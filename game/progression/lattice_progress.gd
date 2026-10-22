@@ -1,0 +1,340 @@
+class_name LatticeProgress
+extends RefCounted
+## The party's progress on one Lattice board (SPEC §6.4): each character's position,
+## activations, and movement points, plus the gates anyone has opened. Headless and
+## deterministic; persisted through to_dict()/from_dict() in GameStateData.lattice.
+##
+## Rules (docs/kb/design/lattice.md):
+## - Stepping onto an adjacent node costs rules.move_cost movement points, or
+##   rules.move_cost_activated if ANY character has activated it (or it is an opened gate).
+## - A closed gate cannot be entered. Open it from an adjacent node with a Key Facet of exactly
+##   its level; opened gates stay open for everyone.
+## - Activating the node you stand on costs one Facet of the matching type and no movement.
+##   Each character activates nodes separately; bonuses apply only to whoever activated them.
+
+const RESULT_OK := &"ok"
+const ERR_UNKNOWN_CHARACTER := &"unknown_character"
+const ERR_UNKNOWN_NODE := &"unknown_node"
+const ERR_NOT_ADJACENT := &"not_adjacent"
+const ERR_GATE_CLOSED := &"gate_closed"
+const ERR_NO_MOVEMENT := &"no_movement_points"
+const ERR_NOT_ACTIVATABLE := &"not_activatable"
+const ERR_ALREADY_ACTIVATED := &"already_activated"
+const ERR_NO_FACET := &"no_facet"
+const ERR_NOT_A_GATE := &"not_a_gate"
+const ERR_GATE_OPEN := &"gate_already_open"
+const MOVE_ILLEGAL := -1
+
+var board: LatticeBoard
+var rules: LatticeRules
+## Character id -> LatticeTraveler.
+var travelers: Dictionary = {}
+## Set of opened gate node ids (id -> true).
+var opened_gates: Dictionary = {}
+
+
+func _init(lattice_board: LatticeBoard = null, lattice_rules: LatticeRules = null) -> void:
+	board = lattice_board if lattice_board != null else LatticeBoard.new()
+	rules = lattice_rules if lattice_rules != null else LatticeRules.new()
+
+
+## Places a character on their start node (which counts as activated by them). Returns false
+## if the board has no start for them. Calling it again for a known character is a no-op.
+func add_character(cid: StringName) -> bool:
+	if travelers.has(cid):
+		return true
+	var start := board.start_of(cid)
+	if start == &"":
+		return false
+	var t := LatticeTraveler.new()
+	t.character_id = cid
+	t.position = start
+	t.activated[start] = true
+	travelers[cid] = t
+	return true
+
+
+func traveler(cid: StringName) -> LatticeTraveler:
+	return travelers.get(cid) as LatticeTraveler
+
+
+func is_activated_by(cid: StringName, node_id: StringName) -> bool:
+	var t := traveler(cid)
+	return t != null and t.activated.has(node_id)
+
+
+## True if any character activated the node, or it is a gate someone opened.
+func is_activated_by_anyone(node_id: StringName) -> bool:
+	if opened_gates.has(node_id):
+		return true
+	for t: LatticeTraveler in travelers.values():
+		if t.activated.has(node_id):
+			return true
+	return false
+
+
+func is_gate_open(node_id: StringName) -> bool:
+	return opened_gates.has(node_id)
+
+
+## Movement points needed to step onto `node_id` from anywhere next to it, or MOVE_ILLEGAL
+## for an unknown node or a closed gate.
+func entry_cost(node_id: StringName) -> int:
+	var n := board.lattice_node(node_id)
+	if n == null or (n.is_gate() and not is_gate_open(node_id)):
+		return MOVE_ILLEGAL
+	return rules.move_cost_activated if is_activated_by_anyone(node_id) else rules.move_cost
+
+
+## Cost for `cid` to step from their position to the adjacent `to`; MOVE_ILLEGAL if they can't.
+func move_cost(cid: StringName, to: StringName) -> int:
+	var t := traveler(cid)
+	if t == null or not board.are_adjacent(t.position, to):
+		return MOVE_ILLEGAL
+	return entry_cost(to)
+
+
+## Steps `cid` onto the adjacent node `to`, spending movement points. Returns RESULT_OK or an ERR_*.
+func move(cid: StringName, to: StringName) -> StringName:
+	var t := traveler(cid)
+	if t == null:
+		return ERR_UNKNOWN_CHARACTER
+	if not board.has_lattice_node(to):
+		return ERR_UNKNOWN_NODE
+	if not board.are_adjacent(t.position, to):
+		return ERR_NOT_ADJACENT
+	var cost := entry_cost(to)
+	if cost == MOVE_ILLEGAL:
+		return ERR_GATE_CLOSED
+	if t.movement_points < cost:
+		return ERR_NO_MOVEMENT
+	t.movement_points -= cost
+	t.position = to
+	return RESULT_OK
+
+
+## Cheapest route for `cid` to `to` (0-1 BFS over entry costs, closed gates blocked), inclusive
+## of both ends; [] if unreachable. Ties prefer fewer hops, then edge order (deterministic).
+func cheapest_path(cid: StringName, to: StringName) -> Array[StringName]:
+	var out: Array[StringName] = []
+	var t := traveler(cid)
+	if t == null or not board.has_lattice_node(to):
+		return out
+	var dist: Dictionary = {t.position: 0}
+	var came: Dictionary = {}
+	var deque: Array[StringName] = [t.position]
+	while not deque.is_empty():
+		var cur: StringName = deque.pop_front()
+		for nb in board.neighbors(cur):
+			var step := entry_cost(nb)
+			if step == MOVE_ILLEGAL:
+				continue
+			var nd: int = int(dist[cur]) + step
+			if not dist.has(nb) or nd < int(dist[nb]):
+				dist[nb] = nd
+				came[nb] = cur
+				if step == 0:
+					deque.push_front(nb)
+				else:
+					deque.push_back(nb)
+	if not dist.has(to):
+		return out
+	var node := to
+	while node != t.position:
+		out.push_front(node)
+		node = came[node]
+	out.push_front(t.position)
+	return out
+
+
+## The Facet item id needed to activate the node `cid` stands on (&"" if it can't be activated).
+func activation_facet(cid: StringName) -> StringName:
+	var t := traveler(cid)
+	if t == null:
+		return &""
+	var n := board.lattice_node(t.position)
+	if n == null or not n.is_activatable():
+		return &""
+	return rules.facet_for(n)
+
+
+## Why `cid` can't activate their current node right now, or RESULT_OK.
+func activate_error(cid: StringName, inventory: FacetInventory) -> StringName:
+	var t := traveler(cid)
+	if t == null:
+		return ERR_UNKNOWN_CHARACTER
+	var n := board.lattice_node(t.position)
+	if n == null or not n.is_activatable():
+		return ERR_NOT_ACTIVATABLE
+	if t.activated.has(n.id):
+		return ERR_ALREADY_ACTIVATED
+	if not inventory.has(rules.facet_for(n), rules.facet_cost(n)):
+		return ERR_NO_FACET
+	return RESULT_OK
+
+
+## Activates the node `cid` stands on, consuming its Facet. Returns RESULT_OK or an ERR_*.
+func activate(cid: StringName, inventory: FacetInventory) -> StringName:
+	var err := activate_error(cid, inventory)
+	if err != RESULT_OK:
+		return err
+	var t := traveler(cid)
+	var n := board.lattice_node(t.position)
+	inventory.consume(rules.facet_for(n), rules.facet_cost(n))
+	t.activated[n.id] = true
+	return RESULT_OK
+
+
+## Why `cid` can't open `gate_id` right now, or RESULT_OK.
+func open_gate_error(cid: StringName, gate_id: StringName, inventory: FacetInventory) -> StringName:
+	var t := traveler(cid)
+	if t == null:
+		return ERR_UNKNOWN_CHARACTER
+	var n := board.lattice_node(gate_id)
+	var gate_err := _gate_state_error(n)
+	if gate_err != RESULT_OK:
+		return gate_err
+	if not board.are_adjacent(t.position, gate_id):
+		return ERR_NOT_ADJACENT
+	if not inventory.has(rules.facet_for(n), rules.facet_cost(n)):
+		return ERR_NO_FACET
+	return RESULT_OK
+
+
+## Opens an adjacent gate for everyone, consuming a Key Facet of its level. Returns RESULT_OK or ERR_*.
+func open_gate(cid: StringName, gate_id: StringName, inventory: FacetInventory) -> StringName:
+	var err := open_gate_error(cid, gate_id, inventory)
+	if err != RESULT_OK:
+		return err
+	var n := board.lattice_node(gate_id)
+	inventory.consume(rules.facet_for(n), rules.facet_cost(n))
+	opened_gates[gate_id] = true
+	return RESULT_OK
+
+
+## Banks LP from one battle and converts it into movement points (formulas.md, Progression).
+## `credited_xp` is what BattleEngine.xp_awards() gave this character. Returns points gained.
+func award_battle(cid: StringName, credited_xp: int) -> int:
+	var t := traveler(cid)
+	if t == null:
+		return 0
+	t.lattice_points += ProgressionFormulas.lp_gain(credited_xp)
+	var r := ProgressionFormulas.convert_lp(
+		t.lattice_points, t.movement_earned, ProgressionFormulas.movement_room(t.movement_points)
+	)
+	t.movement_points += r.x
+	t.movement_earned += r.x
+	t.lattice_points = r.y
+	return r.x
+
+
+## Sum of activated stat-node bonuses for `cid`: stat name -> total.
+func stat_bonuses(cid: StringName) -> Dictionary:
+	var out: Dictionary = {}
+	var t := traveler(cid)
+	if t == null:
+		return out
+	for nid: StringName in t.activated:
+		var n := board.lattice_node(nid)
+		if n != null and n.kind == LatticeNode.KIND_STAT:
+			out[n.stat] = int(out.get(n.stat, 0)) + n.value
+	return out
+
+
+## Skills from activated ability nodes, in activation order, without duplicates.
+func learned_skills(cid: StringName) -> Array[StringName]:
+	var out: Array[StringName] = []
+	var t := traveler(cid)
+	if t == null:
+		return out
+	for nid: StringName in t.activated:
+		var n := board.lattice_node(nid)
+		if n != null and n.kind == LatticeNode.KIND_ABILITY and not out.has(n.skill):
+			out.append(n.skill)
+	return out
+
+
+## Layers this character's Lattice gains onto a freshly built combatant (base stats come from
+## characters.json via BattleCombatant.from_dict). Call it ONCE per combatant: it adds.
+func apply_to(c: BattleCombatant) -> void:
+	var bonus := stat_bonuses(c.id)
+	for stat: StringName in bonus:
+		_add_stat(c, stat, int(bonus[stat]))
+	for s in learned_skills(c.id):
+		if not c.skills.has(s):
+			c.skills.append(s)
+
+
+func to_dict() -> Dictionary:
+	var chars: Dictionary = {}
+	for cid: StringName in travelers:
+		chars[String(cid)] = (travelers[cid] as LatticeTraveler).to_dict()
+	var gates: Array[String] = []
+	for gid: StringName in opened_gates:
+		gates.append(String(gid))
+	return {"board": String(board.id), "characters": chars, "opened_gates": gates}
+
+
+## Restores progress onto `lattice_board`. Ids the board no longer has are dropped (with a
+## warning) and a lost position falls back to the character's start, so old saves stay loadable.
+static func from_dict(d: Dictionary, lattice_board: LatticeBoard, lattice_rules: LatticeRules) -> LatticeProgress:
+	var p := LatticeProgress.new(lattice_board, lattice_rules)
+	var chars: Dictionary = d.get("characters", {})
+	for key: Variant in chars:
+		var cid := StringName(str(key))
+		var t := LatticeTraveler.from_dict(cid, chars[key] as Dictionary)
+		for nid: StringName in t.activated.keys():
+			if not p.board.has_lattice_node(nid):
+				push_warning("LatticeProgress: dropping unknown node '%s' for %s" % [nid, cid])
+				t.activated.erase(nid)
+		if not p.board.has_lattice_node(t.position):
+			t.position = p.board.start_of(cid)
+			if t.position == &"":
+				push_warning("LatticeProgress: %s has no start on board '%s'; dropped" % [cid, p.board.id])
+				continue
+			t.activated[t.position] = true
+		p.travelers[cid] = t
+	for gid: Variant in d.get("opened_gates", []):
+		var g := StringName(str(gid))
+		var n := p.board.lattice_node(g)
+		if n != null and n.is_gate():
+			p.opened_gates[g] = true
+	return p
+
+
+func _gate_state_error(n: LatticeNode) -> StringName:
+	if n == null:
+		return ERR_UNKNOWN_NODE
+	if not n.is_gate():
+		return ERR_NOT_A_GATE
+	if is_gate_open(n.id):
+		return ERR_GATE_OPEN
+	return RESULT_OK
+
+
+static func _add_stat(c: BattleCombatant, stat: StringName, amount: int) -> void:
+	match stat:
+		&"hp":
+			c.max_hp += amount
+			c.hp += amount
+		&"mp":
+			c.max_mp += amount
+			c.mp += amount
+		&"strength":
+			c.strength += amount
+		&"magic":
+			c.magic += amount
+		&"defense":
+			c.defense += amount
+		&"magic_defense":
+			c.magic_defense += amount
+		&"agility":
+			c.agility += amount
+		&"accuracy":
+			c.accuracy += amount
+		&"evasion":
+			c.evasion += amount
+		&"luck":
+			c.luck += amount
+		_:
+			push_error("LatticeProgress: unknown stat '%s'" % stat)
