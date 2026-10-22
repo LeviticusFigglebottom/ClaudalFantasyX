@@ -2,8 +2,8 @@
 id: M1-QA-01
 title: Real screenshot regression on a GPU-capable runner
 role: qa
-status: todo
-owner_session: ""
+status: doing
+owner_session: qa-stream-1
 depends_on: []
 milestone: M1
 request-from: ""
