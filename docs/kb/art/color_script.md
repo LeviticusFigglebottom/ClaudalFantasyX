@@ -26,7 +26,7 @@ Measured as numbers across the frames below, the key light runs ~5,600 K at noon
 ## Narrative light rules (non-negotiable)
 
 1. **Rising light = released. Sinking or seaward light = held.** Motes that are released rise in slow vertical spirals (0.15–0.4 m/s upward, a spiral radius of 0.2–0.6 m) and use `glimmer_lift` (`#FFE9B8`), a warm pale gold that brightens to `glimmer_lift_hi` (`#F4F8FF`) as it fades into the sky. Motes that are held drift sideways and down toward water (0.05–0.2 m/s, mostly lateral, with a downward bias of 15–30°) and use `glimmer_held` (`#7FC6D9`), a cool cyan. **Never mix the two hues on one mote.** The transition between them, at a release, is a 1.5 s hue lerp from held to lift that starts as the direction reverses. The player is never told this rule. They learn it, so that the Ebbing (Ch9) looks quietly wrong in hindsight and the Letting (Ch21) looks like the world exhaling.
-2. **Bound glimmer** (machines, salt-glass, Lit Age conduits, the Kite's lamps) uses `glimmer_bound` (`#4FB3B0`). It is steady, never flickers, and never moves. Its stillness is its wrongness.
+2. **Bound glimmer** (machines, salt-glass, Lit Age conduits, the Kite's lamps, **and the Vowbound**) uses `glimmer_bound` (`#4FB3B0`). It is steady, never flickers, and never moves on its own: it moves only as part of the thing it is bound into (a housing, a conduit, a Vowbound's form), with no drift, no shed motes, and no trails. Its stillness is its wrongness. **The Vowbound are bound light** ([decisions_log N-05](../story/decisions_log.md)): Ilun in his chamber (`ch03_shrine_int`, haluna.md S08) and every summon (C10) use this treatment, so the player's own summons share the stillness of the Lit Age machines. A Vowbound turns to rising `glimmer_lift` only at its Act III release (Ilun: Ch20), through the rule 1 hue lerp. Rhen's lantern is **not** bound light: it burns oil (`oil_lamp`, [N-02](../story/decisions_log.md)) and does not go dark at the Unbinding.
 3. **The night sea-glow.** Every night frame, and every frame where open sea is visible after sunset, has a faint ambient emission on the sea surface and in the water column: `sea_glow` (`#1C6B78`) at energy 0.04–0.15, modulated by slow noise (a period of 8–20 s and an amplitude of ±25%). It is present from the Prologue through `ending_unbinding`, and it is **exactly 0.0** in `ending_dock`. Do not cut it or drop it below 0.04 for performance on any preset. If it costs too much, find a cheaper way to draw it and tell Narrative (bible §11). Its absence in the last shot is the payoff of the entire game.
 4. **Oil flame** (`oil_lamp`, ~2,900 K) is the only warm practical light in a world without glimmer-tech, and the last light the game shows.
 5. **Shadows are teal, never neutral black.** In daylight, the LUT toe is tinted toward `deep_teal_shadow` (`#0E4A55`). At night it's tinted toward `night_sky` (`#050A14`). No frame's black point is (0, 0, 0).
@@ -37,8 +37,8 @@ Measured as numbers across the frames below, the key light runs ~5,600 K at noon
 |---|---|---|---|---|---|---|
 | Prologue | 2,500 | 11.0 | 0.55 | 1.05 | lift | 0.04 |
 | Ch1 | 5,600 | 14.5 | 0.45 | 1.12 | held | 0 (day) |
-| Ch2 ★ | 3,200 | 12.5 | 0.40 | 1.00 | none | 0.03 |
-| Ch3 ★ | 2,900 | 12.0 | 0.50 | 1.08 | lift | 0.03 |
+| Ch2 ★ | 3,200 | 12.5 | 0.40 | 1.00 | held (9 motes, H06 only) | 0.04 |
+| Ch3 ★ | 2,900 | 12.0 | 0.50 | 1.08 | lift (bound in the shrine, held at the bell) | 0.04 |
 | Ch4 | lamp 3,000 | 7.5 | 0.60 | 0.95 | held | 0.12 |
 | Ch5 | lamp 2,700 | 8.0 | 0.55 | 1.15 | held | 0.08 |
 | Ch6 | 4,300 | 13.5 | 0.50 | 0.90 | bound | 0 |
@@ -120,11 +120,20 @@ Measured as numbers across the frames below, the key light runs ~5,600 K at noon
 | Sky zenith / horizon | `#4E7FB8` / `#F6C9A0` |
 | Fog | albedo `#E9C9A8`, volumetric density 0.01 |
 | Water | absorption (m^-1) R 0.45 G 0.065 B 0.045; deep color `#1FA3A6` |
-| Glimmer | `glimmer_lift`, emission energy 0.0, none on screen |
-| Night sea-glow | energy 0.03 |
+| Glimmer | `glimmer_held`, emission energy 0.6, sideways/down (held). **Exactly 9 motes, in H06 only** (see "Ch2 held motes" below). Nothing rises in this frame. |
+| Night sea-glow | energy 0.04 |
 | Exposure / contrast / saturation | EV100 12.5 · S-curve 0.4 · saturation x1.0 |
 | LUT intent | lut_ch02_dawn: peach highlights, lavender-teal shadows, gentle S-curve. Gameplay noon variant lut_ch02_noon (see haluna.md) is the Act I reference grade. |
-| Emotional note | Waking into kindness. Asha backlit by a low gold rim, kneeling; the lantern-staff catches the first sun. Soft, forgiving, a little too beautiful. The residual sea-glow is just fading at dawn. |
+| Emotional note | Waking into kindness. Asha backlit by a low gold rim, kneeling; the lantern-staff catches the first sun. Soft, forgiving, a little too beautiful. The residual sea-glow is just fading at dawn. Then the grief turn: nine small cool points in the warm water around Rhen, drifting down and out to sea. They are the only cold color in the frame, and he can't look at them. |
+
+**Ch2 held motes (Cutscene A, `@vfx glimmer_held at=rhen_shallows count=9 drift=down_seaward`).** These are exact values, inside palette.json's rules:
+- **Swatch and energy:** `glimmer_held` `#7FC6D9`, mote-core emission energy **0.6** (the frame's `hymn_glimmer.a`; the field follows scene intensity, `intensity` 1.0). Bloom is the frame's default; there is no extra glow pass.
+- **Count:** **exactly 9**, on every quality preset. The field is fixed-count, so the preset `amount_scale` (0.35 on Low) must not apply to it (a request to Rendering). No respawn: the nine spawn once and stay in the scene.
+- **Size:** core 0.012–0.030 m (capped under the global `size_max_m` 0.045 so halos stay small at 50 mm).
+- **Motion:** held mode, at the slow end: drift 0.05–0.10 m/s, down bias 15–30°, heading seaward (east, azimuth 95°, away from the beach), ±35° spread. They start 0.5–2.0 m from Rhen, at or just under the surface (0–0.15 m deep), and fade by underwater absorption as they sink. No attractors: they do not gather around Rhen or Asha. They are leaving.
+- **No fill light** (`fill_light_energy` 0). The motes must not light Rhen. The dawn rim does that.
+- **Frame area:** ≤ **1%** of H06 (core plus halo, measured on the swatch-mask view), well under the 3% daytime limit. In H05 they are behind the lens. In H01 they are sub-pixel at 180 m: do not boost them to make them read there.
+- **Sea-glow:** 0.04, the palette floor. The old value (0.03) could not render: the sea-glow gate clamps any visible value to 0.04–0.15.
 
 ### Ch3 "The Shell Shrine" (VERTICAL SLICE, Cutscene B)
 `ch03` · zone `ch03/saltgrass_causeway, ch03/shell_shrine`
@@ -139,11 +148,24 @@ Measured as numbers across the frames below, the key light runs ~5,600 K at noon
 | Sky zenith / horizon | `#46609A` / `#F0A35C` |
 | Fog | albedo `#D9A27A`, volumetric density 0.01 |
 | Water | absorption (m^-1) R 0.45 G 0.065 B 0.045; deep color `#1FA3A6` |
-| Glimmer | `glimmer_lift`, emission energy 2.5, rising (released) |
-| Night sea-glow | energy 0.03 |
+| Glimmer | `glimmer_lift`, emission energy 2.5, rising (released): the light off Asha at the door (S09). Inside the shrine (S08, `ch03_shrine_int`), Ilun is `glimmer_bound` at energy 1.2. At the Drownbell (C08–C10, `ch03_boss`), the bell's motes are `glimmer_held` at 1.5. See "Ch3 glimmer by shot" below. |
+| Night sea-glow | energy 0.04 |
 | Exposure / contrast / saturation | EV100 12.0 · S-curve 0.5 · saturation x1.08 |
 | LUT intent | lut_ch03_sunset: gold gain, magenta-free (clip hue shift so skies never go pink), shadows held at deep_teal_shadow. Route gameplay uses lut_ch02_noon at 14:30. |
 | Emotional note | The first verse. Ilun's light lifting off Asha's skin in slow upward spirals, gold against the sunset, is the first time the player sees released light. Joy and a cold undertone: the sun is setting on her. |
+
+**Ch3 glimmer by shot (Cutscene B and the Drownbell).** Each shot uses one meaning, so the three kinds of light never share a frame:
+
+| Shot (sub-frame) | Cue | Swatch, energy | Motion | Frame-area budget |
+|---|---|---|---|---|
+| S08 (`ch03_shrine_int`) | `@vfx glimmer_bound at=ilun_chamber form=ilun` | `glimmer_bound` `#4FB3B0`, 1.2 (the glimmer.json `machine` default) | **None.** Ilun's form holds still in a held frame. No breath flicker, no drift, no shed motes. Only the water's net caustics move. | Set-piece; target ≤ 15% (limit 35%). Ilun's face is not shown. |
+| S09 (`ch03`) | `@vfx glimmer_lift at=asha motion=spiral_up rate=slow` | `glimmer_lift` `#FFE9B8` → `glimmer_lift_hi`, 2.5 | Rule 1 released, at the slow end ("rate=slow"): rise 0.15–0.25 m/s, spiral radius 0.2–0.4 m. They are already gold when she steps into frame: Ilun's light let go of her inside, offscreen, so no bound → lift lerp is seen. | Set-piece; target ≤ 10% (limit 35%) so her face stays the subject at 85 mm. |
+| S10 (`ch03`) | (the S09 field, seen past Rhen) | as S09 | as S09 | ≤ 3% (day): a few motes out of focus beyond Rhen. |
+| C08 (`ch03_boss`) | `@vfx glimmer_held at=drownbell drift=down_seaward` | `glimmer_held` `#7FC6D9`, 1.5 (motes shed from the wounds). The wound surfaces themselves are `spawn_wound` `#3FE0C8` emissive. | Rule 1 held: sideways and down, seaward. | ≤ 3% (the sun is still up). |
+| C09 (`ch03_boss`, flood) | (gameplay) | Polyps `spawn_wound` under the surface; bell motes as C08 | as C08 | Set-piece; target ≤ 12%. |
+| C10 (`ch03_boss`) | (Ilun's summon) | `glimmer_bound`, 1.2, plus his net caustics | Bound: his light moves only with his body. No trails. | Set-piece; limit 35%. |
+
+When the bell dies, its motes do **not** rise. They slide seaward (held), which is quietly wrong.
 
 ### Ch4 "The Pilgrim's Wake"
 `ch04` · zone `ch02/haluna (night), ch04/brightwater_ferry`
@@ -550,3 +572,5 @@ Measured as numbers across the frames below, the key light runs ~5,600 K at noon
 | LUT intent | lut_post_credits: blue-hour cool everywhere except one small oil-lamp pool, which is the only warm source in frame. |
 | Emotional note | One new flame. Mother Kell's wick lights the first oil lamp of a world without glimmer. Small, warm, enough. |
 
+## Review log
+- 2026-10-22 (art-stream-2, M1-ART-03): synced with the final vertical-slice script ([beat sheet](../story/beats/vertical_slice.md), [decisions_log](../story/decisions_log.md)). `ch02`: glimmer changed from none to 9 held motes at 0.6 (H06 only); sea-glow 0.03 → 0.04. `ch03`: sea-glow 0.03 → 0.04; added the per-shot glimmer table (bound in S08, lift in S09, held at the bell). Rule 2: the Vowbound are bound light (N-05); Rhen's lantern is oil (N-02). Baselines affected: `ch02` and `ch03` mood frames (none are captured yet), and the M1-ENV-01 noon shots are unchanged.
