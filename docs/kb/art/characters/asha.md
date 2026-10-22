@@ -258,5 +258,5 @@ Braid (8), sleeve (6), sash tails (2 × 4), skirt (3 rings × 8, front-left spli
 ---
 
 ## 10. Open Questions
-- **Reach-bands:** Low Reaches adults carry one band per voyage survived (bible §5.1). Asha has never sailed past Haluna's reef, so **her forearms are bare**. Art proposes that she earns her first band offscreen after the Ch4 ferry, shown from Ch5 on her left forearm, as a small visible growth beat. This needs Narrative's sign-off.
-- **The gold lash stroke** for ceremonies, and **the S8 sleeve unraveling**: these need Cinematics and Narrative sign-off.
+- **Reach-bands:** Low Reaches adults carry one band per voyage survived (bible §5.1). Asha has never sailed past Haluna's reef, so **her forearms are bare**. She earns her first band offscreen after the Ch4 ferry, shown from Ch5 on her left forearm, as a small visible growth beat, and a second band only in the ending dock shot (**approved by Narrative, [N-01](../../story/decisions_log.md)**). Band count: 0 in the slice, 1 from Ch5, 2 in `ending_dock`.
+- **The gold lash stroke** is approved as the **gilt line** ([N-04](../../story/decisions_log.md)): a mask layer worn only at Order rites (Ch9, Ch13, Ch14, Ch16), never in the vertical slice or Act III. **The S8 sleeve unraveling** still needs Cinematics sign-off.
