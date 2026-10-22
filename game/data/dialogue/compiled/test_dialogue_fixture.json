@@ -1,0 +1,48 @@
+{
+ "format": 1,
+ "scene": "test_dialogue_fixture",
+ "source": "game/data/dialogue/test/test_dialogue_fixture.dlg",
+ "start": "test_dialogue_fixture",
+ "nodes": {
+  "test_dialogue_fixture": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["fixture_wide"], "kwargs": {"blend": 1.5, "hold": true}, "src": 5},
+    {"op": "line", "id": "test_dlg_001", "key": "DLG_TEST_DLG_001", "speaker": "", "emotion": "", "voice": "", "src": 6},
+    {"op": "line", "id": "test_dlg_002", "key": "DLG_TEST_DLG_002", "speaker": "rhen", "emotion": "worried", "voice": "", "src": 7, "tags": ["tagged"]},
+    {"op": "if_not", "cond": ["flag", "test_flag"], "to": 6, "src": 8},
+    {"op": "line", "id": "test_dlg_003", "key": "DLG_TEST_DLG_003", "speaker": "asha", "emotion": "", "voice": "", "src": 9},
+    {"op": "goto", "to": 11, "src": 8},
+    {"op": "if_not", "cond": ["and", [">=", ["flag", "test_counter"], ["lit", 3]], ["not", ["flag", "test_flag"]]], "to": 9, "src": 8},
+    {"op": "line", "id": "test_dlg_004", "key": "DLG_TEST_DLG_004", "speaker": "asha", "emotion": "", "voice": "", "src": 11},
+    {"op": "goto", "to": 11, "src": 8},
+    {"op": "line", "id": "test_dlg_005", "key": "DLG_TEST_DLG_005", "speaker": "asha", "emotion": "", "voice": "", "src": 13},
+    {"op": "goto", "to": 11, "src": 8},
+    {"op": "set", "flag": "test_counter", "value": ["lit", 7], "src": 15},
+    {"op": "event", "name": "fixture_event", "args": ["alpha", 2, true], "src": 16},
+    {"op": "options", "choices": [{"id": "test_dlg_006", "key": "DLG_TEST_DLG_006", "to": 14, "src": 17}, {"id": "test_dlg_010", "key": "DLG_TEST_DLG_010", "to": 20, "src": 22, "cond": ["==", ["flag", "test_counter"], ["lit", 7]]}, {"id": "test_dlg_011", "key": "DLG_TEST_DLG_011", "to": 22, "src": 24, "cond": ["and", ["!=", ["flag", "test_text"], ["lit", ""]], ["<", ["flag", "test_counter"], ["lit", 0]]]}], "src": 17, "next": 23},
+    {"op": "line", "id": "test_dlg_007", "key": "DLG_TEST_DLG_007", "speaker": "rhen", "emotion": "", "voice": "", "src": 18},
+    {"op": "options", "choices": [{"id": "test_dlg_008", "key": "DLG_TEST_DLG_008", "to": 16, "src": 19}, {"id": "test_dlg_009", "key": "DLG_TEST_DLG_009", "to": 18, "src": 21}], "src": 19, "next": 19},
+    {"op": "set", "flag": "test_text", "value": ["lit", "nested"], "src": 20},
+    {"op": "goto", "to": 19, "src": 19},
+    {"op": "goto", "to": 19, "src": 21},
+    {"op": "goto", "to": 23, "src": 17},
+    {"op": "jump", "node": "second", "src": 23},
+    {"op": "goto", "to": 23, "src": 22},
+    {"op": "goto", "to": 23, "src": 24},
+    {"op": "line", "id": "test_dlg_012", "key": "DLG_TEST_DLG_012", "speaker": "toma", "emotion": "", "voice": "", "src": 25},
+    {"op": "stop", "src": 26},
+    {"op": "line", "id": "test_dlg_013", "key": "DLG_TEST_DLG_013", "speaker": "toma", "emotion": "", "voice": "", "src": 27}
+   ]
+  },
+  "second": {
+   "headers": {},
+   "ops": [
+    {"op": "if_not", "cond": ["or", ["==", ["flag", "test_text"], ["lit", "nested"]], [">", ["flag", "test_counter"], ["lit", 100]]], "to": 3, "src": 31},
+    {"op": "line", "id": "test_dlg_014", "key": "DLG_TEST_DLG_014", "speaker": "asha", "emotion": "", "voice": "", "src": 32},
+    {"op": "goto", "to": 3, "src": 31},
+    {"op": "line", "id": "test_dlg_015", "key": "DLG_TEST_DLG_015", "speaker": "asha", "emotion": "smile", "voice": "", "src": 34}
+   ]
+  }
+ }
+}

@@ -1,0 +1,16 @@
+keys,en
+DLG_TEST_DLG_001,Test narration.
+DLG_TEST_DLG_002,Test line with an emotion.
+DLG_TEST_DLG_003,Flag was on.
+DLG_TEST_DLG_004,Counter at least three.
+DLG_TEST_DLG_005,Neither.
+DLG_TEST_DLG_006,First option.
+DLG_TEST_DLG_007,Took the first.
+DLG_TEST_DLG_008,Nested A.
+DLG_TEST_DLG_009,Nested B.
+DLG_TEST_DLG_010,Hidden unless counter is seven.
+DLG_TEST_DLG_011,Never shown.
+DLG_TEST_DLG_012,After the options.
+DLG_TEST_DLG_013,Unreachable.
+DLG_TEST_DLG_014,Wrong branch.
+DLG_TEST_DLG_015,In the second node.
