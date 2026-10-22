@@ -1,0 +1,37 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/vegetation/vegetation_foliage.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" path="res://assets/environments/vegetation/saltgrass_albedo.png" id="2_albedo"]
+[ext_resource type="Texture2D" path="res://assets/environments/vegetation/saltgrass_normal.png" id="3_normal"]
+
+[resource]
+resource_name = "saltgrass"
+shader = ExtResource("1_shader")
+shader_parameter/tex_albedo = ExtResource("2_albedo")
+shader_parameter/tex_normal_trans = ExtResource("3_normal")
+shader_parameter/wind_response = 0.9
+shader_parameter/plant_height_m = 0.7
+shader_parameter/sway_lean = 0.14
+shader_parameter/sway_amplitude = 0.1
+shader_parameter/sway_frequency_hz = 0.6
+shader_parameter/gust_contrast = 1.4
+shader_parameter/secondary_amplitude_m = 0.04
+shader_parameter/secondary_frequency_hz = 1.4
+shader_parameter/flutter_amplitude_m = 0.01
+shader_parameter/flutter_frequency_hz = 5
+shader_parameter/col_tint = Color(1, 1, 1, 1)
+shader_parameter/col_tint_variation = Color(1.1, 1, 0.8, 1)
+shader_parameter/tint_variation = 0.4
+shader_parameter/underside_lighten = 0.1
+shader_parameter/alpha_cutoff = 0.4
+shader_parameter/mip_coverage_boost = 0.45
+shader_parameter/roughness_value = 0.6
+shader_parameter/specular_value = 0.35
+shader_parameter/ao_strength = 0.85
+shader_parameter/ao_in_albedo = 0.6
+shader_parameter/diffuse_wrap = 0.4
+shader_parameter/col_translucency = Color(0.95, 0.92, 0.5, 1)
+shader_parameter/translucency = 1
+shader_parameter/translucency_shadow_floor = 0.5
+shader_parameter/translucency_focus = 4
+shader_parameter/translucency_forward = 1.2
