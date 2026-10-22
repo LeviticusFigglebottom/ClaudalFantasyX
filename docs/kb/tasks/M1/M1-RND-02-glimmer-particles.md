@@ -2,8 +2,8 @@
 id: M1-RND-02
 title: Glimmer motes (GPU particles, curl noise, gathering around the living)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: rendering-stream-3
 depends_on: []
 milestone: M1
 request-from: ""
