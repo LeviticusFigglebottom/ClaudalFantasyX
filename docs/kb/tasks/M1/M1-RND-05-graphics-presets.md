@@ -2,8 +2,8 @@
 id: M1-RND-05
 title: Graphics quality presets backend
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: rendering-stream-1
 depends_on: []
 milestone: M1
 request-from: ""

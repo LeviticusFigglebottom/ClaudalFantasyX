@@ -2,8 +2,8 @@
 id: M1-RND-06
 title: Shader-cache warmup scene hooked into SceneRouter.prewarm_requested
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: rendering-stream-1
 depends_on: []
 milestone: M1
 request-from: ""
