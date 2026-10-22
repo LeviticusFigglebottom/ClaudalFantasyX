@@ -2,8 +2,8 @@
 id: M1-QA-03
 title: Coverage strategy for battle/ and progression/
 role: qa
-status: todo
-owner_session: ""
+status: doing
+owner_session: qa-stream-2
 depends_on: []
 milestone: M1
 request-from: ""
