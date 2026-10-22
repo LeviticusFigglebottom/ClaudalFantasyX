@@ -44,7 +44,7 @@ from functools import lru_cache
 
 import numpy as np
 
-from .dsp import SR, bq_bandpass, bq_highpass, bq_lowpass, bq_peak, fft_convolve, filt, midi_to_hz, rng
+from .dsp import SR, bq_bandpass, bq_highpass, bq_highshelf, bq_lowpass, bq_peak, fft_convolve, filt, midi_to_hz, rng
 
 DEC = 32                 # decimation of the slow-envelope grid
 DAMPER_TOP = 88          # E6: keys above this have no dampers
@@ -290,6 +290,8 @@ def soundboard_ir_modal(seed: int = 4242, length: float = 0.45, sr: int = SR) ->
     direct = 0.70
     out *= math.sqrt(1 - direct ** 2)
     out[0] += direct
+    # radiation efficiency rises with frequency over the whole board, not only in the modal part
+    out = filt(out, [bq_highshelf(1100, 7.0, 0.7, sr), bq_lowpass(9000, 0.7, sr)], tail=0.05, sr=sr)
     return out
 
 

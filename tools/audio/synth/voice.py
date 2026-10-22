@@ -142,20 +142,29 @@ def sing(phonemes: list[tuple[str, float]], pitches: list[tuple[float, float]], 
 
 def hum_ensemble(line: list[tuple[float, float]], voices: int = 14, seed: int = 0, sr: int = SR,
                  register: str = "low", spread: float = 0.8, scatter_cents: float = 9.0,
-                 breath_every: tuple[float, float] = (6.0, 11.0)) -> np.ndarray:
+                 breath_every: tuple[float, float] = (6.0, 11.0), loop: bool = False) -> np.ndarray:
     """A congregation humming a slow line together. line = [(midi, seconds)].
 
     Each voice gets its own pitch offset, entry delay, timing drift, breath
     gaps (taken at random points, so the ensemble never breathes at once) and
-    a distance (darker and quieter when far). Returns stereo (N, 2)."""
+    a distance (darker and quieter when far). Returns stereo (N, 2).
+
+    loop=True: the line is one cycle of a loop. Each voice starts its breath
+    schedule at its own random point in the cycle, and the result is exactly
+    one cycle long with every tail wrapped onto the start, so the
+    congregation never breathes together at the loop seam."""
     g = rng(seed)
     total = sum(d for _, d in line)
     dec_sr = 11025
     q = sr // dec_sr
-    N = int((total + 1.5) * sr)
-    out = np.zeros((N, 2))
+    N = q * int(np.ceil((total + 1.5) * sr / q))
+    Lt = int(round(total * sr))
+    out = np.zeros((Lt if loop else N, 2))
+    base_line = list(line)
     scale = 1.0 if register == "low" else 1.17
     for v in range(voices):
+        u = float(g.uniform(0, total)) if loop else 0.0
+        line = _rotate(base_line, u) if loop else base_line
         offs = g.normal(0, scatter_cents) / 100.0
         delay = abs(g.normal(0, 0.12))
         # breath gaps: split the line into breath phrases of 6-11 s with 0.6-1.1 s gaps
@@ -168,7 +177,7 @@ def hum_ensemble(line: list[tuple[float, float]], voices: int = 14, seed: int = 
         dist = g.uniform(0, 1)
         lvl = 1.0 - 0.45 * dist
         pan = spread * g.uniform(-1, 1)
-        xl = np.zeros(N // q + 1)          # accumulated at the reduced rate
+        xl = np.zeros(N // q)              # accumulated at the reduced rate
         for a, b in segs:
             # the slice of the line inside [a, b)
             pts = []
@@ -191,9 +200,29 @@ def hum_ensemble(line: list[tuple[float, float]], voices: int = 14, seed: int = 
         Xu = np.zeros(N // 2 + 1, dtype=np.complex128)
         m = min(len(X), len(Xu))
         Xu[:m] = X[:m]
-        x = np.fft.irfft(Xu, N) * (N / len(xl))
+        x = np.fft.irfft(Xu, N) * q
         x = filt(x, [bq_lowpass(2800 - 1600 * dist, 0.7, sr)], sr=sr)
+        if loop:
+            y = x[:Lt].copy()
+            y[: N - Lt] += x[Lt:]
+            x = np.roll(y, int(round(u * sr)))
         th = (pan + 1) * np.pi / 4
         out[:, 0] += x * np.cos(th)
         out[:, 1] += x * np.sin(th)
     return out / np.sqrt(voices)
+
+
+def _rotate(line: list[tuple[float, float]], u: float) -> list[tuple[float, float]]:
+    """The same cyclic line, starting at time u."""
+    out_a, out_b = [], []
+    t = 0.0
+    for m, d in line:
+        if t + d <= u:
+            out_b.append((m, d))
+        elif t >= u:
+            out_a.append((m, d))
+        else:
+            out_b.append((m, u - t))
+            out_a.append((m, t + d - u))
+        t += d
+    return out_a + out_b

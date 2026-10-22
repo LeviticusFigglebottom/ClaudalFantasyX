@@ -16,3 +16,8 @@ Rules:
 | assets/audio/sfx/ui_confirm.ogg | assets_src/sfx/ui_sfx.py + tools/audio/synth/ | python3 assets_src/sfx/ui_sfx.py | Audio Director | 2026-10-22 | original |
 | assets/audio/sfx/ui_cancel.ogg | assets_src/sfx/ui_sfx.py + tools/audio/synth/ | python3 assets_src/sfx/ui_sfx.py | Audio Director | 2026-10-22 | original |
 | assets/audio/sfx/text_blip.ogg | assets_src/sfx/ui_sfx.py + tools/audio/synth/ | python3 assets_src/sfx/ui_sfx.py | Audio Director | 2026-10-22 | original |
+| assets/audio/music/hush_theme_v2.ogg | assets_src/music/hush_theme_v2.py + tools/audio/synth/ | python3 assets_src/music/hush_theme_v2.py | Audio Director | 2026-10-22 | original |
+| assets/audio/music/battle_standard.ogg | assets_src/music/battle_standard.py + tools/audio/synth/ | python3 assets_src/music/battle_standard.py | Audio Director | 2026-10-22 | original |
+| assets/audio/music/battle_standard.loop.json | assets_src/music/battle_standard.py + tools/audio/synth/looping.py | python3 assets_src/music/battle_standard.py | Audio Director | 2026-10-22 | original |
+| assets/audio/music/temple_trial.ogg | assets_src/music/temple_trial.py + tools/audio/synth/ | python3 assets_src/music/temple_trial.py | Audio Director | 2026-10-22 | original |
+| assets/audio/music/temple_trial.loop.json | assets_src/music/temple_trial.py + tools/audio/synth/looping.py | python3 assets_src/music/temple_trial.py | Audio Director | 2026-10-22 | original |

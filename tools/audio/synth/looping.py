@@ -123,7 +123,7 @@ class LoopMixer:
             ib = b.intro.copy()
             a0 = S - self.lead
             ib[a0: a0 + C + self.lead] += self.cold[b.name][: len(ib) - a0]
-            xi = b.process(ib) if b.process else ib
+            xi = b.process(ib) if (b.process and S > 0) else ib
             loop += g * xl
             intro += g * xi
             self.bus_lufs[b.name] = integrated_lufs(g * xl, sr) if np.any(xl) else float("-inf")
@@ -135,8 +135,9 @@ class LoopMixer:
             reverb.loop_period = self.L / sr
             reverb.t_offset = -self.pre / sr
             loop += ret * self._steady(send_l, lambda v: reverb.process(v, tail=0.0)[: len(v)])
-            reverb.t_offset = (self.L - S) / sr          # intro = the loop's last bars
-            intro += ret * reverb.process(send_i, tail=0.0)[: len(intro)]
+            if S > 0:
+                reverb.t_offset = (self.L - S) / sr      # intro = the loop's last bars
+                intro += ret * reverb.process(send_i, tail=0.0)[: len(intro)]
             reverb.t_offset = 0.0
         hp = [bq_highpass(hp_hz, 0.6, sr)]
         loop = self._steady(loop, lambda v: filt(v, hp, sr=sr))
@@ -152,16 +153,26 @@ class LoopMixer:
 
 
 def master_loop(intro: np.ndarray, loop: np.ndarray, target_lufs: float, ceiling_db: float = -2.0,
-                sr: int = SR, iters: int = 5) -> tuple[np.ndarray, np.ndarray]:
-    """Common gain to the LUFS target (measured on intro + one loop) and wrap-aware limiting."""
+                sr: int = SR, iters: int = 5, report: dict | None = None) -> tuple[np.ndarray, np.ndarray]:
+    """Common gain to the LUFS target (measured on intro + one loop) and wrap-aware limiting.
+
+    `report` (optional) receives the limiter's work: max gain reduction (dB)
+    and the fraction of samples it touched, measured on the final pass."""
     S, L = len(intro), len(loop)
     ctx = min(L, int(0.05 * sr))
     for _ in range(iters):
         cur = integrated_lufs(np.concatenate([intro, loop]) if S else loop, sr)
         gain = db_to_lin(target_lufs - cur)
-        intro, loop = intro * gain, loop * gain
-        lp = limit(np.concatenate([loop[-ctx:], loop, loop[:ctx]]), ceiling_db, sr=sr)[ctx: ctx + L]
-        it = limit(np.concatenate([intro, loop[:ctx]]), ceiling_db, sr=sr)[:S] if S else intro
+        a, b = intro * gain, loop * gain
+        lp = limit(np.concatenate([b[-ctx:], b, b[:ctx]]), ceiling_db, sr=sr)[ctx: ctx + L]
+        it = limit(np.concatenate([a, b[:ctx]]), ceiling_db, sr=sr)[:S] if S else a
+        if report is not None:
+            pre = np.concatenate([a, b])
+            post = np.concatenate([it, lp])
+            ratio = np.abs(post).max(axis=1) / np.maximum(np.abs(pre).max(axis=1), 1e-12)
+            touched = ratio < 0.999
+            report["max_gain_reduction_db"] = float(-20 * np.log10(max(ratio.min(), 1e-12)))
+            report["fraction_limited"] = float(touched.mean())
         intro, loop = it, lp
         if abs(integrated_lufs(np.concatenate([intro, loop]) if S else loop, sr) - target_lufs) < 0.1:
             break
