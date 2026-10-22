@@ -2,8 +2,8 @@
 id: M1-ARC-02
 title: Debug overlays F1–F12 framework
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: architect-stream-2
 depends_on: []
 milestone: M1
 request-from: ""
