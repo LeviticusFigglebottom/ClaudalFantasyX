@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "_doc": "Glimmer mote tunables (M1-RND-02). Docs: docs/kb/tech/glimmer.md. Meaning rules: docs/kb/art/color_script.md (narrative light rules 1-3). Colours are sRGB hex from docs/kb/art/palette.json; shaders receive them as source_color (linearised by Godot).",
+  "colors": {
+    "released": "#FFE9B8",
+    "released_hi": "#F4F8FF",
+    "held": "#7FC6D9",
+    "machine": "#4FB3B0"
+  },
+  "release_duration_s": 1.5,
+  "release_wave": {
+    "fraction": 0.4,
+    "radius_m": 4.0,
+    "jitter": 0.3
+  },
+  "modes": {
+    "released": {
+      "energy": 3.0,
+      "rise_min_mps": 0.15,
+      "rise_max_mps": 0.4,
+      "spiral_radius_min_m": 0.2,
+      "spiral_radius_max_m": 0.6,
+      "spiral_rate_rad_s": 0.3,
+      "curl_scale": 0.4,
+      "hi_shift": 0.55
+    },
+    "held": {
+      "energy": 1.5,
+      "drift_min_mps": 0.05,
+      "drift_max_mps": 0.2,
+      "down_bias_min_deg": 15.0,
+      "down_bias_max_deg": 30.0,
+      "heading_spread_deg": 35.0,
+      "curl_scale": 1.0
+    },
+    "machine": {
+      "energy": 1.2
+    }
+  },
+  "motion": {
+    "curl_frequency": 0.35,
+    "curl_strength_mps": 0.05,
+    "curl_evolve": 0.04,
+    "response_rate": 1.4,
+    "underwater_drag": 3.0,
+    "underwater_absorb_per_m": 2.2
+  },
+  "attractor": {
+    "max": 8,
+    "default_strength": 1.0,
+    "default_radius_m": 0.7,
+    "default_swirl": 1.0,
+    "default_half_height_m": 0.0,
+    "influence_scale": 3.0,
+    "pull_mps": 0.5,
+    "swirl_mps": 0.45,
+    "keep_drift": 0.55,
+    "focus_strength": 0.8,
+    "focus_half_height_m": 0.8
+  },
+  "look": {
+    "size_min_m": 0.012,
+    "size_max_m": 0.045,
+    "size_power": 3.0,
+    "halo_scale": 7.0,
+    "core_gain": 0.8,
+    "halo_gain": 0.12,
+    "halo_falloff": 0.6,
+    "trail_time_s": 1.1,
+    "trail_max_ratio": 1.4,
+    "breath_rate_hz": 0.18,
+    "breath_depth": 0.22,
+    "fade_in_fraction": 0.12,
+    "fade_out_fraction": 0.3,
+    "reflection_gain": 1.0,
+    "reflection_softness": 1.6,
+    "streak_gain": 0.25,
+    "streak_width": 1.6,
+    "soft_depth_m": 0.35,
+    "brightness_min": 0.3,
+    "brightness_power": 1.5,
+    "near_fade_start_m": 0.6,
+    "near_fade_end_m": 2.0
+  },
+  "emitter": {
+    "amount": 450,
+    "lifetime_s": 14.0,
+    "preprocess_s": 14.0,
+    "fixed_fps": 30,
+    "aabb_margin_m": 6.0
+  },
+  "fill_light": {
+    "range_m": 6.0,
+    "attenuation": 1.6
+  },
+  "quality": {
+    "low": {"amount_scale": 0.35, "trail_scale": 0.0, "curl_octaves": 1, "reflection": false},
+    "medium": {"amount_scale": 0.6, "trail_scale": 0.6, "curl_octaves": 2, "reflection": true},
+    "high": {"amount_scale": 1.0, "trail_scale": 1.0, "curl_octaves": 2, "reflection": true},
+    "ultra": {"amount_scale": 1.5, "trail_scale": 1.0, "curl_octaves": 3, "reflection": true}
+  },
+  "default_quality": "high"
+}
