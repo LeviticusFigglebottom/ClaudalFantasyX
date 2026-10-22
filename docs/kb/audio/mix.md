@@ -75,10 +75,32 @@ Master            AudioEffectLimiter (ceiling −1.0 dB, threshold −1.5 dB): s
 
 ## 5. File format
 
-- Ogg Vorbis, 44.1 kHz. Music is stereo at `-q:a 4` (about 100–130 kb/s). SFX are mono at
-  `-q:a 4`.
-- For looping cues, set loop points in the Godot import settings (`loop`,
-  `loop_offset`). Render the loop body with a pre-roll tail so the reverb at the seam is
-  already "warm" (M2 task).
-- Size budget: all M1 audio must stay under 3 MB. The full-game target is about 60–80
-  cues at roughly 1 MB per minute.
+- Ogg Vorbis, 44.1 kHz. Music is stereo at `-q:a` 3–4 (about 90–130 kb/s): `-q:a 4`
+  for piano-led cues, 3.5 for dense battle cues, and 3 for sparse ambient cues. SFX are
+  mono at `-q:a 4`.
+- **Looping cues** (M1-AUD-02, `synth/looping.py`):
+  - The file is an optional one-shot intro plus the loop body. `LOOPSTART` and
+    `LOOPLENGTH` (in samples) go in the Vorbis comments, and the same values plus
+    `loop_offset_seconds`, `bpm`, `beat_count`, and `bar_beats` go in a sidecar
+    `<name>.loop.json`. `render_all.py` copies them into the Godot `.import` file
+    (`loop=true`, `loop_offset`). Godot loops from the end of the file back to
+    `loop_offset`, so the body runs to the last sample.
+  - The body is rendered in steady state: the tails of its own last bars are already
+    ringing at its first sample, so the reverb at the seam is warm (this closes the M1
+    to-do).
+  - An intro must be a copy of the loop's last bars, so the first-play splice carries
+    the same tails (battle: residual −102 dB).
+- Size budget: all M1 audio must stay under **5 MiB**, and the three M1-AUD-02 cues
+  under 4 MiB together. `render_all.py` enforces both. M1 currently uses 3.48 MiB (the
+  cues are 2.66 MiB). The full-game target is about 60–80 cues at roughly 1 MB per
+  minute.
+
+## 6. Ambient music vs ambience beds
+
+The temple-trial cue is a **score cue** (SPEC §9 lists "temple trial ambience" among
+the cues). It plays on the Music bus at the music-bed target of −16 LUFS, not at the
+−26 LUFS ambience-loop target. The steady bed (drone plus congregation hum) carries the
+integrated loudness, so the sparse hits need no limiting: 0 % of samples were touched,
+and its true peak is −3.2 dBTP. Pure environmental beds (surf, rain, temple wind)
+remain at −26 LUFS on the Ambience bus. If the temple cue feels too present under
+dialogue in play, the dialogue duck (−4 dB) applies as for any music.

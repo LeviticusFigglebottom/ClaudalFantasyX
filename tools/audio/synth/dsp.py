@@ -8,6 +8,8 @@ is a vectorized operation.
 """
 from __future__ import annotations
 
+from functools import lru_cache
+
 import numpy as np
 
 SR = 44100
@@ -125,12 +127,21 @@ def _next_pow2(n: int) -> int:
     return 1 << int(np.ceil(np.log2(max(2, n))))
 
 
-def freq_response(sections, nfft: int) -> np.ndarray:
-    """Complex response of a cascade of (b, a) biquads on the rfft grid."""
+@lru_cache(maxsize=3)
+def _unit_circle(nfft: int) -> tuple[np.ndarray, np.ndarray]:
+    """z^-1 and z^-2 on the rfft grid (cached: identical values, computed once per size)."""
     k = np.arange(nfft // 2 + 1)
     z1 = np.exp(-2j * np.pi * k / nfft)
+    z1.setflags(write=False)
     z2 = z1 * z1
-    H = np.ones(len(k), dtype=np.complex128)
+    z2.setflags(write=False)
+    return z1, z2
+
+
+def freq_response(sections, nfft: int) -> np.ndarray:
+    """Complex response of a cascade of (b, a) biquads on the rfft grid."""
+    z1, z2 = _unit_circle(nfft)
+    H = np.ones(len(z1), dtype=np.complex128)
     for b, a in sections:
         H *= (b[0] + b[1] * z1 + b[2] * z2) / (a[0] + a[1] * z1 + a[2] * z2)
     return H
