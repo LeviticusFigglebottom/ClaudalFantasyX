@@ -94,22 +94,35 @@ func test_game_flag_access_uses_game_autoload() -> void:
 	game.set("state", saved)
 
 
+## Steps to the end, returning the ids of every line seen. Picks option 0 at any menu.
+func _lines_to_end() -> Array[String]:
+	var seen: Array[String] = []
+	var step := _next_visible()
+	while not step.is_end():
+		if step.is_options():
+			runner.choose(0)
+		else:
+			seen.append(String(step.line_id))
+		step = _next_visible()
+	return seen
+
+
+## Full branch coverage of both vertical-slice cutscenes is in test_dialogue_vs_scenes.gd.
 func test_beach_scene_named_lantern_path() -> void:
 	var events: Array = []
 	runner.event_triggered.connect(func(n: StringName, a: Array) -> void: events.append([n, a]))
 	_start(BEACH)
 	var first := _expect_line("ch02_beach_001")
 	assert_eq(first.speaker, &"", "opens on narration")
-	for id in ["002", "003", "004", "005", "006", "007"]:
+	for id in ["016", "002", "003", "004", "005", "017", "006", "007"]:
 		_expect_line("ch02_beach_" + id)
 	var menu := _next_visible()
 	assert_eq(_option_ids(menu), ["ch02_beach_008", "ch02_beach_010"] as Array[String])
 	runner.choose(0)
 	assert_eq(_expect_line("ch02_beach_009").emotion, &"tender")
-	_expect_line("ch02_beach_012")
-	_expect_line("ch02_beach_013")
-	_expect_line("ch02_beach_014", "lantern variant of the closing line")
-	assert_true(_next_visible().is_end())
+	var rest := _lines_to_end()
+	assert_true("ch02_beach_014" in rest, "lantern variant of the closing line")
+	assert_false("ch02_beach_015" in rest)
 	assert_eq(flags.get_flag(&"ch02_rhen_named_lantern"), true)
 	assert_eq(flags.get_flag(&"ch02_met_asha"), true)
 	assert_eq(events, [[&"zone_unlock", ["haluna_village"]]])
@@ -120,9 +133,8 @@ func test_beach_scene_deflect_path() -> void:
 	_to_menu()
 	runner.choose(1)
 	_expect_line("ch02_beach_011")
-	_expect_line("ch02_beach_012")
-	_expect_line("ch02_beach_013")
-	_expect_line("ch02_beach_015")
-	assert_true(_next_visible().is_end())
+	var rest := _lines_to_end()
+	assert_true("ch02_beach_015" in rest, "plain variant of the closing line")
+	assert_false("ch02_beach_014" in rest)
 	assert_eq(flags.get_flag(&"ch02_rhen_named_lantern"), false)
 	assert_eq(flags.get_flag(&"ch02_met_asha"), true)
