@@ -2,8 +2,8 @@
 id: M1-PRG-02
 title: Items, inventory, equipment with ability slots, Customize, shops (data + headless logic)
 role: progression
-status: todo
-owner_session: ""
+status: doing
+owner_session: progression-stream-2
 depends_on: [M1-PRG-01]
 milestone: M1
 request-from: ""
