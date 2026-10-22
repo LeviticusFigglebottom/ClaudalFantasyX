@@ -3,7 +3,7 @@
     {
       "id": "reef_crab", "name_key": "ENEMY_REEF_CRAB", "role_answer": "toma",
       "lore_key": "LORE_REEF_CRAB",
-      "stats": {"level": 4, "hp": 520, "mp": 0, "strength": 14, "magic": 2, "defense": 60,
+      "stats": {"level": 4, "hp": 380, "mp": 0, "strength": 12, "magic": 2, "defense": 40,
                 "magic_defense": 4, "agility": 8, "accuracy": 8, "evasion": 2, "luck": 4},
       "affinities": {"lightning": "weak", "water": "absorb"},
       "skills": ["pinch", "brine_spit"],
@@ -17,7 +17,7 @@
     {
       "id": "lantern_eel", "name_key": "ENEMY_LANTERN_EEL", "role_answer": "ysolde",
       "lore_key": "LORE_LANTERN_EEL",
-      "stats": {"level": 4, "hp": 300, "mp": 20, "strength": 6, "magic": 14, "defense": 8,
+      "stats": {"level": 4, "hp": 300, "mp": 20, "strength": 6, "magic": 12, "defense": 8,
                 "magic_defense": 30, "agility": 14, "accuracy": 8, "evasion": 10, "luck": 6},
       "affinities": {"fire": "weak", "lightning": "immune"},
       "skills": ["lure_glow"],
@@ -27,7 +27,7 @@
     {
       "id": "gull_harrier", "name_key": "ENEMY_GULL_HARRIER", "role_answer": "rhen",
       "lore_key": "LORE_GULL_HARRIER",
-      "stats": {"level": 4, "hp": 220, "mp": 0, "strength": 11, "magic": 2, "defense": 6,
+      "stats": {"level": 4, "hp": 220, "mp": 0, "strength": 8, "magic": 2, "defense": 6,
                 "magic_defense": 6, "agility": 24, "accuracy": 10, "evasion": 30, "luck": 8},
       "affinities": {"ice": "weak"},
       "skills": ["dive_rake"],

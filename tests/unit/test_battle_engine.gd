@@ -538,3 +538,116 @@ func test_party_modifier_keeps_battles_deterministic() -> void:
 	engine.party_modifier = p.apply_to
 	_start(&"dummies", 5)
 	assert_eq(_auto_play(60), first)
+
+
+# --- preview_swap (M1-CMB-02 follow-up for the Swap menu) -----------------------------------
+
+
+func test_preview_swap_matches_swap_of_current_member() -> void:
+	_start(&"plain")
+	_assert_swap_preview_matches(engine.current.id, &"bench")
+
+
+func test_preview_swap_matches_swap_of_other_member() -> void:
+	_start(&"plain")
+	var other := engine.party_active[1] if engine.current == engine.party_active[0] else engine.party_active[0]
+	_assert_swap_preview_matches(other.id, &"bench")
+
+
+func test_preview_swap_matches_swap_for_ko_member() -> void:
+	_start(&"plain")
+	var other := engine.party_active[1] if engine.current == engine.party_active[0] else engine.party_active[0]
+	other.hp = 0
+	_assert_swap_preview_matches(other.id, &"bench")
+
+
+func test_preview_swap_keeps_reserve_statuses() -> void:
+	_start(&"plain")
+	engine.find(&"bench").add_status(&"haste", 3)
+	_assert_swap_preview_matches(engine.current.id, &"bench")
+
+
+func test_preview_swap_mutates_nothing() -> void:
+	_start(&"plain")
+	var before := _snapshot()
+	var base := _entries(engine.preview())
+	engine.preview_swap(engine.current.id, &"bench")
+	assert_eq(_snapshot(), before)
+	assert_eq(_entries(engine.preview()), base)
+	assert_true(engine.find(&"bench") in engine.party_reserve)
+
+
+func test_preview_swap_empty_when_swap_would_refuse() -> void:
+	_start(&"plain")
+	assert_eq(engine.preview_swap(&"nobody", &"bench").size(), 0)
+	assert_eq(engine.preview_swap(engine.current.id, &"nobody").size(), 0)
+	engine.find(&"bench").hp = 0
+	assert_eq(engine.preview_swap(engine.current.id, &"bench").size(), 0, "a fallen reserve cannot enter")
+
+
+func test_preview_swap_length() -> void:
+	_start(&"plain")
+	assert_eq(engine.preview_swap(engine.current.id, &"bench").size(), CtbTimeline.PREVIEW_LENGTH)
+	assert_eq(engine.preview_swap(engine.current.id, &"bench", 5).size(), 5)
+
+
+func _assert_swap_preview_matches(out_id: StringName, in_id: StringName) -> void:
+	var predicted := _entries(engine.preview_swap(out_id, in_id, 20))
+	assert_true(engine.swap(out_id, in_id))
+	assert_eq(_entries(engine.preview(&"", null, 20)), predicted)
+	var played: Array[String] = []
+	while played.size() < 20 and engine.outcome == &"":
+		played.append("%s@%d" % [engine.current.id, engine.now])
+		_step(&"attack")
+	assert_eq(played, predicted.slice(0, played.size()), "and with what actually happens")
+
+
+func _entries(list: Array[TurnEntry]) -> Array[String]:
+	var out: Array[String] = []
+	for e in list:
+		out.append("%s@%d" % [e.combatant_id, e.time])
+	return out
+
+
+func _snapshot() -> Array[String]:
+	var out: Array[String] = []
+	for c in engine.party_active + engine.party_reserve + engine.enemies:
+		out.append("%s:%d:%d:%s" % [c.id, c.next_time, c.hp, str(c.statuses)])
+	out.append("current=%s now=%d" % [engine.current.id, engine.now])
+	return out
+
+
+# --- hero level (ADR 0012) ---------------------------------------------------------------
+
+
+func test_hero_level_comes_from_data() -> void:
+	_start(&"dummies")
+	assert_eq(engine.find(&"hero").level, 5)
+
+
+func test_party_modifier_cannot_change_hero_level() -> void:
+	engine.party_modifier = func(c: BattleCombatant) -> void:
+		c.level += 10
+		c.strength += 1
+	_start(&"dummies")
+	var hero := engine.find(&"hero")
+	assert_eq(hero.level, 5, "level is fixed; growth is Lattice stats only")
+	assert_eq(hero.strength, 31, "other gains still apply")
+
+
+func test_real_heroes_share_one_level_and_lattice_keeps_it() -> void:
+	var db := BattleDB.load_default()
+	var levels: Dictionary = {}
+	for cid: StringName in db.characters:
+		levels[int(db.characters[cid]["stats"]["level"])] = true
+	assert_eq(levels.size(), 1, "one fixed hero level")
+	var p := LatticeFixture.progress()
+	var inv := FacetInventory.new({"facet_power": 2, "facet_ability": 1})
+	p.traveler(&"rhen").movement_points = 3
+	p.move(&"rhen", &"s_str")
+	p.activate(&"rhen", inv)
+	engine.party_modifier = p.apply_to
+	var active: Array[StringName] = [&"rhen", &"asha"]
+	var reserve: Array[StringName] = []
+	engine.setup(db, active, reserve, &"sandbox_reef", 1)
+	assert_eq(engine.find(&"rhen").level, int(levels.keys()[0]))

@@ -24,6 +24,8 @@ Notation: `floor`, `ceil`, `clamp(x, lo, hi)`. **`round` rounds half away from z
 | `STAT_BREAK_MULT` | 0.5 | Power Break / Magic Break (result floored) |
 | `DAMAGE_CAP` / `DAMAGE_CAP_BROKEN` | 9999 / 99999 | Per-hit cap; the "Unfettered" equipment ability lifts it |
 | `POISON_PCT` / `REGEN_PCT` | 0.10 / 0.08 | Of max HP, at the end of own turn |
+| `BERSERK_STR_RATIO` | 3/2 | Berserk strength multiplier (after Power Break, floored) |
+| `CONFUSE_ALLY_PCT` | 50 | Chance a Confused unit turns on its own side |
 | `ESCAPE_BASE_PCT`, `ESCAPE_AGI_FACTOR`, `ESCAPE_MIN_PCT`, `ESCAPE_MAX_PCT` | 50, 2, 10, 95 | Escape |
 
 Element affinity multipliers (as ratios): normal 1/1, weak 3/2, resist 1/2, immune 0/1, absorb −1/1 (heals).
@@ -59,7 +61,7 @@ Examples: agi 10: roll 0 → 300, roll 100 → 200. (Ambush and preemptive modif
 
 **Status durations** are measured in the affected unit's *own* turns and tick down at the end of each own turn (−1 = until cured).
 
-**Timeline preview** assumes every future action uses `DEFAULT_RANK`. Timed statuses (Haste, Slow, Stop, Sleep) count down per simulated own turn exactly as in play, so a 16-turn preview matches actual play whenever every action is rank 3 and nothing new is inflicted. The candidate action's rank, delay push, and any time statuses it inflicts (assumed to land) are applied exactly.
+**Timeline preview** assumes every future action uses `DEFAULT_RANK`. Timed statuses (Haste, Slow, Stop, Sleep, Doom) count down per simulated own turn exactly as in play, so a 16-turn preview matches actual play whenever every action is rank 3 and nothing new is inflicted. The candidate action's rank, delay push, and any time statuses it inflicts (assumed to land) are applied exactly. A Doomed unit's entries carry its countdown (`TurnEntry.doom`), and no entry follows the one showing 1. A candidate that inflicts Petrify removes its target from the preview. A candidate aimed at a Reflect unit is previewed on the unit it will really bounce to.
 
 ## Damage
 
@@ -69,6 +71,8 @@ num = power × (stat + level) × DEF_K × variance_pct
 den = (DEF_K + max(def, 0)) × 100
   physical: stat = strength (Power Break: floor(strength × 0.5)), def = defense (0 under Armor Break)
   magical:  stat = magic (Magic Break: floor(magic × 0.5)),       def = magic_defense (0 under Mental Break)
+level: heroes = the one fixed hero level (characters.json, 5 for every hero; ADR 0012), never raised in play
+       enemies = their data level, a tuning tier
 if crit:    num ×= 2                       # physical only
 if barrier: den ×= 2                       # Protect vs physical, Shell vs magical
 num ×= el_num; den ×= el_den               # element ratio for the target's affinity
@@ -83,13 +87,15 @@ heal = min(cap, power × (magic + level) × variance_pct ÷ 100)       # magic i
 ```
 Examples: power 10, magic 18, level 5: variance 100 → 230; variance 93 → 213.
 
+**Hero level (ADR 0012).** Growth comes only from the Lattice. Every hero has the same fixed `level` (5), so in hero formulas it is a flat +5 "potency floor" on the attacking stat. The validator rejects heroes with different levels, the Lattice can't add `level`, and `BattleEngine` undoes any `party_modifier` change to it. Enemies keep `level` as a per-enemy tuning tier.
+
 ## Accuracy and criticals
 
 ```
 hit_chance  = clamp(round((skill_accuracy + accuracy − evasion) × (Darkness ? 0.2 : 1)), 5, 100)   # physical only
 crit_chance = clamp(CRIT_BASE_PCT + (luck − target_luck) / 2, 0, CRIT_MAX_PCT)                      # integer division (truncates toward zero)
 ```
-Magic always hits (Reflect will come with M1-CMB-02). Rolls are `rng.randi_range(1, 100) ≤ chance`.
+Magic always hits (Reflect can redirect it: § Statuses). Rolls are `rng.randi_range(1, 100) ≤ chance`.
 Examples: hit (95, 14, 14) → 95; (95, 10, 30) → 75; with Darkness → 19. Crit (18 vs 4) → 11; (4 vs 18) → 0.
 
 ## Over time
@@ -98,6 +104,22 @@ Examples: hit (95, 14, 14) → 95; (95, 10, 30) → 75; with Darkness → 19. Cr
 poison = max(1, ceil(max_hp × 0.10))     regen = max(1, ceil(max_hp × 0.08))
 ```
 Both apply at the end of the unit's own turn. Examples: max HP 420 → poison 42, regen 34.
+
+## Statuses (M1-CMB-02)
+
+Every status in SPEC §6.8 is implemented. Durations are in the affected unit's own turns (−1 = until cured) unless a rule below says otherwise; defaults live in `statuses.json`. No status here adds a random roll beyond the ones named, and every roll goes through the battle RNG.
+
+**Who is in control.** A unit under **Confuse** or **Berserk** (Confuse wins if both) is *not in control*: its turn is played by the engine (`run_enemy_turn()`, on either side) and the player gets no menu, swap, or escape on that turn. Stop and Sleep come first: a lost turn is lost. The unit uses its **basic attack**: `attack` if it knows it and can pay, otherwise its first affordable `physical` `single_foe` skill in skill-list order. With none, it loses the turn (a default-rank delay).
+
+| Status | Default | Rule |
+|---|---|---|
+| **Petrify** | −1 (must be −1) | Stone. The unit leaves the timeline, can't be targeted, and **counts as KO** for victory, defeat, swap-in timing and the XP rule (`is_alive()` is false). HP is kept. Petrify clears every other status, and nothing new can be added. It never wears off (stone takes no turns, so the validator forbids a countdown); curing it is an item (Progression, later). A petrified member can be swapped out like a KO'd one but can't come back in. |
+| **Berserk** | −1 | Not in control. Basic attack on a uniformly random living foe, or on the provoker if Provoked. `strength_eff = floor(broken_strength × 3 / 2)`, where `broken_strength` already includes Power Break. Example: 16 → 24; 15 → 22; 16 under Power Break → 8 → 12. |
+| **Confuse** | 3 | Not in control. Roll `randi_range(1, 100) ≤ CONFUSE_ALLY_PCT` (50): on success the target is a uniformly random living **ally other than itself**, otherwise a random living foe (if one side is empty, the other). Provoke is ignored. Taking **physical damage** (> 0) ends Confuse; magic does not. |
+| **Doom** | 5 (must be ≥ 1) | A countdown. It drops by 1 at the end of each own turn, **lost turns included** (Stop can't stall it), and the unit is KO'd at the end of the turn that showed **1**, after Poison/Regen. So Doom *n* gives exactly *n* more turns. A Doom that fells the last enemy is a victory even on a lost turn. |
+| **Zombie** | −1 | HP restoration from **heal skills and Regen** is dealt as damage of the same amount (no defense, no barrier, same cap), and can KO. Ordinary damage and Absorb are unchanged. Revival (no revive exists yet) will KO a Zombie outright. |
+| **Reflect** | 4 | A `magic: true` skill aimed at **one other** unit (`single_foe` or `single_ally`) that has Reflect lands instead on the **living unit with the lowest current HP on the other side from the reflector** (ties: field order, party slots then enemies in encounter order). It is deterministic, so the timeline preview is exact. A bounced spell is never bounced again (no chains), even onto another reflector. Physical skills, self-casts and group skills ignore Reflect. The hit reports `reflected_from`. |
+| **Provoke** | 3 | Remembers its provoker (whoever's skill inflicted it). The provoked unit's `single_foe` skills **must** target the provoker: the engine rejects any other target with `provoked` (no MP or time spent), and enemy AI selectors are overridden. Group, ally and self skills are free. It ends early, at once, when the provoker is KO'd, petrified, or leaves the field. Re-provoking replaces the provoker. |
 
 ## Escape
 
@@ -112,7 +134,7 @@ Every party member who was **on the field at any point** in the battle (they sta
 
 ## Not yet specified (owned by Combat, tracked in M1 tasks)
 
-Swell gauge fill rates (M1-CMB-04), Reflect, Berserk, Confuse, Doom, Zombie, Petrify, and Provoke behaviour (M1-CMB-02), steal and item formulas (Progression), and Vowbound stat scaling from Asha (M2).
+Swell gauge fill rates (M1-CMB-04), steal and item formulas including status cures and revival (Progression), and Vowbound stat scaling from Asha (M2).
 
 ## Progression
 

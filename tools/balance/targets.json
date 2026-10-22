@@ -1,0 +1,34 @@
+{
+  "_doc": "Machine-readable target bands for tools/balance/sim.py. The prose and rationale live in docs/kb/design/balance_targets.md; change both together. Bands are inclusive [min, max] win percentages per policy; null = reported, no band.",
+  "suites": [
+    {
+      "id": "sandbox_reef",
+      "chapter": "M1 sandbox",
+      "kind": "showcase",
+      "encounter": "sandbox_reef",
+      "active": ["rhen", "asha"],
+      "reserve": ["toma", "ysolde"],
+      "bands": {
+        "naive": [5, 15],
+        "lowest_hp": null,
+        "role_answer": [85, 100],
+        "smart": [85, 100]
+      },
+      "p90_turns_max": 40
+    },
+    {
+      "id": "drownbell",
+      "chapter": "Ch3 boss (vertical slice)",
+      "kind": "boss",
+      "encounter": "boss_drownbell",
+      "active": ["rhen", "asha", "toma"],
+      "reserve": [],
+      "bands": {
+        "naive": [0, 10],
+        "role_answer": [70, 90],
+        "smart": [80, 95]
+      },
+      "p90_turns_max": 60
+    }
+  ]
+}
