@@ -1,0 +1,40 @@
+// Ch2 Cutscene A, "The Girl on the Beach" (act_outline.md). Short excerpt for the vertical slice.
+// Facial beat to hit: Asha's smile, the stillness at the lantern, then the smile again.
+title: ch02_girl_on_the_beach
+location: ch02/haluna
+---
+@letterbox on
+@camera haluna_shallows_dawn
+@fade in 2.5
+@music haluna_dawn fade=4.0
+The sea gave me back at dawn. Somebody was humming. #line:ch02_beach_001
+@anim asha kneel_over_rhen
+Asha [soft_smile]: There you are. No, don't sit up yet. You've swallowed half the bay. #line:ch02_beach_002
+@camera spear_insert blend=0.4
+@anim toma spear_level
+Toma [cold]: Lie still, please. Hands open where I can see them. I would rather not. #line:ch02_beach_003
+Rhen [afraid]: That's a very big spear for a very small conversation. #line:ch02_beach_004
+Asha [laugh]: Toma. He's half drowned. I think he's allowed one joke. #line:ch02_beach_005
+@camera lantern_insert blend=0.8
+@anim asha look_at rhen_lantern
+Asha [neutral]: That lantern. #line:ch02_beach_006
+@wait 0.6
+Asha [soft_smile]: Where did you get it? #line:ch02_beach_007
+-> It was my father's. #line:ch02_beach_008
+    <<set $ch02_rhen_named_lantern = true>>
+    Asha [tender]: Then it's a good thing the sea gave you both back. #line:ch02_beach_009
+-> Good trade. Don't ask what I gave for it. #line:ch02_beach_010
+    Asha [soft_smile]: Then I won't ask. Not today. #line:ch02_beach_011
+Rhen [worried]: Rhen Sallow. Oruvel, the raft-town, east of here, all those ugly hulls tied together. Is it still there? #line:ch02_beach_012
+@anim toma lower_spear
+@wait 1.0
+Toma [sad]: We watched the storm go east last night. I am sorry. #line:ch02_beach_013
+<<if $ch02_rhen_named_lantern>>
+    Asha [tender]: Come up to the village. Bring your father's light. You'll eat first, and then we'll tell you what we know. #line:ch02_beach_014
+<<else>>
+    Asha [tender]: Come up to the village. You'll eat first, and then we'll tell you what we know. #line:ch02_beach_015
+<<endif>>
+<<set $ch02_met_asha = true>>
+<<event zone_unlock haluna_village>>
+@fade out 1.5
+===
