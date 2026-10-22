@@ -2,8 +2,8 @@
 id: M1-RND-04
 title: Skin, hair, eye, and cloth shaders for the M1 hero
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: rendering-stream-4
 depends_on: []
 milestone: M1
 request-from: ""
