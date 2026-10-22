@@ -15,6 +15,7 @@ jobs:
   tools:
     name: Validators, Python tests, GDScript lint
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -37,6 +38,7 @@ jobs:
   godot:
     name: Godot import + tests
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Cache Godot
@@ -65,6 +67,10 @@ jobs:
         run: |
           set -o pipefail
           ~/godot/godot --headless --path . res://tests/run_tests.tscn 2>&1 | tee tests.log
+      - name: Boot scene smoke test (60 frames)
+        run: |
+          timeout 300 ~/godot/godot --headless --path . --quit-after 60 > boot.log 2>&1
+          if grep -E "SCRIPT ERROR|ERROR" boot.log; then echo "::error::Boot scene errors"; exit 1; fi
       - name: Fail on script errors during tests
         run: |
           if grep -E "SCRIPT ERROR|Parse Error" tests.log; then
@@ -75,6 +81,7 @@ jobs:
     name: Screenshot regression (Forward+ on Mesa lavapipe, ADR 0009)
     needs: [tools]
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     # Baselines were approved on the sandbox stack (Mesa 26.2 lavapipe, Godot 4.6.3 distro build).
     # The runner's Mesa and the official Godot build may differ slightly, so this job reports but does
     # not gate until a baseline set from this runner is approved (see docs/kb/qa/screenshots.md).
@@ -122,6 +129,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [tools, godot]
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Cache Godot + templates
