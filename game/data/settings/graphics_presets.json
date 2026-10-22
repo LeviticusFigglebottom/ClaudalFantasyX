@@ -1,0 +1,268 @@
+{
+  "version": 1,
+  "default_preset": "high",
+  "voxel_gi_group": "gi_voxel",
+  "settings": {
+    "gi_mode": {"type": "enum", "label_key": "GFX_GI_MODE", "options": ["off", "voxel_gi", "sdfgi"]},
+    "sdfgi_quality": {"type": "enum", "label_key": "GFX_SDFGI_QUALITY", "options": ["low", "medium", "high", "ultra"]},
+    "voxel_gi_quality": {"type": "enum", "label_key": "GFX_VOXEL_GI_QUALITY", "options": ["low", "high"]},
+    "gi_half_resolution": {"type": "bool", "label_key": "GFX_GI_HALF_RES", "options": [true, false]},
+    "shadow_atlas_size": {"type": "int", "label_key": "GFX_SHADOW_ATLAS", "options": [1024, 2048, 4096, 8192]},
+    "directional_shadow_size": {"type": "int", "label_key": "GFX_SUN_SHADOW", "options": [1024, 2048, 4096, 8192]},
+    "shadow_16_bits": {"type": "bool", "label_key": "GFX_SHADOW_16BIT", "options": [true, false]},
+    "soft_shadow_quality": {
+      "type": "enum",
+      "label_key": "GFX_SOFT_SHADOWS",
+      "options": ["hard", "very_low", "low", "medium", "high", "ultra"]
+    },
+    "volumetric_fog": {"type": "bool", "label_key": "GFX_VOLUMETRIC_FOG", "options": [true, false]},
+    "volumetric_fog_volume_size": {"type": "int", "label_key": "GFX_FOG_VOLUME_SIZE", "options": [64, 96, 128, 192]},
+    "volumetric_fog_volume_depth": {"type": "int", "label_key": "GFX_FOG_VOLUME_DEPTH", "options": [32, 64, 96, 128]},
+    "volumetric_fog_filter": {"type": "bool", "label_key": "GFX_FOG_FILTER", "options": [true, false]},
+    "ssr": {"type": "bool", "label_key": "GFX_SSR", "options": [true, false]},
+    "ssr_max_steps": {"type": "int", "label_key": "GFX_SSR_STEPS", "options": [16, 32, 64, 128]},
+    "ssr_roughness_quality": {
+      "type": "enum",
+      "label_key": "GFX_SSR_ROUGHNESS",
+      "options": ["disabled", "low", "medium", "high"]
+    },
+    "ssao_quality": {
+      "type": "enum",
+      "label_key": "GFX_SSAO",
+      "options": ["off", "very_low", "low", "medium", "high", "ultra"]
+    },
+    "ssil_quality": {
+      "type": "enum",
+      "label_key": "GFX_SSIL",
+      "options": ["off", "very_low", "low", "medium", "high", "ultra"]
+    },
+    "render_scale": {"type": "float", "label_key": "GFX_RENDER_SCALE", "options": [0.5, 0.59, 0.67, 0.77, 0.85, 1.0]},
+    "scaling_mode": {"type": "enum", "label_key": "GFX_SCALING_MODE", "options": ["bilinear", "fsr", "fsr2"]},
+    "fsr_sharpness": {"type": "float", "label_key": "GFX_FSR_SHARPNESS", "options": [0.0, 0.2, 0.5, 1.0, 2.0]},
+    "aa": {"type": "enum", "label_key": "GFX_ANTI_ALIASING", "options": ["none", "fxaa", "smaa", "taa", "msaa_2x", "msaa_4x"]},
+    "lod_threshold": {"type": "float", "label_key": "GFX_LOD_BIAS", "options": [0.5, 1.0, 2.0, 4.0]},
+    "anisotropic_filtering": {"type": "enum", "label_key": "GFX_ANISOTROPIC", "options": ["off", "2x", "4x", "8x", "16x"]}
+  },
+  "enums": {
+    "voxel_gi_quality": {
+      "low": "RenderingServer.VOXEL_GI_QUALITY_LOW",
+      "high": "RenderingServer.VOXEL_GI_QUALITY_HIGH"
+    },
+    "soft_shadow_quality": {
+      "hard": "RenderingServer.SHADOW_QUALITY_HARD",
+      "very_low": "RenderingServer.SHADOW_QUALITY_SOFT_VERY_LOW",
+      "low": "RenderingServer.SHADOW_QUALITY_SOFT_LOW",
+      "medium": "RenderingServer.SHADOW_QUALITY_SOFT_MEDIUM",
+      "high": "RenderingServer.SHADOW_QUALITY_SOFT_HIGH",
+      "ultra": "RenderingServer.SHADOW_QUALITY_SOFT_ULTRA"
+    },
+    "ssr_roughness_quality": {
+      "disabled": "RenderingServer.ENV_SSR_ROUGHNESS_QUALITY_DISABLED",
+      "low": "RenderingServer.ENV_SSR_ROUGHNESS_QUALITY_LOW",
+      "medium": "RenderingServer.ENV_SSR_ROUGHNESS_QUALITY_MEDIUM",
+      "high": "RenderingServer.ENV_SSR_ROUGHNESS_QUALITY_HIGH"
+    },
+    "scaling_mode": {
+      "bilinear": "Viewport.SCALING_3D_MODE_BILINEAR",
+      "fsr": "Viewport.SCALING_3D_MODE_FSR",
+      "fsr2": "Viewport.SCALING_3D_MODE_FSR2"
+    },
+    "anisotropic_filtering": {
+      "off": "Viewport.ANISOTROPY_DISABLED",
+      "2x": "Viewport.ANISOTROPY_2X",
+      "4x": "Viewport.ANISOTROPY_4X",
+      "8x": "Viewport.ANISOTROPY_8X",
+      "16x": "Viewport.ANISOTROPY_16X"
+    }
+  },
+  "levels": {
+    "sdfgi_quality": {
+      "low": {
+        "cascades": 4,
+        "use_occlusion": false,
+        "ray_count": "RenderingServer.ENV_SDFGI_RAY_COUNT_8",
+        "frames_to_converge": "RenderingServer.ENV_SDFGI_CONVERGE_IN_30_FRAMES",
+        "frames_to_update_light": "RenderingServer.ENV_SDFGI_UPDATE_LIGHT_IN_16_FRAMES"
+      },
+      "medium": {
+        "cascades": 4,
+        "use_occlusion": false,
+        "ray_count": "RenderingServer.ENV_SDFGI_RAY_COUNT_16",
+        "frames_to_converge": "RenderingServer.ENV_SDFGI_CONVERGE_IN_30_FRAMES",
+        "frames_to_update_light": "RenderingServer.ENV_SDFGI_UPDATE_LIGHT_IN_8_FRAMES"
+      },
+      "high": {
+        "cascades": 6,
+        "use_occlusion": false,
+        "ray_count": "RenderingServer.ENV_SDFGI_RAY_COUNT_32",
+        "frames_to_converge": "RenderingServer.ENV_SDFGI_CONVERGE_IN_20_FRAMES",
+        "frames_to_update_light": "RenderingServer.ENV_SDFGI_UPDATE_LIGHT_IN_4_FRAMES"
+      },
+      "ultra": {
+        "cascades": 8,
+        "use_occlusion": true,
+        "ray_count": "RenderingServer.ENV_SDFGI_RAY_COUNT_64",
+        "frames_to_converge": "RenderingServer.ENV_SDFGI_CONVERGE_IN_15_FRAMES",
+        "frames_to_update_light": "RenderingServer.ENV_SDFGI_UPDATE_LIGHT_IN_2_FRAMES"
+      }
+    },
+    "ssao_quality": {
+      "very_low": {"quality": "RenderingServer.ENV_SSAO_QUALITY_VERY_LOW", "half_size": true, "adaptive_target": 0.5,
+        "blur_passes": 2, "fadeout_from": 50.0, "fadeout_to": 300.0},
+      "low": {"quality": "RenderingServer.ENV_SSAO_QUALITY_LOW", "half_size": true, "adaptive_target": 0.5,
+        "blur_passes": 2, "fadeout_from": 50.0, "fadeout_to": 300.0},
+      "medium": {"quality": "RenderingServer.ENV_SSAO_QUALITY_MEDIUM", "half_size": true, "adaptive_target": 0.5,
+        "blur_passes": 2, "fadeout_from": 50.0, "fadeout_to": 300.0},
+      "high": {"quality": "RenderingServer.ENV_SSAO_QUALITY_HIGH", "half_size": false, "adaptive_target": 0.5,
+        "blur_passes": 2, "fadeout_from": 50.0, "fadeout_to": 300.0},
+      "ultra": {"quality": "RenderingServer.ENV_SSAO_QUALITY_ULTRA", "half_size": false, "adaptive_target": 0.7,
+        "blur_passes": 3, "fadeout_from": 50.0, "fadeout_to": 300.0}
+    },
+    "ssil_quality": {
+      "very_low": {"quality": "RenderingServer.ENV_SSIL_QUALITY_VERY_LOW", "half_size": true, "adaptive_target": 0.5,
+        "blur_passes": 4, "fadeout_from": 50.0, "fadeout_to": 300.0},
+      "low": {"quality": "RenderingServer.ENV_SSIL_QUALITY_LOW", "half_size": true, "adaptive_target": 0.5,
+        "blur_passes": 4, "fadeout_from": 50.0, "fadeout_to": 300.0},
+      "medium": {"quality": "RenderingServer.ENV_SSIL_QUALITY_MEDIUM", "half_size": true, "adaptive_target": 0.5,
+        "blur_passes": 4, "fadeout_from": 50.0, "fadeout_to": 300.0},
+      "high": {"quality": "RenderingServer.ENV_SSIL_QUALITY_HIGH", "half_size": false, "adaptive_target": 0.5,
+        "blur_passes": 4, "fadeout_from": 50.0, "fadeout_to": 300.0},
+      "ultra": {"quality": "RenderingServer.ENV_SSIL_QUALITY_ULTRA", "half_size": false, "adaptive_target": 0.7,
+        "blur_passes": 4, "fadeout_from": 50.0, "fadeout_to": 300.0}
+    },
+    "aa": {
+      "none": {"use_taa": false, "screen_space_aa": "Viewport.SCREEN_SPACE_AA_DISABLED", "msaa_3d": "Viewport.MSAA_DISABLED"},
+      "fxaa": {"use_taa": false, "screen_space_aa": "Viewport.SCREEN_SPACE_AA_FXAA", "msaa_3d": "Viewport.MSAA_DISABLED"},
+      "smaa": {"use_taa": false, "screen_space_aa": "Viewport.SCREEN_SPACE_AA_SMAA", "msaa_3d": "Viewport.MSAA_DISABLED"},
+      "taa": {"use_taa": true, "screen_space_aa": "Viewport.SCREEN_SPACE_AA_DISABLED", "msaa_3d": "Viewport.MSAA_DISABLED"},
+      "msaa_2x": {"use_taa": false, "screen_space_aa": "Viewport.SCREEN_SPACE_AA_DISABLED", "msaa_3d": "Viewport.MSAA_2X"},
+      "msaa_4x": {"use_taa": false, "screen_space_aa": "Viewport.SCREEN_SPACE_AA_DISABLED", "msaa_3d": "Viewport.MSAA_4X"}
+    }
+  },
+  "rules": {
+    "temporal_upscaler_modes": ["fsr2"],
+    "temporal_upscaler_note": "FSR2 runs its own temporal AA, so use_taa is forced off while it is active."
+  },
+  "presets": [
+    {
+      "id": "low",
+      "name_key": "GFX_PRESET_LOW",
+      "tier": "minimum",
+      "settings": {
+        "gi_mode": "off",
+        "sdfgi_quality": "low",
+        "voxel_gi_quality": "low",
+        "gi_half_resolution": true,
+        "shadow_atlas_size": 2048,
+        "directional_shadow_size": 2048,
+        "shadow_16_bits": true,
+        "soft_shadow_quality": "very_low",
+        "volumetric_fog": true,
+        "volumetric_fog_volume_size": 64,
+        "volumetric_fog_volume_depth": 32,
+        "volumetric_fog_filter": false,
+        "ssr": false,
+        "ssr_max_steps": 16,
+        "ssr_roughness_quality": "disabled",
+        "ssao_quality": "very_low",
+        "ssil_quality": "off",
+        "render_scale": 0.77,
+        "scaling_mode": "fsr",
+        "fsr_sharpness": 0.2,
+        "aa": "fxaa",
+        "lod_threshold": 2.0,
+        "anisotropic_filtering": "4x"
+      }
+    },
+    {
+      "id": "medium",
+      "name_key": "GFX_PRESET_MEDIUM",
+      "tier": "between",
+      "settings": {
+        "gi_mode": "voxel_gi",
+        "sdfgi_quality": "low",
+        "voxel_gi_quality": "low",
+        "gi_half_resolution": true,
+        "shadow_atlas_size": 4096,
+        "directional_shadow_size": 4096,
+        "shadow_16_bits": true,
+        "soft_shadow_quality": "low",
+        "volumetric_fog": true,
+        "volumetric_fog_volume_size": 96,
+        "volumetric_fog_volume_depth": 64,
+        "volumetric_fog_filter": true,
+        "ssr": true,
+        "ssr_max_steps": 32,
+        "ssr_roughness_quality": "low",
+        "ssao_quality": "medium",
+        "ssil_quality": "off",
+        "render_scale": 0.85,
+        "scaling_mode": "fsr",
+        "fsr_sharpness": 0.2,
+        "aa": "taa",
+        "lod_threshold": 1.0,
+        "anisotropic_filtering": "8x"
+      }
+    },
+    {
+      "id": "high",
+      "name_key": "GFX_PRESET_HIGH",
+      "tier": "recommended",
+      "settings": {
+        "gi_mode": "sdfgi",
+        "sdfgi_quality": "medium",
+        "voxel_gi_quality": "high",
+        "gi_half_resolution": true,
+        "shadow_atlas_size": 4096,
+        "directional_shadow_size": 4096,
+        "shadow_16_bits": true,
+        "soft_shadow_quality": "medium",
+        "volumetric_fog": true,
+        "volumetric_fog_volume_size": 128,
+        "volumetric_fog_volume_depth": 64,
+        "volumetric_fog_filter": true,
+        "ssr": true,
+        "ssr_max_steps": 64,
+        "ssr_roughness_quality": "medium",
+        "ssao_quality": "high",
+        "ssil_quality": "medium",
+        "render_scale": 0.77,
+        "scaling_mode": "fsr2",
+        "fsr_sharpness": 0.2,
+        "aa": "taa",
+        "lod_threshold": 1.0,
+        "anisotropic_filtering": "16x"
+      }
+    },
+    {
+      "id": "ultra",
+      "name_key": "GFX_PRESET_ULTRA",
+      "tier": "above_recommended",
+      "settings": {
+        "gi_mode": "sdfgi",
+        "sdfgi_quality": "ultra",
+        "voxel_gi_quality": "high",
+        "gi_half_resolution": false,
+        "shadow_atlas_size": 8192,
+        "directional_shadow_size": 8192,
+        "shadow_16_bits": true,
+        "soft_shadow_quality": "high",
+        "volumetric_fog": true,
+        "volumetric_fog_volume_size": 192,
+        "volumetric_fog_volume_depth": 128,
+        "volumetric_fog_filter": true,
+        "ssr": true,
+        "ssr_max_steps": 128,
+        "ssr_roughness_quality": "high",
+        "ssao_quality": "ultra",
+        "ssil_quality": "high",
+        "render_scale": 1.0,
+        "scaling_mode": "bilinear",
+        "fsr_sharpness": 0.2,
+        "aa": "taa",
+        "lod_threshold": 0.5,
+        "anisotropic_filtering": "16x"
+      }
+    }
+  ]
+}
