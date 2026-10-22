@@ -19,6 +19,8 @@ import fetch_godot as fg  # noqa: E402  (shared archive/closure helpers)
 
 PACKAGE = "blender"
 PINNED_DEB = "5.0.1+dfsg-5"
+# Not hard dependencies of the package, but the glTF exporter and our generators need them.
+EXTRA_PACKAGES = ["python3-numpy"]
 
 
 def main() -> int:
@@ -38,6 +40,8 @@ def main() -> int:
         print(f"no Ubuntu dist in {fg.DISTS} ships {PACKAGE} {PINNED_DEB}", file=sys.stderr)
         return 1
     pkgs = fg.closure(db, PACKAGE)
+    for extra_pkg in EXTRA_PACKAGES:
+        pkgs.update(fg.closure(db, extra_pkg))
     print(f"{dist}: {len(pkgs)} packages")
     sysroot.mkdir(parents=True, exist_ok=True)
     debs.mkdir(parents=True, exist_ok=True)
@@ -50,14 +54,14 @@ def main() -> int:
         subprocess.run(["dpkg-deb", "-x", str(deb), str(sysroot)], check=True)
     lib = sysroot / "usr" / "lib" / "x86_64-linux-gnu"
     extra = [p for p in lib.iterdir() if p.is_dir() and any(p.glob("*.so*"))]
-    libpath = ":".join(str(p) for p in [lib, sysroot / "lib" / "x86_64-linux-gnu", *extra])
+    libpath = ":".join(str(p) for p in [lib, sysroot / "lib" / "x86_64-linux-gnu", sysroot / "usr" / "lib", *extra])
     pyver = sorted((sysroot / "usr" / "lib").glob("python3.*"))
     pyhome = f'export PYTHONHOME="{sysroot}/usr"\n' if pyver else ""
     wrapper.write_text(
         "#!/bin/sh\n"
         + pyhome
-        + f'export BLENDER_SYSTEM_RESOURCES="{sysroot}/usr/share/blender"\n'
-        + f'exec "{lib}/ld-linux-x86-64.so.2" --library-path "{libpath}" "{sysroot}/usr/bin/blender" "$@"\n'
+        + f'export BLENDER_SYSTEM_RESOURCES="{sysroot}/usr/lib/blender"\n'
+        + f'exec "{lib}/ld-linux-x86-64.so.2" --library-path "{libpath}" "{sysroot}/usr/bin/blender" --python-use-system-env "$@"\n'
     )
     wrapper.chmod(wrapper.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
     out = subprocess.run([str(wrapper), "--background", "--factory-startup", "--version"],
