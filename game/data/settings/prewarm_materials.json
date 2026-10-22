@@ -13,6 +13,31 @@
       "path": "res://game/shaders/test/prewarm_test_material.tres",
       "scenes": [],
       "note": "Test material exercising common.gdshaderinc. Real materials are appended by their owning stream."
+    },
+    {
+      "path": "res://assets/environments/vegetation/materials/palm_frond.tres",
+      "scenes": ["res://game/levels/_tests/vegetation/vegetation_test.tscn"],
+      "note": "M1-ENV-02 foliage (default tier). Zones that place palms add their scene paths here."
+    },
+    {
+      "path": "res://assets/environments/vegetation/materials/palm_bark.tres",
+      "scenes": ["res://game/levels/_tests/vegetation/vegetation_test.tscn"],
+      "note": "M1-ENV-02 bark."
+    },
+    {
+      "path": "res://assets/environments/vegetation/materials/frangipani_leaf.tres",
+      "scenes": ["res://game/levels/_tests/vegetation/vegetation_test.tscn"],
+      "note": "M1-ENV-02 foliage (default tier)."
+    },
+    {
+      "path": "res://assets/environments/vegetation/materials/saltgrass.tres",
+      "scenes": ["res://game/levels/_tests/vegetation/vegetation_test.tscn"],
+      "note": "M1-ENV-02 foliage; drawn as a MultiMesh in zones (a quad prewarms a different vertex format)."
+    },
+    {
+      "path": "res://game/shaders/vegetation/vegetation_foliage_low.gdshader",
+      "scenes": ["res://game/levels/_tests/vegetation/vegetation_test.tscn"],
+      "note": "M1-ENV-02 Low-tier foliage variant: a separate pipeline (README 'Shader-cache prewarm')."
     }
   ]
 }
