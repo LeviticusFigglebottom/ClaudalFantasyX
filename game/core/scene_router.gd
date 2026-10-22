@@ -19,6 +19,7 @@ func _ready() -> void:
 	_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_fade_layer.add_child(_fade_rect)
+	ShaderPrewarm.install(self)
 
 
 func is_busy() -> bool:

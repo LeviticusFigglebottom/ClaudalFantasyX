@@ -1,0 +1,53 @@
+# Lattice authoring source: standard board, section 1 (vertical slice: Rhen, Asha, Toma).
+# Build:   python3 tools/lattice_editor/lattice_editor.py build
+# Preview: python3 tools/lattice_editor/lattice_editor.py svg      (-> tools/lattice_editor/out/)
+# Syntax and design notes: docs/kb/design/lattice.md
+#
+# Shape: three hero "petals" around a shared hub at (0, 0).
+#   * Each hero's start sits mid-line. AHEAD (toward the hub) is their niche spine, cut by a
+#     level-1 gate. BEHIND the start is their mastery pocket, behind a level-2 gate.
+#   * A ring of side nodes around each early spine gives a real choice of route.
+#   * Three bridges link the petals' early rings. Each bridge offers the neighbour's signature
+#     skill on your own side (a visible cross-over), then a level-1 gate into the neighbour's petal.
+#   * The hub spur ends in a level-3 gate onto the east bridge; section 2 attaches beyond it (M2).
+# Node ids are save data: never rename or renumber a node after it ships. Append new nodes at the
+# END of a walk, or start a new walk.
+
+board standard name_key=LATTICE_STANDARD
+
+region hub
+node hub luck+3 @ 0 0
+
+region rhen
+# Fast striker: agility, accuracy, evasion, strength; turn manipulation skills.
+start rhen_start rhen @ -12 0
+walk rh from rhen_start E: agility+2 strength+1 @kick_off agility+2 hp+40 accuracy+2 #1 agility+3 evasion+2 strength+2 @undercut -> hub
+walk rn from rh_02 N: evasion+2 >E luck+2 agility+2 -> rh_04
+walk rs from rh_02 S: hp+40 >E strength+1 accuracy+1 -> rh_04
+walk rp from rhen_start W: #2 agility+3 @lantern_flare >NW evasion+3 strength+2 @slipstream
+
+region asha
+# Healer and white mage: magic, mp, magic_defense; protection and recovery skills.
+start asha_start asha @ 6 -10
+walk as from asha_start SW: magic+2 mp+10 @veil magic_defense+2 magic+2 >S #1 mp+10 magic+3 @lull -> hub
+walk ae from as_01 E: magic_defense+2 >S hp+30 >SW mp+8 magic+2 >W luck+2 -> as_04
+walk ap from asha_start NE: #2 magic+3 @stilling_bell >E mp+12 magic_defense+3 @chorus_mend
+
+region toma
+# Tank and defender: hp, defense, strength, magic_defense; aggro and cover skills.
+start toma_start toma @ 6 10
+walk ts from toma_start NW: hp+50 defense+2 @brace strength+2 hp+50 >N #1 defense+2 magic_defense+2 @sunder -> hub
+walk te from ts_01 E: defense+2 >N hp+50 >NW strength+1 defense+2 >W magic_defense+1 -> ts_04
+walk tp from toma_start SE: #2 hp+60 @challenge >E defense+3 strength+3 @shield_wall
+
+region cross
+# Rhen <-> Asha: Rhen's side offers Hasten, Asha's side offers Quick Hit.
+walk xra from rn_02 NE step=2: evasion+1 @hasten #1 >E @quick_hit magic+1 -> as_03
+# Rhen <-> Toma: Rhen's side offers Shell Breaker, Toma's side offers Undertow Cut.
+walk xrt from rs_02 SE step=2: hp+30 @shell_breaker #1 >E @undertow_cut defense+1 -> ts_03
+# Asha <-> Toma: Asha's side offers Brace, Toma's side offers Ward.
+walk xat from ae_02 SE step=2: magic_defense+1 >S @brace mp+6 #1 hp+30 @ward defense+1 -> te_02
+
+region hub
+# Shared spur: an empty node (rewritable late game), a shared heavy strike, then the way on.
+walk hx from hub E step=2: _ @breakwater #3 -> xat_04

@@ -2,13 +2,14 @@ extends Node
 ## Autoload "SaveSystem": versioned JSON saves with forward migrations.
 ## Saving is only offered at save shrines and chapter-boundary autosaves (genre convention).
 
-const SAVE_VERSION := 1
+const SAVE_VERSION := 2
 const SAVE_DIR := "user://saves"
 const AUTOSAVE_SLOT := 0
 
 ## Migrations keyed by the version they upgrade FROM. Each takes and returns a save dict.
 var _migrations: Dictionary = {
 	0: _migrate_v0_to_v1,
+	1: _migrate_v1_to_v2,
 }
 
 
@@ -78,3 +79,13 @@ static func _migrate_v0_to_v1(d: Dictionary) -> Dictionary:
 		st["currency"] = st["coin"]
 		st.erase("coin")
 	return {"version": 1, "state": st}
+
+
+## v2 (M1-PRG-01) adds Lattice progress. A v1 save predates the Lattice, so it gets empty
+## progress on the standard board; heroes are placed on their starts when they next join.
+## The literal is frozen on purpose: later LatticeProgress changes need their own migration.
+static func _migrate_v1_to_v2(d: Dictionary) -> Dictionary:
+	var st: Dictionary = (d.get("state", {}) as Dictionary).duplicate(true)
+	if not st.has("lattice"):
+		st["lattice"] = {"board": "standard", "characters": {}, "opened_gates": []}
+	return {"version": 2, "state": st}

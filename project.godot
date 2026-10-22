@@ -36,6 +36,33 @@ theme/default_font_multichannel_signed_distance_field=true
 
 locale/translations=PackedStringArray("res://game/data/loc/strings.en.translation", "res://game/data/loc/dialogue.en.translation")
 
+[shader_globals]
+
+hymn_wind={
+"type": "vec4",
+"value": Vector4(0, 0, 0, 0)
+}
+hymn_wind_time={
+"type": "float",
+"value": 0.0
+}
+hymn_time_of_day={
+"type": "float",
+"value": 12.0
+}
+hymn_sun_direction={
+"type": "vec3",
+"value": Vector3(0, 1, 0)
+}
+hymn_glimmer={
+"type": "vec4",
+"value": Vector4(1, 0.91, 0.72, 0)
+}
+hymn_glimmer_focus={
+"type": "vec4",
+"value": Vector4(0, 0, 0, 0)
+}
+
 [rendering]
 
 renderer/rendering_method="forward_plus"

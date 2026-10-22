@@ -10,6 +10,9 @@ extends Resource
 @export var play_time_sec: float = 0.0
 @export var location_id: StringName = &""
 @export var chapter: int = 0
+## Lattice progress as plain data (LatticeProgress.to_dict()); rebuild it with
+## LatticeProgress.from_dict(lattice, board, rules). Facets themselves live in `inventory`.
+@export var lattice: Dictionary = {}
 
 
 func to_dict() -> Dictionary:
@@ -22,6 +25,7 @@ func to_dict() -> Dictionary:
 		"play_time_sec": play_time_sec,
 		"location_id": String(location_id),
 		"chapter": chapter,
+		"lattice": lattice.duplicate(true),
 	}
 
 
@@ -37,4 +41,5 @@ static func from_dict(d: Dictionary) -> GameStateData:
 	s.play_time_sec = float(d.get("play_time_sec", 0.0))
 	s.location_id = StringName(str(d.get("location_id", "")))
 	s.chapter = int(d.get("chapter", 0))
+	s.lattice = (d.get("lattice", {}) as Dictionary).duplicate(true)
 	return s

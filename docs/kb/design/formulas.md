@@ -113,3 +113,47 @@ Every party member who was **on the field at any point** in the battle (they sta
 ## Not yet specified (owned by Combat, tracked in M1 tasks)
 
 Swell gauge fill rates (M1-CMB-04), Reflect, Berserk, Confuse, Doom, Zombie, Petrify, and Provoke behaviour (M1-CMB-02), steal and item formulas (Progression), and Vowbound stat scaling from Asha (M2).
+
+## Progression
+
+**Owned by Progression.** `game/progression/progression_formulas.gd` mirrors this section exactly, and `tests/unit/test_lattice_formulas.gd` has a test per formula with the worked examples below. Change all three in one commit and get it reviewed by Combat (SPEC §12.3). The battle `Formulas` class does not change for these. Board rules (move costs, Facets per activation) are data in `game/data/progression/facets.json`. See [lattice.md](lattice.md).
+
+On this page, **movement points** are the Lattice currency spent to walk the board. They are not the battle `mp` stat.
+
+| Name | Value | Meaning |
+|---|---|---|
+| `LP_BASE` | 30 | Lattice points (LP) for one movement point, early on |
+| `LP_GROWTH` | 5 | Extra LP per point after each `LP_STEP` points earned |
+| `LP_STEP` | 10 | Movement points earned per threshold step |
+| `MOVEMENT_POINT_CAP` | 99 | Most movement points a character can bank |
+
+**LP gain**: a character earns LP equal to the XP the battle credits them under the XP credit rule above. They must have been on the field at some point and be alive at victory.
+```
+lp_gain(credited_xp) = max(credited_xp, 0)
+```
+Example: the sandbox reef encounter credits 105 XP, so the character gains 105 LP.
+
+**Threshold**: LP needed for the next movement point. It depends on how many points the character has earned over the whole game (`earned`), not on what they have banked.
+```
+lp_threshold(earned) = LP_BASE + LP_GROWTH × floor(max(earned, 0) / LP_STEP)
+```
+Examples: earned 0 → 30, 9 → 30, 10 → 35, 25 → 40.
+
+**Conversion**: after each battle, pooled LP converts into points one at a time. The threshold is re-read after every point, and conversion stops when the bank is full (`room = MOVEMENT_POINT_CAP − banked`).
+```
+convert_lp(pool, earned, room):
+    gained = 0
+    while gained < room and pool ≥ lp_threshold(earned + gained):
+        pool −= lp_threshold(earned + gained);  gained += 1
+    → (gained, pool)
+```
+Examples: (105, 0, 99) → (3, 15). (70, 9, 99) → (2, 5), because the threshold rises from 30 to 35 after the first point. (29, 0, 99) → (0, 29). (105, 0, 1) → (1, 75). (105, 0, 0) → (0, 105).
+LP is never lost: at the cap it keeps pooling and converts once the character spends points.
+
+**Room**
+```
+movement_room(banked) = max(MOVEMENT_POINT_CAP − banked, 0)
+```
+Examples: 0 → 99, 98 → 1, 120 → 0.
+
+**Pacing note.** An early three-enemy fight gives about 3 points. The first section's pre-gate area is about 16 nodes per hero, so it takes roughly five or six fights before the first Key Facet matters. This is tuned against the M1 sandbox numbers only; revisit it with the balancing simulator (M1-CMB-05).

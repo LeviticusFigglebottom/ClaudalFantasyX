@@ -4,6 +4,8 @@
 Checks:
   * every JSON file under game/data parses
   * battle tables: schema, unique ids, enums, dangling references
+  * progression: facets.json rules/facet types, and every lattice_*.json board (dangling edges,
+    unreachable nodes from each start, unknown skills, stat names, gate levels, coordinates)
   * localization: every *_key / tr("KEY") / dialogue #line: key exists in a loc CSV
   * story flags: every flag used in .gd / .dlg is declared in game/data/flags.tres
   * dialogue: .dlg files compile (tools/dlgc.py), committed outputs are fresh, emotion tags
@@ -38,6 +40,20 @@ CANON_STATUSES = {"poison", "sleep", "silence", "darkness", "petrify", "slow", "
                   "berserk", "confuse", "doom", "zombie", "shell", "protect", "reflect", "regen",
                   "armor_break", "mental_break", "power_break", "magic_break", "provoke"}
 NO_PERMANENT_STATUSES = {"stop", "sleep"}  # -1 duration could stall every combatant
+
+
+LATTICE_STATS = STAT_KEYS - {"level"}
+LATTICE_NODE_TYPES = {"start", "stat", "ability", "gate", "empty"}
+LATTICE_NODE_FIELDS = {"start": {"character"}, "stat": {"stat", "value"}, "ability": {"skill"},
+                       "gate": {"gate_level"}, "empty": set()}
+LATTICE_COMMON_FIELDS = {"id", "type", "x", "y", "region"}
+FACET_TYPES = {"power": "stat", "mind": "stat", "speed": "stat", "fortune": "stat",
+               "ability": "ability", "key": "gate"}
+FACET_RULE_KEYS = {"move_cost", "move_cost_activated", "facets_per_activation", "keys_per_gate",
+                   "max_gate_level"}
+FACETS_FILE = "game/data/progression/facets.json"
+LATTICE_DIR = "game/data/progression"
+LATTICE_GLOB = "lattice_*.json"
 MAX_BINARY_BYTES = 5 * 1024 * 1024
 BINARY_EXT = {".png", ".jpg", ".exr", ".wav", ".ogg", ".glb", ".blend", ".ttf", ".otf", ".webp"}
 BANNED_SCAN = ["game", "assets_src", "docs/kb/story", "docs/kb/glossary.md"]
@@ -301,6 +317,216 @@ def check_dialogue(root: Path, files: dict[str, object], rep: Report) -> list[st
     return keys
 
 
+def _is_int(v: object) -> bool:
+    return isinstance(v, int) and not isinstance(v, bool)
+
+
+def facets_errors(doc: object, where: str = FACETS_FILE) -> list[str]:
+    """Checks the Facet table and the board rules. Pure: returns error strings."""
+    if not isinstance(doc, dict):
+        return [f"{where}: must be an object with 'rules' and 'facets'"]
+    errs: list[str] = []
+    rules = doc.get("rules")
+    if not isinstance(rules, dict):
+        errs.append(f"{where}: missing 'rules' object")
+        rules = {}
+    for k in sorted(FACET_RULE_KEYS):
+        if not _is_int(rules.get(k)) or rules[k] < 0:
+            errs.append(f"{where}: rules.{k} must be a non-negative int")
+    for k in sorted(set(rules) - FACET_RULE_KEYS):
+        errs.append(f"{where}: unknown rule '{k}'")
+    max_level = rules["max_gate_level"] if _is_int(rules.get("max_gate_level")) else 0
+    if max_level < 1:
+        errs.append(f"{where}: rules.max_gate_level must be at least 1")
+    facets = doc.get("facets")
+    if not isinstance(facets, list):
+        return errs + [f"{where}: missing 'facets' list"]
+    seen: set[str] = set()
+    types: set[str] = set()
+    stat_owner: dict[str, str] = {}
+    key_levels: set[int] = set()
+    for i, f in enumerate(facets):
+        if not isinstance(f, dict) or not isinstance(f.get("id"), str):
+            errs.append(f"{where}: facets[{i}] needs a string 'id'")
+            continue
+        fid = f["id"]
+        w = f"{where}: facet '{fid}'"
+        if fid in seen:
+            errs.append(f"{where}: duplicate facet id '{fid}'")
+        seen.add(fid)
+        ftype = f.get("type")
+        if ftype not in FACET_TYPES:
+            errs.append(f"{w}: type must be one of {sorted(FACET_TYPES)}")
+            continue
+        types.add(ftype)
+        if f.get("activates") != FACET_TYPES[ftype]:
+            errs.append(f"{w}: a {ftype} facet activates '{FACET_TYPES[ftype]}' nodes")
+        if "name_key" not in f:
+            errs.append(f"{w}: missing name_key")
+        if FACET_TYPES[ftype] == "stat":
+            stats = f.get("stats")
+            if not isinstance(stats, list) or not stats:
+                errs.append(f"{w}: needs a non-empty 'stats' list")
+                continue
+            for st in stats:
+                if st not in LATTICE_STATS:
+                    errs.append(f"{w}: unknown stat '{st}' (valid: {sorted(LATTICE_STATS)})")
+                elif st in stat_owner:
+                    errs.append(f"{w}: stat '{st}' is already activated by '{stat_owner[st]}'")
+                else:
+                    stat_owner[st] = fid
+        if ftype == "key":
+            lvl = f.get("level")
+            if not _is_int(lvl) or not 1 <= lvl <= max(max_level, 1):
+                errs.append(f"{w}: key level must be an int in 1..{max_level}")
+            elif lvl in key_levels:
+                errs.append(f"{w}: duplicate key level {lvl}")
+            else:
+                key_levels.add(lvl)
+    for t in sorted(set(FACET_TYPES) - types):
+        errs.append(f"{where}: no facet of type '{t}' (SPEC §6.4 needs all six)")
+    for st in sorted(LATTICE_STATS - set(stat_owner)):
+        errs.append(f"{where}: no facet activates stat '{st}'")
+    for lvl in range(1, max_level + 1):
+        if lvl not in key_levels:
+            errs.append(f"{where}: no key facet for gate level {lvl}")
+    return errs
+
+
+def _check_lattice_node(n: dict, w: str, max_gate_level: int, skill_ids: set[str], char_ids: set[str],
+                        starts: dict[str, str]) -> list[str]:
+    errs: list[str] = []
+    ntype = n["type"]
+    for k in sorted(set(n) - LATTICE_COMMON_FIELDS - LATTICE_NODE_FIELDS[ntype]):
+        errs.append(f"{w}: field '{k}' does not belong on a {ntype} node")
+    if ntype == "stat":
+        if n.get("stat") not in LATTICE_STATS:
+            errs.append(f"{w}: unknown stat '{n.get('stat')}' (valid: {sorted(LATTICE_STATS)})")
+        if not _is_int(n.get("value")) or n["value"] <= 0:
+            errs.append(f"{w}: stat value must be a positive int")
+    elif ntype == "ability":
+        if n.get("skill") not in skill_ids:
+            errs.append(f"{w}: unknown skill '{n.get('skill')}' (add it to skills.json)")
+    elif ntype == "gate":
+        lvl = n.get("gate_level")
+        if not _is_int(lvl) or not 1 <= lvl <= max_gate_level:
+            errs.append(f"{w}: gate needs a gate_level in 1..{max_gate_level}")
+    elif ntype == "start":
+        cid = n.get("character")
+        if cid not in char_ids:
+            errs.append(f"{w}: start for unknown character '{cid}'")
+        elif cid in starts:
+            errs.append(f"{w}: character '{cid}' already starts at '{starts[cid]}'")
+        else:
+            starts[cid] = n["id"]
+    return errs
+
+
+def lattice_errors(board: object, max_gate_level: int, skill_ids: set[str], char_ids: set[str],
+                   where: str) -> list[str]:
+    """Checks one Lattice board. Pure: returns error strings (tools/lattice_editor reuses it)."""
+    if not isinstance(board, dict):
+        return [f"{where}: must be an object with 'board', 'nodes' and 'edges'"]
+    errs: list[str] = []
+    meta = board.get("board")
+    if not isinstance(meta, dict) or not isinstance(meta.get("id"), str) or "name_key" not in meta:
+        errs.append(f"{where}: 'board' needs a string 'id' and a 'name_key'")
+    nodes, edges = board.get("nodes"), board.get("edges")
+    if not isinstance(nodes, list) or not isinstance(edges, list):
+        return errs + [f"{where}: needs 'nodes' and 'edges' lists"]
+    ids: dict[str, dict] = {}
+    coords: dict[tuple[int, int], str] = {}
+    starts: dict[str, str] = {}
+    for i, n in enumerate(nodes):
+        if not isinstance(n, dict) or not isinstance(n.get("id"), str):
+            errs.append(f"{where}: nodes[{i}] needs a string 'id'")
+            continue
+        nid = n["id"]
+        w = f"{where}: node '{nid}'"
+        if nid in ids:
+            errs.append(f"{where}: duplicate node id '{nid}'")
+        ids[nid] = n
+        if n.get("type") not in LATTICE_NODE_TYPES:
+            errs.append(f"{w}: type must be one of {sorted(LATTICE_NODE_TYPES)}")
+            continue
+        x, y = n.get("x"), n.get("y")
+        if not _is_int(x) or not _is_int(y):
+            errs.append(f"{w}: x and y must be ints")
+        elif (x, y) in coords:
+            errs.append(f"{w}: duplicate coordinates ({x}, {y}) with '{coords[(x, y)]}'")
+        else:
+            coords[(x, y)] = nid
+        errs += _check_lattice_node(n, w, max_gate_level, skill_ids, char_ids, starts)
+    adj: dict[str, set[str]] = {nid: set() for nid in ids}
+    seen_edges: set[frozenset[str]] = set()
+    for i, e in enumerate(edges):
+        if not (isinstance(e, list) and len(e) == 2 and all(isinstance(v, str) for v in e)):
+            errs.append(f"{where}: edges[{i}] must be a pair of node ids")
+            continue
+        a, b = e
+        dangling = [v for v in (a, b) if v not in ids]
+        if dangling:
+            errs.append(f"{where}: dangling edge [{a}, {b}]: unknown node(s) {dangling}")
+            continue
+        if a == b:
+            errs.append(f"{where}: edge [{a}, {b}] is a self-loop")
+            continue
+        if frozenset((a, b)) in seen_edges:
+            errs.append(f"{where}: duplicate edge [{a}, {b}]")
+        seen_edges.add(frozenset((a, b)))
+        adj[a].add(b)
+        adj[b].add(a)
+    if not starts:
+        errs.append(f"{where}: board has no start nodes")
+    for cid, sid in sorted(starts.items()):
+        seen = {sid}
+        todo = [sid]
+        while todo:
+            for nb in adj[todo.pop()]:
+                if nb not in seen:
+                    seen.add(nb)
+                    todo.append(nb)
+        lost = [nid for nid in ids if nid not in seen]
+        if lost:
+            errs.append(f"{where}: {len(lost)} node(s) unreachable from {cid}'s start '{sid}': {lost[:8]}")
+    return errs
+
+
+def _ids(files: dict[str, object], rel: str, table: str) -> set[str]:
+    doc = files.get(rel)
+    rows = doc.get(table, []) if isinstance(doc, dict) else []
+    return {r["id"] for r in rows if isinstance(r, dict) and isinstance(r.get("id"), str)}
+
+
+def check_progression(files: dict[str, object], rep: Report) -> list[str]:
+    """Validates facets.json and every Lattice board. Returns *_key values for loc checks."""
+    keys: list[str] = []
+    boards = sorted(k for k in files if Path(k).parent.as_posix() == LATTICE_DIR and Path(k).match(LATTICE_GLOB))
+    facets = files.get(FACETS_FILE)
+    if facets is None:
+        if boards:
+            rep.err(f"{FACETS_FILE} is missing but Lattice boards exist")
+        return keys
+    for e in facets_errors(facets):
+        rep.err(e)
+    rules = facets.get("rules") if isinstance(facets, dict) else None
+    max_level = rules.get("max_gate_level") if isinstance(rules, dict) else 0
+    max_level = max_level if _is_int(max_level) else 0
+    for f in facets.get("facets", []) if isinstance(facets, dict) else []:
+        if isinstance(f, dict) and isinstance(f.get("name_key"), str):
+            keys.append(f["name_key"])
+    skill_ids = _ids(files, "game/data/battle/skills.json", "skills")
+    char_ids = _ids(files, "game/data/battle/characters.json", "characters")
+    for rel in boards:
+        board = files[rel]
+        for e in lattice_errors(board, max_level, skill_ids, char_ids, rel):
+            rep.err(e)
+        meta = board.get("board") if isinstance(board, dict) else None
+        if isinstance(meta, dict) and isinstance(meta.get("name_key"), str):
+            keys.append(meta["name_key"])
+    return keys
+
+
 def load_loc_keys(root: Path, rep: Report) -> set[str]:
     keys: set[str] = set()
     for p in sorted((root / "game" / "data" / "loc").glob("*.csv")):
@@ -437,11 +663,28 @@ def check_binary_sizes(root: Path, rep: Report) -> None:
                         f"{MAX_BINARY_BYTES}-byte limit while Git LFS is deferred (ADR 0005)")
 
 
+def collect_keys(obj: object) -> list[str]:
+    """Every string value of a field named *_key, anywhere in nested JSON."""
+    out: list[str] = []
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if isinstance(k, str) and k.endswith("_key") and isinstance(v, str):
+                out.append(v)
+            else:
+                out += collect_keys(v)
+    elif isinstance(obj, list):
+        for v in obj:
+            out += collect_keys(v)
+    return out
+
+
 def run(root: Path) -> Report:
     rep = Report()
     files = load_json_files(root, rep)
     data_keys = check_battle(files, rep)
     data_keys += check_dialogue(root, files, rep)
+    data_keys += check_progression(files, rep)
+    data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_provenance(root, rep)

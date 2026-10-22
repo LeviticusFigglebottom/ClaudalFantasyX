@@ -136,6 +136,8 @@ func test_handles_every_material_kind_and_scene_filter() -> void:
 
 func test_install_hooks_scene_router_signal() -> void:
 	var router: Node = SceneRouter
+	assert_true(router.has_meta(ShaderPrewarm.HOOK_META), "SceneRouter installs the hook in _ready()")
+	ShaderPrewarm.uninstall(router)  # start from a clean state; restored at the end
 	var before := router.get_child_count()
 	assert_true(ShaderPrewarm.install(router))
 	assert_false(ShaderPrewarm.install(router), "idempotent")
@@ -152,6 +154,7 @@ func test_install_hooks_scene_router_signal() -> void:
 	assert_eq(router.get_child_count(), before + 1, "no spawn after uninstall (the finished one is only queued)")
 	node.free()
 	assert_eq(router.get_child_count(), before)
+	ShaderPrewarm.install(router)
 
 
 # --- Shader includes compile (front end) under the headless dummy renderer --------------------
