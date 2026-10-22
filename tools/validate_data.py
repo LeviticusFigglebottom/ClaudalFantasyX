@@ -13,6 +13,8 @@ Checks:
   * provenance: every file under assets/ has a row in assets/PROVENANCE.md
   * banned terms (tools/banned_terms.txt) in game/, assets_src/, story docs, glossary
   * binary size limit while Git LFS is deferred (ADR 0005)
+  * items (game/data/items): schema, dangling refs (abilities, recipe and shop items, characters,
+    Facets), at most 4 ability slots, positive prices, declared stock flags (M1-PRG-02)
 
 Usage: python3 tools/validate_data.py [--root PATH]
 """
@@ -678,12 +680,419 @@ def collect_keys(obj: object) -> list[str]:
     return out
 
 
+# --- Items, equipment, abilities, Customize and shops (M1-PRG-02, docs/kb/design/economy.md) --------
+
+ITEMS_DIR = "game/data/items"
+ITEM_TABLES = ("items", "equipment", "abilities", "customize", "shops")
+ITEM_CATEGORIES = {"consumable", "material", "facet", "key"}
+ITEM_RULE_INTS = ("stack_cap", "key_item_cap", "currency_cap")
+ITEM_RANK_MIN, ITEM_RANK_MAX = 1, 8  # same range as skill ranks (formulas.md, Time)
+ITEM_EFFECT_FIELDS = {"heal_hp": {"amount"}, "restore_mp": {"amount"}, "cure": {"statuses"},
+                      "revive": {"hp_pct"}, "add_status": {"status", "duration"}, "delay": {"ranks"},
+                      "damage": {"amount", "element"}}
+EQUIP_SLOTS = {"weapon", "armor"}
+MAX_EQUIP_SLOTS = 4  # SPEC §6.5: "up to four ability slots"
+ABILITY_EFFECT_FIELDS = {"on_hit_element": {"element"}, "status_strike": {"status", "chance", "duration"},
+                         "stat_bonus": {"stat", "amount"}, "element_guard": {"element", "affinity"},
+                         "status_ward": {"status"}, "auto_status": {"status", "trigger"},
+                         "economy": {"currency_mult"}, "field": {"encounter_rate_pct"},
+                         "special": {"break_damage_cap"}}
+ABILITY_OPTIONAL_FIELDS = {"auto_status": {"hp_below_pct"}}
+GUARD_AFFINITIES = {"resist", "immune", "absorb"}
+AUTO_TRIGGERS = {"always", "low_hp"}
+SHOP_KINDS = {"items", "equipment"}
+
+
+def _rows(doc: object, table: str, where: str, errs: list[str]) -> list[dict]:
+    """Rows of doc[table] that have a unique string id; reports the rest."""
+    rows = doc.get(table) if isinstance(doc, dict) else None
+    if not isinstance(rows, list):
+        errs.append(f"{where}: missing top-level list '{table}'")
+        return []
+    out: list[dict] = []
+    seen: set[str] = set()
+    for i, r in enumerate(rows):
+        if not isinstance(r, dict) or not isinstance(r.get("id"), str):
+            errs.append(f"{where}[{i}]: row needs a string 'id'")
+            continue
+        if r["id"] in seen:
+            errs.append(f"{where}: duplicate id '{r['id']}'")
+        seen.add(r["id"])
+        out.append(r)
+    return out
+
+
+def _pos_int(v: object) -> bool:
+    return _is_int(v) and v > 0
+
+
+def _need_keys(row: dict, w: str, keys: tuple[str, ...], errs: list[str]) -> None:
+    for k in keys:
+        if not isinstance(row.get(k), str) or not row[k]:
+            errs.append(f"{w}: missing {k}")
+
+
+def _item_effect_errors(e: object, w: str, refs: dict[str, set[str]]) -> list[str]:
+    if not isinstance(e, dict) or e.get("type") not in ITEM_EFFECT_FIELDS:
+        return [f"{w}: effect type must be one of {sorted(ITEM_EFFECT_FIELDS)}"]
+    errs: list[str] = []
+    t = e["type"]
+    for k in sorted(ITEM_EFFECT_FIELDS[t] - set(e)):
+        errs.append(f"{w}: {t} effect needs '{k}'")
+    for k in sorted(set(e) - ITEM_EFFECT_FIELDS[t] - {"type"}):
+        errs.append(f"{w}: field '{k}' does not belong on a {t} effect")
+    for k in ("amount", "ranks"):
+        if k in e and not _pos_int(e[k]):
+            errs.append(f"{w}: {t}.{k} must be a positive int")
+    if "hp_pct" in e and not (_is_int(e["hp_pct"]) and 1 <= e["hp_pct"] <= 100):
+        errs.append(f"{w}: revive.hp_pct must be an int in 1..100")
+    if "element" in e and e["element"] not in ELEMENTS:
+        errs.append(f"{w}: unknown element '{e['element']}'")
+    if "statuses" in e:
+        sts = e["statuses"]
+        if not isinstance(sts, list) or not sts:
+            errs.append(f"{w}: cure.statuses must be a non-empty list")
+        else:
+            for s in sts:
+                if s not in refs["statuses"]:
+                    errs.append(f"{w}: unknown status '{s}'")
+    if t == "add_status":
+        s = e.get("status")
+        if s not in refs["statuses"]:
+            errs.append(f"{w}: unknown status '{s}'")
+        if not _is_int(e.get("duration")) or e["duration"] == 0 or e["duration"] < -1:
+            errs.append(f"{w}: add_status.duration must be -1 or a positive int")
+        elif e["duration"] == -1 and s in NO_PERMANENT_STATUSES:
+            errs.append(f"{w}: '{s}' may not be permanent (formulas.md, Stop / Sleep)")
+    return errs
+
+
+def _items_table_errors(doc: object, refs: dict[str, set[str]], w0: str, errs: list[str]) -> dict[str, dict]:
+    rules = doc.get("rules") if isinstance(doc, dict) else None
+    if not isinstance(rules, dict):
+        errs.append(f"{w0}: missing 'rules' object")
+        rules = {}
+    for k in ITEM_RULE_INTS:
+        if not _pos_int(rules.get(k)):
+            errs.append(f"{w0}: rules.{k} must be a positive int")
+    order = rules.get("category_order")
+    if not isinstance(order, list) or sorted(order) != sorted(ITEM_CATEGORIES):
+        errs.append(f"{w0}: rules.category_order must list each of {sorted(ITEM_CATEGORIES)} once")
+    items: dict[str, dict] = {}
+    for it in _rows(doc, "items", w0, errs):
+        w = f"{w0}: item '{it['id']}'"
+        items[it["id"]] = it
+        cat = it.get("category")
+        if cat not in ITEM_CATEGORIES:
+            errs.append(f"{w}: category must be one of {sorted(ITEM_CATEGORIES)}")
+            continue
+        _need_keys(it, w, ("name_key", "desc_key"), errs)
+        if cat == "key":
+            for k in ("price", "stack_cap", "battle"):
+                if k in it:
+                    errs.append(f"{w}: key items have no '{k}' (they can't be sold or stacked)")
+        elif not _pos_int(it.get("price")):
+            errs.append(f"{w}: price must be a positive int")
+        if "stack_cap" in it and not _pos_int(it["stack_cap"]):
+            errs.append(f"{w}: stack_cap must be a positive int")
+        if cat == "facet":
+            if it.get("facet") != it["id"] or it["id"] not in refs["facets"]:
+                errs.append(f"{w}: a facet item needs 'facet' equal to its id and listed in {FACETS_FILE}")
+        elif "facet" in it:
+            errs.append(f"{w}: only facet items carry 'facet'")
+        if "field" in it and not isinstance(it["field"], bool):
+            errs.append(f"{w}: 'field' must be true or false")
+        if "battle" in it:
+            b = it["battle"]
+            if cat != "consumable":
+                errs.append(f"{w}: only consumables can be used in battle")
+            if not isinstance(b, dict):
+                errs.append(f"{w}: 'battle' must be an object")
+                continue
+            if b.get("target") not in SKILL_TARGETS:
+                errs.append(f"{w}: battle.target must be one of {sorted(SKILL_TARGETS)}")
+            if not (_is_int(b.get("rank")) and ITEM_RANK_MIN <= b["rank"] <= ITEM_RANK_MAX):
+                errs.append(f"{w}: battle.rank must be an int in {ITEM_RANK_MIN}..{ITEM_RANK_MAX}")
+            effects = b.get("effects")
+            if not isinstance(effects, list) or not effects:
+                errs.append(f"{w}: battle.effects must be a non-empty list")
+                continue
+            for j, e in enumerate(effects):
+                errs += _item_effect_errors(e, f"{w}: effects[{j}]", refs)
+    for fid in sorted(refs["facets"] - set(items)):
+        errs.append(f"{w0}: Facet '{fid}' from {FACETS_FILE} has no item row")
+    return items
+
+
+def _ability_effect_errors(ab: dict, w: str, refs: dict[str, set[str]]) -> list[str]:
+    cat = ab["category"]
+    eff = ab.get("effect")
+    if not isinstance(eff, dict):
+        return [f"{w}: needs an 'effect' object"]
+    errs: list[str] = []
+    want = ABILITY_EFFECT_FIELDS[cat]
+    for k in sorted(want - set(eff)):
+        errs.append(f"{w}: {cat} effect needs '{k}'")
+    for k in sorted(set(eff) - want - ABILITY_OPTIONAL_FIELDS.get(cat, set())):
+        errs.append(f"{w}: field '{k}' does not belong on a {cat} effect")
+    if "element" in eff and eff["element"] not in ELEMENTS - {"none"}:
+        errs.append(f"{w}: unknown element '{eff['element']}'")
+    if "affinity" in eff and eff["affinity"] not in GUARD_AFFINITIES:
+        errs.append(f"{w}: guard affinity must be one of {sorted(GUARD_AFFINITIES)}")
+    if "stat" in eff and eff["stat"] not in LATTICE_STATS:
+        errs.append(f"{w}: unknown stat '{eff['stat']}'")
+    if "amount" in eff and not _pos_int(eff["amount"]):
+        errs.append(f"{w}: amount must be a positive int")
+    if "status" in eff:
+        s = eff["status"]
+        kind = "beneficial" if cat == "auto_status" else "harmful"
+        if s not in refs["statuses"]:
+            errs.append(f"{w}: unknown status '{s}'")
+        elif s not in refs[kind]:
+            errs.append(f"{w}: {cat} needs a {kind} status, not '{s}'")
+    if cat == "status_strike":
+        if not (_is_int(eff.get("chance")) and 1 <= eff["chance"] <= 100):
+            errs.append(f"{w}: chance must be an int in 1..100")
+        d = eff.get("duration")
+        if not _is_int(d) or d == 0 or d < -1:
+            errs.append(f"{w}: duration must be -1 or a positive int")
+        elif d == -1 and eff.get("status") in NO_PERMANENT_STATUSES:
+            errs.append(f"{w}: '{eff['status']}' may not be permanent (formulas.md, Stop / Sleep)")
+    if cat == "auto_status":
+        trig = eff.get("trigger")
+        if trig not in AUTO_TRIGGERS:
+            errs.append(f"{w}: trigger must be one of {sorted(AUTO_TRIGGERS)}")
+        pct = eff.get("hp_below_pct")
+        if trig == "low_hp" and not (_is_int(pct) and 1 <= pct <= 99):
+            errs.append(f"{w}: a low_hp trigger needs hp_below_pct in 1..99")
+        if trig == "always" and pct is not None:
+            errs.append(f"{w}: an always trigger takes no hp_below_pct")
+    if cat == "economy" and not (_is_int(eff.get("currency_mult")) and eff["currency_mult"] >= 2):
+        errs.append(f"{w}: currency_mult must be an int of at least 2")
+    if cat == "field" and not (_is_int(eff.get("encounter_rate_pct")) and 0 <= eff["encounter_rate_pct"] < 100):
+        errs.append(f"{w}: encounter_rate_pct must be an int in 0..99")
+    if cat == "special" and eff.get("break_damage_cap") is not True:
+        errs.append(f"{w}: the only special effect is break_damage_cap: true")
+    return errs
+
+
+def _equipment_errors(doc: object, abilities: dict[str, dict], refs: dict[str, set[str]],
+                      item_ids: set[str], w0: str, errs: list[str]) -> dict[str, dict]:
+    rules = doc.get("rules") if isinstance(doc, dict) else None
+    if not isinstance(rules, dict):
+        errs.append(f"{w0}: missing 'rules' object")
+        rules = {}
+    max_slots = rules.get("max_slots")
+    if not (_is_int(max_slots) and 1 <= max_slots <= MAX_EQUIP_SLOTS):
+        errs.append(f"{w0}: rules.max_slots must be an int in 1..{MAX_EQUIP_SLOTS} (SPEC §6.5)")
+        max_slots = MAX_EQUIP_SLOTS
+    slots = rules.get("equip_slots")
+    if not isinstance(slots, list) or not slots or not set(slots) <= EQUIP_SLOTS or len(set(slots)) != len(slots):
+        errs.append(f"{w0}: rules.equip_slots must list slots from {sorted(EQUIP_SLOTS)} once each")
+        slots = sorted(EQUIP_SLOTS)
+    required = rules.get("required_slots", [])
+    if not isinstance(required, list) or not set(required) <= set(slots):
+        errs.append(f"{w0}: rules.required_slots must be a subset of equip_slots")
+        required = []
+    gear: dict[str, dict] = {}
+    for g in _rows(doc, "gear_types", f"{w0} gear_types", errs):
+        w = f"{w0}: gear type '{g['id']}'"
+        gear[g["id"]] = g
+        if g.get("slot") not in slots:
+            errs.append(f"{w}: slot must be one of {slots}")
+        if g.get("character") not in refs["characters"]:
+            errs.append(f"{w}: unknown character '{g.get('character')}'")
+        _need_keys(g, w, ("name_key",), errs)
+    pieces: dict[str, dict] = {}
+    for e in _rows(doc, "equipment", w0, errs):
+        w = f"{w0}: '{e['id']}'"
+        pieces[e["id"]] = e
+        if e["id"] in item_ids:
+            errs.append(f"{w}: id clashes with an item id (shops share one namespace)")
+        _need_keys(e, w, ("name_key", "desc_key"), errs)
+        if not _pos_int(e.get("price")):
+            errs.append(f"{w}: price must be a positive int")
+        gt = gear.get(e.get("type"))
+        if gt is None:
+            errs.append(f"{w}: unknown gear type '{e.get('type')}'")
+        n = e.get("slots")
+        if not (_is_int(n) and 0 <= n <= max_slots):
+            errs.append(f"{w}: slots must be an int in 0..{max_slots}")
+            n = max_slots
+        pre = e.get("abilities", [])
+        if not isinstance(pre, list):
+            errs.append(f"{w}: abilities must be a list")
+            pre = []
+        if len(pre) > n:
+            errs.append(f"{w}: {len(pre)} pre-filled abilities but only {n} slots")
+        if len(set(pre)) != len(pre):
+            errs.append(f"{w}: an ability appears twice")
+        for a in pre:
+            if a not in abilities:
+                errs.append(f"{w}: unknown ability '{a}'")
+            elif gt is not None and gt.get("slot") not in abilities[a].get("equip", []):
+                errs.append(f"{w}: ability '{a}' does not fit a {gt.get('slot')} piece")
+        stats = e.get("stats", {})
+        if not isinstance(stats, dict):
+            errs.append(f"{w}: stats must be an object")
+            stats = {}
+        for k, v in stats.items():
+            if k not in LATTICE_STATS:
+                errs.append(f"{w}: unknown stat '{k}'")
+            elif not _pos_int(v):
+                errs.append(f"{w}: stat '{k}' must be a positive int")
+    starting = doc.get("starting", {}) if isinstance(doc, dict) else {}
+    if not isinstance(starting, dict):
+        errs.append(f"{w0}: 'starting' must be an object")
+        starting = {}
+    for cid in sorted(refs["characters"] - set(starting)):
+        errs.append(f"{w0}: character '{cid}' has no starting gear")
+    for cid, lo in starting.items():
+        w = f"{w0}: starting.{cid}"
+        if cid not in refs["characters"]:
+            errs.append(f"{w}: unknown character")
+        if not isinstance(lo, dict):
+            errs.append(f"{w}: must map slot -> equipment id")
+            continue
+        for s in required:
+            if s not in lo:
+                errs.append(f"{w}: missing required slot '{s}'")
+        for s, eid in lo.items():
+            gt = gear.get(pieces.get(eid, {}).get("type"))
+            if eid not in pieces:
+                errs.append(f"{w}.{s}: unknown equipment '{eid}'")
+            elif gt is not None and (gt.get("slot") != s or gt.get("character") != cid):
+                errs.append(f"{w}.{s}: '{eid}' is a {gt.get('character')} {gt.get('slot')} piece")
+    return pieces
+
+
+def items_errors(docs: dict[str, object], refs: dict[str, set[str]]) -> list[str]:
+    """Checks the item tables. Pure: returns error strings.
+
+    docs maps 'items', 'equipment', 'abilities', 'customize', 'shops' to parsed JSON. refs holds
+    sets: 'characters', 'statuses', 'harmful', 'beneficial', 'facets', 'flags'."""
+    errs: list[str] = []
+    w = {t: f"{ITEMS_DIR}/{t}.json" for t in ITEM_TABLES}
+    items = _items_table_errors(docs.get("items"), refs, w["items"], errs)
+    abilities: dict[str, dict] = {}
+    for ab in _rows(docs.get("abilities"), "abilities", w["abilities"], errs):
+        aw = f"{w['abilities']}: '{ab['id']}'"
+        abilities[ab["id"]] = ab
+        _need_keys(ab, aw, ("name_key", "desc_key"), errs)
+        eq = ab.get("equip")
+        if not isinstance(eq, list) or not eq or not set(eq) <= EQUIP_SLOTS:
+            errs.append(f"{aw}: equip must list slots from {sorted(EQUIP_SLOTS)}")
+        if ab.get("category") not in ABILITY_EFFECT_FIELDS:
+            errs.append(f"{aw}: category must be one of {sorted(ABILITY_EFFECT_FIELDS)}")
+            continue
+        errs += _ability_effect_errors(ab, aw, refs)
+    pieces = _equipment_errors(docs.get("equipment"), abilities, refs, set(items), w["equipment"], errs)
+    cz = docs.get("customize")
+    recipes = cz.get("recipes") if isinstance(cz, dict) else None
+    if not isinstance(recipes, list):
+        errs.append(f"{w['customize']}: missing top-level list 'recipes'")
+        recipes = []
+    seen: set[str] = set()
+    for i, r in enumerate(recipes):
+        rw = f"{w['customize']}: recipes[{i}]"
+        if not isinstance(r, dict):
+            errs.append(f"{rw}: must be an object")
+            continue
+        aid = r.get("ability")
+        if aid not in abilities:
+            errs.append(f"{rw}: unknown ability '{aid}'")
+        elif aid in seen:
+            errs.append(f"{rw}: second recipe for '{aid}'")
+        seen.add(aid)
+        parts = r.get("items")
+        if not isinstance(parts, list) or not parts:
+            errs.append(f"{rw}: items must be a non-empty list")
+            continue
+        used: set[str] = set()
+        for p in parts:
+            iid = p.get("item") if isinstance(p, dict) else None
+            if iid not in items:
+                errs.append(f"{rw}: unknown item '{iid}'")
+            elif items[iid].get("category") == "key":
+                errs.append(f"{rw}: key item '{iid}' can't be spent")
+            if iid in used:
+                errs.append(f"{rw}: item '{iid}' listed twice")
+            used.add(iid)
+            if not isinstance(p, dict) or not _pos_int(p.get("count")):
+                errs.append(f"{rw}: count for '{iid}' must be a positive int")
+    sh = docs.get("shops")
+    rules = sh.get("rules") if isinstance(sh, dict) else None
+    if not isinstance(rules, dict):
+        errs.append(f"{w['shops']}: missing 'rules' object")
+        rules = {}
+    num, den = rules.get("sell_ratio_num"), rules.get("sell_ratio_den")
+    if not (_is_int(num) and _pos_int(den) and 0 <= num <= den):
+        errs.append(f"{w['shops']}: sell ratio must be ints with 0 <= sell_ratio_num <= sell_ratio_den, den > 0")
+    if not (_is_int(rules.get("min_sell_price")) and rules["min_sell_price"] >= 0):
+        errs.append(f"{w['shops']}: rules.min_sell_price must be a non-negative int")
+    for shop in _rows(sh, "shops", w["shops"], errs):
+        sw = f"{w['shops']}: '{shop['id']}'"
+        _need_keys(shop, sw, ("name_key",), errs)
+        kind = shop.get("kind")
+        if kind not in SHOP_KINDS:
+            errs.append(f"{sw}: kind must be one of {sorted(SHOP_KINDS)}")
+        flag = shop.get("requires_flag", "")
+        if flag and flag not in refs["flags"]:
+            errs.append(f"{sw}: undeclared story flag '{flag}' (declare it in game/data/flags.tres)")
+        stock = shop.get("stock")
+        if not isinstance(stock, list) or not stock:
+            errs.append(f"{sw}: stock must be a non-empty list")
+            continue
+        listed: set[str] = set()
+        for row in stock:
+            gid = row.get("item") if isinstance(row, dict) else None
+            table = pieces if kind == "equipment" else items
+            if gid not in table:
+                errs.append(f"{sw}: unknown {'equipment' if kind == 'equipment' else 'item'} '{gid}' in stock")
+            elif kind == "items" and items[gid].get("category") == "key":
+                errs.append(f"{sw}: key item '{gid}' can't be sold in a shop")
+            if gid in listed:
+                errs.append(f"{sw}: '{gid}' is stocked twice")
+            listed.add(gid)
+            f = row.get("requires_flag", "") if isinstance(row, dict) else ""
+            if f and f not in refs["flags"]:
+                errs.append(f"{sw}: undeclared story flag '{f}' on '{gid}'")
+    return errs
+
+
+def check_items(files: dict[str, object], flags: set[str], rep: Report) -> list[str]:
+    """Validates game/data/items/*.json. Returns *_key values for loc checks."""
+    docs = {t: files.get(f"{ITEMS_DIR}/{t}.json") for t in ITEM_TABLES}
+    if all(d is None for d in docs.values()):
+        return []
+    statuses = files.get("game/data/battle/statuses.json")
+    rows = statuses.get("statuses", []) if isinstance(statuses, dict) else []
+    rows = [r for r in rows if isinstance(r, dict)]
+    refs = {
+        "characters": _ids(files, "game/data/battle/characters.json", "characters"),
+        "statuses": {r.get("id") for r in rows},
+        "harmful": {r.get("id") for r in rows if r.get("category") == "harmful"},
+        "beneficial": {r.get("id") for r in rows if r.get("category") == "beneficial"},
+        "facets": _ids(files, FACETS_FILE, "facets"),
+        "flags": flags,
+    }
+    for e in items_errors(docs, refs):
+        rep.err(e)
+    return collect_keys([d for d in docs.values() if d is not None])
+
+
+def declared_flags_quiet(root: Path) -> set[str]:
+    """Declared flag names without re-reporting flags.tres problems (check_flags owns those)."""
+    return load_flags(root, Report())
+
+
 def run(root: Path) -> Report:
     rep = Report()
     files = load_json_files(root, rep)
     data_keys = check_battle(files, rep)
     data_keys += check_dialogue(root, files, rep)
     data_keys += check_progression(files, rep)
+    data_keys += check_items(files, declared_flags_quiet(root), rep)
     data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
