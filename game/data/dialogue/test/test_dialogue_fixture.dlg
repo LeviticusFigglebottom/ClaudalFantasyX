@@ -1,0 +1,35 @@
+// Fixture for tests/unit/test_dialogue_runner.gd. Never played by game content.
+// Flags: test_flag (bool), test_counter (number), test_text (string), all reserved for tests.
+title: test_dialogue_fixture
+---
+@camera fixture_wide blend=1.5 hold=true
+Test narration. #line:test_dlg_001
+Rhen [worried]: Test line with an emotion. #line:test_dlg_002 #tagged
+<<if $test_flag>>
+Asha: Flag was on. #line:test_dlg_003
+<<elseif $test_counter >= 3 and not $test_flag>>
+Asha: Counter at least three. #line:test_dlg_004
+<<else>>
+Asha: Neither. #line:test_dlg_005
+<<endif>>
+<<set $test_counter = 7>>
+<<event fixture_event alpha 2 true>>
+-> First option. #line:test_dlg_006
+    Rhen: Took the first. #line:test_dlg_007
+    -> Nested A. #line:test_dlg_008
+        <<set $test_text = "nested">>
+    -> Nested B. #line:test_dlg_009
+-> Hidden unless counter is seven. #line:test_dlg_010 <<if $test_counter == 7>>
+    <<jump second>>
+-> Never shown. <<if $test_text != "" and $test_counter < 0>> #line:test_dlg_011
+Toma: After the options. #line:test_dlg_012
+<<stop>>
+Toma: Unreachable. #line:test_dlg_013
+===
+title: second
+---
+<<if $test_text == "nested" or $test_counter > 100>>
+Asha: Wrong branch. #line:test_dlg_014
+<<endif>>
+Asha [smile]: In the second node. #line:test_dlg_015
+===

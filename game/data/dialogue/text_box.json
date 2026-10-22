@@ -1,0 +1,11 @@
+{
+ "text_box": {
+  "chars_per_sec": 40.0,
+  "min_chars_per_sec": 5.0,
+  "max_chars_per_sec": 400.0,
+  "blip_every_n_chars": 2,
+  "blip_volume_db": -8.0,
+  "narration_blip": false,
+  "flap_vowels": "aeiouyAEIOUY"
+ }
+}

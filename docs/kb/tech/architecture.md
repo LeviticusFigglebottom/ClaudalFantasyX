@@ -13,4 +13,6 @@
 - Bump `SaveSystem.SAVE_VERSION` on any schema change, and add a `_migrations[old_version]` step plus a test.
 
 ## Planned (M1+)
-Field controller with camera rails (`game/world/`), dialogue runner (`game/narrative/`), battle scene glue (`game/battle/scene/`), Lattice (`game/progression/`), UI theme (`game/ui/`), and debug overlays F1–F12 (SPEC §5.4, task M1-ARC-02).
+Built in M1: dialogue runner (`game/narrative/`, DialogueRunner) and text box (`game/ui/dialogue/`, DialogueBox); see tech/dialogue_format.md.
+
+Still planned: field controller with camera rails (`game/world/`), dialogue runner (`game/narrative/`), battle scene glue (`game/battle/scene/`), Lattice (`game/progression/`), UI theme (`game/ui/`), and debug overlays F1–F12 (SPEC §5.4, task M1-ARC-02).

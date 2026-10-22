@@ -80,5 +80,55 @@ class ValidatorTests(unittest.TestCase):
         self.assertTrue(any("must not be permanent" in e for e in self.errors()))
 
 
+    def _dialogue(self, rel: str) -> Path:
+        return self.tmp / "game" / "data" / "dialogue" / rel
+
+    def test_stale_compiled_dialogue_is_caught(self) -> None:
+        p = self._dialogue("ch02/ch02_girl_on_the_beach.dlg")
+        p.write_text(p.read_text().replace("Asha [laugh]:", "Asha [smile]:"))
+        errs = self.errors()
+        self.assertTrue(any("ch02_girl_on_the_beach.json: dialogue output is stale" in e for e in errs), errs)
+
+    def test_stale_dialogue_csv_is_caught(self) -> None:
+        p = self._dialogue("ch02/ch02_girl_on_the_beach.dlg")
+        p.write_text(p.read_text().replace("That lantern.", "That lamp."))
+        self.assertTrue(any("dialogue.csv: dialogue output is stale" in e for e in self.errors()))
+
+    def test_unknown_emotion_is_caught_with_location(self) -> None:
+        p = self._dialogue("ch02/ch02_girl_on_the_beach.dlg")
+        p.write_text(p.read_text().replace("Asha [laugh]:", "Asha [smirk]:"))
+        self.assertTrue(any("ch02_girl_on_the_beach.dlg:" in e and "unknown emotion '[smirk]'" in e
+                            for e in self.errors()))
+
+    def test_emotion_set_comes_from_data_file(self) -> None:
+        p = self._dialogue("emotions.json")
+        p.write_text(p.read_text().replace('{"id": "laugh"},', ""))
+        self.assertTrue(any("unknown emotion '[laugh]'" in e for e in self.errors()))
+
+    def test_duplicate_emotion_is_caught(self) -> None:
+        p = self._dialogue("emotions.json")
+        p.write_text(p.read_text().replace('{"id": "laugh"}', '{"id": "smile"}'))
+        self.assertTrue(any("duplicate emotion 'smile'" in e for e in self.errors()))
+
+    def test_speaker_schema_is_checked(self) -> None:
+        p = self._dialogue("speakers.json")
+        p.write_text(p.read_text().replace('"blip_pitch": 0.78', '"blip_pitch": 0'))
+        self.assertTrue(any("speakers.toma: blip_pitch" in e for e in self.errors()))
+
+    def test_speaker_name_key_needs_loc(self) -> None:
+        p = self._dialogue("speakers.json")
+        p.write_text(p.read_text().replace('"CHAR_PELL"', '"CHAR_NOBODY"'))
+        self.assertTrue(any("CHAR_NOBODY" in e for e in self.errors()))
+
+    def test_text_box_speed_range_is_checked(self) -> None:
+        p = self._dialogue("text_box.json")
+        p.write_text(p.read_text().replace('"chars_per_sec": 40.0', '"chars_per_sec": 1.0'))
+        self.assertTrue(any("min_chars_per_sec <= chars_per_sec" in e for e in self.errors()))
+
+    def test_dialogue_syntax_error_is_reported(self) -> None:
+        self._dialogue("ch02/broken_scene.dlg").write_text("title: broken_scene\n---\nRhen: No tag.\n===\n")
+        self.assertTrue(any("broken_scene.dlg:3: spoken text is missing its #line" in e for e in self.errors()))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -6,6 +6,8 @@ Checks:
   * battle tables: schema, unique ids, enums, dangling references
   * localization: every *_key / tr("KEY") / dialogue #line: key exists in a loc CSV
   * story flags: every flag used in .gd / .dlg is declared in game/data/flags.tres
+  * dialogue: .dlg files compile (tools/dlgc.py), committed outputs are fresh, emotion tags
+    come from game/data/dialogue/emotions.json, speakers.json and text_box.json are well-formed
   * provenance: every file under assets/ has a row in assets/PROVENANCE.md
   * banned terms (tools/banned_terms.txt) in game/, assets_src/, story docs, glossary
   * binary size limit while Git LFS is deferred (ADR 0005)
@@ -20,6 +22,9 @@ import json
 import re
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import dlgc  # noqa: E402
 
 ELEMENTS = {"none", "fire", "water", "lightning", "ice", "holy", "glimmer"}
 AFFINITIES = {"normal", "weak", "resist", "immune", "absorb"}
@@ -225,6 +230,77 @@ def _ai_arg_ok(cond: str, arg: object, status_ids: set[str]) -> bool:
     return False
 
 
+TEXT_BOX_NUMBERS = ("chars_per_sec", "min_chars_per_sec", "max_chars_per_sec", "blip_volume_db")
+
+
+def check_dialogue(root: Path, files: dict[str, object], rep: Report) -> list[str]:
+    """Validates dialogue data tables and compiles every .dlg (freshness + syntax + emotion tags).
+    Returns every *_key value found (for loc checks)."""
+    keys: list[str] = []
+    base = "game/data/dialogue"
+    emotions = files.get(f"{base}/emotions.json")
+    rows = emotions.get("emotions") if isinstance(emotions, dict) else None
+    if not isinstance(rows, list) or not rows:
+        rep.err(f"{base}/emotions.json: missing non-empty top-level list 'emotions'")
+    else:
+        seen: set[str] = set()
+        for i, row in enumerate(rows):
+            eid = row.get("id") if isinstance(row, dict) else None
+            if not isinstance(eid, str) or not re.fullmatch(r"[a-z][a-z0-9_]*", eid):
+                rep.err(f"{base}/emotions.json[{i}]: needs a snake_case string 'id'")
+            elif eid in seen:
+                rep.err(f"{base}/emotions.json: duplicate emotion '{eid}'")
+            else:
+                seen.add(eid)
+
+    speakers = files.get(f"{base}/speakers.json")
+    rows = speakers.get("speakers") if isinstance(speakers, dict) else None
+    if not isinstance(rows, list):
+        rep.err(f"{base}/speakers.json: missing top-level list 'speakers'")
+    else:
+        seen = set()
+        for i, row in enumerate(rows):
+            sid = row.get("id") if isinstance(row, dict) else None
+            if not isinstance(sid, str) or not re.fullmatch(r"[a-z][a-z0-9_]*", sid):
+                rep.err(f"{base}/speakers.json[{i}]: needs a lowercase string 'id'")
+                continue
+            if sid in seen:
+                rep.err(f"{base}/speakers.json: duplicate speaker '{sid}'")
+            seen.add(sid)
+            if not isinstance(row.get("name_key"), str):
+                rep.err(f"speakers.{sid}: missing name_key")
+            else:
+                keys.append(row["name_key"])
+            pitch = row.get("blip_pitch")
+            if isinstance(pitch, bool) or not isinstance(pitch, (int, float)) or pitch <= 0:
+                rep.err(f"speakers.{sid}: blip_pitch must be a positive number")
+            if not isinstance(row.get("portrait_id"), str) or not row["portrait_id"]:
+                rep.err(f"speakers.{sid}: portrait_id must be a non-empty string")
+
+    box = files.get(f"{base}/text_box.json")
+    cfg = box.get("text_box") if isinstance(box, dict) else None
+    if not isinstance(cfg, dict):
+        rep.err(f"{base}/text_box.json: missing top-level object 'text_box'")
+    else:
+        for k in TEXT_BOX_NUMBERS:
+            if isinstance(cfg.get(k), bool) or not isinstance(cfg.get(k), (int, float)):
+                rep.err(f"text_box.{k} must be a number")
+        nums = [cfg.get(k) for k in TEXT_BOX_NUMBERS[:3]]
+        if all(isinstance(n, (int, float)) for n in nums) and not 0 < nums[1] <= nums[0] <= nums[2]:
+            rep.err("text_box: need 0 < min_chars_per_sec <= chars_per_sec <= max_chars_per_sec")
+        n = cfg.get("blip_every_n_chars")
+        if isinstance(n, bool) or not isinstance(n, int) or n < 1:
+            rep.err("text_box.blip_every_n_chars must be an int >= 1")
+        if not isinstance(cfg.get("narration_blip"), bool):
+            rep.err("text_box.narration_blip must be a bool")
+        if not isinstance(cfg.get("flap_vowels"), str) or not cfg.get("flap_vowels"):
+            rep.err("text_box.flap_vowels must be a non-empty string")
+
+    for e in dlgc.check(root):
+        rep.err(f"dlgc: {e}")
+    return keys
+
+
 def load_loc_keys(root: Path, rep: Report) -> set[str]:
     keys: set[str] = set()
     for p in sorted((root / "game" / "data" / "loc").glob("*.csv")):
@@ -365,6 +441,7 @@ def run(root: Path) -> Report:
     rep = Report()
     files = load_json_files(root, rep)
     data_keys = check_battle(files, rep)
+    data_keys += check_dialogue(root, files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_provenance(root, rep)

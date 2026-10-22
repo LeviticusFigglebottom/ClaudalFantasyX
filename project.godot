@@ -34,7 +34,7 @@ theme/default_font_multichannel_signed_distance_field=true
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://game/data/loc/strings.en.translation")
+locale/translations=PackedStringArray("res://game/data/loc/strings.en.translation", "res://game/data/loc/dialogue.en.translation")
 
 [rendering]
 

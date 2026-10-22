@@ -1,0 +1,12 @@
+{
+ "speakers": [
+  {"id": "rhen", "name_key": "CHAR_RHEN", "blip_pitch": 1.0, "portrait_id": "portrait_rhen_placeholder"},
+  {"id": "asha", "name_key": "CHAR_ASHA", "blip_pitch": 1.18, "portrait_id": "portrait_asha_placeholder"},
+  {"id": "toma", "name_key": "CHAR_TOMA", "blip_pitch": 0.78, "portrait_id": "portrait_toma_placeholder"},
+  {"id": "liss", "name_key": "CHAR_LISS", "blip_pitch": 1.1, "portrait_id": "portrait_liss_placeholder"},
+  {"id": "ysolde", "name_key": "CHAR_YSOLDE", "blip_pitch": 1.04, "portrait_id": "portrait_ysolde_placeholder"},
+  {"id": "kerrid", "name_key": "CHAR_KERRID", "blip_pitch": 0.7, "portrait_id": "portrait_kerrid_placeholder"},
+  {"id": "pell", "name_key": "CHAR_PELL", "blip_pitch": 0.88, "portrait_id": "portrait_pell_placeholder"},
+  {"id": "sefir", "name_key": "CHAR_SEFIR", "blip_pitch": 0.92, "portrait_id": "portrait_sefir_placeholder"}
+ ]
+}

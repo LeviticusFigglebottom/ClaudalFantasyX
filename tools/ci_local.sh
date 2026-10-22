@@ -19,6 +19,9 @@ if ! command -v "$GODOT" > /dev/null; then
   echo "SKIP Godot steps: '$GODOT' not found (python3 tools/dev/fetch_godot.py)"; exit 1
 fi
 step "Godot import"
+# Pass 1 warms the import cache: on a fresh checkout Godot loads project translations
+# before the CSVs are imported and logs a spurious "Failed loading resource". Gate on pass 2.
+"$GODOT" --headless --path . --import > /tmp/hymn_import_warm.log 2>&1 || true
 "$GODOT" --headless --path . --import > /tmp/hymn_import.log 2>&1 || true
 if grep -E "SCRIPT ERROR|Parse Error|Failed to load script|Failed loading resource" /tmp/hymn_import.log; then
   echo "Import reported errors (full log: /tmp/hymn_import.log)"; exit 1

@@ -1,0 +1,48 @@
+{
+ "format": 1,
+ "scene": "ch02_girl_on_the_beach",
+ "source": "game/data/dialogue/ch02/ch02_girl_on_the_beach.dlg",
+ "start": "ch02_girl_on_the_beach",
+ "nodes": {
+  "ch02_girl_on_the_beach": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 6},
+    {"op": "cue", "cue": "camera", "args": ["haluna_shallows_dawn"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "fade", "args": ["in", 2.5], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "music", "args": ["haluna_dawn"], "kwargs": {"fade": 4.0}, "src": 9},
+    {"op": "line", "id": "ch02_beach_001", "key": "DLG_CH02_BEACH_001", "speaker": "", "emotion": "", "voice": "", "src": 10},
+    {"op": "cue", "cue": "anim", "args": ["asha", "kneel_over_rhen"], "kwargs": {}, "src": 11},
+    {"op": "line", "id": "ch02_beach_002", "key": "DLG_CH02_BEACH_002", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["spear_insert"], "kwargs": {"blend": 0.4}, "src": 13},
+    {"op": "cue", "cue": "anim", "args": ["toma", "spear_level"], "kwargs": {}, "src": 14},
+    {"op": "line", "id": "ch02_beach_003", "key": "DLG_CH02_BEACH_003", "speaker": "toma", "emotion": "cold", "voice": "", "src": 15},
+    {"op": "line", "id": "ch02_beach_004", "key": "DLG_CH02_BEACH_004", "speaker": "rhen", "emotion": "afraid", "voice": "", "src": 16},
+    {"op": "line", "id": "ch02_beach_005", "key": "DLG_CH02_BEACH_005", "speaker": "asha", "emotion": "laugh", "voice": "", "src": 17},
+    {"op": "cue", "cue": "camera", "args": ["lantern_insert"], "kwargs": {"blend": 0.8}, "src": 18},
+    {"op": "cue", "cue": "anim", "args": ["asha", "look_at", "rhen_lantern"], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ch02_beach_006", "key": "DLG_CH02_BEACH_006", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 20},
+    {"op": "cue", "cue": "wait", "args": [0.6], "kwargs": {}, "src": 21},
+    {"op": "line", "id": "ch02_beach_007", "key": "DLG_CH02_BEACH_007", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 22},
+    {"op": "options", "choices": [{"id": "ch02_beach_008", "key": "DLG_CH02_BEACH_008", "to": 18, "src": 23}, {"id": "ch02_beach_010", "key": "DLG_CH02_BEACH_010", "to": 21, "src": 26}], "src": 23, "next": 23},
+    {"op": "set", "flag": "ch02_rhen_named_lantern", "value": ["lit", true], "src": 24},
+    {"op": "line", "id": "ch02_beach_009", "key": "DLG_CH02_BEACH_009", "speaker": "asha", "emotion": "tender", "voice": "", "src": 25},
+    {"op": "goto", "to": 23, "src": 23},
+    {"op": "line", "id": "ch02_beach_011", "key": "DLG_CH02_BEACH_011", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 27},
+    {"op": "goto", "to": 23, "src": 26},
+    {"op": "line", "id": "ch02_beach_012", "key": "DLG_CH02_BEACH_012", "speaker": "rhen", "emotion": "worried", "voice": "", "src": 28},
+    {"op": "cue", "cue": "anim", "args": ["toma", "lower_spear"], "kwargs": {}, "src": 29},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 30},
+    {"op": "line", "id": "ch02_beach_013", "key": "DLG_CH02_BEACH_013", "speaker": "toma", "emotion": "sad", "voice": "", "src": 31},
+    {"op": "if_not", "cond": ["flag", "ch02_rhen_named_lantern"], "to": 30, "src": 32},
+    {"op": "line", "id": "ch02_beach_014", "key": "DLG_CH02_BEACH_014", "speaker": "asha", "emotion": "tender", "voice": "", "src": 33},
+    {"op": "goto", "to": 32, "src": 32},
+    {"op": "line", "id": "ch02_beach_015", "key": "DLG_CH02_BEACH_015", "speaker": "asha", "emotion": "tender", "voice": "", "src": 35},
+    {"op": "goto", "to": 32, "src": 34},
+    {"op": "set", "flag": "ch02_met_asha", "value": ["lit", true], "src": 37},
+    {"op": "event", "name": "zone_unlock", "args": ["haluna_village"], "src": 38},
+    {"op": "cue", "cue": "fade", "args": ["out", 1.5], "kwargs": {}, "src": 39}
+   ]
+  }
+ }
+}

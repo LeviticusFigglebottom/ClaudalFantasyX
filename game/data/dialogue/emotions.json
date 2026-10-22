@@ -1,0 +1,19 @@
+{
+ "emotions": [
+  {"id": "neutral"},
+  {"id": "soft_smile"},
+  {"id": "smile"},
+  {"id": "laugh"},
+  {"id": "worried"},
+  {"id": "sad"},
+  {"id": "grief"},
+  {"id": "angry"},
+  {"id": "cold"},
+  {"id": "surprised"},
+  {"id": "afraid"},
+  {"id": "determined"},
+  {"id": "tender"},
+  {"id": "guilty"},
+  {"id": "exhausted"}
+ ]
+}

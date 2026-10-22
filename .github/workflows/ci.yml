@@ -55,6 +55,8 @@ jobs:
       - name: Import project
         run: |
           set -o pipefail
+          # Pass 1 warms the cache (translations load before CSV import on a fresh checkout).
+          ~/godot/godot --headless --path . --import > import_warm.log 2>&1 || true
           ~/godot/godot --headless --path . --import 2>&1 | tee import.log || true
           if grep -E "SCRIPT ERROR|Parse Error|Failed to load script|Failed loading resource" import.log; then
             echo "::error::Import reported script or resource errors"; exit 1

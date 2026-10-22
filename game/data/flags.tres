@@ -6,5 +6,9 @@
 script = ExtResource("1_flags")
 flags = {
 "prologue_seen": "The in-medias-res prologue at the dead city has played.",
-"test_flag": "Reserved for automated tests. Never read by game content."
+"ch02_met_asha": "Ch2 'The Girl on the Beach' has played: Rhen has met Asha and Toma at Haluna.",
+"ch02_rhen_named_lantern": "On the beach, Rhen told Asha the lantern was his father's instead of deflecting.",
+"test_flag": "Reserved for automated tests. Never read by game content.",
+"test_counter": "Reserved for automated tests (numeric). Never read by game content.",
+"test_text": "Reserved for automated tests (string). Never read by game content."
 }
