@@ -281,12 +281,11 @@ func _auto_pool(actor: BattleCombatant, reason: StringName, skill_id: StringName
 ## theirs). Replacing a KO'd member, the incoming one acts after a default-rank delay from
 ## now: time never runs backwards (docs/kb/design/battle_ctb.md).
 func swap(out_id: StringName, in_id: StringName) -> bool:
-	if not is_party_turn():
+	var idx := _swap_indices(out_id, in_id)
+	if idx.x < 0:
 		return false
-	var out_idx := _index_of(party_active, out_id)
-	var in_idx := _index_of(party_reserve, in_id)
-	if out_idx < 0 or in_idx < 0 or not party_reserve[in_idx].is_alive():
-		return false
+	var out_idx := idx.x
+	var in_idx := idx.y
 	var leaving := party_active[out_idx]
 	var entering := party_reserve[in_idx]
 	entering.next_time = _swap_in_time(leaving, entering)
@@ -299,6 +298,22 @@ func swap(out_id: StringName, in_id: StringName) -> bool:
 		current = entering
 		turn_started.emit(current)
 	return true
+
+
+## The timeline exactly as preview() would show it right after swap(out_id, in_id), using
+## the same rule, without changing any state. Empty when swap() would refuse (not a player
+## turn, unknown ids, or a fallen reserve). For the Swap menu's timeline chips (pillar 4).
+func preview_swap(out_id: StringName, in_id: StringName, count: int = CtbTimeline.PREVIEW_LENGTH) -> Array[TurnEntry]:
+	var idx := _swap_indices(out_id, in_id)
+	if idx.x < 0:
+		return []
+	var leaving := party_active[idx.x]
+	var entering := party_reserve[idx.y]
+	var roster := _field()
+	roster[idx.x] = entering  # party slots come first in _field(), in active order
+	var tl := CtbTimeline.new()
+	tl.set_roster(roster)
+	return tl.predict(count, null, Formulas.DEFAULT_RANK, null, 0, {}, {entering: _swap_in_time(leaving, entering)})
 
 
 ## Attempts to flee. A failed attempt costs the actor a default-rank turn.
@@ -524,6 +539,17 @@ func _valid_provoker(c: BattleCombatant) -> BattleCombatant:
 		if p.id == c.provoker_id:
 			return p if p.is_alive() else null
 	return null
+
+
+## (active index, reserve index) for a legal swap, or (-1, -1) when swap() must refuse.
+func _swap_indices(out_id: StringName, in_id: StringName) -> Vector2i:
+	if not is_party_turn():
+		return Vector2i(-1, -1)
+	var out_idx := _index_of(party_active, out_id)
+	var in_idx := _index_of(party_reserve, in_id)
+	if out_idx < 0 or in_idx < 0 or not party_reserve[in_idx].is_alive():
+		return Vector2i(-1, -1)
+	return Vector2i(out_idx, in_idx)
 
 
 ## The swap rule (docs/kb/design/battle_ctb.md): a living leaver hands over its slot (never
