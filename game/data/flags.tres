@@ -19,5 +19,6 @@ flags = {
 "ch03_rhen_named_lullaby": "At the shrine door Rhen told Asha his father hummed the first verse every night.",
 "ch03_first_verse_sung": "Ch3 'The First Verse' has played to the end: Asha sang the first verse toward home.",
 "ch03_drownbell_defeated": "The Drownbell boss is beaten on the Saltgrass Causeway (set by the battle result).",
-"ch03_rhen_sworn_guardian": "On Haluna dock at night Rhen asked to come and Asha said yes: he is her guardian (slice end)."
+"ch03_rhen_sworn_guardian": "On Haluna dock at night Rhen asked to come and Asha said yes: he is her guardian (slice end).",
+"ch02_saved_once": "The player has used Haluna's save shrine at least once (gates the save tutorial prompt)."
 }
