@@ -2,8 +2,8 @@
 id: M1-CMB-01
 title: CTB battle sandbox: 2 heroes vs 3 enemies with timeline preview and swap
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: ui-combat-stream-1
 depends_on: [M1-CMB-00, M1-UI-01]
 milestone: M1
 request-from: ""
