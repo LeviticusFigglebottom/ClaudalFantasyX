@@ -2,8 +2,8 @@
 id: M1-CHR-01
 title: Parametric body pipeline (Blender headless)
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: character-stream-1
 depends_on: [M1-ART-01]
 milestone: M1
 request-from: ""
