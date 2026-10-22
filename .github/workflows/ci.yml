@@ -1,0 +1,109 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "claude/**"]
+  pull_request:
+
+env:
+  # Pinned engine (ADR 0001). Change only via a new ADR.
+  GODOT_VERSION: "4.6.3"
+  GODOT_RELEASE: "4.6.3-stable"
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  tools:
+    name: Validators, Python tests, GDScript lint
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install -r tools/requirements.txt
+      - name: Data validators (schema, refs, flags, loc, provenance, banned terms)
+        run: python3 tools/validate_data.py
+      - name: Tool unit tests
+        run: python3 -m unittest discover -s tools/tests -v
+      - name: Task board consistency
+        run: python3 tools/taskboard.py --check
+      - name: gdlint
+        run: gdlint game tests
+      - name: gdformat (check only)
+        run: gdformat -l 120 --check game tests
+      - name: Screenshot regression (stub until M1-QA-01)
+        run: python3 tools/screenshots/compare.py
+
+  godot:
+    name: Godot import + tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache Godot
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: ~/godot
+          key: godot-${{ env.GODOT_RELEASE }}-linux
+      - name: Download Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot && cd ~/godot
+          curl -fsSL -o godot.zip "https://github.com/godotengine/godot-builds/releases/download/${GODOT_RELEASE}/Godot_v${GODOT_RELEASE}_linux.x86_64.zip"
+          unzip -q godot.zip && rm godot.zip
+          mv Godot_v${GODOT_RELEASE}_linux.x86_64 godot && chmod +x godot
+      - name: Import project
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . --import 2>&1 | tee import.log || true
+          if grep -E "SCRIPT ERROR|Parse Error|Failed to load script|Failed loading resource" import.log; then
+            echo "::error::Import reported script or resource errors"; exit 1
+          fi
+      - name: Unit + integration tests
+        run: |
+          set -o pipefail
+          ~/godot/godot --headless --path . res://tests/run_tests.tscn 2>&1 | tee tests.log
+      - name: Fail on script errors during tests
+        run: |
+          if grep -E "SCRIPT ERROR|Parse Error" tests.log; then
+            echo "::error::Script errors during test run"; exit 1
+          fi
+
+  export:
+    name: Export Windows + Linux
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [tools, godot]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache Godot + templates
+        id: cache-export
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_RELEASE }}-linux-templates
+      - name: Download Godot and export templates
+        if: steps.cache-export.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot && cd ~/godot
+          base="https://github.com/godotengine/godot-builds/releases/download/${GODOT_RELEASE}"
+          curl -fsSL -o godot.zip "$base/Godot_v${GODOT_RELEASE}_linux.x86_64.zip"
+          unzip -q godot.zip && rm godot.zip
+          mv Godot_v${GODOT_RELEASE}_linux.x86_64 godot && chmod +x godot
+          curl -fsSL -o templates.tpz "$base/Godot_v${GODOT_RELEASE}_export_templates.tpz"
+          dest=~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mkdir -p "$dest" && unzip -q templates.tpz -d /tmp/tpl && mv /tmp/tpl/templates/* "$dest"/ && rm templates.tpz
+      - name: Import
+        run: ~/godot/godot --headless --path . --import || true
+      - name: Export
+        run: |
+          mkdir -p build/linux build/windows
+          ~/godot/godot --headless --path . --export-release "Linux" build/linux/hymn_of_the_undertow.x86_64
+          ~/godot/godot --headless --path . --export-release "Windows Desktop" build/windows/hymn_of_the_undertow.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: builds-${{ github.sha }}
+          path: build/
+          retention-days: 14

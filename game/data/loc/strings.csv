@@ -1,0 +1,47 @@
+keys,en
+CHAR_RHEN,Rhen
+CHAR_ASHA,Asha
+CHAR_TOMA,Toma
+CHAR_YSOLDE,Ysolde
+SKILL_ATTACK,Attack
+SKILL_QUICK_HIT,Quick Hit
+SKILL_UNDERTOW_CUT,Undertow Cut
+SKILL_SHELL_BREAKER,Shell Breaker
+SKILL_MEND,Mend
+SKILL_HASTEN,Hasten
+SKILL_WARD,Ward
+SKILL_EMBER,Ember
+SKILL_FROST,Frost
+SKILL_SLOW_HEX,Slow Hex
+SKILL_PINCH,Pinch
+SKILL_BRINE_SPIT,Brine Spit
+SKILL_LURE_GLOW,Lure Glow
+SKILL_DIVE_RAKE,Dive Rake
+ENEMY_REEF_CRAB,Reef Crab
+ENEMY_LANTERN_EEL,Lantern Eel
+ENEMY_GULL_HARRIER,Gull Harrier
+LORE_REEF_CRAB,"Its shell is grown from the coral of drowned houses. Blades skid off it; only a heavy, patient blow will crack it."
+LORE_LANTERN_EEL,"It hangs a cold light in the shallows. Divers who follow the light are not found."
+LORE_GULL_HARRIER,"A sea-bird grown too large on the leavings of storms. Too quick for heavy weapons."
+ENC_SANDBOX_REEF,Reef Sandbox
+STATUS_POISON,Poison
+STATUS_SLEEP,Sleep
+STATUS_SILENCE,Silence
+STATUS_DARKNESS,Darkness
+STATUS_PETRIFY,Petrify
+STATUS_SLOW,Slow
+STATUS_HASTE,Haste
+STATUS_STOP,Stop
+STATUS_BERSERK,Berserk
+STATUS_CONFUSE,Confuse
+STATUS_DOOM,Doom
+STATUS_ZOMBIE,Zombie
+STATUS_SHELL,Shell
+STATUS_PROTECT,Protect
+STATUS_REFLECT,Reflect
+STATUS_REGEN,Regen
+STATUS_ARMOR_BREAK,Armor Break
+STATUS_MENTAL_BREAK,Mental Break
+STATUS_POWER_BREAK,Power Break
+STATUS_MAGIC_BREAK,Magic Break
+STATUS_PROVOKE,Provoke

@@ -1,0 +1,68 @@
+# Banned proper nouns and coined terms from the Final Fantasy series (SPEC §2, §14).
+# One term per line. Matching is whole-word and case-sensitive unless the line starts with
+# "i:" (case-insensitive). tools/validate_data.py greps game/, assets_src/, docs/kb/story/,
+# docs/kb/glossary.md, and every .dlg file. Add a term here whenever you notice a near-miss.
+Final Fantasy
+Square Enix
+Spira
+Yevon
+Yevonite
+Sin
+i:aeon
+i:aeons
+i:fayth
+i:pyrefly
+i:pyreflies
+i:sphere grid
+i:blitzball
+i:blitz ball
+Zanarkand
+Bevelle
+Luca
+Kilika
+Besaid
+Macalania
+Guadosalam
+Djose
+Mushroom Rock
+Mi'ihen
+Gagazet
+Bikanel
+Home of the Al Bhed
+Al Bhed
+Ronso
+Guado
+Hypello
+Tidus
+Yuna
+Auron
+Wakka
+Lulu
+Kimahri
+Rikku
+Seymour
+Jecht
+Braska
+Mika
+Cid
+Chocobo
+i:chocobo
+i:moogle
+i:sending
+i:summoner
+i:overdrive
+i:limit break
+i:gil
+i:cactuar
+i:tonberry
+Celsius
+Shinra
+Vegnagun
+Baaj
+Omega Ruins
+Zanarkand Abes
+Besaid Aurochs
+Luca Goers
+i:unsent
+Calm Lands
+Eternal Calm

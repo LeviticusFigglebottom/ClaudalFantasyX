@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FlagRegistry" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/core/flag_registry.gd" id="1_flags"]
+
+[resource]
+script = ExtResource("1_flags")
+flags = {
+"prologue_seen": "The in-medias-res prologue at the dead city has played.",
+"test_flag": "Reserved for automated tests. Never read by game content."
+}

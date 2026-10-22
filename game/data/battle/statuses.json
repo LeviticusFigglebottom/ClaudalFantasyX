@@ -1,0 +1,172 @@
+{
+  "statuses": [
+    {
+      "id": "poison",
+      "name_key": "STATUS_POISON",
+      "category": "harmful",
+      "default_duration": -1,
+      "implemented": true,
+      "description": "Loses 10% max HP at the end of each own turn."
+    },
+    {
+      "id": "sleep",
+      "name_key": "STATUS_SLEEP",
+      "category": "harmful",
+      "default_duration": 3,
+      "implemented": true,
+      "description": "Loses turns until it wears off or the target takes damage."
+    },
+    {
+      "id": "silence",
+      "name_key": "STATUS_SILENCE",
+      "category": "harmful",
+      "default_duration": 4,
+      "implemented": true,
+      "description": "Cannot use skills marked magic."
+    },
+    {
+      "id": "darkness",
+      "name_key": "STATUS_DARKNESS",
+      "category": "harmful",
+      "default_duration": 4,
+      "implemented": true,
+      "description": "Physical hit chance x0.2."
+    },
+    {
+      "id": "petrify",
+      "name_key": "STATUS_PETRIFY",
+      "category": "harmful",
+      "default_duration": -1,
+      "implemented": false,
+      "description": "Turned to stone; counts as defeated."
+    },
+    {
+      "id": "slow",
+      "name_key": "STATUS_SLOW",
+      "category": "harmful",
+      "default_duration": 4,
+      "implemented": true,
+      "description": "Action delay x2."
+    },
+    {
+      "id": "haste",
+      "name_key": "STATUS_HASTE",
+      "category": "beneficial",
+      "default_duration": 4,
+      "implemented": true,
+      "description": "Action delay x0.5."
+    },
+    {
+      "id": "stop",
+      "name_key": "STATUS_STOP",
+      "category": "harmful",
+      "default_duration": 2,
+      "implemented": true,
+      "description": "Loses turns until it wears off."
+    },
+    {
+      "id": "berserk",
+      "name_key": "STATUS_BERSERK",
+      "category": "harmful",
+      "default_duration": -1,
+      "implemented": false,
+      "description": "Attacks random foes automatically; strength up."
+    },
+    {
+      "id": "confuse",
+      "name_key": "STATUS_CONFUSE",
+      "category": "harmful",
+      "default_duration": 3,
+      "implemented": false,
+      "description": "Acts against random targets."
+    },
+    {
+      "id": "doom",
+      "name_key": "STATUS_DOOM",
+      "category": "harmful",
+      "default_duration": 5,
+      "implemented": false,
+      "description": "Defeated when the count reaches zero."
+    },
+    {
+      "id": "zombie",
+      "name_key": "STATUS_ZOMBIE",
+      "category": "harmful",
+      "default_duration": -1,
+      "implemented": false,
+      "description": "Healing harms; revival defeats."
+    },
+    {
+      "id": "shell",
+      "name_key": "STATUS_SHELL",
+      "category": "beneficial",
+      "default_duration": 4,
+      "implemented": true,
+      "description": "Magical damage x0.5."
+    },
+    {
+      "id": "protect",
+      "name_key": "STATUS_PROTECT",
+      "category": "beneficial",
+      "default_duration": 4,
+      "implemented": true,
+      "description": "Physical damage x0.5."
+    },
+    {
+      "id": "reflect",
+      "name_key": "STATUS_REFLECT",
+      "category": "beneficial",
+      "default_duration": 4,
+      "implemented": false,
+      "description": "Bounces single-target magic."
+    },
+    {
+      "id": "regen",
+      "name_key": "STATUS_REGEN",
+      "category": "beneficial",
+      "default_duration": 4,
+      "implemented": true,
+      "description": "Heals 8% max HP at the end of each own turn."
+    },
+    {
+      "id": "armor_break",
+      "name_key": "STATUS_ARMOR_BREAK",
+      "category": "harmful",
+      "default_duration": -1,
+      "implemented": true,
+      "description": "Defense becomes 0."
+    },
+    {
+      "id": "mental_break",
+      "name_key": "STATUS_MENTAL_BREAK",
+      "category": "harmful",
+      "default_duration": -1,
+      "implemented": true,
+      "description": "Magic defense becomes 0."
+    },
+    {
+      "id": "power_break",
+      "name_key": "STATUS_POWER_BREAK",
+      "category": "harmful",
+      "default_duration": -1,
+      "implemented": true,
+      "description": "Strength halved."
+    },
+    {
+      "id": "magic_break",
+      "name_key": "STATUS_MAGIC_BREAK",
+      "category": "harmful",
+      "default_duration": -1,
+      "implemented": true,
+      "description": "Magic halved."
+    },
+    {
+      "id": "provoke",
+      "name_key": "STATUS_PROVOKE",
+      "category": "harmful",
+      "default_duration": 3,
+      "implemented": false,
+      "description": "Must target the provoker."
+    }
+  ]
+}

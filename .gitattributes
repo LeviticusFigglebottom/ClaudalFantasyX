@@ -1,0 +1,32 @@
+# Normalize text
+* text=auto eol=lf
+*.gd text eol=lf
+*.gdshader text eol=lf
+*.tscn text eol=lf
+*.tres text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.dlg text eol=lf
+
+# Binary assets: Git LFS is DEFERRED (ADR 0005). When enabled, uncomment these lines and
+# run `git lfs migrate import` for existing binaries. Until then binaries are plain blobs
+# and must stay small (< 5 MB each, enforced by tools/validate_data.py).
+# *.blend filter=lfs diff=lfs merge=lfs -text
+# *.glb filter=lfs diff=lfs merge=lfs -text
+# *.png filter=lfs diff=lfs merge=lfs -text
+# *.exr filter=lfs diff=lfs merge=lfs -text
+# *.wav filter=lfs diff=lfs merge=lfs -text
+# *.ogg filter=lfs diff=lfs merge=lfs -text
+# *.ttf filter=lfs diff=lfs merge=lfs -text
+# *.otf filter=lfs diff=lfs merge=lfs -text
+# Screenshot baselines always stay plain git blobs so CI can diff them without LFS.
+tests/screenshots/baselines/** binary
+*.blend binary
+*.glb binary
+*.png binary
+*.exr binary
+*.wav binary
+*.ogg binary
+*.ttf binary
+*.otf binary

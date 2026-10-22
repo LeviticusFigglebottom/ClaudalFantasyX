@@ -1,0 +1,17 @@
+extends Node
+## Global decoupled signal hub. Systems emit here instead of holding references to each other.
+
+@warning_ignore("unused_signal")
+signal battle_started(encounter_id: StringName)
+@warning_ignore("unused_signal")
+signal battle_ended(encounter_id: StringName, result: StringName)
+@warning_ignore("unused_signal")
+signal flag_changed(flag: StringName, value: Variant)
+@warning_ignore("unused_signal")
+signal dialogue_event(event_name: StringName, args: Array)
+@warning_ignore("unused_signal")
+signal scene_changed(scene_path: String)
+@warning_ignore("unused_signal")
+signal game_saved(slot: int)
+@warning_ignore("unused_signal")
+signal game_loaded(slot: int)

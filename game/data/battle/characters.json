@@ -1,0 +1,28 @@
+{
+  "characters": [
+    {
+      "id": "rhen", "name_key": "CHAR_RHEN",
+      "stats": {"level": 5, "hp": 420, "mp": 24, "strength": 16, "magic": 6, "defense": 10,
+                "magic_defense": 6, "agility": 22, "accuracy": 14, "evasion": 14, "luck": 18},
+      "skills": ["attack", "quick_hit", "undertow_cut"]
+    },
+    {
+      "id": "asha", "name_key": "CHAR_ASHA",
+      "stats": {"level": 5, "hp": 300, "mp": 60, "strength": 6, "magic": 18, "defense": 6,
+                "magic_defense": 14, "agility": 14, "accuracy": 8, "evasion": 10, "luck": 12},
+      "skills": ["attack", "mend", "hasten", "ward"]
+    },
+    {
+      "id": "toma", "name_key": "CHAR_TOMA",
+      "stats": {"level": 5, "hp": 560, "mp": 12, "strength": 18, "magic": 4, "defense": 18,
+                "magic_defense": 8, "agility": 10, "accuracy": 10, "evasion": 6, "luck": 10},
+      "skills": ["attack", "shell_breaker"]
+    },
+    {
+      "id": "ysolde", "name_key": "CHAR_YSOLDE",
+      "stats": {"level": 5, "hp": 280, "mp": 70, "strength": 5, "magic": 20, "defense": 5,
+                "magic_defense": 16, "agility": 13, "accuracy": 8, "evasion": 9, "luck": 10},
+      "skills": ["attack", "ember", "frost", "slow_hex"]
+    }
+  ]
+}
