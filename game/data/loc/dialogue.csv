@@ -1,9 +1,11 @@
 keys,en
 DLG_CH02_BEACH_001,The sea gave me back at dawn. Somebody was humming.
+DLG_CH02_BEACH_016,A star-path. The one they teach children for finding the way home.
 DLG_CH02_BEACH_002,"There you are. No, don't sit up yet. You've swallowed half the bay."
-DLG_CH02_BEACH_003,"Lie still, please. Hands open where I can see them. I would rather not."
+DLG_CH02_BEACH_003,"Lie still, please, and keep your hands open. I would like this to stay a small conversation."
 DLG_CH02_BEACH_004,That's a very big spear for a very small conversation.
 DLG_CH02_BEACH_005,Toma. He's half drowned. I think he's allowed one joke.
+DLG_CH02_BEACH_017,One.
 DLG_CH02_BEACH_006,That lantern.
 DLG_CH02_BEACH_007,Where did you get it?
 DLG_CH02_BEACH_008,It was my father's.
@@ -12,8 +14,86 @@ DLG_CH02_BEACH_010,Good trade. Don't ask what I gave for it.
 DLG_CH02_BEACH_011,Then I won't ask. Not today.
 DLG_CH02_BEACH_012,"Rhen Sallow. Oruvel, the raft-town, east of here, all those ugly hulls tied together. Is it still there?"
 DLG_CH02_BEACH_013,We watched the storm go east last night. I am sorry.
+DLG_CH02_BEACH_018,The water's thick this morning.
+DLG_CH02_BEACH_019,Those are ours. Aren't they.
+DLG_CH02_BEACH_020,Some of them came in with you. I heard them on the water before it was light.
+DLG_CH02_BEACH_021,She woke the whole house. I have learned not to argue.
+DLG_CH02_BEACH_022,Stay with them a minute.
+DLG_CH02_BEACH_023,Mother Kell can't swim. Never learned. Said the sea owed her a favour.
+DLG_CH02_BEACH_024,You don't have to be anything yet. Not on this beach.
+DLG_CH02_BEACH_025,"Be level, Oruvel."
+DLG_CH02_BEACH_026,Don't look at them. Get up.
+DLG_CH02_BEACH_027,"Nope. Up. I'm getting up. The beach is moving, but I'm getting up."
+DLG_CH02_BEACH_028,Slowly.
+DLG_CH02_BEACH_029,"Lean on him. He likes it, he just won't say so."
+DLG_CH02_BEACH_030,I'm Asha. That's Toma. He's nicer than his spear.
+DLG_CH02_BEACH_031,"Toma Okeru, of Haluna. You are speaking to the Lady—"
+DLG_CH02_BEACH_032,To Asha. Who is very glad you aren't dead.
+DLG_CH02_BEACH_033,Lady what?
+DLG_CH02_BEACH_034,Later. You're shaking.
 DLG_CH02_BEACH_014,"Come up to the village. Bring your father's light. You'll eat first, and then we'll tell you what we know."
 DLG_CH02_BEACH_015,"Come up to the village. You'll eat first, and then we'll tell you what we know."
+DLG_CH02_BEACH_035,She smiled first. Every time. It took me a long while to understand why.
+DLG_CH03_VERSE_001,"Don't look so worried, both of you. It's only my first one."
+DLG_CH03_VERSE_002,Shout if it bites.
+DLG_CH03_VERSE_003,He's been in there a hundred and forty years. I think he'll be polite.
+DLG_CH03_VERSE_004,"We will be here, Lady Cantor."
+DLG_CH03_VERSE_005,Toma.
+DLG_CH03_VERSE_006,...Asha.
+DLG_CH03_VERSE_007,So. How long does a verse take?
+DLG_CH03_VERSE_008,"As long as it takes. The last time, the village waited on the beach until dark."
+DLG_CH03_VERSE_009,You weren't here for that one?
+DLG_CH03_VERSE_010,I was on the wall at Corrow. I came home after.
+DLG_CH03_VERSE_011,Do you ever put that spear down?
+DLG_CH03_VERSE_012,To eat.
+DLG_CH03_VERSE_013,Do you know what a Cantor is?
+DLG_CH03_VERSE_014,...Someone who sings?
+DLG_CH03_VERSE_015,Yes. Someone who sings.
+DLG_CH03_VERSE_016,And then she comes home?
+DLG_CH03_VERSE_017,Then the storm sleeps. For years. Children grow up who have never seen it.
+DLG_CH03_VERSE_018,That's not an answer.
+DLG_CH03_VERSE_019,No. It is not.
+DLG_CH03_VERSE_020,Seems like a lot of fuss for one song.
+DLG_CH03_VERSE_021,"You do not mock the rites, Rhen. You may ask about them. That is different."
+DLG_CH03_VERSE_022,"I'm asking. Badly, but I'm asking."
+DLG_CH03_VERSE_023,Then ask her. Not me. She has earned the telling of it.
+DLG_CH03_VERSE_024,I have guarded her since she was nine. She used to hide in the net racks so I would have to find her.
+DLG_CH03_VERSE_025,And now?
+DLG_CH03_VERSE_026,Now she does not hide. I find I miss it.
+DLG_CH03_VERSE_027,"This morning, in the water. You stayed with them."
+DLG_CH03_VERSE_028,Somebody should have.
+DLG_CH03_VERSE_029,Yes. I think so too.
+DLG_CH03_VERSE_030,Oh. It's evening.
+DLG_CH03_VERSE_031,"You're glowing. Is that normal? Toma, is that normal?"
+DLG_CH03_VERSE_032,It is normal.
+DLG_CH03_VERSE_033,It tickles.
+DLG_CH03_VERSE_034,Was it him? The boy from the shells. Teyo.
+DLG_CH03_VERSE_035,He's still frightened. He was kind to me anyway.
+DLG_CH03_VERSE_036,He was kind to me. I didn't expect that.
+DLG_CH03_VERSE_037,Found this in the side pool. Seemed like it belonged to someone.
+DLG_CH03_VERSE_038,He carries one just like it.
+DLG_CH03_VERSE_039,Keep it. I think he'd like it to stay with someone who goes home.
+DLG_CH03_VERSE_040,The verse. It is sung toward home first.
+DLG_CH03_VERSE_041,"I know, Toma. I watched it once."
+DLG_CH03_VERSE_042,"Vey ennu, vey ennu,"
+DLG_CH03_VERSE_043,"hal oan, ish karra."
+DLG_CH03_VERSE_044,"Ennu re, ennu re..."
+DLG_CH03_VERSE_045,...mir.
+DLG_CH03_VERSE_046,...where did you learn that?
+DLG_CH03_VERSE_047,Just now. It's the first verse.
+DLG_CH03_VERSE_048,Rhen?
+DLG_CH03_VERSE_049,My father hummed that. Every night.
+DLG_CH03_VERSE_050,Every night until he didn't.
+DLG_CH03_VERSE_051,Your father. The one with the lantern.
+DLG_CH03_VERSE_052,Yeah.
+DLG_CH03_VERSE_053,My mother sang it from this door. I was seven. I'd forgotten it until he gave it back.
+DLG_CH03_VERSE_054,Small world.
+DLG_CH03_VERSE_055,Nowhere. Must have been the wind.
+DLG_CH03_VERSE_056,All right. Not today.
+DLG_CH03_VERSE_057,"That's twice you haven't answered me, Rhen Sallow. I'm patient."
+DLG_CH03_VERSE_058,The tide has turned.
+DLG_CH03_VERSE_059,Something heard that.
+DLG_CH03_VERSE_060,"On my shield. Everyone, on my shield, now."
 DLG_TEST_DLG_001,Test narration.
 DLG_TEST_DLG_002,Test line with an emotion.
 DLG_TEST_DLG_003,Flag was on.

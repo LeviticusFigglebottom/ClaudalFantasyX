@@ -10,5 +10,15 @@ flags = {
 "ch02_rhen_named_lantern": "On the beach, Rhen told Asha the lantern was his father's instead of deflecting.",
 "test_flag": "Reserved for automated tests. Never read by game content.",
 "test_counter": "Reserved for automated tests (numeric). Never read by game content.",
-"test_text": "Reserved for automated tests (string). Never read by game content."
+"test_text": "Reserved for automated tests (string). Never read by game content.",
+"ch02_rhen_stayed_with_dead": "On the beach, Rhen chose to sit with Oruvel's held motes instead of turning away (Ch3 steps talk, later Pell payoff).",
+"ch02_heard_pila": "Set by the optional Ch2 side scene 'Pila's Granddaughter' at the wake-shell wall; lets Asha answer Ilun in the Ch20 release.",
+"ch03_found_net_float": "The player drained the Shell Shrine side pool and took the net-float charm (set by the trial pickup, read in 'The First Verse').",
+"ch03_rhen_asked_after": "On the shrine steps Rhen asked Toma whether a Cantor comes home, and Toma did not answer (Ch4 wake payoff).",
+"ch03_ilun_bound": "Asha has bound Ilun at the Shell Shrine; the Vowbound may be summoned from the Drownbell fight on.",
+"ch03_rhen_named_lullaby": "At the shrine door Rhen told Asha his father hummed the first verse every night.",
+"ch03_first_verse_sung": "Ch3 'The First Verse' has played to the end: Asha sang the first verse toward home.",
+"ch03_drownbell_defeated": "The Drownbell boss is beaten on the Saltgrass Causeway (set by the battle result).",
+"ch03_rhen_sworn_guardian": "On Haluna dock at night Rhen asked to come and Asha said yes: he is her guardian (slice end).",
+"ch02_saved_once": "The player has used Haluna's save shrine at least once (gates the save tutorial prompt)."
 }
