@@ -147,3 +147,174 @@ HUD_RESULT_RETRY,Fight again
 HUD_RESULT_RETURN,Return
 HUD_TARGET_UNREAD,HP unknown until Read
 HUD_RESULT_FELL,Fell before the end: no XP
+ITEM_SALT_TONIC,Salt Tonic
+ITEM_SALT_TONIC_DESC,"Brine, honey and bitter bark. Restores 200 HP to one ally."
+ITEM_REEF_DRAUGHT,Reef Draught
+ITEM_REEF_DRAUGHT_DESC,A stronger tonic steeped with sea grape. Restores 600 HP to one ally.
+ITEM_QUIET_TEA,Quiet Tea
+ITEM_QUIET_TEA_DESC,Hearers drink it before long rites. Restores 30 MP to one ally.
+ITEM_BITTERLEAF,Bitterleaf
+ITEM_BITTERLEAF_DESC,"Chewed raw, it draws out venom. Cures Poison."
+ITEM_BRINE_EYEWASH,Brine Eyewash
+ITEM_BRINE_EYEWASH_DESC,"Stings, then clears. Cures Darkness."
+ITEM_THROAT_HONEY,Throat Honey
+ITEM_THROAT_HONEY_DESC,Cantors keep a jar for the long road. Cures Silence.
+ITEM_SMELLING_SALTS,Smelling Salts
+ITEM_SMELLING_SALTS_DESC,Sharp enough to wake a sleeping net-mender. Cures Sleep.
+ITEM_TIDEWASH_SALVE,Tidewash Salve
+ITEM_TIDEWASH_SALVE_DESC,"A healer's last resort. Cures Poison, Darkness, Silence, Sleep, Slow and every Break."
+ITEM_RELIGHTING_WICK,Relighting Wick
+ITEM_RELIGHTING_WICK_DESC,A taper lit from a living lamp. Revives one fallen ally with a quarter of their HP.
+ITEM_DRAG_NET,Drag Net
+ITEM_DRAG_NET_DESC,Thrown weighted and wide. Pushes one foe's next turn back by two ranks.
+ITEM_QUICKWATER,Quickwater
+ITEM_QUICKWATER_DESC,Cold spring water carried up from a hidden pool. Grants Haste to one ally.
+ITEM_EMBER_POT,Ember Pot
+ITEM_EMBER_POT_DESC,A sealed clay pot of coals from the Pemakar kilns. Deals 150 Fire damage to one foe.
+ITEM_CRAB_CARAPACE,Crab Carapace
+ITEM_CRAB_CARAPACE_DESC,"A plate of reef-crab shell, hard as tile. Used in Customize."
+ITEM_EEL_LANTERN,Eel Lantern
+ITEM_EEL_LANTERN_DESC,The glow-sac of a lantern-lure eel. It still flickers. Used in Customize.
+ITEM_GULL_QUILL,Harrier Quill
+ITEM_GULL_QUILL_DESC,A flight feather from a gull harrier. Used in Customize.
+ITEM_EMBER_CORAL,Ember Coral
+ITEM_EMBER_CORAL_DESC,Red coral that stays warm out of the water. Used in Customize.
+ITEM_TIDE_PEARL,Tide Pearl
+ITEM_TIDE_PEARL_DESC,A grey pearl that is always slightly damp. Used in Customize.
+ITEM_STORM_SCALE,Storm Scale
+ITEM_STORM_SCALE_DESC,A scale that crackles when rubbed. Used in Customize.
+ITEM_RIME_SHARD,Rime Shard
+ITEM_RIME_SHARD_DESC,Highland ice that does not melt in the sun. Used in Customize.
+ITEM_LIT_AGE_BRASS,Lit Age Brass
+ITEM_LIT_AGE_BRASS_DESC,"Pre-Edict brass, cut out of a drowned tower. Dealers pay well and ask nothing."
+ITEM_SALT_GLASS_SHARD,Salt-Glass Shard
+ITEM_SALT_GLASS_SHARD_DESC,A shard of Lit Age salt-glass. Something inside it is very still. Used in Customize.
+ITEM_FACET_POWER_DESC,"A dull red crystal. Activates HP, Strength and Defense nodes on the Lattice."
+ITEM_FACET_MIND_DESC,"A pale blue crystal. Activates MP, Magic and Magic Defense nodes on the Lattice."
+ITEM_FACET_SPEED_DESC,"A clear green crystal. Activates Agility, Accuracy and Evasion nodes on the Lattice."
+ITEM_FACET_FORTUNE_DESC,A gold-flecked crystal. Activates Luck nodes on the Lattice.
+ITEM_FACET_ABILITY_DESC,A crystal with a light inside it. Activates ability nodes on the Lattice.
+ITEM_FACET_KEY_1_DESC,Opens a level 1 gate on the Lattice.
+ITEM_FACET_KEY_2_DESC,Opens a level 2 gate on the Lattice.
+ITEM_FACET_KEY_3_DESC,Opens a level 3 gate on the Lattice.
+ITEM_FACET_KEY_4_DESC,Opens a level 4 gate on the Lattice.
+ITEM_BRASS_LANTERN,Brass Lantern
+ITEM_BRASS_LANTERN_DESC,Rhen's father's diving lantern. The glass is cracked and it still lights.
+ITEM_NET_FLOAT_CHARM,Glass Net-Float
+ITEM_NET_FLOAT_CHARM_DESC,A child's glass net-float from the Shell Shrine's side pool. Someone kept it for a long time.
+ITEM_CATEGORY_CONSUMABLE,Items
+ITEM_CATEGORY_MATERIAL,Materials
+ITEM_CATEGORY_FACET,Facets
+ITEM_CATEGORY_KEY,Key Items
+CURRENCY_NAME,lume
+CURRENCY_AMOUNT,%d lume
+ABILITY_EMBER_EDGE,Ember Edge
+ABILITY_EMBER_EDGE_DESC,Attacks deal Fire damage.
+ABILITY_TIDE_EDGE,Tide Edge
+ABILITY_TIDE_EDGE_DESC,Attacks deal Water damage.
+ABILITY_SPARK_EDGE,Spark Edge
+ABILITY_SPARK_EDGE_DESC,Attacks deal Lightning damage.
+ABILITY_RIME_EDGE,Rime Edge
+ABILITY_RIME_EDGE_DESC,Attacks deal Ice damage.
+ABILITY_BITTER_EDGE,Bitter Edge
+ABILITY_BITTER_EDGE_DESC,Attacks sometimes inflict Poison.
+ABILITY_DROWSE_EDGE,Drowse Edge
+ABILITY_DROWSE_EDGE_DESC,Attacks sometimes inflict Sleep.
+ABILITY_GLOAM_EDGE,Gloam Edge
+ABILITY_GLOAM_EDGE_DESC,Attacks sometimes inflict Darkness.
+ABILITY_DRAG_EDGE,Drag Edge
+ABILITY_DRAG_EDGE_DESC,Attacks sometimes inflict Slow.
+ABILITY_STEADY_ARM,Steady Arm
+ABILITY_STEADY_ARM_DESC,Strength +3.
+ABILITY_CLEAR_MIND,Clear Mind
+ABILITY_CLEAR_MIND_DESC,Magic +3.
+ABILITY_KEEN_SIGHT,Keen Sight
+ABILITY_KEEN_SIGHT_DESC,Accuracy +5.
+ABILITY_DEEP_LUNGS,Deep Lungs
+ABILITY_DEEP_LUNGS_DESC,max HP +60.
+ABILITY_HARD_CARAPACE,Hard Carapace
+ABILITY_HARD_CARAPACE_DESC,Defense +3.
+ABILITY_STILL_HEART,Still Heart
+ABILITY_STILL_HEART_DESC,Magic Defense +3.
+ABILITY_LIGHT_FEET,Light Feet
+ABILITY_LIGHT_FEET_DESC,Agility +2.
+ABILITY_EMBER_GUARD,Ember Guard
+ABILITY_EMBER_GUARD_DESC,Halves Fire damage taken.
+ABILITY_TIDE_GUARD,Tide Guard
+ABILITY_TIDE_GUARD_DESC,Halves Water damage taken.
+ABILITY_SPARK_GUARD,Spark Guard
+ABILITY_SPARK_GUARD_DESC,Halves Lightning damage taken.
+ABILITY_RIME_GUARD,Rime Guard
+ABILITY_RIME_GUARD_DESC,Halves Ice damage taken.
+ABILITY_BITTER_WARD,Bitterward
+ABILITY_BITTER_WARD_DESC,Prevents Poison.
+ABILITY_WAKE_WARD,Wakeward
+ABILITY_WAKE_WARD_DESC,Prevents Sleep.
+ABILITY_VOICE_WARD,Voiceward
+ABILITY_VOICE_WARD_DESC,Prevents Silence.
+ABILITY_SIGHT_WARD,Sightward
+ABILITY_SIGHT_WARD_DESC,Prevents Darkness.
+ABILITY_STANDING_GUARD,Standing Guard
+ABILITY_STANDING_GUARD_DESC,Protect for the whole battle.
+ABILITY_STANDING_MEND,Standing Mend
+ABILITY_STANDING_MEND_DESC,Regen for the whole battle.
+ABILITY_LOW_TIDE_HASTE,Low Tide Haste
+ABILITY_LOW_TIDE_HASTE_DESC,Haste while HP is below half.
+ABILITY_LOW_TIDE_MEND,Low Tide Mend
+ABILITY_LOW_TIDE_MEND_DESC,Regen while HP is below half.
+ABILITY_FULL_NET,Full Net
+ABILITY_FULL_NET_DESC,Doubles the lume won in battle.
+ABILITY_LIGHT_STEP,Light Step
+ABILITY_LIGHT_STEP_DESC,Halves random encounters.
+ABILITY_UNFETTERED,Unfettered
+ABILITY_UNFETTERED_DESC,"Damage can exceed 9,999."
+GEAR_TYPE_REEF_HOOKS,Reef-Hooks
+GEAR_TYPE_TETHER_HARNESS,Tether Harness
+GEAR_TYPE_LANTERN_STAFF,Lantern-Staff
+GEAR_TYPE_BELL_BANGLE,Bell-Shell Bangle
+GEAR_TYPE_BOARDING_SPEAR,Boarding Spear
+GEAR_TYPE_TIDE_SHIELD,Tide-Shield
+GEAR_TYPE_LACQUER_BOOK,Folding Book
+GEAR_TYPE_INK_GUARDS,Ink-Guards
+EQUIP_RHEN_SALVAGE_HOOKS,Salvage Hooks
+EQUIP_RHEN_SALVAGE_HOOKS_DESC,Rhen's working hooks. Better for prying brass than for fighting.
+EQUIP_RHEN_CORAL_HOOKS,Coral-Bitten Hooks
+EQUIP_RHEN_CORAL_HOOKS_DESC,Hooks quenched in a bed of ember coral.
+EQUIP_RHEN_TIDEWALKER_HOOKS,Tidewalker Hooks
+EQUIP_RHEN_TIDEWALKER_HOOKS_DESC,Balanced for a diver who fights on wet stone.
+EQUIP_RHEN_PATCHED_TETHER,Patched Tether
+EQUIP_RHEN_PATCHED_TETHER_DESC,"The harness he washed up in, mended by Neme."
+EQUIP_RHEN_REEFLINE_HARNESS,Reefline Harness
+EQUIP_RHEN_REEFLINE_HARNESS_DESC,"Haluna net-cord, oiled against salt."
+EQUIP_ASHA_VIGIL_STAFF,Vigil Lantern-Staff
+EQUIP_ASHA_VIGIL_STAFF_DESC,The staff she carries in the Ebbing. Its bell-shells are worn smooth.
+EQUIP_ASHA_BELLSHELL_STAFF,Bell-Shell Staff
+EQUIP_ASHA_BELLSHELL_STAFF_DESC,Hung with new shells from the Haluna reef.
+EQUIP_ASHA_DAWNWICK_STAFF,Dawnwick Staff
+EQUIP_ASHA_DAWNWICK_STAFF_DESC,Its lantern is never allowed to go out.
+EQUIP_ASHA_CORD_BANGLE,Plain Cord Bangle
+EQUIP_ASHA_CORD_BANGLE_DESC,Three shells on a cord. A child's first bangle.
+EQUIP_ASHA_PEARL_BANGLE,Tide-Pearl Bangle
+EQUIP_ASHA_PEARL_BANGLE_DESC,A gift from the village for the road.
+EQUIP_TOMA_BOARDING_SPEAR,Boarding Spear
+EQUIP_TOMA_BOARDING_SPEAR_DESC,A hooked spear made for pulling raiders off a hull.
+EQUIP_TOMA_NET_RACK_SPEAR,Net-Rack Spear
+EQUIP_TOMA_NET_RACK_SPEAR_DESC,Cut from a net-rack pole and shod in iron.
+EQUIP_TOMA_SALTGRASS_PIKE,Saltgrass Pike
+EQUIP_TOMA_SALTGRASS_PIKE_DESC,Long enough to hold the tide line.
+EQUIP_TOMA_OLD_TURTLE_SHIELD,Old Turtle Shield
+EQUIP_TOMA_OLD_TURTLE_SHIELD_DESC,Layered turtle-shell. It has taken worse than you.
+EQUIP_TOMA_CHISELLED_SHIELD,Chiselled Shield
+EQUIP_TOMA_CHISELLED_SHIELD_DESC,Red lacquer with a bright scar where an emblem was.
+EQUIP_TOMA_REACH_TIDE_SHIELD,Reach Tide-Shield
+EQUIP_TOMA_REACH_TIDE_SHIELD_DESC,"Four plates, four empty settings, waiting."
+EQUIP_YSOLDE_PLEATED_PRIMER,Pleated Primer
+EQUIP_YSOLDE_PLEATED_PRIMER_DESC,"A scholar's first folding book, gold script on black."
+EQUIP_YSOLDE_GOLD_SCRIPT_BOOK,Gold-Script Book
+EQUIP_YSOLDE_GOLD_SCRIPT_BOOK_DESC,Every panel is a different hand.
+EQUIP_YSOLDE_PLAIN_GUARDS,Plain Ink-Guards
+EQUIP_YSOLDE_PLAIN_GUARDS_DESC,Unlacquered sheaths for marking wet lacquer.
+EQUIP_YSOLDE_LACQUERED_GUARDS,Lacquered Ink-Guards
+EQUIP_YSOLDE_LACQUERED_GUARDS_DESC,"Curved and black, cold to the touch."
+SHOP_HALUNA_MARKET,Haluna Market
+SHOP_HALUNA_FORGE,The Net-Rack Forge
