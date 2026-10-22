@@ -36,7 +36,9 @@ class ValidatorTests(unittest.TestCase):
         self.assertTrue(any("undeclared story flag 'nope_flag'" in e for e in self.errors()))
 
     def test_dialogue_flag_is_caught(self) -> None:
-        (self.tmp / "game" / "data" / "dialogue" / "x.dlg").write_text("<<if $ghost_flag>>\n")
+        dlg = self.tmp / "game" / "data" / "dialogue" / "x.dlg"
+        dlg.parent.mkdir(parents=True, exist_ok=True)  # empty dirs are not tracked by git
+        dlg.write_text("<<if $ghost_flag>>\n")
         self.assertTrue(any("ghost_flag" in e for e in self.errors()))
 
     def test_missing_provenance_is_caught(self) -> None:

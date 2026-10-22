@@ -1,0 +1,24 @@
+{
+  "rules": {
+    "move_cost": 1,
+    "move_cost_activated": 0,
+    "facets_per_activation": 1,
+    "keys_per_gate": 1,
+    "max_gate_level": 4
+  },
+  "facets": [
+    {"id": "facet_power", "type": "power", "name_key": "FACET_POWER", "activates": "stat",
+     "stats": ["hp", "strength", "defense"]},
+    {"id": "facet_mind", "type": "mind", "name_key": "FACET_MIND", "activates": "stat",
+     "stats": ["mp", "magic", "magic_defense"]},
+    {"id": "facet_speed", "type": "speed", "name_key": "FACET_SPEED", "activates": "stat",
+     "stats": ["agility", "accuracy", "evasion"]},
+    {"id": "facet_fortune", "type": "fortune", "name_key": "FACET_FORTUNE", "activates": "stat",
+     "stats": ["luck"]},
+    {"id": "facet_ability", "type": "ability", "name_key": "FACET_ABILITY", "activates": "ability"},
+    {"id": "facet_key_1", "type": "key", "name_key": "FACET_KEY_1", "activates": "gate", "level": 1},
+    {"id": "facet_key_2", "type": "key", "name_key": "FACET_KEY_2", "activates": "gate", "level": 2},
+    {"id": "facet_key_3", "type": "key", "name_key": "FACET_KEY_3", "activates": "gate", "level": 3},
+    {"id": "facet_key_4", "type": "key", "name_key": "FACET_KEY_4", "activates": "gate", "level": 4}
+  ]
+}
