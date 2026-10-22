@@ -91,8 +91,8 @@ Master            AudioEffectLimiter (ceiling −1.0 dB, threshold −1.5 dB): s
   - An intro must be a copy of the loop's last bars, so the first-play splice carries
     the same tails (battle: residual −102 dB).
 - Size budget: all M1 audio must stay under **5 MiB**, and the three M1-AUD-02 cues
-  under 4 MiB together. `render_all.py` enforces both. M1 currently uses 3.47 MiB (the
-  cues are 2.65 MiB). The full-game target is about 60–80 cues at roughly 1 MB per
+  under 4 MiB together. `render_all.py` enforces both. M1 currently uses 3.48 MiB (the
+  cues are 2.66 MiB). The full-game target is about 60–80 cues at roughly 1 MB per
   minute.
 
 ## 6. Ambient music vs ambience beds

@@ -30,7 +30,7 @@ Delivered 2026-10-22 by audio-stream-2.
   - `hush_theme_v2.ogg`: 69.4 s, −16.1 LUFS, −1.6 dBTP.
   - `battle_standard.ogg`: 3 s intro + 72 s loop, −16.1 LUFS, −1.9 dBTP.
   - `temple_trial.ogg`: 80 s loop, −16.0 LUFS, −3.2 dBTP.
-  - Together they are 2.65 MiB. Renders are deterministic.
+  - Together they are 2.66 MiB. Renders are deterministic.
 - Loops carry LOOPSTART/LOOPLENGTH Vorbis comments and `.loop.json` sidecars, which are
   synced into the `.import` files. `tests/unit/test_audio_loops.gd` checks them.
 - Self-assessment: Hush 40–50 %, battle 25–35 %, temple 45–55 % of commercial. Weakest
