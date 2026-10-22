@@ -15,6 +15,7 @@ step() { printf '\n== %s\n' "$*"; }
 
 step "Data validators";        python3 tools/validate_data.py
 step "Tool unit tests";        python3 -m unittest discover -s tools/tests
+step "Audio synth tests";       python3 -m unittest discover -s tools/audio/tests -p "test_*.py"
 step "Task board";             python3 tools/taskboard.py --check > /dev/null
 step "gdlint";                 gdlint game tests
 step "gdformat --check";       gdformat -l 120 --check game tests
