@@ -67,6 +67,7 @@ The art README's packing rule for stone is "R moss, G salt, B wet, A erosion". V
 - **Per-instance phase** = `hymn_hash12(instance origin.xz)` + the `inst_wind_phase` instance uniform. This works for MultiMesh too, because `world_vertex_coords` gives instance-transformed positions.
 - **Inputs.** `hymn_wind` (xyz = downwind direction × m/s, w = gust 0..1) and `hymn_wind_time` (s). Nothing reads `TIME`. A gust field (2-octave fBm) travels downwind at wind speed, with an 18 m wavelength, so gusts roll across the grass. The reference wind is 6 m/s, the Haluna trade wind, at which `wind_response` is reached.
 - **Captures are deterministic.** `VegetationTestScene` pins `hymn_wind = (-5, 0, -2.4, 0.6)` (onshore) and `hymn_wind_time = 7.4` on enter, and restores the project defaults on exit. `animate_wind = true` lets it run.
+- **Screenshot thresholds.** The three `veg_*` shots use `threshold_rmse` 0.018, not 0.008. A full `capture.sh` run is bit-exact (RMSE 0.00000). But the TAA jitter phase depends on the global frame count, so capturing these shots alone or in a different order shifts every alpha-scissored edge, giving RMSE 0.010–0.015. The baselines come from the full-manifest order. Re-approve them if a shot is inserted *before* them in `shots.json`.
 - **Verified.** Rendering `dbg_palm_side` at `wind_time` 7.4 and 9.9 changed 14% of pixels (the crowns sway and stay attached to the trunk).
 
 ## Shaders and tiers
