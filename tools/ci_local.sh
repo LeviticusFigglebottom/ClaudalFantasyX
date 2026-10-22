@@ -13,7 +13,7 @@ step "Tool unit tests";        python3 -m unittest discover -s tools/tests
 step "Task board";             python3 tools/taskboard.py --check > /dev/null
 step "gdlint";                 gdlint game tests
 step "gdformat --check";       gdformat -l 120 --check game tests
-step "Screenshot regression";  python3 tools/screenshots/compare.py
+step "Screenshot manifest";    python3 tools/screenshots/compare.py --manifest-only
 
 if ! command -v "$GODOT" > /dev/null; then
   echo "SKIP Godot steps: '$GODOT' not found (python3 tools/dev/fetch_godot.py)"; exit 1
@@ -30,4 +30,16 @@ grep -q "Tests: .* 0 failed" /tmp/hymn_tests.log
 step "Boot scene smoke test (60 frames)"
 "$GODOT" --headless --path . --quit-after 60 > /tmp/hymn_boot.log 2>&1
 if grep -E "SCRIPT ERROR|ERROR" /tmp/hymn_boot.log; then echo "Boot scene errors"; exit 1; fi
+step "Screenshot capture + regression (software Forward+, ADR 0009)"
+set +e
+tools/screenshots/capture.sh
+cap=$?
+set -e
+if [ "$cap" -eq 3 ]; then
+  echo "SKIP screenshot regression: no render deps (python3 tools/dev/fetch_render_deps.py)"
+elif [ "$cap" -ne 0 ]; then
+  echo "Screenshot capture failed (log: ${TMPDIR:-/tmp}/hymn_capture.log)"; exit 1
+else
+  python3 tools/screenshots/compare.py
+fi
 printf '\nAll local CI gates passed.\n'
