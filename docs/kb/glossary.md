@@ -50,6 +50,8 @@ Rhen Sallow · Asha Velamir · Toma Okeru · Liss Varrow · Old Kerrid · Ysolde
 - **wake-shell wall** (n.): Haluna's wall style of set shells. **fan-shell roof** (n.): its roof style.
 - **tide-notch** (n.): the UI corner treatment (a small stepped notch). **lamp-node / lamp mote**: UI ornaments.
 
+- **gilt line** (n.): a thin gold stroke a Tender paints on a Cantor before an Order rite. Asha wipes hers off at the Drowned Choir. *story/decisions_log.md N-04*
+
 ## Story terms (Narrative M1, merged 2026-10-22)
 
 These come from `docs/kb/story/bible.md`. Where a row conflicts with an entry above, this section wins (it is the newer refinement).
