@@ -2,8 +2,8 @@
 id: M1-ENV-02
 title: Procedural palm, frangipani, and grass with wind shader
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: environment-stream-1
 depends_on: []
 milestone: M1
 request-from: ""
