@@ -12,7 +12,8 @@ need total / share words. The slice's fair share of the budget is 40k–60k × s
 
 Words are runs of letters and digits (apostrophes and hyphens inside a word don't split it).
 Scenes under game/data/dialogue/test/ are fixtures and are skipped unless --include-tests.
-A line over the voice guide's ~25-word limit is listed as a warning.
+A line over the voice guide's ~25-word limit is listed as a warning (dlgc warns too), unless it is
+tagged #long. Narration with a voice identity (`Narrator(rhen): ...`) counts as "(narration: rhen)".
 
 Usage: python3 tools/dialogue_stats.py [--slice-minutes 40] [--game-hours 30] [--json]
 """
@@ -20,7 +21,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -31,15 +31,21 @@ import dlgc  # noqa: E402
 BUDGET_MIN = 40_000
 BUDGET_MAX = 60_000
 BUDGET_CEILING = 80_000
-LINE_WORD_LIMIT = 25  # docs/kb/story/voice_guide.md: "about 25 words or fewer"
+LINE_WORD_LIMIT = dlgc.LINE_WORD_LIMIT  # docs/kb/story/voice_guide.md: "about 25 words or fewer"
 NARRATION = "(narration)"
 OPTIONS = "(player options)"
-FIXTURE_DIR = "game/data/dialogue/test/"
-WORD_RE = re.compile(r"[A-Za-z0-9]+(?:['’\-][A-Za-z0-9]+)*")
+FIXTURE_DIR = dlgc.TEST_DIR.as_posix() + "/"
 
 
 def count_words(text: str) -> int:
-    return len(WORD_RE.findall(text))
+    return dlgc.count_words(text)
+
+
+def who_of(op: dict) -> str:
+    """The word-count bucket for a line op: its speaker, or narration (with its voice identity)."""
+    if op["speaker"]:
+        return op["speaker"]
+    return f"(narration: {op['narrator']})" if op.get("narrator") else NARRATION
 
 
 def collect(root: Path, include_tests: bool = False) -> dict:
@@ -63,12 +69,12 @@ def collect(root: Path, include_tests: bool = False) -> dict:
             for op in node["ops"]:
                 if op["op"] == "line":
                     n = count_words(text_by_key[op["key"]])
-                    who = op["speaker"] or NARRATION
+                    who = who_of(op)
                     row["narration" if not op["speaker"] else "spoken"] += n
                     row["lines"] += 1
                     row["speakers"][who] += n
                     speakers[who] += n
-                    if n > LINE_WORD_LIMIT:
+                    if n > LINE_WORD_LIMIT and dlgc.TAG_LONG not in op.get("tags", []):
                         long_lines.append((scene["scene"], op["id"], n))
                 elif op["op"] == "options":
                     for choice in op["choices"]:

@@ -1,0 +1,6 @@
+keys	scene	do_not_translate	note	en
+DLG_CH03_VERSE_042	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown.	Vey ennu, vey ennu,
+DLG_CH03_VERSE_043	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown.	hal oan, ish karra.
+DLG_CH03_VERSE_044	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown.	Ennu re, ennu re...
+DLG_CH03_VERSE_045	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown.	...mir.
+DLG_TEST_DLG_020	test_dialogue_fixture	yes	Invented language: keep as written.	Ennu re.

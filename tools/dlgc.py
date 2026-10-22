@@ -1,22 +1,28 @@
 #!/usr/bin/env python3
-"""dlgc: the .dlg dialogue compiler (ADR 0004, task M1-NAR-03).
+"""dlgc: the .dlg dialogue compiler (ADR 0004, tasks M1-NAR-03 and M1-NAR-04).
 
 Compiles every game/data/dialogue/**/*.dlg (except the compiled/ folder) into
   * game/data/dialogue/compiled/<scene>.json   one file per .dlg, <scene> = file stem = first node title
   * game/data/loc/dialogue.csv                 Godot CSV translation (header `keys,en`, key DLG_<LINE_ID>)
+  * game/data/dialogue/compiled/translator_notes.tsv   #notr / #tn:"..." lines, for translators
 
-The syntax reference lives in docs/kb/tech/dialogue_format.md. Errors are reported as
-`path:line: message` and the exit code is 1 if there are any.
+Cues are checked against game/data/dialogue/cues.json and <<event>> names against
+game/data/dialogue/events.json. The syntax reference lives in docs/kb/tech/dialogue_format.md.
+Errors are reported as `path:line: message` and the exit code is 1 if there are any. Warnings
+(e.g. a line over 25 words) are printed as WARN and never fail the build.
 
 Usage:
-  python3 tools/dlgc.py            compile and write outputs
-  python3 tools/dlgc.py --check    compile in memory; fail if the committed outputs are stale
+  python3 tools/dlgc.py                     compile and write outputs
+  python3 tools/dlgc.py --check             compile in memory; fail if the committed outputs are stale
+  python3 tools/dlgc.py --assign-ids FILE   fill in missing #line: ids in FILE (in place), then stop
+                        [--prefix PREFIX]   id prefix (default: the file's most common one, else its scene name)
   python3 tools/dlgc.py --root PATH
 """
 from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import io
 import json
 import re
@@ -32,12 +38,30 @@ COMPILED_DIR = DIALOGUE_DIR / "compiled"
 LOC_CSV = Path("game/data/loc/dialogue.csv")
 SPEAKERS_JSON = DIALOGUE_DIR / "speakers.json"
 EMOTIONS_JSON = DIALOGUE_DIR / "emotions.json"
+CUES_JSON = DIALOGUE_DIR / "cues.json"
+EVENTS_JSON = DIALOGUE_DIR / "events.json"
+NOTES_TSV = COMPILED_DIR / "translator_notes.tsv"
+TEST_DIR = DIALOGUE_DIR / "test"
+# Reserved speaker name for narration with an emotion and an optional voice identity.
+NARRATOR = "narrator"
+LINE_WORD_LIMIT = 25  # docs/kb/story/voice_guide.md: "about 25 words or fewer"
+WORD_RE = re.compile(r"[A-Za-z0-9]+(?:['’\-][A-Za-z0-9]+)*")
+# Tags the compiler gives meaning to (all are also kept in the op's `tags`).
+TAG_SUNG = "sung"
+TAG_NOTR = "notr"
+TAG_LONG = "long"
 
 IDENT = r"[a-z][a-z0-9_]*"
 LINE_ID_RE = re.compile(r"[a-z0-9_]+")
 TITLE_RE = re.compile(r"[a-z][a-z0-9_]*")
 HEADER_RE = re.compile(r"^([a-z_]+)\s*:\s*(.*)$")
-SPEAKER_RE = re.compile(r"^([A-Za-z][A-Za-z0-9_]*)\s*(?:\[([^\]]*)\])?\s*:\s*(.*)$")
+# Name, optional (identity), optional as "Alias", optional [emotion], then ':'.
+SPEAKER_RE = re.compile(
+    r"""^([A-Za-z][A-Za-z0-9_]*)(?:\(\s*([^)]*?)\s*\))?(?:\s+as\s+"((?:[^"\\]|\\.)*)")?"""
+    r"""\s*(?:\[([^\]]*)\])?\s*:\s*(.*)$"""
+)
+TN_RE = re.compile(r"""(?:^|\s)#tn:"((?:[^"\\]|\\.)*)"(?=\s|$)""")
+ARG_ID_RE = re.compile(r"[A-Za-z0-9_]+")
 COMMAND_RE = re.compile(r"^<<\s*(.*?)\s*>>$")
 OPTION_COND_RE = re.compile(r"<<\s*if\s+(.*?)\s*>>\s*$")
 CUE_RE = re.compile(r"^@([a-z][a-z0-9_]*)(?:\s+(.*))?$")
@@ -192,7 +216,15 @@ class Node:
 class CompileResult:
     outputs: dict[str, str] = field(default_factory=dict)  # repo-relative path -> file text
     errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
     loc_rows: list[tuple[str, str]] = field(default_factory=list)
+    # (key, scene, do_not_translate, note, en) for lines with #notr or #tn:"..."
+    note_rows: list[tuple[str, str, bool, str, str]] = field(default_factory=list)
+    # every loc key written so far -> where it was first defined (line ids and aliases share the namespace)
+    keys: dict[str, str] = field(default_factory=dict)
+    alias_text: dict[str, str] = field(default_factory=dict)
+    # --assign-ids: (source line, what) of each line or option missing its #line: id, in file order
+    missing_ids: list[tuple[int, str]] = field(default_factory=list)
 
 
 def strip_comment(raw: str) -> str:
@@ -253,12 +285,26 @@ def command_word(text: str) -> str:
     return m.group(1).split(" ", 1)[0] if m.group(1) else ""
 
 
-def split_tags(text: str, line: int) -> tuple[str, str, list[str]]:
-    """Pops trailing #hashtags. Returns (text, line_id, other_tags)."""
+def split_tags(text: str, line: int) -> tuple[str, str, list[str], str]:
+    """Pops trailing #hashtags and one #tn:"translator note". Returns (text, line_id, other_tags, note)."""
+    note = ""
+    notes = list(TN_RE.finditer(text))
+    if len(notes) > 1:
+        raise DlgError(line, 'more than one #tn:"..." translator note')
+    if notes:
+        m = notes[0]
+        note = json.loads('"' + m.group(1) + '"').strip()
+        if not note:
+            raise DlgError(line, '#tn:"" is empty (write the note for translators, or drop the tag)')
+        text = (text[: m.start()] + " " + text[m.end():]).strip()
+    elif re.search(r"(?:^|\s)#tn:", text):
+        raise DlgError(line, 'bad translator note: write #tn:"note text" with double quotes')
     words = text.split(" ")
     tags: list[str] = []
-    while words and words[-1].startswith("#"):
-        tags.insert(0, words.pop())
+    while words and (words[-1] == "" or words[-1].startswith("#")):
+        w = words.pop()
+        if w:
+            tags.insert(0, w)
     line_id = ""
     others: list[str] = []
     for t in tags:
@@ -271,8 +317,10 @@ def split_tags(text: str, line: int) -> tuple[str, str, list[str]]:
             line_id = lid
         else:
             others.append(t[1:])
+    if TAG_NOTR in others and not note:
+        raise DlgError(line, '#notr needs a translator note saying why: #tn:"..."')
     body = " ".join(words).strip().replace("\\:", ":").replace("\\#", "#")
-    return body, line_id, others
+    return body, line_id, others, note
 
 
 def convert_arg(tok: str) -> Any:
@@ -301,6 +349,100 @@ def split_args(src: str, line: int) -> tuple[list[Any], dict[str, Any]]:
                 raise DlgError(line, f"positional argument '{t}' after key=value arguments")
             args.append(convert_arg(t))
     return args, kwargs
+
+
+ARG_TYPES = ("id", "number", "int", "bool", "string", "emotion", "enum")
+
+
+@dataclass
+class Vocab:
+    """cues.json and events.json, plus the emotion ids (for the `emotion` arg type)."""
+
+    cues: dict[str, dict] = field(default_factory=dict)
+    sets: dict[str, list] = field(default_factory=dict)
+    reserved: dict[str, dict] = field(default_factory=dict)
+    events: dict[str, dict] = field(default_factory=dict)
+    emotions: set[str] = field(default_factory=set)
+
+    def enum_values(self, spec: dict) -> list:
+        if "set" in spec:
+            return list(self.sets.get(str(spec["set"]), []))
+        return list(spec.get("values", []))
+
+
+def value_error(spec: dict, value: Any, vocab: Vocab) -> str:
+    """Why `value` does not fit the arg spec ({"type", "min"?, "max"?, "values"|"set"?}); empty if it fits."""
+    kind = spec.get("type", "")
+    shown = json.dumps(value) if not isinstance(value, str) else f"'{value}'"
+    if kind == "id":
+        ok = isinstance(value, str) and ARG_ID_RE.fullmatch(value) is not None
+        return "" if ok else f"{shown} is not an id (letters, digits, underscores)"
+    if kind == "string":
+        return "" if isinstance(value, str) else f"{shown} is not text"
+    if kind == "bool":
+        return "" if isinstance(value, bool) else f"{shown} is not true/false"
+    if kind == "emotion":
+        return "" if value in vocab.emotions else f"{shown} is not an emotion in {EMOTIONS_JSON.as_posix()}"
+    if kind == "enum":
+        allowed = vocab.enum_values(spec)
+        if value in allowed:
+            return ""
+        where = f" (set '{spec['set']}' in {CUES_JSON.as_posix()})" if "set" in spec else ""
+        return f"{shown} is not one of {', '.join(str(a) for a in allowed)}{where}"
+    if kind in ("number", "int"):
+        numeric = isinstance(value, (int, float)) and not isinstance(value, bool)
+        if not numeric or (kind == "int" and not isinstance(value, int)):
+            return f"{shown} is not {'an integer' if kind == 'int' else 'a number'}"
+        if "min" in spec and value < spec["min"]:
+            return f"{shown} is below the minimum {spec['min']}"
+        if "max" in spec and value > spec["max"]:
+            return f"{shown} is above the maximum {spec['max']}"
+        return ""
+    return f"unknown arg type '{kind}'"
+
+
+def check_positional(label: str, specs: list[dict], args: list[Any], vocab: Vocab, line: int) -> None:
+    required = sum(1 for a in specs if not a.get("optional"))
+    names = " ".join(a["name"] if not a.get("optional") else f"[{a['name']}]" for a in specs) or "nothing"
+    if not required <= len(args) <= len(specs):
+        raise DlgError(line, f"{label} takes {names}; got {len(args)} argument(s)")
+    for spec, value in zip(specs, args):
+        why = value_error(spec, value, vocab)
+        if why:
+            raise DlgError(line, f"{label} {spec['name']}: {why}")
+
+
+def check_cue(cue: str, args: list[Any], kwargs: dict[str, Any], vocab: Vocab, line: int) -> None:
+    """Checks a cue against cues.json: known name, positional args, key=value names and values."""
+    spec = vocab.cues.get(cue)
+    if spec is None:
+        raise DlgError(line, f"unknown cue '@{cue}' (known: {', '.join(sorted(vocab.cues))}; "
+                             f"new cues go in {CUES_JSON.as_posix()})")
+    check_positional(f"@{cue}", spec.get("args", []), args, vocab, line)
+    allowed: dict[str, dict] = spec.get("kwargs", {})
+    for k, v in kwargs.items():
+        if k not in allowed:
+            known = ", ".join(f"{a}=" for a in sorted(allowed)) or "none"
+            raise DlgError(line, f"@{cue}: unknown key '{k}=' (allowed: {known})")
+        why = value_error(allowed[k], v, vocab)
+        if why:
+            raise DlgError(line, f"@{cue} {k}=: {why}")
+    given = {a["name"] for a, _ in zip(spec.get("args", []), args)} | set(kwargs)
+    one_of: list[str] = spec.get("one_of", [])
+    if one_of and len(given & set(one_of)) != 1:
+        raise DlgError(line, f"@{cue} needs exactly one of: {', '.join(one_of)}")
+    for k, needed in spec.get("requires", {}).items():
+        if k in given and needed not in given:
+            raise DlgError(line, f"@{cue}: {k}= only works together with {needed}")
+
+
+def check_event(name: str, args: list[Any], vocab: Vocab, in_test_dir: bool, line: int) -> None:
+    spec = vocab.events.get(name)
+    if spec is None or (spec.get("test_only") and not in_test_dir):
+        known = sorted(k for k, v in vocab.events.items() if in_test_dir or not v.get("test_only"))
+        raise DlgError(line, f"unknown event '{name}' (declared: {', '.join(known)}; "
+                             f"declare new ones in {EVENTS_JSON.as_posix()})")
+    check_positional(f"<<event {name}>>", spec.get("args", []), args, vocab, line)
 
 
 class BodyParser:
@@ -359,7 +501,7 @@ class BodyParser:
             if m:
                 cond = parse_expr(m.group(1), ln.no)
                 text = text[: m.start()].rstrip()
-            body_text, line_id, tags = split_tags(text, ln.no)
+            body_text, line_id, tags, note = split_tags(text, ln.no)
             if m is None:
                 m2 = OPTION_COND_RE.search(body_text)
                 if m2:
@@ -367,9 +509,7 @@ class BodyParser:
                     body_text = body_text[: m2.start()].rstrip()
             if not body_text:
                 raise DlgError(ln.no, "option has no text")
-            if not line_id:
-                raise DlgError(ln.no, "option text is missing its #line:<id> tag")
-            self.ctx.register_line(line_id, body_text, ln.no)
+            line_id = self.ctx.register_line(line_id, body_text, ln.no, tags, note, "option text")
             nxt = self.peek()
             body: list[dict] = []
             if nxt is not None and nxt.indent > col:
@@ -429,6 +569,7 @@ class BodyParser:
             if not m:
                 raise DlgError(ln.no, f"bad cue '{text}' (cue names are lowercase, e.g. @camera)")
             args, kwargs = split_args(m.group(2) or "", ln.no)
+            check_cue(m.group(1), args, kwargs, self.ctx.vocab, ln.no)
             return {"kind": "cue", "cue": m.group(1), "args": args, "kwargs": kwargs, "src": ln.no}
         cm = COMMAND_RE.match(text)
         if cm:
@@ -458,6 +599,7 @@ class BodyParser:
             args, kwargs = split_args(arg_src, ln.no)
             if kwargs:
                 raise DlgError(ln.no, "<<event>> takes positional arguments only")
+            check_event(name, args, self.ctx.vocab, self.ctx.in_test_dir, ln.no)
             return {"kind": "event", "name": name, "args": args, "src": ln.no}
         if word == "stop":
             if rest:
@@ -466,27 +608,44 @@ class BodyParser:
         raise DlgError(ln.no, f"unknown command <<{word}>> (known: if, elseif, else, endif, set, jump, event, stop)")
 
     def spoken(self, ln: SrcLine) -> dict:
+        """`Speaker [as "Alias"] [emotion]: text`, `Narrator(identity) [emotion]: text`, or bare narration."""
         speaker_id = ""
         emotion = ""
+        narrator = ""
+        alias = None
         text = ln.text
         m = SPEAKER_RE.match(text)
         if m:
-            speaker_id = m.group(1).lower()
-            emotion = (m.group(2) or "").strip()
-            text = m.group(3)
-            if speaker_id not in self.ctx.speakers:
-                raise DlgError(ln.no, f"unknown speaker '{m.group(1)}' (add it to {SPEAKERS_JSON.as_posix()}, "
-                                      "or write '\\:' for a colon in narration)")
-            if m.group(2) is not None and emotion not in self.ctx.emotions:
+            name, identity, alias, emo, text = m.groups()
+            speaker_id = name.lower()
+            emotion = (emo or "").strip()
+            if emo is not None and emotion not in self.ctx.emotions:
                 raise DlgError(ln.no, f"unknown emotion '[{emotion}]' (allowed: see {EMOTIONS_JSON.as_posix()})")
-        body, line_id, tags = split_tags(text, ln.no)
+            if speaker_id == NARRATOR:
+                if alias is not None:
+                    raise DlgError(ln.no, "narration shows no name, so Narrator takes no 'as \"...\"' alias")
+                if identity is not None:
+                    if identity.lower() not in self.ctx.speakers:
+                        raise DlgError(ln.no, f"unknown narrator identity '{identity}' "
+                                              f"(use a speaker id from {SPEAKERS_JSON.as_posix()})")
+                    narrator = identity.lower()
+                speaker_id = ""
+            else:
+                if speaker_id not in self.ctx.speakers:
+                    raise DlgError(ln.no, f"unknown speaker '{name}' (add it to {SPEAKERS_JSON.as_posix()}, "
+                                          "or write '\\:' for a colon in narration)")
+                if identity is not None:
+                    raise DlgError(ln.no, f"'{name}({identity})': only Narrator takes a voice identity")
+        body, line_id, tags, note = split_tags(text, ln.no)
         if not body:
             raise DlgError(ln.no, "line has no text")
-        if not line_id:
-            raise DlgError(ln.no, "spoken text is missing its #line:<id> tag")
-        self.ctx.register_line(line_id, body, ln.no)
+        line_id = self.ctx.register_line(line_id, body, ln.no, tags, note, "spoken text")
         out: dict[str, Any] = {"kind": "line", "id": line_id, "key": dlg_key(line_id), "speaker": speaker_id,
                                "emotion": emotion, "voice": "", "src": ln.no}
+        if alias is not None:
+            out["name_key"] = self.ctx.register_alias(speaker_id, alias, ln.no)
+        if narrator:
+            out["narrator"] = narrator
         if tags:
             out["tags"] = tags
         return out
@@ -556,26 +715,85 @@ def dlg_key(line_id: str) -> str:
     return "DLG_" + line_id.upper()
 
 
+def count_words(text: str) -> int:
+    """Words as the voice guide counts them: runs of letters and digits (inner ' and - don't split)."""
+    return len(WORD_RE.findall(text))
+
+
+def alias_key(speaker: str, alias: str) -> str:
+    """DLG_NAME_<SPEAKER>_<SLUG>; a name with no letters or digits (e.g. "???") gets a short hash."""
+    slug = re.sub(r"[^A-Za-z0-9]+", "_", alias).strip("_").upper()
+    if not slug:
+        slug = "X" + hashlib.sha1(alias.encode("utf-8")).hexdigest()[:6].upper()
+    return f"DLG_NAME_{speaker.upper()}_{slug}"
+
+
 class FileCtx:
-    def __init__(self, rel: str, speakers: set[str], emotions: set[str], line_ids: dict[str, str],
-                 result: CompileResult) -> None:
+    def __init__(self, rel: str, speakers: set[str], vocab: Vocab, line_ids: dict[str, str],
+                 result: CompileResult, assigning: bool = False) -> None:
         self.rel = rel
+        self.scene = Path(rel).stem
         self.speakers = speakers
-        self.emotions = emotions
+        self.vocab = vocab
+        self.emotions = vocab.emotions
         self.line_ids = line_ids
         self.result = result
+        self.assigning = assigning
+        self.in_test_dir = rel.startswith(TEST_DIR.as_posix() + "/")
         self.ok = True
 
     def error(self, line: int, msg: str) -> None:
         self.ok = False
         self.result.errors.append(f"{self.rel}:{line}: {msg}")
 
-    def register_line(self, line_id: str, text: str, line: int) -> None:
+    def warn(self, line: int, msg: str) -> None:
+        self.result.warnings.append(f"{self.rel}:{line}: {msg}")
+
+    def _claim_key(self, key: str, line: int, what: str) -> None:
+        if key in self.result.keys:
+            raise DlgError(line, f"{what} maps to loc key {key}, already defined at {self.result.keys[key]}")
+        self.result.keys[key] = f"{self.rel}:{line}"
+
+    def register_line(self, line_id: str, text: str, line: int, tags: list[str], note: str, what: str) -> str:
+        """Records a line or option's loc row (and translator note). Returns its id. With no id, it is an
+        error, except under --assign-ids, where the line is listed and gets a placeholder id."""
+        if not line_id:
+            if not self.assigning:
+                raise DlgError(line, f"{what} is missing its #line:<id> tag")
+            self.result.missing_ids.append((line, what))
+            return f"missing_{line}"
         where = f"{self.rel}:{line}"
         if line_id in self.line_ids:
             raise DlgError(line, f"duplicate line id '{line_id}' (first used at {self.line_ids[line_id]})")
+        self._claim_key(dlg_key(line_id), line, f"line id '{line_id}'")
         self.line_ids[line_id] = where
         self.result.loc_rows.append((dlg_key(line_id), text))
+        if note or TAG_NOTR in tags:
+            self.result.note_rows.append((dlg_key(line_id), self.scene, TAG_NOTR in tags, note, text))
+        words = count_words(text)
+        if words > LINE_WORD_LIMIT and TAG_LONG not in tags:
+            self.warn(line, f"'{line_id}' has {words} words (voice guide: about {LINE_WORD_LIMIT} or fewer; "
+                            f"tag #{TAG_LONG} if the length is earned)")
+        return line_id
+
+    def register_alias(self, speaker: str, alias: str, line: int) -> str:
+        """Returns the loc key for a speaker's display-name alias, adding its row the first time."""
+        try:
+            name = json.loads('"' + alias + '"').strip()
+        except ValueError as e:
+            raise DlgError(line, f"bad alias name: {e}") from e
+        if not name:
+            raise DlgError(line, 'empty alias name (write as "The girl")')
+        key = alias_key(speaker, name)
+        if key in self.result.alias_text:
+            if self.result.alias_text[key] != name:
+                raise DlgError(line, f"alias \"{name}\" and \"{self.result.alias_text[key]}\" both map to {key} "
+                                     f"(first at {self.result.keys[key]}); pick distinct names")
+            return key
+        self._claim_key(key, line, f"alias \"{name}\"")
+        self.result.alias_text[key] = name
+        self.result.loc_rows.append((key, name))
+        return key
 
 
 def _load_ids(root: Path, rel: Path, table: str, result: CompileResult) -> set[str]:
@@ -586,6 +804,36 @@ def _load_ids(root: Path, rel: Path, table: str, result: CompileResult) -> set[s
     except (OSError, ValueError, KeyError, TypeError) as e:
         result.errors.append(f"{rel.as_posix()}: cannot read '{table}' table: {e}")
         return set()
+
+
+def _load_json(root: Path, rel: Path, result: CompileResult) -> dict:
+    try:
+        data = json.loads((root / rel).read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        result.errors.append(f"{rel.as_posix()}: cannot read: {e}")
+        return {}
+    if not isinstance(data, dict):
+        result.errors.append(f"{rel.as_posix()}: must be a JSON object")
+        return {}
+    return data
+
+
+def load_vocab(root: Path, result: CompileResult) -> Vocab:
+    """cues.json + events.json + emotions. Shape errors go to result.errors (validate_data checks deeper)."""
+    vocab = Vocab(emotions=_load_ids(root, EMOTIONS_JSON, "emotions", result))
+    cues = _load_json(root, CUES_JSON, result)
+    for name in ("cues", "sets", "reserved"):
+        value = cues.get(name, {})
+        if not isinstance(value, dict):
+            result.errors.append(f"{CUES_JSON.as_posix()}: '{name}' must be an object")
+            value = {}
+        setattr(vocab, name, value)
+    events = _load_json(root, EVENTS_JSON, result).get("events", [])
+    if not isinstance(events, list):
+        result.errors.append(f"{EVENTS_JSON.as_posix()}: 'events' must be a list")
+        events = []
+    vocab.events = {str(e["id"]): e for e in events if isinstance(e, dict) and "id" in e}
+    return vocab
 
 
 def source_files(root: Path) -> list[Path]:
@@ -612,6 +860,10 @@ def compile_file(path: Path, rel: str, ctx: FileCtx) -> dict | None:
             ctx.error(n.line, f"duplicate node title '{n.title}'")
         titles.add(n.title)
     stem = path.stem
+    grades = ctx.vocab.sets.get("grades", [])
+    for n in nodes:
+        if "grade" in n.headers and n.headers["grade"] not in grades:
+            ctx.error(n.line, f"unknown grade '{n.headers['grade']}' (set 'grades' in {CUES_JSON.as_posix()})")
     if nodes[0].title != stem:
         ctx.error(nodes[0].line, f"the first node's title '{nodes[0].title}' must match the file name '{stem}'")
     out_nodes: dict[str, Any] = {}
@@ -663,15 +915,28 @@ def render_csv(rows: list[tuple[str, str]]) -> str:
     return buf.getvalue()
 
 
-def compile_project(root: Path) -> CompileResult:
+def render_notes(rows: list[tuple[str, str, bool, str, str]]) -> str:
+    """Translator notes, tab-separated (a .tsv, so Godot does not import it as a translation)."""
+    buf = io.StringIO()
+    w = csv.writer(buf, delimiter="\t", lineterminator="\n")
+    w.writerow(["keys", "scene", "do_not_translate", "note", "en"])
+    for key, scene, notr, note, text in rows:
+        w.writerow([key, scene, "yes" if notr else "", note, text])
+    return buf.getvalue()
+
+
+def compile_project(root: Path, assign: Path | None = None) -> CompileResult:
+    """Compiles every .dlg. With `assign` (a .dlg path), lines missing a #line: id in that file are
+    listed in result.missing_ids instead of being errors (see assign_ids)."""
     result = CompileResult()
     speakers = _load_ids(root, SPEAKERS_JSON, "speakers", result)
-    emotions = _load_ids(root, EMOTIONS_JSON, "emotions", result)
+    vocab = load_vocab(root, result)
     line_ids: dict[str, str] = {}
     scenes: dict[str, str] = {}
+    target = assign.resolve() if assign is not None else None
     for path in source_files(root):
         rel = path.relative_to(root).as_posix()
-        ctx = FileCtx(rel, speakers, emotions, line_ids, result)
+        ctx = FileCtx(rel, speakers, vocab, line_ids, result, assigning=path.resolve() == target)
         if path.stem in scenes:
             ctx.error(1, f"scene name '{path.stem}' is already used by {scenes[path.stem]} (compiled names are flat)")
             continue
@@ -681,6 +946,7 @@ def compile_project(root: Path) -> CompileResult:
             out = (COMPILED_DIR / f"{path.stem}.json").as_posix()
             result.outputs[out] = render_scene(compiled)
     result.outputs[LOC_CSV.as_posix()] = render_csv(result.loc_rows)
+    result.outputs[NOTES_TSV.as_posix()] = render_notes(result.note_rows)
     return result
 
 
@@ -700,15 +966,19 @@ def stale_outputs(root: Path, result: CompileResult) -> list[str]:
     return stale
 
 
-def check(root: Path) -> list[str]:
-    """Compile errors plus staleness errors; empty means the committed outputs are fresh."""
+def check_report(root: Path) -> tuple[list[str], list[str]]:
+    """(errors, warnings). Errors are compile errors plus stale outputs; empty means fresh."""
     result = compile_project(root)
     errors = list(result.errors)
-    if errors:
-        return errors
-    for rel in stale_outputs(root, result):
-        errors.append(f"{rel}: dialogue output is stale (run python3 tools/dlgc.py)")
-    return errors
+    if not errors:
+        for rel in stale_outputs(root, result):
+            errors.append(f"{rel}: dialogue output is stale (run python3 tools/dlgc.py)")
+    return errors, list(result.warnings)
+
+
+def check(root: Path) -> list[str]:
+    """Compile errors plus staleness errors; empty means the committed outputs are fresh."""
+    return check_report(root)[0]
 
 
 def write(root: Path) -> CompileResult:
@@ -725,22 +995,123 @@ def write(root: Path) -> CompileResult:
     return result
 
 
-def main() -> int:
+# ---------------------------------------------------------------- --assign-ids
+
+ID_NUM_RE = re.compile(r"^(.*)_(\d+)$")
+
+
+def default_prefix(ids: list[str], scene: str) -> str:
+    """The most common `<prefix>` of the file's `<prefix>_<NNN>` ids (first seen wins a tie), else the scene."""
+    counts: dict[str, int] = {}
+    for lid in ids:
+        m = ID_NUM_RE.match(lid)
+        if m:
+            counts[m.group(1)] = counts.get(m.group(1), 0) + 1
+    if not counts:
+        return scene
+    return max(counts, key=lambda k: counts[k])  # dicts keep first-seen order; max keeps the first maximum
+
+
+@dataclass
+class AssignResult:
+    text: str | None  # the rewritten file, or None when there are errors
+    assigned: list[tuple[int, str]]  # (source line, new id)
+    errors: list[str]
+
+
+def assign_ids(root: Path, path: Path, prefix: str | None = None) -> AssignResult:
+    """Fills each missing #line: id in `path` with `<prefix>_<NNN>`, counting on from the highest number
+    the prefix already uses anywhere in the project (zero-padded to 3 digits, or wider if the prefix
+    already is). Existing ids are never changed, and an id in use anywhere is skipped. Pure: returns
+    the new text; the caller writes it. Running it again on its own output assigns nothing."""
+    path = path.resolve()
+    try:
+        rel = path.relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return AssignResult(None, [], [f"{path}: not under {root}"])
+    if path.suffix != ".dlg" or not path.exists():
+        return AssignResult(None, [], [f"{rel}: not a .dlg file"])
+    if prefix is not None and not LINE_ID_RE.fullmatch(prefix):
+        return AssignResult(None, [], [f"bad --prefix '{prefix}' (lowercase letters, digits, underscores)"])
+    result = compile_project(root, assign=path)
+    if result.errors:
+        return AssignResult(None, [], result.errors)
+    text = path.read_text(encoding="utf-8")
+    if not result.missing_ids:
+        return AssignResult(text, [], [])
+    placed = _ids_with_places(result)
+    prefix = prefix or default_prefix([lid for lid, where in placed if where == rel], path.stem)
+    used = {lid for lid, _ in placed}
+    numbers = [m for m in (ID_NUM_RE.match(lid) for lid in used) if m and m.group(1) == prefix]
+    width = max([3] + [len(m.group(2)) for m in numbers])
+    n = max([0] + [int(m.group(2)) for m in numbers])
+    lines = text.splitlines(keepends=True)
+    assigned: list[tuple[int, str]] = []
+    for no, _what in sorted(result.missing_ids):
+        n += 1
+        while f"{prefix}_{n:0{width}d}" in used:
+            n += 1
+        new_id = f"{prefix}_{n:0{width}d}"
+        used.add(new_id)
+        lines[no - 1] = _insert_line_tag(lines[no - 1], new_id)
+        assigned.append((no, new_id))
+    return AssignResult("".join(lines), assigned, [])
+
+
+def _ids_with_places(result: CompileResult) -> list[tuple[str, str]]:
+    """(line id, repo-relative file) for every registered line id, in registration order."""
+    out: list[tuple[str, str]] = []
+    for key, where in result.keys.items():
+        if key not in result.alias_text:
+            out.append((key[len("DLG_"):].lower(), where.rsplit(":", 1)[0]))
+    return out
+
+
+def _insert_line_tag(raw: str, line_id: str) -> str:
+    """Appends ` #line:<id>` after the statement's text and tags, before any // comment."""
+    body = raw.rstrip("\r\n")
+    ending = raw[len(body):]
+    m = COMMENT_RE.search(body)
+    code = body[: m.start() if m else len(body)].rstrip()
+    return f"{code} #line:{line_id}{body[len(code):]}{ending}"
+
+
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--root", type=Path, default=Path(__file__).resolve().parent.parent)
     ap.add_argument("--check", action="store_true", help="fail if committed outputs are stale; write nothing")
-    args = ap.parse_args()
+    ap.add_argument("--assign-ids", type=Path, metavar="FILE", help="fill missing #line: ids in FILE, in place")
+    ap.add_argument("--prefix", help="id prefix for --assign-ids")
+    args = ap.parse_args(argv)
+    if args.assign_ids is not None:
+        res = assign_ids(args.root, args.assign_ids, args.prefix)
+        for e in res.errors:
+            print(f"ERROR {e}")
+        if res.text is None:
+            return 1
+        for no, lid in res.assigned:
+            print(f"{args.assign_ids}:{no}: #line:{lid}")
+        if res.assigned:
+            args.assign_ids.write_text(res.text, encoding="utf-8")
+        tail = " (now run python3 tools/dlgc.py)" if res.assigned else ""
+        print(f"dlgc --assign-ids: {len(res.assigned)} id(s) assigned{tail}")
+        return 0
     if args.check:
-        errors = check(args.root)
+        errors, warnings = check_report(args.root)
+        for w in warnings:
+            print(f"WARN  {w}")
         for e in errors:
             print(f"ERROR {e}")
-        print(f"dlgc --check: {len(errors)} error(s)")
+        print(f"dlgc --check: {len(errors)} error(s), {len(warnings)} warning(s)")
         return 1 if errors else 0
     result = write(args.root)
+    for w in result.warnings:
+        print(f"WARN  {w}")
     for e in result.errors:
         print(f"ERROR {e}")
     n = len([k for k in result.outputs if k.endswith(".json")])
-    print(f"dlgc: {n} scene(s), {len(result.loc_rows)} line(s), {len(result.errors)} error(s)")
+    print(f"dlgc: {n} scene(s), {len(result.loc_rows)} line(s), {len(result.errors)} error(s), "
+          f"{len(result.warnings)} warning(s)")
     return 1 if result.errors else 0
 
 
