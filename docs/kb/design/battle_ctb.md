@@ -18,15 +18,16 @@ Owner: Combat Designer-Engineer. Formulas: [formulas.md](formulas.md).
 
 ## Sandbox balance (M1 target bands)
 
-`tests/integration/test_sandbox_battle.gd` runs 100 seeds per policy on the real `sandbox_reef` data and asserts these bands:
+The balancing simulator (`game/battle/sim/`, `tools/balance/sim.py`; see [balance_targets.md](balance_targets.md)) owns the bands, and [balance_report.md](balance_report.md) has the latest numbers and the tuning log. `tests/integration/test_sandbox_battle.gd` asserts them on the real `sandbox_reef` data on every run.
 
-| Policy | Band | Measured 2026-10-22 (200 seeds) |
+| Policy | Band | Measured 2026-10-22 (1000 seeds, after the M1-CMB-05 softening) |
 |---|---|---|
-| Naive: attack the first living foe | ≤ 20% wins | 0% |
-| Attack the lowest-HP foe | (no band) | 61% |
-| Swap Toma in for Asha, then attack the lowest-HP foe | ≥ 70% wins | 88% |
+| Naive: attack the first living foe | 5–15% wins (test: ≥ 1% and ≤ 20% at 200 seeds) | 8.7% (was 0%) |
+| Attack the lowest-HP foe | report only | 82.8% (was 58.8%) |
+| Role answer: swap in each foe's `role_answer` | ≥ 85% wins | 96.8% (was 86.5%) |
+| Swap Toma in for Asha, then attack the lowest-HP foe (legacy test policy) | ≥ 70% wins | 95.6% (was 87.8%) |
 
-This is the intended shape: swapping is the elegant answer (SPEC §6.1). A naive party wipes in about two rounds, which is harsh for a showcase, so M1-CMB-05 may soften enemy power by about 15% while keeping the bands.
+Swapping remains the elegant answer (SPEC §6.1), but a naive party now wins about one fight in eleven instead of never.
 
 ## Timeline API for the UI
 
