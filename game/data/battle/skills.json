@@ -66,7 +66,7 @@
      "element": "none", "target": "single_foe", "mp_cost": 4, "magic": false,
      "statuses": [{"id": "provoke", "chance": 100}]},
     {"id": "shield_wall", "name_key": "SKILL_SHIELD_WALL", "kind": "support", "power": 0, "rank": 4,
-     "element": "none", "target": "all_allies", "mp_cost": 14, "magic": false,
+     "element": "none", "target": "all_allies", "mp_cost": 10, "magic": false,
      "statuses": [{"id": "protect", "chance": 100}]},
     {"id": "breakwater", "name_key": "SKILL_BREAKWATER", "kind": "physical", "power": 10, "rank": 5,
      "accuracy": 90, "element": "none", "target": "single_foe", "mp_cost": 10, "magic": false}

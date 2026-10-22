@@ -15,3 +15,8 @@ Claim a path glob before editing `.tscn` or `.tres` files or assets (SPEC §5.3)
 | Rendering (stream) | `game/core/graphics_settings.gd`, `game/core/shader_prewarm.*`, `game/data/settings/**`, `game/shaders/**` | 2026-10-22 | rendering-stream-1 |
 | QA (stream) | `tools/dev/**`, `tools/screenshots/**`, `tests/screenshots/**`, `docs/kb/qa/**` | 2026-10-22 | qa-stream-1 |
 | Art direction (stream) | `docs/kb/art/**` | 2026-10-22 | art-stream-1 |
+| UI + Combat (stream) | `game/ui/**`, `game/battle/scene/**`, `game/data/ui/**`, `assets/fonts/**` | 2026-10-22 | ui-combat-stream-1 |
+| Rendering (glimmer) | `game/vfx/glimmer/**`, `game/shaders/glimmer/**`, `game/data/vfx/**`, `game/levels/_tests/glimmer/**` | 2026-10-22 | rendering-stream-3 |
+| Rendering (water) | `game/shaders/water/**`, `game/world/water/**`, `game/levels/_tests/water/**` | 2026-10-22 | rendering-stream-2 |
+| Character | `assets_src/characters/**`, `assets/characters/**`, `game/levels/_tests/characters/**` | 2026-10-22 | character-stream-1 |
+| Environment | `assets_src/environments/**`, `assets/environments/**`, `game/shaders/vegetation/**`, `game/levels/_tests/vegetation/**` | 2026-10-22 | environment-stream-1 |
