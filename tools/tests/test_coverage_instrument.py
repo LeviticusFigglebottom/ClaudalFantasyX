@@ -278,6 +278,10 @@ class GateTest(unittest.TestCase):
         self.assertEqual(len(fails), 1)
         self.assertIn("a.gd", fails[0])
 
+    def test_update_refuses_any_directory_lowering(self) -> None:
+        self.assertEqual(len(run_coverage.lowered_dirs(self._report(79.9, {}), self.base)), 1)
+        self.assertEqual(run_coverage.lowered_dirs(self._report(80.0, {}), self.base), [])
+
     def test_empty_file_is_ignored(self) -> None:
         files = {"game/battle/a.gd": self.a, "game/battle/consts.gd": {"lines": 0, "covered": 0}}
         self.assertEqual(run_coverage.gate(self._report(80.0, files), self.base)[0], [])

@@ -297,6 +297,16 @@ def gate(report: dict, baseline: dict) -> tuple[list[str], list[str]]:
     return fails, notes
 
 
+def lowered_dirs(report: dict, baseline: dict) -> list[str]:
+    """Directories the new numbers would lower at all (no tolerance): the baseline only ratchets up."""
+    base = baseline.get("directories", {})
+    return [
+        f"{d}: {s['pct']:.2f}% would lower the baseline {float(base[d]):.2f}%"
+        for d, s in report["directories"].items()
+        if d in base and s["pct"] < float(base[d])
+    ]
+
+
 def make_baseline(report: dict) -> dict:
     return {
         "_comment": "ADR 0013. Change only with --update-baseline after adding tests (docs/kb/qa/coverage.md).",
@@ -372,6 +382,7 @@ def main(argv: list[str] | None = None) -> int:
     baseline = load_baseline()
     fails, notes = gate(report, baseline) if baseline else ([], ["no baseline.json yet"])
     if args.update_baseline:
+        fails += lowered_dirs(report, baseline)
         if fails and not args.accept_drop:
             for f in fails:
                 print(f"coverage: DROP {f}", file=sys.stderr)
