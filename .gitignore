@@ -21,3 +21,6 @@ Thumbs.db
 
 # Screenshot regression output (baselines live in tests/screenshots/baselines)
 /tests/screenshots/out/
+
+# Agent git worktrees (parallel streams)
+/.claude/worktrees/
