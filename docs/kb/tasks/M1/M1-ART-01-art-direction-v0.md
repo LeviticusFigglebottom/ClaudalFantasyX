@@ -2,8 +2,8 @@
 id: M1-ART-01
 title: Art direction v0: verbal references, color script, Asha design sheet
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: art-stream-1
 depends_on: [M1-NAR-01]
 milestone: M1
 request-from: ""
