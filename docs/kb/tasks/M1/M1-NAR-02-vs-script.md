@@ -2,8 +2,8 @@
 id: M1-NAR-02
 title: Vertical-slice beat sheet and two cutscene scripts in .dlg
 role: narrative
-status: todo
-owner_session: ""
+status: doing
+owner_session: narrative-stream-2
 depends_on: [M1-NAR-01, M1-NAR-03]
 milestone: M1
 request-from: ""
