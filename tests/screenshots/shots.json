@@ -4,6 +4,12 @@
     {"id": "boot_title", "scene": "res://game/core/boot.tscn", "resolution": [1920, 1080], "settle_frames": 10,
      "threshold_rmse": 0.004},
     {"id": "lighting_probe", "scene": "res://tests/screenshots/scenes/lighting_probe.tscn", "camera": "ShotCamera"},
-    {"id": "lighting_probe_low", "scene": "res://tests/screenshots/scenes/lighting_probe.tscn", "camera": "Cameras/Low"}
+    {"id": "lighting_probe_low", "scene": "res://tests/screenshots/scenes/lighting_probe.tscn", "camera": "Cameras/Low"},
+    {"id": "veg_backlit_fronds", "scene": "res://game/levels/_tests/vegetation/vegetation_test.tscn",
+     "camera": "Cameras/Backlit", "resolution": [960, 540], "settle_frames": 16},
+    {"id": "veg_frangipani_close", "scene": "res://game/levels/_tests/vegetation/vegetation_test.tscn",
+     "camera": "Cameras/FrangipaniClose", "resolution": [960, 540], "settle_frames": 16},
+    {"id": "veg_beach_wide", "scene": "res://game/levels/_tests/vegetation/vegetation_test.tscn",
+     "camera": "Cameras/Wide", "resolution": [960, 540], "settle_frames": 16}
   ]
 }
