@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "doc": "Performance regression thresholds for headless tests (SPEC §4.2). Budgets are the spec limits; test thresholds keep headroom below them so a real regression fails before the budget is reached. Measured on the dummy renderer (CPU only), see docs/kb/tech/architecture.md 'Scene-swap hitch'.",
+  "scene_swap": {
+    "budget_ms": 50.0,
+    "test_threshold_ms": 40.0,
+    "probe_scene": "res://game/core/debug/scene_swap_probe.tscn",
+    "from": "res://game/core/boot.tscn",
+    "targets": [
+      "res://game/core/boot.tscn",
+      "res://game/battle/scene/battle_sandbox.tscn"
+    ],
+    "attempts": 3,
+    "settle_frames": 10,
+    "timeout_frames": 2400
+  }
+}
