@@ -1,0 +1,1204 @@
+{
+  "schema": "hymn-palette/1",
+  "version": "0.1.0",
+  "owner": "art (M1-ART-01)",
+  "color_space_note": "hex is sRGB-encoded (what you type into a Godot color picker). linear is the sRGB EOTF of that hex, rounded to 4 places, which is what shaders and the renderer use. luminance_linear is Rec.709 relative luminance.",
+  "global_rules": {
+    "albedo_floor_hex": "#1D1916",
+    "albedo_ceiling_hex": "#EBE7DF",
+    "gold_max_frame_fraction": 0.05,
+    "lacquer_red_max_frame_fraction": 0.08,
+    "glimmer_max_frame_fraction_day": 0.03,
+    "glimmer_max_frame_fraction_night": 0.12,
+    "glimmer_max_frame_fraction_set_piece": 0.35,
+    "shadow_tint_hex": "#0E4A55",
+    "never_neutral_black_shadows": true,
+    "mote_direction_rule": "rising + warm (glimmer_lift) = released; sideways/down/seaward + cool (glimmer_held) = held",
+    "sea_glow_rule": "sea_glow emission present in every night frame (energy 0.04-0.15) until ending_dock, where it is 0"
+  },
+  "swatches": {
+    "sun_noon": {
+      "hex": "#FFF4E0",
+      "linear": [
+        1.0,
+        0.9047,
+        0.7454
+      ],
+      "luminance_linear": 0.9134,
+      "temperature": "~5500 K",
+      "family": "light",
+      "role": "Act I key light: high-noon sun, slightly warm white.",
+      "usage_limit": null
+    },
+    "sun_gold": {
+      "hex": "#FFD27A",
+      "linear": [
+        1.0,
+        0.6445,
+        0.1946
+      ],
+      "luminance_linear": 0.6876,
+      "temperature": "~3600 K",
+      "family": "light",
+      "role": "Late-afternoon key; warm bounce off sand and lacquer.",
+      "usage_limit": null
+    },
+    "dusk_gold": {
+      "hex": "#F2A64A",
+      "linear": [
+        0.8879,
+        0.3813,
+        0.0685
+      ],
+      "luminance_linear": 0.4664,
+      "temperature": "~2700 K",
+      "family": "light",
+      "role": "Dusk key light; Act III opening and the Prologue.",
+      "usage_limit": null
+    },
+    "ember_orange": {
+      "hex": "#E0702E",
+      "linear": [
+        0.7454,
+        0.162,
+        0.0273
+      ],
+      "luminance_linear": 0.2763,
+      "temperature": "~1900 K",
+      "family": "light",
+      "role": "Last-light horizon band, oil-lamp flame core, Fire VFX base.",
+      "usage_limit": "Flame and horizon only; never a surface albedo."
+    },
+    "oil_lamp": {
+      "hex": "#FFB16E",
+      "linear": [
+        1.0,
+        0.4397,
+        0.1559
+      ],
+      "luminance_linear": 0.5383,
+      "temperature": "~2900 K",
+      "family": "light",
+      "role": "Oil lamp and wick light (~3000 K). The only warm light at night.",
+      "usage_limit": null
+    },
+    "sky_zenith_noon": {
+      "hex": "#2E7FD6",
+      "linear": [
+        0.0273,
+        0.2122,
+        0.6724
+      ],
+      "luminance_linear": 0.2061,
+      "temperature": "off-locus (spectral)",
+      "family": "sky",
+      "role": "Noon sky zenith.",
+      "usage_limit": null
+    },
+    "sky_horizon_noon": {
+      "hex": "#A9DCF2",
+      "linear": [
+        0.3968,
+        0.7157,
+        0.8879
+      ],
+      "luminance_linear": 0.6603,
+      "temperature": "~10500 K",
+      "family": "sky",
+      "role": "Noon sky at the horizon; haze.",
+      "usage_limit": null
+    },
+    "cumulus_lit": {
+      "hex": "#FFF8EE",
+      "linear": [
+        1.0,
+        0.9387,
+        0.855
+      ],
+      "luminance_linear": 0.9457,
+      "temperature": "~5900 K",
+      "family": "sky",
+      "role": "Sunlit face of cumulus.",
+      "usage_limit": null
+    },
+    "cumulus_shadow": {
+      "hex": "#8FA7C4",
+      "linear": [
+        0.2747,
+        0.3864,
+        0.552
+      ],
+      "luminance_linear": 0.3746,
+      "temperature": "~11100 K",
+      "family": "sky",
+      "role": "Shadowed underside of cumulus; never grey, always blue-lilac.",
+      "usage_limit": null
+    },
+    "overcast_slate": {
+      "hex": "#6F7E8E",
+      "linear": [
+        0.159,
+        0.2086,
+        0.2705
+      ],
+      "luminance_linear": 0.2025,
+      "temperature": "~9500 K",
+      "family": "sky",
+      "role": "Act II overcast sky dome.",
+      "usage_limit": null
+    },
+    "storm_slate": {
+      "hex": "#3E4A57",
+      "linear": [
+        0.0482,
+        0.0685,
+        0.0953
+      ],
+      "luminance_linear": 0.0661,
+      "temperature": "~10800 K",
+      "family": "sky",
+      "role": "Storm cloud mass; Undertow outer wall.",
+      "usage_limit": null
+    },
+    "moon_blue": {
+      "hex": "#9DB4D9",
+      "linear": [
+        0.3372,
+        0.4564,
+        0.6939
+      ],
+      "luminance_linear": 0.4482,
+      "temperature": "~11900 K",
+      "family": "light",
+      "role": "Moonlight key (Act II nights).",
+      "usage_limit": null
+    },
+    "night_sky": {
+      "hex": "#050A14",
+      "linear": [
+        0.0015,
+        0.003,
+        0.007
+      ],
+      "luminance_linear": 0.003,
+      "temperature": "off-locus (spectral)",
+      "family": "sky",
+      "role": "Deep night zenith. Darkest permitted sky value.",
+      "usage_limit": null
+    },
+    "starlight": {
+      "hex": "#DCE6FF",
+      "linear": [
+        0.7157,
+        0.7913,
+        1.0
+      ],
+      "luminance_linear": 0.7903,
+      "temperature": "~8400 K",
+      "family": "light",
+      "role": "Star points and their reflection in the final shot.",
+      "usage_limit": "Point sources only; <=0.5% of frame."
+    },
+    "turquoise_shallow": {
+      "hex": "#3FD0C9",
+      "linear": [
+        0.0497,
+        0.6308,
+        0.5841
+      ],
+      "luminance_linear": 0.5039,
+      "temperature": null,
+      "family": "water",
+      "role": "Sun-struck shallows over white sand, 0-1 m.",
+      "usage_limit": null
+    },
+    "lagoon_teal": {
+      "hex": "#1FA3A6",
+      "linear": [
+        0.0137,
+        0.3663,
+        0.3813
+      ],
+      "luminance_linear": 0.2924,
+      "temperature": null,
+      "family": "water",
+      "role": "Lagoon at 1-4 m.",
+      "usage_limit": null
+    },
+    "reef_blue": {
+      "hex": "#1569A0",
+      "linear": [
+        0.0075,
+        0.1413,
+        0.3515
+      ],
+      "luminance_linear": 0.128,
+      "temperature": null,
+      "family": "water",
+      "role": "Open water over reef, 4-15 m.",
+      "usage_limit": null
+    },
+    "deep_teal_shadow": {
+      "hex": "#0E4A55",
+      "linear": [
+        0.0044,
+        0.0685,
+        0.0908
+      ],
+      "luminance_linear": 0.0565,
+      "temperature": null,
+      "family": "water",
+      "role": "Deep water and the signature shadow tint of every daylight frame.",
+      "usage_limit": null
+    },
+    "abyss_navy": {
+      "hex": "#061A2B",
+      "linear": [
+        0.0018,
+        0.0103,
+        0.0242
+      ],
+      "luminance_linear": 0.0095,
+      "temperature": null,
+      "family": "water",
+      "role": "Beyond 30 m, open ocean at night, Act III abyss base.",
+      "usage_limit": null
+    },
+    "foam_white": {
+      "hex": "#EEF6F4",
+      "linear": [
+        0.855,
+        0.9216,
+        0.9047
+      ],
+      "luminance_linear": 0.9062,
+      "temperature": null,
+      "family": "water",
+      "role": "Shoreline and crest foam.",
+      "usage_limit": "Foam texture only."
+    },
+    "sea_glow": {
+      "hex": "#1C6B78",
+      "linear": [
+        0.0116,
+        0.147,
+        0.1878
+      ],
+      "luminance_linear": 0.1212,
+      "temperature": "~16000 K, off-locus green tint",
+      "family": "glimmer",
+      "role": "Faint ambient night sea-glow (anchored dead). Present in every night frame until the final shot.",
+      "usage_limit": "Emission only, energy 0.04-0.15; never a lit surface color."
+    },
+    "glimmer_lift": {
+      "hex": "#FFE9B8",
+      "linear": [
+        1.0,
+        0.8148,
+        0.4793
+      ],
+      "luminance_linear": 0.83,
+      "temperature": "~4600 K",
+      "family": "glimmer",
+      "role": "Released (rising) mote core. Warm pale gold.",
+      "usage_limit": "Motes and their bloom only."
+    },
+    "glimmer_lift_hi": {
+      "hex": "#F4F8FF",
+      "linear": [
+        0.9047,
+        0.9387,
+        1.0
+      ],
+      "luminance_linear": 0.9359,
+      "temperature": "~6900 K",
+      "family": "glimmer",
+      "role": "Hottest center of a rising mote as it fades into the sky.",
+      "usage_limit": "Mote cores only."
+    },
+    "glimmer_held": {
+      "hex": "#7FC6D9",
+      "linear": [
+        0.2122,
+        0.5647,
+        0.6939
+      ],
+      "luminance_linear": 0.4991,
+      "temperature": "~11900 K, off-locus green tint",
+      "family": "glimmer",
+      "role": "Held / anchored mote: cool cyan, drifting sideways and down.",
+      "usage_limit": "Motes, bound lamps, spawn wounds."
+    },
+    "glimmer_bound": {
+      "hex": "#4FB3B0",
+      "linear": [
+        0.0782,
+        0.4508,
+        0.4342
+      ],
+      "luminance_linear": 0.3704,
+      "temperature": "~10900 K, off-locus green tint",
+      "family": "glimmer",
+      "role": "Bound glimmer in salt-glass housings and Lit Age conduits.",
+      "usage_limit": "Emissive inserts only."
+    },
+    "spawn_wound": {
+      "hex": "#3FE0C8",
+      "linear": [
+        0.0497,
+        0.7454,
+        0.5776
+      ],
+      "luminance_linear": 0.5854,
+      "temperature": "~10000 K, off-locus green tint",
+      "family": "glimmer",
+      "role": "Undertow-spawn glimmer wounds and weak points.",
+      "usage_limit": "Creature weak points only."
+    },
+    "coral_stone": {
+      "hex": "#E8DCC4",
+      "linear": [
+        0.807,
+        0.7157,
+        0.552
+      ],
+      "luminance_linear": 0.7233,
+      "temperature": null,
+      "family": "stone",
+      "role": "Low Reaches coral block, sunlit and fresh.",
+      "usage_limit": null
+    },
+    "coral_stone_weathered": {
+      "hex": "#B9AE98",
+      "linear": [
+        0.4851,
+        0.4233,
+        0.314
+      ],
+      "luminance_linear": 0.4285,
+      "temperature": null,
+      "family": "stone",
+      "role": "Coral block after salt and lichen.",
+      "usage_limit": null
+    },
+    "mortar_white": {
+      "hex": "#E6E1D6",
+      "linear": [
+        0.7913,
+        0.7529,
+        0.6724
+      ],
+      "luminance_linear": 0.7553,
+      "temperature": null,
+      "family": "stone",
+      "role": "Lime mortar on roofs and tide-walls.",
+      "usage_limit": null
+    },
+    "roof_clay": {
+      "hex": "#B5523A",
+      "linear": [
+        0.4621,
+        0.0844,
+        0.0423
+      ],
+      "luminance_linear": 0.1616,
+      "temperature": null,
+      "family": "stone",
+      "role": "Low Reaches red clay roof tile.",
+      "usage_limit": null
+    },
+    "laterite": {
+      "hex": "#A8573A",
+      "linear": [
+        0.3916,
+        0.0953,
+        0.0423
+      ],
+      "luminance_linear": 0.1545,
+      "temperature": null,
+      "family": "stone",
+      "role": "Corrow seawall block.",
+      "usage_limit": null
+    },
+    "volcanic_stone": {
+      "hex": "#3A3A3F",
+      "linear": [
+        0.0423,
+        0.0423,
+        0.0497
+      ],
+      "luminance_linear": 0.0428,
+      "temperature": null,
+      "family": "stone",
+      "role": "Pemakar stair-mountain stone.",
+      "usage_limit": null
+    },
+    "cold_blue_stone": {
+      "hex": "#5E6E80",
+      "linear": [
+        0.1119,
+        0.1559,
+        0.2159
+      ],
+      "luminance_linear": 0.1509,
+      "temperature": null,
+      "family": "stone",
+      "role": "Act II stone under overcast and moon.",
+      "usage_limit": null
+    },
+    "order_marble": {
+      "hex": "#E4DED3",
+      "linear": [
+        0.7758,
+        0.7305,
+        0.6514
+      ],
+      "luminance_linear": 0.7344,
+      "temperature": null,
+      "family": "stone",
+      "role": "Order marble (Ansedra, chapels).",
+      "usage_limit": null
+    },
+    "lit_ceramic": {
+      "hex": "#DCE3E0",
+      "linear": [
+        0.7157,
+        0.7682,
+        0.7454
+      ],
+      "luminance_linear": 0.7554,
+      "temperature": null,
+      "family": "stone",
+      "role": "Lit Age white ceramic towers (Iskarra, Vey).",
+      "usage_limit": null
+    },
+    "sand_dry": {
+      "hex": "#EFDDB4",
+      "linear": [
+        0.8632,
+        0.7231,
+        0.4564
+      ],
+      "luminance_linear": 0.7336,
+      "temperature": null,
+      "family": "earth",
+      "role": "Dry beach sand.",
+      "usage_limit": null
+    },
+    "sand_wet": {
+      "hex": "#B59D74",
+      "linear": [
+        0.4621,
+        0.3372,
+        0.1746
+      ],
+      "luminance_linear": 0.352,
+      "temperature": null,
+      "family": "earth",
+      "role": "Wet sand below the tide line.",
+      "usage_limit": null
+    },
+    "timber_weathered": {
+      "hex": "#7E6A55",
+      "linear": [
+        0.2086,
+        0.1441,
+        0.0908
+      ],
+      "luminance_linear": 0.154,
+      "temperature": null,
+      "family": "earth",
+      "role": "Sun-silvered timber.",
+      "usage_limit": null
+    },
+    "thatch": {
+      "hex": "#B08A52",
+      "linear": [
+        0.4342,
+        0.2542,
+        0.0844
+      ],
+      "luminance_linear": 0.2802,
+      "temperature": null,
+      "family": "earth",
+      "role": "Palm thatch and woven panels.",
+      "usage_limit": null
+    },
+    "palm_green": {
+      "hex": "#3E7A3A",
+      "linear": [
+        0.0482,
+        0.1946,
+        0.0423
+      ],
+      "luminance_linear": 0.1525,
+      "temperature": null,
+      "family": "vegetation",
+      "role": "Sunlit palm and broadleaf.",
+      "usage_limit": null
+    },
+    "foliage_shadow": {
+      "hex": "#1E4A3A",
+      "linear": [
+        0.013,
+        0.0685,
+        0.0423
+      ],
+      "luminance_linear": 0.0548,
+      "temperature": null,
+      "family": "vegetation",
+      "role": "Foliage in shadow; always teal-shifted.",
+      "usage_limit": null
+    },
+    "saltgrass": {
+      "hex": "#B9B26A",
+      "linear": [
+        0.4851,
+        0.4452,
+        0.1441
+      ],
+      "luminance_linear": 0.432,
+      "temperature": null,
+      "family": "vegetation",
+      "role": "Saltgrass blades, sun-dried tips.",
+      "usage_limit": null
+    },
+    "frangipani": {
+      "hex": "#F0E8D8",
+      "linear": [
+        0.8714,
+        0.807,
+        0.6867
+      ],
+      "luminance_linear": 0.812,
+      "temperature": null,
+      "family": "vegetation",
+      "role": "Frangipani petals; yolk-yellow throat uses sun_gold.",
+      "usage_limit": null
+    },
+    "lacquer_red": {
+      "hex": "#B3261E",
+      "linear": [
+        0.4508,
+        0.0194,
+        0.013
+      ],
+      "luminance_linear": 0.1106,
+      "temperature": null,
+      "family": "accent",
+      "role": "Red lacquer: Stillguard armor, pavilions, Toma's pauldron.",
+      "usage_limit": "<=8% of frame area, except Ansedra and Pemakar interiors (<=15%)."
+    },
+    "lacquer_red_deep": {
+      "hex": "#7A1712",
+      "linear": [
+        0.1946,
+        0.0086,
+        0.006
+      ],
+      "luminance_linear": 0.0479,
+      "temperature": null,
+      "family": "accent",
+      "role": "Red lacquer in shadow and on aged pieces.",
+      "usage_limit": null
+    },
+    "lacquer_black": {
+      "hex": "#1D1916",
+      "linear": [
+        0.0123,
+        0.0097,
+        0.008
+      ],
+      "luminance_linear": 0.0101,
+      "temperature": null,
+      "family": "material",
+      "role": "Black lacquer. Darkest albedo allowed on a hero.",
+      "usage_limit": "Albedo floor: no hero albedo darker than this."
+    },
+    "gold_leaf": {
+      "hex": "#D4A437",
+      "linear": [
+        0.6584,
+        0.3712,
+        0.0382
+      ],
+      "luminance_linear": 0.4082,
+      "temperature": null,
+      "family": "accent",
+      "role": "Gold leaf and gold thread.",
+      "usage_limit": "<=5% of frame area in any shot. Specular-driven, metallic 1.0."
+    },
+    "gold_leaf_hi": {
+      "hex": "#F1D27A",
+      "linear": [
+        0.8796,
+        0.6445,
+        0.1946
+      ],
+      "luminance_linear": 0.662,
+      "temperature": null,
+      "family": "accent",
+      "role": "Gold highlight / edge wear.",
+      "usage_limit": "Included in the gold 5% budget."
+    },
+    "brass": {
+      "hex": "#B08D57",
+      "linear": [
+        0.4342,
+        0.2664,
+        0.0953
+      ],
+      "luminance_linear": 0.2897,
+      "temperature": null,
+      "family": "material",
+      "role": "Brass: Rhen's lantern, fittings.",
+      "usage_limit": null
+    },
+    "bronze_patina": {
+      "hex": "#5F8A78",
+      "linear": [
+        0.1144,
+        0.2542,
+        0.1878
+      ],
+      "luminance_linear": 0.2197,
+      "temperature": null,
+      "family": "material",
+      "role": "Verdigris on old bronze and copper.",
+      "usage_limit": null
+    },
+    "salt_glass": {
+      "hex": "#BFE6E0",
+      "linear": [
+        0.521,
+        0.7913,
+        0.7454
+      ],
+      "luminance_linear": 0.7305,
+      "temperature": null,
+      "family": "material",
+      "role": "Salt-glass (transmissive, slightly green).",
+      "usage_limit": null
+    },
+    "gauze_white": {
+      "hex": "#EBE7DF",
+      "linear": [
+        0.8308,
+        0.7991,
+        0.7379
+      ],
+      "luminance_linear": 0.8014,
+      "temperature": null,
+      "family": "cloth",
+      "role": "White gauze and undyed cotton.",
+      "usage_limit": "Albedo ceiling: no albedo brighter than this except foam and glimmer."
+    },
+    "sea_blue_cloth": {
+      "hex": "#3C78A8",
+      "linear": [
+        0.0452,
+        0.1878,
+        0.3916
+      ],
+      "luminance_linear": 0.1722,
+      "temperature": null,
+      "family": "cloth",
+      "role": "Asha's sea-blue dye.",
+      "usage_limit": null
+    },
+    "indigo_dye": {
+      "hex": "#2B3A6B",
+      "linear": [
+        0.0242,
+        0.0423,
+        0.147
+      ],
+      "luminance_linear": 0.046,
+      "temperature": null,
+      "family": "cloth",
+      "role": "Indigo: Toma's sash, Low Reaches workwear.",
+      "usage_limit": null
+    },
+    "faded_teal_cloth": {
+      "hex": "#5E9A96",
+      "linear": [
+        0.1119,
+        0.3231,
+        0.305
+      ],
+      "luminance_linear": 0.2769,
+      "temperature": null,
+      "family": "cloth",
+      "role": "Rhen's sun-faded sea-jacket.",
+      "usage_limit": null
+    },
+    "sand_cloth": {
+      "hex": "#C9B48E",
+      "linear": [
+        0.5841,
+        0.4564,
+        0.2705
+      ],
+      "luminance_linear": 0.4701,
+      "temperature": null,
+      "family": "cloth",
+      "role": "Undyed sand-colored linen.",
+      "usage_limit": null
+    },
+    "bone": {
+      "hex": "#E6DAC0",
+      "linear": [
+        0.7913,
+        0.7011,
+        0.5271
+      ],
+      "luminance_linear": 0.7077,
+      "temperature": null,
+      "family": "material",
+      "role": "Bone, shell, and turtle-shell highlights.",
+      "usage_limit": null
+    },
+    "tortoiseshell": {
+      "hex": "#6B3A1E",
+      "linear": [
+        0.147,
+        0.0423,
+        0.013
+      ],
+      "luminance_linear": 0.0625,
+      "temperature": null,
+      "family": "material",
+      "role": "Tortoiseshell comb and shield layers (mid tone).",
+      "usage_limit": null
+    },
+    "skin_asha": {
+      "hex": "#B9876A",
+      "linear": [
+        0.4851,
+        0.2423,
+        0.1441
+      ],
+      "luminance_linear": 0.2868,
+      "temperature": null,
+      "family": "skin",
+      "role": "Asha albedo, medium warm brown (Low Reaches).",
+      "usage_limit": null
+    },
+    "skin_rhen": {
+      "hex": "#A87556",
+      "linear": [
+        0.3916,
+        0.1779,
+        0.0931
+      ],
+      "luminance_linear": 0.2172,
+      "temperature": null,
+      "family": "skin",
+      "role": "Rhen albedo, sun-darkened warm brown.",
+      "usage_limit": null
+    },
+    "skin_toma": {
+      "hex": "#8A5A3E",
+      "linear": [
+        0.2542,
+        0.1022,
+        0.0482
+      ],
+      "luminance_linear": 0.1306,
+      "temperature": null,
+      "family": "skin",
+      "role": "Toma albedo, deep bronze.",
+      "usage_limit": null
+    },
+    "tattoo_ink": {
+      "hex": "#24323A",
+      "linear": [
+        0.0176,
+        0.0319,
+        0.0423
+      ],
+      "luminance_linear": 0.0296,
+      "temperature": null,
+      "family": "skin",
+      "role": "Reach-band ink: blue-black, never pure black.",
+      "usage_limit": null
+    },
+    "hair_black": {
+      "hex": "#201A16",
+      "linear": [
+        0.0144,
+        0.0103,
+        0.008
+      ],
+      "luminance_linear": 0.011,
+      "temperature": null,
+      "family": "hair",
+      "role": "Black hair albedo (Asha, Toma). Highlights come from the shader.",
+      "usage_limit": null
+    },
+    "hair_copper": {
+      "hex": "#A65A2A",
+      "linear": [
+        0.3813,
+        0.1022,
+        0.0232
+      ],
+      "luminance_linear": 0.1559,
+      "temperature": null,
+      "family": "hair",
+      "role": "Rhen's sun-bleached tips.",
+      "usage_limit": null
+    },
+    "hair_dark_brown": {
+      "hex": "#2E1E14",
+      "linear": [
+        0.0273,
+        0.013,
+        0.007
+      ],
+      "luminance_linear": 0.0156,
+      "temperature": null,
+      "family": "hair",
+      "role": "Rhen's roots.",
+      "usage_limit": null
+    },
+    "ui_panel_deep": {
+      "hex": "#0A2342",
+      "linear": [
+        0.003,
+        0.0168,
+        0.0545
+      ],
+      "luminance_linear": 0.0166,
+      "temperature": null,
+      "family": "ui",
+      "role": "Panel fill, top of gradient. Alpha 0.80.",
+      "usage_limit": null
+    },
+    "ui_panel_low": {
+      "hex": "#06162B",
+      "linear": [
+        0.0018,
+        0.008,
+        0.0242
+      ],
+      "luminance_linear": 0.0079,
+      "temperature": null,
+      "family": "ui",
+      "role": "Panel fill, bottom of gradient. Alpha 0.86.",
+      "usage_limit": null
+    },
+    "ui_panel_raised": {
+      "hex": "#133A66",
+      "linear": [
+        0.0065,
+        0.0423,
+        0.1329
+      ],
+      "luminance_linear": 0.0412,
+      "temperature": null,
+      "family": "ui",
+      "role": "Selected row / raised panel fill. Alpha 0.85.",
+      "usage_limit": null
+    },
+    "ui_line_gold": {
+      "hex": "#D9B45A",
+      "linear": [
+        0.6939,
+        0.4564,
+        0.1022
+      ],
+      "luminance_linear": 0.4813,
+      "temperature": null,
+      "family": "ui",
+      "role": "Hairline frame gold.",
+      "usage_limit": "Lines and icons only; never a fill larger than 4 px."
+    },
+    "ui_line_white": {
+      "hex": "#F2F5FA",
+      "linear": [
+        0.8879,
+        0.9131,
+        0.956
+      ],
+      "luminance_linear": 0.9108,
+      "temperature": null,
+      "family": "ui",
+      "role": "Hairline white and primary text.",
+      "usage_limit": null
+    },
+    "ui_text_dim": {
+      "hex": "#A9B8CC",
+      "linear": [
+        0.3968,
+        0.4793,
+        0.6038
+      ],
+      "luminance_linear": 0.4708,
+      "temperature": null,
+      "family": "ui",
+      "role": "Secondary text and disabled labels.",
+      "usage_limit": null
+    },
+    "ui_focus": {
+      "hex": "#6FE0D8",
+      "linear": [
+        0.159,
+        0.7454,
+        0.6867
+      ],
+      "luminance_linear": 0.6165,
+      "temperature": null,
+      "family": "ui",
+      "role": "Focus glow, cursor, current-actor marker.",
+      "usage_limit": null
+    },
+    "ui_hp": {
+      "hex": "#7FD38A",
+      "linear": [
+        0.2122,
+        0.6514,
+        0.2542
+      ],
+      "luminance_linear": 0.5294,
+      "temperature": null,
+      "family": "ui",
+      "role": "HP bar fill.",
+      "usage_limit": null
+    },
+    "ui_mp": {
+      "hex": "#6FA8F0",
+      "linear": [
+        0.159,
+        0.3916,
+        0.8714
+      ],
+      "luminance_linear": 0.3768,
+      "temperature": null,
+      "family": "ui",
+      "role": "MP bar fill.",
+      "usage_limit": null
+    },
+    "ui_swell": {
+      "hex": "#F2B84B",
+      "linear": [
+        0.8879,
+        0.4793,
+        0.0704
+      ],
+      "luminance_linear": 0.5367,
+      "temperature": null,
+      "family": "ui",
+      "role": "Swell gauge fill.",
+      "usage_limit": null
+    },
+    "ui_danger": {
+      "hex": "#E85A44",
+      "linear": [
+        0.807,
+        0.1022,
+        0.0578
+      ],
+      "luminance_linear": 0.2489,
+      "temperature": null,
+      "family": "ui",
+      "role": "Low HP, damage numbers on allies, enemy turn tag.",
+      "usage_limit": null
+    },
+    "ui_heal": {
+      "hex": "#9FF0B8",
+      "linear": [
+        0.3467,
+        0.8714,
+        0.4793
+      ],
+      "luminance_linear": 0.7315,
+      "temperature": null,
+      "family": "ui",
+      "role": "Healing numbers.",
+      "usage_limit": null
+    }
+  },
+  "acts": {
+    "prologue": {
+      "frames": [
+        "prologue_iskarra_dusk"
+      ],
+      "dominant": [
+        "dusk_gold",
+        "lit_ceramic",
+        "deep_teal_shadow"
+      ],
+      "secondary": [
+        "lagoon_teal",
+        "cumulus_shadow",
+        "oil_lamp"
+      ],
+      "accent": [
+        "glimmer_lift",
+        "sea_glow"
+      ],
+      "ratio_dominant_secondary_accent": [
+        70,
+        25,
+        5
+      ],
+      "notes": "Gold dusk over white drowned towers. Faint sea-glow already present."
+    },
+    "act1": {
+      "frames": [
+        "ch01",
+        "ch02",
+        "ch03",
+        "ch04",
+        "ch05",
+        "ch06",
+        "ch07",
+        "ch08",
+        "ch09"
+      ],
+      "dominant": [
+        "sun_noon",
+        "sky_zenith_noon",
+        "turquoise_shallow",
+        "sand_dry",
+        "coral_stone"
+      ],
+      "secondary": [
+        "palm_green",
+        "deep_teal_shadow",
+        "roof_clay",
+        "cumulus_lit",
+        "cumulus_shadow"
+      ],
+      "accent": [
+        "lacquer_red",
+        "gold_leaf",
+        "frangipani",
+        "glimmer_lift"
+      ],
+      "ratio_dominant_secondary_accent": [
+        60,
+        32,
+        8
+      ],
+      "notes": "Warm, high-key, festival. Saturation peaks here. Shadows teal, never grey."
+    },
+    "act2": {
+      "frames": [
+        "ch10",
+        "ch11",
+        "ch12",
+        "ch13",
+        "ch14",
+        "ch15",
+        "ch16"
+      ],
+      "dominant": [
+        "overcast_slate",
+        "cold_blue_stone",
+        "storm_slate",
+        "moon_blue"
+      ],
+      "secondary": [
+        "reef_blue",
+        "foliage_shadow",
+        "order_marble",
+        "glimmer_held"
+      ],
+      "accent": [
+        "gold_leaf",
+        "lacquer_red_deep",
+        "oil_lamp",
+        "glimmer_lift"
+      ],
+      "ratio_dominant_secondary_accent": [
+        65,
+        30,
+        5
+      ],
+      "notes": "Overcast, storm, moonlit, cold blue stone. Gold survives only in Order spaces, where it reads as cold."
+    },
+    "act3_dusk": {
+      "frames": [
+        "ch17",
+        "ch18",
+        "ch19"
+      ],
+      "dominant": [
+        "dusk_gold",
+        "sun_gold",
+        "deep_teal_shadow"
+      ],
+      "secondary": [
+        "cumulus_shadow",
+        "brass",
+        "timber_weathered",
+        "lit_ceramic"
+      ],
+      "accent": [
+        "ember_orange",
+        "glimmer_lift",
+        "lacquer_red"
+      ],
+      "ratio_dominant_secondary_accent": [
+        60,
+        32,
+        8
+      ],
+      "notes": "Dusk gold: warmth returns but low and long, the light of an ending."
+    },
+    "act3_abyss": {
+      "frames": [
+        "ch20",
+        "ch21"
+      ],
+      "dominant": [
+        "abyss_navy",
+        "deep_teal_shadow",
+        "night_sky"
+      ],
+      "secondary": [
+        "glimmer_held",
+        "glimmer_bound",
+        "reef_blue"
+      ],
+      "accent": [
+        "glimmer_lift",
+        "glimmer_lift_hi",
+        "gold_leaf"
+      ],
+      "ratio_dominant_secondary_accent": [
+        75,
+        18,
+        7
+      ],
+      "notes": "Underwater abyss lit only by glimmer. Held cyan dominates until the Letting turns it gold and upward."
+    },
+    "finale_stars": {
+      "frames": [
+        "ending_unbinding",
+        "ending_dock",
+        "post_credits"
+      ],
+      "dominant": [
+        "night_sky",
+        "abyss_navy"
+      ],
+      "secondary": [
+        "moon_blue",
+        "lit_ceramic"
+      ],
+      "accent": [
+        "starlight",
+        "oil_lamp"
+      ],
+      "ratio_dominant_secondary_accent": [
+        88,
+        10,
+        2
+      ],
+      "notes": "Total darkness under stars. sea_glow energy is exactly 0 in the dock shot."
+    }
+  }
+}
