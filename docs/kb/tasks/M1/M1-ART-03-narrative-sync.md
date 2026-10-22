@@ -2,8 +2,8 @@
 id: M1-ART-03
 title: Sync color script and Haluna brief with the vertical-slice script
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: art-stream-2
 depends_on: [M1-NAR-02]
 milestone: M1
 request-from: "narrative"
