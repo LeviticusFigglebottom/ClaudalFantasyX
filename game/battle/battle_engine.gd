@@ -31,6 +31,10 @@ var outcome: StringName = &""
 var encounter_id: StringName = &""
 ## Scripted fights forbid escape.
 var scripted := false
+## Optional hook run once on every party combatant (active and reserve) right after setup()
+## builds it from characters.json, e.g. `progress.apply_to` to layer Lattice gains on (SPEC §6.4).
+## It receives the BattleCombatant and must stay deterministic. Set it before setup().
+var party_modifier := Callable()
 
 
 func setup(
@@ -369,7 +373,10 @@ func _rebuild_roster() -> void:
 
 
 func _make_party_member(cid: StringName) -> BattleCombatant:
-	return BattleCombatant.from_dict(cid, BattleCombatant.TEAM_PARTY, db.characters[cid])
+	var c := BattleCombatant.from_dict(cid, BattleCombatant.TEAM_PARTY, db.characters[cid])
+	if party_modifier.is_valid():
+		party_modifier.call(c)
+	return c
 
 
 static func _living(list: Array[BattleCombatant]) -> Array[BattleCombatant]:

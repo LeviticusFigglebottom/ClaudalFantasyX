@@ -1,0 +1,26 @@
+{
+  "battle_sandbox": {
+    "doc": "Greybox presentation of the M1 battle sandbox (M1-CMB-01). Colors are palette hexes; sizes in metres.",
+    "active": ["rhen", "asha"],
+    "reserve": ["toma", "ysolde"],
+    "encounter": "sandbox_reef",
+    "seed": 20261022,
+    "board": "standard",
+    "ring": {"radius_factor": 1.4, "line_width_m": 0.06, "inner_soft_m": 0.25, "spin_deg_per_sec": 12.0,
+             "notches": 6, "lift_m": 0.02, "stagger_sec": 0.08},
+    "stand_in_defaults": {"roughness": 0.85, "emission_energy": 0.6, "recoil_m": 0.12, "recoil_sec": 0.16},
+    "ko_sink_m": 0.25,
+    "ko_alpha": 0.35,
+    "stand_ins": {
+      "rhen": {"shape": "capsule", "color": "#5E9A96", "radius": 0.32, "height": 1.72, "tint": "#5E9A96"},
+      "asha": {"shape": "capsule", "color": "#3C78A8", "radius": 0.28, "height": 1.62, "tint": "#3C78A8"},
+      "toma": {"shape": "capsule", "color": "#2B3A6B", "radius": 0.42, "height": 1.9, "tint": "#5B6FB0"},
+      "ysolde": {"shape": "capsule", "color": "#B08A52", "radius": 0.27, "height": 1.66, "tint": "#B08A52"},
+      "reef_crab": {"shape": "box", "color": "#B5523A", "radius": 0.62, "height": 0.62, "tint": "#B5523A"},
+      "lantern_eel": {"shape": "cylinder", "color": "#1C6B78", "radius": 0.24, "height": 2.1, "tint": "#3FA9B5",
+                      "emission": "#4FB3B0"},
+      "gull_harrier": {"shape": "prism", "color": "#8FA7C4", "radius": 0.4, "height": 0.45, "hover": 1.05,
+                       "tint": "#C9B48E"}
+    }
+  }
+}

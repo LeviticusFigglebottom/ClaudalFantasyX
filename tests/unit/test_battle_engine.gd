@@ -476,3 +476,65 @@ static func _stats(hp: int, strength: int, agility: int) -> Dictionary:
 		"evasion": 0,
 		"luck": 0,
 	}
+
+
+# --- party_modifier hook (M1-CMB-01: Lattice gains in battle) ----------------------------
+
+
+func test_party_modifier_defaults_to_no_op() -> void:
+	assert_false(engine.party_modifier.is_valid())
+	_start(&"dummies")
+	var hero := engine.find(&"hero")
+	assert_eq(hero.strength, 30)
+	assert_eq(hero.max_hp, 300)
+
+
+func test_party_modifier_runs_once_per_party_member_only() -> void:
+	var seen: Array[StringName] = []
+	engine.party_modifier = func(c: BattleCombatant) -> void:
+		seen.append(c.id)
+		c.strength += 1
+	_start(&"dummies")
+	assert_eq(seen, [&"hero", &"helper", &"bench"] as Array[StringName], "active then reserve, once each")
+	assert_eq(engine.find(&"hero").strength, 31)
+	assert_eq(engine.find(&"bench").strength, 31, "reserves are modified too")
+	for e in engine.enemies:
+		assert_eq(e.strength, 5, "enemies are never modified")
+
+
+func test_party_modifier_applies_lattice_progress() -> void:
+	var p := LatticeFixture.progress()
+	var inv := FacetInventory.new({"facet_power": 2, "facet_ability": 1})
+	p.traveler(&"rhen").movement_points = 3
+	p.move(&"rhen", &"s_str")
+	p.activate(&"rhen", inv)
+	p.move(&"rhen", &"s_hp")
+	p.activate(&"rhen", inv)
+	p.move(&"rhen", &"ab_kick")
+	p.activate(&"rhen", inv)
+	engine.party_modifier = p.apply_to
+	var active: Array[StringName] = [&"rhen", &"asha"]
+	var reserve: Array[StringName] = [&"toma"]
+	var db := BattleDB.load_default()
+	engine.setup(db, active, reserve, &"sandbox_reef", 7)
+	var rhen := engine.find(&"rhen")
+	var base: Dictionary = db.characters[&"rhen"]["stats"]
+	assert_eq(rhen.strength, int(base["strength"]) + 3)
+	assert_eq(rhen.max_hp, int(base["hp"]) + 40)
+	assert_eq(rhen.hp, rhen.max_hp, "HP bonus raises current HP too")
+	assert_true(rhen.skills.has(&"kick_off"), "ability node grants its skill")
+	assert_eq(rhen.skills.count(&"kick_off"), 1)
+	var asha := engine.find(&"asha")
+	assert_eq(asha.strength, int(db.characters[&"asha"]["stats"]["strength"]), "only the activator gains")
+	assert_eq(engine.find(&"toma").skills.size(), (db.characters[&"toma"]["skills"] as Array).size())
+
+
+func test_party_modifier_keeps_battles_deterministic() -> void:
+	var p := LatticeFixture.progress()
+	engine.party_modifier = p.apply_to
+	_start(&"dummies", 5)
+	var first := _auto_play(60)
+	engine = BattleEngine.new()
+	engine.party_modifier = p.apply_to
+	_start(&"dummies", 5)
+	assert_eq(_auto_play(60), first)
