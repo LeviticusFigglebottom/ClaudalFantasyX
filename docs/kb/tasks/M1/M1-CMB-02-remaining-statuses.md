@@ -2,8 +2,8 @@
 id: M1-CMB-02
 title: Implement remaining statuses (Petrify, Berserk, Confuse, Doom, Zombie, Reflect, Provoke)
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: combat-stream-2
 depends_on: [M1-CMB-00]
 milestone: M1
 request-from: ""

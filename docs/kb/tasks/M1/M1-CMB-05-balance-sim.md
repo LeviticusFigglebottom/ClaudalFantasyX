@@ -2,8 +2,8 @@
 id: M1-CMB-05
 title: Headless balancing simulator
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: combat-stream-2
 depends_on: [M1-CMB-00]
 milestone: M1
 request-from: ""
