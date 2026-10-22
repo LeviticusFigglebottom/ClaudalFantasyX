@@ -4,6 +4,9 @@
     {"id": "boot_title", "scene": "res://game/core/boot.tscn", "resolution": [1920, 1080], "settle_frames": 10,
      "threshold_rmse": 0.004},
     {"id": "lighting_probe", "scene": "res://tests/screenshots/scenes/lighting_probe.tscn", "camera": "ShotCamera"},
-    {"id": "lighting_probe_low", "scene": "res://tests/screenshots/scenes/lighting_probe.tscn", "camera": "Cameras/Low"}
+    {"id": "lighting_probe_low", "scene": "res://tests/screenshots/scenes/lighting_probe.tscn", "camera": "Cameras/Low"},
+    {"id": "battle_hud_preview", "scene": "res://game/battle/scene/shots/battle_player_preview.tscn"},
+    {"id": "battle_swap_menu", "scene": "res://game/battle/scene/shots/battle_swap_menu.tscn"},
+    {"id": "battle_victory", "scene": "res://game/battle/scene/shots/battle_victory.tscn"}
   ]
 }

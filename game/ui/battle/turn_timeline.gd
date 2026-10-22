@@ -28,6 +28,8 @@ func _ready() -> void:
 	_metrics = HudLayout.section(&"timeline")
 	HudLayout.place(self, _metrics)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Turns sliding in or out of the order stay inside the panel.
+	clip_contents = true
 	_panel = Panel.new()
 	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
