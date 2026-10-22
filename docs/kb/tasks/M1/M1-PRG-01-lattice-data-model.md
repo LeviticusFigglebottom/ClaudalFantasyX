@@ -2,8 +2,8 @@
 id: M1-PRG-01
 title: Lattice data model, editor tool, and first section
 role: progression
-status: todo
-owner_session: ""
+status: doing
+owner_session: progression-stream-1
 depends_on: [M1-CMB-00]
 milestone: M1
 request-from: ""
