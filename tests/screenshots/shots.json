@@ -1,6 +1,9 @@
 {
+  "defaults": {"camera": "default", "resolution": [1280, 720], "settle_frames": 30, "seed": 1, "threshold_rmse": 0.008},
   "shots": [
-    {"id": "boot_title", "scene": "res://game/core/boot.tscn", "camera": "default",
-     "resolution": [1920, 1080], "threshold_rmse": 0.02}
+    {"id": "boot_title", "scene": "res://game/core/boot.tscn", "resolution": [1920, 1080], "settle_frames": 10,
+     "threshold_rmse": 0.004},
+    {"id": "lighting_probe", "scene": "res://tests/screenshots/scenes/lighting_probe.tscn", "camera": "ShotCamera"},
+    {"id": "lighting_probe_low", "scene": "res://tests/screenshots/scenes/lighting_probe.tscn", "camera": "Cameras/Low"}
   ]
 }

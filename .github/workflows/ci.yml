@@ -31,8 +31,8 @@ jobs:
         run: gdlint game tests
       - name: gdformat (check only)
         run: gdformat -l 120 --check game tests
-      - name: Screenshot regression (stub until M1-QA-01)
-        run: python3 tools/screenshots/compare.py
+      - name: Screenshot manifest (capture + compare run in the screenshots job)
+        run: python3 tools/screenshots/compare.py --manifest-only
 
   godot:
     name: Godot import + tests
@@ -70,6 +70,52 @@ jobs:
           if grep -E "SCRIPT ERROR|Parse Error" tests.log; then
             echo "::error::Script errors during test run"; exit 1
           fi
+
+  screenshots:
+    name: Screenshot regression (Forward+ on Mesa lavapipe, ADR 0009)
+    needs: [tools]
+    runs-on: ubuntu-24.04
+    # Baselines were approved on the sandbox stack (Mesa 26.2 lavapipe, Godot 4.6.3 distro build).
+    # The runner's Mesa and the official Godot build may differ slightly, so this job reports but does
+    # not gate until a baseline set from this runner is approved (see docs/kb/qa/screenshots.md).
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install -r tools/requirements.txt
+      - name: Software rendering stack
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends mesa-vulkan-drivers libvulkan1 xvfb xauth
+      - name: Cache Godot
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: ~/godot
+          key: godot-${{ env.GODOT_RELEASE }}-linux
+      - name: Download Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot && cd ~/godot
+          curl -fsSL -o godot.zip "https://github.com/godotengine/godot-builds/releases/download/${GODOT_RELEASE}/Godot_v${GODOT_RELEASE}_linux.x86_64.zip"
+          unzip -q godot.zip && rm godot.zip
+          mv Godot_v${GODOT_RELEASE}_linux.x86_64 godot && chmod +x godot
+      - name: Render wrapper (Xvfb + lavapipe)
+        run: |
+          printf '#!/bin/sh\nexport LP_NATIVE_VECTOR_WIDTH=256\nexec xvfb-run -a -s "-screen 0 1920x1080x24" "$HOME/godot/godot" "$@"\n' > "$HOME/godot-render"
+          chmod +x "$HOME/godot-render"
+      - name: Import project
+        run: ~/godot/godot --headless --path . --import || true
+      - name: Capture
+        run: HYMN_GODOT_RENDER="$HOME/godot-render" tools/screenshots/capture.sh
+      - name: Compare against baselines
+        run: python3 tools/screenshots/compare.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots-${{ github.sha }}
+          path: tests/screenshots/out/
+          retention-days: 14
 
   export:
     name: Export Windows + Linux
