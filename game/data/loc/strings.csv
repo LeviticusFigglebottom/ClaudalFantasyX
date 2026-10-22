@@ -99,3 +99,51 @@ GFX_SSR_STEPS,Reflection Steps
 GFX_SUN_SHADOW,Sun Shadow Size
 GFX_VOLUMETRIC_FOG,Volumetric Fog
 GFX_VOXEL_GI_QUALITY,VoxelGI Quality
+HUD_CMD_ATTACK,Attack
+HUD_CMD_SKILLS,Skills
+HUD_CMD_ESCAPE,Escape
+HUD_CMD_SWAP,Swap
+HUD_PAGE_RESERVE,Reserve
+HUD_RANK_FMT,R{rank}
+HUD_MP_FMT,{mp} MP
+HUD_HP_FMT,{hp}/{max} HP
+HUD_CHANCE_FMT,{pct}%
+HUD_COST_FREE,No time
+HUD_HELP_SKILLS,Techniques and songs this fighter knows.
+HUD_HELP_SWAP,Trade places with a reserve fighter. Costs no time.
+HUD_HELP_ESCAPE_FMT,Try to slip away: {pct}% chance. Failing costs a turn.
+HUD_HELP_ESCAPE_SCRIPTED,There is no slipping away from this fight.
+HUD_HELP_SWAP_IN_FMT,{name} steps in and takes {out}'s place in the order. Costs no time.
+HUD_HELP_SWAP_OUT_FMT,Who steps back for {name}?
+HUD_KIND_PHYSICAL,Physical
+HUD_KIND_MAGICAL,Magic
+HUD_KIND_HEAL,Healing
+HUD_KIND_SUPPORT,Support
+HUD_TARGET_SINGLE_FOE,one foe
+HUD_TARGET_ALL_FOES,all foes
+HUD_TARGET_SINGLE_ALLY,one ally
+HUD_TARGET_ALL_ALLIES,all allies
+HUD_TARGET_SELF,self
+HUD_GROUP_ALL_FOES,All foes
+HUD_GROUP_ALL_ALLIES,All allies
+HUD_HELP_INFLICTS_FMT,inflicts {status}
+HUD_HELP_GRANTS_FMT,grants {status}
+HUD_HELP_DELAY_FMT,delays the target {n} ranks
+HUD_HELP_NEXT_ONE,{name} acts again next
+HUD_HELP_NEXT_FMT,{name} acts again in {n} turns
+HUD_ENEMY_ACTS_FMT,{name}: {skill}
+HUD_ESCAPE_FAILED,Couldn't get away.
+HUD_MISS,Miss
+HUD_VICTORY,Victory
+HUD_VICTORY_SUB,The reef falls quiet.
+HUD_DEFEAT,Defeat
+HUD_DEFEAT_SUB,The tide takes the light.
+HUD_ESCAPED,Escaped
+HUD_ESCAPED_SUB,You slip back toward the shore.
+HUD_RESULT_XP_FMT,+{xp} XP
+HUD_RESULT_MOVES_FMT,+{n} movement
+HUD_RESULT_NO_LATTICE,no Lattice path yet
+HUD_RESULT_RETRY,Fight again
+HUD_RESULT_RETURN,Return
+HUD_TARGET_UNREAD,HP unknown until Read
+HUD_RESULT_FELL,Fell before the end: no XP
