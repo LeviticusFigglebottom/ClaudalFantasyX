@@ -10,5 +10,7 @@ flags = {
 "ch02_rhen_named_lantern": "On the beach, Rhen told Asha the lantern was his father's instead of deflecting.",
 "test_flag": "Reserved for automated tests. Never read by game content.",
 "test_counter": "Reserved for automated tests (numeric). Never read by game content.",
-"test_text": "Reserved for automated tests (string). Never read by game content."
+"test_text": "Reserved for automated tests (string). Never read by game content.",
+"field_test_lever_pulled": "Field test zone (game/levels/_tests/field): the lever interactable was used. Tests and the debug flag inspector only; never read by story content.",
+"field_test_causeway_reached": "Field test zone (game/levels/_tests/field): the player touched the causeway gate trigger. Tests only; never read by story content."
 }

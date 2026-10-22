@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "doc": "Field camera director defaults (M1-ARC-01, docs/kb/tech/field_camera.md). A CameraShot overrides any of these; negative / empty in a shot means 'use the default here'.",
+  "default_blend_sec": 1.2,
+  "default_blend_ease": "in_out_sine",
+  "eases": {
+    "doc": "Named blend curves: Tween transition + ease, sampled with Tween.interpolate_value.",
+    "linear": {"trans": "TRANS_LINEAR", "ease": "EASE_IN_OUT"},
+    "in_out_sine": {"trans": "TRANS_SINE", "ease": "EASE_IN_OUT"},
+    "in_out_cubic": {"trans": "TRANS_CUBIC", "ease": "EASE_IN_OUT"},
+    "out_quart": {"trans": "TRANS_QUART", "ease": "EASE_OUT"}
+  },
+  "default_fov_deg": 37.8,
+  "pan_follow_smoothing_per_sec": 4.0,
+  "dolly_follow_smoothing_per_sec": 3.0,
+  "orbit": {
+    "doc": "Only when the director's hub_orbit_enabled flag is set (SPEC §6.6: no free orbit except optional hub zones).",
+    "distance_m": 6.0,
+    "height_m": 2.4,
+    "yaw_speed_deg_per_sec": 120.0
+  },
+  "volume_check_epsilon_m": 0.001
+}
