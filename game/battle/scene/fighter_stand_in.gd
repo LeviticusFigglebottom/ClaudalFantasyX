@@ -1,0 +1,137 @@
+class_name FighterStandIn
+extends Node3D
+## Greybox stand-in for one fighter (M1-CMB-01): a primitive mesh from battle_sandbox.json and
+## the ground-ring target highlight. Presentation only: it is told what to show.
+
+const RING_SHADER := preload("res://game/battle/scene/ground_ring.gdshader")
+const RING_NONE := &"none"
+const RING_ALLY := &"ally"
+const RING_FOE := &"foe"
+
+var combatant_id: StringName = &""
+var spec: Dictionary = {}
+
+var _mesh: MeshInstance3D
+var _ring: MeshInstance3D
+var _ring_mat: ShaderMaterial
+var _body_mat: StandardMaterial3D
+var _ring_cfg: Dictionary = {}
+var _spin := 0.0
+var _rest := Vector3.ZERO
+var _ko := false
+
+
+func setup(cid: StringName, stand_in: Dictionary, ring_cfg: Dictionary) -> void:
+	combatant_id = cid
+	spec = stand_in
+	_ring_cfg = ring_cfg
+	name = String(cid).replace("#", "_")
+	_mesh = MeshInstance3D.new()
+	_mesh.mesh = _make_mesh()
+	_body_mat = StandardMaterial3D.new()
+	_body_mat.albedo_color = Color.html(str(spec.get("color", "#B9AE98")))
+	_body_mat.roughness = float(spec.get("roughness", 1.0))
+	if spec.has("emission"):
+		_body_mat.emission_enabled = true
+		_body_mat.emission = Color.html(str(spec["emission"]))
+		_body_mat.emission_energy_multiplier = float(spec.get("emission_energy", 1.0))
+	_mesh.material_override = _body_mat
+	_rest = Vector3(0.0, _base_height(), 0.0)
+	_mesh.position = _rest
+	add_child(_mesh)
+	_build_ring()
+
+
+func _process(delta: float) -> void:
+	if _ring.visible:
+		_spin += deg_to_rad(float(_ring_cfg.get("spin_deg_per_sec", 0.0))) * delta
+		_ring_mat.set_shader_parameter(&"spin", _spin)
+
+
+## World position just above the head (for damage numbers and markers).
+func head_position(extra_m: float = 0.0) -> Vector3:
+	var top := _base_height() + _height() * 0.5 + extra_m
+	return global_position + Vector3(0.0, top, 0.0)
+
+
+func set_ring(mode: StringName, color: Color) -> void:
+	_ring.visible = mode != RING_NONE
+	_ring_mat.set_shader_parameter(&"ring_color", color)
+
+
+func ring_mode_visible() -> bool:
+	return _ring.visible
+
+
+## A small knock-back away from the camera's right, then back (no effect while KO'd).
+func flinch() -> void:
+	if _ko or not is_inside_tree():
+		return
+	var push := float(spec.get("recoil_m", 0.0))
+	var sec := float(spec.get("recoil_sec", 0.0))
+	var tw := create_tween()
+	tw.tween_property(_mesh, "position", _rest + Vector3(push * signf(-global_position.x), 0.0, 0.0), sec * 0.5)
+	tw.tween_property(_mesh, "position", _rest, sec * 0.5)
+
+
+func set_ko(ko: bool, sink_m: float, alpha: float) -> void:
+	_ko = ko
+	_mesh.position = _rest - Vector3(0.0, sink_m if ko else 0.0, 0.0)
+	_body_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if ko else BaseMaterial3D.TRANSPARENCY_DISABLED
+	_body_mat.albedo_color.a = alpha if ko else 1.0
+
+
+func _height() -> float:
+	return float(spec.get("height", 1.0))
+
+
+func _radius() -> float:
+	return float(spec.get("radius", 0.3))
+
+
+func _base_height() -> float:
+	return float(spec.get("hover", 0.0)) + _height() * 0.5
+
+
+func _make_mesh() -> Mesh:
+	match str(spec.get("shape", "capsule")):
+		"box":
+			var b := BoxMesh.new()
+			b.size = Vector3(_radius() * 2.0, _height(), _radius() * 1.6)
+			return b
+		"cylinder":
+			var c := CylinderMesh.new()
+			c.top_radius = _radius() * 0.6
+			c.bottom_radius = _radius()
+			c.height = _height()
+			return c
+		"prism":
+			var p := PrismMesh.new()
+			p.size = Vector3(_radius() * 3.0, _height(), _radius() * 1.4)
+			return p
+	var cap := CapsuleMesh.new()
+	cap.radius = _radius()
+	cap.height = _height()
+	return cap
+
+
+func _build_ring() -> void:
+	_ring = MeshInstance3D.new()
+	var r := _radius() * float(_ring_cfg.get("radius_factor", 1.4))
+	var soft := float(_ring_cfg.get("inner_soft_m", 0.25))
+	var extent := r + soft
+	var quad := PlaneMesh.new()
+	quad.size = Vector2(extent * 2.0, extent * 2.0)
+	_ring.mesh = quad
+	_ring_mat = ShaderMaterial.new()
+	_ring_mat.shader = RING_SHADER
+	_ring_mat.set_shader_parameter(&"radius", r)
+	_ring_mat.set_shader_parameter(&"extent", extent)
+	_ring_mat.set_shader_parameter(&"line_width", float(_ring_cfg.get("line_width_m", 0.06)))
+	_ring_mat.set_shader_parameter(&"inner_soft", soft)
+	_ring_mat.set_shader_parameter(&"notches", float(_ring_cfg.get("notches", 6)))
+	_ring.material_override = _ring_mat
+	_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_ring.position = Vector3(0.0, float(_ring_cfg.get("lift_m", 0.02)), 0.0)
+	_ring.visible = false
+	add_child(_ring)
