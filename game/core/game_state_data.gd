@@ -13,6 +13,10 @@ extends Resource
 ## Lattice progress as plain data (LatticeProgress.to_dict()); rebuild it with
 ## LatticeProgress.from_dict(lattice, board, rules). Facets themselves live in `inventory`.
 @export var lattice: Dictionary = {}
+## Owned equipment pieces and loadouts as plain data (wrapped in place by EquipmentBag):
+## {next_uid, owned: {"<uid>": {base, abilities[]}}, loadout: {character: {weapon, armor}}}.
+## Items and Facets live in `inventory`, lume in `currency`.
+@export var equipment: Dictionary = {}
 
 
 func to_dict() -> Dictionary:
@@ -26,6 +30,7 @@ func to_dict() -> Dictionary:
 		"location_id": String(location_id),
 		"chapter": chapter,
 		"lattice": lattice.duplicate(true),
+		"equipment": equipment.duplicate(true),
 	}
 
 
@@ -42,4 +47,5 @@ static func from_dict(d: Dictionary) -> GameStateData:
 	s.location_id = StringName(str(d.get("location_id", "")))
 	s.chapter = int(d.get("chapter", 0))
 	s.lattice = (d.get("lattice", {}) as Dictionary).duplicate(true)
+	s.equipment = (d.get("equipment", {}) as Dictionary).duplicate(true)
 	return s
