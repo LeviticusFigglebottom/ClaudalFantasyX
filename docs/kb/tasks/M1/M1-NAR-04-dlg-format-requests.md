@@ -2,8 +2,8 @@
 id: M1-NAR-04
 title: Dialogue format requests from Narrative
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: architect-stream-3
 depends_on: [M1-NAR-03]
 milestone: M1
 request-from: "narrative"
