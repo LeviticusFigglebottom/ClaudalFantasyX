@@ -22,3 +22,4 @@ A headless, deterministic CTB engine that the sandbox, simulator, and tests driv
 Written in the bootstrap session without a local Godot binary; verified by gdparse and gdlint only until CI runs. Reviewer: Progression.
 
 ## Review log
+- 2026-10-22 lead: first real run on Godot 4.6.3: all engine, timeline, and formula tests pass. Progression review pending.

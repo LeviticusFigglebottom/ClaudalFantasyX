@@ -41,6 +41,8 @@ The full brief is [`SPEC.md`](SPEC.md). Only the Lead edits it, and every change
 
 ### Local checks before you push
 
+`tools/ci_local.sh` runs every CI gate and **is the merge gate while GitHub Actions isn't running** (ADR 0008). If there's no Godot on PATH, run `python3 tools/dev/fetch_godot.py` first. The individual steps:
+
 ```bash
 pip install -r tools/requirements.txt
 python3 tools/validate_data.py

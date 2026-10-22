@@ -1,8 +1,8 @@
 # STATUS
 
-- **Milestone:** M0 Bootstrap, in **review** (exit check: first green CI run). M1 is open for parallel streams.
+- **Milestone:** M0 Bootstrap, gates **green locally** (ADR 0008), awaiting a fresh-agent review. **M1 is open**: parallel streams are running.
 - **Updated:** 2026-10-22 by Lead (lead-bootstrap)
-- **M0 progress:** about 95%. Every §15 step 1–6 artifact is in the repo. The Godot import and test jobs have not yet run green in CI.
+- **M0 progress:** about 98%. Every §15 step 1–6 artifact is in the repo, and `tools/ci_local.sh` passes (42/42 Godot tests on 4.6.3).
 - **M1 progress:** about 10%. The CTB engine core and story bible are in review, and the audio PoC is landing. See `python3 tools/taskboard.py --milestone M1`.
 
 ## The project in one page (Lead's reading of SPEC v1.0)
@@ -25,13 +25,14 @@ We're building *Hymn of the Undertow*: an original, cinematic, turn-based JRPG i
 - Story bible, 8 character sheets, voice guide, act outline (vertical slice = Ch2–3, Haluna), and 7 Vowbound.
 
 ## Top risks
-1. **The engine code has not run yet.** The bootstrap container had no Godot binary; checks so far are gdparse, gdlint, and hand-verified test expectations. The first CI run may need fix-up commits.
+1. **GitHub Actions does not run.** Runs sit in `queued` with no runner (Actions disabled, or no minutes). We gate locally instead (ADR 0008), with Godot fetched from the Ubuntu archive, and GPU-dependent checks are still missing.
 2. **Character fidelity** (§14): procedural humans may look uncanny. M1-CHR-02 must prove Asha before anything scales.
 3. **Generated music quality** (§14, Q3): see the audio PoC assessment in `audio/pipeline.md`.
 4. **Binary storage:** Git LFS is deferred (ADR 0005), and M1 hero textures will need it.
 5. **No GPU CI:** screenshot regression and performance checks need a GPU-capable runner (M1-QA-01).
 
 ## Blockers / questions for the human
+- **GitHub Actions:** when convenient, check the repo's Settings → Actions (are workflows allowed?) and the account's Actions minutes. Nothing is blocked meanwhile, thanks to the local gate.
 - **LFS:** may we enable Git LFS on this repo (quota)? It's needed before M1-CHR-02 textures land.
 - **Q1 title/world:** proceeding with the defaults. Note that "the Calm" is spec-mandated but overlaps a term from the inspiring game. Narrative kept it and banned the compounds. Say the word if you'd rather rename it.
 - **Q2 (MPFB/MakeHuman as a base tool):** the default (allowed as a tool, heavily modified) will be logged in an ADR at M1-CHR-01 unless you say otherwise.

@@ -8,6 +8,8 @@
 | Lint/format | gdtoolkit 4.5.0: `gdlint`, `gdformat -l 120` |
 | CI download | `https://github.com/godotengine/godot-builds/releases/download/4.6.3-stable/Godot_v4.6.3-stable_linux.x86_64.zip` |
 
+**No network path to GitHub releases (cloud sandbox)?** Run `python3 tools/dev/fetch_godot.py` and put `~/.cache/hymn/godot-4.6.3+ds-2/godot` on PATH as `godot` (ADR 0008). Then `tools/ci_local.sh` runs every CI gate.
+
 Change the version only through a new ADR, updating `project.godot` (`config/features`), `.github/workflows/ci.yml` (`GODOT_RELEASE`), and this file together.
 
 ## Headless gotchas
