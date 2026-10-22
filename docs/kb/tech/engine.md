@@ -16,3 +16,6 @@ Change the version only through a new ADR, updating `project.godot` (`config/fea
 - `--headless` uses the dummy renderer: the shader front end runs and scenes load, but nothing draws. To **see** frames without a GPU, use `~/.cache/hymn/godot-4.6.3+ds-2/godot-render` (Forward+ on lavapipe under Xvfb, from `tools/dev/fetch_render_deps.py`; ADR 0009, docs/kb/qa/screenshots.md). Performance numbers still need a real GPU.
 - Run `--import` once on a fresh checkout before running scenes, or `class_name` lookups fail (the global class cache lives in `.godot/`, which is gitignored).
 - The test runner is a *scene* (not `--script`), so autoloads exist during tests.
+
+## Blender (asset pipeline, ADR 0005)
+In the sandbox, run `python3 tools/dev/fetch_blender.py` to fetch Ubuntu's `blender 5.0.1+dfsg-5` (plus python3-numpy for the glTF exporter) into `~/.cache/hymn/`. The wrapper `~/.cache/hymn/blender-5.0.1+dfsg-5/blender` sets `PYTHONHOME`, `BLENDER_SYSTEM_RESOURCES` and `--python-use-system-env`. It has been verified to run `--background --factory-startup` and export `.glb`. Pin this version in any Blender CI job (M1-QA-02).

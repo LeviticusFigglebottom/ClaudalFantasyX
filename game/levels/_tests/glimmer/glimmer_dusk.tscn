@@ -1,0 +1,141 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/glimmer/glimmer_test_stage.gd" id="stage"]
+[ext_resource type="Script" path="res://game/vfx/glimmer/glimmer_field.gd" id="field"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
+sky_top_color = Color(0.2745, 0.3765, 0.6039, 1)
+sky_horizon_color = Color(0.9412, 0.6392, 0.3608, 1)
+sky_curve = 0.09
+sky_energy_multiplier = 1.0
+ground_bottom_color = Color(0.0549, 0.1647, 0.2275, 1)
+ground_horizon_color = Color(0.9412, 0.6392, 0.3608, 1)
+ground_curve = 0.05
+ground_energy_multiplier = 1.0
+sun_angle_max = 8.0
+sun_curve = 0.1
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("Sky_mat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_energy = 0.6
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.0
+tonemap_white = 6.0
+ssr_enabled = true
+glow_enabled = true
+glow_levels/1 = 0.0
+glow_levels/2 = 0.6
+glow_levels/3 = 1.0
+glow_levels/4 = 0.8
+glow_levels/5 = 0.6
+glow_levels/6 = 0.4
+glow_levels/7 = 0.0
+glow_normalized = true
+glow_intensity = 0.9
+glow_strength = 1.0
+glow_bloom = 0.0
+glow_blend_mode = 0
+glow_hdr_threshold = 1.0
+glow_hdr_scale = 2.0
+fog_enabled = false
+fog_light_color = Color(0.851, 0.6353, 0.4784, 1)
+fog_density = 0.0
+fog_sky_affect = 0.0
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.01
+volumetric_fog_albedo = Color(0.851, 0.6353, 0.4784, 1)
+volumetric_fog_emission = Color(0, 0, 0, 1)
+volumetric_fog_emission_energy = 0.0
+volumetric_fog_anisotropy = 0.6
+volumetric_fog_temporal_reprojection_enabled = false
+volumetric_fog_length = 40.0
+volumetric_fog_sky_affect = 0.0
+adjustment_enabled = true
+adjustment_saturation = 1.0
+adjustment_contrast = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Water_mat"]
+albedo_color = Color(0.0549, 0.2902, 0.3333, 1)
+roughness = 0.04
+metallic_specular = 0.5
+
+[sub_resource type="PlaneMesh" id="Water_mesh"]
+material = SubResource("Water_mat")
+size = Vector2(600, 600)
+
+[sub_resource type="StandardMaterial3D" id="Figure_mat"]
+albedo_color = Color(0.2275, 0.1882, 0.1647, 1)
+roughness = 0.85
+
+[sub_resource type="CapsuleMesh" id="Body_mesh"]
+material = SubResource("Figure_mat")
+radius = 0.21
+height = 1.5
+
+[sub_resource type="SphereMesh" id="Head_mesh"]
+material = SubResource("Figure_mat")
+radius = 0.12
+height = 0.24
+
+[node name="GlimmerDusk" type="Node3D"]
+script = ExtResource("stage")
+field_path = NodePath("Glimmer")
+figure_path = NodePath("Figure")
+glimmer_intensity = 2.5
+figure_attractor_strength = 0.8
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Key" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.0348995, 0.069714, -0.996956, -0, 0.997564, 0.0697565, 0.999391, -0.00243447, 0.0348145, 0, 10, 0)
+light_color = Color(1, 0.6824, 0.4039, 1)
+light_energy = 2.2
+light_volumetric_fog_energy = 1.0
+shadow_enabled = true
+directional_shadow_max_distance = 40.0
+
+[node name="Fill" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-6.12323e-17, -0.642788, 0.766044, 0, 0.766044, 0.642788, -1, 3.93594e-17, -4.69067e-17, 0, 10, 0)
+light_color = Color(0.4314, 0.5608, 0.7529, 1)
+light_energy = 0.4
+light_volumetric_fog_energy = 0.0
+light_specular = 0.2
+
+[node name="Water" type="MeshInstance3D" parent="."]
+mesh = SubResource("Water_mesh")
+
+[node name="Figure" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+
+[node name="Body" type="MeshInstance3D" parent="Figure"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+mesh = SubResource("Body_mesh")
+
+[node name="Head" type="MeshInstance3D" parent="Figure"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77, 0)
+mesh = SubResource("Head_mesh")
+
+[node name="Glimmer" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+script = ExtResource("field")
+mode = 1
+quality = "high"
+emission_shape = 1
+emission_extents_m = Vector3(5, 0.04, 0)
+still_water_reflection = true
+fill_light_energy = 0.5
+fill_light_offset_m = Vector3(0, 0.8, 0.6)
+use_fixed_seed = true
+fixed_seed = 7
+
+[node name="ShotCamera" type="Camera3D" parent="."]
+transform = Transform3D(0.991061, 0.0151573, 0.132548, 0, 0.993525, -0.113613, -0.133412, 0.112597, 0.984644, 0.7, 0.75, 5.2)
+current = true
+fov = 38
