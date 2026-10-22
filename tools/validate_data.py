@@ -40,6 +40,8 @@ CANON_STATUSES = {"poison", "sleep", "silence", "darkness", "petrify", "slow", "
                   "berserk", "confuse", "doom", "zombie", "shell", "protect", "reflect", "regen",
                   "armor_break", "mental_break", "power_break", "magic_break", "provoke"}
 NO_PERMANENT_STATUSES = {"stop", "sleep"}  # -1 duration could stall every combatant
+ONLY_PERMANENT_STATUSES = {"petrify"}  # stone never takes a turn, so a countdown never ticks
+COUNTDOWN_STATUSES = {"doom"}  # a -1 countdown would never fall
 
 
 LATTICE_STATS = STAT_KEYS - {"level"}
@@ -170,6 +172,10 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
             dur = inf.get("duration", status_rows[inf["id"]].get("default_duration"))
             if inf["id"] in NO_PERMANENT_STATUSES and isinstance(dur, int) and dur < 0:
                 rep.err(f"{w}: '{inf['id']}' must not be permanent (duration -1)")
+            if inf["id"] in ONLY_PERMANENT_STATUSES and dur != -1:
+                rep.err(f"{w}: '{inf['id']}' must be permanent (duration -1)")
+            if inf["id"] in COUNTDOWN_STATUSES and (not isinstance(dur, int) or dur < 1):
+                rep.err(f"{w}: '{inf['id']}' needs a countdown duration >= 1")
             ch = inf.get("chance", 100)
             if not isinstance(ch, int) or not 0 <= ch <= 100:
                 rep.err(f"{w}: status chance must be 0..100")
@@ -181,6 +187,10 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
             rep.err(f"statuses.{st['id']}: default_duration must be an int (-1 = until cured)")
         elif st["id"] in NO_PERMANENT_STATUSES and st["default_duration"] < 1:
             rep.err(f"statuses.{st['id']}: default_duration must be >= 1")
+        elif st["id"] in COUNTDOWN_STATUSES and st["default_duration"] < 1:
+            rep.err(f"statuses.{st['id']}: default_duration must be >= 1")
+        elif st["id"] in ONLY_PERMANENT_STATUSES and st["default_duration"] != -1:
+            rep.err(f"statuses.{st['id']}: default_duration must be -1")
 
     for c in characters:
         w = f"characters.{c['id']}"
