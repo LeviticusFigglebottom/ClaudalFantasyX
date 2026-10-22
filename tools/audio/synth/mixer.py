@@ -136,15 +136,20 @@ def measure(x: np.ndarray, sr: int = SR) -> dict:
 # --------------------------------------------------------------------------- #
 # Encoding
 # --------------------------------------------------------------------------- #
-def write_ogg(path: str, x: np.ndarray, sr: int = SR, quality: float = 4.0) -> None:
+def write_ogg(path: str, x: np.ndarray, sr: int = SR, quality: float = 4.0, tags: dict | None = None) -> None:
     """Encode float audio to Ogg Vorbis with ffmpeg/libvorbis, bit-exact flags on
-    so the Ogg stream serial and metadata do not change between runs."""
+    so the Ogg stream serial and metadata do not change between runs.
+
+    `tags` become Vorbis comments (e.g. LOOPSTART / LOOPLENGTH in samples)."""
     x = np.clip(np.asarray(x, dtype=np.float64), -1.0, 1.0)
     ch = 1 if x.ndim == 1 else x.shape[1]
     os.makedirs(os.path.dirname(path), exist_ok=True)
+    meta = []
+    for k, v in sorted((tags or {}).items()):
+        meta += ["-metadata", f"{k}={v}"]
     cmd = [FFMPEG, "-hide_banner", "-loglevel", "error", "-y",
            "-f", "f32le", "-ar", str(sr), "-ac", str(ch), "-i", "pipe:0",
-           "-map_metadata", "-1", "-fflags", "+bitexact", "-flags:a", "+bitexact",
+           "-map_metadata", "-1", *meta, "-fflags", "+bitexact", "-flags:a", "+bitexact",
            "-c:a", "libvorbis", "-q:a", str(quality), "-ar", str(sr), path]
     subprocess.run(cmd, input=x.astype("<f4").tobytes(), check=True)
 
