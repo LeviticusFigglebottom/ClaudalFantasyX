@@ -192,6 +192,10 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
         elif st["id"] in ONLY_PERMANENT_STATUSES and st["default_duration"] != -1:
             rep.err(f"statuses.{st['id']}: default_duration must be -1")
 
+    hero_levels = {c.get("stats", {}).get("level") for c in characters if isinstance(c.get("stats"), dict)}
+    if len(hero_levels) > 1:
+        rep.err("characters: every hero must share one fixed stats.level (ADR 0012), "
+                f"found {sorted(map(str, hero_levels))}")
     for c in characters:
         w = f"characters.{c['id']}"
         _check_stats(w, c.get("stats"), rep)

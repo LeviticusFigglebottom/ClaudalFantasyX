@@ -564,10 +564,16 @@ func _rebuild_roster() -> void:
 	timeline.set_roster(_field())
 
 
+## Hero `level` is the fixed value from characters.json (ADR 0012): growth comes only from
+## Lattice stats, so a modifier that touches `level` is undone.
 func _make_party_member(cid: StringName) -> BattleCombatant:
 	var c := BattleCombatant.from_dict(cid, BattleCombatant.TEAM_PARTY, db.characters[cid])
+	var fixed_level := c.level
 	if party_modifier.is_valid():
 		party_modifier.call(c)
+		if c.level != fixed_level:
+			push_error("BattleEngine: party_modifier changed %s's level; hero level is fixed (ADR 0012)" % cid)
+			c.level = fixed_level
 	return c
 
 

@@ -615,3 +615,39 @@ func _snapshot() -> Array[String]:
 		out.append("%s:%d:%d:%s" % [c.id, c.next_time, c.hp, str(c.statuses)])
 	out.append("current=%s now=%d" % [engine.current.id, engine.now])
 	return out
+
+
+# --- hero level (ADR 0012) ---------------------------------------------------------------
+
+
+func test_hero_level_comes_from_data() -> void:
+	_start(&"dummies")
+	assert_eq(engine.find(&"hero").level, 5)
+
+
+func test_party_modifier_cannot_change_hero_level() -> void:
+	engine.party_modifier = func(c: BattleCombatant) -> void:
+		c.level += 10
+		c.strength += 1
+	_start(&"dummies")
+	var hero := engine.find(&"hero")
+	assert_eq(hero.level, 5, "level is fixed; growth is Lattice stats only")
+	assert_eq(hero.strength, 31, "other gains still apply")
+
+
+func test_real_heroes_share_one_level_and_lattice_keeps_it() -> void:
+	var db := BattleDB.load_default()
+	var levels: Dictionary = {}
+	for cid: StringName in db.characters:
+		levels[int(db.characters[cid]["stats"]["level"])] = true
+	assert_eq(levels.size(), 1, "one fixed hero level")
+	var p := LatticeFixture.progress()
+	var inv := FacetInventory.new({"facet_power": 2, "facet_ability": 1})
+	p.traveler(&"rhen").movement_points = 3
+	p.move(&"rhen", &"s_str")
+	p.activate(&"rhen", inv)
+	engine.party_modifier = p.apply_to
+	var active: Array[StringName] = [&"rhen", &"asha"]
+	var reserve: Array[StringName] = []
+	engine.setup(db, active, reserve, &"sandbox_reef", 1)
+	assert_eq(engine.find(&"rhen").level, int(levels.keys()[0]))

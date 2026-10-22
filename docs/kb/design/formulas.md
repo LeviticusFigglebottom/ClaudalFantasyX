@@ -71,6 +71,8 @@ num = power × (stat + level) × DEF_K × variance_pct
 den = (DEF_K + max(def, 0)) × 100
   physical: stat = strength (Power Break: floor(strength × 0.5)), def = defense (0 under Armor Break)
   magical:  stat = magic (Magic Break: floor(magic × 0.5)),       def = magic_defense (0 under Mental Break)
+level: heroes = the one fixed hero level (characters.json, 5 for every hero; ADR 0012), never raised in play
+       enemies = their data level, a tuning tier
 if crit:    num ×= 2                       # physical only
 if barrier: den ×= 2                       # Protect vs physical, Shell vs magical
 num ×= el_num; den ×= el_den               # element ratio for the target's affinity
@@ -84,6 +86,8 @@ Example: power 8, strength 16, level 5, defense 10, variance 100 → 1,680,000 �
 heal = min(cap, power × (magic + level) × variance_pct ÷ 100)       # magic is Magic-Break-adjusted
 ```
 Examples: power 10, magic 18, level 5: variance 100 → 230; variance 93 → 213.
+
+**Hero level (ADR 0012).** Growth comes only from the Lattice. Every hero has the same fixed `level` (5), so in hero formulas it is a flat +5 "potency floor" on the attacking stat. The validator rejects heroes with different levels, the Lattice can't add `level`, and `BattleEngine` undoes any `party_modifier` change to it. Enemies keep `level` as a per-enemy tuning tier.
 
 ## Accuracy and criticals
 
