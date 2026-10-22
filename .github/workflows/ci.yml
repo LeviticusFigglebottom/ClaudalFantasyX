@@ -67,6 +67,13 @@ jobs:
         run: |
           set -o pipefail
           ~/godot/godot --headless --path . res://tests/run_tests.tscn 2>&1 | tee tests.log
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Coverage gate for battle/ and progression/ (ADR 0013, docs/kb/qa/coverage.md)
+        run: |
+          pip install -r tools/requirements.txt
+          python3 tools/coverage/run_coverage.py --godot ~/godot/godot --compare-log tests.log
       - name: Boot scene smoke test (60 frames)
         run: |
           timeout 300 ~/godot/godot --headless --path . --quit-after 60 > boot.log 2>&1
