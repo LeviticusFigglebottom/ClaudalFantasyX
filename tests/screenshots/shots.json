@@ -71,6 +71,116 @@
     {
       "id": "battle_victory",
       "scene": "res://game/battle/scene/shots/battle_victory.tscn"
+    },
+    {
+      "id": "base_body_slender_front",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Slender/Cameras/Front",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_slender_q34",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Slender/Cameras/ThreeQuarter",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_slender_side",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Slender/Cameras/Side",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_slender_face",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Slender/Cameras/Face",
+      "resolution": [
+        512,
+        512
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_slender_posed",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "SlenderPosed/Cameras/ThreeQuarter",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_athletic_front",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Athletic/Cameras/Front",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_athletic_q34",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Athletic/Cameras/ThreeQuarter",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_athletic_side",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Athletic/Cameras/Side",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_heavy_front",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Heavy/Cameras/Front",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_heavy_q34",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Heavy/Cameras/ThreeQuarter",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_heavy_side",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Heavy/Cameras/Side",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
     }
   ]
 }
