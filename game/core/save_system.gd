@@ -2,7 +2,7 @@ extends Node
 ## Autoload "SaveSystem": versioned JSON saves with forward migrations.
 ## Saving is only offered at save shrines and chapter-boundary autosaves (genre convention).
 
-const SAVE_VERSION := 2
+const SAVE_VERSION := 3
 const SAVE_DIR := "user://saves"
 const AUTOSAVE_SLOT := 0
 
@@ -10,6 +10,7 @@ const AUTOSAVE_SLOT := 0
 var _migrations: Dictionary = {
 	0: _migrate_v0_to_v1,
 	1: _migrate_v1_to_v2,
+	2: _migrate_v2_to_v3,
 }
 
 
@@ -89,3 +90,22 @@ static func _migrate_v1_to_v2(d: Dictionary) -> Dictionary:
 	if not st.has("lattice"):
 		st["lattice"] = {"board": "standard", "characters": {}, "opened_gates": []}
 	return {"version": 2, "state": st}
+
+
+## v3 (M1-PRG-02) adds equipment pieces and loadouts. A v2 save predates equipment, so it gets an
+## empty bag; heroes receive their starting gear (EquipmentBag.grant_starting) when they next
+## join. Inventory counts are made whole ints and empty stacks dropped, because JSON numbers load
+## as floats and v2 never normalized them. The literal is frozen on purpose.
+static func _migrate_v2_to_v3(d: Dictionary) -> Dictionary:
+	var st: Dictionary = (d.get("state", {}) as Dictionary).duplicate(true)
+	if not st.has("equipment"):
+		st["equipment"] = {"next_uid": 1, "owned": {}, "loadout": {}}
+	var inv: Dictionary = {}
+	var old: Variant = st.get("inventory", {})
+	if old is Dictionary:
+		for k: Variant in old:
+			var n := int(old[k])
+			if n > 0:
+				inv[str(k)] = n
+	st["inventory"] = inv
+	return {"version": 3, "state": st}
