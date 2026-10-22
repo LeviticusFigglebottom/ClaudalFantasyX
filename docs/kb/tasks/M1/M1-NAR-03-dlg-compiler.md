@@ -2,8 +2,8 @@
 id: M1-NAR-03
 title: dlgc.py compiler and runtime DialogueRunner
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: architect-stream-1
 depends_on: []
 milestone: M1
 request-from: "narrative"
