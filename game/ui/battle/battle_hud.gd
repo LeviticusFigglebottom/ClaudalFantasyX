@@ -6,6 +6,8 @@ extends Control
 
 ## Damage numbers spawned this battle (tests read it).
 var damage_numbers_shown := 0
+## The most recent numbers: [{text, kind, on_ally, crit}] (tests and debug overlays).
+var recent_numbers: Array[Dictionary] = []
 
 var _damage_m: Dictionary = {}
 
@@ -40,6 +42,9 @@ func pop_number(text: String, at: Vector2, kind: StringName, on_ally: bool, crit
 	_damage_layer.add_child(n)
 	n.pop(text, at - Vector2(0.0, HudLayout.num(_damage_m, "stack_px") * stack), kind, on_ally, crit, _damage_m)
 	damage_numbers_shown += 1
+	recent_numbers.append({"text": text, "kind": kind, "on_ally": on_ally, "crit": crit})
+	if recent_numbers.size() > CtbTimeline.PREVIEW_LENGTH:
+		recent_numbers.pop_front()
 
 
 func set_combat_ui_visible(on: bool) -> void:

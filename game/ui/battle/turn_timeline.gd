@@ -147,7 +147,9 @@ func _sync_chips(mode: StringName) -> void:
 			chip.setup(_metrics)
 			add_child(chip)
 			_chips[key] = chip
-			chip.position = r.position
+			# A turn entering the bottom of the order rises in from one pitch below.
+			var from_below := HudLayout.num(_metrics, "chip_pitch") if mode == MODE_TURN else 0.0
+			chip.position = r.position + Vector2(0.0, from_below)
 			chip.size = r.size
 			chip.modulate.a = 0.0
 		chip.target_color = _target_color

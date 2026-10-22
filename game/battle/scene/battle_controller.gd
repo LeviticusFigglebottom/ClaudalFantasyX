@@ -263,6 +263,9 @@ func _after_action(actor_id: StringName) -> void:
 	hud.commands.visible = false
 	hud.timeline.note_turn_taken(actor_id)
 	_show_timeline(TurnTimeline.MODE_TURN)
+	# The order already shows who is next; the party highlight and actor marker follow it.
+	hud.party.set_current(current_actor_id())
+	hud.target_cursor.show_actor(Vector2.ZERO, false)
 	hud.party.refresh(pacing_scale > 0.0, _pace(&"action_hold_sec") * 0.5)
 	stage.refresh_ko(engine)
 	_wait(_pace(&"action_hold_sec"), _next_turn)
@@ -594,7 +597,8 @@ func _on_action_resolved(result: ActionResult) -> void:
 		var tid: StringName = hit["target_id"]
 		var target := engine.find(tid)
 		var f := stage.stand_in(tid)
-		if f != null and int(hit["amount"]) < 0:
+		# ActionResult.amount: positive = HP lost, negative = HP restored (BattleEngine._resolve_on).
+		if f != null and int(hit["amount"]) > 0:
 			f.flinch()
 		if not show_damage_numbers or target == null:
 			continue
@@ -605,10 +609,10 @@ func _on_action_resolved(result: ActionResult) -> void:
 		var amount := int(hit["amount"])
 		if not bool(hit["hit"]):
 			hud.pop_number(tr("HUD_MISS"), at, DamageNumber.KIND_MISS, ally, false, n)
-		elif amount < 0:
-			hud.pop_number(str(-amount), at, DamageNumber.KIND_DAMAGE, ally, bool(hit["crit"]), n)
 		elif amount > 0:
-			hud.pop_number(str(amount), at, DamageNumber.KIND_HEAL, ally, false, n)
+			hud.pop_number(str(amount), at, DamageNumber.KIND_DAMAGE, ally, bool(hit["crit"]), n)
+		elif amount < 0:
+			hud.pop_number(str(-amount), at, DamageNumber.KIND_HEAL, ally, false, n)
 
 
 func _wait(sec: float, then: Callable) -> void:

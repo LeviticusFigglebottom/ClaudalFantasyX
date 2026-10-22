@@ -93,6 +93,32 @@ func test_confirming_an_attack_ends_the_turn_and_pops_numbers() -> void:
 	_free()
 
 
+func test_numbers_use_damage_and_heal_kinds_by_sign() -> void:
+	_start()
+	_to_turn_of(&"rhen")
+	ctl.hud.recent_numbers.clear()
+	var foe := ctl.engine.living_foes_of(ctl.engine.current)[0]
+	var hp := foe.hp
+	var r := ctl.act(&"attack", [foe.id])
+	var first: Dictionary = ctl.hud.recent_numbers[0]
+	if bool(r.hits[0]["hit"]):
+		assert_eq(first["kind"], DamageNumber.KIND_DAMAGE, "a hit on a foe pops a damage number")
+		assert_eq(first["text"], str(hp - foe.hp), "showing the HP it lost")
+		assert_false(first["on_ally"])
+	else:
+		assert_eq(first["kind"], DamageNumber.KIND_MISS)
+	for n in ctl.hud.recent_numbers:
+		if n["on_ally"] and n["kind"] != DamageNumber.KIND_MISS:
+			assert_eq(n["kind"], DamageNumber.KIND_DAMAGE, "enemy hits on the party are damage (ui_danger)")
+	_to_turn_of(&"asha")
+	ctl.hud.recent_numbers.clear()
+	ctl.act(&"mend", [&"asha"])
+	var heal: Dictionary = ctl.hud.recent_numbers[0] if not ctl.hud.recent_numbers.is_empty() else {}
+	if not heal.is_empty() and heal["text"] != "0":
+		assert_eq(heal["kind"], DamageNumber.KIND_HEAL, "Mend pops a heal number")
+	_free()
+
+
 func test_swap_menu_swaps_at_no_time_cost() -> void:
 	_start()
 	var actor := ctl.current_actor_id()
