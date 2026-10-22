@@ -5,6 +5,8 @@ extends RefCounted
 ## Predictions assume every future action uses DEFAULT_RANK and statuses stay as they are.
 
 const PREVIEW_LENGTH := 16
+## Statuses that change when a combatant acts; predictions simulate their countdown.
+const TIMED_STATUSES: Array[StringName] = [&"haste", &"slow", &"stop", &"sleep"]
 
 var _roster: Array[BattleCombatant] = []
 
@@ -38,37 +40,34 @@ func next_actor() -> BattleCombatant:
 ## Predicts the next `count` turns. If `preview_actor` is set, that combatant is assumed to
 ## act right now with `preview_rank`, and `delay_target` (optional) is pushed back by
 ## `delay_ranks` × its base delay, so the UI can show how an action reshapes the order.
+## `status_changes` ({BattleCombatant: {status: duration}}) previews time statuses the
+## candidate action would apply (assumed to land). Timed statuses (Haste, Slow, Stop, Sleep)
+## count down per simulated own turn exactly as the engine does; other statuses are ignored.
 func predict(
 	count: int = PREVIEW_LENGTH,
 	preview_actor: BattleCombatant = null,
 	preview_rank: int = Formulas.DEFAULT_RANK,
 	delay_target: BattleCombatant = null,
-	delay_ranks: int = 0
+	delay_ranks: int = 0,
+	status_changes: Dictionary = {}
 ) -> Array[TurnEntry]:
 	var sims: Array[Dictionary] = []
 	for i in _roster.size():
 		var c := _roster[i]
 		if not c.is_alive():
 			continue
+		var timed := _timed_copy(c)
+		for sid: StringName in status_changes.get(c, {}):
+			_sim_add_status(timed, sid, int(status_changes[c][sid]))
 		var t := c.next_time
 		var first_is_preview := false
 		if c == preview_actor:
-			t = c.next_time + Formulas.action_delay(c.agility, preview_rank, c.speed_mult())
+			t = c.next_time + Formulas.action_delay(c.agility, preview_rank, _sim_speed(timed))
+			_sim_tick(timed)
 			first_is_preview = true
 		if delay_target != null and c == delay_target and delay_ranks > 0:
 			t += Formulas.base_delay(c.agility) * delay_ranks
-		(
-			sims
-			. append(
-				{
-					"c": c,
-					"idx": i,
-					"t": t,
-					"first_preview": first_is_preview,
-					"stop_left": _skip_turns(c),
-				}
-			)
-		)
+		sims.append({"c": c, "idx": i, "t": t, "first_preview": first_is_preview, "timed": timed})
 	var out: Array[TurnEntry] = []
 	if sims.is_empty():
 		return out
@@ -79,23 +78,56 @@ func predict(
 				bi = j
 		var s: Dictionary = sims[bi]
 		var c: BattleCombatant = s["c"]
-		var skipped: bool = int(s["stop_left"]) > 0
+		var timed: Dictionary = s["timed"]
+		var skipped := timed.has(&"stop") or timed.has(&"sleep")
 		out.append(TurnEntry.new(c.id, int(s["t"]), c.team, skipped, bool(s["first_preview"])))
 		s["first_preview"] = false
-		if skipped:
-			s["stop_left"] = int(s["stop_left"]) - 1
-		s["t"] = int(s["t"]) + Formulas.action_delay(c.agility, Formulas.DEFAULT_RANK, c.speed_mult())
+		s["t"] = int(s["t"]) + Formulas.action_delay(c.agility, Formulas.DEFAULT_RANK, _sim_speed(timed))
+		_sim_tick(timed)
 	return out
 
 
-## Turns this combatant will lose while Stop or Sleep lasts.
-static func _skip_turns(c: BattleCombatant) -> int:
-	var n := 0
-	for s: StringName in [&"stop", &"sleep"]:
-		if c.has_status(s):
-			var left: int = c.statuses[s]
-			n = maxi(n, 999 if left < 0 else left)
-	return n
+## Copies the time-relevant statuses of `c` ({status: turns left, -1 = until cured}).
+static func _timed_copy(c: BattleCombatant) -> Dictionary:
+	var out: Dictionary = {}
+	for sid: StringName in TIMED_STATUSES:
+		if c.has_status(sid):
+			out[sid] = int(c.statuses[sid])
+	return out
+
+
+## Mirrors BattleCombatant.add_status (Haste and Slow replace each other).
+static func _sim_add_status(timed: Dictionary, sid: StringName, duration: int) -> void:
+	if not TIMED_STATUSES.has(sid):
+		return
+	timed[sid] = duration
+	if sid == &"haste":
+		timed.erase(&"slow")
+	elif sid == &"slow":
+		timed.erase(&"haste")
+
+
+## Mirrors BattleCombatant.speed_mult.
+static func _sim_speed(timed: Dictionary) -> float:
+	var m := 1.0
+	if timed.has(&"haste"):
+		m *= Formulas.HASTE_SPEED_MULT
+	if timed.has(&"slow"):
+		m *= Formulas.SLOW_SPEED_MULT
+	return m
+
+
+## Mirrors BattleCombatant.tick_statuses.
+static func _sim_tick(timed: Dictionary) -> void:
+	for sid: StringName in timed.keys():
+		var left: int = timed[sid]
+		if left < 0:
+			continue
+		left -= 1
+		if left <= 0:
+			timed.erase(sid)
+		else:
+			timed[sid] = left
 
 
 static func _before(a: BattleCombatant, ai: int, b: BattleCombatant, bi: int) -> bool:

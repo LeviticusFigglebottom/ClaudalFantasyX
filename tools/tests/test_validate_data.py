@@ -61,6 +61,24 @@ class ValidatorTests(unittest.TestCase):
         p.write_text("\n".join(l for l in p.read_text().splitlines() if not l.startswith("SKILL_EMBER,")) + "\n")
         self.assertTrue(any("SKILL_EMBER" in e for e in self.errors()))
 
+    def _edit(self, rel: str, old: str, new: str) -> None:
+        p = self.tmp / rel
+        text = p.read_text()
+        self.assertIn(old, text)
+        p.write_text(text.replace(old, new, 1))
+
+    def test_turn_mod_zero_is_caught(self) -> None:
+        self._edit("game/data/battle/enemies.json", '"turn_mod": [3, 2]', '"turn_mod": [0, 0]')
+        self.assertTrue(any("bad argument" in e for e in self.errors()))
+
+    def test_negative_weight_is_caught(self) -> None:
+        self._edit("game/data/battle/enemies.json", '"weight": 2', '"weight": -1')
+        self.assertTrue(any("weight must be" in e for e in self.errors()))
+
+    def test_permanent_stop_is_caught(self) -> None:
+        self._edit("game/data/battle/skills.json", '{"id": "slow", "chance": 80}', '{"id": "stop", "chance": 80, "duration": -1}')
+        self.assertTrue(any("must not be permanent" in e for e in self.errors()))
+
 
 if __name__ == "__main__":
     unittest.main()

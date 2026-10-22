@@ -16,6 +16,18 @@ Owner: Combat Designer-Engineer. Formulas: [formulas.md](formulas.md).
 
 **Headless and deterministic:** no Nodes, no scene access, and all randomness through `engine.rng` (seeded in `setup`). The battle *scene* (UI, cameras, VFX) listens to the engine's signals and never mutates combat state directly.
 
+## Sandbox balance (M1 target bands)
+
+`tests/integration/test_sandbox_battle.gd` runs 100 seeds per policy on the real `sandbox_reef` data and asserts these bands:
+
+| Policy | Band | Measured 2026-10-22 (200 seeds) |
+|---|---|---|
+| Naive: attack the first living foe | ≤ 20% wins | 0% |
+| Attack the lowest-HP foe | (no band) | 61% |
+| Swap Toma in for Asha, then attack the lowest-HP foe | ≥ 70% wins | 88% |
+
+This is the intended shape: swapping is the elegant answer (SPEC §6.1). A naive party wipes in about two rounds, which is harsh for a showcase, so M1-CMB-05 may soften enemy power by about 15% while keeping the bands.
+
 ## Data
 
 - `skills.json`: `kind` (physical|magical|heal|support), `power`, `rank` 1–8, `accuracy`, `element`, `target`, `mp_cost`, `magic` (Silence blocks it), optional `statuses: [{id, chance, duration}]`, and `delay_ranks`.
@@ -26,7 +38,8 @@ Owner: Combat Designer-Engineer. Formulas: [formulas.md](formulas.md).
 
 ## Rules worth knowing
 
-- **Swap** costs no time. The incoming member inherits the outgoing member's `next_time`, and the current turn if it was theirs. Reserve members don't occupy the timeline.
+- **Swap** costs no time. Replacing a *living* member, the incoming one inherits its slot (`max(slot, now)`), and the current turn if it was theirs. Replacing a *KO'd* member, the incoming one acts `action_delay(agi, DEFAULT_RANK)` after `now`. **Time never runs backwards** (a test asserts it). Reserve members don't occupy the timeline.
+- **Targets are validated** against the skill's `target` field: alive, deduplicated, on the right side, and exactly one for single-target skills. An action with no valid target fails with `no_valid_target` and costs nothing (no MP, no turn).
 - Defeat means every *active* member is KO'd. Reserves don't prevent a game over (genre convention). Revisit in M1-CMB-01 review.
 - Enemy actions that fail on bad data (for example, not enough MP) burn the enemy's turn instead of stalling the battle.
 

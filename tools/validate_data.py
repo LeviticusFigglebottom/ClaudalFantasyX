@@ -32,6 +32,7 @@ STAT_KEYS = {"level", "hp", "mp", "strength", "magic", "defense", "magic_defense
 CANON_STATUSES = {"poison", "sleep", "silence", "darkness", "petrify", "slow", "haste", "stop",
                   "berserk", "confuse", "doom", "zombie", "shell", "protect", "reflect", "regen",
                   "armor_break", "mental_break", "power_break", "magic_break", "provoke"}
+NO_PERMANENT_STATUSES = {"stop", "sleep"}  # -1 duration could stall every combatant
 MAX_BINARY_BYTES = 5 * 1024 * 1024
 BINARY_EXT = {".png", ".jpg", ".exr", ".wav", ".ogg", ".glb", ".blend", ".ttf", ".otf", ".webp"}
 BANNED_SCAN = ["game", "assets_src", "docs/kb/story", "docs/kb/glossary.md"]
@@ -138,9 +139,16 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
             rep.err(f"{w}: 'magic' must be a bool")
         if "name_key" not in s:
             rep.err(f"{w}: missing name_key")
+        status_rows = {st["id"]: st for st in statuses}
         for inf in s.get("statuses", []):
             if inf.get("id") not in status_ids:
                 rep.err(f"{w}: inflicts unknown status '{inf.get('id')}'")
+                continue
+            if not status_rows[inf["id"]].get("implemented", False):
+                rep.warn(f"{w}: inflicts '{inf['id']}', which the engine does not implement yet")
+            dur = inf.get("duration", status_rows[inf["id"]].get("default_duration"))
+            if inf["id"] in NO_PERMANENT_STATUSES and isinstance(dur, int) and dur < 0:
+                rep.err(f"{w}: '{inf['id']}' must not be permanent (duration -1)")
             ch = inf.get("chance", 100)
             if not isinstance(ch, int) or not 0 <= ch <= 100:
                 rep.err(f"{w}: status chance must be 0..100")
@@ -150,6 +158,8 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
             rep.err(f"statuses.{st['id']}: category must be harmful|beneficial")
         if not isinstance(st.get("default_duration"), int):
             rep.err(f"statuses.{st['id']}: default_duration must be an int (-1 = until cured)")
+        elif st["id"] in NO_PERMANENT_STATUSES and st["default_duration"] < 1:
+            rep.err(f"statuses.{st['id']}: default_duration must be >= 1")
 
     for c in characters:
         w = f"characters.{c['id']}"
@@ -176,9 +186,11 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
         if ai and "if" in ai[-1]:
             rep.warn(f"{w}: last ai rule has conditions; enemy may have no default action")
         for i, rule in enumerate(ai):
-            for cond in rule.get("if", {}):
+            for cond, arg in rule.get("if", {}).items():
                 if cond not in AI_CONDITIONS:
                     rep.err(f"{w}.ai[{i}]: unknown condition '{cond}'")
+                elif not _ai_arg_ok(cond, arg, status_ids):
+                    rep.err(f"{w}.ai[{i}]: bad argument {arg!r} for '{cond}'")
             if not rule.get("pick"):
                 rep.err(f"{w}.ai[{i}]: empty 'pick'")
             for opt in rule.get("pick", []):
@@ -186,6 +198,9 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
                     rep.err(f"{w}.ai[{i}]: picks skill '{opt.get('skill')}' the enemy does not have")
                 if opt.get("target", "random_foe") not in AI_TARGETS:
                     rep.err(f"{w}.ai[{i}]: unknown target selector '{opt.get('target')}'")
+                weight = opt.get("weight", 1)
+                if not isinstance(weight, int) or isinstance(weight, bool) or weight < 0:
+                    rep.err(f"{w}.ai[{i}]: weight must be an int >= 0")
 
     for enc in encounters:
         lineup = enc.get("enemies", [])
@@ -195,6 +210,19 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
             if eid not in enemy_ids:
                 rep.err(f"encounters.{enc['id']}: unknown enemy '{eid}'")
     return keys
+
+
+def _ai_arg_ok(cond: str, arg: object, status_ids: set[str]) -> bool:
+    if cond == "turn_mod":
+        return (isinstance(arg, list) and len(arg) == 2 and all(isinstance(x, int) for x in arg)
+                and arg[0] > 0 and 0 <= arg[1] < arg[0])
+    if cond == "self_hp_below_pct":
+        return isinstance(arg, int) and 1 <= arg <= 100
+    if cond == "allies_alive_below":
+        return isinstance(arg, int) and arg >= 1
+    if cond == "foe_has_status":
+        return arg in status_ids
+    return False
 
 
 def load_loc_keys(root: Path, rep: Report) -> set[str]:

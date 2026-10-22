@@ -116,14 +116,16 @@ func apply_damage(amount: int) -> int:
 	return hp - before
 
 
-func add_status(status: StringName, duration: int) -> void:
+## Returns false (and does nothing) if the target is KO'd.
+func add_status(status: StringName, duration: int) -> bool:
 	if not is_alive():
-		return
+		return false
 	statuses[status] = duration
 	if status == &"haste":
 		statuses.erase(&"slow")
 	elif status == &"slow":
 		statuses.erase(&"haste")
+	return true
 
 
 ## Called at the end of this combatant's own turn: counts timed statuses down.

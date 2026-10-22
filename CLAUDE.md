@@ -57,7 +57,8 @@ godot --headless --path . res://tests/run_tests.tscn       # add -- --filter=bat
 ## 4. Claiming work — SPEC §13.3
 
 - Tasks are files: `docs/kb/tasks/<milestone>/<id>-<slug>.md` (see `docs/kb/tasks/README.md`).
-- To claim one, set `status: doing` and `owner_session: <your session or worktree name>`, and commit that change alone, first, so parallel agents see the claim.
+- To claim one, set `status: doing` and `owner_session: <your session or worktree name>`, commit that change alone, and **push it to the integration branch** (`main`, or the Lead's session branch while one is active) **before starting**. A claim that exists only in your worktree is invisible to everyone else. If two claims race, the one that reached the integration branch first wins, and the other agent picks a different task.
+- Agents launched by the Lead in a worktree may leave the claim to the Lead (the Lead records it); they still update their own task file's status and notes.
 - When the work is ready, set `status: review` and name the reviewer role (SPEC §12.3 pairs). The reviewer appends to the task's **Review log**. Only then does it move to `done`.
 - To ask another role for something, create a task with `role: <target>`, `status: todo`, and `request-from: <your role>`.
 - Urgent blockers go in the **Blockers** section of `STATUS.md`.
@@ -67,6 +68,7 @@ godot --headless --path . res://tests/run_tests.tscn       # add -- --filter=bat
 - Claim path globs in `docs/kb/ownership.md` before you edit `.tscn` or `.tres` files or assets.
 - Never edit another role's claimed scene. Open a request task instead.
 - Prefer small, single-purpose scenes instanced into level scenes.
+- **Shared files** that many roles touch (`game/data/loc/*.csv`, `game/data/flags.tres`, `assets/PROVENANCE.md`, `tools/banned_terms.txt`, `tools/validate_data.py`, `docs/kb/design/formulas.md`, `docs/kb/glossary.md`) are **append-only for non-owners**: add your rows or sections at the end of the relevant block, never reorder or reformat others' lines, and keep each edit in its own small commit so merges stay trivial. Prefer a new per-domain file (such as `game/data/loc/dialogue.csv` or `tools/tests/test_<area>.py`) over growing a shared one.
 
 ## 6. Decisions — SPEC §13.4
 

@@ -68,7 +68,7 @@ static func _conditions_hold(engine: BattleEngine, actor: BattleCombatant, cond:
 					return false
 			&"turn_mod":
 				var a: Array = arg
-				if actor.turns_taken % int(a[0]) != int(a[1]):
+				if int(a[0]) <= 0 or actor.turns_taken % int(a[0]) != int(a[1]):
 					return false
 			&"foe_has_status":
 				var any := false

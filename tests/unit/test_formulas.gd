@@ -17,6 +17,7 @@ func test_action_delay_scales_with_rank_and_speed() -> void:
 	assert_eq(Formulas.action_delay(10, 3, Formulas.HASTE_SPEED_MULT), 150)
 	assert_eq(Formulas.action_delay(10, 3, Formulas.SLOW_SPEED_MULT), 600)
 	assert_eq(Formulas.action_delay(10, 0), Formulas.MIN_DELAY, "never below MIN_DELAY")
+	assert_eq(Formulas.action_delay(0, 3, Formulas.HASTE_SPEED_MULT), 401, "400.5 rounds half away from zero")
 
 
 func test_initial_ticks() -> void:
@@ -24,34 +25,38 @@ func test_initial_ticks() -> void:
 	assert_eq(Formulas.initial_ticks(10, 100), 200)
 
 
-func test_raw_and_final_damage() -> void:
-	var raw := Formulas.raw_damage(8, 16, 5, 10, 100)
-	assert_between(raw, 152.72, 152.73)
-	assert_eq(Formulas.final_damage(raw, &"normal", false, false, false), 152)
-	assert_eq(Formulas.final_damage(raw, &"normal", true, false, false), 305, "crit x2")
-	assert_eq(Formulas.final_damage(raw, &"normal", false, true, false), 76, "barrier x0.5")
-	assert_eq(Formulas.final_damage(raw, &"weak", false, false, false), 229)
-	assert_eq(Formulas.final_damage(raw, &"resist", false, false, false), 76)
-	assert_eq(Formulas.final_damage(raw, &"immune", false, false, false), 0)
-	assert_eq(Formulas.final_damage(raw, &"absorb", false, false, false), -152)
+func test_damage_pipeline() -> void:
+	# power 8, strength 16, level 5, defense 10, variance 100: 8 * 21 * 100/110 = 152.72...
+	assert_eq(Formulas.damage(8, 16, 5, 10, 100, &"normal", false, false, false), 152)
+	assert_eq(Formulas.damage(8, 16, 5, 10, 100, &"normal", true, false, false), 305, "crit x2")
+	assert_eq(Formulas.damage(8, 16, 5, 10, 100, &"normal", false, true, false), 76, "barrier x1/2")
+	assert_eq(Formulas.damage(8, 16, 5, 10, 100, &"weak", false, false, false), 229)
+	assert_eq(Formulas.damage(8, 16, 5, 10, 100, &"resist", false, false, false), 76)
+	assert_eq(Formulas.damage(8, 16, 5, 10, 100, &"immune", false, false, false), 0)
+	assert_eq(Formulas.damage(8, 16, 5, 10, 100, &"absorb", false, false, false), -152, "absorb heals")
+
+
+func test_damage_is_exact_not_float() -> void:
+	# 7 * 10 * 100/105 * 0.93 = 62 exactly; a float pipeline floors this to 61.
+	assert_eq(Formulas.damage(7, 5, 5, 5, 93, &"normal", false, false, false), 62)
 
 
 func test_damage_variance_bounds() -> void:
-	var lo := Formulas.raw_damage(10, 10, 0, 0, Formulas.VARIANCE_MIN_PCT)
-	var hi := Formulas.raw_damage(10, 10, 0, 0, Formulas.VARIANCE_MAX_PCT)
-	assert_between(lo, 91.99, 92.01)
-	assert_between(hi, 107.99, 108.01)
+	assert_eq(Formulas.damage(10, 10, 0, 0, Formulas.VARIANCE_MIN_PCT, &"normal", false, false, false), 92)
+	assert_eq(Formulas.damage(10, 10, 0, 0, Formulas.VARIANCE_MAX_PCT, &"normal", false, false, false), 108)
 
 
 func test_damage_cap() -> void:
-	assert_eq(Formulas.final_damage(20000.0, &"normal", false, false, false), Formulas.DAMAGE_CAP)
-	assert_eq(Formulas.final_damage(20000.0, &"normal", false, false, true), 20000)
-	assert_eq(Formulas.final_damage(200000.0, &"normal", false, false, true), Formulas.DAMAGE_CAP_BROKEN)
+	assert_eq(Formulas.damage(100, 255, 99, 0, 100, &"normal", false, false, false), Formulas.DAMAGE_CAP)
+	assert_eq(Formulas.damage(100, 255, 99, 0, 100, &"normal", false, false, true), 35400)
+	assert_eq(Formulas.damage(255, 255, 99, 0, 100, &"normal", true, false, true), Formulas.DAMAGE_CAP_BROKEN)
+	assert_eq(Formulas.damage(100, 255, 99, 0, 100, &"absorb", false, false, false), -Formulas.DAMAGE_CAP)
 
 
 func test_heal_amount() -> void:
 	assert_eq(Formulas.heal_amount(10, 18, 5, 100, false), 230)
 	assert_eq(Formulas.heal_amount(1000, 99, 99, 100, false), Formulas.DAMAGE_CAP)
+	assert_eq(Formulas.heal_amount(10, 18, 5, 93, false), 213, "230 * 0.93 = 213.9 floors")
 
 
 func test_hit_chance() -> void:

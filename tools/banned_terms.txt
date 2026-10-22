@@ -48,7 +48,8 @@ Cid
 Chocobo
 i:chocobo
 i:moogle
-i:sending
+the Sending
+a Sending
 i:summoner
 i:overdrive
 i:limit break
@@ -63,6 +64,6 @@ Omega Ruins
 Zanarkand Abes
 Besaid Aurochs
 Luca Goers
-i:unsent
+i:the unsent
 Calm Lands
 Eternal Calm

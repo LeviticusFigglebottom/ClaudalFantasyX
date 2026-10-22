@@ -3,6 +3,8 @@ extends RefCounted
 ## Every battle formula. Mirrors docs/kb/design/formulas.md EXACTLY; change both together
 ## and update tests/unit/test_formulas.gd. Constants here are the only tunable numbers
 ## allowed outside data files (they define the formulas themselves).
+## Damage and healing use exact integer arithmetic (rational multipliers, one truncating
+## division at the end) so an external simulator can reproduce them bit-for-bit.
 
 const DELAY_K := 1600.0
 const DELAY_OFFSET := 6.0
@@ -13,16 +15,14 @@ const MIN_DELAY := 1
 const HASTE_SPEED_MULT := 0.5
 const SLOW_SPEED_MULT := 2.0
 
-const DEF_K := 100.0
+const DEF_K := 100
 const VARIANCE_MIN_PCT := 92
 const VARIANCE_MAX_PCT := 108
-const CRIT_MULT := 2.0
 const CRIT_BASE_PCT := 4
 const CRIT_MAX_PCT := 50
 const HIT_MIN_PCT := 5
 const HIT_MAX_PCT := 100
 const DARKNESS_HIT_MULT := 0.2
-const BARRIER_MULT := 0.5
 const STAT_BREAK_MULT := 0.5
 
 const DAMAGE_CAP := 9999
@@ -36,12 +36,15 @@ const ESCAPE_MAX_PCT := 95
 const POISON_PCT := 0.10
 const REGEN_PCT := 0.08
 
-const ELEMENT_MULT := {
-	&"normal": 1.0,
-	&"weak": 1.5,
-	&"resist": 0.5,
-	&"immune": 0.0,
-	&"absorb": -1.0,
+## Rational multipliers as [numerator, denominator].
+const CRIT_RATIO: Array[int] = [2, 1]
+const BARRIER_RATIO: Array[int] = [1, 2]
+const ELEMENT_RATIO := {
+	&"normal": [1, 1],
+	&"weak": [3, 2],
+	&"resist": [1, 2],
+	&"immune": [0, 1],
+	&"absorb": [-1, 1],
 }
 
 
@@ -60,29 +63,40 @@ static func initial_ticks(agility: int, roll: int) -> int:
 	return maxi(0, base_delay(agility) * INITIAL_RANK - roll)
 
 
-## Shared core of physical and magical damage. `variance_pct` is in [92, 108].
-static func raw_damage(power: int, stat: int, level: int, defense: int, variance_pct: int) -> float:
-	var mitigation := DEF_K / (DEF_K + float(maxi(defense, 0)))
-	return float(power) * float(stat + level) * mitigation * float(variance_pct) / 100.0
-
-
-## Full damage pipeline. Returns a signed amount: negative means the target is healed
-## (absorb). `barrier` is Protect for physical or Shell for magical.
-static func final_damage(raw: float, element_affinity: StringName, crit: bool, barrier: bool, break_cap: bool) -> int:
-	var d := raw
+## Full damage pipeline, exact in integers. Returns a signed amount: negative means the
+## target is healed (absorb). `barrier` is Protect for physical or Shell for magical.
+## `variance_pct` is in [VARIANCE_MIN_PCT, VARIANCE_MAX_PCT].
+static func damage(
+	power: int,
+	stat: int,
+	level: int,
+	defense: int,
+	variance_pct: int,
+	element_affinity: StringName,
+	crit: bool,
+	barrier: bool,
+	break_cap: bool
+) -> int:
+	var num := power * (stat + level) * DEF_K * variance_pct
+	var den := (DEF_K + maxi(defense, 0)) * 100
 	if crit:
-		d *= CRIT_MULT
+		num *= CRIT_RATIO[0]
+		den *= CRIT_RATIO[1]
 	if barrier:
-		d *= BARRIER_MULT
-	d *= float(ELEMENT_MULT.get(element_affinity, 1.0))
+		num *= BARRIER_RATIO[0]
+		den *= BARRIER_RATIO[1]
+	var el: Array = ELEMENT_RATIO.get(element_affinity, ELEMENT_RATIO[&"normal"])
+	num *= int(el[0])
+	den *= int(el[1])
+	# GDScript integer division truncates toward zero: floor for damage, ceil for absorb.
 	var cap := DAMAGE_CAP_BROKEN if break_cap else DAMAGE_CAP
-	return clampi(floori(d) if d >= 0.0 else ceili(d), -cap, cap)
+	return clampi(num / den, -cap, cap)
 
 
-## Healing ignores defense. `variance_pct` is in [92, 108].
+## Healing ignores defense. Exact in integers.
 static func heal_amount(power: int, magic: int, level: int, variance_pct: int, break_cap: bool) -> int:
 	var cap := DAMAGE_CAP_BROKEN if break_cap else DAMAGE_CAP
-	return mini(cap, floori(float(power) * float(magic + level) * float(variance_pct) / 100.0))
+	return mini(cap, power * (magic + level) * variance_pct / 100)
 
 
 ## Percent chance for a physical action to hit.

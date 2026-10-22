@@ -23,6 +23,8 @@ ROOT = Path(__file__).resolve().parent.parent
 TASKS = ROOT / "docs" / "kb" / "tasks"
 STATUSES = ["doing", "review", "blocked", "todo", "done"]
 REQUIRED = ["id", "title", "role", "status", "owner_session", "depends_on", "milestone"]
+ROLES = {"lead", "architect", "combat", "progression", "narrative", "cinematics", "rendering",
+         "character", "environment", "ui", "audio", "qa"}
 STALE_SEC = 48 * 3600
 
 
@@ -69,8 +71,20 @@ def load_all() -> tuple[list[dict[str, object]], list[str]]:
         missing = [k for k in REQUIRED if k not in t]
         if missing:
             problems.append(f"{p.relative_to(ROOT)}: missing {missing}")
+        rel = p.relative_to(ROOT)
         if t.get("status") not in STATUSES:
-            problems.append(f"{p.relative_to(ROOT)}: bad status '{t.get('status')}'")
+            problems.append(f"{rel}: bad status '{t.get('status')}'")
+        if t.get("role") not in ROLES:
+            problems.append(f"{rel}: unknown role '{t.get('role')}' (one of {sorted(ROLES)})")
+        if not p.name.startswith(f"{t.get('id')}-"):
+            problems.append(f"{rel}: filename must start with its id '{t.get('id')}-'")
+        if t.get("status") in ("doing", "review") and not t.get("owner_session"):
+            problems.append(f"{rel}: status '{t.get('status')}' needs an owner_session")
+        if t.get("status") == "done":
+            body = p.read_text(encoding="utf-8")
+            log = body.split("## Review log", 1)[1] if "## Review log" in body else ""
+            if not any(line.strip().startswith("-") for line in log.splitlines()):
+                problems.append(f"{rel}: 'done' requires a Review log entry (SPEC §11.6)")
         tasks.append(t)
     ids = {t.get("id") for t in tasks}
     for t in tasks:

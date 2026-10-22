@@ -15,6 +15,9 @@ const OUTCOME_VICTORY := &"victory"
 const OUTCOME_DEFEAT := &"defeat"
 const OUTCOME_ESCAPED := &"escaped"
 const MAX_ACTIVE := 3
+## Consecutive turns lost to Stop/Sleep with nobody able to act before the battle is ruled a
+## stalemate (only reachable with "until cured" durations on everyone; ends as defeat).
+const MAX_CONSECUTIVE_LOST_TURNS := 1000
 
 var db: BattleDB
 var rng := RandomNumberGenerator.new()
@@ -69,16 +72,27 @@ func is_party_turn() -> bool:
 	return outcome == &"" and current != null and current.team == BattleCombatant.TEAM_PARTY
 
 
-## Timeline for the UI. With `skill_id`, shows the order as if `current` used that skill
-## (and, for delay skills, as if `target` were pushed back).
+## Timeline for the UI. With `skill_id`, shows the order as if `current` used that skill on
+## `target`: its rank, any delay push, and any time statuses it inflicts (assumed to land).
 func preview(
 	skill_id: StringName = &"", target: BattleCombatant = null, count: int = CtbTimeline.PREVIEW_LENGTH
 ) -> Array[TurnEntry]:
 	if skill_id == &"" or current == null:
 		return timeline.predict(count)
 	var sk := db.skill(skill_id)
+	var changes: Dictionary = {}
+	var recipient := current if String(sk.get("target", "")) == "self" else target
+	if recipient != null:
+		for inflict: Variant in sk.get("statuses", []):
+			var inf: Dictionary = inflict
+			var sid := StringName(str(inf["id"]))
+			if CtbTimeline.TIMED_STATUSES.has(sid):
+				var row: Dictionary = db.statuses.get(sid, {})
+				if not changes.has(recipient):
+					changes[recipient] = {}
+				changes[recipient][sid] = int(inf.get("duration", row.get("default_duration", -1)))
 	return timeline.predict(
-		count, current, int(sk.get("rank", Formulas.DEFAULT_RANK)), target, int(sk.get("delay_ranks", 0))
+		count, current, int(sk.get("rank", Formulas.DEFAULT_RANK)), target, int(sk.get("delay_ranks", 0)), changes
 	)
 
 
@@ -95,13 +109,15 @@ func perform(skill_id: StringName, targets: Array[BattleCombatant]) -> ActionRes
 		return ActionResult.failed(actor.id, skill_id, &"no_mp")
 	if bool(sk.get("magic", false)) and actor.has_status(&"silence"):
 		return ActionResult.failed(actor.id, skill_id, &"silenced")
+	var valid := _valid_targets(actor, sk, targets)
+	if valid.is_empty():
+		return ActionResult.failed(actor.id, skill_id, &"no_valid_target")
 	actor.mp -= cost
 	var result := ActionResult.new()
 	result.actor_id = actor.id
 	result.skill_id = skill_id
-	for t in targets:
-		if t.is_alive():
-			result.hits.append(_resolve_on(actor, t, sk))
+	for t in valid:
+		result.hits.append(_resolve_on(actor, t, sk))
 	action_resolved.emit(result)
 	_end_turn(actor, int(sk.get("rank", Formulas.DEFAULT_RANK)))
 	return result
@@ -126,7 +142,9 @@ func run_enemy_turn() -> ActionResult:
 
 
 ## Swaps an active member for a reserve member at no turn cost. The incoming member takes
-## over the outgoing member's slot in the timeline (and the current turn, if it was theirs).
+## over a living outgoing member's slot in the timeline (and the current turn, if it was
+## theirs). Replacing a KO'd member, the incoming one acts after a default-rank delay from
+## now: time never runs backwards (docs/kb/design/battle_ctb.md).
 func swap(out_id: StringName, in_id: StringName) -> bool:
 	if not is_party_turn():
 		return false
@@ -136,14 +154,17 @@ func swap(out_id: StringName, in_id: StringName) -> bool:
 		return false
 	var leaving := party_active[out_idx]
 	var entering := party_reserve[in_idx]
-	entering.next_time = leaving.next_time
+	if leaving.is_alive():
+		entering.next_time = maxi(leaving.next_time, now)
+	else:
+		entering.next_time = now + Formulas.action_delay(entering.agility, Formulas.DEFAULT_RANK, entering.speed_mult())
 	entering.participated = true
 	party_active[out_idx] = entering
 	party_reserve[in_idx] = leaving
+	_rebuild_roster()
 	if current == leaving:
 		current = entering
-	_rebuild_roster()
-	turn_started.emit(current)
+		turn_started.emit(current)
 	return true
 
 
@@ -206,20 +227,30 @@ func _resolve_on(actor: BattleCombatant, target: BattleCombatant, sk: Dictionary
 				hit["hit"] = false
 				return hit
 			var crit := rng.randi_range(1, 100) <= Formulas.crit_chance(actor.luck, target.luck)
-			var raw := Formulas.raw_damage(
-				power, actor.effective_strength(), actor.level, target.effective_defense(), _variance()
-			)
-			var dmg := Formulas.final_damage(
-				raw, target.affinity_for(element), crit, target.has_status(&"protect"), actor.break_damage_cap
+			var dmg := Formulas.damage(
+				power,
+				actor.effective_strength(),
+				actor.level,
+				target.effective_defense(),
+				_variance(),
+				target.affinity_for(element),
+				crit,
+				target.has_status(&"protect"),
+				actor.break_damage_cap
 			)
 			hit["crit"] = crit
 			hit["amount"] = -target.apply_damage(dmg)
 		&"magical":
-			var raw_m := Formulas.raw_damage(
-				power, actor.effective_magic(), actor.level, target.effective_magic_defense(), _variance()
-			)
-			var dmg_m := Formulas.final_damage(
-				raw_m, target.affinity_for(element), false, target.has_status(&"shell"), actor.break_damage_cap
+			var dmg_m := Formulas.damage(
+				power,
+				actor.effective_magic(),
+				actor.level,
+				target.effective_magic_defense(),
+				_variance(),
+				target.affinity_for(element),
+				false,
+				target.has_status(&"shell"),
+				actor.break_damage_cap
 			)
 			hit["amount"] = -target.apply_damage(dmg_m)
 		&"heal":
@@ -237,8 +268,8 @@ func _resolve_on(actor: BattleCombatant, target: BattleCombatant, sk: Dictionary
 		if rng.randi_range(1, 100) <= int(inf.get("chance", 100)):
 			var sid := StringName(str(inf["id"]))
 			var row: Dictionary = db.statuses.get(sid, {})
-			target.add_status(sid, int(inf.get("duration", row.get("default_duration", -1))))
-			added.append(sid)
+			if target.add_status(sid, int(inf.get("duration", row.get("default_duration", -1)))):
+				added.append(sid)
 	hit["statuses_added"] = added
 	var delay_ranks := int(sk.get("delay_ranks", 0))
 	if delay_ranks > 0 and target.is_alive():
@@ -266,6 +297,7 @@ func _end_turn(actor: BattleCombatant, rank: int) -> void:
 
 func _advance() -> void:
 	current = null
+	var lost_turns := 0
 	while outcome == &"":
 		var actor := timeline.next_actor()
 		if actor == null:
@@ -276,6 +308,10 @@ func _advance() -> void:
 			# The turn is lost; statuses still count down so Stop/Sleep wear off.
 			actor.next_time = now + Formulas.action_delay(actor.agility, Formulas.DEFAULT_RANK, actor.speed_mult())
 			actor.tick_statuses()
+			lost_turns += 1
+			if lost_turns >= MAX_CONSECUTIVE_LOST_TURNS:
+				push_error("BattleEngine: nobody can act (permanent Stop/Sleep); ruling a defeat")
+				_finish(OUTCOME_DEFEAT)
 			continue
 		current = actor
 		turn_started.emit(actor)
@@ -300,6 +336,31 @@ func _field() -> Array[BattleCombatant]:
 	var out: Array[BattleCombatant] = []
 	out.append_array(party_active)
 	out.append_array(enemies)
+	return out
+
+
+## Filters `targets` to those `sk` may legally hit: alive, deduplicated, on the side its
+## "target" field names, and exactly one for single-target skills.
+func _valid_targets(actor: BattleCombatant, sk: Dictionary, targets: Array[BattleCombatant]) -> Array[BattleCombatant]:
+	var kind := String(sk.get("target", "single_foe"))
+	var out: Array[BattleCombatant] = []
+	for t in targets:
+		if t == null or not t.is_alive() or out.has(t):
+			continue
+		var is_foe := t.team != actor.team
+		match kind:
+			"single_foe", "all_foes":
+				if not is_foe:
+					continue
+			"single_ally", "all_allies":
+				if is_foe or not party_active.has(t) and t.team == BattleCombatant.TEAM_PARTY:
+					continue
+			"self":
+				if t != actor:
+					continue
+		out.append(t)
+	if kind in ["single_foe", "single_ally", "self"] and out.size() > 1:
+		out.resize(1)
 	return out
 
 
