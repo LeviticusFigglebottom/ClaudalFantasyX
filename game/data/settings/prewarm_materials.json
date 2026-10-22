@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "frames_to_render": 2,
+  "measure_frames": 6,
+  "hitch_budget_ms": 50.0,
+  "viewport_width": 64,
+  "viewport_height": 64,
+  "quad_size": 1.0,
+  "quad_distance": 1.5,
+  "particle_amount": 1,
+  "materials": [
+    {
+      "path": "res://game/shaders/test/prewarm_test_material.tres",
+      "scenes": [],
+      "note": "Test material exercising common.gdshaderinc. Real materials are appended by their owning stream."
+    }
+  ]
+}
