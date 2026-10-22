@@ -38,7 +38,7 @@
     {"op": "line", "id": "ch02_beach_014", "key": "DLG_CH02_BEACH_014", "speaker": "asha", "emotion": "tender", "voice": "", "src": 33},
     {"op": "goto", "to": 32, "src": 32},
     {"op": "line", "id": "ch02_beach_015", "key": "DLG_CH02_BEACH_015", "speaker": "asha", "emotion": "tender", "voice": "", "src": 35},
-    {"op": "goto", "to": 32, "src": 32},
+    {"op": "goto", "to": 32, "src": 34},
     {"op": "set", "flag": "ch02_met_asha", "value": ["lit", true], "src": 37},
     {"op": "event", "name": "zone_unlock", "args": ["haluna_village"], "src": 38},
     {"op": "cue", "cue": "fade", "args": ["out", 1.5], "kwargs": {}, "src": 39}

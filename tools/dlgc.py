@@ -385,18 +385,19 @@ class BodyParser:
     def if_block(self, col: int) -> dict:
         open_ln = self.peek()
         assert open_ln is not None
-        branches: list[tuple[list | None, list[dict]]] = []
+        branches: list[tuple[list | None, list[dict], int]] = []
         cond_src = COMMAND_RE.match(open_ln.text).group(1)[2:]
         cond: list | None = parse_expr(cond_src, open_ln.no)
         self.i += 1
         seen_else = False
+        branch_line = open_ln.no
         while True:
             nxt = self.peek()
             if nxt is not None and nxt.indent > col:
                 body = self.block(nxt.indent, allow_stop=True)
             else:
                 body = self.block(col, allow_stop=True)
-            branches.append((cond, body))
+            branches.append((cond, body, branch_line))
             ln = self.peek()
             if ln is None or command_word(ln.text) not in STOP_WORDS:
                 raise DlgError(open_ln.no, "unbalanced <<if>>: missing <<endif>>")
@@ -405,6 +406,7 @@ class BodyParser:
                                       f"<<if>> on line {open_ln.no} (column {col})")
             word = command_word(ln.text)
             inner = COMMAND_RE.match(ln.text).group(1)
+            branch_line = ln.no
             self.i += 1
             if word == "endif":
                 if inner != "endif":
@@ -513,13 +515,13 @@ def emit(stmts: list[dict], ops: list[dict], titles: set[str], ctx: "FileCtx") -
             ops.append({"op": "jump", "node": s["node"], "src": s["src"]})
         elif kind == "if":
             ends: list[dict] = []
-            for cond, body in s["branches"]:
+            for cond, body, branch_line in s["branches"]:
                 test = None
                 if cond is not None:
-                    test = {"op": "if_not", "cond": cond, "to": -1, "src": s["src"]}
+                    test = {"op": "if_not", "cond": cond, "to": -1, "src": branch_line}
                     ops.append(test)
                 emit(body, ops, titles, ctx)
-                goto = {"op": "goto", "to": -1, "src": s["src"]}
+                goto = {"op": "goto", "to": -1, "src": branch_line}
                 ops.append(goto)
                 ends.append(goto)
                 if test is not None:
