@@ -44,6 +44,12 @@ Fire, Water, Lightning, Ice, Holy, **Glimmer** (an original non-elemental spirit
 ## People (principal cast)
 Rhen Sallow · Asha Velamir · Toma Okeru · Liss Varrow · Old Kerrid · Ysolde · Pell (Kirru) · High Warden Sefir Aurane. Full sheets: `docs/kb/story/characters/`.
 
+## Art terms (Art direction M1, docs/kb/art/)
+- **sea-glow** (n.): the faint teal night glow of held glimmer on the sea (`#1C6B78`). It is in every night frame and absent only in the final shot.
+- **held light / released light** (n.): glimmer that sinks or drifts seaward in cool cyan (held by grief) vs. glimmer that rises in warm gold (released).
+- **wake-shell wall** (n.): Haluna's wall style of set shells. **fan-shell roof** (n.): its roof style.
+- **tide-notch** (n.): the UI corner treatment (a small stepped notch). **lamp-node / lamp mote**: UI ornaments.
+
 ## Story terms (Narrative M1, merged 2026-10-22)
 
 These come from `docs/kb/story/bible.md`. Where a row conflicts with an entry above, this section wins (it is the newer refinement).

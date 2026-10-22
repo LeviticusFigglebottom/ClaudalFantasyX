@@ -1,9 +1,9 @@
 # STATUS
 
-- **Milestone:** M0 Bootstrap, gates **green locally** (ADR 0008), awaiting a fresh-agent review. **M1 is open**: parallel streams are running.
+- **Milestone:** M0 is reviewed (fresh-agent approve-with-fixes, fixes landed). **M1 is in progress** with parallel streams.
 - **Updated:** 2026-10-22 by Lead (lead-bootstrap)
-- **M0 progress:** about 98%. Every §15 step 1–6 artifact is in the repo, and `tools/ci_local.sh` passes (42/42 Godot tests on 4.6.3).
-- **M1 progress:** about 10%. The CTB engine core and story bible are in review, and the audio PoC is landing. See `python3 tools/taskboard.py --milestone M1`.
+- **M0 progress:** done, pending the human's look. `tools/ci_local.sh` passes from a fresh checkout: 153 Godot tests, 96 tool tests, 3 screenshot baselines.
+- **M1 progress:** about 30%. 1 task done and 8 in review (story, audio PoC, art direction, dialogue system, Lattice, screenshots, graphics presets, prewarm). See `python3 tools/taskboard.py --milestone M1`.
 
 ## The project in one page (Lead's reading of SPEC v1.0)
 
@@ -18,23 +18,26 @@ We're building *Hymn of the Undertow*: an original, cinematic, turn-based JRPG i
 **Process.** The Lead orchestrates role agents through the repo: the KB (`docs/kb/`), a file task board, ADRs, handoffs, and an ownership file. CI gates everything. Milestones run M0 → M7, and the **M2 vertical slice is a blocking human review** (Q7). The scale fallback is to cut zones and optional content before story beats or the graphical bar.
 
 ## What exists now
-- Godot project (4.6.3, Forward+) with autoloads `EventBus`, `Game` (flags/state), `SaveSystem` (versioned and migrating), and `SceneRouter` (async load, fade, prewarm hook).
-- **CTB engine core** (`game/battle/`): formulas (documented 1:1 in `design/formulas.md`), a timeline with preview, an engine with swap, escape, XP, and statuses, data-driven enemy AI, and JSON data for 4 heroes, 3 sandbox enemies, and all 21 statuses.
-- Tests: an in-repo runner (ADR 0006) with unit tests for formulas, timeline, engine, saves, and flags, plus an integration test on real data.
-- Tools: a data validator (schema, refs, flags, loc, provenance, banned terms, size), a task board, and a screenshot-regression stub. CI runs all of it, plus export on `main`.
-- Story bible, 8 character sheets, voice guide, act outline (vertical slice = Ch2–3, Haluna), and 7 Vowbound.
+- **Engine and tooling:** Godot 4.6.3 (Forward+). `tools/dev/fetch_godot.py` fetches it in the sandbox, and `tools/dev/fetch_render_deps.py` adds **software Forward+ rendering** (Mesa lavapipe plus Xvfb, ADR 0009). `tools/ci_local.sh` is the merge gate while Actions has no runner (ADR 0008).
+- **Core:** autoloads `EventBus`, `Game` (flags), `SaveSystem` (v2: versioned, migrating, with Lattice progress), and `SceneRouter` (async load, fade, shader prewarm installed).
+- **Battle:** a deterministic CTB engine (exact integer damage; a timeline that simulates status countdown; swap, escape and the XP rule; target validation; data-driven AI). Sandbox balance bands are asserted in tests.
+- **Progression:** Lattice data, logic, and editor (`tools/lattice_editor/`). The first 87-node section covers Rhen, Asha, and Toma. Movement and Facet rules are in formulas.md.
+- **Narrative tech:** the `.dlg` compiler (`tools/dlgc.py`), `DialogueRunner`, and a typewriter `DialogueBox` with per-speaker blips. Sample scene: ch02 "The Girl on the Beach".
+- **Rendering:** graphics presets (Low to Ultra, every API checked against 4.6.3), shader prewarm, shared shader includes and globals, and screenshot capture plus RMSE regression.
+- **Content docs:** story bible, characters, voice guide, act outline (vertical slice = Ch2–3 at Haluna), 7 Vowbound; art references, a 25-frame color script, `palette.json`, design sheets for Asha, Rhen and Toma, the Haluna brief, and UI rules.
+- **Audio:** a numpy synth library, a Hush theme sketch at −16 LUFS, and UI SFX. **Nobody has listened to it yet.**
 
 ## Top risks
-1. **GitHub Actions does not run.** Runs sit in `queued` with no runner (Actions disabled, or no minutes). We gate locally instead (ADR 0008), with Godot fetched from the Ubuntu archive, and GPU-dependent checks are still missing.
-2. **Character fidelity** (§14): procedural humans may look uncanny. M1-CHR-02 must prove Asha before anything scales.
-3. **Generated music quality** (§14, Q3): see the audio PoC assessment in `audio/pipeline.md`.
-4. **Binary storage:** Git LFS is deferred (ADR 0005), and M1 hero textures will need it.
-5. **No GPU CI:** screenshot regression and performance checks need a GPU-capable runner (M1-QA-01).
+1. **No real GPU anywhere.** Software rendering proves correctness and look, but performance targets (§4.2) are still estimates. The CPU-side scene-swap frame already measures 51–71 ms on the dummy renderer, over the 50 ms budget. Investigate in M1-RND-06 follow-up.
+2. **Character fidelity** (§14): M1-CHR-01 and M1-CHR-02 must prove Asha before anything scales. Blender is being fetched the same way as Godot.
+3. **Generated music quality** (§14, Q3): the agent's self-assessment is about 30–40% of a commercial theme, with the piano the weakest part. It needs human ears.
+4. **Binary storage:** Git LFS is deferred (ADR 0005). Hero textures will need it.
+5. **GitHub Actions does not run** (runs stay queued). We gate locally instead, so the export job has never run.
 
 ## Blockers / questions for the human
-- **GitHub Actions:** when convenient, check the repo's Settings → Actions (are workflows allowed?) and the account's Actions minutes. Nothing is blocked meanwhile, thanks to the local gate.
-- **LFS:** may we enable Git LFS on this repo (quota)? It's needed before M1-CHR-02 textures land.
-- **Q1 title/world:** proceeding with the defaults. Note that "the Calm" is spec-mandated but overlaps a term from the inspiring game. Narrative kept it and banned the compounds. Say the word if you'd rather rename it.
-- **Q2 (MPFB/MakeHuman as a base tool):** the default (allowed as a tool, heavily modified) will be logged in an ADR at M1-CHR-01 unless you say otherwise.
-- **Q6 platforms/hardware:** proceeding as written (Windows and Linux, macOS best effort).
-- Q3, Q4, Q5, and Q7 are at their spec defaults; they're asked at the stated points.
+- **Listen to `assets/audio/music/hush_theme_sketch.ogg`** (69 s) and tell us whether the synthesized direction is acceptable, or whether you'd supply or commission music (§16 Q3, raised early per §14).
+- **GitHub Actions:** check Settings → Actions (are workflows allowed?) and the account's minutes when convenient.
+- **LFS:** may we enable Git LFS (quota)? It's needed before the M1-CHR-02 textures land.
+- **Q1 title/world:** proceeding with the defaults. "The Calm" overlaps a term from the inspiring game; Narrative kept it and banned the compounds. Say the word to rename it.
+- **Q2 (MPFB):** default is "allowed as a tool, heavily modified". The character stream records it in an ADR.
+- Q4, Q5, Q6 and Q7 are at their spec defaults.
