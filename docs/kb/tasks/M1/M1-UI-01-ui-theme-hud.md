@@ -2,7 +2,7 @@
 id: M1-UI-01
 title: UI theme, OFL font pairing, battle HUD layout
 role: ui
-status: review
+status: done
 owner_session: ui-combat-stream-1
 reviewer: lead
 depends_on: []
@@ -27,3 +27,4 @@ Delivered (how it works: `docs/kb/tech/ui.md`):
 - For the Lead: `project.godot` could set `gui/theme/custom` to the theme. It isn't set yet; each UI root assigns it.
 
 ## Review log
+- 2026-10-22 lead: approve. The HUD reads clearly (who acts next, action cost in MP and rank, the ghost turn, and the target ring). The documented deviations from art/ui.md (208px chips, 22px minimum text) are accepted, as is the EB Garamond fallback (Cormorant isn't packaged). Follow-ups are tracked: preview_swap (M1-CMB-02 stream), colorblind/reduced-motion/text-size settings (M2 UI task), and a larger current-actor marker.
