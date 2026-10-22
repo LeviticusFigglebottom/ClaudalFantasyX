@@ -2,8 +2,8 @@
 id: M1-RND-01
 title: Ocean and shallows water shader with test scene
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: rendering-stream-2
 depends_on: []
 milestone: M1
 request-from: ""
