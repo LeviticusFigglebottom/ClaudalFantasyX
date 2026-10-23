@@ -6,4 +6,5 @@
 resource_name = "eye_occlusion"
 render_priority = 2
 shader = ExtResource("sh")
-
+shader_parameter/corner_strength = 0.7
+shader_parameter/upper_strength = 0.9
