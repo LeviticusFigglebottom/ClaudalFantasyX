@@ -2,7 +2,7 @@
 id: M1-NAR-08
 title: Remaining IP near-miss, ending consistency, staging (review-sweep-C)
 role: narrative
-status: doing
+status: review
 reviewer: cinematics
 owner_session: "worktree-agent-ac18e8281253ab668"
 depends_on: [M1-NAR-05]
@@ -29,6 +29,19 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
 - **ch02:** `offer_hand` and the sitting H05 now play only in the "Stay" branch. In the "Get up" branch Asha rises (`rise_to_stand`) and H05 is taken at Rhen's standing eye-line. haluna.md H05 is defined as Rhen's POV, following his eye. dlgc compiles cleanly, and the dialogue tests pass (47/47).
 - **Art docs:** haluna.md S10 now specifies the hold (a cut on 043 and at least 6 s, no blend). Color script rule 3 now covers practical- and glimmer-keyed night frames: pools are exempt from (b), and (a) and (c) still apply. The `ending_unbinding` sea-glow is the same everywhere (0.15 → 0.0 in steps).
 - **Not done (other sweep nits, out of scope):** Dace's battle-camera constraint (H04–H07), the ch03 `turn_back` nit, and the banned-list additions (which are the Lead's). The element glyphs in art `ui.md` (Ice a knot, Holy a ring) were authored against the old mapping. They are generic, so Art may want to revisit them.
+
+**Sweep-D changes (narrative, 2026-10-23):**
+- **B1:** [ADR 0016](../../decisions/0016-act-two-restaging.md) and N-18.
+  - (b) The founding truth is now learned in Ch13's Lamp Archive, before the wedding: the founders' ledgers, the Cantor roll's *kept / spent* column, and the same signatures across four centuries. Ysolde's Corran maths moves there. The founders' records also leave Lowlight.
+  - (a) The escape goes out across the lagoon on Merel's bridal barge, and Merel is taken for it. Venn is fought as a living-seeming man on the water, with no revenant reveal. Nothing goes under the city: Underreach and Cistern are cut as zones. Ch15 becomes "Unlamped" (the Wakefin, then Hollowmere at dawn, where Toma's faith breaks).
+  - (c) Sefir's temptation at the Choir is "leave the Eighth Verse in the stones, go home, live". He never asks to be sung in; in Ch21 he takes the heart himself.
+  - **Kerrid's reveal** is his own confession at sea in Ch15, as held dead drift to him. No Stilling is performed on him.
+  - The ADR includes an echo check of every beat from Ch9 to the ending, plus two flagged residuals outside its scope (Sefir at the Ch7 Tidecup, and the Ch8 cannons).
+- **S1:** the ADR 0015 order statement is corrected (Fire and Lightning are the same pair, swapped, and Ice is 4th). Nhoa's "snow" is now "silt". 0015 records that the truth beat left Lowlight.
+- **S2:** act3_ending §0 rule 7 and bible §10 now say that everything is released at H09; what follows is ascent.
+- **S3:** the sea-glow holds at 0.04 through E5. It reaches 0.0 only on the cut to E6.
+- **S4:** E6 is now front three-quarter. The camera sits on the dock looking out to sea, and Asha turns back toward Haluna, ending about 40° off her nose line. The "H10 reversed" wording is fixed in act3_ending, haluna.md and the color script.
+- **S5 and nits:** the "Stay" branch now resolves `offer_hand` (`take_hand`, then `rise_to_stand`) before the walk. "Get up" has a `@wait 0.8` before H05. The E3 lantern is unlit. dlgc compiles cleanly, and the dialogue tests pass (48/48).
 
 ## Review log
 - 2026-10-23 cinematics + IP check (review-sweep-D): **request-changes.** I read ADR 0015, act_outline Ch1–Ending, act3_ending.md, vowbound.md, haluna.md H05/H10/S10, color_script rule 3, and the ch02 .dlg. dlgc compiles, and tools tests give 247 OK.
