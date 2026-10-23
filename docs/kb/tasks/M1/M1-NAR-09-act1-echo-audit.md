@@ -2,7 +2,7 @@
 id: M1-NAR-09
 title: Act I echo audit (Ch1-Ch8): Sefir's tournament introduction, the seawall operation
 role: narrative
-status: review
+status: done
 reviewer: cinematics
 owner_session: "worktree-agent-a62a3327575b9aaf4"
 depends_on: [M1-NAR-08]
@@ -88,3 +88,4 @@ Residuals accepted with reasons in the ADR: the SPEC-fixed prologue line, the Ha
     - decisions_log.md:154 still says 0020 is "proposed for Lead sign-off", but it is accepted.
     - tech/dialogue_format.md:53 says "Kerrid in Ch14"; voice_guide.md:10 says Ch15.
     - SPEC.md:522 cites ADR 0021, which is not on this branch.
+- 2026-10-23 lead: closing on review-sweep-F approve-with-fixes; the remaining items are in M1-NAR-11.

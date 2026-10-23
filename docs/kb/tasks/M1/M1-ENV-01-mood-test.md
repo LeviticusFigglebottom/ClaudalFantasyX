@@ -2,7 +2,7 @@
 id: M1-ENV-01
 title: Five-shot environment mood test (coastal village)
 role: environment
-status: review
+status: todo
 owner_session: environment-stream-2
 reviewer: rendering
 depends_on: [M1-RND-01, M1-ART-01]
@@ -55,3 +55,4 @@ SPEC §10.2 M1 exit criterion.
   - **Process.** The front matter names `reviewer: rendering` (:6), but Art also has to sign this off (SPEC §8.4 mood frames). Record both reviewers.
   - **Nit.** A shadow sample right of H02's wall (about x 820-860, y 440-470) reads hue about 126°, a green-grey. It may be the tuft. Re-check it with the swatch-mask view when it exists (haluna.md:208).
   - **GI.** SDFGI off for the frames, with a GPU re-test requested (README "GI choice"), is reasonable and documented. It's not a review item.
+- 2026-10-23 lead: reopened on review-sweep-F request-changes. The sky blocker is fixed here; no waiver. Reviewers are Rendering and Art.

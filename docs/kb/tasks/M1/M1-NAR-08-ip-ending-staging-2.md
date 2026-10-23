@@ -2,7 +2,7 @@
 id: M1-NAR-08
 title: Remaining IP near-miss, ending consistency, staging (review-sweep-C)
 role: narrative
-status: review
+status: done
 reviewer: cinematics
 owner_session: "worktree-agent-a62a3327575b9aaf4"
 depends_on: [M1-NAR-05]
@@ -105,3 +105,4 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
   - **Should-fix S1 (consistency).** palette.json:161 `sea_glow_rule` still says ">= 0.08 once the sun is below -6 deg", with no exception. `ending_unbinding` E4 at 0.07 and E5 at 0.06 are night frames below that (act3_ending.md:15). color_script.md:47 makes the exception, but palette.json doesn't. Add it there (Art owns palette.json, so open a request task) so the frame isn't flagged later.
   - **Should-fix S2 (consistency, sheet edited in this task).** liss_varrow.md:7 puts her line-marks on her left arm and collarbone. liss_varrow.md:23 sleeves the left arm in mesh and shows the line-marks on the bare right arm, up onto her cheek. Pick one side.
   - **Nit (E3 light).** Once NAR-09 S5 settles the hue of Kerrid's rope-burn light, state in E3 (act3_ending.md:96) that his hand motes are `glimmer_lift` from H09 on, after rule 1's 1.5 s lerp from held to lift. Then the last farewell can't show cyan, held light after rule 7's single release.
+- 2026-10-23 lead: closing on review-sweep-F approve-with-fixes; the palette sea-glow exception and Liss's arm are in M1-NAR-11.
