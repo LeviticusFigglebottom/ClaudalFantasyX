@@ -20,3 +20,8 @@ Claim a path glob before editing `.tscn` or `.tres` files or assets (SPEC §5.3)
 | Rendering (water) | `game/shaders/water/**`, `game/world/water/**`, `game/levels/_tests/water/**` | 2026-10-22 | rendering-stream-2 |
 | Character | `assets_src/characters/**`, `assets/characters/**`, `game/levels/_tests/characters/**` | 2026-10-22 | character-stream-1 |
 | Environment | `assets_src/environments/**`, `assets/environments/**`, `game/shaders/vegetation/**`, `game/levels/_tests/vegetation/**` | 2026-10-22 | environment-stream-1 |
+| Progression (economy) | `game/data/items/**`, `game/progression/{item_db,inventory,equipment_bag,customize,wallet,shop,flag_reader,party_goods,equipment_effects,item_battle_action}.gd` | 2026-10-23 | progression-stream-2 |
+| Systems (field/debug/saves) | `game/world/**`, `game/core/debug/**`, `game/data/world/**`, `game/data/debug/**` | 2026-10-23 | architect-stream-2/4 |
+| Rendering (storm) | `game/shaders/undertow/**`, `game/vfx/undertow/**`, `game/levels/_tests/undertow/**` | 2026-10-23 | rendering-stream-5 |
+| Environment (kits) | `assets_src/environments/kits/**`, `assets/environments/kits/**`, `game/shaders/environment/**`, `game/levels/_tests/haluna_mood/**` | 2026-10-23 | environment-stream-2 |
+| Systems (saves) | `game/world/save_shrine/**`, `game/ui/save/**`, `game/levels/_tests/save_shrine/**` | 2026-10-23 | architect-stream-4 |

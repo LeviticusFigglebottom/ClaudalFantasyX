@@ -354,3 +354,312 @@ func _press(action: StringName) -> void:
 func _free() -> void:
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
+
+
+# --- M1-UI-02: swap preview, fail copy, Provoke, auto turns, statuses, fixtures ----------
+
+
+func test_hovering_a_reserve_member_previews_the_swap() -> void:
+	_start()
+	var actor := ctl.current_actor_id()
+	ctl.hud.commands.select(BattleMenus.ROW_SWAP)
+	var before := _slot_ids()
+	_press(&"ui_accept")
+	assert_eq(ctl.state, BattleController.STATE_SWAP_IN)
+	assert_eq(ctl.hud.commands.current_row()["id"], &"toma")
+	assert_eq(_slot_ids(), _entry_ids(ctl.engine.preview_swap(actor, &"toma")), "chips show the order after the swap")
+	assert_ne(_slot_ids(), before, "hovering Toma moves the chips")
+	assert_eq(ctl.hud.timeline.slots[0]["id"], &"toma", "Toma would take the acting turn")
+	assert_eq(_ids(ctl.engine.party_active), [&"rhen", &"asha"] as Array[StringName], "a preview changes nothing")
+	_free()
+
+
+func test_swap_out_preview_follows_the_leaver_and_matches_the_real_swap() -> void:
+	_start()
+	var actor := ctl.current_actor_id()
+	ctl.hud.commands.select(BattleMenus.ROW_SWAP)
+	_press(&"ui_accept")
+	_press(&"ui_accept")
+	assert_eq(ctl.state, BattleController.STATE_SWAP_OUT)
+	assert_eq(_slot_ids(), _entry_ids(ctl.engine.preview_swap(actor, &"toma")))
+	_press(&"ui_right")
+	var leaver: StringName = ctl.picked_ids()[0]
+	assert_ne(leaver, actor)
+	var expected := _entry_ids(ctl.engine.preview_swap(leaver, &"toma"))
+	assert_eq(_slot_ids(), expected, "the preview follows the highlighted leaver")
+	assert_eq(ctl.hud.timeline.slots[0]["id"], actor, "the actor keeps the turn when someone else steps back")
+	_press(&"ui_accept")
+	assert_eq(_slot_ids(), expected, "the preview was exactly the order after the swap (pillar 4)")
+	_free()
+
+
+func test_every_engine_fail_reason_has_its_own_localized_text() -> void:
+	_start()
+	var src := FileAccess.get_file_as_string("res://game/battle/battle_engine.gd")
+	var rx := RegEx.create_from_string('failed\\([^)]*&"([a-z_]+)"\\)')
+	var engine_reasons: Array[StringName] = []
+	for m in rx.search_all(src):
+		engine_reasons.append(StringName(m.get_string(1)))
+	assert_true(engine_reasons.size() >= 6, "found the engine's fail reasons")
+	for r in engine_reasons:
+		assert_true(BattleMenus.FAIL_REASONS.has(r), "BattleMenus.FAIL_REASONS lists '%s'" % r)
+	var generic := tr("HUD_FAIL_GENERIC")
+	var actor := ctl.engine.current
+	for r in BattleMenus.FAIL_REASONS:
+		var text := ctl.menus.fail_text(r, actor, ctl.engine.enemies[0])
+		assert_ne(text, generic, "'%s' has its own sentence" % r)
+		assert_ne(text, String(r), "'%s' is not shown as its raw id" % r)
+		if String(r).contains("_"):
+			assert_false(text.contains(String(r)), "'%s' never shows the raw id: %s" % [r, text])
+		assert_false(text.contains("{"), "'%s' is fully formatted: %s" % [r, text])
+		assert_false(text.begins_with("HUD_"), "'%s' is translated" % r)
+	assert_eq(ctl.menus.fail_text(&"some_future_reason", actor), generic, "unknown reasons still read as words")
+	_free()
+
+
+func test_a_refused_action_explains_itself_in_words() -> void:
+	_start()
+	_to_turn_of(&"rhen")
+	ctl.engine.current.mp = 0
+	var r := ctl.act(&"quick_hit", [ctl.engine.living_foes_of(ctl.engine.current)[0].id])
+	assert_false(r.ok)
+	assert_eq(r.fail_reason, &"no_mp")
+	assert_eq(ctl.state, BattleController.STATE_COMMAND, "nothing was spent; the menu is back")
+	assert_eq(ctl.hud.help_text(), ctl.menus.fail_text(&"no_mp", ctl.engine.current))
+	assert_false(ctl.hud.help_text().contains("no_mp"))
+	_free()
+
+
+func test_provoke_locks_the_cursor_on_the_provoker_and_marks_it() -> void:
+	var harrier := &"gull_harrier#3"
+	_start_fixture(
+		&"player_preview", {"rhen": {"statuses": [{"id": "provoke", "duration": -1}], "provoked_by": harrier}}
+	)
+	_to_turn_of(&"rhen")
+	assert_eq(ctl.current_actor_id(), &"rhen")
+	assert_true(ctl.hud.target_cursor.provoker_marked(), "the hook hangs over the provoker on Rhen's turn")
+	assert_true(ctl.hud.help_text().contains(ctl.menus.display_name(ctl.engine.find(harrier))), "help names it")
+	_press(&"ui_accept")
+	assert_eq(ctl.state, BattleController.STATE_TARGET)
+	assert_eq(ctl.candidate_ids(), [harrier] as Array[StringName], "only the provoker can be picked")
+	_press(&"ui_right")
+	assert_eq(ctl.picked_ids(), [harrier] as Array[StringName], "the cursor cannot leave it")
+	assert_true(bool(ctl.hud.target_cursor.targets[0]["forced"]), "the locked chevron is marked")
+	_press(&"ui_cancel")
+	var other := ctl.engine.find(&"reef_crab#1")
+	var r := ctl.act(&"attack", [other.id])
+	assert_eq(r.fail_reason, &"provoked")
+	assert_eq(ctl.hud.help_text(), ctl.menus.fail_text(&"provoked", ctl.engine.current, ctl.engine.find(harrier)))
+	_free()
+
+
+func test_berserk_and_confused_party_turns_are_announced_and_play_themselves() -> void:
+	for reason: StringName in [BattleMenus.AUTO_BERSERK, BattleMenus.AUTO_CONFUSE]:
+		before_each()
+		ctl.pacing_scale = 1.0
+		_start_fixture(&"player_preview", {"asha": {"statuses": [{"id": String(reason), "duration": -1}]}})
+		var asha := ctl.engine.find(&"asha")
+		var announce := ctl.menus.auto_announce(asha, reason)
+		var guard := 0
+		while ctl.hud.help_text() != announce and guard < 400:
+			guard += 1
+			if ctl.state == BattleController.STATE_COMMAND:
+				ctl.act(&"attack", [ctl.engine.living_foes_of(ctl.engine.current)[0].id])
+			else:
+				ctl.tick(0.05)
+		assert_eq(ctl.hud.help_text(), announce, "%s: the turn is announced before it plays" % reason)
+		assert_eq(ctl.current_actor_id(), &"asha")
+		assert_eq(ctl.state, BattleController.STATE_BUSY, "no menu: the player does not choose")
+		assert_false(ctl.hud.commands.visible)
+		assert_eq(ctl.hud.party.row_for(&"asha").auto_reason, reason, "the party row marks an automatic turn")
+		assert_eq(ctl.hud.timeline.caption, ctl.menus.turn_caption(reason), "slot 0 says why")
+		assert_eq(ctl.hud.target_cursor.actor_auto, reason, "the actor marker is hollow")
+		ctl.tick(HudLayout.num(HudLayout.section(&"pacing"), "enemy_think_sec") + 0.01)
+		assert_eq(ctl.current_actor_id(), &"asha", "%s: held longer than an enemy's think time" % reason)
+		var announced_at := ctl.hud.help_history.size()
+		var spins := 0
+		while ctl.current_actor_id() == &"asha" and spins < 100:
+			spins += 1
+			ctl.tick(0.05)
+		var said := ctl.hud.help_history[mini(announced_at, ctl.hud.help_history.size() - 1)]
+		var prefix := tr(
+			"HUD_AUTO_CONFUSE_ACTS_FMT" if reason == BattleMenus.AUTO_CONFUSE else "HUD_AUTO_BERSERK_ACTS_FMT"
+		)
+		assert_true(said.begins_with(prefix.get_slice("{", 0)), "%s: the result says why ('%s')" % [reason, said])
+		_free()
+
+
+func test_doom_counts_down_on_the_chips_and_the_party_row() -> void:
+	_start_fixture(&"player_preview", {"rhen": {"statuses": [{"id": "doom", "duration": 3}]}})
+	var counts: Array[int] = []
+	for s in ctl.hud.timeline.slots:
+		if s["id"] == &"rhen":
+			counts.append(int(s["doom"]))
+	assert_eq(counts, [3, 2, 1] as Array[int], "three more turns, counting down, then none")
+	var first := _first_slot_of(&"rhen")
+	assert_eq(ctl.hud.timeline.chip_for_key(str(first["key"])).doom, 3, "the chip carries the count")
+	assert_eq(ctl.hud.party.row_for(&"rhen").doom_text(), "3", "the party row shows it beside the hourglass")
+	_free()
+
+
+func test_statuses_capture_shows_provoke_reflect_petrify_and_doom() -> void:
+	ctl.run_script(BattleController.SCRIPT_STATUSES)
+	var eel := &"lantern_eel#2"
+	assert_eq(ctl.current_actor_id(), &"ysolde")
+	assert_eq(ctl.state, BattleController.STATE_TARGET)
+	assert_eq(ctl.pending_skill(), &"ember")
+	assert_eq(ctl.candidate_ids(), [eel] as Array[StringName], "provoked by the eel")
+	assert_eq(ctl.hud.target_cursor.bounce_ids(), [&"rhen"] as Array[StringName], "Reflect bounces Ember onto Rhen")
+	assert_eq(_target_marked_ids(), [&"rhen"] as Array[StringName], "the timeline marks where it lands")
+	var help := ctl.hud.help_text()
+	assert_true(help.contains(ctl.menus.display_name(ctl.engine.find(&"rhen"))), "help: %s" % help)
+	assert_true(ctl.hud.target_cursor.provoker_marked())
+	assert_false(_slot_ids().has(&"asha"), "stone takes no turns")
+	assert_true(ctl.hud.party.row_for(&"asha").is_stone(), "the party row turns to stone")
+	assert_true(ctl.stage.stand_in(&"asha").is_stone(), "so does the stand-in")
+	assert_true(int(_first_slot_of(&"rhen")["doom"]) > 0, "Rhen's chips count Doom down")
+	var glyphs := ctl.hud.party.row_for(&"rhen").status_ids()
+	assert_true(glyphs.has(&"zombie") and glyphs.has(&"regen"), "Zombie and (inverted) Regen are shown")
+	assert_true(StatusGlyph.inverted_for(ctl.engine.find(&"rhen"), &"regen"))
+	_free()
+
+
+func test_a_reflected_spell_floats_reflected_over_the_reflector() -> void:
+	ctl.run_script(BattleController.SCRIPT_STATUSES)
+	ctl.show_damage_numbers = true
+	ctl.hud.recent_numbers.clear()
+	var r := ctl.act(&"ember", [&"lantern_eel#2"])
+	assert_true(r.ok)
+	assert_eq(StringName(str(r.hits[0].get("reflected_from", ""))), &"lantern_eel#2")
+	var words := ctl.hud.recent_numbers.filter(func(n: Dictionary) -> bool: return n["kind"] == DamageNumber.KIND_INFO)
+	assert_true(words.any(func(n: Dictionary) -> bool: return n["text"] == tr("HUD_FLOAT_REFLECTED")))
+	_free()
+
+
+func test_a_heal_on_a_zombie_is_flagged_before_and_after() -> void:
+	_start_fixture(&"player_preview", {"rhen": {"statuses": [{"id": "zombie", "duration": -1}]}})
+	ctl.show_damage_numbers = true
+	_to_turn_of(&"asha")
+	_press(&"ui_down")
+	_press(&"ui_accept")
+	ctl.hud.commands.select(&"mend")
+	_press(&"ui_accept")
+	var guard := 0
+	while ctl.picked_ids()[0] != &"rhen" and guard < 4:
+		guard += 1
+		_press(&"ui_right")
+	var note := tr("HUD_HELP_ZOMBIE_FMT").format({"name": ctl.menus.display_name(ctl.engine.find(&"rhen"))})
+	assert_true(ctl.hud.help_text().contains(note), "the preview warns: %s" % ctl.hud.help_text())
+	ctl.hud.recent_numbers.clear()
+	var hp := ctl.engine.find(&"rhen").hp
+	_press(&"ui_accept")
+	assert_true(ctl.engine.find(&"rhen").hp < hp, "the heal harmed")
+	var first: Dictionary = ctl.hud.recent_numbers[0]
+	assert_eq(first["kind"], DamageNumber.KIND_DAMAGE, "shown as damage")
+	assert_true(ctl.hud.recent_numbers.any(func(n: Dictionary) -> bool: return n["text"] == tr("HUD_FLOAT_INVERTED")))
+	_free()
+
+
+func test_regen_on_a_zombie_shows_its_end_of_turn_harm() -> void:
+	var o := {"rhen": {"statuses": [{"id": "zombie", "duration": -1}, {"id": "regen", "duration": -1}]}}
+	_start_fixture(&"player_preview", o)
+	ctl.show_damage_numbers = true
+	_to_turn_of(&"rhen")
+	ctl.hud.recent_numbers.clear()
+	var hp := ctl.engine.find(&"rhen").hp
+	ctl.act(&"attack", [ctl.engine.living_foes_of(ctl.engine.current)[0].id])
+	assert_true(ctl.engine.find(&"rhen").hp < hp or ctl.engine.outcome != &"", "Regen harmed Rhen")
+	var regen_word := tr("HUD_FLOAT_REGEN_INVERTED")
+	assert_true(ctl.hud.recent_numbers.any(func(n: Dictionary) -> bool: return n["text"] == regen_word))
+	_free()
+
+
+func test_the_current_actor_is_marked_everywhere() -> void:
+	_start()
+	var actor := ctl.current_actor_id()
+	assert_true(ctl.hud.target_cursor.actor_visible(), "a marker over the acting fighter")
+	assert_eq(ctl.hud.target_cursor.actor_auto, &"", "solid: the player chooses")
+	assert_true(ctl.hud.party.row_for(actor).is_current)
+	var head: Dictionary = ctl.hud.timeline.slots[0]
+	assert_true(bool(head["is_current"]))
+	assert_eq(ctl.hud.timeline.chip_for_key(str(head["key"])).caption, tr("HUD_TL_NOW"), "slot 0 says Acting now")
+	_free()
+
+
+func test_capture_states_run_on_fixture_data_not_live_balance() -> void:
+	var live := BattleDB.load_default()
+	for sid: StringName in BattleFixture.fixture_ids():
+		before_each()
+		ctl.run_script(sid)
+		assert_true(ctl.fixture != null, "%s starts from a fixture" % sid)
+		assert_eq(ctl.engine.db, ctl.fixture.db, "%s uses the frozen tables" % sid)
+		assert_ne(ctl.engine.db, live)
+		match sid:
+			BattleController.SCRIPT_PLAYER_PREVIEW:
+				assert_eq(ctl.state, BattleController.STATE_TARGET)
+				assert_eq(ctl.pending_skill(), &"undertow_cut")
+			BattleController.SCRIPT_SWAP_MENU:
+				assert_eq(ctl.state, BattleController.STATE_SWAP_IN)
+			BattleController.SCRIPT_VICTORY:
+				assert_eq(ctl.engine.outcome, BattleEngine.OUTCOME_VICTORY)
+				assert_eq(ctl.hud.result.result_rows.size(), 3, "Rhen, Toma and Asha all stood")
+				for row in ctl.hud.result.result_rows:
+					assert_false(bool(row.get("fell", false)))
+			BattleController.SCRIPT_DEFEAT:
+				assert_eq(ctl.engine.outcome, BattleEngine.OUTCOME_DEFEAT)
+				assert_eq(ctl.state, BattleController.STATE_RESULT)
+			BattleController.SCRIPT_STATUSES:
+				assert_eq(ctl.state, BattleController.STATE_TARGET)
+		_free()
+
+
+func test_fixture_overrides_never_touch_the_shared_tables() -> void:
+	var tables := {"enemies": [{"id": "a", "stats": {"hp": 10, "agility": 5}}]}
+	var out := BattleFixture.merged_tables(tables, {"enemies": {"a": {"stats": {"hp": 1}}}})
+	assert_eq(int(out["enemies"][0]["stats"]["hp"]), 1)
+	assert_eq(int(out["enemies"][0]["stats"]["agility"]), 5, "deep merge keeps the other stats")
+	assert_eq(int(tables["enemies"][0]["stats"]["hp"]), 10, "the source is untouched")
+	var fx := BattleFixture.load_fixture(&"victory")
+	assert_eq(int(fx.db.enemies[&"reef_crab"]["stats"]["hp"]), 1)
+	assert_eq(fx.encounter, &"fixture_reef", "its own encounter, not sandbox_reef")
+
+
+# --- M1-UI-02 helpers --------------------------------------------------------------------
+
+
+func _start_fixture(fid: StringName, opening: Dictionary = {}) -> void:
+	var fx := BattleFixture.load_fixture(fid)
+	if not opening.is_empty():
+		fx.opening = opening
+	ctl.start_fixture(fx)
+
+
+func _slot_ids() -> Array[StringName]:
+	var out: Array[StringName] = []
+	for s in ctl.hud.timeline.slots:
+		out.append(s["id"])
+	return out
+
+
+func _entry_ids(entries: Array[TurnEntry]) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for e in entries:
+		out.append(e.combatant_id)
+	return out
+
+
+func _first_slot_of(cid: StringName) -> Dictionary:
+	for s in ctl.hud.timeline.slots:
+		if s["id"] == cid:
+			return s
+	return {}
+
+
+func test_the_help_line_wraps_only_when_one_line_cannot_hold_it() -> void:
+	ctl.run_script(BattleController.SCRIPT_PLAYER_PREVIEW)
+	assert_false(ctl.hud.help_wraps(), "a one-line help keeps the panel one line tall")
+	_free()
+	before_each()
+	ctl.run_script(BattleController.SCRIPT_STATUSES)
+	assert_true(ctl.hud.help_wraps(), "Reflect + Provoke notes take a second line instead of being cut")
+	_free()

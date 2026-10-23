@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Balancing simulator front end (M1-CMB-05, SPEC §6.9).
 
-Runs game/battle/sim/sim_main.gd in headless Godot for every suite in
+Runs tools/balance/sim_main.gd in headless Godot for every suite in
 tools/balance/targets.json, checks each policy's win rate against its band, and writes:
 
   * docs/kb/design/balance_report.md: a Markdown summary table. Everything below the
@@ -32,7 +32,7 @@ TARGETS = ROOT / "tools/balance/targets.json"
 ENCOUNTERS = ROOT / "game/data/battle/encounters.json"
 REPORT = ROOT / "docs/kb/design/balance_report.md"
 OUT_DIR = ROOT / "tools/balance/out"
-SIM_SCRIPT = "res://game/battle/sim/sim_main.gd"
+SIM_SCRIPT = "res://tools/balance/sim_main.gd"
 PREFIX = "SIM_RESULT "
 LOG_MARKER = "<!-- tuning-log -->"
 DEFAULT_SEEDS = 1000

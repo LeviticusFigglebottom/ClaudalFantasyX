@@ -9,7 +9,7 @@ python3 tools/balance/sim.py                 # every suite, 1000 seeds, rewrites
 python3 tools/balance/sim.py --seeds 200 --suite sandbox_reef --check   # quick, exit 1 on a miss
 ```
 
-`sim.py` calls `godot --headless -s res://game/battle/sim/sim_main.gd` (the GDScript runner, `BattleSim`), writes per-seed and summary CSVs to `tools/balance/out/` (gitignored), and rewrites the table at the top of the report, keeping the hand-written tuning log below the `<!-- tuning-log -->` marker. Seeds are `1..N`, so every number is reproducible. `tests/integration/test_sandbox_battle.gd` asserts the sandbox bands at 200 seeds on every CI run.
+`sim.py` calls `godot --headless -s res://tools/balance/sim_main.gd` (a thin wrapper around the GDScript runner `BattleSim`, whose `run_cli()` holds the logic), writes per-seed and summary CSVs to `tools/balance/out/` (gitignored), and rewrites the table at the top of the report, keeping the hand-written tuning log below the `<!-- tuning-log -->` marker. Seeds are `1..N`, so every number is reproducible. `tests/integration/test_sandbox_battle.gd` asserts the sandbox bands at 200 seeds on every CI run.
 
 ## Party policies (`game/battle/sim/`)
 

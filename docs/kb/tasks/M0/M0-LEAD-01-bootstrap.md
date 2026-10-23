@@ -2,7 +2,7 @@
 id: M0-LEAD-01
 title: M0 bootstrap: repo, KB, CI, ADRs, task board
 role: lead
-status: review
+status: done
 owner_session: "lead-bootstrap"
 depends_on: []
 milestone: M0
@@ -24,3 +24,4 @@ Reviewer: a fresh agent (milestone gate, SPEC §12.3). The Godot steps could not
 
 ## Review log
 - 2026-10-22 lead: GitHub Actions runs never left `queued`. Verified instead with tools/ci_local.sh on Godot 4.6.3 (ADR 0008): 42/42 tests pass, import is clean, the boot smoke test passes, and the harness canary showed crashes and bad asserts both FAIL. Awaiting a fresh-agent review.
+- 2026-10-23 lead: the fresh-agent review (approve-with-fixes) is in M1-CMB-00's log; all fixes landed (claim protocol, shared-file rule, taskboard checks, CI timeouts and boot smoke test). Closing.

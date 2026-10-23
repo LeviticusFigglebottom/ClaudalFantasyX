@@ -17,8 +17,8 @@ func _ready() -> void:
 	add_child(bg)
 
 
-## Rebuilds the rows for `members` (labels: id -> display name).
-func show_members(members: Array[BattleCombatant], labels: Dictionary) -> void:
+## Rebuilds the rows for `members` (labels: id -> display name; tints: id -> portrait Color).
+func show_members(members: Array[BattleCombatant], labels: Dictionary, tints: Dictionary = {}) -> void:
 	for r in _rows:
 		r.queue_free()
 	_rows.clear()
@@ -32,7 +32,8 @@ func show_members(members: Array[BattleCombatant], labels: Dictionary) -> void:
 		row.position = Vector2(inset, y0 + i * (h + gap))
 		row.size = Vector2(size.x - inset * 2.0, h)
 		add_child(row)
-		row.setup(_m, members[i], str(labels.get(members[i].id, String(members[i].id))))
+		var cid := members[i].id
+		row.setup(_m, members[i], str(labels.get(cid, String(cid))), tints.get(cid, Color.WHITE) as Color)
 		_rows.append(row)
 
 
@@ -41,9 +42,11 @@ func refresh(animate: bool = false, drain_sec: float = 0.0) -> void:
 		r.refresh(animate, drain_sec)
 
 
-func set_current(cid: StringName) -> void:
+## Highlights the fighter acting now. `auto` (&"berserk"/&"confuse") marks a turn that plays itself.
+func set_current(cid: StringName, auto: StringName = &"") -> void:
 	for r in _rows:
 		r.is_current = r.combatant != null and r.combatant.id == cid
+		r.auto_reason = auto if r.is_current else &""
 		r.queue_redraw()
 
 
