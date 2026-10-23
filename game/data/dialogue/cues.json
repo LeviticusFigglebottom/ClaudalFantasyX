@@ -1,21 +1,24 @@
 {
- "doc": "The @cue vocabulary of .dlg files (docs/kb/tech/dialogue_format.md). tools/dlgc.py rejects unknown cues, unknown key= arguments, and values outside these types and option sets. Arg types: id (letters, digits, _), number, int, bool, string, emotion (game/data/dialogue/emotions.json), enum (values, or a named set). Positional args are listed in order; optional ones come last. one_of: exactly one of these names must be given. requires: key -> the name it needs.",
+ "doc": "The @cue vocabulary of .dlg files (docs/kb/tech/dialogue_format.md). tools/dlgc.py rejects unknown cues, unknown key= arguments, and values outside these types and option sets. Arg types: id (letters, digits, _), number, int, bool, string, emotion (game/data/dialogue/emotions.json), enum (values, or a named set). Positional args are listed in order; optional ones come last. one_of: exactly one of these names must be given. requires: key -> the name it needs. reserved: cue -> first-arg values that are commands rather than ids, each a meaning string or {doc, kwargs: [the only keys allowed with it]}.",
  "sets": {
   "grades": ["ch02", "ch02_noon", "ch02_night", "ch03", "ch03_causeway", "ch03_steps", "ch03_boss", "ch03_shrine_int"],
   "vfx_effects": ["glimmer_lift", "glimmer_held", "glimmer_bound"],
   "vfx_drift": ["down_seaward"],
   "vfx_motion": ["spiral_up"],
-  "vfx_rate": ["slow", "normal", "fast"]
+  "vfx_rate": ["slow", "normal", "fast"],
+  "camera_eases": ["linear", "in_out_sine", "in_out_cubic", "out_quart"]
  },
  "reserved": {
-  "music": {"silence": "Not a track: fade the music bed out to nothing (fade= sets the time)."}
+  "music": {"silence": "Not a track: fade the music bed out to nothing (fade= sets the time)."},
+  "camera": {"release": {"doc": "Not a shot: hand the camera back to the field volumes (FieldCameraDirector.release). Without blend= it blends with the volume's resolved blend; blend=0 cuts; a force_hard_cut volume always cuts.", "kwargs": ["blend", "ease"]}}
  },
  "cues": {
   "camera": {
-   "doc": "Cut or blend to an authored shot. grade= also blends the color grade to that color-script frame.",
+   "doc": "Cut (no blend=, or blend=0) or blend to an authored shot. ease= names a field_camera.json ease for this blend (sets.camera_eases mirrors them). grade= also blends the color grade to that color-script frame. 'release' is reserved (see reserved.camera).",
    "args": [{"name": "shot", "type": "id"}],
    "kwargs": {
     "blend": {"type": "number", "min": 0},
+    "ease": {"type": "enum", "set": "camera_eases"},
     "grade": {"type": "enum", "set": "grades"}
    }
   },

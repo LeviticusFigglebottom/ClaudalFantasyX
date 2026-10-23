@@ -61,7 +61,7 @@ func _run(scene: StringName, preset: Dictionary, prefix: Array[int]) -> Dictiona
 			break
 		if step.is_cue():
 			letterbox = _check_cue(step, letterbox, where)
-			if step.cue == &"camera":
+			if step.cue == &"camera" and not step.is_camera_release():
 				shots.append({"shot": str(step.args[0]), "wait": 0.0, "lines": [] as Array[StringName]})
 			elif step.cue == &"wait" and not step.args.is_empty() and not shots.is_empty():
 				shots[-1]["wait"] = float(shots[-1]["wait"]) + float(step.args[0])
@@ -136,7 +136,8 @@ func _check_cue(step: DialogueStep, letterbox: bool, where: String) -> bool:
 	var at := "@%s %s %s (%s)" % [step.cue, step.args, step.kwargs, where]
 	match step.cue:
 		&"camera":
-			assert_true(shot_re.search(str(step.args[0])) != null, "haluna.md shot id: " + at)
+			if not step.is_camera_release():
+				assert_true(shot_re.search(str(step.args[0])) != null, "haluna.md shot id: " + at)
 		&"letterbox":
 			return str(step.args[0]) == "on"
 		&"vfx":

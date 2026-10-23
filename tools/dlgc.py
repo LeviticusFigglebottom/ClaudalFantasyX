@@ -476,6 +476,11 @@ def check_cue(cue: str, args: list[Any], kwargs: dict[str, Any], vocab: Vocab, l
                              f"new cues go in {CUES_JSON.as_posix()})")
     check_positional(f"@{cue}", spec.get("args", []), args, vocab, line)
     allowed: dict[str, dict] = spec.get("kwargs", {})
+    reserved = vocab.reserved.get(cue, {}).get(args[0]) if args and isinstance(args[0], str) else None
+    if isinstance(reserved, dict) and "kwargs" in reserved:
+        # M1-ARC-07: a reserved command (`@camera release`) allows only its own keys.
+        allowed = {k: v for k, v in allowed.items() if k in reserved["kwargs"]}
+        cue = f"{cue} {args[0]}"
     for k, v in kwargs.items():
         if k not in allowed:
             known = ", ".join(f"{a}=" for a in sorted(allowed)) or "none"
