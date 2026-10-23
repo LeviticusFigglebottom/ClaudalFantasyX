@@ -135,8 +135,8 @@ fov_deg = 67.4
 [sub_resource type="Resource" id="ShotS06"]
 script = ExtResource("5_shot")
 id = &"S06"
-position = Vector3(-7.0, 1.77, 4.6)
-look_at = Vector3(-7.4, 1.2, -0.2)
+position = Vector3(-12.5, 1.8, 5.5)
+look_at = Vector3(-7.2, 1.3, 0.0)
 fov_deg = 27.0
 
 [sub_resource type="Resource" id="ShotS09"]
@@ -149,8 +149,8 @@ fov_deg = 16.1
 [sub_resource type="Resource" id="ShotS10"]
 script = ExtResource("5_shot")
 id = &"S10"
-position = Vector3(-5.0, 2.0, 0.2)
-look_at = Vector3(-7.2, 1.95, -1.1)
+position = Vector3(-4.2, 2.1, -3.9)
+look_at = Vector3(-7.2, 1.85, -1.1)
 fov_deg = 20.9
 
 [sub_resource type="Resource" id="ShotC08"]
@@ -178,7 +178,7 @@ current = true
 near = 0.05
 far = 2000.0
 
-[node name="CameraDirector" type="Node" parent="."]
+[node name="CameraDirector" type="Node3D" parent="."]
 script = ExtResource("2_dir")
 camera_path = NodePath("../Camera")
 rail_root_path = NodePath("..")
