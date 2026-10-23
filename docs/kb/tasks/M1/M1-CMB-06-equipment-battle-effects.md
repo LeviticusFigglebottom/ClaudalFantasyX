@@ -2,8 +2,8 @@
 id: M1-CMB-06
 title: Equipment on-hit effects, battle item use, and lume/drop rewards in BattleEngine
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: combat-stream-2
 depends_on: [M1-PRG-02]
 milestone: M1
 request-from: progression
