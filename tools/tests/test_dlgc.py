@@ -661,6 +661,136 @@ class NearMissTests(DlgcTestBase):
         # A close name needs a known emotion (or a quoted alias) as evidence: these stay prose.
         self.ops("Kerid [sic] was the word. #line:t_001\nRain [sad] fell. #line:t_002\nKerid smiled. #line:t_003")
 
+    def test_misspelt_narrator_is_an_error_with_a_hint(self) -> None:
+        """M1-NAR-10 (review-sweep-F F1): `Narator [grief] The bell.` used to ship as raw narration."""
+        self.assert_error("Narator [grief] The bell. #line:t_001", "'Narator' is not a speaker and a speaker line "
+                                                                   "needs a ':' after the name: did you mean "
+                                                                   "'Narrator [grief]: The bell.'?", 3)
+        self.assert_error("Narrater [grief] The bell. #line:t_001", "did you mean 'Narrator [grief]: The bell.'?", 3)
+        self.assert_error("Narator(asha) [grief] The bell. #line:t_001",
+                          "did you mean 'Narrator(asha) [grief]: The bell.'?", 3)
+        for line in ("Narator: The bell.", "Narator [grief]: The bell.", "Narator(asha): The bell."):
+            with self.subTest(line=line):
+                self.assert_error(f"{line} #line:t_001", "unknown speaker 'Narator'; did you mean 'Narrator'?", 3)
+        # Ordinary words near "narrator" are not typos of it (NARRATOR_TYPO_CUTOFF).
+        self.ops("Narration: a voice from nowhere. #line:t_001 #narration\nNarrow [sad] streets. #line:t_002\n"
+                 "Narrate [sad] tales. #line:t_003")
+        self.assertEqual(dlgc.compile_project(self.tmp).warnings, [])
+
+    def test_narrator_identity_without_a_colon_names_the_colon(self) -> None:
+        """M1-NAR-10: `Narrator(asha) [grief] The bell.` has no space to remove; the colon is what is missing."""
+        errors = self.scene("Narrator(asha) [grief] The bell. #line:t_001")
+        self.assertIn("a speaker line needs a ':' after the name: did you mean 'Narrator(asha) [grief]: The bell.'?",
+                      errors[0])
+        self.assertNotIn("no space", errors[0])
+
+    def test_emotion_evidence_is_case_insensitive(self) -> None:
+        """M1-NAR-10 nit: `Kerid [Sad] Hi.` was silent while `Asha [Sad] Hi.` errored. The hint gives the id."""
+        self.assert_error("Kerid [Sad] Hi. #line:t_001", "did you mean 'Kerrid [sad]: Hi.'?", 3)
+        self.assert_error("Asha [Sad] Hi. #line:t_001", "did you mean 'Asha [sad]: Hi.'?", 3)
+        self.assert_error("Asha [Sad]: Hi. #line:t_001", "unknown emotion '[Sad]'; did you mean '[sad]'?", 3)
+        self.ops("Kerid [Sic] was the word. #line:t_001")
+
+    def test_misspelt_speaker_with_wrong_brackets(self) -> None:
+        """M1-NAR-10 nit: `Kerid (sad): Hi.` was only a WARN; the exact name already errored."""
+        self.assert_error("Kerid (sad): Hi. #line:t_001", "'Kerid' is not a speaker; an emotion goes in square "
+                                                          "brackets, before the colon: did you mean 'Kerrid [sad]: Hi.'?", 3)
+        self.assert_error("Tomas (sad): Lie still. #line:t_001", "did you mean 'Toma [sad]: Lie still.'?", 3)
+        self.assert_error("Tomas (Sad) Lie still. #line:t_001", "did you mean 'Toma [sad]: Lie still.'?", 3)
+        # No emotion as evidence: a typo-shaped name with a parenthesis stays prose (a WARN with a colon).
+        self.ops("Tomas (again) laughed. #line:t_001")
+
+    def test_bare_speaker_head_with_no_text(self) -> None:
+        """M1-NAR-10 nit: `Asha [sad]` alone compiled silently to narration."""
+        self.assert_error("Asha [sad] #line:t_001", "a speaker line needs ': text' after the name: did you mean "
+                                                    "'Asha [sad]: ...'?", 3)
+        self.assert_error("Kerid [sad] #line:t_001", "'Kerid' is not a speaker and", 3)
+        self.assert_error('Kerid as "The Stranger" #line:t_001', "did you mean 'Kerrid as \"The Stranger\": ...'?", 3)
+        self.ops("Asha #line:t_001\nRain [sic] #line:t_002\nKerid [sic] #line:t_003")
+
+    def test_stray_punctuation_without_a_colon(self) -> None:
+        """M1-NAR-10 nit: `Kerid, [sad] Hi.` compiled silently. Without a colon, only a known emotion counts."""
+        self.assert_error("Kerid, [sad] Hi. #line:t_001", "'Kerid' is not a speaker; stray ',' between the name and "
+                                                          "the emotion: did you mean 'Kerrid [sad]: Hi.'?", 3)
+        self.assert_error("Asha, [sad] Hi. #line:t_001", "did you mean 'Asha [sad]: Hi.'?", 3)
+        self.ops("Asha, [sic] she wrote. #line:t_001\nRain, [sad] fell. #line:t_002")
+
+    # review-sweep-F probe lines (scratchpad freshF.txt and freshF2.txt): line -> an error fragment, or None for
+    # a line that compiles as narration with no warning.
+    SWEEP_F_PROBES: dict[str, str | None] = {
+        "Kerid [sad] Hi.": "did you mean 'Kerrid [sad]: Hi.'?",
+        "Kerid [cold] You came back.": "did you mean 'Kerrid [cold]: You came back.'?",
+        "Ahsa [sad] Hi there.": "did you mean 'Asha [sad]: Hi there.'?",
+        "Asha [sad] Hi there.": "did you mean 'Asha [sad]: Hi there.'?",
+        "Tomma [worried] Lie still.": "did you mean 'Toma [worried]: Lie still.'?",
+        "Ysold [grief] The bell.": "did you mean 'Ysolde [grief]: The bell.'?",
+        "Sefr [angry] Enough.": "did you mean 'Sefir [angry]: Enough.'?",
+        "Rehn [tired] I know.": None,  # `tired` is no emotion, so a misspelt name has no evidence
+        'Kerid as "The Stranger" Hello.': "did you mean 'Kerrid as \"The Stranger\": Hello.'?",
+        'Kerid as "The Stranger": Hello.': "unknown speaker 'Kerid'; did you mean 'Kerrid'?",
+        "Kerid [sad]: Hi.": "unknown speaker 'Kerid'; did you mean 'Kerrid'?",
+        "Kerid [sic] was the word.": None,
+        "Kerid smiled.": None,
+        "Kerid [sad], Hi.": "did you mean 'Kerrid [sad]: Hi.'?",
+        "Kerid [sad] - Hi.": "did you mean 'Kerrid [sad]: Hi.'?",
+        "Kerid [sad]. Hi.": "did you mean 'Kerrid [sad]: Hi.'?",
+        "Kerid [sad]": "did you mean 'Kerrid [sad]: ...'?",
+        "Kerid [sad] hi": "did you mean 'Kerrid [sad]: hi'?",
+        "kerid [sad] Hi.": "did you mean 'Kerrid [sad]: Hi.'?",
+        "Kerrid[sad] Hi.": "did you mean 'Kerrid [sad]: Hi.'?",
+        "Kerid[sad] Hi.": "did you mean 'Kerrid [sad]: Hi.'?",
+        "Kerid  [sad]  Hi.": "did you mean 'Kerrid [sad]: Hi.'?",
+        "Kerid [Sad] Hi.": "did you mean 'Kerrid [sad]: Hi.'?",
+        "Liss [sad] Hi.": "did you mean 'Liss [sad]: Hi.'?",
+        "Lis [sad] Hi.": "did you mean 'Liss [sad]: Hi.'?",
+        "Pel [sad] Hi.": "did you mean 'Pell [sad]: Hi.'?",
+        "Pell [sad] Hi.": "did you mean 'Pell [sad]: Hi.'?",
+        "Toma [sad] Hi.": "did you mean 'Toma [sad]: Hi.'?",
+        "Narator [grief] The bell.": "did you mean 'Narrator [grief]: The bell.'?",
+        "Narrator [grief] The bell.": "did you mean 'Narrator [grief]: The bell.'?",
+        "Rain [sad] fell.": None,
+        "Karen [sad] sang.": None,
+        "Keri [sad] laughed.": "did you mean 'Kerrid [sad]: laughed.'?",  # accepted in sweep F
+        "Ashes [sad] drifted.": None,
+        "Pella [sad] Hi.": "did you mean 'Pell [sad]: Hi.'?",
+        "Kerrid's [sad] voice.": None,
+        "Asha [the girl] smiled.": None,
+        "Mother [sad] wept.": None,
+        "Toma (sad) Lie still.": "did you mean 'Toma [sad]: Lie still.'?",
+        "Tomas (sad) Lie still.": "did you mean 'Toma [sad]: Lie still.'?",
+        "Kerid as Stranger Hello.": None,
+        "Ash [sad] fell from the sky.": "did you mean 'Asha [sad]: fell from the sky.'?",
+        "Rhea [sad] waited.": "did you mean 'Rhen [sad]: waited.'?",
+        "Seth [sad] turned away.": None,
+        "Narator [grief]: The bell.": "unknown speaker 'Narator'; did you mean 'Narrator'?",
+        "Narator: The bell.": "unknown speaker 'Narator'; did you mean 'Narrator'?",
+        "Narator(asha): The bell.": "unknown speaker 'Narator'; did you mean 'Narrator'?",
+        "Narator(asha) [grief] The bell.": "did you mean 'Narrator(asha) [grief]: The bell.'?",
+        "Narrator(asha) [grief] The bell.": "did you mean 'Narrator(asha) [grief]: The bell.'?",
+        "Narrater [grief] The bell.": "did you mean 'Narrator [grief]: The bell.'?",
+        "Asha [tired] Hi.": "did you mean 'Asha [tired]: Hi.'?",
+        "Rhen [tired] I know.": "did you mean 'Rhen [tired]: I know.'?",
+        "Asha [Sad] Hi.": "did you mean 'Asha [sad]: Hi.'?",
+        "Asha [sad]": "did you mean 'Asha [sad]: ...'?",
+        'Kerid [sad] "Hi."': "did you mean 'Kerrid [sad]: \"Hi.\"'?",
+        "Kerid [sad] …you came.": "did you mean 'Kerrid [sad]: …you came.'?",
+        "Kerid [sad] 6:20 was late.": "did you mean 'Kerrid [sad]: 6:20 was late.'?",
+        "Kerid (sad): Hi.": "did you mean 'Kerrid [sad]: Hi.'?",
+        "Tomas (sad): Lie still.": "did you mean 'Toma [sad]: Lie still.'?",
+        'Kerid as "The Stranger"': "did you mean 'Kerrid as \"The Stranger\": ...'?",
+        "Kerid, [sad] Hi.": "did you mean 'Kerrid [sad]: Hi.'?",
+    }
+
+    def test_review_sweep_f_probe_lines(self) -> None:
+        """M1-NAR-10: every review-sweep-F probe line, one at a time, with its expected result."""
+        for line, fragment in self.SWEEP_F_PROBES.items():
+            with self.subTest(line=line):
+                if fragment is None:
+                    self.ops(f"{line} #line:t_001")
+                    self.assertEqual(dlgc.compile_project(self.tmp).warnings, [])
+                else:
+                    self.assert_error(f"{line} #line:t_001", fragment, 3)
+
     def test_a_speaker_id_in_parentheses_is_not_an_emotion(self) -> None:
         """review-sweep-E nit: `Toma (rhen):` used to suggest `Toma [rhen]:`."""
         self.assert_error("Toma (rhen): Lie still. #line:t_001",

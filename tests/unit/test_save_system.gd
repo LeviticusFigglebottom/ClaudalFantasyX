@@ -81,8 +81,11 @@ func test_save_version_is_4() -> void:
 func test_migrates_v2_adds_empty_equipment_and_normalizes_inventory() -> void:
 	var v2 := {
 		"version": 2,
-		"state": {"currency": 120, "inventory": {"salt_tonic": 3.0, "bitterleaf": 0, "drag_net": -2}},
+		"state": {"currency": 120, "inventory": {"salt_tonic": 3.0, "bitterleaf": 0}},
 	}
+	# M1-ARC-11: a negative count is malformed (as in v3+), not an empty stack: the save is corrupt.
+	var negative := {"version": 2, "state": {"inventory": {"salt_tonic": 3.0, "drag_net": -2}}}
+	assert_eq(saves.deserialize(negative), null, "a negative count reads as corrupt")
 	var step: Dictionary = saves._migrate_v2_to_v3(v2)
 	assert_eq(int(step["version"]), 3, "the v2 -> v3 step itself is unchanged")
 	var migrated: Dictionary = saves.migrate(v2)

@@ -157,6 +157,30 @@ func equip_error(cid: StringName, uid: int) -> StringName:
 	return RESULT_OK
 
 
+## Why the loadout could not have been made by equip() ("" when it could): every worn piece is
+## owned, made for its wearer (equip_error), sits in its own slot, and is worn by one hero only.
+## SaveSystem rejects a save that fails this (M1-ARC-11, after QA review-sweep-F): a piece worn
+## twice, or by the wrong hero, would let two heroes fight with one piece, or a hero with another's.
+func loadout_problem() -> String:
+	var wearer: Dictionary = {}
+	for cid: Variant in _loadout():
+		var lo: Dictionary = _loadout()[cid]
+		for slot: Variant in lo:
+			var uid := int(lo[slot])
+			if uid == NO_PIECE:
+				continue
+			var where := "loadout.%s.%s" % [cid, slot]
+			if wearer.has(uid):
+				return "%s: piece %d is already worn at %s" % [where, uid, wearer[uid]]
+			wearer[uid] = where
+			var err := equip_error(StringName(str(cid)), uid)
+			if err != RESULT_OK:
+				return "%s: piece %d (%s) cannot be worn here (%s)" % [where, uid, base_of(uid), err]
+			if db.slot_of(base_of(uid)) != StringName(str(slot)):
+				return "%s: piece %d (%s) goes in %s" % [where, uid, base_of(uid), db.slot_of(base_of(uid))]
+	return ""
+
+
 ## Puts the piece in its slot for `cid`, replacing whatever was there.
 func equip(cid: StringName, uid: int) -> StringName:
 	var err := equip_error(cid, uid)
@@ -206,7 +230,7 @@ func grant_starting(cid: StringName) -> bool:
 		return true
 	var granted := false
 	for slot in db.required_slots:
-		if equipped(cid, slot) != NO_PIECE and has_piece(equipped(cid, slot)):
+		if equipped(cid, slot) != NO_PIECE and equip_error(cid, equipped(cid, slot)) == RESULT_OK:
 			continue
 		var spare := _unworn_piece_for(cid, slot)
 		if spare != NO_PIECE:
