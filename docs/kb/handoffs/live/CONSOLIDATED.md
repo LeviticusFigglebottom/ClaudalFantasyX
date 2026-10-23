@@ -33,7 +33,7 @@
 |---|---|
 | `claude/new-session-mj8c3c` | **The integration branch, standing in for `main`.** Every merge lands here. Last full gate green at fc3940c (ci30). Scoped gates were green afterwards: ci32 at 2ce7045, ci33 lavapipe-approved merges at c940d77. See §5 for what is pending. |
 | `claude/first-playable` | The First Playable session's branch. It's ahead of the integration branch with unmerged work (the Drownbell boss and the M2-FP queue). Its newest log is `docs/kb/handoffs/live/first-playable.md` on that branch. **Merge it after a scoped gate.** |
-| `gpu/*` | The PC GPU session's branches, one per item. **Unmerged:** `gpu/rnd-18-20-followups` (lavapipe check ci35 was running at handoff), `gpu/rnd-21-mouth-fill` (needs the asha_* shots, the Blender asha job, and re-approval of asha_face_grief), `gpu/m2-rnd-01-undertow` (WIP, compiling, the integration branch merged in; its task file has a 'WIP handoff' section with the exact next step), plus any newer branch. Everything else is merged. The PC's final log, `pc-gpu.md` (from `gpu/m2-rnd-01-undertow` 8831615, its final push), is copied onto the integration branch. **Also unmerged:** `gpu/qa-07-windows-interpreter-test` (files M1-QA-07). |
+| `gpu/*` | The PC GPU session's branches, one per item. **Unmerged:** `gpu/rnd-21-mouth-fill` (needs the asha_* shots, the Blender asha job, and re-approval of asha_face_grief), `gpu/m2-rnd-01-undertow` (WIP, compiling, the integration branch merged in; its task file has a 'WIP handoff' section with the exact next step), plus any newer branch. Everything else is merged. The PC's final log, `pc-gpu.md` (from `gpu/m2-rnd-01-undertow` 8831615, its final push), is copied onto the integration branch. **Also unmerged:** `gpu/qa-07-windows-interpreter-test` (files M1-QA-07). |
 | `worktree-agent-*` | Local to the old Lead's container. **Gone after the handoff**; anything not merged is lost, so the tasks say what to redo. |
 
 ## 3. Environments for the NEW account (recommended)
@@ -61,7 +61,7 @@
 ## 5. Exact next steps for the new Lead
 1. `git fetch origin` and check out `claude/new-session-mj8c3c`. Set up the tools: `python3 tools/dev/fetch_godot.py`, `fetch_render_deps.py` and `fetch_blender.py`.
 2. Merge, with lavapipe checks:
-   - `gpu/rnd-18-20-followups`: affected shots are water_*, undertow_*, haluna_h01 and h04; the PC expects zero drift.
+   - (`gpu/rnd-18-20-followups` is DONE: merged after ci35 found 0 drift.)
    - `gpu/rnd-21-mouth-fill`: the asha_* shots, plus `python3 tools/dev/verify_blender_builds.py --job asha`; re-approve asha_face_grief after viewing it.
    - Then `claude/first-playable` (scoped battle, field and FP shots, plus `python3 tools/balance/sim.py --check` for the Drownbell suite).
    - Then any newer `gpu/*` branch, such as `gpu/m2-rnd-01-undertow` once it's in review.
