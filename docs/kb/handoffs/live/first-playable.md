@@ -69,6 +69,11 @@ None that matters. `.scratch/` (excluded through `.git/info/exclude`) holds the 
 5. Read the M2-FP task files and `docs/kb/handoffs/2026-10-23-first-playable-1.md`.
 
 ## History
+- 2026-10-23: merged integration c21dce5 (M1-CMB-03: save v5, Read, openings).
+  - The Drownbell's ADR is now **0024**, because CMB-03 took 0023. My combat handoff is now combat-5.
+  - ch02_tideline and drownbell have `"opening": "normal"`.
+  - The two id helpers moved out of BattleController into `BattleIds`, keeping it at 989 lines (under the cap).
+  - ci_local green: 1094 tests, battle coverage 99.94%, battle and title shots unchanged.
 - 2026-10-23: merged M1-ARC-15 (GraphicsRuntime). Area tests green: graphics, fp_, haluna, scene_router.
 - 2026-10-23: M2-FP-09 done. Merged integration 7f4c76b+ (sweep K). M1-ARC-15 with an agent.
 - 2026-10-23: merged FP-05 (prebuild, defeat retry) and FP-06 (Drownbell), wired the boss into the thread. ci_local green: 1043 tests, battle shots unchanged.
