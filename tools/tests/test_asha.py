@@ -216,8 +216,9 @@ class TestGenerators(unittest.TestCase):
         mid = np.abs(u) < at.VERM_PEAK_U
         np.testing.assert_allclose(out[mid], (zl + hu)[mid], atol=1e-4)  # the bow itself is kept
 
-    def test_lashes_are_tapered_clumps_over_a_dark_root_line(self):
-        """M1-CHR-10: CHR-07's evenly spaced straight strands read as a comb of thin ticks."""
+    def test_lashes_are_fine_irregular_and_fanned_not_a_comb(self):
+        """M1-CHR-10: CHR-07's evenly spaced strands read as a comb. M1-CHR-11: so did CHR-10's 38
+        regular clumps on the GPU (QA-05c fault 4): many fine hairs, irregular gaps, fanning."""
         import numpy as np
 
         import asha_textures as at
@@ -229,16 +230,21 @@ class TestGenerators(unittest.TestCase):
         def row(v: float) -> np.ndarray:
             return a[int(v * h), upper] > 0.3
 
-        def runs(on: np.ndarray) -> int:
-            return int(np.count_nonzero(np.diff(on.astype(int)) == 1) + on[0])
+        def gaps(on: np.ndarray) -> np.ndarray:
+            edges = np.flatnonzero(np.diff(on.astype(int)) != 0)
+            runs = np.diff(edges)
+            return runs[1::2] if on[0] else runs[::2]
 
-        self.assertGreater(row(0.04).mean(), 0.7)  # the margin reads as one dark line
-        mid = row(0.6)
-        self.assertLess(mid.mean(), 0.45)  # out along the lashes there are gaps between clumps
-        clumps = at.LASH_CLUMPS[0]
-        self.assertGreater(runs(mid), clumps // 2)
-        self.assertLess(runs(mid), clumps * 2)  # a few strands per point, not one tick per strand
+        self.assertGreater(row(0.04).mean(), 0.45)  # the margin reads as a dark line
+        mid = row(0.5)
+        self.assertLess(mid.mean(), 0.4)  # out along the lashes there are gaps
+        g = gaps(mid)
+        self.assertGreater(len(g), 40)  # many separate hairs, not a few ticks
+        self.assertGreater(float(g.std() / g.mean()), 0.6)  # irregular spacing, not a comb
         self.assertLess(row(0.85).mean(), mid.mean())  # and they taper to their tips
+        self.assertLess(at.LASH_WIDTH[0], 1.5)  # finer at the root than CHR-10
+        self.assertLess(at.LASH_FAN[0], 0.0)  # the inner lashes lean toward the nose
+        self.assertGreater(at.LASH_FAN[1], 0.0)  # the outer ones toward the temple
 
     def test_brow_strokes_fade_before_the_card_edges(self):
         """M1-CHR-10: hairs cut by the card's straight border drew a hard, flat lower edge."""

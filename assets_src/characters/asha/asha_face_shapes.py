@@ -74,6 +74,30 @@ SEALED = ("mouth_smile", "mouth_frown", "lip_upper_up")
 SEAL_BAND = 0.0025  # m at s = 1: the height round the contact line that moves as one
 SEAL_BIN = 0.0015  # m: x spacing of the contact line's delta profile
 
+# M1-CHR-11 lids: the lid turn fades out over this ball round the globe's centre (m at s = 1, full
+# inside the first radius), and by this much just outside the canthi
+LID_BALL = (0.019, 0.027)
+LID_CANTHUS_ANCHOR = 0.7
+# M1-CHR-11, the Duchenne smile (FACS AU6, the orbicularis oculi's outer ring), on top of the
+# CHR-07 cheek raise. In `asha_face_smile` the eyes did not take part: the lower lid rose a little
+# and nothing else moved, so the smile read as a smirk with dead eyes (review-sweep-M fault 5).
+CROW_ORIGIN = (0.003, 0.0)  # m lateral of / above the outer canthus: where the crow's feet radiate from
+CROW_RANGE = (0.004, 0.019)  # m from the origin: the fan's inner and outer reach
+CROW_FAN = 0.85  # rad half-angle of the fan, about the lateral direction
+CROW_SPACING = 0.40  # rad between folds: four lines across the fan, at +-0.2 and +-0.6 rad
+CROW_DEPTH = 0.00065  # m: each fold's depth into the face
+CROW_PULL = 0.0016  # m: the skin drawn in toward the eye corner
+LID_ROLL = 0.0019  # m: the bunched pretarsal roll under the lower lid (CHR-07: 1.2 mm)
+LID_LOWER_PUSH = -0.30  # rad: the lower lid pushed up on the globe (CHR-07: -0.22)
+LID_UPPER_DROP = 0.05  # rad: the upper lid drops a little as the ring closes
+INFRA_CREASE = 0.0005  # m: the lid-cheek junction deepens under the roll
+BROW_TAIL_DROP = 0.0016  # m: the lateral brow tail is drawn down
+# M1-CHR-11, grief (FACS AU1): the donor's inner-brow unit lifts the brow head only 1.2 mm at full
+# weight, and grief's brow_down 0.3 took most of that back, so the inner brows barely moved. A
+# procedural medial lift on top of the unit gives the oblique, raised inner brow of grief
+BROW_INNER_LIFT = 0.0048  # m at full weight, peak over the brow head
+BROW_INNER_DRAW = 0.0008  # m toward the midline
+
 
 def seal_contact(d: np.ndarray, x: np.ndarray, lip: dict, s: float) -> np.ndarray:
     """Blend `d` near the contact line toward the contact line's own delta at that x, so the upper
@@ -201,8 +225,17 @@ class ShapeBuilder:
         ang = np.where(self.tags == lu, upper_ang, ang)
         ang = np.where(self.tags == ll, lower_ang, ang)
         keep = self.skinlike & (np.isin(self.tags, [0, lu, ll]))
-        keep &= np.linalg.norm(V - fr.E, axis=1) < 0.030 * self.s  # the frontal field alone also hits the skull
-        ang = np.where(keep, ang, 0.0)
+        # the frontal field alone also hits the skull. M1-CHR-11: a soft ball, not a hard one. The
+        # 30 mm cut reached the nose bridge 5 mm off the midline, where the squint's rotation
+        # (several mm at that radius) stopped dead: the light/dark notch at the inner corner in grief
+        # and the smile (QA-05c fault 6)
+        dist = np.linalg.norm(V - fr.E, axis=1)
+        ang = np.where(keep, ang * smoothstep(LID_BALL[1] * self.s, LID_BALL[0] * self.s, dist), 0.0)
+        # M1-CHR-11: the canthi are anchored (the canthal tendons). Skin just beyond either corner
+        # sat between an upper lid turning one way and a lower lid turning the other, and sheared
+        # into a crease; outside the margin the turn now fades toward the corners
+        corner = (1.0 - smoothstep(0.15, 0.6, np.abs(np.sin(t)))) * smoothstep(1.0, 1.25, r)
+        ang = ang * (1.0 - LID_CANTHUS_ANCHOR * np.where(self.tags == 0, corner, 0.0))
         return rot_x(V, fr.E, ang) - V
 
     def blink_angle(self, side: str) -> float:
@@ -270,12 +303,37 @@ class ShapeBuilder:
         d[:, 1] = -0.0028 * s * w
         d[:, 2] = 0.0065 * s * w
         # the bunched roll under the lower lid, and the lid pushed up on the globe
-        roll = np.exp(-((r - 1.55) / 0.22) ** 2) * (z < fr.E[2]) * self.front
-        roll = np.where(self.skinlike & (self.tags == 0), roll, 0.0)
-        roll *= np.linalg.norm(V - fr.E, axis=1) < 0.030 * s
-        d[:, 1] += -0.0012 * s * roll
-        d[:, 2] += 0.0012 * s * roll
-        return d + self.lid(side, 0.0, -0.22)
+        skin = self.skinlike & (self.tags == 0)
+        ball = smoothstep(LID_BALL[1] * s, LID_BALL[0] * s, np.linalg.norm(V - fr.E, axis=1))
+        roll = np.exp(-((r - 1.55) / 0.22) ** 2) * smoothstep(fr.E[2] + 0.001 * s, fr.E[2] - 0.002 * s, z)
+        roll = np.where(skin, roll * self.front * ball, 0.0)
+        d[:, 1] += -LID_ROLL * s * roll
+        d[:, 2] += LID_ROLL * s * roll
+        # M1-CHR-11 (Duchenne): the outward normal, roughly (from a point behind the globe)
+        nrm = V - (fr.E + np.array([0.0, 0.02 * s, 0.0]))
+        nrm /= np.maximum(np.linalg.norm(nrm, axis=1, keepdims=True), 1e-9)
+        # the lid-cheek junction deepens under the roll
+        crease = np.exp(-((r - 1.95) / 0.14) ** 2) * smoothstep(fr.E[2] - 0.001 * s, fr.E[2] - 0.004 * s, z)
+        crease = np.where(skin, crease * self.front * ball, 0.0)
+        d -= nrm * (INFRA_CREASE * s * crease)[:, None]
+        # crow's feet: three or four folds fanning out from the outer canthus, and the skin there
+        # drawn in toward the eye
+        ca, cb = fr.contour(np.array([0.0]))
+        ox = fr.E[0] + sg * (float(ca[0]) + CROW_ORIGIN[0] * s)
+        oz = fr.E[2] + float(cb[0]) + CROW_ORIGIN[1] * s
+        lat, up = sg * (x - ox), z - oz
+        rho = np.hypot(lat, up)
+        th = np.arctan2(up, np.maximum(lat, 1e-9))
+        fan = smoothstep(CROW_FAN, 0.6 * CROW_FAN, np.abs(th)) * (lat > 0)
+        fan *= smoothstep(CROW_RANGE[0] * s, CROW_RANGE[0] * s + 0.003 * s, rho)
+        fan *= smoothstep(CROW_RANGE[1] * s, CROW_RANGE[1] * s - 0.006 * s, rho)
+        fan = np.where(skin, fan * smoothstep(-0.30, -0.10, (V[:, 1] - self.yc) / self.h), 0.0)
+        folds = (0.5 + 0.5 * np.cos(2 * math.pi * (th / CROW_SPACING + 0.5))) ** 2
+        d -= nrm * (CROW_DEPTH * s * fan * folds)[:, None]
+        d[:, 0] += -sg * CROW_PULL * s * fan
+        # the lateral brow tail drawn down, and the lids: the lower pushed up, the upper dropping a little
+        d += self.brow(side, 0.016, -BROW_TAIL_DROP, 0.0, 0.0, 0.012)
+        return d + self.lid(side, LID_UPPER_DROP, LID_LOWER_PUSH)
 
     def lip_line_z(self, x: np.ndarray) -> np.ndarray:
         lift = float(self.lm.p["mouth_corner_lift"])
@@ -354,6 +412,9 @@ class ShapeBuilder:
                                                  np.array([sg * 0.0005, 0.0022, 0.0]))
         for k, d in self.units.items():  # M1-CHR-03 donor expression units replace the procedural ones
             S[k] = d + (self.lid(k[-1], 0.06, 0.0) if k.startswith("brow_down_") else 0.0)
+        for sd in ("L", "R"):  # M1-CHR-11: grief's inner brow (AU1), on top of the donor unit
+            S[f"brow_inner_up_{sd}"] = S[f"brow_inner_up_{sd}"] + self.brow(sd, -0.014, BROW_INNER_LIFT,
+                                                                          BROW_INNER_DRAW, 0.0003, 0.011)
         up, lo = self.lips_weight()
         dz = V[:, 2] - self.lip_line_z(V[:, 0])
         press = np.zeros_like(V)
