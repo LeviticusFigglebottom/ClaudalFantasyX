@@ -78,8 +78,10 @@ func test_sim_bands_naive_rarely_wins_role_answer_does() -> void:
 	var sim := BattleSim.new()
 	var active: Array[StringName] = [&"rhen", &"asha"]
 	var reserve: Array[StringName] = [&"toma", &"ysolde"]
-	var naive := sim.run_many(&"sandbox_reef", active, reserve, &"naive", SIM_SEEDS)
-	var answer := sim.run_many(&"sandbox_reef", active, reserve, &"role_answer", SIM_SEEDS)
+	var kit := sim.loadout(&"m1_starting")  # the bands assume starting gear (balance_targets.md)
+	assert_false(kit.is_empty())
+	var naive := sim.run_many(&"sandbox_reef", active, reserve, &"naive", SIM_SEEDS, 1, Callable(), kit)
+	var answer := sim.run_many(&"sandbox_reef", active, reserve, &"role_answer", SIM_SEEDS, 1, Callable(), kit)
 	var naive_pct: float = naive["win_pct"]
 	var answer_pct: float = answer["win_pct"]
 	assert_between(naive_pct, SIM_NAIVE_MIN_WIN_PCT, NAIVE_MAX_WIN_PCT, "naive wins %.1f%%" % naive_pct)

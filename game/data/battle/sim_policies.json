@@ -1,10 +1,62 @@
 {
-  "_doc": "Tunables for the balancing simulator's party policies (game/battle/sim/, docs/kb/design/balance_targets.md). Not game data: nothing in play reads this file.",
+  "_doc": "Tunables for the balancing simulator's party policies (game/battle/sim/, docs/kb/design/balance_targets.md). Not game data: nothing in play reads this file. loadouts: the gear (equipment ids per character) and consumables a suite's party carries (balance_targets.md, Party assumptions).",
   "policies": {
     "naive": {},
     "lowest_hp": {},
     "role_answer": {},
-    "smart": {"heal_below_pct": 45, "keep_healer_below_pct": 70}
+    "smart": {
+      "heal_below_pct": 45,
+      "keep_healer_below_pct": 70
+    }
   },
-  "max_actions": 2000
+  "max_actions": 2000,
+  "loadouts": {
+    "m1_starting": {
+      "gear": {
+        "rhen": [
+          "rhen_salvage_hooks",
+          "rhen_patched_tether"
+        ],
+        "asha": [
+          "asha_vigil_staff",
+          "asha_cord_bangle"
+        ],
+        "toma": [
+          "toma_boarding_spear",
+          "toma_old_turtle_shield"
+        ],
+        "ysolde": [
+          "ysolde_pleated_primer",
+          "ysolde_plain_guards"
+        ]
+      },
+      "items": {
+        "salt_tonic": 2
+      }
+    },
+    "m1_tier1": {
+      "gear": {
+        "rhen": [
+          "rhen_coral_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_bellshell_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_net_rack_spear",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ]
+      },
+      "items": {
+        "salt_tonic": 4,
+        "relighting_wick": 1
+      }
+    }
+  }
 }

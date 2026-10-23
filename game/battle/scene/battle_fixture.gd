@@ -59,18 +59,9 @@ static func merged_tables(tables: Dictionary, overrides: Variant) -> Dictionary:
 
 
 ## Applies the opening state. Call after engine.setup() and before engine.begin().
+## Applies the opening state through the engine (M1-CMB-06): UI code never writes combatant state.
 func prepare(engine: BattleEngine) -> void:
-	for c in engine.party_active + engine.party_reserve + engine.enemies:
-		var row: Dictionary = opening.get(String(c.id), opening.get(String(c.id).get_slice("#", 0), {}))
-		if row.is_empty():
-			continue
-		if row.has("hp"):
-			c.hp = clampi(int(row["hp"]), 1, c.max_hp)
-		for st: Variant in row.get("statuses", []):
-			var sd := st as Dictionary
-			c.add_status(StringName(str(sd.get("id", ""))), int(sd.get("duration", -1)))
-		if row.has("provoked_by"):
-			c.provoker_id = StringName(str(row["provoked_by"]))
+	engine.apply_fixture(opening)
 
 
 static func _root(path: String) -> Dictionary:

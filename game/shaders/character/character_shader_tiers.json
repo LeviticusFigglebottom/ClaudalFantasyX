@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "note": "M1-RND-04. Graphics preset -> character shader tier -> variant shader. Ultra uses the High variant: on characters the extra Ultra budget goes to native resolution, not to more shading features. Docs: docs/kb/tech/character_shading.md.",
+  "preset_tiers": {
+    "low": "low",
+    "medium": "medium",
+    "high": "high",
+    "ultra": "high"
+  },
+  "default_tier": "high",
+  "families": {
+    "skin": {
+      "low": "res://game/shaders/character/character_skin_low.gdshader",
+      "medium": "res://game/shaders/character/character_skin_medium.gdshader",
+      "high": "res://game/shaders/character/character_skin.gdshader"
+    },
+    "hair": {
+      "low": "res://game/shaders/character/character_hair_low.gdshader",
+      "medium": "res://game/shaders/character/character_hair_medium.gdshader",
+      "high": "res://game/shaders/character/character_hair.gdshader"
+    },
+    "eye": {
+      "low": "res://game/shaders/character/character_eye_low.gdshader",
+      "medium": "res://game/shaders/character/character_eye_medium.gdshader",
+      "high": "res://game/shaders/character/character_eye.gdshader"
+    },
+    "cloth": {
+      "low": "res://game/shaders/character/character_cloth_low.gdshader",
+      "medium": "res://game/shaders/character/character_cloth_medium.gdshader",
+      "high": "res://game/shaders/character/character_cloth.gdshader"
+    },
+    "cloth_sheer": {
+      "low": "res://game/shaders/character/character_cloth_sheer_low.gdshader",
+      "medium": "res://game/shaders/character/character_cloth_sheer_medium.gdshader",
+      "high": "res://game/shaders/character/character_cloth_sheer.gdshader"
+    }
+  },
+  "single_tier": [
+    "res://game/shaders/character/character_cornea.gdshader",
+    "res://game/shaders/character/character_eye_occlusion.gdshader",
+    "res://game/shaders/character/character_tear_line.gdshader"
+  ]
+}

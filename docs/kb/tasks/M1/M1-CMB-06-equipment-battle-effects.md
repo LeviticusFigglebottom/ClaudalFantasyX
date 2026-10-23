@@ -2,8 +2,9 @@
 id: M1-CMB-06
 title: Equipment on-hit effects, battle item use, and lume/drop rewards in BattleEngine
 role: combat
-status: todo
-owner_session: ""
+status: review
+owner_session: combat-stream-2
+reviewer: progression
 depends_on: [M1-PRG-02]
 milestone: M1
 request-from: progression
@@ -23,17 +24,36 @@ Wire the M1-PRG-02 equipment and item APIs into `game/battle/` (Progression may 
 - `EquipmentEffects.currency_multiplier(cids)` gives the Full Net multiplier (the highest worn by anyone credited).
 
 ## Acceptance criteria
-- [ ] The basic Attack uses `attack_elements` (proposal: the element the target is weakest to, falling back to the first; none means `"none"`). Element skills keep their own element.
-- [ ] Physical hits roll each `on_hit_statuses` entry on the seeded `rng` after damage, only if the hit landed and the target lives.
-- [ ] `add_status` refuses statuses in the target's `status_wards` (a party-side immunity; enemies may reuse the mechanism later).
-- [ ] `low_hp_statuses` switch on when HP drops below `hp_below_pct` of max (checked after damage) and switch off when healed at or above it.
-- [ ] Item use is a battle action: `use_item(item_id, targets, inventory)` (or similar) validates targets with `ItemBattleAction.can_target`, applies `resolve_on`, consumes one item, ends the turn with `rank`, and emits an `ActionResult`. The timeline preview accepts an item's rank as the candidate action.
-- [ ] `enemies.json` rows gain `currency` and `drops` (`[{item, chance}]`, item ids from `game/data/items/items.json`). Proposed lume: reef crab 24, lantern-lure eel 20, gull harrier 18, Drownbell about 300. Proposed drops: crab carapace, eel lantern, harrier quill, and the occasional salt_tonic. Add `BattleEngine.currency_award()` (× `currency_multiplier` of the credited party) and seeded drop rolls. The validator should check drop item ids.
-- [ ] formulas.md gains the item formulas: revive HP = `max(1, floor(max_hp × hp_pct / 100))`, and fixed item damage = `clamp(amount × el_num ÷ el_den, −cap, cap)` (ignores stats, defense, and barriers). Both already live in `ItemBattleAction.revive_hp` / `fixed_damage` with tests. Mirror or move them into `Formulas` as you prefer.
-- [ ] Tests in `tests/unit/test_battle_*` for each item, and the battle stays deterministic.
+- [x] The basic Attack uses `attack_elements` (proposal: the element the target is weakest to, falling back to the first; none means `"none"`). Element skills keep their own element.
+- [x] Physical hits roll each `on_hit_statuses` entry on the seeded `rng` after damage, only if the hit landed and the target lives.
+- [x] `add_status` refuses statuses in the target's `status_wards` (a party-side immunity; enemies may reuse the mechanism later).
+- [x] `low_hp_statuses` switch on when HP drops below `hp_below_pct` of max (checked after damage) and switch off when healed at or above it.
+- [x] Item use is a battle action: `use_item(item_id, targets, inventory)` (or similar) validates targets with `ItemBattleAction.can_target`, applies `resolve_on`, consumes one item, ends the turn with `rank`, and emits an `ActionResult`. The timeline preview accepts an item's rank as the candidate action.
+- [x] `enemies.json` rows gain `currency` and `drops` (`[{item, chance}]`, item ids from `game/data/items/items.json`). Proposed lume: reef crab 24, lantern-lure eel 20, gull harrier 18, Drownbell about 300. Proposed drops: crab carapace, eel lantern, harrier quill, and the occasional salt_tonic. Add `BattleEngine.currency_award()` (× `currency_multiplier` of the credited party) and seeded drop rolls. The validator should check drop item ids.
+- [x] formulas.md gains the item formulas: revive HP = `max(1, floor(max_hp × hp_pct / 100))`, and fixed item damage = `clamp(amount × el_num ÷ el_den, −cap, cap)` (ignores stats, defense, and barriers). Both already live in `ItemBattleAction.revive_hp` / `fixed_damage` with tests. Mirror or move them into `Formulas` as you prefer.
+- [x] Tests in `tests/unit/test_battle_*` for each item, and the battle stays deterministic.
 
 ## Notes
 - If you promote the metadata to a typed `BattleCombatant` field, tell Progression so `EquipmentEffects.apply_to` changes in the same commit.
 - Decide whether dispel effects (later) may strip the duration -1 auto-statuses from equipment.
+
+Delivered (combat-stream-2). Rules are in formulas.md § Items, § Equipment in battle, § Rewards; the API is in battle_ctb.md § Timeline API.
+- The metadata is **not** promoted to a typed field. The engine reads it through `BattleCombatant.equipment()` (key `EQUIPMENT_META`, and a test asserts it equals `EquipmentEffects.META_KEY`), so `EquipmentEffects.apply_to` needs no change.
+- Attack element: the weakest-to element, with ties going to slot order (the hit reports `element`). Strikes roll after the landed physical hit, before the skill's own statuses. Wards live in `add_status`. Low-HP statuses are re-checked after every turn and every swap, and only the equipment's own copy is removed.
+- `use_item(item_id, targets, items: BattleItemSource)`. The engine only sees the injectable `BattleItemSource`; `InventoryItemSource` wraps ItemDB plus Inventory. `item_can_target()` adds "revive fells a living Zombie" on top of `ItemBattleAction.can_target`. A revive rejoins at now + a default-rank delay. `preview_item()` is tested against play.
+- Rewards: `enemies.json` `currency` 24/20/18 and drops (the material at 50%, Salt Tonic at 10%). `currency_award()` uses the `currency_multiplier` hook; `drop_awards()` is rolled once at victory on the seeded RNG. The validator checks drop items, chances and currency. Drownbell's ~300 lume comes with its encounter data.
+- `Formulas.revive_hp` / `item_damage` mirror ItemBattleAction's, and a test keeps them equal.
+- **Dispel decision:** equipment "always" statuses are ordinary and may be dispelled (they don't return); low-HP ones return while the condition holds.
+- Tests: `test_battle_items.gd` (20), `test_battle_equipment.gd` (15), 3 in `test_formulas.gd`, 2 validator tests. Coverage: battle 99.53%, progression 95.42% (baselines ratcheted).
+Folded in (2026-10-23):
+- **UI requests (M1-UI-02):** `turn_ended(actor, changes)` plus `ActionResult.end_of_turn` (Poison, Regen, Zombie Regen, Doom tick and fall); `turn_lost(actor, reason, changes)` for Stop/Sleep turns, with Doom; `apply_fixture(state)`. UI switch: `BattleFixture.prepare(engine)` → `engine.apply_fixture(opening)`.
+- **Review fixes:**
+  - The Sleep-wake preview is now honest: damage wakes the target in the preview.
+  - A revive (and a Petrify cure) never rewinds time.
+  - "Revival KOs a Zombie" is reachable: a revive item may target a living Zombie.
+  - Petrify cure targeting: a minimal fix in Progression's `item_battle_action.gd` (`can_target` and `cures()`).
+  - Drag Net: rank 2 → 3 in `items.json` (Progression's data, one field), plus engine delay diminishing returns and `delay_immune`, with a lock check.
+  - Sim loadouts (gear and consumables per suite), the smart item rule, and a lume column; the bands are defined per loadout.
+For Progression: wire `InventoryItemSource` and `currency_multiplier = fx.currency_multiplier` into the sandbox glue (UI stream), and award `drop_awards()` / `currency_award()` into the inventory and wallet after victory.
 
 ## Review log

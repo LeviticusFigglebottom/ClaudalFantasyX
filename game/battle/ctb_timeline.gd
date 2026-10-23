@@ -11,6 +11,12 @@ const TIMED_STATUSES: Array[StringName] = [&"haste", &"slow", &"stop", &"sleep",
 ## Statuses a candidate action can inflict that the preview shows: the timed ones, plus
 ## Petrify, which takes the target off the timeline at once.
 const PREVIEW_STATUSES: Array[StringName] = [&"haste", &"slow", &"stop", &"sleep", &"doom", &"petrify"]
+## Pseudo-status for status_changes: the candidate action KOs this unit (e.g. a revive item on
+## a Zombie), so it leaves the preview like Petrify.
+const FALLS := &"_falls"
+## Pseudo-status for status_changes: the candidate action damages this sleeping unit, which
+## wakes it (applied before any statuses the action adds).
+const WAKES := &"_wakes"
 
 var _roster: Array[BattleCombatant] = []
 
@@ -50,6 +56,8 @@ func next_actor() -> BattleCombatant:
 ## count that runs out removes the combatant from later entries.
 ## `time_overrides` ({BattleCombatant: int}) replaces a combatant's next_time for this
 ## prediction only (BattleEngine.preview_swap uses it; nothing is mutated).
+## `revived` lists fallen combatants the candidate action brings back (revive items): they are
+## predicted from their time_overrides entry.
 func predict(
 	count: int = PREVIEW_LENGTH,
 	preview_actor: BattleCombatant = null,
@@ -57,17 +65,20 @@ func predict(
 	delay_target: BattleCombatant = null,
 	delay_ranks: int = 0,
 	status_changes: Dictionary = {},
-	time_overrides: Dictionary = {}
+	time_overrides: Dictionary = {},
+	revived: Array[BattleCombatant] = []
 ) -> Array[TurnEntry]:
 	var sims: Array[Dictionary] = []
 	for i in _roster.size():
 		var c := _roster[i]
-		if not c.is_alive():
+		if not c.is_alive() and not revived.has(c):
 			continue
 		var changes: Dictionary = status_changes.get(c, {})
-		if changes.has(&"petrify"):
+		if changes.has(&"petrify") or changes.has(FALLS):
 			continue
 		var timed := _timed_copy(c)
+		if changes.has(WAKES):
+			timed.erase(&"sleep")
 		for sid: StringName in changes:
 			_sim_add_status(timed, sid, int(changes[sid]))
 		var t: int = time_overrides.get(c, c.next_time)
@@ -78,7 +89,7 @@ func predict(
 			if _sim_tick(timed):
 				continue  # Doom runs out at the end of this very action
 		if delay_target != null and c == delay_target and delay_ranks > 0:
-			t += Formulas.base_delay(c.agility) * delay_ranks
+			t += Formulas.delay_push(c.agility, delay_ranks, c.delays_taken, c.delay_immune)
 		sims.append({"c": c, "idx": i, "t": t, "first_preview": first_is_preview, "timed": timed})
 	var out: Array[TurnEntry] = []
 	while out.size() < count and not sims.is_empty():

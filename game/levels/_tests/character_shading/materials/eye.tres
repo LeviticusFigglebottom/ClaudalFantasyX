@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_eye.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/characters/shader_test/iris_albedo.png" id="t0"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_iris = ExtResource("t0")

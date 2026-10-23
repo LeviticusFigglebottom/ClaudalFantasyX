@@ -77,6 +77,21 @@ class ValidatorTests(unittest.TestCase):
         self._edit("game/data/battle/enemies.json", '"weight": 2', '"weight": -1')
         self.assertTrue(any("weight must be" in e for e in self.errors()))
 
+    def test_unknown_drop_item_is_caught(self) -> None:
+        self._edit("game/data/battle/enemies.json", '"item": "crab_carapace"', '"item": "no_such_item"')
+        self.assertTrue(any("unknown item" in e for e in self.errors()))
+
+    def test_non_bool_delay_immune_is_caught(self) -> None:
+        self._edit("game/data/battle/enemies.json", '"currency": 24', '"currency": 24, "delay_immune": 1')
+        self.assertTrue(any("delay_immune must be" in e for e in self.errors()))
+
+    def test_bad_drop_chance_and_currency_are_caught(self) -> None:
+        self._edit("game/data/battle/enemies.json", '"chance": 50}', '"chance": 150}')
+        self._edit("game/data/battle/enemies.json", '"currency": 24', '"currency": -1')
+        errs = self.errors()
+        self.assertTrue(any("drop chance" in e for e in errs))
+        self.assertTrue(any("currency must be" in e for e in errs))
+
     def test_permanent_stop_is_caught(self) -> None:
         self._edit("game/data/battle/skills.json", '{"id": "slow", "chance": 80}', '{"id": "stop", "chance": 80, "duration": -1}')
         self.assertTrue(any("must not be permanent" in e for e in self.errors()))

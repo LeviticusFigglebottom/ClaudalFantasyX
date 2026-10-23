@@ -8,6 +8,8 @@ extends RefCounted
 ## Items used this battle. Items don't exist yet (Progression), so this stays 0; a policy that
 ## uses one increments it so the report's item column has a hook.
 var items_used := 0
+## The party's items for this battle (BattleSim sets it from the suite's loadout).
+var items: BattleItemSource = BattleItemSource.new()
 ## Tunables from game/data/battle/sim_policies.json for this policy (may be empty).
 var config: Dictionary = {}
 
@@ -36,6 +38,20 @@ func decide(engine: BattleEngine) -> void:
 
 
 # --- shared helpers ----------------------------------------------------------------------
+
+
+## Uses the first held item with an effect of `effect_type` that `target` may receive. Counts it.
+func use_item_with(engine: BattleEngine, effect_type: StringName, target: BattleCombatant) -> bool:
+	for iid in items.usable():
+		var action := items.action_for(iid)
+		if not BattleEngine.item_can_target(action, target):
+			continue
+		for eff in action.effects:
+			if StringName(str(eff.get("type", ""))) == effect_type:
+				if engine.use_item(iid, _one(target), items).ok:
+					items_used += 1
+					return true
+	return false
 
 
 ## Basic attack on the first living foe (the provoker if Provoked). Escapes as a last resort

@@ -88,3 +88,37 @@ func test_escape_chance() -> void:
 	assert_eq(Formulas.escape_chance(20.0, 10.0), 70)
 	assert_eq(Formulas.escape_chance(10.0, 40.0), Formulas.ESCAPE_MIN_PCT)
 	assert_eq(Formulas.escape_chance(60.0, 0.0), Formulas.ESCAPE_MAX_PCT)
+
+
+func test_revive_hp() -> void:
+	assert_eq(Formulas.revive_hp(420, 25), 105)
+	assert_eq(Formulas.revive_hp(301, 25), 75, "75.25 floors")
+	assert_eq(Formulas.revive_hp(3, 25), 1, "never below 1")
+
+
+func test_item_damage_is_fixed() -> void:
+	assert_eq(Formulas.item_damage(150, &"normal"), 150)
+	assert_eq(Formulas.item_damage(150, &"weak"), 225)
+	assert_eq(Formulas.item_damage(151, &"resist"), 75, "75.5 truncates")
+	assert_eq(Formulas.item_damage(150, &"immune"), 0)
+	assert_eq(Formulas.item_damage(150, &"absorb"), -150, "absorb heals")
+	assert_eq(Formulas.item_damage(20000, &"normal"), Formulas.DAMAGE_CAP)
+	assert_eq(Formulas.item_damage(20000, &"absorb"), -Formulas.DAMAGE_CAP)
+
+
+func test_affinity_order_for_attack_elements() -> void:
+	assert_true(Formulas.affinity_hurts_more(&"weak", &"normal"))
+	assert_true(Formulas.affinity_hurts_more(&"normal", &"resist"))
+	assert_true(Formulas.affinity_hurts_more(&"resist", &"immune"))
+	assert_true(Formulas.affinity_hurts_more(&"immune", &"absorb"))
+	assert_false(Formulas.affinity_hurts_more(&"normal", &"normal"), "ties are not 'more'")
+
+
+func test_delay_push_diminishes_and_respects_immunity() -> void:
+	assert_eq(Formulas.delay_push(10, 2, 0), 200, "first delay: base 100 x 2 ranks")
+	assert_eq(Formulas.delay_push(10, 2, 1), 100, "second before the target acts: halved")
+	assert_eq(Formulas.delay_push(10, 2, 2), 50)
+	assert_eq(Formulas.delay_push(10, 1, 3), 12, "100 / 8 = 12.5 truncates")
+	assert_eq(Formulas.delay_push(10, 2, 99), 200 / 65536, "capped at DELAY_STACK_MAX_STEPS halvings")
+	assert_eq(Formulas.delay_push(10, 2, 0, true), 0, "delay-immune")
+	assert_eq(Formulas.delay_push(10, 0, 0), 0)

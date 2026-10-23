@@ -136,6 +136,7 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
     status_ids = {s["id"] for s in statuses}
     char_ids = {c["id"] for c in characters}
     enemy_ids = {e["id"] for e in enemies}
+    item_ids = _ids(files, "game/data/items/items.json", "items")
 
     if status_ids != CANON_STATUSES:
         rep.err(f"statuses.json must declare exactly the SPEC §6.8 set; "
@@ -218,6 +219,16 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
                 rep.err(f"{w}: bad affinity {el}={aff}")
         if "role_answer" in e and e["role_answer"] not in char_ids:
             rep.err(f"{w}: role_answer '{e['role_answer']}' is not a character")
+        if "currency" in e and (not isinstance(e["currency"], int) or isinstance(e["currency"], bool)
+                                or e["currency"] < 0):
+            rep.err(f"{w}: currency must be a non-negative int")
+        if "delay_immune" in e and not isinstance(e["delay_immune"], bool):
+            rep.err(f"{w}: delay_immune must be true or false")
+        for d in e.get("drops", []):
+            if not isinstance(d, dict) or d.get("item") not in item_ids:
+                rep.err(f"{w}: drop {d!r} names an unknown item (game/data/items/items.json)")
+            elif not isinstance(d.get("chance"), int) or not 0 <= d["chance"] <= 100:
+                rep.err(f"{w}: drop chance must be an int in 0..100")
         ai = e.get("ai", [])
         if not ai:
             rep.err(f"{w}: needs at least one ai rule")

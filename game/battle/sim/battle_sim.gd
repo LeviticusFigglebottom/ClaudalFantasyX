@@ -10,6 +10,7 @@ const CONFIG_PATH := "res://game/data/battle/sim_policies.json"
 
 var db: BattleDB
 var _config: Dictionary = {}
+var _item_db: ItemDB
 
 
 func _init(battle_db: BattleDB = null) -> void:
@@ -37,7 +38,19 @@ func make_policy(policy: StringName) -> SimPolicy:
 	return p
 
 
-## Plays one battle. Returns {seed, outcome, turns, party_turns, party_ko, items}. `turns`
+## A named party loadout from sim_policies.json "loadouts": {gear: {character: [equipment ids]},
+## items: {item id: count}}. {} if unknown (the bare party from characters.json).
+func loadout(loadout_name: StringName) -> Dictionary:
+	return ((_config.get("loadouts", {}) as Dictionary).get(String(loadout_name), {}) as Dictionary).duplicate(true)
+
+
+func items_db() -> ItemDB:
+	if _item_db == null:
+		_item_db = ItemDB.load_default()
+	return _item_db
+
+
+## Plays one battle. Returns {seed, outcome, turns, party_turns, party_ko, items, lume}. `turns`
 ## counts every action taken (both sides, automatic turns included; lost turns excluded).
 ## A battle that exceeds max_actions is recorded with outcome "timeout".
 func run_one(
@@ -46,12 +59,25 @@ func run_one(
 	reserve: Array[StringName],
 	policy: SimPolicy,
 	rng_seed: int,
-	party_modifier: Callable = Callable()
+	party_modifier: Callable = Callable(),
+	kit: Dictionary = {}
 ) -> Dictionary:
 	var engine := BattleEngine.new()
 	engine.party_modifier = party_modifier
+	var gear: Dictionary = kit.get("gear", {})
+	# Held for the whole battle: a Callable does not keep its RefCounted object alive.
+	var fx: EquipmentEffects = null
+	if not gear.is_empty():
+		fx = _equip(gear)
+		engine.party_modifier = EquipmentEffects.compose([party_modifier, fx.apply_to])
+		engine.currency_multiplier = fx.currency_multiplier
 	engine.setup(db, active, reserve, encounter, rng_seed)
 	policy.reset()
+	var bag := Inventory.new(items_db(), {})
+	var stock: Dictionary = kit.get("items", {})
+	for iid: Variant in stock:
+		bag.add(StringName(str(iid)), int(stock[iid]))
+	policy.items = InventoryItemSource.new(items_db(), bag)
 	engine.begin()
 	var limit := int(_config.get("max_actions", 0))
 	var steps := 0
@@ -79,7 +105,18 @@ func run_one(
 		"party_turns": party_turns,
 		"party_ko": ko,
 		"items": policy.items_used,
+		"lume": engine.currency_award(),
 	}
+
+
+func _equip(gear: Dictionary) -> EquipmentEffects:
+	var bag := EquipmentBag.new(items_db())
+	for cid: Variant in gear:
+		for eid: Variant in gear[cid]:
+			var err := bag.equip(StringName(str(cid)), bag.add_piece(StringName(str(eid))))
+			if err != EquipmentBag.RESULT_OK:
+				push_error("BattleSim: can't equip %s on %s (%s)" % [eid, cid, err])
+	return EquipmentEffects.new(items_db(), bag)
 
 
 ## Runs seeds first_seed .. first_seed + seeds - 1 and aggregates them.
@@ -90,12 +127,13 @@ func run_many(
 	policy_name: StringName,
 	seeds: int,
 	first_seed: int = 1,
-	party_modifier: Callable = Callable()
+	party_modifier: Callable = Callable(),
+	kit: Dictionary = {}
 ) -> Dictionary:
 	var policy := make_policy(policy_name)
 	var runs: Array[Dictionary] = []
 	for s in range(first_seed, first_seed + seeds):
-		runs.append(run_one(encounter, active, reserve, policy, s, party_modifier))
+		runs.append(run_one(encounter, active, reserve, policy, s, party_modifier, kit))
 	var out := summarize(runs)
 	out["encounter"] = String(encounter)
 	out["policy"] = String(policy_name)
@@ -104,8 +142,9 @@ func run_many(
 
 
 ## Runs a command-line request (sim_main.gd): {encounter, active, reserve, policies, seeds,
-## first-seed} as parsed by parse_args(). Returns {ok, error, results}; each result is a
-## summarize() aggregate plus encounter, policy, first_seed and the per-seed "runs".
+## first-seed, loadout?} as parsed by parse_args(); loadout names a sim_policies.json loadout.
+## Returns {ok, error, results}; each result is a summarize() aggregate plus encounter, policy,
+## first_seed and the per-seed "runs".
 func run_cli(args: Dictionary) -> Dictionary:
 	var encounter := StringName(str(args.get("encounter", "")))
 	var active := split_ids(str(args.get("active", "")))
@@ -121,12 +160,18 @@ func run_cli(args: Dictionary) -> Dictionary:
 		if not p in POLICY_NAMES:
 			out["error"] = "unknown policy '%s'" % p
 			return out
+	var kit := {}
+	if args.has("loadout"):
+		kit = loadout(StringName(str(args["loadout"])))
+		if kit.is_empty():
+			out["error"] = "unknown loadout '%s'" % args["loadout"]
+			return out
 	var results: Array = []
 	for p in policies:
 		var policy := make_policy(p)
 		var runs: Array[Dictionary] = []
 		for s in range(first, first + seeds):
-			runs.append(run_one(encounter, active, reserve, policy, s))
+			runs.append(run_one(encounter, active, reserve, policy, s, Callable(), kit))
 		var agg := summarize(runs)
 		agg["encounter"] = String(encounter)
 		agg["policy"] = String(p)
@@ -164,6 +209,7 @@ static func summarize(runs: Array[Dictionary]) -> Dictionary:
 	var turns: Array[int] = []
 	var ko_total := 0
 	var items_total := 0
+	var lume_total := 0
 	for r in runs:
 		if r["outcome"] == "victory":
 			wins += 1
@@ -172,6 +218,7 @@ static func summarize(runs: Array[Dictionary]) -> Dictionary:
 		turns.append(int(r["turns"]))
 		ko_total += int(r["party_ko"])
 		items_total += int(r["items"])
+		lume_total += int(r.get("lume", 0))
 	turns.sort()
 	return {
 		"n": n,
@@ -182,6 +229,7 @@ static func summarize(runs: Array[Dictionary]) -> Dictionary:
 		"p90_turns": percentile(turns, 90),
 		"mean_party_ko": float(ko_total) / maxi(n, 1),
 		"mean_items": float(items_total) / maxi(n, 1),
+		"mean_lume": float(lume_total) / maxi(n, 1),
 	}
 
 

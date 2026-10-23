@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/undertow/undertow_bench.gd" id="bench"]
+
+[node name="UndertowBench" type="Node"]
+script = ExtResource("bench")

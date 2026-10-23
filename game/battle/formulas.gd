@@ -41,6 +41,13 @@ const REGEN_PCT := 0.08
 const BERSERK_STR_RATIO: Array[int] = [3, 2]
 const CONFUSE_ALLY_PCT := 50
 
+## Items (M1-CMB-06): revive HP is a percent of max HP, never below 1.
+const REVIVE_MIN_HP := 1
+## Delay diminishing returns: each earlier delay since the target's last turn divides the next.
+const DELAY_STACK_DIVISOR := 2
+const DELAY_STACK_MAX_STEPS := 16
+const PCT := 100
+
 ## Rational multipliers as [numerator, denominator].
 const CRIT_RATIO: Array[int] = [2, 1]
 const BARRIER_RATIO: Array[int] = [1, 2]
@@ -120,6 +127,38 @@ static func crit_chance(luck: int, target_luck: int) -> int:
 ## Effective stat after Break statuses (Power/Magic Break halve; Armor/Mental Break zero).
 static func broken_stat(value: int, half_break: bool) -> int:
 	return floori(value * STAT_BREAK_MULT) if half_break else value
+
+
+## Ticks a delay effect adds: base_delay × ranks, halved for each delay the target already took
+## since its last own turn (DELAY_STACK_DIVISOR per step, at most DELAY_STACK_MAX_STEPS), and 0
+## for a delay-immune target.
+static func delay_push(agility: int, ranks: int, prior: int, immune: bool = false) -> int:
+	if immune or ranks <= 0:
+		return 0
+	var divisor := 1
+	for i in mini(maxi(prior, 0), DELAY_STACK_MAX_STEPS):
+		divisor *= DELAY_STACK_DIVISOR
+	return base_delay(agility) * ranks / divisor
+
+
+## HP a revive item restores: max(1, floor(max_hp × hp_pct / 100)).
+static func revive_hp(max_hp: int, hp_pct: int) -> int:
+	return maxi(REVIVE_MIN_HP, max_hp * hp_pct / PCT)
+
+
+## Fixed item damage: ignores stats, defense and barriers; takes the element ratio of the
+## target's affinity (absorb heals) and the per-hit cap. Signed like damage().
+static func item_damage(amount: int, element_affinity: StringName) -> int:
+	var el: Array = ELEMENT_RATIO.get(element_affinity, ELEMENT_RATIO[&"normal"])
+	return clampi(amount * int(el[0]) / int(el[1]), -DAMAGE_CAP, DAMAGE_CAP)
+
+
+## True if affinity `a` lets more damage through than `b` (weak > normal > resist > immune >
+## absorb), comparing the element ratios exactly.
+static func affinity_hurts_more(a: StringName, b: StringName) -> bool:
+	var ra: Array = ELEMENT_RATIO.get(a, ELEMENT_RATIO[&"normal"])
+	var rb: Array = ELEMENT_RATIO.get(b, ELEMENT_RATIO[&"normal"])
+	return int(ra[0]) * int(rb[1]) > int(rb[0]) * int(ra[1])
 
 
 ## Berserk strength, applied after Power Break: floor(strength x 3/2).

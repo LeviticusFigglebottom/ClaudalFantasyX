@@ -5,6 +5,8 @@ extends SimPolicyRoleAnswer
 ##    one that answers a living foe).
 ## 2. A healer heals the most hurt active ally below heal_below_pct of max HP.
 ## 3. A healer stays on the field while any active ally is below keep_healer_below_pct.
+## 4. Items: with no healer acting, a heal item goes to that most hurt ally; a fallen active
+##    member with no reserve left to replace them gets a revive item.
 ## Thresholds live in game/data/battle/sim_policies.json ("smart").
 
 
@@ -17,8 +19,13 @@ func decide(engine: BattleEngine) -> void:
 	var actor := engine.current
 	var heal := _heal_skill(engine, actor)
 	var hurt := _most_hurt(engine, actor)
-	if heal != &"" and hurt != null and _below(hurt, int(config.get("heal_below_pct", 0))):
-		if use(engine, heal, hurt):
+	if hurt != null and _below(hurt, int(config.get("heal_below_pct", 0))):
+		if heal != &"" and use(engine, heal, hurt):
+			return
+		if use_item_with(engine, ItemBattleAction.EFFECT_HEAL_HP, hurt):
+			return
+	for slot in engine.party_active:
+		if not slot.is_alive() and use_item_with(engine, ItemBattleAction.EFFECT_REVIVE, slot):
 			return
 	super.decide(engine)
 

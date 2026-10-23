@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""dlgc: the .dlg dialogue compiler (ADR 0004, tasks M1-NAR-03 and M1-NAR-04).
+"""dlgc: the .dlg dialogue compiler (ADR 0004, tasks M1-NAR-03, M1-NAR-04 and M1-NAR-06).
 
 Compiles every game/data/dialogue/**/*.dlg (except the compiled/ folder) into
   * game/data/dialogue/compiled/<scene>.json   one file per .dlg, <scene> = file stem = first node title
@@ -15,7 +15,8 @@ Usage:
   python3 tools/dlgc.py                     compile and write outputs
   python3 tools/dlgc.py --check             compile in memory; fail if the committed outputs are stale
   python3 tools/dlgc.py --assign-ids FILE   fill in missing #line: ids in FILE (in place), then stop
-                        [--prefix PREFIX]   id prefix (default: the file's most common one, else its scene name)
+                        [--prefix PREFIX]   id prefix (default: the file's most common one, else the scene
+                                            name's first and last words, e.g. ch02_beach)
   python3 tools/dlgc.py --root PATH
 """
 from __future__ import annotations
@@ -61,6 +62,20 @@ SPEAKER_RE = re.compile(
     r"""\s*(?:\[([^\]]*)\])?\s*:\s*(.*)$"""
 )
 TN_RE = re.compile(r"""(?:^|\s)#tn:"((?:[^"\\]|\\.)*)"(?=\s|$)""")
+# Near misses of SPEAKER_RE (M1-NAR-06). Each would otherwise compile, silently, to narration.
+# `Name [emotion] as "Alias":` (the emotion belongs after the alias)
+EMO_BEFORE_ALIAS_RE = re.compile(
+    r"""^([A-Za-z][A-Za-z0-9_]*)(\([^)]*\))?\s*\[([^\]]*)\]\s+as\s+"((?:[^"\\]|\\.)*)"\s*:"""
+)
+# `Name as Alias [emotion]:` (the alias needs double quotes)
+UNQUOTED_ALIAS_RE = re.compile(r"""^([A-Za-z][A-Za-z0-9_]*)\s+as\s+([^"\[\]:]*?)\s*(\[[^\]]*\])?\s*:""")
+# `[emotion] narration` (narration takes an emotion only through `Narrator [emotion]:`)
+EMO_NARRATION_RE = re.compile(r"^\[([^\]]*)\]\s*:?\s*(.*)$")
+# The heuristic: up to SPEAKER_LIKE_MAX_WORDS words that start with a capital letter and carry no
+# sentence punctuation, then an unescaped colon. Real narration that reads like that takes #narration.
+SPEAKER_LIKE_RE = re.compile(r"""^([A-Z][^:.!?;,…—]*?)(?<!\\):""")
+SPEAKER_LIKE_MAX_WORDS = 6
+TAG_NARRATION = "narration"  # compiler-only: "this is narration, as written"; not kept in the op
 ARG_ID_RE = re.compile(r"[A-Za-z0-9_]+")
 COMMAND_RE = re.compile(r"^<<\s*(.*?)\s*>>$")
 OPTION_COND_RE = re.compile(r"<<\s*if\s+(.*?)\s*>>\s*$")
@@ -202,6 +217,7 @@ class SrcLine:
     no: int
     indent: int
     text: str
+    raw: str = ""  # the source line before the // comment was stripped (for error messages)
 
 
 @dataclass
@@ -265,7 +281,7 @@ def split_nodes(text: str) -> tuple[list[Node], list[DlgError]]:
         if "\t" in line[: len(line) - len(line.lstrip())]:
             errs.append(DlgError(no, "bad indentation: use spaces, not tabs"))
             continue
-        body.append(SrcLine(no, len(line) - len(line.lstrip(" ")), stripped))
+        body.append(SrcLine(no, len(line) - len(line.lstrip(" ")), stripped, raw))
     if body is not None:
         errs.append(DlgError(header_line or 1, f"node '{headers.get('title', '?')}' is missing its closing '==='"))
     elif headers:
@@ -285,8 +301,32 @@ def command_word(text: str) -> str:
     return m.group(1).split(" ", 1)[0] if m.group(1) else ""
 
 
-def split_tags(text: str, line: int) -> tuple[str, str, list[str], str]:
-    """Pops trailing #hashtags and one #tn:"translator note". Returns (text, line_id, other_tags, note)."""
+def split_tags(text: str, line: int, raw: str = "") -> tuple[str, str, list[str], str]:
+    """Pops trailing #hashtags and one #tn:"translator note". Returns (text, line_id, other_tags, note).
+    `raw` is the source line before comment stripping; it only sharpens the bad-note message."""
+    body, line_id, others, note = split_tags_raw(text, line, raw)
+    return unescape(body), line_id, others, note
+
+
+def _clip(text: str, n: int = 40) -> str:
+    return text if len(text) <= n else text[: n - 3].rstrip() + "..."
+
+
+def unescape(body: str) -> str:
+    return body.replace("\\:", ":").replace("\\#", "#")
+
+
+def _note_cut_by_comment(raw: str) -> bool:
+    """True if a ` //` comment starts inside a #tn:"..." note on this source line."""
+    start = raw.find('#tn:"')
+    if start < 0:
+        return False
+    m = COMMENT_RE.search(raw, start)
+    return m is not None
+
+
+def split_tags_raw(text: str, line: int, raw: str = "") -> tuple[str, str, list[str], str]:
+    """split_tags without unescaping `\\:` and `\\#` in the text."""
     note = ""
     notes = list(TN_RE.finditer(text))
     if len(notes) > 1:
@@ -298,6 +338,9 @@ def split_tags(text: str, line: int) -> tuple[str, str, list[str], str]:
             raise DlgError(line, '#tn:"" is empty (write the note for translators, or drop the tag)')
         text = (text[: m.start()] + " " + text[m.end():]).strip()
     elif re.search(r"(?:^|\s)#tn:", text):
+        if _note_cut_by_comment(raw):
+            raise DlgError(line, 'translator note cut off: " //" starts a comment, even inside #tn:"..." '
+                                 '(reword the note without " //", e.g. use "/" or "or")')
         raise DlgError(line, 'bad translator note: write #tn:"note text" with double quotes')
     words = text.split(" ")
     tags: list[str] = []
@@ -319,8 +362,7 @@ def split_tags(text: str, line: int) -> tuple[str, str, list[str], str]:
             others.append(t[1:])
     if TAG_NOTR in others and not note:
         raise DlgError(line, '#notr needs a translator note saying why: #tn:"..."')
-    body = " ".join(words).strip().replace("\\:", ":").replace("\\#", "#")
-    return body, line_id, others, note
+    return " ".join(words).strip(), line_id, others, note
 
 
 def convert_arg(tok: str) -> Any:
@@ -501,7 +543,9 @@ class BodyParser:
             if m:
                 cond = parse_expr(m.group(1), ln.no)
                 text = text[: m.start()].rstrip()
-            body_text, line_id, tags, note = split_tags(text, ln.no)
+            body_text, line_id, tags, note = split_tags(text, ln.no, ln.raw)
+            if TAG_NARRATION in tags:
+                raise DlgError(ln.no, f"#{TAG_NARRATION} marks narration lines; an option is never narration")
             if m is None:
                 m2 = OPTION_COND_RE.search(body_text)
                 if m2:
@@ -636,7 +680,17 @@ class BodyParser:
                                           "or write '\\:' for a colon in narration)")
                 if identity is not None:
                     raise DlgError(ln.no, f"'{name}({identity})': only Narrator takes a voice identity")
-        body, line_id, tags, note = split_tags(text, ln.no)
+            body, line_id, tags, note = split_tags(text, ln.no, ln.raw)
+            if TAG_NARRATION in tags:
+                raise DlgError(ln.no, f"#{TAG_NARRATION} marks narration that looks like a speaker line; "
+                                      f"this line has a speaker ('{name}:')")
+        else:
+            raw_body, line_id, tags, note = split_tags_raw(text, ln.no, ln.raw)
+            if TAG_NARRATION in tags:
+                tags.remove(TAG_NARRATION)
+            else:
+                self.check_near_miss(raw_body, ln.no)
+            body = unescape(raw_body)
         if not body:
             raise DlgError(ln.no, "line has no text")
         line_id = self.ctx.register_line(line_id, body, ln.no, tags, note, "spoken text")
@@ -649,6 +703,41 @@ class BodyParser:
         if tags:
             out["tags"] = tags
         return out
+
+    def check_near_miss(self, body: str, line: int) -> None:
+        """M1-NAR-06: a narration line (tags already popped, escapes kept) that nearly matches a speaker
+        line is an error, so a typo never ships its raw `Name [emo]:` text. `#narration` skips this."""
+        allow = f"tag the line #{TAG_NARRATION} if it really is narration"
+        m = EMO_BEFORE_ALIAS_RE.match(body)
+        if m:
+            name, identity, emo, alias = m.groups()
+            fix = f'{name}{identity or ""} as "{alias}" [{emo.strip()}]:'
+            raise DlgError(line, f"the emotion goes after the alias: did you mean '{fix}'? "
+                                 "(as written, this line would compile as narration)")
+        m = UNQUOTED_ALIAS_RE.match(body)
+        if m and m.group(1).lower() in self.ctx.speakers and m.group(2):
+            name, alias, emo = m.groups()
+            fix = f'{name} as "{alias}"' + (f" {emo}" if emo else "") + ":"
+            raise DlgError(line, f"an alias needs double quotes: did you mean '{fix}'? "
+                                 "(as written, this line would compile as narration)")
+        m = EMO_NARRATION_RE.match(body)
+        if m:
+            emo = m.group(1).strip()
+            known = "" if emo in self.ctx.emotions else f"; '{emo}' is not in {EMOTIONS_JSON.as_posix()} either"
+            raise DlgError(line, f"narration takes an emotion only through Narrator: did you mean "
+                                 f"'Narrator [{emo}]: {_clip(m.group(2))}'? (or 'Narrator(<speaker id>) [{emo}]:' "
+                                 f"for a voice-over{known}; {allow})")
+        m = SPEAKER_LIKE_RE.match(body)
+        if m and len(m.group(1).split()) <= SPEAKER_LIKE_MAX_WORDS:
+            prefix = m.group(1).strip()
+            first = re.match(r"[A-Za-z0-9_]+", prefix)
+            hint = ""
+            if first and first.group(0).lower() in self.ctx.speakers | {NARRATOR}:
+                hint = f" Did you mean '{first.group(0)}:' or '{first.group(0)} [emotion]:'?"
+            raise DlgError(line, f"'{prefix}:' looks like a speaker, but this line would compile as narration "
+                                 "(a speaker line is 'Name [emotion]: text' or 'Name as \"Alias\" [emotion]: "
+                                 f"text', Name one word from {SPEAKERS_JSON.as_posix()}).{hint} For narration, "
+                                 f"write '\\:' for the colon or {allow}")
 
 
 # ---------------------------------------------------------------- codegen (statement tree -> ops)
@@ -1000,15 +1089,23 @@ def write(root: Path) -> CompileResult:
 ID_NUM_RE = re.compile(r"^(.*)_(\d+)$")
 
 
+def short_scene_prefix(scene: str) -> str:
+    """The fallback id prefix: the scene name's first and last words (`ch02_girl_on_the_beach` ->
+    `ch02_beach`, after the `<chapter>_<scene-short>` convention); a name of one or two words as is."""
+    words = [w for w in scene.split("_") if w]
+    return f"{words[0]}_{words[-1]}" if len(words) > 2 else scene
+
+
 def default_prefix(ids: list[str], scene: str) -> str:
-    """The most common `<prefix>` of the file's `<prefix>_<NNN>` ids (first seen wins a tie), else the scene."""
+    """The most common `<prefix>` of the file's `<prefix>_<NNN>` ids (first seen wins a tie), else the
+    scene name shortened by short_scene_prefix."""
     counts: dict[str, int] = {}
     for lid in ids:
         m = ID_NUM_RE.match(lid)
         if m:
             counts[m.group(1)] = counts.get(m.group(1), 0) + 1
     if not counts:
-        return scene
+        return short_scene_prefix(scene)
     return max(counts, key=lambda k: counts[k])  # dicts keep first-seen order; max keeps the first maximum
 
 
@@ -1017,6 +1114,7 @@ class AssignResult:
     text: str | None  # the rewritten file, or None when there are errors
     assigned: list[tuple[int, str]]  # (source line, new id)
     errors: list[str]
+    hint: str = ""  # advice to print (e.g. when the prefix fell back to the scene name)
 
 
 def assign_ids(root: Path, path: Path, prefix: str | None = None) -> AssignResult:
@@ -1040,7 +1138,13 @@ def assign_ids(root: Path, path: Path, prefix: str | None = None) -> AssignResul
     if not result.missing_ids:
         return AssignResult(text, [], [])
     placed = _ids_with_places(result)
-    prefix = prefix or default_prefix([lid for lid, where in placed if where == rel], path.stem)
+    hint = ""
+    if prefix is None:
+        file_ids = [lid for lid, where in placed if where == rel]
+        prefix = default_prefix(file_ids, path.stem)
+        if not any(ID_NUM_RE.match(lid) for lid in file_ids):
+            hint = (f"no <prefix>_<NNN> ids in this file yet, so the prefix '{prefix}' comes from the scene "
+                    "name; pass --prefix <chapter>_<scene-short> to choose another")
     used = {lid for lid, _ in placed}
     numbers = [m for m in (ID_NUM_RE.match(lid) for lid in used) if m and m.group(1) == prefix]
     width = max([3] + [len(m.group(2)) for m in numbers])
@@ -1055,7 +1159,7 @@ def assign_ids(root: Path, path: Path, prefix: str | None = None) -> AssignResul
         used.add(new_id)
         lines[no - 1] = _insert_line_tag(lines[no - 1], new_id)
         assigned.append((no, new_id))
-    return AssignResult("".join(lines), assigned, [])
+    return AssignResult("".join(lines), assigned, [], hint)
 
 
 def _ids_with_places(result: CompileResult) -> list[tuple[str, str]]:
@@ -1091,6 +1195,8 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         for no, lid in res.assigned:
             print(f"{args.assign_ids}:{no}: #line:{lid}")
+        if res.hint:
+            print(f"NOTE  {res.hint}")
         if res.assigned:
             args.assign_ids.write_text(res.text, encoding="utf-8")
         tail = " (now run python3 tools/dlgc.py)" if res.assigned else ""

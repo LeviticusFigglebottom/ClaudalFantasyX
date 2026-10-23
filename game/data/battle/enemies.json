@@ -12,7 +12,9 @@
         {"pick": [{"skill": "pinch", "target": "lowest_hp_foe", "weight": 2},
                   {"skill": "pinch", "target": "random_foe", "weight": 1}]}
       ],
-      "xp": 40
+      "xp": 40,
+      "currency": 24,
+      "drops": [{"item": "crab_carapace", "chance": 50}, {"item": "salt_tonic", "chance": 10}]
     },
     {
       "id": "lantern_eel", "name_key": "ENEMY_LANTERN_EEL", "role_answer": "ysolde",
@@ -22,7 +24,9 @@
       "affinities": {"fire": "weak", "lightning": "immune"},
       "skills": ["lure_glow"],
       "ai": [{"pick": [{"skill": "lure_glow", "target": "random_foe"}]}],
-      "xp": 35
+      "xp": 35,
+      "currency": 20,
+      "drops": [{"item": "eel_lantern", "chance": 50}, {"item": "salt_tonic", "chance": 10}]
     },
     {
       "id": "gull_harrier", "name_key": "ENEMY_GULL_HARRIER", "role_answer": "rhen",
@@ -35,7 +39,9 @@
         {"if": {"self_hp_below_pct": 40}, "pick": [{"skill": "dive_rake", "target": "lowest_hp_foe"}]},
         {"pick": [{"skill": "dive_rake", "target": "random_foe"}]}
       ],
-      "xp": 30
+      "xp": 30,
+      "currency": 18,
+      "drops": [{"item": "gull_quill", "chance": 50}, {"item": "salt_tonic", "chance": 10}]
     }
   ]
 }
