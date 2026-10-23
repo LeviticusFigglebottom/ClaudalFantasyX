@@ -2,7 +2,7 @@
 id: M1-NAR-11
 title: Story consistency and residual echoes after the Kerrid re-staging (review-sweep-F)
 role: narrative
-status: doing
+status: review
 reviewer: cinematics
 owner_session: "worktree-agent-afdcaea09c59ff37c"
 depends_on: [M1-NAR-09]
@@ -20,6 +20,8 @@ The review-sweep-F entries on M1-NAR-09 and M1-NAR-08.
 - [x] palette.json night sea-glow minimum gets an explicit Ending exception (0.07/0.06), validated
 - [x] Liss's line-marks on one arm consistently; nits: "the place he once sent Imra"; decisions_log still says 0020 is proposed; dialogue_format.md Ch14 should be Ch15
 - [x] All .dlg compile; validators pass
+- [x] Review-sweep-G: B1 (Toma at Ansedra in 1001) and B2 (no "guarded since she was nine") fixed in the game text; B3 Lead verdict applied (ch03 051/052 cut, echo row in ADR 0022's append note)
+- [x] Review-sweep-G should-fix S1-S11 and the nits
 
 ## Notes
 - 2026-10-23 narrative (worktree-agent-a34ff8effe727a250): everything is recorded in [ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md) (proposed) and decisions_log N-23. Append notes are on ADRs 0016, 0017 and 0020, and the glossary is appended.
@@ -39,6 +41,21 @@ The review-sweep-F entries on M1-NAR-09 and M1-NAR-08.
   - **Liss:** line-marks on the right arm.
   - **Nits:** fixed. The .dlg changes are comment-only, with the same line count, so the compiled JSON is unchanged.
   - **Not done:** SPEC.md:522 cites ADR 0021, which is reserved for the MPFB2 ADR (Lead/character). No edit.
+- 2026-10-23 narrative (worktree-agent-afdcaea09c59ff37c), reopened on review-sweep-G. Everything is recorded in the dated append note on [ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md), which holds the B3 Lead verdict and new echo rows, and in decisions_log N-24.
+  - **B1 and B2 (game text):** `ch03_verse_061` "I was at Ansedra then, at the temples. I heard of it by letter." replaces 010. `ch03_verse_062` "I have guarded her three years. Before that, on leave, I had to find her in the net racks. She hid on purpose." replaces 024. vertical_slice B08 follows.
+  - **B3 (Lead verdict):** `ch03_verse_051`/`052` are cut. Act I never voices the lantern link, and it surfaces only in Ch15. vertical_slice B09 and its flag table are updated. The echo row is in 0022's append note (re-staged, with the residual accepted and a watch).
+  - **Loc:** a changed meaning gets a new key (061, 062, 063). dlgc writes `dialogue.csv` in `.dlg` order, so each new row sits where its old row was and no other row moves. The keys 010, 024 and 051-053 are gone. `test_dialogue_vs_scenes.gd` asserts that the cut lines never play and that 061-063 do.
+  - **S1:** no drinking. They spent eight low tides at the rings, with Kerrid holding Dace's line.
+  - **S2:** Kerrid kept the wall-gate on Imra's path, spoke with her there, and never walked beside her.
+  - **S3:** "Somebody's still below." is said looking out to sea, with a new echo row.
+  - **S4:** Kerrid is alone in the Ch9 cutaway.
+  - **S5:** the Asha line ends "until tonight" (`063`).
+  - **S6:** Dace's line-marks were seen on the stair, and a hunted Saltwright going home brings the Order to his son. His message asked Mother Kell to keep Rhen, and she raised him from eight to nineteen. The reason is in the Ch17 logs.
+  - **S7, S8, S9:** the kerrid.md and rhen_sallow.md fixes.
+  - **S10:** the N-11 heading and N-23's status.
+  - **S11:** act3_ending §0 rule 8. The three dead never share a frame from H02 to E3, E2's look is a shot and a reverse, and the line reads "Dace and Kerrid: one look, no words". It is extended to H02, whose wide had all three.
+  - **Nits:** voice_guide's early slouch sample is cut. ADR 0016:92 is left as it is (append-only), and N-23 and N-24 carry the acceptance. A short append note on ADR 0020 points at the superseded lines.
+  - **Not done:** the vertical_slice §8 per-path word range and mean are estimated from per-line deltas, because `dialogue_stats.py` gives only the written totals.
 
 ## Review log
 - 2026-10-23 cinematics + IP (review-sweep-G, fresh reviewer): **request-changes.** I read CLAUDE.md §2, SPEC v1.1 (§1-§3.5), ADRs 0015, 0016, 0017, 0020 and 0022, and then act_outline, act3_ending, bible, vertical_slice, voice_guide, decisions_log, glossary, every character sheet, color_script (`ch08`, `ch15`, `ending_unbinding`), palette.json `global_rules`, haluna.md, and both `.dlg` files with `dialogue.csv`. `validate_data.py` gives 0 errors and 0 warnings, `unittest discover -s tools/tests` gives 322 OK (including `test_palette_rules.py`), and `dlgc.py --check` gives 0 errors and 0 warnings.
