@@ -5,6 +5,7 @@ During a conflicted `git merge`, run:  python3 tools/dev/merge_union.py
 It resolves, if conflicted:
   tests/screenshots/shots.json            ours' shots, then theirs' new shots (ids unique)
   tests/screenshots/baselines/baselines.json  dict union (ours wins on equal keys)
+  game/data/flags.tres                    union of the flags dictionary
   assets/PROVENANCE.md, game/data/loc/*.csv, tools/banned_terms.txt
                                           line union: ours' lines, then theirs' new lines
 and `git add`s each. Anything else stays conflicted for a human/agent to resolve.
@@ -19,6 +20,7 @@ from pathlib import Path
 
 JSON_SHOTS = "tests/screenshots/shots.json"
 JSON_BASELINES = "tests/screenshots/baselines/baselines.json"
+FLAGS_TRES = "game/data/flags.tres"
 LINE_UNION = ("assets/PROVENANCE.md", "tools/banned_terms.txt")
 LINE_UNION_GLOBS = ("game/data/loc/*.csv",)
 
@@ -42,6 +44,18 @@ def union_lines(ours: str, theirs: str) -> str:
     return "\n".join(out) + "\n"
 
 
+def union_flags(ours: str, theirs: str) -> str:
+    """flags.tres keeps its `flags = {...}` block JSON-compatible (ADR 0007): merge the dicts."""
+    import re
+    pat = re.compile(r"^flags = (\{.*?^\})", re.S | re.M)
+    mo, mt = pat.search(ours), pat.search(theirs)
+    fo, ft = json.loads(mo.group(1)), json.loads(mt.group(1))
+    for k, v in ft.items():
+        fo.setdefault(k, v)
+    body = "{\n" + ",\n".join(f"{json.dumps(k)}: {json.dumps(v)}" for k, v in fo.items()) + "\n}"
+    return ours[: mo.start(1)] + body + ours[mo.end(1):]
+
+
 def main() -> int:
     left = []
     for path in conflicted():
@@ -56,6 +70,8 @@ def main() -> int:
             for k, v in t.items():
                 o.setdefault(k, v)
             text = json.dumps(dict(sorted(o.items())), indent=2) + "\n"
+        elif path == FLAGS_TRES:
+            text = union_flags(ours, theirs)
         elif path in LINE_UNION or any(Path(path).match(g) for g in LINE_UNION_GLOBS):
             text = union_lines(ours, theirs)
         else:
