@@ -2,8 +2,8 @@
 id: M1-CHR-07
 title: Asha face round 3: smile driver, lip shape, hairline, brows, hair colour
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a092b4032f6c64db4 (session_01Bg3iP7cPGyjbX4CyniBahc)"
 depends_on: [M1-CHR-04]
 milestone: M1
 request-from: "lead"
