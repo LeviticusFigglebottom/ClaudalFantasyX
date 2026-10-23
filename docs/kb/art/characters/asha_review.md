@@ -393,3 +393,104 @@ All 10 `asha_*` shots were re-approved. I looked at each one side by side with i
 | One flyaway sticks out sideways near the jaw by the braid | The hair RNG reshuffled with the lower temple; per spec, but a candidate to pin |
 | Visemes have no morph normals | GLB cap. The mouth's silhouette carries them; revisit with LFS |
 | `seal_contact` keeps the lips together under `lip_upper_up` | Intended for Asha. A hero who must bare teeth without opening the jaw needs it off |
+
+## 9. M1-CHR-09: round 4 (crown card layout, framing lock, lips, the doll-like read)
+
+The task takes the faults still failing in §8.3: the crown shell, the framing-lock streak, the thin lips with wobbly bow shoulders, plus an honest look at why the face reads slightly doll-like. The shadow settings and the cloth, vest and bodice materials belong to the PC GPU session and were not touched; neither were `write_materials.py`'s cloth entries. Every material change goes through `write_materials.py`.
+
+**Same lighting and cameras as §3. Every frame is lavapipe.** CHR-07 (the previous baselines) is the "before", CHR-09 (the re-approved baselines) the "after".
+
+### 9.1 Triangle headroom, without visible loss
+
+LOD0 was at exactly 63,500. `bb_donor.seat_eyes` tucks the deep eye-socket skin to 0.9 R, inside the opaque globe, where no camera can see it. `build_asha.delete_hidden_socket` deletes every head-skin face whose vertices all lie inside 0.95 R of a globe, at rest and under all 40 shape keys. It runs after the bake, so the AO and thickness rays still see a closed socket and the skin maps don't change.
+- **1,230 triangles** are freed, and 100 KB of GLB with them, because every head vertex carries 40 morph targets.
+- It is invisible: the four face shots rendered before and after differ by at most 1/255 in any channel, in 191 pixels (rounding noise, RMSE 0.00007).
+- The hair was rebalanced inside its own 16,000 line (asha.md §8.1). The base layer lies under the mid layer, the clumps and the underpaint, so it is now 230 wider cards (12–20 mm) instead of 350 (9–16 mm). That paid for the crown clumps.
+
+### 9.2 What changed and why
+
+- **Crown** (`asha_hair.crown_clumps`). The CHR-07 top layer sat at one fixed 4 mm lift and followed the scalp exactly, so the outline was a clean arc and the highlight one band. It is replaced by 62 strand clumps:
+  - 2–4 narrow cards (4–7 mm) share a traced path and gather toward mid-length;
+  - each clump rises off the scalp in an arc (0.8–3.7 mm extra; 18% of them stand another 3–5.5 mm off);
+  - each card rolls up to 0.35 rad about its length, so each clump catches its own highlight;
+  - 40% of the cards use the sparse breakup columns.
+- **Crown flyaways** now stand 4–11 mm off at the tip (CHR-07: 4 mm), so some of them cross the outline. The braid's flyaways start at the shoulder, so the one that stuck out sideways by the jaw is gone.
+- **The framing lock** (asha.md §5: two uncut strands, 6–8 cm, free on the right temple).
+  - Why it was a streak: CHR-07 rooted it 4.4–5.3 cm off the midline, right above the brow tail, as three 4–5 mm ribbons 4 mm off the skin. From the front that is a dark bar across the brow.
+  - Now each strand escapes the drawn-back hair at the temple hairline (53° and 63° round from the front), outside the orbit.
+  - Each strand is a fan of 6 ribbons (2.2–3.6 mm) that start together and spread 9 mm toward uneven tips. It hangs 1.5 mm off the skin at the root and 4.5 mm from mid-length, with a slight forward S.
+  - The ribbons sample the dense middle of an atlas column. A narrow ribbon over a full column is mostly the column's feathered edges, and the first try was nearly invisible.
+  - At 7 mm off the skin, the strands' shadow plus the skin's red penumbra scatter drew a pinkish scratch beside the lock. That is why the lock now hangs closer.
+- **Separate random streams** per hair part, so re-laying the scalp no longer reshuffles the braid, the flyaways or the lock.
+- **Lips** (`asha_textures`).
+  - The cause of the wobble, found by tracing the drawn border on the baked mesh: the outline is the contact line plus the bow height, and the contact line *rises* toward the corners (her resting corner lift). Past each bow peak the outline dipped at 11 mm from the midline, then rose into a second hump at 18 mm. Smoothing the frame per texel, tried first, changed nothing.
+  - `monotone_upper` keeps the bow (the dip and both peaks). Outside the peaks, the outline falls from the peak to the corner as a linear-plus-quadratic ramp.
+  - The vermilion heights go from 8.8 / 9.0 mm to 9.4 / 9.5 mm (upper / lower). The geometry (`lip_fullness`) is unchanged.
+- **The doll-like read**, judged on the asha_face_* shots. Three cues, in order of cost:
+  1. **The sclera** was a flat, bright white round a hard-edged iris.
+     - The sclera texture now darkens 16% and warms toward the canthi (v 0.12–0.42).
+     - `col_sclera` goes from #DCD0C4 to #CCBEB0, and `limbus_softness` from 0.06 to 0.09.
+     - The occlusion shell's upper and corner strengths go from 0.75 / 0.55 to 0.9 / 0.7.
+     - The iris scale is the sheet's (×1.10, SPEC §7.3) and was not touched.
+  2. **A pale band on the upper lid**, margin to crease, read as pale eyeshadow. A diagnostic render with the lashes hidden showed it is the lid skin, not the lashes. Its albedo is now 15% darker and slightly redder. That helps only a little: most of the band is shading (an upward-facing, thin, smooth lid under the key), which is a Rendering question.
+  3. **The skin's subsurface warmth.** `skin_head` `curvature_scale` goes from 1.0 to 1.3, which warms the light-to-shadow transitions. I also tried `shadow_scatter` and reverted it. It is a shadow-penumbra term, close to the shadow settings this task must not touch, and it reddened the lock's shadow.
+
+### 9.3 The SPEC §14 dialogue-range review, side by side with CHR-07
+
+| | CHR-07 | CHR-09 |
+|---|---|---|
+| Crown | A smooth shell: a clean arc of an outline, one broad highlight band | **Strand clumps combed back**, each with its own highlight. Lifted clumps and flyaways break the outline. Still sleek, which is the style |
+| Framing lock | A dark bar across the right brow tail (front-on figure of `asha_face_stylized_compare`) | **A loose fan of fine strands at the temple, outside the brow**, with skin between the strands and uneven tips. In `asha_face_neutral` it is a strand line at the temple outline. The lower half is pale where it is backlit, and faint where it crosses the dark wall |
+| Lips | Thin; the bow's shoulders scalloped | Slightly fuller. A clean bow (centre dip, two peaks) and smooth shoulders into the corners. No scallops in any of the three expressions |
+| Eyes | Flat bright sclera, hard iris edge | The sclera shades and warms toward the corners and sits under the lid's shadow. The iris edge is softer. **Less of a stare**, though still large and glossy, per the sheet's ×1.10 |
+| Upper lid | A pale band over the iris | Slightly less pale. **Still visible**; it is mostly shading |
+| Skin | Smooth, slightly flat in the transitions | Warmer transitions. Still smooth at this framing; the §7 micro-detail is near the limit of a 960×540 lavapipe frame |
+
+**Verdict: the four named faults are fixed at the asset. The face is less doll-like, but not free of it.**
+- **With the ADR 0019 close-range look:** it passes §14 at dialogue range.
+- **As built:** it is still borderline. I would not call it a clean pass.
+
+What is left:
+1. **The doll cue is now mostly surface and shading:** the pale, evenly lit upper lid, skin that is smooth and evenly lit between the features, and large glossy eyes. The asset levers (albedo, sclera texture, occlusion shell) are used. The rest is for Rendering on a GPU (subsurface blur, the lid's shading) and for the motion review, because blinks and lid motion break a stare in a way a still can't.
+2. **The lock** reads as loose hair but is pale in its backlit lower half. It needs a GPU look, plus spring bones (asha.md §5: front strands, 2 bones each, not built).
+3. **The crown at the back, and the part,** are not in any close-up shot. They were judged in the field-range shots only.
+4. All of this is lavapipe.
+
+### 9.4 Re-approved baselines
+
+Only the four face shots were re-approved. I looked at each one at full size, and in crops, against its CHR-07 baseline. The six field-range shots also change slightly (the crown, the lock, the eyes), but they stay inside their limits, so their baselines were kept.
+
+| Shot | RMSE against CHR-07 | |
+|---|---:|---|
+| `asha_face_neutral` | 0.0106 | Re-approved: crown clumps, the lock at the temple outline, lips, sclera, lid, skin warmth |
+| `asha_face_smile` | 0.0105 | Re-approved: the same under `smile` (the bow stays clean as the corners lift) |
+| `asha_face_grief` | 0.0105 | Re-approved: the same under `grief` |
+| `asha_face_stylized_compare` | 0.0205 | Re-approved: the same under both skins; the lock is front-on here |
+| `asha_q34` | 0.0036 | Within its limit (0.008); kept |
+| `asha_extreme_pose` | 0.0028 | Within its limit; kept |
+| `asha_sleeve_s0` / `s4` | 0.0027 | Within their limit; kept |
+| `asha_front` | 0.0019 | Within its limit; kept |
+| `asha_profile` | 0.0018 | Within its limit; kept |
+
+### 9.5 Numbers
+
+| | CHR-07 | CHR-09 |
+|---|---|---|
+| Head | 20,996 | **19,766** (1,230 hidden socket triangles deleted) |
+| Hair, on the mesh scalp | 15,584 | **15,604**. The scalp cards are 9,858: base 230, mid 210, 62 clumps and 100 hairline cards. The lock is 360 and the 48 flyaways 442. On the field scalp, which `test_part_budgets` uses, the hair is 15,824 of 16,000 |
+| **LOD0** | 63,500 | **62,290**, 1,210 under the 63,500 target |
+| LOD1 | 29,891 | 29,378 |
+| `asha.glb` | 4,555,480 B | **4,455,676 B** |
+| `asha_lod1.glb` | 1,429,576 B | 1,412,604 B |
+| Head maps | albedo 1.94 MB, normal 3.04 MB, ORM 1.34 MB, skinmask 3.29 MB | 1.96 / 3.01 / 1.33 / 3.28 MB, all under 5 MB |
+
+### 9.6 Known issues (CHR-09)
+
+| Item | Note |
+|---|---|
+| The upper lid reads paler than the cheek | Mostly shading; the albedo there is already 15% darker. For Rendering, on a GPU |
+| The lock is pale where it is backlit, and faint against the dark wall | GPU look. Spring bones for the front strands are not built (asha.md §9.4) |
+| As built, the skin and the eyes keep a slight doll quality | Surface and shading, plus the motion review (ADR 0019 watch item 3) |
+| 1,210 triangles of LOD0 headroom unused | Kept as margin. The hair is at 15,824 of its 16,000 line on the field scalp |
+| The left brow's head is slightly heavy (§8.6) | Not taken this round |
+| The hair lobe (exponent 400) still departs from asha.md §5 | Unchanged; for Rendering and Art to confirm (§8.2) |
