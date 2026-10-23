@@ -15,7 +15,7 @@ sub-frame, composed from the procedural Haluna kit. The art review is in
 | `haluna_shot_camera.gd` (`HalunaShotCamera`) | A Camera3D driven by a `CameraShot` resource (FIXED framing, vFOV, DOF) |
 | `haluna_noon_environment.tres` | The `ch02_noon` mood frame: sky, AgX, exposure, fog, LUT |
 | `lut_ch02_noon.png` | 32³ grade LUT (Texture3D), from `assets_src/environments/kits/haluna/zone_lut.py` |
-| `haluna_water_material.tres` | The lagoon look (validated water.md values; crest foam reduced) |
+| `haluna_water_material.tres` | The colour script's validated `lagoon_clear` look (absorption ×1.5, deep `#0E4A55`), crest foam reduced |
 | `haluna_kit_sheet.tscn` / `.gd` / `.json` | Every kit piece in rows, for review (not a registered shot) |
 
 Shots (`tests/screenshots/shots.json`): `haluna_h01_village_from_sea`, `haluna_h02_tidewall_lane`,
@@ -45,7 +45,7 @@ five baselines. The frames as committed are also what the Low preset (`gi_mode =
 
 ## Tonemap and LUT
 
-AgX (white 12), exposure 0.58, then `lut_ch02_noon` through `Environment.adjustment_color_correction`
+AgX (white 12), exposure 0.65 (the `ch02_noon` practical exposure of ADR 0014), then `lut_ch02_noon` through `Environment.adjustment_color_correction`
 (saturation ×1.12, S-curve 0.45, teal toe `#0E4A55`, highlight roll-off to `#FFF8EE`, no (0,0,0)
 black). The LUT is sampled at the colour itself, so each texel stores the grade of its own centre
 (`(i + 0.5) / 32`); `zone_lut.py --identity` writes the neutral table for checking that.

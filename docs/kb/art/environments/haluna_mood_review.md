@@ -50,7 +50,7 @@ float (unit-tested). There is a `paint_cover` layer for lime wash and dyes. The 
 ## Per-shot review against the colour script and brief
 
 All five shots use `ch02_noon`: sun at 74° elevation and 165° azimuth, key `#FFF1E4` at energy 3.2, sky fill
-0.65, AgX white 12, then the LUT. There is no glimmer and no sea-glow, because noon has neither (colour
+0.65, AgX white 12, exposure 0.65 (ADR 0014), then the LUT; water is the colour script's validated `lagoon_clear` look. There is no glimmer and no sea-glow, because noon has neither (colour
 script rule 3 applies only after sunset), so none was added. The shots are at 960×540, with 24 settle
 frames and FXAA (the rig holds the weather clock still under capture).
 
