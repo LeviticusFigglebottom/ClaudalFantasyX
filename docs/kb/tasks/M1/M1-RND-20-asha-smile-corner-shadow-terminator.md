@@ -34,6 +34,21 @@ Report: `docs/kb/qa/gpu/2026-10-23-rnd-20-smile-terminator.md`.
 - **Drift.** All `asha_*` shots (RMSE 0.005–0.012 on the GPU).
 - **Optional for Character.** More subdivision at the corner (1,210 triangles of headroom) if the fold line shows.
 
+### Follow-up S1 (branch `gpu/rnd-18-20-followups`): 4.5 is not the zone value
+- **Measured:** Asha's smile, neutral and q34 shots, rendered on the GPU with the key and rim lights given Haluna's
+  sun cascade settings: PSSM 4 splits, 400 m, splits 0.04/0.12/0.35, blur 1.2, bias 0.03. Biases 1.0, 2.5 and 4.5.
+  - At **1.0** the smile corner is clean, with no stripe, and a faint nose shadow remains.
+  - At **2.5** the nose shadow is fainter; at **4.5** it's gone.
+- **Why:** the normal bias is in shadow texels. Haluna's cascades are about 10–20× coarser at face range than the
+  stage's 8 m key light, so 1.0 there is already a larger world offset than 4.5 on the stage.
+- **Decision:** the Haluna sun stays at 1.0. No edit to Environment's haluna_mood.tscn or to the First Playable
+  levels.
+- **Rule:** character_shading.md "Shadows on characters" now states the world-offset rule and the stage's 4.5.
+- **For the M2 dialogue rig:** a zone sun can't resolve a face's own shadows at dialogue range at all. Close-ups need
+  a dialogue key light with a few metres of shadow range and bias 4.5.
+- This also answers M2-FP-02 review S1, which asked for 2.5–3.0 on the Haluna sun: at that cascade, that only
+  removes the nose shadow.
+
 ## Review log
 - 2026-10-23 character (review-sweep-N, fresh reviewer): **approve; re-approve every asha_* baseline together.** No blockers.
   - **What I read:** this task, `docs/kb/qa/gpu/2026-10-23-rnd-20-smile-terminator.md`, and `git diff 4542426^1 4542426` (asha_stage.tscn:109 and 119, test_character_shading.gd:16). I grepped for other users of the stage: only the asha_* shot scenes and the prewarm registry instance it. Other `shadow_normal_bias` values are unchanged: shading_test 1.0, vegetation_test 1.2, haluna_mood 1.0.

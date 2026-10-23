@@ -637,3 +637,88 @@ Only the four face shots were re-approved. I looked at each one at full size and
 | Lid strip between the lashes and the crease | Reduced. Next: a lash-shadow term on the lid (not tested this round), or lid geometry |
 | Brows a touch thin at full frame | `BROW_SIGMA_*` and `BROW_EDGE_*` in asha_textures |
 | Hair values depart from asha.md §5 | ADR 0024 (proposed). Art amends the sheet or overturns the ADR |
+
+## 11. M1-CHR-11: round 6 (grief teeth, the Duchenne smile, grief brows, the notch, lashes, the lid band, the upper-lip edge)
+
+The task works through the QA-05c GPU faults (3, 4, 5 and 6) and the review-sweep-M and -N findings, in the order the Lead set. Shader and shadow settings were not touched. The mouth interior's darkness in shadow belongs to M1-RND-21. **Every frame below is lavapipe.** The diagnostic renders turned the stage's shadows off, or recoloured one material, and were then reverted.
+
+### 11.1 Root causes
+
+- **The grief "gold-brass teeth" are two things.** A render with the teeth pure green and shadows off showed that the upper teeth are only the upper half of the lit band. The long khaki-gold strip under them is the **inner surface of the lower lip** (`skin_head` texels behind the contact line), painted in the vermilion's outer colour. The QA-05c capture read the whole band as teeth.
+  - The teeth themselves overlapped by 8% (pitch 0.92 of a crown width) into one band. At 8 × 4 segments with a boxy exponent (0.45), each labial face was a few flat panels.
+  - The CHR-10 ivory (#DCC6A6, R:B 1.33) is pushed past brass by the orange key. A neutral grey reads R:B 2.0 under that key.
+- **The notch at the inner corner** (QA-05c fault 6, also in the smile). `lid()` cut the lid turn with a hard 30 mm ball round the globe. The ball reached the nose bridge 5 mm off the midline, where the squint's rotation stopped dead: a Laplacian of 1.23 mm on `lid_squint` at x = ±5.3 mm.
+- **Grief's inner brows barely moved.** At full weight the donor's inner-brow unit lifts the brow head 1.15 mm. Grief's `brow_down` 0.3 took back 0.65 mm of it, leaving +0.41 mm.
+- **The smile's dead eyes.** The cheek raise moved the lower lid 3.3 mm at the smile's weights. Nothing else around the eye moved: no crow's feet, no brow-tail drop, and the eye did not narrow.
+- **The orange lid band.** The CHR-09/10 darkening took less from red than from green and blue (`[0.8, 1, 1.05]`), so the lid was *more* saturated than the cheek. The lid AO also removed the cool sky fill and left the warm key. Rendered, the lid read R:B 4.2 (cheek 2.2).
+- **The comb.** 38 clumps on a jittered grid, 1.5 px at the root.
+- **The upper-lip edge.** The vermilion mask in the atlas is smooth (checked texel by texel). The ragged read comes from a sharp 0.35 mm colour edge, plus a shoulder just past each bow peak (the peak bump, 0.06 over a 0.06 half-width), plus a crisp normal-map ridge along the border.
+
+### 11.2 What changed
+
+- **Teeth** (`asha_mouth`): crowns are 0.86 of their slot (a gap of about 0.5 mm), on the same arch. The incisors and canines (3 per side) are 12 × 6 segments with exponent 0.62. U runs across each tooth (`TOOTH_U_SPAN`). +864 triangles.
+- **Teeth patch** (`asha_textures.teeth_patch`): enamel #D6D9DC, a translucent #B8BFC8 band at the biting edge, #CDC6BA toward the gum, and roughness 0.55. Each tooth's sides are darker (−45%), more occluded and rougher, so the row reads as separate teeth.
+- **Inner lip** (`inner_lip_weight`): texels behind the contact line take a wet-mucosa colour (#7A3834, 80%).
+- **Smile** (`cheek_raise`, FACS AU6): crow's feet (four folds fanning from the outer canthus, 0.65 mm deep, with the skin drawn 1.6 mm toward the eye); a stronger lower-lid push (−0.30 rad, was −0.22) and roll (1.9 mm); the lid–cheek crease; the upper lid dropping 0.05 rad; the brow tail drawn 1.6 mm down.
+  - **Emotion data:** `smile` is `cheek_raise` 0.60 (was 0.45) and `lid_squint` 0.30 (was 0.25). [ADR 0025](../../decisions/0025-asha-smile-weights.md) covers the departure from asha.md §6.3.
+- **Grief:** `brow_inner_up` adds a procedural medial lift (4.8 mm peak over the brow head, drawn 0.8 mm toward the midline) on top of the donor unit. The grief data is unchanged.
+- **Lids:** the turn fades between 19 and 27 mm from the globe's centre (`LID_BALL`). Outside the margin it fades 70% toward the canthi (`LID_CANTHUS_ANCHOR`). The cheek roll uses the same soft ball.
+- **Lashes** (`lash_clumps`): 140 groups of 1–3 hairs at random positions, 1.15 px at the root. Lengths range widely. They fan from −18° (inner) to +32° (outer), ±9° per lash, so they cross. There are 220 root hairs.
+- **Lid band:** the darkening is 0.22, taking the most from red (`UPPER_LID_TINT` 1.2/1.0/0.6). The lash line no longer warms. The lid AO is 0.18.
+- **Upper lip:** `VERM_EDGE` 0.55 mm (was 0.35), `VERM_PEAK_BUMP` 0.035 over a 0.09 half-width, and the border ridge in the normal map at 0.03 mm (was 0.05).
+- **Not changed:** `write_materials.py`. A teeth `ao_light_affect` of 0.2 was tried and reverted, to keep out of the way of M1-RND-21's move to the `character_mouth` family (§11.6).
+- **Tests:**
+  - `test_asha`: lashes are fine, irregular and fanned. The gap coefficient of variation must be over 0.6, with more than 40 hairs at mid-length. This replaces the CHR-10 clump test.
+  - `test_asha_face_drive`, new class `TestRound6Expressions`:
+    - the smile lifts the lower lid at least 4 mm (now 5.2), draws in the crow's-feet skin, and lowers the brow tail;
+    - grief lifts the medial brow at least 2.5 mm (now 3.9), at least 2 mm more than the lateral brow;
+    - no lid shape has a Laplacian step over 0.5 mm on the nose bridge (CHR-10: 1.23).
+
+### 11.3 Numbers
+
+| | CHR-10 | CHR-11 |
+|---|---|---|
+| LOD0 | 62,290 | **63,352** (cap 63,500) |
+| LOD1 | 29,378 | 29,462 |
+| `asha.glb` | 4,487,948 B | **4,601,608 B** |
+| `asha_lod1.glb` | 1,412,604 B | 1,416,332 B |
+| Largest texture | skinmask 3.28 MB | the same; every file under 5 MB |
+| Grief, medial brow lift (mean) | +0.41 mm | **+3.92 mm** (lateral −0.07) |
+| Smile, lower-lid lift (max / mean) | 3.28 / 2.08 mm | **5.16 / 3.14 mm** |
+| Smile, crow's-feet region (max) | 2.31 mm | 3.85 mm |
+| `lid_squint` Laplacian on the nose bridge | 1.23 mm | 0.56 mm, now at the inner canthus |
+| Rendered upper lid, neutral | R:B 4.23 | R:B 3.3 (cheek 2.2) |
+
+### 11.4 The SPEC §14 dialogue-range review, strict
+
+| | CHR-10 | CHR-11 |
+|---|---|---|
+| Nose-bridge notch (smile, grief) | A light tab at the screen-right eye's inner corner | **Gone** in both |
+| Grief brows | Nearly flat | **The inner ends rise in an oblique line**, the true grief brow. They read at 1× |
+| Smile eyes | A smirk with dead eyes | **The lower lid rises and the eye narrows**, with a cheek bulge under it (clear with shadows off). Crow's feet are faint at 960×540. **No longer a smirk**, but the eyes "smile" moderately, not strongly |
+| Lashes | A comb of even dark ticks | **Fine, irregular, crossing hairs** with a darker root. Still a touch sparse and spidery at the outer ends in places |
+| Lid band | Orange, like make-up | **Browner and less saturated**, though still warmer than the cheek. A thin red line at the crease remains (the crease groove under the key, likely subsurface). Reduced, not gone |
+| Grief teeth (lit, shadows off) | One continuous band | **The upper teeth read as separate, off-white teeth with dark gaps.** The inner lower lip is now mucosa-dark, not khaki |
+| Grief teeth (as shot) | Near-black | **Still near-black**: that is M1-RND-21's shading, not judged here |
+| Upper-lip edge | Ragged | **Softer and smoother**; the bow peaks still read slightly lumpy at 5× |
+
+**Verdict: improved on every named fault. Strict SPEC §14 at dialogue range: smile is borderline-pass, neutral passes, and grief cannot pass until M1-RND-21 lights the interior. As built, I would not call the whole set a pass.** The GPU re-capture of grief and smile (after RND-21 merges) is the judge.
+
+### 11.5 Re-approved baselines
+
+The four face shots were re-approved after viewing each at full size and in 3–8× crops. The six field shots pass within their limits and their baselines were kept.
+
+| Shot | RMSE vs CHR-10 | Note |
+|---|---:|---|
+| `asha_face_neutral` | 0.0047 | Within the limit; re-approved anyway (lashes and lid are intentional) |
+| `asha_face_smile` | 0.0096 | Re-approved: the Duchenne eyes, no notch |
+| `asha_face_grief` | 0.0110 | Re-approved: the inner brows, no notch, separate teeth |
+| `asha_face_stylized_compare` | 0.0046 | Re-approved (lashes, lid) |
+| `asha_front` / `q34` / `profile` / `sleeve_s0` / `sleeve_s4` / `extreme_pose` | ≤ 0.0006 | Kept |
+
+### 11.6 Known issues and next step
+
+- **Not merged on this branch:** M1-RND-21 (`origin/gpu/rnd-21-mouth-fill`) and the integration branch. The merge needs a rebuild, a fresh 44-identical gate and a re-approval of the grief baseline. `write_materials.py` is untouched here, so the merge should be clean.
+- Lashes are slightly sparse at the outer ends; the red crease line; the bow peaks are slightly lumpy.
+- Crow's feet are subtle on lavapipe. Judge them on the GPU at 2×.
+- asha.md §6.3 needs Art to adopt the new smile weights (ADR 0025).

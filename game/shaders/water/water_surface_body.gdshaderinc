@@ -264,6 +264,8 @@ uniform float sss_view_height_hi_m : hint_range(0.0, 500.0) = 25.0;
 // the in-scatter (col_deep) grows by this share over the same view-steepness ramp, never as crest
 // patches, and the shallow bands keep their colour. 0 = off.
 uniform float scatter_view_lift : hint_range(0.0, 4.0) = 1.5;
+// sss_strength at which scatter_view_lift was tuned (the default): weaker SSS gets less lift.
+#define SSS_LIFT_TUNED_STRENGTH 1.4
 
 group_uniforms sea_glow;
 // Color script rule 3: this surface's own sea-glow energy (0.04-0.15 at night; 0 = use the zone's
@@ -595,7 +597,10 @@ void fragment() {
 			view_dist * view_steep);
 	float view_keep = 1.0 - smoothstep(sss_view_fade_lo, max(sss_view_fade_hi, sss_view_fade_lo + HYMN_EPSILON), view_steep)
 			* view_high;
-	vec3 deep_lit = col_deep * (1.0 + scatter_view_lift * (1.0 - view_keep));
+	// The lift stands in for the crest SSS a high camera loses, so it scales with that SSS: none on a
+	// material with SSS off (the storm sea, M1-RND-18 S1), full at the sss_strength it was tuned at.
+	float lift_gate = use_sss ? clamp(sss_strength / SSS_LIFT_TUNED_STRENGTH, 0.0, 1.0) : 0.0;
+	vec3 deep_lit = col_deep * (1.0 + scatter_view_lift * lift_gate * (1.0 - view_keep));
 	vec3 col_scatter = mix(col_scatter_shallow, deep_lit, smoothstep(0.0, scatter_depth_m, vdepth));
 	v_foam = foam;
 	v_crest = use_sss ? smoothstep(sss_crest_lo, sss_crest_hi, v_height / max(water_amplitude_sum, HYMN_EPSILON))
