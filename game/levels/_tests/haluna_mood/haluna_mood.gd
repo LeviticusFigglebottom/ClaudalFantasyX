@@ -4,8 +4,9 @@ extends Node3D
 ## - places the sun from the sub-frame's elevation/azimuth (azimuth clockwise from north = -Z);
 ## - writes the hymn_* shader globals (wind, weather clock, sun direction, time of day; glimmer off:
 ##   noon has no glimmer and no sea-glow) and restores the project defaults on exit;
-## - holds the weather clock under the screenshot capture and swaps TAA for FXAA there, so a shot is
-##   identical wherever it sits in shots.json (the water rig's approach, water.md "Gotchas").
+## - advances the weather clock by frame_step_s per rendered frame. The haluna_* shots hold it and
+##   swap TAA for FXAA through their shots.json `setup` (M1-RND-13: `hymn_wind_time` = start_time_s,
+##   viewport use_taa off, FXAA), so a shot is identical wherever it sits in shots.json.
 
 const GLOBAL_WIND := &"hymn_wind"
 const GLOBAL_WIND_TIME := &"hymn_wind_time"
@@ -15,7 +16,6 @@ const GLOBAL_GLIMMER := &"hymn_glimmer"
 const PINNED_GLOBALS: Array[StringName] = [
 	GLOBAL_WIND, GLOBAL_WIND_TIME, GLOBAL_SUN, GLOBAL_TIME_OF_DAY, GLOBAL_GLIMMER
 ]
-const CAPTURE_SCENE := "res://tests/screenshots/capture.tscn"
 
 @export var sun: DirectionalLight3D
 @export var tide: WeatheringTide
@@ -26,7 +26,7 @@ const CAPTURE_SCENE := "res://tests/screenshots/capture.tscn"
 @export var sun_azimuth_deg: float = 165.0
 @export var time_of_day_h: float = 12.5
 @export_group("Weather")
-## Weather clock at frame 0 (s); held here under the capture.
+## Weather clock at frame 0 (s); the screenshot shots pin hymn_wind_time to it.
 @export var start_time_s: float = 40.0
 @export var frame_step_s: float = 1.0 / 60.0
 ## Haluna trade wind: blows from the east-north-east, onshore (vegetation.md reference 6 m/s).
@@ -39,9 +39,6 @@ const CAPTURE_SCENE := "res://tests/screenshots/capture.tscn"
 
 var _clock: float = 0.0
 var _frames: int = 0
-var _hold_clock: bool = false
-var _taa_was_on: bool = false
-var _ssaa_was: Viewport.ScreenSpaceAA = Viewport.SCREEN_SPACE_AA_DISABLED
 
 
 func _enter_tree() -> void:
@@ -50,14 +47,6 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
-	var top := get_tree().current_scene
-	_hold_clock = top != null and top.scene_file_path == CAPTURE_SCENE
-	if _hold_clock:
-		var vp := get_viewport()
-		_taa_was_on = vp.use_taa
-		_ssaa_was = vp.screen_space_aa
-		vp.use_taa = false
-		vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
 	if sun != null:
 		var toward := direction_from_angles(sun_elevation_deg, sun_azimuth_deg)
 		sun.global_basis = Basis.looking_at(-toward, Vector3.UP)
@@ -70,15 +59,11 @@ func _process(_delta: float) -> void:
 	if water != null:
 		water.follow_target = get_viewport().get_camera_3d()
 	_frames += 1
-	if not _hold_clock:
-		_clock = start_time_s + _frames * frame_step_s
+	_clock = start_time_s + _frames * frame_step_s
 	_write_globals()
 
 
 func _exit_tree() -> void:
-	if _hold_clock:
-		get_viewport().use_taa = _taa_was_on
-		get_viewport().screen_space_aa = _ssaa_was
 	for g: StringName in PINNED_GLOBALS:
 		var entry: Variant = ProjectSettings.get_setting("shader_globals/%s" % g)
 		if entry is Dictionary:

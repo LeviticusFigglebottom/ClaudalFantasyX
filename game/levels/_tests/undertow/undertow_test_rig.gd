@@ -2,10 +2,13 @@ class_name UndertowTestRig
 extends Node3D
 ## Drives the Undertow test scene (M1-RND-03) the way a zone or cutscene would, deterministically:
 ## - writes the hymn_* globals (wind, weather clock, sun direction, glimmer) every frame;
-## - picks the mood (dusk, high-angle eye, night) from the current camera and applies it: key light,
-##   environment, storm placement, wound intensity, the sea-glow and the held motes;
-## - holds the storm clock and the weather clock at the mood's time while the screenshot capture
-##   runs (capture.gd gives the first shot one process frame fewer), and swaps TAA for FXAA there.
+## - picks the mood (dusk, high-angle eye, night, day) from the current camera, or holds the one named
+##   by `mood`, and applies it: key light, environment, storm placement, wound intensity, the sea-glow
+##   and the held motes;
+## - the storm plays (storm.playing) unless something holds it. Screenshot shots hold the storm clock
+##   (`Storm.playing = false`: it stays at the mood's time), the weather clock (`hymn_wind_time`), FXAA
+##   instead of TAA and the mood through their shots.json `setup` (M1-RND-13), because capture.gd
+##   gives the first shot of a run one process frame fewer than later shots.
 ## Moods are data (the MOODS table below is the test's "cutscene"); the storm's tunables live in
 ## game/data/vfx/undertow.json.
 
@@ -13,7 +16,6 @@ const GLOBAL_WIND := &"hymn_wind"
 const GLOBAL_WIND_TIME := &"hymn_wind_time"
 const GLOBAL_SUN := &"hymn_sun_direction"
 const GLOBAL_TIME_OF_DAY := &"hymn_time_of_day"
-const CAPTURE_SCENE := "res://tests/screenshots/capture.tscn"
 const MOOD_DUSK := &"dusk"
 const MOOD_EYE := &"eye"
 const MOOD_DAY := &"day"
@@ -37,6 +39,8 @@ const LOW_TIER := "low"
 @export var night_camera: Camera3D
 @export var low_camera: Camera3D
 @export var day_camera: Camera3D
+## Mood to hold (&"dusk", &"eye", &"night", &"day" or &"dusk_low"). Empty: chosen by the current camera.
+@export var mood: StringName = &""
 ## Shown only at night (the lighthouse's oil lamp).
 @export var night_nodes: Array[Node3D] = []
 @export var frame_step_s: float = 1.0 / 60.0
@@ -134,27 +138,15 @@ const LOW_TIER := "low"
 }
 
 var _frames: int = 0
-var _hold: bool = false
 var _mood: StringName = &""
 var _base_quality: String = ""
 var _weather_s: float = 0.0
-var _taa_was_on: bool = false
-var _ssaa_was: Viewport.ScreenSpaceAA = Viewport.SCREEN_SPACE_AA_DISABLED
 ## Authored fog density of each mood environment (a mood may override it, see "fog_density").
 var _authored_fog: Dictionary = {}
 
 
 func _ready() -> void:
-	var top := get_tree().current_scene
-	_hold = top != null and top.scene_file_path == CAPTURE_SCENE
-	if _hold:
-		var vp := get_viewport()
-		_taa_was_on = vp.use_taa
-		_ssaa_was = vp.screen_space_aa
-		vp.use_taa = false
-		vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
 	if storm != null:
-		storm.playing = not _hold
 		_base_quality = storm.get_quality()
 	_weather_s = weather_start_s
 	_aim_camera(horizon_camera, MOOD_DUSK)
@@ -167,8 +159,7 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	_frames += 1
-	if not _hold:
-		_weather_s = weather_start_s + _frames * frame_step_s
+	_weather_s = weather_start_s + _frames * frame_step_s
 	var want := _mood_for(get_viewport().get_camera_3d())
 	if want != _mood:
 		_apply_mood(want)
@@ -180,6 +171,8 @@ func current_mood() -> StringName:
 
 
 func _mood_for(cam: Camera3D) -> StringName:
+	if mood != &"":
+		return mood
 	if cam != null and cam == night_camera:
 		return MOOD_NIGHT
 	if cam != null and cam == eye_camera:
@@ -260,6 +253,3 @@ func _write_globals() -> void:
 
 func _exit_tree() -> void:
 	GlimmerField.set_scene_glimmer(Color("#7FC6D9"), 0.0)
-	if _hold:
-		get_viewport().use_taa = _taa_was_on
-		get_viewport().screen_space_aa = _ssaa_was
