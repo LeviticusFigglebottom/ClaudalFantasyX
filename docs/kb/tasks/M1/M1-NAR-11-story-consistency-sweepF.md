@@ -2,9 +2,9 @@
 id: M1-NAR-11
 title: Story consistency and residual echoes after the Kerrid re-staging (review-sweep-F)
 role: narrative
-status: todo
+status: doing
 reviewer: cinematics
-owner_session: "worktree-agent-a34ff8effe727a250"
+owner_session: "worktree-agent-afdcaea09c59ff37c"
 depends_on: [M1-NAR-09]
 milestone: M1
 request-from: "cinematics"
