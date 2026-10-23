@@ -10,6 +10,14 @@
     {"id": "glimmer_night_held", "scene": "res://game/levels/_tests/glimmer/glimmer_night_held.tscn",
      "camera": "ShotCamera", "settle_frames": 30, "resolution": [960, 540]},
     {"id": "glimmer_release", "scene": "res://game/levels/_tests/glimmer/glimmer_release.tscn", "camera": "ShotCamera",
-     "settle_frames": 45, "resolution": [960, 540]}
+     "settle_frames": 45, "resolution": [960, 540]},
+    {"id": "water_shallows", "scene": "res://game/levels/_tests/water/water_test.tscn", "camera": "Cameras/Shallows",
+     "settle_frames": 16, "resolution": [960, 540]},
+    {"id": "water_lagoon", "scene": "res://game/levels/_tests/water/water_test.tscn", "camera": "Cameras/Lagoon",
+     "settle_frames": 16, "resolution": [960, 540]},
+    {"id": "water_horizon", "scene": "res://game/levels/_tests/water/water_test.tscn", "camera": "Cameras/Horizon",
+     "settle_frames": 16, "resolution": [960, 540]},
+    {"id": "water_night", "scene": "res://game/levels/_tests/water/water_test.tscn", "camera": "Cameras/Night",
+     "settle_frames": 16, "resolution": [960, 540]}
   ]
 }
