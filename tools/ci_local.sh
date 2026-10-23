@@ -45,7 +45,7 @@ $T "$GODOT" --headless --path . --quit-after 60 > $L/hymn_boot.log 2>&1
 if grep -E "SCRIPT ERROR|ERROR" $L/hymn_boot.log; then echo "Boot scene errors"; exit 1; fi
 step "Screenshot capture + regression (software Forward+, ADR 0009)"
 set +e
-$T tools/screenshots/capture.sh
+timeout "${HYMN_CAPTURE_TIMEOUT:-3600}" tools/screenshots/capture.sh
 cap=$?
 set -e
 if [ "$cap" -eq 3 ]; then

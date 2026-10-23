@@ -24,3 +24,4 @@ Claim a path glob before editing `.tscn` or `.tres` files or assets (SPEC §5.3)
 | Systems (field/debug/saves) | `game/world/**`, `game/core/debug/**`, `game/data/world/**`, `game/data/debug/**` | 2026-10-23 | architect-stream-2/4 |
 | Rendering (storm) | `game/shaders/undertow/**`, `game/vfx/undertow/**`, `game/levels/_tests/undertow/**` | 2026-10-23 | rendering-stream-5 |
 | Environment (kits) | `assets_src/environments/kits/**`, `assets/environments/kits/**`, `game/shaders/environment/**`, `game/levels/_tests/haluna_mood/**` | 2026-10-23 | environment-stream-2 |
+| Systems (saves) | `game/world/save_shrine/**`, `game/ui/save/**`, `game/levels/_tests/save_shrine/**` | 2026-10-23 | architect-stream-4 |

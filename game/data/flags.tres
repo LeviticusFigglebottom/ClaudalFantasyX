@@ -22,5 +22,6 @@ flags = {
 "ch03_rhen_sworn_guardian": "On Haluna dock at night Rhen asked to come and Asha said yes: he is her guardian (slice end).",
 "ch02_saved_once": "The player has used Haluna's save shrine at least once (gates the save tutorial prompt).",
 "field_test_lever_pulled": "Field test zone (game/levels/_tests/field): the lever interactable was used. Tests and the debug flag inspector only; never read by story content.",
-"field_test_causeway_reached": "Field test zone (game/levels/_tests/field): the player touched the causeway gate trigger. Tests only; never read by story content."
+"field_test_causeway_reached": "Field test zone (game/levels/_tests/field): the player touched the causeway gate trigger. Tests only; never read by story content.",
+"save_shrine_used": "The player has used any save shrine at least once (set by every SaveShrine, M1-ARC-03). Story shrines may also set their own flag (Haluna's sets ch02_saved_once)."
 }
