@@ -2,7 +2,7 @@
 id: M1-ART-01
 title: Art direction v0: verbal references, color script, Asha design sheet
 role: character
-status: review
+status: done
 owner_session: art-stream-1
 depends_on: [M1-NAR-01]
 milestone: M1
@@ -30,3 +30,4 @@ SPEC §7.1–7.3 foundations, in words and shader mood frames only (no reference
   3. **EV100 isn't actionable** while physical light units are off (project default; CameraAttributesPhysical exposure needs them). I used `tonemap_exposure` 0.65 by day and 1.1 at night. Give exposure as a tonemap multiplier per frame, or decide on physical units (an ADR).
   4. **Night: "the glow is the brightest value" isn't reachable with these energies.** Sea-glow 0.12 × #1C6B78 is ~0.02–0.04 linear even with the full water column, while moon key 0.25 on white coral is ~0.12–0.17. In `water_night` the oil-lamp flame and its glints are the brightest values, then moonlit stone, then the shallow glowing water. It reads correctly as a faint teal sea under a navy sky, but the rule should say "brightest *water* value", or the moon fill on stone should be ≤ ~0.08.
   - Minor: ch02's "deep color" #1FA3A6 is lagoon teal, while references §1.7 puts > 15 m at #0E4A55 and 4–15 m at #1569A0. The shader now takes both (`col_scatter_shallow`, `col_deep`). There's also no swatch for a white coral lagoon floor; I used mortar #E6E1D6 under water. Wet sand #B59D74 reads correctly in the capillary band.
+- 2026-10-23 lead: closing on Rendering's approve-with-fixes; the four practical fixes are tracked in M1-ART-04.

@@ -12,7 +12,7 @@ extends Node
 ## The "meta" block is display data only (timestamp, reason, location key, shrine id). It is not
 ## part of GameStateData and is never needed to restore a game, so it needs no SAVE_VERSION bump.
 
-const SAVE_VERSION := 2
+const SAVE_VERSION := 3
 const SAVE_DIR := "user://saves"
 const AUTOSAVE_SLOT := 0
 ## slot_path() formats two digits.
@@ -38,6 +38,7 @@ var autosave_enabled := true
 var _migrations: Dictionary = {
 	0: _migrate_v0_to_v1,
 	1: _migrate_v1_to_v2,
+	2: _migrate_v2_to_v3,
 }
 
 
@@ -81,7 +82,7 @@ func load_from_slot(slot: int) -> GameStateData:
 		return null
 	var text := FileAccess.get_file_as_string(slot_path(slot))
 	var parsed: Variant = JSON.parse_string(text)
-	if typeof(parsed) != TYPE_DICTIONARY:
+	if typeof(parsed) != TYPE_DICTIONARY or not _state_is_dict(parsed as Dictionary):
 		push_error("SaveSystem: corrupt save in slot %d" % slot)
 		return null
 	var migrated := migrate(parsed as Dictionary)
@@ -141,6 +142,25 @@ static func _migrate_v1_to_v2(d: Dictionary) -> Dictionary:
 	if not st.has("lattice"):
 		st["lattice"] = {"board": "standard", "characters": {}, "opened_gates": []}
 	return {"version": 2, "state": st}
+
+
+## v3 (M1-PRG-02) adds equipment pieces and loadouts. A v2 save predates equipment, so it gets an
+## empty bag; heroes receive their starting gear (EquipmentBag.grant_starting) when they next
+## join. Inventory counts are made whole ints and empty stacks dropped, because JSON numbers load
+## as floats and v2 never normalized them. The literal is frozen on purpose.
+static func _migrate_v2_to_v3(d: Dictionary) -> Dictionary:
+	var st: Dictionary = (d.get("state", {}) as Dictionary).duplicate(true)
+	if not st.has("equipment"):
+		st["equipment"] = {"next_uid": 1, "owned": {}, "loadout": {}}
+	var inv: Dictionary = {}
+	var old: Variant = st.get("inventory", {})
+	if old is Dictionary:
+		for k: Variant in old:
+			var n := int(old[k])
+			if n > 0:
+				inv[str(k)] = n
+	st["inventory"] = inv
+	return {"version": 3, "state": st}
 
 
 # --- M1-ARC-03: autosave, slot listing, load into the live game ---------------------------------
@@ -213,7 +233,7 @@ func _readable_state(d: Dictionary, info: Dictionary) -> Dictionary:
 	if version > SAVE_VERSION:
 		info["status"] = STATUS_NEWER
 		return {}
-	if version < 0 or not _has_migration_path(version):
+	if version < 0 or not _has_migration_path(version) or not _state_is_dict(d):
 		return {}
 	var migrated := migrate(d)
 	if migrated.is_empty() or not state_shape_ok(migrated.get("state")):
@@ -272,7 +292,7 @@ static func state_shape_ok(st: Variant) -> bool:
 	if typeof(st) != TYPE_DICTIONARY:
 		return false
 	var d := st as Dictionary
-	for k: String in ["flags", "inventory", "lattice"]:
+	for k: String in ["flags", "inventory", "lattice", "equipment"]:
 		if d.has(k) and typeof(d[k]) != TYPE_DICTIONARY:
 			return false
 	for k: String in ["party_ids", "reserve_ids"]:
@@ -290,6 +310,12 @@ static func location_name_key(location_id: StringName) -> String:
 	if location_id == &"":
 		return ""
 	return LOCATION_KEY_PREFIX + String(location_id).to_upper().replace("/", "_").replace("-", "_")
+
+
+## Migrations cast "state" to a Dictionary, so anything else must be rejected before them.
+## (A v0 save is flat and has no "state" key.)
+static func _state_is_dict(d: Dictionary) -> bool:
+	return not d.has("state") or typeof(d["state"]) == TYPE_DICTIONARY
 
 
 func _has_migration_path(version: int) -> bool:

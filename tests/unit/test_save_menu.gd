@@ -81,6 +81,9 @@ func test_wrongly_typed_state_counts_as_corrupt() -> void:
 	assert_eq(SaveSystem.load_from_slot(EMPTY_SLOT), null)
 	_write_raw(EMPTY_SLOT, "[1, 2, 3]")
 	assert_eq(SaveSystem.slot_info(EMPTY_SLOT)["status"], SaveSystem.STATUS_CORRUPT)
+	_write_raw(EMPTY_SLOT, JSON.stringify({"version": 1, "state": [1]}))
+	assert_eq(SaveSystem.slot_info(EMPTY_SLOT)["status"], SaveSystem.STATUS_CORRUPT, "state must be an object")
+	assert_eq(SaveSystem.load_from_slot(EMPTY_SLOT), null)
 	_done()
 
 

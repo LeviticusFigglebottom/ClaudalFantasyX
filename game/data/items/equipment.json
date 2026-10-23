@@ -1,0 +1,36 @@
+{
+  "rules": {"max_slots": 4, "equip_slots": ["weapon", "armor"], "required_slots": ["weapon"]},
+  "gear_types": [
+    {"id": "reef_hooks", "slot": "weapon", "character": "rhen", "name_key": "GEAR_TYPE_REEF_HOOKS"},
+    {"id": "tether_harness", "slot": "armor", "character": "rhen", "name_key": "GEAR_TYPE_TETHER_HARNESS"},
+    {"id": "lantern_staff", "slot": "weapon", "character": "asha", "name_key": "GEAR_TYPE_LANTERN_STAFF"},
+    {"id": "bell_bangle", "slot": "armor", "character": "asha", "name_key": "GEAR_TYPE_BELL_BANGLE"},
+    {"id": "boarding_spear", "slot": "weapon", "character": "toma", "name_key": "GEAR_TYPE_BOARDING_SPEAR"},
+    {"id": "tide_shield", "slot": "armor", "character": "toma", "name_key": "GEAR_TYPE_TIDE_SHIELD"},
+    {"id": "lacquer_book", "slot": "weapon", "character": "ysolde", "name_key": "GEAR_TYPE_LACQUER_BOOK"},
+    {"id": "ink_guards", "slot": "armor", "character": "ysolde", "name_key": "GEAR_TYPE_INK_GUARDS"}
+  ],
+  "equipment": [
+    {"id": "rhen_salvage_hooks", "type": "reef_hooks", "name_key": "EQUIP_RHEN_SALVAGE_HOOKS", "desc_key": "EQUIP_RHEN_SALVAGE_HOOKS_DESC", "price": 100, "slots": 1, "abilities": []},
+    {"id": "rhen_coral_hooks", "type": "reef_hooks", "name_key": "EQUIP_RHEN_CORAL_HOOKS", "desc_key": "EQUIP_RHEN_CORAL_HOOKS_DESC", "price": 380, "slots": 2, "abilities": ["ember_edge"], "stats": {"strength": 1}},
+    {"id": "rhen_tidewalker_hooks", "type": "reef_hooks", "name_key": "EQUIP_RHEN_TIDEWALKER_HOOKS", "desc_key": "EQUIP_RHEN_TIDEWALKER_HOOKS_DESC", "price": 620, "slots": 3, "abilities": [], "stats": {"strength": 2, "accuracy": 2}},
+    {"id": "rhen_patched_tether", "type": "tether_harness", "name_key": "EQUIP_RHEN_PATCHED_TETHER", "desc_key": "EQUIP_RHEN_PATCHED_TETHER_DESC", "price": 90, "slots": 1, "abilities": [], "stats": {"hp": 20}},
+    {"id": "rhen_reefline_harness", "type": "tether_harness", "name_key": "EQUIP_RHEN_REEFLINE_HARNESS", "desc_key": "EQUIP_RHEN_REEFLINE_HARNESS_DESC", "price": 340, "slots": 2, "abilities": ["bitter_ward"], "stats": {"hp": 40}},
+    {"id": "asha_vigil_staff", "type": "lantern_staff", "name_key": "EQUIP_ASHA_VIGIL_STAFF", "desc_key": "EQUIP_ASHA_VIGIL_STAFF_DESC", "price": 100, "slots": 1, "abilities": []},
+    {"id": "asha_bellshell_staff", "type": "lantern_staff", "name_key": "EQUIP_ASHA_BELLSHELL_STAFF", "desc_key": "EQUIP_ASHA_BELLSHELL_STAFF_DESC", "price": 380, "slots": 2, "abilities": ["clear_mind"], "stats": {"magic": 1}},
+    {"id": "asha_dawnwick_staff", "type": "lantern_staff", "name_key": "EQUIP_ASHA_DAWNWICK_STAFF", "desc_key": "EQUIP_ASHA_DAWNWICK_STAFF_DESC", "price": 620, "slots": 3, "abilities": [], "stats": {"magic": 2}},
+    {"id": "asha_cord_bangle", "type": "bell_bangle", "name_key": "EQUIP_ASHA_CORD_BANGLE", "desc_key": "EQUIP_ASHA_CORD_BANGLE_DESC", "price": 90, "slots": 1, "abilities": [], "stats": {"magic_defense": 1}},
+    {"id": "asha_pearl_bangle", "type": "bell_bangle", "name_key": "EQUIP_ASHA_PEARL_BANGLE", "desc_key": "EQUIP_ASHA_PEARL_BANGLE_DESC", "price": 340, "slots": 2, "abilities": ["wake_ward"], "stats": {"magic_defense": 2}},
+    {"id": "toma_boarding_spear", "type": "boarding_spear", "name_key": "EQUIP_TOMA_BOARDING_SPEAR", "desc_key": "EQUIP_TOMA_BOARDING_SPEAR_DESC", "price": 100, "slots": 1, "abilities": []},
+    {"id": "toma_net_rack_spear", "type": "boarding_spear", "name_key": "EQUIP_TOMA_NET_RACK_SPEAR", "desc_key": "EQUIP_TOMA_NET_RACK_SPEAR_DESC", "price": 380, "slots": 2, "abilities": ["steady_arm"], "stats": {"strength": 1}},
+    {"id": "toma_saltgrass_pike", "type": "boarding_spear", "name_key": "EQUIP_TOMA_SALTGRASS_PIKE", "desc_key": "EQUIP_TOMA_SALTGRASS_PIKE_DESC", "price": 620, "slots": 3, "abilities": [], "stats": {"strength": 2}},
+    {"id": "toma_old_turtle_shield", "type": "tide_shield", "name_key": "EQUIP_TOMA_OLD_TURTLE_SHIELD", "desc_key": "EQUIP_TOMA_OLD_TURTLE_SHIELD_DESC", "price": 90, "slots": 1, "abilities": [], "stats": {"defense": 2}},
+    {"id": "toma_chiselled_shield", "type": "tide_shield", "name_key": "EQUIP_TOMA_CHISELLED_SHIELD", "desc_key": "EQUIP_TOMA_CHISELLED_SHIELD_DESC", "price": 340, "slots": 2, "abilities": ["ember_guard"], "stats": {"defense": 3}},
+    {"id": "toma_reach_tide_shield", "type": "tide_shield", "name_key": "EQUIP_TOMA_REACH_TIDE_SHIELD", "desc_key": "EQUIP_TOMA_REACH_TIDE_SHIELD_DESC", "price": 1200, "slots": 4, "abilities": [], "stats": {"defense": 4}},
+    {"id": "ysolde_pleated_primer", "type": "lacquer_book", "name_key": "EQUIP_YSOLDE_PLEATED_PRIMER", "desc_key": "EQUIP_YSOLDE_PLEATED_PRIMER_DESC", "price": 100, "slots": 1, "abilities": []},
+    {"id": "ysolde_gold_script_book", "type": "lacquer_book", "name_key": "EQUIP_YSOLDE_GOLD_SCRIPT_BOOK", "desc_key": "EQUIP_YSOLDE_GOLD_SCRIPT_BOOK_DESC", "price": 380, "slots": 2, "abilities": ["clear_mind"], "stats": {"magic": 1}},
+    {"id": "ysolde_plain_guards", "type": "ink_guards", "name_key": "EQUIP_YSOLDE_PLAIN_GUARDS", "desc_key": "EQUIP_YSOLDE_PLAIN_GUARDS_DESC", "price": 90, "slots": 1, "abilities": [], "stats": {"magic_defense": 1}},
+    {"id": "ysolde_lacquered_guards", "type": "ink_guards", "name_key": "EQUIP_YSOLDE_LACQUERED_GUARDS", "desc_key": "EQUIP_YSOLDE_LACQUERED_GUARDS_DESC", "price": 340, "slots": 2, "abilities": ["rime_guard"], "stats": {"magic_defense": 2}}
+  ],
+  "starting": {"rhen": {"weapon": "rhen_salvage_hooks", "armor": "rhen_patched_tether"}, "asha": {"weapon": "asha_vigil_staff", "armor": "asha_cord_bangle"}, "toma": {"weapon": "toma_boarding_spear", "armor": "toma_old_turtle_shield"}, "ysolde": {"weapon": "ysolde_pleated_primer", "armor": "ysolde_plain_guards"}}
+}

@@ -162,7 +162,7 @@ The look follows color script rule 2 (bound light). A salt-glass core and a cond
 
 ### Open items (other owners)
 
-- **Persisted state still needed (not added: Progression owns SAVE_VERSION 3):**
+- **Persisted state still needed** (not added here: each needs a new `GameStateData` field and SAVE_VERSION 4):
   - party HP/MP/statuses, for a real heal and for persistence between battles;
   - the attuned shrine network ids, for the teleport network;
   - a respawn point (`scene` + `spawn`), so a load can put the player back at the shrine. `meta.shrine_id` is recorded already, but it is display-only.

@@ -2,7 +2,7 @@
 id: M1-NAR-03
 title: dlgc.py compiler and runtime DialogueRunner
 role: architect
-status: review
+status: done
 owner_session: architect-stream-1
 reviewer: narrative
 depends_on: []
@@ -34,3 +34,4 @@ ADR 0004 implementation.
   - *Against the cue contract:* the camera ids (`haluna_shallows_dawn`, `spear_insert`, `lantern_insert`) were invented. They are now haluna.md shot ids (H05, H06, H01). The scene left the letterbox on, so it now ends `@letterbox off`. Narration is tagged `#vo`.
   - *Ergonomics for writers:* good. It reads like a screenplay, the indentation rules are learnable in one sitting, and errors are `file:line:` and specific. Writing 110 lines across two scenes, I hit no compiler surprises. The real friction is listed as requests to Systems in M1-NAR-02's notes. The biggest are hand-numbered `#line:` ids, no display-name override for a speaker the player hasn't met, no emotion or identity on narration, and no `#sung`/do-not-translate convention.
   - The scene is now the full Cutscene A (M1-NAR-02). Its two pinned-sequence tests in `tests/unit/test_dialogue_scenes.gd` were relaxed to the opening, the menu, and the flags. Every branch is covered in `tests/unit/test_dialogue_vs_scenes.gd`.
+- 2026-10-23 lead: closing on Narrative's approval; the format requests landed as M1-NAR-04.
