@@ -2,7 +2,7 @@
 id: M1-UI-03
 title: Spread battle HUD construction over frames (swap-frame budget)
 role: ui
-status: review
+status: done
 owner_session: worktree-agent-a442bf3baa0b90315
 reviewer: lead
 depends_on: [M1-UI-02]
@@ -32,3 +32,4 @@ Delivered (worktree-agent-a442bf3baa0b90315; how it works: `docs/kb/tech/ui.md` 
 - Tests: `test_staged_build_spreads_over_frames_and_ends_like_the_one_shot_build` and `test_prebuilt_chips_are_reused_not_duplicated` in `tests/unit/test_battle_controller.gd`.
 
 ## Review log
+- 2026-10-23 lead: approve. The staged five-frame build drops the worst swap frame from 44-95 ms to 10-33 ms at higher load, and the swap test passes outright. The one-shot path is kept for tests and captures, so the baselines are bit-identical.
