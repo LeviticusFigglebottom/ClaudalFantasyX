@@ -3,7 +3,7 @@
   "tolerance_pp": 0.5,
   "directories": {
     "game/battle": 99.45,
-    "game/progression": 93.06
+    "game/progression": 95.42
   },
   "files": {
     "game/battle/action_result.gd": 100.0,
@@ -20,12 +20,22 @@
     "game/battle/sim/sim_policy_role_answer.gd": 100.0,
     "game/battle/sim/sim_policy_smart.gd": 97.44,
     "game/battle/turn_entry.gd": 100.0,
+    "game/progression/customize.gd": 97.96,
+    "game/progression/equipment_bag.gd": 99.07,
+    "game/progression/equipment_effects.gd": 95.33,
     "game/progression/facet_inventory.gd": 84.62,
+    "game/progression/flag_reader.gd": 80.0,
+    "game/progression/inventory.gd": 97.96,
+    "game/progression/item_battle_action.gd": 98.21,
+    "game/progression/item_db.gd": 96.74,
     "game/progression/lattice_board.gd": 91.89,
     "game/progression/lattice_node.gd": 100.0,
-    "game/progression/lattice_progress.gd": 94.06,
+    "game/progression/lattice_progress.gd": 94.55,
     "game/progression/lattice_rules.gd": 84.85,
     "game/progression/lattice_traveler.gd": 100.0,
-    "game/progression/progression_formulas.gd": 100.0
+    "game/progression/party_goods.gd": 100.0,
+    "game/progression/progression_formulas.gd": 100.0,
+    "game/progression/shop.gd": 94.03,
+    "game/progression/wallet.gd": 100.0
   }
 }
