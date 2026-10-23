@@ -1,4 +1,4 @@
-"""M1-NAR-07: realistic narration must compile with no near-miss error and no warning.
+"""M1-NAR-07: realistic narration must compile with no near-miss error (and, for prose, no warning).
 
 Rhen narrates the whole game, so colon-led prose is common. Every line here is plain narration as a
 writer would type it (no `\\:`, no `#narration`). A heuristic change that rejects or warns on any of
@@ -55,6 +55,43 @@ CORPUS = [
     "The harbour at 4:10, grey and empty: I will never forget it.",
     "I asked her why. She shrugged: because.",
     "Every child in Corrow learns the count: one bell, two bells, the long silence.",
+    # review-sweep-D narration probes (M1-NAR-07 Review log).
+    "I knew it then: she was never coming back.",
+    "I had one job that winter: keep the lamp lit.",
+    "I counted them twice: eleven, then ten.",
+    "My hands remembered before I did: knot, pull, tie off.",
+    "Chapter 2: The Raft",
+    "Corrow Harbour, Dawn",
+    "Asha and Toma: the only two who stayed.",
+    "Asha and I: that was all that was left of us.",
+    "Not Asha: me.",
+    "Only Kerrid: he alone understood.",
+    "Ansedra, the Drowned City: we reached it on the ninth day.",
+    "Low tide, the eastern reef: nothing moved.",
+    "What I said next: I don't remember.",
+    "I said the only thing I could: sorry.",
+    "Toma's rule was simple: never trust still water.",
+    "Kerrid's ship: the Patience, black-hulled, unlit.",
+    "North of Corrow: only the reef, and past it nothing.",
+    "The Long Dark, Year 412: the lamps went out.",
+    "\"Run,\" she said: and I ran.",
+    "Even now: I hear it.",
+    "Sefir and Pell: brothers in everything but blood.",
+    "I Remember Corrow: that was the song.",
+]
+
+# Captions and headings: name-shaped, but no speaker in them. They compile as narration with one WARN
+# that gives the `\:` / `#narration` escape (review-sweep-D, Lead decision). Never an error.
+# (`Asha Vell: ...` from the same probe set names a speaker, so it is an error: see test_dlgc.py.)
+CAPTIONS = [
+    "Chapter Two: The Raft",
+    "Part One: Ashfall",
+    "Day Three: the reef.",
+    "The Hollow: three days later.",
+    "Corrow Harbour: dawn.",
+    "Eleven Bells: that is what they called the hour.",
+    "Interlude: Ysolde",
+    "The Order of Lamps: what they wanted was simple.",
 ]
 
 
@@ -66,6 +103,8 @@ class NarrationCorpusTests(unittest.TestCase):
         (self.tmp / "game" / "data" / "loc").mkdir(parents=True)
         for name in ("speakers.json", "emotions.json", "cues.json", "events.json"):
             shutil.copy(ROOT / "game" / "data" / "dialogue" / name, d / name)
+        # The real display names, so the near-miss checks see what they see in the repo.
+        shutil.copy(ROOT / "game" / "data" / "loc" / "strings.csv", self.tmp / "game" / "data" / "loc" / "strings.csv")
 
     def tearDown(self) -> None:
         shutil.rmtree(self.tmp)
@@ -90,6 +129,19 @@ class NarrationCorpusTests(unittest.TestCase):
                 self.assertEqual((ops[0]["op"], ops[0]["speaker"]), ("line", ""))
                 self.assertNotIn("tags", ops[0])
                 self.assertEqual(res.loc_rows, [("DLG_T_CORPUS_001", text)])
+
+    def test_captions_warn_but_compile_as_narration(self) -> None:
+        self.assertTrue(set(CAPTIONS).isdisjoint(CORPUS))
+        for text in CAPTIONS:
+            with self.subTest(text=text):
+                res = self.compile_one(text)
+                self.assertEqual(res.errors, [])
+                self.assertEqual(len(res.warnings), 1, res.warnings)
+                self.assertIn("looks like a speaker", res.warnings[0])
+                self.assertIn("write '\\:' for a colon in narration", res.warnings[0])
+                self.assertEqual(res.loc_rows, [("DLG_T_CORPUS_001", text)])
+                ops = json.loads(res.outputs["game/data/dialogue/compiled/t_corpus.json"])["nodes"]["t_corpus"]["ops"]
+                self.assertEqual(ops[0]["speaker"], "")
 
 
 if __name__ == "__main__":
