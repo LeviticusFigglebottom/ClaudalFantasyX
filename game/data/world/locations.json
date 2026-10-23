@@ -12,11 +12,9 @@
     },
     {
       "id": "ch02/haluna",
-      "scene": "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+      "scene": "res://game/levels/ch02/haluna/haluna.tscn",
       "spawn": "Shrine",
-      "name_key": "LOCATION_CH02_HALUNA",
-      "playable": false,
-      "_note": "Stand-in: the Haluna mood-test zone has no player, so Continue and teleports go to default_location (warned, location kept) until the playable zone game/levels/ch02/haluna/ exists (M1-ENV-06)."
+      "name_key": "LOCATION_CH02_HALUNA"
     }
   ],
   "shrines": [
