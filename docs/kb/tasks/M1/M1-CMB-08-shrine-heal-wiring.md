@@ -31,3 +31,12 @@ See the review-sweep-F entries in the source tasks' Review logs for file:line.
   - **Not done:** live battles still build no `EquipmentEffects` (that was true before this task). When they do, put `fx.modifier()` between the Lattice and the vitals in `BattleVitals.setup`.
 
 ## Review log
+
+- 2026-10-23 architect (review-sweep-G): **approve-with-fixes**.
+  - **Engine core stays headless and deterministic.** battle_engine.gd is untouched. `BattleVitals` lives in `game/battle/scene/` (glue) and is the only new code that touches `Game` and `EventBus`; the engine only receives a `party_modifier`. The re-lineup calls `engine.setup` again, which reseeds `rng` (battle_engine.gd:64) and rebuilds every combatant from the composed modifiers. Nothing is rolled before `begin()`, so the second build is the same as a first build with that lineup. Retry after a victory starts from the written-back vitals, and after a defeat it replays the same start (both tested). Fixtures and tests (`persist_progress` off) never read vitals, so no baseline moves.
+  - **The KO-at-start rule** (battle_ctb.md "Carried vitals") is clear, matches `line_up` (battle_vitals.gd:68-95) and serves pillar 4: a fight never opens already lost. I checked the edge cases: stone counts as fallen, each reserve member is used once, the raise applies to the active members only, and a fallen member with no living reserve keeps its slot.
+  - Docs: the economy.md Ember Pot row (220, Pemakar) and the formulas.md § Time wording are correct, and it is wording only, so leaving formulas.gd and the tests unchanged is right. test_sandbox_battle reads `mean_turns_min` from targets.json and checks its keys against the bands.
+  - Tests: battle_vitals 14, formulas 21, equipment 44, shrine 18, all 0 failed (private XDG_DATA_HOME). I did not run the 200-seed sandbox sim; the Lead's gate covers it.
+  - **S1: none of the five AC checkboxes in this file is ticked**, though the notes say all are done. Tick them, or say which is not done.
+  - S2: `STATUS_STONE := &"petrify"` (battle_vitals.gd:22) is a third copy of the status id (combatant.gd:107/111 and ctb_timeline.gd also hard-code it). Add one `BattleCombatant.STATUS_PETRIFY` and use it here, at least.
+  - S3 (follow-up, as the handoff says): when live battles build `EquipmentEffects`, the order is Lattice → equipment → vitals. Add a comment at battle_vitals.gd:36-40 so the next person doesn't append it after the vitals clamp.
