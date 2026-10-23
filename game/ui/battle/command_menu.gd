@@ -56,6 +56,19 @@ func pop() -> bool:
 	return true
 
 
+## Redraws the top page with `rows` in place (same size and position, the cursor kept), without
+## a highlight signal: the caller has just acted on the row (M2-UI-01's fill-mode choice).
+func refresh_top(rows: Array[Dictionary]) -> void:
+	if not _pages.is_empty():
+		_pages[-1].replace_rows(rows)
+
+
+## Redraws the root page with `rows` in place (under a pushed page it stays dimmed).
+func refresh_root(rows: Array[Dictionary]) -> void:
+	if not _pages.is_empty():
+		_pages[0].replace_rows(rows)
+
+
 func depth() -> int:
 	return _pages.size()
 

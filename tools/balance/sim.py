@@ -15,7 +15,10 @@ Suites whose encounter is not authored yet are listed as pending, not failed.
 
 Usage: python3 tools/balance/sim.py [--seeds N] [--suite ID ...] [--godot PATH]
                                     [--report PATH] [--out-dir PATH] [--check]
+                                    [--swell off|miss|good|perfect]
 --check exits 1 if any band is missed (for local gating; CI does not run it yet).
+--swell (M2-CMB-01) overrides every suite's `swell` (targets.json): the quality each hero's Swell
+input is played at when a policy unleashes a full gauge; "off" leaves Swell out.
 """
 from __future__ import annotations
 
@@ -38,9 +41,12 @@ SIM_SCRIPT = "res://tools/balance/sim_main.gd"
 PREFIX = "SIM_RESULT "
 LOG_MARKER = "<!-- tuning-log -->"
 DEFAULT_SEEDS = 1000
-RUN_FIELDS = ["suite", "encounter", "policy", "seed", "outcome", "turns", "party_turns", "party_ko", "items", "lume"]
-SUMMARY_FIELDS = ["suite", "chapter", "encounter", "loadout", "policy", "n", "wins", "win_pct", "band", "in_band",
-                  "timeouts", "mean_turns", "p90_turns", "mean_party_ko", "mean_items", "mean_lume"]
+RUN_FIELDS = ["suite", "encounter", "policy", "seed", "outcome", "turns", "party_turns", "party_ko", "items", "lume",
+              "swells"]
+SUMMARY_FIELDS = ["suite", "chapter", "encounter", "loadout", "swell", "policy", "n", "wins", "win_pct", "band",
+                  "in_band", "timeouts", "mean_turns", "p90_turns", "mean_party_ko", "mean_items", "mean_lume",
+                  "mean_swells"]
+SWELL_QUALITIES = ("off", "miss", "good", "perfect")
 
 
 def load_targets(path: Path = TARGETS) -> list[dict]:
@@ -51,7 +57,12 @@ def authored_encounters(path: Path = ENCOUNTERS) -> set[str]:
     return {e["id"] for e in json.loads(path.read_text())["encounters"]}
 
 
-def run_suite(godot: str, suite: dict, seeds: int) -> list[dict]:
+def suite_swell(suite: dict, override: str | None = None) -> str:
+    """The Swell input quality a suite is run at: the --swell override, else its "swell", else off."""
+    return override or suite.get("swell", "off")
+
+
+def run_suite(godot: str, suite: dict, seeds: int, swell: str | None = None) -> list[dict]:
     """Runs one suite in Godot and returns its aggregates (each with a "runs" list)."""
     policies = ",".join(suite["bands"].keys())
     with tempfile.TemporaryDirectory() as tmp:
@@ -62,6 +73,7 @@ def run_suite(godot: str, suite: dict, seeds: int) -> list[dict]:
                f"--seeds={seeds}", f"--out={out}"]
         if suite.get("loadout"):
             cmd.append(f"--loadout={suite['loadout']}")
+        cmd.append(f"--swell={suite_swell(suite, swell)}")
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=3600)
         if proc.returncode != 0 or not out.exists():
             sys.stderr.write(proc.stdout + proc.stderr)
@@ -91,14 +103,14 @@ def not_too_easy(mean_turns: float, floor: float | None) -> bool:
     return floor is None or mean_turns >= floor
 
 
-def summary_rows(suite: dict, results: list[dict]) -> list[dict]:
+def summary_rows(suite: dict, results: list[dict], swell: str | None = None) -> list[dict]:
     rows = []
     for r in results:
         band = suite["bands"][r["policy"]]
         floor = turns_floor(suite, r["policy"])
         rows.append({
             "suite": suite["id"], "chapter": suite["chapter"], "encounter": suite["encounter"],
-            "loadout": suite.get("loadout", "bare"),
+            "loadout": suite.get("loadout", "bare"), "swell": suite_swell(suite, swell),
             "policy": r["policy"], "n": r["n"], "wins": r["wins"], "win_pct": round(r["win_pct"], 1),
             "band": band_text(band, floor),
             "in_band": (in_band(r["win_pct"], band) and r["timeouts"] == 0 and not_too_easy(r["mean_turns"], floor)
@@ -106,6 +118,7 @@ def summary_rows(suite: dict, results: list[dict]) -> list[dict]:
             "timeouts": r["timeouts"], "mean_turns": round(r["mean_turns"], 1), "p90_turns": r["p90_turns"],
             "mean_party_ko": round(r["mean_party_ko"], 2), "mean_items": round(r["mean_items"], 2),
             "mean_lume": round(r.get("mean_lume", 0.0), 1),
+            "mean_swells": round(r.get("mean_swells", 0.0), 2),
         })
     return rows
 
@@ -122,19 +135,23 @@ def markdown(rows: list[dict], pending: list[dict], seeds: int, today: str) -> s
         "turns lost to Stop/Sleep excluded). `party KO` is the mean number of party members "
         "down (KO or stone) at the end. `items` is the mean number of consumables used (only `smart` uses them), "
         "and `lume` the mean battle lume. `loadout` is the gear and consumables the party carries "
-        "(`game/data/battle/sim_policies.json`, see balance_targets.md).",
+        "(`game/data/battle/sim_policies.json`, see balance_targets.md). `swell` is the quality every Swell "
+        "input is played at when a policy unleashes a full gauge (`off`: no Swell), and `swells` the mean "
+        "number of techniques unleashed.",
         "",
-        "| Chapter | Encounter | Loadout | Policy | Win % | Band | OK | Mean turns | p90 turns | Party KO | Items | Lume |",
-        "|---|---|---|---|---|---|---|---|---|---|---|---|",
+        "| Chapter | Encounter | Loadout | Swell | Policy | Win % | Band | OK | Mean turns | p90 turns | Party KO | Items "
+        "| Lume | Swells |",
+        "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|",
     ]
     for r in rows:
         ok = "yes" if r["in_band"] else "**NO**"
-        lines.append(f"| {r['chapter']} | `{r['encounter']}` | {r['loadout']} | {r['policy']} | {r['win_pct']:.1f} | "
-                     f"{r['band']} | {ok} | {r['mean_turns']:.1f} | {r['p90_turns']} | {r['mean_party_ko']:.2f} | "
-                     f"{r['mean_items']:.2f} | {r['mean_lume']:.1f} |")
+        lines.append(f"| {r['chapter']} | `{r['encounter']}` | {r['loadout']} | {r.get('swell', 'off')} | {r['policy']} | "
+                     f"{r['win_pct']:.1f} | {r['band']} | {ok} | {r['mean_turns']:.1f} | {r['p90_turns']} | "
+                     f"{r['mean_party_ko']:.2f} | {r['mean_items']:.2f} | {r['mean_lume']:.1f} | "
+                     f"{r.get('mean_swells', 0.0):.2f} |")
     for s in pending:
-        lines.append(f"| {s['chapter']} | `{s['encounter']}` | {s.get('loadout', 'bare')} | (all) | pending | "
-                     "see targets | n/a | | | | | |")
+        lines.append(f"| {s['chapter']} | `{s['encounter']}` | {s.get('loadout', 'bare')} | {s.get('swell', 'off')} | "
+                     "(all) | pending | see targets | n/a | | | | | | |")
     if pending:
         lines += ["", "Pending suites have target bands but no encounter data yet: "
                   + ", ".join(f"`{s['encounter']}`" for s in pending) + "."]
@@ -168,6 +185,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--report", type=Path, default=REPORT)
     ap.add_argument("--out-dir", type=Path, default=OUT_DIR)
     ap.add_argument("--check", action="store_true", help="exit 1 if a band is missed")
+    ap.add_argument("--swell", choices=SWELL_QUALITIES, help="Swell input quality for every suite (default: each suite's)")
     args = ap.parse_args(argv)
 
     suites = [s for s in load_targets() if not args.suite or s["id"] in args.suite]
@@ -180,11 +198,11 @@ def main(argv: list[str] | None = None) -> int:
             pending.append(suite)
             print(f"{suite['id']}: encounter '{suite['encounter']}' not authored yet (pending)")
             continue
-        results = run_suite(args.godot, suite, args.seeds)
+        results = run_suite(args.godot, suite, args.seeds, args.swell)
         for r in results:
             for run in r["runs"]:
                 runs.append({"suite": suite["id"], "encounter": suite["encounter"], "policy": r["policy"], **run})
-        for row in summary_rows(suite, results):
+        for row in summary_rows(suite, results, args.swell):
             rows.append(row)
             flag = "ok" if row["in_band"] else "OUT OF BAND"
             print(f"{suite['id']:>14} {row['policy']:>12}: {row['win_pct']:5.1f}% (band {row['band']}) {flag}")

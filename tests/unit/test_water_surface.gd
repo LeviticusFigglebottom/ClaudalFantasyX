@@ -22,6 +22,10 @@ const EXPECTED_UNIFORMS: Array[String] = [
 	"foam_shore_width_m",
 	"use_ssr",
 ]
+## M1-RND-18: the high-camera SSS fade and the even deep lift, on every ocean and river tier.
+const VIEW_FADE_UNIFORMS: Array[String] = [
+	"sss_view_fade_lo", "sss_view_fade_hi", "sss_view_height_lo_m", "sss_view_height_hi_m", "scatter_view_lift"
+]
 const TIME_S := 12.0
 
 
@@ -83,7 +87,7 @@ func test_every_water_shader_variant_compiles() -> void:
 		var names: Array = sh.get_shader_uniform_list().map(func(u: Dictionary) -> String: return str(u["name"]))
 		assert_true(names.size() > 0, "%s compiled to no uniforms (shader error?)" % path)
 		if path.get_file().begins_with("water_ocean") or path.get_file().begins_with("water_river"):
-			for u in EXPECTED_UNIFORMS:
+			for u in EXPECTED_UNIFORMS + VIEW_FADE_UNIFORMS:
 				assert_true(names.has(u), "%s lacks uniform %s" % [path, u])
 		if path.get_file().begins_with("water_river"):
 			assert_true(names.has("tex_flow"), "river variant samples a flowmap")

@@ -104,6 +104,7 @@ The project will move to another account with new environments on the same repo.
 
 ## 8a. Shared machine etiquette (parallel agents)
 - **Never kill processes by pattern** (`pkill -f capture.tscn`, `killall godot` and the like). Other agents run the same commands in their own worktrees. Kill only PIDs you started, for example by remembering `$!` or by checking `/proc/<pid>/cwd` is your worktree.
+- **Scratch files:** put them in a subfolder named after your worktree or task, such as `$SCRATCH/<task-id>/`, and always set a unique `HYMN_LOG_DIR` for `ci_local.sh` runs. Parallel agents share the scratchpad, and shared paths have mixed up gate logs.
 - Use `HYMN_SHOTS` for screenshot gates in a worktree (see §3). Godot's `user://` is isolated per `ci_local.sh` run (`XDG_DATA_HOME`); if you run Godot outside it, set your own `XDG_DATA_HOME`.
 
 ## 9. Asking the human

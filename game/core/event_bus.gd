@@ -41,6 +41,11 @@ signal autosave_finished(reason: StringName, error: int)
 ## architecture.md "Saves"); the engine core stays untouched.
 @warning_ignore("unused_signal")
 signal battle_party_returned(encounter_id: StringName, outcome: StringName, party: Array)
+## M2-ARC-01. Emitted with battle_party_returned (victory or escape only) with the party's Swell
+## record (BattleSwell.to_saved: unlocked modes and unlock counts). Game writes it into
+## Game.state.swell. Gauges and modes travel on the combatants in battle_party_returned.
+@warning_ignore("unused_signal")
+signal battle_swell_returned(record: Dictionary)
 ## M1-ARC-08. Game.new_game() replaced the live state with a fresh one. SaveSystem drops any
 ## autosave still waiting for a safe point (it was asked for the previous run).
 @warning_ignore("unused_signal")

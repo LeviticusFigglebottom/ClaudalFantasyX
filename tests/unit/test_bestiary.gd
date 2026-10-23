@@ -170,26 +170,30 @@ func test_a_test_controller_keeps_the_normal_opening_and_the_save_clean() -> voi
 	_done()
 
 
-func test_the_opening_caption_floats_once_over_the_first_to_act() -> void:
+func test_the_opening_banner_shows_once_for_a_special_opening() -> void:  # M2-UI-02 (was a float)
 	_controller(true)
 	var bb := ctl.bestiary
 	var e := ctl.engine
-	var key := str(BattleOpening.CAPTION_KEYS.get(e.opening, ""))
-	assert_eq(_floated(TranslationServer.translate(key)), 1 if key != "" else 0, "live opening %s" % e.opening)
-	# Force each special opening's caption on the started stage.
+	var special := BattleOpening.CAPTION_KEYS.has(e.opening)
+	assert_eq(ctl.hud.opening_banner().is_showing(), special, "live opening %s" % e.opening)
+	# Force each special opening on the started stage.
 	for opening: StringName in [BattleOpening.PREEMPTIVE, BattleOpening.AMBUSH]:
-		var text := TranslationServer.translate(str(BattleOpening.CAPTION_KEYS[opening]))
-		var before := _floated(text)
+		var caption := TranslationServer.translate(str(BattleOpening.CAPTION_KEYS[opening]))
+		ctl.hud.opening_banner().hide_banner()
+		var floats := _floated(caption)
 		e.opening = opening
 		bb._opening_shown = false
 		bb._on_turn_started(e.current)
+		assert_true(ctl.hud.opening_banner().is_showing(), "%s shows the banner" % opening)
+		assert_true(ctl.hud.opening_banner().caption_text().begins_with(caption), "with its caption")
+		assert_eq(_floated(caption), floats, "the banner replaced the float")
+		ctl.hud.opening_banner().hide_banner()
 		bb._on_turn_started(e.current)
-		assert_eq(_floated(text), before + 1, "%s floats once" % opening)
+		assert_false(ctl.hud.opening_banner().is_showing(), "%s shows once" % opening)
 	e.opening = BattleOpening.NORMAL
 	bb._opening_shown = false
-	var count := ctl.hud.recent_numbers.size()
 	bb._on_turn_started(e.current)
-	assert_eq(ctl.hud.recent_numbers.size(), count, "a normal opening floats nothing")
+	assert_false(ctl.hud.opening_banner().is_showing(), "a normal opening shows nothing")
 	_done()
 
 
@@ -197,14 +201,14 @@ func test_nothing_floats_without_a_controller_or_with_numbers_off() -> void:
 	var bb := BattleBestiary.new()
 	bb.attach(_engine(), false)
 	bb.engine.opening = BattleOpening.AMBUSH
-	bb.engine.begin()  # turn_started: no controller, no float, no error
+	bb.engine.begin()  # turn_started: no controller, no float, no banner, no error
 	_controller(false)
 	ctl.show_damage_numbers = false
+	_swap_in_ysolde()
 	var count := ctl.hud.recent_numbers.size()
-	ctl.bestiary._opening_shown = false
-	ctl.engine.opening = BattleOpening.AMBUSH
-	ctl.bestiary._on_turn_started(ctl.engine.current)
-	assert_eq(ctl.hud.recent_numbers.size(), count)
+	assert_true(ctl.act(&"read", [ctl.engine.enemies[0].id]).ok)
+	assert_eq(ctl.hud.recent_numbers.size(), count, "numbers off: no weakness float")
+	assert_true(ctl.hud.read_panel().is_open(), "the Read panel still opens: it is not a float")
 	_done()
 
 

@@ -146,6 +146,22 @@ class TestEmotionsDriveTheFace(unittest.TestCase):
             if name.startswith("vis_"):
                 self.assertIsNone(d.h["DN"][name], name)
 
+    def test_mouth_primitive_carries_normals_where_a_shape_moves_it(self):
+        # M1-CHR-10: the inner lips and corners (the `mouth` primitive) shaded at rest under the
+        # smile; every expression shape that moves it now changes its normals too, visemes still none
+        js, bin_ = asha_glb.read_glb(GLB)
+        m = asha_glb.head_targets(js, bin_, material="mouth")
+        for name in m["names"]:
+            moved = np.linalg.norm(m["D"][name], axis=1) > 1e-5
+            with self.subTest(target=name):
+                if name.startswith("vis_"):
+                    self.assertIsNone(m["DN"][name])
+                elif moved.sum() >= 8:
+                    self.assertIsNotNone(m["DN"][name], f"{name} moves {moved.sum()} mouth vertices at rest normals")
+        for side in ("L", "R"):
+            dn = m["DN"][f"mouth_smile_{side}"]
+            self.assertGreater(int((np.linalg.norm(dn, axis=1) > 0).sum()), 20)
+
     def test_smile_lifts_the_lower_lid_and_the_cheek(self):
         d = drive()
         poses = json.loads(POSES.read_text(encoding="utf-8"))["emotions"]

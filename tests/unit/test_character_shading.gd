@@ -13,8 +13,9 @@ const STAGE_SCENE := "res://game/levels/_tests/character_shading/shading_test.ts
 const ASHA_STAGE := "res://game/levels/_tests/characters/asha/asha_stage.tscn"
 const ASHA_CLOTH := "res://assets/characters/asha/materials/cloth.tres"
 ## Shadow normal bias that clears the shadow-terminator banding on Asha's cheeks at dialogue range
-## (M1-QA-05 / M1-CHR-04 GPU sweep: 1.0 bands, 2.0 leaves a faint residue, 2.5 is clean).
-const MIN_CLOSEUP_NORMAL_BIAS := 2.5
+## (M1-QA-05 / M1-CHR-04 GPU sweep: 1.0 bands, 2.0 leaves a faint residue, 2.5 is clean on the cheek;
+## M1-RND-20 raised it to 4.5 for the smiling mouth corner's fold, which still striped at 2.5 and 3.5).
+const MIN_CLOSEUP_NORMAL_BIAS := 4.5
 ## Lacquered leather, not patent plastic (M1-CHR-04): the vest coat may not go back to a mirror.
 const MIN_VEST_COAT_ROUGHNESS := 0.12
 const FIT_TOLERANCE := 1e-6
@@ -172,9 +173,87 @@ func test_apply_to_tree_visits_each_material_once() -> void:
 	surf.set_surface_override_material(0, cloth)
 	root.get_child(0).add_child(surf)
 	assert_eq(CharacterShaderTiers.apply_to_tree(root, "medium"), 2, "hair once + cloth once")
-	assert_eq(shared.shader.resource_path, CharacterShaderTiers.shader_path("hair", "medium"))
-	assert_eq(cloth.shader.resource_path, CharacterShaderTiers.shader_path("cloth", "medium"))
+	# Copy-on-swap (M1-RND-19): the sources stay; the three hair slots share one copy.
+	assert_eq(shared.shader.resource_path, CharacterShaderTiers.shader_path("hair", "high"), "source hair kept")
+	assert_eq(cloth.shader.resource_path, CharacterShaderTiers.shader_path("cloth", "high"), "source cloth kept")
+	var hair_copy := (root.get_child(0) as GeometryInstance3D).material_override as ShaderMaterial
+	assert_true(hair_copy != shared, "hair copied")
+	assert_eq(hair_copy.shader.resource_path, CharacterShaderTiers.shader_path("hair", "medium"))
+	for i in 3:
+		assert_true((root.get_child(i) as GeometryInstance3D).material_override == hair_copy, "one copy, shared")
+	var cloth_copy := surf.get_surface_override_material(0) as ShaderMaterial
+	assert_true(cloth_copy != cloth, "cloth copied")
+	assert_eq(cloth_copy.shader.resource_path, CharacterShaderTiers.shader_path("cloth", "medium"))
 	root.free()
+
+
+## M1-RND-19: two instances share a material override and a mesh (whose surface material is the
+## import-style shared slot) and take different tiers; neither the shared resources nor the other
+## instance move, and a second swap reuses the instance's own copies.
+func test_apply_to_tree_copies_shared_materials_per_instance() -> void:
+	var skin := ShaderMaterial.new()
+	skin.resource_name = "skin_head"
+	skin.shader = load(CharacterShaderTiers.shader_path("skin", "high")) as Shader
+	skin.set_shader_parameter("col_scatter", Color(0.5, 0.2, 0.1))
+	var hair := ShaderMaterial.new()
+	hair.shader = load(CharacterShaderTiers.shader_path("hair", "high")) as Shader
+	var mesh := BoxMesh.new()
+	mesh.material = hair
+	var a := _sharing_instance(skin, mesh)
+	var b := _sharing_instance(skin, mesh)
+	assert_eq(CharacterShaderTiers.apply_to_tree(a, "low"), 2, "A: skin + the mesh's hair")
+	assert_eq(CharacterShaderTiers.apply_to_tree(b, "medium"), 2, "B: skin + the mesh's hair")
+	assert_eq(skin.shader.resource_path, CharacterShaderTiers.shader_path("skin", "high"), "shared skin untouched")
+	assert_eq(hair.shader.resource_path, CharacterShaderTiers.shader_path("hair", "high"), "shared hair untouched")
+	assert_true(mesh.surface_get_material(0) == hair, "the mesh keeps its material")
+	for pair: Array in [[a, "low"], [b, "medium"]]:
+		var root := pair[0] as Node3D
+		var tier := str(pair[1])
+		var head := root.get_node("Head") as MeshInstance3D
+		var head_mat := head.material_override as ShaderMaterial
+		assert_true(head_mat != skin, "%s: skin copied" % tier)
+		assert_eq(head_mat.shader.resource_path, CharacterShaderTiers.shader_path("skin", tier))
+		assert_eq(head_mat.resource_name, "skin_head", "%s: the copy keeps its slot name" % tier)
+		assert_eq(head_mat.get_shader_parameter("col_scatter"), Color(0.5, 0.2, 0.1), "%s: params kept" % tier)
+		assert_true(CharacterShaderTiers.owns(head_mat, root.get_instance_id()), "%s: owned by its root" % tier)
+		var hair_mi := root.get_node("Hair") as MeshInstance3D
+		var hair_mat := hair_mi.get_surface_override_material(0) as ShaderMaterial
+		assert_true(hair_mat != null and hair_mat != hair, "%s: the mesh material is copied into the override" % tier)
+		if hair_mat != null:
+			assert_eq(hair_mat.shader.resource_path, CharacterShaderTiers.shader_path("hair", tier))
+	# A second swap on A reuses A's own copies and leaves B alone.
+	var a_head := a.get_node("Head") as MeshInstance3D
+	var a_skin := a_head.material_override
+	assert_eq(CharacterShaderTiers.apply_to_tree(a, "high"), 2, "A back to high")
+	assert_true(a_head.material_override == a_skin, "an owned copy is swapped in place")
+	var b_skin := (b.get_node("Head") as MeshInstance3D).material_override as ShaderMaterial
+	assert_eq(b_skin.shader.resource_path, CharacterShaderTiers.shader_path("skin", "medium"), "B keeps its tier")
+	# Another root (or a duplicate of an owned copy, meta and all) does not own it.
+	assert_false(CharacterShaderTiers.owns(a_skin, b.get_instance_id()), "B does not own A's copy")
+	assert_false(
+		CharacterShaderTiers.owns(a_skin.duplicate() as Material, a.get_instance_id()), "a duplicate is not owned"
+	)
+	# Already at the tier: nothing to copy.
+	var c := _sharing_instance(skin, mesh)
+	assert_eq(CharacterShaderTiers.apply_to_tree(c, "high"), 0, "already high")
+	assert_true((c.get_node("Head") as MeshInstance3D).material_override == skin, "no copy without a swap")
+	assert_true((c.get_node("Hair") as MeshInstance3D).get_surface_override_material(0) == null, "no override added")
+	for root: Node3D in [a, b, c]:
+		root.free()
+
+
+func _sharing_instance(skin: Material, mesh: Mesh) -> Node3D:
+	var root := Node3D.new()
+	var head := MeshInstance3D.new()
+	head.name = &"Head"
+	head.mesh = BoxMesh.new()
+	head.material_override = skin
+	root.add_child(head)
+	var hair := MeshInstance3D.new()
+	hair.name = &"Hair"
+	hair.mesh = mesh
+	root.add_child(hair)
+	return root
 
 
 # --- pre-integrated skin fit ---------------------------------------------------------------------

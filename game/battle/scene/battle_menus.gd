@@ -14,6 +14,9 @@ const ROW_ESCAPE := &"escape"
 const ROW_SWAP := &"swap"
 const ROW_ITEMS := &"items"
 const ROW_SWELL := &"swell"
+## A Swell page row that chooses a fill mode (M2-UI-01) carries the mode id under this key.
+const KEY_SWELL_MODE := "swell_mode"
+const ROW_SWELL_MODE_PREFIX := "swell_mode_"
 const ATTACK_SKILL := &"attack"
 const AUTO_BERSERK := &"berserk"
 const AUTO_CONFUSE := &"confuse"
@@ -55,8 +58,10 @@ func skill_name(engine: BattleEngine, skill_id: StringName) -> String:
 	return tr(key) if key != "" else String(skill_id)
 
 
-## Root page: Attack, Swell (only while the actor's gauge is full, M1-CMB-04), Skills, Items (only
-## when the battle has a bag: capture fixtures have none), Escape, then Swap (always the last row).
+## Root page: Attack, Swell (for a hero with a Swell, M1-CMB-04; M2-UI-01 keeps it on the menu
+## while the gauge fills, so the fill mode can be chosen: the right column names the input when
+## the gauge is full, else the mode in force), Skills, Items (only when the battle has a bag:
+## capture fixtures have none), Escape, then Swap (always the last row).
 func root_rows(engine: BattleEngine, items: BattleItemSource = null, swell: BattleSwell = null) -> Array[Dictionary]:
 	var actor := engine.current
 	var rows: Array[Dictionary] = []
@@ -71,9 +76,15 @@ func root_rows(engine: BattleEngine, items: BattleItemSource = null, swell: Batt
 			ATTACK_SKILL
 		)
 	)
-	if swell != null and swell.is_ready(actor):
+	# Only an input the HUD draws (SwellRingView.draws; the other kinds wait for M2-UI-03).
+	var has_page := swell != null and swell.has_swell(actor) and actor.is_alive()
+	if has_page and not swell.techniques(actor).is_empty() and SwellRingView.draws(swell.input_for(actor)):
 		var input_key := str(swell.input_for(actor).get("name_key", ""))
-		rows.append(_row(ROW_SWELL, tr("HUD_CMD_SWELL"), tr(input_key) if input_key != "" else "", &"swell", true))
+		if swell.is_ready(actor):
+			rows.append(_row(ROW_SWELL, tr("HUD_CMD_SWELL"), tr(input_key) if input_key != "" else "", &"swell", true))
+		else:
+			var mode_name := swell_mode_name(swell, actor.swell_mode)
+			rows.append(_row(ROW_SWELL, tr("HUD_CMD_SWELL"), mode_name, &"text_dim", true))
 	rows.append(_row(ROW_SKILLS, tr("HUD_CMD_SKILLS"), "", &"text_dim", not skill_ids(actor).is_empty()))
 	if items != null:
 		rows.append(_row(ROW_ITEMS, tr("HUD_CMD_ITEMS"), "", &"text_dim", _any_usable(engine, items)))
@@ -108,13 +119,64 @@ func skill_rows(engine: BattleEngine) -> Array[Dictionary]:
 	return rows
 
 
-## The actor's Swell techniques (BattleSwell.techniques): name and rank, no MP.
+## The Swell page: the actor's techniques (BattleSwell.techniques: name and rank, no MP; greyed out
+## until the gauge is full), then one row per unlocked fill mode (M2-UI-01, swell_mode_rows).
 func swell_rows(engine: BattleEngine, swell: BattleSwell) -> Array[Dictionary]:
 	var rows: Array[Dictionary] = []
+	var full := swell.is_full(engine.current)
 	for tid in swell.techniques(engine.current):
 		var rank := int(engine.db.skill(tid).get("rank", Formulas.DEFAULT_RANK))
-		rows.append(_row(tid, skill_name(engine, tid), _rank_text(rank), _rank_role(rank), true, tid))
+		rows.append(_row(tid, skill_name(engine, tid), _rank_text(rank), _rank_role(rank), full, tid))
+	rows.append_array(swell_mode_rows(swell, engine.current))
 	return rows
+
+
+## One row per fill mode `actor` may choose (BattleSwell.mode_rows, the M2-CMB-01 API: the unlocked
+## modes in data order): the mode's name, and "In use" or the free cost on the right. Choosing one
+## costs no time.
+func swell_mode_rows(swell: BattleSwell, actor: BattleCombatant) -> Array[Dictionary]:
+	var rows: Array[Dictionary] = []
+	for m: Dictionary in swell.mode_rows(actor):
+		var mid := StringName(str(m.get("id", "")))
+		var current := bool(m.get("current", false))
+		var right := tr("HUD_SWELL_MODE_IN_USE") if current else tr("HUD_COST_FREE")
+		var rid := StringName(ROW_SWELL_MODE_PREFIX + String(mid))
+		var key := str(m.get("name_key", ""))
+		var row := _row(rid, tr(key) if key != "" else String(mid), right, &"swell" if current else &"focus", true)
+		row[KEY_SWELL_MODE] = mid
+		rows.append(row)
+	return rows
+
+
+func swell_mode_name(swell: BattleSwell, mode: StringName) -> String:
+	var key := str((swell.modes.get(mode, {}) as Dictionary).get("name_key", ""))
+	return tr(key) if key != "" else String(mode)
+
+
+## The help line on a fill-mode row: what fills the gauge in that mode, and that choosing it is
+## free (or that it is already in use).
+func swell_mode_help(swell: BattleSwell, actor: BattleCombatant, mode: StringName) -> String:
+	var key := str((swell.modes.get(mode, {}) as Dictionary).get("desc_key", ""))
+	var words := {"mode": swell_mode_name(swell, mode), "desc": tr(key) if key != "" else ""}
+	if actor.swell_mode == mode:
+		return tr("HUD_HELP_SWELL_MODE_CURRENT_FMT").format(words)
+	return tr("HUD_HELP_SWELL_MODE_FMT").format(words)
+
+
+## The help line once a mode is chosen.
+func swell_mode_set_text(swell: BattleSwell, actor: BattleCombatant) -> String:
+	var words := {"name": display_name(actor), "mode": swell_mode_name(swell, actor.swell_mode)}
+	return tr("HUD_SWELL_MODE_SET_FMT").format(words)
+
+
+## The help line on the root Swell row: full and ready, or how full and in which mode.
+func swell_root_help(engine: BattleEngine, swell: BattleSwell) -> String:
+	var actor := engine.current
+	if swell.is_ready(actor):
+		return tr("HUD_HELP_SWELL_FMT").format({"name": display_name(actor)})
+	var pct := roundi(float(Formulas.PCT) * actor.swell / Formulas.SWELL_MAX)
+	var words := {"name": display_name(actor), "pct": pct, "mode": swell_mode_name(swell, actor.swell_mode)}
+	return tr("HUD_HELP_SWELL_GAUGE_FMT").format(words)
 
 
 ## The help line for a technique: what its input asks, then the skill's own line.

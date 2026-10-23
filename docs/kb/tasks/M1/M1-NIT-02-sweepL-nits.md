@@ -2,7 +2,7 @@
 id: M1-NIT-02
 title: Small fixes from review-sweep-L
 role: qa
-status: review
+status: done
 owner_session: "worktree-agent-ad32302c9926d0fee"
 depends_on: [M1-CMB-03, M1-ENV-05, M1-RND-16]
 milestone: M1
@@ -30,3 +30,14 @@ From the review-sweep-L entries (file:line references there).
   - **Gates:** Godot `--filter=` bestiary 19/0 failed, graphics_settings 24/0, graphics_override 13/0, weathering 2/0, autosave 22/0, environment_shaders 11/0, battle 287/0, haluna 7/0, water_surface 13/0. Coverage: battle 99.93%, progression 96.52%, OK (1071 tests). validate_data 0/0, taskboard --check OK, gdlint and gdformat clean. Tool unit tests 411 OK. No shots: no scene, shader or material changed, and the only render-path change is the non-publishing-sea branch, which no shot scene hits. No Blender rebuild: no Blender source changed (only the test that reads the scripts).
 
 ## Review log
+- 2026-10-23 lead role, fresh reviewer (review-sweep-M): **approve.** No blockers. Every criterion is met as the notes say.
+  - **Checks run** (worktree at 449f856, own `XDG_DATA_HOME`): Godot `--filter=` graphics_override 13/0 failed, autosave_toast 8/0, weathering 2/0, bestiary 19/0. validate_data 0/0, taskboard --check OK, tools unittest 431 OK, gdlint and gdformat clean. I ran no shots: the diff touches no shader, scene or material that a shot renders.
+  - **What I read:** the diff 2c5fec4^1..2c5fec4, ADR 0023 Amendment 1, and handoff qa-3. The ADR now matches `BattleController._on_result_choice` (seed + 1). `BattleEngine.enemy_id` is the one rule, used by `_enemy_row` and by victory credit. The thread-count test parses every tracked `assets_src/**/*.sh`, and the Asha PROVENANCE rows show `--threads 4`.
+  - **Should-fix:**
+    1. game/core/graphics_settings.gd:398 with :414 and :447. The pop is now deferred, which opens an ordering gap. Suppose cutscene A leaves the tree and cutscene B calls `push_override` in the same frame, as a scene swap does. A's entry is still on the stack, so B's `base` is ignored with the "keeping the first override's base" warning. A's deferred pop then leaves B layered on A's base until B pops too. Nothing in `game/` calls `push_override` yet, so the gap is latent. Either let a push re-base when every older entry's owner is already outside the tree, or document the gap in the docstring.
+    2. tests/unit/test_weathering_tide.gd:31. The test asserts `tide.water_level()`, which is computed and is not what the tide wrote. Read the global back instead, or check `writes_water_level()` together with a push spy. As written, the test passes even if `_push` stops writing. The test also leaves `hymn_water_level` at (-0.3, 0.1) for every later test in the run. Reset it at the end.
+    3. game/core/graphics_settings.gd:496-503. `_override_settings_or_player()` now returns a shared cached instance, and `push_override` stores it as `_override_settings`. The docstring says "Read-only", but nothing enforces that. A caller that later mutates the returned settings (`set_preset`, say) would poison the cache until settings.cfg's mtime changes. mtime also has 1 s granularity, so a write to settings.cfg that bypasses `save_config` within the same second is missed. Both are minor. Add a comment on the static var, or return a duplicate.
+    4. tests/unit/test_bestiary.gd:126. `assert_ne(enemy_id, foe.id)` holds only while the fixture's combatants all carry a `#n` suffix. A single-foe encounter whose id has no `#` would fail it for no reason. Assert on `enemy_id(foe) == foe.id.get_slice("#", 0)` instead.
+    5. The task file has no `reviewer:` field (the reviewer is named only in Notes), so `taskboard --role lead` cannot route it. Add `reviewer: lead`.
+  - **Nits left open, as the notes say:** env_weathering_body.gdshaderinc:12-14, vegetation_plant.gd:41, and the toast's `tr()` and wording nits. Carry them to the next nit sweep rather than dropping them.
+- 2026-10-23 lead: closing on review-sweep-M approve; the should-fixes are in M2-NIT-03.

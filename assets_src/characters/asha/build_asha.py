@@ -654,6 +654,11 @@ def main() -> int:
     # M1-CHR-07: morph-target normals for the expression shapes only (Blender writes all or none,
     # and all 40 would not fit the 5 MB cap). Without them a cheek raise shades as at rest.
     report["morph_normals"] = asha_glb.add_morph_normals(out, asha_face_shapes.MORPH_NORMAL_SHAPES)
+    # M1-CHR-10: the mouth primitive too (the inner lips and the corners; `mouth_smile` moves 88 of
+    # its vertices). With rest normals there, the key's shadow normal-bias pushed the lookup the
+    # wrong way on the deformed corner, which drew the diagonal striations in the smile.
+    report["morph_normals_mouth"] = asha_glb.add_morph_normals(out, asha_face_shapes.MORPH_NORMAL_SHAPES,
+                                                               material="mouth")
     report["glb_bytes"] = out.stat().st_size
     lod_objs, lod_tris = make_lod1([ob_head, ob_body, *garment_objs, *hair_objs, ob_staff], skel)
     eye_lod = [ob for ob in eye_objs if ob.name.startswith(("Eye", "Cornea")) and not ob.name.startswith("EyeOcc")]

@@ -1,5 +1,5 @@
 {
-  "_doc": "Tunables for the balancing simulator's party policies (game/battle/sim/, docs/kb/design/balance_targets.md). Not game data: nothing in play reads this file. loadouts: the gear (equipment ids per character) and consumables a suite's party carries (balance_targets.md, Party assumptions).",
+  "_doc": "Tunables for the balancing simulator's party policies (game/battle/sim/, docs/kb/design/balance_targets.md). Not game data: nothing in play reads this file. loadouts: the gear (equipment ids per character) and consumables a suite's party carries (balance_targets.md, Party assumptions). swell_heal_below_pct (M2-CMB-01): a ready healing Swell technique waits until an active ally is below this share of max HP.",
   "policies": {
     "naive": {},
     "lowest_hp": {},
@@ -13,6 +13,7 @@
     }
   },
   "max_actions": 2000,
+  "swell_heal_below_pct": 60,
   "loadouts": {
     "m1_starting": {
       "gear": {

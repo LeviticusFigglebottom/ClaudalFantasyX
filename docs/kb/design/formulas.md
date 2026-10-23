@@ -228,7 +228,17 @@ swell_fill(value, gain)              = clamp(value + gain, 0, SWELL_MAX)
 
 - Only action hits count (`ActionResult.hits` with `amount > 0`, through `BattleEngine.action_resolved`). A miss or a heal feeds no damage mode, and Poison, Regen and Doom ticks feed none. Reserve members gain nothing. A KO'd owner keeps its points.
 - **A technique feeds no gauge**, its own or anyone's.
-- Changing mode keeps the points. `set_mode` takes only unlocked modes; `unlock_mode` is the hook for unlocking through play (SPEC §6.2). The unlock rules and saving the gauge between battles come in later tasks.
+- Changing mode keeps the points. `set_mode` takes only unlocked modes; `unlock_mode` is the hook for unlocking through play (SPEC §6.2).
+- **The gauge carries** (M2-ARC-01, save v6): it ends a won or escaped battle where it stood and starts the next one there, and so does the mode. A defeat carries nothing (play resumes from the last save). A save shrine's rest fills HP and MP but leaves gauges and modes alone: a rest is not a battle.
+
+**Unlocks** (M2-CMB-01; data: `swell.json` `unlocks`). Each rule counts one event, a mode trigger from the table above, every time it happens to a hero with a Swell, and only while that hero uses the rule's `while_mode` when it names one. At its count the rule unlocks its mode for the whole party (`BattleSwell.unlock_mode`, which emits `mode_unlocked`). Counts and unlocks are saved (`GameStateData.swell`). A mode that starts locked must have a rule (validate_data).
+
+| Rule | Unlocks | Counts | While | Count |
+|---|---|---|---|---|
+| `tether_from_ballast` | **Tether** | a hit that takes HP from the hero (`damage_taken`) | Ballast | 12 |
+| `salve_from_items` | **Salve** | the hero uses an item that restores HP or revives (`heal_item`) | any mode | 5 |
+
+Bearing blows yourself teaches you to feel your allies', and five healing items teach the gauge to answer care. The counts are first guesses: tune them against the slice's encounter count once it is playable. `ally_hurt` counts once per living active ally with a Swell, as Tether fills.
 
 Examples: Ballast, 95 of 420 HP lost → 27 (27.1 floors). Wake, 152 dealt to a 380 HP foe → 20. Tether, an ally loses 95 of 300 → 19. 1 HP lost at rate 120 on 420 → 1. Gauge 90 + 27 → 100.
 
@@ -251,9 +261,65 @@ The scaled power goes into the normal damage formula (§ Damage).
 
 The first press in a beat is the one that counts, and a press before the beat opens is ignored. The input can be **canceled only before the first grade**, so it cannot be retried until it goes well; canceling costs nothing. **Lamp Dive** (power 12, rank 2, physical, single foe, accuracy 100): perfect ×3 → power 22 (12 × 190 / 100 = 22.8), perfect + good + miss → 17, all miss → 12. From Rhen (strength 16, level 5) on the sandbox Reef Crab (defense 40, 380 HP) at variance 100: a perfect Lamp Dive deals 330, an all-miss one 180, and a plain Attack 120.
 
+**The other heroes' inputs** (M2-CMB-01; `SwellInput` subclasses, Node-free like the ring). Every input shares the ring's rules: one grade per step, a step is never retried, cancel only before the first grade. Each kind has its own grade names. **Played at good, every input earns +45%, and played perfectly +90%** (all missed: 0), so no hero's Swell is worth more for being easier to read (a test checks the live data). Every input lasts at most 5 s (validate_data).
+
+*Asha: the verse chant* (`chant`, `SwellChant`). After a 0.6 s lead-in, five notes follow a phrase of the Hush: up at 0.0 s, up at 0.5, left at 0.9, down at 1.3 and right at 2.0 (after the lead-in; at most 2.75 s in all). Press each note's direction on its note. A press before the note's window opens is ignored, and any other direction in the window is a miss.
+
+| Grade | Distance from the note | Bonus |
+|---|---|---|
+| perfect | ≤ 0.06 s, right button | +18% |
+| good | ≤ 0.15 s, right button | +9% |
+| miss | wrong button, or no press before the window closes | 0 |
+
+*Toma: the tide brace* (`brace`, `SwellBrace`). Hold Confirm through three blows (0.4, 1.0 and 1.6 s after a 0.6 s lead-in) and let go on the counter at 2.3 s (at most 3.05 s in all). Letting go early turns the blows still to come into misses and is graded against the counter like any release.
+
+| Grade | When | Bonus |
+|---|---|---|
+| braced | a blow lands while Confirm is held | +10% each |
+| perfect | released ≤ 0.06 s from the counter | +60% |
+| good | released ≤ 0.15 s from the counter | +15% |
+| miss | a blow unbraced, or a release further off (or none) | 0 |
+
+*Ysolde: the glyph trace* (`glyph`, `SwellGlyph`). After a 0.6 s lead-in, trace five strokes in order (down, right, up, right, down) with the directions within 3.0 s. No beat: a stroke counts when it is made. A clean trace finished within 2.0 s of the lead-in earns *swift*.
+
+| Grade | When | Bonus |
+|---|---|---|
+| traced | the stroke the glyph asks for next | +9% each |
+| swift | after the last stroke: no miss, within 2.0 s | +45% |
+| miss | a wrong stroke, strokes left when the window closes, or a slow or flawed trace (the swift grade) | 0 |
+
+**Their techniques** (`skills.json`, `"swell": true`, no MP, rank 3):
+
+| Hero | Technique | Row | Played at good | Played perfectly |
+|---|---|---|---|---|
+| Asha | **Shallows Verse** | heal, power 12, every ally, magic (Silence blocks it) | power 17 | power 22 |
+| Toma | **Return Tide** | physical, power 14, one foe, accuracy 100 | power 20 | power 26 |
+| Ysolde | **Written Light** | magical, power 10, every foe, no element, magic | power 14 | power 19 |
+
+(`swell_power`: 12 × 145 / 100 = 17.4 → 17; 14 × 190 / 100 = 26.6 → 26.) For comparison, Chorus Mend heals every ally at power 6 for 14 MP.
+
+**In the simulator** a suite's `swell` quality plays every input at miss, good or perfect (`SwellInput.scripted_result`); balance_targets.md has the policy rules and balance_report.md the effect (2026-10-23).
+
+**Timing assist (M2-UI-01, an accessibility setting; appended by UI, for Combat to confirm).** The `timing_assist` setting (`game/data/ui/accessibility.json`, `UiSettings.timing_input`) changes the input *row* before the input is built (`SwellInput.create`), for every kind. The grading code and the bonus tables stay the same, and no RNG is involved.
+
+- `off` (the default) changes nothing.
+- `wide` multiplies the windows by `window_scale` 1.5, then clamps each kind so it still passes the validator. A clamped window still cannot overlap its neighbour or leave its beat.
+- `auto` sets `assist_floor: "good"`. Every kind grades through `SwellInput._record`, so a step that would grade a miss (unpressed, mistimed, a wrong button) records the grade that step earns when played at good (`scripted_grades("good")`).
+
+| Kind | `wide` | `auto` (all steps missed) |
+|---|---|---|
+| ring (Rhen) | `perfect_sec` 0.09, `good_sec` 0.225, the window kept inside its beat: good ≤ min(peak, beat − peak), late edge 0.785 s of 0.8 | good ×3: +45%, Lamp Dive power 17 |
+| chant (Asha) | perfect 0.09; good min(0.225, half the closest note gap 0.4) = 0.2, so the windows never overlap | good ×5: +45% |
+| brace (Toma) | perfect 0.09, good 0.225; good stays < `counter_at` − the last impact (0.7) − `edge_margin_sec` 0.01 | braced ×3, then good: +45% |
+| glyph (Ysolde) | `window_sec` min(3.0 × 1.5, `max_duration_sec` 5.0 − lead-in 0.6) = 4.4; `swift_sec` stays 2.0 | traced ×5, no swift: +45% |
+
+- Under `auto` the worst result is the "played at good" +45% for every hero, and the best is still +90% (`perfect` and `swift` are never handed out).
+- Swift asks for a clean trace *as played* (`raw_misses == 0`), so the assist never earns it.
+- `max_step_sec` (0.05) stays within each kind's tightest window under every option.
+
 ## Not yet specified (owned by Combat, tracked in M1 tasks)
 
-Swell mode unlock rules and carrying gauges between battles (after M1-CMB-04), equipment abilities that tilt the opening odds, steal formulas, a Petrify cure item, and Vowbound stat scaling from Asha (M2).
+Equipment abilities that tilt the opening odds, steal formulas, a Petrify cure item, and Vowbound stat scaling from Asha (M2).
 
 ## Progression
 

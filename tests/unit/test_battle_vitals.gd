@@ -152,9 +152,12 @@ func test_victory_writes_vitals_back_and_a_shrine_heals_them() -> void:
 		var c := ctl.engine.find(cid)
 		if c.is_alive():
 			assert_eq(c.hp, int(hurt[cid]), "%s starts the next fight as it ended the last" % cid)
-	# A shrine rest fills everyone again.
+	# A shrine rest fills everyone again. Swell gauges and modes stay (M2-ARC-01: a rest is not a battle).
 	EventBus.party_full_heal_requested.emit(&"test_shrine")
-	assert_true(Game.state.party_vitals.is_empty())
+	for key: Variant in Game.state.party_vitals:
+		var left: Array = (Game.state.party_vitals[key] as Dictionary).keys()
+		left.sort()
+		assert_true(left.all(func(k: Variant) -> bool: return k in ["swell", "swell_mode"]), "%s: %s" % [key, left])
 	_done()
 
 

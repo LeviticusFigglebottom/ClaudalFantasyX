@@ -62,7 +62,8 @@ var _total_ms := 0.0
 var _instanced := 0
 var _skipped := 0
 var _spawned: Array[Node] = []
-var _pending: Array[Node] = []
+## Draws waiting for the stage: built Nodes (scene harvest) or registry entries loaded in their batch.
+var _pending: Array = []
 var _batch := 0
 var _min_batch_seen := 0
 var _batches := 0
@@ -126,15 +127,19 @@ func start(for_scene: String = "") -> int:
 	var height := int(config.get("viewport_height", _viewport.size.y))
 	_viewport.size = Vector2i(width, height)
 	match_viewport(get_viewport())
+	# Registry entries are only listed here and loaded in their batch (M1-RND-15): loading a material
+	# compiles its shader on the CPU, up to ~35 ms each on an RX 9070 XT. Loading them all at start put
+	# 0.2 s into one frame however small the batches were.
 	for entry: Variant in config.get("materials", []):
 		var e := entry as Dictionary
 		var scenes := e.get("scenes", []) as Array
 		if not (scenes.is_empty() or scenes.has(for_scene)):
 			continue
-		var mat := _load_material(str(e.get("path", "")))
-		if mat != null and _instance(mat, e):
+		if ResourceLoader.exists(str(e.get("path", ""))):
+			_pending.append(e)
 			_instanced += 1
 		else:
+			push_warning("%s: registered material not found: %s" % [LOG_PREFIX, e.get("path", "")])
 			_skipped += 1
 	if bool(config.get("scene_materials", false)) and for_scene != "" and ResourceLoader.exists(for_scene):
 		_instanced += _instance_scene_materials(for_scene, int(config.get("max_scene_materials", 0)))
@@ -203,7 +208,9 @@ func tick(frame_ms: float) -> void:
 	_total_ms += frame_ms
 	if _stage_alive:
 		if not _pending.is_empty():
-			if frame_ms > float(config.get("slice_budget_ms", INF)) and _batch > 1:
+			# The first frame also carries start() and the stage's set-up, so it says nothing about how
+			# big a batch the card can take (review-sweep-J S3): never halve on it.
+			if frame_ms > float(config.get("slice_budget_ms", INF)) and _batch > 1 and _frames_measured > 1:
 				_batch = maxi(floori(_batch / 2.0), 1)
 				_min_batch_seen = mini(_min_batch_seen, _batch)
 			_stage_next_batch()
@@ -220,11 +227,14 @@ func _stage_next_batch() -> void:
 	var n := mini(_batch, _pending.size())
 	if n <= 0:
 		return
-	for i in n:
-		var node: Node = _pending[i]
+	var batch := _pending.slice(0, n)
+	_pending = _pending.slice(n)
+	for item: Variant in batch:
+		var node: Node = item as Node if item is Node else _build_entry(item as Dictionary)
+		if node == null:
+			continue
 		(_stage_2d if node is Control else _stage_3d).add_child(node)
 		_spawned.append(node)
-	_pending = _pending.slice(n)
 	_batches += 1
 	_frames_since_batch = 0
 
@@ -235,8 +245,8 @@ func _process(delta: float) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
-		for n in _pending:
-			if is_instance_valid(n):
+		for n: Variant in _pending:
+			if is_instance_valid(n) and n is Node:
 				n.free()
 		_pending.clear()
 
@@ -268,8 +278,8 @@ func _finish() -> void:
 
 
 func _clear_stage() -> void:
-	for n in _spawned + _pending:
-		if is_instance_valid(n):
+	for n: Variant in _pending + _spawned:
+		if is_instance_valid(n) and n is Node:
 			n.free()
 	_spawned.clear()
 	_pending.clear()
@@ -347,7 +357,20 @@ static func entry_mesh(entry: Dictionary, fallback: Mesh) -> Mesh:
 	return fallback
 
 
-func _instance(mat: Material, entry: Dictionary = {}) -> bool:
+## Loads a registry entry's material and builds its draw (null when it cannot be drawn, or for a
+## sky, which goes on the stage environment instead of a node).
+func _build_entry(entry: Dictionary) -> Node:
+	var mat := _load_material(str(entry.get("path", "")))
+	var node: Node = _instance(mat, entry) if mat != null else null
+	if mat == null or (node == null and _shader_mode(mat) != Shader.MODE_SKY):
+		_instanced -= 1
+		_skipped += 1
+	return node
+
+
+## Builds the draw for one material (null for a sky, set on the stage environment, or when the
+## material kind is unsupported).
+func _instance(mat: Material, entry: Dictionary = {}) -> Node:
 	var in_front := Vector3.FORWARD * float(config.get("quad_distance", 0.0))
 	var quad := QuadMesh.new()
 	var side := float(config.get("quad_size", 0.0))
@@ -394,7 +417,7 @@ func _instance(mat: Material, entry: Dictionary = {}) -> bool:
 			sky.sky_material = mat
 			_ensure_stage_env().background_mode = Environment.BG_SKY
 			_stage_env.sky = sky
-			return true
+			return null
 		Shader.MODE_FOG:
 			var fog := FogVolume.new()
 			fog.material = mat
@@ -403,9 +426,8 @@ func _instance(mat: Material, entry: Dictionary = {}) -> bool:
 			node = fog
 		_:
 			push_warning("%s: unsupported material %s" % [LOG_PREFIX, mat.resource_path])
-			return false
-	_pending.append(node)
-	return true
+			return null
+	return node
 
 
 ## Draws every (material, mesh) pair on the incoming scene's geometry, and its sky. Returns how

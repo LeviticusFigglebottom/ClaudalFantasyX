@@ -45,10 +45,19 @@ Nothing. The Lead's queue of 2026-10-23 (M2-FP-05..08) is done and pushed:
   - Its select and override API is ready for the settings menu, which doesn't exist yet: M1-UI-10 was filed for UI.
   - Finding on RND-12 S2: Haluna's sun is Light Only, so the sky never sees it. With Light and Sky, the incremental cubemap follows within about 64 frames. This needs an Art/Rendering decision; details in graphics_settings.md.
   - Non-default presets aren't prewarmed (a Rendering follow-up).
-  - Handoff: `docs/kb/handoffs/2026-10-23-architect-16.md`.
+  - Handoff: `docs/kb/handoffs/2026-10-23-architect-17.md`.
 
 ### Exact next step
 Wait for the Lead's review and the human's playtest notes, and turn the notes into M2-FP-09+ tasks. The open follow-up on this branch is the shutdown-only engine errors described below.
+
+### For the PC GPU session (M2-RND-04: the Drownbell's VFX and flood rig)
+- The hook table is in battle_ctb.md, under "The Drownbell", then "VFX hook points". It covers:
+  - each moment: the toll's gathering and firing, rim hits and the break, the change to the Flood phase, polyps joining and healing, Call Ilun clearing the water, and the bell's death;
+  - the engine signal and arguments for each moment, and the light rule for each (held, bound or released);
+  - the data and code paths, and the tests.
+- **How to wire it:** a view class beside `BattleBossHud`, attached with one line where `BattleBossHud.attached(self, engine)` is called. It listens only and never writes combat state.
+- **Flood height:** goes through `hymn_water_level`. The battle scene has no water today, so the flood rig is that scene's single publisher.
+- No logic change is needed on this branch.
 
 ### For the save v6 owner (M2-ARC-01)
 - This branch needs **no new save fields** and never bumps SAVE_VERSION. The Drownbell, retry, escape and story state all live in existing flags (`ch02_tideline_won`, `ch03_drownbell_defeated`, `ch03_ilun_bound`) and in the existing respawn and location fields.
@@ -73,9 +82,13 @@ None that matters. `.scratch/` (excluded through `.git/info/exclude`) holds the 
 5. Read the M2-FP task files and `docs/kb/handoffs/2026-10-23-first-playable-1.md`.
 
 ## History
+- 2026-10-23: merged integration (SPEC v1.2, M2-CMB-01 Swell inputs, M2-ARC-01 save v6).
+  - Handoff renumbering: theirs took combat-5 and architect-16, so mine are now **combat-6** (Drownbell) and **architect-17** (ARC-15).
+  - Drownbell rebalance after Swell: with Swell, smart reached 95.5%, so Floodtide went from power 13 to 15. At 5000 seeds: naive 0%, role_answer 78.8%, smart 91.2%.
+  - Added the VFX hook docs for M2-RND-04.
 - 2026-10-23: merged integration (the coverage ratchet 4c462ee, M1-NIT-02 enemy_id, ADR 0023 Amendment 1); clean merge. ci_local green: 1125 tests; game/battle 99.94% (baseline 99.93%), progression 96.52%.
 - 2026-10-23: merged integration c21dce5 (M1-CMB-03: save v5, Read, openings).
-  - The Drownbell's ADR is now **0024**, because CMB-03 took 0023. My combat handoff is now combat-5.
+  - The Drownbell's ADR is now **0024**, because CMB-03 took 0023. My combat handoff is now combat-6.
   - ch02_tideline and drownbell have `"opening": "normal"`.
   - The two id helpers moved out of BattleController into `BattleIds`, keeping it at 989 lines (under the cap).
   - ci_local green: 1094 tests, battle coverage 99.94%, battle and title shots unchanged.

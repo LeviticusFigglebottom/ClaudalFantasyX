@@ -18,9 +18,20 @@ TAG_TONGUE = 33
 # per side, from the midline: (crown width mm, crown height mm, depth mm)
 UPPER = [(8.6, 10.0, 6.4), (6.6, 8.8, 5.8), (7.6, 9.6, 7.4), (7.0, 8.0, 8.8), (6.6, 7.4, 9.0)]
 LOWER = [(5.4, 8.6, 5.6), (5.9, 8.6, 5.9), (6.9, 9.6, 7.0), (7.0, 8.2, 7.8), (7.0, 7.6, 8.4)]
+# M1-CHR-10: the teeth sample a patch in an unused corner of the head atlas (u0, v0, u1, v1 in the
+# Part / glTF convention, V down the image like the lash and brow UVs: the bottom-right corner),
+# where asha_textures.teeth_patch paints their colour and occlusion. U runs along the arch (front
+# incisor -> last tooth), V from the biting edge (v0) to the gum (v1). With a single UV the teeth
+# took the full sky fill inside the mouth and read as a blue-grey slab in grief.
+TEETH_UV = (0.84, 0.84, 0.98, 0.98)
+TEETH_UV_INSET = 0.004  # keeps the samples off the patch border (mip bleed)
 
 
-def _superellipsoid(part: Part, c, axes, r, mat: str, tag: int, nu: int = 8, nv: int = 4, e: float = 0.45) -> None:
+def _superellipsoid(part: Part, c, axes, r, mat: str, tag: int, nu: int = 8, nv: int = 4, e: float = 0.45,
+                    uv_of=None) -> None:
+    """uv_of(ct) -> (u, v) per vertex from its height on the +axes[2] axis (ct = 1 at the top pole,
+    -1 at the bottom); None puts every corner at (0.5, 0.5)."""
+    uv_of = uv_of or (lambda ct: (0.5, 0.5))
     rows = []
     top = part.add_v(c + axes[2] * r[2], tag=tag)
     for j in range(1, nv):
@@ -35,14 +46,24 @@ def _superellipsoid(part: Part, c, axes, r, mat: str, tag: int, nu: int = 8, nv:
             row.append(part.add_v(p, tag=tag))
         rows.append(row)
     bot = part.add_v(c - axes[2] * r[2], tag=tag)
+    uv_row = [uv_of(math.cos(math.pi * j / nv)) for j in range(nv + 1)]  # 0 = top pole .. nv = bottom pole
     for i in range(nu):
         i2 = (i + 1) % nu
-        part.add_f((top, rows[0][i], rows[0][i2]), [(0.5, 0.5)] * 3, mat)
-        part.add_f((rows[-1][i], bot, rows[-1][i2]), [(0.5, 0.5)] * 3, mat)
+        part.add_f((top, rows[0][i], rows[0][i2]), [uv_row[0], uv_row[1], uv_row[1]], mat)
+        part.add_f((rows[-1][i], bot, rows[-1][i2]), [uv_row[nv - 1], uv_row[nv], uv_row[nv - 1]], mat)
     for j in range(len(rows) - 1):
         for i in range(nu):
             i2 = (i + 1) % nu
-            part.add_f((rows[j][i], rows[j + 1][i], rows[j + 1][i2], rows[j][i2]), [(0.5, 0.5)] * 4, mat)
+            part.add_f((rows[j][i], rows[j + 1][i], rows[j + 1][i2], rows[j][i2]),
+                       [uv_row[j + 1], uv_row[j + 2], uv_row[j + 2], uv_row[j + 1]], mat)
+
+
+def teeth_uv(a: float, b: float) -> tuple[float, float]:
+    """TEETH_UV patch coordinates of arch position a (0 front .. 1 back) and height b (0 biting
+    edge .. 1 gum). +axes[2] of a tooth points to its gum, so its top pole is b = 1."""
+    u0, v0, u1, v1 = TEETH_UV
+    m = TEETH_UV_INSET
+    return (u0 + m + (u1 - u0 - 2 * m) * a, v0 + m + (v1 - v0 - 2 * m) * b)
 
 
 def mouth_interior(lm, lip_line_y: float) -> Part:
@@ -54,7 +75,7 @@ def mouth_interior(lm, lip_line_y: float) -> Part:
                                  (LOWER, M[2] - 0.0016 * s, TAG_TEETH_LO, False)):
         for sgn in (1.0, -1.0):
             x = 0.0
-            for (w, hgt, dpt) in row:
+            for k, (w, hgt, dpt) in enumerate(row):
                 w, hgt, dpt = w * 0.001 * s, hgt * 0.001 * s, dpt * 0.001 * s
                 xc = x + w * 0.5
                 x += w * 0.92
@@ -67,7 +88,8 @@ def mouth_interior(lm, lip_line_y: float) -> Part:
                 vert = np.array([0.0, 0.0, 1.0 if up else -1.0])
                 c = np.array([sgn * xc, yc, z_edge + (hgt * 0.5 if up else -hgt * 0.5)])
                 axes = np.stack([side, -fwd, vert])
-                _superellipsoid(part, c, axes, np.array([w * 0.5, dpt * 0.5, hgt * 0.5]), "teeth", tag)
+                _superellipsoid(part, c, axes, np.array([w * 0.5, dpt * 0.5, hgt * 0.5]), "teeth", tag,
+                                uv_of=lambda ct, a=(k + 0.5) / len(row): teeth_uv(a, 0.5 * (1.0 + ct)))
     # tongue: a flattened ellipsoid resting behind the lower teeth
     c = np.array([0.0, y_front + 0.022 * s, M[2] - 0.0085 * s])
     axes = np.eye(3)

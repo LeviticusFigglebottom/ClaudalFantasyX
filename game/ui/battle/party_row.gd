@@ -6,7 +6,8 @@ extends Control
 ##   (hollow when Berserk/Confuse plays the turn for them).
 ## - Petrify greys the row and turns the portrait to stone (strata lines, not hue alone).
 ## - Doom shows its count beside the hourglass glyph; Regen under Zombie shows inverted.
-## - A hero with a Swell (BattleCombatant.swell_mode set) gets the Swell gauge under the name
+## - A hero with a Swell (BattleCombatant.swell_mode set) whose input the HUD draws
+##   (SwellRingView.draws_hero, M2-CMB-01) gets the Swell gauge under the name
 ##   (docs/kb/art/ui.md §6.2: 64 x 4 px, ui_swell). Full, it is framed (a night gap, then a white line) and pulses on a
 ##   1.6 s sine; with reduced motion it holds the full glow instead of pulsing.
 
@@ -78,7 +79,7 @@ func setup(metrics: Dictionary, c: BattleCombatant, label: String, portrait_tint
 	_mp.position = Vector2(mp_x, bar_y + HudLayout.num(_m, "hp_bar_px") - HudLayout.num(_m, "mp_bar_px"))
 	_mp.size = Vector2(mp_w, HudLayout.num(_m, "mp_bar_px"))
 	add_child(_mp)
-	if c.swell_mode != &"":
+	if c.swell_mode != &"" and SwellRingView.draws_hero(c.id):
 		var swell_px := HudLayout.num(_m, "swell_bar_px")
 		_swell = HudGauge.new(&"swell")
 		_swell.position = Vector2(name_x, bar_y + HudLayout.num(_m, "hp_bar_px") - swell_px)

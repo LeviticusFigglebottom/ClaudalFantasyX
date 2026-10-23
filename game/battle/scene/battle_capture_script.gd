@@ -7,6 +7,10 @@ extends RefCounted
 
 ## The Swell ring shot freezes this long before the second flare's peak, the ring closing in.
 const RING_SHOT_BEFORE_PEAK_SEC := 0.2
+## M2-UI-02 / M2-UI-01 capture states (their fixtures share the id; see shots.json).
+const SCRIPT_READ_PANEL := &"read_panel"
+const SCRIPT_OPENING_BANNER := &"opening_banner"
+const SCRIPT_SWELL_MODES := &"swell_modes"
 
 
 ## Plays `ctl`'s already-started fixture `sid` (a BattleController.SCRIPT_* id) to its state.
@@ -14,7 +18,7 @@ static func play(ctl: BattleController, sid: StringName) -> void:
 	match sid:
 		BattleController.SCRIPT_PLAYER_PREVIEW:
 			_to_turn_of(ctl, &"rhen")
-			_press(ctl, &"ui_down")
+			ctl.hud.commands.select(BattleMenus.ROW_SKILLS)  # past the Swell row (M2-UI-01)
 			_press(ctl, &"ui_accept")
 			ctl.hud.commands.select(&"undertow_cut")
 			_press(ctl, &"ui_accept")
@@ -49,6 +53,23 @@ static func play(ctl: BattleController, sid: StringName) -> void:
 			_press(ctl, &"ui_accept")
 			ctl.tick(ring.time_to_peak() - RING_SHOT_BEFORE_PEAK_SEC)
 			ctl.swell_input_live = false
+		SCRIPT_READ_PANEL:
+			# Ysolde opens and Reads the reflecting Lantern Eel: the Read panel holds the battle.
+			_to_turn_of(ctl, &"ysolde")
+			ctl.hud.commands.select(BattleMenus.ROW_SKILLS)
+			_press(ctl, &"ui_accept")
+			ctl.hud.commands.select(&"read")
+			_press(ctl, &"ui_accept")
+			ctl.aim_at(&"lantern_eel")
+			_press(ctl, &"ui_accept")
+		SCRIPT_OPENING_BANNER:
+			pass  # the fixture's ambush plays the foes' turns and shows the banner by itself
+		SCRIPT_SWELL_MODES:
+			# Rhen's gauge is part full: the Swell page lists Lamp Dive (greyed) and the fill modes.
+			_to_turn_of(ctl, &"rhen")
+			ctl.hud.commands.select(BattleMenus.ROW_SWELL)
+			_press(ctl, &"ui_accept")
+			ctl.hud.commands.select(StringName(BattleMenus.ROW_SWELL_MODE_PREFIX + "wake"))
 
 
 ## Plays (party: Attack the first living foe) until it is `cid`'s turn.

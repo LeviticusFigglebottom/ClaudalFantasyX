@@ -19,6 +19,9 @@ var encounter: StringName = &""
 var rng_seed := 0
 ## Combatant id (or base id) -> {hp?, statuses?: [{id, duration}], provoked_by?}.
 var opening: Dictionary = {}
+## The battle's opening (BattleOpening: preemptive or ambush; &"" = normal), so a capture can show
+## the opening banner without a roll (M2-UI-02). "battle_opening" in the fixture row.
+var battle_opening: StringName = &""
 
 
 static func load_fixture(fixture_id: StringName, path: String = DATA_PATH) -> BattleFixture:
@@ -36,6 +39,7 @@ static func load_fixture(fixture_id: StringName, path: String = DATA_PATH) -> Ba
 	fx.encounter = StringName(str(spec.get("encounter", "")))
 	fx.rng_seed = int(spec.get("seed", 0))
 	fx.opening = (spec.get("opening", {}) as Dictionary).duplicate(true)
+	fx.battle_opening = StringName(str(spec.get("battle_opening", "")))
 	return fx
 
 
@@ -62,6 +66,8 @@ static func merged_tables(tables: Dictionary, overrides: Variant) -> Dictionary:
 ## Applies the opening state through the engine (M1-CMB-06): UI code never writes combatant state.
 func prepare(engine: BattleEngine) -> void:
 	engine.apply_fixture(opening)
+	if BattleOpening.OPENINGS.has(battle_opening):
+		engine.opening = battle_opening
 
 
 static func _root(path: String) -> Dictionary:
