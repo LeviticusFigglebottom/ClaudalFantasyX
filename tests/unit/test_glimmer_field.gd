@@ -564,3 +564,18 @@ func _host() -> Node:
 
 func _json(path: String) -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string(path)) as Dictionary
+
+
+## M1-RND-17 (review-sweep-N B2, S2): the released halo hue comes from the released colour, and the
+## near-horizon hue switch only applies to a field whose scene has a warm horizon.
+func test_released_halo_hue_and_warm_horizon_gate() -> void:
+	var field := GlimmerField.new()
+	var hue := field.released_hue_deg()
+	assert_between(hue, 75.0, 95.0, "glimmer_lift #FFE9B8 is a gold hue (about 83 deg)")
+	var p := field.draw_parameters()
+	assert_eq(p["halo_hue_deg"], hue)
+	assert_eq(p["halo_hue_horizon_deg"], hue, "no switch by default (night, noon)")
+	field.warm_horizon_halo = true
+	var lk := field.config["look"] as Dictionary
+	assert_eq(field.draw_parameters()["halo_hue_horizon_deg"], float(lk["halo_hue_horizon_deg"]), "dusk switch")
+	field.free()
