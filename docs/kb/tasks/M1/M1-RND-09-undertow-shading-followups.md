@@ -2,7 +2,7 @@
 id: M1-RND-09
 title: Undertow placement and character-shader contract fixes
 role: rendering
-status: review
+status: done
 reviewer: environment
 owner_session: session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-09-undertow-shading)
 depends_on: [M1-RND-03, M1-RND-04]
@@ -41,3 +41,4 @@ All six criteria done; report with GPU before/after, look metrics and the lavapi
   - S1: in the lavapipe capture the wound glow shows a hard diagonal ordered-dither stipple (a 4× crop of the upper-left rent shows it clearly). With 6 settle frames and FXAA nothing integrates it, so the baseline will encode it, and future look reviews of this shot will see grain that in-game TAA removes. Either raise `settle_frames` for this shot or note it in the shot's manifest entry.
   - Nit: the Ch1 (10:30, clear sky into storm) daylight shot named in the AC alongside Ch8 is not made. Ch8 alone satisfies "Ch1/Ch8", but Ch1 is the player's first sight of the storm. Consider it for M2.
   - Nit: the mood tunables live in an exported dictionary in undertow_test_rig.gd (fog_density 6e-5 and the rest). That is a test rig, it follows the existing dusk/eye/night entries, and I accept it.
+- 2026-10-23 lead: closing on review-sweep-G approve-with-fixes; the dither and the 'dark water' half of the day look go to M2-RND-01.

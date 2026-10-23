@@ -2,7 +2,7 @@
 id: M1-RND-10
 title: Undertow High-tier performance to the SPEC §4.2 budget
 role: rendering
-status: review
+status: done
 reviewer: environment
 owner_session: session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-10-undertow-perf)
 depends_on: [M1-RND-03, M1-QA-01]
@@ -31,3 +31,4 @@ Reviewer (Environment, SPEC 12.3 fidelity vs performance): please compare the be
   - **S1: the tier parameters are data, but only a test validates them.** `curl_reuse`, `temporal_jitter` and `march_steps` are checked by `test_tier_perf_params_parse_and_validate`, not by validate_data.py, which has no undertow schema. At runtime `quality_plan` clamps only the lower bound (undertow_state.gd:261 `maxi(1, …)`), so `curl_reuse` 20 passes into the shader unclamped. Clamp to the shader's range there (or in the shader), or add an append-only undertow quality check to validate_data.
   - **S2: `temporal_jitter` ignores the AA the player actually runs.** `jitter_phase` reads only the tier flag (undertow_state.gd:451-454). High with FXAA or no AA (a settings override) gets the crawling grain that undertow.md lists as a gotcha. Gate the phase on the viewport's real temporal AA (TAA or FSR2) and return 0 otherwise. It is one check, and it turns a documented artefact into a non-issue.
   - Nit: the 3060/1060 figures are still projections, as the report says. Keep it as a top risk in STATUS until someone measures them.
+- 2026-10-23 lead: closing on review-sweep-G approve-with-fixes; the runtime upper clamp, validated tier params and jitter without TAA go to the PC session as M1-RND-11.

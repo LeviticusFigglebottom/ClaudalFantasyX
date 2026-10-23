@@ -2,7 +2,7 @@
 id: M1-CMB-08
 title: Wire the shrine HP/MP carry-over into live battles; economy.md cleanups
 role: combat
-status: review
+status: done
 owner_session: "worktree-agent-af6af1b46e0ce25af"
 reviewer: architect
 depends_on: [M1-ARC-06]
@@ -40,3 +40,4 @@ See the review-sweep-F entries in the source tasks' Review logs for file:line.
   - **S1: none of the five AC checkboxes in this file is ticked**, though the notes say all are done. Tick them, or say which is not done.
   - S2: `STATUS_STONE := &"petrify"` (battle_vitals.gd:22) is a third copy of the status id (combatant.gd:107/111 and ctb_timeline.gd also hard-code it). Add one `BattleCombatant.STATUS_PETRIFY` and use it here, at least.
   - S3 (follow-up, as the handoff says): when live battles build `EquipmentEffects`, the order is Lattice → equipment → vitals. Add a comment at battle_vitals.gd:36-40 so the next person doesn't append it after the vitals clamp.
+- 2026-10-23 lead: closing on review-sweep-G approve-with-fixes; the ticked boxes and the petrify constant are folded into M1-ARC-11's rework.

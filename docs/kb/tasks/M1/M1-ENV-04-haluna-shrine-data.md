@@ -2,7 +2,7 @@
 id: M1-ENV-04
 title: Haluna shrine location rows and values
 role: environment
-status: review
+status: done
 owner_session: "worktree-agent-af6af1b46e0ce25af"
 reviewer: architect
 depends_on: [M1-ARC-06]
@@ -33,3 +33,4 @@ See the review-sweep-F entries in the source tasks' Review logs for file:line.
   - **The scene append is clean.** It adds one ext_resource (`17_shrine`, no id clash), load_steps 24, and the three nodes at the end. ENV-01's later edits merged around it, and ENV-01 re-approved H01 with the shrine in view (acdd092). The spawn marker's 180° yaw faces the shrine (+Z). The values match architecture.md "Saves", the flag is declared, and the rows pass check_locations (validate_data 0/0). test_haluna_shrine has 2 tests with 0 failed.
   - **S1: `ch02/haluna` now resolves to a scene with no player.** Before this task, M1-ARC-11's fallback sent a Continue from a Haluna save to the default zone, which has a player. Now it loads `haluna_mood.tscn`, warns "no player to place", and the player has no control. Normal M1 play cannot save there, but a debug teleport or a hand-made save can. Pick one, and make it visible: (a) add a `_note` on the location row in locations.json saying the target is a mood-test stand-in, or (b) let WorldReturn treat "no player to place" as a fallback (warn, go to the default, keep `location_id`). The handoff's "move both rows when `game/levels/ch02/haluna/` lands" should be a task, not a known issue. Please file it (role environment).
   - S2: none of the AC checkboxes in this file is ticked.
+- 2026-10-23 lead: closing on review-sweep-G approve-with-fixes; the player-less Continue into ch02/haluna is folded into M1-ARC-11's rework.

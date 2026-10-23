@@ -2,7 +2,7 @@
 id: M1-ARC-11
 title: Save and camera fixes from review-sweep-F
 role: architect
-status: review
+status: todo
 reviewer: qa
 owner_session: "worktree-agent-abfc1d79a20572a9b"
 depends_on: [M1-ARC-10]
@@ -74,3 +74,4 @@ See the review-sweep-F entries in the source tasks' Review logs for file:line.
   - **S3: Continue skips a good `location_id` when the respawn is unknown.** `WorldReturn.resolve` (world_return.gd:39-45) falls back to the default when `respawn_location_id` is stale, even when `location_id` is registered. Try `location_id` before the default. The warning and keep-the-id behaviour are correct.
   - Nits: after 99 set-asides the next temp is replaced (bounded, and it warns; fine). Continue takes the newest `saved_at`, so a save made with a wrong system clock wins forever (worth a sentence in ADR 0018). The reparent rule also drops a scripted shot that nobody awaited (fire-and-forget `play_shot` plus a timer). That is documented in field_camera.md, and the sequencer's own hold still covers the autosave.
   - Verified OK: Amendment 2 matches `TitleSaveEntry.continue_slot` (OK slots only, newest `saved_at`). `_drop_scripted_shot` runs only when an owed emit is paid. A same-second temp with less play time is not recoverable. The set-aside numbering is never overwritten. Python gates: validate_data 0/0, 322 tool tests OK, taskboard OK, gdlint and gdformat clean.
+- 2026-10-23 lead: reopened on review-sweep-G request-changes (B1 data loss). Also carries NAR-10 S1/S2, the CMB-08 petrify constant and the unticked boxes, and the ENV-04 player-less Continue.

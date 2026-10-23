@@ -2,7 +2,7 @@
 id: M1-NAR-10
 title: dlgc: catch Narrator misspellings and case-insensitive emotions
 role: architect
-status: review
+status: done
 reviewer: narrative
 owner_session: "worktree-agent-abfc1d79a20572a9b"
 depends_on: [M1-NAR-07]
@@ -52,3 +52,4 @@ See the review-sweep-F entries in the source tasks' Review logs for file:line.
   - Nit: `Narrators [grief] gathered at the pier.` errors (ratio 0.94 ≥ 0.85). This is unlikely in prose and acceptable, but please add it to the dialogue_format.md known limits next to `Narater`.
   - Nit: `NARRATOR:`, `narrator:`, `ASHA:` and `Narrator(ASHA):` are accepted in any case and normalised. That is consistent, but dialogue_format.md should say speaker names are case-insensitive while emotion ids are not.
   - 322 tool tests OK (test_dlgc included).
+- 2026-10-23 lead: closing on review-sweep-G approve-with-fixes; S1/S2 folded into M1-ARC-11's rework.

@@ -2,7 +2,7 @@
 id: M1-NAR-11
 title: Story consistency and residual echoes after the Kerrid re-staging (review-sweep-F)
 role: narrative
-status: review
+status: todo
 reviewer: cinematics
 owner_session: "worktree-agent-a34ff8effe727a250"
 depends_on: [M1-NAR-09]
@@ -79,3 +79,4 @@ The review-sweep-F entries on M1-NAR-09 and M1-NAR-08.
     - **Watch.** Ch7 ("Toma played here for Haluna as a boy", act_outline:84, toma_okeru.md:9) is a trace of the island-captain guardian. Keep it at one line.
     - **Watch.** Ch18's "heirloom weapon quests, one per party member" (act_outline:181) must not grow the inspiring game's crest-and-sigil ultimate-weapon structure.
   - **To clear:** fix B1-B3. Move the task back to review with the `.dlg` and loc line changes, and with the new ADR rows for B3 and S3.
+- 2026-10-23 lead: reopened on review-sweep-G request-changes. Lead verdict on B3: cut ch03 lines 051/052 so Asha's link to Rhen's father surfaces only in Kerrid's Ch15 confession.
