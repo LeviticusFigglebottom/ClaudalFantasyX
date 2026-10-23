@@ -249,3 +249,7 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 - **Old Kerrid** (rows above): captain of the Corrow stair-watch, never a Stillguard officer, with no title or fame outside Corrow.
 - **Dace Sallow** (row above): never Imra's guardian. He was Kerrid's hired diver at Corrow in 1001, a stranger to Imra until she went down the Fisher Stair into the sea for him.
 - **the Velamir lullaby** (row above): Dace heard Imra hum it at Haluna without ever learning her name.
+
+### Added 2026-10-23 (M1-NAR-11, review-sweep-G; ADR 0022 append note, N-24)
+- **Mother Kell** (row above): the old Oruvel diver who kept Rhen from eight to nineteen, at Dace's one message. She drowns in Ch1.
+- **Dace Sallow** (rows above): he never went home after Corrow, because his line-marks were seen on the stair and a hunted Saltwright would bring the Order to his son.
