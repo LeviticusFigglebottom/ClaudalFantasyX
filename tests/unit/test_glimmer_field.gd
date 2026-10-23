@@ -473,6 +473,42 @@ func test_sea_glow_is_decoupled_from_mote_energy() -> void:
 	assert_true(water.contains("hymn_sea_glow_energy(hymn_sea_glow_zone(sea_glow_energy))"), "water uses the zone")
 
 
+## M1-RND-15 (review-sweep-I S1): a zone hard off (ending_dock) cannot be overridden by any material's
+## own sea_glow_energy; set_scene_sea_glow(0) writes that hard off, clear_scene_sea_glow() unsets.
+func test_zone_hard_off_beats_material_sea_glow() -> void:
+	var inc := FileAccess.get_file_as_string(GLIMMER_INC)
+	var zone := inc.substr(inc.find("float hymn_sea_glow_zone("))
+	zone = zone.substr(0, zone.find("\n}\n"))
+	var off_at := zone.find("if (hymn_zone_sea_glow < 0.0)")
+	var material_at := zone.find("material_energy > 0.0 ? material_energy")
+	assert_true(off_at > 0, "the zone hard off is checked")
+	assert_true(off_at < material_at, "before the material override")
+	assert_true(zone.substr(off_at, material_at - off_at).contains("return 0.0;"), "and returns 0")
+	# Every shader that reads the zone goes through hymn_sea_glow_zone (no direct reads to bypass it).
+	for path: String in [
+		"res://game/shaders/water/water_surface_body.gdshaderinc",
+		"res://game/shaders/undertow/undertow_sea.gdshader",
+		"res://game/shaders/glimmer/glimmer_sea_glow_overlay.gdshader",
+	]:
+		var raw := 0
+		for line in FileAccess.get_file_as_string(path).split("\n"):
+			if not line.strip_edges().begins_with("//") and line.contains("hymn_zone_sea_glow"):
+				raw += 1
+		assert_eq(raw, 0, "%s reads hymn_zone_sea_glow raw" % path)
+	assert_true(GlimmerField.SEA_GLOW_ZONE_OFF < 0.0)
+	assert_eq(GlimmerField.zone_sea_glow_value(0.0), GlimmerField.SEA_GLOW_ZONE_OFF, "0 is the hard off")
+	assert_eq(GlimmerField.zone_sea_glow_value(-0.5), GlimmerField.SEA_GLOW_ZONE_OFF)
+	assert_between(GlimmerField.zone_sea_glow_value(0.07), 0.0699, 0.0701, "the Ending's E4 passes as authored")
+	var ceiling := float((GlimmerField.load_config()["sea_glow"] as Dictionary)["ceiling"])
+	assert_eq(GlimmerField.zone_sea_glow_value(1.0), ceiling, "clamped to the rule-3 ceiling")
+	assert_eq(
+		GlimmerField.SEA_GLOW_ZONE_UNSET,
+		float(ProjectSettings.get_setting("shader_globals/hymn_zone_sea_glow")["value"])
+	)
+	GlimmerField.set_scene_sea_glow(0.0)
+	GlimmerField.clear_scene_sea_glow()  # leaves the project default for later tests
+
+
 ## glimmer.json "sea_glow" mirrors palette.json rule 3, Ending exception included.
 func test_sea_glow_rule_mirrors_the_palette_and_honours_the_ending() -> void:
 	var rule := GlimmerField.load_config()["sea_glow"] as Dictionary

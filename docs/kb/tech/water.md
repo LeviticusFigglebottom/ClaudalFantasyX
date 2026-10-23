@@ -138,12 +138,12 @@ Derived from an operation count of the High fragment path: about 2,000 ALU ops a
 
 These fit the M1-RND-05 frame budgets: High's ≈ 11.4–17.5 ms already includes SSR and the base, and water replaces the opaque surface it covers. Still, a coast-heavy High frame should budget **2 ms for water**, which is one more reason to keep `ssil_quality` at medium on High. If the measured cost overruns, shed it in this order: SSR steps (`ssr_max_distance_m` / tier), per-pixel normals (Medium behaviour), then the second caustic layer.
 
-## Zone globals (M1-RND-08)
+## Zone globals (M1-RND-08, M1-RND-15)
 
 | Global | Type | Written by | Meaning |
 |---|---|---|---|
-| `hymn_water_level` | vec2 | the zone sea's `WaterSurface` every frame (`publishes_water_level`, on by default; turn it off for pools and rivers) | x = the sea's rest plane now (the node's world Y: animate the node for tides and the Drownbell flood), y = `tide_line_y`, the datum stone weathering keys its wet band to |
-| `hymn_zone_sea_glow` | float | `GlimmerField.set_scene_sea_glow(energy)` | The zone's night sea-glow energy (rule 3). It's **not** gated by the mote energy `hymn_glimmer.a` any more. A water material's own `sea_glow_energy` > 0 overrides it for that surface. 0 = off (`ending_dock`). Check a frame with `GlimmerField.sea_glow_violation(energy, sun_elevation_deg, scene, beat)`: it knows the floor and ceiling, the night minimum below −6°, and the Ending's E4 0.07 / E5 0.06 exceptions (mirrored from palette.json, tested). |
+| `hymn_water_level` | vec2 | the zone sea's `WaterSurface` every frame (`publishes_water_level`, **off by default** since M1-RND-15: turn it on for the zone's sea only; a second publisher in the tree warns). Reset to (0, 0) when the publisher leaves the tree and by `SceneRouter` on every zone change | x = the sea's rest plane now (the node's world Y: animate the node for tides and the Drownbell flood), y = `tide_line_y`, the datum stone weathering keys its wet band to |
+| `hymn_zone_sea_glow` | float | `GlimmerField.set_scene_sea_glow(energy)`; `clear_scene_sea_glow()` | The zone's night sea-glow energy (rule 3). It's **not** gated by the mote energy `hymn_glimmer.a` any more. Three states (M1-RND-15): **> 0** the zone's energy, which a water material's own `sea_glow_energy` > 0 overrides for that surface; **0** unset (the project default, and `SceneRouter` resets to it on every zone change): materials decide; **< 0** hard off, written by `set_scene_sea_glow(0)`: every surface is dark whatever its material says. `ending_dock` must call `set_scene_sea_glow(0.0)`, so no stray material can light SPEC §3.5's dark sea. A night zone must write its own value after loading. Check a frame with `GlimmerField.sea_glow_violation(energy, sun_elevation_deg, scene, beat)`: it knows the floor and ceiling, the night minimum below −6°, and the Ending's E4 0.07 / E5 0.06 exceptions (mirrored from palette.json, tested). |
 
 Environment's `WeatheringTide` (haluna_mood) still pushes `tide_line_y` / `water_height_y` into each material. It can switch to reading `hymn_water_level`.
 

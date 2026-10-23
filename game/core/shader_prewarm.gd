@@ -21,6 +21,13 @@ extends Node
 ## WorldEnvironment sky: inline sub-resource materials and real vertex formats need no registry
 ## entry. Materials scenes build at runtime in _ready still need their registry entries.
 ##
+## Time slicing (M1-RND-15, SPEC §4.2 "no hitch over 50 ms during battle transitions"): the stage is
+## built at start but its draws enter the viewport at most "materials_per_frame" per frame (0 = all at
+## once), because a pipeline compiles on the first frame that draws it and staging everything in one
+## frame cost 121-150 ms on an RX 9070 XT. When a frame comes in over "slice_budget_ms" the batch is
+## halved (never below 1), so slower cards self-tune. The stage is cleared "frames_to_render" frames
+## after the last batch went in. SceneRouter waits while is_staging() before showing the new scene.
+##
 ## Hook-up (autoload-free): `ShaderPrewarm.install(SceneRouter)` connects to
 ## SceneRouter.prewarm_requested and spawns this scene as a child of the router (which survives the
 ## scene change). Headless-safe: the dummy renderer simply draws nothing.
@@ -50,6 +57,11 @@ var _total_ms := 0.0
 var _instanced := 0
 var _skipped := 0
 var _spawned: Array[Node] = []
+var _pending: Array[Node] = []
+var _batch := 0
+var _min_batch_seen := 0
+var _batches := 0
+var _frames_since_batch := 0
 var _stage_env: Environment
 
 @onready var _viewport: SubViewport = $Viewport
@@ -111,9 +123,13 @@ func start(for_scene: String = "") -> int:
 			_skipped += 1
 	if bool(config.get("scene_materials", false)) and for_scene != "" and ResourceLoader.exists(for_scene):
 		_instanced += _instance_scene_materials(for_scene, int(config.get("max_scene_materials", 0)))
+	var per_frame := int(config.get("materials_per_frame", 0))
+	_batch = per_frame if per_frame > 0 else maxi(_pending.size(), 1)
+	_min_batch_seen = _batch
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_running = true
 	_stage_alive = true
+	_stage_next_batch()
 	return _instanced
 
 
@@ -133,9 +149,32 @@ func is_running() -> bool:
 	return _running
 
 
-## Number of warmup draw nodes currently alive in the stage.
+## True while draws are still entering or rendering in the stage: the incoming scene should wait.
+func is_staging() -> bool:
+	return _running and _stage_alive
+
+
+## True when a ShaderPrewarm child of `router` is still staging (SceneRouter waits on it).
+static func is_staging_under(router: Node) -> bool:
+	for child in router.get_children():
+		if child is ShaderPrewarm and (child as ShaderPrewarm).is_staging():
+			return true
+	return false
+
+
+## Number of warmup draw nodes currently in the stage (pending batches excluded).
 func stage_node_count() -> int:
 	return _spawned.size()
+
+
+## Draws built but not yet in the stage.
+func pending_count() -> int:
+	return _pending.size()
+
+
+## Draws that enter the stage on the next frame (halved after an over-budget frame).
+func batch_size() -> int:
+	return _batch
 
 
 ## Records one frame of the transition. Called from _process; tests call it directly.
@@ -145,14 +184,44 @@ func tick(frame_ms: float) -> void:
 	_frames_measured += 1
 	_max_frame_ms = maxf(_max_frame_ms, frame_ms)
 	_total_ms += frame_ms
-	if _stage_alive and _frames_measured >= _frames_to_render:
-		_clear_stage()
-	if _frames_measured >= _measure_frames:
+	if _stage_alive:
+		if not _pending.is_empty():
+			if frame_ms > float(config.get("slice_budget_ms", INF)) and _batch > 1:
+				_batch = maxi(floori(_batch / 2.0), 1)
+				_min_batch_seen = mini(_min_batch_seen, _batch)
+			_stage_next_batch()
+		else:
+			_frames_since_batch += 1
+			if _frames_since_batch >= _frames_to_render:
+				_clear_stage()
+	if not _stage_alive and _frames_measured >= _measure_frames:
 		_finish()
+
+
+## Moves up to one batch of pending draws into the stage; they compile on the frame that draws them.
+func _stage_next_batch() -> void:
+	var n := mini(_batch, _pending.size())
+	if n <= 0:
+		return
+	for i in n:
+		var node: Node = _pending[i]
+		(_stage_2d if node is Control else _stage_3d).add_child(node)
+		_spawned.append(node)
+	_pending = _pending.slice(n)
+	_batches += 1
+	_frames_since_batch = 0
 
 
 func _process(delta: float) -> void:
 	tick(delta * MSEC_PER_SEC)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		for n in _pending:
+			if is_instance_valid(n):
+				n.free()
+		_pending.clear()
 
 
 func _finish() -> void:
@@ -167,6 +236,8 @@ func _finish() -> void:
 		"total_ms": _total_ms,
 		"budget_ms": budget,
 		"over_budget": _max_frame_ms > budget,
+		"batches": _batches,
+		"min_batch": _min_batch_seen,
 	}
 	var line := (
 		"%s: '%s' warmed %d material(s) (%d skipped); max frame %.1f ms over %d frames (budget %.0f ms)"
@@ -180,10 +251,11 @@ func _finish() -> void:
 
 
 func _clear_stage() -> void:
-	for n in _spawned:
+	for n in _spawned + _pending:
 		if is_instance_valid(n):
 			n.free()
 	_spawned.clear()
+	_pending.clear()
 	_camera.environment = null
 	_stage_env = null
 	_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
@@ -315,8 +387,7 @@ func _instance(mat: Material, entry: Dictionary = {}) -> bool:
 		_:
 			push_warning("%s: unsupported material %s" % [LOG_PREFIX, mat.resource_path])
 			return false
-	(_stage_2d if node is Control else _stage_3d).add_child(node)
-	_spawned.append(node)
+	_pending.append(node)
 	return true
 
 
@@ -366,8 +437,7 @@ func _instance_scene_materials(path: String, cap: int) -> int:
 				node = mi
 			node.material_override = pair[0] as Material
 			node.position = in_front
-			_stage_3d.add_child(node)
-			_spawned.append(node)
+			_pending.append(node)
 			count += 1
 	inst.free()
 	return count

@@ -39,6 +39,8 @@ const PRESET_TIER_SYSTEM := "water"
 const SURFACE_NODE := &"Surface"
 const PARAM_SEA_GLOW := &"sea_glow_energy"
 const GLOBAL_WATER_LEVEL := &"hymn_water_level"
+## Tree group of the WaterSurfaces that publish hymn_water_level (at most one per zone).
+const LEVEL_PUBLISHERS_GROUP := &"hymn_water_level_publishers"
 
 @export var wave_set: WaveSet:
 	set(value):
@@ -57,7 +59,8 @@ const GLOBAL_WATER_LEVEL := &"hymn_water_level"
 	set(value):
 		river = value
 		_refresh()
-## Night sea-glow energy (color script rule 3: 0.04-0.15 at night). It shows only while hymn_glimmer.a > 0.
+## Night sea-glow energy (color script rule 3: 0.04-0.15 at night). 0 = use the zone's
+## hymn_zone_sea_glow (GlimmerField.set_scene_sea_glow). A zone hard off (ending_dock) wins over it.
 @export_range(0.0, 0.15, 0.001) var sea_glow_energy: float = 0.0:
 	set(value):
 		sea_glow_energy = value
@@ -68,9 +71,10 @@ const GLOBAL_WATER_LEVEL := &"hymn_water_level"
 ## World Y of the zone's tide-line datum (stone weathering keys its wet band to it). The current level
 ## is this node's Y: animate the node (tide, Drownbell flood) and everything follows.
 @export var tide_line_y: float = 0.0
-## Write hymn_water_level (current level, datum) every frame. Leave on for the zone's sea only: pools
-## and rivers should not drive the zone's weathering.
-@export var publishes_water_level: bool = true
+## Write hymn_water_level (current level, datum) every frame. Off by default (M1-RND-15): turn it on
+## for the zone's sea only, so pools and rivers never drive the zone's weathering. With two publishers
+## in the tree the second warns. Leaving the tree resets the global to (0, 0).
+@export var publishes_water_level: bool = false
 
 @export_group("Mesh")
 ## Optional authored mesh (rivers, pools). Empty = generate the ocean grid below.
@@ -93,6 +97,30 @@ var _surface: MeshInstance3D
 func _ready() -> void:
 	_rebuild_mesh()
 	_refresh()
+
+
+func _enter_tree() -> void:
+	if not publishes_water_level:
+		return
+	if get_tree().get_node_count_in_group(LEVEL_PUBLISHERS_GROUP) > 0:
+		push_warning(
+			(
+				"WaterSurface %s: another WaterSurface already publishes hymn_water_level; only the zone's sea should"
+				% get_path()
+			)
+		)
+	add_to_group(LEVEL_PUBLISHERS_GROUP)
+
+
+func _exit_tree() -> void:
+	if publishes_water_level or is_in_group(LEVEL_PUBLISHERS_GROUP):
+		remove_from_group(LEVEL_PUBLISHERS_GROUP)
+		clear_water_level()
+
+
+## Resets hymn_water_level to its project default (0, 0). SceneRouter also calls it on every zone change.
+static func clear_water_level() -> void:
+	RenderingServer.global_shader_parameter_set(GLOBAL_WATER_LEVEL, Vector2.ZERO)
 
 
 func _process(_delta: float) -> void:
