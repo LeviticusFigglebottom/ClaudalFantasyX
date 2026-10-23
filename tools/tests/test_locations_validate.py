@@ -25,6 +25,8 @@ ZONE_TEXT = """[gd_scene format=3]
 
 [node name="Deep" type="Marker3D" parent="Spawns/Gate"]
 
+[node name="Player" type="CharacterBody3D" parent="."]
+
 [node name="SaveShrine" parent="." instance=ExtResource("7_shrine")]
 id = &"zone_shrine"
 location_id = &"zone"
@@ -111,6 +113,34 @@ class LocationValidatorTests(unittest.TestCase):
         doc = copy.deepcopy(DOC)
         doc["locations"].append(copy.deepcopy(doc["locations"][0]))
         self.assertTrue(any("duplicate location id" in e for e in errors(doc=doc)))
+
+    def test_scene_has_player(self) -> None:
+        self.assertTrue(vd.scene_has_player(ZONE_TEXT))
+        no_player = ZONE_TEXT.replace('[node name="Player" type="CharacterBody3D" parent="."]\n', "")
+        self.assertFalse(vd.scene_has_player(no_player))
+        self.assertFalse(vd.scene_has_player(no_player + '[node name="Player" type="Node3D" parent="Deep"]\n'),
+                         "a Player deeper than the root's children is not found by place_player")
+        grouped = no_player + '[node name="Hero" type="Node3D" parent="Rig" groups=["actors", "player"]]\n'
+        self.assertTrue(vd.scene_has_player(grouped))
+
+    def test_a_scene_with_no_player_must_be_marked_not_playable(self) -> None:
+        """M1-ARC-11 (review-sweep-G S1 on M1-ENV-04): Continue into a player-less scene strands
+        the player, so the row must say so, and the fallbacks must be playable."""
+        no_player = ZONE_TEXT.replace('[node name="Player" type="CharacterBody3D" parent="."]\n', "")
+        errs = errors(text=no_player)
+        self.assertTrue(any("has no player" in e for e in errs), errs)
+        doc = copy.deepcopy(DOC)
+        doc["locations"].append({"id": "mood", "scene": ZONE, "spawn": "Gate", "name_key": "LOCATION_ZONE",
+                                 "playable": False})
+        self.assertEqual(errors(doc=doc), [])
+        doc["locations"][1]["playable"] = "no"
+        self.assertTrue(any("'playable' must be true or false" in e for e in errors(doc=doc)))
+        doc["locations"][1]["playable"] = False
+        doc["default_location"] = "mood"
+        doc["new_game"] = {"location_id": "mood", "spawn": "Gate"}
+        errs = errors(doc=doc)
+        self.assertTrue(any("default_location: location 'mood' is not playable" in e for e in errs), errs)
+        self.assertTrue(any("new_game: location 'mood' is not playable" in e for e in errs), errs)
 
     def test_repo_data_files_parse(self) -> None:
         for rel in (vd.LOCATIONS_FILE, vd.PARTY_REST_FILE):

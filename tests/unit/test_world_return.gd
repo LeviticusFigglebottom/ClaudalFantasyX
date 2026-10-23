@@ -264,6 +264,74 @@ func test_an_empty_location_uses_the_default_without_a_warning() -> void:
 	_done()
 
 
+## M1-ARC-11 (QA review-sweep-G S3): a stale respawn does not skip a good location_id.
+func test_a_stale_respawn_continues_at_the_saved_location() -> void:
+	wr.enabled = true
+	Game.state.location_id = &"zone_b"
+	Game.state.respawn_location_id = &"ch99/renamed_shrine"
+	Game.state.respawn_spawn = &"Gate"
+	var to := wr.resolve(Game.state)
+	assert_eq(to["location_id"], &"zone_b", "the saved location, not the default")
+	assert_eq(to["spawn"], &"Dock", "at the location's own spawn (the respawn's spawn belongs elsewhere)")
+	assert_false(bool(to["fallback"]))
+	var tally := _WarningTally.new()
+	OS.add_logger(tally)
+	EventBus.game_loaded.emit(3)
+	OS.remove_logger(tally)
+	assert_eq(swaps, [[ZONE_B, &"Dock"]] as Array[Array])
+	assert_eq(tally.matching("ch99/renamed_shrine"), 1, "the stale respawn is reported once")
+	assert_eq(Game.state.respawn_location_id, &"ch99/renamed_shrine", "and kept, like a stale location")
+	Game.state.location_id = &"ch99/gone"
+	swaps.clear()
+	EventBus.game_loaded.emit(3)
+	assert_eq(swaps, [[ZONE_A, &"Gate"]] as Array[Array], "both stale: the default")
+	_done()
+
+
+## M1-ARC-11 (review-sweep-G S1 on M1-ENV-04): a location whose scene has no player (a mood or
+## art stand-in, marked "playable": false) is never entered. Continue and go_to warn, go to the
+## default and keep the saved location, so the player is never stranded without control.
+func test_a_location_with_no_player_is_never_entered() -> void:
+	var doc := _registry_doc()
+	(doc["locations"] as Array).append(
+		{"id": "mood", "scene": ZONE_B, "spawn": "Dock", "name_key": "LOCATION_FIELD_TEST", "playable": false}
+	)
+	wr.registry = LocationRegistry.from_dict(doc)
+	assert_true(wr.registry.has_location(&"mood"))
+	assert_false(wr.registry.can_enter(&"mood"))
+	assert_true(wr.registry.can_enter(&"zone_b"), "playable is the default")
+	var to := wr.registry.resolve(&"mood")
+	assert_eq(to["location_id"], &"zone_a")
+	assert_eq(to["reason"], LocationRegistry.REASON_NOT_PLAYABLE)
+	wr.enabled = true
+	Game.state.location_id = &"mood"
+	Game.state.respawn_location_id = &"mood"
+	var tally := _WarningTally.new()
+	OS.add_logger(tally)
+	EventBus.game_loaded.emit(3)
+	assert_true(wr.go_to(&"mood"))
+	OS.remove_logger(tally)
+	assert_eq(swaps, [[ZONE_A, &"Gate"], [ZONE_A, &"Gate"]] as Array[Array], "the default stands in both times")
+	assert_eq(tally.matching("no player to place"), 2, "each one warns")
+	assert_eq(Game.state.location_id, &"mood", "the saved location is kept")
+	Game.state.respawn_location_id = &"mood"
+	Game.state.location_id = &"zone_b"
+	swaps.clear()
+	EventBus.game_loaded.emit(3)
+	assert_eq(swaps, [[ZONE_B, &"Dock"]] as Array[Array], "a stand-in respawn yields to a good location")
+	_done()
+
+
+## The real registry marks the Haluna mood stand-in (until game/levels/ch02/haluna/ exists).
+func test_the_real_haluna_stand_in_is_not_entered() -> void:
+	var reg := LocationRegistry.load_default()
+	assert_true(reg.has_location(&"ch02/haluna"))
+	assert_false(reg.can_enter(&"ch02/haluna"), "haluna_mood.tscn has no player")
+	assert_true(reg.can_enter(reg.default_location))
+	assert_true(reg.can_enter(reg.new_game_location))
+	_done()
+
+
 func _host() -> Node:
 	return (Engine.get_main_loop() as SceneTree).current_scene
 
