@@ -127,3 +127,31 @@ func _to_turn_of(cid: StringName) -> void:
 			engine.perform(&"attack", engine.living_foes_of(engine.current).slice(0, 1))
 		else:
 			engine.run_enemy_turn()
+
+
+# --- M1-UI-02 ----------------------------------------------------------------------------
+
+
+func test_swap_preview_replaces_the_whole_order() -> void:
+	_to_turn_of(&"rhen")
+	var after := engine.preview_swap(&"rhen", &"toma")
+	var affected: Array[StringName] = [&"rhen"]
+	var slots := TurnTimeline.build_slots(&"rhen", engine.preview(), after, {}, 16, affected, true)
+	assert_eq(slots.size(), CtbTimeline.PREVIEW_LENGTH)
+	assert_eq(slots[0]["id"], &"toma", "the entrant takes the current turn")
+	assert_true(bool(slots[0]["is_current"]))
+	for i in slots.size():
+		assert_eq(slots[i]["id"], after[i].combatant_id, "slot %d follows preview_swap" % i)
+		assert_false(slots[i]["id"] == &"rhen", "the leaver is off the timeline")
+		if slots[i]["id"] == &"toma":
+			assert_eq(int(slots[i]["moved"]), 0, "new turns get no arrow")
+
+
+func test_doom_is_carried_into_the_slots() -> void:
+	engine.current.add_status(&"doom", 2)
+	var slots := TurnTimeline.build_slots(engine.current.id, engine.preview(), [], {}, 16)
+	var counts: Array[int] = []
+	for s in slots:
+		if s["id"] == engine.current.id:
+			counts.append(int(s["doom"]))
+	assert_eq(counts, [2, 1] as Array[int], "the count on each remaining turn, then nothing")
