@@ -2,8 +2,8 @@
 id: M1-NAR-09
 title: Act I echo audit (Ch1-Ch8): Sefir's tournament introduction, the seawall operation
 role: narrative
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a1c60c801e373ac96"
 depends_on: [M1-NAR-08]
 milestone: M1
 request-from: "lead"
