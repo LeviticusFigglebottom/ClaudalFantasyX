@@ -17,7 +17,7 @@ M1-QA-06 pinned Blender's thread count in the rebuild gate (tools/dev/blender_bu
 
 ## Acceptance criteria
 - [x] base_body's build script passes `--threads 1` to Blender (or stops exporting tangents and regenerates), and M1-CHR-05's rebuild uses it.
-- [ ] Asha's build.sh passes `--threads 4` (or the gate's `default_threads` changes with a regenerate, in one commit). **Handed to the Asha line**: this round was told not to touch `assets_src/characters/asha`, because another round may be editing it. The change is one line: `"$blender" --threads 4 --background ...` in `build.sh`. After it, extend `test_owner_build_scripts_use_the_gate_thread_count` (tools/tests/test_blender_builds.py) to cover `asha/build.sh`.
+- [x] Asha's build.sh passes `--threads 4` (or the gate's `default_threads` changes with a regenerate, in one commit). **Handed to the Asha line**: this round was told not to touch `assets_src/characters/asha`, because another round may be editing it. The change is one line: `"$blender" --threads 4 --background ...` in `build.sh`. After it, extend `test_owner_build_scripts_use_the_gate_thread_count` (tools/tests/test_blender_builds.py) to cover `asha/build.sh`.
 - [x] `python3 tools/dev/verify_blender_builds.py --job asha --job base_body` agrees with the committed files, apart from base_body's tracked M1-CHR-05 mismatch until that lands. (M1-CHR-05 landed in the same branch: both jobs are `identical`.)
 
 ## Notes
@@ -33,3 +33,4 @@ M1-QA-06 pinned Blender's thread count in the rebuild gate (tools/dev/blender_bu
     - **S2: the Asha rows in assets/PROVENANCE.md:158-167 still show `blender --background --factory-startup --python ...` with no `--threads 4`.** The base_body rows were updated. Append-only rules allow fixing the owner's own rows.
     - **S3: the second criterion's box is still `[ ]`,** although the Lead's log line says it is closed. Tick it when S1 lands.
 - 2026-10-23 lead: closing on review-sweep-L approve; the should-fixes are in M1-NIT-02.
+- 2026-10-23 qa (M1-NIT-02): S1 to S3 done. `test_owner_build_scripts_use_the_gate_thread_count` now checks every `"$blender" ... --python <script>` call in every tracked `assets_src/**/*.sh` against the gate job that runs that script (base_body `--threads 1`, asha `--threads 4`). It also fails on a build script whose Blender script no job runs. The Asha PROVENANCE rows show `--threads 4`, and criterion 2 is ticked.
