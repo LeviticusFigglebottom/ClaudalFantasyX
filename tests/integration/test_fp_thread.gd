@@ -2,7 +2,7 @@ extends TestCase
 ## M2-FP-04: the whole first-playable thread, headless, with instant cutscenes and every scene change
 ## recorded instead of made: New Game → prologue → Haluna (Cutscene A) → three villagers → walk up
 ## the beach into the tideline battle → win → back at BattleReturn (not re-triggered) → the shrine
-## gate on the causeway head → Cutscene B on its set → end card.
+## gate on the causeway head → Cutscene B on its set → the Drownbell → end card.
 
 const ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
 const PROLOGUE := "res://game/levels/prologue/prologue.tscn"
@@ -66,7 +66,7 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	# The battle: win, and come back to BattleReturn with the flag set.
 	BattleRequest.change_scene = func(_p: String) -> void: pass
 	BattleRequest.start(&"ch02_tideline", &"ch02/haluna", &"BattleReturn", &"ch02_tideline_won")
-	_win_battle()
+	_win_battle(&"ch02_tideline")
 	assert_true(bool(Game.get_flag(&"ch02_tideline_won")))
 	assert_eq(travels.back(), [&"ch02/haluna", &"BattleReturn"])
 	BattleRequest.change_scene = Callable()
@@ -86,17 +86,24 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	assert_eq(hand_offs, [[&"cutscene", FIRST_VERSE]] as Array[Array])
 	_free(zone)
 
-	# Cutscene B on its set, then the end card.
+	# Cutscene B on its set, then the Drownbell, then the end card.
 	var verse := (load(FIRST_VERSE) as PackedScene).instantiate() as FirstVerseScene
 	verse.autoplay = false
-	var changes: Array[String] = []
-	verse.change_scene = func(p: String) -> void: changes.append(p)
+	var requests: Array[BattleRequest] = []
+	verse.start_battle = func(r: BattleRequest) -> void: requests.append(r)
 	_host().add_child(verse)
 	verse.sequencer.instant = true
 	verse.run()
 	assert_true(bool(Game.get_flag(&"ch03_first_verse_sung")), "the verse was sung")
-	assert_eq(changes, [EndCard.SCENE])
+	assert_true(bool(Game.get_flag(&"ch03_ilun_bound")), "Ilun answers Asha in the fight")
 	verse.free()
+	assert_eq(requests.size(), 1, "Cutscene B calls the Drownbell")
+	BattleRequest.change_scene = func(_p: String) -> void: pass
+	BattleRequest.submit(requests[0])
+	var opened := _win_battle(&"drownbell")
+	BattleRequest.change_scene = Callable()
+	assert_true(bool(Game.get_flag(&"ch03_drownbell_defeated")))
+	assert_eq(opened, [EndCard.SCENE] as Array[String], "after the Drownbell, the end card")
 	Game.state = saved_state
 
 
@@ -147,25 +154,30 @@ func _walk(zone: HalunaZone, world_dir: Vector3, seconds: float, stop: Callable)
 	zone.player.input_override = Vector2.ZERO
 
 
-func _win_battle() -> void:
+## Plays the pending request to a forced win (every foe at 1 HP, attacks only) and presses Return.
+## Returns the scenes Return opened (a request with return_scene) instead of travelling.
+func _win_battle(encounter: StringName) -> Array[String]:
+	var opened: Array[String] = []
 	var ctl := (load(BATTLE) as PackedScene).instantiate() as FieldBattle
 	ctl.auto_start = false
 	ctl.pacing_scale = 0.0
 	ctl.show_damage_numbers = false
 	ctl.travel = _record_travel
+	ctl.open_title = func(p: String) -> void: opened.append(p)
 	_host().add_child(ctl)
 	ctl.start_sandbox()
-	assert_eq(ctl.engine.encounter_id, &"ch02_tideline")
-	for foe in ctl.engine.enemies:
-		foe.hp = 1  # force a quick win; the controller never writes combatant state
+	assert_eq(ctl.engine.encounter_id, encounter)
 	for _i in MAX_TURNS:
 		if ctl.state == BattleController.STATE_RESULT:
 			break
+		for foe in ctl.engine.enemies:
+			foe.hp = mini(foe.hp, 1)  # force a quick win; the controller never writes combatant state
 		ctl.act(&"attack", [ctl.engine.living_foes_of(ctl.engine.current)[0].id])
 	assert_eq(ctl.engine.outcome, BattleEngine.OUTCOME_VICTORY)
 	ctl.hud.result.accept()
 	_host().remove_child(ctl)
 	ctl.free()
+	return opened
 
 
 func _free(zone: Node) -> void:

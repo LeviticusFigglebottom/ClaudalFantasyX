@@ -1,6 +1,6 @@
 {
   "first_playable": {
-    "doc": "First-playable flow (M2-FP-03; docs/kb/tech/first_playable_flow.md). field_battle: the scene BattleRequest opens and the party a field battle starts with when the request names none (active, reserve, rng seed). prologue: the cutscene the prologue plays and where it hands the party off. end_card: the minimum hold before ui_accept is taken, its fade-in, and the scene accept returns to (the title). haluna: what HalunaStory (game/flow/haluna_story.gd, M2-FP-04) plays in the playable zone: the cutscene on first arrival and its spawn, the field battle's return spawn, victory flag and escape spawn (M2-FP-05: the beach side of the trigger), and the scene the causeway-head trigger opens (Cutscene B on its placeholder set, then the end card).",
+    "doc": "First-playable flow (M2-FP-03; docs/kb/tech/first_playable_flow.md). field_battle: the scene BattleRequest opens and the party a field battle starts with when the request names none (active, reserve, rng seed). prologue: the cutscene the prologue plays and where it hands the party off. end_card: the minimum hold before ui_accept is taken, its fade-in, and the scene accept returns to (the title). haluna: what HalunaStory (game/flow/haluna_story.gd, M2-FP-04) plays in the playable zone: the cutscene on first arrival and its spawn, the field battle's return spawn, victory flag and escape spawn (M2-FP-05: the beach side of the trigger), and the scene the causeway-head trigger opens (Cutscene B on its placeholder set, then the end card). first_verse: the fight Cutscene B's <<event start_battle>> opens (M2-FP-06): its party (Rhen, Asha and Toma, no reserve), the flag a win sets, and the scene after it (the end card).",
     "field_battle": {
       "scene": "res://game/flow/field_battle.tscn",
       "active": [
@@ -31,6 +31,16 @@
       "battle_victory_flag": "ch02_tideline_won",
       "battle_escape_spawn": "BeforeBattle",
       "ending_scene": "res://game/levels/ch03/first_verse/first_verse.tscn"
+    },
+    "first_verse": {
+      "battle_active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "battle_reserve": [],
+      "victory_flag": "ch03_drownbell_defeated",
+      "after_scene": "res://game/flow/end_card.tscn"
     }
   }
 }

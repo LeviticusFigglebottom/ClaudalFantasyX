@@ -35,8 +35,8 @@ var request: BattleRequest
 ## How Return travels: (location_id: StringName, spawn: StringName) -> bool. Unset =
 ## SceneRouter.world_return.go_to. Tests set a recorder.
 var travel: Callable = Callable()
-## How Return to last save opens the title when there is no record: (scene_path: String). Unset =
-## SceneRouter.change_scene. Tests set a recorder.
+## How a scene is opened instead of travelling (the title after a defeat with no record, or the
+## request's return_scene): (scene_path: String). Unset = SceneRouter.change_scene. Tests record.
 var open_title: Callable = Callable()
 ## Where save records are read (null = the SaveSystem autoload). Tests pass their own.
 var save_system: Node
@@ -82,6 +82,9 @@ func return_to_field() -> bool:
 	returned = true
 	if engine.outcome == BattleEngine.OUTCOME_VICTORY and request.victory_flag != &"":
 		Game.set_flag(request.victory_flag)
+	if request.return_scene != "":
+		_open_scene(request.return_scene)
+		return true
 	var spawn := request.return_spawn
 	if engine.outcome == BattleEngine.OUTCOME_ESCAPED and request.escape_spawn != &"":
 		spawn = request.escape_spawn
@@ -124,10 +127,15 @@ func _travel(location_id: StringName, spawn: StringName) -> bool:
 
 
 func _open_title() -> void:
+	_open_scene(RETURN_SCENE)
+
+
+## Opens `path` through the router (tests record it through the `open_title` hook).
+func _open_scene(path: String) -> void:
 	if open_title.is_valid():
-		open_title.call(RETURN_SCENE)
+		open_title.call(path)
 	elif is_inside_tree():
-		SceneRouter.change_scene(RETURN_SCENE)
+		SceneRouter.change_scene(path)
 
 
 func _world_return() -> WorldReturn:

@@ -34,6 +34,9 @@ var victory_flag: StringName = &""
 ## Where an escape returns the party (M2-FP-05): the near side of the field trigger, so fleeing
 ## never carries the party past it. &"" = return_spawn.
 var escape_spawn: StringName = &""
+## After a victory or an escape, open this scene instead of travelling to return_location (M2-FP-06:
+## the Drownbell is the last fight of the first playable and goes to the end card). "" = travel.
+var return_scene: String = ""
 
 
 ## A request with the data file's party and seed; nothing is recorded or opened.
