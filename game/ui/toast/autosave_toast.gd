@@ -111,11 +111,14 @@ func _on_autosave_finished(_reason: StringName, error: int) -> void:
 	_show()
 
 
+## A second skip while the notice is up keeps its opacity: it fades in from where it is, then holds
+## again in full, so the panel never blinks back to 0 (M1-NIT-02, review-sweep-L on M1-UI-09).
 func _show() -> void:
 	_label.text = tr(TEXT_KEY)
+	var a := opacity() if is_showing() else 0.0
 	_panel.visible = true
-	_panel.modulate.a = 0.0
-	_age = 0.0
+	_panel.modulate.a = a
+	_age = a * float((_d.get("motion", {}) as Dictionary).get("fade_in_sec", 0.0))
 	set_process(true)
 
 

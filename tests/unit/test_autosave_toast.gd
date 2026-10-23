@@ -77,6 +77,28 @@ func test_it_fades_out_and_hides_itself() -> void:
 	_done()
 
 
+func test_a_second_skip_keeps_the_opacity_and_holds_again() -> void:  # M1-NIT-02
+	var m := _motion()
+	var fade_in := float(m["fade_in_sec"])
+	var hold := float(m["hold_sec"])
+	var fade_out := float(m["fade_out_sec"])
+	_bus.autosave_finished.emit(SaveSystem.REASON_CHAPTER, ERR_ALREADY_EXISTS)
+	_toast.advance(fade_in * 0.5)
+	var mid_in := _toast.opacity()
+	_bus.autosave_finished.emit(SaveSystem.REASON_CHAPTER, ERR_ALREADY_EXISTS)
+	assert_between(_toast.opacity(), mid_in - 0.001, mid_in + 0.001, "no restart from 0 during the fade in")
+	_toast.advance(fade_in * 0.5 + hold + fade_out * 0.5)
+	var mid_out := _toast.opacity()
+	assert_between(mid_out, 0.3, 0.7, "fading out")
+	_bus.autosave_finished.emit(SaveSystem.REASON_CHAPTER, ERR_ALREADY_EXISTS)
+	assert_between(_toast.opacity(), mid_out - 0.001, mid_out + 0.001, "no blink during the fade out")
+	_toast.advance(fade_in)
+	assert_between(_toast.opacity(), 0.99, 1.0, "back to full")
+	_toast.advance(hold * 0.9)
+	assert_between(_toast.opacity(), 0.99, 1.0, "and a fresh hold")
+	_done()
+
+
 func test_it_never_takes_input_and_has_its_text() -> void:
 	_bus.autosave_finished.emit(SaveSystem.REASON_CHAPTER, ERR_ALREADY_EXISTS)
 	for c: Node in _toast.find_children("*", "Control", true, false):
