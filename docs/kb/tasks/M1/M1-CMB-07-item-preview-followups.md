@@ -2,8 +2,8 @@
 id: M1-CMB-07
 title: Engine item previews and sweep-C combat nits
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a6210d9196b16c99a"
 depends_on: [M1-UI-04]
 milestone: M1
 request-from: "ui"
