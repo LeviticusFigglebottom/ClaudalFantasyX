@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/base_body_stage.tscn" id="1_stage"]
+[ext_resource type="PackedScene" path="res://assets/characters/base_body/base_body_slender.glb" id="2_slender"]
+[ext_resource type="PackedScene" path="res://assets/characters/base_body/base_body_athletic.glb" id="3_athletic"]
+[ext_resource type="PackedScene" path="res://assets/characters/base_body/base_body_heavy.glb" id="4_heavy"]
+
+[sub_resource type="Environment" id="Env_studio"]
+background_mode = 1
+background_color = Color(0.3, 0.3, 0.31, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.62, 0.63, 0.66, 1)
+ambient_light_energy = 0.45
+tonemap_mode = 4
+ssao_enabled = true
+ssao_radius = 0.6
+ssao_intensity = 1.6
+
+[sub_resource type="CameraAttributesPractical" id="CamAttr"]
+
+[node name="BaseBodyTest" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_studio")
+camera_attributes = SubResource("CamAttr")
+
+[node name="Slender" parent="." instance=ExtResource("1_stage")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, 0)
+body_scene = ExtResource("2_slender")
+
+[node name="SlenderPosed" parent="." instance=ExtResource("1_stage")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0, 0)
+body_scene = ExtResource("2_slender")
+test_pose = {
+"DEF-upper_arm.L": Vector3(0, 0, -35),
+"DEF-forearm.L": Vector3(75, 0, 0),
+"DEF-forearm.R": Vector3(40, 0, 0),
+"DEF-thigh.L": Vector3(-45, 0, 0),
+"DEF-shin.L": Vector3(70, 0, 0),
+"DEF-spine.004": Vector3(15, 0, 0),
+"DEF-f_index.01.R": Vector3(50, 0, 0),
+"DEF-f_index.02.R": Vector3(50, 0, 0),
+"DEF-f_middle.01.R": Vector3(50, 0, 0),
+"DEF-f_middle.02.R": Vector3(50, 0, 0),
+"DEF-f_ring.01.R": Vector3(50, 0, 0),
+"DEF-f_ring.02.R": Vector3(50, 0, 0),
+"DEF-f_pinky.01.R": Vector3(50, 0, 0),
+"DEF-f_pinky.02.R": Vector3(50, 0, 0)
+}
+
+[node name="Athletic" parent="." instance=ExtResource("1_stage")]
+body_scene = ExtResource("3_athletic")
+
+[node name="Heavy" parent="." instance=ExtResource("1_stage")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
+body_scene = ExtResource("4_heavy")

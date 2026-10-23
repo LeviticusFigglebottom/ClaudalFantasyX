@@ -35,6 +35,7 @@ We're building *Hymn of the Undertow*: an original, cinematic, turn-based JRPG i
 5. **GitHub Actions does not run** (runs stay queued). We gate locally instead, so the export job has never run.
 
 ## Blockers / questions for the human
+- **Reefball arena form (IP judgment):** SPEC §6.10 specifies "a suspended sphere of water", and a fresh reviewer flagged it as the inspiring game's signature arena image. Keep the sphere (we differentiate its construction and ritual meaning; Narrative is drafting that in story/decisions_log.md), or change the form? The default is to keep it as the spec says.
 - **Listen to `assets/audio/music/hush_theme_sketch.ogg`** (69 s) and tell us whether the synthesized direction is acceptable, or whether you'd supply or commission music (§16 Q3, raised early per §14).
 - **GitHub Actions:** check Settings → Actions (are workflows allowed?) and the account's minutes when convenient.
 - **LFS:** may we enable Git LFS (quota)? It's needed before the M1-CHR-02 textures land.

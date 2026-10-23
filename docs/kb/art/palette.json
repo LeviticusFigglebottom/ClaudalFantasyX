@@ -1,6 +1,6 @@
 {
   "schema": "hymn-palette/1",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "owner": "art (M1-ART-01)",
   "color_space_note": "hex is sRGB-encoded (what you type into a Godot color picker). linear is the sRGB EOTF of that hex, rounded to 4 places, which is what shaders and the renderer use. luminance_linear is Rec.709 relative luminance.",
   "global_rules": {
@@ -327,7 +327,7 @@
       "temperature": "~11900 K, off-locus green tint",
       "family": "glimmer",
       "role": "Held / anchored mote: cool cyan, drifting sideways and down.",
-      "usage_limit": "Motes, bound lamps, spawn wounds."
+      "usage_limit": "Held motes only, including motes shed from spawn wounds. Not bound lamps (glimmer_bound) and not wound surfaces (spawn_wound)."
     },
     "glimmer_bound": {
       "hex": "#4FB3B0",
@@ -339,8 +339,8 @@
       "luminance_linear": 0.3704,
       "temperature": "~10900 K, off-locus green tint",
       "family": "glimmer",
-      "role": "Bound glimmer in salt-glass housings and Lit Age conduits.",
-      "usage_limit": "Emissive inserts only."
+      "role": "Bound glimmer in salt-glass housings and Lit Age conduits, and the Vowbound (temple and summoned forms) until their release.",
+      "usage_limit": "Emissive inserts and Vowbound forms only. Steady: no flicker, no drift, no shed motes."
     },
     "spawn_wound": {
       "hex": "#3FE0C8",

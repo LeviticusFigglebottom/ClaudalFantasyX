@@ -15,6 +15,7 @@ step() { printf '\n== %s\n' "$*"; }
 
 step "Data validators";        python3 tools/validate_data.py
 step "Tool unit tests";        python3 -m unittest discover -s tools/tests
+step "Audio synth tests";       python3 -m unittest discover -s tools/audio/tests -p "test_*.py"
 step "Task board";             python3 tools/taskboard.py --check > /dev/null
 step "gdlint";                 gdlint game tests
 step "gdformat --check";       gdformat -l 120 --check game tests
@@ -35,12 +36,20 @@ step "Godot tests"
 $T "$GODOT" --headless --path . res://tests/run_tests.tscn 2>&1 | tee $L/hymn_tests.log | grep -E "FAIL|Tests:"
 if grep -E "SCRIPT ERROR|Parse Error" $L/hymn_tests.log; then echo "Script errors during tests"; exit 1; fi
 grep -q "Tests: .* 0 failed" $L/hymn_tests.log
+step "Coverage gate: battle/ + progression/ (ADR 0013)"
+cov_t0=$SECONDS
+python3 tools/coverage/run_coverage.py --godot "$GODOT" --compare-log $L/hymn_tests.log
+echo "coverage step: $((SECONDS - cov_t0))s"
 step "Boot scene smoke test (60 frames)"
 $T "$GODOT" --headless --path . --quit-after 60 > $L/hymn_boot.log 2>&1
 if grep -E "SCRIPT ERROR|ERROR" $L/hymn_boot.log; then echo "Boot scene errors"; exit 1; fi
 step "Screenshot capture + regression (software Forward+, ADR 0009)"
 set +e
-$T tools/screenshots/capture.sh
+# HYMN_SHOTS=id1,id2 restricts capture+compare to those shots. Worktree agents use it for the
+# shots their change can affect; the Lead runs the full manifest on every merge (CLAUDE.md §3).
+shot_args=()
+if [ -n "${HYMN_SHOTS:-}" ]; then shot_args=(--shots "$HYMN_SHOTS"); echo "screenshots restricted to: $HYMN_SHOTS"; fi
+timeout "${HYMN_CAPTURE_TIMEOUT:-3600}" tools/screenshots/capture.sh "${shot_args[@]}"
 cap=$?
 set -e
 if [ "$cap" -eq 3 ]; then
@@ -48,6 +57,6 @@ if [ "$cap" -eq 3 ]; then
 elif [ "$cap" -ne 0 ]; then
   echo "Screenshot capture failed (log: ${TMPDIR:-/tmp}/hymn_capture.log)"; exit 1
 else
-  python3 tools/screenshots/compare.py
+  python3 tools/screenshots/compare.py "${shot_args[@]}"
 fi
 printf '\nAll local CI gates passed.\n'

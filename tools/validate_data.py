@@ -8,11 +8,14 @@ Checks:
     unreachable nodes from each start, unknown skills, stat names, gate levels, coordinates)
   * localization: every *_key / tr("KEY") / dialogue #line: key exists in a loc CSV
   * story flags: every flag used in .gd / .dlg is declared in game/data/flags.tres
-  * dialogue: .dlg files compile (tools/dlgc.py), committed outputs are fresh, emotion tags
-    come from game/data/dialogue/emotions.json, speakers.json and text_box.json are well-formed
+  * dialogue: .dlg files compile (tools/dlgc.py), committed outputs are fresh, emotion tags, cues and
+    events come from game/data/dialogue/{emotions,cues,events}.json (long lines are warnings),
+    and those tables plus speakers.json and text_box.json are well-formed
   * provenance: every file under assets/ has a row in assets/PROVENANCE.md
   * banned terms (tools/banned_terms.txt) in game/, assets_src/, story docs, glossary
   * binary size limit while Git LFS is deferred (ADR 0005)
+  * items (game/data/items): schema, dangling refs (abilities, recipe and shop items, characters,
+    Facets), at most 4 ability slots, positive prices, declared stock flags (M1-PRG-02)
 
 Usage: python3 tools/validate_data.py [--root PATH]
 """
@@ -40,6 +43,8 @@ CANON_STATUSES = {"poison", "sleep", "silence", "darkness", "petrify", "slow", "
                   "berserk", "confuse", "doom", "zombie", "shell", "protect", "reflect", "regen",
                   "armor_break", "mental_break", "power_break", "magic_break", "provoke"}
 NO_PERMANENT_STATUSES = {"stop", "sleep"}  # -1 duration could stall every combatant
+ONLY_PERMANENT_STATUSES = {"petrify"}  # stone never takes a turn, so a countdown never ticks
+COUNTDOWN_STATUSES = {"doom"}  # a -1 countdown would never fall
 
 
 LATTICE_STATS = STAT_KEYS - {"level"}
@@ -170,6 +175,10 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
             dur = inf.get("duration", status_rows[inf["id"]].get("default_duration"))
             if inf["id"] in NO_PERMANENT_STATUSES and isinstance(dur, int) and dur < 0:
                 rep.err(f"{w}: '{inf['id']}' must not be permanent (duration -1)")
+            if inf["id"] in ONLY_PERMANENT_STATUSES and dur != -1:
+                rep.err(f"{w}: '{inf['id']}' must be permanent (duration -1)")
+            if inf["id"] in COUNTDOWN_STATUSES and (not isinstance(dur, int) or dur < 1):
+                rep.err(f"{w}: '{inf['id']}' needs a countdown duration >= 1")
             ch = inf.get("chance", 100)
             if not isinstance(ch, int) or not 0 <= ch <= 100:
                 rep.err(f"{w}: status chance must be 0..100")
@@ -181,7 +190,15 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
             rep.err(f"statuses.{st['id']}: default_duration must be an int (-1 = until cured)")
         elif st["id"] in NO_PERMANENT_STATUSES and st["default_duration"] < 1:
             rep.err(f"statuses.{st['id']}: default_duration must be >= 1")
+        elif st["id"] in COUNTDOWN_STATUSES and st["default_duration"] < 1:
+            rep.err(f"statuses.{st['id']}: default_duration must be >= 1")
+        elif st["id"] in ONLY_PERMANENT_STATUSES and st["default_duration"] != -1:
+            rep.err(f"statuses.{st['id']}: default_duration must be -1")
 
+    hero_levels = {c.get("stats", {}).get("level") for c in characters if isinstance(c.get("stats"), dict)}
+    if len(hero_levels) > 1:
+        rep.err("characters: every hero must share one fixed stats.level (ADR 0012), "
+                f"found {sorted(map(str, hero_levels))}")
     for c in characters:
         w = f"characters.{c['id']}"
         _check_stats(w, c.get("stats"), rep)
@@ -282,6 +299,8 @@ def check_dialogue(root: Path, files: dict[str, object], rep: Report) -> list[st
                 continue
             if sid in seen:
                 rep.err(f"{base}/speakers.json: duplicate speaker '{sid}'")
+            if sid == dlgc.NARRATOR:
+                rep.err(f"{base}/speakers.json: '{sid}' is reserved for narration lines (Narrator(id): ...)")
             seen.add(sid)
             if not isinstance(row.get("name_key"), str):
                 rep.err(f"speakers.{sid}: missing name_key")
@@ -312,9 +331,100 @@ def check_dialogue(root: Path, files: dict[str, object], rep: Report) -> list[st
         if not isinstance(cfg.get("flap_vowels"), str) or not cfg.get("flap_vowels"):
             rep.err("text_box.flap_vowels must be a non-empty string")
 
-    for e in dlgc.check(root):
+    for e in dialogue_vocab_errors(files.get(f"{base}/cues.json"), files.get(f"{base}/events.json")):
+        rep.err(e)
+    errors, warnings = dlgc.check_report(root)
+    for e in errors:
         rep.err(f"dlgc: {e}")
+    for w in warnings:
+        rep.warn(f"dlgc: {w}")
     return keys
+
+
+def _arg_spec_errors(spec: object, where: str, sets: dict) -> list[str]:
+    if not isinstance(spec, dict) or spec.get("type") not in dlgc.ARG_TYPES:
+        return [f"{where}: needs a 'type' from {', '.join(dlgc.ARG_TYPES)}"]
+    errs: list[str] = []
+    if spec["type"] == "enum":
+        if "set" in spec:
+            if spec["set"] not in sets:
+                errs.append(f"{where}: unknown set '{spec['set']}'")
+        elif not isinstance(spec.get("values"), list) or not spec["values"]:
+            errs.append(f"{where}: an enum needs 'values' or a 'set'")
+    for bound in ("min", "max"):
+        if bound in spec and (isinstance(spec[bound], bool) or not isinstance(spec[bound], (int, float))):
+            errs.append(f"{where}: '{bound}' must be a number")
+    return errs
+
+
+def _positional_errors(args: object, where: str, sets: dict) -> list[str]:
+    if not isinstance(args, list):
+        return [f"{where}: 'args' must be a list"]
+    errs: list[str] = []
+    seen_optional = False
+    for i, a in enumerate(args):
+        errs += _arg_spec_errors(a, f"{where}.args[{i}]", sets)
+        if isinstance(a, dict):
+            if not isinstance(a.get("name"), str):
+                errs.append(f"{where}.args[{i}]: needs a 'name'")
+            if a.get("optional"):
+                seen_optional = True
+            elif seen_optional:
+                errs.append(f"{where}.args[{i}]: a required arg after an optional one")
+    return errs
+
+
+def dialogue_vocab_errors(cues: object, events: object) -> list[str]:
+    """Shape of game/data/dialogue/cues.json and events.json (dlgc enforces their contents on .dlg files)."""
+    errs: list[str] = []
+    cw, ew = "game/data/dialogue/cues.json", "game/data/dialogue/events.json"
+    if not isinstance(cues, dict) or not isinstance(cues.get("cues"), dict) or not cues["cues"]:
+        errs.append(f"{cw}: missing non-empty object 'cues'")
+        cues = {"cues": {}}
+    sets = cues.get("sets", {})
+    if not isinstance(sets, dict) or any(not isinstance(v, list) or not v for v in sets.values()):
+        errs.append(f"{cw}: 'sets' must map names to non-empty lists")
+        sets = {}
+    for name, spec in cues["cues"].items():
+        where = f"cues.{name}"
+        if not re.fullmatch(r"[a-z][a-z0-9_]*", name):
+            errs.append(f"{where}: cue names are snake_case")
+        if not isinstance(spec, dict):
+            errs.append(f"{where}: must be an object")
+            continue
+        errs += _positional_errors(spec.get("args", []), where, sets)
+        kwargs = spec.get("kwargs", {})
+        if not isinstance(kwargs, dict):
+            errs.append(f"{where}: 'kwargs' must be an object")
+            kwargs = {}
+        for k, v in kwargs.items():
+            errs += _arg_spec_errors(v, f"{where}.kwargs.{k}", sets)
+        names = {a.get("name") for a in spec.get("args", []) if isinstance(a, dict)} | set(kwargs)
+        for n in spec.get("one_of", []):
+            if n not in names:
+                errs.append(f"{where}.one_of: '{n}' is not an arg or key of this cue")
+        for k, needed in spec.get("requires", {}).items():
+            if k not in names or needed not in names:
+                errs.append(f"{where}.requires: '{k}' and '{needed}' must both be args or keys of this cue")
+    for cue, values in (cues.get("reserved") or {}).items():
+        if cue not in cues["cues"] or not isinstance(values, dict):
+            errs.append(f"{cw}: reserved.{cue} must name a cue and map values to their meaning")
+    rows = events.get("events") if isinstance(events, dict) else None
+    if not isinstance(rows, list) or not rows:
+        return errs + [f"{ew}: missing non-empty list 'events'"]
+    seen: set[str] = set()
+    for i, row in enumerate(rows):
+        eid = row.get("id") if isinstance(row, dict) else None
+        if not isinstance(eid, str) or not re.fullmatch(r"[a-z][a-z0-9_]*", eid):
+            errs.append(f"{ew}[{i}]: needs a snake_case string 'id'")
+            continue
+        if eid in seen:
+            errs.append(f"{ew}: duplicate event '{eid}'")
+        seen.add(eid)
+        if not isinstance(row.get("doc"), str) or not row["doc"].strip():
+            errs.append(f"events.{eid}: needs a one-line 'doc'")
+        errs += _positional_errors(row.get("args", []), f"events.{eid}", sets)
+    return errs
 
 
 def _is_int(v: object) -> bool:
@@ -678,12 +788,419 @@ def collect_keys(obj: object) -> list[str]:
     return out
 
 
+# --- Items, equipment, abilities, Customize and shops (M1-PRG-02, docs/kb/design/economy.md) --------
+
+ITEMS_DIR = "game/data/items"
+ITEM_TABLES = ("items", "equipment", "abilities", "customize", "shops")
+ITEM_CATEGORIES = {"consumable", "material", "facet", "key"}
+ITEM_RULE_INTS = ("stack_cap", "key_item_cap", "currency_cap")
+ITEM_RANK_MIN, ITEM_RANK_MAX = 1, 8  # same range as skill ranks (formulas.md, Time)
+ITEM_EFFECT_FIELDS = {"heal_hp": {"amount"}, "restore_mp": {"amount"}, "cure": {"statuses"},
+                      "revive": {"hp_pct"}, "add_status": {"status", "duration"}, "delay": {"ranks"},
+                      "damage": {"amount", "element"}}
+EQUIP_SLOTS = {"weapon", "armor"}
+MAX_EQUIP_SLOTS = 4  # SPEC §6.5: "up to four ability slots"
+ABILITY_EFFECT_FIELDS = {"on_hit_element": {"element"}, "status_strike": {"status", "chance", "duration"},
+                         "stat_bonus": {"stat", "amount"}, "element_guard": {"element", "affinity"},
+                         "status_ward": {"status"}, "auto_status": {"status", "trigger"},
+                         "economy": {"currency_mult"}, "field": {"encounter_rate_pct"},
+                         "special": {"break_damage_cap"}}
+ABILITY_OPTIONAL_FIELDS = {"auto_status": {"hp_below_pct"}}
+GUARD_AFFINITIES = {"resist", "immune", "absorb"}
+AUTO_TRIGGERS = {"always", "low_hp"}
+SHOP_KINDS = {"items", "equipment"}
+
+
+def _rows(doc: object, table: str, where: str, errs: list[str]) -> list[dict]:
+    """Rows of doc[table] that have a unique string id; reports the rest."""
+    rows = doc.get(table) if isinstance(doc, dict) else None
+    if not isinstance(rows, list):
+        errs.append(f"{where}: missing top-level list '{table}'")
+        return []
+    out: list[dict] = []
+    seen: set[str] = set()
+    for i, r in enumerate(rows):
+        if not isinstance(r, dict) or not isinstance(r.get("id"), str):
+            errs.append(f"{where}[{i}]: row needs a string 'id'")
+            continue
+        if r["id"] in seen:
+            errs.append(f"{where}: duplicate id '{r['id']}'")
+        seen.add(r["id"])
+        out.append(r)
+    return out
+
+
+def _pos_int(v: object) -> bool:
+    return _is_int(v) and v > 0
+
+
+def _need_keys(row: dict, w: str, keys: tuple[str, ...], errs: list[str]) -> None:
+    for k in keys:
+        if not isinstance(row.get(k), str) or not row[k]:
+            errs.append(f"{w}: missing {k}")
+
+
+def _item_effect_errors(e: object, w: str, refs: dict[str, set[str]]) -> list[str]:
+    if not isinstance(e, dict) or e.get("type") not in ITEM_EFFECT_FIELDS:
+        return [f"{w}: effect type must be one of {sorted(ITEM_EFFECT_FIELDS)}"]
+    errs: list[str] = []
+    t = e["type"]
+    for k in sorted(ITEM_EFFECT_FIELDS[t] - set(e)):
+        errs.append(f"{w}: {t} effect needs '{k}'")
+    for k in sorted(set(e) - ITEM_EFFECT_FIELDS[t] - {"type"}):
+        errs.append(f"{w}: field '{k}' does not belong on a {t} effect")
+    for k in ("amount", "ranks"):
+        if k in e and not _pos_int(e[k]):
+            errs.append(f"{w}: {t}.{k} must be a positive int")
+    if "hp_pct" in e and not (_is_int(e["hp_pct"]) and 1 <= e["hp_pct"] <= 100):
+        errs.append(f"{w}: revive.hp_pct must be an int in 1..100")
+    if "element" in e and e["element"] not in ELEMENTS:
+        errs.append(f"{w}: unknown element '{e['element']}'")
+    if "statuses" in e:
+        sts = e["statuses"]
+        if not isinstance(sts, list) or not sts:
+            errs.append(f"{w}: cure.statuses must be a non-empty list")
+        else:
+            for s in sts:
+                if s not in refs["statuses"]:
+                    errs.append(f"{w}: unknown status '{s}'")
+    if t == "add_status":
+        s = e.get("status")
+        if s not in refs["statuses"]:
+            errs.append(f"{w}: unknown status '{s}'")
+        if not _is_int(e.get("duration")) or e["duration"] == 0 or e["duration"] < -1:
+            errs.append(f"{w}: add_status.duration must be -1 or a positive int")
+        elif e["duration"] == -1 and s in NO_PERMANENT_STATUSES:
+            errs.append(f"{w}: '{s}' may not be permanent (formulas.md, Stop / Sleep)")
+    return errs
+
+
+def _items_table_errors(doc: object, refs: dict[str, set[str]], w0: str, errs: list[str]) -> dict[str, dict]:
+    rules = doc.get("rules") if isinstance(doc, dict) else None
+    if not isinstance(rules, dict):
+        errs.append(f"{w0}: missing 'rules' object")
+        rules = {}
+    for k in ITEM_RULE_INTS:
+        if not _pos_int(rules.get(k)):
+            errs.append(f"{w0}: rules.{k} must be a positive int")
+    order = rules.get("category_order")
+    if not isinstance(order, list) or sorted(order) != sorted(ITEM_CATEGORIES):
+        errs.append(f"{w0}: rules.category_order must list each of {sorted(ITEM_CATEGORIES)} once")
+    items: dict[str, dict] = {}
+    for it in _rows(doc, "items", w0, errs):
+        w = f"{w0}: item '{it['id']}'"
+        items[it["id"]] = it
+        cat = it.get("category")
+        if cat not in ITEM_CATEGORIES:
+            errs.append(f"{w}: category must be one of {sorted(ITEM_CATEGORIES)}")
+            continue
+        _need_keys(it, w, ("name_key", "desc_key"), errs)
+        if cat == "key":
+            for k in ("price", "stack_cap", "battle"):
+                if k in it:
+                    errs.append(f"{w}: key items have no '{k}' (they can't be sold or stacked)")
+        elif not _pos_int(it.get("price")):
+            errs.append(f"{w}: price must be a positive int")
+        if "stack_cap" in it and not _pos_int(it["stack_cap"]):
+            errs.append(f"{w}: stack_cap must be a positive int")
+        if cat == "facet":
+            if it.get("facet") != it["id"] or it["id"] not in refs["facets"]:
+                errs.append(f"{w}: a facet item needs 'facet' equal to its id and listed in {FACETS_FILE}")
+        elif "facet" in it:
+            errs.append(f"{w}: only facet items carry 'facet'")
+        if "field" in it and not isinstance(it["field"], bool):
+            errs.append(f"{w}: 'field' must be true or false")
+        if "battle" in it:
+            b = it["battle"]
+            if cat != "consumable":
+                errs.append(f"{w}: only consumables can be used in battle")
+            if not isinstance(b, dict):
+                errs.append(f"{w}: 'battle' must be an object")
+                continue
+            if b.get("target") not in SKILL_TARGETS:
+                errs.append(f"{w}: battle.target must be one of {sorted(SKILL_TARGETS)}")
+            if not (_is_int(b.get("rank")) and ITEM_RANK_MIN <= b["rank"] <= ITEM_RANK_MAX):
+                errs.append(f"{w}: battle.rank must be an int in {ITEM_RANK_MIN}..{ITEM_RANK_MAX}")
+            effects = b.get("effects")
+            if not isinstance(effects, list) or not effects:
+                errs.append(f"{w}: battle.effects must be a non-empty list")
+                continue
+            for j, e in enumerate(effects):
+                errs += _item_effect_errors(e, f"{w}: effects[{j}]", refs)
+    for fid in sorted(refs["facets"] - set(items)):
+        errs.append(f"{w0}: Facet '{fid}' from {FACETS_FILE} has no item row")
+    return items
+
+
+def _ability_effect_errors(ab: dict, w: str, refs: dict[str, set[str]]) -> list[str]:
+    cat = ab["category"]
+    eff = ab.get("effect")
+    if not isinstance(eff, dict):
+        return [f"{w}: needs an 'effect' object"]
+    errs: list[str] = []
+    want = ABILITY_EFFECT_FIELDS[cat]
+    for k in sorted(want - set(eff)):
+        errs.append(f"{w}: {cat} effect needs '{k}'")
+    for k in sorted(set(eff) - want - ABILITY_OPTIONAL_FIELDS.get(cat, set())):
+        errs.append(f"{w}: field '{k}' does not belong on a {cat} effect")
+    if "element" in eff and eff["element"] not in ELEMENTS - {"none"}:
+        errs.append(f"{w}: unknown element '{eff['element']}'")
+    if "affinity" in eff and eff["affinity"] not in GUARD_AFFINITIES:
+        errs.append(f"{w}: guard affinity must be one of {sorted(GUARD_AFFINITIES)}")
+    if "stat" in eff and eff["stat"] not in LATTICE_STATS:
+        errs.append(f"{w}: unknown stat '{eff['stat']}'")
+    if "amount" in eff and not _pos_int(eff["amount"]):
+        errs.append(f"{w}: amount must be a positive int")
+    if "status" in eff:
+        s = eff["status"]
+        kind = "beneficial" if cat == "auto_status" else "harmful"
+        if s not in refs["statuses"]:
+            errs.append(f"{w}: unknown status '{s}'")
+        elif s not in refs[kind]:
+            errs.append(f"{w}: {cat} needs a {kind} status, not '{s}'")
+    if cat == "status_strike":
+        if not (_is_int(eff.get("chance")) and 1 <= eff["chance"] <= 100):
+            errs.append(f"{w}: chance must be an int in 1..100")
+        d = eff.get("duration")
+        if not _is_int(d) or d == 0 or d < -1:
+            errs.append(f"{w}: duration must be -1 or a positive int")
+        elif d == -1 and eff.get("status") in NO_PERMANENT_STATUSES:
+            errs.append(f"{w}: '{eff['status']}' may not be permanent (formulas.md, Stop / Sleep)")
+    if cat == "auto_status":
+        trig = eff.get("trigger")
+        if trig not in AUTO_TRIGGERS:
+            errs.append(f"{w}: trigger must be one of {sorted(AUTO_TRIGGERS)}")
+        pct = eff.get("hp_below_pct")
+        if trig == "low_hp" and not (_is_int(pct) and 1 <= pct <= 99):
+            errs.append(f"{w}: a low_hp trigger needs hp_below_pct in 1..99")
+        if trig == "always" and pct is not None:
+            errs.append(f"{w}: an always trigger takes no hp_below_pct")
+    if cat == "economy" and not (_is_int(eff.get("currency_mult")) and eff["currency_mult"] >= 2):
+        errs.append(f"{w}: currency_mult must be an int of at least 2")
+    if cat == "field" and not (_is_int(eff.get("encounter_rate_pct")) and 0 <= eff["encounter_rate_pct"] < 100):
+        errs.append(f"{w}: encounter_rate_pct must be an int in 0..99")
+    if cat == "special" and eff.get("break_damage_cap") is not True:
+        errs.append(f"{w}: the only special effect is break_damage_cap: true")
+    return errs
+
+
+def _equipment_errors(doc: object, abilities: dict[str, dict], refs: dict[str, set[str]],
+                      item_ids: set[str], w0: str, errs: list[str]) -> dict[str, dict]:
+    rules = doc.get("rules") if isinstance(doc, dict) else None
+    if not isinstance(rules, dict):
+        errs.append(f"{w0}: missing 'rules' object")
+        rules = {}
+    max_slots = rules.get("max_slots")
+    if not (_is_int(max_slots) and 1 <= max_slots <= MAX_EQUIP_SLOTS):
+        errs.append(f"{w0}: rules.max_slots must be an int in 1..{MAX_EQUIP_SLOTS} (SPEC §6.5)")
+        max_slots = MAX_EQUIP_SLOTS
+    slots = rules.get("equip_slots")
+    if not isinstance(slots, list) or not slots or not set(slots) <= EQUIP_SLOTS or len(set(slots)) != len(slots):
+        errs.append(f"{w0}: rules.equip_slots must list slots from {sorted(EQUIP_SLOTS)} once each")
+        slots = sorted(EQUIP_SLOTS)
+    required = rules.get("required_slots", [])
+    if not isinstance(required, list) or not set(required) <= set(slots):
+        errs.append(f"{w0}: rules.required_slots must be a subset of equip_slots")
+        required = []
+    gear: dict[str, dict] = {}
+    for g in _rows(doc, "gear_types", f"{w0} gear_types", errs):
+        w = f"{w0}: gear type '{g['id']}'"
+        gear[g["id"]] = g
+        if g.get("slot") not in slots:
+            errs.append(f"{w}: slot must be one of {slots}")
+        if g.get("character") not in refs["characters"]:
+            errs.append(f"{w}: unknown character '{g.get('character')}'")
+        _need_keys(g, w, ("name_key",), errs)
+    pieces: dict[str, dict] = {}
+    for e in _rows(doc, "equipment", w0, errs):
+        w = f"{w0}: '{e['id']}'"
+        pieces[e["id"]] = e
+        if e["id"] in item_ids:
+            errs.append(f"{w}: id clashes with an item id (shops share one namespace)")
+        _need_keys(e, w, ("name_key", "desc_key"), errs)
+        if not _pos_int(e.get("price")):
+            errs.append(f"{w}: price must be a positive int")
+        gt = gear.get(e.get("type"))
+        if gt is None:
+            errs.append(f"{w}: unknown gear type '{e.get('type')}'")
+        n = e.get("slots")
+        if not (_is_int(n) and 0 <= n <= max_slots):
+            errs.append(f"{w}: slots must be an int in 0..{max_slots}")
+            n = max_slots
+        pre = e.get("abilities", [])
+        if not isinstance(pre, list):
+            errs.append(f"{w}: abilities must be a list")
+            pre = []
+        if len(pre) > n:
+            errs.append(f"{w}: {len(pre)} pre-filled abilities but only {n} slots")
+        if len(set(pre)) != len(pre):
+            errs.append(f"{w}: an ability appears twice")
+        for a in pre:
+            if a not in abilities:
+                errs.append(f"{w}: unknown ability '{a}'")
+            elif gt is not None and gt.get("slot") not in abilities[a].get("equip", []):
+                errs.append(f"{w}: ability '{a}' does not fit a {gt.get('slot')} piece")
+        stats = e.get("stats", {})
+        if not isinstance(stats, dict):
+            errs.append(f"{w}: stats must be an object")
+            stats = {}
+        for k, v in stats.items():
+            if k not in LATTICE_STATS:
+                errs.append(f"{w}: unknown stat '{k}'")
+            elif not _pos_int(v):
+                errs.append(f"{w}: stat '{k}' must be a positive int")
+    starting = doc.get("starting", {}) if isinstance(doc, dict) else {}
+    if not isinstance(starting, dict):
+        errs.append(f"{w0}: 'starting' must be an object")
+        starting = {}
+    for cid in sorted(refs["characters"] - set(starting)):
+        errs.append(f"{w0}: character '{cid}' has no starting gear")
+    for cid, lo in starting.items():
+        w = f"{w0}: starting.{cid}"
+        if cid not in refs["characters"]:
+            errs.append(f"{w}: unknown character")
+        if not isinstance(lo, dict):
+            errs.append(f"{w}: must map slot -> equipment id")
+            continue
+        for s in required:
+            if s not in lo:
+                errs.append(f"{w}: missing required slot '{s}'")
+        for s, eid in lo.items():
+            gt = gear.get(pieces.get(eid, {}).get("type"))
+            if eid not in pieces:
+                errs.append(f"{w}.{s}: unknown equipment '{eid}'")
+            elif gt is not None and (gt.get("slot") != s or gt.get("character") != cid):
+                errs.append(f"{w}.{s}: '{eid}' is a {gt.get('character')} {gt.get('slot')} piece")
+    return pieces
+
+
+def items_errors(docs: dict[str, object], refs: dict[str, set[str]]) -> list[str]:
+    """Checks the item tables. Pure: returns error strings.
+
+    docs maps 'items', 'equipment', 'abilities', 'customize', 'shops' to parsed JSON. refs holds
+    sets: 'characters', 'statuses', 'harmful', 'beneficial', 'facets', 'flags'."""
+    errs: list[str] = []
+    w = {t: f"{ITEMS_DIR}/{t}.json" for t in ITEM_TABLES}
+    items = _items_table_errors(docs.get("items"), refs, w["items"], errs)
+    abilities: dict[str, dict] = {}
+    for ab in _rows(docs.get("abilities"), "abilities", w["abilities"], errs):
+        aw = f"{w['abilities']}: '{ab['id']}'"
+        abilities[ab["id"]] = ab
+        _need_keys(ab, aw, ("name_key", "desc_key"), errs)
+        eq = ab.get("equip")
+        if not isinstance(eq, list) or not eq or not set(eq) <= EQUIP_SLOTS:
+            errs.append(f"{aw}: equip must list slots from {sorted(EQUIP_SLOTS)}")
+        if ab.get("category") not in ABILITY_EFFECT_FIELDS:
+            errs.append(f"{aw}: category must be one of {sorted(ABILITY_EFFECT_FIELDS)}")
+            continue
+        errs += _ability_effect_errors(ab, aw, refs)
+    pieces = _equipment_errors(docs.get("equipment"), abilities, refs, set(items), w["equipment"], errs)
+    cz = docs.get("customize")
+    recipes = cz.get("recipes") if isinstance(cz, dict) else None
+    if not isinstance(recipes, list):
+        errs.append(f"{w['customize']}: missing top-level list 'recipes'")
+        recipes = []
+    seen: set[str] = set()
+    for i, r in enumerate(recipes):
+        rw = f"{w['customize']}: recipes[{i}]"
+        if not isinstance(r, dict):
+            errs.append(f"{rw}: must be an object")
+            continue
+        aid = r.get("ability")
+        if aid not in abilities:
+            errs.append(f"{rw}: unknown ability '{aid}'")
+        elif aid in seen:
+            errs.append(f"{rw}: second recipe for '{aid}'")
+        seen.add(aid)
+        parts = r.get("items")
+        if not isinstance(parts, list) or not parts:
+            errs.append(f"{rw}: items must be a non-empty list")
+            continue
+        used: set[str] = set()
+        for p in parts:
+            iid = p.get("item") if isinstance(p, dict) else None
+            if iid not in items:
+                errs.append(f"{rw}: unknown item '{iid}'")
+            elif items[iid].get("category") == "key":
+                errs.append(f"{rw}: key item '{iid}' can't be spent")
+            if iid in used:
+                errs.append(f"{rw}: item '{iid}' listed twice")
+            used.add(iid)
+            if not isinstance(p, dict) or not _pos_int(p.get("count")):
+                errs.append(f"{rw}: count for '{iid}' must be a positive int")
+    sh = docs.get("shops")
+    rules = sh.get("rules") if isinstance(sh, dict) else None
+    if not isinstance(rules, dict):
+        errs.append(f"{w['shops']}: missing 'rules' object")
+        rules = {}
+    num, den = rules.get("sell_ratio_num"), rules.get("sell_ratio_den")
+    if not (_is_int(num) and _pos_int(den) and 0 <= num <= den):
+        errs.append(f"{w['shops']}: sell ratio must be ints with 0 <= sell_ratio_num <= sell_ratio_den, den > 0")
+    if not (_is_int(rules.get("min_sell_price")) and rules["min_sell_price"] >= 0):
+        errs.append(f"{w['shops']}: rules.min_sell_price must be a non-negative int")
+    for shop in _rows(sh, "shops", w["shops"], errs):
+        sw = f"{w['shops']}: '{shop['id']}'"
+        _need_keys(shop, sw, ("name_key",), errs)
+        kind = shop.get("kind")
+        if kind not in SHOP_KINDS:
+            errs.append(f"{sw}: kind must be one of {sorted(SHOP_KINDS)}")
+        flag = shop.get("requires_flag", "")
+        if flag and flag not in refs["flags"]:
+            errs.append(f"{sw}: undeclared story flag '{flag}' (declare it in game/data/flags.tres)")
+        stock = shop.get("stock")
+        if not isinstance(stock, list) or not stock:
+            errs.append(f"{sw}: stock must be a non-empty list")
+            continue
+        listed: set[str] = set()
+        for row in stock:
+            gid = row.get("item") if isinstance(row, dict) else None
+            table = pieces if kind == "equipment" else items
+            if gid not in table:
+                errs.append(f"{sw}: unknown {'equipment' if kind == 'equipment' else 'item'} '{gid}' in stock")
+            elif kind == "items" and items[gid].get("category") == "key":
+                errs.append(f"{sw}: key item '{gid}' can't be sold in a shop")
+            if gid in listed:
+                errs.append(f"{sw}: '{gid}' is stocked twice")
+            listed.add(gid)
+            f = row.get("requires_flag", "") if isinstance(row, dict) else ""
+            if f and f not in refs["flags"]:
+                errs.append(f"{sw}: undeclared story flag '{f}' on '{gid}'")
+    return errs
+
+
+def check_items(files: dict[str, object], flags: set[str], rep: Report) -> list[str]:
+    """Validates game/data/items/*.json. Returns *_key values for loc checks."""
+    docs = {t: files.get(f"{ITEMS_DIR}/{t}.json") for t in ITEM_TABLES}
+    if all(d is None for d in docs.values()):
+        return []
+    statuses = files.get("game/data/battle/statuses.json")
+    rows = statuses.get("statuses", []) if isinstance(statuses, dict) else []
+    rows = [r for r in rows if isinstance(r, dict)]
+    refs = {
+        "characters": _ids(files, "game/data/battle/characters.json", "characters"),
+        "statuses": {r.get("id") for r in rows},
+        "harmful": {r.get("id") for r in rows if r.get("category") == "harmful"},
+        "beneficial": {r.get("id") for r in rows if r.get("category") == "beneficial"},
+        "facets": _ids(files, FACETS_FILE, "facets"),
+        "flags": flags,
+    }
+    for e in items_errors(docs, refs):
+        rep.err(e)
+    return collect_keys([d for d in docs.values() if d is not None])
+
+
+def declared_flags_quiet(root: Path) -> set[str]:
+    """Declared flag names without re-reporting flags.tres problems (check_flags owns those)."""
+    return load_flags(root, Report())
+
+
 def run(root: Path) -> Report:
     rep = Report()
     files = load_json_files(root, rep)
     data_keys = check_battle(files, rep)
     data_keys += check_dialogue(root, files, rep)
     data_keys += check_progression(files, rep)
+    data_keys += check_items(files, declared_flags_quiet(root), rep)
     data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)

@@ -2,7 +2,7 @@
 // Flags: test_flag (bool), test_counter (number), test_text (string), all reserved for tests.
 title: test_dialogue_fixture
 ---
-@camera fixture_wide blend=1.5 hold=true
+@camera fixture_wide blend=1.5 grade=ch02
 Test narration. #line:test_dlg_001
 Rhen [worried]: Test line with an emotion. #line:test_dlg_002 #tagged
 <<if $test_flag>>
@@ -32,4 +32,19 @@ title: second
 Asha: Wrong branch. #line:test_dlg_014
 <<endif>>
 Asha [smile]: In the second node. #line:test_dlg_015
+===
+title: features
+---
+// M1-NAR-04 syntax: alias, narrator identity, sung, notr + translator note, music waits.
+Asha as "The girl" [smile]: Alias line. #line:test_dlg_016
+Asha [smile]: Named again. #line:test_dlg_017
+Narrator(rhen) [tender]: Narration with an identity. #line:test_dlg_018 #vo
+Narrator [sad]: Narration with only an emotion. #line:test_dlg_019
+@music fixture_song fade=0.5
+Asha [tender]: Ennu re. #line:test_dlg_020 #sung #notr #tn:"Invented language: keep as written."
+@wait music=verse_end max=6.0
+@wait music=already_passed
+@music silence fade=1.0
+@sfx fixture_toll vol=0.5 at=asha
+Toma: After the waits. #line:test_dlg_021
 ===

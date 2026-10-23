@@ -22,5 +22,8 @@ Thumbs.db
 # Screenshot regression output (baselines live in tests/screenshots/baselines)
 /tests/screenshots/out/
 
+# Coverage reports (tools/coverage/run_coverage.py, ADR 0013)
+/tools/coverage/out/
+
 # Agent git worktrees (parallel streams)
 /.claude/worktrees/

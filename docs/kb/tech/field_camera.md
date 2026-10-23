@@ -1,0 +1,99 @@
+# Field Controller and Camera Rails (M1-ARC-01)
+
+SPEC §6.6 asks for a 3D field with directed, cinematic camera rails: zones are divided into camera volumes, and each volume selects an authored shot. Free orbit is allowed only, and optionally, in large hub zones. This page is the authoring and API reference. The code is in `game/world/`, the tuning in `game/data/world/`, and the reference zone in `game/levels/_tests/field/`.
+
+## Pieces
+
+| Class | File | Role |
+|---|---|---|
+| `FieldController` | `field_controller.gd` | The player, a `CharacterBody3D`. Its movement is camera-relative, it has gravity and floor snapping, it interacts with interactables, and it fires touch triggers. |
+| `FieldMotor` | `field_motor.gd` | Pure movement logic. It turns stick plus camera yaw into velocity and facing, and holds the **input latch**. No Nodes. |
+| `CameraShot` | `camera_shot.gd` | A `Resource` describing one authored shot: mode, framing, FOV, DOF, and how it blends in. |
+| `CameraVolume` | `camera_volume.gd` | An `Area3D` region that selects a shot, using `shot_priority`, `blend_sec_override` and `force_hard_cut`. |
+| `FieldCameraDirector` | `field_camera_director.gd` | Picks the active volume, blends or cuts between shots, tracks the target, and drives a `Camera3D`. |
+| `CameraPose` | `camera_pose.gd` | A blendable camera state (transform, FOV, DOF). It applies DOF through `CameraAttributesPractical`. |
+| `FieldShapes` | `field_shapes.gd` | Point-in-shape tests for Box, Sphere, Cylinder and Capsule shapes under an `Area3D`. |
+| `Interactable` | `interactable.gd` | An interact or touch trigger. It emits on the EventBus and gates on story flags. |
+| `FieldEvents` | `field_events.gd` | The EventBus field signals (see "EventBus signals"). |
+| `FieldInput` | `field_input.gd` | Adds the field actions from `field_input.json` at runtime and loads the JSON data. |
+
+## Shot modes
+
+| Mode | Camera | Aim | Use |
+|---|---|---|---|
+| `FIXED` | `position` | `look_at` | Composed, locked frames such as Haluna H02, H03, H07 and S03. |
+| `PAN_FOLLOW` | `position` | `look_at` moved toward the player by `follow_weight`, at most `max_pan_deg` away, smoothed | Courts and rooms, such as H07, H09 and S02. |
+| `DOLLY` | Rides the Path3D `dolly_path` at the player's projected progress along `track_path`, mapped as `progress_offset + progress * progress_scale` | The player plus `target_offset` | Tracking shots, such as C02 side-on, C01 and C04. |
+| `ORBIT` | Orbits the player at `orbit_distance` and `orbit_height`, steered by `field_camera_left/right` | The player | **Hub zones only.** It needs `FieldCameraDirector.hub_orbit_enabled`. Otherwise the director treats the shot as `PAN_FOLLOW` and warns. |
+
+- FOV is **vertical**, in degrees, and matches the lens tables in `docs/kb/art/environments/haluna.md` §5 (for example, 35 mm is 37.8°).
+- DOF fields (`dof_far_*`, `dof_near_*`, `dof_blur_amount`) become `CameraAttributesPractical`. A camera that already has `CameraAttributesPhysical` is left alone.
+- Positions and paths are in the director's **rail space**, which is `rail_root_path` and defaults to the level root. Shots can therefore be authored in level coordinates.
+
+## Selection, blends and cuts
+
+1. **Containment.** Each `update(delta)`, the director tests the target's position against every `CameraVolume`'s `CollisionShape3D` children geometrically. It does not wait for physics overlap signals, which makes selection frame-exact, independent of signal order, and testable headlessly. Volumes turn physics monitoring off.
+2. **Priority.** The highest `shot_priority` wins. On a tie, the volume entered most recently wins. If the player leaves every volume, the **current shot stays**, so a composed frame is never dropped for a fallback.
+3. **Transition.** The camera cuts when the volume forces it (`force_hard_cut`), when the shot is marked `hard_cut`, or when the resolved duration is ≤ 0. Otherwise it blends over the duration resolved in this order: `blend_sec_override` on the volume, `blend_sec` on the shot, then `default_blend_sec` in `field_camera.json`. The blend weight comes from the shot's `blend_curve` (a `Curve`), then its `blend_ease` (a named ease in `field_camera.json` such as `linear`, `in_out_sine`, `in_out_cubic` or `out_quart`), then `default_blend_ease`.
+4. **Live blends.** A blend runs from the *live* outgoing shot to the *live* incoming shot, so tracking keeps moving during it. If a new change interrupts a blend, the next blend starts from a snapshot of the current pose, so there's no pop.
+5. **Snap.** `snap()` jumps straight to the right shot with a hard cut. Call it on zone load, after a teleport, and in capture scenes.
+
+Signals: `shot_changed(shot, hard_cut, blend_sec)` and `blend_finished(shot)`. Introspection: `active_shot_id()`, `is_blending()`, `blend_weight()`, `blend_duration()`, `history`, `state_snapshot()` (shown in the debug overlay on F7), and `camera_yaw()`.
+
+## Camera-relative input and the latch
+
+Stick "up" means *away from the camera*. When the shot changes while the stick is held, `FieldMotor` keeps the **previous camera's reference yaw** until the stick is released. This is the genre convention for fixed cameras: without it, a cut from a front view to a side view would turn the player around mid-stride.
+
+The data (`field_movement.json` → `input_latch`) sets three things:
+- `latch_on_cut` and `latch_on_blend` choose which kinds of change latch.
+- `release_on_turn_deg` (60) also releases the latch when the stick turns that far from where it pointed at the change, so a deliberate new direction re-reads the camera.
+
+Between changes, the reference follows the live camera. On a pan-follow shot, that means a gentle curve, which is expected.
+
+`test_field_controller.gd` walks due north through all three test volumes: a lane blend, then a court blend, then a hard cut onto the side-on dolly. It asserts that the latch held and the player stayed within 1.5 m of the line. Without the latch, the court's pan camera would bend the path by about 45°.
+
+## Interactables and triggers
+
+- `activation = INTERACT`: `FieldController.interact()` (the `field_interact` action) uses the nearest available interactable whose shape contains the player, or one within `interact_reach_m`.
+- `activation = TOUCH`: fires once per entry while the player is inside.
+- **Gating:** `requires_flag` must be truthy and `blocked_by_flag` falsy, each only when set. `once` disables the interactable after its first use, and also after a reload when `sets_flag` is already true.
+- **Effect:** `sets_flag` is set to `true` through `Game.set_flag`, and `field_interacted` or `field_trigger_entered` is emitted with the `payload` dictionary.
+- **Flags** are read and written only through `Game.get_flag` / `Game.set_flag`. Scene-authored flag names aren't visible to `tools/validate_data.py`, which only scans `.gd` literals. They're checked twice instead: `Interactable._ready()` reports undeclared names, and `test_field_interactables.gd` regex-scans every `.tscn` under `game/`.
+
+## EventBus signals
+
+`game/core/event_bus.gd` doesn't declare field signals yet. Until it does, `FieldEvents.ensure_signals()` adds them to the bus at runtime with `add_user_signal`:
+- `field_interacted(interactable_id: StringName, kind: StringName, payload: Dictionary)`
+- `field_trigger_entered(trigger_id: StringName, payload: Dictionary)`
+
+Listeners use `FieldEvents.connect_interacted(callable)` and `FieldEvents.connect_trigger(callable)`. **Request to the Lead:** declare both in `event_bus.gd` with these exact signatures. `ensure_signals()` then becomes a no-op and nothing else changes.
+
+## Input actions
+
+The `field_move_*`, `field_walk`, `field_interact` and `field_camera_left/right` actions are defined in `game/data/world/field_input.json`. They're added to the InputMap at runtime **only if `project.godot` doesn't already define them**, so moving them into the project later needs no code change. The defaults are WASD and arrows, the left stick, Shift or the left shoulder to walk, E, Enter or Space, or A to interact, and Q/R or the right stick to steer the hub orbit.
+
+## Authoring a zone (checklist)
+
+1. Instance the `FieldController` (with `director_path`), a `Camera3D`, and a `FieldCameraDirector` (`camera_path` and `target_path`) under the level root.
+2. For each composed shot, add a `CameraVolume` with a box (or other supported) `CollisionShape3D` and a `CameraShot` sub-resource. Overlap volumes slightly, and use `shot_priority` to choose the winner in the overlap. That avoids flicker on a shared boundary.
+3. For dollies, add two Path3D nodes: the rail (`dolly_path`) and the player's walk line (`track_path`). Use `progress_scale` and `progress_offset` to lead or lag the camera.
+4. Put spawns under `Spawns/` and give the root a `place_at(spawn)` that moves the player and calls `director.snap()`. The debug teleport menu (F5) calls it.
+5. Add one screenshot shot per camera to `tests/screenshots/shots.json`, using an inherited scene that sets the spawn (see `field_shot_*.tscn`), with `settle_frames` ≥ 30 so TAA history converges.
+
+## Test zone (`game/levels/_tests/field/field_test.tscn`)
+
+| Volume | Shot | Mode | Reference |
+|---|---|---|---|
+| `LaneVolume` (z 2…14) | `lane_fixed` | FIXED, 37.8° (35 mm), 1.6 m, hard cut | H02, the tide-walled lane |
+| `CourtVolume` (z −12…2) | `court_pan` | PAN_FOLLOW, 53.1° (24 mm), weight 0.6, ≤ 30°, blend 1.2 s in-out sine | H07, the chapel court with the banyan |
+| `CausewayVolume` (z −40…−10, priority 1, overlapping the court) | `causeway_dolly` | DOLLY on `Rails/CausewayDolly` by progress along `Rails/CausewayTrack`, 27° (50 mm), far DOF from 14 m, hard cut | C02, the side-on tracking shot |
+
+Interactables: `Lever` (interact, sets `field_test_lever_pulled`, once) and `CausewayGate` (touch, sets `field_test_causeway_reached`). Screenshot baselines: `field_lane_fixed`, `field_court_pan` and `field_causeway_dolly`.
+
+Tests: `tests/unit/test_camera_director.gd` (shot sequence, blend duration and monotonic ease, cut, priority and recency, keep-on-exit, the fixed, pan and dolly framings, orbit gating, interrupted blends), `test_field_motor.gd` (mapping, latch, release-on-turn, speeds), `test_field_controller.gd` (walking through every volume, latch across the cut, runtime actions), and `test_field_interactables.gd`.
+
+## Open items
+
+- Encounter steps: `FieldController` will feed the M2 encounter system's step counter. The debug overlay's F3 page already reads a provider (see `DebugHooks`).
+- Collision with camera geometry isn't handled. Shots are authored, so the frame is composed by hand, and this is deliberate.
+- Cinematics (reviewer): check that the blend eases and the latch feel right with a real stick, and review the shot conventions against the Haluna shot list.

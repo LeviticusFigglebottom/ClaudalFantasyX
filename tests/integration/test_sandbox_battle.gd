@@ -6,6 +6,11 @@ extends TestCase
 const SEEDS := 100
 const NAIVE_MAX_WIN_PCT := 20
 const SWAP_MIN_WIN_PCT := 70
+## M1-CMB-05 bands via BattleSim (docs/kb/design/balance_targets.md). 200 seeds keeps the
+## test fast; tools/balance/sim.py runs 1000 for the report.
+const SIM_SEEDS := 200
+const SIM_NAIVE_MIN_WIN_PCT := 1
+const SIM_ROLE_ANSWER_MIN_WIN_PCT := 85
 
 
 func test_real_data_loads() -> void:
@@ -67,3 +72,45 @@ func _play(rng_seed: int, policy: StringName) -> Array[String]:
 			out.append("%s:%s" % [r2.actor_id, r2.skill_id])
 	out.append(String(e.outcome))
 	return out
+
+
+func test_sim_bands_naive_rarely_wins_role_answer_does() -> void:
+	var sim := BattleSim.new()
+	var active: Array[StringName] = [&"rhen", &"asha"]
+	var reserve: Array[StringName] = [&"toma", &"ysolde"]
+	var naive := sim.run_many(&"sandbox_reef", active, reserve, &"naive", SIM_SEEDS)
+	var answer := sim.run_many(&"sandbox_reef", active, reserve, &"role_answer", SIM_SEEDS)
+	var naive_pct: float = naive["win_pct"]
+	var answer_pct: float = answer["win_pct"]
+	assert_between(naive_pct, SIM_NAIVE_MIN_WIN_PCT, NAIVE_MAX_WIN_PCT, "naive wins %.1f%%" % naive_pct)
+	assert_true(answer_pct >= SIM_ROLE_ANSWER_MIN_WIN_PCT, "role answer wins %.1f%%" % answer_pct)
+	assert_eq(naive["timeouts"], 0)
+	assert_eq(answer["timeouts"], 0)
+
+
+func test_sim_is_deterministic_and_counts() -> void:
+	var sim := BattleSim.new()
+	var active: Array[StringName] = [&"rhen", &"asha"]
+	var reserve: Array[StringName] = [&"toma", &"ysolde"]
+	for policy in BattleSim.POLICY_NAMES:
+		var p := sim.make_policy(policy)
+		var a := sim.run_one(&"sandbox_reef", active, reserve, p, 42)
+		var b := sim.run_one(&"sandbox_reef", active, reserve, sim.make_policy(policy), 42)
+		assert_eq(a, b, "%s replays identically" % policy)
+		assert_true(a["outcome"] in ["victory", "defeat"], "%s ended: %s" % [policy, a["outcome"]])
+		assert_true(int(a["turns"]) >= int(a["party_turns"]))
+		assert_eq(a["items"], 0, "no items yet")
+
+
+func test_sim_summary_math() -> void:
+	var runs: Array[Dictionary] = []
+	for i in 10:
+		var won := i < 3
+		runs.append({"outcome": "victory" if won else "defeat", "turns": i + 1, "party_ko": 1, "items": 0})
+	var s := BattleSim.summarize(runs)
+	assert_eq(s["wins"], 3)
+	assert_eq(s["win_pct"], 30.0)
+	assert_eq(s["mean_turns"], 5.5)
+	assert_eq(s["p90_turns"], 9, "nearest rank: ceil(0.9 x 10) = 9th value")
+	assert_eq(s["mean_party_ko"], 1.0)
+	assert_eq(BattleSim.percentile([] as Array[int], 90), 0)

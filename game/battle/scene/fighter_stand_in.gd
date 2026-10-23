@@ -19,6 +19,9 @@ var _ring_cfg: Dictionary = {}
 var _spin := 0.0
 var _rest := Vector3.ZERO
 var _ko := false
+var _stone := false
+var _albedo := Color.WHITE
+var _roughness := 1.0
 
 
 func setup(cid: StringName, stand_in: Dictionary, ring_cfg: Dictionary) -> void:
@@ -36,6 +39,8 @@ func setup(cid: StringName, stand_in: Dictionary, ring_cfg: Dictionary) -> void:
 		_body_mat.emission = Color.html(str(spec["emission"]))
 		_body_mat.emission_energy_multiplier = float(spec.get("emission_energy", 1.0))
 	_mesh.material_override = _body_mat
+	_albedo = _body_mat.albedo_color
+	_roughness = _body_mat.roughness
 	_rest = Vector3(0.0, _base_height(), 0.0)
 	_mesh.position = _rest
 	add_child(_mesh)
@@ -65,13 +70,25 @@ func ring_mode_visible() -> bool:
 
 ## A small knock-back away from the camera's right, then back (no effect while KO'd).
 func flinch() -> void:
-	if _ko or not is_inside_tree():
+	if _ko or _stone or not is_inside_tree():
 		return
 	var push := float(spec.get("recoil_m", 0.0))
 	var sec := float(spec.get("recoil_sec", 0.0))
 	var tw := create_tween()
 	tw.tween_property(_mesh, "position", _rest + Vector3(push * signf(-global_position.x), 0.0, 0.0), sec * 0.5)
 	tw.tween_property(_mesh, "position", _rest, sec * 0.5)
+
+
+## Petrify: the stand-in turns to matte stone (no glow) where it stands; it does not sink.
+func set_stone(on: bool, stone_color: Color, stone_roughness: float) -> void:
+	_stone = on
+	_body_mat.albedo_color = stone_color if on else _albedo
+	_body_mat.roughness = stone_roughness if on else _roughness
+	_body_mat.emission_enabled = spec.has("emission") and not on
+
+
+func is_stone() -> bool:
+	return _stone
 
 
 func set_ko(ko: bool, sink_m: float, alpha: float) -> void:

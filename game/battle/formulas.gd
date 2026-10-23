@@ -36,6 +36,11 @@ const ESCAPE_MAX_PCT := 95
 const POISON_PCT := 0.10
 const REGEN_PCT := 0.08
 
+## Berserk: strength x3/2 (exact in integers, floored). Confuse: chance a confused unit turns
+## on its own side instead of the foe.
+const BERSERK_STR_RATIO: Array[int] = [3, 2]
+const CONFUSE_ALLY_PCT := 50
+
 ## Rational multipliers as [numerator, denominator].
 const CRIT_RATIO: Array[int] = [2, 1]
 const BARRIER_RATIO: Array[int] = [1, 2]
@@ -115,6 +120,11 @@ static func crit_chance(luck: int, target_luck: int) -> int:
 ## Effective stat after Break statuses (Power/Magic Break halve; Armor/Mental Break zero).
 static func broken_stat(value: int, half_break: bool) -> int:
 	return floori(value * STAT_BREAK_MULT) if half_break else value
+
+
+## Berserk strength, applied after Power Break: floor(strength x 3/2).
+static func berserk_strength(value: int) -> int:
+	return value * BERSERK_STR_RATIO[0] / BERSERK_STR_RATIO[1]
 
 
 static func poison_damage(max_hp: int) -> int:

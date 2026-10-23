@@ -36,7 +36,7 @@ Format: **Term** (part of speech; pronunciation hint when it's ambiguous): meani
 - **save shrine** (n.): a glowing save point. It fully heals the party and opens the save menu. *§6.6*
 - **Temple Trial** (n.): an environmental puzzle leading to a Vowbound. *§6.6*
 - **Unfettered** (equipment ability): lifts the 9,999 damage cap to 99,999. *design/formulas.md*
-- **currency**: name TBD by Narrative (M1-NAR-01). Code uses `currency`.
+- **lume** (n., uncountable; "a lume" for one coin): the Order-minted currency of Maresh, a holed disc of pressed lamp-brass named for oil-lamp light, the only light the Order allows. Code uses `currency`. *design/economy.md*
 
 ## Elements
 Fire, Water, Lightning, Ice, Holy, **Glimmer** (an original non-elemental spirit element). *§6.8*
@@ -49,6 +49,8 @@ Rhen Sallow · Asha Velamir · Toma Okeru · Liss Varrow · Old Kerrid · Ysolde
 - **held light / released light** (n.): glimmer that sinks or drifts seaward in cool cyan (held by grief) vs. glimmer that rises in warm gold (released).
 - **wake-shell wall** (n.): Haluna's wall style of set shells. **fan-shell roof** (n.): its roof style.
 - **tide-notch** (n.): the UI corner treatment (a small stepped notch). **lamp-node / lamp mote**: UI ornaments.
+
+- **gilt line** (n.): a thin gold stroke a Tender paints on a Cantor before an Order rite. Asha wipes hers off at the Drowned Choir. *story/decisions_log.md N-04*
 
 ## Story terms (Narrative M1, merged 2026-10-22)
 

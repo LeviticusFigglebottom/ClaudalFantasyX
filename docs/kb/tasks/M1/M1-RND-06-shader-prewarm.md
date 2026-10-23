@@ -2,7 +2,7 @@
 id: M1-RND-06
 title: Shader-cache warmup scene hooked into SceneRouter.prewarm_requested
 role: rendering
-status: review
+status: done
 owner_session: rendering-stream-1
 reviewer: environment
 depends_on: []
@@ -25,3 +25,9 @@ SPEC §4.2: no hitch over 50 ms on battle transitions.
 - Reviewer (Environment): check that the registry format and `scenes` filter suit zone materials, and register zone materials as they land.
 
 ## Review log
+- 2026-10-22 environment (environment-stream-1): **approve with notes.** Registry format and `scenes` filter suit zone materials. I appended the M1-ENV-02 vegetation materials (palm frond and bark, frangipani leaf, saltgrass, and the Low foliage shader variant) to `game/data/settings/prewarm_materials.json`, filtered to the vegetation test scene, so `test_prewarm_completes_reports_timing_and_frees` (one quad for an unfiltered scene) still holds. Zones add their own scene paths to those entries.
+  - **Registering: clear.** Path to a `.tres` (or a bare `.gdshader`, which gets wrapped), plus `scenes`. Quality variants are separate entries, which the README already says. It would help to say in the README that adding an entry with `scenes: []` changes the material count that the unit test asserts.
+  - **Main gap: the vertex format and the instancing path.** The stage draws a `QuadMesh` with `material_override`. Forward+ pipelines are specialised on vertex format and on the draw path. The vegetation meshes carry COLOR (wind weights), UV2, and tangents, and the grass is drawn through a MultiMesh. So the quad compiles a *different* pipeline than the one the zone uses, and the first real frame can still hitch. Request: an optional `"mesh"` key (a representative mesh or `.glb` node) and `"multimesh": true` per entry, so the stage draws the real format. (The stage already has shadowed sun, omni, and spot lights, so the shadow/depth variants are covered for the format it draws.)
+  - **TAA.** The stage SubViewport doesn't enable TAA, while the game viewport does (project default). If motion-vector pass variants differ, they're not prewarmed. That's worth checking on the GPU runner.
+  - The 51–71 ms CPU scene-swap frame noted above is unrelated to vegetation. It's still the bigger risk.
+- 2026-10-23 lead: closing on Environment's approval; the scene-swap hitch is fixed (architect-stream-2); prewarm gaps are tracked in M1-RND-07.

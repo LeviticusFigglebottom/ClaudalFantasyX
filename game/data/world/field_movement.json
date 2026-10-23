@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "doc": "Field movement tuning (M1-ARC-01). Metres, seconds, degrees. Read by FieldMotor/FieldController.",
+  "walk_speed_mps": 2.4,
+  "run_speed_mps": 4.6,
+  "acceleration_mps2": 18.0,
+  "deceleration_mps2": 24.0,
+  "turn_speed_deg_per_sec": 720.0,
+  "gravity_mps2": 9.8,
+  "max_fall_speed_mps": 20.0,
+  "stick_deadzone": 0.2,
+  "walk_run_threshold": 0.75,
+  "input_latch": {
+    "doc": "Camera-relative input keeps the pre-change camera's reference across a shot change until the stick is released (genre convention for fixed cameras). release_on_turn_deg > 0 also releases the latch when the stick turns more than that from its direction at the change.",
+    "latch_on_cut": true,
+    "latch_on_blend": true,
+    "release_on_turn_deg": 60.0
+  },
+  "interact_reach_m": 1.2,
+  "floor_snap_m": 0.3
+}

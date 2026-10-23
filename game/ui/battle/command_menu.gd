@@ -11,6 +11,8 @@ signal cancelled(page_id: StringName)
 
 ## Accepts input only while active (the controller turns it off during enemy turns).
 var active := true
+## Reduced motion (UiSettings): sub-menus fade in place, the cursor jumps, the mote holds still.
+var reduced_motion := false
 
 var _m: Dictionary = {}
 var _pages: Array[MenuPage] = []
@@ -124,13 +126,15 @@ func _add_page(pid: StringName, title: String, rows: Array[Dictionary], r: Rect2
 	page.position = r.position
 	page.size = r.size
 	add_child(page)
+	page.reduced_motion = reduced_motion
 	page.setup(_m, pid, title, rows)
 	page.row_hovered.connect(func(_i: int) -> void: _emit_highlight())
 	page.row_clicked.connect(_on_row_clicked.bind(page))
 	_pages.append(page)
 	if animate and is_inside_tree():
 		var dur := HudLayout.num(_m, "push_sec")
-		page.position.x += HudLayout.num(_m, "submenu_offset")
+		if not reduced_motion:
+			page.position.x += HudLayout.num(_m, "submenu_offset")
 		page.modulate.a = 0.0
 		var tw := page.create_tween().set_parallel(true)
 		tw.tween_property(page, "position:x", r.position.x, dur).set_trans(Tween.TRANS_CUBIC)

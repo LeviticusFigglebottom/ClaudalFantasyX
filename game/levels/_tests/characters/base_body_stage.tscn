@@ -1,0 +1,91 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/characters/base_body_stage.gd" id="1_stage"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_cyc"]
+albedo_color = Color(0.36, 0.36, 0.37, 1)
+roughness = 0.92
+
+[sub_resource type="PlaneMesh" id="Mesh_floor"]
+material = SubResource("Mat_cyc")
+size = Vector2(16, 16)
+
+[sub_resource type="StandardMaterial3D" id="Mat_wall"]
+cull_mode = 1
+albedo_color = Color(0.3, 0.3, 0.31, 1)
+roughness = 1.0
+emission_enabled = true
+emission = Color(0.3, 0.3, 0.31, 1)
+emission_energy_multiplier = 0.55
+
+[sub_resource type="CylinderMesh" id="Mesh_wall"]
+material = SubResource("Mat_wall")
+top_radius = 7.5
+bottom_radius = 7.5
+height = 8.0
+radial_segments = 64
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[node name="BaseBodyStage" type="Node3D"]
+script = ExtResource("1_stage")
+
+[node name="Turntable" type="Node3D" parent="."]
+
+[node name="Cyclorama" type="Node3D" parent="."]
+
+[node name="Floor" type="MeshInstance3D" parent="Cyclorama"]
+mesh = SubResource("Mesh_floor")
+
+[node name="Wall" type="MeshInstance3D" parent="Cyclorama"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.99, 0)
+mesh = SubResource("Mesh_wall")
+
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="Key" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(0.788011, 0.344274, -0.510406, -0, 0.829038, 0.559193, 0.615661, -0.44065, 0.653291, -2.14371, 3.34861, 2.74382)
+light_color = Color(1, 0.97, 0.93, 1)
+light_energy = 7.0
+shadow_enabled = true
+shadow_blur = 1.5
+spot_range = 9.0
+spot_angle = 34.0
+spot_angle_attenuation = 0.6
+
+[node name="Fill" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(0.573576, -0.114004, 0.81118, 0, 0.990268, 0.139173, -0.819152, -0.0798264, 0.567994, 3.73143, 1.6402, 2.61277)
+light_color = Color(0.93, 0.96, 1, 1)
+light_energy = 2.5
+spot_range = 9.0
+spot_angle = 35.0
+
+[node name="Rim" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(-0.866025, 0.321394, -0.383022, 0, 0.766044, 0.642788, 0.5, 0.55667, -0.663414, -1.6853, 4.02827, -2.91902)
+light_energy = 5.0
+spot_range = 9.0
+spot_angle = 26.0
+
+[node name="Rim2" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(-0.866025, -0.286788, 0.409576, 0, 0.819152, 0.573576, -0.5, 0.496732, -0.709406, 1.80213, 3.72374, -3.12139)
+light_energy = 3.0
+spot_range = 9.0
+spot_angle = 26.0
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Front" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.999391, 0.0348995, 0, -0.0348995, 0.999391, 0, 1.10101, 4.89702)
+fov = 30.0
+
+[node name="ThreeQuarter" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.707107, 0.0246777, -0.706676, -0, 0.999391, 0.0348995, 0.707107, -0.0246777, 0.706676, -3.46271, 1.10101, 3.46271)
+fov = 30.0
+
+[node name="Side" type="Camera3D" parent="Cameras"]
+transform = Transform3D(6.12323e-17, 0.0348995, -0.999391, -0, 0.999391, 0.0348995, 1, -2.13698e-18, 6.1195e-17, -4.89702, 1.10101, 2.99856e-16)
+fov = 30.0
+
+[node name="Face" type="Camera3D" parent="Cameras"]
+fov = 14.0

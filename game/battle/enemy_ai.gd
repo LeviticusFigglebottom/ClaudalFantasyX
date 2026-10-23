@@ -7,6 +7,7 @@ extends RefCounted
 ## Conditions: self_hp_below_pct:int, turn_mod:[n, r], foe_has_status:String,
 ##             allies_alive_below:int
 ## Targets:    random_foe, lowest_hp_foe, highest_hp_foe, self, random_ally, all_foes, all_allies
+## A Provoked enemy's single-foe skills always target its provoker (formulas.md § Statuses).
 
 
 static func choose(engine: BattleEngine, actor: BattleCombatant) -> Dictionary:
@@ -16,11 +17,15 @@ static func choose(engine: BattleEngine, actor: BattleCombatant) -> Dictionary:
 			var option := _weighted_pick(engine.rng, r.get("pick", []) as Array)
 			if option.is_empty():
 				continue
+			var skill_id := StringName(str(option["skill"]))
 			var selector := StringName(str(option.get("target", "random_foe")))
 			var targets := select_targets(engine, actor, selector)
 			if targets.is_empty():
 				continue
-			return {"skill": StringName(str(option["skill"])), "targets": targets}
+			var forced := engine.forced_target(actor, skill_id)
+			if forced != null:
+				targets = [forced]  # Provoke overrides the selector for single-foe skills
+			return {"skill": skill_id, "targets": targets}
 	return {}
 
 

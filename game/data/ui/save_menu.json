@@ -1,0 +1,64 @@
+{
+  "save_menu": {
+    "doc": "docs/kb/tech/architecture.md (Saves). Rects are top-left x, y, w, h at the 1920 x 1080 reference; motion follows docs/kb/art/ui.md §5.",
+    "manual_slots": 6,
+    "canvas_layer": 64,
+    "panel": {
+      "rect": [400, 86, 1120, 908],
+      "pad": 28,
+      "title_height": 56,
+      "subtitle_height": 34,
+      "gap": 12,
+      "help_height": 40
+    },
+    "rows": {
+      "height": 92,
+      "pitch": 100,
+      "name_x": 64,
+      "name_width": 240,
+      "detail_x": 320,
+      "right_pad": 28,
+      "right_width": 300,
+      "line1_y": 10,
+      "line2_y": 50,
+      "line_height": 34,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "separator_inset": 16
+    },
+    "cursor": {
+      "sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "breath_sec": 2.4,
+      "breath_min": 0.75,
+      "dim_behind_dialog": 0.35
+    },
+    "panel_open": {
+      "sec": 0.18,
+      "rise_px": 8,
+      "scale_from": 0.98
+    },
+    "dialog": {
+      "rect": [660, 400, 600, 150],
+      "pad": 24,
+      "gap": 12
+    },
+    "dialog_choices": {
+      "rect": [810, 0, 300, 104],
+      "max_rows": 2,
+      "header_height": 0,
+      "row_inset": 8,
+      "row_pitch": 44,
+      "text_indent": 44,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75,
+      "cost_width": 0,
+      "rank_width": 0,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "submenu_dim": 0.5
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "_doc": "Tunables for the balancing simulator's party policies (game/battle/sim/, docs/kb/design/balance_targets.md). Not game data: nothing in play reads this file.",
+  "policies": {
+    "naive": {},
+    "lowest_hp": {},
+    "role_answer": {},
+    "smart": {"heal_below_pct": 45, "keep_healer_below_pct": 70}
+  },
+  "max_actions": 2000
+}

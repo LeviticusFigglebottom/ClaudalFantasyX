@@ -1,0 +1,7 @@
+{
+  "rules": {"sell_ratio_num": 1, "sell_ratio_den": 2, "min_sell_price": 1},
+  "shops": [
+    {"id": "haluna_market", "kind": "items", "name_key": "SHOP_HALUNA_MARKET", "location": "haluna", "requires_flag": "ch02_met_asha", "stock": [{"item": "salt_tonic"}, {"item": "bitterleaf"}, {"item": "brine_eyewash"}, {"item": "smelling_salts"}, {"item": "quiet_tea"}, {"item": "drag_net"}, {"item": "facet_power"}, {"item": "facet_mind"}, {"item": "facet_speed"}, {"item": "reef_draught", "requires_flag": "ch03_drownbell_defeated"}, {"item": "throat_honey", "requires_flag": "ch03_drownbell_defeated"}, {"item": "tidewash_salve", "requires_flag": "ch03_drownbell_defeated"}, {"item": "relighting_wick", "requires_flag": "ch03_drownbell_defeated"}]},
+    {"id": "haluna_forge", "kind": "equipment", "name_key": "SHOP_HALUNA_FORGE", "location": "haluna", "requires_flag": "ch02_met_asha", "stock": [{"item": "rhen_coral_hooks"}, {"item": "rhen_reefline_harness"}, {"item": "asha_bellshell_staff"}, {"item": "asha_pearl_bangle"}, {"item": "toma_net_rack_spear"}, {"item": "toma_chiselled_shield"}, {"item": "rhen_tidewalker_hooks", "requires_flag": "ch03_drownbell_defeated"}, {"item": "asha_dawnwick_staff", "requires_flag": "ch03_drownbell_defeated"}, {"item": "toma_saltgrass_pike", "requires_flag": "ch03_drownbell_defeated"}, {"item": "toma_reach_tide_shield", "requires_flag": "ch03_drownbell_defeated"}]}
+  ]
+}

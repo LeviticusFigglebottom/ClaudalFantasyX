@@ -11,6 +11,21 @@ const ROW_SKILLS := &"skills"
 const ROW_ESCAPE := &"escape"
 const ROW_SWAP := &"swap"
 const ATTACK_SKILL := &"attack"
+const AUTO_BERSERK := &"berserk"
+const AUTO_CONFUSE := &"confuse"
+## Every ActionResult.fail_reason the engine and the controller can produce. Each has its own
+## line in fail_text(); tests/unit/test_battle_controller.gd checks this list against the engine.
+const FAIL_REASONS: Array[StringName] = [
+	&"no_mp",
+	&"silenced",
+	&"no_valid_target",
+	&"provoked",
+	&"auto_turn",
+	&"not_your_turn",
+	&"battle_over",
+	&"unknown_skill",
+	&"no_valid_action",
+]
 
 ## Ranks at or above this show in the swell color (docs/kb/art/ui.md §6.1).
 var rank_swell_from := 3
@@ -127,6 +142,81 @@ func swap_in_help(engine: BattleEngine, incoming: BattleCombatant) -> String:
 
 func swap_out_help(incoming: BattleCombatant) -> String:
 	return tr("HUD_HELP_SWAP_OUT_FMT").format({"name": display_name(incoming)})
+
+
+## The help line for a refused action: a localized sentence for every engine fail reason, never
+## the raw id. `actor` is who tried; `provoker` names the forced target for &"provoked".
+func fail_text(reason: StringName, actor: BattleCombatant, provoker: BattleCombatant = null) -> String:
+	var text := tr("HUD_FAIL_GENERIC")
+	match reason:
+		&"no_mp":
+			text = tr("HUD_FAIL_NO_MP")
+		&"silenced":
+			text = tr("HUD_FAIL_SILENCED_FMT")
+		&"no_valid_target":
+			text = tr("HUD_FAIL_NO_TARGET")
+		&"provoked":
+			text = tr("HUD_FAIL_PROVOKED_FMT")
+		&"auto_turn":
+			text = tr("HUD_FAIL_AUTO_TURN_FMT")
+		&"not_your_turn":
+			text = tr("HUD_FAIL_NOT_YOUR_TURN")
+		&"battle_over":
+			text = tr("HUD_FAIL_BATTLE_OVER")
+		&"unknown_skill":
+			text = tr("HUD_FAIL_UNKNOWN_SKILL")
+		&"no_valid_action":
+			text = tr("HUD_FAIL_NO_ACTION_FMT")
+	return text.format({"name": display_name(actor), "provoker": display_name(provoker)})
+
+
+## Announces a turn the player does not choose (Berserk/Confuse), before it plays.
+func auto_announce(c: BattleCombatant, reason: StringName) -> String:
+	if reason == AUTO_CONFUSE:
+		return tr("HUD_AUTO_CONFUSE_FMT").format({"name": display_name(c)})
+	return tr("HUD_AUTO_BERSERK_FMT").format({"name": display_name(c)})
+
+
+## What an automatic turn did: "Berserk: Rhen lashes out with Attack at Reef Crab."
+func auto_result(engine: BattleEngine, c: BattleCombatant, result: ActionResult, reason: StringName) -> String:
+	var who := display_name(c)
+	var confused := reason == AUTO_CONFUSE
+	if result == null or not result.ok or result.hits.is_empty():
+		if confused:
+			return tr("HUD_AUTO_CONFUSE_IDLE_FMT").format({"name": who})
+		return tr("HUD_AUTO_BERSERK_IDLE_FMT").format({"name": who})
+	var target := display_name(engine.find(StringName(str(result.hits[0].get("target_id", "")))))
+	var args := {"name": who, "skill": skill_name(engine, result.skill_id), "target": target}
+	if confused:
+		return tr("HUD_AUTO_CONFUSE_ACTS_FMT").format(args)
+	return tr("HUD_AUTO_BERSERK_ACTS_FMT").format(args)
+
+
+## Slot 0's caption on the timeline: "Acting now", or why the fighter acts on its own.
+func turn_caption(reason: StringName) -> String:
+	match reason:
+		AUTO_BERSERK:
+			return tr("HUD_TL_BERSERK")
+		AUTO_CONFUSE:
+			return tr("HUD_TL_CONFUSE")
+	return tr("HUD_TL_NOW")
+
+
+## Extra help-line notes for a candidate action: the Provoke lock, a Reflect bounce, and a heal
+## that a Zombie turns to harm. `lands_on` is where the action really lands (after Reflect).
+func target_notes(
+	engine: BattleEngine, skill_id: StringName, chosen: BattleCombatant, lands_on: BattleCombatant
+) -> PackedStringArray:
+	var out: PackedStringArray = []
+	var forced := engine.forced_target(engine.current, skill_id)
+	if chosen != null and lands_on != null and lands_on != chosen:
+		out.append(tr("HUD_HELP_REFLECT_FMT").format({"name": display_name(lands_on)}))
+	if forced != null:
+		out.append(tr("HUD_HELP_PROVOKED_FMT").format({"name": display_name(forced)}))
+	var kind := str(engine.db.skill(skill_id).get("kind", ""))
+	if kind == "heal" and lands_on != null and lands_on.has_status(&"zombie"):
+		out.append(tr("HUD_HELP_ZOMBIE_FMT").format({"name": display_name(lands_on)}))
+	return out
 
 
 func group_label(hostile: bool) -> String:

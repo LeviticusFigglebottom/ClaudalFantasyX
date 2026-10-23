@@ -73,6 +73,247 @@
       "scene": "res://game/battle/scene/shots/battle_victory.tscn"
     },
     {
+      "id": "base_body_slender_front",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Slender/Cameras/Front",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_slender_q34",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Slender/Cameras/ThreeQuarter",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_slender_side",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Slender/Cameras/Side",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_slender_face",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Slender/Cameras/Face",
+      "resolution": [
+        512,
+        512
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_slender_posed",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "SlenderPosed/Cameras/ThreeQuarter",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_athletic_front",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Athletic/Cameras/Front",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_athletic_q34",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Athletic/Cameras/ThreeQuarter",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_athletic_side",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Athletic/Cameras/Side",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_heavy_front",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Heavy/Cameras/Front",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_heavy_q34",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Heavy/Cameras/ThreeQuarter",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "base_body_heavy_side",
+      "scene": "res://game/levels/_tests/characters/base_body_test.tscn",
+      "camera": "Heavy/Cameras/Side",
+      "resolution": [
+        432,
+        768
+      ],
+      "settle_frames": 24
+    },
+    {
+      "id": "veg_backlit_fronds",
+      "scene": "res://game/levels/_tests/vegetation/vegetation_test.tscn",
+      "camera": "Cameras/Backlit",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 16,
+      "threshold_rmse": 0.018
+    },
+    {
+      "id": "veg_frangipani_close",
+      "scene": "res://game/levels/_tests/vegetation/vegetation_test.tscn",
+      "camera": "Cameras/FrangipaniClose",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 16,
+      "threshold_rmse": 0.018
+    },
+    {
+      "id": "veg_beach_wide",
+      "scene": "res://game/levels/_tests/vegetation/vegetation_test.tscn",
+      "camera": "Cameras/Wide",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 16,
+      "threshold_rmse": 0.018
+    },
+    {
+      "id": "water_shallows",
+      "scene": "res://game/levels/_tests/water/water_test.tscn",
+      "camera": "Cameras/Shallows",
+      "settle_frames": 16,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "water_lagoon",
+      "scene": "res://game/levels/_tests/water/water_test.tscn",
+      "camera": "Cameras/Lagoon",
+      "settle_frames": 16,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "water_horizon",
+      "scene": "res://game/levels/_tests/water/water_test.tscn",
+      "camera": "Cameras/Horizon",
+      "settle_frames": 16,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "water_night",
+      "scene": "res://game/levels/_tests/water/water_test.tscn",
+      "camera": "Cameras/Night",
+      "settle_frames": 16,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "field_lane_fixed",
+      "scene": "res://game/levels/_tests/field/field_shot_lane.tscn",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "field_court_pan",
+      "scene": "res://game/levels/_tests/field/field_shot_court.tscn",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "field_causeway_dolly",
+      "scene": "res://game/levels/_tests/field/field_shot_causeway.tscn",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "battle_statuses",
+      "scene": "res://game/battle/scene/shots/battle_statuses.tscn"
+    },
+    {
+      "id": "save_shrine_field",
+      "scene": "res://game/levels/_tests/save_shrine/shot_save_field.tscn",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "save_menu",
+      "scene": "res://game/levels/_tests/save_shrine/shot_save_menu.tscn",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "save_menu_overwrite",
+      "scene": "res://game/levels/_tests/save_shrine/shot_save_menu_overwrite.tscn",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
       "id": "char_skin_eye_closeup",
       "scene": "res://game/levels/_tests/character_shading/shading_test.tscn",
       "camera": "Cameras/SkinEye",

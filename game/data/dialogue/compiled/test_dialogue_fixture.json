@@ -7,7 +7,7 @@
   "test_dialogue_fixture": {
    "headers": {},
    "ops": [
-    {"op": "cue", "cue": "camera", "args": ["fixture_wide"], "kwargs": {"blend": 1.5, "hold": true}, "src": 5},
+    {"op": "cue", "cue": "camera", "args": ["fixture_wide"], "kwargs": {"blend": 1.5, "grade": "ch02"}, "src": 5},
     {"op": "line", "id": "test_dlg_001", "key": "DLG_TEST_DLG_001", "speaker": "", "emotion": "", "voice": "", "src": 6},
     {"op": "line", "id": "test_dlg_002", "key": "DLG_TEST_DLG_002", "speaker": "rhen", "emotion": "worried", "voice": "", "src": 7, "tags": ["tagged"]},
     {"op": "if_not", "cond": ["flag", "test_flag"], "to": 6, "src": 8},
@@ -42,6 +42,22 @@
     {"op": "line", "id": "test_dlg_014", "key": "DLG_TEST_DLG_014", "speaker": "asha", "emotion": "", "voice": "", "src": 32},
     {"op": "goto", "to": 3, "src": 31},
     {"op": "line", "id": "test_dlg_015", "key": "DLG_TEST_DLG_015", "speaker": "asha", "emotion": "smile", "voice": "", "src": 34}
+   ]
+  },
+  "features": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "test_dlg_016", "key": "DLG_TEST_DLG_016", "speaker": "asha", "emotion": "smile", "voice": "", "src": 39, "name_key": "DLG_NAME_ASHA_THE_GIRL"},
+    {"op": "line", "id": "test_dlg_017", "key": "DLG_TEST_DLG_017", "speaker": "asha", "emotion": "smile", "voice": "", "src": 40},
+    {"op": "line", "id": "test_dlg_018", "key": "DLG_TEST_DLG_018", "speaker": "", "emotion": "tender", "voice": "", "src": 41, "narrator": "rhen", "tags": ["vo"]},
+    {"op": "line", "id": "test_dlg_019", "key": "DLG_TEST_DLG_019", "speaker": "", "emotion": "sad", "voice": "", "src": 42},
+    {"op": "cue", "cue": "music", "args": ["fixture_song"], "kwargs": {"fade": 0.5}, "src": 43},
+    {"op": "line", "id": "test_dlg_020", "key": "DLG_TEST_DLG_020", "speaker": "asha", "emotion": "tender", "voice": "", "src": 44, "tags": ["sung", "notr"]},
+    {"op": "cue", "cue": "wait", "args": [], "kwargs": {"music": "verse_end", "max": 6.0}, "src": 45},
+    {"op": "cue", "cue": "wait", "args": [], "kwargs": {"music": "already_passed"}, "src": 46},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.0}, "src": 47},
+    {"op": "cue", "cue": "sfx", "args": ["fixture_toll"], "kwargs": {"vol": 0.5, "at": "asha"}, "src": 48},
+    {"op": "line", "id": "test_dlg_021", "key": "DLG_TEST_DLG_021", "speaker": "toma", "emotion": "", "voice": "", "src": 49}
    ]
   }
  }
