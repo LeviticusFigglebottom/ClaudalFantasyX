@@ -30,4 +30,6 @@ SPEC §6.1 and §6.11. M1-CMB-03 ships Read, the bestiary log and preemptive/amb
 - **Follow-ups (not done):** the target info panel still says "HP unknown until Read" for a foe the party has Read (`revealed: false` in `BattleController._show_pick`). Combining it with `bestiary.book.is_read` is a one-line change at the controller's cap. The art review of deviations 10-11 is in M2-ART-01.
 - **Gate:** `HYMN_SHOTS=battle_read_panel,battle_opening_banner,battle_swell_modes,bestiary_menu,battle_hud_preview,battle_swap_menu,battle_swell_ring,battle_statuses,battle_victory tools/ci_local.sh` rc 0 at b2dbe53: validate_data 0/0, tool tests 411 OK, audio 9 OK, taskboard, gdlint and gdformat clean, **1105 Godot tests, 0 failed**, coverage battle 99.93% (1524/1525) and progression 96.52% (unchanged from baseline), boot smoke OK, 9 shots at rmse 0. Filters beforehand: swell 62, bestiary 27, read_panel 12, swell_mode 12, ui 87, battle 287, all passing.
 
+- **Gate after merging claude/new-session-mj8c3c (merge 9186104):** the scoped `tools/ci_local.sh` with all 9 battle and bestiary shots gives rc 0. 1169 Godot tests, 0 failed. Coverage: battle 99.94% (1770/1771), progression 96.52%, within baseline. All shots at rmse 0, so none needed re-approval.
+
 ## Review log

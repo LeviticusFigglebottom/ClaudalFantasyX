@@ -39,4 +39,6 @@ SPEC §6.2 says the mode is selectable. M1-CMB-04 ships the rules (`BattleSwell.
 ## Notes
 - 2026-10-23 (Combat, M2-CMB-01 / M2-ARC-01): the API is ready and documented in battle_ctb.md "Swell" (API for the Swell mode menu). In battle: `ctl.swell.mode_rows(c)`, `set_mode(c, mode)`, `unlocked`, `progress_toward(mode)` and the `mode_unlocked` signal. Out of battle: `BattleSwellCarry.mode_rows(cid)`, `set_mode(cid, mode)` and `rules()` over `Game.state`. Modes carry between battles and in saves (save v6).
 
+- **Gate after merging claude/new-session-mj8c3c (merge 9186104):** the scoped `tools/ci_local.sh` with all 9 battle and bestiary shots gives rc 0. 1169 Godot tests, 0 failed. Coverage: battle 99.94% (1770/1771), progression 96.52%, within baseline. All shots at rmse 0, so none needed re-approval.
+
 ## Review log
