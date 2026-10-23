@@ -106,3 +106,9 @@ Ranked by percentage, then missed lines. Each item is a test to write, or dead c
 5. **progression**: `game/progression/lattice_rules.gd:24 load_file()`, **60%** (2 missed). The parse-failure path (lines 27–28) is untested.
 
 Next in line: `battle_engine.gd:131 run_enemy_turn()` at 62% (the no-valid-action idle path and the bad-data turn loss), `lattice_board.gd:25 load_board()` at 67%, and `facet_inventory.gd:21 add()` at 67%. Always check `coverage.txt` for the current list.
+
+## Performance tests under instrumentation
+Instrumented code is slower, so wall-clock budget tests (e.g. `test_scene_router_swap.gd`'s swap-frame threshold) return early when `HYMN_COV_OUT` is set. The plain Godot test step still enforces them. Any new timing-budget test must do the same, or the coverage gate becomes flaky (review-sweep-A blocker, 2026-10-23).
+
+## Tolerance at high coverage
+At battle's 99.45% (911 lines) the 0.5 pp tolerance is about 4–5 uncovered lines per change. Treat that as slack for genuinely unreachable lines, not a budget for untested code.
