@@ -7,6 +7,7 @@ owner_session: "worktree-agent-ad32302c9926d0fee"
 depends_on: [M1-CMB-03, M1-ENV-05, M1-RND-16]
 milestone: M1
 request-from: "lead"
+reviewer: lead
 ---
 ## Goal
 From the review-sweep-L entries (file:line references there).
