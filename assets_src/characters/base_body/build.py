@@ -1,8 +1,9 @@
 """Parametric human base body: build and export (M1-CHR-01, ADR 0005, ADR 0010).
 
-Run headless (the wrapper from tools/dev/fetch_blender.py):
+Run headless (the wrapper from tools/dev/fetch_blender.py), single-threaded like the rebuild gate
+(M1-CHR-06: the exported tangents race at more threads; build_all.sh does this for every variant):
 
-    blender --background --factory-startup --python assets_src/characters/base_body/build.py -- \\
+    blender --threads 1 --background --factory-startup --python assets_src/characters/base_body/build.py -- \\
         --variant slender --out assets/characters/base_body/base_body_slender.glb
 
 Options (after `--`):

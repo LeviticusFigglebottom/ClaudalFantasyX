@@ -116,6 +116,13 @@ class ManifestTest(unittest.TestCase):
         kinds = {j["id"]: j["expected_failure"]["kind"] for j in self.manifest["jobs"] if "expected_failure" in j}
         self.assertEqual(kinds, {"base_body": "mismatch"})  # M1-RND-14 fixed
 
+
+    def test_owner_build_scripts_use_the_gate_thread_count(self) -> None:  # M1-CHR-06
+        """A hand rebuild must commit what the gate rebuilds: base_body's build_all.sh passes the job's
+        --threads (Asha's build.sh is folded in by the Asha line, M1-CHR-06 notes)."""
+        bb = next(j for j in self.manifest["jobs"] if j["id"] == "base_body")
+        sh = (ROOT / "assets_src/characters/base_body/build_all.sh").read_text(encoding="utf-8")
+        self.assertIn(f'"$blender" --threads {vbb.job_threads(bb, self.manifest)} ', sh)
     def test_python_runs_use_this_interpreter(self) -> None:
         run = ["{python}", "assets_src/x/t.py", "--bake-dir", "{scratch}/b"]
         self.assertEqual(vbb.expand(run, "/bin/blender", Path("/s")), [sys.executable, "assets_src/x/t.py", "--bake-dir", "/s/b"])
