@@ -2,8 +2,8 @@
 id: M1-RND-08
 title: Water and glimmer follow-ups (review-sweep-B)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-08-water-glimmer; water items first)
 depends_on: [M1-RND-01, M1-RND-02, M1-RND-03, M1-ENV-01]
 milestone: M1
 request-from: "environment"
@@ -24,6 +24,6 @@ Environment-side findings on water and glimmer, scheduled after the Undertow and
 - [ ] Water: SSS crests read as large pale patches from high cameras at noon (Art, M1-ART-04)
 
 ## Notes
--
+- 2026-10-23 PC GPU session claims this task and starts with the three water items (NaN at the anti-solar pixel, SSS green bands, SSS crest patches), which need a real GPU to see. Glimmer and caustics items stay open unless noted below.
 
 ## Review log
