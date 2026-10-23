@@ -266,6 +266,37 @@ def pack_faces(ob: bpy.types.Object, mats: set[str], margin: float = 0.003) -> N
         uvl[li].uv = (float(q[0]), float(q[1]))
 
 
+def head_surface(V: np.ndarray, F: np.ndarray, N: np.ndarray, freg: np.ndarray, coarse=None) -> "asha_hair.MeshScalp":
+    """M1-CHR-04: the shipped head skin as the hair's scalp (asha_hair.MeshScalp): a BVH over its
+    triangles; the normal is the welded vertex normal interpolated at the closest point."""
+    from mathutils import Vector
+    from mathutils.bvhtree import BVHTree
+
+    T = bb_donor.tris_of(F[np.isin(freg, ["head", "scalp"])])
+    bvh = BVHTree.FromPolygons([tuple(map(float, v)) for v in V], [tuple(int(i) for i in t) for t in T])
+
+    def nearest(P: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        Q = np.zeros((len(P), 3))
+        Nq = np.zeros((len(P), 3))
+        for i, p in enumerate(P):
+            loc, _n, ti, _d = bvh.find_nearest(Vector(tuple(map(float, p))))
+            a, b, c = V[T[ti]]
+            q = np.array(loc[:])
+            # barycentric of q in (a, b, c)
+            v0, v1, v2 = b - a, c - a, q - a
+            d00, d01, d11 = v0 @ v0, v0 @ v1, v1 @ v1
+            d20, d21 = v2 @ v0, v2 @ v1
+            den = max(d00 * d11 - d01 * d01, 1e-18)
+            wb = (d11 * d20 - d01 * d21) / den
+            wc = (d00 * d21 - d01 * d20) / den
+            n = (1.0 - wb - wc) * N[T[ti][0]] + wb * N[T[ti][1]] + wc * N[T[ti][2]]
+            Q[i] = q
+            Nq[i] = n / max(np.linalg.norm(n), 1e-12)
+        return Q, Nq
+
+    return asha_hair.MeshScalp(nearest, coarse)
+
+
 def read_weights(ob: bpy.types.Object) -> tuple[np.ndarray, list[str]]:
     names = [g.name for g in ob.vertex_groups]
     W = np.zeros((len(ob.data.vertices), len(names)), dtype=np.float32)
@@ -476,7 +507,7 @@ def main() -> int:
     hair_objs = []
     hair_tris = 0
     if not args.no_hair:
-        hair = asha_hair.build_hair(lm, body, extra["_hair"])
+        hair = asha_hair.build_hair(lm, body, extra["_hair"], head_surface(V, F, Nw, freg, asha_hair.Scalp(body)))
         G = asha_hair._gather(lm)
         rigid_parts = Part("HairHead")
         for key in ("HairScalp", "HairFront", "HairComb"):
@@ -498,7 +529,7 @@ def main() -> int:
         apply_weights(ob, Wf, wnames, skel)
         hair_objs.append(ob)
         hair_tris = rigid_parts.tris() + flowing.tris()
-        log(f"hair: {hair_tris} tris ({time.time() - t0:.1f}s)")
+        log(f"hair: {hair_tris} tris, scalp {hair['HairScalp'].tris()} ({time.time() - t0:.1f}s)")
 
     staff = asha_staff.staff(lm)
     ob_staff = part_object(staff)
@@ -543,8 +574,14 @@ def main() -> int:
     }
     report["triangles"]["total_lod0"] = sum(report["triangles"].values())
     if args.bake_dir:
+        # M1-CHR-04: the lip contact line and the commissures (bb_donor.lip_rest) for the lip bake
+        lip_terms = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("CONTACT", "lip_contact"),
+                                                                            ("CORNER", "lip_corner"))}
+        face_v = np.zeros(len(Vhead))  # the face-mask island's vertices (texel report)
+        face_v[np.unique(Fh[cat == 1][Fh[cat == 1] >= 0])] = 1.0
+        lip_terms["FACE"] = face_v
         dump_bake(Path(args.bake_dir), {"head": ob_head, "body": ob_body}, lm, {"head": np.array(head.T)},
-                  {"head": {"LIP": masks["lip"]}})
+                  {"head": {"LIP": masks["lip"], **lip_terms}})
     if args.blend:
         bpy.ops.wm.save_as_mainfile(filepath=str(Path(args.blend).resolve()), compress=True)
     out = Path(args.out).resolve()

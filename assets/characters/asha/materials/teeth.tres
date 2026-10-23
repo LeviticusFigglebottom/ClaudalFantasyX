@@ -2,5 +2,5 @@
 
 [resource]
 resource_name = "teeth"
-albedo_color = Color(0.80, 0.76, 0.68, 1)
-roughness = 0.35
+albedo_color = Color(0.82, 0.76, 0.66, 1)
+roughness = 0.5

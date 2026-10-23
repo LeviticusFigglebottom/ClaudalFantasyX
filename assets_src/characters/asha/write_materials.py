@@ -57,7 +57,8 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
                       "tex_detail_normal": "asha_thread_detail_normal.png"}),
 }
 STANDARD_MATERIALS = {
-    "teeth": "albedo_color = Color(0.80, 0.76, 0.68, 1)\nroughness = 0.35\n",
+    # M1-CHR-04: warmer and rougher; at 0.35 the teeth mirrored the cool sky and read blue-grey in grief
+    "teeth": "albedo_color = Color(0.82, 0.76, 0.66, 1)\nroughness = 0.5\n",
     "tongue": "albedo_color = Color(0.55, 0.26, 0.25, 1)\nroughness = 0.4\n",
     "mouth": "albedo_color = Color(0.28, 0.10, 0.09, 1)\nroughness = 0.5\n",
     "staff_wood": "albedo_color = Color(0.227, 0.165, 0.125, 1)\nroughness = 0.45\n",
