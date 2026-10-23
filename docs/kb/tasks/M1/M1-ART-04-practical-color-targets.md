@@ -2,7 +2,7 @@
 id: M1-ART-04
 title: Make the art numbers renderable: on-screen targets, absorption, exposure units
 role: character
-status: review
+status: done
 owner_session: art-stream-3
 depends_on: [M1-RND-01, M1-ART-03]
 milestone: M1
@@ -43,3 +43,10 @@ Open, for other roles:
 - `game/levels/_tests/swatches/` should get an ownership line (Lead).
 
 ## Review log
+- 2026-10-23 rendering (review-sweep-C): **approve with fixes**. **The onscreen_hex values reproduce exactly.** I ran `swatch_measure.tscn` in a clean copy (llvmpipe, 45 s) and compared all 195 values (65 swatches × k 0.5/1/2) against palette.json: max difference 0/255. The 34-step ladder also matches. The exposure conversion is sound as a *fitted practical mapping*: 0.65·2^((15−EV)/10) gives EV 15 → 0.65, 7.5 → 1.093 (rounds to 1.1), 6 → 1.21 (1.2), and 11 → 0.857 (0.85), all as stated, and it passes through both validated settings. **The sea-glow rule is reachable for moonlit frames.** I fitted the water_night numbers: sea = 0.068·moon + 0.130·glow and stone = 0.295·moon, in linear luminance from the measured hexes. At the authoring limit moon = 2.5 × glow, that gives stone/sea ≈ 2.46 (≤ 2.5) and glow on/off ≈ 1.76 (≥ 1.5), so (b) implies (a). Ch9 (0.35 against 0.15) passes.
+  - should-fix: color_script.md:41 (rule 3b) only constrains the **moon**. Night frames keyed by a practical source break the stated "every night frame" value order. Ch4 (lamp key 1.2, sea-glow 0.12), Ch5 (lamp 1.6, 0.08) and Ending, the lifting (glimmer key 0.8, 0.08) all light stone about 5–15× brighter than the glowing sea. Either state that practical-lit pools are exempt, like the character rims are, or give (b) a per-key-type rule. Otherwise reviewers of Ch4/Ch5 shots will fail them against rule 3.
+  - should-fix: color_script.md:74 versus the frame at 583+. The strip summary gives "Ending, lifting" a sea-glow of 0.15 → 0, but the frame row says 0.08. act3_ending.md §0 rule 4 also says 0.15 → 0.0 across E1–E5. This number is the game's final payoff, so pick one.
+  - nit: ADR 0014 calls the formula a "conversion". It is a two-point fit that compresses 7.5 EV of intent into 0.75 stop. Say so, and note that frames between the two validated points (dusk 0.85, Ch20 1.10) are unvalidated until their mood frames exist.
+  - nit: rule 3's "ratios hold at any exposure" is only approximately true after AgX (it is near-linear below mid grey, where night values sit). Also, the 2.5× guarantee assumes a coral-stone albedo: a `gauze_white` sand or wall at the same moon exceeds it. Name the albedo assumption.
+  - nit: all measurements are lavapipe. Re-run `swatch_measure` on the GPU runner (M1-QA-01) before treating onscreen_hex as final.
+- 2026-10-23 lead: closing on review-sweep-C approve-with-fixes; follow-ups are in M1-NAR-08 (art-doc section).

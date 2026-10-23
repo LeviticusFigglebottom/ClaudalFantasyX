@@ -2,7 +2,7 @@
 id: M1-RND-04
 title: Skin, hair, eye, and cloth shaders for the M1 hero
 role: rendering
-status: review
+status: done
 owner_session: rendering-stream-4
 reviewer: character
 depends_on: []
@@ -29,3 +29,10 @@ SPEC §8.2 items 4–6, supporting M1-CHR-02.
 - Reviewer (Character): check that the map and geometry contracts in character_shading.md ("Map authoring requirements") are workable for the procedural Asha build, especially the eye object-space contract, the lid requirements, the hair flow-map variation, and the band-id texture. Also judge whether the painterly range is the right SPEC §14 fallback.
 
 ## Review log
+- 2026-10-23 character (review-sweep-C): **approve with fixes**. The shader set and tier contract are solid, and the map/geometry contract is mostly buildable from a procedural Blender pipeline: the test-prop script already shows sorted triangulation, MikkTSpace tangents from Godot and `FLOAT_COLOR` wind attributes. I checked the char_* baselines against the doc. The eye is convincing (refraction, limbal ring, lid occlusion), cloth sheen, gold thread and the S8 dissolve edge read well, and hair transmission works against the rim. As the author says, the bust reads as a mannequin. That is a geometry gap, so the §14 uncanny-valley risk stays open until the Asha head exists. Painterly 0.2 is the right default. 1.0 as a fallback reads as cel, as stated, and needs authored albedo colour zones to be a real fallback. Ship it with the contract gaps below closed.
+  - should-fix: `game/shaders/character/character_cloth_body.gdshaderinc:75,115` and contract row `character_shading.md:141`. `tex_band_id` is `filter_linear_mipmap`, and the contract says "mipmaps on for every map" (line 127). Bilinear filtering and mips between band 7 and blank 0 produce the values 1/7–6/7, which decode to bands 1–6. At `verse_count` 3, a texel-wide outline of hidden band 7's artwork shows. At battle distance the mips average whole hidden bands down into revealed ids, so S4+ bands leak in at range. Fix: `filter_nearest` (no mips) for the id map, and exempt id maps from the "mipmaps on" rule in the doc.
+  - should-fix: character_shading.md:152 and the Wind section. The contract doesn't say how to author the vertex colours. A Blender *Byte Color* attribute is stored in sRGB and goes through a transfer on export, so a painted weight or phase of 0.5 arrives as about 0.21. The test props avoid this only because `build_shader_test_meshes.py:65` uses `FLOAT_COLOR`. Fix: state "use a FLOAT_COLOR point attribute named …, exported as COLOR_0" in the contract.
+  - should-fix: character_shading.md:135 (detail normal). Pores tile in UV space, so the contract needs **uniform texel density across the head's UV islands**, with `detail_tiling` stated as a formula: tiles per UV unit = (mm of skin per UV unit) ÷ 27.5. "16 on a spherical UV" doesn't transfer, and unequal islands give visible pore-scale jumps at seams.
+  - nit: character_shading.md:136. `*_hair` B ("vary it per strand or per layer") is a texture channel. When cards share one atlas, per-layer variation needs a separate atlas region per layer, or a per-card attribute (UV2.x). Vertex colour is taken by wind. Say which one the pipeline should use.
+  - nit: eye contract. "+Z is the gaze (Blender −Y)" is correct for the glTF Y-up export, but say explicitly that the object transform must be applied with the origin at the eyeball centre *before* parenting to the eye bone. A bone-relative rotation baked into the mesh breaks the object-space iris.
+- 2026-10-23 lead: closing on review-sweep-C approve-with-fixes; contract fixes in M1-RND-09, and the authoring implications were forwarded to M1-CHR-02.

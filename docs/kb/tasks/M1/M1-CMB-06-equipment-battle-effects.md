@@ -2,7 +2,7 @@
 id: M1-CMB-06
 title: Equipment on-hit effects, battle item use, and lume/drop rewards in BattleEngine
 role: combat
-status: review
+status: done
 owner_session: combat-stream-2
 reviewer: progression
 depends_on: [M1-PRG-02]
@@ -57,3 +57,13 @@ Folded in (2026-10-23):
 For Progression: wire `InventoryItemSource` and `currency_multiplier = fx.currency_multiplier` into the sandbox glue (UI stream), and award `drop_awards()` / `currency_award()` into the inventory and wallet after victory.
 
 ## Review log
+- 2026-10-23 progression (review-sweep-C): **approve with fixes**. The engine rules match formulas.md § Items / § Equipment / § Rewards and the economy.md anchors (62 lume per sandbox win; about 7 fights plus the Drownbell ≈ 734 lume, which matches the "about 700 by the slice's end" pricing). I reproduced every balance band bit-for-bit at 1000 seeds (`sim.py --report /tmp/...`): m1_starting naive 10.9 / lowest_hp 84.2 / role_answer 97.1 / smart 100.0, and m1_tier1 25.1 / 89.3 / 98.4 / 100.0, with identical lume columns. Engine probes on the real items.json (a throwaway test outside the repo):
+  - Drag Net twice before the foe acts gives 268, then 134 ticks (halved), `delays_taken` 2, and the preview equals play.
+  - A Petrify cure (synthetic `cure: [petrify]` item) targets the stone ally, keeps its HP (300/300), rejoins at now + rank-3 delay (280 = expected), and the preview equals play.
+  - A Wick on a living Zombie fells it. A Zombie KO clears Zombie, and the ex-Zombie then revives normally at 25%.
+  - A Zombie using a Wick on itself while it is the last member standing ends in defeat. That is legal, and the preview shows it.
+  - should-fix: `docs/kb/design/economy.md:53` is stale against this task. It still says revive "targets **only** the fallen" and "no current item reaches [petrified allies]… a follow-up". formulas.md now has the living-Zombie revive path and petrify-cure targeting. The doc is Progression's (mine to fix, or Combat may append). Item tooltips and UI will be written from economy.md.
+  - should-fix (UI/pillar 4): the self-targeted Wick on a living Zombie is a one-action defeat when the user is the last one standing (probe above). The engine is right, but the item menu should show the "falls" preview as a warning, not just drop the entry from the timeline. Raise a UI request.
+  - nit: `game/battle/battle_engine.gd:336-338` (`_resolve_item_on`) and `_rejoin_time` (364). A revived or stone-cured unit keeps its old `delays_taken`, so its first delay after rejoining is pre-halved. The engine has no party-side delays yet, so this is latent. Reset it on rejoin, matching "acting resets it to 0".
+  - nit: the smart-policy bands (85–100% and 95–100%) sit at 100.0%, so they can't detect a regression that makes the sandbox easier. Consider a ceiling (for example ≤ 99.5%) or a turns band for smart.
+- 2026-10-23 lead: closing on review-sweep-C approve-with-fixes; all bands reproduced bit-for-bit. economy.md and the self-revive warning are in M1-UI-04.
