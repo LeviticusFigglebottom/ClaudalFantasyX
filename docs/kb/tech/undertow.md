@@ -218,7 +218,46 @@ Calibrated against the water bench, the only ratio we have. Water High costs abo
 6. **Cinematics hooks:** an `UndertowStorm` preset per chapter (Ch1 arrival, Ch8 storm wall, Ch20 interior, Ch21 the Letting: wounds turning to `glimmer_lift` and rising via the rule-1 hue lerp), and a timeline/AnimationPlayer track that drives `approach_distance_m`, `intensity` and `force_flash`.
 7. **Art review** against the colour script with paintovers, and the `spawn_wound` usage decision.
 
+### Half-resolution body (M2-RND-01)
+Medium and High raymarch the body at `body_scale` 0.5 of the view (undertow.json `quality.*.body_scale`; Ultra 1).
+`UndertowStorm.half_res_body_scale` overrides it (−1 = the tier).
+
+How it works (`UndertowHalfRes`, `undertow_composite.gdshader`):
+- The body moves to visual layer 20, and the game camera stops drawing that layer.
+- A `SubViewport` that shares the world renders only that layer, through a camera that copies the game camera
+  every frame. The copy happens on `RenderingServer.frame_pre_draw`, after the camera has moved.
+  - The SubViewport is transparent, HDR (`use_hdr_2d`) and linear-tonemapped.
+  - Its TAA is off, because TAA does not keep a transparent viewport's alpha.
+- The composite is drawn on the body's own proxy cylinder in the game view, premultiplied, so it sorts as the body
+  did.
+  - It reads the half-res frame through a 3×3 tent, four bilinear taps. At half resolution each march-jitter
+    sample covers a 2×2 block, which narrows TAA's neighbourhood clamp so the history couldn't average the jitter
+    out; the tent removes the stipple before TAA sees it.
+  - **Occlusion:** the SubViewport sees no opaque geometry. So the composite drops a pixel whose opaque depth is
+    nearer than where the ray enters the capped cylinder of the wall's foot (eye + wall + skirt radius, slab
+    sea → top).
+  - Opaque geometry inside that cylinder isn't occluded (the old body clipped against the depth buffer per
+    sample). Nothing in the test scene is there. A boat inside the eyewall would need the M2 compute path (below).
+
+Measured (RX 9070 XT, High 1440p, GPU including the SubViewport):
+
+| Camera | Full res | Half res |
+|---|---:|---:|
+| Day | 4.94 ms | 2.27 ms |
+| Eye | 5.41 ms | 2.68 ms |
+| Night | 5.06 ms | 2.25 ms |
+| Horizon | 3.97 ms | 1.94 ms |
+
+- **Glow dither on High** (FSR2): 0.0092, against 0.0291 at full resolution. That's within 16 % of native TAA
+  without the M1-RND-16 cutscene override.
+- **Panning** at 0.15° a frame on Ultra reads like the full-res body.
+
+**Next step (M2):** move the half-res march to a `CompositorEffect` compute pass. It would read the game view's depth
+for exact occlusion inside the volume, with its own reprojected history.
+
 ## Gotchas
+- **The half-res body (M2-RND-01) puts the body on visual layer 20 and clears that bit from the game camera's
+  `cull_mask` every frame.** Don't use layer 20 for anything else in a scene with a storm.
 - **Keep the node unrotated and unscaled.** The visuals are a top-level child placed at `storm_center()` in world axes. Its Y is irrelevant: see "Sea level".
 - **Render priorities matter.** The lid must draw before the water (−1 < 0), and the body after the water. Anything transparent that should cover the storm (motes, rain near the lens, UI-like VFX) needs a priority above `render_priority.body` (2). The body ignores the transparent depth (`depth_test_disabled`, clipped against the *opaque* depth copy), so transparent things at lower priorities are painted over.
 - **The lid hides transparent things below its height over the funnel** (lift + crest height, about 2–3 m): the ocean, as intended, but also any low transparent VFX placed on the storm's sea. Nothing gameplay-relevant lives there.

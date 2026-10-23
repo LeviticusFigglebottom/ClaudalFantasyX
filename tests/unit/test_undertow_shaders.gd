@@ -30,6 +30,7 @@ const SHADER_UNIFORMS := {
 	"undertow_spray.gdshader": ["spray_radius_m", "spray_height_m"],
 	"undertow_sea.gdshader": ["funnel_depth_m", "foam_octaves", "sea_glow_energy", "col_sea_deep"],
 	"undertow_sea_lid.gdshader": ["lid_height_m"],
+	"undertow_composite.gdshader": ["body_tex", "occluder_radius_m", "body_texel"],
 }
 const LINEAR_TOL := 0.002
 
@@ -82,7 +83,8 @@ func test_every_undertow_shader_compiles() -> void:
 		assert_true(SHADER_UNIFORMS.has(file), "unexpected shader %s" % file)
 		for u: String in SHADER_UNIFORMS.get(file, []):
 			assert_true(names.has(u), "%s lacks uniform %s" % [file, u])
-		if file != "undertow_sea_lid.gdshader":
+		# The lid writes depth only; the half-res composite only lays the body's texture down.
+		if file not in ["undertow_sea_lid.gdshader", "undertow_composite.gdshader"]:
 			for u in COMMON_UNIFORMS:
 				assert_true(names.has(u), "%s lacks storm uniform %s" % [file, u])
 	OS.remove_logger(shader_log)

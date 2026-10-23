@@ -227,7 +227,8 @@
       "march_steps": 28,
       "spray_layers": 2,
       "sea_foam_octaves": 3,
-      "temporal_jitter": true
+      "temporal_jitter": true,
+      "body_scale": 0.5
     },
     "high": {
       "body": "raymarch",
@@ -235,7 +236,8 @@
       "spray_layers": 2,
       "sea_foam_octaves": 4,
       "curl_reuse": 2,
-      "temporal_jitter": true
+      "temporal_jitter": true,
+      "body_scale": 0.5
     },
     "ultra": {
       "body": "raymarch",
@@ -243,7 +245,8 @@
       "spray_layers": 2,
       "sea_foam_octaves": 5,
       "curl_reuse": 2,
-      "temporal_jitter": true
+      "temporal_jitter": true,
+      "body_scale": 1.0
     }
   },
   "looks": {

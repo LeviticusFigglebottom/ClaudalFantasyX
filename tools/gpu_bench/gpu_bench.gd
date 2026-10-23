@@ -18,6 +18,7 @@ extends Node
 ##   --label=<name>               scene label in the CSV (default: scene file name + camera)
 ##   --png-dir=<abs dir>          save the last sampled frame of each measurement as a PNG
 ##   --override=key=value,...     GraphicsSettings overrides on top of each preset (e.g. vegetation_detail=low)
+##   --undertow-half=<scale>     render every UndertowStorm's body at this resolution fraction (M2-RND-01)
 ##   --tag-vegetation             tag MultiMeshes (vegetation_multimesh, small_foliage) and range-limited
 ##                                meshes (vegetation_lod) before measuring, as a zone would (M1-RND-07)
 ##   --spin-sun=<deg>             turn every DirectionalLight3D this many degrees about Y each frame
@@ -82,6 +83,10 @@ func _run() -> void:
 	win.position = DisplayServer.screen_get_position(win.current_screen)
 	_scene = packed.instantiate()
 	add_child(_scene)
+	if _opts.has("undertow-half"):
+		for n in _scene.find_children("*", "", true, false):
+			if n is UndertowStorm:
+				(n as UndertowStorm).half_res_body_scale = float(_opts["undertow-half"])
 	if _opts.has("hold-storm"):
 		for n in _scene.find_children("*", "", true, false):
 			if n is UndertowStorm:
@@ -168,7 +173,7 @@ func _measure(preset: String, variant: Dictionary, camera: String, label: String
 		var now := Time.get_ticks_usec()
 		wall.append(float(now - last) / US_PER_MS)
 		last = now
-		gpu.append(RenderingServer.viewport_get_measured_render_time_gpu(rid))
+		gpu.append(RenderingServer.viewport_get_measured_render_time_gpu(rid) + _sub_viewports_gpu())
 		cpu.append(RenderingServer.viewport_get_measured_render_time_cpu(rid))
 	var size := get_window().size
 	var scale := get_viewport().scaling_3d_scale
@@ -287,6 +292,17 @@ func _tick_sun() -> void:
 		var off: Variant = m.get_shader_parameter("cloud_offset_m")
 		var v := off as Vector2 if off is Vector2 else Vector2(900.0, -1400.0)
 		m.set_shader_parameter("cloud_offset_m", v + Vector2(float(_opts["drift-sky"]), 0.0))
+
+
+## GPU ms of the SubViewports the scene renders (an off-screen storm body, M2-RND-01): the main
+## viewport's own measurement does not include them.
+func _sub_viewports_gpu() -> float:
+	var ms := 0.0
+	for n in find_children("*", "SubViewport", true, false):
+		var vp_rid := (n as SubViewport).get_viewport_rid()
+		RenderingServer.viewport_set_measure_render_time(vp_rid, true)
+		ms += RenderingServer.viewport_get_measured_render_time_gpu(vp_rid)
+	return ms
 
 
 ## A held storm's clock stays put, but its temporal jitter (UndertowState.frame) still advances.

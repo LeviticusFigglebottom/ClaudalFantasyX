@@ -40,6 +40,9 @@ const JITTER_STEP := 0.6180339887
 ## UNDERTOW_MAX_STEPS still limits the loop inside the shader.
 const MAX_MARCH_STEPS := 128
 const MAX_CURL_REUSE := 8
+## Range of a tier's body_scale (M2-RND-01): the raymarched body's resolution fraction (UndertowHalfRes).
+const MIN_BODY_SCALE := 0.25
+const MAX_BODY_SCALE := 1.0
 
 ## JSON section/key -> shader uniform. Colours are handled separately (colors section).
 const UNIFORM_MAP := {
@@ -280,6 +283,7 @@ func quality_plan(id: String = "") -> Dictionary:
 		"march_steps": clampi(int(tier.get("march_steps", 0)), 0, MAX_MARCH_STEPS),
 		"curl_reuse": clampi(int(tier.get("curl_reuse", 1)), 1, MAX_CURL_REUSE),
 		"temporal_jitter": bool(tier.get("temporal_jitter", false)),
+		"body_scale": clampf(float(tier.get("body_scale", MAX_BODY_SCALE)), MIN_BODY_SCALE, MAX_BODY_SCALE),
 		"spray_layers": int(tier.get("spray_layers", 1)),
 		"sea_foam_octaves": int(tier.get("sea_foam_octaves", 1)),
 		"shell_fractions": (shells.get("fractions", []) as Array) if body == BODY_SHELLS else [],

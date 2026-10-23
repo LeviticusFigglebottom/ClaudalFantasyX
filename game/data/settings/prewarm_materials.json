@@ -94,6 +94,13 @@
       "note": "M1-ENV-02 Low-tier foliage variant: a separate pipeline (README 'Shader-cache prewarm')."
     },
     {
+      "path": "res://game/shaders/undertow/undertow_composite.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
+      "note": "M2-RND-01 composite of the half-resolution Undertow body (Medium and High tiers)."
+    },
+    {
       "path": "res://game/shaders/undertow/undertow_body.gdshader",
       "scenes": [
         "res://game/levels/_tests/undertow/undertow_test.tscn"

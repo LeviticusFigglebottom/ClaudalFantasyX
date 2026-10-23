@@ -119,6 +119,13 @@ const GIZMO_COLOR := Color(0.25, 0.88, 0.78)
 @export_group("Scene")
 ## The zone's ocean: its look is copied into the funnel, and the lid clears it over the funnel.
 @export var water: WaterSurface
+## Resolution fraction of the raymarched body (M2-RND-01, UndertowHalfRes): -1 = the quality tier's
+## body_scale (undertow.json; 0.5 on Medium and High, 1 on Ultra), else this value (1 = full resolution).
+@export_range(-1.0, 1.0) var half_res_body_scale: float = -1.0:
+	set(value):
+		half_res_body_scale = value
+		if _built:
+			_build()
 ## The zone's key light (sun or moon): its colour and energy light the storm.
 @export var sun: DirectionalLight3D
 @export var ambient_top: Color = Color("#6F7E8E")
@@ -137,6 +144,8 @@ var sea: MeshInstance3D
 var body: MeshInstance3D
 var sea_material: ShaderMaterial
 var body_material: ShaderMaterial
+## The half-resolution body renderer while half_res_body_scale < 1 (else null).
+var half_res: UndertowHalfRes
 var shell_materials: Array[ShaderMaterial] = []
 var spray_materials: Array[ShaderMaterial] = []
 var lid: MeshInstance3D
@@ -161,6 +170,41 @@ func _ready() -> void:
 		push_warning("UndertowStorm: unknown quality '%s', using default" % quality)
 		set_quality(str(state.config.get("default_quality", "")))
 	_place()
+
+
+func _update_half_res(body_priority: int) -> void:
+	var scale := body_scale()
+	var want := scale < 1.0 and body != null and not Engine.is_editor_hint()
+	if not want:
+		if half_res != null:
+			half_res.teardown()
+			half_res.queue_free()
+			half_res = null
+		return
+	if half_res == null:
+		half_res = UndertowHalfRes.new()
+		half_res.name = "HalfRes"
+		add_child(half_res, false, Node.INTERNAL_MODE_FRONT)
+		half_res.scale = scale
+		half_res.setup(visuals, body, body_priority)
+	half_res.scale = scale
+
+
+## The body's resolution fraction in use: the export when set (>= 0), else the tier's body_scale.
+func body_scale() -> float:
+	if half_res_body_scale >= 0.0:
+		return clampf(half_res_body_scale, UndertowState.MIN_BODY_SCALE, UndertowState.MAX_BODY_SCALE)
+	return float(state.quality_plan()["body_scale"])
+
+
+## Storm-local radius of the wall's foot (eye + wall + skirt): where the composite's occlusion starts.
+func _wall_foot_radius() -> float:
+	var sh := state.config.get("shape", {}) as Dictionary
+	return (
+		float(sh.get("eye_radius_m", 0.0))
+		+ float(sh.get("wall_thickness_m", 0.0))
+		+ float(sh.get("skirt_reach_m", 0.0))
+	)
 
 
 ## A storm that leaves the tree takes its hold on the zone sea with it.
@@ -392,6 +436,7 @@ func _build() -> void:
 			body_material = _material(path, int(prio.get("body", 0)))
 		body.material_override = body_material
 		body.visible = true
+		_update_half_res(int(prio.get("body", 0)))
 	elif body != null:
 		body.visible = false
 	_build_shells(plan, bound, full_height, str(shaders.get("shell", "")), int(prio.get("shells", 0)))
@@ -483,6 +528,9 @@ func _push_static() -> void:
 func _push_dynamic() -> void:
 	if not _built:
 		return
+	if half_res != null:
+		var top := float((state.config.get("shape", {}) as Dictionary).get("height_m", 0.0))
+		half_res.set_occluder(storm_center(), _wall_foot_radius(), top)
 	state.temporal_aa = viewport_is_temporal(get_viewport() if is_inside_tree() else null)
 	var params := state.dynamic_parameters()
 	params["storm_center"] = storm_center()

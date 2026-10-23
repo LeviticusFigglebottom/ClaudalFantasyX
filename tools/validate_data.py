@@ -1588,6 +1588,10 @@ def undertow_quality_errors(root: Path, doc: object, where: str = UNDERTOW_FILE)
                 errs.append(f"{w}.curl_reuse must be an int in 1..{UNDERTOW_MAX_CURL_REUSE}")
         if "temporal_jitter" in t and not isinstance(t["temporal_jitter"], bool):
             errs.append(f"{w}.temporal_jitter must be a bool")
+        if "body_scale" in t:
+            bs = t["body_scale"]
+            if isinstance(bs, bool) or not isinstance(bs, (int, float)) or not 0.25 <= bs <= 1.0:
+                errs.append(f"{w}.body_scale must be a number in 0.25..1 (M2-RND-01 half-res body)")
     noise = doc.get("noise")
     if noise is not None and not isinstance(noise, dict):
         errs.append(f"{where}: noise must be an object")

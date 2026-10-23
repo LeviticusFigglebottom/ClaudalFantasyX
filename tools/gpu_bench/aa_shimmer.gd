@@ -8,6 +8,10 @@ extends Node
 ## 1080p): any frame-to-frame change is temporal aliasing, not motion. After --warmup frames it saves
 ## --frames consecutive frames (f00.png ...) and prints the GPU median; tools/gpu_bench/aa_shimmer.py
 ## turns them into a flicker index.
+## Ghosting with the wind on (M1-RND-15): --wind sets the scene's `animate_wind` (the vegetation test;
+## Haluna's mood rig always runs its weather clock) and --scene/--camera pick another scene. Run under
+## --fixed-fps 30 with --pan-deg=0, once with --aa=taa and once with --aa=none: the frames then show
+## the same wind instants, and `aa_shimmer.py --ghost <taa_dir> <ref_dir>` measures the trail.
 
 const SCENE := "res://game/levels/_tests/vegetation/vegetation_test.tscn"
 
@@ -28,8 +32,14 @@ func _run() -> void:
 	win.position = DisplayServer.screen_get_position(win.current_screen)
 	var wh := str(_opts.get("res", "1920x1080")).split("x")
 	win.size = Vector2i(int(wh[0]), int(wh[1]))
-	var scene := (load(SCENE) as PackedScene).instantiate()
+	var scene := (load(str(_opts.get("scene", SCENE))) as PackedScene).instantiate()
+	if _opts.has("wind") and "animate_wind" in scene:
+		scene.set("animate_wind", true)
 	add_child(scene)
+	if _opts.has("undertow-half"):
+		for st in scene.find_children("*", "", true, false):
+			if st is UndertowStorm:
+				(st as UndertowStorm).half_res_body_scale = float(_opts["undertow-half"])
 	var cam := scene.get_node(NodePath(str(_opts.get("camera", "Cameras/Wide")))) as Camera3D
 	cam.make_current()
 	await get_tree().process_frame

@@ -539,3 +539,35 @@ func test_wall_foot_uniforms_reach_every_tier() -> void:
 	var params := UndertowState.new().static_parameters()
 	for u: String in shared + body_only:
 		assert_true(params.has(u), "static_parameters carries %s" % u)
+
+
+## M2-RND-01: the raymarched body renders at the tier's body_scale (Medium/High 0.5, Ultra 1), clamped
+## to the documented range; High builds the half-res renderer and moves the body off the game camera's
+## layers, Ultra does not, and the export overrides the tier.
+func test_half_res_body_follows_the_tier() -> void:
+	var s := UndertowState.new()
+	assert_eq(s.quality_plan("high")["body_scale"], 0.5)
+	assert_eq(s.quality_plan("ultra")["body_scale"], 1.0)
+	var cfg := UndertowState.load_config()
+	((cfg["quality"] as Dictionary)["high"] as Dictionary)["body_scale"] = 0.01
+	assert_eq(UndertowState.new(cfg).quality_plan("high")["body_scale"], UndertowState.MIN_BODY_SCALE, "clamped")
+	var storm := UndertowStorm.new()
+	storm.quality = "high"
+	_add(storm)
+	assert_true(storm.half_res != null, "High renders the body at half resolution")
+	assert_eq(storm.body.layers, UndertowHalfRes.BODY_LAYER, "the body leaves the game camera's layers")
+	assert_true(storm.half_res.composite != null and storm.half_res.composite.mesh == storm.body.mesh)
+	storm.quality = "ultra"
+	storm.refresh()
+	assert_true(storm.half_res == null, "Ultra renders at full resolution")
+	storm.half_res_body_scale = 0.6
+	assert_true(storm.half_res != null, "the export overrides the tier")
+	assert_between(storm.body_scale(), 0.6 - 1e-6, 0.6 + 1e-6)
+	_free_nodes()
+
+
+func test_half_res_composite_compiles() -> void:
+	var sh := load("res://game/shaders/undertow/undertow_composite.gdshader") as Shader
+	var names: Array = sh.get_shader_uniform_list().map(func(u: Dictionary) -> String: return str(u["name"]))
+	for u in ["body_tex", "storm_center", "occluder_radius_m", "top_m", "body_texel"]:
+		assert_true(names.has(u), "composite lacks %s" % u)
