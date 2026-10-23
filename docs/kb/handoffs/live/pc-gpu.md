@@ -44,6 +44,10 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 | M1-RND-18 SSS crest fade, high cameras | gpu/rnd-18-sss-crest | review (character) | Crest SSS fades with view steepness for cameras ≥ 10–25 m above the water; even `col_deep` lift. Survey: 0.06 % over 0.03, max 0.050, deep band ΔE 0.019. Low shots bit-identical. Report: `docs/kb/qa/gpu/2026-10-23-rnd-18-sss-crest.md` |
 | QA-05b Asha re-check (High, Ultra) | gpu/qa-05b-asha-recheck | done (note in the QA-05 report) | Cheek banding gone; faint smile-fold steps on Ultra only. Hair warm brown (scalp hue 20°, braid 23°), not black. |
 | M1-ENV-03 vegetation follow-ups | gpu/env-03-vegetation | review (rendering) | Eave glow removed (shelter auto-probe); FXAA capture + 0.008 threshold; 6 m LOD cross-fade (+0.04 ms); overdraw budget; PLACEHOLDER list; flutter cap. Drift: veg_*, haluna_h02/h03. Report: `docs/kb/qa/gpu/2026-10-23-env-03-vegetation.md` |
+| M1-RND-17 v2 (sweep-N blockers) | gpu/rnd-17-dusk-motes-v2 | review (character) | B1: gold halo only once released (smoothstep 0.6–1). B2: warm horizon halo per field (`warm_horizon_halo`, dusk only). Hue derived from colors.released; checks re-scoped (advisory). Drift: glimmer_dusk 0.0146, glimmer_release 0.0043 |
+| M1-ENV-03 v2 (sweep-N blockers) | gpu/env-03-vegetation-v2 | review (rendering) | Only the final 400 m cut fades (no ghost trunks). `Shelter` enum, `shelter_mask`, sun from `hymn_sun_direction` via the new `ShaderGlobals`, auto-detect test. Drift: veg_* purely TAA → FXAA (0.022–0.031); haluna_h02 0.0124 (a 120 m palm the base's hysteresis hid); h03 back to 0. Report: `docs/kb/qa/gpu/2026-10-23-env-03-vegetation.md` §v2 |
+| RND-18/20 follow-ups (sweep N) | gpu/rnd-18-20-followups | notes in both tasks (both still review) | RND-18 S1: the `col_deep` lift is gated by `use_sss` × sss_strength/1.4; no shot drifts. RND-20 S1: measured, not applied. Haluna's cascades make bias 1.0 already larger in world terms than the stage's 4.5; at 4.5 the nose shadow vanishes. Rule in character_shading.md; dialogue key light for M2. Filed M1-ENV-08 (LOD hysteresis hole). Report: `docs/kb/qa/gpu/2026-10-23-rnd-18-20-followups.md` |
+| M1-RND-21 mouth-interior fill | gpu/rnd-21-mouth-fill | review (character) | New `mouth` shader family (all heroes' mouth, teeth and tongue) with an unshadowed cavity bounce per light, on every tier. Grief interior median luminance 0.0121 → 0.0174; share < 0.01 halved. Drift: asha_face_grief 0.0023. Teeth still khaki (albedo, CHR-11). Report: `docs/kb/qa/gpu/2026-10-23-rnd-21-mouth-fill.md` |
 | Perf regression sweep | gpu/perf-sweep | done | 31 cameras × 4 presets × 2 res (`docs/kb/qa/gpu/perf_baseline.csv`). Nothing over or at risk against SPEC §4.2; worst High 1440p is Undertow Eye 5.3 ms (12.2–14.9 projected). Report: `docs/kb/qa/gpu/2026-10-23-perf-sweep.md` |
 | M1-RND-16 criterion 5 (cutscene AA override) | gpu/rnd-15-prewarm | measured | Override TAA + bilinear: dither −22 % vs native TAA, −0.40 ms. Recommended. Report: `docs/kb/qa/gpu/2026-10-23-rnd-16-aa-override.md` |
 | M1-QA-05c Asha §14 final judgement | gpu/qa-05c-asha-final | done | Neutral passes; smile passes after RND-20 (corner terminator); grief fails (mouth interior black, teeth read gold, faceted). Lashes and lid band are asset faults. Report: `docs/kb/qa/gpu/2026-10-23-qa-05c-asha.md` |
@@ -57,22 +61,25 @@ Nothing; between items.
 
 ## Queue, in order (exact next step first)
 
-1. ~~**Playtest copy:** re-pull `C:\Users\Aaron\Hymn_Playtest` to 7f4c76b and re-import (Lead; PLAYTEST.md updated).~~ Done: imported twice (0 errors), 60-frame smoke boot exit 0.
-2. ~~**QA-05b:** re-run QA-05's six Asha face shots at High and Ultra against the current build (cheek banding, hair
-   black or brown). Branch `gpu/qa-05b-asha-recheck`.~~ Done.
-3. ~~**RND-15 follow-up:** re-measure the prewarm on the latest integration branch, with the steady per-frame cost
-   reported apart from the first frame (the split_swap-off wait and the first-tick halving).~~ Done on `gpu/rnd-15-prewarm`, with the integration branch merged in. Asha: first frame ~0.3 s, steady ≤ 10 ms. Undertow lazy: first 0.6 s, 7 steady stalls of 0.1–0.3 s. Lead to choose lazy or batch 12.
-4. ~~**Perf regression sweep**~~ Done (`gpu/perf-sweep`).
-   - Every scene with a camera, at Low/Medium/High/Ultra × 1080p/1440p, with gpu_bench.
-   - Output: `docs/kb/qa/gpu/perf_baseline.csv`, plus a report flagging anything over the SPEC §4.2 budgets.
-   - Sweeps under ~30 minutes at a stretch.
-5. ~~M1-RND-20~~ Done. Open follow-up (not claimed): the grief mouth-interior fill (QA-05c fault 2), with Character's teeth material.
-6. **QUEUE EMPTY** (2026-10-23). here.
+The Lead's queue of 2026-10-23 (after sweep N). Items 1–4 are done. **Next: M2-RND-01**, on `gpu/m2-rnd-01-undertow`.
+
+1. ~~**RND-17 v2**~~ Done (`gpu/rnd-17-dusk-motes-v2`).
+2. ~~**ENV-03 v2**~~ Done (`gpu/env-03-vegetation-v2`).
+3. ~~**rnd-18/20 follow-ups**~~ Done (`gpu/rnd-18-20-followups`).
+4. ~~**M1-RND-21**~~ Done (`gpu/rnd-21-mouth-fill`).
+5. **M2-RND-01**, the remaining criteria: billow surface detail, striation regularity, and compute-pass occlusion
+   inside the volume. Undertow High 1440p is AT RISK on an RTX 3060 (~3×).
+6. **M1-RND-22:** the prewarm hitch floor at Low, High and Ultra. Draft an ADR if 50 ms is impossible.
+7. **M2-RND-03:** the battle VFX library (power tiers lesser, greater and grand; Narrative names them).
+8. **M2-RND-02:** underwater rendering.
+9. **M2-RND-04:** Drownbell boss VFX and flood rig. Read the First Playable boss data first.
+- Standing: GPU checks of shots before the Lead re-approves lavapipe baselines.
 
 ## Local-only state (not in git)
 
 - **`C:\Users\Aaron\Hymn_Playtest`**: a separate clone for the human's playtest, with `PLAY.bat` and `EDITOR.bat`
   (untracked, local only). Delete it freely after the playtest.
-- Scratch renders and CSVs under `C:\Users\Aaron\chr04`, `C:\Users\Aaron\rnd12` and `C:\Users\Aaron\m2rnd01`, `C:\Users\Aaron\rnd15`, `C:\Users\Aaron\rnd17`, `C:\Users\Aaron\rnd18`, `C:\Users\Aaron\qa05b` and `C:\Users\Aaron\env03`.
+- Scratch renders and CSVs under `C:\Users\Aaron\chr04`, `C:\Users\Aaron\rnd12` and `C:\Users\Aaron\m2rnd01`, `C:\Users\Aaron\rnd15`, `C:\Users\Aaron\rnd17`, `C:\Users\Aaron\rnd18`, `C:\Users\Aaron\qa05b`, `C:\Users\Aaron\env03`, and the session scratchpad's `env03v2/` (the v2 captures).
   Everything quoted in the reports is reproducible from the commands in them; none of it is needed.
 - Edit scripts and the keep-awake helper live in the session scratchpad (temporary).
+- **`stash@{0}`** in `C:\Users\Aaron\hymn_gpu`: the RND-21 FillLight WIP. Superseded by the shader family and safe to drop.

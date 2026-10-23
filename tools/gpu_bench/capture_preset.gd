@@ -11,7 +11,7 @@ extends Node
 ## player's preset does to the same shot. Never writes baselines.
 ## Diagnosis (M1-QA-05): --light-set=prop=value,... on every DirectionalLight3D (e.g.
 ## shadow_enabled=false, shadow_normal_bias=2.0, directional_shadow_max_distance=2.0);
-## --mat-set=uniform=value,... on every ShaderMaterial that declares the uniform.
+## --mat-set=uniform=value,... on every ShaderMaterial that declares the uniform (#rrggbb for colours).
 ## --push-override=key=value,... pushes a scoped GraphicsSettings override (M1-RND-16, e.g.
 ## aa=taa,scaling_mode=fsr) on top of the preset for the shot, through the real API, and pops it after.
 ## --manifest=res://...json reads another manifest (e.g. a pending-shots file); --hold-storm freezes
@@ -109,7 +109,15 @@ func _tweak(scene: Node) -> void:
 		for m: ShaderMaterial in mats:
 			var names := m.shader.get_shader_uniform_list().map(func(u: Dictionary) -> String: return str(u["name"]))
 			if names.has(kv[0]):
-				m.set_shader_parameter(kv[0], str_to_var(kv[1]))
+				m.set_shader_parameter(kv[0], _value(kv[1]))
+
+
+## A --mat-set value: a Godot literal (1.5, true, Vector3(...)), or a #rrggbb colour (the list is
+## comma-separated, so Color(r, g, b) cannot be passed).
+static func _value(text: String) -> Variant:
+	if text.begins_with("#") and Color.html_is_valid(text):
+		return Color.html(text)
+	return str_to_var(text)
 
 
 func _args() -> Dictionary:
