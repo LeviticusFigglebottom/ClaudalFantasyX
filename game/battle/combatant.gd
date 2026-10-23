@@ -5,6 +5,10 @@ extends RefCounted
 
 const TEAM_PARTY := &"party"
 const TEAM_ENEMY := &"enemy"
+## Metadata key where EquipmentEffects.apply_to (game/progression) leaves the engine-facing
+## equipment data: {attack_elements, on_hit_statuses, status_wards, low_hp_statuses, abilities}.
+## Must equal EquipmentEffects.META_KEY (a test checks it).
+const EQUIPMENT_META := &"equipment_effects"
 
 var id: StringName
 var name_key: String
@@ -40,6 +44,9 @@ var participated := false
 ## Who inflicted Provoke on this combatant (its single-foe actions must target them). An id,
 ## not a reference, so two combatants never hold each other (RefCounted cycle).
 var provoker_id: StringName = &""
+## Low-HP auto-statuses this combatant's equipment switched on (so healing removes only those,
+## never the same status from another source).
+var low_hp_owned: Array[StringName] = []
 
 
 static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> BattleCombatant:
@@ -78,6 +85,34 @@ func is_alive() -> bool:
 
 func is_petrified() -> bool:
 	return hp > 0 and statuses.has(&"petrify")
+
+
+## Engine-facing equipment data (see EQUIPMENT_META), {} for enemies and bare heroes.
+func equipment() -> Dictionary:
+	return get_meta(EQUIPMENT_META, {})
+
+
+## An equipment status ward makes this combatant immune to `status`.
+func is_warded(status: StringName) -> bool:
+	return (equipment().get("status_wards", []) as Array).has(status)
+
+
+## Low-HP auto-statuses (formulas.md § Equipment): on while HP × 100 < max_hp × hp_below_pct,
+## off once healed to the threshold or above. Called by the engine after every HP change.
+func sync_low_hp() -> void:
+	if not is_alive():
+		low_hp_owned.clear()
+		return
+	for entry: Variant in equipment().get("low_hp_statuses", []):
+		var e: Dictionary = entry
+		var sid := StringName(str(e["id"]))
+		var below := hp * Formulas.PCT < max_hp * int(e["hp_below_pct"])
+		if below and not has_status(sid):
+			if add_status(sid, int(e.get("duration", -1))) and not low_hp_owned.has(sid):
+				low_hp_owned.append(sid)
+		elif not below and low_hp_owned.has(sid):
+			statuses.erase(sid)
+			low_hp_owned.erase(sid)
 
 
 func has_status(status: StringName) -> bool:
@@ -141,10 +176,10 @@ func fall() -> void:
 	provoker_id = &""
 
 
-## Returns false (and does nothing) if the target is KO'd or petrified. Petrify replaces
-## every other status: stone has no poison, haste or countdown.
+## Returns false (and does nothing) if the target is KO'd, petrified, or warded against it.
+## Petrify replaces every other status: stone has no poison, haste or countdown.
 func add_status(status: StringName, duration: int) -> bool:
-	if not is_alive():
+	if not is_alive() or is_warded(status):
 		return false
 	if status == &"petrify":
 		statuses.clear()

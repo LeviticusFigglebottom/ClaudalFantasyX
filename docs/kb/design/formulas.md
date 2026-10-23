@@ -26,6 +26,7 @@ Notation: `floor`, `ceil`, `clamp(x, lo, hi)`. **`round` rounds half away from z
 | `POISON_PCT` / `REGEN_PCT` | 0.10 / 0.08 | Of max HP, at the end of own turn |
 | `BERSERK_STR_RATIO` | 3/2 | Berserk strength multiplier (after Power Break, floored) |
 | `CONFUSE_ALLY_PCT` | 50 | Chance a Confused unit turns on its own side |
+| `REVIVE_MIN_HP` / `PCT` | 1 / 100 | Revive floor; percent base for item and threshold math |
 | `ESCAPE_BASE_PCT`, `ESCAPE_AGI_FACTOR`, `ESCAPE_MIN_PCT`, `ESCAPE_MAX_PCT` | 50, 2, 10, 95 | Escape |
 
 Element affinity multipliers (as ratios): normal 1/1, weak 3/2, resist 1/2, immune 0/1, absorb −1/1 (heals).
@@ -121,6 +122,45 @@ Every status in SPEC §6.8 is implemented. Durations are in the affected unit's 
 | **Reflect** | 4 | A `magic: true` skill aimed at **one other** unit (`single_foe` or `single_ally`) that has Reflect lands instead on the **living unit with the lowest current HP on the other side from the reflector** (ties: field order, party slots then enemies in encounter order). It is deterministic, so the timeline preview is exact. A bounced spell is never bounced again (no chains), even onto another reflector. Physical skills, self-casts and group skills ignore Reflect. The hit reports `reflected_from`. |
 | **Provoke** | 3 | Remembers its provoker (whoever's skill inflicted it). The provoked unit's `single_foe` skills **must** target the provoker: the engine rejects any other target with `provoked` (no MP or time spent), and enemy AI selectors are overridden. Group, ally and self skills are free. It ends early, at once, when the provoker is KO'd, petrified, or leaves the field. Re-provoking replaces the provoker. |
 
+## Items (M1-CMB-06)
+
+`BattleEngine.use_item(item_id, targets, items)` is a battle action like a skill. The item's effects come from `items.json` (`battle` block, run by `ItemBattleAction`). It ends the user's turn with the **item's rank**, consumes exactly one, and costs nothing if refused (`not_your_turn`, `unknown_item`, `no_item`, `no_valid_target`). Items are **fixed numbers**, not stat-scaled. They ignore Silence, Provoke and Reflect.
+
+```
+revive_hp(max_hp, hp_pct) = max(REVIVE_MIN_HP, floor(max_hp × hp_pct / 100))
+item_damage(amount, aff)  = clamp(amount × el_num ÷ el_den, −DAMAGE_CAP, DAMAGE_CAP)   # ignores stats, defense, barriers
+heal_hp / restore_mp      = the item's amount, clamped to max (heal goes through Zombie)
+```
+Examples: revive 25% of 420 → 105; of 301 → 75; of 3 → 1. Item damage 150 vs normal 150, weak 225, resist (151) 75, immune 0, absorb −150 (heals); 20000 → 9999.
+
+- **Revive** targets only the KO'd (HP 0). The revived unit rejoins the timeline `action_delay(agi, DEFAULT_RANK, speed)` after now, the same rule as a swap-in for a KO'd member. Time never runs backwards.
+- **Petrify:** a petrified ally is neither alive nor fallen, so no current item reaches them (a Petrify cure comes later).
+- **Zombie:** a revive item may target a *living* Zombie ally and KOs them outright (the hit reports `zombie_felled`). Healing items harm a Zombie by their amount.
+- **Delay** items push the target `base_delay(agi) × ranks`; **add_status** items go through wards and the normal status rules.
+- **Preview:** `preview_item(item_id, target, items, count)` shows the item's rank, its delay push, the time statuses it adds, a revived ally rejoining, and a felled Zombie leaving.
+- `Formulas.revive_hp` / `item_damage` mirror `ItemBattleAction.revive_hp` / `fixed_damage` (Progression's reference implementation), and a test keeps them equal.
+
+## Equipment in battle (M1-CMB-06)
+
+`EquipmentEffects.apply_to` (Progression) leaves engine-facing data on each party combatant (`BattleCombatant.equipment()`, metadata key `equipment_effects`). The engine applies it as follows:
+
+| Data | Rule |
+|---|---|
+| `attack_elements` | The **basic Attack** (`attack`, element `none`) hits with the listed element the target is **weakest to**, comparing element ratios exactly (weak > normal > resist > immune > absorb). Ties go to the first in slot order. Every other skill keeps its own element. The hit reports `element`. |
+| `on_hit_statuses` | After a **landed physical hit** (any physical skill), while the target still stands, each `{id, chance, duration}` rolls `randi_range(1, 100) ≤ chance` on the battle RNG, in list order. This happens before the skill's own statuses. |
+| `status_wards` | `add_status` refuses a warded status from any source (skills, items, strikes). |
+| `low_hp_statuses` | On while `hp × 100 < max_hp × hp_below_pct`, and off once HP is at or above the threshold. The engine re-checks the field after every turn ends and after every swap. It removes only a status the equipment itself switched on, never the same status from a spell. If the status is removed while HP is still low, it comes back at the next check. A KO clears it. |
+
+Equipment "always" auto-statuses are ordinary duration −1 statuses. **Decision:** a future dispel may strip them like any other status. They do not return, but low-HP ones do while the condition holds.
+
+## Rewards (M1-CMB-06)
+
+At victory:
+- **Lume:** `currency_award()` = Σ every enemy's `currency` (`enemies.json`, petrified enemies included) × `currency_multiplier(credited_ids())`. The multiplier is a hook, `EquipmentEffects.currency_multiplier` (Full Net ×2), and ×1 when unset.
+- **Drops:** `drop_awards()` is rolled **once** when the battle is won, on the battle RNG. For each enemy in encounter order, each `drops` entry `{item, chance}` adds one item when `randi_range(1, 100) ≤ chance`.
+
+Escape and defeat award nothing. Sandbox values: Reef Crab 24 lume (Crab Carapace 50%, Salt Tonic 10%), Lantern Eel 20 (Eel Lantern 50%, Salt Tonic 10%), Gull Harrier 18 (Gull Quill 50%, Salt Tonic 10%), so 62 lume per sandbox win. Drownbell's ~300 lands with its encounter data.
+
 ## Escape
 
 ```
@@ -134,7 +174,7 @@ Every party member who was **on the field at any point** in the battle (they sta
 
 ## Not yet specified (owned by Combat, tracked in M1 tasks)
 
-Swell gauge fill rates (M1-CMB-04), steal and item formulas including status cures and revival (Progression), and Vowbound stat scaling from Asha (M2).
+Swell gauge fill rates (M1-CMB-04), steal formulas, a Petrify cure item, and Vowbound stat scaling from Asha (M2).
 
 ## Progression
 

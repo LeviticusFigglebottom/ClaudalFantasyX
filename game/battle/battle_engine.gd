@@ -37,6 +37,12 @@ var scripted := false
 ## builds it from characters.json, e.g. `progress.apply_to` to layer Lattice gains on (SPEC §6.4).
 ## It receives the BattleCombatant and must stay deterministic. Set it before setup().
 var party_modifier := Callable()
+## Optional reward hook: (credited ids: Array[StringName]) -> int lume multiplier, e.g.
+## `equipment_effects.currency_multiplier` (Full Net). Unset = x1. See currency_award().
+var currency_multiplier := Callable()
+
+## Item drops rolled once at victory (item id -> count). See drop_awards().
+var _drops: Dictionary = {}
 
 
 func setup(
@@ -143,6 +149,131 @@ func perform(skill_id: StringName, targets: Array[BattleCombatant]) -> ActionRes
 	if is_auto_turn():
 		return ActionResult.failed(current.id, skill_id, &"auto_turn")
 	return _perform(current, skill_id, targets)
+
+
+## Uses one `item_id` from `items` on `targets` as the current party member's action
+## (formulas.md § Items): validates targets, resolves every effect, consumes one item, and
+## ends the turn with the item's rank. Fails, costing nothing, with not_your_turn,
+## unknown_item, no_item or no_valid_target. Items ignore Silence, Provoke and Reflect.
+func use_item(item_id: StringName, targets: Array[BattleCombatant], items: BattleItemSource) -> ActionResult:
+	if outcome != &"" or current == null:
+		return ActionResult.failed(&"", &"", &"battle_over")
+	var actor := current
+	var fail := &""
+	var action: ItemBattleAction = null
+	if not is_party_turn():
+		fail = &"not_your_turn"
+	elif items == null or items.action_for(item_id) == null:
+		fail = &"unknown_item"
+	elif items.count(item_id) <= 0:
+		fail = &"no_item"
+	else:
+		action = items.action_for(item_id)
+	var valid: Array[BattleCombatant] = []
+	if action != null:
+		valid = _valid_item_targets(actor, action, targets)
+		if valid.is_empty():
+			fail = &"no_valid_target"
+	if fail != &"":
+		var r := ActionResult.failed(actor.id, &"", fail)
+		r.item_id = item_id
+		return r
+	var result := ActionResult.new()
+	result.actor_id = actor.id
+	result.item_id = item_id
+	for t in valid:
+		result.hits.append(_resolve_item_on(action, t))
+	items.consume(item_id)
+	action_resolved.emit(result)
+	_end_turn(actor, action.rank)
+	return result
+
+
+## Whether `item` may target `c`: the item's own life-state rule (revives take the KO'd only),
+## plus a living Zombie for revive items, whom revival fells. A petrified ally is neither alive
+## nor fallen, so no item reaches them.
+static func item_can_target(item: ItemBattleAction, c: BattleCombatant) -> bool:
+	if item.targets_fallen and c.is_alive() and c.has_status(&"zombie"):
+		return true
+	return item.can_target(c)
+
+
+## Timeline if the current actor used `item_id` on `target`: the item's rank, its delay push,
+## time statuses it adds, a revived ally rejoining, and a revived Zombie falling.
+func preview_item(
+	item_id: StringName, target: BattleCombatant, items: BattleItemSource, count: int = CtbTimeline.PREVIEW_LENGTH
+) -> Array[TurnEntry]:
+	var action := items.action_for(item_id) if items != null else null
+	if action == null or current == null:
+		return timeline.predict(count)
+	var recipient := current if action.target == ItemBattleAction.TARGET_SELF else target
+	var changes: Dictionary = {}
+	var overrides: Dictionary = {}
+	var revived: Array[BattleCombatant] = []
+	var delay := 0
+	if recipient != null:
+		var mine: Dictionary = {}
+		for eff in action.effects:
+			match StringName(str(eff.get("type", ""))):
+				ItemBattleAction.EFFECT_ADD_STATUS:
+					var sid := StringName(str(eff["status"]))
+					if CtbTimeline.PREVIEW_STATUSES.has(sid):
+						mine[sid] = int(eff["duration"])
+				ItemBattleAction.EFFECT_DELAY:
+					delay += int(eff["ranks"])
+				ItemBattleAction.EFFECT_REVIVE:
+					if recipient.is_alive():
+						mine[CtbTimeline.FALLS] = -1
+					else:
+						revived.append(recipient)
+						overrides[recipient] = _rejoin_time(recipient)
+		changes[recipient] = mine
+	return timeline.predict(count, current, action.rank, recipient, delay, changes, overrides, revived)
+
+
+func _valid_item_targets(
+	actor: BattleCombatant, action: ItemBattleAction, targets: Array[BattleCombatant]
+) -> Array[BattleCombatant]:
+	var out: Array[BattleCombatant] = []
+	for t in targets:
+		if t == null or out.has(t) or not item_can_target(action, t):
+			continue
+		var ok := false
+		match action.target:
+			ItemBattleAction.TARGET_SELF:
+				ok = t == actor
+			ItemBattleAction.TARGET_SINGLE_ALLY, ItemBattleAction.TARGET_ALL_ALLIES:
+				ok = party_active.has(t)
+			_:
+				ok = enemies.has(t)
+		if ok:
+			out.append(t)
+	if not String(action.target).begins_with("all_") and out.size() > 1:
+		out.resize(1)
+	return out
+
+
+## One item hit. A revive on a living Zombie fells it; a real revive rejoins the timeline a
+## default-rank delay from now (time never runs backwards, as for a swap-in).
+func _resolve_item_on(action: ItemBattleAction, t: BattleCombatant) -> Dictionary:
+	if action.targets_fallen and t.is_alive():
+		var before := t.hp
+		t.fall()
+		var felled := {"target_id": t.id, "hit": true, "crit": false, "amount": before, "statuses_added": []}
+		felled["revived"] = false
+		felled["zombie_felled"] = true
+		return felled
+	var res := action.resolve_on(t)
+	res["hit"] = true
+	res["crit"] = false
+	if bool(res["revived"]):
+		t.next_time = _rejoin_time(t)
+		t.participated = true
+	return res
+
+
+func _rejoin_time(c: BattleCombatant) -> int:
+	return now + Formulas.action_delay(c.agility, Formulas.DEFAULT_RANK, c.speed_mult())
 
 
 ## Runs the current enemy's AI turn, or the current Berserk/Confused combatant's automatic
@@ -294,6 +425,7 @@ func swap(out_id: StringName, in_id: StringName) -> bool:
 	party_reserve[in_idx] = leaving
 	_rebuild_roster()
 	_prune_provoke()
+	_sync_low_hp()
 	if current == leaving:
 		current = entering
 		turn_started.emit(current)
@@ -343,6 +475,48 @@ func xp_awards() -> Dictionary:
 	return out
 
 
+## Ids credited under the XP rule (participated, alive at victory), in party order.
+func credited_ids() -> Array[StringName]:
+	var out: Array[StringName] = []
+	for cid: StringName in xp_awards():
+		out.append(cid)
+	return out
+
+
+## Battle lume (formulas.md § Rewards): the sum of every enemy's `currency`, times the
+## currency_multiplier hook for the credited party (x1 when unset). 0 unless victorious.
+func currency_award() -> int:
+	if outcome != OUTCOME_VICTORY:
+		return 0
+	var total := 0
+	for e in enemies:
+		total += int(_enemy_row(e).get("currency", 0))
+	var mult := 1
+	if currency_multiplier.is_valid():
+		mult = int(currency_multiplier.call(credited_ids()))
+	return total * mult
+
+
+## Items dropped this battle (item id -> count), rolled once at victory. {} otherwise.
+func drop_awards() -> Dictionary:
+	return _drops.duplicate() if outcome == OUTCOME_VICTORY else {}
+
+
+## The element a skill really hits `target` with. The basic Attack ("attack", element "none")
+## takes the wearer's equipment attack_elements: the one the target is weakest to, ties to the
+## first in slot order. Every other skill keeps its own element.
+func attack_element(actor: BattleCombatant, target: BattleCombatant, sk: Dictionary) -> StringName:
+	var element := StringName(str(sk.get("element", "none")))
+	if str(sk.get("id", "")) != "attack" or element != &"none":
+		return element
+	var best := element
+	for el: Variant in actor.equipment().get("attack_elements", []):
+		var cand := StringName(str(el))
+		if best == &"none" or Formulas.affinity_hurts_more(target.affinity_for(cand), target.affinity_for(best)):
+			best = cand
+	return best
+
+
 func living_foes_of(c: BattleCombatant) -> Array[BattleCombatant]:
 	return _living(enemies if c.team == BattleCombatant.TEAM_PARTY else party_active)
 
@@ -364,8 +538,10 @@ func find(cid: StringName) -> BattleCombatant:
 func _resolve_on(actor: BattleCombatant, target: BattleCombatant, sk: Dictionary) -> Dictionary:
 	var kind := StringName(str(sk.get("kind", "physical")))
 	var power := int(sk.get("power", 0))
-	var element := StringName(str(sk.get("element", "none")))
+	var element := attack_element(actor, target, sk)
 	var hit := {"target_id": target.id, "hit": true, "crit": false, "amount": 0, "statuses_added": []}
+	hit["element"] = element
+	var added: Array = []
 	match kind:
 		&"physical":
 			var chance := Formulas.hit_chance(
@@ -390,6 +566,7 @@ func _resolve_on(actor: BattleCombatant, target: BattleCombatant, sk: Dictionary
 			hit["amount"] = -target.apply_damage(dmg)
 			if dmg > 0:
 				target.statuses.erase(&"confuse")  # a physical blow snaps a confused unit out of it
+			added.append_array(_roll_on_hit(actor, target))
 		&"magical":
 			var dmg_m := Formulas.damage(
 				power,
@@ -412,7 +589,6 @@ func _resolve_on(actor: BattleCombatant, target: BattleCombatant, sk: Dictionary
 			pass
 		_:
 			push_error("BattleEngine: unknown skill kind '%s'" % kind)
-	var added: Array = []
 	for inflict: Variant in sk.get("statuses", []):
 		var inf: Dictionary = inflict
 		if rng.randi_range(1, 100) <= int(inf.get("chance", 100)):
@@ -427,6 +603,21 @@ func _resolve_on(actor: BattleCombatant, target: BattleCombatant, sk: Dictionary
 	if delay_ranks > 0 and target.is_alive():
 		target.next_time += Formulas.base_delay(target.agility) * delay_ranks
 	return hit
+
+
+## Equipment status strikes (formulas.md § Equipment): after a landed physical hit on a target
+## that still stands, each on_hit_statuses entry rolls its chance on the battle RNG.
+func _roll_on_hit(actor: BattleCombatant, target: BattleCombatant) -> Array:
+	var out: Array = []
+	for entry: Variant in actor.equipment().get("on_hit_statuses", []):
+		var e: Dictionary = entry
+		if not target.is_alive():
+			break
+		if rng.randi_range(1, 100) <= int(e["chance"]):
+			var sid := StringName(str(e["id"]))
+			if target.add_status(sid, int(e["duration"])):
+				out.append(sid)
+	return out
 
 
 func _variance() -> int:
@@ -450,6 +641,7 @@ func _end_turn(actor: BattleCombatant, rank: int) -> void:
 func _advance() -> void:
 	current = null
 	_prune_provoke()
+	_sync_low_hp()
 	var lost_turns := 0
 	while outcome == &"":
 		var actor := timeline.next_actor()
@@ -485,7 +677,25 @@ func _check_outcome() -> bool:
 func _finish(result: StringName) -> void:
 	outcome = result
 	current = null
+	if result == OUTCOME_VICTORY:
+		_roll_drops()
 	battle_finished.emit(result)
+
+
+## Drop rolls, once, at victory: for each enemy in encounter order, each `drops` entry
+## {item, chance} rolls randi_range(1, 100) <= chance on the battle RNG for one item.
+func _roll_drops() -> void:
+	_drops = {}
+	for e in enemies:
+		for entry: Variant in _enemy_row(e).get("drops", []):
+			var d: Dictionary = entry
+			if rng.randi_range(1, 100) <= int(d.get("chance", 0)):
+				var iid := StringName(str(d["item"]))
+				_drops[iid] = int(_drops.get(iid, 0)) + 1
+
+
+func _enemy_row(e: BattleCombatant) -> Dictionary:
+	return db.enemies.get(StringName(String(e.id).get_slice("#", 0)), {})
 
 
 func _field() -> Array[BattleCombatant]:
@@ -518,6 +728,13 @@ func _valid_targets(actor: BattleCombatant, sk: Dictionary, targets: Array[Battl
 	if kind in ["single_foe", "single_ally", "self"] and out.size() > 1:
 		out.resize(1)
 	return out
+
+
+## Equipment low-HP auto-statuses follow every HP change: the engine re-checks the field after
+## each action, end-of-turn tick and swap.
+func _sync_low_hp() -> void:
+	for c in _field():
+		c.sync_low_hp()
 
 
 ## Combatants whose provoker fell or left the field lose Provoke at once.

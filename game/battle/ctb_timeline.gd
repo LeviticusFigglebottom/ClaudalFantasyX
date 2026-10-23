@@ -11,6 +11,9 @@ const TIMED_STATUSES: Array[StringName] = [&"haste", &"slow", &"stop", &"sleep",
 ## Statuses a candidate action can inflict that the preview shows: the timed ones, plus
 ## Petrify, which takes the target off the timeline at once.
 const PREVIEW_STATUSES: Array[StringName] = [&"haste", &"slow", &"stop", &"sleep", &"doom", &"petrify"]
+## Pseudo-status for status_changes: the candidate action KOs this unit (e.g. a revive item on
+## a Zombie), so it leaves the preview like Petrify.
+const FALLS := &"_falls"
 
 var _roster: Array[BattleCombatant] = []
 
@@ -50,6 +53,8 @@ func next_actor() -> BattleCombatant:
 ## count that runs out removes the combatant from later entries.
 ## `time_overrides` ({BattleCombatant: int}) replaces a combatant's next_time for this
 ## prediction only (BattleEngine.preview_swap uses it; nothing is mutated).
+## `revived` lists fallen combatants the candidate action brings back (revive items): they are
+## predicted from their time_overrides entry.
 func predict(
 	count: int = PREVIEW_LENGTH,
 	preview_actor: BattleCombatant = null,
@@ -57,15 +62,16 @@ func predict(
 	delay_target: BattleCombatant = null,
 	delay_ranks: int = 0,
 	status_changes: Dictionary = {},
-	time_overrides: Dictionary = {}
+	time_overrides: Dictionary = {},
+	revived: Array[BattleCombatant] = []
 ) -> Array[TurnEntry]:
 	var sims: Array[Dictionary] = []
 	for i in _roster.size():
 		var c := _roster[i]
-		if not c.is_alive():
+		if not c.is_alive() and not revived.has(c):
 			continue
 		var changes: Dictionary = status_changes.get(c, {})
-		if changes.has(&"petrify"):
+		if changes.has(&"petrify") or changes.has(FALLS):
 			continue
 		var timed := _timed_copy(c)
 		for sid: StringName in changes:

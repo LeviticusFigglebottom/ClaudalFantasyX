@@ -10,6 +10,10 @@ var fail_reason: StringName = &""
 ## One Dictionary per target: {target_id, hit, crit, amount, statuses_added: Array}, plus
 ## "reflected_from": <id> when Reflect bounced a spell from that combatant onto target_id.
 var hits: Array[Dictionary] = []
+## Set for item use (BattleEngine.use_item); skill_id is then empty. Item hits also carry
+## mp_amount, revived, statuses_removed and delay_ticks (ItemBattleAction.resolve_on), and
+## "zombie_felled" when a revive item KO'd a Zombie.
+var item_id: StringName = &""
 ## Set when the actor was not in control: &"berserk" or &"confuse" (the engine chose).
 var auto_reason: StringName = &""
 

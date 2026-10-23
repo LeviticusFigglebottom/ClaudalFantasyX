@@ -163,7 +163,7 @@ Haluna's **inn** is not modelled yet (a price and a full heal). It is a one-fiel
 
 ## What remains
 
-### Combat (request task [M1-CMB-06](../tasks/M1/M1-CMB-06-equipment-battle-effects.md))
+### Combat (request task [M1-CMB-06](../tasks/M1/M1-CMB-06-equipment-battle-effects.md)): done, see formulas.md § Items, § Equipment in battle, § Rewards
 
 1. Read `EquipmentEffects.data_of(c)` in `BattleEngine`: `attack_elements` on the basic Attack (suggested: use the element the target is weakest to, otherwise the first), `on_hit_statuses` on physical hits (roll with `rng`, after damage), `status_wards` (immunity in `add_status` for party members), and `low_hp_statuses` (apply when HP falls below the threshold, remove when healed above it).
 2. Item use as a battle action: `BattleEngine.use_item(item_id, targets, inventory)` built on `ItemBattleAction` (target validation with `can_target`, `rank` for the delay, consume one item, emit an `ActionResult`), plus the timeline preview for item rank.
