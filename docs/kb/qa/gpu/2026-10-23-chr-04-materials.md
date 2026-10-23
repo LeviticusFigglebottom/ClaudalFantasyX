@@ -53,3 +53,22 @@ CHR-04 mesh half (lips, hair, face density) so they move once.
 
 Tests: `test_asha_stage_lights_clear_the_shadow_terminator`, `test_asha_vest_lacquer_is_leather_not_plastic`
 (tests/unit/test_character_shading.gd).
+
+## Follow-up after the mesh half merged (2026-10-23)
+
+- The vest values are now in `assets_src/characters/asha/write_materials.py` (the `cloth` row), because the generator
+  rewrites `cloth.tres`. A regenerated file is byte-identical to the committed one.
+  - On Windows the script writes CRLF, which I normalised to LF. Nothing else differs.
+- **Shadow terminator on the new head:** clean at 2× High, `asha_face_neutral`.
+- **Hair under the warm key light** (2× High, `asha_face_neutral`), judged on the GPU: it reads **warm brown, not
+  black**.
+
+  | Region | Median sRGB | Hue | Saturation | Value |
+  |---|---|---:|---:|---:|
+  | Scalp | (70, 33, 11) | 22° | 0.84 | 0.27 |
+  | Braid | (83, 58, 42) | 23° | 0.49 | 0.33 |
+
+  The scalp catches a golden sheen along the part. The braid's crossings stay a dark warm brown.
+- **Checks skipped** (gate scope): the Blender rebuild (no Blender source touched) and the screenshot manifest (the Lead
+  re-approves the `asha_*` set). I ran the Godot tests filtered to `character_shading`.
+

@@ -2,7 +2,7 @@
 id: M1-CHR-04
 title: Asha close-range polish - lips, hair, skin micro-detail, costume materials
 role: character
-status: doing
+status: review
 owner_session: "lead-cloud (mesh half, merged b3b66ac) + session_01778wbLbDFnRRLTKjnawv3T (PC: shadows and materials)"
 depends_on: [M1-CHR-03]
 milestone: M1
@@ -15,8 +15,8 @@ CHR-03 put Asha on the MPFB2 donor topology, which is a clear step up. At the Le
 - [ ] Lips: rest shape thinner and less rubbery; no dark seam line at the lip contact; the mouth interior and corners read correctly in neutral, smile and grief
 - [ ] Scalp hair: no visible card blocks or gaps at dialogue range; a soft hairline; strand-level alpha detail; the braid kept (asha.md hair section)
 - [ ] Skin: micro-detail (pores, fine lines) at the specified texel density; less waxy specular; the painterly close-up look stays per ADR 0019
-- [ ] Costume: the bodice and vest read as cloth or leather of the right roughness, not glossy plastic (character_shading.md contract)
-- [ ] Shadow banding on the shadow-side cheek: confirmed as a renderer artifact or fixed (the GPU-session check, M1-QA-05)
+- [x] Costume: the bodice and vest read as cloth or leather of the right roughness, not glossy plastic (character_shading.md contract)
+- [x] Shadow banding on the shadow-side cheek: confirmed as a renderer artifact or fixed (the GPU-session check, M1-QA-05)
 - [ ] §14 dialogue-range review re-run side by side with CHR-03 and recorded in asha_review.md; baselines re-approved with reasons
 
 ## Notes
@@ -71,7 +71,13 @@ Done on the GPU (Godot 4.6.3, RX 9070 XT), measured on all ten `asha_*` shots at
 4. Baselines: every `asha_*` lavapipe baseline drifts with this branch (see the report); re-approve them together
    with the mesh work, not separately.
 
-Status stays **doing** until both halves are verified together.
+**After the mesh half merged (re-checked on the GPU, 2× High):** the cheeks stay clean on the new head. The vest
+values now live in `write_materials.py`, and regenerating gives a byte-identical `cloth.tres`. **Hair** reads warm
+brown, not black, under the warm key: scalp median sRGB (70, 33, 11), hue 22°, saturation 0.84; braid (83, 58, 42),
+hue 23°. Blender gate not run: no Blender source was touched (CLAUDE.md gate scope).
+
+**Status: review** (Rendering). Both halves are in. The B-channel wear on the vest mask is still a follow-up for the
+texture half; the material values hold without it.
 
 ## Review log
 - 2026-10-23 rendering-side fresh reviewer (review-sweep-J): **progress note, NOT a final verdict.** The task is still in progress: the GPU half is outstanding. Note that the front matter says `status: todo` with an empty `owner_session`, while two sessions are working on it. The Lead should set `doing` and record both claims.

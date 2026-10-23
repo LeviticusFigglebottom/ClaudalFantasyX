@@ -46,7 +46,10 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
              {"tex_hair": "asha_facehair.png"}),
     "hair": ("character_hair", 0, {"spec_secondary_intensity": "0.3"},
              {"tex_hair": "asha_hair.png", "tex_hairflow": "asha_hairflow.png"}),
-    "cloth": ("character_cloth", 0, {"detail_tiling": "160.0"},
+    # M1-CHR-04: lacquered leather on the vest, not the shader's hard-lacquer defaults (0.35 / 0.06 / 1.0),
+    # which read as patent plastic over the whole-vest lacquer mask (docs/kb/qa/gpu/2026-10-23-chr-04-materials.md)
+    "cloth": ("character_cloth", 0, {"detail_tiling": "160.0", "lacquer_base_roughness": "0.55",
+                                     "lacquer_coat_roughness": "0.16", "lacquer_coat_strength": "0.55"},
               {"tex_albedo": "asha_cloth_albedo.png", "tex_normal": "asha_cloth_normal.png",
                "tex_orm": "asha_cloth_orm.png", "tex_cloth_mask": "asha_cloth_clothmask.png",
                "tex_detail_normal": "asha_thread_detail_normal.png"}),
@@ -57,7 +60,8 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
                       "tex_detail_normal": "asha_thread_detail_normal.png"}),
 }
 STANDARD_MATERIALS = {
-    "teeth": "albedo_color = Color(0.80, 0.76, 0.68, 1)\nroughness = 0.35\n",
+    # M1-CHR-04: warmer and rougher; at 0.35 the teeth mirrored the cool sky and read blue-grey in grief
+    "teeth": "albedo_color = Color(0.82, 0.76, 0.66, 1)\nroughness = 0.5\n",
     "tongue": "albedo_color = Color(0.55, 0.26, 0.25, 1)\nroughness = 0.4\n",
     "mouth": "albedo_color = Color(0.28, 0.10, 0.09, 1)\nroughness = 0.5\n",
     "staff_wood": "albedo_color = Color(0.227, 0.165, 0.125, 1)\nroughness = 0.45\n",
