@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/water/water_ocean.gdshader" id="1_ocean"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_ocean")
+shader_parameter/col_deep = Color(0.0235, 0.102, 0.169, 1)
+shader_parameter/col_scatter_shallow = Color(0.055, 0.29, 0.333, 1)
+shader_parameter/absorption_per_m = Vector3(2.0, 0.5, 0.42)
+shader_parameter/scatter_energy = 0.12
+shader_parameter/col_foam = Color(0.933, 0.965, 0.957, 1)
+shader_parameter/foam_crest_threshold = 0.55
+shader_parameter/roughness_far = 0.16
+shader_parameter/use_caustics = false
+shader_parameter/use_ssr = false
+shader_parameter/use_sss = false
