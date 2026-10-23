@@ -12,7 +12,7 @@
     {"id": "relighting_wick", "category": "consumable", "name_key": "ITEM_RELIGHTING_WICK", "desc_key": "ITEM_RELIGHTING_WICK_DESC", "price": 300, "battle": {"target": "single_ally", "rank": 3, "effects": [{"type": "revive", "hp_pct": 25}]}, "field": true},
     {"id": "drag_net", "category": "consumable", "name_key": "ITEM_DRAG_NET", "desc_key": "ITEM_DRAG_NET_DESC", "price": 80, "battle": {"target": "single_foe", "rank": 3, "effects": [{"type": "delay", "ranks": 2}]}, "field": false},
     {"id": "quickwater", "category": "consumable", "name_key": "ITEM_QUICKWATER", "desc_key": "ITEM_QUICKWATER_DESC", "price": 220, "battle": {"target": "single_ally", "rank": 2, "effects": [{"type": "add_status", "status": "haste", "duration": 4}]}, "field": false},
-    {"id": "ember_pot", "category": "consumable", "name_key": "ITEM_EMBER_POT", "desc_key": "ITEM_EMBER_POT_DESC", "price": 110, "battle": {"target": "single_foe", "rank": 2, "effects": [{"type": "damage", "amount": 150, "element": "fire"}]}, "field": false},
+    {"id": "ember_pot", "category": "consumable", "name_key": "ITEM_EMBER_POT", "desc_key": "ITEM_EMBER_POT_DESC", "price": 220, "battle": {"target": "single_foe", "rank": 2, "effects": [{"type": "damage", "amount": 150, "element": "fire"}]}, "field": false},
     {"id": "crab_carapace", "category": "material", "name_key": "ITEM_CRAB_CARAPACE", "desc_key": "ITEM_CRAB_CARAPACE_DESC", "price": 12},
     {"id": "eel_lantern", "category": "material", "name_key": "ITEM_EEL_LANTERN", "desc_key": "ITEM_EEL_LANTERN_DESC", "price": 14},
     {"id": "gull_quill", "category": "material", "name_key": "ITEM_GULL_QUILL", "desc_key": "ITEM_GULL_QUILL_DESC", "price": 10},

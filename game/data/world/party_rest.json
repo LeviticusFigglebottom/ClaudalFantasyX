@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "doc": "Party vitals out of battle (M1-ARC-06; docs/kb/tech/architecture.md, Saves). carried_statuses survive the end of a battle and are saved per member (GameStateData.party_vitals); every other status ends with the battle. They come back at the next battle setup with carried_duration (-1 = until cured, the engine's whole battle). shrine_cures are what a save shrine's rest removes (it also fills HP and MP, which lifts KO). Genre convention: poison, stone and zombie follow you out of a fight, and a shrine clears all three.",
+  "carried_statuses": ["poison", "petrify", "zombie"],
+  "carried_duration": -1,
+  "shrine_cures": ["poison", "petrify", "zombie"]
+}
