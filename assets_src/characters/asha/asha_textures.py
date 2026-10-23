@@ -8,10 +8,10 @@ DIR holds the mesh dumps from `build_asha.py --bake-dir DIR` (head.npz, body.npz
 assets/characters/asha/textures/:
 
 * Skin (head 2K albedo + normal, 1K ORM + skinmask; body 1K): every UV texel is rasterised back to
-  its point on the low mesh, then projected onto the full-resolution sculpt field (bb_anatomy). The
-  normal map is the field's normal in the mesh's tangent frame (nostrils, lid creases, the lip
-  border and philtrum the 13k-vertex head can't hold); cavity, AO and thickness are sampled from the
-  field too. Albedo is a function of the 3D rest position, so head and body agree at their seam.
+  its point on the mesh (M1-CHR-03: the subdivided donor head). The normal map is the welded mesh
+  normal plus our detail pass (`detail_height`: lid creases, lower-lid line, lip lines); AO, cavity
+  and thickness are per-vertex terms ray-cast from the mesh in build_asha (`vertex_bake_terms`).
+  Albedo is a function of the 3D rest position, so head and body agree at their seam.
 * Eyes: iris (radial fibres, collarette, crypts; near white so it multiplies col_iris) and sclera.
 * Tileable pore / skin-line detail normal (one tile ~27 mm of skin).
 * Hair: 2K atlas of 16 strand clumps (R root->tip, G strand ID, B depth, A alpha) and a flow map;
@@ -209,7 +209,12 @@ def rasterise(npz: dict, size: int, mats: set[str]) -> dict:
     sign[sign == 0] = 1.0
     Bt = np.cross(N, Tt) * sign[:, None]
     tags = npz["T"][tv[T]] if "T" in npz else np.zeros((len(T), 3), dtype=int)
-    return {"cov": cov, "tri": T, "P": pos, "N": N, "T": Tt, "B": Bt, "tags": np.max(tags, axis=1), "size": size}
+    out = {"cov": cov, "tri": T, "P": pos, "N": N, "T": Tt, "B": Bt, "tags": np.max(tags, axis=1), "size": size,
+           "bary": b}
+    for key in ("AO", "THK", "CAV", "LIP"):  # M1-CHR-03 per-vertex bake terms
+        if key in npz:
+            out[key] = np.einsum("ni,ni->n", b, np.asarray(npz[key], dtype=float)[tv[T]])
+    return out
 
 
 def vertex_tangents(P, tv, tuv, Nv):
@@ -252,80 +257,25 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
     print(f"{key}: {n} texels")
     s = lm.h / 0.222
     tags = r["tags"]
-    in_field = np.isin(tags, [0])  # ears and accessories are not in the sculpt field
-    sdf = body.sdf
-
-    tet = np.array([[1.0, -1.0, -1.0], [-1.0, -1.0, 1.0], [-1.0, 1.0, -1.0], [1.0, 1.0, 1.0]])
-
-    def grad(Q):
-        """Tetrahedral central difference: 4 field evaluations instead of 6."""
-        e = 2e-4
-        g = np.zeros_like(Q)
-        for k in tet:
-            g += k[None, :] * sdf(Q + k * e)[:, None]
-        return g / np.maximum(np.linalg.norm(g, axis=1, keepdims=True), 1e-12)
-
+    # M1-CHR-03: the head is the donor mesh, subdivided; there is no sculpt field behind it. The
+    # normal map carries our detail pass (detail_height: lid creases, lower-lid line, lip lines)
+    # on top of the welded mesh normal; AO, cavity and thickness are the per-vertex terms baked
+    # from the mesh in build_asha (vertex_bake_terms), interpolated per texel.
+    _ = tags
     Ph = P.copy()
     Nh = N.copy()
-    okmask = np.zeros(n, dtype=bool)
-    idx = np.nonzero(in_field)[0]
-    CH = 200000
-    for a in range(0, len(idx), CH):
-        ii = idx[a:a + CH]
-        Q = P[ii]
-        for _ in range(3):
-            dq = np.clip(sdf(Q), -0.004, 0.004)
-            Q = Q - grad(Q) * dq[:, None]
-        moved = np.linalg.norm(Q - P[ii], axis=1)
-        G = grad(Q)
-        ok = (moved < 0.0035 * s) & (np.sum(G * N[ii], axis=1) > 0.2)
-        Ph[ii[ok]] = Q[ok]
-        # the normal map only carries what the mesh can't: clamp its deviation from the mesh normal
-        # to 30 deg, and fade it out where the projection had to travel far (nostril and lip-corner
-        # undercuts the 13k-vertex head doesn't sample): those read as blotches, not detail
-        Nm = N[ii]
-        cosang = np.clip(np.sum(G * Nm, axis=1), -1.0, 1.0)
-        ang = np.arccos(cosang)
-        lim = np.radians(30.0)
-        perp = G - cosang[:, None] * Nm
-        perp /= np.maximum(np.linalg.norm(perp, axis=1, keepdims=True), 1e-12)
-        a2 = np.minimum(ang, lim) * (1.0 - smoothstep(0.0008 * s, 0.0025 * s, moved))
-        Gc = Nm * np.cos(a2)[:, None] + perp * np.sin(a2)[:, None]
-        Nh[ii[ok]] = Gc[ok]
-        okmask[ii[ok]] = True
+    if key == "head":
+        e = 0.00012 * s
+        hT = (detail_height(P + r["T"] * e, face, lm, r) - detail_height(P - r["T"] * e, face, lm, r)) / (2 * e)
+        hB = (detail_height(P + r["B"] * e, face, lm, r) - detail_height(P - r["B"] * e, face, lm, r)) / (2 * e)
+        Nh = N - hT[:, None] * r["T"] - hB[:, None] * r["B"]
+        Nh /= np.maximum(np.linalg.norm(Nh, axis=1, keepdims=True), 1e-12)
     # tangent-space normal (OpenGL: +Y follows +V)
     ts = np.stack([np.sum(Nh * r["T"], axis=1), np.sum(Nh * r["B"], axis=1), np.sum(Nh * N, axis=1)], axis=1)
     ts /= np.maximum(np.linalg.norm(ts, axis=1, keepdims=True), 1e-12)
-    # cavity and AO from the field
-    cav = np.ones(n)
-    ao = np.ones(n)
-    thick = np.ones(n)
-    # cavity, AO and thickness only where the texel found the sculpt surface: a texel left on the
-    # low mesh (inside a nostril or lid undercut) would sample the field from inside and go black
-    idx = np.nonzero(okmask)[0]
-    for a in range(0, len(idx), CH):
-        ii = idx[a:a + CH]
-        Q, G = Ph[ii], Nh[ii]
-        c = np.zeros(len(ii))
-        for dlt in (0.0010 * s, 0.0028 * s):
-            c += np.clip(sdf(Q + G * dlt) / dlt, 0.0, 1.0)
-        cav[ii] = np.clip(c / 2.0, 0.0, 1.0) ** 1.5
-        occ = np.zeros(len(ii))
-        for k in range(1, 5):
-            dl = 0.004 * s * k
-            occ += (dl - np.clip(sdf(Q + G * dl), 0.0, dl)) / dl * 0.5 ** k
-        ao[ii] = np.clip(1.0 - 1.6 * occ, 0.25, 1.0)
-        t_exit = np.full(len(ii), 0.020 * s)
-        found = np.zeros(len(ii), dtype=bool)
-        for tt in np.linspace(0.0015, 0.020, 9) * s:
-            out = (sdf(Q - G * tt) > 0) & ~found
-            t_exit[out] = tt
-            found |= out
-        thick[ii] = np.clip((t_exit - 0.002 * s) / (0.014 * s), 0.0, 1.0)
-    ear = np.isin(tags, [21, 22])
-    thick[ear] = 0.16
-    cav[ear] = 0.85
-    ao[ear] = 0.85
+    ao = np.clip(r.get("AO", np.ones(n)) * 1.15, 0.25, 1.0) if "AO" in r else np.ones(n)
+    cav = r["CAV"] if "CAV" in r else np.ones(n)
+    thick = np.clip((r["THK"] - 0.002) / 0.014, 0.0, 1.0) if "THK" in r else np.ones(n)
     # ---- albedo -------------------------------------------------------------------------------
     alb = albedo(Ph, Nh, key, face, lm, hair_mod, r, npz)
     # ---- ORM: AO, roughness remapped (T-zone oilier = 0), unused ----
@@ -334,8 +284,8 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
     front = smoothstep(0.0, -0.3, (Ph[:, 1] - lm.P("head_c")[1]) / lm.h)
     tzone = (np.exp(-(u / 0.09) ** 2) * smoothstep(0.20, 0.30, v)) * front
     rough = np.clip(0.75 - 0.75 * tzone + 0.15 * (noise3(Ph, 0.01 * s, 5) - 0.5), 0.0, 1.0)
-    lips = lip_mask(Ph, face, lm)
-    rough = rough * (1.0 - lips)
+    lips = lip_weight(Ph, face, lm, r)
+    rough = rough * (1.0 - lips) + 0.38 * lips  # M1-CHR-03: satin, not wet: the donor lips are bigger than the old ones
     orm = np.stack([ao, rough, np.zeros(n)], axis=1)
     # ---- skinmask: R thickness, G cavity, B micro-roughness, A detail weight ----
     detail = np.ones(n) - 0.65 * lips
@@ -380,6 +330,36 @@ def texel_report(r: dict, npz: dict) -> None:
     print(f"head texel density: {dens:.1f} px/cm at {r['size']} px")
 
 
+def lip_weight(Ph: np.ndarray, face, lm, r: dict) -> np.ndarray:
+    """The donor's lip face set (vertex weight LIP, interpolated) sharpened to the vermilion border;
+    the M1-CHR-02 analytic outline when no LIP term was dumped."""
+    if "LIP" in r:
+        return smoothstep(0.3, 0.7, r["LIP"])
+    return lip_mask(Ph, face, lm)
+
+
+def detail_height(P: np.ndarray, face, lm, r: dict) -> np.ndarray:
+    """Our detail pass (metres, + = out): fine forms below the subdivided mesh's resolution."""
+    s = lm.h / 0.222
+    h = np.zeros(len(P))
+    for e in face.eyes.values():
+        rr, tt = e.field(P[:, 0], P[:, 2])
+        front = smoothstep(0.6 * e.R, -0.2 * e.R, P[:, 1] - e.E[1])
+        up = (np.sin(tt) > 0).astype(float)
+        # the upper-lid crease, low and partly hidden at the inner third (asha.md §6.1)
+        inner = smoothstep(-0.2, -0.75, np.cos(tt))
+        h -= 0.00028 * s * np.exp(-((rr - 1.62) / 0.07) ** 2) * up * front * (1.0 - 0.7 * inner)
+        # the lower-lid line and a faint tear-trough edge
+        h -= 0.00012 * s * np.exp(-((rr - 1.32) / 0.06) ** 2) * (1 - up) * front
+        # lid margin roll: a narrow raised band just outside the margin
+        h += 0.00010 * s * np.exp(-((rr - 1.07) / 0.035) ** 2) * front
+    if "LIP" in r:
+        lip = smoothstep(0.2, 0.8, r["LIP"])
+        # vertical lip lines, finer toward the centre
+        h -= 0.00004 * s * lip * (0.5 + 0.5 * np.cos(P[:, 0] / (0.0011 * s) * 2 * math.pi)) ** 4
+    return h
+
+
 def lip_mask(Ph: np.ndarray, face, lm) -> np.ndarray:
     import bb_head
 
@@ -412,7 +392,7 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
         col = col * (1 + 0.025 * warm[:, None] * np.array([1.0, -0.25, -0.55]))
         col = col * (1 + 0.04 * cool[:, None] * np.array([-0.5, 0.15, 0.1]))
         # lips: a deeper, rosier brown; darker at the contact line
-        lips = lip_mask(Ph, face, lm)
+        lips = lip_weight(Ph, face, lm, r)
         lipc = hexc("#A8665C")
         col = col * (1 - lips[:, None]) + lipc * lips[:, None]
         zm = lm.P("mouth")[2]
@@ -863,7 +843,9 @@ def main() -> int:
 
     params = bb_params.load_params(path=str(PARAMS))
     extra = json.loads(PARAMS.read_text(encoding="utf-8"))
-    lm = bb_params.Landmarks(params)
+    import bb_donor
+
+    lm = bb_donor.fit(params).lm  # the landmarks of the placed donor (eyes, mouth), as the build uses
     body = bb_anatomy.Body(lm)
     if "skin" in only:
         bd = Path(args.bake_dir)

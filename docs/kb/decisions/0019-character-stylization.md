@@ -33,3 +33,6 @@ Verdict: at battle and field range (5 m and beyond, LOD1) she reads as the hero,
   1. Q2's answer. If yes, a new ADR supersedes ADR 0010 for the face. The body pipeline (loft field, cage, costume panels, hair, rig) stays.
   2. The first GPU review: lavapipe frames show no subsurface blur, so the skin may read softer on real hardware.
   3. Expression motion: still frames hide the stiffness that motion reveals. Lip-flap and blinks must be reviewed in a video capture before M2.
+
+## Note, 2026-10-23 (M1-CHR-03, append-only)
+Q2 was answered "yes" and the face was rebuilt on the MPFB2 donor topology ([ADR 0021](0021-mpfb2-topology-donor.md)). The dialogue-range review in [`asha_review.md`](../art/characters/asha_review.md) §6 found that it **passes with this ADR's close-range stylisation and is borderline as built**: the anatomy is now sound, and what remains is the skin surface and the mouth's rest shape. **The close-range stylisation (option 2) is still needed and stays the dialogue look**, but now as a finish rather than a mitigation. Option 3 (stronger stylisation and a SPEC §7.3 change) is not needed. Watch item 1 is closed by ADR 0021.

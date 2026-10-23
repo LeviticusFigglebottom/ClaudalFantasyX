@@ -35,7 +35,7 @@ def hairline_v(lm, P: np.ndarray) -> np.ndarray:
     phi = np.degrees(np.arctan2(P[:, 0], -(P[:, 1] - yc)))
     a = np.abs(phi)
     xs = [0, 30, 50, 66, 76, 84, 96, 112, 135, 160, 180]
-    vs = [0.80, 0.785, 0.735, 0.665, 0.60, 0.585, 0.635, 0.50, 0.32, 0.25, 0.24]
+    vs = [0.765, 0.752, 0.712, 0.655, 0.60, 0.585, 0.635, 0.50, 0.32, 0.25, 0.24]  # M1-CHR-03: front -0.035 h (donor forehead)
     return np.interp(a, xs, vs)
 
 
@@ -73,6 +73,8 @@ class Scalp:
 
 
 def _gather(lm) -> np.ndarray:
+    if "hair_gather" in lm.pts:  # M1-CHR-03: set by bb_donor on the donor scalp (15 mm off it)
+        return lm.pts["hair_gather"]
     yc = lm.P("head_c")[1]
     zc = lm.P("chin")[2]
     return np.array([lm.head_w * 0.40, yc + 0.30 * lm.h, zc + 0.37 * lm.h])

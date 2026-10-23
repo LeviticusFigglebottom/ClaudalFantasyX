@@ -112,3 +112,62 @@ The `base_body_*` baselines were rebuilt and re-approved (all 11 looked at): the
 | Hero battle and dialogue scenes into `prewarm_materials.json` | Character | Only the test stage is listed until those scenes exist |
 | GPU review of the skin (SSS softness), the hair overdraw and the cornea highlight | QA (M1-QA-01) | Every frame here is lavapipe |
 | asha.md §6.2 says "32 shapes"; its own list is 30 names | Art | All 30 are built; fix the count in the sheet |
+
+## 6. M1-CHR-03: rebuilt on the MPFB2 donor topology ([ADR 0021](../../decisions/0021-mpfb2-topology-donor.md))
+
+The human answered SPEC §16 Q2 "yes, as a tool, with heavy modification". The head and body are now MakeHuman's CC0 hm08 mesh, driven through our interfaces (`bb_donor.py`, [`pipeline.md`](pipeline.md) §11). §1–§5 above describe the CHR-02 build. They stay as the record, and this section supersedes their numbers.
+
+**Same lighting and cameras as §3. Every frame is lavapipe.** CHR-02 is on the left (the previous baselines), CHR-03 on the right (the re-approved baselines).
+
+### 6.1 What changed in the build
+- **Head:** the donor face (macro mix: female, young, `donor_mix` asian 0.5 / caucasian 0.3 / african 0.2, muscle 0.35, mass 0.22), placed and scaled to the asha.md §1 head canon. Lid margins are re-shaped onto our EyeFrame almond (×1.10 eyes, 4° tilt, 1 mm canthus) and conformed to our 13.2 mm globe. The resting lip parting is 45% closed. Our face sliders were re-tuned against the donor's own form (jaw 0.94, chin 0.95, cheekbones +0.004 h, bridge 0.95, lips 0.9, corner lift 0.8 mm, brow ridge 0.85). One Catmull-Clark level on the face mask and lips. The donor's ears replace the parametric ear.
+- **Body:** donor topology with our proportions (RBF fit to the landmarks) and our volumes (the girth fit to the anatomy field). The donor's hands and feet are decimated to 30% for the budget. Skinning uses the donor's hand-made weights, not bone heat.
+- **Shapes:** the same 30 + 10 names. Brows, nose sneer, smile, frown, stretch, pucker, upper-lip up and lower-lip down are the donor's expression units, re-targeted. Lids, cheek raise, dimple, press and jaw stay procedural.
+- **Textures:** the skin bake no longer samples a sculpt field. AO, cavity and thickness are ray-cast from the mesh per vertex. The normal map is the welded normal plus our detail pass (lid crease, lower-lid line, lip lines). The lip colour follows the donor's vermilion, found by counting face rings from the inner lip loop.
+- **Export:** morph-target normals are dropped to stay under 5 MB.
+
+### 6.2 Numbers
+
+| | CHR-02 | CHR-03 |
+|---|---|---|
+| Head (skin, mouth, lashes, brows, teeth) | 14,896 | 20,996 |
+| Visible body skin | 8,800 | 7,358 |
+| Eyes / costume / hair / staff | 2,216 / 15,288 / 13,266 / 2,050 | 2,216 / 15,288 / 14,292 / 2,050 |
+| **LOD0** | **56,516** | **62,200** (target 63,500, ceiling 70,000) |
+| **LOD1** | 26,885 | **29,242** (47%) |
+| `asha.glb` | 4.58 MB (with morph normals) | **3.94 MB** (no morph normals) |
+| `asha_lod1.glb` | 1.28 MB | 1.37 MB |
+| Textures | 23 PNGs | the same 23 PNGs, same sizes (head 2048² albedo and normal, 1024² ORM and skinmask; body 1024²; hair, cloth and sleeve unchanged) |
+| Head texel density, whole head skin | (68 px/cm on the face mask only) | 42.9 px/cm averaged over face, scalp, neck and ears. The face island gets the space; the rest is packed at 0.45× |
+| Rig | 75 `DEF-*`, bone heat | 75 `DEF-*` (unchanged names), donor weights on 73, 0 unweighted |
+
+### 6.3 The SPEC §14 dialogue-range review, side by side
+
+| | CHR-02 (left) | CHR-03 (right) |
+|---|---|---|
+| Eyes and lids | Lids drawn on, a wide stare, a hard lid ring | Real upper-lid fold and lower-lid bulge, a lid that covers the top of the iris, an inner canthus. **Reads as an eye** |
+| Nose | Alae outlined by the bake, a V at the root | A continuous bridge, rounded tip, alae and nostrils from the topology. **Reads as a nose** |
+| Cheeks, jaw, ears | A flat cheek-to-jaw plane, ear partly hidden | Cheek volume, a jaw angle and a real ear (helix, antihelix, concha) |
+| Mouth | Thin lips, slit-like | Full lips with a vermilion border. Still the weakest feature: slightly rubbery and heavy in the lower lip, with a dark line where the lips meet |
+| Expressions | Smile and grief moved the right places weakly; "shapes, not muscle" | The donor units move the face as muscle does: the smile lifts the corners and bunches the cheeks, the grief brows knit. **Visibly better** |
+| Skin | Mannequin-smooth, glossy | Still smooth (no colour zoning beyond ±4%, no fine creases besides the lid lines). The shadow-side cheek shows diagonal banding, which looks like shadow-map acne (also faint in CHR-02) |
+| Hair | Weakest element | Unchanged design, now sitting on the donor scalp. Still card-edged at the crown and the part |
+
+**Verdict: passes at dialogue range with the ADR 0019 close-range look; borderline as built.** The face is now a person's face. Structure, eyes, nose, ears and expression motion all moved out of the uncanny valley, and side by side the CHR-02 face reads as a mannequin while the CHR-03 face does not. What is left is surface and the mouth, not anatomy:
+1. **The mouth** is the remaining near-miss: lips a little too full and rubbery at rest, the contact line a dark slit. A dedicated lip pass is the first follow-up: the lip rest shape, a contact-line albedo, and dropping `lip_fullness` further.
+2. **The skin surface** needs colour zoning and fine creases (the §5 follow-up stands). Without them the as-built shader (painterly 0.2) still reads slightly waxy, and that is why the as-built frame is only borderline. With `skin_head_dialogue.tres` (painterly 0.6, `asha_face_stylized_compare`, right) the waxiness goes, and the face reads as a painted young woman.
+3. **Hair** is unchanged and is now clearly the weakest element at close range.
+
+**Recommendation:** keep the ADR 0019 close-range stylisation (painterly 0.6) for dialogue, cinematics and portraits. It is now a finish on a sound face, not a mask over an uncanny one. ADR 0019's option 3 (stronger stylisation, a SPEC §7.3 change) is **not** needed. Next: the lip pass, skin colour zones and creases, then a GPU and motion review (QA, M1-QA-01). Still frames hide what lip-flap and blinks reveal.
+
+### 6.4 Known issues (CHR-03)
+
+| Item | Note |
+|---|---|
+| Mouth at rest: lips heavy, dark contact slit | First follow-up (lip pass) |
+| No morph-target normals | GLB budget (ADR 0005). Expressions shade with the rest normals; revisit with LFS |
+| Head texel density 42.9 px/cm average (CHR-02 68 on the face mask) | The donor head carries more skin per island; a face-only 2K map or 4K needs LFS |
+| Hands and feet decimated to 30% in LOD0 | Fine at battle range; finger close-ups would want the full donor density |
+| Ears at the native donor density | Budget; check on a GPU |
+| Base bodies: flattened breasts, shallow heavy torso (girth fit) | Placeholders (SPEC §8.4); pipeline.md §11 |
+| Shadow-side diagonal banding on the cheek | Looks like shadow acne on lavapipe; Rendering to confirm |

@@ -16,6 +16,7 @@ downloaded. Deterministic (no unseeded randomness; faces are created in a fixed 
 from __future__ import annotations
 
 import argparse
+import math
 import json
 import sys
 import time
@@ -31,7 +32,6 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent / "base_body"))
 
 import asha_costume  # noqa: E402
-import asha_ears  # noqa: E402
 import asha_hair  # noqa: E402
 import asha_eyes  # noqa: E402
 import asha_face_shapes  # noqa: E402
@@ -39,6 +39,7 @@ import asha_mouth  # noqa: E402
 import asha_staff  # noqa: E402
 import bb_anatomy  # noqa: E402
 import bb_cage  # noqa: E402
+import bb_donor  # noqa: E402
 import bb_params  # noqa: E402
 import bb_rig  # noqa: E402
 from asha_mesh import Part  # noqa: E402
@@ -179,6 +180,92 @@ def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None,
     bpy.ops.object.mode_set(mode="OBJECT")
 
 
+HAND_FOOT_RATIO = 0.3  # the donor's hands and feet are dense (~10.7k tris); cut for the LOD0 budget
+
+
+def decimate_where(ob: bpy.types.Object, mask: np.ndarray, ratio: float, P0: np.ndarray, N0: np.ndarray) -> None:
+    """Collapse-decimate only the vertices in `mask` (a vertex group; the rest is kept as is),
+    then restore the welded custom normals on every vertex that did not move."""
+    from mathutils import kdtree
+
+    vg = ob.vertex_groups.new(name="_decimate")
+    vg.add([int(i) for i in np.nonzero(mask)[0]], 1.0, "REPLACE")
+    dec = ob.modifiers.new("Decimate", "DECIMATE")
+    dec.ratio = ratio
+    dec.vertex_group = vg.name
+    dec.vertex_group_factor = 1.0
+    dec.invert_vertex_group = False  # weight 1 = decimated, 0 = kept (checked on Blender 5.0.1)
+    bpy.ops.object.select_all(action="DESELECT")
+    bpy.context.view_layer.objects.active = ob
+    ob.select_set(True)
+    bpy.ops.object.modifier_move_to_index(modifier="Decimate", index=0)
+    bpy.ops.object.modifier_apply(modifier="Decimate")
+    ob.vertex_groups.remove(ob.vertex_groups["_decimate"])
+    me = ob.data
+    kd = kdtree.KDTree(len(P0))
+    for i, p in enumerate(P0):
+        kd.insert(tuple(map(float, p)), i)
+    kd.balance()
+    auto = np.zeros((len(me.vertices), 3))
+    me.vertices.foreach_get("normal", auto.ravel())
+    for v in me.vertices:
+        _co, idx, dist = kd.find(v.co)
+        if dist < 1e-6:
+            auto[v.index] = N0[idx]
+    me.normals_split_custom_set_from_vertices([tuple(map(float, n)) for n in auto])
+
+
+def head_seams(F: np.ndarray, cat: np.ndarray, V: np.ndarray, lm) -> set:
+    """Seam edges of the head: between face categories (face mask, rest of head, sockets, mouth
+    cavity) and down the back midline of the rest of the head."""
+    from collections import defaultdict
+
+    ecat: dict = defaultdict(set)
+    yc = float(lm.P("head_c")[1])
+    for f, c in zip(F, cat):
+        vs = [int(i) for i in f if i >= 0]
+        for i in range(len(vs)):
+            a, b = vs[i], vs[(i + 1) % len(vs)]
+            ecat[(min(a, b), max(a, b))].add(int(c))
+    seams = {e for e, cs in ecat.items() if len(cs) > 1}
+    for e, cs in ecat.items():
+        a, b = e
+        if cs == {2} and abs(V[a, 0]) < 1e-5 and abs(V[b, 0]) < 1e-5 and V[a, 1] > yc and V[b, 1] > yc:
+            seams.add(e)
+    return seams
+
+
+def uv_seams(F: list, UV: list) -> set:
+    """Edges where the donor atlas UVs are discontinuous (its island borders)."""
+    seen: dict = {}
+    seams = set()
+    for f, q in zip(F, UV):
+        for i in range(len(f)):
+            a, b = int(f[i]), int(f[(i + 1) % len(f)])
+            key = (min(a, b), max(a, b))
+            ua, ub = tuple(np.round(q[i], 6)), tuple(np.round(q[(i + 1) % len(f)], 6))
+            val = (ua, ub) if a < b else (ub, ua)
+            if key in seen and seen[key] != val:
+                seams.add(key)
+            seen.setdefault(key, val)
+    return seams
+
+
+def pack_faces(ob: bpy.types.Object, mats: set[str], margin: float = 0.003) -> None:
+    """Fit the donor-atlas UVs of the faces using `mats` to fill 0..1 (one uniform scale and offset,
+    so MakeHuman's island layout is kept and nothing overlaps); other faces keep their UVs."""
+    me = ob.data
+    names = [m.name for m in me.materials]
+    loops = [li for p in me.polygons if names[p.material_index] in mats for li in p.loop_indices]
+    uvl = me.uv_layers["UVMap"].data
+    uv = np.array([uvl[li].uv[:] for li in loops])
+    lo, hi = uv.min(axis=0), uv.max(axis=0)
+    k = (1.0 - 2.0 * margin) / float(np.max(hi - lo))
+    uv = margin + (uv - lo) * k
+    for li, q in zip(loops, uv):
+        uvl[li].uv = (float(q[0]), float(q[1]))
+
+
 def read_weights(ob: bpy.types.Object) -> tuple[np.ndarray, list[str]]:
     names = [g.name for g in ob.vertex_groups]
     W = np.zeros((len(ob.data.vertices), len(names)), dtype=np.float32)
@@ -257,11 +344,11 @@ def vertex_normals(V: np.ndarray, F: np.ndarray) -> np.ndarray:
 
 def submesh(V: np.ndarray, F: np.ndarray, keep: np.ndarray, seams: set) -> tuple[np.ndarray, np.ndarray, np.ndarray, set]:
     Fk = F[keep]
-    used = np.unique(Fk)
-    remap = -np.ones(len(V), dtype=int)
+    used = np.unique(Fk[Fk >= 0])
+    remap = -np.ones(len(V) + 1, dtype=int)  # remap[-1] stays -1 (triangle padding)
     remap[used] = np.arange(len(used))
     S = {(min(remap[a], remap[b]), max(remap[a], remap[b])) for a, b in seams if remap[a] >= 0 and remap[b] >= 0}
-    return used, remap[Fk], remap, S
+    return used, remap[Fk], remap[:len(V)], S
 
 
 # ---------------------------------------------------------------------------------------------
@@ -271,47 +358,40 @@ def main() -> int:
     bpy.ops.wm.read_factory_settings(use_empty=True)
     params = bb_params.load_params(path=str(PARAMS))
     extra = json.loads(PARAMS.read_text(encoding="utf-8"))
-    res = bb_cage.generate(params, subdiv=1, log=log)
+    res = bb_donor.generate(params, log=log, subdiv_face=True)
     lm, body = res["lm"], res["body"]
     face = body.face
     V, F = res["V"], np.asarray(res["F"])
     reg = np.array(res["reg"])
-    freg = np.array(res["freg"])  # face regions: head (face mask), scalp, mouth (bag), torso, arm_L, ...
-    log(f"body: {len(V)} verts, {len(F)} quads ({time.time() - t0:.1f}s)")
+    freg = np.array(res["freg"])  # face regions: head (face mask), scalp, mouth (cavity), torso, arm_L, ...
+    UVc = np.asarray(res["uv"])  # donor atlas UVs per face corner (v up)
+    log(f"body: {len(V)} verts, {len(F)} polygons ({time.time() - t0:.1f}s)")
 
-    # ---- rig and weights on the welded body ------------------------------------------------
-    weld = make_object("weld", V, F.tolist(), None, ["skin_body"] * len(F))
+    # ---- rig on our landmarks; the donor's hand-made skin weights ------------------------------
     meta = bb_rig.build_metarig(lm)
     rig = bb_rig.generate_rig(meta)
     skel = bb_rig.build_game_skeleton(rig, "asha_skeleton")
-    winfo = bb_rig.skin(weld, rig, skel)
-    W, wnames = read_weights(weld)
-    Nw = vertex_normals(V, F)
-    log(f"rig: {len(skel.data.bones)} deform bones, {winfo} ({time.time() - t0:.1f}s)")
-    bpy.data.objects.remove(weld, do_unlink=True)
+    W, wnames, dropped = bb_rig.donor_weight_matrix(skel, res["weights"], len(V))
+    W = W.astype(np.float32)
+    Nw = bb_donor.face_normals_vertex(V, F)
+    log(f"rig: {len(skel.data.bones)} deform bones, donor weights on {len(wnames)} bones, dropped {dropped} "
+        f"({time.time() - t0:.1f}s)")
 
     # ---- split head / body --------------------------------------------------------------------
     is_head = np.isin(freg, ["head", "scalp", "mouth"])
     used_h, Fh, remap_h, Sh = submesh(V, F, is_head, res["seams"])
     Vh = V[used_h]
-    M = lm.P("mouth")
-    s = lm.h / 0.222
-    line_y = float(np.mean(V[res["groups"]["lip_line"]][:, 1]))
     fh_reg = freg[is_head]
     mats_h = ["mouth" if r == "mouth" else "skin_head" for r in fh_reg]
-    scalp_polys = np.nonzero(fh_reg == "scalp")[0]
-    _ = M
     head = Part("Head")
     for p in Vh:
         head.add_v(p, tag=0)
-    for f, m in zip(Fh, mats_h):
-        head.add_f(f, [(0.0, 0.0)] * 4, m)
+    for f, q, m in zip(Fh, UVc[is_head], mats_h):
+        k = 4 if f[3] >= 0 else 3
+        head.add_f(f[:k], [(float(u), 1.0 - float(v)) for u, v in q[:k]], m)
     n_skin = len(Vh)
     normals_h = list(Nw[used_h])
     extras: list[Part] = []
-    for sd in ("L", "R"):
-        e = asha_ears.ear(lm, sd)
-        extras.append(e)
     fr_th = bb_anatomy.LID_THICKNESS * lm.S
     for sd in ("L", "R"):
         fr = face.eyes[sd]
@@ -327,19 +407,10 @@ def main() -> int:
 
     for sd in ("L", "R"):
         extras.append(asha_eyes.brow(face, sd, surface_fn))
-    extras.append(asha_mouth.mouth_interior(lm, line_y))
-    ear_seams = set()
+    extras.append(asha_mouth.mouth_interior(lm, res["fit"].lip_line_y + 0.0015 * lm.S))  # teeth behind the inner lip
     for ex in extras:
-        off = len(head.V)
-        if hasattr(ex, "seam_rings"):
-            for ring in ex.seam_rings:
-                for i in range(len(ring)):
-                    a, b = ring[i] + off, ring[(i + 1) % len(ring)] + off
-                    ear_seams.add((min(a, b), max(a, b)))
         head.extend(ex)
-    head.T = head.T[:n_skin] + head.T[n_skin:]
     Vhead = head.varr()
-    # extras get recomputed (auto) normals: append zeros and fix after creation
     ob_head = make_object("Head", Vhead, head.F, head.UV, head.M)
     me = ob_head.data
     # custom normals: welded normals on the skin, Blender's own elsewhere
@@ -347,8 +418,17 @@ def main() -> int:
     me.vertices.foreach_get("normal", auto.ravel())
     auto[:n_skin] = np.array(normals_h)
     me.normals_split_custom_set_from_vertices([tuple(map(float, n)) for n in auto])
-    unwrap_faces(ob_head, {"skin_head", "mouth"}, Sh | ear_seams, shrink=(scalp_polys, 0.55))
-    shapes = asha_face_shapes.build_shapes(face, lm, Vhead, np.array(head.T))
+    # UVs: our own unwrap of the donor head. The face mask is one island; the rest of the head
+    # (cut down the back midline), each eye socket and the mouth cavity are their own islands,
+    # shrunk before packing so the face gets the texels (asha.md §8.2)
+    cat = np.where(res["face_mask"][is_head], 1, np.where(res["face_socket"][is_head], 3,
+                                                       np.where(fh_reg == "mouth", 4, 2)))
+    unwrap_faces(ob_head, {"skin_head", "mouth"}, head_seams(Fh, cat, Vh, lm),
+                 shrink=(np.nonzero(cat != 1)[0], 0.45))
+    pad = np.zeros(len(Vhead) - n_skin)
+    masks = {"lower": np.concatenate([res["lower"][used_h], pad]), "lip": np.concatenate([res["lip_w"][used_h], pad])}
+    units = asha_face_shapes.donor_unit_shapes(res["unit_delta"], used_h, Vhead, np.array(head.T), masks["lower"])
+    shapes = asha_face_shapes.build_shapes(face, lm, Vhead, np.array(head.T), masks, units)
     ob_head.shape_key_add(name="Basis", from_mix=False)
     flat = Vhead.astype(np.float64)
     for name, d in shapes.items():
@@ -365,7 +445,7 @@ def main() -> int:
     # ---- costume (procedural cloth panels) and the hidden body under it ------------------------
     cparams = extra["_costume"]
     covered = asha_costume.coverage(body, cparams, V, reg)
-    hidden = covered[F].all(axis=1) & ~is_head
+    hidden = np.where(F >= 0, covered[np.maximum(F, 0)], True).all(axis=1) & ~is_head
     costume = {} if args.no_costume else asha_costume.build_costume(body, cparams)
     log(f"costume: {sum(p.tris() for p in costume.values())} tris, hidden body quads {int(hidden.sum())} "
         f"({time.time() - t0:.1f}s)")
@@ -427,11 +507,20 @@ def main() -> int:
     apply_weights(ob_staff, Wst, wnames, skel)
 
     # ---- body ---------------------------------------------------------------------------------
-    used_b, Fb, remap_b, Sb = submesh(V, F, ~is_head & ~hidden, res["seams"])
-    ob_body = make_object("Body", V[used_b], Fb.tolist(), None, ["skin_body"] * len(Fb), normals=Nw[used_b])
-    unwrap_faces(ob_body, {"skin_body"}, Sb)
+    keep_b = ~is_head & ~hidden
+    used_b, Fb, remap_b, Sb = submesh(V, F, keep_b, res["seams"])
+    Fb_l = [tuple(int(i) for i in f if i >= 0) for f in Fb]
+    UVb = [[(float(u), 1.0 - float(v)) for u, v in q[:len(f)]] for f, q in zip(Fb_l, UVc[keep_b])]
+    ob_body = make_object("Body", V[used_b], Fb_l, UVb, ["skin_body"] * len(Fb), normals=Nw[used_b])
     apply_weights(ob_body, W[used_b], wnames, skel)
-    log(f"body skin: {len(used_b)} verts, {2 * len(Fb)} tris ({time.time() - t0:.1f}s)")
+    unwrap_faces(ob_body, {"skin_body"}, uv_seams(Fb_l, UVb))  # the donor's islands, re-flattened and packed
+    dense = np.isin(reg[used_b], ["hand_L", "hand_R", "foot_L", "foot_R"])
+    t_all = sum(len(f) - 2 for f in Fb_l)
+    t_dense = sum(len(f) - 2 for f in Fb_l if dense[list(f)].all())
+    decimate_where(ob_body, dense, 1.0 - (1.0 - HAND_FOOT_RATIO) * t_dense / t_all, V[used_b], Nw[used_b])
+    ob_body.data.calc_loop_triangles()
+    body_tris = len(ob_body.data.loop_triangles)
+    log(f"body skin: {len(used_b)} verts, {body_tris} tris ({time.time() - t0:.1f}s)")
 
     # ---- eyes -----------------------------------------------------------------------------------
     eye_objs = []
@@ -447,14 +536,15 @@ def main() -> int:
 
     export_objs = [ob_head, ob_body, *eye_objs, *garment_objs, *hair_objs, ob_staff, skel]
     report = {
-        "triangles": {"head": head.tris(), "body_skin": 2 * len(Fb), "eyes": eye_tris,
+        "triangles": {"head": head.tris(), "body_skin": body_tris, "eyes": eye_tris,
                       "costume": sum(p.tris() for p in costume.values()), "hair": hair_tris,
                       "staff": staff.tris()},
         "seconds": 0.0,
     }
     report["triangles"]["total_lod0"] = sum(report["triangles"].values())
     if args.bake_dir:
-        dump_bake(Path(args.bake_dir), {"head": ob_head, "body": ob_body}, lm, {"head": np.array(head.T)})
+        dump_bake(Path(args.bake_dir), {"head": ob_head, "body": ob_body}, lm, {"head": np.array(head.T)},
+                  {"head": {"LIP": masks["lip"]}})
     if args.blend:
         bpy.ops.wm.save_as_mainfile(filepath=str(Path(args.blend).resolve()), compress=True)
     out = Path(args.out).resolve()
@@ -466,7 +556,7 @@ def main() -> int:
     bpy.ops.export_scene.gltf(
         filepath=str(out), export_format="GLB", use_selection=True, export_yup=True, export_apply=False,
         export_tangents=False, export_normals=True, export_texcoords=True, export_extras=False,
-        export_skins=True, export_morph=True, export_morph_normal=True, export_animations=False,
+        export_skins=True, export_morph=True, export_morph_normal=False, export_animations=False,
         export_def_bones=False, export_materials="EXPORT", export_vertex_color="ACTIVE",
         export_all_vertex_colors=False,
     )
@@ -540,9 +630,104 @@ def make_lod1(objs: list, skel: bpy.types.Object) -> tuple[list, int]:
     return out, tris
 
 
-def dump_bake(out_dir: Path, objs: dict, lm, tags: dict) -> None:
-    """Per object: rest positions, triangles, per-corner UVs and material per triangle."""
+SKIN_MATS = {"skin_head", "skin_body", "mouth"}
+SHELL_MATS = {"skin_head", "skin_body"}
+
+
+def _hemisphere(n: int = 24) -> np.ndarray:
+    """Fixed cosine-weighted directions about +Z (golden-angle spiral, deterministic)."""
+    k = np.arange(n) + 0.5
+    r = np.sqrt(k / n)
+    ph = k * math.pi * (3.0 - math.sqrt(5.0))
+    return np.stack([r * np.cos(ph), r * np.sin(ph), np.sqrt(1.0 - r * r)], axis=1)
+
+
+def vertex_bake_terms(objs: dict, lm) -> dict:
+    """M1-CHR-03: the skin bake terms per vertex, from the mesh itself (the donor head has no sculpt
+    field to bake from): ambient occlusion (24 rays, 4 cm), thickness (inward ray), cavity (mean
+    curvature against the vertex normal) and the welded normal. asha_textures interpolates them."""
+    from mathutils import Vector
+    from mathutils.bvhtree import BVHTree
+
+    s = lm.h / 0.222
+    verts, polys, shell = [], [], []
+    for ob in objs.values():
+        me = ob.data
+        names = [m.name for m in me.materials]
+        off = len(verts)
+        verts.extend(v.co.copy() for v in me.vertices)
+        polys.extend([off + i for i in p.vertices] for p in me.polygons if names[p.material_index] in SKIN_MATS)
+        shell.extend([off + i for i in p.vertices] for p in me.polygons if names[p.material_index] in SHELL_MATS)
+    bvh = BVHTree.FromPolygons(verts, polys)
+    bvh_shell = BVHTree.FromPolygons(verts, shell)  # thickness: through the skin, not into the mouth bag
+    H = _hemisphere()
+    out = {}
+    for key, ob in objs.items():
+        me = ob.data
+        nv = len(me.vertices)
+        P = np.zeros((nv, 3))
+        me.vertices.foreach_get("co", P.ravel())
+        cn = np.zeros((len(me.loops), 3))
+        me.corner_normals.foreach_get("vector", cn.ravel())
+        lv = np.zeros(len(me.loops), dtype=np.int64)
+        me.loops.foreach_get("vertex_index", lv)
+        N = np.zeros((nv, 3))
+        np.add.at(N, lv, cn)
+        N /= np.maximum(np.linalg.norm(N, axis=1, keepdims=True), 1e-12)
+        names = [m.name for m in me.materials]
+        skin_v = np.zeros(nv, bool)
+        for p in me.polygons:
+            if names[p.material_index] in SKIN_MATS:
+                skin_v[list(p.vertices)] = True
+        ao = np.ones(nv)
+        thk = np.full(nv, 0.02)
+        for i in np.nonzero(skin_v)[0]:
+            n = N[i]
+            t = np.cross(n, [0.0, 0.0, 1.0] if abs(n[2]) < 0.9 else [1.0, 0.0, 0.0])
+            t /= np.linalg.norm(t)
+            b = np.cross(n, t)
+            o = Vector(P[i] + n * 0.0004 * s)
+            hit = 0.0
+            for d in H:
+                dd = t * d[0] + b * d[1] + n * d[2]
+                loc, _nrm, _idx, dist = bvh.ray_cast(o, Vector(dd), 0.04 * s)
+                if loc is not None:
+                    hit += 1.0 - dist / (0.04 * s)
+            ao[i] = 1.0 - hit / len(H)
+            loc, _nrm, _idx, dist = bvh_shell.ray_cast(Vector(P[i] - n * 0.0003 * s), Vector(-n), 0.02 * s)
+            thk[i] = (dist if loc is not None else 0.02 * s) / s
+        # cavity: how far the vertex sits below its neighbours' mean, along its normal
+        ev = np.zeros((len(me.edges), 2), dtype=np.int64)
+        me.edges.foreach_get("vertices", ev.ravel())
+        acc = np.zeros((nv, 3))
+        cnt = np.zeros(nv)
+        np.add.at(acc, ev[:, 0], P[ev[:, 1]])
+        np.add.at(acc, ev[:, 1], P[ev[:, 0]])
+        np.add.at(cnt, ev[:, 0], 1)
+        np.add.at(cnt, ev[:, 1], 1)
+        L = np.linalg.norm(P[ev[:, 0]] - P[ev[:, 1]], axis=1)
+        lsum = np.zeros(nv)
+        np.add.at(lsum, ev[:, 0], L)
+        np.add.at(lsum, ev[:, 1], L)
+        lmean = lsum / np.maximum(cnt, 1)
+        c = np.sum((acc / np.maximum(cnt, 1)[:, None] - P) * N, axis=1) / np.maximum(lmean, 1e-9)
+        cav = np.clip(1.0 - 3.0 * np.maximum(c, 0.0), 0.15, 1.0)
+        # per-vertex ray noise: a few neighbour-averaging passes
+        for _ in range(3):
+            for arr in (ao, thk):
+                acc1 = np.zeros(nv)
+                np.add.at(acc1, ev[:, 0], arr[ev[:, 1]])
+                np.add.at(acc1, ev[:, 1], arr[ev[:, 0]])
+                arr[:] = np.where(skin_v, 0.5 * arr + 0.5 * acc1 / np.maximum(cnt, 1), arr)
+        out[key] = {"AO": np.clip(ao, 0.0, 1.0), "THK": thk, "CAV": cav, "NW": N}
+    return out
+
+
+def dump_bake(out_dir: Path, objs: dict, lm, tags: dict, extra: dict | None = None) -> None:
+    """Per object: rest positions, triangles, per-corner UVs, material per triangle, and the
+    per-vertex skin terms (vertex_bake_terms) plus any `extra` per-vertex arrays."""
     out_dir.mkdir(parents=True, exist_ok=True)
+    terms = vertex_bake_terms(objs, lm)
     for key, ob in objs.items():
         me = ob.data
         me.calc_loop_triangles()
@@ -558,12 +743,11 @@ def dump_bake(out_dir: Path, objs: dict, lm, tags: dict) -> None:
         me.loop_triangles.foreach_get("material_index", mi)
         uv = np.zeros((len(me.loops), 2))
         me.uv_layers["UVMap"].data.foreach_get("uv", uv.ravel())
-        Nl = np.zeros((nv, 3))
-        me.vertices.foreach_get("normal", Nl.ravel())
         T = tags.get(key, np.zeros(nv, dtype=np.int64))
-        np.savez(out_dir / f"{key}.npz", P=P, tv=tv, tuv=uv[tl], mi=mi, N=Nl, T=T,
-                 mats=np.array([m.name for m in me.materials]))
-    _ = lm
+        tm = terms[key]
+        ex = dict((extra or {}).get(key, {}))
+        np.savez(out_dir / f"{key}.npz", P=P, tv=tv, tuv=uv[tl], mi=mi, N=tm["NW"], T=T, AO=tm["AO"], THK=tm["THK"],
+                 CAV=tm["CAV"], mats=np.array([m.name for m in me.materials]), **ex)
 
 
 if __name__ == "__main__":
