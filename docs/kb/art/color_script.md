@@ -136,7 +136,7 @@ Two findings for Rendering:
 | Night sea-glow | energy 0.04 |
 | Exposure / contrast / saturation | exposure 0.85 (EV100 11.0 intent) · S-curve 0.55 · saturation x1.05 |
 | LUT intent | lut_prologue_dusk: gold gain (+0.06 R, +0.03 G), teal lift in shadows (toe tinted to #0E4A55), highlights roll off softly to cream, not white. |
-| Emotional note | Elegy before the story. Seven silhouettes around one oil fire, dwarfed by white towers. The light is warm but horizontal and leaving. |
+| Emotional note | Elegy before the story. Seven silhouettes apart across the plaza, each keeping a vigil, dwarfed by white towers. There is no fire: the one practical is Rhen's oil lantern, lit as the line lands ([ADR 0017](../decisions/0017-act-one-restaging.md)). The light is warm but horizontal and leaving. |
 
 ## Act I: The Pilgrimage (warm, high noon, festival)
 
@@ -293,7 +293,7 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Night sea-glow | energy 0.0 |
 | Exposure / contrast / saturation | exposure 0.70 (EV100 13.5 intent) · S-curve 0.5 · saturation x0.9 |
 | LUT intent | lut_ch06_smoke: amber smoke haze, mudflat greens desaturated, saturation 0.90 overall; fire kept hot so the raid reads. |
-| Emotional note | The Order's violence in daylight. Brown-grey flats, black wrecks, orange fire, and Liss's crate leaking bound teal light. |
+| Emotional note | The Order's violence in daylight. Brown-grey flats, black wrecks, orange fire, and Liss's crate leaking bound teal light. Sefir's first appearance ([ADR 0017](../decisions/0017-act-one-restaging.md)): his white barge poled through the smoke on water the smoke can't stir, the only clean white in the frame. |
 
 ### Ch7 "The Tidecup"
 `ch07` · zone `ch07/tamsule, ch07/tamsule_bell`
@@ -312,7 +312,7 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Night sea-glow | energy 0.0 |
 | Exposure / contrast / saturation | exposure 0.65 (EV100 15.0 intent) · S-curve 0.45 · saturation x1.18 |
 | LUT intent | lut_ch07_festival: the most saturated grade in the game (1.18), gilded signboards pushed warm, water sphere pushed cyan. Inside the Bell: caustics allowed to clip to white. |
-| Emotional note | Peak festival. Gold signboards, a crowd, a suspended sphere of water glowing with bound light that nobody questions. Sefir in white and gold, lit like a saint. |
+| Emotional note | Peak festival. Gold signboards, a crowd, a suspended sphere of water glowing with bound light that nobody questions. A festival held for a drowned town: Oruvel's side plays, and its empty moorings sit under the Bell. No Order official is in the frame ([ADR 0017](../decisions/0017-act-one-restaging.md)). |
 
 ### Ch8 "The Seawall"
 `ch08` · zone `ch08/corrow, ch08/coilspire`
@@ -544,7 +544,7 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Night sea-glow | energy 0.06 |
 | Exposure / contrast / saturation | exposure 0.85 (EV100 11.0 intent) · S-curve 0.55 · saturation x1.05 |
 | LUT intent | lut_prologue_dusk, unchanged (the frame must match the Prologue exactly; screenshot baseline shared). Spire interior: bound-teal and stone-grey, skin kept warm through a +0.03 R lift masked to luminance 0.1-0.5, warmed 400 K (the former Cistern grade; Ch15 no longer uses it, ADR 0016). |
-| Emotional note | The prologue, understood. Same shot, same light. What changes is the audience. |
+| Emotional note | The prologue, understood. Same shot, same light, the same separate vigils and the one oil lantern ([ADR 0017](../decisions/0017-act-one-restaging.md)). What changes is the audience. |
 
 ### Ch20 "Undertow"
 `ch20` · zone `ch20/undertow_layers`

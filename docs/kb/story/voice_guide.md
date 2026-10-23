@@ -7,7 +7,7 @@ How each principal character talks. Use this when writing any `.dlg` line. If a 
 - **No lore dump over four lines.** Exposition comes through argument, discovery, or action. If a character must explain, someone interrupts, disagrees, or walks away.
 - **Swearing:** in-world oaths only, sparing. Examples: *"Salt and stone."* (Low Reaches), *"Level preserve us."* (Order), *"Rust it."* (Saltwright).
 - **Address:** the Order says *Lady Cantor* and *Warden*. Friends use first names. Kerrid uses no names until Act II.
-- **Line length:** keep most lines to one or two sentences of about 25 words or fewer. Long speeches are earned only by Kerrid (once, Ch14), Sefir (once, Ch16), and Rhen's narration.
+- **Line length:** keep most lines to one or two sentences of about 25 words or fewer. Long speeches are earned only by Kerrid (once, Ch15, ADR 0016), Sefir (once, Ch16), and Rhen's narration.
 
 ---
 
@@ -103,8 +103,8 @@ How each principal character talks. Use this when writing any `.dlg` line. If a 
 - **Diction:** gentle and inclusive (*"we," "together," "of course"*), with an archivist's precise vocabulary and occasional archaic constructions that slip through ("It were kinder...").
 - **Tell:** he answers grief with logic. When someone weeps, he explains.
 
-> "Lady Cantor. I knelt beside your mother once, on a morning very like this one."
-> "Be level, children. Sit. The match will wait for a blessing; it always has."
+> "Lady Cantor. I knelt beside your mother once, on a day very like this one."
+> "Be level, Inquisitor. The Edict burns things. It has never needed to burn people."
 > "Nothing you love has to end. I am offering you that. Why do you look at me as if it were cruel?"
 > "Your guardian died here. He was very brave. I have thought of him often."
 > "You see a cage. I see a cradle. It is the same shape."
