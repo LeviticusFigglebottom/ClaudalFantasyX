@@ -2,8 +2,9 @@
 id: M1-RND-17
 title: Dusk released motes read gold and rising (halo chroma, streak axis)
 role: rendering
-status: todo
-owner_session: ""
+status: review
+reviewer: character
+owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-17-dusk-motes)"
 depends_on: [M1-RND-08]
 milestone: M1
 request-from: "character"
@@ -49,5 +50,39 @@ In the M1-ART-05 sign-off (Art Director, 2026-10-23), `glimmer_dusk` got **chang
 ## Notes
 - The numbers come from M1-ART-05 (docs/kb/art/color_script.md, "Art sign-off 2026-10-23").
 - The pre-RND-08 `glimmer_dusk` comes from `git show cb318dc^:tests/screenshots/baselines/glimmer_dusk.png`.
+
+## Notes (PC GPU session, branch gpu/rnd-17-dusk-motes)
+
+Report: `docs/kb/qa/gpu/2026-10-23-rnd-17-dusk-motes.md`. All numbers are on the GPU capture rig (960×540, scene
+defaults), measured with the sign-off method, now `tools/screenshots/mote_metrics.py`. On the current baseline it
+reproduces 87° / 175° / 136°, |Δab| 0.039, and a median streak angle of 37°.
+
+**Met:**
+- **Streaks:** median 5.7° (≤ 25), 84 % within 30° (≥ 70), 3 % beyond 60° (≤ 5).
+- **Upper sky:** hue 76° (75–95), |Δab| 0.060 (≥ 0.06).
+- **Halo chroma at or above the background:** horizon 0.044 against 0.043, mirror 0.045 against 0.036.
+- **Coverage** 16.3 % (≤ 18).
+- **The spiral keeps its radius, rise and rate:** 1.6 turns per mote in 10 s.
+- **Nothing else moves:** `glimmer_night_held` 0.00004, `glimmer_bound` 0.0001, `save_shrine_field` 0.00001 RMSE on
+  the GPU. Water is untouched.
+
+**Not met:**
+- **Horizon:** hue 139° and |Δab| 0.024, against 75–95° and ≥ 0.04.
+- **Mirror:** hue 102° and |Δab| 0.031.
+- Why: on a red-peach sky (a 0.037, b 0.024), added light reads gold only if its own a/L is at least the sky's. At
+  83° that needs C/L ≥ 0.46, past the gamut. The inner-halo band there is also dominated by the pale cores, which
+  this task says not to tint. The horizon-warm hue (55° within 8° of the horizon) moved it from 175° to 139°.
+  Reaching 75–95 would need either a gold core near the horizon, or a target measured on the halo only. That is
+  the Art Director's call.
+- **Heads-down:** 6 % (≤ 2). By this script's definition the baseline was already 7 %, against the sign-off's 3/96,
+  so the count method differs. Art should re-count with their own method.
+- **Core chroma:** 0.031 (permitted ≤ 0.03, not required).
+
+**Checks.** `mote_halo` and `mote_streaks` are in palette_checks.json as `advisory` (warn, don't fail), and
+palette_check gained the `advisory` flag. Turn them strict when `glimmer_dusk` is re-approved.
+
+**Drift:** `glimmer_dusk` (RMSE 0.0147 on the GPU) and `glimmer_release` (0.0140). Re-approve both after looking.
+
+**Reviewer:** character (Art Director).
 
 ## Review log

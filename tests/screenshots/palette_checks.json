@@ -1,6 +1,6 @@
 {
   "schema": "hymn-palette-checks/1",
-  "note": "Numeric palette checks over the screenshot baselines (tools/screenshots/palette_check.py check). Rects are [x0, y0, x1, y1] in the 960x540 frame; select filters pixels by Oklab L / C / hue (degrees). Targets are palette.json onscreen_hex columns. M1-ENV-01, review-sweep-F B1 and S2-S4, S6; M1-RND-12 (review-sweep-H): zenith checks need 90% of the rect selected, and underside hue is measured on cloud pixels only (within ΔE_ok 0.06 of a cumulus_shadow column, sweep G S1). Re-measure the rects when a shot is reframed.",
+  "note": "Numeric palette checks over the screenshot baselines (tools/screenshots/palette_check.py check). Rects are [x0, y0, x1, y1] in the 960x540 frame; select filters pixels by Oklab L / C / hue (degrees). Targets are palette.json onscreen_hex columns. M1-ENV-01, review-sweep-F B1 and S2-S4, S6; M1-RND-12 (review-sweep-H): zenith checks need 90% of the rect selected, and underside hue is measured on cloud pixels only (within ΔE_ok 0.06 of a cumulus_shadow column, sweep G S1). M1-RND-17: mote_halo / mote_streaks (tools/screenshots/mote_metrics.py) gate glimmer_dusk; advisory: true reports without failing until the shot is re-approved. Re-measure the rects when a shot is reframed.",
   "checks": [
     {"shot": "haluna_h01_village_from_sea", "name": "zenith on sky_zenith_noon +1", "kind": "near_swatch",
      "rect": [420, 0, 600, 60], "select": {"C_min": 0.03}, "min_fraction": 0.9, "swatch": "sky_zenith_noon", "level": "+1", "max_de": 0.045},
@@ -46,6 +46,14 @@
     {"shot": "haluna_h02_tidewall_lane", "name": "red budget (haluna.md §6)", "kind": "mask_fraction",
      "mask": "red_hsv", "max": 0.08},
     {"shot": "haluna_h03_lintel_gull", "name": "red budget (haluna.md §6)", "kind": "mask_fraction",
-     "mask": "red_hsv", "max": 0.08}
+     "mask": "red_hsv", "max": 0.08},
+
+    {"shot": "glimmer_dusk", "name": "released halo gold and rich (M1-RND-17, M1-ART-05 method)", "kind": "mote_halo",
+     "advisory": true, "box": [445, 200, 515, 470], "coverage_max": 0.18,
+     "regions": {"upper_sky": {"hue_min": 75, "hue_max": 95, "dab_min": 0.06},
+                 "horizon": {"hue_min": 75, "hue_max": 95, "dab_min": 0.04, "chroma_not_below_background": true},
+                 "mirror": {"hue_min": 75, "hue_max": 95, "dab_min": 0.04, "chroma_not_below_background": true}}},
+    {"shot": "glimmer_dusk", "name": "released streaks rise (M1-RND-17)", "kind": "mote_streaks", "advisory": true,
+     "box": [445, 200, 515, 470], "median_deg_max": 25, "within_30_min": 0.7, "beyond_60_max": 0.05, "heads_down_max": 0.02}
   ]
 }
