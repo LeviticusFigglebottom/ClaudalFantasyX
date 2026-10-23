@@ -116,17 +116,17 @@ Mangrove channels, tannin-dark water, and white egrets. See §8.
 ### 5.6 Sunken Vey (the great drowned city)
 *Influences: Khmer stone ruins and Lit Age glimmer architecture.*
 The largest Lit Age ruin still above water. Towered stone galleries stand chest-deep in a turquoise lagoon, wrapped in strangler-fig roots, and ancient ceramic conduits still faintly pulse with bound light. Silent, gorgeous, and dead.
-- **Lowlight**: the Glimmer temple, a half-flooded gallery temple whose inner sanctum is entirely underwater.
+- **Lowlight**: the Ice temple, a half-flooded gallery temple whose inner sanctum is entirely underwater, at the foot of a Lit Age well-shaft where cold water from the open deep wells up through the floor. Drowned glimmer sifts down through it like snow. Nothing there is frozen; the cold is the deep's ([N-15](decisions_log.md)).
 
 ### 5.7 The Ullar Heights (cold northern ranges)
 *Influences: Andean high-altitude culture.*
 Thin air, enormous skies, terraced high valleys, and mortarless fitted stone walls of many-sided blocks. The Ullari herd **woolbacks** (long-necked shaggy pack animals) and wear layered hand-woven cloth in dense patterns, many of them *tide patterns*, oddly, so far from the sea. They keep records on **keth**: knotted cord bundles read by touch. Their custom for the dead is to tie a knot for the person on the **pass-cords** strung across every mountain pass, and then *walk on without looking back*. Up here the dead lift quickly. The Ullari are stoic about death in a way the coast finds cold.
 - **Quellan**: a highland town of stone and woven awnings.
-- **Cloudloom**: the Holy temple, built into a glacier cave whose roof has opened to the sky, hung with frozen keth. At noon the high sun comes straight down through the ice, and the cords cast their shadows like writing.
+- **Cloudloom**: the Holy temple, a weaving-hall cut into the summit rock above Quellan, its roof open to the sky and hung with thousands of keth that stir in the thin wind. At noon the high sun comes straight down through the open roof, and the cords cast their shadows on the white stone floor like writing. It is cold, as the whole range is, but it is stone and cord and sky, not ice ([N-15](decisions_log.md)).
 
 ### 5.8 Ansedra (the holy city)
 *Influences: Thai and Burmese lacquer and gold leaf, plus Javanese tiered roofs, combined into an original city plan.*
-The Order's seat, built on a lagoon kept perfectly flat. No wind ripples it, and no wake is permitted (the stillness is maintained by forbidden glimmer machinery under the city, which the party discovers in Act II). Its skyline is **bowl-domes**: inverted gilded bowls on tiered red-lacquer bases, each crowned with a thin spire. Barges are poled, never rowed, so the water stays still. The city has no seabirds, no dogs, and no children's games in the squares. The **Lacquer Court** is the ceremonial heart. The **Sanctum of the Level** is the Ice temple: its inner basin is held so still that it has frozen, in the tropics, and the Order calls it a miracle. Below it all lies the **Underreach** and the **Cistern**.
+The Order's seat, built on a lagoon kept perfectly flat. No wind ripples it, and no wake is permitted (the stillness is maintained by forbidden glimmer machinery under the city, which the party discovers in Act II). Its skyline is **bowl-domes**: inverted gilded bowls on tiered red-lacquer bases, each crowned with a thin spire. Barges are poled, never rowed, so the water stays still. The city has no seabirds, no dogs, and no children's games in the squares. The **Lacquer Court** is the ceremonial heart. The **Sanctum of the Level** is the Glimmer temple: its inner basin is held so still that it is a perfect mirror, lit from beneath by a steady light that never moves, and the Order calls it a miracle. The light is bound glimmer, the very thing the Order forbids ([N-15](decisions_log.md)). Below it all lies the **Underreach** and the **Cistern**.
 
 ### 5.9 Hollowmere (the Saltwright flotilla)
 See §7.

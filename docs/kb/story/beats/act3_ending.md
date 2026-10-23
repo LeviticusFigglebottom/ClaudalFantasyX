@@ -76,7 +76,7 @@ Written for the review-sweep-B finding that Ch21 and the Ending stack Kesh's rel
 
 **H08. Sefir lets go (C, 2 min).** **Goodbye: Sefir's, to Kesh.** Kesh, already lifting, doesn't take his hand. He finally watches her go, and he lets her. Then he lifts too, and his last expression is relief. No speech longer than two lines. *Staging:* his reflection in the water ripples for the first time in the game (his revenant tell, undone). *Music:* `the_letting` thinning to a single held note.
 
-**H09. The Great Unbinding (C, 2 min).** The last *tash*. Every mote in Maresh lifts at once. Six cutaways, each 3 to 4 s, no people in close-up and no goodbyes: Iskarra's lamp-columns go dark; a Hollowmere tide-wheel stops; the Tamsule Bell's light leaves it; Ansedra's frozen basin cracks and moves; Lowlight's conduits empty upward; the storm wall comes apart into rising light. Then the Kite climbs out of the storm into open night. *Music:* `the_letting`'s last phrase, then `unbinding_swell`: full choir and orchestra for the only time in the game, and the Hush theme finally resolves upward.
+**H09. The Great Unbinding (C, 2 min).** The last *tash*. Every mote in Maresh lifts at once. Six cutaways, each 3 to 4 s, no people in close-up and no goodbyes: Iskarra's lamp-columns go dark; a Hollowmere tide-wheel stops; the Tamsule Bell's light leaves it; the Sanctum's mirror basin goes dark and ripples for the first time in four hundred years; Lowlight's conduits empty upward; the storm wall comes apart into rising light. Then the Kite climbs out of the storm into open night. *Music:* `the_letting`'s last phrase, then `unbinding_swell`: full choir and orchestra for the only time in the game, and the Hush theme finally resolves upward.
 
 ### Ending
 

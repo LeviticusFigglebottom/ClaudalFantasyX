@@ -402,7 +402,7 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Glimmer | `glimmer_lift`, emission energy 1.0, rising (released) |
 | Night sea-glow | energy 0.0 |
 | Exposure / contrast / saturation | exposure 0.65 (EV100 14.5 intent) · S-curve 0.6 · saturation x0.9 |
-| LUT intent | lut_ch12_heights: cold clean blue, high contrast, whites slightly blue. Woven cloth reds kept at full saturation as the only warm notes. Cloudloom interior: ice cyan with keth shadows. |
+| LUT intent | lut_ch12_heights: cold clean blue, high contrast, whites slightly blue. Woven cloth reds kept at full saturation as the only warm notes. Cloudloom interior: white stone under open sky with keth shadows; no ice anywhere in the temple ([ADR 0015](../decisions/0015-vowbound-element-temple-order.md)). |
 | Emotional note | Enormous sky, thin cold light. Up here the dead lift quickly, so the few motes present rise fast. The breath that doesn't fog (Kerrid) needs a clean dark background: compose for it. |
 
 ### Ch13 "Gold and Lacquer"

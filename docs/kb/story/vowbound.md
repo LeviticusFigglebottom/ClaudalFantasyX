@@ -6,10 +6,10 @@ Seven bound spirits of past Cantors. The Order calls them "the Saints who stayed
 
 **Shared design language (for Art; full sheets go in `docs/kb/art/vowbound/`):** huge, regal, spectral, and each part animal, part memory of the person. Every one carries **one human keepsake** worked into its form, the thing that anchored it. When it is released in the finale, the keepsake is the last thing to fade.
 
-**Acquisition order:** Ilun (Ch3, Water), Kahre (Ch5, Lightning), Virel (Ch8, Fire), Nhoa (Ch11, Glimmer), Hesk (Ch12, Holy), Ethren (Ch13, Ice), Kesh (Ch16, all six).
+**Acquisition order:** Ilun (Ch3, Water), Kahre (Ch5, Lightning), Virel (Ch8, Fire), Nhoa (Ch11, Ice), Hesk (Ch12, Holy), Ethren (Ch13, Glimmer), Kesh (Ch16, all six).
 **Release order in the dive:** Ilun, Kahre, Virel, Hesk, Nhoa, Ethren, then the Cage-Wardens, then Kesh, then Sefir.
 
-**Why this element order (IP, [decisions_log N-09](decisions_log.md)):** the first draft ran Water, Fire, Lightning, Glimmer, Ice, Holy, then the edge of the world, which tracked the inspiring game's temple sequence almost step for step. Lightning now comes before Fire, Holy sits in the mountains with the woman who counted, and the Order's own Saint is Ice: stillness made absolute, which is what the Order worships. Do not move them back.
+**Why this element order (IP, [ADR 0015](../decisions/0015-vowbound-element-temple-order.md), [decisions_log N-09](decisions_log.md), [N-15](decisions_log.md)):** the first draft ran Water, Fire, Lightning, Glimmer, Ice, Holy, then the edge of the world, which tracked the inspiring game's temple sequence almost step for step. N-09 put Lightning before Fire and Holy in the mountains, but it gave Ice to the Order's own Saint, in a frozen basin at the Order's seat, right before the wedding trap and the heretic turn. That recreated the inspiring game's frozen-lake temple followed by the wedding betrayal. Now Ice sits in the deep cold under Sunken Vey (Ch11), two chapters and a mountain range away from Ansedra, and **no temple anywhere is frozen**. The Order's Saint is **Glimmer**: the showpiece of a church that forbids binding glimmer is made of bound glimmer, which is the Act II truth hanging in plain sight. Do not move Ice to Ch12 or Ch13, and do not put ice, frost or a frozen basin in any temple from Ch12 to Ch15.
 
 ---
 
@@ -37,23 +37,23 @@ Seven bound spirits of past Cantors. The Order calls them "the Saints who stayed
 
 ## 4. Hesk, the Cord-Keeper *(Holy)*
 - **Temple:** Cloudloom, the Ullar Heights.
-- **Who she was:** **Ama Quillo**, the 47th Cantor, sang about 175 years ago. She was a thirty-four-year-old Ullari keth-reader and a devout believer who, on pilgrimage, started *counting*: Cantors, Saints, temples. She recorded the arithmetic in keth and hung them frozen in Cloudloom's ice. *Forty-seven voices. Seven houses. Where did the rest go?* She sang anyway, believing faith could hold a question.
+- **Who she was:** **Ama Quillo**, the 47th Cantor, sang about 175 years ago. She was a thirty-four-year-old Ullari keth-reader and a devout believer who, on pilgrimage, started *counting*: Cantors, Saints, temples. She recorded the arithmetic in keth and hung them among the thousands of cords in Cloudloom's open hall, where nobody thought to read them. *Forty-seven voices. Seven houses. Where did the rest go?* She sang anyway, believing faith could hold a question.
 - **Form:** a great condor whose wing feathers are knotted cords, patterned like Ullari weaving and lit from inside with the clean white light of the high passes. **A keth bundle** is clutched in one talon (the keepsake).
 - **Battle identity:** Holy damage, cleansing (she lifts statuses off the party, the way the high passes lift the dead), and Regen. Her light is the truth held up to be read. **Swell:** *Pass-Cord*, a line of shining knots across the field.
 - **The final fight:** Toma's fight. Ama was what Toma tried to be, faithful enough to ask. She asks whether anyone read her cords. Toma says he did, and that they broke his faith, and thanks her for it. *It lands as: a believer honouring the believer who told the truth.*
 
-## 5. Nhoa, the Rootlight *(Glimmer)*
-- **Temple:** Lowlight, Sunken Vey.
+## 5. Nhoa, the Rootlight *(Ice)*
+- **Temple:** Lowlight, Sunken Vey. Its inner sanctum lies underwater at the foot of a Lit Age well-shaft, where cold water from the open deep wells up through the floor. Down there the light is low, the water is the coldest in Maresh, and drowned glimmer sifts down through it like snow. Nothing in the temple is frozen: the cold is the deep's.
 - **Who she was:** **Ressa**, the 56th Cantor, sang about 70 years ago. She was the only Kirru Cantor and Pell's clutch-sister, and she was a hearer who believed she could end the storm from inside.
-- **Form:** a tall Kirru-like figure made entirely of drifting motes, with antlers of mangrove root and a long heron neck. She moves through water as if it were air. **A name-shell** (her own, carved) hangs at her throat (the keepsake).
-- **Battle identity:** pure Glimmer element, mote-swarms, and the ability to *copy* the last enemy action (an echo of Pell). **Swell:** *Farewell-Tide*, a rising column of light (the only Vowbound finisher where the motes go *up*, a visual seed for the Letting).
+- **Form:** a tall Kirru-like figure made entirely of drifting motes that sift around her like snow in deep water, with antlers of mangrove root and a long heron neck. She moves through water as if it were air, and the cold moves with her. **A name-shell** (her own, carved) hangs at her throat (the keepsake).
+- **Battle identity:** Ice damage carried on sifting mote-swarms, and the ability to *copy* the last enemy action (an echo of Pell). **Swell:** *Farewell-Tide*, the snow falling upward in a rising column of light (the only Vowbound finisher where the motes go *up*, a visual seed for the Letting).
 - **The final fight:** Pell's fight. She is glad to see him and sad that he is old. He fights her silently. When she starts to lift, he **turns his back**, the Kirru farewell he refused her seventy years ago, and sings. *It lands as: the most complete act of love in the game, done by looking away.*
 
-## 6. Ethren, the Level Saint *(Ice)*
-- **Temple:** the Sanctum of the Level, Ansedra. Its inner basin is water held so still, by the machines under the city, that it has frozen in the tropics. Pilgrims call it a miracle. It is the first sight of what stillness costs.
+## 6. Ethren, the Level Saint *(Glimmer)*
+- **Temple:** the Sanctum of the Level, Ansedra. Its inner basin is water held so still, by the machines under the city, that it is a perfect mirror, and it is lit from beneath by a steady light that never moves. Pilgrims call it a miracle: water that has not stirred in four hundred years. It is the first sight of what stillness costs, and the light under it is the same bound glimmer the Order burns Saltwright camps for (Ch6).
 - **Who he was:** **Corran Ysel**, the 60th Cantor, sang 24 years ago. He was a thirty-one-year-old Ansedran Tender and Ysolde's husband: patient, funny, and a terrible cook. He was displaced when Imra sang eleven years ago and placed in the Sanctum, the Order's showpiece Saint.
-- **Form:** the Order's ideal made literal: an armoured winged figure of gold lacquer with a veiled face and a bowl-halo behind its head, its gold rimed with frost that never melts. It is beautiful and impersonal. **A plain copper wedding ring** sits on one gauntleted finger (the keepsake), the only human thing about it, and the only part of it the frost never touches.
-- **Battle identity:** Ice damage and stillness: Slow and Stop on enemies, and mass wards on the party (Combat coins the ward names; never the series' spell names). **Swell:** *Still Water*, the Order's whole creed in one blow: everything on the field stops.
+- **Form:** the Order's ideal made literal: an armoured winged figure of gold lacquer with a veiled face and a bowl-halo behind its head, its gold lit from inside by a steady bound light that never drifts. It is beautiful and impersonal. **A plain copper wedding ring** sits on one gauntleted finger (the keepsake), the only human thing about it, and the only part of it that doesn't shine.
+- **Battle identity:** Glimmer damage and stillness: Slow and Stop on enemies, and mass wards on the party (Combat coins the ward names; never the series' spell names). **Swell:** *Still Water*, the Order's whole creed in one blow: everything on the field stops.
 - **The final fight:** Ysolde's fight, and the hardest Vowbound fight in the game. Mid-fight the veil falls, and it is just Corran's face. He tells her he heard every visit. She tells him she is not coming back to the Sanctum anymore. *It lands as: the widow's goodbye she has been refusing for twenty-four years.* The ring is the last thing to fade.
 
 ## 7. Kesh, the First Voice *(all six elements in turn)*
