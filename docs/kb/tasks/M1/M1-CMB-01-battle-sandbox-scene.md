@@ -2,7 +2,7 @@
 id: M1-CMB-01
 title: CTB battle sandbox: 2 heroes vs 3 enemies with timeline preview and swap
 role: combat
-status: review
+status: done
 owner_session: ui-combat-stream-1
 reviewer: progression
 depends_on: [M1-CMB-00, M1-UI-01]
@@ -32,6 +32,16 @@ Delivered (how it works: `docs/kb/tech/ui.md`, "Battle sandbox"):
 
 Follow-ups: `BattleEngine.preview_swap(out, in)`, so the Swap menu can move timeline chips (today the help line explains the effect). Defeat still means every *active* member is KO'd, and the sandbox makes that readable: the result screen lists fallen fighters.
 
+Review follow-ups closed by M1-UI-02 (2026-10-23, `docs/kb/tasks/M1/M1-UI-02-battle-hud-followups.md`):
+- [x] 1. Unlocalized fail reasons: every reason maps to a `HUD_FAIL_*` line (`BattleMenus.fail_text`), and a test reads the reasons from the engine.
+- [x] 2. Provoke targeting: the cursor starts on and is locked to `forced_target()`, with a hook marker on the provoker.
+- [x] 3. Swap preview: the swap-in and swap-out steps show `preview_swap(out, in)`; the chips move.
+- [x] 4. Auto-turn copy: Berserk/Confuse turns are announced and reported from `auto_reason`, with their own pacing.
+- [x] 5. New status data: the Doom count is on chips and party rows, Reflect shows a bounce arc and "Reflected", Petrify shows a stone portrait and stand-in.
+- [x] 6. Victory capture encodes balance: every capture state runs on `game/data/ui/battle_fixtures.json` (frozen tables), so rebalancing no longer moves the baselines.
+- [x] 7. Flaky-risk captures: the baselines were re-approved on the fixture data. Repeat captures here measure RMSE 0.00000. Text anti-aliasing determinism on other stacks is still QA's question.
+- The swap follow-up above is closed by item 3.
+
 ## Review log
 - **2026-10-22, Progression-side reviewer (combat-stream-2), SPEC §12.3 pair: approve with follow-ups (none blocking).**
   Read `game/battle/scene/` (controller, menus, stage, stand-ins), `docs/kb/tech/ui.md` § Battle sandbox and `tests/unit/test_battle_controller.gd`. Ran the sandbox headlessly through its tests (15/15 pass, plus the 4 `party_modifier` hook tests in `test_battle_engine.gd`) and the full `tools/ci_local.sh`.
@@ -46,3 +56,4 @@ Follow-ups: `BattleEngine.preview_swap(out, in)`, so the Swap menu can move time
   6. **The victory capture encodes balance.** `battle_victory` shows who fell, so any enemy tuning breaks the screenshot gate. M1-CMB-05's sandbox softening does: RMSE 0.0160 against the 0.008 limit; the same shot on the old data measures 0.00026. Now Rhen survives, so the result lists three XP rows instead of "Rhen: Fell before the end". QA needs to approve the new baseline (`compare.py --update-baselines battle_victory`). Longer term, pin the capture to a fixture encounter, or show a result that doesn't depend on tuning.
   7. **Flaky-risk captures.** `battle_hud_preview` and `battle_swap_menu` sit at 0.0078–0.0079 against a 0.008 limit even on unchanged data (0.00777 measured on the pre-tuning data). The diff concentrates on HUD text. QA should check text anti-aliasing determinism, or re-baseline.
   Fine as-is: the state machine and cancel paths, instant-pacing drain loop, the failed-escape preview (rank-3 turn), the default-target heuristics, and the capture scripts driving only the intent API.
+- 2026-10-23 lead: closing on the Progression-side approval; the UI follow-ups are M1-UI-02 (in progress).

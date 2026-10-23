@@ -2,15 +2,21 @@ class_name BattleStage
 extends Node3D
 ## The 3D half of the battle sandbox: places FighterStandIns on the slot markers, shows ground
 ## rings, and projects fighters to screen space for the HUD. Reads engine state, never writes.
+## KO'd fighters sink and fade; petrified ones turn to stone where they stand. shake() nudges the
+## camera on heavy hits (the controller skips it under reduced motion).
 
 const CONFIG_PATH := "res://game/data/ui/battle_sandbox.json"
 
 static var _config: Dictionary = {}
 
+## Camera shakes started (tests read it).
+var shakes_started := 0
+
 var _party_slots: Array[Marker3D] = []
 var _enemy_slots: Array[Marker3D] = []
 ## Combatant id -> FighterStandIn.
 var _fighters: Dictionary = {}
+var _shake_tween: Tween
 
 @onready var camera: Camera3D = %BattleCamera
 @onready var _fighter_root: Node3D = %Fighters
@@ -65,10 +71,37 @@ func sync_party(engine: BattleEngine) -> void:
 
 func refresh_ko(engine: BattleEngine) -> void:
 	var cfg := config()
+	var stone: Dictionary = cfg.get("stone", {})
 	for c in engine.party_active + engine.enemies:
 		var f := stand_in(c.id)
-		if f != null:
-			f.set_ko(not c.is_alive(), float(cfg.get("ko_sink_m", 0.0)), float(cfg.get("ko_alpha", 1.0)))
+		if f == null:
+			continue
+		f.set_stone(
+			c.is_petrified(), Color.html(str(stone.get("color", "#FFFFFF"))), float(stone.get("roughness", 1.0))
+		)
+		var ko := c.hp <= 0
+		f.set_ko(ko, float(cfg.get("ko_sink_m", 0.0)), float(cfg.get("ko_alpha", 1.0)))
+
+
+## A short, decaying side-to-side camera nudge (deterministic: no randomness).
+func shake() -> void:
+	if camera == null or not is_inside_tree():
+		return
+	var cfg: Dictionary = config().get("shake", {})
+	var amp := float(cfg.get("amplitude_m", 0.0))
+	var steps := maxi(int(cfg.get("steps", 1)), 1)
+	var step_sec := float(cfg.get("sec", 0.0)) / steps
+	if amp <= 0.0 or step_sec <= 0.0:
+		return
+	shakes_started += 1
+	if _shake_tween != null and _shake_tween.is_valid():
+		_shake_tween.kill()
+	_shake_tween = create_tween()
+	for i in steps:
+		var side := 1.0 if i % 2 == 0 else -1.0
+		var fade := 1.0 - float(i) / steps
+		_shake_tween.tween_property(camera, "h_offset", amp * side * fade, step_sec)
+	_shake_tween.tween_property(camera, "h_offset", 0.0, step_sec)
 
 
 func stand_in(cid: StringName) -> FighterStandIn:

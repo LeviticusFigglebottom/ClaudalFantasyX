@@ -1,0 +1,786 @@
+{
+ "battle_fixtures": {
+  "doc": "Frozen battle data for the HUD capture states (tests/screenshots/shots.json) and their tests (docs/kb/tech/ui.md § Capture fixtures). A copy of the sandbox rows as of 2026-10-23: rebalancing game/data/battle/*.json never moves a screenshot baseline. Each fixture may override rows (deep merge by id) and set opening state (hp, statuses, provoked_by) before the first turn. Edit only to change what a shot shows, then re-approve its baseline.",
+  "tables": {
+   "characters": [
+    {
+     "id": "rhen",
+     "name_key": "CHAR_RHEN",
+     "stats": {
+      "level": 5,
+      "hp": 420,
+      "mp": 24,
+      "strength": 16,
+      "magic": 6,
+      "defense": 10,
+      "magic_defense": 6,
+      "agility": 22,
+      "accuracy": 14,
+      "evasion": 14,
+      "luck": 18
+     },
+     "skills": [
+      "attack",
+      "quick_hit",
+      "undertow_cut"
+     ]
+    },
+    {
+     "id": "asha",
+     "name_key": "CHAR_ASHA",
+     "stats": {
+      "level": 5,
+      "hp": 300,
+      "mp": 60,
+      "strength": 6,
+      "magic": 18,
+      "defense": 6,
+      "magic_defense": 14,
+      "agility": 14,
+      "accuracy": 8,
+      "evasion": 10,
+      "luck": 12
+     },
+     "skills": [
+      "attack",
+      "mend",
+      "hasten",
+      "ward"
+     ]
+    },
+    {
+     "id": "toma",
+     "name_key": "CHAR_TOMA",
+     "stats": {
+      "level": 5,
+      "hp": 560,
+      "mp": 12,
+      "strength": 18,
+      "magic": 4,
+      "defense": 18,
+      "magic_defense": 8,
+      "agility": 10,
+      "accuracy": 10,
+      "evasion": 6,
+      "luck": 10
+     },
+     "skills": [
+      "attack",
+      "shell_breaker"
+     ]
+    },
+    {
+     "id": "ysolde",
+     "name_key": "CHAR_YSOLDE",
+     "stats": {
+      "level": 5,
+      "hp": 280,
+      "mp": 70,
+      "strength": 5,
+      "magic": 20,
+      "defense": 5,
+      "magic_defense": 16,
+      "agility": 13,
+      "accuracy": 8,
+      "evasion": 9,
+      "luck": 10
+     },
+     "skills": [
+      "attack",
+      "ember",
+      "frost",
+      "slow_hex"
+     ]
+    }
+   ],
+   "enemies": [
+    {
+     "id": "reef_crab",
+     "name_key": "ENEMY_REEF_CRAB",
+     "role_answer": "toma",
+     "stats": {
+      "level": 4,
+      "hp": 380,
+      "mp": 0,
+      "strength": 12,
+      "magic": 2,
+      "defense": 40,
+      "magic_defense": 4,
+      "agility": 8,
+      "accuracy": 8,
+      "evasion": 2,
+      "luck": 4
+     },
+     "affinities": {
+      "lightning": "weak",
+      "water": "absorb"
+     },
+     "skills": [
+      "pinch",
+      "brine_spit"
+     ],
+     "ai": [
+      {
+       "if": {
+        "turn_mod": [
+         3,
+         2
+        ]
+       },
+       "pick": [
+        {
+         "skill": "brine_spit",
+         "target": "random_foe"
+        }
+       ]
+      },
+      {
+       "pick": [
+        {
+         "skill": "pinch",
+         "target": "lowest_hp_foe",
+         "weight": 2
+        },
+        {
+         "skill": "pinch",
+         "target": "random_foe",
+         "weight": 1
+        }
+       ]
+      }
+     ],
+     "xp": 40
+    },
+    {
+     "id": "lantern_eel",
+     "name_key": "ENEMY_LANTERN_EEL",
+     "role_answer": "ysolde",
+     "stats": {
+      "level": 4,
+      "hp": 300,
+      "mp": 20,
+      "strength": 6,
+      "magic": 12,
+      "defense": 8,
+      "magic_defense": 30,
+      "agility": 14,
+      "accuracy": 8,
+      "evasion": 10,
+      "luck": 6
+     },
+     "affinities": {
+      "fire": "weak",
+      "lightning": "immune"
+     },
+     "skills": [
+      "lure_glow"
+     ],
+     "ai": [
+      {
+       "pick": [
+        {
+         "skill": "lure_glow",
+         "target": "random_foe"
+        }
+       ]
+      }
+     ],
+     "xp": 35
+    },
+    {
+     "id": "gull_harrier",
+     "name_key": "ENEMY_GULL_HARRIER",
+     "role_answer": "rhen",
+     "stats": {
+      "level": 4,
+      "hp": 220,
+      "mp": 0,
+      "strength": 8,
+      "magic": 2,
+      "defense": 6,
+      "magic_defense": 6,
+      "agility": 24,
+      "accuracy": 10,
+      "evasion": 30,
+      "luck": 8
+     },
+     "affinities": {
+      "ice": "weak"
+     },
+     "skills": [
+      "dive_rake"
+     ],
+     "ai": [
+      {
+       "if": {
+        "self_hp_below_pct": 40
+       },
+       "pick": [
+        {
+         "skill": "dive_rake",
+         "target": "lowest_hp_foe"
+        }
+       ]
+      },
+      {
+       "pick": [
+        {
+         "skill": "dive_rake",
+         "target": "random_foe"
+        }
+       ]
+      }
+     ],
+     "xp": 30
+    }
+   ],
+   "skills": [
+    {
+     "id": "attack",
+     "name_key": "SKILL_ATTACK",
+     "kind": "physical",
+     "power": 8,
+     "rank": 3,
+     "accuracy": 95,
+     "element": "none",
+     "target": "single_foe",
+     "mp_cost": 0,
+     "magic": false
+    },
+    {
+     "id": "quick_hit",
+     "name_key": "SKILL_QUICK_HIT",
+     "kind": "physical",
+     "power": 6,
+     "rank": 2,
+     "accuracy": 100,
+     "element": "none",
+     "target": "single_foe",
+     "mp_cost": 6,
+     "magic": false
+    },
+    {
+     "id": "undertow_cut",
+     "name_key": "SKILL_UNDERTOW_CUT",
+     "kind": "physical",
+     "power": 7,
+     "rank": 4,
+     "accuracy": 95,
+     "element": "none",
+     "target": "single_foe",
+     "mp_cost": 8,
+     "magic": false,
+     "delay_ranks": 2
+    },
+    {
+     "id": "shell_breaker",
+     "name_key": "SKILL_SHELL_BREAKER",
+     "kind": "physical",
+     "power": 7,
+     "rank": 4,
+     "accuracy": 90,
+     "element": "none",
+     "target": "single_foe",
+     "mp_cost": 6,
+     "magic": false,
+     "statuses": [
+      {
+       "id": "armor_break",
+       "chance": 100,
+       "duration": -1
+      }
+     ]
+    },
+    {
+     "id": "mend",
+     "name_key": "SKILL_MEND",
+     "kind": "heal",
+     "power": 10,
+     "rank": 3,
+     "element": "none",
+     "target": "single_ally",
+     "mp_cost": 4,
+     "magic": true
+    },
+    {
+     "id": "hasten",
+     "name_key": "SKILL_HASTEN",
+     "kind": "support",
+     "power": 0,
+     "rank": 3,
+     "element": "none",
+     "target": "single_ally",
+     "mp_cost": 8,
+     "magic": true,
+     "statuses": [
+      {
+       "id": "haste",
+       "chance": 100
+      }
+     ]
+    },
+    {
+     "id": "ward",
+     "name_key": "SKILL_WARD",
+     "kind": "support",
+     "power": 0,
+     "rank": 3,
+     "element": "none",
+     "target": "single_ally",
+     "mp_cost": 6,
+     "magic": true,
+     "statuses": [
+      {
+       "id": "protect",
+       "chance": 100
+      }
+     ]
+    },
+    {
+     "id": "ember",
+     "name_key": "SKILL_EMBER",
+     "kind": "magical",
+     "power": 9,
+     "rank": 3,
+     "element": "fire",
+     "target": "single_foe",
+     "mp_cost": 4,
+     "magic": true
+    },
+    {
+     "id": "frost",
+     "name_key": "SKILL_FROST",
+     "kind": "magical",
+     "power": 9,
+     "rank": 3,
+     "element": "ice",
+     "target": "single_foe",
+     "mp_cost": 4,
+     "magic": true
+    },
+    {
+     "id": "slow_hex",
+     "name_key": "SKILL_SLOW_HEX",
+     "kind": "support",
+     "power": 0,
+     "rank": 3,
+     "element": "none",
+     "target": "single_foe",
+     "mp_cost": 6,
+     "magic": true,
+     "statuses": [
+      {
+       "id": "slow",
+       "chance": 80
+      }
+     ]
+    },
+    {
+     "id": "pinch",
+     "name_key": "SKILL_PINCH",
+     "kind": "physical",
+     "power": 7,
+     "rank": 3,
+     "accuracy": 90,
+     "element": "none",
+     "target": "single_foe",
+     "mp_cost": 0,
+     "magic": false
+    },
+    {
+     "id": "brine_spit",
+     "name_key": "SKILL_BRINE_SPIT",
+     "kind": "physical",
+     "power": 4,
+     "rank": 3,
+     "accuracy": 85,
+     "element": "water",
+     "target": "single_foe",
+     "mp_cost": 0,
+     "magic": false,
+     "statuses": [
+      {
+       "id": "poison",
+       "chance": 40
+      }
+     ]
+    },
+    {
+     "id": "lure_glow",
+     "name_key": "SKILL_LURE_GLOW",
+     "kind": "magical",
+     "power": 7,
+     "rank": 3,
+     "element": "lightning",
+     "target": "single_foe",
+     "mp_cost": 0,
+     "magic": true
+    },
+    {
+     "id": "dive_rake",
+     "name_key": "SKILL_DIVE_RAKE",
+     "kind": "physical",
+     "power": 6,
+     "rank": 2,
+     "accuracy": 95,
+     "element": "none",
+     "target": "single_foe",
+     "mp_cost": 0,
+     "magic": false
+    }
+   ],
+   "statuses": [
+    {
+     "id": "poison",
+     "name_key": "STATUS_POISON",
+     "category": "harmful",
+     "default_duration": -1,
+     "implemented": true,
+     "description": "Loses 10% max HP at the end of each own turn."
+    },
+    {
+     "id": "sleep",
+     "name_key": "STATUS_SLEEP",
+     "category": "harmful",
+     "default_duration": 3,
+     "implemented": true,
+     "description": "Loses turns until it wears off or the target takes damage."
+    },
+    {
+     "id": "silence",
+     "name_key": "STATUS_SILENCE",
+     "category": "harmful",
+     "default_duration": 4,
+     "implemented": true,
+     "description": "Cannot use skills marked magic."
+    },
+    {
+     "id": "darkness",
+     "name_key": "STATUS_DARKNESS",
+     "category": "harmful",
+     "default_duration": 4,
+     "implemented": true,
+     "description": "Physical hit chance x0.2."
+    },
+    {
+     "id": "petrify",
+     "name_key": "STATUS_PETRIFY",
+     "category": "harmful",
+     "default_duration": -1,
+     "implemented": true,
+     "description": "Turned to stone: off the timeline, untargetable, counts as KO for victory, defeat and XP. Clears other statuses. Until cured."
+    },
+    {
+     "id": "slow",
+     "name_key": "STATUS_SLOW",
+     "category": "harmful",
+     "default_duration": 4,
+     "implemented": true,
+     "description": "Action delay x2."
+    },
+    {
+     "id": "haste",
+     "name_key": "STATUS_HASTE",
+     "category": "beneficial",
+     "default_duration": 4,
+     "implemented": true,
+     "description": "Action delay x0.5."
+    },
+    {
+     "id": "stop",
+     "name_key": "STATUS_STOP",
+     "category": "harmful",
+     "default_duration": 2,
+     "implemented": true,
+     "description": "Loses turns until it wears off."
+    },
+    {
+     "id": "berserk",
+     "name_key": "STATUS_BERSERK",
+     "category": "harmful",
+     "default_duration": -1,
+     "implemented": true,
+     "description": "Not in control: uses its basic attack on a random foe (the provoker if Provoked). Strength x1.5."
+    },
+    {
+     "id": "confuse",
+     "name_key": "STATUS_CONFUSE",
+     "category": "harmful",
+     "default_duration": 3,
+     "implemented": true,
+     "description": "Not in control: uses its basic attack on a random ally (50%) or a random foe. A physical hit snaps it out."
+    },
+    {
+     "id": "doom",
+     "name_key": "STATUS_DOOM",
+     "category": "harmful",
+     "default_duration": 5,
+     "implemented": true,
+     "description": "Counts down on each own turn, lost turns included; KO at the end of the turn that shows 1."
+    },
+    {
+     "id": "zombie",
+     "name_key": "STATUS_ZOMBIE",
+     "category": "harmful",
+     "default_duration": -1,
+     "implemented": true,
+     "description": "Heal skills and Regen deal their amount as damage instead; revival will KO (items, later)."
+    },
+    {
+     "id": "shell",
+     "name_key": "STATUS_SHELL",
+     "category": "beneficial",
+     "default_duration": 4,
+     "implemented": true,
+     "description": "Magical damage x0.5."
+    },
+    {
+     "id": "protect",
+     "name_key": "STATUS_PROTECT",
+     "category": "beneficial",
+     "default_duration": 4,
+     "implemented": true,
+     "description": "Physical damage x0.5."
+    },
+    {
+     "id": "reflect",
+     "name_key": "STATUS_REFLECT",
+     "category": "beneficial",
+     "default_duration": 4,
+     "implemented": true,
+     "description": "Single-target magic aimed at it bounces to the lowest-HP living unit on the other side. No chains."
+    },
+    {
+     "id": "regen",
+     "name_key": "STATUS_REGEN",
+     "category": "beneficial",
+     "default_duration": 4,
+     "implemented": true,
+     "description": "Heals 8% max HP at the end of each own turn."
+    },
+    {
+     "id": "armor_break",
+     "name_key": "STATUS_ARMOR_BREAK",
+     "category": "harmful",
+     "default_duration": -1,
+     "implemented": true,
+     "description": "Defense becomes 0."
+    },
+    {
+     "id": "mental_break",
+     "name_key": "STATUS_MENTAL_BREAK",
+     "category": "harmful",
+     "default_duration": -1,
+     "implemented": true,
+     "description": "Magic defense becomes 0."
+    },
+    {
+     "id": "power_break",
+     "name_key": "STATUS_POWER_BREAK",
+     "category": "harmful",
+     "default_duration": -1,
+     "implemented": true,
+     "description": "Strength halved."
+    },
+    {
+     "id": "magic_break",
+     "name_key": "STATUS_MAGIC_BREAK",
+     "category": "harmful",
+     "default_duration": -1,
+     "implemented": true,
+     "description": "Magic halved."
+    },
+    {
+     "id": "provoke",
+     "name_key": "STATUS_PROVOKE",
+     "category": "harmful",
+     "default_duration": 3,
+     "implemented": true,
+     "description": "Single-foe skills must target the provoker; ends early if the provoker falls or leaves the field."
+    }
+   ],
+   "encounters": [
+    {
+     "id": "fixture_reef",
+     "name_key": "ENC_SANDBOX_REEF",
+     "scripted": false,
+     "enemies": [
+      "reef_crab",
+      "lantern_eel",
+      "gull_harrier"
+     ]
+    }
+   ]
+  },
+  "fixtures": {
+   "player_preview": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022
+   },
+   "swap_menu": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022
+   },
+   "victory": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "overrides": {
+     "enemies": {
+      "reef_crab": {
+       "stats": {
+        "hp": 1,
+        "evasion": 0
+       }
+      },
+      "lantern_eel": {
+       "stats": {
+        "hp": 1,
+        "evasion": 0
+       }
+      },
+      "gull_harrier": {
+       "stats": {
+        "hp": 1,
+        "evasion": 0
+       }
+      }
+     }
+    }
+   },
+   "defeat": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "overrides": {
+     "characters": {
+      "rhen": {
+       "stats": {
+        "hp": 1,
+        "evasion": 0
+       }
+      },
+      "asha": {
+       "stats": {
+        "hp": 1,
+        "evasion": 0
+       }
+      }
+     },
+     "enemies": {
+      "reef_crab": {
+       "stats": {
+        "accuracy": 200
+       }
+      },
+      "lantern_eel": {
+       "stats": {
+        "accuracy": 200
+       }
+      },
+      "gull_harrier": {
+       "stats": {
+        "accuracy": 200
+       }
+      }
+     }
+    }
+   },
+   "statuses": {
+    "active": [
+     "rhen",
+     "asha",
+     "ysolde"
+    ],
+    "reserve": [
+     "toma"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "overrides": {
+     "characters": {
+      "ysolde": {
+       "stats": {
+        "agility": 40
+       }
+      }
+     }
+    },
+    "opening": {
+     "rhen": {
+      "hp": 90,
+      "statuses": [
+       {
+        "id": "doom",
+        "duration": 4
+       },
+       {
+        "id": "zombie",
+        "duration": -1
+       },
+       {
+        "id": "regen",
+        "duration": 4
+       }
+      ]
+     },
+     "asha": {
+      "statuses": [
+       {
+        "id": "petrify",
+        "duration": -1
+       }
+      ]
+     },
+     "lantern_eel#2": {
+      "statuses": [
+       {
+        "id": "reflect",
+        "duration": 4
+       }
+      ]
+     },
+     "ysolde": {
+      "statuses": [
+       {
+        "id": "provoke",
+        "duration": 3
+       }
+      ],
+      "provoked_by": "lantern_eel#2"
+     }
+    }
+   }
+  }
+ }
+}

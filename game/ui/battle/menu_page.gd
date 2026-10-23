@@ -9,6 +9,8 @@ signal row_hovered(index: int)
 signal row_clicked(index: int)
 
 var page_id: StringName = &""
+## Reduced motion (UiSettings): the cursor jumps instead of sliding and the mote does not breathe.
+var reduced_motion := false
 var rows: Array[Dictionary] = []
 var cursor := 0
 
@@ -60,6 +62,7 @@ func setup(metrics: Dictionary, pid: StringName, title: String, page_rows: Array
 	_mote = LampMote.new()
 	_mote.period_sec = HudLayout.num(_m, "breath_sec")
 	_mote.alpha_min = HudLayout.num(_m, "breath_min")
+	_mote.breathing = not reduced_motion
 	var mp := HudLayout.num(_m, "mote_px")
 	_mote.size = Vector2(mp, mp)
 	_content.add_child(_mote)
@@ -208,7 +211,7 @@ func _place_cursor(animate: bool) -> void:
 	var mp := HudLayout.num(_m, "mote_px")
 	var label_x := HudLayout.num(_m, "text_indent")
 	var mote_pos := Vector2(label_x - HudLayout.num(_m, "mote_offset") - mp * 0.5, r.get_center().y - mp * 0.5)
-	if not animate or not is_inside_tree():
+	if not animate or reduced_motion or not is_inside_tree():
 		_cursor_box.position = r.position
 		_cursor_box.size = r.size
 		_mote.position = mote_pos

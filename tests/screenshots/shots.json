@@ -281,6 +281,10 @@
         960,
         540
       ]
+    },
+    {
+      "id": "battle_statuses",
+      "scene": "res://game/battle/scene/shots/battle_statuses.tscn"
     }
   ]
 }

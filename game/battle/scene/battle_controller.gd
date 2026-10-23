@@ -1,12 +1,15 @@
 class_name BattleController
 extends Node3D
-## Glue for the battle sandbox (M1-CMB-01): drives a headless BattleEngine from player input,
-## runs enemy turns with short readable pauses, and feeds the HUD and the 3D stage. It only
-## calls the engine's public API (setup/begin/preview/perform/swap/escape/run_enemy_turn/
-## xp_awards) and listens to its signals; it never writes combatant state itself.
+## Glue for the battle sandbox (M1-CMB-01, M1-UI-02): drives a headless BattleEngine from player
+## input, runs enemy and automatic (Berserk/Confuse) turns with short readable pauses, and feeds
+## the HUD and the 3D stage. It only calls the engine's public API (setup/begin/preview/
+## preview_swap/forced_target/reflect_recipient/perform/swap/escape/run_enemy_turn/xp_awards) and
+## listens to its signals; it never writes combatant state itself.
 ##
 ## Player intent funnels into three public actions (act, swap_members, try_escape) that menus,
 ## tests and capture scripts all use. Time passes only through tick(), so tests can fast-forward.
+## Capture states start from BattleFixture data (battle_fixtures.json), never from the live
+## balance tables, so rebalancing never moves a screenshot baseline.
 
 signal state_changed(new_state: StringName)
 
@@ -21,6 +24,8 @@ const STATE_RESULT := &"result"
 const SCRIPT_PLAYER_PREVIEW := &"player_preview"
 const SCRIPT_SWAP_MENU := &"swap_menu"
 const SCRIPT_VICTORY := &"victory"
+const SCRIPT_DEFEAT := &"defeat"
+const SCRIPT_STATUSES := &"statuses"
 const CHOICE_RETRY := &"retry"
 const CHOICE_RETURN := &"return"
 const RETURN_SCENE := "res://game/core/boot.tscn"
@@ -31,7 +36,7 @@ const RETURN_SCENE := "res://game/core/boot.tscn"
 @export var auto_start := true
 ## 1.0 = readable pacing; 0.0 = instant (tests and captures).
 @export var pacing_scale := 1.0
-## Spawn damage numbers (off for captures so nothing is mid-flight in the frame).
+## Spawn damage numbers, float text and camera shake (off for captures: nothing mid-flight).
 @export var show_damage_numbers := true
 ## Write Lattice gains back to Game.state after a victory.
 @export var persist_progress := true
@@ -43,8 +48,11 @@ var state: StringName = STATE_IDLE
 ## Last victory: id -> {xp, moves}; moves is -1 for a fighter with no Lattice start yet.
 var last_awards: Dictionary = {}
 var battles_started := 0
+## The fixture the current battle started from (null for live data).
+var fixture: BattleFixture
 
 var _db: BattleDB
+var _live_db: BattleDB
 var _setup: Dictionary = {}
 var _pacing: Dictionary = {}
 var _damage_m: Dictionary = {}
@@ -58,6 +66,8 @@ var _candidates: Array[StringName] = []
 var _target_index := 0
 var _swap_in_id: StringName = &""
 var _last_foe: StringName = &""
+## The acting fighter as the action resolved: {id, hp, zombie, regen, doom} (end-of-turn feedback).
+var _turn_snapshot: Dictionary = {}
 
 @onready var stage: BattleStage = %Stage
 @onready var hud: BattleHud = %BattleHud
@@ -68,7 +78,8 @@ func _ready() -> void:
 	_damage_m = HudLayout.section(&"damage")
 	_marker_m = HudLayout.section(&"actor_marker")
 	menus = BattleMenus.new(int(HudLayout.section(&"commands").get("rank_swell_from", Formulas.DEFAULT_RANK)))
-	_db = BattleDB.load_default()
+	_live_db = BattleDB.load_default()
+	_db = _live_db
 	hud.commands.highlighted.connect(_on_menu_highlighted)
 	hud.commands.chosen.connect(_on_menu_chosen)
 	hud.commands.cancelled.connect(_on_menu_cancelled)
@@ -77,7 +88,9 @@ func _ready() -> void:
 		pacing_scale = 0.0
 		show_damage_numbers = false
 		persist_progress = false
-		_run_script.call_deferred()
+		# Captures always render at the default accessibility settings, whatever the host saved.
+		hud.apply_settings(UiSettings.new())
+		run_script.call_deferred()
 	elif auto_start:
 		start_sandbox.call_deferred()
 
@@ -93,11 +106,21 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Starts the configured sandbox fight (battle_sandbox.json) with the saved Lattice progress.
 func start_sandbox(rng_seed: int = -1) -> void:
+	fixture = null
+	_db = _live_db
 	var cfg := BattleStage.config()
 	var active: Array[StringName] = _ids(cfg.get("active", []))
 	var reserve: Array[StringName] = _ids(cfg.get("reserve", []))
 	var s := int(cfg.get("seed", 0)) if rng_seed < 0 else rng_seed
 	start_battle(active, reserve, StringName(str(cfg.get("encounter", ""))), s, _load_progress(active + reserve))
+
+
+## Starts a capture/test fixture (BattleFixture): frozen tables, opening statuses, a fresh
+## (never persisted) Lattice progress.
+func start_fixture(fx: BattleFixture) -> void:
+	fixture = fx
+	_db = fx.db
+	start_battle(fx.active, fx.reserve, fx.encounter, fx.rng_seed, _fresh_progress(fx.active + fx.reserve))
 
 
 func start_battle(
@@ -111,16 +134,19 @@ func start_battle(
 	battles_started += 1
 	last_awards = {}
 	_after_wait = Callable()
+	_turn_snapshot = {}
 	progress = lattice
 	engine = BattleEngine.new()
 	if progress != null:
 		engine.party_modifier = progress.apply_to
 	engine.setup(_db, active, reserve, encounter, rng_seed)
+	if fixture != null:
+		fixture.prepare(engine)
 	engine.action_resolved.connect(_on_action_resolved)
 	stage.spawn(engine)
+	stage.refresh_ko(engine)
 	for c in engine.party_active + engine.party_reserve + engine.enemies:
-		var tint := Color.html(str(BattleStage.stand_in_spec(c.id).get("tint", "#A9B8CC")))
-		hud.timeline.set_identity(c.id, menus.display_name(c), tint)
+		hud.timeline.set_identity(c.id, menus.display_name(c), _tint(c.id))
 	hud.result.visible = false
 	hud.set_combat_ui_visible(true)
 	_rebuild_party_panel()
@@ -154,9 +180,14 @@ func handle_input(event: InputEvent) -> bool:
 
 
 ## Uses `skill_id` on `target_ids` for the current party member. Returns the engine's result.
+## A refused action costs nothing; the help line says why, in words (never the raw reason id).
 func act(skill_id: StringName, target_ids: Array[StringName]) -> ActionResult:
 	if not engine.is_party_turn():
-		return ActionResult.failed(&"", skill_id, &"not_your_turn")
+		var refused := ActionResult.failed(current_actor_id(), skill_id, &"not_your_turn")
+		if engine.is_auto_turn():
+			refused.fail_reason = &"auto_turn"
+		hud.set_help(menus.fail_text(refused.fail_reason, engine.current))
+		return refused
 	var actor := engine.current
 	var targets: Array[BattleCombatant] = []
 	for tid in target_ids:
@@ -166,8 +197,8 @@ func act(skill_id: StringName, target_ids: Array[StringName]) -> ActionResult:
 	var result := engine.perform(skill_id, targets)
 	_clear_targets()
 	if not result.ok:
-		hud.set_help(String(result.fail_reason))
 		_open_command()
+		hud.set_help(menus.fail_text(result.fail_reason, actor, engine.forced_target(actor, skill_id)))
 		return result
 	if targets.size() == 1 and targets[0].team == BattleCombatant.TEAM_ENEMY:
 		_last_foe = targets[0].id
@@ -181,6 +212,8 @@ func swap_members(out_id: StringName, in_id: StringName) -> bool:
 		return false
 	_clear_targets()
 	stage.sync_party(engine)
+	stage.refresh_ko(engine)
+	hud.timeline.set_identity(in_id, menus.display_name(engine.find(in_id)), _tint(in_id))
 	_rebuild_party_panel()
 	_show_timeline(TurnTimeline.MODE_PREVIEW)
 	_open_command()
@@ -221,6 +254,11 @@ func picked_ids() -> Array[StringName]:
 	return [_candidates[_target_index]]
 
 
+## The ids the cursor may move between (one id when Provoke locks it).
+func candidate_ids() -> Array[StringName]:
+	return _candidates.duplicate()
+
+
 func is_waiting() -> bool:
 	return _after_wait.is_valid()
 
@@ -234,41 +272,54 @@ func _next_turn() -> void:
 		hud.commands.visible = false
 		_wait(_pace(&"result_delay_sec"), _show_result)
 		return
-	hud.party.set_current(current_actor_id())
+	var auto := _auto_reason()
+	hud.party.set_current(current_actor_id(), auto)
 	_mark_actor()
 	if engine.is_party_turn():
 		_open_command()
 		return
 	_set_state(STATE_BUSY)
 	hud.commands.visible = false
+	if auto != &"":
+		# Pillar 4: say why the player has no menu, and give them time to read it.
+		hud.set_help(menus.auto_announce(engine.current, auto))
+		_wait(_pace(&"auto_announce_sec"), _run_enemy)
+		return
 	hud.set_help("")
 	_wait(_pace(&"enemy_think_sec"), _run_enemy)
 
 
+## Plays the current enemy turn, or the current automatic (Berserk/Confuse) turn on either side.
 func _run_enemy() -> void:
 	var actor := engine.current
+	var auto := _auto_reason()
 	var result := engine.run_enemy_turn()
-	if result != null and result.ok:
+	if auto != &"":
+		hud.set_help(menus.auto_result(engine, actor, result, auto))
+	elif result != null and result.ok:
 		hud.set_help(
 			tr("HUD_ENEMY_ACTS_FMT").format(
 				{"name": menus.display_name(actor), "skill": menus.skill_name(engine, result.skill_id)}
 			)
 		)
-	_after_action(actor.id)
+	var hold := &"auto_hold_sec" if auto != &"" and actor.team == BattleCombatant.TEAM_PARTY else &"action_hold_sec"
+	_after_action(actor.id, hold)
 
 
-func _after_action(actor_id: StringName) -> void:
+func _after_action(actor_id: StringName, hold: StringName = &"action_hold_sec") -> void:
 	_set_state(STATE_BUSY)
 	hud.commands.active = false
 	hud.commands.visible = false
+	_show_end_of_turn(actor_id)
 	hud.timeline.note_turn_taken(actor_id)
 	_show_timeline(TurnTimeline.MODE_TURN)
 	# The order already shows who is next; the party highlight and actor marker follow it.
-	hud.party.set_current(current_actor_id())
+	hud.party.set_current(current_actor_id(), _auto_reason())
 	hud.target_cursor.show_actor(Vector2.ZERO, false)
+	hud.target_cursor.show_provoker(Vector2.ZERO, false)
 	hud.party.refresh(pacing_scale > 0.0, _pace(&"action_hold_sec") * 0.5)
 	stage.refresh_ko(engine)
-	_wait(_pace(&"action_hold_sec"), _next_turn)
+	_wait(_pace(hold), _next_turn)
 
 
 func _open_command() -> void:
@@ -277,6 +328,7 @@ func _open_command() -> void:
 	hud.commands.visible = true
 	hud.commands.active = true
 	hud.party.set_current(current_actor_id())
+	_mark_provoker()
 	hud.commands.open_root(BattleMenus.PAGE_ROOT, menus.display_name(engine.current), menus.root_rows(engine))
 
 
@@ -327,7 +379,7 @@ func _award_victory() -> Array[Dictionary]:
 				"moves_text": moves_text
 			}
 		)
-	if persist_progress and progress != null:
+	if persist_progress and progress != null and fixture == null:
 		Game.state.lattice = progress.to_dict()
 	return rows
 
@@ -345,8 +397,9 @@ func _on_menu_highlighted(_page: StringName, row: Dictionary) -> void:
 		STATE_SKILLS:
 			_preview_skill(rid, _default_targets(rid))
 		STATE_SWAP_IN:
+			# Hovering a reserve member previews them taking the acting fighter's place.
 			var incoming := engine.find(rid)
-			_show_timeline(TurnTimeline.MODE_PREVIEW)
+			_show_swap_preview(current_actor_id(), rid)
 			hud.set_help(menus.swap_in_help(engine, incoming) if incoming != null else "")
 
 
@@ -416,7 +469,7 @@ func _begin_target(skill_id: StringName) -> void:
 		return
 	_pending_skill = skill_id
 	_group_target = kind.begins_with("all_")
-	_candidates = _ids_of(_candidates_for(kind))
+	_candidates = _ids_of(_candidates_for(skill_id))
 	if _candidates.is_empty():
 		return
 	var preferred := _default_targets(skill_id)
@@ -471,6 +524,7 @@ func _cancel_pick() -> void:
 	_set_state(
 		STATE_SWAP_IN if was == STATE_SWAP_OUT else (STATE_SKILLS if hud.commands.depth() > 1 else STATE_COMMAND)
 	)
+	_mark_provoker()
 	_on_menu_highlighted(hud.commands.page_id(), hud.commands.current_row())
 
 
@@ -478,24 +532,29 @@ func _show_pick() -> void:
 	var ids := picked_ids()
 	var hostile: Array[bool] = []
 	var entries: Array[Dictionary] = []
+	var sk := engine.db.skill(_pending_skill) if state == STATE_TARGET else {}
+	var forced := engine.forced_target(engine.current, _pending_skill) if state == STATE_TARGET else null
+	var chosen: Array[BattleCombatant] = []
 	for cid in ids:
 		var c := engine.find(cid)
 		var foe := c.team == BattleCombatant.TEAM_ENEMY
 		hostile.append(foe)
-		(
-			entries
-			. append(
-				{
-					"id": cid,
-					"label": menus.display_name(c),
-					"group_label": menus.group_label(foe),
-					"screen_pos": stage.screen_pos(cid, HudLayout.num(_marker_m, "head_offset_m")),
-					"hostile": foe,
-					"combatant": c,
-					"revealed": false,
-				}
-			)
-		)
+		var entry := {
+			"id": cid,
+			"label": menus.display_name(c),
+			"group_label": menus.group_label(foe),
+			"screen_pos": _head(cid),
+			"hostile": foe,
+			"combatant": c,
+			"revealed": false,
+			"forced": forced != null and forced == c,
+		}
+		var land := engine.reflect_recipient(engine.current, c, sk) if ids.size() == 1 else c
+		if land != c and land != null:
+			entry["bounce_pos"] = _head(land.id)
+			entry["bounce_id"] = land.id
+		chosen.append(c)
+		entries.append(entry)
 	stage.set_rings(ids, hostile, _color(&"focus"), _color(&"danger"))
 	hud.target_cursor.show_targets(entries)
 	var ally_ids: Array[StringName] = []
@@ -504,13 +563,10 @@ func _show_pick() -> void:
 			ally_ids.append(ids[i])
 	hud.party.set_targeted(ally_ids)
 	if state == STATE_SWAP_OUT:
-		_show_timeline(TurnTimeline.MODE_PREVIEW)
+		_show_swap_preview(_candidates[_target_index], _swap_in_id)
 		hud.set_help(menus.swap_out_help(engine.find(_swap_in_id)))
 		return
-	var targets: Array[BattleCombatant] = []
-	for cid in ids:
-		targets.append(engine.find(cid))
-	_preview_skill(_pending_skill, targets)
+	_preview_skill(_pending_skill, chosen)
 
 
 func _clear_targets() -> void:
@@ -521,26 +577,35 @@ func _clear_targets() -> void:
 	hud.party.set_targeted([])
 
 
-func _candidates_for(kind: String) -> Array[BattleCombatant]:
+## Who the cursor may pick for `skill_id`: the provoker alone while Provoke forces it, otherwise
+## every living foe or ally the skill's reach allows.
+func _candidates_for(skill_id: StringName) -> Array[BattleCombatant]:
+	var kind := str(engine.db.skill(skill_id).get("target", "single_foe"))
+	var forced := engine.forced_target(engine.current, skill_id)
+	if forced != null:
+		var only: Array[BattleCombatant] = [forced]
+		return only
 	if kind.ends_with("foe") or kind.ends_with("foes"):
 		return engine.living_foes_of(engine.current)
 	return engine.living_allies_of(engine.current)
 
 
-## The target a skill starts on: the last foe you hit, the most hurt ally for heals, yourself
-## for other ally skills, or everyone for group skills.
+## The target a skill starts on: the provoker when Provoked, the last foe you hit, the most hurt
+## ally for heals, yourself for other ally skills, or everyone for group skills.
 func _default_targets(skill_id: StringName) -> Array[BattleCombatant]:
 	var sk := engine.db.skill(skill_id)
 	var kind := str(sk.get("target", "single_foe"))
-	var pool := _candidates_for(kind)
+	var pool := _candidates_for(skill_id)
 	var out: Array[BattleCombatant] = []
+	if pool.is_empty() and kind != "self":
+		return out
 	if kind == "self":
 		out.append(engine.current)
 	elif kind.begins_with("all_"):
 		out = pool
 	elif kind == "single_foe":
 		var last := engine.find(_last_foe)
-		out.append(last if last != null and last.is_alive() else pool[0])
+		out.append(last if last != null and last.is_alive() and pool.has(last) else pool[0])
 	elif str(sk.get("kind", "")) == "heal":
 		var best := pool[0]
 		for c in pool:
@@ -555,19 +620,42 @@ func _default_targets(skill_id: StringName) -> Array[BattleCombatant]:
 # --- presentation helpers ----------------------------------------------------------------
 
 
+## Previews `skill_id` on the chosen `targets`. A spell that Reflect would bounce is marked on
+## the timeline where it really lands (engine.preview() already simulates the bounce).
 func _preview_skill(skill_id: StringName, targets: Array[BattleCombatant]) -> void:
-	var single: BattleCombatant = targets[0] if targets.size() == 1 else null
-	var preview := engine.preview(skill_id, single, CtbTimeline.PREVIEW_LENGTH - 1)
-	_show_timeline(TurnTimeline.MODE_PREVIEW, preview, _ids_of(targets))
-	hud.set_help(menus.skill_help(engine, skill_id, _ghost_slot() - 1))
+	var chosen: BattleCombatant = targets[0] if targets.size() == 1 else null
+	var lands := engine.reflect_recipient(engine.current, chosen, engine.db.skill(skill_id))
+	var preview := engine.preview(skill_id, chosen, CtbTimeline.PREVIEW_LENGTH - 1)
+	var marked: Array[BattleCombatant] = targets
+	if lands != chosen:
+		marked = [lands]
+	_show_timeline(TurnTimeline.MODE_PREVIEW, preview, _ids_of(marked))
+	# What changes the outcome (Provoke, Reflect, Zombie) reads before the generic description.
+	var parts := menus.target_notes(engine, skill_id, chosen, lands)
+	parts.append(menus.skill_help(engine, skill_id, _ghost_slot() - 1))
+	hud.set_help(" · ".join(parts))
 
 
-func _show_timeline(mode: StringName, preview: Array[TurnEntry] = [], targets: Array[StringName] = []) -> void:
+## Shows the order exactly as it will stand after swapping `out_id` for `in_id`.
+func _show_swap_preview(out_id: StringName, in_id: StringName) -> void:
+	var after := engine.preview_swap(out_id, in_id)
+	if after.is_empty():
+		_show_timeline(TurnTimeline.MODE_PREVIEW)
+		return
+	var who: Array[StringName] = [out_id, in_id]
+	_show_timeline(TurnTimeline.MODE_PREVIEW, after, who, true)
+
+
+func _show_timeline(
+	mode: StringName, preview: Array[TurnEntry] = [], targets: Array[StringName] = [], full: bool = false
+) -> void:
 	if engine.outcome != &"":
 		return
-	var hostile := not targets.is_empty() and engine.find(targets[0]).team == BattleCombatant.TEAM_ENEMY
+	var marks := targets.duplicate() if not full else ([] as Array[StringName])
+	var hostile := not marks.is_empty() and engine.find(marks[0]).team == BattleCombatant.TEAM_ENEMY
 	var color := _color(&"danger") if hostile else _color(&"focus")
-	hud.timeline.show_turns(current_actor_id(), engine.preview(), preview, targets, color, mode)
+	hud.timeline.caption = menus.turn_caption(_auto_reason())
+	hud.timeline.show_turns(current_actor_id(), engine.preview(), preview, marks, color, mode, full)
 
 
 func _ghost_slot() -> int:
@@ -579,40 +667,109 @@ func _ghost_slot() -> int:
 
 func _mark_actor() -> void:
 	var cid := current_actor_id()
-	var shown := cid != &"" and stage.has_fighter(cid) and engine.is_party_turn()
-	hud.target_cursor.show_actor(stage.screen_pos(cid, HudLayout.num(_marker_m, "head_offset_m")), shown)
+	var shown := cid != &"" and stage.has_fighter(cid) and engine.is_player_side_turn()
+	hud.target_cursor.show_actor(_head(cid), shown, _auto_reason())
+	_mark_provoker()
+
+
+## The Provoke hook hangs over the provoker while the acting party member is Provoked.
+func _mark_provoker() -> void:
+	var provoker: BattleCombatant = null
+	if engine.is_party_turn():
+		provoker = engine.forced_target(engine.current, BattleMenus.ATTACK_SKILL)
+	var shown := provoker != null and stage.has_fighter(provoker.id)
+	hud.target_cursor.show_provoker(_head(provoker.id) if shown else Vector2.ZERO, shown)
+
+
+func _auto_reason() -> StringName:
+	return BattleEngine.auto_reason(engine.current) if engine != null and engine.is_auto_turn() else &""
 
 
 func _rebuild_party_panel() -> void:
 	var labels: Dictionary = {}
+	var tints: Dictionary = {}
 	for c in engine.party_active:
 		labels[c.id] = menus.display_name(c)
-	hud.party.show_members(engine.party_active, labels)
-	hud.party.set_current(current_actor_id())
+		tints[c.id] = _tint(c.id)
+	hud.party.show_members(engine.party_active, labels, tints)
+	hud.party.set_current(current_actor_id(), _auto_reason())
 
 
 func _on_action_resolved(result: ActionResult) -> void:
+	var actor := engine.find(result.actor_id)
+	if actor != null:
+		_turn_snapshot = {
+			"id": actor.id,
+			"hp": actor.hp,
+			"zombie": actor.has_status(&"zombie"),
+			"regen": actor.has_status(&"regen"),
+			"doom": actor.doom_count(),
+		}
+	var kind := str(engine.db.skill(result.skill_id).get("kind", ""))
 	var stacks: Dictionary = {}
+	var heavy := false
 	for hit in result.hits:
 		var tid: StringName = hit["target_id"]
 		var target := engine.find(tid)
 		var f := stage.stand_in(tid)
 		# ActionResult.amount: positive = HP lost, negative = HP restored (BattleEngine._resolve_on).
-		if f != null and int(hit["amount"]) > 0:
+		var amount := int(hit["amount"])
+		if f != null and amount > 0:
 			f.flinch()
+		heavy = heavy or bool(hit.get("crit", false))
 		if not show_damage_numbers or target == null:
 			continue
 		var n := int(stacks.get(tid, 0))
 		stacks[tid] = n + 1
-		var at := stage.screen_pos(tid, HudLayout.num(_damage_m, "head_offset_m"))
+		var at := _head(tid, &"damage")
 		var ally := target.team == BattleCombatant.TEAM_PARTY
-		var amount := int(hit["amount"])
+		if hit.has("reflected_from"):
+			var from := StringName(str(hit["reflected_from"]))
+			hud.pop_info(tr("HUD_FLOAT_REFLECTED"), _head(from, &"damage"), &"focus_gold")
 		if not bool(hit["hit"]):
 			hud.pop_number(tr("HUD_MISS"), at, DamageNumber.KIND_MISS, ally, false, n)
 		elif amount > 0:
 			hud.pop_number(str(amount), at, DamageNumber.KIND_DAMAGE, ally, bool(hit["crit"]), n)
+			if kind == "heal":
+				# Zombie: the heal landed as harm.
+				hud.pop_info(tr("HUD_FLOAT_INVERTED"), at, &"danger")
 		elif amount < 0:
 			hud.pop_number(str(-amount), at, DamageNumber.KIND_HEAL, ally, false, n)
+	if heavy and show_damage_numbers and hud.animations_enabled():
+		stage.shake()
+
+
+## End-of-turn HP changes the ActionResult cannot carry (Poison, Regen, Regen turned to harm by
+## Zombie, and Doom running out), shown on the fighter who just acted.
+func _show_end_of_turn(actor_id: StringName) -> void:
+	var snap := _turn_snapshot
+	_turn_snapshot = {}
+	if not show_damage_numbers or snap.is_empty() or StringName(str(snap["id"])) != actor_id:
+		return
+	var c := engine.find(actor_id)
+	if c == null or not stage.has_fighter(actor_id):
+		return
+	var at := _head(actor_id, &"damage")
+	var ally := c.team == BattleCombatant.TEAM_PARTY
+	if int(snap["doom"]) == 1 and c.hp <= 0:
+		hud.pop_info(tr("HUD_FLOAT_DOOM"), at, &"danger")
+		return
+	var delta := c.hp - int(snap["hp"])
+	if delta < 0:
+		hud.pop_number(str(-delta), at, DamageNumber.KIND_DAMAGE, ally, false)
+		if bool(snap["zombie"]) and bool(snap["regen"]):
+			hud.pop_info(tr("HUD_FLOAT_REGEN_INVERTED"), at, &"danger")
+	elif delta > 0:
+		hud.pop_number(str(delta), at, DamageNumber.KIND_HEAL, ally, false)
+
+
+func _head(cid: StringName, section: StringName = &"actor_marker") -> Vector2:
+	var m := _damage_m if section == &"damage" else _marker_m
+	return stage.screen_pos(cid, HudLayout.num(m, "head_offset_m"))
+
+
+func _tint(cid: StringName) -> Color:
+	return Color.html(str(BattleStage.stand_in_spec(cid).get("tint", "#A9B8CC")))
 
 
 func _wait(sec: float, then: Callable) -> void:
@@ -647,14 +804,20 @@ func _color(role: StringName) -> Color:
 
 
 func _load_progress(ids: Array[StringName]) -> LatticeProgress:
+	if not persist_progress or Game.state.lattice.is_empty():
+		return _fresh_progress(ids)
 	var cfg := BattleStage.config()
 	var board := LatticeBoard.load_board(StringName(str(cfg.get("board", LatticeBoard.DEFAULT_BOARD))))
-	var rules := LatticeRules.load_file()
-	var p: LatticeProgress
-	if persist_progress and not Game.state.lattice.is_empty():
-		p = LatticeProgress.from_dict(Game.state.lattice, board, rules)
-	else:
-		p = LatticeProgress.new(board, rules)
+	var p := LatticeProgress.from_dict(Game.state.lattice, board, LatticeRules.load_file())
+	for cid in ids:
+		p.add_character(cid)
+	return p
+
+
+func _fresh_progress(ids: Array[StringName]) -> LatticeProgress:
+	var cfg := BattleStage.config()
+	var board := LatticeBoard.load_board(StringName(str(cfg.get("board", LatticeBoard.DEFAULT_BOARD))))
+	var p := LatticeProgress.new(board, LatticeRules.load_file())
 	for cid in ids:
 		p.add_character(cid)
 	return p
@@ -677,9 +840,14 @@ static func _ids_of(list: Array[BattleCombatant]) -> Array[StringName]:
 # --- capture scripts (deterministic; see tests/screenshots/shots.json) ---------------------
 
 
-func _run_script() -> void:
-	start_sandbox()
-	match scripted_state:
+## Plays the `scripted_state` fixture to its capture state. Public so tests can drive it.
+func run_script(state_id: StringName = &"") -> void:
+	var sid := state_id if state_id != &"" else scripted_state
+	var fx := BattleFixture.load_fixture(sid)
+	if fx == null:
+		return
+	start_fixture(fx)
+	match sid:
 		SCRIPT_PLAYER_PREVIEW:
 			_script_to_turn_of(&"rhen")
 			_press(&"ui_down")
@@ -693,6 +861,16 @@ func _run_script() -> void:
 			_press(&"ui_accept")
 		SCRIPT_VICTORY:
 			_script_play_to_victory()
+		SCRIPT_DEFEAT:
+			_script_play_naive()
+		SCRIPT_STATUSES:
+			# Ysolde is provoked by the reflecting Lantern Eel: Ember must go at it and bounces
+			# onto Rhen (Doom, Zombie, Regen turned to harm); Asha stands as stone.
+			_script_to_turn_of(&"ysolde")
+			_press(&"ui_down")
+			_press(&"ui_accept")
+			hud.commands.select(&"ember")
+			_press(&"ui_accept")
 
 
 ## Plays (party: Attack the first living foe) until it is `cid`'s turn.
@@ -701,7 +879,7 @@ func _script_to_turn_of(cid: StringName) -> void:
 	while engine.outcome == &"" and current_actor_id() != cid and guard < CtbTimeline.PREVIEW_LENGTH:
 		guard += 1
 		if engine.is_party_turn():
-			act(BattleMenus.ATTACK_SKILL, [engine.living_foes_of(engine.current)[0].id])
+			act(BattleMenus.ATTACK_SKILL, [_default_targets(BattleMenus.ATTACK_SKILL)[0].id])
 
 
 ## The sandbox's "elegant answer" policy: bring Toma in for Asha, then hit the weakest foe.
@@ -719,6 +897,16 @@ func _script_play_to_victory() -> void:
 			if f.hp < weakest.hp:
 				weakest = f
 		act(BattleMenus.ATTACK_SKILL, [weakest.id])
+
+
+## Attack the first living foe until the fight ends.
+func _script_play_naive() -> void:
+	var guard := 0
+	while engine.outcome == &"" and guard < CtbTimeline.PREVIEW_LENGTH * CtbTimeline.PREVIEW_LENGTH:
+		guard += 1
+		if not engine.is_party_turn():
+			break
+		act(BattleMenus.ATTACK_SKILL, [engine.living_foes_of(engine.current)[0].id])
 
 
 func _script_pick(base_id: StringName) -> void:
