@@ -254,6 +254,33 @@
         960,
         540
       ]
+    },
+    {
+      "id": "field_lane_fixed",
+      "scene": "res://game/levels/_tests/field/field_shot_lane.tscn",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "field_court_pan",
+      "scene": "res://game/levels/_tests/field/field_shot_court.tscn",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "field_causeway_dolly",
+      "scene": "res://game/levels/_tests/field/field_shot_causeway.tscn",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
     }
   ]
 }

@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/core/debug/debug_overlay.gd" id="1_overlay"]
+
+[node name="DebugOverlay" type="CanvasLayer"]
+layer = 120
+script = ExtResource("1_overlay")
+
+[node name="Panel" type="PanelContainer" parent="."]
+visible = false
+offset_right = 760.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="Rows" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Panel/Margin/Rows"]
+layout_mode = 2
+
+[node name="Body" type="Label" parent="Panel/Margin/Rows"]
+layout_mode = 2

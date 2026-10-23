@@ -20,5 +20,7 @@ flags = {
 "ch03_first_verse_sung": "Ch3 'The First Verse' has played to the end: Asha sang the first verse toward home.",
 "ch03_drownbell_defeated": "The Drownbell boss is beaten on the Saltgrass Causeway (set by the battle result).",
 "ch03_rhen_sworn_guardian": "On Haluna dock at night Rhen asked to come and Asha said yes: he is her guardian (slice end).",
-"ch02_saved_once": "The player has used Haluna's save shrine at least once (gates the save tutorial prompt)."
+"ch02_saved_once": "The player has used Haluna's save shrine at least once (gates the save tutorial prompt).",
+"field_test_lever_pulled": "Field test zone (game/levels/_tests/field): the lever interactable was used. Tests and the debug flag inspector only; never read by story content.",
+"field_test_causeway_reached": "Field test zone (game/levels/_tests/field): the player touched the causeway gate trigger. Tests only; never read by story content."
 }

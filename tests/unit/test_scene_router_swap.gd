@@ -1,0 +1,137 @@
+extends TestCase
+## M1-RND-06 fix: the SceneRouter swap frame stays under a data-defined threshold
+## (game/data/debug/perf_budgets.json) with headroom below the SPEC §4.2 50 ms budget, and the
+## router's font warmer covers the project theme without ever touching MSDF fonts.
+##
+## The swap is measured in a child Godot process (game/core/debug/scene_swap_probe.tscn): the test
+## runner calls tests synchronously, and a real swap would replace the runner's own scene. Shared
+## CI machines are noisy, so each target gets up to `attempts` runs and passes on the first run
+## under the threshold; every run's numbers are kept in the failure message.
+
+const PROBE_TAG := "SCENE_SWAP_PROBE "
+const GODOT_NAME_HINT := "godot"
+const GODOT_ON_PATH := "godot"
+const GODOT_ENV := "GODOT"
+
+
+func test_budget_data_has_headroom_below_the_spec_budget() -> void:
+	var cfg := SceneSwapProbe.budgets()
+	assert_false(cfg.is_empty(), "perf_budgets.json scene_swap section")
+	assert_true(float(cfg.get("budget_ms", 0.0)) <= SceneRouter.SWAP_BUDGET_MS, "budget may not exceed SPEC §4.2")
+	assert_true(float(cfg.get("test_threshold_ms", INF)) < float(cfg.get("budget_ms", 0.0)), "threshold has headroom")
+	assert_true(int(cfg.get("attempts", 0)) >= 1)
+	assert_true(ResourceLoader.exists(str(cfg.get("probe_scene", ""))), "probe scene exists")
+	for t: Variant in cfg.get("targets", []):
+		assert_true(ResourceLoader.exists(str(t)), "target exists: %s" % t)
+
+
+func test_swap_frame_stays_under_threshold_for_every_target() -> void:
+	var cfg := SceneSwapProbe.budgets()
+	var threshold := float(cfg.get("test_threshold_ms", 0.0))
+	for t: Variant in cfg.get("targets", []):
+		var runs: Array[Dictionary] = []
+		var passed := false
+		for i in int(cfg.get("attempts", 1)):
+			var stats := _probe(str(cfg.get("probe_scene", "")), str(t))
+			runs.append(stats)
+			if stats.is_empty():
+				continue
+			_assert_fix_shape(stats, str(t))
+			if float(stats.get("max_frame_ms", INF)) < threshold:
+				passed = true
+				break
+		var worst: Array[float] = []
+		for r in runs:
+			worst.append(float(r.get("max_frame_ms", -1.0)))
+		assert_true(
+			passed, "%s swap frame >= %.0f ms in every run: %s (last stats %s)" % [t, threshold, worst, runs[-1]]
+		)
+
+
+func test_font_warmer_covers_the_theme_and_skips_msdf() -> void:
+	var theme := ThemeDB.get_project_theme()
+	assert_true(theme != null, "project theme is set (gui/theme/custom)")
+	var pairs := SceneRouter.FontWarmer.theme_pairs(theme)
+	assert_true(pairs.size() > 1, "theme yields several font/size pairs")
+	var sizes: Dictionary = {}
+	for p in pairs:
+		assert_false(SceneRouter.FontWarmer.is_msdf(p["font"] as Font), "MSDF fonts are never warmed")
+		sizes[int(p["size"])] = true
+	assert_true(sizes.has(theme.default_font_size), "theme default size is warmed")
+	for type in theme.get_type_list():
+		for sname in theme.get_font_size_list(type):
+			assert_true(sizes.has(theme.get_font_size(sname, type)), "%s/%s is warmed" % [type, sname])
+
+
+func test_font_warmer_units_are_small_and_cover_the_charset() -> void:
+	var font := SystemFont.new()
+	var pairs: Array[Dictionary] = [{"font": font, "size": 20, "outline": 0}, {"font": font, "size": 30, "outline": 2}]
+	var units := SceneRouter.FontWarmer.units_for(pairs)
+	var charset := SceneRouter.FontWarmer.CHARSET
+	var chunks := ceili(float(charset.length()) / SceneRouter.FontWarmer.CHUNK_CHARS)
+	assert_eq(units.size(), chunks * pairs.size())
+	var joined := ""
+	for u in units:
+		assert_true(String(u["text"]).length() <= SceneRouter.FontWarmer.CHUNK_CHARS)
+		if int(u["size"]) == 20:
+			joined += String(u["text"])
+	assert_eq(joined, charset, "every character is drawn once per pair")
+
+
+func test_msdf_detection_follows_variations() -> void:
+	var file := FontFile.new()
+	file.multichannel_signed_distance_field = true
+	var variation := FontVariation.new()
+	variation.base_font = file
+	assert_true(SceneRouter.FontWarmer.is_msdf(file))
+	assert_true(SceneRouter.FontWarmer.is_msdf(variation))
+	file.multichannel_signed_distance_field = false
+	assert_false(SceneRouter.FontWarmer.is_msdf(variation))
+	var empty: Array[Dictionary] = []
+	assert_eq(SceneRouter.FontWarmer.units_for(empty).size(), 0)
+
+
+func test_router_public_api_is_stable() -> void:
+	assert_true(SceneRouter.has_signal(&"prewarm_requested"))
+	assert_true(SceneRouter.has_signal(&"swap_measured"))
+	assert_true(SceneRouter.has_method(&"change_scene"))
+	assert_true(SceneRouter.has_method(&"is_busy"))
+	assert_false(SceneRouter.is_busy())
+	assert_true(SceneRouter.instantiate_on_thread and SceneRouter.warm_fonts and SceneRouter.split_swap)
+
+
+## The fixed router: instanced off the main thread, fonts warm, and the old scene unloaded and the
+## prewarm stage built in frames before the measured swap window.
+func _assert_fix_shape(stats: Dictionary, target: String) -> void:
+	assert_true(bool(stats.get("instantiated_on_thread", false)), "%s instanced on a worker thread" % target)
+	assert_true(bool(stats.get("fonts_warmed", false)), "%s fonts warmed before the swap" % target)
+	assert_true(stats.has("unload_ms"), "%s old scene unloaded in its own frame" % target)
+	assert_eq((stats.get("frame_ms", []) as Array).size(), SceneRouter.MEASURE_FRAMES)
+
+
+func _probe(probe_scene: String, target: String) -> Dictionary:
+	var output: Array = []
+	var args := PackedStringArray(
+		["--headless", "--path", ProjectSettings.globalize_path("res://"), probe_scene, "--", "--to=" + target]
+	)
+	var code := OS.execute(_godot(), args, output, true)
+	for chunk: Variant in output:
+		for line in str(chunk).split("\n"):
+			if line.begins_with(PROBE_TAG):
+				var parsed: Variant = JSON.parse_string(line.trim_prefix(PROBE_TAG))
+				if parsed is Dictionary:
+					return parsed as Dictionary
+	fail("probe for %s printed no stats (exit %d)" % [target, code])
+	return {}
+
+
+## The binary that runs this test, unless it was started through a loader (the sandbox wrapper
+## execs Godot via ld-linux), in which case $GODOT or `godot` on PATH.
+static func _godot() -> String:
+	var env := OS.get_environment(GODOT_ENV)
+	if env != "":
+		return env
+	var exe := OS.get_executable_path()
+	if exe.get_file().to_lower().contains(GODOT_NAME_HINT):
+		return exe
+	return GODOT_ON_PATH

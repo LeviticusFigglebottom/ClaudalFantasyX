@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "doc": "Field input actions, added to the InputMap at runtime only when project.godot does not define them (FieldInput.ensure_actions). keys: names for OS.find_keycode_from_string. joy_axes: [JoyAxis value, direction] (0 left X, 1 left Y, 2 right X, 3 right Y). joy_buttons: JoyButton values (0 A/cross, 9 left shoulder). Moving these into project.godot is a request to the Lead (docs/kb/tech/field_camera.md).",
+  "actions": {
+    "field_move_left": {"keys": ["A", "Left"], "joy_axes": [[0, -1.0]]},
+    "field_move_right": {"keys": ["D", "Right"], "joy_axes": [[0, 1.0]]},
+    "field_move_forward": {"keys": ["W", "Up"], "joy_axes": [[1, -1.0]]},
+    "field_move_back": {"keys": ["S", "Down"], "joy_axes": [[1, 1.0]]},
+    "field_walk": {"keys": ["Shift"], "joy_buttons": [9]},
+    "field_interact": {"keys": ["E", "Enter", "Space"], "joy_buttons": [0]},
+    "field_camera_left": {"keys": ["Q"], "joy_axes": [[2, -1.0]]},
+    "field_camera_right": {"keys": ["R"], "joy_axes": [[2, 1.0]]}
+  },
+  "deadzone": 0.2
+}
