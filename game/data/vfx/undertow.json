@@ -222,6 +222,19 @@
       "temporal_jitter": true
     }
   },
+  "looks": {
+    "_note": "Named storm looks (UndertowStorm.look): shader uniform -> value, pushed on top of the tunables to every storm material. '#hex' strings are sRGB colours. M1-RND-09.",
+    "day_storm": {
+      "_note": "Daylight storm wall (colour script Ch1 storm / Ch8 'The Seawall'; bible: 'a wall of dark water and cloud lit from within by glimmer'). Albedo toward storm_slate (#3E4A57; lit flanks near its +1 stop), more ambient self-shadow, and a high sun that reaches the lower wall (sun_low_floor / sun_clear_height: the dusk defaults assume a low sun already crossed the outer bands), so a 30-degree afternoon sun reads as a slate wall standing on the sea, not a khaki cumulonimbus or a sandstorm.",
+      "col_albedo": "#66788A",
+      "albedo_gain": 1.0,
+      "sun_extinction": 1.1,
+      "ambient_occlusion": 1.8,
+      "base_darkening": 0.6,
+      "sun_low_floor": 0.45,
+      "sun_clear_height": 0.5
+    }
+  },
   "noise": {
     "_note": "Baked value-noise lattice the raymarched body samples instead of hashing (M1-RND-10): assets_src/vfx/undertow/bake_noise3d.py. texels = the bake's SIZE.",
     "texture": "res://assets/vfx/undertow/undertow_noise3d.png",

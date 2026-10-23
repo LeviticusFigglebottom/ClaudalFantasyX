@@ -1,11 +1,16 @@
+@tool
 class_name UndertowStorm
 extends Node3D
 ## The Undertow: a colossal storm of the unreleased dead (M1-RND-03, SPEC §8.2 item 9).
 ## Docs: docs/kb/tech/undertow.md. Tunables: game/data/vfx/undertow.json. Logic: UndertowState.
 ##
 ## Place one per zone or cutscene. This node marks the point the storm approaches (a village, the
-## Kite); the storm itself sits approach_distance_m away along approach_azimuth_deg. Keep the node
-## unrotated and unscaled: the storm is built in world axes. It builds, under a top-level child:
+## Kite); the storm itself sits approach_distance_m away along approach_azimuth_deg. Its sea level is
+## sea_level() (the zone water's rest plane, or sea_level_y), never the node's Y, so the marker may sit
+## on a headland. Keep the node unrotated and unscaled: the storm is built in world axes.
+## @tool: in the editor it builds at editor_preview_quality (Low shells by default, no raymarch) with
+## its clock stopped, plus a footprint gizmo (eye, wall, funnel, lid and bound circles, eye axis).
+## It builds, under a top-level child:
 ##   Sea     the maelstrom funnel disc (every tier); SeaLid, a depth-only disc that keeps the zone's
 ##           WaterSurface from drawing over the funnel (no rebuild when the storm moves)
 ##   Body    raymarched volume on a proxy cylinder (Medium+), or Shell* lathe shells (Low)
@@ -16,7 +21,8 @@ extends Node3D
 ##   get_time() / set_time(t) / playing / time_scale the storm clock (never TIME)
 ##   set_quality(id) / get_quality() / apply_graphics_settings(gs)
 ##   force_flash(site, start_s)                     time a lightning stroke in a cutscene
-##   storm_center() / sea_height_at(world_xz)       placement and the funnel surface for floaters
+##   storm_center() / sea_level() / sea_height_at(world_xz)   placement and the funnel for floaters
+##   look                                           named look from undertow.json ("day_storm")
 ##   refresh()                                      re-apply after changing tunables at runtime
 
 signal quality_changed(tier: String)
@@ -36,6 +42,9 @@ const PARAM_NOISE_TEX := &"noise_tex"
 const PROXY_SEGMENTS := 48
 ## Sea disc AABB head-room above sea level (m) for the lip and swell.
 const SEA_AABB_TOP_M := 200.0
+const GIZMO_NODE := "EditorFootprint"
+const GIZMO_SEGMENTS := 96
+const GIZMO_COLOR := Color(0.25, 0.88, 0.78)
 
 @export_range(0.0, 1.0, 0.01) var intensity: float = 1.0:
 	set(value):
@@ -59,8 +68,33 @@ const SEA_AABB_TOP_M := 200.0
 	set(value):
 		approach_azimuth_deg = value
 		_place()
-## Graphics preset id ("low" .. "ultra"); empty = undertow.json default_quality.
-@export var quality: String = ""
+## Graphics preset id ("low" .. "ultra"); empty = undertow.json default_quality. Setting it at
+## runtime switches the tier (same as set_quality).
+@export var quality: String = "":
+	set(value):
+		quality = value
+		if is_inside_tree() and not Engine.is_editor_hint() and value != state.get_quality():
+			set_quality(value)
+## Named look from undertow.json "looks" ("" = the tunables): e.g. "day_storm" for daylight shots.
+@export var look: String = "":
+	set(value):
+		look = value
+		state.look = value
+		_push_static()
+## Tier the editor previews (the raymarched tiers are heavy for a viewport that redraws constantly).
+@export var editor_preview_quality: String = "low"
+
+@export_group("Sea level")
+## World Y of the storm's sea surface when it is not taken from `water` (see sea_level()).
+@export var sea_level_y: float = 0.0:
+	set(value):
+		sea_level_y = value
+		_place()
+## Take sea level from the zone `water` (its rest plane, WaterSurface's global Y) when it is set.
+@export var sea_level_from_water: bool = true:
+	set(value):
+		sea_level_from_water = value
+		_place()
 
 @export_group("Clock")
 ## Advance the storm clock in _process. Off = the clock only moves through set_time().
@@ -105,6 +139,13 @@ var _noise_tex: Texture3D
 
 func _ready() -> void:
 	state.time_s = start_time_s
+	if Engine.is_editor_hint():
+		# Preview only: never write the preview tier into the saved `quality`.
+		if not _use_quality(editor_preview_quality):
+			_use_quality(str(state.config.get("default_quality", "")))
+		_build_gizmo()
+		_place()
+		return
 	if not set_quality(quality if quality != "" else str(state.config.get("default_quality", ""))):
 		push_warning("UndertowStorm: unknown quality '%s', using default" % quality)
 		set_quality(str(state.config.get("default_quality", "")))
@@ -112,7 +153,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if playing:
+	if playing and not Engine.is_editor_hint():
 		state.advance(delta)
 	_place()
 	_push_dynamic()
@@ -142,7 +183,16 @@ static func direction_from_azimuth(azimuth_deg: float) -> Vector3:
 ## World position of the eye at sea level.
 func storm_center() -> Vector3:
 	var origin := global_position if is_inside_tree() else position
-	return origin + direction_from_azimuth(approach_azimuth_deg) * approach_distance_m
+	var c := origin + direction_from_azimuth(approach_azimuth_deg) * approach_distance_m
+	return Vector3(c.x, sea_level(), c.z)
+
+
+## World Y of the storm's sea surface: the zone water's rest plane when `water` is set and
+## sea_level_from_water is on, else sea_level_y. Independent of this node's Y.
+func sea_level() -> float:
+	if sea_level_from_water and water != null:
+		return water.global_position.y if water.is_inside_tree() else water.position.y
+	return sea_level_y
 
 
 ## World Y of the maelstrom's rest surface (no swell) at world point (xz.x, xz.y).
@@ -155,13 +205,19 @@ func sea_height_at(world_xz: Vector2) -> float:
 
 
 func set_quality(id: String) -> bool:
-	if not state.set_quality(id):
+	if not _use_quality(id):
 		return false
 	quality = id
+	quality_changed.emit(id)
+	return true
+
+
+func _use_quality(id: String) -> bool:
+	if not state.set_quality(id):
+		return false
 	_build()
 	_push_static()
 	_push_dynamic()
-	quality_changed.emit(id)
 	return true
 
 
@@ -225,7 +281,8 @@ func mood_parameters() -> Dictionary:
 func lid_height() -> float:
 	var s := state.config.get("sea", {}) as Dictionary
 	var ld := state.config.get("lid", {}) as Dictionary
-	var crest := water.waves().amplitude_sum if water != null else 0.0
+	# In the editor `water` is a placeholder (WaterSurface is not @tool): no waves() to ask.
+	var crest := water.waves().amplitude_sum if water != null and not Engine.is_editor_hint() else 0.0
 	return float(s.get("lift_m", 0.0)) + crest + float(ld.get("margin_m", 0.0))
 
 
@@ -312,7 +369,8 @@ func _build() -> void:
 		body.visible = false
 	_build_shells(plan, bound, full_height, str(shaders.get("shell", "")), int(prio.get("shells", 0)))
 	_build_sprays(int(plan["spray_layers"]), str(shaders.get("spray", "")), int(prio.get("spray", 0)))
-	if motes != null and motes.draw_material != null:
+	# In the editor `motes` is a placeholder (GlimmerField is not @tool).
+	if motes != null and not Engine.is_editor_hint() and motes.draw_material != null:
 		motes.draw_material.render_priority = int(prio.get("motes", 0))
 	_built = true
 
@@ -396,6 +454,32 @@ func _push_dynamic() -> void:
 		params[PARAM_SEA_GLOW] = water.sea_glow_energy
 	for m in _active_materials():
 		_set_all(m, params)
+
+
+## Editor-only footprint gizmo under the visuals (internal, so it is never saved with the scene).
+func _build_gizmo() -> void:
+	if visuals == null or visuals.has_node(GIZMO_NODE):
+		return
+	var sea_cfg := state.config.get("sea", {}) as Dictionary
+	var radii := PackedFloat32Array(
+		[
+			state.eye_radius(0.0),
+			state.wall_radius(0.0),
+			float(sea_cfg.get("funnel_radius_m", 0.0)),
+			float(sea_cfg.get("fade_start_m", 0.0)),
+			state.bound_radius(),
+		]
+	)
+	var gizmo := MeshInstance3D.new()
+	gizmo.name = GIZMO_NODE
+	gizmo.mesh = UndertowMeshBuilder.footprint(radii, state.height_now(), GIZMO_SEGMENTS)
+	gizmo.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.albedo_color = GIZMO_COLOR
+	mat.no_depth_test = true
+	gizmo.material_override = mat
+	visuals.add_child(gizmo, false, Node.INTERNAL_MODE_FRONT)
 
 
 ## The baked noise lattice (undertow.json "noise"), loaded once.
