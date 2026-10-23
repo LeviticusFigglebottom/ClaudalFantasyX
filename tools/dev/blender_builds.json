@@ -2,7 +2,7 @@
   "_doc": "Blender asset builds re-verified by tools/dev/verify_blender_builds.py (M1-QA-02, ADR 0005). See docs/kb/qa/blender_builds.md.",
   "blender_version": "5.0.1",
   "blender_deb": "5.0.1+dfsg-5",
-  "_threads": "M1-QA-06: Blender runs with --threads <n>, never the host's CPU count. A job that exports tangents runs single-threaded: Blender's threaded tangent export races (base_body differed run to run at 4 threads, and was stable at 1). Every other job is pinned at 4, the count its committed files were built with (Asha's body bakes change with the thread count). See docs/kb/qa/blender_builds.md.",
+  "_threads": "M1-QA-06: Blender runs with --threads <n>, never the host's CPU count. A job that exports tangents runs single-threaded: Blender's threaded tangent export races (base_body differed run to run at 4 threads, and was stable at 1). Every other job is pinned at 4, the count its committed files were built with (Asha's body bakes change with the thread count). Verified on a 4-vCPU host only (M1-NIT-01). See docs/kb/qa/blender_builds.md.",
   "default_threads": 4,
   "copy_into_sandbox": ["assets_src"],
   "coverage_exempt": [],
@@ -19,6 +19,11 @@
           "assets/characters/base_body/base_body_athletic.glb": ["base_body_athletic.NORMAL", "base_body_athletic.POSITION", "base_body_athletic.TANGENT", "base_body_athletic.indices"],
           "assets/characters/base_body/base_body_heavy.glb": ["base_body_heavy.NORMAL", "base_body_heavy.POSITION", "base_body_heavy.TANGENT", "base_body_heavy.indices"],
           "assets/characters/base_body/base_body_slender.glb": ["base_body_slender.NORMAL", "base_body_slender.POSITION", "base_body_slender.TANGENT", "base_body_slender.indices"]
+        },
+        "rebuilt_sha256": {
+          "assets/characters/base_body/base_body_athletic.glb": "4523ba29c31a5417d2f1b0ce88128cc40abc8dc72200705900d7aca23baeb157",
+          "assets/characters/base_body/base_body_heavy.glb": "58142e2ae261229605d2265ec2834b379d7002721fa52fb05e45504cd8240122",
+          "assets/characters/base_body/base_body_slender.glb": "5da6843023d5109c9bf5738dd74a7fe7dcf3d834db51ddc5155ff91e88f41803"
         }},
       "runs": [
         ["{blender}", "--python", "assets_src/characters/base_body/build.py", "--", "--variant", "slender", "--out", "assets/characters/base_body/base_body_slender.glb"],

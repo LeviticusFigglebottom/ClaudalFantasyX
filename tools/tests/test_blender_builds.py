@@ -223,6 +223,41 @@ class KnownVerdictTest(unittest.TestCase):  # M1-QA-06
             self.assertIn(want, why)
         self.assertFalse(vbb.known_verdict(self.MISMATCH, self.res("build exited 1"), "")[0], "a crash is not the mismatch")
 
+    def test_a_content_pin_sees_a_change_inside_the_same_accessors(self) -> None:  # M1-NIT-01
+        pinned = dict(self.MISMATCH, rebuilt_sha256={"o/a.glb": "a" * 64})
+        same = {"o/a.glb": ["m.POSITION", "m.indices"]}
+        res = self.res(diffs=same)
+        res["files"][0]["rebuilt_sha256"] = "a" * 64
+        self.assertTrue(vbb.known_verdict(pinned, res, "")[0])
+        res["files"][0]["rebuilt_sha256"] = "b" * 64
+        ok, why = vbb.known_verdict(pinned, res, "")
+        self.assertFalse(ok, "same accessors, different bytes: a regression inside POSITION")
+        self.assertIn("rebuilt content changed", why)
+
+    def test_a_single_threaded_mismatch_must_pin_content(self) -> None:  # M1-NIT-01
+        job = {"id": "x", "sources": ["a/**"], "outputs": ["b/*.glb"], "runs": [["{blender}", "--python", "s.py"]]}
+        known = {"task": "T", "why": "w", "kind": "mismatch", "differs": {"b/x.glb": ["m.POSITION"]}}
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "m.json"
+            path.write_text(json.dumps({"jobs": [dict(job, threads=4, expected_failure=known)]}))
+            vbb.load_manifest(path)  # a threaded build is not byte-stable: names only
+            for hashes, want in ((None, "needs 'rebuilt_sha256'"), ({"b/x.glb": "ABC"}, "lowercase hex"),
+                                 ({"b/y.glb": "a" * 64}, "per 'differs' path")):
+                k = dict(known) if hashes is None else dict(known, rebuilt_sha256=hashes)
+                path.write_text(json.dumps({"jobs": [dict(job, threads=1, expected_failure=k)]}))
+                with self.assertRaises(ValueError, msg=hashes) as cm:
+                    vbb.load_manifest(path)
+                self.assertIn(want, str(cm.exception))
+            ok = dict(known, rebuilt_sha256={"b/x.glb": "a" * 64})
+            path.write_text(json.dumps({"jobs": [dict(job, threads=1, expected_failure=ok)]}))
+            vbb.load_manifest(path)
+
+    def test_repo_base_body_pins_its_rebuilt_content(self) -> None:  # M1-NIT-01
+        manifest = vbb.load_manifest()
+        bb = next(j for j in manifest["jobs"] if j["id"] == "base_body")
+        self.assertEqual(vbb.job_threads(bb, manifest), 1)
+        self.assertEqual(set(bb["expected_failure"]["rebuilt_sha256"]), set(bb["expected_failure"]["differs"]))
+
 
 class SelectionTest(unittest.TestCase):
     def test_matches(self) -> None:
