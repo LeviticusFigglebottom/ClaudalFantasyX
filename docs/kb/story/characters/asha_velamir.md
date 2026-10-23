@@ -4,7 +4,7 @@
 **Battle niche:** healer and white mage. She calls the Vowbound.
 
 ## Background
-Asha's mother **Imra Velamir** was the 61st Cantor. Imra hummed her the Velamir family lullaby every night, a tune Asha later lost. She left when Asha was seven and sang the Hush at the Drowned Choir eleven years ago. Asha's father died at sea before she was born. She was raised in Haluna by her mother's sister **Neme**, who mends nets and pretends not to be afraid. Asha has heard the dead since she was four: a faint hum near motes, which she describes as "someone humming in the next room." She was named Cantor at fifteen, when the Order's tide-readers saw the Calm failing early. She has spent three years preparing.
+Asha's mother **Imra Velamir** was the 61st Cantor. Imra hummed her the Velamir family lullaby every night, a tune Asha later lost. She left when Asha was seven and sang the Hush at the Drowned Choir eleven years ago. Weeks after she left, a stranger with a brass lantern on his shoulder walked up Haluna's dock and put Imra's tortoiseshell comb into Asha's hands, because her mother wasn't coming home. He didn't give his name. It was Dace Sallow, whom Imra had gone into the sea for on the Corrow stair ([ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md)). Asha has worn the comb ever since, and she has never forgotten the lantern. Asha's father died at sea before she was born. She was raised in Haluna by her mother's sister **Neme**, who mends nets and pretends not to be afraid. Asha has heard the dead since she was four: a faint hum near motes, which she describes as "someone humming in the next room." She was named Cantor at fifteen, when the Order's tide-readers saw the Calm failing early. She has spent three years preparing.
 
 She knows exactly what a Cantor's pilgrimage ends in, and she has decided to be glad about it, because that is easier for everyone around her. She smiles first so other people don't have to.
 
@@ -23,7 +23,7 @@ She knows exactly what a Cantor's pilgrimage ends in, and she has decided to be 
 - **Cantor vestments:** a layered sea-blue and white wrap-skirt, and a high-collared vest in black lacquered leather with gold-leaf wave figures.
 - **Asymmetry:** the left shoulder is bare. On the right, a single long **verse-sleeve** trails to the knee in white gauze. **One band of embroidery is added for each verse she learns**, so the sleeve fills over the game (a progression note for Character Art: seven states plus the ending, where the sleeve is gone).
 - **Signature prop:** a **lantern-staff** of dark wood taller than she is, hung with small bell-shells and topped by an open-cage lantern. She uses it in the Ebbing and to cast.
-- Hair: black and very long, in a single side braid tied with shell clasps, held by her mother's tortoiseshell comb.
+- Hair: black and very long, in a single side braid tied with shell clasps, held by her mother's tortoiseshell comb (the one the lantern-man brought home).
 - Palette: white, sea-blue, black lacquer, and gold.
 
 ## Battle Tie-in
@@ -31,8 +31,8 @@ She is the steady centre of the team: healing, wards, and revival. Calling a Vow
 
 ## Relationships
 - **Rhen:** he is the only one who treats her as a person rather than a Cantor, at first because he doesn't know better. Love grows from that.
-- **Toma:** her oath-guardian since she was nine and the brother she chose. She worries about him more than about herself.
+- **Toma:** her sworn guardian since she was named at fifteen. Before that he was the Haluna boy who went away to be a soldier and came home on leave with shells for her, and he is the brother she chose ([ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md) (d)). She worries about him more than about herself.
 - **Ysolde:** her tutor. Asha wins her over slowly by refusing to be afraid of her. By the end, the relationship is mother-and-daughter in all but name.
-- **Kerrid:** he guarded her mother. She knows it and he won't speak of it, and she is patient about that.
+- **Kerrid:** "I held a stair for your mother once." She knows that much and he won't speak of the rest until Ch15, and she is patient about that. Then she learns that her mother went down the Fisher Stair at Corrow for a drowning stranger, Rhen's father, and that Kerrid got them both up it, so that Imra could walk on to the Choir ([ADR 0020](../../decisions/0020-kerrid-restaging.md), [ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md)). She touches her comb: "A man with that lantern brought me this. I was seven."
 - **Imra (mother):** the heart of the storm. Asha's goal changes over the game from *follow her* to *free her*.
 - **Sefir:** he knew her mother, and he is kind to her. That kindness makes him dangerous.

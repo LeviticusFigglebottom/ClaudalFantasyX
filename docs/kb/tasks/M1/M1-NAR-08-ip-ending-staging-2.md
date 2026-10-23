@@ -2,9 +2,9 @@
 id: M1-NAR-08
 title: Remaining IP near-miss, ending consistency, staging (review-sweep-C)
 role: narrative
-status: review
+status: done
 reviewer: cinematics
-owner_session: "worktree-agent-ac18e8281253ab668"
+owner_session: "worktree-agent-a62a3327575b9aaf4"
 depends_on: [M1-NAR-05]
 milestone: M1
 request-from: "cinematics"
@@ -43,6 +43,13 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
 - **S4:** E6 is now front three-quarter. The camera sits on the dock looking out to sea, and Asha turns back toward Haluna, ending about 40° off her nose line. The "H10 reversed" wording is fixed in act3_ending, haluna.md and the color script.
 - **S5 and nits:** the "Stay" branch now resolves `offer_hand` (`take_hand`, then `rise_to_stand`) before the walk. "Get up" has a `@wait 0.8` before H05. The E3 lantern is unlit. dlgc compiles cleanly, and the dialogue tests pass (48/48).
 
+**Sweep-E changes (narrative, worktree-agent-a62a3327575b9aaf4, 2026-10-23):** [ADR 0020](../../decisions/0020-kerrid-restaging.md) (`proposed`), N-21 and N-22.
+- **S1 (Kerrid):** 0020 re-stages his backstory (he died at Corrow's Fisher Stair, not the Choir), replaces the promises with a watch, and adds echo rows for the Ch15 confession, Ch16 (no visit to where he died, because he died at Corrow) and the Ending. The order is now **Imra, Dace, then Kerrid last**, so he no longer goes first. act3_ending: rules 2 and 7, the running order, E1–E3 and R2–R4 are rewritten (durations unchanged). Appended notes point 0016 and 0017 at 0020.
+- **S2 (Liss):** re-staged. Her father is Hollowmere's **dock-master**, not a chief, and a council of hull-captains governs Hollowmere. **Tobin volunteered** as the groom and was never an heir. The Kite coming from her people's dry-dock is accepted, with reasons in 0020 (f).
+- **S3 (E6):** she starts side-on across the dock end, looking out to frame left with her left shoulder to camera, and turns about 50° to her left toward Haluna, ending 40° off the lens axis. The same blocking is in act3_ending E6, haluna.md H10 and color_script `ending_dock`.
+- **Nit (hand):** in the Stay branch, Rhen takes the hand right after line 030, before Toma's introduction. The later block is removed. dlgc compiles cleanly, and the Godot dialogue tests pass (48/48).
+- **Nit (E5):** E4 is now 0.07 and E5 holds at 0.06 (interpolated on/off about 1.45×, against 1.3× at 0.04), so the cut to E6's 0.0 is a visible step. This is in act3_ending rule 4 and E5, color script rule 3, `ending_unbinding` and the strip summary. Rendering should confirm it on the mood frame.
+
 ## Review log
 - 2026-10-23 cinematics + IP check (review-sweep-D): **request-changes.** I read ADR 0015, act_outline Ch1–Ending, act3_ending.md, vowbound.md, haluna.md H05/H10/S10, color_script rule 3, and the ch02 .dlg. dlgc compiles, and tools tests give 247 OK.
   - **Blocker B1 (IP): the Act II run after the wedding still follows the inspiring game's sequence, beat for beat.** ADR 0015 checks only Ch11–13. Read in order, act_outline.md:124–142 is:
@@ -67,3 +74,35 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
   - Nit: in the 'Get up' branch, `@anim asha rise_to_stand` is immediately followed by `@camera H05 blend=0.0` (:77–78). If `@anim` doesn't block, H05 opens mid-rise, but haluna.md:167 says she "has risen". Add a `@wait`, or note it for the sequencer.
   - Nit: E3 "the oil wick in his old lantern" (act3_ending.md:93). State that the lantern is unlit, so the farewell stays keyed only by Dace's motes (:83).
   - Done well: Ice is off Cloudloom and the Sanctum. The Ch12–15 no-frost rule is clear (0015:37). The grep finds no stray ice, frost or glacier text in story or art docs, apart from the generic glyphs in ui.md:160 the author already noted. S10's hold and the color script's practical-keyed rule are consistent.
+- 2026-10-23 cinematics + IP check (review-sweep-E): **approve-with-fixes.** I read ADR 0016 (Lead-accepted), act_outline.md Ch9-Ending (:98-207), act3_ending.md §0 and E1-E6, color_script.md:31-47 and :603-624, haluna.md:172, ch02_girl_on_the_beach.dlg:55-100, and the dd051d5, 5b80162 and 35bf109 diffs. dlgc and the tools tests are clean.
+  - **Every sweep-D item is addressed.**
+    - B1: the escape goes out across the lagoon, and no zone is under the city. The wedding has no revenant reveal and no rite. The founding truth comes earlier, on paper in Ch13. The temptation is "go home", and Sefir takes the heart himself in Ch21.
+    - S1: the 0015 order wording is corrected, and the simile is now "silt".
+    - S2: rule 7 (act3_ending.md:18), released at H09 with ascent after, reconciles the stepped glow with SPEC §3.5.
+    - S3: 0.04 is held through E5, with 0.0 only on the cut to E6.
+    - S4: E6 is front three-quarter, with the angle given against her nose line.
+    - S5: the Stay branch resolves the hand (`take_hand`, then both rise) before the walk. The 0.8 s wait and the unlit E3 lantern are in.
+    - With these, the Act II run after the wedding no longer follows the inspiring game's holy-city → beneath-the-city → ruined-city chain.
+  - **Should-fix S1 (IP, cross-cutting; see M1-NAR-09 B1):** ADR 0016 passes Kerrid on staging only (0016:65, :72). The *content* of his confession still follows the inspiring game's dead mentor:
+    - he was killed confronting the man behind the ritual at its last site (kerrid.md:7);
+    - he is kept walking by promises to the heroine's parent and the hero's father (kerrid.md:9; act_outline.md:152 "the promise that kept him walking");
+    - "Kerrid finds the spot where he died" at the ritual site (act_outline.md:158);
+    - he is the first to depart in the finale (act_outline.md:203; kerrid.md Ending).
+
+    Add a Kerrid row to 0016's check that covers these beats, and re-stage or accept each with a reason. For example, Imra goes first and Kerrid goes last, or after Dace.
+  - **Should-fix S2 (IP, unrecorded residual):** Liss is the chief wright's daughter and the younger sister of the flotilla's heir (liss_varrow.md:7). The party reaches her people's haven and her father (act_outline.md:153), and the ship that opens the world is built in that haven's dry-dock (:171-177). In the inspiring game, the outlaw tinkerer girl is the chief's daughter with an elder brother, and the airship comes from her father's people at their home. Ours differs in real ways: the brother dies, the ship is Dace's, and it comes after the Choir. 0016 has no row for it. Record it as accepted with a reason, or change one element (for example, Liss is not the chief's child).
+  - **Should-fix S3 (E6 blocking):** act3_ending.md:102 says "The shot opens with her facing the dark sea, side-on to the lens". But the camera is 4 m shoreward on the dock, looking out to sea. Facing the sea from there, she has her back to the lens, and the two can't both hold. State that she stands across the dock end, facing the sea on one named side, so the turn back to Haluna lands at the stated 40°. Mirror the fix in haluna.md:172 and color_script.md:624.
+  - **Nit:** in the Stay branch, `offer_hand` (.dlg:67) is held across six lines (030-034, then 014/015) before `take_hand` (.dlg:95), through Toma's formal introduction. It reads, but consider taking the hand after 030, or add a comment that she keeps it out on purpose.
+  - **Nit:** color_script.md:47 says E4-E5 fall below 0.08 "because there the glow is meant to fade from sight". At 0.04 the on/off ratio is 1.3× (color_script.md:40), so E5's "nearly dark, but not yet" and E6's full dark may look the same. When the mood frame is built, Rendering should confirm the cut to 0.0 is perceptible, or E5 should hold nearer 0.06.
+- 2026-10-23 cinematics + IP check (review-sweep-F): **approve-with-fixes.** I read ADR 0020, act3_ending.md (all of it), act_outline Ch14-Ending, liss_varrow.md, kerrid.md, color_script.md:31-47 and :590-624, palette.json:161, haluna.md:167 and :172, and ch02_girl_on_the_beach.dlg. validate_data 0/0, tools tests 300 OK, `dlgc --check` 0/0. See M1-NAR-09's sweep-F entry for the whole-story echo pass.
+  - **Every sweep-E item is addressed.**
+    - **S1 (Kerrid):** re-staged, and his ending order is now Imra, Dace, Kerrid last (act3_ending.md:13, :86, :96).
+    - **S2 (Liss):** she is the dock-master's daughter, Tobin volunteered as the groom, and the Kite residual is accepted with reasons (liss_varrow.md:7; 0020 (f)).
+    - **S3 (E6):** the blocking is now geometrically consistent. She faces frame left with her left shoulder to a shoreward camera, so a 50° turn to her left brings her toward the lens and ends 40° off it, a front three-quarter. The same wording is in act3_ending.md:104, haluna.md:172 and color_script.md:624.
+    - **Hand nit:** the hand is taken right after line 030 (.dlg:82-90).
+    - **E5 nit:** 0.07 and 0.06 agree across act3_ending.md:15 and :102 and color_script.md:31, :47, :80 and :603.
+    - The timings still add up: the Ending is 14.5 min, and the family goodbyes take 7.5 min plus 2 min of rests.
+  - **Should-fix S1 (consistency).** palette.json:161 `sea_glow_rule` still says ">= 0.08 once the sun is below -6 deg", with no exception. `ending_unbinding` E4 at 0.07 and E5 at 0.06 are night frames below that (act3_ending.md:15). color_script.md:47 makes the exception, but palette.json doesn't. Add it there (Art owns palette.json, so open a request task) so the frame isn't flagged later.
+  - **Should-fix S2 (consistency, sheet edited in this task).** liss_varrow.md:7 puts her line-marks on her left arm and collarbone. liss_varrow.md:23 sleeves the left arm in mesh and shows the line-marks on the bare right arm, up onto her cheek. Pick one side.
+  - **Nit (E3 light).** Once NAR-09 S5 settles the hue of Kerrid's rope-burn light, state in E3 (act3_ending.md:96) that his hand motes are `glimmer_lift` from H09 on, after rule 1's 1.5 s lerp from held to lift. Then the last farewell can't show cyan, held light after rule 7's single release.
+- 2026-10-23 lead: closing on review-sweep-F approve-with-fixes; the palette sea-glow exception and Liss's arm are in M1-NAR-11.

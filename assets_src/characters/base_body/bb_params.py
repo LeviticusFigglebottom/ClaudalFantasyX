@@ -46,6 +46,18 @@ DEFAULTS: dict[str, float | str] = {
     "ipd_m": 0.063,
     "arm_abduction_deg": 47.0,  # A-pose: arm angle below horizontal
     "skin_hex": "#B08060",
+    # face sculpt sliders (bb_face; asha.md §9.1 "Head"): 1.0 / 0.0 = the neutral base face
+    "eye_tilt_deg": 2.0,  # canthal tilt, outer corner up
+    "canthus_offset_m": 0.0,  # inner canthus moved toward the midline (Asha: 1 mm)
+    "jaw_width": 1.0,
+    "cheekbone_height": 0.0,  # in head heights, + = higher
+    "cheekbone_width": 1.0,
+    "chin_size": 1.0,
+    "nose_bridge_width": 1.0,
+    "nose_tip_projection": 1.0,
+    "lip_fullness": 1.0,
+    "mouth_corner_lift": 0.0,  # metres at the corner (Asha: a slight natural upturn)
+    "brow_ridge": 1.0,
 }
 
 
@@ -218,19 +230,21 @@ class Landmarks:
         # face (absolute, from the head canon: eyes at mid-head, thirds below the brow)
         # Face points are in head units (h) measured from the head centre's Y, so the face scales
         # with the head, not the body.
+        # M1-CHR-02: one consistent profile (bb_face.HeadLoft is built on the same numbers). Eye
+        # centre ~15 mm behind the corneal plane, cornea apex ~10 mm behind the glabella.
         es = float(p["eye_scale"])
-        self.eye_r = 0.0120 * es * (h / 0.226) ** 0.5
+        self.eye_r = 0.0120 * es * (h / 0.222) ** 0.5  # Asha: 13.2 mm (asha.md §1, character_shading.md)
         ipd = float(p["ipd_m"])
         yc = pts["head_c"][1]
-        pts["eye"] = v3(ipd / 2, yc - 0.278 * h, z_chin + 0.535 * h)
-        pts["brow"] = v3(0, yc - 0.425 * h, z_chin + 0.635 * h)
-        pts["nose_tip"] = v3(0, yc - 0.515 * h, z_chin + 0.335 * h)
-        pts["subnasale"] = v3(0, yc - 0.445 * h, z_chin + 0.29 * h)
-        pts["mouth"] = v3(0, yc - 0.432 * h, z_chin + 0.215 * h)
-        pts["ear"] = v3(hw / 2 - 0.004 * S, yc + 0.04 * h, z_chin + 0.47 * h)
-        pts["chin"] = v3(0, yc - 0.36 * h, z_chin)
+        pts["eye"] = v3(ipd / 2, yc - 0.312 * h, z_chin + 0.515 * h)
+        pts["brow"] = v3(0, yc - 0.414 * h, z_chin + 0.58 * h)
+        pts["nose_tip"] = v3(0, yc - 0.476 * h, z_chin + 0.326 * h)
+        pts["subnasale"] = v3(0, yc - 0.40 * h, z_chin + 0.290 * h)
+        pts["mouth"] = v3(0, yc - 0.392 * h, z_chin + 0.205 * h)
+        pts["ear"] = v3(hw / 2 - 0.006 * S, yc + 0.045 * h, z_chin + 0.47 * h)
+        pts["chin"] = v3(0, yc - 0.342 * h, z_chin)
         self.mouth_w = (0.40 - 0.02 * (1 - f)) * hw
-        self.fissure_w = 0.030 * es * (h / 0.226) ** 0.5
+        self.fissure_w = 0.030 * es * (h / 0.222) ** 0.5
 
     def _hand(self, wrist: np.ndarray, axis: np.ndarray, L: float, f: float, S: float) -> Hand:
         axis = unit(axis)

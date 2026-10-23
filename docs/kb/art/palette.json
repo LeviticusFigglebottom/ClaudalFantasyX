@@ -158,7 +158,17 @@
     "shadow_tint_hex": "#0E4A55",
     "never_neutral_black_shadows": true,
     "mote_direction_rule": "rising + warm (glimmer_lift) = released; sideways/down/seaward + cool (glimmer_held) = held",
-    "sea_glow_rule": "sea_glow emission present in every night frame (energy 0.04-0.15; >= 0.08 once the sun is below -6 deg) until ending_dock, where it is 0. Night value order: flames and glimmer cores > moonlit stone > glowing sea > sky. The glowing sea is the brightest WATER value and the frame's teal field: glow on/off >= 1.5x luminance, moonlit stone <= 2.5x the glowing sea (author moon key energy <= 2.5 x sea-glow energy). color_script.md rule 3."
+    "sea_glow_rule": "sea_glow emission present in every night frame (energy 0.04-0.15; >= 0.08 once the sun is below -6 deg, except where sea_glow_night_exceptions names a scene: ending_unbinding E4 0.07 and E5 0.06, fading toward ending_dock on purpose, ADR 0022) until ending_dock, where it is 0. Night value order: flames and glimmer cores > moonlit stone > glowing sea > sky. The glowing sea is the brightest WATER value and the frame's teal field: glow on/off >= 1.5x luminance, moonlit stone <= 2.5x the glowing sea (author moon key energy <= 2.5 x sea-glow energy). color_script.md rule 3.",
+    "sea_glow_energy_floor": 0.04,
+    "sea_glow_energy_ceiling": 0.15,
+    "sea_glow_night_min": 0.08,
+    "sea_glow_night_exceptions": {
+      "ending_unbinding": {
+        "E4": 0.07,
+        "E5": 0.06,
+        "reason": "The Ending's sea-glow steps down toward ending_dock's 0.0. E4 and E5 fall below the night minimum on purpose; E5 holds 0.06 (on/off about 1.45x) so the cut to 0.0 is a visible step. act3_ending.md section 0 rule 4; color_script.md rule 3; ADR 0020, ADR 0022."
+      }
+    }
   },
   "swatches": {
     "sun_noon": {

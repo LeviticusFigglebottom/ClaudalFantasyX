@@ -55,7 +55,7 @@ Examples: agi 10: roll 0 → 300, roll 100 → 200. (Ambush and preemptive modif
 
 **Turn order**: the lowest `next_time` acts. Ties go to higher agility, then to roster order (party slots first, then enemies in encounter order). After acting: `next_time = now + action_delay(...)`.
 
-**Delay** (skills with `delay_ranks`, and delay items): adds `delay_push` ticks to the target's `next_time`, with diminishing returns so no foe can be held forever. `prior` counts the delays the target already took since its last own turn (acted or lost); acting resets it to 0. A `delay_immune` enemy (`enemies.json`, for bosses) takes 0 and its count doesn't grow.
+**Delay** (skills with `delay_ranks`, and delay items): adds `delay_push` ticks to the target's `next_time`, with diminishing returns so no foe can be held forever. `prior` counts the delays the target already took since its last own turn (acted or lost); acting resets it to 0, and so does rejoining the timeline after a KO or stone (revive, petrify cure, or swapping in for a fallen member). A swap-in that takes over a living member's slot takes over its count too, so swapping can't launder diminishing returns. A `delay_immune` enemy (`enemies.json`, for bosses) takes 0 and its count doesn't grow.
 ```
 delay_push(agi, ranks, prior, immune) = immune ? 0 : floor(base_delay(agi) × ranks ÷ 2^min(prior, 16))
 ```
@@ -119,7 +119,7 @@ Every status in SPEC §6.8 is implemented. Durations are in the affected unit's 
 
 | Status | Default | Rule |
 |---|---|---|
-| **Petrify** | −1 (must be −1) | Stone. The unit leaves the timeline, can't be targeted, and **counts as KO** for victory, defeat, swap-in timing and the XP rule (`is_alive()` is false). HP is kept. Petrify clears every other status, and nothing new can be added. It never wears off (stone takes no turns, so the validator forbids a countdown). Only an item whose `cure` lists `petrify` reaches stone; the cured unit rejoins the timeline `action_delay(agi, DEFAULT_RANK)` after now. A petrified member can be swapped out like a KO'd one but can't come back in. |
+| **Petrify** | −1 (must be −1) | Stone. The unit leaves the timeline, can't be targeted, and **counts as KO** for victory, defeat, swap-in timing and the XP rule (`is_alive()` is false). HP is kept. Petrify clears every other status, and nothing new can be added. It never wears off (stone takes no turns, so the validator forbids a countdown). Only an item whose `cure` lists `petrify` reaches stone; the cured unit rejoins the timeline `action_delay(agi, DEFAULT_RANK, speed)` after now, like a revive. A petrified member can be swapped out like a KO'd one but can't come back in. |
 | **Berserk** | −1 | Not in control. Basic attack on a uniformly random living foe, or on the provoker if Provoked. `strength_eff = floor(broken_strength × 3 / 2)`, where `broken_strength` already includes Power Break. Example: 16 → 24; 15 → 22; 16 under Power Break → 8 → 12. |
 | **Confuse** | 3 | Not in control. Roll `randi_range(1, 100) ≤ CONFUSE_ALLY_PCT` (50): on success the target is a uniformly random living **ally other than itself**, otherwise a random living foe (if one side is empty, the other). Provoke is ignored. Taking **physical damage** (> 0) ends Confuse; magic does not. |
 | **Doom** | 5 (must be ≥ 1) | A countdown. It drops by 1 at the end of each own turn, **lost turns included** (Stop can't stall it), and the unit is KO'd at the end of the turn that showed **1**, after Poison/Regen. So Doom *n* gives exactly *n* more turns. A Doom that fells the last enemy is a victory even on a lost turn. |
@@ -139,10 +139,10 @@ heal_hp / restore_mp      = the item's amount, clamped to max (heal goes through
 Examples: revive 25% of 420 → 105; of 301 → 75; of 3 → 1. Item damage 150 vs normal 150, weak 225, resist (151) 75, immune 0, absorb −150 (heals); 20000 → 9999.
 
 - **Revive** targets only the KO'd (HP 0). The revived unit rejoins the timeline `action_delay(agi, DEFAULT_RANK, speed)` after now, the same rule as a swap-in for a KO'd member. Time never runs backwards.
-- **Petrify:** a petrified ally is neither alive nor fallen. Only an item whose `cure` lists `petrify` reaches them (`ItemBattleAction.can_target` / `cures`); none ships yet. The cured unit rejoins `action_delay(agi, DEFAULT_RANK)` after now.
+- **Petrify:** a petrified ally is neither alive nor fallen. Only an item whose `cure` lists `petrify` reaches them (`ItemBattleAction.can_target` / `cures`); none ships yet. The cured unit rejoins `action_delay(agi, DEFAULT_RANK, speed)` after now, the revive rule (`speed` read after all the item's effects).
 - **Zombie:** a revive item may target a *living* Zombie ally and KOs them outright (the hit reports `zombie_felled`). Healing items harm a Zombie by their amount.
 - **Delay** items use `delay_push` (§ Time: diminishing returns, immunity), applied by the engine, not by `ItemBattleAction`. **add_status** items go through wards and the normal status rules. **Drag Net** is rank 3 (was 2): a 2-rank push for a full Attack-length turn, and a second net before the foe acts pushes half as far.
-- **Preview:** `preview_item(item_id, target, items, count)` shows the item's rank, its delay push, the time statuses it adds, a revived ally rejoining, and a felled Zombie leaving.
+- **Preview:** `preview_item(item_id, target, items, count)` shows the item's rank, its delay push, the time statuses it adds, a revived ally rejoining, and a target the item downs leaving: a felled Zombie, or a Zombie a heal item KOs (`BattleEngine.item_downs`, which runs the effects in order on a `sim_copy`; items use no RNG, so it is exact). `item_defeats_party` uses the same rule over every target and the whole active party: it is a defeat only when nobody stands afterwards, so a group revive that fells the last Zombie and revives a fallen ally is not one, and a last foe felled first is a victory.
 - `Formulas.revive_hp` / `item_damage` mirror `ItemBattleAction.revive_hp` / `fixed_damage` (Progression's reference implementation), and a test keeps them equal.
 
 ## Equipment in battle (M1-CMB-06)

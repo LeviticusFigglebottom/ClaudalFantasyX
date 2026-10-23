@@ -2,7 +2,7 @@
 id: M1-ARC-06
 title: Save v4 (party HP/MP/statuses, shrine network, respawn) and return-to-world on load
 role: architect
-status: review
+status: done
 owner_session: architect-stream-6
 reviewer: qa
 depends_on: [M1-ARC-03, M1-PRG-03]
@@ -33,3 +33,10 @@ Combine with M1-PRG-03 (starting gear after load) in one stream to avoid two con
   - Not done here: ADRs are Lead-owned. The cross-role choices (vitals rules, `battle_party_returned`, the unarmed-by-default world return) may want one.
 
 ## Review log
+- 2026-10-23 qa (review-sweep-F, fresh reviewer): **approve-with-fixes.** I read 50bebc7, ffff4a1 and 5c14b46, and the current game_state_data.gd, save_system.gd, game.gd, world_return.gd, world_return_registry.gd, save_shrine.gd, shrine_network.gd, title_menu.gd, title_menu_model.gd, title_save_entry.gd, locations.json and party_rest.json. Checks: validate_data 0/0; `unittest discover -s tools/tests` 300 OK; taskboard --check rc 0; `dlgc --check` 0/0; gdlint and gdformat clean. Godot (own `XDG_DATA_HOME`): `--filter=save` 114/0, `--filter=title` 16/0, `--filter=world_return` 11/0, `--filter=shrine` 16/0. I also ran a probe test (not committed) against `apply_vitals_to`.
+  - **Every AC is met.** v4 schema, migration and the older-migration tests are green. `full_heal` erases HP/MP and cures `shrine_cures` (game_state_data.gd:130-149). `record_vitals` keeps only the carried statuses and drops full members. `apply_vitals_to` runs last, clamps to the battle-time maximum, and a stored `hp: 0` gives a KO'd combatant with no statuses (probe: hp=0, alive=false, statuses {}). The registry is validated, `WorldReturn` is unarmed except in boot, the title menu stops the clock, and shrine attunement and teleport go through the registry. No game/battle core file was touched, so the headless rule holds.
+  - **Should-fix S1: the cross-role requests were never filed as tasks.** The Combat request (compose `Game.vitals_modifier()` into live battles, emit `EventBus.battle_party_returned`, decide what a KO'd active member does at battle start) and the Environment request (Haluna shrine `sets_flag`/`location_id`/`network_id` plus the `ch02/haluna` and `haluna_shrine` rows) exist only in this task's notes. `grep -rl battle_party_returned docs/kb/tasks` finds only this file. Until Combat wires it, `party_vitals` is written by nothing in play, so a shrine "heal" restores nothing real. File both as `role: combat` and `role: environment` request tasks (CLAUDE.md §4).
+  - **Should-fix S2: an unregistered location falls back silently and overwrites `location_id`.** `WorldReturn._on_game_loaded` (world_return.gd:80-87) ignores `resolve()`'s `fallback` flag, and `_travel` (world_return.gd:102) then writes the fallback id (`field_test`) into `Game.state.location_id`. A save made at a location that is not in locations.json yet (Haluna, today), or after a location id is renamed, continues at the test level with no warning, and the next save records `field_test` as its location (the menu then shows the wrong place). `respawn_location_id` survives, so the respawn is not lost. Fix: `push_warning` (or `push_error`) when `fallback` is true, and keep the state's `location_id` unless the travel resolved it.
+  - Nit: `TitleMenu.start_new_game` (title_menu.gd:113-122) replaces `Game.state` and sets SaveSystem's `_new_run` before `go_to` can fail. On failure the title stays up over an empty state. That is harmless today (Continue reloads and clears `_new_run`), but calling `go_to`'s resolve first would avoid it.
+  - Nit: `ShrineNetwork._loaded` (shrine_network.gd:19) holds strong references to shrine nodes. `_exit_tree` unregisters them, so this is fine in play. A shrine freed without entering the tree (a tool) would stay listed.
+- 2026-10-23 lead: closing on review-sweep-F approve-with-fixes; the cross-role requests are filed as M1-CMB-08 and M1-ENV-04, and the Continue fallback as M1-ARC-11.

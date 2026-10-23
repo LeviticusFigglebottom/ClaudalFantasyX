@@ -2,7 +2,9 @@
 """Balancing simulator front end (M1-CMB-05, SPEC §6.9).
 
 Runs tools/balance/sim_main.gd in headless Godot for every suite in
-tools/balance/targets.json, checks each policy's win rate against its band, and writes:
+tools/balance/targets.json, checks each policy's win rate against its band (and, where a
+suite sets `mean_turns_min`, the ease ceiling: a policy that already wins every fight must
+still take at least that many mean turns), and writes:
 
   * docs/kb/design/balance_report.md: a Markdown summary table. Everything below the
     "<!-- tuning-log -->" marker is kept as is, so hand-written tuning notes survive reruns.
@@ -71,20 +73,35 @@ def in_band(win_pct: float, band: list[int] | None) -> bool:
     return band is None or band[0] <= win_pct <= band[1]
 
 
-def band_text(band: list[int] | None) -> str:
-    return "report only" if band is None else f"{band[0]}–{band[1]}%"
+def band_text(band: list[int] | None, turns_min: float | None = None) -> str:
+    text = "report only" if band is None else f"{band[0]}–{band[1]}%"
+    return text if turns_min is None else f"{text}, ≥ {turns_min:g} mean turns"
+
+
+def turns_floor(suite: dict, policy: str) -> float | None:
+    """The suite's ease ceiling for `policy` (targets.json `mean_turns_min`), or None.
+
+    A win rate saturates at 100%, so it can't see a regression that makes a fight easier;
+    the mean fight length can."""
+    floor = suite.get("mean_turns_min", {}).get(policy)
+    return None if floor is None else float(floor)
+
+
+def not_too_easy(mean_turns: float, floor: float | None) -> bool:
+    return floor is None or mean_turns >= floor
 
 
 def summary_rows(suite: dict, results: list[dict]) -> list[dict]:
     rows = []
     for r in results:
         band = suite["bands"][r["policy"]]
+        floor = turns_floor(suite, r["policy"])
         rows.append({
             "suite": suite["id"], "chapter": suite["chapter"], "encounter": suite["encounter"],
             "loadout": suite.get("loadout", "bare"),
             "policy": r["policy"], "n": r["n"], "wins": r["wins"], "win_pct": round(r["win_pct"], 1),
-            "band": band_text(band),
-            "in_band": (in_band(r["win_pct"], band) and r["timeouts"] == 0
+            "band": band_text(band, floor),
+            "in_band": (in_band(r["win_pct"], band) and r["timeouts"] == 0 and not_too_easy(r["mean_turns"], floor)
                         and r["p90_turns"] <= suite.get("p90_turns_max", r["p90_turns"])),
             "timeouts": r["timeouts"], "mean_turns": round(r["mean_turns"], 1), "p90_turns": r["p90_turns"],
             "mean_party_ko": round(r["mean_party_ko"], 2), "mean_items": round(r["mean_items"], 2),

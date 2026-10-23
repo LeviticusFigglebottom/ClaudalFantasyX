@@ -5,7 +5,9 @@ extends RefCounted
 ##
 ## Contract for Combat:
 ## - `target` uses the skill target vocabulary (single_ally, all_allies, single_foe, all_foes,
-##   self). `targets_fallen` is true for revive items: they target KO'd allies ONLY.
+##   self). `targets_fallen` is true for revive items: by life state (can_target) they take
+##   KO'd allies only; in battle BattleEngine.item_can_target also admits a living Zombie,
+##   whom the revive fells (M1-CMB-06).
 ## - `rank` is the CTB action rank of the turn (Formulas.action_delay).
 ## - `effects` run in order on each target. resolve_on() is the reference implementation and is
 ##   deterministic (no RNG): heal_hp {amount}, restore_mp {amount}, cure {statuses},

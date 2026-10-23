@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_hair.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/characters/asha/textures/asha_hair.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/characters/asha/textures/asha_hairflow.png" id="t1"]
+
+[resource]
+resource_name = "hair"
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_hair = ExtResource("t0")
+shader_parameter/tex_hairflow = ExtResource("t1")
+shader_parameter/spec_secondary_intensity = 0.3

@@ -7,9 +7,9 @@ Pure numpy, no bpy. The cage is built as explicit topology:
 * legs: tubes from the crotch loop to the ankle, bridged into a hole on top of a foot tube;
 * arms: tubes from the armhole to the wrist, then a palm tube whose end is consumed by four
   4-sided finger tubes; the thumb grows from a quad on the radial side of the palm;
-* head: a box lattice (front face 12x12) ray-cast onto the head field, with 3x2-cell eye blocks
-  and a 4x2-cell mouth block replaced by concentric loops (lid rim, lid margin, socket) and
-  (lip border, lip contact line, mouth bag); the neck enters through an 8x8 hole underneath.
+* head: bb_head (M1-CHR-02): a landmark-aligned box lattice ray-cast onto the head field, with
+  eye and mouth blocks refilled by concentric face loops (orbicularis oculi / oris, nasolabial,
+  lid margins, lip lines); the neck enters through a 12x4-cell hole underneath.
 
 Every ring vertex is found by ray-casting from a skeleton axis onto that region's own field, so
 the topology is fixed while the shape follows the anatomy. After one Catmull-Clark level the
@@ -22,6 +22,7 @@ import math
 
 import numpy as np
 
+import bb_head
 from bb_anatomy import Body
 from bb_params import Landmarks, unit, v3
 
@@ -30,7 +31,6 @@ N_TORSO = 32
 N_LEG = N_TORSO // 2 + 2  # half the torso ring + the crotch vertex = 18
 N_ARM = 10
 N_FOOT = 12
-HEAD_N = 12
 
 
 # ---------------------------------------------------------------------------------------------
@@ -168,7 +168,8 @@ class Cage:
         a, b = int(a), int(b)
         self.seams.add((min(a, b), max(a, b)))
 
-    def fill_grid(self, loop: Arr, a: int, b: int, reg: str, pin: bool = False, bulge: Arr | None = None) -> Arr:
+    def fill_grid(self, loop: Arr, a: int, b: int, reg: str, pin: bool = False, bulge: Arr | None = None,
+                  freg: str | None = None) -> Arr:
         """Fill a closed loop of 2(a+b) verts with an a x b quad grid (Coons patch)."""
         loop = np.asarray(loop)
         assert len(loop) == 2 * (a + b), (len(loop), a, b)
@@ -201,7 +202,7 @@ class Cage:
                 grid[r, c] = self.add(P, reg, pin)[0]
         for r in range(a):
             for c in range(b):
-                self.quad(grid[r, c], grid[r, c + 1], grid[r + 1, c + 1], grid[r + 1, c], reg)
+                self.quad(grid[r, c], grid[r, c + 1], grid[r + 1, c + 1], grid[r + 1, c], freg or reg)
         return grid
 
 
@@ -211,7 +212,7 @@ class Cage:
 def build_cage(body: Body) -> Cage:
     cg = Cage(body)
     torso = _torso(cg)
-    head_hole = _head(cg)
+    head_hole = bb_head.build_head(cg, cast)
     _neck_to_head(cg, torso, head_hole)
     for side in ("L", "R"):
         wrist_ring = _arm(cg, torso, side)
@@ -342,177 +343,6 @@ def _neck_to_head(cg: Cage, torso: dict, head_hole: Arr) -> None:
     V = cg.V
     j = int(np.argmin(np.linalg.norm(V[hole] - V[mid[16]], axis=1)))
     cg.seam(mid[16], hole[j])
-
-
-def _head(cg: Cage) -> Arr:
-    lm, body = cg.lm, cg.body
-    h, hw = lm.h, lm.head_w
-    yc = lm.P("head_c")[1]
-    zc = lm.P("chin")[2]
-    O = v3(0, yc + 0.02 * h, zc + 0.5 * h)
-    X = np.array([-0.5, -0.435, -0.37, -0.29, -0.215, -0.06, 0, 0.06, 0.215, 0.29, 0.37, 0.435, 0.5]) * hw
-    # align eye block to the eye: x_e - (fissure/2 + margin) .. x_e + ...
-    xe = lm.P("eye")[0]
-    fw = lm.fissure_w
-    X[10] = xe + fw / 2 + 0.006 * lm.S
-    X[7] = max(xe - fw / 2 - 0.006 * lm.S, 0.004)
-    X[8] = xe - fw * 0.18
-    X[9] = xe + fw * 0.2
-    X[11] = 0.5 * (X[10] + hw * 0.5)
-    X[0:6] = -X[12:6:-1]
-    Zf = np.array([0.0, 0.07, 0.135, 0.205, 0.27, 0.335, 0.425, 0.49, 0.535, 0.585, 0.68, 0.80, 0.92])
-    Z = zc + Zf * h
-    Z[8] = lm.P("eye")[2]
-    Z[3] = lm.P("mouth")[2]
-    y_front, y_back = yc - 0.40 * h, yc + 0.47 * h
-    Y = np.linspace(y_front, y_back, HEAD_N + 1)
-    Y[1] = y_front + 0.06 * h
-    n = HEAD_N
-    ids: dict[tuple[int, int, int], int] = {}
-    pts: list[tuple[tuple[int, int, int], Arr]] = []
-    for i in range(n + 1):
-        for j in range(n + 1):
-            for k in range(n + 1):
-                if i in (0, n) or j in (0, n) or k in (0, n):
-                    pts.append(((i, j, k), v3(X[i], Y[j], Z[k])))
-    keys = [p[0] for p in pts]
-    B = np.array([p[1] for p in pts])
-    D = B - O
-    hits = cast(body, "head", np.repeat(O[None, :], len(D), axis=0), D, tmax=0.3, steps=200)
-    vid = cg.add(hits, "head")
-    for key, v in zip(keys, vid):
-        ids[key] = int(v)
-
-    # cells to skip: eyes, mouth on the front face (j == 0); neck hole on the bottom (k == 0)
-    def skip(face: str, a: int, b: int) -> bool:
-        if face == "front":  # a = i (x cell), b = k (z cell)
-            if 7 <= b < 9 and (2 <= a < 5 or 7 <= a < 10):
-                return True
-            if 2 <= b < 4 and 4 <= a < 8:
-                return True
-        if face == "bottom":  # a = i, b = j
-            if 2 <= a < 10 and 4 <= b < 12:
-                return True
-        return False
-
-    faces = []
-    for a in range(n):
-        for b in range(n):
-            # front (y = 0): x = a, z = b
-            if not skip("front", a, b):
-                faces.append((ids[(a, 0, b)], ids[(a + 1, 0, b)], ids[(a + 1, 0, b + 1)], ids[(a, 0, b + 1)]))
-            faces.append((ids[(a, n, b)], ids[(a, n, b + 1)], ids[(a + 1, n, b + 1)], ids[(a + 1, n, b)]))  # back
-            faces.append((ids[(0, a, b)], ids[(0, a, b + 1)], ids[(0, a + 1, b + 1)], ids[(0, a + 1, b)]))  # right
-            faces.append((ids[(n, a, b)], ids[(n, a + 1, b)], ids[(n, a + 1, b + 1)], ids[(n, a, b + 1)]))  # left
-            faces.append((ids[(a, b, n)], ids[(a + 1, b, n)], ids[(a + 1, b + 1, n)], ids[(a, b + 1, n)]))  # top
-            if not skip("bottom", a, b):
-                faces.append((ids[(a, b, 0)], ids[(a, b + 1, 0)], ids[(a + 1, b + 1, 0)], ids[(a + 1, b, 0)]))
-    for q in faces:
-        cg.quad(*q, "head")
-    # back-of-head seam: x = n/2 on the back face, then over the top to the middle
-    mid = n // 2
-    for k in range(0, n):
-        cg.seam(ids[(mid, n, k)], ids[(mid, n, k + 1)])
-    for j in range(n, mid, -1):
-        cg.seam(ids[(mid, j, n)], ids[(mid, j - 1, n)])
-    for j in range(11, 12):
-        cg.seam(ids[(mid, j, 0)], ids[(mid, j + 1, 0)])
-
-    def block_loop(face_cells: tuple[int, int, int, int]) -> list[int]:
-        a0, a1, b0, b1 = face_cells  # x cells a0..a1, z cells b0..b1 (exclusive)
-        loop = [ids[(a, 0, b0)] for a in range(a0, a1 + 1)]
-        loop += [ids[(a1, 0, b)] for b in range(b0 + 1, b1 + 1)]
-        loop += [ids[(a, 0, b1)] for a in range(a1 - 1, a0 - 1, -1)]
-        loop += [ids[(a0, 0, b)] for b in range(b1 - 1, b0, -1)]
-        return loop
-
-    for side, cells in (("R", (2, 5, 7, 9)), ("L", (7, 10, 7, 9))):
-        _eye(cg, np.array(block_loop(cells)), side)
-    _mouth(cg, np.array(block_loop((4, 8, 2, 4))))
-    # neck hole loop on the bottom face: x cells 2..10, y cells 4..12 (touches the back face)
-    a0, a1, b0, b1 = 2, 10, 4, 12
-    hole = [ids[(a, b0, 0)] for a in range(a0, a1 + 1)]
-    hole += [ids[(a1, b, 0)] for b in range(b0 + 1, b1 + 1)]
-    hole += [ids[(a, b1, 0)] for a in range(a1 - 1, a0 - 1, -1)]
-    hole += [ids[(a0, b, 0)] for b in range(b1 - 1, b0, -1)]
-    return np.array(hole)
-
-
-def _almond(lm: Landmarks, side: str, t: Arr) -> tuple[Arr, Arr]:
-    a = lm.fissure_w / 2
-    up = 0.31 * a
-    lo = 0.26 * a
-    u = a * np.cos(t)
-    v = np.where(np.sin(t) > 0, up, lo) * np.sin(t)
-    # upper lid peak sits a little medial, lower lid low point a little lateral
-    v = v * (1 + 0.12 * np.cos(t) * np.sign(np.sin(t)) * -1)
-    # canthal tilt: the outer corner (u > 0 in eye-local space) sits higher
-    vv = v + u * math.tan(math.radians(4.0))
-    return u, vv
-
-
-def _eye(cg: Cage, B: Arr, side: str) -> None:
-    lm = cg.lm
-    E = lm.side_pt("eye", side)
-    R = lm.eye_r + 0.0004
-    V = cg.V
-    sgn = 1.0 if side == "L" else -1.0
-    q = V[B] - E
-    t = np.arctan2(q[:, 2] / 0.5, q[:, 0] * sgn)  # angle around the eye, 0 = outer canthus
-    # canthi exactly at the side midpoints of the block: snap them
-    t = np.unwrap(t)
-    u, v = _almond(lm, side, t)
-    u = u * sgn
-    lid = E + np.stack([u, -np.sqrt(np.maximum(R * R - u * u - v * v, 1e-8)), v], axis=1)
-    rim = 0.45 * V[B] + 0.55 * (E + (lid - E) * 1.25)
-    sock = E + np.stack([u * 0.72, np.full(len(u), -0.35 * R), v * 0.72], axis=1)
-    rim_i = cg.add(rim, "head")
-    lid_i = cg.add(lid, "head", pin=True)
-    sock_i = cg.add(sock, "head", pin=True)
-    cg.bridge(B, rim_i, "head")
-    cg.bridge(rim_i, lid_i, "head")
-    cg.bridge(lid_i, sock_i, "head")
-    cg.seam_loop(lid_i)
-    cap = cg.fill_grid(sock_i, 2, 3, "head", pin=True)
-    for r in range(cap.shape[0]):
-        for c in range(cap.shape[1]):
-            if 0 < r < cap.shape[0] - 1 and 0 < c < cap.shape[1] - 1:
-                i = cap[r, c]
-                cg.set_pos([i], [cg.V[i] + v3(0, 0.25 * R, 0)])
-    cg.groups.setdefault(f"eyelid_{side}", []).extend(lid_i.tolist())
-
-
-def _mouth(cg: Cage, B: Arr) -> None:
-    lm, body = cg.lm, cg.body
-    h = lm.h
-    M = lm.P("mouth")
-    V = cg.V
-    q = V[B] - M
-    t = np.unwrap(np.arctan2(q[:, 2] / 0.45, q[:, 0]))
-    hw = lm.mouth_w / 2
-    u = hw * np.cos(t) * (1 - 0.06 * np.abs(np.sin(t)))
-    v = 0.0007 * np.sin(t) + M[2] - M[2]
-    zz = M[2] + v
-    O = np.stack([u, np.full(len(u), M[1] - 0.06), zz], axis=1)
-    # find the lip surface by marching +Y from in front of the face (first entry)
-    ts = np.linspace(0, 0.12, 241)
-    P = O[:, None, :] + np.array([0, 1.0, 0])[None, None, :] * ts[None, :, None]
-    d = body.sdf(P.reshape(-1, 3), "head").reshape(len(u), -1)
-    j = np.argmax(d < 0, axis=1)
-    y_lip = O[:, 1] + ts[j]
-    line = np.stack([u, y_lip + 0.0025, zz], axis=1)
-    border = 0.5 * V[B] + 0.5 * np.stack([u * 1.04, y_lip - 0.002, M[2] + (V[B][:, 2] - M[2]) * 0.55], axis=1)
-    bag = np.stack([u * 0.75, y_lip + 0.014 * h / 0.226, zz + 0.0 * v], axis=1)
-    bag[:, 2] = M[2] + (zz - M[2]) * 6.0
-    bi = cg.add(border, "head")
-    li = cg.add(line, "head", pin=True)
-    gi = cg.add(bag, "head", pin=True)
-    cg.bridge(B, bi, "head")
-    cg.bridge(bi, li, "head")
-    cg.bridge(li, gi, "head")
-    cg.seam_loop(li)
-    cg.fill_grid(gi, 2, 4, "head", pin=True, bulge=v3(0, 0.01 * h / 0.226, 0))
-    cg.groups["lip_line"] = li.tolist()
 
 
 def _arm(cg: Cage, torso: dict, side: str) -> Arr:
@@ -876,7 +706,7 @@ def catmull_clark(V: Arr, F: Arr, vpin: Arr, seams: set, vreg: list[str]) -> tup
     newV[nv:nv + len(E)][e_pin] = mids[e_pin]
     newV[nv + len(E):][f_pin] = FP[f_pin]
     new_pin = np.concatenate([pin, e_pin, f_pin])
-    new_reg = list(vreg) + [vreg[u] for u, _ in E] + ["face"] * m
+    new_reg = list(vreg) + [vreg[u] for u, _ in E] + [vreg[int(f[0])] for f in F]
     newF = []
     for fi, f in enumerate(F):
         fp = nv + len(E) + fi
@@ -1002,14 +832,21 @@ def generate(params: dict, subdiv: int = 1, log=print) -> dict:
     pin = np.array(cg.vpin)[used]
     reg = [cg.vreg[i] for i in used]
     seams = {(min(remap[a], remap[b]), max(remap[a], remap[b])) for a, b in cg.seams if remap[a] >= 0 and remap[b] >= 0}
-    groups = {k: [int(remap[i]) for i in v if remap[i] >= 0] for k, v in cg.groups.items()}
+    def _remap(v):
+        if v and isinstance(v[0], list):
+            return [_remap(x) for x in v]
+        return [int(remap[i]) for i in v if remap[i] >= 0]
+
+    groups = {k: _remap(v) for k, v in cg.groups.items()}
     cg.groups = groups
     V, F = V0, F0
+    freg = list(cg.freg)
     for _ in range(subdiv):
+        freg = [r for r in freg for _k in range(4)]  # catmull_clark emits 4 quads per face, in order
         V, F, pin, seams, reg = catmull_clark(V, F, pin, seams, reg)
     log(f"subdivided: {len(V)} verts, {len(F)} quads ({time.time() - t0:.1f}s)")
     V = project(body, V, F, pin)
     V[:, 2] = np.maximum(V[:, 2], 0.0)  # soles stand exactly on the ground plane
     log(f"projected ({time.time() - t0:.1f}s)")
     return {"V": V, "F": F, "pin": pin, "seams": seams, "lm": lm, "body": body, "cage_V": V0, "cage_F": F0,
-            "groups": cg.groups, "n_cage_v": len(V0)}
+            "groups": cg.groups, "n_cage_v": len(V0), "reg": reg, "freg": np.array(freg)}

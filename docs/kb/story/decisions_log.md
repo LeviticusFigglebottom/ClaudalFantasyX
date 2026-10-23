@@ -16,7 +16,7 @@ Small canon calls that Narrative owns: answers to other roles' open questions an
   1. In Ch1 the lantern is the right light in the drowned tower against the held cyan motes, which is the player's first lesson in the color language (color script Ch1). If it were bound, that lesson would invert.
   2. Oil is the last light the game shows (color script rule 4, the post-credits lamp). Rhen carrying honest light all game is what that ending rhymes with.
   3. It gives Dace a wordless character note: a wright who could have bound his own lamp and chose not to. Liss reads the housing as Saltwright work in Ch6 and will notice the wick. That's a scene seed.
-  4. Asha's stillness at the lantern in Cutscene A is *recognition* (she saw it on her mother's guardian when she was seven), not her hearing someone inside it. That keeps the Dace mystery human.
+  4. Asha's stillness at the lantern in Cutscene A is *recognition* (she saw it ~~on her mother's guardian~~ when she was seven; **corrected 2026-10-23 by N-23:** on the stranger who brought her mother's comb home to Haluna), not her hearing someone inside it. That keeps the Dace mystery human.
 
 ### N-03. The wake-shell wall stands at the causeway head: confirmed
 - **Answer:** approve Art's placement. The wall at the Haluna end of the Saltgrass Causeway **is** "the shrine wall" of bible §4 (the Pilgrim's Wake). In canon it is the Shell Shrine's *outer wall*, begun on the village side so the names can be visited and washed at any tide (the islet is reachable only at low water). Asha's shell is set there at the Ch4 wake. The Ch2 side scene happens there (H08).
@@ -71,7 +71,7 @@ Small canon calls that Narrative owns: answers to other roles' open questions an
 - **Why:** "Stillness" is the Order's own vocabulary (the Still Water, the Stilling, "Be level. And still."), so the antagonist's dream sounds like his church's creed taken to its end. That is exactly what it is. Updated: bible §11, `characters/sefir_aurane.md`.
 
 ### N-11. The first verse is a Velamir family lullaby, and Dace knew Imra before she was named
-- **Answer:** an earlier Velamir Cantor sang the first verse toward home from the Shell Shrine door, and the women of the line have hummed its tune as a lullaby ever since, without the words. Imra hummed it as a girl, long before she was named. **Dace** met her years before Rhen was born, as a young wright trading salvage along the Low Reaches and putting in at Haluna. He heard her hum it, took the tune home to Oruvel, and hummed it to Rhen every night until he left. That old friendship is also why he went with her as a guardian in 1001. Asha was hummed it every night until she was seven, heard it sung once from the door, and forgot it until Ilun gave it back.
+- **Answer:** an earlier Velamir Cantor sang the first verse toward home from the Shell Shrine door, and the women of the line have hummed its tune as a lullaby ever since, without the words. Imra hummed it as a girl, long before she was named. ~~**Dace** met her~~ **Dace** heard her (**corrected 2026-10-23 by N-23:** he never learned her name) years before Rhen was born, as a young wright trading salvage along the Low Reaches and putting in at Haluna. He heard her hum it, took the tune home to Oruvel, and hummed it to Rhen every night until he left. ~~That old friendship is also why he went with her as a guardian in 1001.~~ (**Withdrawn by N-23:** there was no friendship and no guardianship; they met only on the Corrow stair in 1001.) Asha was hummed it every night until she was seven, heard it sung once from the door, and forgot it until Ilun gave it back.
 - **Why:** N-08 had Dace learn it "on the pilgrimage", but he never came home from that pilgrimage, and he hummed it to Rhen before it. The slice's central reveal depends on this, so it has to hold. Supersedes N-08's last sentence. Updated: bible §6, `characters/rhen_sallow.md`, `characters/asha_velamir.md`, `vowbound.md` §1, and ch03's source comments and line 053.
 
 ### N-12. The Reefball arena: what makes ours ours (a note for the human's call)
@@ -145,3 +145,45 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
   - **The Prologue has no campfire circle.** The seven keep separate vigils, Rhen walks among them and sits beside Asha, and the line comes as his oil wick catches. Ch19 repeats the vigil.
 - **Why:** the audit found these beats followed the inspiring game's opening acts: the cleric introduced at the games, the guardian-captain with the newcomer as star, the coastal assault with forbidden weapons, the monster attacking the pilgrims' boat, and the campfire with the hero walking off to narrate. The other Act I residuals are accepted in the ADR, with reasons.
 - **Supersedes:** N-01's wording "after the Brightwater ferry survives the Spar-Wraith". The band is still earned on the Ch4 crossing, and is still inked by Toma and shown from Ch5. It also supersedes N-12's "the veteran's empty benches": the Ch7 side scene is now Tavi asking Asha to bless Oruvel's empty moorings under the Bell, by the same naming rite. N-12's arena notes are otherwise unchanged.
+
+---
+
+## 2026-10-23 (narrative, M1-NAR-09 and M1-NAR-08): review-sweep-E fixes
+
+### N-21. Kerrid is re-staged; the Ending order is Imra, Dace, Kerrid; the Prologue line is replaced (ADR 0020)
+- **Answer:** [ADR 0020](../decisions/0020-kerrid-restaging.md), ~~proposed for Lead sign-off~~ **accepted by the Lead 2026-10-23** (noted in N-23).
+  - **Kerrid was never a guardian.** He was the ~~Stillguard captain of the Corrow wall~~ captain of Corrow's fisher stair-watch (**corrected by N-23**). In 1001 AL ~~Imra and Dace were his guests for eight days~~ he walked Imra to Coilspire and drank with his hired diver Dace for the same eight days (**corrected by N-23**; they were strangers) during the Coilspire trial. When the Undertow came he held the Fisher Stair open, got them both up, and was taken by the sea at its foot holding the hand-line. Dace reached back for him and missed. He never went to the Choir and never fought Sefir.
+  - **What keeps him is a watch, not a promise:** the stair-law "first down the stair, last up it". There are no promises to watch Asha or raise Rhen, and he never sought either child. He met the pilgrimage at Pemakar on his way to Corrow.
+  - **Face:** bare and weathered, both eyes clear, no mask. His scars are rope-burns on his hands and forearms (his death-wounds), and the left forearm is wrapped.
+  - **Ch5** line: "I held a stair for your mother once." **Ch8:** he works the stair's foot, and a fishwife says "Captain?". **Ch15:** the confession is about Corrow. **Ch16:** no visit to where he died; he walks last on the Rim, and at the Choir says "I carried her up so you could do this."
+  - **Ending:** E1 Imra, E2 Dace, E3 Kerrid last ("Stair's clear." then "Stand up straight. Your father slouched."). The rests are R2 hands, R3 where his father stood, R4 the empty place. Durations are unchanged.
+  - **Prologue line** (the human's approval, relayed by the Lead): **"Everyone I'm going to tell you about is still here tonight. Remember that, later."** The SPEC amendment is the Lead's.
+- **Why:** sweep E found Kerrid's backstory followed the inspiring game's dead mentor point for point: guardian beside the hero's father, killed confronting the man responsible at the ritual's end, two promises about the children, the face cues, the return to where he died, and departing first.
+- **Supersedes:** N-16's placement of Kerrid's shadow cue in E1 (it is now E3) and N-19's "E3" lantern note (Dace is now E2). ADR 0017's acceptance of the old Prologue line.
+
+### N-22. Sweep-E residuals and staging
+- **Ch7:** the newcomer filling a small island side's empty place is an accepted residual. **Oruvel's side does not win the cup:** win or lose its opening round, Tavi withdraws the side to go home and search Oruvel, and Tamsule's own side wins offscreen.
+- **Ch6:** Sefir's "I knelt beside your mother" is accepted, with reasons in ADR 0020 (i).
+- **Ch9:** the act break is "at the Iskarra vigil" (there is no fire, ADR 0017).
+- **Liss:** her father is Hollowmere's **dock-master**, not a chief, and Hollowmere is governed by a council of hull-captains. **Tobin volunteered** as the groom and was never an heir. The Kite coming from her people's dry-dock is an accepted residual.
+- **E6 blocking:** Asha starts side-on across the dock end, looking out to frame left with her left shoulder to camera, and turns about 50° to her left toward Haluna, ending 40° off the lens axis.
+- **E5 sea-glow:** E4 0.07 and E5 0.06 held (were 0.06 and 0.04), so E5 still reads as glow and the cut to E6's 0.0 is visible. Rendering to confirm.
+- **ch02 Stay branch:** Rhen takes Asha's hand right after her line 030, so she doesn't hold it out through Toma's introduction.
+
+---
+
+## 2026-10-23 (narrative, M1-NAR-11): review-sweep-F fixes
+
+### N-23. Dace and Imra are strangers until the Corrow stair; Kerrid is a fisher-watch captain; the sweep-F residuals (ADR 0022)
+- **Answer:** [ADR 0022](../decisions/0022-dace-imra-strangers-sweep-f.md), proposed for Lead sign-off. The decision that Dace is not Imra's guardian is the Lead's.
+  - **Dace was never Imra's guardian and never walked her road.** He heard her hum the lullaby on Haluna's dock as a girl and never learned her name. In 1001 he was Kerrid's hired diver at Corrow while she was there for the Coilspire trial, and they never met. In the storm she went down the Fisher Stair into the sea for him, and Kerrid died holding the stair for them both. She gave him her comb to carry home to Asha. He began a hull at Hollowmere and sailed into the storm after her, to repay the debt: first down the stair.
+  - **Kerrid** was the captain of Corrow's conscripted fisher **stair-watch**, never a Stillguard officer. He has no rank, title or fame, and there is no "Hero of Corrow". The stair-law and "Stair's clear." are the watch's. Only Corrow's old watch knows his face. Sefir sees what he is, not who.
+  - **Toma** was at Ansedra 997–1002 and on the Corrow wall 1002–1009. He was sworn as Asha's guardian at her naming, at fifteen.
+  - **Ch9:** Kerrid is bringing up the drowned at the stair foot during the Ebbing (a practical cause, and the tell is dropped). At dawn: "Somebody's still below."
+  - **Light:** the rope-burns are `glimmer_held`, from Ch10 on, never in Ch5 or Ch8. They lerp to lift at H09.
+  - **E2:** Dace sees Kerrid; one shake of the head; no words.
+  - **Accepted, with reasons in the ADR:** Sefir and Kesh as the founding couple; Rhen's recognition of the first verse in Ch3.
+  - **Liss's** line-marks are on her right arm. The palette's night sea-glow minimum has an explicit Ending exception (E4 0.07, E5 0.06), tested.
+  - **ADR 0020 was accepted by the Lead on 2026-10-23** (N-21 is marked).
+- **Why:** sweep F found Dace's guardianship to be the largest remaining echo (the Lead's call), and Kerrid's new fame to be an echo of the mentor whose name precedes him. It also left consistency gaps in Toma's timeline, Kerrid's face, his reason to stay, and his light.
+- **Supersedes:** N-02 item 4's "her mother's guardian"; N-11's "Dace met her" and "why he went with her as a guardian"; N-21's "Stillguard captain" and "guests for eight days" (each marked inline).

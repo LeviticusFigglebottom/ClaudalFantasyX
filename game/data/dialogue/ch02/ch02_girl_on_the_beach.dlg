@@ -6,8 +6,8 @@
 // H05 is Rhen's POV and follows his eye: lying, sitting, or standing in the "Get up" branch (N-17).
 // Light rule: the motes that came ashore with Rhen are HELD (glimmer_held: cool cyan, drifting
 // sideways and down toward the water). Nothing rises in this scene. The first rising light is Ch3.
-// Asha's stillness is recognition: she saw this lantern on her mother's guardian when she was seven.
-// She never says so here. Do not stage it as hearing a voice in the lantern (it burns oil).
+// Asha's stillness is recognition: at seven she saw this lantern on the stranger who brought her
+// mother's comb home (ADR 0022). She never says so. Not a voice in the lantern (it burns oil).
 title: ch02_girl_on_the_beach
 location: ch02/haluna
 grade: ch02
@@ -79,6 +79,15 @@ Toma [sad]: She woke the house before light. We came down so they would not come
     @wait 0.8
     @camera H05 blend=0.0
 Asha [soft_smile]: I'm Asha. That's Toma. He's nicer than his spear. #line:ch02_beach_030
+<<if $ch02_rhen_stayed_with_dead>>
+    // Stay branch (decisions_log N-19, N-22): he takes the hand she offered as soon as she has
+    // named herself, so she isn't holding it out through Toma's introduction. They rise together,
+    // and H05 (Rhen's POV, haluna.md H05) rises with his eye.
+    @anim rhen take_hand asha
+    @anim rhen rise_to_stand
+    @anim asha rise_to_stand
+    @wait 1.2
+<<endif>>
 Toma [neutral]: Toma Okeru, of Haluna. You are speaking to the Lady— #line:ch02_beach_031
 Asha [smile]: To Asha. Who is very glad you aren't dead. #line:ch02_beach_032
 Rhen [surprised]: Lady what? #line:ch02_beach_033
@@ -88,14 +97,6 @@ Asha [soft_smile]: Later. You're shaking. #line:ch02_beach_034
     Asha [tender]: Come up to the village. Bring your father's light. You'll eat first, and then we'll tell you what we know. #line:ch02_beach_014
 <<else>>
     Asha [tender]: Come up to the village. You'll eat first, and then we'll tell you what we know. #line:ch02_beach_015
-<<endif>>
-<<if $ch02_rhen_stayed_with_dead>>
-    // Stay branch (decisions_log N-19): he takes the hand she offered and they rise together
-    // on H05, so he is standing before the cut to the walk.
-    @anim rhen take_hand asha
-    @anim rhen rise_to_stand
-    @anim asha rise_to_stand
-    @wait 1.2
 <<endif>>
 @camera H01 blend=0.0 grade=ch02
 @mark asha beach_path walk

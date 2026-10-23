@@ -153,6 +153,17 @@ func test_grant_starting_replaces_a_vanished_weapon() -> void:
 	assert_eq(bag.base_of(bag.equipped(&"asha", ItemDB.SLOT_WEAPON)), &"asha_vigil_staff")
 
 
+## M1-ARC-11 (review-sweep-F nit on M1-PRG-03): a slot holding a piece the hero cannot wear is not
+## "filled"; grant_starting gives them a proper one (a save like this is also rejected on load).
+func test_grant_starting_replaces_another_heros_weapon() -> void:
+	var staff := {"base": "asha_vigil_staff", "abilities": []}
+	var bag := EquipmentBag.new(db, {"next_uid": 2, "owned": {"1": staff}, "loadout": {"rhen": {"weapon": 1}}})
+	assert_ne(bag.loadout_problem(), "", "rhen wears asha's staff")
+	assert_true(bag.grant_starting(&"rhen"))
+	assert_eq(bag.base_of(bag.equipped(&"rhen", ItemDB.SLOT_WEAPON)), &"rhen_salvage_hooks")
+	assert_eq(bag.loadout_problem(), "", "the loadout is one equip() could make again")
+
+
 func test_party_goods_ensures_gear_for_joined_members_only() -> void:
 	var st := GameStateData.new()
 	st.party_ids = [&"rhen", &"asha"] as Array[StringName]

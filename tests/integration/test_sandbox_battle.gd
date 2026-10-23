@@ -11,6 +11,10 @@ const SWAP_MIN_WIN_PCT := 70
 const SIM_SEEDS := 200
 const SIM_NAIVE_MIN_WIN_PCT := 1
 const SIM_ROLE_ANSWER_MIN_WIN_PCT := 85
+const SIM_SMART_MIN_WIN_PCT := 85
+## The ease ceiling (tools/balance/targets.json `mean_turns_min`, M1-CMB-07): smart wins every
+## seed, so only a shorter fight can show that the sandbox got easier.
+const SIM_SMART_MIN_MEAN_TURNS := 16.0
 
 
 func test_real_data_loads() -> void:
@@ -88,6 +92,19 @@ func test_sim_bands_naive_rarely_wins_role_answer_does() -> void:
 	assert_true(answer_pct >= SIM_ROLE_ANSWER_MIN_WIN_PCT, "role answer wins %.1f%%" % answer_pct)
 	assert_eq(naive["timeouts"], 0)
 	assert_eq(answer["timeouts"], 0)
+
+
+func test_sim_smart_band_has_an_ease_ceiling() -> void:
+	var sim := BattleSim.new()
+	var active: Array[StringName] = [&"rhen", &"asha"]
+	var reserve: Array[StringName] = [&"toma", &"ysolde"]
+	var kit := sim.loadout(&"m1_starting")
+	var smart := sim.run_many(&"sandbox_reef", active, reserve, &"smart", SIM_SEEDS, 1, Callable(), kit)
+	var win_pct: float = smart["win_pct"]
+	var mean_turns: float = smart["mean_turns"]
+	assert_true(win_pct >= SIM_SMART_MIN_WIN_PCT, "smart wins %.1f%%" % win_pct)
+	assert_true(mean_turns >= SIM_SMART_MIN_MEAN_TURNS, "smart takes %.1f mean turns" % mean_turns)
+	assert_eq(smart["timeouts"], 0)
 
 
 func test_sim_is_deterministic_and_counts() -> void:

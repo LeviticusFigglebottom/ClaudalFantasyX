@@ -242,9 +242,9 @@ func use_item(item_id: StringName, targets: Array[BattleCombatant], items: Battl
 	return result
 
 
-## Whether `item` may target `c`: the item's own life-state rule (revives take the KO'd only),
-## plus a living Zombie for revive items, whom revival fells. A petrified ally is neither alive
-## nor fallen, so no item reaches them.
+## Whether `item` may target `c`: the item's own life-state rule (revives take the KO'd;
+## stone only takes an item whose cure lists petrify), plus a living Zombie for revive items,
+## whom revival fells.
 static func item_can_target(item: ItemBattleAction, c: BattleCombatant) -> bool:
 	if item.targets_fallen and c.is_alive() and c.has_status(&"zombie"):
 		return true
@@ -257,10 +257,27 @@ static func item_fells(item: ItemBattleAction, c: BattleCombatant) -> bool:
 	return item.targets_fallen and c.is_alive()
 
 
-## Whether the current party member using `item_id` on `targets` would lose the battle on the
-## spot: every living active ally would be felled by it (M1-UI-04: a Zombie reviving itself
-## while it is the last one standing). Read-only; filters targets exactly as use_item() does,
-## and "living" is _check_outcome's rule (stone counts as down). False if the use is refused.
+## Whether `c` (a target item_can_target admits) is_alive right after `item` resolves on it, as
+## _resolve_item_on plays it: the effects run in order on a sim_copy (items use no RNG).
+static func item_leaves_standing(item: ItemBattleAction, c: BattleCombatant) -> bool:
+	if item_fells(item, c):
+		return false
+	var probe := c.sim_copy()
+	_without_delay(item).resolve_on(probe)
+	return probe.is_alive()
+
+
+## Whether `item` takes a standing `c` out of the fight: felled as a Zombie by a revive, KO'd
+## by a heal on a Zombie or by damage, or turned to stone. preview_item drops such a unit.
+static func item_downs(item: ItemBattleAction, c: BattleCombatant) -> bool:
+	return c.is_alive() and not item_leaves_standing(item, c)
+
+
+## Whether the current party member using `item_id` on `targets` would lose on the spot: no
+## active member stands once it resolves (a Zombie reviving or healing itself to a KO as the
+## last one standing; a group revive that also brings someone back is not a defeat). The last
+## foe falling wins first, as in _check_outcome. Read-only; filters targets as use_item() does;
+## stone counts as down. False if the use is refused.
 func item_defeats_party(item_id: StringName, targets: Array[BattleCombatant], items: BattleItemSource) -> bool:
 	if items == null or not is_party_turn():
 		return false
@@ -268,17 +285,24 @@ func item_defeats_party(item_id: StringName, targets: Array[BattleCombatant], it
 	if action == null or items.count(item_id) <= 0:
 		return false
 	var hit := _valid_item_targets(current, action, targets)
-	var standing := _living(party_active)
-	if hit.is_empty() or standing.is_empty():
+	if hit.is_empty():
 		return false
-	for c in standing:
-		if not hit.has(c) or not item_fells(action, c):
-			return false
-	return true
+	for e in enemies:
+		if _standing_after(action, hit, e):
+			for c in party_active:
+				if _standing_after(action, hit, c):
+					return false
+			return true
+	return false  # the last foe falls first: victory
+
+
+func _standing_after(action: ItemBattleAction, hit: Array[BattleCombatant], c: BattleCombatant) -> bool:
+	return item_leaves_standing(action, c) if hit.has(c) else c.is_alive()
 
 
 ## Timeline if the current actor used `item_id` on `target`: the item's rank, its delay push,
-## time statuses it adds, a revived ally rejoining, and a revived Zombie falling.
+## time statuses it adds, a revived ally rejoining, and a target the item downs (item_downs: a
+## revived Zombie, or a Zombie a heal item KOs) leaving the order.
 func preview_item(
 	item_id: StringName, target: BattleCombatant, items: BattleItemSource, count: int = CtbTimeline.PREVIEW_LENGTH
 ) -> Array[TurnEntry]:
@@ -311,11 +335,11 @@ func preview_item(
 					elif recipient.has_status(&"sleep") and (eff.get("statuses", []) as Array).has("sleep"):
 						mine[CtbTimeline.WAKES] = 0
 				ItemBattleAction.EFFECT_REVIVE:
-					if recipient.is_alive():
-						mine[CtbTimeline.FALLS] = -1
-					else:
+					if recipient.hp <= 0:
 						revived.append(recipient)
 						overrides[recipient] = _rejoin_time(recipient)
+		if item_downs(action, recipient):
+			mine[CtbTimeline.FALLS] = -1
 		changes[recipient] = mine
 	return timeline.predict(count, current, action.rank, recipient, delay, changes, overrides, revived)
 
@@ -342,8 +366,9 @@ func _valid_item_targets(
 	return out
 
 
-## One item hit. A revive on a living Zombie fells it; a real revive rejoins the timeline a
-## default-rank delay from now (time never runs backwards, as for a swap-in).
+## One item hit. A revive on a living Zombie fells it; a real revive or a petrify cure rejoins
+## the timeline at _rejoin_time (time never runs backwards, as for a swap-in) with a fresh
+## delay count (formulas.md § Time).
 func _resolve_item_on(action: ItemBattleAction, t: BattleCombatant) -> Dictionary:
 	if item_fells(action, t):
 		var before := t.hp
@@ -361,6 +386,7 @@ func _resolve_item_on(action: ItemBattleAction, t: BattleCombatant) -> Dictionar
 		res["delay_ticks"] = push_delay(t, ranks)
 	if bool(res["revived"]) or was_stone and t.is_alive():
 		t.next_time = _rejoin_time(t)  # back from KO or stone: never before now
+		t.delays_taken = 0
 		t.participated = true
 	return res
 
@@ -535,6 +561,8 @@ func swap(out_id: StringName, in_id: StringName) -> bool:
 	var leaving := party_active[out_idx]
 	var entering := party_reserve[in_idx]
 	entering.next_time = _swap_in_time(leaving, entering)
+	# A living leaver hands over its slot, delays included; replacing the fallen starts fresh.
+	entering.delays_taken = leaving.delays_taken if leaving.is_alive() else 0
 	entering.participated = true
 	party_active[out_idx] = entering
 	party_reserve[in_idx] = leaving
