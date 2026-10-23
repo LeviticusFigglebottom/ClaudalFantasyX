@@ -199,7 +199,10 @@ def lashes(fr, thickness: float, upper: bool, n: int = 14) -> Part:
             else:
                 P[j, i] = P[j - 1, i] + d * length / rows
     v0, v1 = (0.0, 0.5)
-    ids = grid(part, P, "lash", uv_fn=lambda j, i: (i / (n - 1), v0 + (v1 - v0) * j / rows), tags=tag)
+    # M1-CHR-07: the lower lashes sample the atlas's sparse strip (asha_textures.LASH_LOWER_U)
+    u0, u1 = (0.0, 0.7) if upper else (0.7, 1.0)
+    ids = grid(part, P, "lash", uv_fn=lambda j, i: (u0 + (u1 - u0) * i / (n - 1), v0 + (v1 - v0) * j / rows),
+               tags=tag)
     _ = ids
     return part
 
@@ -216,7 +219,9 @@ def brow(face, side: str, surface_fn, layers: int = 3, n: int = 16) -> Part:
     tag = TAG_BROW[side]
     u = np.linspace(0.0, 1.0, n)
     xs = E[0] + fr.sgn * (-0.0175 * s + 0.044 * s * u)  # 13.5 mm from the midline -> past the orbit rim
-    arch = 0.0035 * s * np.sin(np.pi * np.clip(u / 0.72, 0, 1)) * (u < 0.72) + 0.0035 * s * np.cos(
+    # M1-CHR-07: the arch rises to its peak at the lateral third and falls after it. It was
+    # sin(pi u / 0.72), back at 0 by u = 0.72, where the falling branch starts at 1: a step
+    arch = 0.0030 * s * np.sin(0.5 * np.pi * np.clip(u / 0.72, 0, 1)) * (u < 0.72) + 0.0030 * s * np.cos(
         np.pi * 0.5 * np.clip((u - 0.72) / 0.28, 0, 1)) * (u >= 0.72)
     zc = E[2] + 0.0148 * s + arch - 0.0022 * s * u**2
     thick = (0.0068 * (1 - u) ** 0.8 + 0.0022 * u) * s
@@ -232,7 +237,8 @@ def brow(face, side: str, surface_fn, layers: int = 3, n: int = 16) -> Part:
             P[j] = pts + np.array([0.0, -0.94, 0.34]) * lift
         # U across (rows j), V along (columns i) -> grid rows are U here
         v_off = 0.5 + 0.5 * (layer / max(layers, 1))
-        grid(part, P, "brow", uv_fn=lambda j, i, vo=v_off: (j / 2.0, 0.5 + 0.5 * i / (n - 1)), tags=tag,
-             flip=(fr.sgn < 0))
+        # M1-CHR-07: each layer samples its own column of hairs (asha_textures.brow_hairs)
+        grid(part, P, "brow", uv_fn=lambda j, i, ly=layer: ((ly + j / 2.0) / layers, 0.5 + 0.5 * i / (n - 1)),
+             tags=tag, flip=(fr.sgn < 0))
         _ = v_off
     return part

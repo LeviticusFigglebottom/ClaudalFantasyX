@@ -35,6 +35,7 @@ import asha_costume  # noqa: E402
 import asha_hair  # noqa: E402
 import asha_eyes  # noqa: E402
 import asha_face_shapes  # noqa: E402
+import asha_glb  # noqa: E402
 import asha_mouth  # noqa: E402
 import asha_staff  # noqa: E402
 import bb_anatomy  # noqa: E402
@@ -458,7 +459,10 @@ def main() -> int:
                  shrink=(np.nonzero(cat != 1)[0], 0.45))
     pad = np.zeros(len(Vhead) - n_skin)
     masks = {"lower": np.concatenate([res["lower"][used_h], pad]), "lip": np.concatenate([res["lip_w"][used_h], pad])}
-    units = asha_face_shapes.donor_unit_shapes(res["unit_delta"], used_h, Vhead, np.array(head.T), masks["lower"])
+    lip_frame = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("contact", "lip_contact"), ("dz", "lip_dz"),
+                                                                        ("front", "lip_front"))}
+    units = asha_face_shapes.donor_unit_shapes(res["unit_delta"], used_h, Vhead, np.array(head.T), masks["lower"],
+                                               lip_frame, lm.h / 0.222)
     shapes = asha_face_shapes.build_shapes(face, lm, Vhead, np.array(head.T), masks, units)
     ob_head.shape_key_add(name="Basis", from_mix=False)
     flat = Vhead.astype(np.float64)
@@ -576,7 +580,9 @@ def main() -> int:
     if args.bake_dir:
         # M1-CHR-04: the lip contact line and the commissures (bb_donor.lip_rest) for the lip bake
         lip_terms = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("CONTACT", "lip_contact"),
-                                                                            ("CORNER", "lip_corner"))}
+                                                                            ("CORNER", "lip_corner"),
+                                                                            ("LIPDZ", "lip_dz"), ("LIPU", "lip_u"),
+                                                                            ("LIPFRONT", "lip_front"))}
         face_v = np.zeros(len(Vhead))  # the face-mask island's vertices (texel report)
         face_v[np.unique(Fh[cat == 1][Fh[cat == 1] >= 0])] = 1.0
         lip_terms["FACE"] = face_v
@@ -597,6 +603,9 @@ def main() -> int:
         export_def_bones=False, export_materials="EXPORT", export_vertex_color="ACTIVE",
         export_all_vertex_colors=False,
     )
+    # M1-CHR-07: morph-target normals for the expression shapes only (Blender writes all or none,
+    # and all 40 would not fit the 5 MB cap). Without them a cheek raise shades as at rest.
+    report["morph_normals"] = asha_glb.add_morph_normals(out, asha_face_shapes.MORPH_NORMAL_SHAPES)
     report["glb_bytes"] = out.stat().st_size
     lod_objs, lod_tris = make_lod1([ob_head, ob_body, *garment_objs, *hair_objs, ob_staff], skel)
     eye_lod = [ob for ob in eye_objs if ob.name.startswith(("Eye", "Cornea")) and not ob.name.startswith("EyeOcc")]
