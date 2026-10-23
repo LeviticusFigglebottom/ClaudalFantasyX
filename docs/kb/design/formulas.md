@@ -251,6 +251,16 @@ The scaled power goes into the normal damage formula (§ Damage).
 
 The first press in a beat is the one that counts, and a press before the beat opens is ignored. The input can be **canceled only before the first grade**, so it cannot be retried until it goes well; canceling costs nothing. **Lamp Dive** (power 12, rank 2, physical, single foe, accuracy 100): perfect ×3 → power 22 (12 × 190 / 100 = 22.8), perfect + good + miss → 17, all miss → 12. From Rhen (strength 16, level 5) on the sandbox Reef Crab (defense 40, 380 HP) at variance 100: a perfect Lamp Dive deals 330, an all-miss one 180, and a plain Attack 120.
 
+**Timing assist (M2-UI-01, an accessibility setting; appended by UI, for Combat to confirm).** The `timing_assist` setting (`game/data/ui/accessibility.json`, `UiSettings.timing_input`) changes the input *row* before the ring is built. The grading code and the bonus table stay the same, and no RNG is involved:
+
+| Option | What changes | Rhen's ring |
+|---|---|---|
+| `off` (default) | nothing | perfect ≤ 0.06 s, good ≤ 0.15 s |
+| `wide` | `perfect_sec` and `good_sec` × `window_scale` 1.5, then `good_sec` ≤ min(peak, beat − peak) and `perfect_sec` ≤ `good_sec`, so the window stays inside its beat (validator rule, M1-UI-05) | perfect ≤ 0.09 s, good ≤ 0.225 s (late edge 0.785 s of a 0.8 s beat) |
+| `auto` | `assist_grade: "good"`: a miss (an unpressed beat or a mistimed press) counts as good; a press on the peak still earns perfect | all three beats left alone → good ×3, +45%, Lamp Dive power 17 |
+
+`max_step_sec` (0.05) stays ≤ `perfect_sec` under every option, so a long frame still cannot move a press across a whole grade. The worst result with `auto` is +45% and the best is still +90%, so practice is still rewarded.
+
 ## Not yet specified (owned by Combat, tracked in M1 tasks)
 
 Swell mode unlock rules and carrying gauges between battles (after M1-CMB-04), equipment abilities that tilt the opening odds, steal formulas, a Petrify cure item, and Vowbound stat scaling from Asha (M2).
