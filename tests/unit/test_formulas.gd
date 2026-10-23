@@ -147,3 +147,18 @@ func test_swell_power_scales_with_the_input_bonus() -> void:
 	assert_eq(Formulas.swell_power(12, 90), 22, "three perfect beats: 12 x 190 / 100 = 22.8 floors")
 	assert_eq(Formulas.swell_power(12, 45), 17, "perfect, good, miss: 17.4 floors")
 	assert_eq(Formulas.swell_power(12, -10), 12, "a negative bonus counts as 0")
+
+
+func test_opening_chances_follow_mean_agility() -> void:
+	assert_eq(Formulas.preemptive_chance(15.0, 15.0), Formulas.OPENING_BASE_PCT, "equal agility: the base 8%")
+	assert_eq(Formulas.preemptive_chance(18.0, 46.0 / 3.0), 11, "sandbox: 8 + round(2.67) = 11")
+	assert_eq(Formulas.ambush_chance(18.0, 46.0 / 3.0), 5, "sandbox: 8 + round(-2.67) = 5")
+	assert_eq(Formulas.preemptive_chance(10.5, 10.0), 9, "a half point rounds away from zero")
+	assert_eq(Formulas.preemptive_chance(60.0, 0.0), Formulas.OPENING_MAX_PCT)
+	assert_eq(Formulas.ambush_chance(60.0, 0.0), Formulas.OPENING_MIN_PCT)
+
+
+func test_opening_lead_passes_the_favored_sides_latest_tick() -> void:
+	assert_eq(Formulas.opening_lead(240), 241)
+	assert_eq(Formulas.opening_lead(0), Formulas.OPENING_LEAD_TICKS)
+	assert_eq(Formulas.opening_lead(-5), Formulas.OPENING_LEAD_TICKS, "never negative")
