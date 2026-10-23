@@ -2,8 +2,8 @@
 id: M1-NAR-05
 title: Story IP near-misses, continuity, and slice staging fixes (review-sweep-B)
 role: narrative
-status: todo
-owner_session: ""
+status: doing
+owner_session: narrative-stream-3
 depends_on: [M1-NAR-01, M1-NAR-02]
 milestone: M1
 request-from: "cinematics"
