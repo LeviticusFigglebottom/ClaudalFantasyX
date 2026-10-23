@@ -323,7 +323,7 @@ This is a **seed**. The Narrative agent owns `docs/kb/story/` and must expand it
 5. **Hair:** an anisotropic Kajiya-Kay style highlight with alpha-to-coverage or dithered transparency and TAA.
 6. **Cloth:** sheen and fuzz layer, embroidery and gold-thread masks, and wind sway.
 7. **Stone and weathering:** triplanar blending of moss, salt-crust, and wet layers driven by vertex color and world height.
-8. **Battle VFX library:** one quality bar per element at three tiers (basic, -ra, -ga), plus Swells and Vowbound finishers.
+8. **Battle VFX library:** one quality bar per element at three power tiers (lesser, greater, grand; in-game names are original and set by Narrative), plus Swells and Vowbound finishers.
 9. **The Undertow:** a colossal volumetric storm with animated vortex shading, raymarched or layered, plus glimmer wounds. It is the most important visual in the game and needs a prototype by Milestone 2.
 
 ### 8.3 Cinematic Quality
@@ -520,3 +520,4 @@ It must include the following: a link to this spec, the pillars, the guardrails,
 **Version log**
 - v1.0: initial spec
 - v1.1 (2026-10-23): §3.5 prologue line replaced at the human's direction (it echoed the inspiring game's opening line); see ADR 0020 §(g). §16 Q2 answered by the human: MPFB/MakeHuman allowed as a tool, CC0 data only, heavily modified (ADR 0021).
+- v1.2 (2026-10-23): §8 item 8 tier wording neutralised. The old suffixes echoed the inspiring game's spell-tier names (IP guardrail §2); no design change.
