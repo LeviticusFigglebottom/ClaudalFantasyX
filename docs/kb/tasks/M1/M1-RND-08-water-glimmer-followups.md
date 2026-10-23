@@ -2,7 +2,7 @@
 id: M1-RND-08
 title: Water and glimmer follow-ups (review-sweep-B)
 role: rendering
-status: todo
+status: review
 reviewer: environment
 owner_session: session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-08-water-glimmer; water items first)
 depends_on: [M1-RND-01, M1-RND-02, M1-RND-03, M1-ENV-01]
@@ -29,6 +29,7 @@ Environment-side findings on water and glimmer, scheduled after the Undertow and
 - 2026-10-23 water items done (NaN guard, view-dependent SSS wrap; pale crest patches reduced, Art to confirm). Report: docs/kb/qa/gpu/2026-10-23-rnd-08.md. Lavapipe re-approvals: water_shallows, water_lagoon, water_horizon, haluna_h01_village_from_sea, haluna_h04_dock (haluna_h03 optional). Remaining items open.
 
 - 2026-10-23 all items done; report docs/kb/qa/gpu/2026-10-23-rnd-08.md (parts 1 and 2). Lavapipe re-approvals: water_shallows, water_lagoon, water_horizon, glimmer_dusk, glimmer_night_held, haluna_h01_village_from_sea, haluna_h04_dock; new glimmer_bound from the pending manifest. Art to confirm caustics look, halo_chroma_gain and the noon crest patches.
+- 2026-10-23 rendering (M1-RND-15, worktree-agent-a94256e372f018240): **B1 closed.** `glimmer_bound` moved from the pending manifest into tests/screenshots/shots.json after `glimmer_release` (ShotCamera, 960×540, 30 settle frames; no capture setup needed: the stage moves the carrier with `delta`, which `--fixed-fps 60` makes deterministic). Rendered on lavapipe (Forward+, llvmpipe LLVM 22.1.8) and inspected before approval: after 0.5 s the cage has travelled 0.75 m right of the figure and its teal field is still inside it, so the local-space field follows its host. About a dozen distinct motes resolve inside the 0.5 m cage at this framing; the rest of the 24 overlap or sit behind the posts (`fixed_count` 24 is unit-tested). The brightest core is #6AA9AB against glimmer_bound's on-screen 0 level #66A7A6, the halos' median is #3A7D84 (near the −1 level #3B8280, hue 205°), there is no gold or red in the cage (palette_check coverage), and the night sea and sky are unchanged from the night shots. Approved with `compare.py --update-baselines glimmer_bound` (PASS rmse 0.00000 on re-compare). The pending-shots manifest is now empty. Back to **review** (environment); S1-S4 and the nit are in M1-RND-15, S5 (Art sign-off) stays open for M1-ART-04.
 
 ## Review log
 - 2026-10-23 environment (review-sweep-I, fresh reviewer): **request-changes** (one AC not met in tree; everything else approve-with-fixes).
