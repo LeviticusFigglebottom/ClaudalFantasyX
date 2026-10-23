@@ -6,8 +6,10 @@ extends Node3D
 ## Until the M1-ART-02 post-import script exists this does the job at runtime; the same mapping
 ## can move into `game/core/import/vegetation_post_import.gd` unchanged.
 
+## Shelter modes of the `shelter` export.
+enum Shelter { AUTO, OPEN, SHELTERED }
+
 const LOD_SUFFIX := "-lod"
-const SHELTER_AUTO := -1.0
 const SHELTER_PARAM := &"inst_translucency_shelter"
 ## The shelter probe starts at this fraction of the plant's height (its crown: a palm's trunk passes
 ## under a neighbour's eave while its crown stands in the sun), and runs this far toward the sun (m).
@@ -20,10 +22,10 @@ const SHELTER_PROBE_LENGTH_M := 40.0
 @export var lod_end_m: PackedFloat32Array = PackedFloat32Array([45.0, 120.0, 400.0])
 ## Hysteresis around each switch distance (m), so LODs do not flicker at the boundary.
 @export var lod_margin_m: float = 2.0
-## Cross-fade width (m) at each LOD switch (M1-ENV-03): the outgoing LOD dissolves out over
-## [switch, switch + fade] while the incoming one dissolves in over the same span (Godot's
-## VISIBILITY_RANGE_FADE_SELF, a dither TAA smooths), so a palm against the sky no longer pops.
-## 0 = hard switch with lod_margin_m hysteresis (the old behaviour).
+## Fade-out width (m) of the last LOD at its final distance (M1-ENV-03), so a palm does not pop off
+## against the sky. Only the last cut fades: Godot's visibility-range fade alpha-blends the instance
+## (not a dither), which turned trunks into translucent ghosts at the LOD0 -> 1 switch
+## (review-sweep-N). LOD switches stay hard, with lod_margin_m hysteresis. 0 = no fade.
 @export var lod_fade_m: float = 6.0
 ## Show only this LOD (for screenshots and debugging); -1 = distance-based.
 @export var force_lod: int = -1
@@ -32,20 +34,27 @@ const SHELTER_PROBE_LENGTH_M := 40.0
 ## Small foliage (vines, grass tufts): tagged small_foliage, so vegetation_detail Low may drop its
 ## shadows (M1-ENV-05). Trees and palms keep theirs.
 @export var small_foliage: bool = false
-## Shelter from solid occluders (M1-ENV-03): 1 turns the leaves' through-shadow translucency floor
-## off, so a plant under an eave does not glow. AUTO (-1) casts a ray from the plant's crown toward
-## the sun (hymn_sun_direction) once placed: a hit on anything that is not a plant means shelter 1.
-@export_range(-1.0, 1.0) var shelter: float = SHELTER_AUTO
+## Shelter from solid occluders (M1-ENV-03): SHELTERED turns the leaves' through-shadow translucency
+## floor off, so a plant under an eave does not glow. AUTO casts one ray from the plant's crown toward
+## the sun (the hymn_sun_direction global, via ShaderGlobals) once placed: a hit on `shelter_mask` means
+## sheltered. OPEN keeps the floor.
+@export var shelter: Shelter = Shelter.AUTO
+## Physics layers the shelter probe tests (the world's solids: buildings, cliffs).
+@export_flags_3d_physics var shelter_mask: int = 1
 
 
 func _ready() -> void:
 	apply()
-	if shelter == SHELTER_AUTO and is_inside_tree():
-		# The physics space is only queryable once the scene's bodies have been placed.
-		await get_tree().physics_frame
-		set_shelter(1.0 if is_sheltered() else 0.0)
-	elif shelter >= 0.0:
-		set_shelter(shelter)
+	match shelter:
+		Shelter.AUTO:
+			if is_inside_tree():
+				# The physics space is only queryable once the scene's bodies have been placed.
+				await get_tree().physics_frame
+				set_shelter(1.0 if is_sheltered() else 0.0)
+		Shelter.OPEN:
+			set_shelter(0.0)
+		Shelter.SHELTERED:
+			set_shelter(1.0)
 
 
 ## Writes the shelter weight to every mesh of the plant.
@@ -60,7 +69,7 @@ func is_sheltered() -> bool:
 	if get_world_3d() == null:
 		return false
 	var from := global_position + Vector3.UP * crown_height() * SHELTER_PROBE_CROWN
-	var query := PhysicsRayQueryParameters3D.create(from, from + sun_direction() * SHELTER_PROBE_LENGTH_M)
+	var query := PhysicsRayQueryParameters3D.create(from, from + sun_direction() * SHELTER_PROBE_LENGTH_M, shelter_mask)
 	return not get_world_3d().direct_space_state.intersect_ray(query).is_empty()
 
 
@@ -75,13 +84,11 @@ func crown_height() -> float:
 	return top
 
 
-## Unit vector toward the sun: the scene's first visible DirectionalLight3D, else straight up.
+## Unit vector toward the sun: the hymn_sun_direction global as last written (ShaderGlobals), else up.
 func sun_direction() -> Vector3:
-	var root := get_tree().current_scene if get_tree() != null else null
-	if root != null:
-		for n in root.find_children("*", "DirectionalLight3D", true, false):
-			if (n as DirectionalLight3D).is_visible_in_tree():
-				return (n as DirectionalLight3D).global_basis.z.normalized()
+	var sun: Variant = ShaderGlobals.get_value(&"hymn_sun_direction")
+	if sun is Vector3 and (sun as Vector3).length_squared() > 0.0:
+		return (sun as Vector3).normalized()
 	return Vector3.UP
 
 
@@ -133,16 +140,15 @@ func _apply_lod(mi: MeshInstance3D, lod: int) -> void:
 	mi.visible = lod < lod_end_m.size()
 	if not mi.visible:
 		return
-	var fade := lod_fade_m > 0.0
-	var margin := lod_fade_m if fade else lod_margin_m
-	# Fading: the incoming LOD's range starts at switch + fade, so its fade-in [begin - margin, begin]
-	# overlaps the outgoing LOD's fade-out [end, end + margin].
-	mi.visibility_range_begin = 0.0 if lod == 0 else lod_end_m[lod - 1] + (lod_fade_m if fade else 0.0)
+	var last := lod == lod_end_m.size() - 1
+	var fade_out := last and lod_fade_m > 0.0
+	mi.visibility_range_begin = 0.0 if lod == 0 else lod_end_m[lod - 1]
 	mi.visibility_range_end = lod_end_m[lod]
-	mi.visibility_range_begin_margin = margin if lod > 0 else 0.0
-	mi.visibility_range_end_margin = margin
+	# Fading uses the margins as fade spans (no hysteresis), so the faded LOD's switch-in stays hard.
+	mi.visibility_range_begin_margin = 0.0 if lod == 0 or fade_out else lod_margin_m
+	mi.visibility_range_end_margin = lod_fade_m if fade_out else lod_margin_m
 	mi.visibility_range_fade_mode = (
-		GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF if fade else GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+		GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF if fade_out else GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
 	)
 	if shadow_lod_max >= 0 and lod > shadow_lod_max:
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF

@@ -37,7 +37,7 @@ func _ready() -> void:
 		vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
 		_aa_swapped = true
 	if sun_node:
-		RenderingServer.global_shader_parameter_set(&"hymn_sun_direction", sun_node.global_basis.z.normalized())
+		ShaderGlobals.set_value(&"hymn_sun_direction", sun_node.global_basis.z.normalized())
 	set_process(animate_wind)
 
 

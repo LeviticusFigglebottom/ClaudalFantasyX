@@ -2,9 +2,9 @@
 id: M1-ENV-03
 title: Vegetation follow-ups (review-sweep-B)
 role: environment
-status: doing
+status: review
 reviewer: rendering
-owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/env-03-vegetation; routed by the Lead)"
+owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/env-03-vegetation-v2; routed by the Lead)"
 depends_on: [M1-ENV-02, M1-ENV-01]
 milestone: M1
 request-from: "rendering"
@@ -15,7 +15,7 @@ Rendering-side findings on vegetation, scheduled after the mood test (which uses
 ## Acceptance criteria
 - [x] translucency_shadow_floor no longer lets plants under eaves glow
 - [x] Capture under FXAA (as water does) and restore threshold 0.008
-- [x] LOD fade (no palm pop against sky)
+- [x] LOD fade (no palm pop against sky): the final 400 m cut only (v2)
 - [x] Overdraw measured (debug_draw OVERDRAW capture) with a budget
 - [x] Assets tagged PLACEHOLDER until Art Director sign-off
 - [x] Wind flutter cap noted for GPU TAA motion test
@@ -38,6 +38,24 @@ PC GPU session (Lead-routed; branch `gpu/env-03-vegetation`). Report: `docs/kb/q
   - `veg_backlit_fronds`, `veg_frangipani_close` and `veg_beach_wide`: TAA → FXAA, RMSE 0.022–0.044 on the GPU.
   - `haluna_h02_tidewall_lane` and `haluna_h03_lintel_gull`: 0.012, a palm in a fade band.
   - Not overwritten. Environment and Art re-approve.
+
+### v2 (review-sweep-N fixes, branch `gpu/env-03-vegetation-v2`)
+Report section: "v2" in `docs/kb/qa/gpu/2026-10-23-env-03-vegetation.md`.
+- **B1 (ghost trunks):** only the last LOD fades, out at 400 m (`VISIBILITY_RANGE_FADE_SELF`, end margin =
+  `lod_fade_m`). The 45 m and 120 m switches are hard again, with the `lod_margin_m` hysteresis. Tested.
+- **B2 (drift attribution):** re-measured on the GPU. With the AA swap disabled, v2 renders the three `veg_*` shots
+  identically to the base (RMSE 0.0000), so their drift is purely TAA → FXAA. `haluna_h03` no longer drifts.
+  `haluna_h02` 0.0124 is one palm at the 120 m switch, drawn now and missing in the base (see the report).
+- **S1:** `shelter` is `enum Shelter { AUTO, OPEN, SHELTERED }`.
+- **S2:**
+  - The ray has a `shelter_mask` (physics layers, default 1).
+  - The sun comes from the `hymn_sun_direction` global through the new `ShaderGlobals`
+    (`game/core/shader_globals.gd`). It keeps a CPU copy of what was written, because `global_shader_parameter_get`
+    is editor-only.
+  - The four writers (the vegetation, water, Undertow and Haluna mood test rigs) now go through
+    `ShaderGlobals.set_value`. The Haluna rig line is a one-line cross-role edit.
+- **Tests:** an auto-detect test (a box roof on layer 1 shelters; off the mask, or under a low side sun, it doesn't).
+  The `.uid` is committed.
 
 ## Review log
 - 2026-10-23 rendering (review-sweep-N, fresh reviewer): **changes needed.** The LOD cross-fade produces see-through trunks in the shots, and the report puts the drift down to the AA swap.

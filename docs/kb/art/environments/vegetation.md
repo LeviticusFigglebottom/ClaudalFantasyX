@@ -80,9 +80,15 @@ The art README's packing rule for stone is "R moss, G salt, B wet, A erosion". V
 
 ## LODs
 
-LODs are authored meshes (`-lodN`). `VegetationPlant` turns them into `visibility_range` LODs, with ends at 45 m / 120 m / 400 m by default. **Cross-fade (M1-ENV-03):** each switch dissolves over `lod_fade_m` (6 m, `VISIBILITY_RANGE_FADE_SELF`; the incoming LOD starts at switch + 6 m, so the two fades overlap), and the last LOD fades out at 400 m instead of popping off against the sky. It costs +0.04 ms at High 1440p on an RX 9070 XT (test scene, Wide). With `lod_fade_m` 0 you get the old hard switch with the 2 m hysteresis. A plant inside a fade band in a still capture shows mid-dissolve, which is why haluna_h02 and h03 moved. `force_lod` pins one LOD for debugging.
+LODs are authored meshes (`-lodN`). `VegetationPlant` turns them into `visibility_range` LODs, with ends at 45 m / 120 m / 400 m by default. LOD switches are hard, with a 2 m hysteresis (`lod_margin_m`).
 
-**Shelter (M1-ENV-03).** `translucency_shadow_floor` (0.35) lets leaves transmit light where the shadow map says occluded, because the occluder is usually the plant's own canopy. Under an eave that made plants glow. `VegetationPlant.shelter` (AUTO by default) casts one ray from 80 % of the plant's height toward the sun after placement. If it hits a collider, the plant counts as sheltered, and the instance uniform `inst_translucency_shelter` = 1 turns the floor off. Set `shelter` to 0 or 1 by hand to override it. The ray needs collision on the building (the Haluna kit has none yet, so its plants stay at 0 until then).
+**Final fade (M1-ENV-03):** only the last LOD fades, out over `lod_fade_m` (6 m) past 400 m, so a palm doesn't pop off against the sky. `lod_fade_m` 0 turns the fade off.
+
+- **Don't fade LOD switches.** Godot's `VISIBILITY_RANGE_FADE_SELF` alpha-blends the whole instance; it isn't a dither. A fade at the 45 m or 120 m switch made opaque trunks translucent (review-sweep-N).
+- **The faded LOD has no hysteresis on its begin**, because Godot uses the margins as fade spans. So the 120 m switch-in is exact.
+- `force_lod` pins one LOD for debugging.
+
+**Shelter (M1-ENV-03).** `translucency_shadow_floor` (0.35) lets leaves transmit light where the shadow map says occluded, because the occluder is usually the plant's own canopy. Under an eave that made plants glow. `VegetationPlant.shelter` (AUTO by default) casts one ray from 80 % of the plant's height toward the sun after placement. The sun direction is the `hymn_sun_direction` global, read back through `ShaderGlobals`. If the ray hits a collider on `shelter_mask` (physics layers, default 1; put the static world there), the plant counts as sheltered, and the instance uniform `inst_translucency_shelter` = 1 turns the floor off. Set `shelter` to OPEN or SHELTERED to override it. The ray needs collision on the building (the Haluna kit has none yet, so its plants stay at 0 until then).
 
 On the GPU (`tools/gpu_bench/eave_glow.tscn`, a roof over a frangipani) the floor's glow under the roof averaged 0.013 linear luminance (p99 0.23, max 0.37). Sheltered, it's gone. Shelter is per plant, so a crown that pokes out past a roof edge loses the floor there too. Godot's automatic LOD generation is off for these files. MultiMesh grass is one LOD per scatter node (use a second node with `saltgrass_*-lod1` for far bands).
 

@@ -127,7 +127,7 @@ func _write_globals() -> void:
 	RenderingServer.global_shader_parameter_set(GLOBAL_WIND_TIME, _clock)
 	var body := moon_elevation_deg if _night else sun_elevation_deg
 	var az := moon_azimuth_deg if _night else sun_azimuth_deg
-	RenderingServer.global_shader_parameter_set(GLOBAL_SUN, direction_from_angles(body, az))
+	ShaderGlobals.set_value(GLOBAL_SUN, direction_from_angles(body, az))
 	RenderingServer.global_shader_parameter_set(
 		GLOBAL_TIME_OF_DAY, night_time_of_day_h if _night else day_time_of_day_h
 	)

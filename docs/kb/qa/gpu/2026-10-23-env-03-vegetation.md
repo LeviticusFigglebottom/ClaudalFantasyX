@@ -29,3 +29,57 @@ session by the Lead.
   `graphics_settings` (24/0); validate_data; taskboard.
 - **Skipped:** the full suite (outside the diff) and the other shots (their scenes don't use VegetationPlant or the
   foliage shader).
+
+## v2: review-sweep-N fixes (branch `gpu/env-03-vegetation-v2`, 2026-10-23)
+
+The first version was reverted on the integration branch. v2 re-applies it (8e10a05) with these fixes.
+
+| Finding | Change |
+|---|---|
+| B1: ghost trunks in the LOD fade bands | Only the last LOD fades, out over 6 m past 400 m. The 45 m and 120 m switches are hard, with the 2 m hysteresis. Godot's fade alpha-blends the instance; it isn't a dither, so the comment that said it was is gone. |
+| S1: float `shelter` with a −1 sentinel | `enum Shelter { AUTO, OPEN, SHELTERED }`. |
+| S2: unmasked ray; sun from the first light | The ray has a `shelter_mask` (physics layers, default 1). The sun comes from `hymn_sun_direction` through the new `ShaderGlobals`, a CPU copy of the globals (`global_shader_parameter_get` is editor-only). The four writers now go through `ShaderGlobals.set_value`: the vegetation, water, Undertow and Haluna mood test rigs. The Haluna rig line is a one-line cross-role edit. |
+| Auto-detect test; the `.uid` | `test_auto_shelter_probes_toward_the_global_sun_on_the_mask`: a box roof on layer 1 shelters; off the mask, or under a low side sun, it doesn't. The `.uid` is committed. |
+
+### Drift, re-measured (B2)
+
+All three captures are on the GPU capture rig:
+- **Base:** `origin/claude/new-session-mj8c3c`, with ENV-03 reverted.
+- **v2:** this branch.
+- **v2 with TAA:** this branch with the AA swap disabled, so it renders with TAA as the base does. This splits the AA
+  change from the plant changes.
+
+| Shot | Base → v2 | Base → v2 with TAA | v2 TAA → FXAA |
+|---|---:|---:|---:|
+| veg_backlit_fronds | 0.0225 | 0.0000 | 0.0225 |
+| veg_beach_wide | 0.0307 | 0.0000 | 0.0307 |
+| veg_frangipani_close | 0.0281 | 0.0000 | 0.0281 |
+| haluna_h02_tidewall_lane | 0.0124 | – | – |
+| haluna_h03_lintel_gull | 0.0000 | – | – |
+| haluna_h01, h04, h07 | ≤ 0.0011 | – | – |
+
+- **`veg_*`:** the drift is purely the TAA → FXAA capture. veg_beach_wide fell from 0.0436 (v1) to 0.0307; the
+  difference was v1's fade band (B1).
+- **`haluna_h03`:** no drift now. v1's 0.0118 was the fade band.
+- **`haluna_h02` 0.0124:** one palm, seen through the gap under the right-hand eave (x ≈ 900–960, y ≈ 200–300). v2
+  draws it and the base doesn't. v2 is the correct frame.
+  - It isn't B1: with the last LOD's begin margin put back to 2 m, the drift stays (0.0116).
+  - The palm stands at the 120 m switch. In the base, both LOD1 and LOD2 carry the 2 m hysteresis there, and on a
+    still camera neither LOD shows the palm.
+  - In v2, LOD2 fades, so Godot reads its margins as fade spans and drops the hysteresis. LOD2 then draws the palm.
+- **Finding (not fixed):** the same hysteresis hole may still hide a plant at the 45 m switch from a camera that
+  hasn't moved since load. No current shot shows one. If a cutscene shows one, overlap the ranges (LOD *n* ends at
+  switch + margin) instead of relying on hysteresis.
+- **Re-approval:** baselines not overwritten. Environment and Art re-approve the drifting shots: the three veg_* and
+  haluna_h02. haluna_h03 is back to its pre-ENV-03 frame.
+
+### Checks (v2)
+
+- **Run:**
+  - gdlint and gdformat on the touched files.
+  - Godot tests filtered to `vegetation` (10/0), `haluna` (7/0), `undertow` (30/0) and `water` (24/0). The last
+    three because their rigs now write the sun through `ShaderGlobals`.
+  - The 8 vegetation and Haluna shots, captured on the GPU.
+- **Skipped:**
+  - The full suite and the other shots: no other scene uses VegetationPlant.
+  - The Undertow and water shots on the GPU: `ShaderGlobals.set_value` writes the same sun value as before.

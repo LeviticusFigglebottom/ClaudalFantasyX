@@ -25,23 +25,27 @@ func _mesh(plant: VegetationPlant, lod: int) -> MeshInstance3D:
 	return plant.get_node("frond-lod%d" % lod) as MeshInstance3D
 
 
-func test_lod_switches_cross_fade() -> void:
+func test_only_the_last_lod_fades_out() -> void:
 	var plant := _plant_with_lods(3)
 	plant.lod_end_m = PackedFloat32Array([45.0, 120.0, 400.0])
 	plant.lod_fade_m = 6.0
+	plant.lod_margin_m = 2.0
 	plant.apply()
-	var l0 := _mesh(plant, 0)
-	var l1 := _mesh(plant, 1)
-	assert_eq(l0.visibility_range_fade_mode, GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF)
-	assert_eq(l0.visibility_range_end, 45.0)
-	assert_eq(l0.visibility_range_end_margin, 6.0)
-	# The incoming LOD fades in over [begin - margin, begin] = [45, 51], the outgoing out over [45, 51].
-	assert_eq(l1.visibility_range_begin, 51.0)
-	assert_eq(l1.visibility_range_begin - l1.visibility_range_begin_margin, l0.visibility_range_end, "fades overlap")
+	# Godot's visibility-range fade alpha-blends, so LOD switches stay hard (no translucent trunks).
+	for i in 2:
+		var mi := _mesh(plant, i)
+		assert_eq(mi.visibility_range_fade_mode, GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED, "LOD%d hard" % i)
+		assert_eq(mi.visibility_range_end_margin, 2.0, "LOD%d hysteresis" % i)
+	var last := _mesh(plant, 2)
+	assert_eq(last.visibility_range_fade_mode, GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF)
+	assert_eq(last.visibility_range_begin, 120.0)
+	assert_eq(last.visibility_range_begin_margin, 0.0, "the faded LOD switches in hard")
+	assert_eq(last.visibility_range_end, 400.0)
+	assert_eq(last.visibility_range_end_margin, 6.0, "fades out over the final cut only")
 	plant.free()
 
 
-func test_hard_switch_keeps_the_old_hysteresis() -> void:
+func test_no_fade_keeps_the_hysteresis_on_every_cut() -> void:
 	var plant := _plant_with_lods(2)
 	plant.lod_end_m = PackedFloat32Array([45.0, 120.0])
 	plant.lod_fade_m = 0.0
@@ -51,6 +55,7 @@ func test_hard_switch_keeps_the_old_hysteresis() -> void:
 	assert_eq(l1.visibility_range_fade_mode, GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED)
 	assert_eq(l1.visibility_range_begin, 45.0)
 	assert_eq(l1.visibility_range_begin_margin, 2.0)
+	assert_eq(l1.visibility_range_end_margin, 2.0)
 	plant.free()
 
 
@@ -62,7 +67,7 @@ func test_lod_index_parses_the_suffix() -> void:
 
 func test_shelter_reaches_every_mesh_and_probes_from_the_crown() -> void:
 	var plant := _plant_with_lods(2)
-	plant.shelter = 1.0
+	plant.shelter = VegetationPlant.Shelter.SHELTERED
 	(Engine.get_main_loop() as SceneTree).current_scene.add_child(plant)
 	plant.set_shelter(1.0)
 	for i in 2:
@@ -78,3 +83,38 @@ func test_foliage_tiers_declare_the_shelter_uniform() -> void:
 		assert_true(src.contains("vegetation_foliage_body.gdshaderinc"), "%s includes the body" % path)
 		assert_true(body.contains("instance uniform float inst_translucency_shelter"), "body declares the shelter")
 		assert_true((load(path) as Shader).get_mode() == Shader.MODE_SPATIAL, "%s compiles" % path)
+
+
+## A 10 x 1 x 10 m box roof on `layer`, its underside `height` m above the origin.
+func _roof(layer: int, height: float) -> StaticBody3D:
+	var roof := StaticBody3D.new()
+	roof.collision_layer = layer
+	var shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(10.0, 1.0, 10.0)
+	shape.shape = box
+	roof.add_child(shape)
+	roof.position = Vector3(0.0, height + 0.5, 0.0)
+	return roof
+
+
+func test_auto_shelter_probes_toward_the_global_sun_on_the_mask() -> void:
+	var root := (Engine.get_main_loop() as SceneTree).current_scene
+	var world := Node3D.new()
+	root.add_child(world)
+	var plant := _plant_with_lods(1)
+	plant.shelter = VegetationPlant.Shelter.OPEN
+	world.add_child(plant)
+	var roof := _roof(1, 5.0)
+	world.add_child(roof)
+	var before: Variant = ShaderGlobals.get_value(&"hymn_sun_direction")
+	ShaderGlobals.set_value(&"hymn_sun_direction", Vector3.UP)
+	assert_eq(plant.sun_direction(), Vector3.UP, "reads the global sun")
+	assert_true(plant.is_sheltered(), "a roof over the crown, toward the sun, shelters")
+	plant.shelter_mask = 2
+	assert_false(plant.is_sheltered(), "a roof off the probe's mask does not")
+	plant.shelter_mask = 1
+	ShaderGlobals.set_value(&"hymn_sun_direction", Vector3(1.0, 0.2, 0.0).normalized())
+	assert_false(plant.is_sheltered(), "a low sun from the side passes under the roof")
+	ShaderGlobals.set_value(&"hymn_sun_direction", before if before is Vector3 else Vector3.UP)
+	world.free()
