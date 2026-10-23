@@ -14,6 +14,9 @@ extends Node
 ##   --warmup-s=3.0               the warm-up also lasts at least this long (async pipeline compiles)
 ##   --csv=<abs path>             append one row per measurement (header written for a new file)
 ##   --label=<name>               scene label in the CSV (default: scene file name + camera)
+##   --png-dir=<abs dir>          save the last sampled frame of each measurement as a PNG
+##   --hold-storm                 freeze every UndertowStorm clock (deterministic frames for look diffs)
+##                                while its temporal jitter keeps advancing; pair with --warmup-s=0
 ## Per configuration: apply the preset through GraphicsSettings (viewport + the scene's Environment),
 ## then the matching tier of every WaterSurface, UndertowStorm, GlimmerField and character material,
 ## skip `warmup` frames, then read RenderingServer.viewport_get_measured_render_time_gpu/_cpu after
@@ -36,6 +39,7 @@ const WATER_TOGGLES := ["use_ssr", "use_caustics", "use_foam", "use_refraction",
 
 var _scene: Node
 var _opts: Dictionary = {}
+var _held: Array[UndertowStorm] = []
 
 
 func _ready() -> void:
@@ -61,6 +65,11 @@ func _run() -> void:
 	win.position = DisplayServer.screen_get_position(win.current_screen)
 	_scene = packed.instantiate()
 	add_child(_scene)
+	if _opts.has("hold-storm"):
+		for n in _scene.find_children("*", "", true, false):
+			if n is UndertowStorm:
+				(n as UndertowStorm).playing = false
+				_held.append(n as UndertowStorm)
 	var camera := str(_opts.get("camera", "default"))
 	if camera != "default":
 		var cam := _scene.get_node_or_null(NodePath(camera)) as Camera3D
@@ -114,6 +123,7 @@ func _measure(preset: String, variant: Dictionary, camera: String, label: String
 	var skipped := 0
 	while skipped < warmup or Time.get_ticks_usec() < warmup_until:
 		await RenderingServer.frame_post_draw
+		_tick_held()
 		skipped += 1
 	var gpu := PackedFloat64Array()
 	var cpu := PackedFloat64Array()
@@ -121,6 +131,7 @@ func _measure(preset: String, variant: Dictionary, camera: String, label: String
 	var last := Time.get_ticks_usec()
 	for i in frames:
 		await RenderingServer.frame_post_draw
+		_tick_held()
 		var now := Time.get_ticks_usec()
 		wall.append(float(now - last) / US_PER_MS)
 		last = now
@@ -128,6 +139,11 @@ func _measure(preset: String, variant: Dictionary, camera: String, label: String
 		cpu.append(RenderingServer.viewport_get_measured_render_time_cpu(rid))
 	var size := get_window().size
 	var scale := get_viewport().scaling_3d_scale
+	if _opts.has("png-dir"):
+		var img := get_viewport().get_texture().get_image()
+		img.convert(Image.FORMAT_RGB8)
+		var png_name := "%s_%s_%s_%dx%d.png" % [label.validate_filename(), str(variant["name"]), preset, size.x, size.y]
+		img.save_png(str(_opts["png-dir"]).path_join(png_name.replace(" ", "_")))
 	return {
 		"scene": label.get_slice(":", 0),
 		"camera": camera,
@@ -207,6 +223,13 @@ func _apply_variant(v: Dictionary) -> void:
 			var overrides := v["set"] as Dictionary
 			for key: String in overrides:
 				water.material.set_shader_parameter(key, overrides[key])
+
+
+## A held storm's clock stays put, but its temporal jitter (UndertowState.frame) still advances.
+func _tick_held() -> void:
+	for storm in _held:
+		if "frame" in storm.state:
+			storm.state.frame += 1
 
 
 func _environment() -> Environment:
