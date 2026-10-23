@@ -1,6 +1,8 @@
 // Ch2 Cutscene A, "The Girl on the Beach". Beat B01 in docs/kb/story/beats/vertical_slice.md.
 // Facial beat to hit (H06): Asha's smile, the half-beat stillness at the lantern, then the smile again.
 // Grade: color script `ch02` (dawn, 06:20). Shots: docs/kb/art/environments/haluna.md §5.1.
+// Camera grammar (decisions_log N-13): H05, H06 and H01 are unrelated setups, so every change is a
+// cut (blend=0.0). The cut to H01 lands on the walk, after Asha's last line on H05.
 // Light rule: the motes that came ashore with Rhen are HELD (glimmer_held: cool cyan, drifting
 // sideways and down toward the water). Nothing rises in this scene. The first rising light is Ch3.
 // Asha's stillness is recognition: she saw this lantern on her mother's guardian when she was seven.
@@ -18,7 +20,7 @@ A star-path. The one they teach children for finding the way home. #line:ch02_be
 @anim asha kneel_over_rhen
 @face asha soft_smile 0.6
 Asha [soft_smile]: There you are. No, don't sit up yet. You've swallowed half the bay. #line:ch02_beach_002
-@camera H06 blend=0.4
+@camera H06 blend=0.0
 @anim toma spear_level
 Toma [determined]: Lie still, please, and keep your hands open. I would like this to stay a small conversation. #line:ch02_beach_003
 Rhen [afraid]: That's a very big spear for a very small conversation. #line:ch02_beach_004
@@ -27,6 +29,7 @@ Asha [laugh]: Toma. He's half drowned. I think he's allowed one joke. #line:ch02
 Toma [neutral]: One. #line:ch02_beach_017
 @anim asha look_at rhen_lantern
 @face asha neutral 0.2
+@wait 0.6
 Asha [neutral]: That lantern. #line:ch02_beach_006
 @wait 0.6
 @face asha soft_smile 0.8
@@ -36,19 +39,19 @@ Asha [soft_smile]: Where did you get it? #line:ch02_beach_007
     Asha [tender]: Then it's a good thing the sea gave you both back. #line:ch02_beach_009
 -> Good trade. Don't ask what I gave for it. #line:ch02_beach_010
     Asha [soft_smile]: Then I won't ask. Not today. #line:ch02_beach_011
-@camera H05 blend=0.8
+@camera H05 blend=0.0
 @anim rhen sit_up
 Rhen [worried]: Rhen Sallow. Oruvel, the raft-town, east of here, all those ugly hulls tied together. Is it still there? #line:ch02_beach_012
 @anim toma lower_spear
 @wait 1.0
 Toma [sad]: We watched the storm go east last night. I am sorry. #line:ch02_beach_013
-@camera H06 blend=1.2
+@camera H06 blend=0.0
 @vfx glimmer_held at=rhen_shallows count=9 drift=down_seaward
 @wait 1.5
 Rhen [surprised]: The water's thick this morning. #line:ch02_beach_018
 Rhen [grief]: Those are ours. Aren't they. #line:ch02_beach_019
 Asha [sad]: Some of them came in with you. I heard them on the water before it was light. #line:ch02_beach_020
-Toma [neutral]: She woke the whole house. I have learned not to argue. #line:ch02_beach_021
+Toma [sad]: She woke the house before light. We came down so they would not come ashore alone. #line:ch02_beach_021
 -> Stay with them a minute. #line:ch02_beach_022
     <<set $ch02_rhen_stayed_with_dead = true>>
     @anim rhen sit_in_shallows
@@ -60,11 +63,11 @@ Toma [neutral]: She woke the whole house. I have learned not to argue. #line:ch0
     Toma [sad]: Be level, Oruvel. #line:ch02_beach_025
 -> Don't look at them. Get up. #line:ch02_beach_026
     @anim rhen turn_from_sea
-    Rhen [afraid]: Nope. Up. I'm getting up. The beach is moving, but I'm getting up. #line:ch02_beach_027
+    Rhen [afraid]: No. Up. I'm getting up. The beach is moving, but I'm getting up. #line:ch02_beach_027
     @anim toma catch_rhen
     Toma [neutral]: Slowly. #line:ch02_beach_028
     Asha [worried]: Lean on him. He likes it, he just won't say so. #line:ch02_beach_029
-@camera H05 blend=1.0
+@camera H05 blend=0.0
 @anim asha offer_hand
 Asha [soft_smile]: I'm Asha. That's Toma. He's nicer than his spear. #line:ch02_beach_030
 Toma [neutral]: Toma Okeru, of Haluna. You are speaking to the Lady— #line:ch02_beach_031
@@ -72,12 +75,12 @@ Asha [smile]: To Asha. Who is very glad you aren't dead. #line:ch02_beach_032
 Rhen [surprised]: Lady what? #line:ch02_beach_033
 @face asha soft_smile 0.3
 Asha [soft_smile]: Later. You're shaking. #line:ch02_beach_034
-@camera H01 blend=3.0 grade=ch02
 <<if $ch02_rhen_named_lantern>>
     Asha [tender]: Come up to the village. Bring your father's light. You'll eat first, and then we'll tell you what we know. #line:ch02_beach_014
 <<else>>
     Asha [tender]: Come up to the village. You'll eat first, and then we'll tell you what we know. #line:ch02_beach_015
 <<endif>>
+@camera H01 blend=0.0 grade=ch02
 @mark asha beach_path walk
 @mark toma beach_path walk
 @mark rhen beach_path walk
