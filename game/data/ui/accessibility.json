@@ -10,11 +10,20 @@
        "label_key": "SET_TEXT_SCALE", "help_key": "SET_TEXT_SCALE_HELP"},
       {"id": "palette", "type": "enum", "default": "standard", "options": ["standard", "colorblind"],
        "option_keys": ["SET_PALETTE_STANDARD", "SET_PALETTE_COLORBLIND"],
-       "label_key": "SET_PALETTE", "help_key": "SET_PALETTE_HELP"}
+       "label_key": "SET_PALETTE", "help_key": "SET_PALETTE_HELP"},
+      {"id": "timing_assist", "type": "enum", "default": "off", "options": ["off", "wide", "auto"],
+       "option_keys": ["SET_TIMING_ASSIST_OFF", "SET_TIMING_ASSIST_WIDE", "SET_TIMING_ASSIST_AUTO"],
+       "label_key": "SET_TIMING_ASSIST", "help_key": "SET_TIMING_ASSIST_HELP"}
     ],
     "palettes": {
       "standard": {},
       "colorblind": {"danger": ["#F08A24", 1.0], "enemy_chip": ["#2A2414", 0.85]}
+    },
+    "timing_assist": {
+      "doc": "M2-UI-01: what each timing_assist option does to a timed Swell input row (swell.json inputs, kind timing_ring) before the ring is built. window_scale multiplies perfect_sec and good_sec, then good_sec is clamped so the window stays inside its beat; assist_grade is the grade a miss becomes; tag_key is the short tag the input panel shows while the assist is on. Numbers: docs/kb/design/formulas.md section Swell, Timing assist.",
+      "off": {},
+      "wide": {"window_scale": 1.5, "tag_key": "HUD_SWELL_ASSIST_WIDE"},
+      "auto": {"assist_grade": "good", "tag_key": "HUD_SWELL_ASSIST_AUTO"}
     },
     "motion": {
       "translate_scale_reduced": 0.5,

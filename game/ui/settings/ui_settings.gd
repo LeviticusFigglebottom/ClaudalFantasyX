@@ -17,6 +17,7 @@ const CONFIG_PATH := "user://settings.cfg"
 const REDUCED_MOTION := &"reduced_motion"
 const TEXT_SCALE := &"text_scale"
 const PALETTE := &"palette"
+const TIMING_ASSIST := &"timing_assist"
 const KIND_BOOL := "bool"
 const KIND_ENUM := "enum"
 const PALETTE_STANDARD := &"standard"
@@ -133,6 +134,34 @@ func palette() -> StringName:
 	return StringName(str(get_value(PALETTE)))
 
 
+func timing_assist() -> StringName:
+	return StringName(str(get_value(TIMING_ASSIST)))
+
+
+## The short on-screen tag of the timing assist in force (its "tag_key"; "" when it is off).
+func timing_assist_tag_key() -> String:
+	return str(_assist().get("tag_key", ""))
+
+
+## A timed Swell input row (swell.json "inputs", kind timing_ring) as the timing assist plays it
+## (M2-UI-01). The assist is applied to the row, never in the engine: "wide" scales perfect_sec and
+## good_sec by window_scale, then keeps the good window inside its beat (both sides of the peak);
+## "auto" sets assist_grade, the grade a miss becomes (SwellTimingRing). A copy; off returns it as is.
+func timing_input(row: Dictionary) -> Dictionary:
+	var out := row.duplicate(true)
+	var assist := _assist()
+	if assist.has("window_scale"):
+		var beat := float(out.get("beat_sec", 0.0))
+		var peak := float(out.get("peak_at", 0.0)) * beat
+		var room := minf(peak, beat - peak)
+		var k := float(assist["window_scale"])
+		out["good_sec"] = minf(float(out.get("good_sec", 0.0)) * k, room)
+		out["perfect_sec"] = minf(float(out.get("perfect_sec", 0.0)) * k, float(out["good_sec"]))
+	if assist.has("assist_grade"):
+		out["assist_grade"] = str(assist["assist_grade"])
+	return out
+
+
 ## False under reduced motion: chips snap (with a short cross-fade) instead of sliding, pulses,
 ## bobbing and breathing stop, and the camera never shakes.
 func animations_enabled() -> bool:
@@ -224,6 +253,10 @@ func load_from(path: String = CONFIG_PATH) -> void:
 
 func _section() -> String:
 	return str(data.get("config_section", "accessibility"))
+
+
+func _assist() -> Dictionary:
+	return (data.get("timing_assist", {}) as Dictionary).get(String(timing_assist()), {}) as Dictionary
 
 
 func _motion() -> Dictionary:
