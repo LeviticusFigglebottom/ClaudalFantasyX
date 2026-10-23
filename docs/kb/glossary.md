@@ -86,7 +86,7 @@ These come from `docs/kb/story/bible.md`. Where a row conflicts with an entry ab
 | the Shortening | The steady shrinking of Calms from 30–40 years to 11–15. |
 | Salt Edicts | The 212 AL laws outlawing binding and salvage, which created the Saltwrights. |
 | Last Calm | The Order's promised final sleep of the Undertow, once the "debt" is paid. |
-| Unbroken Calm | Sefir's goal: a permanent Calm with himself as the eternal heart. |
+| the Long Stillness | Sefir's goal: a permanent sleep of the storm with himself as the eternal heart. (Renamed from an IP near-miss; decisions_log N-10.) |
 
 ### The Order of the Still Water
 | Term | Meaning |
@@ -152,11 +152,11 @@ These come from `docs/kb/story/bible.md`. Where a row conflicts with an entry ab
 | Oruvel Underway | The drowned tower beneath Oruvel (the tutorial dive). |
 | Brightwater Crossing | The ferry route out of the Low Reaches. |
 | Pemakar Terraces / Pemakar | The central volcanic isles and their town. |
-| Ember Terrace | The Fire temple. |
+| Ashcrown | The Lightning temple (zone `ch05/ashcrown`; was Ember Terrace, N-09). |
 | Brine Shoals | The mud-flat route of wrecks where Liss is found. |
 | Tamsule | The trade-port stilt city. |
 | Corrow / Corrow Bastion | The seawall coast and its garrison town. |
-| Coilspire | The Lightning temple. |
+| Coilspire | The Fire temple (N-09). |
 | Ossa Fen | The Kirru mangrove estuary. |
 | Reedhollow | The Kirru roost-village. |
 | Sunken Vey | The great drowned Lit Age city. |
@@ -164,10 +164,10 @@ These come from `docs/kb/story/bible.md`. Where a row conflicts with an entry ab
 | Ullar Heights / Ullari | The cold northern ranges and their people. |
 | Keth Pass | The mountain route into Ullar. |
 | Quellan | The Ullari highland town. |
-| Cloudloom | The Ice temple. |
+| Cloudloom | The Holy temple (N-09). |
 | Ansedra | The Order's holy city on a still lagoon. |
 | Lacquer Court | Ansedra's ceremonial heart and the wedding site. |
-| Sanctum of the Level | The Holy temple. |
+| Sanctum of the Level | The Ice temple: its basin is held so still it freezes (N-09). |
 | Hollowmere | The largest Saltwright flotilla. |
 | Iskarra | The drowned Lit Age capital and the Prologue setting. |
 | Lamp Spire | Iskarra's anchor-engine tower. |
@@ -177,11 +177,11 @@ These come from `docs/kb/story/bible.md`. Where a row conflicts with an entry ab
 | Term | Meaning |
 |---|---|
 | Ilun | Water Vowbound; Teyo Marrin; Shell Shrine. |
-| Kahre | Fire Vowbound; Daro Pemakan; Ember Terrace. |
-| Virel | Lightning Vowbound; Wenna Corr; Coilspire. |
-| Hesk | Ice Vowbound; Ama Quillo; Cloudloom. |
+| Kahre | Lightning Vowbound; Daro Pemakan; Ashcrown. Swell *Last Strike*. |
+| Virel | Fire Vowbound; Wenna Corr; Coilspire. Swell *Flare Line*. |
+| Hesk | Holy Vowbound; Ama Quillo; Cloudloom. |
 | Nhoa | Glimmer Vowbound; Ressa; Lowlight. |
-| Ethren | Holy Vowbound; Corran Ysel; Sanctum of the Level. |
+| Ethren | Ice Vowbound; Corran Ysel; Sanctum of the Level (its basin is held so still it freezes). Swell *Still Water*. |
 | Kesh | The First Voice, all six elements; Kesh Aurane; the Drowned Choir. |
 
 ### Named Supporting Characters
@@ -214,3 +214,8 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 
 ### Lamptongue Roots (for Audio lyrics)
 *vey* water · *ish* light · *karra* gathering/city · *hal* shell · *ennu* sleep/hush · *mir* stay · *tash* let go · *re* again · *oan* home.
+
+### Added 2026-10-23 (M1-NAR-05)
+- **the Velamir lullaby**: the family lullaby that became the first verse; Imra knew it before she was named, and Dace heard it from her at Haluna (N-11).
+- **heirloom weapons**: the per-character ultimate-weapon quest line (SPEC §6.5).
+- **the Weir** (contingent): an alternative Reefball arena form, only if the human changes the sphere (N-12).
