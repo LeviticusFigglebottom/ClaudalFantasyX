@@ -34,7 +34,10 @@ func test_a_full_gauge_glows_pulses_and_puts_swell_on_the_menu() -> void:
 	_fixture(&"swell_ring")
 	var row := ctl.hud.party.row_for(&"rhen")
 	assert_eq(row.swell_gauge().shown, 1.0)
-	assert_true(row.swell_gauge().glow > 0.0, "full: framed in gold")
+	assert_true(row.swell_gauge().glow > 0.0, "full: framed")
+	var party := HudLayout.section(&"party")
+	assert_eq(row.swell_gauge().full_gap_px, HudLayout.num(party, "swell_full_gap_px"), "frame sizes are data")
+	assert_eq(row.swell_gauge().full_frame_rects().size(), 2, "a night gap, then the frame")
 	var before := row.swell_gauge().glow
 	row._process(0.4)
 	assert_ne(row.swell_gauge().glow, before, "it pulses")
@@ -75,6 +78,20 @@ func test_waiting_out_the_ring_still_strikes_at_base_power() -> void:
 	assert_ne(ctl.state, BattleController.STATE_SWELL_INPUT)
 	assert_true(ctl.engine.find(&"rhen").swell < Formulas.SWELL_MAX)
 	assert_true(ctl.hud.help_history.has(ctl.menus.swell_result_text([&"miss", &"miss", &"miss"], 0)))
+	_free()
+
+
+func test_a_long_rendered_frame_pauses_the_ring_instead_of_skipping_a_beat() -> void:  # M1-UI-05
+	_open_ring()
+	var ring := ctl.swell_input()
+	ctl.tick(ring.time_to_peak() - 0.01)
+	var at := ring.elapsed
+	ctl._process(ring.duration_sec())  # one frame longer than the whole input
+	assert_eq(ctl.state, BattleController.STATE_SWELL_INPUT, "still open")
+	assert_eq(ring.grades.size(), 0, "no beat was skipped")
+	assert_between(ring.elapsed, at + ring.max_step_sec - 1e-6, at + ring.max_step_sec + 1e-6)
+	_press(&"ui_accept")
+	assert_ne(ring.grades[0], SwellTimingRing.GRADE_MISS, "the press after the hitch still counts")
 	_free()
 
 
@@ -129,7 +146,10 @@ func test_the_technique_page_previews_its_input_and_its_turn() -> void:
 	assert_eq(ctl.state, BattleController.STATE_SWELL)
 	assert_eq(ctl.hud.commands.page_id(), BattleMenus.PAGE_SWELL)
 	assert_eq(_row_ids(), [&"lamp_dive"] as Array[StringName])
-	assert_true(ctl.hud.help_text().begins_with(tr("SWELL_INPUT_TIMING_RING_HELP")), ctl.hud.help_text())
+	var beats := int(ctl.swell.input_for(ctl.engine.current).get("beats", 0))
+	var how := tr("SWELL_INPUT_TIMING_RING_HELP").format({"beats": beats})
+	assert_true(ctl.hud.help_text().begins_with(how), ctl.hud.help_text())
+	assert_true(how.contains(str(beats)) and not how.contains("{"), "the flare count comes from data: %s" % how)
 	var preview := ctl.engine.preview(
 		&"lamp_dive", ctl.default_targets(&"lamp_dive")[0], CtbTimeline.PREVIEW_LENGTH - 1
 	)

@@ -23,6 +23,9 @@ var peak_at := 0.0
 ## Largest distance from the peak (seconds) for each grade.
 var perfect_sec := 0.0
 var good_sec := 0.0
+## Largest step one rendered frame may move the ring (clamp_step); 0 = no limit. Kept at or under
+## perfect_sec (validate_data), so a hitch can never jump a press across a whole grade.
+var max_step_sec := 0.0
 ## Seconds since the ring opened (advance()).
 var elapsed := 0.0
 ## One grade per finished beat, in order.
@@ -38,6 +41,12 @@ func _init(input: Dictionary = {}) -> void:
 	peak_at = float(input.get("peak_at", peak_at))
 	perfect_sec = float(input.get("perfect_sec", perfect_sec))
 	good_sec = float(input.get("good_sec", good_sec))
+	max_step_sec = float(input.get("max_step_sec", max_step_sec))
+
+
+## `delta` limited to max_step_sec (SwellRingClock steps rendered frames through this).
+func clamp_step(delta: float) -> float:
+	return minf(delta, max_step_sec) if max_step_sec > 0.0 else delta
 
 
 ## The grade for a press `offset_sec` away from the peak (either side).

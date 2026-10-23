@@ -28,7 +28,8 @@ step "Blender asset rebuild + compare (M1-QA-02, docs/kb/qa/blender_builds.md)"
 # Rebuilds the Blender jobs whose assets_src/ or outputs changed since the merge-base with
 # $HYMN_BLENDER_BASE (else main / origin/main; with no base ref, every job) in a scratch copy, and
 # compares each output with the committed file. HYMN_BLENDER_ALL=1 runs every job;
-# HYMN_SKIP_BLENDER=1 skips the step; HYMN_BLENDER_TIMEOUT bounds it (s, default 1800).
+# HYMN_SKIP_BLENDER=1 skips the step; HYMN_BLENDER_TIMEOUT bounds it (s, default 1800);
+# HYMN_BLENDER_REQUIRED=1 (the Lead's merge run) fails instead of SKIP when Blender is missing.
 if [ "${HYMN_SKIP_BLENDER:-0}" = "1" ]; then
   echo "SKIP Blender rebuild: HYMN_SKIP_BLENDER=1"
 else
@@ -40,7 +41,9 @@ else
   bl=$?
   set -e
   echo "blender step: $((SECONDS - bl_t0))s"
-  if [ "$bl" -eq 3 ]; then
+  if [ "$bl" -eq 3 ] && [ "${HYMN_BLENDER_REQUIRED:-0}" = "1" ]; then
+    echo "Blender rebuild required (HYMN_BLENDER_REQUIRED=1) but no pinned Blender (python3 tools/dev/fetch_blender.py)"; exit 1
+  elif [ "$bl" -eq 3 ]; then
     echo "SKIP Blender rebuild: no pinned Blender (python3 tools/dev/fetch_blender.py)"
   elif [ "$bl" -eq 124 ]; then
     echo "Blender rebuild timed out after ${HYMN_BLENDER_TIMEOUT:-1800} s (logs: $L/blender_*.log)"; exit 1
@@ -57,12 +60,14 @@ step "Godot import"
 # before the CSVs are imported and logs a spurious "Failed loading resource". Gate on pass 2.
 $T "$GODOT" --headless --path . --import > $L/hymn_import_warm.log 2>&1 || true
 $T "$GODOT" --headless --path . --import > $L/hymn_import.log 2>&1 || true
-if grep -E "SCRIPT ERROR|Parse Error|Failed to load script|Failed loading resource" $L/hymn_import.log; then
+if ! python3 tools/dev/godot_log_check.py import $L/hymn_import.log; then
   echo "Import reported errors (full log: $L/hymn_import.log)"; exit 1
 fi
 step "Godot tests"
 $T "$GODOT" --headless --path . res://tests/run_tests.tscn 2>&1 | tee $L/hymn_tests.log | grep -E "FAIL|Tests:"
-if grep -E "SCRIPT ERROR|Parse Error" $L/hymn_tests.log; then echo "Script errors during tests"; exit 1; fi
+# Only real GDScript errors: a test that loads a deliberately torn .tres makes Godot print
+# "<file>.tres:N - Parse Error", which is not a script error (M1-QA-06, tools/dev/godot_log_check.py).
+if ! python3 tools/dev/godot_log_check.py tests $L/hymn_tests.log; then echo "Script errors during tests"; exit 1; fi
 grep -q "Tests: .* 0 failed" $L/hymn_tests.log
 step "Coverage gate: battle/ + progression/ (ADR 0013)"
 cov_t0=$SECONDS

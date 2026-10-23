@@ -87,6 +87,7 @@ var _target_index := 0
 var _swap_in_id: StringName = &""
 var _last_foe: StringName = &""
 var _ring: SwellTimingRing
+var _ring_clock: SwellRingClock
 
 @onready var stage: BattleStage = %Stage
 @onready var hud: BattleHud = %BattleHud
@@ -116,7 +117,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	tick(delta)
+	tick(delta, true)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -247,10 +248,11 @@ func _wait_frame() -> void:
 		await get_tree().process_frame
 
 
-## Advances paced waits by `delta` seconds (called from _process; tests call it directly).
-func tick(delta: float) -> void:
+## Advances paced waits by `delta` seconds (called from _process; tests call it directly). A
+## rendered `frame` moves an open Swell input by at most its max_step_sec (SwellRingClock).
+func tick(delta: float, frame: bool = false) -> void:
 	if state == STATE_SWELL_INPUT and swell_input_live:
-		_ring.advance(delta)  # input timing is real time: never scaled by pacing
+		_ring_clock.step(delta, frame)  # input timing is real time: never scaled by pacing
 		_after_ring()
 	if not _after_wait.is_valid():
 		return
@@ -692,6 +694,7 @@ func _commit_skill(skill_id: StringName, target_ids: Array[StringName]) -> void:
 		return
 	_pending_skill = skill_id
 	_ring = SwellTimingRing.new(swell.input_for(engine.current))
+	_ring_clock = SwellRingClock.new(_ring)
 	_set_state(STATE_SWELL_INPUT)
 	hud.commands.visible = false
 	hud.swell_ring.open(_ring, menus.skill_name(engine, skill_id), tr("HUD_SWELL_RING_HINT"))
@@ -701,7 +704,7 @@ func _commit_skill(skill_id: StringName, target_ids: Array[StringName]) -> void:
 ## The open input takes ui_accept (press) and ui_cancel (back out, only before the first grade).
 func _handle_ring_input(event: InputEvent) -> bool:
 	if event.is_action_pressed(&"ui_accept"):
-		_ring.press()
+		_ring_clock.press(swell_input_live)
 	elif event.is_action_pressed(&"ui_cancel"):
 		_ring.cancel()
 	else:
