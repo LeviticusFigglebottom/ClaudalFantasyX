@@ -9,6 +9,8 @@ const SCRIM_SHADER := preload("res://game/ui/shaders/scrim.gdshader")
 
 var outcome: StringName = &""
 var result_rows: Array[Dictionary] = []
+## Scales the open animation's rise (UiSettings.motion_scale(); halved under reduced motion).
+var motion_scale := 1.0
 
 var _m: Dictionary = {}
 var _open_m: Dictionary = {}
@@ -157,7 +159,7 @@ func _animate_open() -> void:
 	if not is_inside_tree():
 		return
 	var dur := HudLayout.num(_open_m, "sec")
-	var rise := HudLayout.num(_open_m, "rise_px")
+	var rise := HudLayout.num(_open_m, "rise_px") * motion_scale
 	var from := HudLayout.num(_open_m, "scale_from")
 	_panel.pivot_offset = _panel.size * 0.5
 	_panel.scale = Vector2(from, from)

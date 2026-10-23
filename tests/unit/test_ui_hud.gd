@@ -145,3 +145,82 @@ func _input(menu: CommandMenu, action: StringName) -> void:
 func _free() -> void:
 	host.get_parent().remove_child(host)
 	host.free()
+
+
+# --- M1-UI-02 ----------------------------------------------------------------------------
+
+
+func test_every_status_has_its_own_glyph_shape() -> void:
+	var raw := FileAccess.get_file_as_string("res://game/data/battle/statuses.json")
+	var rows: Array = (JSON.parse_string(raw) as Dictionary)["statuses"]
+	assert_eq(rows.size(), 21, "SPEC §6.8 statuses")
+	for row: Variant in rows:
+		var sid := StringName(str((row as Dictionary)["id"]))
+		assert_true(StatusGlyph.has_shape(sid), "%s has a dedicated vector glyph (no fallback diamond)" % sid)
+	_free()
+
+
+func test_glyph_polarity_is_coded_by_backing_shape_too() -> void:
+	var buff := StatusGlyph.new(&"reflect")
+	var ailment := StatusGlyph.new(&"doom")
+	assert_true(buff.shows_buff(), "Reflect sits on a disc")
+	assert_false(ailment.shows_buff(), "Doom sits on a diamond")
+	var flipped := StatusGlyph.new(&"regen", true)
+	assert_false(flipped.shows_buff(), "Regen under Zombie reads as an ailment")
+	var zombie := BattleCombatant.from_dict(&"rhen", BattleCombatant.TEAM_PARTY, {"stats": {"hp": 10}})
+	zombie.add_status(&"regen", 3)
+	assert_false(StatusGlyph.inverted_for(zombie, &"regen"))
+	zombie.add_status(&"zombie", -1)
+	assert_true(StatusGlyph.inverted_for(zombie, &"regen"))
+	assert_false(StatusGlyph.inverted_for(zombie, &"zombie"))
+	for g: StatusGlyph in [buff, ailment, flipped]:
+		g.free()
+	_free()
+
+
+func test_party_row_shows_stone_and_the_doom_count() -> void:
+	var c := BattleCombatant.from_dict(&"asha", BattleCombatant.TEAM_PARTY, {"stats": {"hp": 300, "mp": 60}})
+	c.add_status(&"doom", 4)
+	var row := PartyRow.new()
+	row.size = Vector2(560, 72)
+	host.add_child(row)
+	row.setup(HudLayout.section(&"party"), c, "Asha", Color.ROYAL_BLUE)
+	assert_eq(row.doom_text(), "4")
+	assert_false(row.is_stone())
+	c.add_status(&"petrify", -1)
+	row.refresh(false)
+	assert_true(row.is_stone(), "petrified: the portrait turns to stone")
+	assert_eq(row.status_ids(), [&"petrify"] as Array[StringName], "stone clears every other status")
+	assert_eq(row.doom_text(), "", "and with it the countdown")
+	assert_eq(row.hp_text(), "300/300", "HP is kept under stone")
+	_free()
+
+
+func test_party_row_marks_an_automatic_turn() -> void:
+	var panel := PartyPanel.new()
+	host.add_child(panel)
+	var c := BattleCombatant.from_dict(&"rhen", BattleCombatant.TEAM_PARTY, {"stats": {"hp": 420}})
+	var members: Array[BattleCombatant] = [c]
+	panel.show_members(members, {&"rhen": "Rhen"})
+	panel.set_current(&"rhen", &"berserk")
+	assert_true(panel.row_for(&"rhen").is_current)
+	assert_eq(panel.row_for(&"rhen").auto_reason, &"berserk")
+	panel.set_current(&"rhen")
+	assert_eq(panel.row_for(&"rhen").auto_reason, &"", "a player turn clears it")
+	_free()
+
+
+func test_new_hud_metrics_and_text_styles_exist() -> void:
+	var tl := HudLayout.section(&"timeline")
+	for k: String in ["current_frame_px", "current_glow_px", "caption_height", "doom_glyph_px", "doom_label_width"]:
+		assert_true(tl.has(k), "timeline.%s" % k)
+	var marker := HudLayout.section(&"actor_marker")
+	assert_true(HudLayout.num(marker, "size_px") > 18.0, "the current-actor marker grew (UI-01 lead review)")
+	for k: String in ["lift_px", "stem_px", "frame_px"]:
+		assert_true(marker.has(k), "actor_marker.%s" % k)
+	var theme := host.theme
+	for v: StringName in [&"FloatText", &"BadgeNumber"]:
+		assert_true(theme.get_font_size(&"font_size", v) >= 22, "%s keeps the 22 px minimum" % v)
+	for role: StringName in [&"stone", &"stone_crack"]:
+		assert_true(theme.has_color(role, &"Hymn"), "theme role %s" % role)
+	_free()

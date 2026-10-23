@@ -1,0 +1,259 @@
+class_name UiSettings
+extends RefCounted
+## Accessibility settings for every UI screen (SPEC §6.11, docs/kb/tech/ui.md § Accessibility):
+## reduced motion, a text-size scale, and a colorblind palette. Data-driven: the settings, their
+## options, their loc keys and the palette overrides live in game/data/ui/accessibility.json, so
+## the future settings menu only lists settings() and calls set_value().
+##
+## One shared instance (shared()) is what the HUD listens to; it loads user://settings.cfg once.
+## Tests and captures build their own with UiSettings.new(), which always starts at the defaults.
+## Views ask it questions (animations_enabled(), motion_scale(), theme_for()) instead of reading
+## raw values, so a new setting never needs a change in every component.
+
+signal changed(key: StringName)
+
+const DATA_PATH := "res://game/data/ui/accessibility.json"
+const CONFIG_PATH := "user://settings.cfg"
+const REDUCED_MOTION := &"reduced_motion"
+const TEXT_SCALE := &"text_scale"
+const PALETTE := &"palette"
+const KIND_BOOL := "bool"
+const KIND_ENUM := "enum"
+const PALETTE_STANDARD := &"standard"
+
+static var _shared: UiSettings
+
+var data: Dictionary = {}
+
+var _values: Dictionary = {}
+var _rows: Dictionary = {}
+var _order: Array[StringName] = []
+var _theme_cache: Dictionary = {}
+
+
+func _init(data_path: String = DATA_PATH) -> void:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(data_path))
+	if typeof(parsed) != TYPE_DICTIONARY or typeof((parsed as Dictionary).get("accessibility")) != TYPE_DICTIONARY:
+		push_error("UiSettings: could not read 'accessibility' from %s" % data_path)
+		return
+	data = (parsed as Dictionary)["accessibility"] as Dictionary
+	for raw: Variant in data.get("settings", []):
+		var row := raw as Dictionary
+		var sid := StringName(str(row.get("id", "")))
+		_rows[sid] = row
+		_order.append(sid)
+	reset()
+
+
+## The instance the game uses (loaded from user://settings.cfg on first use).
+static func shared() -> UiSettings:
+	if _shared == null:
+		_shared = UiSettings.new()
+		_shared.load_from(CONFIG_PATH)
+	return _shared
+
+
+## Replaces the shared instance (tests; null makes the next shared() reload from disk).
+static func set_shared(s: UiSettings) -> void:
+	_shared = s
+
+
+# --- the generic layer the settings menu calls --------------------------------------------
+
+
+## Setting ids in menu order.
+func settings() -> Array[StringName]:
+	return _order.duplicate()
+
+
+## The data row of one setting: {id, type, default, options?, option_keys?, label_key, help_key}.
+func setting_row(key: StringName) -> Dictionary:
+	return _rows.get(key, {}) as Dictionary
+
+
+## Allowed values in display order ([false, true] for a bool).
+func options(key: StringName) -> Array:
+	var row := setting_row(key)
+	if str(row.get("type", "")) == KIND_BOOL:
+		return [false, true]
+	return (row.get("options", []) as Array).duplicate()
+
+
+func default_value(key: StringName) -> Variant:
+	return _coerce(key, setting_row(key).get("default"))
+
+
+func get_value(key: StringName) -> Variant:
+	return _values.get(key, default_value(key))
+
+
+## Sets one setting. Returns false (and changes nothing) for an unknown key or a value that is
+## not one of its options. Emits `changed` only when the value really changes.
+func set_value(key: StringName, value: Variant) -> bool:
+	if not _rows.has(key):
+		return false
+	var v: Variant = _coerce(key, value)
+	if v == null or not _has_option(key, v):
+		return false
+	if _values.get(key) == v:
+		return true
+	_values[key] = v
+	changed.emit(key)
+	return true
+
+
+## Back to the defaults; emits `changed` for every setting that moved.
+func reset() -> void:
+	for key in _order:
+		var was: Variant = _values.get(key)
+		_values[key] = default_value(key)
+		if was != null and was != _values[key]:
+			changed.emit(key)
+
+
+func is_default() -> bool:
+	for key in _order:
+		if get_value(key) != default_value(key):
+			return false
+	return true
+
+
+# --- what views ask -----------------------------------------------------------------------
+
+
+func reduced_motion() -> bool:
+	return bool(get_value(REDUCED_MOTION))
+
+
+func text_scale() -> float:
+	return float(get_value(TEXT_SCALE))
+
+
+func palette() -> StringName:
+	return StringName(str(get_value(PALETTE)))
+
+
+## False under reduced motion: chips snap (with a short cross-fade) instead of sliding, pulses,
+## bobbing and breathing stop, and the camera never shakes.
+func animations_enabled() -> bool:
+	return not reduced_motion()
+
+
+## Multiplier for any translation a view animates (art/ui.md §5: halved under reduced motion).
+func motion_scale() -> float:
+	return float(_motion().get("translate_scale_reduced", 1.0)) if reduced_motion() else 1.0
+
+
+## The cross-fade that replaces a slide under reduced motion.
+func crossfade_sec() -> float:
+	return float(_motion().get("crossfade_sec", 0.0))
+
+
+func crossfade_from_alpha() -> float:
+	return float(_motion().get("crossfade_from_alpha", 0.0))
+
+
+## Palette ids in display order.
+func palette_ids() -> Array[StringName]:
+	var out: Array[StringName] = []
+	for p: Variant in options(PALETTE):
+		out.append(StringName(str(p)))
+	return out
+
+
+## Theme role -> [swatch or "#RRGGBB", alpha] overrides of the active palette.
+func color_overrides() -> Dictionary:
+	return ((data.get("palettes", {}) as Dictionary).get(String(palette()), {}) as Dictionary).duplicate(true)
+
+
+## The theme recipe (game/data/ui/theme.json) with this palette's colors and every font size
+## scaled by text_scale() (rounded; scale >= 1, so the 22 px minimum holds).
+func theme_config(base_cfg: Dictionary = {}) -> Dictionary:
+	var cfg := (base_cfg if not base_cfg.is_empty() else HymnThemeBuilder.load_config()).duplicate(true)
+	var colors: Dictionary = cfg.get("colors", {})
+	var over := color_overrides()
+	for role: Variant in over:
+		colors[role] = over[role]
+	var s := text_scale()
+	cfg["default_font_size"] = roundi(float(cfg.get("default_font_size", 0)) * s)
+	var variations: Dictionary = cfg.get("variations", {})
+	for vname: Variant in variations:
+		var v: Dictionary = variations[vname]
+		if v.has("size"):
+			v["size"] = roundi(float(v["size"]) * s)
+	return cfg
+
+
+## The theme a UI root should use: `base` itself at the defaults (so nothing is rebuilt and the
+## saved hymn_theme.tres stays authoritative), otherwise a theme built from theme_config().
+## Built themes are cached per (palette, scale).
+func theme_for(base: Theme) -> Theme:
+	if palette() == PALETTE_STANDARD and is_equal_approx(text_scale(), 1.0):
+		return base
+	var key := "%s@%.2f" % [palette(), text_scale()]
+	if not _theme_cache.has(key):
+		_theme_cache[key] = HymnThemeBuilder.build(theme_config())
+	return _theme_cache[key] as Theme
+
+
+# --- persistence (the same user://settings.cfg as GraphicsSettings, its own section) -------
+
+
+func save_to(path: String = CONFIG_PATH) -> Error:
+	var cfg := ConfigFile.new()
+	cfg.load(path)  # keep the other sections (graphics, audio, ...); a missing file is fine
+	for key in _order:
+		cfg.set_value(_section(), String(key), get_value(key))
+	return cfg.save(path)
+
+
+## Loads saved values; unknown keys and values outside the options are ignored.
+func load_from(path: String = CONFIG_PATH) -> void:
+	var cfg := ConfigFile.new()
+	if cfg.load(path) != OK:
+		return
+	for key in _order:
+		if cfg.has_section_key(_section(), String(key)):
+			var v: Variant = _coerce(key, cfg.get_value(_section(), String(key)))
+			if v != null and _has_option(key, v):
+				_values[key] = v
+
+
+# --- internals ----------------------------------------------------------------------------
+
+
+func _section() -> String:
+	return str(data.get("config_section", "accessibility"))
+
+
+func _motion() -> Dictionary:
+	return data.get("motion", {}) as Dictionary
+
+
+func _has_option(key: StringName, v: Variant) -> bool:
+	for o: Variant in options(key):
+		if _coerce(key, o) == v:
+			return true
+	return false
+
+
+## Normalizes a raw value to the setting's type (null when it cannot be one).
+func _coerce(key: StringName, value: Variant) -> Variant:
+	var row := setting_row(key)
+	var t := typeof(value)
+	if str(row.get("type", "")) == KIND_BOOL:
+		return bool(value) if t in [TYPE_BOOL, TYPE_INT, TYPE_FLOAT] else null
+	var opts: Array = row.get("options", [])
+	if opts.is_empty():
+		return null
+	if typeof(opts[0]) in [TYPE_INT, TYPE_FLOAT]:
+		return _snap_number(opts, value) if t in [TYPE_INT, TYPE_FLOAT] else null
+	return str(value) if t in [TYPE_STRING, TYPE_STRING_NAME] else null
+
+
+## A number as the matching option (so 1.15 from a file equals the 1.15 option exactly).
+static func _snap_number(opts: Array, value: Variant) -> float:
+	for o: Variant in opts:
+		if is_equal_approx(float(o), float(value)):
+			return float(o)
+	return float(value)
