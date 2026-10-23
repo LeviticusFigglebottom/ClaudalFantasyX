@@ -43,10 +43,10 @@ Seven bound spirits of past Cantors. The Order calls them "the Saints who stayed
 - **The final fight:** Toma's fight. Ama was what Toma tried to be, faithful enough to ask. She asks whether anyone read her cords. Toma says he did, and that they broke his faith, and thanks her for it. *It lands as: a believer honouring the believer who told the truth.*
 
 ## 5. Nhoa, the Rootlight *(Ice)*
-- **Temple:** Lowlight, Sunken Vey. Its inner sanctum lies underwater at the foot of a Lit Age well-shaft, where cold water from the open deep wells up through the floor. Down there the light is low, the water is the coldest in Maresh, and drowned glimmer sifts down through it like snow. Nothing in the temple is frozen: the cold is the deep's.
+- **Temple:** Lowlight, Sunken Vey. Its inner sanctum lies underwater at the foot of a Lit Age well-shaft, where cold water from the open deep wells up through the floor. Down there the light is low, the water is the coldest in Maresh, and drowned glimmer sifts down through it like silt. Nothing in the temple is frozen: the cold is the deep's.
 - **Who she was:** **Ressa**, the 56th Cantor, sang about 70 years ago. She was the only Kirru Cantor and Pell's clutch-sister, and she was a hearer who believed she could end the storm from inside.
-- **Form:** a tall Kirru-like figure made entirely of drifting motes that sift around her like snow in deep water, with antlers of mangrove root and a long heron neck. She moves through water as if it were air, and the cold moves with her. **A name-shell** (her own, carved) hangs at her throat (the keepsake).
-- **Battle identity:** Ice damage carried on sifting mote-swarms, and the ability to *copy* the last enemy action (an echo of Pell). **Swell:** *Farewell-Tide*, the snow falling upward in a rising column of light (the only Vowbound finisher where the motes go *up*, a visual seed for the Letting).
+- **Form:** a tall Kirru-like figure made entirely of drifting motes that sift around her like silt in deep water, with antlers of mangrove root and a long heron neck. She moves through water as if it were air, and the cold moves with her. **A name-shell** (her own, carved) hangs at her throat (the keepsake).
+- **Battle identity:** Ice damage carried on sifting mote-swarms, and the ability to *copy* the last enemy action (an echo of Pell). **Swell:** *Farewell-Tide*, the settling silt turning and rising in a column of light (the only Vowbound finisher where the motes go *up*, a visual seed for the Letting).
 - **The final fight:** Pell's fight. She is glad to see him and sad that he is old. He fights her silently. When she starts to lift, he **turns his back**, the Kirru farewell he refused her seventy years ago, and sings. *It lands as: the most complete act of love in the game, done by looking away.*
 
 ## 6. Ethren, the Level Saint *(Glimmer)*
@@ -61,7 +61,7 @@ Seven bound spirits of past Cantors. The Order calls them "the Saints who stayed
 - **Who she was:** **Kesh Aurane**, the 1st Cantor and a Lamplighter. Sefir's wife. She sang herself in a thousand years ago and was displaced forty years later. She has been awake in stone ever since, unable to lift, while her husband became what he became. She hid the melody of the Eighth Verse in the Choir stones.
 - **Form:** a colossal woman of standing seawater, rising from the Choir's sunken bowl. Her robe is a hundred open choir-mouths. **A Lamplighter's lamp-key** hangs at her belt (the keepsake).
 - **Battle identity:** she cycles through all six elements by phase (a Combat note: telegraph each shift on the timeline). **Swell:** *The Seven*, all seven verses at once.
-- **Acquisition:** binding her at the Choir is what shows Asha (through Kesh's memory) the founding, and the truth of the Hush.
+- **Acquisition:** binding her at the Choir is what shows Asha, through Kesh's memory, the truth of the Hush: the singer becomes the storm's next heart. The founding itself is already known from the Lamp Archive (Ch13, [ADR 0016](../decisions/0016-act-two-restaging.md)).
 - **The final fight:** fought just before Sefir, with Sefir watching. She fights at full strength because she *wants* the party strong enough to beat him. When she lifts, she doesn't look at him. *It lands as: a thousand-year-old woman choosing release over the man who wouldn't let her go, which is the thesis of the game, shown to its antagonist.*
 
 ---

@@ -103,8 +103,8 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 
 ### Ch11 "Lowlight"
 **Zones:** Sunken Vey, the drowned galleries [`ch11/sunken_vey`]. Lowlight temple, half underwater [`ch11/lowlight`].
-- Liss finds Lit Age records showing the founders were *binders*. Rhen admits he is Dace's son and that he hid it. Liss is furious.
-- Asha binds **Nhoa** (Ice) in the drowned sanctum at the foot of the well-shaft, where the deep's cold wells up and drowned glimmer sifts down like snow. Nhoa is Ressa. Pell kneels before his sister and says nothing for a full scene.
+- Liss reads a Saltwright housing-mark on a Lowlight conduit, the same make as Rhen's lantern, and Rhen admits he is Dace's son and that he hid it. Liss is furious. *(The founders' records are no longer found here: they are in the Ch13 Lamp Archive, [ADR 0016](../../decisions/0016-act-two-restaging.md).)*
+- Asha binds **Nhoa** (Ice) in the drowned sanctum at the foot of the well-shaft, where the deep's cold wells up and drowned glimmer sifts down through it like silt. Nhoa is Ressa. Pell kneels before his sister and says nothing for a full scene.
 - **Boss:** *the Lamp Engine*, a still-running Lit Age machine full of bound dead (two phases). Releasing its core makes a small upward lift, a foreshadowing.
 - **Side scene:** Rhen and Liss repair a lamp together in silence. It's the start of their truce.
 
@@ -116,30 +116,36 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 - **Side scene:** an Ullari woman ties a knot for her son on the pass-cord and walks on. Rhen asks how she can. She says, "I carry the knot. He doesn't have to."
 
 ### Ch13 "Gold and Lacquer"
-**Zones:** Ansedra, the holy city [`ch13/ansedra`]. Sanctum of the Level, the Glimmer temple [`ch13/sanctum`].
+**Zones:** Ansedra, the holy city [`ch13/ansedra`]. Sanctum of the Level, the Glimmer temple [`ch13/sanctum`]. The Lamp Archive [`ch13/lamp_archive`].
 - A city of perfect stillness. Sefir hosts the party. In the Sanctum the basin is a perfect mirror that has not stirred in four hundred years, lit from beneath by a light that never moves, and pilgrims kneel to it. Liss looks at the light for a long time and says nothing. Asha binds **Ethren** (Glimmer), and Ysolde stands before Corran with a Cantor beside her.
 - The **peace wedding** is announced: Liss's brother **Tobin** will marry **Merel Dask**, a Warden's daughter. Liss is cautiously, painfully hopeful.
+- **The founding truth, on paper ([ADR 0016](../../decisions/0016-act-two-restaging.md)).** To show the Order has nothing to hide from a Saltwright, Sefir gives Liss the run of the **Lamp Archive**, the Order's library of Lit Age records, for the three days before the wedding. Liss and Ysolde find what it keeps in plain sight:
+  - the founders' own lamp-ledgers, showing that the Lamplighters were binders who bound themselves and the storm together, and that the Order forbids binding so that only the Order binds;
+  - the Cantor roll, all sixty-one names, with one column the public copies leave out: *kept* or *spent*. Seven are kept. Ysolde finds Corran's line: *kept, Sanctum*, and in the margin, in a hand she has seen on every Warden's seal for her whole life, *to be spent at the next Calm*. She does the maths on Corran here.
+  - The same few hands sign the ledgers across four hundred years. Nobody says "revenant" yet. Liss just lays the pages side by side.
+- They agree to say nothing until Tobin is married and they can get him out. Tobin won't call it off: the wedding is his people's peace. *Staging:* Sefir knows exactly what Liss read. He let her.
 - **Side scene:** Ysolde shows Rhen the house she shared with Corran, now someone else's.
 
 ### Ch14 "The Peace Wedding"
-**Zones:** the Lacquer Court [`ch13/ansedra_lacquer_court`].
+**Zones:** the Lacquer Court [`ch13/ansedra_lacquer_court`]. The still lagoon at night [`ch13/ansedra` lagoon].
 - A gorgeous ceremony at dusk on still water. Sefir officiates. The Conclave springs the trap: Saltwright leaders are seized and the party is declared **heretics**. **Tobin is killed** shielding Merel.
-- In the escape, the Stillguard perform a **Stilling** on Kerrid, and motes tear out of him. **The reveal.** He holds it off by will and tells them what he is.
-- **Boss:** *Warden Malcor Venn* (Abiding, two phases). The second phase reveals that he is a revenant: his wounds don't bleed.
+- **The escape goes out across the water, never under the city.** Merel, widowed for a minute, cuts her own bridal barge loose from the court and poles the party out onto the lagoon, where no wake is permitted. Every stroke is the first ripple Ansedra has seen in four hundred years. The bells ring, and the whole city comes to its windows to watch the water move. **Merel does not come.** She stays to drop the court's water-gate behind them, and the last thing the party sees is her father's Stillguard taking her, still in wedding red, with Tobin's blood on her sleeve. That is the cost of their escape, and they watch it paid.
+- **Boss:** *Warden Malcor Venn* on the Conclave's pursuit barge (two phases). In phase 1 his barge's bound flat-engine pulls the water level and still around the party, so the timeline slows. Liss breaks the engine. In phase 2 he boards, fighting as a living-seeming man. Nothing about what he is is revealed here: he is left standing on his crippled barge in the middle of the ripples.
 - No side scene; the chapter runs straight on.
 
-### Ch15 "Heretics"
-**Zones:** the Underreach, Ansedra's sunken under-city [`ch15/underreach`]. The Cistern [`ch15/cistern`].
-- Fleeing below the city, they find the **Cistern**: the glimmer machines that hold Ansedra still, and the reservoir where "retired" Saints are consumed.
-- Toma's faith breaks. Ysolde does the maths on Corran's fate. Toma confesses the camp burning to Liss. She lets him carry Tobin.
-- **Boss:** *the Cistern Keeper*, a bound-dead construct (two phases).
-- They escape by sea on a stolen barge.
+### Ch15 "Unlamped"
+**Zones:** the open sea at night, aboard the bridal barge [`ch15/open_sea`]. Hollowmere, first visit [`ch17/hollowmere`].
+- The barge carries no lamp (wedding barges never do, so as not to trouble the still water), and nobody dares strike one. They drift south through the night with Tobin's body under Merel's bridal cloth.
+- **Boss:** *the Wakefin*, an Undertow-spawn that followed the first wake out of Ansedra's lagoon. It is fought on the drifting barge in the dark, with the sea-glow as the only light. *(It replaces the Cistern Keeper.)*
+- **Kerrid's reveal, at sea and by his own word.** Past midnight the barge drifts over a shoal where an old Rising's dead are still held. The motes come up off the water and drift toward Kerrid, the way held light drifts toward the sea, and a few start to leave his hands to join them. He doesn't wait to be exposed. He sits down, holds his hands still, and tells them: what happened at the Choir, Imra, Dace, and the promise that kept him walking. Toma: "Your breath. In Ullar." Kerrid: "Yes." Nobody performs a rite on him, and nobody attacks.
+- At dawn Liss sings a Saltwright current-song into the fog, and **Hollowmere** answers. Liss has to tell her father that Tobin is dead. **Toma's faith breaks** among the people his order burned. He confesses the camp burning to Liss, and she lets him carry Tobin to the pyre-raft.
+- **Side scene:** Rhen and Liss's father share a drink and two different memories of Dace.
 
 ### Ch16 "The Edge of the World"
 **Zones:** the Pale Rim, white shallows [`ch16/pale_rim`]. The Drowned Choir [`ch16/drowned_choir`].
-- Days of wading over white sand under a white sky. Kerrid finds the spot where he died.
-- At the Choir, Asha binds **Kesh** and sees, through Kesh's memory, the founding and what the Hush truly does.
-- **Sefir arrives** and explains reasonably. He offers Asha the chance to free her mother. Then he reveals that he wants her to sing *him* in. **Asha refuses.** Ysolde denounces him.
+- A Hollowmere ship carries them as far as the shallows allow and waits at the Rim. Days of wading over white sand under a white sky follow. Kerrid finds the spot where he died.
+- At the Choir, Asha binds **Kesh**. Through Kesh's memory she learns the one thing the Archive couldn't tell them: **what the Hush truly does**. The singer becomes the storm's next heart. Kesh shows it from inside, and she shows the man who bound her in the stones rather than let her go.
+- **Sefir arrives** and explains reasonably. **His temptation is to go home ([ADR 0016](../../decisions/0016-act-two-restaging.md)).** "Leave the Eighth Verse in the stones, Asha. Go home to Haluna. Live. No Cantor will ever be named again. Your mother sleeps, and is never spent. I will see to the storm myself." It is the Long Stillness offered as a gift: nobody pays, nobody is lost, and nothing ends. Ysolde asks the only question: "Then who does it take?" He smiles and doesn't answer. **Asha refuses.** Ysolde denounces him.
 - **Boss:** *Sefir's Abiding guard*, then the storm wakes early as Imra's heart falters. Kerrid holds the line. The party is swept away.
 - **Act break:** a Rhen voice-over.
 
@@ -150,9 +156,9 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 
 ### Ch17 "Hollowmere"
 **Zones:** the Hollowmere flotilla [`ch17/hollowmere`].
-- Saltwright ships pulled the party from the sea. Tobin is mourned. Liss's father is broken.
+- The Hollowmere ship that waited at the Rim pulled the party from the sea. Liss's father hasn't spoken since Tobin's pyre-raft.
 - Dace's dry-dock and his unfinished ship. Rhen reads Dace's logs and finds his own name in every entry. Asha decides on the Unbinding. Ysolde begins reconstructing the Eighth Verse.
-- **Side scene:** Rhen and Liss's father share a drink and two different memories of Dace.
+- **Side scene:** Liss's father breaks his silence to show Rhen the berth where Dace built his first hull.
 
 ### Ch18 "The Kite"
 **Zones:** the Kite (a hub) [`ch18/kite`]. Reedhollow revisited.
