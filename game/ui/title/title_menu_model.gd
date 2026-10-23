@@ -5,7 +5,7 @@ extends RefCounted
 ## The cursor starts on Continue when it is available, otherwise on New Game, and skips rows that
 ## are not available. Every row has a help line, including why a row is unavailable (pillar 4).
 ##
-## New Game confirm (M1-ARC-08, ADR 0017): a new run's first chapter autosave writes over slot 0.
+## New Game confirm (M1-ARC-08, ADR 0018): a new run's first chapter autosave writes over slot 0.
 ## When slot 0 holds a readable (or newer-build) autosave, New Game first asks: the rows become
 ## [Go back, Begin anew] with "Go back" first and the default, and the help line says what would
 ## be lost. Manual records are never touched by a new run.

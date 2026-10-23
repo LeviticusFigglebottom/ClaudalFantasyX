@@ -1,6 +1,6 @@
-# 0017 — New Game asks before a new run can replace the autosave; the chapter autosave waits for a safe point
+# 0018 — New Game asks before a new run can replace the autosave; the chapter autosave waits for a safe point
 
-- **Status:** proposed (Architect, M1-ARC-08; the Lead accepts or overturns it on merge)
+- **Status:** accepted (Lead sign-off 2026-10-23; renumbered from 0017 on merge)
 - **Date:** 2026-10-23
 - **Roles affected:** UI (title screen), Narrative and Cinematics (the cutscene sequencer), QA
 - **Author role:** Systems Architect
