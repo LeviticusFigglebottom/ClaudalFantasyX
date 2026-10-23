@@ -45,7 +45,11 @@ $T "$GODOT" --headless --path . --quit-after 60 > $L/hymn_boot.log 2>&1
 if grep -E "SCRIPT ERROR|ERROR" $L/hymn_boot.log; then echo "Boot scene errors"; exit 1; fi
 step "Screenshot capture + regression (software Forward+, ADR 0009)"
 set +e
-$T tools/screenshots/capture.sh
+# HYMN_SHOTS=id1,id2 restricts capture+compare to those shots. Worktree agents use it for the
+# shots their change can affect; the Lead runs the full manifest on every merge (CLAUDE.md §3).
+shot_args=()
+if [ -n "${HYMN_SHOTS:-}" ]; then shot_args=(--shots "$HYMN_SHOTS"); echo "screenshots restricted to: $HYMN_SHOTS"; fi
+timeout "${HYMN_CAPTURE_TIMEOUT:-3600}" tools/screenshots/capture.sh "${shot_args[@]}"
 cap=$?
 set -e
 if [ "$cap" -eq 3 ]; then
@@ -53,6 +57,6 @@ if [ "$cap" -eq 3 ]; then
 elif [ "$cap" -ne 0 ]; then
   echo "Screenshot capture failed (log: ${TMPDIR:-/tmp}/hymn_capture.log)"; exit 1
 else
-  python3 tools/screenshots/compare.py
+  python3 tools/screenshots/compare.py "${shot_args[@]}"
 fi
 printf '\nAll local CI gates passed.\n'

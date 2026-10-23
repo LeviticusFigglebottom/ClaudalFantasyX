@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/save_shrine/save_shrine_shot.gd" id="1_drv"]
+[ext_resource type="PackedScene" path="res://game/levels/_tests/save_shrine/save_shrine_test.tscn" id="2_zone"]
+
+[node name="SaveShrineShot" type="Node3D"]
+script = ExtResource("1_drv")
+view = 0
+
+[node name="Zone" parent="." instance=ExtResource("2_zone")]

@@ -12,7 +12,7 @@ It runs as a step in `tools/ci_local.sh` (after "Godot tests") and in the CI `go
 
 ## What is measured
 
-- **Files:** every `.gd` under `game/battle/` and `game/progression/`, found by globbing on each run, so new files are picked up automatically. `game/battle/scene/**` is excluded because it is UI glue, covered by screenshots and the sandbox scene. The list lives in `MEASURED_DIRS` / `EXCLUDE` in `run_coverage.py`.
+- **Files:** every `.gd` under `game/battle/` and `game/progression/`, found by globbing on each run, so new files are picked up automatically. `game/battle/scene/**` is excluded because it is UI glue, covered by screenshots and the sandbox scene. The list lives in `MEASURED_DIRS` / `EXCLUDE` in `run_coverage.py`. Nothing else is excluded. Command-line entry scripts (`extends SceneTree`, run with `godot -s`) belong outside the measured directories and must stay thin process-I/O wrappers: for example, `tools/balance/sim_main.gd` only calls `BattleSim.parse_args()` / `run_cli()`, which are measured and tested in `tests/unit/test_battle_sim.gd`.
 - **Lines:** the first line of every statement inside a function body, lambda, setter or getter. That includes `var`, expressions, `return`, `pass`, `break`, `continue`, and the header lines of `if`/`elif`/`while`/`for`/`match`.
 - **Not counted:** `else:` lines, `match` patterns, continuation lines of a multi-line statement, `func` headers, comments, and class-level `var`/`const` initializers.
 - **Test suite:** `res://tests/run_tests.tscn`, the full unit and integration suite. Every test counts, including integration tests.
@@ -106,3 +106,9 @@ Ranked by percentage, then missed lines. Each item is a test to write, or dead c
 5. **progression**: `game/progression/lattice_rules.gd:24 load_file()`, **60%** (2 missed). The parse-failure path (lines 27–28) is untested.
 
 Next in line: `battle_engine.gd:131 run_enemy_turn()` at 62% (the no-valid-action idle path and the bad-data turn loss), `lattice_board.gd:25 load_board()` at 67%, and `facet_inventory.gd:21 add()` at 67%. Always check `coverage.txt` for the current list.
+
+## Performance tests under instrumentation
+Instrumented code is slower, so wall-clock budget tests (e.g. `test_scene_router_swap.gd`'s swap-frame threshold) return early when `HYMN_COV_OUT` is set. The plain Godot test step still enforces them. Any new timing-budget test must do the same, or the coverage gate becomes flaky (review-sweep-A blocker, 2026-10-23).
+
+## Tolerance at high coverage
+At battle's 99.45% (911 lines) the 0.5 pp tolerance is about 4–5 uncovered lines per change. Treat that as slack for genuinely unreachable lines, not a budget for untested code.

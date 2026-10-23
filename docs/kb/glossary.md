@@ -36,7 +36,7 @@ Format: **Term** (part of speech; pronunciation hint when it's ambiguous): meani
 - **save shrine** (n.): a glowing save point. It fully heals the party and opens the save menu. *§6.6*
 - **Temple Trial** (n.): an environmental puzzle leading to a Vowbound. *§6.6*
 - **Unfettered** (equipment ability): lifts the 9,999 damage cap to 99,999. *design/formulas.md*
-- **currency**: name TBD by Narrative (M1-NAR-01). Code uses `currency`.
+- **lume** (n., uncountable; "a lume" for one coin): the Order-minted currency of Maresh, a holed disc of pressed lamp-brass named for oil-lamp light, the only light the Order allows. Code uses `currency`. *design/economy.md*
 
 ## Elements
 Fire, Water, Lightning, Ice, Holy, **Glimmer** (an original non-elemental spirit element). *§6.8*
