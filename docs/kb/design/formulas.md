@@ -292,11 +292,13 @@ The first press in a beat is the one that counts, and a press before the beat op
 
 | Hero | Technique | Row | Played at good | Played perfectly |
 |---|---|---|---|---|
-| Asha | **Shallows Verse** | heal, power 4, every ally, magic (Silence blocks it) | power 5 | power 7 |
+| Asha | **Shallows Verse** | heal, power 4, every other active ally (`all_other_allies`: never Asha herself), magic (Silence blocks it) | power 5 | power 7 |
 | Toma | **Return Tide** | physical, power 14, one foe, accuracy 100 | power 20 | power 26 |
 | Ysolde | **Written Light** | magical, power 10, every foe, no element, magic | power 14 | power 19 |
 
 (`swell_power`: 4 × 145 / 100 = 5.8 → 5; 14 × 190 / 100 = 26.6 → 26.) `test_formulas.gd` pins every row of this table against `skills.json`.
+
+**The Verse is a song for the others (M2-CMB-02).** Shallows Verse reaches every living active ally but the singer (target `all_other_allies`). Ballast fills when its owner is nearly down, so a Verse that healed Asha too was a second life for her whenever her gauge filled. Per ally the numbers are unchanged: 92 missed, 115 at good and 161 perfect, against a Chorus Mend's 138 (which still heals Asha). With nobody else standing the Verse has no target: it is refused at no cost, and the Swell page greys it out.
 
 **Shallows Verse against Chorus Mend** (M2-NIT-03; the Verse was power 12). Chorus Mend heals every ally at power 6 for 14 MP and rank 4. From Asha (magic 18, level 5) at variance 100, Chorus Mend heals 138. The Verse heals 92 when missed and 115 at good, both less than a Chorus Mend. Only a perfect chant (161) beats it. At power 12 the Verse healed 391 at good, nearly three Chorus Mends for free, and it was the one Swell a masher could not lose with (balance_report.md, 2026-10-23 M2-NIT-03). The free song saves the 14 MP and a rank, and a well-sung one is the better heal, so the input still decides.
 

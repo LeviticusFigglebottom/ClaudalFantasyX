@@ -77,7 +77,7 @@
      "accuracy": 100, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false,
      "read": true},
     {"id": "shallows_verse", "name_key": "SKILL_SHALLOWS_VERSE", "kind": "heal", "power": 4, "rank": 3,
-     "element": "none", "target": "all_allies", "mp_cost": 0, "magic": true, "swell": true},
+     "element": "none", "target": "all_other_allies", "mp_cost": 0, "magic": true, "swell": true},
     {"id": "return_tide", "name_key": "SKILL_RETURN_TIDE", "kind": "physical", "power": 14, "rank": 3,
      "accuracy": 100, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false,
      "swell": true},
