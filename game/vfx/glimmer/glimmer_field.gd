@@ -536,10 +536,6 @@ func draw_parameters() -> Dictionary:
 	var lk := config.get("look", {}) as Dictionary
 	return {
 		"halo_chroma_gain": float(lk.get("halo_chroma_gain", 1.0)),
-		"halo_chroma_min": float(lk.get("halo_chroma_min", 0.0)),
-		"halo_hue_deg": float(lk.get("halo_hue_deg", 83.0)),
-		"halo_hue_horizon_deg": float(lk.get("halo_hue_horizon_deg", 83.0)),
-		"halo_hue_band_deg": float(lk.get("halo_hue_band_deg", 8.0)),
 		"halo_scale": float(lk.get("halo_scale", 1.0)),
 		"core_gain": float(lk.get("core_gain", 0.0)),
 		"halo_gain": float(lk.get("halo_gain", 0.0)),

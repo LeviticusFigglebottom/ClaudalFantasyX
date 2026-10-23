@@ -32,19 +32,6 @@ uniform float halo_falloff : hint_range(0.01, 4.0) = 0.35; // inverse-square hal
 // Oklab chroma gain of the halo for warm (released, gold) motes: same hue as the core, richer, so a
 // pale gold core blown towards white by bloom still reads gold at dusk (M1-RND-08). 1 = off.
 uniform float halo_chroma_gain : hint_range(1.0, 3.0) = 1.0;
-// Released motes' halo (M1-RND-17): Oklab chroma per unit lightness at least halo_chroma_min, at
-// hue halo_hue_deg (glimmer_lift, 83 deg), whatever the core has whitened to. The gain alone
-// multiplied glimmer_lift's C 0.022-0.037, still below a dusk sky's 0.04-0.06, and a core that had
-// climbed to the cool lift_hi white gave a cool halo: an added halo bleached the sky toward cyan
-// instead of gilding it. Weighted by the mote's released share (INSTANCE_CUSTOM.w), so held and
-// bound motes keep their halos. halo_chroma_min 0 = off.
-uniform float halo_chroma_min : hint_range(0.0, 0.5) = 0.0;
-uniform float halo_hue_deg : hint_range(0.0, 360.0) = 83.0;
-// Near the horizon the sky behind a mote is warm peach, and gold added there reads as a loss of red
-// (toward cyan): within halo_hue_band_deg of the horizon (view elevation, mirrored motes too) the
-// halo hue turns to halo_hue_horizon_deg, an orange gold. Still one hue per mote.
-uniform float halo_hue_horizon_deg : hint_range(0.0, 360.0) = 83.0;
-uniform float halo_hue_band_deg : hint_range(0.1, 45.0) = 8.0;
 uniform float streak_gain : hint_range(0.0, 2.0) = 0.35;  // brightness of the tail streak
 uniform float streak_width : hint_range(0.1, 4.0) = 1.5;  // tail half-width, in core radii
 uniform float trail_time_s : hint_range(0.0, 4.0) = 0.35; // trail length = screen speed * this
@@ -103,12 +90,6 @@ void vertex() {
 	vec3 lab = hymn_linear_srgb_to_oklab(max(COLOR.rgb, vec3(0.0)));
 	float warm = smoothstep(0.0, HALO_WARM_B, lab.z);
 	lab.yz *= mix(1.0, halo_chroma_gain, warm);
-	float released = clamp(INSTANCE_CUSTOM.w, 0.0, 1.0);
-	float c_gold = max(length(lab.yz), halo_chroma_min * lab.x);
-	float elev = degrees(asin(clamp(abs(normalize(center_w - CAMERA_POSITION_WORLD).y), 0.0, 1.0)));
-	float hue = radians(mix(halo_hue_horizon_deg, halo_hue_deg, smoothstep(0.0, halo_hue_band_deg, elev)));
-	vec2 gold = c_gold * vec2(cos(hue), sin(hue));
-	lab.yz = mix(lab.yz, gold, released * step(HYMN_EPSILON, halo_chroma_min));
 	v_halo_color = max(hymn_oklab_to_linear_srgb(lab), vec3(0.0));
 	// Spread the same light over a longer streak instead of adding energy with speed.
 	float near = smoothstep(near_fade_start_m, max(near_fade_end_m, near_fade_start_m + HYMN_EPSILON), -center.z);
@@ -155,9 +136,7 @@ void fragment() {
 #else
 	float soft = clamp((VERTEX.z - scene_z) / soft_depth_m, 0.0, 1.0);
 #endif
-	// The core stays the mote's own pale colour; the halo and the streak carry the richer halo colour
-	// (they are most of a released mote's inner glow against the sky, M1-RND-17).
-	ALBEDO = v_color * (core * core_gain) + v_halo_color * (halo * halo_gain + streak * streak_gain);
+	ALBEDO = v_color * (core * core_gain + streak * streak_gain) + v_halo_color * (halo * halo_gain);
 	ALPHA = clamp(v_alpha * soft, 0.0, 1.0);
 }
 
