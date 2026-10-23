@@ -2,8 +2,8 @@
 id: M1-RND-19
 title: CharacterShaderTiers.apply_to_tree mutates shared materials and surface overrides
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-aa89bf29c8049ad55"
 depends_on: [M1-ART-02]
 milestone: M1
 request-from: "character"
