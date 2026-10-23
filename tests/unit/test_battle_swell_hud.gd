@@ -26,7 +26,11 @@ func test_only_heroes_with_a_swell_get_a_gauge_and_it_starts_empty() -> void:
 	assert_eq(rhen.swell_gauge().glow, 0.0, "no glow until full")
 	assert_true(ctl.hud.party.row_for(&"asha").swell_gauge() == null, "no swell.json row, no gauge")
 	_to_turn_of(&"rhen")
-	assert_false(_row_ids().has(BattleMenus.ROW_SWELL), "no Swell command until the gauge is full")
+	# M2-UI-01: the Swell row stays on the menu while the gauge fills, so the fill mode can be
+	# chosen; its right column names the mode in force instead of the input.
+	var swell_row := ctl.hud.commands.top_page().rows[_row_ids().find(BattleMenus.ROW_SWELL)]
+	assert_eq(str(swell_row["right"]), tr("SWELL_MODE_BALLAST"), "not full: the mode in force")
+	assert_eq(StringName(str(swell_row["right_role"])), &"text_dim")
 	_free()
 
 
@@ -145,7 +149,9 @@ func test_the_technique_page_previews_its_input_and_its_turn() -> void:
 	_press(&"ui_accept")
 	assert_eq(ctl.state, BattleController.STATE_SWELL)
 	assert_eq(ctl.hud.commands.page_id(), BattleMenus.PAGE_SWELL)
-	assert_eq(_row_ids(), [&"lamp_dive"] as Array[StringName])
+	# The technique, then the unlocked fill modes (M2-UI-01).
+	var want: Array[StringName] = [&"lamp_dive", &"swell_mode_ballast", &"swell_mode_wake"]
+	assert_eq(_row_ids(), want)
 	var beats := int(ctl.swell.input_for(ctl.engine.current).get("beats", 0))
 	var how := tr("SWELL_INPUT_TIMING_RING_HELP_LAMP").format({"beats": beats})
 	assert_true(ctl.hud.help_text().begins_with(how), ctl.hud.help_text())

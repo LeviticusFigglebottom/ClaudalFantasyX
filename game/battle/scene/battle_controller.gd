@@ -257,7 +257,7 @@ func tick(delta: float, frame: bool = false) -> void:
 	if state == STATE_SWELL_INPUT and swell_input_live:
 		_ring_clock.step(delta, frame)  # input timing is real time: never scaled by pacing
 		_after_ring()
-	if not _after_wait.is_valid():
+	if not _after_wait.is_valid() or hud.holds_battle():  # the open Read panel holds every wait (M2-UI-02)
 		return
 	_wait_left -= delta
 	if _wait_left <= 0.0:
@@ -522,7 +522,7 @@ func _show_result() -> void:
 
 
 func _on_menu_highlighted(_page: StringName, row: Dictionary) -> void:
-	if engine == null or not engine.is_party_turn():
+	if engine == null or not engine.is_party_turn() or SwellModeRows.highlight(self, row):  # M2-UI-01
 		return
 	var rid := StringName(str(row.get("id", "")))
 	match state:
@@ -556,7 +556,7 @@ func _highlight_root(rid: StringName) -> void:
 			hud.set_help(tr("HUD_HELP_ITEMS"))
 		BattleMenus.ROW_SWELL:
 			_show_timeline(TurnTimeline.MODE_PREVIEW)
-			hud.set_help(tr("HUD_HELP_SWELL_FMT").format({"name": menus.display_name(engine.current)}))
+			hud.set_help(menus.swell_root_help(engine, swell))  # gauge and mode until full (M2-UI-01)
 		_:
 			_show_timeline(TurnTimeline.MODE_PREVIEW)
 			hud.set_help(tr("HUD_HELP_SKILLS"))
@@ -583,8 +583,8 @@ func _on_menu_chosen(_page: StringName, row: Dictionary) -> void:
 				BattleMenus.ROW_SWAP:
 					_set_state(STATE_SWAP_IN)
 					hud.commands.push(BattleMenus.PAGE_SWAP, tr("HUD_PAGE_RESERVE"), menus.reserve_rows(engine))
-		STATE_SKILLS, STATE_SWELL:
-			_begin_target(StringName(str(row.get("skill", rid))))
+		STATE_SKILLS, STATE_SWELL:  # a Swell fill-mode row sets the mode instead (M2-UI-01)
+			SwellModeRows.pick(self, row, _begin_target.bind(StringName(str(row.get("skill", rid)))))
 		STATE_ITEMS:
 			_begin_item_target(StringName(str(row.get("item", rid))))
 		STATE_SWAP_IN:
@@ -696,7 +696,7 @@ func _commit_skill(skill_id: StringName, target_ids: Array[StringName]) -> void:
 		act(skill_id, target_ids)
 		return
 	_pending_skill = skill_id
-	_ring = SwellTimingRing.new(swell.input_for(engine.current))
+	_ring = SwellTimingRing.new(hud.settings.timing_input(swell.input_for(engine.current)))  # timing assist
 	_ring_clock = SwellRingClock.new(_ring)
 	_set_state(STATE_SWELL_INPUT)
 	hud.commands.visible = false

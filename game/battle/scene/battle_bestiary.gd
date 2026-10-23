@@ -7,13 +7,15 @@ extends RefCounted
 ##   - a live battle (persist_progress on, no capture fixture) rolls its opening
 ##     (BattleOpening.choose) and logs into Game.state.bestiary; tests and capture fixtures open
 ##     normally and log into a scratch dictionary, so no baseline or save moves;
-##   - every Read hit is logged (Bestiary.record_read) and kept in `last_reveal` for the HUD, and
-##     floats the target's weaknesses over it;
+##   - every Read hit is logged (Bestiary.record_read) and kept in `last_reveal` for the HUD,
+##     floats the target's weaknesses over it, and opens the Read panel on it (M2-UI-02:
+##     BattleHud.read_panel(), which holds the battle until it is closed);
 ##   - a victory logs one defeat per enemy in the encounter (Bestiary.record_defeated). Read and
 ##     victory credit key the log by the same id, BattleEngine.enemy_id (Read's reveal carries the
 ##     row that rule finds). A KO'd foe stays in engine.enemies, so it is credited; the engine has
 ##     no rule that removes a foe mid-battle today, and a foe such a rule removed would not be;
-##   - an opening other than normal floats its caption over the first combatant to act.
+##   - an opening other than normal shows the opening banner at the first turn (M2-UI-02:
+##     BattleHud.opening_banner(); it replaced the caption float).
 ## Hold the instance for the whole battle: a signal connection does not keep it alive.
 
 const KEY_WEAK := "weak"
@@ -44,6 +46,8 @@ func attach(battle: BattleEngine, live: bool) -> void:
 	book = Bestiary.new(Game.state.bestiary if live else {})
 	last_reveal = {}
 	_opening_shown = false
+	if ctl != null and ctl.hud != null:
+		ctl.hud.close_overlays()
 	if live and roll_openings:
 		engine.opening = BattleOpening.choose(engine)
 	engine.action_resolved.connect(_on_action_resolved)
@@ -69,6 +73,7 @@ func _on_action_resolved(result: ActionResult) -> void:
 		last_reveal = hit["read"]
 		book.record_read(StringName(str(last_reveal.get("enemy_id", ""))))
 		_float(StringName(str(hit["target_id"])), weakness_text(last_reveal))
+		_open_panel(last_reveal)
 
 
 func _on_battle_finished(outcome: StringName) -> void:
@@ -78,13 +83,19 @@ func _on_battle_finished(outcome: StringName) -> void:
 		book.record_defeated(BattleEngine.enemy_id(e))
 
 
-func _on_turn_started(actor: BattleCombatant) -> void:
+func _on_turn_started(_actor: BattleCombatant) -> void:
 	if _opening_shown:
 		return
 	_opening_shown = true
-	var key := str(BattleOpening.CAPTION_KEYS.get(engine.opening, ""))
-	if key != "":
-		_float(actor.id, TranslationServer.translate(key))
+	if ctl != null and ctl.hud != null and BattleOpening.CAPTION_KEYS.has(engine.opening):
+		ctl.hud.opening_banner().show_opening(engine.opening, ctl.pacing_scale > 0.0)
+
+
+## The Read panel, for a foe (a Confused reader's Read on an ally has no enemies.json page).
+func _open_panel(reveal: Dictionary) -> void:
+	if ctl == null or ctl.hud == null or str(reveal.get("enemy_id", "")) == "":
+		return
+	ctl.hud.read_panel().open(EnemyPage.new().from_reveal(reveal, engine.db.statuses), ctl.pacing_scale > 0.0)
 
 
 func _float(cid: StringName, text: String) -> void:

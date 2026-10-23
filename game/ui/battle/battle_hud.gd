@@ -22,6 +22,9 @@ var swell_ring: SwellRingView
 var _damage_m: Dictionary = {}
 var _float_m: Dictionary = {}
 var _base_theme: Theme
+## Built on first use (M2-UI-02), so the staged battle build (M1-UI-03) never pays for them.
+var _read_panel: ReadPanel
+var _banner: OpeningBanner
 
 @onready var timeline: TurnTimeline = %TurnTimeline
 @onready var party: PartyPanel = %PartyPanel
@@ -129,10 +132,46 @@ func pop_info(text: String, at: Vector2, role: StringName = &"text_dim") -> void
 	_note_number(text, DamageNumber.KIND_INFO, false, false)
 
 
+## The Read panel (M2-UI-02), built the first time a Read lands.
+func read_panel() -> ReadPanel:
+	if _read_panel == null:
+		_read_panel = ReadPanel.new()
+		_read_panel.name = &"ReadPanel"
+		add_child(_read_panel)
+		_refresh_settings()
+	return _read_panel
+
+
+## The preemptive / ambush banner (M2-UI-02), built the first time an opening needs it.
+func opening_banner() -> OpeningBanner:
+	if _banner == null:
+		_banner = OpeningBanner.new()
+		_banner.name = &"OpeningBanner"
+		add_child(_banner)
+		move_child(_banner, _damage_layer.get_index())  # under the floats, the menus and panels
+		_refresh_settings()
+	return _banner
+
+
+## True while a modal HUD panel (the Read panel) is open: BattleController.tick() then holds every
+## wait, so the battle does not move on under it and the panel costs no battle time.
+func holds_battle() -> bool:
+	return _read_panel != null and _read_panel.is_open()
+
+
+## Closes the Read panel and the opening banner (a new battle, the result screen).
+func close_overlays() -> void:
+	if _read_panel != null:
+		_read_panel.close()
+	if _banner != null:
+		_banner.hide_banner()
+
+
 func set_combat_ui_visible(on: bool) -> void:
 	for c: CanvasItem in [timeline, party, commands, _help_panel]:
 		c.visible = on
 	if not on:
+		close_overlays()
 		swell_ring.close()
 		target_cursor.clear()
 		target_cursor.show_actor(Vector2.ZERO, false)
@@ -164,5 +203,11 @@ func _refresh_settings() -> void:
 	result.motion_scale = settings.motion_scale()
 	party.set_reduced_motion(reduced)
 	swell_ring.reduced_motion = reduced
+	var assist_key := settings.timing_assist_tag_key()
+	swell_ring.set_assist_text(tr(assist_key) if assist_key != "" else "")
+	if _read_panel != null:
+		_read_panel.motion_scale = settings.motion_scale()
+	if _banner != null:
+		_banner.reduced_motion = reduced
 	party.refresh()
 	_apply_help_role()  # a palette switch recolors a warning already on screen
