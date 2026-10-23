@@ -2,8 +2,8 @@
 id: M1-QA-04
 title: Screenshot capture: per-shot setup hook
 role: qa
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-aafc786bec1f4e2c5"
 depends_on: [M1-QA-01]
 milestone: M1
 request-from: "rendering"
