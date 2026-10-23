@@ -85,3 +85,5 @@ It is a confession among friends. It is not a reveal in a fight, at a wedding, o
 - **Art and Rendering:** color script `ch15` is re-keyed (a proposal mirroring the validated `ch02_night`); the `ch14` notes lose the Stilling; `ch19`'s spire note no longer cites the Cistern LUT.
 - **Audio:** Ch15's night is lampless. Narrative proposes a sparse cue there (sea, wood, the held dead's hum), for Audio to decide.
 - **Watch:** nobody performs the Stilling on Kerrid, and no revenant is unmasked mid-fight at or near the wedding. The Stilling stays in the lore only.
+
+- 2026-10-23 Lead sign-off: accepted as written. The two out-of-scope Act I risks (Sefir's Ch7 tournament introduction, the Ch8 seawall operation's forbidden weapons) go to M1-NAR-09.
