@@ -147,7 +147,9 @@ def _flow_dir(lm, P: np.ndarray, N: np.ndarray, G: np.ndarray) -> np.ndarray:
 
 
 def _ribbon(part: Part, pts: np.ndarray, nrm: np.ndarray, width: float, slot: int, color_fn, taper: float = 0.45,
-            v_range=(0.0, 1.0), mat: str = "hair") -> None:
+            v_range=(0.0, 1.0), mat: str = "hair", u_range=(0.0, 1.0)) -> None:
+    """A card along `pts`. `u_range`: the part of the atlas column it samples (the columns feather
+    out to nothing at their edges, so a very narrow card wants the dense middle)."""
     n = len(pts)
     T = np.gradient(pts, axis=0)
     T /= np.maximum(np.linalg.norm(T, axis=1, keepdims=True), 1e-12)
@@ -161,7 +163,7 @@ def _ribbon(part: Part, pts: np.ndarray, nrm: np.ndarray, width: float, slot: in
         P[k, 1] = pts[k] + side[k] * w
         t = k / (n - 1)
         cols.append([color_fn(t), color_fn(t)])
-    u0, u1 = slot / CLUMPS, (slot + 1) / CLUMPS
+    u0, u1 = (slot + u_range[0]) / CLUMPS, (slot + u_range[1]) / CLUMPS
     v0, v1 = v_range
     grid(part, P, mat, colors=cols, tags=TAG_HAIR,
          uv_fn=lambda j, i: (u0 + (u1 - u0) * i, v0 + (v1 - v0) * j / (n - 1)))
@@ -249,10 +251,15 @@ def scalp_cards(lm, body, params: dict, rng: np.random.Generator, scalp=None) ->
         length = rng.uniform(0.06, 0.11, n_hl) * s
         paths, stop = _trace(scalp, lm, roots, length, 0.0010 * s, G, 6)
         emit(paths, stop, rng.uniform(0.005, 0.009, n_hl) * s, rng.choice(SLOTS_HAIRLINE, n_hl), 0.3, (0.0, 0.8))
-    layers = [(0.0012 * s, params["scalp_cards"][0], (0.009, 0.016)),
+    # M1-CHR-09: the base layer is hidden under the mid layer, the crown clumps and the underpaint,
+    # so it is fewer, wider cards (12-20 mm; CHR-04 had 9-16 mm), which pays for the clumps. The
+    # chord sag across a 20 mm card on the skull is about 0.6 mm, under the 1.2 mm lift.
+    layers = [(0.0012 * s, params["scalp_cards"][0], (0.012, 0.020)),
               (0.0026 * s, params["scalp_cards"][1], (0.007, 0.013)),
               (0.0040 * s, params["scalp_cards"][2], (0.005, 0.010))]
     for li, (lift, count, wr) in enumerate(layers):
+        if count == 0:
+            continue
         # roots: a fifth of the base layer along the hairline (behind the hairline row), the rest inside
         n_line = count // 5 if li == 0 else 0
         d_in = rng.normal(size=(count * 6, 3))
@@ -276,7 +283,65 @@ def scalp_cards(lm, body, params: dict, rng: np.random.Generator, scalp=None) ->
             slots = rng.integers(SLOTS_FULL, size=n)
         slots[:n_line] = rng.choice(SLOTS_HAIRLINE, n_line)  # the base layer's hairline roots stay soft too
         emit(paths, stop, rng.uniform(*wr, n) * s, slots, 0.35, (0.0, 0.85))
+    crown_clumps(part, scalp, lm, params, rng, G, hc, seg)
     return part
+
+
+# M1-CHR-09: the crown read as a smooth shell (asha_review.md §8.3): every card lay at one of three
+# fixed lifts and followed the scalp exactly, so the silhouette was a clean arc and the highlight one
+# band. The top layer is now strand clumps: 2-4 narrow cards share a path, gather toward the middle
+# of their length (hair clumps where it is combed together), rise off the scalp in an arc of up to a
+# few millimetres, and twist a little about their length, so each clump catches its own highlight.
+CLUMP_LIFT = 0.0036  # m at s = 1: the clump paths' lift at the root and the tip (the old top layer's 4 mm)
+CLUMP_RISE = (0.0008, 0.0037)  # extra lift at mid-length, m (a few clumps are looser, below)
+CLUMP_LOOSE = (0.18, 0.0055)  # share of clumps that stand further off, and their extra rise, m
+CLUMP_SPREAD = (0.003, 0.006)  # half-spread of the member cards at the root, m
+CLUMP_GATHER = 0.55  # how far the members close up at mid-length (0 = parallel)
+CLUMP_TWIST = 0.35  # rad, the most a member card rolls about its length
+
+
+def crown_clumps(part: Part, scalp, lm, params: dict, rng: np.random.Generator, G: np.ndarray, hc: np.ndarray,
+                 seg: int) -> None:
+    n = int(params.get("crown_clumps", 0))
+    if not n:
+        return
+    s = lm.h / 0.222
+    d_in = rng.normal(size=(n * 6, 3))
+    d_in[:, 2] = np.abs(d_in[:, 2]) * 1.2 + 0.1
+    d_in /= np.linalg.norm(d_in, axis=1, keepdims=True)
+    p_in = scalp.project(hc + d_in * ROOT_CAST_H * lm.h)
+    ok = in_hair(lm, p_in, 0.025) & (np.linalg.norm(p_in - G, axis=1) > 0.05 * s)
+    roots = p_in[ok][:n]
+    length = rng.uniform(0.10, 0.19, len(roots)) * s
+    paths, stop = _trace(scalp, lm, roots, length, CLUMP_LIFT * s, G, seg)
+    for c in range(len(roots)):
+        C = paths[c, : stop[c] + 1]
+        if len(C) < 4:
+            continue
+        N = scalp.normal(C)
+        T = np.gradient(C, axis=0)
+        T /= np.maximum(np.linalg.norm(T, axis=1, keepdims=True), 1e-12)
+        side = np.cross(T, N)
+        side /= np.maximum(np.linalg.norm(side, axis=1, keepdims=True), 1e-12)
+        t = np.linspace(0.0, 1.0, len(C))
+        arc = np.sin(math.pi * t) ** 1.3
+        rise = rng.uniform(*CLUMP_RISE) * s
+        if rng.random() < CLUMP_LOOSE[0]:
+            rise += CLUMP_LOOSE[1] * s * float(rng.uniform(0.6, 1.0))
+        k = int(rng.integers(2, 5))
+        spread = rng.uniform(*CLUMP_SPREAD) * s
+        gather = 1.0 - CLUMP_GATHER * np.sin(math.pi * t)
+        for m in range(k):
+            f = (m - (k - 1) / 2) / ((k - 1) / 2)  # -1 .. 1 across the clump
+            off = f * spread * rng.uniform(0.7, 1.1)
+            lift = rise * (1.0 - 0.35 * abs(f)) * rng.uniform(0.75, 1.0) * arc  # a rounded clump
+            pts = C + side * (off * gather)[:, None] + N * lift[:, None]
+            a = rng.uniform(-CLUMP_TWIST, CLUMP_TWIST) * np.sin(math.pi * t)
+            nrm = N * np.cos(a)[:, None] - side * np.sin(a)[:, None]
+            slot = int(rng.choice(SLOTS_SPARSE)) if rng.random() < 0.4 else int(rng.integers(SLOTS_FULL))
+            ph = float(rng.random())
+            _ribbon(part, pts, nrm, float(rng.uniform(0.004, 0.007) * s), slot, lambda t, ph=ph: (0.0, 0.0, ph, 0.0),
+                    taper=0.35, v_range=(0.0, 0.85))
 
 
 def braid_spine(lm, body, params: dict) -> np.ndarray:
@@ -370,6 +435,10 @@ def braid(lm, body, params: dict, rng: np.random.Generator) -> tuple[Part, Part,
     return part, acc, Cb
 
 
+FLY_LIFT = (0.004, 0.011)  # m at s = 1: how far a crown flyaway's tip stands off the hair
+FLY_BRAID_FROM = 30  # braid spine sample (of 200) where the braid's flyaways start: the shoulder
+
+
 def flyaways(lm, body, params: dict, rng: np.random.Generator, braid_spine_pts: np.ndarray, scalp=None) -> Part:
     part = Part("HairFlyaways")
     scalp = scalp or Scalp(body)
@@ -393,9 +462,13 @@ def flyaways(lm, body, params: dict, rng: np.random.Generator, braid_spine_pts: 
             tdir -= (tdir @ nrm) * nrm
             tdir /= np.linalg.norm(tdir)
             length = rng.uniform(0.03, 0.07) * s
-            pts = np.array([p + tdir * length * t + nrm * (0.004 * s) * t * t for t in np.linspace(0, 1, 5)])
+            # M1-CHR-09: they stand off the crown by 4-11 mm at the tip (CHR-04: 4 mm), so some of
+            # them cross the head's outline and break the clean arc of the silhouette
+            up = rng.uniform(FLY_LIFT[0], FLY_LIFT[1]) * s
+            pts = np.array([p + tdir * length * t + nrm * up * t ** 1.6 for t in np.linspace(0, 1, 6)])
         else:  # off the braid surface
-            k = int(rng.integers(10, len(braid_spine_pts) - 5))
+            # M1-CHR-09: from the shoulder down; nearer the gather one stuck out sideways by the jaw
+            k = int(rng.integers(FLY_BRAID_FROM, len(braid_spine_pts) - 5))
             c = braid_spine_pts[k]
             tdir = braid_spine_pts[k + 3] - braid_spine_pts[k]
             tdir /= np.linalg.norm(tdir)
@@ -411,36 +484,66 @@ def flyaways(lm, body, params: dict, rng: np.random.Generator, braid_spine_pts: 
     return part
 
 
+# M1-CHR-09: the face-framing lock (asha.md §5: two uncut strands, 6-8 cm, free on the right
+# temple). CHR-07 rooted it 4.4-5.3 cm off the midline, right above the brow tail, and laid three
+# 4-5 mm ribbons 4 mm off the skin, so from the front it was a dark streak drawn across the brow.
+# Now each strand escapes the drawn-back hair at the temple hairline, outside the orbit, and hangs
+# as a fan of fine ribbons that leaves the skin as it falls, with uneven tips and skin between them.
+LOCK_AZIMUTH = (-53.0, -63.0)  # deg round the head from the front (- = her right): the temple
+LOCK_LENGTH = (0.080, 0.065)  # m at s = 1, per strand (asha.md §5: 6-8 cm)
+LOCK_OFF_SKIN = (0.0015, 0.0045)  # m, the strand's distance off the skin at the root and from mid-length down
+LOCK_FAN = 0.009  # m, the half-spread of a strand's ribbons at the tips (they start together)
+LOCK_WIDTH = (0.0022, 0.0036)  # m, one ribbon: a few dozen hairs
+LOCK_POINTS = 16
+# the dense middle of an atlas column: a 2-4 mm ribbon over the full column was mostly its feathered edges
+LOCK_U = (0.25, 0.75)
+
+
 def front_strands(lm, body, params: dict, rng: np.random.Generator, scalp=None) -> Part:
-    """Two uncut face-framing strands on the right temple (asha.md §5)."""
+    """Two uncut face-framing strands on the right temple (asha.md §5), each a fan of fine ribbons."""
     part = Part("HairFront")
     scalp = scalp or Scalp(body)
     s = lm.h / 0.222
-    yc = lm.P("head_c")[1]
-    zc = lm.P("chin")[2]
+    per = int(params.get("front_strand_ribbons", 3))
     for k in range(params["front_strands"]):
-        x = -lm.head_w * (0.30 + 0.06 * k)
-        root = scalp.project(np.array([[x, yc - 0.30 * lm.h, zc + (0.72 - 0.03 * k) * lm.h]]), 0.004 * s)[0]
-        for c in range(3):
+        phi = math.radians(LOCK_AZIMUTH[k % len(LOCK_AZIMUTH)])
+        root = _hairline_roots(scalp, lm, np.array([phi]), np.array([0.004 + 0.003 * k]))[0]
+        n0 = scalp.normal(root[None, :])[0]
+        fwd = np.array([0.0, -1.0, 0.0]) - n0 * (-n0[1])  # toward the face, in the skin's tangent plane
+        fwd /= np.linalg.norm(fwd)
+        down = np.cross(n0, fwd)  # tangent, roughly -z on her right temple
+        if down[2] > 0:
+            down = -down
+        length = LOCK_LENGTH[k % len(LOCK_LENGTH)] * s
+        for c in range(per):
+            f = (c - (per - 1) / 2) / max((per - 1) / 2, 1)  # -1 .. 1 across the fan
+            L = length * rng.uniform(0.78, 1.0)
+            fan = (f * LOCK_FAN + rng.normal(0.0, 0.0015)) * s
             ctrl = np.array([
-                root + np.array([0.003 * c, 0.0, 0.0]) * s,
-                root + np.array([-0.008 - 0.004 * c, -0.010, -0.030]) * s,
-                root + np.array([-0.012 - 0.006 * c, -0.012, -0.062 + 0.004 * c]) * s,
-                root + np.array([-0.010 - 0.008 * c, -0.008, -0.085 - 0.01 * k + 0.008 * c]) * s,
+                root + fwd * (0.0006 * f * s),
+                root + down * 0.30 * L + fwd * (0.002 * s + 0.25 * fan),
+                root + down * 0.65 * L + fwd * (0.003 * s + 0.6 * fan),  # a slight forward S toward the cheek
+                root + down * L + fwd * (0.001 * s + fan),
             ])
-            pts = catmull_rom(ctrl, 12)
-            # keep clear of the face
-            for _ in range(3):
+            pts = catmull_rom(ctrl, LOCK_POINTS)
+            t = np.linspace(0.0, 1.0, len(pts))
+            gap = (LOCK_OFF_SKIN[0] + (LOCK_OFF_SKIN[1] - LOCK_OFF_SKIN[0]) * smooth01(t / 0.5)) * s
+            gap = gap + rng.uniform(0.0, 0.002) * s * t  # the ribbons sit at different depths
+            for _ in range(4):  # hang clear of the face: the skin pushes the strand out, never pulls it in
                 d = scalp.sdf(pts)
                 nrm = scalp.normal(pts)
-                pts = pts + nrm * np.maximum(0.004 * s - d, 0.0)[:, None]
+                pts = pts + nrm * np.maximum(gap - d, 0.0)[:, None]
             nrm = scalp.normal(pts)
-            # M1-CHR-07: narrower ribbons on full clumps only, fanned apart toward the tips, so the
-            # strand reads as a lock of hair, not one flat dark card (review sweep J). The sparse and
-            # hairline columns left gaps that showed the skin through as a pinkish streak.
-            _ribbon(part, pts, nrm, rng.uniform(0.0035, 0.0055) * s, int(rng.integers(SLOTS_FULL)),
-                    lambda t, ph=float(rng.random()): (0.9 * t, 0.6 * t, ph, 0.4 * t), taper=0.65)
+            ph = float(rng.random())
+            _ribbon(part, pts, nrm, float(rng.uniform(*LOCK_WIDTH) * s), int(rng.integers(SLOTS_FULL)),
+                    lambda t, ph=ph: (0.9 * t, 0.6 * t, ph, 0.4 * t), taper=0.45, v_range=(0.0, 0.75),
+                    u_range=LOCK_U)
     return part
+
+
+def smooth01(x: np.ndarray) -> np.ndarray:
+    x = np.clip(x, 0.0, 1.0)
+    return x * x * (3.0 - 2.0 * x)
 
 
 def comb(lm, body, scalp=None) -> Part:
@@ -473,13 +576,15 @@ def comb(lm, body, scalp=None) -> Part:
 def build_hair(lm, body, params: dict, scalp=None) -> dict[str, Part]:
     """`scalp`: what the scalp cards, flyaways, front strands and comb sit on (MeshScalp on the
     shipped head in build_asha; the anatomy field when omitted)."""
-    rng = np.random.default_rng(int(params["seed"]))
-    out = {"HairScalp": scalp_cards(lm, body, params, rng, scalp)}
-    br, clasps, spine = braid(lm, body, params, rng)
+    # M1-CHR-09: one random stream per part, so re-laying the scalp cards no longer reshuffles the
+    # braid, the flyaways and the lock (CHR-07's lower temple moved a flyaway onto the jaw that way)
+    seed = int(params["seed"])
+    out = {"HairScalp": scalp_cards(lm, body, params, np.random.default_rng([seed, 0]), scalp)}
+    br, clasps, spine = braid(lm, body, params, np.random.default_rng([seed, 1]))
     out["HairBraid"] = br
     out["HairClasps"] = clasps
-    out["HairFlyaways"] = flyaways(lm, body, params, rng, spine, scalp)
-    out["HairFront"] = front_strands(lm, body, params, rng, scalp)
+    out["HairFlyaways"] = flyaways(lm, body, params, np.random.default_rng([seed, 2]), spine, scalp)
+    out["HairFront"] = front_strands(lm, body, params, np.random.default_rng([seed, 3]), scalp)
     out["HairComb"] = comb(lm, body, scalp)
     for p in out.values():  # wind colours everywhere (accessories are pinned)
         p.C = p.C + [(0.0, 0.0, 0.0, 0.0)] * (len(p.V) - len(p.C))
