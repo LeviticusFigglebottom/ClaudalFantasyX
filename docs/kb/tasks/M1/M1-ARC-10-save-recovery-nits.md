@@ -2,7 +2,7 @@
 id: M1-ARC-10
 title: Save: leftover .tmp recovery and debug downward set_chapter
 role: architect
-status: review
+status: done
 owner_session: "worktree-agent-a35fbca43cd81575b"
 depends_on: [M1-ARC-08]
 reviewer: qa
@@ -32,3 +32,4 @@ Two open QA minors from M1-ARC-08's handoff (docs/kb/handoffs/2026-10-23-archite
   - **Should-fix F1: a temp file "recovers" over a newer build's save.** `leftover_temp_info` treats any slot status other than OK as older (save_system.gd:190), and that includes `STATUS_NEWER`. Probe: slot 5 holds `{"version": 99}`, and slot 5's `.tmp` is a valid v4 save with `saved_at: 1`. The result was `recoverable: true`, and `recover_temp(5)` returned OK and replaced the v99 save with the v4 one. `report_leftover_temps` would advise the same. After a downgrade, that loses the newer build's save. Fix: treat `STATUS_NEWER` as "not older" (not recoverable, or log only), and add the case to test_save_recovery.gd.
   - Nit: `_set_aside_leftover_temp` renames over an existing `slot_NN.json.recovered` (save_system.gd:234-236), so a second set-aside silently replaces the first. Use a numbered or timestamped name, or skip when one exists.
   - Nit: "newer" is a strict `>` on whole-second `saved_at` (:190). A temp written in the same second as the slot's save (two quick saves, then a failed rename) is not recoverable, and the next write overwrites it without a word. That is rare. Use `>=`, or compare `play_time_sec` as a tiebreak.
+- 2026-10-23 lead: closing on review-sweep-F approve-with-fixes; the data-loss case (tmp vs a newer-build slot) is in M1-ARC-11 as a must-fix.

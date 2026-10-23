@@ -2,7 +2,7 @@
 id: M1-ARC-08
 title: Save robustness: write-check before rename, deep shape check, deferred autosave, New Game slot policy
 role: architect
-status: review
+status: done
 owner_session: "worktree-agent-a35fbca43cd81575b"
 reviewer: qa
 depends_on: [M1-ARC-03, M1-ARC-06]
@@ -68,3 +68,4 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
     - Fix: in the migration, skip (or mark as bad) any value that isn't `SaveShape.is_whole` and ≥ 0, and add the three probe cases to test_save_shape.gd or test_save_v4.gd.
   - Nit: as noted in PRG-03 sweep F, `_equipment` still allows one uid in two loadouts (two wearers) and a piece worn by the wrong character or in the wrong slot. That is the same class as S2. `wearer_of` returns the first wearer only, so `remove_piece` and the shop logic see one wearer while two heroes fight with it.
   - Nit (ADR 0018 Amendment 1, Consequences): "Continue still offers slot 0, the further-along run" is not quite true. `TitleSaveEntry.continue_slot` picks the newest `saved_at`, so once the player shrine-saves the replayed older branch, Continue offers that manual slot. The behaviour is reasonable, but the ADR sentence should match it. Also file the toast as a UI task, so the skipped autosave isn't silent to the player (pillar 4).
+- 2026-10-23 lead: closing on review-sweep-F approve-with-fixes; the v2 migration-before-shape issue is in M1-ARC-11.

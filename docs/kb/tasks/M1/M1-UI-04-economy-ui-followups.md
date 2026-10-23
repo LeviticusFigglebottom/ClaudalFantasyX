@@ -2,7 +2,7 @@
 id: M1-UI-04
 title: economy.md refresh and self-revive warning
 role: ui
-status: review
+status: done
 reviewer: combat
 owner_session: "worktree-agent-aa5733be52ed5e16a"
 depends_on: [M1-CMB-06]
@@ -50,3 +50,4 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
   - I re-checked every § Targeting bullet against `_valid_item_targets`, `item_can_target`, `_resolve_item_on` and combatant.gd, and they still match.
   - Nit: economy.md:72's "**For Combat:** formulas.md lists 'item formulas (Progression)' as unspecified … Please fold them into formulas.md" is stale. formulas.md now has them (§ Items, with `Formulas.revive_hp`/`item_damage` mirrored and tested), so replace it with a pointer.
   - Nit (also in M1-PRG-03 sweep F): economy.md:139 still prices Ember Pot at 80–110, but it is 220 (items.json:15).
+- 2026-10-23 lead: closing on review-sweep-F approve; the Ember Pot price and the stale paragraph are in M1-CMB-08.

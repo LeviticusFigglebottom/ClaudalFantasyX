@@ -2,7 +2,7 @@
 id: M1-ARC-07
 title: Camera contract fixes for the cutscene sequencer
 role: architect
-status: review
+status: done
 owner_session: "worktree-agent-a35fbca43cd81575b"
 reviewer: cinematics
 depends_on: [M1-ARC-05]
@@ -63,3 +63,4 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
   - **The nit is fixed** (:296-297).
   - **Should-fix F1: S1 and S2 together leave an orphaned scripted shot on a reparent.** When a director with an owed move is re-parented mid-cutscene (`remove_child`, then `add_child`), `_exit_tree` pays `blend_finished`. The sequencer resumes, sees `is_leaving() == true` and, per the documented pattern, returns. But `_scripted_shot` is still set, so `_enter_tree` takes the autosave hold back. Nobody will call `release()` now, so the camera stays on the scripted shot and every chapter autosave waits until the director is freed (for the whole zone). Fix one of two ways: have the doc pattern `release(0)` before returning (release is safe inside the emit), or have the director drop its scripted state in `_exit_tree` when it pays an owed emit, as sweep-E S2 originally offered. Then add a test: reparent with an owed blend, let the awaiting coroutine stop, re-add, and check `SaveSystem.autosave_holders()` is empty.
   - Nit: the sequencer can't tell an unload from a reparent at the resume point, because both read `is_leaving() == true`. One sentence in field_camera.md, saying a reparent mid-move ends the cutscene, would set the expectation.
+- 2026-10-23 lead: closing on review-sweep-F approve-with-fixes; the hold leak on reparent is in M1-ARC-11.

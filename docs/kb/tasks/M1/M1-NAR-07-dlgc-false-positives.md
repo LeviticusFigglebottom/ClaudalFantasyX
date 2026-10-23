@@ -2,7 +2,7 @@
 id: M1-NAR-07
 title: dlgc near-miss heuristic: kill false positives, catch the remaining silent cases
 role: architect
-status: review
+status: done
 reviewer: narrative
 owner_session: "worktree-agent-a35fbca43cd81575b"
 depends_on: [M1-NAR-06]
@@ -68,3 +68,4 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
   - Nit: the typo branch needs an exact-case emotion (:829). `Kerid [Sad] Hi.` is silent, while `Asha [Sad] Hi.` errors. Match `m.group(4).lower()` for the evidence check, so the existing unknown-emotion error can report the case.
   - Nit: with a typo, a wrong bracket plus a colon is only a WARN: `Kerid (sad): Hi.` and `Tomas (sad): Lie still.`. The exact name (`Asha (sad): Hi.`) errors. Also, a bare `Asha [sad]` with no text, and `Kerid, [sad] Hi.`, compile silently. All are rare, so list them as known limits, or extend `WRONG_BRACKET_RE`/`STRAY_PUNCT_RE` to the typo match.
   - Noted, acceptable: a one-word unknown name close to a speaker, with a real emotion and no colon, now errors (`Rhea [sad] waited.` → "did you mean 'Rhen'", `Ash [sad] fell …`, `Keri [sad] laughed.`, `Pella [sad] Hi.`). A bracketed emotion in narration isn't prose we write, and the colon form would be an unknown-speaker error anyway.
+- 2026-10-23 lead: closing on review-sweep-F approve-with-fixes; the Narrator misspellings are in M1-NAR-10.

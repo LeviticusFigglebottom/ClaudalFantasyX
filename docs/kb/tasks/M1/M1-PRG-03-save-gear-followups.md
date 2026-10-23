@@ -2,7 +2,7 @@
 id: M1-PRG-03
 title: Starting gear on load, EquipmentEffects lifetime (review-sweep-A)
 role: progression
-status: review
+status: done
 owner_session: architect-stream-6
 reviewer: qa
 depends_on: [M1-PRG-02]
@@ -31,3 +31,4 @@ Review-sweep-A findings on PRG-02 outside the engine.
   - **Should-fix S1: the price change is not reflected in the design doc, and no request was filed.** economy.md:139 still prices "Drag Net / Quiet Tea / Ember Pot" at "80–110". The note asks Design to update it, but there is no `role: design` request task. Player-facing tooltips and balance notes get written from economy.md, so file the request (or have Progression append the row, since economy.md is append-only for non-owners).
   - Nit: `SaveShape` lets one uid be worn by two heroes, or by the wrong character. A review probe passed `loadout {rhen: {weapon: 1, armor: 1}, asha: {weapon: 1}}` with an unknown `base`. `grant_starting` (:209) then treats the slot as filled, because it only checks `has_piece`, so both heroes fight with the bogus piece. Consider `equip_error(cid, uid) == RESULT_OK` in that check (and see M1-ARC-08 F-nit).
   - Nit: `grant_starting` returns true for a hero with no loadout even when `_equip_new` fails for every slot (:201-206). The return value isn't used yet.
+- 2026-10-23 lead: closing on review-sweep-F approve-with-fixes; the economy.md Ember Pot price and the equipment double-wear check are in M1-CMB-08 and M1-ARC-11.

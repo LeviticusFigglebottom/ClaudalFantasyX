@@ -2,7 +2,7 @@
 id: M1-ARC-09
 title: Camera director works without a player; missing aim_node is loud
 role: architect
-status: review
+status: done
 owner_session: "worktree-agent-a35fbca43cd81575b"
 depends_on: [M1-ARC-07]
 reviewer: cinematics
@@ -29,3 +29,4 @@ See M1-ARC-07's handoff docs/kb/handoffs/2026-10-23-architect-7.md.
   - **AC2 is met.** A missing `aim_node` is a `push_error` naming the shot, the path and the rail root (:406-413), once per shot, and the shot is recorded in `missing_aim_nodes()`. The fallback is still the player, or `look_at` with no player. field_camera.md:44 says so.
   - **AC3 is met.** The test counts exactly one error over many evaluations, and confirms a found aim_node is not reported.
   - Nit: `_aim_warned` is keyed by shot and never cleared. If a cutscene evaluates a shot before its actor is instanced, and the actor is then added, the shot stays in `missing_aim_nodes()` and the error has already fired, although the shot now frames correctly. Either clear the entry when the node is found, or document "instance actors before the first `play_shot` that aims at them".
+- 2026-10-23 lead: closing on review-sweep-F approve.

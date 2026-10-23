@@ -2,7 +2,7 @@
 id: M1-CMB-07
 title: Engine item previews and sweep-C combat nits
 role: combat
-status: review
+status: done
 reviewer: ui
 owner_session: "worktree-agent-a6210d9196b16c99a"
 depends_on: [M1-UI-04]
@@ -34,3 +34,4 @@ Follow-ups from M1-UI-04's handoff (docs/kb/handoffs/2026-10-23-ui-1.md) and CMB
   - Nit: test_sandbox_battle.gd:17 `SIM_SMART_MIN_MEAN_TURNS := 16.0` duplicates targets.json. Read the floor from targets.json, so moving it with a tuning-log note can't leave the test behind. Also, a misspelt policy key in `mean_turns_min` is silently ignored (sim.py `turns_floor`). A one-line check that its keys are in `bands` would catch that.
   - Nit: formulas.md:58 says "so swapping can't launder diminishing returns". A high count protects the delayed unit, so the real reason is that the swap-in inherits the slot's delayed `next_time`, and a fresh count would let that slot be pushed again at full strength. Reword it. Also, this rule landed in 247304b (an M1-UI-04 commit) rather than with the engine change in 64a618a. Keep a rule and its code in one commit next time.
   - Nit: `item_defeats_party` (battle_engine.gd:281) predicts the item alone. The actor's end-of-turn Poison or Doom tick in `_end_turn` can still cause a defeat that is not predicted. Add one sentence to formulas.md or economy.md so the UI help line isn't read as a full guarantee.
+- 2026-10-23 lead: closing on review-sweep-F approve; nits are in M1-CMB-08.

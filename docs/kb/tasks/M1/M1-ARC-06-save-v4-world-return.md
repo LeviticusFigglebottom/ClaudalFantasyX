@@ -2,7 +2,7 @@
 id: M1-ARC-06
 title: Save v4 (party HP/MP/statuses, shrine network, respawn) and return-to-world on load
 role: architect
-status: review
+status: done
 owner_session: architect-stream-6
 reviewer: qa
 depends_on: [M1-ARC-03, M1-PRG-03]
@@ -39,3 +39,4 @@ Combine with M1-PRG-03 (starting gear after load) in one stream to avoid two con
   - **Should-fix S2: an unregistered location falls back silently and overwrites `location_id`.** `WorldReturn._on_game_loaded` (world_return.gd:80-87) ignores `resolve()`'s `fallback` flag, and `_travel` (world_return.gd:102) then writes the fallback id (`field_test`) into `Game.state.location_id`. A save made at a location that is not in locations.json yet (Haluna, today), or after a location id is renamed, continues at the test level with no warning, and the next save records `field_test` as its location (the menu then shows the wrong place). `respawn_location_id` survives, so the respawn is not lost. Fix: `push_warning` (or `push_error`) when `fallback` is true, and keep the state's `location_id` unless the travel resolved it.
   - Nit: `TitleMenu.start_new_game` (title_menu.gd:113-122) replaces `Game.state` and sets SaveSystem's `_new_run` before `go_to` can fail. On failure the title stays up over an empty state. That is harmless today (Continue reloads and clears `_new_run`), but calling `go_to`'s resolve first would avoid it.
   - Nit: `ShrineNetwork._loaded` (shrine_network.gd:19) holds strong references to shrine nodes. `_exit_tree` unregisters them, so this is fine in play. A shrine freed without entering the tree (a tool) would stay listed.
+- 2026-10-23 lead: closing on review-sweep-F approve-with-fixes; the cross-role requests are filed as M1-CMB-08 and M1-ENV-04, and the Continue fallback as M1-ARC-11.
