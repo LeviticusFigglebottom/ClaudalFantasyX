@@ -4,14 +4,20 @@ extends Node3D
 ## - writes the hymn_* shader globals (wind, weather clock, sun direction) every frame from data;
 ## - places the sun from the color-script elevation/azimuth (azimuth clockwise from north = -Z);
 ## - switches to the night mood (moon, oil lamp, sea-glow) while night_camera is current.
-## With --fixed-fps 60 the clock advances exactly 1/60 s per frame, so captures are repeatable.
+## The clock counts rendered frames at a fixed step (frame_step_s), not engine delta. Under the
+## screenshot capture scene it is held at start_time_s: capture.gd gives the first shot of a run
+## one process frame fewer than later shots, so a moving sea would shift by a frame (RMSE ~0.012)
+## depending on the shot's position in shots.json. For the same reason capture uses FXAA, not TAA.
 
 const GLOBAL_WIND := &"hymn_wind"
 const GLOBAL_WIND_TIME := &"hymn_wind_time"
 const GLOBAL_SUN := &"hymn_sun_direction"
 const GLOBAL_TIME_OF_DAY := &"hymn_time_of_day"
+const GLOBAL_GLIMMER := &"hymn_glimmer"
 const PARAM_DEEP := &"col_deep"
 const PARAM_CAUSTICS := &"caustic_strength"
+## While this scene runs under the screenshot capture, the weather clock is held still.
+const CAPTURE_SCENE := "res://tests/screenshots/capture.tscn"
 
 @export var water: WaterSurface
 @export var sun: DirectionalLight3D
@@ -32,26 +38,47 @@ const PARAM_CAUSTICS := &"caustic_strength"
 @export var night_sea_glow: float = 0.12
 ## Moonlight focuses into caustics too, but faintly.
 @export var night_caustic_strength: float = 0.25
+## hymn_glimmer at night: held cyan (glimmer_held #7FC6D9, linear) at the ch04 emission 0.6. Its
+## alpha also gates the sea-glow on (glimmer.gdshaderinc); by day the alpha is 0.
+@export var night_glimmer := Vector4(0.2122, 0.5647, 0.6939, 0.6)
 @export_group("Weather")
 ## Weather clock at frame 0 (s). Any value works; it only picks which moment the shots show.
 @export var start_time_s: float = 40.0
+## Seconds the weather clock advances per rendered frame (1/60: the capture runs at 60 fps).
+@export var frame_step_s: float = 1.0 / 60.0
 ## Wind travel direction (azimuth, deg) and speed (m/s); w = gust strength.
 @export var wind_azimuth_deg: float = 250.0
 @export var wind_speed_m_s: float = 6.0
 @export_range(0.0, 1.0) var wind_gust: float = 0.3
 
 var _clock: float = 0.0
+var _frames: int = 0
 var _night: bool = false
+var _taa_was_on: bool = false
+var _ssaa_was: Viewport.ScreenSpaceAA = Viewport.SCREEN_SPACE_AA_DISABLED
+var _hold_clock: bool = false
 
 
 func _ready() -> void:
 	_clock = start_time_s
+	var top := get_tree().current_scene
+	_hold_clock = top != null and top.scene_file_path == CAPTURE_SCENE
+	if _hold_clock:
+		# TAA history depends on how many frames a shot got and on the previous shot; FXAA has no
+		# history, so the capture is identical wherever the shot sits in shots.json. Restored on exit.
+		var vp := get_viewport()
+		_taa_was_on = vp.use_taa
+		_ssaa_was = vp.screen_space_aa
+		vp.use_taa = false
+		vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
 	_apply_mood(false)
 	_write_globals()
 
 
-func _process(delta: float) -> void:
-	_clock += delta
+func _process(_delta: float) -> void:
+	_frames += 1
+	if not _hold_clock:
+		_clock = start_time_s + _frames * frame_step_s
 	var cam := get_viewport().get_camera_3d()
 	var want_night := cam != null and cam == night_camera
 	if want_night != _night:
@@ -107,3 +134,11 @@ func _write_globals() -> void:
 	RenderingServer.global_shader_parameter_set(
 		GLOBAL_TIME_OF_DAY, night_time_of_day_h if _night else day_time_of_day_h
 	)
+	var glimmer := night_glimmer if _night else Vector4(night_glimmer.x, night_glimmer.y, night_glimmer.z, 0.0)
+	RenderingServer.global_shader_parameter_set(GLOBAL_GLIMMER, glimmer)
+
+
+func _exit_tree() -> void:
+	if _hold_clock:
+		get_viewport().use_taa = _taa_was_on
+		get_viewport().screen_space_aa = _ssaa_was

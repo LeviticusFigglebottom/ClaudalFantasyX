@@ -9,13 +9,20 @@ extends Node
 ##   --set=name=value,...         one look-debug configuration (shader params; bools as true/false)
 ##   --quality=low|medium|high|ultra   tier for --set
 ##   --png=/abs/file.png          save the last frame of --set
-## Timing: after WARMUP_FRAMES, the mean wall time and the RenderingServer-measured GPU time of
-## MEASURE_FRAMES frames. On lavapipe the "GPU" is the CPU rasteriser: the numbers rank features
-## relative to each other; they are not GPU milliseconds (docs/kb/tech/water.md, "Cost").
+## Timing (--cost): COST_ROUNDS interleaved rounds. Per round, after WARMUP_FRAMES, the CPU time
+## this process spends per frame over MEASURE_FRAMES (lavapipe rasterises in its own threads, so
+## other load on the machine does not inflate it); the minimum round is reported. The numbers
+## rank features relative to each other; they are not GPU milliseconds (docs/kb/tech/water.md).
 
 const SCENE := "res://game/levels/_tests/water/water_test.tscn"
-const WARMUP_FRAMES := 12
-const MEASURE_FRAMES := 16
+const WARMUP_FRAMES := 6
+const MEASURE_FRAMES := 8
+const COST_ROUNDS := 2
+## /proc/self/stat: utime and stime are fields 14 and 15, i.e. indices 11 and 12 after the
+## ")" that ends the command name; Linux clock ticks are 100 Hz (USER_HZ).
+const STAT_UTIME := 11
+const STAT_STIME := 12
+const MS_PER_TICK := 10.0
 const US_PER_MS := 1000.0
 const QUALITY_NAMES := {
 	"low": WaterSurface.Quality.LOW,
@@ -71,16 +78,27 @@ func _run() -> void:
 	RenderingServer.viewport_set_measure_render_time(get_viewport().get_viewport_rid(), true)
 	if opts.has("cost"):
 		print("BENCH %s, %s" % [opts.get("camera", "Cameras/Lagoon"), RenderingServer.get_video_adapter_name()])
-		var base := -1.0
-		for c: Dictionary in CONFIGS:
-			var r := await _measure(str(c["quality"]), bool(c["water"]), c["set"] as Dictionary)
-			if base < 0.0:
-				base = r.x
-			print("BENCH %-24s wall %7.1f ms  gpu %7.1f ms  water %+7.1f ms" % [c["name"], r.x, r.y, r.x - base])
+		# Interleaved rounds, keeping each configuration's fastest round: other processes on a
+		# shared machine only ever add time, so the minimum is the least-contended estimate.
+		var best: Array[float] = []
+		best.resize(CONFIGS.size())
+		best.fill(INF)
+		for round_i in COST_ROUNDS:
+			for i in CONFIGS.size():
+				var c := CONFIGS[i]
+				var r := await _measure(str(c["quality"]), bool(c["water"]), c["set"] as Dictionary)
+				best[i] = minf(best[i], r.z)
+		for i in CONFIGS.size():
+			print(
+				(
+					"BENCH %-24s cpu(min of %d) %7.1f ms/frame  water %+7.1f ms"
+					% [CONFIGS[i]["name"], COST_ROUNDS, best[i], best[i] - best[0]]
+				)
+			)
 	else:
 		var overrides := _parse_set(str(opts.get("set", "")))
 		var r := await _measure(str(opts.get("quality", "high")), not opts.has("hide-water"), overrides)
-		print("BENCH wall %.1f ms gpu %.1f ms" % [r.x, r.y])
+		print("BENCH wall %.1f ms gpu %.1f ms cpu %.1f ms" % [r.x, r.y, r.z])
 		if opts.has("png"):
 			var img := get_viewport().get_texture().get_image()
 			img.convert(Image.FORMAT_RGB8)
@@ -89,7 +107,7 @@ func _run() -> void:
 
 
 # Returns Vector2(mean wall ms, mean measured GPU ms).
-func _measure(quality: String, water_visible: bool, overrides: Dictionary) -> Vector2:
+func _measure(quality: String, water_visible: bool, overrides: Dictionary) -> Vector3:
 	var water := _scene.water
 	water.quality = QUALITY_NAMES.get(quality, WaterSurface.Quality.HIGH)
 	water.visible = water_visible
@@ -102,11 +120,27 @@ func _measure(quality: String, water_visible: bool, overrides: Dictionary) -> Ve
 	var rid := get_viewport().get_viewport_rid()
 	var gpu := 0.0
 	var start := Time.get_ticks_usec()
+	var cpu0 := _cpu_ticks()
 	for i in MEASURE_FRAMES:
 		await RenderingServer.frame_post_draw
 		gpu += RenderingServer.viewport_get_measured_render_time_gpu(rid)
 	var wall := float(Time.get_ticks_usec() - start) / US_PER_MS / MEASURE_FRAMES
-	return Vector2(wall, gpu / MEASURE_FRAMES)
+	var cpu := float(_cpu_ticks() - cpu0) * MS_PER_TICK / MEASURE_FRAMES
+	return Vector3(wall, gpu / MEASURE_FRAMES, cpu)
+
+
+# User + system CPU time of this process in clock ticks (Linux /proc/self/stat fields 14 and 15).
+# lavapipe rasterises in this process's threads, so this is the work done, whatever else runs.
+func _cpu_ticks() -> int:
+	# procfs reports length 0, so read line-wise rather than with get_file_as_string().
+	var f := FileAccess.open("/proc/self/stat", FileAccess.READ)
+	if f == null:
+		return 0
+	var stat := f.get_line()
+	var fields := stat.substr(stat.rfind(")") + 2).split(" ")
+	if fields.size() < STAT_STIME + 1:
+		return 0
+	return int(fields[STAT_UTIME]) + int(fields[STAT_STIME])
 
 
 func _args() -> Dictionary:
