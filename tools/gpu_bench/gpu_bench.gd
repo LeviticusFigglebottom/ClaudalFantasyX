@@ -18,6 +18,7 @@ extends Node
 ##   --label=<name>               scene label in the CSV (default: scene file name + camera)
 ##   --png-dir=<abs dir>          save the last sampled frame of each measurement as a PNG
 ##   --override=key=value,...     GraphicsSettings overrides on top of each preset (e.g. vegetation_detail=low)
+##   --debug-draw=overdraw      render Viewport.DEBUG_DRAW_OVERDRAW (pair with --png-dir; M1-ENV-03 budget)
 ##   --tag-vegetation             tag MultiMeshes (vegetation_multimesh, small_foliage) and range-limited
 ##                                meshes (vegetation_lod) before measuring, as a zone would (M1-RND-07)
 ##   --spin-sun=<deg>             turn every DirectionalLight3D this many degrees about Y each frame
@@ -141,6 +142,8 @@ func _measure(preset: String, variant: Dictionary, camera: String, label: String
 		var v: Variant = str_to_var(kv[1])
 		gs.set_override(kv[0], v if v != null else kv[1])
 	gs.apply_current(get_viewport(), _environment())
+	if str(_opts.get("debug-draw", "")) == "overdraw":
+		get_viewport().debug_draw = Viewport.DEBUG_DRAW_OVERDRAW
 	if _opts.has("sky-process") and _environment() != null and _environment().sky != null:
 		_environment().sky.process_mode = int(_opts["sky-process"]) as Sky.ProcessMode
 	_apply_tiers(preset)

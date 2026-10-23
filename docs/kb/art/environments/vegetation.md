@@ -80,7 +80,11 @@ The art README's packing rule for stone is "R moss, G salt, B wet, A erosion". V
 
 ## LODs
 
-LODs are authored meshes (`-lodN`). `VegetationPlant` turns them into `visibility_range` LODs, with ends at 45 m / 120 m / 400 m by default, a 2 m hysteresis margin, and no fade (deterministic captures). `force_lod` pins one LOD for debugging. Godot's automatic LOD generation is off for these files. MultiMesh grass is one LOD per scatter node (use a second node with `saltgrass_*-lod1` for far bands).
+LODs are authored meshes (`-lodN`). `VegetationPlant` turns them into `visibility_range` LODs, with ends at 45 m / 120 m / 400 m by default. **Cross-fade (M1-ENV-03):** each switch dissolves over `lod_fade_m` (6 m, `VISIBILITY_RANGE_FADE_SELF`; the incoming LOD starts at switch + 6 m, so the two fades overlap), and the last LOD fades out at 400 m instead of popping off against the sky. It costs +0.04 ms at High 1440p on an RX 9070 XT (test scene, Wide). With `lod_fade_m` 0 you get the old hard switch with the 2 m hysteresis. A plant inside a fade band in a still capture shows mid-dissolve, which is why haluna_h02 and h03 moved. `force_lod` pins one LOD for debugging.
+
+**Shelter (M1-ENV-03).** `translucency_shadow_floor` (0.35) lets leaves transmit light where the shadow map says occluded, because the occluder is usually the plant's own canopy. Under an eave that made plants glow. `VegetationPlant.shelter` (AUTO by default) casts one ray from 80 % of the plant's height toward the sun after placement. If it hits a collider, the plant counts as sheltered, and the instance uniform `inst_translucency_shelter` = 1 turns the floor off. Set `shelter` to 0 or 1 by hand to override it. The ray needs collision on the building (the Haluna kit has none yet, so its plants stay at 0 until then).
+
+On the GPU (`tools/gpu_bench/eave_glow.tscn`, a roof over a frangipani) the floor's glow under the roof averaged 0.013 linear luminance (p99 0.23, max 0.37). Sheltered, it's gone. Shelter is per plant, so a crown that pokes out past a roof edge loses the floor there too. Godot's automatic LOD generation is off for these files. MultiMesh grass is one LOD per scatter node (use a second node with `saltgrass_*-lod1` for far bands).
 
 `VegetationPlant` is a runtime stopgap. When M1-ART-02 lands, its material map and LOD setup should move into `game/core/import/vegetation_post_import.gd` unchanged.
 
@@ -98,7 +102,25 @@ LODs are authored meshes (`-lodN`). `VegetationPlant` turns them into `visibilit
 
 Textures are 1K maximum. The palm frond atlas is 1024², palm bark 512×1024 (tiles every 1.6 m), the frangipani leaf/flower atlas 1024², frangipani bark 512², and saltgrass and beach vine 512². Their PNGs total about 3.5 MB, and no file exceeds 1 MB. Normal maps are **8-bit**, not the 16-bit that ADR 0005 suggests: foliage normals are low-amplitude detail, and 16-bit would roughly double the size for no visible gain. Promote them if a hero needs it.
 
-The test scene holds 6 palms, 2 frangipani, 3 vine patches, and about 1,100 MultiMesh grass clumps. A 960×540 frame takes 1.8–3 s on lavapipe (4 vCPU, shared). The GPU cost is unmeasured. Expect alpha-tested overdraw in dense crowns to dominate, not triangle count.
+The test scene holds 6 palms, 2 frangipani, 3 vine patches, and about 1,100 MultiMesh grass clumps. A 960×540 frame takes 1.8–3 s on lavapipe (4 vCPU, shared).
+
+**On the GPU** (RX 9070 XT, 1440p), the whole test scene costs 0.94–0.98 ms (Low) and 1.56–1.60 ms (High) on Wide, and 0.65 / 1.27 ms on Backlit.
+
+**Overdraw budget (M1-ENV-03).** Measured with `gpu_bench --debug-draw=overdraw`, 1080p High, in layers per pixel, calibrated on the single-layer sand plane:
+
+| View | Frame mean | Covered-pixel mean | p95 | p99 | max |
+|---|---:|---:|---:|---:|---:|
+| Wide | 1.64 | 3.0 | 7.9 | 11.9 | 16.4 |
+| Backlit | 0.50 | 2.1 | 3.4 | 4.6 | 8.1 |
+| FrangipaniClose | 4.36 | 5.0 | 10.0 | 11.9 | 15.3 |
+
+The budget per view is:
+- **Field and wide views:** frame mean ≤ 2.5 layers, p99 ≤ 12.
+- **Close-ups:** frame mean ≤ 5, p99 ≤ 14.
+
+The dense layers are the near salt-grass clumps (8–16 layers). Thin those first, or use the `vegetation_detail` MultiMesh fraction, before cutting crown cards.
+
+**Wind flutter and TAA.** `flutter_amplitude_m` 0.02 at 3.5 Hz is the cap for TAA presets. Measured at a fixed 30 fps on Low (M1-RND-15, `docs/kb/qa/gpu/2026-10-23-rnd-15-prewarm.md`), TAA with the wind on departs from the instant 30–40 % more than its static softening: soft blades and faint double edges, with no trails. Raise the flutter only together with a ghosting re-measure (`aa_shimmer --wind` plus `aa_shimmer.py --ghost`).
 
 ## Honest quality assessment
 
@@ -112,5 +134,5 @@ What is weak (about 55–65% of a shipped AAA tropical set):
 - **The wing cards read as cards** at grazing angles near the crown centre. There are no leaflet-level geometric silhouettes at LOD0.
 - **Frangipani bark is too smooth and uniform** (it looks like a grey pipe in shade). The forks have no branch collars. The tips are capped with flat-ish cones. Flowers face only upward-ish, so side views show slivers.
 - **Saltgrass is one colour family**, with no seed heads and no ground debris. The clump fans can show their radial structure from above.
-- **Not built:** windbreak tree, screw-pine, sea hibiscus, hero banyan, seagrass, mangrove (later tasks). No impostors or billboards for more than 400 m. No wind interaction with characters. No collision meshes. No `PLACEHOLDER` metadata needed: the assets are final-intent, but expect a revision pass.
+- **Not built:** windbreak tree, screw-pine, sea hibiscus, hero banyan, seagrass, mangrove (later tasks). No impostors or billboards for more than 400 m. No wind interaction with characters. No collision meshes. **PLACEHOLDER until Art Director sign-off** (M1-ENV-03): `docs/kb/art/environments/vegetation_placeholders.md` lists every asset and moves each to "Signed off" when Art approves it.
 - **Unverified on GPU:** cost, alpha-scissor shimmer under motion, and the shadow-acne settings. Lavapipe only.
