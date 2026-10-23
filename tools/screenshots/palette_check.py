@@ -12,7 +12,8 @@ Two jobs, both in Oklab (ΔE_ok is plain Euclidean distance in Oklab, as the col
 
   check     Runs the numeric checks in tests/screenshots/palette_checks.json against a directory
             of shots (the committed baselines by default) and exits 1 on any failure. A check
-            selects pixels inside a rectangle (optionally filtered by Oklab L / C / hue), takes a
+            selects pixels inside a rectangle (optionally filtered by Oklab L / C / hue, and by
+            ΔE_ok to a swatch: "near": swatch, "near_max_de": d, any on-screen column), takes a
             statistic, and compares it with a palette swatch's on-screen value or with a bound.
 
 Usage:
@@ -189,6 +190,10 @@ def select(lab: np.ndarray, sel: dict) -> np.ndarray:
             m &= arr >= sel[f"{key}_min"]
         if f"{key}_max" in sel:
             m &= arr <= sel[f"{key}_max"]
+    if "near" in sel:
+        cols = np.stack(list(load_palette()[sel["near"]].values()))
+        de = np.linalg.norm(lab[..., None, :] - cols, axis=-1).min(axis=-1)
+        m &= de <= sel["near_max_de"]
     return m
 
 
