@@ -149,3 +149,5 @@ The cleric's warm first meeting invokes the heroine's spent parent, as in the in
   - **(d):** Ch6, Sefir doesn't know the face (he sees an unrisen); there is no "Hero of Corrow". Ch12, Toma learned the story on the Corrow wall after 1001, not as a cadet. Ch16, "the place he once sent Imra" is withdrawn: he walks last behind Asha toward the Choir where Imra was spent.
   - **(e):** in E2 Dace sees Kerrid, who shakes his head once. The order is unchanged.
   - The Ch9 Ebbing absence now has a practical cause on screen, and the tell is dropped (0022 (f)).
+
+- 2026-10-23 Narrative (M1-NAR-11, review-sweep-G): see the append note on [0022](0022-dace-imra-strangers-sweep-f.md). It supersedes (a)'s "He and Dace drank together" (they worked the rings, Kerrid holding his line), and the line "When a new Cantor was named, he started walking toward Corrow" (he set out when the Undertow stirred early this year). In the Ending, Imra, Dace and Kerrid never share a frame (act3_ending §0 rule 8).

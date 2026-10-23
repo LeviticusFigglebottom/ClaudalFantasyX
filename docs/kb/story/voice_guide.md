@@ -76,7 +76,8 @@ How each principal character talks. Use this when writing any `.dlg` line. If a 
 > "Your mother laughed at the wrong times too."
 > "I have nothing left to hide. I may as well talk."
 > "I don't sleep. I sit. You'd be surprised how long a night is, Rhen."
-> "Dace slouched. You slouch. Stand up straight before the end, will you?"
+
+*(Review-sweep-G: his slouch line belongs to E3 alone, "Stand up straight. Your father slouched." It is never sampled here or scripted before E3, so the Ending spends it first.)*
 
 ## Ysolde Ysel: *cold, exact, devastatingly dry*
 - **Rhythm:** complete, grammatically perfect sentences with long pauses. She corrects pronunciation mid-crisis.
