@@ -143,22 +143,21 @@ func timing_assist_tag_key() -> String:
 	return str(_assist().get("tag_key", ""))
 
 
-## A timed Swell input row (swell.json "inputs", kind timing_ring) as the timing assist plays it
-## (M2-UI-01). The assist is applied to the row, never in the engine: "wide" scales perfect_sec and
-## good_sec by window_scale, then keeps the good window inside its beat (both sides of the peak);
-## "auto" sets assist_grade, the grade a miss becomes (SwellTimingRing). A copy; off returns it as is.
+## A Swell input row (swell.json "inputs", any kind) as the timing assist plays it (M2-UI-01).
+## The assist is applied to the row, never in the grading code, and the result still passes the
+## validator's rules for its kind:
+##   "wide" scales the windows by window_scale: perfect_sec and good_sec (ring, chant, brace), each
+##   clamped (ring: inside the beat; chant: half the closest note gap; brace: before the counter's
+##   window would reach the last blow), or window_sec (glyph: within max_duration_sec);
+##   "auto" sets assist_floor ("good"): a miss records the step's good grade (SwellInput._record).
+## A copy; off returns it as is.
 func timing_input(row: Dictionary) -> Dictionary:
 	var out := row.duplicate(true)
 	var assist := _assist()
 	if assist.has("window_scale"):
-		var beat := float(out.get("beat_sec", 0.0))
-		var peak := float(out.get("peak_at", 0.0)) * beat
-		var room := minf(peak, beat - peak)
-		var k := float(assist["window_scale"])
-		out["good_sec"] = minf(float(out.get("good_sec", 0.0)) * k, room)
-		out["perfect_sec"] = minf(float(out.get("perfect_sec", 0.0)) * k, float(out["good_sec"]))
-	if assist.has("assist_grade"):
-		out["assist_grade"] = str(assist["assist_grade"])
+		_widen(out, float(assist["window_scale"]))
+	if assist.has("assist_floor"):
+		out["assist_floor"] = str(assist["assist_floor"])
 	return out
 
 
@@ -255,8 +254,39 @@ func _section() -> String:
 	return str(data.get("config_section", "accessibility"))
 
 
+func _widen(row: Dictionary, k: float) -> void:
+	var kind := StringName(str(row.get("kind", "")))
+	if kind == SwellInput.KIND_GLYPH:
+		var longest := float(_assist_data().get("max_duration_sec", 0.0)) - float(row.get("lead_in_sec", 0.0))
+		row["window_sec"] = minf(float(row.get("window_sec", 0.0)) * k, longest)
+		return
+	var room := INF
+	match kind:
+		SwellInput.KIND_TIMING_RING:
+			var beat := float(row.get("beat_sec", 0.0))
+			var peak := float(row.get("peak_at", 0.0)) * beat
+			room = minf(peak, beat - peak)
+		SwellInput.KIND_CHANT:
+			var at: Array[float] = []
+			for n: Variant in row.get("notes", []):
+				at.append(float((n as Dictionary).get("at", 0.0)))
+			for i in range(1, at.size()):
+				room = minf(room, (at[i] - at[i - 1]) * 0.5)
+		SwellInput.KIND_BRACE:
+			var last := 0.0
+			for t: Variant in row.get("impacts", []):
+				last = maxf(last, float(t))
+			room = float(row.get("counter_at", 0.0)) - last - float(_assist_data().get("edge_margin_sec", 0.0))
+	row["good_sec"] = minf(float(row.get("good_sec", 0.0)) * k, room)
+	row["perfect_sec"] = minf(float(row.get("perfect_sec", 0.0)) * k, float(row["good_sec"]))
+
+
+func _assist_data() -> Dictionary:
+	return data.get("timing_assist", {}) as Dictionary
+
+
 func _assist() -> Dictionary:
-	return (data.get("timing_assist", {}) as Dictionary).get(String(timing_assist()), {}) as Dictionary
+	return _assist_data().get(String(timing_assist()), {}) as Dictionary
 
 
 func _motion() -> Dictionary:

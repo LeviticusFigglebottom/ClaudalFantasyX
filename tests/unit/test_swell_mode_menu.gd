@@ -1,7 +1,7 @@
 extends TestCase
 ## M2-UI-01: choosing a Swell fill mode on the battle Swell page (BattleMenus.swell_mode_rows,
 ## SwellModeRows) and the timing-assist accessibility setting (UiSettings.timing_input, applied to
-## the input row; SwellTimingRing.assist_grade), on the sandbox with the frozen capture fixtures.
+## the input row; SwellInput.assist_floor, every kind), on the sandbox with the frozen capture fixtures.
 
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 
@@ -150,7 +150,7 @@ func test_wide_widens_both_windows_and_keeps_them_inside_the_beat() -> void:
 		assert_true(float(row["max_step_sec"]) <= float(out["perfect_sec"]), "a frame step still fits a grade")
 		assert_eq(float(row["good_sec"]), float(_ring_row()["good_sec"]), "the data row is not touched")
 	assert_eq(s.timing_assist_tag_key(), "HUD_SWELL_ASSIST_WIDE")
-	var tight := {"beat_sec": 1.0, "peak_at": 0.9, "perfect_sec": 0.05, "good_sec": 0.08}
+	var tight := {"kind": "timing_ring", "beat_sec": 1.0, "peak_at": 0.9, "perfect_sec": 0.05, "good_sec": 0.08}
 	assert_between(float(s.timing_input(tight)["good_sec"]), 0.1 - 1e-6, 0.1 + 1e-6, "clamped to the late room")
 
 
@@ -158,7 +158,7 @@ func test_auto_makes_every_miss_good_and_presses_can_still_be_perfect() -> void:
 	var s := UiSettings.new()
 	assert_true(s.set_value(UiSettings.TIMING_ASSIST, "auto"))
 	var out := s.timing_input(_ring_row())
-	assert_eq(out["assist_grade"], "good")
+	assert_eq(out["assist_floor"], "good")
 	assert_eq(float(out["good_sec"]), float(_ring_row()["good_sec"]), "auto leaves the windows alone")
 	var ring := SwellTimingRing.new(out)
 	ring.advance(ring.time_to_peak())
@@ -180,7 +180,7 @@ func test_the_battle_ring_plays_the_assisted_row_and_shows_the_tag() -> void:
 	ctl.aim_at(&"gull_harrier")
 	_press(&"ui_accept")
 	var ring := ctl.swell_input()
-	assert_eq(ring.assist_grade, SwellTimingRing.GRADE_GOOD, "the ring was built from the assisted row")
+	assert_eq(ring.assist_floor, SwellInput.QUALITY_GOOD, "the ring was built from the assisted row")
 	ctl.tick(ring.duration_sec())
 	var good := int((_ring_row()["grades"] as Dictionary)["good"])
 	assert_true(ctl.hud.help_history.has(ctl.menus.swell_result_text([&"good", &"good", &"good"], good * 3)))
@@ -197,6 +197,77 @@ func test_every_assist_option_is_documented_with_a_tag() -> void:
 		var tag := str((assists[str(opt)] as Dictionary).get("tag_key", ""))
 		if str(opt) != "off":
 			assert_ne(tr(tag), tag, "%s's tag is localized" % opt)
+
+
+func test_auto_floors_every_input_kind_at_its_played_at_good_result() -> void:  # merged with M2-CMB-01
+	var s := UiSettings.new()
+	s.set_value(UiSettings.TIMING_ASSIST, "auto")
+	var kinds: Array[StringName] = []
+	for row: Variant in BattleSwell.load_config().get("inputs", []):
+		var plain := row as Dictionary
+		var input := SwellInput.create(s.timing_input(plain))
+		kinds.append(input.kind)
+		input.advance(input.duration_sec() + 1.0)  # the player does nothing at all
+		assert_true(input.is_done(), "%s ran out" % plain["id"])
+		var good := SwellInput.scripted_result(plain, SwellInput.QUALITY_GOOD)
+		assert_eq(input.grades, good[BattleSwell.RESULT_GRADES], "%s: every miss became its good grade" % plain["id"])
+		assert_eq(input.raw_misses, input.grade_count(), "%s: the misses as played are still counted" % plain["id"])
+		var bonus := BattleSwell.bonus_pct(plain, input.result())
+		assert_eq(bonus, BattleSwell.bonus_pct(plain, good), "%s: the played-at-good bonus" % plain["id"])
+	assert_eq(kinds.size(), SwellInput.KINDS.size(), "every kind in swell.json is covered")
+
+
+func test_auto_never_earns_the_glyph_s_swift() -> void:
+	var s := UiSettings.new()
+	s.set_value(UiSettings.TIMING_ASSIST, "auto")
+	var glyph := SwellInput.create(s.timing_input(_row_of(SwellInput.KIND_GLYPH))) as SwellGlyph
+	glyph.advance(glyph.lead_in_sec)
+	for i in glyph.strokes.size():  # fast, but every stroke wrong
+		glyph.press(SwellInput.BUTTON_UP if glyph.strokes[i] != SwellInput.BUTTON_UP else SwellInput.BUTTON_DOWN)
+	assert_true(glyph.is_done())
+	assert_eq(glyph.grades[-1], SwellInput.GRADE_MISS, "swift asks for a clean trace as played")
+
+
+func test_wide_keeps_every_kind_within_the_validator_rules() -> void:
+	var s := UiSettings.new()
+	s.set_value(UiSettings.TIMING_ASSIST, "wide")
+	var limits: Dictionary = s.data["timing_assist"]
+	for row: Variant in BattleSwell.load_config().get("inputs", []):
+		var plain := row as Dictionary
+		var out := s.timing_input(plain)
+		var id := str(plain["id"])
+		match StringName(str(plain["kind"])):
+			SwellInput.KIND_GLYPH:
+				assert_true(float(out["window_sec"]) > float(plain["window_sec"]), "%s: a longer window" % id)
+				var total := float(out["lead_in_sec"]) + float(out["window_sec"])
+				assert_true(total <= float(limits["max_duration_sec"]) + 1e-9, "%s stays short" % id)
+				assert_true(float(out["swift_sec"]) <= float(out["window_sec"]))
+			SwellInput.KIND_CHANT:
+				assert_true(float(out["good_sec"]) > float(plain["good_sec"]), "%s: wider" % id)
+				var notes: Array = out["notes"]
+				for i in range(1, notes.size()):
+					var gap := float(notes[i]["at"]) - float(notes[i - 1]["at"])
+					assert_true(gap >= 2.0 * float(out["good_sec"]) - 1e-9, "%s: windows never overlap" % id)
+			SwellInput.KIND_BRACE:
+				assert_true(float(out["good_sec"]) > float(plain["good_sec"]), "%s: wider" % id)
+				var last := 0.0
+				for t: Variant in out["impacts"]:
+					last = maxf(last, float(t))
+				assert_true(
+					float(out["counter_at"]) - float(out["good_sec"]) > last, "%s: opens after the last blow" % id
+				)
+			SwellInput.KIND_TIMING_RING:
+				assert_true(float(out["good_sec"]) > float(plain["good_sec"]), "%s: wider" % id)
+		if out.has("perfect_sec"):
+			assert_true(float(out["perfect_sec"]) <= float(out["good_sec"]), "%s: perfect within good" % id)
+			assert_true(float(out["max_step_sec"]) <= float(out["perfect_sec"]), "%s: a frame fits a grade" % id)
+
+
+func _row_of(kind: StringName) -> Dictionary:
+	for row: Variant in BattleSwell.load_config().get("inputs", []):
+		if StringName(str((row as Dictionary).get("kind", ""))) == kind:
+			return row as Dictionary
+	return {}
 
 
 # --- helpers -------------------------------------------------------------------------------------

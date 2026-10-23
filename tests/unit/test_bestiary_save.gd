@@ -50,7 +50,7 @@ func test_save_and_load_keep_the_log() -> void:
 	st.bestiary = LOG.duplicate(true)
 	assert_eq(SaveSystem.save_to_slot(1, st), OK)
 	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SaveSystem.slot_path(1)))
-	assert_eq(int(raw["version"]), 5)
+	assert_eq(int(raw["version"]), SaveSystem.SAVE_VERSION, "v5 or later")
 	var back := SaveSystem.load_from_slot(1)
 	assert_true(back != null)
 	if back != null:

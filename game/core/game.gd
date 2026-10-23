@@ -15,6 +15,9 @@ extends Node
 ##   EventBus.battle_party_returned       -> record_party(): writes HP/MP/carried statuses back
 ##   vitals_modifier()                    -> a BattleEngine.party_modifier that applies them; put
 ##                                           it LAST in EquipmentEffects.compose([...])
+## Swell (M2-ARC-01, save v6): record_party also keeps each hero's gauge and mode in its vitals
+## entry (vitals_modifier puts them back), and EventBus.battle_swell_returned -> record_swell()
+## keeps the party's unlocked modes and unlock counts in state.swell. A shrine rest keeps both.
 
 const FLAGS_PATH := "res://game/data/flags.tres"
 ## The largest single frame step counted towards play time, in seconds.
@@ -34,6 +37,7 @@ func _ready() -> void:
 	rest_rules = load_rest_rules()
 	EventBus.party_full_heal_requested.connect(heal_party)
 	EventBus.battle_party_returned.connect(record_party)
+	EventBus.battle_swell_returned.connect(record_swell)
 
 
 func _process(delta: float) -> void:
@@ -154,6 +158,7 @@ func record_party(_encounter_id: StringName, _outcome: StringName, party: Array)
 		push_error("Game: not recording party vitals; %s" % problem)
 		return
 	var carried := carried_statuses()
+	var default_mode := StringName(str(BattleSwell.load_config().get("default_mode", "")))
 	for v: Variant in party:
 		if not v is BattleCombatant:
 			continue
@@ -161,7 +166,17 @@ func record_party(_encounter_id: StringName, _outcome: StringName, party: Array)
 		var held: Array[StringName] = []
 		for sid: StringName in c.statuses:
 			held.append(sid)
-		state.record_vitals(c.id, c.hp, c.max_hp, c.mp, c.max_mp, held, carried)
+		state.record_vitals(c.id, c.hp, c.max_hp, c.mp, c.max_mp, held, carried, c.swell, c.swell_mode, default_mode)
+
+
+## EventBus.battle_swell_returned: keeps the party's Swell record (unlocked modes, unlock counts).
+## While swell.json is broken (BattleSwell.config_problem) nothing is written (ADR 0018 Amendment 6).
+func record_swell(record: Dictionary) -> void:
+	var problem := BattleSwell.config_problem(BattleSwell.load_config())
+	if problem != "":
+		push_error("Game: not recording the Swell record; %s" % problem)
+		return
+	state.swell = record.duplicate(true)
 
 
 ## A BattleEngine.party_modifier that applies `for_state`'s vitals (default: the live state at the

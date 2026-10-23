@@ -54,5 +54,30 @@ class EaseCeilingTest(unittest.TestCase):
             self.assertIsNone(sim.turns_floor(suites[sid], "naive"))
 
 
+
+class SwellColumnTest(unittest.TestCase):
+    """M2-CMB-01: a suite's Swell quality, the --swell override and the report's Swell columns."""
+
+    def test_suite_swell_defaults_off_and_the_override_wins(self):
+        self.assertEqual(sim.suite_swell(SUITE), "off")
+        self.assertEqual(sim.suite_swell(dict(SUITE, swell="good")), "good")
+        self.assertEqual(sim.suite_swell(dict(SUITE, swell="good"), "perfect"), "perfect")
+
+    def test_rows_and_markdown_carry_swell(self):
+        r = dict(result("smart", 100.0, 18.0), mean_swells=0.554)
+        row = sim.summary_rows(dict(SUITE, swell="good"), [r])[0]
+        self.assertEqual((row["swell"], row["mean_swells"]), ("good", 0.55))
+        md = sim.markdown([row], [dict(SUITE, swell="good")], 10, "2026-10-23")
+        self.assertIn("| Swell | Policy |", md)
+        self.assertIn("| good | smart | 100.0 |", md)
+        self.assertIn("| 0.55 |", md)
+        self.assertIn("| l | good | (all) | pending |", md)
+
+    def test_the_shipped_suites_play_swell_at_good(self):
+        for s in sim.load_targets():
+            self.assertIn(sim.suite_swell(s), sim.SWELL_QUALITIES, s["id"])
+            self.assertEqual(s.get("swell"), "good", s["id"])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -501,3 +501,12 @@ SET_TIMING_ASSIST_AUTO,Misses count as Good
 HUD_SWELL_ASSIST_WIDE,Assist: wider window
 HUD_SWELL_ASSIST_AUTO,Assist: misses count as Good
 BESTIARY_UNREAD_TAG,Not Read
+SKILL_SHALLOWS_VERSE,Shallows Verse
+SKILL_RETURN_TIDE,Return Tide
+SKILL_WRITTEN_LIGHT,Written Light
+SWELL_INPUT_CHANT,Verse Chant
+SWELL_INPUT_CHANT_HELP,Sing the phrase back: press each note's direction as it sounds.
+SWELL_INPUT_BRACE,Tide Brace
+SWELL_INPUT_BRACE_HELP,Hold Confirm through every blow and let go on the counter.
+SWELL_INPUT_GLYPH,Glyph Trace
+SWELL_INPUT_GLYPH_HELP,Trace the glyph's strokes in order. A clean quick trace burns brighter.

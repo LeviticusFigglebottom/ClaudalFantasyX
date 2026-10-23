@@ -25,6 +25,7 @@ DOC = {"swell": {
     "modes": [_mode("a", "damage_taken"), _mode("b", "damage_dealt"), _mode("c", "heal_item", False, flat=20)],
     "inputs": [RING],
     "heroes": [{"id": "rhen", "input": "ring", "techniques": ["dive"]}],
+    "unlocks": [{"id": "c_from_a", "mode": "c", "event": "damage_taken", "count": 10}],
 }}
 SKILLS = {"dive": {"id": "dive", "swell": True}, "attack": {"id": "attack"}}
 CHARS = {"rhen", "asha"}
@@ -142,6 +143,118 @@ class SwellValidateTests(unittest.TestCase):
         rep = vd.Report()
         self.assertEqual(vd.check_swell({}, rep), [])
         self.assertTrue(any("missing" in e for e in rep.errors))
+
+
+
+# --- M2-CMB-01: chant, brace and glyph inputs; unlock rules --------------------------------------
+
+CHANT = {"id": "chant", "kind": "chant", "lead_in_sec": 0.6, "perfect_sec": 0.06, "good_sec": 0.15,
+         "max_step_sec": 0.05, "notes": [{"button": "up", "at": 0.0}, {"button": "left", "at": 0.5}],
+         "grades": {"perfect": 18, "good": 9, "miss": 0}}
+BRACE = {"id": "brace", "kind": "brace", "lead_in_sec": 0.6, "impacts": [0.4, 1.0], "counter_at": 1.6,
+         "perfect_sec": 0.06, "good_sec": 0.15, "max_step_sec": 0.05,
+         "grades": {"braced": 10, "perfect": 60, "good": 15, "miss": 0}}
+GLYPH = {"id": "glyph", "kind": "glyph", "lead_in_sec": 0.6, "window_sec": 3.0, "swift_sec": 2.0,
+         "max_step_sec": 0.05, "strokes": ["down", "right"], "grades": {"traced": 9, "swift": 45, "miss": 0}}
+UNLOCKS = [{"id": "c_from_a", "mode": "c", "event": "damage_taken", "while_mode": "a", "count": 10}]
+
+
+class SwellInputKindTests(unittest.TestCase):
+    def doc(self, *inputs: dict, unlocks: list | None = None) -> dict:
+        d = copy.deepcopy(DOC)
+        d["swell"]["inputs"] += [copy.deepcopy(i) for i in inputs]
+        d["swell"]["unlocks"] = copy.deepcopy(UNLOCKS if unlocks is None else unlocks)
+        return d
+
+    def errs(self, d: dict) -> list[str]:
+        return vd.swell_errors(d, SKILLS, CHARS)
+
+    def assert_errs(self, d: dict, *wants: str) -> None:
+        e = self.errs(d)
+        for want in wants:
+            self.assertTrue(any(want in x for x in e), f"{want!r} not in {e}")
+
+    def test_clean_kinds(self) -> None:
+        self.assertEqual(self.errs(self.doc(CHANT, BRACE, GLYPH)), [])
+        self.assertEqual(vd.SWELL_INPUT_KINDS, {"timing_ring", "chant", "brace", "glyph"})
+
+    def test_chant_notes(self) -> None:
+        c = copy.deepcopy(CHANT)
+        c["notes"][1]["at"] = 0.2
+        c["perfect_sec"] = 0.2
+        self.assert_errs(self.doc(c), "within 2 x good_sec", "perfect_sec must not exceed good_sec")
+        for bad in ([], "up", [{"button": "accept", "at": 0.0}], [{"button": "up"}]):
+            c["notes"] = bad
+            self.assertTrue(any("notes" in x for x in self.errs(self.doc(c))), bad)
+        c = copy.deepcopy(CHANT)
+        c["notes"].append({"button": "down", "at": 4.5})
+        self.assert_errs(self.doc(c), "keep it at most 5 s")
+        c = copy.deepcopy(CHANT)
+        del c["good_sec"]
+        self.assert_errs(self.doc(c), "'good_sec' must be a number >= 0")
+
+    def test_brace_timing(self) -> None:
+        b = copy.deepcopy(BRACE)
+        b["impacts"] = [1.0, 0.4]
+        b["counter_at"] = 1.1
+        b["perfect_sec"] = 0.3
+        self.assert_errs(self.doc(b), "ascending order", "must open after the last impact", "must not exceed")
+        b["impacts"] = []
+        self.assert_errs(self.doc(b), "impacts must be a non-empty list")
+        b = copy.deepcopy(BRACE)
+        b["max_step_sec"] = 0.1
+        self.assert_errs(self.doc(b), "max_step_sec must be a number in (0, 0.06]")
+        b["counter_at"] = "late"
+        self.assert_errs(self.doc(b), "'counter_at' must be a number >= 0")
+
+    def test_glyph_strokes_and_window(self) -> None:
+        g = copy.deepcopy(GLYPH)
+        g["strokes"] = ["down", "sideways"]
+        g["swift_sec"] = 4.0
+        self.assert_errs(self.doc(g), "strokes must be a non-empty list", "swift_sec must be in (0, window_sec]")
+        g = copy.deepcopy(GLYPH)
+        g["window_sec"] = 6.0
+        g["max_step_sec"] = 0.5
+        self.assert_errs(self.doc(g), "keep it at most 5 s", "max_step_sec must be a number in (0, 0.1]")
+        g["window_sec"] = -1
+        self.assert_errs(self.doc(g), "'window_sec' must be a number >= 0")
+
+    def test_each_kind_names_its_own_grades(self) -> None:
+        for row, wrong in ((CHANT, {"perfect": 1, "good": 1}), (BRACE, {"perfect": 1, "good": 1, "miss": 0}),
+                           (GLYPH, {"traced": 1, "swift": -1, "miss": 0})):
+            r = copy.deepcopy(row)
+            r["grades"] = wrong
+            e = self.errs(self.doc(r))
+            self.assertTrue(any("grades must give exactly" in x or "grade bonuses must be ints" in x for x in e), row["id"])
+        r = copy.deepcopy(CHANT)
+        r["lead_in_sec"] = None
+        self.assert_errs(self.doc(r), "'lead_in_sec' must be a number >= 0")
+
+    def test_unlock_rules(self) -> None:
+        self.assertEqual(self.errs(self.doc()), [])
+        bad = [{"id": "x", "mode": "a", "event": "sneezing", "while_mode": "zzz", "count": 0}]
+        self.assert_errs(self.doc(unlocks=bad), "mode must be a mode that starts locked", "event must be one of",
+                         "while_mode 'zzz' is not a mode", "count must be a positive int",
+                         "mode 'c' starts locked but no unlocks rule unlocks it")
+        d = self.doc()
+        del d["swell"]["unlocks"]
+        self.assert_errs(d, "mode 'c' starts locked but no unlocks rule")
+        self.assert_errs(self.doc(unlocks=[UNLOCKS[0], dict(UNLOCKS[0])]), "duplicate id 'c_from_a'")
+
+    def test_repo_inputs_earn_the_same_at_each_quality(self) -> None:
+        """formulas.md § Swell: +45% played at good and +90% played perfectly, for every input."""
+        doc = json.loads((ROOT / vd.SWELL_FILE).read_text())["swell"]
+        for i in doc["inputs"]:
+            g = i["grades"]
+            steps = {"timing_ring": i.get("beats"), "chant": len(i.get("notes", [])),
+                     "brace": len(i.get("impacts", [])), "glyph": len(i.get("strokes", []))}[i["kind"]]
+            if i["kind"] == "brace":
+                good, perfect = steps * g["braced"] + g["good"], steps * g["braced"] + g["perfect"]
+            elif i["kind"] == "glyph":
+                good, perfect = steps * g["traced"], steps * g["traced"] + g["swift"]
+            else:
+                good, perfect = steps * g["good"], steps * g["perfect"]
+            self.assertEqual((good, perfect), (45, 90), i["id"])
 
 
 if __name__ == "__main__":

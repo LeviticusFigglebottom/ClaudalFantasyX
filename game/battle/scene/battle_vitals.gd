@@ -11,6 +11,8 @@ extends RefCounted
 ##   send_back()  emits EventBus.battle_party_returned after a victory or an escape; Game records
 ##                HP, MP and carried statuses. A defeat records nothing: the run goes back to the
 ##                last save (or Retry replays the same start), so it never saves an all-KO party.
+##                M2-ARC-01: the combatants also carry their Swell gauge and mode, and with the
+##                battle's BattleSwell it emits EventBus.battle_swell_returned (unlocks) too.
 ## Capture fixtures and tests (persist_progress off) never read or write vitals.
 ## Glue, not engine core: it only sets the engine's party_modifier and calls setup().
 
@@ -108,13 +110,16 @@ static func raise_modifier(ids: Array[StringName]) -> Callable:
 
 
 ## After a victory or an escape: hands every party combatant (active, then reserve) to
-## EventBus.battle_party_returned, which Game.record_party turns into saved vitals. Returns
-## whether it sent them (false for a defeat or an unfinished battle).
-static func send_back(engine: BattleEngine) -> bool:
+## EventBus.battle_party_returned, which Game.record_party turns into saved vitals (Swell gauges
+## and modes included), then `swell`'s record to EventBus.battle_swell_returned. Returns whether
+## it sent them (false for a defeat or an unfinished battle).
+static func send_back(engine: BattleEngine, swell: BattleSwell = null) -> bool:
 	if engine.outcome != BattleEngine.OUTCOME_VICTORY and engine.outcome != BattleEngine.OUTCOME_ESCAPED:
 		return false
 	var party: Array = []
 	for c in engine.party_active + engine.party_reserve:
 		party.append(c)
 	EventBus.battle_party_returned.emit(engine.encounter_id, engine.outcome, party)
+	if swell != null:
+		EventBus.battle_swell_returned.emit(swell.to_saved())
 	return true

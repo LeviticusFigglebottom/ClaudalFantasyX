@@ -1,0 +1,11 @@
+{
+  "_about": "M1-ART-02 post-import rules for the base bodies (game/core/import/base_body_post_import.gd, AssetImportRules). The bodies are PLACEHOLDER art (glTF extras hymn_tag), so the import tags them; they keep their flat glTF PLACEHOLDER_* materials on purpose (no slot_dir), LODs are Godot's auto LODs, and characters have no static collision.",
+  "kind": "base_body",
+  "script": "res://game/core/import/base_body_post_import.gd",
+  "assets": ["res://assets/characters/base_body/"],
+  "adoption_pending": {},
+  "generate_lods": true,
+  "materials": {},
+  "lods": {},
+  "collision": {}
+}

@@ -1,0 +1,24 @@
+{
+  "_about": "M1-ART-02 post-import rules for the Haluna kit (game/core/import/haluna_kit_post_import.gd, AssetImportRules). Materials and LOD ranges match HalunaDresser's defaults, which still override them at runtime with the layout's values. Walk collision for the playable zone is built at runtime by HalunaCollision; the kit exports no -col proxies yet, so the collision rules apply only when a piece gains one.",
+  "kind": "haluna_kit",
+  "script": "res://game/core/import/haluna_kit_post_import.gd",
+  "assets": ["res://assets/environments/kits/haluna/"],
+  "adoption_pending": {},
+  "generate_lods": false,
+  "materials": {
+    "slot_dir": "res://assets/environments/kits/haluna/materials/",
+    "by_node": {},
+    "warn_unmapped": true
+  },
+  "lods": {
+    "suffix": "-lod",
+    "end_m": [70.0, 2000.0],
+    "margin_m": 2.0
+  },
+  "collision": {
+    "proxy_suffix": "-col",
+    "shape": "trimesh",
+    "layer": 1,
+    "mask": 1
+  }
+}

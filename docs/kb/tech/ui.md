@@ -155,8 +155,8 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
 ## Swell fill modes (M2-UI-01)
 
 - The **Swell** page lists the techniques (greyed out until the gauge is full), then one row per unlocked mode (`BattleMenus.swell_mode_rows`, in swell.json order). Each row shows the mode's `name_key`, and "In use" or "No time" on the right. Highlighting a mode row puts its `desc_key` on the help line with "Choosing it costs no time", and the timeline shows the order unchanged (no ghost). Choosing one calls `BattleSwell.set_mode` (the engine's rule), redraws the page and the root row in place, and leaves the turn with the same fighter. `SwellModeRows` is the glue; the controller reaches it through one-condition hooks on two existing lines.
-- Modes chosen in battle last for that battle until M2-ARC-01 carries `swell_mode` (and the unlocked list) between battles and saves. That is also when an out-of-battle chooser (a party or Customize menu) has somewhere to write. None exists yet.
-- **Timing assist:** see § Accessibility. The controller builds the ring from `hud.settings.timing_input(row)`, and the ring panel shows the tag ("Assist: wider window" / "Assist: misses count as Good") at its top left. `SwellTimingRing.assist_grade` is the one engine-side addition.
+- Since the merge with M2-ARC-01 a mode chosen in battle is carried out of it with the gauge (`BattleSwellCarry`). The out-of-battle API exists (`BattleSwellCarry.mode_rows` / `set_mode`, battle_ctb.md), but there is no party or Customize menu to put a chooser in yet. That chooser is the follow-up, and it can reuse `BattleMenus.swell_mode_rows`'s row shape.
+- **Timing assist:** see § Accessibility. The controller builds the ring from `hud.settings.timing_input(row)`, and the ring panel shows the tag ("Assist: wider window" / "Assist: misses count as Good") at its top left. `SwellInput.assist_floor` (every kind grades through `SwellInput._record`) is the one engine-side addition.
 - **Capture:** `battle_swell_modes` (fixture `swell_modes`: Rhen at 40, the Swell page with Wake highlighted).
 
 ## Swell (M1-CMB-04)

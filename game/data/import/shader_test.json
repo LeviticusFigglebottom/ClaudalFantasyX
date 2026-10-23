@@ -1,0 +1,11 @@
+{
+  "_about": "M1-ART-02 post-import rules for the M1-RND-04 shader-test meshes (game/core/import/shader_test_post_import.gd, AssetImportRules). No import-time materials, on purpose: the meshes export no glTF materials and CharacterShadingStage assigns its test materials as material_override at runtime, then CharacterShaderTiers.apply_to_tree swaps the shader on every material it reaches, surface overrides included. Shared .tres surface overrides from the import would let the Low comparison copy's tier swap leak into the High copy and the main bust (char_low_compare; tests/unit/test_character_shading.gd). No LOD chains, no collision.",
+  "kind": "shader_test",
+  "script": "res://game/core/import/shader_test_post_import.gd",
+  "assets": ["res://assets/characters/shader_test/"],
+  "adoption_pending": {},
+  "generate_lods": false,
+  "materials": {},
+  "lods": {},
+  "collision": {}
+}

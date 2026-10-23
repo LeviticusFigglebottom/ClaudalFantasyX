@@ -265,3 +265,8 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 ### Added 2026-10-23 (M1-CMB-03, Combat)
 - **bestiary** (n.): the party's record of the creatures it has Read or defeated. *§6.1, §6.11*
 - **preemptive opening** / **ambush** (battle openings): the party, or the foes, take their first turns before the other side. *design/formulas.md § Openings*
+
+### Added 2026-10-23 (M2-CMB-01, Combat)
+- **Verse Chant**: Asha's Swell input, a short phrase of direction buttons that follows a verse of the Hush. **Shallows Verse**: her first Swell technique (heals every ally).
+- **Tide Brace**: Toma's Swell input: hold through the blows, let go on the counter. **Return Tide**: his first Swell technique.
+- **Glyph Trace**: Ysolde's Swell input: trace a Lamptongue glyph's strokes before the window closes (*swift* for a clean, quick trace). **Written Light**: her first Swell technique (strikes every foe).

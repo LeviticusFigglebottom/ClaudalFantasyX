@@ -93,9 +93,9 @@ func test_defaults_and_the_live_ring_is_short() -> void:
 
 func test_the_timing_assist_turns_misses_into_its_grade_and_nothing_else() -> void:  # M2-UI-01
 	var cfg := CFG.duplicate()
-	cfg["assist_grade"] = "good"
+	cfg["assist_floor"] = "good"
 	ring = SwellTimingRing.new(cfg)
-	assert_eq(ring.assist_grade, SwellTimingRing.GRADE_GOOD)
+	assert_eq(ring.assist_floor, SwellInput.QUALITY_GOOD)
 	ring.advance(ring.beat_start(1) + 0.01)
 	assert_eq(ring.grades, [&"good"] as Array[StringName], "a beat that runs out counts as good")
 	ring.advance(ring.time_to_peak())
@@ -106,6 +106,6 @@ func test_the_timing_assist_turns_misses_into_its_grade_and_nothing_else() -> vo
 
 
 func test_no_assist_by_default() -> void:
-	assert_eq(ring.assist_grade, &"")
+	assert_eq(ring.assist_floor, &"")
 	ring.advance(ring.duration_sec())
 	assert_eq(ring.grades, [&"miss", &"miss", &"miss"] as Array[StringName])

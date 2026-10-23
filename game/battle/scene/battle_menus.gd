@@ -76,7 +76,9 @@ func root_rows(engine: BattleEngine, items: BattleItemSource = null, swell: Batt
 			ATTACK_SKILL
 		)
 	)
-	if swell != null and swell.has_swell(actor) and actor.is_alive() and not swell.techniques(actor).is_empty():
+	# Only an input the HUD draws (SwellRingView.draws; the other kinds wait for M2-UI-03).
+	var has_page := swell != null and swell.has_swell(actor) and actor.is_alive()
+	if has_page and not swell.techniques(actor).is_empty() and SwellRingView.draws(swell.input_for(actor)):
 		var input_key := str(swell.input_for(actor).get("name_key", ""))
 		if swell.is_ready(actor):
 			rows.append(_row(ROW_SWELL, tr("HUD_CMD_SWELL"), tr(input_key) if input_key != "" else "", &"swell", true))
@@ -128,17 +130,18 @@ func swell_rows(engine: BattleEngine, swell: BattleSwell) -> Array[Dictionary]:
 	return rows
 
 
-## One row per fill mode `actor` may choose (BattleSwell.unlocked, in swell.json order): the
-## mode's name, and "In use" or the free cost on the right. Choosing one costs no time.
+## One row per fill mode `actor` may choose (BattleSwell.mode_rows, the M2-CMB-01 API: the unlocked
+## modes in data order): the mode's name, and "In use" or the free cost on the right. Choosing one
+## costs no time.
 func swell_mode_rows(swell: BattleSwell, actor: BattleCombatant) -> Array[Dictionary]:
 	var rows: Array[Dictionary] = []
-	for mid: StringName in swell.modes:
-		if not swell.unlocked.has(mid):
-			continue
-		var current := actor.swell_mode == mid
+	for m: Dictionary in swell.mode_rows(actor):
+		var mid := StringName(str(m.get("id", "")))
+		var current := bool(m.get("current", false))
 		var right := tr("HUD_SWELL_MODE_IN_USE") if current else tr("HUD_COST_FREE")
 		var rid := StringName(ROW_SWELL_MODE_PREFIX + String(mid))
-		var row := _row(rid, swell_mode_name(swell, mid), right, &"swell" if current else &"focus", true)
+		var key := str(m.get("name_key", ""))
+		var row := _row(rid, tr(key) if key != "" else String(mid), right, &"swell" if current else &"focus", true)
 		row[KEY_SWELL_MODE] = mid
 		rows.append(row)
 	return rows
