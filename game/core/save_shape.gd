@@ -23,6 +23,7 @@ extends RefCounted
 ##                     loadout: {String: {String: whole number >= 0}}}
 ##   party_vitals     {String: {hp, mp: whole numbers >= 0, statuses: [String]}}
 ##   respawn          {location_id: String, spawn: String}
+##   bestiary         {String: {read: bool, defeated: whole number >= 0}}   (v5, M1-CMB-03)
 ## JSON loads every number as a float, so "whole number" means an int, or a finite float with no
 ## fractional part, and at most MAX_WHOLE in size: above 2^53 a float no longer holds every whole
 ## number, and int() of a float past the int64 range wraps to a negative number (QA review-sweep-E
@@ -66,6 +67,7 @@ static func problem(st: Variant) -> String:
 		_opt(d, "equipment", _equipment),
 		_opt(d, "party_vitals", _vitals),
 		_opt(d, "respawn", _respawn),
+		_opt(d, "bestiary", _bestiary),
 	]
 	for c in checks:
 		if c != OK_SHAPE:
@@ -250,3 +252,15 @@ static func _vitals(v: Variant, path: String) -> String:
 
 static func _respawn(v: Variant, path: String) -> String:
 	return _record(v, path, {"location_id": _string, "spawn": _string})
+
+
+static func _bool(v: Variant, path: String) -> String:
+	return OK_SHAPE if typeof(v) == TYPE_BOOL else "%s: expected true or false" % path
+
+
+static func _beast(v: Variant, path: String) -> String:
+	return _record(v, path, {"read": _bool, "defeated": _count})
+
+
+static func _bestiary(v: Variant, path: String) -> String:
+	return _map_of(v, path, _beast)

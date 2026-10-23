@@ -10,3 +10,5 @@ render_priority = 0
 shader = ExtResource("sh")
 shader_parameter/tex_iris = ExtResource("t0")
 shader_parameter/tex_sclera = ExtResource("t1")
+shader_parameter/col_sclera = Color(0.80, 0.745, 0.69, 1)
+shader_parameter/limbus_softness = 0.09

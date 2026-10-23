@@ -19,7 +19,7 @@ The boss Cutscene B calls to battle (`<<event start_battle drownbell>>`), per ve
 - [x] Cutscene B → the Drownbell → end card in the thread; tests. (Boss side and its tests done; the thread wiring is the first-playable Lead's: `BattleRequest` for encounter `drownbell`, party active `rhen, asha, toma`, reserve none, victory flag `ch03_drownbell_defeated`.)
 
 ## Notes (combat worktree, 2026-10-23)
-- Engine: `game/battle/boss_mechanics.gd` (`BossMechanics`) holds the rules; the engine calls it at five points. Data shape, API, HUD: battle_ctb.md "The Drownbell (M2-FP-06)". Stand-in: ADR 0023.
+- Engine: `game/battle/boss_mechanics.gd` (`BossMechanics`) holds the rules; the engine calls it at five points. Data shape, API, HUD: battle_ctb.md "The Drownbell (M2-FP-06)". Stand-in: ADR 0024 (renumbered from 0023 on merge: M1-CMB-03 took 0023).
 - Balance (1000 seeds): naive 0.0%, role answer 79.7%, smart 89.6%, p90 51 actions (5000 seeds: 0.0 / 80.3 / 90.4%).
 - Live battles fill `BattleEngine.story_flags` from `Game.get_flag` (`BattleBossHud.live_flags`), so `ch03_ilun_bound` must be set before the fight (Cutscene B sets it) for Asha to have Call Ilun.
 - Touched UI-owned files minimally (additive): `game/ui/battle/turn_timeline.gd` (`intent_labels`, the `intent` slot field) and `game/ui/battle/timeline_chip.gd` (the "· The Toll" suffix). UI may restyle.

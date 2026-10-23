@@ -64,6 +64,9 @@ var currency_multiplier := Callable()
 var story_flags: Array[StringName] = []
 ## Fields in force (a phase row's "field", e.g. &"flood"); a "clears_field" skill ends one.
 var fields: Array[StringName] = []
+## How the battle opens (BattleOpening: normal, preemptive or ambush). Set it after setup() and
+## before begin(); live play uses BattleOpening.choose(self). Normal leaves the rolled ticks be.
+var opening: StringName = BattleOpening.NORMAL
 
 ## Item drops rolled once at victory (item id -> count). See drop_awards().
 var _drops: Dictionary = {}
@@ -79,6 +82,7 @@ func setup(
 	db = battle_db
 	rng.seed = rng_seed
 	encounter_id = encounter
+	opening = BattleOpening.NORMAL
 	party_active.clear()
 	party_reserve.clear()
 	enemies.clear()
@@ -121,6 +125,7 @@ func begin() -> void:
 	for c in _field():
 		c.next_time = Formulas.initial_ticks(c.agility, rng.randi_range(0, Formulas.base_delay(c.agility)))
 		c.participated = c.team == BattleCombatant.TEAM_PARTY
+	BattleOpening.apply(opening, party_active, enemies)
 	_advance()
 
 
@@ -711,7 +716,8 @@ func _resolve_on(actor: BattleCombatant, target: BattleCombatant, sk: Dictionary
 			)
 			hit["amount"] = -target.restore_hp(amt)  # Zombie: the same amount harms instead
 		&"support":
-			pass
+			if BattleRead.is_read(sk):
+				hit["read"] = BattleRead.reveal(target, _enemy_row(target))
 		_:
 			push_error("BattleEngine: unknown skill kind '%s'" % kind)
 	for inflict: Variant in sk.get("statuses", []):

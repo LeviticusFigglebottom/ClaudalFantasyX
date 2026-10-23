@@ -60,6 +60,7 @@ func test_one_gate_covers_every_table_and_the_shipped_build_is_healthy() -> void
 		DataHealth.LOCATIONS,
 		DataHealth.FLAGS,
 		DataHealth.PARTY_REST,
+		DataHealth.BESTIARY,
 	]
 	assert_eq(SaveSystem.data_health().tables(), expected)
 	assert_eq(SaveSystem.data_tables_problem(), "", "the shipped tables are sound")

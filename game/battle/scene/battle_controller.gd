@@ -65,6 +65,8 @@ var items: BattleItemSource
 var frame_wait := Callable()
 ## Damage numbers and float words for resolved actions (BattleFloats).
 var floats := BattleFloats.new(self)
+## Read, the bestiary log and the opening (M1-CMB-03; BattleBestiary).
+var bestiary := BattleBestiary.new(self)
 ## Swell gauges and techniques for the current battle (M1-CMB-04).
 var swell: BattleSwell
 ## False freezes an open Swell input where it stands (capture scripts); tick() advances it.
@@ -133,8 +135,8 @@ func start_sandbox(rng_seed: int = -1, staged: bool = false) -> void:
 	fixture = null
 	_db = _live_db
 	var cfg := BattleStage.config()
-	var active: Array[StringName] = _ids(cfg.get("active", []))
-	var reserve: Array[StringName] = _ids(cfg.get("reserve", []))
+	var active: Array[StringName] = BattleIds.from(cfg.get("active", []))
+	var reserve: Array[StringName] = BattleIds.from(cfg.get("reserve", []))
 	var s := int(cfg.get("seed", 0)) if rng_seed < 0 else rng_seed
 	var encounter := StringName(str(cfg.get("encounter", "")))
 	items = _live_items()
@@ -225,6 +227,7 @@ func _build_engine(
 		fixture.prepare(engine)
 	swell = BattleSwell.new(BattleSwell.load_config())
 	swell.attach(engine)
+	bestiary.attach(engine, persist_progress and fixture == null)
 	engine.action_resolved.connect(floats.on_action_resolved)
 	boss = BattleBossHud.attached(self, engine)
 	stage.spawn(engine)
@@ -622,7 +625,7 @@ func _begin_target(skill_id: StringName) -> void:
 		return
 	_pending_skill = skill_id
 	_group_target = kind.begins_with("all_")
-	_candidates = _ids_of(menus.skill_candidates(engine, skill_id))
+	_candidates = BattleIds.of(menus.skill_candidates(engine, skill_id))
 	if _candidates.is_empty():
 		return
 	var preferred := default_targets(skill_id)
@@ -639,7 +642,7 @@ func _begin_item_target(item_id: StringName) -> void:
 	var action := items.action_for(item_id) if items != null else null
 	if action == null:
 		return
-	_candidates = _ids_of(menus.item_candidates(engine, action))
+	_candidates = BattleIds.of(menus.item_candidates(engine, action))
 	if _candidates.is_empty():
 		return
 	_pending_skill = &""
@@ -656,7 +659,7 @@ func _begin_swap_out() -> void:
 	_pending_skill = &""
 	_pending_item = &""
 	_group_target = false
-	_candidates = _ids_of(engine.party_active)
+	_candidates = BattleIds.of(engine.party_active)
 	_target_index = maxi(_candidates.find(engine.current.id), 0)
 	_set_state(STATE_SWAP_OUT)
 	hud.commands.active = false
@@ -827,7 +830,7 @@ func _preview_skill(skill_id: StringName, targets: Array[BattleCombatant]) -> vo
 	var marked: Array[BattleCombatant] = targets
 	if lands != chosen:
 		marked = [lands]
-	_show_timeline(TurnTimeline.MODE_PREVIEW, preview, _ids_of(marked))
+	_show_timeline(TurnTimeline.MODE_PREVIEW, preview, BattleIds.of(marked))
 	# What changes the outcome (Provoke, Reflect, Zombie) reads before the generic description.
 	var parts := menus.target_notes(engine, skill_id, chosen, lands)
 	if swell.is_technique(engine.current, skill_id):
@@ -843,7 +846,7 @@ func _preview_skill(skill_id: StringName, targets: Array[BattleCombatant]) -> vo
 func _preview_item(item_id: StringName, targets: Array[BattleCombatant]) -> void:
 	var chosen: BattleCombatant = targets[0] if targets.size() == 1 else null
 	var preview := engine.preview_item(item_id, chosen, items, CtbTimeline.PREVIEW_LENGTH - 1)
-	_show_timeline(TurnTimeline.MODE_PREVIEW, preview, _ids_of(targets))
+	_show_timeline(TurnTimeline.MODE_PREVIEW, preview, BattleIds.of(targets))
 	var parts := menus.item_notes(engine, items, item_id, chosen)
 	if engine.item_defeats_party(item_id, targets, items):
 		# The warning stands alone: nothing else about the item matters if it ends the fight.
@@ -961,20 +964,6 @@ func _live_items() -> BattleItemSource:
 	var item_db := ItemDB.load_default()
 	var bag: Dictionary = Game.state.inventory if persist_progress else Game.state.inventory.duplicate(true)
 	return InventoryItemSource.new(item_db, Inventory.new(item_db, bag))
-
-
-static func _ids(raw: Variant) -> Array[StringName]:
-	var out: Array[StringName] = []
-	for v: Variant in raw as Array:
-		out.append(StringName(str(v)))
-	return out
-
-
-static func _ids_of(list: Array[BattleCombatant]) -> Array[StringName]:
-	var out: Array[StringName] = []
-	for c in list:
-		out.append(c.id)
-	return out
 
 
 # --- capture scripts (deterministic; see tests/screenshots/shots.json) ---------------------

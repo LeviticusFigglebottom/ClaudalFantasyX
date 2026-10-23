@@ -1252,6 +1252,7 @@ def run(root: Path) -> Report:
     data_keys += check_locations(root, files, rep)
     data_keys += check_swell(files, rep)
     data_keys += check_boss(files, declared_flags_quiet(root), rep)
+    check_read_openings(files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_undertow(root, files, rep)
@@ -1908,6 +1909,48 @@ def check_boss(files: dict[str, object], flags: set[str], rep: Report) -> list[s
             if f not in flags:
                 rep.err(f"sim_policies.loadouts.{name}: undeclared story flag '{f}'")
     return collect_keys([e.get("phases", []) for e in enemies] + [e.get("weak_point", {}) for e in enemies])
+# --- Read and openings (M1-CMB-03, formulas.md § Openings, battle_ctb.md § Read) -----------------
+
+OPENINGS = {"roll", "normal", "preemptive", "ambush"}
+
+
+def read_openings_errors(skills: list, enemies: list, encounters: list) -> list[str]:
+    """Read skills are support rows aimed at one foe; every enemy has the lore and name keys a Read
+    reveals; an encounter's optional "opening" is roll, normal, preemptive or ambush."""
+    errs: list[str] = []
+    reads = []
+    for s in skills:
+        if not isinstance(s, dict) or "read" not in s:
+            continue
+        w = f"skills.{s.get('id')}"
+        if not isinstance(s["read"], bool):
+            errs.append(f"{w}: 'read' must be true or false")
+            continue
+        if s["read"]:
+            reads.append(s.get("id"))
+            if s.get("kind") != "support" or s.get("target") != "single_foe":
+                errs.append(f"{w}: a Read skill must be kind 'support' with target 'single_foe'")
+    if reads:
+        for e in enemies:
+            if not isinstance(e, dict):
+                continue
+            for key in ("lore_key", "name_key"):
+                if not isinstance(e.get(key), str) or not e[key]:
+                    errs.append(f"enemies.{e.get('id')}: needs a {key} (Read reveals it)")
+    for enc in encounters:
+        if isinstance(enc, dict) and "opening" in enc and enc["opening"] not in OPENINGS:
+            errs.append(f"encounters.{enc.get('id')}: opening must be one of {sorted(OPENINGS)}")
+    return errs
+
+
+def check_read_openings(files: dict[str, object], rep: Report) -> None:
+    def rows(name: str) -> list:
+        doc = files.get(f"game/data/battle/{name}.json")
+        got = doc.get(name, []) if isinstance(doc, dict) else []
+        return got if isinstance(got, list) else []
+
+    for e in read_openings_errors(rows("skills"), rows("enemies"), rows("encounters")):
+        rep.err(e)
 
 
 if __name__ == "__main__":

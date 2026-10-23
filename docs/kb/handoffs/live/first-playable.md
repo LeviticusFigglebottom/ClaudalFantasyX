@@ -31,7 +31,7 @@ Nothing. The Lead's queue of 2026-10-23 (M2-FP-05..08) is done and pushed:
 - **M2-FP-06 Drownbell (review):**
   - The engine gains a phase mechanism (`game/battle/boss_mechanics.gd`).
   - Phase 1, the Toll: a timeline push, telegraphed in the preview, that breaking the rim silences.
-  - Phase 2, the Flood: polyps heal the bell; Asha's Call Ilun clears the water. Call Ilun stands in for the Vowbound summon (ADR 0023).
+  - Phase 2, the Flood: polyps heal the bell; Asha's Call Ilun clears the water. Call Ilun stands in for the Vowbound summon (ADR 0024).
   - In balance: naive 0%, role_answer 80%, smart 90%.
   - Wired into the thread: Cutscene B → `BattleRequest(drownbell)` with `return_scene` → end card.
 - **M2-FP-07:** a request task for Character (Asha's clips), still `todo`.

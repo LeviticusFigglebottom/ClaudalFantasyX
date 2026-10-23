@@ -58,7 +58,7 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - The music is a prototype stand-in: the hush theme sketch plays on the beach and in Haluna, the temple cue plays at the shrine, and the hush theme v2 plays for the verse. Nobody has signed off on any of them.
 - The glimmer motes in the cutscenes are simple glowing dots, not the real particle effect.
 - Haluna uses the art team's mood-test scene, with simple collision added. The camera mostly follows Rhen from behind; only a few spots use composed shots.
-- **Call Ilun** is a stand-in for the real Vowbound summon (ADR 0023). For now it is one of Asha's commands rather than a full summon that replaces the party, and the bell and polyps are placeholder shapes.
+- **Call Ilun** is a stand-in for the real Vowbound summon (ADR 0024). For now it is one of Asha's commands rather than a full summon that replaces the party, and the bell and polyps are placeholder shapes.
 - Entering Haluna holds the black fade for about a second and a half while the village builds itself; the picture no longer freezes when it appears.
 - In the field, Escape does nothing. **E** also advances dialogue.
 

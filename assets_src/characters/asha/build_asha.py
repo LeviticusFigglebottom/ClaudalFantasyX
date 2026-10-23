@@ -216,6 +216,49 @@ def decimate_where(ob: bpy.types.Object, mask: np.ndarray, ratio: float, P0: np.
     me.normals_split_custom_set_from_vertices([tuple(map(float, n)) for n in auto])
 
 
+# M1-CHR-09: the deep eye-socket skin sits inside the opaque eyeball (bb_donor.seat_eyes tucks it to
+# 0.9 R), so no camera ever sees it. Its faces are deleted after the bake, which still ray-casts the
+# AO and thickness against the closed socket, so the textures don't change. The ring of socket
+# faces that reaches out to the lid margin is kept: it is the inner rim of the lid.
+HIDDEN_SOCKET_R = 0.95  # of the globe radius: a face with every vertex inside this is deleted
+
+
+def delete_hidden_socket(ob: bpy.types.Object, face) -> int:
+    """Delete the skin faces of `ob` whose vertices all lie inside an eyeball, at rest and under
+    every shape key. Returns the triangles removed."""
+    me = ob.data
+    nv = len(me.vertices)
+    P = np.zeros((nv, 3))
+    me.vertices.foreach_get("co", P.ravel())
+    keys = [kb for kb in me.shape_keys.key_blocks] if me.shape_keys else []
+    hidden = np.zeros(nv, bool)
+    for fr in face.eyes.values():
+        inside = np.linalg.norm(P - fr.E, axis=1) < HIDDEN_SOCKET_R * fr.R
+        for kb in keys:  # a vertex that any shape moves out of the globe stays
+            K = np.zeros((nv, 3))
+            kb.data.foreach_get("co", K.ravel())
+            inside &= np.linalg.norm(K - fr.E, axis=1) < HIDDEN_SOCKET_R * fr.R
+        hidden |= inside
+    skin = [i for i, m in enumerate(me.materials) if m.name == "skin_head"]
+    me.calc_loop_triangles()
+    before = len(me.loop_triangles)
+    for p in me.polygons:
+        p.select = p.material_index in skin and bool(hidden[list(p.vertices)].all())
+    bpy.ops.object.select_all(action="DESELECT")
+    bpy.context.view_layer.objects.active = ob
+    ob.select_set(True)
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_mode(type="FACE")
+    bpy.ops.object.mode_set(mode="OBJECT")
+    for p in me.polygons:
+        p.select = p.material_index in skin and bool(hidden[list(p.vertices)].all())
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.delete(type="FACE")
+    bpy.ops.object.mode_set(mode="OBJECT")
+    me.calc_loop_triangles()
+    return before - len(me.loop_triangles)
+
+
 def head_seams(F: np.ndarray, cat: np.ndarray, V: np.ndarray, lm) -> set:
     """Seam edges of the head: between face categories (face mask, rest of head, sockets, mouth
     cavity) and down the back midline of the rest of the head."""
@@ -588,6 +631,11 @@ def main() -> int:
         lip_terms["FACE"] = face_v
         dump_bake(Path(args.bake_dir), {"head": ob_head, "body": ob_body}, lm, {"head": np.array(head.T)},
                   {"head": {"LIP": masks["lip"], **lip_terms}})
+    removed = delete_hidden_socket(ob_head, face)  # after the bake: the AO still sees a closed socket
+    report["triangles"]["head"] -= removed
+    report["triangles"]["total_lod0"] -= removed
+    report["hidden_socket_tris_deleted"] = removed
+    log(f"hidden socket faces deleted: {removed} tris ({time.time() - t0:.1f}s)")
     if args.blend:
         bpy.ops.wm.save_as_mainfile(filepath=str(Path(args.blend).resolve()), compress=True)
     out = Path(args.out).resolve()

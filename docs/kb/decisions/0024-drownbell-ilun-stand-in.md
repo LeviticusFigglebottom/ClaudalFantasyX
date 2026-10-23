@@ -1,4 +1,4 @@
-# 0023 — The Drownbell's Ilun call is a first-playable stand-in for Vowbound
+# 0024 — The Drownbell's Ilun call is a first-playable stand-in for Vowbound
 
 - **Status:** accepted
 - **Date:** 2026-10-23

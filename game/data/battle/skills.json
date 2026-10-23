@@ -91,6 +91,9 @@
      "element": "none", "target": "single_ally", "mp_cost": 0, "magic": true},
     {"id": "call_ilun", "name_key": "SKILL_CALL_ILUN", "kind": "magical", "power": 8, "rank": 4,
      "element": "none", "target": "all_foes", "mp_cost": 12, "magic": true,
-     "requires_flag": "ch03_ilun_bound", "clears_field": "flood"}
+     "requires_flag": "ch03_ilun_bound", "clears_field": "flood"},
+    {"id": "read", "name_key": "SKILL_READ", "kind": "support", "power": 0, "rank": 2,
+     "accuracy": 100, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false,
+     "read": true}
   ]
 }

@@ -466,3 +466,14 @@ HUD_FAIL_NO_FIELD,There is no water field to clear.
 HUD_CHARGE_BROKEN_FMT,{name}'s {part} breaks. {skill} is silenced.
 HUD_WEAK_POINT_FMT,{part} {hits}/{need}
 HUD_FIELD_CLEARED,The water field clears.
+SKILL_READ,Read
+HUD_OPENING_PREEMPTIVE,They have not seen you yet.
+HUD_OPENING_AMBUSH,They saw you first.
+ELEMENT_FIRE,Fire
+ELEMENT_WATER,Water
+ELEMENT_LIGHTNING,Lightning
+ELEMENT_ICE,Ice
+ELEMENT_HOLY,Holy
+ELEMENT_GLIMMER,Glimmer
+HUD_READ_WEAK,Weak to {list}
+HUD_READ_NO_WEAKNESS,No weakness found
