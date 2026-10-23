@@ -13,10 +13,23 @@ extends Resource
 ##   respawn          {"location_id", "spawn"}: where Continue puts the party (WorldReturn).
 ##                    An empty location means the registry's default; an empty spawn means
 ##                    the location's own spawn (game/data/world/locations.json).
+##
+## Save v5 (M1-CMB-03) adds the bestiary log:
+##   bestiary         {"<enemy id>": {"read": bool, "defeated": whole number}} (Bestiary wraps it)
+##
+## Save v6 (M2-ARC-01) carries Swell (docs/kb/design/battle_ctb.md "Carried Swell"):
+##   party_vitals     entries may also hold "swell" (gauge points, 0..Formulas.SWELL_MAX) and
+##                    "swell_mode" (the hero's fill mode id). No "swell" means an empty gauge, and
+##                    no "swell_mode" means swell.json's default mode. A shrine rest keeps both.
+##   swell            {"unlocked": [mode id], "progress": {"<unlock rule id>": count}}: the modes
+##                    unlocked through play and the counts towards the rest, party-wide
+##                    (BattleSwell.to_saved / load_saved). Ids swell.json no longer lists are kept.
 
 const KEY_HP := "hp"
 const KEY_MP := "mp"
 const KEY_STATUSES := "statuses"
+const KEY_SWELL := "swell"
+const KEY_SWELL_MODE := "swell_mode"
 
 @export var flags: Dictionary = {}
 @export var party_ids: Array[StringName] = []
@@ -40,6 +53,10 @@ const KEY_STATUSES := "statuses"
 ## v4: the respawn location id (LocationRegistry) and spawn marker name.
 @export var respawn_location_id: StringName = &""
 @export var respawn_spawn: StringName = &""
+## v5: the bestiary log (Bestiary.new(bestiary) reads and writes it in place).
+@export var bestiary: Dictionary = {}
+## v6: the party's Swell record (see the class comment; BattleSwellCarry reads and writes it).
+@export var swell: Dictionary = {}
 
 
 func to_dict() -> Dictionary:
@@ -57,6 +74,8 @@ func to_dict() -> Dictionary:
 		"party_vitals": party_vitals.duplicate(true),
 		"attuned_shrines": attuned_shrines.map(func(s: StringName) -> String: return String(s)),
 		"respawn": {"location_id": String(respawn_location_id), "spawn": String(respawn_spawn)},
+		"bestiary": bestiary.duplicate(true),
+		"swell": swell.duplicate(true),
 	}
 
 
@@ -83,6 +102,8 @@ static func from_dict(d: Dictionary) -> GameStateData:
 	if typeof(rs) == TYPE_DICTIONARY:
 		s.respawn_location_id = StringName(str((rs as Dictionary).get("location_id", "")))
 		s.respawn_spawn = StringName(str((rs as Dictionary).get("spawn", "")))
+	s.bestiary = Bestiary.from_saved(d.get("bestiary", {}))
+	s.swell = _clean_swell(d.get("swell", {}))
 	return s
 
 
@@ -104,11 +125,25 @@ func statuses_of(cid: StringName) -> Array[StringName]:
 
 ## Records `cid`'s state after a battle. HP and MP at their maximum are stored as "full" (no
 ## value), and only statuses in `carried` are kept. A member left at full with nothing carried
-## has no entry at all, so saves stay small and the "no entry = full" rule holds.
+## has no entry at all, so saves stay small and the "no entry = full" rule holds. v6: a gauge
+## above 0 is stored as `swell`, and a mode other than `default_mode` as `swell_mode`.
 func record_vitals(
-	cid: StringName, hp: int, max_hp: int, mp: int, max_mp: int, statuses: Array[StringName], carried: Array[StringName]
+	cid: StringName,
+	hp: int,
+	max_hp: int,
+	mp: int,
+	max_mp: int,
+	statuses: Array[StringName],
+	carried: Array[StringName],
+	swell_points: int = 0,
+	swell_mode: StringName = &"",
+	default_mode: StringName = &""
 ) -> void:
 	var entry := {}
+	if swell_points > 0:
+		entry[KEY_SWELL] = swell_points
+	if swell_mode != &"" and swell_mode != default_mode:
+		entry[KEY_SWELL_MODE] = String(swell_mode)
 	if hp < max_hp:
 		entry[KEY_HP] = maxi(hp, 0)
 	if mp < max_mp:
@@ -126,7 +161,8 @@ func record_vitals(
 
 
 ## A full rest (save shrine): every member's HP and MP become full and the statuses in `cures`
-## are removed. Statuses not in `cures` stay. Returns the ids whose entry changed, sorted.
+## are removed. Statuses not in `cures` stay, and so do Swell gauges and modes (v6: a rest is not
+## a battle). Returns the ids whose entry changed, sorted.
 func full_heal(cures: Array[StringName]) -> Array[StringName]:
 	var changed: Array[StringName] = []
 	for key: Variant in party_vitals.keys():
@@ -166,6 +202,58 @@ func apply_vitals_to(c: BattleCombatant, duration: int) -> void:
 			c.statuses.clear()
 	if entry.has(KEY_MP):
 		c.mp = clampi(int(entry[KEY_MP]), 0, c.max_mp)
+	if entry.has(KEY_SWELL):
+		c.swell = clampi(int(entry[KEY_SWELL]), 0, Formulas.SWELL_MAX)
+	if entry.has(KEY_SWELL_MODE):
+		c.swell_mode = StringName(str(entry[KEY_SWELL_MODE]))
+
+
+# --- Swell (v6) --------------------------------------------------------------------------------
+
+
+## `cid`'s saved fill mode, or `default_mode` when none is saved.
+func swell_mode_of(cid: StringName, default_mode: StringName = &"") -> StringName:
+	var mode := str(vitals_of(cid).get(KEY_SWELL_MODE, ""))
+	return StringName(mode) if mode != "" else default_mode
+
+
+## `cid`'s saved gauge points (0 when none).
+func swell_of(cid: StringName) -> int:
+	return int(vitals_of(cid).get(KEY_SWELL, 0))
+
+
+## Saves `cid`'s fill mode outside battle (a field menu), leaving the rest of its entry alone. The
+## default mode is stored as no value. Callers check that the mode is choosable
+## (BattleSwellCarry.set_mode).
+func set_swell_mode(cid: StringName, mode: StringName, default_mode: StringName) -> void:
+	var entry: Dictionary = party_vitals.get(String(cid), {})
+	if mode == default_mode or mode == &"":
+		entry.erase(KEY_SWELL_MODE)
+	else:
+		entry[KEY_SWELL_MODE] = String(mode)
+	if entry.is_empty():
+		party_vitals.erase(String(cid))
+	else:
+		party_vitals[String(cid)] = entry
+
+
+## {unlocked: [String], progress: {String: int}} from a saved record (JSON counts are floats).
+static func _clean_swell(raw: Variant) -> Dictionary:
+	if typeof(raw) != TYPE_DICTIONARY:
+		return {}
+	var d := raw as Dictionary
+	var out := {}
+	if typeof(d.get("unlocked")) == TYPE_ARRAY:
+		var ids: Array[String] = []
+		for v: Variant in d["unlocked"]:
+			ids.append(str(v))
+		out["unlocked"] = ids
+	if typeof(d.get("progress")) == TYPE_DICTIONARY:
+		var counts := {}
+		for k: Variant in d["progress"]:
+			counts[str(k)] = int((d["progress"] as Dictionary)[k])
+		out["progress"] = counts
+	return out
 
 
 ## Keeps only well-formed entries (a hand-edited or damaged save must not crash battle setup).
@@ -182,6 +270,13 @@ static func _clean_vitals(raw: Variant) -> Dictionary:
 			var v: Variant = (e as Dictionary).get(k)
 			if typeof(v) == TYPE_INT or typeof(v) == TYPE_FLOAT:
 				entry[k] = maxi(int(v), 0)
+		var points: Variant = (e as Dictionary).get(KEY_SWELL)
+		if typeof(points) == TYPE_INT or typeof(points) == TYPE_FLOAT:
+			if int(points) > 0:
+				entry[KEY_SWELL] = int(points)
+		var mode: Variant = (e as Dictionary).get(KEY_SWELL_MODE)
+		if typeof(mode) == TYPE_STRING and str(mode) != "":
+			entry[KEY_SWELL_MODE] = str(mode)
 		var sts: Variant = (e as Dictionary).get(KEY_STATUSES, [])
 		if typeof(sts) == TYPE_ARRAY and not (sts as Array).is_empty():
 			var kept: Array[String] = []

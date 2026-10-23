@@ -42,6 +42,21 @@ OUT = ROOT / "assets" / "characters" / "asha" / "textures"
 PARAMS = HERE / "asha_params.json"
 FLOOR = np.array([0x1D, 0x19, 0x16]) / 255.0
 CEIL = np.array([0xEB, 0xE7, 0xDF]) / 255.0
+SCLERA_FALL = (0.12, 0.42)  # sclera texture v (0 front pole .. 1 back) over which it darkens and warms
+SCLERA_DARKEN = 0.16
+SCLERA_WARM = 0.08
+# M1-CHR-09: the upper lid's albedo, margin to crease, against the cheek. M1-CHR-10: 0.15 -> 0.26,
+# plus the lash line and the lid's ambient occlusion below; at 0.15 the band still read pale.
+UPPER_LID_DARKEN = 0.26
+UPPER_LID_AO = 0.30  # ambient occlusion on the upper lid (the lashes and the brow overhang shade it)
+LASH_LINE_RR = 1.05  # lid-field radius of the lash line (1 = the margin)
+LASH_LINE_W = 0.04
+LASH_LINE_DARKEN = 0.30
+# M1-CHR-10: the scalp underpaint matches the hair's new neutral near-black (write_materials.py
+# HAIR_BLACK); #201A16 read auburn between the cards under the warm key, as the cards did
+HAIR_UNDERPAINT = "#16161A"
+SKIN_MOTTLE = 0.26  # M1-CHR-10: head albedo mottle amplitude (fbm spans about +-0.25: +-6.5% value)
+SKIN_MOTTLE_SCALE = 0.009  # m (times the head scale): the mottle's base cell
 
 
 # ---------------------------------------------------------------------------------------------
@@ -211,7 +226,8 @@ def rasterise(npz: dict, size: int, mats: set[str]) -> dict:
     tags = npz["T"][tv[T]] if "T" in npz else np.zeros((len(T), 3), dtype=int)
     out = {"cov": cov, "tri": T, "P": pos, "N": N, "T": Tt, "B": Bt, "tags": np.max(tags, axis=1), "size": size,
            "bary": b}
-    for key in ("AO", "THK", "CAV", "LIP"):  # M1-CHR-03 per-vertex bake terms
+    # per-vertex bake terms (CHR-03, CHR-04; the lip frame LIPDZ/LIPU/LIPFRONT is CHR-07)
+    for key in ("AO", "THK", "CAV", "LIP", "CONTACT", "CORNER", "LIPDZ", "LIPU", "LIPFRONT"):
         if key in npz:
             out[key] = np.einsum("ni,ni->n", b, np.asarray(npz[key], dtype=float)[tv[T]])
     return out
@@ -265,6 +281,8 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
     Ph = P.copy()
     Nh = N.copy()
     if key == "head":
+        r["verm"] = vermilion(r, s)
+        r["zones"] = skin_zones(P, face, lm, r, hair_mod)
         e = 0.00012 * s
         hT = (detail_height(P + r["T"] * e, face, lm, r) - detail_height(P - r["T"] * e, face, lm, r)) / (2 * e)
         hB = (detail_height(P + r["B"] * e, face, lm, r) - detail_height(P - r["B"] * e, face, lm, r)) / (2 * e)
@@ -276,6 +294,13 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
     ao = np.clip(r.get("AO", np.ones(n)) * 1.15, 0.25, 1.0) if "AO" in r else np.ones(n)
     cav = r["CAV"] if "CAV" in r else np.ones(n)
     thick = np.clip((r["THK"] - 0.002) / 0.014, 0.0, 1.0) if "THK" in r else np.ones(n)
+    if key == "head":
+        # M1-CHR-10: the upper lid sits under the lashes and the brow, so the sky fill reaches it
+        # less than the cheek; the vertex bake (no lashes in it) left it fully open
+        lfront = smoothstep(0.0, -0.3, (Ph[:, 1] - lm.P("head_c")[1]) / lm.h)
+        for e in face.eyes.values():
+            rr, tt = e.field(Ph[:, 0], Ph[:, 2])
+            ao = ao * (1.0 - UPPER_LID_AO * upper_lid_weight(rr, tt, lfront))
     # ---- albedo -------------------------------------------------------------------------------
     alb = albedo(Ph, Nh, key, face, lm, hair_mod, r, npz)
     # ---- ORM: AO, roughness remapped (T-zone oilier = 0), unused ----
@@ -286,6 +311,15 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
     rough = np.clip(0.75 - 0.75 * tzone + 0.15 * (noise3(Ph, 0.01 * s, 5) - 0.5), 0.0, 1.0)
     lips = lip_weight(Ph, face, lm, r)
     rough = rough * (1.0 - lips) + 0.38 * lips  # M1-CHR-03: satin, not wet: the donor lips are bigger than the old ones
+    if key == "head":
+        # M1-CHR-04, less waxy: the macro roughness is high (0.9) away from a smaller, broken-up
+        # T-zone, varies at 1.5 mm (oil does not sit evenly), and pores and fine lines are rough;
+        # under the hair the skin is fully rough (the underpaint must not shine like skin)
+        z = r["zones"]
+        oil = tzone * smoothstep(0.35, 0.65, noise3(Ph, 0.006 * s, 6))
+        rough = np.clip(0.9 - 0.55 * oil + 0.18 * (noise3(Ph, 0.0015 * s, 7) - 0.5) + 0.1 * z["pit"], 0.0, 1.0)
+        rough = rough * (1.0 - lips) + 0.55 * lips
+        rough = np.where(z["scalp"] > 0.5, 1.0, rough)
     orm = np.stack([ao, rough, np.zeros(n)], axis=1)
     # ---- skinmask: R thickness, G cavity, B micro-roughness, A detail weight ----
     detail = np.ones(n) - 0.65 * lips
@@ -297,51 +331,261 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
     scalp = hair_mod.in_hair(lm, Ph, -0.01).astype(float) * (key == "head")
     detail = np.where(scalp > 0, 0.3, detail)
     micro = np.clip(0.5 + 0.35 * (noise3(Ph, 0.0035 * s, 9) - 0.5), 0.0, 1.0)
+    if key == "head":
+        # M1-CHR-04: cavity carries the pores, the fine lines, the lip contact and the commissures
+        # (the shader occludes specular by cavity, so the highlight breaks up instead of sitting on
+        # the skin like varnish); micro-roughness varies at pore scale, pores rougher
+        z = r["zones"]
+        cav = cav * (1.0 - 0.45 * z["pit"]) * (1.0 - 0.35 * z["line"]) * (1.0 - 0.5 * z["contact"]) * (1.0 - 0.5 * z["corner"])
+        cav = np.where(z["scalp"] > 0.5, np.minimum(cav, 0.45), cav)
+        micro = np.clip(0.5 + 0.5 * (noise3(Ph, 0.0009 * s, 9) - 0.5) + 0.25 * z["pit"], 0.0, 1.0)
     mask = np.stack([thick, cav, micro, np.clip(detail, 0.0, 1.0)], axis=1)
     big = size
     cov = r["cov"]
     nrm = scatter(r, ts * 0.5 + 0.5, np.array([0.5, 0.5, 1.0]))
     nrm = dilate(nrm, cov, 6)
     albi = dilate(scatter(r, alb, np.array([0.5, 0.4, 0.35])), cov, 6)
+    ormi = dilate(scatter(r, orm, np.array([1.0, 0.5, 0.0])), cov, 6)
+    if key == "head":
+        teeth_patch(albi, ormi, size)
     write(f"asha_{key}_albedo.png", albi)
     write(f"asha_{key}_normal.png", nrm)
-    ormi = dilate(scatter(r, orm, np.array([1.0, 0.5, 0.0])), cov, 6)
     maski = dilate(scatter(r, mask, np.array([1.0, 1.0, 0.5, 1.0])), cov, 6)
     if size_small != big:
         ormi = np.asarray(Image.fromarray((np.clip(ormi, 0, 1) * 255).astype(np.uint8)).resize(
             (size_small, size_small), Image.BOX)) / 255.0
         maski = np.asarray(Image.fromarray((np.clip(maski, 0, 1) * 255).astype(np.uint8), "RGBA").resize(
             (size_small, size_small), Image.BOX)) / 255.0
+    if key == "head":
+        # M1-CHR-04: at 2K the pore-scale cavity and micro-roughness are near-noise, and the PNG
+        # passed the 5 MB blob cap (ADR 0005). Cavity in 64 levels and micro-roughness in 32 are far
+        # below what the shader can show (micro-roughness is +-0.06 of roughness), and fit at ~3.4 MB.
+        def levels(x: np.ndarray, n: int) -> np.ndarray:
+            step = 256 // n
+            return (np.floor(np.clip(x, 0.0, 1.0) * 255.0 / step) * step + step // 2) / 255.0
+
+        maski = maski.copy()
+        maski[..., 1] = levels(maski[..., 1], 64)
+        maski[..., 2] = levels(maski[..., 2], 32)
     write(f"asha_{key}_orm.png", ormi)
     write(f"asha_{key}_skinmask.png", maski)
     if key == "head":
         texel_report(r, npz)
+        texel_report(r, npz, face_only=True)
 
 
-def texel_report(r: dict, npz: dict) -> None:
+def texel_report(r: dict, npz: dict, face_only: bool = False) -> None:
     P, tv, tuv = npz["P"], npz["tv"], npz["tuv"]
     names = list(npz["mats"])
     keep = npz["mi"] == names.index("skin_head")
+    if face_only:  # the face-mask island (asha.md §8.2 sets >= 50 px/cm for the face)
+        if "FACE" not in npz:
+            return
+        keep = keep & (np.asarray(npz["FACE"])[tv] > 0.5).all(axis=1)
     a3 = 0.5 * np.linalg.norm(np.cross(P[tv[keep, 1]] - P[tv[keep, 0]], P[tv[keep, 2]] - P[tv[keep, 0]]), axis=1)
     d1 = tuv[keep, 1] - tuv[keep, 0]
     d2 = tuv[keep, 2] - tuv[keep, 0]
     auv = 0.5 * np.abs(d1[:, 0] * d2[:, 1] - d1[:, 1] * d2[:, 0])
     dens = np.sqrt(auv.sum() / a3.sum()) * r["size"] / 100.0
-    print(f"head texel density: {dens:.1f} px/cm at {r['size']} px")
+    print(f"head texel density{' (face mask)' if face_only else ''}: {dens:.1f} px/cm at {r['size']} px")
+
+
+# M1-CHR-07: the vermilion outline, drawn in the frame of the sealed contact line (bb_donor.lip_rest
+# dumps LIPDZ = height above the contact, LIPU = x over the mouth half-width, LIPFRONT = the lip roll
+# in front of the teeth). The donor's lip face set runs 12-13 mm above the contact and is jagged at
+# its 1.9 mm quads, which read as a soft pink rectangle with no bow. Heights in metres at s = 1.
+# M1-CHR-09: a little fuller (CHR-07: 8.8 and 9.0 mm), which the review found slightly thin
+VERM_UP = 0.0094  # upper vermilion height at the bow's peaks: at the upper lip's front-most ridge
+VERM_LO = 0.0095  # lower vermilion height (asha.md §6.1: a full lower lip)
+VERM_DIP = 0.18  # the bow's dip over the philtrum, as a fraction of the height
+VERM_PEAK_U = 0.25  # the bow's peaks (the philtral columns' feet), in half-widths
+VERM_EDGE = 0.00035  # half-width of the colour edge at the border
+PHILTRUM_H = 0.013  # philtrum height above the bow
+
+
+def vermilion(r: dict, s: float) -> dict | None:
+    """{"lips": 0..1 inside the vermilion, "bu"/"bl": 1 on the upper / lower border, "roll": the
+    skin's white roll just outside the upper border, "philtrum": signed relief (+ columns,
+    - groove)}, per texel; None without the CHR-07 lip frame."""
+    if "LIPDZ" not in r:
+        return None
+    u = r["LIPU"]
+    dz = r["LIPDZ"]
+    f = np.clip(r["LIPFRONT"], 0.0, 1.0)
+    au = np.abs(u)
+    taper = np.clip(1.0 - u * u, 0.0, 1.0)
+    bow = (1.0 - VERM_DIP * np.exp(-((u / 0.10) ** 2))) * (1.0 + 0.06 * np.exp(-(((au - VERM_PEAK_U) / 0.06) ** 2)))
+    hu = VERM_UP * s * taper ** 0.6 * bow
+    hu = monotone_upper(r["P"][:, 2] - dz, u, hu, f)
+    hl = VERM_LO * s * taper ** 0.55
+    e = VERM_EDGE * s
+    side = smoothstep(1.0, 0.93, au)
+    inside = smoothstep(hu + e, hu - e, dz) * smoothstep(-hl - e, -hl + e, dz) * side * f
+    bu = np.exp(-(((dz - hu) / (0.0005 * s)) ** 2)) * side * f * (dz > 0)
+    bl = np.exp(-(((dz + hl) / (0.0007 * s)) ** 2)) * side * f * (dz < 0)
+    above = dz - hu
+    roll = smoothstep(0.0, 0.0004 * s, above) * smoothstep(0.0018 * s, 0.0008 * s, above) * side * f
+    rise = smoothstep(0.0, 0.0015 * s, above) * smoothstep(PHILTRUM_H * s, 0.6 * PHILTRUM_H * s, above)
+    col = np.exp(-(((au - 0.19) / 0.06) ** 2)) - 1.3 * np.exp(-((u / 0.085) ** 2))
+    phil = col * rise * f * (au < 0.45)
+    return {"lips": inside, "bu": bu, "bl": bl, "roll": roll, "philtrum": phil}
+
+
+VERM_GRID = 101  # samples across the mouth for the outline's profile
+VERM_CORNER_U = 0.93  # where the outline ends (the colour fades out at the corners from here)
+VERM_FALL_LIN = 0.35  # the outline's fall from a bow peak to its corner: this much linear (it leaves the
+# peak with a definite slope, so the peak reads), the rest quadratic (it steepens into the corner)
+
+
+def monotone_upper(zl: np.ndarray, u: np.ndarray, hu: np.ndarray, front: np.ndarray) -> np.ndarray:
+    """M1-CHR-09: the upper border's height above the contact, reshaped so the outline itself
+    (z = contact + height) falls steadily from each bow peak to its corner. The contact line rises
+    toward the corners (her resting corner lift), so contact + bow dipped past the peaks and rose
+    again into a second hump about 18 mm out: the wobble on the bow's shoulders. Outside the peaks
+    the outline falls from z_peak to z_corner as a linear-plus-quadratic ramp; the bow itself is kept.
+    `zl`: the contact height per texel (z - LIPDZ)."""
+    n = VERM_GRID
+    g = np.linspace(-1.0, 1.0, n)
+    sel = (front > 0.5) & (np.abs(u) < 1.0)
+    idx = np.clip(np.round((u[sel] + 1.0) * 0.5 * (n - 1)).astype(int), 0, n - 1)
+    cnt = np.bincount(idx, minlength=n)
+    if (cnt > 0).sum() < n // 4:
+        return hu
+    have = cnt > 0
+    zl_g = np.interp(g, g[have], (np.bincount(idx, zl[sel], n) / np.maximum(cnt, 1))[have])
+    hu_g = np.interp(g, g[have], (np.bincount(idx, hu[sel], n) / np.maximum(cnt, 1))[have])
+    zb = zl_g + hu_g
+    out = zb.copy()
+    for sgn in (1.0, -1.0):
+        a = int(np.argmin(np.abs(g - sgn * VERM_PEAK_U)))
+        b = int(np.argmin(np.abs(g - sgn * VERM_CORNER_U)))
+        seq = np.arange(a, b + int(sgn), int(sgn))
+        tt = np.abs(g[seq] - g[a]) / abs(g[b] - g[a])
+        out[seq] = zb[a] - (zb[a] - zb[b]) * (VERM_FALL_LIN * tt + (1.0 - VERM_FALL_LIN) * tt * tt)
+        rest = sgn * g > abs(g[b])  # past the corner: follow the original fall-off
+        out[rest] = zb[rest] - zb[b] + out[b]
+    return np.interp(u, g, out - zl_g)
 
 
 def lip_weight(Ph: np.ndarray, face, lm, r: dict) -> np.ndarray:
-    """The donor's lip face set (vertex weight LIP, interpolated) sharpened to the vermilion border;
-    the M1-CHR-02 analytic outline when no LIP term was dumped."""
+    """The vermilion (the M1-CHR-07 outline when the lip frame was dumped); before that, the donor's
+    lip face set sharpened to its border, and the M1-CHR-02 analytic outline when there was neither."""
+    if r.get("verm") is not None:
+        return r["verm"]["lips"]
     if "LIP" in r:
         return smoothstep(0.3, 0.7, r["LIP"])
     return lip_mask(Ph, face, lm)
 
 
+def aniso_noise(P: np.ndarray, d: np.ndarray, scale: float, stretch: float, seed: int) -> np.ndarray:
+    """Value noise stretched `stretch` times along the per-point unit direction d (streaks along d)."""
+    along = np.sum(P * d, axis=1, keepdims=True)
+    return noise3(P - d * along * (1.0 - 1.0 / stretch), scale, seed)
+
+
+def skin_zones(P: np.ndarray, face, lm, r: dict, hair_mod) -> dict:
+    """M1-CHR-04: where the skin micro-detail goes, per texel (0..1 each): pore density by region
+    (nose and inner cheeks dense, forehead and chin medium, none on lids, lips or under the hair),
+    the pore pits themselves, the micro-relief lines, the lip contact, the commissures, the
+    vermilion border and the scalp. Computed once on the rest positions (detail_height reuses them
+    for its finite differences)."""
+    s = lm.h / 0.222
+    zc = lm.P("chin")[2]
+    yc = lm.P("head_c")[1]
+    u, v = P[:, 0] / lm.h, (P[:, 2] - zc) / lm.h
+    front = smoothstep(0.0, -0.3, (P[:, 1] - yc) / lm.h)
+    ve = face.ve
+    nose = np.exp(-((u / 0.05) ** 2) - ((v - (ve - 0.10)) / 0.09) ** 2)
+    cheek = np.exp(-(((np.abs(u) - 0.15) / 0.07) ** 2) - ((v - (ve - 0.14)) / 0.08) ** 2)
+    lids = np.zeros(len(P))
+    for e in face.eyes.values():
+        rr, _t = e.field(P[:, 0], P[:, 2])
+        lids = np.maximum(lids, 1.0 - smoothstep(1.2, 1.9, rr))
+    lips = smoothstep(0.2, 0.6, r["LIP"]) if "LIP" in r else np.zeros(len(P))
+    vm = r.get("verm")
+    if vm is not None:
+        lips = vm["lips"]
+    dz_hair = v - hair_mod.hairline_v(lm, P)
+    scalp = smoothstep(-0.01, 0.01, dz_hair)
+    density = np.clip(0.45 + 0.55 * np.maximum(nose, cheek), 0.0, 1.0) * front
+    density *= (1.0 - lids) * (1.0 - lips) * (1.0 - scalp)
+    # pores: sparse value-noise maxima ~0.3 mm across, about 0.6 mm apart (finer on the forehead)
+    fine = smoothstep(ve + 0.05, ve + 0.12, v)
+    pit_a = smoothstep(0.70, 0.90, noise3(P, 0.00055 * s, 91))
+    pit_b = smoothstep(0.72, 0.92, noise3(P, 0.00040 * s, 92))
+    pit = (pit_a * (1.0 - fine) + pit_b * fine) * density
+    # micro-relief: two crossing families of very fine creases in the skin's tangent plane
+    Tg, Bg = r["T"], r["B"]
+    d1 = Tg * 0.866 + Bg * 0.5
+    d2 = Tg * 0.866 - Bg * 0.5
+    l1 = 1.0 - np.abs(2.0 * aniso_noise(P, d1, 0.00035 * s, 7.0, 93) - 1.0)
+    l2 = 1.0 - np.abs(2.0 * aniso_noise(P, d2, 0.00035 * s, 7.0, 94) - 1.0)
+    line = np.maximum(smoothstep(0.86, 0.98, l1), smoothstep(0.86, 0.98, l2)) * (1.0 - scalp) * (1.0 - lips) * front
+    line *= 1.0 - 0.6 * lids
+    contact = np.clip(r["CONTACT"], 0.0, 1.0) if "CONTACT" in r else np.zeros(len(P))
+    corner = np.clip(r["CORNER"], 0.0, 1.0) if "CORNER" in r else np.zeros(len(P))
+    border = np.exp(-(((r["LIP"] if "LIP" in r else np.zeros(len(P))) - 0.5) / 0.13) ** 2)
+    border *= 1.0 - smoothstep(0.05, 0.3, contact)
+    if vm is not None:  # M1-CHR-07: the drawn border, not the donor face set's
+        border = np.maximum(vm["bu"], 0.6 * vm["bl"])
+    relief_w = (1.0 - scalp) * (1.0 - lips) * front * (1.0 - 0.6 * lids)
+    return {"density": density, "pit": pit, "line": line, "contact": contact, "corner": corner, "relief_w": relief_w,
+            "border": border * front, "scalp": scalp, "lips": lips, "dz_hair": dz_hair}
+
+
 def detail_height(P: np.ndarray, face, lm, r: dict) -> np.ndarray:
-    """Our detail pass (metres, + = out): fine forms below the subdivided mesh's resolution."""
+    """Our detail pass (metres, + = out): fine forms below the subdivided mesh's resolution.
+    M1-CHR-04 adds the skin micro-detail at the face map's texel density (asha.md §8.2): pores and
+    a micro-relief of fine crossing creases (skin_zones), soft expression lines (crow's feet at the
+    outer canthi, two faint forehead lines), the vermilion border roll, and quieter, irregular lip
+    lines (the CHR-03 ones were a regular stripe, which QA-05 saw as striations)."""
     s = lm.h / 0.222
     h = np.zeros(len(P))
+    z = r.get("zones")
+    if z is not None:
+        # the pits and lines are re-evaluated at P (this is called at offset points for the slope)
+        fine = smoothstep(face.ve + 0.05, face.ve + 0.12, (P[:, 2] - lm.P("chin")[2]) / lm.h)
+        pit_a = smoothstep(0.70, 0.90, noise3(P, 0.00055 * s, 91))
+        pit_b = smoothstep(0.72, 0.92, noise3(P, 0.00040 * s, 92))
+        h -= 0.000030 * s * (pit_a * (1.0 - fine) + pit_b * fine) * z["density"]
+        Tg, Bg = r["T"], r["B"]
+        l1 = 1.0 - np.abs(2.0 * aniso_noise(P, Tg * 0.866 + Bg * 0.5, 0.00035 * s, 7.0, 93) - 1.0)
+        l2 = 1.0 - np.abs(2.0 * aniso_noise(P, Tg * 0.866 - Bg * 0.5, 0.00035 * s, 7.0, 94) - 1.0)
+        relief = np.maximum(smoothstep(0.86, 0.98, l1), smoothstep(0.86, 0.98, l2))
+        h -= 0.000012 * s * relief * z["relief_w"]
+        # the vermilion border: a slight raised roll where lip meets skin
+        h += 0.000035 * s * z["border"]
+        vm = r.get("verm")
+        if vm is not None:
+            # M1-CHR-07: a crisper ridge on the upper border (it catches the key as a thin line),
+            # the white roll of skin above it, and the philtrum: a groove between two columns that
+            # rise from the bow's peaks toward the nose
+            h += 0.00005 * s * vm["bu"] + 0.00004 * s * vm["roll"]
+            h += 0.00030 * s * vm["philtrum"]
+        # where the lips meet: a shallow groove (the geometry closes the slit; this is the line)
+        h -= 0.00006 * s * z["contact"] ** 2
+        # forehead: two faint horizontal lines, broken up
+        v = (P[:, 2] - lm.P("chin")[2]) / lm.h
+        u = P[:, 0] / lm.h
+        brk = smoothstep(0.35, 0.7, noise3(P, 0.008 * s, 95))
+        for vl in (face.ve + 0.17, face.ve + 0.215):
+            h -= 0.000025 * s * np.exp(-((v - vl - 0.004 * np.sin(u * 40.0)) / 0.0035) ** 2) * smoothstep(0.2, 0.08, np.abs(u)) * brk * (1.0 - z["scalp"])
+    for e in face.eyes.values():
+        rr, tt = e.field(P[:, 0], P[:, 2])
+        front = smoothstep(0.6 * e.R, -0.2 * e.R, P[:, 1] - e.E[1])
+        up = (np.sin(tt) > 0).astype(float)
+        # the upper-lid crease, low and partly hidden at the inner third (asha.md §6.1)
+        inner = smoothstep(-0.2, -0.75, np.cos(tt))
+        h -= 0.00028 * s * np.exp(-((rr - 1.62) / 0.07) ** 2) * up * front * (1.0 - 0.7 * inner)
+        # the lower-lid line and a faint tear-trough edge
+        h -= 0.00012 * s * np.exp(-((rr - 1.32) / 0.06) ** 2) * (1 - up) * front
+        # lid margin roll: a narrow raised band just outside the margin
+        h += 0.00010 * s * np.exp(-((rr - 1.07) / 0.035) ** 2) * front
+        if z is not None:
+            # crow's feet: a few soft lines fanning from the outer canthus (young skin: faint)
+            outer = smoothstep(0.55, 0.9, np.cos(tt)) * smoothstep(1.25, 1.5, rr) * smoothstep(2.6, 1.9, rr)
+            fan = (0.5 + 0.5 * np.cos(tt * 26.0 + 0.6)) ** 6
+            h -= 0.000035 * s * outer * fan * front
     for e in face.eyes.values():
         rr, tt = e.field(P[:, 0], P[:, 2])
         front = smoothstep(0.6 * e.R, -0.2 * e.R, P[:, 1] - e.E[1])
@@ -355,9 +599,48 @@ def detail_height(P: np.ndarray, face, lm, r: dict) -> np.ndarray:
         h += 0.00010 * s * np.exp(-((rr - 1.07) / 0.035) ** 2) * front
     if "LIP" in r:
         lip = smoothstep(0.2, 0.8, r["LIP"])
-        # vertical lip lines, finer toward the centre
-        h -= 0.00004 * s * lip * (0.5 + 0.5 * np.cos(P[:, 0] / (0.0011 * s) * 2 * math.pi)) ** 4
+        if z is None:  # M1-CHR-03: vertical lip lines, finer toward the centre
+            h -= 0.00004 * s * lip * (0.5 + 0.5 * np.cos(P[:, 0] / (0.0011 * s) * 2 * math.pi)) ** 4
+        else:  # irregular vertical lines: streak noise along z, a third of the old depth
+            vert = np.zeros_like(P)
+            vert[:, 2] = 1.0
+            ln = smoothstep(0.62, 0.9, aniso_noise(P, vert, 0.0005 * s, 6.0, 96))
+            h -= 0.000014 * s * lip * ln * (1.0 - z["contact"])
     return h
+
+
+TEETH_EDGE = "#DCC6A6"  # enamel at the biting edge: warm ivory, not white (the sky fill cools it)
+TEETH_GUM = "#BC9C7C"  # toward the gum: warmer and darker (thicker dentine under the enamel)
+TEETH_AO_EDGE = 0.62  # ambient reaching the front teeth's biting edge; the lips shade the rest
+TEETH_AO_GUM = 0.38
+TEETH_AO_BACK = 0.4  # the last teeth get this fraction of the front teeth's ambient
+TEETH_ROUGH = 0.45  # ORM G (the teeth material's roughness texture): satin, wet
+
+
+def teeth_patch(albi: np.ndarray, ormi: np.ndarray, size: int) -> None:
+    """M1-CHR-10: paint the teeth's colour and occlusion into the head atlas's unused corner
+    (asha_mouth.TEETH_UV), in place. U along the arch (front -> back), V edge -> gum. The baked AO
+    comes from the skin's vertex bake, which never saw the teeth, so this is a model of it: open at
+    the front teeth's biting edge, closing toward the gum and the back of the mouth."""
+    import asha_mouth
+
+    u0, v0, u1, v1 = asha_mouth.TEETH_UV  # V down the image (the Part / glTF convention)
+    x0, x1 = int(math.floor(u0 * size)), int(math.ceil(u1 * size))
+    y0, y1 = int(math.floor(v0 * size)), int(math.ceil(v1 * size))
+    yy, xx = np.mgrid[y0:y1, x0:x1]
+    a = np.clip(((xx + 0.5) / size - u0) / (u1 - u0), 0.0, 1.0)
+    b = np.clip(((yy + 0.5) / size - v0) / (v1 - v0), 0.0, 1.0)
+    col = hexc(TEETH_EDGE) * (1 - b[..., None] ** 0.8) + hexc(TEETH_GUM) * b[..., None] ** 0.8
+    albi[y0:y1, x0:x1] = col * (1.0 - 0.12 * a[..., None])
+    ao = (TEETH_AO_EDGE + (TEETH_AO_GUM - TEETH_AO_EDGE) * b ** 0.7) * (1.0 - (1.0 - TEETH_AO_BACK) * a)
+    ormi[y0:y1, x0:x1, 0] = ao
+    ormi[y0:y1, x0:x1, 1] = TEETH_ROUGH
+    ormi[y0:y1, x0:x1, 2] = 0.0
+
+
+def upper_lid_weight(rr: np.ndarray, tt: np.ndarray, front: np.ndarray) -> np.ndarray:
+    """The upper lid, margin (lid-field radius 1) to crease (about 1.6), on the face's front."""
+    return smoothstep(1.02, 1.12, rr) * smoothstep(1.75, 1.5, rr) * smoothstep(0.0, 0.35, np.sin(tt)) * front
 
 
 def lip_mask(Ph: np.ndarray, face, lm) -> np.ndarray:
@@ -391,18 +674,68 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
         cool = smoothstep(0.30, 0.12, v) * smoothstep(0.08, 0.22, np.abs(u))
         col = col * (1 + 0.025 * warm[:, None] * np.array([1.0, -0.25, -0.55]))
         col = col * (1 + 0.04 * cool[:, None] * np.array([-0.5, 0.15, 0.1]))
+        z = r.get("zones")
+        if z is not None:
+            # M1-CHR-04 colour zones: a warmer flush on the cheeks, nose tip and ears, a cooler,
+            # slightly darker ring round the eyes, an olive cast over the upper lip and the jaw, and
+            # a low-frequency asymmetry so the two halves are not mirror images
+            flush = np.exp(-(((np.abs(u) - 0.16) / 0.06) ** 2) - ((v - (ve - 0.15)) / 0.06) ** 2) * front
+            tip = np.exp(-((u / 0.03) ** 2) - ((v - (ve - 0.17)) / 0.035) ** 2) * front
+            ears = smoothstep(0.30, 0.36, np.abs(u)) * smoothstep(ve - 0.2, ve - 0.1, v) * smoothstep(ve + 0.12, ve + 0.02, v)
+            col = col * (1 + 0.05 * np.clip(flush + 0.8 * tip + 0.6 * ears, 0, 1)[:, None] * np.array([1.0, -0.35, -0.5]))
+            orbit = np.zeros(n)
+            for e in face.eyes.values():
+                rr, _tt = e.field(Ph[:, 0], Ph[:, 2])
+                orbit = np.maximum(orbit, np.exp(-((rr - 1.7) / 0.45) ** 2))
+            col = col * (1 - 0.045 * (orbit * front)[:, None] * np.array([0.9, 1.0, 0.8]))
+            upper = np.exp(-((u / 0.08) ** 2) - ((v - (face.vm + 0.05)) / 0.035) ** 2) * front * (1 - z["lips"])
+            col = col * (1 + 0.03 * upper[:, None] * np.array([-0.6, 0.1, 0.1]))
+            col = col * (1 + 0.025 * (fbm3(Ph, 0.05 * s, 17) - 0.5))[:, None]  # value noise is not mirror-symmetric
+            # pores read a touch darker, fine lines a hair darker still
+            col *= (1 - 0.035 * z["pit"] - 0.015 * z["line"])[:, None]
+            # M1-CHR-10: the review's "evenly lit, smooth skin between the features". A mid-scale
+            # (5-15 mm) mottle in value and a little hue, so the flat planes of the cheeks and the
+            # forehead are not one tone; the painterly close-up (ADR 0019) reads it as brushwork
+            mot = fbm3(Ph, SKIN_MOTTLE_SCALE * s, 18) - 0.5
+            col = col * (1 + SKIN_MOTTLE * (mot * front)[:, None] * np.array([1.0, 0.85, 0.7]))
         # lips: a deeper, rosier brown; darker at the contact line
         lips = lip_weight(Ph, face, lm, r)
         lipc = hexc("#A8665C")
-        col = col * (1 - lips[:, None]) + lipc * lips[:, None]
-        zm = lm.P("mouth")[2]
-        crease = np.exp(-((Ph[:, 2] - zm) / (0.0007 * s)) ** 2) * smoothstep(1.0, 0.85, np.abs(Ph[:, 0]) / face.mouth_half)
-        col *= 1 - 0.25 * (crease * front)[:, None]
+        if z is None:
+            col = col * (1 - lips[:, None]) + lipc * lips[:, None]
+            zm = lm.P("mouth")[2]
+            crease = np.exp(-((Ph[:, 2] - zm) / (0.0007 * s)) ** 2) * smoothstep(1.0, 0.85, np.abs(Ph[:, 0]) / face.mouth_half)
+            col *= 1 - 0.25 * (crease * front)[:, None]
+        else:
+            # M1-CHR-04: the lip colour deepens toward the contact and lightens at the vermilion
+            # border; the contact itself is a thin line (the geometry is sealed), the corners a
+            # small shadowed pocket. The CHR-03 crease sat at the donor's old mouth line, which the
+            # seal moved onto the lower lip: that was the dark line across it
+            deep = hexc("#93544E")
+            lipcol = lipc * (1 - 0.55 * z["contact"][:, None]) + deep * 0.55 * z["contact"][:, None]
+            lipcol = lipcol * (1 + 0.04 * z["border"][:, None])
+            vm = r.get("verm")
+            if vm is not None:
+                # M1-CHR-07: the border reads as a colour edge: the vermilion a touch deeper just
+                # inside it, the white roll of skin just outside it a touch lighter
+                inner = np.maximum(vm["bu"], vm["bl"]) * lips
+                lipcol = lipcol * (1 - 0.06 * inner[:, None])
+                col = col * (1 + 0.05 * vm["roll"][:, None] * np.array([1.0, 0.95, 0.9]))
+            col = col * (1 - lips[:, None]) + lipcol * lips[:, None]
+            col *= 1 - (0.22 * z["contact"] ** 3 + 0.25 * z["corner"])[:, None]
         # lids slightly darker and pinker; the lid margin and caruncle wet pink
         for e in face.eyes.values():
             rr, tt = e.field(Ph[:, 0], Ph[:, 2])
             near = (1 - smoothstep(1.0, 2.0, rr)) * front
             col = col * (1 - 0.03 * near[:, None] * np.array([0.6, 1.0, 1.0]))
+            # M1-CHR-09: the upper lid, margin to crease, a touch darker and browner. Lit from
+            # above it read as a pale band over the iris, like pale eyeshadow (a doll cue)
+            lid_up = upper_lid_weight(rr, tt, front)
+            col = col * (1 - UPPER_LID_DARKEN * lid_up[:, None] * np.array([0.8, 1.0, 1.05]))
+            # M1-CHR-10: the lash line, a narrow darker band along the upper margin where the lash
+            # roots sit (it frames the eye; without it the lid read as one pale strip down to the iris)
+            line = np.exp(-((rr - LASH_LINE_RR) / LASH_LINE_W) ** 2) * smoothstep(0.0, 0.35, np.sin(tt)) * front
+            col = col * (1 - LASH_LINE_DARKEN * line[:, None] * np.array([0.85, 1.0, 1.0]))
             wall = (np.linalg.norm(Ph - e.E, axis=1) < e.R + 0.0016 * s) & (rr < 1.15)
             col[wall] = col[wall] * 0.7 + hexc("#B87268") * 0.3
             car = np.exp(-((rr - 1.0) / 0.12) ** 2) * smoothstep(-0.7, -0.98, np.cos(tt)) * front
@@ -420,8 +753,24 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
         col *= 1 - 0.08 * (fre * front)[:, None]
         # under the hair: tint the scalp toward the hair colour so cards read dense
         dz = (Ph[:, 2] - zc) / lm.h - hair_mod.hairline_v(lm, Ph)
-        scalp = smoothstep(-0.005, 0.03, dz)
-        col = col * (1 - 0.95 * scalp[:, None]) + hexc("#201A16") * 0.95 * scalp[:, None]
+        if z is None:
+            scalp = smoothstep(-0.005, 0.03, dz)
+            col = col * (1 - 0.95 * scalp[:, None]) + hexc(HAIR_UNDERPAINT) * 0.95 * scalp[:, None]
+        else:
+            # M1-CHR-04: the scalp is painted as hair, strands combed along the cards' flow, so a
+            # gap between cards reads as hair; at the hairline the paint breaks into separate fine
+            # strands over 5 mm (a soft hairline, with the hairline card row's soft roots on top)
+            flow = hair_mod._flow_dir(lm, Ph, Nh, hair_mod._gather(lm))
+            streak = 0.6 * aniso_noise(Ph, flow, 0.0008 * s, 14.0, 71) + 0.4 * aniso_noise(Ph, flow, 0.002 * s, 10.0, 72)
+            wander = 0.012 * (fbm3(Ph, 0.012 * s, 73, octaves=3) - 0.5)  # an uneven line, +-1.3 mm
+            # M1-CHR-07: a longer, sparser transition (about 15 mm) whose first strands are fine and
+            # half transparent, as baby hairs are. CHR-04's 5 mm ramp to 95% hair colour drew the
+            # hard dark line the review called a helmet edge
+            ramp = smoothstep(-0.045, 0.03, dz + wander)
+            cover = smoothstep(0.40, 0.66, streak + (ramp - 0.5) * 1.2) * smoothstep(-0.055, -0.012, dz + wander)
+            hcol = hexc(HAIR_UNDERPAINT) * (0.75 + 0.5 * streak)[:, None]
+            dens = (0.55 + 0.40 * ramp) * cover
+            col = col * (1 - dens[:, None]) + hcol * dens[:, None]
         # brow skin a touch darker
         col *= 1 - 0.12 * (np.exp(-((v - (ve + 0.072)) / 0.015) ** 2) * np.exp(-((np.abs(u) - 0.13) / 0.06) ** 2))[:, None]
         mouth = npz["mi"][r["tri"]] == list(npz["mats"]).index("mouth") if "mouth" in list(npz["mats"]) else np.zeros(n, bool)
@@ -493,6 +842,11 @@ def sclera(size: int = 512) -> None:
     veins = np.clip(veins, 0, 1)
     img = img * (1 - 0.35 * veins[..., None]) + np.array([0.75, 0.35, 0.32]) * 0.35 * veins[..., None]
     img *= (1 - 0.06 * smoothstep(0.25, 0.6, v))[..., None]
+    # M1-CHR-09: a flat bright white round the iris was the strongest doll cue in the close-ups. The
+    # visible sclera darkens and warms away from the limbus toward the canthi, as a real eye does
+    # (it curves away from the light and carries more vessels there)
+    away = smoothstep(SCLERA_FALL[0], SCLERA_FALL[1], v)[..., None]
+    img = img * (1 - SCLERA_DARKEN * away) * (1 - SCLERA_WARM * away * np.array([0.0, 0.5, 1.0]))
     write("asha_sclera.png", img)
 
 
@@ -531,31 +885,87 @@ def strand_layer(h: int, w: int, n: int, rng, width_px: tuple, lean: float, wave
     return alpha, sid, dep, flow
 
 
+HAIR_COLUMNS = 16
+HAIR_SPARSE = (12, 13)  # asha_hair.SLOTS_SPARSE
+HAIR_HAIRLINE = (14, 15)  # asha_hair.SLOTS_HAIRLINE
+
+
+def strand_clump(h: int, w: int, rng, n: int, kind: str):
+    """M1-CHR-04: one atlas column (a card's clump) as individual strands, V root (0) -> tip (1).
+
+    The strands gather in 3-5 sub-clumps whose density falls to nothing toward the column edges, so
+    a card never ends in a hard border (the M1-CHR-03 columns were near-solid rectangles, which is
+    what read as blocks). Strands are 0.6-1.5 px wide (about 0.1 mm on a 1 cm card), each with its
+    own opacity, lean, wave, length and tip taper. `kind`: "full", "sparse" (fewer, finer, uneven
+    lengths: the top layer's breakup) or "hairline" (roots staggered over the first fifth, finer
+    near the root: a soft hairline). Returns alpha, strand id, depth and flow-x per texel."""
+    alpha = np.zeros((h, w))
+    sid = np.zeros((h, w))
+    dep = np.zeros((h, w))
+    flow = np.zeros((h, w))
+    vv = (np.arange(h) + 0.5) / h
+    xs = np.arange(w)
+    k_sub = int(rng.integers(3, 6))
+    centres = np.sort(rng.uniform(0.28, 0.72, k_sub))
+    spread = rng.uniform(0.10, 0.16, k_sub)
+    for k in range(n):
+        j = int(rng.integers(k_sub))
+        x0 = float(np.clip(rng.normal(centres[j], spread[j]), 0.05, 0.95)) * w
+        wd = rng.uniform(0.6, 1.5) if kind == "full" else rng.uniform(0.5, 1.1)
+        op = rng.uniform(0.55, 1.0)
+        ln = rng.normal(0, 0.025)
+        wave = rng.uniform(0.0, 0.006)
+        ph = rng.uniform(0, 2 * np.pi)
+        fr = rng.uniform(1.5, 4.5)
+        if kind == "hairline":
+            v0 = rng.uniform(0.0, 0.22) ** 1.5 / 0.22 ** 0.5
+            L = rng.uniform(0.55, 1.0)
+        elif kind == "sparse":
+            v0 = rng.uniform(0.0, 0.35)
+            L = rng.uniform(0.4, 1.0)
+        else:
+            v0 = rng.uniform(0.0, 0.05)
+            L = rng.uniform(0.7, 1.0)
+        cx = x0 + (ln * vv + wave * np.sin(2 * np.pi * fr * vv + ph)) * w
+        dxdv = ln + wave * 2 * np.pi * fr * np.cos(2 * np.pi * fr * vv + ph)
+        t = np.clip((vv - v0) / max(L - v0, 1e-3), 0.0, 1.0)
+        taper = (1.0 - t) ** 0.6
+        a_row = smoothstep(v0, v0 + 0.03, vv) * (1.0 - smoothstep(0.75, 1.0, t)) * op
+        if kind == "hairline":  # finer and fainter right at the root
+            a_row = a_row * (0.55 + 0.45 * smoothstep(v0, v0 + 0.12, vv))
+        lo = int(max(math.floor(cx.min() - 4 * wd - 2), 0))
+        hi = int(min(math.ceil(cx.max() + 4 * wd + 2), w))
+        if lo >= hi:
+            continue
+        d = np.abs(xs[None, lo:hi] - cx[:, None])
+        prof = np.exp(-(d / (0.5 * wd * (0.45 + 0.55 * taper[:, None]))) ** 2) * a_row[:, None]
+        sub = alpha[:, lo:hi]
+        upd = prof > sub
+        alpha[:, lo:hi] = np.maximum(sub, prof)
+        sid[:, lo:hi][upd] = (k * 0.6180339 + rng.random() * 0.1) % 1.0
+        dep[:, lo:hi][upd] = rng.random()
+        flow[:, lo:hi][upd] = np.broadcast_to(np.clip(dxdv, -1, 1)[:, None], (h, hi - lo))[upd]
+    return alpha, sid, dep, flow
+
+
 def hair_atlas(size: int = 2048) -> None:
+    """16 clump columns (asha.md §5: 2K, root-to-tip taper); see strand_clump and asha_hair's slots."""
     rng = np.random.default_rng(41)
-    cw = size // 16
+    cw = size // HAIR_COLUMNS
     img = np.zeros((size, size, 4))
     flowimg = np.zeros((size, size, 3))
     flowimg[..., 0] = 0.5
     flowimg[..., 1] = 1.0
     vv = ((np.arange(size) + 0.5) / size)[:, None]
-    for c in range(16):
-        width_frac = rng.uniform(0.35, 1.0)  # clump width 2-14 mm on a card
-        lo = 0.5 - width_frac / 2
-        hi = 0.5 + width_frac / 2
-        a, sid, dep, fl = strand_layer(size, cw, int(70 * width_frac + 25), rng, (1.2, 2.6), 0.03, 0.004,
-                                       length=(0.75, 1.0), x_span=(lo, hi))
-        a2, sid2, dep2, fl2 = strand_layer(size, cw, 18, rng, (0.8, 1.4), 0.05, 0.006, length=(0.5, 0.95),
-                                           x_span=(0.05, 0.95))
-        a2 *= 0.6
-        upd = a2 > a
-        a = np.maximum(a, a2)
-        sid[upd], dep[upd], fl[upd] = sid2[upd], dep2[upd], fl2[upd]
+    for c in range(HAIR_COLUMNS):
+        kind = "sparse" if c in HAIR_SPARSE else "hairline" if c in HAIR_HAIRLINE else "full"
+        n = {"full": int(rng.integers(320, 420)), "sparse": 110, "hairline": 200}[kind]
+        a, sid, dep, fl = strand_clump(size, cw, rng, n, kind)
         x0 = c * cw
         img[:, x0:x0 + cw, 0] = np.broadcast_to(vv, (size, cw))
         img[:, x0:x0 + cw, 1] = sid
         img[:, x0:x0 + cw, 2] = dep
-        img[:, x0:x0 + cw, 3] = np.clip(a * 1.25, 0, 1)
+        img[:, x0:x0 + cw, 3] = np.clip(a * 1.1, 0, 1)
         lean = rng.normal(0, 0.14)
         und = 0.12 * np.sin(2 * np.pi * (vv * rng.uniform(1.5, 3.0) + rng.random()))
         fx = np.clip(0.5 + 0.5 * (lean + und + 0.3 * fl), 0, 1)
@@ -566,43 +976,186 @@ def hair_atlas(size: int = 2048) -> None:
     write("asha_hairflow.png", small / 255.0)
 
 
+LASH_LOWER_U = 0.7  # asha_eyes.lashes: upper lashes sample U 0..0.7, lower lashes the sparse 0.7..1
+BROW_LAYERS = 3  # asha_eyes.brow's card layers; each samples its own column of the atlas
+BROW_LENGTH = 0.044  # m, medial -> lateral (asha_eyes.brow)
+BROW_HAIRS = 520  # strokes per layer column (M1-CHR-10: 420 -> 520, with the softer edges)
+# M1-CHR-10, brow edges: the density peak across the brow (0 bottom .. 1 top), its falloff below and
+# above, how faint and fine the edge hairs get (fractions of a centre hair), and the head's fade-in
+BROW_CENTRE = 0.5
+BROW_SIGMA_LOW = 0.28
+BROW_SIGMA_HIGH = 0.34
+BROW_EDGE_OPACITY = 0.7
+BROW_EDGE_WIDTH = 0.85
+BROW_HEAD_FADE = 0.18
+BROW_EDGE_FADE = 0.08  # of the card height: strokes fade to nothing over this band at each edge
+
+
+LASH_CLUMPS = (38, 14)  # upper, lower: clumps across the strip (about one per 0.9 mm on the upper lid)
+LASH_STRANDS = ((3, 6), (2, 4))  # strands per clump, [lo, hi)
+LASH_ROOT_HAIRS = (150, 40)  # short fine hairs along the root, between the clumps
+
+
+def _lash_strand(alpha, sid, dep, rng, rx: float, tx: float, length: float, width: float, op: float,
+                 ident: float, converge: float = 0.8) -> None:
+    """One lash hair from the root (row 0, x = rx) to its tip (V = length, x = tx), in place.
+    It runs straight out of the lid, then bends toward the clump's tip by `converge` of its
+    length, tapering from `width` px at the root to a fine point; the last fifth fades out."""
+    h, w = alpha.shape
+    vv = (np.arange(h) + 0.5) / h
+    rows = np.nonzero(vv <= length)[0]
+    if len(rows) == 0:
+        return
+    t = vv[rows] / length
+    cx = rx + (tx - rx) * smoothstep(0.0, converge, t)
+    half = width * (1.0 - t) ** 0.8 + 0.3
+    a_row = (1.0 - smoothstep(0.8, 1.0, t)) * op
+    lo = int(max(math.floor(min(rx, tx) - 3 * width - 2), 0))
+    hi = int(min(math.ceil(max(rx, tx) + 3 * width + 2), w))
+    if lo >= hi:
+        return
+    xs = np.arange(lo, hi)
+    prof = np.exp(-((xs[None, :] - cx[:, None]) / half[:, None]) ** 2) * a_row[:, None]
+    blk = alpha[rows[0]:rows[-1] + 1, lo:hi]
+    upd = prof > 0.3
+    alpha[rows[0]:rows[-1] + 1, lo:hi] = 1.0 - (1.0 - blk) * (1.0 - prof)
+    sid[rows[0]:rows[-1] + 1, lo:hi][upd] = ident
+    dep[rows[0]:rows[-1] + 1, lo:hi][upd] = rng.random()
+
+
+def lash_clumps(h: int, w: int, rng) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """M1-CHR-10: the lash half of the face-hair atlas (V root 0 -> tip 1 over the h rows; U along
+    the lid). Real lashes gather in clumps of a few hairs that start apart on the lid margin and
+    meet near the tip, so the row reads as tapered points with gaps, not a comb. Each clump has
+    its own length, lean and strand count; under the clumps a dense row of short, fine hairs keeps
+    the margin a continuous dark line. Returns alpha, strand id and depth."""
+    alpha = np.zeros((h, w))
+    sid = np.zeros((h, w))
+    dep = np.zeros((h, w))
+    spans = ((0.0, LASH_LOWER_U), (LASH_LOWER_U, 1.0))
+    k = 0
+    for part, (u0, u1) in enumerate(spans):
+        lower = part == 1
+        n = LASH_CLUMPS[part]
+        span = (u1 - u0) * w
+        pitch = span / n
+        for c in range(n):
+            u = (c + 0.5) / n
+            xc = u0 * w + (c + rng.uniform(0.2, 0.8)) * pitch
+            # longest over the outer middle of the lid, as asha_eyes.lashes shapes the ribbon
+            prof = math.sin(math.pi * (0.1 + 0.8 * u)) ** 0.6
+            length = rng.uniform(0.62, 0.78) + 0.22 * prof if not lower else rng.uniform(0.45, 0.75)
+            lean = rng.normal(0.0, 0.18) * pitch
+            tip = xc + lean
+            ns = int(rng.integers(*LASH_STRANDS[part]))
+            wd = (1.5 if not lower else 1.0) * rng.uniform(0.85, 1.15)
+            for _ in range(ns):
+                k += 1
+                rx = xc + rng.normal(0.0, 0.28 * pitch)
+                _lash_strand(alpha, sid, dep, rng, rx, tip + rng.normal(0.0, 0.8), length * rng.uniform(0.82, 1.0),
+                             wd * rng.uniform(0.8, 1.2), rng.uniform(0.8, 1.0), (k * 0.6180339) % 1.0,
+                             converge=rng.uniform(0.65, 0.9))
+        for _ in range(LASH_ROOT_HAIRS[part]):
+            k += 1
+            rx = rng.uniform(u0 * w + 2, u1 * w - 2)
+            ln = rng.uniform(0.10, 0.28)
+            _lash_strand(alpha, sid, dep, rng, rx, rx + rng.normal(0.0, 2.0), ln, rng.uniform(0.8, 1.3),
+                         rng.uniform(0.6, 0.95), (k * 0.6180339) % 1.0)
+    return alpha, sid, dep
+
+
+def brow_thickness(t: np.ndarray) -> np.ndarray:
+    """Brow card height (m) at t = 0 (medial) .. 1 (lateral), as asha_eyes.brow builds it."""
+    return 0.0068 * (1 - t) ** 0.8 + 0.0022 * t
+
+
+def brow_hairs(h2: int, size: int, rng) -> tuple[np.ndarray, np.ndarray]:
+    """(alpha, strand id) of the atlas's brow half: BROW_LAYERS columns of hair strokes."""
+    cw = size // BROW_LAYERS
+    alpha = np.zeros((h2, size))
+    sid = np.zeros((h2, size))
+    yy, xx = np.mgrid[0:h2, 0:cw]
+    for layer in range(BROW_LAYERS):
+        acc = np.zeros((h2, cw))
+        ids = np.zeros((h2, cw))
+        x0 = layer * cw
+        k = 0
+        while k < BROW_HAIRS:
+            # M1-CHR-10: roots evenly along the brow (CHR-07 packed them medially, which with the
+            # upright head hairs made the left brow's head a dense tuft), and a density that falls
+            # off faster toward the lower edge than the upper one, so neither edge is a line of
+            # roots. Hairs near the edges are also fainter and finer (BROW_EDGE_*).
+            t = rng.uniform(0.0, 1.0)  # root position along the brow
+            b = rng.uniform(0.0, 1.0)  # root position across
+            head = smoothstep(0.0, BROW_HEAD_FADE, t)  # the head fades in
+            sig = BROW_SIGMA_LOW if b < BROW_CENTRE else BROW_SIGMA_HIGH
+            dens = np.exp(-(((b - BROW_CENTRE) / sig) ** 2)) * (0.2 + 0.8 * head) * (1.0 - 0.45 * t)
+            if rng.random() > dens:
+                continue
+            edge = float(np.exp(-(((b - BROW_CENTRE) / 0.30) ** 2)))
+            k += 1
+            if t < 0.12:
+                ang = math.radians(rng.normal(68.0, 12.0))  # head: upright
+            else:
+                rise = (0.55 - b) * 70.0 * (1.0 - 0.6 * t)  # lower rows rise, upper rows lie down
+                ang = math.radians(rng.normal(12.0 + rise, 7.0))
+            ln = rng.uniform(0.004, 0.0075) * (1.0 - 0.35 * t) * (0.6 + 0.4 * head)
+            th = brow_thickness(t)
+            da = ln * math.cos(ang) / BROW_LENGTH  # along, in V
+            db = ln * math.sin(ang) / th  # across, in card heights
+            cx, cy = b * cw, t * h2
+            ex, ey = cx + db * cw, cy + da * h2
+            dx, dy = ex - cx, ey - cy
+            ll = max(dx * dx + dy * dy, 1e-6)
+            m = (xx > min(cx, ex) - 4) & (xx < max(cx, ex) + 4) & (yy > min(cy, ey) - 4) & (yy < max(cy, ey) + 4)
+            if not m.any():
+                continue
+            u = np.clip(((xx[m] - cx) * dx + (yy[m] - cy) * dy) / ll, 0, 1)
+            d = np.hypot(xx[m] - (cx + u * dx), yy[m] - (cy + u * dy))
+            op = rng.uniform(0.65, 1.0) * (BROW_EDGE_OPACITY + (1.0 - BROW_EDGE_OPACITY) * edge) * (0.6 + 0.4 * head)
+            wd = 1.25 * (BROW_EDGE_WIDTH + (1.0 - BROW_EDGE_WIDTH) * edge)
+            prof = np.exp(-(d / (wd * (1 - 0.6 * u))) ** 2) * op * (1.0 - 0.5 * u ** 2)
+            acc[m] = acc[m] + prof * (1.0 - acc[m])
+            ids[m] = np.where(prof > 0.3, (k * 0.618 + layer * 0.31) % 1.0, ids[m])
+        # M1-CHR-10: every stroke fades out before the card's bottom and top edges. Hairs that
+        # crossed them were cut, so the card's straight border drew the brow's lower edge
+        bb = (xx + 0.5) / cw
+        alpha[:, x0:x0 + cw] = acc * smoothstep(0.0, BROW_EDGE_FADE, bb) * smoothstep(1.0, 1.0 - BROW_EDGE_FADE, bb)
+        sid[:, x0:x0 + cw] = ids
+    return alpha, sid
+
+
 def facehair_atlas(size: int = 1024) -> None:
-    """Top half: lash strands (V root -> tip, clumped). Bottom half: brow hairs along V."""
+    """Top half: lash strands (V root -> tip, clumped; the exported lash UVs are V 0..0.5, root at 0).
+    Bottom half: the brow columns (V 0.5 medial -> 1 lateral)."""
     rng = np.random.default_rng(43)
     h2 = size // 2
     img = np.zeros((size, size, 4))
     vv = ((np.arange(h2) + 0.5) / h2)[:, None]
-    a, sid, dep, _ = strand_layer(h2, size, 170, rng, (2.4, 3.8), 0.06, 0.0, length=(0.55, 1.0))
-    img[:h2, :, 0] = np.broadcast_to(vv, (h2, size))
-    img[:h2, :, 1] = sid
-    img[:h2, :, 2] = dep
-    img[:h2, :, 3] = np.clip(a * 1.3, 0, 1)
-    # brows: short hairs, slanted along V (lateral), denser toward the brow's centre line and head
-    b = np.zeros((h2, size))
-    bs = np.zeros((h2, size))
-    yy, xx = np.mgrid[0:h2, 0:size]
-    for k in range(2200):
-        u = rng.uniform(0.05, 0.95)
-        vstart = rng.uniform(0.0, 0.92)
-        dens = np.exp(-((u - 0.5) / 0.28) ** 2) * (1.15 - 0.6 * vstart)
-        if rng.random() > dens:
-            continue
-        L = rng.uniform(0.05, 0.11)
-        ang = rng.normal(0.0, 0.25) + (0.9 - 1.2 * vstart) * 0.6 * (u - 0.5)
-        cx, cy = u * size, vstart * h2
-        ex, ey = cx + math.sin(ang) * L * size * 0.35, cy + math.cos(ang) * L * h2
-        dx, dy = ex - cx, ey - cy
-        ll = dx * dx + dy * dy
-        m = (xx > min(cx, ex) - 4) & (xx < max(cx, ex) + 4) & (yy > min(cy, ey) - 4) & (yy < max(cy, ey) + 4)
-        t = np.clip(((xx[m] - cx) * dx + (yy[m] - cy) * dy) / ll, 0, 1)
-        d = np.hypot(xx[m] - (cx + t * dx), yy[m] - (cy + t * dy))
-        prof = np.exp(-(d / (2.3 * (1 - 0.55 * t))) ** 2)
-        b[m] = np.maximum(b[m], prof)
-        bs[m] = np.where(prof > 0.5, (k * 0.618) % 1.0, bs[m])
-    img[h2:, :, 0] = 0.5
-    img[h2:, :, 1] = bs
-    img[h2:, :, 2] = 0.5
-    img[h2:, :, 3] = np.clip(b * 1.2, 0, 1)
+    # M1-CHR-10: lashes as tapered clumps over a dense root line (lash_clumps). CHR-07's separate,
+    # evenly spaced straight strands read as a comb of thin ticks. U 0.7..1 stays the lower lashes'
+    # strip: fewer, shorter and finer clumps (at full density they read as a drawn eyeliner).
+    a, sid, dep = lash_clumps(h2, size, rng)
+    lash = np.zeros((h2, size, 4))
+    lash[:, :, 0] = np.broadcast_to(vv, (h2, size))
+    lash[:, :, 1] = sid
+    lash[:, :, 2] = dep
+    lash[:, :, 3] = np.clip(a * 1.3, 0, 1)
+    img[:h2] = lash
+    # M1-CHR-07 brows: one column per card layer (BROW_LAYERS), each its own set of hairs drawn as
+    # single strokes in the brow's physical frame (asha_eyes.brow: V along the brow medial -> lateral,
+    # U across it bottom -> top). At the head the hairs stand up; along the body the lower rows rise
+    # laterally and the upper rows lie down, so they converge on the brow's centre line; the tail
+    # lies nearly flat. The rows feather out at the top and bottom edges and the head fades in, so
+    # the brow has no hard outline. CHR-02 drew one set of hairs that every layer sampled, stacked
+    # at alpha boost 2.2: a solid bar.
+    b, bs = brow_hairs(h2, size, rng)
+    brow = np.zeros((h2, size, 4))
+    brow[:, :, 0] = 0.5
+    brow[:, :, 1] = bs
+    brow[:, :, 2] = 0.5
+    brow[:, :, 3] = np.clip(b, 0, 1)
+    img[h2:] = brow
     write("asha_facehair.png", img)
 
 
@@ -849,7 +1402,9 @@ def main() -> int:
     body = bb_anatomy.Body(lm)
     if "skin" in only:
         bd = Path(args.bake_dir)
-        for key, size, small in (("head", 2048, 1024), ("body", 1024, 1024)):
+        # M1-CHR-04: the head ORM and skinmask at 2K like the albedo and normal (pore-scale cavity
+        # and roughness; at 1K they averaged away)
+        for key, size, small in (("head", 2048, 2048), ("body", 1024, 1024)):
             npz = dict(np.load(bd / f"{key}.npz"))
             skin_maps(key, npz, size, small, body, body.face, lm, asha_hair)
     if "detail" in only:

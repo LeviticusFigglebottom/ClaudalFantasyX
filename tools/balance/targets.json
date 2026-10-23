@@ -1,5 +1,5 @@
 {
-  "_doc": "Machine-readable target bands for tools/balance/sim.py. The prose and rationale live in docs/kb/design/balance_targets.md; change both together. Bands are inclusive [min, max] win percentages per policy; null = reported, no band. Each suite names the loadout (gear and consumables) its bands assume. mean_turns_min (optional) maps a policy to its ease ceiling: the fewest mean turns it may take, so a band that sits at 100% still catches a regression that makes the fight easier.",
+  "_doc": "Machine-readable target bands for tools/balance/sim.py. The prose and rationale live in docs/kb/design/balance_targets.md; change both together. Bands are inclusive [min, max] win percentages per policy; null = reported, no band. Each suite names the loadout (gear and consumables) its bands assume. mean_turns_min (optional) maps a policy to its ease ceiling: the fewest mean turns it may take, so a band that sits at 100% still catches a regression that makes the fight easier. swell (M2-CMB-01, optional): the quality every hero's Swell input is played at when a policy unleashes a full gauge (off, miss, good or perfect; default off). naive never unleashes.",
   "suites": [
     {
       "id": "sandbox_reef",
@@ -33,7 +33,8 @@
       "loadout": "m1_starting",
       "mean_turns_min": {
         "smart": 16
-      }
+      },
+      "swell": "good"
     },
     {
       "id": "sandbox_reef_tier1",
@@ -67,7 +68,8 @@
       "loadout": "m1_tier1",
       "mean_turns_min": {
         "smart": 14.5
-      }
+      },
+      "swell": "good"
     },
     {
       "id": "drownbell",
@@ -95,7 +97,8 @@
         ]
       },
       "p90_turns_max": 60,
-      "loadout": "m1_tier1"
+      "loadout": "m1_tier1",
+      "swell": "good"
     }
   ]
 }

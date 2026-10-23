@@ -213,3 +213,27 @@ Review-sweep-F (the M1-NAR-09 and M1-NAR-08 Review logs) approved ADR 0020 with 
   | Bible (S2) | Asha was named in 1009 and sets out in 1012 | (none) | *Consistency* with asha_velamir.md, toma_okeru.md and `ch03_verse_062`. Pass. |
   | 21 (S3) | Rule 8 in player cameras: the two lamps are drawn as light; H05 keeps Kerrid off-frame | the inspiring game's three dead together | Extends the sweep-G S11 re-stage to the playable beats. Pass. |
   | 17 (S4) | Dace's logs say why he stayed away from Oruvel, why Haluna was safe once, and why he never fetched Rhen | the father lost to the calamity, whom the son resents | **Mandated core:** SPEC §3.4 says his father vanished into the Undertow, and §3.5 gives Rhen his goodbye. The reasons (the Order's hunt, a wright's son for life, "after the storm") are ours, and none of them is a promise or a charge to anyone. Pass. |
+
+- 2026-10-23 Narrative (M1-NAR-12, review-sweep-I; append note, not a change to the accepted text above or to the sweep-G and sweep-H notes). This note **amends** the sweep-H note's S4 quote and its "17 (S4)" row, where it says so below.
+  - **S1 (IP): how the Ch17 logs are delivered.** ADR 0016 accepted "the father's backstory through recordings" because ours is a ship and a ledger with the son's name in it. Sweep H's S4 gave that ledger the father's own words about his son. The reasons are ours, so the delivery is pinned:
+    - **Watch:** the logs are a written ledger, read on screen in Rhen's hands. They are never voiced in Dace's voice, never played back as a recording, a projection or a glimmer-echo, and never addressed to Rhen as a message ("if you're reading this"). Dace's voice is heard only in E2.
+    - **The entry breaks off.** The sweep-H S4 quote now ends "Let him be one. After the storm", and the next page is blank. "I'll go myself" is withdrawn: an unfinished line keeps the irony without a stated promise to return.
+  - **S2 (wording):** act3_ending E2 says Dace sees his old lantern "still the oil burner he fitted and not glimmer (N-02)", not "the oil wick", so no reader takes it for Kell's wick. The sweep-H watch (Kell's wick is never fitted to the lantern) is unchanged.
+  - **S3:** the stale decisions_log lines are corrected inline (N-24's Lead verdict, N-02 item 4) and listed in N-25's Supersedes. N-26 records this note.
+
+  | Item | Our beat | Nearest analogue | Verdict |
+  |---|---|---|---|
+  | 17 (S1) | Dace's ledger, read on screen, about Rhen but addressed to nobody; the "after the storm" entry breaks off | the father's recorded messages to his son, found on the pilgrimage, with his wish to come home | Re-staged: written, never voiced or played back, never a message to the son, and no stated promise. Amends the sweep-H "17 (S4)" row's "after the storm" to the broken-off line. **Watch:** as above. Pass. |
+  | E2 (S2) | the lamp on Rhen's shoulder is the oil burner Dace fitted | (none) | *Consistency* with N-02 and the sweep-H wick watch. Pass. |
+
+- 2026-10-23 Narrative (M1-NIT-01, review-sweep-J S1/S2 on M1-NAR-12; append note, not a change to the accepted text above or to the sweep-G, sweep-H and sweep-I notes). This note **amends** the sweep-I note's "The entry breaks off" line and the sweep-H note's (B1) "a season later", where it says so below.
+  - **S1 (order): the broken-off entry is the ledger's last.** The sweep-I note says the next page after "After the storm" is blank, while the sweep-H note dates "Kell. Of course." to a season after Corrow; read in order in the outline, a later entry followed a blank page. Resolved:
+    - The ledger runs in time order. "Kell. Of course." is the earlier entry: a season after Corrow, when the Hollowmere trader brings word.
+    - The "why he never fetched Rhen" entry is the **last** one, written the night he went into the storm after Imra. It ends "Let him be one. After the storm" and breaks off. The next page is blank, and so is every page after it.
+    - So the blank page is the end of the ledger, and Cinematics can stage the page-turn on it: the turn lands on the blank, and nothing follows. act_outline Ch17 now puts the Kell sentence first.
+  - **S2 (one term for Dace's lamp).** Dace's lantern is fitted with an **oil burner**. "Wick" belongs to Kell alone (her Ch1 gift, kept unburned until E7). The two stale "oil wick" phrasings in decisions_log (N-02's answer and the sweep-C Prologue line) are corrected inline. The sweep-H wick watch is unchanged.
+
+  | Item | Our beat | Nearest analogue | Verdict |
+  |---|---|---|---|
+  | 17 (S1) | the ledger ends on the broken-off "after the storm" entry, written the night Dace went after Imra; "Kell. Of course." comes before it | the father's recorded messages to his son, with his wish to come home | *Consistency.* Order only: still written, never voiced, addressed to nobody, and no stated promise. The last page being blank adds no message and no farewell. **Watch:** as in the sweep-I note, and no later entry is ever added after the broken-off one. Pass. |
+  | 0, E2 (S2) | Dace's lantern has an oil burner; only Kell's gift is a wick | (none) | *Consistency* with N-02, the sweep-H wick watch and the sweep-I E2 wording. Pass. |

@@ -61,6 +61,16 @@
       ]
     },
     {
+      "id": "glimmer_bound",
+      "scene": "res://game/levels/_tests/glimmer/glimmer_bound.tscn",
+      "camera": "ShotCamera",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
       "id": "battle_hud_preview",
       "scene": "res://game/battle/scene/shots/battle_player_preview.tscn"
     },
@@ -223,7 +233,21 @@
       "resolution": [
         960,
         540
-      ]
+      ],
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "day"
+          }
+        }
+      }
     },
     {
       "id": "water_lagoon",
@@ -233,7 +257,21 @@
       "resolution": [
         960,
         540
-      ]
+      ],
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "day"
+          }
+        }
+      }
     },
     {
       "id": "water_horizon",
@@ -243,7 +281,21 @@
       "resolution": [
         960,
         540
-      ]
+      ],
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "day"
+          }
+        }
+      }
     },
     {
       "id": "water_night",
@@ -253,7 +305,21 @@
       "resolution": [
         960,
         540
-      ]
+      ],
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "night"
+          }
+        }
+      }
     },
     {
       "id": "field_lane_fixed",
@@ -332,7 +398,24 @@
       "resolution": [
         960,
         540
-      ]
+      ],
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "dusk"
+          },
+          "Storm": {
+            "playing": false
+          }
+        }
+      }
     },
     {
       "id": "undertow_eye",
@@ -342,7 +425,24 @@
       "resolution": [
         960,
         540
-      ]
+      ],
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "eye"
+          },
+          "Storm": {
+            "playing": false
+          }
+        }
+      }
     },
     {
       "id": "undertow_night",
@@ -352,7 +452,24 @@
       "resolution": [
         960,
         540
-      ]
+      ],
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "night"
+          },
+          "Storm": {
+            "playing": false
+          }
+        }
+      }
     },
     {
       "id": "undertow_horizon_low",
@@ -362,7 +479,24 @@
       "resolution": [
         480,
         270
-      ]
+      ],
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "dusk_low"
+          },
+          "Storm": {
+            "playing": false
+          }
+        }
+      }
     },
     {
       "id": "char_skin_eye_closeup",
@@ -412,7 +546,16 @@
         960,
         540
       ],
-      "settle_frames": 24
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     },
     {
       "id": "haluna_h02_tidewall_lane",
@@ -422,7 +565,16 @@
         960,
         540
       ],
-      "settle_frames": 24
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     },
     {
       "id": "haluna_h03_lintel_gull",
@@ -432,7 +584,16 @@
         960,
         540
       ],
-      "settle_frames": 24
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     },
     {
       "id": "haluna_h04_dock",
@@ -442,7 +603,16 @@
         960,
         540
       ],
-      "settle_frames": 24
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     },
     {
       "id": "haluna_h07_chapel_court",
@@ -452,7 +622,16 @@
         960,
         540
       ],
-      "settle_frames": 24
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     },
     {
       "id": "asha_front",
@@ -557,6 +736,22 @@
     {
       "id": "battle_swell_ring",
       "scene": "res://game/battle/scene/shots/battle_swell_ring.tscn"
+    },
+    {
+      "id": "battle_read_panel",
+      "scene": "res://game/battle/scene/shots/battle_read_panel.tscn"
+    },
+    {
+      "id": "battle_opening_banner",
+      "scene": "res://game/battle/scene/shots/battle_opening_banner.tscn"
+    },
+    {
+      "id": "battle_swell_modes",
+      "scene": "res://game/battle/scene/shots/battle_swell_modes.tscn"
+    },
+    {
+      "id": "bestiary_menu",
+      "scene": "res://game/ui/bestiary/shots/bestiary_menu.tscn"
     }
   ]
 }

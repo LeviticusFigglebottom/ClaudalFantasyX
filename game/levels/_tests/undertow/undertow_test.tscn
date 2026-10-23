@@ -221,6 +221,7 @@ sky_mode = 1
 script = ExtResource("surface")
 wave_set = ExtResource("waves")
 material = ExtResource("ocean_mat")
+publishes_water_level = true
 outer_half_extent_m = 20000.0
 
 [node name="Motes" type="Node3D" parent="."]
@@ -238,7 +239,6 @@ script = ExtResource("storm")
 approach_distance_m = 17000.0
 approach_azimuth_deg = 90.0
 quality = "high"
-playing = false
 start_time_s = 205.0
 water = NodePath("../Water")
 sun = NodePath("../Sun")

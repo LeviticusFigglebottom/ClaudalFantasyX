@@ -94,7 +94,8 @@ Frame budget: 16.7 ms at 60 fps and 33.3 ms at 30 fps. Costs are GPU millisecond
 | SSR 64 steps | 1.0 – 1.5 |
 | SSAO high (full) + SSIL medium (half) | 1.6 – 2.4 |
 | FSR2 to 1440p | 0.6 – 0.9 |
-| **Total** | **≈ 11.4 – 17.5** (target ≤ 16.7) |
+| Procedural sky clouds, `sky_detail` high (measured 0.39 – 0.42 ms on an RX 9070 XT × 2.3 – 2.8, M1-RND-12) | 0.9 – 1.2 |
+| **Total** | **≈ 12.3 – 18.7** (target ≤ 16.7) |
 
 High is the tight preset. If measurement shows it over budget, step down in this order: `ssil_quality` medium → low, `render_scale` 0.77 → 0.67 (FSR2 Quality), then SDFGI rays.
 
@@ -108,7 +109,8 @@ High is the tight preset. If measurement shows it over budget, step down in this
 | Volumetric fog 64×32, no filter | 0.5 – 0.8 |
 | SSAO very low (half) | 0.4 – 0.6 |
 | FSR1 + TAA | 0.5 – 0.8 (TAA measured +0.12 ms on an RX 9070 XT at 1080p) |
-| **Total** | **≈ 8.1 – 12.5** (30 fps is safe; 60 fps likely in lighter scenes) |
+| Procedural sky clouds, `sky_detail` low (measured 0.21 – 0.24 ms on an RX 9070 XT × 4.2 – 5.0, M1-RND-12) | 0.9 – 1.2 |
+| **Total** | **≈ 9.0 – 13.7** (30 fps is safe; 60 fps likely in lighter scenes) |
 
 **Medium on the minimum tier (GTX 1060, 1080p, 0.85):** about 14 – 20 ms (VoxelGI 1–2 ms, SSR 0.8 ms, SSAO 0.7 ms, fog 0.8 ms, TAA 0.3 ms on top of a larger base). That's a 30–60 fps preset for the minimum tier, or 60 fps on GTX 1660 / RTX 2060 class cards.
 
@@ -127,6 +129,49 @@ High is the tight preset. If measurement shows it over budget, step down in this
 
   Measured: −9 to −12 % of the vegetation test's frame on Low.
 - **Low AA is TAA** (it was FXAA). Measured on alpha-tested foliage: FXAA removed 10 % of the shimmer, TAA 65 %, for +0.12 ms on an RX 9070 XT (docs/kb/qa/gpu/2026-10-23-rnd-07.md).
+- **`sky_detail`** (low / medium / high / ultra, M1-RND-12) sets the procedural sky's quality uniforms on the
+  Environment's sky material (`levels.sky_detail`; only uniforms the sky's shader declares, so other skies are
+  untouched): march steps 32 / 32 / 40 / 64, erosion octaves 2 / 3 / 4 / 4, erosion seen by the sun samples
+  0 / 0 / 0 / 1, radiance-cubemap steps 16 / 24 / 24 / 24. Measured cloud cost on an RX 9070 XT (Haluna H01/H04/H07):
+  0.21–0.24 ms (Low, 1080p), 0.34–0.37 (Medium, 1440p), 0.39–0.42 (High, 1440p), 1.1–1.2 (Ultra, 1440p). The
+  cost follows the window resolution, not `render_scale`. Below 32 steps the cloud silhouettes step, so no tier goes
+  lower (tested).
+
+## Scoped overrides (M1-RND-16)
+
+A cutscene or other scene-owned moment can change the game viewport's AA and 3D scaling for its duration
+without touching the player's settings. The keys it may name are `rules.override_keys` in
+graphics_presets.json: `aa`, `scaling_mode`, `render_scale`, `fsr_sharpness` (the viewport pipeline state;
+everything else is per-scene and the zone owns it).
+
+```gdscript
+# At a camera cut (or behind a fade): never mid-shot, the pipeline switches on the next frame drawn.
+var h := GraphicsSettings.push_override(self, {"aa": "taa", "scaling_mode": "fsr"})
+# ... the storm close-up ...
+GraphicsSettings.pop_override(h)   # at the cut out; also automatic when `self` leaves the tree
+```
+
+- **Layering.** The override is laid on the player's settings (`base`, default: user://settings.cfg, or the
+  default preset when there is none; after M1-ARC-15 pass `GraphicsRuntime.settings()`), then planned like
+  any preset, so the FSR2 rule (TAA forced off under a temporal upscaler) still holds. Only the viewport
+  properties are written: `scaling_3d_mode`, `scaling_3d_scale`, `fsr_sharpness`, `use_taa`,
+  `screen_space_aa`, `msaa_3d`.
+- **Stacking.** Overrides stack and resolve key by key: the last pushed wins, popping any one re-applies the
+  rest in push order, and when the last one goes the viewport gets back exactly the values it had before the
+  first (a snapshot, so it also restores a viewport that never had settings applied, like a test's). All
+  overrides target one viewport at a time; a push to a second one is refused. Invalid keys or values are
+  refused (handle 0) and change nothing.
+- **Never saved.** Nothing here calls `save_config`; the player's preset and override layer are untouched.
+- **Listeners.** After every push or pop, nodes in `GraphicsSettings.VIEWPORT_STATE_GROUP`
+  (`hymn_viewport_state_listeners`) get `on_viewport_state_changed()`. UndertowStorm uses it to re-gate its
+  temporal jitter in the same frame.
+- **Prewarm.** `GraphicsSettings.override_state(values)` returns the viewport state an override would set
+  without applying it. Give it to `ShaderPrewarm.spawn_with_state(scene, SceneRouter, state)` (or set
+  `viewport_state` before `start`), so the stage compiles the override's pipeline before the cut. An
+  override pushed before a zone loads is seen by the router's own prewarm, which copies the live viewport.
+- **Caveat until M1-ARC-15 lands here:** a settings-menu apply while an override is active writes the
+  player's AA over it; the cutscene's pop then restores the pre-override snapshot, which is the old setting.
+  Menus are not reachable during cutscenes today.
 
 ## Open items
 - **Measure** every row above on a GPU runner (M1-QA-01) and replace the estimates. Add a per-preset benchmark camera path to the vertical-slice zone when one exists.

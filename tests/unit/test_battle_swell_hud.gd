@@ -24,9 +24,16 @@ func test_only_heroes_with_a_swell_get_a_gauge_and_it_starts_empty() -> void:
 	assert_true(rhen.swell_gauge() != null, "Rhen has a Swell")
 	assert_eq(rhen.swell_gauge().shown, 0.0)
 	assert_eq(rhen.swell_gauge().glow, 0.0, "no glow until full")
-	assert_true(ctl.hud.party.row_for(&"asha").swell_gauge() == null, "no swell.json row, no gauge")
+	assert_true(
+		ctl.hud.party.row_for(&"asha").swell_gauge() == null,
+		"Asha's chant has no HUD panel yet (M2-UI-03), so no gauge"
+	)
 	_to_turn_of(&"rhen")
-	assert_false(_row_ids().has(BattleMenus.ROW_SWELL), "no Swell command until the gauge is full")
+	# M2-UI-01: the Swell row stays on the menu while the gauge fills, so the fill mode can be
+	# chosen; its right column names the mode in force instead of the input.
+	var swell_row := ctl.hud.commands.top_page().rows[_row_ids().find(BattleMenus.ROW_SWELL)]
+	assert_eq(str(swell_row["right"]), tr("SWELL_MODE_BALLAST"), "not full: the mode in force")
+	assert_eq(StringName(str(swell_row["right_role"])), &"text_dim")
 	_free()
 
 
@@ -34,7 +41,10 @@ func test_a_full_gauge_glows_pulses_and_puts_swell_on_the_menu() -> void:
 	_fixture(&"swell_ring")
 	var row := ctl.hud.party.row_for(&"rhen")
 	assert_eq(row.swell_gauge().shown, 1.0)
-	assert_true(row.swell_gauge().glow > 0.0, "full: framed in gold")
+	assert_true(row.swell_gauge().glow > 0.0, "full: framed")
+	var party := HudLayout.section(&"party")
+	assert_eq(row.swell_gauge().full_gap_px, HudLayout.num(party, "swell_full_gap_px"), "frame sizes are data")
+	assert_eq(row.swell_gauge().full_frame_rects().size(), 2, "a night gap, then the frame")
 	var before := row.swell_gauge().glow
 	row._process(0.4)
 	assert_ne(row.swell_gauge().glow, before, "it pulses")
@@ -75,6 +85,20 @@ func test_waiting_out_the_ring_still_strikes_at_base_power() -> void:
 	assert_ne(ctl.state, BattleController.STATE_SWELL_INPUT)
 	assert_true(ctl.engine.find(&"rhen").swell < Formulas.SWELL_MAX)
 	assert_true(ctl.hud.help_history.has(ctl.menus.swell_result_text([&"miss", &"miss", &"miss"], 0)))
+	_free()
+
+
+func test_a_long_rendered_frame_pauses_the_ring_instead_of_skipping_a_beat() -> void:  # M1-UI-05
+	_open_ring()
+	var ring := ctl.swell_input()
+	ctl.tick(ring.time_to_peak() - 0.01)
+	var at := ring.elapsed
+	ctl._process(ring.duration_sec())  # one frame longer than the whole input
+	assert_eq(ctl.state, BattleController.STATE_SWELL_INPUT, "still open")
+	assert_eq(ring.grades.size(), 0, "no beat was skipped")
+	assert_between(ring.elapsed, at + ring.max_step_sec - 1e-6, at + ring.max_step_sec + 1e-6)
+	_press(&"ui_accept")
+	assert_ne(ring.grades[0], SwellTimingRing.GRADE_MISS, "the press after the hitch still counts")
 	_free()
 
 
@@ -128,8 +152,18 @@ func test_the_technique_page_previews_its_input_and_its_turn() -> void:
 	_press(&"ui_accept")
 	assert_eq(ctl.state, BattleController.STATE_SWELL)
 	assert_eq(ctl.hud.commands.page_id(), BattleMenus.PAGE_SWELL)
-	assert_eq(_row_ids(), [&"lamp_dive"] as Array[StringName])
-	assert_true(ctl.hud.help_text().begins_with(tr("SWELL_INPUT_TIMING_RING_HELP")), ctl.hud.help_text())
+	# The technique, then the unlocked fill modes (M2-UI-01).
+	var want: Array[StringName] = [&"lamp_dive", &"swell_mode_ballast", &"swell_mode_wake"]
+	assert_eq(_row_ids(), want)
+	var beats := int(ctl.swell.input_for(ctl.engine.current).get("beats", 0))
+	var how := tr("SWELL_INPUT_TIMING_RING_HELP_LAMP").format({"beats": beats})
+	assert_true(ctl.hud.help_text().begins_with(how), ctl.hud.help_text())
+	# M1-NIT-01 (review-sweep-J S2): one metaphor with the ring's own hint, no ". ·" at the join.
+	assert_false(ctl.hud.help_text().contains(". ·"), ctl.hud.help_text())
+	assert_true(
+		how.contains("the ring meets the lamp") and tr("HUD_SWELL_RING_HINT").contains("the ring meets the lamp")
+	)
+	assert_true(how.contains(str(beats)) and not how.contains("{"), "the beat count comes from data: %s" % how)
 	var preview := ctl.engine.preview(
 		&"lamp_dive", ctl.default_targets(&"lamp_dive")[0], CtbTimeline.PREVIEW_LENGTH - 1
 	)

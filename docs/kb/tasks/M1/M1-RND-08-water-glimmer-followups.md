@@ -2,7 +2,7 @@
 id: M1-RND-08
 title: Water and glimmer follow-ups (review-sweep-B)
 role: rendering
-status: todo
+status: done
 reviewer: environment
 owner_session: session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-08-water-glimmer; water items first)
 depends_on: [M1-RND-01, M1-RND-02, M1-RND-03, M1-ENV-01]
@@ -29,6 +29,8 @@ Environment-side findings on water and glimmer, scheduled after the Undertow and
 - 2026-10-23 water items done (NaN guard, view-dependent SSS wrap; pale crest patches reduced, Art to confirm). Report: docs/kb/qa/gpu/2026-10-23-rnd-08.md. Lavapipe re-approvals: water_shallows, water_lagoon, water_horizon, haluna_h01_village_from_sea, haluna_h04_dock (haluna_h03 optional). Remaining items open.
 
 - 2026-10-23 all items done; report docs/kb/qa/gpu/2026-10-23-rnd-08.md (parts 1 and 2). Lavapipe re-approvals: water_shallows, water_lagoon, water_horizon, glimmer_dusk, glimmer_night_held, haluna_h01_village_from_sea, haluna_h04_dock; new glimmer_bound from the pending manifest. Art to confirm caustics look, halo_chroma_gain and the noon crest patches.
+- 2026-10-23 rendering (M1-RND-15, worktree-agent-a94256e372f018240): **B1 closed.** `glimmer_bound` moved from the pending manifest into tests/screenshots/shots.json after `glimmer_release` (ShotCamera, 960×540, 30 settle frames; no capture setup needed: the stage moves the carrier with `delta`, which `--fixed-fps 60` makes deterministic). Rendered on lavapipe (Forward+, llvmpipe LLVM 22.1.8) and inspected before approval: after 0.5 s the cage has travelled 0.75 m right of the figure and its teal field is still inside it, so the local-space field follows its host. About a dozen distinct motes resolve inside the 0.5 m cage at this framing; the rest of the 24 overlap or sit behind the posts (`fixed_count` 24 is unit-tested). The brightest core is #6AA9AB against glimmer_bound's on-screen 0 level #66A7A6, the halos' median is #3A7D84 (near the −1 level #3B8280, hue 205°), there is no gold or red in the cage (palette_check coverage), and the night sea and sky are unchanged from the night shots. Approved with `compare.py --update-baselines glimmer_bound` (PASS rmse 0.00000 on re-compare). The pending-shots manifest is now empty. Back to **review** (environment); S1-S4 and the nit are in M1-RND-15, S5 (Art sign-off) stays open for M1-ART-04.
+- 2026-10-23 rendering (M1-RND-15): **NaN fix confirmed on lavapipe**, the driver where the Undertow stream saw the white disc. `tools/gpu_bench/water_probe.tscn -- --scene=undertow --camera=Cameras/Horizon --sun-elev=5 --sun-rel-az=180 --set=use_sss=true --res=960x540 --frames=60` (llvmpipe, Forward+, High): anti-solar pixel (480, 453), disc peak 0.192 and mean 0.109 (the GPU measured 0.102 after the fix), and no white disc in the frame.
 
 ## Review log
 - 2026-10-23 environment (review-sweep-I, fresh reviewer): **request-changes** (one AC not met in tree; everything else approve-with-fixes).
@@ -53,3 +55,22 @@ Environment-side findings on water and glimmer, scheduled after the Undertow and
       Please get Art (M1-ART-04) to sign off, or open an Art task, before this goes to done.
   - **Nits:** the `local_space` field converts through `field_to_world` in the process shader. Record in glimmer.md which inputs stay world-space (attractors, the release wave, water), so Environment knows what follows a moving host.
 - 2026-10-23 lead: reopened on review-sweep-I request-changes: the glimmer_bound shot and baseline are missing; the should-fixes move into M1-RND-15 alongside it.
+- 2026-10-23 environment (review-sweep-J re-review, fresh reviewer): **approve. B1 is closed.** One condition before `done`: S5 still has no owner (see below).
+  - **What I read:**
+    - commits 6bf283d and 4a73665;
+    - the `glimmer_bound` entry in tests/screenshots/shots.json, after `glimmer_release`;
+    - baselines.json;
+    - the now-empty pending manifest;
+    - game/levels/_tests/glimmer/glimmer_bound.tscn (`fixed_count` 24, `local_space` true, carrier-driven stage).
+  - **I opened tests/screenshots/baselines/glimmer_bound.png (960×540):**
+    - It is a night sea and sky, with the dark figure at centre.
+    - The cage stands clear to the figure's right, at the figure's head height. Its teal field sits wholly inside the four posts, and roughly 8-12 distinct motes resolve.
+    - No motes are left at the figure, which is where a world-space field would have stayed. So this one frame does tell local space from world space, and it is a real regression shot.
+    - There is no gold or red in the cage. The sea and horizon match the other night shots.
+  - **The lavapipe NaN confirmation is recorded:** anti-solar mean 0.109, and no disc.
+  - **S1-S4** were reviewed in M1-RND-15 (sweep J).
+  - **Remaining, S5 (Art sign-off) has no task.** RND-15's Notes say it "belongs to M1-ART-04", but M1-ART-04 is `done` and lists only the crest patches. Before RND-08 goes to done, the Lead should file an Art request (role art, request-from environment) covering:
+    - the caustics look (water_lagoon);
+    - `halo_chroma_gain`: dusk released motes still read near-white, not gold, in glimmer_dusk;
+    - the noon crest patches.
+- 2026-10-23 lead: closing on review-sweep-J approve; the Art sign-off on caustics, halo and noon crests is in M1-ART-05.

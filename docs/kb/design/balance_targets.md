@@ -17,12 +17,14 @@ Each policy is a `SimPolicy` subclass. Policies use only the engine's public API
 
 | Policy | What it models | Rule |
 |---|---|---|
-| `naive` | A player mashing Attack | `attack` on the first living foe. Never swaps. |
+| `naive` | A player mashing Attack | `attack` on the first living foe. Never swaps, and never opens Swell (mashing confirm picks the top row). |
 | `lowest_hp` | Focus fire, no swaps | `attack` on the living foe with the least HP. |
 | `role_answer` | The elegant answer (SPEC §6.1) | If the actor answers a living foe (`enemies.json` `role_answer`), it takes the weakest such foe. Otherwise the focus is the weakest foe, and if that foe's answer is in reserve it swaps in for the actor (free) and takes the turn. An answerer opens with a Break skill its foe lacks, then uses its best expected damage per rank (MP permitting). |
 | `smart` | A careful player | `role_answer`, plus: replace a KO'd or petrified active member at once (preferring a reserve who answers a living foe); a healer heals the most hurt ally below `heal_below_pct` (45%) of max HP; a healer won't swap out while an ally is below `keep_healer_below_pct` (70%). |
 
 "Expected damage" is the real formula at mean variance (100%), without crits, times the hit chance, and 0 for magic the target would Reflect. It is deterministic.
+
+**Swell (M2-CMB-01).** A suite's `swell` (targets.json; `--swell` overrides it) is the quality each hero's Swell input is played at: `off`, `miss`, `good` or `perfect` (`SwellInput.scripted_result`). Every policy but `naive` unleashes a full gauge before anything else: a damage technique on the weakest foe (the provoker when Provoked) or every foe, a healing one once an active ally is below `swell_heal_below_pct` (60%, `sim_policies.json`). Heroes fill in the default mode (Ballast) and start every fight empty. The sandbox suites assume `good`: a player who has learned the inputs but does not nail them.
 
 ## Party assumptions (gear and consumables)
 
@@ -49,6 +51,7 @@ Only `smart` uses items. Its rule: a heal item on the most hurt ally below `heal
 | Party KO | Mean party members down (KO or stone) at the end. |
 | Items | Mean consumables used (the `smart` item rule). |
 | Lume | Mean battle lume (`currency_award()`, × Full Net when worn). Validates economy.md's "about 60 lume per early fight". |
+| Swell / Swells | The quality the suite's Swell inputs are played at, and the mean techniques unleashed per fight (M2-CMB-01). |
 
 ## Target curve by chapter
 

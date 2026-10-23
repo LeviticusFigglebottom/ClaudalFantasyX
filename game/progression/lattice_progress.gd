@@ -11,6 +11,21 @@ extends RefCounted
 ##   its level; opened gates stay open for everyone.
 ## - Activating the node you stand on costs one Facet of the matching type and no movement.
 ##   Each character activates nodes separately; bonuses apply only to whoever activated them.
+##
+## M1-ARC-13 (QA review-sweep-I S1; ADR 0018 Amendment 5): saved progress is never dropped.
+## - An activated node id the board does not know stays in the traveler's set (it grants nothing
+##   and round-trips untouched); a lost position puts the traveler on their start, and the saved
+##   position is written back until they move (LatticeTraveler.saved_position).
+## - A character with no start on the board, and an opened gate the board has no gate for, are
+##   kept as saved (kept_characters, kept_gates) and written back by to_dict.
+## - While the board or the rules are broken (integrity_problem), from_dict places nobody: the
+##   whole saved dict is frozen and to_dict returns it as it was.
+## M1-ARC-14 (QA review-sweep-J S1/S2):
+## - A save that names a board other than the one it is restored onto is frozen the same way: its
+##   "board" field and positions are never rewritten. Writers load the board the save names
+##   (board_for), so in practice only a save whose board id is not a valid id is frozen this way.
+## - A lost position does not add the start to the saved activations: the start counts as
+##   activated in memory (LatticeTraveler.implied_start) and joins `activated` on the first move.
 
 const RESULT_OK := &"ok"
 const ERR_UNKNOWN_CHARACTER := &"unknown_character"
@@ -31,6 +46,17 @@ var rules: LatticeRules
 var travelers: Dictionary = {}
 ## Set of opened gate node ids (id -> true).
 var opened_gates: Dictionary = {}
+## Character id (String) -> the saved traveler dict, for characters this board has no start for.
+var kept_characters: Dictionary = {}
+## Saved opened-gate ids that are not gates on this board.
+var kept_gates: Array[String] = []
+## The saved gate order (to_dict keeps it, so a round trip changes nothing).
+var _gate_order: Array[String] = []
+## The whole saved dict while from_dict froze it ({} otherwise): see is_frozen.
+var _frozen: Dictionary = {}
+## True when from_dict froze the save (broken board or rules, or another board's save), even when
+## the saved dict was empty.
+var _frozen_flag := false
 
 
 func _init(lattice_board: LatticeBoard = null, lattice_rules: LatticeRules = null) -> void:
@@ -39,10 +65,13 @@ func _init(lattice_board: LatticeBoard = null, lattice_rules: LatticeRules = nul
 
 
 ## Places a character on their start node (which counts as activated by them). Returns false
-## if the board has no start for them. Calling it again for a known character is a no-op.
+## if the board has no start for them, or the progress is frozen (is_frozen). Calling it again
+## for a known character is a no-op.
 func add_character(cid: StringName) -> bool:
 	if travelers.has(cid):
 		return true
+	if is_frozen():
+		return false
 	var start := board.start_of(cid)
 	if start == &"":
 		return false
@@ -60,7 +89,7 @@ func traveler(cid: StringName) -> LatticeTraveler:
 
 func is_activated_by(cid: StringName, node_id: StringName) -> bool:
 	var t := traveler(cid)
-	return t != null and t.activated.has(node_id)
+	return t != null and t.has_activated(node_id)
 
 
 ## True if any character activated the node, or it is a gate someone opened.
@@ -68,7 +97,7 @@ func is_activated_by_anyone(node_id: StringName) -> bool:
 	if opened_gates.has(node_id):
 		return true
 	for t: LatticeTraveler in travelers.values():
-		if t.activated.has(node_id):
+		if t.has_activated(node_id):
 			return true
 	return false
 
@@ -110,6 +139,10 @@ func move(cid: StringName, to: StringName) -> StringName:
 		return ERR_NO_MOVEMENT
 	t.movement_points -= cost
 	t.position = to
+	t.saved_position = &""
+	if t.implied_start != &"":
+		t.activated[t.implied_start] = true
+		t.implied_start = &""
 	return RESULT_OK
 
 
@@ -266,39 +299,114 @@ func apply_to(c: BattleCombatant) -> void:
 
 
 func to_dict() -> Dictionary:
+	if is_frozen():
+		return _frozen.duplicate(true)
 	var chars: Dictionary = {}
 	for cid: StringName in travelers:
 		chars[String(cid)] = (travelers[cid] as LatticeTraveler).to_dict()
+	for key: String in kept_characters:
+		if not chars.has(key):
+			chars[key] = (kept_characters[key] as Dictionary).duplicate(true)
 	var gates: Array[String] = []
+	for g in _gate_order:
+		if not gates.has(g) and (opened_gates.has(StringName(g)) or kept_gates.has(g)):
+			gates.append(g)
 	for gid: StringName in opened_gates:
-		gates.append(String(gid))
+		if not gates.has(String(gid)):
+			gates.append(String(gid))
 	return {"board": String(board.id), "characters": chars, "opened_gates": gates}
 
 
-## Restores progress onto `lattice_board`. Ids the board no longer has are dropped (with a
-## warning) and a lost position falls back to the character's start, so old saves stay loadable.
+## Why this progress must not be written back over saved progress ("" when it may): its board or
+## rules are broken (LatticeBoard / LatticeRules integrity_problem). BattleRewards and the F6
+## cheat check it before writing Game.state.lattice.
+func integrity_problem() -> String:
+	var problem := board.integrity_problem()
+	if problem == "":
+		problem = rules.integrity_problem()
+	return problem
+
+
+## Writes this progress into `state.lattice`, unless its board or rules are broken (M1-ARC-13,
+## review-sweep-I S1): then the state keeps its saved progress exactly as it was, with a
+## push_error. Returns true when it wrote. BattleRewards and the F6 cheat write through this.
+func save_into(state: GameStateData) -> bool:
+	var problem := integrity_problem()
+	if problem != "":
+		push_error("LatticeProgress: the Lattice tables are broken (%s); saved Lattice progress is kept" % problem)
+		return false
+	state.lattice = to_dict()
+	return true
+
+
+## True when from_dict kept the saved dict as it was: the board or rules were broken, or the save
+## names another board (M1-ARC-14). Also true for an empty saved dict, so nobody is added.
+func is_frozen() -> bool:
+	return _frozen_flag
+
+
+## The board to restore `saved` (GameStateData.lattice) onto (M1-ARC-14, review-sweep-J S1): the
+## board the save names, or `configured` when it names none. A save naming an id that is not a
+## valid board id (LatticeBoard.is_valid_id) is refused: it gets `configured`, which from_dict then
+## freezes it against, and no path is built from the id. BattleStage and the F6 cheat load through it.
+static func board_for(saved: Dictionary, configured: StringName) -> LatticeBoard:
+	var named := str(saved.get("board", ""))
+	if named == "":
+		return LatticeBoard.load_board(configured)
+	if not LatticeBoard.is_valid_id(named):
+		push_error("LatticeProgress: the save names an invalid Lattice board id '%s'; it is kept as saved" % named)
+		return LatticeBoard.load_board(configured)
+	return LatticeBoard.load_board(StringName(named))
+
+
+## Restores progress onto `lattice_board`. Nothing saved is ever dropped (M1-ARC-13): see the
+## class comment. While the board or rules are broken, or the save names another board
+## (M1-ARC-14), the save is frozen whole, with a push_error.
 static func from_dict(d: Dictionary, lattice_board: LatticeBoard, lattice_rules: LatticeRules) -> LatticeProgress:
 	var p := LatticeProgress.new(lattice_board, lattice_rules)
+	var problem := p.integrity_problem()
+	if problem != "":
+		problem = "the Lattice tables are broken (%s)" % problem
+	var named := str(d.get("board", ""))
+	if problem == "" and named != "" and StringName(named) != p.board.id:
+		problem = "the save names board '%s', not '%s'" % [named, p.board.id]
+	if problem != "":
+		push_error("LatticeProgress: %s; saved progress is kept as it is" % problem)
+		p._frozen = d.duplicate(true)
+		p._frozen_flag = true
+		return p
 	var chars: Dictionary = d.get("characters", {})
 	for key: Variant in chars:
 		var cid := StringName(str(key))
 		var t := LatticeTraveler.from_dict(cid, chars[key] as Dictionary)
-		for nid: StringName in t.activated.keys():
+		for nid: StringName in t.activated:
 			if not p.board.has_lattice_node(nid):
-				push_warning("LatticeProgress: dropping unknown node '%s' for %s" % [nid, cid])
-				t.activated.erase(nid)
+				push_warning("LatticeProgress: %s keeps unknown node '%s'; it grants nothing" % [cid, nid])
 		if not p.board.has_lattice_node(t.position):
-			t.position = p.board.start_of(cid)
-			if t.position == &"":
-				push_warning("LatticeProgress: %s has no start on board '%s'; dropped" % [cid, p.board.id])
+			var start := p.board.start_of(cid)
+			if start == &"":
+				push_warning("LatticeProgress: %s has no start on board '%s'; kept as saved" % [cid, p.board.id])
+				p.kept_characters[String(cid)] = (chars[key] as Dictionary).duplicate(true)
 				continue
-			t.activated[t.position] = true
+			push_warning(
+				"LatticeProgress: %s stands on unknown node '%s'; on the start until moved" % [cid, t.position]
+			)
+			t.saved_position = t.position
+			t.position = start
+			if not t.activated.has(start):
+				t.implied_start = start
 		p.travelers[cid] = t
 	for gid: Variant in d.get("opened_gates", []):
-		var g := StringName(str(gid))
-		var n := p.board.lattice_node(g)
+		var g := String(StringName(str(gid)))
+		p._gate_order.append(g)
+		var n := p.board.lattice_node(StringName(g))
 		if n != null and n.is_gate():
-			p.opened_gates[g] = true
+			p.opened_gates[StringName(g)] = true
+		elif not p.kept_gates.has(g):
+			push_warning(
+				"LatticeProgress: opened gate '%s' is not a gate on board '%s'; kept as saved" % [g, p.board.id]
+			)
+			p.kept_gates.append(g)
 	return p
 
 

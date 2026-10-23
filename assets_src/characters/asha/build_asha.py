@@ -35,6 +35,7 @@ import asha_costume  # noqa: E402
 import asha_hair  # noqa: E402
 import asha_eyes  # noqa: E402
 import asha_face_shapes  # noqa: E402
+import asha_glb  # noqa: E402
 import asha_mouth  # noqa: E402
 import asha_staff  # noqa: E402
 import bb_anatomy  # noqa: E402
@@ -215,6 +216,49 @@ def decimate_where(ob: bpy.types.Object, mask: np.ndarray, ratio: float, P0: np.
     me.normals_split_custom_set_from_vertices([tuple(map(float, n)) for n in auto])
 
 
+# M1-CHR-09: the deep eye-socket skin sits inside the opaque eyeball (bb_donor.seat_eyes tucks it to
+# 0.9 R), so no camera ever sees it. Its faces are deleted after the bake, which still ray-casts the
+# AO and thickness against the closed socket, so the textures don't change. The ring of socket
+# faces that reaches out to the lid margin is kept: it is the inner rim of the lid.
+HIDDEN_SOCKET_R = 0.95  # of the globe radius: a face with every vertex inside this is deleted
+
+
+def delete_hidden_socket(ob: bpy.types.Object, face) -> int:
+    """Delete the skin faces of `ob` whose vertices all lie inside an eyeball, at rest and under
+    every shape key. Returns the triangles removed."""
+    me = ob.data
+    nv = len(me.vertices)
+    P = np.zeros((nv, 3))
+    me.vertices.foreach_get("co", P.ravel())
+    keys = [kb for kb in me.shape_keys.key_blocks] if me.shape_keys else []
+    hidden = np.zeros(nv, bool)
+    for fr in face.eyes.values():
+        inside = np.linalg.norm(P - fr.E, axis=1) < HIDDEN_SOCKET_R * fr.R
+        for kb in keys:  # a vertex that any shape moves out of the globe stays
+            K = np.zeros((nv, 3))
+            kb.data.foreach_get("co", K.ravel())
+            inside &= np.linalg.norm(K - fr.E, axis=1) < HIDDEN_SOCKET_R * fr.R
+        hidden |= inside
+    skin = [i for i, m in enumerate(me.materials) if m.name == "skin_head"]
+    me.calc_loop_triangles()
+    before = len(me.loop_triangles)
+    for p in me.polygons:
+        p.select = p.material_index in skin and bool(hidden[list(p.vertices)].all())
+    bpy.ops.object.select_all(action="DESELECT")
+    bpy.context.view_layer.objects.active = ob
+    ob.select_set(True)
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_mode(type="FACE")
+    bpy.ops.object.mode_set(mode="OBJECT")
+    for p in me.polygons:
+        p.select = p.material_index in skin and bool(hidden[list(p.vertices)].all())
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.delete(type="FACE")
+    bpy.ops.object.mode_set(mode="OBJECT")
+    me.calc_loop_triangles()
+    return before - len(me.loop_triangles)
+
+
 def head_seams(F: np.ndarray, cat: np.ndarray, V: np.ndarray, lm) -> set:
     """Seam edges of the head: between face categories (face mask, rest of head, sockets, mouth
     cavity) and down the back midline of the rest of the head."""
@@ -264,6 +308,37 @@ def pack_faces(ob: bpy.types.Object, mats: set[str], margin: float = 0.003) -> N
     uv = margin + (uv - lo) * k
     for li, q in zip(loops, uv):
         uvl[li].uv = (float(q[0]), float(q[1]))
+
+
+def head_surface(V: np.ndarray, F: np.ndarray, N: np.ndarray, freg: np.ndarray, coarse=None) -> "asha_hair.MeshScalp":
+    """M1-CHR-04: the shipped head skin as the hair's scalp (asha_hair.MeshScalp): a BVH over its
+    triangles; the normal is the welded vertex normal interpolated at the closest point."""
+    from mathutils import Vector
+    from mathutils.bvhtree import BVHTree
+
+    T = bb_donor.tris_of(F[np.isin(freg, ["head", "scalp"])])
+    bvh = BVHTree.FromPolygons([tuple(map(float, v)) for v in V], [tuple(int(i) for i in t) for t in T])
+
+    def nearest(P: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        Q = np.zeros((len(P), 3))
+        Nq = np.zeros((len(P), 3))
+        for i, p in enumerate(P):
+            loc, _n, ti, _d = bvh.find_nearest(Vector(tuple(map(float, p))))
+            a, b, c = V[T[ti]]
+            q = np.array(loc[:])
+            # barycentric of q in (a, b, c)
+            v0, v1, v2 = b - a, c - a, q - a
+            d00, d01, d11 = v0 @ v0, v0 @ v1, v1 @ v1
+            d20, d21 = v2 @ v0, v2 @ v1
+            den = max(d00 * d11 - d01 * d01, 1e-18)
+            wb = (d11 * d20 - d01 * d21) / den
+            wc = (d00 * d21 - d01 * d20) / den
+            n = (1.0 - wb - wc) * N[T[ti][0]] + wb * N[T[ti][1]] + wc * N[T[ti][2]]
+            Q[i] = q
+            Nq[i] = n / max(np.linalg.norm(n), 1e-12)
+        return Q, Nq
+
+    return asha_hair.MeshScalp(nearest, coarse)
 
 
 def read_weights(ob: bpy.types.Object) -> tuple[np.ndarray, list[str]]:
@@ -427,7 +502,10 @@ def main() -> int:
                  shrink=(np.nonzero(cat != 1)[0], 0.45))
     pad = np.zeros(len(Vhead) - n_skin)
     masks = {"lower": np.concatenate([res["lower"][used_h], pad]), "lip": np.concatenate([res["lip_w"][used_h], pad])}
-    units = asha_face_shapes.donor_unit_shapes(res["unit_delta"], used_h, Vhead, np.array(head.T), masks["lower"])
+    lip_frame = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("contact", "lip_contact"), ("dz", "lip_dz"),
+                                                                        ("front", "lip_front"))}
+    units = asha_face_shapes.donor_unit_shapes(res["unit_delta"], used_h, Vhead, np.array(head.T), masks["lower"],
+                                               lip_frame, lm.h / 0.222)
     shapes = asha_face_shapes.build_shapes(face, lm, Vhead, np.array(head.T), masks, units)
     ob_head.shape_key_add(name="Basis", from_mix=False)
     flat = Vhead.astype(np.float64)
@@ -476,7 +554,7 @@ def main() -> int:
     hair_objs = []
     hair_tris = 0
     if not args.no_hair:
-        hair = asha_hair.build_hair(lm, body, extra["_hair"])
+        hair = asha_hair.build_hair(lm, body, extra["_hair"], head_surface(V, F, Nw, freg, asha_hair.Scalp(body)))
         G = asha_hair._gather(lm)
         rigid_parts = Part("HairHead")
         for key in ("HairScalp", "HairFront", "HairComb"):
@@ -498,7 +576,7 @@ def main() -> int:
         apply_weights(ob, Wf, wnames, skel)
         hair_objs.append(ob)
         hair_tris = rigid_parts.tris() + flowing.tris()
-        log(f"hair: {hair_tris} tris ({time.time() - t0:.1f}s)")
+        log(f"hair: {hair_tris} tris, scalp {hair['HairScalp'].tris()} ({time.time() - t0:.1f}s)")
 
     staff = asha_staff.staff(lm)
     ob_staff = part_object(staff)
@@ -543,8 +621,21 @@ def main() -> int:
     }
     report["triangles"]["total_lod0"] = sum(report["triangles"].values())
     if args.bake_dir:
+        # M1-CHR-04: the lip contact line and the commissures (bb_donor.lip_rest) for the lip bake
+        lip_terms = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("CONTACT", "lip_contact"),
+                                                                            ("CORNER", "lip_corner"),
+                                                                            ("LIPDZ", "lip_dz"), ("LIPU", "lip_u"),
+                                                                            ("LIPFRONT", "lip_front"))}
+        face_v = np.zeros(len(Vhead))  # the face-mask island's vertices (texel report)
+        face_v[np.unique(Fh[cat == 1][Fh[cat == 1] >= 0])] = 1.0
+        lip_terms["FACE"] = face_v
         dump_bake(Path(args.bake_dir), {"head": ob_head, "body": ob_body}, lm, {"head": np.array(head.T)},
-                  {"head": {"LIP": masks["lip"]}})
+                  {"head": {"LIP": masks["lip"], **lip_terms}})
+    removed = delete_hidden_socket(ob_head, face)  # after the bake: the AO still sees a closed socket
+    report["triangles"]["head"] -= removed
+    report["triangles"]["total_lod0"] -= removed
+    report["hidden_socket_tris_deleted"] = removed
+    log(f"hidden socket faces deleted: {removed} tris ({time.time() - t0:.1f}s)")
     if args.blend:
         bpy.ops.wm.save_as_mainfile(filepath=str(Path(args.blend).resolve()), compress=True)
     out = Path(args.out).resolve()
@@ -560,6 +651,14 @@ def main() -> int:
         export_def_bones=False, export_materials="EXPORT", export_vertex_color="ACTIVE",
         export_all_vertex_colors=False,
     )
+    # M1-CHR-07: morph-target normals for the expression shapes only (Blender writes all or none,
+    # and all 40 would not fit the 5 MB cap). Without them a cheek raise shades as at rest.
+    report["morph_normals"] = asha_glb.add_morph_normals(out, asha_face_shapes.MORPH_NORMAL_SHAPES)
+    # M1-CHR-10: the mouth primitive too (the inner lips and the corners; `mouth_smile` moves 88 of
+    # its vertices). With rest normals there, the key's shadow normal-bias pushed the lookup the
+    # wrong way on the deformed corner, which drew the diagonal striations in the smile.
+    report["morph_normals_mouth"] = asha_glb.add_morph_normals(out, asha_face_shapes.MORPH_NORMAL_SHAPES,
+                                                               material="mouth")
     report["glb_bytes"] = out.stat().st_size
     lod_objs, lod_tris = make_lod1([ob_head, ob_body, *garment_objs, *hair_objs, ob_staff], skel)
     eye_lod = [ob for ob in eye_objs if ob.name.startswith(("Eye", "Cornea")) and not ob.name.startswith("EyeOcc")]

@@ -6,11 +6,17 @@ extends RefCounted
 
 const DATA_DIR := "res://game/data/progression"
 const DEFAULT_BOARD := &"standard"
+## A board id as tools/lattice_editor writes it (M1-ARC-14, review-sweep-J nit): ids from a save are
+## checked against this before they become a res:// path.
+const ID_PATTERN := "^[a-z0-9_]+$"
 
 var id: StringName = &""
 var name_key: String = ""
 ## Node id -> LatticeNode, in file order.
 var nodes: Dictionary = {}
+## Why the board file could not be read ("" when it was): it is missing or failed to parse, and
+## the board is empty. See integrity_problem (M1-ARC-13).
+var load_error: String = ""
 ## Node id -> Array[StringName] of neighbours, in edge order (deterministic).
 var _adjacency: Dictionary = {}
 ## Character id -> start node id.
@@ -18,17 +24,48 @@ var _starts: Dictionary = {}
 var _edge_count := 0
 
 
-static func path_for(board_id: StringName) -> String:
-	return "%s/lattice_%s.json" % [DATA_DIR, board_id]
+## True when `board_id` is a well-formed board id (ID_PATTERN). It says nothing about whether the
+## board file exists.
+static func is_valid_id(board_id: String) -> bool:
+	var re := RegEx.create_from_string(ID_PATTERN)
+	return re.search(board_id) != null
+
+
+static func path_for(board_id: StringName, dir: String = DATA_DIR) -> String:
+	return "%s/lattice_%s.json" % [dir, board_id]
 
 
 static func load_board(board_id: StringName = DEFAULT_BOARD) -> LatticeBoard:
-	var path := path_for(board_id)
-	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return load_board_from(DATA_DIR, board_id)
+
+
+## Loads `lattice_<board_id>.json` from `dir`. A missing or unparseable file gives an empty board
+## that keeps `board_id` and says why in load_error (with a push_error). Tests point it at a
+## folder with a broken board.
+static func load_board_from(dir: String, board_id: StringName = DEFAULT_BOARD) -> LatticeBoard:
+	var path := path_for(board_id, dir)
+	var parsed: Variant = null
+	if FileAccess.file_exists(path):
+		parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
 	if typeof(parsed) != TYPE_DICTIONARY:
 		push_error("LatticeBoard: could not parse %s" % path)
-		return LatticeBoard.new()
+		var empty := LatticeBoard.new()
+		empty.id = board_id
+		empty.load_error = "%s is missing or could not be parsed" % path
+		return empty
 	return from_dict(parsed as Dictionary)
+
+
+## Why this board must not be used to judge saved Lattice progress ("" when it can be): the file
+## was missing or failed to parse, or it has no nodes or no start nodes. Every saved position and
+## activation would then read as unknown, so LatticeProgress keeps the save as it is, battle
+## rewards write nothing back and SaveSystem refuses to save (M1-ARC-13, review-sweep-I S1).
+func integrity_problem() -> String:
+	if load_error != "":
+		return load_error
+	if nodes.is_empty() or _starts.is_empty():
+		return "board '%s' has no nodes or no start nodes" % id
+	return ""
 
 
 ## Builds a board from {"board": {id, name_key}, "nodes": [...], "edges": [[a, b], ...]}.

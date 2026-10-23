@@ -209,7 +209,9 @@ static func lattice_target(source: Object, cfg: Dictionary) -> Dictionary:
 				"inventory": inv if inv != null else FacetInventory.new(Game.state.inventory),
 				"persist": false
 			}
-	var board := LatticeBoard.load_board(StringName(str(cfg.get("board", LatticeBoard.DEFAULT_BOARD))))
+	# M1-ARC-14: the board the save names, not the configured one.
+	var configured := StringName(str(cfg.get("board", LatticeBoard.DEFAULT_BOARD)))
+	var board := LatticeProgress.board_for(Game.state.lattice, configured)
 	var rules := LatticeRules.load_file()
 	var progress: LatticeProgress
 	if Game.state.lattice.is_empty():
@@ -271,7 +273,7 @@ static func apply_lattice_cheat(source: Object, cfg: Dictionary) -> Dictionary:
 		balances[cid] = grant_movement(progress, cid, int(cfg.get("movement_points", 0)))
 	var facets := grant_facets(progress, target["inventory"] as FacetInventory, int(cfg.get("facets_each", 0)))
 	if bool(target["persist"]):
-		Game.state.lattice = progress.to_dict()
+		progress.save_into(Game.state)
 	return {"characters": balances, "facets": facets}
 
 

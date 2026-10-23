@@ -1,0 +1,387 @@
+[gd_scene load_steps=31 format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch03/first_verse/first_verse_scene.gd" id="1_root"]
+[ext_resource type="Script" path="res://game/world/field_camera_director.gd" id="2_dir"]
+[ext_resource type="Script" path="res://game/cutscene/cutscene_stage.gd" id="3_stage"]
+[ext_resource type="Script" path="res://game/cutscene/cutscene_shot_node.gd" id="4_shotnode"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="5_shot"]
+[ext_resource type="PackedScene" path="res://assets/characters/asha/asha.glb" id="6_asha"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat"]
+sky_top_color = Color(0.168, 0.227, 0.42, 1)
+sky_horizon_color = Color(0.949, 0.651, 0.4, 1)
+sky_curve = 0.18
+ground_bottom_color = Color(0.055, 0.165, 0.22, 1)
+ground_horizon_color = Color(0.949, 0.651, 0.4, 1)
+sun_angle_max = 25.0
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_color = Color(0.36, 0.42, 0.6, 1)
+ambient_light_sky_contribution = 0.6
+tonemap_mode = 4
+glow_enabled = true
+glow_intensity = 0.5
+glow_bloom = 0.08
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.949, 0.651, 0.4, 1)
+fog_density = 0.2
+fog_depth_begin = 30.0
+fog_depth_end = 220.0
+
+[sub_resource type="StandardMaterial3D" id="Stone"]
+albedo_color = Color(0.91, 0.878, 0.816, 1)
+roughness = 0.95
+metallic = 0.0
+cull_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="Sand"]
+albedo_color = Color(0.937, 0.867, 0.706, 1)
+roughness = 1.0
+metallic = 0.0
+
+[sub_resource type="StandardMaterial3D" id="Sea"]
+albedo_color = Color(0.055, 0.29, 0.333, 1)
+roughness = 0.08
+metallic = 0.2
+
+[sub_resource type="StandardMaterial3D" id="Pool"]
+albedo_color = Color(0.31, 0.702, 0.69, 1)
+roughness = 0.05
+metallic = 0.0
+emission_enabled = true
+emission = Color(0.31, 0.702, 0.69, 1)
+emission_energy_multiplier = 0.6
+
+[sub_resource type="StandardMaterial3D" id="Bronze"]
+albedo_color = Color(0.29, 0.22, 0.157, 1)
+roughness = 0.5
+metallic = 0.6
+
+[sub_resource type="StandardMaterial3D" id="Rhen"]
+albedo_color = Color(0.369, 0.604, 0.588, 1)
+roughness = 0.85
+metallic = 0.0
+
+[sub_resource type="StandardMaterial3D" id="Toma"]
+albedo_color = Color(0.169, 0.227, 0.42, 1)
+roughness = 0.85
+metallic = 0.0
+
+[sub_resource type="StandardMaterial3D" id="Wood"]
+albedo_color = Color(0.45, 0.33, 0.22, 1)
+roughness = 0.9
+metallic = 0.0
+
+[sub_resource type="StandardMaterial3D" id="Lamp"]
+albedo_color = Color(1, 0.82, 0.5, 1)
+roughness = 0.4
+metallic = 0.0
+emission_enabled = true
+emission = Color(1, 0.75, 0.42, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="PlaneMesh" id="SeaMesh"]
+material = SubResource("Sea")
+size = Vector2(1200, 1200)
+
+[sub_resource type="CapsuleMesh" id="RhenMesh"]
+material = SubResource("Rhen")
+radius = 0.32
+height = 1.72
+
+[sub_resource type="CapsuleMesh" id="TomaMesh"]
+material = SubResource("Toma")
+radius = 0.42
+height = 1.9
+
+[sub_resource type="CylinderMesh" id="SpearMesh"]
+material = SubResource("Wood")
+top_radius = 0.025
+bottom_radius = 0.025
+height = 2.4
+
+[sub_resource type="SphereMesh" id="LampMesh"]
+material = SubResource("Lamp")
+radius = 0.09
+height = 0.18
+
+[sub_resource type="CylinderMesh" id="PoolMesh"]
+material = SubResource("Pool")
+top_radius = 1.4
+bottom_radius = 1.4
+height = 0.02
+
+[sub_resource type="Resource" id="ShotS07"]
+script = ExtResource("5_shot")
+id = &"S07"
+position = Vector3(-8.8, 1.5, 0.0)
+look_at = Vector3(-5.0, 1.8, 0.0)
+fov_deg = 46.4
+
+[sub_resource type="Resource" id="ShotS08"]
+script = ExtResource("5_shot")
+id = &"S08"
+position = Vector3(2.8, 2.5, -1.8)
+look_at = Vector3(-1.5, 2.9, 1.4)
+fov_deg = 67.4
+
+[sub_resource type="Resource" id="ShotS06"]
+script = ExtResource("5_shot")
+id = &"S06"
+position = Vector3(-12.5, 1.8, 5.5)
+look_at = Vector3(-7.2, 1.3, 0.0)
+fov_deg = 27.0
+
+[sub_resource type="Resource" id="ShotS09"]
+script = ExtResource("5_shot")
+id = &"S09"
+position = Vector3(-11.5, 1.8, 0.4)
+look_at = Vector3(-5.5, 2.35, 0.0)
+fov_deg = 16.1
+
+[sub_resource type="Resource" id="ShotS10"]
+script = ExtResource("5_shot")
+id = &"S10"
+position = Vector3(-4.2, 2.1, -3.9)
+look_at = Vector3(-7.2, 1.85, -1.1)
+fov_deg = 20.9
+
+[sub_resource type="Resource" id="ShotC08"]
+script = ExtResource("5_shot")
+id = &"C08"
+position = Vector3(-8.0, 8.2, -4.0)
+look_at = Vector3(-30.0, 0.0, -24.0)
+fov_deg = 67.4
+
+[node name="FirstVerse" type="Node3D"]
+script = ExtResource("1_root")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.120933, 0.109372, -0.986617, 0, 0.993912, 0.110181, 0.992661, 0.0133245, -0.120197, 0, 30, 0)
+light_color = Color(1, 0.72, 0.48, 1)
+light_energy = 1.6
+shadow_enabled = true
+directional_shadow_max_distance = 120.0
+
+[node name="Camera" type="Camera3D" parent="."]
+current = true
+near = 0.05
+far = 2000.0
+
+[node name="CameraDirector" type="Node3D" parent="."]
+script = ExtResource("2_dir")
+camera_path = NodePath("../Camera")
+rail_root_path = NodePath("..")
+initial_shot = SubResource("ShotS07")
+
+[node name="Sea" type="MeshInstance3D" parent="."]
+mesh = SubResource("SeaMesh")
+
+[node name="Island" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -0.1, 0)
+radius = 22.0
+height = 0.6
+sides = 32
+material = SubResource("Sand")
+
+[node name="Shrine" type="CSGCombiner3D" parent="."]
+
+[node name="Platform" type="CSGCylinder3D" parent="Shrine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.6, 0)
+radius = 6.0
+height = 0.8
+sides = 32
+material = SubResource("Stone")
+
+[node name="Dome" type="CSGSphere3D" parent="Shrine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 1, 0)
+radius = 5.0
+radial_segments = 32
+rings = 16
+material = SubResource("Stone")
+
+[node name="Hollow" type="CSGSphere3D" parent="Shrine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 1, 0)
+radius = 4.6
+radial_segments = 32
+rings = 16
+material = SubResource("Stone")
+operation = 2
+
+[node name="Floor" type="CSGCylinder3D" parent="Shrine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.8, 0)
+radius = 4.7
+height = 0.4
+sides = 32
+material = SubResource("Stone")
+
+[node name="Door" type="CSGBox3D" parent="Shrine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -4.8, 2.3, 0)
+size = Vector3(2.2, 2.6, 2.0)
+material = SubResource("Stone")
+operation = 2
+
+[node name="PoolCut" type="CSGCylinder3D" parent="Shrine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.6, 0.95, 0)
+radius = 1.4
+height = 0.3
+sides = 24
+material = SubResource("Stone")
+operation = 2
+
+[node name="Step1" type="CSGBox3D" parent="Shrine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -6.15, 0.465, 0)
+size = Vector3(1.3, 0.53, 4.0)
+material = SubResource("Stone")
+
+[node name="Step2" type="CSGBox3D" parent="Shrine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -7.2, 0.335, 0)
+size = Vector3(0.8, 0.27, 4.0)
+material = SubResource("Stone")
+
+[node name="PillarN" type="CSGCylinder3D" parent="Shrine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -5.95, 2.33, -1.35)
+radius = 0.25
+height = 3.2
+sides = 12
+material = SubResource("Stone")
+
+[node name="PillarS" type="CSGCylinder3D" parent="Shrine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -5.95, 2.33, 1.35)
+radius = 0.25
+height = 3.2
+sides = 12
+material = SubResource("Stone")
+
+[node name="Lintel" type="CSGBox3D" parent="Shrine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -5.95, 4.05, 0)
+size = Vector3(0.7, 0.4, 3.4)
+material = SubResource("Stone")
+
+[node name="PoolWater" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.6, 0.86, 0)
+mesh = SubResource("PoolMesh")
+
+[node name="Bell" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -30, -0.9, -24)
+radius = 2.6
+radial_segments = 24
+rings = 12
+material = SubResource("Bronze")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Start" type="Marker3D" parent="Spawns"]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -8, 0.2, 2.5)
+
+[node name="CutsceneStage" type="Node3D" parent="."]
+script = ExtResource("3_stage")
+director_path = NodePath("../CameraDirector")
+clip_marks = {
+"asha/emerge_doorway": "doorway",
+"asha/face_west": "threshold_west",
+"rhen/sit_steps": "steps_rhen",
+"toma/sit_steps": "steps_toma",
+"toma/turn_seaward": "toma_seaward"
+}
+
+[node name="Shots" type="Node" parent="CutsceneStage"]
+
+[node name="S07" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("4_shotnode")
+shot = SubResource("ShotS07")
+
+[node name="S08" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("4_shotnode")
+shot = SubResource("ShotS08")
+
+[node name="S06" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("4_shotnode")
+shot = SubResource("ShotS06")
+
+[node name="S09" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("4_shotnode")
+shot = SubResource("ShotS09")
+
+[node name="S10" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("4_shotnode")
+shot = SubResource("ShotS10")
+
+[node name="C08" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("4_shotnode")
+shot = SubResource("ShotC08")
+
+[node name="Marks" type="Node3D" parent="CutsceneStage"]
+
+[node name="steps_rhen" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -7.2, 0.47, -1.1)
+
+[node name="steps_toma" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -7.2, 0.47, 1.2)
+
+[node name="toma_seaward" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -7.2, 0.47, 1.2)
+
+[node name="asha_start" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -5.6, 1, 0)
+
+[node name="chamber_pool" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(6.12323e-17, 0, -1, 0, 1, 0, 1, 0, 6.12323e-17, -0.9, 1, 0.4)
+
+[node name="doorway" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -5.4, 1, 0)
+
+[node name="threshold_west" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -6.2, 0.73, 0)
+
+[node name="ilun_chamber" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.6, 2, 0)
+
+[node name="drownbell_arena" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -15, 0.2, -12)
+
+[node name="drownbell" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -30, 1.2, -24)
+
+[node name="causeway" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -20, 0.2, 10)
+
+[node name="Actors" type="Node3D" parent="CutsceneStage"]
+
+[node name="asha" type="Node3D" parent="CutsceneStage/Actors"]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -5.6, 1, 0)
+
+[node name="Model" parent="CutsceneStage/Actors/asha" instance=ExtResource("6_asha")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
+
+[node name="rhen" type="Node3D" parent="CutsceneStage/Actors"]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -7.2, 0.47, -1.1)
+
+[node name="Body" type="MeshInstance3D" parent="CutsceneStage/Actors/rhen"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.86, 0)
+mesh = SubResource("RhenMesh")
+
+[node name="Lantern" type="MeshInstance3D" parent="CutsceneStage/Actors/rhen"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.3, 0.9, -0.15)
+mesh = SubResource("LampMesh")
+
+[node name="toma" type="Node3D" parent="CutsceneStage/Actors"]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -7.2, 0.47, 1.2)
+
+[node name="Body" type="MeshInstance3D" parent="CutsceneStage/Actors/toma"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.95, 0)
+mesh = SubResource("TomaMesh")
+
+[node name="Spear" type="MeshInstance3D" parent="CutsceneStage/Actors/toma"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.5, 1.2, 0)
+mesh = SubResource("SpearMesh")

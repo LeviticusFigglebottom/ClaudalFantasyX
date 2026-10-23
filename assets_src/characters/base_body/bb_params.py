@@ -58,6 +58,10 @@ DEFAULTS: dict[str, float | str] = {
     "lip_fullness": 1.0,
     "mouth_corner_lift": 0.0,  # metres at the corner (Asha: a slight natural upturn)
     "brow_ridge": 1.0,
+    # M1-CHR-04 lip rest shape (bb_donor; the defaults leave the donor mouth as M1-CHR-03 built it)
+    "lip_close": 0.45,  # share of the donor's resting lip parting the face warp closes (bb_donor.LIP_CLOSE)
+    "lip_lower_fullness": 1.0,  # extra scale on the lower lip's forward roll (1.0 = as lip_fullness gives)
+    "lip_seal": 0.0,  # 0..0.98: share of the remaining contact slit closed on the final face (bb_donor.lip_rest)
     # M1-CHR-03 donor macro mix (bb_donor, ADR 0021): the MakeHuman ethnic blend, normalised
     "donor_mix_african": 1.0,
     "donor_mix_asian": 1.0,

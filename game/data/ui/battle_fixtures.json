@@ -440,6 +440,19 @@
      "mp_cost": 0,
      "magic": false,
      "swell": true
+    },
+    {
+     "id": "read",
+     "name_key": "SKILL_READ",
+     "kind": "support",
+     "power": 0,
+     "rank": 2,
+     "accuracy": 100,
+     "element": "none",
+     "target": "single_foe",
+     "mp_cost": 0,
+     "magic": false,
+     "read": true
     }
    ],
    "statuses": [
@@ -808,6 +821,85 @@
        }
       ],
       "provoked_by": "lantern_eel#2"
+     }
+    }
+   },
+   "read_panel": {
+    "active": [
+     "rhen",
+     "asha",
+     "ysolde"
+    ],
+    "reserve": [
+     "toma"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "overrides": {
+     "characters": {
+      "ysolde": {
+       "stats": {
+        "agility": 40
+       },
+       "skills": [
+        "attack",
+        "ember",
+        "frost",
+        "slow_hex",
+        "read"
+       ]
+      }
+     },
+     "enemies": {
+      "reef_crab": {
+       "lore_key": "LORE_REEF_CRAB"
+      },
+      "lantern_eel": {
+       "lore_key": "LORE_LANTERN_EEL"
+      },
+      "gull_harrier": {
+       "lore_key": "LORE_GULL_HARRIER"
+      }
+     }
+    },
+    "opening": {
+     "lantern_eel#2": {
+      "statuses": [
+       {
+        "id": "reflect",
+        "duration": 4
+       }
+      ]
+     }
+    }
+   },
+   "opening_banner": {
+    "active": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "battle_opening": "ambush"
+   },
+   "swell_modes": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "opening": {
+     "rhen": {
+      "swell": 40
      }
     }
    }

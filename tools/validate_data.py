@@ -1248,6 +1248,7 @@ def run(root: Path) -> Report:
     data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
     data_keys += check_locations(root, files, rep)
     data_keys += check_swell(files, rep)
+    check_read_openings(files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_undertow(root, files, rep)
@@ -1325,7 +1326,10 @@ def scene_has_player(text: str, scenes: dict[str, str] | None = None, scripts: d
         is_root = "parent" not in a
         if a.get("name") == "Player" and a.get("parent") == ".":
             return True
-        if is_root and scripts and PLACE_AT_RE.search(scripts.get(ext.get(a.get("script", ""), ""), "")):
+        # Godot writes a node's script as a property line under the header (`script = ExtResource(..)`),
+        # not in the header itself; both forms count (M2-FP-03).
+        script_id = a.get("script", "") or _node_script_id(text, m.end())
+        if is_root and scripts and PLACE_AT_RE.search(scripts.get(ext.get(script_id, ""), "")):
             return True
         sub = (scenes or {}).get(ext.get(a.get("instance", ""), ""))
         if sub is None:
@@ -1335,6 +1339,17 @@ def scene_has_player(text: str, scenes: dict[str, str] | None = None, scripts: d
         if not is_root and _scene_in_player_group(sub, scenes, _depth + 1):
             return True
     return False
+
+
+TSCN_SCRIPT_PROP_RE = re.compile(r'^script = ExtResource\("([^"]+)"\)', re.M)
+
+
+def _node_script_id(text: str, header_end: int) -> str:
+    """The ext_resource id of the `script = ExtResource("..")` property in the node block that starts
+    at `header_end` (up to the next `[` section), or ""."""
+    nxt = text.find("\n[", header_end)
+    m = TSCN_SCRIPT_PROP_RE.search(text[header_end: nxt if nxt >= 0 else len(text)])
+    return m.group(1) if m else ""
 
 
 def _scene_in_player_group(text: str, scenes: dict[str, str] | None, depth: int) -> bool:
@@ -1497,9 +1512,13 @@ UNDERTOW_TIERS = ("low", "medium", "high", "ultra")
 UNDERTOW_BODIES = ("shells", "raymarch")
 # = UndertowState.MAX_CURL_REUSE and the shader's hint_range(1, 8).
 UNDERTOW_MAX_CURL_REUSE = 8
-# undertow_body.gdshaderinc's default when a variant does not define UNDERTOW_MAX_STEPS.
-UNDERTOW_DEFAULT_STEP_CAP = 48
+# The body include: its `#ifndef UNDERTOW_MAX_STEPS` default (a variant that defines none compiles
+# that cap) and the march_steps uniform's hint_range floor are parsed from it, never copied
+# (M1-RND-15, review-sweep-I on RND-11).
+UNDERTOW_BODY_INC = "game/shaders/undertow/undertow_body.gdshaderinc"
 UNDERTOW_STEP_CAP_RE = re.compile(r"#define UNDERTOW_MAX_STEPS (\d+)")
+UNDERTOW_DEFAULT_CAP_RE = re.compile(r"#ifndef UNDERTOW_MAX_STEPS\s*\n\s*#define UNDERTOW_MAX_STEPS (\d+)")
+UNDERTOW_STEPS_HINT_RE = re.compile(r"uniform int march_steps : hint_range\((\d+),\s*(\d+)\)")
 IMPORT_SLICES_RE = re.compile(r"^slices/(horizontal|vertical)=(\d+)", re.M)
 
 
@@ -1507,17 +1526,40 @@ def _res_path(root: Path, res: str) -> Path:
     return root / res.removeprefix("res://")
 
 
+def undertow_step_limits(root: Path) -> tuple[int, int] | None:
+    """(march_steps floor from the uniform's hint_range, default UNDERTOW_MAX_STEPS) from the body
+    include, or None when either cannot be parsed."""
+    path = root / UNDERTOW_BODY_INC
+    if not path.is_file():
+        return None
+    text = path.read_text(encoding="utf-8")
+    cap = UNDERTOW_DEFAULT_CAP_RE.search(text)
+    hint = UNDERTOW_STEPS_HINT_RE.search(text)
+    if cap is None or hint is None:
+        return None
+    return int(hint.group(1)), int(cap.group(1))
+
+
 def undertow_quality_errors(root: Path, doc: object, where: str = UNDERTOW_FILE) -> list[str]:
     """Tier params the storm reads at runtime: types, ranges, the compiled step cap, the noise."""
     if not isinstance(doc, dict):
         return [f"{where}: not an object"]
     errs: list[str] = []
+    limits = undertow_step_limits(root)
+    if limits is None:
+        errs.append(f"{UNDERTOW_BODY_INC}: cannot parse the march_steps hint_range or the UNDERTOW_MAX_STEPS default")
+    step_floor, default_cap = limits if limits is not None else (1, 0)
     quality = doc.get("quality", {})
     shaders = doc.get("shaders", {})
+    if not isinstance(quality, dict) or not isinstance(shaders, dict):
+        return errs + [f"{where}: quality and shaders must be objects"]
     if sorted(quality) != sorted(UNDERTOW_TIERS):
         errs.append(f"{where}: quality tiers must be exactly {', '.join(UNDERTOW_TIERS)}")
     for tier, t in quality.items():
         w = f"{where}: quality.{tier}"
+        if not isinstance(t, dict):
+            errs.append(f"{w} must be an object")
+            continue
         body = t.get("body")
         if body not in UNDERTOW_BODIES:
             errs.append(f"{w}.body must be one of {UNDERTOW_BODIES}")
@@ -1534,9 +1576,12 @@ def undertow_quality_errors(root: Path, doc: object, where: str = UNDERTOW_FILE)
                 errs.append(f"{w}: shaders.body_{tier} missing ({shader!r})")
             else:
                 m = UNDERTOW_STEP_CAP_RE.search(path.read_text(encoding="utf-8"))
-                cap = int(m.group(1)) if m else UNDERTOW_DEFAULT_STEP_CAP
-                if not 1 <= steps <= cap:
-                    errs.append(f"{w}.march_steps {steps} outside 1..{cap} (the variant's UNDERTOW_MAX_STEPS)")
+                cap = int(m.group(1)) if m else default_cap
+                if not step_floor <= steps <= cap:
+                    errs.append(
+                        f"{w}.march_steps {steps} outside {step_floor}..{cap}"
+                        " (the uniform's hint_range floor, the variant's UNDERTOW_MAX_STEPS)"
+                    )
         if "curl_reuse" in t:
             r = t["curl_reuse"]
             if not _is_int(r) or not 1 <= r <= UNDERTOW_MAX_CURL_REUSE:
@@ -1544,7 +1589,9 @@ def undertow_quality_errors(root: Path, doc: object, where: str = UNDERTOW_FILE)
         if "temporal_jitter" in t and not isinstance(t["temporal_jitter"], bool):
             errs.append(f"{w}.temporal_jitter must be a bool")
     noise = doc.get("noise")
-    if noise is not None:
+    if noise is not None and not isinstance(noise, dict):
+        errs.append(f"{where}: noise must be an object")
+    elif noise is not None:
         tex = str(noise.get("texture", ""))
         texels = noise.get("texels")
         if not tex or not _res_path(root, tex).is_file():
@@ -1560,18 +1607,25 @@ def undertow_quality_errors(root: Path, doc: object, where: str = UNDERTOW_FILE)
 
 
 def check_undertow(root: Path, files: dict[str, object], rep: Report) -> None:
-    if UNDERTOW_FILE in files:
-        for e in undertow_quality_errors(root, files[UNDERTOW_FILE]):
-            rep.err(e)
+    if UNDERTOW_FILE not in files:
+        # Invalid JSON is already reported by load_json_files; a missing file is an error too
+        # (the storm cannot pick a tier without it).
+        if not (root / UNDERTOW_FILE).is_file():
+            rep.err(f"{UNDERTOW_FILE}: missing (the Undertow quality tiers)")
+        return
+    for e in undertow_quality_errors(root, files[UNDERTOW_FILE]):
+        rep.err(e)
 
 
 # --- M1-CMB-04: Swell gauges (game/data/battle/swell.json, formulas.md § Swell) ------------------
 
 SWELL_FILE = "game/data/battle/swell.json"
 SWELL_TRIGGERS = {"damage_taken", "damage_dealt", "ally_hurt", "heal_item"}
-SWELL_INPUT_KINDS = {"timing_ring"}
+SWELL_INPUT_KINDS = {"timing_ring", "chant", "brace", "glyph"}  # M2-CMB-01 added chant, brace, glyph
 SWELL_MIN_MODES = 3  # SPEC §6.2 / M1-CMB-04: at least three fill modes
 RING_SEC_FIELDS = ("lead_in_sec", "beat_sec", "perfect_sec", "good_sec")
+# M1-UI-05: SPEC §6.2 asks for a short input. The longest the ring may run if every beat runs out.
+RING_MAX_DURATION_SEC = 5.0
 
 
 def _num(v: object) -> bool:
@@ -1595,9 +1649,34 @@ def _swell_mode_errors(m: dict, w: str) -> list[str]:
     return errs
 
 
+def _ring_timing_errors(i: dict, w: str) -> list[str]:
+    """M1-UI-05: the grading window must sit inside its beat, or SwellTimingRing grades a miss before
+    a late press and that press lands on the next beat (and an early one is ignored before the beat
+    opens). The input stays short, and one frame's step never exceeds the perfect window."""
+    if not all(_num(i.get(k)) for k in (*RING_SEC_FIELDS, "peak_at")) or not _pos_int(i.get("beats")):
+        return []  # the field checks above already report it
+    errs: list[str] = []
+    peak = i["peak_at"] * i["beat_sec"]
+    if peak + i["good_sec"] > i["beat_sec"]:
+        errs.append(f"{w}: the good window ends after its beat (peak_at x beat_sec + good_sec = "
+                    f"{peak + i['good_sec']:.3g} > beat_sec {i['beat_sec']:g})")
+    if peak - i["good_sec"] < 0:
+        errs.append(f"{w}: the good window starts before its beat opens (peak_at x beat_sec - good_sec = "
+                    f"{peak - i['good_sec']:.3g} < 0)")
+    total = i["lead_in_sec"] + i["beats"] * i["beat_sec"]
+    if total > RING_MAX_DURATION_SEC:
+        errs.append(f"{w}: lasts {total:g} s (lead_in_sec + beats x beat_sec); keep it at most {RING_MAX_DURATION_SEC:g} s")
+    step = i.get("max_step_sec")
+    if not _num(step) or not 0 < step <= i["perfect_sec"]:
+        errs.append(f"{w}: max_step_sec must be a number in (0, perfect_sec]")
+    return errs
+
+
 def _swell_input_errors(i: dict, w: str) -> list[str]:
     if i.get("kind") not in SWELL_INPUT_KINDS:
         return [f"{w}: kind must be one of {sorted(SWELL_INPUT_KINDS)}"]
+    if i["kind"] != "timing_ring":
+        return _swell_sequence_input_errors(i, w)
     errs: list[str] = []
     if not _pos_int(i.get("beats")):
         errs.append(f"{w}: beats must be a positive int")
@@ -1608,6 +1687,7 @@ def _swell_input_errors(i: dict, w: str) -> list[str]:
         errs.append(f"{w}: peak_at must be a fraction in (0, 1)")
     if _num(i.get("perfect_sec")) and _num(i.get("good_sec")) and i["perfect_sec"] > i["good_sec"]:
         errs.append(f"{w}: perfect_sec must not exceed good_sec")
+    errs += _ring_timing_errors(i, w)
     grades = i.get("grades")
     if not isinstance(grades, dict) or set(grades) != {"perfect", "good", "miss"}:
         errs.append(f"{w}: grades must give perfect, good and miss")
@@ -1660,6 +1740,7 @@ def swell_errors(doc: object, skills: dict[str, dict], char_ids: set[str]) -> li
         errs.append(f"{w0}: default_mode '{default}' must start unlocked")
     for i in inputs:
         errs += _swell_input_errors(i, f"{w0}: inputs.{i['id']}")
+    errs += swell_unlock_errors(root, {m["id"] for m in modes}, {m["id"] for m in modes} - unlocked)
     used: dict[str, str] = {}
     refs = {"characters": char_ids, "inputs": {i["id"] for i in inputs}}
     for h in heroes:
@@ -1667,6 +1748,128 @@ def swell_errors(doc: object, skills: dict[str, dict], char_ids: set[str]) -> li
     for sid, row in skills.items():
         if row.get("swell") is True and sid not in used:
             errs.append(f"skills.{sid}: a Swell row that no hero in {w0} lists")
+    return errs
+
+
+# --- M2-CMB-01: the other heroes' inputs (SwellChant, SwellBrace, SwellGlyph) and unlock rules -----
+
+SWELL_DIRECTIONS = {"up", "down", "left", "right"}
+# Each kind's grade names (the keys its "grades" table must give).
+SWELL_KIND_GRADES = {
+    "chant": {"perfect", "good", "miss"},
+    "brace": {"braced", "perfect", "good", "miss"},
+    "glyph": {"traced", "swift", "miss"},
+}
+# The most one rendered frame may move a glyph trace, which has no grading window of its own.
+GLYPH_MAX_STEP_SEC = 0.1
+
+
+def _seq_nums(i: dict, keys: tuple[str, ...], w: str, errs: list[str]) -> bool:
+    ok = True
+    for k in keys:
+        if not _num(i.get(k)) or i[k] < 0:
+            errs.append(f"{w}: '{k}' must be a number >= 0")
+            ok = False
+    return ok
+
+
+def _chant_errors(i: dict, w: str, errs: list[str]) -> tuple[float, float] | None:
+    """Notes are {button: a direction, at: seconds}, ascending, with windows that never overlap."""
+    if not _seq_nums(i, ("perfect_sec", "good_sec"), w, errs):
+        return None
+    notes = i.get("notes")
+    if not isinstance(notes, list) or not notes:
+        errs.append(f"{w}: notes must be a non-empty list")
+        return None
+    prev = None
+    for n, note in enumerate(notes):
+        if not isinstance(note, dict) or note.get("button") not in SWELL_DIRECTIONS or not _num(note.get("at")):
+            errs.append(f"{w}: notes[{n}] needs a button in {sorted(SWELL_DIRECTIONS)} and a number 'at'")
+            return None
+        if prev is not None and note["at"] - prev < 2 * i["good_sec"]:
+            errs.append(f"{w}: notes[{n}] is within 2 x good_sec of the note before it (the windows overlap)")
+        prev = note["at"]
+    if i["perfect_sec"] > i["good_sec"]:
+        errs.append(f"{w}: perfect_sec must not exceed good_sec")
+    return notes[-1]["at"] + i["good_sec"], i["perfect_sec"]
+
+
+def _brace_errors(i: dict, w: str, errs: list[str]) -> tuple[float, float] | None:
+    """Blows land in order; the counter's whole window opens after the last blow."""
+    if not _seq_nums(i, ("perfect_sec", "good_sec", "counter_at"), w, errs):
+        return None
+    hits = i.get("impacts")
+    if not isinstance(hits, list) or not hits or not all(_num(t) and t >= 0 for t in hits):
+        errs.append(f"{w}: impacts must be a non-empty list of numbers >= 0")
+        return None
+    if any(b <= a for a, b in zip(hits, hits[1:])):
+        errs.append(f"{w}: impacts must be in ascending order")
+    if i["counter_at"] - i["good_sec"] <= max(hits):
+        errs.append(f"{w}: the counter's good window must open after the last impact")
+    if i["perfect_sec"] > i["good_sec"]:
+        errs.append(f"{w}: perfect_sec must not exceed good_sec")
+    return i["counter_at"] + i["good_sec"], i["perfect_sec"]
+
+
+def _glyph_errors(i: dict, w: str, errs: list[str]) -> tuple[float, float] | None:
+    """Strokes are directions; swift_sec fits inside window_sec."""
+    if not _seq_nums(i, ("window_sec", "swift_sec"), w, errs):
+        return None
+    strokes = i.get("strokes")
+    if not isinstance(strokes, list) or not strokes or any(d not in SWELL_DIRECTIONS for d in strokes):
+        errs.append(f"{w}: strokes must be a non-empty list of {sorted(SWELL_DIRECTIONS)}")
+    if not 0 < i["swift_sec"] <= i["window_sec"]:
+        errs.append(f"{w}: swift_sec must be in (0, window_sec]")
+    return i["window_sec"], GLYPH_MAX_STEP_SEC
+
+
+def _swell_sequence_input_errors(i: dict, w: str) -> list[str]:
+    """chant, brace and glyph rows: their own fields, the kind's grade names, a short input
+    (RING_MAX_DURATION_SEC, like the ring) and a frame step no larger than the tightest window."""
+    errs: list[str] = []
+    kind = i["kind"]
+    if not _num(i.get("lead_in_sec")) or i["lead_in_sec"] < 0:
+        errs.append(f"{w}: 'lead_in_sec' must be a number >= 0")
+        return errs
+    got = {"chant": _chant_errors, "brace": _brace_errors, "glyph": _glyph_errors}[kind](i, w, errs)
+    if got is not None:
+        length, tightest = got
+        if i["lead_in_sec"] + length > RING_MAX_DURATION_SEC:
+            errs.append(f"{w}: lasts {i['lead_in_sec'] + length:g} s; keep it at most {RING_MAX_DURATION_SEC:g} s")
+        step = i.get("max_step_sec")
+        if not _num(step) or not 0 < step <= tightest:
+            errs.append(f"{w}: max_step_sec must be a number in (0, {tightest:g}]")
+    grades = i.get("grades")
+    want = SWELL_KIND_GRADES[kind]
+    if not isinstance(grades, dict) or set(grades) != want:
+        errs.append(f"{w}: grades must give exactly {sorted(want)}")
+    elif any(not isinstance(v, int) or isinstance(v, bool) or v < 0 for v in grades.values()):
+        errs.append(f"{w}: grade bonuses must be ints >= 0")
+    return errs
+
+
+def swell_unlock_errors(root: dict, mode_ids: set[str], locked: set[str]) -> list[str]:
+    """swell.json "unlocks" (M2-CMB-01): each rule unlocks a mode that starts locked, counts a mode
+    trigger (optionally only while_mode), and needs a positive count. Every locked mode has a rule,
+    so players unlock new modes through play (SPEC §6.2)."""
+    w0 = SWELL_FILE
+    errs: list[str] = []
+    rules = _rows(root, "unlocks", w0, errs) if "unlocks" in root else []
+    covered: set[str] = set()
+    for r in rules:
+        w = f"{w0}: unlocks.{r['id']}"
+        if r.get("mode") not in locked:
+            errs.append(f"{w}: mode must be a mode that starts locked")
+        else:
+            covered.add(r["mode"])
+        if r.get("event") not in SWELL_TRIGGERS:
+            errs.append(f"{w}: event must be one of {sorted(SWELL_TRIGGERS)}")
+        if "while_mode" in r and r["while_mode"] not in mode_ids:
+            errs.append(f"{w}: while_mode '{r['while_mode']}' is not a mode")
+        if not _pos_int(r.get("count")):
+            errs.append(f"{w}: count must be a positive int")
+    for m in sorted(locked - covered):
+        errs.append(f"{w0}: mode '{m}' starts locked but no unlocks rule unlocks it")
     return errs
 
 
@@ -1696,6 +1899,50 @@ def check_swell(files: dict[str, object], rep: Report) -> list[str]:
         if skills.get(sid, {}).get("swell") is True:
             rep.err(f"skills.{sid}: a Swell technique is never learned (a character or enemy lists it)")
     return collect_keys(doc)
+
+
+# --- Read and openings (M1-CMB-03, formulas.md § Openings, battle_ctb.md § Read) -----------------
+
+OPENINGS = {"roll", "normal", "preemptive", "ambush"}
+
+
+def read_openings_errors(skills: list, enemies: list, encounters: list) -> list[str]:
+    """Read skills are support rows aimed at one foe; every enemy has the lore and name keys a Read
+    reveals; an encounter's optional "opening" is roll, normal, preemptive or ambush."""
+    errs: list[str] = []
+    reads = []
+    for s in skills:
+        if not isinstance(s, dict) or "read" not in s:
+            continue
+        w = f"skills.{s.get('id')}"
+        if not isinstance(s["read"], bool):
+            errs.append(f"{w}: 'read' must be true or false")
+            continue
+        if s["read"]:
+            reads.append(s.get("id"))
+            if s.get("kind") != "support" or s.get("target") != "single_foe":
+                errs.append(f"{w}: a Read skill must be kind 'support' with target 'single_foe'")
+    if reads:
+        for e in enemies:
+            if not isinstance(e, dict):
+                continue
+            for key in ("lore_key", "name_key"):
+                if not isinstance(e.get(key), str) or not e[key]:
+                    errs.append(f"enemies.{e.get('id')}: needs a {key} (Read reveals it)")
+    for enc in encounters:
+        if isinstance(enc, dict) and "opening" in enc and enc["opening"] not in OPENINGS:
+            errs.append(f"encounters.{enc.get('id')}: opening must be one of {sorted(OPENINGS)}")
+    return errs
+
+
+def check_read_openings(files: dict[str, object], rep: Report) -> None:
+    def rows(name: str) -> list:
+        doc = files.get(f"game/data/battle/{name}.json")
+        got = doc.get(name, []) if isinstance(doc, dict) else []
+        return got if isinstance(got, list) else []
+
+    for e in read_openings_errors(rows("skills"), rows("enemies"), rows("encounters")):
+        rep.err(e)
 
 
 if __name__ == "__main__":

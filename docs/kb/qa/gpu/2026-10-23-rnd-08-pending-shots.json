@@ -1,5 +1,5 @@
 {
-  "_note": "M1-RND-08: shots awaiting a lavapipe baseline. Lead: move each entry into tests/screenshots/shots.json (after glimmer_release) when approving its baseline. GPU: capture.tscn -- --manifest=res://docs/kb/qa/gpu/2026-10-23-rnd-08-pending-shots.json",
+  "_note": "M1-RND-08: emptied by M1-RND-15 (2026-10-23): glimmer_bound moved into tests/screenshots/shots.json after glimmer_release with its lavapipe baseline. Kept so the report's link resolves; add new pending shots here.",
   "defaults": {
     "camera": "default",
     "resolution": [
@@ -10,16 +10,5 @@
     "seed": 1,
     "threshold_rmse": 0.008
   },
-  "shots": [
-    {
-      "id": "glimmer_bound",
-      "scene": "res://game/levels/_tests/glimmer/glimmer_bound.tscn",
-      "camera": "ShotCamera",
-      "settle_frames": 30,
-      "resolution": [
-        960,
-        540
-      ]
-    }
-  ]
+  "shots": []
 }

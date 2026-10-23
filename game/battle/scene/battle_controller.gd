@@ -65,6 +65,8 @@ var items: BattleItemSource
 var frame_wait := Callable()
 ## Damage numbers and float words for resolved actions (BattleFloats).
 var floats := BattleFloats.new(self)
+## Read, the bestiary log and the opening (M1-CMB-03; BattleBestiary).
+var bestiary := BattleBestiary.new(self)
 ## Swell gauges and techniques for the current battle (M1-CMB-04).
 var swell: BattleSwell
 ## False freezes an open Swell input where it stands (capture scripts); tick() advances it.
@@ -86,7 +88,8 @@ var _candidates: Array[StringName] = []
 var _target_index := 0
 var _swap_in_id: StringName = &""
 var _last_foe: StringName = &""
-var _ring: SwellTimingRing
+var _ring: SwellInput
+var _ring_clock: SwellRingClock
 
 @onready var stage: BattleStage = %Stage
 @onready var hud: BattleHud = %BattleHud
@@ -116,7 +119,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	tick(delta)
+	tick(delta, true)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -219,7 +222,8 @@ func _build_engine(
 	if fixture != null:
 		fixture.prepare(engine)
 	swell = BattleSwell.new(BattleSwell.load_config())
-	swell.attach(engine)
+	BattleSwellCarry.attach(swell, engine, persist_progress and fixture == null)  # M2-ARC-01
+	bestiary.attach(engine, persist_progress and fixture == null)
 	engine.action_resolved.connect(floats.on_action_resolved)
 	stage.spawn(engine)
 	stage.refresh_ko(engine)
@@ -247,12 +251,13 @@ func _wait_frame() -> void:
 		await get_tree().process_frame
 
 
-## Advances paced waits by `delta` seconds (called from _process; tests call it directly).
-func tick(delta: float) -> void:
+## Advances paced waits by `delta` seconds (called from _process; tests call it directly). A
+## rendered `frame` moves an open Swell input by at most its max_step_sec (SwellRingClock).
+func tick(delta: float, frame: bool = false) -> void:
 	if state == STATE_SWELL_INPUT and swell_input_live:
-		_ring.advance(delta)  # input timing is real time: never scaled by pacing
+		_ring_clock.step(delta, frame)  # input timing is real time: never scaled by pacing
 		_after_ring()
-	if not _after_wait.is_valid():
+	if not _after_wait.is_valid() or hud.holds_battle():  # the open Read panel holds every wait (M2-UI-02)
 		return
 	_wait_left -= delta
 	if _wait_left <= 0.0:
@@ -413,7 +418,7 @@ func is_waiting() -> bool:
 
 
 ## The open Swell input (null when none is open).
-func swell_input() -> SwellTimingRing:
+func swell_input() -> SwellInput:
 	return _ring if state == STATE_SWELL_INPUT else null
 
 
@@ -494,7 +499,7 @@ func _show_result() -> void:
 	hud.set_combat_ui_visible(false)
 	stage.clear_rings()
 	if persist_progress and fixture == null:
-		BattleVitals.send_back(engine)
+		BattleVitals.send_back(engine, swell)
 	var rows: Array[Dictionary] = []
 	var title_key := "HUD_VICTORY"
 	var sub_key := "HUD_VICTORY_SUB"
@@ -517,7 +522,7 @@ func _show_result() -> void:
 
 
 func _on_menu_highlighted(_page: StringName, row: Dictionary) -> void:
-	if engine == null or not engine.is_party_turn():
+	if engine == null or not engine.is_party_turn() or SwellModeRows.highlight(self, row):  # M2-UI-01
 		return
 	var rid := StringName(str(row.get("id", "")))
 	match state:
@@ -551,7 +556,7 @@ func _highlight_root(rid: StringName) -> void:
 			hud.set_help(tr("HUD_HELP_ITEMS"))
 		BattleMenus.ROW_SWELL:
 			_show_timeline(TurnTimeline.MODE_PREVIEW)
-			hud.set_help(tr("HUD_HELP_SWELL_FMT").format({"name": menus.display_name(engine.current)}))
+			hud.set_help(menus.swell_root_help(engine, swell))  # gauge and mode until full (M2-UI-01)
 		_:
 			_show_timeline(TurnTimeline.MODE_PREVIEW)
 			hud.set_help(tr("HUD_HELP_SKILLS"))
@@ -578,8 +583,8 @@ func _on_menu_chosen(_page: StringName, row: Dictionary) -> void:
 				BattleMenus.ROW_SWAP:
 					_set_state(STATE_SWAP_IN)
 					hud.commands.push(BattleMenus.PAGE_SWAP, tr("HUD_PAGE_RESERVE"), menus.reserve_rows(engine))
-		STATE_SKILLS, STATE_SWELL:
-			_begin_target(StringName(str(row.get("skill", rid))))
+		STATE_SKILLS, STATE_SWELL:  # a Swell fill-mode row sets the mode instead (M2-UI-01)
+			SwellModeRows.pick(self, row, _begin_target.bind(StringName(str(row.get("skill", rid)))))
 		STATE_ITEMS:
 			_begin_item_target(StringName(str(row.get("item", rid))))
 		STATE_SWAP_IN:
@@ -691,20 +696,18 @@ func _commit_skill(skill_id: StringName, target_ids: Array[StringName]) -> void:
 		act(skill_id, target_ids)
 		return
 	_pending_skill = skill_id
-	_ring = SwellTimingRing.new(swell.input_for(engine.current))
+	_ring = SwellInput.create(hud.settings.timing_input(swell.input_for(engine.current)))  # timing assist
+	_ring_clock = SwellRingClock.new(_ring)
 	_set_state(STATE_SWELL_INPUT)
 	hud.commands.visible = false
 	hud.swell_ring.open(_ring, menus.skill_name(engine, skill_id), tr("HUD_SWELL_RING_HINT"))
 	hud.set_help(menus.swell_help(engine, swell, skill_id, -1))
 
 
-## The open input takes ui_accept (press) and ui_cancel (back out, only before the first grade).
+## The open input takes ui_accept and the directions (SwellInputKeys) and ui_cancel (back out,
+## only before the first grade).
 func _handle_ring_input(event: InputEvent) -> bool:
-	if event.is_action_pressed(&"ui_accept"):
-		_ring.press()
-	elif event.is_action_pressed(&"ui_cancel"):
-		_ring.cancel()
-	else:
+	if not SwellInputKeys.feed(event, _ring_clock, swell_input_live):
 		return false
 	_after_ring()
 	return true

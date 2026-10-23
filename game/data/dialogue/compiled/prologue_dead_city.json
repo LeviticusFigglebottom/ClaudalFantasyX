@@ -1,0 +1,21 @@
+{
+ "format": 1,
+ "scene": "prologue_dead_city",
+ "source": "game/data/dialogue/prologue/prologue_dead_city.dlg",
+ "start": "prologue_dead_city",
+ "nodes": {
+  "prologue_dead_city": {
+   "headers": {"location": "prologue"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "camera", "args": ["P01"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "fade", "args": ["in", 3.0], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 13},
+    {"op": "line", "id": "prologue_dead_city_001", "key": "DLG_PROLOGUE_DEAD_CITY_001", "speaker": "", "emotion": "tender", "voice": "", "src": 14, "narrator": "rhen", "tags": ["vo"]},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "fade", "args": ["out", 2.5], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 17}
+   ]
+  }
+ }
+}

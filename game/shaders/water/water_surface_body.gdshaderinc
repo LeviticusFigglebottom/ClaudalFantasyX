@@ -253,9 +253,9 @@ uniform float sss_crest_lo : hint_range(-1.0, 1.0) = 0.0;
 uniform float sss_crest_hi : hint_range(-1.0, 1.0) = 0.35;
 
 group_uniforms sea_glow;
-// Color script rule 3: the zone's sea-glow energy (0.04-0.15 at night). Colour, noise and the
-// column build-up come from glimmer.gdshaderinc; the glow is ON only while hymn_glimmer.a > 0
-// (ending_dock sets it to 0). Never cut by a tier.
+// Color script rule 3: this surface's own sea-glow energy (0.04-0.15 at night; 0 = use the zone's
+// hymn_zone_sea_glow). Colour, noise and the column build-up come from glimmer.gdshaderinc. Not gated
+// by hymn_glimmer.a; a zone hard off (ending_dock) wins over this value. Never cut by a tier.
 uniform float sea_glow_energy : hint_range(0.0, 0.15) = 0.0;
 // How strongly the water brightens under hymn_glimmer_focus (motes gathering).
 uniform float glimmer_response : hint_range(0.0, 4.0) = 0.6;
@@ -565,8 +565,9 @@ void fragment() {
 #endif
 
 	// --- Night sea-glow and glimmer response (every tier) --------------------------------------
-	// Shared glimmer-stream term (glimmer.gdshaderinc): gated by hymn_glimmer.a, clamped to the
-	// rule-3 band, column = the underwater view path. Seen through the surface: x (1 - Fresnel).
+	// Shared glimmer-stream term (glimmer.gdshaderinc): the zone or material energy (hymn_sea_glow_zone,
+	// a zone hard off wins), clamped to the rule-3 band, column = the underwater view path. Seen
+	// through the surface: x (1 - Fresnel).
 	float glow_energy = hymn_sea_glow_energy(hymn_sea_glow_zone(sea_glow_energy));
 	vec3 glow = hymn_sea_glow(world, t, glow_energy, path) * (1.0 - fresnel);
 	if (hymn_glimmer_focus.w > 0.0) {

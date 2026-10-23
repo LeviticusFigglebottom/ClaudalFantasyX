@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch02_bark_market",
+ "source": "game/data/dialogue/ch02/ch02_bark_market.dlg",
+ "start": "ch02_bark_market",
+ "nodes": {
+  "ch02_bark_market": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "line", "id": "ch02_bark_market_001", "key": "DLG_CH02_BARK_MARKET_001", "speaker": "vendor", "emotion": "soft_smile", "voice": "", "src": 7},
+    {"op": "line", "id": "ch02_bark_market_002", "key": "DLG_CH02_BARK_MARKET_002", "speaker": "vendor", "emotion": "sad", "voice": "", "src": 8},
+    {"op": "line", "id": "ch02_bark_market_003", "key": "DLG_CH02_BARK_MARKET_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "line", "id": "ch02_bark_market_004", "key": "DLG_CH02_BARK_MARKET_004", "speaker": "vendor", "emotion": "neutral", "voice": "", "src": 10}
+   ]
+  }
+ }
+}

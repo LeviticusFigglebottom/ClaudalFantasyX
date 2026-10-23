@@ -20,16 +20,40 @@ const REASON_NOT_PLAYABLE := &"not_playable"
 var default_location: StringName = &""
 var new_game_location: StringName = &""
 var new_game_spawn: StringName = &""
+## Why the file could not be read ("" when it was); the registry is then empty (M1-ARC-13).
+var load_error: String = ""
 var _locations: Dictionary = {}
 var _shrines: Dictionary = {}
 
 
 static func load_default() -> LocationRegistry:
-	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+	return load_path(DATA_PATH)
+
+
+## Reads a locations file. A missing or unparseable one gives an empty registry that says why in
+## load_error, with a push_error. Tests point it at a broken file.
+static func load_path(path: String) -> LocationRegistry:
+	var parsed: Variant = null
+	if FileAccess.file_exists(path):
+		parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
 	if typeof(parsed) != TYPE_DICTIONARY:
-		push_error("LocationRegistry: could not read %s" % DATA_PATH)
-		return LocationRegistry.new()
+		push_error("LocationRegistry: could not read %s" % path)
+		var empty := LocationRegistry.new()
+		empty.load_error = "%s is missing or could not be parsed" % path
+		return empty
 	return from_dict(parsed as Dictionary)
+
+
+## Why this registry must not judge a saved location ("" when it can): the file was missing or
+## failed to parse, it lists no locations, or its default_location is not listed. A save made
+## meanwhile could record a stand-in place, so SaveSystem's data-tables gate refuses to save
+## while this is non-empty (M1-ARC-13).
+func integrity_problem() -> String:
+	if load_error != "":
+		return load_error
+	if _locations.is_empty() or not has_location(default_location):
+		return "the location registry lists no locations, or not its default_location"
+	return ""
 
 
 static func from_dict(d: Dictionary) -> LocationRegistry:

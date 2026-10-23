@@ -49,6 +49,14 @@ const DELAY_STACK_MAX_STEPS := 16
 const PCT := 100
 ## Swell (M1-CMB-04): a gauge holds 0..SWELL_MAX, and a full one unlocks the owner's techniques.
 const SWELL_MAX := 100
+## Openings (M1-CMB-03): the percent chance of a preemptive opening (an ambush mirrors it) at
+## equal mean agility, the points it moves per point of mean agility difference, its bounds, and
+## the ticks by which the side caught out waits past the other side's last opening turn.
+const OPENING_BASE_PCT := 8
+const OPENING_AGI_FACTOR := 1
+const OPENING_MIN_PCT := 2
+const OPENING_MAX_PCT := 25
+const OPENING_LEAD_TICKS := 1
 
 ## Rational multipliers as [numerator, denominator].
 const CRIT_RATIO: Array[int] = [2, 1]
@@ -200,3 +208,21 @@ static func swell_fill(value: int, gain: int) -> int:
 ## counts as 0, so a botched input never makes a technique weaker than its base.
 static func swell_power(power: int, bonus_pct: int) -> int:
 	return power * (PCT + maxi(bonus_pct, 0)) / PCT
+
+
+## Percent chance of a preemptive opening (the party moves first), from the mean agility of the
+## living active party and of the enemies (formulas.md § Openings).
+static func preemptive_chance(party_mean_agility: float, enemy_mean_agility: float) -> int:
+	var c := OPENING_BASE_PCT + roundi((party_mean_agility - enemy_mean_agility) * OPENING_AGI_FACTOR)
+	return clampi(c, OPENING_MIN_PCT, OPENING_MAX_PCT)
+
+
+## Percent chance of an ambush (the enemies move first): the preemptive chance seen from their side.
+static func ambush_chance(party_mean_agility: float, enemy_mean_agility: float) -> int:
+	return preemptive_chance(enemy_mean_agility, party_mean_agility)
+
+
+## Ticks added to every opening tick of the side caught out: past the favored side's latest
+## opening tick, so each favored combatant acts once before any of them.
+static func opening_lead(favored_latest_ticks: int) -> int:
+	return maxi(favored_latest_ticks, 0) + OPENING_LEAD_TICKS

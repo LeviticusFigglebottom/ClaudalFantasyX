@@ -15,6 +15,9 @@ extends Node
 ##   EventBus.battle_party_returned       -> record_party(): writes HP/MP/carried statuses back
 ##   vitals_modifier()                    -> a BattleEngine.party_modifier that applies them; put
 ##                                           it LAST in EquipmentEffects.compose([...])
+## Swell (M2-ARC-01, save v6): record_party also keeps each hero's gauge and mode in its vitals
+## entry (vitals_modifier puts them back), and EventBus.battle_swell_returned -> record_swell()
+## keeps the party's unlocked modes and unlock counts in state.swell. A shrine rest keeps both.
 
 const FLAGS_PATH := "res://game/data/flags.tres"
 ## The largest single frame step counted towards play time, in seconds.
@@ -30,13 +33,11 @@ var rest_rules: Dictionary = {}
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	registry = load(FLAGS_PATH) as FlagRegistry
-	if registry == null:
-		push_error("Game: failed to load flag registry at %s" % FLAGS_PATH)
-		registry = FlagRegistry.new()
+	registry = FlagRegistry.load_path(FLAGS_PATH)
 	rest_rules = load_rest_rules()
 	EventBus.party_full_heal_requested.connect(heal_party)
 	EventBus.battle_party_returned.connect(record_party)
+	EventBus.battle_swell_returned.connect(record_swell)
 
 
 func _process(delta: float) -> void:
@@ -101,12 +102,30 @@ func play_time_sec() -> float:
 # --- Party vitals (M1-ARC-06) -------------------------------------------------------------------
 
 
-static func load_rest_rules() -> Dictionary:
-	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(REST_RULES_PATH))
+static func load_rest_rules(path: String = REST_RULES_PATH) -> Dictionary:
+	var parsed: Variant = null
+	if FileAccess.file_exists(path):
+		parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
 	if typeof(parsed) != TYPE_DICTIONARY:
-		push_error("Game: could not read %s" % REST_RULES_PATH)
+		push_error("Game: could not read %s" % path)
 		return {}
 	return parsed as Dictionary
+
+
+## Why `rules` (party_rest.json) cannot be trusted with saved vitals ("" when it can): it is empty
+## (missing or unparseable) or lacks carried_statuses, carried_duration or shrine_cures. Without
+## carried_statuses every carried status would be dropped from party_vitals after a battle, so
+## record_party writes nothing and SaveSystem's data-tables gate refuses to save (M1-ARC-13).
+static func rest_rules_problem(rules: Dictionary) -> String:
+	if rules.is_empty():
+		return "%s is missing, empty or could not be parsed" % REST_RULES_PATH
+	if not (
+		typeof(rules.get("carried_statuses")) == TYPE_ARRAY
+		and typeof(rules.get("shrine_cures")) == TYPE_ARRAY
+		and rules.has("carried_duration")
+	):
+		return "%s lacks carried_statuses, carried_duration or shrine_cures" % REST_RULES_PATH
+	return ""
 
 
 ## Statuses that outlast a battle and are saved per member.
@@ -131,9 +150,15 @@ func heal_party(_source_id: StringName = &"") -> Array[StringName]:
 
 
 ## EventBus.battle_party_returned: writes each party combatant's HP, MP and carried statuses into
-## state.party_vitals. Entries that are not BattleCombatants are ignored.
+## state.party_vitals. Entries that are not BattleCombatants are ignored. While party_rest.json is
+## broken (rest_rules_problem) nothing is written, so no carried status is dropped (M1-ARC-13).
 func record_party(_encounter_id: StringName, _outcome: StringName, party: Array) -> void:
+	var problem := rest_rules_problem(rest_rules)
+	if problem != "":
+		push_error("Game: not recording party vitals; %s" % problem)
+		return
 	var carried := carried_statuses()
+	var default_mode := StringName(str(BattleSwell.load_config().get("default_mode", "")))
 	for v: Variant in party:
 		if not v is BattleCombatant:
 			continue
@@ -141,7 +166,17 @@ func record_party(_encounter_id: StringName, _outcome: StringName, party: Array)
 		var held: Array[StringName] = []
 		for sid: StringName in c.statuses:
 			held.append(sid)
-		state.record_vitals(c.id, c.hp, c.max_hp, c.mp, c.max_mp, held, carried)
+		state.record_vitals(c.id, c.hp, c.max_hp, c.mp, c.max_mp, held, carried, c.swell, c.swell_mode, default_mode)
+
+
+## EventBus.battle_swell_returned: keeps the party's Swell record (unlocked modes, unlock counts).
+## While swell.json is broken (BattleSwell.config_problem) nothing is written (ADR 0018 Amendment 6).
+func record_swell(record: Dictionary) -> void:
+	var problem := BattleSwell.config_problem(BattleSwell.load_config())
+	if problem != "":
+		push_error("Game: not recording the Swell record; %s" % problem)
+		return
+	state.swell = record.duplicate(true)
 
 
 ## A BattleEngine.party_modifier that applies `for_state`'s vitals (default: the live state at the

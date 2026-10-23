@@ -3,6 +3,8 @@
   "frames_to_render": 2,
   "measure_frames": 6,
   "hitch_budget_ms": 50.0,
+  "materials_per_frame": 12,
+  "slice_budget_ms": 33.0,
   "viewport_width": 64,
   "viewport_height": 64,
   "quad_size": 1.0,
@@ -21,7 +23,9 @@
       "path": "res://assets/environments/vegetation/materials/palm_frond.tres",
       "mesh": "res://assets/environments/vegetation/palm_coconut_a.glb",
       "scenes": [
-        "res://game/levels/_tests/vegetation/vegetation_test.tscn"
+        "res://game/levels/_tests/vegetation/vegetation_test.tscn",
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
       "note": "M1-ENV-02 foliage (default tier). Zones that place palms add their scene paths here."
     },
@@ -29,7 +33,9 @@
       "path": "res://assets/environments/vegetation/materials/palm_bark.tres",
       "mesh": "res://assets/environments/vegetation/palm_coconut_a.glb",
       "scenes": [
-        "res://game/levels/_tests/vegetation/vegetation_test.tscn"
+        "res://game/levels/_tests/vegetation/vegetation_test.tscn",
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
       "note": "M1-ENV-02 bark."
     },
@@ -37,7 +43,9 @@
       "path": "res://assets/environments/vegetation/materials/frangipani_leaf.tres",
       "mesh": "res://assets/environments/vegetation/frangipani_a.glb",
       "scenes": [
-        "res://game/levels/_tests/vegetation/vegetation_test.tscn"
+        "res://game/levels/_tests/vegetation/vegetation_test.tscn",
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
       "note": "M1-ENV-02 foliage (default tier)."
     },
@@ -47,9 +55,31 @@
       "mesh_node": "saltgrass_a",
       "multimesh": true,
       "scenes": [
-        "res://game/levels/_tests/vegetation/vegetation_test.tscn"
+        "res://game/levels/_tests/vegetation/vegetation_test.tscn",
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
       "note": "M1-ENV-02 foliage; drawn as a MultiMesh in zones (a quad prewarms a different vertex format)."
+    },
+    {
+      "path": "res://assets/environments/vegetation/materials/frangipani_bark.tres",
+      "mesh": "res://assets/environments/vegetation/frangipani_a.glb",
+      "scenes": [
+        "res://game/levels/_tests/vegetation/vegetation_test.tscn",
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
+      ],
+      "note": "M1-ENV-05 frangipani bark (applied at runtime by VegetationPlant)."
+    },
+    {
+      "path": "res://assets/environments/vegetation/materials/beach_vine.tres",
+      "mesh": "res://assets/environments/vegetation/beach_vine_patch.glb",
+      "scenes": [
+        "res://game/levels/_tests/vegetation/vegetation_test.tscn",
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
+      ],
+      "note": "M1-ENV-05 beach vine foliage (applied at runtime by VegetationPlant)."
     },
     {
       "path": "res://game/shaders/vegetation/vegetation_foliage_low.gdshader",
@@ -57,7 +87,9 @@
       "mesh_node": "saltgrass_a",
       "multimesh": true,
       "scenes": [
-        "res://game/levels/_tests/vegetation/vegetation_test.tscn"
+        "res://game/levels/_tests/vegetation/vegetation_test.tscn",
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
       "note": "M1-ENV-02 Low-tier foliage variant: a separate pipeline (README 'Shader-cache prewarm')."
     },
@@ -257,77 +289,98 @@
     {
       "path": "res://assets/environments/kits/haluna/materials/kit_coral_stone.tres",
       "scenes": [
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering (High tier): coral stone, triplanar. Zones placing the Haluna kit add their scene paths."
+      "note": "M1-ENV-01 weathering (High tier): coral stone, triplanar. Zones placing the Haluna kit add their scene paths.",
+      "mesh": "res://assets/environments/kits/haluna/tidewall_straight.glb"
     },
     {
       "path": "res://assets/environments/kits/haluna/materials/kit_coral_concrete.tres",
       "scenes": [
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering: Lit Age coral-concrete ruins."
+      "note": "M1-ENV-01 weathering: Lit Age coral-concrete ruins.",
+      "mesh": "res://assets/environments/kits/haluna/ruin_slab.glb"
     },
     {
       "path": "res://assets/environments/kits/haluna/materials/kit_mortar_white.tres",
       "scenes": [
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering: lime mortar (tide-wall caps, ridge rolls)."
+      "note": "M1-ENV-01 weathering: lime mortar (tide-wall caps, ridge rolls).",
+      "mesh": "res://assets/environments/kits/haluna/tidewall_straight.glb"
     },
     {
       "path": "res://assets/environments/kits/haluna/materials/kit_timber.tres",
       "scenes": [
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering, mesh-UV path: timber."
+      "note": "M1-ENV-01 weathering, mesh-UV path: timber.",
+      "mesh": "res://assets/environments/kits/haluna/timber_deck_2m.glb"
     },
     {
       "path": "res://assets/environments/kits/haluna/materials/kit_thatch.tres",
       "scenes": [
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering, mesh-UV path: thatch."
+      "note": "M1-ENV-01 weathering, mesh-UV path: thatch.",
+      "mesh": "res://assets/environments/kits/haluna/roof_thatch_hip.glb"
     },
     {
       "path": "res://assets/environments/kits/haluna/materials/kit_roof_tile.tres",
       "scenes": [
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering, mesh-UV path: red tile."
+      "note": "M1-ENV-01 weathering, mesh-UV path: red tile.",
+      "mesh": "res://assets/environments/kits/haluna/roof_tile_hip.glb"
     },
     {
       "path": "res://assets/environments/kits/haluna/materials/kit_wake_shell.tres",
       "scenes": [
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 wake-shells (env_wake_shell.gdshader)."
+      "note": "M1-ENV-01 wake-shells (env_wake_shell.gdshader).",
+      "mesh": "res://assets/environments/kits/haluna/wakeshell_wall.glb"
     },
     {
       "path": "res://game/shaders/environment/env_weathering_low.gdshader",
       "scenes": [
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering Low tier: a separate pipeline (README 'Shader-cache prewarm')."
+      "note": "M1-ENV-01 weathering Low tier: a separate pipeline (README 'Shader-cache prewarm').",
+      "mesh": "res://assets/environments/kits/haluna/tidewall_straight.glb"
     },
     {
       "path": "res://game/shaders/environment/env_weathering_medium.gdshader",
       "scenes": [
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering Medium tier."
+      "note": "M1-ENV-01 weathering Medium tier.",
+      "mesh": "res://assets/environments/kits/haluna/tidewall_straight.glb"
     },
     {
       "path": "res://game/shaders/environment/env_weathering_ultra.gdshader",
       "scenes": [
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering Ultra tier."
+      "note": "M1-ENV-01 weathering Ultra tier.",
+      "mesh": "res://assets/environments/kits/haluna/tidewall_straight.glb"
     },
     {
       "path": "res://game/shaders/environment/env_ground.gdshader",
       "scenes": [
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
       "note": "M1-ENV-01 zone ground (terrain is generated, so a quad prewarms a different vertex format)."
     },
@@ -425,7 +478,8 @@
       "scenes": [
         "res://game/levels/_tests/water/water_test.tscn",
         "res://game/levels/_tests/undertow/undertow_test.tscn",
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
       "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths."
     },
@@ -435,7 +489,8 @@
       "scenes": [
         "res://game/levels/_tests/water/water_test.tscn",
         "res://game/levels/_tests/undertow/undertow_test.tscn",
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
       "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths."
     },
@@ -445,7 +500,8 @@
       "scenes": [
         "res://game/levels/_tests/water/water_test.tscn",
         "res://game/levels/_tests/undertow/undertow_test.tscn",
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
       "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths."
     },
@@ -455,7 +511,8 @@
       "scenes": [
         "res://game/levels/_tests/water/water_test.tscn",
         "res://game/levels/_tests/undertow/undertow_test.tscn",
-        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+        "res://game/levels/ch02/haluna/haluna.tscn"
       ],
       "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths."
     },

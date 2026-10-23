@@ -200,6 +200,7 @@ material_override = SubResource("SandMat")
 script = ExtResource("surface")
 wave_set = ExtResource("waves")
 material = ExtResource("water_mat")
+publishes_water_level = true
 
 [node name="Ruins" type="Node3D" parent="."]
 

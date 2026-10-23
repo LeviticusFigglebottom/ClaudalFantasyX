@@ -11,7 +11,7 @@ sub-frame, composed from the procedural Haluna kit. The art review is in
 | `haluna_layout.json` | **All placement data**: terrain shape, lanes, wall runs, pieces, plants, scatter |
 | `haluna_dresser.gd` (`HalunaDresser`) | Builds the zone from the layout: kit .glb + materials + LOD ranges, wall runs, gulls facing the sea |
 | `haluna_terrain.gd` (`HalunaTerrain`) | Generated crescent beach, terrace, lagoon, reef, islet, far islands; lane/turf/seagrass masks |
-| `weathering_tide.gd` (`WeatheringTide`) | Writes `tide_line_y` / `water_height_y` to every weathering and ground material and moves the sea; swaps the weathering tier |
+| `weathering_tide.gd` (`WeatheringTide`) | Moves the sea to the tide height and gives it the datum (the sea publishes `hymn_water_level`, which the weathering and ground shaders read); swaps the weathering tier |
 | `haluna_shot_camera.gd` (`HalunaShotCamera`) | A Camera3D driven by a `CameraShot` resource (FIXED framing, vFOV, DOF) |
 | `haluna_noon_environment.tres` | The `ch02_noon` mood frame: sky, AgX, exposure, LUT (no fog: the frame row has none) |
 | `lut_ch02_noon.png` | 32³ grade LUT (Texture3D), from `assets_src/environments/kits/haluna/zone_lut.py` |
@@ -52,10 +52,31 @@ black). The LUT is sampled at the colour itself, so each texel stores the grade 
 
 ## Tide
 
-No global tide uniform exists yet (`project.godot` belongs to the Lead). `WeatheringTide` writes the
-two uniforms into each registered material instead. Request: a `hymn_tide` vec2 global
-(`tide_line_y`, `water_height_y`); the shader reads material uniforms of the same names, so the switch
-is a one-line change in `env_weathering_body.gdshaderinc` and `env_ground.gdshader`.
+M1-ENV-05: the sea (`Water`, `publishes_water_level = true`) publishes the `hymn_water_level` global
+every frame (x = the water's world Y now, y = its `tide_line_y` datum; docs/kb/tech/water.md), and
+`env_weathering_body.gdshaderinc` and `env_ground.gdshader` read it: there are no per-material tide
+uniforms any more. `WeatheringTide` moves the sea to `water_height_y` and gives it `tide_line_y`, so a
+flood rig animates one value and every wet line follows. Its tier comes from graphics_presets.json
+`presets[].tiers.weathering` (`WeatheringTide.quality_for_preset`). SceneRouter resets the global on
+every zone change, and the sea resets it when it leaves the tree.
+
+M1-NIT-02 (review-sweep-L on M1-ENV-05):
+- **A sea that doesn't publish.** If `WeatheringTide.water` is set but its `publishes_water_level`
+  is off, the tide still moves that sea, warns once at `_ready`, and writes `hymn_water_level`
+  itself. The no-sea branch does the same. The shaders therefore never keep 0,0 or the previous
+  zone's level.
+- **One-frame lag (for the Drownbell flood rig).** The sea publishes in its `_process`, so the wet
+  line trails a `water_height_y` change by one frame. Before the sea's first frame it reads the
+  cleared 0,0. At tide speed this can't be seen. A flood rig that cuts the water height in one jump
+  under a camera cut should make the jump one frame before the cut.
+
+## Vegetation groups (M1-ENV-05)
+
+The dresser tags what `vegetation_detail` drives (graphics_presets.json `vegetation_groups`): plant LOD
+meshes join `vegetation_lod` (their authored visibility ranges scale), the saltgrass scatters join
+`vegetation_multimesh` and `small_foliage` (density, and shadows off on Low), and plant kinds marked
+`"small_foliage": true` in haluna_layout.json (the beach vines) join `small_foliage`. GraphicsSettings
+applies them when the zone loads (M1-ARC-15's per-scene hook).
 
 ## Sky and palette checks (review-sweep-F)
 
@@ -65,6 +86,14 @@ sky reflection keeps `sky_energy` 1.0, so ground, shade and water values are unc
 `horizon_curve` 0.14. The depth fog and volumetric fog are gone: they are not in the `ch02_noon` row
 (haluna.md §0), and the volumetric fog also hazed the sky (`volumetric_fog_sky_affect` 1), which was most of
 the zenith's lost chroma.
+
+**Cost and quality tiers (M1-RND-12).** The clouds read two baked lattices, `cloud_lattice`
+(assets/vfx/undertow/undertow_noise3d.png) and `cloud_lattice2` (assets/vfx/sky/cloud_lattice2.png); both are bound
+in `haluna_noon_environment.tres`, and an unbound lattice reads 0. The march's quality comes from the graphics preset
+(`sky_detail` in graphics_presets.json, applied by GraphicsSettings to the sky material). The sky's
+`process_mode` is Incremental, so a moving sun or drifting `cloud_offset_m` re-renders the radiance cubemap over
+several frames. Measured on an RX 9070 XT: the clouds cost 0.23 ms at Low 1080p and 0.40 ms at High 1440p (they were
+2.4 and 3.7 ms); see docs/kb/qa/gpu/2026-10-23-rnd-12-sky.md.
 
 `tests/screenshots/palette_checks.json` holds the numeric targets the five baselines must meet (zenith on
 `sky_zenith_noon` +1, lit tops at `cumulus_lit` +1 L, chromatic blue-lilac undersides, cloud grain, the

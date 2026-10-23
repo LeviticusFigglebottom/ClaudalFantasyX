@@ -138,6 +138,9 @@ func test_jitter_needs_temporal_aa() -> void:
 	vp.use_taa = false
 	vp.scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR2
 	assert_true(UndertowStorm.viewport_is_temporal(vp), "FSR2 accumulates too")
+	# M1-RND-15: MetalFX temporal (macOS) is listed beside FSR2 so the gate never drops jitter for it.
+	assert_true(UndertowStorm.TEMPORAL_SCALING_MODES.has(Viewport.SCALING_3D_MODE_METALFX_TEMPORAL))
+	assert_false(UndertowStorm.TEMPORAL_SCALING_MODES.has(Viewport.SCALING_3D_MODE_METALFX_SPATIAL))
 	vp.free()
 
 

@@ -24,6 +24,10 @@ extends Node3D
 ##   storm_center() / sea_level() / sea_height_at(world_xz)   placement and the funnel for floaters
 ##   look                                           named look from undertow.json ("day_storm")
 ##   refresh()                                      re-apply after changing tunables at runtime
+##   on_viewport_state_changed()                    re-reads the viewport's AA now (M1-RND-16: a
+##                                                  GraphicsSettings.push_override at a cut calls it
+##                                                  through VIEWPORT_STATE_GROUP, so the temporal
+##                                                  jitter gate follows the override frame-exactly)
 
 signal quality_changed(tier: String)
 
@@ -38,6 +42,11 @@ const PARAM_STORM_CENTER_XZ := &"storm_center_xz"
 const PARAM_STORM_REACH := &"storm_reach_m"
 const PARAM_FOAM := &"col_foam"
 const PARAM_SEA_GLOW := &"sea_glow_energy"
+## 3D scaling modes that accumulate history like TAA (M1-RND-15).
+const TEMPORAL_SCALING_MODES: Array[int] = [
+	Viewport.SCALING_3D_MODE_FSR2,
+	Viewport.SCALING_3D_MODE_METALFX_TEMPORAL,
+]
 const PARAM_NOISE_TEX := &"noise_tex"
 ## Radial segments of the raymarch proxy (the shader clips rays analytically; this only has to
 ## cover the silhouette).
@@ -157,6 +166,16 @@ func _ready() -> void:
 ## A storm that leaves the tree takes its hold on the zone sea with it.
 func _exit_tree() -> void:
 	_clear_sea_response()
+
+
+func _enter_tree() -> void:
+	add_to_group(GraphicsSettings.VIEWPORT_STATE_GROUP)
+
+
+## M1-RND-16: the viewport's AA or 3D scaling just changed (a scoped override was pushed or popped):
+## re-gate the temporal jitter and push the dynamic uniforms now, not on the next _process.
+func on_viewport_state_changed() -> void:
+	_push_dynamic()
 
 
 func _process(delta: float) -> void:
@@ -517,12 +536,13 @@ func _build_gizmo() -> void:
 	visuals.add_child(gizmo, false, Node.INTERNAL_MODE_FRONT)
 
 
-## True when `vp` accumulates frames: TAA, or the FSR2 temporal upscaler (which replaces TAA). A
-## null viewport counts as temporal (headless tests, before the node is in a tree).
+## True when `vp` accumulates frames: TAA, or a temporal upscaler that replaces it (FSR2, or MetalFX
+## temporal on macOS: not offered by the presets today, listed so the gate never drops jitter if it
+## is). A null viewport counts as temporal (headless tests, before the node is in a tree).
 static func viewport_is_temporal(vp: Viewport) -> bool:
 	if vp == null:
 		return true
-	return vp.use_taa or vp.scaling_3d_mode == Viewport.SCALING_3D_MODE_FSR2
+	return vp.use_taa or TEMPORAL_SCALING_MODES.has(vp.scaling_3d_mode)
 
 
 ## The baked noise lattice (undertow.json "noise"), loaded once.

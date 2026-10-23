@@ -89,3 +89,23 @@ func test_defaults_and_the_live_ring_is_short() -> void:
 	assert_true(live.duration_sec() <= 3.5, "SPEC §6.2: short (%.2f s)" % live.duration_sec())
 	assert_true(live.perfect_sec < live.good_sec)
 	assert_true(live.peak_at > 0.0 and live.peak_at < 1.0)
+
+
+func test_the_timing_assist_turns_misses_into_its_grade_and_nothing_else() -> void:  # M2-UI-01
+	var cfg := CFG.duplicate()
+	cfg["assist_floor"] = "good"
+	ring = SwellTimingRing.new(cfg)
+	assert_eq(ring.assist_floor, SwellInput.QUALITY_GOOD)
+	ring.advance(ring.beat_start(1) + 0.01)
+	assert_eq(ring.grades, [&"good"] as Array[StringName], "a beat that runs out counts as good")
+	ring.advance(ring.time_to_peak())
+	assert_eq(ring.press(), SwellTimingRing.GRADE_PERFECT, "a press on the peak still earns perfect")
+	ring.advance(ring.time_to_peak() + 0.4)
+	assert_eq(ring.press(), SwellTimingRing.GRADE_GOOD, "a mistimed press counts as good too")
+	assert_true(ring.is_done())
+
+
+func test_no_assist_by_default() -> void:
+	assert_eq(ring.assist_floor, &"")
+	ring.advance(ring.duration_sec())
+	assert_eq(ring.grades, [&"miss", &"miss", &"miss"] as Array[StringName])
