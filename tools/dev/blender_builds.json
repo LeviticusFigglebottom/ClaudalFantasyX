@@ -1,0 +1,58 @@
+{
+  "_doc": "Blender asset builds re-verified by tools/dev/verify_blender_builds.py (M1-QA-02, ADR 0005). See docs/kb/qa/blender_builds.md.",
+  "blender_version": "5.0.1",
+  "blender_deb": "5.0.1+dfsg-5",
+  "copy_into_sandbox": ["assets_src"],
+  "jobs": [
+    {
+      "id": "base_body",
+      "owner": "character",
+      "sources": ["assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/base_body/*.glb"],
+      "tolerance": {"abs": 0.001, "attributes": ["TANGENT"], "why": "Blender's tangent export is not run-to-run stable: 1 vertex in 14.5k moves by 1e-4 between identical runs (measured 2026-10-23)"},
+      "expected_failure": {"task": "M1-CHR-05", "why": "the committed base_body_*.glb do not match their source (POSITION differs by up to ~3 mm)"},
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/base_body/build.py", "--", "--variant", "slender", "--out", "assets/characters/base_body/base_body_slender.glb"],
+        ["{blender}", "--python", "assets_src/characters/base_body/build.py", "--", "--variant", "athletic", "--out", "assets/characters/base_body/base_body_athletic.glb"],
+        ["{blender}", "--python", "assets_src/characters/base_body/build.py", "--", "--variant", "heavy", "--out", "assets/characters/base_body/base_body_heavy.glb"]
+      ]
+    },
+    {
+      "id": "asha",
+      "owner": "character",
+      "sources": ["assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/asha/*.glb"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/asha/build_asha.py", "--", "--out", "assets/characters/asha/asha.glb", "--bake-dir", "{scratch}/asha_bake"]
+      ]
+    },
+    {
+      "id": "shader_test",
+      "owner": "rendering",
+      "sources": ["assets_src/characters/shader_test/build_shader_test_meshes.py", "assets_src/characters/shader_test/layout.py"],
+      "outputs": ["assets/characters/shader_test/*.glb"],
+      "expected_failure": {"task": "M1-RND-12", "why": "build_shader_test_meshes.py fails on Blender 5.0.1: bm.faces.sort(key=...) must return a number"},
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/shader_test/build_shader_test_meshes.py"]
+      ]
+    },
+    {
+      "id": "vegetation",
+      "owner": "environment",
+      "sources": ["assets_src/environments/vegetation/*.py"],
+      "outputs": ["assets/environments/vegetation/*.glb"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/vegetation/build.py", "--", "--all", "--out-dir", "assets/environments/vegetation"]
+      ]
+    },
+    {
+      "id": "haluna_kit",
+      "owner": "environment",
+      "sources": ["assets_src/environments/kits/haluna/*.py"],
+      "outputs": ["assets/environments/kits/haluna/*.glb", "assets/environments/kits/haluna/kit_manifest.json"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/haluna/build.py", "--", "--all", "--out-dir", "assets/environments/kits/haluna", "--manifest", "assets/environments/kits/haluna/kit_manifest.json"]
+      ]
+    }
+  ]
+}

@@ -7,15 +7,28 @@ extends Node
 ##   godot-render --path . --audio-driver Dummy --fixed-fps 60 res://tests/screenshots/capture.tscn
 ## User args (after `--`): --shots=id1,id2   --out=<absolute dir>   --manifest=<res:// path>
 ## Shot keys: id, scene, camera ("default" or a Camera3D/Camera2D path relative to the scene root),
-## resolution [w, h], settle_frames, seed, threshold_rmse. Missing keys come from the manifest "defaults".
+## resolution [w, h], settle_frames, seed, threshold_rmse, and an optional setup block (globals, node
+## properties, viewport properties, time_scale: see CaptureSetup). Missing keys come from "defaults".
 
 const MANIFEST_PATH := "res://tests/screenshots/shots.json"
 const OUT_DIR := "res://tests/screenshots/out"
 const REPORT_NAME := "capture_report.json"
+## Process after every node of the shot's scene (lower priorities run first), so the setup's held
+## values are the last write before each frame is drawn.
+const HOLD_PRIORITY := 1 << 20
+
+## The running shot's setup (null between shots and for shots without one).
+var _setup: CaptureSetup = null
 
 
 func _ready() -> void:
+	process_priority = HOLD_PRIORITY
 	_run.call_deferred()
+
+
+func _process(_delta: float) -> void:
+	if _setup != null:
+		_setup.hold()
 
 
 func _run() -> void:
@@ -68,17 +81,27 @@ func _capture(shot: Dictionary, out_dir: String) -> Dictionary:
 	if packed == null:
 		result["error"] = "cannot load scene %s" % shot["scene"]
 		return result
-	var instance := packed.instantiate()
-	add_child(instance)
-	var cam_error := _use_camera(instance, String(shot.get("camera", "default")))
-	if cam_error != "":
-		instance.queue_free()
-		result["error"] = cam_error
+	# An absent setup is empty: begin/attach/hold/end then change nothing (baselines stay byte-stable).
+	_setup = CaptureSetup.new(shot.get("setup", {}))
+	var instance: Node = null
+	var error := _setup.begin(get_viewport())
+	if error == "":
+		instance = packed.instantiate()
+		add_child(instance)
+		error = _setup.attach(instance)
+	if error == "":
+		error = _use_camera(instance, String(shot.get("camera", "default")))
+	if error != "":
+		_end_setup()
+		if instance != null:
+			instance.queue_free()
+		result["error"] = error
 		return result
 	for i in frames:
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	var image := get_viewport().get_texture().get_image()
+	_end_setup()
 	instance.queue_free()
 	await get_tree().process_frame
 	if image == null or image.get_size() != size:
@@ -95,6 +118,12 @@ func _capture(shot: Dictionary, out_dir: String) -> Dictionary:
 	result["frames"] = frames
 	result["ms"] = Time.get_ticks_msec() - started
 	return result
+
+
+func _end_setup() -> void:
+	if _setup != null:
+		_setup.end()
+		_setup = null
 
 
 func _use_camera(instance: Node, camera: String) -> String:

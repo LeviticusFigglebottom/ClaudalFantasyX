@@ -154,6 +154,21 @@ class CompareTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             compare.load_shots(path)
 
+    def test_manifest_setup_keys(self) -> None:
+        path = self.tmp / "shots.json"
+        base = {"id": "a", "scene": "res://a.tscn", "camera": "default", "resolution": [8, 4], "threshold_rmse": 0.1}
+        path.write_text(json.dumps({"shots": [{**base, "setup": {"globals": {"g": 1}, "time_scale": 0}}]}))
+        self.assertEqual(compare.load_shots(path)[0]["setup"]["time_scale"], 0)
+        for bad in ({"global": {}}, [1]):
+            path.write_text(json.dumps({"shots": [{**base, "setup": bad}]}))
+            with self.assertRaises(ValueError):
+                compare.load_shots(path)
+
+    def test_setup_keys_match_capture_setup(self) -> None:
+        text = (ROOT / "tests" / "screenshots" / "capture_setup.gd").read_text()
+        line = next(ln for ln in text.splitlines() if ln.startswith("const KEYS"))
+        self.assertEqual(set(json.loads(line.split("=", 1)[1])), compare.SETUP_KEYS)
+
     def test_repo_manifest_is_valid_and_baselined(self) -> None:
         for shot in compare.load_shots(compare.SHOTS):
             self.assertTrue((compare.BASELINES / f"{shot['id']}.png").exists(), shot["id"])

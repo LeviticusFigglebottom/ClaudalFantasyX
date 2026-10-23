@@ -131,6 +131,38 @@ jobs:
           path: tests/screenshots/out/
           retention-days: 14
 
+  blender:
+    name: Blender asset rebuild + compare (M1-QA-02, docs/kb/qa/blender_builds.md)
+    needs: [tools]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    # The pinned Blender (5.0.1+dfsg-5, tools/dev/blender_builds.json) comes from the Ubuntu archive
+    # via tools/dev/fetch_blender.py, the same sysroot the sandbox uses. Byte-identity on this
+    # runner's CPU is unconfirmed (numpy/Blender may pick other SIMD paths), so this job reports but
+    # does not gate until a run here has matched; tools/ci_local.sh is the gate (ADR 0008).
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install -r tools/requirements.txt
+      - name: Cache Blender
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/hymn/blender-5.0.1+dfsg-5
+          key: blender-5.0.1+dfsg-5-linux
+      - name: Fetch pinned Blender
+        run: python3 tools/dev/fetch_blender.py
+      - name: Rebuild every Blender job and compare with the committed assets
+        run: timeout 1700 python3 tools/dev/verify_blender_builds.py --all --log-dir blender_logs --report blender_logs/report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blender-logs-${{ github.sha }}
+          path: blender_logs/
+          retention-days: 14
+
   export:
     name: Export Windows + Linux
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
