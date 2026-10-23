@@ -7,12 +7,17 @@ extends BattleController
 ##            carried HP/MP (BattleVitals), real inventory and Lattice. With no request pending it
 ##            falls back to the sandbox fight (battle_sandbox.json), so the scene opens on its own.
 ##   result   after a victory or an escape the panel offers only Return (a story fight is not
-##            replayed); after a defeat it keeps Fight again (the same start, BattleVitals records
-##            nothing on a defeat) and Return.
+##            replayed); after a defeat (M2-FP-05) it offers Fight again (the same start,
+##            BattleVitals records nothing on a defeat) and Return to last save.
 ##   Return   sets the request's victory_flag (victory only, Game.set_flag) and sends the party to
-##            the request's location and spawn (SceneRouter.world_return.go_to). After a defeat the
-##            party returns with the vitals it had before the fight, the flag unset, so the field
-##            can offer the fight again. Without a request, Return goes to the title as in the sandbox.
+##            the request's location and spawn (SceneRouter.world_return.go_to); after an escape,
+##            to the request's escape_spawn when it names one (Haluna: BeforeBattle, the beach side
+##            of the trigger). A defeat never returns to the field, so a field trigger cannot be
+##            walked past by losing. Without a request, Return goes to the title as in the sandbox.
+##   Return to last save (defeat only) loads the newest readable save record, autosave included,
+##            exactly as the title's Continue does (TitleSaveEntry.continue_game), and goes where
+##            it continues; with no record it goes to the title. The row reads "Return to title"
+##            then, so the player knows which it is before choosing.
 
 ## {outcome: [title key, subtitle key]} for the outcomes whose panel is re-shown with Return only.
 const RETURN_ONLY := {
@@ -20,12 +25,22 @@ const RETURN_ONLY := {
 	BattleEngine.OUTCOME_ESCAPED: ["HUD_ESCAPED", "HUD_ESCAPED_SUB"],
 }
 
+## Defeat row: load the newest save record (or go to the title when there is none).
+const CHOICE_LAST_SAVE := &"last_save"
+const KEY_LAST_SAVE := "FLOW_RESULT_LAST_SAVE"
+const KEY_TO_TITLE := "FLOW_RESULT_TITLE"
+
 ## The fight being played (null while the sandbox fallback runs).
 var request: BattleRequest
 ## How Return travels: (location_id: StringName, spawn: StringName) -> bool. Unset =
 ## SceneRouter.world_return.go_to. Tests set a recorder.
 var travel: Callable = Callable()
-## True once Return has sent the party back (a second Return does nothing).
+## How Return to last save opens the title when there is no record: (scene_path: String). Unset =
+## SceneRouter.change_scene. Tests set a recorder.
+var open_title: Callable = Callable()
+## Where save records are read (null = the SaveSystem autoload). Tests pass their own.
+var save_system: Node
+## True once Return (or Return to last save) has sent the party on (a second one does nothing).
 var returned := false
 
 
@@ -58,22 +73,82 @@ func start_request(r: BattleRequest, rng_seed: int = -1, staged: bool = false) -
 
 ## Ends the field battle: sets the victory flag after a win and sends the party back to the
 ## request's location and spawn. Returns false when there is nothing to return to, or once done.
+## A defeat never returns to the field (see return_to_last_save).
 func return_to_field() -> bool:
 	if request == null or returned or engine == null or engine.outcome == &"":
+		return false
+	if engine.outcome == BattleEngine.OUTCOME_DEFEAT:
 		return false
 	returned = true
 	if engine.outcome == BattleEngine.OUTCOME_VICTORY and request.victory_flag != &"":
 		Game.set_flag(request.victory_flag)
+	var spawn := request.return_spawn
+	if engine.outcome == BattleEngine.OUTCOME_ESCAPED and request.escape_spawn != &"":
+		spawn = request.escape_spawn
+	return _travel(request.return_location, spawn)
+
+
+## After a defeat: loads the newest readable save record into Game.state (TitleSaveEntry, as the
+## title's Continue) and sends the party where it continues. In the game WorldReturn is armed and
+## does that itself on EventBus.game_loaded; when it is not (a scene opened on its own, tests), this
+## travels to WorldReturn.resolve(Game.state). With no record it opens the title. Returns OK, or why
+## no record was loaded (the title is opened then); ERR_UNAVAILABLE when not after a defeat, or once
+## done.
+func return_to_last_save() -> Error:
+	if returned or engine == null or engine.outcome != BattleEngine.OUTCOME_DEFEAT:
+		return ERR_UNAVAILABLE
+	returned = true
+	var err := TitleSaveEntry.continue_game(save_system)
+	if err != OK:
+		_open_title()
+		return err
+	var wr := _world_return()
+	if wr != null and not wr.enabled:
+		var to := wr.resolve(Game.state)
+		if not to.is_empty():
+			_travel(StringName(str(to[LocationRegistry.KEY_LOCATION])), StringName(str(to[LocationRegistry.KEY_SPAWN])))
+	return OK
+
+
+## True when a save record exists for Return to last save (else it goes to the title).
+func has_last_save() -> bool:
+	return TitleSaveEntry.can_continue(save_system)
+
+
+func _travel(location_id: StringName, spawn: StringName) -> bool:
 	if travel.is_valid():
-		return bool(travel.call(request.return_location, request.return_spawn))
+		return bool(travel.call(location_id, spawn))
 	if not is_inside_tree():
 		return false
-	return SceneRouter.world_return.go_to(request.return_location, request.return_spawn)
+	return SceneRouter.world_return.go_to(location_id, spawn)
+
+
+func _open_title() -> void:
+	if open_title.is_valid():
+		open_title.call(RETURN_SCENE)
+	elif is_inside_tree():
+		SceneRouter.change_scene(RETURN_SCENE)
+
+
+func _world_return() -> WorldReturn:
+	if not is_inside_tree():
+		return null
+	return SceneRouter.world_return
 
 
 func _show_result() -> void:
 	super()
-	if request == null or not RETURN_ONLY.has(engine.outcome):
+	if request == null:
+		return
+	if engine.outcome == BattleEngine.OUTCOME_DEFEAT:
+		var back := KEY_LAST_SAVE if has_last_save() else KEY_TO_TITLE
+		var rows: Array[Dictionary] = [
+			{"id": CHOICE_RETRY, "label": tr("HUD_RESULT_RETRY"), "enabled": true},
+			{"id": CHOICE_LAST_SAVE, "label": tr(back), "enabled": true},
+		]
+		hud.result.show_result(engine.outcome, tr("HUD_DEFEAT"), tr("HUD_DEFEAT_SUB"), hud.result.result_rows, rows)
+		return
+	if not RETURN_ONLY.has(engine.outcome):
 		return
 	var keys: Array = RETURN_ONLY[engine.outcome]
 	var choices: Array[Dictionary] = [{"id": CHOICE_RETURN, "label": tr("HUD_RESULT_RETURN"), "enabled": true}]
@@ -83,5 +158,8 @@ func _show_result() -> void:
 func _on_result_choice(choice: StringName) -> void:
 	if choice == CHOICE_RETURN and request != null:
 		return_to_field()
+		return
+	if choice == CHOICE_LAST_SAVE and request != null:
+		return_to_last_save()
 		return
 	super(choice)

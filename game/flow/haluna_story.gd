@@ -7,7 +7,8 @@ extends Node
 ##             (ch02_girl_on_the_beach), then free play.
 ##   villagers an Interactable whose payload has "dialogue" plays that bark scene in-engine.
 ##   battle    a trigger whose payload has "battle" opens that field battle (BattleRequest), which
-##             returns the party to BattleReturn and sets the victory flag on a win.
+##             returns the party to BattleReturn and sets the victory flag on a win; an escape
+##             returns it to BeforeBattle, on the beach side of the trigger (M2-FP-05).
 ##   ending    a trigger whose payload has "cutscene" opens Cutscene B on its own set
 ##             (game/levels/ch03/first_verse/), which ends on the end card.
 ## The zone's interactables only author ids, payloads and flags; nothing in them knows this script.
@@ -96,7 +97,8 @@ func _go(kind: StringName, target: String) -> void:
 			StringName(target),
 			StringName(str(cfg.get("location_id", ""))),
 			StringName(str(cfg.get("battle_return_spawn", ""))),
-			StringName(str(cfg.get("battle_victory_flag", "")))
+			StringName(str(cfg.get("battle_victory_flag", ""))),
+			StringName(str(cfg.get("battle_escape_spawn", "")))
 		)
 	else:
 		SceneRouter.change_scene(target)

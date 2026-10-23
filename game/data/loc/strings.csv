@@ -443,3 +443,5 @@ CHAR_FISHER,Fisher
 FIELD_PROMPT_LISTEN,Listen
 SWELL_INPUT_TIMING_RING_HELP_LAMP,Strike each time the ring meets the lamp. Beats: {beats}
 CUTSCENE_HOLD_TO_SKIP,Hold to skip
+FLOW_RESULT_LAST_SAVE,Return to last save
+FLOW_RESULT_TITLE,Return to title

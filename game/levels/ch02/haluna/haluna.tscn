@@ -451,6 +451,9 @@ transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -67, 2.02, 44.3)
 [node name="BattleReturn" type="Marker3D" parent="Spawns"]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -24, 1.38, 6.5)
 
+[node name="BeforeBattle" type="Marker3D" parent="Spawns"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -13, 0.71, 6.5)
+
 [node name="CausewayHead" type="Marker3D" parent="Spawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.73, -118)
 
