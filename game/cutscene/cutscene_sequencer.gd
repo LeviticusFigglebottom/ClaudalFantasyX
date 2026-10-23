@@ -52,7 +52,8 @@ var restore_fade := true
 var events: Array[Dictionary] = []
 ## Soft failures (a missing shot, actor, mark or track), each reported once.
 var warnings: Array[String] = []
-## Every @face cue of the last play() (placeholder: no face rig yet), [actor, expression, sec].
+## Every @face cue of the last play(), [actor, expression, sec]. Actors whose meshes have blend
+## shapes and a sequencer.json "face_poses" row also show it (CutsceneFace).
 var faces: Array = []
 var config: Dictionary = {}
 var overlay: CutsceneOverlay
@@ -77,6 +78,10 @@ var _skip_held := false
 var _hold := 0.0
 ## What play() is awaiting right now: &"line", &"wait", &"land", &"choice" or &"" (none).
 var _awaiting: StringName = &""
+## actor id -> CutsceneFace (null when the actor has no face shapes), per play().
+var _face_rigs: Dictionary = {}
+## actor id -> face-poses JSON "emotions" + "blend_in_s", per play().
+var _pose_tables: Dictionary = {}
 
 
 static func load_config() -> Dictionary:
@@ -193,6 +198,9 @@ func play(scene_id: StringName, stage: CutsceneStage) -> bool:
 
 ## Advances every timed thing by `delta` seconds: waits, fades, letterbox, moves, turns, music.
 func advance(delta: float) -> void:
+	for rig: Variant in _face_rigs.values():
+		if rig != null:
+			(rig as CutsceneFace).advance(delta)
 	if _playing and _skip_held and not _skipping and _awaiting != &"choice":
 		var need := float(config.get("skip_hold_sec", 0.0))
 		_hold += delta
@@ -231,6 +239,7 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 	_aborted = false
 	events.clear()
 	faces.clear()
+	_face_rigs.clear()
 	SaveSystem.hold_autosave(self)
 	if _player != null:
 		_player_input_was = _player.accepts_input
@@ -277,6 +286,11 @@ func _line(step: DialogueStep) -> void:
 	overlay.box.visible = true
 	overlay.box.show_line(step)
 	line_shown.emit(step)
+	var speaker := _stage.actor(step.speaker) if _stage != null and step.speaker != &"" else null
+	if speaker != null:
+		if step.emotion != &"":
+			_set_face(step.speaker, step.emotion, -1.0)
+		_play_clip(speaker, &"talk")
 	if _fast():
 		overlay.box.skip_reveal()
 		return
@@ -290,6 +304,9 @@ func _line(step: DialogueStep) -> void:
 	_awaiting = &"line"
 	await overlay.box.advance_requested
 	_awaiting = &""
+	if speaker != null and is_instance_valid(speaker):
+		_on_mouth_flap(step.speaker, false)
+		_play_clip(speaker, &"idle")
 
 
 func _options(step: DialogueStep) -> int:
@@ -322,6 +339,8 @@ func _cue(step: DialogueStep) -> void:
 			_cue_anim(step)
 		&"face":
 			faces.append(step.args.duplicate())
+			var sec := float(step.args[2]) if step.args.size() > 2 else -1.0
+			_set_face(StringName(str(step.args[0])), StringName(str(step.args[1])), sec)
 		&"music":
 			_cue_music(step)
 		&"sfx":
@@ -415,7 +434,15 @@ func _cue_mark(step: DialogueStep) -> void:
 	if flat.length() > 0.01:
 		_face(actor, flat)
 	var dur := from.distance_to(to) / maxf(speed, 0.01)
-	_start_motion(&"move:%s" % step.args[0], dur, func(t: float) -> void: _place(actor, from.lerp(to, t)))
+	_play_clip(actor, gait)
+	_start_motion(
+		&"move:%s" % step.args[0],
+		dur,
+		func(t: float) -> void:
+			_place(actor, from.lerp(to, t))
+			if t >= 1.0 and is_instance_valid(actor):
+				_play_clip(actor, &"idle")
+	)
 
 
 func _cue_anim(step: DialogueStep) -> void:
@@ -507,10 +534,55 @@ func _ensure_overlay() -> void:
 	if overlay == null:
 		overlay = CutsceneOverlay.new(config)
 		add_child(overlay)
+	if not overlay.box.mouth_flap.is_connected(_on_mouth_flap):
+		overlay.box.mouth_flap.connect(_on_mouth_flap)
 	if music == null:
 		music = AudioStreamPlayer.new()
 		music.name = "Music"
 		add_child(music)
+
+
+## Blends `actor_id`'s face to emotion `expr` over `sec` (< 0: the pose table's blend_in_s).
+func _set_face(actor_id: StringName, expr: StringName, sec: float) -> void:
+	var rig := _face_of(actor_id)
+	var table: Dictionary = _pose_tables.get(actor_id, {})
+	var poses: Dictionary = table.get("emotions", {})
+	if rig == null or not poses.has(String(expr)):
+		return
+	var t := sec if sec >= 0.0 else float(table.get("blend_in_s", 0.0))
+	rig.blend_to(poses[String(expr)], 0.0 if _fast() else t)
+
+
+func _face_of(actor_id: StringName) -> CutsceneFace:
+	if _face_rigs.has(actor_id):
+		return _face_rigs[actor_id]
+	var rig: CutsceneFace = null
+	var path := str((config.get("face_poses", {}) as Dictionary).get(String(actor_id), ""))
+	var actor := _stage.actor(actor_id) if _stage != null else null
+	if actor != null and path != "" and FileAccess.file_exists(path):
+		if not _pose_tables.has(actor_id):
+			var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+			_pose_tables[actor_id] = parsed if parsed is Dictionary else {}
+		rig = CutsceneFace.new(actor, config.get("lip_flap", {}))
+		if not rig.has_shapes():
+			rig = null
+	_face_rigs[actor_id] = rig
+	return rig
+
+
+func _on_mouth_flap(speaker: StringName, open: bool) -> void:
+	var rig := _face_of(speaker) if _playing else null
+	if rig != null:
+		rig.set_mouth_open(open)
+
+
+## Plays the actor's AnimationPlayer clip for `role` (sequencer.json "clips": idle, talk, walk,
+## run) when the rig has it; nothing otherwise (M2-FP-07 asks Character for the clips).
+func _play_clip(actor: Node3D, role: StringName) -> void:
+	var clip := StringName(str((config.get("clips", {}) as Dictionary).get(String(role), "")))
+	var ap := actor.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	if ap != null and clip != &"" and ap.has_animation(clip):
+		ap.play(clip)
 
 
 ## No time passes: a test (`instant`) or a skip in progress.

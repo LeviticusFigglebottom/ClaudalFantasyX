@@ -49,7 +49,7 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 
 ## Known placeholders and limits
 
-- People are capsules, apart from Asha, who stands in a rest pose because she has no animations yet. Nobody's face moves. The `@face` and `@anim` cues are recorded but not performed.
+- People are capsules, apart from Asha, who stands in a rest pose because she has no animations yet. Asha's face does change: her expression follows each line's emotion, and her mouth moves as her text appears. Body animations are still missing.
 - The music is a prototype stand-in: the hush theme sketch plays on the beach and in Haluna, the temple cue plays at the shrine, and the hush theme v2 plays for the verse. Nobody has signed off on any of them.
 - The glimmer motes in the cutscenes are simple glowing dots, not the real particle effect.
 - Haluna uses the art team's mood-test scene, with simple collision added. The camera mostly follows Rhen from behind; only a few spots use composed shots.

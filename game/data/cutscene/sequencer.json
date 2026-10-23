@@ -1,5 +1,5 @@
 {
-  "doc": "CutsceneSequencer tuning (M2-FP-01; docs/kb/tech/cutscenes.md). Times in seconds, distances in metres, sizes as a fraction of the screen height. music_stand_ins maps a cue's track id to an existing file under music_dir until Audio ships the real cue (placeholders for the first playable; nobody has approved them as final). vfx rows give the placeholder mote look per @vfx effect (colours from docs/kb/tech/glimmer.md). skip_hold_sec: how long ui_cancel is held to skip (a skip fast-forwards to the next choice or the end); skip_prompt: the 'hold to skip' fill, bottom right.",
+  "doc": "CutsceneSequencer tuning (M2-FP-01; docs/kb/tech/cutscenes.md). Times in seconds, distances in metres, sizes as a fraction of the screen height. music_stand_ins maps a cue's track id to an existing file under music_dir until Audio ships the real cue (placeholders for the first playable; nobody has approved them as final). vfx rows give the placeholder mote look per @vfx effect (colours from docs/kb/tech/glimmer.md). skip_hold_sec: how long ui_cancel is held to skip (a skip fast-forwards to the next choice or the end); skip_prompt: the 'hold to skip' fill, bottom right. face_poses: actor id -> a face-poses JSON (emotion -> blend shape weights; Character's file, read only) used by @face and by each line's [emotion]. lip_flap: blend shape weights held while DialogueBox reports the mouth open. clips: the AnimationPlayer clip played per role (idle, talk, walk, run) when the actor's rig has it.",
   "layer": 32,
   "letterbox_ratio": 0.11,
   "letterbox_sec": 0.6,
@@ -75,5 +75,18 @@
     "width_px": 160,
     "height_px": 10,
     "font_size": 22
+  },
+  "face_poses": {
+    "asha": "res://game/levels/_tests/characters/asha/asha_face_poses.json"
+  },
+  "lip_flap": {
+    "vis_aa": 0.55,
+    "jaw_open": 0.18
+  },
+  "clips": {
+    "idle": "idle",
+    "talk": "talk",
+    "walk": "walk",
+    "run": "run"
   }
 }

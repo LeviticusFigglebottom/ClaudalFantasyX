@@ -26,10 +26,10 @@ How the human plays it: [docs/PLAYTEST.md](../../../PLAYTEST.md) (Godot 4.6.3, o
 - **M2-FP-05 polish:** the cutscene skip is **done** (hold Escape/B for 1 s; it stops at choices). The Haluna entry hitch and the lost-battle Retry / Return to last save are with a worktree agent (branch `worktree-agent-a6b0fa997cf23504d`, not merged yet).
 - **M2-FP-06 Drownbell boss:** a worktree agent (branch `worktree-agent-a930ab70519d670e7`) is building the engine phases, data, balance and docs. Not merged yet.
 - **M2-FP-07:** request task filed for Character (Asha's clips). No work here.
-- **M2-FP-08 @anim/@face drive:** next for this session.
+- **M2-FP-08 @anim/@face drive:** **done**. `CutsceneFace` blends Asha's 40 shape keys from Character's `asha_face_poses.json` on `@face` and on each line's [emotion], with viseme lip-flap from `DialogueBox.mouth_flap`. Idle, talk, walk and run clips play when the rig has them. Tests: `tests/unit/test_cutscene_face.gd`.
 
 ### Exact next step
-Implement M2-FP-08 in `game/cutscene/`, then merge the two worktree branches as they finish (dialogue.csv and strings.csv conflicts: `python3 tools/dev/merge_union.py <file>` for strings, `python3 tools/dlgc.py` for dialogue). Then wire Cutscene B → BattleRequest(drownbell) → end card.
+Merge the two worktree branches as they finish (dialogue.csv and strings.csv conflicts: `python3 tools/dev/merge_union.py <file>` for strings, `python3 tools/dlgc.py` for dialogue). Then wire Cutscene B → BattleRequest(drownbell) → end card.
 
 Previously: The Lead merges `claude/first-playable` and runs the full screenshot manifest once. Then the human plays per PLAYTEST.md, and their notes become M2-FP follow-up tasks.
 
@@ -52,6 +52,7 @@ None that matters. `.scratch/` (excluded through `.git/info/exclude`) holds the 
 5. Read the M2-FP task files and `docs/kb/handoffs/2026-10-23-first-playable-1.md`.
 
 ## History
+- 2026-10-23: M2-FP-08 done (face shape keys, lip-flap, clip defaults); 16 cutscene tests.
 - 2026-10-23: merged integration 9508ade; claimed M2-FP-05..08; cutscene skip done (13 sequencer tests).
 - 2026-10-23: claimed M2-FP-01..04; CutsceneStage contract and sequencer API stub.
 - 2026-10-23: pushed the sequencer, the flow (prologue, battle hand-off, end card), the Cutscene B set and a PLAYTEST draft. ci_local green with 967 tests.
