@@ -13,18 +13,6 @@
       "sources": ["assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
       "outputs": ["assets/characters/base_body/*.glb"],
       "threads": 1,
-      "expected_failure": {"task": "M1-CHR-05", "why": "the committed base_body_*.glb do not match their source (POSITION differs by up to ~3 mm)",
-        "kind": "mismatch",
-        "differs": {
-          "assets/characters/base_body/base_body_athletic.glb": ["base_body_athletic.NORMAL", "base_body_athletic.POSITION", "base_body_athletic.TANGENT", "base_body_athletic.indices"],
-          "assets/characters/base_body/base_body_heavy.glb": ["base_body_heavy.NORMAL", "base_body_heavy.POSITION", "base_body_heavy.TANGENT", "base_body_heavy.indices"],
-          "assets/characters/base_body/base_body_slender.glb": ["base_body_slender.NORMAL", "base_body_slender.POSITION", "base_body_slender.TANGENT", "base_body_slender.indices"]
-        },
-        "rebuilt_sha256": {
-          "assets/characters/base_body/base_body_athletic.glb": "4523ba29c31a5417d2f1b0ce88128cc40abc8dc72200705900d7aca23baeb157",
-          "assets/characters/base_body/base_body_heavy.glb": "58142e2ae261229605d2265ec2834b379d7002721fa52fb05e45504cd8240122",
-          "assets/characters/base_body/base_body_slender.glb": "5da6843023d5109c9bf5738dd74a7fe7dcf3d834db51ddc5155ff91e88f41803"
-        }},
       "runs": [
         ["{blender}", "--python", "assets_src/characters/base_body/build.py", "--", "--variant", "slender", "--out", "assets/characters/base_body/base_body_slender.glb"],
         ["{blender}", "--python", "assets_src/characters/base_body/build.py", "--", "--variant", "athletic", "--out", "assets/characters/base_body/base_body_athletic.glb"],
