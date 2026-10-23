@@ -130,11 +130,64 @@ A cutscene animates it by tweening these properties (`create_tween().tween_prope
 ```
 The same method as the water bench: CPU time of the Godot process per frame (from `/proc/self/stat`, so other load on the shared 4-core machine cannot inflate it). There are 10 configurations, 2 interleaved rounds, 3 warm-up plus 4 measured frames each, and the minimum is kept. 960×540 matches the shots.
 
-COST_TABLE_PLACEHOLDER
+### Measured (lavapipe CPU ms per 960×540 frame; "storm" = the frame minus the same view with the storm hidden)
+| Configuration | Horizon (dusk), storm ≈ 45% of pixels | | Eye (high angle), ≈ 85% | |
+|---|---|---|---|---|
+| | frame | storm | frame | storm |
+| no storm (the ocean fills the footprint) | 500 | 0 | 510 | 0 |
+| **Low** (shells) | 865 | **+365** (8% of High) | 933 | **+423** (8%) |
+| Medium (28 steps) | 2215 | +1715 (36%) | 2615 | +2105 (39%) |
+| **High** (44 steps) | 5230 | **+4730** (100%) | 5928 | **+5418** (100%) |
+| Ultra (72 steps) | 8665 | +8165 (173%) | 9088 | +8578 (158%) |
+| High − body | 518 | +18 | 635 | +125 |
+| High − sea (and lid) | 5328 | within noise | 5483 | within noise |
+| High − spray | 5283 | within noise | 5635 | within noise |
+| High − wounds (`wound_intensity` 0) | 5305 | within noise | 5783 | within noise |
+| High at 22 steps | 2820 | +2320 (49%) | 3358 | +2848 (53%) |
+
+Reading:
+- **The raymarched body is the storm's cost: 99% (horizon) and 98% (eye) of it.** The sea funnel, lid, spray curtains and wound seams together sit within this method's noise (about ±150 ms here). Note that the sea and lid *replace* ocean pixels, so they can even save time: the ocean is the more expensive surface.
+- The body scales with steps (High at 22 steps costs half of High at 44). High costs about 2.7× Medium per frame because of the curl warp, the extra octave and the noisy light samples. Ultra's extra steps cost another 60–70%.
+- **Low is cheap** (8% of High) and keeps the read (see Tiers).
+- These numbers were taken before the final dusk sun azimuth change (212° instead of 262°) and the larger sea floor. Neither touches the storm's per-pixel work.
+
+### GPU budget (estimates, not measured)
+Calibrated against the water bench, the only ratio we have. Water High costs about 0.9 µs of lavapipe CPU per covered pixel and is estimated at 1.0–2.0 ms on an RTX 3060 at 1971×1109 with 60% coverage (water.md). The storm's High body costs about 20 µs per covered pixel on the same method (about 22× water). An operation count agrees: about 3,000 ALU ops per dense step (two-phase fBm, curl warp, coarse light samples, envelope), about 25 dense steps a pixel, so about 75k ops a pixel against water's 2k. Read these as **±2×**:
+
+| Tier on target hardware | Internal res, storm coverage | Est. GPU ms |
+|---|---|---|
+| **High on RTX 3060** (recommended; FSR2 0.77) | 1971×1109, ~45% (a horizon shot) | **16 – 33** |
+| Ultra on RTX 3060 | 2560×1440, ~45% | 45 – 90 |
+| Medium on GTX 1060 (1080p, 0.85) | 1632×918, ~45% | 12 – 25 (a 1060 has about 40% of a 3060's ALU) |
+| **Low on GTX 1060** (minimum; 1080p, 0.77) | 1478×831, ~45% | **1.5 – 3** |
+
+**The raymarched tiers do not fit the frame budget.** High's whole-frame budget (graphics_settings.md) is 11.4–17.5 ms before the storm, and a storm shot can afford about **2–3 ms**. Low fits. Medium, High and Ultra are 5–15× over. This is a prototype of the *look*. The cost work is M2's first job (see below), and the shots that use the storm (Ch1, Ch8, Ch20–21) are cutscenes, where a lower frame rate or a reduced zone load is negotiable but 30 ms is not.
 
 ## Honest assessment against "the most important visual in the game"
 
-COST_ASSESSMENT_PLACEHOLDER
+**Does it read?** Mostly, yes, for the two required shots:
+- **Horizon (dusk):** a colossal, side-lit storm tower filling two thirds of the frame over a darkening sea, with helical banding that says "rotating", rain-band skirts spreading kilometres along the horizon, a gold-lit upper flank against a dark slate lower wall (gorgeous and doomed), cyan rents glowing in the shadow side, a lightning flash inside the base, and a boat and lighthouse a few pixels tall for scale.
+- **Eye (high angle):** a hurricane-like ring of cloud around an open eye, at whose bottom the sea is pulled down into a maelstrom with spiral foam and cyan held light sinking into the throat. This is the strongest "this is not an ordinary storm" image.
+- **Night:** the mass goes near-black and the wounds and the strike dominate, as the brief asks.
+- **Low** keeps the silhouette, banding, wounds and flashes.
+
+**Where it falls short of "the most important visual in the game"** (my estimate: about a third of the way there):
+1. **Cost** (above): the raymarched tiers are 5–15× over budget. Nothing else matters until this is fixed.
+2. **Cloud surface quality:** the billows are soft and "smoky" at 960×540, with no crisp cauliflower edges, no wispy fractal fringe, and a fairly uniform khaki-gold where lit. The IGN dither shows as grain without TAA (the captures use FXAA for determinism). The striations are too regular: they read as stacked plates at a glance.
+3. **Wounds:** at dusk they read as glowing smears and blobs more often than as torn seams. They are not yet clearly *rents* (dark edges, light pouring out, motes peeling off visibly at the near ones). The held motes (`GlimmerField`) are human-scale and so sub-pixel at storm distance. The storm has no km-scale "mote streamers" coming off its wounds yet.
+4. **Integration:** the storm does not appear in reflections (the sea reflects the sky only), does not shadow or darken the zone's light, and adds no rain or near-field weather. The horizon sea in front of it is therefore too calm and too unaffected.
+5. **Motion is unproven:** differential rotation, two-phase advection, sinking wounds and flashes all run on the storm clock and are deterministic, but nobody has watched them at frame rate on a GPU. The two-phase cross-fade may "breathe" visibly over `flow_cycle_s`.
+6. **Inside the storm** (Ch20) and very close approaches are untested: the proxy works with the camera inside, but there is no near-field detail.
+7. The lightning is glow only: no bolt geometry, no exposure flash (the colour script wants 2.0× exposure for 2 frames in Ch8).
+
+**What M2 must add** (in priority order):
+1. **Make the body affordable.** Render it at half or quarter resolution into its own buffer (a compositor effect or SubViewport) with temporal reprojection and a depth-aware upsample. Replace the hash noise with **baked tileable 3D noise textures** generated in-repo (`tools/` script → `.exr`/`.res`, with PROVENANCE rows): one fetch replaces about 150 ALU ops a sample. Use blue-noise jitter plus TAA, and early-out on opacity. Target ≤ 2–3 ms on High. Measure on the GPU runner (M1-QA-01).
+2. **Surface detail:** an erosion/detail pass with curl-advected high-frequency noise at the cloud boundary only, a powder term, multiple-scattering approximation (octave-scaled extinction), and irregular striations (noise-modulated phase and spacing).
+3. **Wounds as rents:** a dark-edged seam profile, glow that pours *out* (in-scatter into the haze around the rent), km-scale held "streamers" (a storm-scale particle pass or a ribbon mesh) peeling off and sinking toward the sea, plus the zone-scale `GlimmerField` near the camera.
+4. **Integration:** capture the storm into the sky/reflection (a low-res storm-only cubemap or a reflection-probe pass) so the sea reflects it; darken the zone's sun and ambient by the storm's shadow along the light direction; add rain curtains, near-field spray and wind-driven chop that grows as `approach_distance_m` falls (the water's `hymn_wind` can carry part of this).
+5. **Lightning:** branching bolt meshes for close strikes, an exposure flash hook for the colour script's 2-frame flashes, and the sea lit by the strike.
+6. **Cinematics hooks:** an `UndertowStorm` preset per chapter (Ch1 arrival, Ch8 storm wall, Ch20 interior, Ch21 the Letting: wounds turning to `glimmer_lift` and rising via the rule-1 hue lerp), and a timeline/AnimationPlayer track that drives `approach_distance_m`, `intensity` and `force_flash`.
+7. **Art review** against the colour script with paintovers, and the `spawn_wound` usage decision.
 
 ## Gotchas
 - **Keep the node unrotated and unscaled.** The visuals are a top-level child placed at `storm_center()` in world axes.
