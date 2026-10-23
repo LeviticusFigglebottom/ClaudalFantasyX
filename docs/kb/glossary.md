@@ -222,3 +222,9 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 
 ### Added 2026-10-23 (M1-NAR-08)
 - **Element reassignment (ADR 0015, N-15):** Nhoa (Lowlight) is now Ice and Ethren (the Sanctum) is now Glimmer. Hesk (Cloudloom) stays Holy. No temple is frozen. The rows above for Lowlight, Cloudloom, the Sanctum, Nhoa and Ethren are updated to match.
+
+### Added 2026-10-23 (M1-NAR-08, review-sweep-D; ADR 0016, N-18)
+- **Lamp Archive**: the Order's library of Lit Age records in Ansedra, where the founders' ledgers and the full Cantor roll are kept (Ch13).
+- **kept / spent**: the Cantor roll's hidden column. *Kept* Cantors are Saints (Vowbound). *Spent* ones were consumed in the Cistern.
+- **Wakefin**: the Ch15 boss, an Undertow-spawn that follows the first wake out of Ansedra's lagoon. It replaces the Cistern Keeper, which is cut.
+- **the Underreach / the Cistern** (rows above): still canon as places, but never visited. The party learns of them from the Archive.
