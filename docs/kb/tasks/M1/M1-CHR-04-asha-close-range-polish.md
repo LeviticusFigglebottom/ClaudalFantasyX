@@ -78,3 +78,29 @@ Costume and banding are the GPU half's. When both halves are in, the boxes can b
     - Items 1-4 get a pass on the asset side.
     - Re-run the review with GPU 2× captures beside these frames, and record the result in asha_review.md as a new subsection. Do not overwrite §7.3.
 - 2026-10-23 lead: status corrected to doing. The mesh half is merged; the sweep-J progress note's remaining faults are in M1-CHR-07 (mesh, rig and hair) and with the PC session (shadows and materials).
+
+## Notes: PC GPU session, rendering + material half (branch gpu/chr-04-materials)
+
+Done on the GPU (Godot 4.6.3, RX 9070 XT), measured on all ten `asha_*` shots at High; the report is
+`docs/kb/qa/gpu/2026-10-23-chr-04-materials.md`.
+
+- **Shadow terminator (criterion "shadow banding"): fixed for the Asha stage.** `asha_stage.tscn` KeyLight and RimLight
+  `shadow_normal_bias` 1.0 → 2.5. Sweep at 2× High on the face shots: 1.0 bands, 2.0 leaves a faint residue, 2.5 and
+  3.0 are clean; no peter-panning at body scale (feet and staff contact hold in `asha_q34`). Tested
+  (`test_asha_stage_lights_clear_the_shadow_terminator`). No skin-shader change was needed. Other rigs that key a
+  face (Cinematics dialogue rigs, battle cameras) should follow the rule in character_shading.md "Shadows on characters".
+- **Vest (criterion "costume"): material half done.** `cloth.tres` now sets lacquer base 0.55, coat 0.16, strength 0.55
+  (lacquered leather; the shader defaults 0.35 / 0.06 / 1.0 stay for hard lacquer). Tested
+  (`test_asha_vest_lacquer_is_leather_not_plastic`).
+
+**For the cloud agent (mesh, lips, hair cards, textures; not touched here):**
+1. The B (lacquer) channel of `asha_cloth_clothmask.png` is still 1.0 over the whole vest. Add wear (0.6–0.8 on
+   edges, folds and around the toggles) and a leather-grain normal under the coat; the material values above assume
+   that and may come down a little once the mask carries the variation.
+2. Face density on the cheeks and jaw still helps: the normal bias hides the terminator, but more triangles there
+   would let close-up rigs use less bias.
+3. Lips and hair cards: as in the QA-05 report (`docs/kb/qa/gpu/2026-10-23-qa-05-asha.md`).
+4. Baselines: every `asha_*` lavapipe baseline drifts with this branch (see the report); re-approve them together
+   with the mesh work, not separately.
+
+Status stays **doing** until the mesh half lands.

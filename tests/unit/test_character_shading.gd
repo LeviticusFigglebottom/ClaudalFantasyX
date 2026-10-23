@@ -10,6 +10,13 @@ const FIT_SCRIPT := "res://assets_src/characters/shader_test/preintegrated_skin_
 const PRESETS_JSON := "res://game/data/settings/graphics_presets.json"
 const PREWARM_JSON := "res://game/data/settings/prewarm_materials.json"
 const STAGE_SCENE := "res://game/levels/_tests/character_shading/shading_test.tscn"
+const ASHA_STAGE := "res://game/levels/_tests/characters/asha/asha_stage.tscn"
+const ASHA_CLOTH := "res://assets/characters/asha/materials/cloth.tres"
+## Shadow normal bias that clears the shadow-terminator banding on Asha's cheeks at dialogue range
+## (M1-QA-05 / M1-CHR-04 GPU sweep: 1.0 bands, 2.0 leaves a faint residue, 2.5 is clean).
+const MIN_CLOSEUP_NORMAL_BIAS := 2.5
+## Lacquered leather, not patent plastic (M1-CHR-04): the vest coat may not go back to a mirror.
+const MIN_VEST_COAT_ROUGHNESS := 0.12
 const FIT_TOLERANCE := 1e-6
 const PREINT_U_MAX := 2.0
 
@@ -251,6 +258,25 @@ func test_stage_assigns_materials_and_builds_the_low_comparison() -> void:
 
 
 # --- helpers -------------------------------------------------------------------------------------
+
+
+## M1-CHR-04: the Asha close-up stage's shadowed lights carry the terminator-safe normal bias.
+func test_asha_stage_lights_clear_the_shadow_terminator() -> void:
+	var stage := (load(ASHA_STAGE) as PackedScene).instantiate()
+	var lights := stage.find_children("*", "DirectionalLight3D", true, false)
+	assert_true(lights.size() > 0, "the stage has directional lights")
+	for n in lights:
+		var l := n as DirectionalLight3D
+		if l.shadow_enabled:
+			assert_true(l.shadow_normal_bias >= MIN_CLOSEUP_NORMAL_BIAS, "%s normal bias" % l.name)
+	stage.free()
+
+
+## M1-CHR-04: Asha's vest lacquer is a satin coat over a leather-rough base.
+func test_asha_vest_lacquer_is_leather_not_plastic() -> void:
+	var m := load(ASHA_CLOTH) as ShaderMaterial
+	assert_true(float(m.get_shader_parameter("lacquer_coat_roughness")) >= MIN_VEST_COAT_ROUGHNESS, "coat")
+	assert_true(float(m.get_shader_parameter("lacquer_coat_strength")) < 1.0, "partial coat")
 
 
 func _table() -> Dictionary:
