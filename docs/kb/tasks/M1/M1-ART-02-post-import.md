@@ -2,8 +2,8 @@
 id: M1-ART-02
 title: Godot post-import scripts per asset category
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a21af6e9e71ccbfda"
 depends_on: []
 milestone: M1
 request-from: ""
