@@ -1,6 +1,6 @@
 # CONSOLIDATED HANDOFF: start here
 
-**Last updated:** 2026-10-23 ~20:30 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
+**Last updated:** 2026-10-23 ~21:15 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
 A new account, Lead or environment should be able to resume from this file and the files it links. Keep it current after every merge batch (CLAUDE.md §7a).
 
 ## 1. What this is
@@ -54,7 +54,16 @@ These are lost if the container restarts. Re-launch from the task files if so.
   - M1-CHR-09, Asha hair round 4 (crown shell, face-framing lock, lip thickness, doll-like eyes).
 - **Rule learned:** Asha's materials change only through write_materials.py.
 
-## 4c. Latest (Lead, ~20:30 UTC)
+## 4d. Latest (Lead, ~21:15 UTC)
+- **Merged:** M1-NIT-02. The coverage baseline is ratcheted: battle 99.93%, progression 96.52% (4c462ee).
+- **Lead subagents running:**
+  - M1-CHR-10 (Asha round 5);
+  - M1-ART-02 (post-import scripts);
+  - M2-UI-02 + M2-UI-01 (Read panel, bestiary menu, Swell mode menu);
+  - M2-ARC-01 + M2-CMB-01 (Swell carry into **save v6**, unlocks, the other heroes' inputs, Swell in the sim).
+- **Save versions:** v6 is owned by M2-ARC-01. The First Playable session was told not to bump it.
+
+## 4c. Earlier (Lead, ~20:30 UTC)
 - **The full gate is green at fc3940c (ci30):** 1,063 tests, 60/60 shots, Blender --all byte-identical, and the known-failure list is EMPTY.
 - **Merged:**
   - M1-CMB-03 (Read, bestiary, save **v5**, openings; ADR 0023);
