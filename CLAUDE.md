@@ -41,7 +41,7 @@ The full brief is [`SPEC.md`](SPEC.md). Only the Lead edits it, and every change
 
 ### Local checks before you push
 
-`tools/ci_local.sh` runs every CI gate and **is the merge gate while GitHub Actions isn't running** (ADR 0008). If there's no Godot on PATH, run `python3 tools/dev/fetch_godot.py` first. The individual steps:
+`tools/ci_local.sh` runs every CI gate and **is the merge gate while GitHub Actions isn't running** (ADR 0008). In a worktree, set `HYMN_SHOTS=<comma-separated ids>` to the screenshots your change can affect (your own shots, plus any scene or shader you touched); the Lead runs the full manifest on merge. Rendering every shot from every agent at once overloads the shared CPU. If there's no Godot on PATH, run `python3 tools/dev/fetch_godot.py` first. The individual steps:
 
 ```bash
 pip install -r tools/requirements.txt
