@@ -193,7 +193,7 @@ def select(lab: np.ndarray, sel: dict) -> np.ndarray:
 
 
 def region_stats(img: np.ndarray, rect: list[int] | None, sel: dict | None = None) -> dict:
-    """Stats of the selected pixels: median colour (hex + Oklab LCh), L percentiles, column streak."""
+    """Stats of the selected pixels: median colour (hex + Oklab LCh) and L percentiles."""
     sub = crop(img, rect)
     lab = image_oklab(sub)
     m = select(lab, sel or {})
@@ -216,35 +216,21 @@ def region_stats(img: np.ndarray, rect: list[int] | None, sel: dict | None = Non
         "L_p05": float(np.percentile(L, 5)),
         "L_p95": float(np.percentile(L, 95)),
         "C_mean": float(np.mean(C)),
-        "column_streak": column_streak(lab[..., 0], m),
     }
 
 
-def column_streak(L: np.ndarray, m: np.ndarray) -> float:
-    """Vertical-banding score: mean |dL/dx| over mean |dL/dy| between neighbouring selected pixels.
-    Stripes that run top-to-bottom (the cloud march banding) change fast across columns and slowly
-    down them, so they score well above 1; isotropic texture or grain scores about 1."""
-    dx = np.abs(np.diff(L, axis=1))[(m[:, 1:] & m[:, :-1])]
-    dy = np.abs(np.diff(L, axis=0))[(m[1:, :] & m[:-1, :])]
-    if dx.size < 16 or dy.size < 16:
-        return 0.0
-    return float(np.mean(dx) / max(float(np.mean(dy)), 1e-6))
-
-
 def grain(img: np.ndarray, rect: list[int] | None, sel: dict | None = None) -> float:
-    """Pixel-scale grain: the RMS difference between each selected pixel's L and the mean of its 3x3
-    neighbourhood (high-pass). Smooth gradients score ~0; stipple and per-pixel jitter score high."""
+    """Pixel-scale grain (stipple, per-pixel march jitter): the MEDIAN over selected pixels of the
+    larger absolute second difference of L (x or y). A smooth gradient has ~0 second difference and a
+    shape edge only touches a thin line of pixels, which the median ignores; grain lifts every pixel."""
     lab = image_oklab(crop(img, rect))
     L = lab[..., 0]
     m = select(lab, sel or {})
-    pad = np.pad(L, 1, mode="edge")
-    box = sum(pad[1 + dy : 1 + dy + L.shape[0], 1 + dx : 1 + dx + L.shape[1]] for dy in (-1, 0, 1) for dx in (-1, 0, 1))
-    hp = L - box / 9.0
-    inner = m.copy()
-    inner[[0, -1], :] = False
-    inner[:, [0, -1]] = False
-    v = hp[inner]
-    return float(np.sqrt(np.mean(v * v))) if v.size else 0.0
+    d2x = np.abs(L[1:-1, :-2] - 2.0 * L[1:-1, 1:-1] + L[1:-1, 2:])
+    d2y = np.abs(L[:-2, 1:-1] - 2.0 * L[1:-1, 1:-1] + L[2:, 1:-1])
+    mm = m[1:-1, 1:-1] & m[1:-1, :-2] & m[1:-1, 2:] & m[:-2, 1:-1] & m[2:, 1:-1]
+    v = np.maximum(d2x, d2y)[mm]
+    return float(np.median(v)) if v.size else 0.0
 
 
 # ---------------------------------------------------------------- checks
