@@ -2,7 +2,7 @@
 id: M1-QA-05
 title: Render the asha_* and char_* shots on a real GPU to separate renderer artifacts from asset faults
 role: qa
-status: review
+status: done
 reviewer: character
 owner_session: session_01778wbLbDFnRRLTKjnawv3T (PC GPU)
 depends_on: [M1-CHR-03]
@@ -36,3 +36,4 @@ The lavapipe captures of Asha show diagonal shadow banding on the cheek and hars
     - **S1: the report measured the CHR-03 build.** M1-CHR-07 has since changed Asha's face: the smile morph normals, the lip seal and the brows. Before the next §14 face review, re-run the six face shots on the GPU at default and High (a short addendum to this report), to confirm the lip seam and terminator classes still hold.
     - **S2: the lighting rule isn't applied to the game zones yet.** The Haluna mood Sun (haluna_mood.tscn:83, 1.0) and the first-verse Sun (first_verse.tscn:169, default 1.0) light Asha at dialogue range in the first playable. Raised in M2-FP-02 S1 and M2-FP-04 S3.
   - **Nit:** the key evidence PNGs (`cheek_exp.png`, `lips_base_noshadow.png`) exist only on the PC, so a reviewer can't see them. Describe each crop in a sentence, or commit two small downscaled crops under docs/kb/qa/gpu/ (our own renders, not reference images).
+- 2026-10-23 lead: closing on review-sweep-K approve; the should-fixes are in M2-FP-05 (FP), M1-ARC-15 (graphics settings never applied) or the PC queue (QA-05 re-run).

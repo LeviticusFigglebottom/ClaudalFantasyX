@@ -2,7 +2,7 @@
 id: M2-FP-02
 title: Playable Haluna zone (player, collision, camera volumes, villagers, shrine, triggers)
 role: environment
-status: review
+status: done
 owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M1-ENV-01, M1-ARC-06]
 milestone: M2
@@ -55,3 +55,4 @@ request-from: lead
     - **S2: duplicated flag.** haluna_zone.gd:31 hard-codes `&"ch02_met_asha"`. first_playable.json `haluna.intro_flag` already names it, so read it through FirstPlayableConfig, or the two will drift.
     - **S3: no test proves the strip can't be bypassed.** README:63 says "any way up from the beach to the village crosses it", but no test checks that. test_fp_thread only walks straight −X from Beach. The causeway head is on the beach side (README:35), so this is what forces the fight (see M2-FP-04 B1). A small test should walk from BattleReturn to CausewayHead along the lanes and assert the trigger fires.
     - **S4: the 1.5 s load frame (known).** File a task to bake or time-slice HalunaCollision (~550 shapes at load). The router logs it over budget, and SPEC §4.2's 50 ms transition limit applies once prewarm is sliced (M1-RND-15).
+- 2026-10-23 lead: closing on review-sweep-K approve; the should-fixes are in M2-FP-05 (FP), M1-ARC-15 (graphics settings never applied) or the PC queue (QA-05 re-run).

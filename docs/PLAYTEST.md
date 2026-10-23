@@ -8,8 +8,8 @@ This is a rough but complete thread through the first minutes of *Hymn of the Un
 2. **Prologue.** A dead city at dusk, with one line of Rhen's narration.
 3. **Cutscene A, "The Girl on the Beach".** Rhen wakes in the shallows at Haluna. There are two choices; both are fine.
 4. **Haluna, free to walk.** Talk to the three villagers (at the market, the chapel court and the dock). Each one has a line that hints at what a "Cantor" is.
-5. **First battle.** Walking up the beach path toward the village starts a fight against a reef crab and a lantern eel, with Rhen and Asha (Toma in reserve). Win it, and you return to the beach path.
-6. **Save** at the shrine: the glowing teal stone with a shell canopy, near the beach palms. Resting there heals the party and opens the save menu.
+5. **First battle.** Walking up the beach path toward the village starts a fight against a reef crab and a lantern eel, with Rhen and Asha (Toma in reserve). Win it, and you're back on the path just inland of where the fight started.
+6. **Save** at the shrine: the glowing teal stone with a shell canopy, on the third lane into the village (past the tide-wall lanes). Resting there heals the party and opens the save menu.
 7. **The causeway head.** Once you have saved, walk north along the beach, past the dock, to the causeway head at its far end. This plays **Cutscene B, "The First Verse"**, at the Shell Shrine at sunset.
 8. **End card.** Press accept to return to the title. **Continue** loads your save.
 
@@ -18,7 +18,7 @@ This is a rough but complete thread through the first minutes of *Hymn of the Un
 ### Option A: the Godot editor (recommended)
 
 1. Download **Godot 4.6.3 stable**, the standard build (not .NET), for Windows: <https://godotengine.org/download/archive/4.6.3-stable/>. Unzip it anywhere. There is no installer.
-2. Get the project: clone the repository, or download the `claude/first-playable` branch as a ZIP from GitHub and unzip it.
+2. Get the project: clone the repository, or download the `claude/new-session-mj8c3c` branch (the integration branch, with the latest art) as a ZIP from GitHub and unzip it.
 3. Run `Godot_v4.6.3-stable_win64.exe`. In the Project Manager, click **Import**, choose the repository's `project.godot`, and click **Import & Edit**.
 4. **The first open imports every asset, which takes a few minutes.** Wait until the progress bar at the bottom of the editor finishes.
 5. Press **F5** (or the ▶ "Run Project" button at the top right). The game starts at the title.
@@ -55,7 +55,8 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - Cutscene B ends with the bell tolling and a call to battle. **The Drownbell boss isn't built yet**, so the end card comes next.
 - There's no skip for cutscenes yet.
 - Entering Haluna freezes for about a second and a half behind the black fade while the village builds itself. That's expected for now.
-- After a lost battle you return past the trigger, so the fight can be skipped by walking on. Walking back down to the beach and up again offers it once more.
+- After a lost battle (or an escape) you return on the village side of the fight. Choosing "Fight again" replays it, and crossing back toward the beach offers it again. The causeway head is past the beach's north end, so the fight comes up again on the way there until you win.
+- In the field, Escape does nothing. **E** also advances dialogue.
 
 ## Reporting
 

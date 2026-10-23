@@ -2,7 +2,7 @@
 id: M2-FP-03
 title: First-playable flow - prologue, New Game routing, battle hand-off and return, end card
 role: architect
-status: review
+status: done
 owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M1-ARC-06, M1-CMB-08]
 milestone: M2
@@ -55,3 +55,4 @@ New Game → Prologue (Rhen's narration over the dead city) → Haluna beach; a 
 
       The current timings make that unlikely: the end card's 1.5 s hold is longer than FADE_SEC 0.35 plus 4 frames. Still, wait for `not SceneRouter.is_busy()` first, as prologue_scene.gd:89 does, or un-latch when the swap is refused.
     - **S3: no test for a missing request.** No test covers `BattleRequest.submit` without a SceneRouter (battle_request.gd:72 push_error). The request stays pending and the field stays busy. Add a test, or clear `_pending` on that path.
+- 2026-10-23 lead: closing on review-sweep-K approve; the should-fixes are in M2-FP-05 (FP), M1-ARC-15 (graphics settings never applied) or the PC queue (QA-05 re-run).

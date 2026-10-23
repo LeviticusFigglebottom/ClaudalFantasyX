@@ -2,7 +2,7 @@
 id: M1-NIT-01
 title: Small fixes from review-sweep-J (UI-05, QA-06, NAR-12)
 role: qa
-status: review
+status: done
 reviewer: lead
 owner_session: "agent-a0094ffbbf8563d67"
 depends_on: [M1-UI-05, M1-QA-06, M1-NAR-12]
@@ -57,3 +57,4 @@ From the review-sweep-J entries (file:line references there).
   - **Still open (recorded, not blocking):**
     - the `taskset -c 0,1` thread-independence proof run (QA S2);
     - the ch02 `.dlg` "She never says so" source comment.
+- 2026-10-23 lead: closing on review-sweep-K approve; the should-fixes are in M2-FP-05 (FP), M1-ARC-15 (graphics settings never applied) or the PC queue (QA-05 re-run).

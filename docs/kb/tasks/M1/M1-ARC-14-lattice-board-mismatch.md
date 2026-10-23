@@ -2,7 +2,7 @@
 id: M1-ARC-14
 title: Lattice: a save naming another board is frozen, not rewritten
 role: architect
-status: review
+status: done
 reviewer: qa
 owner_session: "agent-a0094ffbbf8563d67"
 depends_on: [M1-ARC-13]
@@ -40,3 +40,4 @@ From the review-sweep-J entries (file:line references there).
   - **Nits:**
     - **N1: `activate_error` still reads `t.activated` directly** (lattice_progress.gd:202), not `has_activated`. Start nodes aren't activatable, so this is harmless, but use the accessor everywhere so the implied start can't be missed later. The same goes for debug_readouts.gd:294, whose count leaves out the implied start.
     - **N2: a frozen save fights without its Lattice gains.** While a save is frozen, `lattice_for` gives no travelers, so `apply_to` adds no stats or skills and the party fights on base stats without being told. Nothing is lost, but say so in architecture.md's "Data tables gate", next to "saving is off".
+- 2026-10-23 lead: closing on review-sweep-K approve; the should-fixes are in M2-FP-05 (FP), M1-ARC-15 (graphics settings never applied) or the PC queue (QA-05 re-run).

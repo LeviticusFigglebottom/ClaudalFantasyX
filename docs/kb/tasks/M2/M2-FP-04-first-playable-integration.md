@@ -2,7 +2,7 @@
 id: M2-FP-04
 title: First-playable integration, Cutscene A and B in game, PLAYTEST.md
 role: lead
-status: review
+status: done
 owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M2-FP-01, M2-FP-02, M2-FP-03]
 milestone: M2
@@ -44,3 +44,4 @@ Wire the thread end to end: boot → title → New Game → prologue → Cutscen
       - a load at Shrine with `ch02_met_asha` set (Cutscene A must not replay).
     - **S3: Asha's face lighting in Cutscene B.** first_verse.tscn:169-173: the Sun has the default `shadow_normal_bias` (1.0) and lights Asha at dialogue range. character_shading.md:184 says 2.5–3.0 for lights that key a face. Same issue as M2-FP-02 S1.
     - **N1: hard-coded hand-off.** first_verse_scene.gd:12-13 hard-codes the scene id and the end-card path, while every other hand-off is in first_playable.json. Move them there.
+- 2026-10-23 lead: closing: the B1 PLAYTEST.md inaccuracies were fixed by the Lead on merge (shrine location, win and loss return points, branch); the test gaps are in M2-FP-05.

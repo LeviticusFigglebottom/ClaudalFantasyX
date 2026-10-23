@@ -2,7 +2,7 @@
 id: M1-RND-12
 title: Haluna sky: quality tiers, cubemap update policy, compositing fix
 role: rendering
-status: review
+status: done
 owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-12-sky)"
 depends_on: [M1-ENV-01]
 milestone: M1
@@ -54,3 +54,4 @@ Measured on an RX 9070 XT; full report `docs/kb/qa/gpu/2026-10-23-rnd-12-sky.md`
   - **Nits:**
     - The projections to the RTX 3060 and GTX 1060 are scaled from the RX 9070 XT. The reference cards are still unmeasured (STATUS risk 3).
     - The half-res sky pass is sized from the window, not `render_scale` (report "After"). FSR2 or a lower render scale therefore doesn't make the sky cheaper. Worth a line in graphics_settings.md.
+- 2026-10-23 lead: closing on review-sweep-K approve; the should-fixes are in M2-FP-05 (FP), M1-ARC-15 (graphics settings never applied) or the PC queue (QA-05 re-run).

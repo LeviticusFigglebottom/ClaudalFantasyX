@@ -2,7 +2,7 @@
 id: M2-FP-01
 title: Cutscene sequencer that plays .dlg cues on a CutsceneStage
 role: architect
-status: review
+status: done
 owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M1-ARC-05, M1-ARC-07]
 milestone: M2
@@ -37,3 +37,4 @@ Play a compiled `.dlg` scene end to end in the game: camera cues through the Fie
     - **N1: unhandled kwargs.** `@anim ... loop=` and a target on a non-`look_at` clip (:375-377), and `@vfx form=` (:414-431), are ignored without a warning. cutscenes.md's Cue mapping table doesn't list `loop=` or `form=` as ignored. Add them to the table, or `_warn` once.
     - **N2: instant mode skips the leave check.** `_land` in instant mode (:302-304) calls `snap()` with no `is_leaving()` check after it. That's tests-only, but it means instant tests can't see an abort.
     - **N3: hosts can hang.** `_exit_tree` (:107-112) sets `_aborted`, but `play()` stays suspended on a signal that will never fire, so a host awaiting `play()` never resumes. HalunaStory keeps `busy` true (haluna_story.gd:59, 85). That's harmless while host and sequencer are freed together. Note it in cutscenes.md "Guarantees", because a reparented sequencer would strand its host.
+- 2026-10-23 lead: closing on review-sweep-K approve; the should-fixes are in M2-FP-05 (FP), M1-ARC-15 (graphics settings never applied) or the PC queue (QA-05 re-run).
