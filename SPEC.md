@@ -74,7 +74,7 @@ This is a **seed**. The Narrative agent owns `docs/kb/story/` and must expand it
 
 ### 3.5 Story Shape
 
-- **Prologue (in medias res):** the party at the ruins of a dead city at dusk. Rhen narrates, "Listen. This might be the last time I tell it." Then cut back.
+- **Prologue (in medias res):** the party at the ruins of a dead city at dusk. Rhen narrates, "Everyone I'm going to tell you about is still here tonight. Remember that, later." Then cut back.
 - **Act I: The Pilgrimage.** Rhen survives an Undertow attack, washes up, meets Asha's group, and joins as a guardian. They visit temples, attend festivals, and play a sport tournament (the **Reefball** analogue, §6.10). The Undertow attacks a coastal fortress, followed by the first great dance for the dead.
 - **Act II: The Truth.** The Order's corruption is revealed. A wedding becomes a trap. The party is declared heretics. Kerrid is revealed as one of the dead. They reach the Drowned Choir and learn what the Hush really does.
 - **Act III: The Unbinding.** The party refuses the sacrifice. They gain a ship-of-the-air (a restored glimmer-tech vessel, the **Kite**), and optional content opens up. Finale: they dive into the Undertow itself, confront the founders' bound spirits, defeat Sefir, and perform the **Great Unbinding**: releasing *all* glimmer in the world at once.
@@ -519,3 +519,4 @@ It must include the following: a link to this spec, the pillars, the guardrails,
 
 **Version log**
 - v1.0: initial spec
+- v1.1 (2026-10-23): §3.5 prologue line replaced at the human's direction (it echoed the inspiring game's opening line); see ADR 0020 §(g). §16 Q2 answered by the human: MPFB/MakeHuman allowed as a tool, CC0 data only, heavily modified (ADR 0021).

@@ -1,6 +1,6 @@
 # 0020 — Kerrid re-staged (death, bond, face, ending order), the Prologue line replaced, and the sweep-E residuals
 
-- **Status:** proposed (needs Lead sign-off on every row marked **Lead**; the Prologue line is the human's approval, relayed by the Lead on 2026-10-23)
+- **Status:** accepted (Lead sign-off 2026-10-23, including the rows marked Lead)
 - **Date:** 2026-10-23
 - **Roles affected:** Narrative; Cinematics (Ch5, Ch8, Ch15, Ch16 and the Ending staging; E6 blocking); Character Art (Kerrid's face, forearms and asymmetry, before his sheet is drawn); Art and Rendering (color script `ending_unbinding` and `ending_dock`, haluna.md H10); Audio (the Ending cue order); Combat (the Ch7 story match has no cup outcome); Lead (the SPEC §3.5 Prologue line amendment)
 - **Author role:** Narrative (M1-NAR-09 and M1-NAR-08, review-sweep-E)
@@ -140,3 +140,5 @@ The cleric's warm first meeting invokes the heroine's spent parent, as in the in
 - **Combat:** the Ch7 story match result gives a reward only and doesn't branch.
 - **Lead:** apply the SPEC §3.5 Prologue amendment, and sign off the rows marked **Lead** above.
 - **Supersedes:** in 0016, "Kerrid ... the promise that kept him walking" and the Ch16 visit; in 0017, the Prologue row's acceptance of the old line ("accepted, as the human's brief") and the Kerrid roster row's "Pass"; in decisions_log, N-16's E1 ordering (Kerrid's cue moves to E3) and N-19's "E3" lantern note (it is now E2).
+
+- 2026-10-23 Lead: accepted. The prologue line was approved by the human on 2026-10-23 and applied to SPEC §3.5 (v1.1).
