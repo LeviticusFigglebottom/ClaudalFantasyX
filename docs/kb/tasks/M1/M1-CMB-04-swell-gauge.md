@@ -2,8 +2,8 @@
 id: M1-CMB-04
 title: Swell gauge modes and Rhen's interactive Swell input
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: worktree-agent-af3aaf0993fbaba55
 depends_on: [M1-CMB-01]
 milestone: M1
 request-from: ""
