@@ -20,6 +20,8 @@ var zone: Node3D
 var director: FieldCameraDirector
 var player: FieldController
 var events: Array[Dictionary] = []
+## Shot ids seen by test coroutines resuming from `await director.blend_finished`.
+var resumed: Array[StringName] = []
 
 
 func before_each() -> void:
@@ -482,7 +484,80 @@ func test_a_superseded_cut_does_not_fire() -> void:
 	_free()
 
 
+func test_a_cut_issued_from_a_blend_finished_await_lands_on_a_later_update() -> void:
+	var finished: Array[StringName] = []
+	director.blend_finished.connect(func(s: CameraShot) -> void: finished.append(s.id))
+	var a := _scripted_shot()
+	var b := _scripted_shot()
+	b.id = &"cutscene_reaction"
+	b.position = Vector3(-4, 1.0, 6)
+	for first_blend: float in [SCRIPT_BLEND_SEC, 0.0]:
+		finished.clear()
+		resumed.clear()
+		director.play_shot(a, first_blend)
+		_sequencer_then_cut(b)
+		var elapsed := 0.0
+		while resumed.is_empty() and elapsed < SETTLE_SEC:
+			director.update(DT)
+			elapsed += DT
+		var how := "after a %s" % ("blend" if first_blend > 0.0 else "cut")
+		assert_eq(resumed, [SCRIPTED] as Array[StringName], "the sequencer resumed inside the emit " + how)
+		assert_eq(finished, [SCRIPTED] as Array[StringName], "its cut does not land in the same update " + how)
+		assert_false(director.is_settled(), "the cut is owed " + how)
+		assert_true(director.camera.global_position.distance_to(a.position) < POS_TOLERANCE_M, "a's pose " + how)
+		director.update(DT)
+		assert_eq(finished, [SCRIPTED, &"cutscene_reaction"] as Array[StringName], "lands next update " + how)
+		assert_true(director.camera.global_position.distance_to(b.position) < POS_TOLERANCE_M, "b's pose " + how)
+	_free()
+
+
+func test_leaving_the_tree_pays_an_owed_blend_finished() -> void:
+	resumed.clear()
+	director.play_shot(_scripted_shot(), SCRIPT_BLEND_SEC)
+	director.update(DT)
+	assert_true(director.is_blending())
+	_await_landing()
+	_host().remove_child(zone)
+	assert_eq(resumed, [SCRIPTED] as Array[StringName], "the awaiting coroutine resumed instead of hanging")
+	assert_true(director.is_settled())
+	_free()
+
+
+func test_no_player_still_applies_shots_and_lands() -> void:
+	var finished: Array[StringName] = []
+	director.blend_finished.connect(func(s: CameraShot) -> void: finished.append(s.id))
+	director.target = null
+	var shot := _scripted_shot()
+	director.play_shot(shot, SCRIPT_BLEND_SEC)
+	_settle()
+	assert_eq(finished, [SCRIPTED] as Array[StringName], "the blend lands without a player")
+	assert_true(director.camera.global_position.distance_to(shot.position) < POS_TOLERANCE_M, "pose applied")
+	var court := (zone.get_node("CameraVolumes/CourtVolume") as CameraVolume).shot.duplicate() as CameraShot
+	court.follow_smoothing = 0.0
+	var pan := director.evaluate(court, DT)
+	assert_true(pan.forward().dot((court.look_at - court.position).normalized()) > AIM_TOLERANCE, "pans at look_at")
+	var dolly := (zone.get_node("CameraVolumes/CausewayVolume") as CameraVolume).shot
+	assert_eq(director.dolly_progress(dolly), clampf(dolly.progress_offset, 0.0, 1.0), "dolly holds its offset")
+	director.release(0.0)
+	director.update(DT)
+	assert_eq(director.active_shot_id(), LANE, "release hands back to the lane")
+	assert_eq(finished, [SCRIPTED, LANE] as Array[StringName])
+	_free()
+
+
 # --- helpers -------------------------------------------------------------------------------------
+
+
+## A sequencer step: await the landing, then cut to `next` from inside the emit.
+func _sequencer_then_cut(next: CameraShot) -> void:
+	await director.blend_finished
+	resumed.append(director.active_shot_id())
+	director.play_shot(next, 0.0)
+
+
+func _await_landing() -> void:
+	await director.blend_finished
+	resumed.append(director.active_shot_id())
 
 
 func _scripted_shot() -> CameraShot:

@@ -34,3 +34,13 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
   - **S2: hang paths still open.** (a) `update()` returns early with no target (:230), so `blend_finished` never fires. This is filed as M1-ARC-09, but field_camera.md should name it as a hang condition until ARC-09 lands. (b) A paused tree, or `auto_update=false` with no driver: documented ("needs the director updating"). (c) The director freed mid-await (a zone unload during a cutscene) leaves the coroutine hanging forever. The future sequencer should race `blend_finished` against `tree_exiting`, or the contract should say so. (d) A sequencer that awaits later than the call must check `is_settled()` first (documented; keep it in the sequencer review checklist).
   - S3: `snap()` emits `blend_finished` synchronously (:134–136, through `update(0.0)` and the `was_blending` branch). That is allowed by the doc, but the signal doc comment at :21–26 lists only play_shot/release/volume change. Add "snap() emits before returning".
   - Nit: the `@camera` cue doc says a missing `blend=` is a cut, while `@camera release` without `blend=` blends. This is documented in both tables, but writers will trip on it, so add a one-line example to dialogue_format.md showing both.
+- 2026-10-23 architect (sweep-D fixes):
+  - **S1:** `update()` now applies the pose, then snapshots and clears the landed/owed flags, then emits `blend_finished` last, so a move issued from a handler lands on a later `update()`. Test: `test_a_cut_issued_from_a_blend_finished_await_lands_on_a_later_update` (a real `await`, after both a blend and a cut; it fails on the old code on the blend path).
+  - **S2:**
+    - (a) Fixed here, which ticks M1-ARC-09's first AC. Without a target, `update()` skips the volumes but evaluates, applies and emits; `aim_point`, orbit and dolly fall back to the shot's `look_at` or `progress_offset`.
+    - (b) The paused-tree and `auto_update=false` driving rule is documented on `update()` and in field_camera.md.
+    - (c) `_exit_tree` ends a move still in progress and emits the owed `blend_finished`; the sequencer checks `is_inside_tree()` when it resumes.
+    - (d) The `is_settled()` check-before-await pattern is in field_camera.md, flagged for the sequencer review checklist.
+  - **S3:** the signal doc and field_camera.md state that `snap()` emits synchronously.
+  - **Nit:** dialogue_format.md has a shot-cuts / release-blends example.
+  - New tests: S1, exit-tree, no-player.

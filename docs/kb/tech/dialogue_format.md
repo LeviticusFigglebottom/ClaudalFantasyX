@@ -129,6 +129,15 @@ Asha [tender]: Vey ennu, vey ennu, #line:ch03_verse_042 #sung #lamptongue #notr 
 
 **The vocabulary is data: [`game/data/dialogue/cues.json`](../../../game/data/dialogue/cues.json).** The compiler rejects an unknown cue, the wrong number of positional args, an unknown `key=`, or a value of the wrong type or outside its option set. The validator checks the file's own shape. To add a cue, key, or option value, add it to `cues.json` (Cinematics and Systems), then to this table. Arg types: `id` (letters, digits, `_`), `number`, `int`, `bool`, `string`, `emotion` (from `emotions.json`), and `enum` (inline `values`, or a named `set`). `min`/`max` bound numbers. `one_of` means exactly one of the named args/keys, and `requires` means a key needs another. `reserved` lists first-arg values that are commands rather than ids (`@music silence`, `@camera release`); one given as `{doc, kwargs}` allows only those keys. The `camera_eases` set mirrors the eases in `game/data/world/field_camera.json`, and the validator fails when they drift apart.
 
+**The camera default differs between a shot and a release.** Without `blend=`, a shot *cuts*, but a release *blends*:
+
+```
+@camera H06                 # cut to H06
+@camera H06 blend=1.5       # blend to H06 over 1.5 s
+@camera release             # blend back to the field camera (the volume's own blend)
+@camera release blend=0     # cut back
+```
+
 | Cue | Args (`[ ]` optional) | Keys | Meaning |
 |---|---|---|---|
 | `@camera` | `shot` | `blend=sec`, `ease=<camera_eases>`, `grade=<grades>` | Cut (`blend` 0 or none) or blend to an authored shot. `ease=` picks the blend curve (a `field_camera.json` ease; empty = the shot's own). `grade=` also blends the color grade to that color-script frame. **`release` is reserved**: `@camera release [blend=sec] [ease=]` is not a shot, it hands the camera back to the field volumes (`DialogueStep.is_camera_release()`; no `grade=`). Without `blend=` the hand-back *blends* with the volume's resolved blend; `blend=0` cuts. Never name a shot `release`. Contract: [field_camera.md](field_camera.md#scripted-shots-the-cutscene-contract-m1-arc-05). |
