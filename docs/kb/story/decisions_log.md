@@ -70,7 +70,7 @@ Small canon calls that Narrative owns: answers to other roles' open questions an
 - **Answer:** Sefir's goal is **the Long Stillness**: the sea held still forever, with himself as its heart. The old two-word name was a one-word swap of a Calm compound already on the banned list, and it is now on `tools/banned_terms.txt` too. **Last Calm** (the Order's promise) stays, as the Order's own phrase. Don't coin any other Calm compound.
 - **Why:** "Stillness" is the Order's own vocabulary (the Still Water, the Stilling, "Be level. And still."), so the antagonist's dream sounds like his church's creed taken to its end. That is exactly what it is. Updated: bible §11, `characters/sefir_aurane.md`.
 
-### N-11. The first verse is a Velamir family lullaby, and Dace knew Imra before she was named
+### N-11. The first verse is a Velamir family lullaby, and Dace ~~knew Imra~~ heard Imra hum it before she was named (heading corrected by N-24)
 - **Answer:** an earlier Velamir Cantor sang the first verse toward home from the Shell Shrine door, and the women of the line have hummed its tune as a lullaby ever since, without the words. Imra hummed it as a girl, long before she was named. ~~**Dace** met her~~ **Dace** heard her (**corrected 2026-10-23 by N-23:** he never learned her name) years before Rhen was born, as a young wright trading salvage along the Low Reaches and putting in at Haluna. He heard her hum it, took the tune home to Oruvel, and hummed it to Rhen every night until he left. ~~That old friendship is also why he went with her as a guardian in 1001.~~ (**Withdrawn by N-23:** there was no friendship and no guardianship; they met only on the Corrow stair in 1001.) Asha was hummed it every night until she was seven, heard it sung once from the door, and forgot it until Ilun gave it back.
 - **Why:** N-08 had Dace learn it "on the pilgrimage", but he never came home from that pilgrimage, and he hummed it to Rhen before it. The slice's central reveal depends on this, so it has to hold. Supersedes N-08's last sentence. Updated: bible §6, `characters/rhen_sallow.md`, `characters/asha_velamir.md`, `vowbound.md` §1, and ch03's source comments and line 053.
 
@@ -152,7 +152,7 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
 
 ### N-21. Kerrid is re-staged; the Ending order is Imra, Dace, Kerrid; the Prologue line is replaced (ADR 0020)
 - **Answer:** [ADR 0020](../decisions/0020-kerrid-restaging.md), ~~proposed for Lead sign-off~~ **accepted by the Lead 2026-10-23** (noted in N-23).
-  - **Kerrid was never a guardian.** He was the ~~Stillguard captain of the Corrow wall~~ captain of Corrow's fisher stair-watch (**corrected by N-23**). In 1001 AL ~~Imra and Dace were his guests for eight days~~ he walked Imra to Coilspire and drank with his hired diver Dace for the same eight days (**corrected by N-23**; they were strangers) during the Coilspire trial. When the Undertow came he held the Fisher Stair open, got them both up, and was taken by the sea at its foot holding the hand-line. Dace reached back for him and missed. He never went to the Choir and never fought Sefir.
+  - **Kerrid was never a guardian.** He was the ~~Stillguard captain of the Corrow wall~~ captain of Corrow's fisher stair-watch (**corrected by N-23**). In 1001 AL ~~Imra and Dace were his guests for eight days~~ he ~~walked Imra to Coilspire and drank with~~ opened his wall-gate for Imra on the Coilspire path and held the line of (**corrected by N-24**) his hired diver Dace for the same eight days (**corrected by N-23**; they were strangers) during the Coilspire trial. When the Undertow came he held the Fisher Stair open, got them both up, and was taken by the sea at its foot holding the hand-line. Dace reached back for him and missed. He never went to the Choir and never fought Sefir.
   - **What keeps him is a watch, not a promise:** the stair-law "first down the stair, last up it". There are no promises to watch Asha or raise Rhen, and he never sought either child. He met the pilgrimage at Pemakar on his way to Corrow.
   - **Face:** bare and weathered, both eyes clear, no mask. His scars are rope-burns on his hands and forearms (his death-wounds), and the left forearm is wrapped.
   - **Ch5** line: "I held a stair for your mother once." **Ch8:** he works the stair's foot, and a fishwife says "Captain?". **Ch15:** the confession is about Corrow. **Ch16:** no visit to where he died; he walks last on the Rim, and at the Choir says "I carried her up so you could do this."
@@ -175,11 +175,11 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
 ## 2026-10-23 (narrative, M1-NAR-11): review-sweep-F fixes
 
 ### N-23. Dace and Imra are strangers until the Corrow stair; Kerrid is a fisher-watch captain; the sweep-F residuals (ADR 0022)
-- **Answer:** [ADR 0022](../decisions/0022-dace-imra-strangers-sweep-f.md), proposed for Lead sign-off. The decision that Dace is not Imra's guardian is the Lead's.
+- **Answer:** [ADR 0022](../decisions/0022-dace-imra-strangers-sweep-f.md), ~~proposed for Lead sign-off~~ **accepted by the Lead 2026-10-23**, including the Sefir and Kesh and Ch3 recognition residuals (noted in N-24). The decision that Dace is not Imra's guardian is the Lead's.
   - **Dace was never Imra's guardian and never walked her road.** He heard her hum the lullaby on Haluna's dock as a girl and never learned her name. In 1001 he was Kerrid's hired diver at Corrow while she was there for the Coilspire trial, and they never met. In the storm she went down the Fisher Stair into the sea for him, and Kerrid died holding the stair for them both. She gave him her comb to carry home to Asha. He began a hull at Hollowmere and sailed into the storm after her, to repay the debt: first down the stair.
   - **Kerrid** was the captain of Corrow's conscripted fisher **stair-watch**, never a Stillguard officer. He has no rank, title or fame, and there is no "Hero of Corrow". The stair-law and "Stair's clear." are the watch's. Only Corrow's old watch knows his face. Sefir sees what he is, not who.
   - **Toma** was at Ansedra 997–1002 and on the Corrow wall 1002–1009. He was sworn as Asha's guardian at her naming, at fifteen.
-  - **Ch9:** Kerrid is bringing up the drowned at the stair foot during the Ebbing (a practical cause, and the tell is dropped). At dawn: "Somebody's still below."
+  - **Ch9:** Kerrid is bringing up the drowned at the stair foot during the Ebbing (a practical cause, and the tell is dropped). At dawn: "Somebody's still below." (**N-24:** alone, not with the old watch; looking out to sea, not at Asha.)
   - **Light:** the rope-burns are `glimmer_held`, from Ch10 on, never in Ch5 or Ch8. They lerp to lift at H09.
   - **E2:** Dace sees Kerrid; one shake of the head; no words.
   - **Accepted, with reasons in the ADR:** Sefir and Kesh as the founding couple; Rhen's recognition of the first verse in Ch3.
@@ -187,3 +187,27 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
   - **ADR 0020 was accepted by the Lead on 2026-10-23** (N-21 is marked).
 - **Why:** sweep F found Dace's guardianship to be the largest remaining echo (the Lead's call), and Kerrid's new fame to be an echo of the mentor whose name precedes him. It also left consistency gaps in Toma's timeline, Kerrid's face, his reason to stay, and his light.
 - **Supersedes:** N-02 item 4's "her mother's guardian"; N-11's "Dace met her" and "why he went with her as a guardian"; N-21's "Stillguard captain" and "guests for eight days" (each marked inline).
+
+---
+
+## 2026-10-23 (narrative, M1-NAR-11 reopened): review-sweep-G fixes
+
+### N-24. The Ch3 lantern link is cut; Kerrid works Dace's line and keeps Imra's gate; the three dead never share a frame (ADR 0022 append note)
+- **Answer:** recorded in the review-sweep-G append note on [ADR 0022](../decisions/0022-dace-imra-strangers-sweep-f.md), which the Lead accepted on 2026-10-23 with the Sefir and Kesh and Ch3 recognition residuals.
+  - **Ch3 game text (B1, B2):**
+    - Toma was at Ansedra in 1001: "I was at Ansedra then, at the temples. I heard of it by letter." (`ch03_verse_061`, replacing 010).
+    - He has guarded Asha three years. Before that, home on leave, he had to find her in the net racks (`ch03_verse_062`, replacing 024). "Since she was nine" is gone from the game and the docs.
+  - **Lead verdict (B3):** `ch03_verse_051`/`052` ("Your father. The one with the lantern." "Yeah.") are cut. Act I never voices Asha's link between the lantern and Rhen's father. The Ch2 stillness stays wordless, and the link surfaces only in Kerrid's Ch15 confession ("A man with that lantern brought me this. I was seven.").
+  - **S5:** Asha's line now ends "until tonight" (`ch03_verse_063`, replacing 053), so "he" can no longer read as Dace.
+  - **S1, Kerrid and Dace:** they did not drink together. For eight low tides they worked the rings, Dace under the water and Kerrid on the bottom step holding his line. "Dace slouched" stays.
+  - **S2, Kerrid and Imra:** he kept the stair-watch's wall-gate on the Coilspire path and opened it for her at dawn and dusk. They spoke at the gate, and he never walked beside her.
+  - **S3:** "Somebody's still below." is said looking south, out to sea, not at Asha. "Below" is Imra under the storm and the held dead.
+  - **S4:** in the Ch9 cutaway Kerrid is alone at the stair foot. The old watch is at the Ebbing on the shore.
+  - **S6:** Dace's sleeves were torn on the stair and Imra's escort saw his line-marks. A hunted Saltwright going home brings the Order to his son, so he never went home. His one message asked **Mother Kell** to keep Rhen, and she raised him from eight to nineteen. The player reads this in Dace's Ch17 logs.
+  - **S7:** Toma came to the Corrow wall in 1002, at twenty-one.
+  - **S8:** Kerrid's walk to Corrow began when the Undertow stirred early this year, not at Asha's naming.
+  - **S9:** Rhen learns Dace's motive from the Ch17 logs, not at the Choir.
+  - **S11:** act3_ending §0 rule 8. Imra, Dace and Kerrid never share a frame from H02 to E3, and E2's look is a shot and a reverse.
+  - **Nits:** voice_guide's early slouch sample is cut; the heading of N-11 and the status in N-23 are corrected inline.
+- **Why:** review-sweep-G found that the shipped Ch3 text still contradicted ADR 0022's timeline, and that the early lantern link, the drinking, the daily escort, the gaze on Asha and a three-dead frame each carried a trace of the inspiring game.
+- **Supersedes:** N-21's "walked Imra to Coilspire and drank with" (marked inline); N-23's Ch9 staging, which now carries an inline note.
