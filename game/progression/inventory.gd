@@ -91,8 +91,14 @@ func facets() -> FacetInventory:
 
 ## Makes the backing data canonical after a load: int counts, no empty stacks, unknown ids
 ## dropped (with a warning) and over-cap stacks clamped. Returns the dropped ids, sorted.
+## M1-ARC-13 (review-sweep-I): while the item tables are broken (ItemDB.items_problem) every id
+## would read as unknown, so nothing is changed and [] is returned, with a push_error.
 func normalize() -> Array[String]:
 	var dropped: Array[String] = []
+	var problem := db.items_problem()
+	if problem != "":
+		push_error("Inventory: not normalizing; the item tables are broken (%s)" % problem)
+		return dropped
 	for k: Variant in counts.keys():
 		var key := str(k)
 		var iid := StringName(key)

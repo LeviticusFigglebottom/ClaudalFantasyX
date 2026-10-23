@@ -271,7 +271,7 @@ static func apply_lattice_cheat(source: Object, cfg: Dictionary) -> Dictionary:
 		balances[cid] = grant_movement(progress, cid, int(cfg.get("movement_points", 0)))
 	var facets := grant_facets(progress, target["inventory"] as FacetInventory, int(cfg.get("facets_each", 0)))
 	if bool(target["persist"]):
-		Game.state.lattice = progress.to_dict()
+		progress.save_into(Game.state)
 	return {"characters": balances, "facets": facets}
 
 

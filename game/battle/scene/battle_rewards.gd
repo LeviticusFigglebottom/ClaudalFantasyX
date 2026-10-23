@@ -26,5 +26,6 @@ func award_victory(ctl: BattleController) -> Array[Dictionary]:
 		var moves_text := tr("HUD_RESULT_MOVES_FMT").format({"n": moves}) if moves >= 0 else tr("HUD_RESULT_NO_LATTICE")
 		rows.append({"label": label, "xp_text": tr("HUD_RESULT_XP_FMT").format({"xp": xp}), "moves_text": moves_text})
 	if ctl.persist_progress and progress != null and ctl.fixture == null:
-		Game.state.lattice = progress.to_dict()
+		# M1-ARC-13: refused (the save keeps its progress) while the Lattice tables are broken.
+		progress.save_into(Game.state)
 	return rows
