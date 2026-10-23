@@ -4,7 +4,7 @@
   "emotions": {
     "neutral": {"mouth_smile": [0.08, 0.07]},
     "soft_smile": {"mouth_smile": [0.35, 0.32], "cheek_raise": 0.15, "lid_squint": 0.10},
-    "smile": {"mouth_smile": [0.70, 0.64], "cheek_raise": 0.45, "lid_squint": 0.25, "lip_upper_up": 0.10},
+    "smile": {"mouth_smile": [0.70, 0.64], "cheek_raise": 0.60, "lid_squint": 0.30, "lip_upper_up": 0.10},
     "laugh": {"mouth_smile": [0.90, 0.82], "cheek_raise": 0.70, "jaw_open": 0.35, "lid_squint": 0.50, "brow_inner_up": 0.10},
     "worried": {"brow_inner_up": 0.60, "brow_down": 0.15, "mouth_press": 0.20, "mouth_frown": 0.15},
     "sad": {"brow_inner_up": 0.70, "lid_close": 0.25, "mouth_frown": 0.40},
