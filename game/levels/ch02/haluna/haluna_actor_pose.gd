@@ -19,12 +19,28 @@ extends Node3D
 var skeleton: Skeleton3D
 var model: Node3D
 
+var _materials_assigned := false
+
 
 func _ready() -> void:
 	apply()
 
 
+## Replaces the imported materials (once). M2-FP-05: loading them cost ~1 s on the main thread, so
+## HalunaZone.prebuild() calls this off the tree, on the thread that instantiates the zone.
+func assign_materials() -> void:
+	if _materials_assigned:
+		return
+	_materials_assigned = true
+	model = get_child(0) as Node3D if get_child_count() > 0 else null
+	if model != null:
+		_assign_materials()
+
+
+## Assigns the materials (unless done already) and poses the skeleton. Needs the tree (the pose is
+## measured in global space, where the skeleton's bone transforms are up to date).
 func apply() -> void:
+	assign_materials()
 	model = get_child(0) as Node3D if get_child_count() > 0 else null
 	if model == null:
 		return
@@ -32,7 +48,6 @@ func apply() -> void:
 	if found.is_empty():
 		return
 	skeleton = found[0] as Skeleton3D
-	_assign_materials()
 	skeleton.reset_bone_poses()
 	model.position = Vector3.ZERO
 	var rel := global_basis.orthonormalized().inverse() * skeleton.global_basis.orthonormalized()

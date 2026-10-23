@@ -12,6 +12,8 @@ extends Node3D
 ##   Bounds  an invisible wall `wade_m` out from the shoreline (left open at `shore_gaps`, where the
 ##           dock crosses it) and walls on the other three edges of `walk_rect`.
 ## Deterministic (the terrain and the dresser are seeded) and built once, after the dresser.
+## M2-FP-05: build() also works off the tree (HalunaZone.prebuild runs it on the instantiating
+## thread), so every placement is taken from local transforms (frame_in), never global ones.
 
 signal built
 
@@ -125,7 +127,7 @@ func _build_props() -> void:
 		var piece := child as Node3D
 		if piece == null or piece is MultiMeshInstance3D:
 			continue
-		var p := piece.global_position
+		var p := _local(piece).origin
 		if not reach.has_point(Vector2(p.x, p.z)):
 			continue
 		var kind := piece_kind(piece)
@@ -160,12 +162,12 @@ static func piece_kind(piece: Node) -> String:
 static func local_bounds(piece: Node3D) -> AABB:
 	var out := AABB()
 	var first := true
-	var to_local := piece.global_transform.orthonormalized().affine_inverse()
+	var to_local := piece.transform.orthonormalized().affine_inverse()
 	for n in piece.find_children("*", "MeshInstance3D", true, false):
 		var mi := n as MeshInstance3D
 		if mi.mesh == null or String(mi.name).ends_with(LOD_SUFFIX):
 			continue
-		var a := (to_local * mi.global_transform) * mi.get_aabb()
+		var a := (to_local * frame_in(mi, piece.get_parent())) * mi.get_aabb()
 		out = a if first else out.merge(a)
 		first = false
 	return out
@@ -182,7 +184,7 @@ func _add_box(piece: Node3D, inset: float) -> void:
 func _add_local_box(piece: Node3D, centre: Vector3, size: Vector3) -> void:
 	var box := BoxShape3D.new()
 	box.size = size
-	var frame := piece.global_transform.orthonormalized()
+	var frame := _local(piece).orthonormalized()
 	_add_shape(props, box, Transform3D(frame.basis, frame * centre))
 
 
@@ -195,7 +197,7 @@ func _add_ramp(piece: Node3D, from: Vector2, to: Vector2, width: float) -> void:
 	var centre := (
 		Vector3((from.x + to.x) * 0.5, (from.y + to.y) * 0.5, 0.0) + pitch * (Vector3.DOWN * ramp_thickness_m * 0.5)
 	)
-	var frame := piece.global_transform.orthonormalized()
+	var frame := _local(piece).orthonormalized()
 	_add_shape(props, box, Transform3D(frame.basis * pitch, frame * centre))
 
 
@@ -203,7 +205,7 @@ func _add_cylinder(piece: Node3D, radius: float, height: float) -> void:
 	var cyl := CylinderShape3D.new()
 	cyl.radius = radius
 	cyl.height = height
-	_add_shape(props, cyl, Transform3D(Basis.IDENTITY, piece.global_position + Vector3.UP * height * 0.5))
+	_add_shape(props, cyl, Transform3D(Basis.IDENTITY, _local(piece).origin + Vector3.UP * height * 0.5))
 
 
 func _add_trimesh(piece: Node3D) -> void:
@@ -213,7 +215,25 @@ func _add_trimesh(piece: Node3D) -> void:
 			continue
 		var shape := mi.mesh.create_trimesh_shape()
 		if shape != null:
-			_add_shape(props, shape, mi.global_transform)
+			_add_shape(props, shape, _local(mi))
+
+
+## `n`'s transform in `root`'s frame (`root` an ancestor of `n`; null = the topmost ancestor). Unlike
+## global_transform it also works off the tree.
+static func frame_in(n: Node, root: Node) -> Transform3D:
+	var xf := Transform3D.IDENTITY
+	var at := n
+	while at != null and at != root:
+		if at is Node3D:
+			xf = (at as Node3D).transform * xf
+		at = at.get_parent()
+	return xf
+
+
+## `n`'s transform in this node's frame, the frame the shapes are added in (via `props`, `bounds`).
+func _local(n: Node) -> Transform3D:
+	var root := get_parent()
+	return frame_in(self, root).affine_inverse() * frame_in(n, root)
 
 
 func _add_shape(body: StaticBody3D, shape: Shape3D, xf: Transform3D) -> void:
