@@ -366,10 +366,6 @@ func _resolve_on(actor: BattleCombatant, target: BattleCombatant, sk: Dictionary
 	var power := int(sk.get("power", 0))
 	var element := StringName(str(sk.get("element", "none")))
 	var hit := {"target_id": target.id, "hit": true, "crit": false, "amount": 0, "statuses_added": []}
-	if not target.is_alive():
-		# A bounce can never pick a fallen unit, but a second hit on a unit felled by the first can.
-		hit["hit"] = false
-		return hit
 	match kind:
 		&"physical":
 			var chance := Formulas.hit_chance(
