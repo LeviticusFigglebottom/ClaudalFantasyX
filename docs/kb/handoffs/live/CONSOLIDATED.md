@@ -63,7 +63,7 @@
 2. Merge, with lavapipe checks:
    - (`gpu/rnd-18-20-followups` is DONE: merged after ci35 found 0 drift.)
    - `gpu/rnd-21-mouth-fill`: the asha_* shots, plus `python3 tools/dev/verify_blender_builds.py --job asha`; re-approve asha_face_grief after viewing it.
-   - Then `claude/first-playable` (scoped battle, field and FP shots, plus `python3 tools/balance/sim.py --check` for the Drownbell suite).
+   - Then `claude/first-playable` (a trial merge at handoff showed ONE conflict: add/add on `tests/unit/test_vegetation_plant.gd.uid`; take the integration branch's copy with `git checkout --ours`). Run its scoped battle, field and FP shots, plus `python3 tools/balance/sim.py --check` for the Drownbell suite).
    - Then any newer `gpu/*` branch, such as `gpu/m2-rnd-01-undertow` once it's in review.
 3. Run the full gate. Then a review sweep over the review column: M1-ENV-03, RND-15, RND-16, RND-17, RND-18, RND-20, RND-21, CHR-03, CHR-10, M2-CMB-02, M2-NIT-03, M2-UI-01 and M2-UI-02.
 4. **M1-CHR-11 (Asha round 6) is MERGED** (ADR 0025 proposed: the smile weights depart from asha.md §6.3, and Art must amend that row).
