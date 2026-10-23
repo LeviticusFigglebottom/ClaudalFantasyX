@@ -98,6 +98,38 @@ GPU capture-rig shots, before → after, plus the effect on the committed lavapi
 
 No other shot in `tests/screenshots/shots.json` draws the raymarched body.
 
+## Ghosting check in motion (follow-up, same day)
+
+**Result: no ghosting or smearing from `temporal_jitter` or `curl_reuse`, so no fix is needed.**
+
+**Setup.** `tools/gpu_bench/ghost_check.tscn` runs a deterministic sequence on `undertow_test.tscn`:
+- Horizon camera, High preset (FSR2 temporal), 2560×1440.
+- The camera **pans at 30°/s** (about 14 px per frame).
+- An opaque ship-sized box (110×70×20 m at 450 m) crosses in front of the storm body.
+- The storm runs at its **fastest API settings**: `rotation_rad_s` 0.12 and `time_scale` 8, so the eyewall turns about 55°/s.
+- A lightning flash is forced at frame 20.
+- Every quantity steps by a fixed amount per frame, and the water clock is frozen.
+
+**Runs.** 90 history frames at the start pose, then 48 moving frames; frames 8, 16, 24, 32, 40 and 47 are saved.
+- **final:** RND-10 High as shipped (32 steps, `curl_reuse` 2, jitter).
+- **static:** the temporal levers off (44 steps, `curl_reuse` 1, no jitter).
+- **At rest:** each config's frames held still for 64 frames at the same pose, so TAA settles.
+- **Reference:** 48 steps, `curl_reuse` 1, jitter on, held for 128 frames: the common ground truth.
+
+Stats come from `python tools/gpu_bench/ghost_stats.py <dir>`. Each value is linear-light RMSE against the reference, as full frame / storm (above the horizon) / a band around the silhouette that extends 200 px past its trailing, disoccluded edge. Means over the 6 frames:
+
+| | In motion | At rest (same poses) | Motion adds |
+|---|---|---|---|
+| **final** | 0.0161 / 0.0142 / 0.0383 | 0.0157 / 0.0141 / 0.0396 | +0.0004 / +0.0001 / −0.0013 |
+| static | 0.0114 / 0.0101 / 0.0287 | 0.0121 / 0.0107 / 0.0341 | −0.0007 / −0.0006 / −0.0054 |
+
+Per frame, final in motion: 0.0148–0.0178 full and 0.0343–0.0407 in the band, with no trend toward the end of the pan and no spike after the flash.
+
+- **Motion doesn't add error for either config**, and in particular none around the silhouette. A ghost would show up as moving error above at-rest error in the band. Crops of the band (moving vs. at rest, both configs, frame 40) show clean box edges with no trail. The only visible difference is that the per-frame jitter grain integrates slightly less in motion.
+- The final config's constant offset from the reference (about 0.016 vs about 0.012 full frame) exists equally at rest. It's the bias of 32 steps plus curl reuse against 48 steps, the same drift reported above. It isn't a temporal artefact.
+- **The azimuthal streaks at the fastest animation are the cloud's real shape**, not TAA smear. The converged reference, which has no motion history, shows the same streaks. At `time_scale` 8, the differential rotation winds the noise within one flow cycle. That's a look question for cutscenes that push the clock, not a rendering bug.
+- Engine note: the storm is transparent and writes no motion vectors, so TAA reprojects it by camera motion only. That holds up at storm distance (above), but anything close to the camera that drives fast storm motion relative to the view could still smear. It's untested here because the API has nothing faster.
+
 ## Files
 
 - `game/shaders/undertow/undertow_body.gdshaderinc`: baked lattice lookup, fBm and curl; wound-after-density; `curl_reuse`; `jitter_phase`. `undertow_common.gdshaderinc` is untouched, so the Low tier, sea and spray are byte-for-byte as before.
@@ -105,7 +137,7 @@ No other shot in `tests/screenshots/shots.json` draws the raymarched body.
 - `game/data/vfx/undertow.json`: tier parameters and the `noise` section.
 - `assets_src/vfx/undertow/bake_noise3d.py` → `assets/vfx/undertow/undertow_noise3d.png` (+ `.import`, a PROVENANCE row, and an ownership row).
 - Tests: `tests/unit/test_undertow_storm.gd`, `tests/unit/test_undertow_shaders.gd`, `tools/tests/test_undertow_noise.py`.
-- Tools: `tools/gpu_bench/gpu_bench.gd` (`--png-dir`, `--hold-storm`), `run_undertow.sh`, `diff_shots.py`.
+- Tools: `tools/gpu_bench/gpu_bench.gd` (`--png-dir`, `--hold-storm`), `run_undertow.sh`, `diff_shots.py`, `ghost_check.gd/.tscn`, `ghost_stats.py`.
 - Docs: `docs/kb/tech/undertow.md` (tiers, measured cost, gotchas).
 
 ## Follow-ups
@@ -113,4 +145,4 @@ No other shot in `tests/screenshots/shots.json` draws the raymarched body.
 1. Lead: re-approve `undertow_horizon_dusk`, `undertow_eye` and `undertow_night` on lavapipe.
 2. Confirm the projection on a real RTX 3060 / GTX 1060. The shader is now fetch-bound, which older cards handle relatively better than integer multiplies.
 3. If more headroom is wanted, add the half-resolution body (lever a), with a depth-aware composite.
-4. Rendering stream: watch the storm in motion at frame rate. The temporal jitter and the 32-step march were judged on held frames, so check for TAA ghosting on fast lightning flashes.
+4. ~~Watch the storm in motion for TAA ghosting~~: done. No ghosting (see "Ghosting check in motion").
