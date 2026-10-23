@@ -107,6 +107,29 @@ def blur(img: np.ndarray, radius: int) -> np.ndarray:
     return out
 
 
+# M1-CHR-08: id maps (values are labels, not colours) are sampled nearest without mips. Each label's
+# region must be at least ID_MAP_MIN_RUN texels wide along both axes, so a magnified edge stays on
+# whole texels (docs/kb/tech/character_shading.md, the band-id row).
+ID_MAP_MIN_RUN = 2
+
+
+def id_map_min_run(labels: np.ndarray) -> int:
+    """The shortest run of one label along any row or column of a 2D label map."""
+    best = max(labels.shape)
+    for grid in (labels, labels.T):
+        for line in grid:
+            cuts = np.flatnonzero(np.diff(line.astype(np.int64))) + 1
+            edges = np.concatenate([[0], cuts, [line.size]])
+            best = min(best, int(np.diff(edges).min()))
+    return best
+
+
+def check_id_map(name: str, labels: np.ndarray) -> None:
+    run = id_map_min_run(labels)
+    if run < ID_MAP_MIN_RUN:
+        raise SystemExit(f"{name}: a label region is {run} texel(s) wide (id maps need >= {ID_MAP_MIN_RUN})")
+
+
 def write(name: str, img: np.ndarray) -> None:
     path = OUT / name
     pngio.write(path, img)
@@ -536,7 +559,9 @@ def build_sleeve() -> None:
     a = np.clip(alpha * (0.97 + 0.05 * gauze_weave), 0, 1)
     write("sleeve_albedo.png", to_u8(np.concatenate([col, a[..., None]], -1)))
     write("sleeve_clothmask.png", to_u8(np.stack([emb_f, gold_f, np.zeros((h, w)), sheen], -1)))
-    write("sleeve_bandid.png", to_u8(band_id[::2, ::2]))
+    bid = to_u8(band_id[::2, ::2])
+    check_id_map("sleeve_bandid.png", bid)
+    write("sleeve_bandid.png", bid)
     hgt = 2.0 * blur(np.maximum(emb_f, gold_f), 2) + 0.15 * gauze_weave
     write("sleeve_normal.png", height_to_normal(hgt, 1.0))
 

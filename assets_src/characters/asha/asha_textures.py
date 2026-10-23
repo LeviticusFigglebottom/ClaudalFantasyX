@@ -78,6 +78,29 @@ def smoothstep(e0, e1, x):
     return t * t * (3.0 - 2.0 * t)
 
 
+# M1-CHR-08: id maps (values are labels, not colours) are sampled nearest without mips. Each label's
+# region must be at least ID_MAP_MIN_RUN texels wide along both axes, so a magnified edge stays on
+# whole texels (docs/kb/tech/character_shading.md, the band-id row).
+ID_MAP_MIN_RUN = 2
+
+
+def id_map_min_run(labels: np.ndarray) -> int:
+    """The shortest run of one label along any row or column of a 2D label map."""
+    best = max(labels.shape)
+    for grid in (labels, labels.T):
+        for line in grid:
+            cuts = np.flatnonzero(np.diff(line.astype(np.int64))) + 1
+            edges = np.concatenate([[0], cuts, [line.size]])
+            best = min(best, int(np.diff(edges).min()))
+    return best
+
+
+def check_id_map(name: str, labels: np.ndarray) -> None:
+    run = id_map_min_run(labels)
+    if run < ID_MAP_MIN_RUN:
+        raise SystemExit(f"{name}: a label region is {run} texel(s) wide (id maps need >= {ID_MAP_MIN_RUN})")
+
+
 def write(name: str, img: np.ndarray, mode: str | None = None) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     a = np.clip(np.round(img * 255.0), 0, 255).astype(np.uint8)
@@ -1452,6 +1475,7 @@ def sleeve_maps(w: int = 1024, h: int = 2048, band_px: int = 512, length_m: floa
     write("asha_sleeve_clothmask.png", blur(mask, 1))
     write("asha_sleeve_normal.png", height_to_normal(blur(hgt, 1), 1.6, wrap=False))
     bid = np.asarray(Image.fromarray((band_id * 255).astype(np.uint8), "L").resize((band_px, band_px), Image.NEAREST))
+    check_id_map("asha_sleeve_bandid.png", bid)
     write("asha_sleeve_bandid.png", bid / 255.0)
 
 
