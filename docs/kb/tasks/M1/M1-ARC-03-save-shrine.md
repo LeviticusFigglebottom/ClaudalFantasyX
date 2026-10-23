@@ -2,8 +2,8 @@
 id: M1-ARC-03
 title: Save shrine interaction and save/load menu
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: architect-stream-4
 depends_on: [M1-UI-01]
 milestone: M1
 request-from: ""
