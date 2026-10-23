@@ -2,7 +2,13 @@
 
 **Session:** `session_01Bg3iP7cPGyjbX4CyniBahc` · **Branch:** `claude/new-session-mj8c3c` (integration) · **Container:** 4 CPUs, Ubuntu, lavapipe.
 
-## Current state (2026-10-23 ~15:30 UTC)
+## FINAL STATE at the account handoff (2026-10-24)
+- **HEAD:** origin/claude/new-session-mj8c3c, pushed. Everything the old Lead had is merged or recorded; no local-only work remains, and the old worktrees can be discarded.
+- **Last full gate:** green at fc3940c (ci30). **Scoped gates since:** ci32 at 2ce7045 (26 shots), ci33 (the PC's v2 branches, 5 baselines re-approved), ci35 (rnd-18-20, 0 drift). All green.
+- **Merged at handoff:** M1-CHR-11 (Asha round 6) and rnd-18-20.
+- **NOT merged (for the new Lead):** `gpu/rnd-21-mouth-fill`, `gpu/qa-07-windows-interpreter-test`, `gpu/m2-rnd-01-undertow` (WIP), and `claude/first-playable` (ahead, with the Drownbell work). See CONSOLIDATED.md §5.
+
+## Earlier state (2026-10-23 ~15:30 UTC)
 - **HEAD:** pushed; see `git log -1 origin/claude/new-session-mj8c3c`.
 - **Last full gate:** green at `b3b66ac` (ci26). 956 tests, coverage within baseline, 60/60 shots, and Blender `--all` clean apart from the 2 known failures.
 - **Local worktrees with live subagents:** M1-CHR-07 (Asha round 3), and M1-ARC-14 + M1-NIT-01. Their branches are `worktree-agent-*` and are not pushed until merged.

@@ -66,7 +66,11 @@
    - Then `claude/first-playable` (scoped battle, field and FP shots, plus `python3 tools/balance/sim.py --check` for the Drownbell suite).
    - Then any newer `gpu/*` branch, such as `gpu/m2-rnd-01-undertow` once it's in review.
 3. Run the full gate. Then a review sweep over the review column: M1-ENV-03, RND-15, RND-16, RND-17, RND-18, RND-20, RND-21, CHR-03, CHR-10, M2-CMB-02, M2-NIT-03, M2-UI-01 and M2-UI-02.
-4. **M1-CHR-11 (Asha round 6)** was in flight in the old Lead's local worktree. Check `lead-cloud.md` for whether it was merged. If not, re-launch it from its task file.
+4. **M1-CHR-11 (Asha round 6) is MERGED** (ADR 0025 proposed: the smile weights depart from asha.md §6.3, and Art must amend that row).
+   - Neutral passes; smile is borderline-pass; grief waits on RND-21.
+   - After merging `gpu/rnd-21-mouth-fill`: rebuild Asha (`assets_src/characters/asha/build.sh`) and check `verify_blender_builds.py --job asha` shows 44 identical, since write_materials.py changes.
+   - Re-approve asha_face_grief after viewing it. Optionally set the teeth `ao_light_affect` to about 0.2 in the mouth-family entry.
+   - Then ask the PC for a GPU re-capture of grief and smile.
 5. Message the new PC GPU session with its queue (§3) and the rules. Spawn the second cloud track if wanted.
 6. Keep this file and `lead-cloud.md` current after every merge batch.
 
