@@ -2,8 +2,8 @@
 id: M1-NIT-02
 title: Small fixes from review-sweep-L
 role: qa
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-ad32302c9926d0fee"
 depends_on: [M1-CMB-03, M1-ENV-05, M1-RND-16]
 milestone: M1
 request-from: "lead"
