@@ -176,10 +176,10 @@ func test_reduced_motion_skips_the_camera_shake() -> void:
 	crit.skill_id = &"attack"
 	var foe := ctl.engine.living_foes_of(ctl.engine.current)[0]
 	crit.hits.append({"target_id": foe.id, "hit": true, "crit": true, "amount": 1, "statuses_added": []})
-	ctl._on_action_resolved(crit)
+	ctl.floats.on_action_resolved(crit)
 	assert_eq(ctl.stage.shakes_started, 0, "reduced motion: no screen shake")
 	ctl.hud.apply_settings(UiSettings.new())
-	ctl._on_action_resolved(crit)
+	ctl.floats.on_action_resolved(crit)
 	assert_eq(ctl.stage.shakes_started, 1, "a critical hit shakes the camera otherwise")
 	_free(ctl)
 

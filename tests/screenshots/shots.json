@@ -553,6 +553,10 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "battle_swell_ring",
+      "scene": "res://game/battle/scene/shots/battle_swell_ring.tscn"
     }
   ]
 }

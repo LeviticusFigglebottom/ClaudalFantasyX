@@ -257,3 +257,7 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 ### Added 2026-10-23 (M1-NAR-11, review-sweep-H; ADR 0022 sweep-H append note, N-25)
 - **Mother Kell** (rows above): Oruvel's chandler, who sold the lamp-divers their oil and wicks and never learned to swim. She took Rhen in at eight, unasked, when nobody came for him. Dace's message asked nothing of her. She drowns in Ch1. Not a diver: this corrects the rows above.
 - **lantern pair**: a Saltwright wright builds lanterns two at a time, one to wear and one on the hook against a flooded housing. Rhen wears the first of Dace's pair, which never left Oruvel. The one Asha saw at Haluna was its twin.
+
+### Added 2026-10-23 (M1-CMB-04, Combat)
+- **Swell modes** (how a gauge fills; formulas.md § Swell): **Ballast** (taking hits), **Wake** (striking foes), **Tether** (allies hurt), **Salve** (using a healing item). The names avoid the inspiring series' mode names on purpose.
+- **Lamp Ring**: Rhen's Swell input, a lantern that flares three times as a ring closes on it. **Lamp Dive**: his first Swell technique.

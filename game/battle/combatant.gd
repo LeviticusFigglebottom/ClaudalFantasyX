@@ -54,6 +54,11 @@ var low_hp_owned: Array[StringName] = []
 var delays_taken := 0
 ## Data flag (enemies.json "delay_immune", e.g. bosses): delay effects add no ticks.
 var delay_immune := false
+## Swell gauge, 0..Formulas.SWELL_MAX (SPEC §6.2). BattleSwell fills and empties it.
+var swell := 0
+## The fill mode in force (a swell.json mode id). &"" = this combatant has no Swell (enemies,
+## and heroes with no swell.json row); the HUD draws no gauge for them.
+var swell_mode: StringName = &""
 
 
 static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> BattleCombatant:

@@ -1247,6 +1247,7 @@ def run(root: Path) -> Report:
     data_keys += check_items(files, declared_flags_quiet(root), rep)
     data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
     data_keys += check_locations(root, files, rep)
+    data_keys += check_swell(files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_undertow(root, files, rep)
@@ -1516,6 +1517,139 @@ def check_undertow(root: Path, files: dict[str, object], rep: Report) -> None:
     if UNDERTOW_FILE in files:
         for e in undertow_quality_errors(root, files[UNDERTOW_FILE]):
             rep.err(e)
+
+
+# --- M1-CMB-04: Swell gauges (game/data/battle/swell.json, formulas.md § Swell) ------------------
+
+SWELL_FILE = "game/data/battle/swell.json"
+SWELL_TRIGGERS = {"damage_taken", "damage_dealt", "ally_hurt", "heal_item"}
+SWELL_INPUT_KINDS = {"timing_ring"}
+SWELL_MIN_MODES = 3  # SPEC §6.2 / M1-CMB-04: at least three fill modes
+RING_SEC_FIELDS = ("lead_in_sec", "beat_sec", "perfect_sec", "good_sec")
+
+
+def _num(v: object) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def _swell_mode_errors(m: dict, w: str) -> list[str]:
+    errs: list[str] = []
+    if m.get("trigger") not in SWELL_TRIGGERS:
+        errs.append(f"{w}: trigger must be one of {sorted(SWELL_TRIGGERS)}")
+    if ("rate" in m) == ("flat" in m):
+        errs.append(f"{w}: needs exactly one of 'rate' or 'flat'")
+    for k in ("rate", "flat"):
+        if k in m and not _pos_int(m[k]):
+            errs.append(f"{w}: '{k}' must be a positive int")
+    if not isinstance(m.get("starts_unlocked", False), bool):
+        errs.append(f"{w}: starts_unlocked must be true or false")
+    for k in ("name_key", "desc_key"):
+        if not isinstance(m.get(k), str):
+            errs.append(f"{w}: missing {k}")
+    return errs
+
+
+def _swell_input_errors(i: dict, w: str) -> list[str]:
+    if i.get("kind") not in SWELL_INPUT_KINDS:
+        return [f"{w}: kind must be one of {sorted(SWELL_INPUT_KINDS)}"]
+    errs: list[str] = []
+    if not _pos_int(i.get("beats")):
+        errs.append(f"{w}: beats must be a positive int")
+    for k in RING_SEC_FIELDS:
+        if not _num(i.get(k)) or i[k] < 0:
+            errs.append(f"{w}: '{k}' must be a number >= 0")
+    if not _num(i.get("peak_at")) or not 0 < i["peak_at"] < 1:
+        errs.append(f"{w}: peak_at must be a fraction in (0, 1)")
+    if _num(i.get("perfect_sec")) and _num(i.get("good_sec")) and i["perfect_sec"] > i["good_sec"]:
+        errs.append(f"{w}: perfect_sec must not exceed good_sec")
+    grades = i.get("grades")
+    if not isinstance(grades, dict) or set(grades) != {"perfect", "good", "miss"}:
+        errs.append(f"{w}: grades must give perfect, good and miss")
+    elif any(not isinstance(v, int) or isinstance(v, bool) or v < 0 for v in grades.values()):
+        errs.append(f"{w}: grade bonuses must be ints >= 0")
+    return errs
+
+
+def _swell_hero_errors(h: dict, w: str, skills: dict[str, dict], refs: dict[str, set[str]],
+                       used: dict[str, str]) -> list[str]:
+    errs: list[str] = []
+    if h["id"] not in refs["characters"]:
+        errs.append(f"{w}: not a character")
+    if h.get("input") not in refs["inputs"]:
+        errs.append(f"{w}: unknown input '{h.get('input')}'")
+    techs = h.get("techniques")
+    if not isinstance(techs, list) or not techs:
+        return errs + [f"{w}: needs at least one technique"]
+    for t in techs:
+        if t not in skills:
+            errs.append(f"{w}: technique '{t}' is not a skill")
+        elif skills[t].get("swell") is not True:
+            errs.append(f"{w}: technique '{t}' must be a skills.json row with swell: true")
+        elif t in used:
+            errs.append(f"{w}: technique '{t}' already belongs to {used[t]}")
+        else:
+            used[t] = h["id"]
+    return errs
+
+
+def swell_errors(doc: object, skills: dict[str, dict], char_ids: set[str]) -> list[str]:
+    """Errors in swell.json against the skill rows (by id) and the hero ids."""
+    w0 = SWELL_FILE
+    root = doc.get("swell") if isinstance(doc, dict) else None
+    if not isinstance(root, dict):
+        return [f"{w0}: missing top-level object 'swell'"]
+    errs: list[str] = []
+    modes = _rows(root, "modes", w0, errs)
+    inputs = _rows(root, "inputs", w0, errs)
+    heroes = _rows(root, "heroes", w0, errs)
+    if len(modes) < SWELL_MIN_MODES:
+        errs.append(f"{w0}: needs at least {SWELL_MIN_MODES} fill modes, found {len(modes)}")
+    for m in modes:
+        errs += _swell_mode_errors(m, f"{w0}: modes.{m['id']}")
+    default = root.get("default_mode")
+    unlocked = {m["id"] for m in modes if m.get("starts_unlocked") is True}
+    if default not in {m["id"] for m in modes}:
+        errs.append(f"{w0}: default_mode '{default}' is not a mode")
+    elif default not in unlocked:
+        errs.append(f"{w0}: default_mode '{default}' must start unlocked")
+    for i in inputs:
+        errs += _swell_input_errors(i, f"{w0}: inputs.{i['id']}")
+    used: dict[str, str] = {}
+    refs = {"characters": char_ids, "inputs": {i["id"] for i in inputs}}
+    for h in heroes:
+        errs += _swell_hero_errors(h, f"{w0}: heroes.{h['id']}", skills, refs, used)
+    for sid, row in skills.items():
+        if row.get("swell") is True and sid not in used:
+            errs.append(f"skills.{sid}: a Swell row that no hero in {w0} lists")
+    return errs
+
+
+def _learned_skills(files: dict[str, object]) -> set[str]:
+    out: set[str] = set()
+    for rel, table in (("game/data/battle/characters.json", "characters"),
+                       ("game/data/battle/enemies.json", "enemies")):
+        doc = files.get(rel)
+        for r in doc.get(table, []) if isinstance(doc, dict) else []:
+            if isinstance(r, dict):
+                out |= {s for s in r.get("skills", []) if isinstance(s, str)}
+    return out
+
+
+def check_swell(files: dict[str, object], rep: Report) -> list[str]:
+    """Validates swell.json (M1-CMB-04). Returns its *_key values for the loc check."""
+    doc = files.get(SWELL_FILE)
+    if doc is None:
+        rep.err(f"{SWELL_FILE}: missing")
+        return []
+    sk = files.get("game/data/battle/skills.json")
+    rows = sk.get("skills", []) if isinstance(sk, dict) else []
+    skills = {r["id"]: r for r in rows if isinstance(r, dict) and isinstance(r.get("id"), str)}
+    for e in swell_errors(doc, skills, _ids(files, "game/data/battle/characters.json", "characters")):
+        rep.err(e)
+    for sid in sorted(_learned_skills(files)):
+        if skills.get(sid, {}).get("swell") is True:
+            rep.err(f"skills.{sid}: a Swell technique is never learned (a character or enemy lists it)")
+    return collect_keys(doc)
 
 
 if __name__ == "__main__":

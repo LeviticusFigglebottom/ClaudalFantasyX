@@ -47,6 +47,8 @@ const REVIVE_MIN_HP := 1
 const DELAY_STACK_DIVISOR := 2
 const DELAY_STACK_MAX_STEPS := 16
 const PCT := 100
+## Swell (M1-CMB-04): a gauge holds 0..SWELL_MAX, and a full one unlocks the owner's techniques.
+const SWELL_MAX := 100
 
 ## Rational multipliers as [numerator, denominator].
 const CRIT_RATIO: Array[int] = [2, 1]
@@ -178,3 +180,23 @@ static func regen_heal(max_hp: int) -> int:
 static func escape_chance(party_mean_agility: float, enemy_mean_agility: float) -> int:
 	var c := ESCAPE_BASE_PCT + roundi((party_mean_agility - enemy_mean_agility) * ESCAPE_AGI_FACTOR)
 	return clampi(c, ESCAPE_MIN_PCT, ESCAPE_MAX_PCT)
+
+
+## Swell points from an HP share (formulas.md § Swell): `amount` HP lost or dealt against the
+## reference max HP, at a mode's `rate` (points per whole max HP, swell.json). Exact in integers;
+## any positive amount gives at least 1 and one share at most SWELL_MAX.
+static func swell_gain(amount: int, ref_max_hp: int, rate: int) -> int:
+	if amount <= 0 or rate <= 0:
+		return 0
+	return clampi(amount * rate / maxi(ref_max_hp, 1), 1, SWELL_MAX)
+
+
+## The gauge after gaining `gain` points: clamped to 0..SWELL_MAX.
+static func swell_fill(value: int, gain: int) -> int:
+	return clampi(value + gain, 0, SWELL_MAX)
+
+
+## A technique's power after its input: floor(power x (100 + bonus_pct) / 100); a negative bonus
+## counts as 0, so a botched input never makes a technique weaker than its base.
+static func swell_power(power: int, bonus_pct: int) -> int:
+	return power * (PCT + maxi(bonus_pct, 0)) / PCT

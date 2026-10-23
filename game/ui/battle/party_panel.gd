@@ -3,6 +3,9 @@ extends Control
 ## Bottom-right party bars (docs/kb/art/ui.md §6.2): the three active fighters only; reserves
 ## appear in the swap menu. A view over BattleCombatant data: refresh() re-reads, never writes.
 
+## Reduced motion (UiSettings): a full Swell gauge holds its glow instead of pulsing.
+var reduced_motion := false
+
 var _m: Dictionary = {}
 var _rows: Array[PartyRow] = []
 
@@ -29,12 +32,19 @@ func show_members(members: Array[BattleCombatant], labels: Dictionary, tints: Di
 	var y0 := (size.y - used) * 0.5
 	for i in members.size():
 		var row := PartyRow.new()
+		row.reduced_motion = reduced_motion
 		row.position = Vector2(inset, y0 + i * (h + gap))
 		row.size = Vector2(size.x - inset * 2.0, h)
 		add_child(row)
 		var cid := members[i].id
 		row.setup(_m, members[i], str(labels.get(cid, String(cid))), tints.get(cid, Color.WHITE) as Color)
 		_rows.append(row)
+
+
+func set_reduced_motion(on: bool) -> void:
+	reduced_motion = on
+	for r in _rows:
+		r.reduced_motion = on
 
 
 func refresh(animate: bool = false, drain_sec: float = 0.0) -> void:

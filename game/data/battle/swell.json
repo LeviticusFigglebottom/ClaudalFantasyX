@@ -1,0 +1,26 @@
+{
+  "swell": {
+    "doc": "Swell gauges (SPEC 6.2, M1-CMB-04). Rules: docs/kb/design/formulas.md section Swell. Fill modes: trigger + rate (points per whole max HP, Formulas.swell_gain) or flat points per event. Inputs: one interactive input per hero; grades map to a power bonus in percent (Formulas.swell_power).",
+    "default_mode": "ballast",
+    "modes": [
+      {"id": "ballast", "name_key": "SWELL_MODE_BALLAST", "desc_key": "SWELL_MODE_BALLAST_DESC",
+       "trigger": "damage_taken", "rate": 120, "starts_unlocked": true},
+      {"id": "wake", "name_key": "SWELL_MODE_WAKE", "desc_key": "SWELL_MODE_WAKE_DESC",
+       "trigger": "damage_dealt", "rate": 50, "starts_unlocked": true},
+      {"id": "tether", "name_key": "SWELL_MODE_TETHER", "desc_key": "SWELL_MODE_TETHER_DESC",
+       "trigger": "ally_hurt", "rate": 60, "starts_unlocked": false},
+      {"id": "salve", "name_key": "SWELL_MODE_SALVE", "desc_key": "SWELL_MODE_SALVE_DESC",
+       "trigger": "heal_item", "flat": 20, "starts_unlocked": false}
+    ],
+    "inputs": [
+      {"id": "timing_ring", "kind": "timing_ring", "name_key": "SWELL_INPUT_TIMING_RING",
+       "help_key": "SWELL_INPUT_TIMING_RING_HELP",
+       "beats": 3, "lead_in_sec": 0.6, "beat_sec": 0.8, "peak_at": 0.7,
+       "perfect_sec": 0.06, "good_sec": 0.15,
+       "grades": {"perfect": 30, "good": 15, "miss": 0}}
+    ],
+    "heroes": [
+      {"id": "rhen", "input": "timing_ring", "techniques": ["lamp_dive"]}
+    ]
+  }
+}
