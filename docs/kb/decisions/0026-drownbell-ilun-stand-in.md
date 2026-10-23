@@ -1,4 +1,4 @@
-# 0024 — The Drownbell's Ilun call is a first-playable stand-in for Vowbound
+# 0026 — The Drownbell's Ilun call is a first-playable stand-in for Vowbound
 
 - **Status:** accepted
 - **Date:** 2026-10-23
@@ -21,3 +21,4 @@ Option 3. `call_ilun` (skills.json) is a 12 MP, rank-4 magical hit on all foes w
 - When the Vowbound system lands, replace `call_ilun` with the real summon command and keep the field rule as Floodnet's effect. The bands must then be re-run, since a summon that takes the hits changes phase 2's damage race.
 - The full first-use cinematic (C10) and the "the party steps off the field" read are missing from the first playable. Playtest notes should not judge the Vowbound feel from this stand-in.
 - `requires_flag`, fields and field-bound combatants are general tools; other story-gated skills can use them.
+- 2026-10-24 (Lead, at merge): renumbered from 0024 to 0026, because 0024 was already taken on the integration branch by 0024-asha-hair-shading-values.
