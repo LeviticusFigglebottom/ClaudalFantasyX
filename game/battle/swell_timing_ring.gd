@@ -26,6 +26,9 @@ var good_sec := 0.0
 ## Largest step one rendered frame may move the ring (clamp_step); 0 = no limit. Kept at or under
 ## perfect_sec (validate_data), so a hitch can never jump a press across a whole grade.
 var max_step_sec := 0.0
+## Timing assist (M2-UI-01, an accessibility setting applied to the input row by UiSettings):
+## the grade a miss becomes, a press that misses or a beat that ends unpressed. &"" = none.
+var assist_grade: StringName = &""
 ## Seconds since the ring opened (advance()).
 var elapsed := 0.0
 ## One grade per finished beat, in order.
@@ -42,6 +45,7 @@ func _init(input: Dictionary = {}) -> void:
 	perfect_sec = float(input.get("perfect_sec", perfect_sec))
 	good_sec = float(input.get("good_sec", good_sec))
 	max_step_sec = float(input.get("max_step_sec", max_step_sec))
+	assist_grade = StringName(str(input.get("assist_grade", "")))
 
 
 ## `delta` limited to max_step_sec (SwellRingClock steps rendered frames through this).
@@ -92,7 +96,7 @@ func advance(delta: float) -> void:
 		return
 	elapsed += maxf(delta, 0.0)
 	while not is_done() and elapsed >= beat_start(grades.size() + 1):
-		grades.append(GRADE_MISS)
+		grades.append(_assisted(GRADE_MISS))
 
 
 ## Presses now: grades the current beat and returns its grade, or &"" when the press is ignored
@@ -100,7 +104,7 @@ func advance(delta: float) -> void:
 func press() -> StringName:
 	if is_done() or elapsed < beat_start(current_beat()):
 		return &""
-	var grade := grade_for(elapsed - peak_time(current_beat()), perfect_sec, good_sec)
+	var grade := _assisted(grade_for(elapsed - peak_time(current_beat()), perfect_sec, good_sec))
 	grades.append(grade)
 	return grade
 
@@ -111,6 +115,11 @@ func cancel() -> bool:
 		return false
 	cancelled = true
 	return true
+
+
+## A miss becomes assist_grade when the timing assist sets one; any other grade stands.
+func _assisted(grade: StringName) -> StringName:
+	return assist_grade if grade == GRADE_MISS and assist_grade != &"" else grade
 
 
 ## {cancelled, grades} for BattleSwell.perform().
