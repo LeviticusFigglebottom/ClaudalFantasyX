@@ -5,8 +5,9 @@
 [resource]
 resource_name = "kit_net"
 albedo_texture = ExtResource("1_tex")
+alpha_scissor_threshold = 0.4
 cull_mode = 2
 roughness = 0.9
 texture_filter = 5
-transparency = 1
+transparency = 2
 uv1_scale = Vector3(2.5, 2.5, 1)

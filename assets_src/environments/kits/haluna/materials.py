@@ -137,7 +137,9 @@ STANDARD: dict[str, dict] = {
     "kit_gold_leaf": {"albedo_color": hexc("#D4A437"), "roughness": 0.28, "metallic": 1.0},
     "kit_lacquer_red": {"albedo_color": hexc("#B3261E"), "roughness": 0.22, "clearcoat_enabled": "true",
                         "clearcoat": 0.6},
-    "kit_net": {"transparency": 1, "cull_mode": 2,
+    # Alpha scissor, not blend (review-sweep-F S6): a blended net writes no depth, so the (transparent)
+    # sea drew over it and the nets vanished. 0.4 keeps the ~0.56-coverage twine solid in the mips.
+    "kit_net": {"transparency": 2, "alpha_scissor_threshold": 0.4, "cull_mode": 2,
                 "albedo_texture": ("tex", TEX + "net_albedo.png"), "roughness": 0.9,
                 "uv1_scale": "Vector3(2.5, 2.5, 1)", "texture_filter": 5},
     "kit_salt_glass": {"transparency": 1, "albedo_color": hexc("#BFE6E0", 0.55), "roughness": 0.06,
