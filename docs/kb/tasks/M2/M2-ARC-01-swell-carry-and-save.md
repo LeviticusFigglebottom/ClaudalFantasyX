@@ -2,8 +2,8 @@
 id: M2-ARC-01
 title: Carry Swell gauges and modes between battles and in saves
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: worktree-agent-a670939c5cb593976
 depends_on: [M1-CMB-04, M1-CMB-08]
 milestone: M2
 request-from: combat

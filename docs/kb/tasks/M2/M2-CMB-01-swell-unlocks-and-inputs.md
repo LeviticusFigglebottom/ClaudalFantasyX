@@ -2,8 +2,8 @@
 id: M2-CMB-01
 title: Swell mode unlocks through play, and the other heroes' Swell inputs
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: worktree-agent-a670939c5cb593976
 depends_on: [M1-CMB-04]
 milestone: M2
 request-from: ""
