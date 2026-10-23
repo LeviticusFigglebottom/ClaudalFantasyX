@@ -2,9 +2,9 @@
 id: M1-ARC-11
 title: Save and camera fixes from review-sweep-F
 role: architect
-status: todo
+status: doing
 reviewer: qa
-owner_session: "worktree-agent-abfc1d79a20572a9b"
+owner_session: "worktree-agent-a442c963360f262ca"
 depends_on: [M1-ARC-10]
 milestone: M1
 request-from: "qa"
