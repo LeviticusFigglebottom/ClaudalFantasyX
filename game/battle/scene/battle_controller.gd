@@ -5,7 +5,7 @@ extends Node3D
 ## the HUD and the 3D stage. It only calls the engine's public API (setup/begin/preview/
 ## preview_swap/forced_target/reflect_recipient/perform/swap/escape/run_enemy_turn/xp_awards,
 ## use_item/preview_item/item_defeats_party) and listens to its signals; it never writes
-## combatant state itself.
+## combatant state itself. Live battles carry party HP/MP in and out (BattleVitals, M1-CMB-08).
 ##
 ## Player intent funnels into four public actions (act, use_item_on, swap_members, try_escape) that menus,
 ## tests and capture scripts all use. Time passes only through tick(), so tests can fast-forward.
@@ -206,9 +206,8 @@ func _build_engine(
 	_turn_snapshot = {}
 	progress = lattice
 	engine = BattleEngine.new()
-	if progress != null:
-		engine.party_modifier = progress.apply_to
-	engine.setup(_db, active, reserve, encounter, rng_seed)
+	# Live battles start from the carried HP/MP and line up past the fallen (BattleVitals).
+	BattleVitals.setup(engine, _db, _setup, progress, persist_progress and fixture == null)
 	if fixture != null:
 		fixture.prepare(engine)
 	engine.action_resolved.connect(_on_action_resolved)
@@ -454,6 +453,8 @@ func _show_result() -> void:
 	_set_state(STATE_RESULT)
 	hud.set_combat_ui_visible(false)
 	stage.clear_rings()
+	if persist_progress and fixture == null:
+		BattleVitals.send_back(engine)
 	var rows: Array[Dictionary] = []
 	var title_key := "HUD_VICTORY"
 	var sub_key := "HUD_VICTORY_SUB"

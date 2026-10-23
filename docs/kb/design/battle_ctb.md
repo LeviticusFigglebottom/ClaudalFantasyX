@@ -72,6 +72,18 @@ Swapping remains the elegant answer (SPEC §6.1), but a naive party now wins abo
 - **Reflect** is deterministic: `reflect_recipient(actor, target, skill_row)` tells the UI where a spell will land, and `preview()` already uses it. Hits that bounced carry `reflected_from`.
 - **Petrify** counts as KO everywhere (`is_alive()` is false). `BattleCombatant.is_petrified()` lets the UI draw stone instead of a KO.
 
+## Carried vitals (M1-CMB-08)
+
+HP, MP and the carried statuses (`game/data/world/party_rest.json`: Poison, Stone, Zombie) follow the party from one battle to the next, and a save shrine restores them (M1-ARC-06, architecture.md "Saves"). The glue is `game/battle/scene/battle_vitals.gd` (`BattleVitals`). The engine core is unchanged: it only receives a `party_modifier`.
+
+- **In.** A live battle (`BattleController.persist_progress` on, no capture fixture) composes `progress.apply_to` and then `Game.vitals_modifier()`, so the saved values are clamped to the battle-time maximum. A member with no saved entry starts full. Capture fixtures and tests (`persist_progress` off) never read vitals, so no baseline moves.
+- **Out.** After a **victory** or an **escape**, `BattleVitals.send_back` emits `EventBus.battle_party_returned` with every party combatant (active, then reserve). `Game.record_party` saves HP, MP and the carried statuses; every other status ends with the battle. A **defeat** writes nothing back: defeat is a game over, so play resumes from the last save, and the sandbox's Retry replays the same start.
+- **A KO'd or petrified member at battle start** (decided here). Fallen members stay fallen between battles until a save shrine's rest or a revive lifts them. When a battle opens:
+  1. Each fallen active member trades places with the first living reserve member not already used, in active-slot order and then reserve order. The fallen member waits in the reserve in that member's place. This happens before `begin()`, so it costs no time and the incoming member rolls its opening ticks like everyone else. (Genre convention: the party you walk with is the party that is standing.)
+  2. If no living reserve member is left, the fallen member keeps its slot at 0 HP. It takes no turns, and the player can revive it or swap it out on any living member's turn.
+  3. If nobody in the party is standing (only possible after a victory where the last foe and the last active member fell together), the active members get up with 1 HP and their stone breaks (`BattleVitals.raise_modifier`). A fight never opens already lost (pillar 4).
+- Tests: `tests/unit/test_battle_vitals.gd` (the lineup rule, in and out on a bare engine, and the live controller: carried HP and Poison, a carried KO swapped out, victory write-back with Retry starting from it and a shrine heal clearing it, defeat recording nothing, and fixtures and tests ignoring vitals).
+
 ## Adding a status
 1. Add it to `statuses.json` (it must be in the SPEC set; the validator enforces this).
 2. Implement its effect in `BattleCombatant` (stat modifier) or `BattleEngine` (behaviour), and set `implemented: true`.
