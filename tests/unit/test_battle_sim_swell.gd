@@ -103,6 +103,9 @@ func test_role_answer_swaps_to_the_answer_before_unleashing() -> void:
 	assert_true(e.party_reserve.has(rhen), "Rhen stepped back for Ysolde")
 	assert_eq(rhen.swell, Formulas.SWELL_MAX, "the gauge waits in reserve")
 	assert_eq(p.swells_used, 0)
+	for f in e.enemies:
+		f.hp = 0
+	assert_false(p._swaps_out(e, e.current), "no foe left: no focus, no swap")
 
 
 func test_the_sandbox_bands_hold_with_swell_played_at_good() -> void:
