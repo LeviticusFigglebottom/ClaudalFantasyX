@@ -204,6 +204,14 @@ func test_the_cutscene_stage_resolves_cutscene_a() -> void:
 		elif step.is_cue():
 			_check_cue(stage, step, missing)
 	assert_eq(missing, [] as Array[String], "every @camera/@anim/@mark/@vfx target is on the stage")
+	# M2-FP-10: the close shots of Asha key her with the mood sun's short-range copy; H01 does not.
+	assert_true(stage.sun() == zone.get_node("HalunaMood").get(&"sun"), "the stage keys from the mood scene's sun")
+	var key_cfg: Dictionary = CutsceneSequencer.load_config().get("key_light", {})
+	for id: StringName in STAGE_SHOTS:
+		# The rail root is the zone root, at the origin.
+		var shot := stage.shot(id)
+		var close := CutsceneKeyLight.is_close(shot.position, shot.look_at, shot.fov_deg, key_cfg)
+		assert_eq(close, id != &"H01", "%s keyed: %s" % [id, close])
 	zone.free()
 	zone = null
 

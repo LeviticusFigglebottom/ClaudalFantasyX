@@ -12,6 +12,7 @@ Plays a compiled `.dlg` scene ([dialogue_format.md](dialogue_format.md)) in the 
 | `CutsceneOverlay` | `cutscene_overlay.gd` | CanvasLayer (layer 32, under the save menu and the router fade): letterbox bars, fade, `DialogueBox`, option menu. |
 | `CutsceneChoices` | `cutscene_choices.gd` | Option buttons: focus with `ui_up`/`ui_down`, pick with `ui_accept` or a click. |
 | `CutsceneMotes` | `cutscene_motes.gd` | Placeholder `@vfx` motes (held sinks seaward, released spirals up, bound holds still). |
+| `CutsceneKeyLight` | `cutscene_key_light.gd` | The close-shot character key light (M2-FP-10; "Key light" below). |
 
 ## Using it
 
@@ -82,6 +83,17 @@ Every await inside `play()` goes through one internal `resumed` signal: a line a
 `play()` then returns `false` to its host instead of hanging, and `finished` still fires once.
 
 Cue keys the placeholder presentation doesn't perform warn once per scene (`UNSUPPORTED_KWARGS`): `@camera grade=`, `@anim loop=`, `@sfx at=`, and `@vfx drift=`/`motion=`/`rate=`/`form=`.
+
+## Key light (M2-FP-10)
+
+A zone sun's shadow cascades span hundreds of metres (Haluna: 400 m, first cascade 16 m), so at dialogue range their texels are 10–20× too coarse to shadow a face's own nose and mouth corners ([GPU report](../qa/gpu/2026-10-23-rnd-18-20-followups.md), RND-20 S1). Raising the sun's bias doesn't help: it only erases what self-shadow is left. On close shots the sequencer therefore swaps the sun for a short-range copy of it, **on the cast only**:
+
+- **When.** On every `@camera <id>`. A shot is close when its frame is at most `close_half_frame_m` (1.0 m) above and below its aim at the aim's distance: `distance × tan(fov / 2)`. Haluna's H05 (Asha's face, about 0.4 m) and H06 (over Rhen, about 0.85 m) qualify; H01 (the wide) doesn't. DOLLY and ORBIT shots move with the player, so AUTO never keys them. Any other shot (and `@camera release`, the end of the scene, an abort) gives the cast back to the sun.
+- **What.** `CutsceneKeyLight`, a `DirectionalLight3D` added under the stage, copies the sun's direction, colour, energy (or lux), temperature, specular and angular size. Its shadow is orthogonal (one split) with `shadow_max_distance_m` 6 m, `shadow_normal_bias` 4.5, `shadow_bias` 0.02 and `shadow_blur` 0.6, the character-shading stage's values ([character_shading.md](character_shading.md), "Shadows on characters").
+- **How only the cast.** Every `GeometryInstance3D` under `Actors/*` and the player moves to render layer `layer` (20) for the shot. The sun's `light_cull_mask` drops that layer and the key's is that layer alone, so scenery is never lit twice and the cast is never lit by both. The sun's `shadow_caster_mask` is untouched, so the cast still throws its shadow on the ground, and scenery within the key's 6 m still shadows the cast. The key has `sky_mode` light-only, no volumetric fog and no indirect energy, so there's no second sun disc, fog shaft or GI bounce. `disengage()` restores every layer and the sun's mask exactly.
+- **The sun.** `CutsceneStage.sun_path`, else the first shadow-casting `DirectionalLight3D` under the stage's parent (Haluna: `HalunaMood/Sun`; prologue: `Sun`, before `Fill`; Chapter 3: `Sun`). A close shot with no sun warns once and leaves the cast alone.
+- **Overrides (shot data).** On each `CutsceneShotNode`: `key_light` AUTO / ON / OFF, `key_yaw_deg` (about world up), `key_pitch_deg` (about the light's own X; positive lowers it toward the horizon) and `key_energy_scale` (× the sun's intensity). The defaults (AUTO, 0, 0, 1) keep the sun's exact direction and intensity, so lighting continuity holds across a cut.
+- **Limits.** Casters further than 6 m from the camera (a cliff, a far roof) stop shadowing the cast during a close shot. A second shadowed directional light shares Godot's directional shadow atlas with the sun, so the sun's cascades get a smaller share during close shots; that only touches scenery, which is mostly out of focus there. The GPU cost is unmeasured (the PC session's Cutscene A check). Tests: `tests/unit/test_cutscene_key_light.gd`, plus Haluna's shot classification in `tests/integration/test_haluna_zone.gd`.
 
 ## Not yet
 
