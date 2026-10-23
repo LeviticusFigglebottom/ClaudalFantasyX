@@ -80,7 +80,7 @@ THATCH_OLD = hex_lin("#857256")  # thatch greyed by rain (thatch x timber)
 LIT_CERAMIC = hex_lin("#DCE3E0")  # lit_ceramic (Lit Age concrete is pale, cool)
 BONE = hex_lin("#E6DAC0")  # bone (shell fragments in the aggregate)
 SAND = hex_lin("#EFDDB4")  # sand_dry
-TWINE = hex_lin("#C9B48E")  # sand_cloth (undyed coir/cotton net twine)
+TWINE = hex_lin("#7E6A55")  # timber_weathered: tannin-barked twine, so a drying net reads against sand and sea
 
 
 # ---------------------------------------------------------------------------------------------
@@ -381,9 +381,11 @@ def build_net(out: Path, n: int) -> list[Path]:
     b = (U - V) % 1.0
     da = np.minimum(a, 1 - a)
     db = np.minimum(b, 1 - b)
-    twine_w = 0.06 * (0.8 + 0.4 * value_noise(shape, (meshes * 4, meshes * 4), rng))
+    # Thick twine (review-sweep-F S6): at dock distances the mesh is sub-pixel and averages to its
+    # coverage, so ~60% coverage is what makes the net read as a sheet rather than vanish.
+    twine_w = 0.13 * (0.8 + 0.4 * value_noise(shape, (meshes * 4, meshes * 4), rng))
     line = np.maximum(smoothstep_np(twine_w * 1.6, twine_w, da), smoothstep_np(twine_w * 1.6, twine_w, db))
-    knot = np.exp(-((da / 0.07) ** 2 + (db / 0.07) ** 2))
+    knot = np.exp(-((da / 0.1) ** 2 + (db / 0.1) ** 2))
     alpha = np.clip(line + knot, 0, 1)
     tone = fbm(shape, (6, 6), rng, 3)
     col = TWINE * (0.7 + 0.35 * tone)[..., None] * (0.85 + 0.15 * knot)[..., None]
