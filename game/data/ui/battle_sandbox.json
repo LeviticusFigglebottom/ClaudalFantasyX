@@ -22,7 +22,11 @@
       "lantern_eel": {"shape": "cylinder", "color": "#1C6B78", "radius": 0.24, "height": 2.1, "tint": "#3FA9B5",
                       "emission": "#4FB3B0"},
       "gull_harrier": {"shape": "prism", "color": "#8FA7C4", "radius": 0.4, "height": 0.45, "hover": 1.05,
-                       "tint": "#C9B48E"}
+                       "tint": "#C9B48E"},
+      "drownbell": {"shape": "cylinder", "color": "#4A3A26", "radius": 0.85, "height": 2.4, "tint": "#8C6A3E",
+                    "emission": "#3FC7C9", "emission_energy": 0.35},
+      "spawn_polyp": {"shape": "capsule", "color": "#2C8A92", "radius": 0.22, "height": 0.6, "tint": "#4FD2D6",
+                      "emission": "#4FD2D6", "emission_energy": 0.9}
     }
   }
 }

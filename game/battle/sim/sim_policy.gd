@@ -148,7 +148,7 @@ static func best_damage_skill(engine: BattleEngine, actor: BattleCombatant, targ
 	return best if best != &"" else engine.basic_attack(actor)
 
 
-## Skills `actor` can pay for and isn't blocked from (Silence).
+## Skills `actor` can pay for and isn't blocked from (Silence, a field clear with no field up).
 static func usable_skills(engine: BattleEngine, actor: BattleCombatant) -> Array[StringName]:
 	var out: Array[StringName] = []
 	for sid in actor.skills:
@@ -156,6 +156,8 @@ static func usable_skills(engine: BattleEngine, actor: BattleCombatant) -> Array
 		if sk.is_empty() or int(sk.get("mp_cost", 0)) > actor.mp:
 			continue
 		if bool(sk.get("magic", false)) and actor.has_status(&"silence"):
+			continue
+		if BossMechanics.refusal(engine, sk) != &"":
 			continue
 		out.append(sid)
 	return out

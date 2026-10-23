@@ -61,6 +61,26 @@ var swell := 0
 ## and heroes with no swell.json row); the HUD draws no gauge for them.
 var swell_mode: StringName = &""
 
+## Boss mechanics (BossMechanics, M2-FP-06; battle_ctb.md "The Drownbell").
+## enemies.json "phases": rows applied in order as HP falls ({id, at_hp_pct, ...changes}).
+var phases: Array = []
+## Index of the phase in force (-1 = the opening one, before any "phases" row).
+var phase_index := -1
+## turns_taken when the phase in force began: EnemyAI's turn_mod counts from here.
+var ai_turn_base := 0
+## A telegraphed skill (a skill row's "charge"): fires on this combatant's own turn when
+## charge_left reaches 1; charge_left counts the acted turns left, the firing one included.
+var charge_skill: StringName = &""
+var charge_left := 0
+## The charged skill's row (rank, target, delay_ranks), so the timeline can predict it.
+var charge_row: Dictionary = {}
+## enemies.json "weak_point" ({hits, max_delay, name_key}): landed low-delay physical hits that
+## break a charge. weak_hits counts them during the charge in progress.
+var weak_point: Dictionary = {}
+var weak_hits := 0
+## enemies.json "field": the field this combatant is bound to; it falls when the field clears.
+var field: StringName = &""
+
 
 static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> BattleCombatant:
 	var c := BattleCombatant.new()
@@ -88,7 +108,23 @@ static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> Ba
 	c.ai_rules = (d.get("ai", []) as Array).duplicate(true)
 	c.xp_reward = int(d.get("xp", 0))
 	c.delay_immune = bool(d.get("delay_immune", false))
+	c.phases = (d.get("phases", []) as Array).duplicate(true)
+	c.weak_point = (d.get("weak_point", {}) as Dictionary).duplicate(true)
+	c.field = StringName(str(d.get("field", "")))
 	return c
+
+
+## True while a telegraphed skill is gathering (see charge_skill).
+func is_charging() -> bool:
+	return charge_left > 0 and charge_skill != &""
+
+
+## Drops any charge in progress (a break, a phase change, or the charged skill firing).
+func clear_charge() -> void:
+	charge_skill = &""
+	charge_left = 0
+	charge_row = {}
+	weak_hits = 0
 
 
 ## A detached copy for read-only predictions (BattleEngine.item_downs): the state an item's

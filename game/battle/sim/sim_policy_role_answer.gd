@@ -13,6 +13,8 @@ func policy_name() -> StringName:
 
 func decide(engine: BattleEngine) -> void:
 	var actor := engine.current
+	if clear_field(engine, actor):
+		return
 	var target := _target_for(engine, actor)
 	if target == null:
 		return
@@ -31,6 +33,16 @@ func _target_for(engine: BattleEngine, actor: BattleCombatant) -> BattleCombatan
 		if role_answer(engine, f) == actor.id:
 			mine.append(f)
 	return lowest_hp(mine) if not mine.is_empty() else lowest_hp(foes)
+
+
+## The Drownbell answer (sim_policies.json "clear_field_skill", e.g. call_ilun): while a field is
+## up, an actor who can use that skill clears it at once (usable_skills already drops it while its
+## own field is down). True if it acted.
+func clear_field(engine: BattleEngine, actor: BattleCombatant) -> bool:
+	var sid := StringName(str(config.get("clear_field_skill", "")))
+	if sid == &"" or engine.fields.is_empty() or not usable_skills(engine, actor).has(sid):
+		return false
+	return use(engine, sid, null)
 
 
 ## Override to keep someone on the field (the smart policy keeps a needed healer).
