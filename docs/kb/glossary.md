@@ -160,14 +160,14 @@ These come from `docs/kb/story/bible.md`. Where a row conflicts with an entry ab
 | Ossa Fen | The Kirru mangrove estuary. |
 | Reedhollow | The Kirru roost-village. |
 | Sunken Vey | The great drowned Lit Age city. |
-| Lowlight | The Glimmer temple. |
+| Lowlight | The Ice temple: its drowned sanctum lies in the deep's cold, and nothing in it is frozen (N-15, ADR 0015). |
 | Ullar Heights / Ullari | The cold northern ranges and their people. |
 | Keth Pass | The mountain route into Ullar. |
 | Quellan | The Ullari highland town. |
-| Cloudloom | The Holy temple (N-09). |
+| Cloudloom | The Holy temple: an open-roofed stone weaving-hall hung with keth (N-09, N-15). |
 | Ansedra | The Order's holy city on a still lagoon. |
 | Lacquer Court | Ansedra's ceremonial heart and the wedding site. |
-| Sanctum of the Level | The Ice temple: its basin is held so still it freezes (N-09). |
+| Sanctum of the Level | The Glimmer temple: its basin is a perfect mirror, lit from beneath by bound glimmer (N-15, ADR 0015). |
 | Hollowmere | The largest Saltwright flotilla. |
 | Iskarra | The drowned Lit Age capital and the Prologue setting. |
 | Lamp Spire | Iskarra's anchor-engine tower. |
@@ -180,8 +180,8 @@ These come from `docs/kb/story/bible.md`. Where a row conflicts with an entry ab
 | Kahre | Lightning Vowbound; Daro Pemakan; Ashcrown. Swell *Last Strike*. |
 | Virel | Fire Vowbound; Wenna Corr; Coilspire. Swell *Flare Line*. |
 | Hesk | Holy Vowbound; Ama Quillo; Cloudloom. |
-| Nhoa | Glimmer Vowbound; Ressa; Lowlight. |
-| Ethren | Ice Vowbound; Corran Ysel; Sanctum of the Level (its basin is held so still it freezes). Swell *Still Water*. |
+| Nhoa | Ice Vowbound; Ressa; Lowlight. Swell *Farewell-Tide*. |
+| Ethren | Glimmer Vowbound; Corran Ysel; Sanctum of the Level (its basin is a lit mirror). Swell *Still Water*. |
 | Kesh | The First Voice, all six elements; Kesh Aurane; the Drowned Choir. |
 
 ### Named Supporting Characters
@@ -219,3 +219,6 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 - **the Velamir lullaby**: the family lullaby that became the first verse; Imra knew it before she was named, and Dace heard it from her at Haluna (N-11).
 - **heirloom weapons**: the per-character ultimate-weapon quest line (SPEC §6.5).
 - **the Weir** (contingent): an alternative Reefball arena form, only if the human changes the sphere (N-12).
+
+### Added 2026-10-23 (M1-NAR-08)
+- **Element reassignment (ADR 0015, N-15):** Nhoa (Lowlight) is now Ice and Ethren (the Sanctum) is now Glimmer. Hesk (Cloudloom) stays Holy. No temple is frozen. The rows above for Lowlight, Cloudloom, the Sanctum, Nhoa and Ethren are updated to match.
