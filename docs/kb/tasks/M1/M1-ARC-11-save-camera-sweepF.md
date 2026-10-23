@@ -2,7 +2,7 @@
 id: M1-ARC-11
 title: Save and camera fixes from review-sweep-F
 role: architect
-status: review
+status: done
 reviewer: qa
 owner_session: "worktree-agent-a442c963360f262ca"
 depends_on: [M1-ARC-10]
@@ -169,3 +169,4 @@ See the review-sweep-F entries in the source tasks' Review logs for file:line.
     - `repair_loadout` leaves an empty loadout entry for an unknown hero id (`"rhenn": {}`). It is harmless, but it is saved forever.
     - `scene_has_player` (validate_data.py:1299) only sees a `Player` directly under the root, or a group set in the level file itself. A player inside an instanced sub-scene, or a zone that places its player through `place_at`, would be a false error. The rule is conservative, so this is acceptable for now; note the limit in the function's docstring.
   - **To close:** S1 (the empty-table guard at minimum, plus the ADR wording). S2 can be a follow-up task.
+- 2026-10-23 lead: closing on review-sweep-H approve-with-fixes; S1 (data loss when the item tables fail to parse) and S2 are in M1-ARC-12 as must-fixes.

@@ -2,7 +2,7 @@
 id: M1-ENV-01
 title: Five-shot environment mood test (coastal village)
 role: environment
-status: review
+status: done
 owner_session: environment-stream-3 (worktree agent-aaa0dfc3de4f41ded)
 reviewer: rendering, art-director
 depends_on: [M1-RND-01, M1-ART-01]
@@ -169,3 +169,4 @@ SPEC §10.2 M1 exit criterion.
     - **Zenith `min_fraction`: yes, it matters.** I greyed 90% of H01's zenith rect to C 0.01 and left 10% blue. Both zenith checks still pass ("0.10 of rect", C_median 0.090). The default 0.02 (palette_check.py:251) lets the gate pass the very defect it guards. Set `min_fraction` to about 0.9 on the zenith checks. It's a one-line change per check, and today's coverage is 1.00.
     - **Underside sampling: it matters less than feared for chroma, and fully for hue.** I greyed every pixel within ΔE 0.05 of `cumulus_shadow`, and then only every other one. The chroma check fails in both shots both times (C_median 0.005-0.012), so a grey underside is caught. The hue check passes every time (219-258°), because it is measured mostly on horizon sky and on near-grey pixels whose hue is noise. So a cyan drift in the undersides would go uncaught. Apply the AD's sweep-G S1 fix (select by ΔE to `cumulus_shadow`, hue 235-265°) with the sky task. It doesn't block this task.
   - **Nit.** The cloud deck ends at elevation 0.86° (`t0 > cloud_max_distance_m`, :120) while the haze still leaves about 60% alpha. That produces the thin clear band above H04's horizon. It reads as haze today, but at a wider lens or a lower horizon it could read as a cut. Fade alpha to 0 before `cloud_max_distance_m`.
+- 2026-10-23 lead: closing: Art Director approved (sweep G), Rendering approved with fixes (sweep H). The sky perf and quality follow-ups are in M1-RND-12.

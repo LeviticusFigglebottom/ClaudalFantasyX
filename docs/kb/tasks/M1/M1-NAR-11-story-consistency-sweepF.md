@@ -2,7 +2,7 @@
 id: M1-NAR-11
 title: Story consistency and residual echoes after the Kerrid re-staging (review-sweep-F)
 role: narrative
-status: review
+status: todo
 reviewer: cinematics
 owner_session: "worktree-agent-afdcaea09c59ff37c"
 depends_on: [M1-NAR-09]
@@ -137,3 +137,4 @@ The review-sweep-F entries on M1-NAR-09 and M1-NAR-08.
     - The Mother Kell glossary row (:195) is still only the wick, and the appended row (:254) carries the request. It will need rewording for B1 anyway.
   - **Residuals I concur with, unchanged:** the sweep-G list. That covers the SPEC-mandated Act I order and heart, Dace inside the storm (0022 21 (a)), Sefir and Kesh, the Ch3 recognition, the Ch7 boyhood line and the Ch18 heirloom-quest watches. The new rows for B3, S1-S4 and S11 are sound.
   - **To clear:** B1 and B2, with ADR 0022 rows and the doc edits. No `.dlg` change is needed unless the Ch2 Kell line is rewritten for S1.
+- 2026-10-23 lead: reopened on review-sweep-H request-changes (B1 Kell asked to keep the boy, B2 the lantern).
