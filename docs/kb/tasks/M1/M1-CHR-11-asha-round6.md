@@ -2,8 +2,8 @@
 id: M1-CHR-11
 title: Asha round 6: grief teeth, lash comb, lid band, brow notch, dead eyes in the smile, upper-lip edge
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a51a24232ad76bb4f (character)"
 depends_on: [M1-CHR-10]
 milestone: M1
 request-from: "rendering"
