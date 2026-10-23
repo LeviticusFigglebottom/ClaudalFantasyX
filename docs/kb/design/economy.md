@@ -47,10 +47,10 @@ An item may override the global cap with `stack_cap`. The order of `rules.catego
 
 | `type` | Fields | Does |
 |---|---|---|
-| `heal_hp` | `amount` | Restores a fixed amount of HP, up to max. Living targets only. |
+| `heal_hp` | `amount` | Restores a fixed amount of HP, up to max, through `restore_hp`, so it damages under Zombie. Living targets only. |
 | `restore_mp` | `amount` | Restores a fixed amount of MP, up to max. |
 | `cure` | `statuses` | Removes the listed statuses. |
-| `revive` | `hp_pct` | A KO'd target returns with `max(1, floor(max_hp × hp_pct / 100))` HP. The item targets **only** the fallen. |
+| `revive` | `hp_pct` | A KO'd target returns with `max(1, floor(max_hp × hp_pct / 100))` HP. The item targets **only** the fallen (HP 0). A petrified ally is neither alive nor fallen, so no current item reaches them. A Petrify cure is a follow-up for when Combat finalizes Petrify. |
 | `add_status` | `status`, `duration` | Like a skill's inflict, but certain to land. |
 | `delay` | `ranks` | Adds `base_delay(target.agi) × ranks` ticks to the target's `next_time` (the same rule as a skill's `delay_ranks`). |
 | `damage` | `amount`, `element` | Fixed damage that ignores stats, defense and barriers, takes the element ratio of the target's affinity (absorb heals), and is capped at `DAMAGE_CAP`. |
