@@ -29,3 +29,14 @@ From the review-sweep-J entries (file:line references there).
 - **Not done.** The sweep-J nit about the boot-time profile for `report_data_tables` is not part of this task.
 
 ## Review log
+- 2026-10-23 qa (review-sweep-K, fresh reviewer): **approve.** No blockers.
+  - **What I read:** the task and `git show c34bedf`: lattice_progress.gd, lattice_traveler.gd, lattice_board.gd, battle_stage.gd, debug_readouts.gd, data_health.gd, test_lattice_save.gd and architecture.md. I also grepped every caller of `LatticeBoard.load_board`, `LatticeProgress.from_dict` and `.activated`.
+  - **Checks:** Godot `--filter=lattice` 37/0 failed, and `--filter=fp_` 15/0 (FieldBattle goes through `BattleStage.lattice_for`). `validate_data` 0/0. I skipped the coverage step: progression coverage was reported at 96.52%, and my run adds nothing to it.
+  - **Criteria met:**
+    - **Another board's save is frozen** (lattice_progress.gd:371-376). `to_dict` returns it unchanged, and the board field is never rewritten.
+    - **Writers load the board the save names.** All three writers go through `board_for` (:352): battle_stage.gd:40, debug_readouts.gd:214, and field_battle.gd:50 through `lattice_for`.
+    - **Invalid ids build no path** (lattice_board.gd:29, data_health.gd:105).
+    - **Lost-start writes are gone** (:397): the start is an `implied_start` until the first `move`.
+  - **Nits:**
+    - **N1: `activate_error` still reads `t.activated` directly** (lattice_progress.gd:202), not `has_activated`. Start nodes aren't activatable, so this is harmless, but use the accessor everywhere so the implied start can't be missed later. The same goes for debug_readouts.gd:294, whose count leaves out the implied start.
+    - **N2: a frozen save fights without its Lattice gains.** While a save is frozen, `lattice_for` gives no travelers, so `apply_to` adds no stats or skills and the party fights on base stats without being told. Nothing is lost, but say so in architecture.md's "Data tables gate", next to "saving is off".

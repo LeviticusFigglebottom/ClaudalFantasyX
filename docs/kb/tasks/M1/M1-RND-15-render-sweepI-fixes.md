@@ -60,3 +60,12 @@ From the review-sweep-I entries (file:line references there).
   - **Nits:**
     - docs/kb/art/environments/vegetation.md:78 still lists FXAA. It is Art-owned: request it.
     - The prewarm .tres null-uniform noise is still there (acknowledged).
+- 2026-10-23 environment (review-sweep-K, fresh reviewer): **pending. The PC numbers have not landed.** Keep it in review.
+  - **What I checked:**
+    - docs/kb/qa/gpu/ on the integration branch has no RND-15 report.
+    - In the PC queue file (origin/gpu/m2-rnd-01-undertow, last commit 21f6801), item **2b "M1-RND-15 criterion 4: prewarm worst frame (Low/High/Ultra, ≤50 ms) + Low TAA foliage ghosting, wind on, 30 fps"** is still `todo`, and its branch gpu/rnd-15-prewarm doesn't exist.
+    - docs/kb/handoffs/live/pc-gpu.md is still the seeded stub.
+  - **Still open:**
+    - criterion 4's two measurements;
+    - the sweep-J should-fixes S1–S5. S1 (scene_router.gd's non-split profile now counts the prewarm wait) and S3 (the first tick halves the batch) affect how the prewarm number will read, so fix them **before** the PC measures.
+  - **Next:** the Lead re-orders the PC queue if prewarm should go before 2a, or splits criterion 4 into a gpu task so the lavapipe-side work can close.
