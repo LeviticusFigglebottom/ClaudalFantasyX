@@ -203,3 +203,12 @@ breaks colour-script rule 5. The measurements and the request to re-test on a GP
   backlight note.
 - **QA:** the baselines folder is now about 11 MB, against the 5 MB guideline in screenshots.md. These five
   shots add 3.2 MB.
+
+## Rework after review-sweep-F (2026-10-23, environment-stream-3)
+
+The sky blocker (B1) and should-fixes S1–S6 have been addressed. Each one now has a numeric check in
+`tests/screenshots/palette_checks.json`, run on the baselines by `tools/tests/test_palette_check.py`. The
+before and after numbers are in the M1-ENV-01 task notes. What remains: the cumulus is still a mood-test sky.
+The cells are soft-edged and read slightly airbrushed at 960×540, and the signature sculpted sky is
+Rendering's R&D. The banyan is still a placeholder (shaded roots now read about one stop under the shaded
+sand, not at the toe). My estimate rises from ~40% to ~55% of art-complete for the five frames.

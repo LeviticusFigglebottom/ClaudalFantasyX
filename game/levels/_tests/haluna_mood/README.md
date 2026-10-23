@@ -13,7 +13,7 @@ sub-frame, composed from the procedural Haluna kit. The art review is in
 | `haluna_terrain.gd` (`HalunaTerrain`) | Generated crescent beach, terrace, lagoon, reef, islet, far islands; lane/turf/seagrass masks |
 | `weathering_tide.gd` (`WeatheringTide`) | Writes `tide_line_y` / `water_height_y` to every weathering and ground material and moves the sea; swaps the weathering tier |
 | `haluna_shot_camera.gd` (`HalunaShotCamera`) | A Camera3D driven by a `CameraShot` resource (FIXED framing, vFOV, DOF) |
-| `haluna_noon_environment.tres` | The `ch02_noon` mood frame: sky, AgX, exposure, fog, LUT |
+| `haluna_noon_environment.tres` | The `ch02_noon` mood frame: sky, AgX, exposure, LUT (no fog: the frame row has none) |
 | `lut_ch02_noon.png` | 32³ grade LUT (Texture3D), from `assets_src/environments/kits/haluna/zone_lut.py` |
 | `haluna_water_material.tres` | The colour script's validated `lagoon_clear` look (absorption ×1.5, deep `#0E4A55`), crest foam reduced |
 | `haluna_kit_sheet.tscn` / `.gd` / `.json` | Every kit piece in rows, for review (not a registered shot) |
@@ -29,7 +29,7 @@ VoxelGI cannot cover the extent (a 512-subdivision probe over 500 m is ~1 m cell
 lanes 3 m wide). LightmapGI stays the choice for the Shell Shrine interior.
 
 **But the mood-test frames are rendered with SDFGI off** (`sdfgi_enabled = false` in
-`haluna_noon_environment.tres`; sky ambient + SSAO + volumetric fog instead). Measured on lavapipe:
+`haluna_noon_environment.tres`; sky ambient + SSAO instead). Measured on lavapipe:
 
 | Configuration (H07, 960×540) | Result |
 |---|---|
@@ -56,3 +56,23 @@ No global tide uniform exists yet (`project.godot` belongs to the Lead). `Weathe
 two uniforms into each registered material instead. Request: a `hymn_tide` vec2 global
 (`tide_line_y`, `water_height_y`); the shader reads material uniforms of the same names, so the switch
 is a one-line change in `env_weathering_body.gdshaderinc` and `env_ground.gdshader`.
+
+## Sky and palette checks (review-sweep-F)
+
+The sky is `game/shaders/environment/env_sky_cumulus.gdshader`, tuned in the environment's sky material:
+`background_energy` 1.5 (the visible sky only; the radiance cubemap that gives the sky fill and the water's
+sky reflection keeps `sky_energy` 1.0, so ground, shade and water values are unchanged by it) and
+`horizon_curve` 0.14. The depth fog and volumetric fog are gone: they are not in the `ch02_noon` row
+(haluna.md §0), and the volumetric fog also hazed the sky (`volumetric_fog_sky_affect` 1), which was most of
+the zenith's lost chroma.
+
+`tests/screenshots/palette_checks.json` holds the numeric targets the five baselines must meet (zenith on
+`sky_zenith_noon` +1, lit tops at `cumulus_lit` +1 L, chromatic blue-lilac undersides, cloud grain, the
+chapel on `order_marble` 0, the banyan roots above the toe, planks on `timber_weathered` +1, the red budget).
+`tools/tests/test_palette_check.py` runs them against the committed baselines, so a re-approval that drifts
+off the palette fails the tool tests. Measure any frame with
+`python3 tools/screenshots/palette_check.py coverage <png>` (swatch coverage, red and gold masks) or
+`... region <png> --rect x0,y0,x1,y1` (median colour, Oklab L/C/h, grain).
+
+The **SaveShrine** (M1-ENV-04) at (-67, 2.04, 46.6) sits behind the beach palms in H01 and does not read there.
+

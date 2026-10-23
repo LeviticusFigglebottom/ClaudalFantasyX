@@ -2,7 +2,7 @@
 id: M1-ENV-01
 title: Five-shot environment mood test (coastal village)
 role: environment
-status: doing
+status: review
 owner_session: environment-stream-3 (worktree agent-aaa0dfc3de4f41ded)
 reviewer: rendering, art-director
 depends_on: [M1-RND-01, M1-ART-01]
@@ -31,6 +31,53 @@ SPEC §10.2 M1 exit criterion.
   - Lead: a `hymn_tide` global, and a packing ADR.
   - Rendering: an SDFGI GPU re-test, adopting the LUT tool, the sky, and a weathering preset mapping.
   - Vegetation: the banyan and the windbreak tree.
+- **Rework on review-sweep-F (environment-stream-3, 2026-10-23).** Merged the session branch first
+  (M1-RND-08 water, M1-RND-09, M1-ENV-04 shrine), then approved the five baselines once with everything
+  included. Measured with the new `tools/screenshots/palette_check.py` (Oklab, ΔE_ok). The targets are
+  checked on every tools test run by `tests/screenshots/palette_checks.json` + `tools/tests/test_palette_check.py`.
+  The old baselines fail 15 of the 19 checks; the new ones pass all 19.
+
+  | Check | Before | After | Target |
+  |---|---|---|---|
+  | H01 zenith | #7D9DB7, C 0.052, ΔE 0.062 | #66A6D0, C 0.090, ΔE 0.029 | `sky_zenith_noon` +1 #6DAFDC, ≤ 0.045 |
+  | H04 zenith | #84A3B7, C 0.045, ΔE 0.057 | #85B5D0, C 0.064, ΔE 0.038 | as above |
+  | H07 zenith | #81A1B6, ΔE 0.059 | #80B2D0, ΔE 0.029 | as above |
+  | Lit tops L p95 (H01 / H04) | 0.837 / 0.836 | 0.904 / 0.899 | `cumulus_lit` +1 L 0.905 |
+  | Undersides C, h (H01 / H04) | 0.021, 267° / 0.013, 256° (grey) | 0.031, 240° / 0.028, 230° | `cumulus_shadow` +1 C 0.025, h 248° |
+  | Cloud grain (median 2nd difference, H01 / H04) | 0.0039 / 0.0040 | 0.0019 / 0.0028 | ≤ 0.0033 |
+  | H07 chapel sun face | #B1B1AE, ΔE 0.043, grain 0.0116 | #BABCBC, ΔE 0.013, grain 0.0032 | `order_marble` 0 #C1BEB9 |
+  | H07 banyan roots (shaded) | #181E1E, L 0.23 | #385259, L 0.42 | above the toe, ≥ 0.33 |
+  | H04 planks | #B8A28E, ΔE 0.064 | #9D846D, ΔE 0.033 | `timber_weathered` +1 #A48F78 |
+  | Red, HSV mask (H02 / H03) | 4.2% / 16.4% | 4.3% / 5.2% | ≤ 8% |
+- **What changed, and why each baseline was re-approved** (each frame inspected before and after):
+  - **All five, sky + fog (B1, S1):** `env_sky_cumulus` reworked. The old per-pixel white-noise march
+    jitter was turned into 2×2 stipple by the half-res pass, so the march is now adaptive: coarse steps,
+    then quarter steps at the first density, so no step adds about 40% opacity. That removes both the grain
+    and the contour rings a fixed offset gave. The coverage field is 3 octaves (finer 2D detail extruded up
+    the dome walls as the vertical streaks), with coarser 3D billows that fade with distance. Light that
+    crossed cloud is tinted to `cumulus_shadow`, so the undersides stay blue. `background_energy` 1.5
+    lifts only the visible sky; fill and water reflection are unchanged. Both fogs are cut, and the
+    volumetric fog had been hazing the sky. Drift is expected everywhere the sky or the haze showed.
+  - **H01:** re-staged to 120 m offshore at 8 m (proposed in haluna.md Revisions; needs AD sign-off). The
+    nearshore shelf varies along the shore (`shelf_variation` 0.8 over 45 m), so the wash band changes width
+    instead of reading as one stripe. The M1-ENV-04 shrine sits behind the palms and doesn't read, so it
+    was not moved.
+  - **H02:** sky and fog only, plus darker weathered timber (all timber now has a `col_tint` and per-board
+    variation).
+  - **H03:** camera 0.3 m lower, tilted up about 4°. The near roof is now a strip and the red budget passes.
+  - **H04:** weathered planks. The net rack is turned square to the lens; it had been seen exactly edge-on.
+    The net is alpha scissor, not blend: blended, it wrote no depth and the transparent sea drew over it,
+    which is why the nets were invisible. The twine is thicker and tannin-brown (`timber_weathered`).
+    "Backlit" is proposed for removal from H04's brief.
+  - **H07:** the lime-wash is at the albedo ceiling #EBE7DF, fully covering a smooth base (no coral
+    stipple). The banyan bark has a gain above 1 over the shared frangipani texture (linear ≈0.26), giving
+    a pale grey bark at about 0.40 linear, with occlusion 0.9 → 0.35.
+- **Ready for review (Rendering + Art Director).** `HYMN_SHOTS=<the five haluna_h0* shots> tools/ci_local.sh`
+  passed all gates: tools tests, 847 Godot tests with 0 failed, coverage, boot, and 5/5 screenshots against
+  the re-approved baselines. AD sign-off is needed on the two haluna.md Revisions proposals (the H01
+  re-stage, and dropping "backlit" from H04).
+- Sky users in the manifest: only the five `haluna_h0*` shots (`haluna_kit_sheet.tscn` also uses the
+  environment but isn't a registered shot).
 
 ## Review log
 - 2026-10-23 art director (review-sweep-F, first AD review): **request-changes.** I read all five baselines (`tests/screenshots/baselines/haluna_h0{1,2,3,4,7}_*.png`, ids in tests/screenshots/shots.json:408-456) against haluna.md §0 and §5.1, color_script (conventions, water looks, `ch02_noon`), palette.json `onscreen_hex`, ADR 0014, the zone README, haluna_mood_review.md, and haluna_noon_environment.tres. I sampled region means in Oklab (ΔE_ok).
