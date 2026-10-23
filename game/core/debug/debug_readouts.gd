@@ -209,7 +209,9 @@ static func lattice_target(source: Object, cfg: Dictionary) -> Dictionary:
 				"inventory": inv if inv != null else FacetInventory.new(Game.state.inventory),
 				"persist": false
 			}
-	var board := LatticeBoard.load_board(StringName(str(cfg.get("board", LatticeBoard.DEFAULT_BOARD))))
+	# M1-ARC-14: the board the save names, not the configured one.
+	var configured := StringName(str(cfg.get("board", LatticeBoard.DEFAULT_BOARD)))
+	var board := LatticeProgress.board_for(Game.state.lattice, configured)
 	var rules := LatticeRules.load_file()
 	var progress: LatticeProgress
 	if Game.state.lattice.is_empty():

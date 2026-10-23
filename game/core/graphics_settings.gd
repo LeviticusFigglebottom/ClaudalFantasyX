@@ -8,7 +8,8 @@ extends RefCounted
 ## a settings dictionary into engine calls in two steps:
 ##   plan()    -> pure: settings in, Array of operation dictionaries out (unit-tested headlessly)
 ##   execute() -> performs those operations on a Viewport, an Environment and the RenderingServer
-## Operation shape: {"target": viewport|environment|rendering_server|group, "op": set|gate|call, ...}.
+## Operation shape: {"target": viewport|environment|rendering_server|group|sky, "op": set|gate|call, ...}.
+## A sky op sets a uniform on the Environment's sky material, if its shader declares it (M1-RND-12).
 ## A "gate" never turns on a feature the zone did not author: the final value is
 ## authored_value AND allowed, with the authored value captured once in object metadata
 ## (see set_authored()). Environment feature toggles and VoxelGI node visibility are gates.
@@ -27,6 +28,7 @@ const TARGET_VIEWPORT := &"viewport"
 const TARGET_ENVIRONMENT := &"environment"
 const TARGET_SERVER := &"rendering_server"
 const TARGET_GROUP := &"group"
+const TARGET_SKY := &"sky"
 const OP_SET := &"set"
 const OP_GATE := &"gate"
 const OP_CALL := &"call"
@@ -191,6 +193,7 @@ func plan(preset_or_dict: Variant = null) -> Array[Dictionary]:
 	ops.append(_op_set(TARGET_VIEWPORT, "mesh_lod_threshold", s["lod_threshold"]))
 	ops.append(_op_set(TARGET_VIEWPORT, "anisotropic_filtering_level", _enum_value("anisotropic_filtering", s)))
 	_plan_vegetation(s, ops)
+	_plan_sky(s, ops)
 	return ops
 
 
@@ -230,7 +233,25 @@ static func execute(ops: Array[Dictionary], viewport: Viewport, environment: Env
 					for node in viewport.get_tree().get_nodes_in_group(StringName(str(op["group"]))):
 						_apply_property(node, op)
 					applied += 1
+			TARGET_SKY:
+				if _apply_sky_uniform(environment, name, op["value"]):
+					applied += 1
 	return applied
+
+
+## Sets a sky_detail uniform on the environment's sky material when its shader declares it; int
+## uniforms get an int (JSON numbers parse as floats). False when there is nothing to set.
+static func _apply_sky_uniform(environment: Environment, name: String, value: Variant) -> bool:
+	if environment == null or environment.sky == null or not (environment.sky.sky_material is ShaderMaterial):
+		return false
+	var mat := environment.sky.sky_material as ShaderMaterial
+	if mat.shader == null:
+		return false
+	for u: Dictionary in mat.shader.get_shader_uniform_list():
+		if str(u["name"]) == name:
+			mat.set_shader_parameter(name, int(value) if int(u["type"]) == TYPE_INT else value)
+			return true
+	return false
 
 
 ## Quality tier of `system` ("water", "vegetation", ...) for a preset (presets[].tiers; "" if the
@@ -392,6 +413,13 @@ func _plan_vegetation(s: Dictionary, ops: Array[Dictionary]) -> void:
 			bool(lvl["small_foliage_shadows"])
 		)
 	)
+
+
+## sky_detail: the procedural sky's quality uniforms (graphics_presets.json levels.sky_detail).
+func _plan_sky(s: Dictionary, ops: Array[Dictionary]) -> void:
+	var lvl := _level("sky_detail", s)
+	for key: String in lvl:
+		ops.append({"target": TARGET_SKY, "op": OP_SET, "name": key, "value": lvl[key]})
 
 
 func _plan_shadows(s: Dictionary, ops: Array[Dictionary]) -> void:

@@ -9,7 +9,9 @@ extends Node
 ##   --camera=default|<path>      Camera3D path relative to the scene root
 ##   --presets=low,...            GraphicsSettings presets (game/data/settings/graphics_presets.json)
 ##   --res=WxH,...                window sizes; the window is borderless at the screen origin
-##   --variants=scene|undertow|water   undertow/water run UndertowBench/WaterBench CONFIGS per preset
+##   --variants=scene|undertow|water|sky   undertow/water run UndertowBench/WaterBench CONFIGS per preset;
+##                                sky runs SKY_CONFIGS on the Environment's sky material (M1-RND-12)
+##   --sky-set=uniform=value,...  extra sky-material uniforms on top of every sky variant
 ##   --warmup=120 --frames=300    frames skipped after each change, then frames sampled
 ##   --warmup-s=3.0               the warm-up also lasts at least this long (async pipeline compiles)
 ##   --csv=<abs path>             append one row per measurement (header written for a new file)
@@ -18,6 +20,10 @@ extends Node
 ##   --override=key=value,...     GraphicsSettings overrides on top of each preset (e.g. vegetation_detail=low)
 ##   --tag-vegetation             tag MultiMeshes (vegetation_multimesh, small_foliage) and range-limited
 ##                                meshes (vegetation_lod) before measuring, as a zone would (M1-RND-07)
+##   --spin-sun=<deg>             turn every DirectionalLight3D this many degrees about Y each frame
+##                                (a moving sun: measures the sky's radiance re-render, M1-RND-12)
+##   --drift-sky=<m>              move the sky material's cloud_offset_m this far each frame (drifting clouds)
+##   --sky-process=<0-3>          Sky.process_mode for the run (0 automatic, 2 incremental, 3 realtime)
 ##   --hold-storm                 freeze every UndertowStorm clock (deterministic frames for look diffs)
 ##                                while its temporal jitter keeps advancing; pair with --warmup-s=0
 ## Per configuration: apply the preset through GraphicsSettings (viewport + the scene's Environment),
@@ -39,10 +45,18 @@ const CSV_HEADER := (
 	+ "gpu_median_ms,gpu_p99_ms,gpu_mean_ms,cpu_median_ms,cpu_p99_ms,frame_median_ms,frame_p99_ms,adapter,driver"
 )
 const WATER_TOGGLES := ["use_ssr", "use_caustics", "use_foam", "use_refraction", "use_detail_normals", "use_sss"]
+## Sky variants (M1-RND-12): the preset's sky tier as applied, and the same frame without clouds (a
+## cloud_max_distance_m of 0 returns before the march), so the difference is the cloud march.
+const SKY_CONFIGS: Array[Dictionary] = [
+	{"name": "sky", "set": {}},
+	{"name": "no_clouds", "set": {"cloud_max_distance_m": 0.0}},
+]
 
 var _scene: Node
 var _opts: Dictionary = {}
 var _held: Array[UndertowStorm] = []
+## The sky material's uniforms before any sky variant touched them (restored between variants).
+var _sky_authored: Dictionary = {}
 
 
 func _ready() -> void:
@@ -127,6 +141,8 @@ func _measure(preset: String, variant: Dictionary, camera: String, label: String
 		var v: Variant = str_to_var(kv[1])
 		gs.set_override(kv[0], v if v != null else kv[1])
 	gs.apply_current(get_viewport(), _environment())
+	if _opts.has("sky-process") and _environment() != null and _environment().sky != null:
+		_environment().sky.process_mode = int(_opts["sky-process"]) as Sky.ProcessMode
 	_apply_tiers(preset)
 	_apply_variant(variant)
 	var warmup := int(_opts.get("warmup", DEFAULT_WARMUP))
@@ -139,6 +155,7 @@ func _measure(preset: String, variant: Dictionary, camera: String, label: String
 	while skipped < warmup or Time.get_ticks_usec() < warmup_until:
 		await RenderingServer.frame_post_draw
 		_tick_held()
+		_tick_sun()
 		skipped += 1
 	var gpu := PackedFloat64Array()
 	var cpu := PackedFloat64Array()
@@ -147,6 +164,7 @@ func _measure(preset: String, variant: Dictionary, camera: String, label: String
 	for i in frames:
 		await RenderingServer.frame_post_draw
 		_tick_held()
+		_tick_sun()
 		var now := Time.get_ticks_usec()
 		wall.append(float(now - last) / US_PER_MS)
 		last = now
@@ -205,6 +223,9 @@ func _variants(kind: String) -> Array[Dictionary]:
 		"water":
 			for c in WaterBench.CONFIGS:
 				out.append(c.merged({"kind": "water"}))
+		"sky":
+			for c in SKY_CONFIGS:
+				out.append(c.merged({"kind": "sky"}))
 		_:
 			out.append({"name": "scene", "kind": "scene"})
 	return out
@@ -238,6 +259,34 @@ func _apply_variant(v: Dictionary) -> void:
 			var overrides := v["set"] as Dictionary
 			for key: String in overrides:
 				water.material.set_shader_parameter(key, overrides[key])
+		"sky":
+			var env := _environment()
+			var m := env.sky.sky_material as ShaderMaterial if env != null and env.sky != null else null
+			if m == null:
+				push_warning("GPU_BENCH --variants=sky: the scene has no ShaderMaterial sky")
+				return
+			for key: String in _sky_authored:
+				m.set_shader_parameter(key, _sky_authored[key])
+			var uniforms := (v["set"] as Dictionary).duplicate()
+			for pair in str(_opts.get("sky-set", "")).split(",", false):
+				var kv := pair.split("=", true, 1)
+				uniforms[kv[0]] = str_to_var(kv[1])
+			for key: String in uniforms:
+				if not _sky_authored.has(key):
+					_sky_authored[key] = m.get_shader_parameter(key)
+				m.set_shader_parameter(key, uniforms[key])
+
+
+func _tick_sun() -> void:
+	if _opts.has("spin-sun"):
+		for n in _scene.find_children("*", "DirectionalLight3D", true, false):
+			(n as Node3D).rotate_y(deg_to_rad(float(_opts["spin-sun"])))
+	var env := _environment()
+	if _opts.has("drift-sky") and env != null and env.sky != null and env.sky.sky_material is ShaderMaterial:
+		var m := env.sky.sky_material as ShaderMaterial
+		var off: Variant = m.get_shader_parameter("cloud_offset_m")
+		var v := off as Vector2 if off is Vector2 else Vector2(900.0, -1400.0)
+		m.set_shader_parameter("cloud_offset_m", v + Vector2(float(_opts["drift-sky"]), 0.0))
 
 
 ## A held storm's clock stays put, but its temporal jitter (UndertowState.frame) still advances.

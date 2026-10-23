@@ -14,7 +14,8 @@ step that follows a Blender run in the same job, e.g. Asha's textures). A commit
 when the rebuild is byte-identical, or, for a job that declares a "tolerance", when the glTF matches
 within it (named float attributes only, e.g. TANGENT). A job with an "expected_failure" (a tracking
 task plus the failure's signature: a build error whose log holds a given line, or a mismatch of
-exactly the listed files and glTF accessors) is reported as KNOWN and does not fail the gate. A
+exactly the listed files and glTF accessors, plus, for a single-threaded job, the sha256 of each
+rebuilt file) is reported as KNOWN and does not fail the gate. A
 failure with any other signature fails, and so does a job that passes again, until the marker is
 removed. Before any build, a coverage check (no Blender) fails the gate when a tracked .glb under
 assets/ or a bpy script under assets_src/ belongs to no job and is not listed in "coverage_exempt".
@@ -61,12 +62,15 @@ BPY_IMPORT = re.compile(r"^\s*(?:import|from)\s+(?:bpy|bmesh|mathutils)\b", re.M
 SIG_NOT_PRODUCED = "<not produced>"
 SIG_NOT_COMMITTED = "<not committed>"
 SIG_BYTES = "<bytes>"
+# A mismatch expected_failure's content pin: {path: sha256 of the rebuilt file} (M1-NIT-01).
+REBUILT_SHA256 = "rebuilt_sha256"
+SHA256_RE = re.compile(r"[0-9a-f]{64}")
 
 
 # ---------------------------------------------------------------------------------------------
 # Manifest and change detection
 # ---------------------------------------------------------------------------------------------
-def _check_known(job: dict) -> None:
+def _check_known(job: dict, threads: int = 0) -> None:
     known = job.get("expected_failure")
     if known is None:
         return
@@ -85,6 +89,16 @@ def _check_known(job: dict) -> None:
         stray = [p for p in differs if not matches(p, job["outputs"])]
         if stray:
             raise ValueError(f"job {jid}: expected_failure lists paths outside its outputs: {', '.join(stray)}")
+        # M1-NIT-01 (review-sweep-J S1 on M1-QA-06): accessor names alone cannot see a further change
+        # inside a listed accessor. A single-threaded build is byte-stable, so it must pin content.
+        hashes = known.get(REBUILT_SHA256)
+        if hashes is None and threads == 1:
+            raise ValueError(f"job {jid}: a single-threaded mismatch expected_failure needs '{REBUILT_SHA256}': "
+                             "{path: sha256 of the rebuilt file}")
+        if hashes is not None:
+            if not isinstance(hashes, dict) or set(hashes) != set(differs) or not all(
+                    isinstance(h, str) and SHA256_RE.fullmatch(h) for h in hashes.values()):
+                raise ValueError(f"job {jid}: '{REBUILT_SHA256}' needs one lowercase hex sha256 per 'differs' path")
     else:
         raise ValueError(f"job {jid}: expected_failure 'kind' must be '{KIND_BUILD_ERROR}' or '{KIND_MISMATCH}'")
 
@@ -103,10 +117,10 @@ def load_manifest(path: Path = MANIFEST) -> dict:
                 raise ValueError(f"job {job['id']}: every run starts with '{{blender}}' or '{{python}}'")
         if job["runs"][0][0] != "{blender}":
             raise ValueError(f"job {job['id']}: the first run must be a Blender run")
-        _check_known(job)
         threads = job.get("threads", data.get("default_threads", 0))
         if not isinstance(threads, int) or isinstance(threads, bool) or threads < 0:
             raise ValueError(f"job {job['id']}: threads must be an int >= 0 (0 = Blender's default)")
+        _check_known(job, threads)
         tol = job.get("tolerance")
         if tol is not None and not (tol.get("attributes") and tol.get("why") and float(tol.get("abs", 0)) > 0):
             raise ValueError(f"job {job['id']}: tolerance needs 'abs' > 0, 'attributes' and 'why'")
@@ -395,7 +409,17 @@ def known_verdict(known: dict, res: dict, log_text: str) -> tuple[bool, str]:
                 ([f"now also differs in {', '.join(new)}"] if new else []) + ([f"no longer in {', '.join(gone)}"] if gone else [])))
     if problems:
         return False, "the mismatch changed: " + " | ".join(problems)
-    return True, "the same files and accessors differ as recorded"
+    pinned = known.get(REBUILT_SHA256)
+    if pinned is None:
+        return True, "the same files and accessors differ as recorded"
+    rebuilt = {f["path"]: f.get(REBUILT_SHA256, "") for f in res["files"] if f["status"] == "DIFF"}
+    for path in sorted(pinned):
+        if rebuilt.get(path) != pinned[path]:
+            problems.append(f"{path} rebuilt as sha256 {rebuilt.get(path, '')[:12] or '?'}, "
+                            f"recorded {pinned[path][:12]}")
+    if problems:
+        return False, "the rebuilt content changed: " + " | ".join(problems)
+    return True, "the same files and accessors differ as recorded, and each rebuild has its recorded sha256"
 
 
 # ---------------------------------------------------------------------------------------------
@@ -485,6 +509,8 @@ def run_job(job: dict, blender: str, manifest: dict, log_dir: Path, timeout_s: f
                 entry = {"path": rel, "status": status, "detail": detail}
                 if status == "DIFF":
                     entry["signature"] = sig
+                    if rel in got:
+                        entry[REBUILT_SHA256] = sha256(sandbox / rel)
                 result["files"].append(entry)
                 if status == "DIFF":
                     result["ok"] = False
