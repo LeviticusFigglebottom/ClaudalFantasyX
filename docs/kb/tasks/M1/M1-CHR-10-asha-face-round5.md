@@ -2,8 +2,8 @@
 id: M1-CHR-10
 title: Asha round 5: hair black and strand-broken, lashes, lid band, brows, teeth, mouth normals
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a109a5ba219573018"
 depends_on: [M1-CHR-09]
 milestone: M1
 request-from: "rendering"
