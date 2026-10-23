@@ -131,3 +131,20 @@ func test_resolution_is_deterministic() -> void:
 	var b := _hero(10, 400)
 	var act := ItemBattleAction.for_item(db, &"reef_draught")
 	assert_eq(act.resolve_on(a), act.resolve_on(b))
+
+
+func test_petrified_allies_are_not_item_targets() -> void:
+	var stone := _hero(80, 400)
+	stone.add_status(&"petrify", -1)
+	assert_false(ItemBattleAction.for_item(db, &"relighting_wick").can_target(stone), "not fallen")
+	assert_false(ItemBattleAction.for_item(db, &"salt_tonic").can_target(stone), "not alive")
+	ItemBattleAction.for_item(db, &"relighting_wick").resolve_on(stone)
+	assert_eq(stone.hp, 80)
+
+
+func test_heal_items_hurt_under_zombie() -> void:
+	var c := _hero(300, 400)
+	c.add_status(&"zombie", -1)
+	var r := ItemBattleAction.for_item(db, &"salt_tonic").resolve_on(c)
+	assert_eq(c.hp, 100)
+	assert_eq(r["amount"], 200)

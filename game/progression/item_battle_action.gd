@@ -71,8 +71,10 @@ func targets_allies() -> bool:
 
 
 ## Whether `c` is a legal target by life state (team checks are the engine's, as for skills).
+## Revive items take only the KO'd (HP 0); a petrified ally is neither alive nor fallen, so no
+## item reaches them until a Petrify cure exists.
 func can_target(c: BattleCombatant) -> bool:
-	return c.is_alive() != targets_fallen
+	return c.hp <= 0 if targets_fallen else c.is_alive()
 
 
 ## Applies every effect to `c`. Returns {"target_id", "amount", "mp_amount", "revived",
@@ -98,7 +100,7 @@ func resolve_on(c: BattleCombatant) -> Dictionary:
 func _apply(c: BattleCombatant, eff: Dictionary, out: Dictionary) -> void:
 	match StringName(str(eff.get("type", ""))):
 		EFFECT_HEAL_HP:
-			out["amount"] = int(out["amount"]) - c.apply_damage(-int(eff["amount"]))
+			out["amount"] = int(out["amount"]) - c.restore_hp(int(eff["amount"]))
 		EFFECT_RESTORE_MP:
 			var before := c.mp
 			c.mp = mini(c.mp + int(eff["amount"]), c.max_mp)
@@ -110,7 +112,7 @@ func _apply(c: BattleCombatant, eff: Dictionary, out: Dictionary) -> void:
 					c.statuses.erase(sid)
 					(out["statuses_removed"] as Array).append(sid)
 		EFFECT_REVIVE:
-			if not c.is_alive():
+			if c.hp <= 0:
 				c.hp = revive_hp(c.max_hp, int(eff["hp_pct"]))
 				out["amount"] = int(out["amount"]) - c.hp
 				out["revived"] = true
