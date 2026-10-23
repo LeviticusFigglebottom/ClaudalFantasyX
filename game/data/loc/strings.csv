@@ -397,3 +397,6 @@ TITLE_HELP_CONTINUE,Return to your newest record.
 TITLE_HELP_NEW_GAME,Begin the pilgrimage from the first shore.
 TITLE_HELP_LOAD,Choose a record to return to.
 TITLE_HELP_NO_RECORD,No record has been written yet. Begin the pilgrimage from the first shore.
+TITLE_CONFIRM_NEW_GAME,A new journey writes over the autosave when its first chapter ends. Records are kept.
+TITLE_CONFIRM_BACK,Go back
+TITLE_CONFIRM_BEGIN,Begin anew
