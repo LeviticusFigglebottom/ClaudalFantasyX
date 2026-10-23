@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "doc": "Debug overlay (SPEC §5.4, M1-ARC-02). Debug builds only; never shipped (docs/kb/tech/architecture.md 'Debug overlays'). Developer-facing text, so not localized. Actions are added to the InputMap at runtime (FieldInput.add_actions format); keys are OS.find_keycode_from_string names.",
+  "actions": {
+    "debug_overlay_help": {"keys": ["F1"]},
+    "debug_page_turn_order": {"keys": ["F2"]},
+    "debug_page_encounters": {"keys": ["F3"]},
+    "debug_page_flags": {"keys": ["F4"]},
+    "debug_page_teleport": {"keys": ["F5"]},
+    "debug_page_lattice": {"keys": ["F6"]},
+    "debug_page_camera": {"keys": ["F7"]},
+    "debug_battle_sandbox": {"keys": ["F9"]},
+    "debug_overlay_hide": {"keys": ["F12"]}
+  },
+  "deadzone": 0.5,
+  "pages": [
+    {"id": "help", "action": "debug_overlay_help", "title": "Debug overlay (F1)"},
+    {"id": "turn_order", "action": "debug_page_turn_order", "title": "Turn order internals (F2)"},
+    {"id": "encounters", "action": "debug_page_encounters", "title": "Encounter rate (F3)"},
+    {"id": "flags", "action": "debug_page_flags", "title": "Flag inspector (F4)"},
+    {"id": "teleport", "action": "debug_page_teleport", "title": "Teleport (F5)"},
+    {"id": "lattice", "action": "debug_page_lattice", "title": "Lattice cheat (F6)"},
+    {"id": "camera", "action": "debug_page_camera", "title": "Field camera (F7)"}
+  ],
+  "battle_sandbox_scene": "res://game/battle/scene/battle_sandbox.tscn",
+  "teleports_path": "res://game/data/debug/teleports.json",
+  "lattice_cheat": {
+    "movement_points": 10,
+    "facets_each": 5,
+    "board": "standard",
+    "fallback_characters": ["rhen", "asha", "toma", "ysolde"]
+  },
+  "turn_order_preview": 16,
+  "refresh_sec": 0.25,
+  "layer": 120,
+  "font_size": 16,
+  "panel_margin_px": 16,
+  "panel_width_px": 760,
+  "list_window_rows": 18,
+  "background": "#0B1A22E6",
+  "text_color": "#E8E0D0",
+  "highlight_color": "#FFD38A"
+}
