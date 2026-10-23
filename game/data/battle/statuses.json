@@ -37,8 +37,8 @@
       "name_key": "STATUS_PETRIFY",
       "category": "harmful",
       "default_duration": -1,
-      "implemented": false,
-      "description": "Turned to stone; counts as defeated."
+      "implemented": true,
+      "description": "Turned to stone: off the timeline, untargetable, counts as KO for victory, defeat and XP. Clears other statuses. Until cured."
     },
     {
       "id": "slow",
@@ -69,32 +69,32 @@
       "name_key": "STATUS_BERSERK",
       "category": "harmful",
       "default_duration": -1,
-      "implemented": false,
-      "description": "Attacks random foes automatically; strength up."
+      "implemented": true,
+      "description": "Not in control: uses its basic attack on a random foe (the provoker if Provoked). Strength x1.5."
     },
     {
       "id": "confuse",
       "name_key": "STATUS_CONFUSE",
       "category": "harmful",
       "default_duration": 3,
-      "implemented": false,
-      "description": "Acts against random targets."
+      "implemented": true,
+      "description": "Not in control: uses its basic attack on a random ally (50%) or a random foe. A physical hit snaps it out."
     },
     {
       "id": "doom",
       "name_key": "STATUS_DOOM",
       "category": "harmful",
       "default_duration": 5,
-      "implemented": false,
-      "description": "Defeated when the count reaches zero."
+      "implemented": true,
+      "description": "Counts down on each own turn, lost turns included; KO at the end of the turn that shows 1."
     },
     {
       "id": "zombie",
       "name_key": "STATUS_ZOMBIE",
       "category": "harmful",
       "default_duration": -1,
-      "implemented": false,
-      "description": "Healing harms; revival defeats."
+      "implemented": true,
+      "description": "Heal skills and Regen deal their amount as damage instead; revival will KO (items, later)."
     },
     {
       "id": "shell",
@@ -117,8 +117,8 @@
       "name_key": "STATUS_REFLECT",
       "category": "beneficial",
       "default_duration": 4,
-      "implemented": false,
-      "description": "Bounces single-target magic."
+      "implemented": true,
+      "description": "Single-target magic aimed at it bounces to the lowest-HP living unit on the other side. No chains."
     },
     {
       "id": "regen",
@@ -165,8 +165,8 @@
       "name_key": "STATUS_PROVOKE",
       "category": "harmful",
       "default_duration": 3,
-      "implemented": false,
-      "description": "Must target the provoker."
+      "implemented": true,
+      "description": "Single-foe skills must target the provoker; ends early if the provoker falls or leaves the field."
     }
   ]
 }

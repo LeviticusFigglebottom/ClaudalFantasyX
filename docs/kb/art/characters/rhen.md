@@ -27,7 +27,7 @@ Shared conventions (mask packing, face shapes, LOD rules, pipeline) are defined 
 - **Sea-jacket:** short, sun-faded heavy cotton with a stand-up collar 3 cm high, open at the front. It has only a **left sleeve**, which runs long past the wrist into a fingerless **diving gauntlet** of oiled leather with brass rivets and a palm grip pad. The right side of the jacket ends in a raw, rolled armhole edge (cut off by hand, so the stitching is visible).
 - **Right arm:** bare to the shoulder. A **faint, half-finished reach-band** sits on the upper forearm, 7 cm below the elbow. It's a 10 mm ring, the outline is complete, and only 40% of the fill is done (tattoo_ink at 60% opacity, slightly blurred with age).
 - **Dace's diving lantern:** a brass frame (`brass`) with a salt-glass globe (`salt_glass`, transmission 0.7), 22 cm tall, clipped to a leather strap on the right shoulder blade. It is **unlit by default**. In dark dungeons it gets an OmniLight3D at energy 1.0 with a range of 5 m, color `oil_lamp`, and a 6 Hz flicker at ±6%. This flicker motif is also his Swell timing ring. The globe has 3 hairline cracks (they're in the normal map, and the light leaks through them).
-- **Open question for Narrative:** is the flame oil, or bound glimmer? The bible implies oil. If it's bound, the light switches to `glimmer_bound`, and it must go dark at the Unbinding.
+- **The flame is oil** (resolved by Narrative, [N-02](../../story/decisions_log.md)): `oil_lamp` light behind salt-glass, never `glimmer_bound`, and it stays lit through the Unbinding. The housing is Saltwright work fitted with a wick by Dace.
 
 ## 4. Costume Layers and Materials
 | # | Piece | Material | Color | Mask channels |

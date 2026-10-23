@@ -37,6 +37,9 @@ var next_time: int = 0
 var turns_taken: int = 0
 ## True once this combatant has been on the field at any point (XP credit rule).
 var participated := false
+## Who inflicted Provoke on this combatant (its single-foe actions must target them). An id,
+## not a reference, so two combatants never hold each other (RefCounted cycle).
+var provoker_id: StringName = &""
 
 
 static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> BattleCombatant:
@@ -67,8 +70,14 @@ static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> Ba
 	return c
 
 
+## Still in the fight: HP above 0 and not turned to stone. Petrify counts as KO for the
+## timeline, targeting, outcome checks and XP credit (formulas.md § Statuses).
 func is_alive() -> bool:
-	return hp > 0
+	return hp > 0 and not statuses.has(&"petrify")
+
+
+func is_petrified() -> bool:
+	return hp > 0 and statuses.has(&"petrify")
 
 
 func has_status(status: StringName) -> bool:
@@ -89,8 +98,10 @@ func speed_mult() -> float:
 	return m
 
 
+## Strength after Power Break, then Berserk (Berserk multiplies the broken value).
 func effective_strength() -> int:
-	return Formulas.broken_stat(strength, has_status(&"power_break"))
+	var s := Formulas.broken_stat(strength, has_status(&"power_break"))
+	return Formulas.berserk_strength(s) if has_status(&"berserk") else s
 
 
 func effective_magic() -> int:
@@ -113,13 +124,31 @@ func apply_damage(amount: int) -> int:
 		statuses.erase(&"sleep")
 	if hp == 0:
 		statuses.clear()
+		provoker_id = &""
 	return hp - before
 
 
-## Returns false (and does nothing) if the target is KO'd.
+## Restores `amount` HP from a heal skill or Regen. Under Zombie the same amount is dealt as
+## damage instead. Returns the actual HP delta (negative = lost), like apply_damage.
+func restore_hp(amount: int) -> int:
+	return apply_damage(amount if has_status(&"zombie") else -amount)
+
+
+## KO now (Doom reaching zero): HP 0 and every status cleared.
+func fall() -> void:
+	hp = 0
+	statuses.clear()
+	provoker_id = &""
+
+
+## Returns false (and does nothing) if the target is KO'd or petrified. Petrify replaces
+## every other status: stone has no poison, haste or countdown.
 func add_status(status: StringName, duration: int) -> bool:
 	if not is_alive():
 		return false
+	if status == &"petrify":
+		statuses.clear()
+		provoker_id = &""
 	statuses[status] = duration
 	if status == &"haste":
 		statuses.erase(&"slow")
@@ -128,8 +157,15 @@ func add_status(status: StringName, duration: int) -> bool:
 	return true
 
 
-## Called at the end of this combatant's own turn: counts timed statuses down.
-func tick_statuses() -> void:
+## Turns left on Doom (0 = not doomed). The combatant falls at the end of a turn shown as 1.
+func doom_count() -> int:
+	return maxi(int(statuses.get(&"doom", 0)), 0)
+
+
+## Called at the end of each own turn (acted or lost): counts timed statuses down. Doom
+## reaching zero KOs the combatant; returns true when that happened.
+func tick_statuses() -> bool:
+	var doomed := doom_count() == 1
 	for s: StringName in statuses.keys():
 		var left: int = statuses[s]
 		if left < 0:
@@ -139,3 +175,9 @@ func tick_statuses() -> void:
 			statuses.erase(s)
 		else:
 			statuses[s] = left
+	if not has_status(&"provoke"):
+		provoker_id = &""
+	if doomed and hp > 0:
+		fall()
+		return true
+	return false

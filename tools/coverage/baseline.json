@@ -1,0 +1,25 @@
+{
+  "_comment": "ADR 0013. Change only with --update-baseline after adding tests (docs/kb/qa/coverage.md).",
+  "tolerance_pp": 0.5,
+  "directories": {
+    "game/battle": 91.7,
+    "game/progression": 93.06
+  },
+  "files": {
+    "game/battle/action_result.gd": 100.0,
+    "game/battle/battle_db.gd": 90.91,
+    "game/battle/battle_engine.gd": 93.07,
+    "game/battle/combatant.gd": 96.72,
+    "game/battle/ctb_timeline.gd": 86.36,
+    "game/battle/enemy_ai.gd": 84.62,
+    "game/battle/formulas.gd": 100.0,
+    "game/battle/turn_entry.gd": 100.0,
+    "game/progression/facet_inventory.gd": 84.62,
+    "game/progression/lattice_board.gd": 91.89,
+    "game/progression/lattice_node.gd": 100.0,
+    "game/progression/lattice_progress.gd": 94.06,
+    "game/progression/lattice_rules.gd": 84.85,
+    "game/progression/lattice_traveler.gd": 100.0,
+    "game/progression/progression_formulas.gd": 100.0
+  }
+}

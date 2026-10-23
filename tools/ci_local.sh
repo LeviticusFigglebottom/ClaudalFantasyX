@@ -36,6 +36,10 @@ step "Godot tests"
 $T "$GODOT" --headless --path . res://tests/run_tests.tscn 2>&1 | tee $L/hymn_tests.log | grep -E "FAIL|Tests:"
 if grep -E "SCRIPT ERROR|Parse Error" $L/hymn_tests.log; then echo "Script errors during tests"; exit 1; fi
 grep -q "Tests: .* 0 failed" $L/hymn_tests.log
+step "Coverage gate: battle/ + progression/ (ADR 0013)"
+cov_t0=$SECONDS
+python3 tools/coverage/run_coverage.py --godot "$GODOT" --compare-log $L/hymn_tests.log
+echo "coverage step: $((SECONDS - cov_t0))s"
 step "Boot scene smoke test (60 frames)"
 $T "$GODOT" --headless --path . --quit-after 60 > $L/hymn_boot.log 2>&1
 if grep -E "SCRIPT ERROR|ERROR" $L/hymn_boot.log; then echo "Boot scene errors"; exit 1; fi
