@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3]
+[gd_scene load_steps=33 format=3]
 
 [ext_resource type="Script" path="res://game/levels/_tests/undertow/undertow_test_rig.gd" id="rig"]
 [ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="surface"]
@@ -6,6 +6,41 @@
 [ext_resource type="Script" path="res://game/vfx/glimmer/glimmer_field.gd" id="field"]
 [ext_resource type="Resource" path="res://game/levels/_tests/undertow/storm_sea_waves.tres" id="waves"]
 [ext_resource type="Material" path="res://game/levels/_tests/undertow/storm_ocean_material.tres" id="ocean_mat"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyDayMat"]
+sky_top_color = Color(0.243137, 0.290196, 0.341176, 1)
+sky_horizon_color = Color(0.541176, 0.501961, 0.439216, 1)
+sky_curve = 0.15
+sky_energy_multiplier = 1.0
+ground_bottom_color = Color(0.054902, 0.164706, 0.227451, 1)
+ground_horizon_color = Color(0.45, 0.43, 0.4, 1)
+ground_curve = 0.06
+sun_angle_max = 8.0
+sun_curve = 0.15
+
+[sub_resource type="Sky" id="SkyDay"]
+sky_material = SubResource("SkyDayMat")
+
+[sub_resource type="Environment" id="EnvDay"]
+background_mode = 2
+sky = SubResource("SkyDay")
+ambient_light_source = 3
+ambient_light_energy = 0.5
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.8
+tonemap_agx_white = 12.0
+glow_enabled = true
+glow_intensity = 0.5
+glow_bloom = 0.04
+glow_hdr_threshold = 1.0
+fog_enabled = true
+fog_light_color = Color(0.368627, 0.4, 0.439216, 1)
+fog_density = 4e-05
+fog_aerial_perspective = 0.5
+fog_sky_affect = 0.0
+adjustment_enabled = true
+adjustment_saturation = 0.95
 
 [sub_resource type="ProceduralSkyMaterial" id="SkyDuskMat"]
 sky_top_color = Color(0.105882, 0.141176, 0.231373, 1)
@@ -101,7 +136,7 @@ roughness = 1.0
 
 [sub_resource type="PlaneMesh" id="FloorMesh"]
 material = SubResource("FloorMat")
-size = Vector2(40000, 40000)
+size = Vector2(400000, 400000)
 
 [sub_resource type="BoxMesh" id="HullMesh"]
 material = SubResource("TimberMat")
@@ -150,7 +185,7 @@ height = 6.0
 radial_segments = 8
 rings = 4
 
-[node name="UndertowTest" type="Node3D" node_paths=PackedStringArray("storm", "water", "sun", "moon", "world_environment", "motes", "horizon_camera", "eye_camera", "night_camera", "low_camera", "night_nodes")]
+[node name="UndertowTest" type="Node3D" node_paths=PackedStringArray("storm", "water", "sun", "moon", "world_environment", "motes", "horizon_camera", "eye_camera", "night_camera", "low_camera", "day_camera", "night_nodes")]
 script = ExtResource("rig")
 storm = NodePath("Storm")
 water = NodePath("Water")
@@ -159,11 +194,13 @@ moon = NodePath("Moon")
 world_environment = NodePath("WorldEnvironment")
 env_dusk = SubResource("EnvDusk")
 env_night = SubResource("EnvNight")
+env_day = SubResource("EnvDay")
 motes = NodePath("Motes")
 horizon_camera = NodePath("Cameras/Horizon")
 eye_camera = NodePath("Cameras/Eye")
 night_camera = NodePath("Cameras/Night")
 low_camera = NodePath("Cameras/HorizonLow")
+day_camera = NodePath("Cameras/Day")
 night_nodes = [NodePath("Props/Lighthouse/Lamp"), NodePath("Props/Lighthouse/LampLight")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -273,7 +310,7 @@ far = 90000.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10500, 19500, 5500)
 fov = 50.0
 near = 2.0
-far = 90000.0
+far = 200000.0
 
 [node name="Night" type="Camera3D" parent="Cameras"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 40)
@@ -282,6 +319,12 @@ near = 0.5
 far = 90000.0
 
 [node name="HorizonLow" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+fov = 60.0
+near = 0.5
+far = 90000.0
+
+[node name="Day" type="Camera3D" parent="Cameras"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
 fov = 60.0
 near = 0.5
