@@ -500,7 +500,7 @@ void fragment() {
 	// --- Night sea-glow and glimmer response (every tier) --------------------------------------
 	// Shared glimmer-stream term (glimmer.gdshaderinc): gated by hymn_glimmer.a, clamped to the
 	// rule-3 band, column = the underwater view path. Seen through the surface: x (1 - Fresnel).
-	float glow_energy = hymn_sea_glow_energy(sea_glow_energy, hymn_glimmer.a);
+	float glow_energy = hymn_sea_glow_energy(hymn_sea_glow_zone(sea_glow_energy));
 	vec3 glow = hymn_sea_glow(world, t, glow_energy, path) * (1.0 - fresnel);
 	if (hymn_glimmer_focus.w > 0.0) {
 		float f = 1.0 - smoothstep(0.0, hymn_glimmer_focus.w, distance(world, hymn_glimmer_focus.xyz));

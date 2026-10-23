@@ -304,7 +304,7 @@ func test_glimmer_include_compiles_with_and_without_globals() -> void:
 			+ inc
 			+ inc
 			+ probe
-			+ "void fragment() { EMISSION = hymn_sea_glow(vec3(probe), probe, hymn_sea_glow_energy(probe, 1.0), 2.0); }\n"
+			+ "void fragment() { EMISSION = hymn_sea_glow(vec3(probe), probe, hymn_sea_glow_energy(probe), 2.0); }\n"
 		),
 		(
 			"shader_type spatial;\n"
@@ -349,6 +349,44 @@ func test_include_constants_match_palette_and_sea_glow_rule() -> void:
 	assert_true(src.contains("#define HYMN_SEA_GLOW_ENERGY_MIN 0.04"), "rule 3 floor")
 	assert_true(src.contains("#define HYMN_SEA_GLOW_ENERGY_MAX 0.15"), "rule 3 ceiling")
 	assert_true(src.contains("#define HYMN_SEA_GLOW_MOD_AMPLITUDE 0.25"), "rule 3 modulation")
+
+
+## M1-RND-08: zone sea-glow is its own global, never gated on the mote energy hymn_glimmer.a.
+func test_sea_glow_is_decoupled_from_mote_energy() -> void:
+	var inc := FileAccess.get_file_as_string(GLIMMER_INC)
+	var body := inc.substr(inc.find("float hymn_sea_glow_energy("))
+	body = body.substr(0, body.find("}"))
+	assert_false(body.contains("hymn_glimmer"), "the energy clamp does not read the mote energy")
+	assert_true(inc.contains("material_energy > 0.0 ? material_energy : hymn_zone_sea_glow"), "zone fallback")
+	var globals := FileAccess.get_file_as_string(GLOBALS_INC)
+	assert_true(globals.contains("global uniform float hymn_zone_sea_glow;"), "declared")
+	assert_true(ProjectSettings.has_setting("shader_globals/hymn_zone_sea_glow"), "registered in project.godot")
+	var water := FileAccess.get_file_as_string("res://game/shaders/water/water_surface_body.gdshaderinc")
+	assert_true(water.contains("hymn_sea_glow_energy(hymn_sea_glow_zone(sea_glow_energy))"), "water uses the zone")
+
+
+## glimmer.json "sea_glow" mirrors palette.json rule 3, Ending exception included.
+func test_sea_glow_rule_mirrors_the_palette_and_honours_the_ending() -> void:
+	var rule := GlimmerField.load_config()["sea_glow"] as Dictionary
+	var pal := _json(PALETTE)["global_rules"] as Dictionary
+	assert_eq(float(rule["floor"]), float(pal["sea_glow_energy_floor"]))
+	assert_eq(float(rule["ceiling"]), float(pal["sea_glow_energy_ceiling"]))
+	assert_eq(float(rule["night_min"]), float(pal["sea_glow_night_min"]))
+	var pal_exc := pal["sea_glow_night_exceptions"] as Dictionary
+	var exc := rule["night_exceptions"] as Dictionary
+	for scene: String in pal_exc:
+		for beat: String in pal_exc[scene]:
+			if beat != "reason":
+				assert_eq(float(exc[scene][beat]), float(pal_exc[scene][beat]), "%s %s" % [scene, beat])
+	assert_eq(GlimmerField.sea_glow_violation(0.07, -20.0, "ending_unbinding", "E4"), "", "E4 0.07 by exception")
+	assert_eq(GlimmerField.sea_glow_violation(0.06, -20.0, "ending_unbinding", "E5"), "", "E5 0.06 by exception")
+	assert_ne(GlimmerField.sea_glow_violation(0.06, -20.0, "ending_unbinding", "E4"), "", "exceptions are exact")
+	assert_ne(GlimmerField.sea_glow_violation(0.07, -20.0, "ch09", "night"), "", "night minimum elsewhere")
+	assert_eq(GlimmerField.sea_glow_violation(0.06, -3.0, "ch05"), "", "dusk (above -6 deg) only needs the floor")
+	assert_eq(GlimmerField.sea_glow_violation(0.12, -20.0, "ch02_night"), "")
+	assert_eq(GlimmerField.sea_glow_violation(0.0, -20.0, "ending_dock"), "", "ending_dock is dark")
+	assert_ne(GlimmerField.sea_glow_violation(0.04, -20.0, "ending_dock"), "", "ending_dock must be 0")
+	assert_eq(GlimmerField.sea_glow_violation(0.0, 40.0, "ch02_noon"), "", "day frames may be 0")
 
 
 # --- Helpers -----------------------------------------------------------------------------------

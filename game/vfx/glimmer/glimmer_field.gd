@@ -20,6 +20,8 @@ extends Node3D
 ##   refresh()                                   re-apply after changing exports at runtime
 ##   GlimmerField.set_global_focus(pos, radius)  writes hymn_glimmer_focus (every field follows it)
 ##   GlimmerField.set_scene_glimmer(tint, a)     writes hymn_glimmer (a = scene mote intensity)
+##   GlimmerField.set_scene_sea_glow(energy)     writes hymn_zone_sea_glow (zone night sea-glow, rule 3)
+##   GlimmerField.sea_glow_violation(...)        checks a frame's sea-glow against rule 3
 
 signal mode_changed(mode: GlimmerState.Mode)
 signal release_started(duration_s: float)
@@ -33,6 +35,7 @@ const DRAW_SHADER := preload("res://game/shaders/glimmer/glimmer_motes_draw.gdsh
 const REFLECT_SHADER := preload("res://game/shaders/glimmer/glimmer_motes_reflect.gdshader")
 const GLOBAL_GLIMMER := &"hymn_glimmer"
 const GLOBAL_FOCUS := &"hymn_glimmer_focus"
+const GLOBAL_SEA_GLOW := &"hymn_zone_sea_glow"
 const MOTES_NODE_NAME := "Motes"
 const LIGHT_NODE_NAME := "GlimmerLight"
 ## Pass to add_attractor() to take that parameter from glimmer.json.
@@ -247,6 +250,42 @@ static func clear_global_focus() -> void:
 static func set_scene_glimmer(tint: Color, scene_intensity: float) -> void:
 	var lin := tint.srgb_to_linear()
 	RenderingServer.global_shader_parameter_set(GLOBAL_GLIMMER, Vector4(lin.r, lin.g, lin.b, scene_intensity))
+
+
+## Writes the zone's night sea-glow energy (hymn_zone_sea_glow), independent of the mote energy. 0 = off
+## (ending_dock). Clamped to [0, rule-3 ceiling]; it does not enforce the night minimum, so scene
+## exceptions (the Ending's E4 0.07, E5 0.06) pass. Check frames with sea_glow_violation().
+static func set_scene_sea_glow(energy: float) -> void:
+	var rule := load_config().get("sea_glow", {}) as Dictionary
+	RenderingServer.global_shader_parameter_set(GLOBAL_SEA_GLOW, clampf(energy, 0.0, float(rule.get("ceiling", 1.0))))
+
+
+## "" if a frame's sea-glow energy obeys colour script rule 3 (glimmer.json "sea_glow", mirrored
+## from palette.json), else the reason. Day frames (sun above the horizon) may be 0; night frames
+## need [floor, ceiling], and >= night_min once the sun is below night_min_below_sun_deg, unless
+## (scene_id, beat) is a named exception (exact value) or the scene is an off scene (0).
+static func sea_glow_violation(
+	energy: float, sun_elevation_deg: float, scene_id: String = "", beat: String = ""
+) -> String:
+	var rule := load_config().get("sea_glow", {}) as Dictionary
+	if (rule.get("off_scenes", []) as Array).has(scene_id):
+		return "" if is_zero_approx(energy) else "%s has no sea-glow (0)" % scene_id
+	var exceptions := rule.get("night_exceptions", {}) as Dictionary
+	if exceptions.has(scene_id) and (exceptions[scene_id] as Dictionary).has(beat):
+		var want := float((exceptions[scene_id] as Dictionary)[beat])
+		return "" if is_equal_approx(energy, want) else "%s %s is %.2f by exception" % [scene_id, beat, want]
+	if sun_elevation_deg >= 0.0:
+		return "" if energy <= float(rule.get("ceiling", 1.0)) else "above the ceiling"
+	if energy < float(rule.get("floor", 0.0)) or energy > float(rule.get("ceiling", 1.0)):
+		return "night sea-glow outside [floor, ceiling]"
+	if (
+		sun_elevation_deg < float(rule.get("night_min_below_sun_deg", 0.0))
+		and energy < float(rule.get("night_min", 0.0))
+	):
+		return (
+			"below the night minimum once the sun is below %.0f deg" % float(rule.get("night_min_below_sun_deg", 0.0))
+		)
+	return ""
 
 
 # --- Quality -----------------------------------------------------------------------------------

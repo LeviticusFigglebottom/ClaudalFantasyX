@@ -112,6 +112,25 @@ func test_low_tier_keeps_sea_glow() -> void:
 	assert_eq(before.count("#if") - before.count("#endif"), 1, "sea-glow sits outside every tier #if")
 
 
+## M1-RND-08: the zone sea publishes hymn_water_level; animating its Y moves the level, the height
+## query (and so foam and caustics, which live in world space on the same mesh) together.
+func test_water_level_follows_the_node_and_is_registered() -> void:
+	assert_true(ProjectSettings.has_setting("shader_globals/hymn_water_level"), "registered in project.godot")
+	var globals := FileAccess.get_file_as_string("res://game/shaders/include/globals.gdshaderinc")
+	assert_true(globals.contains("global uniform vec2 hymn_water_level;"), "declared")
+	var w := WaterSurface.new()
+	w.tide_line_y = 0.4
+	(Engine.get_main_loop() as SceneTree).current_scene.add_child(w)
+	assert_true(w.publishes_water_level, "the zone sea publishes by default")
+	var xz := Vector2(3.0, -2.0)
+	var h0 := w.height_at(xz, 1.0)
+	assert_eq(w.water_level(), Vector2(0.0, 0.4))
+	w.position.y = 0.6  # Drownbell flood peak
+	assert_eq(w.water_level(), Vector2(0.6, 0.4), "the level follows the node; the datum stays")
+	assert_between(w.height_at(xz, 1.0) - h0, 0.6 - 1e-4, 0.6 + 1e-4, "the surface moved with it")
+	w.free()
+
+
 func test_light_is_nan_safe_and_sss_is_view_dependent() -> void:
 	# M1-RND-08: pow() of a negative base is undefined (NaN on some drivers): every Schlick base in
 	# light() must be clamped, the half vector guarded (LIGHT = -VIEW), and the SSS wrap view-dependent.

@@ -99,5 +99,21 @@
     "high": {"amount_scale": 1.0, "trail_scale": 1.0, "curl_octaves": 2, "reflection": true},
     "ultra": {"amount_scale": 1.5, "trail_scale": 1.0, "curl_octaves": 3, "reflection": true}
   },
+  "sea_glow": {
+    "_note": "Colour script rule 3, mirrored from docs/kb/art/palette.json global_rules (tested to match). GlimmerField.set_scene_sea_glow() clamps to [0, ceiling]; GlimmerField.sea_glow_violation() checks a frame against the rule.",
+    "floor": 0.04,
+    "ceiling": 0.15,
+    "night_min": 0.08,
+    "night_min_below_sun_deg": -6.0,
+    "off_scenes": [
+      "ending_dock"
+    ],
+    "night_exceptions": {
+      "ending_unbinding": {
+        "E4": 0.07,
+        "E5": 0.06
+      }
+    }
+  },
   "default_quality": "high"
 }
