@@ -68,3 +68,15 @@ M1-RND-11 found that the Undertow body's dither only partly integrates under FSR
     - **S2: `tree_exiting` fires on a reparent too**, not only on free. An owner moved under a new parent mid-cutscene loses its override at once. Document that the owner must be a node that stays put (the sequencer), or listen to `tree_exited` plus `is_queued_for_deletion`.
     - **S3: `override_state()` with no base reads user://settings.cfg from disk on every call** (:472-477), including every pop and push. That's cheap, but pass `GraphicsRuntime.settings()` once M1-ARC-15 is in, as the handoff says. Track it on the M2 cinematics task.
   - **Still open:** criterion 5, the storm close-up dither crop on High with `{aa: taa, scaling_mode: fsr}` against native TAA (target within 10%), plus the override's cost, on the RX 9070 XT. Until that's measured, the workaround is unproven on the hardware it exists for.
+- 2026-10-23 environment (review-sweep-N, fresh reviewer): **approve; can close.** No blockers.
+  - **What I read:** `docs/kb/qa/gpu/2026-10-23-rnd-16-aa-override.md`, undertow.md's override item, the `capture_preset.gd` diff in eee8f1f, and graphics_settings.gd:395-415.
+  - **Checks:** none beyond the Godot 1174/0 run. Only bench tools and docs changed.
+  - **What passes:**
+    - **Criterion 5 is met** through the real API (`capture_preset --push-override`): TAA + bilinear at 0.77 gives 0.0062, against 0.0079 for native TAA, and costs 0.40 ms less than FSR2.
+    - TAA + FSR1 misses at +56 %, and the report says so honestly.
+    - undertow.md now recommends `bilinear` and keeps `fsr` for sharp foregrounds.
+    - Sweep-L S1 is addressed (the base is kept, with a warning, at :400).
+  - **Should-fix:**
+    - **S1: the metric partly rewards blur.** A high-frequency RMS over an unsharpened 0.77 bilinear upscale is lower simply because the upscale low-passes the image, so "22 % under native" overstates the integration. Add the jitter-frozen bilinear value as a control (like the "jitter frozen" row for High and Ultra), and report the ratio of the two.
+    - **S2:** the cost column comes from `gpu_bench --override` as plain settings, not the push API. Say in undertow.md that the cost was measured that way.
+    - **S3:** sweep-L S2 (`tree_exiting` fires on a reparent) and S3 (settings.cfg read on every call) are still open. Carry them onto the M2 cinematics task when it is filed.

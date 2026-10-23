@@ -79,3 +79,16 @@ Report: `docs/kb/qa/gpu/2026-10-23-rnd-18-sss-crest.md`. The GPU probe pair repr
 - **Reviewer:** character (Art Director), who re-runs the probe pair.
 
 ## Review log
+- 2026-10-23 character (review-sweep-N, fresh reviewer, Art Director): **approve with should-fixes.** No blockers.
+  - **What I read:** this task, `docs/kb/qa/gpu/2026-10-23-rnd-18-sss-crest.md`, water.md's subsurface row and gotcha, and `git diff cede626^1 cede626` (water_surface_body.gdshaderinc, test_water_surface.gd, sss_probe_metrics.py).
+  - **Checks:** lavapipe shots via ci_local (HYMN_SHOTS): `water_shallows` 0.00000, `water_lagoon` 0.00000, `water_horizon` 0.00507, `water_night` 0.00306, `haluna_h01` 0.00189, `haluna_h04` 0.00000. The 0.00507 and 0.00306 are the drift that was already there before these merges, the same values recorded in handoff integration-1 and M1-RND-13. So the low shots are bit-identical on lavapipe too, and the lagoon's pale-turquoise share is unchanged. Godot tests 1174/0. I did not re-run the probe pair, which needs a real renderer (ADR 0009). I accept the GPU pair: its "before" reproduces Art's lavapipe numbers exactly.
+  - **What passes:**
+    - The survey targets clear with margin: 0.0004 % over ΔE 0.05, 0.06 % over 0.03, max 0.050, spread 0.075.
+    - The > 15 m band improved to `#15627A` (ΔE 0.019).
+    - The height gate is the right call: steepness alone would have moved the 5.5 m shots.
+    - The parameters are material uniforms with shader defaults, on every tier (tested).
+  - **Should-fix:**
+    - **S1: the even lift is not gated by `use_sss`** (water_surface_body.gdshaderinc:551). `scatter_view_lift` makes up for crest SSS, but it also lifts `col_deep` up to 2.5× on materials that have SSS off. `storm_ocean_material.tres:17` is one, and it will be seen from the Ch18 Kite. Multiply the lift by `float(use_sss)`, ideally by `sss_strength` too, so a murky or storm sea seen from above doesn't brighten.
+    - **S2:** the fade thresholds are much steeper than the task's suggestion: 0.10 / 0.28 (about 6–16°) against "lose most past 25–30°". That's fine with the height gate, but note in water.md that from a 10–25 m crane the near water already loses its crests, so the H01-style crane shots coming in M2 are judged with that in mind.
+    - **S3:** add the probe's `--sss=#hex` flag (the task's Notes suggest it), so the control run no longer needs a temporary edit to Art-owned water_looks.json.
+  - **Closing:** Art can tick the colour script's first "Two findings for Rendering" bullet. Close after S1, or file S1 against the Undertow owner.
