@@ -3,8 +3,10 @@
 // underwater shader (M1 SPEC §8.2 item 2: caustic light on characters).
 //
 // The pattern is the cell-edge distance (F2 - F1) of an animated Worley field: bright thin lines
-// where light focuses, dark cells between. Two layers at different scales and drift directions are
-// combined with a soft minimum so the network shimmers and re-forms instead of sliding as one sheet.
+// where light focuses, dark cells between. Two layers, each domain-warped by its own field, at
+// different scales and drift directions (M1-RND-08): their union keeps the web, their PRODUCT adds
+// bright focus knots where the two webs cross (they may exceed 1, like real hot spots). Line width
+// and focus vary over metres with low-frequency noise, so the web is neither uniform glass nor tiles.
 
 #ifndef HYMN_WATER_CAUSTICS_GDSHADERINC
 #define HYMN_WATER_CAUSTICS_GDSHADERINC
@@ -20,6 +22,27 @@
 #define HYMN_CAUSTIC_WARP 0.9
 // Big sentinel for the nearest-distance search (larger than any squared in-neighbourhood distance).
 #define HYMN_CAUSTIC_FAR 8.0
+// Layer 2 gets its own warp field (offset into the noise).
+#define HYMN_CAUSTIC_WARP2_OFFSET 31.7
+// Union weight of the two webs and gain of their product (the focus knots).
+#define HYMN_CAUSTIC_UNION 0.6
+#define HYMN_CAUSTIC_KNOT 2.0
+// Second, finer warp octave: curls the filaments so cells are not straight-edged polygons.
+#define HYMN_CAUSTIC_WARP_FINE 0.35
+#define HYMN_CAUSTIC_WARP_FINE_SCALE 1.7
+// Low-frequency variation (pattern units): focus brightness +-MOD, line width +-WIDTH_VAR.
+#define HYMN_CAUSTIC_MOD_SCALE 0.13
+#define HYMN_CAUSTIC_MOD_OFFSET vec2(7.1, -3.3)
+#define HYMN_CAUSTIC_MOD 0.5
+#define HYMN_CAUSTIC_WIDTH_SCALE 0.21
+#define HYMN_CAUSTIC_WIDTH_OFFSET vec2(-4.7, 9.9)
+#define HYMN_CAUSTIC_WIDTH_VAR 0.4
+// Mean of hymn_caustic() as a function of the line width (least-squares fits of a numpy replica of
+// this file over 0.065-0.43 pattern units, max error 0.006: tools/gpu_bench/caustic_mean_fit.py).
+#define HYMN_CAUSTIC_MEAN2_A -0.0228
+#define HYMN_CAUSTIC_MEAN2_B 1.8759
+#define HYMN_CAUSTIC_MEAN1_A 0.0105
+#define HYMN_CAUSTIC_MEAN1_B 0.8265
 
 // Edge distance of an animated Worley field: 0 on a cell border, about 0.5 at a cell centre.
 float hymn_caustic_edge(vec2 p, float t) {
@@ -47,22 +70,45 @@ float hymn_caustic_edge(vec2 p, float t) {
 	return sqrt(f2) - sqrt(f1);
 }
 
-// Caustic brightness in [0, 1]. p in pattern units (world metres * scale), t in seconds * speed.
-// width: line half-width in pattern units (thinner = sharper focus). layers: 1 or 2.
+// Domain warp: bends the straight Worley edges into the curved filaments of focused light.
+vec2 hymn_caustic_warp(vec2 p, float t, float offset) {
+	vec2 coarse = vec2(hymn_value_noise2(p * 0.5 + t * 0.1 + offset), hymn_value_noise2(p * 0.5 - t * 0.1 + 5.2 + offset));
+	vec2 q = p * HYMN_CAUSTIC_WARP_FINE_SCALE;
+	vec2 fine = vec2(hymn_value_noise2(q + t * 0.17 + offset + 2.3), hymn_value_noise2(q - t * 0.17 + 8.1 + offset));
+	return p + HYMN_CAUSTIC_WARP * (coarse - 0.5) + HYMN_CAUSTIC_WARP_FINE * (fine - 0.5);
+}
+
+// The union/product combination of two line intensities (shared with the texture pattern).
+float hymn_caustic_combine(float l1, float l2) {
+	return HYMN_CAUSTIC_UNION * max(l1, l2) + HYMN_CAUSTIC_KNOT * l1 * l2;
+}
+
+// Caustic brightness, about [0, 1] with focus knots above 1. p in pattern units (world metres *
+// scale), t in seconds * speed. width: line half-width in pattern units (thinner = sharper focus).
+// layers: 1 (Low tier: one warped web) or 2.
 float hymn_caustic(vec2 p, float t, float width, int layers) {
-	// Domain warp: bends the straight Worley edges into the curved filaments of focused light.
-	p += HYMN_CAUSTIC_WARP * (vec2(hymn_value_noise2(p * 0.5 + t * 0.1), hymn_value_noise2(p * 0.5 - t * 0.1 + 5.2))
-			- 0.5);
-	float e1 = hymn_caustic_edge(p, t);
-	float c = 1.0 - smoothstep(0.0, width, e1);
+	float m = hymn_value_noise2(p * HYMN_CAUSTIC_MOD_SCALE + HYMN_CAUSTIC_MOD_OFFSET);
+	float w = width
+			* (1.0 - HYMN_CAUSTIC_WIDTH_VAR
+					+ 2.0 * HYMN_CAUSTIC_WIDTH_VAR
+							* hymn_value_noise2(p * HYMN_CAUSTIC_WIDTH_SCALE + HYMN_CAUSTIC_WIDTH_OFFSET));
+	float l1 = 1.0 - smoothstep(0.0, w, hymn_caustic_edge(hymn_caustic_warp(p, t, 0.0), t));
+	l1 *= l1;
+	float c = l1;
 	if (layers > 1) {
 		vec2 p2 = HYMN_FBM_ROT2 * p * HYMN_CAUSTIC_LAYER2_SCALE + HYMN_CAUSTIC_LAYER2_OFFSET;
-		float e2 = hymn_caustic_edge(p2, t * 1.3);
-		float c2 = 1.0 - smoothstep(0.0, width * HYMN_CAUSTIC_LAYER2_SCALE, e2);
-		// Lines brighten where the two networks cross, as real focused light does.
-		c = clamp(0.65 * c + 0.65 * c2 + 0.9 * c * c2, 0.0, 1.0);
+		float e2 = hymn_caustic_edge(hymn_caustic_warp(p2, t * 1.3, HYMN_CAUSTIC_WARP2_OFFSET), t * 1.3);
+		float l2 = 1.0 - smoothstep(0.0, w * HYMN_CAUSTIC_LAYER2_SCALE, e2);
+		c = hymn_caustic_combine(l1, l2 * l2);
 	}
-	return c * c;
+	return c * (1.0 - HYMN_CAUSTIC_MOD + 2.0 * HYMN_CAUSTIC_MOD * m);
+}
+
+// Spatial and temporal mean of hymn_caustic() at a line width (subtract it so caustics only
+// redistribute light: the floor's average brightness does not change with depth).
+float hymn_caustic_mean(float width, int layers) {
+	return layers > 1 ? HYMN_CAUSTIC_MEAN2_A + HYMN_CAUSTIC_MEAN2_B * width
+					  : HYMN_CAUSTIC_MEAN1_A + HYMN_CAUSTIC_MEAN1_B * width;
 }
 
 #endif
