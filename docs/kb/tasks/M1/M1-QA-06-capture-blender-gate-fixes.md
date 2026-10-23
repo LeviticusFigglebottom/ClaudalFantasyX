@@ -2,8 +2,8 @@
 id: M1-QA-06
 title: Capture setup and Blender gate hardening (review-sweep-I)
 role: qa
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-ae77f8e225d2b48a3"
 depends_on: [M1-QA-04, M1-QA-02]
 milestone: M1
 request-from: "character"
