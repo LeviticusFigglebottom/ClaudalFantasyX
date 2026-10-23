@@ -49,3 +49,30 @@ From the review-sweep-I entries (file:line references there).
 - Docs: qa/blender_builds.md, qa/screenshots.md "Per-shot setup".
 
 ## Review log
+- 2026-10-23 character (review-sweep-J, fresh reviewer): **approve with should-fixes.** No blockers.
+  - **What I read:**
+    - the task and handoff qa-2;
+    - the commits 8ff8162 (capture_setup.gd and its test), f1892f2 (verify_blender_builds.py, blender_builds.json, test_blender_builds.py, blender_builds.md) and 30a12cd (godot_log_check.py, its test, ci_local.sh).
+  - **Checks:**
+    - `verify_blender_builds.py --coverage-only`: 0 uncovered.
+    - Tool tests: 382 OK (test_blender_builds, test_godot_log_check).
+    - Godot import ×2 in my own XDG_DATA_HOME, then `godot_log_check.py import`: exit 0.
+    - `--filter=capture_setup`: 9 run, 0 failed.
+    - Every targeted test log I ran passed `godot_log_check.py tests`.
+  - **What passes:**
+    - **The hold order.** `frame_pre_draw` comes after SceneTree process, so after Tweens and AnimationPlayers, and the transforms are flushed. The hook is connected only for a shot with a setup (capture_setup.gd:86).
+    - **The globals limitation** is documented as a rule.
+    - **The signature kinds**, with "NEW failure signature" on anything else.
+    - **The coverage check**, which also runs without Blender.
+    - **Asha's texture chain** is in the job: 44 files.
+    - **Pinned threads**, with a test that a tangent-exporting job runs at 1 thread.
+    - **The narrowed Parse Error check.** The import log stays strict.
+  - **Should-fix:**
+    - **S1 (a mismatch signature that cannot see a regression).** base_body's `expected_failure` is pinned by accessor *names* only (blender_builds.json:17-22; compared at verify_blender_builds.py:383-399). Any further change inside NORMAL, POSITION, TANGENT or indices of those three files still reads KNOWN, even a bb_donor regression that moves the base bodies by centimetres.
+      - This matters now: M1-CHR-04 has just edited bb_donor.py and bb_params.py on the claim that "the defaults leave V untouched". This gate could not have caught that claim being false.
+      - With `--threads 1` base_body is byte-stable (your own result), so the reason given against hashes is gone. Record each rebuilt file's sha256, or a max-|Δ| bound for POSITION, in `differs`, and fail on a change.
+    - **S2 (thread pin is unproven below 4 vCPUs).** "Pinned at 4, so the result never depends on the host's CPU count" is asserted (blender_builds.json `_threads`), but it was verified only on this 4-vCPU box. Run `--job asha` once with `taskset -c 0,1`, or note it as unverified in blender_builds.md.
+  - **Nits:**
+    - `GD_PATH` (godot_log_check.py:26) would count a torn-`.tres` Parse Error whose message happens to quote a `.gd` path. That is rare and fails safe.
+    - `frame_pre_draw` ordering assumes the default rendering thread model. Say so in the CaptureSetup header.
+    - `_tracked()` counts untracked, non-ignored `.glb` files, so a developer's WIP export fails the local gate. That is intended, but blender_builds.md should say how to exempt scratch files (or to keep them outside assets/).
