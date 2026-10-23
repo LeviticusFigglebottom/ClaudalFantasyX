@@ -49,7 +49,7 @@ The sea gave me back at dawn. #line:ch02_beach_001
 - A line **without** `Speaker:` is narration (Rhen's older voice-over, captions). A line that *nearly* matches a speaker line is an error, not narration ([below](#near-miss-speaker-lines)).
 - **Every line needs `#line:<id>`**: lowercase letters, digits, and `_`, unique across the whole project. The loc key is `DLG_<ID>` upper-cased (`DLG_CH02_BEACH_002`).
 - Other trailing `#tags` (e.g. `#whisper`) are kept in a `tags` list for the UI or Cinematics. Tags with a meaning are listed [below](#tags-with-a-meaning).
-- Escapes: `\:` for a colon in narration that would otherwise read as a speaker (`Dawn: grey.` reads as speaker "Dawn", and `Then she said: go.` is a [near miss](#near-miss-speaker-lines)), and `\#` for a literal `#` at the end of a line.
+- Escapes: `\:` for a colon in narration that would otherwise read as a speaker (`Dawn: grey.` reads as speaker "Dawn", and `Old Toma: hm.` is a [near miss](#near-miss-speaker-lines)), and `\#` for a literal `#` at the end of a line.
 - One line of text per line; there are no multi-line strings. Keep to the voice guide's length rules: the compiler **warns** (it never fails) on a line or option over **25 words**. Tag a line `#long` when the length is earned (Kerrid in Ch14, Sefir in Ch16, Rhen's narration). Words are counted as `tools/dialogue_stats.py` counts them: runs of letters and digits, where an inner `'` or `-` doesn't split a word.
 
 ### Speaker alias (before an introduction)
@@ -76,19 +76,27 @@ Narrator [grief]: The bell rang under the water. #line:ch03_x_001
 
 ### Near-miss speaker lines
 
-A typo in a speaker line used to compile silently to narration, and its raw `Name [emo]:` text shipped to players. Now each of these is a `path:line:` error with a "did you mean" hint:
+A typo in a speaker line used to compile silently to narration (or ship stray text), and its raw `Name [emo]:` text reached players. Now each of these is a `path:line:` error with a "did you mean" hint:
 
 | Written | Error |
 |---|---|
 | `Asha [smile] as "The girl": Hello.` | `the emotion goes after the alias: did you mean 'Asha as "The girl" [smile]:'?` |
 | `Asha as The girl: Hello.` | `an alias needs double quotes: did you mean 'Asha as "The girl":'?` (only when `Asha` is in `speakers.json`) |
-| `[grief] The bell rang.` | `narration takes an emotion only through Narrator: did you mean 'Narrator [grief]: The bell rang.'? (or 'Narrator(<speaker id>) [grief]:' for a voice-over; ...)` |
-| `Old Toma: Lie still.`, `Asha (sad): Hi.`, `Then she said: go.` | `'Old Toma:' looks like a speaker, but this line would compile as narration (...)`, plus `Did you mean 'Asha:' or 'Asha [emotion]:'?` when the first word is a speaker |
+| `Asha [sad] Hi there.`, `Toma as "???" Lie still.` | `a speaker line needs a ':' after the name: did you mean 'Asha [sad]: Hi there.'?` (only when the name is in `speakers.json` or is `Narrator`, and the brackets hold one identifier-like word) |
+| `Asha: [sad] Hi.` | `the emotion goes before the colon: did you mean 'Asha [sad]: Hi.'?` (a speaker line whose text starts with one bracketed word; it would otherwise show `[sad]` as text) |
+| `[grief] The bell rang.` | `narration takes an emotion only through Narrator: did you mean 'Narrator [grief]: The bell rang.'? (...)` (only one identifier-like word in the brackets: `[The page is water-stained.]` is prose) |
+| `Old Toma: Lie still.`, `Asha (sad): Hi.` | `'Old Toma:' looks like a speaker, but this line would compile as narration (...)`, plus `Did you mean 'Asha:' or 'Asha [emotion]:'?` when the first word is a speaker |
 
-The last row is a **heuristic**: narration whose text (tags aside) starts with a capital letter and has an unescaped `:` within its first 6 words, with no `.`, `!`, `?`, `,`, `;`, `…` or `—` before it. Options are never checked. When such a line really is narration, write `\:` for the colon, or tag it **`#narration`**, which skips every near-miss check on that line and is not kept in the op's `tags`:
+The last row is a **heuristic** (tiered in M1-NAR-07). It looks at narration text (tags aside) up to its first unescaped `:` and fires only when that prefix **reads like a name**:
+
+- it starts with a capital letter and has no `.`, `!`, `?`, `,`, `;`, `…`, `—` or `"`;
+- every word is capitalized (`Old`, `Toma`) or a `(...)`/`{...}` group, except lowercase joiners inside it (`of`, `the`, `from`, `in`, `on`, `at`, `and`, `by`, `de`, `van`, `von`);
+- the colon is not between digits: `At 6:20 the tide turned.` and `Ratio 3:1` never trigger.
+
+A prefix of **1–2 words** (`Old Toma:`, the real typo shape) is an **error**. **3–6 words** (`The Keeper of Lamps:`) is a **WARN** that never fails the build. So ordinary prose passes without escapes: `Then she said: go.`, `Mother said: run.`, `Asha's answer: nothing.`, `Asha laughed: once.`, `The bell rang three times: once for...`, `Chapter 2: the raft.` all compile as narration (a lowercase word, a possessive, or digits before the colon). `tools/tests/test_dlgc_narration_corpus.py` holds 30+ such lines and must stay free of errors and warnings. Options are never checked. When a flagged line really is narration, write `\:` for the colon, or tag it **`#narration`**, which skips every near-miss check (and the warning) on that line and is not kept in the op's `tags`:
 
 ```
-Then she said: go home. #line:ch05_x_012 #narration
+Low Tide: the harbour empties. #line:ch05_x_012 #narration
 ```
 
 `#narration` on a speaker line or an option is an error.
@@ -219,7 +227,7 @@ This fills in every spoken line and option that lacks a `#line:` id, **rewriting
 
 Missing `#line` on spoken text or an option; a [near-miss speaker line](#near-miss-speaker-lines), or `#narration` on a speaker line or option; duplicate line ids (with the first location); unknown speaker, emotion, or narrator identity; an alias whose key clashes; `#notr` without `#tn`, or a malformed or empty note (or one cut off by ` //`); unknown cue, a wrong arg count, an unknown `key=`, or a value outside its type or option set (`cues.json`); an unknown `grade:` header; an unknown event or wrong event args (`events.json`); unknown jump target; unbalanced `<<if>>` (missing `<<endif>>`, stray `<<else>>`/`<<endif>>`, `<<else>>` twice, misaligned keywords); bad indentation; tabs; unknown commands; malformed expressions; a node missing `===`; a first title that doesn't match the file name; duplicate node titles or scene names.
 
-**Warnings** (`WARN path:line: ...`, never fatal; also shown by `validate_data.py`): a line or option over 25 words without `#long`.
+**Warnings** (`WARN path:line: ...`, never fatal; also shown by `validate_data.py`): a line or option over 25 words without `#long`; narration whose 3–6-word prefix before `:` reads like a name ([near miss](#near-miss-speaker-lines)).
 
 ## Compiled JSON (format 1)
 
