@@ -12,6 +12,14 @@ var items_used := 0
 var items: BattleItemSource = BattleItemSource.new()
 ## Tunables from game/data/battle/sim_policies.json for this policy (may be empty).
 var config: Dictionary = {}
+## M2-CMB-01: the battle's Swell rules (null: no Swell) and the quality its inputs are played at.
+var swell: BattleSwell
+var swell_quality: StringName = &""
+## Techniques unleashed this battle.
+var swells_used := 0
+## A ready healing technique waits until an active ally is below this share of max HP (percent;
+## BattleSim sets it from sim_policies.json "swell_heal_below_pct").
+var swell_heal_below_pct := 100
 
 
 func policy_name() -> StringName:
@@ -21,15 +29,23 @@ func policy_name() -> StringName:
 ## Called once per battle before begin().
 func reset() -> void:
 	items_used = 0
+	swells_used = 0
 
 
 ## Plays the current party turn. May swap first; must end with an action that ends the turn.
 func take_turn(engine: BattleEngine) -> void:
 	var actor := engine.current
 	var now := engine.now
+	if unleash_swell(engine):
+		return
 	decide(engine)
 	if engine.outcome == &"" and engine.current == actor and engine.now == now and engine.is_party_turn():
 		_basic(engine)
+
+
+## Override: false for a policy that never opens the Swell command (balance_targets.md).
+func unleashes_swell() -> bool:
+	return true
 
 
 ## Override: choose swaps and one action for engine.current.
@@ -38,6 +54,49 @@ func decide(engine: BattleEngine) -> void:
 
 
 # --- shared helpers ----------------------------------------------------------------------
+
+
+## A ready Swell goes first (a player rarely sits on a full gauge; naive never opens it, see
+## unleashes_swell): the actor's first technique with targets, its input played at swell_quality.
+## Damage techniques aim at the lowest-HP foe (the provoker when Provoked) or every foe; a healing
+## one waits for a hurt ally (swell_heal_below_pct). True when a technique was unleashed.
+func unleash_swell(engine: BattleEngine) -> bool:
+	var actor := engine.current
+	if swell == null or not unleashes_swell() or not swell.is_ready(actor):
+		return false
+	for tid in swell.techniques(actor):
+		var targets := _swell_targets(engine, actor, tid)
+		if targets.is_empty():
+			continue
+		var res := swell.perform(tid, targets, SwellInput.scripted_result(swell.input_for(actor), swell_quality))
+		if res.ok:
+			swells_used += 1
+			return true
+	return false
+
+
+func _swell_targets(engine: BattleEngine, actor: BattleCombatant, tid: StringName) -> Array[BattleCombatant]:
+	var row := engine.db.skill(tid)
+	var foes := engine.living_foes_of(actor)
+	var allies := engine.living_allies_of(actor)
+	match String(row.get("target", "single_foe")):
+		"all_foes":
+			return foes
+		"all_allies", "single_ally":
+			var hurt: BattleCombatant = null
+			for c in allies:
+				if (
+					c.hp * 100 < c.max_hp * swell_heal_below_pct
+					and (hurt == null or c.hp * hurt.max_hp < hurt.hp * c.max_hp)
+				):
+					hurt = c
+			if hurt == null:
+				return [] as Array[BattleCombatant]
+			return allies if String(row.get("target", "")) == "all_allies" else _one(hurt)
+	if foes.is_empty():
+		return foes
+	var forced := engine.forced_target(actor, tid)
+	return _one(forced if forced != null else lowest_hp(foes))
 
 
 ## Uses the first held item with an effect of `effect_type` that `target` may receive. Counts it.

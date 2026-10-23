@@ -9,6 +9,10 @@ const POLICY_NAMES: Array[StringName] = [&"naive", &"lowest_hp", &"role_answer",
 const CONFIG_PATH := "res://game/data/battle/sim_policies.json"
 
 var db: BattleDB
+## M2-CMB-01: when set (SwellInput.QUALITIES), every hero with a Swell fills its gauge in its
+## default mode and policies unleash a ready technique with its input played at this quality
+## (SwellInput.scripted_result). &"" leaves Swell out, as the M1 bands were measured.
+var swell_quality: StringName = &""
 var _config: Dictionary = {}
 var _item_db: ItemDB
 
@@ -50,7 +54,7 @@ func items_db() -> ItemDB:
 	return _item_db
 
 
-## Plays one battle. Returns {seed, outcome, turns, party_turns, party_ko, items, lume}. `turns`
+## Plays one battle. Returns {seed, outcome, turns, party_turns, party_ko, items, lume, swells}. `turns`
 ## counts every action taken (both sides, automatic turns included; lost turns excluded).
 ## A battle that exceeds max_actions is recorded with outcome "timeout".
 func run_one(
@@ -73,6 +77,14 @@ func run_one(
 		engine.currency_multiplier = fx.currency_multiplier
 	engine.setup(db, active, reserve, encounter, rng_seed)
 	policy.reset()
+	# Held for the whole battle, like fx: the signal connection does not keep it alive.
+	var swell: BattleSwell = null
+	if swell_quality != &"":
+		swell = BattleSwell.new(BattleSwell.load_config())
+		swell.attach(engine)
+	policy.swell = swell
+	policy.swell_quality = swell_quality
+	policy.swell_heal_below_pct = int(_config.get("swell_heal_below_pct", 100))
 	var bag := Inventory.new(items_db(), {})
 	var stock: Dictionary = kit.get("items", {})
 	for iid: Variant in stock:
@@ -106,6 +118,7 @@ func run_one(
 		"party_ko": ko,
 		"items": policy.items_used,
 		"lume": engine.currency_award(),
+		"swells": policy.swells_used,
 	}
 
 
@@ -142,7 +155,8 @@ func run_many(
 
 
 ## Runs a command-line request (sim_main.gd): {encounter, active, reserve, policies, seeds,
-## first-seed, loadout?} as parsed by parse_args(); loadout names a sim_policies.json loadout.
+## first-seed, loadout?, swell?} as parsed by parse_args(); loadout names a sim_policies.json
+## loadout, and swell a SwellInput quality (miss, good or perfect; omitted or "off": no Swell).
 ## Returns {ok, error, results}; each result is a summarize() aggregate plus encounter, policy,
 ## first_seed and the per-seed "runs".
 func run_cli(args: Dictionary) -> Dictionary:
@@ -166,6 +180,11 @@ func run_cli(args: Dictionary) -> Dictionary:
 		if kit.is_empty():
 			out["error"] = "unknown loadout '%s'" % args["loadout"]
 			return out
+	var quality := StringName(str(args.get("swell", "off")))
+	if quality != &"off" and not quality in SwellInput.QUALITIES:
+		out["error"] = "unknown swell quality '%s' (off, miss, good or perfect)" % quality
+		return out
+	swell_quality = &"" if quality == &"off" else quality
 	var results: Array = []
 	for p in policies:
 		var policy := make_policy(p)
@@ -210,6 +229,7 @@ static func summarize(runs: Array[Dictionary]) -> Dictionary:
 	var ko_total := 0
 	var items_total := 0
 	var lume_total := 0
+	var swells_total := 0
 	for r in runs:
 		if r["outcome"] == "victory":
 			wins += 1
@@ -219,6 +239,7 @@ static func summarize(runs: Array[Dictionary]) -> Dictionary:
 		ko_total += int(r["party_ko"])
 		items_total += int(r["items"])
 		lume_total += int(r.get("lume", 0))
+		swells_total += int(r.get("swells", 0))
 	turns.sort()
 	return {
 		"n": n,
@@ -230,6 +251,7 @@ static func summarize(runs: Array[Dictionary]) -> Dictionary:
 		"mean_party_ko": float(ko_total) / maxi(n, 1),
 		"mean_items": float(items_total) / maxi(n, 1),
 		"mean_lume": float(lume_total) / maxi(n, 1),
+		"mean_swells": float(swells_total) / maxi(n, 1),
 	}
 
 
