@@ -30,6 +30,12 @@ const TARGET_GROUP := &"group"
 const OP_SET := &"set"
 const OP_GATE := &"gate"
 const OP_CALL := &"call"
+## Group ops of vegetation_detail (M1-RND-07): scale an authored float, set a MultiMesh visible
+## fraction, gate cast_shadow off.
+const OP_SCALE := &"scale"
+const OP_FRACTION := &"fraction"
+const OP_SHADOW_GATE := &"shadow_gate"
+const KEY_VEG_GROUPS := "vegetation_groups"
 const AUTHORED_META_PREFIX := "hymn_authored_"
 
 const GI_OFF := "off"
@@ -184,6 +190,7 @@ func plan(preset_or_dict: Variant = null) -> Array[Dictionary]:
 	_plan_scaling_and_aa(s, ops)
 	ops.append(_op_set(TARGET_VIEWPORT, "mesh_lod_threshold", s["lod_threshold"]))
 	ops.append(_op_set(TARGET_VIEWPORT, "anisotropic_filtering_level", _enum_value("anisotropic_filtering", s)))
+	_plan_vegetation(s, ops)
 	return ops
 
 
@@ -358,6 +365,35 @@ func _plan_gi(s: Dictionary, ops: Array[Dictionary]) -> void:
 	ops.append(_op_call("gi_set_use_half_resolution", [bool(s["gi_half_resolution"])]))
 
 
+## vegetation_detail: visibility-range LOD scale, MultiMesh density and small-foliage shadows, on
+## the node groups zones tag (graphics_presets.json "vegetation_groups").
+func _plan_vegetation(s: Dictionary, ops: Array[Dictionary]) -> void:
+	var lvl := _level("vegetation_detail", s)
+	var groups := data.get(KEY_VEG_GROUPS, {}) as Dictionary
+	for prop in ["visibility_range_begin", "visibility_range_end"]:
+		ops.append(
+			_op_group(OP_SCALE, str(groups.get("lod", "")), "GeometryInstance3D", prop, float(lvl["visibility_scale"]))
+		)
+	ops.append(
+		_op_group(
+			OP_FRACTION,
+			str(groups.get("multimesh", "")),
+			"MultiMesh",
+			"visible_instance_count",
+			float(lvl["multimesh_fraction"])
+		)
+	)
+	ops.append(
+		_op_group(
+			OP_SHADOW_GATE,
+			str(groups.get("small_shadows", "")),
+			"GeometryInstance3D",
+			"cast_shadow",
+			bool(lvl["small_foliage_shadows"])
+		)
+	)
+
+
 func _plan_shadows(s: Dictionary, ops: Array[Dictionary]) -> void:
 	var soft := _enum_value("soft_shadow_quality", s)
 	ops.append(_op_set(TARGET_VIEWPORT, "positional_shadow_atlas_size", int(s["shadow_atlas_size"])))
@@ -478,6 +514,18 @@ static func _op_set(target: StringName, name: String, value: Variant) -> Diction
 	return {"target": target, "op": OP_SET, "name": name, "value": value}
 
 
+## The zone's own value of a property, captured on first use (as gates do).
+static func _authored(obj: Object, name: String) -> Variant:
+	var meta := StringName(AUTHORED_META_PREFIX + name)
+	if not obj.has_meta(meta):
+		obj.set_meta(meta, obj.get(name))
+	return obj.get_meta(meta)
+
+
+static func _op_group(kind: StringName, group: String, cls: String, name: String, value: Variant) -> Dictionary:
+	return {"target": TARGET_GROUP, "op": kind, "group": group, "class": cls, "name": name, "value": value}
+
+
 static func _op_gate(target: StringName, name: String, allowed: bool) -> Dictionary:
 	return {"target": target, "op": OP_GATE, "name": name, "value": allowed}
 
@@ -488,6 +536,20 @@ static func _op_call(method: String, args: Array) -> Dictionary:
 
 static func _apply_property(obj: Object, op: Dictionary) -> void:
 	var name := str(op["name"])
+	match op["op"]:
+		OP_SCALE:
+			obj.set(name, float(_authored(obj, name)) * float(op["value"]))
+			return
+		OP_FRACTION:
+			if obj is MultiMeshInstance3D and (obj as MultiMeshInstance3D).multimesh != null:
+				var mm := (obj as MultiMeshInstance3D).multimesh
+				var f := float(op["value"])
+				mm.visible_instance_count = -1 if f >= 1.0 else roundi(mm.instance_count * f)
+			return
+		OP_SHADOW_GATE:
+			var authored: Variant = _authored(obj, name)
+			obj.set(name, authored if bool(op["value"]) else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+			return
 	if op["op"] != OP_GATE:
 		obj.set(name, op["value"])
 		return

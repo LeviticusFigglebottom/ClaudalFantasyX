@@ -41,7 +41,8 @@
     "fsr_sharpness": {"type": "float", "label_key": "GFX_FSR_SHARPNESS", "options": [0.0, 0.2, 0.5, 1.0, 2.0]},
     "aa": {"type": "enum", "label_key": "GFX_ANTI_ALIASING", "options": ["none", "fxaa", "smaa", "taa", "msaa_2x", "msaa_4x"]},
     "lod_threshold": {"type": "float", "label_key": "GFX_LOD_BIAS", "options": [0.5, 1.0, 2.0, 4.0]},
-    "anisotropic_filtering": {"type": "enum", "label_key": "GFX_ANISOTROPIC", "options": ["off", "2x", "4x", "8x", "16x"]}
+    "anisotropic_filtering": {"type": "enum", "label_key": "GFX_ANISOTROPIC", "options": ["off", "2x", "4x", "8x", "16x"]},
+    "vegetation_detail": {"type": "enum", "label_key": "GFX_VEGETATION_DETAIL", "options": ["low", "medium", "high", "ultra"]}
   },
   "enums": {
     "voxel_gi_quality": {
@@ -76,6 +77,12 @@
     }
   },
   "levels": {
+    "vegetation_detail": {
+      "low": {"visibility_scale": 0.6, "multimesh_fraction": 0.5, "small_foliage_shadows": false},
+      "medium": {"visibility_scale": 0.8, "multimesh_fraction": 0.75, "small_foliage_shadows": true},
+      "high": {"visibility_scale": 1.0, "multimesh_fraction": 1.0, "small_foliage_shadows": true},
+      "ultra": {"visibility_scale": 1.3, "multimesh_fraction": 1.0, "small_foliage_shadows": true}
+    },
     "sdfgi_quality": {
       "low": {
         "cascades": 4,
@@ -144,6 +151,12 @@
     "temporal_upscaler_note": "FSR2 runs its own temporal AA, so use_taa is forced off while it is active."
   },
   "system_tiers_note": "presets[].tiers: per-system quality tier for systems that keep their own variants (water: WaterSurface.quality_for_preset; vegetation: shader_families; weathering: Environment's WeatheringTide). Undertow, glimmer and character tiers map 1:1 from the preset id in their own data files (M1-RND-07).",
+  "vegetation_groups": {
+    "_note": "M1-RND-07 vegetation_detail: zones tag nodes with these groups. lod: GeometryInstance3D whose visibility_range_begin/end scale (authored values captured once); multimesh: MultiMeshInstance3D whose visible_instance_count is the fraction; small_shadows: small foliage whose cast_shadow the setting may turn off.",
+    "lod": "vegetation_lod",
+    "multimesh": "vegetation_multimesh",
+    "small_shadows": "small_foliage"
+  },
   "shader_families": {
     "_note": "Compile-time shader variants per system tier. GraphicsSettings.apply_tiers(root) swaps every material whose shader belongs to a family to the variant of the preset's tier for the family's system; a tier with no entry uses 'high'. Variants declare the same uniforms (tested).",
     "vegetation_foliage": {
@@ -180,7 +193,8 @@
         "fsr_sharpness": 0.2,
         "aa": "taa",
         "lod_threshold": 2.0,
-        "anisotropic_filtering": "4x"
+        "anisotropic_filtering": "4x",
+        "vegetation_detail": "low"
       },
       "tiers": {"water": "low", "vegetation": "low", "weathering": "low"}
     },
@@ -211,7 +225,8 @@
         "fsr_sharpness": 0.2,
         "aa": "taa",
         "lod_threshold": 1.0,
-        "anisotropic_filtering": "8x"
+        "anisotropic_filtering": "8x",
+        "vegetation_detail": "medium"
       },
       "tiers": {"water": "medium", "vegetation": "high", "weathering": "medium"}
     },
@@ -242,7 +257,8 @@
         "fsr_sharpness": 0.2,
         "aa": "taa",
         "lod_threshold": 1.0,
-        "anisotropic_filtering": "16x"
+        "anisotropic_filtering": "16x",
+        "vegetation_detail": "high"
       },
       "tiers": {"water": "high", "vegetation": "high", "weathering": "high"}
     },
@@ -273,7 +289,8 @@
         "fsr_sharpness": 0.2,
         "aa": "taa",
         "lod_threshold": 0.5,
-        "anisotropic_filtering": "16x"
+        "anisotropic_filtering": "16x",
+        "vegetation_detail": "ultra"
       },
       "tiers": {"water": "ultra", "vegetation": "high", "weathering": "ultra"}
     }

@@ -57,7 +57,7 @@ func test_planned_engine_api_names_exist_in_this_godot() -> void:
 			variants.append({key: option})
 	var viewport_props := _property_names("Viewport")
 	var env_props := _property_names("Environment")
-	var node_props := _property_names("VoxelGI")
+	var class_props := {}
 	for v: Variant in variants:
 		for op in gs.plan(v):
 			var name := str(op["name"])
@@ -67,7 +67,10 @@ func test_planned_engine_api_names_exist_in_this_godot() -> void:
 				GraphicsSettings.TARGET_ENVIRONMENT:
 					assert_true(env_props.has(name), "Environment.%s missing" % name)
 				GraphicsSettings.TARGET_GROUP:
-					assert_true(node_props.has(name), "VoxelGI.%s missing" % name)
+					var cls := str(op.get("class", "VoxelGI"))
+					if not class_props.has(cls):
+						class_props[cls] = _property_names(cls)
+					assert_true((class_props[cls] as Array).has(name), "%s.%s missing" % [cls, name])
 				GraphicsSettings.TARGET_SERVER:
 					assert_true(ClassDB.class_has_method("RenderingServer", name), "RenderingServer.%s missing" % name)
 					assert_eq((op["args"] as Array).size(), _arg_count("RenderingServer", name), "args of %s" % name)
@@ -393,3 +396,33 @@ func test_apply_tiers_swaps_family_materials_both_ways() -> void:
 	assert_eq(gs.apply_tiers(root, "high"), 1)
 	assert_eq(mat.shader.resource_path, str(f["high"]))
 	root.free()
+
+
+## M1-RND-07: vegetation_detail scales authored visibility ranges, thins MultiMeshes and may turn
+## small-foliage shadows off, on the groups zones tag; returning to High restores the zone's values.
+func test_vegetation_detail_drives_tagged_vegetation() -> void:
+	var groups := gs.data["vegetation_groups"] as Dictionary
+	var vp := SubViewport.new()
+	(Engine.get_main_loop() as SceneTree).current_scene.add_child(vp)
+	var palm := MeshInstance3D.new()
+	palm.visibility_range_begin = 10.0
+	palm.visibility_range_end = 80.0
+	palm.add_to_group(str(groups["lod"]))
+	vp.add_child(palm)
+	var grass := MultiMeshInstance3D.new()
+	grass.multimesh = MultiMesh.new()
+	grass.multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	grass.multimesh.instance_count = 200
+	grass.add_to_group(str(groups["multimesh"]))
+	grass.add_to_group(str(groups["small_shadows"]))
+	vp.add_child(grass)
+	gs.apply("low", vp, null)
+	assert_between(palm.visibility_range_end, 48.0 - 1e-3, 48.0 + 1e-3, "Low: 0.6 x the authored 80 m")
+	assert_between(palm.visibility_range_begin, 6.0 - 1e-3, 6.0 + 1e-3, "LOD chains scale together")
+	assert_eq(grass.multimesh.visible_instance_count, 100, "half the grass")
+	assert_eq(grass.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "small foliage casts no shadow")
+	gs.apply("high", vp, null)
+	assert_between(palm.visibility_range_end, 80.0 - 1e-3, 80.0 + 1e-3, "authored value restored")
+	assert_eq(grass.multimesh.visible_instance_count, -1, "all instances")
+	assert_eq(grass.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_ON, "authored shadow restored")
+	vp.free()
