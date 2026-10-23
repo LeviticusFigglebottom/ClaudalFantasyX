@@ -75,11 +75,24 @@ static func load_dir(dir: String) -> ItemDB:
 ## or failed to parse (load_errors), or the equipment table has no equipment, gear types or equip
 ## slots. Every owned piece would then read as unknown, so SaveSystem neither repairs a loadout
 ## nor writes a save while this is non-empty (M1-ARC-12, QA review-sweep-H S1).
+## M1-ARC-13 (review-sweep-I audit): an items table with no items (items_problem) is a problem
+## too, since every stack in the bag would then read as unknown.
 func integrity_problem() -> String:
-	if not load_errors.is_empty():
-		return "; ".join(load_errors)
+	var problem := items_problem()
+	if problem != "":
+		return problem
 	if equipment.is_empty() or gear_types.is_empty() or equip_slots.is_empty():
 		return "the equipment table has no equipment, gear types or equip slots"
+	return ""
+
+
+## Why this DB must not be used to judge the saved item bag ("" when it can be): a table failed to
+## load, or items.json has no items. Inventory.normalize refuses to run while it is non-empty.
+func items_problem() -> String:
+	if not load_errors.is_empty():
+		return "; ".join(load_errors)
+	if items.is_empty():
+		return "the items table has no items"
 	return ""
 
 
