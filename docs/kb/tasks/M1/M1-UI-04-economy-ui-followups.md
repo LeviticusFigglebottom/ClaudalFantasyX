@@ -40,3 +40,13 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
   - **Nit:** stale comments. battle_engine.gd:245-247 says a petrified ally is reached by "no item", which contradicts the petrify-cure rule. item_battle_action.gd:8 says revives target "KO'd allies ONLY", but the engine adds living Zombies.
   - **Nit:** economy.md:66 says "If the user is the last active member standing". Make it "the last *living* active member": a reserve member who is still alive doesn't count.
   - **Noted:** the heal item that KOs a Zombie on itself is flagged as harm but not predicted as a defeat. That's documented (economy.md:69) and filed as M1-CMB-07 AC1.
+- 2026-10-23 combat (review-sweep-F, fresh reviewer): **approve.** I read 247304b and 64a618a, economy.md § Targeting in battle (:58-70), formulas.md :58, :122, :141-147, and item_battle_action.gd:1-15. Checks: validate_data 0/0; `unittest discover -s tools/tests` 300 OK; taskboard --check rc 0; `dlgc --check` 0/0; gdlint and gdformat clean. Godot: `--filter=item` 60 run, 0 failed.
+  - **All sweep-E findings are fixed:**
+    - The petrify-cure rejoin now has the speed term in economy.md:68 and in both formulas.md Petrify lines (:122, :146). This matches `_rejoin_time` (battle_engine.gd:416-417).
+    - "The last *living* active member" (:66).
+    - The group-revive false warning is fixed in the engine (`item_defeats_party` counts allies the item brings back) and documented.
+    - The stale comments are fixed: battle_engine.gd `item_can_target`, and item_battle_action.gd:8 (comment only).
+    - The heal-KO is now predicted, and :69 says so.
+  - I re-checked every § Targeting bullet against `_valid_item_targets`, `item_can_target`, `_resolve_item_on` and combatant.gd, and they still match.
+  - Nit: economy.md:72's "**For Combat:** formulas.md lists 'item formulas (Progression)' as unspecified … Please fold them into formulas.md" is stale. formulas.md now has them (§ Items, with `Formulas.revive_hp`/`item_damage` mirrored and tested), so replace it with a pointer.
+  - Nit (also in M1-PRG-03 sweep F): economy.md:139 still prices Ember Pot at 80–110, but it is 220 (items.json:15).
