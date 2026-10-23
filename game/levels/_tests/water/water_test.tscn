@@ -1,0 +1,319 @@
+[gd_scene load_steps=31 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/water/water_test_rig.gd" id="rig"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="surface"]
+[ext_resource type="Script" path="res://game/levels/_tests/water/lagoon_seabed.gd" id="seabed"]
+[ext_resource type="Resource" path="res://game/levels/_tests/water/lagoon_waves.tres" id="waves"]
+[ext_resource type="Material" path="res://game/levels/_tests/water/water_lagoon_material.tres" id="water_mat"]
+[ext_resource type="Shader" path="res://game/shaders/water/test/water_test_seabed.gdshader" id="sand_sh"]
+[ext_resource type="Shader" path="res://game/shaders/water/test/water_test_stone.gdshader" id="stone_sh"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyDayMat"]
+sky_top_color = Color(0.180392, 0.498039, 0.839216, 1)
+sky_horizon_color = Color(0.662745, 0.862745, 0.94902, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.560784, 0.764706, 0.878431, 1)
+ground_horizon_color = Color(0.662745, 0.862745, 0.94902, 1)
+ground_curve = 0.3
+sun_angle_max = 12.0
+sun_curve = 0.1
+sky_energy_multiplier = 1.0
+
+[sub_resource type="Sky" id="SkyDay"]
+sky_material = SubResource("SkyDayMat")
+
+[sub_resource type="Environment" id="EnvDay"]
+background_mode = 2
+sky = SubResource("SkyDay")
+ambient_light_source = 3
+ambient_light_energy = 0.65
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.65
+tonemap_agx_white = 12.0
+adjustment_enabled = true
+adjustment_saturation = 1.12
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.03
+glow_hdr_threshold = 1.2
+fog_enabled = true
+fog_light_color = Color(0.74902, 0.866667, 0.909804, 1)
+fog_density = 0.00045
+fog_aerial_perspective = 0.6
+fog_sky_affect = 0.0
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyNightMat"]
+sky_top_color = Color(0.0431373, 0.0862745, 0.188235, 1)
+sky_horizon_color = Color(0.117647, 0.180392, 0.305882, 1)
+sky_curve = 0.2
+ground_bottom_color = Color(0.117647, 0.180392, 0.305882, 1)
+ground_horizon_color = Color(0.117647, 0.180392, 0.305882, 1)
+sun_angle_max = 4.0
+
+[sub_resource type="Sky" id="SkyNight"]
+sky_material = SubResource("SkyNightMat")
+
+[sub_resource type="Environment" id="EnvNight"]
+background_mode = 2
+sky = SubResource("SkyNight")
+ambient_light_source = 3
+ambient_light_energy = 0.08
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.1
+tonemap_agx_white = 12.0
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.08
+glow_hdr_threshold = 0.9
+fog_enabled = true
+fog_light_color = Color(0.133333, 0.207843, 0.309804, 1)
+fog_density = 0.0008
+fog_aerial_perspective = 0.3
+fog_sky_affect = 0.0
+
+[sub_resource type="ShaderMaterial" id="SandMat"]
+shader = ExtResource("sand_sh")
+
+[sub_resource type="ShaderMaterial" id="StoneMat"]
+shader = ExtResource("stone_sh")
+
+[sub_resource type="StandardMaterial3D" id="FlameMat"]
+shading_mode = 0
+albedo_color = Color(1, 0.694118, 0.431373, 1)
+emission_enabled = true
+emission = Color(1, 0.694118, 0.431373, 1)
+emission_energy_multiplier = 6.0
+
+[sub_resource type="SphereMesh" id="FlameMesh"]
+material = SubResource("FlameMat")
+radius = 0.07
+height = 0.16
+
+[sub_resource type="StandardMaterial3D" id="BrassMat"]
+albedo_color = Color(0.690196, 0.552941, 0.341176, 1)
+metallic = 1.0
+roughness = 0.4
+
+[sub_resource type="CylinderMesh" id="LampPostMesh"]
+material = SubResource("BrassMat")
+top_radius = 0.03
+bottom_radius = 0.05
+height = 0.9
+
+[sub_resource type="CylinderMesh" id="Pillar_0"]
+top_radius = 0.42
+bottom_radius = 0.46
+height = 4.6
+material = SubResource("StoneMat")
+radial_segments = 24
+rings = 1
+
+[sub_resource type="CylinderMesh" id="Pillar_1"]
+top_radius = 0.4
+bottom_radius = 0.46
+height = 3.1
+material = SubResource("StoneMat")
+radial_segments = 24
+rings = 1
+
+[sub_resource type="CylinderMesh" id="Pillar_2"]
+top_radius = 0.42
+bottom_radius = 0.46
+height = 5.2
+material = SubResource("StoneMat")
+radial_segments = 24
+rings = 1
+
+[sub_resource type="CylinderMesh" id="Pillar_3"]
+top_radius = 0.44
+bottom_radius = 0.46
+height = 1.9
+material = SubResource("StoneMat")
+radial_segments = 24
+rings = 1
+
+[sub_resource type="CylinderMesh" id="Pillar_fallen"]
+top_radius = 0.42
+bottom_radius = 0.42
+height = 4.2
+material = SubResource("StoneMat")
+radial_segments = 24
+rings = 1
+
+[sub_resource type="BoxMesh" id="Block_plinth"]
+size = Vector3(6, 1.6, 4)
+material = SubResource("StoneMat")
+
+[sub_resource type="BoxMesh" id="Block_step"]
+size = Vector3(4.2, 0.9, 1.4)
+material = SubResource("StoneMat")
+
+[sub_resource type="BoxMesh" id="Block_pier"]
+size = Vector3(1.3, 6.4, 1.3)
+material = SubResource("StoneMat")
+
+[sub_resource type="BoxMesh" id="Block_lintel"]
+size = Vector3(7.0, 0.9, 1.5)
+material = SubResource("StoneMat")
+
+[sub_resource type="BoxMesh" id="Block_wall"]
+size = Vector3(11, 1.4, 0.8)
+material = SubResource("StoneMat")
+
+[sub_resource type="BoxMesh" id="Block_small"]
+size = Vector3(1.2, 0.7, 0.9)
+material = SubResource("StoneMat")
+
+[node name="WaterTest" type="Node3D" node_paths=PackedStringArray("water", "sun", "moon", "night_nodes", "night_camera")]
+script = ExtResource("rig")
+water = NodePath("Water")
+sun = NodePath("Sun")
+moon = NodePath("Moon")
+night_nodes = [NodePath("Ruins/Pillar3/LampPost"), NodePath("Ruins/Pillar3/LampPost/Flame"), NodePath("Ruins/Pillar3/LampPost/Lamp")]
+night_camera = NodePath("Cameras/Night")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("EnvDay")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+light_color = Color(1, 0.945098, 0.894118, 1)
+light_energy = 3.2
+shadow_enabled = true
+sky_mode = 1
+directional_shadow_max_distance = 120.0
+
+[node name="Moon" type="DirectionalLight3D" parent="."]
+visible = false
+light_color = Color(0.615686, 0.705882, 0.85098, 1)
+light_energy = 0.25
+shadow_enabled = true
+sky_mode = 1
+directional_shadow_max_distance = 80.0
+
+[node name="Seabed" type="MeshInstance3D" parent="."]
+script = ExtResource("seabed")
+material_override = SubResource("SandMat")
+
+[node name="Water" type="Node3D" parent="."]
+script = ExtResource("surface")
+wave_set = ExtResource("waves")
+material = ExtResource("water_mat")
+
+[node name="Ruins" type="Node3D" parent="."]
+
+[node name="Pillar0" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 1, -14)
+mesh = SubResource("Pillar_0")
+
+[node name="Pillar1" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.997564, -0.0697565, 0, 0.0697565, 0.997564, 0, 0, 0, 1, -2.2, 0.25, -14)
+mesh = SubResource("Pillar_1")
+
+[node name="Pillar2" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.999391, 0.0348995, 0, -0.0348995, 0.999391, 0, 0, 0, 1, 2.2, 1.3, -14)
+mesh = SubResource("Pillar_2")
+
+[node name="Pillar3" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, -0.35, -14)
+mesh = SubResource("Pillar_3")
+
+[node name="FallenPillar" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(5.1928e-17, -0.848048, 0.529919, 1, 6.12323e-17, 0, -3.24482e-17, 0.529919, 0.848048, 2.5, -0.62, -7.5)
+mesh = SubResource("Pillar_fallen")
+
+[node name="Plinth" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.978148, 0, 0.207912, 0, 1, 0, -0.207912, 0, 0.978148, -15, -0.3, 7)
+mesh = SubResource("Block_plinth")
+
+[node name="PlinthStep" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.978148, 0, 0.207912, 0, 1, 0, -0.207912, 0, 0.978148, -13.2, -0.55, 9.3)
+mesh = SubResource("Block_step")
+
+[node name="ArchPierW" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.990268, 0, -0.139173, 0, 1, 0, 0.139173, 0, 0.990268, 10, 0.9, -46)
+mesh = SubResource("Block_pier")
+
+[node name="ArchPierE" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.990268, 0, -0.139173, 0, 1, 0, 0.139173, 0, 0.990268, 15.4, 0.9, -46.8)
+mesh = SubResource("Block_pier")
+
+[node name="ArchLintel" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.989326, -0.0431949, -0.139173, 0.0436194, 0.999048, 0, 0.139041, -0.00607065, 0.990268, 12.7, 4.55, -46.4)
+mesh = SubResource("Block_lintel")
+
+[node name="DrownedWall" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -11, -1.15, -23)
+mesh = SubResource("Block_wall")
+
+[node name="Block0" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.897488, -0.126134, 0.422618, 0.139173, 0.990268, 0, -0.418505, 0.0588171, 0.906308, -4, -1.05, -19)
+mesh = SubResource("Block_small")
+
+[node name="Block1" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.761848, 0.0800734, -0.642788, -0.104528, 0.994522, 0, 0.639266, 0.0671896, 0.766044, 5, -0.85, -10.5)
+mesh = SubResource("Block_small")
+
+[node name="Block2" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.984808, 0, 0.173648, 0, 1, 0, -0.173648, 0, 0.984808, -8.5, -0.55, -4)
+mesh = SubResource("Block_small")
+
+[node name="Block3" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.485148, -0.120961, 0.866025, 0.241922, 0.970296, 0, -0.840301, 0.209511, 0.5, 13, -1.5, -22.5)
+mesh = SubResource("Block_small")
+
+[node name="Block4" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.96225, -0.084186, -0.258819, 0.0871557, 0.996195, 0, 0.257834, -0.0225576, 0.965926, 0.5, -1.3, -26)
+mesh = SubResource("Block_small")
+
+[node name="Block5" type="MeshInstance3D" parent="Ruins"]
+transform = Transform3D(0.806707, 0.142244, 0.573576, -0.173648, 0.984808, 0, -0.564863, -0.0996005, 0.819152, -17, -1.6, -30)
+mesh = SubResource("Block_small")
+
+[node name="LampPost" type="MeshInstance3D" parent="Ruins/Pillar3"]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+mesh = SubResource("LampPostMesh")
+
+[node name="Flame" type="MeshInstance3D" parent="Ruins/Pillar3/LampPost"]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.53, 0)
+mesh = SubResource("FlameMesh")
+
+[node name="Lamp" type="OmniLight3D" parent="Ruins/Pillar3/LampPost"]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.53, 0)
+light_color = Color(1, 0.694118, 0.431373, 1)
+light_energy = 1.2
+omni_range = 9.0
+omni_attenuation = 1.2
+shadow_enabled = false
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Shallows" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.813733, 0.073724, -0.576544, -0, 0.991923, 0.12684, 0.581238, -0.103214, 0.807161, -21, 1.5, 15)
+fov = 46.4
+far = 4000.0
+near = 0.1
+current = true
+
+[node name="Lagoon" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.819232, -0.0851744, 0.567102, 0, 0.988908, 0.148527, -0.573462, -0.121678, 0.810145, 19, 5.5, 6)
+fov = 53.13
+far = 4000.0
+near = 0.1
+
+[node name="Horizon" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.999989, 7.19623e-05, -0.00470528, -0, 0.999883, 0.0152922, 0.00470583, -0.015292, 0.999872, 11.8, 1.6, -30)
+fov = 37.85
+far = 4000.0
+near = 0.1
+
+[node name="Night" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.989488, -0.00374129, 0.144569, 0, 0.999665, 0.0258702, -0.144617, -0.0255983, 0.989156, 10.5, 1.3, -5)
+fov = 37.85
+far = 4000.0
+near = 0.1
+environment = SubResource("EnvNight")

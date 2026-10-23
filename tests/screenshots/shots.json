@@ -214,6 +214,46 @@
       ],
       "settle_frames": 16,
       "threshold_rmse": 0.018
+    },
+    {
+      "id": "water_shallows",
+      "scene": "res://game/levels/_tests/water/water_test.tscn",
+      "camera": "Cameras/Shallows",
+      "settle_frames": 16,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "water_lagoon",
+      "scene": "res://game/levels/_tests/water/water_test.tscn",
+      "camera": "Cameras/Lagoon",
+      "settle_frames": 16,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "water_horizon",
+      "scene": "res://game/levels/_tests/water/water_test.tscn",
+      "camera": "Cameras/Horizon",
+      "settle_frames": 16,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "water_night",
+      "scene": "res://game/levels/_tests/water/water_test.tscn",
+      "camera": "Cameras/Night",
+      "settle_frames": 16,
+      "resolution": [
+        960,
+        540
+      ]
     }
   ]
 }
