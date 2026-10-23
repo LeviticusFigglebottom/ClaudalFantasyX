@@ -1,86 +1,68 @@
 # Live log: first-playable environment
 
-Seeded by the Lead on 2026-10-23. **This environment owns this file** (CLAUDE.md §7a). Update it on your own branch after every finished item: what's done, what's in progress, the exact next step, and any un-pushed state.
+Seeded by the Lead on 2026-10-23. **This environment owns this file** (CLAUDE.md §7a).
 
-## Current state (2026-10-23, session_01ELR13ohWMPrprcpcgLa7UR)
+## FINAL HANDOFF (2026-10-23, session_01ELR13ohWMPrprcpcgLa7UR, for the account move)
 
-**The first playable thread works end to end** on `claude/first-playable`, and everything is pushed:
-title → New Game → prologue → Cutscene A on Haluna's beach → walk the village (3 villagers) → tideline battle → back to the field → save at the shrine → causeway head → Cutscene B (the first verse) on a placeholder Shell Shrine set → end card → title.
+**Branch `claude/first-playable` is pushed. Nothing is WIP, and there's no un-pushed or local-only state.** The last code commit was gated at 76397e4: `tools/ci_local.sh` with `HYMN_SHOTS=battle_hud_preview,battle_swap_menu,battle_victory,battle_statuses,battle_swell_ring,boot_title` and `HYMN_SKIP_BLENDER=1` gave 1244 tests green, game/battle 99.95% and progression 96.52% (both within the ratchet), shots unchanged, and `tools/balance/sim.py --check` passing every suite at 5000 seeds. Only this file changed after that.
 
-How the human plays it: [docs/PLAYTEST.md](../../../PLAYTEST.md) (Godot 4.6.3, open project.godot, press F5).
+### Already merged into the integration branch (at 2ddca3f)
+- M2-FP-01 cutscene sequencer, M2-FP-02 playable Haluna, M2-FP-03 flow (prologue, BattleRequest/FieldBattle, end card) and M2-FP-04 integration with PLAYTEST.md. Sweep K approved all four; they are closed on the integration branch at 7f4c76b.
 
-### Done (all four tasks are in `review`)
-| Task | What | Where |
-|---|---|---|
-| M2-FP-01 | Cutscene sequencer: `.dlg` cues on a `CutsceneStage`, the camera contract, autosave hold, choices | `game/cutscene/`, `docs/kb/tech/cutscenes.md` |
-| M2-FP-02 | Playable Haluna: the mood scene instanced, collision, Rhen, camera volumes, villagers, triggers, Cutscene A stage | `game/levels/ch02/haluna/` |
-| M2-FP-03 | Prologue, New Game routing, `BattleRequest`/`FieldBattle`, the `ch02_tideline` encounter, end card | `game/flow/`, `game/levels/prologue/`, `docs/kb/tech/first_playable_flow.md` |
-| M2-FP-04 | `HalunaStory` driver, Cutscene B set, whole-thread test, PLAYTEST.md | `game/flow/haluna_story.gd`, `game/levels/ch03/first_verse/`, `tests/integration/test_fp_thread.gd` |
+### On `claude/first-playable` but NOT merged yet: all `review`, merge as one batch
+The branch already contains every integration change through origin/claude/new-session-mj8c3c at the M2-CMB-02 merge, so it merges back cleanly as of then.
+1. **M2-FP-05 polish** (`docs/kb/tasks/M2/M2-FP-05-playable-polish.md`):
+   - Cutscene skip: hold ui_cancel for 1 s; it fast-forwards to the next choice or the end.
+   - Haluna prebuild on SceneRouter's worker thread: the swap frame went from 1684 to 33 ms.
+   - After a defeat: Fight again, or Return to last save (the title when there is none).
+   - An escape returns to `BeforeBattle`.
+2. **M2-FP-06 the Drownbell** (`M2-FP-06-drownbell-boss.md`):
+   - `game/battle/boss_mechanics.gd`; data in `encounters.json`, `enemies.json` and `skills.json`.
+   - ADR **0024** is the Ilun stand-in.
+   - Wired as Cutscene B → `BattleRequest(drownbell, return_scene=end card)` → end card.
+   - Battle docs: battle_ctb.md, "The Drownbell", which includes the **VFX hook points** table for M2-RND-04.
+   - Balance: Floodtide power 14. At 5000 seeds: naive 0%, role_answer 77.7%, smart 85.5%.
+3. **M2-FP-08:** `@face` and line emotions drive Asha's shape keys (`CutsceneFace`), with viseme lip-flap; idle, talk, walk and run clips play when they exist.
+4. **M2-FP-09 thread hardening** (renumbered from a duplicate M2-FP-05; `M2-FP-09-thread-hardening.md`):
+   - `FlowRouting` keeps hand-offs from being lost while the router is busy.
+   - The whole-thread test drives the real trigger, with defeat, save and load legs, plus a strip test.
+   - The intro flag comes from JSON, and the zone suns use the close-up shadow bias.
+   - A sequencer that leaves the tree releases `play()`.
+5. **M1-ARC-15:** `game/core/graphics_runtime.gd` applies GraphicsSettings at boot and on each zone load through `SceneRouter.attach_graphics_hook` (a minimal, additive change to a Systems-owned file). M1-UI-10 (the graphics menu) is filed for UI. The RND-12 S2 finding is in graphics_settings.md.
+6. Smaller items:
+   - The `BattleIds` helper keeps `battle_controller.gd` under the cap.
+   - `"opening": "normal"` on both story fights.
+   - Handoffs renumbered on merges: combat-8 is the Drownbell, architect-17 is ARC-15.
 
-### Verification
-- `tools/ci_local.sh` green before the integration merge: 974 tests, `HYMN_SHOTS=boot_title`, Blender skipped (no asset sources touched).
-- After merging the integration branch (e9ae43a), I ran scoped checks per §3 "Gate scope": lint, format, data, and the filtered tests `fp_`, `cutscene`, `haluna`.
-- A real-runtime smoke run (throwaway script, not committed) went through the actual SceneRouter from New Game to the title with Enter mashed. No script errors.
+### WIP
+None.
 
-### In progress
-Nothing. The Lead's queue of 2026-10-23 (M2-FP-05..08) is done and pushed:
-- **M2-FP-05 polish (review):**
-  - Cutscene skip: hold Escape/B for 1 s; it stops at choices.
-  - Haluna entry: prebuilt on the router's worker thread, so the swap frame went from a median of 1684 ms to 33 ms.
-  - After a defeat: Fight again, or Return to last save (the title when there is no save). An escape returns to `BeforeBattle`, on the near side of the trigger.
-- **M2-FP-06 Drownbell (review):**
-  - The engine gains a phase mechanism (`game/battle/boss_mechanics.gd`).
-  - Phase 1, the Toll: a timeline push, telegraphed in the preview, that breaking the rim silences.
-  - Phase 2, the Flood: polyps heal the bell; Asha's Call Ilun clears the water. Call Ilun stands in for the Vowbound summon (ADR 0024).
-  - In balance: naive 0%, role_answer 80%, smart 90%.
-  - Wired into the thread: Cutscene B → `BattleRequest(drownbell)` with `return_scene` → end card.
-- **M2-FP-07:** a request task for Character (Asha's clips), still `todo`.
-- **M2-FP-08 (review):** `@face` and line emotions blend Asha's shape keys, with lip-flap; idle, talk, walk and run clips play when they exist.
+### Remaining queue, in order
+1. **Merge** `claude/first-playable` into the integration branch. On conflicts:
+   - `strings.csv`: `python3 tools/dev/merge_union.py`.
+   - `dialogue.csv`: rerun `python3 tools/dlgc.py`.
+   - `balance_report.md`: take theirs and rerun `sim.py`.
+   - Rerun `sim.py --check` after any merge that touches skills or Swell.
+2. **Dialogue key light**, filed by the Lead as `docs/kb/tasks/M2/M2-FP-06-dialogue-key-light.md` on the integration branch. **That id clashes with M2-FP-06 (the Drownbell), so renumber it M2-FP-10 when claiming.**
+   - The problem: the 400 m sun cascades can't resolve face self-shadows at dialogue range.
+   - The fix: a character key light with a short shadow range, `shadow_normal_bias` 4.5, aligned to the zone sun. Add it to the cutscene sequencer or shot data, e.g. a `CameraShot`/`CutsceneShotNode` field or a per-stage `KeyLight` that the sequencer enables on close-ups.
+   - When it's done, ask the PC GPU session (session_01778wbLbDFnRRLTKjnawv3T, or its successor) for a GPU check of Cutscene A.
+3. **M2-FP-07:** Character's clip request (idle, walk, run, talk, the beach rise, take_hand and the others listed). The sequencer already plays same-named clips, so there's no code to do here; just follow up.
+4. **Keep docs/PLAYTEST.md current** after each item.
+5. **Known issue:** 8 `p_elem->_root != this` engine errors at exit after `haluna.tscn` has been loaded. They are present on the base too (ARC-15's finding), are exit-only, and don't affect play. Bisect the mood scene vs our zone.
 
-### Queue of 2026-10-23 (second batch: the Lead's sweep K)
-- **M2-FP-09 thread hardening (review):** renumbered from a duplicate M2-FP-05. FlowRouting makes hand-offs safe while the router is busy. The thread test drives the real trigger and adds the defeat, save and load legs, plus a strip-walk test. The arrival flag comes from JSON. The zone sun follows the close-up shadow rule. A sequencer that leaves the tree returns from play(). Placeholder cue keys warn once.
-- **M1-ARC-15 apply GraphicsSettings (review):**
-  - `GraphicsRuntime` (`game/core/graphics_runtime.gd`): boot applies the saved preset, or the default.
-  - `SceneRouter.attach_graphics_hook` re-applies the per-scene tiers on each zone's `ready`.
-  - Its select and override API is ready for the settings menu, which doesn't exist yet: M1-UI-10 was filed for UI.
-  - Finding on RND-12 S2: Haluna's sun is Light Only, so the sky never sees it. With Light and Sky, the incremental cubemap follows within about 64 frames. This needs an Art/Rendering decision; details in graphics_settings.md.
-  - Non-default presets aren't prewarmed (a Rendering follow-up).
-  - Handoff: `docs/kb/handoffs/2026-10-23-architect-17.md`.
+### Coordination notes
+- **Save v6 belongs to the integration branch (M2-ARC-01).** This branch never bumps SAVE_VERSION and needs no new save fields.
+- **`battle_engine.gd` is at exactly 1000 lines and `battle_controller.gd` at about 990, the lint cap.** Put new logic in helper classes (BossMechanics, BattleBossHud, BattleBestiary, BattleIds). Combat should split the engine before it grows.
+- **The PC GPU session builds the Drownbell VFX and flood rig as M2-RND-04.** Hooks: battle_ctb.md, "VFX hook points". It should be a listen-only view attached next to `BattleBossHud.attached`, and the flood height goes through `hymn_water_level` with one publisher.
+- **ADR numbers:** 0023 is save v5 (CMB-03) and 0024 is the Drownbell stand-in.
+- Cross-session messages from this session to the Lead were refused (the session needs a trusted device). This file is the report.
 
 ### Exact next step
-Wait for the Lead's review and the human's playtest notes, and turn the notes into M2-FP-09+ tasks. The open follow-up on this branch is the shutdown-only engine errors described below.
+For a new session: check out `claude/first-playable` and run `python3 tools/dev/fetch_godot.py && python3 tools/dev/fetch_render_deps.py`, then `godot --headless --path . --import` twice. Merge it into the integration branch (step 1 of the queue), then claim the dialogue key light as M2-FP-10.
 
-### For the PC GPU session (M2-RND-04: the Drownbell's VFX and flood rig)
-- The hook table is in battle_ctb.md, under "The Drownbell", then "VFX hook points". It covers:
-  - each moment: the toll's gathering and firing, rim hits and the break, the change to the Flood phase, polyps joining and healing, Call Ilun clearing the water, and the bell's death;
-  - the engine signal and arguments for each moment, and the light rule for each (held, bound or released);
-  - the data and code paths, and the tests.
-- **How to wire it:** a view class beside `BattleBossHud`, attached with one line where `BattleBossHud.attached(self, engine)` is called. It listens only and never writes combat state.
-- **Flood height:** goes through `hymn_water_level`. The battle scene has no water today, so the flood rig is that scene's single publisher.
-- No logic change is needed on this branch.
-
-### For the save v6 owner (M2-ARC-01)
-- This branch needs **no new save fields** and never bumps SAVE_VERSION. The Drownbell, retry, escape and story state all live in existing flags (`ch02_tideline_won`, `ch03_drownbell_defeated`, `ch03_ilun_bound`) and in the existing respawn and location fields.
-- `battle_controller.gd` on this branch only moved two static helpers out into `BattleIds`. Boss presentation lives in `BattleBossHud` and field-battle flow in `game/flow/field_battle.gd`, both helpers.
-
-### Known issues (candidate follow-ups)
-- **`game/battle/battle_engine.gd` is at exactly 1000 lines**, the lint cap, after the CMB-02 merge. To get there I condensed my own boss-signal doc comments; the full signal docs are in battle_ctb.md. The next growth needs a split, which is Combat's to do. `battle_controller.gd` is at about 990 lines.
-- **Correction (ARC-15 agent):** the exit-time errors also reproduce on the base commit when `haluna.tscn` is simply loaded and freed on the main thread, so they predate the threaded prebuild. They come from something in the zone or the mood scene. Quitting the game after Haluna has been loaded logs 8 engine errors, `Condition "p_elem->_root != this"` (self_list.h). They come from resources built during the worker-thread prebuild. They appear only at process exit, and scene swaps stay clean. Before the prebuild there were none. A bisect that ran each prebuild step on a worker thread outside the router (`.scratch/bisect.gd`, local only) did not reproduce them: dress, all and asha timed out under CPU load, and collision and water were clean. So far they reproduce only through the real SceneRouter flow. The likely culprit is a material or mesh created off the main thread; next, try creating those resources on the main thread in `_ready` while keeping the heavy mesh build threaded.
-- `battle_controller.gd` sits at exactly the 1000-line lint cap after FP-06. Split it before growing it.
-- The balance sim doesn't model Toma's Lattice skills.
-- Placeholders: stand-in music (`game/data/cutscene/sequencer.json` `music_stand_ins`); `@face` is recorded only; `@anim` uses `CutsceneStage.clip_marks`; motes are simple spheres; everyone except Asha is a capsule, and Asha holds her rest pose.
-- `tools/validate_data.py` (Systems-owned) got a small `place_at` player-detection fix from FP-03. It's in its own commit with a test, and Systems should confirm it.
-
-### Local-only state
-None that matters. `.scratch/` (excluded through `.git/info/exclude`) holds the throwaway smoke and preview scripts; regenerate them if needed.
-- The first-verse `.tscn` was emitted by a scratch Python generator. The `.tscn` is the source now, so edit it directly.
-
-### How to resume
-1. Check out `claude/first-playable`.
-2. Run `python3 tools/dev/fetch_godot.py && python3 tools/dev/fetch_render_deps.py`.
-3. Run `godot --headless --path . --import` twice.
-4. Run the area tests: `godot --headless --path . res://tests/run_tests.tscn -- --filter=fp_`, then `--filter=cutscene` and `--filter=haluna`.
-5. Read the M2-FP task files and `docs/kb/handoffs/2026-10-23-first-playable-1.md`.
+### How to resume (tests for this area)
+`godot --headless --path . res://tests/run_tests.tscn -- --filter=<x>` for x in `fp_`, `test_cutscene`, `haluna`, `flow_routing`, `graphics`, `boss`, `drownbell`. The coverage step applies because this branch touches game/battle.
 
 ## History
 - 2026-10-23: ci_local green after the CMB-02 merge: 1244 tests; game/battle 99.95%, progression 96.52%; battle and title shots unchanged. The Drownbell is mergeable now.
