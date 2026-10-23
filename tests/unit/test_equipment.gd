@@ -125,3 +125,41 @@ func test_data_slot_counts_respect_the_rule() -> void:
 		assert_true(slots >= 0 and slots <= db.max_slots, "%s has %d slots" % [eid, slots])
 		assert_true((row["abilities"] as Array).size() <= slots, "%s overfilled" % eid)
 		assert_ne(db.character_of(eid), &"", "%s has no wearer" % eid)
+
+
+# --- M1-PRG-03: starting gear after a load ------------------------------------------------------
+
+
+func test_grant_starting_fills_a_missing_required_slot_only() -> void:
+	var bag := EquipmentBag.new(db, {"next_uid": 1, "owned": {}, "loadout": {"rhen": {}}})
+	assert_true(bag.grant_starting(&"rhen"), "a loadout with no weapon gets one")
+	assert_eq(bag.base_of(bag.equipped(&"rhen", ItemDB.SLOT_WEAPON)), &"rhen_salvage_hooks")
+	assert_eq(bag.equipped(&"rhen", ItemDB.SLOT_ARMOR), EquipmentBag.NO_PIECE, "optional slots are the player's")
+	assert_false(bag.grant_starting(&"rhen"), "idempotent")
+	assert_eq(bag.uids().size(), 1)
+
+
+func test_grant_starting_prefers_an_owned_unworn_piece() -> void:
+	var bag := EquipmentBag.new(db, {"next_uid": 1, "owned": {}, "loadout": {"rhen": {}}})
+	var spare := bag.add_piece(&"rhen_coral_hooks")
+	assert_true(bag.grant_starting(&"rhen"))
+	assert_eq(bag.equipped(&"rhen", ItemDB.SLOT_WEAPON), spare, "no duplicate starter when one is owned")
+	assert_eq(bag.uids().size(), 1)
+
+
+func test_grant_starting_replaces_a_vanished_weapon() -> void:
+	var bag := EquipmentBag.new(db, {"next_uid": 9, "owned": {}, "loadout": {"asha": {"weapon": 4}}})
+	assert_true(bag.grant_starting(&"asha"), "the loadout pointed at a piece that is gone")
+	assert_eq(bag.base_of(bag.equipped(&"asha", ItemDB.SLOT_WEAPON)), &"asha_vigil_staff")
+
+
+func test_party_goods_ensures_gear_for_joined_members_only() -> void:
+	var st := GameStateData.new()
+	st.party_ids = [&"rhen", &"asha"] as Array[StringName]
+	st.reserve_ids = [&"asha", &"toma"] as Array[StringName]
+	assert_eq(PartyGoods.joined_members(st), [&"rhen", &"asha", &"toma"] as Array[StringName])
+	var goods := PartyGoods.from_state(db, st)
+	assert_eq(goods.ensure_starting_gear(st), [&"rhen", &"asha", &"toma"] as Array[StringName])
+	assert_eq(goods.ensure_starting_gear(st), [] as Array[StringName], "a second pass changes nothing")
+	assert_eq(goods.equipment.equipped_uids(&"ysolde"), [] as Array[int], "not joined: nothing")
+	assert_eq((st.equipment["loadout"] as Dictionary).size(), 3, "written into the state")

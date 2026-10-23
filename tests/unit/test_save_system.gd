@@ -73,8 +73,8 @@ func test_v2_lattice_is_not_overwritten() -> void:
 	saves.free()
 
 
-func test_save_version_is_3() -> void:
-	assert_eq(saves.SAVE_VERSION, 3)
+func test_save_version_is_4() -> void:
+	assert_eq(saves.SAVE_VERSION, 4)
 	saves.free()
 
 
@@ -83,8 +83,11 @@ func test_migrates_v2_adds_empty_equipment_and_normalizes_inventory() -> void:
 		"version": 2,
 		"state": {"currency": 120, "inventory": {"salt_tonic": 3.0, "bitterleaf": 0, "drag_net": -2}},
 	}
+	var step: Dictionary = saves._migrate_v2_to_v3(v2)
+	assert_eq(int(step["version"]), 3, "the v2 -> v3 step itself is unchanged")
 	var migrated: Dictionary = saves.migrate(v2)
-	assert_eq(int(migrated["version"]), 3)
+	assert_eq(int(migrated["version"]), saves.SAVE_VERSION)
+	assert_eq(step["state"]["equipment"], migrated["state"]["equipment"])
 	var st: Dictionary = migrated["state"]
 	assert_eq(st["equipment"], {"next_uid": 1, "owned": {}, "loadout": {}})
 	assert_eq(st["inventory"], {"salt_tonic": 3})

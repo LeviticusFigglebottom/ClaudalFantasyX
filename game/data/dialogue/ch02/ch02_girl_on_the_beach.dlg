@@ -75,6 +75,8 @@ Toma [sad]: She woke the house before light. We came down so they would not come
     // He is standing, leaning on Toma (decisions_log N-17): H05 follows his eye to standing height,
     // Asha rises to meet it, and there is no offered hand. He is already up.
     @anim asha rise_to_stand
+    // Let her finish rising before H05 opens: haluna.md H05 has her already standing.
+    @wait 0.8
     @camera H05 blend=0.0
 Asha [soft_smile]: I'm Asha. That's Toma. He's nicer than his spear. #line:ch02_beach_030
 Toma [neutral]: Toma Okeru, of Haluna. You are speaking to the Lady— #line:ch02_beach_031
@@ -86,6 +88,14 @@ Asha [soft_smile]: Later. You're shaking. #line:ch02_beach_034
     Asha [tender]: Come up to the village. Bring your father's light. You'll eat first, and then we'll tell you what we know. #line:ch02_beach_014
 <<else>>
     Asha [tender]: Come up to the village. You'll eat first, and then we'll tell you what we know. #line:ch02_beach_015
+<<endif>>
+<<if $ch02_rhen_stayed_with_dead>>
+    // Stay branch (decisions_log N-19): he takes the hand she offered and they rise together
+    // on H05, so he is standing before the cut to the walk.
+    @anim rhen take_hand asha
+    @anim rhen rise_to_stand
+    @anim asha rise_to_stand
+    @wait 1.2
 <<endif>>
 @camera H01 blend=0.0 grade=ch02
 @mark asha beach_path walk

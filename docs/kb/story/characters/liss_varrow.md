@@ -13,8 +13,8 @@ She grew up on stories of **Dace Sallow**, the wright who went into the Undertow
 - **Needs:** to accept that her people's way, like the Order's, is a way of holding on to the dead. She represents the outlawed past, and the ending asks her to let it go too.
 
 ## Arc Beats
-- **Act I:** the party shelters her from an Order raid in the Brine Shoals (Ch6). She joins out of practicality: Toma's Stillguard papers get her past checkpoints. She is quick and sharp with everyone, and at Rhen most of all ("You sell the dead by the pound, diver."). At Corrow she rigs forbidden Saltwright cannons for the defence, and the Order uses them and thanks no one.
-- **Act II:** she finds Lit Age records at Lowlight that prove binding was the founders' craft too. She learns Rhen is Dace's son and is furious that he hid it. The **peace wedding** at Ansedra is Tobin's: he is marrying **Merel Dask**, the living daughter of a Warden, in a public reconciliation Liss campaigned for. It is a trap. Saltwright leaders are seized, and Tobin is killed shielding Merel. Liss's grief is the rawest in the game.
+- **Act I:** the party shelters her from an Order raid in the Brine Shoals (Ch6). Sefir himself lets her go on Toma's papers, and she never forgives him for being kind about it ("He put the fire out once it had finished."). She joins out of practicality: Toma's Stillguard papers get her past checkpoints. She is quick and sharp with everyone, and at Rhen most of all ("You sell the dead by the pound, diver."). At Corrow (Ch8) she rigs a rope-and-block hoist off the Watchers' faces to lift children up the seawall during the evacuation. It is plain rope and iron, nothing bound. Afterwards the Stillguard cut it down for touching the Watchers. The Order thanks no one ([ADR 0017](../../decisions/0017-act-one-restaging.md)).
+- **Act II:** at Lowlight (Ch11) she learns Rhen is Dace's son and is furious that he hid it. In Ansedra's Lamp Archive (Ch13), given the run of it as a show of peace, she finds the founders' ledgers that prove binding was their craft too, and the Cantor roll's *kept* and *spent* column ([ADR 0016](../../decisions/0016-act-two-restaging.md)). The **peace wedding** at Ansedra is Tobin's: he is marrying **Merel Dask**, the living daughter of a Warden, in a public reconciliation Liss campaigned for. It is a trap. Saltwright leaders are seized, and Tobin is killed shielding Merel. Merel gets the party out across the lagoon and is taken for it. In Ch15 Liss has to tell her father at Hollowmere. Liss's grief is the rawest in the game.
 - **Act III:** she restores the **Kite**, Dace's ship, at Hollowmere, with Rhen working beside her and both of them reading Dace's notes. When she understands that the Unbinding will kill every machine her people own, she builds the final dive rig anyway. Her mourning is shown by the work she puts in.
 - **Ending:** the Kite's lamps go dark mid-air. She brings it down on the water by hand, with ropes and sail. In the epilogue she is teaching Hollowmere children to build windmills.
 
@@ -31,7 +31,7 @@ Liss turns found things into answers: she steals items, combines them, and deplo
 
 ## Relationships
 - **Rhen:** a foil and later a sibling-like friend. They are equally stubborn and equally afraid of loss. They express it in opposite ways: he runs, she builds.
-- **Toma:** the man who burned a camp like hers. Their reckoning happens in Ch15. She never says "I forgive you." She lets him carry Tobin.
+- **Toma:** the man who burned a camp like hers. Their reckoning happens in Ch15, at Hollowmere. She never says "I forgive you." She lets him carry Tobin.
 - **Tobin (brother):** her sunlight. His death is Act II's real cost.
 - **Pell:** an unexpected easy rapport. He is curious about her machines, and she likes that he never lectures.
 - **Asha:** at first Liss sees her as a girl walking politely to her death and says so. Later they become fierce allies.

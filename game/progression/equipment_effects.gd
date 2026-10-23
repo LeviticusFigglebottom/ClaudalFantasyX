@@ -2,7 +2,11 @@ class_name EquipmentEffects
 extends RefCounted
 ## What a character's equipped pieces do in battle (SPEC §6.5). apply_to() is a
 ## BattleEngine.party_modifier, composable with LatticeProgress.apply_to through compose():
-##   engine.party_modifier = EquipmentEffects.compose([progress.apply_to, effects.apply_to])
+##   engine.party_modifier = EquipmentEffects.compose([progress.apply_to, effects.modifier()])
+## Lifetime: Godot method Callables do not keep a RefCounted alive. modifier() returns a hook that
+## owns its EquipmentEffects; for a bare method (`progress.apply_to`) the caller must hold the
+## object for the life of the engine setup. compose() reports an invalid hook instead of skipping
+## it silently (M1-PRG-03).
 ##
 ## apply_to() handles everything the engine already supports: piece stats and stat_bonus
 ## abilities (added, like the Lattice; HP/MP raise max and current), "always" auto-statuses
@@ -52,13 +56,29 @@ func _init(item_db: ItemDB, equipment_bag: EquipmentBag) -> void:
 	bag = equipment_bag
 
 
-## Chains several party_modifier hooks into one, called in order.
+## Chains several party_modifier hooks into one, called in order. An invalid hook is an error,
+## not a silent skip: a bound method Callable (`fx.apply_to`) does not keep a RefCounted alive,
+## so a hook whose owner was freed would otherwise drop its gear without a word. Pass owning
+## hooks (`fx.modifier()`), or keep `fx` and the LatticeProgress referenced for the whole setup.
 static func compose(modifiers: Array[Callable]) -> Callable:
 	var mods := modifiers.duplicate()
+	for i in mods.size():
+		if not (mods[i] as Callable).is_valid():
+			push_error("EquipmentEffects.compose: modifier %d is not valid (was its owner freed?)" % i)
 	return func(c: BattleCombatant) -> void:
 		for m: Callable in mods:
 			if m.is_valid():
 				m.call(c)
+			else:
+				push_error("EquipmentEffects.compose: skipped an invalid modifier for %s" % c.id)
+
+
+## apply_to as a party_modifier that OWNS this EquipmentEffects (the lambda holds a reference),
+## so `engine.party_modifier = EquipmentEffects.new(db, bag).modifier()` works without the
+## caller keeping `fx` alive. Prefer this over the bare `fx.apply_to`.
+func modifier() -> Callable:
+	var owner_ref: EquipmentEffects = self
+	return func(c: BattleCombatant) -> void: owner_ref.apply_to(c)
 
 
 ## Every filled ability on `cid`'s equipped pieces: weapon first, then armor, in slot order.

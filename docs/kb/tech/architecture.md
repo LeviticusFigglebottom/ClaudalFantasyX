@@ -108,7 +108,7 @@ SPEC §5.2 (versioned saves, save-point-only, chapter autosave) and §6.6 (shrin
 | `game/core/save_system.gd` | Autoload. Existing format and migrations, plus the APIs below. |
 | `game/core/game.gd` | Play-time clock and `set_chapter()`. |
 | `game/core/event_bus.gd` | New signals: `chapter_changed(chapter, previous)`, `party_full_heal_requested(source_id)`, `save_shrine_used(shrine_id, location_id)`, `autosave_finished(reason, error)`. |
-| `game/world/save_shrine/` | `SaveShrine` (an `Interactable`), `save_shrine.tscn` (primitives + bound glimmer), and the `ShrineNetwork` stub. |
+| `game/world/save_shrine/` | `SaveShrine` (an `Interactable`), `save_shrine.tscn` (primitives + bound glimmer), and `ShrineNetwork` (the teleport network, M1-ARC-06). |
 | `game/ui/save/` | `SaveMenu` (view + input, `save_menu.tscn`), `SaveMenuModel` (logic, no nodes), `SaveSlotRow`, `SaveSlotInfo`, and the `TitleSaveEntry` stub. |
 | `game/data/ui/save_menu.json` | Slot count (autosave + 6 manual), layout at 1920 × 1080, and motion timings. |
 | `game/levels/_tests/save_shrine/` | A copy of the field test zone with a shrine, the capture driver `SaveShrineShot`, and `save_menu_fixtures.json`. |
@@ -133,9 +133,9 @@ SPEC §5.2 (versioned saves, save-point-only, chapter autosave) and §6.6 (shrin
 On use (`FieldController.interact()` → `try_interact()`): the base `Interactable` effects run (`uses`, the instance's own `sets_flag`, `used`, and the `field_interacted` bus event). Then `rest()` runs:
 1. It sets `save_shrine_used`. Story shrines set their own flag as well; Haluna's sets `ch02_saved_once`.
 2. It sets `Game.state.location_id` from its export.
-3. It emits `party_full_heal_requested(id)`. **There is no persisted party HP yet**: the battle engine builds every fighter at full HP, so today the heal is already true. Whoever owns live party state (the party menu, or persistent HP) restores it when this fires.
+3. It emits `party_full_heal_requested(id)`, and `Game` restores `party_vitals` (M1-ARC-06). It also makes this shrine the respawn point.
 4. It emits `save_shrine_used(id, location_id)`.
-5. It calls `ShrineNetwork.attune()` (a no-op).
+5. It calls `ShrineNetwork.attune()`, which saves the network id (M1-ARC-06).
 6. It opens `SaveMenu` in SAVE mode with `{"shrine_id": id}` and the subtitle "In the shrine's still light, every wound closes."
 
 Shrines are never used up (`once = false`).
@@ -153,7 +153,7 @@ The look follows color script rule 2 (bound light). A salt-glass core and a cond
   - The result message closes the menu after a successful save. A failure returns to the list.
 - **Input.** `ui_up` / `ui_down` move, `ui_left` / `ui_right` also move inside dialogs, `ui_accept` chooses and `ui_cancel` backs out. That covers keyboard and controller through the built-in actions. A mouse click on a row or choice also works. The menu handles `_input` and marks events handled. While open it pauses the tree and restores the pause state on close or free.
 - `SaveMenu.open_in(host, mode, extra_meta, subtitle_key)` brings its own `CanvasLayer` (layer 64, under the router fade at 128), which frees itself on close.
-- **Title stub.** `TitleSaveEntry.can_continue()`, `continue_slot()` (the newest readable slot, autosave included), `continue_game()` and `open_load_menu(host)`. **After a load nothing moves the player yet**: there is no location → scene registry. Listen to `EventBus.game_loaded`.
+- **Title entry.** `TitleSaveEntry.can_continue()`, `continue_slot()` (the newest readable slot, autosave included), `continue_game()` and `open_load_menu(host)`. Since M1-ARC-06 the title menu in `boot.tscn` uses them, and `WorldReturn` moves the player after a load (see below).
 
 ### Tests and shots
 
@@ -162,10 +162,79 @@ The look follows color script rule 2 (bound light). A salt-glass core and a cond
 
 ### Open items (other owners)
 
-- **Persisted state still needed** (not added here: each needs a new `GameStateData` field and SAVE_VERSION 4):
-  - party HP/MP/statuses, for a real heal and for persistence between battles;
-  - the attuned shrine network ids, for the teleport network;
-  - a respawn point (`scene` + `spawn`), so a load can put the player back at the shrine. `meta.shrine_id` is recorded already, but it is display-only.
-- A location registry (`location_id` → scene, spawn, name key) under `game/data/world/`, used by load routing and by `ShrineNetwork`.
-- The title screen (UI) wires `TitleSaveEntry` and calls `Game.stop_play_clock()`.
-- The Haluna shrine instance sets `sets_flag = ch02_saved_once` and `location_id = ch02/haluna` (Environment / Narrative).
+- ~~Persisted party HP/MP/statuses, attuned shrines, a respawn point, a location registry, title wiring~~: done in M1-ARC-06 (next section).
+- **Haluna shrine instance (Environment / Narrative):** `sets_flag = ch02_saved_once`, `location_id = ch02/haluna`, and since M1-ARC-06 `network_id = haluna_shrine`. Environment adds `ch02/haluna` (scene, spawn, `LOCATION_CH02_HALUNA`) to `game/data/world/locations.json` and a `shrines` row for `haluna_shrine` **in the same commit as the scene**: `validate_data.py` fails on a shrine whose `location_id` or `network_id` the registry does not list.
+
+## Save v4, party vitals and return to world (M1-ARC-06 + M1-PRG-03, architect-stream-6)
+
+### Save v4 schema (`GameStateData`, `SAVE_VERSION = 4`)
+
+The v3 fields are unchanged. New in `state`:
+
+| Field | Type | Meaning |
+|---|---|---|
+| `party_vitals` | `{"<character>": {"hp"?: int, "mp"?: int, "statuses"?: [status id]}}` | HP, MP and **carried** statuses between battles. A member with no entry is at full HP and MP with no statuses. Inside an entry, a missing `hp` or `mp` also means full: a shrine cannot know the maximum (the Lattice and gear set it at battle setup), so it erases the values instead of writing them. Values are clamped to the battle-time maximum. |
+| `attuned_shrines` | `[network id]` | Shrines rested at, in attunement order, without duplicates. |
+| `respawn` | `{"location_id": String, "spawn": String}` | Where Continue puts the party. An empty `location_id` means `locations.json` `default_location`; an empty `spawn` means the location's own spawn. |
+
+- **v3 → v4 migration** (`_migrate_v3_to_v4`, a frozen literal): `party_vitals = {}` (everyone full, no statuses), `attuned_shrines = []`, and `respawn = {location_id: <the save's location_id, or "">, spawn: ""}`. Fields already present are kept. `state_shape_ok` rejects a non-dictionary `party_vitals` or `respawn` and a non-array `attuned_shrines`, and `from_dict` drops malformed vitals entries, so a damaged save cannot crash battle setup.
+- **Post-load step** (M1-PRG-03): `load_from_slot` and `deserialize` run `PartyGoods.ensure_starting_gear(state)`, which calls `EquipmentBag.grant_starting(cid)` for every joined hero (`party_ids` + `reserve_ids`). `grant_starting` is idempotent. A hero with no loadout gets every starting piece once. A hero with a loadout only gets a missing **required** slot (the weapon) filled: with an owned, unworn piece if there is one, otherwise a new starter. Migrated v2 saves therefore load with weapons.
+- **`EventBus.game_loaded` moved.** `load_into_game` emits it *after* the save is `Game.state` and the clock runs. A plain `load_from_slot` (menus, tools, tests) only reads and announces nothing.
+
+### Party vitals (`Game`; rules in `game/data/world/party_rest.json`)
+
+- `carried_statuses` (poison, petrify, zombie) outlast a battle; every other status ends with it. They come back at the next setup with `carried_duration` (−1, the engine's "until cured"). `shrine_cures` (the same three) are what a shrine's rest removes. The validator checks the ids exist and that every cure is a carried status.
+- `EventBus.party_full_heal_requested` → `Game.heal_party()` → `GameStateData.full_heal(cures)`: full HP and MP for everyone (which lifts KO), and the cures removed. The shrine emits it before its menu opens, so the save holds the healed party.
+- `EventBus.battle_party_returned(encounter_id, outcome, party: Array)` (new) → `Game.record_party()` → `GameStateData.record_vitals(...)`: HP and MP (omitted at the maximum) and carried statuses only. A member back at full with nothing carried loses their entry.
+- **Battle setup hook.** `Game.vitals_modifier(state = Game.state) -> Callable` is a `BattleEngine.party_modifier` that holds its state. Run it **last**, so it sees the Lattice and gear maximum: `EquipmentEffects.compose([progress.apply_to, fx.modifier(), Game.vitals_modifier()])`. Statuses are added before HP is set, because a KO'd combatant takes none. With no saved vitals it changes nothing, so every existing engine test plays as before (a test asserts this).
+
+### Requests for Combat (the battle scene; no engine-core API is needed)
+
+`game/battle/scene/battle_controller.gd` is outside this stream, so the live sandbox does not use the hooks yet:
+1. In `start_battle`, for live battles only (fixtures and captures must stay frozen), set `engine.party_modifier = EquipmentEffects.compose([progress.apply_to, fx.modifier(), Game.vitals_modifier()])`.
+2. When a battle ends in victory or escape (defeat goes to the title), emit `EventBus.battle_party_returned.emit(engine.encounter_id, engine.outcome, engine.party_active + engine.party_reserve)`.
+3. Decide what a KO'd active member at battle start does (genre convention: a living reserve swaps in). The engine accepts a combatant built with HP 0; it is simply off the timeline.
+
+### Location registry (`game/data/world/locations.json`; `LocationRegistry` in `game/world/world_return_registry.gd`)
+
+- `locations[]`: `{id, scene, spawn, name_key}`, plus `default_location`, `new_game: {location_id, spawn}`, and `shrines[]: {id (network id), location_id, spawn}`. Only locations whose scene exists are listed. Today that is `field_test` → the save-shrine copy of the field test zone, spawn `Shrine`.
+- `resolve(id, spawn)` returns `{location_id, scene, spawn, fallback}` and falls back to the default for an unknown id.
+- `check_locations` in `tools/validate_data.py` (tests in `tools/tests/test_locations_validate.py`) checks that scenes exist, spawns are nodes under the scene's `Spawns`, name keys exist, the default, new-game and shrine rows resolve, every `SaveShrine` instance in any `.tscn` has a registered `location_id` and `network_id`, and the `party_rest.json` rules hold.
+
+### Return to world (`WorldReturn`, `game/world/world_return.gd`)
+
+- `SceneRouter.world_return` is a `WorldReturn` child of the router. On `EventBus.game_loaded` it resolves `Game.state`'s respawn (respawn point, then current `location_id`, then the default) and calls `SceneRouter.change_scene(scene, spawn)`.
+- **It is off until `boot.gd` arms it** (`arm_world_return()`), so the test runner, captures and tools that load saves never change scene.
+- `SceneRouter.change_scene(path, spawn = &"")` takes an optional spawn (API-compatible). Once the new scene is in the tree, still under the opaque fade, `WorldReturn.place_player(root, spawn)` puts the player on `Spawns/<spawn>`: through the zone's own `place_at(spawn, yaw)` when it has one (field zones snap their camera), otherwise by moving the `player` group node or a child named `Player`.
+- `go_to(location_id, spawn)` serves New Game and teleports. `change_scene` is an injectable Callable, so tests record swaps; `tests/unit/test_world_return.gd` builds fixture zones at runtime under `user://`.
+
+### Shrine network (`ShrineNetwork`, no longer a stub)
+
+- `attune(shrine)` appends the network id to `Game.state.attuned_shrines` once. `destinations_from(shrine)` lists attuned shrines that have a registry row, minus the shrine itself.
+- `request_teleport(shrine, dest)` refuses unless `dest` is one of those destinations and its location resolves. It travels through `SceneRouter.world_return.go_to` (refused while the router is busy) and makes the destination the respawn point. `registry` and `travel` are static vars for tests.
+- A rest also makes the shrine the respawn point: the spawn is `SaveShrine.respawn_spawn` (an export), else its registry row's spawn, else the location's spawn.
+
+### Title (`game/ui/title/`, instanced in `boot.tscn`)
+
+- `TitleMenu` (view and input: a `MenuPage` and a help line, using the theme and loc keys only) over `TitleMenuModel` (no nodes). Its layout is in `game/ui/title/title_menu.json` until UI owns a title screen under `game/data/ui/`.
+- Continue loads the newest readable record (`TitleSaveEntry.continue_game`). New Game runs `Game.new_game()` and `go_to(new_game)`. Load opens `SaveMenu` in LOAD mode. Without a record, Continue and Load are greyed and the help line says why.
+- The title calls `Game.stop_play_clock()`. The `boot_title` baseline was re-approved after looking: the menu is new, and the name label is unchanged.
+
+### M1-PRG-03 notes
+
+- `EquipmentEffects.modifier()` returns a `party_modifier` that owns its `EquipmentEffects`, because a bare `fx.apply_to` Callable does not keep a RefCounted alive. `compose()` now pushes an error for an invalid hook (when composing and when called) instead of skipping it silently.
+- **Ember Pot**: the price goes from 110 to **220**, and it stays out of the slice shops (Haluna Market and Forge). Fixed fire damage that ignores defence, at rank 2, beats Rhen's attack on the crab and nearly matches Ysolde's Ember on the eel. At 110 it would undercut the "find the role that answers this foe" lesson. At 220 (the Quickwater tier, about 3½ early fights) it is a deliberate emergency buy. Its description names the Pemakar kilns, so its first shop should be Pemakar's, after the slice. Design: please update the Ember Pot row in `economy.md`'s price curve.
+
+### Tests
+
+`tests/unit/test_save_v4.gd` (schema, migration, `game_loaded` order, post-load gear), `test_save_party_vitals.gd` (rules, write-back, heal, and the setup hook on the real engine), `test_world_return.gd`, `test_shrine_network.gd` and `test_title_menu.gd`, plus additions to `test_save_shrine.gd`, `test_save_system.gd`, `test_equipment.gd` and `test_equipment_effects.gd`.
+
+## Save robustness (M1-ARC-08, after QA review-sweep-C)
+
+ADR [0018](../decisions/0018-new-game-autosave-policy.md) records the policy decisions.
+
+- **Checked writes.** `save_to_slot` writes `slot_NN.json.tmp` through `_write_checked`. That checks the store result, flushes, checks `get_error()`, closes, and reads the file back to compare it with the text. Only then does it rename over the slot. On any failure it deletes the temp file, pushes a warning, returns the error (`ERR_FILE_CANT_WRITE` when Godot reported none) and emits no `game_saved`, so the slot keeps its previous save. `SaveSystem.store_text: Callable(f: FileAccess, text) -> bool` is the injectable writer. Tests replace it with one that writes half and fails, or writes half and claims success (`tests/unit/test_save_write_check.gd`).
+- **Deep shape check.** `SaveShape.problem(state)` (`game/core/save_shape.gd`) checks every present key down to element types: string ids in `party_ids`, `reserve_ids` and `attuned_shrines`; scalar flags; whole, non-negative counts; Lattice travelers; equipment pieces keyed by uid; loadouts; vitals; respawn. The table is in the class comment. JSON loads numbers as floats, so a "whole number" is an int, or a float with no fraction. `state_shape_ok` now delegates to it. Versions must be whole numbers, so 2.7 and `"4"` are corrupt. `load_from_slot`, `deserialize` and `slot_info` share one reader, `_read_save`, so a listing and a load can never disagree. A malformed slot lists as `corrupt`, loads as `null`, and `load_into_game` returns `ERR_FILE_CORRUPT` without touching `Game.state` (`tests/unit/test_save_shape.gd`, including QA's probe slot).
+- **Deferred autosave.** `chapter_changed` only calls `request_autosave`. `_process` writes it on a later frame at the first safe point: no hold, `SceneRouter.is_busy()` false, and the tree not paused. **Sequencer rule:** hold the autosave for the whole cutscene (`SaveSystem.hold_autosave(self)` … `release_autosave(self)`). `FieldCameraDirector` also holds it while a scripted shot is held. `new_game_started` (new on `EventBus`, emitted by `Game.new_game()`) and `load_into_game` drop a pending request. Tests use `poll_pending_autosave()`; `autosave()` still writes at once for callers that own their timing (`tests/unit/test_autosave_deferred.gd`, `test_autosave.gd`).
+- **New Game over an autosave.** When slot 0 is readable, or from a newer build, the title's New Game asks first. "Go back" is the default, and `ui_cancel` also goes back. "Begin anew" starts the run, and the old autosave stays until the new run's first boundary is written. Manual records are never touched. The loc keys are `TITLE_CONFIRM_NEW_GAME`, `TITLE_CONFIRM_BACK` and `TITLE_CONFIRM_BEGIN` (`tests/unit/test_title_menu.gd`, and the end-to-end flow in `tests/integration/test_save_new_run.gd`).
+- **Still open (QA nits, not in this task):** a valid stale `.tmp` beside a corrupt main file is still ignored rather than offered for recovery. `set_chapter` downward (debug) still autosaves.

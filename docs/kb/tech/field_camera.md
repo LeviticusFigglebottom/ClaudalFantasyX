@@ -74,10 +74,28 @@ director.release(blend_sec: float = -1, ease: StringName = &"") -> bool
   await director.blend_finished      # lands on the next update for a cut; never hangs on blend=0
   ```
 
-  A transition replaced before it lands (a cut immediately followed by another `play_shot`) does not fire; the one that replaced it does. `is_settled()` (no blend running, no `blend_finished` owed) lets code that did not just move the camera skip the await. Time only passes through `update()`, so the await needs the director updating (`auto_update`, or a test or capture driving it).
+  A transition replaced before it lands (a cut immediately followed by another `play_shot`) does not fire; the one that replaced it does.
+
+  **Emitted last in `update()`.** `blend_finished` is the final thing `update()` does, after that frame's pose is on the camera. A sequencer resuming from its `await` runs *inside* that emit; if it issues the next `@camera` there (even a cut, or a no-move `release`), that move's own `blend_finished` waits for a **later** `update()`. It never fires in the update that is emitting, so a cut always lands on a frame where its pose has been applied.
+
+  **Check before a late await.** The safe pattern is "move, then await" in the same breath. Code that awaits a move it did not just make (it started the move earlier, or it isn't sure one is running) checks first, or it waits for a signal that already fired:
+
+  ```gdscript
+  if not director.is_settled():   # no blend running and no blend_finished owed
+      await director.blend_finished
+  ```
+
+  This belongs on the sequencer's review checklist.
+
+  **Hang conditions** (each one is a way an `await blend_finished` could wait forever, and what covers it):
+  - *Nothing drives `update()`.* Time passes only through `update()`. While the tree is paused (the director's `process_mode` doesn't run when paused), or with `auto_update = false`, the owner must call `update(delta)` itself: a test, a capture scene, or a sequencer running while paused.
+  - *The director leaves the tree* (zone unload mid-cutscene, the director freed). `_exit_tree` ends any move in progress and emits the owed `blend_finished`, so the awaiting coroutine resumes. It must check `director.is_inside_tree()` (or `is_instance_valid`) before it touches the camera again. A director that is freed without ever entering the tree has nothing to emit.
+  - *No player in the scene.* Fixed by M1-ARC-09: without a target, `update()` skips the volumes but still evaluates, blends and applies the active shot, and still emits. Shots aim at their `aim_node`, or at their authored `look_at` when there is neither an aim node nor a player.
+- **`snap()` is synchronous.** Unlike `play_shot`/`release`, `snap()` settles at once and emits before it returns: `blend_finished` (for a blend it cut short, or for the cut it made onto a new shot), then `snapped`. Don't call `snap()` and then `await blend_finished`; it has already fired.
 - **Mapping `@camera`.** `@camera <shot> [blend=<sec>] [ease=<name>]` becomes `play_shot(shot_by_id[shot], blend, ease)`. The cue table says a missing `blend=` is a cut, so the sequencer passes `0` then. `-1` (the shot's own setting) is there for sequencer code that wants the authored default. A missing `ease=` passes `&""` (the shot's own curve). The sequencer owns the id-to-`CameraShot` table for the cutscene (shots are scene sub-resources, like the volume shots). Shots that frame actors use `aim_node` (above).
 - **Mapping `@camera release`.** `release` is a reserved word, not a shot id (`DialogueStep.is_camera_release()`). `@camera release [blend=<sec>] [ease=<name>]` becomes `release(blend, ease)`, with a missing `blend=` passed as `-1` (the resolved volume blend, **not** a cut: a hand-back blends by default) and a missing `ease=` as `&""`. Writers use it to hand the camera back mid-scene (walk-and-talk) or to control the hand-back at the end. When a cutscene ends still holding a scripted shot, the sequencer calls `release()` itself, with the defaults.
 - **The player during a cutscene.** The sequencer freezes the player with `FieldController.accepts_input = false`. The director doesn't do this. Shot changes during a scripted sequence still notify `FieldMotor`, but the latch only engages while the stick is held, which a frozen player never does.
+- **Autosave during a cutscene (M1-ARC-08).** A chapter change made mid-cutscene is saved only after the cutscene ends. The sequencer holds the autosave from its first beat to its last (`SaveSystem.hold_autosave(self)` … `release_autosave(self)`). The director also holds it while a scripted shot is held, from `play_shot` to `release` or leaving the tree. See architecture.md, "Save robustness".
 
 ## Camera-relative input and the latch
 

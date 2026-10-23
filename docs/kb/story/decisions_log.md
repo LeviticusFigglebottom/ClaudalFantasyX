@@ -109,3 +109,39 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
 ### N-17. The final shot shows her face; ch02's "Get up" branch keeps Rhen standing
 - **Answer (E6):** the locked final shot is a **three-quarter profile from the dock's side**, at her eye height. Her face is against the star-filled sea, so the smile reads. There is still no cut and no push. (It replaces "1.0 m behind her".)
 - **Answer (ch02):** in the "Get up" branch Rhen stays on his feet, leaning on Toma. The closing H05 is taken at his standing eye-line, and Asha rises to meet it. There is **no offered hand**, because he is already up. `offer_hand` now plays only in the "Stay with them" branch, where he is sitting in the water. H05 is defined as Rhen's POV, and its height follows his eye (haluna.md H05).
+
+---
+
+## 2026-10-23 (narrative, M1-NAR-08): review-sweep-D fixes
+
+### N-18. Act II after the wedding is re-staged (Lead decision)
+- **Answer:** [ADR 0016](../decisions/0016-act-two-restaging.md).
+  - **The founding truth moves to Ch13's Lamp Archive, before the wedding.** The ledgers show the founders were binders, the Cantor roll carries its *kept / spent* column (Ysolde does the maths on Corran there), and the same hands sign across four centuries.
+  - **The escape goes out across the lagoon** on the bride's barge. Merel stays behind and is taken.
+  - **Venn has no revenant reveal**, and **nobody goes under the city**.
+  - **Ch15 is "Unlamped":** a dark barge at sea, the Wakefin, Kerrid's reveal, and Hollowmere's grief, where Toma's faith breaks.
+  - **Sefir's temptation at the Choir is to go home**, with the Eighth Verse left unsung. He never asks to be sung in.
+  - **Kerrid's reveal is his own confession at sea.** No Stilling is performed on him.
+- **Why:** sweep D found the post-wedding run followed the inspiring game in order. SPEC §3.5 mandates only the trap, the heretic declaration, Kerrid's reveal, and the Choir truth.
+- **Supersedes:** the Ch14–Ch16 beats of act_outline as written for M1-NAR-02 and M1-NAR-05. It also supersedes N-15's "snow" simile: Nhoa's motes now sift like **silt**.
+
+### N-19. Sweep-D staging fixes
+- **Released at H09, rising after:** act3_ending §0 rule 7 states it plainly. Every release is at H09. After that, `sea_glow` and the dead coming up out of the sea are the ascent of already-released motes. Nothing is released later.
+- **E5 is not the first dark sea:** `sea_glow` steps down to 0.04 and holds through E5. It reaches 0.0 only on the cut to E6.
+- **E6 is front three-quarter:** the camera is on the dock planks, about 4 m shoreward, looking out to sea. Asha turns back from the sea toward Haluna, so her nose line ends about 40° off the lens axis toward camera, with the dark sea behind her. The ambiguous "H10 reversed" wording is gone. This supersedes N-17's E6 framing.
+- **ch02 "Stay":** after Asha's closing line, Rhen takes the hand she offered and they rise together (`take_hand`, `rise_to_stand`) before the cut to the walk. In "Get up", a `@wait 0.8` lets Asha finish rising before H05 opens.
+- **E3:** Rhen's lantern is unlit, so Dace's motes stay the only key.
+
+---
+
+## 2026-10-23 (narrative, M1-NAR-09): Act I echo audit
+
+### N-20. Act I is re-staged from the Prologue to Ch8 (ADR 0017)
+- **Answer:** [ADR 0017](../decisions/0017-act-one-restaging.md).
+  - **Sefir first appears at the end of the Ch6 Brine Shoals raid**, on his Edict progress. He stops the branding, lets Liss go, and is at neither the Tidecup nor the seawall.
+  - **The Tidecup (Ch7) has no Order official.** It opens with the captains' naming rite. **Rhen dives for Oruvel's side** under its captain **Tavi Orse**, Mother Kell's grandson. Toma doesn't captain or play. Nothing interrupts the match.
+  - **The seawall (Ch8) is an evacuation up the Fisher Stair**, with no weapon and no forbidden machine. Liss's contribution is a plain rope hoist, which the Stillguard cut down afterwards. The wall falls anyway.
+  - **The Ch4 ferry is never attacked.** The party boards a drifting dead trader to bring its name-board home and fights the Spar-Wraith on its deck.
+  - **The Prologue has no campfire circle.** The seven keep separate vigils, Rhen walks among them and sits beside Asha, and the line comes as his oil wick catches. Ch19 repeats the vigil.
+- **Why:** the audit found these beats followed the inspiring game's opening acts: the cleric introduced at the games, the guardian-captain with the newcomer as star, the coastal assault with forbidden weapons, the monster attacking the pilgrims' boat, and the campfire with the hero walking off to narrate. The other Act I residuals are accepted in the ADR, with reasons.
+- **Supersedes:** N-01's wording "after the Brightwater ferry survives the Spar-Wraith". The band is still earned on the Ch4 crossing, and is still inked by Toma and shown from Ch5. It also supersedes N-12's "the veteran's empty benches": the Ch7 side scene is now Tavi asking Asha to bless Oruvel's empty moorings under the Bell, by the same naming rite. N-12's arena notes are otherwise unchanged.

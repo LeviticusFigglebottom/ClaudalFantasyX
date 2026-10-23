@@ -6,10 +6,12 @@ extends RefCounted
 const PAGE_ROOT := &"root"
 const PAGE_SKILLS := &"skills"
 const PAGE_SWAP := &"swap"
+const PAGE_ITEMS := &"items"
 const ROW_ATTACK := &"attack"
 const ROW_SKILLS := &"skills"
 const ROW_ESCAPE := &"escape"
 const ROW_SWAP := &"swap"
+const ROW_ITEMS := &"items"
 const ATTACK_SKILL := &"attack"
 const AUTO_BERSERK := &"berserk"
 const AUTO_CONFUSE := &"confuse"
@@ -25,6 +27,8 @@ const FAIL_REASONS: Array[StringName] = [
 	&"battle_over",
 	&"unknown_skill",
 	&"no_valid_action",
+	&"no_item",
+	&"unknown_item",
 ]
 
 ## Ranks at or above this show in the swell color (docs/kb/art/ui.md §6.1).
@@ -46,8 +50,9 @@ func skill_name(engine: BattleEngine, skill_id: StringName) -> String:
 	return tr(key) if key != "" else String(skill_id)
 
 
-## Root page: Attack, Skills, Escape, then Swap (always the last row).
-func root_rows(engine: BattleEngine) -> Array[Dictionary]:
+## Root page: Attack, Skills, Items (only when the battle has a bag: capture fixtures have none),
+## Escape, then Swap (always the last row).
+func root_rows(engine: BattleEngine, items: BattleItemSource = null) -> Array[Dictionary]:
 	var actor := engine.current
 	var rows: Array[Dictionary] = []
 	var attack := engine.db.skill(ATTACK_SKILL)
@@ -62,6 +67,8 @@ func root_rows(engine: BattleEngine) -> Array[Dictionary]:
 		)
 	)
 	rows.append(_row(ROW_SKILLS, tr("HUD_CMD_SKILLS"), "", &"text_dim", not skill_ids(actor).is_empty()))
+	if items != null:
+		rows.append(_row(ROW_ITEMS, tr("HUD_CMD_ITEMS"), "", &"text_dim", _any_usable(engine, items)))
 	var chance := escape_chance(engine)
 	var esc := _row(ROW_ESCAPE, tr("HUD_CMD_ESCAPE"), _pct_text(chance), &"text_dim", not engine.scripted)
 	rows.append(esc)
@@ -90,6 +97,147 @@ func skill_rows(engine: BattleEngine) -> Array[Dictionary]:
 		row["mp"] = tr("HUD_MP_FMT").format({"mp": mp}) if mp > 0 else ""
 		rows.append(row)
 	return rows
+
+
+## Battle items the party holds, in bag order: name, count, rank. A row is greyed out while
+## nobody on the field can take it (a Wick with no one fallen and no Zombie standing).
+func item_rows(engine: BattleEngine, items: BattleItemSource) -> Array[Dictionary]:
+	var rows: Array[Dictionary] = []
+	if items == null:
+		return rows
+	for iid in items.usable():
+		var action := items.action_for(iid)
+		if action == null:
+			continue
+		var usable := not item_candidates(engine, action).is_empty()
+		var row := _row(iid, item_name(items, iid), _rank_text(action.rank), _rank_role(action.rank), usable)
+		row["item"] = iid
+		row["mp"] = tr("HUD_ITEM_COUNT_FMT").format({"n": items.count(iid)})
+		rows.append(row)
+	return rows
+
+
+## Who `action` may be aimed at right now, in field order: the acting fighter for self items,
+## else the active allies or the foes that BattleEngine.item_can_target admits (revives take
+## the fallen and living Zombies; only a petrify cure reaches stone). Items ignore Provoke.
+func item_candidates(engine: BattleEngine, action: ItemBattleAction) -> Array[BattleCombatant]:
+	var out: Array[BattleCombatant] = []
+	if action == null or engine.current == null:
+		return out
+	var pool: Array[BattleCombatant] = []
+	if action.target == ItemBattleAction.TARGET_SELF:
+		pool.append(engine.current)
+	elif action.targets_allies():
+		pool = engine.party_active
+	else:
+		pool = engine.enemies
+	for c in pool:
+		if BattleEngine.item_can_target(action, c):
+			out.append(c)
+	return out
+
+
+## Who the cursor may pick for `skill_id`: the provoker alone while Provoke forces it, otherwise
+## every living foe or ally the skill's reach allows.
+func skill_candidates(engine: BattleEngine, skill_id: StringName) -> Array[BattleCombatant]:
+	var kind := str(engine.db.skill(skill_id).get("target", "single_foe"))
+	var forced := engine.forced_target(engine.current, skill_id)
+	if forced != null:
+		var only: Array[BattleCombatant] = [forced]
+		return only
+	if kind.ends_with("foe") or kind.ends_with("foes"):
+		return engine.living_foes_of(engine.current)
+	return engine.living_allies_of(engine.current)
+
+
+## The target a skill starts on: the provoker when Provoked, the last foe you hit (`last_foe`),
+## the most hurt ally for heals, yourself for other ally skills, or everyone for group skills.
+func default_targets(engine: BattleEngine, skill_id: StringName, last_foe: StringName) -> Array[BattleCombatant]:
+	var sk := engine.db.skill(skill_id)
+	var kind := str(sk.get("target", "single_foe"))
+	var pool := skill_candidates(engine, skill_id)
+	var out: Array[BattleCombatant] = []
+	if pool.is_empty() and kind != "self":
+		return out
+	if kind == "self":
+		out.append(engine.current)
+	elif kind.begins_with("all_"):
+		out = pool
+	elif kind == "single_foe":
+		var last := engine.find(last_foe)
+		out.append(last if last != null and last.is_alive() and pool.has(last) else pool[0])
+	elif str(sk.get("kind", "")) == "heal":
+		out.append(_most_hurt(pool))
+	else:
+		out.append(engine.current)
+	return out
+
+
+## The target an item starts on: everyone for group items, the last foe you hit for foe items,
+## the first fallen ally for a revive (else the first who can take it: a living Zombie), and
+## otherwise the most hurt ally (yourself for self items, the only candidate).
+func default_item_targets(
+	engine: BattleEngine, action: ItemBattleAction, last_foe: StringName
+) -> Array[BattleCombatant]:
+	var pool := item_candidates(engine, action)
+	var out: Array[BattleCombatant] = []
+	if pool.is_empty():
+		return out
+	if String(action.target).begins_with("all_"):
+		return pool
+	var best := pool[0]
+	if not action.targets_allies():
+		var last := engine.find(last_foe)
+		best = last if last != null and pool.has(last) else pool[0]
+	elif action.targets_fallen:
+		for c in pool:
+			if c.hp <= 0:
+				best = c
+				break
+	else:
+		best = _most_hurt(pool)
+	out.append(best)
+	return out
+
+
+func item_name(items: BattleItemSource, iid: StringName) -> String:
+	var action := items.action_for(iid) if items != null else null
+	return tr(action.name_key) if action != null and action.name_key != "" else String(iid)
+
+
+## One help line for an item: its description (when the bag knows it) and when the actor acts
+## again (`next_in` as in skill_help).
+func item_help(engine: BattleEngine, items: BattleItemSource, iid: StringName, next_in: int) -> String:
+	var parts: PackedStringArray = []
+	var bag := items as InventoryItemSource
+	if bag != null:
+		var key := str(bag.db.item(iid).get("desc_key", ""))
+		if key != "":
+			parts.append(tr(key))
+	if next_in >= 0:
+		parts.append(next_turn_text(display_name(engine.current), next_in))
+	return " · ".join(parts)
+
+
+## Notes that change what an item will really do to `target`, most serious first: the use that
+## loses the fight on the spot (a Zombie reviving itself as the last one standing), a revive
+## that fells a living Zombie, and a heal that a Zombie turns to harm.
+func item_notes(
+	engine: BattleEngine, items: BattleItemSource, iid: StringName, target: BattleCombatant
+) -> PackedStringArray:
+	var out: PackedStringArray = []
+	var action := items.action_for(iid) if items != null else null
+	if action == null or target == null:
+		return out
+	var who := {"name": display_name(target)}
+	var only: Array[BattleCombatant] = [target]
+	if engine.item_defeats_party(iid, only, items):
+		out.append(tr("HUD_HELP_ITEM_DEFEAT_FMT").format(who))
+	elif BattleEngine.item_can_target(action, target) and BattleEngine.item_fells(action, target):
+		out.append(tr("HUD_HELP_ITEM_FELLS_FMT").format(who))
+	elif target.has_status(&"zombie") and _heals_hp(action):
+		out.append(tr("HUD_HELP_ZOMBIE_FMT").format(who))
+	return out
 
 
 func reserve_rows(engine: BattleEngine) -> Array[Dictionary]:
@@ -167,6 +315,10 @@ func fail_text(reason: StringName, actor: BattleCombatant, provoker: BattleComba
 			text = tr("HUD_FAIL_UNKNOWN_SKILL")
 		&"no_valid_action":
 			text = tr("HUD_FAIL_NO_ACTION_FMT")
+		&"no_item":
+			text = tr("HUD_FAIL_NO_ITEM")
+		&"unknown_item":
+			text = tr("HUD_FAIL_UNKNOWN_ITEM")
 	return text.format({"name": display_name(actor), "provoker": display_name(provoker)})
 
 
@@ -263,6 +415,29 @@ func _target_text(target: String) -> String:
 		"self":
 			return tr("HUD_TARGET_SELF")
 	return tr("HUD_TARGET_SINGLE_FOE")
+
+
+## The lowest HP fraction in `pool` (first wins ties). `pool` is not empty.
+static func _most_hurt(pool: Array[BattleCombatant]) -> BattleCombatant:
+	var best := pool[0]
+	for c in pool:
+		if c.hp * best.max_hp < best.hp * c.max_hp:
+			best = c
+	return best
+
+
+func _any_usable(engine: BattleEngine, items: BattleItemSource) -> bool:
+	for iid in items.usable():
+		if not item_candidates(engine, items.action_for(iid)).is_empty():
+			return true
+	return false
+
+
+static func _heals_hp(action: ItemBattleAction) -> bool:
+	for eff in action.effects:
+		if StringName(str(eff.get("type", ""))) == ItemBattleAction.EFFECT_HEAL_HP:
+			return true
+	return false
 
 
 func _has_living_reserve(engine: BattleEngine) -> bool:

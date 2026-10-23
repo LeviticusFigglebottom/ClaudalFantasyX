@@ -14,6 +14,8 @@ var recent_numbers: Array[Dictionary] = []
 var help_history: PackedStringArray = []
 ## The accessibility settings in force (UiSettings.shared() unless a caller applies others).
 var settings: UiSettings
+## The palette role the help line is drawn in (&"" = the theme's own text color).
+var help_role: StringName = &""
 
 var _damage_m: Dictionary = {}
 var _float_m: Dictionary = {}
@@ -59,7 +61,11 @@ func animations_enabled() -> bool:
 	return settings == null or settings.animations_enabled()
 
 
-func set_help(text: String) -> void:
+## Shows `text` on the help line. `role` draws it in a palette role instead of the theme's text
+## color (the item menu's defeat warning uses &"danger"); the next plain call resets it.
+func set_help(text: String, role: StringName = &"") -> void:
+	help_role = role
+	_apply_help_role()
 	_help_label.text = text
 	_help_panel.visible = text != ""
 	# Wrap onto a second line only when one line cannot hold the text, then let the panel fit it
@@ -87,6 +93,13 @@ func _help_width(text: String) -> float:
 func _help_room() -> float:
 	var sb := _help_panel.get_theme_stylebox(&"panel")
 	return _help_panel.size.x - (sb.get_minimum_size().x if sb != null else 0.0)
+
+
+func _apply_help_role() -> void:
+	if help_role == &"":
+		_help_label.remove_theme_color_override(&"font_color")
+	else:
+		_help_label.add_theme_color_override(&"font_color", get_theme_color(help_role, HymnThemeBuilder.PALETTE_TYPE))
 
 
 func help_text() -> String:
@@ -144,3 +157,4 @@ func _refresh_settings() -> void:
 	target_cursor.set_reduced_motion(reduced)
 	result.motion_scale = settings.motion_scale()
 	party.refresh()
+	_apply_help_role()  # a palette switch recolors a warning already on screen

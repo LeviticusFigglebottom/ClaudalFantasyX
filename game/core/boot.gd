@@ -1,5 +1,9 @@
 extends Node
-## Boot scene. Until the title screen exists (M1 UI task) it shows the project name.
+## Boot scene and minimal title (M1-ARC-06): the project name over a Continue / New Game / Load
+## menu (TitleMenu, game/ui/title/), until the UI stream builds the real title screen.
+## The title stops the play clock, and boot arms SceneRouter.world_return so a load from here
+## (Continue or Load) returns the party to its respawn point. Nothing else arms it, so the test
+## runner and screenshot captures never change scene on a load.
 ## Debug builds: installs the F1–F12 debug overlay (game/core/debug/, M1-ARC-02) under the tree
 ## root, where it survives scene changes. It is referenced only by path, so release exports can
 ## leave the whole debug folder out. F9 (battle sandbox) now lives in the overlay.
@@ -12,7 +16,18 @@ const DEBUG_OVERLAY_NAME := "DebugOverlay"
 
 func _ready() -> void:
 	_label.text = "%s\n%s" % [ProjectSettings.get_setting("application/config/name"), "bootstrap build"]
+	Game.stop_play_clock()
+	arm_world_return()
 	_install_debug_overlay()
+
+
+## Lets loads made from the title move the party into the world (WorldReturn).
+static func arm_world_return() -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var router := tree.root.get_node_or_null(^"SceneRouter") if tree != null else null
+	var wr: Variant = router.get(&"world_return") if router != null else null
+	if wr is WorldReturn:
+		(wr as WorldReturn).enabled = true
 
 
 func _install_debug_overlay() -> void:

@@ -32,6 +32,19 @@ static func config() -> Dictionary:
 	return _config
 
 
+## Lattice progress for fighters `ids` on the sandbox board: `saved` (GameStateData.lattice) when
+## it holds any, otherwise a fresh start. Every id gets a traveler.
+static func lattice_for(ids: Array[StringName], saved: Dictionary = {}) -> LatticeProgress:
+	var board := LatticeBoard.load_board(StringName(str(config().get("board", LatticeBoard.DEFAULT_BOARD))))
+	var rules := LatticeRules.load_file()
+	var p := (
+		LatticeProgress.from_dict(saved, board, rules) if not saved.is_empty() else LatticeProgress.new(board, rules)
+	)
+	for cid in ids:
+		p.add_character(cid)
+	return p
+
+
 ## Stand-in spec for a combatant id ("reef_crab#1" uses the "reef_crab" row), defaults merged.
 static func stand_in_spec(cid: StringName) -> Dictionary:
 	var cfg := config()

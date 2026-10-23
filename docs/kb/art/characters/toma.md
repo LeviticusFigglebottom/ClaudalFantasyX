@@ -56,7 +56,7 @@ Shared conventions are in [`asha.md`](asha.md) §4.2 (masks), §6.2 (face shapes
 - **Blend timing:** 0.22 s, measured.
 
 ### Emotion tags mapped to Toma's face
-His tells: **devotion is still** (as `neutral`, steady), and **his faith breaking is in the brows** (`brow_inner_up` held under a `determined` mouth). For the Ch15 Cistern scene, Cinematics should layer `brow_inner_up` 0.6 on `determined`.
+His tells: **devotion is still** (as `neutral`, steady), and **his faith breaking is in the brows** (`brow_inner_up` held under a `determined` mouth). For the Ch15 Hollowmere scene, where his faith breaks among the people his order burned (ADR 0016; it was the Cistern), Cinematics should layer `brow_inner_up` 0.6 on `determined`.
 
 | Tag | Shape weights (with the brow ×1.15 already applied) |
 |---|---|

@@ -222,3 +222,16 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 
 ### Added 2026-10-23 (M1-NAR-08)
 - **Element reassignment (ADR 0015, N-15):** Nhoa (Lowlight) is now Ice and Ethren (the Sanctum) is now Glimmer. Hesk (Cloudloom) stays Holy. No temple is frozen. The rows above for Lowlight, Cloudloom, the Sanctum, Nhoa and Ethren are updated to match.
+
+### Added 2026-10-23 (M1-NAR-08, review-sweep-D; ADR 0016, N-18)
+- **Lamp Archive**: the Order's library of Lit Age records in Ansedra, where the founders' ledgers and the full Cantor roll are kept (Ch13).
+- **kept / spent**: the Cantor roll's hidden column. *Kept* Cantors are Saints (Vowbound). *Spent* ones were consumed in the Cistern.
+- **Wakefin**: the Ch15 boss, an Undertow-spawn that follows the first wake out of Ansedra's lagoon. It replaces the Cistern Keeper, which is cut.
+- **the Underreach / the Cistern** (rows above): still canon as places, but never visited. The party learns of them from the Archive.
+
+### Added 2026-10-23 (M1-NAR-09; ADR 0017, N-20)
+- **name-board**: a ship's carved name plank. Low Reaches sea-law says a hull drowned in a Rising is not passed without bringing its name-board home (Ch4).
+- **Fisher Stair**: the broad stone stair up the inner face of the Corrow seawall, by which the low town climbs onto the wall ahead of the sea (Ch8).
+- **Tavi Orse**: captain of Oruvel's Reefball side and Mother Kell's grandson. Rhen dives for his side at the Tidecup (Ch7).
+- **Edict progress**: the High Warden's once-a-Calm journey along a coast to see the Salt Edict kept. Sefir is first met on one (Ch6).
+- **Spar-Wraith** (boss row above): now fought on the deck of a drifting dead trader, not on the ferry.

@@ -1,0 +1,140 @@
+[gd_scene load_steps=23 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_mood.gd" id="1_rig"]
+[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/weathering_tide.gd" id="2_tide"]
+[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_terrain.gd" id="3_terrain"]
+[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_dresser.gd" id="4_dresser"]
+[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_shot_camera.gd" id="5_cam"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="6_shot"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="7_water"]
+[ext_resource type="Resource" path="res://game/levels/_tests/water/lagoon_waves.tres" id="8_waves"]
+[ext_resource type="Material" path="res://game/levels/_tests/haluna_mood/haluna_water_material.tres" id="9_water_mat"]
+[ext_resource type="Environment" path="res://game/levels/_tests/haluna_mood/haluna_noon_environment.tres" id="10_env"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_ground.gdshader" id="11_ground"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/sand_albedo.png" id="12_sand"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/sand_normal.png" id="13_sand_n"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/coral_stone_albedo.png" id="14_stone"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/coral_stone_normal.png" id="15_stone_n"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/weathering_detail.png" id="16_detail"]
+
+[sub_resource type="ShaderMaterial" id="GroundMat"]
+resource_name = "haluna_ground"
+shader = ExtResource("11_ground")
+shader_parameter/tex_sand = ExtResource("12_sand")
+shader_parameter/tex_sand_normal = ExtResource("13_sand_n")
+shader_parameter/tex_stone = ExtResource("14_stone")
+shader_parameter/tex_stone_normal = ExtResource("15_stone_n")
+shader_parameter/tex_detail = ExtResource("16_detail")
+
+[sub_resource type="Resource" id="ShotH01"]
+script = ExtResource("6_shot")
+id = &"H01"
+position = Vector3(180, 6.15, -5)
+look_at = Vector3(0, 29.0, -8)
+fov_deg = 53.1
+
+[sub_resource type="Resource" id="ShotH02"]
+script = ExtResource("6_shot")
+id = &"H02"
+position = Vector3(-93.5, 3.98, -15.7)
+look_at = Vector3(-28, 3.4, 6.0)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotH03"]
+script = ExtResource("6_shot")
+id = &"H03"
+position = Vector3(-74.3, 6.55, -14.4)
+look_at = Vector3(-72.95, 6.2, -18.6)
+fov_deg = 16.1
+dof_far_enabled = true
+dof_far_distance = 6.0
+dof_far_transition = 10.0
+dof_blur_amount = 0.08
+
+[sub_resource type="Resource" id="ShotH04"]
+script = ExtResource("6_shot")
+id = &"H04"
+position = Vector3(-3.54, 2.6, 58.28)
+look_at = Vector3(43.1, 0.6, 25.6)
+fov_deg = 46.4
+
+[sub_resource type="Resource" id="ShotH07"]
+script = ExtResource("6_shot")
+id = &"H07"
+position = Vector3(-105, 4.3, 42.5)
+look_at = Vector3(-118, 5.4, 31.5)
+fov_deg = 53.1
+
+[node name="HalunaMood" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water")]
+script = ExtResource("1_rig")
+sun = NodePath("Sun")
+tide = NodePath("Tide")
+water = NodePath("Water")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("10_env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+light_color = Color(1, 0.945, 0.894, 1)
+light_energy = 3.2
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.2
+sky_mode = 1
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.04
+directional_shadow_split_2 = 0.12
+directional_shadow_split_3 = 0.35
+directional_shadow_max_distance = 400.0
+
+[node name="Water" type="Node3D" parent="."]
+script = ExtResource("7_water")
+wave_set = ExtResource("8_waves")
+material = ExtResource("9_water_mat")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("2_tide")
+water = NodePath("../Water")
+
+[node name="Terrain" type="Node3D" parent="."]
+script = ExtResource("3_terrain")
+
+[node name="Dresser" type="Node3D" parent="." node_paths=PackedStringArray("terrain", "tide")]
+script = ExtResource("4_dresser")
+terrain = NodePath("../Terrain")
+tide = NodePath("../Tide")
+ground_material = SubResource("GroundMat")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="H01" type="Camera3D" parent="Cameras"]
+current = true
+near = 0.1
+far = 6000.0
+script = ExtResource("5_cam")
+shot = SubResource("ShotH01")
+
+[node name="H02" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("5_cam")
+shot = SubResource("ShotH02")
+
+[node name="H03" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("5_cam")
+shot = SubResource("ShotH03")
+
+[node name="H04" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("5_cam")
+shot = SubResource("ShotH04")
+
+[node name="H07" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("5_cam")
+shot = SubResource("ShotH07")
