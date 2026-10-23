@@ -217,6 +217,114 @@ func test_ready_builds_a_deterministic_emitter() -> void:
 	_cleanup()
 
 
+## M1-RND-08 (H06): a fixed count bypasses every tier, and a non-respawning field spawns once and
+## keeps its motes.
+func test_fixed_count_field_is_exact_on_every_tier_and_does_not_respawn() -> void:
+	var f := GlimmerField.new()
+	f.fixed_count = 9
+	f.respawn = false
+	f.amount_multiplier = 3.0
+	_host().add_child(f)
+	_nodes.append(f)
+	var motes := f.motes
+	for id in PRESET_IDS:
+		f.set_quality(id)
+		assert_eq(motes.amount, 9, "exactly 9 on %s" % id)
+	var emitter := cfg["emitter"] as Dictionary
+	assert_true(motes.one_shot, "no respawn")
+	assert_eq(motes.explosiveness, 1.0, "all at once")
+	assert_eq(motes.lifetime, float(emitter["persist_lifetime_s"]))
+	var p := f.static_process_parameters()
+	assert_true(bool(p["persistent"]), "no fade-out")
+	assert_eq(float(p["persist_fade_in_s"]), float(emitter["persist_fade_in_s"]))
+	_cleanup()
+
+
+func test_spawn_points_and_height_bias_reach_the_shader() -> void:
+	var src := FileAccess.get_file_as_string(PROCESS_SHADER)
+	assert_true(src.contains("#define HYMN_GLIMMER_MAX_SPAWN_POINTS %d" % GlimmerField.MAX_SPAWN_POINTS))
+	var f := GlimmerField.new()
+	f.spawn_points = PackedVector3Array([Vector3(1, 0, 0), Vector3(0, 0, 2)])
+	f.height_bias = 2.5
+	f.center_bias = 1.8
+	var p := f.static_process_parameters()
+	assert_eq(int(p["spawn_point_count"]), 2)
+	var pts := p["spawn_points"] as PackedVector3Array
+	assert_eq(pts.size(), GlimmerField.MAX_SPAWN_POINTS, "padded to the shader array")
+	assert_eq(pts[1], Vector3(0, 0, 2))
+	assert_eq(float(p["emission_height_bias"]), 2.5)
+	assert_eq(float(p["emission_center_bias"]), 1.8)
+	f.free()
+
+
+## Bound light on a moving host: local-space motes, and the motion rules still see world space.
+func test_local_space_field_follows_a_moving_host() -> void:
+	var host := Node3D.new()
+	_host().add_child(host)
+	_nodes.append(host)
+	var f := GlimmerField.new()
+	f.local_space = true
+	f.mode = GlimmerState.Mode.MACHINE
+	host.add_child(f)
+	assert_true(f.motes.local_coords, "motes live in the host's space")
+	host.position = Vector3(5.0, 1.0, -3.0)
+	host.rotation.y = 0.7
+	var d := f.dynamic_process_parameters()
+	var to_world := d["field_to_world"] as Transform3D
+	assert_true(to_world.is_equal_approx(f.global_transform), "field -> world follows the host")
+	assert_true((d["world_to_field_basis"] as Basis).is_equal_approx(f.global_transform.basis.inverse()))
+	var w := GlimmerField.new()
+	assert_eq(w.field_to_world(), Transform3D.IDENTITY, "world-space fields need no transform")
+	w.free()
+	_cleanup()
+
+
+## .dlg @vfx kwargs map to field parameters; every cues.json value has a mapping.
+func test_dlg_cues_map_to_field_parameters() -> void:
+	var h06 := GlimmerField.cue_parameters("glimmer_held", {"at": "rhen_shallows", "count": 9, "drift": "down_seaward"})
+	assert_eq(h06["mode"], GlimmerState.Mode.HELD)
+	assert_eq(h06["fixed_count"], 9)
+	assert_false(bool(h06["respawn"]))
+	var s09 := GlimmerField.cue_parameters("glimmer_lift", {"at": "asha", "motion": "spiral_up", "rate": "slow"})
+	assert_eq(s09["mode"], GlimmerState.Mode.RELEASED)
+	assert_eq(s09["motion_rate"], "slow")
+	assert_false(s09.has("fixed_count"), "no count: the field's own density")
+	var bound := GlimmerField.cue_parameters("glimmer_bound", {})
+	assert_eq(bound["mode"], GlimmerState.Mode.MACHINE)
+	assert_true(bool(bound["local_space"]), "bound light moves with its host")
+	assert_eq(GlimmerField.cue_parameters("fireworks", {}).size(), 0)
+	var sets := (_json("res://game/data/dialogue/cues.json")["sets"]) as Dictionary
+	var cues := cfg["cues"] as Dictionary
+	for pair in [["vfx_effects", "effects"], ["vfx_drift", "drift"], ["vfx_motion", "motion"], ["vfx_rate", "rates"]]:
+		for value: String in sets[pair[0]]:
+			assert_true((cues[pair[1]] as Dictionary).has(value), "%s %s is mapped" % [pair[0], value])
+	var f := GlimmerField.new()
+	_host().add_child(f)
+	_nodes.append(f)
+	assert_true(f.apply_cue("glimmer_held", {"count": 9, "drift": "down_seaward"}))
+	assert_eq(f.motes.amount, 9)
+	assert_true(f.motes.one_shot)
+	_cleanup()
+
+
+## Released motes visibly spiral (bible 2, colour script rule 1): >= 2 turns per lifetime; rate=slow
+## is S09's slow end (rise <= 0.25 m/s, radius <= 0.4 m) and still turns.
+func test_released_motes_spiral_and_rates_follow_the_colour_script() -> void:
+	var rel := (cfg["modes"] as Dictionary)["released"] as Dictionary
+	var life := float((cfg["emitter"] as Dictionary)["lifetime_s"])
+	assert_true(float(rel["spiral_rate_rad_s"]) * life / TAU >= 2.0, "two turns per life")
+	var f := GlimmerField.new()
+	f.motion_rate = "slow"
+	var p := f.static_process_parameters()
+	assert_true(float(p["rise_max_mps"]) <= 0.25 + EPS)
+	assert_true(float(p["spiral_radius_max_m"]) <= 0.4 + EPS)
+	assert_true(float(p["spiral_rate_rad_s"]) * life / TAU >= 1.5, "slow still turns")
+	f.motion_rate = "normal"
+	assert_eq(float(f.static_process_parameters()["spiral_rate_rad_s"]), float(rel["spiral_rate_rad_s"]))
+	assert_true(float(f.draw_parameters()["halo_chroma_gain"]) > 1.0, "warm halos richer than the core")
+	f.free()
+
+
 func test_release_drives_the_shader_uniforms_over_time() -> void:
 	var f := GlimmerField.new()
 	var singer := _node3d(Vector3(2.0, 0.0, -1.0))

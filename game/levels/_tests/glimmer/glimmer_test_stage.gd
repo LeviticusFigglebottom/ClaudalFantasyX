@@ -1,7 +1,7 @@
 extends Node3D
 ## Test-scene driver for the glimmer shots (M1-RND-02). It does what a zone or cutscene would do:
 ## writes the scene globals (hymn_glimmer, hymn_glimmer_focus), registers the living figure as an
-## attractor, and optionally starts the release on the first frame. Restores the globals on exit
+## attractor, optionally starts the release on the first frame, and moves a carrier. Restores the globals on exit
 ## so the next screenshot shot starts clean. Deterministic: no input, no wall clock.
 
 @export var field_path: NodePath
@@ -17,6 +17,9 @@ extends Node3D
 @export var release_on_ready: bool = false
 ## Negative = glimmer.json release_duration_s.
 @export var release_duration_s: float = GlimmerField.USE_DEFAULT
+## A host that moves at a constant velocity (bound light must move only with it, M1-RND-08).
+@export var carrier_path: NodePath
+@export var carrier_velocity_mps: Vector3 = Vector3.ZERO
 
 
 func _ready() -> void:
@@ -39,6 +42,12 @@ func _ready() -> void:
 		)
 	if release_on_ready:
 		field.release(release_duration_s, figure)
+
+
+func _process(delta: float) -> void:
+	var carrier := get_node_or_null(carrier_path) as Node3D
+	if carrier != null:
+		carrier.position += carrier_velocity_mps * delta
 
 
 func _exit_tree() -> void:

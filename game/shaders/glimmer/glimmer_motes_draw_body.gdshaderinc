@@ -19,6 +19,8 @@
 #define HALO_EDGE_START 0.55
 // A trailing mote spreads its light along the streak: alpha / (1 + this * trail length).
 #define TRAIL_ENERGY_SPREAD 0.5
+// Oklab b above which a mote counts as warm (gold) for the halo chroma gain.
+#define HALO_WARM_B 0.02
 // Schlick reflectance of water at normal incidence ((1.33 - 1) / (1.33 + 1))^2.
 #define WATER_F0 0.02
 
@@ -27,6 +29,9 @@ uniform float halo_scale : hint_range(1.0, 20.0) = 7.0;   // quad half-size in c
 uniform float core_gain : hint_range(0.0, 10.0) = 1.0;
 uniform float halo_gain : hint_range(0.0, 2.0) = 0.2;
 uniform float halo_falloff : hint_range(0.01, 4.0) = 0.35; // inverse-square halo: 1 / (1 + k r^2), r in core radii
+// Oklab chroma gain of the halo for warm (released, gold) motes: same hue as the core, richer, so a
+// pale gold core blown towards white by bloom still reads gold at dusk (M1-RND-08). 1 = off.
+uniform float halo_chroma_gain : hint_range(1.0, 3.0) = 1.0;
 uniform float streak_gain : hint_range(0.0, 2.0) = 0.35;  // brightness of the tail streak
 uniform float streak_width : hint_range(0.1, 4.0) = 1.5;  // tail half-width, in core radii
 uniform float trail_time_s : hint_range(0.0, 4.0) = 0.35; // trail length = screen speed * this
@@ -49,6 +54,7 @@ varying vec3 v_color;
 varying float v_alpha;
 varying vec2 v_local;   // x across, y along velocity; units of halo radius, head at origin
 varying float v_trail;  // trail length in halo radii
+varying vec3 v_halo_color;
 
 void vertex() {
 	vec3 center_w = MODEL_MATRIX[3].xyz;
@@ -81,6 +87,10 @@ void vertex() {
 	v_local = vec2(q.x, along);
 	v_trail = trail;
 	v_color = COLOR.rgb;
+	vec3 lab = hymn_linear_srgb_to_oklab(max(COLOR.rgb, vec3(0.0)));
+	float warm = smoothstep(0.0, HALO_WARM_B, lab.z);
+	lab.yz *= mix(1.0, halo_chroma_gain, warm);
+	v_halo_color = max(hymn_oklab_to_linear_srgb(lab), vec3(0.0));
 	// Spread the same light over a longer streak instead of adding energy with speed.
 	float near = smoothstep(near_fade_start_m, max(near_fade_end_m, near_fade_start_m + HYMN_EPSILON), -center.z);
 	v_alpha = COLOR.a * gain * near / (1.0 + TRAIL_ENERGY_SPREAD * trail) / (soft * soft);
@@ -126,7 +136,7 @@ void fragment() {
 #else
 	float soft = clamp((VERTEX.z - scene_z) / soft_depth_m, 0.0, 1.0);
 #endif
-	ALBEDO = v_color * light;
+	ALBEDO = v_color * (core * core_gain + streak * streak_gain) + v_halo_color * (halo * halo_gain);
 	ALPHA = clamp(v_alpha * soft, 0.0, 1.0);
 }
 
