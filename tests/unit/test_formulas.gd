@@ -165,6 +165,13 @@ func test_technique_powers_at_good_and_perfect() -> void:
 		assert_eq(Formulas.swell_power(want[0], 90), want[2], "%s played perfectly" % tid)
 
 
+## M2-CMB-02: the Verse reaches every other active ally, never the singer (formulas.md § Swell).
+func test_shallows_verse_is_a_song_for_the_others() -> void:
+	var db := BattleDB.load_default()
+	assert_eq(str(db.skill(&"shallows_verse").get("target", "")), "all_other_allies")
+	assert_eq(str(db.skill(&"chorus_mend").get("target", "")), "all_allies", "the paid heal still takes her")
+
+
 ## The Verse against Chorus Mend, from Asha (magic 18, level 5) at variance 100: below a Chorus Mend
 ## at miss and good, above it only when chanted perfectly (formulas.md § Swell, M2-NIT-03).
 func test_shallows_verse_beats_chorus_mend_only_when_perfect() -> void:

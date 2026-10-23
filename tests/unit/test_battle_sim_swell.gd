@@ -117,6 +117,10 @@ func test_the_sandbox_bands_hold_with_swell_played_at_good() -> void:
 	assert_true(float(answer["win_pct"]) >= 85.0, "role answer %.1f%%" % answer["win_pct"])
 	assert_true(float(smart["win_pct"]) >= 85.0, "smart %.1f%%" % smart["win_pct"])
 	assert_true(float(smart["mean_turns"]) >= 16.0, "the ease ceiling holds: %.1f turns" % smart["mean_turns"])
+	# M2-CMB-02: with the Verse a song for the others, the masher's second life is gone (22.0% over
+	# these 200 seeds, 23.8% over the report's 1000; balance_targets.md's line is 25%).
+	var masher := sim.run_many(REEF, ACTIVE, RESERVE, &"naive_swell", SEEDS, 1, Callable(), kit)
+	assert_true(float(masher["win_pct"]) <= 25.0, "naive_swell %.1f%%" % masher["win_pct"])
 	var a := sim.run_one(REEF, ACTIVE, RESERVE, sim.make_policy(&"smart"), 9, Callable(), kit)
 	var b := sim.run_one(REEF, ACTIVE, RESERVE, sim.make_policy(&"smart"), 9, Callable(), kit)
 	assert_eq(a, b, "seed 9 plays the same battle with Swell on")

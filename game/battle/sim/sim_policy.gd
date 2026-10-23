@@ -59,7 +59,8 @@ func decide(engine: BattleEngine) -> void:
 ## A ready Swell goes first (a player rarely sits on a full gauge; naive never opens it, see
 ## unleashes_swell): the actor's first technique with targets, its input played at swell_quality.
 ## Single-foe techniques aim at the policy's focus foe (swell_focus; the provoker when Provoked),
-## group ones at every foe; a healing one waits for a hurt ally (swell_heal_below_pct). True when
+## group ones at every foe; a healing one waits for a hurt ally (swell_heal_below_pct; one other
+## than the actor for an "all_other_allies" row, M2-CMB-02). True when
 ## a technique was unleashed.
 func unleash_swell(engine: BattleEngine) -> bool:
 	var actor := engine.current
@@ -79,11 +80,13 @@ func unleash_swell(engine: BattleEngine) -> bool:
 func _swell_targets(engine: BattleEngine, actor: BattleCombatant, tid: StringName) -> Array[BattleCombatant]:
 	var row := engine.db.skill(tid)
 	var foes := engine.living_foes_of(actor)
-	var allies := engine.living_allies_of(actor)
-	match String(row.get("target", "single_foe")):
+	var kind := String(row.get("target", "single_foe"))
+	# M2-CMB-02: a song for the others waits for one of them to be hurt, not the singer.
+	var allies := engine.living_other_allies_of(actor) if kind == "all_other_allies" else engine.living_allies_of(actor)
+	match kind:
 		"all_foes":
 			return foes
-		"all_allies", "single_ally":
+		"all_allies", "all_other_allies", "single_ally":
 			var hurt: BattleCombatant = null
 			for c in allies:
 				if (
@@ -93,7 +96,7 @@ func _swell_targets(engine: BattleEngine, actor: BattleCombatant, tid: StringNam
 					hurt = c
 			if hurt == null:
 				return [] as Array[BattleCombatant]
-			return allies if String(row.get("target", "")) == "all_allies" else _one(hurt)
+			return _one(hurt) if kind == "single_ally" else allies
 	if foes.is_empty():
 		return foes
 	var forced := engine.forced_target(actor, tid)
@@ -144,6 +147,8 @@ static func use(engine: BattleEngine, skill_id: StringName, target: BattleCombat
 		targets = engine.living_foes_of(engine.current)
 	elif kind == "all_allies":
 		targets = engine.living_allies_of(engine.current)
+	elif kind == "all_other_allies":
+		targets = engine.living_other_allies_of(engine.current)
 	else:
 		targets.append(forced if forced != null else target)
 	return engine.perform(skill_id, targets).ok

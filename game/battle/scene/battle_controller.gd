@@ -762,7 +762,7 @@ func _show_pick() -> void:
 		var entry := {
 			"id": cid,
 			"label": menus.display_name(c),
-			"group_label": menus.group_label(foe),
+			"group_label": menus.group_label(foe, str(sk.get("target", ""))),
 			"screen_pos": head_pos(cid),
 			"hostile": foe,
 			"combatant": c,

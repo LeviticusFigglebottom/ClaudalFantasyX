@@ -28,6 +28,11 @@ class SkillTargetsValidateTests(unittest.TestCase):
                 s["target"] = target
         return files
 
+    def test_repo_verse_is_a_song_for_the_others(self) -> None:
+        verse = next(s for s in self.files[SKILLS]["skills"] if s["id"] == "shallows_verse")
+        self.assertEqual(verse["target"], "all_other_allies")
+        self.assertEqual(self.target_errors(self.files), [])
+
     def test_all_other_allies_is_a_skill_only_kind(self) -> None:
         self.assertIn("all_other_allies", vd.SKILL_ONLY_TARGETS)
         self.assertNotIn("all_other_allies", vd.SKILL_TARGETS, "items do not take it")
