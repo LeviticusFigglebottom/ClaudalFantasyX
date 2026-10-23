@@ -2,8 +2,8 @@
 id: M1-RND-15
 title: glimmer_bound shot plus rendering follow-ups (review-sweep-I on RND-07/08/11)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a94256e372f018240"
 depends_on: [M1-RND-08, M1-RND-07, M1-RND-11]
 milestone: M1
 request-from: "environment"
