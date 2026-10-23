@@ -28,7 +28,7 @@ Measured as numbers across the frames below, the key light runs ~5,600 K at noon
 
 1. **Rising light = released. Sinking or seaward light = held.** Motes that are released rise in slow vertical spirals (0.15–0.4 m/s upward, a spiral radius of 0.2–0.6 m) and use `glimmer_lift` (`#FFE9B8`), a warm pale gold that brightens to `glimmer_lift_hi` (`#F4F8FF`) as it fades into the sky. Motes that are held drift sideways and down toward water (0.05–0.2 m/s, mostly lateral, with a downward bias of 15–30°) and use `glimmer_held` (`#7FC6D9`), a cool cyan. **Never mix the two hues on one mote.** The transition between them, at a release, is a 1.5 s hue lerp from held to lift that starts as the direction reverses. The player is never told this rule. They learn it, so that the Ebbing (Ch9) looks quietly wrong in hindsight and the Letting (Ch21) looks like the world exhaling.
 2. **Bound glimmer** (machines, salt-glass, Lit Age conduits, the Kite's lamps, **and the Vowbound**) uses `glimmer_bound` (`#4FB3B0`). It is steady, never flickers, and never moves on its own: it moves only as part of the thing it is bound into (a housing, a conduit, a Vowbound's form), with no drift, no shed motes, and no trails. Its stillness is its wrongness. **The Vowbound are bound light** ([decisions_log N-05](../story/decisions_log.md)): Ilun in his chamber (`ch03_shrine_int`, haluna.md S08) and every summon (C10) use this treatment, so the player's own summons share the stillness of the Lit Age machines. A Vowbound turns to rising `glimmer_lift` only at its Act III release (Ilun: Ch20), through the rule 1 hue lerp. Rhen's lantern is **not** bound light: it burns oil (`oil_lamp`, [N-02](../story/decisions_log.md)) and does not go dark at the Unbinding.
-3. **The night sea-glow.** Every night frame, and every frame where open sea is visible after sunset, has a faint ambient emission on the sea surface and in the water column: `sea_glow` (`#1C6B78`) at energy 0.04–0.15, modulated by slow noise (a period of 8–20 s and an amplitude of ±25%). It is present from the Prologue through `ending_unbinding`, and it is **exactly 0.0** in `ending_dock`. Do not cut it or drop it below 0.04 for performance on any preset. The one scripted exception is the Ending's ramp to 0.0 (`ending_unbinding`, below). If it costs too much, find a cheaper way to draw it and tell Narrative (bible §11). Its absence in the last shot is the payoff of the entire game.
+3. **The night sea-glow.** Every night frame, and every frame where open sea is visible after sunset, has a faint ambient emission on the sea surface and in the water column: `sea_glow` (`#1C6B78`) at energy 0.04–0.15, modulated by slow noise (a period of 8–20 s and an amplitude of ±25%). It is present from the Prologue through `ending_unbinding`, and it is **exactly 0.0** in `ending_dock`. Do not cut it or drop it below 0.04 for performance on any preset. The Ending steps it down to 0.04 (`ending_unbinding`, below) and holds it there until the cut to `ending_dock`. If it costs too much, find a cheaper way to draw it and tell Narrative (bible §11). Its absence in the last shot is the payoff of the entire game.
 
    **Night value order (M1-ART-04; replaces "the glow is the brightest value").** The v0 wording came from references §1.8, where "the glow" meant glimmer. Applied to sea-glow, it couldn't be met: sea-glow 0.12 × `#1C6B78` is about 0.02–0.04 linear even with the full water column, while moonlit coral is about 0.12–0.17. To make the sea the brightest value, the moon would have to drop below about 0.05, or sea-glow would have to leave its 0.04–0.15 band. Either one turns night stone black, or the sea into the "lit teal floor" glimmer.md warns about, and contradicts "faint". So at night (sun below −6°), on screen, the order is:
    1. Oil flames and glimmer mote cores: the brightest values, as small sources.
@@ -70,14 +70,14 @@ Measured as numbers across the frames below, the key light runs ~5,600 K at noon
 | Ch12 | 6,800 | 0.65 (14.5) | 0.60 | 0.90 | lift | 0 |
 | Ch13 | 6,200 | 0.75 (13.0) | 0.35 | 0.80 | bound | 0 |
 | Ch14 | 2,800 | 0.90 (10.0) | 0.70 | 0.90 | held | 0.08 |
-| Ch15 | machine 12,000 | 1.05 (8.0) | 0.65 | 0.85 | bound | 0.10 |
+| Ch15 | moon 9,000 | 1.10 (7.5) | 0.50 | 0.85 | held | 0.12 |
 | Ch16 | 7,500 | 0.70 (14.0) | 0.25 | 0.70 | held | 0.10 |
 | Ch17 | 3,000 | 0.85 (11.5) | 0.50 | 1.05 | bound | 0.06 |
 | Ch18 | 3,400 | 0.70 (13.5) | 0.45 | 1.10 | bound | 0 |
 | Ch19 | 2,500 | 0.85 (11.0) | 0.55 | 1.05 | held | 0.06 |
 | Ch20 | glimmer 11,000 | 1.10 (7.5) | 0.60 | 0.90 | held | 0.15 |
 | Ch21 | glimmer 4,600 | 1.05 (8.0) | 0.55 | 1.00 | lift | 0.15 |
-| Ending, lifting | 4,600 | 1.15 (7.0) | 0.50 | 0.95 | lift | 0.15 → 0 |
+| Ending, lifting | 4,600 | 1.15 (7.0) | 0.50 | 0.95 | lift | 0.15 → 0.04 |
 | **Ending, dock** | stars 9,000 | 1.20 (6.0) | 0.55 | 0.80 | none | **0.0** |
 | Post-credits | lamp 2,900 | 1.05 (8.0) | 0.45 | 0.90 | none | 0 |
 
@@ -109,7 +109,7 @@ At Rendering's values, the probe reproduces the `water_shallows` baseline to RMS
 | `pale_rim` | ch16 | 1.6 / 0.4 / 0.34 (×0.8) | `#7FB8B8` / `#5E8C90` / `#BFE6E0` | `ch16` (70°, 2.2; ambient 1.0; exposure 0.70; sat ×0.7) | `#A0BEC1` · `#9DBCC0` · `#769BA2` · `#72878B` | **Pass.** Near-white, the lowest contrast in the game: "the horizon dissolves". v0's deep color `#BFE6E0` was a shallow tint, so `col_deep` is now `#5E8C90`. |
 | `night_sea` | ch02_night, ch04, ch05, ch09, ch15, ch20, ch21, ending_unbinding, ending_dock | 2.0 / 0.5 / 0.42 (×1.0) | `#1FA3A6` / `#061A2B` / `#1C6B78` | `ch02_night` (moon 0.25, 38°; sea-glow 0.12; exposure 1.1) and `ch09` (moon 0.35, sea-glow 0.15, exposure 1.15) | Foreground sea (`Night` camera): `#003845` (glow 0.12), `#002734` (glow 0), `#004251` (ch09) | **Pass** (rule 3: on/off 1.9×, stone 2.3× and 2.35× the sea). At ×1.5 the night sea lost about a quarter of its glow (`#00313D`), so night frames stay at ×1.0. |
 
-Not validated yet (stated in the frame rows): underwater views (ch20, ch21), which wait for the underwater shader; enclosed or other light on a validated material (ch05 shore, ch13 mirror, ch14 dusk, ch15 cistern, ch18 from altitude, post_credits blue hour, the `ending_dock` mirror). Each is re-checked when its mood frame is built.
+Not validated yet (stated in the frame rows): underwater views (ch20, ch21), which wait for the underwater shader; enclosed or other light on a validated material (ch05 shore, ch13 mirror, ch14 dusk, ch18 from altitude, post_credits blue hour, the `ending_dock` mirror). Each is re-checked when its mood frame is built.
 
 Two findings for Rendering:
 - From the high survey view at noon, `col_sss` lights the 62 m swell crests as large pale-turquoise patches over deep water. That is the SSS crest term at full strength, seen from above. Zones with a high camera should lower `sss_strength`, or the term should fade with view elevation.
@@ -446,27 +446,27 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Glimmer | `glimmer_held`, emission energy 3.5, sideways/down (held) |
 | Night sea-glow | energy 0.08 |
 | Exposure / contrast / saturation | exposure 0.90 (EV100 10.0 intent) · S-curve 0.7 · saturation x0.9 |
-| LUT intent | lut_ch14_wedding: red lacquer pushed toward blood (hue -4 deg), shadows navy. On the Stilling, Kerrid's motes tear sideways: full held cyan, 1.0 bloom. |
-| Emotional note | A trap dressed as a wedding. Red lacquer and still water at dusk, then motes ripping out of Kerrid sideways and down. Highest contrast of Act II. |
+| LUT intent | lut_ch14_wedding: red lacquer pushed toward blood (hue -4 deg), shadows navy. The escape barge's wake is the first moving water in the city: ripples catch the red band and the bowl-domes' reflections break apart (ADR 0016; no Stilling here). |
+| Emotional note | A trap dressed as a wedding. Red lacquer and still water at dusk, then the mirror lagoon breaking into ripples behind the bride's barge. Highest contrast of Act II. |
 
-### Ch15 "Heretics"
-`ch15` · zone `ch15/underreach, ch15/cistern`
+### Ch15 "Unlamped"
+`ch15` · zone `ch15/open_sea, ch17/hollowmere (first visit, dawn)` *(re-staged by [ADR 0016](../decisions/0016-act-two-restaging.md); the Underreach and the Cistern are no longer visited. The values below are Narrative's proposal, mirroring the validated `ch02_night` water-test settings. Art should confirm them when the mood frame is built.)*
 
 | Field | Value |
 |---|---|
-| Time of day | Underground, no sun; machine light |
-| Sun | none (enclosed) |
-| Key | `#BFD3FF` lin (0.521, 0.651, 1.000), ~11500 K (blackbody 12000 K), energy 1.0 |
-| Fill | `#0E4A55` lin (0.004, 0.069, 0.091), ~17200 K, off-locus green tint, energy 0.3 |
-| Rim | `#4FB3B0` lin (0.078, 0.451, 0.434), ~10900 K, off-locus green tint, energy 1.2 |
-| Sky zenith / horizon | `#020610` / `#020610` |
-| Fog | albedo `#0E2A30`, volumetric density 0.04 |
-| Water | look `night_sea`, absorption_scale 1 (σ 2 / 0.5 / 0.42 m⁻¹); deep color `#061A2B`; material validated; enclosed light not yet (replaces the v0 triple R 0.5 G 0.08 B 0.06) |
-| Glimmer | `glimmer_bound`, emission energy 3.0, sideways/down (held) |
-| Night sea-glow | energy 0.1 |
-| Exposure / contrast / saturation | exposure 1.05 (EV100 8.0 intent) · S-curve 0.65 · saturation x0.85 |
-| LUT intent | lut_ch15_cistern: everything bound-teal and stone-grey; skin kept warm through a +0.03 R lift masked to luminance 0.1-0.5. Oil lamps are the only warm sources. |
-| Emotional note | The machine under the faith. Vast cisterns lit by imprisoned light. Coldest saturated color in the game: the held dead, industrialized. |
+| Time of day | Night at sea, 01:00, unlamped barge; dawn fog at Hollowmere 05:40 |
+| Sun | elevation -40 deg, azimuth 0 deg (below horizon; key is moon, lamp, or sky as listed) |
+| Key | `#D2DFFF` lin (0.644, 0.738, 1.000), ~9200 K (blackbody 9000 K), energy 0.25 (moon; rule 3b: ≤ 2.5 × sea-glow) |
+| Fill | `#0B1630` lin (0.003, 0.008, 0.030), off-locus (spectral), energy 0.15 |
+| Rim | `#9DB4D9` lin (0.337, 0.456, 0.694), ~11900 K, energy 0.4 |
+| Sky zenith / horizon | `#050A14` / `#0B1630` |
+| Fog | albedo `#1C3A4A`, volumetric density 0.004 (night); 0.03 at the Hollowmere dawn |
+| Water | look `night_sea`, absorption_scale 1 (σ 2 / 0.5 / 0.42 m⁻¹); deep color `#061A2B`; validated at moon 0.25, sea-glow 0.12 (`ch02_night`) |
+| Glimmer | `glimmer_held`, emission energy 2.0, sideways/down (held): the shoal's held dead drifting toward Kerrid, and a few of his own motes leaving his hands sideways toward them (they never rise) |
+| Night sea-glow | energy 0.12 |
+| Exposure / contrast / saturation | exposure 1.10 (EV100 7.5 intent) · S-curve 0.5 · saturation x0.85 |
+| LUT intent | lut_ch15_unlamped: no warm source anywhere at night (no lamp may be struck), so skin takes only moon and sea. Toe tinted to night_sky. The Hollowmere dawn lifts to grey-rose with the first oil lamps on the hulls. |
+| Emotional note | Fugitives in the dark on a wedding barge, with a dead man under the bridal cloth. The only light is the sea and the dead coming up out of it toward Kerrid. Quiet, cold, honest: he tells them before anyone asks. |
 
 ### Ch16 "The Edge of the World"
 `ch16` · zone `ch16/pale_rim, ch16/drowned_choir`
@@ -506,7 +506,7 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Night sea-glow | energy 0.06 |
 | Exposure / contrast / saturation | exposure 0.85 (EV100 11.5 intent) · S-curve 0.5 · saturation x1.05 |
 | LUT intent | lut_act3_dusk: the Act III base grade. Gold gain returns, but highlights are held lower than Act I (max 0.92) so it reads as evening, not noon. |
-| Emotional note | Warmth returns, low and long. Patched hulls, windmills, signal lamps of bound teal; mourning Tobin. Gold light on people who will lose every machine they own. |
+| Emotional note | Warmth returns, low and long. Patched hulls, windmills, signal lamps of bound teal; still mourning Tobin (his pyre-raft was Ch15). Gold light on people who will lose every machine they own. |
 
 ### Ch18 "The Kite"
 `ch18` · zone `ch18/kite, Reedhollow revisited`
@@ -543,7 +543,7 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Glimmer | `glimmer_held`, emission energy 1.5, sideways/down (held) |
 | Night sea-glow | energy 0.06 |
 | Exposure / contrast / saturation | exposure 0.85 (EV100 11.0 intent) · S-curve 0.55 · saturation x1.05 |
-| LUT intent | lut_prologue_dusk, unchanged (the frame must match the Prologue exactly; screenshot baseline shared). Spire interior: lut_ch15_cistern warmed 400 K. |
+| LUT intent | lut_prologue_dusk, unchanged (the frame must match the Prologue exactly; screenshot baseline shared). Spire interior: bound-teal and stone-grey, skin kept warm through a +0.03 R lift masked to luminance 0.1-0.5, warmed 400 K (the former Cistern grade; Ch15 no longer uses it, ADR 0016). |
 | Emotional note | The prologue, understood. Same shot, same light. What changes is the audience. |
 
 ### Ch20 "Undertow"
@@ -600,9 +600,9 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Fog | albedo `#0B1630`, volumetric density 0.004 |
 | Water | look `night_sea`, absorption_scale 1 (σ 2 / 0.5 / 0.42 m⁻¹); deep color `#061A2B`; validated (replaces the v0 triple R 0.45 G 0.065 B 0.045) |
 | Glimmer | `glimmer_lift`, emission energy 4.0, rising (released) |
-| Night sea-glow | energy **0.15 → 0.0**, stepped per scene: E1 0.15, E2 0.11, E3 0.08, E4 0.04, then 0.0 during E5 (act3_ending.md §0 rule 4), eased linearly through the rests |
+| Night sea-glow | energy **0.15 → 0.04**, stepped per scene: E1 0.15, E2 0.11, E3 0.08, E4 0.06, E5 0.04 held (act3_ending.md §0 rule 4), eased linearly through the rests. 0.0 only from the cut to `ending_dock`. After H09 this glow is released motes still rising through the water (act3_ending §0 rule 7), not held light. |
 | Exposure / contrast / saturation | exposure 1.15 (EV100 7.0 intent) · S-curve 0.5 · saturation x0.95 |
-| LUT intent | lut_ending_lift: warm motes over a navy world. sea_glow ramps from 0.15 to 0.0 over the sequence (steps in the Night sea-glow row) as the last held light leaves the sea. The Kite's bound lamps are dark from H09 on ([N-16](../story/decisions_log.md)): the farewell scenes (Kerrid, Imra, Dace) are keyed only by the leaving person's rising motes, other dead rise outside the key, and the sea-glow never lights a face. |
+| LUT intent | lut_ending_lift: warm motes over a navy world. sea_glow steps from 0.15 down to 0.04 over the sequence (steps in the Night sea-glow row) as the last released motes rise out of the sea. The Kite's bound lamps are dark from H09 on ([N-16](../story/decisions_log.md)): the farewell scenes (Kerrid, Imra, Dace) are keyed only by the leaving person's rising motes, other dead rise outside the key, and the sea-glow never lights a face. |
 | Emotional note | Everything lifts. The sea gives up its dead in slow vertical spirals. Goodbyes lit by the people leaving. |
 
 ### Ending, final image: Haluna dock
@@ -621,7 +621,7 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Glimmer | `glimmer_lift`, emission energy 0.0, none on screen |
 | Night sea-glow | energy 0.0 |
 | Exposure / contrast / saturation | exposure 1.20 (EV100 6.0 intent) · S-curve 0.55 · saturation x0.8 |
-| LUT intent | lut_ending_dock: starlight only. sea_glow = 0.0 exactly (the first frame in the game where it is zero). Water is a mirror of stars: SSR plus planar reflection, roughness 0.02. Asha's skin lit by starlight and a 0.15 sky fill. The shot is a locked three-quarter profile from the dock's side ([N-17](../story/decisions_log.md); haluna.md H10 note), and the key and rim are placed so that her face, and the smile, read against the star-filled sea. |
+| LUT intent | lut_ending_dock: starlight only. sea_glow = 0.0 exactly (the first frame in the game where it is zero). Water is a mirror of stars: SSR plus planar reflection, roughness 0.02. Asha's skin lit by starlight and a 0.15 sky fill. The shot is a locked front three-quarter on her face: the camera is on the dock looking out to sea, and she has turned back toward Haluna, with her nose line about 40° off the lens axis ([N-17](../story/decisions_log.md), [N-19](../story/decisions_log.md); haluna.md H10 note). The key and rim are placed so that her face, and the smile, read against the star-filled sea behind her. |
 | Emotional note | For the first time in a thousand years the sea is dark. Stars above and stars below, and a girl who draws breath for the tune, lets it go unsung, and smiles. She never sings or hums again. Quiet, enormous, at peace. |
 
 ### Post-credits: Oruvel rebuilt

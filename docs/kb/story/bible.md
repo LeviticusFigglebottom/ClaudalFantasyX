@@ -116,7 +116,7 @@ Mangrove channels, tannin-dark water, and white egrets. See §8.
 ### 5.6 Sunken Vey (the great drowned city)
 *Influences: Khmer stone ruins and Lit Age glimmer architecture.*
 The largest Lit Age ruin still above water. Towered stone galleries stand chest-deep in a turquoise lagoon, wrapped in strangler-fig roots, and ancient ceramic conduits still faintly pulse with bound light. Silent, gorgeous, and dead.
-- **Lowlight**: the Ice temple, a half-flooded gallery temple whose inner sanctum is entirely underwater, at the foot of a Lit Age well-shaft where cold water from the open deep wells up through the floor. Drowned glimmer sifts down through it like snow. Nothing there is frozen; the cold is the deep's ([N-15](decisions_log.md)).
+- **Lowlight**: the Ice temple, a half-flooded gallery temple whose inner sanctum is entirely underwater, at the foot of a Lit Age well-shaft where cold water from the open deep wells up through the floor. Drowned glimmer sifts down through it like silt. Nothing there is frozen; the cold is the deep's ([N-15](decisions_log.md)).
 
 ### 5.7 The Ullar Heights (cold northern ranges)
 *Influences: Andean high-altitude culture.*
@@ -126,7 +126,7 @@ Thin air, enormous skies, terraced high valleys, and mortarless fitted stone wal
 
 ### 5.8 Ansedra (the holy city)
 *Influences: Thai and Burmese lacquer and gold leaf, plus Javanese tiered roofs, combined into an original city plan.*
-The Order's seat, built on a lagoon kept perfectly flat. No wind ripples it, and no wake is permitted (the stillness is maintained by forbidden glimmer machinery under the city, which the party discovers in Act II). Its skyline is **bowl-domes**: inverted gilded bowls on tiered red-lacquer bases, each crowned with a thin spire. Barges are poled, never rowed, so the water stays still. The city has no seabirds, no dogs, and no children's games in the squares. The **Lacquer Court** is the ceremonial heart. The **Sanctum of the Level** is the Glimmer temple: its inner basin is held so still that it is a perfect mirror, lit from beneath by a steady light that never moves, and the Order calls it a miracle. The light is bound glimmer, the very thing the Order forbids ([N-15](decisions_log.md)). Below it all lies the **Underreach** and the **Cistern**.
+The Order's seat, built on a lagoon kept perfectly flat. No wind ripples it, and no wake is permitted (the stillness is maintained by forbidden glimmer machinery under the city, which the party learns of from the Lamp Archive's ledgers in Act II). Its skyline is **bowl-domes**: inverted gilded bowls on tiered red-lacquer bases, each crowned with a thin spire. Barges are poled, never rowed, so the water stays still. The city has no seabirds, no dogs, and no children's games in the squares. The **Lacquer Court** is the ceremonial heart. The **Sanctum of the Level** is the Glimmer temple: its inner basin is held so still that it is a perfect mirror, lit from beneath by a steady light that never moves, and the Order calls it a miracle. The light is bound glimmer, the very thing the Order forbids ([N-15](decisions_log.md)). Below it all lie the **Underreach** and the **Cistern**, the reservoir where *spent* Saints are consumed. The party never goes down there: they read about it in the **Lamp Archive**, the Order's library of Lit Age records, where the founders' ledgers and the full Cantor roll are kept in plain sight ([ADR 0016](../decisions/0016-act-two-restaging.md)).
 
 ### 5.9 Hollowmere (the Saltwright flotilla)
 See §7.
@@ -182,8 +182,8 @@ See §7.
 
 ## 10. The Ending (locked shape from SPEC §3.5)
 
-1. In the heart of the Undertow the party defeats Sefir, who is trying to sing himself in as its eternal heart.
-2. Asha sings the Eighth Verse, the Letting. Every mote in Maresh lifts at once: the storm, every ancient lamp, every Saltwright machine, every Vowbound, and every unrisen. This is the **Great Unbinding**.
+1. In the heart of the Undertow the party defeats Sefir, who is trying to take the heart into himself and become the storm's eternal heart.
+2. Asha sings the Eighth Verse, the Letting. Every mote in Maresh lifts at once: the storm, every ancient lamp, every Saltwright machine, every Vowbound, and every unrisen. This is the **Great Unbinding**. Everything is released in that one instant. What the Ending shows afterwards (the dead still coming up out of the sea, the three goodbyes, the last faint sea-glow) is the *ascent* of light that was already released, and nothing lets go later ([act3_ending §0 rule 7](beats/act3_ending.md)).
 3. Kerrid lifts. Imra Velamir appears for one last scene with Asha. Dace Sallow says goodbye to Rhen, and this time Rhen says it back.
 4. The Undertow ends forever. The Kite's lamps go out and Liss sets it down on the water. Asha can speak, but she will never sing again.
 5. **Final image:** Asha on Haluna's dock at night. For the first time in a thousand years the sea is completely dark, and the stars are reflected in it.
