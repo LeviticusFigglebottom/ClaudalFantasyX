@@ -37,6 +37,7 @@ const PRESET_QUALITY := {
 }
 const SURFACE_NODE := &"Surface"
 const PARAM_SEA_GLOW := &"sea_glow_energy"
+const GLOBAL_WATER_LEVEL := &"hymn_water_level"
 
 @export var wave_set: WaveSet:
 	set(value):
@@ -62,6 +63,14 @@ const PARAM_SEA_GLOW := &"sea_glow_energy"
 		if material != null:
 			material.set_shader_parameter(PARAM_SEA_GLOW, value)
 
+@export_group("Water level")
+## World Y of the zone's tide-line datum (stone weathering keys its wet band to it). The current level
+## is this node's Y: animate the node (tide, Drownbell flood) and everything follows.
+@export var tide_line_y: float = 0.0
+## Write hymn_water_level (current level, datum) every frame. Leave on for the zone's sea only: pools
+## and rivers should not drive the zone's weathering.
+@export var publishes_water_level: bool = true
+
 @export_group("Mesh")
 ## Optional authored mesh (rivers, pools). Empty = generate the ocean grid below.
 @export var surface_mesh: Mesh:
@@ -86,11 +95,19 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	if publishes_water_level:
+		var level := water_level()
+		RenderingServer.global_shader_parameter_set(GLOBAL_WATER_LEVEL, level)
 	if follow_target == null or _surface == null:
 		return
 	var p := follow_target.global_position
 	var snap := core_cell_m * 2.0
 	_surface.global_position = Vector3(snappedf(p.x, snap), global_position.y, snappedf(p.z, snap))
+
+
+## What hymn_water_level carries: x = the rest plane's world Y now, y = tide_line_y.
+func water_level() -> Vector2:
+	return Vector2(global_position.y if is_inside_tree() else position.y, tide_line_y)
 
 
 ## World Y of the water surface above or below world point (xz.x, xz.y) at weather time `time`.

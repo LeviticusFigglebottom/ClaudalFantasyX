@@ -131,7 +131,7 @@ vec3 hymn_sea_glow_global(vec3 world_pos, float zone_energy, float column_m);
 |---|---|
 | `colors` | `released`, `released_hi`, `held`, `machine`: sRGB hex from palette.json (tested) |
 | `release_duration_s`, `release_wave` | 1.5 s; wave `fraction` 0.4, `radius_m` 4, `jitter` 0.3 |
-| `modes.released` | `energy` 3.0, `rise_min/max_mps` 0.15/0.4, `spiral_radius_min/max_m` 0.2/0.6, `spiral_rate_rad_s` 0.3, `curl_scale` 0.4, `hi_shift` 0.55 |
+| `modes.released` | `energy` 3.0, `rise_min/max_mps` 0.15/0.4, `spiral_radius_min/max_m` 0.2/0.6, `spiral_rate_rad_s` 1.0, `curl_scale` 0.4, `hi_shift` 0.55 |
 | `modes.held` | `energy` 1.5, `drift_min/max_mps` 0.05/0.2, `down_bias_min/max_deg` 15/30, `heading_spread_deg` 35, `curl_scale` 1.0 |
 | `modes.machine` | `energy` 1.2 |
 | `motion` | `curl_frequency` 0.35 /m, `curl_strength_mps` 0.05, `curl_evolve` 0.04, `response_rate` 1.4, `underwater_drag` 3, `underwater_absorb_per_m` 2.2 |
@@ -181,9 +181,33 @@ No tier removes the effect (a test asserts amount ≥ 1 and growing with tier). 
 8. **Prewarm:** the materials are created in code, so they aren't in `game/data/settings/prewarm_materials.json` yet. A battle or dialogue transition that reveals a glimmer field for the first time may hitch while the pipelines compile. Follow-up: save the three materials as `.tres` under `game/vfx/glimmer/` and register them (the registry is Rendering-owned, M1-RND-06).
 9. **Shared `/tmp` logs:** `tools/screenshots/capture.sh` writes `${TMPDIR:-/tmp}/hymn_capture.log`. With several worktrees capturing at once, set `TMPDIR` per worktree, or the logs interleave.
 
+## Counted beats, moving hosts, cues and density (M1-RND-08)
+
+| Export | What it does |
+|---|---|
+| `fixed_count` | Exactly this many motes on **every** tier (bypasses `emitter.amount`, `amount_multiplier` and the tier scale). H06: 9. |
+| `respawn = false` | Spawns every mote at once (`one_shot`, explosiveness 1) and keeps it: lifetime `emitter.persist_lifetime_s` (3600 s), fade-in `persist_fade_in_s` (1.5 s), no fade-out. Underwater absorption still applies. |
+| `spawn_points` | Optional authored start points (field-local, up to 16): mote *i* starts at point *i* mod n. |
+| `local_space` | Motes live in the field's space and move only with their host (rule 2: bound light on Ilun, a summon, the Kite's lamps). The motion rules stay in world space through `field_to_world`. Shot: `glimmer_bound` (a lantern cage on a carrier at 1.5 m/s). |
+| `motion_rate` | `cues.rates` preset: `slow` (S09: rise ≤ 0.25 m/s, spiral radius ≤ 0.4 m, 0.8 rad/s), `normal`, `fast`. |
+| `height_bias` / `center_bias` | Density gradients: > 1 packs motes toward the bottom of the volume / the centre of a disc (near the water and the figure), so a field doesn't fill the sky evenly. |
+
+**`.dlg` cues.** `GlimmerField.cue_parameters(effect, kwargs)` maps a `@vfx` cue to field parameters through `glimmer.json "cues"`, and `apply_cue()` applies them:
+- `glimmer_lift` / `glimmer_held` / `glimmer_bound` set the mode; `glimmer_bound` also sets `local_space`.
+- `drift=down_seaward` means held; `motion=spiral_up` means released.
+- `count=n` gives `fixed_count` n with `respawn = false`.
+- `rate=slow|normal|fast` sets `motion_rate`.
+- `form` is reserved.
+
+Every value in `cues.json`'s sets must have a mapping (tested). There's no runtime `@vfx` handler yet. The sequencer should call `apply_cue()` when the beat starts.
+
+**Spiral.** `spiral_rate_rad_s` is 1.0 (was 0.3): 2.2 turns per 14 s life, so released light reads as a spiral, not straight streaks (bible §2, colour script rule 1).
+
+**Warm halo.** `look.halo_chroma_gain` (1.6) raises the halo's Oklab chroma for warm (gold) motes only, keeping their hue. A pale `glimmer_lift` core blown toward white by bloom still reads gold at dusk. Held and bound motes are unchanged. Art to confirm the value.
+
 ## Open items
 
 - Integrate `hymn_sea_glow()` into the ocean shader (M1-RND-01, water stream) and retire the overlay in those zones.
 - The dance for the dead: animate a moving attractor along the dancer's hand path (cinematics). The API supports it already: `add_attractor(hand_node, ...)` follows the node each frame.
 - Real-GPU measurement of the cost table (M1-QA-01 runner).
-- Art review: the gold reads as pale cream at dusk against a warm sky. That is per palette (`glimmer_lift` is a pale gold), but the Art Director may want the halo warmer than the core.
+- Art review: the gold reads as pale cream at dusk against a warm sky. M1-RND-08 added `halo_chroma_gain` (1.6, same hue, richer halo); the Art Director should confirm the value.

@@ -63,6 +63,14 @@ hymn_glimmer_focus={
 "type": "vec4",
 "value": Vector4(0, 0, 0, 0)
 }
+hymn_zone_sea_glow={
+"type": "float",
+"value": 0.0
+}
+hymn_water_level={
+"type": "vec2",
+"value": Vector2(0, 0)
+}
 
 [rendering]
 

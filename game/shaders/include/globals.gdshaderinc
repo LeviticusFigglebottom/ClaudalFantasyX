@@ -19,5 +19,12 @@ global uniform vec3 hymn_sun_direction;
 global uniform vec4 hymn_glimmer;
 // Glimmer focus: xyz = world position the motes gather around, w = radius in metres (0 = none).
 global uniform vec4 hymn_glimmer_focus;
+// Zone night sea-glow energy (colour script rule 3; 0 = off, e.g. ending_dock). Independent of the
+// mote energy hymn_glimmer.a. Written by GlimmerField.set_scene_sea_glow() (M1-RND-08).
+global uniform float hymn_zone_sea_glow;
+// Zone water level: x = current world Y of the sea's rest plane (tide and floods included), y = the
+// tide-line datum (world Y) stone weathering keys its wet band to. Written each frame by the zone's
+// WaterSurface (publishes_water_level, M1-RND-08).
+global uniform vec2 hymn_water_level;
 
 #endif
