@@ -1,0 +1,38 @@
+# Asset import: post-import scripts per category (M1-ART-02)
+
+ADR 0005 step 4. Every `.glb` under `assets/` is imported through an `EditorScenePostImport` script for its category. The script only names its category. The rules are data in `game/data/import/<kind>.json`, and the work is done by `AssetImportRules` (`game/core/import/asset_import_rules.gd`), which has no editor dependency, so tests run it on in-memory trees as well.
+
+| Category | Script (`game/core/import/`) | Rules | Assets | Materials | LODs | Collision |
+|---|---|---|---|---|---|---|
+| `haluna_kit` | `haluna_kit_post_import.gd` | `haluna_kit.json` | `assets/environments/kits/haluna/` (30) | slot → `kits/haluna/materials/<slot>.tres` | `-lod1`: 0–70 m, 70–2000 m, 2 m margin | `-col` → trimesh body |
+| `vegetation` | `vegetation_post_import.gd` | `vegetation.json` | `assets/environments/vegetation/` (7) | slot → `vegetation/materials/<slot>.tres` | `-lodN`: 45 / 120 / 400 m, 2 m margin | `-col` → convex body |
+| `base_body` | `base_body_post_import.gd` | `base_body.json` | `assets/characters/base_body/` (3) | none: keeps the flat `PLACEHOLDER_*` glTF materials | Godot auto LODs | none |
+| `shader_test` | `shader_test_post_import.gd` | `shader_test.json` | `assets/characters/shader_test/` (2) | none, on purpose (see "Shared materials and shader tiers") | none | none |
+| `characters` | `characters_post_import.gd` | `characters.json` | `assets/characters/asha/`: **adoption pending** | slot → `<asset dir>/materials/<slot>.tres` | Godot auto LODs plus `<hero>_lod1.glb` | none |
+
+## What the import does (in order)
+1. **Collision.** Godot's own suffix import (`nodes/use_name_suffixes=true`) turns `x-col` into a *visible* `MeshInstance3D(x-col)` with a trimesh `StaticBody3D` child. The ADR 0005 `-col` node is a proxy, so the script drops the proxy mesh and puts the body in its place, with the same name, index and transform. It uses the rules' `shape` (`trimesh`, or `convex` from the proxy mesh), `layer` and `mask`, and tags it with `hymn_collision`. Every other `CollisionObject3D` (`-colonly`, `-convcolonly`) gets the same layer and mask. `-noimp` helpers are removed by Godot itself.
+2. **Materials.** Each surface without an override gets a **surface override material**: `by_node[node name]`, else `<slot_dir><glTF material name>.tres` when that file exists. With `warn_unmapped`, a surface left unmapped is an import warning. The mesh keeps its glTF material, so a dresser that keys on `surface_get_material(i).resource_name` (HalunaDresser, VegetationPlant, AshaStage) still finds the slot. A runtime override (surface or `material_override`) wins over the import's, which is why the existing shots do not move.
+3. **LODs.** Authored `<name><suffix>N` meshes get visibility ranges: LOD *i* spans `end_m[i-1]` to `end_m[i]`, with `margin_m` hysteresis (no begin margin on LOD0) and fade disabled. That is the same scheme VegetationPlant and HalunaDresser apply. A LOD past the table is hidden. Auto LODs are the `.import` option `meshes/generate_lods`. The rules state the expected value (`generate_lods`) and the test checks every `.import` against it.
+4. **PLACEHOLDER (SPEC §8.4).** A node, mesh or material whose glTF extras declare `hymn_tag: "PLACEHOLDER"` (base bodies) or a `placeholder` / `hymn_note` note (Haluna kit) gets the meta `hymn_tag = &"PLACEHOLDER"`. The asset root gets the same tag and `hymn_placeholder_notes` (a `PackedStringArray` of the distinct notes). Godot 4.6 imports glTF extras as the meta `extras`.
+5. The root always gets `hymn_import_kind` (the category).
+
+## Shared materials and shader tiers
+Import-time overrides are the **shared** `.tres` resources. Anything that mutates a material in place therefore mutates it for every instance. `CharacterShaderTiers.apply_to_tree` does exactly that: it swaps the shader of every material it reaches, surface overrides included, without duplicating. The first design gave the shader-test bust by-node overrides. With those, `CharacterShadingStage._build_compare` (which duplicates only `material_override`) let the Low copy's tier swap reach `skin.tres`, the High copy and the main bust. `test_character_shading.gd::test_stage_assigns_materials_and_builds_the_low_comparison` caught it. So `shader_test` assigns no materials. Kit and vegetation materials are never tier-swapped, and the dressers already put the same shared instances on every surface, so the import adds no new sharing there.
+
+## Adding an asset or a category
+- **A new `.glb` in an existing folder:** copy a sibling's `.import`, which carries `import_script/path`. `tests/unit/test_post_import.gd::test_every_glb_import_runs_its_category_script` fails for any `.glb.import` under `assets/` that names the wrong script or belongs to no category.
+- **A new category:** add `game/data/import/<kind>.json` (keys: `kind`, `script`, `assets`, `adoption_pending`, `generate_lods`, `materials`, `lods`, `collision`), a five-line `<kind>_post_import.gd` like the others, and add `<kind>` to `KINDS` in both tests.
+- The editor scripts have no `class_name`, because `EditorScenePostImport` does not exist in exported builds.
+
+## How Asha adopts the `characters` rules (after M1-CHR-03)
+Asha's `.import` files were deliberately left alone while M1-CHR-03 rebuilds her. When that lands:
+1. Set `import_script/path="res://game/core/import/characters_post_import.gd"` in `assets/characters/asha/asha.glb.import` and `asha_lod1.glb.import`. Leave the rest of the file as it is (`generate_lods=true` matches the rules).
+2. Delete the `res://assets/characters/asha/` entry from `adoption_pending` in `game/data/import/characters.json`. The wiring test then requires the script.
+3. Every glTF slot must have `assets/characters/asha/materials/<slot>.tres`. `tools/tests/test_post_import.py::test_mapped_materials_exist` already checks this for today's 18 slots. A new slot needs its `.tres` first, or it is an import warning.
+4. AshaStage keeps its own `materials` table and still overrides at runtime with the same shared `.tres` instances, so the `asha_*` shots should not move. **The tier risk above applies to Asha.** AshaStage calls `CharacterShaderTiers.apply_to_tree` on the hero and on its comparison copy, and the comparison duplicates its surface overrides first (`asha_stage.gd` around line 76). That stays correct only while AshaStage overrides *every* surface the import overrides. It does today, because both use `<asha>/materials/<slot>.tres`. Any slot AshaStage stops mapping would keep the import's shared material, and a tier swap on it would leak. Run `--filter=character_shading` and the `asha_face_stylized_compare`, `asha_sleeve_*` and `asha_face_*` shots before and after, byte for byte. If the in-game party will ever tier-swap heroes, `apply_to_tree` should duplicate materials it does not own (Rendering).
+5. If the rebuild adds authored `-lodN` meshes, give `characters.json` an `lods.end_m` table. If it adds a `-col` proxy (a staff, say), add a `collision` block.
+
+## Not done here (by design)
+- **Runtime dressers still apply materials and LOD ranges.** Moving that fully into the import (and deleting it from VegetationPlant and HalunaDresser) is Environment's call, because the per-placement overrides (`materials`, `lod1_from_m`, `force_lod`) are layout data.
+- **Kit walk collision** stays in HalunaCollision (M2-FP-02). The kit exports no `-col` proxies yet. When one gains a proxy, check that HalunaCollision's rule for that piece is set to `none`, so the piece doesn't collide twice.
