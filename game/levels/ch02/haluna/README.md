@@ -72,7 +72,8 @@ scene, as before this change).
 | Spawn | Position | Facing | What |
 |---|---|---|---|
 | `Beach` | (−1.0, 0.04, 8.0) | west | Where Rhen washes up, at the waterline (Cutscene A) |
-| `BattleReturn` | (−24.0, 1.38, 6.5) | west | After the tideline battle: just inland of the battle strip, before the lane-1 gate |
+| `BattleReturn` | (−24.0, 1.38, 6.5) | west | After winning the tideline battle: just inland of the battle strip, before the lane-1 gate |
+| `BeforeBattle` | (−13.0, 0.71, 6.5) | west, toward the strip | After fleeing it (M2-FP-05, `haluna.battle_escape_spawn`): on the beach about 5 m seaward of the strip, so the way on is the fight again. A defeat never comes back here: it offers Fight again or the last save |
 | `Village` | (−52.0, 1.84, −2.6) | east, down lane 1 | The lane by the market |
 | `Shrine` | (−67.0, 2.02, 44.3) | south, at the shrine | The location's default spawn (the shrine is at z 46.6) |
 | `CausewayHead` | (4.0, 0.73, −118.0) | north | The beach's north end, 4 m short of the causeway trigger |

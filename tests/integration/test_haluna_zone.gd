@@ -7,7 +7,7 @@ extends TestCase
 const ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
 const LOCATION := &"ch02/haluna"
 const DT := 1.0 / 60.0
-const SPAWNS: Array[StringName] = [&"Beach", &"Village", &"Shrine", &"BattleReturn", &"CausewayHead"]
+const SPAWNS: Array[StringName] = [&"Beach", &"Village", &"Shrine", &"BattleReturn", &"BeforeBattle", &"CausewayHead"]
 ## Collision build budget on the shared CI CPU (the brief asks for under about a second).
 const BUILD_BUDGET_MSEC := 1000
 ## How far a spawn marker may sit from the floor found under it.
@@ -152,6 +152,14 @@ func test_villagers_and_triggers_fire_their_payloads() -> void:
 	zone.place_at(&"Beach")
 	_walk(Vector3.LEFT, 6.0)
 	assert_eq(fired.size(), 1, "won once, it stays quiet")
+	# M2-FP-05: an escape returns the party to BeforeBattle, on the beach side: clear of the strip,
+	# and the way on to the village crosses it again.
+	assert_false(battle.contains_point(zone.spawn_marker(&"BeforeBattle").global_position), "escape lands clear")
+	Game.set_flag(&"ch02_tideline_won", false)
+	fired.clear()
+	zone.place_at(&"BeforeBattle", zone.spawn_yaw_deg(&"BeforeBattle"))
+	_walk(Vector3.LEFT, 6.0)
+	assert_eq(fired, [&"tideline_battle"] as Array[StringName], "from BeforeBattle the way on is the fight")
 	# The causeway head waits for the first save.
 	Game.set_flag(&"ch02_saved_once", false)
 	zone.place_at(&"CausewayHead")
