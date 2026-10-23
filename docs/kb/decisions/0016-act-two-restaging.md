@@ -88,3 +88,4 @@ It is a confession among friends. It is not a reveal in a fight, at a wedding, o
 
 - 2026-10-23 Lead sign-off: accepted as written. The two out-of-scope Act I risks (Sefir's Ch7 tournament introduction, the Ch8 seawall operation's forbidden weapons) go to M1-NAR-09.
 - 2026-10-23 (Narrative, M1-NAR-09): both Act I residuals above are re-staged in [0017](0017-act-one-restaging.md). The Ch19 row's "prologue campfire" describes the old Prologue staging; the Prologue and Ch19 now use the vigil set out in 0017.
+- 2026-10-23 (Narrative, review-sweep-E): Kerrid's backstory is re-staged in [0020](0020-kerrid-restaging.md), proposed. The Ch15 row's confession is now about Corrow in 1001, not the Choir, and it carries no promise. The Ch16 row no longer has him find the place he died, because he died at Corrow. The Ending row's order is now Imra, Dace, then Kerrid last. 0020 has the added echo rows.

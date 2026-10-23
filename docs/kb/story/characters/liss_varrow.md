@@ -4,7 +4,7 @@
 **Battle niche:** item specialist who steals and builds gadgets.
 
 ## Background
-Liss is the daughter of Hollowmere's chief wright and the younger sister of **Tobin Varrow**, the flotilla's charming, idealistic heir. She restored her first bound lamp at nine, and her left arm and collarbone already carry eleven line-marks. She was running a salvage camp in the Brine Shoals when an Order raid burned it. She escaped with one crate of parts and a grudge that could float a ship.
+Liss is the daughter of Hollowmere's **dock-master**, the keeper of the flotilla's dry-dock berths, and the younger sister of **Tobin Varrow**, who is charming and idealistic. Hollowmere has no chief: its council of hull-captains governs it. When the Order asked the council for a Saltwright groom for a Warden's daughter, Tobin volunteered so that nobody would have to be chosen ([ADR 0020](../../decisions/0020-kerrid-restaging.md)). She restored her first bound lamp at nine, and her left arm and collarbone already carry eleven line-marks. She was running a salvage camp in the Brine Shoals when an Order raid burned it. She escaped with one crate of parts and a grudge that could float a ship.
 
 She grew up on stories of **Dace Sallow**, the wright who went into the Undertow "to fix it," and of an unfinished ship he left in Hollowmere's dry-dock that nobody else can make fly. To her, Dace is a legend. To Rhen, Dace is a wound. That is the engine of their friction.
 

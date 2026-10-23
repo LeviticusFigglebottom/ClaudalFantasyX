@@ -12,7 +12,7 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 **Zone:** Iskarra Ruins, dusk [`prologue/iskarra_dusk`] (re-used in Ch19).
 - Gold dusk light over drowned white towers. The party, all seven, are on a broken plaza that juts above the water, but **apart**, each keeping a vigil at a distance from the others: Kerrid standing (he never sits), Pell with his back to the sea, Ysolde with her book shut, Asha on the steps. **There is no fire** ([ADR 0017](../../decisions/0017-act-one-restaging.md)). Nobody speaks. Asha's verse-sleeve is fully embroidered. The sea glows faintly with drowned motes.
 - A short walk (a controls tutorial) **among them**, never away from them: Rhen crosses the plaza from one to the next, and each gets a look or a gesture, no words. He ends sitting beside Asha and trims his oil lantern's wick. It is the only flame in the frame.
-- Rhen, in voice-over, as the wick catches: **"Listen. This might be the last time I tell it."**
+- Rhen, in voice-over, as the wick catches: **"Everyone I'm going to tell you about is still here tonight. Remember that, later."** ([ADR 0020](../../decisions/0020-kerrid-restaging.md) (g): replaces the SPEC's original line, with the human's approval.)
 - Glimmer rises around him, and we cut to black and then back to Oruvel, *one month earlier*, with a title card.
 - **Cinematics note:** this frame recurs at each act break as a short Rhen voice-over of one or two lines.
 
@@ -59,7 +59,7 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 
 ### Ch5 "Terraces of Ash"
 **Zones:** Pemakar Town [`ch05/pemakar`]. Ashcrown temple [`ch05/ashcrown`].
-- Lanternfall festival: a thousand leaf-boats on the terrace channels, among the graves (pillar 2). Kerrid appears at the festival's edge, tells Asha "I travelled with your mother," and simply walks with them from then on.
+- Lanternfall festival: a thousand leaf-boats on the terrace channels, among the graves (pillar 2). Kerrid appears at the festival's edge on his way to Corrow, tells Asha "I held a stair for your mother once," and simply walks with them from then on ([ADR 0020](../../decisions/0020-kerrid-restaging.md)).
 - Temple trial: catch a strike from the ash-plume at the crown and walk it down the stair-mountain's copper veins, tier by tier, before it fades. Asha binds **Kahre** (Lightning).
 - **Boss:** *Cinder Matron* (a magma-crusted temple guardian construct, two phases) breaks armour, which introduces Kerrid's niche.
 - **Side scene:** a smith whose son drowned in Oruvel asks Rhen what the town looked like. Rhen tells him the truth, then a better version.
@@ -80,6 +80,7 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 **Zones:** Tamsule port [`ch07/tamsule`]. The Tamsule Bell, the Reefball arena [`ch07/tamsule_bell`].
 - **Rhen dives for Oruvel ([ADR 0017](../../decisions/0017-act-one-restaging.md)).** Oruvel's side came to Tamsule a week before the storm and has been waiting for news. Its captain, **Tavi Orse**, Mother Kell's grandson, finds Rhen in the crowd, and Rhen has to tell him that Kell couldn't swim. The side is a player short: their youngest went home to look and hasn't come back. **The story Reefball match** (simplified, turn-paused, SPEC §6.10).
 - **No Order official blesses or opens the Tidecup.** It opens as Reefball always has ([N-12](../decisions_log.md)): each captain names one person the sea has taken. Tavi names the whole town: "Oruvel." The match is played for the ones who didn't come up. **Nothing interrupts it**: no spawn reach the Bell.
+- **Oruvel's side does not win the cup ([ADR 0020](../../decisions/0020-kerrid-restaging.md) (h)).** The story match is their opening round. Win or lose (the result gives a reward only and never branches the story), Tavi withdraws the side after it to go home and search what is left of Oruvel. The cup goes on without them and is won offscreen by Tamsule's own side, mentioned once in passing.
 - Toma, who played here for Haluna as a boy, watches from the galleries beside Asha. Liss notes aloud that the Bell is glimmer-tech, and nobody answers.
 - **Side scene:** Tavi asks Asha to bless the empty moorings under the Bell, where Oruvel's boats always tied up to watch.
 
@@ -90,16 +91,18 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 - **Set-piece:** the evacuation. The party holds the wall-head over the Fisher Stair against waves of spawn while the low town climbs.
   - Liss rigs a rope-and-block hoist off the Watchers' carved faces to lift children and the old faster than the stair can take them. It is plain rope and iron, with nothing bound in it.
   - **Pell** is on the wall imitating the storm's sounds, luring spawn away from the fishers on the stair.
-  - Toma fights beside his old Stillguard comrades.
+  - Toma fights beside his old Stillguard comrades, holding the stair, never going on the offensive.
+  - **Kerrid works the foot of the stair**, waist-deep, pushing the last climbers up. An old Corrow fishwife on the stair stares at him and says "Captain?" He says nothing and goes down a step. This is where he died in 1001, and the player doesn't know it yet ([ADR 0020](../../decisions/0020-kerrid-restaging.md)).
 - **Boss:** *the Undertow's Reach*, a colossal limb of the storm (multi-phase, scripted escape). **The wall falls anyway.** The stair was not wide enough.
-- Rhen sees a figure inside the storm's wall and hears the current-song. He can't move. The figure turns away into the dark, and Kerrid has to pull him off the wall's edge by the collar. *(Staged as a freeze, not a run toward it.)*
+- Rhen sees a figure inside the storm's wall and hears the current-song. He can't move. The figure turns away into the dark, and Kerrid, the last man up the stair, has to pull him off the wall's edge by the collar. *(Staged as a freeze, not a run toward it.)*
 - After the storm, the Stillguard cut Liss's hoist down, because it was bolted into the Watchers. The Order thanks no one.
 
 ### Ch9 "The Ebbing"
 **Zones:** Corrow shoreline at night [`ch08/corrow` night variant].
 - Hundreds of drowned. Asha performs her **first great Ebbing**, dancing on a raft as the motes follow her lantern-staff out to sea. It is the most beautiful sequence in Act I. (Rendering: motes visibly drift *down and seaward*.)
 - Pell watches and says: *"Beautiful. And pointing the wrong way."* He joins.
-- **Act break:** a Rhen voice-over at the Iskarra fire.
+- Kerrid is gone from the shoreline before the Ebbing begins.
+- **Act break:** a Rhen voice-over at the Iskarra vigil.
 - **Side scene:** Toma finds an old Stillguard friend among the dead.
 
 ---
@@ -149,15 +152,15 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 **Zones:** the open sea at night, aboard the bridal barge [`ch15/open_sea`]. Hollowmere, first visit [`ch17/hollowmere`].
 - The barge carries no lamp (wedding barges never do, so as not to trouble the still water), and nobody dares strike one. They drift south through the night with Tobin's body under Merel's bridal cloth.
 - **Boss:** *the Wakefin*, an Undertow-spawn that followed the first wake out of Ansedra's lagoon. It is fought on the drifting barge in the dark, with the sea-glow as the only light. *(It replaces the Cistern Keeper.)*
-- **Kerrid's reveal, at sea and by his own word.** Past midnight the barge drifts over a shoal where an old Rising's dead are still held. The motes come up off the water and drift toward Kerrid, the way held light drifts toward the sea, and a few start to leave his hands to join them. He doesn't wait to be exposed. He sits down, holds his hands still, and tells them: what happened at the Choir, Imra, Dace, and the promise that kept him walking. Toma: "Your breath. In Ullar." Kerrid: "Yes." Nobody performs a rite on him, and nobody attacks.
+- **Kerrid's reveal, at sea and by his own word.** Past midnight the barge drifts over a shoal where an old Rising's dead are still held. The motes come up off the water and drift toward Kerrid, the way held light drifts toward the sea, and a few start to leave his hands to join them. He doesn't wait to be exposed. He sits down, holds his hands still (the motes are leaving through his rope-burns), and tells them what happened **at Corrow** in 1001 ([ADR 0020](../../decisions/0020-kerrid-restaging.md)): eight days as Imra and Dace's host, the gate held open, the line through his hands, Dace reaching back for him and missing, and the watch he never came off. To Asha: "I got your mother up the stair. That's all I did. I got her up so she could walk to the Choir." Toma: "Your breath. In Ullar." Kerrid: "Yes." Nobody performs a rite on him, and nobody attacks.
 - At dawn Liss sings a Saltwright current-song into the fog, and **Hollowmere** answers. Liss has to tell her father that Tobin is dead. **Toma's faith breaks** among the people his order burned. He confesses the camp burning to Liss, and she lets him carry Tobin to the pyre-raft.
 - **Side scene:** Rhen and Liss's father share a drink and two different memories of Dace.
 
 ### Ch16 "The Edge of the World"
 **Zones:** the Pale Rim, white shallows [`ch16/pale_rim`]. The Drowned Choir [`ch16/drowned_choir`].
-- A Hollowmere ship carries them as far as the shallows allow and waits at the Rim. Days of wading over white sand under a white sky follow. Kerrid finds the spot where he died.
+- A Hollowmere ship carries them as far as the shallows allow and waits at the Rim. Days of wading over white sand under a white sky follow. Kerrid has never been here. He walks last in the line, as on a stair, toward the place he once sent Imra ([ADR 0020](../../decisions/0020-kerrid-restaging.md)).
 - At the Choir, Asha binds **Kesh**. Through Kesh's memory she learns the one thing the Archive couldn't tell them: **what the Hush truly does**. The singer becomes the storm's next heart. Kesh shows it from inside, and she shows the man who bound her in the stones rather than let her go.
-- **Sefir arrives** and explains reasonably. **His temptation is to go home ([ADR 0016](../../decisions/0016-act-two-restaging.md)).** "Leave the Eighth Verse in the stones, Asha. Go home to Haluna. Live. No Cantor will ever be named again. Your mother sleeps, and is never spent. I will see to the storm myself." It is the Long Stillness offered as a gift: nobody pays, nobody is lost, and nothing ends. Ysolde asks the only question: "Then who does it take?" He smiles and doesn't answer. **Asha refuses.** Ysolde denounces him.
+- **Sefir arrives** and explains reasonably. **His temptation is to go home ([ADR 0016](../../decisions/0016-act-two-restaging.md)).** "Leave the Eighth Verse in the stones, Asha. Go home to Haluna. Live. No Cantor will ever be named again. Your mother sleeps, and is never spent. I will see to the storm myself." It is the Long Stillness offered as a gift: nobody pays, nobody is lost, and nothing ends. Ysolde asks the only question: "Then who does it take?" He smiles and doesn't answer. **Asha refuses.** Ysolde denounces him. Kerrid, who has just learned what he saved Imra for, says it without shouting: "I carried her up so you could do this."
 - **Boss:** *Sefir's Abiding guard*, then the storm wakes early as Imra's heart falters. Kerrid holds the line. The party is swept away.
 - **Act break:** a Rhen voice-over.
 
@@ -181,7 +184,7 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 
 ### Ch19 "Iskarra"
 **Zones:** the Iskarra Ruins [`prologue/iskarra_dusk` full version]. Iskarra Lamp Spire, a dungeon [`ch19/iskarra_spire`].
-- **The prologue catches up:** the dusk vigil and the same shot, now understood ([ADR 0017](../../decisions/0017-act-one-restaging.md)). "Listen. This might be the last time I tell it."
+- **The prologue catches up:** the dusk vigil and the same shot, now understood ([ADR 0017](../../decisions/0017-act-one-restaging.md)). "Everyone I'm going to tell you about is still here tonight. Remember that, later." Now it hurts: Imra, Dace and Kerrid are about to go.
 - They climb the Lamp Spire to shut down the founders' anchor-engine, which opens a way into the storm's eye.
 - **Boss:** *Warden Hesper Oan and Ilsabet Rue* (a revenant pair).
 - Kerrid's last quiet night with Rhen.
@@ -200,7 +203,7 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 - **The Great Unbinding.**
 
 ### Ending
-- Everything lifts. Kerrid goes first: "Stand up straight. Your father slouched." Imra and Asha share a last scene of hands and silence. Dace and Rhen say goodbye, and this time Rhen says it back.
+- Everything lifts. Imra and Asha share a last scene of hands and silence. Dace and Rhen say goodbye, and this time Rhen says it back. **Kerrid goes last** ([ADR 0020](../../decisions/0020-kerrid-restaging.md)), because the captain comes off the wall last: "Stair's clear." Then, to Rhen: "Stand up straight. Your father slouched."
 - The Kite goes dark, and Liss brings it down by hand.
 - Asha tries to sing and nothing comes.
 - **Final image:** Haluna dock at night, the sea completely dark, the stars reflected in it.

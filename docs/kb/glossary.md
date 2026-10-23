@@ -235,3 +235,10 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 - **Tavi Orse**: captain of Oruvel's Reefball side and Mother Kell's grandson. Rhen dives for his side at the Tidecup (Ch7).
 - **Edict progress**: the High Warden's once-a-Calm journey along a coast to see the Salt Edict kept. Sefir is first met on one (Ch6).
 - **Spar-Wraith** (boss row above): now fought on the deck of a drifting dead trader, not on the ferry.
+
+### Added 2026-10-23 (M1-NAR-09 and M1-NAR-08, review-sweep-E; ADR 0020, N-21, N-22)
+- **stair-law**: the Corrow Stillguard rule "first down the stair, last up it": a captain doesn't come off the wall while anyone is still below.
+- **Stair's clear**: the Stillguard all-clear at the Fisher Stair, meaning nobody is left below. Kerrid's first line in his last scene.
+- **the straw-cape man**: an anonymous Low Reaches fisher's tale about a big man in a straw cape who pulls the drowning out of the sea and is gone before anyone can thank him. It is Kerrid, and nobody knows it.
+- **dock-master**: the keeper of Hollowmere's dry-dock berths, an office and not a chief. Liss's father holds it.
+- **Old Kerrid** (roster row above): no longer Imra's guardian. He was the Stillguard captain of the Corrow wall and died at the foot of the Fisher Stair in 1001 AL.

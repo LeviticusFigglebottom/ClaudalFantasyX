@@ -4,7 +4,7 @@ title: Act I echo audit (Ch1-Ch8): Sefir's tournament introduction, the seawall 
 role: narrative
 status: review
 reviewer: cinematics
-owner_session: "worktree-agent-a1c60c801e373ac96"
+owner_session: "worktree-agent-a62a3327575b9aaf4"
 depends_on: [M1-NAR-08]
 milestone: M1
 request-from: "lead"
@@ -27,6 +27,21 @@ Lead signed off ADR 0016 on 2026-10-23.
 - the Prologue: no campfire circle, and Rhen walks among the separate vigils.
 
 Residuals accepted with reasons in the ADR: the SPEC-fixed prologue line, the Haluna island-village start, the Ch3 emergence (with a watch), the father's song in the storm, the roster archetypes, Toma's guilt toward the Saltwrights, the element order (0015), and SPEC's own Act I order. For review: Cinematics checks the staging; the Lead signs off on the ADR (it is `proposed`).
+
+**Sweep-E changes (narrative, worktree-agent-a62a3327575b9aaf4, 2026-10-23):** [ADR 0020](../../decisions/0020-kerrid-restaging.md) (`proposed`; the rows marked **Lead** need sign-off), decisions_log N-21 and N-22.
+- **B1 (Kerrid):**
+  - **Death:** he was never Imra's guardian. He was the Stillguard captain of the Corrow wall. In 1001 Imra and Dace were his guests for eight days. When the storm came he held the Fisher Stair open, got them both up, and died at its foot holding the hand-line. Dace reached back and missed. He never went to the Choir or fought Sefir.
+  - **Bond:** a watch, not promises. The stair-law is "first down the stair, last up it". He never watched Asha or sought Rhen.
+  - **Face:** bare and weathered, both eyes clear, no mask. His scars are rope-burns on his hands and forearms (his death-wounds; the Ch15 motes leave through them), and the left forearm is wrapped.
+  - **Chapters:** Ch5 "I held a stair for your mother once". Ch8: he works the stair's foot, and a fishwife says "Captain?". Ch15: the confession is about Corrow. Ch16: he walks last on the Rim; there is no "spot where he died" (it is at Corrow), and he says "I carried her up so you could do this".
+  - **Ending:** Imra, Dace, then **Kerrid last**, by the stair-law ("Stair's clear." then "Stand up straight. Your father slouched.").
+  - Updated: kerrid.md, the other character sheets, act_outline, act3_ending, the bible (§3, §5 unrisen, §5.4, §10), voice_guide, glossary (appended), and color script `ending_unbinding`.
+- **S1:** the Ch7 island-side shape is an accepted residual. Oruvel's side withdraws after its opening round, win or lose, and Tamsule's side wins the cup offscreen.
+- **S2:** "I knelt beside your mother" is accepted, with reasons in 0020 (i).
+- **S3:** at the Lead's instruction (the human approved), the Prologue line is replaced by **"Everyone I'm going to tell you about is still here tonight. Remember that, later."** 0020 (g) gives the three candidates. It is in act_outline (Prologue, Ch19) and rhen_sallow.md. There is no `.dlg` or loc key yet. The SPEC edit is the Lead's.
+- **S4:** "at the Iskarra vigil".
+- **Watch:** Toma's Stillguard hold the stair and are never on an offensive (act_outline Ch8).
+- Validators are clean: validate_data, tools tests (291 OK), taskboard, and dlgc. The Godot dialogue tests pass 48/48.
 
 ## Review log
 - 2026-10-23 cinematics + IP check (review-sweep-E): **request-changes.** I read ADR 0017, act_outline.md Prologue-Ch9 (:11-103), Ch15-16 and the Ending, the character files (rhen, sefir, toma, liss, kerrid), decisions_log N-20 (:140-147), the glossary rows, color_script ch06 (:296), the ch03 `.dlg` watch comment, and the 6703678 diff. dlgc is clean.

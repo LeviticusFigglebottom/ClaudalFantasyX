@@ -145,3 +145,27 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
   - **The Prologue has no campfire circle.** The seven keep separate vigils, Rhen walks among them and sits beside Asha, and the line comes as his oil wick catches. Ch19 repeats the vigil.
 - **Why:** the audit found these beats followed the inspiring game's opening acts: the cleric introduced at the games, the guardian-captain with the newcomer as star, the coastal assault with forbidden weapons, the monster attacking the pilgrims' boat, and the campfire with the hero walking off to narrate. The other Act I residuals are accepted in the ADR, with reasons.
 - **Supersedes:** N-01's wording "after the Brightwater ferry survives the Spar-Wraith". The band is still earned on the Ch4 crossing, and is still inked by Toma and shown from Ch5. It also supersedes N-12's "the veteran's empty benches": the Ch7 side scene is now Tavi asking Asha to bless Oruvel's empty moorings under the Bell, by the same naming rite. N-12's arena notes are otherwise unchanged.
+
+---
+
+## 2026-10-23 (narrative, M1-NAR-09 and M1-NAR-08): review-sweep-E fixes
+
+### N-21. Kerrid is re-staged; the Ending order is Imra, Dace, Kerrid; the Prologue line is replaced (ADR 0020)
+- **Answer:** [ADR 0020](../decisions/0020-kerrid-restaging.md), proposed for Lead sign-off.
+  - **Kerrid was never a guardian.** He was the Stillguard captain of the Corrow wall. In 1001 AL Imra and Dace were his guests for eight days during the Coilspire trial. When the Undertow came he held the Fisher Stair open, got them both up, and was taken by the sea at its foot holding the hand-line. Dace reached back for him and missed. He never went to the Choir and never fought Sefir.
+  - **What keeps him is a watch, not a promise:** the stair-law "first down the stair, last up it". There are no promises to watch Asha or raise Rhen, and he never sought either child. He met the pilgrimage at Pemakar on his way to Corrow.
+  - **Face:** bare and weathered, both eyes clear, no mask. His scars are rope-burns on his hands and forearms (his death-wounds), and the left forearm is wrapped.
+  - **Ch5** line: "I held a stair for your mother once." **Ch8:** he works the stair's foot, and a fishwife says "Captain?". **Ch15:** the confession is about Corrow. **Ch16:** no visit to where he died; he walks last on the Rim, and at the Choir says "I carried her up so you could do this."
+  - **Ending:** E1 Imra, E2 Dace, E3 Kerrid last ("Stair's clear." then "Stand up straight. Your father slouched."). The rests are R2 hands, R3 where his father stood, R4 the empty place. Durations are unchanged.
+  - **Prologue line** (the human's approval, relayed by the Lead): **"Everyone I'm going to tell you about is still here tonight. Remember that, later."** The SPEC amendment is the Lead's.
+- **Why:** sweep E found Kerrid's backstory followed the inspiring game's dead mentor point for point: guardian beside the hero's father, killed confronting the man responsible at the ritual's end, two promises about the children, the face cues, the return to where he died, and departing first.
+- **Supersedes:** N-16's placement of Kerrid's shadow cue in E1 (it is now E3) and N-19's "E3" lantern note (Dace is now E2). ADR 0017's acceptance of the old Prologue line.
+
+### N-22. Sweep-E residuals and staging
+- **Ch7:** the newcomer filling a small island side's empty place is an accepted residual. **Oruvel's side does not win the cup:** win or lose its opening round, Tavi withdraws the side to go home and search Oruvel, and Tamsule's own side wins offscreen.
+- **Ch6:** Sefir's "I knelt beside your mother" is accepted, with reasons in ADR 0020 (i).
+- **Ch9:** the act break is "at the Iskarra vigil" (there is no fire, ADR 0017).
+- **Liss:** her father is Hollowmere's **dock-master**, not a chief, and Hollowmere is governed by a council of hull-captains. **Tobin volunteered** as the groom and was never an heir. The Kite coming from her people's dry-dock is an accepted residual.
+- **E6 blocking:** Asha starts side-on across the dock end, looking out to frame left with her left shoulder to camera, and turns about 50° to her left toward Haluna, ending 40° off the lens axis.
+- **E5 sea-glow:** E4 0.07 and E5 0.06 held (were 0.06 and 0.04), so E5 still reads as glow and the cut to E6's 0.0 is visible. Rendering to confirm.
+- **ch02 Stay branch:** Rhen takes Asha's hand right after her line 030, so she doesn't hold it out through Toma's introduction.

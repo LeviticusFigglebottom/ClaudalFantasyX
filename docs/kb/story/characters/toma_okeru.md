@@ -33,5 +33,5 @@ Toma *takes the hit and answers it.* His skills draw aggro (Provoke), raise Prot
 - **Asha:** devoted, protective, and occasionally overbearing. The hardest thing he does is let her choose.
 - **Rhen:** begins as rivals, becomes brothers. Rhen makes him laugh, and Toma makes Rhen stand still.
 - **Liss:** guilt and slowly earned respect. Their Act II scene is one of the game's emotional peaks.
-- **Kerrid:** Toma knew Kerrid by reputation as a Stillguard legend who died eleven years ago. Toma is the first to suspect what Kerrid is and the last to say it.
+- **Kerrid:** Toma knew Kerrid by reputation: every Stillguard cadet learns how the captain of the Corrow wall held the Fisher Stair in 1001 and died at its foot ([ADR 0020](../../decisions/0020-kerrid-restaging.md)). Toma is the first to suspect what Kerrid is and the last to say it.
 - **Ysolde:** a fellow believer at first. As both their faiths fall, they become the two people who understand exactly what it costs.
