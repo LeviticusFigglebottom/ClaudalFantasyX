@@ -2,8 +2,8 @@
 id: M1-CMB-08
 title: Wire the shrine HP/MP carry-over into live battles; economy.md cleanups
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-af6af1b46e0ce25af"
 depends_on: [M1-ARC-06]
 milestone: M1
 request-from: "architect"
