@@ -14,6 +14,9 @@ var hits: Array[Dictionary] = []
 ## mp_amount, revived, statuses_removed and delay_ticks (ItemBattleAction.resolve_on), and
 ## "zombie_felled" when a revive item KO'd a Zombie.
 var item_id: StringName = &""
+## End-of-turn effects of this action (Poison, Regen, Doom), as BattleEngine.turn_ended sends
+## them. Empty for failed actions.
+var end_of_turn: Array[Dictionary] = []
 ## Set when the actor was not in control: &"berserk" or &"confuse" (the engine chose).
 var auto_reason: StringName = &""
 

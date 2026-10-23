@@ -12,6 +12,14 @@ extends RefCounted
 signal turn_started(actor: BattleCombatant)
 signal action_resolved(result: ActionResult)
 signal battle_finished(outcome: StringName)
+## After every acted turn (including automatic and idle ones), once its end-of-turn effects
+## ran: `changes` lists them in order as {target_id, cause, amount, doom}. cause is &"poison",
+## &"regen" (amount < 0 heals, > 0 under Zombie), &"doom_tick" (doom = count left) or &"doom"
+## (the count ran out; amount = HP lost). amount follows the hit convention: HP lost.
+signal turn_ended(actor: BattleCombatant, changes: Array[Dictionary])
+## A turn eaten by Stop or Sleep (reason &"stop" wins if both). Doom still ticks on it, so
+## `changes` uses the turn_ended format (doom_tick / doom only).
+signal turn_lost(actor: BattleCombatant, reason: StringName, changes: Array[Dictionary])
 
 const OUTCOME_VICTORY := &"victory"
 const OUTCOME_DEFEAT := &"defeat"
@@ -71,6 +79,22 @@ func setup(
 		var row: Dictionary = db.enemies[StringName(str(eid))]
 		enemies.append(BattleCombatant.from_dict(StringName("%s#%d" % [eid, n]), BattleCombatant.TEAM_ENEMY, row))
 	_rebuild_roster()
+
+
+## Starting state for tests and capture fixtures (never play). Call after setup() and before
+## begin(). `state` maps a combatant id, or a base enemy id for every copy ("reef_crab"), to
+## {hp?: int (clamped to 1..max_hp), statuses?: [{id, duration}], provoked_by?: id}.
+## Statuses go through add_status, so wards and Petrify rules hold.
+func apply_fixture(state: Dictionary) -> void:
+	for c in party_active + party_reserve + enemies:
+		var row: Dictionary = state.get(String(c.id), state.get(String(c.id).get_slice("#", 0), {}))
+		if row.has("hp"):
+			c.hp = clampi(int(row["hp"]), 1, c.max_hp)
+		for st: Variant in row.get("statuses", []):
+			var sd: Dictionary = st
+			c.add_status(StringName(str(sd.get("id", ""))), int(sd.get("duration", -1)))
+		if row.has("provoked_by"):
+			c.provoker_id = StringName(str(row["provoked_by"]))
 
 
 func begin() -> void:
@@ -136,9 +160,38 @@ func preview(
 				if not changes.has(recipient):
 					changes[recipient] = {}
 				changes[recipient][sid] = int(inf.get("duration", row.get("default_duration", -1)))
+	for t in _hit_set(sk, recipient):
+		if t.has_status(&"sleep") and _wakes(current, t, sk):
+			if not changes.has(t):
+				changes[t] = {}
+			changes[t][CtbTimeline.WAKES] = 0
 	return timeline.predict(
 		count, current, int(sk.get("rank", Formulas.DEFAULT_RANK)), recipient, int(sk.get("delay_ranks", 0)), changes
 	)
+
+
+## Who `sk` would hit: the (reflected) single recipient, or everyone on the group's side.
+func _hit_set(sk: Dictionary, recipient: BattleCombatant) -> Array[BattleCombatant]:
+	match String(sk.get("target", "single_foe")):
+		"all_foes":
+			return living_foes_of(current)
+		"all_allies":
+			return living_allies_of(current)
+	var out: Array[BattleCombatant] = []
+	if recipient != null:
+		out.append(recipient)
+	return out
+
+
+## Whether `sk` from `actor` would deal HP damage to `t` (assumed to land), which wakes Sleep:
+## physical or magical power through a non-immune, non-absorbing affinity, or a heal on a Zombie.
+func _wakes(actor: BattleCombatant, t: BattleCombatant, sk: Dictionary) -> bool:
+	var kind := String(sk.get("kind", ""))
+	if kind == "heal":
+		return t.has_status(&"zombie")
+	if not kind in ["physical", "magical"] or int(sk.get("power", 0)) <= 0:
+		return false
+	return Formulas.affinity_hurts_more(t.affinity_for(attack_element(actor, t, sk)), &"immune")
 
 
 ## Executes `skill_id` for the current actor. Ends the actor's turn on success. Fails with
@@ -185,7 +238,7 @@ func use_item(item_id: StringName, targets: Array[BattleCombatant], items: Battl
 		result.hits.append(_resolve_item_on(action, t))
 	items.consume(item_id)
 	action_resolved.emit(result)
-	_end_turn(actor, action.rank)
+	result.end_of_turn = _end_turn(actor, action.rank)
 	return result
 
 
@@ -221,6 +274,16 @@ func preview_item(
 						mine[sid] = int(eff["duration"])
 				ItemBattleAction.EFFECT_DELAY:
 					delay += int(eff["ranks"])
+				ItemBattleAction.EFFECT_DAMAGE:
+					var aff := recipient.affinity_for(StringName(str(eff.get("element", "none"))))
+					if recipient.has_status(&"sleep") and Formulas.affinity_hurts_more(aff, &"immune"):
+						mine[CtbTimeline.WAKES] = 0
+				ItemBattleAction.EFFECT_CURE:
+					if recipient.is_petrified() and (eff.get("statuses", []) as Array).has("petrify"):
+						revived.append(recipient)
+						overrides[recipient] = _rejoin_time(recipient)
+					elif recipient.has_status(&"sleep") and (eff.get("statuses", []) as Array).has("sleep"):
+						mine[CtbTimeline.WAKES] = 0
 				ItemBattleAction.EFFECT_REVIVE:
 					if recipient.is_alive():
 						mine[CtbTimeline.FALLS] = -1
@@ -263,13 +326,39 @@ func _resolve_item_on(action: ItemBattleAction, t: BattleCombatant) -> Dictionar
 		felled["revived"] = false
 		felled["zombie_felled"] = true
 		return felled
-	var res := action.resolve_on(t)
+	var was_stone := t.is_petrified()
+	var res := _without_delay(action).resolve_on(t)
 	res["hit"] = true
 	res["crit"] = false
-	if bool(res["revived"]):
-		t.next_time = _rejoin_time(t)
+	var ranks := _delay_ranks(action)
+	if ranks > 0 and t.is_alive():
+		res["delay_ticks"] = push_delay(t, ranks)
+	if bool(res["revived"]) or was_stone and t.is_alive():
+		t.next_time = _rejoin_time(t)  # back from KO or stone: never before now
 		t.participated = true
 	return res
+
+
+## The item without its delay effects: the engine applies delay itself (diminishing returns).
+static func _without_delay(action: ItemBattleAction) -> ItemBattleAction:
+	var a := ItemBattleAction.new()
+	a.item_id = action.item_id
+	a.name_key = action.name_key
+	a.target = action.target
+	a.rank = action.rank
+	a.targets_fallen = action.targets_fallen
+	for eff in action.effects:
+		if StringName(str(eff.get("type", ""))) != ItemBattleAction.EFFECT_DELAY:
+			a.effects.append(eff)
+	return a
+
+
+static func _delay_ranks(action: ItemBattleAction) -> int:
+	var total := 0
+	for eff in action.effects:
+		if StringName(str(eff.get("type", ""))) == ItemBattleAction.EFFECT_DELAY:
+			total += int(eff["ranks"])
+	return total
 
 
 func _rejoin_time(c: BattleCombatant) -> int:
@@ -352,7 +441,7 @@ func _execute(
 			hit["reflected_from"] = t.id
 		result.hits.append(hit)
 	action_resolved.emit(result)
-	_end_turn(actor, int(sk.get("rank", Formulas.DEFAULT_RANK)))
+	result.end_of_turn = _end_turn(actor, int(sk.get("rank", Formulas.DEFAULT_RANK)))
 	return result
 
 
@@ -601,8 +690,18 @@ func _resolve_on(actor: BattleCombatant, target: BattleCombatant, sk: Dictionary
 	hit["statuses_added"] = added
 	var delay_ranks := int(sk.get("delay_ranks", 0))
 	if delay_ranks > 0 and target.is_alive():
-		target.next_time += Formulas.base_delay(target.agility) * delay_ranks
+		hit["delay_ticks"] = push_delay(target, delay_ranks)
 	return hit
+
+
+## Pushes `target` back by delay_push() (formulas.md § Time: halved for each earlier delay since
+## its last turn; 0 if delay_immune) and counts it. Returns the ticks added.
+func push_delay(target: BattleCombatant, ranks: int) -> int:
+	var ticks := Formulas.delay_push(target.agility, ranks, target.delays_taken, target.delay_immune)
+	target.next_time += ticks
+	if ticks > 0:
+		target.delays_taken += 1
+	return ticks
 
 
 ## Equipment status strikes (formulas.md § Equipment): after a landed physical hit on a target
@@ -624,18 +723,42 @@ func _variance() -> int:
 	return rng.randi_range(Formulas.VARIANCE_MIN_PCT, Formulas.VARIANCE_MAX_PCT)
 
 
-func _end_turn(actor: BattleCombatant, rank: int) -> void:
+## Ends `actor`'s acted turn: next delay, Poison/Regen, status countdown (Doom may fell it),
+## then turn_ended. Returns the end-of-turn changes (also on ActionResult.end_of_turn).
+func _end_turn(actor: BattleCombatant, rank: int) -> Array[Dictionary]:
 	actor.next_time = now + Formulas.action_delay(actor.agility, rank, actor.speed_mult())
+	actor.delays_taken = 0
+	var changes: Array[Dictionary] = []
 	if actor.is_alive():
 		if actor.has_status(&"poison"):
-			actor.apply_damage(Formulas.poison_damage(actor.max_hp))
+			changes.append(_change(actor, &"poison", -actor.apply_damage(Formulas.poison_damage(actor.max_hp))))
 		if actor.has_status(&"regen"):
-			actor.restore_hp(Formulas.regen_heal(actor.max_hp))  # Zombie: Regen harms
-	actor.tick_statuses()  # Doom may fell the actor here
+			# Zombie: Regen harms
+			changes.append(_change(actor, &"regen", -actor.restore_hp(Formulas.regen_heal(actor.max_hp))))
+	changes.append_array(_tick(actor))
 	actor.turns_taken += 1
-	if _check_outcome():
-		return
-	_advance()
+	turn_ended.emit(actor, changes)
+	if not _check_outcome():
+		_advance()
+	return changes
+
+
+## Counts `c`'s statuses down and reports Doom: a doom_tick while it counts, doom when it falls.
+func _tick(c: BattleCombatant) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	var doomed := c.doom_count() > 0
+	var hp := c.hp
+	if c.tick_statuses():
+		out.append(_change(c, &"doom", hp))
+	elif doomed:
+		var tick := _change(c, &"doom_tick", 0)
+		tick["doom"] = c.doom_count()
+		out.append(tick)
+	return out
+
+
+static func _change(c: BattleCombatant, cause: StringName, amount: int) -> Dictionary:
+	return {"target_id": c.id, "cause": cause, "amount": amount, "doom": 0}
 
 
 func _advance() -> void:
@@ -652,7 +775,11 @@ func _advance() -> void:
 		if actor.has_status(&"stop") or actor.has_status(&"sleep"):
 			# The turn is lost; statuses still count down so Stop/Sleep wear off.
 			actor.next_time = now + Formulas.action_delay(actor.agility, Formulas.DEFAULT_RANK, actor.speed_mult())
-			if actor.tick_statuses() and _check_outcome():  # Doom counts lost turns too
+			actor.delays_taken = 0
+			var reason := &"stop" if actor.has_status(&"stop") else &"sleep"
+			var changes := _tick(actor)  # Doom counts lost turns too
+			turn_lost.emit(actor, reason, changes)
+			if not actor.is_alive() and _check_outcome():
 				return
 			_prune_provoke()
 			lost_turns += 1

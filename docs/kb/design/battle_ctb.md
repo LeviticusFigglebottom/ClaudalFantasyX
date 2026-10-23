@@ -43,6 +43,12 @@ Swapping remains the elegant answer (SPEC §6.1), but a naive party now wins abo
 
 | `preview_item(item_id, target, items, count = 16)` | `Array[TurnEntry]` | The order if `current` used that item on `target` (rank, delay push, time statuses, revive rejoin, Zombie felled). |
 
+**Turn reports (M1-CMB-06, for the HUD):**
+- `turn_ended(actor, changes)` fires after every acted turn, and the same list is on `ActionResult.end_of_turn`. `changes` is `[{target_id, cause, amount, doom}]`: `poison`, `regen` (negative heals, positive under Zombie), `doom_tick` (`doom` = turns left) or `doom` (fell; `amount` = HP lost). Stop diffing HP.
+- `turn_lost(actor, reason, changes)` fires for each Stop/Sleep turn (`reason` &"stop" or &"sleep"), and `changes` carries Doom's tick or fall on that turn.
+- `apply_fixture(state)` sets an opening state after `setup()` and before `begin()`: `{id or base id: {hp?, statuses?: [{id, duration}], provoked_by?}}`. HP is clamped to 1..max, and statuses go through `add_status`. **UI switch:** replace the body of `BattleFixture.prepare(engine)` with `engine.apply_fixture(opening)`, and give a provoked combatant a `provoke` status entry as well as `provoked_by` (Provoke needs both).
+- **Lifetime gotcha:** a `Callable` does not keep its `RefCounted` object alive. Hold the `EquipmentEffects` (and `LatticeProgress`) instance for the whole battle when you pass `fx.apply_to` / `fx.currency_multiplier`, or the hook silently does nothing.
+
 **Items and rewards (M1-CMB-06):** `use_item(item_id, targets, items: BattleItemSource) -> ActionResult` (hits carry `amount`, `mp_amount`, `revived`, `statuses_removed`, `delay_ticks`, and `ActionResult.item_id` is set). For play, pass `InventoryItemSource.new(item_db, inventory)`; its `usable()` lists the Items menu. Use `item_can_target(action, c)` to filter the cursor. After victory, call `currency_award()` (set `currency_multiplier = equipment_effects.currency_multiplier` first) and `drop_awards()`. For equipment, compose `engine.party_modifier = EquipmentEffects.compose([progress.apply_to, fx.apply_to])`; skill hits then report `element`. Rules: formulas.md § Items, § Equipment in battle, § Rewards.
 
 `TurnEntry` fields: `combatant_id`, `time`, `team`, `skipped` (Stop/Sleep will eat it), `is_preview`, and `doom` (Doom countdown shown on that turn, 0 = none; the unit falls after the turn showing 1, so it has no later entries).
@@ -51,7 +57,7 @@ Swapping remains the elegant answer (SPEC §6.1), but a naive party now wins abo
 
 - `skills.json`: `kind` (physical|magical|heal|support), `power`, `rank` 1–8, `accuracy`, `element`, `target`, `mp_cost`, `magic` (Silence blocks it), optional `statuses: [{id, chance, duration}]`, and `delay_ranks`.
 - `statuses.json`: all 21 statuses from SPEC §6.8. `implemented: false` marks the ones the engine doesn't handle yet.
-- `enemies.json`: stats, `affinities`, `skills`, `ai` rules, `xp`, `lore_key`, and **`role_answer`**: which party member's niche is the "elegant answer" (SPEC §6.1). QA can audit encounter variety from this.
+- `enemies.json`: stats, `affinities`, `skills`, `ai` rules, `xp`, `currency`, `drops` (`[{item, chance}]`), optional `delay_immune` (bosses), `lore_key`, and **`role_answer`**: which party member's niche is the "elegant answer" (SPEC §6.1). QA can audit encounter variety from this.
 - `characters.json`: base stats and skills (the Lattice will layer on top in M1-PRG-01).
 - `encounters.json`: enemy lineup, `scripted` (no escape).
 

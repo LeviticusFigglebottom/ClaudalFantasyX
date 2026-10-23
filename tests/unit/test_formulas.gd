@@ -112,3 +112,13 @@ func test_affinity_order_for_attack_elements() -> void:
 	assert_true(Formulas.affinity_hurts_more(&"resist", &"immune"))
 	assert_true(Formulas.affinity_hurts_more(&"immune", &"absorb"))
 	assert_false(Formulas.affinity_hurts_more(&"normal", &"normal"), "ties are not 'more'")
+
+
+func test_delay_push_diminishes_and_respects_immunity() -> void:
+	assert_eq(Formulas.delay_push(10, 2, 0), 200, "first delay: base 100 x 2 ranks")
+	assert_eq(Formulas.delay_push(10, 2, 1), 100, "second before the target acts: halved")
+	assert_eq(Formulas.delay_push(10, 2, 2), 50)
+	assert_eq(Formulas.delay_push(10, 1, 3), 12, "100 / 8 = 12.5 truncates")
+	assert_eq(Formulas.delay_push(10, 2, 99), 200 / 65536, "capped at DELAY_STACK_MAX_STEPS halvings")
+	assert_eq(Formulas.delay_push(10, 2, 0, true), 0, "delay-immune")
+	assert_eq(Formulas.delay_push(10, 0, 0), 0)

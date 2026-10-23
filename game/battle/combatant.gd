@@ -47,6 +47,10 @@ var provoker_id: StringName = &""
 ## Low-HP auto-statuses this combatant's equipment switched on (so healing removes only those,
 ## never the same status from another source).
 var low_hp_owned: Array[StringName] = []
+## Delays received since this combatant's last own turn (diminishing returns; formulas.md).
+var delays_taken := 0
+## Data flag (enemies.json "delay_immune", e.g. bosses): delay effects add no ticks.
+var delay_immune := false
 
 
 static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> BattleCombatant:
@@ -74,6 +78,7 @@ static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> Ba
 		c.affinities[StringName(str(k))] = StringName(str(d["affinities"][k]))
 	c.ai_rules = (d.get("ai", []) as Array).duplicate(true)
 	c.xp_reward = int(d.get("xp", 0))
+	c.delay_immune = bool(d.get("delay_immune", false))
 	return c
 
 

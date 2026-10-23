@@ -18,3 +18,8 @@ func count(_item_id: StringName) -> int:
 ## Takes one `item_id` out of the bag. False (and nothing changes) if none are left.
 func consume(_item_id: StringName) -> bool:
 	return false
+
+
+## Battle-usable item ids held, in menu order.
+func usable() -> Array[StringName]:
+	return []

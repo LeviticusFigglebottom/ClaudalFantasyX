@@ -222,6 +222,8 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
         if "currency" in e and (not isinstance(e["currency"], int) or isinstance(e["currency"], bool)
                                 or e["currency"] < 0):
             rep.err(f"{w}: currency must be a non-negative int")
+        if "delay_immune" in e and not isinstance(e["delay_immune"], bool):
+            rep.err(f"{w}: delay_immune must be true or false")
         for d in e.get("drops", []):
             if not isinstance(d, dict) or d.get("item") not in item_ids:
                 rep.err(f"{w}: drop {d!r} names an unknown item (game/data/items/items.json)")

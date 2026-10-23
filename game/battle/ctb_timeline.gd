@@ -14,6 +14,9 @@ const PREVIEW_STATUSES: Array[StringName] = [&"haste", &"slow", &"stop", &"sleep
 ## Pseudo-status for status_changes: the candidate action KOs this unit (e.g. a revive item on
 ## a Zombie), so it leaves the preview like Petrify.
 const FALLS := &"_falls"
+## Pseudo-status for status_changes: the candidate action damages this sleeping unit, which
+## wakes it (applied before any statuses the action adds).
+const WAKES := &"_wakes"
 
 var _roster: Array[BattleCombatant] = []
 
@@ -74,6 +77,8 @@ func predict(
 		if changes.has(&"petrify") or changes.has(FALLS):
 			continue
 		var timed := _timed_copy(c)
+		if changes.has(WAKES):
+			timed.erase(&"sleep")
 		for sid: StringName in changes:
 			_sim_add_status(timed, sid, int(changes[sid]))
 		var t: int = time_overrides.get(c, c.next_time)
@@ -84,7 +89,7 @@ func predict(
 			if _sim_tick(timed):
 				continue  # Doom runs out at the end of this very action
 		if delay_target != null and c == delay_target and delay_ranks > 0:
-			t += Formulas.base_delay(c.agility) * delay_ranks
+			t += Formulas.delay_push(c.agility, delay_ranks, c.delays_taken, c.delay_immune)
 		sims.append({"c": c, "idx": i, "t": t, "first_preview": first_is_preview, "timed": timed})
 	var out: Array[TurnEntry] = []
 	while out.size() < count and not sims.is_empty():

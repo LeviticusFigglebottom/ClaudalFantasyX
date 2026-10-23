@@ -71,10 +71,25 @@ func targets_allies() -> bool:
 
 
 ## Whether `c` is a legal target by life state (team checks are the engine's, as for skills).
-## Revive items take only the KO'd (HP 0); a petrified ally is neither alive nor fallen, so no
-## item reaches them until a Petrify cure exists.
+## Revive items take only the KO'd (HP 0). A petrified ally is neither alive nor fallen: only
+## an item whose cure lists "petrify" reaches them (M1-CMB-06).
 func can_target(c: BattleCombatant) -> bool:
-	return c.hp <= 0 if targets_fallen else c.is_alive()
+	if targets_fallen:
+		return c.hp <= 0
+	if c.is_petrified():
+		return cures(&"petrify")
+	return c.is_alive()
+
+
+## Whether a cure effect of this item removes `status`.
+func cures(status: StringName) -> bool:
+	for eff in effects:
+		if (
+			StringName(str(eff.get("type", ""))) == EFFECT_CURE
+			and (eff.get("statuses", []) as Array).has(String(status))
+		):
+			return true
+	return false
 
 
 ## Applies every effect to `c`. Returns {"target_id", "amount", "mp_amount", "revived",

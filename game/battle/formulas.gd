@@ -43,6 +43,9 @@ const CONFUSE_ALLY_PCT := 50
 
 ## Items (M1-CMB-06): revive HP is a percent of max HP, never below 1.
 const REVIVE_MIN_HP := 1
+## Delay diminishing returns: each earlier delay since the target's last turn divides the next.
+const DELAY_STACK_DIVISOR := 2
+const DELAY_STACK_MAX_STEPS := 16
 const PCT := 100
 
 ## Rational multipliers as [numerator, denominator].
@@ -124,6 +127,18 @@ static func crit_chance(luck: int, target_luck: int) -> int:
 ## Effective stat after Break statuses (Power/Magic Break halve; Armor/Mental Break zero).
 static func broken_stat(value: int, half_break: bool) -> int:
 	return floori(value * STAT_BREAK_MULT) if half_break else value
+
+
+## Ticks a delay effect adds: base_delay × ranks, halved for each delay the target already took
+## since its last own turn (DELAY_STACK_DIVISOR per step, at most DELAY_STACK_MAX_STEPS), and 0
+## for a delay-immune target.
+static func delay_push(agility: int, ranks: int, prior: int, immune: bool = false) -> int:
+	if immune or ranks <= 0:
+		return 0
+	var divisor := 1
+	for i in mini(maxi(prior, 0), DELAY_STACK_MAX_STEPS):
+		divisor *= DELAY_STACK_DIVISOR
+	return base_delay(agility) * ranks / divisor
 
 
 ## HP a revive item restores: max(1, floor(max_hp × hp_pct / 100)).
