@@ -82,7 +82,7 @@ def main() -> None:
     ap.add_argument("npz")
     ap.add_argument("out")
     ap.add_argument("--views", default="0,45,90,180")
-    ap.add_argument("--zoom", default="body", choices=["body", "head", "hand", "torso", "foot"])
+    ap.add_argument("--zoom", default="body", choices=["body", "head", "face", "hand", "torso", "foot"])
     ap.add_argument("--size", type=int, default=300)
     ap.add_argument("--wire", action="store_true")
     args = ap.parse_args()
@@ -103,6 +103,9 @@ def main() -> None:
     elif args.zoom == "head":
         hh = zmax / 7.3
         box = (-0.75 * hh, 0.75 * hh, zmax - 1.3 * hh, zmax + 0.05 * hh)
+    elif args.zoom == "face":
+        hh = zmax / 7.3
+        box = (-0.42 * hh, 0.42 * hh, zmax - 1.04 * hh, zmax - 0.2 * hh)
     elif args.zoom == "torso":
         hh = zmax / 7.3
         box = (-1.6 * hh, 1.6 * hh, zmax - 4.4 * hh, zmax - 0.8 * hh)

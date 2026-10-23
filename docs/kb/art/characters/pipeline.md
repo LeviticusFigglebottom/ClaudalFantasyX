@@ -127,3 +127,22 @@ At battle and field distance (5–15 m, LOD1 range) the bodies read as believabl
 6. **The skin shader from Rendering (M1-RND-04):** pre-integrated SSS with a painterly bias. The `*_skinmask` bake inputs (thickness, cavity) can come from the field (distance to bone axes) and from mesh curvature.
 7. **Weight review and correctives** (elbow, knee, shoulder raise, hip flexion), then LOD1–3.
 8. If the face review fails twice, escalate SPEC §16 Q2 (MPFB as a topology donor) to the human, per ADR 0010.
+
+## 11. M1-CHR-03: the donor topology (ADR 0021)
+
+Since M1-CHR-03 the mesh is no longer the procedural cage. `bb_donor.generate(params)` puts the **MakeHuman hm08 CC0 base mesh** (vendored in `assets_src/third_party/mpfb2/`, read by our own `mpfb_data.py`) behind the same interfaces: the parameter files, `Landmarks`, the `DEF-*` skeleton and the asha.md §6.2 shape names. The cage builder (`bb_cage`, `bb_head`) is kept for its helpers (`check_manifold`, `cast`, `eye_mesh`) and as history.
+
+| Step | What happens |
+|---|---|
+| Macro mix | The donor's young sex/ethnicity targets plus the muscle/weight targets, mixed by `femininity`, `muscle`, `mass` and `donor_mix_{african,asian,caucasian}` |
+| Fit | A polyharmonic RBF warp from the donor's joint markers onto our landmarks; the head, hands and feet move as exact similarity transforms (head height, palm length, foot length). The face, finger and foot landmarks are then **read back from the placed donor**, so the rig and the eye and mouth parts agree with the mesh |
+| Girth | Torso, arm and leg cross-sections are scaled (22 sections × 16 angles, smoothed) to our anatomy field's radius, so the width, depth, muscle and mass sliders still shape the body |
+| Eyes and mouth | An RBF re-shapes each lid margin onto `EyeFrame` (fissure ×1.10, tilt, canthus) and tucks the socket behind our globe; the donor's resting lip parting is 45% closed |
+| Face sculpt | The bb_params face sliders as smooth face-space deformations (1.0 / 0.0 = the donor's own form) |
+| Field | Every anatomy-field region is offset by a grid so its zero set lies on the donor skin (p95 error < 2 mm). Costume panels, hair cards, brows and sandals ray-cast against it unchanged |
+| Weights | The donor's Rigify weights mapped onto our 75 `DEF-*` bones (`bb_donor.bone_of`; `bb_rig.skin_with_weights`). No bone heat |
+| UVs | Base bodies keep the donor's atlas. The hero head is our own unwrap (face mask, rest of head cut down the back, sockets and mouth cavity); the hero body re-flattens the donor's islands |
+
+Base bodies: 13,380 vertices, 13,378 quads (26,756 triangles) for every variant, closed and manifold. The hero adds one Catmull-Clark level (`bb_donor.subdivide`, a linear stencil that also carries weights, masks and shape deltas) on the face mask and lips; the neighbouring quads are fan-triangulated through the edge points, so the mesh stays watertight. `python3 assets_src/characters/base_body/preview.py ... --zoom face` is the quick clay view.
+
+Known weaknesses: the base bodies' breasts are flattened by the girth fit (the field's breast volume, not the donor's). The heavy variant's depth comes only from the field's torso and is still shallow. The donor's ears and hands keep the native density.

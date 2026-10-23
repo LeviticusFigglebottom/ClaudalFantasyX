@@ -16,7 +16,9 @@ Options (after `--`):
     --no-rig            skip Rigify and skinning (fast geometry-only build, used by the unit test)
 
 Deterministic: no randomness at all; the same parameters give byte-identical geometry.
-Everything is original procedural work (no downloaded meshes, scans, packs or CC0 assets).
+M1-CHR-03 (ADR 0021): the mesh is the MakeHuman hm08 CC0 donor topology, fitted to the variant's
+proportions and re-shaped by bb_donor (vendored data in assets_src/third_party/mpfb2/, no MPFB code);
+its UVs and skin weights are the donor's. The anatomy field and the rig are ours.
 """
 from __future__ import annotations
 
@@ -33,6 +35,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 import bb_cage  # noqa: E402
+import bb_donor  # noqa: E402
 import bb_params  # noqa: E402
 
 PLACEHOLDER_NOTE = (
@@ -88,6 +91,15 @@ def mesh_object(name: str, V: np.ndarray, F: list[tuple[int, ...]]) -> bpy.types
     return ob
 
 
+def set_uvs(ob: bpy.types.Object, uv: np.ndarray) -> int:
+    """Per-corner UVs (the donor's atlas, MakeHuman convention: v up, as Blender)."""
+    me = ob.data
+    layer = me.uv_layers.new(name="UVMap")
+    flat = np.asarray(uv, dtype=np.float64).reshape(-1, 2)
+    layer.data.foreach_set("uv", flat.ravel())
+    return 0
+
+
 def mark_seams_and_unwrap(ob: bpy.types.Object, seams: set) -> int:
     me = ob.data
     lookup = {tuple(sorted(e.vertices)): e for e in me.edges}
@@ -141,11 +153,13 @@ def main() -> int:
     log = lambda msg: print(f"[base_body {params['name']}] {msg}", flush=True)  # noqa: E731
     reset_scene()
 
-    res = bb_cage.generate(params, subdiv=1, log=log)
+    res = bb_donor.generate(params, log=log)
     lm = res["lm"]
     V, F = res["V"], res["F"]
     body = mesh_object(f"base_body_{params['name']}", V, [tuple(map(int, f)) for f in F])
-    n_seams = mark_seams_and_unwrap(body, res["seams"])
+    man = bb_cage.check_manifold(np.asarray(F))
+    log(f"donor mesh: non-manifold edges {man['non_manifold']}")
+    n_seams = set_uvs(body, res["uv"])
     uvs = uv_stats(body)
     log(f"uv: {n_seams} seam edges, {uvs} ({time.time() - t0:.1f}s)")
     skin_rgb = bb_params.hex_to_linear(str(params["skin_hex"]))
@@ -183,7 +197,7 @@ def main() -> int:
         meta = bb_rig.build_metarig(lm)
         rig = bb_rig.generate_rig(meta)
         skel = bb_rig.build_game_skeleton(rig, f"base_body_{params['name']}_skeleton")
-        w = bb_rig.skin(body, rig, skel)
+        w = bb_rig.skin_with_weights(body, skel, res["weights"])
         for side, ob in zip(("L", "R"), eyes):
             bb_rig.attach_rigid(ob, skel, f"DEF-eye.{side}")
         skel["hymn_tag"] = "PLACEHOLDER"
