@@ -13,8 +13,8 @@ request-from: "architect"
 ARC-06's request to Environment was never filed: Haluna's shrine needs its locations.json rows and values.
 
 ## Acceptance criteria
-- [ ] Haluna shrine rows in locations.json with real positions and values; check_locations passes
-- [ ] The shrine is placed in the Haluna zone scene
+- [x] Haluna shrine rows in locations.json with real positions and values; check_locations passes
+- [x] The shrine is placed in the Haluna zone scene
 
 ## Notes
 See the review-sweep-F entries in the source tasks' Review logs for file:line.
@@ -34,3 +34,4 @@ See the review-sweep-F entries in the source tasks' Review logs for file:line.
   - **S1: `ch02/haluna` now resolves to a scene with no player.** Before this task, M1-ARC-11's fallback sent a Continue from a Haluna save to the default zone, which has a player. Now it loads `haluna_mood.tscn`, warns "no player to place", and the player has no control. Normal M1 play cannot save there, but a debug teleport or a hand-made save can. Pick one, and make it visible: (a) add a `_note` on the location row in locations.json saying the target is a mood-test stand-in, or (b) let WorldReturn treat "no player to place" as a fallback (warn, go to the default, keep `location_id`). The handoff's "move both rows when `game/levels/ch02/haluna/` lands" should be a task, not a known issue. Please file it (role environment).
   - S2: none of the AC checkboxes in this file is ticked.
 - 2026-10-23 lead: closing on review-sweep-G approve-with-fixes; the player-less Continue into ch02/haluna is folded into M1-ARC-11's rework.
+- 2026-10-23 architect (M1-ARC-11 rework, worktree-agent-a442c963360f262ca): ticked both boxes (review-sweep-G verified them). S1, both options: the `ch02/haluna` row is marked `"playable": false` with a `_note`, and WorldReturn treats a not-playable location as a fallback (warn, go to the default, keep `location_id`); shrine teleports there are refused. `check_locations` now errors on a playable row whose scene has no player. Moving the rows to the playable zone is filed as **M1-ENV-06** (role environment).

@@ -2,7 +2,7 @@
 id: M1-ARC-11
 title: Save and camera fixes from review-sweep-F
 role: architect
-status: doing
+status: review
 reviewer: qa
 owner_session: "worktree-agent-a442c963360f262ca"
 depends_on: [M1-ARC-10]
@@ -21,6 +21,17 @@ Review-sweep-F findings on ARC-06/07/08/10 and PRG-03.
 - [x] Second set-aside does not overwrite an existing .recovered file; same-second saves stay recoverable
 - [x] ADR 0018 amendment wording matches what Continue picks
 - [x] Tests for each
+
+### Rework (review-sweep-G)
+- [x] B1 MUST (a): wrong-hero, wrong-slot or unknown-item loadouts are repaired on load (unequip into the bag, drop unknown ids, with a warning), not corrupt; a piece worn twice or an unowned uid stays corrupt
+- [x] B1 MUST (b): no save path overwrites a non-empty corrupt slot without first moving it to a numbered `.corrupt` copy; tests reproduce the probes (ch 7 renamed weapon + ch 2 autosave; the same for recover_temp)
+- [x] S1: a negative v2 (and v0/v1) inventory count is dropped with a warning; v3+ stays corrupt
+- [x] S2: a .tmp from a newer build is set aside and logged, never silently overwritten
+- [x] S3: Continue uses a valid location_id when respawn_location_id is stale
+- [x] NAR-10 S1/S2: `Narrator(asha)` alone errors; `Narator(asha) The bell.` errors with a hint
+- [x] CMB-08: one shared petrify constant; CMB-08 boxes ticked
+- [x] ENV-04: Continue or teleport into a player-less location never strands the player; ENV-04 boxes ticked
+- [x] ADR 0018 Amendment 3 (append-only)
 
 ## Notes
 See the review-sweep-F entries in the source tasks' Review logs for file:line.
@@ -56,6 +67,61 @@ See the review-sweep-F entries in the source tasks' Review logs for file:line.
   older branch becomes the Continue slot; and the director's reparent rule. The toast is filed as
   **M1-UI-09** (role ui).
 - Not done (nit, not an AC): `TitleMenu.start_new_game` ordering (ARC-06), `ShrineNetwork._loaded` strong refs.
+
+### Rework done (architect, worktree-agent-a442c963360f262ca; review-sweep-G)
+- **B1(a) repair, not reject.** `_read_save` no longer runs `loadout_problem()` (`_equipment_problem` removed).
+  `_post_load` calls the new `EquipmentBag.repair_loadout()` before `ensure_starting_gear`: a worn piece that
+  is known but no longer fits its wearer or slot (`misfit`: `wrong_character`, `unknown_slot`, new
+  `ERR_WRONG_SLOT`) comes off and stays in the bag; a piece whose base is unknown is taken off and dropped
+  (worn or not), each with a `SaveSystem: equipment.<path>: ...` warning. `grant_starting` refills the weapon
+  (a fitting spare first). `SaveShape` still rejects a piece worn twice and an unowned uid. Listings no longer
+  depend on the item tables at all.
+- **B1(b) keep a copy.** `_set_aside_corrupt_slot` runs in `save_to_slot` (after the checked temp write,
+  before the rename) and in `recover_temp`: a non-empty slot whose status is corrupt is renamed to the next
+  free `slot_NN.json.corrupt`, `.corrupt.2`, ... (`corrupt_path`, `free_corrupt_path`, `MAX_CORRUPT = 99`).
+  If no name is free or the rename fails, the write is refused (temp removed) and the slot kept. A 0-byte
+  file is replaced without a copy.
+- **Probe tests (test_save_recovery.gd).** P1: a ch 7 / 99,999 s slot 0 wearing `old_reef_hooks` lists OK, a
+  ch 2 chapter autosave is skipped (`ERR_ALREADY_EXISTS`), slot 0 is byte-identical, and it loads with Rhen
+  re-armed. P3: a ch 1 temp beside a ch 9 renamed-weapon slot is not recoverable and `recover_temp` refuses.
+  Real corruption (a piece in two slots, `{torn`): the autosave writes, the old bytes are in `.corrupt`, a
+  second one goes to `.corrupt.2`, a readable slot is never copied; `recover_temp` over a corrupt slot keeps
+  `.corrupt`. test_save_shape.gd: four table-drift loadouts load (listing, load_from_slot, deserialize) with the
+  weapon refilled and the piece kept or dropped; worn-twice / two-slots / unowned stay corrupt.
+  test_equipment.gd: `repair_loadout` notes, idempotence, the refill from the bag.
+- **S1.** `_migrate_v2_to_v3` drops whole counts <= 0 again and warns for a negative one; only non-whole values
+  pass through to the shape check. The `"drag_net": -2` line is back in test_save_system.gd, plus a v3
+  negative count that is corrupt; test_save_shape.gd checks v0/v1/v2 drop and v3 corrupt.
+- **S2.** `leftover_temp_info` gains `keep` (`temp_worth_keeping`): recoverable, a `STATUS_NEWER` temp, or a
+  readable temp beside a newer build's slot. `_set_aside_leftover_temp` uses `keep`, so those go to
+  `.recovered` before the next write. `report_leftover_temps` logs every kept temp (new `kept_leftover_temps`)
+  and still returns only the recoverable slots. Tests: the v99 temp probe (P2), a temp beside a v99 slot, the
+  rule table.
+- **S3.** `WorldReturn.resolve` tries the respawn only when `registry.can_enter` it, else `location_id` (at the
+  location's own spawn), else the default; the result carries `asked` and `respawn_skipped`, and Continue
+  warns once for a skipped respawn. Test: a stale respawn with a good `location_id`, then both stale.
+- **ENV-04 (player-less Continue): both options.** `"playable": false` on a locations.json row (with a
+  `_note` on `ch02/haluna`); `LocationRegistry.is_playable` / `can_enter`; `resolve` falls back for it with
+  `reason: not_playable` (also `empty`, `unknown`); Continue and `go_to` warn "has no player to place" and keep
+  the location; `ShrineNetwork.request_teleport` refuses it. `check_locations` (validate_data.py) errors on a
+  playable row whose scene has no `Player` under the root and no node in group `"player"`, and on a
+  non-playable `default_location` / `new_game` (tools/tests/test_locations_validate.py: 2 new tests; the
+  fixture zone gained a Player). Filed **M1-ENV-06** (environment) to move the rows to the playable zone.
+  ENV-04 boxes ticked.
+- **NAR-10 S1/S2 (tools/dlgc.py).** New `BodyParser.narrator_identity(name, identity)`: Narrator or a Narrator
+  misspelling followed by a known `(speaker id)`. It counts as evidence in `check_bare_speaker` (which now runs
+  before the wrong-bracket check, so `Narrator(asha) [grief]` alone gets the bare-head fix `': ...'`) and in the
+  missing-colon check. `Narrator(asha)`, `Narator(asha)`, `Narator(asha) The bell.` error with hints;
+  `Narator The bell.`, `Narrator(kerid)` and `Toma(rhen)` stay narration. Test
+  `test_narrator_identity_is_evidence`; dialogue_format.md has the row, the `Narrators [grief]` known limit and
+  the case rule (names any case, emotion ids not).
+- **CMB-08.** `BattleCombatant.STATUS_PETRIFY`, used by combatant.gd, ctb_timeline.gd, battle_vitals.gd and
+  item_battle_action.gd; an order comment at `BattleVitals.setup` (S3). CMB-08 boxes ticked.
+- **ADR 0018 Amendment 3** (append-only) records the repair rule, the `.corrupt` copies, kept temps, legacy
+  counts, and the wrong-clock nit. architecture.md "Saves" has a sweep-G block.
+- Not done: battle_engine.gd:332 still tests a JSON string array for `"petrify"` (the engine is at its size
+  limit; a `String(...)` of the constant would push the line past 120). The reparent nit (a fire-and-forget
+  scripted shot is dropped) is unchanged, as documented in field_camera.md.
 
 ## Review log
 
