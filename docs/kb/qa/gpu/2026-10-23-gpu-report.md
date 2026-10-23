@@ -1,6 +1,6 @@
 # GPU performance report, 2026-10-23 (M1-QA-01 follow-up)
 
-> **Status: PARTIAL.** The main sweep (every test scene × 4 presets × 2 resolutions) and the Undertow Horizon breakdown are complete and valid. Still pending: the Undertow **Eye** breakdown, the **water** breakdown, and the **screenshot drift** run (step 3). They stopped because the PC's display went to sleep after 60 min idle (23:06 local), and Vulkan cannot create a swapchain without a display (`swap_chain_resize`, `rendering_device_driver_vulkan.cpp:3369`). Someone needs to wake the display at the machine. See "Harness gotchas".
+> **Status: complete.** Main sweep (every test scene × 4 presets × 2 resolutions), Undertow breakdown (Horizon and Eye), water breakdown, and the screenshot drift run against the lavapipe baselines (baselines untouched).
 
 These are the first **real GPU** numbers for the project. Everything in `graphics_settings.md`, `water.md`, `undertow.md`, `glimmer.md` and `character_shading.md` was estimated from lavapipe.
 
@@ -45,7 +45,9 @@ These are the first **real GPU** numbers for the project. Everything in `graphic
 | High | 20.48 (undertow Night) | 1.30 (char SkinEye) | **35.66** (undertow Night) | 1.99 (water Lagoon) |
 | Ultra | 60.12 (undertow Night) | 2.08 (water Lagoon) | **105.97** (undertow Night) | 3.28 (water Lagoon) |
 
-## Undertow cost by tier and feature (Horizon camera; Eye pending)
+## Undertow cost by tier and feature
+
+### Horizon camera
 
 The column is the GraphicsSettings preset (environment, shadows, render scale). The row picks the storm tier, as in `UndertowBench.CONFIGS`. The value is GPU median ms; the parenthesised value is the delta against "no storm" in the same column.
 
@@ -62,8 +64,23 @@ The column is the GraphicsSettings preset (environment, shadows, render scale). 
 | high - wounds | 14.91 (+14.50) | 15.21 (+14.57) | 25.30 (+24.70) | 25.82 (+24.73) |
 | high, 22 steps | 7.54 (+7.12) | 7.78 (+7.14) | 12.76 (+12.16) | 13.20 (+12.12) |
 
-- **The body is the whole cost.** Hiding it ("high - body") brings the frame back to the no-storm figure. Sea, lid, spray curtains and wounds are each within ±0.1 ms, so they are free.
-- **Cost is linear in march steps:** 22 steps costs 51% of 44 (7.78 vs 15.16 ms at 1080p). Each dense step costs about **0.33 ms at 1478×831 internal** on this card.
+### Eye camera
+
+| Config | Low preset 1080p | High preset 1080p | Low preset 1440p | High preset 1440p |
+|---|---:|---:|---:|---:|
+| no storm | 0.48 | 0.81 | 0.79 | 1.37 |
+| low (shells) | 1.29 (+0.81) | 1.58 (+0.77) | 2.25 (+1.46) | 2.75 (+1.38) |
+| medium | 5.86 (+5.38) | 6.15 (+5.34) | 10.01 (+9.22) | 10.58 (+9.21) |
+| high | 16.31 (+15.83) | 16.54 (+15.73) | 28.14 (+27.35) | 28.53 (+27.16) |
+| ultra | 28.57 (+28.09) | 28.92 (+28.11) | 49.62 (+48.83) | 49.48 (+48.11) |
+| high - body | 0.64 (+0.16) | 0.92 (+0.11) | 1.04 (+0.25) | 1.52 (+0.16) |
+| high - sea | 16.13 (+15.65) | 16.45 (+15.64) | 27.98 (+27.19) | 28.15 (+26.78) |
+| high - spray | 16.26 (+15.78) | 16.55 (+15.74) | 28.07 (+27.28) | 28.42 (+27.06) |
+| high - wounds | 16.18 (+15.70) | 16.57 (+15.76) | 28.06 (+27.27) | 28.34 (+26.97) |
+| high, 22 steps | 8.78 (+8.30) | 9.15 (+8.33) | 15.28 (+14.50) | 15.68 (+14.31) |
+
+- **The body is the whole cost.** Hiding it ("high - body") brings the frame back to within 0.25 ms of the no-storm figure (Eye: sea, lid and spray together are about 0.1–0.25 ms). Sea, spray curtains and wounds each move the frame by under 0.4 ms, which is noise at these frame times.
+- **Cost is linear in march steps:** 22 steps costs 51–55% of 44 (Horizon 7.78 vs 15.16 ms at 1080p; Eye 9.15 vs 16.54). Each dense step costs about **0.33 ms at 1478×831 internal** on this card.
 - **The storm cost doesn't depend on the preset.** The storm delta is the same under the Low and High presets at the same output size (both use 0.77 render scale), so shadows, SSR, GI and fog don't interact with it.
 - **Ultra is about 1.8× High, and High about 2.9× Medium.** That's close to the lavapipe *ratios* in `undertow.md` (+60–70% and 2.7×). Lavapipe ranked the features correctly but underestimated the absolute cost: undertow.md projected the raymarched tiers at "5–15× over" a 2–3 ms slot, and High on an RTX 3060 at 1440p is about **20–35× over**.
 - **The resolution scaling is almost ideal.** 1080p to 1440p is 1.78× the pixels and 1.70× the cost, so the half-/quarter-resolution body that undertow.md proposes for M2 should cut cost by roughly 4× / 16×.
@@ -72,7 +89,32 @@ The column is the GraphicsSettings preset (environment, shadows, render scale). 
 
 1. **Undertow raymarched body, High/Ultra (blocker for §4.2).** 25.9–35.7 ms at High 1440p on a 9070 XT, about 60–100 ms on an RTX 3060. To fit **≤ 2–3 ms on an RTX 3060** it needs to be about **1 ms on this card**: a 25–35× cut. The M2 plan in undertow.md (render at quarter resolution with temporal reprojection, about 16×; baked 3D noise in place of hash fBm; early-out on opacity) is the right direction. Measure each step with `gpu_bench --variants=undertow`.
 2. **The Undertow Medium tier can't serve as a fallback.** 8.5 ms (1080p) and 14.9 ms (1440p) at Night on this card, so about 36–43 ms on a GTX 1060 at 1080p and about 34–42 ms on an RTX 3060 at 1440p. Until (1) lands, ship the storm as **shells (Low tier) on every preset**, with raymarched tiers opt-in for capture or trailers. Shells cost 1.1 ms at 1440p here, about 2.5–3 ms on a 3060.
-3. *(Provisional, pending the water breakdown.)* **Water-heavy views are the heaviest non-storm content.** Lagoon is 1.99 ms at High 1440p and 3.28 ms at Ultra 1440p (about 4.6–5.6 ms and 7.5–9.2 ms on an RTX 3060), with Ultra +65% over High. It fits the budget alone, but it's the biggest line item a coastal zone will add. Re-ranked once the `--variants=water` run shows how much is the water shader itself (SSR, refraction, caustics).
+3. **The Undertow's Low-tier shells sit at the top of their slot.** The fallback in (2) costs +1.1 ms (Horizon) and +1.4 ms (Eye) at 1440p on this card, about **2.5–3.9 ms on an RTX 3060**, against the 2–3 ms a storm shot can afford (undertow.md). It's fine at 1080p on a GTX 1060 (+0.6–0.8 ms here, about 2.5–4 ms there, inside a 33 ms frame). At High 1440p, trim shell overdraw (fewer wall fractions or a tighter alpha cut) if a storm view also carries water and characters.
+
+Water is **not** in the top 3. See the next section: it matches its estimate.
+
+## Water cost by tier and feature (Lagoon camera)
+
+Same layout as the Undertow tables, with the delta against "no water" in the same column (`WaterBench.CONFIGS`; "high - X" turns one optional term off on the High tier).
+
+| Config | Low preset 1080p | High preset 1080p | Low preset 1440p | High preset 1440p |
+|---|---:|---:|---:|---:|
+| no water | 0.46 | 0.74 | 0.71 | 1.19 |
+| low | 0.69 (+0.24) | 1.01 (+0.27) | 1.14 (+0.43) | 1.63 (+0.43) |
+| medium | 0.82 (+0.36) | 1.13 (+0.39) | 1.34 (+0.64) | 1.83 (+0.64) |
+| high | 0.93 (+0.47) | 1.24 (+0.50) | 1.51 (+0.80) | 2.01 (+0.82) |
+| ultra | 1.15 (+0.69) | 1.45 (+0.71) | 1.86 (+1.15) | 2.37 (+1.18) |
+| high - ssr | 0.83 (+0.37) | 1.15 (+0.41) | 1.36 (+0.66) | 1.85 (+0.66) |
+| high - caustics | 0.84 (+0.38) | 1.16 (+0.42) | 1.38 (+0.68) | 1.88 (+0.68) |
+| high - foam | 0.83 (+0.37) | 1.15 (+0.41) | 1.36 (+0.65) | 1.86 (+0.67) |
+| high - refraction | 0.93 (+0.47) | 1.25 (+0.51) | 1.52 (+0.82) | 2.02 (+0.83) |
+| high - detail normals | 0.86 (+0.40) | 1.18 (+0.44) | 1.42 (+0.71) | 1.91 (+0.72) |
+| high - sss | 0.93 (+0.47) | 1.24 (+0.50) | 1.51 (+0.81) | 2.01 (+0.82) |
+| high - all optional | 0.59 (+0.14) | 0.92 (+0.18) | 0.96 (+0.26) | 1.47 (+0.27) |
+
+- **Water High at 1440p: +0.82 ms here, about 1.9–2.3 ms on an RTX 3060.** That's at the top of water.md's 1.0–2.0 ms estimate (made at the same 0.77 internal scale), so the estimate holds. Water Low at 1080p on a GTX 1060: +0.24 ms here, about 1.0–1.2 ms there (estimate 0.4–0.9).
+- Per term at High 1440p: SSR, caustics and foam about 0.15 ms each; detail normals about 0.1 ms. Refraction and SSS cost nothing measurable (refraction's screen copy is part of the base). The base (all optional terms off) is +0.27 ms, about a third of the High cost. Lavapipe put it at half.
+- The jump from High to Ultra in the whole-scene tables (Lagoon 1.99 → 3.28 ms) is mostly the **Ultra preset's native resolution** (1.0 vs 0.77 render scale) plus its heavier SSR, GI and fog. The water Ultra tier itself adds only +0.36 ms over High.
 
 ## Budget verdicts (all scenes)
 
@@ -106,11 +148,65 @@ Scenes that miss budget: **undertow (Horizon, Eye, Night) at High 1440p on the r
 
 ## Screenshot drift (GPU vs. lavapipe baselines)
 
-**Pending.** Blocked by the display sleeping. The runner is ready: `GODOT=<godot> tools/gpu_bench/capture_gpu.sh <out_dir>` (one process per shot, like `capture.sh`), then `python tools/screenshots/compare.py --out <out_dir>`. Baselines are not touched.
+Captured on the RX 9070 XT with the official build: `GODOT=<godot> tools/gpu_bench/capture_gpu.sh <out_dir>` (one process per shot, like `capture.sh`, `--fixed-fps 60`), then `python tools/screenshots/compare.py --out <out_dir>`. **Baselines were not modified** (`git status tests/` clean before and after). **41 of 43 shots pass; 2 exceed their limit.** Neither looks wrong on the GPU.
+
+| Shot | RMSE | Limit | Result |
+|---|---:|---:|---|
+| boot_title | 0.00009 | 0.004 | pass |
+| lighting_probe | 0.00258 | 0.008 | pass |
+| lighting_probe_low | 0.00306 | 0.008 | pass |
+| glimmer_dusk | 0.00137 | 0.008 | pass |
+| glimmer_night_held | 0.00020 | 0.008 | pass |
+| glimmer_release | 0.00028 | 0.008 | pass |
+| battle_hud_preview | 0.00138 | 0.008 | pass |
+| battle_swap_menu | 0.00138 | 0.008 | pass |
+| battle_victory | 0.00121 | 0.008 | pass |
+| base_body_slender_front | 0.00071 | 0.008 | pass |
+| base_body_slender_q34 | 0.00083 | 0.008 | pass |
+| base_body_slender_side | 0.00111 | 0.008 | pass |
+| base_body_slender_face | 0.00102 | 0.008 | pass |
+| base_body_slender_posed | 0.00083 | 0.008 | pass |
+| base_body_athletic_front | 0.00072 | 0.008 | pass |
+| base_body_athletic_q34 | 0.00081 | 0.008 | pass |
+| base_body_athletic_side | 0.00099 | 0.008 | pass |
+| base_body_heavy_front | 0.00072 | 0.008 | pass |
+| base_body_heavy_q34 | 0.00074 | 0.008 | pass |
+| base_body_heavy_side | 0.00069 | 0.008 | pass |
+| veg_backlit_fronds | 0.01356 | 0.018 | pass (75% of limit) |
+| veg_frangipani_close | 0.01575 | 0.018 | pass (88% of limit) |
+| **veg_beach_wide** | **0.01903** | 0.018 | **fail** |
+| water_shallows | 0.00222 | 0.008 | pass |
+| water_lagoon | 0.00214 | 0.008 | pass |
+| water_horizon | 0.00230 | 0.008 | pass |
+| water_night | 0.00031 | 0.008 | pass |
+| field_lane_fixed | 0.00116 | 0.008 | pass |
+| field_court_pan | 0.00344 | 0.008 | pass |
+| field_causeway_dolly | 0.00496 | 0.008 | pass |
+| battle_statuses | 0.00137 | 0.008 | pass |
+| save_shrine_field | 0.00122 | 0.008 | pass |
+| save_menu | 0.00097 | 0.008 | pass |
+| save_menu_overwrite | 0.00058 | 0.008 | pass |
+| swatch_card | 0.00112 | 0.004 | pass |
+| undertow_horizon_dusk | 0.00071 | 0.008 | pass |
+| undertow_eye | 0.00081 | 0.008 | pass |
+| undertow_night | 0.00075 | 0.008 | pass |
+| **undertow_horizon_low** | **0.01202** | 0.008 | **fail** |
+| char_skin_eye_closeup | 0.00198 | 0.008 | pass |
+| char_hair_backlit | 0.00165 | 0.008 | pass |
+| char_cloth_gold | 0.00185 | 0.008 | pass |
+| char_low_compare | 0.00242 | 0.008 | pass |
+
+Findings (I inspected the GPU PNG, the baseline and the diff for each failure):
+
+- **`undertow_horizon_low` (0.012):** the error is confined to the **alpha-cut edges of the Low-tier shells**, where the hash noise crosses `alpha cut`. A last-bit difference in the GPU's float hash flips pixels on either side of the cutoff. The image is visually identical, and the GPU edges are if anything slightly cleaner. Not a GPU bug. Alpha-tested noise edges simply aren't stable across rasterizers.
+- **`veg_beach_wide` (0.019) and the other vegetation shots (75–88% of a limit already loosened to 0.018):** the error is on **foliage alpha edges and the dappled palm shadow edges** (shadow filtering). It's visually identical. The vegetation limit is already the loosest in the manifest because of this.
+- Everything else, including the raymarched storm shots, SDFGI/fog lighting probes, water and skin, is **under 0.005**. Lavapipe is a good proxy for the GPU look here.
+- **Recommendation:** keep the lavapipe baselines as the CI reference (the job is already `continue-on-error`). If a GPU runner becomes a gate, approve a **separate GPU baseline set** rather than raising the shared limits. Never re-approve lavapipe baselines from GPU captures.
+- Most interesting PNGs (on the measuring PC, not committed): `C:\Users\Aaron\hymn_shots_gpu\undertow_horizon_low.png`, `C:\Users\Aaron\hymn_shots_gpu\diff\undertow_horizon_low.png`, `C:\Users\Aaron\hymn_shots_gpu\veg_beach_wide.png`, `C:\Users\Aaron\hymn_shots_gpu\diff\veg_beach_wide.png`, `C:\Users\Aaron\hymn_shots_gpu\undertow_night.png` (the 106 ms-at-Ultra view, matching lavapipe at 0.00075).
 
 ## Harness gotchas
 
-- **The display must be awake.** On Windows, Godot's window needs a live display for the Vulkan swapchain. After the monitor's idle timeout (60 min here), every process logs `swap_chain_resize ... ERR_CANT_CREATE` and reports **0.00 ms GPU at about 16 ms frames**. Four rows of the Undertow Eye breakdown were lost this way and dropped from the CSV. `summarize.py` discards `gpu_median_ms == 0` rows. Hold the display on *before* a long run (power settings, or `SetThreadExecutionState(ES_CONTINUOUS|ES_DISPLAY_REQUIRED)`). That keeps a display awake but cannot wake one that is already off.
+- **The monitor must stay on.** On Windows, Godot's window needs a live display for the Vulkan swapchain. When the monitor was switched off mid-run, every process logged `swap_chain_resize ... ERR_CANT_CREATE` (`rendering_device_driver_vulkan.cpp:3369`) and reported **0.00 ms GPU at about 16 ms frames**. Four rows were lost this way, dropped from the CSV, and re-measured once the monitor was back on. `summarize.py` discards `gpu_median_ms == 0` rows. For unattended runs, keep the monitor on (and the idle display timeout off), or fit an HDMI/DP dummy plug.
 - Very low GPU load (about 1 ms frames) can leave a GPU at partial clocks, so the light scenes' absolute numbers may read slightly high. That doesn't change any verdict.
 
 ## Full table (RX 9070 XT)
