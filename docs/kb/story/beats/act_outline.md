@@ -56,9 +56,9 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 - **Side scene:** Ysolde re-inks Asha's wake-shell by lamplight, alone.
 
 ### Ch5 "Terraces of Ash"
-**Zones:** Pemakar Town [`ch05/pemakar`]. Ember Terrace temple [`ch05/ember_terrace`].
+**Zones:** Pemakar Town [`ch05/pemakar`]. Ashcrown temple [`ch05/ashcrown`].
 - Lanternfall festival: a thousand leaf-boats on the terrace channels, among the graves (pillar 2). Kerrid appears at the festival's edge, tells Asha "I travelled with your mother," and simply walks with them from then on.
-- Temple trial: light glimmer channels in sequence up the stair-mountain. Asha binds **Kahre**.
+- Temple trial: catch a strike from the ash-plume at the crown and walk it down the stair-mountain's copper veins, tier by tier, before it fades. Asha binds **Kahre** (Lightning).
 - **Boss:** *Cinder Matron* (a magma-crusted temple guardian construct, two phases) breaks armour, which introduces Kerrid's niche.
 - **Side scene:** a smith whose son drowned in Oruvel asks Rhen what the town looked like. Rhen tells him the truth, then a better version.
 
@@ -77,11 +77,11 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 
 ### Ch8 "The Seawall"
 **Zones:** Corrow Bastion and the seawall [`ch08/corrow`]. Coilspire temple [`ch08/coilspire`].
-- Asha binds **Virel** at Coilspire (trial: route lightning through copper channels). Liss finds Wenna's scratched line-marks in the stone.
+- Asha binds **Virel** (Fire) at Coilspire (trial: open and close the copper flues so the beacon's fire climbs the spire). Liss finds Wenna's scratched line-marks in the stone.
 - The Undertow comes for Corrow. The Stillguard defend the wall with Liss's rigged Saltwright cannons. The Order uses them and thanks no one.
 - **Set-piece:** the defence. The party holds a section of wall against waves of spawn. **Pell** is on the wall imitating the storm's sounds, luring spawn from fishers.
 - **Boss:** *the Undertow's Reach*, a colossal limb of the storm (multi-phase, scripted escape).
-- Rhen sees a figure inside the storm's wall and hears the current-song. He dives toward it. Kerrid drags him out.
+- Rhen sees a figure inside the storm's wall and hears the current-song. He can't move. The figure turns away into the dark, and Kerrid has to pull him off the wall's edge by the collar. *(Staged as a freeze, not a run toward it.)*
 
 ### Ch9 "The Ebbing"
 **Zones:** Corrow shoreline at night [`ch08/corrow` night variant].
@@ -111,13 +111,13 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 ### Ch12 "The Cold Road"
 **Zones:** Keth Pass, a mountain route [`ch12/keth_pass`]. Quellan, a highland town [`ch12/quellan`]. Cloudloom temple [`ch12/cloudloom`].
 - The pass-cords. In the cold, Toma notices **Kerrid's breath doesn't fog**.
-- Asha binds **Hesk**. Ama's frozen keth hang everywhere. Ysolde reads them and lies about what they say. That night she confesses to Asha: *"forty-seven voices, seven houses."*
+- Asha binds **Hesk** (Holy) in the open-roofed glacier cave. Ama's frozen keth hang everywhere, and the noon light writes their shadows on the ice. Ysolde reads them and lies about what they say. That night she confesses to Asha: *"forty-seven voices, seven houses."*
 - **Boss:** *Avalanche Ram* (a woolback grown monstrous on drowned glimmer from a meltwater lake).
 - **Side scene:** an Ullari woman ties a knot for her son on the pass-cord and walks on. Rhen asks how she can. She says, "I carry the knot. He doesn't have to."
 
 ### Ch13 "Gold and Lacquer"
-**Zones:** Ansedra, the holy city [`ch13/ansedra`]. Sanctum of the Level, the Holy temple [`ch13/sanctum`].
-- A city of perfect stillness. Sefir hosts the party. Asha binds **Ethren**, and Ysolde stands before Corran with a Cantor beside her.
+**Zones:** Ansedra, the holy city [`ch13/ansedra`]. Sanctum of the Level, the Ice temple [`ch13/sanctum`].
+- A city of perfect stillness. Sefir hosts the party. In the Sanctum the basin is frozen solid in the tropical heat, and pilgrims kneel to it. Asha binds **Ethren** (Ice), and Ysolde stands before Corran with a Cantor beside her.
 - The **peace wedding** is announced: Liss's brother **Tobin** will marry **Merel Dask**, a Warden's daughter. Liss is cautiously, painfully hopeful.
 - **Side scene:** Ysolde shows Rhen the house she shared with Corran, now someone else's.
 
@@ -156,7 +156,7 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 
 ### Ch18 "The Kite"
 **Zones:** the Kite (a hub) [`ch18/kite`]. Reedhollow revisited.
-- Maiden flight. **The world opens** (SPEC §6.6): revisit towns that have changed, Ultimate Weapon quests, and secret coordinates.
+- Maiden flight. **The world opens** (SPEC §6.6): revisit towns that have changed, heirloom weapon quests (one per party member, each tied to someone they lost), and secret coordinates.
 - **Required:** Pell returns to Reedhollow, is given a new name-shell, and teaches Asha the farewell-tide.
 - **Optional flagged scene:** Toma leads Haluna in lifting its own dead the Kirru way.
 - **Side scenes:** one per revisited town, showing how each town's grief has changed.
@@ -175,7 +175,7 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 - **Boss:** *the Cage*: the four bound founders, Orin Tesk, Halde Moor, Isse Varan, and Cael Imbrey, fought as one multi-part boss. They thank the party as they fall.
 
 ### Ch21 "The Heart"
-**Zones:** the Heart of the Undertow [`ch21/heart`].
+**Zones:** the Heart of the Undertow [`ch21/heart`]. Beat-by-beat durations, staging, and music for Ch21 and the Ending are in [act3_ending.md](act3_ending.md).
 - Imra at the centre, and beside her, holding her light together for eleven years, **Dace Sallow**.
 - **Kesh's release**, with Sefir watching.
 - **Final boss: Sefir Aurane**, three phases: the Warden, the Undertow-heart, and **the Letting**. In the last phase Asha sings the Eighth Verse as a timeline countdown the party must protect.

@@ -187,7 +187,7 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Emotional note | A funeral for a living girl. Lamp-lit feast faces against the first full sea-glow of the game; the dock scene is lit only by the sea from below, which reads as beautiful and wrong. |
 
 ### Ch5 "Terraces of Ash"
-`ch05` · zone `ch05/pemakar, ch05/ember_terrace`
+`ch05` · zone `ch05/pemakar, ch05/ashcrown`
 
 | Field | Value |
 |---|---|
@@ -551,7 +551,7 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Night sea-glow | energy 0.0 |
 | Exposure / contrast / saturation | EV100 6.0 · S-curve 0.55 · saturation x0.8 |
 | LUT intent | lut_ending_dock: starlight only. sea_glow = 0.0 exactly (the first frame in the game where it is zero). Water is a mirror of stars: SSR plus planar reflection, roughness 0.02. Asha's skin lit by starlight and a 0.15 sky fill. |
-| Emotional note | For the first time in a thousand years the sea is dark. Stars above and stars below, and a girl who hums once and smiles. Quiet, enormous, at peace. |
+| Emotional note | For the first time in a thousand years the sea is dark. Stars above and stars below, and a girl who draws breath for the tune, lets it go unsung, and smiles. She never sings or hums again. Quiet, enormous, at peace. |
 
 ### Post-credits: Oruvel rebuilt
 `post_credits` · zone `ch01/oruvel (rebuilt variant)`

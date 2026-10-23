@@ -4,7 +4,7 @@
 **Battle niche:** healer and white mage. She calls the Vowbound.
 
 ## Background
-Asha's mother **Imra Velamir** was the 61st Cantor. She left when Asha was seven and sang the Hush at the Drowned Choir eleven years ago. Asha's father died at sea before she was born. She was raised in Haluna by her mother's sister **Neme**, who mends nets and pretends not to be afraid. Asha has heard the dead since she was four: a faint hum near motes, which she describes as "someone humming in the next room." She was named Cantor at fifteen, when the Order's tide-readers saw the Calm failing early. She has spent three years preparing.
+Asha's mother **Imra Velamir** was the 61st Cantor. Imra hummed her the Velamir family lullaby every night, a tune Asha later lost. She left when Asha was seven and sang the Hush at the Drowned Choir eleven years ago. Asha's father died at sea before she was born. She was raised in Haluna by her mother's sister **Neme**, who mends nets and pretends not to be afraid. Asha has heard the dead since she was four: a faint hum near motes, which she describes as "someone humming in the next room." She was named Cantor at fifteen, when the Order's tide-readers saw the Calm failing early. She has spent three years preparing.
 
 She knows exactly what a Cantor's pilgrimage ends in, and she has decided to be glad about it, because that is easier for everyone around her. She smiles first so other people don't have to.
 
@@ -16,7 +16,7 @@ She knows exactly what a Cantor's pilgrimage ends in, and she has decided to be 
 - **Act I:** gentle, stubborn, and visibly loved by her village. She binds Ilun at the Shell Shrine (vertical slice) and sings her first verse. Rhen recognises it. She attends her own Pilgrim's Wake and comforts the mourners. At Corrow she performs her first great Ebbing for hundreds of drowned (Ch9) and is radiant and exhausted. Privately she notices that the motes don't seem to *want* to go to sea.
 - **Act II:** the Kirru farewell-tide (Ch10) shows her motes rising, and she can't unsee it. At Cloudloom, Ama Quillo's keth tell her the Saints are a fraction of the Cantors. At the wedding she is the one Sefir wants alive. At the Drowned Choir she learns what the Hush does and that her mother is the storm's heart *right now*. Sefir offers her a gentle death that would free Imra into a temple. **She says no.** It is the first time in the game she doesn't smile while refusing.
 - **Act III:** she chooses the Unbinding knowing it may cost her everything. She learns the farewell-tide from the Kirru and pieces the Eighth Verse together. She releases her Vowbound one by one inside the storm, each a friend. She sings the Letting.
-- **Ending:** she lives, but the Hush has taken her singing voice. Her last scene with Imra is mostly silence and hands. On the dock she hums once and nothing comes, and she smiles anyway. This time it isn't to protect anyone.
+- **Ending:** she lives, but the Hush has taken her singing voice. Her last scene with Imra is mostly silence and hands. On the dock she draws breath for the tune, lets it go unsung, and smiles anyway. She never sings or hums again. This time it isn't to protect anyone.
 
 ## Silhouette and Costume
 - A slender, upright build that stays still while others move.
@@ -27,7 +27,7 @@ She knows exactly what a Cantor's pilgrimage ends in, and she has decided to be 
 - Palette: white, sea-blue, black lacquer, and gold.
 
 ## Battle Tie-in
-She is the steady centre of the team: healing, Shell/Protect, and revival. Calling a Vowbound sends the whole party off the field, which mirrors her story as a person who keeps stepping in front of everyone else. **Suggested Swell input:** a *chant sequence*, a short button phrase following the melody of the verse.
+She is the steady centre of the team: healing, wards, and revival. Calling a Vowbound sends the whole party off the field, which mirrors her story as a person who keeps stepping in front of everyone else. **Suggested Swell input:** a *chant sequence*, a short button phrase following the melody of the verse.
 
 ## Relationships
 - **Rhen:** he is the only one who treats her as a person rather than a Cantor, at first because he doesn't know better. Love grows from that.
