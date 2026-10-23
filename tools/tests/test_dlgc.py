@@ -204,7 +204,7 @@ class ErrorTests(DlgcTestBase):
         self.assert_error("-> A. #line:t_001\n\tRhen: In. #line:t_002", "tabs", 4)
 
     def test_unknown_speaker(self) -> None:
-        self.assert_error("Nobody: Hi. #line:t_001", "unknown speaker 'Nobody'", 3)
+        self.assert_error("Ahsa: Hi. #line:t_001", "unknown speaker 'Ahsa'; did you mean 'Asha'?", 3)
 
     def test_unknown_emotion(self) -> None:
         self.assert_error("Rhen [smug]: Hi. #line:t_001", "unknown emotion '[smug]'", 3)
@@ -513,7 +513,8 @@ class LongLineTests(DlgcTestBase):
 
 
 class NearMissTests(DlgcTestBase):
-    """M1-NAR-06: lines that nearly match a speaker line are errors, never silent narration."""
+    """M1-NAR-06/07: lines that nearly match a speaker line are errors, never silent narration. Every
+    review-sweep-D near-miss probe is here; its narration probes are in test_dlgc_narration_corpus.py."""
 
     def test_emotion_before_alias(self) -> None:
         self.assert_error('Asha [smile] as "The girl": Hello. #line:t_001',
@@ -531,10 +532,32 @@ class NearMissTests(DlgcTestBase):
         self.assert_error("[smug] The bell rang. #line:t_001", "'smug' is not in", 3)
 
     def test_speaker_like_narration_is_an_error(self) -> None:
-        for line in ("Old Toma: Lie still.", "Asha (sad): Hi.", "Mother Ilse: Hi.", "Rhen {tired}: Hm."):
+        """review-sweep-D: 1-2 name words with a speaker among them, or any `[...]` group, is an error."""
+        for line in ("Old Toma: Lie still.", "Toma Vell: Lie still.", "Asha Vell: I never learned her name.",
+                     "Old Toma [sad]: Lie still.", "Mother Ilse [sad]: Hi.", "The Keeper of Lamps [cold]: Hm."):
             with self.subTest(line=line):
                 self.assert_error(f"{line} #line:t_001", "looks like a speaker, but this line would compile as "
                                                          "narration", 3)
+
+    def test_name_shaped_prefix_without_a_speaker_only_warns(self) -> None:
+        """review-sweep-D (Lead): captions and headings are narration; they WARN with the escape hint."""
+        lines = ("Chapter Two: The Raft", "Part One: Ashfall", "Day Three: the reef.", "The Hollow: three days later.",
+                 "Corrow Harbour: dawn.", "Eleven Bells: that is what they called the hour.", "Mother Ilse: Hi.",
+                 "Interlude: Ysolde", "Nobody: Hi.")
+        self.ops("\n".join(f"{t} #line:t_{i:03}" for i, t in enumerate(lines)))
+        res = dlgc.compile_project(self.tmp)
+        self.assertEqual(len(res.warnings), len(lines), res.warnings)
+        for w in res.warnings:
+            self.assertIn("write '\\:' for a colon in narration", w)
+        self.assertEqual([r[1] for r in res.loc_rows], list(lines))
+
+    def test_display_names_count_as_speakers(self) -> None:
+        loc = self.tmp / "game" / "data" / "loc" / "strings.csv"
+        loc.write_text("keys,en\nCHAR_PELL,Brother Ansel\nCHAR_ASHA,Asha\nOTHER,Mother Ilse\n", encoding="utf-8")
+        self.assertEqual(dlgc.load_speaker_names(self.tmp), {"brother ansel": "pell", "asha": "asha"})
+        self.assertEqual(dlgc.load_speaker_names(self.tmp / "nowhere"), {})
+        self.assert_error("Brother Ansel: Hi. #line:t_001", "Did you mean 'Pell:' or 'Pell [emotion]:'?", 3)
+        self.assertEqual(self.scene("Mother Ilse: Hi. #line:t_001"), [])
 
     def test_longer_name_shaped_prefix_only_warns(self) -> None:
         """M1-NAR-07: 3-6 name-shaped words before ':' is a WARN, not an error."""
@@ -559,7 +582,64 @@ class NearMissTests(DlgcTestBase):
                  "Bell 12:40 Tide 3:1 Low. #line:t_003\n"
                  "Psalm 4:2 was her favourite. #line:t_004")
         self.assertEqual(dlgc.compile_project(self.tmp).warnings, [])
-        self.assert_error("Bell Twelve: Hi. #line:t_001", "'Bell Twelve:' looks like a speaker", 3)
+        self.assertEqual(self.scene("Bell Twelve: Hi. #line:t_001"), [])
+        self.assertIn("'Bell Twelve:' looks like a speaker", dlgc.compile_project(self.tmp).warnings[0])
+
+    def test_name_lists_compass_points_and_prose_leaders_are_prose(self) -> None:
+        self.ops("Asha and Toma: the only two who stayed. #line:t_001\n"
+                 "Sefir and Pell: brothers. #line:t_002\n"
+                 "North of Corrow: only the reef. #line:t_003\n"
+                 "Not Asha: me. #line:t_004\n"
+                 "Only Kerrid: he alone understood. #line:t_005\n"
+                 "I Remember Corrow: that was the song. #line:t_006")
+        self.assertEqual(dlgc.compile_project(self.tmp).warnings, [])
+
+    def test_wrong_brackets_around_the_emotion(self) -> None:
+        for line, fix in (("Asha (sad) Hi.", "Asha [sad]: Hi."), ("Asha (sad): Hi.", "Asha [sad]: Hi."),
+                          ('Asha "sad": Hi.', "Asha [sad]: Hi."), ("Asha {sad}: Hi.", "Asha [sad]: Hi."),
+                          ("Rhen <tired>: Hm.", "Rhen [tired]: Hm."), ("Narrator (rhen): Hm.", "Narrator(rhen): Hm.")):
+            with self.subTest(line=line):
+                self.assert_error(f"{line} #line:t_001", f"did you mean '{fix}'?", 3)
+        # No colon and not an emotion: prose.
+        self.ops('Asha (again) laughed. #line:t_001\nToma "Lamp" was his name. #line:t_002')
+
+    def test_stray_punctuation_before_the_emotion(self) -> None:
+        self.assert_error("Asha, [sad]: Hi. #line:t_001", "stray ',' between the name and the emotion: did you mean "
+                                                          "'Asha [sad]: Hi.'?", 3)
+        self.assert_error("Asha; [sad]: Hi. #line:t_001", "stray ';'", 3)
+
+    def test_full_width_colon(self) -> None:
+        self.assert_error("Asha\uff1a Hi. #line:t_001", "a full-width colon after 'Asha'", 3)
+        self.assert_error("Asha [sad]\uff1a Hi. #line:t_001", "did you mean 'Asha [sad]: Hi.'?", 3)
+        self.ops("The tide\uff1a gone. #line:t_001")
+
+    def test_two_colons_after_the_speaker(self) -> None:
+        self.assert_error("Asha [sad]:: Hi. #line:t_001",
+                          "two colons after the speaker: did you mean 'Asha [sad]: Hi.'?", 3)
+        self.assertEqual(self.ops("Asha: \\: Hi. #line:t_001")[0]["speaker"], "asha")
+
+    def test_emotion_before_an_unquoted_alias(self) -> None:
+        self.assert_error("Kerrid [cold] as The Stranger: Hi. #line:t_001",
+                          "did you mean 'Kerrid as \"The Stranger\" [cold]:'?", 3)
+
+    def test_missing_colon_hint_drops_stray_punctuation(self) -> None:
+        for line in ("Asha [sad]; Hi.", "Asha [sad] - Hi.", "Asha [sad]. Hi.", "Asha [sad] \u2014 Hi."):
+            with self.subTest(line=line):
+                self.assert_error(f"{line} #line:t_001", "did you mean 'Asha [sad]: Hi.'?", 3)
+        self.assert_error('Asha as "The girl". Hello. #line:t_001', "did you mean 'Asha as \"The girl\": Hello.'?", 3)
+
+    def test_unknown_speaker_typo_hint(self) -> None:
+        self.assert_error("Ahsa [sad]: Hi. #line:t_001", "unknown speaker 'Ahsa'; did you mean 'Asha'?", 3)
+        self.assert_error("Kerid: Hi. #line:t_001", "did you mean 'Kerrid'?", 3)
+
+    def test_still_compiles_as_a_speaker_line(self) -> None:
+        for line in ("Asha[sad]: Hi.", "asha [sad]: hi.", "ASHA: Hi."):
+            with self.subTest(line=line):
+                self.assertEqual(self.ops(f"{line} #line:t_001")[0]["speaker"], "asha")
+
+    def test_known_limits_compile_as_narration(self) -> None:
+        """No grammar: these stay narration (documented in dialogue_format.md)."""
+        self.ops("Asha the girl: Hi. #line:t_001\nAsha. Hi. #line:t_002\nAsha - Hi. #line:t_003")
 
     def test_missing_colon_after_a_speaker(self) -> None:
         self.assert_error("Asha [sad] Hi there. #line:t_001",
@@ -589,9 +669,10 @@ class NearMissTests(DlgcTestBase):
                 self.assert_error(line, "tag the line #narration if it really is narration", 3)
 
     def test_speaker_like_hint_names_a_known_speaker(self) -> None:
-        self.assert_error("Asha (sad): Hi. #line:t_001", "Did you mean 'Asha:' or 'Asha [emotion]:'?", 3)
         self.assert_error("Old Toma: Hi. #line:t_001", "'Old Toma:' looks like a speaker", 3)
-        self.assertNotIn("Did you mean", self.scene("Old Toma: Hi. #line:t_001")[0])
+        self.assert_error("Old Toma: Hi. #line:t_001", "Did you mean 'Toma:' or 'Toma [emotion]:'?", 3)
+        self.assert_error("Asha Vell [sad]: Hi. #line:t_001", "Did you mean 'Asha:' or 'Asha [emotion]:'?", 3)
+        self.assertNotIn("Did you mean", self.scene("Mother Ilse [sad]: Hi. #line:t_001")[0])
 
     def test_narration_tag_allows_it_and_is_not_kept(self) -> None:
         ops = self.ops("Low Tide: the harbour empties. #line:t_001 #narration\n"
@@ -698,7 +779,7 @@ class AssignIdsTests(DlgcTestBase):
         self.assertEqual(res.assigned, [(4, "t_x_0013")])
 
     def test_other_errors_abort_without_text(self) -> None:
-        res, p = self.assign("Nobody: One.")
+        res, p = self.assign("Ahsa: One.")
         self.assertIsNone(res.text)
         self.assertTrue(any("unknown speaker" in e for e in res.errors), res.errors)
         self.assertNotIn("#line:", p.read_text(encoding="utf-8"))

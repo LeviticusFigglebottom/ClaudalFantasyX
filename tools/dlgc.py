@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import difflib
 import hashlib
 import io
 import json
@@ -62,33 +63,57 @@ SPEAKER_RE = re.compile(
     r"""\s*(?:\[([^\]]*)\])?\s*:\s*(.*)$"""
 )
 TN_RE = re.compile(r"""(?:^|\s)#tn:"((?:[^"\\]|\\.)*)"(?=\s|$)""")
-# Near misses of SPEAKER_RE (M1-NAR-06). Each would otherwise compile, silently, to narration.
-# `Name [emotion] as "Alias":` (the emotion belongs after the alias)
+# Near misses of SPEAKER_RE (M1-NAR-06, M1-NAR-07). Each would otherwise compile, silently, to narration
+# (or ship stray text in a speaker line). WORD is the "one identifier-like word" an emotion or identity is.
+WORD = r"[A-Za-z][A-Za-z0-9_]*"
+# `Name [emotion] as "Alias":` or `Name [emotion] as Alias:` (the emotion belongs after the alias)
 EMO_BEFORE_ALIAS_RE = re.compile(
-    r"""^([A-Za-z][A-Za-z0-9_]*)(\([^)]*\))?\s*\[([^\]]*)\]\s+as\s+"((?:[^"\\]|\\.)*)"\s*:"""
+    r"""^([A-Za-z][A-Za-z0-9_]*)(\([^)]*\))?\s*\[([^\]]*)\]\s+as\s+(?:"((?:[^"\\]|\\.)*)"|([^"\[\]:]+?))\s*:"""
 )
 # `Name as Alias [emotion]:` (the alias needs double quotes)
 UNQUOTED_ALIAS_RE = re.compile(r"""^([A-Za-z][A-Za-z0-9_]*)\s+as\s+([^"\[\]:]*?)\s*(\[[^\]]*\])?\s*:""")
+# `Asha (sad): Hi.`, `Asha {sad} Hi.`, `Asha "sad": Hi.`, `Asha <sad>: Hi.` (an emotion takes square brackets)
+WRONG_BRACKET_RE = re.compile(
+    r"""^([A-Za-z][A-Za-z0-9_]*)\s*(?:\(\s*(W)\s*\)|\{\s*(W)\s*\}|"\s*(W)\s*"|<\s*(W)\s*>)\s*(:?)\s*(.*)$""".replace(
+        "W", WORD)
+)
+# `Asha, [sad]: Hi.` (stray punctuation between the name and the emotion)
+STRAY_PUNCT_RE = re.compile(r"^([A-Za-z][A-Za-z0-9_]*)\s*([,;.\-–—]+)\s*\[\s*(" + WORD + r")\s*\]\s*:\s*(.*)$")
+# Full-width colons (an IME types them) that would otherwise make a speaker line narration.
+WIDE_COLONS = "：﹕"
 # `[emotion] narration` (narration takes an emotion only through `Narrator [emotion]:`). Only a single
 # identifier-like word in the brackets counts: `[The page is water-stained.]` is prose (M1-NAR-07).
-EMO_NARRATION_RE = re.compile(r"^\[\s*([A-Za-z][A-Za-z0-9_]*)\s*\]\s*:?\s*(.*)$")
+EMO_NARRATION_RE = re.compile(r"^\[\s*(" + WORD + r")\s*\]\s*:?\s*(.*)$")
 # `Asha [sad] Hi.` / `Asha as "The girl" Hi.`: a speaker line with its colon missing (M1-NAR-07). The name
-# must be in speakers.json (or Narrator), and the brackets hold one identifier-like word.
+# must be in speakers.json (or Narrator); the brackets and parentheses hold one identifier-like word.
 MISSING_COLON_RE = re.compile(
-    r"""^([A-Za-z][A-Za-z0-9_]*)(\([^)]*\))?(?:\s+as\s+"((?:[^"\\]|\\.)*)")?"""
-    r"""(?:\s*\[\s*([A-Za-z][A-Za-z0-9_]*)\s*\])?\s*(?=[^\s:])(.*)$"""
+    r"""^([A-Za-z][A-Za-z0-9_]*)(\(\s*""" + WORD + r"""\s*\))?(?:\s+as\s+"((?:[^"\\]|\\.)*)")?"""
+    r"""(?:\s*\[\s*(""" + WORD + r""")\s*\])?\s*(?=[^\s:])(.*)$"""
 )
+MISSING_COLON_JUNK_RE = re.compile(r"^[,;.\-–—]+\s*")
 # `Asha: [sad] Hi.`: the emotion after the colon would ship as text (M1-NAR-07).
-EMO_AFTER_COLON_RE = re.compile(r"^\[\s*([A-Za-z][A-Za-z0-9_]*)\s*\]\s*(.*)$")
+EMO_AFTER_COLON_RE = re.compile(r"^\[\s*(" + WORD + r")\s*\]\s*(.*)$")
 # The heuristic (M1-NAR-06, tiered by M1-NAR-07): text up to the first unescaped colon that starts with a
 # capital letter, has no sentence punctuation, and reads like a name: every word capitalized (or a
-# `(...)`/`{...}` group), with lowercase NAME_JOINERS allowed inside. A colon between digits (6:20, 3:1)
-# is never a speaker colon. 1-2 words is the typo shape (`Old Toma:`) and an error; 3-6 words is a WARN.
+# `(...)`/`{...}`/`[...]` group), with lowercase NAME_JOINERS allowed inside. A colon between digits
+# (6:20, 3:1) is never a speaker colon. Tiers (review-sweep-D, Lead decision):
+# - a `[...]` group in it (`Old Toma [sad]:`) is speaker syntax: always an error;
+# - 1-2 words with a speaker id, display name or Narrator among them (`Old Toma:`): an error;
+# - any other name-shaped prefix of 1-6 words (`Chapter Two:`, `The Keeper of Lamps:`): a WARN.
 SPEAKER_LIKE_RE = re.compile(r"""^([A-Z][^:.!?;,…—"]*?)(?<!\\):""")
 SPEAKER_LIKE_ERROR_WORDS = 2
 SPEAKER_LIKE_MAX_WORDS = 6
-NAME_WORD_RE = re.compile(r"[A-Z][A-Za-z0-9_]*|\([^()]*\)|\{[^{}]*\}")
-NAME_JOINERS = frozenset({"of", "the", "from", "in", "on", "at", "and", "by", "de", "van", "von"})
+NAME_WORD_RE = re.compile(r"[A-Z][A-Za-z0-9_]*|\([^()]*\)|\{[^{}]*\}|\[[^\[\]]*\]")
+NAME_JOINERS = frozenset({"of", "the", "from", "in", "on", "at", "by", "de", "van", "von"})
+# Capitalized words that are never part of a name: `I Remember Corrow:`, `North of Corrow:`.
+NOT_NAME_WORDS = frozenset({"I", "North", "South", "East", "West", "Northeast", "Northwest", "Southeast",
+                            "Southwest"})
+# A prefix that starts with one of these is prose, not a name: `Not Asha: me.`, `Only Kerrid: he knew.`
+PROSE_LEADERS = frozenset({"Not", "Only", "Even", "Just", "Never", "Always", "Also", "Still", "But", "Or",
+                           "Nor", "Except", "Unlike", "Like", "Without", "Before", "After", "Until", "Since",
+                           "Because", "If", "When", "Then", "So", "Yet"})
+# How close an unknown one-word name must be to a speaker id to be a typo (difflib ratio).
+SPEAKER_TYPO_CUTOFF = 0.7
 TAG_NARRATION = "narration"  # compiler-only: "this is narration, as written"; not kept in the op
 ARG_ID_RE = re.compile(r"[A-Za-z0-9_]+")
 COMMAND_RE = re.compile(r"^<<\s*(.*?)\s*>>$")
@@ -678,6 +703,8 @@ class BodyParser:
         alias = None
         text = ln.text
         m = SPEAKER_RE.match(text)
+        if m and self.caption_word(m):
+            m = None  # `Interlude: Ysolde`: one unknown word, nothing like a speaker (M1-NAR-07); WARN below
         if m:
             name, identity, alias, emo, text = m.groups()
             speaker_id = name.lower()
@@ -695,11 +722,16 @@ class BodyParser:
                 speaker_id = ""
             else:
                 if speaker_id not in self.ctx.speakers:
-                    raise DlgError(ln.no, f"unknown speaker '{name}' (add it to {SPEAKERS_JSON.as_posix()}, "
-                                          "or write '\\:' for a colon in narration)")
+                    raise DlgError(ln.no, f"unknown speaker '{name}'{self.ctx.typo_hint(name)} (add it to "
+                                          f"{SPEAKERS_JSON.as_posix()}, or write '\\:' for a colon in narration)")
                 if identity is not None:
                     raise DlgError(ln.no, f"'{name}({identity})': only Narrator takes a voice identity")
+            head = ln.text[: len(ln.text) - len(text)].rstrip()
             body, line_id, tags, note = split_tags(text, ln.no, ln.raw)
+            if text.startswith(":"):  # `Asha [sad]:: Hi.` would ship ': Hi.' (M1-NAR-07); `\:` is fine
+                raise DlgError(ln.no, f"two colons after the speaker: did you mean '{head} "
+                                      f"{_clip(body.lstrip(':').strip())}'? (as written, the second ':' would "
+                                      "show as text)")
             late = EMO_AFTER_COLON_RE.match(body)
             if late:
                 emo2, rest = late.groups()
@@ -731,29 +763,68 @@ class BodyParser:
             out["tags"] = tags
         return out
 
+    def caption_word(self, m: re.Match) -> bool:
+        """True for a bare `Word: text` whose Word is no speaker and not a likely typo of one (M1-NAR-07):
+        it is narration (a caption such as `Interlude: Ysolde`), and check_near_miss warns about it."""
+        name, identity, alias, emo, _text = m.groups()
+        if identity is not None or alias is not None or emo is not None:
+            return False
+        low = name.lower()
+        return (low not in self.ctx.speakers and low != NARRATOR and low not in self.ctx.speaker_names
+                and not self.ctx.typo_hint(name))
+
     def check_near_miss(self, body: str, line: int) -> None:
         """M1-NAR-06/07: a narration line (tags already popped, escapes kept) that nearly matches a speaker
         line is an error, so a typo never ships its raw `Name [emo]:` text. `#narration` skips this."""
         allow = f"write '\\:' for a colon in narration, or tag the line #{TAG_NARRATION} if it really is narration"
+        narr = f"(as written, this line would compile as narration; {allow})"
+        names = self.ctx.speakers | {NARRATOR}
+        wide = body.translate({ord(c): ":" for c in WIDE_COLONS})
+        if wide != body:
+            m = SPEAKER_RE.match(wide)
+            if m and m.group(1).lower() in names:
+                raise DlgError(line, f"a full-width colon after '{m.group(1)}': a speaker line needs ':' "
+                                     f"(did you mean '{_clip(wide, 60)}'?) {narr}")
         m = EMO_BEFORE_ALIAS_RE.match(body)
-        if m:
-            name, identity, emo, alias = m.groups()
-            fix = f'{name}{identity or ""} as "{alias}" [{emo.strip()}]:'
-            raise DlgError(line, f"the emotion goes after the alias: did you mean '{fix}'? "
-                                 f"(as written, this line would compile as narration; {allow})")
+        if m and (m.group(4) is not None or m.group(1).lower() in self.ctx.speakers):
+            name, identity, emo, alias, bare = m.groups()
+            fix = f'{name}{identity or ""} as "{alias if alias is not None else bare.strip()}" [{emo.strip()}]:'
+            raise DlgError(line, f"the emotion goes after the alias: did you mean '{fix}'? {narr}")
         m = UNQUOTED_ALIAS_RE.match(body)
         if m and m.group(1).lower() in self.ctx.speakers and m.group(2):
             name, alias, emo = m.groups()
             fix = f'{name} as "{alias}"' + (f" {emo}" if emo else "") + ":"
-            raise DlgError(line, f"an alias needs double quotes: did you mean '{fix}'? "
-                                 f"(as written, this line would compile as narration; {allow})")
+            raise DlgError(line, f"an alias needs double quotes: did you mean '{fix}'? {narr}")
+        m = WRONG_BRACKET_RE.match(body)
+        if m and m.group(1).lower() in names:
+            name, paren, brace, quote, angle, colon, rest = m.groups()
+            word = paren or brace or quote or angle
+            if colon or word in self.ctx.emotions:
+                if name.lower() == NARRATOR and paren and word.lower() in self.ctx.speakers:
+                    fix = f"{name}({word}): {_clip(rest)}"
+                    what = "a narrator identity goes in parentheses right after Narrator, with no space"
+                else:
+                    fix = f"{name} [{word}]: {_clip(rest)}"
+                    what = "an emotion goes in square brackets, before the colon"
+                raise DlgError(line, f"{what}: did you mean '{fix}'? {narr}")
+        m = STRAY_PUNCT_RE.match(body)
+        if m and m.group(1).lower() in names:
+            name, junk, emo, rest = m.groups()
+            raise DlgError(line, f"stray '{junk}' between the name and the emotion: did you mean "
+                                 f"'{name} [{emo}]: {_clip(rest)}'? {narr}")
         m = MISSING_COLON_RE.match(body)
-        if m and m.group(1).lower() in self.ctx.speakers | {NARRATOR} and (m.group(3) is not None or m.group(4)):
+        if m and m.group(1).lower() in names and (m.group(2) or m.group(3) is not None or m.group(4)):
             name, identity, alias, emo, rest = m.groups()
-            fix = (name + (identity or "") + (f' as "{alias}"' if alias is not None else "")
-                   + (f" [{emo}]" if emo else "") + ": " + _clip(rest))
-            raise DlgError(line, f"a speaker line needs a ':' after the name: did you mean '{fix}'? "
-                                 f"(as written, this line would compile as narration; {allow})")
+            if identity and name.lower() != NARRATOR and not emo:  # `Asha (sad) Hi.`: the emotion in parens
+                ident_word = identity.strip("() ")
+                if ident_word not in self.ctx.emotions:
+                    identity = None
+                else:
+                    identity, emo = None, ident_word
+            if identity or alias is not None or emo:
+                fix = (name + (identity or "") + (f' as "{alias}"' if alias is not None else "")
+                       + (f" [{emo}]" if emo else "") + ": " + _clip(MISSING_COLON_JUNK_RE.sub("", rest)))
+                raise DlgError(line, f"a speaker line needs a ':' after the name: did you mean '{fix}'? {narr}")
         m = EMO_NARRATION_RE.match(body)
         if m:
             emo = m.group(1)
@@ -764,21 +835,22 @@ class BodyParser:
         prefix = speaker_like_prefix(body)
         if prefix is None:
             return
-        words = len(_name_tokens(prefix))
-        first = re.match(r"[A-Za-z0-9_]+", prefix)
+        tokens = _name_tokens(prefix)
+        speaker = self.ctx.speaker_in(tokens)
+        bracketed = any(t.startswith("[") for t in tokens)
         hint = ""
-        if first and first.group(0).lower() in self.ctx.speakers | {NARRATOR}:
-            hint = f" Did you mean '{first.group(0)}:' or '{first.group(0)} [emotion]:'?"
+        if speaker:
+            hint = f" Did you mean '{speaker}:' or '{speaker} [emotion]:'?"
         msg = (f"'{prefix}:' looks like a speaker, but this line would compile as narration (a speaker line is "
                f"'Name [emotion]: text' or 'Name as \"Alias\" [emotion]: text', Name one word from "
                f"{SPEAKERS_JSON.as_posix()}).{hint} For narration, {allow}")
-        if words <= SPEAKER_LIKE_ERROR_WORDS:
+        if bracketed or (speaker and len(tokens) <= SPEAKER_LIKE_ERROR_WORDS):
             raise DlgError(line, msg)
         self.ctx.warn(line, msg)
 
 
 def _name_tokens(prefix: str) -> list[str]:
-    return re.findall(r"\([^()]*\)|\{[^{}]*\}|\S+", prefix)
+    return re.findall(r"\([^()]*\)|\{[^{}]*\}|\[[^\[\]]*\]|\S+", prefix)
 
 
 def speaker_like_prefix(body: str) -> str | None:
@@ -792,10 +864,10 @@ def speaker_like_prefix(body: str) -> str | None:
         return None
     prefix = m.group(1).strip()
     tokens = _name_tokens(prefix)
-    if not tokens or len(tokens) > SPEAKER_LIKE_MAX_WORDS:
+    if not tokens or len(tokens) > SPEAKER_LIKE_MAX_WORDS or tokens[0] in PROSE_LEADERS:
         return None
     for i, tok in enumerate(tokens):
-        if NAME_WORD_RE.fullmatch(tok):
+        if NAME_WORD_RE.fullmatch(tok) and tok not in NOT_NAME_WORDS:
             continue
         if 0 < i < len(tokens) - 1 and tok in NAME_JOINERS:
             continue
@@ -882,8 +954,10 @@ def alias_key(speaker: str, alias: str) -> str:
 
 class FileCtx:
     def __init__(self, rel: str, speakers: set[str], vocab: Vocab, line_ids: dict[str, str],
-                 result: CompileResult, assigning: bool = False) -> None:
+                 result: CompileResult, assigning: bool = False,
+                 speaker_names: dict[str, str] | None = None) -> None:
         self.rel = rel
+        self.speaker_names = speaker_names or {}  # lowercased display name (loc `en`) -> speaker id
         self.scene = Path(rel).stem
         self.speakers = speakers
         self.vocab = vocab
@@ -893,6 +967,26 @@ class FileCtx:
         self.assigning = assigning
         self.in_test_dir = rel.startswith(TEST_DIR.as_posix() + "/")
         self.ok = True
+
+    def typo_hint(self, name: str) -> str:
+        """`; did you mean 'Asha'?` when `name` is close to a speaker id (difflib), else ''."""
+        close = difflib.get_close_matches(name.lower(), sorted(self.speakers), n=1, cutoff=SPEAKER_TYPO_CUTOFF)
+        return f"; did you mean '{close[0].capitalize()}'?" if close else ""
+
+    def speaker_in(self, tokens: list[str]) -> str:
+        """The speaker (as its one-word name, `Toma`) that a name-shaped prefix names: a token that is a
+        speaker id or Narrator, or a display name among its words. '' if none."""
+        for tok in tokens:
+            low = tok.lower()
+            if low in self.speakers or low == NARRATOR:
+                return tok
+            if low in self.speaker_names:
+                return self.speaker_names[low].capitalize()
+        words = " ".join(t for t in tokens if not t.startswith(("(", "{", "["))).lower()
+        for display, sid in sorted(self.speaker_names.items()):
+            if " " in display and re.search(rf"(?<!\w){re.escape(display)}(?!\w)", words):
+                return sid.capitalize()
+        return ""
 
     def error(self, line: int, msg: str) -> None:
         self.ok = False
@@ -956,6 +1050,27 @@ def _load_ids(root: Path, rel: Path, table: str, result: CompileResult) -> set[s
     except (OSError, ValueError, KeyError, TypeError) as e:
         result.errors.append(f"{rel.as_posix()}: cannot read '{table}' table: {e}")
         return set()
+
+
+def load_speaker_names(root: Path) -> dict[str, str]:
+    """Lowercased `en` display name -> speaker id, from each speaker's `name_key` row in game/data/loc/*.csv.
+    Optional: a missing or unreadable table just means the near-miss checks know the ids only."""
+    try:
+        rows = json.loads((root / SPEAKERS_JSON).read_text(encoding="utf-8"))["speakers"]
+        keys = {str(r["name_key"]): str(r["id"]) for r in rows if isinstance(r, dict) and r.get("name_key")}
+    except (OSError, ValueError, KeyError, TypeError):
+        return {}
+    names: dict[str, str] = {}
+    for p in sorted((root / LOC_CSV.parent).glob("*.csv")):
+        try:
+            with p.open(encoding="utf-8", newline="") as f:
+                for row in csv.DictReader(f):
+                    key = row.get("keys")
+                    if key in keys and row.get("en"):
+                        names[row["en"].strip().lower()] = keys[key]
+        except (OSError, csv.Error, UnicodeDecodeError):
+            continue
+    return names
 
 
 def _load_json(root: Path, rel: Path, result: CompileResult) -> dict:
@@ -1082,13 +1197,15 @@ def compile_project(root: Path, assign: Path | None = None) -> CompileResult:
     listed in result.missing_ids instead of being errors (see assign_ids)."""
     result = CompileResult()
     speakers = _load_ids(root, SPEAKERS_JSON, "speakers", result)
+    speaker_names = load_speaker_names(root)
     vocab = load_vocab(root, result)
     line_ids: dict[str, str] = {}
     scenes: dict[str, str] = {}
     target = assign.resolve() if assign is not None else None
     for path in source_files(root):
         rel = path.relative_to(root).as_posix()
-        ctx = FileCtx(rel, speakers, vocab, line_ids, result, assigning=path.resolve() == target)
+        ctx = FileCtx(rel, speakers, vocab, line_ids, result, assigning=path.resolve() == target,
+                      speaker_names=speaker_names)
         if path.stem in scenes:
             ctx.error(1, f"scene name '{path.stem}' is already used by {scenes[path.stem]} (compiled names are flat)")
             continue
