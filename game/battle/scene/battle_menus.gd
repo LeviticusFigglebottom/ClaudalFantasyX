@@ -118,10 +118,12 @@ func swell_rows(engine: BattleEngine, swell: BattleSwell) -> Array[Dictionary]:
 
 ## The help line for a technique: what its input asks, then the skill's own line.
 func swell_help(engine: BattleEngine, swell: BattleSwell, tid: StringName, next_in: int) -> String:
-	var key := str(swell.input_for(engine.current).get("help_key", ""))
+	var input := swell.input_for(engine.current)
+	var key := str(input.get("help_key", ""))
 	var parts: PackedStringArray = []
 	if key != "":
-		parts.append(tr(key))
+		# The count is data (swell.json "beats"), never written into the string (M1-UI-05).
+		parts.append(tr(key).format({"beats": int(input.get("beats", 1))}))
 	parts.append(skill_help(engine, tid, next_in))
 	return " · ".join(parts)
 
