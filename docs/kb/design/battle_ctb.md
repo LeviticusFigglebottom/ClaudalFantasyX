@@ -13,6 +13,9 @@ Owner: Combat Designer-Engineer. Formulas: [formulas.md](formulas.md).
 | `EnemyAI` | Data-driven rule evaluation (conditions → weighted picks → target selectors). |
 | `BattleDB` | Loads and indexes `game/data/battle/*.json`; `from_tables()` for test fixtures. |
 | `ActionResult`, `TurnEntry` | Value objects for UI and VFX glue. |
+| `BattleItemRules` | Static item rules shared by play and previews (who an item may target, fells, downs). `BattleEngine` keeps its `item_*` names as wrappers. Split out in M1-CMB-04 for the line cap. |
+| `BattleSwell` | Swell gauges (M1-CMB-04): fill modes from `swell.json`, filled from `action_resolved`, and techniques resolved with their input's result passed in. |
+| `SwellTimingRing` | Rhen's Swell input logic (lantern-flicker timing ring). It is Node-free, and the HUD's `SwellRingView` draws it. |
 
 **Headless and deterministic:** no Nodes, no scene access, and all randomness through `engine.rng` (seeded in `setup`). The battle *scene* (UI, cameras, VFX) listens to the engine's signals and never mutates combat state directly.
 
@@ -71,6 +74,17 @@ Swapping remains the elegant answer (SPEC §6.1), but a naive party now wins abo
 - **Provoke** forces single-foe targets. `forced_target(actor, skill_id)` returns the provoker (or null), so the target cursor can lock onto it; `perform()` rejects other targets with `provoked` at no cost.
 - **Reflect** is deterministic: `reflect_recipient(actor, target, skill_row)` tells the UI where a spell will land, and `preview()` already uses it. Hits that bounced carry `reflected_from`.
 - **Petrify** counts as KO everywhere (`is_alive()` is false). `BattleCombatant.is_petrified()` lets the UI draw stone instead of a KO.
+
+## Swell (M1-CMB-04)
+
+The rules and numbers are in [formulas.md § Swell](formulas.md); the data is in `game/data/battle/swell.json`, which `check_swell` in validate_data.py checks.
+
+- **State and rules.** The gauge state lives on `BattleCombatant` (`swell` 0..100, `swell_mode`). `BattleSwell` holds the rules. Create it with `BattleSwell.new(BattleSwell.load_config())` and call `attach(engine)` after `setup()` and `apply_fixture()`. Hold the instance for the whole battle, because a signal connection does not keep it alive. Only heroes with a `heroes` row get a mode, and only they get a gauge on the HUD.
+- **Filling.** Gauges fill only from `action_resolved` hits, so nothing in the engine core calls into Swell. A technique feeds no gauge.
+- **Engine hook.** `BattleEngine.perform_row(skill_id, row, targets)` plays a skill row the actor has not learned and pays no MP for. Otherwise it applies `perform()`'s checks: turn, Silence, targets, Provoke, Reflect, rank. `BattleSwell.perform(technique, targets, input_result)` gates the technique on a full gauge, scales the row's power by the input bonus (a copy; the table row is never changed), calls `perform_row`, and empties the gauge on success.
+- **Inputs are outside the engine.** `SwellTimingRing` (Node-free, `advance` / `press` / `cancel`) produces `{cancelled, grades}`. Tests and the simulator pass that dictionary straight to `perform()`. In the scene, `BattleController` shows **Swell** on the root menu under Attack while the actor is ready. The flow is Swell page → target pick → ring (`STATE_SWELL_INPUT`, advanced by `tick()` at real time, never scaled by pacing) → `unleash()`. Cancelling the ring returns to the pick, and cancelling the pick returns to the Swell page.
+- **Fixtures.** `apply_fixture` takes `swell` (clamped to 0..100). The `swell_ring` capture fixture opens with Rhen full.
+- **Not yet:** mode unlock rules, other heroes' inputs and Swell in the simulator (M2-CMB-01); carrying gauges and modes between battles and in saves (M2-ARC-01); a mode menu and timing assist (M2-UI-01). The balance bands are unaffected because the simulator never unleashes.
 
 ## Carried vitals (M1-CMB-08)
 
