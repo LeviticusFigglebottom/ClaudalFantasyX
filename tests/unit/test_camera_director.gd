@@ -387,6 +387,101 @@ func test_missing_aim_node_falls_back_to_the_player() -> void:
 	_free()
 
 
+# --- M1-ARC-07: the sequencer contract ------------------------------------------------------------
+
+
+func test_release_honours_the_volumes_force_hard_cut() -> void:
+	var released: Array[float] = []
+	director.scripted_shot_released.connect(func(_s: CameraShot, b: float) -> void: released.append(b))
+	var court := zone.get_node("CameraVolumes/CourtVolume") as CameraVolume
+	court.force_hard_cut = true
+	_walk_to(Vector3(0, 0, -5))
+	assert_eq(director.active_shot_id(), COURT)
+	director.play_shot(_scripted_shot(), SCRIPT_BLEND_SEC)
+	_settle()
+	director.release()
+	assert_eq(director.active_shot_id(), COURT)
+	assert_false(director.is_blending(), "force_hard_cut: the default release cuts")
+	assert_eq(events[-1], {"id": COURT, "cut": true, "blend": 0.0})
+	director.play_shot(_scripted_shot(), SCRIPT_BLEND_SEC)
+	_settle()
+	director.release(SCRIPT_BLEND_SEC, &"linear")
+	assert_false(director.is_blending(), "force_hard_cut wins over an explicit blend too")
+	assert_eq(released, [0.0, 0.0] as Array[float], "released reports the cut")
+	_free()
+
+
+func test_a_cut_emits_blend_finished_on_the_next_update() -> void:
+	var finished: Array[StringName] = []
+	director.blend_finished.connect(func(s: CameraShot) -> void: finished.append(s.id))
+	director.play_shot(_scripted_shot(), 0.0)
+	assert_eq(finished, [] as Array[StringName], "not synchronously: `play_shot` then `await` cannot miss it")
+	assert_false(director.is_settled(), "a blend_finished is owed")
+	director.update(DT)
+	assert_eq(finished, [SCRIPTED] as Array[StringName], "the cut landed")
+	assert_true(director.is_settled())
+	_settle()
+	assert_eq(finished.size(), 1, "exactly once")
+	director.release(0.0)
+	director.update(DT)
+	assert_eq(finished, [SCRIPTED, LANE] as Array[StringName], "a release cut lands too")
+	_free()
+
+
+func test_a_volume_cut_emits_blend_finished() -> void:
+	var finished: Array[StringName] = []
+	director.blend_finished.connect(func(s: CameraShot) -> void: finished.append(s.id))
+	_walk_to(Vector3(0, 0, -5))
+	_walk_to(Vector3(0, 0, -20))
+	assert_eq(finished, [COURT, CAUSEWAY] as Array[StringName], "the court blend, then the causeway cut")
+	_free()
+
+
+func test_a_no_move_play_shot_still_settles() -> void:
+	var finished: Array[StringName] = []
+	director.blend_finished.connect(func(s: CameraShot) -> void: finished.append(s.id))
+	var shot := _scripted_shot()
+	director.play_shot(shot, SCRIPT_BLEND_SEC)
+	_settle()
+	assert_eq(finished, [SCRIPTED] as Array[StringName], "the blend in")
+	director.play_shot(shot, SCRIPT_BLEND_SEC)
+	assert_false(director.is_settled())
+	director.update(DT)
+	assert_eq(finished, [SCRIPTED, SCRIPTED] as Array[StringName], "re-playing the held shot settles at once")
+	assert_eq(director.history, [LANE, SCRIPTED] as Array[StringName], "and is not a new shot")
+	_free()
+
+
+func test_a_cut_onto_the_shot_blending_in_ends_the_blend_once() -> void:
+	var finished: Array[StringName] = []
+	director.blend_finished.connect(func(s: CameraShot) -> void: finished.append(s.id))
+	var shot := _scripted_shot()
+	director.play_shot(shot, SCRIPT_BLEND_SEC)
+	director.update(DT)
+	assert_true(director.is_blending())
+	director.play_shot(shot, 0.0)
+	assert_false(director.is_blending(), "the cut ends the blend")
+	director.update(DT)
+	assert_true(director.camera.global_position.distance_to(shot.position) < POS_TOLERANCE_M, "on the shot")
+	_settle()
+	assert_eq(finished, [SCRIPTED] as Array[StringName], "one landing, not two")
+	_free()
+
+
+func test_a_superseded_cut_does_not_fire() -> void:
+	var finished: Array[StringName] = []
+	director.blend_finished.connect(func(s: CameraShot) -> void: finished.append(s.id))
+	var b := _scripted_shot()
+	b.id = &"cutscene_reaction"
+	director.play_shot(_scripted_shot(), 0.0)
+	director.play_shot(b, SCRIPT_BLEND_SEC)
+	director.update(DT)
+	assert_eq(finished, [] as Array[StringName], "the cut was replaced before it landed")
+	_settle()
+	assert_eq(finished, [&"cutscene_reaction"] as Array[StringName], "the blend that replaced it lands")
+	_free()
+
+
 # --- helpers -------------------------------------------------------------------------------------
 
 
