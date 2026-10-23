@@ -152,13 +152,20 @@ func heal_party(_source_id: StringName = &"") -> Array[StringName]:
 ## EventBus.battle_party_returned: writes each party combatant's HP, MP and carried statuses into
 ## state.party_vitals. Entries that are not BattleCombatants are ignored. While party_rest.json is
 ## broken (rest_rules_problem) nothing is written, so no carried status is dropped (M1-ARC-13).
+## While swell.json is broken (BattleSwell.config_problem), HP, MP and statuses are still written but
+## each member keeps its saved gauge and mode, as record_swell keeps the saved record: both halves of
+## Swell refuse to record from a battle that ran without its rules (M2-NIT-03).
 func record_party(_encounter_id: StringName, _outcome: StringName, party: Array) -> void:
 	var problem := rest_rules_problem(rest_rules)
 	if problem != "":
 		push_error("Game: not recording party vitals; %s" % problem)
 		return
 	var carried := carried_statuses()
-	var default_mode := StringName(str(BattleSwell.load_config().get("default_mode", "")))
+	var swell_config := BattleSwell.load_config()
+	var swell_broken := BattleSwell.config_problem(swell_config) != ""
+	if swell_broken:
+		push_error("Game: keeping the saved Swell gauges; %s" % BattleSwell.config_problem(swell_config))
+	var default_mode := StringName(str(swell_config.get("default_mode", "")))
 	for v: Variant in party:
 		if not v is BattleCombatant:
 			continue
@@ -166,7 +173,12 @@ func record_party(_encounter_id: StringName, _outcome: StringName, party: Array)
 		var held: Array[StringName] = []
 		for sid: StringName in c.statuses:
 			held.append(sid)
-		state.record_vitals(c.id, c.hp, c.max_hp, c.mp, c.max_mp, held, carried, c.swell, c.swell_mode, default_mode)
+		var gauge := c.swell
+		var mode := c.swell_mode
+		if swell_broken:
+			gauge = state.swell_of(c.id)
+			mode = state.swell_mode_of(c.id)
+		state.record_vitals(c.id, c.hp, c.max_hp, c.mp, c.max_mp, held, carried, gauge, mode, default_mode)
 
 
 ## EventBus.battle_swell_returned: keeps the party's Swell record (unlocked modes, unlock counts).
