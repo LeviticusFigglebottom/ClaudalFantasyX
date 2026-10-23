@@ -2,7 +2,7 @@
 id: M1-UI-02
 title: "Battle HUD follow-ups: swap preview, fail copy, Provoke, auto-turns, status display, fixture captures, accessibility settings"
 role: ui
-status: review
+status: done
 owner_session: worktree-agent-a442bf3baa0b90315
 reviewer: lead
 depends_on: [M1-CMB-01, M1-CMB-02]
@@ -38,3 +38,4 @@ Delivered:
 - Engine changes: none. Engine requests: see the session report (optional; nothing blocks).
 
 ## Review log
+- 2026-10-23 lead: approve. The battle_statuses frame reads clearly: the Reflect arc, the Provoke hook, Doom countdowns on the chips, and Petrify on the party row. Both design calls are accepted (a two-line help wrap; a 120 ms cross-fade under reduced motion). The three engine requests have been forwarded to M1-CMB-06.
