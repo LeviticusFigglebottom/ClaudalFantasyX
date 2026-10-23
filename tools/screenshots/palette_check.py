@@ -241,10 +241,52 @@ def grain(img: np.ndarray, rect: list[int] | None, sel: dict | None = None) -> f
 # ---------------------------------------------------------------- checks
 
 
+def _mote_halo_check(chk: dict, img: np.ndarray) -> tuple[bool, str]:
+    """M1-RND-17: inner-halo delta of released motes per region (mote_metrics.halo)."""
+    import mote_metrics
+
+    h = mote_metrics.halo(img, tuple(chk.get("box", mote_metrics.DEFAULT_BOX)))
+    ok = h["coverage"] <= chk.get("coverage_max", np.inf)
+    parts = [f"coverage {h['coverage']:.3f}"]
+    for name, t in chk.get("regions", {}).items():
+        r = h["regions"].get(name, {})
+        if not r.get("pixels"):
+            ok = False
+            parts.append(f"{name}: no halo pixels")
+            continue
+        ok &= t.get("hue_min", -np.inf) <= r["hue"] <= t.get("hue_max", np.inf)
+        ok &= r["dab"] >= t.get("dab_min", -np.inf)
+        if t.get("chroma_not_below_background"):
+            ok &= r["chroma"] >= r["bg_chroma"]
+        parts.append(f"{name} h {r['hue']:.0f} dab {r['dab']:.3f} C {r['chroma']:.3f}/{r['bg_chroma']:.3f}")
+    return bool(ok), "; ".join(parts)
+
+
+def _mote_streaks_check(chk: dict, img: np.ndarray) -> tuple[bool, str]:
+    """M1-RND-17: released-mote streak axis (mote_metrics.streaks)."""
+    import mote_metrics
+
+    s = mote_metrics.streaks(img, tuple(chk.get("box", mote_metrics.DEFAULT_BOX)))
+    ok = s["count"] > 0
+    ok &= s["median_deg"] <= chk.get("median_deg_max", np.inf)
+    ok &= s["within_30"] >= chk.get("within_30_min", -np.inf)
+    ok &= s["beyond_60"] <= chk.get("beyond_60_max", np.inf)
+    ok &= s["heads_down"] <= chk.get("heads_down_max", np.inf)
+    msg = (
+        f"{s['count']} streaks, median {s['median_deg']:.1f} deg, within 30 {s['within_30']:.2f}, "
+        f"beyond 60 {s['beyond_60']:.2f}, heads-down {s['heads_down']:.2f}"
+    )
+    return bool(ok), msg
+
+
 def run_check(chk: dict, img: np.ndarray, palette: dict) -> tuple[bool, str]:
     kind = chk["kind"]
     rect = chk.get("rect")
     sel = chk.get("select")
+    if kind == "mote_halo":
+        return _mote_halo_check(chk, img)
+    if kind == "mote_streaks":
+        return _mote_streaks_check(chk, img)
     if kind == "mask_fraction":
         cov = coverage(img, palette, chk.get("max_de", 0.08), rect)
         val = cov[chk["mask"]]
@@ -287,8 +329,11 @@ def run_checks(checks_path: Path, shot_dir: Path, only: set[str] | None = None) 
         if sid not in cache:
             cache[sid] = pngio.read(p)
         ok, msg = run_check(chk, cache[sid], palette)
-        failures += 0 if ok else 1
-        lines.append(f"{'ok  ' if ok else 'FAIL'} {sid} {chk['name']}: {msg}")
+        # Advisory checks report but do not fail (a target set ahead of its baseline's re-approval).
+        advisory = bool(chk.get("advisory", False))
+        failures += 0 if ok or advisory else 1
+        tag = "ok  " if ok else ("warn" if advisory else "FAIL")
+        lines.append(f"{tag} {sid} {chk['name']}: {msg}")
     return failures, lines
 
 
