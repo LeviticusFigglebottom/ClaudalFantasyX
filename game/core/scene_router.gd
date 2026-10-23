@@ -6,6 +6,8 @@ extends Node
 ## is in the tree (still under the opaque fade), and `world_return` (a WorldReturn child) returns
 ## the party to its respawn point on EventBus.game_loaded once boot.gd arms it.
 ## Added in the M1-RND-06 fix: signal swap_measured(stats) and last_swap_stats (see below).
+## M1-ARC-15: when the new scene's root is ready (main thread, in the tree, before its first draw),
+## the player's graphics settings are applied to it (attach_graphics_hook; only after boot armed it).
 ##
 ## SPEC §4.2 allows no frame over 50 ms in a transition, so the expensive steps are kept out of the
 ## frame that shows the new scene (docs/kb/tech/architecture.md, "Scene-swap hitch"):
@@ -131,6 +133,7 @@ func _swap(packed: PackedScene, scene_path: String, stats: Dictionary, spawn: St
 	# writes them does not inherit the last zone's night sea-glow or tide line.
 	GlimmerField.clear_scene_sea_glow()
 	WaterSurface.clear_water_level()
+	attach_graphics_hook(node, stats)
 	get_tree().change_scene_to_node(node)
 	for i in MEASURE_FRAMES:
 		await get_tree().process_frame
@@ -142,6 +145,14 @@ func _swap(packed: PackedScene, scene_path: String, stats: Dictionary, spawn: St
 				WorldReturn.place_player(node, spawn)
 			EventBus.scene_changed.emit(scene_path)
 	_record(stats, frames)
+
+
+## M1-ARC-15: applies the graphics settings' per-scene part to `node` when its root is ready, i.e. in
+## the tree, on the main thread, after every child's _ready (HalunaZone has finished its worker-thread
+## prebuild by then) and before the first frame draws it. No-op until boot arms GraphicsRuntime.
+## Records the operation count in stats["graphics_ops"].
+func attach_graphics_hook(node: Node, stats: Dictionary) -> void:
+	node.ready.connect(func() -> void: stats["graphics_ops"] = GraphicsRuntime.on_scene_entered(node), CONNECT_ONE_SHOT)
 
 
 ## Instantiates off the main thread when allowed; falls back to the main thread otherwise.
