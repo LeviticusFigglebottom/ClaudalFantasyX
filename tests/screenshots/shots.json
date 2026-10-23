@@ -214,6 +214,10 @@
       ],
       "settle_frames": 16,
       "threshold_rmse": 0.018
+    },
+    {
+      "id": "battle_statuses",
+      "scene": "res://game/battle/scene/shots/battle_statuses.tscn"
     }
   ]
 }
