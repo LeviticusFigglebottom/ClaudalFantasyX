@@ -177,6 +177,14 @@ All four channels are linear data (see "Author them as float colours" under Geom
 
 After S8, hide the sleeve mesh. The faint gold pressure mark on the arm is a skin-albedo decal for the Character stream.
 
+## Shadows on characters (M1-QA-05)
+
+Measured on a GPU (docs/kb/qa/gpu/2026-10-23-qa-05-asha.md): the diagonal banding and blotchy self-shadowing on Asha's shadow-side cheek are the **shadow-terminator artefact**. Where smooth vertex normals disagree with flat triangles, the face shadows itself in steps that follow the triangles. It isn't the skin shader (detail normal, curvature and scatter off change nothing), and it isn't the CPU renderer (the GPU matches lavapipe).
+
+- **Lights that key a face: `shadow_normal_bias` 2.5–3.0** (Godot default 1.0). At 3.0 Asha's full-body contact shadows still hold; there's no visible peter-panning.
+- **Don't fight it with a shorter `directional_shadow_max_distance`.** Godot's normal bias scales with the shadow texel, so finer texels shrink the bias, and the stair-steps get sharper.
+- The lasting fix is mesh density across the cheeks and jaw (Character).
+
 ## Cost estimates
 
 **GPU (estimates from operation counts, not measured).** Per lit pixel, per light, compared with a StandardMaterial3D:
