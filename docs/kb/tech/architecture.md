@@ -102,6 +102,8 @@ The maxima are contention outliers. What's left of the battle swap frame (about 
 
 SPEC §5.2 (versioned saves, save-point-only, chapter autosave) and §6.6 (shrines: full heal, a save menu, a teleport network later).
 
+**Versions.** The current save is **v6** (`SaveSystem.SAVE_VERSION`). v4 added party vitals, shrines and the respawn point, v5 the bestiary log, and v6 carried Swell (gauges and modes in `party_vitals`, the unlock record in `swell`); each has its own section below, and every older save migrates forward one step at a time.
+
 ### Pieces
 
 | Path | What it is |
@@ -300,6 +302,7 @@ ADR [0018](../decisions/0018-new-game-autosave-policy.md) Amendment 5 records th
 | `flags` | `game/data/flags.tres` | No loss: flags are never pruned, and an undeclared flag only logs. But a story build without its registry is broken. | Gate check `flags` (`FlagRegistry.load_path` / `integrity_problem`: failed to load, or declares no flags). |
 | `currency`, `chapter`, `play_time_sec` | none | Not judged against a table. | Shape check only (`SaveShape`). |
 | `bestiary` (v5, M1-CMB-03) | `battle/enemies.json` | New field. Nothing prunes it: an id enemies.json no longer lists is kept as saved, and a page reads its stats from the table at display time. | Gate check `bestiary` (`BattleDB.enemies_problem`: enemies.json torn, missing or listing no enemies). Shape: `{String: {read: bool, defeated: whole number}}`. |
+| `swell`, and `swell` / `swell_mode` in `party_vitals` (v6, M2-ARC-01) | `battle/swell.json` | New fields. Nothing prunes them: an unlocked mode or rule id swell.json no longer lists is kept as saved (`BattleSwell.load_saved` / `to_saved`). A carried mode that is not choosable falls back to the default mode in battle, and that battle writes the default back (a choice the player can make again, never a gauge). | Gate check `swell` (`BattleSwell.config_problem`: swell.json missing, torn, with no modes, or a default mode it does not list); `Game.record_swell` writes nothing while it is non-empty. Shape: `{unlocked: [String], progress: {String: whole number}}`; vitals `swell` a whole number, `swell_mode` a String. |
 
 - **Not covered.** `recover_temp` is still not behind the gate: it only renames a temp file that an earlier, healthy run wrote and checked, so no table can change what it holds. `report_data_tables` is a log line, not a player-facing message; a boot banner needs a UI task and a loc key.
 - Tests: `tests/unit/test_save_data_tables.gd` (each guarded table torn, missing and empty: the gate names it, the save loads exactly as written, manual, empty-slot and auto saves are refused, both slots are byte-identical, and it saves again once mended; the Lattice freeze and refused write-back; unknown Lattice ids through save, load and write-back; `normalize` and `record_party` on broken tables), `tests/unit/test_lattice_save.gd` (in-play behaviour of unknown ids).
@@ -311,3 +314,12 @@ ADR [0018](../decisions/0018-new-game-autosave-policy.md) Amendment 5 records th
 - `SaveShape` checks it (`_bestiary`: a Dictionary of records; `read` a bool, `defeated` a whole number >= 0; other keys are ignored). A malformed log reads as corrupt.
 - The data-tables gate gained a seventh check, `bestiary` (`DataHealth.bestiary_problem`, from the same cached `battle_db`): enemies.json torn, missing or empty closes saving. A torn or missing enemies.json is also reported by the `battle` check, which joins every battle table's load error.
 - Writers: `BattleBestiary` (a Read hit, and one defeat per foe on victory) in live battles only. Rules and glue: docs/kb/design/battle_ctb.md "Read, the bestiary and openings". Tests: `tests/unit/test_bestiary_save.gd`.
+
+## Save v6, carried Swell (M2-ARC-01, Architect; ADR 0018 Amendment 6)
+
+- `SAVE_VERSION = 6`. A `party_vitals` entry may also hold `swell` (gauge points; no value = empty) and `swell_mode` (no value = swell.json's `default_mode`). `GameStateData.swell` is the party's record, `{"unlocked": [mode id], "progress": {"<unlock rule id>": count}}`: modes unlocked through play (starting modes are not listed) and the counts towards the rest. `from_dict` keeps the Swell keys through `_clean_vitals` and turns JSON's float counts into ints (`_clean_swell`).
+- `_migrate_v5_to_v6` adds `{"unlocked": [], "progress": {}}` (a v5 save predates carried Swell: empty gauges, default modes, nothing unlocked through play). The literal is frozen. Chained: v4 → v5 → v6.
+- `SaveShape` checks `swell` (`_swell`) and the two new vitals keys (`_vital`). A malformed value reads as corrupt.
+- The data-tables gate gained an eighth check, `swell` (`DataHealth.swell_problem`; tests set `swell_config` and `swell_loaded`). While swell.json is missing, torn, hollow or names a default mode it does not list, a load changes nothing and saving is refused.
+- Writers, live battles only (`persist_progress`, no fixture): `Game.record_party` (gauge and mode, from `EventBus.battle_party_returned`), `Game.record_swell` (the record, from the new `EventBus.battle_swell_returned`), both after a victory or an escape. Out of battle, `BattleSwellCarry.set_mode` (a field mode menu) writes `swell_mode`. `GameStateData.full_heal` (a shrine) keeps both keys.
+- Readers: `Game.vitals_modifier()` (gauge, mode) and `BattleSwellCarry.attach` (the record). Rules and glue: docs/kb/design/battle_ctb.md "Carried Swell". Tests: `tests/unit/test_swell_save.gd`.
