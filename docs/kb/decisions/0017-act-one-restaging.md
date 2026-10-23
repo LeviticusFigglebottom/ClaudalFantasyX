@@ -1,6 +1,6 @@
 # 0017 — Act I re-staging, with an echo check from the Prologue to Ch8
 
-- **Status:** proposed (Narrative, M1-NAR-09; for Cinematics review and Lead sign-off)
+- **Status:** accepted (Lead sign-off 2026-10-23)
 - **Date:** 2026-10-23
 - **Roles affected:** Narrative, Cinematics (Prologue, Ch4, Ch6, Ch7 and Ch8 staging), Environment (`prologue/iskarra_dusk` loses its fire prop; `ch04/brightwater_ferry` gains a derelict hull alongside; `ch08/corrow` gains the Fisher Stair), Combat (the Spar-Wraith arena; the Ch8 set-piece; Tamsule's Reefball roster), Art and Rendering (color script `prologue`, `ch06` and `ch07` notes), Audio (the Ch7 naming rite)
 - **Author role:** Narrative (M1-NAR-09)
@@ -143,3 +143,5 @@ The rest of Act I had not been checked the same way. The inspiring game's openin
   - No light values change.
 - **Audio:** the naming rite before the match wants a beat of silence in the crowd. That is a proposal.
 - **Supersedes:** in decisions_log, N-01's "survives the Spar-Wraith" wording (the band is still earned on the Ch4 crossing) and N-12's "veteran's empty benches" (the side scene is now Oruvel's moorings, the same rite). In ADR 0016, the Ch19 row's "campfire" analogue wording describes the old Prologue staging. The Ch19 frame now repeats the vigil.
+
+- 2026-10-23 Lead sign-off: accepted, including the accepted risks as reasoned.
