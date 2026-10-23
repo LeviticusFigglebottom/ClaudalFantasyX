@@ -2,8 +2,8 @@
 id: M1-ENV-07
 title: Vegetation builds with deterministic tangents (single-threaded, or no exported tangents)
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a361fe4924e35dfcf"
 depends_on: [M1-QA-06]
 milestone: M1
 request-from: "qa"

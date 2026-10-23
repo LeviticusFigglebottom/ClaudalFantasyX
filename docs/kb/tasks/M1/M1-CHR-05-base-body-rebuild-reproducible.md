@@ -2,8 +2,8 @@
 id: M1-CHR-05
 title: Base body .glb files do not reproduce from source
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a361fe4924e35dfcf"
 depends_on: [M1-QA-02]
 milestone: M1
 request-from: "qa"

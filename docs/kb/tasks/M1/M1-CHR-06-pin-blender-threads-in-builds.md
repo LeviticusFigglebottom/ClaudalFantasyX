@@ -2,8 +2,8 @@
 id: M1-CHR-06
 title: Pin Blender's thread count in the base_body and Asha build scripts
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a361fe4924e35dfcf"
 depends_on: [M1-QA-06]
 milestone: M1
 request-from: "qa"
