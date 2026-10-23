@@ -2,8 +2,9 @@
 id: M1-RND-20
 title: Diagonal striations at Asha's smiling mouth corner (key-light shadow terminator)
 role: rendering
-status: todo
-owner_session: ""
+status: review
+reviewer: character
+owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-20-smile-terminator)"
 depends_on: [M1-CHR-10]
 milestone: M1
 request-from: "character"
@@ -17,11 +18,20 @@ Evidence, all lavapipe at `asha_face_smile` (details in asha_review.md §10.3):
 - **`directional_shadow_max_distance` 8 → 1.5 m** (finer shadow texels): the striations get *sharper*, and turn into a saw-tooth shadow edge. That rules out simple resolution blur. It is the terminator pattern: smoothed normals say lit, while the deformed corner's facets are self-shadowed at grazing light.
 
 ## Acceptance criteria
-- [ ] No striations at the smiling corner in `asha_face_smile` (lavapipe, and the GPU 2× High capture)
-- [ ] No new acne or peter-panning in the other asha_* shots
-- [ ] Candidate fixes, for Rendering to choose from:
+- [x] No striations at the smiling corner in `asha_face_smile` (GPU 2× High; lavapipe on re-approval)
+- [x] No new acne or peter-panning in the other asha_* shots
+- [x] Candidate fixes, for Rendering to choose from (chosen: key and rim bias 4.5; the shader band was tried and rejected because it breaks the nose shadow):
   - a terminator softening in `character_skin_body.gdshaderinc` (for example, fade the shadow attenuation by the geometric N·L, or apply the shadow per channel only where N·L > 0);
   - per-light `shadow_normal_bias` or `shadow_blur` (the PC session's settings);
   - or a request back to Character for more subdivision at the corner (LOD0 has 1,210 triangles of headroom).
+
+## Notes (PC GPU session, branch gpu/rnd-20-smile-terminator)
+Report: `docs/kb/qa/gpu/2026-10-23-rnd-20-smile-terminator.md`.
+- **Change.** Asha stage KeyLight and RimLight `shadow_normal_bias` 2.5 → 4.5. The corner is clean at 2× High
+  (a faint fold line remains). The nose shadow and the feet and staff contact are intact. Tested (≥ 4.5).
+- **Rejected.** A skin-shader terminator band (0.08–0.35) cleaned the corner but broke the nose's cast shadow. It
+  was reverted, so no material or shader change.
+- **Drift.** All `asha_*` shots (RMSE 0.005–0.012 on the GPU).
+- **Optional for Character.** More subdivision at the corner (1,210 triangles of headroom) if the fold line shows.
 
 ## Review log

@@ -42,7 +42,13 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 | M1-RND-15 criterion 4 (prewarm, Low-TAA ghosting) | gpu/rnd-15-prewarm | review (measured; 50 ms not met, needs a Lead/Systems decision) | Lazy material loads, batch 2, no halving on the first tick. Worst prewarm frame ~230–310 ms (set-up), up to 0.62 s (Undertow, cold). Ghosting mild. Report: `docs/kb/qa/gpu/2026-10-23-rnd-15-prewarm.md` |
 | M1-RND-17 dusk released motes | gpu/rnd-17-dusk-motes | review (character) | Streaks upright (median 37 → 6°) and the upper-sky halo is gold. Horizon and mirror hue targets not met (pale cores; the Art Director's call). New mote_halo/mote_streaks advisory checks. Drift: glimmer_dusk, glimmer_release. Report: `docs/kb/qa/gpu/2026-10-23-rnd-17-dusk-motes.md` |
 | M1-RND-18 SSS crest fade, high cameras | gpu/rnd-18-sss-crest | review (character) | Crest SSS fades with view steepness for cameras ≥ 10–25 m above the water; even `col_deep` lift. Survey: 0.06 % over 0.03, max 0.050, deep band ΔE 0.019. Low shots bit-identical. Report: `docs/kb/qa/gpu/2026-10-23-rnd-18-sss-crest.md` |
-| Playtest checkout (Lead request) | – (clone of claude/new-session-mj8c3c @ 9508ade) | done | `C:\Users\Aaron\Hymn_Playtest`, imported twice. 60-frame headless smoke boot: exit 0, no errors. **PLAY.bat is at `C:\Users\Aaron\Hymn_Playtest\PLAY.bat`** (EDITOR.bat next to it). Not launched. |
+| QA-05b Asha re-check (High, Ultra) | gpu/qa-05b-asha-recheck | done (note in the QA-05 report) | Cheek banding gone; faint smile-fold steps on Ultra only. Hair warm brown (scalp hue 20°, braid 23°), not black. |
+| M1-ENV-03 vegetation follow-ups | gpu/env-03-vegetation | review (rendering) | Eave glow removed (shelter auto-probe); FXAA capture + 0.008 threshold; 6 m LOD cross-fade (+0.04 ms); overdraw budget; PLACEHOLDER list; flutter cap. Drift: veg_*, haluna_h02/h03. Report: `docs/kb/qa/gpu/2026-10-23-env-03-vegetation.md` |
+| Perf regression sweep | gpu/perf-sweep | done | 31 cameras × 4 presets × 2 res (`docs/kb/qa/gpu/perf_baseline.csv`). Nothing over or at risk against SPEC §4.2; worst High 1440p is Undertow Eye 5.3 ms (12.2–14.9 projected). Report: `docs/kb/qa/gpu/2026-10-23-perf-sweep.md` |
+| M1-RND-16 criterion 5 (cutscene AA override) | gpu/rnd-15-prewarm | measured | Override TAA + bilinear: dither −22 % vs native TAA, −0.40 ms. Recommended. Report: `docs/kb/qa/gpu/2026-10-23-rnd-16-aa-override.md` |
+| M1-QA-05c Asha §14 final judgement | gpu/qa-05c-asha-final | done | Neutral passes; smile passes after RND-20 (corner terminator); grief fails (mouth interior black, teeth read gold, faceted). Lashes and lid band are asset faults. Report: `docs/kb/qa/gpu/2026-10-23-qa-05c-asha.md` |
+| M1-RND-20 smile-corner terminator | gpu/rnd-20-smile-terminator | review (character) | Key and rim bias 2.5 → 4.5: corner clean, nose and contact intact. Shader band rejected (breaks the nose shadow). Drift: all `asha_*`. Report: `docs/kb/qa/gpu/2026-10-23-rnd-20-smile-terminator.md` |
+| Playtest checkout (Lead request) | – (clone of claude/new-session-mj8c3c, re-pulled to 7f4c76b) | done | `C:\Users\Aaron\Hymn_Playtest`, imported twice. 60-frame headless smoke boot: exit 0, no errors. **PLAY.bat is at `C:\Users\Aaron\Hymn_Playtest\PLAY.bat`** (EDITOR.bat next to it). Not launched. |
 | Earlier (merged by the Lead) | gpu/results-2026-10-23, gpu/rnd-10-undertow-perf, gpu/rnd-09-undertow-shading, gpu/rnd-08-water-glimmer, gpu/rnd-07-presets, gpu/qa-05-asha-gpu, gpu/rnd-11-undertow-params | – | – |
 
 ## In progress
@@ -51,22 +57,22 @@ Nothing; between items.
 
 ## Queue, in order (exact next step first)
 
-1. **Playtest copy:** re-pull `C:\Users\Aaron\Hymn_Playtest` to 7f4c76b and re-import (Lead; PLAYTEST.md updated).
-2. **QA-05b:** re-run QA-05's six Asha face shots at High and Ultra against the current build (cheek banding, hair
-   black or brown). Branch `gpu/qa-05b-asha-recheck`.
-3. **RND-15 follow-up:** re-measure the prewarm on the latest integration branch, with the steady per-frame cost
-   reported apart from the first frame (the split_swap-off wait and the first-tick halving).
-4. **M1-ENV-03**, the vegetation follow-ups judged on the GPU (`gpu/env-03-vegetation`).
-5. **Perf regression sweep** (`gpu/perf-sweep`).
+1. ~~**Playtest copy:** re-pull `C:\Users\Aaron\Hymn_Playtest` to 7f4c76b and re-import (Lead; PLAYTEST.md updated).~~ Done: imported twice (0 errors), 60-frame smoke boot exit 0.
+2. ~~**QA-05b:** re-run QA-05's six Asha face shots at High and Ultra against the current build (cheek banding, hair
+   black or brown). Branch `gpu/qa-05b-asha-recheck`.~~ Done.
+3. ~~**RND-15 follow-up:** re-measure the prewarm on the latest integration branch, with the steady per-frame cost
+   reported apart from the first frame (the split_swap-off wait and the first-tick halving).~~ Done on `gpu/rnd-15-prewarm`, with the integration branch merged in. Asha: first frame ~0.3 s, steady ≤ 10 ms. Undertow lazy: first 0.6 s, 7 steady stalls of 0.1–0.3 s. Lead to choose lazy or batch 12.
+4. ~~**Perf regression sweep**~~ Done (`gpu/perf-sweep`).
    - Every scene with a camera, at Low/Medium/High/Ultra × 1080p/1440p, with gpu_bench.
    - Output: `docs/kb/qa/gpu/perf_baseline.csv`, plus a report flagging anything over the SPEC §4.2 budgets.
    - Sweeps under ~30 minutes at a stretch.
-6. Then write **QUEUE EMPTY** here.
+5. ~~M1-RND-20~~ Done. Open follow-up (not claimed): the grief mouth-interior fill (QA-05c fault 2), with Character's teeth material.
+6. **QUEUE EMPTY** (2026-10-23). here.
 
 ## Local-only state (not in git)
 
 - **`C:\Users\Aaron\Hymn_Playtest`**: a separate clone for the human's playtest, with `PLAY.bat` and `EDITOR.bat`
   (untracked, local only). Delete it freely after the playtest.
-- Scratch renders and CSVs under `C:\Users\Aaron\chr04`, `C:\Users\Aaron\rnd12` and `C:\Users\Aaron\m2rnd01`, `C:\Users\Aaron\rnd15`, `C:\Users\Aaron\rnd17` and `C:\Users\Aaron\rnd18`.
+- Scratch renders and CSVs under `C:\Users\Aaron\chr04`, `C:\Users\Aaron\rnd12` and `C:\Users\Aaron\m2rnd01`, `C:\Users\Aaron\rnd15`, `C:\Users\Aaron\rnd17`, `C:\Users\Aaron\rnd18`, `C:\Users\Aaron\qa05b` and `C:\Users\Aaron\env03`.
   Everything quoted in the reports is reproducible from the commands in them; none of it is needed.
 - Edit scripts and the keep-awake helper live in the session scratchpad (temporary).
