@@ -145,3 +145,9 @@ The rest of Act I had not been checked the same way. The inspiring game's openin
 - **Supersedes:** in decisions_log, N-01's "survives the Spar-Wraith" wording (the band is still earned on the Ch4 crossing) and N-12's "veteran's empty benches" (the side scene is now Oruvel's moorings, the same rite). In ADR 0016, the Ch19 row's "campfire" analogue wording describes the old Prologue staging. The Ch19 frame now repeats the vigil.
 
 - 2026-10-23 Lead sign-off: accepted, including the accepted risks as reasoned.
+- 2026-10-23 (Narrative, review-sweep-E): [0020](0020-kerrid-restaging.md), proposed, amends this ADR:
+  - **Prologue row:** the line is no longer accepted here. With the human's approval (relayed by the Lead), it is replaced by "Everyone I'm going to tell you about is still here tonight. Remember that, later." The SPEC amendment is the Lead's.
+  - **Ch5 row:** Kerrid's line is now "I held a stair for your mother once."
+  - **Ch7 row:** the island-side shape is added as an accepted residual, and Oruvel's side does not win the cup.
+  - **Ch6 row:** "I knelt beside your mother" is added as accepted, with a reason.
+  - **Kerrid roster row:** its "Pass" covered only his introduction and props. His backstory, bond, face and ending order are re-staged in 0020.

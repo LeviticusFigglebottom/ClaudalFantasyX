@@ -33,6 +33,6 @@ She is the steady centre of the team: healing, wards, and revival. Calling a Vow
 - **Rhen:** he is the only one who treats her as a person rather than a Cantor, at first because he doesn't know better. Love grows from that.
 - **Toma:** her oath-guardian since she was nine and the brother she chose. She worries about him more than about herself.
 - **Ysolde:** her tutor. Asha wins her over slowly by refusing to be afraid of her. By the end, the relationship is mother-and-daughter in all but name.
-- **Kerrid:** he guarded her mother. She knows it and he won't speak of it, and she is patient about that.
+- **Kerrid:** "I held a stair for your mother once." She knows that much and he won't speak of the rest until Ch15, and she is patient about that. Then she learns he got Imra up the Fisher Stair at Corrow, so that she could walk on to the Choir ([ADR 0020](../../decisions/0020-kerrid-restaging.md)).
 - **Imra (mother):** the heart of the storm. Asha's goal changes over the game from *follow her* to *free her*.
 - **Sefir:** he knew her mother, and he is kind to her. That kindness makes him dangerous.

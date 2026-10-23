@@ -34,6 +34,6 @@ His phases echo the story: the reasonable Warden (he buffs, delays, and "settles
 ## Relationships
 - **Kesh:** his wife and his whole reason. Her release ends him.
 - **Asha:** his instrument, and in his mind his kindness to her is real.
-- **Kerrid:** a man he killed eleven years ago who kept walking. He finds this interesting rather than frightening.
+- **Kerrid:** the Order's dead Hero of Corrow, whose name it lit eleven years ago, and who kept walking. Sefir didn't kill him ([ADR 0020](../../decisions/0020-kerrid-restaging.md)). He knows the face in Ch6 and finds it interesting rather than frightening.
 - **Ysolde:** a favoured scholar whose rage surprises him.
 - **The Abiding Conclave:** his peers and co-conspirators, whom he would discard to become the heart.

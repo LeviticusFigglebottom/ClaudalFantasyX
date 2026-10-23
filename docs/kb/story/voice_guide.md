@@ -65,9 +65,12 @@ How each principal character talks. Use this when writing any `.dlg` line. If a 
 ## Old Kerrid: *almost silent, then plain and dry*
 - **Acts I–II (pre-reveal):** single words or short sentences. He often answers with an action instead of a line (cinematics: give him a gesture slot). No names.
 - **Post-reveal:** longer, plainer, with dry gallows humor about being dead. He never sounds like he is performing wisdom.
-- **Tell:** the first time he uses Rhen's name (Ch14) should hit like a blow.
+- **Tell:** the first time he uses Rhen's name (Ch15, in the confession) should hit like a blow.
+- **Diction:** a Corrow wall captain's. Stair and watch words, never vows: he makes no promises and doesn't talk about having made any ([ADR 0020](../decisions/0020-kerrid-restaging.md)).
 
 > "Move."
+> "I held a stair for your mother once." *(Ch5, the only thing he says to her.)*
+> "Stair's clear." *(The Stillguard all-clear. The Ending.)*
 > "No." *(He sets down a full bowl of food untouched.)*
 > "Your mother laughed at the wrong times too."
 > "I have nothing left to hide. I may as well talk."
