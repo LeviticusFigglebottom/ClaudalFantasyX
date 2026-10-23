@@ -2,7 +2,7 @@
 id: M1-RND-17
 title: Dusk released motes read gold and rising (halo chroma, streak axis)
 role: rendering
-status: review
+status: doing
 reviewer: character
 owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-17-dusk-motes)"
 depends_on: [M1-RND-08]
@@ -115,3 +115,4 @@ palette_check gained the `advisory` flag. Turn them strict when `glimmer_dusk` i
     - **`glimmer_dusk` (0.0147): approve the look.** Re-approve it after B1/B2 land, because the fix will move it again.
     - **`glimmer_release` (0.0145): reject** (B1, B2).
   - **Still owed:** Art's numbers in color_script.md "Art sign-off" after the fix. This review log is the record until then.
+- 2026-10-23 lead: the code merge was REVERTED on the integration branch (e97dd41 / 9a57a8c) because the review-sweep-N blockers broke lavapipe shots. The reports and notes are kept. The PC reworks it on its gpu/ branch: rebase on the integration branch, fix the blockers, and resubmit.
