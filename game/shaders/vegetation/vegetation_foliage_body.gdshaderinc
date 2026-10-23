@@ -42,10 +42,6 @@ uniform vec4 col_translucency : source_color = vec4(0.78, 0.92, 0.36, 1.0);
 uniform float translucency : hint_range(0.0, 4.0) = 1.0;
 // Light still reaching a leaf through the leaves above it, where the shadow map says "occluded".
 uniform float translucency_shadow_floor : hint_range(0.0, 1.0) = 0.35;
-// 1 where the plant's occluder is a solid (an eave, a wall) rather than its own leaves: the floor is
-// off there, so a plant under a roof no longer glows (M1-ENV-03). Set per instance by VegetationPlant
-// (a ray toward the sun at placement) or by hand.
-instance uniform float inst_translucency_shelter : hint_range(0.0, 1.0) = 0.0;
 // Exponent of the forward-scattering lobe: the glow when looking towards the sun through leaves.
 uniform float translucency_focus : hint_range(1.0, 32.0) = 6.0;
 uniform float translucency_forward : hint_range(0.0, 4.0) = 1.4;
@@ -120,7 +116,7 @@ void light() {
 #if HYMN_QUALITY > HYMN_QUALITY_LOW
 	float back = max(0.0, -ndl);
 	float fwd = pow(clamp(dot(-VIEW, LIGHT), 0.0, 1.0), translucency_focus);
-	float through = mix(translucency_shadow_floor * (1.0 - inst_translucency_shelter), 1.0, ATTENUATION);
+	float through = mix(translucency_shadow_floor, 1.0, ATTENUATION);
 	DIFFUSE_LIGHT += LIGHT_COLOR * BACKLIGHT * ((back + fwd * translucency_forward) / HYMN_PI) * through;
 #endif
 }
