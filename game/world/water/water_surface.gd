@@ -27,14 +27,15 @@ const RIVER_SHADERS := {
 	Quality.HIGH: "res://game/shaders/water/water_river.gdshader",
 	Quality.ULTRA: "res://game/shaders/water/water_river.gdshader",
 }
-## Graphics preset id (game/data/settings/graphics_presets.json) -> tier. Until the presets file
-## carries this mapping (README "Quality tiers"), it lives here.
-const PRESET_QUALITY := {
+## Tier names as graphics_presets.json presets[].tiers.water spells them (M1-RND-07: the preset ->
+## tier map lives in the presets file now).
+const QUALITY_NAMES := {
 	"low": Quality.LOW,
 	"medium": Quality.MEDIUM,
 	"high": Quality.HIGH,
 	"ultra": Quality.ULTRA,
 }
+const PRESET_TIER_SYSTEM := "water"
 const SURFACE_NODE := &"Surface"
 const PARAM_SEA_GLOW := &"sea_glow_energy"
 const GLOBAL_WATER_LEVEL := &"hymn_water_level"
@@ -129,7 +130,7 @@ func surface() -> MeshInstance3D:
 
 
 static func quality_for_preset(preset_id: String) -> Quality:
-	return PRESET_QUALITY.get(preset_id, Quality.HIGH)
+	return QUALITY_NAMES.get(GraphicsSettings.preset_tier(preset_id, PRESET_TIER_SYSTEM), Quality.HIGH)
 
 
 static func shader_path(tier: Quality, is_river: bool) -> String:

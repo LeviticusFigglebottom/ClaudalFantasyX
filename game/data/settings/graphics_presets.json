@@ -143,6 +143,15 @@
     "temporal_upscaler_modes": ["fsr2"],
     "temporal_upscaler_note": "FSR2 runs its own temporal AA, so use_taa is forced off while it is active."
   },
+  "system_tiers_note": "presets[].tiers: per-system quality tier for systems that keep their own variants (water: WaterSurface.quality_for_preset; vegetation: shader_families; weathering: Environment's WeatheringTide). Undertow, glimmer and character tiers map 1:1 from the preset id in their own data files (M1-RND-07).",
+  "shader_families": {
+    "_note": "Compile-time shader variants per system tier. GraphicsSettings.apply_tiers(root) swaps every material whose shader belongs to a family to the variant of the preset's tier for the family's system; a tier with no entry uses 'high'. Variants declare the same uniforms (tested).",
+    "vegetation_foliage": {
+      "system": "vegetation",
+      "high": "res://game/shaders/vegetation/vegetation_foliage.gdshader",
+      "low": "res://game/shaders/vegetation/vegetation_foliage_low.gdshader"
+    }
+  },
   "presets": [
     {
       "id": "low",
@@ -172,7 +181,8 @@
         "aa": "fxaa",
         "lod_threshold": 2.0,
         "anisotropic_filtering": "4x"
-      }
+      },
+      "tiers": {"water": "low", "vegetation": "low", "weathering": "low"}
     },
     {
       "id": "medium",
@@ -202,7 +212,8 @@
         "aa": "taa",
         "lod_threshold": 1.0,
         "anisotropic_filtering": "8x"
-      }
+      },
+      "tiers": {"water": "medium", "vegetation": "high", "weathering": "medium"}
     },
     {
       "id": "high",
@@ -232,7 +243,8 @@
         "aa": "taa",
         "lod_threshold": 1.0,
         "anisotropic_filtering": "16x"
-      }
+      },
+      "tiers": {"water": "high", "vegetation": "high", "weathering": "high"}
     },
     {
       "id": "ultra",
@@ -262,7 +274,8 @@
         "aa": "taa",
         "lod_threshold": 0.5,
         "anisotropic_filtering": "16x"
-      }
+      },
+      "tiers": {"water": "ultra", "vegetation": "high", "weathering": "ultra"}
     }
   ]
 }

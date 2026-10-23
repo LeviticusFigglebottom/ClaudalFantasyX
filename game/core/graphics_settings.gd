@@ -19,6 +19,9 @@ const CONFIG_SECTION := "graphics"
 const KEY_VERSION := "version"
 const KEY_PRESET := "preset"
 const KEY_OVERRIDES := "overrides"
+const KEY_TIERS := "tiers"
+const KEY_FAMILIES := "shader_families"
+const FAMILY_FALLBACK_TIER := "high"
 
 const TARGET_VIEWPORT := &"viewport"
 const TARGET_ENVIRONMENT := &"environment"
@@ -36,6 +39,9 @@ const TYPE_INT_NAME := "int"
 const TYPE_FLOAT_NAME := "float"
 const TYPE_BOOL_NAME := "bool"
 const TYPE_ENUM_NAME := "enum"
+
+## Parsed presets data shared by the static helpers (preset_tier).
+static var _data_cache: Dictionary = {}
 
 var data: Dictionary = {}
 var preset_id: String = ""
@@ -218,6 +224,80 @@ static func execute(ops: Array[Dictionary], viewport: Viewport, environment: Env
 						_apply_property(node, op)
 					applied += 1
 	return applied
+
+
+## Quality tier of `system` ("water", "vegetation", ...) for a preset (presets[].tiers; "" if the
+## preset or system is unknown). Static and cached: systems ask it without a GraphicsSettings.
+static func preset_tier(preset: String, system: String) -> String:
+	for p: Dictionary in _shared_data().get("presets", []):
+		if str(p.get("id", "")) == preset:
+			return str((p.get(KEY_TIERS, {}) as Dictionary).get(system, ""))
+	return ""
+
+
+## Swaps every ShaderMaterial under `root` whose shader belongs to a shader family
+## (graphics_presets.json "shader_families") to the variant of the current preset's tier. Each
+## material is visited once; shared materials change for every user, which is the intent. Call it
+## after a zone loads and after a preset change, like apply(). Returns the number of swaps.
+func apply_tiers(root: Node, preset: String = "") -> int:
+	var pid := preset if preset != "" else preset_id
+	var families := data.get(KEY_FAMILIES, {}) as Dictionary
+	var member_of := {}
+	for fam: String in families:
+		if fam.begins_with("_"):
+			continue
+		for tier: String in families[fam]:
+			if tier != "system":
+				member_of[str(families[fam][tier])] = fam
+	var seen := {}
+	var swaps := 0
+	for mat in _materials_under(root):
+		if seen.has(mat) or not (mat is ShaderMaterial) or (mat as ShaderMaterial).shader == null:
+			continue
+		seen[mat] = true
+		var sm := mat as ShaderMaterial
+		var fam := str(member_of.get(sm.shader.resource_path, ""))
+		if fam == "":
+			continue
+		var f := families[fam] as Dictionary
+		var tier := preset_tier(pid, str(f.get("system", "")))
+		var want := str(f.get(tier, f.get(FAMILY_FALLBACK_TIER, "")))
+		if want != "" and want != sm.shader.resource_path:
+			sm.shader = load(want) as Shader
+			swaps += 1
+	return swaps
+
+
+static func _materials_under(root: Node) -> Array[Material]:
+	var out: Array[Material] = []
+	for n in root.find_children("*", "GeometryInstance3D", true, false) + [root]:
+		if not (n is GeometryInstance3D):
+			continue
+		var g := n as GeometryInstance3D
+		if g.material_override != null:
+			out.append(g.material_override)
+		var mesh: Mesh = null
+		if g is MeshInstance3D:
+			mesh = (g as MeshInstance3D).mesh
+			for i in (g as MeshInstance3D).get_surface_override_material_count():
+				var m := (g as MeshInstance3D).get_surface_override_material(i)
+				if m != null:
+					out.append(m)
+		elif g is MultiMeshInstance3D and (g as MultiMeshInstance3D).multimesh != null:
+			mesh = (g as MultiMeshInstance3D).multimesh.mesh
+		if mesh != null:
+			for i in mesh.get_surface_count():
+				var m := mesh.surface_get_material(i)
+				if m != null:
+					out.append(m)
+	return out
+
+
+static func _shared_data() -> Dictionary:
+	if _data_cache.is_empty():
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+		_data_cache = parsed as Dictionary if parsed is Dictionary else {}
+	return _data_cache
 
 
 ## Records what a zone/cutscene wants for a gated property (e.g. a cutscene turning fog on), then

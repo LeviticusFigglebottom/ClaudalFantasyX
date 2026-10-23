@@ -336,3 +336,58 @@ func _arg_count(cls: String, method: String) -> int:
 		if str(m["name"]) == method:
 			return (m["args"] as Array).size()
 	return -1
+
+
+# --- System tiers and shader families (M1-RND-07) ----------------------------------------------
+
+
+func test_every_preset_has_system_tiers() -> void:
+	var gs := GraphicsSettings.new()
+	for id in gs.preset_ids():
+		for system in ["water", "vegetation", "weathering"]:
+			assert_ne(GraphicsSettings.preset_tier(id, system), "", "%s has a %s tier" % [id, system])
+	assert_eq(GraphicsSettings.preset_tier("low", "vegetation"), "low", "Low maps to vegetation_foliage_low")
+	assert_eq(GraphicsSettings.preset_tier("nonsense", "water"), "")
+
+
+func test_shader_family_variants_exist_and_share_uniforms() -> void:
+	var gs := GraphicsSettings.new()
+	var families := gs.data["shader_families"] as Dictionary
+	for fam: String in families:
+		if fam.begins_with("_"):
+			continue
+		var f := families[fam] as Dictionary
+		var high := load(str(f["high"])) as Shader
+		assert_true(high != null, "%s high variant loads" % fam)
+		var high_names := high.get_shader_uniform_list().map(func(u: Dictionary) -> String: return str(u["name"]))
+		for tier: String in f:
+			if tier == "system" or tier == "high":
+				continue
+			var sh := load(str(f[tier])) as Shader
+			assert_true(sh != null, "%s %s variant loads" % [fam, tier])
+			for u: Dictionary in sh.get_shader_uniform_list():
+				assert_true(high_names.has(str(u["name"])), "%s %s uniform %s exists on high" % [fam, tier, u["name"]])
+
+
+func test_apply_tiers_swaps_family_materials_both_ways() -> void:
+	var gs := GraphicsSettings.new()
+	var f := gs.data["shader_families"]["vegetation_foliage"] as Dictionary
+	var mat := ShaderMaterial.new()
+	mat.shader = load(str(f["high"])) as Shader
+	var root := Node3D.new()
+	var a := MeshInstance3D.new()
+	a.mesh = QuadMesh.new()
+	a.material_override = mat
+	root.add_child(a)
+	var b := MultiMeshInstance3D.new()
+	b.multimesh = MultiMesh.new()
+	var mesh := QuadMesh.new()
+	mesh.material = mat
+	b.multimesh.mesh = mesh
+	root.add_child(b)
+	assert_eq(gs.apply_tiers(root, "low"), 1, "one shared material swapped once")
+	assert_eq(mat.shader.resource_path, str(f["low"]))
+	assert_eq(gs.apply_tiers(root, "low"), 0, "idempotent")
+	assert_eq(gs.apply_tiers(root, "high"), 1)
+	assert_eq(mat.shader.resource_path, str(f["high"]))
+	root.free()
