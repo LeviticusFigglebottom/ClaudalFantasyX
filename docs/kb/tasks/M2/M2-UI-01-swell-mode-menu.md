@@ -2,8 +2,8 @@
 id: M2-UI-01
 title: Swell mode menu and timing-input accessibility
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-ab3d864d1e75fe481"
 depends_on: [M1-CMB-04]
 milestone: M2
 request-from: combat
