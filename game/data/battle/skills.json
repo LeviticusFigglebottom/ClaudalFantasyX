@@ -75,6 +75,13 @@
      "swell": true},
     {"id": "read", "name_key": "SKILL_READ", "kind": "support", "power": 0, "rank": 2,
      "accuracy": 100, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false,
-     "read": true}
+     "read": true},
+    {"id": "shallows_verse", "name_key": "SKILL_SHALLOWS_VERSE", "kind": "heal", "power": 12, "rank": 3,
+     "element": "none", "target": "all_allies", "mp_cost": 0, "magic": true, "swell": true},
+    {"id": "return_tide", "name_key": "SKILL_RETURN_TIDE", "kind": "physical", "power": 14, "rank": 3,
+     "accuracy": 100, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false,
+     "swell": true},
+    {"id": "written_light", "name_key": "SKILL_WRITTEN_LIGHT", "kind": "magical", "power": 10, "rank": 3,
+     "element": "none", "target": "all_foes", "mp_cost": 0, "magic": true, "swell": true}
   ]
 }

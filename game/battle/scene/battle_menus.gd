@@ -71,7 +71,7 @@ func root_rows(engine: BattleEngine, items: BattleItemSource = null, swell: Batt
 			ATTACK_SKILL
 		)
 	)
-	if swell != null and swell.is_ready(actor):
+	if swell != null and swell.is_ready(actor) and SwellRingView.draws(swell.input_for(actor)):
 		var input_key := str(swell.input_for(actor).get("name_key", ""))
 		rows.append(_row(ROW_SWELL, tr("HUD_CMD_SWELL"), tr(input_key) if input_key != "" else "", &"swell", true))
 	rows.append(_row(ROW_SKILLS, tr("HUD_CMD_SKILLS"), "", &"text_dim", not skill_ids(actor).is_empty()))

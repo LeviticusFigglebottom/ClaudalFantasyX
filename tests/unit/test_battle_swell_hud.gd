@@ -24,7 +24,10 @@ func test_only_heroes_with_a_swell_get_a_gauge_and_it_starts_empty() -> void:
 	assert_true(rhen.swell_gauge() != null, "Rhen has a Swell")
 	assert_eq(rhen.swell_gauge().shown, 0.0)
 	assert_eq(rhen.swell_gauge().glow, 0.0, "no glow until full")
-	assert_true(ctl.hud.party.row_for(&"asha").swell_gauge() == null, "no swell.json row, no gauge")
+	assert_true(
+		ctl.hud.party.row_for(&"asha").swell_gauge() == null,
+		"Asha's chant has no HUD panel yet (M2-UI-03), so no gauge"
+	)
 	_to_turn_of(&"rhen")
 	assert_false(_row_ids().has(BattleMenus.ROW_SWELL), "no Swell command until the gauge is full")
 	_free()

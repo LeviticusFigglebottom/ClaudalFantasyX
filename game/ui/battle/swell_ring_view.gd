@@ -7,6 +7,11 @@ extends Control
 ## Grades read by shape, not hue alone: perfect = filled diamond with a halo, good = filled
 ## diamond, miss = a cross. Reduced motion keeps the timing but drops the flicker.
 
+## The input kinds the HUD can draw (M2-CMB-01). The HUD shows a Swell gauge, and offers Swell,
+## only to a hero whose input is drawn; the chant, brace and glyph run headless (engine, tests,
+## simulator) until M2-UI-03 gives each its panel and lists its kind here.
+const DRAWN_KINDS: Array[StringName] = [SwellInput.KIND_TIMING_RING]
+
 var ring: SwellTimingRing
 var reduced_motion := false
 
@@ -35,6 +40,16 @@ func _ready() -> void:
 	_title = _label(&"HeaderLabel", Rect2(0, 0, size.x, title_h))
 	_hint = _label(&"HelpLabel", Rect2(0, size.y - hint_h, size.x, hint_h))
 	visible = false
+
+
+## True when the HUD draws swell.json input row `input`.
+static func draws(input: Dictionary) -> bool:
+	return DRAWN_KINDS.has(StringName(str(input.get("kind", ""))))
+
+
+## True when the HUD draws hero `hero_id`'s input (the live swell.json).
+static func draws_hero(hero_id: StringName) -> bool:
+	return draws(BattleSwell.input_row_of(BattleSwell.load_config(), hero_id))
 
 
 ## Shows `r` under the technique's name `title_text`, with `hint` (what to press) below.
