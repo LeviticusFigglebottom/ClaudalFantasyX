@@ -3,10 +3,11 @@ extends Node3D
 ## Glue for the battle sandbox (M1-CMB-01, M1-UI-02): drives a headless BattleEngine from player
 ## input, runs enemy and automatic (Berserk/Confuse) turns with short readable pauses, and feeds
 ## the HUD and the 3D stage. It only calls the engine's public API (setup/begin/preview/
-## preview_swap/forced_target/reflect_recipient/perform/swap/escape/run_enemy_turn/xp_awards) and
-## listens to its signals; it never writes combatant state itself.
+## preview_swap/forced_target/reflect_recipient/perform/swap/escape/run_enemy_turn/xp_awards,
+## use_item/preview_item/item_defeats_party) and listens to its signals; it never writes
+## combatant state itself.
 ##
-## Player intent funnels into three public actions (act, swap_members, try_escape) that menus,
+## Player intent funnels into four public actions (act, use_item_on, swap_members, try_escape) that menus,
 ## tests and capture scripts all use. Time passes only through tick(), so tests can fast-forward.
 ## Capture states start from BattleFixture data (battle_fixtures.json), never from the live
 ## balance tables, so rebalancing never moves a screenshot baseline.
@@ -16,6 +17,7 @@ signal state_changed(new_state: StringName)
 const STATE_IDLE := &"idle"
 const STATE_COMMAND := &"command"
 const STATE_SKILLS := &"skills"
+const STATE_ITEMS := &"items"
 const STATE_TARGET := &"target"
 const STATE_SWAP_IN := &"swap_in"
 const STATE_SWAP_OUT := &"swap_out"
@@ -52,6 +54,9 @@ var battles_started := 0
 var fixture: BattleFixture
 ## True while a staged build (start_battle_staged) is still spreading its steps over frames.
 var building := false
+## The bag the Items command draws from. null = no Items command (capture fixtures, so their
+## baselines keep the four-row root). start_sandbox() wraps the party's real inventory.
+var items: BattleItemSource
 ## How a staged build waits between frames. Unset = the next process frame; tests set a callable
 ## that records the boundary and returns at once, so the whole build runs synchronously.
 var frame_wait := Callable()
@@ -66,6 +71,7 @@ var _wait_left := 0.0
 var _after_wait := Callable()
 var _draining := false
 var _pending_skill: StringName = &""
+var _pending_item: StringName = &""
 var _group_target := false
 var _candidates: Array[StringName] = []
 var _target_index := 0
@@ -120,11 +126,18 @@ func start_sandbox(rng_seed: int = -1, staged: bool = false) -> void:
 	var reserve: Array[StringName] = _ids(cfg.get("reserve", []))
 	var s := int(cfg.get("seed", 0)) if rng_seed < 0 else rng_seed
 	var encounter := StringName(str(cfg.get("encounter", "")))
+	items = _live_items()
 	if not staged:
-		start_battle(active, reserve, encounter, s, _load_progress(active + reserve))
+		start_battle(
+			active,
+			reserve,
+			encounter,
+			s,
+			BattleStage.lattice_for(active + reserve, Game.state.lattice if persist_progress else {})
+		)
 		return
 	building = true
-	var lattice := _load_progress(active + reserve)
+	var lattice := BattleStage.lattice_for(active + reserve, Game.state.lattice if persist_progress else {})
 	await _wait_frame()
 	await start_battle_staged(active, reserve, encounter, s, lattice)
 
@@ -134,7 +147,7 @@ func start_sandbox(rng_seed: int = -1, staged: bool = false) -> void:
 func start_fixture(fx: BattleFixture) -> void:
 	fixture = fx
 	_db = fx.db
-	start_battle(fx.active, fx.reserve, fx.encounter, fx.rng_seed, _fresh_progress(fx.active + fx.reserve))
+	start_battle(fx.active, fx.reserve, fx.encounter, fx.rng_seed, BattleStage.lattice_for(fx.active + fx.reserve))
 
 
 ## Builds and starts a battle in one call (tests, captures, retry).
@@ -237,7 +250,7 @@ func tick(delta: float) -> void:
 ## Routes one input event by state; returns true if consumed.
 func handle_input(event: InputEvent) -> bool:
 	match state:
-		STATE_COMMAND, STATE_SKILLS, STATE_SWAP_IN:
+		STATE_COMMAND, STATE_SKILLS, STATE_ITEMS, STATE_SWAP_IN:
 			return hud.commands.handle_input(event)
 		STATE_TARGET, STATE_SWAP_OUT:
 			return _handle_pick_input(event)
@@ -253,17 +266,9 @@ func handle_input(event: InputEvent) -> bool:
 ## A refused action costs nothing; the help line says why, in words (never the raw reason id).
 func act(skill_id: StringName, target_ids: Array[StringName]) -> ActionResult:
 	if not engine.is_party_turn():
-		var refused := ActionResult.failed(current_actor_id(), skill_id, &"not_your_turn")
-		if engine.is_auto_turn():
-			refused.fail_reason = &"auto_turn"
-		hud.set_help(menus.fail_text(refused.fail_reason, engine.current))
-		return refused
+		return _refuse_off_turn(skill_id)
 	var actor := engine.current
-	var targets: Array[BattleCombatant] = []
-	for tid in target_ids:
-		var t := engine.find(tid)
-		if t != null:
-			targets.append(t)
+	var targets := _found(target_ids)
 	var result := engine.perform(skill_id, targets)
 	_clear_targets()
 	if not result.ok:
@@ -274,6 +279,44 @@ func act(skill_id: StringName, target_ids: Array[StringName]) -> ActionResult:
 		_last_foe = targets[0].id
 	_after_action(actor.id)
 	return result
+
+
+## Uses one `item_id` from `items` on `target_ids` for the current party member (formulas.md
+## § Items). A refused use costs nothing, as for act().
+func use_item_on(item_id: StringName, target_ids: Array[StringName]) -> ActionResult:
+	if not engine.is_party_turn():
+		var off := _refuse_off_turn(&"")
+		off.item_id = item_id
+		return off
+	var actor := engine.current
+	var targets := _found(target_ids)
+	var result := engine.use_item(item_id, targets, items)
+	_clear_targets()
+	if not result.ok:
+		_open_command()
+		hud.set_help(menus.fail_text(result.fail_reason, actor))
+		return result
+	if targets.size() == 1 and targets[0].team == BattleCombatant.TEAM_ENEMY:
+		_last_foe = targets[0].id
+	_after_action(actor.id)
+	return result
+
+
+func _refuse_off_turn(skill_id: StringName) -> ActionResult:
+	var refused := ActionResult.failed(current_actor_id(), skill_id, &"not_your_turn")
+	if engine.is_auto_turn():
+		refused.fail_reason = &"auto_turn"
+	hud.set_help(menus.fail_text(refused.fail_reason, engine.current))
+	return refused
+
+
+func _found(target_ids: Array[StringName]) -> Array[BattleCombatant]:
+	var targets: Array[BattleCombatant] = []
+	for tid in target_ids:
+		var t := engine.find(tid)
+		if t != null:
+			targets.append(t)
+	return targets
 
 
 ## Swaps active `out_id` for reserve `in_id` at no time cost.
@@ -314,6 +357,10 @@ func current_actor_id() -> StringName:
 
 func pending_skill() -> StringName:
 	return _pending_skill
+
+
+func pending_item() -> StringName:
+	return _pending_item
 
 
 func picked_ids() -> Array[StringName]:
@@ -395,11 +442,12 @@ func _after_action(actor_id: StringName, hold: StringName = &"action_hold_sec") 
 func _open_command() -> void:
 	_set_state(STATE_COMMAND)
 	_pending_skill = &""
+	_pending_item = &""
 	hud.commands.visible = true
 	hud.commands.active = true
 	hud.party.set_current(current_actor_id())
 	_mark_provoker()
-	hud.commands.open_root(BattleMenus.PAGE_ROOT, menus.display_name(engine.current), menus.root_rows(engine))
+	hud.commands.open_root(BattleMenus.PAGE_ROOT, menus.display_name(engine.current), menus.root_rows(engine, items))
 
 
 func _show_result() -> void:
@@ -465,7 +513,9 @@ func _on_menu_highlighted(_page: StringName, row: Dictionary) -> void:
 		STATE_COMMAND:
 			_highlight_root(rid)
 		STATE_SKILLS:
-			_preview_skill(rid, _default_targets(rid))
+			_preview_skill(rid, default_targets(rid))
+		STATE_ITEMS:
+			_preview_item(rid, _default_item_targets(rid))
 		STATE_SWAP_IN:
 			# Hovering a reserve member previews them taking the acting fighter's place.
 			var incoming := engine.find(rid)
@@ -476,7 +526,7 @@ func _on_menu_highlighted(_page: StringName, row: Dictionary) -> void:
 func _highlight_root(rid: StringName) -> void:
 	match rid:
 		BattleMenus.ROW_ATTACK:
-			_preview_skill(BattleMenus.ATTACK_SKILL, _default_targets(BattleMenus.ATTACK_SKILL))
+			_preview_skill(BattleMenus.ATTACK_SKILL, default_targets(BattleMenus.ATTACK_SKILL))
 		BattleMenus.ROW_ESCAPE:
 			# A failed attempt costs a default-rank turn: preview exactly that.
 			var failed := engine.timeline.predict(CtbTimeline.PREVIEW_LENGTH - 1, engine.current, Formulas.DEFAULT_RANK)
@@ -485,6 +535,9 @@ func _highlight_root(rid: StringName) -> void:
 		BattleMenus.ROW_SWAP:
 			_show_timeline(TurnTimeline.MODE_PREVIEW)
 			hud.set_help(tr("HUD_HELP_SWAP"))
+		BattleMenus.ROW_ITEMS:
+			_show_timeline(TurnTimeline.MODE_PREVIEW)
+			hud.set_help(tr("HUD_HELP_ITEMS"))
 		_:
 			_show_timeline(TurnTimeline.MODE_PREVIEW)
 			hud.set_help(tr("HUD_HELP_SKILLS"))
@@ -500,6 +553,9 @@ func _on_menu_chosen(_page: StringName, row: Dictionary) -> void:
 				BattleMenus.ROW_SKILLS:
 					_set_state(STATE_SKILLS)
 					hud.commands.push(BattleMenus.PAGE_SKILLS, tr("HUD_CMD_SKILLS"), menus.skill_rows(engine))
+				BattleMenus.ROW_ITEMS:
+					_set_state(STATE_ITEMS)
+					hud.commands.push(BattleMenus.PAGE_ITEMS, tr("HUD_CMD_ITEMS"), menus.item_rows(engine, items))
 				BattleMenus.ROW_ESCAPE:
 					try_escape()
 				BattleMenus.ROW_SWAP:
@@ -507,13 +563,15 @@ func _on_menu_chosen(_page: StringName, row: Dictionary) -> void:
 					hud.commands.push(BattleMenus.PAGE_SWAP, tr("HUD_PAGE_RESERVE"), menus.reserve_rows(engine))
 		STATE_SKILLS:
 			_begin_target(StringName(str(row.get("skill", rid))))
+		STATE_ITEMS:
+			_begin_item_target(StringName(str(row.get("item", rid))))
 		STATE_SWAP_IN:
 			_swap_in_id = rid
 			_begin_swap_out()
 
 
 func _on_menu_cancelled(_page: StringName) -> void:
-	if state in [STATE_SKILLS, STATE_SWAP_IN] and hud.commands.pop():
+	if state in [STATE_SKILLS, STATE_ITEMS, STATE_SWAP_IN] and hud.commands.pop():
 		_set_state(STATE_COMMAND)
 		_highlight_root(StringName(str(hud.commands.current_row().get("id", ""))))
 
@@ -539,10 +597,30 @@ func _begin_target(skill_id: StringName) -> void:
 		return
 	_pending_skill = skill_id
 	_group_target = kind.begins_with("all_")
-	_candidates = _ids_of(_candidates_for(skill_id))
+	_candidates = _ids_of(menus.skill_candidates(engine, skill_id))
 	if _candidates.is_empty():
 		return
-	var preferred := _default_targets(skill_id)
+	var preferred := default_targets(skill_id)
+	_target_index = maxi(_candidates.find(preferred[0].id), 0) if not preferred.is_empty() else 0
+	_set_state(STATE_TARGET)
+	hud.commands.active = false
+	_show_pick()
+
+
+## Like _begin_target, for an item: the cursor moves between whoever the item may take (the
+## fallen and living Zombies for a revive). Self items still open the pick, so a warning about
+## what the use costs is on screen before it is confirmed.
+func _begin_item_target(item_id: StringName) -> void:
+	var action := items.action_for(item_id) if items != null else null
+	if action == null:
+		return
+	_candidates = _ids_of(menus.item_candidates(engine, action))
+	if _candidates.is_empty():
+		return
+	_pending_skill = &""
+	_pending_item = item_id
+	_group_target = String(action.target).begins_with("all_")
+	var preferred := _default_item_targets(item_id)
 	_target_index = maxi(_candidates.find(preferred[0].id), 0) if not preferred.is_empty() else 0
 	_set_state(STATE_TARGET)
 	hud.commands.active = false
@@ -551,6 +629,7 @@ func _begin_target(skill_id: StringName) -> void:
 
 func _begin_swap_out() -> void:
 	_pending_skill = &""
+	_pending_item = &""
 	_group_target = false
 	_candidates = _ids_of(engine.party_active)
 	_target_index = maxi(_candidates.find(engine.current.id), 0)
@@ -583,17 +662,22 @@ func _cycle_target(delta: int) -> void:
 func _confirm_pick() -> void:
 	if state == STATE_SWAP_OUT:
 		swap_members(_candidates[_target_index], _swap_in_id)
+	elif _pending_item != &"":
+		use_item_on(_pending_item, picked_ids())
 	else:
 		act(_pending_skill, picked_ids())
 
 
 func _cancel_pick() -> void:
-	var was := state
+	var back := STATE_SKILLS if hud.commands.depth() > 1 else STATE_COMMAND
+	if state == STATE_SWAP_OUT:
+		back = STATE_SWAP_IN
+	elif _pending_item != &"":
+		back = STATE_ITEMS
+	_pending_item = &""
 	_clear_targets()
 	hud.commands.active = true
-	_set_state(
-		STATE_SWAP_IN if was == STATE_SWAP_OUT else (STATE_SKILLS if hud.commands.depth() > 1 else STATE_COMMAND)
-	)
+	_set_state(back)
 	_mark_provoker()
 	_on_menu_highlighted(hud.commands.page_id(), hud.commands.current_row())
 
@@ -602,8 +686,10 @@ func _show_pick() -> void:
 	var ids := picked_ids()
 	var hostile: Array[bool] = []
 	var entries: Array[Dictionary] = []
-	var sk := engine.db.skill(_pending_skill) if state == STATE_TARGET else {}
-	var forced := engine.forced_target(engine.current, _pending_skill) if state == STATE_TARGET else null
+	var skill_pick := state == STATE_TARGET and _pending_item == &""
+	var sk := engine.db.skill(_pending_skill) if skill_pick else {}
+	# Items ignore Provoke and Reflect (formulas.md § Items).
+	var forced := engine.forced_target(engine.current, _pending_skill) if skill_pick else null
 	var chosen: Array[BattleCombatant] = []
 	for cid in ids:
 		var c := engine.find(cid)
@@ -636,6 +722,9 @@ func _show_pick() -> void:
 		_show_swap_preview(_candidates[_target_index], _swap_in_id)
 		hud.set_help(menus.swap_out_help(engine.find(_swap_in_id)))
 		return
+	if _pending_item != &"":
+		_preview_item(_pending_item, chosen)
+		return
 	_preview_skill(_pending_skill, chosen)
 
 
@@ -647,44 +736,13 @@ func _clear_targets() -> void:
 	hud.party.set_targeted([])
 
 
-## Who the cursor may pick for `skill_id`: the provoker alone while Provoke forces it, otherwise
-## every living foe or ally the skill's reach allows.
-func _candidates_for(skill_id: StringName) -> Array[BattleCombatant]:
-	var kind := str(engine.db.skill(skill_id).get("target", "single_foe"))
-	var forced := engine.forced_target(engine.current, skill_id)
-	if forced != null:
-		var only: Array[BattleCombatant] = [forced]
-		return only
-	if kind.ends_with("foe") or kind.ends_with("foes"):
-		return engine.living_foes_of(engine.current)
-	return engine.living_allies_of(engine.current)
+## The target a skill starts on (BattleMenus.default_targets). Public for the capture scripts.
+func default_targets(skill_id: StringName) -> Array[BattleCombatant]:
+	return menus.default_targets(engine, skill_id, _last_foe)
 
 
-## The target a skill starts on: the provoker when Provoked, the last foe you hit, the most hurt
-## ally for heals, yourself for other ally skills, or everyone for group skills.
-func _default_targets(skill_id: StringName) -> Array[BattleCombatant]:
-	var sk := engine.db.skill(skill_id)
-	var kind := str(sk.get("target", "single_foe"))
-	var pool := _candidates_for(skill_id)
-	var out: Array[BattleCombatant] = []
-	if pool.is_empty() and kind != "self":
-		return out
-	if kind == "self":
-		out.append(engine.current)
-	elif kind.begins_with("all_"):
-		out = pool
-	elif kind == "single_foe":
-		var last := engine.find(_last_foe)
-		out.append(last if last != null and last.is_alive() and pool.has(last) else pool[0])
-	elif str(sk.get("kind", "")) == "heal":
-		var best := pool[0]
-		for c in pool:
-			if c.hp * best.max_hp < best.hp * c.max_hp:
-				best = c
-		out.append(best)
-	else:
-		out.append(engine.current)
-	return out
+func _default_item_targets(item_id: StringName) -> Array[BattleCombatant]:
+	return menus.default_item_targets(engine, items.action_for(item_id) if items != null else null, _last_foe)
 
 
 # --- presentation helpers ----------------------------------------------------------------
@@ -703,6 +761,24 @@ func _preview_skill(skill_id: StringName, targets: Array[BattleCombatant]) -> vo
 	# What changes the outcome (Provoke, Reflect, Zombie) reads before the generic description.
 	var parts := menus.target_notes(engine, skill_id, chosen, lands)
 	parts.append(menus.skill_help(engine, skill_id, _ghost_slot() - 1))
+	hud.set_help(" · ".join(parts))
+
+
+## Previews item `item_id` on `targets`. What the use will really do leads the help line; a use
+## that loses the fight on the spot (a Zombie reviving itself as the last one standing, M1-UI-04)
+## is the whole line, in the danger color, while the timeline shows the user dropping out of it.
+func _preview_item(item_id: StringName, targets: Array[BattleCombatant]) -> void:
+	var chosen: BattleCombatant = targets[0] if targets.size() == 1 else null
+	var preview := engine.preview_item(item_id, chosen, items, CtbTimeline.PREVIEW_LENGTH - 1)
+	_show_timeline(TurnTimeline.MODE_PREVIEW, preview, _ids_of(targets))
+	var parts := menus.item_notes(engine, items, item_id, chosen)
+	if engine.item_defeats_party(item_id, targets, items):
+		# The warning stands alone: nothing else about the item matters if it ends the fight.
+		hud.set_help(" · ".join(parts), &"danger")
+		return
+	var help := menus.item_help(engine, items, item_id, _ghost_slot() - 1)
+	if help != "":
+		parts.append(help)
 	hud.set_help(" · ".join(parts))
 
 
@@ -873,24 +949,12 @@ func _color(role: StringName) -> Color:
 	return hud.get_theme_color(role, HymnThemeBuilder.PALETTE_TYPE)
 
 
-func _load_progress(ids: Array[StringName]) -> LatticeProgress:
-	if not persist_progress or Game.state.lattice.is_empty():
-		return _fresh_progress(ids)
-	var cfg := BattleStage.config()
-	var board := LatticeBoard.load_board(StringName(str(cfg.get("board", LatticeBoard.DEFAULT_BOARD))))
-	var p := LatticeProgress.from_dict(Game.state.lattice, board, LatticeRules.load_file())
-	for cid in ids:
-		p.add_character(cid)
-	return p
-
-
-func _fresh_progress(ids: Array[StringName]) -> LatticeProgress:
-	var cfg := BattleStage.config()
-	var board := LatticeBoard.load_board(StringName(str(cfg.get("board", LatticeBoard.DEFAULT_BOARD))))
-	var p := LatticeProgress.new(board, LatticeRules.load_file())
-	for cid in ids:
-		p.add_character(cid)
-	return p
+## The party's bag for live play: the real inventory when the battle persists, otherwise a copy
+## so a test or preview run never spends the player's items.
+func _live_items() -> BattleItemSource:
+	var item_db := ItemDB.load_default()
+	var bag: Dictionary = Game.state.inventory if persist_progress else Game.state.inventory.duplicate(true)
+	return InventoryItemSource.new(item_db, Inventory.new(item_db, bag))
 
 
 static func _ids(raw: Variant) -> Array[StringName]:
@@ -910,85 +974,21 @@ static func _ids_of(list: Array[BattleCombatant]) -> Array[StringName]:
 # --- capture scripts (deterministic; see tests/screenshots/shots.json) ---------------------
 
 
-## Plays the `scripted_state` fixture to its capture state. Public so tests can drive it.
+## Plays the `scripted_state` fixture to its capture state (BattleCaptureScript). Public so tests
+## can drive it.
 func run_script(state_id: StringName = &"") -> void:
 	var sid := state_id if state_id != &"" else scripted_state
 	var fx := BattleFixture.load_fixture(sid)
 	if fx == null:
 		return
 	start_fixture(fx)
-	match sid:
-		SCRIPT_PLAYER_PREVIEW:
-			_script_to_turn_of(&"rhen")
-			_press(&"ui_down")
-			_press(&"ui_accept")
-			hud.commands.select(&"undertow_cut")
-			_press(&"ui_accept")
-			_script_pick(&"gull_harrier")
-		SCRIPT_SWAP_MENU:
-			_script_to_turn_of(&"rhen")
-			hud.commands.select(BattleMenus.ROW_SWAP)
-			_press(&"ui_accept")
-		SCRIPT_VICTORY:
-			_script_play_to_victory()
-		SCRIPT_DEFEAT:
-			_script_play_naive()
-		SCRIPT_STATUSES:
-			# Ysolde is provoked by the reflecting Lantern Eel: Ember must go at it and bounces
-			# onto Rhen (Doom, Zombie, Regen turned to harm); Asha stands as stone.
-			_script_to_turn_of(&"ysolde")
-			_press(&"ui_down")
-			_press(&"ui_accept")
-			hud.commands.select(&"ember")
-			_press(&"ui_accept")
+	BattleCaptureScript.play(self, sid)
 
 
-## Plays (party: Attack the first living foe) until it is `cid`'s turn.
-func _script_to_turn_of(cid: StringName) -> void:
-	var guard := 0
-	while engine.outcome == &"" and current_actor_id() != cid and guard < CtbTimeline.PREVIEW_LENGTH:
-		guard += 1
-		if engine.is_party_turn():
-			act(BattleMenus.ATTACK_SKILL, [_default_targets(BattleMenus.ATTACK_SKILL)[0].id])
-
-
-## The sandbox's "elegant answer" policy: bring Toma in for Asha, then hit the weakest foe.
-func _script_play_to_victory() -> void:
-	var guard := 0
-	while engine.outcome == &"" and guard < CtbTimeline.PREVIEW_LENGTH * CtbTimeline.PREVIEW_LENGTH:
-		guard += 1
-		if not engine.is_party_turn():
-			break
-		if engine.find(&"asha") in engine.party_active and engine.find(&"toma") in engine.party_reserve:
-			swap_members(&"asha", &"toma")
-			continue
-		var weakest := engine.living_foes_of(engine.current)[0]
-		for f in engine.living_foes_of(engine.current):
-			if f.hp < weakest.hp:
-				weakest = f
-		act(BattleMenus.ATTACK_SKILL, [weakest.id])
-
-
-## Attack the first living foe until the fight ends.
-func _script_play_naive() -> void:
-	var guard := 0
-	while engine.outcome == &"" and guard < CtbTimeline.PREVIEW_LENGTH * CtbTimeline.PREVIEW_LENGTH:
-		guard += 1
-		if not engine.is_party_turn():
-			break
-		act(BattleMenus.ATTACK_SKILL, [engine.living_foes_of(engine.current)[0].id])
-
-
-func _script_pick(base_id: StringName) -> void:
+## Moves the open target cursor onto the first candidate whose base id is `base_id` (captures).
+func aim_at(base_id: StringName) -> void:
 	for i in _candidates.size():
 		if String(_candidates[i]).get_slice("#", 0) == String(base_id):
 			_target_index = i
 			_show_pick()
 			return
-
-
-func _press(action: StringName) -> void:
-	var ev := InputEventAction.new()
-	ev.action = action
-	ev.pressed = true
-	handle_input(ev)
