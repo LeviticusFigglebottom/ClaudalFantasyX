@@ -1,5 +1,5 @@
 ---
-id: M2-FP-06
+id: M2-FP-10
 title: Dialogue-range character key light in the cutscene rig
 role: cinematics
 status: todo

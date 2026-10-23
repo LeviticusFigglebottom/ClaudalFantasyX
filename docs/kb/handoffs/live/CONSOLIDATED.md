@@ -39,7 +39,7 @@
 ## 3. Environments for the NEW account (recommended)
 1. **The new Lead, a cloud session** that orchestrates, merges, reviews and runs the gates. It may use subagents in worktrees. 4 CPUs are enough with scoped gates.
 2. **Optionally, a second cloud session as a dedicated feature track.** The old account's "First Playable" session worked well in its own container: spawn it with `create_session`, give it `outcome_branch` set to a `claude/<track>` branch, and give it a standing queue. Good next tracks:
-   - **(a) the M2 vertical slice content:** the Drownbell boss, Haluna to slice quality, the Shell Shrine temple trial, the first Vowbound, Cutscene A and B facial animation, M2-FP-05 and M2-FP-06, M1-ARC-15;
+   - **(a) the M2 vertical slice content:** the Drownbell boss, Haluna to slice quality, the Shell Shrine temple trial, the first Vowbound, Cutscene A and B facial animation, M2-FP-10 (dialogue key light), M1-ARC-15 (if not already done on claude/first-playable);
    - **(b) Characters:** Rhen and Toma on the MPFB2 pipeline; Asha's animation clips.
 3. **The PC GPU worker:** a Remote Control session on the human's Windows PC (RX 9070 XT, official Godot 4.6.3 and Vulkan). It **can message the Lead back** via `send_message`. It has been the most productive worker. Give it a standing queue of GPU-heavy items: captures and look judgements, perf, raymarching, shaders, GPU checks before lavapipe re-approvals.
    - **The human's rules for it:** cumulative CPU, memory and GPU load at or under **75%**; GPU timing benchmarks run one at a time; keep the PC awake with the monitor on (a switched-off monitor broke the swapchain once).
@@ -55,7 +55,7 @@
   - Append-only conflicts go through `python3 tools/dev/merge_union.py <file>`. Check for duplicate loc keys with `cut -d, -f1 game/data/loc/strings.csv | sort | uniq -d`.
   - Never commit conflict markers; check with `git grep -n '^<<<<<<< '`.
   - Run `timeout 900 python3 -m unittest discover -s tools/tests`, which takes about 4 minutes; a 280 s timeout cuts it off silently.
-- **Number collisions:** parallel agents collide on task ids, ADR numbers and handoff numbers, so check every merge. Valid task roles are listed by `taskboard.py --check`; use `character` for art.
+- **Number collisions:** at handoff, the integration branch's task files were renumbered to match `claude/first-playable`: FP-05 is polish and FP-06 the Drownbell boss on that branch; thread hardening is FP-09 and the dialogue key light FP-10. Parallel agents collide on task ids, ADR numbers and handoff numbers, so check every merge. Valid task roles are listed by `taskboard.py --check`; use `character` for art.
 - **Coverage baseline:** ratchet it up after test-adding merges with `python3 tools/coverage/run_coverage.py --update-baseline`. Currently battle 99.93% and progression 96.52%.
 
 ## 5. Exact next steps for the new Lead
