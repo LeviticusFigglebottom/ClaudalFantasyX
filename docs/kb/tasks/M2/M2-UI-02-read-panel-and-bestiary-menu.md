@@ -2,8 +2,8 @@
 id: M2-UI-02
 title: Read result panel, bestiary menu and opening banner
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-ab3d864d1e75fe481"
 depends_on: [M1-CMB-03]
 milestone: M2
 request-from: combat
