@@ -103,3 +103,40 @@ SPEC §10.2 M1 exit criterion.
   - **Nit.** A shadow sample right of H02's wall (about x 820-860, y 440-470) reads hue about 126°, a green-grey. It may be the tuft. Re-check it with the swatch-mask view when it exists (haluna.md:208).
   - **GI.** SDFGI off for the frames, with a GPU re-test requested (README "GI choice"), is reasonable and documented. It's not a review item.
 - 2026-10-23 lead: reopened on review-sweep-F request-changes. The sky blocker is fixed here; no waiver. Reviewers are Rendering and Art.
+- 2026-10-23 art director (review-sweep-G, re-review after sweep F): **approve (Art), with should-fixes.** Rendering has not yet logged a re-review of the rework, so the task stays in `review` until it does.
+  - **What I read:** the five baselines (`tests/screenshots/baselines/haluna_h0{1,2,3,4,7}_*.png`), against palette.json `onscreen_hex`, color_script (conventions, rule 3, `lagoon_clear`), haluna.md §0, §5.1, §6 and Revisions, `tools/screenshots/palette_check.py`, `tests/screenshots/palette_checks.json`, `tools/tests/test_palette_check.py` and haluna_noon_environment.tres. `palette_check.py check` gives 19 ok and 0 failed. `validate_data.py` gives 0 errors and 0 warnings, and `unittest discover -s tools/tests` gives 322 OK.
+  - **Sweep-F items:**
+    - **B1 (sky) is resolved in the pictures.** The H01 and H07 zeniths sit on `sky_zenith_noon` +1 (ΔE_ok 0.029, C 0.090). The lit tops read at `cumulus_lit` +1 (L p95 0.90). The undersides read blue-grey by eye, the grain is gone, and the Act I grade is clear rather than hazy.
+    - **S1 (haze):** cut. That is the right call, since the `ch02_noon` row never asked for fog (haluna.md:218 (3)).
+    - **S2 (chapel):** reads white (#BABCBC, ΔE 0.013 to `order_marble` 0), and the stipple is gone.
+    - **S3 (red):** 5.2% in H03 and 4.3% in H02.
+    - **S4 (banyan roots):** they are now pale grey (L 0.42), not near-black poles.
+    - **S5 (H01):** partly resolved; see the decision below.
+    - **S6 (H04):** the planks are on `timber_weathered` +1 (ΔE 0.033), and the nets are visible.
+  - **Art Director decisions on the haluna.md Revisions proposals (haluna.md:218):**
+    1. **H01 re-staged to 120 m offshore at 8 m: APPROVED** as the shot's camera, with the horizon at about 0.36 of frame height. Environment should write the new numbers into the §5.1 H01 row (haluna.md:163 still says 180 m at 6 m) and mark the Revisions entry approved.
+       - The brief text stays. "The tide-wall reads as one white curved line" and "a beach crescent" are still unmet, because the beach is a straight white band across the frame and the roofs are still a dotted line behind the palm trunks (S5 below).
+       - For the Cutscene A close under `ch02` dawn, check that the three walking figures still read at 120 m (about 8 px tall at 24 mm).
+    2. **H04 drops "backlit": APPROVED.** At 12:30 the sun is 74° up behind the camera, so backlit nets are impossible. Replace the phrase with "drying nets, dark tannin mesh, against the shallows" in haluna.md:166.
+  - **The palette checker: targets and value as a CI check.**
+    - The `near_swatch` targets are the palette's. They read palette.json `onscreen_hex` live by swatch name (palette_check.py:123-131), so a palette edit flows through.
+    - The red budget is haluna.md §6's 8%.
+    - The bounds (zenith C minima, grain maxima, root L) are bespoke, not palette values.
+    - It is a meaningful gate, but a narrow one. test_palette_check.py:84-86 runs the checks on the committed baselines in every tools test run, so a re-approval that drifts off the palette fails, and the screenshot diff ties renders to those baselines. It is not wired to fresh renders, and it doesn't need to be.
+  - **Should-fix:**
+    - **S1 (check validity). The "undersides" checks mostly measure sky.** These are palette_checks.json:11-16 and :26-31. Of the selected pixels, 51% (H01) and 57% (H04) are nearest `sky_horizon_noon`, and only 19% and 11% are nearest `cumulus_shadow`. The L 0.6-0.8, C ≤ 0.045 window contains `sky_horizon_noon` 0 and -1 (L 0.675-0.786, C 0.029-0.035, h 222°).
+      - Consequence: a grey underside could pass on horizon sky, and H04's 230° median is 18° off the swatch's 248°, toward cyan.
+      - Fix: select the cloud bodies themselves (rects inside the cloud, or require ΔE_ok to `cumulus_shadow` below a bound), and tighten the hue window to about 235-265°.
+    - **S2 (check validity). A filtered selection can pass on a small minority of its rect.** The default `min_fraction` is 0.02 (palette_check.py:251). The zenith checks (palette_checks.json:5-8, :20-23, :37) filter `C_min 0.03`, so a mostly grey sky is filtered away rather than failed. Set `min_fraction` to about 0.9 on the zenith checks; today they cover 1.00 of the rect.
+    - **S3 (H04 "zenith").** palette_checks.json:20-23 samples the top of a 28 mm frame at 1.2 m, about 20° up, not the zenith. Its C minimum of 0.06 sits just under the measured 0.064, against the swatch's 0.094. Rename it "upper sky" and target a zenith-to-horizon interpolation, or record why it is looser than H01's 0.075.
+    - **S4 (coverage). Add the haluna.md §6 checklist items the tool can already measure:**
+      - shaded-sand hue 170-200° in H07;
+      - gold ≤ 5% by swatch mask in H07 (the door and finial);
+      - the water and sand ΔE values sweep F passed (H01 near water against `lagoon_teal` 0, H04 shallows against `turquoise_shallow` 0, H02 lane against `sand_dry` +1).
+
+      As it stands, a regression in those parts of the frame would go uncaught.
+    - **S5 (H01 dressing).** Curve the beach and tide-wall into a crescent, and thin or stagger the front palms so the roofs read as a band (haluna.md:163). This is not a blocker for the M1 mood test.
+    - **S6 (H04 dressing).** The nets read as a taut chain-link fence panel. Give them drape and sag between the rack posts. The brief's outriggers and seagrass patches (haluna.md:166) are absent: the dock now leads to the marker posts.
+    - **S7 (sky artefacts).** Detached cloud specks at H01 about (675, 127) and H07 about (306, 93) read as floating dots. Suppress blobs below a size threshold in `env_sky_cumulus`.
+    - **S8 (record).** `background_energy` 1.5 (haluna_noon_environment.tres:8) lifts the visible sky but not the reflection or fill, so the water now reflects a sky at 1/1.5 of what is seen. Record this as a deliberate per-zone exception in the zone README and color_script, so other zones don't copy it without re-validating their water looks.
+  - **Nit.** In H07 the two window slits are also hard rectangles; the brief (haluna.md:169) wants the door to be the only one. Soften them, or accept and amend the brief.
