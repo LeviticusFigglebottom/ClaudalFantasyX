@@ -25,3 +25,18 @@ From the review-sweep-I entries (file:line references there).
 - Checks: `validate_data` 0/0 (it includes the banned-terms grep), and the full gate below.
 
 ## Review log
+- 2026-10-23 cinematics (review-sweep-J, fresh reviewer, + IP): **approve with should-fixes.** No blockers.
+  - **What I read:**
+    - the task;
+    - commit 0588945: the ADR 0022 append note, decisions_log N-24/N-25/N-26, act3_ending E2, act_outline Ch17, rhen_sallow.md, vertical_slice.md H06;
+    - a repo grep for "go myself", "oil wick", "two hulls along" and "never says so".
+  - **Checks:** `validate_data` 0/0, including banned terms.
+  - **IP watch.** The watch is sound: a written ledger, never voiced or played back, never addressed to Rhen, with no stated promise to return. The ADR note is append-only and amends the sweep-H row correctly.
+  - **E2.** "Still the oil burner he fitted" no longer collides with Kell's wick.
+  - **Should-fix:**
+    - **S1 (the broken-off entry contradicts the ledger's order).**
+      - act_outline.md:176 says the "After the storm" entry breaks off and "the next page is blank". The same paragraph then goes on: "A season later a Hollowmere trader told him … and the entry says only 'Kell. Of course.'"
+      - Read in order, a later entry follows a blank page. The same "next page is blank" is in ADR 0022:220 and decisions_log.md:237, while ADR 0022:186 dates the Kell entry to a season after Corrow.
+      - Say the broken-off entry is the ledger's **last**, written the night he went after Imra, and move the Kell sentence before it in the outline. Or drop "the next page is blank". Cinematics needs that order to stage the page-turn.
+    - **S2 (the "wick" vocabulary is still split).** decisions_log.md:14 (the N-02 answer) still says Dace fitted the lantern "with an oil wick", the phrase S2 removed from E2. decisions_log.md:145 has the Prologue line "as his oil wick catches". Mark them inline (N-26) or reword them to "oil burner", so the Kell-wick watch has one term. Otherwise the next reader repeats the sweep-I confusion.
+  - **Nit:** game/data/dialogue/ch02/ch02_girl_on_the_beach.dlg:10 still says "She never says so" (acknowledged, comment-only).

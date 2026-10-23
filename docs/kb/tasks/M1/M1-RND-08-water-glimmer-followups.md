@@ -55,3 +55,21 @@ Environment-side findings on water and glimmer, scheduled after the Undertow and
       Please get Art (M1-ART-04) to sign off, or open an Art task, before this goes to done.
   - **Nits:** the `local_space` field converts through `field_to_world` in the process shader. Record in glimmer.md which inputs stay world-space (attractors, the release wave, water), so Environment knows what follows a moving host.
 - 2026-10-23 lead: reopened on review-sweep-I request-changes: the glimmer_bound shot and baseline are missing; the should-fixes move into M1-RND-15 alongside it.
+- 2026-10-23 environment (review-sweep-J re-review, fresh reviewer): **approve. B1 is closed.** One condition before `done`: S5 still has no owner (see below).
+  - **What I read:**
+    - commits 6bf283d and 4a73665;
+    - the `glimmer_bound` entry in tests/screenshots/shots.json, after `glimmer_release`;
+    - baselines.json;
+    - the now-empty pending manifest;
+    - game/levels/_tests/glimmer/glimmer_bound.tscn (`fixed_count` 24, `local_space` true, carrier-driven stage).
+  - **I opened tests/screenshots/baselines/glimmer_bound.png (960×540):**
+    - It is a night sea and sky, with the dark figure at centre.
+    - The cage stands clear to the figure's right, at the figure's head height. Its teal field sits wholly inside the four posts, and roughly 8-12 distinct motes resolve.
+    - No motes are left at the figure, which is where a world-space field would have stayed. So this one frame does tell local space from world space, and it is a real regression shot.
+    - There is no gold or red in the cage. The sea and horizon match the other night shots.
+  - **The lavapipe NaN confirmation is recorded:** anti-solar mean 0.109, and no disc.
+  - **S1-S4** were reviewed in M1-RND-15 (sweep J).
+  - **Remaining, S5 (Art sign-off) has no task.** RND-15's Notes say it "belongs to M1-ART-04", but M1-ART-04 is `done` and lists only the crest patches. Before RND-08 goes to done, the Lead should file an Art request (role art, request-from environment) covering:
+    - the caustics look (water_lagoon);
+    - `halo_chroma_gain`: dusk released motes still read near-white, not gold, in glimmer_dusk;
+    - the noon crest patches.

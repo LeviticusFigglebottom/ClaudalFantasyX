@@ -33,3 +33,25 @@ From the review-sweep-I entries (file:line references there).
 - Tests: `tests/unit/test_swell_ring_clock.gd` (7), `tests/unit/test_hud_gauge.gd` (3), and 1 new + 2 extended in `tests/unit/test_battle_swell_hud.gd`.
 
 ## Review log
+- 2026-10-23 combat (review-sweep-J, fresh reviewer): **approve with should-fixes.** No blockers.
+  - **What I read:**
+    - the task and handoff qa-2;
+    - the commits dcaca56, 9e76295 and 6a43b1f: `SwellRingClock`, `SwellTimingRing.clamp_step`, battle_controller `tick`/`_handle_ring_input`, `HudGauge.full_frame_rects`, party_row, battle_menus `swell_help`, the validator, swell.json and battle_hud.json.
+  - **I viewed tests/screenshots/baselines/battle_swell_ring.png:**
+    - The white frame with its dark gap is plainly visible round Rhen's full gauge, and it overlaps nothing.
+    - The help line fits on one line.
+  - **Checks:** Godot `--filter=swell` 46/0 and `hud_gauge` 3/0 failed. Tool tests 382 OK, including test_swell_validate. `validate_data` 0/0.
+  - **What passes:**
+    - The clamp (`max_step_sec` 0.05 ≤ `perfect_sec` 0.06, validated).
+    - The press catch-up, with the next frame subtracting it.
+    - The validator conditions, which match `SwellTimingRing.press/advance` exactly: a press before `beat_start` is ignored, and one after the next beat start lands on the next beat.
+    - The 3:1 contrast test on the real theme colours.
+  - **Should-fix:**
+    - **S1 (two clocks under `Engine.time_scale`).** swell_ring_clock.gd:35 steps by the engine `delta`, which `Engine.time_scale` scales. :47 catches up by wall-clock µs, which it does not. battle_controller.gd:255 says "input timing is real time: never scaled", but that only holds for pacing, not for `time_scale` (used by CaptureSetup today, and by any later slow-mo). Pick one: step frames by wall-clock µs too, or divide the catch-up by `Engine.time_scale`.
+    - **S2 (help text reads oddly).**
+      - battle_menus.gd:126-128 joins with " · ", so the line becomes "Press as each flare burns brightest. Flares: 3. · Physical, one foe" (visible in the baseline). Drop the trailing period in strings.csv:421.
+      - That line also says "as each flare burns brightest", while the ring's own hint (strings.csv:424) says "strike as the ring meets the lamp". Two different instructions for one input go against pillar 4 (tactical clarity). Narrative or UI should pick one metaphor.
+    - **S3 (Art spec).** docs/kb/art/ui.md:135 still specifies only "glows with a 1.6 s sine pulse" for a full gauge. The night-gap-plus-white-frame is documented as deviation 8 in tech/ui.md:126 only. Ask Art to append the frame to art/ui.md §6.2, or approve it there.
+  - **Nits:**
+    - Below 20 fps (frame time > 0.05 s) the ring now runs slower than real time. That is fair, and the ring draws its own `elapsed`, but say so in tech/ui.md.
+    - The author's open nits stand: `target: "self"`, the `_resolving` line in formulas.md, and "next in N".
