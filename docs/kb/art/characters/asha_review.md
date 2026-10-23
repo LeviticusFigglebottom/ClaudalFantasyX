@@ -1,6 +1,6 @@
 # Asha at final fidelity: build notes and the SPEC §14 review (M1-CHR-02)
 
-Owner: Character Artist (character-stream-3). Reviewer: Rendering. Decision: [ADR 0016](../../decisions/0016-character-stylization.md).
+Owner: Character Artist (character-stream-3). Reviewer: Rendering. Decision: [ADR 0019](../../decisions/0019-character-stylization.md).
 Sheet: [`asha.md`](asha.md). Pipeline: [`pipeline.md`](pipeline.md). Shader contract: [`character_shading.md`](../../tech/character_shading.md).
 
 > Every frame below is Forward+ on lavapipe (CPU; ADR 0009) under the M1-RND-04 shading-test lighting: warm key `#FFB87B` 2.4 and dusk rim `#F2A64A` 1.8. There's no screen-space subsurface blur, and nothing here was seen on a GPU.
@@ -70,7 +70,7 @@ Files: `assets/characters/asha/asha.glb` (4.58 MB, under the 5 MB cap; the 40 mo
 | `asha_face_grief` | Same | `grief`: inner brows up, frown and stretch, the jaw parted over the teeth |
 | `asha_sleeve_s0` / `asha_sleeve_s4` | Her right, closer | One mesh, one uniform: blank gauze with only the gold cuff ring; then four bands (net-knot, hammer-and-spark, kite-line, root-and-mote) stacked down the sleeve |
 | `asha_extreme_pose` | Front | Weight regression gate: left arm overhead, right arm raised with the staff, a 22° spine twist, a 120° left knee |
-| `asha_face_stylized_compare` | Two Ashas | SPEC §14 mitigation: as built (left, painterly 0.2) against the ADR 0016 close-range look (right: painterly 0.6, less pore and normal detail, `lid_wide` 0.18) |
+| `asha_face_stylized_compare` | Two Ashas | SPEC §14 mitigation: as built (left, painterly 0.2) against the ADR 0019 close-range look (right: painterly 0.6, less pore and normal detail, `lid_wide` 0.18) |
 
 The `base_body_*` baselines were rebuilt and re-approved (all 11 looked at): the shared head field and topology changed, and the heavy variant was reshaped.
 
@@ -90,17 +90,17 @@ The `base_body_*` baselines were rebuilt and re-approved (all 11 looked at): the
 
 **The stylisation mitigation, side by side** (`asha_face_stylized_compare`): painterly 0.6 with less pore and normal detail and slightly wider lids moves her toward "a painted person". It removes some of the waxiness and is clearly the better close-range look. **It mitigates but does not cure** items 1–3: the stiffness and the hair are geometry and authoring, not shading.
 
-**Recommendation (ADR 0016):**
+**Recommendation (ADR 0019):**
 - Ship the close-range stylisation now (`skin_head_dialogue.tres`).
 - Keep battle and field framing as built.
 - **Escalate SPEC §16 Q2 to the human.** This is the second face review to fail: the M1-CHR-01 base face was the first, so ADR 0010's trigger is met. The question is whether MPFB/MakeHuman may serve as a topology and shape donor behind the existing interfaces. That is the only option that adds the anatomical knowledge the from-scratch sculpt lacks.
-- If Q2 is "no", the next step is option 3 of ADR 0016: stronger, explicit stylisation, which needs a SPEC §7.3 change from the Lead.
+- If Q2 is "no", the next step is option 3 of ADR 0019: stronger, explicit stylisation, which needs a SPEC §7.3 change from the Lead.
 
 ## 5. Known issues and follow-ups
 
 | Item | Owner | Note |
 |---|---|---|
-| **Q2: MPFB as a topology and shape donor** | Lead → human | ADR 0010's two-failure trigger is met (ADR 0016) |
+| **Q2: MPFB as a topology and shape donor** | Lead → human | ADR 0010's two-failure trigger is met (ADR 0019) |
 | Hairline card row, crown density, tapered-alpha hairline, scalp fine strands | Character | The weakest element at close range |
 | Skin albedo colour zones and asymmetry, fine creases (crow's feet, nasolabial, lip lines) in the bake | Character / Art | Makes the painterly look intentional (character_shading.md says the same) |
 | **Skirt rig** (asha.md §9.4: skirt 3 rings × 8, sash tails 2 × 4, braid 8, sleeve 6) | Character / Animation | Not built. In `asha_extreme_pose` the raised left knee pushes through the outer skirt, because the skirt is half-weighted to the pelvis. The braid and sleeve follow their nearest body bones |

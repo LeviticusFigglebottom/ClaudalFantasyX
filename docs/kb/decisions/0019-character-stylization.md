@@ -1,4 +1,4 @@
-# 0016 — Hero character stylisation: painterly skin for close range; Q2 escalated
+# 0019 — Hero character stylisation: painterly skin for close range; Q2 escalated
 
 - **Status:** proposed (needs the human's answer on SPEC §16 Q2; the stylisation half can be applied now)
 - **Date:** 2026-10-23
