@@ -14,7 +14,14 @@ const DEFAULT_FRAMES := 180
 const HITCH_MS := 50.0
 const FIRST_FRAMES := 5
 const US_PER_MS := 1000.0
-const CSV_HEADER := "label,scene,prewarm,preset,res,frames,max_ms,over_50ms,mean_ms,first_frames_ms,prewarm_max_ms"
+const CSV_HEADER := (
+	"label,scene,prewarm,preset,res,frames,max_ms,over_50ms,mean_ms,first_frames_ms,prewarm_max_ms,"
+	+ "prewarm_frames,prewarm_wall_max_ms,prewarm_trace_ms"
+)
+## Prewarm frames listed in the trace column (M1-RND-15).
+const TRACE_FRAMES := 16
+## Frames the --pre-scene (a field played before the transition, M1-RND-15) runs first.
+const PRE_FRAMES := 120
 
 var _opts: Dictionary = {}
 
@@ -42,11 +49,34 @@ func _run() -> void:
 	gs.apply_current(get_viewport(), null)
 	for i in 3:
 		await RenderingServer.frame_post_draw
+	# --pre-scene: play a field scene first (M1-RND-15), as a battle transition always follows one.
+	# The game viewport has then already run its AA and upscaler, so what the prewarm costs is the
+	# incoming scene's pipelines, not the engine's first use of TAA in this process.
+	if _opts.has("pre-scene"):
+		var field := (load(str(_opts["pre-scene"])) as PackedScene).instantiate()
+		add_child(field)
+		var fenvs := field.find_children("*", "WorldEnvironment", true, false)
+		gs.apply_current(get_viewport(), (fenvs[0] as WorldEnvironment).environment if fenvs.size() > 0 else null)
+		for i in int(_opts.get("pre-frames", PRE_FRAMES)):
+			await RenderingServer.frame_post_draw
+		field.queue_free()
+		await RenderingServer.frame_post_draw
 	var prewarm_max := 0.0
+	var trace := PackedFloat64Array()
 	if _opts.has("prewarm"):
+		# Wall time of every frame while the prewarm runs, the spawn frame included (M1-RND-15): what a
+		# player would see under the transition fade.
+		var t0 := Time.get_ticks_usec()
 		var pw := ShaderPrewarm.spawn(scene_path, self)
-		var stats: Dictionary = await pw.finished
-		prewarm_max = float(stats.get("max_frame_ms", 0.0))
+		var done := {"stats": {}}
+		pw.finished.connect(func(st: Dictionary) -> void: done["stats"] = st, CONNECT_ONE_SHOT)
+		var prev := t0
+		while (done["stats"] as Dictionary).is_empty():
+			await RenderingServer.frame_post_draw
+			var now_us := Time.get_ticks_usec()
+			trace.append(float(now_us - prev) / US_PER_MS)
+			prev = now_us
+		prewarm_max = float((done["stats"] as Dictionary).get("max_frame_ms", 0.0))
 	var scene := packed.instantiate()
 	add_child(scene)
 	var envs := scene.find_children("*", "WorldEnvironment", true, false)
@@ -80,6 +110,9 @@ func _run() -> void:
 		"%.2f" % (total / maxf(1.0, times.size())),
 		" ".join(first),
 		"%.1f" % prewarm_max,
+		str(trace.size()),
+		"%.1f" % _max(trace),
+		" ".join(_fmt(trace.slice(0, TRACE_FRAMES))),
 	]
 	print("PREWARM_BENCH " + " | ".join(row))
 	if _opts.has("csv"):
@@ -91,6 +124,20 @@ func _run() -> void:
 			f.store_line(CSV_HEADER)
 		f.store_line(",".join(row))
 	get_tree().quit()
+
+
+static func _max(a: PackedFloat64Array) -> float:
+	var m := 0.0
+	for v in a:
+		m = maxf(m, v)
+	return m
+
+
+static func _fmt(a: PackedFloat64Array) -> PackedStringArray:
+	var out := PackedStringArray()
+	for v in a:
+		out.append("%.1f" % v)
+	return out
 
 
 func _args() -> Dictionary:

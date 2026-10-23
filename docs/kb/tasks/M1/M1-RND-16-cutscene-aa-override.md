@@ -17,7 +17,7 @@ M1-RND-11 found that the Undertow body's dither only partly integrates under FSR
 - [x] Nested or overlapping overrides resolve deterministically (last pushed wins; popping restores the one below); tested headless
 - [x] Prewarm compiles the override's pipeline variant before the cut (`ShaderPrewarm.match_viewport` sees the overridden state, or the cutscene requests a prewarm for it)
 - [x] The Undertow's `temporal_jitter` gate (`UndertowStorm.viewport_is_temporal`) follows the override frame-exactly
-- [ ] PC GPU: storm close-up dither crop measured on High with the override (target: within 10 % of native TAA), plus the override's cost
+- [x] PC GPU: storm close-up dither crop measured on High with the override (target: within 10 % of native TAA), plus the override's cost
 - [x] docs/kb/tech/undertow.md and graphics_settings.md document the API; M2 cinematics tasks reference it
 
 ## Notes
@@ -43,6 +43,15 @@ M1-RND-11 found that the Undertow body's dither only partly integrates under FSR
   - **Open (PC GPU):** criterion 5, the storm close-up dither crop on High with the override (target within 10 % of
     native TAA) and the override's cost. Needs the RX 9070 XT session (`tools/gpu_bench`, as in RND-11). M2
     cinematics tasks do not exist yet; undertow.md names the Ch1, Ch8 and Ch20-21 shots for them to reference.
+
+- 2026-10-23 PC GPU session (session_01778wbLbDFnRRLTKjnawv3T, branch `gpu/rnd-15-prewarm`): **criterion 5 measured.**
+  Report: `docs/kb/qa/gpu/2026-10-23-rnd-16-aa-override.md`. Glow dither on `undertow_day_ch08`:
+  - High (FSR2): 0.0291.
+  - Override TAA + FSR1: 0.0123 (+56 % vs native, −0.30 ms).
+  - **Override TAA + bilinear: 0.0062 (−22 %, meets the target, −0.40 ms).**
+  - Native TAA at render scale 1.0: 0.0079 (+2.33 ms).
+  - Recommended storm close-up override: `{"aa": "taa", "scaling_mode": "bilinear"}`, or `"fsr"` for a sharp
+    foreground.
 
 ## Review log
 - 2026-10-23 environment (review-sweep-L, fresh reviewer): **interim approve of the API; stays in `review` until criterion 5 (the PC GPU measurement) lands.** No blockers in the code.
