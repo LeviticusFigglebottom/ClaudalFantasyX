@@ -188,6 +188,18 @@ Measured on a GPU (docs/kb/qa/gpu/2026-10-23-qa-05-asha.md): the diagonal bandin
 - **Lights that key a face: `shadow_normal_bias` 2.5–3.0** (Godot default 1.0). At 3.0 Asha's full-body contact shadows still hold; there's no visible peter-panning.
 - **Don't fight it with a shorter `directional_shadow_max_distance`.** Godot's normal bias scales with the shadow texel, so finer texels shrink the bias, and the stair-steps get sharper.
 - The lasting fix is mesh density across the cheeks and jaw (Character).
+- **Asha stage: 4.5 (M1-RND-20).** At 4.5 the smile corner is clean, and the nose, feet and staff contact shadows
+  hold. The stage's key light has `directional_shadow_max_distance` 8 m.
+- **The bias is in shadow texels, not metres.** Godot multiplies `shadow_normal_bias` by the cascade's texel size, so
+  the same number pushes much further in a zone sun with long cascades. Match the *world* offset, not the number.
+  - Haluna's sun (400 m, first split 0.04 = 16 m) has cascades about 10–20× coarser than the stage's at face range.
+    At its own 1.0 its offset at a face is already larger than the stage's 4.5.
+  - Measured (M1-RND-20 follow-up, `docs/kb/qa/gpu/2026-10-23-rnd-18-20-followups.md`): Asha's smile and neutral
+    faces under Haluna's cascade settings show no corner stripe at bias 1.0. At 2.5 and 4.5 the nose shadow fades,
+    and at 4.5 it's gone. **Keep zone suns at 1.0.**
+  - What a zone sun can't do at dialogue range is resolve a face's own shadows at all: 16 m cascades blur the nose
+    and cheek shadows away. Close-ups that need them need a dialogue key light with a short shadow range (a few
+    metres, as the stage does) and bias 4.5 (M2 dialogue rig).
 
 ## Cost estimates
 

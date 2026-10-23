@@ -78,6 +78,15 @@ Report: `docs/kb/qa/gpu/2026-10-23-rnd-18-sss-crest.md`. The GPU probe pair repr
   for Rendering" bullet.
 - **Reviewer:** character (Art Director), who re-runs the probe pair.
 
+### Follow-up S1 (branch `gpu/rnd-18-20-followups`)
+- The `col_deep` lift is multiplied by `lift_gate = use_sss ? clamp(sss_strength / 1.4, 0, 1) : 0`, where 1.4 is the
+  default `sss_strength` the lift was tuned at (`SSS_LIFT_TUNED_STRENGTH`). So the storm sea (`use_sss` off) gets no
+  lift, and a weaker SSS gets less. Tested (`test_deep_lift_is_gated_by_sss`).
+- GPU before → after (capture_preset High, storm held): the 4 water shots are 0.0000. Of the Undertow shots, eye is
+  0.0004 and the other three are 0.0000. No current shot sees the storm sea from the lift's 10–25 m heights; the Ch18
+  Kite will.
+- S2 and S3 are not done (they weren't in the Lead's follow-up).
+
 ## Review log
 - 2026-10-23 character (review-sweep-N, fresh reviewer, Art Director): **approve with should-fixes.** No blockers.
   - **What I read:** this task, `docs/kb/qa/gpu/2026-10-23-rnd-18-sss-crest.md`, water.md's subsurface row and gotcha, and `git diff cede626^1 cede626` (water_surface_body.gdshaderinc, test_water_surface.gd, sss_probe_metrics.py).
