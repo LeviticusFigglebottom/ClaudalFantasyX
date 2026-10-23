@@ -363,6 +363,46 @@
         480,
         270
       ]
+    },
+    {
+      "id": "char_skin_eye_closeup",
+      "scene": "res://game/levels/_tests/character_shading/shading_test.tscn",
+      "camera": "Cameras/SkinEye",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "char_hair_backlit",
+      "scene": "res://game/levels/_tests/character_shading/shading_test.tscn",
+      "camera": "Cameras/HairBack",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "char_cloth_gold",
+      "scene": "res://game/levels/_tests/character_shading/shading_test.tscn",
+      "camera": "Cameras/Cloth",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "char_low_compare",
+      "scene": "res://game/levels/_tests/character_shading/shading_test.tscn",
+      "camera": "Cameras/Compare",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
     }
   ]
 }

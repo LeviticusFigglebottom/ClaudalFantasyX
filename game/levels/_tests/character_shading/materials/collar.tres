@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" load_steps=5 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_cloth.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/characters/shader_test/collar_albedo.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/characters/shader_test/collar_clothmask.png" id="t1"]
+[ext_resource type="Texture2D" path="res://assets/characters/shader_test/collar_normal.png" id="t2"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_albedo = ExtResource("t0")
+shader_parameter/tex_cloth_mask = ExtResource("t1")
+shader_parameter/tex_normal = ExtResource("t2")
+shader_parameter/wind_response = 0.0
+shader_parameter/normal_strength = 0.6

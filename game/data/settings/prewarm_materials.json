@@ -16,63 +16,231 @@
     },
     {
       "path": "res://assets/environments/vegetation/materials/palm_frond.tres",
-      "scenes": ["res://game/levels/_tests/vegetation/vegetation_test.tscn"],
+      "scenes": [
+        "res://game/levels/_tests/vegetation/vegetation_test.tscn"
+      ],
       "note": "M1-ENV-02 foliage (default tier). Zones that place palms add their scene paths here."
     },
     {
       "path": "res://assets/environments/vegetation/materials/palm_bark.tres",
-      "scenes": ["res://game/levels/_tests/vegetation/vegetation_test.tscn"],
+      "scenes": [
+        "res://game/levels/_tests/vegetation/vegetation_test.tscn"
+      ],
       "note": "M1-ENV-02 bark."
     },
     {
       "path": "res://assets/environments/vegetation/materials/frangipani_leaf.tres",
-      "scenes": ["res://game/levels/_tests/vegetation/vegetation_test.tscn"],
+      "scenes": [
+        "res://game/levels/_tests/vegetation/vegetation_test.tscn"
+      ],
       "note": "M1-ENV-02 foliage (default tier)."
     },
     {
       "path": "res://assets/environments/vegetation/materials/saltgrass.tres",
-      "scenes": ["res://game/levels/_tests/vegetation/vegetation_test.tscn"],
+      "scenes": [
+        "res://game/levels/_tests/vegetation/vegetation_test.tscn"
+      ],
       "note": "M1-ENV-02 foliage; drawn as a MultiMesh in zones (a quad prewarms a different vertex format)."
     },
     {
       "path": "res://game/shaders/vegetation/vegetation_foliage_low.gdshader",
-      "scenes": ["res://game/levels/_tests/vegetation/vegetation_test.tscn"],
+      "scenes": [
+        "res://game/levels/_tests/vegetation/vegetation_test.tscn"
+      ],
       "note": "M1-ENV-02 Low-tier foliage variant: a separate pipeline (README 'Shader-cache prewarm')."
     },
     {
       "path": "res://game/shaders/undertow/undertow_body.gdshader",
-      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
       "note": "M1-RND-03 Undertow raymarched body, High tier (default). Each tier is its own pipeline. Cutscene scenes that show the storm add their paths."
     },
     {
       "path": "res://game/shaders/undertow/undertow_body_medium.gdshader",
-      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
       "note": "M1-RND-03 Undertow body, Medium tier."
     },
     {
       "path": "res://game/shaders/undertow/undertow_body_ultra.gdshader",
-      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
       "note": "M1-RND-03 Undertow body, Ultra tier."
     },
     {
       "path": "res://game/shaders/undertow/undertow_shell.gdshader",
-      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
       "note": "M1-RND-03 Undertow Low-tier body shells (alpha-hash opaque pipeline)."
     },
     {
       "path": "res://game/shaders/undertow/undertow_spray.gdshader",
-      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
       "note": "M1-RND-03 Undertow spray curtains (every tier)."
     },
     {
       "path": "res://game/shaders/undertow/undertow_sea.gdshader",
-      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
       "note": "M1-RND-03 Undertow maelstrom sea funnel (every tier)."
     },
     {
       "path": "res://game/shaders/undertow/undertow_sea_lid.gdshader",
-      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
       "note": "M1-RND-03 Undertow depth-only sea lid (every tier)."
+    },
+    {
+      "path": "res://game/shaders/character/character_skin_low.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "low",
+      "note": "M1-RND-04 character skin (low tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_skin_medium.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "medium",
+      "note": "M1-RND-04 character skin (medium tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_skin.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "high",
+      "note": "M1-RND-04 character skin (high tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_hair_low.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "low",
+      "note": "M1-RND-04 character hair (low tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_hair_medium.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "medium",
+      "note": "M1-RND-04 character hair (medium tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_hair.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "high",
+      "note": "M1-RND-04 character hair (high tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_eye_low.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "low",
+      "note": "M1-RND-04 character eye (low tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_eye_medium.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "medium",
+      "note": "M1-RND-04 character eye (medium tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_eye.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "high",
+      "note": "M1-RND-04 character eye (high tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_cloth_low.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "low",
+      "note": "M1-RND-04 character cloth (low tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_cloth_medium.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "medium",
+      "note": "M1-RND-04 character cloth (medium tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_cloth.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "high",
+      "note": "M1-RND-04 character cloth (high tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_cloth_sheer_low.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "low",
+      "note": "M1-RND-04 character cloth_sheer (low tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_cloth_sheer_medium.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "medium",
+      "note": "M1-RND-04 character cloth_sheer (medium tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_cloth_sheer.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "high",
+      "note": "M1-RND-04 character cloth_sheer (high tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
+    },
+    {
+      "path": "res://game/shaders/character/character_cornea.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "all",
+      "note": "M1-RND-04 eye helper (one variant for every tier)."
+    },
+    {
+      "path": "res://game/shaders/character/character_eye_occlusion.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "all",
+      "note": "M1-RND-04 eye helper (one variant for every tier)."
+    },
+    {
+      "path": "res://game/shaders/character/character_tear_line.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/character_shading/shading_test.tscn"
+      ],
+      "tier": "all",
+      "note": "M1-RND-04 eye helper (one variant for every tier)."
     }
   ]
 }

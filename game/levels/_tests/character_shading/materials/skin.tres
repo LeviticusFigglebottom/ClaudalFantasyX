@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" load_steps=5 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_skin.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/characters/shader_test/head_albedo.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/characters/shader_test/head_skinmask.png" id="t1"]
+[ext_resource type="Texture2D" path="res://assets/characters/shader_test/skin_pore_detail_normal.png" id="t2"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_albedo = ExtResource("t0")
+shader_parameter/tex_skin_mask = ExtResource("t1")
+shader_parameter/tex_detail_normal = ExtResource("t2")
+shader_parameter/detail_tiling = 16.0
+shader_parameter/detail_strength = 0.9
+shader_parameter/painterly = 0.2

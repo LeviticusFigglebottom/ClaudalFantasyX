@@ -1,0 +1,184 @@
+[gd_scene load_steps=24 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/character_shading/character_shading_stage.gd" id="stage"]
+[ext_resource type="PackedScene" path="res://assets/characters/shader_test/shader_test_bust.glb" id="bust"]
+[ext_resource type="PackedScene" path="res://assets/characters/shader_test/shader_test_cloth.glb" id="cloth"]
+[ext_resource type="Material" path="res://game/levels/_tests/character_shading/materials/skin.tres" id="m_skin"]
+[ext_resource type="Material" path="res://game/levels/_tests/character_shading/materials/hair.tres" id="m_hair"]
+[ext_resource type="Material" path="res://game/levels/_tests/character_shading/materials/eye.tres" id="m_eye"]
+[ext_resource type="Material" path="res://game/levels/_tests/character_shading/materials/cornea.tres" id="m_cornea"]
+[ext_resource type="Material" path="res://game/levels/_tests/character_shading/materials/eye_occlusion.tres" id="m_eye_occlusion"]
+[ext_resource type="Material" path="res://game/levels/_tests/character_shading/materials/tear_line.tres" id="m_tear_line"]
+[ext_resource type="Material" path="res://game/levels/_tests/character_shading/materials/collar.tres" id="m_collar"]
+[ext_resource type="Material" path="res://game/levels/_tests/character_shading/materials/drape.tres" id="m_drape"]
+[ext_resource type="Material" path="res://game/levels/_tests/character_shading/materials/sleeve.tres" id="m_sleeve"]
+[ext_resource type="Material" path="res://game/levels/_tests/character_shading/materials/sleeve_dissolve.tres" id="m_sleeve_dissolve"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
+sky_top_color = Color(0.46, 0.53, 0.63, 1)
+sky_horizon_color = Color(0.86, 0.79, 0.71, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.36, 0.33, 0.31, 1)
+ground_horizon_color = Color(0.478, 0.431, 0.392, 1)
+ground_curve = 0.06
+sun_angle_max = 1.0
+sun_curve = 0.01
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("Sky_mat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_energy = 0.5
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.0
+tonemap_white = 12.0
+ssao_enabled = true
+ssao_radius = 0.04
+ssao_intensity = 1.0
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.02
+glow_hdr_threshold = 1.2
+
+[sub_resource type="StandardMaterial3D" id="Studio_mat"]
+albedo_color = Color(0.26, 0.255, 0.25, 1)
+roughness = 0.95
+
+[sub_resource type="PlaneMesh" id="Floor_mesh"]
+material = SubResource("Studio_mat")
+size = Vector2(16, 16)
+
+[sub_resource type="CylinderMesh" id="Cyc_mesh"]
+material = SubResource("Studio_mat")
+flip_faces = true
+top_radius = 5.5
+bottom_radius = 5.5
+height = 7.0
+radial_segments = 48
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="StandardMaterial3D" id="Prop_mat"]
+albedo_color = Color(0.227, 0.165, 0.125, 1)
+roughness = 0.6
+
+[sub_resource type="CylinderMesh" id="Rod_mesh"]
+material = SubResource("Prop_mat")
+top_radius = 0.008
+bottom_radius = 0.008
+height = 1.5
+
+[sub_resource type="CylinderMesh" id="Plinth_mesh"]
+material = SubResource("Prop_mat")
+top_radius = 0.09
+bottom_radius = 0.13
+height = 1.2
+
+[node name="ShadingTest" type="Node3D"]
+script = ExtResource("stage")
+node_materials = {
+"Head": ExtResource("m_skin"),
+"Hair": ExtResource("m_hair"),
+"Collar": ExtResource("m_collar"),
+"EyeL": ExtResource("m_eye"),
+"EyeR": ExtResource("m_eye"),
+"CorneaL": ExtResource("m_cornea"),
+"CorneaR": ExtResource("m_cornea"),
+"EyeOcclusionL": ExtResource("m_eye_occlusion"),
+"EyeOcclusionR": ExtResource("m_eye_occlusion"),
+"TearLineL": ExtResource("m_tear_line"),
+"TearLineR": ExtResource("m_tear_line"),
+"Drape": ExtResource("m_drape"),
+"Sleeve": ExtResource("m_sleeve")
+}
+compare_scene = ExtResource("bust")
+compare_origin = Vector3(-2.0, 1.45, 0.0)
+compare_offset = Vector3(0.34, 0.0, 0.0)
+compare_rotation_deg = -28.0
+sleeve_offset = Vector3(0.5, 0.0, 0.12)
+dissolve_sleeve_offset = Vector3(0.82, 0.0, 0.12)
+dissolve_sleeve_material = ExtResource("m_sleeve_dissolve")
+wind = Vector4(2.4, 0, 1.2, 0.3)
+wind_time = 1.7
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.683157, 0.381423, -0.622746, -0, 0.85276, 0.522303, 0.730271, -0.356815, 0.582569, 0, 4, 0)
+light_color = Color(1, 0.722, 0.482, 1)
+light_energy = 2.4
+shadow_enabled = true
+shadow_bias = 0.02
+shadow_normal_bias = 1.0
+shadow_blur = 0.6
+directional_shadow_max_distance = 6.0
+
+[node name="RimLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.738956, -0.25716, 0.622746, 0, 0.924293, 0.381683, -0.673754, 0.282047, -0.683012, 0, 4, 0)
+light_color = Color(0.949, 0.651, 0.29, 1)
+light_energy = 1.8
+shadow_enabled = true
+shadow_bias = 0.02
+shadow_normal_bias = 1.0
+directional_shadow_max_distance = 6.0
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("Floor_mesh")
+
+[node name="Cyclorama" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+mesh = SubResource("Cyc_mesh")
+cast_shadow = 0
+
+[node name="Plinth" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0.012)
+mesh = SubResource("Plinth_mesh")
+
+[node name="Bust" parent="." instance=ExtResource("bust")]
+transform = Transform3D(0.882948, 0, -0.469472, 0, 1, 0, 0.469472, 0, 0.882948, 0, 1.45, 0)
+
+[node name="Cloth" parent="." instance=ExtResource("cloth")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 1.78, 0.0)
+
+[node name="Rod" type="MeshInstance3D" parent="."]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 2.0500000000000003, 1.786, -0.02)
+mesh = SubResource("Rod_mesh")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="SkinEye" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.803537, 0.0117711, -0.595138, -0, 0.999804, 0.0197749, 0.595254, -0.0158898, 0.80338, -0.237143, 1.454, 0.305418)
+fov = 14.0
+near = 0.02
+current = true
+
+[node name="HairBack" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.58612, 0, -0.810224, -0, 1, 0, 0.810224, 0, 0.58612, -0.44, 1.4, 0.3)
+fov = 30.0
+near = 0.02
+
+[node name="FaceFront" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.999911, 0.0133321, 0, -0.0133321, 0.999911, 0, 1.45, 0.75)
+fov = 18.0
+near = 0.02
+
+[node name="Cloth" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.998618, 0.00765238, -0.0519988, -0, 0.989344, 0.145597, 0.0525588, -0.145395, 0.987977, 1.95, 1.5, 0.95)
+fov = 36.0
+near = 0.02
+
+[node name="EyeMacro" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.882948, 0, -0.469472, -0, 1, 0, 0.469472, 0, 0.882948, -0.0857713, 1.462, 0.227344)
+fov = 12.0
+near = 0.02
+
+[node name="Compare" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.974391, -0.011222, 0.224579, 0, 0.998754, 0.0499065, -0.22486, -0.0486285, 0.973177, -1.65, 1.47, 0.78)
+fov = 22.0
+near = 0.02

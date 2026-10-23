@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" load_steps=7 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_cloth_sheer.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/characters/shader_test/sleeve_albedo.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/characters/shader_test/sleeve_clothmask.png" id="t1"]
+[ext_resource type="Texture2D" path="res://assets/characters/shader_test/sleeve_normal.png" id="t2"]
+[ext_resource type="Texture2D" path="res://assets/characters/shader_test/sleeve_bandid.png" id="t3"]
+[ext_resource type="Texture2D" path="res://assets/characters/shader_test/thread_detail_normal.png" id="t4"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_albedo = ExtResource("t0")
+shader_parameter/tex_cloth_mask = ExtResource("t1")
+shader_parameter/tex_normal = ExtResource("t2")
+shader_parameter/tex_band_id = ExtResource("t3")
+shader_parameter/tex_detail_normal = ExtResource("t4")
+shader_parameter/verse_count = 7
+shader_parameter/detail_tiling = 120.0
+shader_parameter/sleeve_dissolve = 0.42
