@@ -2,7 +2,7 @@
 id: M1-CMB-01
 title: CTB battle sandbox: 2 heroes vs 3 enemies with timeline preview and swap
 role: combat
-status: review
+status: done
 owner_session: ui-combat-stream-1
 reviewer: progression
 depends_on: [M1-CMB-00, M1-UI-01]
@@ -46,3 +46,4 @@ Follow-ups: `BattleEngine.preview_swap(out, in)`, so the Swap menu can move time
   6. **The victory capture encodes balance.** `battle_victory` shows who fell, so any enemy tuning breaks the screenshot gate. M1-CMB-05's sandbox softening does: RMSE 0.0160 against the 0.008 limit; the same shot on the old data measures 0.00026. Now Rhen survives, so the result lists three XP rows instead of "Rhen: Fell before the end". QA needs to approve the new baseline (`compare.py --update-baselines battle_victory`). Longer term, pin the capture to a fixture encounter, or show a result that doesn't depend on tuning.
   7. **Flaky-risk captures.** `battle_hud_preview` and `battle_swap_menu` sit at 0.0078–0.0079 against a 0.008 limit even on unchanged data (0.00777 measured on the pre-tuning data). The diff concentrates on HUD text. QA should check text anti-aliasing determinism, or re-baseline.
   Fine as-is: the state machine and cancel paths, instant-pacing drain loop, the failed-escape preview (rank-3 turn), the default-target heuristics, and the capture scripts driving only the intent API.
+- 2026-10-23 lead: closing on the Progression-side approval; the UI follow-ups are M1-UI-02 (in progress).

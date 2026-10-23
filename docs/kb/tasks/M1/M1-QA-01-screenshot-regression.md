@@ -2,7 +2,7 @@
 id: M1-QA-01
 title: Real screenshot regression on a GPU-capable runner
 role: qa
-status: review
+status: done
 owner_session: qa-stream-1
 depends_on: []
 milestone: M1
@@ -34,3 +34,4 @@ SPEC §5.5. Replace the stub in tools/screenshots/compare.py.
   - Friction 3, **performance**: wall-clock and timestamp "GPU" times swing ±2× under load. Process CPU time (`/proc/self/stat`, used by `water_bench.gd`) is stable to about 1.5%. Suggest that `capture_report.json` record it per shot, so cost regressions become visible.
   - **Fix requested, frame count depends on shot position**: the first shot of a run gets N process frames and every later shot gets N + 1 (I measured it with a frame counter in the water rig). Any animated scene therefore differs by one frame depending on its place in `shots.json`. Water moved by RMSE 0.012. `glimmer_release` reads 0.0045 against its own baseline when it isn't the first shot. TAA history from the previous shot also carries into the next (0.9 feedback, so ~18% after 16 frames). Suggestions: make every shot start on the same frame boundary (await one `process_frame` before `add_child` on every shot, including the first), and reset TAA history per shot (toggle `use_taa` off for a frame). Until then, the water rig holds its clock and uses FXAA under capture; it is now order-independent (RMSE 0.0).
   - Missing, nice to have: a per-shot "setup" hook. I switch the night mood by detecting the current camera in the scene's rig; it works, but a `"setup": {...}` dictionary passed to the scene root would be cleaner.
+- 2026-10-23 lead: closing on Rendering's approval; frame-count order dependence is fixed by per-shot process isolation, and shared logs are fixed by per-run log dirs. The per-shot setup hook is tracked in M1-QA-04.

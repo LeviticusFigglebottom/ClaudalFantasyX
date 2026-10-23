@@ -2,7 +2,7 @@
 id: M1-PRG-01
 title: Lattice data model, editor tool, and first section
 role: progression
-status: review
+status: done
 owner_session: progression-stream-1
 reviewer: combat
 depends_on: [M1-CMB-00]
@@ -43,3 +43,4 @@ For Combat review:
   5. **Note for M1-CMB-02 and bosses:** Sunder and Shell Breaker apply permanent (−1) Breaks at 100%. Bosses will need resistances.
   6. **Question (ADR, Combat + Progression):** `level` sits in the damage and heal formulas (`stat + level`), but it is not a Lattice stat and nothing raises it, so it is a constant 5. Decide before M2 enemy tuning whether level exists at all.
   Fine as-is: Undercut (6/R3, delay 1, 6 MP) is a fair Attack sidegrade. Lantern Flare and Stilling Bell at 70% are good (`lure_glow` is `magic: true`, so Silence answers the eel). Chorus Mend trades MP for tempo against three Mends (103 vs 77 HP per rank). Challenge waits on Provoke (the validator warns). The LP thresholds and the XP credit rule fit together: rotating reserves shares XP at no time cost, by design.
+- 2026-10-23 lead: closing on Combat's approval; Shield Wall MP 14→10 applied. The open question about hero level was resolved by ADR 0012.
