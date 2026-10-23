@@ -1,0 +1,234 @@
+{
+  "schema": "hymn-undertow/1",
+  "version": 1,
+  "owner": "rendering (M1-RND-03)",
+  "doc": "docs/kb/tech/undertow.md",
+  "default_quality": "high",
+  "colors": {
+    "_note": "sRGB hex. albedo = the cloud's cool-white scattering albedo (the mass reads as storm_slate #3E4A57 through its own shadow); wound = spawn_wound (rent surfaces), held = glimmer_held (light pooled inside and the motes shed), lightning = ch20 key #C4D6FF, foam = foam_white, sea_deep = abyss_navy. Palette hexes are tested against docs/kb/art/palette.json.",
+    "wound": "#3FE0C8",
+    "held": "#7FC6D9",
+    "lightning": "#C4D6FF",
+    "foam": "#EEF6F4",
+    "sea_deep": "#061A2B",
+    "albedo": "#B8C4D0"
+  },
+  "state": {
+    "_note": "Runtime API ranges and defaults (UndertowStorm exports).",
+    "intensity": {
+      "default": 1.0,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "rotation_rad_s": {
+      "default": 0.012,
+      "min": 0.0,
+      "max": 0.12
+    },
+    "wound_intensity": {
+      "default": 1.0,
+      "min": 0.0,
+      "max": 4.0
+    },
+    "approach_distance_m": {
+      "default": 0.0,
+      "min": 0.0,
+      "max": 60000.0
+    },
+    "time_scale": {
+      "default": 1.0,
+      "min": 0.0,
+      "max": 8.0
+    }
+  },
+  "shape": {
+    "_note": "Metres, storm-local (origin = eye centre at sea level). The Undertow is kilometres wide (bible \u00a79).",
+    "eye_radius_m": 1800.0,
+    "eye_flare": 2.1,
+    "eye_flare_power": 1.6,
+    "wall_thickness_m": 5400.0,
+    "wall_taper": 0.0,
+    "wall_softness_m": 1100.0,
+    "height_m": 11500.0,
+    "top_softness": 0.12,
+    "canopy_height_m": 8200.0,
+    "canopy_thickness_m": 4400.0,
+    "canopy_radius_m": 10500.0,
+    "canopy_softness_m": 3500.0,
+    "band_radius_m": 16000.0,
+    "band_height_m": 5600.0,
+    "band_arms": 3.0,
+    "band_twist": 2.6,
+    "band_sharpness": 2.2,
+    "band_density": 0.9,
+    "calm_shrink": 0.55,
+    "bound_margin_m": 400.0,
+    "striation_spacing_m": 2400.0,
+    "striation_starts": 2.0,
+    "striation_strength": 0.45,
+    "striation_sharpness": 1.2
+  },
+  "flow": {
+    "_note": "Differential rotation: omega(r) = rotation_rad_s * (eye_radius / r)^falloff. Two-phase advection over cycle_s keeps the noise from winding up forever.",
+    "rotation_falloff": 0.6,
+    "cycle_s": 240.0,
+    "inflow_m_s": 6.0,
+    "updraft_m_s": 9.0,
+    "curl_scale_m": 4200.0,
+    "curl_warp_m": 900.0
+  },
+  "cloud": {
+    "noise_scale_m": 2300.0,
+    "detail_scale_m": 420.0,
+    "detail_weight": 0.4,
+    "coverage_bias": 0.08,
+    "density_per_m": 0.0045,
+    "albedo_gain": 1.0,
+    "sun_extinction": 1.8,
+    "ambient_occlusion": 3.0,
+    "forward_scatter": 0.55,
+    "back_scatter": -0.25,
+    "scatter_mix": 0.7,
+    "sun_energy": 0.55,
+    "ambient_energy": 1.0,
+    "light_step_m": 650.0,
+    "base_darkening": 0.75,
+    "haze_visibility_m": 60000.0,
+    "jitter": 1.0,
+    "erosion_envelope": 0.75,
+    "erosion_threshold": 0.9,
+    "erosion_contrast": 4.0,
+    "sun_clear_height": 0.92,
+    "sun_low_floor": 0.04,
+    "empty_step": 2.5,
+    "dense_step": 0.55
+  },
+  "wounds": {
+    "_note": "Rents where held light bleeds out (bible \u00a79). Seams drift DOWN the wall (held light sinks, colour script rule 1).",
+    "scale_m": 1600.0,
+    "width": 0.08,
+    "coverage": 0.4,
+    "presence_scale_m": 4200.0,
+    "sink_m_s": 5.0,
+    "energy": 26.0,
+    "pocket_energy": 0.6,
+    "rent_depth": 0.65,
+    "skin_m": 900.0,
+    "height_min": 0.15,
+    "height_max": 0.85
+  },
+  "lightning": {
+    "_note": "Deterministic schedule (UndertowState.flash_levels). Sites ride the eyewall and rotate with it.",
+    "sites": 4,
+    "period_s": 5.5,
+    "period_spread": 0.37,
+    "duration_s": 0.55,
+    "chance": 0.6,
+    "decay_s": 0.09,
+    "restrike_s": 0.21,
+    "restrike_gain": 0.65,
+    "radius_m": 1300.0,
+    "energy": 1.6,
+    "height_min": 0.15,
+    "height_max": 0.7
+  },
+  "sea": {
+    "_note": "The maelstrom: the sea pulled down into the eye. Profile = funnel (depth_m, Gaussian-ish throat) + lip (surge heaped against the wall).",
+    "funnel_depth_m": 260.0,
+    "throat_radius_m": 650.0,
+    "funnel_radius_m": 3600.0,
+    "lip_height_m": 30.0,
+    "lip_radius_m": 4800.0,
+    "lip_width_m": 1300.0,
+    "swell_height_m": 14.0,
+    "swell_scale_m": 420.0,
+    "radius_m": 11000.0,
+    "fade_start_m": 9000.0,
+    "rings": 96,
+    "segments": 160,
+    "ring_power": 1.9,
+    "lift_m": 1.0,
+    "foam_scale_m": 160.0,
+    "foam_streak": 9.0,
+    "foam_amount": 0.45,
+    "foam_ring_spacing_m": 380.0,
+    "foam_ring_radius_m": 8000.0,
+    "darkening": 0.55,
+    "roughness": 0.16,
+    "throat_glow_energy": 2.2,
+    "glow_sink_m_s": 6.0,
+    "foam_pitch": 3.5
+  },
+  "spray": {
+    "inner_radius_m": 1750.0,
+    "outer_radius_m": 6600.0,
+    "height_m": 650.0,
+    "scale_m": 300.0,
+    "rise_m_s": 14.0,
+    "density": 0.6
+  },
+  "shells": {
+    "_note": "Low tier body: open lathe shells mapped onto the same envelope the raymarch uses. fraction = position across the wall (0 eye face, 1 outer face).",
+    "fractions": [
+      0.0,
+      0.45,
+      0.85
+    ],
+    "canopy": true,
+    "rings": 28,
+    "segments": 96,
+    "alpha_cut": 0.42
+  },
+  "motes": {
+    "_note": "GlimmerField (held) for motes torn off the wounds that have drifted ashore. Placed by the zone; amount follows glimmer.json tiers.",
+    "amount_multiplier": 0.2
+  },
+  "render_priority": {
+    "_note": "Transparent sort: lid < water (0) < spray < body < motes drawn over the storm.",
+    "lid": -1,
+    "spray": 1,
+    "body": 2,
+    "shells": 1,
+    "motes": 3
+  },
+  "quality": {
+    "low": {
+      "body": "shells",
+      "march_steps": 0,
+      "spray_layers": 1,
+      "sea_foam_octaves": 2
+    },
+    "medium": {
+      "body": "raymarch",
+      "march_steps": 28,
+      "spray_layers": 2,
+      "sea_foam_octaves": 3
+    },
+    "high": {
+      "body": "raymarch",
+      "march_steps": 44,
+      "spray_layers": 2,
+      "sea_foam_octaves": 4
+    },
+    "ultra": {
+      "body": "raymarch",
+      "march_steps": 72,
+      "spray_layers": 2,
+      "sea_foam_octaves": 5
+    }
+  },
+  "shaders": {
+    "body_medium": "res://game/shaders/undertow/undertow_body_medium.gdshader",
+    "body_high": "res://game/shaders/undertow/undertow_body.gdshader",
+    "body_ultra": "res://game/shaders/undertow/undertow_body_ultra.gdshader",
+    "shell": "res://game/shaders/undertow/undertow_shell.gdshader",
+    "spray": "res://game/shaders/undertow/undertow_spray.gdshader",
+    "sea": "res://game/shaders/undertow/undertow_sea.gdshader",
+    "lid": "res://game/shaders/undertow/undertow_sea_lid.gdshader"
+  },
+  "lid": {
+    "_note": "Depth-only disc over the funnel (undertow_sea_lid.gdshader), radius = sea.fade_start_m, height = sea.lift_m + the zone's crest height + margin_m. Drawn just before the water.",
+    "segments": 96,
+    "margin_m": 0.5
+  }
+}

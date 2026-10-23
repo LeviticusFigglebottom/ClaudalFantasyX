@@ -323,6 +323,46 @@
         720
       ],
       "threshold_rmse": 0.004
+    },
+    {
+      "id": "undertow_horizon_dusk",
+      "scene": "res://game/levels/_tests/undertow/undertow_test.tscn",
+      "camera": "Cameras/Horizon",
+      "settle_frames": 6,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "undertow_eye",
+      "scene": "res://game/levels/_tests/undertow/undertow_test.tscn",
+      "camera": "Cameras/Eye",
+      "settle_frames": 6,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "undertow_night",
+      "scene": "res://game/levels/_tests/undertow/undertow_test.tscn",
+      "camera": "Cameras/Night",
+      "settle_frames": 6,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "undertow_horizon_low",
+      "scene": "res://game/levels/_tests/undertow/undertow_test.tscn",
+      "camera": "Cameras/HorizonLow",
+      "settle_frames": 6,
+      "resolution": [
+        480,
+        270
+      ]
     }
   ]
 }
