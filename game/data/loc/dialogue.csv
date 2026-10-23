@@ -1,4 +1,15 @@
 keys,en
+DLG_CH02_BARK_CHAPEL_001,The Lady Cantor's shell is cut. They'll set it at the wake.
+DLG_CH02_BARK_CHAPEL_002,I'm sorry. Was she very old?
+DLG_CH02_BARK_CHAPEL_003,"Mind the steps, please. I've only just swept them."
+DLG_CH02_BARK_DOCK_001,Her mother went from this dock too. Same age near enough.
+DLG_CH02_BARK_DOCK_002,Then she'll have fair weather. Her mother did.
+DLG_CH02_BARK_DOCK_003,Went where?
+DLG_CH02_BARK_DOCK_004,"Out. Pass me that float, would you?"
+DLG_CH02_BARK_MARKET_001,"Two days. Two days, and she's still helping me wrap fish."
+DLG_CH02_BARK_MARKET_002,Salt and stone. Her knots are neater than mine ever were.
+DLG_CH02_BARK_MARKET_003,Who's leaving? You've wrapped enough for a whole crew.
+DLG_CH02_BARK_MARKET_004,"Hold this end, would you? The leaf tears if you pull it."
 DLG_CH02_BEACH_001,The sea gave me back at dawn. Somebody was humming.
 DLG_CH02_BEACH_016,A star-path. The one they teach children for finding the way home.
 DLG_CH02_BEACH_002,"There you are. No, don't sit up yet. You've swallowed half the bay."
@@ -92,6 +103,11 @@ DLG_CH03_VERSE_057,"That's twice you haven't answered me, Rhen Sallow. I'm patie
 DLG_CH03_VERSE_058,The tide has turned.
 DLG_CH03_VERSE_059,Something heard that.
 DLG_CH03_VERSE_060,"On my shield. Everyone, on my shield, now."
+DLG_PROLOGUE_DEAD_CITY_001,"Everyone I'm going to tell you about is still here tonight. Remember that, later."
+DLG_TEST_CUTSCENE_001,First fixture line.
+DLG_TEST_CUTSCENE_002,Fixture option A.
+DLG_TEST_CUTSCENE_003,Fixture option B.
+DLG_TEST_CUTSCENE_004,Fixture closing narration.
 DLG_TEST_DLG_001,Test narration.
 DLG_TEST_DLG_002,Test line with an emotion.
 DLG_TEST_DLG_003,Flag was on.

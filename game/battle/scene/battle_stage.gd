@@ -33,9 +33,11 @@ static func config() -> Dictionary:
 
 
 ## Lattice progress for fighters `ids` on the sandbox board: `saved` (GameStateData.lattice) when
-## it holds any, otherwise a fresh start. Every id gets a traveler.
+## it holds any, otherwise a fresh start. Every id gets a traveler. A save is restored onto the
+## board it names (M1-ARC-14), so a configured board change never re-homes saved travelers.
 static func lattice_for(ids: Array[StringName], saved: Dictionary = {}) -> LatticeProgress:
-	var board := LatticeBoard.load_board(StringName(str(config().get("board", LatticeBoard.DEFAULT_BOARD))))
+	var configured := StringName(str(config().get("board", LatticeBoard.DEFAULT_BOARD)))
+	var board := LatticeProgress.board_for(saved, configured)
 	var rules := LatticeRules.load_file()
 	var p := (
 		LatticeProgress.from_dict(saved, board, rules) if not saved.is_empty() else LatticeProgress.new(board, rules)

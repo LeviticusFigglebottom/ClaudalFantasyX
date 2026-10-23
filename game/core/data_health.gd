@@ -96,11 +96,15 @@ func lattice_board(board_id: StringName = LatticeBoard.DEFAULT_BOARD) -> Lattice
 
 
 ## The board the save's Lattice progress names (the default board when it names none, or there is
-## no state) and facets.json: Game.state.lattice.
+## no state) and facets.json: Game.state.lattice. A save naming an id that is not a valid board id
+## is a problem itself, and no path is built from it (M1-ARC-14, review-sweep-J nit).
 func lattice_problem(state: GameStateData = null) -> String:
 	var board_id := LatticeBoard.DEFAULT_BOARD
 	if state != null and str(state.lattice.get("board", "")) != "":
-		board_id = StringName(str(state.lattice["board"]))
+		var named := str(state.lattice["board"])
+		if not LatticeBoard.is_valid_id(named):
+			return "the save names an invalid Lattice board id '%s'" % named
+		board_id = StringName(named)
 	var p := lattice_board(board_id).integrity_problem()
 	if p != "":
 		return p

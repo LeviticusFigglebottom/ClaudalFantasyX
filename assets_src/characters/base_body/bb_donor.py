@@ -1070,12 +1070,16 @@ def lip_rest(lm: Landmarks, dn: Donor, V: Arr, head: Arr, lips: Arr, lower: Arr)
     * `lip_lower_fullness`: the lower lip's forward roll, scaled about the contact plane.
 
     Also returns per-vertex texture terms for the bake: `lip_contact` (1 on the line where the
-    lips meet, 1.2 mm falloff) and `lip_corner` (the contact in the outer quarter: the commissures)."""
+    lips meet, 1.2 mm falloff) and `lip_corner` (the contact in the outer quarter: the commissures).
+    M1-CHR-07 adds the frame the texture draws the vermilion outline in: `lip_dz` (height above the
+    contact line, metres), `lip_u` (x over the mouth half-width) and `lip_front` (1 on the lip roll
+    in front of the teeth, 0 behind and beside it)."""
     p = lm.p
     seal = float(p.get("lip_seal", 0.0))
     lo_full = float(p.get("lip_lower_fullness", 1.0))
     if seal == 0.0 and lo_full == 1.0:
-        return V, {"lip_contact": np.zeros(len(V)), "lip_corner": np.zeros(len(V))}
+        zero = np.zeros(len(V))
+        return V, {"lip_contact": zero, "lip_corner": zero, "lip_dz": zero, "lip_u": zero, "lip_front": zero}
     s = lm.h / 0.222
     loop = inner_lip_loop(dn, V[:md.N_BODY])
     L = V[loop]
@@ -1105,7 +1109,8 @@ def lip_rest(lm: Landmarks, dn: Donor, V: Arr, head: Arr, lips: Arr, lower: Arr)
     wide = bb_face.smoothstep(half + 0.004 * s, half - 0.001 * s, np.abs(x)) * depth * head
     contact = np.exp(-(((V[:, 2] - zl) / (0.0012 * s)) ** 2)) * wide
     corner = contact * bb_face.smoothstep(0.7 * half, 0.95 * half, np.abs(x))
-    return V, {"lip_contact": contact, "lip_corner": corner}
+    return V, {"lip_contact": contact, "lip_corner": corner, "lip_dz": V[:, 2] - zl, "lip_u": x / half,
+               "lip_front": depth * head}
 
 
 # ---------------------------------------------------------------------------------------------

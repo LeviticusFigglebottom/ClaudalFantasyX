@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://game/battle/scene/battle_sandbox.tscn" id="1_sandbox"]
+[ext_resource type="Script" path="res://game/flow/field_battle.gd" id="2_field"]
+
+[node name="FieldBattle" instance=ExtResource("1_sandbox")]
+script = ExtResource("2_field")

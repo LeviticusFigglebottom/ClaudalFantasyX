@@ -6,6 +6,9 @@ extends RefCounted
 
 const DATA_DIR := "res://game/data/progression"
 const DEFAULT_BOARD := &"standard"
+## A board id as tools/lattice_editor writes it (M1-ARC-14, review-sweep-J nit): ids from a save are
+## checked against this before they become a res:// path.
+const ID_PATTERN := "^[a-z0-9_]+$"
 
 var id: StringName = &""
 var name_key: String = ""
@@ -19,6 +22,13 @@ var _adjacency: Dictionary = {}
 ## Character id -> start node id.
 var _starts: Dictionary = {}
 var _edge_count := 0
+
+
+## True when `board_id` is a well-formed board id (ID_PATTERN). It says nothing about whether the
+## board file exists.
+static func is_valid_id(board_id: String) -> bool:
+	var re := RegEx.create_from_string(ID_PATTERN)
+	return re.search(board_id) != null
 
 
 static func path_for(board_id: StringName, dir: String = DATA_DIR) -> String:

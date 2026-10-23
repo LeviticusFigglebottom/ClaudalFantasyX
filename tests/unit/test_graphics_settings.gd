@@ -1,6 +1,7 @@
 extends TestCase
 ## M1-RND-05: graphics presets data, the pure plan() mapping, the override layer and persistence.
 
+const SKY_SHADER := "res://game/shaders/environment/env_sky_cumulus.gdshader"
 const TEST_CFG := "user://test_graphics_settings.cfg"
 const EXPECTED_PRESETS: Array[String] = ["low", "medium", "high", "ultra"]
 
@@ -57,6 +58,9 @@ func test_planned_engine_api_names_exist_in_this_godot() -> void:
 			variants.append({key: option})
 	var viewport_props := _property_names("Viewport")
 	var env_props := _property_names("Environment")
+	var sky_uniforms := (load(SKY_SHADER) as Shader).get_shader_uniform_list().map(
+		func(u: Dictionary) -> String: return str(u["name"])
+	)
 	var class_props := {}
 	for v: Variant in variants:
 		for op in gs.plan(v):
@@ -71,6 +75,8 @@ func test_planned_engine_api_names_exist_in_this_godot() -> void:
 					if not class_props.has(cls):
 						class_props[cls] = _property_names(cls)
 					assert_true((class_props[cls] as Array).has(name), "%s.%s missing" % [cls, name])
+				GraphicsSettings.TARGET_SKY:
+					assert_true(sky_uniforms.has(name), "env_sky_cumulus uniform %s missing" % name)
 				GraphicsSettings.TARGET_SERVER:
 					assert_true(ClassDB.class_has_method("RenderingServer", name), "RenderingServer.%s missing" % name)
 					assert_eq((op["args"] as Array).size(), _arg_count("RenderingServer", name), "args of %s" % name)
@@ -426,3 +432,30 @@ func test_vegetation_detail_drives_tagged_vegetation() -> void:
 	assert_eq(grass.multimesh.visible_instance_count, -1, "all instances")
 	assert_eq(grass.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_ON, "authored shadow restored")
 	vp.free()
+
+
+## M1-RND-12: sky_detail sets the procedural sky's quality uniforms per preset (ints stay ints), and
+## leaves a sky whose shader lacks them alone.
+func test_sky_detail_sets_the_sky_uniforms() -> void:
+	var env := Environment.new()
+	env.sky = Sky.new()
+	var mat := ShaderMaterial.new()
+	mat.shader = load(SKY_SHADER) as Shader
+	env.sky.sky_material = mat
+	var levels := (gs.data["levels"] as Dictionary)["sky_detail"] as Dictionary
+	gs.apply("low", null, env)
+	assert_eq(typeof(mat.get_shader_parameter("cloud_steps")), TYPE_INT, "int uniform gets an int")
+	assert_eq(mat.get_shader_parameter("cloud_steps"), int((levels["low"] as Dictionary)["cloud_steps"]))
+	assert_eq(
+		mat.get_shader_parameter("cloud_light_detail"), float((levels["low"] as Dictionary)["cloud_light_detail"])
+	)
+	gs.apply("ultra", null, env)
+	assert_eq(mat.get_shader_parameter("cloud_steps"), int((levels["ultra"] as Dictionary)["cloud_steps"]))
+	for tier: String in levels:
+		var lv := levels[tier] as Dictionary
+		assert_true(int(lv["cloud_steps"]) >= 32, "%s: below 32 steps the silhouettes step (RND-12 report)" % tier)
+	var physical := Environment.new()
+	physical.sky = Sky.new()
+	physical.sky.sky_material = PhysicalSkyMaterial.new()
+	gs.apply("low", null, physical)
+	assert_true(physical.sky.sky_material is PhysicalSkyMaterial, "other skies untouched")

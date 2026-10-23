@@ -135,6 +135,7 @@ The safe margin is **48 px** on all sides. Coordinates are top-left x, y and wid
 - **Each row:** name (Medium at 24 px, 180 px wide), HP number and bar (220 px; the bar is 6 px tall), MP number and bar (120 px; bar 4 px), and the Swell gauge (64 px wide, 4 px tall, `ui_swell`; when full it glows with a 1.6 s sine pulse). Status icons sit in a 24 px strip above the bars, up to 6 icons.
 - Low HP turns the HP number and bar to `ui_danger`, and adds a bar pattern of 2 px diagonal hatching (again, not hue alone).
 - Reserve members are listed in the swap menu only, not here (the HUD shows 3 active fighters).
+- **Full Swell gauge frame (M1-UI-05; recorded here by M1-NIT-01).** Besides the 1.6 s sine pulse, a full gauge is framed, so "full" is a shape cue and not hue alone: a 2 px `outline` (night) gap, then a 2 px `text` (white) line outside the bar. Both edges of the gap clear 3:1 against any fill. With reduced motion the pulse holds at full glow and the frame stays. The gauge sits under the name, not in its own column (tech/ui.md deviation 8 has the sizes and the reason for 2 px).
 
 ### 6.3 Command menu (bottom left)
 - **Panel:** at (48, 760), 480 × 272. A header tab with the actor's name (Cormorant at 28 px) sits on the top-left chamfer. Up to 6 rows at 40 px pitch. The right column shows the rank cost and MP cost (tabular).

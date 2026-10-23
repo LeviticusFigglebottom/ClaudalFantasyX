@@ -1,0 +1,27 @@
+// Fixture for tests/unit/test_cutscene_sequencer.gd (M2-FP-01). Never played by game content.
+// Flags: test_flag and test_counter are reserved for tests.
+title: test_cutscene_fixture
+---
+@letterbox on
+@camera wide
+@fade in 1.0
+Asha [soft_smile]: First fixture line. #line:test_cutscene_001
+@camera close blend=0.5 ease=linear
+@mark asha spot walk
+@anim asha look_at rhen
+@face asha neutral 0.2
+@wait 0.5
+@vfx glimmer_held at=spot count=4 drift=down_seaward
+@music hush_first_verse fade=0.5
+@sfx ui_confirm
+-> Fixture option A. #line:test_cutscene_002
+    <<set $test_flag = true>>
+-> Fixture option B. #line:test_cutscene_003
+    <<set $test_counter = 2>>
+@wait music=bar_one max=1.0
+@camera release blend=0.0
+Narrator: Fixture closing narration. #line:test_cutscene_004
+<<event fixture_event closing 1 true>>
+@fade out 0.5
+@letterbox off
+===

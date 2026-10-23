@@ -40,13 +40,20 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
     "lash": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.15",
                                    "spec_secondary_intensity": "0.1", "transmission_strength": "0.3"},
              {"tex_hair": "asha_facehair.png"}),
-    "brow": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.12", "alpha_boost": "2.2",
+    "brow": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.12", "alpha_boost": "1.6",
                                    "spec_secondary_intensity": "0.1", "transmission_strength": "0.3",
                                    "root_occlusion": "0.2"},
              {"tex_hair": "asha_facehair.png"}),
-    "hair": ("character_hair", 0, {"spec_secondary_intensity": "0.3"},
+    # M1-CHR-07: the albedo is hair_black (#201A16, the shader default and the scalp underpaint);
+    # the warm-brown read was the primary lobe. At exponent 120 on the smooth card shell it spread
+    # over the whole lit side and, under the warm key, read as a broad gold sheen, which asha.md §5
+    # rules out ("a thin ribbon, never a broad sheen"). Narrower, broken up per strand, and less
+    # environment reflection: the mass reads black with a thin highlight. Rendering to confirm on GPU.
+    "hair": ("character_hair", 0, {"spec_secondary_intensity": "0.3", "spec_primary_exponent": "400.0",
+                                   "spec_shift_jitter": "0.25", "indirect_specular": "0.1"},
              {"tex_hair": "asha_hair.png", "tex_hairflow": "asha_hairflow.png"}),
-    "cloth": ("character_cloth", 0, {"detail_tiling": "160.0"},
+    "cloth": ("character_cloth", 0, {"detail_tiling": "160.0", "lacquer_base_roughness": "0.55",
+                                          "lacquer_coat_roughness": "0.16", "lacquer_coat_strength": "0.55"},
               {"tex_albedo": "asha_cloth_albedo.png", "tex_normal": "asha_cloth_normal.png",
                "tex_orm": "asha_cloth_orm.png", "tex_cloth_mask": "asha_cloth_clothmask.png",
                "tex_detail_normal": "asha_thread_detail_normal.png"}),
@@ -64,7 +71,10 @@ STANDARD_MATERIALS = {
     "staff_wood": "albedo_color = Color(0.227, 0.165, 0.125, 1)\nroughness = 0.45\n",
     "brass": "albedo_color = Color(0.69, 0.553, 0.341, 1)\nmetallic = 1.0\nroughness = 0.35\n",
     "bone": "albedo_color = Color(0.902, 0.855, 0.753, 1)\nroughness = 0.4\n",
-    "tortoiseshell": "albedo_color = Color(0.42, 0.227, 0.118, 1)\nroughness = 0.15\nclearcoat_enabled = true\n",
+    # M1-CHR-07: polished, not a mirror; at roughness 0.15 under a full clearcoat the comb mirrored
+    # the sky and read as a pale grey card above the ear
+    "tortoiseshell": "albedo_color = Color(0.30, 0.16, 0.08, 1)\nroughness = 0.35\nclearcoat_enabled = true\n"
+                     "clearcoat = 0.5\nclearcoat_roughness = 0.3\n",
 }
 
 
