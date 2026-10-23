@@ -2,7 +2,7 @@
 id: M1-UI-05
 title: Swell HUD and validator fixes (review-sweep-I on CMB-04)
 role: ui
-status: review
+status: done
 owner_session: "worktree-agent-ae77f8e225d2b48a3"
 depends_on: [M1-CMB-04]
 milestone: M1
@@ -55,3 +55,4 @@ From the review-sweep-I entries (file:line references there).
   - **Nits:**
     - Below 20 fps (frame time > 0.05 s) the ring now runs slower than real time. That is fair, and the ring draws its own `elapsed`, but say so in tech/ui.md.
     - The author's open nits stand: `target: "self"`, the `_resolving` line in formulas.md, and "next in N".
+- 2026-10-23 lead: closing on review-sweep-J approve; S1-S3 are in M1-NIT-01.

@@ -2,7 +2,7 @@
 id: M1-RND-08
 title: Water and glimmer follow-ups (review-sweep-B)
 role: rendering
-status: review
+status: done
 reviewer: environment
 owner_session: session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-08-water-glimmer; water items first)
 depends_on: [M1-RND-01, M1-RND-02, M1-RND-03, M1-ENV-01]
@@ -73,3 +73,4 @@ Environment-side findings on water and glimmer, scheduled after the Undertow and
     - the caustics look (water_lagoon);
     - `halo_chroma_gain`: dusk released motes still read near-white, not gold, in glimmer_dusk;
     - the noon crest patches.
+- 2026-10-23 lead: closing on review-sweep-J approve; the Art sign-off on caustics, halo and noon crests is in M1-ART-05.

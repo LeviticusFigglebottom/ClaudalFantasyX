@@ -2,7 +2,7 @@
 id: M1-ARC-13
 title: Never drop Lattice progress when the lattice tables are missing or broken
 role: architect
-status: review
+status: done
 owner_session: "worktree-agent-a26ce419921db7765"
 depends_on: [M1-ARC-12]
 milestone: M1
@@ -58,3 +58,4 @@ From the review-sweep-I entries (file:line references there).
     - The board id is taken from the save unsanitised into a res:// path (data_health.gd:102 → lattice_board.gd:24). It is read-only, but a hand-edited save can point the gate at any `lattice_*.json`. Reject ids that are not `[a-z0-9_]+`.
     - `report_data_tables.call_deferred()` (save_system.gd:146) now loads BattleDB, the board, facets and locations at boot. That is fine, but it belongs in the boot-time profile.
     - The audit table in architecture.md is accurate, as far as I can verify. It would help to add the row "Lattice `board` field vs the configured board" once S1 lands.
+- 2026-10-23 lead: closing on review-sweep-J approve; the board-mismatch issue (not reachable yet) is in M1-ARC-14.

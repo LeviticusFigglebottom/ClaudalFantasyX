@@ -2,7 +2,7 @@
 id: M1-NAR-12
 title: Story nits from review-sweep-I on NAR-11
 role: narrative
-status: review
+status: done
 owner_session: "worktree-agent-ae77f8e225d2b48a3"
 depends_on: [M1-NAR-11]
 milestone: M1
@@ -40,3 +40,4 @@ From the review-sweep-I entries (file:line references there).
       - Say the broken-off entry is the ledger's **last**, written the night he went after Imra, and move the Kell sentence before it in the outline. Or drop "the next page is blank". Cinematics needs that order to stage the page-turn.
     - **S2 (the "wick" vocabulary is still split).** decisions_log.md:14 (the N-02 answer) still says Dace fitted the lantern "with an oil wick", the phrase S2 removed from E2. decisions_log.md:145 has the Prologue line "as his oil wick catches". Mark them inline (N-26) or reword them to "oil burner", so the Kell-wick watch has one term. Otherwise the next reader repeats the sweep-I confusion.
   - **Nit:** game/data/dialogue/ch02/ch02_girl_on_the_beach.dlg:10 still says "She never says so" (acknowledged, comment-only).
+- 2026-10-23 lead: closing on review-sweep-J approve; S1/S2 are in M1-NIT-01.

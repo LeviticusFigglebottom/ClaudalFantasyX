@@ -2,8 +2,8 @@
 id: M1-CHR-04
 title: Asha close-range polish - lips, hair, skin micro-detail, costume materials
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "lead-cloud (mesh half, merged b3b66ac) + session_01778wbLbDFnRRLTKjnawv3T (PC: shadows and materials)"
 depends_on: [M1-CHR-03]
 milestone: M1
 request-from: "lead"
@@ -77,3 +77,4 @@ Costume and banding are the GPU half's. When both halves are in, the boxes can b
     - The GPU half lands (banding, cloth).
     - Items 1-4 get a pass on the asset side.
     - Re-run the review with GPU 2× captures beside these frames, and record the result in asha_review.md as a new subsection. Do not overwrite §7.3.
+- 2026-10-23 lead: status corrected to doing. The mesh half is merged; the sweep-J progress note's remaining faults are in M1-CHR-07 (mesh, rig and hair) and with the PC session (shadows and materials).

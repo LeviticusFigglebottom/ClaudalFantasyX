@@ -2,7 +2,7 @@
 id: M1-QA-06
 title: Capture setup and Blender gate hardening (review-sweep-I)
 role: qa
-status: review
+status: done
 owner_session: "worktree-agent-ae77f8e225d2b48a3"
 depends_on: [M1-QA-04, M1-QA-02]
 milestone: M1
@@ -76,3 +76,4 @@ From the review-sweep-I entries (file:line references there).
     - `GD_PATH` (godot_log_check.py:26) would count a torn-`.tres` Parse Error whose message happens to quote a `.gd` path. That is rare and fails safe.
     - `frame_pre_draw` ordering assumes the default rendering thread model. Say so in the CaptureSetup header.
     - `_tracked()` counts untracked, non-ignored `.glb` files, so a developer's WIP export fails the local gate. That is intended, but blender_builds.md should say how to exempt scratch files (or to keep them outside assets/).
+- 2026-10-23 lead: closing on review-sweep-J approve; S1/S2 are in M1-NIT-01.
