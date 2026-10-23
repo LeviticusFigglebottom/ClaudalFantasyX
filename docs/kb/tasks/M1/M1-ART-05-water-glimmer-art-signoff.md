@@ -1,7 +1,7 @@
 ---
 id: M1-ART-05
 title: Art sign-off on caustics, dusk halo chroma and noon crests (RND-08 S5)
-role: art
+role: character
 status: todo
 owner_session: ""
 depends_on: [M1-RND-08]
