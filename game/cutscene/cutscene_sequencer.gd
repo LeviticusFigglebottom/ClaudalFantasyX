@@ -29,6 +29,8 @@ signal line_shown(step: DialogueStep)
 signal cue_played(cue: StringName, args: Array, kwargs: Dictionary)
 ## Internal: a timed wait (`@wait`, a fade, an auto-advance hold) ran out.
 signal wait_elapsed
+## The player held ui_cancel long enough: the scene fast-forwarded to its next choice or its end.
+signal skipped(scene_id: StringName)
 
 const CONFIG_PATH := "res://game/data/cutscene/sequencer.json"
 const ANIM_LOOK_AT := &"look_at"
@@ -69,6 +71,12 @@ var _wait_left := 0.0
 ## key -> {elapsed, duration, apply: Callable(t: float)}; a new motion on a key replaces the old.
 var _motions: Dictionary = {}
 var _vfx_count := 0
+## True while a skip fast-forwards (until the next choice or the end).
+var _skipping := false
+var _skip_held := false
+var _hold := 0.0
+## What play() is awaiting right now: &"line", &"wait", &"land", &"choice" or &"" (none).
+var _awaiting: StringName = &""
 
 
 static func load_config() -> Dictionary:
@@ -91,6 +99,10 @@ func _process(delta: float) -> void:
 ## The field's interact key (E, which starts a bark) also advances lines, like ui_accept does in
 ## the DialogueBox, so a player never has to switch keys mid-conversation.
 func _unhandled_input(event: InputEvent) -> void:
+	if _playing and event.is_action(&"ui_cancel"):
+		set_skip_held(event.is_pressed())
+		get_viewport().set_input_as_handled()
+		return
 	if not _playing or overlay == null or not overlay.box.visible or overlay.choices.visible:
 		return
 	if not InputMap.has_action(FieldInput.INTERACT):
@@ -114,6 +126,42 @@ func _exit_tree() -> void:
 
 func is_playing() -> bool:
 	return _playing
+
+
+func is_skipping() -> bool:
+	return _skipping
+
+
+## Holding ui_cancel for `skip_hold_sec` (sequencer.json) skips; advance() counts the hold.
+func set_skip_held(held: bool) -> void:
+	_skip_held = held
+	if not held:
+		_hold = 0.0
+		if overlay != null:
+			overlay.set_skip_progress(0.0)
+
+
+## Fast-forwards to the next choice (which is then shown, so the player still chooses) or to the
+## end. Flags, branches and events run exactly as in a normal play; the camera snaps, waits and
+## moves complete at once. Returns false when nothing is playing or a skip is already running.
+func skip() -> bool:
+	if not _playing or _skipping or _awaiting == &"choice":
+		return false
+	_skipping = true
+	set_skip_held(false)
+	skipped.emit(_scene_id)
+	_complete_motions()
+	match _awaiting:
+		&"line":
+			overlay.box.skip_reveal()
+			overlay.box.advance_requested.emit()
+		&"wait":
+			_wait_left = 0.0
+			wait_elapsed.emit()
+		&"land":
+			if _director_alive():
+				_director.snap()
+	return true
 
 
 ## Plays `scene_id` (a compiled scene under game/data/dialogue/compiled/) to its end on `stage`.
@@ -145,6 +193,12 @@ func play(scene_id: StringName, stage: CutsceneStage) -> bool:
 
 ## Advances every timed thing by `delta` seconds: waits, fades, letterbox, moves, turns, music.
 func advance(delta: float) -> void:
+	if _playing and _skip_held and not _skipping and _awaiting != &"choice":
+		var need := float(config.get("skip_hold_sec", 0.0))
+		_hold += delta
+		overlay.set_skip_progress(clampf(_hold / need, 0.0, 1.0) if need > 0.0 else 1.0)
+		if _hold >= need:
+			skip()
 	for key: StringName in _motions.keys():
 		var m: Dictionary = _motions[key]
 		m["elapsed"] = float(m["elapsed"]) + delta
@@ -188,6 +242,9 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 
 
 func _finish() -> void:
+	_skipping = false
+	_awaiting = &""
+	set_skip_held(false)
 	_complete_motions()
 	if overlay != null:
 		overlay.box.visible = false
@@ -220,23 +277,31 @@ func _line(step: DialogueStep) -> void:
 	overlay.box.visible = true
 	overlay.box.show_line(step)
 	line_shown.emit(step)
-	if instant:
+	if _fast():
 		overlay.box.skip_reveal()
 		return
 	if auto_advance:
 		if overlay.box.is_revealing():
+			_awaiting = &"line"
 			await overlay.box.reveal_finished
+			_awaiting = &""
 		await _wait_for(auto_advance_hold_sec)
 		return
+	_awaiting = &"line"
 	await overlay.box.advance_requested
+	_awaiting = &""
 
 
 func _options(step: DialogueStep) -> int:
 	var pick := clampi(auto_choice, 0, step.options.size() - 1)
 	if instant or auto_advance:
 		return step.options[pick].index
+	# A skip stops here: the player makes every choice themselves.
+	_skipping = false
 	overlay.choices.show_options(step.options)
+	_awaiting = &"choice"
 	var chosen: int = await overlay.choices.chosen
+	_awaiting = &""
 	return chosen
 
 
@@ -299,11 +364,13 @@ func _cue_camera(step: DialogueStep) -> void:
 
 ## Waits for the director's move to land; a director that left the tree ends the cutscene.
 func _land() -> void:
-	if instant:
+	if _fast():
 		_director.snap()
 		return
 	if not _director.is_settled():
+		_awaiting = &"land"
 		await _director.blend_finished
+		_awaiting = &""
 	if not is_instance_valid(_director) or _director.is_leaving():
 		_director = null
 		_aborted = true
@@ -446,6 +513,11 @@ func _ensure_overlay() -> void:
 		add_child(music)
 
 
+## No time passes: a test (`instant`) or a skip in progress.
+func _fast() -> bool:
+	return instant or _skipping
+
+
 func _director_alive() -> bool:
 	return _director != null and is_instance_valid(_director) and not _director.is_leaving()
 
@@ -458,14 +530,16 @@ func _actor(id: StringName) -> Node3D:
 
 
 func _wait_for(sec: float) -> void:
-	if instant or sec <= 0.0:
+	if _fast() or sec <= 0.0:
 		return
 	_wait_left = sec
+	_awaiting = &"wait"
 	await wait_elapsed
+	_awaiting = &""
 
 
 func _start_motion(key: StringName, duration: float, apply: Callable) -> void:
-	if instant or duration <= 0.0:
+	if _fast() or duration <= 0.0:
 		_motions.erase(key)
 		apply.call(1.0)
 		return

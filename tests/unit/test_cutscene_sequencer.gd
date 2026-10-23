@@ -208,6 +208,50 @@ func test_the_interact_key_advances_lines_too() -> void:
 	_free()
 
 
+func test_skip_fast_forwards_to_the_choice_then_to_the_end() -> void:
+	_start(FIXTURE)
+	_drive_until(func() -> bool: return lines_pending > 0)
+	lines_pending = 0
+	var skips := [0]
+	seq.skipped.connect(func(_id: StringName) -> void: skips[0] += 1)
+	assert_true(seq.skip(), "skips from the first line")
+	assert_eq(skips[0], 1)
+	assert_true(seq.overlay.choices.visible, "the skip stopped at the choice")
+	assert_false(seq.is_skipping(), "and is over")
+	assert_eq(asha.global_position.distance_to(SPOT) < 0.01, true, "the walk before the choice completed")
+	assert_false(seq.skip(), "no skip while a choice is open")
+	seq.overlay.choices.pick(1)
+	assert_true(seq.is_playing(), "after the choice the scene plays on at its own pace")
+	assert_true(seq.skip())
+	_drive()
+	assert_false(seq.is_playing())
+	assert_eq(int(Game.get_flag(&"test_counter", 0)), 2, "the player's choice stood")
+	assert_eq(seq.events.size(), 1, "events after the choice still ran")
+	_assert_clean()
+	_free()
+
+
+func test_holding_cancel_skips_after_the_hold_time() -> void:
+	_start(FIXTURE)
+	_drive_until(func() -> bool: return lines_pending > 0)
+	var need := float(seq.config["skip_hold_sec"])
+	seq.set_skip_held(true)
+	seq.advance(need * 0.5)
+	assert_true(seq.overlay.skip_prompt.visible, "the fill shows while held")
+	assert_false(seq.overlay.choices.visible, "not yet skipped")
+	seq.set_skip_held(false)
+	assert_false(seq.overlay.skip_prompt.visible, "letting go resets it")
+	seq.set_skip_held(true)
+	seq.advance(need * 0.6)
+	assert_false(seq.overlay.choices.visible, "the hold restarted from zero")
+	seq.advance(need * 0.6)
+	assert_true(seq.overlay.choices.visible, "a full hold skipped to the choice")
+	seq.overlay.choices.pick(0)
+	lines_pending = 0
+	_drive()
+	_free()
+
+
 func test_real_time_blend_runs_and_fade_takes_its_time() -> void:
 	_start(FIXTURE)
 	var frames := _drive_until(func() -> bool: return director.active_shot_id() == &"close")

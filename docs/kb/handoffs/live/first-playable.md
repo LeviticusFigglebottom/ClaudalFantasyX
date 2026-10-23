@@ -22,11 +22,16 @@ How the human plays it: [docs/PLAYTEST.md](../../../PLAYTEST.md) (Godot 4.6.3, o
 - After merging the integration branch (e9ae43a), I ran scoped checks per §3 "Gate scope": lint, format, data, and the filtered tests `fp_`, `cutscene`, `haluna`.
 - A real-runtime smoke run (throwaway script, not committed) went through the actual SceneRouter from New Game to the title with Enter mashed. No script errors.
 
-### In progress
-Nothing.
+### In progress (Lead's queue of 2026-10-23, tasks M2-FP-05..08)
+- **M2-FP-05 polish:** the cutscene skip is **done** (hold Escape/B for 1 s; it stops at choices). The Haluna entry hitch and the lost-battle Retry / Return to last save are with a worktree agent (branch `worktree-agent-a6b0fa997cf23504d`, not merged yet).
+- **M2-FP-06 Drownbell boss:** a worktree agent (branch `worktree-agent-a930ab70519d670e7`) is building the engine phases, data, balance and docs. Not merged yet.
+- **M2-FP-07:** request task filed for Character (Asha's clips). No work here.
+- **M2-FP-08 @anim/@face drive:** next for this session.
 
 ### Exact next step
-The Lead merges `claude/first-playable` and runs the full screenshot manifest once. Then the human plays per PLAYTEST.md, and their notes become M2-FP follow-up tasks.
+Implement M2-FP-08 in `game/cutscene/`, then merge the two worktree branches as they finish (dialogue.csv and strings.csv conflicts: `python3 tools/dev/merge_union.py <file>` for strings, `python3 tools/dlgc.py` for dialogue). Then wire Cutscene B → BattleRequest(drownbell) → end card.
+
+Previously: The Lead merges `claude/first-playable` and runs the full screenshot manifest once. Then the human plays per PLAYTEST.md, and their notes become M2-FP follow-up tasks.
 
 ### Known issues (candidate follow-ups)
 - The swap into Haluna has one ~1.5 s frame under the fade (mood dressing plus collision build).
@@ -47,6 +52,7 @@ None that matters. `.scratch/` (excluded through `.git/info/exclude`) holds the 
 5. Read the M2-FP task files and `docs/kb/handoffs/2026-10-23-first-playable-1.md`.
 
 ## History
+- 2026-10-23: merged integration 9508ade; claimed M2-FP-05..08; cutscene skip done (13 sequencer tests).
 - 2026-10-23: claimed M2-FP-01..04; CutsceneStage contract and sequencer API stub.
 - 2026-10-23: pushed the sequencer, the flow (prologue, battle hand-off, end card), the Cutscene B set and a PLAYTEST draft. ci_local green with 967 tests.
 - 2026-10-23: merged playable Haluna, wired the whole thread, added test_fp_thread.gd plus the runtime smoke run. ci_local green with 974 tests. Merged the integration branch for the §3 and §7a directives. The old `first-playable-progress.md` is folded into this file.

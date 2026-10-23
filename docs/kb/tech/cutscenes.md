@@ -65,8 +65,13 @@ CutsceneStage (director_path, player_path)
 - **After every `await blend_finished`** the sequencer checks `is_instance_valid(director)` and `director.is_leaving()`; a leaving director ends the cutscene at once (no further cues, overlay cleared).
 - Missing shots, actors, marks, tracks and sounds are soft failures: `warnings` lists each once (and `push_warning`), and the scene plays on. A rough stage can play a finished script.
 
+## Skipping (M2-FP-05)
+
+Holding `ui_cancel` (Escape, or B/Circle on a controller) for `skip_hold_sec` (1 s, in `sequencer.json`) shows a "Hold to skip" fill at the bottom right, then skips. Letting go resets the fill. `skip()` does the same from code.
+- **A skip fast-forwards to the next choice, or to the end.** Flags, branches and events run exactly as in a normal play. Camera moves snap, and waits, fades and walks complete at once. **At a choice the skip stops and the menu shows, so the player always makes their own choices.** Hold again after it to skip the rest.
+- The autosave hold, the player freeze and the camera hand-back end exactly as on a normal finish, because a skip is a normal play with no time passing. `skipped(scene_id)` fires once per skip.
+
 ## Not yet
 
 - Music markers (`music_marker_reached`) need an adaptive music player (Audio).
 - `@face` and body clips need the character rigs (Character, Cinematics). `grade=` on `@camera` is ignored until the grading pipeline has frames per sub-frame.
-- No skip button. A held-skip that drains the scene through `instant` is a small addition when Cinematics asks.

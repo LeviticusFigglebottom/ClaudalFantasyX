@@ -40,6 +40,7 @@ This needs the Godot 4.6.3 **export templates**: in the editor, open **Editor â†
 | Advance dialogue, confirm | Enter or Space | A / Cross |
 | Choose an option | Up / Down, then Enter | D-pad, then A |
 | Back, cancel | Escape | B / Circle |
+| Skip a cutscene (it stops at each choice, so you still choose) | hold Escape for 1 s | hold B / Circle |
 | Battle menus | Up / Down / Left / Right, Enter, Escape | D-pad, A, B |
 
 In battle, the timeline on the right shows who acts next. Highlighting a command previews how it changes the order. Swap brings Toma in from the reserve.
@@ -53,7 +54,6 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - The glimmer motes in the cutscenes are simple glowing dots, not the real particle effect.
 - Haluna uses the art team's mood-test scene, with simple collision added. The camera mostly follows Rhen from behind; only a few spots use composed shots.
 - Cutscene B ends with the bell tolling and a call to battle. **The Drownbell boss isn't built yet**, so the end card comes next.
-- There's no skip for cutscenes yet.
 - Entering Haluna freezes for about a second and a half behind the black fade while the village builds itself. That's expected for now.
 - After a lost battle you return past the trigger, so the fight can be skipped by walking on. Walking back down to the beach and up again offers it once more.
 
