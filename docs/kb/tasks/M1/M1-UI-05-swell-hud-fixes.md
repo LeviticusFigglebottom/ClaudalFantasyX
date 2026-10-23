@@ -2,8 +2,8 @@
 id: M1-UI-05
 title: Swell HUD and validator fixes (review-sweep-I on CMB-04)
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-ae77f8e225d2b48a3"
 depends_on: [M1-CMB-04]
 milestone: M1
 request-from: "combat"
