@@ -22,6 +22,9 @@ var player: FieldController
 var events: Array[Dictionary] = []
 ## Shot ids seen by test coroutines resuming from `await director.blend_finished`.
 var resumed: Array[StringName] = []
+## What those coroutines saw when they resumed (M1-ARC-07 review-sweep-E S1).
+var seen_leaving: Array[bool] = []
+var seen_in_tree: Array[bool] = []
 
 
 func before_each() -> void:
@@ -389,6 +392,27 @@ func test_missing_aim_node_falls_back_to_the_player() -> void:
 	_free()
 
 
+func test_missing_aim_node_is_loud_once_per_shot() -> void:
+	var log := AimErrorLog.new()
+	OS.add_logger(log)
+	var shot := _scripted_shot()
+	shot.aim_node = NodePath("NoSuchActor")
+	director.play_shot(shot, 0.0)
+	_settle()
+	director.subject_node(shot)
+	var errors := log.take()
+	OS.remove_logger(log)
+	assert_eq(errors, 1, "push_error, not a warning, and only once for the shot however often it evaluates")
+	assert_eq(director.missing_aim_nodes(), [SCRIPTED] as Array[StringName], "recorded for the overlay and tests")
+	var good := _scripted_shot()
+	good.id = &"cutscene_reaction"
+	good.aim_node = NodePath(_actor(Vector3(0, 0, 9)).name)
+	director.play_shot(good, 0.0)
+	_settle()
+	assert_eq(director.missing_aim_nodes(), [SCRIPTED] as Array[StringName], "a found aim_node is not reported")
+	_free()
+
+
 # --- M1-ARC-07: the sequencer contract ------------------------------------------------------------
 
 
@@ -517,9 +541,41 @@ func test_leaving_the_tree_pays_an_owed_blend_finished() -> void:
 	director.update(DT)
 	assert_true(director.is_blending())
 	_await_landing()
+	assert_false(director.is_leaving(), "in the tree and not leaving")
 	_host().remove_child(zone)
 	assert_eq(resumed, [SCRIPTED] as Array[StringName], "the awaiting coroutine resumed instead of hanging")
+	assert_eq(seen_leaving, [true] as Array[bool], "inside the _exit_tree emit, is_leaving() is already true")
+	assert_eq(
+		seen_in_tree, [true] as Array[bool], "while Godot still reports is_inside_tree() (why it is not the guard)"
+	)
 	assert_true(director.is_settled())
+	assert_true(director.is_leaving(), "out of the tree")
+	_host().add_child(zone)
+	assert_false(director.is_leaving(), "re-entering clears it")
+	_free()
+
+
+func test_the_autosave_hold_follows_the_scripted_shot_across_a_reparent() -> void:
+	var saves := _host().get_node(^"/root/SaveSystem")
+	var held := func() -> bool: return director in (saves.call(&"autosave_holders") as Array[Object])
+	director.play_shot(_scripted_shot(), 0.0)
+	assert_true(held.call(), "play_shot holds the autosave")
+	_host().remove_child(zone)
+	assert_false(held.call(), "an unloading zone never blocks the save")
+	assert_true(director.is_scripted(), "the shot is still held")
+	_host().add_child(zone)
+	assert_true(held.call(), "re-entering with the shot held takes the hold back")
+	director.release(0.0)
+	assert_false(held.call(), "release drops it")
+	_host().remove_child(zone)
+	_host().add_child(zone)
+	assert_false(held.call(), "no shot held, no hold on re-entry")
+	_host().remove_child(zone)
+	director.play_shot(_scripted_shot(), 0.0)
+	assert_false(held.call(), "out of the tree, play_shot does not hold yet")
+	_host().add_child(zone)
+	assert_true(held.call(), "it holds once the director is back in a tree")
+	director.release(0.0)
 	_free()
 
 
@@ -558,6 +614,37 @@ func _sequencer_then_cut(next: CameraShot) -> void:
 func _await_landing() -> void:
 	await director.blend_finished
 	resumed.append(director.active_shot_id())
+	seen_leaving.append(director.is_leaving())
+	seen_in_tree.append(director.is_inside_tree())
+
+
+## Counts FieldCameraDirector's missing-aim_node errors reported through the engine log.
+class AimErrorLog:
+	extends Logger
+	var count := 0
+	var _mutex := Mutex.new()
+
+	func _log_error(
+		_function: String,
+		_file: String,
+		_line: int,
+		code: String,
+		rationale: String,
+		_editor_notify: bool,
+		error_type: int,
+		_script_backtraces: Array[ScriptBacktrace]
+	) -> void:
+		if error_type == Logger.ERROR_TYPE_ERROR and ("%s %s" % [code, rationale]).contains("aim_node"):
+			_mutex.lock()
+			count += 1
+			_mutex.unlock()
+
+	func take() -> int:
+		_mutex.lock()
+		var n := count
+		count = 0
+		_mutex.unlock()
+		return n
 
 
 func _scripted_shot() -> CameraShot:

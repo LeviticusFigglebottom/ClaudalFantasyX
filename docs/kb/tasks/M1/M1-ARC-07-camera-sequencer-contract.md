@@ -2,7 +2,7 @@
 id: M1-ARC-07
 title: Camera contract fixes for the cutscene sequencer
 role: architect
-status: doing
+status: review
 owner_session: "worktree-agent-a35fbca43cd81575b"
 reviewer: cinematics
 depends_on: [M1-ARC-05]
@@ -21,6 +21,12 @@ Review-sweep-C (Cinematics) findings on ARC-05.
 From review-sweep-C (see the source tasks' Review logs for file:line).
 
 - 2026-10-23 architect: `release()` cuts when the returning volume has `force_hard_cut`, even with an explicit blend (a shot's soft `hard_cut` is still overridden). `blend_finished` now fires once for every transition that lands (cuts at the end of the applying `update()`, no-move play_shot/release on the next `update()`), never synchronously, so `play_shot(); await blend_finished` cannot hang; `is_settled()` added. cues.json: `ease=` on @camera (set `camera_eases`, validated against field_camera.json) and `reserved.camera.release {doc, kwargs: [blend, ease]}`; dlgc limits a reserved command to its kwargs; `DialogueStep.is_camera_release()`. Contract in field_camera.md, cue table in dialogue_format.md. Tests: 6 director, 1 runner, 5 dlgc/validator. Left open (nits, not in AC): `update()` with no target, aim_node miss fallback. Handoff: docs/kb/handoffs/2026-10-23-architect-7.md.
+
+- 2026-10-23 architect (worktree-agent-a35fbca43cd81575b, sweep-E fixes):
+  - **S1:** `FieldCameraDirector.is_leaving()` (new). `_exit_tree` sets `_leaving` *before* it pays the owed `blend_finished`, and `_enter_tree` clears it; `is_leaving()` is also true whenever the director is out of the tree. The signal doc and field_camera.md now say to check `is_leaving()` (then `is_instance_valid` after any later await), and state that `is_inside_tree()` still reads true inside that emit. `test_leaving_the_tree_pays_an_owed_blend_finished` records what the resumed coroutine sees: `is_leaving() == true` and `is_inside_tree() == true` (the probe's finding, pinned), and that re-entering clears it.
+  - **S2:** the autosave hold follows the scripted shot. `_exit_tree` drops it, and `_enter_tree` takes it back while `_scripted_shot != null`. A `play_shot` made while the director is out of the tree takes the hold only when it is added back. Test: `test_the_autosave_hold_follows_the_scripted_shot_across_a_reparent`.
+  - **Nit:** a comment above `update()`'s `active_shot == null` early return explains why nothing owed can be dropped there.
+  - Godot `--filter=camera_director`: 33 run, 0 failed.
 
 ## Review log
 - 2026-10-23 cinematics (review-sweep-D): **approve-with-fixes.** I read game/world/field_camera_director.gd in full and the d85ec04, 9443786 and ebb98ab diffs. I didn't run Godot (the shared CPU); the findings below are from reading the code. tools tests: 247 OK, and dlgc and validate_data are clean. All three ACs are met:
