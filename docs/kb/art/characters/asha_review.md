@@ -494,3 +494,146 @@ Only the four face shots were re-approved. I looked at each one at full size, an
 | 1,210 triangles of LOD0 headroom unused | Kept as margin. The hair is at 15,824 of its 16,000 line on the field scalp |
 | The left brow's head is slightly heavy (§8.6) | Not taken this round |
 | The hair lobe (exponent 400) still departs from asha.md §5 | Unchanged; for Rendering and Art to confirm (§8.2) |
+
+## 10. M1-CHR-10: round 5 (black hair, lashes, the lid band, brows, the grief mouth, the smile corner, skin)
+
+The task works through the review-sweep-L findings on M1-CHR-07 and M1-CHR-09, in their order. The shadow settings and the cloth, vest and bodice materials belong to the PC GPU session and were not touched; neither were `write_materials.py`'s cloth entries. Every material change goes through `write_materials.py`. The hair shader is unchanged: the fault was in the values, not the code.
+
+**Same lighting and cameras as §3. Every frame is lavapipe.** CHR-09 (the previous baselines) is the "before", CHR-10 (the re-approved baselines) the "after". The pixel numbers are sRGB means over fixed boxes on `asha_face_neutral` (or `grief` where named). For scale: under this orange key, a neutral grey (the cyclorama) reads R:B 2.0.
+
+### 10.1 Root causes, found by diagnostic renders
+
+Each fault below was isolated by rendering `asha_face_*` with a single material override (later reverted) and comparing crops at 2.5–5×.
+
+- **Hair reads auburn.**
+  - With every lobe off (primary, secondary, transmission and indirect specular all 0), the crown still rendered at 36/16/7. So the fault is the base colour, not the highlights CHR-07 blamed.
+  - #201A16 is a warm brown-black, and the stage's key and rim are orange. The root and layer occlusion (0.5 and 0.45) take away most of the cool sky fill, so lit hair is the key's hue on a warm albedo.
+  - The lobes then add gold: the #E8D8C8 primary under the orange key, and the secondary and transmission in #8A5A3A, the colour of light through *brown* hair.
+  - Decision and values: [ADR 0024](../../decisions/0024-asha-hair-shading-values.md) (proposed; Art and Rendering confirm on a GPU).
+- **The pale upper-lid band.** Two things:
+  1. *A pale, glittery fringe.* With the lashes discarded (alpha boost 0), the fringe vanishes. With the lashes forced to pure red, the pale stays between the red strands, and making them near-black with their lobes off barely changed it. So the fringe is the bright lid skin seen through the lashes' sparse, dithered tips, not lash colour.
+  2. *The lid skin itself*: 179/105/63 against 141/72/38 in the crease above it. It is lit like the forehead: there's no lash shadow, no brow overhang occlusion, and the vertex AO bake never saw the lashes. CHR-09's 15% albedo darkening was not enough.
+- **Comb lashes.** `strand_layer` drew 170 separate, straight, evenly spaced strands: a comb.
+- **Brow edges.**
+  - The brow is three card layers, each a strip of hair strokes. Strokes that crossed a card's edge were cut there, so the card's straight border *was* the brow's lower edge. At the lateral tail, where the card is 2.2 mm high, almost every stroke crosses it.
+  - The left brow's heavy head came from roots packed medially (`t ** 1.15`) plus upright head hairs as long as the card is high, stacked three layers deep.
+- **The grief "tooth slab".**
+  - One render with the teeth pure red and specular 0 showed that the grey panels were the teeth's **specular**: the sky's reflection, which nothing occluded inside the mouth.
+  - Pure green on the `mouth` material showed the rest of the dark band is the mouth bag. The pale streak along the bottom is the tongue's reflection (shown in blue in a third render).
+  - Albedo and AO changes alone (tried first) moved the slab only slightly.
+- **The smile-corner striations** (CHR-07 S2): see §10.3. They are a shadow fault, not normals.
+- **Evenly lit skin.** The skin shader's roughness range (0.42–0.50) made the ORM's oily T-zone and rough cheeks almost identical, so the sheen sat evenly over the face. The albedo's colour zones and mottling are 2–5%.
+
+### 10.2 What changed
+
+- **Hair, lashes and brows** (`write_materials.py`, ADR 0024).
+  - The base colour is #141417 (neutral, slightly cool). The primary is a cool white, `Color(0.76, 0.85, 1.0)` at 0.45 (exponent 400 since CHR-07), with per-strand jitter 0.3, the shader's cap.
+  - Secondary and transmission are dark pigment brown, at 0.12 and 0.5.
+  - Root and layer occlusion are 0.7 and 0.75, so the sky fill reaches the mass. The scalp underpaint in the head albedo is #16161A, held by the albedo floor.
+  - Lashes and brows use the same base colour, with environment specular 0.03 and 0.05.
+- **Lashes** (`asha_textures.lash_clumps`).
+  - 38 upper clumps of 3–5 hairs (14 lower clumps of 2–3). The hairs start apart on the margin and meet near a shared, leaning tip, tapering from 1.5 px to a point. Clump lengths are longest over the outer middle of the lid.
+  - Under the clumps, 150 short fine hairs (40 on the lower lid) keep the margin a continuous dark line.
+- **Lid** (`asha_textures`).
+  - `UPPER_LID_DARKEN` is 0.26 (was 0.15).
+  - A lash line: a 30% darker band at lid-field radius 1.05.
+  - 30% ambient occlusion over the upper lid in the head ORM (`UPPER_LID_AO`).
+- **Brows** (`asha_textures.brow_hairs`).
+  - Roots are evenly spaced along the brow. The density across it peaks at the centre and falls faster toward the lower edge (σ 0.28 below, 0.34 above). Edge hairs are 70% as opaque and 85% as wide.
+  - The head fades in over the first 18%, with shorter, fainter hairs.
+  - Every stroke fades to nothing over the outer 8% of the card's height (`BROW_EDGE_FADE`).
+  - 520 strokes per layer (was 420). The material's alpha boost stays at 1.6.
+- **Teeth and mouth.**
+  - The teeth have UVs for the first time. They point into an unused corner of the head atlas (`asha_mouth.TEETH_UV`, glTF V-down: u, v 0.84–0.98; `test_teeth_sample_their_own_patch_of_the_head_atlas` checks that no skin or mouth texel lands in it). U runs along the arch and V from the biting edge to the gum.
+  - `asha_textures.teeth_patch` paints warm ivory there, darker toward the gum and the back teeth, plus a modelled AO (0.62 at the front edge to 0.38 at the gum, times 0.4 at the back) and roughness 0.45.
+  - The `teeth` material reads them, with **specular 0.06** (was 0.5) and AO light affect 0.35. The `tongue` is rougher (0.6, specular 0.25). The `mouth` bag takes the head bake's AO (light affect 0.5).
+  - The gate's output set did not grow: this round added no new texture file.
+- **Mouth morph normals** (`build_asha`). `asha_glb.add_morph_normals` now also runs on the `mouth` primitive: 16 shapes and 2,002 sparse rows (+28 KB). On the CHR-09 GLB, 16 expression shapes moved 8 or more mouth vertices with no NORMAL target. The new test `test_mouth_primitive_carries_normals_where_a_shape_moves_it` fails on exactly those 16 there.
+- **Skin** (`skin_head`, `skin_head_dialogue`).
+  - Roughness range 0.40–0.58 (the shader's default is 0.42–0.50), `cavity_albedo` 0.45 (was 0.35), and `micro_roughness` 0.1 on the as-built skin.
+  - A head-only albedo mottle at a 9 mm base cell, ±6.5% in value and slightly in hue (`SKIN_MOTTLE`).
+- **Tests.**
+  - `test_asha_face_drive`: mouth normals.
+  - `test_asha`:
+    - the teeth patch is isolated;
+    - the lashes are clumps over a dark root line (at least 70% covered at the root, under 45% at 60% of their length, between half and twice as many runs as clumps there, thinner toward the tips);
+    - brow strokes fade before both card edges.
+
+### 10.3 The smile-corner striations: a shadow terminator, out of this task's reach
+
+Three lavapipe renders of `asha_face_smile`, each changed temporarily and then reverted:
+
+| Change | Striations |
+|---|---|
+| `KeyLight.shadow_enabled = false` | **gone** |
+| Morph normals on the `mouth` primitive (this round) | unchanged: they sit on `skin_head`, which has had morph normals since CHR-07 |
+| `directional_shadow_max_distance` 8 → 1.5 m (finer shadow texels) | **sharper**: a saw-tooth shadow edge |
+
+This is the shadow-terminator pattern on the deformed corner's facets at grazing light. It is not resolution blur and not a normal fault. The fix belongs to the shadow settings (the PC session) or the skin shader (Rendering), so I filed [M1-RND-20](../../tasks/M1/M1-RND-20-asha-smile-corner-shadow-terminator.md) with the candidate fixes. **It is still visible in the re-approved `asha_face_smile`.**
+
+### 10.4 The SPEC §14 dialogue-range review, strict, side by side with CHR-09
+
+| | CHR-09 | CHR-10 |
+|---|---|---|
+| Hair colour | Warm auburn-brown, a gold sheen on the lit side. Crown 36/16/7 in shadow (R:B 5.4), 76/38/10 lit (7.6) | **Near-black**: 25/15/10 (2.6) and 53/35/18 (3.0). The lit-side ribbons are a pale, desaturated beige, not gold. The braid reads black at every range (`asha_front`, `asha_q34`). **Still slightly warmer than neutral** (2.0) under this key |
+| Crown shape | Sleek; a smooth arc of an outline | **Unchanged geometry.** Darker, with more broken per-strand highlights, but at this framing it is **still a smooth shell**. This criterion is not met |
+| Lashes | A sparse comb of thin dark ticks over a pale, glittery fringe | **Dark, tapered clumps on a continuous lash line.** From this camera they read as an upright fringe of even height: a little like a strip lash. The lower lashes are faint |
+| Upper lid | A pale band over the iris | **Darker**: 127/66/33 (cheek 210/142/98; CHR-09 lid 147/82/45). The glitter is gone. **A tan strip still shows between the lashes and the crease**, now darker than the cheek and the forehead. Reduced, not gone |
+| Brows | A hard, flat lower edge; the left head a dense tuft | **Soft edges with density falloff at both edges; the head fades in.** At 960×540 they now read a touch thin and light. That's a better error than bars, but not tuned |
+| Grief mouth | A blue-grey tooth slab with dark outlines; a hard inner lower-lip edge | **The slab is gone** (grey teeth pixels in the mouth box: 394 → 73). The open mouth reads as a dark interior with the upper teeth's edge. **Still there:** the hard inner lower-lip edge, dark outlines where the lips meet the interior, and a faint tongue streak |
+| Smile corner | Diagonal striations | **Unchanged.** Shadow terminator, M1-RND-20 (§10.3) |
+| Skin | Smooth and evenly lit between the features | **A soft mottle shows** on the forehead and cheeks at 1.6×. The sheen is slightly broken by zone. **At 1×, still smooth and evenly lit.** The forehead's pixel deviation even fell (6.7 → 5.1): the wider roughness range evened the sheen there more than the mottle broke it. Not resolution-limited, so it still counts |
+| Eyes | Large, glossy, the sheet's ×1.10 | Unchanged |
+| `asha_front` cloth (out of scope) | Stair-stepped underskirt hem; the gauze sleeve's grid shows | Unchanged |
+
+**Verdict: improved, and five of the six named faults are fixed or clearly reduced at the asset (hair colour, lashes, lid band, brows, tooth slab). Strict SPEC §14 at dialogue range: FAIL as built. With the ADR 0019 close-range look: borderline. I would not call it a pass.**
+
+What still fails, in order of how much it costs the read:
+1. **Skin evenness.** The face is still smooth and evenly lit at 1×: the doll cue CHR-09 named. The material levers (roughness range, cavity, mottle) moved it only a little. What remains is shading: subsurface variation, the skin's response to the key, and occlusion under the brow and nose. That is for Rendering on a GPU, and the motion review.
+2. **The crown is still a sleek shell.** This round did not change the card geometry. Black hides more of the shell than auburn did, but the outline is still a clean arc.
+3. **The smile-corner striations** (M1-RND-20).
+4. **The grief mouth's inner lower-lip edge** and the dark outline round the interior.
+5. **The lid strip** between the lashes and the crease is reduced but visible. The lashes read slightly like a strip lash.
+6. **Brows** now a touch thin and light at full frame.
+7. **The hair's warm cast** (R:B 2.6–3.0 against neutral 2.0) and the cool-tint risk under a cool key (ADR 0024 watch item 1).
+8. All of this is lavapipe. The GPU 2× High capture (M1-QA-05c) is the final judge.
+
+### 10.5 Re-approved baselines
+
+Only the four face shots were re-approved. I looked at each one at full size and in 2.5–5× crops against its CHR-09 baseline. The six field-range shots change slightly (black hair and braid) but stay inside their limit, so their baselines were kept.
+
+| Shot | RMSE against CHR-09 | |
+|---|---:|---|
+| `asha_face_neutral` | 0.0097 | Re-approved: black hair, lashes, lid, brows, skin mottle |
+| `asha_face_smile` | 0.0096 | Re-approved: the same under `smile`; the corner striations remain (§10.3) |
+| `asha_face_grief` | 0.0099 | Re-approved: the same, plus the dark mouth interior without the slab |
+| `asha_face_stylized_compare` | 0.0102 | Re-approved: the same under both skins |
+| `asha_q34` | 0.0040 | Within its limit (0.008); kept |
+| `asha_sleeve_s0` / `s4` | 0.0031 | Within their limit; kept |
+| `asha_extreme_pose` | 0.0030 | Within its limit; kept |
+| `asha_front` | 0.0022 | Within its limit; kept |
+| `asha_profile` | 0.0021 | Within its limit; kept |
+
+### 10.6 Numbers
+
+| | CHR-09 | CHR-10 |
+|---|---|---|
+| LOD0 | 62,290 | **62,290** (no geometry added; the teeth gained UVs only) |
+| LOD1 | 29,378 | 29,378 (LOD1 has no blendshapes and drops the teeth, tongue and lashes) |
+| `asha.glb` | 4,455,676 B | **4,487,948 B** (mouth morph normals +28,036 B) |
+| `asha_lod1.glb` | 1,412,604 B | 1,412,604 B (byte-identical) |
+| Head maps | albedo 1.96, normal 3.01, ORM 1.33, skinmask 3.28 MB | 2.09 / 3.01 / 1.34 / 3.28 MB; every file under 5 MB |
+| `asha_facehair.png` | — | 0.68 MB |
+| Outputs | 44 | 44 (no new file) |
+
+### 10.7 Known issues (CHR-10)
+
+| Item | Note |
+|---|---|
+| Skin still smooth and evenly lit at 1× | The material levers are used. Next: Rendering's subsurface and key response on a GPU; the motion review |
+| Crown reads as a sleek shell | Card layout, not colour. The hair is at 15,824 of its 16,000 line on the field scalp; LOD0 has 1,210 triangles of headroom |
+| Smile-corner striations | M1-RND-20 (shadow terminator) |
+| Grief: hard inner lower-lip edge; dark outline round the interior; faint tongue streak | The skin-to-`mouth` material seam. Next: darken the skin albedo toward the inner lip edge, or a gradient on the bag |
+| Lid strip between the lashes and the crease | Reduced. Next: a lash-shadow term on the lid (not tested this round), or lid geometry |
+| Brows a touch thin at full frame | `BROW_SIGMA_*` and `BROW_EDGE_*` in asha_textures |
+| Hair values depart from asha.md §5 | ADR 0024 (proposed). Art amends the sheet or overturns the ADR |
