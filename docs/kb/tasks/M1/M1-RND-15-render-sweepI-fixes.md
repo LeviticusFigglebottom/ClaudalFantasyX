@@ -31,6 +31,23 @@ From the review-sweep-I entries (file:line references there).
 - **Outstanding (PC GPU):** Low-TAA foliage ghosting with the wind **on**, at a 30 fps cap (`tools/gpu_bench/aa_shimmer` with the wind running, plus a trail metric). This cannot be measured on lavapipe. It is the last open part of criterion 4, together with the prewarm worst frame.
 - Not done here: RND-08 S5 (Art sign-off on caustics, halo chroma and noon crests) belongs to M1-ART-04 / Art.
 
+- 2026-10-23 PC GPU session (session_01778wbLbDFnRRLTKjnawv3T, branch `gpu/rnd-15-prewarm`): **criterion 4 measured.**
+  Report: `docs/kb/qa/gpu/2026-10-23-rnd-15-prewarm.md`.
+  - **(a) Prewarm worst frame.** Measured after a field scene, cold and warm, at Low, High and Ultra.
+    - It is **still over 50 ms**: ~230 ms (warm) to ~310 ms (cold) for the stage set-up, and 90–430 ms for a single
+      Undertow material load (a shader compile).
+    - Neither can be fixed with the slice constants. Batch size made no difference to the set-up frame (1–12 all
+      measured).
+    - Done: materials now load in their batch (lazy entries), the first tick no longer halves the batch (S3), and
+      `materials_per_frame` is 2. Undertow's worst frame drops from 1.58 s to 0.62 s (cold).
+    - Recommended: export with Godot's shader baker, keep one stage alive from boot, and register active-tier variants
+      only.
+  - **(b) Low-TAA foliage ghosting, wind on, 30 fps.** Measured: TAA departs from the instant 30–40 % more than its
+    static softening (vegetation Wide 0.115 → 0.149, FrangipaniClose 0.113 → 0.158). It shows as soft blades and faint
+    double edges, with no long trails. Acceptable for Low; nothing to tune.
+  - So both measurements are done. The 50 ms limit itself is **not met**: that needs the shader baker or a boot-time
+    stage (Lead / Systems decision), so the checkbox stays unticked.
+
 ## Review log
 - 2026-10-23 environment (review-sweep-J, fresh reviewer): **approve the lavapipe-side work with should-fixes. Not done:** criterion 4 is still unticked. It needs the PC GPU numbers: the prewarm worst frame against 50 ms, and Low-TAA ghosting with the wind on. Keep the task in review until they land, or have the Lead split them into a gpu task.
   - **What I read:** the task, handoff rendering-2, and `git diff 4d12869^1 4d12869` (scene_router.gd, shader_prewarm.gd, glimmer_field.gd, water_surface.gd, the shader includes, the validator, the tests, shots.json). I viewed `glimmer_bound.png` (see M1-RND-08). I checked that no shader or script reads `hymn_zone_sea_glow` outside `hymn_sea_glow_zone` (grep: only glimmer.gdshaderinc:82-85).

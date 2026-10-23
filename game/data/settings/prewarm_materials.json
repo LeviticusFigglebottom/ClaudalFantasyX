@@ -3,7 +3,7 @@
   "frames_to_render": 2,
   "measure_frames": 6,
   "hitch_budget_ms": 50.0,
-  "materials_per_frame": 12,
+  "materials_per_frame": 2,
   "slice_budget_ms": 33.0,
   "viewport_width": 64,
   "viewport_height": 64,
