@@ -38,7 +38,7 @@ The test rig (`water_test_rig.gd`) shows all of this in about 100 lines.
 | detail | `detail_scale_per_m`, `detail_strength`, `detail_speed_m_s`, `detail_fade_m`, `wind_reference_m_s`, `wind_chop`, `calm_direction` | Ripples scroll with `hymn_wind` and grow up to `wind_chop`× with wind speed. |
 | foam | `foam_shore_width_m` / `foam_wash_depth_m` (**vertical** water depth), `foam_band_*`, `foam_crest_threshold/softness` (Jacobian), `foam_scale_per_m`, `foam_flow_*`, `flow_cycle_s` | Curl-noise advection (two-phase, never stretches). |
 | caustics | `caustic_strength`, `caustic_scale_per_m`, `caustic_speed`, `caustic_width`, `caustic_blur_per_m`, `caustic_fade_in_m`, `caustic_falloff_m`, `caustic_mean`, `caustic_chroma` (Ultra) | See "Caustics" below. |
-| subsurface | `col_sss`, `sss_strength`, `sss_power`, `sss_distortion`, `sss_crest_lo/hi` | Sun through thin crests, crest height / Σ amplitude. |
+| subsurface | `col_sss`, `sss_strength`, `sss_power`, `sss_distortion`, `sss_crest_lo/hi` | Sun through thin crests, crest height / Σ amplitude. View-dependent (M1-RND-08): the sharp term peaks looking into the light and the soft wrap term fades as the sun moves behind the viewer, so a sun behind the camera adds no SSS. |
 | sea_glow | `sea_glow_energy`, `glimmer_response` | The glow comes from `hymn_sea_glow()`. It is on only while `hymn_glimmer.a > 0`, and `glimmer_response` brightens the water under `hymn_glimmer_focus`. |
 | features | `use_refraction`, `use_caustics`, `use_ssr`, `use_foam`, `use_sss`, `use_detail_normals` | These are uniform across a draw, so the branches are coherent and nearly free. Use them for per-zone art choices (murky water: no caustics). |
 | flow (river) | `tex_flow` (RG, 0.5 = still, data texture), `flow_speed_m_s` | Ripples and foam advect along the map (two-phase flow). |
@@ -149,6 +149,10 @@ These fit the M1-RND-05 frame budgets: High's ≈ 11.4–17.5 ms already include
 - **The globals must be written** (`hymn_wind_time` at least). With the defaults, the waves freeze and the caustics point straight down.
 - **Screenshot shots hold the sea still.** `capture.gd` gives the first shot of a run one process frame fewer than later shots, so an animated sea shifted by a frame (RMSE 0.012) depending on its place in `shots.json`. TAA history made it worse. Under the capture scene, the test rig therefore holds the weather clock at `start_time_s` and swaps TAA for FXAA, restoring the viewport on exit. The four shots are now identical (RMSE 0.0) whether run alone or after the other shots. Use the bench, or open the scene in the editor, to see the sea move.
 - **TIME is never used.** Everything runs on `hymn_wind_time × time_scale`, so cinematics can pause and scrub the sea.
+- **Sun behind the camera (fixed in M1-RND-08).** Two artefacts with a low sun behind the camera, both measured on an RX 9070 XT (`tools/gpu_bench/water_probe.tscn`, `docs/kb/qa/gpu/2026-10-23-rnd-08.md`):
+  - The SSS wrap term was view-independent and painted saturated green bands along every swell crest (cyan `col_sss` × a warm low sun). It's now scaled by `toward_light` = ½ − ½·(VIEW·LIGHT): unchanged when back-lit, 0 when the sun is straight behind the viewer. The same term made the large pale crest patches from high noon cameras (M1-ART-04), which are now dimmer.
+  - The glint's Schlick term did `pow(1 − vdh, 5)` with an unclamped `vdh`. At the anti-solar pixel VIEW = LIGHT = H, rounding can push `vdh` past 1, and `pow()` of a negative base is undefined (NaN on some drivers, not on the RX 9070 XT), and one NaN pixel blooms into a white disc. `vdh` is clamped now, and the half vector is guarded for LIGHT = −VIEW.
+  - Scenes that turned SSS off to dodge the bands (`undertow/storm_ocean_material.tres`) can turn it back on. That changes their shots, so it's left to the scene owners.
 
 ## Open items
 - Move the preset → water-tier map into `game/data/settings/graphics_presets.json` (Rendering, with M1-RND-05).
