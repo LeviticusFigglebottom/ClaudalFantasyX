@@ -2,8 +2,8 @@
 id: M1-UI-04
 title: economy.md refresh and self-revive warning
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-aa5733be52ed5e16a"
 depends_on: [M1-CMB-06]
 milestone: M1
 request-from: "progression"
