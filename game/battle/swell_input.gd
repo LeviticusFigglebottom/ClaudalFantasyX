@@ -47,12 +47,19 @@ var elapsed := 0.0
 ## One grade per finished step, in order.
 var grades: Array[StringName] = []
 var cancelled := false
+## Timing assist (M2-UI-01, an accessibility setting UiSettings applies to the row): a QUALITIES
+## id ("good"); a step that would grade a miss records this quality's grade for that step instead
+## (scripted_grades), so the floor speaks each kind's own grade names. &"" = no assist.
+var assist_floor: StringName = &""
+## Misses as played, before the assist (a kind that rewards a clean run reads this, not grades).
+var raw_misses := 0
 
 
 func _init(input: Dictionary = {}) -> void:
 	kind = StringName(str(input.get("kind", kind)))
 	lead_in_sec = float(input.get("lead_in_sec", lead_in_sec))
 	max_step_sec = float(input.get("max_step_sec", max_step_sec))
+	assist_floor = StringName(str(input.get("assist_floor", "")))
 
 
 ## The input for swell.json "inputs" row `input`, by its kind; null for an unknown kind.
@@ -149,6 +156,16 @@ func press(_button: StringName = BUTTON_ACCEPT) -> StringName:
 ## A button came up now. Returns the grade it earned, or &"".
 func release(_button: StringName = BUTTON_ACCEPT) -> StringName:
 	return &""
+
+
+## Records the next step's grade. Every kind grades through here, so the timing assist works the
+## same for all of them: a miss becomes assist_floor's grade for this step.
+func _record(grade: StringName) -> void:
+	if grade == GRADE_MISS:
+		raw_misses += 1
+		if assist_floor != &"":
+			grade = scripted_grades(assist_floor)[grades.size()]
+	grades.append(grade)
 
 
 ## Backs out before the first grade. False (and nothing changes) once a step is graded.

@@ -96,6 +96,13 @@
     "swell_ring": {"rect": [48, 700, 480, 332], "title_height": 44, "hint_height": 36, "pad": 14,
                    "ring_radius": 100, "lamp_radius": 20, "glow_radius": 44, "glow_alpha": 0.55, "lamp_rest": 0.25,
                    "flare_sec": 0.3, "flicker_hz": 7.0, "flicker_amp": 0.12, "target_px": 2, "ring_px": 4,
-                   "ring_min_alpha": 0.35, "pip_px": 10, "pip_gap": 40}
+                   "ring_min_alpha": 0.35, "pip_px": 10, "pip_gap": 40, "assist_width": 150, "assist_height": 60},
+    "read_panel": {"rect": [560, 128, 800, 600], "pad": 28},
+    "enemy_page": {"gap": 8, "stat_columns": 4, "stat_gap": 14, "stat_value_width": 44, "fact_gap": 24,
+                   "lore_lines": 3, "min_width": 640},
+    "opening_banner": {"rect": [560, 156, 800, 120], "title_height": 72, "rule_top": 6, "rule_bottom": 66,
+                       "rule_length": 320, "rule_px": 1, "mark_px": 10, "chevron_px": 2, "rise_px": 8,
+                       "fade_in_sec": 0.3, "hold_sec": 1.8, "fade_out_sec": 0.5, "band_alpha": 0.72,
+                       "band_fade": 0.22}
   }
 }

@@ -23,7 +23,9 @@ func test_sandbox_reaches_a_player_turn_with_the_root_menu() -> void:
 	assert_eq(ctl.state, BattleController.STATE_COMMAND)
 	assert_true(ctl.engine.is_party_turn())
 	var ids := _row_ids()
-	assert_eq(ids, [&"attack", &"skills", &"escape", &"swap"] as Array[StringName], "Swap is the last row")
+	# Rhen has a Swell: its row stays under Attack while the gauge fills (M2-UI-01).
+	var want: Array[StringName] = [&"attack", &"swell", &"skills", &"escape", &"swap"]
+	assert_eq(ids, want, "Swap is the last row")
 	assert_eq(ctl.hud.commands.page_id(), BattleMenus.PAGE_ROOT)
 	assert_eq(ctl.hud.timeline.slots.size(), CtbTimeline.PREVIEW_LENGTH, "16 turns are always visible")
 	_free()
@@ -41,7 +43,7 @@ func test_rhen_and_asha_active_toma_and_ysolde_reserve() -> void:
 func test_hovering_skills_changes_the_preview_and_help() -> void:
 	_start()
 	_to_turn_of(&"rhen")
-	_press(&"ui_down")
+	ctl.hud.commands.select(BattleMenus.ROW_SKILLS)  # past Rhen's Swell row (M2-UI-01)
 	_press(&"ui_accept")
 	assert_eq(ctl.state, BattleController.STATE_SKILLS)
 	ctl.hud.commands.select(&"quick_hit")
@@ -61,7 +63,7 @@ func test_hovering_skills_changes_the_preview_and_help() -> void:
 func test_preview_follows_the_target() -> void:
 	_start()
 	_to_turn_of(&"rhen")
-	_press(&"ui_down")
+	ctl.hud.commands.select(BattleMenus.ROW_SKILLS)  # past Rhen's Swell row (M2-UI-01)
 	_press(&"ui_accept")
 	ctl.hud.commands.select(&"undertow_cut")
 	_press(&"ui_accept")

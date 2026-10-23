@@ -71,6 +71,20 @@ func setup(metrics: Dictionary, pid: StringName, title: String, page_rows: Array
 	_place_cursor(false)
 
 
+## Replaces the rows in place, keeping the cursor on the same index when it is still enabled.
+func replace_rows(page_rows: Array[Dictionary]) -> void:
+	rows = page_rows
+	_first = 0
+	_build_rows()
+	# A page set up empty hid its cursor (_place_cursor): show it again for the new rows.
+	_cursor_box.visible = not rows.is_empty()
+	_mote.visible = not rows.is_empty() and is_equal_approx(_content.modulate.a, 1.0)
+	var keep := cursor < rows.size() and bool(rows[cursor].get("enabled", true))
+	cursor = cursor if keep else first_enabled(0, 1)
+	_scroll_to_cursor()
+	_place_cursor(false)
+
+
 func row_count() -> int:
 	return rows.size()
 

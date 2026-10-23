@@ -90,10 +90,13 @@ func test_a_refused_use_never_warns() -> void:
 
 func test_items_sits_between_skills_and_escape_only_when_there_is_a_bag() -> void:
 	_start_menu({"salt_tonic": 2})
-	assert_eq(_row_ids(), [&"attack", &"skills", &"items", &"escape", &"swap"] as Array[StringName])
+	# Rhen's Swell row sits under Attack (M2-UI-01).
+	var bag: Array[StringName] = [&"attack", &"swell", &"skills", &"items", &"escape", &"swap"]
+	assert_eq(_row_ids(), bag)
 	_free()
 	_start_menu({}, false)
-	assert_eq(_row_ids(), [&"attack", &"skills", &"escape", &"swap"] as Array[StringName], "fixtures keep four rows")
+	var no_bag: Array[StringName] = [&"attack", &"swell", &"skills", &"escape", &"swap"]
+	assert_eq(_row_ids(), no_bag, "fixtures have no Items row")
 	_free()
 
 

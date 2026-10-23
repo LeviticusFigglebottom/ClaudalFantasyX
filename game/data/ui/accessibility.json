@@ -10,11 +10,22 @@
        "label_key": "SET_TEXT_SCALE", "help_key": "SET_TEXT_SCALE_HELP"},
       {"id": "palette", "type": "enum", "default": "standard", "options": ["standard", "colorblind"],
        "option_keys": ["SET_PALETTE_STANDARD", "SET_PALETTE_COLORBLIND"],
-       "label_key": "SET_PALETTE", "help_key": "SET_PALETTE_HELP"}
+       "label_key": "SET_PALETTE", "help_key": "SET_PALETTE_HELP"},
+      {"id": "timing_assist", "type": "enum", "default": "off", "options": ["off", "wide", "auto"],
+       "option_keys": ["SET_TIMING_ASSIST_OFF", "SET_TIMING_ASSIST_WIDE", "SET_TIMING_ASSIST_AUTO"],
+       "label_key": "SET_TIMING_ASSIST", "help_key": "SET_TIMING_ASSIST_HELP"}
     ],
     "palettes": {
       "standard": {},
       "colorblind": {"danger": ["#F08A24", 1.0], "enemy_chip": ["#2A2414", 0.85]}
+    },
+    "timing_assist": {
+      "doc": "M2-UI-01: what each timing_assist option does to a Swell input row (swell.json inputs, every kind) before the input is built. window_scale widens the windows, clamped per kind so the row still passes validate_data (max_duration_sec is its longest input, edge_margin_sec keeps the brace's counter window clear of the last blow); assist_floor is the quality a miss is recorded at (SwellInput._record); tag_key is the short tag the input panel shows while the assist is on. Numbers: docs/kb/design/formulas.md section Swell, Timing assist.",
+      "off": {},
+      "wide": {"window_scale": 1.5, "tag_key": "HUD_SWELL_ASSIST_WIDE"},
+      "auto": {"assist_floor": "good", "tag_key": "HUD_SWELL_ASSIST_AUTO"},
+      "max_duration_sec": 5.0,
+      "edge_margin_sec": 0.01
     },
     "motion": {
       "translate_scale_reduced": 0.5,

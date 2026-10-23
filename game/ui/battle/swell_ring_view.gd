@@ -20,6 +20,8 @@ var _m: Dictionary = {}
 var _canvas: Control
 var _title: Label
 var _hint: Label
+## The timing assist's tag (M2-UI-01), top left beside the ring; hidden while the assist is off.
+var _assist: Label
 
 
 func _ready() -> void:
@@ -39,6 +41,14 @@ func _ready() -> void:
 	var hint_h := HudLayout.num(_m, "hint_height")
 	_title = _label(&"HeaderLabel", Rect2(0, 0, size.x, title_h))
 	_hint = _label(&"HelpLabel", Rect2(0, size.y - hint_h, size.x, hint_h))
+	var pad := HudLayout.num(_m, "pad")
+	_assist = _label(
+		&"DimLabel", Rect2(pad, title_h, HudLayout.num(_m, "assist_width"), HudLayout.num(_m, "assist_height"))
+	)
+	_assist.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_assist.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	_assist.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_assist.visible = false
 	visible = false
 
 
@@ -81,6 +91,16 @@ func set_hint(hint: String) -> void:
 
 func hint_text() -> String:
 	return _hint.text
+
+
+## The timing assist's tag ("" hides it). BattleHud sets it from UiSettings.
+func set_assist_text(text: String) -> void:
+	_assist.text = text
+	_assist.visible = text != ""
+
+
+func assist_text() -> String:
+	return _assist.text if _assist.visible else ""
 
 
 ## How bright the lamp is now, 0..1: it peaks with each beat (time_to_peak 0) and fades over

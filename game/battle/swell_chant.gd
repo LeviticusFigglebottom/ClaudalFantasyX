@@ -66,7 +66,7 @@ func duration_sec() -> float:
 ## Every note whose window closed unpressed is a miss.
 func _on_time() -> void:
 	while not is_done() and elapsed > note_time(current_note()) + good_sec:
-		grades.append(GRADE_MISS)
+		_record(GRADE_MISS)
 
 
 func press(button: StringName = BUTTON_ACCEPT) -> StringName:
@@ -76,5 +76,5 @@ func press(button: StringName = BUTTON_ACCEPT) -> StringName:
 	if elapsed < note_time(i) - good_sec:
 		return &""
 	var grade := grade_for(elapsed - note_time(i), perfect_sec, good_sec) if button == buttons[i] else GRADE_MISS
-	grades.append(grade)
-	return grade
+	_record(grade)
+	return grades[-1]

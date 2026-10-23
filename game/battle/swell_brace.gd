@@ -72,9 +72,9 @@ func duration_sec() -> float:
 ## Grades each blow as it lands, and a release that never came once the counter has passed.
 func _on_time() -> void:
 	while blows_left() > 0 and elapsed >= impact_time(grades.size()):
-		grades.append(GRADE_BRACED if holding else GRADE_MISS)
+		_record(GRADE_BRACED if holding else GRADE_MISS)
 	if not is_done() and blows_left() == 0 and elapsed > counter_time() + good_sec:
-		grades.append(GRADE_MISS)
+		_record(GRADE_MISS)
 
 
 ## Starts the hold. Earns no grade itself.
@@ -90,7 +90,7 @@ func release(button: StringName = BUTTON_ACCEPT) -> StringName:
 		return &""
 	holding = false
 	while blows_left() > 0:
-		grades.append(GRADE_MISS)
+		_record(GRADE_MISS)
 	var grade := grade_for(elapsed - counter_time(), perfect_sec, good_sec)
-	grades.append(grade)
-	return grade
+	_record(grade)
+	return grades[-1]

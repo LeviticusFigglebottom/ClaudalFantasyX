@@ -1,0 +1,25 @@
+{
+  "bestiary_menu": {
+    "doc": "The bestiary menu (M2-UI-02; docs/kb/tech/ui.md section Bestiary). Rects are top-left x, y, w, h at the 1920 x 1080 reference. 'list' is a MenuPage metrics block (the same keys as battle_hud.json commands).",
+    "canvas_layer": 64,
+    "panel": {"rect": [160, 86, 1600, 908], "pad": 28, "title_height": 56, "help_height": 40},
+    "list": {
+      "rect": [188, 178, 560, 744],
+      "header_height": 0,
+      "row_pitch": 40,
+      "max_rows": 17,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 230,
+      "rank_width": 70,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "page": {"rect": [780, 178, 952, 744], "pad": 28}
+  }
+}

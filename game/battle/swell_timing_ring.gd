@@ -60,7 +60,7 @@ func duration_sec() -> float:
 ## Every beat that ends unpressed becomes a miss.
 func _on_time() -> void:
 	while not is_done() and elapsed >= beat_start(grades.size() + 1):
-		grades.append(GRADE_MISS)
+		_record(GRADE_MISS)
 
 
 ## Presses now: grades the current beat and returns its grade, or &"" when the press is ignored
@@ -69,5 +69,5 @@ func press(button: StringName = BUTTON_ACCEPT) -> StringName:
 	if button != BUTTON_ACCEPT or is_done() or elapsed < beat_start(current_beat()):
 		return &""
 	var grade := grade_for(elapsed - peak_time(current_beat()), perfect_sec, good_sec)
-	grades.append(grade)
-	return grade
+	_record(grade)
+	return grades[-1]

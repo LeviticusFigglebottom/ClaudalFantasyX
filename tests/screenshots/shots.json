@@ -736,6 +736,22 @@
     {
       "id": "battle_swell_ring",
       "scene": "res://game/battle/scene/shots/battle_swell_ring.tscn"
+    },
+    {
+      "id": "battle_read_panel",
+      "scene": "res://game/battle/scene/shots/battle_read_panel.tscn"
+    },
+    {
+      "id": "battle_opening_banner",
+      "scene": "res://game/battle/scene/shots/battle_opening_banner.tscn"
+    },
+    {
+      "id": "battle_swell_modes",
+      "scene": "res://game/battle/scene/shots/battle_swell_modes.tscn"
+    },
+    {
+      "id": "bestiary_menu",
+      "scene": "res://game/ui/bestiary/shots/bestiary_menu.tscn"
     }
   ]
 }

@@ -72,7 +72,7 @@ func duration_sec() -> float:
 func _on_time() -> void:
 	if elapsed > lead_in_sec + window_sec:
 		while not is_done():
-			grades.append(GRADE_MISS)
+			_record(GRADE_MISS)
 
 
 func press(button: StringName = BUTTON_ACCEPT) -> StringName:
@@ -80,8 +80,9 @@ func press(button: StringName = BUTTON_ACCEPT) -> StringName:
 		return &""
 	var i := current_stroke()
 	var grade := GRADE_TRACED if button == strokes[i] else GRADE_MISS
-	grades.append(grade)
+	_record(grade)
+	var got := grades[-1]
 	if i == strokes.size() - 1:
-		var clean := not grades.has(GRADE_MISS)
-		grades.append(GRADE_SWIFT if clean and elapsed - lead_in_sec <= swift_sec else GRADE_MISS)
-	return grade
+		var clean := raw_misses == 0  # as played: the timing assist never earns Swift
+		_record(GRADE_SWIFT if clean and elapsed - lead_in_sec <= swift_sec else GRADE_MISS)
+	return got

@@ -300,6 +300,23 @@ The first press in a beat is the one that counts, and a press before the beat op
 
 **In the simulator** a suite's `swell` quality plays every input at miss, good or perfect (`SwellInput.scripted_result`); balance_targets.md has the policy rules and balance_report.md the effect (2026-10-23).
 
+**Timing assist (M2-UI-01, an accessibility setting; appended by UI, for Combat to confirm).** The `timing_assist` setting (`game/data/ui/accessibility.json`, `UiSettings.timing_input`) changes the input *row* before the input is built (`SwellInput.create`), for every kind. The grading code and the bonus tables stay the same, and no RNG is involved.
+
+- `off` (the default) changes nothing.
+- `wide` multiplies the windows by `window_scale` 1.5, then clamps each kind so it still passes the validator. A clamped window still cannot overlap its neighbour or leave its beat.
+- `auto` sets `assist_floor: "good"`. Every kind grades through `SwellInput._record`, so a step that would grade a miss (unpressed, mistimed, a wrong button) records the grade that step earns when played at good (`scripted_grades("good")`).
+
+| Kind | `wide` | `auto` (all steps missed) |
+|---|---|---|
+| ring (Rhen) | `perfect_sec` 0.09, `good_sec` 0.225, the window kept inside its beat: good ≤ min(peak, beat − peak), late edge 0.785 s of 0.8 | good ×3: +45%, Lamp Dive power 17 |
+| chant (Asha) | perfect 0.09; good min(0.225, half the closest note gap 0.4) = 0.2, so the windows never overlap | good ×5: +45% |
+| brace (Toma) | perfect 0.09, good 0.225; good stays < `counter_at` − the last impact (0.7) − `edge_margin_sec` 0.01 | braced ×3, then good: +45% |
+| glyph (Ysolde) | `window_sec` min(3.0 × 1.5, `max_duration_sec` 5.0 − lead-in 0.6) = 4.4; `swift_sec` stays 2.0 | traced ×5, no swift: +45% |
+
+- Under `auto` the worst result is the "played at good" +45% for every hero, and the best is still +90% (`perfect` and `swift` are never handed out).
+- Swift asks for a clean trace *as played* (`raw_misses == 0`), so the assist never earns it.
+- `max_step_sec` (0.05) stays within each kind's tightest window under every option.
+
 ## Not yet specified (owned by Combat, tracked in M1 tasks)
 
 Equipment abilities that tilt the opening odds, steal formulas, a Petrify cure item, and Vowbound stat scaling from Asha (M2).
