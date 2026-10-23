@@ -72,7 +72,9 @@ uniform float lacquer_coat_strength : hint_range(0.0, 1.0) = 1.0;
 group_uniforms;
 
 group_uniforms verse_sleeve;
-uniform sampler2D tex_band_id : hint_default_black, filter_linear_mipmap;
+// An id map, not an image: nearest, no mipmaps. Bilinear or mip averaging between band 7 and blank 0
+// makes the in-between ids 1-6 and leaks hidden bands (M1-RND-09; character_shading.md map table).
+uniform sampler2D tex_band_id : hint_default_black, filter_nearest;
 uniform int verse_count : hint_range(0, 7) = 7;
 uniform vec4 col_blank_gauze : source_color = vec4(0.922, 0.906, 0.875, 1.0); // gauze_white
 uniform float blank_alpha : hint_range(0.0, 1.0) = 0.55; // asha.md §3.1

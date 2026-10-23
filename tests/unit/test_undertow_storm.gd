@@ -254,6 +254,75 @@ func test_storm_places_itself_and_builds_the_high_tier() -> void:
 	_free_nodes()
 
 
+## M1-RND-09: sea level comes from the zone water or sea_level_y, never the node's Y.
+func test_sea_level_is_decoupled_from_the_node_height() -> void:
+	var storm := UndertowStorm.new()
+	storm.position = Vector3(0.0, 12.0, 0.0)
+	_add(storm)
+	assert_between(storm.storm_center().y, -EPS, EPS, "a marker on a 12 m headland keeps the sea at 0")
+	assert_between(storm.visuals.global_position.y, -EPS, EPS)
+	storm.sea_level_y = -1.5
+	assert_between(storm.storm_center().y, -1.5 - EPS, -1.5 + EPS, "explicit sea level")
+	var water := WaterSurface.new()
+	water.position = Vector3(0.0, 3.0, 0.0)
+	_add(water)
+	storm.water = water
+	storm.refresh()
+	assert_between(storm.sea_level(), 3.0 - EPS, 3.0 + EPS, "the zone water's rest plane wins")
+	assert_between(storm.sea_height_at(Vector2(1.0e6, 0.0)), 3.0 - EPS, 3.0 + EPS, "far field = sea level")
+	storm.sea_level_from_water = false
+	assert_between(storm.storm_center().y, -1.5 - EPS, -1.5 + EPS, "the override ignores the water")
+	_free_nodes()
+
+
+func test_storm_is_a_tool_with_an_editor_footprint() -> void:
+	for path in [
+		"res://game/vfx/undertow/undertow_storm.gd",
+		"res://game/vfx/undertow/undertow_state.gd",
+		"res://game/vfx/undertow/undertow_mesh_builder.gd",
+	]:
+		assert_true((load(path) as Script).is_tool(), "%s is @tool (the storm runs in the editor)" % path)
+	var radii := PackedFloat32Array([100.0, 200.0, 300.0])
+	var mesh := UndertowMeshBuilder.footprint(radii, 5000.0, 32)
+	var verts := mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX] as PackedVector3Array
+	assert_eq(mesh.surface_get_primitive_type(0), Mesh.PRIMITIVE_LINES)
+	assert_eq(verts.size(), 3 * 32 * 2 + 2, "one closed circle per radius plus the eye axis")
+	assert_between(verts[0].length(), 100.0 - EPS, 100.0 + EPS)
+	assert_between(verts[verts.size() - 1].y, 5000.0 - EPS, 5000.0 + EPS)
+	var storm := UndertowStorm.new()
+	_add(storm)
+	assert_false(storm.visuals.has_node(UndertowStorm.GIZMO_NODE), "the gizmo is editor-only")
+	assert_eq(storm.editor_preview_quality, "low", "the editor previews the cheap tier by default")
+	_free_nodes()
+
+
+func test_storm_look_overrides_and_restores_the_tunables() -> void:
+	var storm := UndertowStorm.new()
+	storm.quality = "high"
+	_add(storm)
+	var base := storm.body_material.get_shader_parameter(&"col_albedo") as Color
+	var day := storm.state.look_parameters("day_storm")
+	storm.look = "day_storm"
+	var got := storm.body_material.get_shader_parameter(&"col_albedo") as Color
+	assert_true(got.is_equal_approx(day["col_albedo"] as Color), "the look's albedo reaches the body")
+	assert_eq(storm.body_material.get_shader_parameter(&"sun_low_floor"), day["sun_low_floor"])
+	storm.look = ""
+	got = storm.body_material.get_shader_parameter(&"col_albedo") as Color
+	assert_true(got.is_equal_approx(base), "clearing the look restores the tunables")
+	_free_nodes()
+
+
+func test_storm_quality_setter_switches_the_tier() -> void:
+	var storm := UndertowStorm.new()
+	storm.quality = "high"
+	_add(storm)
+	assert_true(storm.body.visible)
+	storm.quality = "low"
+	assert_eq(storm.get_quality(), "low", "assigning quality after _ready switches the tier")
+	assert_false(storm.body.visible, "Low draws shells")
+	_free_nodes()
+
+
 func test_storm_tiers_switch_body_and_shells() -> void:
 	var storm := UndertowStorm.new()
 	storm.quality = "high"

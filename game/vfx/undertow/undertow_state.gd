@@ -1,3 +1,4 @@
+@tool
 class_name UndertowState
 extends RefCounted
 ## Pure, headless state of one Undertow storm (M1-RND-03, SPEC §8.2 item 9). No nodes, no rendering:
@@ -180,6 +181,8 @@ var time_scale: float = 1.0:
 
 ## Frames the clock has advanced (drives the temporal march jitter; frozen while the storm is held).
 var frame: int = 0
+## Named look from undertow.json "looks" ("" = the tunables alone).
+var look: String = ""
 var _quality: String = ""
 var _forced_start: Array[float] = []
 
@@ -262,6 +265,27 @@ func quality_plan(id: String = "") -> Dictionary:
 		"shell_fractions": (shells.get("fractions", []) as Array) if body == BODY_SHELLS else [],
 		"shell_canopy": bool(shells.get("canopy", false)) and body == BODY_SHELLS,
 	}
+
+
+## Names of the looks in undertow.json "looks".
+func look_ids() -> PackedStringArray:
+	var out := PackedStringArray()
+	for key: String in _section("looks"):
+		if not key.begins_with("_"):
+			out.append(key)
+	return out
+
+
+## Uniforms a named look overrides ({} for "" or an unknown look). "#hex" strings become Colors.
+func look_parameters(id: String) -> Dictionary:
+	var out := {}
+	var src := _section("looks").get(id, {}) as Dictionary
+	for key: String in src:
+		if key.begins_with("_"):
+			continue
+		var v: Variant = src[key]
+		out[key] = Color.from_string(str(v), Color.MAGENTA) if v is String else float(v)
+	return out
 
 
 ## res:// path of the baked noise lattice the raymarched body samples ("" if none).
@@ -405,6 +429,7 @@ func static_parameters() -> Dictionary:
 	var plan := quality_plan()
 	out["march_steps"] = int(plan["march_steps"])
 	out["curl_reuse"] = int(plan["curl_reuse"])
+	out.merge(look_parameters(look), true)
 	out["foam_octaves"] = int(plan["sea_foam_octaves"])
 	return out
 

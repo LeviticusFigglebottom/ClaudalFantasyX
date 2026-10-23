@@ -137,6 +137,23 @@ func test_noise_lattice_matches_its_data() -> void:
 	assert_eq(tex.get_format(), Image.FORMAT_RGBA8, "lossless RGBA8, not VRAM-compressed")
 
 
+## M1-RND-09: every key of every undertow.json look is a uniform the raymarched body (and so the
+## look) actually drives; colours parse.
+func test_every_look_drives_body_uniforms() -> void:
+	var s := UndertowState.new()
+	assert_true(s.look_ids().has("day_storm"), "the daylight look exists")
+	var body := _uniform_names(SHADER_DIR.path_join("undertow_body.gdshader"))
+	for id in s.look_ids():
+		var params := s.look_parameters(id)
+		assert_true(params.size() > 0, "%s overrides something" % id)
+		for key: String in params:
+			assert_true(body.has(key), "%s.%s is a body uniform" % [id, key])
+			if key.begins_with("col_"):
+				assert_true(params[key] is Color and params[key] != Color.MAGENTA, "%s.%s parses" % [id, key])
+	assert_eq(s.look_parameters("").size(), 0)
+	assert_eq(s.look_parameters("nonsense").size(), 0)
+
+
 func test_colours_match_the_palette() -> void:
 	var pal := (JSON.parse_string(FileAccess.get_file_as_string(PALETTE)) as Dictionary)["swatches"] as Dictionary
 	var colors := UndertowState.load_config()["colors"] as Dictionary

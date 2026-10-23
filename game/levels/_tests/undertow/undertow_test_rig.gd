@@ -16,6 +16,7 @@ const GLOBAL_TIME_OF_DAY := &"hymn_time_of_day"
 const CAPTURE_SCENE := "res://tests/screenshots/capture.tscn"
 const MOOD_DUSK := &"dusk"
 const MOOD_EYE := &"eye"
+const MOOD_DAY := &"day"
 const MOOD_NIGHT := &"night"
 ## The dusk mood with the storm forced to the Low tier (shells), to show Low still reads.
 const MOOD_DUSK_LOW := &"dusk_low"
@@ -28,11 +29,14 @@ const LOW_TIER := "low"
 @export var world_environment: WorldEnvironment
 @export var env_dusk: Environment
 @export var env_night: Environment
+## Daylight storm (Ch8 'The Seawall': slate sky, 16:00).
+@export var env_day: Environment
 @export var motes: GlimmerField
 @export var horizon_camera: Camera3D
 @export var eye_camera: Camera3D
 @export var night_camera: Camera3D
 @export var low_camera: Camera3D
+@export var day_camera: Camera3D
 ## Shown only at night (the lighthouse's oil lamp).
 @export var night_nodes: Array[Node3D] = []
 @export var frame_step_s: float = 1.0 / 60.0
@@ -45,8 +49,31 @@ const LOW_TIER := "low"
 ## from north), colour and energy; time of day (h); storm clock (s); approach distance (m); wound
 ## intensity; scene glimmer energy (hymn_glimmer.a, the colour-script mote energy); the storm's
 ## ambient energy, haze colour and visibility; sea-glow energy; a forced flash (site, -1 = none,
-## struck flash_age s before the frame); and the world point the mood's camera looks at.
+## struck flash_age s before the frame); the world point the mood's camera looks at; and optionally
+## the storm look (undertow.json "looks") and the environment's fog density.
 @export var moods: Dictionary = {
+	# Colour script Ch8 "The Seawall" (16:00, sun 30 deg / 250 deg, key #FFE4CE x 2.0, slate sky,
+	# fog #5E6670, spawn_wound glimmer): the daylight storm wall the bible describes.
+	MOOD_DAY:
+	{
+		"elevation": 30.0,
+		"azimuth": 250.0,
+		"sun_color": Color(1.0, 0.894, 0.808),
+		"sun_energy": 2.0,
+		"tod": 16.0,
+		"time": 205.0,
+		"distance": 14000.0,
+		"wounds": 1.2,
+		"glimmer": 0.6,
+		"ambient": 0.9,
+		"visibility": 60000.0,
+		"haze": Color(0.369, 0.4, 0.439),
+		"sea_glow": 0.0,
+		"flash": 1,
+		"flash_age": 0.05,
+		"look": "day_storm",
+		"look_at": Vector3(1000.0, 60.0, 0.0),
+	},
 	MOOD_DUSK:
 	{
 		"elevation": 5.0,
@@ -79,6 +106,10 @@ const LOW_TIER := "low"
 		"ambient": 0.35,
 		"visibility": 120000.0,
 		"haze": Color(0.435, 0.416, 0.459),
+		# From the Kite's height the frustum reaches past the zone ocean's 20 km grid: denser aerial
+		# perspective fades the far sea into haze, so no grid or floor edge shows (M1-RND-09). The
+		# storm body is fog_disabled (its own haze), so this only touches the sea and the floor.
+		"fog_density": 6.0e-5,
 		"sea_glow": 0.04,
 		"flash": 2,
 		"flash_age": 0.02,
@@ -109,6 +140,8 @@ var _base_quality: String = ""
 var _weather_s: float = 0.0
 var _taa_was_on: bool = false
 var _ssaa_was: Viewport.ScreenSpaceAA = Viewport.SCREEN_SPACE_AA_DISABLED
+## Authored fog density of each mood environment (a mood may override it, see "fog_density").
+var _authored_fog: Dictionary = {}
 
 
 func _ready() -> void:
@@ -128,6 +161,7 @@ func _ready() -> void:
 	_aim_camera(eye_camera, MOOD_EYE)
 	_aim_camera(night_camera, MOOD_NIGHT)
 	_aim_camera(low_camera, MOOD_DUSK)
+	_aim_camera(day_camera, MOOD_DAY)
 	_apply_mood(_mood_for(get_viewport().get_camera_3d()))
 
 
@@ -152,6 +186,8 @@ func _mood_for(cam: Camera3D) -> StringName:
 		return MOOD_EYE
 	if cam != null and cam == low_camera:
 		return MOOD_DUSK_LOW
+	if cam != null and cam == day_camera:
+		return MOOD_DAY
 	return MOOD_DUSK
 
 
@@ -171,7 +207,12 @@ func _apply_mood(mood: StringName) -> void:
 		if n != null:
 			n.visible = night
 	if world_environment != null:
-		world_environment.environment = env_night if night else env_dusk
+		world_environment.environment = env_night if night else (env_day if mood == MOOD_DAY else env_dusk)
+		var env := world_environment.environment
+		if env != null:
+			if not _authored_fog.has(env):
+				_authored_fog[env] = env.fog_density
+			env.fog_density = float(m.get("fog_density", _authored_fog[env]))
 	if water != null:
 		water.sea_glow_energy = float(m.get("sea_glow", 0.0))
 	GlimmerField.set_scene_glimmer(Color("#7FC6D9"), float(m.get("glimmer", 0.0)))
@@ -180,6 +221,8 @@ func _apply_mood(mood: StringName) -> void:
 		if tier != "" and tier != storm.get_quality():
 			storm.set_quality(tier)
 		storm.sun = moon if night else sun
+		if storm.look != str(m.get("look", "")):
+			storm.look = str(m.get("look", ""))
 		storm.approach_distance_m = float(m.get("distance", 0.0))
 		storm.wound_intensity = float(m.get("wounds", 1.0))
 		storm.ambient_energy = float(m.get("ambient", 1.0))

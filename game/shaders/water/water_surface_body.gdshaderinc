@@ -533,16 +533,24 @@ void light() {
 	// Foam and column in-scatter (the engine multiplies DIFFUSE_LIGHT by ALBEDO). The column is
 	// lit through the surface, so wave faces turned from the light still glow a little (wrap).
 	DIFFUSE_LIGHT += lc * mix(ndl_c, 1.0, scatter_wrap * (1.0 - v_foam)) / HYMN_PI;
-	// Sun through thin crests: strongest looking toward the light, through the wave.
+	// Sun through thin crests: strongest looking toward the light, through the wave. The soft wrap
+	// term is view-dependent too (toward_light): light through a crest only reaches an eye on the far
+	// side. Without it, a sun behind the camera painted saturated bands along every swell crest, and a
+	// high noon camera saw pale crest patches (M1-RND-08).
 	vec3 h_sss = normalize(LIGHT + NORMAL * sss_distortion);
 	float back = pow(clamp(dot(VIEW, -h_sss), 0.0, 1.0), sss_power);
 	float wrap = 0.5 + 0.5 * ndl;
-	SPECULAR_LIGHT += col_sss * lc * v_crest * sss_strength * (back + 0.25 * wrap) / HYMN_PI;
-	// Sun glint: GGX with Schlick Fresnel and Smith-Schlick visibility.
-	vec3 hv = normalize(LIGHT + VIEW);
+	float toward_light = clamp(0.5 - 0.5 * dot(VIEW, LIGHT), 0.0, 1.0);
+	SPECULAR_LIGHT += col_sss * lc * v_crest * sss_strength * (back + 0.25 * wrap * toward_light) / HYMN_PI;
+	// Sun glint: GGX with Schlick Fresnel and Smith-Schlick visibility. The half vector is guarded
+	// (LIGHT = -VIEW has none) and vdh clamped: at the anti-solar pixel VIEW = LIGHT = hv, rounding
+	// can push dot(VIEW, hv) past 1, and pow() of the negative 1 - vdh is NaN on some drivers; one
+	// NaN pixel blooms into a white disc through glow (M1-RND-08).
+	vec3 hv = LIGHT + VIEW;
+	hv *= inversesqrt(max(dot(hv, hv), HYMN_EPSILON));
 	float ndh = max(dot(NORMAL, hv), 0.0);
 	float ndv = max(dot(NORMAL, VIEW), HYMN_EPSILON);
-	float vdh = max(dot(VIEW, hv), 0.0);
+	float vdh = clamp(dot(VIEW, hv), 0.0, 1.0);
 	float a = max(ROUGHNESS, glint_min_roughness);
 	a *= a;
 	float a2 = a * a;
