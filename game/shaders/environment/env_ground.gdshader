@@ -9,6 +9,7 @@ shader_type spatial;
 render_mode cull_back;
 
 #include "res://game/shaders/include/common.gdshaderinc"
+#include "res://game/shaders/include/globals.gdshaderinc"
 
 group_uniforms sand;
 uniform sampler2D tex_sand : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
@@ -36,8 +37,8 @@ uniform vec4 col_algae : source_color = vec4(0.290, 0.353, 0.180, 1.0); // #4A5A
 group_uniforms;
 
 group_uniforms tide;
-uniform float tide_line_y = 0.0;
-uniform float water_height_y = 0.0;
+// Tide datum and live water height come from hymn_water_level (y, x), published by the zone sea
+// (M1-ENV-05).
 // The wet band above the water (swash and capillary rise on a beach), in metres of height.
 uniform float wet_band_m : hint_range(0.0, 2.0) = 0.45;
 uniform float damp_band_m : hint_range(0.0, 3.0) = 1.1;
@@ -56,6 +57,8 @@ vec3 ground_unpack(vec2 rg) {
 }
 
 void fragment() {
+	float tide_line_y = hymn_water_level.y;
+	float water_height_y = hymn_water_level.x;
 	vec3 wp = v_world_pos;
 	vec4 m = COLOR;
 	vec2 suv = wp.xz / sand_tile_m;

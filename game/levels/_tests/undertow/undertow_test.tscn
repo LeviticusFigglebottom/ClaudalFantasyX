@@ -239,7 +239,6 @@ script = ExtResource("storm")
 approach_distance_m = 17000.0
 approach_azimuth_deg = 90.0
 quality = "high"
-playing = false
 start_time_s = 205.0
 water = NodePath("../Water")
 sun = NodePath("../Sun")

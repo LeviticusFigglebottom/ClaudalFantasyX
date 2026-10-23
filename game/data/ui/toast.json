@@ -1,0 +1,15 @@
+{
+  "toast": {
+    "doc": "M1-UI-09: short non-blocking notices (game/ui/toast/autosave_toast.gd). Rects are top-left x, y, w, h at the 1920 x 1080 reference; motion follows docs/kb/art/ui.md §5.",
+    "canvas_layer": 80,
+    "panel": {
+      "rect": [1180, 64, 680, 104],
+      "pad": 20
+    },
+    "motion": {
+      "fade_in_sec": 0.18,
+      "hold_sec": 4.5,
+      "fade_out_sec": 0.6
+    }
+  }
+}

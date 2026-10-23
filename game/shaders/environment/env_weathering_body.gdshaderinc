@@ -7,6 +7,9 @@
 //   3 algae band (height)   4 barnacle crust (height x noise)   5 salt crust (VC.G x spray band)
 //   6 moss and lichen (VC.R x up/north-facing x inland height)   7 wetness (VC.B or below the live
 //   water height + a capillary band)
+// Heights are world Y relative to the tide datum; the wet line follows the live water height. Both come
+// from the `hymn_water_level` global (x = water Y now, y = datum), which the zone sea publishes
+// (M1-ENV-05; WeatheringTide moves the sea). Below: the old note, with the uniforms now that global.
 // Heights are world Y relative to `tide_line_y`; the wet line follows `water_height_y`, which the zone
 // writes every time the tide or a flood rig moves (WeatheringTide), so the wet line responds live.
 //
@@ -27,6 +30,7 @@
 #define HYMN_ENV_WEATHERING_BODY_GDSHADERINC
 
 #include "res://game/shaders/include/common.gdshaderinc"
+#include "res://game/shaders/include/globals.gdshaderinc"
 
 // Macro detail octave scale relative to detail_scale_m (Ultra only), and the width of a layer's
 // soft edge before height sharpening, in mask units. Tuned on the haluna_mood shots.
@@ -64,9 +68,7 @@ uniform float erosion_roughness : hint_range(0.0, 1.0) = 0.1;
 group_uniforms;
 
 group_uniforms tide;
-// Tide datum (haluna.md §0): 0.0 at mean sea level. water_height_y is the live surface height.
-uniform float tide_line_y = 0.0;
-uniform float water_height_y = 0.0;
+// Tide datum (haluna.md §0) and live surface height: hymn_water_level.y and .x (globals.gdshaderinc).
 uniform float capillary_band_m : hint_range(0.0, 2.0) = 0.25;
 group_uniforms;
 
@@ -154,6 +156,8 @@ float hymn_weather_cover(float noise, float coverage, float edge) {
 }
 
 void fragment() {
+	float tide_line_y = hymn_water_level.y;
+	float water_height_y = hymn_water_level.x;
 	vec3 wp = v_world_pos;
 	vec3 wn_geo = normalize((INV_VIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);
 	vec4 vc = COLOR;

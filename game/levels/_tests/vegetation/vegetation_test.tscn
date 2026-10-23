@@ -147,16 +147,19 @@ materials = Dictionary[StringName, Material]({&"frangipani_bark": ExtResource("9
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -0.5, 0, 9)
 script = ExtResource("2_r")
 materials = Dictionary[StringName, Material]({&"beach_vine": ExtResource("11_r")})
+small_foliage = true
 
 [node name="BeachVine2" parent="Plants" instance=ExtResource("12_r")]
 transform = Transform3D(-0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, -0.5, 3, 0, -2.5)
 script = ExtResource("2_r")
 materials = Dictionary[StringName, Material]({&"beach_vine": ExtResource("11_r")})
+small_foliage = true
 
 [node name="BeachVine3" parent="Plants" instance=ExtResource("12_r")]
 transform = Transform3D(-0.376222, 0, -1.03366, 0, 1.1, 0, 1.03366, 0, -0.376222, -1.5, 0, -12)
 script = ExtResource("2_r")
 materials = Dictionary[StringName, Material]({&"beach_vine": ExtResource("11_r")})
+small_foliage = true
 
 [node name="Ground" type="Node3D" parent="."]
 

@@ -18,6 +18,9 @@ const LOD_SUFFIX := "-lod"
 @export var force_lod: int = -1
 ## Cast shadows from LODs above this index only as a cheap fallback (-1 = every LOD casts).
 @export var shadow_lod_max: int = -1
+## Small foliage (vines, grass tufts): tagged small_foliage, so vegetation_detail Low may drop its
+## shadows (M1-ENV-05). Trees and palms keep theirs.
+@export var small_foliage: bool = false
 
 
 func _ready() -> void:
@@ -29,6 +32,16 @@ func apply() -> void:
 		var mi := node as MeshInstance3D
 		_apply_materials(mi)
 		_apply_lod(mi, lod_index(mi.name))
+		_tag(mi)
+
+
+## vegetation_detail groups (graphics_presets.json vegetation_groups): a mesh with an authored
+## visibility range scales it; small foliage may lose its shadows on Low.
+func _tag(mi: MeshInstance3D) -> void:
+	if mi.visible and mi.visibility_range_end > 0.0:
+		mi.add_to_group(GraphicsSettings.vegetation_group(GraphicsSettings.VEG_GROUP_LOD))
+	if small_foliage:
+		mi.add_to_group(GraphicsSettings.vegetation_group(GraphicsSettings.VEG_GROUP_SMALL_SHADOWS))
 
 
 static func lod_index(node_name: String) -> int:

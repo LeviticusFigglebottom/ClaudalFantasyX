@@ -287,6 +287,7 @@ func _place_plant(spec: Dictionary) -> void:
 	plant.materials = mats
 	var lods: Array = kind.get("lod_end_m", [45.0, 120.0, 400.0])
 	plant.lod_end_m = PackedFloat32Array(lods)
+	plant.small_foliage = bool(kind.get("small_foliage", false))
 	plant.add_child(node)
 	var at: Array = spec.get("at", [0.0, 0.0])
 	var x := float(at[0])
@@ -350,6 +351,7 @@ func _scatter(spec: Dictionary) -> void:
 	mmi.multimesh = mm
 	mmi.material_override = load(String(spec["material"])) as Material
 	mmi.visibility_range_end = float(spec.get("visibility_end_m", 0.0))
+	VegetationScatter.tag(mmi)
 	add_child(mmi)
 	src.free()
 	placed[mmi.name] = xforms.size()

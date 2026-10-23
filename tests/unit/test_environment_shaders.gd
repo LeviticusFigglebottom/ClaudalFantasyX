@@ -9,8 +9,6 @@ const WEATHERING_UNIFORMS: Array[String] = [
 	"tex_albedo",
 	"tex_normal",
 	"tex_detail",
-	"tide_line_y",
-	"water_height_y",
 	"capillary_band_m",
 	"algae_band_m",
 	"barnacle_band_m",
@@ -20,7 +18,7 @@ const WEATHERING_UNIFORMS: Array[String] = [
 	"paint_cover",
 ]
 const EXPECTED: Dictionary = {
-	"env_ground.gdshader": ["tex_sand", "water_height_y", "wet_band_m"],
+	"env_ground.gdshader": ["tex_sand", "wet_band_m"],
 	"env_wake_shell.gdshader": ["tex_glyph", "glyph_depth"],
 	"env_sky_cumulus.gdshader": ["cloud_coverage", "cloud_steps", "col_cloud_shadow"],
 }
@@ -83,7 +81,8 @@ func test_every_weathering_tier_exists() -> void:
 	)
 	for p: Variant in (presets as Dictionary)["presets"]:
 		var id := str((p as Dictionary)["id"])
-		assert_true(WeatheringTide.PRESET_QUALITY.has(id), "graphics preset %s has no weathering tier" % id)
+		var tier := GraphicsSettings.preset_tier(id, WeatheringTide.PRESET_TIER_SYSTEM)
+		assert_true(WeatheringTide.TIER_NAMES.has(tier), "graphics preset %s has no weathering tier" % id)
 
 
 func test_low_tier_drops_triplanar() -> void:
@@ -111,24 +110,55 @@ func test_kit_materials_load_on_their_shaders() -> void:
 	assert_true(count >= 20, "kit materials present (%d)" % count)
 
 
-func test_tide_writes_every_registered_material_and_moves_the_water() -> void:
+## M1-ENV-05: the tide moves the sea and gives it the datum; the sea publishes hymn_water_level, which
+## the weathering and ground shaders read (no per-material tide uniforms).
+func test_tide_drives_the_sea_that_publishes_the_water_level() -> void:
 	var tide := WeatheringTide.new()
 	var mat := (load(MATERIAL_DIR.path_join("kit_coral_stone.tres")) as ShaderMaterial).duplicate() as ShaderMaterial
 	var water := WaterSurface.new()
+	water.publishes_water_level = true
 	tide.water = water
 	tide.register(mat)
 	tide.register(mat)
 	assert_eq(tide.registered().size(), 1, "register is idempotent")
 	tide.water_height_y = 0.6
 	tide.tide_line_y = -0.1
-	assert_eq(float(mat.get_shader_parameter(&"water_height_y")), 0.6, "flood rig height reaches the wet line")
-	assert_eq(float(mat.get_shader_parameter(&"tide_line_y")), -0.1, "tide datum reaches the bands")
-	assert_between(water.position.y, 0.599, 0.601, "the sea follows")
+	assert_between(water.position.y, 0.599, 0.601, "the sea follows the flood rig")
+	assert_eq(water.tide_line_y, -0.1, "the sea carries the datum")
+	assert_true(water.water_level().is_equal_approx(Vector2(0.6, -0.1)), "what hymn_water_level carries")
+	assert_true(tide.water_level().is_equal_approx(water.water_level()))
+	assert_eq(mat.get_shader_parameter(&"water_height_y"), null, "no per-material uniform is written")
 	tide.quality = WeatheringTide.Quality.LOW
 	assert_eq(mat.shader.resource_path, String(WeatheringTide.WEATHERING_SHADERS[WeatheringTide.Quality.LOW]))
-	assert_eq(float(mat.get_shader_parameter(&"water_height_y")), 0.6, "parameters survive a tier swap")
 	water.free()
 	tide.free()
+
+
+func test_weathering_shaders_read_the_water_level_global() -> void:
+	for f: String in ["env_weathering_body.gdshaderinc", "env_ground.gdshader"]:
+		var code := FileAccess.get_file_as_string(SHADER_DIR.path_join(f))
+		assert_true(code.contains("hymn_water_level"), "%s reads hymn_water_level" % f)
+		assert_false(code.contains("uniform float water_height_y"), "%s has no tide uniform" % f)
+	for path: String in WeatheringTide.WEATHERING_SHADERS.values():
+		assert_false(_uniforms(path).has("tide_line_y"), "%s: the datum is the global's" % path)
+
+
+func test_weathering_tier_comes_from_the_presets() -> void:
+	for preset: String in ["low", "medium", "high", "ultra"]:
+		var tier := GraphicsSettings.preset_tier(preset, WeatheringTide.PRESET_TIER_SYSTEM)
+		assert_eq(WeatheringTide.quality_for_preset(preset), WeatheringTide.TIER_NAMES[tier], preset)
+	assert_eq(WeatheringTide.quality_for_preset("nonsense"), WeatheringTide.Quality.HIGH)
+
+
+func test_the_haluna_sea_is_the_one_publisher() -> void:
+	var zone := (load("res://game/levels/_tests/haluna_mood/haluna_mood.tscn") as PackedScene).instantiate()
+	var publishers := 0
+	for n: Node in zone.find_children("*", "", true, false):
+		if n is WaterSurface and (n as WaterSurface).publishes_water_level:
+			publishers += 1
+	assert_eq(publishers, 1, "exactly one WaterSurface publishes hymn_water_level")
+	assert_true((zone.get_node("Water") as WaterSurface).publishes_water_level, "the sea")
+	zone.free()
 
 
 func test_layout_is_valid_and_shots_use_camera_shots() -> void:
