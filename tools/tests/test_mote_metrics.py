@@ -81,7 +81,9 @@ class HaloTests(unittest.TestCase):
         self.assertGreater(r["chroma"], r["bg_chroma"])
 
     def test_baseline_reproduces_the_sign_off(self) -> None:
-        img = pngio.read(ROOT / "tests" / "screenshots" / "baselines" / "glimmer_dusk.png")
+        # The frozen image the 2026-10-23 Art sign-off measured (the pre-RND-17 glimmer_dusk
+        # baseline). The live baseline moves on re-approval, so it cannot pin the tool.
+        img = pngio.read(ROOT / "tests" / "fixtures" / "mote_metrics" / "glimmer_dusk_signoff_2026-10-23.png")
         h = mm.halo(img)["regions"]
         self.assertAlmostEqual(h["upper_sky"]["hue"], 87.0, delta=3.0)
         self.assertAlmostEqual(h["horizon"]["hue"], 175.0, delta=5.0)
