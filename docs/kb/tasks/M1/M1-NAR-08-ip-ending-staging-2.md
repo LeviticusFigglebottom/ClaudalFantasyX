@@ -2,7 +2,7 @@
 id: M1-NAR-08
 title: Remaining IP near-miss, ending consistency, staging (review-sweep-C)
 role: narrative
-status: doing
+status: review
 reviewer: cinematics
 owner_session: "worktree-agent-a62a3327575b9aaf4"
 depends_on: [M1-NAR-05]
@@ -42,6 +42,13 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
 - **S3:** the sea-glow holds at 0.04 through E5. It reaches 0.0 only on the cut to E6.
 - **S4:** E6 is now front three-quarter. The camera sits on the dock looking out to sea, and Asha turns back toward Haluna, ending about 40° off her nose line. The "H10 reversed" wording is fixed in act3_ending, haluna.md and the color script.
 - **S5 and nits:** the "Stay" branch now resolves `offer_hand` (`take_hand`, then `rise_to_stand`) before the walk. "Get up" has a `@wait 0.8` before H05. The E3 lantern is unlit. dlgc compiles cleanly, and the dialogue tests pass (48/48).
+
+**Sweep-E changes (narrative, worktree-agent-a62a3327575b9aaf4, 2026-10-23):** [ADR 0020](../../decisions/0020-kerrid-restaging.md) (`proposed`), N-21 and N-22.
+- **S1 (Kerrid):** 0020 re-stages his backstory (he died at Corrow's Fisher Stair, not the Choir), replaces the promises with a watch, and adds echo rows for the Ch15 confession, Ch16 (no visit to where he died, because he died at Corrow) and the Ending. The order is now **Imra, Dace, then Kerrid last**, so he no longer goes first. act3_ending: rules 2 and 7, the running order, E1–E3 and R2–R4 are rewritten (durations unchanged). Appended notes point 0016 and 0017 at 0020.
+- **S2 (Liss):** re-staged. Her father is Hollowmere's **dock-master**, not a chief, and a council of hull-captains governs Hollowmere. **Tobin volunteered** as the groom and was never an heir. The Kite coming from her people's dry-dock is accepted, with reasons in 0020 (f).
+- **S3 (E6):** she starts side-on across the dock end, looking out to frame left with her left shoulder to camera, and turns about 50° to her left toward Haluna, ending 40° off the lens axis. The same blocking is in act3_ending E6, haluna.md H10 and color_script `ending_dock`.
+- **Nit (hand):** in the Stay branch, Rhen takes the hand right after line 030, before Toma's introduction. The later block is removed. dlgc compiles cleanly, and the Godot dialogue tests pass (48/48).
+- **Nit (E5):** E4 is now 0.07 and E5 holds at 0.06 (interpolated on/off about 1.45×, against 1.3× at 0.04), so the cut to E6's 0.0 is a visible step. This is in act3_ending rule 4 and E5, color script rule 3, `ending_unbinding` and the strip summary. Rendering should confirm it on the mood frame.
 
 ## Review log
 - 2026-10-23 cinematics + IP check (review-sweep-D): **request-changes.** I read ADR 0015, act_outline Ch1–Ending, act3_ending.md, vowbound.md, haluna.md H05/H10/S10, color_script rule 3, and the ch02 .dlg. dlgc compiles, and tools tests give 247 OK.
