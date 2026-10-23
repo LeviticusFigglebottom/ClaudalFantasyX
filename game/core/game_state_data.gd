@@ -13,6 +13,9 @@ extends Resource
 ##   respawn          {"location_id", "spawn"}: where Continue puts the party (WorldReturn).
 ##                    An empty location means the registry's default; an empty spawn means
 ##                    the location's own spawn (game/data/world/locations.json).
+##
+## Save v5 (M1-CMB-03) adds the bestiary log:
+##   bestiary         {"<enemy id>": {"read": bool, "defeated": whole number}} (Bestiary wraps it)
 
 const KEY_HP := "hp"
 const KEY_MP := "mp"
@@ -40,6 +43,8 @@ const KEY_STATUSES := "statuses"
 ## v4: the respawn location id (LocationRegistry) and spawn marker name.
 @export var respawn_location_id: StringName = &""
 @export var respawn_spawn: StringName = &""
+## v5: the bestiary log (Bestiary.new(bestiary) reads and writes it in place).
+@export var bestiary: Dictionary = {}
 
 
 func to_dict() -> Dictionary:
@@ -57,6 +62,7 @@ func to_dict() -> Dictionary:
 		"party_vitals": party_vitals.duplicate(true),
 		"attuned_shrines": attuned_shrines.map(func(s: StringName) -> String: return String(s)),
 		"respawn": {"location_id": String(respawn_location_id), "spawn": String(respawn_spawn)},
+		"bestiary": bestiary.duplicate(true),
 	}
 
 
@@ -83,6 +89,7 @@ static func from_dict(d: Dictionary) -> GameStateData:
 	if typeof(rs) == TYPE_DICTIONARY:
 		s.respawn_location_id = StringName(str((rs as Dictionary).get("location_id", "")))
 		s.respawn_spawn = StringName(str((rs as Dictionary).get("spawn", "")))
+	s.bestiary = Bestiary.from_saved(d.get("bestiary", {}))
 	return s
 
 
