@@ -147,3 +147,40 @@ HUD_RESULT_RETRY,Fight again
 HUD_RESULT_RETURN,Return
 HUD_TARGET_UNREAD,HP unknown until Read
 HUD_RESULT_FELL,Fell before the end: no XP
+HUD_FAIL_NO_MP,Not enough MP for that.
+HUD_FAIL_SILENCED_FMT,{name} is silenced: no songs or spells until it lifts.
+HUD_FAIL_NO_TARGET,There is no one there to aim at.
+HUD_FAIL_PROVOKED_FMT,{name} is provoked: single-foe skills must strike {provoker}.
+HUD_FAIL_AUTO_TURN_FMT,{name} is not in control this turn.
+HUD_FAIL_NOT_YOUR_TURN,Wait for your turn.
+HUD_FAIL_BATTLE_OVER,The fight is already over.
+HUD_FAIL_UNKNOWN_SKILL,That technique is not known.
+HUD_FAIL_NO_ACTION_FMT,{name} finds nothing to do.
+HUD_FAIL_GENERIC,That can't be done right now.
+HUD_AUTO_BERSERK_FMT,{name} is berserk and fights on their own.
+HUD_AUTO_CONFUSE_FMT,{name} is confused and strikes without choosing.
+HUD_AUTO_BERSERK_ACTS_FMT,Berserk: {name} lashes out with {skill} at {target}.
+HUD_AUTO_CONFUSE_ACTS_FMT,Confused: {name} uses {skill} on {target}.
+HUD_AUTO_BERSERK_IDLE_FMT,Berserk: {name} finds no one to strike.
+HUD_AUTO_CONFUSE_IDLE_FMT,Confused: {name} stands lost for a moment.
+HUD_TL_NOW,Acting now
+HUD_TL_BERSERK,Berserk: acts alone
+HUD_TL_CONFUSE,Confused: acts alone
+HUD_HELP_PROVOKED_FMT,provoked: must strike {name}
+HUD_HELP_REFLECT_FMT,Reflect bounces it onto {name}
+HUD_HELP_ZOMBIE_FMT,{name} is a Zombie: this heal will harm
+HUD_FLOAT_REFLECTED,Reflected
+HUD_FLOAT_INVERTED,Heal turns to harm
+HUD_FLOAT_REGEN_INVERTED,Regen turns to harm
+HUD_FLOAT_DOOM,Doom
+SET_REDUCED_MOTION,Reduced motion
+SET_REDUCED_MOTION_HELP,Turn-order chips change places without sliding. No screen shake and no pulsing.
+SET_TEXT_SCALE,Text size
+SET_TEXT_SCALE_HELP,Scales menu and battle text.
+SET_TEXT_SCALE_100,100%
+SET_TEXT_SCALE_115,115%
+SET_TEXT_SCALE_130,130%
+SET_PALETTE,Color palette
+SET_PALETTE_HELP,Swaps red warnings and enemy fills for colors that stay distinct with red-green color blindness.
+SET_PALETTE_STANDARD,Standard
+SET_PALETTE_COLORBLIND,Colorblind-friendly

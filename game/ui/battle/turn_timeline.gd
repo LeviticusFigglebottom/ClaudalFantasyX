@@ -3,7 +3,8 @@ extends Control
 ## The always-visible turn order (SPEC §6.1, docs/kb/art/ui.md §6.1). Slot 0 is the fighter
 ## acting now; slots 1..15 come from BattleEngine.preview(). While a command is hovered, the
 ## preview's entries slide to their new slots, the actor's next turn shows as a ghost, and any
-## chip the action shifts gets ▲/▼ (pillar 4). Pure view: it never touches combat state.
+## chip the action shifts gets ▲/▼ (pillar 4). A swap preview (BattleEngine.preview_swap) is a
+## whole new order instead (`full_preview`), slot 0 included. Pure view: never touches combat state.
 
 const MODE_PREVIEW := &"preview"
 const MODE_TURN := &"turn"
@@ -12,6 +13,12 @@ const MODE_TURN := &"turn"
 var length := CtbTimeline.PREVIEW_LENGTH
 ## Last slots shown (for tests and the help line).
 var slots: Array[Dictionary] = []
+## Reduced motion (UiSettings): chips snap to their slot with a short cross-fade, no pulse.
+var reduced_motion := false
+var crossfade_sec := 0.0
+var crossfade_from_alpha := 0.0
+## Caption under the name on slot 0 ("Acting now", or why the fighter acts on its own).
+var caption := ""
 
 var _metrics: Dictionary = {}
 ## Combatant id -> {label: String, tint: Color}.
@@ -53,35 +60,51 @@ func show_turns(
 	preview: Array[TurnEntry] = [],
 	targets: Array[StringName] = [],
 	target_color: Color = Color.WHITE,
-	mode: StringName = MODE_PREVIEW
+	mode: StringName = MODE_PREVIEW,
+	full_preview: bool = false
 ) -> void:
 	_target_color = target_color
 	var affected: Array[StringName] = [current_id]
 	affected.append_array(targets)
-	slots = build_slots(current_id, base, preview, _offsets, length, affected)
+	slots = build_slots(current_id, base, preview, _offsets, length, affected, full_preview)
 	for s in slots:
 		s["targeted"] = targets.has(s["id"]) and not bool(s["is_current"])
+		s["caption"] = caption if bool(s["is_current"]) else ""
 	_sync_chips(mode)
 
 
 ## Pure layout of the timeline: one Dictionary per visible slot with
-## {key, id, team, slot, skipped, ghost, moved, is_current}. Keys are "<id>#<turn index>", so a
-## turn keeps its key while the preview moves it, and `moved` compares against `base`.
+## {key, id, team, slot, skipped, ghost, moved, is_current, doom}. Keys are "<id>#<turn index>",
+## so a turn keeps its key while the preview moves it, and `moved` compares against `base`.
 ## With `affected` set, only those fighters get ▲/▼ (the actor and its targets): everyone else
 ## still slides, but arrows on every chip would bury the two that matter.
+## `full_preview`: `preview` is a whole order from slot 0 (a swap preview, where the entrant may
+## take the current turn). Turns that are not in `base` (the entrant's) get no arrow.
 static func build_slots(
 	current_id: StringName,
 	base: Array[TurnEntry],
 	preview: Array[TurnEntry],
 	offsets: Dictionary,
 	count: int,
-	affected: Array[StringName] = []
+	affected: Array[StringName] = [],
+	full_preview: bool = false
 ) -> Array[Dictionary]:
 	var base_keyed := _keyed(base, offsets, &"")
 	var base_slot: Dictionary = {}
 	for i in base_keyed.size():
 		base_slot[base_keyed[i]["key"]] = i
 	var out: Array[Dictionary] = []
+	if full_preview and not preview.is_empty():
+		var full := _keyed(preview, offsets, &"")
+		for i in mini(full.size(), count):
+			var f: Dictionary = full[i]
+			f["slot"] = i
+			f["is_current"] = i == 0
+			var known := base_slot.has(f["key"])
+			var arrow := known and (affected.is_empty() or affected.has(f["id"]))
+			f["moved"] = signi(i - int(base_slot.get(f["key"], i))) if arrow else 0
+			out.append(f)
+		return out
 	if preview.is_empty() or base.is_empty():
 		for i in mini(base_keyed.size(), count):
 			var s: Dictionary = base_keyed[i]
@@ -117,7 +140,19 @@ static func _keyed(entries: Array[TurnEntry], offsets: Dictionary, skip_first_of
 		var k: int = int(seen.get(e.combatant_id, 1 if e.combatant_id == skip_first_of else 0))
 		seen[e.combatant_id] = k + 1
 		var key := "%s#%d" % [e.combatant_id, int(offsets.get(e.combatant_id, 0)) + k]
-		out.append({"key": key, "id": e.combatant_id, "team": e.team, "skipped": e.skipped, "ghost": e.is_preview})
+		(
+			out
+			. append(
+				{
+					"key": key,
+					"id": e.combatant_id,
+					"team": e.team,
+					"skipped": e.skipped,
+					"ghost": e.is_preview,
+					"doom": e.doom,
+				}
+			)
+		)
 	return out
 
 
@@ -157,7 +192,7 @@ func _sync_chips(mode: StringName) -> void:
 		chip.target_color = _target_color
 		chip.apply(s, _identity.get(s["id"], {}), bool(s["is_current"]))
 		_move(chip, r, dur, stagger * int(s["slot"]), fresh, mode)
-		if bool(s["is_current"]) and mode == MODE_TURN:
+		if bool(s["is_current"]) and mode == MODE_TURN and not reduced_motion:
 			_pulse(chip)
 	for key: String in _chips.keys():
 		if not live.has(key):
@@ -173,6 +208,9 @@ func _move(chip: TimelineChip, r: Rect2, dur: float, delay: float, fresh: bool, 
 		chip.size = r.size
 		chip.modulate.a = 1.0
 		return
+	if reduced_motion:
+		_crossfade(chip, r, fresh)
+		return
 	var tw := chip.create_tween().set_parallel(true)
 	chip.move_tween = tw
 	var trans := Tween.TRANS_QUART if mode == MODE_TURN else Tween.TRANS_CUBIC
@@ -181,6 +219,21 @@ func _move(chip: TimelineChip, r: Rect2, dur: float, delay: float, fresh: bool, 
 	tw.tween_property(chip, "size", r.size, dur).set_trans(trans).set_ease(ease_type).set_delay(delay)
 	if fresh or chip.modulate.a < 1.0:
 		tw.tween_property(chip, "modulate:a", 1.0, dur).set_delay(delay)
+
+
+## Reduced motion: no slide. A chip that changes slot (or appears) snaps there and fades up.
+func _crossfade(chip: TimelineChip, r: Rect2, fresh: bool) -> void:
+	var moved := fresh or not chip.position.is_equal_approx(r.position) or not chip.size.is_equal_approx(r.size)
+	chip.position = r.position
+	chip.size = r.size
+	chip.scale = Vector2.ONE
+	if not moved or crossfade_sec <= 0.0:
+		chip.modulate.a = 1.0
+		return
+	chip.modulate.a = 0.0 if fresh else minf(chip.modulate.a, crossfade_from_alpha)
+	var tw := chip.create_tween()
+	chip.move_tween = tw
+	tw.tween_property(chip, "modulate:a", 1.0, crossfade_sec)
 
 
 func _pulse(chip: TimelineChip) -> void:
@@ -201,5 +254,6 @@ func _retire(chip: TimelineChip) -> void:
 		chip.queue_free()
 		return
 	var tw := chip.create_tween()
-	tw.tween_property(chip, "modulate:a", 0.0, HudLayout.num(_metrics, "preview_out_sec"))
+	var out_sec := crossfade_sec if reduced_motion else HudLayout.num(_metrics, "preview_out_sec")
+	tw.tween_property(chip, "modulate:a", 0.0, out_sec)
 	tw.tween_callback(chip.queue_free)
