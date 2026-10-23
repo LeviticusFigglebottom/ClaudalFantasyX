@@ -442,3 +442,15 @@ CHAR_NETMENDER,Old Net-Mender
 CHAR_FISHER,Fisher
 FIELD_PROMPT_LISTEN,Listen
 SWELL_INPUT_TIMING_RING_HELP_LAMP,Strike each time the ring meets the lamp. Beats: {beats}
+SKILL_READ,Read
+HUD_OPENING_PREEMPTIVE,They have not seen you yet.
+HUD_OPENING_AMBUSH,They saw you first.
+ELEMENT_FIRE,Fire
+ELEMENT_WATER,Water
+ELEMENT_LIGHTNING,Lightning
+ELEMENT_ICE,Ice
+ELEMENT_HOLY,Holy
+ELEMENT_GLIMMER,Glimmer
+HUD_READ_WEAK,Weak to {list}
+HUD_READ_NO_WEAKNESS,No weakness found
+AUTOSAVE_SKIPPED_TOAST,"The autosave still holds a journey further along, so it was kept. Rest at a shrine to record this one."

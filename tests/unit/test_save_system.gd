@@ -73,8 +73,8 @@ func test_v2_lattice_is_not_overwritten() -> void:
 	saves.free()
 
 
-func test_save_version_is_4() -> void:
-	assert_eq(saves.SAVE_VERSION, 4)
+func test_save_version_is_5() -> void:
+	assert_eq(saves.SAVE_VERSION, 5)
 	saves.free()
 
 

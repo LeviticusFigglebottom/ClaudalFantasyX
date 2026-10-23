@@ -42,6 +42,10 @@ OUT = ROOT / "assets" / "characters" / "asha" / "textures"
 PARAMS = HERE / "asha_params.json"
 FLOOR = np.array([0x1D, 0x19, 0x16]) / 255.0
 CEIL = np.array([0xEB, 0xE7, 0xDF]) / 255.0
+SCLERA_FALL = (0.12, 0.42)  # sclera texture v (0 front pole .. 1 back) over which it darkens and warms
+SCLERA_DARKEN = 0.16
+SCLERA_WARM = 0.08
+UPPER_LID_DARKEN = 0.15  # M1-CHR-09: the upper lid's albedo, margin to crease, against the cheek
 
 
 # ---------------------------------------------------------------------------------------------
@@ -370,8 +374,9 @@ def texel_report(r: dict, npz: dict, face_only: bool = False) -> None:
 # dumps LIPDZ = height above the contact, LIPU = x over the mouth half-width, LIPFRONT = the lip roll
 # in front of the teeth). The donor's lip face set runs 12-13 mm above the contact and is jagged at
 # its 1.9 mm quads, which read as a soft pink rectangle with no bow. Heights in metres at s = 1.
-VERM_UP = 0.0088  # upper vermilion height at the bow's peaks: just under the upper lip's front-most ridge
-VERM_LO = 0.0090  # lower vermilion height (asha.md §6.1: a full lower lip)
+# M1-CHR-09: a little fuller (CHR-07: 8.8 and 9.0 mm), which the review found slightly thin
+VERM_UP = 0.0094  # upper vermilion height at the bow's peaks: at the upper lip's front-most ridge
+VERM_LO = 0.0095  # lower vermilion height (asha.md §6.1: a full lower lip)
 VERM_DIP = 0.18  # the bow's dip over the philtrum, as a fraction of the height
 VERM_PEAK_U = 0.25  # the bow's peaks (the philtral columns' feet), in half-widths
 VERM_EDGE = 0.00035  # half-width of the colour edge at the border
@@ -391,6 +396,7 @@ def vermilion(r: dict, s: float) -> dict | None:
     taper = np.clip(1.0 - u * u, 0.0, 1.0)
     bow = (1.0 - VERM_DIP * np.exp(-((u / 0.10) ** 2))) * (1.0 + 0.06 * np.exp(-(((au - VERM_PEAK_U) / 0.06) ** 2)))
     hu = VERM_UP * s * taper ** 0.6 * bow
+    hu = monotone_upper(r["P"][:, 2] - dz, u, hu, f)
     hl = VERM_LO * s * taper ** 0.55
     e = VERM_EDGE * s
     side = smoothstep(1.0, 0.93, au)
@@ -403,6 +409,42 @@ def vermilion(r: dict, s: float) -> dict | None:
     col = np.exp(-(((au - 0.19) / 0.06) ** 2)) - 1.3 * np.exp(-((u / 0.085) ** 2))
     phil = col * rise * f * (au < 0.45)
     return {"lips": inside, "bu": bu, "bl": bl, "roll": roll, "philtrum": phil}
+
+
+VERM_GRID = 101  # samples across the mouth for the outline's profile
+VERM_CORNER_U = 0.93  # where the outline ends (the colour fades out at the corners from here)
+VERM_FALL_LIN = 0.35  # the outline's fall from a bow peak to its corner: this much linear (it leaves the
+# peak with a definite slope, so the peak reads), the rest quadratic (it steepens into the corner)
+
+
+def monotone_upper(zl: np.ndarray, u: np.ndarray, hu: np.ndarray, front: np.ndarray) -> np.ndarray:
+    """M1-CHR-09: the upper border's height above the contact, reshaped so the outline itself
+    (z = contact + height) falls steadily from each bow peak to its corner. The contact line rises
+    toward the corners (her resting corner lift), so contact + bow dipped past the peaks and rose
+    again into a second hump about 18 mm out: the wobble on the bow's shoulders. Outside the peaks
+    the outline falls from z_peak to z_corner as a linear-plus-quadratic ramp; the bow itself is kept.
+    `zl`: the contact height per texel (z - LIPDZ)."""
+    n = VERM_GRID
+    g = np.linspace(-1.0, 1.0, n)
+    sel = (front > 0.5) & (np.abs(u) < 1.0)
+    idx = np.clip(np.round((u[sel] + 1.0) * 0.5 * (n - 1)).astype(int), 0, n - 1)
+    cnt = np.bincount(idx, minlength=n)
+    if (cnt > 0).sum() < n // 4:
+        return hu
+    have = cnt > 0
+    zl_g = np.interp(g, g[have], (np.bincount(idx, zl[sel], n) / np.maximum(cnt, 1))[have])
+    hu_g = np.interp(g, g[have], (np.bincount(idx, hu[sel], n) / np.maximum(cnt, 1))[have])
+    zb = zl_g + hu_g
+    out = zb.copy()
+    for sgn in (1.0, -1.0):
+        a = int(np.argmin(np.abs(g - sgn * VERM_PEAK_U)))
+        b = int(np.argmin(np.abs(g - sgn * VERM_CORNER_U)))
+        seq = np.arange(a, b + int(sgn), int(sgn))
+        tt = np.abs(g[seq] - g[a]) / abs(g[b] - g[a])
+        out[seq] = zb[a] - (zb[a] - zb[b]) * (VERM_FALL_LIN * tt + (1.0 - VERM_FALL_LIN) * tt * tt)
+        rest = sgn * g > abs(g[b])  # past the corner: follow the original fall-off
+        out[rest] = zb[rest] - zb[b] + out[b]
+    return np.interp(u, g, out - zl_g)
 
 
 def lip_weight(Ph: np.ndarray, face, lm, r: dict) -> np.ndarray:
@@ -627,6 +669,10 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
             rr, tt = e.field(Ph[:, 0], Ph[:, 2])
             near = (1 - smoothstep(1.0, 2.0, rr)) * front
             col = col * (1 - 0.03 * near[:, None] * np.array([0.6, 1.0, 1.0]))
+            # M1-CHR-09: the upper lid, margin to crease, a touch darker and browner. Lit from
+            # above it read as a pale band over the iris, like pale eyeshadow (a doll cue)
+            lid_up = smoothstep(1.02, 1.12, rr) * smoothstep(1.75, 1.5, rr) * smoothstep(0.0, 0.35, np.sin(tt)) * front
+            col = col * (1 - UPPER_LID_DARKEN * lid_up[:, None] * np.array([0.8, 1.0, 1.05]))
             wall = (np.linalg.norm(Ph - e.E, axis=1) < e.R + 0.0016 * s) & (rr < 1.15)
             col[wall] = col[wall] * 0.7 + hexc("#B87268") * 0.3
             car = np.exp(-((rr - 1.0) / 0.12) ** 2) * smoothstep(-0.7, -0.98, np.cos(tt)) * front
@@ -733,6 +779,11 @@ def sclera(size: int = 512) -> None:
     veins = np.clip(veins, 0, 1)
     img = img * (1 - 0.35 * veins[..., None]) + np.array([0.75, 0.35, 0.32]) * 0.35 * veins[..., None]
     img *= (1 - 0.06 * smoothstep(0.25, 0.6, v))[..., None]
+    # M1-CHR-09: a flat bright white round the iris was the strongest doll cue in the close-ups. The
+    # visible sclera darkens and warms away from the limbus toward the canthi, as a real eye does
+    # (it curves away from the light and carries more vessels there)
+    away = smoothstep(SCLERA_FALL[0], SCLERA_FALL[1], v)[..., None]
+    img = img * (1 - SCLERA_DARKEN * away) * (1 - SCLERA_WARM * away * np.array([0.0, 0.5, 1.0]))
     write("asha_sclera.png", img)
 
 

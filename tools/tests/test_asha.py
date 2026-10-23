@@ -158,6 +158,40 @@ class TestGenerators(unittest.TestCase):
         self.assertAlmostEqual(min(v), 0.0)  # UV.y shoulder 0 -> cuff tip 1 (character_shading.md)
         self.assertAlmostEqual(max(v), 1.0)
 
+    def test_framing_lock_hangs_at_the_temple_outside_the_orbit(self):
+        """M1-CHR-09: the lock was rooted over the brow tail and read as a streak across it."""
+        import numpy as np
+
+        import asha_hair
+
+        part = asha_hair.front_strands(self.lm, self.body, self.extra["_hair"], np.random.default_rng([7, 3]))
+        V = part.varr()
+        self.assertEqual(len(V), self.extra["_hair"]["front_strands"] * self.extra["_hair"]["front_strand_ribbons"]
+                         * asha_hair.LOCK_POINTS * 2)
+        eye = self.body.face.eyes["R"]
+        self.assertTrue((V[:, 0] < eye.E[0] - eye.R).all())  # her right, outside the eye socket
+        drop = float(V[:, 2].max() - V[:, 2].min())
+        self.assertGreater(drop, 0.06)  # asha.md §5: 6-8 cm
+        self.assertLess(drop, 0.09)
+
+    def test_upper_lip_outline_falls_from_the_bow_peaks(self):
+        """M1-CHR-09: the contact line rises toward the corners; contact + bow height wobbled."""
+        import numpy as np
+
+        import asha_textures as at
+
+        u = np.linspace(-1.0, 1.0, 4001)
+        zl = 0.0015 * np.exp(-(((np.abs(u) - 0.8) / 0.12) ** 2))  # a corner hump like the donor's
+        taper = np.clip(1.0 - u * u, 0.0, 1.0)
+        hu = at.VERM_UP * taper ** 0.6 * (1.0 - at.VERM_DIP * np.exp(-((u / 0.10) ** 2)))
+        out = zl + at.monotone_upper(zl, u, hu, np.ones_like(u))
+        for sgn in (1.0, -1.0):
+            m = (sgn * u >= at.VERM_PEAK_U) & (sgn * u <= at.VERM_CORNER_U)
+            z = out[m][:: int(sgn)]
+            self.assertTrue((np.diff(z) <= 1e-9).all(), sgn)
+        mid = np.abs(u) < at.VERM_PEAK_U
+        np.testing.assert_allclose(out[mid], (zl + hu)[mid], atol=1e-4)  # the bow itself is kept
+
     def test_every_shape_moves_and_lids_stay_off_the_globe(self):
         import numpy as np
 

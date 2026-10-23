@@ -22,7 +22,7 @@
       "id": "ysolde", "name_key": "CHAR_YSOLDE",
       "stats": {"level": 5, "hp": 280, "mp": 70, "strength": 5, "magic": 20, "defense": 5,
                 "magic_defense": 16, "agility": 13, "accuracy": 8, "evasion": 9, "luck": 10},
-      "skills": ["attack", "ember", "frost", "slow_hex"]
+      "skills": ["attack", "ember", "frost", "slow_hex", "read"]
     }
   ]
 }

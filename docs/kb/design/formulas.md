@@ -29,6 +29,8 @@ Notation: `floor`, `ceil`, `clamp(x, lo, hi)`. **`round` rounds half away from z
 | `REVIVE_MIN_HP` / `PCT` | 1 / 100 | Revive floor; percent base for item and threshold math |
 | `DELAY_STACK_DIVISOR` / `DELAY_STACK_MAX_STEPS` | 2 / 16 | Delay diminishing returns |
 | `ESCAPE_BASE_PCT`, `ESCAPE_AGI_FACTOR`, `ESCAPE_MIN_PCT`, `ESCAPE_MAX_PCT` | 50, 2, 10, 95 | Escape |
+| `OPENING_BASE_PCT`, `OPENING_AGI_FACTOR`, `OPENING_MIN_PCT`, `OPENING_MAX_PCT` | 8, 1, 2, 25 | Preemptive / ambush chance (§ Openings) |
+| `OPENING_LEAD_TICKS` | 1 | How far the side caught out waits past the other side's last opening tick |
 
 Element affinity multipliers (as ratios): normal 1/1, weak 3/2, resist 1/2, immune 0/1, absorb −1/1 (heals).
 
@@ -51,7 +53,7 @@ Examples: agi 10, rank 3 → 300; with Haste → 150; with Slow → 600; rank 2 
 ```
 initial_ticks(agi, roll) = max(0, base_delay(agi) × INITIAL_RANK − roll)
 ```
-Examples: agi 10: roll 0 → 300, roll 100 → 200. (Ambush and preemptive modifiers come in M1-CMB-03.)
+Examples: agi 10: roll 0 → 300, roll 100 → 200. A preemptive or ambush opening then moves one side's ticks (§ Openings).
 
 **Turn order**: the lowest `next_time` acts. Ties go to higher agility, then to roster order (party slots first, then enemies in encounter order). After acting: `next_time = now + action_delay(...)`.
 
@@ -166,6 +168,29 @@ At victory:
 
 Escape and defeat award nothing. Sandbox values: Reef Crab 24 lume (Crab Carapace 50%, Salt Tonic 10%), Lantern Eel 20 (Eel Lantern 50%, Salt Tonic 10%), Gull Harrier 18 (Gull Quill 50%, Salt Tonic 10%), so 62 lume per sandbox win. Drownbell's ~300 lands with its encounter data.
 
+## Openings (M1-CMB-03)
+
+SPEC §6.1. A battle opens **normal**, **preemptive** (the party moves first) or **ambush** (the enemies move first). `BattleOpening` (`game/battle/battle_opening.gd`) holds the rules.
+
+**Which opening.** An encounter may fix it with `"opening"` in `encounters.json` (`normal`, `preemptive`, `ambush`, or `roll`). Without the field, a `scripted` fight opens normally and any other fight rolls. A fixed opening draws nothing from the RNG. A rolled one draws **once**, after `setup()` and before the opening ticks, `roll = randi_range(1, 100)` on the battle RNG:
+```
+preemptive_chance = clamp(8 + round((mean party agi − mean enemy agi) × 1), 2, 25)
+ambush_chance     = clamp(8 + round((mean enemy agi − mean party agi) × 1), 2, 25)
+roll ≤ preemptive_chance                     → preemptive
+roll ≤ preemptive_chance + ambush_chance     → ambush
+otherwise                                    → normal
+```
+The means use the living active party and the living enemies, as for Escape. Only live battles roll (`BattleBestiary.attach`). Tests, capture fixtures and the balance simulator open normally unless they set `engine.opening`, so their seeds keep their turn orders.
+
+**The ticks.** Every combatant first rolls its opening ticks exactly as in § Time (the same draws in the same order). Then the side caught out waits past the favored side:
+```
+opening_lead = max(latest opening tick on the favored side, 0) + OPENING_LEAD_TICKS
+each living combatant on the side caught out: next_time += opening_lead
+```
+Every favored combatant therefore acts once before any of the other side, and the timeline shows it from the first turn. A fast favored combatant may act twice before the others do. Fallen combatants neither set the lead nor move, and if nobody on the favored side stands the opening changes nothing.
+
+Examples: sandbox party Rhen (agi 22) and Asha (14), mean 18, against Reef Crab (8), Lantern Eel (14) and Gull Harrier (24), mean 15.33: preemptive 8 + round(2.67) = **11%**, ambush 8 + round(−2.67) = **5%**, normal 84%. Equal means give 8% each. A preemptive opening where Asha's opening tick of 240 is the party's latest gives a lead of 241, so a crab whose opening tick is 300 waits until 541.
+
 ## Escape
 
 ```
@@ -228,7 +253,7 @@ The first press in a beat is the one that counts, and a press before the beat op
 
 ## Not yet specified (owned by Combat, tracked in M1 tasks)
 
-Swell mode unlock rules and carrying gauges between battles (after M1-CMB-04), steal formulas, a Petrify cure item, and Vowbound stat scaling from Asha (M2).
+Swell mode unlock rules and carrying gauges between battles (after M1-CMB-04), equipment abilities that tilt the opening odds, steal formulas, a Petrify cure item, and Vowbound stat scaling from Asha (M2).
 
 ## Progression
 

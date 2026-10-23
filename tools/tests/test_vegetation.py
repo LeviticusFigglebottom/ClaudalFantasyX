@@ -155,7 +155,15 @@ class CommittedAssetsTest(unittest.TestCase):
             with self.subTest(glb=path.name):
                 for mesh, st in glb_mesh_stats(path).items():
                     self.assertLessEqual(st["triangles"], budget_for(module, mesh), mesh)
-                    self.assertTrue({"COLOR_0", "TEXCOORD_0", "TEXCOORD_1", "NORMAL", "TANGENT"} <= st["attributes"])
+                    self.assertTrue({"COLOR_0", "TEXCOORD_0", "TEXCOORD_1", "NORMAL"} <= st["attributes"])
+                    # M1-ENV-07: no exported tangents (Blender's threaded export races); Godot makes them
+                    self.assertNotIn("TANGENT", st["attributes"], mesh)
+
+    def test_imports_generate_tangents(self):  # M1-ENV-07: the .glb carry none, so the import must
+        for path in sorted(ASSETS.glob("*.glb")):
+            with self.subTest(glb=path.name):
+                text = Path(f"{path}.import").read_text(encoding="utf-8")
+                self.assertIn("meshes/ensure_tangents=true", text)
 
 
 @unittest.skipUnless(find_blender(), "Blender 5.0.1 not found (python3 tools/dev/fetch_blender.py)")

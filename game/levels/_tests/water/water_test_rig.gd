@@ -3,11 +3,13 @@ extends Node3D
 ## Drives the water test scene (M1-RND-01) deterministically for screenshot capture:
 ## - writes the hymn_* shader globals (wind, weather clock, sun direction) every frame from data;
 ## - places the sun from the color-script elevation/azimuth (azimuth clockwise from north = -Z);
-## - switches to the night mood (moon, oil lamp, sea-glow) while night_camera is current.
-## The clock counts rendered frames at a fixed step (frame_step_s), not engine delta. Under the
-## screenshot capture scene it is held at start_time_s: capture.gd gives the first shot of a run
-## one process frame fewer than later shots, so a moving sea would shift by a frame (RMSE ~0.012)
-## depending on the shot's position in shots.json. For the same reason capture uses FXAA, not TAA.
+## - switches to the night mood (moon, oil lamp, sea-glow) while night_camera is current, or holds
+##   the mood named by `mood`.
+## The clock counts rendered frames at a fixed step (frame_step_s), not engine delta. The screenshot
+## shots hold it through their shots.json `setup` (M1-RND-13): `hymn_wind_time` pinned to
+## start_time_s, FXAA instead of TAA, and the mood as `mood`, because capture.gd gives the first shot
+## of a run one process frame fewer than later shots (a moving sea would shift by a frame, RMSE
+## ~0.012, depending on the shot's position in shots.json) and TAA history depends on it too.
 
 const GLOBAL_WIND := &"hymn_wind"
 const GLOBAL_WIND_TIME := &"hymn_wind_time"
@@ -16,14 +18,16 @@ const GLOBAL_TIME_OF_DAY := &"hymn_time_of_day"
 const GLOBAL_GLIMMER := &"hymn_glimmer"
 const PARAM_DEEP := &"col_deep"
 const PARAM_CAUSTICS := &"caustic_strength"
-## While this scene runs under the screenshot capture, the weather clock is held still.
-const CAPTURE_SCENE := "res://tests/screenshots/capture.tscn"
+const MOOD_DAY := &"day"
+const MOOD_NIGHT := &"night"
 
 @export var water: WaterSurface
 @export var sun: DirectionalLight3D
 @export var moon: DirectionalLight3D
 @export var night_nodes: Array[Node3D] = []
 @export var night_camera: Camera3D
+## Mood to hold: &"day" or &"night". Empty: night while night_camera is current, day otherwise.
+@export var mood: StringName = &""
 @export_group("Day (color script ch02_noon)")
 @export var sun_elevation_deg: float = 74.0
 @export var sun_azimuth_deg: float = 165.0
@@ -54,33 +58,18 @@ const CAPTURE_SCENE := "res://tests/screenshots/capture.tscn"
 var _clock: float = 0.0
 var _frames: int = 0
 var _night: bool = false
-var _taa_was_on: bool = false
-var _ssaa_was: Viewport.ScreenSpaceAA = Viewport.SCREEN_SPACE_AA_DISABLED
-var _hold_clock: bool = false
 
 
 func _ready() -> void:
 	_clock = start_time_s
-	var top := get_tree().current_scene
-	_hold_clock = top != null and top.scene_file_path == CAPTURE_SCENE
-	if _hold_clock:
-		# TAA history depends on how many frames a shot got and on the previous shot; FXAA has no
-		# history, so the capture is identical wherever the shot sits in shots.json. Restored on exit.
-		var vp := get_viewport()
-		_taa_was_on = vp.use_taa
-		_ssaa_was = vp.screen_space_aa
-		vp.use_taa = false
-		vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
 	_apply_mood(false)
 	_write_globals()
 
 
 func _process(_delta: float) -> void:
 	_frames += 1
-	if not _hold_clock:
-		_clock = start_time_s + _frames * frame_step_s
-	var cam := get_viewport().get_camera_3d()
-	var want_night := cam != null and cam == night_camera
+	_clock = start_time_s + _frames * frame_step_s
+	var want_night := wants_night()
 	if want_night != _night:
 		_apply_mood(want_night)
 	_write_globals()
@@ -95,6 +84,14 @@ static func direction_from_angles(elevation_deg: float, azimuth_deg: float) -> V
 
 func weather_time() -> float:
 	return _clock
+
+
+## The mood this frame: `mood` when set, else night while night_camera is current.
+func wants_night() -> bool:
+	if mood != &"":
+		return mood == MOOD_NIGHT
+	var cam := get_viewport().get_camera_3d()
+	return cam != null and cam == night_camera
 
 
 func _apply_mood(night: bool) -> void:
@@ -136,9 +133,3 @@ func _write_globals() -> void:
 	)
 	var glimmer := night_glimmer if _night else Vector4(night_glimmer.x, night_glimmer.y, night_glimmer.z, 0.0)
 	RenderingServer.global_shader_parameter_set(GLOBAL_GLIMMER, glimmer)
-
-
-func _exit_tree() -> void:
-	if _hold_clock:
-		get_viewport().use_taa = _taa_was_on
-		get_viewport().screen_space_aa = _ssaa_was

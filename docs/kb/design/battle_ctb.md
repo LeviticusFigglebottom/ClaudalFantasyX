@@ -16,6 +16,9 @@ Owner: Combat Designer-Engineer. Formulas: [formulas.md](formulas.md).
 | `BattleItemRules` | Static item rules shared by play and previews (who an item may target, fells, downs). `BattleEngine` keeps its `item_*` names as wrappers. Split out in M1-CMB-04 for the line cap. |
 | `BattleSwell` | Swell gauges (M1-CMB-04): fill modes from `swell.json`, filled from `action_resolved`, and techniques resolved with their input's result passed in. |
 | `SwellTimingRing` | Rhen's Swell input logic (lantern-flicker timing ring). It is Node-free, and the HUD's `SwellRingView` draws it. |
+| `BattleOpening` | Preemptive and ambush openings (M1-CMB-03): which opening an encounter gets (`choose`, one RNG draw when rolled) and the tick shift `begin()` applies. |
+| `BattleRead` | What Read reveals (M1-CMB-03). The engine puts `reveal()` on a Read hit as `hit["read"]`. |
+| `Bestiary` | The bestiary log over `GameStateData.bestiary` (read flag and defeat count per enemy id; save v5). |
 
 **Headless and deterministic:** no Nodes, no scene access, and all randomness through `engine.rng` (seeded in `setup`). The battle *scene* (UI, cameras, VFX) listens to the engine's signals and never mutates combat state directly.
 
@@ -62,7 +65,8 @@ Swapping remains the elegant answer (SPEC §6.1), but a naive party now wins abo
 - `statuses.json`: all 21 statuses from SPEC §6.8. `implemented: false` marks the ones the engine doesn't handle yet.
 - `enemies.json`: stats, `affinities`, `skills`, `ai` rules, `xp`, `currency`, `drops` (`[{item, chance}]`), optional `delay_immune` (bosses), `lore_key`, and **`role_answer`**: which party member's niche is the "elegant answer" (SPEC §6.1). QA can audit encounter variety from this.
 - `characters.json`: base stats and skills (the Lattice will layer on top in M1-PRG-01).
-- `encounters.json`: enemy lineup, `scripted` (no escape).
+- `encounters.json`: enemy lineup, `scripted` (no escape), optional `opening` (`normal`, `preemptive`, `ambush` or `roll`; § Openings).
+- `skills.json` `"read": true` marks a Read skill: kind `support`, target `single_foe` (the validator's `check_read_openings` enforces both, and that every enemy has a `name_key` and `lore_key`).
 
 ## Rules worth knowing
 
@@ -85,6 +89,17 @@ The rules and numbers are in [formulas.md § Swell](formulas.md); the data is in
 - **Inputs are outside the engine.** `SwellTimingRing` (Node-free, `advance` / `press` / `cancel`) produces `{cancelled, grades}`. Tests and the simulator pass that dictionary straight to `perform()`. In the scene, `BattleController` shows **Swell** on the root menu under Attack while the actor is ready. The flow is Swell page → target pick → ring (`STATE_SWELL_INPUT`, advanced by `tick()` at real time, never scaled by pacing) → `unleash()`. Cancelling the ring returns to the pick, and cancelling the pick returns to the Swell page.
 - **Fixtures.** `apply_fixture` takes `swell` (clamped to 0..100). The `swell_ring` capture fixture opens with Rhen full.
 - **Not yet:** mode unlock rules, other heroes' inputs and Swell in the simulator (M2-CMB-01); carrying gauges and modes between battles and in saves (M2-ARC-01); a mode menu and timing assist (M2-UI-01). The balance bands are unaffected because the simulator never unleashes.
+
+## Read, the bestiary and openings (M1-CMB-03)
+
+Numbers are in [formulas.md § Openings](formulas.md).
+
+- **Read** (`read`, SPEC §6.1) is a `support` skill: rank 2, no MP, single foe. Ysolde knows it (Asha's tutor reads what she faces), so a fight Rhen and Asha open asks for a swap to read. It always lands, rolls nothing, ignores Silence and Reflect (it is not magic) and deals nothing. The hit carries `hit["read"] = BattleRead.reveal(target, row)`: `enemy_id` (the enemies.json id; `""` for a party member), `target_id`, `name_key`, `lore_key`, `level`, `hp`/`max_hp`, `mp`/`max_mp` as they stand, `stats` (the eight battle stats before breaks), `affinities` (`weak`, `resist`, `immune`, `absorb` lists in SPEC element order), `delay_immune` and the current `statuses`.
+- **The bestiary log** is `GameStateData.bestiary` (save v5): `{"<enemy id>": {"read": bool, "defeated": n}}`, wrapped in place by `Bestiary`. Only the facts are saved; a bestiary page reads the stats, weaknesses and lore from enemies.json when it is shown, so a rebalance never leaves a stale page. Ids enemies.json no longer lists are kept as saved. The data-tables gate's `bestiary` check (`BattleDB.enemies_problem`) closes saving while enemies.json is torn, missing or empty (architecture.md "Data tables gate").
+- **Glue.** `BattleBestiary` (`game/battle/scene/battle_bestiary.gd`) is attached by `BattleController._build_engine` after Swell, before `begin()`. In a live battle (`persist_progress` on, no capture fixture) it rolls the opening and logs into `Game.state.bestiary`; tests and fixtures open normally and log into a scratch dictionary. It logs every Read (`last_reveal` keeps the latest for the HUD), one defeat per foe on victory, and floats two short lines: the read foe's weaknesses ("Weak to Lightning", `HUD_READ_WEAK` with `ELEMENT_*` names) and, on the first turn, the opening's caption over whoever acts first (`HUD_OPENING_PREEMPTIVE` "They have not seen you yet.", `HUD_OPENING_AMBUSH` "They saw you first."). `roll_openings = false` keeps a live battle's opening normal for tests about other rules (test_battle_vitals does this).
+- **Openings.** Set `engine.opening` after `setup()` (which resets it to normal) and before `begin()`. Live play uses `BattleOpening.choose(engine)`. The timeline and every preview show the shifted order from the first turn, so the player sees who moves first (pillar 4).
+- **Not yet:** a full Read panel and a bestiary menu (request M2-UI-02), openings in the balance simulator (it opens normally, so the bands are unchanged), and equipment abilities that tilt the opening odds.
+- Tests: `tests/unit/test_battle_read.gd`, `test_battle_opening.gd`, `test_bestiary.gd` (log, glue, live controller) and `test_bestiary_save.gd` (v5 round trip, v4 migration, shape, gate).
 
 ## Carried vitals (M1-CMB-08)
 

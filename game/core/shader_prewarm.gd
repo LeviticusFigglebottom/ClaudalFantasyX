@@ -15,7 +15,9 @@ extends Node
 ##   "multimesh": true  draw it through a MultiMeshInstance3D (colours and custom data on)
 ##   "draw_material": for a particles material, the draw pass's material (billboard pipelines)
 ## The stage viewport copies the game viewport's AA (TAA, MSAA, screen-space AA, 3D scaling mode),
-## so motion-vector and upscaler pipeline variants are compiled too.
+## so motion-vector and upscaler pipeline variants are compiled too. A cutscene that will push a
+## scoped graphics override (M1-RND-16) sets `viewport_state` to GraphicsSettings.override_state(...)
+## first (or uses spawn_with_state), so the stage compiles the pipeline the override will select.
 ## With "scene_materials": true the incoming scene itself is instanced off-tree (no _ready runs) and
 ## every material on its geometry is drawn on that geometry's own mesh (or MultiMesh), plus its
 ## WorldEnvironment sky: inline sub-resource materials and real vertex formats need no registry
@@ -46,6 +48,9 @@ var registry_path: String = REGISTRY_PATH
 var config: Dictionary = {}
 var scene_path: String = ""
 var stats: Dictionary = {}
+## Viewport properties laid over the game viewport's when the stage copies them (match_viewport):
+## the state a planned GraphicsSettings override will set (M1-RND-16). Empty: the game's own.
+var viewport_state: Dictionary = {}
 
 var _running := false
 var _stage_alive := false
@@ -93,6 +98,16 @@ static func uninstall(router: Node) -> void:
 ## Instances the warmup scene under `parent` and starts it for `for_scene`.
 static func spawn(for_scene: String, parent: Node) -> ShaderPrewarm:
 	var node := (load(SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	parent.add_child(node)
+	node.start(for_scene)
+	return node
+
+
+## spawn() for a pipeline state the game viewport does not have yet: `state` is
+## GraphicsSettings.override_state(values) of an override a cutscene will push at its cut.
+static func spawn_with_state(for_scene: String, parent: Node, state: Dictionary) -> ShaderPrewarm:
+	var node := (load(SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.viewport_state = state.duplicate()
 	parent.add_child(node)
 	node.start(for_scene)
 	return node
@@ -148,6 +163,8 @@ func match_viewport(game: Viewport) -> void:
 	_viewport.screen_space_aa = game.screen_space_aa
 	_viewport.scaling_3d_mode = game.scaling_3d_mode
 	_viewport.scaling_3d_scale = game.scaling_3d_scale
+	for prop: Variant in viewport_state:
+		_viewport.set(str(prop), viewport_state[prop])
 
 
 func is_running() -> bool:

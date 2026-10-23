@@ -321,7 +321,8 @@ def export_glb(builders: list[MeshBuilder], out_path: str) -> None:
         export_apply=False,
         export_texcoords=True,
         export_normals=True,
-        export_tangents=True,
+        export_tangents=False,  # M1-ENV-07: Godot generates them on import (ensure_tangents, import_settings.py);
+        # Blender's threaded tangent export races, so exported tangents made the build depend on --threads.
         export_vertex_color="ACTIVE",
         export_all_vertex_colors=False,
         export_materials="EXPORT",

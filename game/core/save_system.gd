@@ -75,8 +75,11 @@ extends Node
 ##   - The tables are loaded on first use and cached on the DataHealth (the item tables stay in
 ##     _item_db); tests replace one to simulate a broken build and set `_health` back to null to
 ##     reload. Flags and party_rest are read from Game, which owns them.
+##
+## M1-CMB-03 (v5): the bestiary log (GameStateData.bestiary, Bestiary). Its enemy ids are judged
+## against battle/enemies.json by the data-tables gate's `bestiary` check.
 
-const SAVE_VERSION := 4
+const SAVE_VERSION := 5
 const SAVE_DIR := "user://saves"
 const AUTOSAVE_SLOT := 0
 ## slot_path() formats two digits.
@@ -122,6 +125,7 @@ var _migrations: Dictionary = {
 	1: _migrate_v1_to_v2,
 	2: _migrate_v2_to_v3,
 	3: _migrate_v3_to_v4,
+	4: _migrate_v4_to_v5,
 }
 ## Item tables for the post-load starting-gear step (loaded on first use).
 var _item_db: ItemDB
@@ -662,6 +666,15 @@ static func _migrate_v3_to_v4(d: Dictionary) -> Dictionary:
 	if not st.has("respawn"):
 		st["respawn"] = {"location_id": str(st.get("location_id", "")), "spawn": ""}
 	return {"version": 4, "state": st}
+
+
+## v5 (M1-CMB-03) adds the bestiary log. A v4 save predates Read, so nothing is logged yet. The
+## literal is frozen on purpose.
+static func _migrate_v4_to_v5(d: Dictionary) -> Dictionary:
+	var st: Dictionary = (d.get("state", {}) as Dictionary).duplicate(true)
+	if not st.has("bestiary"):
+		st["bestiary"] = {}
+	return {"version": 5, "state": st}
 
 
 # --- M1-ARC-03: autosave, slot listing, load into the live game ---------------------------------
