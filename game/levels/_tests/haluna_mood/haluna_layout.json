@@ -36,6 +36,8 @@
   "interior_rise_m": 5.0,
   "lagoon_slope": 0.012,
   "lagoon_shelf_m": 1.4,
+  "shelf_variation": 0.8,
+  "shelf_variation_period_m": 45.0,
   "reef_edge_m": 270.0,
   "reef_depth_m": 22.0,
   "reef_width_m": 40.0,
@@ -937,7 +939,7 @@
     2,
     47
    ],
-   "yaw_deg": 60
+   "yaw_deg": -26
   },
   {
    "piece": "net_rack",

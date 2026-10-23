@@ -22,6 +22,10 @@ var interior_start_m: float = 190.0
 var interior_rise_m: float = 5.0
 var lagoon_slope: float = 0.012
 var lagoon_shelf_m: float = 0.6
+## Along-shore variation of the nearshore shelf (fraction of its depth, and its period along z): the
+## wash zone's width follows the depth, so without it the surf reads as one even stripe (H01).
+var shelf_variation: float = 0.0
+var shelf_variation_period_m: float = 40.0
 var reef_edge_m: float = 270.0
 var reef_depth_m: float = 22.0
 var reef_width_m: float = 40.0
@@ -109,7 +113,9 @@ func height_at(x: float, z: float) -> float:
 		h = lerpf(h, -reef_depth_m, smoothstep(west_coast_m, west_coast_m + 70.0, d))
 	else:
 		var s := -d
-		h = -s * lagoon_slope - lagoon_shelf_m * (1.0 - exp(-s / 25.0)) + n * 0.6
+		var along := _noise.get_noise_2d(-41.0, z * noise_period_m / shelf_variation_period_m)
+		var shelf := lagoon_shelf_m * (1.0 + shelf_variation * along)
+		h = -s * lagoon_slope * (1.0 + shelf_variation * along) - shelf * (1.0 - exp(-s / 25.0)) + n * 0.6
 		var edge := reef_edge_m + _noise.get_noise_2d(z * 0.31, 17.0) * 35.0
 		var r := clampf((s - edge) / reef_width_m, 0.0, 1.0)
 		h = lerpf(h, -reef_depth_m, r * r * (3.0 - 2.0 * r))

@@ -7,9 +7,9 @@
 [resource]
 resource_name = "kit_canopy_bark"
 shader = ExtResource("1_shader")
-shader_parameter/ao_strength = 0.9
-shader_parameter/col_base = Color(0.549, 0.5216, 0.4784, 1)
-shader_parameter/col_top = Color(0.7255, 0.6824, 0.5961, 1)
+shader_parameter/ao_strength = 0.35
+shader_parameter/col_base = Color(1.18, 1.16, 1.15, 1)
+shader_parameter/col_top = Color(1.24, 1.21, 1.17, 1)
 shader_parameter/flutter_amplitude_m = 0
 shader_parameter/gust_contrast = 1
 shader_parameter/normal_strength = 1.3

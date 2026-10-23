@@ -58,16 +58,21 @@ MATERIALS: dict[str, dict] = {
     "kit_mortar_white": stone("coral_stone_albedo.png", "coral_stone_normal.png", (0.9, 0.9), base_triplanar=True,
                               normal_strength=0.35, roughness_base=0.9, col_paint=hexc("#E6E1D6"), paint_cover=0.97,
                               cavity_darken=0.04, erosion_pit_darken=0.05, ao_strength=0.4),
-    "kit_whitewash": stone("coral_stone_albedo.png", "coral_stone_normal.png", (1.6, 1.6), base_triplanar=True,
-                           normal_strength=0.45, roughness_base=0.82, col_paint=hexc("#EAE7E0"), paint_cover=0.95,
-                           cavity_darken=0.1, use_moss=False, use_algae=False, use_barnacles=False),
+    # The chapel's lime-wash (review-sweep-F S2: "small foreign whiteness"): the albedo ceiling, fully
+    # covering a smooth base, so the walls read order_marble white without coral stipple showing through.
+    "kit_whitewash": stone("coral_concrete_albedo.png", "coral_concrete_normal.png", (2.0, 2.0), base_triplanar=True,
+                           normal_strength=0.12, roughness_base=0.82, col_paint=hexc("#EBE7DF"), paint_cover=1.0,
+                           cavity_darken=0.02, ao_strength=0.35, variation_value=0.03, erosion_pit_darken=0.05,
+                           use_moss=False, use_algae=False, use_barnacles=False),
     "kit_order_marble": stone("coral_concrete_albedo.png", "coral_concrete_normal.png", (1.5, 1.5),
                               base_triplanar=True, normal_strength=0.25, roughness_base=0.38, specular_base=0.5,
                               col_paint=hexc("#E4DED3"), paint_cover=0.9, cavity_darken=0.05, use_moss=False,
                               use_algae=False, use_barnacles=False),
+    # Sun-silvered (review-sweep-F S6): a cool grey tint takes the boards down to timber_weathered and
+    # a wider per-board variation keeps them from reading as one new surface.
     "kit_timber": stone("timber_albedo.png", "timber_normal.png", (0.4, 1.6), base_triplanar=False,
-                        normal_strength=1.2, roughness_base=0.8, specular_base=0.3, cavity_darken=0.3,
-                        moss_min_height_m=1.0),
+                        col_tint=hexc("#CFCDC8"), normal_strength=1.2, roughness_base=0.8, specular_base=0.3,
+                        cavity_darken=0.45, variation_value=0.24, variation_warmth=0.03, moss_min_height_m=1.0),
     "kit_thatch": stone("thatch_albedo.png", "thatch_normal.png", (1.6, 1.6), base_triplanar=False,
                         normal_strength=1.4, roughness_base=0.95, specular_base=0.2, use_algae=False,
                         use_barnacles=False, use_salt=False, moss_normal_y=0.5),
@@ -90,8 +95,13 @@ MATERIALS: dict[str, dict] = {
         "tex_normal": ("tex", VEG_TEX + "frangipani_bark_normal.png"),
         "wind_response": 0.15, "plant_height_m": 14, "sway_lean": 0.005, "sway_amplitude": 0.004,
         "sway_frequency_hz": 0.15, "gust_contrast": 1, "secondary_amplitude_m": 0.05, "flutter_amplitude_m": 0,
-        "col_base": hexc("#8C857A"), "col_top": hexc("#B9AE98"), "normal_strength": 1.3, "roughness_value": 0.9,
-        "ao_strength": 0.9}},
+        # Pale banyan bark, low occlusion (review-sweep-F S4: the aerial roots read as near-black poles).
+        # The shared frangipani bark texture averages ~0.26 linear, so the tint is a GAIN above 1: it
+        # lifts the bark to ~0.40 linear albedo (a pale grey #AAA59A), well inside the palette floor and
+        # ceiling. Shaded roots then sit about one stop under the shaded sand instead of at the toe.
+        "col_base": "Color(1.18, 1.16, 1.15, 1)", "col_top": "Color(1.24, 1.21, 1.17, 1)",
+        "normal_strength": 1.3, "roughness_value": 0.9,
+        "ao_strength": 0.35}},
 }
 _FOLIAGE = {
     "tex_albedo": ("tex", TEX + "canopy_cluster_albedo.png"),
