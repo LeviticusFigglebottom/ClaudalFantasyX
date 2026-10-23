@@ -8,7 +8,7 @@ This is a rough but complete thread through the first minutes of *Hymn of the Un
 2. **Prologue.** A dead city at dusk, with one line of Rhen's narration.
 3. **Cutscene A, "The Girl on the Beach".** Rhen wakes in the shallows at Haluna. There are two choices; both are fine.
 4. **Haluna, free to walk.** Talk to the three villagers (at the market, the chapel court and the dock). Each one has a line that hints at what a "Cantor" is.
-5. **First battle.** Walking up the beach path toward the village starts a fight against a reef crab and a lantern eel, with Rhen and Asha (Toma in reserve). Win it, and you return to the beach path.
+5. **First battle.** Walking up the beach path toward the village starts a fight against a reef crab and a lantern eel, with Rhen and Asha (Toma in reserve). Win it, and you return to the beach path. Flee it, and you are back on the beach below the path, with the fight still ahead. Lose it, and you can **Fight again** or **Return to last save** (your newest save; with none yet, this reads **Return to title**).
 6. **Save** at the shrine: the glowing teal stone with a shell canopy, near the beach palms. Resting there heals the party and opens the save menu.
 7. **The causeway head.** Once you have saved, walk north along the beach, past the dock, to the causeway head at its far end. This plays **Cutscene B, "The First Verse"**, at the Shell Shrine at sunset.
 8. **End card.** Press accept to return to the title. **Continue** loads your save.
@@ -54,8 +54,7 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - Haluna uses the art team's mood-test scene, with simple collision added. The camera mostly follows Rhen from behind; only a few spots use composed shots.
 - Cutscene B ends with the bell tolling and a call to battle. **The Drownbell boss isn't built yet**, so the end card comes next.
 - There's no skip for cutscenes yet.
-- Entering Haluna freezes for about a second and a half behind the black fade while the village builds itself. That's expected for now.
-- After a lost battle you return past the trigger, so the fight can be skipped by walking on. Walking back down to the beach and up again offers it once more.
+- Entering Haluna holds the black fade for about a second and a half while the village builds itself; the picture no longer freezes when it appears.
 
 ## Reporting
 
