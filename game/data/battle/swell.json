@@ -1,6 +1,6 @@
 {
   "swell": {
-    "doc": "Swell gauges (SPEC 6.2, M1-CMB-04). Rules: docs/kb/design/formulas.md section Swell. Fill modes: trigger + rate (points per whole max HP, Formulas.swell_gain) or flat points per event. Inputs: one interactive input per hero; grades map to a power bonus in percent (Formulas.swell_power). timing_ring: the good window must fit inside its beat, the whole input stays short (validate_data), and max_step_sec (<= perfect_sec) is the most one rendered frame may move the ring (SwellRingClock, M1-UI-05).",
+    "doc": "Swell gauges (SPEC 6.2, M1-CMB-04). Rules: docs/kb/design/formulas.md section Swell. Fill modes: trigger + rate (points per whole max HP, Formulas.swell_gain) or flat points per event. Inputs: one interactive input per hero; grades map to a power bonus in percent (Formulas.swell_power). timing_ring: the good window must fit inside its beat, the whole input stays short (validate_data), and max_step_sec (<= perfect_sec) is the most one rendered frame may move the ring (SwellRingClock, M1-UI-05). M2-CMB-01: chant (notes [{button, at}]), brace (impacts [sec], counter_at) and glyph (strokes [direction], window_sec, swift_sec) inputs, each with its own grade names; every input earns +45% played at good and +90% played perfectly. Unlocks: each rule counts its event (a mode trigger) for any Swell hero, only while that hero uses while_mode when it names one, and unlocks its mode at count.",
     "default_mode": "ballast",
     "modes": [
       {"id": "ballast", "name_key": "SWELL_MODE_BALLAST", "desc_key": "SWELL_MODE_BALLAST_DESC",
@@ -17,10 +17,33 @@
        "help_key": "SWELL_INPUT_TIMING_RING_HELP_LAMP",
        "beats": 3, "lead_in_sec": 0.6, "beat_sec": 0.8, "peak_at": 0.7,
        "perfect_sec": 0.06, "good_sec": 0.15, "max_step_sec": 0.05,
-       "grades": {"perfect": 30, "good": 15, "miss": 0}}
+       "grades": {"perfect": 30, "good": 15, "miss": 0}},
+      {"id": "verse_chant", "kind": "chant", "name_key": "SWELL_INPUT_CHANT",
+       "help_key": "SWELL_INPUT_CHANT_HELP",
+       "lead_in_sec": 0.6, "perfect_sec": 0.06, "good_sec": 0.15, "max_step_sec": 0.05,
+       "notes": [{"button": "up", "at": 0.0}, {"button": "up", "at": 0.5}, {"button": "left", "at": 0.9},
+                 {"button": "down", "at": 1.3}, {"button": "right", "at": 2.0}],
+       "grades": {"perfect": 18, "good": 9, "miss": 0}},
+      {"id": "tide_brace", "kind": "brace", "name_key": "SWELL_INPUT_BRACE",
+       "help_key": "SWELL_INPUT_BRACE_HELP",
+       "lead_in_sec": 0.6, "impacts": [0.4, 1.0, 1.6], "counter_at": 2.3,
+       "perfect_sec": 0.06, "good_sec": 0.15, "max_step_sec": 0.05,
+       "grades": {"braced": 10, "perfect": 60, "good": 15, "miss": 0}},
+      {"id": "glyph_trace", "kind": "glyph", "name_key": "SWELL_INPUT_GLYPH",
+       "help_key": "SWELL_INPUT_GLYPH_HELP",
+       "lead_in_sec": 0.6, "window_sec": 3.0, "swift_sec": 2.0, "max_step_sec": 0.05,
+       "strokes": ["down", "right", "up", "right", "down"],
+       "grades": {"traced": 9, "swift": 45, "miss": 0}}
+    ],
+    "unlocks": [
+      {"id": "tether_from_ballast", "mode": "tether", "event": "damage_taken", "while_mode": "ballast", "count": 12},
+      {"id": "salve_from_items", "mode": "salve", "event": "heal_item", "count": 5}
     ],
     "heroes": [
-      {"id": "rhen", "input": "timing_ring", "techniques": ["lamp_dive"]}
+      {"id": "rhen", "input": "timing_ring", "techniques": ["lamp_dive"]},
+      {"id": "asha", "input": "verse_chant", "techniques": ["shallows_verse"]},
+      {"id": "toma", "input": "tide_brace", "techniques": ["return_tide"]},
+      {"id": "ysolde", "input": "glyph_trace", "techniques": ["written_light"]}
     ]
   }
 }

@@ -16,6 +16,8 @@ Owner: Combat Designer-Engineer. Formulas: [formulas.md](formulas.md).
 | `BattleItemRules` | Static item rules shared by play and previews (who an item may target, fells, downs). `BattleEngine` keeps its `item_*` names as wrappers. Split out in M1-CMB-04 for the line cap. |
 | `BattleSwell` | Swell gauges (M1-CMB-04): fill modes from `swell.json`, filled from `action_resolved`, and techniques resolved with their input's result passed in. |
 | `SwellTimingRing` | Rhen's Swell input logic (lantern-flicker timing ring). It is Node-free, and the HUD's `SwellRingView` draws it. |
+| `SwellInput` | Base of every Swell input (M2-CMB-01): `advance`, `press(button)`, `release(button)`, `cancel`, `result`, `buttons_used`; `create(row)` builds one by kind and `scripted_result(row, quality)` plays one at a fixed quality for the simulator. |
+| `SwellChant`, `SwellBrace`, `SwellGlyph` | Asha's verse chant, Toma's tide brace and Ysolde's glyph trace (M2-CMB-01). Node-free; no HUD panel yet (M2-UI-03). |
 | `BattleOpening` | Preemptive and ambush openings (M1-CMB-03): which opening an encounter gets (`choose`, one RNG draw when rolled) and the tick shift `begin()` applies. |
 | `BattleRead` | What Read reveals (M1-CMB-03). The engine puts `reveal()` on a Read hit as `hit["read"]`. |
 | `Bestiary` | The bestiary log over `GameStateData.bestiary` (read flag and defeat count per enemy id; save v5). |
@@ -88,7 +90,25 @@ The rules and numbers are in [formulas.md § Swell](formulas.md); the data is in
 - **Engine hook.** `BattleEngine.perform_row(skill_id, row, targets)` plays a skill row the actor has not learned and pays no MP for. Otherwise it applies `perform()`'s checks: turn, Silence, targets, Provoke, Reflect, rank. `BattleSwell.perform(technique, targets, input_result)` gates the technique on a full gauge, scales the row's power by the input bonus (a copy; the table row is never changed), calls `perform_row`, and empties the gauge on success.
 - **Inputs are outside the engine.** `SwellTimingRing` (Node-free, `advance` / `press` / `cancel`) produces `{cancelled, grades}`. Tests and the simulator pass that dictionary straight to `perform()`. In the scene, `BattleController` shows **Swell** on the root menu under Attack while the actor is ready. The flow is Swell page → target pick → ring (`STATE_SWELL_INPUT`, advanced by `tick()` at real time, never scaled by pacing) → `unleash()`. Cancelling the ring returns to the pick, and cancelling the pick returns to the Swell page.
 - **Fixtures.** `apply_fixture` takes `swell` (clamped to 0..100). The `swell_ring` capture fixture opens with Rhen full.
-- **Not yet:** mode unlock rules, other heroes' inputs and Swell in the simulator (M2-CMB-01); carrying gauges and modes between battles and in saves (M2-ARC-01); a mode menu and timing assist (M2-UI-01). The balance bands are unaffected because the simulator never unleashes.
+- **Unlocks (M2-CMB-01).** `swell.json` `unlocks` rows count events as gauges fill (`BattleSwell._count`, from the same `_gain` calls) and call `unlock_mode()` at their count; the numbers are in formulas.md § Swell. The party-wide record (unlocked modes, counts) is plain data on `BattleSwell` (`load_saved`, `to_saved`), and ids swell.json no longer knows are kept as loaded. `attach()` keeps a carried mode only while it is unlocked, else the hero falls back to the default mode.
+- **The other heroes' inputs (M2-CMB-01).** Every hero has a Swell: Rhen's `timing_ring`, Asha's `chant`, Toma's `brace`, Ysolde's `glyph` (formulas.md § Swell; each a `SwellInput` subclass with its own grade names, all worth +45% at good and +90% perfect). `BattleSwell.bonus_pct` counts at most `SwellInput.grade_count()` grades. The controller builds any kind through `SwellInput.create`, `SwellRingClock` drives any `SwellInput`, and `SwellInputKeys` feeds it ui_accept and the four directions (press and release) for the buttons it uses (`buttons_used`), so an event the input ignores keeps its usual meaning.
+- **The HUD gate.** `SwellRingView.DRAWN_KINDS` lists the input kinds the HUD can draw (the ring only, for now). A hero whose input is not drawn gets no gauge on the party panel and no Swell row (`SwellRingView.draws`, `draws_hero`), though the engine, the tests and the simulator fill and unleash it. M2-UI-03 adds the three panels and lists their kinds, which turns the gauges on. No screenshot changed.
+- **API for the Swell mode menu (M2-UI-01).**
+
+  | Call | Returns | Use |
+  |---|---|---|
+  | `swell.mode_rows(c)` | `Array[Dictionary]` `{id, name_key, desc_key, trigger, current}` | In battle: `c`'s choosable modes in data order (empty for no Swell). |
+  | `swell.set_mode(c, mode)` | `bool` | In battle: choose; refused for a locked mode or no Swell. The gauge keeps its points. |
+  | `swell.unlocked` | `Array[StringName]` | Every choosable mode. |
+  | `swell.progress_toward(mode)` | `{count, need}` | How far a locked mode is (`need` 0: no rule unlocks it). |
+  | `swell.mode_unlocked` | signal `(mode)` | Play just unlocked a mode (a float or toast; not fired when a save is loaded). |
+  | `BattleSwellCarry.mode_rows(cid, state = Game.state)` | as `mode_rows` | Out of battle: hero `cid`'s choosable modes from the saved record, `current` = its saved mode. |
+  | `BattleSwellCarry.set_mode(cid, mode, state = Game.state)` | `bool` | Out of battle: saves the choice into `party_vitals` (refused for a locked mode or a hero with no Swell). |
+  | `BattleSwellCarry.rules(state = Game.state)` | `BattleSwell` | The rules with the saved record loaded (`unlocked`, `progress_toward`). |
+
+  The controller's live `BattleSwell` is `ctl.swell`; a mode chosen there is carried out of the battle with the gauge.
+- **Simulator (M2-CMB-01).** `BattleSim.swell_quality` (targets.json `swell`, `--swell`) attaches a `BattleSwell`, and every policy but `naive` unleashes a full gauge first with `SwellInput.scripted_result` (balance_targets.md). The sandbox suites play at `good`, and every band holds at every quality (balance_report.md, 2026-10-23).
+- **Not yet:** HUD panels for the chant, brace and glyph, their grade words, and a float for `mode_unlocked` (M2-UI-03); a mode menu and timing assist (M2-UI-01); Swell for Kerrid, Liss and Pell (not in characters.json yet: the character sheets suggest a weighted swing, a reel-stop and call-and-response tiles).
 
 ## Read, the bestiary and openings (M1-CMB-03)
 
@@ -112,6 +132,16 @@ HP, MP and the carried statuses (`game/data/world/party_rest.json`: Poison, Ston
   2. If no living reserve member is left, the fallen member keeps its slot at 0 HP. It takes no turns, and the player can revive it or swap it out on any living member's turn.
   3. If nobody in the party is standing (only possible after a victory where the last foe and the last active member fell together), the active members get up with 1 HP and their stone breaks (`BattleVitals.raise_modifier`). A fight never opens already lost (pillar 4).
 - Tests: `tests/unit/test_battle_vitals.gd` (the lineup rule, in and out on a bare engine, and the live controller: carried HP and Poison, a carried KO swapped out, victory write-back with Retry starting from it and a shrine heal clearing it, defeat recording nothing, and fixtures and tests ignoring vitals).
+
+## Carried Swell (M2-ARC-01)
+
+Swell follows the party as HP and MP do (save v6; architecture.md "Save v6"). The glue is `game/battle/scene/battle_swell_carry.gd` (`BattleSwellCarry`) and `BattleVitals`; the engine core only gained the plain-data record on `BattleSwell`.
+
+- **Gauges and modes** ride on the combatants. In: `Game.vitals_modifier()` sets the saved `swell` (clamped to 0..100) and `swell_mode` at setup. Out: after a victory or an escape, `BattleVitals.send_back(engine, swell)` emits `EventBus.battle_party_returned`, and `Game.record_party` keeps a gauge above 0 and a mode other than swell.json's default in the member's `party_vitals` entry. A **defeat writes nothing**.
+- **The record** (unlocked modes and unlock counts, `GameStateData.swell`). In: `BattleSwellCarry.attach(swell, engine, carry)` loads it before `attach()`. Out: `send_back` also emits `EventBus.battle_swell_returned(swell.to_saved())`, and `Game.record_swell` keeps it (not while swell.json is broken).
+- **A shrine's rest keeps gauges and modes** (decided here, the combat default): it fills HP and MP and cures, and a gauge built in battle is still there for the next one.
+- Capture fixtures and tests (`persist_progress` off) read and write none of it, so no baseline moves.
+- Tests: `tests/unit/test_swell_save.gd` (state, record, migration, shape, gate, field API, live controller: victory carries, defeat and tests do not).
 
 ## Adding a status
 1. Add it to `statuses.json` (it must be in the SPEC set; the validator enforces this).

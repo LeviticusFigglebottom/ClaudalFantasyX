@@ -1621,7 +1621,7 @@ def check_undertow(root: Path, files: dict[str, object], rep: Report) -> None:
 
 SWELL_FILE = "game/data/battle/swell.json"
 SWELL_TRIGGERS = {"damage_taken", "damage_dealt", "ally_hurt", "heal_item"}
-SWELL_INPUT_KINDS = {"timing_ring"}
+SWELL_INPUT_KINDS = {"timing_ring", "chant", "brace", "glyph"}  # M2-CMB-01 added chant, brace, glyph
 SWELL_MIN_MODES = 3  # SPEC §6.2 / M1-CMB-04: at least three fill modes
 RING_SEC_FIELDS = ("lead_in_sec", "beat_sec", "perfect_sec", "good_sec")
 # M1-UI-05: SPEC §6.2 asks for a short input. The longest the ring may run if every beat runs out.
@@ -1675,6 +1675,8 @@ def _ring_timing_errors(i: dict, w: str) -> list[str]:
 def _swell_input_errors(i: dict, w: str) -> list[str]:
     if i.get("kind") not in SWELL_INPUT_KINDS:
         return [f"{w}: kind must be one of {sorted(SWELL_INPUT_KINDS)}"]
+    if i["kind"] != "timing_ring":
+        return _swell_sequence_input_errors(i, w)
     errs: list[str] = []
     if not _pos_int(i.get("beats")):
         errs.append(f"{w}: beats must be a positive int")
@@ -1738,6 +1740,7 @@ def swell_errors(doc: object, skills: dict[str, dict], char_ids: set[str]) -> li
         errs.append(f"{w0}: default_mode '{default}' must start unlocked")
     for i in inputs:
         errs += _swell_input_errors(i, f"{w0}: inputs.{i['id']}")
+    errs += swell_unlock_errors(root, {m["id"] for m in modes}, {m["id"] for m in modes} - unlocked)
     used: dict[str, str] = {}
     refs = {"characters": char_ids, "inputs": {i["id"] for i in inputs}}
     for h in heroes:
@@ -1745,6 +1748,128 @@ def swell_errors(doc: object, skills: dict[str, dict], char_ids: set[str]) -> li
     for sid, row in skills.items():
         if row.get("swell") is True and sid not in used:
             errs.append(f"skills.{sid}: a Swell row that no hero in {w0} lists")
+    return errs
+
+
+# --- M2-CMB-01: the other heroes' inputs (SwellChant, SwellBrace, SwellGlyph) and unlock rules -----
+
+SWELL_DIRECTIONS = {"up", "down", "left", "right"}
+# Each kind's grade names (the keys its "grades" table must give).
+SWELL_KIND_GRADES = {
+    "chant": {"perfect", "good", "miss"},
+    "brace": {"braced", "perfect", "good", "miss"},
+    "glyph": {"traced", "swift", "miss"},
+}
+# The most one rendered frame may move a glyph trace, which has no grading window of its own.
+GLYPH_MAX_STEP_SEC = 0.1
+
+
+def _seq_nums(i: dict, keys: tuple[str, ...], w: str, errs: list[str]) -> bool:
+    ok = True
+    for k in keys:
+        if not _num(i.get(k)) or i[k] < 0:
+            errs.append(f"{w}: '{k}' must be a number >= 0")
+            ok = False
+    return ok
+
+
+def _chant_errors(i: dict, w: str, errs: list[str]) -> tuple[float, float] | None:
+    """Notes are {button: a direction, at: seconds}, ascending, with windows that never overlap."""
+    if not _seq_nums(i, ("perfect_sec", "good_sec"), w, errs):
+        return None
+    notes = i.get("notes")
+    if not isinstance(notes, list) or not notes:
+        errs.append(f"{w}: notes must be a non-empty list")
+        return None
+    prev = None
+    for n, note in enumerate(notes):
+        if not isinstance(note, dict) or note.get("button") not in SWELL_DIRECTIONS or not _num(note.get("at")):
+            errs.append(f"{w}: notes[{n}] needs a button in {sorted(SWELL_DIRECTIONS)} and a number 'at'")
+            return None
+        if prev is not None and note["at"] - prev < 2 * i["good_sec"]:
+            errs.append(f"{w}: notes[{n}] is within 2 x good_sec of the note before it (the windows overlap)")
+        prev = note["at"]
+    if i["perfect_sec"] > i["good_sec"]:
+        errs.append(f"{w}: perfect_sec must not exceed good_sec")
+    return notes[-1]["at"] + i["good_sec"], i["perfect_sec"]
+
+
+def _brace_errors(i: dict, w: str, errs: list[str]) -> tuple[float, float] | None:
+    """Blows land in order; the counter's whole window opens after the last blow."""
+    if not _seq_nums(i, ("perfect_sec", "good_sec", "counter_at"), w, errs):
+        return None
+    hits = i.get("impacts")
+    if not isinstance(hits, list) or not hits or not all(_num(t) and t >= 0 for t in hits):
+        errs.append(f"{w}: impacts must be a non-empty list of numbers >= 0")
+        return None
+    if any(b <= a for a, b in zip(hits, hits[1:])):
+        errs.append(f"{w}: impacts must be in ascending order")
+    if i["counter_at"] - i["good_sec"] <= max(hits):
+        errs.append(f"{w}: the counter's good window must open after the last impact")
+    if i["perfect_sec"] > i["good_sec"]:
+        errs.append(f"{w}: perfect_sec must not exceed good_sec")
+    return i["counter_at"] + i["good_sec"], i["perfect_sec"]
+
+
+def _glyph_errors(i: dict, w: str, errs: list[str]) -> tuple[float, float] | None:
+    """Strokes are directions; swift_sec fits inside window_sec."""
+    if not _seq_nums(i, ("window_sec", "swift_sec"), w, errs):
+        return None
+    strokes = i.get("strokes")
+    if not isinstance(strokes, list) or not strokes or any(d not in SWELL_DIRECTIONS for d in strokes):
+        errs.append(f"{w}: strokes must be a non-empty list of {sorted(SWELL_DIRECTIONS)}")
+    if not 0 < i["swift_sec"] <= i["window_sec"]:
+        errs.append(f"{w}: swift_sec must be in (0, window_sec]")
+    return i["window_sec"], GLYPH_MAX_STEP_SEC
+
+
+def _swell_sequence_input_errors(i: dict, w: str) -> list[str]:
+    """chant, brace and glyph rows: their own fields, the kind's grade names, a short input
+    (RING_MAX_DURATION_SEC, like the ring) and a frame step no larger than the tightest window."""
+    errs: list[str] = []
+    kind = i["kind"]
+    if not _num(i.get("lead_in_sec")) or i["lead_in_sec"] < 0:
+        errs.append(f"{w}: 'lead_in_sec' must be a number >= 0")
+        return errs
+    got = {"chant": _chant_errors, "brace": _brace_errors, "glyph": _glyph_errors}[kind](i, w, errs)
+    if got is not None:
+        length, tightest = got
+        if i["lead_in_sec"] + length > RING_MAX_DURATION_SEC:
+            errs.append(f"{w}: lasts {i['lead_in_sec'] + length:g} s; keep it at most {RING_MAX_DURATION_SEC:g} s")
+        step = i.get("max_step_sec")
+        if not _num(step) or not 0 < step <= tightest:
+            errs.append(f"{w}: max_step_sec must be a number in (0, {tightest:g}]")
+    grades = i.get("grades")
+    want = SWELL_KIND_GRADES[kind]
+    if not isinstance(grades, dict) or set(grades) != want:
+        errs.append(f"{w}: grades must give exactly {sorted(want)}")
+    elif any(not isinstance(v, int) or isinstance(v, bool) or v < 0 for v in grades.values()):
+        errs.append(f"{w}: grade bonuses must be ints >= 0")
+    return errs
+
+
+def swell_unlock_errors(root: dict, mode_ids: set[str], locked: set[str]) -> list[str]:
+    """swell.json "unlocks" (M2-CMB-01): each rule unlocks a mode that starts locked, counts a mode
+    trigger (optionally only while_mode), and needs a positive count. Every locked mode has a rule,
+    so players unlock new modes through play (SPEC §6.2)."""
+    w0 = SWELL_FILE
+    errs: list[str] = []
+    rules = _rows(root, "unlocks", w0, errs) if "unlocks" in root else []
+    covered: set[str] = set()
+    for r in rules:
+        w = f"{w0}: unlocks.{r['id']}"
+        if r.get("mode") not in locked:
+            errs.append(f"{w}: mode must be a mode that starts locked")
+        else:
+            covered.add(r["mode"])
+        if r.get("event") not in SWELL_TRIGGERS:
+            errs.append(f"{w}: event must be one of {sorted(SWELL_TRIGGERS)}")
+        if "while_mode" in r and r["while_mode"] not in mode_ids:
+            errs.append(f"{w}: while_mode '{r['while_mode']}' is not a mode")
+        if not _pos_int(r.get("count")):
+            errs.append(f"{w}: count must be a positive int")
+    for m in sorted(locked - covered):
+        errs.append(f"{w0}: mode '{m}' starts locked but no unlocks rule unlocks it")
     return errs
 
 

@@ -78,8 +78,12 @@ extends Node
 ##
 ## M1-CMB-03 (v5): the bestiary log (GameStateData.bestiary, Bestiary). Its enemy ids are judged
 ## against battle/enemies.json by the data-tables gate's `bestiary` check.
+##
+## M2-ARC-01 (v6; ADR 0018 Amendment 6): Swell. Gauges and modes ride in party_vitals entries
+## (`swell`, `swell_mode`), and the party's unlocked modes and unlock counts in GameStateData.swell.
+## Their mode and rule ids are judged against battle/swell.json by the gate's `swell` check.
 
-const SAVE_VERSION := 5
+const SAVE_VERSION := 6
 const SAVE_DIR := "user://saves"
 const AUTOSAVE_SLOT := 0
 ## slot_path() formats two digits.
@@ -126,6 +130,7 @@ var _migrations: Dictionary = {
 	2: _migrate_v2_to_v3,
 	3: _migrate_v3_to_v4,
 	4: _migrate_v4_to_v5,
+	5: _migrate_v5_to_v6,
 }
 ## Item tables for the post-load starting-gear step (loaded on first use).
 var _item_db: ItemDB
@@ -675,6 +680,16 @@ static func _migrate_v4_to_v5(d: Dictionary) -> Dictionary:
 	if not st.has("bestiary"):
 		st["bestiary"] = {}
 	return {"version": 5, "state": st}
+
+
+## v6 (M2-ARC-01): Swell. A v5 save predates carried gauges: every gauge is empty and every mode
+## the default (party_vitals entries need no change), and nothing is unlocked through play yet.
+## The literal is frozen.
+static func _migrate_v5_to_v6(d: Dictionary) -> Dictionary:
+	var st: Dictionary = (d.get("state", {}) as Dictionary).duplicate(true)
+	if not st.has("swell"):
+		st["swell"] = {"unlocked": [], "progress": {}}
+	return {"version": 6, "state": st}
 
 
 # --- M1-ARC-03: autosave, slot listing, load into the live game ---------------------------------

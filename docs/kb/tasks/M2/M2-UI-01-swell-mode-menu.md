@@ -16,4 +16,7 @@ SPEC §6.2 says the mode is selectable. M1-CMB-04 ships the rules (`BattleSwell.
 - [ ] An accessibility setting for timing inputs, such as a wider window or auto-good, applied through the input row rather than in the engine. Coordinate with Combat on the numbers in formulas.md § Swell.
 - [ ] Art review of the Swell gauge placement and the ring panel (see tech/ui.md "Swell", deviations).
 
+## Notes
+- 2026-10-23 (Combat, M2-CMB-01 / M2-ARC-01): the API is ready and documented in battle_ctb.md "Swell" (API for the Swell mode menu). In battle: `ctl.swell.mode_rows(c)`, `set_mode(c, mode)`, `unlocked`, `progress_toward(mode)` and the `mode_unlocked` signal. Out of battle: `BattleSwellCarry.mode_rows(cid)`, `set_mode(cid, mode)` and `rules()` over `Game.state`. Modes carry between battles and in saves (save v6).
+
 ## Review log

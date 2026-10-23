@@ -454,3 +454,12 @@ ELEMENT_GLIMMER,Glimmer
 HUD_READ_WEAK,Weak to {list}
 HUD_READ_NO_WEAKNESS,No weakness found
 AUTOSAVE_SKIPPED_TOAST,"The autosave still holds a journey further along, so it was kept. Rest at a shrine to record this one."
+SKILL_SHALLOWS_VERSE,Shallows Verse
+SKILL_RETURN_TIDE,Return Tide
+SKILL_WRITTEN_LIGHT,Written Light
+SWELL_INPUT_CHANT,Verse Chant
+SWELL_INPUT_CHANT_HELP,Sing the phrase back: press each note's direction as it sounds.
+SWELL_INPUT_BRACE,Tide Brace
+SWELL_INPUT_BRACE_HELP,Hold Confirm through every blow and let go on the counter.
+SWELL_INPUT_GLYPH,Glyph Trace
+SWELL_INPUT_GLYPH_HELP,Trace the glyph's strokes in order. A clean quick trace burns brighter.
