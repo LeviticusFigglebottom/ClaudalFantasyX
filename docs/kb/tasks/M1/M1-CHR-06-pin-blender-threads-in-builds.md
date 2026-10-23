@@ -2,8 +2,8 @@
 id: M1-CHR-06
 title: Pin Blender's thread count in the base_body and Asha build scripts
 role: character
-status: todo
-owner_session: ""
+status: review
+owner_session: "worktree-agent-a361fe4924e35dfcf"
 depends_on: [M1-QA-06]
 milestone: M1
 request-from: "qa"
@@ -16,11 +16,12 @@ M1-QA-06 pinned Blender's thread count in the rebuild gate (tools/dev/blender_bu
 `assets_src/characters/base_body/build_all.sh` and `assets_src/characters/asha/build.sh` still use Blender's default (the host's CPU count). A rebuild on a machine with another core count, or one that loses the tangent race, commits files the gate then rejects.
 
 ## Acceptance criteria
-- [ ] base_body's build script passes `--threads 1` to Blender (or stops exporting tangents and regenerates), and M1-CHR-05's rebuild uses it.
-- [ ] Asha's build.sh passes `--threads 4` (or the gate's `default_threads` changes with a regenerate, in one commit).
-- [ ] `python3 tools/dev/verify_blender_builds.py --job asha --job base_body` agrees with the committed files, apart from base_body's tracked M1-CHR-05 mismatch until that lands.
+- [x] base_body's build script passes `--threads 1` to Blender (or stops exporting tangents and regenerates), and M1-CHR-05's rebuild uses it.
+- [ ] Asha's build.sh passes `--threads 4` (or the gate's `default_threads` changes with a regenerate, in one commit). **Handed to the Asha line**: this round was told not to touch `assets_src/characters/asha`, because another round may be editing it. The change is one line: `"$blender" --threads 4 --background ...` in `build.sh`. After it, extend `test_owner_build_scripts_use_the_gate_thread_count` (tools/tests/test_blender_builds.py) to cover `asha/build.sh`.
+- [x] `python3 tools/dev/verify_blender_builds.py --job asha --job base_body` agrees with the committed files, apart from base_body's tracked M1-CHR-05 mismatch until that lands. (M1-CHR-05 landed in the same branch: both jobs are `identical`.)
 
 ## Notes
 - Do not change these from QA; `assets_src/characters/asha` is being rebuilt in another worktree (M1-CHR-03/04 line). Fold this in there.
+- 2026-10-23 (worktree-agent-a361fe4924e35dfcf): `build_all.sh` runs `"$blender" --threads 1 --background --factory-startup ...`, the same argv order the gate uses. build.py's docstring and the six base_body PROVENANCE build commands say `--threads 1`. A new unit test (`test_owner_build_scripts_use_the_gate_thread_count`) checks that build_all.sh passes the job's thread count, so a change to either side fails the test. The in-tree `build_all.sh` rebuild gives exactly the gate's hashes (M1-CHR-05 notes). Review: rendering (SPEC §12.3). The Asha item above stays open for the Asha line; the Lead may split it into its own task.
 
 ## Review log

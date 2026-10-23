@@ -46,8 +46,12 @@ def new_object(name: str, bm: bmesh.types.BMesh, location=(0.0, 0.0, 0.0)) -> bp
     # between runs, and the assets must regenerate identically (PROVENANCE).
     bmesh.ops.triangulate(bm, faces=bm.faces[:], quad_method="FIXED", ngon_method="EAR_CLIP")
     # bmesh operators order their output by pointer hashes; sort faces by vertex indices instead.
+    # Blender 5's BMElemSeq.sort needs a number from `key` (M1-RND-14), so rank the tuple keys first.
     bm.verts.index_update()
-    bm.faces.sort(key=lambda f: tuple(sorted(v.index for v in f.verts)))
+    bm.faces.index_update()
+    keys = {f.index: tuple(sorted(v.index for v in f.verts)) for f in bm.faces}
+    rank = {i: r for r, i in enumerate(sorted(keys, key=lambda i: keys[i]))}
+    bm.faces.sort(key=lambda f: rank[f.index])
     me = bpy.data.meshes.new(name)
     bm.to_mesh(me)
     bm.free()

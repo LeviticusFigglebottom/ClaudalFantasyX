@@ -114,7 +114,15 @@ class ManifestTest(unittest.TestCase):
 
     def test_repo_known_failures_are_pinned(self) -> None:
         kinds = {j["id"]: j["expected_failure"]["kind"] for j in self.manifest["jobs"] if "expected_failure" in j}
-        self.assertEqual(kinds, {"base_body": "mismatch", "shader_test": "build_error"})
+        # M1-CHR-05 (base_body) and M1-RND-14 (shader_test) were fixed and their markers removed.
+        self.assertEqual(kinds, {})
+
+    def test_owner_build_scripts_use_the_gate_thread_count(self) -> None:  # M1-CHR-06
+        """A hand rebuild must commit what the gate rebuilds: base_body's build_all.sh passes the job's
+        --threads (Asha's build.sh is folded in by the Asha line, M1-CHR-06 notes)."""
+        bb = next(j for j in self.manifest["jobs"] if j["id"] == "base_body")
+        sh = (ROOT / "assets_src/characters/base_body/build_all.sh").read_text(encoding="utf-8")
+        self.assertIn(f'"$blender" --threads {vbb.job_threads(bb, self.manifest)} ', sh)
 
     def test_python_runs_use_this_interpreter(self) -> None:
         run = ["{python}", "assets_src/x/t.py", "--bake-dir", "{scratch}/b"]
@@ -256,7 +264,8 @@ class KnownVerdictTest(unittest.TestCase):  # M1-QA-06
         manifest = vbb.load_manifest()
         bb = next(j for j in manifest["jobs"] if j["id"] == "base_body")
         self.assertEqual(vbb.job_threads(bb, manifest), 1)
-        self.assertEqual(set(bb["expected_failure"]["rebuilt_sha256"]), set(bb["expected_failure"]["differs"]))
+        if "expected_failure" in bb:  # none since M1-CHR-05; a future marker must pin its content again
+            self.assertEqual(set(bb["expected_failure"]["rebuilt_sha256"]), set(bb["expected_failure"]["differs"]))
 
 
 class SelectionTest(unittest.TestCase):
