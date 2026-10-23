@@ -2,8 +2,8 @@
 id: M1-NAR-10
 title: dlgc: catch Narrator misspellings and case-insensitive emotions
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-abfc1d79a20572a9b"
 depends_on: [M1-NAR-07]
 milestone: M1
 request-from: "narrative"
