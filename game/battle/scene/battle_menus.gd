@@ -101,6 +101,7 @@ func skill_rows(engine: BattleEngine) -> Array[Dictionary]:
 		var rank := int(sk.get("rank", Formulas.DEFAULT_RANK))
 		var mp := int(sk.get("mp_cost", 0))
 		var usable := actor.mp >= mp and not (bool(sk.get("magic", false)) and actor.has_status(&"silence"))
+		usable = usable and BossMechanics.refusal(engine, sk) == &""  # e.g. Call Ilun with no field up
 		var row := _row(sid, skill_name(engine, sid), _rank_text(rank), _rank_role(rank), usable, sid)
 		row["mp"] = tr("HUD_MP_FMT").format({"mp": mp}) if mp > 0 else ""
 		rows.append(row)
@@ -371,6 +372,8 @@ func fail_text(reason: StringName, actor: BattleCombatant, provoker: BattleComba
 			text = tr("HUD_FAIL_UNKNOWN_TECHNIQUE")
 		&"swell_cancelled":
 			text = tr("HUD_FAIL_SWELL_CANCELLED")
+		BossMechanics.FAIL_NO_FIELD:
+			text = tr("HUD_FAIL_NO_FIELD")
 	return text.format({"name": display_name(actor), "provoker": display_name(provoker)})
 
 

@@ -69,6 +69,8 @@ var floats := BattleFloats.new(self)
 var swell: BattleSwell
 ## False freezes an open Swell input where it stands (capture scripts); tick() advances it.
 var swell_input_live := true
+## Boss mechanics on the stage and HUD (phases, spawns, the toll, the field; M2-FP-06).
+var boss: BattleBossHud
 
 var _db: BattleDB
 var _live_db: BattleDB
@@ -215,6 +217,8 @@ func _build_engine(
 	floats.reset()
 	progress = lattice
 	engine = BattleEngine.new()
+	if persist_progress and fixture == null:  # flag-locked skills (call_ilun) follow the live story
+		engine.story_flags = BattleBossHud.live_flags(_db)
 	# Live battles start from the carried HP/MP and line up past the fallen (BattleVitals).
 	BattleVitals.setup(engine, _db, _setup, progress, persist_progress and fixture == null)
 	if fixture != null:
@@ -222,6 +226,7 @@ func _build_engine(
 	swell = BattleSwell.new(BattleSwell.load_config())
 	swell.attach(engine)
 	engine.action_resolved.connect(floats.on_action_resolved)
+	boss = BattleBossHud.attached(self, engine)
 	stage.spawn(engine)
 	stage.refresh_ko(engine)
 
@@ -489,6 +494,7 @@ func _open_command() -> void:
 	hud.commands.open_root(
 		BattleMenus.PAGE_ROOT, menus.display_name(engine.current), menus.root_rows(engine, items, swell)
 	)
+	boss.show_prompt()  # a phase's one tutorial line, over the first highlight's help
 
 
 func _show_result() -> void:

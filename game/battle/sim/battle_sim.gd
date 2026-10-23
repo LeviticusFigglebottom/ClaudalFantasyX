@@ -39,7 +39,8 @@ func make_policy(policy: StringName) -> SimPolicy:
 
 
 ## A named party loadout from sim_policies.json "loadouts": {gear: {character: [equipment ids]},
-## items: {item id: count}}. {} if unknown (the bare party from characters.json).
+## items: {item id: count}, flags?: [story flags set]}. {} if unknown (the bare party from
+## characters.json). `flags` become BattleEngine.story_flags (flag-locked skills, e.g. call_ilun).
 func loadout(loadout_name: StringName) -> Dictionary:
 	return ((_config.get("loadouts", {}) as Dictionary).get(String(loadout_name), {}) as Dictionary).duplicate(true)
 
@@ -69,8 +70,13 @@ func run_one(
 	var fx: EquipmentEffects = null
 	if not gear.is_empty():
 		fx = _equip(gear)
-		engine.party_modifier = EquipmentEffects.compose([party_modifier, fx.apply_to])
+		var hooks: Array[Callable] = [fx.apply_to]
+		if party_modifier.is_valid():
+			hooks.push_front(party_modifier)  # compose() flags an unset hook as an error
+		engine.party_modifier = EquipmentEffects.compose(hooks)
 		engine.currency_multiplier = fx.currency_multiplier
+	for f: Variant in kit.get("flags", []):
+		engine.story_flags.append(StringName(str(f)))
 	engine.setup(db, active, reserve, encounter, rng_seed)
 	policy.reset()
 	var bag := Inventory.new(items_db(), {})

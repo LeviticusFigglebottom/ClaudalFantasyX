@@ -73,7 +73,7 @@
       "id": "drownbell",
       "chapter": "Ch3 boss (vertical slice)",
       "kind": "boss",
-      "encounter": "boss_drownbell",
+      "encounter": "drownbell",
       "active": [
         "rhen",
         "asha",
@@ -95,7 +95,7 @@
         ]
       },
       "p90_turns_max": 60,
-      "loadout": "m1_tier1"
+      "loadout": "ch03_drownbell"
     }
   ]
 }
