@@ -102,16 +102,67 @@ func test_overlapping_pops_out_of_order_resolve_deterministically() -> void:
 	_done()
 
 
+## The owner's tree_exiting defers the check to the end of the frame; the tests call that deferred
+## step (GraphicsSettings._owner_left) themselves, since the runner does not run frames.
 func test_the_owner_leaving_the_tree_pops_it() -> void:
 	var before := GraphicsSettings._viewport_state(_vp)
 	var owner := _owner("Cutscene")
-	GraphicsSettings.push_override(owner, STORM_CLOSEUP, null, _base)
+	var h := GraphicsSettings.push_override(owner, STORM_CLOSEUP, null, _base)
 	assert_true(_vp.use_taa)
 	_vp.remove_child(owner)
+	GraphicsSettings._owner_left(h)
 	assert_eq(GraphicsSettings.active_overrides(), 0, "leaving the tree pops it")
 	assert_eq(GraphicsSettings._viewport_state(_vp), before)
 	_vp.add_child(owner)
 	assert_eq(_vp.scaling_3d_mode, Viewport.SCALING_3D_MODE_FSR2, "re-entering does not re-apply it")
+	_done()
+
+
+func test_a_freed_owner_pops_it() -> void:  # M1-NIT-02
+	var before := GraphicsSettings._viewport_state(_vp)
+	var owner := _owner("Cutscene")
+	var h := GraphicsSettings.push_override(owner, STORM_CLOSEUP, null, _base)
+	owner.free()
+	GraphicsSettings._owner_left(h)
+	assert_eq(GraphicsSettings.active_overrides(), 0, "freeing the owner pops it")
+	assert_eq(GraphicsSettings._viewport_state(_vp), before)
+	_done()
+
+
+func test_a_reparented_owner_keeps_its_override() -> void:  # M1-NIT-02 (review-sweep-L S2)
+	var owner := _owner("Cutscene")
+	var h := GraphicsSettings.push_override(owner, STORM_CLOSEUP, null, _base)
+	var holder := _owner("Holder")
+	owner.reparent(holder)
+	GraphicsSettings._owner_left(h)
+	assert_eq(GraphicsSettings.active_overrides(), 1, "a reparent is not a pop")
+	assert_true(_vp.use_taa, "the override still holds")
+	_vp.remove_child(holder)
+	GraphicsSettings._owner_left(h)
+	assert_eq(GraphicsSettings.active_overrides(), 0, "leaving for good after the reparent still pops")
+	_vp.add_child(holder)
+	_done()
+
+
+func test_a_later_base_never_rebases_the_stack() -> void:  # M1-NIT-02 (review-sweep-L S1)
+	var low := GraphicsSettings.new()
+	low.set_preset("low")
+	var planned := GraphicsSettings.override_state(STORM_CLOSEUP, _base)
+	var a := GraphicsSettings.push_override(_owner("A"), {"aa": "taa"}, null, _base)
+	var b := GraphicsSettings.push_override(_owner("B"), {"scaling_mode": "fsr"}, null, low)
+	assert_true(b > 0, "applied")
+	assert_eq(GraphicsSettings.override_state(), planned, "both layers on the first push's High base")
+	assert_between(_vp.scaling_3d_scale, 0.769, 0.771, "High's render scale, not Low's")
+	assert_true(GraphicsSettings.pop_override(b))
+	assert_true(GraphicsSettings.pop_override(a))
+	_done()
+
+
+func test_the_player_settings_are_read_once() -> void:  # M1-NIT-02 (review-sweep-L S3)
+	var first := GraphicsSettings._override_settings_or_player()
+	assert_true(GraphicsSettings._override_settings_or_player() == first, "cached while settings.cfg is unchanged")
+	GraphicsSettings._player_settings = null
+	assert_false(GraphicsSettings._override_settings_or_player() == first, "read again once invalidated")
 	_done()
 
 

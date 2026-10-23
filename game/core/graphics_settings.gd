@@ -69,7 +69,11 @@ static var _override_stack: Array[Dictionary] = []
 ## The overridden viewport's state before the first override (restored by the last pop).
 static var _override_base: Dictionary = {}
 static var _override_viewport: Object = null
+## The base settings the whole stack layers on: the first push's, kept until the last pop.
 static var _override_settings: GraphicsSettings = null
+## user://settings.cfg as last read for an override with no base, and its modified time (M1-NIT-02).
+static var _player_settings: GraphicsSettings = null
+static var _player_settings_mtime := -1
 static var _next_override_handle := 1
 
 var data: Dictionary = {}
@@ -375,8 +379,12 @@ static func set_authored(obj: Object, property: String, value: Variant) -> void:
 ## the last pushed wins key by key, and popping any of them re-applies the rest. When the last one
 ## goes, the viewport gets back exactly the values it had before the first. `base` is the player's
 ## settings the overrides layer on (default: user://settings.cfg, or the default preset); it is never
-## saved. Call it at a cut: the pipeline switches on the next frame drawn. Returns the handle, or 0
-## when nothing was applied (invalid key or value, no viewport, or a second viewport).
+## saved. The first push's base holds for the whole stack: a later push with another base is applied
+## on the first one's, with a warning, so it never re-bases an earlier owner's layer (M1-NIT-02).
+## The owner leaving the tree pops its entry at the end of that frame, unless it is back in a tree
+## by then: a reparent (remove_child then add_child, or Node.reparent) keeps the override. Call it at
+## a cut: the pipeline switches on the next frame drawn. Returns the handle, or 0 when nothing was
+## applied (invalid key or value, no viewport, or a second viewport).
 static func push_override(
 	owner: Node, values: Dictionary, viewport: Viewport = null, base: GraphicsSettings = null
 ) -> int:
@@ -387,7 +395,9 @@ static func push_override(
 	if vp == null:
 		push_warning("GraphicsSettings: push_override(%s) has no viewport" % owner.name)
 		return 0
-	var settings := base if base != null else _override_settings_or_player()
+	var settings := base if base != null and _override_stack.is_empty() else _override_settings_or_player()
+	if base != null and base != settings:
+		push_warning("GraphicsSettings: push_override(%s): keeping the first override's base settings" % owner.name)
 	var invalid := settings.invalid_override(values)
 	if invalid != "":
 		push_warning("GraphicsSettings: push_override(%s): %s" % [owner.name, invalid])
@@ -401,8 +411,8 @@ static func push_override(
 	_override_settings = settings
 	var handle := _next_override_handle
 	_next_override_handle += 1
-	var on_exit := func() -> void: pop_override(handle)
-	owner.tree_exiting.connect(on_exit, CONNECT_ONE_SHOT)
+	var on_exit := func() -> void: GraphicsSettings._owner_left.call_deferred(handle)
+	owner.tree_exiting.connect(on_exit)
 	_override_stack.append(
 		{"handle": handle, "owner": weakref(owner), "values": values.duplicate(), "on_exit": on_exit}
 	)
@@ -430,6 +440,18 @@ static func pop_override(handle: int) -> bool:
 			_apply_override_state(override_state())
 		return true
 	return false
+
+
+## The deferred end of an owner's tree_exiting: pops `handle` unless its owner is alive and in a tree
+## again (a reparent). A no-op for a handle that is no longer active.
+static func _owner_left(handle: int) -> void:
+	for entry in _override_stack:
+		if int(entry["handle"]) != handle:
+			continue
+		var owner := (entry["owner"] as WeakRef).get_ref() as Node
+		if owner == null or not owner.is_inside_tree():
+			pop_override(handle)
+		return
 
 
 ## Number of active overrides.
@@ -469,12 +491,17 @@ func invalid_override(values: Dictionary) -> String:
 	return ""
 
 
+## The stack's base, else the player's settings. settings.cfg is read again only when its modified
+## time changes or save_config wrote it, not on every push, pop and plan (M1-NIT-02). Read-only.
 static func _override_settings_or_player() -> GraphicsSettings:
 	if _override_settings != null:
 		return _override_settings
-	var gs := GraphicsSettings.new()
-	gs.load_config(CONFIG_PATH)
-	return gs
+	var mtime := FileAccess.get_modified_time(CONFIG_PATH) if FileAccess.file_exists(CONFIG_PATH) else 0
+	if _player_settings == null or mtime != _player_settings_mtime:
+		_player_settings = GraphicsSettings.new()
+		_player_settings.load_config(CONFIG_PATH)
+		_player_settings_mtime = mtime
+	return _player_settings
 
 
 static func _viewport_state(vp: Viewport) -> Dictionary:
@@ -506,6 +533,8 @@ func save_config(path: String = CONFIG_PATH) -> Error:
 	cfg.set_value(CONFIG_SECTION, KEY_VERSION, int(data.get(KEY_VERSION, 0)))
 	cfg.set_value(CONFIG_SECTION, KEY_PRESET, preset_id)
 	cfg.set_value(CONFIG_SECTION, KEY_OVERRIDES, overrides.duplicate())
+	if path == CONFIG_PATH:
+		_player_settings = null
 	return cfg.save(path)
 
 
