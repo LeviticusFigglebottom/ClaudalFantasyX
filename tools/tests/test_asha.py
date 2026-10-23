@@ -98,6 +98,30 @@ class TestCommittedAssets(unittest.TestCase):
             if m["name"].startswith(("Hair", "Costume", "VerseSleeve")):
                 self.assertTrue(all("COLOR_0" in p["attributes"] for p in m["primitives"]), m["name"])
 
+    def test_teeth_sample_their_own_patch_of_the_head_atlas(self):
+        """M1-CHR-10: the teeth's colour and occlusion live in an unused corner of the head maps;
+        no skin or mouth texel may land in it, and every tooth corner must sample inside it."""
+        import numpy as np
+
+        import asha_glb
+        import asha_mouth
+
+        js, bin_ = asha_glb.read_glb(OUT / "asha.glb")
+        head = asha_glb.mesh_by_name(js, "Head")
+        u0, v0, u1, v1 = asha_mouth.TEETH_UV
+        for p in head["primitives"]:
+            mat = js["materials"][p["material"]]["name"]
+            if mat not in ("skin_head", "mouth", "teeth"):
+                continue
+            uv = asha_glb.accessor(js, bin_, p["attributes"]["TEXCOORD_0"]).astype(np.float64)
+            u, v = uv[:, 0], uv[:, 1]  # glTF V runs down the image, as TEETH_UV does
+            inside = (u >= u0) & (u <= u1) & (v >= v0) & (v <= v1)
+            with self.subTest(material=mat):
+                if mat == "teeth":
+                    self.assertTrue(inside.all())
+                else:
+                    self.assertFalse(inside.any())
+
     def test_lod1_is_about_half(self):
         js0 = glb_json(OUT / "asha.glb")
         js1 = glb_json(OUT / "asha_lod1.glb")
@@ -191,6 +215,46 @@ class TestGenerators(unittest.TestCase):
             self.assertTrue((np.diff(z) <= 1e-9).all(), sgn)
         mid = np.abs(u) < at.VERM_PEAK_U
         np.testing.assert_allclose(out[mid], (zl + hu)[mid], atol=1e-4)  # the bow itself is kept
+
+    def test_lashes_are_tapered_clumps_over_a_dark_root_line(self):
+        """M1-CHR-10: CHR-07's evenly spaced straight strands read as a comb of thin ticks."""
+        import numpy as np
+
+        import asha_textures as at
+
+        h, w = 512, 1024
+        a, _sid, _dep = at.lash_clumps(h, w, np.random.default_rng(43))
+        upper = slice(4, int(at.LASH_LOWER_U * w) - 4)
+
+        def row(v: float) -> np.ndarray:
+            return a[int(v * h), upper] > 0.3
+
+        def runs(on: np.ndarray) -> int:
+            return int(np.count_nonzero(np.diff(on.astype(int)) == 1) + on[0])
+
+        self.assertGreater(row(0.04).mean(), 0.7)  # the margin reads as one dark line
+        mid = row(0.6)
+        self.assertLess(mid.mean(), 0.45)  # out along the lashes there are gaps between clumps
+        clumps = at.LASH_CLUMPS[0]
+        self.assertGreater(runs(mid), clumps // 2)
+        self.assertLess(runs(mid), clumps * 2)  # a few strands per point, not one tick per strand
+        self.assertLess(row(0.85).mean(), mid.mean())  # and they taper to their tips
+
+    def test_brow_strokes_fade_before_the_card_edges(self):
+        """M1-CHR-10: hairs cut by the card's straight border drew a hard, flat lower edge."""
+        import numpy as np
+
+        import asha_textures as at
+
+        alpha, _sid = at.brow_hairs(512, 1024, np.random.default_rng(5))
+        cw = 1024 // at.BROW_LAYERS
+        for layer in range(at.BROW_LAYERS):
+            col = alpha[:, layer * cw:(layer + 1) * cw]
+            edge = max(int(cw * 0.01), 1)
+            with self.subTest(layer=layer):
+                self.assertLess(col[:, :edge].max(), 0.15)  # bottom edge
+                self.assertLess(col[:, -edge:].max(), 0.15)  # top edge
+                self.assertGreater(col[:, cw // 3:2 * cw // 3].mean(), 3 * col[:, :cw // 8].mean())
 
     def test_every_shape_moves_and_lids_stay_off_the_globe(self):
         import numpy as np

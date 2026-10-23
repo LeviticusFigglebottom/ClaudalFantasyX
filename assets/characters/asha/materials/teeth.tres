@@ -1,6 +1,17 @@
-[gd_resource type="StandardMaterial3D" format=3]
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/asha/textures/asha_head_albedo.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/characters/asha/textures/asha_head_orm.png" id="t1"]
 
 [resource]
 resource_name = "teeth"
-albedo_color = Color(0.82, 0.76, 0.66, 1)
-roughness = 0.5
+albedo_color = Color(1, 1, 1, 1)
+roughness = 1.0
+roughness_texture_channel = 1
+metallic_specular = 0.06
+ao_enabled = true
+ao_light_affect = 0.35
+ao_texture_channel = 0
+albedo_texture = ExtResource("t0")
+ao_texture = ExtResource("t1")
+roughness_texture = ExtResource("t1")
