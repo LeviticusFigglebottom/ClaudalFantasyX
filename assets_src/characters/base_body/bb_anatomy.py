@@ -18,6 +18,7 @@ import numpy as np
 from bb_params import Landmarks, rot, unit, v3
 
 Arr = np.ndarray
+LID_THICKNESS = 0.0019  # lid margin thickness over the globe (m at S = 1)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -92,6 +93,7 @@ class Shape:
     fn: Callable[[Arr], Arr]
     c: Arr
     R: float
+    blend: Callable[[Arr, Arr], Arr] | None = None  # op "blend": fn(P, d_so_far) -> new d
 
 
 @dataclass
@@ -105,6 +107,13 @@ class Prim:
         lower bound of the primitive's distance, so wherever dc >= d + k (union) or dc >= k - d
         (subtraction) the primitive provably cannot change `d` and is not evaluated. Exact."""
         dc = np.linalg.norm(P - self.shape.c, axis=1) - self.shape.R
+        if self.op == "blend":
+            m = dc < 0.0
+            if not m.any():
+                return d
+            out = d.copy()
+            out[m] = self.shape.blend(P[m], d[m])
+            return out
         if self.op == "union":
             m = dc < d + self.k
         else:
@@ -131,6 +140,7 @@ class Region:
     lo: Arr | None = None
     hi: Arr | None = None
     disp: list[Callable[[Arr], Arr]] = field(default_factory=list)
+    post: list[Prim] = field(default_factory=list)  # blended after the displacement (nose)
 
     def add(self, shape: Shape, k: float, op: str = "union") -> None:
         self.prims.append(Prim(shape, k, op))
@@ -151,8 +161,18 @@ class Region:
                 d = _apply(d, pr, Pn)
             for fn in self.disp:
                 d = d - fn(Pn)
+            for pr in self.post:
+                d = _apply(d, pr, Pn)
             out[near] = d
         return out
+
+    def sdf_no_post(self, P: Arr) -> Arr:
+        d = np.full(len(P), 1e3)
+        for pr in self.prims:
+            d = _apply(d, pr, P)
+        for fn in self.disp:
+            d = d - fn(P)
+        return d
 
 
 class Body:
@@ -162,7 +182,9 @@ class Body:
         self.lm = lm
         self.regions: dict[str, Region] = {}
         self.k_join = 0.014 * lm.S
+        self.k_head_neck = 0.020 * lm.S
         self.post: list[Prim] = []  # applied after the regional union (eyeballs, sockets)
+        self.face = None  # bb_face.Face, set by _build_head
         _build_torso(self)
         _build_head(self)
         for side in ("L", "R"):
@@ -184,9 +206,16 @@ class Body:
                     d = _apply(d, pr, P)
             return d
         d = None
-        for reg in self.regions.values():
+        for name, reg in self.regions.items():
             v = reg.sdf(P)
-            d = v if d is None else smin(d, v, self.k_join)
+            if d is None:
+                d = v
+            elif name == "head":
+                # the jaw and skull blend into the neck with a much wider fillet than the limbs:
+                # a narrow one leaves a hard shelf under the mandible (review-sweep-B, M1-CHR-01)
+                d = smin(d, v, self.k_head_neck)
+            else:
+                d = smin(d, v, self.k_join)
         for pr in self.post:
             d = _apply(d, pr, P)
         return d
@@ -316,98 +345,61 @@ def _spline(xs: list[float], ys: list[float], n: int = 200) -> tuple[Arr, Arr]:
 
 
 def _build_head(body: Body) -> None:
-    """Head = smooth 'egg' (cranium, lower face, jaw, chin) + sculpt-style displacement.
+    """Head = smooth 'egg' (cranium, lower face, jaw, chin, zygoma) + the bb_face sculpt.
 
-    Facial features are Gaussian displacement fields in face space (u = lateral, v = height above
-    the chin, both in head heights h), faded out toward the back of the head. Displacement reads
-    far less 'blobby' than unions of ellipsoids and is easy to drive from named sliders later.
+    The sculpt is a heightfield in face space (soft forms, lids, lips) plus primitives blended
+    after it (the nose, nostrils subtracted). Ears are separate meshes (bb_ear), rooted into a
+    low mound here, because a ray-cast head lattice can't resolve a helix or the gap behind it.
     """
+    import bb_face
+
     lm = body.lm
     p, h, S = lm.p, lm.h, lm.S
-    f = float(p["femininity"])
-    hw = lm.head_w
     R = body.region("head")
     yc = lm.P("head_c")[1]
     zc = lm.P("chin")[2]
-    masc = 1.0 - f
-    # cranium and lower-face egg
-    R.add(_E(v3(0, yc + 0.035 * h, zc + 0.60 * h), v3(hw * 0.5, 0.43 * h, 0.40 * h)), 0.0)
-    R.add(_E(v3(0, yc - 0.13 * h, zc + 0.35 * h), v3(hw * 0.40, 0.27 * h, 0.34 * h)), 0.14 * h)
-    # mandible: angle -> chin, narrower for feminine faces
-    jaw_w = hw * (0.35 + 0.08 * masc)
+    face = bb_face.Face(lm)
+    body.face = face
+    # the lofted head solid (cranium, face planes, jaw line and under-chin in one field)
+    R.add(Shape(face.loft.sdf, v3(0, yc, zc + 0.5 * h), 0.62 * h), 0.0)
+    # ear root mound (the ear itself is a separate mesh, asha_ears / bb_ear)
     for side in ("L", "R"):
-        ang = _mir(v3(jaw_w, yc + 0.045 * h, zc + 0.235 * h), side)
-        chin_s = _mir(v3(0.06 * h, yc - 0.29 * h, zc + 0.06 * h), side)
-        R.add(_C(ang, chin_s, (0.045 + 0.015 * masc) * h, 0.05 * h), 0.12 * h)
-    R.add(_E(v3(0, yc - 0.30 * h, zc + 0.08 * h), v3((0.075 + 0.02 * masc) * h, 0.07 * h, 0.08 * h)), 0.10 * h)
-    # side of the face: masseter and zygomatic arch fill the valley between face and cranium
-    for side in ("L", "R"):
-        ms = _mir(v3(hw * 0.38, yc - 0.03 * h, zc + 0.33 * h), side)
-        R.add(_E(ms, v3((0.07 + 0.02 * masc) * h, 0.17 * h, 0.17 * h)), 0.12 * h)
-        za = _mir(v3(hw * 0.30, yc - 0.27 * h, zc + 0.46 * h), side)
-        zb = _mir(v3(hw * 0.44, yc - 0.02 * h, zc + 0.47 * h), side)
-        R.add(_C(za, zb, 0.04 * h, 0.035 * h), 0.08 * h)
-    # ears: a thin back-tilted disc with a cupped bowl (concha) cut into it
-    for side in ("L", "R"):
-        ec = lm.side_pt("ear", side) + _mir(v3(0.006 * S, 0, 0), side)
-        ax = frame_from(v3(0, 0, 1), v3(1, 0, 0))
-        ax = (rot(v3(1, 0, 0), -14.0) @ ax.T).T
-        R.add(_E(ec, v3(0.135 * h, 0.072 * h, 0.011 * S), ax), 0.02 * h)
-        bowl = ec + _mir(v3(0.011 * S, 0.006 * h, -0.02 * h), side)
-        R.add(_E(bowl, v3(0.06 * h, 0.04 * h, 0.008 * S), ax), 0.01 * h, op="subtract")
+        ec = lm.side_pt("ear", side)
+        R.add(_E(ec + _mir(v3(-0.004 * S, 0.004 * S, 0), side), v3(0.010 * S, 0.014 * S, 0.024 * S)), 0.010 * S)
+    _ = p
+    R.disp.append(face.disp)
 
-    mw = lm.mouth_w / h
-    xe = lm.P("eye")[0] / h
-    ve = (lm.P("eye")[2] - zc) / h
-    vm = (lm.P("mouth")[2] - zc) / h
-    nv, na = _spline([0.27, 0.295, 0.32, 0.35, 0.40, 0.47, 0.55, 0.61],
-                     [0.0, 0.045, 0.092, 0.112, 0.082, 0.052, 0.026, 0.0])
-    sv, sa = _spline([0.27, 0.32, 0.35, 0.40, 0.47, 0.55, 0.61],
-                     [0.075, 0.068, 0.06, 0.048, 0.042, 0.045, 0.05])
-    brow = 0.03 + 0.02 * masc
-    G = []  # (u0, v0, su, sv, amplitude, mirrored)
-    G += [(0.088 + 0.01 * masc, 0.318, 0.042, 0.032, 0.042, True)]  # alae
-    G += [(0.0, vm + 0.03, mw * 0.36, 0.024, 0.028, False)]  # upper lip
-    G += [(0.028, vm + 0.022, 0.03, 0.014, 0.010, True)]  # cupid's bow peaks
-    G += [(0.0, vm + 0.058, 0.022, 0.03, -0.008, False)]  # philtrum groove
-    G += [(0.0, vm - 0.032, mw * 0.32, 0.028, 0.034, False)]  # lower lip
-    G += [(mw * 0.5, vm, 0.03, 0.03, -0.01, True)]  # mouth corners
-    G += [(0.0, vm - 0.075, mw * 0.4, 0.02, -0.014, False)]  # mentolabial sulcus
-    G += [(0.0, 0.075, 0.08, 0.05, 0.016, False)]  # chin pad
-    G += [(xe, ve + 0.01, 0.085, 0.055, -0.04, True)]  # orbits
-    G += [(xe * 0.95, ve + 0.105, 0.15, 0.045, brow, True)]  # brow ridge
-    G += [(0.0, ve + 0.09, 0.07, 0.05, 0.02 + 0.01 * masc, False)]  # glabella
-    G += [(0.235, ve - 0.075, 0.11, 0.08, 0.028, True)]  # cheekbones
-    G += [(0.12, ve - 0.09, 0.07, 0.05, 0.015, True)]  # infraorbital fill
-    G += [(0.13, vm + 0.09, 0.06, 0.08, 0.01, True)]  # maxilla beside the nose
-    G += [(0.33, ve + 0.12, 0.07, 0.09, -0.008, True)]  # temples
-    G += [(0.24, vm - 0.02, 0.06, 0.07, -0.008 * masc, True)]  # buccal hollow
-    G += [(0.16, vm + 0.075, 0.12, 0.075, 0.022, True)]  # midface fill
-    G_arr = np.array([g[:5] for g in G])
-    mir = np.array([g[5] for g in G])
-
-    def disp(P: Arr) -> Arr:
-        u = P[:, 0] / h
-        v = (P[:, 2] - zc) / h
-        front = np.clip((yc + 0.02 * h - P[:, 1]) / (0.32 * h), 0.0, 1.0)
-        front = front * front * (3 - 2 * front)
-        amp = np.interp(v, nv, na, left=0.0, right=0.0)
-        su = np.interp(v, sv, sa)
-        d = amp * np.exp(-((u / su) ** 2))
-        for (u0, v0, s_u, s_v, A), m in zip(G_arr, mir):
-            e = np.exp(-(((v - v0) / s_v) ** 2))
-            if m:
-                d = d + A * e * (np.exp(-(((u - u0) / s_u) ** 2)) + np.exp(-(((u + u0) / s_u) ** 2)))
+    def surface_y(x: float, z: float) -> float:
+        """y of the head (egg + heightfield) in front of (x, z): bisection along -Y."""
+        lo, hi = yc, yc - 0.6 * h  # lo inside, hi outside
+        for _ in range(40):
+            mid = 0.5 * (lo + hi)
+            dm = R.sdf_no_post(np.array([[x, mid, z]]))[0]
+            if dm <= 0:
+                lo = mid
             else:
-                d = d + A * e * np.exp(-(((u - u0) / s_u) ** 2))
-        return d * front * h
+                hi = mid
+        return 0.5 * (lo + hi)
 
-    R.disp.append(disp)
-    # eyeballs: added after the regional union so the lids hug the globe
+    for kind, a in face.nose_spec(surface_y):
+        if kind == "cone":
+            R.post.append(Prim(_C(a["a"], a["b"], a["r1"], a["r2"]), a["k"]))
+        else:
+            axes = np.eye(3)
+            if "rot_x" in a:
+                axes = (rot(v3(1, 0, 0), a["rot_x"]) @ axes.T).T
+            if "rot_z" in a:
+                axes = (rot(v3(0, 0, 1), a["rot_z"]) @ axes.T).T
+            op = "subtract" if kind == "hole" else "union"
+            R.post.append(Prim(_E(a["c"], a["r"], axes), a["k"], op))
+    # lids: a shell around each globe with the almond aperture cut through it, added after the
+    # regional union so the lids hug the eyeball (the eyeball itself is a separate mesh)
     r_e = lm.eye_r
     for side in ("L", "R"):
         e = lm.side_pt("eye", side)
-        body.post.append(Prim(_E(e, v3(r_e, r_e, r_e) + 0.0016), 0.003 * h, "union"))
+        fr = face.eyes[side]
+        bl = (lambda fr_: (lambda P, d: fr_.eye_skin(P, d, LID_THICKNESS * S, 0.0009 * S)))(fr)
+        body.post.append(Prim(Shape(lambda P: P[:, 0] * 0.0, e, 0.034 * S, bl), 0.0, "blend"))
 
 
 # ---------------------------------------------------------------------------------------------

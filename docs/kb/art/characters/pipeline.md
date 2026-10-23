@@ -36,7 +36,7 @@ The build is **deterministic**: two builds of the same variant are byte-identica
 
 ## 3. Topology notes
 
-Base mesh: **21,120 triangles** (10,560 quads, 10,562 vertices) for every variant, plus 1,440 for the two eyes. Every face is a quad, the mesh is closed and manifold (the build logs `non-manifold edges 0`), and it is ready for further subdivision.
+Base mesh: **25,696 triangles** (12,848 quads, 12,850 vertices) for every variant, plus 1,440 for the two eyes. (21,120 before the M1-CHR-02 head rebuild.) Every face is a quad, the mesh is closed and manifold (the build logs `non-manifold edges 0`), and it is ready for further subdivision.
 
 | Part | Cage (before Catmull-Clark) | Loops |
 |---|---|---|
@@ -45,9 +45,11 @@ Base mesh: **21,120 triangles** (10,560 quads, 10,562 vertices) for every varian
 | Legs | The bottom torso ring splits at a crotch vertex into two 18-vert loops (a briefs-line leg loop) | 5 thigh loops, **knee**, 6 shin loops, **ankle** |
 | Feet | 12 around × 11 rings, ankle enters through a 4×5-cell hole | Heel and toe caps are 2×4 grids. Toes are a mitten (see weaknesses). |
 | Hands | 10-vert palm tube. Four 4-sided finger tubes consume the knuckle end, the thumb grows from the radial side | Rings at **MCP, PIP, DIP** with mid-phalanx rings; fingertips capped with a quad |
-| Head | A box lattice (front face 12×12) ray-cast from the head centre. The neck enters an 8×8 hole underneath | **Eyes:** a 3×2-cell block becomes concentric loops (rim, lid margin on the globe, socket inside the globe, capped). **Mouth:** a 4×2-cell block becomes lip border, lip contact line and mouth bag (capped) |
+| Head (`bb_head.py`, M1-CHR-02) | A box lattice (18 × 17 × 8 cells) whose lines sit on the face's landmarks, ray-cast from the head centre. The neck enters a 12×4-cell hole centred under the neck column | **Eyes:** a 6×2-cell block (16-vertex loops) refilled with two orbicularis-oculi loops, a crease/lower-lid loop, the lid surface, the lid margin as two pinned loops (outer edge and the edge on the globe, so the margin has thickness) and a socket, capped. The canthi are loop vertices. **Mouth:** a 12×4-cell block (32-vertex loops): nasolabial/outer orbicularis loop, a second orbicularis loop, vermilion border, mid-vermilion, contact line (pinned), inner lip and mouth bag (tagged `mouth`), capped |
 
-After one subdivision level every loop doubles: eye 20 verts, lip line 24, fingers 8 around, arm 20, leg 36. Poles (valence 3 and 5) sit at the eye and mouth block corners, the armhole corners, the crotch vertex and the finger webs. Those are the conventional places for them, and they are kept away from the main bend lines.
+After one subdivision level every loop doubles: eye loops 32 verts (6 concentric loops), lip loops 64 (7 loops), fingers 8 around, arm 20, leg 36. Poles (valence 3 and 5) sit at the eye and mouth block corners (lateral brow, side of the bridge, below the outer canthus, beside the alae, below the mouth corners), the armhole corners, the crotch vertex and the finger webs, away from the lid and lip lines and the main bend lines.
+
+**The head field (M1-CHR-02, `bb_face.py`)** is a lofted solid (horizontal superellipse sections from tables you can read as a profile: chin, mouth base, nose base, nasion, glabella, forehead, vertex), closed underneath by the mandible's lower border as a tilted plane (no shelf, no web into the neck); heightfield terms for the soft forms; nose tip, columella and alae as primitives with the nostrils subtracted; and **lids as a solid**: an ellipsoid around each globe with the almond aperture cut through it, cross-faded into the face by distance from the fissure, so the lid margin has its 1.9 mm thickness and the brow overlaps the lid to form the crease. `assets_src/characters/asha/sdf_preview.py` sphere-traces this field directly (seconds per view) for sculpt iteration.
 
 ## 4. UV notes
 
@@ -88,9 +90,11 @@ Results (from the build report):
 
 | Variant | Height | Head | Heads tall | Body tris |
 |---|---|---|---|---|
-| slender (Asha-like) | 1.630 m | 0.222 m | 7.34 | 21,120 |
-| athletic (Rhen-like) | 1.770 m | 0.237 m | 7.47 | 21,120 |
-| heavy (Toma-like) | 1.890 m | 0.252 m | 7.50 | 21,120 |
+| slender (Asha-like) | 1.630 m | 0.222 m | 7.34 | 25,696 |
+| athletic (Rhen-like) | 1.770 m | 0.237 m | 7.47 | 25,696 |
+| heavy (Toma-like) | 1.890 m | 0.252 m | 7.50 | 25,696 |
+
+The heavy variant was reshaped on review-sweep-B (less belly fat, broader shoulders, a shallower trunk, a slightly larger head).
 
 ## 7. Review scene and shots
 
@@ -99,6 +103,8 @@ Results (from the build report):
 Shots in `tests/screenshots/shots.json` (432×768, Face 512², 24 settle frames): `base_body_{slender,athletic,heavy}_{front,q34,side}`, `base_body_slender_face` and `base_body_slender_posed`. Captured alone they match bit for bit. Inside a full `capture.sh` run they differ by RMSE ≈ 0.002 (state carried over from earlier shots), well under the 0.008 limit.
 
 ## 8. Known weaknesses (honest)
+
+*M1-CHR-02 update:* the head now has loop flow, real lids, a lofted face, nostrils (in the field and the bake) and a softened jaw/neck junction; see `asha_review.md` for the hero's state. The base bodies still use the flat placeholder material, so the notes below about the face describe the **placeholder** read.
 
 - **Face:** reads as a mannequin or wax bust, not a person. The mid-face is long and slightly muzzle-like in 3/4. The lip line is a hard slit, the eyes stare (no lashes, brows, tear line, caruncle or lid thickness detail), the ears are lumps, and there are no nostrils. **This is the main §14 risk and it is not solved.**
 - **Hands:** proportions and joint loops are right, but fingers are smooth tubes (no knuckle or nail detail) and the thumb root is soft. **Feet** are mittens with no separate toes, which matters because Asha wears sandals.

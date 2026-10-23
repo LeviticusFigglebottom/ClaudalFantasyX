@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "tortoiseshell"
+albedo_color = Color(0.42, 0.227, 0.118, 1)
+roughness = 0.15
+clearcoat_enabled = true
