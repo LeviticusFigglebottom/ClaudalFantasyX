@@ -24,6 +24,10 @@ extends Node3D
 ##   storm_center() / sea_level() / sea_height_at(world_xz)   placement and the funnel for floaters
 ##   look                                           named look from undertow.json ("day_storm")
 ##   refresh()                                      re-apply after changing tunables at runtime
+##   on_viewport_state_changed()                    re-reads the viewport's AA now (M1-RND-16: a
+##                                                  GraphicsSettings.push_override at a cut calls it
+##                                                  through VIEWPORT_STATE_GROUP, so the temporal
+##                                                  jitter gate follows the override frame-exactly)
 
 signal quality_changed(tier: String)
 
@@ -155,6 +159,16 @@ func _ready() -> void:
 		push_warning("UndertowStorm: unknown quality '%s', using default" % quality)
 		set_quality(str(state.config.get("default_quality", "")))
 	_place()
+
+
+func _enter_tree() -> void:
+	add_to_group(GraphicsSettings.VIEWPORT_STATE_GROUP)
+
+
+## M1-RND-16: the viewport's AA or 3D scaling just changed (a scoped override was pushed or popped):
+## re-gate the temporal jitter and push the dynamic uniforms now, not on the next _process.
+func on_viewport_state_changed() -> void:
+	_push_dynamic()
 
 
 func _process(delta: float) -> void:

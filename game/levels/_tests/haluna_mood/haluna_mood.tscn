@@ -91,6 +91,7 @@ directional_shadow_max_distance = 400.0
 
 [node name="Water" type="Node3D" parent="."]
 script = ExtResource("7_water")
+publishes_water_level = true
 wave_set = ExtResource("8_waves")
 material = ExtResource("9_water_mat")
 

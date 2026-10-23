@@ -118,6 +118,20 @@ func test_victory_logs_each_foe_and_other_endings_log_nothing() -> void:
 	_done()
 
 
+func test_read_and_victory_credit_the_same_enemy_id() -> void:  # M1-NIT-02 (sweep-L CMB-03 S2)
+	var e := _engine()
+	for foe in e.enemies:
+		var rev := BattleRead.reveal(foe, e.db.enemies.get(BattleEngine.enemy_id(foe), {}))
+		assert_eq(StringName(str(rev["enemy_id"])), BattleEngine.enemy_id(foe), "%s" % foe.id)
+		assert_ne(String(BattleEngine.enemy_id(foe)), String(foe.id), "the row id, not the field id")
+	var bb := BattleBestiary.new()
+	bb.attach(e, true)
+	e.battle_finished.emit(BattleEngine.OUTCOME_VICTORY)
+	for foe in e.enemies:
+		assert_eq(Bestiary.new(Game.state.bestiary).defeated(BattleEngine.enemy_id(foe)), 1, "%s" % foe.id)
+	_done()
+
+
 func test_weakness_text_names_the_elements() -> void:
 	assert_eq(BattleBestiary.weakness_text({"affinities": {"weak": ["fire", "ice"]}}), "Weak to Fire, Ice")
 	assert_eq(BattleBestiary.weakness_text({"affinities": {"weak": []}}), "No weakness found")

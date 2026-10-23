@@ -9,7 +9,10 @@ extends RefCounted
 ##     normally and log into a scratch dictionary, so no baseline or save moves;
 ##   - every Read hit is logged (Bestiary.record_read) and kept in `last_reveal` for the HUD, and
 ##     floats the target's weaknesses over it;
-##   - a victory logs one defeat per enemy in the encounter (Bestiary.record_defeated);
+##   - a victory logs one defeat per enemy in the encounter (Bestiary.record_defeated). Read and
+##     victory credit key the log by the same id, BattleEngine.enemy_id (Read's reveal carries the
+##     row that rule finds). A KO'd foe stays in engine.enemies, so it is credited; the engine has
+##     no rule that removes a foe mid-battle today, and a foe such a rule removed would not be;
 ##   - an opening other than normal floats its caption over the first combatant to act.
 ## Hold the instance for the whole battle: a signal connection does not keep it alive.
 
@@ -72,7 +75,7 @@ func _on_battle_finished(outcome: StringName) -> void:
 	if outcome != BattleEngine.OUTCOME_VICTORY:
 		return
 	for e in engine.enemies:
-		book.record_defeated(StringName(String(e.id).get_slice("#", 0)))
+		book.record_defeated(BattleEngine.enemy_id(e))
 
 
 func _on_turn_started(actor: BattleCombatant) -> void:

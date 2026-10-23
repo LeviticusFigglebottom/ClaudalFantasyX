@@ -59,6 +59,12 @@ Exit 3 (no Blender, or not the pinned 5.0.1) prints `SKIP`, as the screenshot st
 
 `--all`: 292 s, 0 failed, 0 uncovered. The M1-QA-02 state is below, for comparison.
 
+**Update 2026-10-23 (M1-CHR-05, M1-CHR-06, M1-RND-14, M1-ENV-07; worktree-agent-a361fe4924e35dfcf):** no known failures are left, and `expected_failure` is gone from every job.
+- `base_body`: recommitted from `build_all.sh`, which now passes `--threads 1`. The rebuild hashes are the pinned ones above. The committed files never matched their sources: a773ea1's own sources rebuild to today's bytes.
+- `shader_test`: the face sort ranks the tuple keys, so the script runs on 5.0.1. Recommitted, because the old files came from an unsorted, irreproducible build. The `char_*` shots pass unchanged.
+- `vegetation`: no exported tangents (`export_tangents=False`, as the Haluna kit does; the imports already `ensure_tangents`), so it runs at the default 4 threads again. Identical at 1 thread and at 4 threads (3 concurrent runs).
+- Asha's `build.sh --threads 4` (M1-CHR-06) is still open for the Asha line.
+
 Asha's texture chain is covered now (sweep I, S3 on M1-QA-02): the face textures are where the §14 fidelity review happens, so a change to `asha_textures.py`, the bake dump or the donor must reproduce them byte for byte. The texture step is most of the job's time, and it runs only when Asha's (or base_body's, or the donor's) sources or outputs change.
 
 ## Earlier state (M1-QA-02: `--all`, 95 s wall, 4 vCPU, load ~4; threads unpinned, TANGENT tolerance on base_body)

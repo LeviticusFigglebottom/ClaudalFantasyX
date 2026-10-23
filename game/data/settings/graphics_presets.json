@@ -155,7 +155,9 @@
   },
   "rules": {
     "temporal_upscaler_modes": ["fsr2"],
-    "temporal_upscaler_note": "FSR2 runs its own temporal AA, so use_taa is forced off while it is active."
+    "temporal_upscaler_note": "FSR2 runs its own temporal AA, so use_taa is forced off while it is active.",
+    "override_keys": ["aa", "scaling_mode", "render_scale", "fsr_sharpness"],
+    "override_keys_note": "M1-RND-16: the settings a scoped GraphicsSettings.push_override may name (the viewport's AA and 3D scaling: the pipeline state a cutscene switches at a cut, e.g. TAA + FSR1 for storm close-ups on High)."
   },
   "system_tiers_note": "presets[].tiers: per-system quality tier for systems that keep their own variants (water: WaterSurface.quality_for_preset; vegetation: shader_families; weathering: Environment's WeatheringTide). Undertow, glimmer and character tiers map 1:1 from the preset id in their own data files (M1-RND-07).",
   "sky_detail_note": "M1-RND-12: levels.sky_detail holds sky-material uniforms (march steps, erosion octaves, how much erosion the sun samples see, radiance-cubemap steps). GraphicsSettings sets each one on the Environment's sky material when its shader declares it (env_sky_cumulus.gdshader), so other skies are untouched. Measured costs: docs/kb/qa/gpu/2026-10-23-rnd-12-sky.md.",

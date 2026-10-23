@@ -114,7 +114,33 @@ class ManifestTest(unittest.TestCase):
 
     def test_repo_known_failures_are_pinned(self) -> None:
         kinds = {j["id"]: j["expected_failure"]["kind"] for j in self.manifest["jobs"] if "expected_failure" in j}
-        self.assertEqual(kinds, {"base_body": "mismatch", "shader_test": "build_error"})
+        # M1-CHR-05 (base_body) and M1-RND-14 (shader_test) were fixed and their markers removed.
+        self.assertEqual(kinds, {})
+
+    def test_owner_build_scripts_use_the_gate_thread_count(self) -> None:  # M1-CHR-06, M1-NIT-02
+        """A hand rebuild must commit what the gate rebuilds. Every Blender call in an owner build script
+        under assets_src/ (base_body's build_all.sh, Asha's build.sh, any later one) runs a script some
+        gate job runs, and passes that job's --threads."""
+        by_script = {}
+        for job in self.manifest["jobs"]:
+            for run in job["runs"]:
+                if run[0] == "{blender}":
+                    by_script[vbb.run_script(run)] = job
+        calls = 0
+        for rel in vbb._tracked(ROOT, "assets_src", ".sh"):
+            text = (ROOT / rel).read_text(encoding="utf-8").replace("\\\n", " ")
+            for line in text.splitlines():
+                words = line.split()
+                if '"$blender"' not in words or "--python" not in words:
+                    continue
+                calls += 1
+                script = words[words.index("--python") + 1]
+                self.assertIn(script, by_script, f"{rel}: {script} is not run by any job in {vbb.MANIFEST.name}")
+                job = by_script[script]
+                self.assertIn("--threads", words, f"{rel}: {script} without --threads")
+                got = words[words.index("--threads") + 1]
+                self.assertEqual(got, str(vbb.job_threads(job, self.manifest)), f"{rel}: {script} vs job {job['id']}")
+        self.assertGreaterEqual(calls, 2, "base_body's build_all.sh and Asha's build.sh at least")
 
     def test_python_runs_use_this_interpreter(self) -> None:
         run = ["{python}", "assets_src/x/t.py", "--bake-dir", "{scratch}/b"]
@@ -256,7 +282,8 @@ class KnownVerdictTest(unittest.TestCase):  # M1-QA-06
         manifest = vbb.load_manifest()
         bb = next(j for j in manifest["jobs"] if j["id"] == "base_body")
         self.assertEqual(vbb.job_threads(bb, manifest), 1)
-        self.assertEqual(set(bb["expected_failure"]["rebuilt_sha256"]), set(bb["expected_failure"]["differs"]))
+        if "expected_failure" in bb:  # none since M1-CHR-05; a future marker must pin its content again
+            self.assertEqual(set(bb["expected_failure"]["rebuilt_sha256"]), set(bb["expected_failure"]["differs"]))
 
 
 class SelectionTest(unittest.TestCase):

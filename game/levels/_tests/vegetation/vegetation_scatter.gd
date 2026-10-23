@@ -70,6 +70,16 @@ func rebuild() -> void:
 		mm.set_instance_transform(i, xforms[i])
 	multimesh = mm
 	material_override = material
+	tag(self)
+
+
+## vegetation_detail groups (M1-ENV-05): a grass scatter thins with the MultiMesh fraction, may lose
+## its shadows on Low, and scales its visibility range when it has one.
+static func tag(mmi: MultiMeshInstance3D) -> void:
+	mmi.add_to_group(GraphicsSettings.vegetation_group(GraphicsSettings.VEG_GROUP_MULTIMESH))
+	mmi.add_to_group(GraphicsSettings.vegetation_group(GraphicsSettings.VEG_GROUP_SMALL_SHADOWS))
+	if mmi.visibility_range_end > 0.0:
+		mmi.add_to_group(GraphicsSettings.vegetation_group(GraphicsSettings.VEG_GROUP_LOD))
 
 
 func _blocked(p: Vector3) -> bool:

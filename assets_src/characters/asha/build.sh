@@ -10,7 +10,7 @@ if [ -z "$blender" ]; then blender="$(command -v blender || true)"; fi
 if [ -z "$blender" ]; then blender="$HOME/.cache/hymn/blender-5.0.1+dfsg-5/blender"; fi
 bake="$(mktemp -d)"
 trap 'rm -rf "$bake"' EXIT
-"$blender" --background --factory-startup --python assets_src/characters/asha/build_asha.py -- \
+"$blender" --background --factory-startup --threads 4 --python assets_src/characters/asha/build_asha.py -- \
   --out assets/characters/asha/asha.glb --bake-dir "$bake" --report "$bake/report.json" 2>&1 \
   | grep -E "^\[asha\]|Error|Traceback" || true
 test -s assets/characters/asha/asha.glb

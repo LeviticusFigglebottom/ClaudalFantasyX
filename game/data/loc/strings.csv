@@ -477,3 +477,4 @@ ELEMENT_HOLY,Holy
 ELEMENT_GLIMMER,Glimmer
 HUD_READ_WEAK,Weak to {list}
 HUD_READ_NO_WEAKNESS,No weakness found
+AUTOSAVE_SKIPPED_TOAST,"The autosave still holds a journey further along, so it was kept. Rest at a shrine to record this one."

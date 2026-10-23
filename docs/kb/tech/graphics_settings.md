@@ -186,6 +186,42 @@ High is the tight preset. If measurement shows it over budget, step down in this
   cost follows the window resolution, not `render_scale`. Below 32 steps the cloud silhouettes step, so no tier goes
   lower (tested).
 
+## Scoped overrides (M1-RND-16)
+
+A cutscene or other scene-owned moment can change the game viewport's AA and 3D scaling for its duration
+without touching the player's settings. The keys it may name are `rules.override_keys` in
+graphics_presets.json: `aa`, `scaling_mode`, `render_scale`, `fsr_sharpness` (the viewport pipeline state;
+everything else is per-scene and the zone owns it).
+
+```gdscript
+# At a camera cut (or behind a fade): never mid-shot, the pipeline switches on the next frame drawn.
+var h := GraphicsSettings.push_override(self, {"aa": "taa", "scaling_mode": "fsr"})
+# ... the storm close-up ...
+GraphicsSettings.pop_override(h)   # at the cut out; also automatic when `self` leaves the tree
+```
+
+- **Layering.** The override is laid on the player's settings (`base`, default: user://settings.cfg, or the
+  default preset when there is none; after M1-ARC-15 pass `GraphicsRuntime.settings()`), then planned like
+  any preset, so the FSR2 rule (TAA forced off under a temporal upscaler) still holds. Only the viewport
+  properties are written: `scaling_3d_mode`, `scaling_3d_scale`, `fsr_sharpness`, `use_taa`,
+  `screen_space_aa`, `msaa_3d`.
+- **Stacking.** Overrides stack and resolve key by key: the last pushed wins, popping any one re-applies the
+  rest in push order, and when the last one goes the viewport gets back exactly the values it had before the
+  first (a snapshot, so it also restores a viewport that never had settings applied, like a test's). All
+  overrides target one viewport at a time; a push to a second one is refused. Invalid keys or values are
+  refused (handle 0) and change nothing.
+- **Never saved.** Nothing here calls `save_config`; the player's preset and override layer are untouched.
+- **Listeners.** After every push or pop, nodes in `GraphicsSettings.VIEWPORT_STATE_GROUP`
+  (`hymn_viewport_state_listeners`) get `on_viewport_state_changed()`. UndertowStorm uses it to re-gate its
+  temporal jitter in the same frame.
+- **Prewarm.** `GraphicsSettings.override_state(values)` returns the viewport state an override would set
+  without applying it. Give it to `ShaderPrewarm.spawn_with_state(scene, SceneRouter, state)` (or set
+  `viewport_state` before `start`), so the stage compiles the override's pipeline before the cut. An
+  override pushed before a zone loads is seen by the router's own prewarm, which copies the live viewport.
+- **Caveat until M1-ARC-15 lands here:** a settings-menu apply while an override is active writes the
+  player's AA over it; the cutscene's pop then restores the pre-override snapshot, which is the old setting.
+  Menus are not reachable during cutscenes today.
+
 ## Open items
 - **Measure** every row above on a GPU runner (M1-QA-01) and replace the estimates. Add a per-preset benchmark camera path to the vertical-slice zone when one exists.
 - Localization rows for the `*_key` fields in `graphics_presets.json` (`GFX_PRESET_LOW`, `GFX_GI_MODE`, …) still need adding to `game/data/loc/strings.csv` (owner: Systems/UI). `tools/validate_data.py` doesn't scan `game/data/settings/` yet.

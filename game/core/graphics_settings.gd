@@ -39,6 +39,20 @@ const OP_FRACTION := &"fraction"
 const OP_SHADOW_GATE := &"shadow_gate"
 const KEY_VEG_GROUPS := "vegetation_groups"
 const AUTHORED_META_PREFIX := "hymn_authored_"
+## vegetation_groups keys (the group names are data): GraphicsSettings.vegetation_group(VEG_GROUP_LOD).
+const VEG_GROUP_LOD := "lod"
+const VEG_GROUP_MULTIMESH := "multimesh"
+const VEG_GROUP_SMALL_SHADOWS := "small_shadows"
+## M1-RND-16 scoped overrides: rules.override_keys lists the settings an override may name.
+const KEY_OVERRIDE_KEYS := "override_keys"
+## Told on_viewport_state_changed() right after an override is applied or restored, so per-frame
+## gates (UndertowStorm's temporal jitter) follow it in the same frame.
+const VIEWPORT_STATE_GROUP := &"hymn_viewport_state_listeners"
+const VIEWPORT_STATE_METHOD := &"on_viewport_state_changed"
+## The viewport properties an override writes, snapshots and restores.
+const OVERRIDE_VIEWPORT_PROPS: Array[String] = [
+	"scaling_3d_mode", "scaling_3d_scale", "fsr_sharpness", "use_taa", "screen_space_aa", "msaa_3d"
+]
 
 const GI_OFF := "off"
 const GI_SDFGI := "sdfgi"
@@ -50,6 +64,17 @@ const TYPE_ENUM_NAME := "enum"
 
 ## Parsed presets data shared by the static helpers (preset_tier).
 static var _data_cache: Dictionary = {}
+## Scoped override stack (M1-RND-16): {handle, owner (WeakRef), values, on_exit}, oldest first.
+static var _override_stack: Array[Dictionary] = []
+## The overridden viewport's state before the first override (restored by the last pop).
+static var _override_base: Dictionary = {}
+static var _override_viewport: Object = null
+## The base settings the whole stack layers on: the first push's, kept until the last pop.
+static var _override_settings: GraphicsSettings = null
+## user://settings.cfg as last read for an override with no base, and its modified time (M1-NIT-02).
+static var _player_settings: GraphicsSettings = null
+static var _player_settings_mtime := -1
+static var _next_override_handle := 1
 
 var data: Dictionary = {}
 var preset_id: String = ""
@@ -263,6 +288,12 @@ static func preset_tier(preset: String, system: String) -> String:
 	return ""
 
 
+## Tree group a zone tags for a vegetation_detail role (VEG_GROUP_LOD / _MULTIMESH / _SMALL_SHADOWS;
+## graphics_presets.json vegetation_groups). &"" if the role is unknown.
+static func vegetation_group(role: String) -> StringName:
+	return StringName(str((_shared_data().get(KEY_VEG_GROUPS, {}) as Dictionary).get(role, "")))
+
+
 ## Swaps every ShaderMaterial under `root` whose shader belongs to a shader family
 ## (graphics_presets.json "shader_families") to the variant of the current preset's tier. Each
 ## material is visited once; shared materials change for every user, which is the intent. Call it
@@ -335,6 +366,162 @@ static func set_authored(obj: Object, property: String, value: Variant) -> void:
 	obj.set(property, value)
 
 
+# --- Scoped overrides (M1-RND-16) --------------------------------------------------------------
+# A cutscene (or any scene-owned moment) can switch the game viewport's AA and 3D scaling for its
+# duration without touching the player's settings: push_override() at a cut, pop_override() (or
+# the owner leaving the tree) restores the state below. Storm close-ups on High use it to swap FSR2,
+# which cannot integrate the Undertow body's dither, for FSR1 + native TAA (docs/kb/tech/undertow.md).
+
+
+## Applies `values` (settings keys from graphics_presets.json rules.override_keys, e.g.
+## {"aa": "taa", "scaling_mode": "fsr"}) on top of the player's settings to `viewport` (default: the
+## owner's viewport), until pop_override(handle) or until `owner` leaves the tree. Overrides stack:
+## the last pushed wins key by key, and popping any of them re-applies the rest. When the last one
+## goes, the viewport gets back exactly the values it had before the first. `base` is the player's
+## settings the overrides layer on (default: user://settings.cfg, or the default preset); it is never
+## saved. The first push's base holds for the whole stack: a later push with another base is applied
+## on the first one's, with a warning, so it never re-bases an earlier owner's layer (M1-NIT-02).
+## The owner leaving the tree pops its entry at the end of that frame, unless it is back in a tree
+## by then: a reparent (remove_child then add_child, or Node.reparent) keeps the override. Call it at
+## a cut: the pipeline switches on the next frame drawn. Returns the handle, or 0 when nothing was
+## applied (invalid key or value, no viewport, or a second viewport).
+static func push_override(
+	owner: Node, values: Dictionary, viewport: Viewport = null, base: GraphicsSettings = null
+) -> int:
+	if owner == null:
+		push_warning("GraphicsSettings: push_override needs an owner")
+		return 0
+	var vp := viewport if viewport != null else (owner.get_viewport() if owner.is_inside_tree() else null)
+	if vp == null:
+		push_warning("GraphicsSettings: push_override(%s) has no viewport" % owner.name)
+		return 0
+	var settings := base if base != null and _override_stack.is_empty() else _override_settings_or_player()
+	if base != null and base != settings:
+		push_warning("GraphicsSettings: push_override(%s): keeping the first override's base settings" % owner.name)
+	var invalid := settings.invalid_override(values)
+	if invalid != "":
+		push_warning("GraphicsSettings: push_override(%s): %s" % [owner.name, invalid])
+		return 0
+	if _override_stack.is_empty():
+		_override_viewport = vp
+		_override_base = _viewport_state(vp)
+	elif not is_instance_valid(_override_viewport) or _override_viewport != vp:
+		push_error("GraphicsSettings: push_override(%s): overrides already target another viewport" % owner.name)
+		return 0
+	_override_settings = settings
+	var handle := _next_override_handle
+	_next_override_handle += 1
+	var on_exit := func() -> void: GraphicsSettings._owner_left.call_deferred(handle)
+	owner.tree_exiting.connect(on_exit)
+	_override_stack.append(
+		{"handle": handle, "owner": weakref(owner), "values": values.duplicate(), "on_exit": on_exit}
+	)
+	_apply_override_state(override_state())
+	return handle
+
+
+## Removes one override (any position in the stack). False when the handle is not active.
+static func pop_override(handle: int) -> bool:
+	for i in _override_stack.size():
+		var entry := _override_stack[i]
+		if int(entry["handle"]) != handle:
+			continue
+		_override_stack.remove_at(i)
+		var owner := (entry["owner"] as WeakRef).get_ref() as Node
+		var on_exit: Callable = entry["on_exit"]
+		if owner != null and owner.tree_exiting.is_connected(on_exit):
+			owner.tree_exiting.disconnect(on_exit)
+		if _override_stack.is_empty():
+			_apply_override_state(_override_base)
+			_override_base = {}
+			_override_viewport = null
+			_override_settings = null
+		else:
+			_apply_override_state(override_state())
+		return true
+	return false
+
+
+## The deferred end of an owner's tree_exiting: pops `handle` unless its owner is alive and in a tree
+## again (a reparent). A no-op for a handle that is no longer active.
+static func _owner_left(handle: int) -> void:
+	for entry in _override_stack:
+		if int(entry["handle"]) != handle:
+			continue
+		var owner := (entry["owner"] as WeakRef).get_ref() as Node
+		if owner == null or not owner.is_inside_tree():
+			pop_override(handle)
+		return
+
+
+## Number of active overrides.
+static func active_overrides() -> int:
+	return _override_stack.size()
+
+
+## The viewport state (property -> value: scaling_3d_mode, scaling_3d_scale, fsr_sharpness, use_taa,
+## screen_space_aa, msaa_3d) the active overrides give, plus `extra` on top, without applying it.
+## A cutscene hands this to ShaderPrewarm.viewport_state before the cut, so the stage compiles the
+## pipeline the override will select. With no overrides and no `extra`: the base settings' state.
+static func override_state(extra: Dictionary = {}, base: GraphicsSettings = null) -> Dictionary:
+	var settings := base if base != null else _override_settings_or_player()
+	var layer := settings.overrides.duplicate()
+	layer[KEY_PRESET] = settings.preset_id
+	for entry in _override_stack:
+		layer.merge(entry["values"] as Dictionary, true)
+	layer.merge(extra, true)
+	var out := {}
+	for op in settings.plan(layer):
+		if op["target"] == TARGET_VIEWPORT and OVERRIDE_VIEWPORT_PROPS.has(str(op["name"])):
+			out[str(op["name"])] = op["value"]
+	return out
+
+
+## "" when every key of `values` may be overridden (rules.override_keys) and every value is one of
+## the setting's options; otherwise what is wrong.
+func invalid_override(values: Dictionary) -> String:
+	var allowed := (data.get("rules", {}) as Dictionary).get(KEY_OVERRIDE_KEYS, []) as Array
+	if values.is_empty():
+		return "no values"
+	for key: Variant in values:
+		if not allowed.has(str(key)):
+			return "'%s' cannot be overridden (rules.%s: %s)" % [key, KEY_OVERRIDE_KEYS, str(allowed)]
+		if not is_valid_value(str(key), values[key]):
+			return "invalid value <%s> for '%s'" % [str(values[key]), key]
+	return ""
+
+
+## The stack's base, else the player's settings. settings.cfg is read again only when its modified
+## time changes or save_config wrote it, not on every push, pop and plan (M1-NIT-02). Read-only.
+static func _override_settings_or_player() -> GraphicsSettings:
+	if _override_settings != null:
+		return _override_settings
+	var mtime := FileAccess.get_modified_time(CONFIG_PATH) if FileAccess.file_exists(CONFIG_PATH) else 0
+	if _player_settings == null or mtime != _player_settings_mtime:
+		_player_settings = GraphicsSettings.new()
+		_player_settings.load_config(CONFIG_PATH)
+		_player_settings_mtime = mtime
+	return _player_settings
+
+
+static func _viewport_state(vp: Viewport) -> Dictionary:
+	var out := {}
+	for prop in OVERRIDE_VIEWPORT_PROPS:
+		out[prop] = vp.get(prop)
+	return out
+
+
+## Writes the state, then tells the listeners (VIEWPORT_STATE_GROUP) in the same frame.
+static func _apply_override_state(state: Dictionary) -> void:
+	if not is_instance_valid(_override_viewport):
+		return
+	var vp := _override_viewport as Viewport
+	for prop: String in state:
+		vp.set(prop, state[prop])
+	if vp.is_inside_tree():
+		vp.get_tree().call_group(VIEWPORT_STATE_GROUP, VIEWPORT_STATE_METHOD)
+
+
 # --- Persistence (user://settings.cfg, section [graphics]) -------------------------------------
 
 
@@ -346,6 +533,8 @@ func save_config(path: String = CONFIG_PATH) -> Error:
 	cfg.set_value(CONFIG_SECTION, KEY_VERSION, int(data.get(KEY_VERSION, 0)))
 	cfg.set_value(CONFIG_SECTION, KEY_PRESET, preset_id)
 	cfg.set_value(CONFIG_SECTION, KEY_OVERRIDES, overrides.duplicate())
+	if path == CONFIG_PATH:
+		_player_settings = null
 	return cfg.save(path)
 
 
