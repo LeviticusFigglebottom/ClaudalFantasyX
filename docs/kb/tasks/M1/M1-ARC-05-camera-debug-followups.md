@@ -2,8 +2,8 @@
 id: M1-ARC-05
 title: Camera director cutscene control and debug overlay input fixes (review-sweep-A)
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: architect-stream-5
 depends_on: [M1-ARC-01, M1-ARC-02]
 milestone: M1
 request-from: "cinematics"
