@@ -447,6 +447,7 @@ func _push_static() -> void:
 func _push_dynamic() -> void:
 	if not _built:
 		return
+	state.temporal_aa = viewport_is_temporal(get_viewport() if is_inside_tree() else null)
 	var params := state.dynamic_parameters()
 	params["storm_center"] = storm_center()
 	params.merge(mood_parameters(), true)
@@ -480,6 +481,14 @@ func _build_gizmo() -> void:
 	mat.no_depth_test = true
 	gizmo.material_override = mat
 	visuals.add_child(gizmo, false, Node.INTERNAL_MODE_FRONT)
+
+
+## True when `vp` accumulates frames: TAA, or the FSR2 temporal upscaler (which replaces TAA). A
+## null viewport counts as temporal (headless tests, before the node is in a tree).
+static func viewport_is_temporal(vp: Viewport) -> bool:
+	if vp == null:
+		return true
+	return vp.use_taa or vp.scaling_3d_mode == Viewport.SCALING_3D_MODE_FSR2
 
 
 ## The baked noise lattice (undertow.json "noise"), loaded once.
