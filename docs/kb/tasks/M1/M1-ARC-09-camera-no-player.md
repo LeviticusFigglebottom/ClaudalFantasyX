@@ -2,8 +2,8 @@
 id: M1-ARC-09
 title: Camera director works without a player; missing aim_node is loud
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a35fbca43cd81575b"
 depends_on: [M1-ARC-07]
 milestone: M1
 request-from: "cinematics"

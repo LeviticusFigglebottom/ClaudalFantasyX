@@ -2,9 +2,9 @@
 id: M1-NAR-07
 title: dlgc near-miss heuristic: kill false positives, catch the remaining silent cases
 role: architect
-status: review
+status: doing
 reviewer: narrative
-owner_session: "agent-a82894145cf6d2aff"
+owner_session: "worktree-agent-a35fbca43cd81575b"
 depends_on: [M1-NAR-06]
 milestone: M1
 request-from: "narrative"

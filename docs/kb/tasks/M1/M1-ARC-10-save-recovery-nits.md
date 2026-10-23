@@ -2,8 +2,8 @@
 id: M1-ARC-10
 title: Save: leftover .tmp recovery and debug downward set_chapter
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a35fbca43cd81575b"
 depends_on: [M1-ARC-08]
 milestone: M1
 request-from: "qa"
