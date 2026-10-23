@@ -215,7 +215,7 @@ def build_chapel(seed: int = 83, *, w: float = 6.0, d: float = 9.0, wall_h: floa
         # Flat roof slab and the cupola: a drum and an inverted-bowl dome (with a lip), gilded.
         kc.rounded_block(mb, (0.0, wall_h + 0.05, 0.0), (hw - 0.05, 0.08, hd - 0.05), ww, radius=0.01, seg=1,
                          weather=crisp)
-        cz = -hd * 0.15
+        cz = 0.0
         base = wall_h + 0.12
         ang_n = 24 if not lod else 10
         drum = np.array([[0.0, base, cz], [0.0, base + 0.85, cz]])
@@ -223,11 +223,11 @@ def build_chapel(seed: int = 83, *, w: float = 6.0, d: float = 9.0, wall_h: floa
         prof_t = np.linspace(0.0, 1.0, 12 if not lod else 5)
         bowl_r = 0.8 * (np.cos(prof_t * math.pi * 0.5) ** 0.85) + 0.05 * np.sin(prof_t * math.pi) * (1 - prof_t)
         base = base + 0.3
-        bowl_y = base + 0.55 + 0.62 * np.sin(prof_t * math.pi * 0.5)
+        bowl_y = base + 0.55 + 0.95 * np.sin(prof_t * math.pi * 0.5)
         centers = np.stack([np.zeros_like(prof_t), bowl_y, np.full_like(prof_t, cz)], axis=-1)
         kc.tube(mb, centers, np.maximum(bowl_r, 0.01), ang_n, gold, first_normal=np.array([1.0, 0.0, 0.0]))
         kc.tube(mb, np.array([[0.0, base + 0.5, cz], [0.0, base + 0.6, cz]]), 0.86, ang_n, gold, cap_start=True)
-        kc.tube(mb, np.array([[0.0, base + 1.15, cz], [0.0, base + 1.5, cz]]), np.array([0.05, 0.015]), 8, gold,
+        kc.tube(mb, np.array([[0.0, base + 1.48, cz], [0.0, base + 1.85, cz]]), np.array([0.05, 0.015]), 8, gold,
                 cap_end=True)
         out.append(mb)
     return out

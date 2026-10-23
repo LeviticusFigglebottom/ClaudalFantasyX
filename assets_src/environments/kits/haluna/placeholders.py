@@ -130,8 +130,8 @@ def build_banyan(seed: int = 91, *, height: float = 14.0, crown_radius: float = 
             sway = r.normal(0, 0.08, (m, 3)) * yy[:, None]
             sway[:, 1] = 0.0
             pts = top + np.stack([np.zeros(m), -length * yy, np.zeros(m)], axis=-1) + sway
-            r0 = r.uniform(0.025, 0.07)
-            r1 = r0 * (2.0 if reach_ground else 0.5)
+            r0 = r.uniform(0.012, 0.035)
+            r1 = r0 * (1.8 if reach_ground else 0.6)
             _limb(mb, pts, r0, r1, 4 if lod else 5, height, r)
         # Crown cards around limb ends, in a flattened dome.
         crown_c = np.array([0.0, height - 3.0, 0.0])

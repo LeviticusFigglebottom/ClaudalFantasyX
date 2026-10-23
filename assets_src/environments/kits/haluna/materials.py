@@ -51,7 +51,7 @@ def stone(albedo: str, normal: str, tile: tuple[float, float], **kw) -> dict:
 
 MATERIALS: dict[str, dict] = {
     "kit_coral_stone": stone("coral_stone_albedo.png", "coral_stone_normal.png", (1.2, 1.2), base_triplanar=True,
-                             normal_strength=1.3, roughness_base=0.86, cavity_darken=0.3),
+                             normal_strength=1.3, roughness_base=0.86, cavity_darken=0.2, ao_strength=0.5),
     "kit_coral_concrete": stone("coral_concrete_albedo.png", "coral_concrete_normal.png", (2.0, 2.0),
                                 base_triplanar=True, normal_strength=1.1, roughness_base=0.8, cavity_darken=0.4,
                                 barnacle_coverage=0.65, salt_coverage="Vector2(0.4, 0.7)"),
@@ -127,7 +127,7 @@ STANDARD: dict[str, dict] = {
     "kit_gold_leaf": {"albedo_color": hexc("#D4A437"), "roughness": 0.28, "metallic": 1.0},
     "kit_lacquer_red": {"albedo_color": hexc("#B3261E"), "roughness": 0.22, "clearcoat_enabled": "true",
                         "clearcoat": 0.6},
-    "kit_net": {"transparency": 2, "alpha_scissor_threshold": 0.35, "cull_mode": 2,
+    "kit_net": {"transparency": 1, "cull_mode": 2,
                 "albedo_texture": ("tex", TEX + "net_albedo.png"), "roughness": 0.9,
                 "uv1_scale": "Vector3(2.5, 2.5, 1)", "texture_filter": 5},
     "kit_salt_glass": {"transparency": 1, "albedo_color": hexc("#BFE6E0", 0.55), "roughness": 0.06,

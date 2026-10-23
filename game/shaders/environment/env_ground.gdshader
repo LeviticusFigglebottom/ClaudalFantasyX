@@ -27,7 +27,7 @@ uniform sampler2D tex_stone_normal : hint_normal, filter_linear_mipmap_anisotrop
 uniform sampler2D tex_detail : hint_default_black, filter_linear_mipmap, repeat_enable;
 uniform float stone_tile_m = 1.2;
 uniform float detail_scale_m = 0.7;
-uniform vec4 col_lane : source_color = vec4(0.86, 0.82, 0.74, 1.0);
+uniform vec4 col_lane : source_color = vec4(0.76, 0.71, 0.62, 1.0);
 uniform vec4 col_turf : source_color = vec4(0.55, 0.53, 0.36, 1.0);
 uniform vec4 col_turf_grass : source_color = vec4(0.40, 0.47, 0.25, 1.0);
 uniform vec4 col_seagrass : source_color = vec4(0.20, 0.30, 0.18, 1.0);
@@ -84,7 +84,7 @@ void fragment() {
 
 	// Lanes: packed coral gravel and sand, paler and smoother, with stone showing through.
 	float lane = clamp(m.r, 0.0, 1.0);
-	vec3 lane_c = mix(col_lane.rgb * (0.9 + 0.15 * stone.a), stone.rgb * col_lane.rgb, 0.35);
+	vec3 lane_c = mix(col_lane.rgb * (0.85 + 0.25 * stone.a), stone.rgb * col_lane.rgb, 0.6);
 	albedo = mix(albedo, lane_c, lane);
 	tn = mix(tn, ground_unpack(stn.rg) * vec3(0.6, 0.6, 1.0), lane * 0.7);
 	rough = mix(rough, 0.85, lane);

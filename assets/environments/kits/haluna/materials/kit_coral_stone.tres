@@ -8,8 +8,9 @@
 [resource]
 resource_name = "kit_coral_stone"
 shader = ExtResource("1_shader")
+shader_parameter/ao_strength = 0.5
 shader_parameter/base_triplanar = true
-shader_parameter/cavity_darken = 0.3
+shader_parameter/cavity_darken = 0.2
 shader_parameter/col_algae = Color(0.2902, 0.3529, 0.1804, 1)
 shader_parameter/col_barnacle = Color(0.902, 0.8549, 0.7529, 1)
 shader_parameter/col_lichen = Color(0.7529, 0.5412, 0.2275, 1)

@@ -97,7 +97,9 @@ func _place_piece(spec: Dictionary) -> Node3D:
 	var yaw := deg_to_rad(float(spec.get("yaw_deg", 0.0)))
 	var tilt: Array = spec.get("tilt_deg", [0.0, 0.0])
 	var s := float(spec.get("scale", 1.0))
-	var basis := Basis(Vector3.UP, yaw) * Basis.from_euler(Vector3(deg_to_rad(float(tilt[0])), 0.0, deg_to_rad(float(tilt[1]))))
+	var basis := (
+		Basis(Vector3.UP, yaw) * Basis.from_euler(Vector3(deg_to_rad(float(tilt[0])), 0.0, deg_to_rad(float(tilt[1]))))
+	)
 	var node := instance_piece(String(spec["piece"]), spec.get("materials", {}), float(spec.get("lod1_from_m", -1.0)))
 	if node == null:
 		return null

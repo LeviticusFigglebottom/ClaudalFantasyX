@@ -34,18 +34,21 @@ uniform vec4 col_cloud_shadow : source_color = vec4(0.561, 0.655, 0.769, 1.0); /
 uniform float cloud_base_m = 900.0;
 uniform float cloud_top_m = 3200.0;
 uniform float cloud_scale_m = 1700.0; // size of a cumulus cell
-uniform float cloud_coverage : hint_range(0.0, 1.0) = 0.4; // towards the horizon
-uniform float cloud_coverage_overhead : hint_range(0.0, 1.0) = 0.18;
-uniform float cloud_clear_radius_m = 2500.0;
+uniform float cloud_coverage : hint_range(0.0, 1.0) = 0.48; // towards the horizon
+uniform float cloud_coverage_overhead : hint_range(0.0, 1.0) = 0.12;
+uniform float cloud_clear_radius_m = 2200.0;
 uniform float cloud_density : hint_range(0.0, 0.05) = 0.006;
 uniform float cloud_erosion : hint_range(0.0, 1.0) = 0.6;
-uniform float cloud_edge_sharpness : hint_range(1.0, 40.0) = 8.0;
+// Dome profile: the tower top is field^power x fraction of the slab (smaller power = flatter tops).
+uniform float cloud_dome_power : hint_range(0.1, 1.0) = 0.25;
+uniform float cloud_tower_fraction : hint_range(0.1, 1.0) = 0.85;
+uniform float cloud_edge_sharpness : hint_range(1.0, 60.0) = 40.0;
 uniform float cloud_light_absorption : hint_range(0.0, 4.0) = 0.6;
-uniform float cloud_sun_energy : hint_range(0.0, 8.0) = 3.0;
-uniform float cloud_ambient_energy : hint_range(0.0, 4.0) = 2.0;
+uniform float cloud_sun_energy : hint_range(0.0, 12.0) = 6.0;
+uniform float cloud_ambient_energy : hint_range(0.0, 8.0) = 3.4;
 uniform float cloud_max_distance_m = 60000.0;
-uniform vec2 cloud_offset_m = vec2(0.0, 0.0);
-uniform int cloud_steps : hint_range(4, 64) = 48;
+uniform vec2 cloud_offset_m = vec2(900.0, -1400.0);
+uniform int cloud_steps : hint_range(4, 96) = 64;
 // Horizon haze: clouds fade into the horizon colour with distance (aerial perspective).
 uniform float haze_distance_m = 38000.0;
 group_uniforms;
@@ -69,7 +72,7 @@ float cloud_density_at(vec3 p) {
 		return 0.0;
 	}
 	float h = (p.y - cloud_base_m) / (cloud_top_m - cloud_base_m);
-	float surf = sqrt(hf) - h;
+	float surf = pow(hf, cloud_dome_power) * cloud_tower_fraction - h;
 	float ero = hymn_fbm3(p / (cloud_scale_m * 0.12), 4, 2.1, 0.55) - 0.5;
 	float d = surf * cloud_edge_sharpness + ero * cloud_erosion * (0.6 + h) * cloud_edge_sharpness * 0.25;
 	d *= smoothstep(0.0, 0.03, h);
@@ -89,11 +92,11 @@ vec4 clouds(vec3 dir, vec3 sun_dir) {
 	float dt = (t1 - t0) / float(cloud_steps);
 	// Per-direction jitter of the sample positions: with 40 steps the residual grain is far less
 	// objectionable than the stair-stepping a fixed offset gives (captures run without TAA).
-	float jitter = 0.5 + 0.6 * (hymn_hash12(dir.xz * 8192.0 + dir.y * 17.0) - 0.5);
+	float jitter = 0.5 + 0.5 * (hymn_hash12(dir.xz * 8192.0 + dir.y * 17.0) - 0.5);
 	float trans = 1.0;
 	vec3 light = vec3(0.0);
 	float mu = dot(dir, sun_dir);
-	float phase = 0.6 + 0.9 * pow(max(mu, 0.0), 6.0); // forward-scatter silver lining
+	float phase = 0.8 + 0.9 * pow(max(mu, 0.0), 6.0); // forward-scatter silver lining
 	for (int i = 0; i < cloud_steps; i++) {
 		float t = t0 + (float(i) + jitter) * dt;
 		vec3 p = dir * t;
@@ -106,7 +109,7 @@ vec4 clouds(vec3 dir, vec3 sun_dir) {
 			// Multiple scattering, approximated by three Beer octaves (each a = 0.5, b = 0.4):
 			// without it the interiors go black, and real cumulus never does.
 			float tau = od * cloud_density * dl * cloud_light_absorption;
-			float sun_t = (exp(-tau) + 0.5 * exp(-tau * 0.4) + 0.25 * exp(-tau * 0.16)) / 1.75;
+			float sun_t = (exp(-tau) + 0.6 * exp(-tau * 0.3) + 0.45 * exp(-tau * 0.08)) / 2.05;
 			float powder = 1.0 - exp(-sigma * dt * 2.0);
 			float hfrac = clamp((p.y - cloud_base_m) / (cloud_top_m - cloud_base_m), 0.0, 1.0);
 			vec3 amb = mix(col_cloud_shadow.rgb, col_cloud_lit.rgb, smoothstep(0.0, 0.8, hfrac)) * cloud_ambient_energy;
@@ -121,7 +124,7 @@ vec4 clouds(vec3 dir, vec3 sun_dir) {
 		}
 	}
 	float haze = 1.0 - exp(-t0 / haze_distance_m);
-	return vec4(light, (1.0 - trans) * (1.0 - haze * 0.85));
+	return vec4(light, (1.0 - trans) * (1.0 - haze * 0.5));
 }
 
 vec3 sky_gradient(vec3 dir) {

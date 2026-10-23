@@ -7,7 +7,7 @@
         1800,
         200
       ],
-      "bytes": 57828,
+      "bytes": 45708,
       "lods": {
         "awning_cloth": 972,
         "awning_cloth-lod1": 56
@@ -18,7 +18,7 @@
         16000,
         2400
       ],
-      "bytes": 701804,
+      "bytes": 542624,
       "lods": {
         "banyan_placeholder": 8230,
         "banyan_placeholder-lod1": 2020
@@ -33,7 +33,7 @@
         26000,
         1500
       ],
-      "bytes": 764716,
+      "bytes": 593352,
       "lods": {
         "dock_haluna": 12630,
         "dock_haluna-lod1": 152
@@ -41,10 +41,10 @@
     },
     "garland_string": {
       "budget": [
-        2600,
-        400
+        3400,
+        600
       ],
-      "bytes": 201768,
+      "bytes": 155876,
       "lods": {
         "garland_string": 1788,
         "garland_string-lod1": 476
@@ -55,7 +55,7 @@
         22000,
         1600
       ],
-      "bytes": 725720,
+      "bytes": 566472,
       "lods": {
         "house_tile_a": 13034,
         "house_tile_a-lod1": 376
@@ -66,7 +66,7 @@
         22000,
         1600
       ],
-      "bytes": 622712,
+      "bytes": 486348,
       "lods": {
         "house_tile_b": 11129,
         "house_tile_b-lod1": 368
@@ -77,7 +77,7 @@
         22000,
         1600
       ],
-      "bytes": 948432,
+      "bytes": 740252,
       "lods": {
         "house_tile_c": 17507,
         "house_tile_c-lod1": 400
@@ -88,7 +88,7 @@
         2400,
         400
       ],
-      "bytes": 117760,
+      "bytes": 89912,
       "lods": {
         "lintel_gull_a": 502,
         "lintel_gull_a-lod1": 260
@@ -99,7 +99,7 @@
         2400,
         400
       ],
-      "bytes": 117752,
+      "bytes": 89904,
       "lods": {
         "lintel_gull_b": 502,
         "lintel_gull_b-lod1": 260
@@ -110,7 +110,7 @@
         2400,
         400
       ],
-      "bytes": 125412,
+      "bytes": 95740,
       "lods": {
         "lintel_gull_c": 532,
         "lintel_gull_c-lod1": 290
@@ -121,7 +121,7 @@
         5000,
         500
       ],
-      "bytes": 101644,
+      "bytes": 80104,
       "lods": {
         "net_rack": 1673,
         "net_rack-lod1": 112
@@ -132,10 +132,10 @@
         9000,
         900
       ],
-      "bytes": 248008,
+      "bytes": 199956,
       "lods": {
         "order_chapel": 3280,
-        "order_chapel-lod1": 370
+        "order_chapel-lod1": 406
       }
     },
     "outrigger_7m": {
@@ -143,7 +143,7 @@
         7000,
         700
       ],
-      "bytes": 136864,
+      "bytes": 102816,
       "lods": {
         "outrigger_7m": 1940,
         "outrigger_7m-lod1": 300
@@ -154,7 +154,7 @@
         18000,
         2500
       ],
-      "bytes": 853552,
+      "bytes": 668636,
       "lods": {
         "roof_fan_shell": 17456,
         "roof_fan_shell-lod1": 984
@@ -165,7 +165,7 @@
         3500,
         400
       ],
-      "bytes": 155892,
+      "bytes": 121972,
       "lods": {
         "roof_thatch_hip": 2864,
         "roof_thatch_hip-lod1": 328
@@ -176,7 +176,7 @@
         12000,
         600
       ],
-      "bytes": 415544,
+      "bytes": 325448,
       "lods": {
         "roof_tile_hip": 8176,
         "roof_tile_hip-lod1": 344
@@ -187,7 +187,7 @@
         7000,
         700
       ],
-      "bytes": 110988,
+      "bytes": 87544,
       "lods": {
         "ruin_column_broken": 2403,
         "ruin_column_broken-lod1": 36
@@ -198,7 +198,7 @@
         5000,
         300
       ],
-      "bytes": 173960,
+      "bytes": 136760,
       "lods": {
         "ruin_slab": 3747,
         "ruin_slab-lod1": 12
@@ -209,7 +209,7 @@
         8000,
         500
       ],
-      "bytes": 116904,
+      "bytes": 91696,
       "lods": {
         "ruin_wall_sunk": 2235,
         "ruin_wall_sunk-lod1": 12
@@ -220,7 +220,7 @@
         22000,
         3500
       ],
-      "bytes": 1103436,
+      "bytes": 861928,
       "lods": {
         "shell_shrine_massing": 20796,
         "shell_shrine_massing-lod1": 1516
@@ -235,7 +235,7 @@
         14000,
         1300
       ],
-      "bytes": 507072,
+      "bytes": 395024,
       "lods": {
         "stilt_house": 8534,
         "stilt_house-lod1": 408
@@ -246,7 +246,7 @@
         7000,
         900
       ],
-      "bytes": 248068,
+      "bytes": 193356,
       "lods": {
         "storehouse_stilt": 3738,
         "storehouse_stilt-lod1": 364
@@ -257,7 +257,7 @@
         5600,
         500
       ],
-      "bytes": 152308,
+      "bytes": 118516,
       "lods": {
         "tidewall_gate": 2328,
         "tidewall_gate-lod1": 24
@@ -268,7 +268,7 @@
         5600,
         500
       ],
-      "bytes": 277416,
+      "bytes": 215304,
       "lods": {
         "tidewall_straight": 4296,
         "tidewall_straight-lod1": 24
@@ -279,7 +279,7 @@
         5600,
         500
       ],
-      "bytes": 270616,
+      "bytes": 210040,
       "lods": {
         "tidewall_windgap": 4188,
         "tidewall_windgap-lod1": 24
@@ -290,7 +290,7 @@
         1400,
         120
       ],
-      "bytes": 31704,
+      "bytes": 24844,
       "lods": {
         "timber_deck_2m": 400,
         "timber_deck_2m-lod1": 12
@@ -301,7 +301,7 @@
         900,
         120
       ],
-      "bytes": 23204,
+      "bytes": 18260,
       "lods": {
         "timber_railing_2m": 222,
         "timber_railing_2m-lod1": 48
@@ -312,7 +312,7 @@
         400,
         60
       ],
-      "bytes": 12656,
+      "bytes": 10344,
       "lods": {
         "timber_stilt_post": 123,
         "timber_stilt_post-lod1": 15
@@ -323,7 +323,7 @@
         28000,
         1500
       ],
-      "bytes": 1554268,
+      "bytes": 1207568,
       "lods": {
         "wakeshell_wall": 27240,
         "wakeshell_wall-lod1": 96
@@ -334,7 +334,7 @@
         2600,
         500
       ],
-      "bytes": 98956,
+      "bytes": 76244,
       "lods": {
         "windbreak_placeholder": 583,
         "windbreak_placeholder-lod1": 175

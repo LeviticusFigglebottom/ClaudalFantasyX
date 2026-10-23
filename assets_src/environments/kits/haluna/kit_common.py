@@ -509,7 +509,8 @@ def export_glb(builders: list[MeshBuilder], out_path: str, extras: dict | None =
         export_apply=False,
         export_texcoords=True,
         export_normals=True,
-        export_tangents=True,
+        export_tangents=False,  # Godot generates them on import (ensure_tangents): Blender's threaded
+        # MikkTSpace is not bit-stable on degenerate hip-line triangles, so exported tangents broke determinism.
         export_vertex_color="ACTIVE",
         export_all_vertex_colors=False,
         export_materials="EXPORT",

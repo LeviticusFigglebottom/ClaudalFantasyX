@@ -43,8 +43,8 @@ fov_deg = 37.8
 [sub_resource type="Resource" id="ShotH03"]
 script = ExtResource("6_shot")
 id = &"H03"
-position = Vector3(-72.75, 5.75, -14.2)
-look_at = Vector3(-72.95, 6.22, -18.6)
+position = Vector3(-74.3, 6.55, -14.4)
+look_at = Vector3(-72.95, 6.2, -18.6)
 fov_deg = 16.1
 dof_far_enabled = true
 dof_far_distance = 6.0
@@ -61,8 +61,8 @@ fov_deg = 46.4
 [sub_resource type="Resource" id="ShotH07"]
 script = ExtResource("6_shot")
 id = &"H07"
-position = Vector3(-102, 4.3, 43.5)
-look_at = Vector3(-118, 5.0, 31.5)
+position = Vector3(-105, 4.3, 42.5)
+look_at = Vector3(-118, 5.4, 31.5)
 fov_deg = 53.1
 
 [node name="HalunaMood" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water")]

@@ -321,7 +321,7 @@
         960,
         540
       ],
-      "settle_frames": 36
+      "settle_frames": 24
     },
     {
       "id": "haluna_h02_tidewall_lane",
@@ -331,7 +331,7 @@
         960,
         540
       ],
-      "settle_frames": 36
+      "settle_frames": 24
     },
     {
       "id": "haluna_h03_lintel_gull",
@@ -341,7 +341,7 @@
         960,
         540
       ],
-      "settle_frames": 36
+      "settle_frames": 24
     },
     {
       "id": "haluna_h04_dock",
@@ -351,7 +351,7 @@
         960,
         540
       ],
-      "settle_frames": 36
+      "settle_frames": 24
     },
     {
       "id": "haluna_h07_chapel_court",
@@ -361,7 +361,7 @@
         960,
         540
       ],
-      "settle_frames": 36
+      "settle_frames": 24
     }
   ]
 }
