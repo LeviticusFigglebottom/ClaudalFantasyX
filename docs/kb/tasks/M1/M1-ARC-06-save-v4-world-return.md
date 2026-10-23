@@ -2,8 +2,8 @@
 id: M1-ARC-06
 title: Save v4 (party HP/MP/statuses, shrine network, respawn) and return-to-world on load
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: architect-stream-6
 depends_on: [M1-ARC-03, M1-PRG-03]
 milestone: M1
 request-from: "architect"

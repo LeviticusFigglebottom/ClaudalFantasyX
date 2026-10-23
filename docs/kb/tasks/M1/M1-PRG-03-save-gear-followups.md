@@ -2,8 +2,8 @@
 id: M1-PRG-03
 title: Starting gear on load, EquipmentEffects lifetime (review-sweep-A)
 role: progression
-status: todo
-owner_session: ""
+status: doing
+owner_session: architect-stream-6
 depends_on: [M1-PRG-02]
 milestone: M1
 request-from: "combat"
