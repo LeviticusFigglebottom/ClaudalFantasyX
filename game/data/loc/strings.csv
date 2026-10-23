@@ -442,3 +442,4 @@ CHAR_NETMENDER,Old Net-Mender
 CHAR_FISHER,Fisher
 FIELD_PROMPT_LISTEN,Listen
 SWELL_INPUT_TIMING_RING_HELP_LAMP,Strike each time the ring meets the lamp. Beats: {beats}
+AUTOSAVE_SKIPPED_TOAST,"The autosave still holds a journey further along, so it was kept. Rest at a shrine to record this one."
