@@ -27,3 +27,8 @@ M1-QA-06 found that Blender's threaded tangent export races. At 4 threads, base_
   - Review: rendering (SPEC §12.3, Rendering ↔ Environment).
 
 ## Review log
+- 2026-10-23 rendering (review-sweep-L, fresh reviewer): **approve.** No blockers.
+  - **Checks:** `python3 tools/dev/verify_blender_builds.py --job vegetation`, run 3 times in a row at the default 4 threads: **`7 identical`** every time, rc 0. test_vegetation (part of the 411 tool tests) asserts no TANGENT in the .glb files and `ensure_tangents=true` on every import.
+  - **Is dropping tangents safe? Yes, confirmed in Godot.** A headless script loaded each imported vegetation .glb from this worktree's fresh `--import`. **Every surface has `ARRAY_FORMAT_TANGENT`:** beach_vine_patch 2/2, frangipani_a/b 6/6, palm_coconut_a/b/c 6/6 and saltgrass_clumps 4/4. All seven `.glb.import` files have `meshes/ensure_tangents=true`. No game code loads these .glb files at runtime through GLTFDocument (grep), so every use goes through the importer. Godot's MikkTSpace pass is deterministic, so the in-game tangents are stable too.
+  - The authors' shot numbers (`veg_*` ≤ 0.0047 against a limit of 0.018, `haluna_*` ≤ 0.0018) are consistent with the attributes being unchanged apart from TANGENT. I did not re-render, because the Lead's full gate covers it.
+  - **Nit:** `beach_vine_patch` lost 82 vertices that had been split only by tangent. If any future script indexes those vertices (wind weights by index), it must not assume the old count. Nothing does today.

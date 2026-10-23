@@ -26,3 +26,9 @@ M1-QA-06 pinned Blender's thread count in the rebuild gate (tools/dev/blender_bu
 
 ## Review log
 - 2026-10-23 lead: added `--threads 4` to assets_src/characters/asha/build.sh, matching the gate's asha job, which closes the unticked box.
+- 2026-10-23 rendering (review-sweep-L, fresh reviewer): **approve, with should-fixes.**
+  - **Checks:** base_body's `build_all.sh` passes `--threads 1` in the gate's argv order (build_all.sh:14). `--job base_body` gives 3 identical. `test_owner_build_scripts_use_the_gate_thread_count` passes (tool tests 411 OK). The Lead's fc3940c adds `--threads 4` to asha/build.sh:13, matching the gate's `default_threads` for the asha job. `--job asha` result: see the M1-CHR-09 entry.
+  - **Should-fix:**
+    - **S1: the test still covers base_body only** (tools/tests/test_blender_builds.py:120-125). Its docstring still says Asha "is folded in by the Asha line". The task asked for the test to be extended to `asha/build.sh` once the flag landed; without that, nothing ties build.sh to the gate.
+    - **S2: the Asha rows in assets/PROVENANCE.md:158-167 still show `blender --background --factory-startup --python ...` with no `--threads 4`.** The base_body rows were updated. Append-only rules allow fixing the owner's own rows.
+    - **S3: the second criterion's box is still `[ ]`,** although the Lead's log line says it is closed. Tick it when S1 lands.

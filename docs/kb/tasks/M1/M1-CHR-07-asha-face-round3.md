@@ -52,3 +52,13 @@ Details are in asha_review.md §8; there is a note on ADR 0021.
 **Verdict:** improved, smile gap closed; **not a clean §14 pass as built** (the crown shell, the framing lock, thin lips). Remaining work: a hair card-layout pass, which needs triangle headroom (LOD0 is at 63,500).
 
 ## Review log
+- 2026-10-23 rendering (review-sweep-L, fresh reviewer): **approve the round as an improvement (the smile driver is fixed); strict SPEC §14 verdict: not a pass.** No blockers for merge: the round's own verdict says the same thing.
+  - **Smile driver, verified:**
+    - `python3 -m unittest tools.tests.test_asha_face_drive`: 5/5 OK on the committed GLB.
+    - The same `TestEmotionsDriveTheFace` run against the CHR-04 GLB and poses (`git show 378fec4:…`) gives **41 failures** (for example, cheek_raise's full-weight peak is 3.61 mm against a 4.0 floor), exactly as the notes claim. The test mirrors `AshaStage._put_weight` (asha_stage.gd:160-169).
+    - **In Godot:** I loaded the imported asha.glb headless. The Head's `skin_head` surface has morph normals that survived import: `cheek_raise_L` changes 1,315 normals and `lid_squint_L` 1,388, while `vis_aa` changes 0, as designed.
+    - On the baselines, the smile moves 1,509 px in the eye and cheek band against neutral. In a 2× crop the lower-lid lift and the cheek bunching are visible.
+  - **Should-fix:**
+    - **S1: only the `skin_head` primitive gets morph normals** (asha_glb.py:191, `material="skin_head"`). The `mouth` primitive moves 88 vertices under `mouth_smile` with unchanged normals (Godot surface 1). It is small, but the inner lip corners shade at rest when the smile is on.
+    - **S2: diagonal striations at the smiling mouth corner** (asha_face_smile, toward the shadow side). They look like the QA-05 shadow-terminator pattern on the deformed corner. Check with sun shadows off on lavapipe (QA-05 showed lavapipe and GPU agree at scene settings, so a GPU isn't needed for this).
+  - **Hairline criterion:** unticked and partial, as recorded. CHR-09 carries it.

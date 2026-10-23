@@ -45,3 +45,17 @@ M1-RND-11 found that the Undertow body's dither only partly integrates under FSR
     cinematics tasks do not exist yet; undertow.md names the Ch1, Ch8 and Ch20-21 shots for them to reference.
 
 ## Review log
+- 2026-10-23 environment (review-sweep-L, fresh reviewer): **interim approve of the API; stays in `review` until criterion 5 (the PC GPU measurement) lands.** No blockers in the code.
+  - **What I read:** `git show` a2a947b: graphics_settings.gd:362-497, shader_prewarm.gd, undertow_storm.gd, graphics_presets.json `rules.override_keys`, and test_graphics_override.gd.
+  - **Checks:** Godot `--filter=graphics_override` 9/0 failed and `--filter=graphics_settings` 24/0.
+  - **Criteria 1–4 and 6 hold:**
+    - The stack is last-wins key by key, and popping any entry re-plans the rest.
+    - The last pop restores a snapshot of the six viewport properties.
+    - The owner's `tree_exiting` pops its own entry, and a second viewport is refused.
+    - settings.cfg is never written.
+    - Storm listeners are told in the same call, so `temporal_aa` follows frame-exactly.
+  - **Should-fix:**
+    - **S1: `_override_settings` is replaced by every push** (graphics_settings.gd:401). A second push with a different `base` re-bases the overrides already active, so the first owner's layer changes silently. Keep the first push's base for the stack's lifetime, or refuse a different one, and test it.
+    - **S2: `tree_exiting` fires on a reparent too**, not only on free. An owner moved under a new parent mid-cutscene loses its override at once. Document that the owner must be a node that stays put (the sequencer), or listen to `tree_exited` plus `is_queued_for_deletion`.
+    - **S3: `override_state()` with no base reads user://settings.cfg from disk on every call** (:472-477), including every pop and push. That's cheap, but pass `GraphicsRuntime.settings()` once M1-ARC-15 is in, as the handoff says. Track it on the M2 cinematics task.
+  - **Still open:** criterion 5, the storm close-up dither crop on High with `{aa: taa, scaling_mode: fsr}` against native TAA (target within 10%), plus the override's cost, on the RX 9070 XT. Until that's measured, the workaround is unproven on the hardware it exists for.

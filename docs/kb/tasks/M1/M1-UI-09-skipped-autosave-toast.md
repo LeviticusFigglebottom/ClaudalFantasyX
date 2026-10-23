@@ -39,3 +39,17 @@ Wording is UI and Narrative's call. Filed from M1-ARC-11 (architect); see ADR 00
   - boot.gd's change sits at the end of `_ready` plus one new function, away from M1-ARC-15's boot.gd hunk.
 
 ## Review log
+- 2026-10-23 architect (review-sweep-L, fresh reviewer): **approve.** No blockers.
+  - **What I read:** `git show` ac901e7 and 28a2f8e: autosave_toast.gd, toast.json, the boot.gd hunk and the loc row (strings.csv:456).
+  - **Checks:** Godot `--filter=autosave_toast` 7/0 failed and `--filter=save` 168/0.
+  - **Criteria met:**
+    - It shows for `ERR_ALREADY_EXISTS` only (:104-106).
+    - A hold defers it to pending, and it shows once released (:78-80, :107-110).
+    - It is `PROCESS_MODE_ALWAYS` and mouse-transparent.
+    - It is installed once under root, deferred.
+    - Timings are data, and the loc key is appended.
+    - The project stretch is `canvas_items`, so the 1920×1080 reference rect scales.
+  - **Nits:**
+    - `tr()` runs once at `_show` (:115), so a language change during the 5.3 s notice keeps the old text. Harmless.
+    - A second skip during the notice restarts the fade-in from 0 (:114-118), so the panel blinks. Keep the alpha if it is already showing.
+    - Narrative should confirm the wording ("still holds a journey further along"), as the task says.
