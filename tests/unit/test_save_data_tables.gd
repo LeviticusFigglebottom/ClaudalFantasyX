@@ -318,10 +318,23 @@ func _locations(how: StringName) -> LocationRegistry:
 	return LocationRegistry.load_path(path)
 
 
+## The torn registry is a real one saved in binary and cut in half: a torn text .tres would make
+## Godot print "Parse Error", which ci_local.sh reads as a GDScript parse error.
 func _flags(how: StringName) -> FlagRegistry:
-	var path := _dir("flags", how) + "/flags.tres"
-	_put(path, how, FLAGS_HEAD + 'flags = {\n"test_flag": "torn', FLAGS_HEAD + "flags = {}\n")
-	return FlagRegistry.load_path(path)
+	var dir := _dir("flags", how)
+	if how != TORN:
+		var path := dir + "/flags.tres"
+		_put(path, how, "", FLAGS_HEAD + "flags = {}\n")
+		return FlagRegistry.load_path(path)
+	var whole := FlagRegistry.new()
+	whole.flags = {"test_flag": "Reserved for automated tests."}
+	var res_path := dir + "/flags.res"
+	assert_eq(ResourceSaver.save(whole, res_path), OK)
+	var bytes := FileAccess.get_file_as_bytes(res_path)
+	var f := FileAccess.open(res_path, FileAccess.WRITE)
+	f.store_buffer(bytes.slice(0, bytes.size() / 2))
+	f.close()
+	return FlagRegistry.load_path(res_path)
 
 
 func _rest(how: StringName) -> Dictionary:
