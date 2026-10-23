@@ -298,6 +298,15 @@ ADR [0018](../decisions/0018-new-game-autosave-policy.md) Amendment 5 records th
 | `location_id`, `respawn`, `attuned_shrines` | `world/locations.json` | No loss: WorldReturn keeps `location_id` on a fallback (ARC-11), and nothing prunes `attuned_shrines`. But a save made with no registry is judged against nothing. | Gate check `locations` (`LocationRegistry.load_path` / `integrity_problem`: a load error, no locations, or `default_location` not listed). |
 | `flags` | `game/data/flags.tres` | No loss: flags are never pruned, and an undeclared flag only logs. But a story build without its registry is broken. | Gate check `flags` (`FlagRegistry.load_path` / `integrity_problem`: failed to load, or declares no flags). |
 | `currency`, `chapter`, `play_time_sec` | none | Not judged against a table. | Shape check only (`SaveShape`). |
+| `bestiary` (v5, M1-CMB-03) | `battle/enemies.json` | New field. Nothing prunes it: an id enemies.json no longer lists is kept as saved, and a page reads its stats from the table at display time. | Gate check `bestiary` (`BattleDB.enemies_problem`: enemies.json torn, missing or listing no enemies). Shape: `{String: {read: bool, defeated: whole number}}`. |
 
 - **Not covered.** `recover_temp` is still not behind the gate: it only renames a temp file that an earlier, healthy run wrote and checked, so no table can change what it holds. `report_data_tables` is a log line, not a player-facing message; a boot banner needs a UI task and a loc key.
 - Tests: `tests/unit/test_save_data_tables.gd` (each guarded table torn, missing and empty: the gate names it, the save loads exactly as written, manual, empty-slot and auto saves are refused, both slots are byte-identical, and it saves again once mended; the Lattice freeze and refused write-back; unknown Lattice ids through save, load and write-back; `normalize` and `record_party` on broken tables), `tests/unit/test_lattice_save.gd` (in-play behaviour of unknown ids).
+
+## Save v5, the bestiary log (M1-CMB-03, Combat; ADR 0023)
+
+- `SAVE_VERSION = 5`. `GameStateData.bestiary` is `{"<enemy id>": {"read": bool, "defeated": whole number}}`, wrapped in place by `Bestiary` (`game/battle/bestiary.gd`). `from_dict` copies it through `Bestiary.from_saved`, which turns JSON's float counts into ints.
+- `_migrate_v4_to_v5` adds an empty log (a v4 save predates Read). The literal is frozen.
+- `SaveShape` checks it (`_bestiary`: a Dictionary of records; `read` a bool, `defeated` a whole number >= 0; other keys are ignored). A malformed log reads as corrupt.
+- The data-tables gate gained a seventh check, `bestiary` (`DataHealth.bestiary_problem`, from the same cached `battle_db`): enemies.json torn, missing or empty closes saving. A torn or missing enemies.json is also reported by the `battle` check, which joins every battle table's load error.
+- Writers: `BattleBestiary` (a Read hit, and one defeat per foe on victory) in live battles only. Rules and glue: docs/kb/design/battle_ctb.md "Read, the bestiary and openings". Tests: `tests/unit/test_bestiary_save.gd`.

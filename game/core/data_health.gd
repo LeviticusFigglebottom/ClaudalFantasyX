@@ -20,6 +20,7 @@ const BATTLE := &"battle"
 const LOCATIONS := &"locations"
 const FLAGS := &"flags"
 const PARTY_REST := &"party_rest"
+const BESTIARY := &"bestiary"
 
 ## The tables behind standard()'s checks, loaded on first use and cached. Tests replace one with
 ## a broken copy (LatticeBoard.load_board_from, BattleDB.load_dir, LocationRegistry.load_path)
@@ -44,6 +45,7 @@ static func standard(item_check: Callable) -> DataHealth:
 	h.add_check(LOCATIONS, h.locations_problem)
 	h.add_check(FLAGS, h.flags_problem)
 	h.add_check(PARTY_REST, h.rest_problem)
+	h.add_check(BESTIARY, h.bestiary_problem)
 	return h
 
 
@@ -139,3 +141,10 @@ func flags_problem(_state: GameStateData = null) -> String:
 ## party_rest.json (the carried statuses in party_vitals), as Game loaded it.
 func rest_problem(_state: GameStateData = null) -> String:
 	return Game.rest_rules_problem(Game.rest_rules)
+
+
+## enemies.json (the enemy ids in bestiary; M1-CMB-03), from the same battle tables.
+func bestiary_problem(_state: GameStateData = null) -> String:
+	if battle_db == null:
+		battle_db = BattleDB.load_default()
+	return battle_db.enemies_problem()

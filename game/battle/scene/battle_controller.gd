@@ -65,6 +65,8 @@ var items: BattleItemSource
 var frame_wait := Callable()
 ## Damage numbers and float words for resolved actions (BattleFloats).
 var floats := BattleFloats.new(self)
+## Read, the bestiary log and the opening (M1-CMB-03; BattleBestiary).
+var bestiary := BattleBestiary.new(self)
 ## Swell gauges and techniques for the current battle (M1-CMB-04).
 var swell: BattleSwell
 ## False freezes an open Swell input where it stands (capture scripts); tick() advances it.
@@ -221,6 +223,7 @@ func _build_engine(
 		fixture.prepare(engine)
 	swell = BattleSwell.new(BattleSwell.load_config())
 	swell.attach(engine)
+	bestiary.attach(engine, persist_progress and fixture == null)
 	engine.action_resolved.connect(floats.on_action_resolved)
 	stage.spawn(engine)
 	stage.refresh_ko(engine)

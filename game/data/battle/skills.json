@@ -72,6 +72,9 @@
      "accuracy": 90, "element": "none", "target": "single_foe", "mp_cost": 10, "magic": false},
     {"id": "lamp_dive", "name_key": "SKILL_LAMP_DIVE", "kind": "physical", "power": 12, "rank": 2,
      "accuracy": 100, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false,
-     "swell": true}
+     "swell": true},
+    {"id": "read", "name_key": "SKILL_READ", "kind": "support", "power": 0, "rank": 2,
+     "accuracy": 100, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false,
+     "read": true}
   ]
 }
