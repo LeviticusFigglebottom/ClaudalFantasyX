@@ -15,6 +15,8 @@ const KEY_PRESET_TIERS := "preset_tiers"
 const KEY_DEFAULT_TIER := "default_tier"
 const KEY_FAMILIES := "families"
 const KEY_SINGLE_TIER := "single_tier"
+## Meta on a material copy apply_to_tree made: [root instance id, the copy's own instance id].
+const OWNER_META := &"hymn_tier_owner"
 
 static var _data: Dictionary = {}
 
@@ -66,52 +68,88 @@ static func family_of(shader: Shader) -> String:
 	return ""
 
 
-## Swaps one material to `tier`. Returns true when the shader changed.
-static func apply_tier(material: Material, tier: String) -> bool:
+## Shader path `material` should switch to for `tier`, or "" when it is not a tiered character
+## material, the tier is unknown, or it is already at that tier.
+static func target_shader_path(material: Material, tier: String) -> String:
 	var sm := material as ShaderMaterial
 	if sm == null:
-		return false
+		return ""
 	var fam := family_of(sm.shader)
 	if fam.is_empty():
-		return false
+		return ""
 	var path := shader_path(fam, tier)
 	if path.is_empty() or path == sm.shader.resource_path:
+		return ""
+	return path
+
+
+## Swaps one material to `tier` **in place**. Returns true when the shader changed. The caller must
+## own `material`: every instance sharing it changes too. Trees go through apply_to_tree.
+static func apply_tier(material: Material, tier: String) -> bool:
+	var path := target_shader_path(material, tier)
+	if path.is_empty():
 		return false
-	sm.shader = load(path) as Shader
+	(material as ShaderMaterial).shader = load(path) as Shader
 	return true
 
 
-## Swaps every character material under `root` (material overrides and surface overrides) to
-## `tier`. Each material is visited once. Returns the number of materials changed.
+## Swaps every character material under `root` (material overrides, surface overrides and the
+## mesh's own surface materials) to `tier`, copy-on-swap (M1-RND-19): a material that needs a new
+## shader and is not a copy this function made for this same `root` is duplicated first, and the
+## copy goes into the slot (a mesh surface material lands in the surface override slot). Shared
+## `.tres` resources, import-time overrides and meshes are never mutated, so instances that share
+## a material can sit at different tiers. Slots under `root` that shared one source share one copy,
+## and calling again on the same root swaps its own copies in place instead of copying again.
+## Each source material is visited once. Returns the number of source materials changed.
 static func apply_to_tree(root: Node, tier: String) -> int:
-	var seen := {}
+	var done := {}
 	var changed := 0
+	var root_id := root.get_instance_id()
 	var stack: Array[Node] = [root]
 	while not stack.is_empty():
 		var node: Node = stack.pop_back()
 		stack.append_array(node.get_children())
-		for mat in _materials_of(node):
-			if seen.has(mat):
+		var gi := node as GeometryInstance3D
+		if gi == null:
+			continue
+		var over := gi.material_override
+		if over != null:
+			changed += _visit(over, tier, root_id, done)
+			if done[over] != over:
+				gi.material_override = done[over] as Material
+		var mi := node as MeshInstance3D
+		if mi == null or mi.mesh == null:
+			continue
+		for i in mi.mesh.get_surface_count():
+			var src := mi.get_surface_override_material(i)
+			if src == null:
+				src = mi.mesh.surface_get_material(i)
+			if src == null:
 				continue
-			seen[mat] = true
-			if apply_tier(mat, tier):
-				changed += 1
+			changed += _visit(src, tier, root_id, done)
+			if done[src] != src:
+				mi.set_surface_override_material(i, done[src] as Material)
 	return changed
 
 
-static func _materials_of(node: Node) -> Array[Material]:
-	var out: Array[Material] = []
-	var gi := node as GeometryInstance3D
-	if gi == null:
-		return out
-	if gi.material_override != null:
-		out.append(gi.material_override)
-	var mi := node as MeshInstance3D
-	if mi != null and mi.mesh != null:
-		for i in mi.mesh.get_surface_count():
-			var m := mi.get_surface_override_material(i)
-			if m == null:
-				m = mi.mesh.surface_get_material(i)
-			if m != null:
-				out.append(m)
-	return out
+## True when `material` is a copy apply_to_tree made for the tree rooted at `root_id`. The meta
+## also names the copy itself, so a duplicate of an owned copy (meta and all) is not owned.
+static func owns(material: Material, root_id: int) -> bool:
+	var tag: Variant = material.get_meta(OWNER_META, PackedInt64Array())
+	return tag is PackedInt64Array and tag == PackedInt64Array([root_id, material.get_instance_id()])
+
+
+## Records in `done` the material that replaces `source` in its slots; returns 1 when it swapped.
+static func _visit(source: Material, tier: String, root_id: int, done: Dictionary) -> int:
+	if done.has(source):
+		return 0
+	done[source] = source
+	if target_shader_path(source, tier).is_empty():
+		return 0
+	var target := source
+	if not owns(source, root_id):
+		target = source.duplicate() as Material
+		target.set_meta(OWNER_META, PackedInt64Array([root_id, target.get_instance_id()]))
+	apply_tier(target, tier)
+	done[source] = target
+	return 1
