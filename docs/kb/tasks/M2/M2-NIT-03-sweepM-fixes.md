@@ -2,8 +2,8 @@
 id: M2-NIT-03
 title: Review-sweep-M follow-ups (balance risk, import LOD ranges, override layering, test hygiene)
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: "agent-a14a20707d2ef004e"
 depends_on: [M2-CMB-01, M1-ART-02, M1-NIT-02]
 milestone: M2
 request-from: "progression"
