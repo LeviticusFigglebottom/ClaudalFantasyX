@@ -15,6 +15,9 @@ extends Node
 ##   --csv=<abs path>             append one row per measurement (header written for a new file)
 ##   --label=<name>               scene label in the CSV (default: scene file name + camera)
 ##   --png-dir=<abs dir>          save the last sampled frame of each measurement as a PNG
+##   --override=key=value,...     GraphicsSettings overrides on top of each preset (e.g. vegetation_detail=low)
+##   --tag-vegetation             tag MultiMeshes (vegetation_multimesh, small_foliage) and range-limited
+##                                meshes (vegetation_lod) before measuring, as a zone would (M1-RND-07)
 ##   --hold-storm                 freeze every UndertowStorm clock (deterministic frames for look diffs)
 ##                                while its temporal jitter keeps advancing; pair with --warmup-s=0
 ## Per configuration: apply the preset through GraphicsSettings (viewport + the scene's Environment),
@@ -80,6 +83,14 @@ func _run() -> void:
 		cam.make_current()
 	for i in SETTLE_FRAMES:
 		await get_tree().process_frame
+	if _opts.has("tag-vegetation"):
+		var groups := GraphicsSettings.new().data.get("vegetation_groups", {}) as Dictionary
+		for n in _scene.find_children("*", "GeometryInstance3D", true, false):
+			if n is MultiMeshInstance3D:
+				n.add_to_group(str(groups.get("multimesh", "")))
+				n.add_to_group(str(groups.get("small_shadows", "")))
+			elif (n as GeometryInstance3D).visibility_range_end > 0.0:
+				n.add_to_group(str(groups.get("lod", "")))
 	var rid := get_viewport().get_viewport_rid()
 	RenderingServer.viewport_set_measure_render_time(rid, true)
 	var label := str(_opts.get("label", "%s:%s" % [scene_path.get_file().get_basename(), camera]))
@@ -111,6 +122,10 @@ func _run() -> void:
 func _measure(preset: String, variant: Dictionary, camera: String, label: String) -> Dictionary:
 	var gs := GraphicsSettings.new()
 	gs.set_preset(preset)
+	for pair in str(_opts.get("override", "")).split(",", false):
+		var kv := pair.split("=", true, 1)
+		var v: Variant = str_to_var(kv[1])
+		gs.set_override(kv[0], v if v != null else kv[1])
 	gs.apply_current(get_viewport(), _environment())
 	_apply_tiers(preset)
 	_apply_variant(variant)

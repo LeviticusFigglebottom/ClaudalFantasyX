@@ -1,0 +1,9 @@
+scene,camera,variant,preset,res_w,res_h,internal_w,internal_h,frames,gpu_median_ms,gpu_p99_ms,gpu_mean_ms,cpu_median_ms,cpu_p99_ms,frame_median_ms,frame_p99_ms,adapter,driver
+veg_high,Cameras/Wide,scene,low,1920,1080,1478,832,300,0.582,0.587,0.582,0.105,0.198,0.756,0.859,AMD Radeon RX 9070 XT,1.4.349
+veg_high,Cameras/Wide,scene,high,1920,1080,1478,832,300,0.988,0.998,0.989,0.116,0.220,1.166,1.661,AMD Radeon RX 9070 XT,1.4.349
+veg_low,Cameras/Wide,scene,low,1920,1080,1478,832,300,0.514,0.520,0.514,0.105,0.209,0.684,0.822,AMD Radeon RX 9070 XT,1.4.349
+veg_low,Cameras/Wide,scene,high,1920,1080,1478,832,300,0.871,0.877,0.870,0.116,0.231,1.041,1.488,AMD Radeon RX 9070 XT,1.4.349
+veg_high,Cameras/Backlit,scene,low,1920,1080,1478,832,300,0.443,0.450,0.443,0.099,0.188,0.611,0.811,AMD Radeon RX 9070 XT,1.4.349
+veg_high,Cameras/Backlit,scene,high,1920,1080,1478,832,300,0.833,0.843,0.834,0.111,0.214,0.995,1.469,AMD Radeon RX 9070 XT,1.4.349
+veg_low,Cameras/Backlit,scene,low,1920,1080,1478,832,300,0.402,0.410,0.401,0.098,0.185,0.570,0.757,AMD Radeon RX 9070 XT,1.4.349
+veg_low,Cameras/Backlit,scene,high,1920,1080,1478,832,300,0.731,0.738,0.731,0.110,0.211,0.894,1.146,AMD Radeon RX 9070 XT,1.4.349

@@ -116,8 +116,20 @@ High is the tight preset. If measurement shows it over budget, step down in this
 
 **VRAM (approximate, by arithmetic):** a 16-bit shadow atlas is 8 MB at 2048², 32 MB at 4096², and 128 MB at 8192². Ultra holds two 8192² atlases (≈256 MB). The volumetric fog froxel buffers grow with size² × depth, from roughly 5 MB at 64×32 to about 150 MB at 192×128, depending on how many RGBA16F volumes the 4.6 implementation allocates. That needs measuring. The minimum tier has 3–4 GB of VRAM, which Low fits comfortably.
 
+## Per-system tiers, shader families and vegetation detail (M1-RND-07)
+
+- **`presets[].tiers`** gives each system's quality tier: `water` (read by `WaterSurface.quality_for_preset`), `vegetation`, `weathering`. Query it with `GraphicsSettings.preset_tier(preset, system)`. Undertow, glimmer and character tiers are the preset id itself, in their own data.
+- **`shader_families`** plus `apply_tiers(root)`: after a zone loads, and after a preset change, call `gs.apply_tiers(zone_root)`. It swaps every material whose shader belongs to a family to the variant for the preset's tier. On Low, foliage goes to `vegetation_foliage_low`.
+- **`vegetation_detail`** (low / medium / high / ultra) drives three node groups (`vegetation_groups`), which zones tag:
+  - `vegetation_lod`: authored `visibility_range_begin/end` × 0.6 / 0.8 / 1.0 / 1.3 (authored values captured once);
+  - `vegetation_multimesh`: MultiMesh `visible_instance_count` fraction 0.5 / 0.75 / 1 / 1;
+  - `small_foliage`: `cast_shadow` turned off on Low.
+
+  Measured: −9 to −12 % of the vegetation test's frame on Low.
+- **Low AA is TAA** (it was FXAA). Measured on alpha-tested foliage: FXAA removed 10 % of the shimmer, TAA 65 %, for +0.12 ms on an RX 9070 XT (docs/kb/qa/gpu/2026-10-23-rnd-07.md).
+
 ## Open items
 - **Measure** every row above on a GPU runner (M1-QA-01) and replace the estimates. Add a per-preset benchmark camera path to the vertical-slice zone when one exists.
 - Localization rows for the `*_key` fields in `graphics_presets.json` (`GFX_PRESET_LOW`, `GFX_GI_MODE`, …) still need adding to `game/data/loc/strings.csv` (owner: Systems/UI). `tools/validate_data.py` doesn't scan `game/data/settings/` yet.
-- Zones must tag VoxelGI nodes with group `gi_voxel` (Environment).
+- Zones must tag VoxelGI nodes with group `gi_voxel` (Environment), and vegetation with the `vegetation_groups` (M1-ENV-05).
 - The mapping from preset to shader quality variant (`HYMN_QUALITY`, see `game/shaders/README.md`) gets added when the first variant shader lands.
