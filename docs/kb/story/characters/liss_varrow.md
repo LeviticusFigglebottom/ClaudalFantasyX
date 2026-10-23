@@ -4,7 +4,7 @@
 **Battle niche:** item specialist who steals and builds gadgets.
 
 ## Background
-Liss is the daughter of Hollowmere's **dock-master**, the keeper of the flotilla's dry-dock berths, and the younger sister of **Tobin Varrow**, who is charming and idealistic. Hollowmere has no chief: its council of hull-captains governs it. When the Order asked the council for a Saltwright groom for a Warden's daughter, Tobin volunteered so that nobody would have to be chosen ([ADR 0020](../../decisions/0020-kerrid-restaging.md)). She restored her first bound lamp at nine, and her left arm and collarbone already carry eleven line-marks. She was running a salvage camp in the Brine Shoals when an Order raid burned it. She escaped with one crate of parts and a grudge that could float a ship.
+Liss is the daughter of Hollowmere's **dock-master**, the keeper of the flotilla's dry-dock berths, and the younger sister of **Tobin Varrow**, who is charming and idealistic. Hollowmere has no chief: its council of hull-captains governs it. When the Order asked the council for a Saltwright groom for a Warden's daughter, Tobin volunteered so that nobody would have to be chosen ([ADR 0020](../../decisions/0020-kerrid-restaging.md)). She restored her first bound lamp at nine, and her right arm, collarbone and the right side of her neck already carry eleven line-marks (the left arm is always sleeved; [ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md) (k)). She was running a salvage camp in the Brine Shoals when an Order raid burned it. She escaped with one crate of parts and a grudge that could float a ship.
 
 She grew up on stories of **Dace Sallow**, the wright who went into the Undertow "to fix it," and of an unfinished ship he left in Hollowmere's dry-dock that nobody else can make fly. To her, Dace is a legend. To Rhen, Dace is a wound. That is the engine of their friction.
 
@@ -20,7 +20,7 @@ She grew up on stories of **Dace Sallow**, the wright who went into the Undertow
 
 ## Silhouette and Costume
 - Small and wiry, and always slightly crouched over something.
-- **Asymmetry:** her **left arm** is sleeved to the shoulder in a fitted copper-wire mesh *work-sleeve* that protects against glass burns. Her right arm is bare and shows line-marks running up onto her cheek.
+- **Asymmetry:** her **left arm** is sleeved to the shoulder in a fitted copper-wire mesh *work-sleeve* that protects against glass burns. Her right arm is bare and shows the line-marks running up her collarbone and the right side of her neck onto her cheek. No line-marks are drawn on the left arm.
 - A harness of tool-pouches crossed over a short patched sailcloth coat, cut high at the front and long at the back.
 - Hair: cropped short except for **one long tail** at the nape, threaded with salvaged glass beads.
 - **Signature prop:** a hand-cranked **launcher** slung at her hip, a boxy shape with a crank handle that reads well in silhouette.

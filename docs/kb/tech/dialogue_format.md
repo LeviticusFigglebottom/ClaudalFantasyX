@@ -50,7 +50,7 @@ The sea gave me back at dawn. #line:ch02_beach_001
 - **Every line needs `#line:<id>`**: lowercase letters, digits, and `_`, unique across the whole project. The loc key is `DLG_<ID>` upper-cased (`DLG_CH02_BEACH_002`).
 - Other trailing `#tags` (e.g. `#whisper`) are kept in a `tags` list for the UI or Cinematics. Tags with a meaning are listed [below](#tags-with-a-meaning).
 - Escapes: `\:` for a colon in narration that would otherwise read as a speaker (`Dawn: grey.` reads as a caption and warns, and `Old Toma: hm.` is a [near miss](#near-miss-speaker-lines)), and `\#` for a literal `#` at the end of a line.
-- One line of text per line; there are no multi-line strings. Keep to the voice guide's length rules: the compiler **warns** (it never fails) on a line or option over **25 words**. Tag a line `#long` when the length is earned (Kerrid in Ch14, Sefir in Ch16, Rhen's narration). Words are counted as `tools/dialogue_stats.py` counts them: runs of letters and digits, where an inner `'` or `-` doesn't split a word.
+- One line of text per line; there are no multi-line strings. Keep to the voice guide's length rules: the compiler **warns** (it never fails) on a line or option over **25 words**. Tag a line `#long` when the length is earned (Kerrid in Ch15, Sefir in Ch16, Rhen's narration). Words are counted as `tools/dialogue_stats.py` counts them: runs of letters and digits, where an inner `'` or `-` doesn't split a word.
 
 ### Speaker alias (before an introduction)
 

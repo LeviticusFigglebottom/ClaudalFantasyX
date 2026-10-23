@@ -142,3 +142,10 @@ The cleric's warm first meeting invokes the heroine's spent parent, as in the in
 - **Supersedes:** in 0016, "Kerrid ... the promise that kept him walking" and the Ch16 visit; in 0017, the Prologue row's acceptance of the old line ("accepted, as the human's brief") and the Kerrid roster row's "Pass"; in decisions_log, N-16's E1 ordering (Kerrid's cue moves to E3) and N-19's "E3" lantern note (it is now E2).
 
 - 2026-10-23 Lead: accepted. The prologue line was approved by the human on 2026-10-23 and applied to SPEC §3.5 (v1.1).
+- 2026-10-23 (Narrative, M1-NAR-11, review-sweep-F): [0022](0022-dace-imra-strangers-sweep-f.md), proposed, amends this ADR:
+  - **(a) and the "Back" rows:** Kerrid was the captain of Corrow's conscripted fisher **stair-watch**, not a Stillguard officer. **Dace was never Imra's guardian** (the Lead's decision). Dace was Kerrid's hired diver, Kerrid walked Imra to Coilspire, and the two never met until the storm, when she went down the stair into the sea for him. The "Back: Dace was Imra's guardian" accepted residual is superseded by 0022's re-staging.
+  - **(b):** the stair-law and "Stair's clear." are the watch's, not the Stillguard's.
+  - **(c):** the rope-burns leak held `glimmer_held` cyan, not gold, from Ch10 on, never in Ch5 or Ch8. They lerp to lift at H09.
+  - **(d):** Ch6, Sefir doesn't know the face (he sees an unrisen); there is no "Hero of Corrow". Ch12, Toma learned the story on the Corrow wall after 1001, not as a cadet. Ch16, "the place he once sent Imra" is withdrawn: he walks last behind Asha toward the Choir where Imra was spent.
+  - **(e):** in E2 Dace sees Kerrid, who shakes his head once. The order is unchanged.
+  - The Ch9 Ebbing absence now has a practical cause on screen, and the tell is dropped (0022 (f)).
