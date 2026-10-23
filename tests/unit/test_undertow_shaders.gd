@@ -13,9 +13,19 @@ const COMMON_UNIFORMS: Array[String] = [
 	"storm_center", "storm_time_s", "storm_intensity", "rotation_rad_s", "wound_intensity", "lightning_sites"
 ]
 const SHADER_UNIFORMS := {
-	"undertow_body.gdshader": ["march_steps", "col_albedo", "erosion_contrast", "col_haze"],
-	"undertow_body_medium.gdshader": ["march_steps", "empty_step"],
-	"undertow_body_ultra.gdshader": ["march_steps", "empty_step"],
+	"undertow_body.gdshader":
+	[
+		"march_steps",
+		"col_albedo",
+		"erosion_contrast",
+		"col_haze",
+		"noise_tex",
+		"noise_texels",
+		"curl_reuse",
+		"jitter_phase"
+	],
+	"undertow_body_medium.gdshader": ["march_steps", "empty_step", "noise_tex", "jitter_phase"],
+	"undertow_body_ultra.gdshader": ["march_steps", "empty_step", "noise_tex", "curl_reuse", "jitter_phase"],
 	"undertow_shell.gdshader": ["shell_kind", "shell_fraction", "alpha_cut"],
 	"undertow_spray.gdshader": ["spray_radius_m", "spray_height_m"],
 	"undertow_sea.gdshader": ["funnel_depth_m", "foam_octaves", "sea_glow_energy", "col_sea_deep"],
@@ -111,6 +121,20 @@ func test_constants_agree_with_gdscript_and_data() -> void:
 	assert_true(int((cfg["lightning"] as Dictionary)["sites"]) <= UndertowState.MAX_FLASHES)
 	var sea := FileAccess.get_file_as_string(SHADER_DIR.path_join("undertow_sea.gdshader"))
 	assert_true(sea.contains("-funnel_depth_m / (1.0 + k * k)"), "sea profile matches UndertowState.sea_height")
+
+
+## M1-RND-10: the baked noise lattice is a 3D texture of noise.texels per side, imported without
+## mipmaps (they would blur the lattice), in a format that keeps 8 bits per channel.
+func test_noise_lattice_matches_its_data() -> void:
+	var noise := UndertowState.load_config()["noise"] as Dictionary
+	var tex := load(str(noise["texture"])) as Texture3D
+	assert_true(tex != null, "noise.texture loads as a Texture3D")
+	var n := int(noise["texels"])
+	assert_eq(tex.get_width(), n)
+	assert_eq(tex.get_height(), n)
+	assert_eq(tex.get_depth(), n)
+	assert_false(tex.has_mipmaps(), "no mipmaps: the lattice must not be blurred")
+	assert_eq(tex.get_format(), Image.FORMAT_RGBA8, "lossless RGBA8, not VRAM-compressed")
 
 
 func test_colours_match_the_palette() -> void:

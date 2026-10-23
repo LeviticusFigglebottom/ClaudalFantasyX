@@ -73,6 +73,53 @@ func test_quality_plans() -> void:
 	assert_eq(s.static_parameters()["march_steps"], s.quality_plan("medium")["march_steps"])
 
 
+## M1-RND-10 tier parameters: curl_reuse within the shader's range, march_steps within each
+## variant's compiled cap, and temporal jitter only on tiers whose preset resolves it temporally.
+func test_tier_perf_params_parse_and_validate() -> void:
+	var s := UndertowState.new()
+	var presets := {}
+	var gp := JSON.parse_string(FileAccess.get_file_as_string(GraphicsSettings.DATA_PATH)) as Dictionary
+	var temporal_modes := (gp["rules"] as Dictionary)["temporal_upscaler_modes"] as Array
+	for p: Dictionary in gp["presets"]:
+		presets[p["id"]] = p["settings"]
+	for id in UndertowState.QUALITY_IDS:
+		var plan := s.quality_plan(id)
+		var reuse := int(plan["curl_reuse"])
+		assert_true(reuse >= 1 and reuse <= 8, "%s curl_reuse in the shader's hint range" % id)
+		assert_true(plan["temporal_jitter"] is bool, "%s temporal_jitter is a bool" % id)
+		var gs := presets[id] as Dictionary
+		var temporal_aa := str(gs["aa"]) == "taa" or temporal_modes.has(str(gs["scaling_mode"]))
+		if bool(plan["temporal_jitter"]):
+			assert_true(temporal_aa, "%s jitters only where the preset's AA is temporal" % id)
+		if str(plan["body"]) != UndertowState.BODY_RAYMARCH:
+			continue
+		var src := FileAccess.get_file_as_string(str(plan["body_shader"]))
+		var cap := RegEx.create_from_string("#define UNDERTOW_MAX_STEPS (\\d+)").search(src)
+		assert_true(cap != null, "%s variant declares its step cap" % id)
+		assert_true(int(plan["march_steps"]) <= int(cap.get_string(1)), "%s march_steps <= compiled cap" % id)
+	assert_true(s.set_quality("high"))
+	assert_eq(s.static_parameters()["curl_reuse"], s.quality_plan("high")["curl_reuse"])
+
+
+func test_jitter_phase_advances_only_with_the_clock() -> void:
+	var s := UndertowState.new()
+	assert_true(s.set_quality("low"))
+	s.advance(0.1)
+	assert_eq(s.jitter_phase(), 0.0, "no temporal jitter on a tier without it")
+	assert_true(s.set_quality("high"))
+	assert_true(bool(s.quality_plan()["temporal_jitter"]), "High resolves its steps temporally")
+	var seen := {}
+	for i in 8:
+		var phase := s.jitter_phase()
+		assert_true(phase >= 0.0 and phase < 1.0)
+		assert_eq(s.dynamic_parameters()["jitter_phase"], phase)
+		seen[snappedf(phase, 0.001)] = true
+		s.advance(1.0 / 60.0)
+	assert_eq(seen.size(), 8, "eight frames, eight distinct step phases")
+	var held := s.jitter_phase()
+	assert_eq(s.jitter_phase(), held, "a held storm (no advance) keeps its pattern")
+
+
 func test_lightning_is_deterministic_and_bounded() -> void:
 	var a := UndertowState.new()
 	var b := UndertowState.new()
@@ -196,6 +243,9 @@ func test_storm_places_itself_and_builds_the_high_tier() -> void:
 	var prio := storm.state.config["render_priority"] as Dictionary
 	assert_eq(storm.body_material.render_priority, int(prio["body"]))
 	assert_true(storm.lid_material.render_priority < 0, "the lid draws before the water")
+	var noise := storm.body_material.get_shader_parameter(&"noise_tex") as Texture3D
+	assert_true(noise != null, "the body gets the baked noise lattice")
+	assert_eq(storm.body_material.get_shader_parameter(&"curl_reuse"), storm.state.quality_plan("high")["curl_reuse"])
 	assert_eq(storm.sea_material.get_shader_parameter(&"storm_center"), c)
 	storm.approach_distance_m = 3000.0
 	assert_true(storm.visuals.global_position.is_equal_approx(storm.storm_center()), "approach moves it")

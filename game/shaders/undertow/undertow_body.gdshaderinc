@@ -18,6 +18,28 @@ render_mode blend_premul_alpha, unshaded, cull_front, depth_draw_never, depth_te
 		shadows_disabled;
 
 #include "res://game/shaders/include/globals.gdshaderinc"
+
+// Baked noise lattice (M1-RND-10): texel (x, y, z) = hymn_pcg3d(x, y, z) in RGB plus a fourth hash in
+// A, tileable (assets_src/vfx/undertow/bake_noise3d.py). UndertowStorm binds it from undertow.json
+// "noise". One trilinear fetch at a quintic-remapped coordinate is hymn_value_noise3's quintic
+// interpolation of the same lattice, at the cost of a texture fetch instead of eight PCG3D hashes.
+// The cloud fields use it; the wounds keep hashing (undertow_common.gdshaderinc), so the rents stay
+// exactly where they were: their fields span only a few lattice cells, where wrapping shows.
+uniform highp sampler3D noise_tex : filter_linear, repeat_enable;
+// Lattice cells per texture side (the bake's SIZE; undertow.json "noise.texels").
+uniform float noise_texels = 64.0;
+
+vec4 undertow_lattice(vec3 p) {
+	vec3 i = floor(p);
+	vec3 f = p - i;
+	vec3 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+	return texture(noise_tex, (i + u + 0.5) / noise_texels);
+}
+
+float undertow_noise(vec3 p) {
+	return undertow_lattice(p).r;
+}
+
 #include "res://game/shaders/undertow/undertow_common.gdshaderinc"
 
 #ifndef UNDERTOW_MAX_STEPS
@@ -50,16 +72,24 @@ render_mode blend_premul_alpha, unshaded, cull_front, depth_draw_never, depth_te
 #define UNDERTOW_INV_4PI 0.0795775
 // Octave count at or below which cloud_noise() skips its detail octave.
 #define UNDERTOW_LIGHT_OCTAVES 2
+// Finite-difference step of the baked curl, in lattice cells.
+#define UNDERTOW_CURL_H 0.125
 
 uniform sampler2D depth_tex : hint_depth_texture, filter_nearest, repeat_disable;
 
 group_uniforms march;
 uniform int march_steps : hint_range(4, 128) = 44;
 uniform float jitter : hint_range(0.0, 1.0) = 1.0;
+// Per-frame rotation of the jitter (UndertowState.jitter_phase; 0 = a static pattern). With TAA on,
+// the history averages several step phases, so fewer steps band less (M1-RND-10).
+uniform float jitter_phase : hint_range(0.0, 1.0) = 0.0;
 uniform float bound_margin_m : hint_range(0.0, 5000.0) = 400.0;
 // Stride multipliers of the mean step (segment / march_steps) outside and inside the envelope.
 uniform float empty_step : hint_range(0.5, 8.0) = 2.5;
 uniform float dense_step : hint_range(0.1, 2.0) = 0.55;
+// Dense steps that share one curl warp (M1-RND-10, undertow.json quality "curl_reuse"): the warp
+// field varies over curl_scale_m (km), the dense steps are hundreds of metres apart. 1 = every step.
+uniform int curl_reuse : hint_range(1, 8) = 1;
 
 group_uniforms cloud;
 uniform float noise_scale_m : hint_range(10.0, 20000.0) = 2300.0;
@@ -106,6 +136,34 @@ uniform float wound_energy : hint_range(0.0, 64.0) = 5.0;
 uniform float pocket_energy : hint_range(0.0, 16.0) = 0.9;
 group_uniforms;
 
+// hymn_fbm3 (lacunarity 2, gain 0.5) on the baked lattice.
+float undertow_fbm(vec3 p, int octaves) {
+	float sum = 0.0;
+	float amp = 1.0;
+	float norm = 0.0;
+	for (int o = 0; o < HYMN_FBM_MAX_OCTAVES; o++) {
+		if (o >= octaves) {
+			break;
+		}
+		sum += amp * undertow_noise(p);
+		norm += amp;
+		p = p * 2.0 + HYMN_FBM_SHIFT3;
+		amp *= 0.5;
+	}
+	return sum / max(norm, HYMN_EPSILON);
+}
+
+// hymn_curl_noise3 on the baked lattice: the vector potential is the lattice's RGB (three decorrelated
+// fields), its gradients forward differences (four fetches instead of three analytic-gradient lookups).
+vec3 undertow_curl(vec3 p) {
+	vec3 c = undertow_lattice(p).rgb;
+	vec3 gx = (undertow_lattice(p + vec3(UNDERTOW_CURL_H, 0.0, 0.0)).rgb - c) / UNDERTOW_CURL_H;
+	vec3 gy = (undertow_lattice(p + vec3(0.0, UNDERTOW_CURL_H, 0.0)).rgb - c) / UNDERTOW_CURL_H;
+	vec3 gz = (undertow_lattice(p + vec3(0.0, 0.0, UNDERTOW_CURL_H)).rgb - c) / UNDERTOW_CURL_H;
+	// psi = (r, g, b); curl psi = (db/dy - dg/dz, dr/dz - db/dx, dg/dx - dr/dy)
+	return vec3(gy.b - gz.g, gz.r - gx.b, gx.g - gy.r);
+}
+
 float hg_phase(float cos_t, float g) {
 	float g2 = g * g;
 	return UNDERTOW_INV_4PI * (1.0 - g2) / pow(max(1.0 + g2 - 2.0 * g * cos_t, HYMN_EPSILON), 1.5);
@@ -139,8 +197,10 @@ vec2 bound_interval(vec3 ro, vec3 rd, float radius, float top) {
 	return vec2(max(tc.x, ty.x), min(tc.y, ty.y));
 }
 
-// Cloud noise in [0, 1] at storm-local p, two-phase advected along the vortex flow.
-float cloud_noise(vec3 p, int octaves) {
+// Cloud noise in [0, 1] at storm-local p, two-phase advected along the vortex flow. With the curl
+// warp on, warp_a / warp_b carry the two phases' warp vectors between calls; they are recomputed only
+// when fresh_warp is true (the march decides, see curl_reuse).
+float cloud_noise(vec3 p, int octaves, bool fresh_warp, inout vec3 warp_a, inout vec3 warp_b) {
 	float ta;
 	float tb;
 	float wa;
@@ -149,15 +209,19 @@ float cloud_noise(vec3 p, int octaves) {
 	vec3 pb = undertow_flow_point(p, tb);
 #if UNDERTOW_CURL
 	// Turbulence: a divergence-free warp carried with the flow (common.gdshaderinc curl noise).
-	pa += hymn_curl_noise3(pa / curl_scale_m) * curl_warp_m;
-	pb += hymn_curl_noise3(pb / curl_scale_m + HYMN_CURL_OFFSET_B) * curl_warp_m;
+	if (fresh_warp) {
+		warp_a = undertow_curl(pa / curl_scale_m) * curl_warp_m;
+		warp_b = undertow_curl(pb / curl_scale_m + HYMN_CURL_OFFSET_B) * curl_warp_m;
+	}
+	pa += warp_a;
+	pb += warp_b;
 #endif
-	float na = hymn_fbm3(pa / noise_scale_m, octaves, 2.0, 0.5);
-	float nb = hymn_fbm3(pb / noise_scale_m, octaves, 2.0, 0.5);
+	float na = undertow_fbm(pa / noise_scale_m, octaves);
+	float nb = undertow_fbm(pb / noise_scale_m, octaves);
 	float n = mix(nb, na, wa);
 	if (octaves > UNDERTOW_LIGHT_OCTAVES) {
-		float da = hymn_value_noise3(pa / detail_scale_m + UNDERTOW_DETAIL_OFFSET);
-		float db = hymn_value_noise3(pb / detail_scale_m + UNDERTOW_DETAIL_OFFSET);
+		float da = undertow_noise(pa / detail_scale_m + UNDERTOW_DETAIL_OFFSET);
+		float db = undertow_noise(pb / detail_scale_m + UNDERTOW_DETAIL_OFFSET);
 		n = mix(n, mix(db, da, wa), detail_weight);
 	}
 	return n;
@@ -170,8 +234,8 @@ float cloud_noise_coarse(vec3 p) {
 	float tb;
 	float wa;
 	undertow_phases(ta, tb, wa);
-	float na = hymn_value_noise3(undertow_flow_point(p, ta) / noise_scale_m);
-	float nb = hymn_value_noise3(undertow_flow_point(p, tb) / noise_scale_m);
+	float na = undertow_noise(undertow_flow_point(p, ta) / noise_scale_m);
+	float nb = undertow_noise(undertow_flow_point(p, tb) / noise_scale_m);
 	return mix(nb, na, wa);
 }
 
@@ -216,7 +280,7 @@ void fragment() {
 	int steps = clamp(march_steps, 1, UNDERTOW_MAX_STEPS);
 	float dt = (t1 - t0) / float(steps);
 	float ign = fract(UNDERTOW_IGN.z * fract(dot(FRAGCOORD.xy, UNDERTOW_IGN.xy)));
-	float offset = mix(0.5, ign, jitter);
+	float offset = mix(0.5, fract(ign + jitter_phase), jitter);
 	vec3 L = normalize(hymn_sun_direction + vec3(0.0, HYMN_EPSILON, 0.0));
 	float cos_t = dot(rd, L);
 	float phase = mix(hg_phase(cos_t, back_scatter), hg_phase(cos_t, forward_scatter), scatter_mix);
@@ -230,6 +294,10 @@ void fragment() {
 	// Adaptive steps: long strides through empty envelope, short ones inside the cloud (a uniform
 	// stride undersamples the billows and leaves streaks along the view rays).
 	float t = t0 + offset * dt * dense_step;
+	vec3 warp_a = vec3(0.0);
+	vec3 warp_b = vec3(0.0);
+	// Dense steps since the warp was computed; an empty stride forces a fresh one.
+	int warp_age = curl_reuse;
 	for (int i = 0; i < UNDERTOW_MAX_STEPS; i++) {
 		if (i >= steps || T < UNDERTOW_MIN_TRANSMITTANCE || t > t1) {
 			break;
@@ -242,6 +310,15 @@ void fragment() {
 		float t_here = t;
 		t += ds;
 		if (env < UNDERTOW_MIN_ENVELOPE) {
+			warp_age = curl_reuse;
+			continue;
+		}
+		bool fresh_warp = warp_age >= curl_reuse;
+		warp_age = fresh_warp ? 1 : warp_age + 1;
+		float d = cloud_density(env, cloud_noise(p, UNDERTOW_OCTAVES, fresh_warp, warp_a, warp_b));
+		// Nothing below draws where the cloud is eroded away (a rent only thins it further), so the
+		// wound noise is only evaluated where there is cloud (M1-RND-10: same image, fewer hashes).
+		if (d <= 0.0) {
 			continue;
 		}
 		// Wounds open in the skins of the eyewall only (the canopy and bands carry no rents).
@@ -252,7 +329,6 @@ void fragment() {
 			seam = undertow_wound(p, pocket) * skin;
 			pocket *= skin;
 		}
-		float d = cloud_density(env, cloud_noise(p, UNDERTOW_OCTAVES));
 		// A rent: the wall is torn open along the seam, and the light behind it shows.
 		d *= 1.0 - clamp(seam, 0.0, 1.0) * rent_depth;
 		float h = p.y / top;

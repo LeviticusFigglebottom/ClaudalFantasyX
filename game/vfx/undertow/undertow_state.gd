@@ -32,6 +32,8 @@ const SALT_START := 2
 const SALT_ANGLE := 3
 const SALT_HEIGHT := 4
 const SALT_SITE := 7919
+## Golden-ratio step of the per-frame march jitter (R1 low-discrepancy sequence): TAA integrates it.
+const JITTER_STEP := 0.6180339887
 
 ## JSON section/key -> shader uniform. Colours are handled separately (colors section).
 const UNIFORM_MAP := {
@@ -62,6 +64,7 @@ const UNIFORM_MAP := {
 		"striation_sharpness": "striation_sharpness",
 		"bound_margin_m": "bound_margin_m",
 	},
+	"noise": {"texels": "noise_texels"},
 	"flow":
 	{
 		"rotation_falloff": "rotation_falloff",
@@ -175,6 +178,8 @@ var time_scale: float = 1.0:
 	set(value):
 		time_scale = clamp_value("time_scale", value)
 
+## Frames the clock has advanced (drives the temporal march jitter; frozen while the storm is held).
+var frame: int = 0
 var _quality: String = ""
 var _forced_start: Array[float] = []
 
@@ -220,6 +225,7 @@ func clamp_value(key: String, value: float) -> float:
 ## Advance the storm clock by delta seconds of game time (scaled by time_scale).
 func advance(delta: float) -> void:
 	time_s += delta * time_scale
+	frame += 1
 
 
 # --- Quality -----------------------------------------------------------------------------------
@@ -249,11 +255,18 @@ func quality_plan(id: String = "") -> Dictionary:
 		"body": body,
 		"body_shader": str(shaders.get("body_" + tier_id, "")) if body == BODY_RAYMARCH else "",
 		"march_steps": int(tier.get("march_steps", 0)),
+		"curl_reuse": maxi(1, int(tier.get("curl_reuse", 1))),
+		"temporal_jitter": bool(tier.get("temporal_jitter", false)),
 		"spray_layers": int(tier.get("spray_layers", 1)),
 		"sea_foam_octaves": int(tier.get("sea_foam_octaves", 1)),
 		"shell_fractions": (shells.get("fractions", []) as Array) if body == BODY_SHELLS else [],
 		"shell_canopy": bool(shells.get("canopy", false)) and body == BODY_SHELLS,
 	}
+
+
+## res:// path of the baked noise lattice the raymarched body samples ("" if none).
+func noise_texture_path() -> String:
+	return str(_section("noise").get("texture", ""))
 
 
 # --- Shape mirrors (keep in step with undertow_common.gdshaderinc / undertow_sea.gdshader) -------
@@ -391,6 +404,7 @@ func static_parameters() -> Dictionary:
 			out[uniform_name] = Color.from_string(str(colors.get(key, "")), Color.MAGENTA)
 	var plan := quality_plan()
 	out["march_steps"] = int(plan["march_steps"])
+	out["curl_reuse"] = int(plan["curl_reuse"])
 	out["foam_octaves"] = int(plan["sea_foam_octaves"])
 	return out
 
@@ -403,7 +417,16 @@ func dynamic_parameters() -> Dictionary:
 		"rotation_rad_s": rotation_rad_s,
 		"wound_intensity": wound_intensity,
 		"lightning_sites": flash_sites(time_s),
+		"jitter_phase": jitter_phase(),
 	}
+
+
+## Per-frame rotation of the raymarch's start offset (0 when the tier has no temporal jitter): an R1
+## sequence over frames, so TAA averages several step phases (M1-RND-10). Frozen while held.
+func jitter_phase() -> float:
+	if not bool(quality_plan()["temporal_jitter"]):
+		return 0.0
+	return fposmod(frame * JITTER_STEP, 1.0)
 
 
 # --- Internals ---------------------------------------------------------------------------------

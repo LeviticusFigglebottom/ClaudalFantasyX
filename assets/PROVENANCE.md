@@ -199,3 +199,4 @@ Rules:
 | assets/characters/asha/materials/tongue.tres | assets_src/characters/asha/write_materials.py | python3 assets_src/characters/asha/write_materials.py | Character Artist (M1-CHR-02) | 2026-10-23 | original |
 | assets/characters/asha/materials/tortoiseshell.tres | assets_src/characters/asha/write_materials.py | python3 assets_src/characters/asha/write_materials.py | Character Artist (M1-CHR-02) | 2026-10-23 | original |
 | assets/characters/asha/materials/skin_head_dialogue.tres | assets_src/characters/asha/write_materials.py | python3 assets_src/characters/asha/write_materials.py | Character Artist (M1-CHR-02) | 2026-10-23 | original |
+| assets/vfx/undertow/undertow_noise3d.png | assets_src/vfx/undertow/bake_noise3d.py + tools/screenshots/pngio.py | python3 assets_src/vfx/undertow/bake_noise3d.py | Rendering | 2026-10-23 | original |

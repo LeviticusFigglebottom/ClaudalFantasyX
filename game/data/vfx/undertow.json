@@ -202,20 +202,30 @@
       "body": "raymarch",
       "march_steps": 28,
       "spray_layers": 2,
-      "sea_foam_octaves": 3
+      "sea_foam_octaves": 3,
+      "temporal_jitter": true
     },
     "high": {
       "body": "raymarch",
-      "march_steps": 44,
+      "march_steps": 32,
       "spray_layers": 2,
-      "sea_foam_octaves": 4
+      "sea_foam_octaves": 4,
+      "curl_reuse": 2,
+      "temporal_jitter": true
     },
     "ultra": {
       "body": "raymarch",
       "march_steps": 72,
       "spray_layers": 2,
-      "sea_foam_octaves": 5
+      "sea_foam_octaves": 5,
+      "curl_reuse": 2,
+      "temporal_jitter": true
     }
+  },
+  "noise": {
+    "_note": "Baked value-noise lattice the raymarched body samples instead of hashing (M1-RND-10): assets_src/vfx/undertow/bake_noise3d.py. texels = the bake's SIZE.",
+    "texture": "res://assets/vfx/undertow/undertow_noise3d.png",
+    "texels": 64
   },
   "shaders": {
     "body_medium": "res://game/shaders/undertow/undertow_body_medium.gdshader",

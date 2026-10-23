@@ -30,6 +30,7 @@ const SPRAY_NODE := "Spray"
 const PARAM_DEEP := &"col_deep"
 const PARAM_FOAM := &"col_foam"
 const PARAM_SEA_GLOW := &"sea_glow_energy"
+const PARAM_NOISE_TEX := &"noise_tex"
 ## Radial segments of the raymarch proxy (the shader clips rays analytically; this only has to
 ## cover the silhouette).
 const PROXY_SEGMENTS := 48
@@ -99,6 +100,7 @@ var lid_material: ShaderMaterial
 var _shells: Array[MeshInstance3D] = []
 var _sprays: Array[MeshInstance3D] = []
 var _built: bool = false
+var _noise_tex: Texture3D
 
 
 func _ready() -> void:
@@ -378,6 +380,8 @@ func _push_static() -> void:
 	params.merge(water_parameters(), true)
 	for m in _active_materials():
 		_set_all(m, params)
+	if body_material != null:
+		body_material.set_shader_parameter(PARAM_NOISE_TEX, _noise_texture())
 	if lid_material != null:
 		lid_material.set_shader_parameter(&"lid_height_m", lid_height())
 
@@ -392,6 +396,13 @@ func _push_dynamic() -> void:
 		params[PARAM_SEA_GLOW] = water.sea_glow_energy
 	for m in _active_materials():
 		_set_all(m, params)
+
+
+## The baked noise lattice (undertow.json "noise"), loaded once.
+func _noise_texture() -> Texture3D:
+	if _noise_tex == null and state.noise_texture_path() != "":
+		_noise_tex = load(state.noise_texture_path()) as Texture3D
+	return _noise_tex
 
 
 func _active_materials() -> Array[ShaderMaterial]:
