@@ -1,0 +1,11 @@
+// Ch2 B03 "Haluna by day", fragment 1 of "Cantor" (docs/kb/story/beats/vertical_slice.md): the market.
+// An overheard field bark, played on the field camera (no @camera cues). Rhen hears it, answers once,
+// and misses what it adds up to. Speaker: a fish seller wrapping farewell food under the awnings.
+title: ch02_bark_market
+location: ch02/haluna
+---
+Vendor [soft_smile]: Two days. Two days, and she's still helping me wrap fish. #line:ch02_bark_market_001
+Vendor [sad]: Salt and stone. Her knots are neater than mine ever were. #line:ch02_bark_market_002
+Rhen [neutral]: Who's leaving? You've wrapped enough for a whole crew. #line:ch02_bark_market_003
+Vendor [neutral]: Hold this end, would you? The leaf tears if you pull it. #line:ch02_bark_market_004
+===

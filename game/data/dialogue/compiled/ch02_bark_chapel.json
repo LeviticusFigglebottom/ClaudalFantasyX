@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch02_bark_chapel",
+ "source": "game/data/dialogue/ch02/ch02_bark_chapel.dlg",
+ "start": "ch02_bark_chapel",
+ "nodes": {
+  "ch02_bark_chapel": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "line", "id": "ch02_bark_chapel_001", "key": "DLG_CH02_BARK_CHAPEL_001", "speaker": "reed", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch02_bark_chapel_002", "key": "DLG_CH02_BARK_CHAPEL_002", "speaker": "rhen", "emotion": "worried", "voice": "", "src": 8},
+    {"op": "line", "id": "ch02_bark_chapel_003", "key": "DLG_CH02_BARK_CHAPEL_003", "speaker": "reed", "emotion": "neutral", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

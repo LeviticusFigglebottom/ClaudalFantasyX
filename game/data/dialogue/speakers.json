@@ -7,6 +7,10 @@
   {"id": "ysolde", "name_key": "CHAR_YSOLDE", "blip_pitch": 1.04, "portrait_id": "portrait_ysolde_placeholder"},
   {"id": "kerrid", "name_key": "CHAR_KERRID", "blip_pitch": 0.7, "portrait_id": "portrait_kerrid_placeholder"},
   {"id": "pell", "name_key": "CHAR_PELL", "blip_pitch": 0.88, "portrait_id": "portrait_pell_placeholder"},
-  {"id": "sefir", "name_key": "CHAR_SEFIR", "blip_pitch": 0.92, "portrait_id": "portrait_sefir_placeholder"}
+  {"id": "sefir", "name_key": "CHAR_SEFIR", "blip_pitch": 0.92, "portrait_id": "portrait_sefir_placeholder"},
+  {"id": "vendor", "name_key": "CHAR_VENDOR", "blip_pitch": 1.08, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "reed", "name_key": "CHAR_REED", "blip_pitch": 1.14, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "netmender", "name_key": "CHAR_NETMENDER", "blip_pitch": 0.84, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "fisher", "name_key": "CHAR_FISHER", "blip_pitch": 0.96, "portrait_id": "portrait_villager_placeholder"}
  ]
 }

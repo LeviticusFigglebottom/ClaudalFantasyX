@@ -1,0 +1,10 @@
+// Ch2 B03 "Haluna by day", fragment 2 of "Cantor" (docs/kb/story/beats/vertical_slice.md): the chapel
+// court. A Reed (an Order novice) sweeps the chapel steps. Rhen misreads it as a death, and nobody
+// corrects him. Field bark, played on the field camera (no @camera cues).
+title: ch02_bark_chapel
+location: ch02/haluna
+---
+Reed [neutral]: The Lady Cantor's shell is cut. They'll set it at the wake. #line:ch02_bark_chapel_001
+Rhen [worried]: I'm sorry. Was she very old? #line:ch02_bark_chapel_002
+Reed [neutral]: Mind the steps, please. I've only just swept them. #line:ch02_bark_chapel_003
+===

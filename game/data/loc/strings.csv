@@ -430,3 +430,7 @@ HUD_SWELL_RESULT_FMT,{grades}: +{pct}% power
 HUD_FAIL_SWELL_NOT_FULL_FMT,{name}'s Swell is not full yet.
 HUD_FAIL_UNKNOWN_TECHNIQUE,That is not a Swell technique.
 HUD_FAIL_SWELL_CANCELLED,The Swell was held back. Nothing was spent.
+CHAR_VENDOR,Fish Seller
+CHAR_REED,Reed
+CHAR_NETMENDER,Old Net-Mender
+CHAR_FISHER,Fisher
