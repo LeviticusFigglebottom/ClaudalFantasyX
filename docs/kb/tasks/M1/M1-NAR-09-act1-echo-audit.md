@@ -2,9 +2,9 @@
 id: M1-NAR-09
 title: Act I echo audit (Ch1-Ch8): Sefir's tournament introduction, the seawall operation
 role: narrative
-status: review
+status: doing
 reviewer: cinematics
-owner_session: "worktree-agent-a1c60c801e373ac96"
+owner_session: "worktree-agent-a62a3327575b9aaf4"
 depends_on: [M1-NAR-08]
 milestone: M1
 request-from: "lead"

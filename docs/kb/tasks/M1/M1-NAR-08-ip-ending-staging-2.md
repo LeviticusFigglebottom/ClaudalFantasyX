@@ -2,9 +2,9 @@
 id: M1-NAR-08
 title: Remaining IP near-miss, ending consistency, staging (review-sweep-C)
 role: narrative
-status: review
+status: doing
 reviewer: cinematics
-owner_session: "worktree-agent-ac18e8281253ab668"
+owner_session: "worktree-agent-a62a3327575b9aaf4"
 depends_on: [M1-NAR-05]
 milestone: M1
 request-from: "cinematics"
