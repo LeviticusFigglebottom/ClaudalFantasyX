@@ -19,6 +19,13 @@ func _ready() -> void:
 	Game.stop_play_clock()
 	arm_world_return()
 	_install_debug_overlay()
+	_install_autosave_toast.call_deferred()
+
+
+## M1-UI-09: the notice for a skipped chapter autosave lives under the tree root, so it outlives the
+## title and every zone change (deferred: the root is still adding its children during boot).
+func _install_autosave_toast() -> void:
+	AutosaveToast.install(get_tree().root)
 
 
 ## Lets loads made from the title move the party into the world (WorldReturn).
