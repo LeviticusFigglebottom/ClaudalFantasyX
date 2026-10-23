@@ -190,6 +190,24 @@ func test_real_time_play_holds_the_autosave_and_freezes_the_player() -> void:
 	_free()
 
 
+func test_the_interact_key_advances_lines_too() -> void:
+	_start(FIXTURE)
+	_drive_until(func() -> bool: return lines_pending > 0)
+	var e := InputEventAction.new()
+	e.action = FieldInput.INTERACT
+	e.pressed = true
+	var advanced := [false]
+	seq.overlay.box.advance_requested.connect(func() -> void: advanced[0] = true)
+	seq._unhandled_input(e)
+	assert_false(seq.overlay.box.is_revealing(), "first press finishes the reveal")
+	assert_false(advanced[0])
+	seq._unhandled_input(e)
+	assert_true(advanced[0], "second press advances")
+	lines_pending = 0
+	_drive()
+	_free()
+
+
 func test_real_time_blend_runs_and_fade_takes_its_time() -> void:
 	_start(FIXTURE)
 	var frames := _drive_until(func() -> bool: return director.active_shot_id() == &"close")

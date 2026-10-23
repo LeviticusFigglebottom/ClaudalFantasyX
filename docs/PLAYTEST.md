@@ -54,6 +54,8 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - Haluna uses the art team's mood-test scene, with simple collision added. The camera mostly follows Rhen from behind; only a few spots use composed shots.
 - Cutscene B ends with the bell tolling and a call to battle. **The Drownbell boss isn't built yet**, so the end card comes next.
 - There's no skip for cutscenes yet.
+- Entering Haluna freezes for about a second and a half behind the black fade while the village builds itself. That's expected for now.
+- After a lost battle you return past the trigger, so the fight can be skipped by walking on. Walking back down to the beach and up again offers it once more.
 
 ## Reporting
 

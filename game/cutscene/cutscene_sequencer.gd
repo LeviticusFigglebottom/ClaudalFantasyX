@@ -88,6 +88,22 @@ func _process(delta: float) -> void:
 	advance(delta)
 
 
+## The field's interact key (E, which starts a bark) also advances lines, like ui_accept does in
+## the DialogueBox, so a player never has to switch keys mid-conversation.
+func _unhandled_input(event: InputEvent) -> void:
+	if not _playing or overlay == null or not overlay.box.visible or overlay.choices.visible:
+		return
+	if not InputMap.has_action(FieldInput.INTERACT):
+		return  # no field in this scene (prologue, a cutscene set): ui_accept only
+	if not event.is_action_pressed(FieldInput.INTERACT) or event.is_action_pressed(&"ui_accept"):
+		return
+	if overlay.box.is_revealing():
+		overlay.box.skip_reveal()
+	else:
+		overlay.box.advance_requested.emit()
+	get_viewport().set_input_as_handled()
+
+
 func _exit_tree() -> void:
 	if _playing:
 		_aborted = true

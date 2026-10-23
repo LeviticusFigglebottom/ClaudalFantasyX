@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://game/cutscene/cutscene_shot_node.gd" id="10_shotnode"]
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_actor_pose.gd" id="11_pose"]
 [ext_resource type="PackedScene" path="res://assets/characters/asha/asha.glb" id="12_asha"]
+[ext_resource type="Script" path="res://game/flow/haluna_story.gd" id="13_story"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_rhen"]
 albedo_color = Color(0.368627, 0.603922, 0.588235, 1)
@@ -684,3 +685,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.15, 8.4)
 
 [node name="rhen_lantern" type="Marker3D" parent="CutsceneStage/Marks"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.12, 7.6)
+
+[node name="Story" type="Node" parent="."]
+script = ExtResource("13_story")

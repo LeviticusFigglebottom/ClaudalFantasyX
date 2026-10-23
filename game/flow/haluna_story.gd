@@ -16,13 +16,16 @@ const KEY_DIALOGUE := "dialogue"
 const KEY_BATTLE := "battle"
 const KEY_CUTSCENE := "cutscene"
 
-## Start the arrival on _ready. Tests turn it off and call begin().
+## Go live on _ready when the zone is the current scene (the game). Tests turn it off, set
+## `active` and call begin() themselves, so a zone instanced by a test never hands off.
 @export var autostart := true
 
 var sequencer: CutsceneSequencer
 var cfg: Dictionary = {}
 ## True while a cutscene, a bark or a hand-off is under way: further triggers wait.
 var busy := false
+## Reacts to villagers and triggers only while true.
+var active := false
 ## Tests record hand-offs here instead of changing scene: (kind: StringName, target: String).
 var hand_off: Callable = Callable()
 
@@ -38,7 +41,7 @@ func _ready() -> void:
 	FieldEvents.connect_interacted(_on_interacted)
 	FieldEvents.connect_trigger(_on_trigger)
 	if autostart:
-		begin.call_deferred()
+		_autostart.call_deferred()
 
 
 func _exit_tree() -> void:
@@ -57,8 +60,10 @@ func begin() -> void:
 	busy = false
 
 
-func stage() -> CutsceneStage:
-	return _stage()
+func _autostart() -> void:
+	if is_inside_tree() and get_tree().current_scene == _zone:
+		active = true
+		await begin()
 
 
 func _on_interacted(_id: StringName, _kind: StringName, payload: Dictionary) -> void:
@@ -98,7 +103,7 @@ func _go(kind: StringName, target: String) -> void:
 
 
 func _free() -> bool:
-	return not busy and not sequencer.is_playing() and not (is_inside_tree() and SceneRouter.is_busy())
+	return active and not busy and not sequencer.is_playing() and not (is_inside_tree() and SceneRouter.is_busy())
 
 
 func _stage() -> CutsceneStage:

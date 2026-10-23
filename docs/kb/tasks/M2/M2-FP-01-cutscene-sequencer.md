@@ -2,7 +2,7 @@
 id: M2-FP-01
 title: Cutscene sequencer that plays .dlg cues on a CutsceneStage
 role: architect
-status: doing
+status: review
 owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M1-ARC-05, M1-ARC-07]
 milestone: M2
@@ -20,5 +20,8 @@ Play a compiled `.dlg` scene end to end in the game: camera cues through the Fie
 
 ## Notes
 - Contract for other streams: `game/cutscene/cutscene_stage.gd` (Shots/Actors/Marks folders) and the public API at the top of `cutscene_sequencer.gd`.
+
+## Notes (handoff)
+- Ready for review by **cinematics** (staging contract) and **architect** (camera contract): `docs/kb/tech/cutscenes.md`. Placeholders: `@face` recorded only, `@anim` via `CutsceneStage.clip_marks`, `@vfx` CutsceneMotes, music stand-ins in `game/data/cutscene/sequencer.json`. The field interact key (E) also advances lines.
 
 ## Review log

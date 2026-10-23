@@ -2,7 +2,7 @@
 id: M2-FP-03
 title: First-playable flow - prologue, New Game routing, battle hand-off and return, end card
 role: architect
-status: doing
+status: review
 owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M1-ARC-06, M1-CMB-08]
 milestone: M2
@@ -26,5 +26,8 @@ New Game → Prologue (Rhen's narration over the dead city) → Haluna beach; a 
   - Fixed `tools/validate_data.py` `scene_has_player`: a root `script = ExtResource(..)` property line (Godot's real format) now counts for place_at (was header-attribute only); test `tools/tests/test_fp_scene_place_at.py`.
   - Tests: `test_fp_field_battle.gd`, `test_fp_prologue.gd` (integration), `test_fp_end_card.gd` (unit).
   - Not done: screenshots of the prologue framing (skipped by instruction); the field trigger that calls `BattleRequest.start` belongs to the playable Haluna zone.
+
+## Notes (handoff)
+- Ready for review by **qa**. `tools/validate_data.py` (Systems-owned, shared) got a small fix so a root script defining `place_at` counts as a player (own commit + test); Systems please confirm.
 
 ## Review log

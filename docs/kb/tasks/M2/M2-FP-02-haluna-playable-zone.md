@@ -2,7 +2,7 @@
 id: M2-FP-02
 title: Playable Haluna zone (player, collision, camera volumes, villagers, shrine, triggers)
 role: environment
-status: doing
+status: review
 owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M1-ENV-01, M1-ARC-06]
 milestone: M2
@@ -38,5 +38,8 @@ request-from: lead
   the SaveShrine stays inside `haluna_mood.tscn` (Environment-owned, not edited here) and reaches the
   playable zone through the instance; `check_locations` passes. M1-ENV-06 can be closed by its owner.
 - Tests: `tests/integration/test_haluna_zone.gd` (`-- --filter=haluna`).
+
+## Notes (handoff)
+- Ready for review by **art** / **environment**. Known: loading the zone costs one ~1.5 s frame under the router fade (mood dressing + collision); the hub orbit fallback can clip roofs (no camera collision).
 
 ## Review log
