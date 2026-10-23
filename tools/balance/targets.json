@@ -1,5 +1,5 @@
 {
-  "_doc": "Machine-readable target bands for tools/balance/sim.py. The prose and rationale live in docs/kb/design/balance_targets.md; change both together. Bands are inclusive [min, max] win percentages per policy; null = reported, no band. Each suite names the loadout (gear and consumables) its bands assume.",
+  "_doc": "Machine-readable target bands for tools/balance/sim.py. The prose and rationale live in docs/kb/design/balance_targets.md; change both together. Bands are inclusive [min, max] win percentages per policy; null = reported, no band. Each suite names the loadout (gear and consumables) its bands assume. mean_turns_min (optional) maps a policy to its ease ceiling: the fewest mean turns it may take, so a band that sits at 100% still catches a regression that makes the fight easier.",
   "suites": [
     {
       "id": "sandbox_reef",
@@ -30,7 +30,10 @@
         ]
       },
       "p90_turns_max": 40,
-      "loadout": "m1_starting"
+      "loadout": "m1_starting",
+      "mean_turns_min": {
+        "smart": 16
+      }
     },
     {
       "id": "sandbox_reef_tier1",
@@ -61,7 +64,10 @@
         ]
       },
       "p90_turns_max": 40,
-      "loadout": "m1_tier1"
+      "loadout": "m1_tier1",
+      "mean_turns_min": {
+        "smart": 14.5
+      }
     },
     {
       "id": "drownbell",
