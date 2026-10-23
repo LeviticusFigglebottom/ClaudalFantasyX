@@ -112,6 +112,16 @@ func test_low_tier_keeps_sea_glow() -> void:
 	assert_eq(before.count("#if") - before.count("#endif"), 1, "sea-glow sits outside every tier #if")
 
 
+func test_light_is_nan_safe_and_sss_is_view_dependent() -> void:
+	# M1-RND-08: pow() of a negative base is undefined (NaN on some drivers): every Schlick base in
+	# light() must be clamped, the half vector guarded (LIGHT = -VIEW), and the SSS wrap view-dependent.
+	var body := FileAccess.get_file_as_string(SHADER_DIR.path_join("water_surface_body.gdshaderinc"))
+	var light := body.substr(body.find("void light()"))
+	assert_false(light.contains("normalize(LIGHT + VIEW)"), "half vector is guarded, not a bare normalize")
+	assert_true(light.contains("float vdh = clamp(dot(VIEW, hv), 0.0, 1.0);"), "vdh clamped before pow(1 - vdh)")
+	assert_true(light.contains("0.25 * wrap * toward_light"), "SSS wrap fades with the sun behind the viewer")
+
+
 # --- WaterSurface ---------------------------------------------------------------------------
 
 

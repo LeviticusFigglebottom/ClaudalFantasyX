@@ -271,6 +271,10 @@ func _enter_tree() -> void:
 ## pays an owed blend_finished, so a coroutine awaiting it resumes instead of hanging forever.
 ## _leaving is set before the emit: the resumed coroutine runs inside it, where is_inside_tree()
 ## is still true, and is_leaving() is how it knows to stop.
+## Paying an owed emit also drops the scripted shot (M1-ARC-07 review-sweep-F F1): the sequencer
+## that awaited it stops there, so nobody would release() it, and on a reparent _enter_tree would
+## take the autosave hold back for good. A reparent mid-move therefore ends the cutscene; a settled
+## scripted shot (nothing owed, nobody woken) is kept and its hold re-taken on re-entry.
 func _exit_tree() -> void:
 	_leaving = true
 	_hold_autosave(false)
@@ -278,7 +282,16 @@ func _exit_tree() -> void:
 		return
 	_end_blend()
 	_settle_pending = false
+	_drop_scripted_shot()
 	blend_finished.emit(active_shot)
+
+
+## Forgets the scripted shot without moving the camera: volume selection resumes on the next
+## update() in a tree. Used only by _exit_tree when it pays an owed blend_finished.
+func _drop_scripted_shot() -> void:
+	_scripted_shot = null
+	_return_shot = null
+	_return_volume = null
 
 
 ## Advances selection, blends and tracking by `delta` seconds and applies the pose to the camera.

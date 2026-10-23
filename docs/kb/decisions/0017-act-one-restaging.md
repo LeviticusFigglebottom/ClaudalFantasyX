@@ -151,3 +151,7 @@ The rest of Act I had not been checked the same way. The inspiring game's openin
   - **Ch7 row:** the island-side shape is added as an accepted residual, and Oruvel's side does not win the cup.
   - **Ch6 row:** "I knelt beside your mother" is added as accepted, with a reason.
   - **Kerrid roster row:** its "Pass" covered only his introduction and props. His backstory, bond, face and ending order are re-staged in 0020.
+- 2026-10-23 (Narrative, M1-NAR-11, review-sweep-F): [0022](0022-dace-imra-strangers-sweep-f.md), proposed, adds to this ADR:
+  - **Ch3 row:** Rhen's recognition of the first verse is accepted for this added reason. The Order hums and never sings, so the verse is not a hymn heard in every temple. Its tune is known in two households, and recognising it is the literal thread between the two families (N-11). Since 0022 it is also how Imra and Dace knew each other on the Corrow stair.
+  - **Ch5 watch:** the no-legend rule now holds in Kerrid's past as well. He was a conscripted fisher-watch captain with no Order rank or fame, and there is no "Hero of Corrow".
+  - **Ch8 row:** the fishwife beat is staged storm-dark, with Toma and the Stillguard out of earshot on the wall-head.

@@ -12,9 +12,11 @@ const SIM_SEEDS := 200
 const SIM_NAIVE_MIN_WIN_PCT := 1
 const SIM_ROLE_ANSWER_MIN_WIN_PCT := 85
 const SIM_SMART_MIN_WIN_PCT := 85
-## The ease ceiling (tools/balance/targets.json `mean_turns_min`, M1-CMB-07): smart wins every
-## seed, so only a shorter fight can show that the sandbox got easier.
-const SIM_SMART_MIN_MEAN_TURNS := 16.0
+## The ease ceiling (M1-CMB-07) is read from tools/balance/targets.json `mean_turns_min`, so a
+## tuning-log move of the floor can't leave this test behind (M1-CMB-08): smart wins every seed,
+## so only a shorter fight can show that the sandbox got easier.
+const TARGETS_PATH := "res://tools/balance/targets.json"
+const SIM_SUITE := "sandbox_reef"
 
 
 func test_real_data_loads() -> void:
@@ -102,9 +104,34 @@ func test_sim_smart_band_has_an_ease_ceiling() -> void:
 	var smart := sim.run_many(&"sandbox_reef", active, reserve, &"smart", SIM_SEEDS, 1, Callable(), kit)
 	var win_pct: float = smart["win_pct"]
 	var mean_turns: float = smart["mean_turns"]
+	var floor_turns := float(_suite(SIM_SUITE).get("mean_turns_min", {}).get("smart", -1.0))
+	assert_true(floor_turns > 0.0, "targets.json sets a smart ease ceiling for %s" % SIM_SUITE)
 	assert_true(win_pct >= SIM_SMART_MIN_WIN_PCT, "smart wins %.1f%%" % win_pct)
-	assert_true(mean_turns >= SIM_SMART_MIN_MEAN_TURNS, "smart takes %.1f mean turns" % mean_turns)
+	assert_true(mean_turns >= floor_turns, "smart takes %.1f mean turns (floor %.1f)" % [mean_turns, floor_turns])
 	assert_eq(smart["timeouts"], 0)
+
+
+## A misspelt policy in `mean_turns_min` would be ignored by sim.py, so every key must be a band.
+func test_ease_ceilings_name_banded_policies() -> void:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(TARGETS_PATH))
+	assert_eq(typeof(parsed), TYPE_DICTIONARY, "%s parses" % TARGETS_PATH)
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return
+	for s: Variant in (parsed as Dictionary).get("suites", []):
+		var suite: Dictionary = s
+		var bands: Dictionary = suite.get("bands", {})
+		for policy: Variant in suite.get("mean_turns_min", {}):
+			assert_true(bands.has(policy), "%s: mean_turns_min '%s' is a banded policy" % [suite.get("id"), policy])
+
+
+func _suite(suite_id: String) -> Dictionary:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(TARGETS_PATH))
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return {}
+	for s: Variant in (parsed as Dictionary).get("suites", []):
+		if typeof(s) == TYPE_DICTIONARY and str((s as Dictionary).get("id", "")) == suite_id:
+			return s
+	return {}
 
 
 func test_sim_is_deterministic_and_counts() -> void:

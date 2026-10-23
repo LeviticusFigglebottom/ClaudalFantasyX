@@ -242,3 +242,10 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 - **the straw-cape man**: an anonymous Low Reaches fisher's tale about a big man in a straw cape who pulls the drowning out of the sea and is gone before anyone can thank him. It is Kerrid, and nobody knows it.
 - **dock-master**: the keeper of Hollowmere's dry-dock berths, an office and not a chief. Liss's father holds it.
 - **Old Kerrid** (roster row above): no longer Imra's guardian. He was the Stillguard captain of the Corrow wall and died at the foot of the Fisher Stair in 1001 AL.
+
+### Added 2026-10-23 (M1-NAR-11, review-sweep-F; ADR 0022, N-23)
+- **stair-watch**: Corrow's conscripted fishers who keep the Fisher Stair, under a captain chosen from among them. It has no rank in the Order: the Stillguard hold the Bastion and the wall-head, and the watch holds the stair.
+- **stair-law** and **Stair's clear** (rows above): the stair-watch's rule and all-clear, not the Stillguard's.
+- **Old Kerrid** (rows above): captain of the Corrow stair-watch, never a Stillguard officer, with no title or fame outside Corrow.
+- **Dace Sallow** (row above): never Imra's guardian. He was Kerrid's hired diver at Corrow in 1001, a stranger to Imra until she went down the Fisher Stair into the sea for him.
+- **the Velamir lullaby** (row above): Dace heard Imra hum it at Haluna without ever learning her name.

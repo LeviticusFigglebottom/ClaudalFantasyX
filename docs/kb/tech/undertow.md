@@ -60,7 +60,10 @@ Atmospheric perspective on the body and spray; a 9 m boat (0.76 km out) and a 42
 
 ```gdscript
 var storm := UndertowStorm.new()          # or instance the node in the zone scene
-storm.position = village_marker.position  # the point it approaches; keep the node unrotated/unscaled
+storm.position = village_marker.position  # the point it approaches (any height); unrotated/unscaled
+# Sea level is NOT the node's Y: it is the zone ocean's rest plane when `water` is set (below), else
+# storm.sea_level_y (set sea_level_from_water = false to force the explicit value). A marker on a 12 m
+# headland therefore still puts the funnel, lid and spray on the zone sea.
 storm.approach_azimuth_deg = 90.0         # it lies due east (clockwise from north = -Z)
 storm.approach_distance_m = 17000.0       # 0 = on top of the marker
 storm.water = $Ocean                      # zone WaterSurface: look copied, lid sized to its crests
@@ -85,6 +88,13 @@ storm.apply_graphics_settings(graphics_settings)   # or set_quality("low" .. "ul
 | `materials()`, `mood_parameters()`, `water_parameters()`, `lid_height()`, `refresh()` | | The uniforms pushed, for tests and debugging. `refresh()` re-applies after changing tunables at runtime |
 
 A cutscene animates it by tweening these properties (`create_tween().tween_property(storm, "approach_distance_m", 4000.0, 12.0)`) and pausing or scrubbing the clock. The test rig (`undertow_test_rig.gd`) does what a zone does, driven by a mood table: key light, environment, approach, wounds, ambient, haze, sea-glow, a timed flash, and the camera aim. Under the screenshot capture it holds the clocks and uses FXAA, as the water rig does.
+
+### Sea level, editor preview and looks (M1-RND-09)
+
+- **Sea level is not the node's Y.** `storm_center().y` is `sea_level()`: the zone `water`'s rest plane (`WaterSurface` global Y) when `water` is set and `sea_level_from_water` is on (the default), else `sea_level_y`. The node itself may sit on a headland or a quay marker.
+- **`@tool`.** In the editor the storm builds at `editor_preview_quality` (default `low`: shells, sea funnel, spray; no raymarch) with its clock stopped, plus a footprint gizmo: circles at sea level for the eye, the wall, the funnel, the lid (`sea.fade_start_m`) and the bound radius, and the eye axis up to the storm's height. The gizmo and every built node are internal children, never saved with the scene. The preview tier is never written into `quality`. `WaterSurface` and `GlimmerField` are not `@tool`, so in the editor the storm reads only their properties (no wave crests for the lid, no mote priority).
+- **`quality` setter.** Assigning `storm.quality` after `_ready` switches the tier, like `set_quality()`.
+- **Looks.** `storm.look` names an entry of `undertow.json "looks"`: shader uniforms pushed on top of the tunables to every storm material ("#hex" = sRGB colour). `day_storm` is the daylight storm wall (Ch1 storm, Ch8 "The Seawall"): albedo toward `storm_slate`, more ambient self-shadow, and a high sun reaching the lower wall (`sun_low_floor`, `sun_clear_height`; the dusk defaults assume a low sun that already crossed the outer bands). Most of the daylight read comes from the *lighting* (the colour script's Ch8 key, fill, slate sky and fog), which the zone provides; the look is the storm's half. The test scene's `day` mood (`Cameras/Day`, shot `undertow_day_ch08`) is the reference.
 
 ## Tunables (`game/data/vfx/undertow.json`)
 
@@ -209,7 +219,7 @@ Calibrated against the water bench, the only ratio we have. Water High costs abo
 7. **Art review** against the colour script with paintovers, and the `spawn_wound` usage decision.
 
 ## Gotchas
-- **Keep the node unrotated and unscaled.** The visuals are a top-level child placed at `storm_center()` in world axes.
+- **Keep the node unrotated and unscaled.** The visuals are a top-level child placed at `storm_center()` in world axes. Its Y is irrelevant: see "Sea level".
 - **Render priorities matter.** The lid must draw before the water (−1 < 0), and the body after the water. Anything transparent that should cover the storm (motes, rain near the lens, UI-like VFX) needs a priority above `render_priority.body` (2). The body ignores the transparent depth (`depth_test_disabled`, clipped against the *opaque* depth copy), so transparent things at lower priorities are painted over.
 - **The lid hides transparent things below its height over the funnel** (lift + crest height, about 2–3 m): the ocean, as intended, but also any low transparent VFX placed on the storm's sea. Nothing gameplay-relevant lives there.
 - **The ocean needs an opaque floor in deep water.** With nothing under it, the water's refraction reads the sky. The test scene places a navy floor at −200 m outside the storm footprint. The funnel goes to −260 m, so keep floors out of the footprint.

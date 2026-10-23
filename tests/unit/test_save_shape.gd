@@ -236,6 +236,87 @@ func test_a_v2_save_with_float_counts_still_migrates() -> void:
 	_done()
 
 
+## M1-ARC-11 (QA review-sweep-F F1 on M1-ARC-08): the v2->v3 migration ran int() on raw values
+## before the shape check: a nested value was a script error (the runner fails the test on one),
+## a huge count wrapped and was dropped, and a string was coerced. Every older version is covered,
+## because each one runs through the v2 step.
+func test_malformed_old_inventories_read_as_corrupt_never_coerced() -> void:
+	var inventories: Array = [
+		{"potion": {"x": 1}},
+		{"potion": 1e20, "ether": 7},
+		{"potion": 1, "ether": "7"},
+		{"potion": -2},
+		{"potion": 1.5},
+		[1, 2],
+		"potion",
+	]
+	var slot := 1
+	for inv: Variant in inventories:
+		for version: int in [0, 1, 2]:
+			var st := {"inventory": inv, "chapter": 1}
+			var data: Dictionary = st.duplicate() if version == 0 else {"version": version, "state": st}
+			if version == 0:
+				data["version"] = 0
+			var why := "v%d inventory %s" % [version, JSON.stringify(inv)]
+			assert_eq(saves.deserialize(JSON.parse_string(JSON.stringify(data)) as Dictionary), null, why)
+			_write_raw(slot, JSON.stringify(data))
+			assert_eq(SaveSystem.slot_info(slot)["status"], SaveSystem.STATUS_CORRUPT, why + " (listing)")
+			assert_eq(SaveSystem.load_from_slot(slot), null, why + " (load)")
+	var ok := {"version": 2, "state": {"inventory": {"potion": 3.0, "ether": 0.0, "salt": 2}}}
+	var back: GameStateData = saves.deserialize(JSON.parse_string(JSON.stringify(ok)) as Dictionary)
+	assert_eq(back.inventory, {"potion": 3, "salt": 2}, "whole counts still migrate, and empty stacks drop")
+	_done()
+
+
+## M1-ARC-11 (review-sweep-F nits on M1-ARC-08 and M1-PRG-03): a loadout equip() could not make.
+func test_a_piece_worn_twice_or_by_the_wrong_hero_is_corrupt() -> void:
+	var hooks := {"base": "rhen_salvage_hooks", "abilities": ["", ""]}
+	var tether := {"base": "rhen_patched_tether", "abilities": []}
+	var staff := {"base": "asha_vigil_staff", "abilities": []}
+	var unknown := {"base": "no_such_gear", "abilities": []}
+	var cases := {
+		"one piece worn by two heroes":
+		{"next_uid": 3, "owned": {"1": hooks, "2": staff}, "loadout": {"rhen": {"weapon": 1}, "asha": {"weapon": 1}}},
+		"one piece in two slots":
+		{"next_uid": 2, "owned": {"1": hooks}, "loadout": {"rhen": {"weapon": 1, "armor": 1}}},
+		"another hero's piece": {"next_uid": 2, "owned": {"1": staff}, "loadout": {"rhen": {"weapon": 1}}},
+		"a weapon in the armor slot": {"next_uid": 2, "owned": {"1": hooks}, "loadout": {"rhen": {"armor": 1}}},
+		"an unknown base": {"next_uid": 2, "owned": {"1": unknown}, "loadout": {"rhen": {"weapon": 1}}},
+	}
+	for why: String in cases:
+		var st := _bad("equipment", cases[why])
+		assert_eq(saves.deserialize({"version": 4, "state": st}), null, why)
+		_write_raw(1, JSON.stringify({"version": 4, "state": st}))
+		assert_eq(SaveSystem.slot_info(1)["status"], SaveSystem.STATUS_CORRUPT, why + " (listing)")
+		assert_eq(SaveSystem.load_from_slot(1), null, why + " (load)")
+	assert_true(
+		SaveShape.problem(_bad("equipment", cases["one piece worn by two heroes"])).contains("already worn"),
+		"double wear is a shape problem"
+	)
+	var fine := {
+		"next_uid": 10,
+		"owned": {"1": hooks, "2": tether, "3": staff, "9": unknown},
+		"loadout": {"rhen": {"weapon": 1, "armor": 2}, "asha": {"weapon": 3, "armor": 0}},
+	}
+	var back: GameStateData = saves.deserialize({"version": 4, "state": _bad("equipment", fine)})
+	assert_true(back != null, "a valid loadout loads; an unworn piece of unknown gear is not a loadout problem")
+	_done()
+
+
+func test_loadout_problem_names_the_slot() -> void:
+	var db := ItemDB.load_default()
+	var bag := EquipmentBag.new(db)
+	var hooks := bag.add_piece(&"rhen_salvage_hooks")
+	assert_eq(bag.equip(&"rhen", hooks), EquipmentBag.RESULT_OK)
+	assert_eq(bag.loadout_problem(), "", "made by equip()")
+	bag.data["loadout"]["asha"] = {"weapon": hooks}
+	assert_true(bag.loadout_problem().contains("is already worn at"), bag.loadout_problem())
+	bag.data["loadout"].erase("rhen")
+	assert_true(bag.loadout_problem().contains("loadout.asha.weapon"), bag.loadout_problem())
+	assert_true(bag.loadout_problem().contains(String(EquipmentBag.ERR_WRONG_CHARACTER)), bag.loadout_problem())
+	_done()
+
+
 func test_load_and_listing_agree_on_every_case() -> void:
 	var texts: Array[String] = [
 		"",

@@ -9,9 +9,16 @@
       "scene": "res://game/levels/_tests/save_shrine/save_shrine_test.tscn",
       "spawn": "Shrine",
       "name_key": "LOCATION_FIELD_TEST"
+    },
+    {
+      "id": "ch02/haluna",
+      "scene": "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+      "spawn": "Shrine",
+      "name_key": "LOCATION_CH02_HALUNA"
     }
   ],
   "shrines": [
-    {"id": "save_shrine_test", "location_id": "field_test", "spawn": "Shrine"}
+    {"id": "save_shrine_test", "location_id": "field_test", "spawn": "Shrine"},
+    {"id": "haluna_shrine", "location_id": "ch02/haluna", "spawn": "Shrine"}
   ]
 }

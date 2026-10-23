@@ -31,7 +31,9 @@ extends RefCounted
 ## Equipment is also checked as a whole (review-sweep-E S2), because EquipmentBag trusts it:
 ## every owned key is a canonical uid ("5", never "05" or "+5", which str(uid) lookups never
 ## reach), next_uid is present and greater than every owned uid (add_piece would otherwise
-## overwrite a piece), and every loadout uid is NO_PIECE (0) or an owned piece.
+## overwrite a piece), and every loadout uid is NO_PIECE (0) or an owned piece, worn in one
+## loadout slot at most (M1-ARC-11). Whether a piece fits its wearer and slot needs the item
+## tables, so SaveSystem checks that after this (EquipmentBag.loadout_problem).
 
 const OK_SHAPE := ""
 ## The largest whole number a save may hold: 2^53, the last float that every smaller whole number
@@ -222,12 +224,18 @@ static func _equipment(v: Variant, path: String) -> String:
 	if top > 0 and (not d.has("next_uid") or int(d["next_uid"]) <= top):
 		return "%s.next_uid: expected a whole number > %d (the highest owned uid)" % [path, top]
 	var loadout := d.get("loadout", {}) as Dictionary
+	var worn: Dictionary = {}
 	for cid: Variant in loadout:
 		var slots := loadout[cid] as Dictionary
 		for slot: Variant in slots:
 			var uid := int(slots[slot])
-			if uid != NO_PIECE and not owned.has(str(uid)):
+			if uid == NO_PIECE:
+				continue
+			if not owned.has(str(uid)):
 				return "%s.loadout.%s.%s: piece %d is not owned" % [path, cid, slot, uid]
+			if worn.has(uid):
+				return "%s.loadout.%s.%s: piece %d is already worn at %s" % [path, cid, slot, uid, worn[uid]]
+			worn[uid] = "%s.%s" % [cid, slot]
 	return OK_SHAPE
 
 

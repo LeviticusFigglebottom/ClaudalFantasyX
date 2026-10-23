@@ -66,11 +66,12 @@ How each principal character talks. Use this when writing any `.dlg` line. If a 
 - **Acts I–II (pre-reveal):** single words or short sentences. He often answers with an action instead of a line (cinematics: give him a gesture slot). No names.
 - **Post-reveal:** longer, plainer, with dry gallows humor about being dead. He never sounds like he is performing wisdom.
 - **Tell:** the first time he uses Rhen's name (Ch15, in the confession) should hit like a blow.
-- **Diction:** a Corrow wall captain's. Stair and watch words, never vows: he makes no promises and doesn't talk about having made any ([ADR 0020](../decisions/0020-kerrid-restaging.md)).
+- **Diction:** a Corrow stair-watch captain's, a conscripted fisher's, never an officer's. Stair and watch words, never vows: he makes no promises and doesn't talk about having made any ([ADR 0020](../decisions/0020-kerrid-restaging.md)). No Order rank, title or drill words ([ADR 0022](../decisions/0022-dace-imra-strangers-sweep-f.md)).
 
 > "Move."
 > "I held a stair for your mother once." *(Ch5, the only thing he says to her.)*
-> "Stair's clear." *(The Stillguard all-clear. The Ending.)*
+> "Stair's clear." *(The stair-watch's all-clear. The Ending.)*
+> "Somebody's still below." *(Ch9, at dawn on the road out of Corrow: why he walks on.)*
 > "No." *(He sets down a full bowl of food untouched.)*
 > "Your mother laughed at the wrong times too."
 > "I have nothing left to hide. I may as well talk."
@@ -109,6 +110,6 @@ How each principal character talks. Use this when writing any `.dlg` line. If a 
 > "Lady Cantor. I knelt beside your mother once, on a day very like this one."
 > "Be level, Inquisitor. The Edict burns things. It has never needed to burn people."
 > "Nothing you love has to end. I am offering you that. Why do you look at me as if it were cruel?"
-> "Your guardian died here. He was very brave. I have thought of him often."
+> "You call it holding on, Lady Cantor. I call it keeping faith with the dead. It is the same hand."
 > "You see a cage. I see a cradle. It is the same shape."
 > *(Final phase)* "Kesh. Kesh, look at me. *Look at me.*"

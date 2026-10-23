@@ -1,9 +1,11 @@
+@tool
 class_name UndertowMeshBuilder
 extends RefCounted
 ## Meshes for the Undertow storm (M1-RND-03). Pure: no nodes, unit-tested.
 ##   sea_disc()       polar disc for the maelstrom, rings packed toward the throat
 ##   unit_tube()      open unit cylinder the shell and spray shaders map onto the storm envelope
 ##   proxy()          closed cylinder the raymarched body is drawn on (back faces)
+##   footprint()      editor gizmo lines: footprint circles at sea level and the eye axis (M1-RND-09)
 
 ## The tube's height runs from -0.5 to 0.5 (CylinderMesh convention); shaders rely on it.
 const UNIT_HEIGHT := 1.0
@@ -69,3 +71,24 @@ static func proxy(radius: float, height: float, segments: int) -> CylinderMesh:
 	m.rings = 1
 	m.radial_segments = maxi(segments, 3)
 	return m
+
+
+## Line mesh (PRIMITIVE_LINES) for UndertowStorm's editor gizmo: one circle of `segments` chords per
+## radius in `radii` (m) at sea level (y = 0), plus the eye axis from sea level to `height` (m).
+static func footprint(radii: PackedFloat32Array, height: float, segments: int) -> ArrayMesh:
+	var n_seg := maxi(segments, 3)
+	var verts := PackedVector3Array()
+	for r in radii:
+		for i in n_seg:
+			var a0 := TAU * float(i) / float(n_seg)
+			var a1 := TAU * float(i + 1) / float(n_seg)
+			verts.append(Vector3(cos(a0) * r, 0.0, sin(a0) * r))
+			verts.append(Vector3(cos(a1) * r, 0.0, sin(a1) * r))
+	verts.append(Vector3.ZERO)
+	verts.append(Vector3(0.0, height, 0.0))
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = verts
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINES, arrays)
+	return mesh

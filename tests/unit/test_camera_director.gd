@@ -560,6 +560,8 @@ func test_the_autosave_hold_follows_the_scripted_shot_across_a_reparent() -> voi
 	var held := func() -> bool: return director in (saves.call(&"autosave_holders") as Array[Object])
 	director.play_shot(_scripted_shot(), 0.0)
 	assert_true(held.call(), "play_shot holds the autosave")
+	director.update(DT)
+	assert_true(director.is_settled(), "the cut has landed: nothing is owed (review-sweep-F F1 is the owed case)")
 	_host().remove_child(zone)
 	assert_false(held.call(), "an unloading zone never blocks the save")
 	assert_true(director.is_scripted(), "the shot is still held")
@@ -576,6 +578,33 @@ func test_the_autosave_hold_follows_the_scripted_shot_across_a_reparent() -> voi
 	_host().add_child(zone)
 	assert_true(held.call(), "it holds once the director is back in a tree")
 	director.release(0.0)
+	_free()
+
+
+## M1-ARC-07 review-sweep-F F1: a reparent with an owed blend wakes the sequencer, which stops on
+## is_leaving() (the documented pattern) and never calls release(). The director must not take the
+## hold back on re-entry, or every chapter autosave would wait until the zone is freed.
+func test_a_reparent_mid_move_drops_the_scripted_shot_and_its_hold() -> void:
+	var saves := _host().get_node(^"/root/SaveSystem")
+	var holders := func() -> Array[Object]: return saves.call(&"autosave_holders") as Array[Object]
+	resumed.clear()
+	seen_leaving.clear()
+	var shot := _scripted_shot()
+	director.play_shot(shot, SCRIPT_BLEND_SEC)
+	director.update(DT)
+	assert_true(director.is_blending(), "a move is in progress")
+	_sequencer_stopping_on_leave()
+	_host().remove_child(zone)
+	assert_eq(resumed, [SCRIPTED] as Array[StringName], "the sequencer woke inside _exit_tree")
+	assert_eq(seen_leaving, [true] as Array[bool], "and stopped on is_leaving()")
+	assert_false(director.is_scripted(), "paying the owed emit dropped the scripted shot")
+	_host().add_child(zone)
+	assert_false(director in holders.call(), "re-entry does not take the hold back")
+	assert_true(holders.call().is_empty(), "nothing holds the autosave")
+	assert_false(director.release(0.0), "nothing is left to release")
+	assert_eq(director.active_shot, shot, "the camera stays where it was until volumes pick again")
+	director.update(DT)
+	assert_eq(director.active_shot_id(), LANE, "volume selection resumes on the next update")
 	_free()
 
 
@@ -609,6 +638,16 @@ func _sequencer_then_cut(next: CameraShot) -> void:
 	await director.blend_finished
 	resumed.append(director.active_shot_id())
 	director.play_shot(next, 0.0)
+
+
+## The documented sequencer pattern (field_camera.md): stop when the director is leaving.
+func _sequencer_stopping_on_leave() -> void:
+	await director.blend_finished
+	resumed.append(director.active_shot_id())
+	seen_leaving.append(director.is_leaving())
+	if not is_instance_valid(director) or director.is_leaving():
+		return
+	director.release(0.0)
 
 
 func _await_landing() -> void:

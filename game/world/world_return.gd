@@ -46,10 +46,11 @@ func resolve(state: GameStateData) -> Dictionary:
 
 
 ## Sends the party to `location_id` (at `spawn`, or the location's own spawn). Updates
-## Game.state.location_id. Returns false when the location does not resolve or no swap is set up.
+## Game.state.location_id, unless the id is unknown and the default stands in (see _travel).
+## Returns false when the location does not resolve or no swap is set up.
 func go_to(location_id: StringName, spawn: StringName = &"") -> bool:
 	var to := _registry().resolve(location_id, spawn)
-	return _travel(to)
+	return _travel(to, location_id)
 
 
 ## Moves the player of a loaded scene to Spawns/<spawn>: the scene's own place_at(spawn, yaw)
@@ -84,12 +85,26 @@ func _on_game_loaded(_slot: int) -> void:
 	if to.is_empty():
 		push_error("WorldReturn: no location to return to (check %s)" % LocationRegistry.DATA_PATH)
 		return
-	_travel(to)
+	var wanted := Game.state.respawn_location_id
+	_travel(to, wanted if wanted != &"" else Game.state.location_id)
 
 
-func _travel(to: Dictionary) -> bool:
+## Changes scene to a resolved location. Game.state.location_id becomes the location only when it
+## resolved as asked: a fallback (a location missing from locations.json, or renamed) warns and
+## keeps the state's own location_id, so the next save never records the stand-in (the test level)
+## as where the party is (M1-ARC-11, after QA review-sweep-F on M1-ARC-06).
+func _travel(to: Dictionary, wanted: StringName = &"") -> bool:
 	if to.is_empty():
 		return false
+	var fallback := bool(to.get("fallback", false))
+	# An empty location (a v3 save migrated with none) is documented to use the default: no warning.
+	if fallback and wanted != &"":
+		push_warning(
+			(
+				"WorldReturn: location '%s' is not in %s; going to the default '%s' and keeping the saved location"
+				% [wanted, LocationRegistry.DATA_PATH, to[LocationRegistry.KEY_LOCATION]]
+			)
+		)
 	var swap := change_scene
 	if not swap.is_valid():
 		var router := get_parent()
@@ -99,7 +114,8 @@ func _travel(to: Dictionary) -> bool:
 	var loc := StringName(str(to[LocationRegistry.KEY_LOCATION]))
 	var scene := str(to[LocationRegistry.KEY_SCENE])
 	var spawn := StringName(str(to[LocationRegistry.KEY_SPAWN]))
-	Game.state.location_id = loc
+	if not fallback:
+		Game.state.location_id = loc
 	travel_requested.emit(loc, scene, spawn)
 	swap.call(scene, spawn)
 	return true
