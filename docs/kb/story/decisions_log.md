@@ -131,3 +131,17 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
 - **E6 is front three-quarter:** the camera is on the dock planks, about 4 m shoreward, looking out to sea. Asha turns back from the sea toward Haluna, so her nose line ends about 40° off the lens axis toward camera, with the dark sea behind her. The ambiguous "H10 reversed" wording is gone. This supersedes N-17's E6 framing.
 - **ch02 "Stay":** after Asha's closing line, Rhen takes the hand she offered and they rise together (`take_hand`, `rise_to_stand`) before the cut to the walk. In "Get up", a `@wait 0.8` lets Asha finish rising before H05 opens.
 - **E3:** Rhen's lantern is unlit, so Dace's motes stay the only key.
+
+---
+
+## 2026-10-23 (narrative, M1-NAR-09): Act I echo audit
+
+### N-20. Act I is re-staged from the Prologue to Ch8 (ADR 0017)
+- **Answer:** [ADR 0017](../decisions/0017-act-one-restaging.md).
+  - **Sefir first appears at the end of the Ch6 Brine Shoals raid**, on his Edict progress. He stops the branding, lets Liss go, and is at neither the Tidecup nor the seawall.
+  - **The Tidecup (Ch7) has no Order official.** It opens with the captains' naming rite. **Rhen dives for Oruvel's side** under its captain **Tavi Orse**, Mother Kell's grandson. Toma doesn't captain or play. Nothing interrupts the match.
+  - **The seawall (Ch8) is an evacuation up the Fisher Stair**, with no weapon and no forbidden machine. Liss's contribution is a plain rope hoist, which the Stillguard cut down afterwards. The wall falls anyway.
+  - **The Ch4 ferry is never attacked.** The party boards a drifting dead trader to bring its name-board home and fights the Spar-Wraith on its deck.
+  - **The Prologue has no campfire circle.** The seven keep separate vigils, Rhen walks among them and sits beside Asha, and the line comes as his oil wick catches. Ch19 repeats the vigil.
+- **Why:** the audit found these beats followed the inspiring game's opening acts: the cleric introduced at the games, the guardian-captain with the newcomer as star, the coastal assault with forbidden weapons, the monster attacking the pilgrims' boat, and the campfire with the hero walking off to narrate. The other Act I residuals are accepted in the ADR, with reasons.
+- **Supersedes:** N-01's wording "after the Brightwater ferry survives the Spar-Wraith". The band is still earned on the Ch4 crossing, and is still inked by Toma and shown from Ch5. It also supersedes N-12's "the veteran's empty benches": the Ch7 side scene is now Tavi asking Asha to bless Oruvel's empty moorings under the Bell, by the same naming rite. N-12's arena notes are otherwise unchanged.

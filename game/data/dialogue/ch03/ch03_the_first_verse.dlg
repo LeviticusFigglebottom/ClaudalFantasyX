@@ -92,6 +92,8 @@ grade: ch03
 @camera S09
 @fade in 2.0
 <<set $ch03_ilun_bound = true>>
+// ADR 0017 watch: she walks out on her own feet. No stumble, no catch at the door, and no summon
+// shown here. Ilun is first called in the Drownbell fight.
 @anim asha emerge_doorway
 @vfx glimmer_lift at=asha motion=spiral_up rate=slow
 @face asha exhausted 1.0
