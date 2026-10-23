@@ -37,6 +37,7 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 | M1-RND-12 Haluna sky tiers | gpu/rnd-12-sky | review | Clouds 3.7 → 0.4 ms (High 1440p) and 2.4 → 0.23 ms (Low 1080p) via baked lattices and `sky_detail` tiers. R2–R6 and palette_check done. All 5 `haluna_*` drift. Report: `docs/kb/qa/gpu/2026-10-23-rnd-12-sky.md` |
 | M2-RND-01 start (sweep-G ch08) | gpu/m2-rnd-01-undertow | doing (more criteria remain) | Wall foot (skirt, water-dark base, scud), outer spray over the body, the sea answers the storm, joined flanks. Day 4.95 ms High 1440p, all cameras ≤ 5.43. Undertow shots drift. Report: `docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md` |
 | M1-RND-15 criterion 4 (prewarm, Low-TAA ghosting) | gpu/rnd-15-prewarm | review (measured; 50 ms not met, needs a Lead/Systems decision) | Lazy material loads, batch 2, no halving on the first tick. Worst prewarm frame ~230–310 ms (set-up), up to 0.62 s (Undertow, cold). Ghosting mild. Report: `docs/kb/qa/gpu/2026-10-23-rnd-15-prewarm.md` |
+| M1-RND-17 dusk released motes | gpu/rnd-17-dusk-motes | review (character) | Streaks upright (median 37 → 6°) and the upper-sky halo is gold. Horizon and mirror hue targets not met (pale cores; the Art Director's call). New mote_halo/mote_streaks advisory checks. Drift: glimmer_dusk, glimmer_release. Report: `docs/kb/qa/gpu/2026-10-23-rnd-17-dusk-motes.md` |
 | Playtest checkout (Lead request) | – (clone of claude/new-session-mj8c3c @ 9508ade) | done | `C:\Users\Aaron\Hymn_Playtest`, imported twice. 60-frame headless smoke boot: exit 0, no errors. **PLAY.bat is at `C:\Users\Aaron\Hymn_Playtest\PLAY.bat`** (EDITOR.bat next to it). Not launched. |
 | Earlier (merged by the Lead) | gpu/results-2026-10-23, gpu/rnd-10-undertow-perf, gpu/rnd-09-undertow-shading, gpu/rnd-08-water-glimmer, gpu/rnd-07-presets, gpu/qa-05-asha-gpu, gpu/rnd-11-undertow-params | – | – |
 
@@ -46,20 +47,19 @@ Nothing; between items.
 
 ## Queue, in order (exact next step first)
 
-1. **M1-RND-17**, dusk released motes gold and rising (`gpu/rnd-17-dusk-motes`). Claim it in the task file.
-2. **M1-RND-18**, the SSS crest fade for high cameras, with deep water within ΔE_ok 0.07 (`gpu/rnd-18-sss-crest`).
+1. **M1-RND-18**, the SSS crest fade for high cameras, with deep water within ΔE_ok 0.07 (`gpu/rnd-18-sss-crest`).
    Claim it in the task file.
-3. **M1-ENV-03**, the vegetation follow-ups judged on the GPU (`gpu/env-03-vegetation`).
-4. **Perf regression sweep** (`gpu/perf-sweep`).
+2. **M1-ENV-03**, the vegetation follow-ups judged on the GPU (`gpu/env-03-vegetation`).
+3. **Perf regression sweep** (`gpu/perf-sweep`).
    - Every scene with a camera, at Low/Medium/High/Ultra × 1080p/1440p, with gpu_bench.
    - Output: `docs/kb/qa/gpu/perf_baseline.csv`, plus a report flagging anything over the SPEC §4.2 budgets.
    - Sweeps under ~30 minutes at a stretch.
-5. Then write **QUEUE EMPTY** here.
+4. Then write **QUEUE EMPTY** here.
 
 ## Local-only state (not in git)
 
 - **`C:\Users\Aaron\Hymn_Playtest`**: a separate clone for the human's playtest, with `PLAY.bat` and `EDITOR.bat`
   (untracked, local only). Delete it freely after the playtest.
-- Scratch renders and CSVs under `C:\Users\Aaron\chr04`, `C:\Users\Aaron\rnd12` and `C:\Users\Aaron\m2rnd01` and `C:\Users\Aaron\rnd15`.
+- Scratch renders and CSVs under `C:\Users\Aaron\chr04`, `C:\Users\Aaron\rnd12` and `C:\Users\Aaron\m2rnd01`, `C:\Users\Aaron\rnd15` and `C:\Users\Aaron\rnd17`.
   Everything quoted in the reports is reproducible from the commands in them; none of it is needed.
 - Edit scripts and the keep-awake helper live in the session scratchpad (temporary).
