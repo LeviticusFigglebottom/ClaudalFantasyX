@@ -2,8 +2,8 @@
 id: M1-CHR-03
 title: Rebuild the hero head and base body on the MPFB2 CC0 topology (SPEC §16 Q2 = yes)
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "character-stream-4 (worktree-agent-ab3226d3af8f7c29e)"
 depends_on: [M1-CHR-02]
 milestone: M1
 request-from: "lead"
