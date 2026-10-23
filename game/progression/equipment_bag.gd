@@ -187,19 +187,46 @@ func unequip(cid: StringName, slot: StringName) -> StringName:
 	return RESULT_OK
 
 
-## Gives a joining hero their starting gear (equipment.json "starting") and equips it, once.
-## Returns false if they already have a loadout or the data has none for them.
+## Gives a joining hero their starting gear (equipment.json "starting") and equips it.
+## A hero with no loadout yet gets every starting piece, once. A hero who already has a loadout
+## (for example from a migrated v2 save) only gets any REQUIRED slot (the weapon) filled: with
+## an owned, unworn piece that fits (lowest uid), or else a new starting piece. Idempotent, so
+## SaveSystem calls it for every joined member after each load (M1-PRG-03).
+## Returns true when it equipped anything; false if nothing was missing or the data has no
+## starting gear for them.
 func grant_starting(cid: StringName) -> bool:
-	if _loadout().has(String(cid)) or not db.starting.has(cid):
+	if not db.starting.has(cid):
 		return false
-	_loadout()[String(cid)] = {}
 	var start: Dictionary = db.starting[cid]
-	for slot in db.equip_slots:
-		if start.has(String(slot)):
-			var uid := add_piece(StringName(str(start[String(slot)])))
-			if uid != NO_PIECE:
-				equip(cid, uid)
-	return true
+	if not _loadout().has(String(cid)):
+		_loadout()[String(cid)] = {}
+		for slot in db.equip_slots:
+			if start.has(String(slot)):
+				_equip_new(cid, StringName(str(start[String(slot)])))
+		return true
+	var granted := false
+	for slot in db.required_slots:
+		if equipped(cid, slot) != NO_PIECE and has_piece(equipped(cid, slot)):
+			continue
+		var spare := _unworn_piece_for(cid, slot)
+		if spare != NO_PIECE:
+			granted = equip(cid, spare) == RESULT_OK or granted
+		elif start.has(String(slot)):
+			granted = _equip_new(cid, StringName(str(start[String(slot)]))) or granted
+	return granted
+
+
+func _equip_new(cid: StringName, equip_id: StringName) -> bool:
+	var uid := add_piece(equip_id)
+	return uid != NO_PIECE and equip(cid, uid) == RESULT_OK
+
+
+## The lowest-uid owned piece `cid` could wear in `slot` that nobody wears, or NO_PIECE.
+func _unworn_piece_for(cid: StringName, slot: StringName) -> int:
+	for uid in pieces_for(cid, slot):
+		if wearer_of(uid) == &"":
+			return uid
+	return NO_PIECE
 
 
 func _owned() -> Dictionary:

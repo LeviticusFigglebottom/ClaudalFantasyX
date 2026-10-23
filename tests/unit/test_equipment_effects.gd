@@ -145,3 +145,33 @@ func test_same_inputs_same_combatant() -> void:
 	fx.apply_to(b)
 	assert_eq(a.magic, b.magic)
 	assert_eq(EquipmentEffects.data_of(a), EquipmentEffects.data_of(b))
+
+
+# --- M1-PRG-03: modifier lifetime ---------------------------------------------------------------
+
+
+func test_modifier_keeps_its_owner_alive() -> void:
+	var bag := EquipmentBag.new(db)
+	_wear(bag, &"rhen", &"rhen_reefline_harness")
+	var mod := EquipmentEffects.new(db, bag).modifier()
+	assert_true(mod.is_valid(), "no reference to the EquipmentEffects is kept here")
+	var engine := BattleEngine.new()
+	engine.party_modifier = mod
+	engine.setup(bdb, [&"rhen"] as Array[StringName], [] as Array[StringName], &"sandbox_reef", 7)
+	assert_eq(engine.find(&"rhen").max_hp, _base(&"rhen").max_hp + 40, "the harness still applies")
+	assert_true(engine.find(&"rhen").has_meta(EquipmentEffects.META_KEY))
+
+
+func test_a_bare_method_callable_dies_with_its_owner() -> void:
+	var bag := EquipmentBag.new(db)
+	_wear(bag, &"rhen", &"rhen_reefline_harness")
+	var bare := _bare_apply_to(bag)
+	assert_false(bare.is_valid(), "why modifier() exists: Callables do not hold RefCounted")
+	var composed := EquipmentEffects.compose([bare, EquipmentEffects.new(db, bag).modifier()])
+	var c := _base(&"rhen")
+	composed.call(c)
+	assert_eq(c.max_hp, _base(&"rhen").max_hp + 40, "the valid hook runs; the dead one is reported")
+
+
+func _bare_apply_to(bag: EquipmentBag) -> Callable:
+	return EquipmentEffects.new(db, bag).apply_to
