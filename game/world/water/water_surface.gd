@@ -55,8 +55,8 @@ const PARAM_SEA_GLOW := &"sea_glow_energy"
 	set(value):
 		river = value
 		_refresh()
-## Night sea-glow energy (color script rule 3: 0.04-0.15 at night, 0 by day and in ending_dock).
-@export_range(0.0, 1.0, 0.001) var sea_glow_energy: float = 0.0:
+## Night sea-glow energy (color script rule 3: 0.04-0.15 at night). It shows only while hymn_glimmer.a > 0.
+@export_range(0.0, 0.15, 0.001) var sea_glow_energy: float = 0.0:
 	set(value):
 		sea_glow_energy = value
 		if material != null:

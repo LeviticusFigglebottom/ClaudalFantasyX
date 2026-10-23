@@ -17,7 +17,8 @@
 //   foam       shoreline (depth difference) + crest (Jacobian < threshold), advected by curl noise
 //              (ocean) or the flowmap (river), lit as a diffuse surface
 //   SSS        sun through thin crests (light())
-//   glow       night sea-glow (sea_glow_energy; never cut on any tier) + glimmer focus response
+//   glow       night sea-glow via hymn_sea_glow() (glimmer.gdshaderinc; never cut on any tier)
+//              + glimmer focus response
 //
 // The material is drawn in the transparent pass (it reads the screen texture) and covers the scene
 // behind it fully: refraction, not alpha, is what makes it see-through.
@@ -29,6 +30,7 @@ render_mode blend_mix, depth_draw_always, cull_back, world_vertex_coords;
 
 #include "res://game/shaders/include/common.gdshaderinc"
 #include "res://game/shaders/include/globals.gdshaderinc"
+#include "res://game/shaders/include/glimmer.gdshaderinc"
 #include "res://game/shaders/water/water_waves.gdshaderinc"
 #include "res://game/shaders/water/water_caustics.gdshaderinc"
 
@@ -80,6 +82,20 @@ render_mode blend_mix, depth_draw_always, cull_back, world_vertex_coords;
 // depth-test thickness grows with distance along the ray; hits more than WATER_SSR_BELOW_M under
 // the surface are seabed seen through the water, not reflections.
 #define WATER_SSR_MIN_RISE 0.01
+// Ripple layers: per-layer amplitude gain and frequency step (not exactly 2, to avoid alignment).
+#define WATER_DETAIL_GAIN 0.5
+#define WATER_DETAIL_LACUNARITY 2.03
+// Foam pattern fBm, the drift of the curl field itself, and how much of the wind pushes foam.
+#define WATER_FOAM_OCTAVES 3
+#define WATER_FOAM_LACUNARITY 2.0
+#define WATER_FOAM_GAIN 0.55
+#define WATER_FOAM_FIELD_DRIFT 0.01
+#define WATER_FOAM_WIND_SHARE 0.5
+// Foam keeps this share far away, fading over detail_fade_m x WATER_FOAM_FADE_SCALE.
+#define WATER_FOAM_FAR_KEEP 0.5
+#define WATER_FOAM_FADE_SCALE 4.0
+// Caustic projection along a low sun is clamped at this elevation (sine) so it cannot smear.
+#define WATER_CAUSTIC_MIN_SUN_Y 0.2
 // Highest coverage the shoreline foam core reaches (1 would be a solid painted line).
 #define WATER_SHORE_CORE_MAX 0.8
 #define WATER_SSR_THICKNESS_GROWTH 0.05
@@ -117,9 +133,9 @@ uniform vec3 absorption_per_m = vec3(0.45, 0.065, 0.045);
 uniform float absorption_scale : hint_range(0.0, 8.0) = 1.0;
 // Light also travels down to the seabed before it comes back up (vertical depth x this).
 uniform float sun_path_factor : hint_range(0.0, 2.0) = 1.0;
-// Brightness of the in-scattered column under direct light, and its ambient floor.
-uniform float scatter_energy : hint_range(0.0, 4.0) = 0.6;
-uniform float scatter_ambient : hint_range(0.0, 2.0) = 0.25;
+// Single-scattering albedo of the water column: the in-scattered colour is output as diffuse
+// ALBEDO, so the engine lights it with the zone's real sun, moon, lamps, ambient and shadows.
+uniform float scatter_energy : hint_range(0.0, 1.0) = 0.25;
 // Fraction of scatter that ignores the sun angle (wave faces turned away still glow a little).
 uniform float scatter_wrap : hint_range(0.0, 1.0) = 0.5;
 // Path length used where the depth buffer shows sky (open sea with no seabed in view), metres.
@@ -206,15 +222,10 @@ uniform float sss_crest_lo : hint_range(-1.0, 1.0) = 0.0;
 uniform float sss_crest_hi : hint_range(-1.0, 1.0) = 0.35;
 
 group_uniforms sea_glow;
-// Color script rule 3: sea_glow #1C6B78, energy 0.04-0.15 every night frame, exactly 0 in
-// ending_dock. Never cut by a tier. Modulated by slow noise (period, amplitude).
-uniform vec3 col_sea_glow : source_color = vec3(0.110, 0.420, 0.471);
-uniform float sea_glow_energy : hint_range(0.0, 1.0) = 0.0;
-uniform float sea_glow_period_s : hint_range(1.0, 60.0) = 14.0;
-uniform float sea_glow_variation : hint_range(0.0, 1.0) = 0.25;
-uniform float sea_glow_scale_m : hint_range(0.5, 200.0) = 18.0;
-// Share of the glow emitted at the surface itself; the rest grows with water-column depth.
-uniform float sea_glow_surface : hint_range(0.0, 1.0) = 0.35;
+// Color script rule 3: the zone's sea-glow energy (0.04-0.15 at night). Colour, noise and the
+// column build-up come from glimmer.gdshaderinc; the glow is ON only while hymn_glimmer.a > 0
+// (ending_dock sets it to 0). Never cut by a tier.
+uniform float sea_glow_energy : hint_range(0.0, 0.15) = 0.0;
 // How strongly the water brightens under hymn_glimmer_focus (motes gathering).
 uniform float glimmer_response : hint_range(0.0, 4.0) = 0.6;
 
@@ -230,7 +241,6 @@ varying vec2 v_rest_xz;
 varying float v_jacobian;
 varying float v_height;
 // Fragment -> light.
-varying vec3 v_scatter;
 varying float v_crest;
 varying float v_foam;
 
@@ -270,15 +280,15 @@ vec2 detail_slope(vec2 p, vec2 dir, float t) {
 		vec2 q = p * detail_scale_per_m * freq - d * t * detail_speed_m_s * detail_scale_per_m * freq;
 		vec3 nd = hymn_value_noise2_d(q);
 		slope += nd.yz * amp * freq * detail_scale_per_m;
-		amp *= 0.5;
-		freq *= 2.03;
+		amp *= WATER_DETAIL_GAIN;
+		freq *= WATER_DETAIL_LACUNARITY;
 		d = rot * d;
 	}
 	return slope;
 }
 
 float foam_pattern(vec2 p) {
-	return hymn_fbm2(p * foam_scale_per_m, 3, 2.0, 0.55);
+	return hymn_fbm2(p * foam_scale_per_m, WATER_FOAM_OCTAVES, WATER_FOAM_LACUNARITY, WATER_FOAM_GAIN);
 }
 
 // Two-phase advection of the foam pattern along `flow` (m/s): no stretching, no visible reset.
@@ -393,7 +403,7 @@ void fragment() {
 	// --- Caustics: projected along the sun onto whatever the refraction sees -----------------
 	vec3 sun = normalize(hymn_sun_direction);
 	if (use_caustics && !sky_behind && sun.y > 0.0) {
-		vec2 entry = scene_world.xz + sun.xz * (vdepth / max(sun.y, 0.2));
+		vec2 entry = scene_world.xz + sun.xz * (vdepth / max(sun.y, WATER_CAUSTIC_MIN_SUN_Y));
 		vec3 c = caustic_light(entry, vdepth, t);
 		// Multiplicative on the lit seabed: shadowed seabed stays dark, as real caustics do.
 		refr *= max(vec3(1.0) + caustic_strength * c * sun.y, vec3(0.0));
@@ -419,14 +429,15 @@ void fragment() {
 		vec2 flow = (texture(tex_flow, UV).rg * 2.0 - 1.0) * flow_speed_m_s;
 		float pattern = advected_foam(world.xz, flow, t);
 #elif WATER_CURL_FOAM
-		vec2 flow = hymn_curl_noise2(world.xz * foam_flow_scale_per_m + vec2(t * 0.01)) * foam_flow_speed_m_s;
-		flow += wind_dir * foam_flow_speed_m_s * 0.5;
+		vec2 flow = hymn_curl_noise2(world.xz * foam_flow_scale_per_m + vec2(t * WATER_FOAM_FIELD_DRIFT)) * foam_flow_speed_m_s;
+		flow += wind_dir * foam_flow_speed_m_s * WATER_FOAM_WIND_SHARE;
 		float pattern = advected_foam(world.xz, flow, t);
 #else
 		float pattern = foam_pattern(world.xz - wind_dir * t * foam_flow_speed_m_s);
 #endif
 		foam = smoothstep(1.0 - cover, 1.0 - cover + foam_softness, pattern) * cover;
-		foam *= exp(-view_dist / (detail_fade_m * 4.0)) * 0.5 + 0.5;
+		// Far foam thins to half (it is sub-pixel lace there) instead of vanishing.
+		foam *= mix(WATER_FOAM_FAR_KEEP, 1.0, exp(-view_dist / (detail_fade_m * WATER_FOAM_FADE_SCALE)));
 	}
 
 	// --- Screen-space reflection --------------------------------------------------------------
@@ -487,10 +498,10 @@ void fragment() {
 #endif
 
 	// --- Night sea-glow and glimmer response (every tier) --------------------------------------
-	float column = 1.0 - exp(-dot(sigma, vec3(1.0 / 3.0)) * path);
-	float glow_noise = hymn_value_noise3(vec3(world.xz / sea_glow_scale_m, t / sea_glow_period_s));
-	float glow_mod = 1.0 + sea_glow_variation * (2.0 * glow_noise - 1.0);
-	vec3 glow = col_sea_glow * sea_glow_energy * glow_mod * mix(column, 1.0, sea_glow_surface);
+	// Shared glimmer-stream term (glimmer.gdshaderinc): gated by hymn_glimmer.a, clamped to the
+	// rule-3 band, column = the underwater view path. Seen through the surface: x (1 - Fresnel).
+	float glow_energy = hymn_sea_glow_energy(sea_glow_energy, hymn_glimmer.a);
+	vec3 glow = hymn_sea_glow(world, t, glow_energy, path) * (1.0 - fresnel);
 	if (hymn_glimmer_focus.w > 0.0) {
 		float f = 1.0 - smoothstep(0.0, hymn_glimmer_focus.w, distance(world, hymn_glimmer_focus.xyz));
 		glow += hymn_glimmer.rgb * hymn_glimmer.a * glimmer_response * f * f;
@@ -499,19 +510,19 @@ void fragment() {
 	// --- Outputs --------------------------------------------------------------------------------
 	float water = 1.0 - foam;
 	vec3 col_scatter = mix(col_scatter_shallow, col_deep, smoothstep(0.0, scatter_depth_m, vdepth));
-	v_scatter = col_scatter * inscatter * scatter_energy * water;
 	v_foam = foam;
 	v_crest = use_sss ? smoothstep(sss_crest_lo, sss_crest_hi, v_height / max(water_amplitude_sum, HYMN_EPSILON))
 			* water : 0.0;
 	float rough = mix(roughness_near, roughness_far, clamp(view_dist / roughness_far_m, 0.0, 1.0));
 
-	ALBEDO = col_foam * foam;
+	// Foam is a lit diffuse surface; so is the in-scattering column under the surface.
+	ALBEDO = col_foam * foam + col_scatter * inscatter * scatter_energy * water * (1.0 - fresnel);
 	ROUGHNESS = mix(rough, foam_roughness, foam);
 	METALLIC = 0.0;
 	// Engine reflection (sky, probes) only where SSR found nothing.
 	SPECULAR = WATER_SPECULAR * water * (1.0 - ssr_hit);
 	NORMAL = n_view;
-	EMISSION = (body + col_scatter * inscatter * scatter_ambient) * water * (1.0 - fresnel * ssr_hit)
+	EMISSION = body * water * (1.0 - fresnel * ssr_hit)
 			+ ssr_col * fresnel * ssr_hit * water + glow * water;
 }
 
@@ -519,10 +530,9 @@ void light() {
 	vec3 lc = LIGHT_COLOR * ATTENUATION;
 	float ndl = dot(NORMAL, LIGHT);
 	float ndl_c = max(ndl, 0.0);
-	// Foam: Lambert (the engine multiplies DIFFUSE_LIGHT by ALBEDO, which is foam only).
-	DIFFUSE_LIGHT += lc * ndl_c / HYMN_PI;
-	// Water column in-scatter, lit through the surface.
-	SPECULAR_LIGHT += v_scatter * lc * mix(ndl_c, 1.0, scatter_wrap) / HYMN_PI;
+	// Foam and column in-scatter (the engine multiplies DIFFUSE_LIGHT by ALBEDO). The column is
+	// lit through the surface, so wave faces turned from the light still glow a little (wrap).
+	DIFFUSE_LIGHT += lc * mix(ndl_c, 1.0, scatter_wrap * (1.0 - v_foam)) / HYMN_PI;
 	// Sun through thin crests: strongest looking toward the light, through the wave.
 	vec3 h_sss = normalize(LIGHT + NORMAL * sss_distortion);
 	float back = pow(clamp(dot(VIEW, -h_sss), 0.0, 1.0), sss_power);

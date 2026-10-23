@@ -106,7 +106,7 @@ func test_every_tier_has_a_shader_and_presets_map_to_tiers() -> void:
 func test_low_tier_keeps_sea_glow() -> void:
 	# Color script rule 3: never cut the night sea-glow on any preset.
 	var body := FileAccess.get_file_as_string(SHADER_DIR.path_join("water_surface_body.gdshaderinc"))
-	var glow_at := body.find("col_sea_glow * sea_glow_energy")
+	var glow_at := body.find("hymn_sea_glow(world")
 	assert_true(glow_at > 0, "sea-glow term present")
 	var before := body.substr(0, glow_at)
 	assert_eq(before.count("#if") - before.count("#endif"), 1, "sea-glow sits outside every tier #if")
