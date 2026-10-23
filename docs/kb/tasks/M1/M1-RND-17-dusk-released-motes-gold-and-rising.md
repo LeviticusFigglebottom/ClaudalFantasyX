@@ -2,8 +2,8 @@
 id: M1-RND-17
 title: Dusk released motes read gold and rising (halo chroma, streak axis)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-17-dusk-motes)"
 depends_on: [M1-RND-08]
 milestone: M1
 request-from: "character"
