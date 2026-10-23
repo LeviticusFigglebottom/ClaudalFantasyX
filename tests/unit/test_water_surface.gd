@@ -103,7 +103,10 @@ func test_every_tier_has_a_shader_and_presets_map_to_tiers() -> void:
 	)
 	for p: Variant in (presets as Dictionary)["presets"]:
 		var id := str((p as Dictionary)["id"])
-		assert_true(WaterSurface.PRESET_QUALITY.has(id), "graphics preset %s has no water tier" % id)
+		assert_true(
+			GraphicsSettings.preset_tier(id, WaterSurface.PRESET_TIER_SYSTEM) in WaterSurface.QUALITY_NAMES,
+			"graphics preset %s has no water tier" % id
+		)
 
 
 func test_low_tier_keeps_sea_glow() -> void:

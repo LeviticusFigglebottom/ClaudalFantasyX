@@ -19,6 +19,9 @@ const CONFIG_SECTION := "graphics"
 const KEY_VERSION := "version"
 const KEY_PRESET := "preset"
 const KEY_OVERRIDES := "overrides"
+const KEY_TIERS := "tiers"
+const KEY_FAMILIES := "shader_families"
+const FAMILY_FALLBACK_TIER := "high"
 
 const TARGET_VIEWPORT := &"viewport"
 const TARGET_ENVIRONMENT := &"environment"
@@ -27,6 +30,12 @@ const TARGET_GROUP := &"group"
 const OP_SET := &"set"
 const OP_GATE := &"gate"
 const OP_CALL := &"call"
+## Group ops of vegetation_detail (M1-RND-07): scale an authored float, set a MultiMesh visible
+## fraction, gate cast_shadow off.
+const OP_SCALE := &"scale"
+const OP_FRACTION := &"fraction"
+const OP_SHADOW_GATE := &"shadow_gate"
+const KEY_VEG_GROUPS := "vegetation_groups"
 const AUTHORED_META_PREFIX := "hymn_authored_"
 
 const GI_OFF := "off"
@@ -36,6 +45,9 @@ const TYPE_INT_NAME := "int"
 const TYPE_FLOAT_NAME := "float"
 const TYPE_BOOL_NAME := "bool"
 const TYPE_ENUM_NAME := "enum"
+
+## Parsed presets data shared by the static helpers (preset_tier).
+static var _data_cache: Dictionary = {}
 
 var data: Dictionary = {}
 var preset_id: String = ""
@@ -178,6 +190,7 @@ func plan(preset_or_dict: Variant = null) -> Array[Dictionary]:
 	_plan_scaling_and_aa(s, ops)
 	ops.append(_op_set(TARGET_VIEWPORT, "mesh_lod_threshold", s["lod_threshold"]))
 	ops.append(_op_set(TARGET_VIEWPORT, "anisotropic_filtering_level", _enum_value("anisotropic_filtering", s)))
+	_plan_vegetation(s, ops)
 	return ops
 
 
@@ -218,6 +231,80 @@ static func execute(ops: Array[Dictionary], viewport: Viewport, environment: Env
 						_apply_property(node, op)
 					applied += 1
 	return applied
+
+
+## Quality tier of `system` ("water", "vegetation", ...) for a preset (presets[].tiers; "" if the
+## preset or system is unknown). Static and cached: systems ask it without a GraphicsSettings.
+static func preset_tier(preset: String, system: String) -> String:
+	for p: Dictionary in _shared_data().get("presets", []):
+		if str(p.get("id", "")) == preset:
+			return str((p.get(KEY_TIERS, {}) as Dictionary).get(system, ""))
+	return ""
+
+
+## Swaps every ShaderMaterial under `root` whose shader belongs to a shader family
+## (graphics_presets.json "shader_families") to the variant of the current preset's tier. Each
+## material is visited once; shared materials change for every user, which is the intent. Call it
+## after a zone loads and after a preset change, like apply(). Returns the number of swaps.
+func apply_tiers(root: Node, preset: String = "") -> int:
+	var pid := preset if preset != "" else preset_id
+	var families := data.get(KEY_FAMILIES, {}) as Dictionary
+	var member_of := {}
+	for fam: String in families:
+		if fam.begins_with("_"):
+			continue
+		for tier: String in families[fam]:
+			if tier != "system":
+				member_of[str(families[fam][tier])] = fam
+	var seen := {}
+	var swaps := 0
+	for mat in _materials_under(root):
+		if seen.has(mat) or not (mat is ShaderMaterial) or (mat as ShaderMaterial).shader == null:
+			continue
+		seen[mat] = true
+		var sm := mat as ShaderMaterial
+		var fam := str(member_of.get(sm.shader.resource_path, ""))
+		if fam == "":
+			continue
+		var f := families[fam] as Dictionary
+		var tier := preset_tier(pid, str(f.get("system", "")))
+		var want := str(f.get(tier, f.get(FAMILY_FALLBACK_TIER, "")))
+		if want != "" and want != sm.shader.resource_path:
+			sm.shader = load(want) as Shader
+			swaps += 1
+	return swaps
+
+
+static func _materials_under(root: Node) -> Array[Material]:
+	var out: Array[Material] = []
+	for n in root.find_children("*", "GeometryInstance3D", true, false) + [root]:
+		if not (n is GeometryInstance3D):
+			continue
+		var g := n as GeometryInstance3D
+		if g.material_override != null:
+			out.append(g.material_override)
+		var mesh: Mesh = null
+		if g is MeshInstance3D:
+			mesh = (g as MeshInstance3D).mesh
+			for i in (g as MeshInstance3D).get_surface_override_material_count():
+				var m := (g as MeshInstance3D).get_surface_override_material(i)
+				if m != null:
+					out.append(m)
+		elif g is MultiMeshInstance3D and (g as MultiMeshInstance3D).multimesh != null:
+			mesh = (g as MultiMeshInstance3D).multimesh.mesh
+		if mesh != null:
+			for i in mesh.get_surface_count():
+				var m := mesh.surface_get_material(i)
+				if m != null:
+					out.append(m)
+	return out
+
+
+static func _shared_data() -> Dictionary:
+	if _data_cache.is_empty():
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+		_data_cache = parsed as Dictionary if parsed is Dictionary else {}
+	return _data_cache
 
 
 ## Records what a zone/cutscene wants for a gated property (e.g. a cutscene turning fog on), then
@@ -276,6 +363,35 @@ func _plan_gi(s: Dictionary, ops: Array[Dictionary]) -> void:
 	ops.append(voxel_gate)
 	ops.append(_op_call("voxel_gi_set_quality", [_enum_value("voxel_gi_quality", s)]))
 	ops.append(_op_call("gi_set_use_half_resolution", [bool(s["gi_half_resolution"])]))
+
+
+## vegetation_detail: visibility-range LOD scale, MultiMesh density and small-foliage shadows, on
+## the node groups zones tag (graphics_presets.json "vegetation_groups").
+func _plan_vegetation(s: Dictionary, ops: Array[Dictionary]) -> void:
+	var lvl := _level("vegetation_detail", s)
+	var groups := data.get(KEY_VEG_GROUPS, {}) as Dictionary
+	for prop in ["visibility_range_begin", "visibility_range_end"]:
+		ops.append(
+			_op_group(OP_SCALE, str(groups.get("lod", "")), "GeometryInstance3D", prop, float(lvl["visibility_scale"]))
+		)
+	ops.append(
+		_op_group(
+			OP_FRACTION,
+			str(groups.get("multimesh", "")),
+			"MultiMesh",
+			"visible_instance_count",
+			float(lvl["multimesh_fraction"])
+		)
+	)
+	ops.append(
+		_op_group(
+			OP_SHADOW_GATE,
+			str(groups.get("small_shadows", "")),
+			"GeometryInstance3D",
+			"cast_shadow",
+			bool(lvl["small_foliage_shadows"])
+		)
+	)
 
 
 func _plan_shadows(s: Dictionary, ops: Array[Dictionary]) -> void:
@@ -398,6 +514,18 @@ static func _op_set(target: StringName, name: String, value: Variant) -> Diction
 	return {"target": target, "op": OP_SET, "name": name, "value": value}
 
 
+## The zone's own value of a property, captured on first use (as gates do).
+static func _authored(obj: Object, name: String) -> Variant:
+	var meta := StringName(AUTHORED_META_PREFIX + name)
+	if not obj.has_meta(meta):
+		obj.set_meta(meta, obj.get(name))
+	return obj.get_meta(meta)
+
+
+static func _op_group(kind: StringName, group: String, cls: String, name: String, value: Variant) -> Dictionary:
+	return {"target": TARGET_GROUP, "op": kind, "group": group, "class": cls, "name": name, "value": value}
+
+
 static func _op_gate(target: StringName, name: String, allowed: bool) -> Dictionary:
 	return {"target": target, "op": OP_GATE, "name": name, "value": allowed}
 
@@ -408,6 +536,20 @@ static func _op_call(method: String, args: Array) -> Dictionary:
 
 static func _apply_property(obj: Object, op: Dictionary) -> void:
 	var name := str(op["name"])
+	match op["op"]:
+		OP_SCALE:
+			obj.set(name, float(_authored(obj, name)) * float(op["value"]))
+			return
+		OP_FRACTION:
+			if obj is MultiMeshInstance3D and (obj as MultiMeshInstance3D).multimesh != null:
+				var mm := (obj as MultiMeshInstance3D).multimesh
+				var f := float(op["value"])
+				mm.visible_instance_count = -1 if f >= 1.0 else roundi(mm.instance_count * f)
+			return
+		OP_SHADOW_GATE:
+			var authored: Variant = _authored(obj, name)
+			obj.set(name, authored if bool(op["value"]) else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+			return
 	if op["op"] != OP_GATE:
 		obj.set(name, op["value"])
 		return

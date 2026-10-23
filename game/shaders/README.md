@@ -88,6 +88,12 @@ render_mode cull_back;
 
 Every material that can appear in a battle transition or a dialogue cut must be registered in `game/data/settings/prewarm_materials.json`, with `scenes: []` for any transition or a list of scene paths. Each quality variant is a separate pipeline and needs its own entry. `ShaderPrewarm` (`game/core/shader_prewarm.gd`) draws each one off-screen for `frames_to_render` frames during the `SceneRouter.prewarm_requested` transition and logs the max frame time against the 50 ms budget (SPEC §4.2).
 
+Since M1-RND-07:
+- **Real meshes.** An entry may add `"mesh"` (a Mesh, or a `.glb`/`.tscn` whose first or named `"mesh_node"` MeshInstance3D supplies it) and `"multimesh": true`, so the pipeline compiled is the real vertex format and instancing path, not the stage quad's. A particles entry may add `"draw_material"` for its draw pass.
+- **Scene materials.** `"scene_materials": true` (registry level, on) also stages every material on the incoming scene's own geometry, inline sub-resources included. Register only materials a scene builds at runtime, plus quality variants.
+- **Game AA.** The stage copies the game viewport's AA and 3D scaling (TAA, FSR2).
+- **Measured on a GPU** (docs/kb/qa/gpu/2026-10-23-rnd-07.md): without prewarm a test zone's first frame took 273–1471 ms even with warm caches; with it, ≤ 39 ms.
+
 ## Testing
 
 - Headless CI (dummy renderer) **does** run Godot's shader front end. Preprocessing, includes, parsing, and type and semantic checks all happen when a shader is first used (for example, `get_shader_uniform_list()`), not when `code` is assigned. Errors print `SHADER ERROR` and leave the shader with no uniforms.

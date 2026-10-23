@@ -8,7 +8,18 @@ extends Node
 ## times; when done it emits `finished(stats)` and logs the max frame time of the transition.
 ##
 ## Registry and tuning: game/data/settings/prewarm_materials.json. Each entry is
-## {"path": res path of a Material or Shader, "scenes": [scene paths] (empty = every transition)}.
+## {"path": res path of a Material or Shader, "scenes": [scene paths] (empty = every transition)},
+## plus optional keys (M1-RND-07) so the stage compiles the pipeline the zone really uses:
+##   "mesh": a Mesh resource, or a scene (.glb/.tscn) whose first MeshInstance3D (or "mesh_node")
+##           supplies it: the real vertex format (vertex colours, UV2, no tangents...)
+##   "multimesh": true  draw it through a MultiMeshInstance3D (colours and custom data on)
+##   "draw_material": for a particles material, the draw pass's material (billboard pipelines)
+## The stage viewport copies the game viewport's AA (TAA, MSAA, screen-space AA, 3D scaling mode),
+## so motion-vector and upscaler pipeline variants are compiled too.
+## With "scene_materials": true the incoming scene itself is instanced off-tree (no _ready runs) and
+## every material on its geometry is drawn on that geometry's own mesh (or MultiMesh), plus its
+## WorldEnvironment sky: inline sub-resource materials and real vertex formats need no registry
+## entry. Materials scenes build at runtime in _ready still need their registry entries.
 ##
 ## Hook-up (autoload-free): `ShaderPrewarm.install(SceneRouter)` connects to
 ## SceneRouter.prewarm_requested and spawns this scene as a child of the router (which survives the
@@ -87,20 +98,35 @@ func start(for_scene: String = "") -> int:
 	var width := int(config.get("viewport_width", _viewport.size.x))
 	var height := int(config.get("viewport_height", _viewport.size.y))
 	_viewport.size = Vector2i(width, height)
+	match_viewport(get_viewport())
 	for entry: Variant in config.get("materials", []):
 		var e := entry as Dictionary
 		var scenes := e.get("scenes", []) as Array
 		if not (scenes.is_empty() or scenes.has(for_scene)):
 			continue
 		var mat := _load_material(str(e.get("path", "")))
-		if mat != null and _instance(mat):
+		if mat != null and _instance(mat, e):
 			_instanced += 1
 		else:
 			_skipped += 1
+	if bool(config.get("scene_materials", false)) and for_scene != "" and ResourceLoader.exists(for_scene):
+		_instanced += _instance_scene_materials(for_scene, int(config.get("max_scene_materials", 0)))
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_running = true
 	_stage_alive = true
 	return _instanced
+
+
+## Copies the AA and 3D scaling state of the game viewport onto the stage, so the pipelines
+## that state selects (TAA motion vectors, FSR2, MSAA, FXAA/SMAA) are the ones compiled.
+func match_viewport(game: Viewport) -> void:
+	if game == null:
+		return
+	_viewport.use_taa = game.use_taa
+	_viewport.msaa_3d = game.msaa_3d
+	_viewport.screen_space_aa = game.screen_space_aa
+	_viewport.scaling_3d_mode = game.scaling_3d_mode
+	_viewport.scaling_3d_scale = game.scaling_3d_scale
 
 
 func is_running() -> bool:
@@ -200,7 +226,39 @@ static func _shader_mode(mat: Material) -> int:
 	return MODE_UNSUPPORTED
 
 
-func _instance(mat: Material) -> bool:
+## The mesh an entry draws: its "mesh" key (a Mesh, or the first/named MeshInstance3D of a scene),
+## else the stage quad.
+static func entry_mesh(entry: Dictionary, fallback: Mesh) -> Mesh:
+	var path := str(entry.get("mesh", ""))
+	if path.is_empty() or not ResourceLoader.exists(path):
+		if not path.is_empty():
+			push_warning("%s: prewarm mesh not found: %s" % [LOG_PREFIX, path])
+		return fallback
+	var res := load(path)
+	if res is Mesh:
+		return res as Mesh
+	if res is PackedScene:
+		var inst := (res as PackedScene).instantiate()
+		var want := str(entry.get("mesh_node", ""))
+		var mi: MeshInstance3D = null
+		if want != "":
+			mi = inst.find_child(want, true, false) as MeshInstance3D
+		else:
+			var found := inst.find_children("*", "MeshInstance3D", true, false)
+			mi = (
+				(inst as MeshInstance3D)
+				if inst is MeshInstance3D
+				else (found[0] as MeshInstance3D if found.size() > 0 else null)
+			)
+		var mesh := mi.mesh if mi != null else null
+		inst.free()
+		if mesh != null:
+			return mesh
+	push_warning("%s: %s has no mesh to prewarm with" % [LOG_PREFIX, path])
+	return fallback
+
+
+func _instance(mat: Material, entry: Dictionary = {}) -> bool:
 	var in_front := Vector3.FORWARD * float(config.get("quad_distance", 0.0))
 	var quad := QuadMesh.new()
 	var side := float(config.get("quad_size", 0.0))
@@ -208,15 +266,32 @@ func _instance(mat: Material) -> bool:
 	var node: Node
 	match _shader_mode(mat):
 		Shader.MODE_SPATIAL:
-			var mesh := MeshInstance3D.new()
-			mesh.mesh = quad
-			mesh.material_override = mat
-			mesh.position = in_front
-			node = mesh
+			var draw_mesh := entry_mesh(entry, quad)
+			if bool(entry.get("multimesh", false)):
+				var mm := MultiMesh.new()
+				mm.transform_format = MultiMesh.TRANSFORM_3D
+				mm.use_colors = true
+				mm.use_custom_data = true
+				mm.mesh = draw_mesh
+				mm.instance_count = int(config.get("multimesh_instances", 1))
+				var mmi := MultiMeshInstance3D.new()
+				mmi.multimesh = mm
+				mmi.material_override = mat
+				mmi.position = in_front
+				node = mmi
+			else:
+				var mesh := MeshInstance3D.new()
+				mesh.mesh = draw_mesh
+				mesh.material_override = mat
+				mesh.position = in_front
+				node = mesh
 		Shader.MODE_PARTICLES:
 			var particles := GPUParticles3D.new()
 			particles.amount = int(config.get("particle_amount", 0))
 			particles.process_material = mat
+			var draw := _load_material(str(entry.get("draw_material", ""))) if entry.has("draw_material") else null
+			if draw != null:
+				quad.material = draw
 			particles.draw_pass_1 = quad
 			particles.position = in_front
 			node = particles
@@ -243,6 +318,83 @@ func _instance(mat: Material) -> bool:
 	(_stage_2d if node is Control else _stage_3d).add_child(node)
 	_spawned.append(node)
 	return true
+
+
+## Draws every (material, mesh) pair on the incoming scene's geometry, and its sky. Returns how
+## many draws were staged (capped at `cap`, deduplicated).
+func _instance_scene_materials(path: String, cap: int) -> int:
+	var packed := load(path) as PackedScene
+	if packed == null:
+		return 0
+	var inst := packed.instantiate(PackedScene.GEN_EDIT_STATE_DISABLED)
+	var seen := {}
+	var count := 0
+	var in_front := Vector3.FORWARD * float(config.get("quad_distance", 0.0))
+	for n in inst.find_children("*", "", true, false) + [inst]:
+		if count >= cap:
+			break
+		if n is WorldEnvironment:
+			var env := (n as WorldEnvironment).environment
+			if env != null and env.sky != null and env.sky.sky_material != null:
+				var sky := Sky.new()
+				sky.sky_material = env.sky.sky_material
+				_ensure_stage_env().background_mode = Environment.BG_SKY
+				_stage_env.sky = sky
+			continue
+		if not (n is GeometryInstance3D):
+			continue
+		for pair in _geometry_draws(n as GeometryInstance3D):
+			var key := [pair[0], pair[1]]
+			if seen.has(key) or count >= cap:
+				continue
+			seen[key] = true
+			var node: GeometryInstance3D
+			if n is MultiMeshInstance3D:
+				var mm := MultiMesh.new()
+				var src := (n as MultiMeshInstance3D).multimesh
+				mm.transform_format = src.transform_format
+				mm.use_colors = src.use_colors
+				mm.use_custom_data = src.use_custom_data
+				mm.mesh = pair[1] as Mesh
+				mm.instance_count = int(config.get("multimesh_instances", 1))
+				var mmi := MultiMeshInstance3D.new()
+				mmi.multimesh = mm
+				node = mmi
+			else:
+				var mi := MeshInstance3D.new()
+				mi.mesh = pair[1] as Mesh
+				node = mi
+			node.material_override = pair[0] as Material
+			node.position = in_front
+			_stage_3d.add_child(node)
+			_spawned.append(node)
+			count += 1
+	inst.free()
+	return count
+
+
+## [material, mesh] pairs a GeometryInstance3D draws (override, per-surface overrides, mesh materials).
+static func _geometry_draws(g: GeometryInstance3D) -> Array:
+	var mesh: Mesh = null
+	if g is MeshInstance3D:
+		mesh = (g as MeshInstance3D).mesh
+	elif g is MultiMeshInstance3D and (g as MultiMeshInstance3D).multimesh != null:
+		mesh = (g as MultiMeshInstance3D).multimesh.mesh
+	if mesh == null:
+		return []
+	var out := []
+	if g.material_override != null:
+		out.append([g.material_override, mesh])
+		return out
+	for i in mesh.get_surface_count():
+		var m: Material = null
+		if g is MeshInstance3D:
+			m = (g as MeshInstance3D).get_surface_override_material(i)
+		if m == null:
+			m = mesh.surface_get_material(i)
+		if m != null:
+			out.append([m, mesh])
+	return out
 
 
 func _ensure_stage_env() -> Environment:

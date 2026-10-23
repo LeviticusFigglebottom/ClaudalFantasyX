@@ -7,6 +7,9 @@
   "viewport_height": 64,
   "quad_size": 1.0,
   "quad_distance": 1.5,
+  "multimesh_instances": 2,
+  "scene_materials": true,
+  "max_scene_materials": 256,
   "particle_amount": 1,
   "materials": [
     {
@@ -16,6 +19,7 @@
     },
     {
       "path": "res://assets/environments/vegetation/materials/palm_frond.tres",
+      "mesh": "res://assets/environments/vegetation/palm_coconut_a.glb",
       "scenes": [
         "res://game/levels/_tests/vegetation/vegetation_test.tscn"
       ],
@@ -23,6 +27,7 @@
     },
     {
       "path": "res://assets/environments/vegetation/materials/palm_bark.tres",
+      "mesh": "res://assets/environments/vegetation/palm_coconut_a.glb",
       "scenes": [
         "res://game/levels/_tests/vegetation/vegetation_test.tscn"
       ],
@@ -30,6 +35,7 @@
     },
     {
       "path": "res://assets/environments/vegetation/materials/frangipani_leaf.tres",
+      "mesh": "res://assets/environments/vegetation/frangipani_a.glb",
       "scenes": [
         "res://game/levels/_tests/vegetation/vegetation_test.tscn"
       ],
@@ -37,6 +43,9 @@
     },
     {
       "path": "res://assets/environments/vegetation/materials/saltgrass.tres",
+      "mesh": "res://assets/environments/vegetation/saltgrass_clumps.glb",
+      "mesh_node": "saltgrass_a",
+      "multimesh": true,
       "scenes": [
         "res://game/levels/_tests/vegetation/vegetation_test.tscn"
       ],
@@ -44,6 +53,9 @@
     },
     {
       "path": "res://game/shaders/vegetation/vegetation_foliage_low.gdshader",
+      "mesh": "res://assets/environments/vegetation/saltgrass_clumps.glb",
+      "mesh_node": "saltgrass_a",
+      "multimesh": true,
       "scenes": [
         "res://game/levels/_tests/vegetation/vegetation_test.tscn"
       ],
@@ -406,6 +418,88 @@
       ],
       "tier": "high",
       "note": "M1-CHR-02 Asha hero material (cloth_sleeve). Add her battle and dialogue scene paths when they exist."
+    },
+    {
+      "path": "res://game/world/water/prewarm/water_ocean_low.tres",
+      "mesh": "res://game/world/water/prewarm/water_grid_prewarm.tres",
+      "scenes": [
+        "res://game/levels/_tests/water/water_test.tscn",
+        "res://game/levels/_tests/undertow/undertow_test.tscn",
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths."
+    },
+    {
+      "path": "res://game/world/water/prewarm/water_ocean_medium.tres",
+      "mesh": "res://game/world/water/prewarm/water_grid_prewarm.tres",
+      "scenes": [
+        "res://game/levels/_tests/water/water_test.tscn",
+        "res://game/levels/_tests/undertow/undertow_test.tscn",
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths."
+    },
+    {
+      "path": "res://game/world/water/prewarm/water_ocean.tres",
+      "mesh": "res://game/world/water/prewarm/water_grid_prewarm.tres",
+      "scenes": [
+        "res://game/levels/_tests/water/water_test.tscn",
+        "res://game/levels/_tests/undertow/undertow_test.tscn",
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths."
+    },
+    {
+      "path": "res://game/world/water/prewarm/water_ocean_ultra.tres",
+      "mesh": "res://game/world/water/prewarm/water_grid_prewarm.tres",
+      "scenes": [
+        "res://game/levels/_tests/water/water_test.tscn",
+        "res://game/levels/_tests/undertow/undertow_test.tscn",
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths."
+    },
+    {
+      "path": "res://game/world/water/prewarm/water_river_low.tres",
+      "scenes": [
+        "res://game/levels/_tests/water/water_test.tscn"
+      ],
+      "note": "M1-RND-07: river tier variant. Rivers use authored meshes: a zone with a river adds its scene path and \"mesh\": its channel mesh."
+    },
+    {
+      "path": "res://game/world/water/prewarm/water_river.tres",
+      "scenes": [
+        "res://game/levels/_tests/water/water_test.tscn"
+      ],
+      "note": "M1-RND-07: river tier variant. Rivers use authored meshes: a zone with a river adds its scene path and \"mesh\": its channel mesh."
+    },
+    {
+      "path": "res://game/vfx/glimmer/materials/glimmer_motes_process.tres",
+      "draw_material": "res://game/vfx/glimmer/materials/glimmer_motes_draw.tres",
+      "scenes": [
+        "res://game/levels/_tests/glimmer/glimmer_dusk.tscn",
+        "res://game/levels/_tests/glimmer/glimmer_night_held.tscn",
+        "res://game/levels/_tests/glimmer/glimmer_release.tscn",
+        "res://game/levels/_tests/glimmer/glimmer_bound.tscn",
+        "res://game/levels/_tests/undertow/undertow_test.tscn",
+        "res://game/world/save_shrine/save_shrine.tscn",
+        "res://game/levels/_tests/save_shrine/save_shrine_test.tscn"
+      ],
+      "note": "M1-RND-07: glimmer motes (process + billboard draw pass)."
+    },
+    {
+      "path": "res://game/vfx/glimmer/materials/glimmer_motes_process.tres",
+      "draw_material": "res://game/vfx/glimmer/materials/glimmer_motes_reflect.tres",
+      "scenes": [
+        "res://game/levels/_tests/glimmer/glimmer_dusk.tscn",
+        "res://game/levels/_tests/glimmer/glimmer_night_held.tscn",
+        "res://game/levels/_tests/glimmer/glimmer_release.tscn",
+        "res://game/levels/_tests/glimmer/glimmer_bound.tscn",
+        "res://game/levels/_tests/undertow/undertow_test.tscn",
+        "res://game/world/save_shrine/save_shrine.tscn",
+        "res://game/levels/_tests/save_shrine/save_shrine_test.tscn"
+      ],
+      "note": "M1-RND-07: glimmer still-water reflection pass."
     }
   ]
 }

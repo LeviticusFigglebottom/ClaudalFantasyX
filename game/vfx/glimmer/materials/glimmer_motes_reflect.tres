@@ -1,0 +1,23 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/glimmer/glimmer_motes_reflect.gdshader" id="1_r17nw"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_r17nw")
+shader_parameter/halo_scale = null
+shader_parameter/core_gain = null
+shader_parameter/halo_gain = null
+shader_parameter/halo_falloff = null
+shader_parameter/halo_chroma_gain = null
+shader_parameter/streak_gain = null
+shader_parameter/streak_width = null
+shader_parameter/trail_time_s = null
+shader_parameter/trail_max_ratio = null
+shader_parameter/trail_scale = null
+shader_parameter/near_fade_start_m = null
+shader_parameter/near_fade_end_m = null
+shader_parameter/soft_depth_m = null
+shader_parameter/mirror_plane_y = null
+shader_parameter/reflection_gain = null
+shader_parameter/reflection_softness = null
