@@ -20,21 +20,36 @@ Zones: `game/levels/ch02/haluna/`, `game/levels/ch03/saltgrass_causeway/`, `game
 
 | Sub-frame | Use | Time | Sun elev / az | Key | Fill | Sea-glow | LUT |
 |---|---|---|---|---|---|---|---|
-| `ch02_noon` | **Haluna gameplay; M1-ENV-01 mood test** | 12:30 | 74° / 165° | `#FFF1E4` (5,700 K), energy 3.2 | sky `#9ED8EE` at 0.65 | 0 | `lut_ch02_noon`: Act I reference. Sat ×1.12, S-curve 0.45, teal toe `#0E4A55`, highlights roll off to `#FFF8EE`. EV100 15.0. |
+| `ch02_noon` | **Haluna gameplay; M1-ENV-01 mood test** | 12:30 | 74° / 165° | `#FFF1E4` (5,700 K), energy 3.2 | sky `#9ED8EE` at 0.65 | 0 | `lut_ch02_noon`: Act I reference. Sat ×1.12, S-curve 0.45, teal toe `#0E4A55`, highlights roll off to `#FFF8EE`. Exposure 0.65 (EV100 15.0 intent). |
 | `ch02` (color script) | Cutscene A (B01) | 06:20 | 6° / 95° | see color script | | 0.04 | `lut_ch02_dawn` |
 | `ch03_causeway` | Causeway gameplay, low tide | 14:30 | 52° / 250° | `#FFEAD8` (5,300 K), energy 3.0 | sky `#A9DCF2` at 0.6 | 0 | `lut_ch02_noon` with +200 K warmth |
-| `ch03_steps` | Cutscene B part 1 exterior: Rhen and Toma on the outer steps (S06, B08) | 17:30 | 14° / 262° | `#FFD3AF` (4,200 K), energy 2.6 | `#7FA6CC` at 0.45 | 0 | `lut_ch03_sunset` at 60% |
+| `ch03_steps` | Cutscene B part 1 exterior: Rhen and Toma on the outer west steps, sea behind them (S06, B08; `.dlg` node `steps`) | 17:30 | 14° / 262° | `#FFD3AF` (4,200 K), energy 2.6; rim `sun_gold` 1.2 (characters) | `#7FA6CC` at 0.45 | 0 | `lut_ch03_sunset` at 60%, S-curve 0.45, sat ×1.05. Exposure 0.75. Full frame: [color script, "Ch3 sub-frame `ch03_steps`"](../color_script.md) |
 | `ch03` (color script) | Cutscene B part 2, the first verse (S09, S10; B09) | 18:05 | 6° / 268° | see color script | | 0.04 | `lut_ch03_sunset` |
 | `ch03_boss` | Drownbell, rising tide (C08–C10, B10). **Phase 1** | 18:15 | 2° / 270° | `#FF9F46` lin (1.000, 0.347, 0.061), ~2,500 K, energy 2.0 | afterglow `#5A7FA8` at 0.35 | 0.04 | `lut_ch03_sunset` at 100%, toe held at `deep_teal_shadow` |
 | `ch03_boss` **phase 2** (flood) | The flood rig's 8 s rise drives this blend | ~18:20 | 0.5° / 271° (the sun touching the sea) | same color, energy 2.0 → 1.2 over the 8 s rise | `#5A7FA8` at 0.35 → 0.30 | 0.04 → 0.06 | as phase 1, toe deepened 10% so the `spawn_wound` polyps read against dark water |
 | `ch03_shrine_int` | Shrine interior (S01–S05, S07, S08) | (any) | oculus shafts only | sun through 3 oculi, `#FFF1E4`, plus bounce from the pools | `#3FD0C9`-tinted bounce at 0.4 | — | `lut_ch02_noon`, S-curve 0.55 |
-| `ch02_night` | Return to Haluna (Ch3 end, B11), Ch4 wake | 21:30 | — | oil lamps `#FFB16E` | moon `#9DB4D9` at 0.25 | **0.12** | `lut_ch04_wake` |
+| `ch02_night` | Return to Haluna (Ch3 end, B11), Ch4 wake | 21:30 | — | oil lamps `#FFB16E` | moon `#9DB4D9` at 0.25 (≤ 2.5 × sea-glow, color script rule 3) | **0.12** | `lut_ch04_wake`. Exposure 1.1 |
 
 **Lighting notes for the slice's afternoon and evening** (M1-ART-03, following [N-07](../../story/decisions_log.md)):
 - **The day runs in order:** causeway 14:30 → shrine interior → the steps at 17:30 → the verse at 18:05 → the Drownbell at 18:15 → the dock at 21:30. Each grade is darker and warmer than the one before it, until night. Nothing jumps back toward noon.
 - **The Drownbell comes after the song.** It is no longer a gold-afternoon fight (the old `ch03_boss` 17:30 light is now `ch03_steps`). At 18:15 the sun is 2° above the western sea, so the party fights in the afterglow of the verse, running back toward Haluna and **into** the sun (the causeway runs north-east, so the return is south-west). The low sun backlights the bell's hood and throws long shadows toward the camera in C08.
 - **Phase 2 is the sunset.** The flood rig's rise also drives the light: the sun touches the horizon, the key falls to 1.2, and sea-glow rises from 0.04 to 0.06, because open sea after sunset must glow (color script rule 3). Cyan `spawn_wound` polyps under dark water read better here than they did in gold light, which was Narrative's point.
 - **Scene glimmer energy (`hymn_glimmer.a`) per sub-frame:** `ch02` 0.6 (the nine held motes), `ch03_shrine_int` 1.2 (bound Ilun), `ch03` 2.5 (lift), `ch03_boss` 1.5 (held, from the bell), `ch03_steps` 0 (no glimmer on the steps). Because sea-glow is gated on `a > 0`, `ch03_steps` shows no sea-glow, which is correct while the sun is at 14°.
+
+**Exposure, key product and water per sub-frame** (M1-ART-04, [ADR 0014](../../decisions/0014-light-units-exposure.md); water looks in the [color script](../color_script.md), "Water looks"). Exposure is `Environment.tonemap_exposure`. k = exposure × key energy says which palette `onscreen_hex` column (−1 / 0 / +1 = k 0.5 / 1 / 2) a sun-facing surface reads in. Water absorption is the shared base σ (2.0, 0.5, 0.42) m⁻¹ × `absorption_scale`. **These replace the v0 physical triples (R 0.45, G 0.065, B 0.045), which rendered near-white.**
+
+| Sub-frame | Exposure | k (key) | Water look, scale (σ m⁻¹) | `col_deep` | Validated on screen (0.3–1 · 1–4 · 4–15 · > 15 m) |
+|---|---|---|---|---|---|
+| `ch02_noon` | 0.65 | 2.1 | `lagoon_clear` ×1.5 (3.0 / 0.75 / 0.63) | `#0E4A55` | `#5FB2B7` · `#4FACB2` · `#17818C` · `#186D7B` (pass, ΔE_ok ≤ 0.068 to the palette ramp) |
+| `ch02` dawn | 0.75 | 1.8 | `lagoon_low_sun` ×1.5 | `#0E4A55` | as `ch03` (the same low-sun class) |
+| `ch03_causeway` | 0.65 | 1.95 | `lagoon_clear` ×1.5; tidepools the same material | `#0E4A55` | as `ch02_noon` |
+| `ch03_steps` | 0.75 | 1.95 | `lagoon_low_sun` ×1.5 | `#0E4A55` | `#207176` · `#206E74` · `#1B5253` · `#2B4D4E` |
+| `ch03` | 0.80 | 2.1 | `lagoon_low_sun` ×1.5 | `#0E4A55` | `#165159` · `#184F58` · `#1B3E39` · `#2A3C37` |
+| `ch03_boss` | 0.80 | 1.6 → 1.0 | `lagoon_low_sun` ×1.5; the flood plane is the same material | `#0E4A55` | as `ch03`; phase 2's darker key deepens it further, as intended for the polyps |
+| `ch03_shrine_int` | 0.75 (proposed; set at the mood frame) | (oculus shafts) | shrine pools and channels: `lagoon_clear` ×1.5 (river shader for channels) | `#0E4A55` | not yet: interior light, re-check at the mood frame |
+| `ch02_night` | 1.1 | 0.3 (lamp pools 1.3) | `night_sea` ×1.0 (2.0 / 0.5 / 0.42) | `#061A2B` | sea `#003845` (glow 0.12) against `#002734` (glow 0); moonlit stone `#424E5C` (rule 3 pass) |
+
+The causeway's pools are 0.1–0.5 m deep, so at ×1.5 they read as sand tinted pale aqua with sharp caustics (references §1.7, the 0–0.3 m row), as the `water_shallows` view shows.
 
 ---
 
@@ -178,7 +193,7 @@ The conventions: lens is full-frame equivalent focal length. **Godot `Camera3D.f
 | S03 | 18 mm (67.4°) | 6 m, pitched down 60° | Overview of the three basins and the channel network, read like a diagram. The active channel shimmers. | Puzzle clarity (pillar 4): the player sees the whole system. |
 | S04 | 50 mm (27.0°) | 1.0 m | Water spilling over a rotating basin's lip into a nacre-lined channel, caustics on the floor. | Water obeying a gentle hand. |
 | S05 | 40 mm (33.4°) | 0.8 m | The drained side pool, with the net-float charm glinting in the silt. | A secret, rewarded. |
-| S06 | 50 mm (27.0°) | 1.3 m | **`ch03_steps`, exterior, 17:30.** Rhen and Toma sitting on the outer (west) entrance steps, the sea behind them, a gap of air between them. The low afternoon sun is warm on the stone, and the shadows lengthen through the scene (16:00 → 18:00 in story time). | "Do you know what a Cantor is?" "...Someone who sings?" |
+| S06 | 50 mm (27.0°) | 1.3 m | **`ch03_steps`, exterior, 17:30.** Rhen and Toma sitting on the outer (west) entrance steps, the sea behind them, a gap of air between them. The camera is at the south end of the steps looking north-north-west, so the 14° sun is frame-left, about 70° off axis: a warm three-quarter key on both faces, with the glitter path behind them. The low afternoon sun is warm on the stone, and the shadows lengthen through the scene (16:00 → 18:00 in story time). | "Do you know what a Cantor is?" "...Someone who sings?" |
 | S07 | 28 mm (46.4°) | 1.2 m, from behind Rhen and Toma | The chamber door sinking as the pool floods. Rhen and Toma are soft shoulders at the left and right frame edges (they speak from there). Asha is small, alone, center frame: she turns back to them for the exchange, then walks in. | Alone, by rite. |
 | S08 | 18 mm (67.4°) | 1.5 m, tilted up 15° | A single held frame of Ilun's chamber: net caustics on the dome, the spectral manta overhead, Asha at the pool edge at one-tenth of the frame height. Ilun is **bound light** (`glimmer_bound`, energy 1.2, perfectly still; the only moving light is the caustics). His face is turned away or lost in the lattice light: save it for C10. Glimmer ≤ 15% of the frame. | Meeting the dead. Scale and tenderness. The same stillness as the Lit Age ring (C05). |
 | S09 | 85 mm (16.1°) | 1.6 m, west of the door looking east | **Cutscene B:** Asha in the doorway, sunset gold on her face (she faces west, toward Haluna and the sun, to sing), Ilun's motes **rising** off her skin (`glimmer_lift`, slow spirals, ≤ 10% of the frame), the first band new on her sleeve. No gold on her face: the gilt line is never worn in the slice ([N-04](../../story/decisions_log.md)). | The first verse, sung aloud. |
@@ -199,3 +214,4 @@ The conventions: lens is full-frame equivalent focal length. **Godot `Camera3D.f
 
 ## Revisions
 - 2026-10-22 (art-stream-2, M1-ART-03): synced with the final vertical-slice script. The Drownbell was re-timed from 17:30 to 18:15 (after the 18:05 verse, [N-07](../../story/decisions_log.md)), with a phase-2 flood blend. The old 17:30 light became `ch03_steps` (S06). H06 was reframed as a side-on two-shot so Asha's facial beat reads, and given the nine held motes. Vowbound bound light (N-05) was added to S08 and C10. The wake-shell wall placement was confirmed (N-03). Sea-glow for `ch02`/`ch03` went from 0.03 to 0.04 (the palette floor).
+- 2026-10-23 (art-stream-3, M1-ART-04): `ch03_steps` is fully defined (color script "Ch3 sub-frame `ch03_steps`"), with rim, exposure and composition for S06; `ch03_the_first_verse.dlg` node `steps` now uses it. Added exposure (ADR 0014), key product and **validated water looks** per sub-frame, replacing the v0 physical absorption numbers. `ch02_night` moon 0.25 checked against the new night value rule.
