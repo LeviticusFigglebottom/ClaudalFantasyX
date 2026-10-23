@@ -12,11 +12,11 @@ request-from: lead
 Play a compiled `.dlg` scene end to end in the game: camera cues through the FieldCameraDirector contract (field_camera.md), waits, actor moves to marks, look-ats, fades, letterbox, music and the dialogue box with choices. First Playable thread (lead request).
 
 ## Acceptance criteria
-- [ ] `CutsceneSequencer.play(scene_id, stage)` runs every cue in cues.json (placeholder presentation allowed for `@anim`, `@face`, `@vfx`).
-- [ ] `@camera` maps to `play_shot` / `release` exactly as field_camera.md says; `is_leaving()` / `is_instance_valid` checked after every `await blend_finished`.
-- [ ] Autosave held from first beat to last (`SaveSystem.hold_autosave`); the player is frozen and unfrozen.
-- [ ] Choices shown with a keyboard/controller menu; lines advance on `ui_accept`.
-- [ ] Unit tests (instant mode) for camera mapping, waits, marks, events, options, hold release, and an unload mid-move.
+- [x] `CutsceneSequencer.play(scene_id, stage)` runs every cue in cues.json (placeholder presentation allowed for `@anim`, `@face`, `@vfx`).
+- [x] `@camera` maps to `play_shot` / `release` exactly as field_camera.md says; `is_leaving()` / `is_instance_valid` checked after every `await blend_finished`.
+- [x] Autosave held from first beat to last (`SaveSystem.hold_autosave`); the player is frozen and unfrozen.
+- [x] Choices shown with a keyboard/controller menu; lines advance on `ui_accept`.
+- [x] Unit tests (instant mode) for camera mapping, waits, marks, events, options, hold release, and an unload mid-move.
 
 ## Notes
 - Contract for other streams: `game/cutscene/cutscene_stage.gd` (Shots/Actors/Marks folders) and the public API at the top of `cutscene_sequencer.gd`.

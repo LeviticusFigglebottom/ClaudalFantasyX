@@ -92,6 +92,10 @@ DLG_CH03_VERSE_057,"That's twice you haven't answered me, Rhen Sallow. I'm patie
 DLG_CH03_VERSE_058,The tide has turned.
 DLG_CH03_VERSE_059,Something heard that.
 DLG_CH03_VERSE_060,"On my shield. Everyone, on my shield, now."
+DLG_TEST_CUTSCENE_001,First fixture line.
+DLG_TEST_CUTSCENE_002,Fixture option A.
+DLG_TEST_CUTSCENE_003,Fixture option B.
+DLG_TEST_CUTSCENE_004,Fixture closing narration.
 DLG_TEST_DLG_001,Test narration.
 DLG_TEST_DLG_002,Test line with an emotion.
 DLG_TEST_DLG_003,Flag was on.
