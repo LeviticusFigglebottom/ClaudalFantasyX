@@ -122,3 +122,28 @@ func test_delay_push_diminishes_and_respects_immunity() -> void:
 	assert_eq(Formulas.delay_push(10, 2, 99), 200 / 65536, "capped at DELAY_STACK_MAX_STEPS halvings")
 	assert_eq(Formulas.delay_push(10, 2, 0, true), 0, "delay-immune")
 	assert_eq(Formulas.delay_push(10, 0, 0), 0)
+
+
+func test_swell_gain_from_an_hp_share() -> void:
+	assert_eq(Formulas.swell_gain(95, 420, 120), 27, "Ballast: 95 of 420 HP lost at rate 120 (27.1 floors)")
+	assert_eq(Formulas.swell_gain(152, 380, 50), 20, "Wake: 152 dealt to a 380 HP foe at rate 50")
+	assert_eq(Formulas.swell_gain(95, 300, 60), 19, "Tether: an ally loses 95 of 300 at rate 60")
+	assert_eq(Formulas.swell_gain(1, 420, 120), 1, "any positive amount gives at least 1")
+	assert_eq(Formulas.swell_gain(0, 420, 120), 0, "no HP moved, no gain")
+	assert_eq(Formulas.swell_gain(-50, 420, 120), 0, "a heal is not a gain")
+	assert_eq(Formulas.swell_gain(95, 420, 0), 0, "rate 0")
+	assert_eq(Formulas.swell_gain(9999, 10, 120), Formulas.SWELL_MAX, "one share fills at most the gauge")
+	assert_eq(Formulas.swell_gain(5, 0, 10), 50, "a 0 max HP counts as 1")
+
+
+func test_swell_fill_clamps_to_the_gauge() -> void:
+	assert_eq(Formulas.swell_fill(40, 27), 67)
+	assert_eq(Formulas.swell_fill(90, 27), Formulas.SWELL_MAX)
+	assert_eq(Formulas.swell_fill(10, -20), 0)
+
+
+func test_swell_power_scales_with_the_input_bonus() -> void:
+	assert_eq(Formulas.swell_power(12, 0), 12, "a missed input keeps the base power")
+	assert_eq(Formulas.swell_power(12, 90), 22, "three perfect beats: 12 x 190 / 100 = 22.8 floors")
+	assert_eq(Formulas.swell_power(12, 45), 17, "perfect, good, miss: 17.4 floors")
+	assert_eq(Formulas.swell_power(12, -10), 12, "a negative bonus counts as 0")
