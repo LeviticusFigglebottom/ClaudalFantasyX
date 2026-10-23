@@ -37,7 +37,7 @@
 #define HYMN_SEA_GLOW_COLUMN_PER_M 0.45      // in-water column build-up (1 - exp(-k * metres))
 #define HYMN_SEA_GLOW_COLUMN_GAIN 1.0        // a deep column at most doubles the surface glow
 
-// Zone energy clamped to the rule-3 band; 0 turns the glow off (ending_dock). Not gated by the mote
+// Zone energy clamped to the rule-3 band; <= 0 turns the glow off (ending_dock). Not gated by the mote
 // energy hymn_glimmer.a any more (M1-RND-08): zones author the two separately. The band floor is the
 // rule-3 floor (0.04), not the night minimum (0.08), so the Ending's E4 0.07 / E5 0.06 pass through.
 float hymn_sea_glow_energy(float zone_energy) {
@@ -72,9 +72,16 @@ vec3 hymn_sea_glow(vec3 world_pos, float time_s, float energy, float column_m) {
 }
 
 #ifdef HYMN_GLOBALS_GDSHADERINC
-// The zone energy a surface uses: its own material energy when it sets one (> 0), else the zone's
-// hymn_zone_sea_glow global.
+// The zone energy a surface uses (M1-RND-15). hymn_zone_sea_glow:
+//   < 0  the zone's hard off (GlimmerField.set_scene_sea_glow(0), ending_dock): 0 for EVERY surface,
+//        whatever its material sets, so no stray material can light the Ending's dark sea;
+//   = 0  the zone set nothing (project default, and the reset on every zone change): a material's own
+//        energy (> 0) shows, else none;
+//   > 0  the zone's energy; a material's own energy (> 0) overrides it for that surface.
 float hymn_sea_glow_zone(float material_energy) {
+	if (hymn_zone_sea_glow < 0.0) {
+		return 0.0;
+	}
 	return material_energy > 0.0 ? material_energy : hymn_zone_sea_glow;
 }
 

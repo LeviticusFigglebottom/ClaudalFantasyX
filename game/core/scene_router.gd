@@ -12,8 +12,10 @@ extends Node
 ##   1. The threaded load runs while the screen fades out. Meanwhile, the theme's fonts are
 ##      rasterized a few (font, size) pairs per frame under the opaque fade (FontWarmer), because
 ##      first-use glyph rasterization was the largest CPU cost of a cold swap.
-##   2. prewarm_requested fires one frame before the swap, so the ShaderPrewarm stage is built
-##      (scene load, material load, shader front-end compile) in a frame of its own.
+##   2. prewarm_requested fires before the swap, so the ShaderPrewarm stage is built (scene load,
+##      material load, shader front-end compile) in a frame of its own. The stage then feeds its draws
+##      in a few per frame (M1-RND-15); the router waits while it is staging, up to
+##      PREWARM_WAIT_MAX_FRAMES, so pipelines compile in small slices under the opaque fade.
 ##   3. The PackedScene is instantiated on a WorkerThreadPool thread (the node is not in the tree
 ##      yet, which Godot 4 allows), never on the main thread.
 ##   4. The old scene is unloaded one frame before the new one is added, so freeing it and
@@ -31,6 +33,8 @@ const FADE_LAYER := 128
 const SWAP_BUDGET_MS := 50.0
 ## Frames measured after the new scene is handed to the tree (its _ready and first draw land here).
 const MEASURE_FRAMES := 4
+## Upper bound on frames spent waiting for a time-sliced ShaderPrewarm stage (M1-RND-15).
+const PREWARM_WAIT_MAX_FRAMES := 120
 const USEC_PER_MSEC := 1000.0
 const LOG_PREFIX := "SceneRouter"
 
@@ -108,6 +112,11 @@ func _swap(packed: PackedScene, scene_path: String, stats: Dictionary, spawn: St
 	if node == null:
 		push_error("SceneRouter: failed to instantiate %s" % scene_path)
 		return
+	var waited := 0
+	while waited < PREWARM_WAIT_MAX_FRAMES and ShaderPrewarm.is_staging_under(self):
+		await get_tree().process_frame
+		waited += 1
+	stats["prewarm_wait_frames"] = waited
 	if split_swap:
 		if get_tree().current_scene != null:
 			t = Time.get_ticks_usec()
@@ -118,6 +127,10 @@ func _swap(packed: PackedScene, scene_path: String, stats: Dictionary, spawn: St
 		swap_frame_start = Time.get_ticks_usec()
 	var frames: Array[float] = []
 	t = swap_frame_start
+	# Zone render globals (M1-RND-15): the new zone starts from the project defaults, so one that never
+	# writes them does not inherit the last zone's night sea-glow or tide line.
+	GlimmerField.clear_scene_sea_glow()
+	WaterSurface.clear_water_level()
 	get_tree().change_scene_to_node(node)
 	for i in MEASURE_FRAMES:
 		await get_tree().process_frame

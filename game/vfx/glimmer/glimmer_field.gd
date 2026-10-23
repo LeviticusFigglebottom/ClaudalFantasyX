@@ -21,7 +21,10 @@ extends Node3D
 ##   apply_cue(effect, kwargs) / cue_parameters() a .dlg @vfx cue (count, drift, motion, rate)
 ##   GlimmerField.set_global_focus(pos, radius)  writes hymn_glimmer_focus (every field follows it)
 ##   GlimmerField.set_scene_glimmer(tint, a)     writes hymn_glimmer (a = scene mote intensity)
-##   GlimmerField.set_scene_sea_glow(energy)     writes hymn_zone_sea_glow (zone night sea-glow, rule 3)
+##   GlimmerField.set_scene_sea_glow(energy)     writes hymn_zone_sea_glow (zone night sea-glow, rule 3;
+##                                               0 = hard off, e.g. ending_dock)
+##   GlimmerField.clear_scene_sea_glow()         unsets it (materials decide); SceneRouter calls it on
+##                                               every zone change
 ##   GlimmerField.sea_glow_violation(...)        checks a frame's sea-glow against rule 3
 
 signal mode_changed(mode: GlimmerState.Mode)
@@ -37,6 +40,10 @@ const REFLECT_SHADER := preload("res://game/shaders/glimmer/glimmer_motes_reflec
 const GLOBAL_GLIMMER := &"hymn_glimmer"
 const GLOBAL_FOCUS := &"hymn_glimmer_focus"
 const GLOBAL_SEA_GLOW := &"hymn_zone_sea_glow"
+## hymn_zone_sea_glow values with a meaning of their own (glimmer.gdshaderinc hymn_sea_glow_zone):
+## below 0 the zone is hard off and no material can light its sea; 0 means the zone set nothing.
+const SEA_GLOW_ZONE_OFF := -1.0
+const SEA_GLOW_ZONE_UNSET := 0.0
 const MOTES_NODE_NAME := "Motes"
 const LIGHT_NODE_NAME := "GlimmerLight"
 ## = HYMN_GLIMMER_MAX_SPAWN_POINTS in glimmer_motes_process.gdshader (tested).
@@ -268,18 +275,34 @@ static func clear_global_focus() -> void:
 
 
 ## hymn_glimmer: rgb = linear tint (for other shaders; motes keep their meaning colours), a = scene
-## glimmer intensity (the colour script's mote emission energy). a = 0 also turns sea-glow off.
+## glimmer intensity (the colour script's mote emission energy). Sea-glow is separate
+## (set_scene_sea_glow); a = 0 does not turn it off.
 static func set_scene_glimmer(tint: Color, scene_intensity: float) -> void:
 	var lin := tint.srgb_to_linear()
 	RenderingServer.global_shader_parameter_set(GLOBAL_GLIMMER, Vector4(lin.r, lin.g, lin.b, scene_intensity))
 
 
-## Writes the zone's night sea-glow energy (hymn_zone_sea_glow), independent of the mote energy. 0 = off
-## (ending_dock). Clamped to [0, rule-3 ceiling]; it does not enforce the night minimum, so scene
-## exceptions (the Ending's E4 0.07, E5 0.06) pass. Check frames with sea_glow_violation().
+## Writes the zone's night sea-glow energy (hymn_zone_sea_glow), independent of the mote energy.
+## energy <= 0 is a HARD off (ending_dock, day zones that want no glow): it writes SEA_GLOW_ZONE_OFF,
+## which every water material honours whatever its own sea_glow_energy (M1-RND-15). Otherwise it is
+## clamped to the rule-3 ceiling; it does not enforce the night minimum, so scene exceptions (the
+## Ending's E4 0.07, E5 0.06) pass. Check frames with sea_glow_violation().
 static func set_scene_sea_glow(energy: float) -> void:
+	RenderingServer.global_shader_parameter_set(GLOBAL_SEA_GLOW, zone_sea_glow_value(energy))
+
+
+## Unsets the zone sea-glow: surfaces show their own material energy, if any. SceneRouter calls it on
+## every zone change, so a zone that never writes the global does not inherit the last zone's glow.
+static func clear_scene_sea_glow() -> void:
+	RenderingServer.global_shader_parameter_set(GLOBAL_SEA_GLOW, SEA_GLOW_ZONE_UNSET)
+
+
+## What set_scene_sea_glow(energy) writes to hymn_zone_sea_glow.
+static func zone_sea_glow_value(energy: float) -> float:
+	if energy <= 0.0:
+		return SEA_GLOW_ZONE_OFF
 	var rule := load_config().get("sea_glow", {}) as Dictionary
-	RenderingServer.global_shader_parameter_set(GLOBAL_SEA_GLOW, clampf(energy, 0.0, float(rule.get("ceiling", 1.0))))
+	return minf(energy, float(rule.get("ceiling", 1.0)))
 
 
 ## "" if a frame's sea-glow energy obeys colour script rule 3 (glimmer.json "sea_glow", mirrored

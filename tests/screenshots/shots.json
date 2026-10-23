@@ -61,6 +61,16 @@
       ]
     },
     {
+      "id": "glimmer_bound",
+      "scene": "res://game/levels/_tests/glimmer/glimmer_bound.tscn",
+      "camera": "ShotCamera",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
       "id": "battle_hud_preview",
       "scene": "res://game/battle/scene/shots/battle_player_preview.tscn"
     },

@@ -1,7 +1,8 @@
 // Night sea-glow overlay (M1-RND-02): a cheap additive pass any zone can put on its sea surface
 // until the zone's water shader calls hymn_sea_glow() itself (M1-RND-01 integrates it there).
 // Use it as the next_pass of the water material, or on its own plane a few mm above the water.
-// On when hymn_glimmer.a > 0, at zone_energy clamped to the colour-script band 0.04-0.15.
+// Shows zone_energy (else the zone's hymn_zone_sea_glow) clamped to the colour-script band 0.04-0.15;
+// off when both are 0 or the zone is hard off (hymn_sea_glow_zone). Not gated by hymn_glimmer.a.
 // Docs: docs/kb/tech/glimmer.md. Rule: docs/kb/art/color_script.md, narrative light rule 3.
 shader_type spatial;
 render_mode blend_add, unshaded, depth_draw_never, cull_back, shadows_disabled, fog_disabled;
