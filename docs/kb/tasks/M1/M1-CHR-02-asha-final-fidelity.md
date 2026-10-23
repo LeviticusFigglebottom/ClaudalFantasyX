@@ -2,7 +2,7 @@
 id: M1-CHR-02
 title: Asha at final fidelity: modeled, rigged, shaded
 role: character
-status: review
+status: done
 owner_session: character-stream-3
 reviewer: rendering
 depends_on: [M1-CHR-01, M1-RND-04]
@@ -29,3 +29,4 @@ Blocked by Git LFS for 4K textures (ADR 0005).
 **Not done (follow-ups in asha_review.md §5):** skirt, sash and braid chain bones; body correctives; hairline card row; skin colour zones and fine creases.
 
 ## Review log
+- 2026-10-23 lead: closing. The asset is built and gated; its own §14 review failed at dialogue range, which triggered ADR 0019 and the human's Q2 answer. The face rework continues in M1-CHR-03 (MPFB2 topology donor).
