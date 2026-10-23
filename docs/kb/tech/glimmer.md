@@ -79,11 +79,13 @@ field.set_quality(graphics_settings.preset_id)          # or field.apply_graphic
 
 | Global | How glimmer uses it |
 |---|---|
-| `hymn_glimmer` | **a** = the colour script's mote emission energy for the frame (Ch2 2.5, Ch9 4.0, Ch21 6.0…). Motes use it when `follow_scene_intensity` is on. Sea-glow is **on whenever a > 0** (see below). **rgb** is a tint for other shaders. **Motes ignore it**, because their hue carries meaning |
+| `hymn_glimmer` | **a** = the colour script's mote emission energy for the frame (Ch2 2.5, Ch9 4.0, Ch21 6.0…). Motes use it when `follow_scene_intensity` is on. Sea-glow no longer reads it (M1-RND-08): it has its own `hymn_zone_sea_glow`. **rgb** is a tint for other shaders. **Motes ignore it**, because their hue carries meaning |
 | `hymn_glimmer_focus` | xyz = gather point, w = orbit radius in m (0 = off). Every field with `follow_global_focus` treats it as an attractor with strength `focus_strength` and half height `focus_half_height_m` |
 | `hymn_wind_time` | the sea-glow clock (`hymn_sea_glow_global`). Motes use their own `flow_time_s`, which `GlimmerField` advances |
 
-The default for `hymn_glimmer.a` in `project.godot` is **0**. A zone that never writes it gets **invisible motes** (with `follow_scene_intensity` on) **and no sea-glow**. That's intended (it is how `ending_dock` turns the dead off), but it is the first thing to check when "nothing shows".
+| `hymn_zone_sea_glow` | the zone's night sea-glow: > 0 energy, 0 unset (materials decide; reset on every zone change), < 0 hard off (`set_scene_sea_glow(0)`, `ending_dock`). See water.md "Zone globals" |
+
+The default for `hymn_glimmer.a` in `project.godot` is **0**. A zone that never writes it gets **invisible motes** (with `follow_scene_intensity` on). That's intended (it is how `ending_dock` turns the dead off), but it is the first thing to check when "nothing shows". The sea-glow is separate: `ending_dock` also calls `GlimmerField.set_scene_sea_glow(0.0)`.
 
 ## Night sea-glow (for the water stream)
 
@@ -97,18 +99,23 @@ The rule (color script rule 3): `sea_glow` `#1C6B78`, energy 0.04–0.15, ±25% 
 vec3 hymn_sea_glow(vec3 world_pos, float time_s, float energy, float column_m);
 //   world_pos : world-space surface point (xz and the clock drive the noise)
 //   time_s    : a pausable clock in seconds (hymn_wind_time or a cinematic uniform), not raw TIME
-//   energy    : already gated: hymn_sea_glow_energy(zone_energy, hymn_glimmer.a)
+//   energy    : already clamped: hymn_sea_glow_energy(hymn_sea_glow_zone(material_energy))
 //   column_m  : metres of water the view ray travels below the surface (0 = surface only);
 //               a deep column glows up to 2x the surface value (1 - exp(-0.45 m^-1 * column))
 
-// Gate and clamp: 0 if glimmer_intensity <= 0 or zone_energy <= 0, else clamp(zone_energy, 0.04, 0.15).
-float hymn_sea_glow_energy(float zone_energy, float glimmer_intensity);
+// Clamp: 0 if zone_energy <= 0, else clamp(zone_energy, 0.04, 0.15). Not gated by hymn_glimmer.a.
+float hymn_sea_glow_energy(float zone_energy);
+
+// (globals.gdshaderinc first) The energy a surface uses: 0 when the zone is hard off
+// (hymn_zone_sea_glow < 0), else the material's own energy if > 0, else hymn_zone_sea_glow.
+float hymn_sea_glow_zone(float material_energy);
 
 // Slow modulation alone, in [0.75, 1.25] (for water that wants to modulate something else too).
 float hymn_sea_glow_modulation(vec3 world_pos, float time_s);
 
-// Convenience (only when globals.gdshaderinc was included first): gate = hymn_glimmer.a, clock = hymn_wind_time.
-vec3 hymn_sea_glow_global(vec3 world_pos, float zone_energy, float column_m);
+// Convenience (only when globals.gdshaderinc was included first): energy = hymn_sea_glow_zone(material_energy),
+// clock = hymn_wind_time.
+vec3 hymn_sea_glow_global(vec3 world_pos, float material_energy, float column_m);
 ```
 
 - Also exported: the palette constants `HYMN_GLIMMER_LIFT`, `HYMN_GLIMMER_LIFT_HI`, `HYMN_GLIMMER_HELD`, `HYMN_GLIMMER_BOUND`, and `HYMN_SEA_GLOW_COLOR` (linear; tests check them against `palette.json`), plus `HYMN_SEA_GLOW_ENERGY_MIN` / `_MAX` / `_MOD_AMPLITUDE` / `_PERIOD_S` / `_PATCH_M`.
@@ -131,7 +138,7 @@ vec3 hymn_sea_glow_global(vec3 world_pos, float zone_energy, float column_m);
 |---|---|
 | `colors` | `released`, `released_hi`, `held`, `machine`: sRGB hex from palette.json (tested) |
 | `release_duration_s`, `release_wave` | 1.5 s; wave `fraction` 0.4, `radius_m` 4, `jitter` 0.3 |
-| `modes.released` | `energy` 3.0, `rise_min/max_mps` 0.15/0.4, `spiral_radius_min/max_m` 0.2/0.6, `spiral_rate_rad_s` 0.3, `curl_scale` 0.4, `hi_shift` 0.55 |
+| `modes.released` | `energy` 3.0, `rise_min/max_mps` 0.15/0.4, `spiral_radius_min/max_m` 0.2/0.6, `spiral_rate_rad_s` 1.0, `curl_scale` 0.4, `hi_shift` 0.55 |
 | `modes.held` | `energy` 1.5, `drift_min/max_mps` 0.05/0.2, `down_bias_min/max_deg` 15/30, `heading_spread_deg` 35, `curl_scale` 1.0 |
 | `modes.machine` | `energy` 1.2 |
 | `motion` | `curl_frequency` 0.35 /m, `curl_strength_mps` 0.05, `curl_evolve` 0.04, `response_rate` 1.4, `underwater_drag` 3, `underwater_absorb_per_m` 2.2 |
@@ -171,7 +178,7 @@ No tier removes the effect (a test asserts amount ≥ 1 and growing with tier). 
 
 ## Gotchas
 
-1. **`hymn_glimmer.a` defaults to 0**, which means no motes (when following the scene) and no sea-glow. See "Global uniforms".
+1. **`hymn_glimmer.a` defaults to 0**, which means no motes (when following the scene). Sea-glow has its own global, `hymn_zone_sea_glow`. See "Global uniforms".
 2. **Quality changes restart the emitter** (the amount changes). Do it behind a fade.
 3. **The reflection pass ignores depth** except against the water-plane hit, so tall geometry *reflected* in the water (by SSR) does not occlude mirrored motes. Use it on open still water (lagoons, flooded courts), not in cluttered harbours. Turn it off for rough water. When M1-RND-01's water has real planar or SSR reflections of transparents, drop it.
 4. **Held motes under an opaque sea are hidden** once they sink. With a transparent or refractive water shader they'll be visible sinking and fading (absorption is already in the colour alpha), which is the intended look.
@@ -181,9 +188,33 @@ No tier removes the effect (a test asserts amount ≥ 1 and growing with tier). 
 8. **Prewarm:** the materials are created in code, so they aren't in `game/data/settings/prewarm_materials.json` yet. A battle or dialogue transition that reveals a glimmer field for the first time may hitch while the pipelines compile. Follow-up: save the three materials as `.tres` under `game/vfx/glimmer/` and register them (the registry is Rendering-owned, M1-RND-06).
 9. **Shared `/tmp` logs:** `tools/screenshots/capture.sh` writes `${TMPDIR:-/tmp}/hymn_capture.log`. With several worktrees capturing at once, set `TMPDIR` per worktree, or the logs interleave.
 
+## Counted beats, moving hosts, cues and density (M1-RND-08)
+
+| Export | What it does |
+|---|---|
+| `fixed_count` | Exactly this many motes on **every** tier (bypasses `emitter.amount`, `amount_multiplier` and the tier scale). H06: 9. |
+| `respawn = false` | Spawns every mote at once (`one_shot`, explosiveness 1) and keeps it: lifetime `emitter.persist_lifetime_s` (3600 s), fade-in `persist_fade_in_s` (1.5 s), no fade-out. Underwater absorption still applies. |
+| `spawn_points` | Optional authored start points (field-local, up to 16): mote *i* starts at point *i* mod n. |
+| `local_space` | Motes live in the field's space and move only with their host (rule 2: bound light on Ilun, a summon, the Kite's lamps). The motion rules stay in world space through `field_to_world`. Shot: `glimmer_bound` (a lantern cage on a carrier at 1.5 m/s). **What follows the host** (field-local): the emission volume (`emission_shape`, `emission_extents_m`, the density biases), `spawn_points`, and the motes' positions and velocities. **What stays world-space** (does not move with the host): attractors (`add_attractor`, `hymn_glimmer_focus`), the release wave's `release_origin` (captured as a world position when `release()` is called), `water_height_m` (and so underwater drag and absorption), and `sea_direction`. A summon whose host moves should re-aim its attractors itself. |
+| `motion_rate` | `cues.rates` preset: `slow` (S09: rise ≤ 0.25 m/s, spiral radius ≤ 0.4 m, 0.8 rad/s), `normal`, `fast`. |
+| `height_bias` / `center_bias` | Density gradients: > 1 packs motes toward the bottom of the volume / the centre of a disc (near the water and the figure), so a field doesn't fill the sky evenly. |
+
+**`.dlg` cues.** `GlimmerField.cue_parameters(effect, kwargs)` maps a `@vfx` cue to field parameters through `glimmer.json "cues"`, and `apply_cue()` applies them:
+- `glimmer_lift` / `glimmer_held` / `glimmer_bound` set the mode; `glimmer_bound` also sets `local_space`.
+- `drift=down_seaward` means held; `motion=spiral_up` means released.
+- `count=n` gives `fixed_count` n with `respawn = false`.
+- `rate=slow|normal|fast` sets `motion_rate`.
+- `form` is reserved.
+
+Every value in `cues.json`'s sets must have a mapping (tested). There's no runtime `@vfx` handler yet. The sequencer should call `apply_cue()` when the beat starts.
+
+**Spiral.** `spiral_rate_rad_s` is 1.0 (was 0.3): 2.2 turns per 14 s life, so released light reads as a spiral, not straight streaks (bible §2, colour script rule 1).
+
+**Warm halo.** `look.halo_chroma_gain` (1.6) raises the halo's Oklab chroma for warm (gold) motes only, keeping their hue. A pale `glimmer_lift` core blown toward white by bloom still reads gold at dusk. Held and bound motes are unchanged. Art to confirm the value.
+
 ## Open items
 
 - Integrate `hymn_sea_glow()` into the ocean shader (M1-RND-01, water stream) and retire the overlay in those zones.
 - The dance for the dead: animate a moving attractor along the dancer's hand path (cinematics). The API supports it already: `add_attractor(hand_node, ...)` follows the node each frame.
 - Real-GPU measurement of the cost table (M1-QA-01 runner).
-- Art review: the gold reads as pale cream at dusk against a warm sky. That is per palette (`glimmer_lift` is a pale gold), but the Art Director may want the halo warmer than the core.
+- Art review: the gold reads as pale cream at dusk against a warm sky. M1-RND-08 added `halo_chroma_gain` (1.6, same hue, richer halo); the Art Director should confirm the value.

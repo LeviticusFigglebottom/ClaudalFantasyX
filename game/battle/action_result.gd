@@ -19,6 +19,8 @@ var item_id: StringName = &""
 var end_of_turn: Array[Dictionary] = []
 ## Set when the actor was not in control: &"berserk" or &"confuse" (the engine chose).
 var auto_reason: StringName = &""
+## Set for a Swell technique (BattleSwell.perform): the power bonus its input earned, in percent.
+var swell_bonus_pct := 0
 
 
 static func failed(actor: StringName, skill: StringName, reason: StringName) -> ActionResult:

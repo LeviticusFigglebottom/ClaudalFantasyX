@@ -200,7 +200,8 @@ group_uniforms caustics;
 uniform float caustic_strength : hint_range(0.0, 8.0) = 1.6;
 uniform float caustic_scale_per_m : hint_range(0.05, 10.0) = 0.9;
 uniform float caustic_speed : hint_range(0.0, 4.0) = 0.7;
-// Line half-width in pattern units at shallow depth; grows with depth (light defocuses).
+// Line half-width in pattern units at shallow depth; grows with depth (light defocuses), faster
+// the deeper it gets: width + blur * depth * (1 + depth / falloff).
 uniform float caustic_width : hint_range(0.005, 0.5) = 0.06;
 uniform float caustic_blur_per_m : hint_range(0.0, 0.2) = 0.02;
 // Depth band (art: sharp and bright in 0.3-4 m): ramp in over fade_in, decay with falloff.
@@ -208,9 +209,16 @@ uniform float caustic_fade_in_m : hint_range(0.01, 2.0) = 0.25;
 uniform float caustic_falloff_m : hint_range(0.1, 40.0) = 6.0;
 // Ultra: per-channel scale spread (rainbow fringes on the lines).
 uniform float caustic_chroma : hint_range(0.0, 0.1) = 0.025;
-// Mean of the caustic pattern (measured in the test scene): subtracted so the floor's average
-// brightness is unchanged and only the focus/defocus contrast is added.
-uniform float caustic_mean : hint_range(0.0, 1.0) = 0.18;
+// Contrast also fades with view distance (far caustics average out; no tiling across the lagoon).
+uniform float caustic_view_fade_m : hint_range(1.0, 500.0) = 30.0;
+// 0 = procedural web (water_caustics.gdshaderinc); 1 = an authored tiling pattern in caustic_tex
+// (R = brightness; e.g. light through Ilun's nets), drawn as two drifting layers combined like the
+// procedural ones.
+uniform int caustic_pattern : hint_enum("Procedural", "Texture") = 0;
+uniform sampler2D caustic_tex : hint_default_black, filter_linear_mipmap, repeat_enable;
+// Mean of caustic_tex's two-layer pattern (the procedural mean is fitted in the include). It is
+// subtracted so the floor's average brightness is unchanged and only the contrast is added.
+uniform float caustic_mean : hint_range(0.0, 2.0) = 0.18;
 
 group_uniforms subsurface;
 uniform vec3 col_sss : source_color = vec3(0.247, 0.816, 0.788);
@@ -222,9 +230,9 @@ uniform float sss_crest_lo : hint_range(-1.0, 1.0) = 0.0;
 uniform float sss_crest_hi : hint_range(-1.0, 1.0) = 0.35;
 
 group_uniforms sea_glow;
-// Color script rule 3: the zone's sea-glow energy (0.04-0.15 at night). Colour, noise and the
-// column build-up come from glimmer.gdshaderinc; the glow is ON only while hymn_glimmer.a > 0
-// (ending_dock sets it to 0). Never cut by a tier.
+// Color script rule 3: this surface's own sea-glow energy (0.04-0.15 at night; 0 = use the zone's
+// hymn_zone_sea_glow). Colour, noise and the column build-up come from glimmer.gdshaderinc. Not gated
+// by hymn_glimmer.a; a zone hard off (ending_dock) wins over this value. Never cut by a tier.
 uniform float sea_glow_energy : hint_range(0.0, 0.15) = 0.0;
 // How strongly the water brightens under hymn_glimmer_focus (motes gathering).
 uniform float glimmer_response : hint_range(0.0, 4.0) = 0.6;
@@ -301,10 +309,23 @@ float advected_foam(vec2 p, vec2 flow, float t) {
 	return mix(b, a, w);
 }
 
-vec3 caustic_light(vec2 p, float depth, float t) {
-	float width = caustic_width + caustic_blur_per_m * depth;
+// The authored-texture pattern: two layers of caustic_tex drifting apart, combined like the web.
+float caustic_tex_pattern(vec2 q, float ts) {
+	float l1 = texture(caustic_tex, q + vec2(0.11, 0.07) * ts).r;
+	float l2 = texture(caustic_tex, HYMN_FBM_ROT2 * q * HYMN_CAUSTIC_LAYER2_SCALE - vec2(0.05, 0.13) * ts).r;
+	return hymn_caustic_combine(l1, l2);
+}
+
+vec3 caustic_light(vec2 p, float depth, float view_dist, float t) {
+	float width = caustic_width + caustic_blur_per_m * depth * (1.0 + depth / caustic_falloff_m);
 	vec2 q = p * caustic_scale_per_m;
 	float ts = t * caustic_speed;
+	float band = smoothstep(0.0, caustic_fade_in_m, depth) * exp(-depth / caustic_falloff_m)
+			* exp(-view_dist / caustic_view_fade_m);
+	if (caustic_pattern == 1) {
+		return vec3(caustic_tex_pattern(q, ts) - caustic_mean) * band;
+	}
+	float mean = hymn_caustic_mean(width, WATER_CAUSTIC_LAYERS);
 #if WATER_CHROMATIC
 	vec3 c = vec3(
 			hymn_caustic(q * (1.0 - caustic_chroma), ts, width, WATER_CAUSTIC_LAYERS),
@@ -313,9 +334,8 @@ vec3 caustic_light(vec2 p, float depth, float t) {
 #else
 	vec3 c = vec3(hymn_caustic(q, ts, width, WATER_CAUSTIC_LAYERS));
 #endif
-	float band = smoothstep(0.0, caustic_fade_in_m, depth) * exp(-depth / caustic_falloff_m);
 	// Caustics redistribute light, they do not add it: modulate around the pattern's mean.
-	return (c - caustic_mean) * band;
+	return (c - mean) * band;
 }
 
 void fragment() {
@@ -404,7 +424,7 @@ void fragment() {
 	vec3 sun = normalize(hymn_sun_direction);
 	if (use_caustics && !sky_behind && sun.y > 0.0) {
 		vec2 entry = scene_world.xz + sun.xz * (vdepth / max(sun.y, WATER_CAUSTIC_MIN_SUN_Y));
-		vec3 c = caustic_light(entry, vdepth, t);
+		vec3 c = caustic_light(entry, vdepth, view_dist, t);
 		// Multiplicative on the lit seabed: shadowed seabed stays dark, as real caustics do.
 		refr *= max(vec3(1.0) + caustic_strength * c * sun.y, vec3(0.0));
 	}
@@ -498,9 +518,10 @@ void fragment() {
 #endif
 
 	// --- Night sea-glow and glimmer response (every tier) --------------------------------------
-	// Shared glimmer-stream term (glimmer.gdshaderinc): gated by hymn_glimmer.a, clamped to the
-	// rule-3 band, column = the underwater view path. Seen through the surface: x (1 - Fresnel).
-	float glow_energy = hymn_sea_glow_energy(sea_glow_energy, hymn_glimmer.a);
+	// Shared glimmer-stream term (glimmer.gdshaderinc): the zone or material energy (hymn_sea_glow_zone,
+	// a zone hard off wins), clamped to the rule-3 band, column = the underwater view path. Seen
+	// through the surface: x (1 - Fresnel).
+	float glow_energy = hymn_sea_glow_energy(hymn_sea_glow_zone(sea_glow_energy));
 	vec3 glow = hymn_sea_glow(world, t, glow_energy, path) * (1.0 - fresnel);
 	if (hymn_glimmer_focus.w > 0.0) {
 		float f = 1.0 - smoothstep(0.0, hymn_glimmer_focus.w, distance(world, hymn_glimmer_focus.xyz));

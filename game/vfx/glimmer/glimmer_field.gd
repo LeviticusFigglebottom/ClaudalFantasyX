@@ -18,8 +18,14 @@ extends Node3D
 ##   remove_attractor(node) / clear_attractors()
 ##   set_quality(preset_id)                      "low" .. "ultra" (GraphicsSettings preset ids)
 ##   refresh()                                   re-apply after changing exports at runtime
+##   apply_cue(effect, kwargs) / cue_parameters() a .dlg @vfx cue (count, drift, motion, rate)
 ##   GlimmerField.set_global_focus(pos, radius)  writes hymn_glimmer_focus (every field follows it)
 ##   GlimmerField.set_scene_glimmer(tint, a)     writes hymn_glimmer (a = scene mote intensity)
+##   GlimmerField.set_scene_sea_glow(energy)     writes hymn_zone_sea_glow (zone night sea-glow, rule 3;
+##                                               0 = hard off, e.g. ending_dock)
+##   GlimmerField.clear_scene_sea_glow()         unsets it (materials decide); SceneRouter calls it on
+##                                               every zone change
+##   GlimmerField.sea_glow_violation(...)        checks a frame's sea-glow against rule 3
 
 signal mode_changed(mode: GlimmerState.Mode)
 signal release_started(duration_s: float)
@@ -33,8 +39,15 @@ const DRAW_SHADER := preload("res://game/shaders/glimmer/glimmer_motes_draw.gdsh
 const REFLECT_SHADER := preload("res://game/shaders/glimmer/glimmer_motes_reflect.gdshader")
 const GLOBAL_GLIMMER := &"hymn_glimmer"
 const GLOBAL_FOCUS := &"hymn_glimmer_focus"
+const GLOBAL_SEA_GLOW := &"hymn_zone_sea_glow"
+## hymn_zone_sea_glow values with a meaning of their own (glimmer.gdshaderinc hymn_sea_glow_zone):
+## below 0 the zone is hard off and no material can light its sea; 0 means the zone set nothing.
+const SEA_GLOW_ZONE_OFF := -1.0
+const SEA_GLOW_ZONE_UNSET := 0.0
 const MOTES_NODE_NAME := "Motes"
 const LIGHT_NODE_NAME := "GlimmerLight"
+## = HYMN_GLIMMER_MAX_SPAWN_POINTS in glimmer_motes_process.gdshader (tested).
+const MAX_SPAWN_POINTS := 16
 ## Pass to add_attractor() to take that parameter from glimmer.json.
 const USE_DEFAULT := -1.0
 
@@ -51,6 +64,25 @@ const USE_DEFAULT := -1.0
 @export var emission_inner_radius_m: float = 0.0
 ## Scales glimmer.json emitter.amount before the quality tier (density per field).
 @export var amount_multiplier: float = 1.0
+## Exactly this many motes on every tier (bypasses emitter.amount, amount_multiplier and the tier
+## scale). 0 = off. For counted beats (H06: exactly 9 held motes).
+@export var fixed_count: int = 0
+## false: spawn every mote at once and keep it (no respawn, no fade-out; emitter.persist_*).
+@export var respawn: bool = true
+## Optional authored spawn points (local to the field, up to MAX_SPAWN_POINTS): mote i starts at
+## spawn_points[i % size]. Empty = random in the emission volume.
+@export var spawn_points: PackedVector3Array = PackedVector3Array()
+## Vertical density gradient of the emission volume: > 1 packs motes low (near the water and the
+## figure), < 1 high. 1 = uniform.
+@export_range(0.1, 8.0, 0.05) var height_bias: float = 1.0
+## Disc emission: > 1 clusters motes toward the centre (near the figure), sparse at the rim.
+@export_range(0.1, 8.0, 0.05) var center_bias: float = 1.0
+## Motes live in this node's space and move with it (bound light on a moving host: Ilun, a summon,
+## the Kite's lamps). Off = world space (free motes left behind by a moving emitter).
+@export var local_space: bool = false
+## Motion preset from glimmer.json cues.rates ("slow", "normal", "fast"): overrides of the
+## released/held motion (the .dlg rate= kwarg).
+@export var motion_rate: String = "normal"
 
 @export_group("Scene")
 ## Seaward direction for held motes (only xz is used).
@@ -243,10 +275,62 @@ static func clear_global_focus() -> void:
 
 
 ## hymn_glimmer: rgb = linear tint (for other shaders; motes keep their meaning colours), a = scene
-## glimmer intensity (the colour script's mote emission energy). a = 0 also turns sea-glow off.
+## glimmer intensity (the colour script's mote emission energy). Sea-glow is separate
+## (set_scene_sea_glow); a = 0 does not turn it off.
 static func set_scene_glimmer(tint: Color, scene_intensity: float) -> void:
 	var lin := tint.srgb_to_linear()
 	RenderingServer.global_shader_parameter_set(GLOBAL_GLIMMER, Vector4(lin.r, lin.g, lin.b, scene_intensity))
+
+
+## Writes the zone's night sea-glow energy (hymn_zone_sea_glow), independent of the mote energy.
+## energy <= 0 is a HARD off (ending_dock, day zones that want no glow): it writes SEA_GLOW_ZONE_OFF,
+## which every water material honours whatever its own sea_glow_energy (M1-RND-15). Otherwise it is
+## clamped to the rule-3 ceiling; it does not enforce the night minimum, so scene exceptions (the
+## Ending's E4 0.07, E5 0.06) pass. Check frames with sea_glow_violation().
+static func set_scene_sea_glow(energy: float) -> void:
+	RenderingServer.global_shader_parameter_set(GLOBAL_SEA_GLOW, zone_sea_glow_value(energy))
+
+
+## Unsets the zone sea-glow: surfaces show their own material energy, if any. SceneRouter calls it on
+## every zone change, so a zone that never writes the global does not inherit the last zone's glow.
+static func clear_scene_sea_glow() -> void:
+	RenderingServer.global_shader_parameter_set(GLOBAL_SEA_GLOW, SEA_GLOW_ZONE_UNSET)
+
+
+## What set_scene_sea_glow(energy) writes to hymn_zone_sea_glow.
+static func zone_sea_glow_value(energy: float) -> float:
+	if energy <= 0.0:
+		return SEA_GLOW_ZONE_OFF
+	var rule := load_config().get("sea_glow", {}) as Dictionary
+	return minf(energy, float(rule.get("ceiling", 1.0)))
+
+
+## "" if a frame's sea-glow energy obeys colour script rule 3 (glimmer.json "sea_glow", mirrored
+## from palette.json), else the reason. Day frames (sun above the horizon) may be 0; night frames
+## need [floor, ceiling], and >= night_min once the sun is below night_min_below_sun_deg, unless
+## (scene_id, beat) is a named exception (exact value) or the scene is an off scene (0).
+static func sea_glow_violation(
+	energy: float, sun_elevation_deg: float, scene_id: String = "", beat: String = ""
+) -> String:
+	var rule := load_config().get("sea_glow", {}) as Dictionary
+	if (rule.get("off_scenes", []) as Array).has(scene_id):
+		return "" if is_zero_approx(energy) else "%s has no sea-glow (0)" % scene_id
+	var exceptions := rule.get("night_exceptions", {}) as Dictionary
+	if exceptions.has(scene_id) and (exceptions[scene_id] as Dictionary).has(beat):
+		var want := float((exceptions[scene_id] as Dictionary)[beat])
+		return "" if is_equal_approx(energy, want) else "%s %s is %.2f by exception" % [scene_id, beat, want]
+	if sun_elevation_deg >= 0.0:
+		return "" if energy <= float(rule.get("ceiling", 1.0)) else "above the ceiling"
+	if energy < float(rule.get("floor", 0.0)) or energy > float(rule.get("ceiling", 1.0)):
+		return "night sea-glow outside [floor, ceiling]"
+	if (
+		sun_elevation_deg < float(rule.get("night_min_below_sun_deg", 0.0))
+		and energy < float(rule.get("night_min", 0.0))
+	):
+		return (
+			"below the night minimum once the sun is below %.0f deg" % float(rule.get("night_min_below_sun_deg", 0.0))
+		)
+	return ""
 
 
 # --- Quality -----------------------------------------------------------------------------------
@@ -282,6 +366,8 @@ func apply_graphics_settings(settings: GraphicsSettings) -> bool:
 
 ## Particle count for the current tier (always >= 1).
 func planned_amount() -> int:
+	if fixed_count > 0:
+		return fixed_count
 	var emitter := config.get("emitter", {}) as Dictionary
 	var scale := float(_tier().get("amount_scale", 1.0))
 	return maxi(1, roundi(float(emitter.get("amount", 1)) * scale * amount_multiplier))
@@ -297,8 +383,10 @@ func reflection_active() -> bool:
 ## Every process-shader uniform that changes only with config, quality or exports.
 func static_process_parameters() -> Dictionary:
 	var m := config.get("modes", {}) as Dictionary
-	var rel := m.get("released", {}) as Dictionary
-	var held := m.get("held", {}) as Dictionary
+	var rates := (config.get("cues", {}) as Dictionary).get("rates", {}) as Dictionary
+	var rate := rates.get(motion_rate, {}) as Dictionary
+	var rel := (m.get("released", {}) as Dictionary).merged(rate, true)
+	var held := (m.get("held", {}) as Dictionary).merged(rate, true)
 	var mach := m.get("machine", {}) as Dictionary
 	var mo := config.get("motion", {}) as Dictionary
 	var a := config.get("attractor", {}) as Dictionary
@@ -323,6 +411,12 @@ func static_process_parameters() -> Dictionary:
 		"emission_shape": int(emission_shape),
 		"emission_extents_m": emission_extents_m,
 		"emission_inner_radius_m": emission_inner_radius_m,
+		"emission_height_bias": height_bias,
+		"emission_center_bias": center_bias,
+		"spawn_point_count": mini(spawn_points.size(), MAX_SPAWN_POINTS),
+		"spawn_points": _padded_spawn_points(),
+		"persistent": not respawn,
+		"persist_fade_in_s": float((config.get("emitter", {}) as Dictionary).get("persist_fade_in_s", 1.0)),
 		"size_min_m": float(lk.get("size_min_m", 0.0)),
 		"size_max_m": float(lk.get("size_max_m", 0.0)),
 		"size_power": float(lk.get("size_power", 1.0)),
@@ -375,11 +469,59 @@ func dynamic_process_parameters() -> Dictionary:
 				"attractor_count": packed["count"],
 				"attractor_pos_radius": packed["pos_radius"],
 				"attractor_params": packed["params"],
+				"field_to_world": field_to_world(),
+				"world_to_field_basis": field_to_world().basis.inverse(),
 			}
 		)
 	)
 	out.erase("progress")
 	return out
+
+
+## Particle space -> world: this node's transform in local space, identity in world space.
+func field_to_world() -> Transform3D:
+	if not local_space:
+		return Transform3D.IDENTITY
+	return global_transform if is_inside_tree() else transform
+
+
+## Field parameters for a .dlg @vfx cue (dialogue_format.md: effect, count, drift, motion, rate,
+## form) through glimmer.json "cues": {mode, fixed_count, respawn, motion_rate, local_space}. Keys
+## the cue does not set are absent. Unknown effects return {}.
+static func cue_parameters(effect: String, kwargs: Dictionary, cfg: Dictionary = {}) -> Dictionary:
+	var cues := (cfg if not cfg.is_empty() else load_config()).get("cues", {}) as Dictionary
+	var effects := cues.get("effects", {}) as Dictionary
+	if not effects.has(effect):
+		return {}
+	var out := {"mode": _mode_from_id(str(effects[effect]))}
+	if kwargs.has("drift") and (cues.get("drift", {}) as Dictionary).has(str(kwargs["drift"])):
+		out["mode"] = _mode_from_id(str((cues["drift"] as Dictionary)[str(kwargs["drift"])]))
+	if kwargs.has("motion") and (cues.get("motion", {}) as Dictionary).has(str(kwargs["motion"])):
+		out["mode"] = _mode_from_id(str((cues["motion"] as Dictionary)[str(kwargs["motion"])]))
+	if kwargs.has("count"):
+		out["fixed_count"] = maxi(1, int(kwargs["count"]))
+		out["respawn"] = false
+	if kwargs.has("rate") and (cues.get("rates", {}) as Dictionary).has(str(kwargs["rate"])):
+		out["motion_rate"] = str(kwargs["rate"])
+	if out["mode"] == GlimmerState.Mode.MACHINE:
+		out["local_space"] = true
+	return out
+
+
+## Applies cue_parameters() to this field (rebuilds the emitter: call it when the beat starts).
+func apply_cue(effect: String, kwargs: Dictionary) -> bool:
+	var p := cue_parameters(effect, kwargs, config)
+	if p.is_empty():
+		return false
+	fixed_count = int(p.get("fixed_count", fixed_count))
+	respawn = bool(p.get("respawn", respawn))
+	motion_rate = str(p.get("motion_rate", motion_rate))
+	local_space = bool(p.get("local_space", local_space))
+	set_mode(p["mode"] as GlimmerState.Mode)
+	if motes != null:
+		_apply_emitter()
+		refresh()
+	return true
 
 
 ## Where the current (or next) release wave starts: the origin given to release(), else this field.
@@ -393,6 +535,7 @@ func release_origin() -> Vector3:
 func draw_parameters() -> Dictionary:
 	var lk := config.get("look", {}) as Dictionary
 	return {
+		"halo_chroma_gain": float(lk.get("halo_chroma_gain", 1.0)),
 		"halo_scale": float(lk.get("halo_scale", 1.0)),
 		"core_gain": float(lk.get("core_gain", 0.0)),
 		"halo_gain": float(lk.get("halo_gain", 0.0)),
@@ -447,13 +590,7 @@ func _build() -> void:
 	_mirror_quad = QuadMesh.new()
 	_mirror_quad.material = reflect_material
 	motes.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	var emitter := config.get("emitter", {}) as Dictionary
-	motes.lifetime = float(emitter.get("lifetime_s", 1.0))
-	motes.fixed_fps = int(emitter.get("fixed_fps", 0))
-	motes.preprocess = preprocess_s if preprocess_s >= 0.0 else float(emitter.get("preprocess_s", 0.0))
-	motes.use_fixed_seed = use_fixed_seed
-	motes.seed = fixed_seed
-	motes.local_coords = false
+	_apply_emitter()
 	add_child(motes)
 	if fill_light_energy > 0.0:
 		var fl := config.get("fill_light", {}) as Dictionary
@@ -464,6 +601,36 @@ func _build() -> void:
 		fill_light.omni_attenuation = float(fl.get("attenuation", 1.0))
 		fill_light.shadow_enabled = false
 		add_child(fill_light)
+
+
+## Lifetime, respawn and space: changing them restarts the emitter.
+func _apply_emitter() -> void:
+	var emitter := config.get("emitter", {}) as Dictionary
+	motes.lifetime = float(emitter.get("lifetime_s" if respawn else "persist_lifetime_s", 1.0))
+	motes.one_shot = not respawn
+	motes.explosiveness = 0.0 if respawn else 1.0
+	motes.fixed_fps = int(emitter.get("fixed_fps", 0))
+	motes.preprocess = preprocess_s if preprocess_s >= 0.0 else float(emitter.get("preprocess_s", 0.0))
+	motes.use_fixed_seed = use_fixed_seed
+	motes.seed = fixed_seed
+	motes.local_coords = local_space
+
+
+func _padded_spawn_points() -> PackedVector3Array:
+	var out := PackedVector3Array()
+	out.resize(MAX_SPAWN_POINTS)
+	for i in mini(spawn_points.size(), MAX_SPAWN_POINTS):
+		out[i] = spawn_points[i]
+	return out
+
+
+static func _mode_from_id(id: String) -> GlimmerState.Mode:
+	match id:
+		"released":
+			return GlimmerState.Mode.RELEASED
+		"machine":
+			return GlimmerState.Mode.MACHINE
+	return GlimmerState.Mode.HELD
 
 
 func _apply_static() -> void:

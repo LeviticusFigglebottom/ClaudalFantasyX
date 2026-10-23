@@ -20,7 +20,7 @@
       "rise_max_mps": 0.4,
       "spiral_radius_min_m": 0.2,
       "spiral_radius_max_m": 0.6,
-      "spiral_rate_rad_s": 0.3,
+      "spiral_rate_rad_s": 1.0,
       "curl_scale": 0.4,
       "hi_shift": 0.55
     },
@@ -66,6 +66,7 @@
     "core_gain": 0.8,
     "halo_gain": 0.12,
     "halo_falloff": 0.6,
+    "halo_chroma_gain": 1.6,
     "trail_time_s": 1.1,
     "trail_max_ratio": 1.4,
     "breath_rate_hz": 0.18,
@@ -86,6 +87,8 @@
     "amount": 450,
     "lifetime_s": 14.0,
     "preprocess_s": 14.0,
+    "persist_lifetime_s": 3600.0,
+    "persist_fade_in_s": 1.5,
     "fixed_fps": 30,
     "aabb_margin_m": 6.0
   },
@@ -98,6 +101,51 @@
     "medium": {"amount_scale": 0.6, "trail_scale": 0.6, "curl_octaves": 2, "reflection": true},
     "high": {"amount_scale": 1.0, "trail_scale": 1.0, "curl_octaves": 2, "reflection": true},
     "ultra": {"amount_scale": 1.5, "trail_scale": 1.0, "curl_octaves": 3, "reflection": true}
+  },
+  "cues": {
+    "_note": "M1-RND-08: .dlg @vfx cue kwargs -> field parameters (GlimmerField.cue_parameters). effect -> mode; count -> fixed_count with no respawn; drift=down_seaward -> held; motion=spiral_up -> released; rate -> overrides of modes.released / modes.held. rate=slow is colour script S09: rise 0.15-0.25 m/s, spiral radius 0.2-0.4 m.",
+    "effects": {
+      "glimmer_lift": "released",
+      "glimmer_held": "held",
+      "glimmer_bound": "machine"
+    },
+    "drift": {
+      "down_seaward": "held"
+    },
+    "motion": {
+      "spiral_up": "released"
+    },
+    "rates": {
+      "slow": {
+        "rise_max_mps": 0.25,
+        "spiral_radius_max_m": 0.4,
+        "spiral_rate_rad_s": 0.8,
+        "drift_max_mps": 0.12
+      },
+      "normal": {},
+      "fast": {
+        "rise_min_mps": 0.3,
+        "rise_max_mps": 0.6,
+        "spiral_rate_rad_s": 1.4,
+        "drift_max_mps": 0.3
+      }
+    }
+  },
+  "sea_glow": {
+    "_note": "Colour script rule 3, mirrored from docs/kb/art/palette.json global_rules (tested to match). GlimmerField.set_scene_sea_glow() clamps to [0, ceiling]; GlimmerField.sea_glow_violation() checks a frame against the rule.",
+    "floor": 0.04,
+    "ceiling": 0.15,
+    "night_min": 0.08,
+    "night_min_below_sun_deg": -6.0,
+    "off_scenes": [
+      "ending_dock"
+    ],
+    "night_exceptions": {
+      "ending_unbinding": {
+        "E4": 0.07,
+        "E5": 0.06
+      }
+    }
   },
   "default_quality": "high"
 }

@@ -8,6 +8,10 @@ const COMMON_INC := "res://game/shaders/include/common.gdshaderinc"
 const GLOBALS_INC := "res://game/shaders/include/globals.gdshaderinc"
 const TMP_DIR := "user://test_shader_prewarm"
 const STATIC_STAGE_NODES := 4
+const WATER_GRID := "res://game/world/water/prewarm/water_grid_prewarm.tres"
+const SALTGRASS_GLB := "res://assets/environments/vegetation/saltgrass_clumps.glb"
+const GLIMMER_PROCESS := "res://game/vfx/glimmer/materials/glimmer_motes_process.tres"
+const GLIMMER_DRAW := "res://game/vfx/glimmer/materials/glimmer_motes_draw.tres"
 
 
 ## Counts shader compiler errors reported through the engine log while a check runs.
@@ -131,6 +135,178 @@ func test_handles_every_material_kind_and_scene_filter() -> void:
 	assert_true(node.is_queued_for_deletion())
 	for file in DirAccess.get_files_at(TMP_DIR):
 		DirAccess.remove_absolute(TMP_DIR + "/" + file)
+	DirAccess.remove_absolute(TMP_DIR)
+
+
+## M1-RND-07: entries can carry the real mesh, the MultiMesh path and a particles draw material, and
+## the stage copies the game viewport's AA.
+func test_entries_draw_real_meshes_multimesh_and_particle_passes() -> void:
+	var quad := QuadMesh.new()
+	assert_eq(ShaderPrewarm.entry_mesh({}, quad), quad, "no mesh key: the quad")
+	assert_eq(ShaderPrewarm.entry_mesh({"mesh": "res://does/not/exist.tres"}, quad), quad)
+	var grid := ShaderPrewarm.entry_mesh({"mesh": WATER_GRID}, quad)
+	assert_true(grid is ArrayMesh, "a Mesh resource")
+	var built := WaterMeshBuilder.build(1.0, 0.5, 2.0, 1.1)
+	assert_eq(grid.surface_get_format(0), built.surface_get_format(0), "committed grid = the ocean's vertex format")
+	var grass := ShaderPrewarm.entry_mesh({"mesh": SALTGRASS_GLB, "mesh_node": "saltgrass_a"}, quad)
+	assert_ne(grass, quad, "a named MeshInstance3D inside a .glb")
+	var reg := {
+		"frames_to_render": 1,
+		"measure_frames": 2,
+		"hitch_budget_ms": 50.0,
+		"viewport_width": 32,
+		"viewport_height": 32,
+		"quad_size": 1.0,
+		"quad_distance": 1.5,
+		"particle_amount": 1,
+		"multimesh_instances": 2,
+		"materials":
+		[
+			{"path": TEST_MATERIAL, "mesh": WATER_GRID, "multimesh": true, "scenes": []},
+			{"path": GLIMMER_PROCESS, "draw_material": GLIMMER_DRAW, "scenes": []},
+		],
+	}
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var reg_path := TMP_DIR + "/registry_mesh.json"
+	var f := FileAccess.open(reg_path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(reg))
+	f.close()
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	_host().add_child(node)
+	var game := node.get_viewport()
+	var taa_was := game.use_taa
+	game.use_taa = true
+	assert_eq(node.start(""), 2)
+	assert_true((node.get_node("Viewport") as SubViewport).use_taa, "the stage matches the game's TAA")
+	game.use_taa = taa_was
+	var stage := node.get_node("Viewport/Stage3D")
+	var mmi := stage.find_children("*", "MultiMeshInstance3D", true, false)
+	assert_eq(mmi.size(), 1, "multimesh entry drawn through a MultiMeshInstance3D")
+	var mm := (mmi[0] as MultiMeshInstance3D).multimesh
+	assert_true(mm.use_colors and mm.use_custom_data)
+	assert_eq(mm.instance_count, 2)
+	var parts := stage.find_children("*", "GPUParticles3D", true, false)
+	assert_eq(parts.size(), 1)
+	var draw := ((parts[0] as GPUParticles3D).draw_pass_1 as QuadMesh).material as ShaderMaterial
+	assert_eq(draw.shader.resource_path, GlimmerField.DRAW_SHADER.resource_path, "the real draw pass")
+	node.tick(5.0)
+	node.tick(5.0)
+	DirAccess.remove_absolute(reg_path)
+	DirAccess.remove_absolute(TMP_DIR)
+
+
+## M1-RND-07: with scene_materials the incoming scene's own (inline) materials are staged on their
+## own meshes, MultiMeshes included, without a registry entry.
+func test_scene_materials_are_harvested_from_the_incoming_scene() -> void:
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var root := Node3D.new()
+	var box := MeshInstance3D.new()
+	box.mesh = BoxMesh.new()
+	var inline := StandardMaterial3D.new()
+	inline.albedo_color = Color.RED
+	box.material_override = inline
+	root.add_child(box)
+	box.owner = root
+	var grass := MultiMeshInstance3D.new()
+	grass.multimesh = MultiMesh.new()
+	grass.multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	grass.multimesh.use_colors = true
+	var blade := QuadMesh.new()
+	blade.material = StandardMaterial3D.new()
+	grass.multimesh.mesh = blade
+	root.add_child(grass)
+	grass.owner = root
+	var packed := PackedScene.new()
+	packed.pack(root)
+	root.free()
+	var scene_path := TMP_DIR + "/harvest.tscn"
+	ResourceSaver.save(packed, scene_path)
+	var reg := {
+		"frames_to_render": 1,
+		"measure_frames": 2,
+		"hitch_budget_ms": 50.0,
+		"viewport_width": 32,
+		"viewport_height": 32,
+		"quad_size": 1.0,
+		"quad_distance": 1.5,
+		"particle_amount": 1,
+		"multimesh_instances": 2,
+		"scene_materials": true,
+		"max_scene_materials": 16,
+		"materials": [],
+	}
+	var reg_path := TMP_DIR + "/registry_harvest.json"
+	var f := FileAccess.open(reg_path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(reg))
+	f.close()
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	_host().add_child(node)
+	assert_eq(node.start(scene_path), 2, "the box's inline material and the grass blade's")
+	var stage := node.get_node("Viewport/Stage3D")
+	assert_eq(stage.find_children("*", "MultiMeshInstance3D", true, false).size(), 1, "grass through a MultiMesh")
+	var boxes := stage.find_children("*", "MeshInstance3D", true, false)
+	assert_true(boxes.any(func(n: Node) -> bool: return (n as MeshInstance3D).mesh is BoxMesh), "on its own mesh")
+	node.tick(5.0)
+	node.tick(5.0)
+	for file in DirAccess.get_files_at(TMP_DIR):
+		DirAccess.remove_absolute(TMP_DIR + "/" + file)
+	DirAccess.remove_absolute(TMP_DIR)
+
+
+## M1-RND-15 (review-sweep-I on RND-07, S1): the stage is time-sliced. At most materials_per_frame
+## draws enter per frame, an over-budget frame halves the batch, the stage clears frames_to_render
+## frames after the last batch, and SceneRouter can see it is still staging.
+func test_stage_is_time_sliced_and_self_tunes() -> void:
+	var reg := {
+		"frames_to_render": 2,
+		"measure_frames": 2,
+		"hitch_budget_ms": 50.0,
+		"materials_per_frame": 4,
+		"slice_budget_ms": 33.0,
+		"viewport_width": 32,
+		"viewport_height": 32,
+		"quad_size": 1.0,
+		"quad_distance": 1.5,
+		"materials": [],
+	}
+	for i in 11:
+		(reg["materials"] as Array).append({"path": TEST_MATERIAL, "scenes": []})
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var reg_path := TMP_DIR + "/registry_slice.json"
+	var f := FileAccess.open(reg_path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(reg))
+	f.close()
+	var router := Node.new()
+	_host().add_child(router)
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	router.add_child(node)
+	assert_eq(node.start(""), 11, "every draw is built at start")
+	assert_eq(node.stage_node_count(), 4, "but only one batch is staged on the first frame")
+	assert_eq(node.pending_count(), 7)
+	assert_true(node.is_staging() and ShaderPrewarm.is_staging_under(router))
+	node.tick(20.0)  # under the slice budget: the next full batch goes in
+	assert_eq(node.stage_node_count(), 8)
+	node.tick(90.0)  # over budget: the batch halves
+	assert_eq(node.batch_size(), 2)
+	assert_eq(node.stage_node_count(), 10)
+	node.tick(10.0)
+	assert_eq(node.stage_node_count(), 11)
+	assert_eq(node.pending_count(), 0)
+	node.tick(10.0)
+	assert_true(node.is_staging(), "the last batch still renders frames_to_render frames")
+	node.tick(10.0)
+	assert_false(node.is_staging())
+	assert_false(ShaderPrewarm.is_staging_under(router))
+	assert_eq(node.stage_node_count(), 0, "stage cleared")
+	assert_eq(node.stats["batches"], 4)
+	assert_eq(node.stats["min_batch"], 2)
+	assert_eq(node.stats["materials"], 11)
+	assert_true(node.is_queued_for_deletion())
+	router.free()
+	DirAccess.remove_absolute(reg_path)
 	DirAccess.remove_absolute(TMP_DIR)
 
 

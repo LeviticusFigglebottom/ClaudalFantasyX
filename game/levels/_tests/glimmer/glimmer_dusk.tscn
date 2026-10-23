@@ -129,6 +129,7 @@ mode = 1
 quality = "high"
 emission_shape = 1
 emission_extents_m = Vector3(5, 0.04, 0)
+center_bias = 1.8
 still_water_reflection = true
 fill_light_energy = 0.5
 fill_light_offset_m = Vector3(0, 0.8, 0.6)

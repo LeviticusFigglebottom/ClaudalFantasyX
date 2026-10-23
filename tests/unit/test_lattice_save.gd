@@ -34,7 +34,9 @@ func test_empty_dict_is_fresh_progress() -> void:
 	assert_true(p.add_character(&"rhen"))
 
 
-func test_unknown_ids_are_dropped_and_position_falls_back_to_start() -> void:
+## M1-ARC-13: in play, unknown ids grant nothing and a lost position stands on the start; the
+## saved data itself is kept (round trips: tests/unit/test_save_data_tables.gd).
+func test_unknown_ids_grant_nothing_and_position_falls_back_to_start() -> void:
 	var d := {
 		"board": "fixture",
 		"characters":
@@ -48,10 +50,16 @@ func test_unknown_ids_are_dropped_and_position_falls_back_to_start() -> void:
 	var t := p.traveler(&"rhen")
 	assert_eq(t.position, &"rhen_start")
 	assert_true(t.activated.has(&"s_str"))
-	assert_false(t.activated.has(&"deleted_node"))
+	assert_true(t.activated.has(&"deleted_node"), "kept, not dropped (M1-ARC-13)")
 	assert_eq(t.movement_points, 2)
 	assert_true(p.traveler(&"ysolde") == null, "no start for her on this board")
+	assert_true(p.kept_characters.has("ysolde"), "but her saved progress is kept")
 	assert_eq(p.opened_gates.keys(), [&"gate1"], "only real gates stay open")
+	assert_eq(p.kept_gates, ["s_str", "gone"] as Array[String], "the others are kept as saved")
+	var back := p.to_dict()
+	assert_eq(back["characters"]["rhen"]["position"], "deleted_node", "the saved position until rhen moves")
+	assert_eq(back["characters"]["ysolde"], d["characters"]["ysolde"])
+	assert_eq(back["opened_gates"], ["gate1", "s_str", "gone"] as Array[String], "in saved order")
 
 
 func test_progress_survives_a_full_save_round_trip() -> void:

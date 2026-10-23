@@ -7,11 +7,13 @@ const PAGE_ROOT := &"root"
 const PAGE_SKILLS := &"skills"
 const PAGE_SWAP := &"swap"
 const PAGE_ITEMS := &"items"
+const PAGE_SWELL := &"swell"
 const ROW_ATTACK := &"attack"
 const ROW_SKILLS := &"skills"
 const ROW_ESCAPE := &"escape"
 const ROW_SWAP := &"swap"
 const ROW_ITEMS := &"items"
+const ROW_SWELL := &"swell"
 const ATTACK_SKILL := &"attack"
 const AUTO_BERSERK := &"berserk"
 const AUTO_CONFUSE := &"confuse"
@@ -29,6 +31,9 @@ const FAIL_REASONS: Array[StringName] = [
 	&"no_valid_action",
 	&"no_item",
 	&"unknown_item",
+	&"swell_not_full",
+	&"unknown_technique",
+	&"swell_cancelled",
 ]
 
 ## Ranks at or above this show in the swell color (docs/kb/art/ui.md §6.1).
@@ -50,9 +55,9 @@ func skill_name(engine: BattleEngine, skill_id: StringName) -> String:
 	return tr(key) if key != "" else String(skill_id)
 
 
-## Root page: Attack, Skills, Items (only when the battle has a bag: capture fixtures have none),
-## Escape, then Swap (always the last row).
-func root_rows(engine: BattleEngine, items: BattleItemSource = null) -> Array[Dictionary]:
+## Root page: Attack, Swell (only while the actor's gauge is full, M1-CMB-04), Skills, Items (only
+## when the battle has a bag: capture fixtures have none), Escape, then Swap (always the last row).
+func root_rows(engine: BattleEngine, items: BattleItemSource = null, swell: BattleSwell = null) -> Array[Dictionary]:
 	var actor := engine.current
 	var rows: Array[Dictionary] = []
 	var attack := engine.db.skill(ATTACK_SKILL)
@@ -66,6 +71,9 @@ func root_rows(engine: BattleEngine, items: BattleItemSource = null) -> Array[Di
 			ATTACK_SKILL
 		)
 	)
+	if swell != null and swell.is_ready(actor):
+		var input_key := str(swell.input_for(actor).get("name_key", ""))
+		rows.append(_row(ROW_SWELL, tr("HUD_CMD_SWELL"), tr(input_key) if input_key != "" else "", &"swell", true))
 	rows.append(_row(ROW_SKILLS, tr("HUD_CMD_SKILLS"), "", &"text_dim", not skill_ids(actor).is_empty()))
 	if items != null:
 		rows.append(_row(ROW_ITEMS, tr("HUD_CMD_ITEMS"), "", &"text_dim", _any_usable(engine, items)))
@@ -97,6 +105,44 @@ func skill_rows(engine: BattleEngine) -> Array[Dictionary]:
 		row["mp"] = tr("HUD_MP_FMT").format({"mp": mp}) if mp > 0 else ""
 		rows.append(row)
 	return rows
+
+
+## The actor's Swell techniques (BattleSwell.techniques): name and rank, no MP.
+func swell_rows(engine: BattleEngine, swell: BattleSwell) -> Array[Dictionary]:
+	var rows: Array[Dictionary] = []
+	for tid in swell.techniques(engine.current):
+		var rank := int(engine.db.skill(tid).get("rank", Formulas.DEFAULT_RANK))
+		rows.append(_row(tid, skill_name(engine, tid), _rank_text(rank), _rank_role(rank), true, tid))
+	return rows
+
+
+## The help line for a technique: what its input asks, then the skill's own line.
+func swell_help(engine: BattleEngine, swell: BattleSwell, tid: StringName, next_in: int) -> String:
+	var input := swell.input_for(engine.current)
+	var key := str(input.get("help_key", ""))
+	var parts: PackedStringArray = []
+	if key != "":
+		# The count is data (swell.json "beats"), never written into the string (M1-UI-05).
+		parts.append(tr(key).format({"beats": int(input.get("beats", 1))}))
+	parts.append(skill_help(engine, tid, next_in))
+	return " · ".join(parts)
+
+
+## What the input earned, for the help line: "Perfect · Good · Miss: +45% power".
+func swell_result_text(grades: Array, bonus_pct: int) -> String:
+	var words: PackedStringArray = []
+	for g: Variant in grades:
+		words.append(grade_text(StringName(str(g))))
+	return tr("HUD_SWELL_RESULT_FMT").format({"grades": " · ".join(words), "pct": bonus_pct})
+
+
+func grade_text(grade: StringName) -> String:
+	match grade:
+		SwellTimingRing.GRADE_PERFECT:
+			return tr("HUD_SWELL_GRADE_PERFECT")
+		SwellTimingRing.GRADE_GOOD:
+			return tr("HUD_SWELL_GRADE_GOOD")
+	return tr("HUD_SWELL_GRADE_MISS")
 
 
 ## Battle items the party holds, in bag order: name, count, rank. A row is greyed out while
@@ -319,6 +365,12 @@ func fail_text(reason: StringName, actor: BattleCombatant, provoker: BattleComba
 			text = tr("HUD_FAIL_NO_ITEM")
 		&"unknown_item":
 			text = tr("HUD_FAIL_UNKNOWN_ITEM")
+		&"swell_not_full":
+			text = tr("HUD_FAIL_SWELL_NOT_FULL_FMT")
+		&"unknown_technique":
+			text = tr("HUD_FAIL_UNKNOWN_TECHNIQUE")
+		&"swell_cancelled":
+			text = tr("HUD_FAIL_SWELL_CANCELLED")
 	return text.format({"name": display_name(actor), "provoker": display_name(provoker)})
 
 

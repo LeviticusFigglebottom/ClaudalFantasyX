@@ -177,9 +177,58 @@ This uses the living active party and living enemies. A failed attempt costs the
 
 Every party member who was **on the field at any point** in the battle (they started active or swapped in, even for zero turns) and is **alive at victory** receives the encounter's **full** XP total, with no split. Reserve members who never entered get nothing. Swapping is free, so a player can rotate every reserve through once to share XP. That is deliberate, the same convention the inspiring genre uses: it rewards using the whole party (pillar 4) at the cost of menu time, not battle time.
 
+## Swell (M1-CMB-04)
+
+SPEC §6.2. Each hero with a row in `game/data/battle/swell.json` (`heroes`) has a gauge of `0..SWELL_MAX` (100) and one fill **mode** at a time. A full gauge puts **Swell** on that hero's command menu; a technique empties it. `BattleSwell` (`game/battle/battle_swell.gd`) holds the rules, and the state sits on `BattleCombatant` (`swell`, `swell_mode`). No step adds a random roll.
+
+| Name | Value | Meaning |
+|---|---|---|
+| `SWELL_MAX` | 100 | Gauge size (formulas.gd) |
+
+**Gain from an HP share**: exact in integers. Any positive amount gives at least 1, and one share gives at most the whole gauge.
+```
+swell_gain(amount, ref_max_hp, rate) = amount ≤ 0 or rate ≤ 0 ? 0 : clamp(amount × rate ÷ max(ref_max_hp, 1), 1, SWELL_MAX)
+swell_fill(value, gain)              = clamp(value + gain, 0, SWELL_MAX)
+```
+`rate` is points per whole max HP, so a rate of 120 fills the gauge after 100/120 of the reference max HP.
+
+**Modes** (data: `swell.json` `modes`; each has a `trigger` and either a `rate` or `flat` points per event):
+
+| Mode | Trigger | Number | Fills when | Starts |
+|---|---|---|---|---|
+| **Ballast** | `damage_taken` | rate 120 | the owner loses HP to a hit (`ref` = the owner's max HP) | unlocked (default) |
+| **Wake** | `damage_dealt` | rate 50 | the owner's action takes HP from a foe (`ref` = that foe's max HP; skills and damage items) | unlocked |
+| **Tether** | `ally_hurt` | rate 60 | another **active, living** party member loses HP to a hit (`ref` = that ally's max HP) | locked |
+| **Salve** | `heal_item` | flat 20 | the owner uses an item that restores HP or revives (once per use) | locked |
+
+- Only action hits count (`ActionResult.hits` with `amount > 0`, through `BattleEngine.action_resolved`). A miss or a heal feeds no damage mode, and Poison, Regen and Doom ticks feed none. Reserve members gain nothing. A KO'd owner keeps its points.
+- **A technique feeds no gauge**, its own or anyone's.
+- Changing mode keeps the points. `set_mode` takes only unlocked modes; `unlock_mode` is the hook for unlocking through play (SPEC §6.2). The unlock rules and saving the gauge between battles come in later tasks.
+
+Examples: Ballast, 95 of 420 HP lost → 27 (27.1 floors). Wake, 152 dealt to a 380 HP foe → 20. Tether, an ally loses 95 of 300 → 19. 1 HP lost at rate 120 on 420 → 1. Gauge 90 + 27 → 100.
+
+**Techniques.** A technique is a `skills.json` row marked `"swell": true` and listed under its hero in `swell.json`. It is not learned, costs no MP, and is otherwise played exactly as its row (targets, Provoke, Reflect, Silence for `magic` rows, rank). `BattleSwell.perform(technique, targets, input_result)` refuses at no cost with `swell_not_full`, `unknown_technique`, `swell_cancelled`, `not_your_turn`, `auto_turn` or `battle_over`. On success the gauge goes to 0 and the turn ends.
+
+**Input bonus.** Each hero's technique takes a short interactive input (SPEC §6.2), and the engine receives only its result, `{cancelled, grades}`:
+```
+bonus_pct            = Σ grade_bonus[grade] over the first `beats` grades      # unknown grades earn 0
+swell_power(p, bonus) = floor(p × (100 + max(bonus, 0)) / 100)
+```
+The scaled power goes into the normal damage formula (§ Damage).
+
+**Rhen: the timing ring** (`timing_ring`, `SwellTimingRing`). After a 0.6 s lead-in, the lamp flares 3 times, one beat every 0.8 s, peaking at 0.7 of each beat. The whole input lasts at most 3.0 s. The player presses once per flare:
+
+| Grade | Distance from the peak | Bonus |
+|---|---|---|
+| perfect | ≤ 0.06 s | +30% |
+| good | ≤ 0.15 s | +15% |
+| miss | further, or no press before the beat ends | 0 |
+
+The first press in a beat is the one that counts, and a press before the beat opens is ignored. The input can be **canceled only before the first grade**, so it cannot be retried until it goes well; canceling costs nothing. **Lamp Dive** (power 12, rank 2, physical, single foe, accuracy 100): perfect ×3 → power 22 (12 × 190 / 100 = 22.8), perfect + good + miss → 17, all miss → 12. From Rhen (strength 16, level 5) on the sandbox Reef Crab (defense 40, 380 HP) at variance 100: a perfect Lamp Dive deals 330, an all-miss one 180, and a plain Attack 120.
+
 ## Not yet specified (owned by Combat, tracked in M1 tasks)
 
-Swell gauge fill rates (M1-CMB-04), steal formulas, a Petrify cure item, and Vowbound stat scaling from Asha (M2).
+Swell mode unlock rules and carrying gauges between battles (after M1-CMB-04), steal formulas, a Petrify cure item, and Vowbound stat scaling from Asha (M2).
 
 ## Progression
 

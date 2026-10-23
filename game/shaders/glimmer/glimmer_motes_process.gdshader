@@ -17,6 +17,8 @@ render_mode disable_force;
 
 // Must equal attractor.max in glimmer.json (a test checks it).
 #define HYMN_GLIMMER_MAX_ATTRACTORS 8
+// Must equal GlimmerField.MAX_SPAWN_POINTS (a test checks it).
+#define HYMN_GLIMMER_MAX_SPAWN_POINTS 16
 #define EMISSION_BOX 0
 #define EMISSION_DISC 1
 #define SALT_A 0x9E3779B9u
@@ -57,6 +59,18 @@ group_uniforms emission;
 uniform int emission_shape : hint_range(0, 1) = 0;
 uniform vec3 emission_extents_m = vec3(3.0, 1.0, 3.0);  // box half-extents; disc: x = outer radius, y = half height
 uniform float emission_inner_radius_m : hint_range(0.0, 50.0) = 0.0;
+// Vertical density gradient: > 1 packs motes toward the bottom of the volume (near the water and
+// the figure), < 1 toward the top. 1 = uniform (M1-RND-08).
+uniform float emission_height_bias : hint_range(0.1, 8.0) = 1.0;
+// Disc emission: > 1 clusters motes toward the centre (the figure), sparse at the rim. 1 = uniform.
+uniform float emission_center_bias : hint_range(0.1, 8.0) = 1.0;
+// Authored spawn points (local to the field): mote i starts at spawn_points[i % count]. 0 = random.
+uniform int spawn_point_count : hint_range(0, 16) = 0;
+uniform vec3 spawn_points[HYMN_GLIMMER_MAX_SPAWN_POINTS];
+// Field -> world (identity unless the field is in local space). The motion rules live in world
+// space (water height, sea direction, attractors), particles in local space follow their host.
+uniform mat4 field_to_world = mat4(1.0);
+uniform mat3 world_to_field_basis = mat3(1.0);
 uniform float size_min_m : hint_range(0.001, 1.0) = 0.012;
 uniform float size_max_m : hint_range(0.001, 1.0) = 0.045;
 uniform float size_power : hint_range(0.5, 8.0) = 3.0;
@@ -89,6 +103,9 @@ uniform float breath_rate_hz : hint_range(0.0, 2.0) = 0.18;
 uniform float breath_depth : hint_range(0.0, 1.0) = 0.22;
 uniform float fade_in_fraction : hint_range(0.001, 1.0) = 0.12;
 uniform float fade_out_fraction : hint_range(0.001, 1.0) = 0.3;
+// Persistent fields (GlimmerField.respawn = false): fade in over persist_fade_in_s, never fade out.
+uniform bool persistent = false;
+uniform float persist_fade_in_s : hint_range(0.01, 30.0) = 1.5;
 
 group_uniforms attractors;
 uniform int attractor_count : hint_range(0, 8) = 0;
@@ -145,11 +162,15 @@ void start() {
 		if (emission_shape == EMISSION_DISC) {
 			float outer = emission_extents_m.x;
 			float inner = min(emission_inner_radius_m, outer);
-			float rad = sqrt(mix(inner * inner, outer * outer, r0.y));
+			float rad = sqrt(mix(inner * inner, outer * outer, pow(r0.y, emission_center_bias)));
 			float ang = r0.x * HYMN_TAU;
 			local = vec3(cos(ang) * rad, (r0.z * 2.0 - 1.0) * emission_extents_m.y, sin(ang) * rad);
 		} else {
 			local = (r0.xyz * 2.0 - 1.0) * emission_extents_m;
+		}
+		local.y = (pow(r0.z, emission_height_bias) * 2.0 - 1.0) * emission_extents_m.y;
+		if (spawn_point_count > 0) {
+			local = spawn_points[int(NUMBER) % min(spawn_point_count, HYMN_GLIMMER_MAX_SPAWN_POINTS)];
 		}
 		vec3 world = (EMISSION_TRANSFORM * vec4(local, 1.0)).xyz;
 		TRANSFORM = mat4(vec4(core, 0.0, 0.0, 0.0), vec4(0.0, core, 0.0, 0.0), vec4(0.0, 0.0, core, 0.0), vec4(world, 1.0));
@@ -170,7 +191,7 @@ void process() {
 	float age = USERDATA2.x + DELTA;
 	USERDATA2.x = age;
 	float life_t = clamp(age / max(LIFETIME, HYMN_EPSILON), 0.0, 1.0);
-	vec3 pos = TRANSFORM[3].xyz;
+	vec3 pos = (field_to_world * vec4(TRANSFORM[3].xyz, 1.0)).xyz;
 	float rank = clamp(length(pos - release_origin) / release_wave_radius_m, 0.0, 1.0);
 	rank = mix(rank, r.z, release_wave_jitter);
 	float local = smoothstep(0.0, 1.0,
@@ -226,7 +247,7 @@ void process() {
 	if (depth > 0.0) {
 		target *= 1.0 / (1.0 + underwater_drag);
 	}
-	VELOCITY = mix(VELOCITY, target, 1.0 - exp(-DELTA * response));
+	VELOCITY = mix(VELOCITY, world_to_field_basis * target, 1.0 - exp(-DELTA * response));
 	CUSTOM = vec4(VELOCITY, 0.0);
 
 	// Colour: hue lerp in Oklab (held -> released), whitening towards lift_hi as a released mote
@@ -238,7 +259,8 @@ void process() {
 	float energy = follow_scene_intensity ? hymn_glimmer.a : mix(mix(energy_held, energy_released, blend), energy_machine, still);
 	energy *= intensity * mix(brightness_min, 1.0, pow(USERDATA3.x, brightness_power));
 	float breath = 1.0 + breath_depth * (1.0 - still) * sin(HYMN_TAU * breath_rate_hz * age + USERDATA2.y);
-	float envelope = smoothstep(0.0, fade_in_fraction, life_t) * (1.0 - smoothstep(1.0 - fade_out_fraction, 1.0, life_t));
+	float envelope = persistent ? smoothstep(0.0, persist_fade_in_s, age)
+								: smoothstep(0.0, fade_in_fraction, life_t) * (1.0 - smoothstep(1.0 - fade_out_fraction, 1.0, life_t));
 	float absorb = exp(-underwater_absorb_per_m * depth);
 	COLOR = vec4(col * energy * breath, envelope * absorb);
 

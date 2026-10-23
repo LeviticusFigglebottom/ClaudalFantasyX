@@ -178,3 +178,50 @@ Review-sweep-F (the M1-NAR-09 and M1-NAR-08 Review logs) approved ADR 0020 with 
   | 9 (S4) | Kerrid alone at the stair foot during the Ebbing | (none) | *Consistency* with (c). Pass. |
   | Back (S6) | Dace stays away because a hunted Saltwright would bring the Order to his son; Mother Kell keeps Rhen | (none close: the inspiring father is lost to the calamity, not hiding from a church) | *Consistency* and pillar 1. **Watch:** the reason never fully excuses him, and Rhen still says goodbye to a man who chose. Pass. |
   | End (S11) | Imra, Dace and Kerrid never share a frame; E2's look is a reverse | the inspiring game closes on its three dead together | Re-staged by act3_ending §0 rule 8. Pass. |
+
+- 2026-10-23 Narrative (M1-NAR-11, reopened on review-sweep-H; append note, not a change to the accepted text above or to the sweep-G note). This note **amends** the sweep-G note's S6 and its "Back (S6)" row, (a)'s lantern at Haluna, and (j)'s Ch15 line, where it says so below.
+  - **B1 (IP): nobody keeps Rhen at Dace's request.** The sweep-G note's S6 "and asked her to keep the boy" is **withdrawn**. A father sending word for someone to raise his son is the "raise the hero" function that ADR 0020 removed from Kerrid (0020 Problem 3 and its Bond row).
+    - Dace's one message is addressed to Rhen and left at Mother Kell's stall, where the traders leave Oruvel's post. It says only "helping a friend on a long trip", and it asks nothing of anyone.
+    - **Kell takes Rhen in unasked**, because nobody came for him and she always took in the raft-town's strays.
+    - Dace learns of it a season later from a Hollowmere trader. His Ch17 log entry says only "Kell. Of course." The bitter half of "he chose" stays intact: he left his son to whoever happened to be there.
+    - **The gift before the opening calamity, re-checked.** Kell's Ch1 wick is her own stock. She is a chandler (S1), and she presses a wick into every diver's hand before a dive "for luck". So it is a trade habit, not a parting gift. It is never from Dace or about Dace, it is not a weapon, it comes with no words about his father, and it is never fitted to his lantern on screen. Rhen keeps it unburned in his tin until E7.
+  - **B2 (consistency): the lantern never travelled.** Dace built his lanterns as a pair, the way wrights do: one to wear, and one on the hook against a flooded housing. He took the newer twin up the coast to Corrow and on to Haluna. The first, which he had worn for years, stayed on its hook at Oruvel, and Rhen took it down himself the winter he turned nine.
+    - Nobody sent, carried or handed Rhen anything of his father's.
+    - Asha's Ch2 "That lantern." (`ch02_beach_006`) is unchanged. It is recognition of the make. Liss reads the same make in Ch6.
+    - (j)'s Ch15 line becomes **"A man with a lantern like that brought me this. I was seven."**
+    - In E2, Dace sees on Rhen's shoulder the lamp he left on the hook.
+    - The ch02 `.dlg` source comment is reworded on the same two lines, so the compiled JSON is unchanged.
+  - **S1: Mother Kell is Oruvel's chandler, not a diver.** She sells the lamp-divers their oil and trims their wicks, and she never learned to swim. That matches the shipped `ch02_beach_023` and Ch7's "couldn't swim", and it is why she has the wick. The game text is unchanged. This is decided here and applied to rhen_sallow.md, act_outline Ch1, the bible's 1001 row and the glossary (appended).
+  - **S2:** the bible's Present row now says that Asha was named in 1009 and sets out when the Undertow rises in 1012.
+  - **S3: the scope of act3_ending §0 rule 8.**
+    - The rule is guaranteed by authoring in every C and E beat, and in the authored intro and outro cameras of each P beat.
+    - The player-driven cameras are the H01 walk, the fights in H03 (P), H04, H06 and H07, and R1's free camera. In these the centre is **drawn as light, not figures**: Imra and Dace read only as the two close lamps of H01, with no silhouette, face or hands. Their figures resolve only in an authored close camera, so Kerrid can be in the active party.
+    - **H05:** Kerrid is off-frame in every shot that holds the two lamps. The party's reaction is a reverse looking out from the centre.
+    - The Ch19 outline line that groups the three is marked as design-doc prose only, never VO.
+  - **S4: what Dace's Ch17 logs answer.**
+    - *Why not Oruvel, even for one night:* every hull there knew his face and knew he had gone to Corrow, so one night home would have answered the Bastion's question.
+    - *Why Haluna was safe once:* he went without a name, after dark, with his sleeves down, and left on the tide. Nobody there knew him, so he risked nobody but himself.
+    - *Why he never fetched Rhen to Hollowmere:* "If I bring him here he's a wright's son for life. Oruvel thinks he's a diver's boy. Let him be one. After the storm I'll go myself." Then he went into the storm instead.
+    - The sweep-G watch stands: the reason never fully excuses him.
+
+  | Item | Our beat | Nearest analogue | Verdict |
+  |---|---|---|---|
+  | Back (B1) | Dace's message asks nothing. Mother Kell, Oruvel's chandler, takes Rhen in unasked, and Dace learns of it later by chance | the hero's father charges the mentor with raising his son (the function 0020 removed from Kerrid); the keeper raises the boy for about ten years | Re-staged: no request, no charge and no promise. Kell is a neighbour who stepped in, never a mentor, and she is never in the party. Supersedes the sweep-G "Back (S6)" row's "(none close)". **Watch:** nobody keeps, raises or watches Rhen at Dace's request, in any line, log or bark, and Kell never says she was asked. Pass. |
+  | 1 (B1) | Kell presses a wick from her own stock into Rhen's hand "for luck" before the storm; it lights the post-credits lamp | the keeper hands the hero a gift from his father on the night the calamity opens the game | Re-staged: her own stock and her trade habit, given to every diver. It is not a weapon and not from his father, and nothing is said about Dace. **Residual accepted:** a neighbour's small object before the opening storm returns at the end. E7 uses it anonymously ("someone"), and it is a lamp, not a weapon or a crest. **Watch:** the wick is never framed as from Dace or for his lantern, and it is never fitted to the lantern on screen. Pass. |
+  | Back (B2) | Rhen's lantern is the first of Dace's pair, left on its hook at home; the Haluna lantern was its twin | (avoided: the father's heirloom delivered to the son by his keeper) | *Consistency.* Nothing of Dace's reaches Rhen by anyone's hand. Ch2 is unchanged, and the Ch15 line is reworded. **Watch:** no line has the lantern sent, carried or given to Rhen. Pass. |
+  | 1, 2, 7 (S1) | Kell is a chandler who never learned to swim | (none) | *Consistency* with `ch02_beach_023` and Ch7. Pass. |
+  | Bible (S2) | Asha was named in 1009 and sets out in 1012 | (none) | *Consistency* with asha_velamir.md, toma_okeru.md and `ch03_verse_062`. Pass. |
+  | 21 (S3) | Rule 8 in player cameras: the two lamps are drawn as light; H05 keeps Kerrid off-frame | the inspiring game's three dead together | Extends the sweep-G S11 re-stage to the playable beats. Pass. |
+  | 17 (S4) | Dace's logs say why he stayed away from Oruvel, why Haluna was safe once, and why he never fetched Rhen | the father lost to the calamity, whom the son resents | **Mandated core:** SPEC §3.4 says his father vanished into the Undertow, and §3.5 gives Rhen his goodbye. The reasons (the Order's hunt, a wright's son for life, "after the storm") are ours, and none of them is a promise or a charge to anyone. Pass. |
+
+- 2026-10-23 Narrative (M1-NAR-12, review-sweep-I; append note, not a change to the accepted text above or to the sweep-G and sweep-H notes). This note **amends** the sweep-H note's S4 quote and its "17 (S4)" row, where it says so below.
+  - **S1 (IP): how the Ch17 logs are delivered.** ADR 0016 accepted "the father's backstory through recordings" because ours is a ship and a ledger with the son's name in it. Sweep H's S4 gave that ledger the father's own words about his son. The reasons are ours, so the delivery is pinned:
+    - **Watch:** the logs are a written ledger, read on screen in Rhen's hands. They are never voiced in Dace's voice, never played back as a recording, a projection or a glimmer-echo, and never addressed to Rhen as a message ("if you're reading this"). Dace's voice is heard only in E2.
+    - **The entry breaks off.** The sweep-H S4 quote now ends "Let him be one. After the storm", and the next page is blank. "I'll go myself" is withdrawn: an unfinished line keeps the irony without a stated promise to return.
+  - **S2 (wording):** act3_ending E2 says Dace sees his old lantern "still the oil burner he fitted and not glimmer (N-02)", not "the oil wick", so no reader takes it for Kell's wick. The sweep-H watch (Kell's wick is never fitted to the lantern) is unchanged.
+  - **S3:** the stale decisions_log lines are corrected inline (N-24's Lead verdict, N-02 item 4) and listed in N-25's Supersedes. N-26 records this note.
+
+  | Item | Our beat | Nearest analogue | Verdict |
+  |---|---|---|---|
+  | 17 (S1) | Dace's ledger, read on screen, about Rhen but addressed to nobody; the "after the storm" entry breaks off | the father's recorded messages to his son, found on the pilgrimage, with his wish to come home | Re-staged: written, never voiced or played back, never a message to the son, and no stated promise. Amends the sweep-H "17 (S4)" row's "after the storm" to the broken-off line. **Watch:** as above. Pass. |
+  | E2 (S2) | the lamp on Rhen's shoulder is the oil burner Dace fitted | (none) | *Consistency* with N-02 and the sweep-H wick watch. Pass. |

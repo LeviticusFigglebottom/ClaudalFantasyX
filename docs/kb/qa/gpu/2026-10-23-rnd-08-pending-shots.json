@@ -1,0 +1,14 @@
+{
+  "_note": "M1-RND-08: emptied by M1-RND-15 (2026-10-23): glimmer_bound moved into tests/screenshots/shots.json after glimmer_release with its lavapipe baseline. Kept so the report's link resolves; add new pending shots here.",
+  "defaults": {
+    "camera": "default",
+    "resolution": [
+      1280,
+      720
+    ],
+    "settle_frames": 30,
+    "seed": 1,
+    "threshold_rmse": 0.008
+  },
+  "shots": []
+}

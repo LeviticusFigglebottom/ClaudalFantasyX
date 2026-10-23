@@ -5,6 +5,9 @@ extends RefCounted
 ## simulated ui_* input, exactly as a player would. Moved out of BattleController (M1-UI-04)
 ## unchanged; BattleController.run_script() loads the fixture and calls play().
 
+## The Swell ring shot freezes this long before the second flare's peak, the ring closing in.
+const RING_SHOT_BEFORE_PEAK_SEC := 0.2
+
 
 ## Plays `ctl`'s already-started fixture `sid` (a BattleController.SCRIPT_* id) to its state.
 static func play(ctl: BattleController, sid: StringName) -> void:
@@ -32,6 +35,20 @@ static func play(ctl: BattleController, sid: StringName) -> void:
 			_press(ctl, &"ui_accept")
 			ctl.hud.commands.select(&"ember")
 			_press(ctl, &"ui_accept")
+		BattleController.SCRIPT_SWELL_RING:
+			# Rhen opens with a full gauge: Swell, Lamp Dive on the Gull Harrier, the first flare
+			# struck perfectly, then the input frozen with the second ring closing on the lamp.
+			_to_turn_of(ctl, &"rhen")
+			ctl.hud.commands.select(BattleMenus.ROW_SWELL)
+			_press(ctl, &"ui_accept")
+			_press(ctl, &"ui_accept")
+			ctl.aim_at(&"gull_harrier")
+			_press(ctl, &"ui_accept")
+			var ring := ctl.swell_input()
+			ctl.tick(ring.time_to_peak())
+			_press(ctl, &"ui_accept")
+			ctl.tick(ring.time_to_peak() - RING_SHOT_BEFORE_PEAK_SEC)
+			ctl.swell_input_live = false
 
 
 ## Plays (party: Attack the first living foe) until it is `cid`'s turn.

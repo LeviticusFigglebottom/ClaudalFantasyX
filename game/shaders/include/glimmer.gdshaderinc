@@ -37,11 +37,11 @@
 #define HYMN_SEA_GLOW_COLUMN_PER_M 0.45      // in-water column build-up (1 - exp(-k * metres))
 #define HYMN_SEA_GLOW_COLUMN_GAIN 1.0        // a deep column at most doubles the surface glow
 
-// Zone energy gated by the scene glimmer intensity (hymn_glimmer.a): any intensity > 0 turns the
-// glow on at the zone's colour-script energy, clamped to the rule-3 band; intensity 0 turns it off
-// (ending_dock). Separate from mote brightness on purpose: the rule-3 band does not scale with it.
-float hymn_sea_glow_energy(float zone_energy, float glimmer_intensity) {
-	if (glimmer_intensity <= 0.0 || zone_energy <= 0.0) {
+// Zone energy clamped to the rule-3 band; <= 0 turns the glow off (ending_dock). Not gated by the mote
+// energy hymn_glimmer.a any more (M1-RND-08): zones author the two separately. The band floor is the
+// rule-3 floor (0.04), not the night minimum (0.08), so the Ending's E4 0.07 / E5 0.06 pass through.
+float hymn_sea_glow_energy(float zone_energy) {
+	if (zone_energy <= 0.0) {
 		return 0.0;
 	}
 	return clamp(zone_energy, HYMN_SEA_GLOW_ENERGY_MIN, HYMN_SEA_GLOW_ENERGY_MAX);
@@ -59,7 +59,7 @@ float hymn_sea_glow_modulation(vec3 world_pos, float time_s) {
 // Linear-light emission to ADD to a water surface (EMISSION) or water-column colour.
 //   world_pos : world-space point on the surface (only .xz and the clock drive the noise)
 //   time_s    : a pausable clock in seconds (hymn_wind_time, or a cinematic uniform), not raw TIME
-//   energy    : already-gated energy, normally hymn_sea_glow_energy(zone_energy, hymn_glimmer.a)
+//   energy    : clamped energy, normally hymn_sea_glow_energy(hymn_sea_glow_zone(material_energy))
 //   column_m  : metres of water the view ray travels below the surface (0 = surface only); a
 //               deeper column glows up to (1 + HYMN_SEA_GLOW_COLUMN_GAIN) times brighter
 // Cost: two 3D value-noise lookups (16 PCG3D hashes) and an exp. Returns vec3(0) when energy <= 0.
@@ -72,9 +72,22 @@ vec3 hymn_sea_glow(vec3 world_pos, float time_s, float energy, float column_m) {
 }
 
 #ifdef HYMN_GLOBALS_GDSHADERINC
-// Convenience form reading the project globals: gate = hymn_glimmer.a, clock = hymn_wind_time.
-vec3 hymn_sea_glow_global(vec3 world_pos, float zone_energy, float column_m) {
-	float energy = hymn_sea_glow_energy(zone_energy, hymn_glimmer.a);
+// The zone energy a surface uses (M1-RND-15). hymn_zone_sea_glow:
+//   < 0  the zone's hard off (GlimmerField.set_scene_sea_glow(0), ending_dock): 0 for EVERY surface,
+//        whatever its material sets, so no stray material can light the Ending's dark sea;
+//   = 0  the zone set nothing (project default, and the reset on every zone change): a material's own
+//        energy (> 0) shows, else none;
+//   > 0  the zone's energy; a material's own energy (> 0) overrides it for that surface.
+float hymn_sea_glow_zone(float material_energy) {
+	if (hymn_zone_sea_glow < 0.0) {
+		return 0.0;
+	}
+	return material_energy > 0.0 ? material_energy : hymn_zone_sea_glow;
+}
+
+// Convenience form reading the project globals: energy = hymn_sea_glow_zone(), clock = hymn_wind_time.
+vec3 hymn_sea_glow_global(vec3 world_pos, float material_energy, float column_m) {
+	float energy = hymn_sea_glow_energy(hymn_sea_glow_zone(material_energy));
 	return hymn_sea_glow(world_pos, hymn_wind_time, energy, column_m);
 }
 #endif

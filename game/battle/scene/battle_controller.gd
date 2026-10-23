@@ -21,6 +21,8 @@ const STATE_ITEMS := &"items"
 const STATE_TARGET := &"target"
 const STATE_SWAP_IN := &"swap_in"
 const STATE_SWAP_OUT := &"swap_out"
+const STATE_SWELL := &"swell"
+const STATE_SWELL_INPUT := &"swell_input"
 const STATE_BUSY := &"busy"
 const STATE_RESULT := &"result"
 const SCRIPT_PLAYER_PREVIEW := &"player_preview"
@@ -28,6 +30,7 @@ const SCRIPT_SWAP_MENU := &"swap_menu"
 const SCRIPT_VICTORY := &"victory"
 const SCRIPT_DEFEAT := &"defeat"
 const SCRIPT_STATUSES := &"statuses"
+const SCRIPT_SWELL_RING := &"swell_ring"
 const CHOICE_RETRY := &"retry"
 const CHOICE_RETURN := &"return"
 const RETURN_SCENE := "res://game/core/boot.tscn"
@@ -60,6 +63,12 @@ var items: BattleItemSource
 ## How a staged build waits between frames. Unset = the next process frame; tests set a callable
 ## that records the boundary and returns at once, so the whole build runs synchronously.
 var frame_wait := Callable()
+## Damage numbers and float words for resolved actions (BattleFloats).
+var floats := BattleFloats.new(self)
+## Swell gauges and techniques for the current battle (M1-CMB-04).
+var swell: BattleSwell
+## False freezes an open Swell input where it stands (capture scripts); tick() advances it.
+var swell_input_live := true
 
 var _db: BattleDB
 var _live_db: BattleDB
@@ -77,8 +86,8 @@ var _candidates: Array[StringName] = []
 var _target_index := 0
 var _swap_in_id: StringName = &""
 var _last_foe: StringName = &""
-## The acting fighter as the action resolved: {id, hp, zombie, regen, doom} (end-of-turn feedback).
-var _turn_snapshot: Dictionary = {}
+var _ring: SwellTimingRing
+var _ring_clock: SwellRingClock
 
 @onready var stage: BattleStage = %Stage
 @onready var hud: BattleHud = %BattleHud
@@ -108,7 +117,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	tick(delta)
+	tick(delta, true)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -203,14 +212,16 @@ func _build_engine(
 	battles_started += 1
 	last_awards = {}
 	_after_wait = Callable()
-	_turn_snapshot = {}
+	floats.reset()
 	progress = lattice
 	engine = BattleEngine.new()
 	# Live battles start from the carried HP/MP and line up past the fallen (BattleVitals).
 	BattleVitals.setup(engine, _db, _setup, progress, persist_progress and fixture == null)
 	if fixture != null:
 		fixture.prepare(engine)
-	engine.action_resolved.connect(_on_action_resolved)
+	swell = BattleSwell.new(BattleSwell.load_config())
+	swell.attach(engine)
+	engine.action_resolved.connect(floats.on_action_resolved)
 	stage.spawn(engine)
 	stage.refresh_ko(engine)
 
@@ -237,8 +248,12 @@ func _wait_frame() -> void:
 		await get_tree().process_frame
 
 
-## Advances paced waits by `delta` seconds (called from _process; tests call it directly).
-func tick(delta: float) -> void:
+## Advances paced waits by `delta` seconds (called from _process; tests call it directly). A
+## rendered `frame` moves an open Swell input by at most its max_step_sec (SwellRingClock).
+func tick(delta: float, frame: bool = false) -> void:
+	if state == STATE_SWELL_INPUT and swell_input_live:
+		_ring_clock.step(delta, frame)  # input timing is real time: never scaled by pacing
+		_after_ring()
 	if not _after_wait.is_valid():
 		return
 	_wait_left -= delta
@@ -249,10 +264,12 @@ func tick(delta: float) -> void:
 ## Routes one input event by state; returns true if consumed.
 func handle_input(event: InputEvent) -> bool:
 	match state:
-		STATE_COMMAND, STATE_SKILLS, STATE_ITEMS, STATE_SWAP_IN:
+		STATE_COMMAND, STATE_SKILLS, STATE_ITEMS, STATE_SWAP_IN, STATE_SWELL:
 			return hud.commands.handle_input(event)
 		STATE_TARGET, STATE_SWAP_OUT:
 			return _handle_pick_input(event)
+		STATE_SWELL_INPUT:
+			return _handle_ring_input(event)
 		STATE_RESULT:
 			return hud.result.handle_input(event)
 	return false
@@ -297,6 +314,24 @@ func use_item_on(item_id: StringName, target_ids: Array[StringName]) -> ActionRe
 		return result
 	if targets.size() == 1 and targets[0].team == BattleCombatant.TEAM_ENEMY:
 		_last_foe = targets[0].id
+	_after_action(actor.id)
+	return result
+
+
+## Unleashes Swell technique `technique` for the current party member on `target_ids`, with its
+## interactive input's `input` result ({cancelled, grades}; BattleSwell.perform). A refusal
+## costs nothing, as for act(); on success the help line says what the input earned.
+func unleash(technique: StringName, target_ids: Array[StringName], input: Dictionary) -> ActionResult:
+	if not engine.is_party_turn():
+		return _refuse_off_turn(technique)
+	var actor := engine.current
+	var result := swell.perform(technique, _found(target_ids), input)
+	_clear_targets()
+	if not result.ok:
+		_open_command()
+		hud.set_help(menus.fail_text(result.fail_reason, actor))
+		return result
+	hud.set_help(menus.swell_result_text(input.get(BattleSwell.RESULT_GRADES, []), result.swell_bonus_pct))
 	_after_action(actor.id)
 	return result
 
@@ -379,6 +414,11 @@ func is_waiting() -> bool:
 	return _after_wait.is_valid()
 
 
+## The open Swell input (null when none is open).
+func swell_input() -> SwellTimingRing:
+	return _ring if state == STATE_SWELL_INPUT else null
+
+
 # --- turn flow ---------------------------------------------------------------------------
 
 
@@ -426,7 +466,7 @@ func _after_action(actor_id: StringName, hold: StringName = &"action_hold_sec") 
 	_set_state(STATE_BUSY)
 	hud.commands.active = false
 	hud.commands.visible = false
-	_show_end_of_turn(actor_id)
+	floats.show_end_of_turn(actor_id)
 	hud.timeline.note_turn_taken(actor_id)
 	_show_timeline(TurnTimeline.MODE_TURN)
 	# The order already shows who is next; the party highlight and actor marker follow it.
@@ -446,7 +486,9 @@ func _open_command() -> void:
 	hud.commands.active = true
 	hud.party.set_current(current_actor_id())
 	_mark_provoker()
-	hud.commands.open_root(BattleMenus.PAGE_ROOT, menus.display_name(engine.current), menus.root_rows(engine, items))
+	hud.commands.open_root(
+		BattleMenus.PAGE_ROOT, menus.display_name(engine.current), menus.root_rows(engine, items, swell)
+	)
 
 
 func _show_result() -> void:
@@ -459,7 +501,7 @@ func _show_result() -> void:
 	var title_key := "HUD_VICTORY"
 	var sub_key := "HUD_VICTORY_SUB"
 	if engine.outcome == BattleEngine.OUTCOME_VICTORY:
-		rows = _award_victory()
+		rows = BattleRewards.new().award_victory(self)
 	elif engine.outcome == BattleEngine.OUTCOME_DEFEAT:
 		title_key = "HUD_DEFEAT"
 		sub_key = "HUD_DEFEAT_SUB"
@@ -473,36 +515,6 @@ func _show_result() -> void:
 	hud.result.show_result(engine.outcome, tr(title_key), tr(sub_key), rows, choices)
 
 
-## XP from engine.xp_awards() becomes Lattice movement points (formulas.md, Progression).
-func _award_victory() -> Array[Dictionary]:
-	var awards := engine.xp_awards()
-	var rows: Array[Dictionary] = []
-	for c in engine.party_active + engine.party_reserve:
-		if not c.participated:
-			continue
-		if not awards.has(c.id):
-			rows.append(
-				{"label": menus.display_name(c), "xp_text": "", "moves_text": tr("HUD_RESULT_FELL"), "fell": true}
-			)
-			continue
-		var xp := int(awards[c.id])
-		var moves := -1
-		if progress != null and progress.traveler(c.id) != null:
-			moves = progress.award_battle(c.id, xp)
-		last_awards[c.id] = {"xp": xp, "moves": moves}
-		var moves_text := tr("HUD_RESULT_MOVES_FMT").format({"n": moves}) if moves >= 0 else tr("HUD_RESULT_NO_LATTICE")
-		rows.append(
-			{
-				"label": menus.display_name(c),
-				"xp_text": tr("HUD_RESULT_XP_FMT").format({"xp": xp}),
-				"moves_text": moves_text
-			}
-		)
-	if persist_progress and progress != null and fixture == null:
-		Game.state.lattice = progress.to_dict()
-	return rows
-
-
 # --- menus -------------------------------------------------------------------------------
 
 
@@ -513,7 +525,7 @@ func _on_menu_highlighted(_page: StringName, row: Dictionary) -> void:
 	match state:
 		STATE_COMMAND:
 			_highlight_root(rid)
-		STATE_SKILLS:
+		STATE_SKILLS, STATE_SWELL:
 			_preview_skill(rid, default_targets(rid))
 		STATE_ITEMS:
 			_preview_item(rid, _default_item_targets(rid))
@@ -539,6 +551,9 @@ func _highlight_root(rid: StringName) -> void:
 		BattleMenus.ROW_ITEMS:
 			_show_timeline(TurnTimeline.MODE_PREVIEW)
 			hud.set_help(tr("HUD_HELP_ITEMS"))
+		BattleMenus.ROW_SWELL:
+			_show_timeline(TurnTimeline.MODE_PREVIEW)
+			hud.set_help(tr("HUD_HELP_SWELL_FMT").format({"name": menus.display_name(engine.current)}))
 		_:
 			_show_timeline(TurnTimeline.MODE_PREVIEW)
 			hud.set_help(tr("HUD_HELP_SKILLS"))
@@ -554,6 +569,9 @@ func _on_menu_chosen(_page: StringName, row: Dictionary) -> void:
 				BattleMenus.ROW_SKILLS:
 					_set_state(STATE_SKILLS)
 					hud.commands.push(BattleMenus.PAGE_SKILLS, tr("HUD_CMD_SKILLS"), menus.skill_rows(engine))
+				BattleMenus.ROW_SWELL:
+					_set_state(STATE_SWELL)
+					hud.commands.push(BattleMenus.PAGE_SWELL, tr("HUD_CMD_SWELL"), menus.swell_rows(engine, swell))
 				BattleMenus.ROW_ITEMS:
 					_set_state(STATE_ITEMS)
 					hud.commands.push(BattleMenus.PAGE_ITEMS, tr("HUD_CMD_ITEMS"), menus.item_rows(engine, items))
@@ -562,7 +580,7 @@ func _on_menu_chosen(_page: StringName, row: Dictionary) -> void:
 				BattleMenus.ROW_SWAP:
 					_set_state(STATE_SWAP_IN)
 					hud.commands.push(BattleMenus.PAGE_SWAP, tr("HUD_PAGE_RESERVE"), menus.reserve_rows(engine))
-		STATE_SKILLS:
+		STATE_SKILLS, STATE_SWELL:
 			_begin_target(StringName(str(row.get("skill", rid))))
 		STATE_ITEMS:
 			_begin_item_target(StringName(str(row.get("item", rid))))
@@ -572,7 +590,7 @@ func _on_menu_chosen(_page: StringName, row: Dictionary) -> void:
 
 
 func _on_menu_cancelled(_page: StringName) -> void:
-	if state in [STATE_SKILLS, STATE_ITEMS, STATE_SWAP_IN] and hud.commands.pop():
+	if state in [STATE_SKILLS, STATE_ITEMS, STATE_SWAP_IN, STATE_SWELL] and hud.commands.pop():
 		_set_state(STATE_COMMAND)
 		_highlight_root(StringName(str(hud.commands.current_row().get("id", ""))))
 
@@ -594,7 +612,7 @@ func _begin_target(skill_id: StringName) -> void:
 	var sk := engine.db.skill(skill_id)
 	var kind := str(sk.get("target", "single_foe"))
 	if kind == "self":
-		act(skill_id, [engine.current.id])
+		_commit_skill(skill_id, [engine.current.id])
 		return
 	_pending_skill = skill_id
 	_group_target = kind.begins_with("all_")
@@ -666,11 +684,56 @@ func _confirm_pick() -> void:
 	elif _pending_item != &"":
 		use_item_on(_pending_item, picked_ids())
 	else:
-		act(_pending_skill, picked_ids())
+		_commit_skill(_pending_skill, picked_ids())
+
+
+## A skill acts at once; a Swell technique first opens its interactive input on the targets.
+func _commit_skill(skill_id: StringName, target_ids: Array[StringName]) -> void:
+	if not swell.is_technique(engine.current, skill_id):
+		act(skill_id, target_ids)
+		return
+	_pending_skill = skill_id
+	_ring = SwellTimingRing.new(swell.input_for(engine.current))
+	_ring_clock = SwellRingClock.new(_ring)
+	_set_state(STATE_SWELL_INPUT)
+	hud.commands.visible = false
+	hud.swell_ring.open(_ring, menus.skill_name(engine, skill_id), tr("HUD_SWELL_RING_HINT"))
+	hud.set_help(menus.swell_help(engine, swell, skill_id, -1))
+
+
+## The open input takes ui_accept (press) and ui_cancel (back out, only before the first grade).
+func _handle_ring_input(event: InputEvent) -> bool:
+	if event.is_action_pressed(&"ui_accept"):
+		_ring_clock.press(swell_input_live)
+	elif event.is_action_pressed(&"ui_cancel"):
+		_ring.cancel()
+	else:
+		return false
+	_after_ring()
+	return true
+
+
+## Redraws the input; once it is done, unleashes the technique, or after a cancel goes back to
+## the target pick with nothing spent.
+func _after_ring() -> void:
+	hud.swell_ring.refresh()
+	if not _ring.grades.is_empty():
+		hud.swell_ring.set_hint(tr("HUD_SWELL_RING_HINT_LOCKED"))
+	if not _ring.is_done():
+		return
+	hud.swell_ring.close()
+	if not _ring.cancelled:
+		unleash(_pending_skill, picked_ids(), _ring.result())
+		return
+	hud.commands.visible = true
+	_set_state(STATE_TARGET)
+	_show_pick()
 
 
 func _cancel_pick() -> void:
 	var back := STATE_SKILLS if hud.commands.depth() > 1 else STATE_COMMAND
+	if hud.commands.page_id() == BattleMenus.PAGE_SWELL:
+		back = STATE_SWELL
 	if state == STATE_SWAP_OUT:
 		back = STATE_SWAP_IN
 	elif _pending_item != &"":
@@ -700,7 +763,7 @@ func _show_pick() -> void:
 			"id": cid,
 			"label": menus.display_name(c),
 			"group_label": menus.group_label(foe),
-			"screen_pos": _head(cid),
+			"screen_pos": head_pos(cid),
 			"hostile": foe,
 			"combatant": c,
 			"revealed": false,
@@ -708,7 +771,7 @@ func _show_pick() -> void:
 		}
 		var land := engine.reflect_recipient(engine.current, c, sk) if ids.size() == 1 else c
 		if land != c and land != null:
-			entry["bounce_pos"] = _head(land.id)
+			entry["bounce_pos"] = head_pos(land.id)
 			entry["bounce_id"] = land.id
 		chosen.append(c)
 		entries.append(entry)
@@ -761,7 +824,10 @@ func _preview_skill(skill_id: StringName, targets: Array[BattleCombatant]) -> vo
 	_show_timeline(TurnTimeline.MODE_PREVIEW, preview, _ids_of(marked))
 	# What changes the outcome (Provoke, Reflect, Zombie) reads before the generic description.
 	var parts := menus.target_notes(engine, skill_id, chosen, lands)
-	parts.append(menus.skill_help(engine, skill_id, _ghost_slot() - 1))
+	if swell.is_technique(engine.current, skill_id):
+		parts.append(menus.swell_help(engine, swell, skill_id, _ghost_slot() - 1))
+	else:
+		parts.append(menus.skill_help(engine, skill_id, _ghost_slot() - 1))
 	hud.set_help(" · ".join(parts))
 
 
@@ -815,7 +881,7 @@ func _ghost_slot() -> int:
 func _mark_actor() -> void:
 	var cid := current_actor_id()
 	var shown := cid != &"" and stage.has_fighter(cid) and engine.is_player_side_turn()
-	hud.target_cursor.show_actor(_head(cid), shown, _auto_reason())
+	hud.target_cursor.show_actor(head_pos(cid), shown, _auto_reason())
 	_mark_provoker()
 
 
@@ -825,7 +891,7 @@ func _mark_provoker() -> void:
 	if engine.is_party_turn():
 		provoker = engine.forced_target(engine.current, BattleMenus.ATTACK_SKILL)
 	var shown := provoker != null and stage.has_fighter(provoker.id)
-	hud.target_cursor.show_provoker(_head(provoker.id) if shown else Vector2.ZERO, shown)
+	hud.target_cursor.show_provoker(head_pos(provoker.id) if shown else Vector2.ZERO, shown)
 
 
 func _auto_reason() -> StringName:
@@ -842,75 +908,8 @@ func _rebuild_party_panel() -> void:
 	hud.party.set_current(current_actor_id(), _auto_reason())
 
 
-func _on_action_resolved(result: ActionResult) -> void:
-	var actor := engine.find(result.actor_id)
-	if actor != null:
-		_turn_snapshot = {
-			"id": actor.id,
-			"hp": actor.hp,
-			"zombie": actor.has_status(&"zombie"),
-			"regen": actor.has_status(&"regen"),
-			"doom": actor.doom_count(),
-		}
-	var kind := str(engine.db.skill(result.skill_id).get("kind", ""))
-	var stacks: Dictionary = {}
-	var heavy := false
-	for hit in result.hits:
-		var tid: StringName = hit["target_id"]
-		var target := engine.find(tid)
-		var f := stage.stand_in(tid)
-		# ActionResult.amount: positive = HP lost, negative = HP restored (BattleEngine._resolve_on).
-		var amount := int(hit["amount"])
-		if f != null and amount > 0:
-			f.flinch()
-		heavy = heavy or bool(hit.get("crit", false))
-		if not show_damage_numbers or target == null:
-			continue
-		var n := int(stacks.get(tid, 0))
-		stacks[tid] = n + 1
-		var at := _head(tid, &"damage")
-		var ally := target.team == BattleCombatant.TEAM_PARTY
-		if hit.has("reflected_from"):
-			var from := StringName(str(hit["reflected_from"]))
-			hud.pop_info(tr("HUD_FLOAT_REFLECTED"), _head(from, &"damage"), &"focus_gold")
-		if not bool(hit["hit"]):
-			hud.pop_number(tr("HUD_MISS"), at, DamageNumber.KIND_MISS, ally, false, n)
-		elif amount > 0:
-			hud.pop_number(str(amount), at, DamageNumber.KIND_DAMAGE, ally, bool(hit["crit"]), n)
-			if kind == "heal":
-				# Zombie: the heal landed as harm.
-				hud.pop_info(tr("HUD_FLOAT_INVERTED"), at, &"danger")
-		elif amount < 0:
-			hud.pop_number(str(-amount), at, DamageNumber.KIND_HEAL, ally, false, n)
-	if heavy and show_damage_numbers and hud.animations_enabled():
-		stage.shake()
-
-
-## End-of-turn HP changes the ActionResult cannot carry (Poison, Regen, Regen turned to harm by
-## Zombie, and Doom running out), shown on the fighter who just acted.
-func _show_end_of_turn(actor_id: StringName) -> void:
-	var snap := _turn_snapshot
-	_turn_snapshot = {}
-	if not show_damage_numbers or snap.is_empty() or StringName(str(snap["id"])) != actor_id:
-		return
-	var c := engine.find(actor_id)
-	if c == null or not stage.has_fighter(actor_id):
-		return
-	var at := _head(actor_id, &"damage")
-	var ally := c.team == BattleCombatant.TEAM_PARTY
-	if int(snap["doom"]) == 1 and c.hp <= 0:
-		hud.pop_info(tr("HUD_FLOAT_DOOM"), at, &"danger")
-		return
-	var delta := c.hp - int(snap["hp"])
-	if delta < 0:
-		hud.pop_number(str(-delta), at, DamageNumber.KIND_DAMAGE, ally, false)
-		if bool(snap["zombie"]) and bool(snap["regen"]):
-			hud.pop_info(tr("HUD_FLOAT_REGEN_INVERTED"), at, &"danger")
-	elif delta > 0:
-		hud.pop_number(str(delta), at, DamageNumber.KIND_HEAL, ally, false)
-
-
-func _head(cid: StringName, section: StringName = &"actor_marker") -> Vector2:
+## Screen position over `cid`'s head, offset by `section`'s head_offset_m (HUD coordinates).
+func head_pos(cid: StringName, section: StringName = &"actor_marker") -> Vector2:
 	var m := _damage_m if section == &"damage" else _marker_m
 	return stage.screen_pos(cid, HudLayout.num(m, "head_offset_m"))
 

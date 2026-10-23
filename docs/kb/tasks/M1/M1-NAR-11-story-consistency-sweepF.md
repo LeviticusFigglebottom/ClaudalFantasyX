@@ -2,9 +2,9 @@
 id: M1-NAR-11
 title: Story consistency and residual echoes after the Kerrid re-staging (review-sweep-F)
 role: narrative
-status: review
+status: done
 reviewer: cinematics
-owner_session: "worktree-agent-afdcaea09c59ff37c"
+owner_session: "worktree-agent-a4c996b47ad5b3285"
 depends_on: [M1-NAR-09]
 milestone: M1
 request-from: "cinematics"
@@ -22,6 +22,7 @@ The review-sweep-F entries on M1-NAR-09 and M1-NAR-08.
 - [x] All .dlg compile; validators pass
 - [x] Review-sweep-G: B1 (Toma at Ansedra in 1001) and B2 (no "guarded since she was nine") fixed in the game text; B3 Lead verdict applied (ch03 051/052 cut, echo row in ADR 0022's append note)
 - [x] Review-sweep-G should-fix S1-S11 and the nits
+- [x] Review-sweep-H: B1 (Kell takes Rhen in unasked; the Ch1 wick re-checked; echo rows) and B2 (the lantern pair) fixed; S1-S4 and the nits
 
 ## Notes
 - 2026-10-23 narrative (worktree-agent-a34ff8effe727a250): everything is recorded in [ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md) (proposed) and decisions_log N-23. Append notes are on ADRs 0016, 0017 and 0020, and the glossary is appended.
@@ -56,6 +57,24 @@ The review-sweep-F entries on M1-NAR-09 and M1-NAR-08.
   - **S11:** act3_ending §0 rule 8. The three dead never share a frame from H02 to E3, E2's look is a shot and a reverse, and the line reads "Dace and Kerrid: one look, no words". It is extended to H02, whose wide had all three.
   - **Nits:** voice_guide's early slouch sample is cut. ADR 0016:92 is left as it is (append-only), and N-23 and N-24 carry the acceptance. A short append note on ADR 0020 points at the superseded lines.
   - **Not done:** the vertical_slice §8 per-path word range and mean are estimated from per-line deltas, because `dialogue_stats.py` gives only the written totals.
+- 2026-10-23 narrative (worktree-agent-a4c996b47ad5b3285), reopened on review-sweep-H. Everything is recorded in the sweep-H append note on [ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md), with seven new echo rows, and in decisions_log N-25 (N-24 S6 is corrected inline). The glossary is appended in its own commit.
+  - **B1:** Dace's one message is addressed to Rhen and left at Kell's stall. It says "helping a friend on a long trip" and asks nothing. Kell takes Rhen in unasked, and Dace hears of it a season later from a Hollowmere trader ("Kell. Of course.").
+    - The Ch1 wick is re-checked. It is Kell's own stock, which she gives "for luck" to every diver. It is never from or about Dace, and it is never fitted to his lantern. Rhen keeps it unburned until E7.
+    - New rows for the request (re-staged, with a watch that nobody keeps or raises Rhen at Dace's request) and for the gift before the opening calamity (re-staged, with the residual accepted and a watch).
+  - **B2:** Dace built his lanterns as a pair. Rhen wears the first one, which never left its hook at Oruvel. Dace had its twin at Corrow and Haluna. Nobody sent Rhen anything.
+    - Ch2's "That lantern." is unchanged, because it is recognition of the make. The Ch15 line is now "A man with a lantern like that brought me this. I was seven."
+    - E2, rhen_sallow, asha_velamir and vertical_slice follow. The ch02 `.dlg` comment is reworded on the same two lines, so the compiled JSON is unchanged.
+  - **S1:** Kell is Oruvel's chandler, who never learned to swim. The shipped `ch02_beach_023` stands.
+  - **S2:** the bible's Present row: named in 1009, sets out in 1012.
+  - **S3:** act3_ending §0 rule 8 is scoped.
+    - It is guaranteed by authoring in the C and E beats, and in the authored cameras of the P beats.
+    - In the player-driven cameras (H01, the H03 fight, H04, H06, H07 and R1), the centre is drawn as light, not figures.
+    - H05 gets a framing note: Kerrid is off-frame in every shot that holds the two lamps.
+  - **S4:** the Ch17 logs (act_outline) now give three reasons:
+    - why not Oruvel even once: every hull knew his face;
+    - why Haluna once: no name, and no-one at risk but him;
+    - why he never fetched Rhen: "a wright's son for life ... After the storm I'll go myself."
+  - **Nits:** the Ch19 grouping is marked as design prose, never VO. The Kell glossary rows are corrected by an appended row.
 
 ## Review log
 - 2026-10-23 cinematics + IP (review-sweep-G, fresh reviewer): **request-changes.** I read CLAUDE.md §2, SPEC v1.1 (§1-§3.5), ADRs 0015, 0016, 0017, 0020 and 0022, and then act_outline, act3_ending, bible, vertical_slice, voice_guide, decisions_log, glossary, every character sheet, color_script (`ch08`, `ch15`, `ending_unbinding`), palette.json `global_rules`, haluna.md, and both `.dlg` files with `dialogue.csv`. `validate_data.py` gives 0 errors and 0 warnings, `unittest discover -s tools/tests` gives 322 OK (including `test_palette_rules.py`), and `dlgc.py --check` gives 0 errors and 0 warnings.
@@ -97,3 +116,68 @@ The review-sweep-F entries on M1-NAR-09 and M1-NAR-08.
     - **Watch.** Ch18's "heirloom weapon quests, one per party member" (act_outline:181) must not grow the inspiring game's crest-and-sigil ultimate-weapon structure.
   - **To clear:** fix B1-B3. Move the task back to review with the `.dlg` and loc line changes, and with the new ADR rows for B3 and S3.
 - 2026-10-23 lead: reopened on review-sweep-G request-changes. Lead verdict on B3: cut ch03 lines 051/052 so Asha's link to Rhen's father surfaces only in Kerrid's Ch15 confession.
+- 2026-10-23 cinematics + IP (review-sweep-H, fresh reviewer, re-review after sweep G): **request-changes.**
+  - **What I read:** the task, the sweep-G entry, handoff narrative-6, `git log -p` for 7d7303c, a785436 and 467f1ad, act_outline (all of it), act3_ending §0 and H01-E7, rhen_sallow, kerrid, asha_velamir, toma_okeru, bible (timeline rows), decisions_log N-23/N-24, ADRs 0020 and 0022 (with the append note), the glossary appends, both slice `.dlg` files and `dialogue.csv`.
+  - **Checks run:** `dlgc --check` gives 0/0 and `validate_data` gives 0/0. Godot `--filter=dialogue` gives 48 run, 0 failed. No removed key (VERSE_010, 024, 051-053) is left in game data or story docs.
+  - **What passes:**
+    - **B1 and B2 (Ch3 game text).** `ch03_verse_061` puts Toma at Ansedra in 1001, and `062` makes him three years sworn, home on leave before that. Both match toma_okeru.md:7, asha_velamir.md:34 and ADR 0022 (d), and Asha's ages work: born 994, seven in 1001, nine in 1003, fifteen at her naming in 1009, eighteen now. "Guarded since she was nine" is gone everywhere.
+    - **B3 (Lead verdict).** 051/052 are cut. The held beat is the same on every path, and `063` ("until tonight") has no Dace antecedent. `ch02_rhen_named_lantern` still has readers (the Ch2 close and the 056/057 deflect), so the flag is not orphaned.
+    - **S1-S5 and S7-S10.** They are applied consistently across kerrid.md, act_outline:95-105 and :156, ADR 0022's append note, decisions_log N-24 and the glossary appends. That covers the rings in place of drinking, the gate in place of an escort, "below" said looking out to sea, Kerrid alone in the Ch9 cutaway, Toma at twenty-one, and the walk starting when the Undertow stirs. The supper replaces the drink in Ch15's side scene. I found no live "drank", "escort" or "Hero of Corrow" outside struck or superseded text.
+    - **Ending rule 8** (act3_ending:19). H02's wide (:65), the deck preamble (:84), E1, E2's shot and reverse (:93) and E3 follow it.
+  - **Blocker B1 (IP, introduced by the S6 fix). "His one message asked Mother Kell to keep the boy" puts back the father's request to have his son raised.**
+    - Where: rhen_sallow.md:9 and :42, act_outline:30 and :176, ADR 0022 append S6 (:162), decisions_log:206, glossary:254.
+    - ADR 0020 removed exactly this function from Kerrid: its Bond row (0020:103) and Problem 3 (:13) list "two promises to the dead parents: watch over the heroine, **raise the hero**".
+    - The S6 fix moves it to a new keeper. The father, gone into the calamity's orbit, sends word asking someone to keep his son, and she raises him for eleven years (the inspiring mentor's ten). In Ch1 she then hands the boy a gift, before the calamity that opens the game. That is the inspiring game's mentor beat at the opening calamity, carried out by an old neighbour.
+    - ADR 0022's S6 row (:179) says "(none close)", so this echo has not been audited. Naming a keeper (sweep G's "Mother Kell?") was right. The request is the problem.
+    - **Fix:** the message says only "helping a friend on a long trip", and asks nothing. Kell takes Rhen in unasked, because she always took in Oruvel's strays. Dace's Ch17 logs may show that he learned of it later. That keeps the bitter half of "he chose" intact.
+    - Keep the wick Kell's own, "for luck", never framed as from Dace or for his lantern.
+    - Add the row to the 0022 table with a watch: nobody keeps, raises or watches Rhen at Dace's request, in any line, log or bark.
+  - **Blocker B2 (consistency, the lantern's route). Nothing explains how Rhen has Dace's lantern.**
+    - Dace walked up Haluna's dock weeks after Corrow "with the comb and his lantern on his shoulder" (ADR 0022:36, asha_velamir.md:7). Since S6 he never went home (rhen_sallow.md:9; bible 1001 row). Yet Rhen wears "Dace's brass-and-salt-glass diving lantern" (rhen_sallow.md:27), and E2 has Dace see "his old lantern" on Rhen's shoulder (act3_ending:93).
+    - Ch15's "A man with that lantern brought me this" makes the player ask the question.
+    - **Do not fix it by having Dace send the lantern to the keeper for his son.** That stacks a father's-heirloom-delivered-by-the-keeper echo on top of B1.
+    - **Suggested fix:** Rhen's lantern is Dace's first lantern, left on its hook at home. The one at Haluna was its twin, of the same Saltwright make. Asha's recognition is of the make: in Ch2 she says "That lantern.", which is unchanged, and the Ch15 line becomes "A man with a lantern like that brought me this."
+    - Record it in 0022.
+  - **Should-fix:**
+    - **S1 (the diver who can't swim).** Mother Kell is "an old diver" or "the old Oruvel diver" (act_outline:30, rhen_sallow.md:9 and :42, glossary:195 and :254). The shipped Ch2 line says "Mother Kell can't swim. Never learned." (`ch02_beach_023`), and Ch7 repeats "couldn't swim" (act_outline:81).
+      - Either make the irony explicit and grounded: she is a tether-diver who walked the bottom on a weighted line and was hauled up, and never learned to swim.
+      - Or make her a wick-trimmer or chandler, which fits the wick.
+      - Decide it in one place, and fix every doc row. The game text can stay as it is.
+    - **S2 (naming year).** bible.md:47 says "The Present (1012 AL): ... Asha Velamir is named the 62nd Cantor". asha_velamir.md:7 and :34, toma_okeru.md, ADR 0022 (d) and the shipped `ch03_verse_062` ("guarded her three years") all put her naming in 1009. Change the row to "named in 1009; sets out when the Undertow rises".
+    - **S3 (rule 8 scope).** Rule 8 covers "H02 through E3" in every shot. But H03 (P), H04, H06 and H07 are playable fights at the heart, and R1 is a free-camera rest. Imra and Dace stand at the centre there, and Kerrid may be in the active party, so a player-driven camera can't guarantee the rule. H05 (C, :73) has "Sefir reaches past Dace into Imra's light" with the party present and no framing note for Kerrid.
+      - Scope the rule to authored shots (C and E beats), and add H05's framing (Kerrid off-frame, or the two lamps out of focus behind a single).
+      - Or, for the P beats, state that the two lamps are drawn as light, not figures.
+    - **S4 (the Ch17 logs need one more answer).** Dace "began a hull at Hollowmere among his own people" (rhen_sallow.md:9). A hunted Saltwright with a refuge the Order can't reach leaves his eight-year-old in the raft-town instead of fetching him to it. Rhen will ask why.
+      - Give the logs one line, for example: fetching him would have marked the boy as a wright's son for life; or Hollowmere was moving and no place for a child; or he meant to come back after the storm.
+      - Also say why Haluna was safe to visit once: he went nameless, at night, and it put nobody at risk but himself.
+      - ADR 0022's watch ("the reason never fully excuses him") stays.
+  - **Nits:**
+    - act_outline:188 (Ch19), "Imra, Dace and Kerrid are about to go", groups the three in prose. That is fine for a design doc, but make sure the Ch19 VO never says it, as rule 8 already requires.
+    - The Mother Kell glossary row (:195) is still only the wick, and the appended row (:254) carries the request. It will need rewording for B1 anyway.
+  - **Residuals I concur with, unchanged:** the sweep-G list. That covers the SPEC-mandated Act I order and heart, Dace inside the storm (0022 21 (a)), Sefir and Kesh, the Ch3 recognition, the Ch7 boyhood line and the Ch18 heirloom-quest watches. The new rows for B3, S1-S4 and S11 are sound.
+  - **To clear:** B1 and B2, with ADR 0022 rows and the doc edits. No `.dlg` change is needed unless the Ch2 Kell line is rewritten for S1.
+- 2026-10-23 lead: reopened on review-sweep-H request-changes (B1 Kell asked to keep the boy, B2 the lantern).
+- 2026-10-23 cinematics + IP (review-sweep-I, fresh reviewer, re-review after sweep H): **approve-with-fixes.** There is one must-fix line (M1, below). It is a one-line doc edit, and the Lead may apply it on merge without another review round.
+  - **What I read:** the sweep-G and sweep-H entries, handoff narrative-7, and `git show` 2dc9573 and 5fead9a (merge 0007758). I then re-read act_outline (Ch1, Ch2, Ch7, Ch15, Ch17, Ch19 and the post-credits), act3_ending §0 and E1-E7, bible.md timeline rows, rhen_sallow.md, asha_velamir.md, vertical_slice.md B01 and B08-B09, decisions_log N-02 and N-23 to N-25, the glossary appends (:254-259), ADR 0016:67 and ADR 0022 with all three append notes, `ch02_girl_on_the_beach.dlg` and `dialogue.csv`. I grepped every story doc, the `.dlg` files and the loc for "keep the boy", "asked", "old diver", "with that lantern", "lantern like that", "twin" and "Kell".
+  - **Checks:** `dlgc --check` 0/0. `validate_data` 0/0. Tool tests 359 OK. The ch02 `.dlg` change is comment-only (lines 9-10), and `DLG_CH02_BEACH_006` ("That lantern.") and `_023` are unchanged in dialogue.csv.
+  - **What passes:**
+    - **B1 (Kell unasked) is applied consistently.** rhen_sallow.md:9 and :42, act_outline:30 and :176, bible.md:46, decisions_log N-25 (N-24 S6 struck inline at :206) and glossary:258 (which corrects :195 and :254, as the append-only rule requires) all say the same thing. The message asks nothing, nobody asks Kell, and Dace hears of it by chance ("Kell. Of course."). The wick is her own stock, given to every diver, never from or about Dace, and never fitted to his lantern. The father's charge to raise the hero is gone. What remains (an orphan taken in by a neighbour, and a small object before the opening storm that returns at the end) is generic, not the inspiring game's expression. I concur with both new rows and their watches.
+    - **B2 (the lantern pair) is coherent.** The first lantern never left its hook at Oruvel, and Rhen took it down himself at nine. The twin went to Corrow and Haluna. Asha recognises the *make*. The route now holds in rhen_sallow.md:9 and :27, asha_velamir.md:7, vertical_slice.md:52, act_outline:156, act3_ending:93, glossary:259 and the ch02 comment. Nothing of Dace's reaches Rhen by anyone's hand.
+    - **S1** (Kell is a chandler who never learned to swim) matches the shipped `ch02_beach_023` and Ch7. **S2:** the bible's Present row says 1009 and 1012. **S3:** rule 8 is scoped (act3_ending:19): it is authored in C and E beats, lamps are drawn as light in player cameras, and H05 is framed. **S4:** the Ch17 logs give the three reasons, and the "never fully excuses him" watch stands.
+    - **Rule 8, re-checked.** No line, caption or bark groups the three. act_outline:188's grouping is marked as design prose only.
+  - **Must-fix:**
+    - **M1 (consistency, B2 not fully applied).** asha_velamir.md:36 still has the old Ch15 line: "A man **with that lantern** brought me this. I was seven." ADR 0022's sweep-H note, decisions_log N-25:222 and act_outline:156 all have "A man with a lantern like that brought me this." This is the character sheet cinematics will script from, and it reasserts that Asha saw *this* lamp. Change it to match.
+  - **Should-fix:**
+    - **S1 (IP, the Ch17 logs).** ADR 0016:67 accepted "the father's backstory through recordings" because ours is "a ship and a ledger with the son's name in it". Sweep H's S4 adds the father's own words about his son, written before he goes into the calamity: "If I bring him here he's a wright's son for life … After the storm I'll go myself." (act_outline:176, ADR 0022 sweep-H S4). That moves the ledger toward the inspiring game's recorded messages from the father, about the son, found on the pilgrimage, and his unrealised wish to come home. The reasons are ours, and I accept them. The *delivery* is what must not drift. Add to the 0022 S4 row:
+      - **Watch:** the logs are a written ledger read on screen in Rhen's hands. They are never voiced in Dace's voice, never played back as a recording or a projection, and never addressed to Rhen as a message ("if you're reading this"). Dace's voice is heard only in E2.
+      - Consider ending the quoted entry at "Let him be one." and leaving "After the storm I'll go myself" as a half-line the ledger never finishes. That keeps the irony and loses the stated promise to return.
+    - **S2 (wording that collides with a watch).** act3_ending:93: "Dace sees **the oil wick** in his old lantern". The 0022 sweep-H row's watch says Kell's wick is "never fitted to his lantern on screen", and E7 needs that wick unburned. Here "the oil wick" means N-02's oil fitting, but a cinematics or VFX reader will take it as Kell's wick. Write "the oil flame he fitted, not glimmer (N-02)", or "the oil burner".
+    - **S3 (decision-log drift).**
+      - decisions_log:200 (N-24's Lead verdict) still quotes "A man with that lantern brought me this". Mark it superseded inline, as :206 is.
+      - decisions_log N-02 item 4 (:19) says Asha "saw it when she was seven". Since sweep H she saw its twin. Add an inline correction, and add both lines to N-25's Supersedes list (:228).
+  - **Nits:**
+    - rhen_sallow.md:9 has Kell's stall "two hulls along", and act_outline:176 has "the chandler on Oruvel's second mooring". These are compatible, but pick one phrase for the location designers.
+    - vertical_slice.md:52 and the ch02 comment say "She never says so", while she does say "That lantern." Write "She never says why", so no one cuts the line as a contradiction.
+  - **Residuals I concur with, unchanged:** the sweep-G and sweep-H lists. Those are the SPEC-mandated Act I order, the heart, the prologue vigil, Dace inside the storm, Sefir and Kesh, the Ch3 recognition, the Ch7 boyhood line and the Ch18 heirloom watch. I also accept the Ch2 "That lantern." / "Where did you get it?" / "It was my father's." exchange as recognition of the make with no voiced link, per the sweep-G Lead verdict. **Watch:** no later Act I line may have Asha connect the make to the man at Haluna aloud before Ch15.
+  - **To clear:** M1, on merge. S1-S3 can land in the same narrative commit or the next one.
+- 2026-10-23 lead: closing on review-sweep-I approve-with-fixes; the must-fix line (asha_velamir.md:36) was fixed by the Lead on merge; the remaining should-fixes are in M1-NAR-12.

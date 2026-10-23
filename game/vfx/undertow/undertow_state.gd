@@ -35,6 +35,11 @@ const SALT_HEIGHT := 4
 const SALT_SITE := 7919
 ## Golden-ratio step of the per-frame march jitter (R1 low-discrepancy sequence): TAA integrates it.
 const JITTER_STEP := 0.6180339887
+## Upper bounds of the tier parameters = the body shader's uniform hint ranges (undertow_body.gdshaderinc
+## march_steps hint_range(4, 128), curl_reuse hint_range(1, 8); tested). The per-variant compiled cap
+## UNDERTOW_MAX_STEPS still limits the loop inside the shader.
+const MAX_MARCH_STEPS := 128
+const MAX_CURL_REUSE := 8
 
 ## JSON section/key -> shader uniform. Colours are handled separately (colors section).
 const UNIFORM_MAP := {
@@ -181,6 +186,9 @@ var time_scale: float = 1.0:
 
 ## Frames the clock has advanced (drives the temporal march jitter; frozen while the storm is held).
 var frame: int = 0
+## Whether the viewport the storm draws in accumulates over frames (TAA, or a temporal upscaler such
+## as FSR2). UndertowStorm sets it every frame; without it the rotating jitter is crawling grain.
+var temporal_aa: bool = true
 ## Named look from undertow.json "looks" ("" = the tunables alone).
 var look: String = ""
 var _quality: String = ""
@@ -257,8 +265,8 @@ func quality_plan(id: String = "") -> Dictionary:
 		"tier": tier_id,
 		"body": body,
 		"body_shader": str(shaders.get("body_" + tier_id, "")) if body == BODY_RAYMARCH else "",
-		"march_steps": int(tier.get("march_steps", 0)),
-		"curl_reuse": maxi(1, int(tier.get("curl_reuse", 1))),
+		"march_steps": clampi(int(tier.get("march_steps", 0)), 0, MAX_MARCH_STEPS),
+		"curl_reuse": clampi(int(tier.get("curl_reuse", 1)), 1, MAX_CURL_REUSE),
 		"temporal_jitter": bool(tier.get("temporal_jitter", false)),
 		"spray_layers": int(tier.get("spray_layers", 1)),
 		"sea_foam_octaves": int(tier.get("sea_foam_octaves", 1)),
@@ -446,10 +454,11 @@ func dynamic_parameters() -> Dictionary:
 	}
 
 
-## Per-frame rotation of the raymarch's start offset (0 when the tier has no temporal jitter): an R1
-## sequence over frames, so TAA averages several step phases (M1-RND-10). Frozen while held.
+## Per-frame rotation of the raymarch's start offset: an R1 sequence over frames, so TAA averages
+## several step phases (M1-RND-10). 0 (a static pattern) when the tier has no temporal jitter or the
+## viewport has no temporal AA (M1-RND-11). Frozen while held.
 func jitter_phase() -> float:
-	if not bool(quality_plan()["temporal_jitter"]):
+	if not temporal_aa or not bool(quality_plan()["temporal_jitter"]):
 		return 0.0
 	return fposmod(frame * JITTER_STEP, 1.0)
 

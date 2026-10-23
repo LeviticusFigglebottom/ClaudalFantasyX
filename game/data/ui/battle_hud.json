@@ -51,6 +51,12 @@
       "status_icon_px": 22,
       "status_gap": 4,
       "max_status_icons": 6,
+      "swell_width": 64,
+      "swell_bar_px": 4,
+      "swell_pulse_sec": 1.6,
+      "swell_pulse_min": 0.55,
+      "swell_full_gap_px": 2,
+      "swell_full_frame_px": 2,
       "low_hp_fraction": 0.25,
       "hatch_px": 4
     },
@@ -86,6 +92,10 @@
     "float_text": {"lift_px": 40, "rise_px": 28, "rise_sec": 0.9, "fade_sec": 0.3},
     "panel_open": {"sec": 0.18, "close_sec": 0.12, "rise_px": 8, "scale_from": 0.98},
     "pacing": {"enemy_think_sec": 0.55, "action_hold_sec": 0.8, "result_delay_sec": 0.6, "message_sec": 1.2,
-               "auto_announce_sec": 1.1, "auto_hold_sec": 1.0}
+               "auto_announce_sec": 1.1, "auto_hold_sec": 1.0},
+    "swell_ring": {"rect": [48, 700, 480, 332], "title_height": 44, "hint_height": 36, "pad": 14,
+                   "ring_radius": 100, "lamp_radius": 20, "glow_radius": 44, "glow_alpha": 0.55, "lamp_rest": 0.25,
+                   "flare_sec": 0.3, "flicker_hz": 7.0, "flicker_amp": 0.12, "target_px": 2, "ring_px": 4,
+                   "ring_min_alpha": 0.35, "pip_px": 10, "pip_gap": 40}
   }
 }

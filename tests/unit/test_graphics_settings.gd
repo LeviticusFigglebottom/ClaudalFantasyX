@@ -57,7 +57,7 @@ func test_planned_engine_api_names_exist_in_this_godot() -> void:
 			variants.append({key: option})
 	var viewport_props := _property_names("Viewport")
 	var env_props := _property_names("Environment")
-	var node_props := _property_names("VoxelGI")
+	var class_props := {}
 	for v: Variant in variants:
 		for op in gs.plan(v):
 			var name := str(op["name"])
@@ -67,7 +67,10 @@ func test_planned_engine_api_names_exist_in_this_godot() -> void:
 				GraphicsSettings.TARGET_ENVIRONMENT:
 					assert_true(env_props.has(name), "Environment.%s missing" % name)
 				GraphicsSettings.TARGET_GROUP:
-					assert_true(node_props.has(name), "VoxelGI.%s missing" % name)
+					var cls := str(op.get("class", "VoxelGI"))
+					if not class_props.has(cls):
+						class_props[cls] = _property_names(cls)
+					assert_true((class_props[cls] as Array).has(name), "%s.%s missing" % [cls, name])
 				GraphicsSettings.TARGET_SERVER:
 					assert_true(ClassDB.class_has_method("RenderingServer", name), "RenderingServer.%s missing" % name)
 					assert_eq((op["args"] as Array).size(), _arg_count("RenderingServer", name), "args of %s" % name)
@@ -95,9 +98,10 @@ func test_low_preset_mapping() -> void:
 	assert_eq(_args(ops, "environment_set_ssil_quality"), null, "SSIL off issues no quality call")
 	assert_eq(_value(ops, "viewport", "scaling_3d_mode"), Viewport.SCALING_3D_MODE_FSR)
 	assert_true(is_equal_approx(float(_value(ops, "viewport", "scaling_3d_scale")), 0.77))
-	assert_eq(_value(ops, "viewport", "screen_space_aa"), Viewport.SCREEN_SPACE_AA_FXAA)
+	# M1-RND-07: TAA, not FXAA: measured 2.9x less foliage shimmer for ~0.12 ms on an RX 9070 XT.
+	assert_eq(_value(ops, "viewport", "screen_space_aa"), Viewport.SCREEN_SPACE_AA_DISABLED)
 	assert_eq(_value(ops, "viewport", "msaa_3d"), Viewport.MSAA_DISABLED)
-	assert_eq(_value(ops, "viewport", "use_taa"), false)
+	assert_eq(_value(ops, "viewport", "use_taa"), true)
 	assert_eq(_value(ops, "viewport", "anisotropic_filtering_level"), Viewport.ANISOTROPY_4X)
 	assert_eq(_value(ops, "viewport", "mesh_lod_threshold"), 2.0)
 
@@ -224,7 +228,8 @@ func test_apply_sets_viewport_and_gates_environment() -> void:
 	assert_eq(env.sdfgi_enabled, false)
 	assert_eq(env.ssil_enabled, false)
 	assert_eq(vp.scaling_3d_mode, Viewport.SCALING_3D_MODE_FSR)
-	assert_eq(vp.screen_space_aa, Viewport.SCREEN_SPACE_AA_FXAA)
+	assert_eq(vp.screen_space_aa, Viewport.SCREEN_SPACE_AA_DISABLED)
+	assert_eq(vp.use_taa, true, "Low uses TAA (M1-RND-07)")
 	gs.apply("ultra", vp, env)
 	assert_eq(env.sdfgi_enabled, true, "authored value restored when the setting allows it again")
 	GraphicsSettings.set_authored(env, "ssr_enabled", true)
@@ -336,3 +341,88 @@ func _arg_count(cls: String, method: String) -> int:
 		if str(m["name"]) == method:
 			return (m["args"] as Array).size()
 	return -1
+
+
+# --- System tiers and shader families (M1-RND-07) ----------------------------------------------
+
+
+func test_every_preset_has_system_tiers() -> void:
+	var gs := GraphicsSettings.new()
+	for id in gs.preset_ids():
+		for system in ["water", "vegetation", "weathering"]:
+			assert_ne(GraphicsSettings.preset_tier(id, system), "", "%s has a %s tier" % [id, system])
+	assert_eq(GraphicsSettings.preset_tier("low", "vegetation"), "low", "Low maps to vegetation_foliage_low")
+	assert_eq(GraphicsSettings.preset_tier("nonsense", "water"), "")
+
+
+func test_shader_family_variants_exist_and_share_uniforms() -> void:
+	var gs := GraphicsSettings.new()
+	var families := gs.data["shader_families"] as Dictionary
+	for fam: String in families:
+		if fam.begins_with("_"):
+			continue
+		var f := families[fam] as Dictionary
+		var high := load(str(f["high"])) as Shader
+		assert_true(high != null, "%s high variant loads" % fam)
+		var high_names := high.get_shader_uniform_list().map(func(u: Dictionary) -> String: return str(u["name"]))
+		for tier: String in f:
+			if tier == "system" or tier == "high":
+				continue
+			var sh := load(str(f[tier])) as Shader
+			assert_true(sh != null, "%s %s variant loads" % [fam, tier])
+			for u: Dictionary in sh.get_shader_uniform_list():
+				assert_true(high_names.has(str(u["name"])), "%s %s uniform %s exists on high" % [fam, tier, u["name"]])
+
+
+func test_apply_tiers_swaps_family_materials_both_ways() -> void:
+	var gs := GraphicsSettings.new()
+	var f := gs.data["shader_families"]["vegetation_foliage"] as Dictionary
+	var mat := ShaderMaterial.new()
+	mat.shader = load(str(f["high"])) as Shader
+	var root := Node3D.new()
+	var a := MeshInstance3D.new()
+	a.mesh = QuadMesh.new()
+	a.material_override = mat
+	root.add_child(a)
+	var b := MultiMeshInstance3D.new()
+	b.multimesh = MultiMesh.new()
+	var mesh := QuadMesh.new()
+	mesh.material = mat
+	b.multimesh.mesh = mesh
+	root.add_child(b)
+	assert_eq(gs.apply_tiers(root, "low"), 1, "one shared material swapped once")
+	assert_eq(mat.shader.resource_path, str(f["low"]))
+	assert_eq(gs.apply_tiers(root, "low"), 0, "idempotent")
+	assert_eq(gs.apply_tiers(root, "high"), 1)
+	assert_eq(mat.shader.resource_path, str(f["high"]))
+	root.free()
+
+
+## M1-RND-07: vegetation_detail scales authored visibility ranges, thins MultiMeshes and may turn
+## small-foliage shadows off, on the groups zones tag; returning to High restores the zone's values.
+func test_vegetation_detail_drives_tagged_vegetation() -> void:
+	var groups := gs.data["vegetation_groups"] as Dictionary
+	var vp := SubViewport.new()
+	(Engine.get_main_loop() as SceneTree).current_scene.add_child(vp)
+	var palm := MeshInstance3D.new()
+	palm.visibility_range_begin = 10.0
+	palm.visibility_range_end = 80.0
+	palm.add_to_group(str(groups["lod"]))
+	vp.add_child(palm)
+	var grass := MultiMeshInstance3D.new()
+	grass.multimesh = MultiMesh.new()
+	grass.multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	grass.multimesh.instance_count = 200
+	grass.add_to_group(str(groups["multimesh"]))
+	grass.add_to_group(str(groups["small_shadows"]))
+	vp.add_child(grass)
+	gs.apply("low", vp, null)
+	assert_between(palm.visibility_range_end, 48.0 - 1e-3, 48.0 + 1e-3, "Low: 0.6 x the authored 80 m")
+	assert_between(palm.visibility_range_begin, 6.0 - 1e-3, 6.0 + 1e-3, "LOD chains scale together")
+	assert_eq(grass.multimesh.visible_instance_count, 100, "half the grass")
+	assert_eq(grass.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "small foliage casts no shadow")
+	gs.apply("high", vp, null)
+	assert_between(palm.visibility_range_end, 80.0 - 1e-3, 80.0 + 1e-3, "authored value restored")
+	assert_eq(grass.multimesh.visible_instance_count, -1, "all instances")
+	assert_eq(grass.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_ON, "authored shadow restored")
+	vp.free()

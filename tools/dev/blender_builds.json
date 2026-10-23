@@ -1,0 +1,72 @@
+{
+  "_doc": "Blender asset builds re-verified by tools/dev/verify_blender_builds.py (M1-QA-02, ADR 0005). See docs/kb/qa/blender_builds.md.",
+  "blender_version": "5.0.1",
+  "blender_deb": "5.0.1+dfsg-5",
+  "_threads": "M1-QA-06: Blender runs with --threads <n>, never the host's CPU count. A job that exports tangents runs single-threaded: Blender's threaded tangent export races (base_body differed run to run at 4 threads, and was stable at 1). Every other job is pinned at 4, the count its committed files were built with (Asha's body bakes change with the thread count). See docs/kb/qa/blender_builds.md.",
+  "default_threads": 4,
+  "copy_into_sandbox": ["assets_src"],
+  "coverage_exempt": [],
+  "jobs": [
+    {
+      "id": "base_body",
+      "owner": "character",
+      "sources": ["assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/base_body/*.glb"],
+      "threads": 1,
+      "expected_failure": {"task": "M1-CHR-05", "why": "the committed base_body_*.glb do not match their source (POSITION differs by up to ~3 mm)",
+        "kind": "mismatch",
+        "differs": {
+          "assets/characters/base_body/base_body_athletic.glb": ["base_body_athletic.NORMAL", "base_body_athletic.POSITION", "base_body_athletic.TANGENT", "base_body_athletic.indices"],
+          "assets/characters/base_body/base_body_heavy.glb": ["base_body_heavy.NORMAL", "base_body_heavy.POSITION", "base_body_heavy.TANGENT", "base_body_heavy.indices"],
+          "assets/characters/base_body/base_body_slender.glb": ["base_body_slender.NORMAL", "base_body_slender.POSITION", "base_body_slender.TANGENT", "base_body_slender.indices"]
+        }},
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/base_body/build.py", "--", "--variant", "slender", "--out", "assets/characters/base_body/base_body_slender.glb"],
+        ["{blender}", "--python", "assets_src/characters/base_body/build.py", "--", "--variant", "athletic", "--out", "assets/characters/base_body/base_body_athletic.glb"],
+        ["{blender}", "--python", "assets_src/characters/base_body/build.py", "--", "--variant", "heavy", "--out", "assets/characters/base_body/base_body_heavy.glb"]
+      ]
+    },
+    {
+      "id": "asha",
+      "owner": "character",
+      "sources": ["assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/asha/*.glb", "assets/characters/asha/textures/*.png", "assets/characters/asha/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/asha/build_asha.py", "--", "--out", "assets/characters/asha/asha.glb", "--bake-dir", "{scratch}/asha_bake"],
+        ["{python}", "assets_src/characters/asha/asha_textures.py", "--bake-dir", "{scratch}/asha_bake"],
+        ["{python}", "assets_src/characters/asha/write_materials.py"]
+      ]
+    },
+    {
+      "id": "shader_test",
+      "owner": "rendering",
+      "sources": ["assets_src/characters/shader_test/build_shader_test_meshes.py", "assets_src/characters/shader_test/layout.py"],
+      "outputs": ["assets/characters/shader_test/*.glb"],
+      "expected_failure": {"task": "M1-RND-14", "why": "build_shader_test_meshes.py fails on Blender 5.0.1: bm.faces.sort(key=...) must return a number",
+        "kind": "build_error",
+        "log_contains": "ValueError: the value returned by the 'key' function is not a number"},
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/shader_test/build_shader_test_meshes.py"]
+      ]
+    },
+    {
+      "id": "vegetation",
+      "owner": "environment",
+      "sources": ["assets_src/environments/vegetation/*.py"],
+      "outputs": ["assets/environments/vegetation/*.glb"],
+      "threads": 1,
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/vegetation/build.py", "--", "--all", "--out-dir", "assets/environments/vegetation"]
+      ]
+    },
+    {
+      "id": "haluna_kit",
+      "owner": "environment",
+      "sources": ["assets_src/environments/kits/haluna/*.py"],
+      "outputs": ["assets/environments/kits/haluna/*.glb", "assets/environments/kits/haluna/kit_manifest.json"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/haluna/build.py", "--", "--all", "--out-dir", "assets/environments/kits/haluna", "--manifest", "assets/environments/kits/haluna/kit_manifest.json"]
+      ]
+    }
+  ]
+}

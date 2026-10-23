@@ -16,17 +16,34 @@ var keys_per_gate: int = 0
 var max_gate_level: int = 0
 ## Facet item id -> its row in facets.json.
 var facets: Dictionary = {}
+## Why facets.json could not be read ("" when it was); the rules are then empty (M1-ARC-13).
+var load_error: String = ""
 var _stat_facet: Dictionary = {}
 var _ability_facet: StringName = &""
 var _key_facet: Dictionary = {}
 
 
 static func load_file(path: String = DEFAULT_PATH) -> LatticeRules:
-	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	var parsed: Variant = null
+	if FileAccess.file_exists(path):
+		parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
 	if typeof(parsed) != TYPE_DICTIONARY:
 		push_error("LatticeRules: could not parse %s" % path)
-		return LatticeRules.new()
+		var empty := LatticeRules.new()
+		empty.load_error = "%s is missing or could not be parsed" % path
+		return empty
 	return from_dict(parsed as Dictionary)
+
+
+## Why these rules must not drive saved Lattice progress ("" when they can): the file was missing
+## or failed to parse, or it defines no Facets or a free step (move_cost <= 0). Walking and
+## activating would then cost nothing, and a save would keep the result (M1-ARC-13).
+func integrity_problem() -> String:
+	if load_error != "":
+		return load_error
+	if facets.is_empty() or move_cost <= 0:
+		return "the Lattice rules define no Facets or no move cost"
+	return ""
 
 
 static func from_dict(d: Dictionary) -> LatticeRules:

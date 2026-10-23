@@ -9,8 +9,9 @@ const TEAM_ENEMY := &"enemy"
 ## equipment data: {attack_elements, on_hit_statuses, status_wards, low_hp_statuses, abilities}.
 ## Must equal EquipmentEffects.META_KEY (a test checks it).
 const EQUIPMENT_META := &"equipment_effects"
-## The petrify (stone) status id (statuses.json). The one copy in code: the engine, the timeline
-## and BattleVitals all use it (M1-ARC-11, after review-sweep-G on M1-CMB-08).
+## The petrify (stone) status id (statuses.json). The one copy in code: the timeline, BattleVitals
+## and the item action use it, and the engine derives its String PETRIFY_ID from it (M1-ARC-11,
+## after review-sweep-G on M1-CMB-08; M1-ARC-12).
 const STATUS_PETRIFY := &"petrify"
 
 var id: StringName
@@ -54,6 +55,11 @@ var low_hp_owned: Array[StringName] = []
 var delays_taken := 0
 ## Data flag (enemies.json "delay_immune", e.g. bosses): delay effects add no ticks.
 var delay_immune := false
+## Swell gauge, 0..Formulas.SWELL_MAX (SPEC §6.2). BattleSwell fills and empties it.
+var swell := 0
+## The fill mode in force (a swell.json mode id). &"" = this combatant has no Swell (enemies,
+## and heroes with no swell.json row); the HUD draws no gauge for them.
+var swell_mode: StringName = &""
 
 
 static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> BattleCombatant:

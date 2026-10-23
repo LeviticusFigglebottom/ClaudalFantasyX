@@ -83,7 +83,8 @@ func setup(
 
 ## Starting state for tests and capture fixtures (never play). Call after setup() and before
 ## begin(). `state` maps a combatant id, or a base enemy id for every copy ("reef_crab"), to
-## {hp?: int (clamped to 1..max_hp), statuses?: [{id, duration}], provoked_by?: id}.
+## {hp?: int (clamped to 1..max_hp), statuses?: [{id, duration}], provoked_by?: id,
+## swell?: int (clamped to 0..SWELL_MAX)}.
 ## Statuses go through add_status, so wards and Petrify rules hold.
 func apply_fixture(state: Dictionary) -> void:
 	for c in party_active + party_reserve + enemies:
@@ -95,6 +96,8 @@ func apply_fixture(state: Dictionary) -> void:
 			c.add_status(StringName(str(sd.get("id", ""))), int(sd.get("duration", -1)))
 		if row.has("provoked_by"):
 			c.provoker_id = StringName(str(row["provoked_by"]))
+		if row.has("swell"):
+			c.swell = clampi(int(row["swell"]), 0, Formulas.SWELL_MAX)
 
 
 func begin() -> void:
@@ -242,35 +245,22 @@ func use_item(item_id: StringName, targets: Array[BattleCombatant], items: Battl
 	return result
 
 
-## Whether `item` may target `c`: the item's own life-state rule (revives take the KO'd;
-## stone only takes an item whose cure lists petrify), plus a living Zombie for revive items,
-## whom revival fells.
+## Item rules (BattleItemRules): who `item` may target, whether it fells a living Zombie, leaves
+## `c` standing, or downs it. Kept here as the engine's public names.
 static func item_can_target(item: ItemBattleAction, c: BattleCombatant) -> bool:
-	if item.targets_fallen and c.is_alive() and c.has_status(&"zombie"):
-		return true
-	return item.can_target(c)
+	return BattleItemRules.can_target(item, c)
 
 
-## Whether `item` fells `c` outright instead of acting on it: a revive on a living (Zombie)
-## target. _resolve_item_on uses the same rule, so the UI warning and play cannot disagree.
 static func item_fells(item: ItemBattleAction, c: BattleCombatant) -> bool:
-	return item.targets_fallen and c.is_alive()
+	return BattleItemRules.fells(item, c)
 
 
-## Whether `c` (a target item_can_target admits) is_alive right after `item` resolves on it, as
-## _resolve_item_on plays it: the effects run in order on a sim_copy (items use no RNG).
 static func item_leaves_standing(item: ItemBattleAction, c: BattleCombatant) -> bool:
-	if item_fells(item, c):
-		return false
-	var probe := c.sim_copy()
-	_without_delay(item).resolve_on(probe)
-	return probe.is_alive()
+	return BattleItemRules.leaves_standing(item, c)
 
 
-## Whether `item` takes a standing `c` out of the fight: felled as a Zombie by a revive, KO'd
-## by a heal on a Zombie or by damage, or turned to stone. preview_item drops such a unit.
 static func item_downs(item: ItemBattleAction, c: BattleCombatant) -> bool:
-	return c.is_alive() and not item_leaves_standing(item, c)
+	return BattleItemRules.downs(item, c)
 
 
 ## Whether the current party member using `item_id` on `targets` would lose on the spot: no
@@ -310,38 +300,9 @@ func preview_item(
 	if action == null or current == null:
 		return timeline.predict(count)
 	var recipient := current if action.target == ItemBattleAction.TARGET_SELF else target
-	var changes: Dictionary = {}
-	var overrides: Dictionary = {}
-	var revived: Array[BattleCombatant] = []
-	var delay := 0
-	if recipient != null:
-		var mine: Dictionary = {}
-		for eff in action.effects:
-			match StringName(str(eff.get("type", ""))):
-				ItemBattleAction.EFFECT_ADD_STATUS:
-					var sid := StringName(str(eff["status"]))
-					if CtbTimeline.PREVIEW_STATUSES.has(sid):
-						mine[sid] = int(eff["duration"])
-				ItemBattleAction.EFFECT_DELAY:
-					delay += int(eff["ranks"])
-				ItemBattleAction.EFFECT_DAMAGE:
-					var aff := recipient.affinity_for(StringName(str(eff.get("element", "none"))))
-					if recipient.has_status(&"sleep") and Formulas.affinity_hurts_more(aff, &"immune"):
-						mine[CtbTimeline.WAKES] = 0
-				ItemBattleAction.EFFECT_CURE:
-					if recipient.is_petrified() and (eff.get("statuses", []) as Array).has("petrify"):
-						revived.append(recipient)
-						overrides[recipient] = _rejoin_time(recipient)
-					elif recipient.has_status(&"sleep") and (eff.get("statuses", []) as Array).has("sleep"):
-						mine[CtbTimeline.WAKES] = 0
-				ItemBattleAction.EFFECT_REVIVE:
-					if recipient.hp <= 0:
-						revived.append(recipient)
-						overrides[recipient] = _rejoin_time(recipient)
-		if item_downs(action, recipient):
-			mine[CtbTimeline.FALLS] = -1
-		changes[recipient] = mine
-	return timeline.predict(count, current, action.rank, recipient, delay, changes, overrides, revived)
+	var p := BattleItemRules.preview_inputs(action, recipient, _rejoin_time)
+	var revived: Array[BattleCombatant] = p["revived"]
+	return timeline.predict(count, current, action.rank, recipient, p["delay"], p["changes"], p["overrides"], revived)
 
 
 func _valid_item_targets(
@@ -378,10 +339,10 @@ func _resolve_item_on(action: ItemBattleAction, t: BattleCombatant) -> Dictionar
 		felled["zombie_felled"] = true
 		return felled
 	var was_stone := t.is_petrified()
-	var res := _without_delay(action).resolve_on(t)
+	var res := BattleItemRules.without_delay(action).resolve_on(t)
 	res["hit"] = true
 	res["crit"] = false
-	var ranks := _delay_ranks(action)
+	var ranks := BattleItemRules.delay_ranks(action)
 	if ranks > 0 and t.is_alive():
 		res["delay_ticks"] = push_delay(t, ranks)
 	if bool(res["revived"]) or was_stone and t.is_alive():
@@ -389,28 +350,6 @@ func _resolve_item_on(action: ItemBattleAction, t: BattleCombatant) -> Dictionar
 		t.delays_taken = 0
 		t.participated = true
 	return res
-
-
-## The item without its delay effects: the engine applies delay itself (diminishing returns).
-static func _without_delay(action: ItemBattleAction) -> ItemBattleAction:
-	var a := ItemBattleAction.new()
-	a.item_id = action.item_id
-	a.name_key = action.name_key
-	a.target = action.target
-	a.rank = action.rank
-	a.targets_fallen = action.targets_fallen
-	for eff in action.effects:
-		if StringName(str(eff.get("type", ""))) != ItemBattleAction.EFFECT_DELAY:
-			a.effects.append(eff)
-	return a
-
-
-static func _delay_ranks(action: ItemBattleAction) -> int:
-	var total := 0
-	for eff in action.effects:
-		if StringName(str(eff.get("type", ""))) == ItemBattleAction.EFFECT_DELAY:
-			total += int(eff["ranks"])
-	return total
 
 
 func _rejoin_time(c: BattleCombatant) -> int:
@@ -465,6 +404,22 @@ func _perform(actor: BattleCombatant, skill_id: StringName, targets: Array[Battl
 	var cost := int(sk.get("mp_cost", 0))
 	if actor.mp < cost:
 		return ActionResult.failed(actor.id, skill_id, &"no_mp")
+	return _checked(actor, skill_id, sk, targets)
+
+
+## A row the current party member need not have learned or pay MP for: a Swell technique,
+## already gated and scaled by BattleSwell (SPEC §6.2). Otherwise the checks of perform().
+func perform_row(skill_id: StringName, sk: Dictionary, targets: Array[BattleCombatant]) -> ActionResult:
+	if outcome != &"" or current == null:
+		return ActionResult.failed(&"", skill_id, &"battle_over")
+	if not is_party_turn():
+		return ActionResult.failed(current.id, skill_id, &"not_your_turn")
+	return _checked(current, skill_id, sk, targets)
+
+
+func _checked(
+	actor: BattleCombatant, skill_id: StringName, sk: Dictionary, targets: Array[BattleCombatant]
+) -> ActionResult:
 	if bool(sk.get("magic", false)) and actor.has_status(&"silence"):
 		return ActionResult.failed(actor.id, skill_id, &"silenced")
 	var valid := _valid_targets(actor, sk, targets)

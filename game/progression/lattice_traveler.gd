@@ -13,6 +13,10 @@ var movement_points: int = 0
 var lattice_points: int = 0
 ## Movement points earned over the whole game (drives ProgressionFormulas.lp_threshold).
 var movement_earned: int = 0
+## M1-ARC-13: the saved position when this board has no such node ("" otherwise). The traveler
+## stands on their start meanwhile, but to_dict writes this back until they move, so a node that a
+## later board restores (or a board that failed to load) never costs them their place.
+var saved_position: StringName = &""
 
 
 func to_dict() -> Dictionary:
@@ -20,7 +24,7 @@ func to_dict() -> Dictionary:
 	for nid: StringName in activated:
 		ids.append(String(nid))
 	return {
-		"position": String(position),
+		"position": String(saved_position if saved_position != &"" else position),
 		"activated": ids,
 		"movement_points": movement_points,
 		"lattice_points": lattice_points,

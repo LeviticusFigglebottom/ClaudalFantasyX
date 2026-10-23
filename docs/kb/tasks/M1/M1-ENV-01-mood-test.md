@@ -2,7 +2,7 @@
 id: M1-ENV-01
 title: Five-shot environment mood test (coastal village)
 role: environment
-status: review
+status: done
 owner_session: environment-stream-3 (worktree agent-aaa0dfc3de4f41ded)
 reviewer: rendering, art-director
 depends_on: [M1-RND-01, M1-ART-01]
@@ -140,3 +140,33 @@ SPEC §10.2 M1 exit criterion.
     - **S7 (sky artefacts).** Detached cloud specks at H01 about (675, 127) and H07 about (306, 93) read as floating dots. Suppress blobs below a size threshold in `env_sky_cumulus`.
     - **S8 (record).** `background_energy` 1.5 (haluna_noon_environment.tres:8) lifts the visible sky but not the reflection or fill, so the water now reflects a sky at 1/1.5 of what is seen. Record this as a deliberate per-zone exception in the zone README and color_script, so other zones don't copy it without re-validating their water looks.
   - **Nit.** In H07 the two window slits are also hard rectangles; the brief (haluna.md:169) wants the door to be the only one. Soften them, or accept and amend the brief.
+- 2026-10-23 rendering (review-sweep-H, fresh reviewer; the Rendering sign-off after the AD's sweep-G approve): **approve-with-fixes (Rendering).** With the AD's approval, both reviewers have now signed, and the task can move to `done` once the Lead records it.
+  - **What I read:** env_sky_cumulus.gdshader (all of it; f322c44), haluna_noon_environment.tres, kit_net.tres with materials.py:140-143, the water reflection path in water_surface_body.gdshaderinc (:443-526), project.godot AA, graphics_settings.md, the zone README "Sky and palette checks", palette_check.py and palette_checks.json, and the H01 and H04 baselines.
+  - **Checks run:** `palette_check.py check` gives 19 ok and 0 failed. The tools tests give 329 OK. `validate_data` gives 0/0.
+  - **Signed off:**
+    - **Fog removal.** It is correct for the `ch02_noon` row. It also drops the volumetric-fog cost from this zone. The clouds' own distance haze (:184-185) stays as the only aerial perspective, which is enough at this range.
+    - **Visible-sky-only brightness.** `background_energy` is applied only when `!AT_CUBEMAP_PASS` (:214). So the radiance cubemap behind the sky ambient (`ambient_light_source` 3) and the water's engine reflection (`SPECULAR`, water_surface_body:523) keep `sky_energy` 1.0, as the README says. The water's SSR only hits geometry, never the sky, so no on-screen sky at 1.5× leaks into the reflection and causes a seam. The radiance fill and the reflection are consistent with each other.
+    - **March jitter.** The fixed half-step start (:135) and the adaptive coarse-to-fine refine (:136-181) are deterministic. The half-res pass turned per-pixel jitter into stipple, so dropping it was right, and captures run without TAA. The baselines show no rings or grain (grain 0.0019 and 0.0028).
+    - **2D detail stretch.** Limiting the height field to 3 octaves (:80-83) removes the vertical streaks. The extruded-column look remains (H01's left tower has smooth vertical walls), but it belongs to the model and is the signature sky's problem, not this one's.
+    - **Net alpha scissor.** Scissor is the right fix. A blended net sat in the transparent pass with the water, which reads the screen texture, so the sort dropped the net. In the opaque pass it writes depth and is refracted correctly where it dips under the surface. `cull_mode` disabled is fine, because the engine flips back-face normals. The discard costs early-Z on one small mesh only.
+  - **Should-fix (route to the Rendering sky task that the shader header asks for; none of these block the M1 mood test):**
+    - **R1 (performance; the main trap).** The sky has no quality tiers, and it runs a full ALU march every frame.
+      - The march is up to `cloud_steps * 3` = 192 iterations (:138). Each lit sample makes three `cloud_density_at` calls (:143, :158): about 3 fbm2 octaves plus 4 octaves of PCG-hashed fbm3, or roughly 40 hashes per call.
+      - That runs at half resolution every frame, and again for the radiance cubemap whenever the sky is dirty.
+      - My estimate is several ms of GPU on the minimum tier (GTX 1060 at 1080p). The sky isn't in graphics_settings.md's budget table, and `HYMN_QUALITY` isn't set for this shader.
+      - Fixes:
+        - per-preset `cloud_steps` (about 24 on low);
+        - `detail = 0.0` for the two light samples at :158, since shadows don't need billows;
+        - a cheaper cubemap march (fewer steps under `AT_CUBEMAP_PASS`);
+        - eventually a baked, tool-generated 3D noise texture in place of the hashed fbm3;
+        - a row in the budget table.
+    - **R2 (radiance re-render trap).** The shader reads `LIGHT0_*`, and the header invites drifting `cloud_offset_m`. With `process_mode` automatic, any per-frame change of the sun or the offset re-renders the 6-face radiance cubemap with the full cloud march and the high-quality filter. That is a hitch every frame. If time-of-day or drift is ever animated, use `PROCESS_MODE_REALTIME` with a small `radiance_size`, or keep `clouds()` out of the cubemap pass.
+    - **R3 (iteration budget).** On grazing rays the coarse-to-fine re-entries can use up the 192-iteration cap before `t1`. The far clouds are then cut short without any signal, and how far depends on `cloud_steps`. Finish the remainder coarse when the budget runs out, or count only fine steps against it.
+    - **R4 (compositing).** `light` is already premultiplied: it accumulates `trans * a * c` (:171). `mix(c, cl.rgb, cl.a)` at :214 multiplies it by alpha a second time, so thin edges and hazed far clouds are darkened quadratically. The look was tuned around this, so fix it together with a retune: `c * (1 - a) + light * haze_fade`.
+    - **R5 (record, the AD's S8, half done).** The zone README records `background_energy` 1.5 (README:63). color_script and water.md do not yet say that the visible sky sits 1.5× over its reflection in this zone. Another zone copying the value would put a value step between the horizon sky and the grazing-angle sea. For the signature sky, move the lift into `sky_energy` and re-validate `lagoon_clear`, rather than keep a split.
+    - **R6 (net at distance).** With a threshold of 0.4 over twine of about 0.56 coverage, the far mips go solid (materials.py:141 says so on purpose). At range the net becomes an opaque tannin sheet, which is part of the "fence panel" read the AD noted. The project runs TAA (project.godot:71), so alpha hash (`transparency` 3) is the better long-term mode for thin cutouts.
+  - **palette_check flaws from sweep G: do they matter? I probed both with mutated copies of the baselines (scratch, not committed).**
+    - **Zenith `min_fraction`: yes, it matters.** I greyed 90% of H01's zenith rect to C 0.01 and left 10% blue. Both zenith checks still pass ("0.10 of rect", C_median 0.090). The default 0.02 (palette_check.py:251) lets the gate pass the very defect it guards. Set `min_fraction` to about 0.9 on the zenith checks. It's a one-line change per check, and today's coverage is 1.00.
+    - **Underside sampling: it matters less than feared for chroma, and fully for hue.** I greyed every pixel within ΔE 0.05 of `cumulus_shadow`, and then only every other one. The chroma check fails in both shots both times (C_median 0.005-0.012), so a grey underside is caught. The hue check passes every time (219-258°), because it is measured mostly on horizon sky and on near-grey pixels whose hue is noise. So a cyan drift in the undersides would go uncaught. Apply the AD's sweep-G S1 fix (select by ΔE to `cumulus_shadow`, hue 235-265°) with the sky task. It doesn't block this task.
+  - **Nit.** The cloud deck ends at elevation 0.86° (`t0 > cloud_max_distance_m`, :120) while the haze still leaves about 60% alpha. That produces the thin clear band above H04's horizon. It reads as haze today, but at a wider lens or a lower horizon it could read as a cut. Fade alpha to 0 before `cloud_max_distance_m`.
+- 2026-10-23 lead: closing: Art Director approved (sweep G), Rendering approved with fixes (sweep H). The sky perf and quality follow-ups are in M1-RND-12.

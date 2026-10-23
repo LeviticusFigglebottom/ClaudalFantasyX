@@ -101,6 +101,49 @@ func test_tier_perf_params_parse_and_validate() -> void:
 	assert_eq(s.static_parameters()["curl_reuse"], s.quality_plan("high")["curl_reuse"])
 
 
+## M1-RND-11: tier parameters are clamped to the shader's ranges at runtime, both ways.
+func test_tier_params_are_clamped_both_ways() -> void:
+	var cfg := UndertowState.load_config()
+	var high := (cfg["quality"] as Dictionary)["high"] as Dictionary
+	high["curl_reuse"] = 20
+	high["march_steps"] = 999
+	var s := UndertowState.new(cfg)
+	var plan := s.quality_plan("high")
+	assert_eq(plan["curl_reuse"], UndertowState.MAX_CURL_REUSE)
+	assert_eq(plan["march_steps"], UndertowState.MAX_MARCH_STEPS)
+	high["curl_reuse"] = -3
+	high["march_steps"] = -5
+	plan = s.quality_plan("high")
+	assert_eq(plan["curl_reuse"], 1)
+	assert_eq(plan["march_steps"], 0)
+	var body := FileAccess.get_file_as_string("res://game/shaders/undertow/undertow_body.gdshaderinc")
+	assert_true(body.contains("march_steps : hint_range(4, %d)" % UndertowState.MAX_MARCH_STEPS), "march cap = hint")
+	assert_true(body.contains("curl_reuse : hint_range(1, %d)" % UndertowState.MAX_CURL_REUSE), "reuse cap = hint")
+
+
+## M1-RND-11: without temporal AA the jitter would crawl, so the phase stays 0.
+func test_jitter_needs_temporal_aa() -> void:
+	var s := UndertowState.new()
+	assert_true(s.set_quality("high"))
+	s.advance(1.0 / 60.0)
+	assert_ne(s.jitter_phase(), 0.0, "High with TAA rotates the phase")
+	s.temporal_aa = false
+	assert_eq(s.jitter_phase(), 0.0, "High with FXAA or no AA: a static pattern")
+	var vp := SubViewport.new()
+	vp.use_taa = false
+	vp.scaling_3d_mode = Viewport.SCALING_3D_MODE_BILINEAR
+	assert_false(UndertowStorm.viewport_is_temporal(vp), "FXAA / none")
+	vp.use_taa = true
+	assert_true(UndertowStorm.viewport_is_temporal(vp), "TAA")
+	vp.use_taa = false
+	vp.scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR2
+	assert_true(UndertowStorm.viewport_is_temporal(vp), "FSR2 accumulates too")
+	# M1-RND-15: MetalFX temporal (macOS) is listed beside FSR2 so the gate never drops jitter for it.
+	assert_true(UndertowStorm.TEMPORAL_SCALING_MODES.has(Viewport.SCALING_3D_MODE_METALFX_TEMPORAL))
+	assert_false(UndertowStorm.TEMPORAL_SCALING_MODES.has(Viewport.SCALING_3D_MODE_METALFX_SPATIAL))
+	vp.free()
+
+
 func test_jitter_phase_advances_only_with_the_clock() -> void:
 	var s := UndertowState.new()
 	assert_true(s.set_quality("low"))

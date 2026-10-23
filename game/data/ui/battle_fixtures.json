@@ -427,6 +427,19 @@
      "target": "single_foe",
      "mp_cost": 0,
      "magic": false
+    },
+    {
+     "id": "lamp_dive",
+     "name_key": "SKILL_LAMP_DIVE",
+     "kind": "physical",
+     "power": 12,
+     "rank": 2,
+     "accuracy": 100,
+     "element": "none",
+     "target": "single_foe",
+     "mp_cost": 0,
+     "magic": false,
+     "swell": true
     }
    ],
    "statuses": [
@@ -624,6 +637,23 @@
     ],
     "encounter": "fixture_reef",
     "seed": 20261022
+   },
+   "swell_ring": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "opening": {
+     "rhen": {
+      "swell": 100
+     }
+    }
    },
    "swap_menu": {
     "active": [

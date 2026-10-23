@@ -15,6 +15,9 @@ const EXPECTED_UNIFORMS: Array[String] = [
 	"col_deep",
 	"absorption_per_m",
 	"caustic_strength",
+	"caustic_pattern",
+	"caustic_tex",
+	"caustic_view_fade_m",
 	"sea_glow_energy",
 	"foam_shore_width_m",
 	"use_ssr",
@@ -100,7 +103,10 @@ func test_every_tier_has_a_shader_and_presets_map_to_tiers() -> void:
 	)
 	for p: Variant in (presets as Dictionary)["presets"]:
 		var id := str((p as Dictionary)["id"])
-		assert_true(WaterSurface.PRESET_QUALITY.has(id), "graphics preset %s has no water tier" % id)
+		assert_true(
+			GraphicsSettings.preset_tier(id, WaterSurface.PRESET_TIER_SYSTEM) in WaterSurface.QUALITY_NAMES,
+			"graphics preset %s has no water tier" % id
+		)
 
 
 func test_low_tier_keeps_sea_glow() -> void:
@@ -110,6 +116,56 @@ func test_low_tier_keeps_sea_glow() -> void:
 	assert_true(glow_at > 0, "sea-glow term present")
 	var before := body.substr(0, glow_at)
 	assert_eq(before.count("#if") - before.count("#endif"), 1, "sea-glow sits outside every tier #if")
+
+
+## M1-RND-08: the zone sea publishes hymn_water_level; animating its Y moves the level, the height
+## query (and so foam and caustics, which live in world space on the same mesh) together.
+func test_water_level_follows_the_node_and_is_registered() -> void:
+	assert_true(ProjectSettings.has_setting("shader_globals/hymn_water_level"), "registered in project.godot")
+	var globals := FileAccess.get_file_as_string("res://game/shaders/include/globals.gdshaderinc")
+	assert_true(globals.contains("global uniform vec2 hymn_water_level;"), "declared")
+	var w := WaterSurface.new()
+	w.tide_line_y = 0.4
+	(Engine.get_main_loop() as SceneTree).current_scene.add_child(w)
+	assert_false(w.publishes_water_level, "off by default: only the zone sea opts in (M1-RND-15)")
+	w.publishes_water_level = true
+	var xz := Vector2(3.0, -2.0)
+	var h0 := w.height_at(xz, 1.0)
+	assert_eq(w.water_level(), Vector2(0.0, 0.4))
+	w.position.y = 0.6  # Drownbell flood peak
+	assert_eq(w.water_level(), Vector2(0.6, 0.4), "the level follows the node; the datum stays")
+	assert_between(w.height_at(xz, 1.0) - h0, 0.6 - 1e-4, 0.6 + 1e-4, "the surface moved with it")
+	w.free()
+
+
+## M1-RND-15 (review-sweep-I S2, S3): one publisher per zone; the level resets when it leaves the
+## tree (and SceneRouter resets it on every zone change), so the next zone never inherits a tide line.
+func test_water_level_has_one_publisher_and_resets_on_exit() -> void:
+	var host := (Engine.get_main_loop() as SceneTree).current_scene
+	var pool := WaterSurface.new()
+	host.add_child(pool)
+	assert_false(pool.is_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP), "a pool does not publish")
+	var sea := WaterSurface.new()
+	sea.publishes_water_level = true
+	host.add_child(sea)
+	assert_true(sea.is_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP))
+	assert_eq(sea.get_tree().get_node_count_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP), 1)
+	sea.free()
+	assert_eq(host.get_tree().get_node_count_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP), 0, "left the group")
+	pool.free()
+	var src := FileAccess.get_file_as_string("res://game/world/water/water_surface.gd")
+	var exit := src.substr(src.find("func _exit_tree()"))
+	exit = exit.substr(0, exit.find("\n\n\n"))
+	assert_true(exit.contains("clear_water_level()"), "leaving the tree resets the level")
+	var router := FileAccess.get_file_as_string("res://game/core/scene_router.gd")
+	assert_true(router.contains("WaterSurface.clear_water_level()"), "SceneRouter resets it on a zone change")
+	assert_true(router.contains("GlimmerField.clear_scene_sea_glow()"), "and the zone sea-glow")
+	for scene: String in [
+		"res://game/levels/_tests/water/water_test.tscn", "res://game/levels/_tests/undertow/undertow_test.tscn"
+	]:
+		assert_true(
+			FileAccess.get_file_as_string(scene).contains("publishes_water_level = true"), "%s sea opts in" % scene
+		)
 
 
 func test_light_is_nan_safe_and_sss_is_view_dependent() -> void:

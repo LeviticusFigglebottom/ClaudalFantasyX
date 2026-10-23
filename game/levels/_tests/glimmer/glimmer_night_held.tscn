@@ -131,12 +131,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77, 0)
 mesh = SubResource("Head_mesh")
 
 [node name="Glimmer" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1.9, -0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.2, -0.5)
 script = ExtResource("field")
 mode = 0
 quality = "high"
 emission_shape = 0
-emission_extents_m = Vector3(4.5, 1.6, 3.5)
+emission_extents_m = Vector3(3.2, 1.1, 2.6)
+height_bias = 2.0
 sea_direction = Vector3(1, 0, -0.5)
 still_water_reflection = true
 fill_light_energy = 0.6

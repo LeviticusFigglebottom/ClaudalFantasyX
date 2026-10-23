@@ -57,6 +57,24 @@ extends Node
 ##     first move it to a numbered `.corrupt` copy (corrupt_path, free_corrupt_path).
 ##   - A leftover temp that is not provably older than its slot (a newer build's temp included) is
 ##     set aside before the next write, and logged at startup (kept_leftover_temps).
+##
+## Review-sweep-H (M1-ARC-12; ADR 0018 Amendment 4):
+##   - While the item tables are missing or failed to parse (item_tables_problem), a load keeps
+##     the equipment exactly as saved (no repair, no starting gear) and save_to_slot refuses every
+##     write with ERR_UNCONFIGURED and a push_error: a broken data build can never wipe the bag.
+##   - A piece whose base the tables do not know stays in the bag, unworn (repair_loadout).
+##   - A slot written by a newer build is moved to a numbered `.newer` copy before a write
+##     replaces it (the confirmed manual save, a New Game autosave), as a corrupt slot is.
+##
+## Review-sweep-I (M1-ARC-13; ADR 0018 Amendment 5):
+##   - The item-table guard above is now one of several checks behind a single data-tables gate,
+##     data_health() (DataHealth): the item tables, the Lattice board the save names and
+##     facets.json, the battle characters and statuses, locations.json, flags.tres and
+##     party_rest.json. While data_tables_problem() is non-empty, a load runs no post-load step
+##     and save_to_slot refuses every write with ERR_UNCONFIGURED. It is logged once at startup.
+##   - The tables are loaded on first use and cached on the DataHealth (the item tables stay in
+##     _item_db); tests replace one to simulate a broken build and set `_health` back to null to
+##     reload. Flags and party_rest are read from Game, which owns them.
 
 const SAVE_VERSION := 4
 const SAVE_DIR := "user://saves"
@@ -73,6 +91,9 @@ const MAX_RECOVERED := 99
 ## RECOVERED_SUFFIX: `.corrupt`, `.corrupt.2`, ... up to MAX_CORRUPT).
 const CORRUPT_SUFFIX := ".corrupt"
 const MAX_CORRUPT := 99
+## A slot a newer build wrote is moved here before a write replaces it (numbered the same way:
+## `.newer`, `.newer.2`, ... up to MAX_CORRUPT).
+const NEWER_SUFFIX := ".newer"
 const REASON_MANUAL := &"manual"
 const REASON_CHAPTER := &"chapter_boundary"
 const STATUS_EMPTY := &"empty"
@@ -104,6 +125,8 @@ var _migrations: Dictionary = {
 }
 ## Item tables for the post-load starting-gear step (loaded on first use).
 var _item_db: ItemDB
+## The data-tables gate (built on first use by data_health(); M1-ARC-13).
+var _health: DataHealth
 ## The reason of the autosave waiting for a safe point, or &"" when none waits.
 var _pending_reason: StringName = &""
 ## The process frame the pending request was made on; it is written on a later frame.
@@ -120,6 +143,7 @@ func _ready() -> void:
 	EventBus.new_game_started.connect(_on_new_game_started)
 	set_process(false)
 	report_leftover_temps.call_deferred()
+	report_data_tables.call_deferred()
 
 
 func _on_new_game_started() -> void:
@@ -145,6 +169,15 @@ func save_to_slot(
 	if slot < 0 or slot > MAX_SLOT:
 		push_error("SaveSystem: slot %d is out of range 0..%d" % [slot, MAX_SLOT])
 		return ERR_PARAMETER_RANGE_ERROR
+	var tables := data_tables_problem(state)
+	if tables != "":
+		push_error(
+			(
+				"SaveSystem: not saving slot %d: the data tables are broken (%s); every save on disk is kept as it is"
+				% [slot, tables]
+			)
+		)
+		return ERR_UNCONFIGURED
 	DirAccess.make_dir_recursive_absolute(save_dir)
 	var path := slot_path(slot)
 	var tmp := path + TEMP_SUFFIX
@@ -336,14 +369,32 @@ func free_recovered_path(slot: int) -> String:
 
 ## The copy a corrupt slot is moved to: `slot_NN.json.corrupt` for n = 1, then `.corrupt.2`, ...
 func corrupt_path(slot: int, n: int = 1) -> String:
-	var base := slot_path(slot) + CORRUPT_SUFFIX
-	return base if n <= 1 else "%s.%d" % [base, n]
+	return _copy_path(slot, CORRUPT_SUFFIX, n)
 
 
 ## The first corrupt_path that does not exist yet, or "" when all MAX_CORRUPT are taken.
 func free_corrupt_path(slot: int) -> String:
+	return _free_copy_path(slot, CORRUPT_SUFFIX)
+
+
+## The copy a newer build's slot is moved to: `slot_NN.json.newer` for n = 1, then `.newer.2`, ...
+func newer_path(slot: int, n: int = 1) -> String:
+	return _copy_path(slot, NEWER_SUFFIX, n)
+
+
+## The first newer_path that does not exist yet, or "" when all MAX_CORRUPT are taken.
+func free_newer_path(slot: int) -> String:
+	return _free_copy_path(slot, NEWER_SUFFIX)
+
+
+func _copy_path(slot: int, suffix: String, n: int) -> String:
+	var base := slot_path(slot) + suffix
+	return base if n <= 1 else "%s.%d" % [base, n]
+
+
+func _free_copy_path(slot: int, suffix: String) -> String:
 	for n in range(1, MAX_CORRUPT + 1):
-		var path := corrupt_path(slot, n)
+		var path := _copy_path(slot, suffix, n)
 		if not FileAccess.file_exists(path):
 			return path
 	return ""
@@ -351,25 +402,32 @@ func free_corrupt_path(slot: int) -> String:
 
 ## M1-ARC-11 (review-sweep-G B1): before anything replaces a slot, a non-empty slot that reads as
 ## corrupt is moved to the next free `.corrupt` copy, so a save this build cannot read (damaged,
-## or failing a check that a later build relaxes) is never destroyed. Returns OK when there was
-## nothing to keep or it was moved; otherwise the error, and the caller must not replace the slot.
+## or failing a check that a later build relaxes) is never destroyed. M1-ARC-12 (review-sweep-H
+## S2): a slot a newer build wrote is moved to the next free `.newer` copy the same way, so the
+## confirmed overwrite after a downgrade keeps the newer run for when the player updates again.
+## Returns OK when there was nothing to keep or it was moved; otherwise the error, and the caller
+## must not replace the slot.
 func _set_aside_corrupt_slot(slot: int) -> Error:
 	var path := slot_path(slot)
-	if not FileAccess.file_exists(path) or slot_info(slot)["status"] != STATUS_CORRUPT:
+	if not FileAccess.file_exists(path):
+		return OK
+	var status: StringName = slot_info(slot)["status"]
+	if status != STATUS_CORRUPT and status != STATUS_NEWER:
 		return OK
 	if FileAccess.get_file_as_bytes(path).is_empty():
 		return OK
-	var aside := free_corrupt_path(slot)
+	var what := "unreadable" if status == STATUS_CORRUPT else "from a newer build"
+	var aside := free_corrupt_path(slot) if status == STATUS_CORRUPT else free_newer_path(slot)
 	if aside == "":
-		push_warning("SaveSystem: slot %d is unreadable and all %d copies are taken; it is kept" % [slot, MAX_CORRUPT])
+		push_warning("SaveSystem: slot %d is %s and all %d copies are taken; it is kept" % [slot, what, MAX_CORRUPT])
 		return ERR_ALREADY_EXISTS
 	var err := DirAccess.rename_absolute(path, aside)
 	if err != OK:
 		push_warning(
-			"SaveSystem: could not move unreadable slot %d to %s (%s); it is kept" % [slot, aside, error_string(err)]
+			"SaveSystem: could not move slot %d (%s) to %s (%s); it is kept" % [slot, what, aside, error_string(err)]
 		)
 		return err
-	push_warning("SaveSystem: slot %d was unreadable; it was moved to %s before the new save" % [slot, aside])
+	push_warning("SaveSystem: slot %d was %s; it was moved to %s before the new save" % [slot, what, aside])
 	return OK
 
 
@@ -425,6 +483,45 @@ func _items() -> ItemDB:
 	return _item_db
 
 
+## Why the item tables cannot be trusted to judge saved equipment right now ("" when they can;
+## ItemDB.integrity_problem). While this is non-empty, loads skip the equipment repair and
+## save_to_slot refuses to write (M1-ARC-12).
+func item_tables_problem() -> String:
+	var db := _items()
+	if db == null:
+		return "the item tables could not be built"
+	return db.integrity_problem()
+
+
+# --- The data-tables gate (M1-ARC-13) -------------------------------------------------------------
+
+
+## The one gate every save write and every post-load step asks (DataHealth.standard: a check per
+## table that saved state refers to; the item check is item_tables_problem, so `_item_db` stays
+## the item tables' injection point). Tests replace a table on it, or set `_health` to null to
+## rebuild it from the shipped files.
+func data_health() -> DataHealth:
+	if _health == null:
+		_health = DataHealth.standard(func(_st: GameStateData) -> String: return item_tables_problem())
+	return _health
+
+
+## Why the data tables cannot be trusted with `state` right now ("" when they can). While this is
+## non-empty, loads skip the post-load step and save_to_slot refuses to write.
+func data_tables_problem(state: GameStateData = null) -> String:
+	return data_health().problem(state)
+
+
+## Pushes one error naming every broken table (runs once at startup, review-sweep-I S2 for
+## ARC-12): a build that can never save says so before the player has played a session.
+## Returns the problem ("" when healthy).
+func report_data_tables() -> String:
+	var problem := data_tables_problem()
+	if problem != "":
+		push_error("SaveSystem: saving is off until the data tables are fixed: %s" % problem)
+	return problem
+
+
 ## Why a parsed save cannot be migrated ("" when it can). Fills out.version, and out.status
 ## with STATUS_NEWER for a save from a newer build.
 func _version_problem(d: Dictionary, out: Dictionary) -> String:
@@ -443,17 +540,38 @@ func _version_problem(d: Dictionary, out: Dictionary) -> String:
 	return ""
 
 
-## Runs after every load. First, a worn piece that no longer fits the item tables is taken off, or
-## dropped when its base is gone, with a warning (EquipmentBag.repair_loadout; review-sweep-G B1:
-## a balance patch must never brick a save). Then joined heroes receive any missing starting gear
-## (a v2 save migrated to v3 has an empty bag, "weapon" is a required slot, and a repaired slot
-## is empty). Idempotent.
+## Runs after every load. First, a worn piece that no longer fits the item tables is taken off
+## into the bag, with a warning (EquipmentBag.repair_loadout; review-sweep-G B1: a balance patch
+## must never brick a save). A piece of unknown equipment stays in the bag, unworn, with one
+## warning per load. Then joined heroes receive any missing starting gear (a v2 save migrated to
+## v3 has an empty bag, "weapon" is a required slot, and a repaired slot is empty). Idempotent.
+## M1-ARC-12 (review-sweep-H S1): while the item tables are broken (item_tables_problem) every
+## piece would read as unknown, so nothing here runs: the equipment stays exactly as saved, with
+## a push_error, and save_to_slot refuses to write until the tables load again.
+## M1-ARC-13: the check is the whole data-tables gate (data_tables_problem), not only the items.
 func _post_load(state: GameStateData) -> GameStateData:
 	if state == null:
 		return null
+	var tables := data_tables_problem(state)
+	if tables != "":
+		push_error(
+			(
+				"SaveSystem: the data tables are broken (%s); the save is loaded as saved, unrepaired, and saving is off"
+				% tables
+			)
+		)
+		return state
 	var goods := PartyGoods.from_state(_items(), state)
 	for note in goods.equipment.repair_loadout():
 		push_warning("SaveSystem: equipment.%s" % note)
+	var unknown := goods.equipment.unknown_uids()
+	if not unknown.is_empty():
+		push_warning(
+			(
+				"SaveSystem: equipment.owned: %d piece(s) of unknown equipment %s are kept unworn as saved"
+				% [unknown.size(), unknown]
+			)
+		)
 	goods.ensure_starting_gear(state)
 	return state
 

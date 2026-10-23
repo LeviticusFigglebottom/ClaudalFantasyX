@@ -1247,8 +1247,10 @@ def run(root: Path) -> Report:
     data_keys += check_items(files, declared_flags_quiet(root), rep)
     data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
     data_keys += check_locations(root, files, rep)
+    data_keys += check_swell(files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
+    check_undertow(root, files, rep)
     check_provenance(root, rep)
     check_banned(root, rep)
     check_binary_sizes(root, rep)
@@ -1296,14 +1298,55 @@ def scene_spawns(text: str) -> set[str]:
 PLAYER_GROUP_RE = re.compile(r'^\[node [^\n]*groups=\[[^\]\n]*"player"', re.M)
 
 
-def scene_has_player(text: str) -> bool:
-    """True when WorldReturn.place_player can find a player in a .tscn: a node named Player
-    directly under the root, or a node in group "player" (M1-ARC-11, review-sweep-G on ENV-04)."""
+PLACE_AT_RE = re.compile(r"^(?:static\s+)?func\s+place_at\s*\(", re.M)
+PLAYER_SCENE_MAX_DEPTH = 8
+
+
+def scene_has_player(text: str, scenes: dict[str, str] | None = None, scripts: dict[str, str] | None = None,
+                     _depth: int = 0) -> bool:
+    """True when WorldReturn.place_player can find a player in a .tscn (M1-ARC-11, review-sweep-G on
+    ENV-04): a node named Player directly under the root, a node in group "player", or a root whose
+    script defines place_at (the zone places its own player).
+    M1-ARC-12 (review-sweep-H nit): instanced scenes count too. `scenes` maps res:// paths to .tscn
+    text and `scripts` res:// paths to .gd text; with them, a node in group "player" inside any
+    instanced sub-scene is found (place_player searches the group under the root), and an inherited
+    scene (an instanced root) is judged by its base scene as well. A path missing from both maps is
+    treated as having no player, so the rule stays conservative."""
+    if _depth > PLAYER_SCENE_MAX_DEPTH:
+        return False
     if PLAYER_GROUP_RE.search(text):
         return True
+    ext: dict[str, str] = {}
+    for m in TSCN_EXT_RE.finditer(text):
+        a = _tscn_attrs(m.group(0))
+        ext[a.get("id", "")] = a.get("path", "")
     for m in TSCN_HEADER_RE.finditer(text):
         a = _tscn_attrs(m.group(0))
+        is_root = "parent" not in a
         if a.get("name") == "Player" and a.get("parent") == ".":
+            return True
+        if is_root and scripts and PLACE_AT_RE.search(scripts.get(ext.get(a.get("script", ""), ""), "")):
+            return True
+        sub = (scenes or {}).get(ext.get(a.get("instance", ""), ""))
+        if sub is None:
+            continue
+        if is_root and scene_has_player(sub, scenes, scripts, _depth + 1):
+            return True
+        if not is_root and _scene_in_player_group(sub, scenes, _depth + 1):
+            return True
+    return False
+
+
+def _scene_in_player_group(text: str, scenes: dict[str, str] | None, depth: int) -> bool:
+    """True when a node of this scene, or of a scene it instances, is in group "player"."""
+    if depth > PLAYER_SCENE_MAX_DEPTH:
+        return False
+    if PLAYER_GROUP_RE.search(text):
+        return True
+    ext = {a.get("id", ""): a.get("path", "") for a in (_tscn_attrs(m.group(0)) for m in TSCN_EXT_RE.finditer(text))}
+    for m in TSCN_HEADER_RE.finditer(text):
+        sub = (scenes or {}).get(ext.get(_tscn_attrs(m.group(0)).get("instance", ""), ""))
+        if sub is not None and _scene_in_player_group(sub, scenes, depth + 1):
             return True
     return False
 
@@ -1350,10 +1393,11 @@ def _rest_errors(rest: object, statuses: set[str]) -> list[str]:
 
 
 def locations_errors(doc: object, scenes: dict[str, str], loc: set[str], statuses: set[str],
-                     rest: object, shrines: dict[str, list[dict[str, str]]]) -> list[str]:
+                     rest: object, shrines: dict[str, list[dict[str, str]]],
+                     scripts: dict[str, str] | None = None) -> list[str]:
     """Validates locations.json and party_rest.json. `scenes` maps res:// paths to .tscn text (a
     missing path means the scene does not exist); `shrines` maps a scene file to its SaveShrine
-    instances (shrine_instances)."""
+    instances (shrine_instances); `scripts` maps res:// paths to .gd text (scene_has_player)."""
     w = LOCATIONS_FILE
     if not isinstance(doc, dict):
         return [f"{w}: must be an object"]
@@ -1376,9 +1420,11 @@ def locations_errors(doc: object, scenes: dict[str, str], loc: set[str], statuse
         playable = row.get("playable", True)
         if not isinstance(playable, bool):
             errs.append(f"{rw}: 'playable' must be true or false")
-        elif playable and isinstance(scene, str) and scene in scenes and not scene_has_player(scenes[scene]):
-            errs.append(f"{rw}: {scene} has no player (a Player node under the root, or a node in group "
-                        f"\"player\"); mark a stand-in scene \"playable\": false")
+        elif (playable and isinstance(scene, str) and scene in scenes
+              and not scene_has_player(scenes[scene], scenes, scripts)):
+            errs.append(f"{rw}: {scene} has no player (a Player node under the root, a node in group "
+                        f"\"player\" here or in an instanced scene, or a root script with place_at); mark a "
+                        f"stand-in scene \"playable\": false")
         if row.get("name_key") not in loc:
             errs.append(f"{rw}: name_key '{row.get('name_key')}' has no localization entry")
     if not locs:
@@ -1436,9 +1482,283 @@ def check_locations(root: Path, files: dict[str, object], rep: Report) -> list[s
     st = files.get("game/data/battle/statuses.json")
     ids = {r.get("id") for r in st.get("statuses", []) if isinstance(r, dict)} if isinstance(st, dict) else set()
     loc = load_loc_keys(root, Report())
-    for e in locations_errors(doc, scenes, loc, ids, files.get(PARTY_REST_FILE), shrines):
+    scripts = {"res://" + p.relative_to(root).as_posix(): p.read_text(encoding="utf-8")
+               for p in sorted((root / "game").rglob("*.gd"))}
+    for e in locations_errors(doc, scenes, loc, ids, files.get(PARTY_REST_FILE), shrines, scripts):
         rep.err(e)
     return []
+
+
+
+# --- M1-RND-11: Undertow quality tiers (game/data/vfx/undertow.json) ----------------------------
+
+UNDERTOW_FILE = "game/data/vfx/undertow.json"
+UNDERTOW_TIERS = ("low", "medium", "high", "ultra")
+UNDERTOW_BODIES = ("shells", "raymarch")
+# = UndertowState.MAX_CURL_REUSE and the shader's hint_range(1, 8).
+UNDERTOW_MAX_CURL_REUSE = 8
+# The body include: its `#ifndef UNDERTOW_MAX_STEPS` default (a variant that defines none compiles
+# that cap) and the march_steps uniform's hint_range floor are parsed from it, never copied
+# (M1-RND-15, review-sweep-I on RND-11).
+UNDERTOW_BODY_INC = "game/shaders/undertow/undertow_body.gdshaderinc"
+UNDERTOW_STEP_CAP_RE = re.compile(r"#define UNDERTOW_MAX_STEPS (\d+)")
+UNDERTOW_DEFAULT_CAP_RE = re.compile(r"#ifndef UNDERTOW_MAX_STEPS\s*\n\s*#define UNDERTOW_MAX_STEPS (\d+)")
+UNDERTOW_STEPS_HINT_RE = re.compile(r"uniform int march_steps : hint_range\((\d+),\s*(\d+)\)")
+IMPORT_SLICES_RE = re.compile(r"^slices/(horizontal|vertical)=(\d+)", re.M)
+
+
+def _res_path(root: Path, res: str) -> Path:
+    return root / res.removeprefix("res://")
+
+
+def undertow_step_limits(root: Path) -> tuple[int, int] | None:
+    """(march_steps floor from the uniform's hint_range, default UNDERTOW_MAX_STEPS) from the body
+    include, or None when either cannot be parsed."""
+    path = root / UNDERTOW_BODY_INC
+    if not path.is_file():
+        return None
+    text = path.read_text(encoding="utf-8")
+    cap = UNDERTOW_DEFAULT_CAP_RE.search(text)
+    hint = UNDERTOW_STEPS_HINT_RE.search(text)
+    if cap is None or hint is None:
+        return None
+    return int(hint.group(1)), int(cap.group(1))
+
+
+def undertow_quality_errors(root: Path, doc: object, where: str = UNDERTOW_FILE) -> list[str]:
+    """Tier params the storm reads at runtime: types, ranges, the compiled step cap, the noise."""
+    if not isinstance(doc, dict):
+        return [f"{where}: not an object"]
+    errs: list[str] = []
+    limits = undertow_step_limits(root)
+    if limits is None:
+        errs.append(f"{UNDERTOW_BODY_INC}: cannot parse the march_steps hint_range or the UNDERTOW_MAX_STEPS default")
+    step_floor, default_cap = limits if limits is not None else (1, 0)
+    quality = doc.get("quality", {})
+    shaders = doc.get("shaders", {})
+    if not isinstance(quality, dict) or not isinstance(shaders, dict):
+        return errs + [f"{where}: quality and shaders must be objects"]
+    if sorted(quality) != sorted(UNDERTOW_TIERS):
+        errs.append(f"{where}: quality tiers must be exactly {', '.join(UNDERTOW_TIERS)}")
+    for tier, t in quality.items():
+        w = f"{where}: quality.{tier}"
+        if not isinstance(t, dict):
+            errs.append(f"{w} must be an object")
+            continue
+        body = t.get("body")
+        if body not in UNDERTOW_BODIES:
+            errs.append(f"{w}.body must be one of {UNDERTOW_BODIES}")
+            continue
+        steps = t.get("march_steps")
+        if not _is_int(steps):
+            errs.append(f"{w}.march_steps must be an int")
+        elif body == "shells" and steps != 0:
+            errs.append(f"{w}.march_steps must be 0 for the shell body")
+        elif body == "raymarch":
+            shader = shaders.get(f"body_{tier}", "")
+            path = _res_path(root, shader) if shader else None
+            if path is None or not path.is_file():
+                errs.append(f"{w}: shaders.body_{tier} missing ({shader!r})")
+            else:
+                m = UNDERTOW_STEP_CAP_RE.search(path.read_text(encoding="utf-8"))
+                cap = int(m.group(1)) if m else default_cap
+                if not step_floor <= steps <= cap:
+                    errs.append(
+                        f"{w}.march_steps {steps} outside {step_floor}..{cap}"
+                        " (the uniform's hint_range floor, the variant's UNDERTOW_MAX_STEPS)"
+                    )
+        if "curl_reuse" in t:
+            r = t["curl_reuse"]
+            if not _is_int(r) or not 1 <= r <= UNDERTOW_MAX_CURL_REUSE:
+                errs.append(f"{w}.curl_reuse must be an int in 1..{UNDERTOW_MAX_CURL_REUSE}")
+        if "temporal_jitter" in t and not isinstance(t["temporal_jitter"], bool):
+            errs.append(f"{w}.temporal_jitter must be a bool")
+    noise = doc.get("noise")
+    if noise is not None and not isinstance(noise, dict):
+        errs.append(f"{where}: noise must be an object")
+    elif noise is not None:
+        tex = str(noise.get("texture", ""))
+        texels = noise.get("texels")
+        if not tex or not _res_path(root, tex).is_file():
+            errs.append(f"{where}: noise.texture missing ({tex!r})")
+        if not _is_int(texels) or texels <= 0:
+            errs.append(f"{where}: noise.texels must be a positive int")
+        imp = _res_path(root, tex + ".import") if tex else None
+        if imp is not None and imp.is_file() and _is_int(texels):
+            slices = {k: int(v) for k, v in IMPORT_SLICES_RE.findall(imp.read_text(encoding="utf-8"))}
+            if slices and slices.get("horizontal", 1) * slices.get("vertical", 1) != texels:
+                errs.append(f"{where}: noise.texels {texels} != the 3D texture's slice count in {tex}.import")
+    return errs
+
+
+def check_undertow(root: Path, files: dict[str, object], rep: Report) -> None:
+    if UNDERTOW_FILE not in files:
+        # Invalid JSON is already reported by load_json_files; a missing file is an error too
+        # (the storm cannot pick a tier without it).
+        if not (root / UNDERTOW_FILE).is_file():
+            rep.err(f"{UNDERTOW_FILE}: missing (the Undertow quality tiers)")
+        return
+    for e in undertow_quality_errors(root, files[UNDERTOW_FILE]):
+        rep.err(e)
+
+
+# --- M1-CMB-04: Swell gauges (game/data/battle/swell.json, formulas.md § Swell) ------------------
+
+SWELL_FILE = "game/data/battle/swell.json"
+SWELL_TRIGGERS = {"damage_taken", "damage_dealt", "ally_hurt", "heal_item"}
+SWELL_INPUT_KINDS = {"timing_ring"}
+SWELL_MIN_MODES = 3  # SPEC §6.2 / M1-CMB-04: at least three fill modes
+RING_SEC_FIELDS = ("lead_in_sec", "beat_sec", "perfect_sec", "good_sec")
+# M1-UI-05: SPEC §6.2 asks for a short input. The longest the ring may run if every beat runs out.
+RING_MAX_DURATION_SEC = 5.0
+
+
+def _num(v: object) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def _swell_mode_errors(m: dict, w: str) -> list[str]:
+    errs: list[str] = []
+    if m.get("trigger") not in SWELL_TRIGGERS:
+        errs.append(f"{w}: trigger must be one of {sorted(SWELL_TRIGGERS)}")
+    if ("rate" in m) == ("flat" in m):
+        errs.append(f"{w}: needs exactly one of 'rate' or 'flat'")
+    for k in ("rate", "flat"):
+        if k in m and not _pos_int(m[k]):
+            errs.append(f"{w}: '{k}' must be a positive int")
+    if not isinstance(m.get("starts_unlocked", False), bool):
+        errs.append(f"{w}: starts_unlocked must be true or false")
+    for k in ("name_key", "desc_key"):
+        if not isinstance(m.get(k), str):
+            errs.append(f"{w}: missing {k}")
+    return errs
+
+
+def _ring_timing_errors(i: dict, w: str) -> list[str]:
+    """M1-UI-05: the grading window must sit inside its beat, or SwellTimingRing grades a miss before
+    a late press and that press lands on the next beat (and an early one is ignored before the beat
+    opens). The input stays short, and one frame's step never exceeds the perfect window."""
+    if not all(_num(i.get(k)) for k in (*RING_SEC_FIELDS, "peak_at")) or not _pos_int(i.get("beats")):
+        return []  # the field checks above already report it
+    errs: list[str] = []
+    peak = i["peak_at"] * i["beat_sec"]
+    if peak + i["good_sec"] > i["beat_sec"]:
+        errs.append(f"{w}: the good window ends after its beat (peak_at x beat_sec + good_sec = "
+                    f"{peak + i['good_sec']:.3g} > beat_sec {i['beat_sec']:g})")
+    if peak - i["good_sec"] < 0:
+        errs.append(f"{w}: the good window starts before its beat opens (peak_at x beat_sec - good_sec = "
+                    f"{peak - i['good_sec']:.3g} < 0)")
+    total = i["lead_in_sec"] + i["beats"] * i["beat_sec"]
+    if total > RING_MAX_DURATION_SEC:
+        errs.append(f"{w}: lasts {total:g} s (lead_in_sec + beats x beat_sec); keep it at most {RING_MAX_DURATION_SEC:g} s")
+    step = i.get("max_step_sec")
+    if not _num(step) or not 0 < step <= i["perfect_sec"]:
+        errs.append(f"{w}: max_step_sec must be a number in (0, perfect_sec]")
+    return errs
+
+
+def _swell_input_errors(i: dict, w: str) -> list[str]:
+    if i.get("kind") not in SWELL_INPUT_KINDS:
+        return [f"{w}: kind must be one of {sorted(SWELL_INPUT_KINDS)}"]
+    errs: list[str] = []
+    if not _pos_int(i.get("beats")):
+        errs.append(f"{w}: beats must be a positive int")
+    for k in RING_SEC_FIELDS:
+        if not _num(i.get(k)) or i[k] < 0:
+            errs.append(f"{w}: '{k}' must be a number >= 0")
+    if not _num(i.get("peak_at")) or not 0 < i["peak_at"] < 1:
+        errs.append(f"{w}: peak_at must be a fraction in (0, 1)")
+    if _num(i.get("perfect_sec")) and _num(i.get("good_sec")) and i["perfect_sec"] > i["good_sec"]:
+        errs.append(f"{w}: perfect_sec must not exceed good_sec")
+    errs += _ring_timing_errors(i, w)
+    grades = i.get("grades")
+    if not isinstance(grades, dict) or set(grades) != {"perfect", "good", "miss"}:
+        errs.append(f"{w}: grades must give perfect, good and miss")
+    elif any(not isinstance(v, int) or isinstance(v, bool) or v < 0 for v in grades.values()):
+        errs.append(f"{w}: grade bonuses must be ints >= 0")
+    return errs
+
+
+def _swell_hero_errors(h: dict, w: str, skills: dict[str, dict], refs: dict[str, set[str]],
+                       used: dict[str, str]) -> list[str]:
+    errs: list[str] = []
+    if h["id"] not in refs["characters"]:
+        errs.append(f"{w}: not a character")
+    if h.get("input") not in refs["inputs"]:
+        errs.append(f"{w}: unknown input '{h.get('input')}'")
+    techs = h.get("techniques")
+    if not isinstance(techs, list) or not techs:
+        return errs + [f"{w}: needs at least one technique"]
+    for t in techs:
+        if t not in skills:
+            errs.append(f"{w}: technique '{t}' is not a skill")
+        elif skills[t].get("swell") is not True:
+            errs.append(f"{w}: technique '{t}' must be a skills.json row with swell: true")
+        elif t in used:
+            errs.append(f"{w}: technique '{t}' already belongs to {used[t]}")
+        else:
+            used[t] = h["id"]
+    return errs
+
+
+def swell_errors(doc: object, skills: dict[str, dict], char_ids: set[str]) -> list[str]:
+    """Errors in swell.json against the skill rows (by id) and the hero ids."""
+    w0 = SWELL_FILE
+    root = doc.get("swell") if isinstance(doc, dict) else None
+    if not isinstance(root, dict):
+        return [f"{w0}: missing top-level object 'swell'"]
+    errs: list[str] = []
+    modes = _rows(root, "modes", w0, errs)
+    inputs = _rows(root, "inputs", w0, errs)
+    heroes = _rows(root, "heroes", w0, errs)
+    if len(modes) < SWELL_MIN_MODES:
+        errs.append(f"{w0}: needs at least {SWELL_MIN_MODES} fill modes, found {len(modes)}")
+    for m in modes:
+        errs += _swell_mode_errors(m, f"{w0}: modes.{m['id']}")
+    default = root.get("default_mode")
+    unlocked = {m["id"] for m in modes if m.get("starts_unlocked") is True}
+    if default not in {m["id"] for m in modes}:
+        errs.append(f"{w0}: default_mode '{default}' is not a mode")
+    elif default not in unlocked:
+        errs.append(f"{w0}: default_mode '{default}' must start unlocked")
+    for i in inputs:
+        errs += _swell_input_errors(i, f"{w0}: inputs.{i['id']}")
+    used: dict[str, str] = {}
+    refs = {"characters": char_ids, "inputs": {i["id"] for i in inputs}}
+    for h in heroes:
+        errs += _swell_hero_errors(h, f"{w0}: heroes.{h['id']}", skills, refs, used)
+    for sid, row in skills.items():
+        if row.get("swell") is True and sid not in used:
+            errs.append(f"skills.{sid}: a Swell row that no hero in {w0} lists")
+    return errs
+
+
+def _learned_skills(files: dict[str, object]) -> set[str]:
+    out: set[str] = set()
+    for rel, table in (("game/data/battle/characters.json", "characters"),
+                       ("game/data/battle/enemies.json", "enemies")):
+        doc = files.get(rel)
+        for r in doc.get(table, []) if isinstance(doc, dict) else []:
+            if isinstance(r, dict):
+                out |= {s for s in r.get("skills", []) if isinstance(s, str)}
+    return out
+
+
+def check_swell(files: dict[str, object], rep: Report) -> list[str]:
+    """Validates swell.json (M1-CMB-04). Returns its *_key values for the loc check."""
+    doc = files.get(SWELL_FILE)
+    if doc is None:
+        rep.err(f"{SWELL_FILE}: missing")
+        return []
+    sk = files.get("game/data/battle/skills.json")
+    rows = sk.get("skills", []) if isinstance(sk, dict) else []
+    skills = {r["id"]: r for r in rows if isinstance(r, dict) and isinstance(r.get("id"), str)}
+    for e in swell_errors(doc, skills, _ids(files, "game/data/battle/characters.json", "characters")):
+        rep.err(e)
+    for sid in sorted(_learned_skills(files)):
+        if skills.get(sid, {}).get("swell") is True:
+            rep.err(f"skills.{sid}: a Swell technique is never learned (a character or enemy lists it)")
+    return collect_keys(doc)
 
 
 if __name__ == "__main__":
