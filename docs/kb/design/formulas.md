@@ -26,6 +26,8 @@ Notation: `floor`, `ceil`, `clamp(x, lo, hi)`. **`round` rounds half away from z
 | `POISON_PCT` / `REGEN_PCT` | 0.10 / 0.08 | Of max HP, at the end of own turn |
 | `BERSERK_STR_RATIO` | 3/2 | Berserk strength multiplier (after Power Break, floored) |
 | `CONFUSE_ALLY_PCT` | 50 | Chance a Confused unit turns on its own side |
+| `REVIVE_MIN_HP` / `PCT` | 1 / 100 | Revive floor; percent base for item and threshold math |
+| `DELAY_STACK_DIVISOR` / `DELAY_STACK_MAX_STEPS` | 2 / 16 | Delay diminishing returns |
 | `ESCAPE_BASE_PCT`, `ESCAPE_AGI_FACTOR`, `ESCAPE_MIN_PCT`, `ESCAPE_MAX_PCT` | 50, 2, 10, 95 | Escape |
 
 Element affinity multipliers (as ratios): normal 1/1, weak 3/2, resist 1/2, immune 0/1, absorb −1/1 (heals).
@@ -53,7 +55,11 @@ Examples: agi 10: roll 0 → 300, roll 100 → 200. (Ambush and preemptive modif
 
 **Turn order**: the lowest `next_time` acts. Ties go to higher agility, then to roster order (party slots first, then enemies in encounter order). After acting: `next_time = now + action_delay(...)`.
 
-**Delay attacks**: a hit with `delay_ranks = n` adds `base_delay(target.agi) × n` to the target's `next_time`.
+**Delay** (skills with `delay_ranks`, and delay items): adds `delay_push` ticks to the target's `next_time`, with diminishing returns so no foe can be held forever. `prior` counts the delays the target already took since its last own turn (acted or lost); acting resets it to 0. A `delay_immune` enemy (`enemies.json`, for bosses) takes 0 and its count doesn't grow.
+```
+delay_push(agi, ranks, prior, immune) = immune ? 0 : floor(base_delay(agi) × ranks ÷ 2^min(prior, 16))
+```
+Examples: agi 10 (base 100), 2 ranks: 200, then 100, then 50 before it acts; 1 rank with prior 3 → 12; immune → 0. The preview applies the same count.
 
 **Stop / Sleep**: the affected unit's turns are consumed without acting (`next_time += action_delay(agi, DEFAULT_RANK, speed)`). Durations count down on those lost turns, but **Poison and Regen do not tick on lost turns**. Sleep also ends when the unit takes damage. If every living combatant is losing turns for 1000 consecutive turns (only possible with "until cured" durations everywhere), the battle ends as a defeat. The validator forbids −1 durations for Stop and Sleep in data.
 
@@ -61,7 +67,7 @@ Examples: agi 10: roll 0 → 300, roll 100 → 200. (Ambush and preemptive modif
 
 **Status durations** are measured in the affected unit's *own* turns and tick down at the end of each own turn (−1 = until cured).
 
-**Timeline preview** assumes every future action uses `DEFAULT_RANK`. Timed statuses (Haste, Slow, Stop, Sleep, Doom) count down per simulated own turn exactly as in play, so a 16-turn preview matches actual play whenever every action is rank 3 and nothing new is inflicted. The candidate action's rank, delay push, and any time statuses it inflicts (assumed to land) are applied exactly. A Doomed unit's entries carry its countdown (`TurnEntry.doom`), and no entry follows the one showing 1. A candidate that inflicts Petrify removes its target from the preview. A candidate aimed at a Reflect unit is previewed on the unit it will really bounce to.
+**Timeline preview** assumes every future action uses `DEFAULT_RANK`. Timed statuses (Haste, Slow, Stop, Sleep, Doom) count down per simulated own turn exactly as in play, so a 16-turn preview matches actual play whenever every action is rank 3 and nothing new is inflicted. The candidate action's rank, delay push, and any time statuses it inflicts (assumed to land) are applied exactly. A Doomed unit's entries carry its countdown (`TurnEntry.doom`), and no entry follows the one showing 1. A candidate that inflicts Petrify removes its target from the preview. A candidate that would deal HP damage to a **sleeping** target (a physical or magical hit through a non-immune, non-absorbing affinity, a heal on a Zombie, or a damage item) wakes it in the preview, before any status the action adds, exactly as in play (assuming the hit lands). A candidate aimed at a Reflect unit is previewed on the unit it will really bounce to.
 
 ## Damage
 
@@ -113,13 +119,52 @@ Every status in SPEC §6.8 is implemented. Durations are in the affected unit's 
 
 | Status | Default | Rule |
 |---|---|---|
-| **Petrify** | −1 (must be −1) | Stone. The unit leaves the timeline, can't be targeted, and **counts as KO** for victory, defeat, swap-in timing and the XP rule (`is_alive()` is false). HP is kept. Petrify clears every other status, and nothing new can be added. It never wears off (stone takes no turns, so the validator forbids a countdown); curing it is an item (Progression, later). A petrified member can be swapped out like a KO'd one but can't come back in. |
+| **Petrify** | −1 (must be −1) | Stone. The unit leaves the timeline, can't be targeted, and **counts as KO** for victory, defeat, swap-in timing and the XP rule (`is_alive()` is false). HP is kept. Petrify clears every other status, and nothing new can be added. It never wears off (stone takes no turns, so the validator forbids a countdown). Only an item whose `cure` lists `petrify` reaches stone; the cured unit rejoins the timeline `action_delay(agi, DEFAULT_RANK)` after now. A petrified member can be swapped out like a KO'd one but can't come back in. |
 | **Berserk** | −1 | Not in control. Basic attack on a uniformly random living foe, or on the provoker if Provoked. `strength_eff = floor(broken_strength × 3 / 2)`, where `broken_strength` already includes Power Break. Example: 16 → 24; 15 → 22; 16 under Power Break → 8 → 12. |
 | **Confuse** | 3 | Not in control. Roll `randi_range(1, 100) ≤ CONFUSE_ALLY_PCT` (50): on success the target is a uniformly random living **ally other than itself**, otherwise a random living foe (if one side is empty, the other). Provoke is ignored. Taking **physical damage** (> 0) ends Confuse; magic does not. |
 | **Doom** | 5 (must be ≥ 1) | A countdown. It drops by 1 at the end of each own turn, **lost turns included** (Stop can't stall it), and the unit is KO'd at the end of the turn that showed **1**, after Poison/Regen. So Doom *n* gives exactly *n* more turns. A Doom that fells the last enemy is a victory even on a lost turn. |
-| **Zombie** | −1 | HP restoration from **heal skills and Regen** is dealt as damage of the same amount (no defense, no barrier, same cap), and can KO. Ordinary damage and Absorb are unchanged. Revival (no revive exists yet) will KO a Zombie outright. |
+| **Zombie** | −1 | HP restoration from **heal skills and Regen** is dealt as damage of the same amount (no defense, no barrier, same cap), and can KO. Ordinary damage and Absorb are unchanged. A revive item may target a **living** Zombie and KOs it outright (§ Items). A KO clears Zombie, so a fallen ex-Zombie revives normally. |
 | **Reflect** | 4 | A `magic: true` skill aimed at **one other** unit (`single_foe` or `single_ally`) that has Reflect lands instead on the **living unit with the lowest current HP on the other side from the reflector** (ties: field order, party slots then enemies in encounter order). It is deterministic, so the timeline preview is exact. A bounced spell is never bounced again (no chains), even onto another reflector. Physical skills, self-casts and group skills ignore Reflect. The hit reports `reflected_from`. |
 | **Provoke** | 3 | Remembers its provoker (whoever's skill inflicted it). The provoked unit's `single_foe` skills **must** target the provoker: the engine rejects any other target with `provoked` (no MP or time spent), and enemy AI selectors are overridden. Group, ally and self skills are free. It ends early, at once, when the provoker is KO'd, petrified, or leaves the field. Re-provoking replaces the provoker. |
+
+## Items (M1-CMB-06)
+
+`BattleEngine.use_item(item_id, targets, items)` is a battle action like a skill. The item's effects come from `items.json` (`battle` block, run by `ItemBattleAction`). It ends the user's turn with the **item's rank**, consumes exactly one, and costs nothing if refused (`not_your_turn`, `unknown_item`, `no_item`, `no_valid_target`). Items are **fixed numbers**, not stat-scaled. They ignore Silence, Provoke and Reflect.
+
+```
+revive_hp(max_hp, hp_pct) = max(REVIVE_MIN_HP, floor(max_hp × hp_pct / 100))
+item_damage(amount, aff)  = clamp(amount × el_num ÷ el_den, −DAMAGE_CAP, DAMAGE_CAP)   # ignores stats, defense, barriers
+heal_hp / restore_mp      = the item's amount, clamped to max (heal goes through Zombie)
+```
+Examples: revive 25% of 420 → 105; of 301 → 75; of 3 → 1. Item damage 150 vs normal 150, weak 225, resist (151) 75, immune 0, absorb −150 (heals); 20000 → 9999.
+
+- **Revive** targets only the KO'd (HP 0). The revived unit rejoins the timeline `action_delay(agi, DEFAULT_RANK, speed)` after now, the same rule as a swap-in for a KO'd member. Time never runs backwards.
+- **Petrify:** a petrified ally is neither alive nor fallen. Only an item whose `cure` lists `petrify` reaches them (`ItemBattleAction.can_target` / `cures`); none ships yet. The cured unit rejoins `action_delay(agi, DEFAULT_RANK)` after now.
+- **Zombie:** a revive item may target a *living* Zombie ally and KOs them outright (the hit reports `zombie_felled`). Healing items harm a Zombie by their amount.
+- **Delay** items use `delay_push` (§ Time: diminishing returns, immunity), applied by the engine, not by `ItemBattleAction`. **add_status** items go through wards and the normal status rules. **Drag Net** is rank 3 (was 2): a 2-rank push for a full Attack-length turn, and a second net before the foe acts pushes half as far.
+- **Preview:** `preview_item(item_id, target, items, count)` shows the item's rank, its delay push, the time statuses it adds, a revived ally rejoining, and a felled Zombie leaving.
+- `Formulas.revive_hp` / `item_damage` mirror `ItemBattleAction.revive_hp` / `fixed_damage` (Progression's reference implementation), and a test keeps them equal.
+
+## Equipment in battle (M1-CMB-06)
+
+`EquipmentEffects.apply_to` (Progression) leaves engine-facing data on each party combatant (`BattleCombatant.equipment()`, metadata key `equipment_effects`). The engine applies it as follows:
+
+| Data | Rule |
+|---|---|
+| `attack_elements` | The **basic Attack** (`attack`, element `none`) hits with the listed element the target is **weakest to**, comparing element ratios exactly (weak > normal > resist > immune > absorb). Ties go to the first in slot order. Every other skill keeps its own element. The hit reports `element`. |
+| `on_hit_statuses` | After a **landed physical hit** (any physical skill), while the target still stands, each `{id, chance, duration}` rolls `randi_range(1, 100) ≤ chance` on the battle RNG, in list order. This happens before the skill's own statuses. |
+| `status_wards` | `add_status` refuses a warded status from any source (skills, items, strikes). |
+| `low_hp_statuses` | On while `hp × 100 < max_hp × hp_below_pct`, and off once HP is at or above the threshold. The engine re-checks the field after every turn ends and after every swap. It removes only a status the equipment itself switched on, never the same status from a spell. If the status is removed while HP is still low, it comes back at the next check. A KO clears it. |
+
+Equipment "always" auto-statuses are ordinary duration −1 statuses. **Decision:** a future dispel may strip them like any other status. They do not return, but low-HP ones do while the condition holds.
+
+## Rewards (M1-CMB-06)
+
+At victory:
+- **Lume:** `currency_award()` = Σ every enemy's `currency` (`enemies.json`, petrified enemies included) × `currency_multiplier(credited_ids())`. The multiplier is a hook, `EquipmentEffects.currency_multiplier` (Full Net ×2), and ×1 when unset.
+- **Drops:** `drop_awards()` is rolled **once** when the battle is won, on the battle RNG. For each enemy in encounter order, each `drops` entry `{item, chance}` adds one item when `randi_range(1, 100) ≤ chance`.
+
+Escape and defeat award nothing. Sandbox values: Reef Crab 24 lume (Crab Carapace 50%, Salt Tonic 10%), Lantern Eel 20 (Eel Lantern 50%, Salt Tonic 10%), Gull Harrier 18 (Gull Quill 50%, Salt Tonic 10%), so 62 lume per sandbox win. Drownbell's ~300 lands with its encounter data.
 
 ## Escape
 
@@ -134,7 +179,7 @@ Every party member who was **on the field at any point** in the battle (they sta
 
 ## Not yet specified (owned by Combat, tracked in M1 tasks)
 
-Swell gauge fill rates (M1-CMB-04), steal and item formulas including status cures and revival (Progression), and Vowbound stat scaling from Asha (M2).
+Swell gauge fill rates (M1-CMB-04), steal formulas, a Petrify cure item, and Vowbound stat scaling from Asha (M2).
 
 ## Progression
 

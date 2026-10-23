@@ -36,9 +36,9 @@ SIM_SCRIPT = "res://tools/balance/sim_main.gd"
 PREFIX = "SIM_RESULT "
 LOG_MARKER = "<!-- tuning-log -->"
 DEFAULT_SEEDS = 1000
-RUN_FIELDS = ["suite", "encounter", "policy", "seed", "outcome", "turns", "party_turns", "party_ko", "items"]
-SUMMARY_FIELDS = ["suite", "chapter", "encounter", "policy", "n", "wins", "win_pct", "band", "in_band",
-                  "timeouts", "mean_turns", "p90_turns", "mean_party_ko", "mean_items"]
+RUN_FIELDS = ["suite", "encounter", "policy", "seed", "outcome", "turns", "party_turns", "party_ko", "items", "lume"]
+SUMMARY_FIELDS = ["suite", "chapter", "encounter", "loadout", "policy", "n", "wins", "win_pct", "band", "in_band",
+                  "timeouts", "mean_turns", "p90_turns", "mean_party_ko", "mean_items", "mean_lume"]
 
 
 def load_targets(path: Path = TARGETS) -> list[dict]:
@@ -58,6 +58,8 @@ def run_suite(godot: str, suite: dict, seeds: int) -> list[dict]:
                f"--encounter={suite['encounter']}", f"--active={','.join(suite['active'])}",
                f"--reserve={','.join(suite['reserve'])}", f"--policies={policies}",
                f"--seeds={seeds}", f"--out={out}"]
+        if suite.get("loadout"):
+            cmd.append(f"--loadout={suite['loadout']}")
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=3600)
         if proc.returncode != 0 or not out.exists():
             sys.stderr.write(proc.stdout + proc.stderr)
@@ -79,12 +81,14 @@ def summary_rows(suite: dict, results: list[dict]) -> list[dict]:
         band = suite["bands"][r["policy"]]
         rows.append({
             "suite": suite["id"], "chapter": suite["chapter"], "encounter": suite["encounter"],
+            "loadout": suite.get("loadout", "bare"),
             "policy": r["policy"], "n": r["n"], "wins": r["wins"], "win_pct": round(r["win_pct"], 1),
             "band": band_text(band),
             "in_band": (in_band(r["win_pct"], band) and r["timeouts"] == 0
                         and r["p90_turns"] <= suite.get("p90_turns_max", r["p90_turns"])),
             "timeouts": r["timeouts"], "mean_turns": round(r["mean_turns"], 1), "p90_turns": r["p90_turns"],
             "mean_party_ko": round(r["mean_party_ko"], 2), "mean_items": round(r["mean_items"], 2),
+            "mean_lume": round(r.get("mean_lume", 0.0), 1),
         })
     return rows
 
@@ -99,18 +103,21 @@ def markdown(rows: list[dict], pending: list[dict], seeds: int, today: str) -> s
         "",
         "`turns` counts every action by both sides (automatic Berserk/Confuse turns included, "
         "turns lost to Stop/Sleep excluded). `party KO` is the mean number of party members "
-        "down (KO or stone) at the end. Items don't exist yet, so `items` is always 0 (hook in `SimPolicy.items_used`).",
+        "down (KO or stone) at the end. `items` is the mean number of consumables used (only `smart` uses them), "
+        "and `lume` the mean battle lume. `loadout` is the gear and consumables the party carries "
+        "(`game/data/battle/sim_policies.json`, see balance_targets.md).",
         "",
-        "| Chapter | Encounter | Policy | Win % | Band | OK | Mean turns | p90 turns | Party KO | Items |",
-        "|---|---|---|---|---|---|---|---|---|---|",
+        "| Chapter | Encounter | Loadout | Policy | Win % | Band | OK | Mean turns | p90 turns | Party KO | Items | Lume |",
+        "|---|---|---|---|---|---|---|---|---|---|---|---|",
     ]
     for r in rows:
         ok = "yes" if r["in_band"] else "**NO**"
-        lines.append(f"| {r['chapter']} | `{r['encounter']}` | {r['policy']} | {r['win_pct']:.1f} | {r['band']} | "
-                     f"{ok} | {r['mean_turns']:.1f} | {r['p90_turns']} | {r['mean_party_ko']:.2f} | "
-                     f"{r['mean_items']:.2f} |")
+        lines.append(f"| {r['chapter']} | `{r['encounter']}` | {r['loadout']} | {r['policy']} | {r['win_pct']:.1f} | "
+                     f"{r['band']} | {ok} | {r['mean_turns']:.1f} | {r['p90_turns']} | {r['mean_party_ko']:.2f} | "
+                     f"{r['mean_items']:.2f} | {r['mean_lume']:.1f} |")
     for s in pending:
-        lines.append(f"| {s['chapter']} | `{s['encounter']}` | (all) | pending | see targets | n/a | | | | |")
+        lines.append(f"| {s['chapter']} | `{s['encounter']}` | {s.get('loadout', 'bare')} | (all) | pending | "
+                     "see targets | n/a | | | | | |")
     if pending:
         lines += ["", "Pending suites have target bands but no encounter data yet: "
                   + ", ".join(f"`{s['encounter']}`" for s in pending) + "."]

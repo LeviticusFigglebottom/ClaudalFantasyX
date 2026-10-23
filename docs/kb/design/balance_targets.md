@@ -24,6 +24,21 @@ Each policy is a `SimPolicy` subclass. Policies use only the engine's public API
 
 "Expected damage" is the real formula at mean variance (100%), without crits, times the hit chance, and 0 for magic the target would Reflect. It is deterministic.
 
+## Party assumptions (gear and consumables)
+
+Every suite names a **loadout** in `game/data/battle/sim_policies.json` (`loadouts`): the equipment each character wears (`EquipmentEffects` is applied as a `party_modifier`, so stats, edges, wards and Full Net count) and the consumables the party carries. Bands only hold for their loadout.
+
+| Chapter | Loadout | Gear | Consumables |
+|---|---|---|---|
+| M1 sandbox (early Ch2) | `m1_starting` | Starting gear (`equipment.json` `starting`) | 2 Salt Tonic |
+| M1 sandbox, geared (measured, its own bands) | `m1_tier1` | Every hero's tier-1 piece, weapon and armor, with their pre-filled ability | 4 Salt Tonic, 1 Relighting Wick |
+| Ch3 boss (Drownbell) | `m1_tier1` | A slice player can afford one or two tier-1 pieces; we assume all of them, the generous case | as above |
+| Later chapters | add one loadout per chapter: the gear that chapter's shops sell, and about one consumable per expected fight | | |
+
+Only `smart` uses items. Its rule: a heal item on the most hurt ally below `heal_below_pct` when the actor can't heal by skill, and a revive item on a fallen active member when no reserve is left to swap in. Gear moves `naive` by about 14 points in the sandbox (10.9% → 25.1%), which is the point of buying it; the showcase bands are defined for starting gear.
+
+**Lock check.** `tests/unit/test_battle_turn_events.gd` runs a Drag-Net-only party (99 nets) against the sandbox and asserts that the slowest foe (the crab) still acts at least once per 10 party turns. With rank-2 nets and unbounded stacking, it never acted.
+
 ## Metrics
 
 | Column | Meaning |
@@ -31,7 +46,8 @@ Each policy is a `SimPolicy` subclass. Policies use only the engine's public API
 | Win % | Victories ÷ seeds. Loss rate = 100 − win %. Timeouts (more than `max_actions` = 2000 actions) count as misses. |
 | Mean / p90 turns | Actions taken by both sides, automatic (Berserk/Confuse) turns included, lost Stop/Sleep turns excluded. p90 is nearest-rank. |
 | Party KO | Mean party members down (KO or stone) at the end. |
-| Items | Mean items used. Items don't exist yet (Progression), so this is 0; `SimPolicy.items_used` is the hook. |
+| Items | Mean consumables used (the `smart` item rule). |
+| Lume | Mean battle lume (`currency_award()`, × Full Net when worn). Validates economy.md's "about 60 lume per early fight". |
 
 ## Target curve by chapter
 
@@ -54,7 +70,7 @@ The simulated party for a chapter is the party the story gives you there, with t
 
 ### M1 sandbox: `sandbox_reef` (showcase)
 
-Rhen and Asha active, Toma and Ysolde in reserve, against Reef Crab (answer: Toma's Shell Breaker), Lantern Eel (answer: Ysolde's fire) and Gull Harrier (answer: Rhen's accuracy). The sandbox exists to teach swapping, so it is deliberately harsher than a Ch1 regular fight.
+Loadout `m1_starting`. Rhen and Asha active, Toma and Ysolde in reserve, against Reef Crab (answer: Toma's Shell Breaker), Lantern Eel (answer: Ysolde's fire) and Gull Harrier (answer: Rhen's accuracy). The sandbox exists to teach swapping, so it is deliberately harsher than a Ch1 regular fight.
 
 | Policy | Band | Why |
 |---|---|---|
