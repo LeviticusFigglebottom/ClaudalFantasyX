@@ -1,0 +1,44 @@
+[gd_resource type="Environment" load_steps=5 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_cumulus.gdshader" id="1_sky"]
+[ext_resource type="Texture3D" path="res://game/levels/_tests/haluna_mood/lut_ch02_noon.png" id="2_lut"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("1_sky")
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+
+[resource]
+resource_name = "haluna_ch02_noon"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_energy = 0.65
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.58
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.4
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+sdfgi_cascades = 6
+sdfgi_min_cell_size = 0.3
+sdfgi_energy = 1.0
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.03
+glow_hdr_threshold = 1.2
+fog_enabled = true
+fog_light_color = Color(0.749, 0.867, 0.91, 1)
+fog_density = 0.00035
+fog_aerial_perspective = 0.7
+fog_sky_affect = 0.0
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.003
+volumetric_fog_albedo = Color(0.91, 0.95, 0.96, 1)
+volumetric_fog_length = 96.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("2_lut")

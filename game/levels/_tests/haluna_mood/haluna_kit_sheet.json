@@ -1,0 +1,10 @@
+{
+ "schema": "hymn-zone-layout/1",
+ "zone": "haluna kit sample sheet (M1-ENV-01 review)",
+ "seed": 3,
+ "kit_dir": "res://assets/environments/kits/haluna/",
+ "materials_dir": "res://assets/environments/kits/haluna/materials/",
+ "lod1_from_m": 400.0,
+ "lod_end_m": 2500.0,
+ "lod_margin_m": 2.0
+}

@@ -281,6 +281,56 @@
         960,
         540
       ]
+    },
+    {
+      "id": "haluna_h01_village_from_sea",
+      "scene": "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+      "camera": "Cameras/H01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 36
+    },
+    {
+      "id": "haluna_h02_tidewall_lane",
+      "scene": "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+      "camera": "Cameras/H02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 36
+    },
+    {
+      "id": "haluna_h03_lintel_gull",
+      "scene": "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+      "camera": "Cameras/H03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 36
+    },
+    {
+      "id": "haluna_h04_dock",
+      "scene": "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+      "camera": "Cameras/H04",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 36
+    },
+    {
+      "id": "haluna_h07_chapel_court",
+      "scene": "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+      "camera": "Cameras/H07",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 36
     }
   ]
 }
