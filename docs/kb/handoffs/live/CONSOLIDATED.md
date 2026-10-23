@@ -1,6 +1,6 @@
 # CONSOLIDATED HANDOFF: start here
 
-**Last updated:** 2026-10-23 ~23:00 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
+**Last updated:** 2026-10-24 ~00:30 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
 A new account, Lead or environment should be able to resume from this file and the files it links. Keep it current after every merge batch (CLAUDE.md §7a).
 
 ## 1. What this is
@@ -54,7 +54,22 @@ These are lost if the container restarts. Re-launch from the task files if so.
   - M1-CHR-09, Asha hair round 4 (crown shell, face-framing lock, lip thickness, doll-like eyes).
 - **Rule learned:** Asha's materials change only through write_materials.py.
 
-## 4e. Latest (Lead, ~23:00 UTC)
+## 4f. Latest (Lead, ~00:30 UTC on 2026-10-24)
+- **Merged:**
+  - M2-UI-01/02 (904e09f);
+  - M2-NIT-03 (Swell balance; naive_swell 32.1% accepted against a 35% line, structural fix in M2-CMB-02, running);
+  - the PC's qa-05c, perf-sweep, rnd-15, rnd-18 and rnd-20;
+  - SPEC v1.2 (neutral VFX tier wording; never use -ra/-ga style names).
+- **REVERTED on the integration branch:** the PC's RND-17 (dusk motes, two-hue motes and copper horizon halos) and ENV-03 (vegetation LOD fade ghosts). Review sweep N found they broke lavapipe shots. The PC resubmits them as gpu/rnd-17-dusk-motes-v2 and gpu/env-03-vegetation-v2. All ten asha_* baselines were re-approved for RND-20.
+- **LESSON (gotcha):** never merge a gpu/* branch before running its affected shots on lavapipe (scoped HYMN_SHOTS) in lead/integration. ci32 is running to confirm the integration branch is green after the reverts.
+- **PC queue:** RND-17 v2 → ENV-03 v2 → rnd-18-20 follow-ups → M2-RND-01 → grief mouth fill → M2-RND-03 battle VFX → M2-RND-02 underwater → M2-RND-04 Drownbell VFX. **The PC can now message the Lead** (it messaged when its queue ran empty).
+- **Asha (QA-05c GPU verdict):**
+  - **passes:** neutral, and the smile after RND-20;
+  - **fails:** grief (black mouth interior, gold-looking teeth), the lash comb, the orange lid band, the brow notch.
+  - **Next round:** a round-6 Character task, plus a Rendering cavity-fill task, still to file.
+- **Perf:** treat Undertow High at 1440p as at risk on an RTX 3060. The prewarm worst frame is 230–620 ms against the §4.2 50 ms limit; it needs a task (shader baker, a warm-up stage kept alive) and possibly an ADR.
+
+## 4e. Earlier (Lead, ~23:00 UTC)
 - **Merged:**
   - M2-ARC-01 + M2-CMB-01 (save **v6**, Swell inputs for all four heroes, unlocks, Swell in the sim): 5b6243a;
   - M1-ART-02 (post-import scripts): 99d2b26;
