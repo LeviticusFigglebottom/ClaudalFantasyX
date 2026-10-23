@@ -44,6 +44,7 @@ Only `smart` uses items. Its rule: a heal item on the most hurt ally below `heal
 | Column | Meaning |
 |---|---|
 | Win % | Victories ÷ seeds. Loss rate = 100 − win %. Timeouts (more than `max_actions` = 2000 actions) count as misses. |
+| Band | The win band, plus the ease ceiling (`mean_turns_min`) where the suite sets one. A row is OK only if it meets both and p90 turns. |
 | Mean / p90 turns | Actions taken by both sides, automatic (Berserk/Confuse) turns included, lost Stop/Sleep turns excluded. p90 is nearest-rank. |
 | Party KO | Mean party members down (KO or stone) at the end. |
 | Items | Mean consumables used (the `smart` item rule). |
@@ -77,8 +78,10 @@ Loadout `m1_starting`. Rhen and Asha active, Toma and Ysolde in reserve, against
 | `naive` | 5–15% | Mashing should usually lose, but not always: hopeless fights read as unfair. |
 | `lowest_hp` | report only | Focus fire is a real tactic and lands near 80% whenever naive sits in its band (the two are tied by the lineup). The swap reward is the gap to `role_answer`. |
 | `role_answer` | ≥ 85% | The elegant answer must reliably work. |
-| `smart` | ≥ 85% | Never worse than `role_answer` in practice. |
+| `smart` | ≥ 85%, and ≥ 16 mean turns | Never worse than `role_answer` in practice. The turns floor is the ease ceiling (below). |
 | p90 turns | ≤ 40 | A showcase fight stays short. |
+
+**Ease ceiling (M1-CMB-07).** `smart` wins every seed (100.0%), so a win band can't see a regression that makes the sandbox *easier*. A win ceiling below 100% would fail today's numbers. The suite sets `mean_turns_min` in targets.json instead: `smart` must still average at least 16 actions per fight (measured 17.9 at 1000 seeds and 18.1 at the 200 seeds CI uses, so the floor allows about a 10% shorter fight). The geared suite `sandbox_reef_tier1` floors `smart` at 14.5 (measured 16.1 and 16.3). `sim.py` marks a row out of band when it misses the floor, and `test_sandbox_battle.gd` asserts the starting-gear floor at 200 seeds. Mean turns is used rather than party KOs because KOs are rare for `smart` (0.07 to 0.12 per fight) and too noisy at 200 seeds. If a deliberate change makes the fight shorter, re-measure and move the floor with a tuning-log note.
 
 ### Ch3 boss: Drownbell (vertical slice), `boss_drownbell` (pending data)
 
