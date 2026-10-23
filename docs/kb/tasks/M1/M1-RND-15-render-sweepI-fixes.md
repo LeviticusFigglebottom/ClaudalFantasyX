@@ -92,3 +92,19 @@ From the review-sweep-I entries (file:line references there).
     - criterion 4's two measurements;
     - the sweep-J should-fixes S1–S5. S1 (scene_router.gd's non-split profile now counts the prewarm wait) and S3 (the first tick halves the batch) affect how the prewarm number will read, so fix them **before** the PC measures.
   - **Next:** the Lead re-orders the PC queue if prewarm should go before 2a, or splits criterion 4 into a gpu task so the lavapipe-side work can close.
+- 2026-10-23 environment (review-sweep-N, fresh reviewer): **criterion 4 is measured and the numbers are sound; the 50 ms limit is not met. Close RND-15 only by splitting that limit out.**
+  - **What I read:** `docs/kb/qa/gpu/2026-10-23-rnd-15-prewarm.md`, including the Lead follow-up; `git diff eee8f1f^1 eee8f1f` (shader_prewarm.gd, prewarm_materials.json, the bench tools); scene_router.gd:100-135; and SPEC §4.2 (SPEC.md:110).
+  - **Checks:** Godot 1174/0 (includes `shader_prewarm` and `scene_router`). No shot can change, because the prewarm stage is off-screen.
+  - **What passes:**
+    - **The method.** It traces the spawn frame, which the old `max_frame_ms` missed, and `--pre-scene` removes the one-time first-TAA cost. Cold and warm runs cover every preset.
+    - **The diagnosis.** The floor is the stage set-up (about 230–310 ms) plus single-shader compiles (90–430 ms). The slice constants can't move either.
+    - **The code.** Lazy entry loading is right. Sweep-J S3 is fixed (shader_prewarm.gd, `_frames_measured > 1`). `_build_entry` keeps the instanced and skipped counts consistent.
+    - **Ghosting.** The Low-TAA ghosting measure is reasonable: +30–40 % over static, with no trails. Low keeps TAA.
+  - **Verdict on criterion 4:** don't tick it. SPEC §4.2 ("No hitch over 50 ms during battle transitions") is a spec target, so missing it needs a decision, not a tuning pass.
+    - The Lead files a task (Systems + Rendering) covering the shader baker on export, a boot-time warm stage, and active-tier-only registration.
+    - If release builds can't meet 50 ms even after that, the Lead writes an ADR.
+    - Once that task exists, criterion 4 reads "measured; limit moved to <task>", and RND-15 can close.
+  - **Should-fix:**
+    - **S1: the lazy/batch-2 choice trades one 1.5 s freeze for seven 0.1–0.3 s stutters in Undertow** (the follow-up table). Under a black fade, the single freeze is less visible than repeated stutters. Unless the transition shows motion, I'd revert to batch 12 for Undertow-class scenes. The Lead's call: record it in the follow-up task.
+    - **S2: try `ResourceLoader.load_threaded_request` for the registry entries** (shader_prewarm.gd:233, :362). That moves the material load and front-end compile off the main thread. It's the one lever this report didn't measure.
+    - **S3: sweep-J S1 is still open in the code** (scene_router.gd:106, :129). With `split_swap` off, `swap_frame_start` is taken before the prewarm wait, so `frames[0]` includes the waited frames. The report is right that the bench doesn't go through the router, but the router's own profile is still skewed. Re-take the timestamp after the wait.
