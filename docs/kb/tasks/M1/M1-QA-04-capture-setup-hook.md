@@ -25,3 +25,14 @@ A per-shot `setup` dictionary in shots.json (globals, node properties, time) ins
 - Moving the rigs off `CAPTURE_SCENE` detection belongs to their owners: request **M1-RND-13**.
 
 ## Review log
+- 2026-10-23 rendering (review-sweep-I, fresh reviewer): **approve-with-fixes.** No blockers.
+  - **What I read:** the task, handoff qa-1, `git log -p` for capture.gd, capture_setup.gd, compare.py and test_screenshots.py (merge ae733de), and docs/kb/qa/screenshots.md "Per-shot setup".
+  - **Checks:** Godot `--filter=capture_setup` 7 run, 0 failed. Tool tests 359 OK. `compare.py --manifest-only` runs in ci_local. No shot in shots.json has a `setup` yet, so baselines are untouched by construction.
+  - **What passes:** an absent setup is a no-op (begin, attach, hold and end all change nothing). Every failure path calls `end()`, so `Engine.time_scale` and the viewport are restored even when the shot errors. A typo fails the shot: an unknown key, node, property or global. Type coercion refuses a mismatch. Globals are typed from the project.godot declaration. The hold priority (`1 << 20`, capture.gd:18 and :25) beats per-frame rig writes, which the measurement confirms (hymn_wind_time 80: 0.079).
+  - **Should-fix:**
+    - **S1 (hold order is not "last write").** capture_setup.gd:103-120 runs in `_process`. SceneTree processes Tweens *after* node `_process`, and `AnimationPlayer` in physics or manual callback modes and `RenderingServer.frame_pre_draw` callbacks can also write later. A held property that a Tween animates is overwritten every frame. The docs (screenshots.md "Hold order") promise "the last write before each frame is drawn". Either re-apply on `RenderingServer.frame_pre_draw` as well, or document the Tween and AnimationPlayer exceptions, and pair `nodes` with `time_scale: 0` for animated properties.
+    - **S2 (globals restore to the project default, not the prior live value).** capture_setup.gd:131-133. After a shot with a `setup.globals` entry, the next shot in the same process starts from the project.godot default, not from what the previous scene left. That is arguably cleaner, but it makes results depend on which shots a `HYMN_SHOTS` subset runs together. State in screenshots.md that capture scenes must not rely on globals inherited from an earlier shot (rigs that set their globals in `_ready` are fine).
+  - **Nits:**
+    - `coerce` passes unknown types through, so a `nodes` value for a Transform3D or Basis property fails only at `_set_prop`'s type check, with a generic message. Fine, but list the supported JSON shapes in the docs table.
+    - `time_scale: 0` also freezes physics. Mention it beside "frame-counting rigs keep counting".
+    - The M1-RND-13 request (move the rigs off `CAPTURE_SCENE`) is the real payoff. Please keep it on the board.
