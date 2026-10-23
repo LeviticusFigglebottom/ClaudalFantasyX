@@ -2,8 +2,8 @@
 id: M1-RND-03
 title: Undertow storm prototype
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: rendering-stream-5
 depends_on: [M1-RND-01]
 milestone: M1
 request-from: ""
