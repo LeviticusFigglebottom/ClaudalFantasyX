@@ -288,6 +288,15 @@ func test_the_fixture_opening_can_set_a_gauge() -> void:
 	assert_eq(engine.find(&"spare").swell, 30)
 
 
+func test_an_unreadable_config_is_empty_and_gives_nobody_a_swell() -> void:
+	var cfg := BattleSwell.load_config("res://tests/unit/no_such_swell.json")
+	assert_eq(cfg, {}, "a missing file reads as no config (and logs an error)")
+	var none := BattleSwell.new(cfg)
+	assert_true(none.modes.is_empty())
+	assert_true(none.unlocked.is_empty())
+	assert_false(none.has_swell(BattleCombatant.from_dict(&"rhen", BattleCombatant.TEAM_PARTY, {})))
+
+
 func test_the_live_config_has_at_least_three_modes_and_rhens_input() -> void:
 	var cfg := BattleSwell.load_config()
 	assert_true(cfg == BattleSwell.load_config(), "parsed once")
