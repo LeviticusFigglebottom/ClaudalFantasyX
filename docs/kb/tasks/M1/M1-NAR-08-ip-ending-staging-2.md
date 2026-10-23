@@ -67,3 +67,23 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
   - Nit: in the 'Get up' branch, `@anim asha rise_to_stand` is immediately followed by `@camera H05 blend=0.0` (:77–78). If `@anim` doesn't block, H05 opens mid-rise, but haluna.md:167 says she "has risen". Add a `@wait`, or note it for the sequencer.
   - Nit: E3 "the oil wick in his old lantern" (act3_ending.md:93). State that the lantern is unlit, so the farewell stays keyed only by Dace's motes (:83).
   - Done well: Ice is off Cloudloom and the Sanctum. The Ch12–15 no-frost rule is clear (0015:37). The grep finds no stray ice, frost or glacier text in story or art docs, apart from the generic glyphs in ui.md:160 the author already noted. S10's hold and the color script's practical-keyed rule are consistent.
+- 2026-10-23 cinematics + IP check (review-sweep-E): **approve-with-fixes.** I read ADR 0016 (Lead-accepted), act_outline.md Ch9-Ending (:98-207), act3_ending.md §0 and E1-E6, color_script.md:31-47 and :603-624, haluna.md:172, ch02_girl_on_the_beach.dlg:55-100, and the dd051d5, 5b80162 and 35bf109 diffs. dlgc and the tools tests are clean.
+  - **Every sweep-D item is addressed.**
+    - B1: the escape goes out across the lagoon, and no zone is under the city. The wedding has no revenant reveal and no rite. The founding truth comes earlier, on paper in Ch13. The temptation is "go home", and Sefir takes the heart himself in Ch21.
+    - S1: the 0015 order wording is corrected, and the simile is now "silt".
+    - S2: rule 7 (act3_ending.md:18), released at H09 with ascent after, reconciles the stepped glow with SPEC §3.5.
+    - S3: 0.04 is held through E5, with 0.0 only on the cut to E6.
+    - S4: E6 is front three-quarter, with the angle given against her nose line.
+    - S5: the Stay branch resolves the hand (`take_hand`, then both rise) before the walk. The 0.8 s wait and the unlit E3 lantern are in.
+    - With these, the Act II run after the wedding no longer follows the inspiring game's holy-city → beneath-the-city → ruined-city chain.
+  - **Should-fix S1 (IP, cross-cutting; see M1-NAR-09 B1):** ADR 0016 passes Kerrid on staging only (0016:65, :72). The *content* of his confession still follows the inspiring game's dead mentor:
+    - he was killed confronting the man behind the ritual at its last site (kerrid.md:7);
+    - he is kept walking by promises to the heroine's parent and the hero's father (kerrid.md:9; act_outline.md:152 "the promise that kept him walking");
+    - "Kerrid finds the spot where he died" at the ritual site (act_outline.md:158);
+    - he is the first to depart in the finale (act_outline.md:203; kerrid.md Ending).
+
+    Add a Kerrid row to 0016's check that covers these beats, and re-stage or accept each with a reason. For example, Imra goes first and Kerrid goes last, or after Dace.
+  - **Should-fix S2 (IP, unrecorded residual):** Liss is the chief wright's daughter and the younger sister of the flotilla's heir (liss_varrow.md:7). The party reaches her people's haven and her father (act_outline.md:153), and the ship that opens the world is built in that haven's dry-dock (:171-177). In the inspiring game, the outlaw tinkerer girl is the chief's daughter with an elder brother, and the airship comes from her father's people at their home. Ours differs in real ways: the brother dies, the ship is Dace's, and it comes after the Choir. 0016 has no row for it. Record it as accepted with a reason, or change one element (for example, Liss is not the chief's child).
+  - **Should-fix S3 (E6 blocking):** act3_ending.md:102 says "The shot opens with her facing the dark sea, side-on to the lens". But the camera is 4 m shoreward on the dock, looking out to sea. Facing the sea from there, she has her back to the lens, and the two can't both hold. State that she stands across the dock end, facing the sea on one named side, so the turn back to Haluna lands at the stated 40°. Mirror the fix in haluna.md:172 and color_script.md:624.
+  - **Nit:** in the Stay branch, `offer_hand` (.dlg:67) is held across six lines (030-034, then 014/015) before `take_hand` (.dlg:95), through Toma's formal introduction. It reads, but consider taking the hand after 030, or add a comment that she keeps it out on purpose.
+  - **Nit:** color_script.md:47 says E4-E5 fall below 0.08 "because there the glow is meant to fade from sight". At 0.04 the on/off ratio is 1.3× (color_script.md:40), so E5's "nearly dark, but not yet" and E6's full dark may look the same. When the mood frame is built, Rendering should confirm the cut to 0.0 is perceptible, or E5 should hold nearer 0.06.
