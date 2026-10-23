@@ -43,7 +43,7 @@ DLG_CH03_VERSE_006,...Asha.
 DLG_CH03_VERSE_007,So. How long does a verse take?
 DLG_CH03_VERSE_008,"As long as it takes. The last time, the village waited on the beach until dark."
 DLG_CH03_VERSE_009,You weren't here for that one?
-DLG_CH03_VERSE_010,I was on the wall at Corrow. I came home after.
+DLG_CH03_VERSE_061,"I was at Ansedra then, at the temples. I heard of it by letter."
 DLG_CH03_VERSE_011,Do you ever put that spear down?
 DLG_CH03_VERSE_012,To eat.
 DLG_CH03_VERSE_013,Do you know what a Cantor is?
@@ -57,7 +57,7 @@ DLG_CH03_VERSE_020,Seems like a lot of fuss for one song.
 DLG_CH03_VERSE_021,"You do not mock the rites, Rhen. You may ask about them. That is different."
 DLG_CH03_VERSE_022,"I'm asking. Badly, but I'm asking."
 DLG_CH03_VERSE_023,Then ask her. Not me. She has earned the telling of it.
-DLG_CH03_VERSE_024,I have guarded her since she was nine. She used to hide in the net racks so I would have to find her.
+DLG_CH03_VERSE_062,"I have guarded her three years. Before that, on leave, I had to find her in the net racks. She hid on purpose."
 DLG_CH03_VERSE_025,And now?
 DLG_CH03_VERSE_026,Now she does not hide. I find I miss it.
 DLG_CH03_VERSE_027,"This morning, in the water. You stayed with them."
@@ -84,9 +84,7 @@ DLG_CH03_VERSE_047,Just now. It's the first verse.
 DLG_CH03_VERSE_048,Rhen?
 DLG_CH03_VERSE_049,My father hummed that. Every night.
 DLG_CH03_VERSE_050,Every night until he didn't.
-DLG_CH03_VERSE_051,Your father. The one with the lantern.
-DLG_CH03_VERSE_052,Yeah.
-DLG_CH03_VERSE_053,"My mother hummed it to me every night, and sang it from this door. I was seven. I'd forgotten it until he gave it back."
+DLG_CH03_VERSE_063,"My mother hummed it to me every night, and sang it from this door. I was seven. I'd forgotten it until tonight."
 DLG_CH03_VERSE_054,...He never said where he learned it.
 DLG_CH03_VERSE_055,Nowhere. Must have been the wind.
 DLG_CH03_VERSE_056,All right. Not today.

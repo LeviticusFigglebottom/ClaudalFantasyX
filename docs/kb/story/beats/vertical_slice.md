@@ -90,7 +90,8 @@ Three rotating shell-basins redirect water until the inner pool fills and the ch
 - **S08:** a single held frame of Ilun's chamber. Ilun is **bound light** (`glimmer_bound`: steady, never drifting, the same stillness as the Lit Age ring). Then fade.
 - **S06:** Rhen and Toma on the outer steps, a gap of air between them. **The mandated exchange:** "Do you know what a Cantor is?" "...Someone who sings?" "Yes. Someone who sings."
 - **Choice:** "And then she comes home?" (sets `ch03_rhen_asked_after`; Toma's non-answer: "No. It is not." That one is for the player, and it lands at the Ch4 wake) or "Seems like a lot of fuss for one song" (Toma's voice-guide line about mocking versus asking). Both end on **"Then ask her. Not me. She has earned the telling of it."**
-- Toma on guarding her since she was nine (the net racks). If `ch02_rhen_stayed_with_dead`, Toma brings up the morning in the water: "Somebody should have." "Yes. I think so too."
+- Rhen asks whether Toma saw the last verse: "I was at Ansedra then, at the temples. I heard of it by letter." (He was at Ansedra in 1001 and came home only at Asha's naming: [ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md) (d).)
+- Toma on his three sworn years, and before them the leaves home when she hid in the net racks on purpose so he would have to find her. He is her guardian since her naming, never since childhood (review-sweep-G). If `ch02_rhen_stayed_with_dead`, Toma brings up the morning in the water: "Somebody should have." "Yes. I think so too."
 
 ### B09. Cutscene B, part 2: the first verse (C, 3 min) — *scripted*
 - **S09, sunset:** Asha comes out with Ilun's light lifting off her skin in slow upward spirals (`glimmer_lift`, warm gold). **This is the first released light in the game.** Nobody names the rule. Rhen panics: "Is that normal? Toma, is that normal?"
@@ -98,7 +99,7 @@ Three rotating shell-basins redirect water until the inner pool fills and the ch
 - **The rite:** the first verse is sung toward home first. The shrine faces west, toward Haluna and the sun.
 - **The verse** (four `#sung #lamptongue` lines, `hush_first_verse`): *Vey ennu, vey ennu, / hal oan, ish karra. / Ennu re, ennu re... / ...mir.* Constructed from the bible's Lamptongue roots, roughly "water, sleep / shell-home, the light gathers / sleep again / stay." The translation is never shown. Like every verse, it ends on *mir* (stay).
 - **S10, recognition:** he knows it from the first phrase, so the **cut** to S10 lands on the second sung line and holds through the rest of the verse and his question, at least 6 s, with Asha's voice over his face. The face is layered: surprise at 0.3 s, quick and light, then grief at 0.6 s settling under it. Never a full-weight "surprised", which reads as comic shock. Then "...where did you learn that?" before he can stop himself.
-- **Choice:** "My father hummed that. Every night." (sets `ch03_rhen_named_lullaby`; "Every night until he didn't.") If he also named the lantern at dawn, Asha goes still again: "Your father. The one with the lantern." Then Asha: "My mother hummed it to me every night, and sang it from this door. I was seven. I'd forgotten it until he gave it back." A held look, then Rhen: "...He never said where he learned it." (It is a Velamir family lullaby. Dace heard Imra hum it on Haluna's dock years before she was named, without learning her name, and the two met only on the Corrow stair in 1001: [N-11](../decisions_log.md), [ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md). Neither child knows that yet.) Or he deflects ("Must have been the wind"), and she lets him, warmly: "That's twice you haven't answered me, Rhen Sallow. I'm patient." (or "Not today" if he did answer about the lantern).
+- **Choice:** "My father hummed that. Every night." (sets `ch03_rhen_named_lullaby`; "Every night until he didn't.") Asha goes quiet for a held beat, the same on every path. **She never connects the lantern to Rhen's father aloud in Act I** (Lead verdict, review-sweep-G B3: the old "Your father. The one with the lantern." is cut, and the link surfaces only in Kerrid's Ch15 confession). Then Asha: "My mother hummed it to me every night, and sang it from this door. I was seven. I'd forgotten it until tonight." A held look, then Rhen: "...He never said where he learned it." (It is a Velamir family lullaby. Dace heard Imra hum it on Haluna's dock years before she was named, without learning her name, and the two met only on the Corrow stair in 1001: [N-11](../decisions_log.md), [ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md). Neither child knows that yet.) Or he deflects ("Must have been the wind"), and she lets him, warmly: "That's twice you haven't answered me, Rhen Sallow. I'm patient." (or "Not today" if he did answer about the lantern).
 - **The toll:** silence, then a bell tolls *under the water*. "The tide has turned." "Something heard that." Cut to C08 with the bell's hood breaking the surface, its wounds bleeding **held** cyan. Toma: "On my shield. Everyone, on my shield, now." The `start_battle drownbell` event follows.
 - *Story logic:* Undertow-spawn reach for the living, and the Drownbell rises because the verse was sung. Beauty draws the danger.
 
@@ -119,7 +120,7 @@ All are declared in `game/data/flags.tres`. Read and write them only through `Ga
 | Flag | Set by | Read by | Payoff |
 |---|---|---|---|
 | `ch02_met_asha` | B01 (end) | zone gating | — |
-| `ch02_rhen_named_lantern` | B01 choice 1 | B01 close, B09 | Asha's second stillness; Ch6 (Liss clocks the lantern) |
+| `ch02_rhen_named_lantern` | B01 choice 1 | B01 close, B09 | B09's deflect reply ("Not today" or "twice"); Ch6 (Liss clocks the lantern). It no longer gives Asha a second stillness or any line linking the lantern to Dace (review-sweep-G B3) |
 | `ch02_rhen_stayed_with_dead` | B01 choice 2 | B08 | Pell, Act II ("held. Gently. But held.") |
 | `ch02_saved_once` | B03, save shrine (gameplay) | tutorial gating | — |
 | `ch02_heard_pila` | B04 | B09 | Ch20: Asha can tell Ilun that Pila lived to ninety-one |
@@ -213,12 +214,13 @@ Generated by `python3 tools/dialogue_stats.py` (it counts every branch's words o
 | Scene | Lines | Words written | Words a player reads (one path) |
 |---|---|---|---|
 | `ch02_girl_on_the_beach` | 35 | 328 | 261–266 (mean 263) |
-| `ch03_the_first_verse` | 60 | 424 | 266–368 (mean 316) |
-| **Both cutscenes** | 95 | **752** | ~579 |
+| `ch03_the_first_verse` | 58 | 416 | ~269–360 (mean ~316) |
+| **Both cutscenes** | 93 | **744** | ~579 |
 
 *(M1-NAR-05: +5 words on the beach from line 021, and +12 on the told path of the verse from lines 053 and 054. The rest of the slice's budget is unchanged.)*
+*(M1-NAR-11, review-sweep-G: 061 replaces 010 (+3 on every path), 062 replaces 024 (±0), 063 replaces 053 (−3 on the told path), and 051/052 are cut (−8 on the told path with the lantern named). The per-path range and mean are estimated from those deltas; the written totals are from `dialogue_stats.py`.)*
 
-**Per speaker** (both scenes): Asha 289 (38%), Toma 221 (29%), Rhen 156 (21%), player options 50 (7%), narration 36 (5%). Rhen reads light on purpose because he jokes in short bursts, and his options and voice-overs add another ~86 words.
+**Per speaker** (both scenes): Asha 279 (38%), Toma 224 (30%), Rhen 155 (21%), player options 50 (7%), narration 36 (5%). Rhen reads light on purpose because he jokes in short bursts, and his options and voice-overs add another ~86 words.
 
 **Against SPEC §3.6** (40–60k words, ceiling 80k): at 40 min of a 30 h main story, the slice is **2.22%** of the game, so its fair share is **889–1,333 words**. The rest of the slice is budgeted at: B02 40, B03 140, B04 150, B05 40, B06 90, B07 15, B10 35, B11 90, B12 25 = **625**, for a slice total of **~1,360 words written**, or ~1,050 on a typical path without the side scene.
 - Projected to the full game at the slice's density: **~61k words**, just over the 60k target and well under the 80k ceiling. That's right for the opening chapters, which carry every introduction. Later dungeon chapters should run thinner.

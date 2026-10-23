@@ -49,7 +49,8 @@ grade: ch03_steps
 Rhen [neutral]: So. How long does a verse take? #line:ch03_verse_007
 Toma [neutral]: As long as it takes. The last time, the village waited on the beach until dark. #line:ch03_verse_008
 Rhen [smile]: You weren't here for that one? #line:ch03_verse_009
-Toma [neutral]: I was on the wall at Corrow. I came home after. #line:ch03_verse_010
+// ADR 0022 (d): Toma was at Ansedra's temples in 1001 and came home only at Asha's naming (1009).
+Toma [neutral]: I was at Ansedra then, at the temples. I heard of it by letter. #line:ch03_verse_061
 @wait 1.5
 Rhen [smile]: Do you ever put that spear down? #line:ch03_verse_011
 Toma [soft_smile]: To eat. #line:ch03_verse_012
@@ -72,7 +73,8 @@ Toma [sad]: Yes. Someone who sings. #line:ch03_verse_015
     Rhen [guilty]: I'm asking. Badly, but I'm asking. #line:ch03_verse_022
 Toma [neutral]: Then ask her. Not me. She has earned the telling of it. #line:ch03_verse_023
 @wait 1.0
-Toma [soft_smile]: I have guarded her since she was nine. She used to hide in the net racks so I would have to find her. #line:ch03_verse_024
+// ADR 0022 (d): sworn at her naming, three years ago. Before that he was the Haluna boy home on leave.
+Toma [soft_smile]: I have guarded her three years. Before that, on leave, I had to find her in the net racks. She hid on purpose. #line:ch03_verse_062
 Rhen [smile]: And now? #line:ch03_verse_025
 Toma [tender]: Now she does not hide. I find I miss it. #line:ch03_verse_026
 <<if $ch02_rhen_stayed_with_dead>>
@@ -143,13 +145,12 @@ Asha [worried]: Rhen? #line:ch03_verse_048
 -> My father hummed that. Every night. #line:ch03_verse_049
     <<set $ch03_rhen_named_lullaby = true>>
     Rhen [grief]: Every night until he didn't. #line:ch03_verse_050
+    // Lead verdict (review-sweep-G B3, ADR 0022 append note): Act I never voices Asha's link between
+    // the lantern and Rhen's father (lines 051/052 are cut). It surfaces only in Kerrid's Ch15
+    // confession. The held beat below is the same on every path and says nothing about the lantern.
     @face asha neutral 0.4
     @wait 0.8
-    <<if $ch02_rhen_named_lantern>>
-        Asha [neutral]: Your father. The one with the lantern. #line:ch03_verse_051
-        Rhen [sad]: Yeah. #line:ch03_verse_052
-    <<endif>>
-    Asha [tender]: My mother hummed it to me every night, and sang it from this door. I was seven. I'd forgotten it until he gave it back. #line:ch03_verse_053
+    Asha [tender]: My mother hummed it to me every night, and sang it from this door. I was seven. I'd forgotten it until tonight. #line:ch03_verse_063
     @wait 1.5
     Rhen [sad]: ...He never said where he learned it. #line:ch03_verse_054
 -> Nowhere. Must have been the wind. #line:ch03_verse_055

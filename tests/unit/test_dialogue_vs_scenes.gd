@@ -208,8 +208,13 @@ func _check_verse_run(run: Dictionary, preset: Dictionary) -> void:
 	assert_eq(_has(run, "ch03_verse_034"), preset.get("ch02_heard_pila", false), "Teyo line " + at)
 	assert_eq(_has(run, "ch03_verse_036"), not preset.get("ch02_heard_pila", false), "plain Ilun line " + at)
 	assert_eq(_has(run, "ch03_verse_037"), preset.get("ch03_found_net_float", false), "net-float " + at)
-	assert_eq(_has(run, "ch03_verse_051"), told and lantern, "lantern recognition " + at)
-	assert_eq(_has(run, "ch03_verse_053"), told, "Imra line " + at)
+	# Review-sweep-G B3 (Lead): Act I never voices the lantern link, so the told path is the same with or
+	# without the lantern flag, and the cut lines 051/052 never play.
+	for cut in ["051", "052", "053"]:
+		assert_false(_has(run, "ch03_verse_" + cut), "cut line %s never plays %s" % [cut, at])
+	assert_eq(_has(run, "ch03_verse_063"), told, "Imra line " + at)
+	assert_true(_has(run, "ch03_verse_061"), "Toma was at Ansedra in 1001 " + at)
+	assert_true(_has(run, "ch03_verse_062"), "Toma's three years " + at)
 	assert_eq(_has(run, "ch03_verse_056"), not told and lantern, "gentle deflect " + at)
 	assert_eq(_has(run, "ch03_verse_057"), not told and not lantern, "'twice' deflect " + at)
 	for sung in ["042", "043", "044", "045", "046"]:
