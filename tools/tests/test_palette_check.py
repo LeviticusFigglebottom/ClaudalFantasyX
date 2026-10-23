@@ -86,5 +86,41 @@ class BaselineTests(unittest.TestCase):
         self.assertEqual(failures, 0, "\n".join(ln for ln in lines if ln.startswith("FAIL")))
 
 
+class MutationTests(unittest.TestCase):
+    """M1-RND-12 (review-sweep-H): the defects the reviewer injected into H01 now fail the checks."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        import json
+
+        cls.checks = json.loads(pc.CHECKS.read_text(encoding="utf-8"))["checks"]
+        cls.img = pc.pngio.read(pc.BASELINES / "haluna_h01_village_from_sea.png")[:, :, :3].copy()
+        cls.palette = pc.load_palette()
+
+    def _check(self, name: str) -> dict:
+        return next(c for c in self.checks if c["shot"] == "haluna_h01_village_from_sea" and c["name"] == name)
+
+    def test_mostly_grey_zenith_fails(self) -> None:
+        chk = self._check("zenith chroma")
+        x0, y0, x1, y1 = chk["rect"]
+        img = self.img.copy()
+        cut = y0 + int((y1 - y0) * 0.9)
+        img[y0:cut, x0:x1] = pc.hex_to_rgb8("#A6A8AA")  # C ~0.01: 90 % of the zenith rect greyed
+        self.assertTrue(pc.run_check(chk, self.img, self.palette)[0], "baseline passes")
+        self.assertFalse(pc.run_check(chk, img, self.palette)[0], "90 % grey zenith")
+
+    def test_cyan_underside_drift_fails(self) -> None:
+        chk = self._check("cumulus underside hue")
+        x0, y0, x1, y1 = chk["rect"]
+        sub = self.img[y0:y1, x0:x1].astype(np.float64)
+        m = pc.select(pc.image_oklab(self.img[y0:y1, x0:x1]), chk["select"])
+        drift = sub.copy()
+        drift[m] = drift[m] * np.array([0.93, 1.0, 0.97])  # pull the undersides towards cyan
+        img = self.img.copy()
+        img[y0:y1, x0:x1] = np.clip(np.round(drift), 0, 255).astype(np.uint8)
+        self.assertTrue(pc.run_check(chk, self.img, self.palette)[0], "baseline passes")
+        self.assertFalse(pc.run_check(chk, img, self.palette)[0], "cyan undersides")
+
+
 if __name__ == "__main__":
     unittest.main()

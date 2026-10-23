@@ -94,7 +94,8 @@ Frame budget: 16.7 ms at 60 fps and 33.3 ms at 30 fps. Costs are GPU millisecond
 | SSR 64 steps | 1.0 – 1.5 |
 | SSAO high (full) + SSIL medium (half) | 1.6 – 2.4 |
 | FSR2 to 1440p | 0.6 – 0.9 |
-| **Total** | **≈ 11.4 – 17.5** (target ≤ 16.7) |
+| Procedural sky clouds, `sky_detail` high (measured 0.39 – 0.42 ms on an RX 9070 XT × 2.3 – 2.8, M1-RND-12) | 0.9 – 1.2 |
+| **Total** | **≈ 12.3 – 18.7** (target ≤ 16.7) |
 
 High is the tight preset. If measurement shows it over budget, step down in this order: `ssil_quality` medium → low, `render_scale` 0.77 → 0.67 (FSR2 Quality), then SDFGI rays.
 
@@ -108,7 +109,8 @@ High is the tight preset. If measurement shows it over budget, step down in this
 | Volumetric fog 64×32, no filter | 0.5 – 0.8 |
 | SSAO very low (half) | 0.4 – 0.6 |
 | FSR1 + TAA | 0.5 – 0.8 (TAA measured +0.12 ms on an RX 9070 XT at 1080p) |
-| **Total** | **≈ 8.1 – 12.5** (30 fps is safe; 60 fps likely in lighter scenes) |
+| Procedural sky clouds, `sky_detail` low (measured 0.21 – 0.24 ms on an RX 9070 XT × 4.2 – 5.0, M1-RND-12) | 0.9 – 1.2 |
+| **Total** | **≈ 9.0 – 13.7** (30 fps is safe; 60 fps likely in lighter scenes) |
 
 **Medium on the minimum tier (GTX 1060, 1080p, 0.85):** about 14 – 20 ms (VoxelGI 1–2 ms, SSR 0.8 ms, SSAO 0.7 ms, fog 0.8 ms, TAA 0.3 ms on top of a larger base). That's a 30–60 fps preset for the minimum tier, or 60 fps on GTX 1660 / RTX 2060 class cards.
 
@@ -127,6 +129,13 @@ High is the tight preset. If measurement shows it over budget, step down in this
 
   Measured: −9 to −12 % of the vegetation test's frame on Low.
 - **Low AA is TAA** (it was FXAA). Measured on alpha-tested foliage: FXAA removed 10 % of the shimmer, TAA 65 %, for +0.12 ms on an RX 9070 XT (docs/kb/qa/gpu/2026-10-23-rnd-07.md).
+- **`sky_detail`** (low / medium / high / ultra, M1-RND-12) sets the procedural sky's quality uniforms on the
+  Environment's sky material (`levels.sky_detail`; only uniforms the sky's shader declares, so other skies are
+  untouched): march steps 32 / 32 / 40 / 64, erosion octaves 2 / 3 / 4 / 4, erosion seen by the sun samples
+  0 / 0 / 0 / 1, radiance-cubemap steps 16 / 24 / 24 / 24. Measured cloud cost on an RX 9070 XT (Haluna H01/H04/H07):
+  0.21–0.24 ms (Low, 1080p), 0.34–0.37 (Medium, 1440p), 0.39–0.42 (High, 1440p), 1.1–1.2 (Ultra, 1440p). The
+  cost follows the window resolution, not `render_scale`. Below 32 steps the cloud silhouettes step, so no tier goes
+  lower (tested).
 
 ## Open items
 - **Measure** every row above on a GPU runner (M1-QA-01) and replace the estimates. Add a per-preset benchmark camera path to the vertical-slice zone when one exists.

@@ -408,3 +408,4 @@ HUD_FAIL_UNKNOWN_ITEM,That has no use in battle.
 HUD_HELP_ITEM_FELLS_FMT,{name} is a Zombie: this revive fells them
 HUD_HELP_ITEM_DEFEAT_FMT,"{name} is a Zombie and the last one standing: this revive fells them, and the fight is lost"
 GFX_VEGETATION_DETAIL,Vegetation Detail
+GFX_SKY_DETAIL,Sky Detail
