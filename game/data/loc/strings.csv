@@ -454,3 +454,50 @@ ELEMENT_GLIMMER,Glimmer
 HUD_READ_WEAK,Weak to {list}
 HUD_READ_NO_WEAKNESS,No weakness found
 AUTOSAVE_SKIPPED_TOAST,"The autosave still holds a journey further along, so it was kept. Rest at a shrine to record this one."
+STAT_STRENGTH,Strength
+STAT_MAGIC,Magic
+STAT_DEFENSE,Defense
+STAT_MAGIC_DEFENSE,Magic Defense
+STAT_AGILITY,Agility
+STAT_ACCURACY,Accuracy
+STAT_EVASION,Evasion
+STAT_LUCK,Luck
+HUD_READ_LEVEL_FMT,Level {level}
+HUD_READ_HP_FMT,HP {hp} / {max}
+HUD_READ_MP_FMT,MP {mp} / {max}
+HUD_READ_AFF_WEAK,Weak
+HUD_READ_AFF_RESIST,Resists
+HUD_READ_AFF_IMMUNE,Immune
+HUD_READ_AFF_ABSORB,Absorbs
+HUD_READ_NONE,None
+HUD_READ_DELAY,Delay
+HUD_READ_DELAY_OK,Delay attacks push it back
+HUD_READ_DELAY_IMMUNE,Delay attacks have no effect
+HUD_READ_STATUSES,Statuses
+HUD_READ_CLOSE_HINT,Confirm: close · The battle waits while you read
+HUD_OPENING_PREEMPTIVE_TITLE,First Strike
+HUD_OPENING_AMBUSH_TITLE,Caught Unaware
+HUD_OPENING_PREEMPTIVE_EFFECT,Your party acts before any foe.
+HUD_OPENING_AMBUSH_EFFECT,Every foe acts before your party.
+BESTIARY_TITLE,Bestiary
+BESTIARY_COUNT_FMT,Read {read} of {known} known
+BESTIARY_HP_FMT,HP {hp}
+BESTIARY_MP_FMT,MP {mp}
+BESTIARY_DEFEATED_FMT,Defeated: {n}
+BESTIARY_ROW_COUNT_FMT,×{n}
+BESTIARY_UNREAD,"Not yet Read. Use Read on it in battle to learn its strengths, weaknesses and story."
+BESTIARY_EMPTY,No foes recorded yet. Foes you Read or defeat are written here.
+BESTIARY_HELP,Up and Down: choose · Cancel: close
+HUD_SWELL_MODE_IN_USE,In use
+HUD_HELP_SWELL_GAUGE_FMT,{name}'s Swell is at {pct}% and fills by {mode}. Choose a fill mode here at no time cost
+HUD_HELP_SWELL_MODE_FMT,{mode}: {desc} Choosing it costs no time
+HUD_HELP_SWELL_MODE_CURRENT_FMT,{mode} is in use: {desc}
+HUD_SWELL_MODE_SET_FMT,{name}'s gauge now fills by {mode}. No time passed
+SET_TIMING_ASSIST,Timing assist
+SET_TIMING_ASSIST_HELP,"Makes timed Swell inputs easier: a wider window, or a miss counts as Good."
+SET_TIMING_ASSIST_OFF,Off
+SET_TIMING_ASSIST_WIDE,Wider window
+SET_TIMING_ASSIST_AUTO,Misses count as Good
+HUD_SWELL_ASSIST_WIDE,Assist: wider window
+HUD_SWELL_ASSIST_AUTO,Assist: misses count as Good
+BESTIARY_UNREAD_TAG,Not Read
