@@ -30,3 +30,20 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
 - Not done (QA nits outside the acceptance criteria): offering recovery from a valid stale `.tmp`, and the downward `set_chapter` autosave.
 
 ## Review log
+- 2026-10-23 qa (review-sweep-E): **approve-with-fixes.** I read save_system.gd, save_shape.gd, the title model and menu diffs (4789d72), ADR 0018 and the architect-9 handoff. I ran `godot --headless res://tests/run_tests.tscn -- --filter=save` (own `XDG_DATA_HOME`): 100 run, 0 failed. I also probed `SaveShape.problem` directly with 11 malformed states (scratchpad `sweepE_godot/save_probe.gd`). gdlint and gdformat are clean.
+  - **The write check holds.** The order is store → flush → `get_error()` → close → read-back compare, before the rename (save_system.gd:121-134). The tmp file is removed on every failure path, and the old slot is untouched. The tests cover a reported failure, a silent short write and a first write.
+  - **One reader works.** `load_from_slot`, `deserialize` and `slot_info` agree, and the version check rejects bools, fractions and newer builds.
+  - **Deferred autosave:** the hold, the paused tree, the busy router and the drops on New Game and on load all behave as ADR 0018 says.
+  - **The New Game confirm works.** "Go back" is the default; `ui_cancel`, the click path and `choose()` all route through `needs_new_game_confirm`, and an empty or corrupt slot 0 skips the question.
+  - **Should-fix S1: whole numbers have no magnitude bound.** `SaveShape.is_whole` (save_shape.gd:62) accepts any finite integral float. `currency: 1e300`, `chapter: 1e19`, `inventory.potion: 1e20` and `party_vitals.rhen.hp: 1e300` all pass. In Godot 4.6.3, `int()` of each is -9223372036854775808, so a save that passes the check loads with negative currency, chapter or counts. Bound counts at ≤ 2^53 (or the data caps) and add the probe cases to test_save_shape.gd.
+  - **Should-fix S2: equipment uid integrity.**
+    - `next_uid` is never checked against `owned` (save_shape.gd:199-201). `{"next_uid": 1, "owned": {"1": {...}}}` passes, and the next `EquipmentBag.add_piece` (equipment_bag.gd:46-48) silently overwrites piece 1. Any loadout pointing at uid 1 then holds the new piece.
+    - Non-canonical keys `"05"` and `"+1"` pass `_owned` (save_shape.gd:181), but `str(uid)` lookups never reach them.
+    - A loadout uid that isn't in `owned` also passes.
+
+    Require `str(int(k)) == k`, `next_uid > max(owned uid)`, and loadout uids that exist in `owned`.
+  - **Should-fix S3 (shared with M1-ARC-07 S2):** `FieldCameraDirector._exit_tree` releases the hold (field_camera_director.gd:250) but keeps `_scripted_shot`. A director re-parented mid-cutscene is unheld, so the chapter autosave can snapshot mid-shot.
+  - **Should-fix S4 (ADR 0018 scope):** loading an *older* record, then crossing its next chapter boundary, overwrites a further-along autosave with no prompt. That loses a run in the same way the New Game case did. At least name it in ADR 0018's Consequences, or ask on load when slot 0 is newer than the record being loaded. It could join M1-ARC-10.
+  - **Nit:** `FileAccess.flush()` is a stdio flush, not an fsync. On some filesystems a power cut right after the rename can still leave an empty slot. Document the limit in architecture.md §Save robustness.
+  - **Nit:** the rename-failure branch (save_system.gd:111-114) returns without the `push_warning` that the write-failure branch gives.
+  - **Nit:** duplicate or unknown `party_ids` pass (`["rhen","rhen","rhen","rhen"]`, `["nobody"]`). That's shape-only, as the AC says, but it's worth a semantic check alongside M1-ARC-10.
