@@ -38,7 +38,7 @@ from bb_params import Landmarks, unit, v3
 Arr = np.ndarray
 ETHNIC = ("african", "asian", "caucasian")
 EYE_GAP = 0.0006  # lid margin rest gap over the globe (m, scaled)
-LIP_CLOSE = 0.45  # share of the donor's resting lip parting that the face warp closes
+LIP_CLOSE = 0.45  # share of the donor's resting lip parting that the face warp closes (param `lip_close`)
 
 # donor weight group -> region (bb_cage names) ------------------------------------------------
 FACE_GROUPS = ("brow", "cheek", "chin", "ear", "forehead", "jaw", "lid", "lip", "nose", "teeth", "tongue", "temple",
@@ -605,7 +605,8 @@ def _eye_warp(ft: Fit, dn: Donor, Y: Arr | None = None) -> None:
         C.extend(ring)
         D.extend(np.zeros_like(ring))
     # mouth: the donor rests with the lips a little parted; bring the inner lip edges together
-    # (LIP_CLOSE of the gap), the lips' outer border stays where it is
+    # (`lip_close` of the gap, LIP_CLOSE by default), the lips' outer border stays where it is
+    close = float(lm.p.get("lip_close", LIP_CLOSE))
     inl = np.zeros(len(dn.F), bool)
     inl[dn.lips] = True
     bnd = [e for e, fs in dn.edges_f.items() if len(fs) == 2 and inl[fs[0]] != inl[fs[1]]]
@@ -617,7 +618,7 @@ def _eye_warp(ft: Fit, dn: Donor, Y: Arr | None = None) -> None:
     for i, q in enumerate(P):
         near = np.abs(P[:, 0] - q[0]) < 0.003 * lm.S
         zc = 0.5 * (P[near, 2].max() + P[near, 2].min())
-        tgt[i, 2] = zc + (q[2] - zc) * (1.0 - LIP_CLOSE)
+        tgt[i, 2] = zc + (q[2] - zc) * (1.0 - close)
     C.extend(P)
     D.extend(tgt - P)
     C.extend(Y[outer])
@@ -1051,6 +1052,62 @@ def sculpt_face(lm: Landmarks, V: Arr, head: Arr, N: Arr, lips: Arr, lower: Arr,
     return V + D * head[:, None]
 
 
+def inner_lip_loop(dn: Donor, Y: Arr) -> list[int]:
+    """The donor's inner lip loop (the lip set's border toward the mouth), as body vertex ids."""
+    inl = np.zeros(len(dn.F), bool)
+    inl[dn.lips] = True
+    bnd = [e for e, fs in dn.edges_f.items() if len(fs) == 2 and inl[fs[0]] != inl[fs[1]]]
+    return min(loops_of(bnd), key=lambda lp: float(np.ptp(Y[lp, 0])))
+
+
+def lip_rest(lm: Landmarks, dn: Donor, V: Arr, head: Arr, lips: Arr, lower: Arr) -> tuple[Arr, dict]:
+    """M1-CHR-04: the lips' rest shape on the final (subdivided) face. Off at the bb_params defaults.
+
+    * `lip_seal`: the lips meet. Around the contact line (the mid-height of the inner lip loop at
+      each x) every vertex of the lip roll is squashed toward it in z by a monotone map
+      (d -> d * (1 - k * exp(-(d / band)^2)), k < 1, so no surface crosses another), which closes
+      the slit that showed the mouth interior and keeps the inner roll behind the contact.
+    * `lip_lower_fullness`: the lower lip's forward roll, scaled about the contact plane.
+
+    Also returns per-vertex texture terms for the bake: `lip_contact` (1 on the line where the
+    lips meet, 1.2 mm falloff) and `lip_corner` (the contact in the outer quarter: the commissures)."""
+    p = lm.p
+    seal = float(p.get("lip_seal", 0.0))
+    lo_full = float(p.get("lip_lower_fullness", 1.0))
+    if seal == 0.0 and lo_full == 1.0:
+        return V, {"lip_contact": np.zeros(len(V)), "lip_corner": np.zeros(len(V))}
+    s = lm.h / 0.222
+    loop = inner_lip_loop(dn, V[:md.N_BODY])
+    L = V[loop]
+    half = 0.5 * float(np.ptp(L[:, 0]))
+    x, y, z = V[:, 0], V[:, 1], V[:, 2]
+    # the contact line z(x) and its depth y(x): smooth even polynomials through the inner loop
+    # (the loop's own vertices zigzag at the donor's spacing; pinning to them makes the lips wavy)
+    u = np.clip(x / half, -1.0, 1.0)
+    cz = np.polyfit((L[:, 0] / half) ** 2, L[:, 2], 3)
+    cy = np.polyfit((L[:, 0] / half) ** 2, L[:, 1], 3)
+    zl = np.polyval(cz, u * u)
+    yl = np.polyval(cy, u * u)
+    # the lip roll: near the contact, in front of the teeth, inside the mouth width
+    width = bb_face.smoothstep(half + 0.003 * s, half - 0.002 * s, np.abs(x))
+    depth = bb_face.smoothstep(0.012 * s, 0.004 * s, y - yl)
+    w = width * depth * head
+    D = np.zeros_like(V)
+    dz = z - zl
+    if seal:
+        band = 0.0035 * s
+        D[:, 2] += -dz * seal * np.exp(-((dz / band) ** 2)) * w
+    if lo_full != 1.0:  # a wider falloff than the seal's toward the corners: no crease at the commissure
+        wl = lips * lower * depth * head * bb_face.smoothstep(half + 0.004 * s, half - 0.010 * s, np.abs(x))
+        wl = wl * bb_face.smoothstep(0.0, -0.002 * s, dz)
+        D[:, 1] += np.minimum(y - yl, 0.0) * (lo_full - 1.0) * wl
+    V = V + D
+    wide = bb_face.smoothstep(half + 0.004 * s, half - 0.001 * s, np.abs(x)) * depth * head
+    contact = np.exp(-(((V[:, 2] - zl) / (0.0012 * s)) ** 2)) * wide
+    corner = contact * bb_face.smoothstep(0.7 * half, 0.95 * half, np.abs(x))
+    return V, {"lip_contact": contact, "lip_corner": corner}
+
+
 # ---------------------------------------------------------------------------------------------
 # generate
 # ---------------------------------------------------------------------------------------------
@@ -1187,6 +1244,7 @@ def generate(params: dict, log=print, subdiv_face: bool = False) -> dict:
     lips_s = smooth_scalar(lipv, rows, cols, 1)
     N = face_normals_vertex(V, F)
     V = sculpt_face(lm, V, head_w, N, lips_s, lower, ft.commissure)
+    V, lip_terms = lip_rest(lm, dn, V, head_w, lips_s, lower)
     V = seat_eyes(lm, V, sock > 0, marg > 0)
     V[:, 2] = np.maximum(V[:, 2], 0.0)
     correct_body(body, V, reg)
@@ -1224,6 +1282,7 @@ def generate(params: dict, log=print, subdiv_face: bool = False) -> dict:
     return {"V": V, "F": F, "pin": np.zeros(n, bool), "seams": set(), "lm": lm, "body": body, "cage_V": V,
             "cage_F": F, "groups": groups, "n_cage_v": n, "reg": list(reg), "freg": freg, "uv": uv,
             "weights": dict(Wd), "lower": lower, "lip_w": lipv, "socket": sock > 0, "fit": ft, "subdiv": sub,
+            **lip_terms,
             "face_socket": fsock, "face_mask": fface & ~fsock & (freg == "head"),
             "unit_delta": unit_delta}
 

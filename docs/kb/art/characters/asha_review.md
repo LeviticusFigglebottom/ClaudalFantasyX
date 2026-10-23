@@ -171,3 +171,113 @@ The human answered SPEC §16 Q2 "yes, as a tool, with heavy modification". The h
 | Ears at the native donor density | Budget; check on a GPU |
 | Base bodies: flattened breasts, shallow heavy torso (girth fit) | Placeholders (SPEC §8.4); pipeline.md §11 |
 | Shadow-side diagonal banding on the cheek | Looks like shadow acne on lavapipe; Rendering to confirm |
+
+## 7. M1-CHR-04: close-range polish, the mesh and texture half
+
+The task is split between two sessions. This section covers the lips, the scalp hair and the skin micro-detail, built on this sandbox and rendered on lavapipe. The shadow terminator (cheek banding) and the vest and bodice materials belong to the PC GPU session on `gpu/chr-04-materials`. This section changes neither: no light, shadow or cloth-material setting, and no cloth texture, was touched. The cheek banding visible in the frames below is therefore unchanged.
+
+**Same lighting and cameras as §3. Every frame is lavapipe.** In each comparison, CHR-03 (the previous baselines) is on the left or on top, and CHR-04 (the re-approved baselines) is on the right or below.
+
+### 7.1 What changed and why
+
+**Lips** (`bb_donor.lip_rest`, new `bb_params` sliders that leave the base bodies unchanged at their defaults):
+- **The cause of the seam.** QA-05's no-shadow render showed a real gap between the lips. The donor rests with its mouth parted. CHR-03 closed 45% of that through the face warp, at the inner lip loop. That still left a slit to the mouth interior along the whole contact, and shadow darkened it into the line. Raising the warp alone doesn't close it: at 100% a sliver remains, because the subdivided lip surface sits in front of the inner loop.
+- **The fix is a seal on the final, subdivided face.** Every vertex of the lip roll is squashed in z toward a smooth contact line. That line is an even polynomial fitted through the inner loop; pinning to the loop's own vertices made the lips wavy at the donor's vertex spacing. The map is monotone (`d → d(1 − k·e^{−(d/3.5 mm)²})`, k = 0.96 < 1), so no surface crosses another, and the inner roll stays behind the contact.
+- **The new values:**
+  - `lip_close` 0.45 → 0.6;
+  - `lip_seal` 0.96;
+  - `lip_fullness` 0.9 → 0.8;
+  - `lip_lower_fullness` 0.55: the lower lip's forward roll, scaled about the contact plane, with a wide falloff toward the commissures so the corners don't crease.
+- **Texture.** CHR-03's dark crease was drawn at the donor's *old* mouth line. The seal moved the lower lip over it, so that crease was QA-05's "dark horizontal line across the lower lip", and it is removed. The bake now gets two per-vertex terms from the seal: `CONTACT` (the line where the lips meet) and `CORNER` (the commissures). The lip colour deepens toward the contact. The contact is a thin line, and the corners are a small shadowed pocket in both albedo and cavity. The vermilion border gets a faint raised roll and a lighter edge. The vertical lip lines are now irregular streaks at a third of the old depth (QA-05's "striations"). Lip roughness went from 0.38 to 0.55.
+- **Teeth:** warmer and rougher (0.35 → 0.5). In grief they had mirrored the cool sky and read blue-grey.
+
+**Scalp hair** (`asha_hair`, `asha_textures.hair_atlas`, `build_asha.head_surface`):
+- **The cause of the blocks and gaps.** The cards were traced over the anatomy field, which sits up to 11 mm off the donor scalp (11% of the card vertices were inside the skin). So whole patches of cards vanished into the head, and the skin showed between the ones left. Root candidates were also cast from *inside* the head (0.2 h from the centre), so their projection slid to the sides, and the crown got almost no roots.
+- **The fix.** Cards now sit on the shipped head mesh itself, through `MeshScalp`: a BVH over the head triangles, with the welded normal interpolated at the closest point. Every card vertex is now 1.0–4.7 mm outside the skin, and all card normals face out. Roots are cast from outside the skull (`ROOT_CAST_H` = 0.6 h).
+- **The layout:**
+  - a **hairline row** of 100 narrow cards (5–9 mm);
+  - base, mid and top layers of 350 / 210 / 85 cards, narrower than before (9–16, 7–13 and 5–10 mm, against 14–33 mm), lifted 1.2 / 2.6 / 4.0 mm, with 8 segments each;
+  - half of the top layer on sparse clumps;
+  - a narrower comb-away at the part line, which had left a bare wedge.
+- **The atlas.** Each of the 16 columns is now 320–420 individual strands (0.6–1.5 px, about 0.1 mm on a card) in 3–5 sub-clumps. Strand density falls to nothing at the column edges, so a card never ends in a hard border, and each strand has its own opacity, lean, wave, length and tip taper. The CHR-03 columns were near-solid rectangles, which is what read as blocks.
+  - Columns 12–13 are sparse breakup clumps.
+  - Columns 14–15 are hairline clumps whose roots are staggered over the first fifth of V and fainter at the root.
+- **The scalp underpaint.** Under the cards, the scalp is painted as hair: dark strands combed along the cards' own flow field (stretched value noise), so any gap reads as hair, not skin. At the hairline the paint breaks into separate strands over about 5 mm. The hairline also wanders by up to about 2.5 mm (`hairline_v`, which the cards, the underpaint and the skin maps all read). The skin under the hair is fully rough, with low cavity, so it does not shine like skin.
+- **The braid is kept**, with the same weave and spine. Its tubes and tail use full clumps only, and the middle 60% of a column, because the feathered column edges would show as a bare stripe on a closed tube.
+
+**Skin micro-detail** (`asha_textures.skin_zones`, `detail_height`, `albedo`):
+- **Texel density.** The face-mask island is at **69 px/cm** in the 2K head maps; the target is ≥ 50 (asha.md §8.2). The new texel report prints it next to the whole-head average of 43 px/cm. The head ORM and skinmask went from 1K to 2K, because at 1K the pore-scale cavity and roughness averaged away. The skinmask's cavity is stored in 64 levels and its micro-roughness in 32, which keeps it at 3.4 MB, under the 5 MB cap. At 256 levels it was 5.2 MB.
+- **Pores** are sparse value-noise pits, about 0.3 mm across and about 0.6 mm apart (finer on the forehead), at 30 µm depth. Their density is highest on the nose and inner cheeks, medium on the forehead and chin, and zero on the lids, the lips and under the hair.
+- **Micro-relief:** two crossing families of fine creases, at 12 µm.
+- **Soft expression lines** for a young face: crow's feet at the outer canthi and two faint, broken forehead lines.
+- **Less waxy specular, from the maps only** (the shader and its 0.42–0.5 roughness range are unchanged):
+  - the macro roughness is high (0.9) away from a smaller, broken-up T-zone;
+  - roughness varies at 1.5 mm;
+  - pores are rougher;
+  - cavity carries the pores, lines, lip contact and corners, so the shader's cavity specular occlusion breaks the highlight up.
+- **Colour zones:** a warmer flush on the cheeks, nose tip and ears; a cooler, slightly darker ring round the eyes; an olive cast on the upper lip; a low-frequency asymmetry; and pores slightly darker.
+- **The ADR 0019 look stays.** `skin_head_dialogue.tres` is unchanged (painterly 0.6, detail 0.35, normal 0.8). The micro-detail reads under it as texture, not as a photographic surface.
+
+### 7.2 Numbers
+
+| | CHR-03 | CHR-04 |
+|---|---|---|
+| Head (skin, mouth, lashes, brows, teeth) | 20,996 | 20,996 (no topology change) |
+| Hair (scalp cards / all) | 14,292 all | 10,132 / **15,528** (budget 16,000) |
+| **LOD0** | 62,200 | **63,444** (target 63,500, ceiling 70,000) |
+| **LOD1** | 29,242 | **29,862** (47%) |
+| `asha.glb` | 3.94 MB | **4.04 MB** (4,036,596 B; cap 5 MB) |
+| `asha_lod1.glb` | 1.37 MB | 1.43 MB |
+| Head maps | albedo and normal 2K; ORM and skinmask 1K | all four at 2K (albedo 1.93 MB, normal 3.16 MB, ORM 1.36 MB, skinmask 3.38 MB) |
+| Hair atlas | 2K, 1.16 MB | 2K, 1.34 MB |
+| Rebuild | `verify_blender_builds.py --job asha`: identical | identical (both GLBs); the textures rebuild byte-identically from the same bake |
+
+### 7.3 The SPEC §14 dialogue-range review, side by side with CHR-03
+
+| | CHR-03 | CHR-04 |
+|---|---|---|
+| Lips, neutral | Heavy, rubbery lower lip; a dark slit showing the mouth interior along the whole contact; a dark crease across the lower lip; strong vertical striations | **Closed**, with a thin natural contact line. Thinner at rest, the lower lip no longer pouts in profile, and the striations have become a quiet texture. No interior shows |
+| Lips, smile | Slit and crease as at rest | Corners lift into the cheek and read as corners. A thin parting at the centre is natural for a smile |
+| Lips, grief | Teeth blue-grey; slit at the corners | The jaw opens over warmer teeth. The corners and the lower lip read correctly |
+| Scalp hair | Rectangular card blocks and bare skin across the crown and the part; a hard hairline | **A continuous, combed-back mass with no blocks or bare patches**, strand-level breakup on the surface, and an uneven, soft hairline. The part shows a narrow line of underpaint, as a real part does |
+| Braid | Kept | Kept; slightly more strand texture on the tubes |
+| Skin | Smooth, slightly waxy, specular like varnish | Fine pore and crease texture on the cheeks and nose at this framing, a highlight broken up by cavity and roughness, warmer cheeks. Still smooth by photographic standards, which is the intended painterly finish at close range |
+| Cheek banding | Present | **Unchanged.** It's a shadow-terminator setting, which the GPU session is handling |
+
+**Verdict: passes at dialogue range as built, and passes clearly with the ADR 0019 close-range look.** The two features that kept CHR-03 borderline are fixed at the asset: the mouth's rest shape and seam, and the hair. Side by side, the CHR-03 hair reads as a cap of blocks and the CHR-04 hair reads as hair.
+
+What still separates her from final fidelity:
+1. **The shadow-side cheek banding.** It's the most visible artefact left in these frames, and it's not an asset fault (QA-05). It closes when the GPU session's normal-bias change lands.
+2. **The lit hair reads warm brown, not black.** That comes from the hair shader's secondary and transmission lobes under the warm key. It's unchanged here and was the same in CHR-03. A material and shading look for Rendering and Art, to judge on a GPU.
+3. **Still frames.** Lip-flap and blinks still need the motion review (ADR 0019 watch item 3).
+
+The micro-detail is near the limit of what a 960 × 540 lavapipe frame can show. The GPU 2× captures (QA-05's method) are the right check for pores.
+
+### 7.4 Re-approved baselines
+
+I re-approved all 10 `asha_*` shots and looked at every one against its CHR-03 baseline. The values are linear RMSE against the old baselines.
+
+| Shot | RMSE against CHR-03 | Why it changed |
+|---|---:|---|
+| `asha_face_neutral` | 0.0336 | Sealed and thinner lips, with the contact bake; rebuilt scalp hair; skin micro-detail and colour zones |
+| `asha_face_smile` | 0.0337 | The same changes, under `smile` |
+| `asha_face_grief` | 0.0333 | The same changes, plus warmer teeth |
+| `asha_face_stylized_compare` | 0.0402 | The same changes, under both the as-built and the dialogue skin |
+| `asha_sleeve_s0` | 0.0098 | The braid and the back of the head are in frame; the sleeve is unchanged |
+| `asha_sleeve_s4` | 0.0099 | The braid and the back of the head are in frame; the sleeve is unchanged |
+| `asha_front` | 0.0069 (within its limit) | The hair silhouette and surface |
+| `asha_q34` | 0.0074 (within its limit) | The hair silhouette and surface |
+| `asha_profile` | 0.0071 (within its limit) | The hair silhouette and surface |
+| `asha_extreme_pose` | 0.0073 (within its limit) | The hair silhouette and surface |
+
+The four shots still inside their limit were re-approved anyway, so the baselines record the new hair and not a drifted copy of the old one.
+
+### 7.5 Known issues (CHR-04)
+
+| Item | Note |
+|---|---|
+| Cheek banding and the plastic vest | The GPU session's half (`gpu/chr-04-materials`) |
+| A small part-line wedge and a thin gap above the right ear in the card layer | Covered by the underpaint at every shot distance; visible only in a bare-geometry clay view |
+| Hair reads warm brown under the warm key | Shading (secondary and transmission lobes); not changed here |
+| `asha_hair.Scalp` (the field) is still the default when no mesh is given | `test_asha.test_part_budgets` uses it. `build_asha` always passes the head mesh |
+| Face texel density 69 px/cm in 2K; whole head 43 px/cm | 4K is still blocked by ADR 0005 (no LFS) |
