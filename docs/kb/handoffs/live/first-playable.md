@@ -50,6 +50,10 @@ Nothing. The Lead's queue of 2026-10-23 (M2-FP-05..08) is done and pushed:
 ### Exact next step
 Wait for the Lead's review and the human's playtest notes, and turn the notes into M2-FP-09+ tasks. The open follow-up on this branch is the shutdown-only engine errors described below.
 
+### For the save v6 owner (M2-ARC-01)
+- This branch needs **no new save fields** and never bumps SAVE_VERSION. The Drownbell, retry, escape and story state all live in existing flags (`ch02_tideline_won`, `ch03_drownbell_defeated`, `ch03_ilun_bound`) and in the existing respawn and location fields.
+- `battle_controller.gd` on this branch only moved two static helpers out into `BattleIds`. Boss presentation lives in `BattleBossHud` and field-battle flow in `game/flow/field_battle.gd`, both helpers.
+
 ### Known issues (candidate follow-ups)
 - **Correction (ARC-15 agent):** the exit-time errors also reproduce on the base commit when `haluna.tscn` is simply loaded and freed on the main thread, so they predate the threaded prebuild. They come from something in the zone or the mood scene. Quitting the game after Haluna has been loaded logs 8 engine errors, `Condition "p_elem->_root != this"` (self_list.h). They come from resources built during the worker-thread prebuild. They appear only at process exit, and scene swaps stay clean. Before the prebuild there were none. A bisect that ran each prebuild step on a worker thread outside the router (`.scratch/bisect.gd`, local only) did not reproduce them: dress, all and asha timed out under CPU load, and collision and water were clean. So far they reproduce only through the real SceneRouter flow. The likely culprit is a material or mesh created off the main thread; next, try creating those resources on the main thread in `_ready` while keeping the heavy mesh build threaded.
 - `battle_controller.gd` sits at exactly the 1000-line lint cap after FP-06. Split it before growing it.
