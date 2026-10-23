@@ -3,7 +3,7 @@ id: M2-RND-01
 title: Undertow storm to production cost and quality
 role: rendering
 status: doing
-owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/m2-rnd-01-undertow; start: sweep-G ch08 findings)"
+owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU, branch gpu/m2-rnd-01-undertow; resumed from the WIP handoff)"
 depends_on: [M1-RND-03]
 milestone: M2
 request-from: ""
