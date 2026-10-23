@@ -91,3 +91,21 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
 ### N-14. Asha never hums again
 - **Answer:** in `ending_dock` she draws breath for the tune, lets it go unsung, and smiles. She does not hum, and she never sings or hums again. Updated: color script `ending_dock`, `characters/asha_velamir.md`, and [act3_ending.md](beats/act3_ending.md) E6.
 - **Why:** a hum gives part of the cost back and softens pillar 6. The ending's loss has to be whole to be true.
+
+---
+
+## 2026-10-23 (narrative, M1-NAR-08): review-sweep-C fixes
+
+### N-15. No frozen temple before Ansedra: Ice moves to Lowlight, and the Sanctum is Glimmer
+- **Answer:** [ADR 0015](../decisions/0015-vowbound-element-temple-order.md). **Nhoa (Lowlight, Ch11) is Ice**, and **Ethren (the Sanctum, Ch13) is Glimmer**. Hesk (Cloudloom, Ch12) stays Holy. Lowlight's drowned sanctum sits in the deep's cold, with motes sifting down like snow, and nothing in it is frozen. Cloudloom is an open-roofed stone weaving-hall, not a glacier cave. The Sanctum's basin is a lit mirror, not ice. No chapter, zone or Cantor moves.
+- **Why:** N-09 put an Ice Saint in a frozen basin at the Order's seat, right before the wedding trap and the heretic turn. With the glacier temple just before it, that recreated the inspiring game's frozen-lake temple followed by the wedding betrayal (Cinematics, review-sweep-C). Making the Order's Saint glimmer is also the stronger clue: the church that burns Saltwright camps for binding glimmer kneels to a basin lit by it.
+- **Supersedes:** N-09's Nhoa and Ethren element cells and its "Ice goes to the Order's own Saint" reasoning. Its Act I order stands. Updated: vowbound.md, bible §5.6–5.8, act_outline Ch11–Ch13, act3_ending H09, glossary, and color script `ch12` (the interior note).
+
+### N-16. The Kite's lamps die in H09 with every other light; the countdown is the sea and the descent
+- **Answer:** SPEC §3.5 is literal. Every glimmer-light in the world, **the Kite's bound lamps and engines included**, goes out in the same instant at H09. The Kite comes out of the storm already dark and flies the whole Ending on sail alone, in a long, slow, descending glide over the open sea. Liss holds it aloft. That removes the old lamp dimming countdown (E1 100% → E4 0). The countdown is now carried by (1) the sea-glow ramp, stepped per scene (act3_ending §0 rule 4), (2) the dead still rising off the sea, thinning scene by scene, and (3) the Kite's height, as the dark sea comes closer. With the lamps dark, **each farewell is keyed only by the leaving person's own motes**. Other dead rise far off the rail, out of the key, and the sea-glow is a background value that never keys a face.
+- **Also:** in E1 Kerrid's "alive for a moment" cue is now **his shadow**: his own rising light throws it across the deck onto Rhen's feet, clearer for a moment than the man. The breath-fog cue is cut, because on a tropical night his breath alone fogging would read as cold, not warm.
+- **Why:** the Kite holding light for ten minutes contradicted SPEC §3.5's "in the same instant" and our own line that each farewell is lit only by the person leaving.
+
+### N-17. The final shot shows her face; ch02's "Get up" branch keeps Rhen standing
+- **Answer (E6):** the locked final shot is a **three-quarter profile from the dock's side**, at her eye height. Her face is against the star-filled sea, so the smile reads. There is still no cut and no push. (It replaces "1.0 m behind her".)
+- **Answer (ch02):** in the "Get up" branch Rhen stays on his feet, leaning on Toma. The closing H05 is taken at his standing eye-line, and Asha rises to meet it. There is **no offered hand**, because he is already up. `offer_hand` now plays only in the "Stay with them" branch, where he is sitting in the water. H05 is defined as Rhen's POV, and its height follows his eye (haluna.md H05).

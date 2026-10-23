@@ -104,20 +104,20 @@ Zone count: 9 towns or hubs, 6 temples plus the Drowned Choir, and about 17 rout
 ### Ch11 "Lowlight"
 **Zones:** Sunken Vey, the drowned galleries [`ch11/sunken_vey`]. Lowlight temple, half underwater [`ch11/lowlight`].
 - Liss finds Lit Age records showing the founders were *binders*. Rhen admits he is Dace's son and that he hid it. Liss is furious.
-- Asha binds **Nhoa**, who is Ressa. Pell kneels before his sister and says nothing for a full scene.
+- Asha binds **Nhoa** (Ice) in the drowned sanctum at the foot of the well-shaft, where the deep's cold wells up and drowned glimmer sifts down like snow. Nhoa is Ressa. Pell kneels before his sister and says nothing for a full scene.
 - **Boss:** *the Lamp Engine*, a still-running Lit Age machine full of bound dead (two phases). Releasing its core makes a small upward lift, a foreshadowing.
 - **Side scene:** Rhen and Liss repair a lamp together in silence. It's the start of their truce.
 
 ### Ch12 "The Cold Road"
 **Zones:** Keth Pass, a mountain route [`ch12/keth_pass`]. Quellan, a highland town [`ch12/quellan`]. Cloudloom temple [`ch12/cloudloom`].
 - The pass-cords. In the cold, Toma notices **Kerrid's breath doesn't fog**.
-- Asha binds **Hesk** (Holy) in the open-roofed glacier cave. Ama's frozen keth hang everywhere, and the noon light writes their shadows on the ice. Ysolde reads them and lies about what they say. That night she confesses to Asha: *"forty-seven voices, seven houses."*
-- **Boss:** *Avalanche Ram* (a woolback grown monstrous on drowned glimmer from a meltwater lake).
+- Asha binds **Hesk** (Holy) in the open-roofed weaving-hall on the summit. Ama's keth hang among thousands of others, and the noon light writes their shadows on the white stone floor. Ysolde reads them and lies about what they say. That night she confesses to Asha: *"forty-seven voices, seven houses."*
+- **Boss:** *Avalanche Ram* (a woolback grown monstrous on drowned glimmer seeping from a Lit Age terrace wall).
 - **Side scene:** an Ullari woman ties a knot for her son on the pass-cord and walks on. Rhen asks how she can. She says, "I carry the knot. He doesn't have to."
 
 ### Ch13 "Gold and Lacquer"
-**Zones:** Ansedra, the holy city [`ch13/ansedra`]. Sanctum of the Level, the Ice temple [`ch13/sanctum`].
-- A city of perfect stillness. Sefir hosts the party. In the Sanctum the basin is frozen solid in the tropical heat, and pilgrims kneel to it. Asha binds **Ethren** (Ice), and Ysolde stands before Corran with a Cantor beside her.
+**Zones:** Ansedra, the holy city [`ch13/ansedra`]. Sanctum of the Level, the Glimmer temple [`ch13/sanctum`].
+- A city of perfect stillness. Sefir hosts the party. In the Sanctum the basin is a perfect mirror that has not stirred in four hundred years, lit from beneath by a light that never moves, and pilgrims kneel to it. Liss looks at the light for a long time and says nothing. Asha binds **Ethren** (Glimmer), and Ysolde stands before Corran with a Cantor beside her.
 - The **peace wedding** is announced: Liss's brother **Tobin** will marry **Merel Dask**, a Warden's daughter. Liss is cautiously, painfully hopeful.
 - **Side scene:** Ysolde shows Rhen the house she shared with Corran, now someone else's.
 

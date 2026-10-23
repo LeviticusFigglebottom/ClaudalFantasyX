@@ -3,6 +3,7 @@
 // Grade: color script `ch02` (dawn, 06:20). Shots: docs/kb/art/environments/haluna.md §5.1.
 // Camera grammar (decisions_log N-13): H05, H06 and H01 are unrelated setups, so every change is a
 // cut (blend=0.0). The cut to H01 lands on the walk, after Asha's last line on H05.
+// H05 is Rhen's POV and follows his eye: lying, sitting, or standing in the "Get up" branch (N-17).
 // Light rule: the motes that came ashore with Rhen are HELD (glimmer_held: cool cyan, drifting
 // sideways and down toward the water). Nothing rises in this scene. The first rising light is Ch3.
 // Asha's stillness is recognition: she saw this lantern on her mother's guardian when she was seven.
@@ -61,14 +62,20 @@ Toma [sad]: She woke the house before light. We came down so they would not come
     Asha [tender]: You don't have to be anything yet. Not on this beach. #line:ch02_beach_024
     @anim toma palms_level
     Toma [sad]: Be level, Oruvel. #line:ch02_beach_025
+    // He is still sitting in the water: H05 at his sitting eye-line, and her hand to help him up.
+    @camera H05 blend=0.0
+    @anim asha offer_hand
 -> Don't look at them. Get up. #line:ch02_beach_026
     @anim rhen turn_from_sea
+    @anim rhen stand_unsteady
     Rhen [afraid]: No. Up. I'm getting up. The beach is moving, but I'm getting up. #line:ch02_beach_027
     @anim toma catch_rhen
     Toma [neutral]: Slowly. #line:ch02_beach_028
     Asha [worried]: Lean on him. He likes it, he just won't say so. #line:ch02_beach_029
-@camera H05 blend=0.0
-@anim asha offer_hand
+    // He is standing, leaning on Toma (decisions_log N-17): H05 follows his eye to standing height,
+    // Asha rises to meet it, and there is no offered hand. He is already up.
+    @anim asha rise_to_stand
+    @camera H05 blend=0.0
 Asha [soft_smile]: I'm Asha. That's Toma. He's nicer than his spear. #line:ch02_beach_030
 Toma [neutral]: Toma Okeru, of Haluna. You are speaking to the Lady— #line:ch02_beach_031
 Asha [smile]: To Asha. Who is very glad you aren't dead. #line:ch02_beach_032

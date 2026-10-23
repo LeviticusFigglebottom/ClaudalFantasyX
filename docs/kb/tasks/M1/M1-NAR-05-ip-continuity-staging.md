@@ -2,7 +2,7 @@
 id: M1-NAR-05
 title: Story IP near-misses, continuity, and slice staging fixes (review-sweep-B)
 role: narrative
-status: review
+status: done
 owner_session: narrative-stream-3
 reviewer: cinematics
 depends_on: [M1-NAR-01, M1-NAR-02]
@@ -32,3 +32,17 @@ Fix the guardrail (SPEC §2) and staging findings from review-sweep-B on NAR-01/
 - Also fixed (review nits, Narrative's paths): the Ch8 staging is a freeze, not a run toward the figure; "Ultimate Weapon" became heirloom weapon quests; Asha's sheet says "wards" instead of series spell names; a silent `@wait 0.6` before ch02 006; "Nope" became "No".
 
 ## Review log
+- 2026-10-23 cinematics (review-sweep-C): **approve with fixes**. I checked the fixes from my own knowledge of the inspiring game.
+  - **Order:** the old run followed its temples almost exactly: a fire temple second, lightning third, an ice temple, then the holy city. The new elements break that, and "Unbroken Calm" → "the Long Stillness" is clean. No banned or series term appears in docs/kb/story or the .dlg scenes. I grepped for Farplane, Maester, Crusader, Celestial, Final Aeon/Summoning, Overdrive, summoner and unsent.
+  - **Staging:** the slice's camera grammar now cuts between unrelated setups. The S10 hold is 1.5 + 1.5 + 3.0 s of waits on S10 from line 043 to 046 with layered surprised → grief, and S07 → S08 is a fade-cut. Toma 021 and Rhen 054 now land sincerely.
+  - **act3_ending.md:** the durations add up (Ch21 39.0 = 28.0 P + 11.0, Ending 14.5, total 61.5). One goodbye per scene with rests between them is very stageable.
+  - should-fix (IP, for the Lead): decisions_log N-09 (decisions_log.md:65) gives **Ice to the Sanctum of the Level**: a basin held so still it freezes, at the Order's seat (Ch13), immediately before the Peace Wedding trap (Ch14) and the heretic turn (Ch15). That recreates the inspiring game's frozen-lake ice temple, where the party turns traitor just before the wedding in the church's city, more closely than the old order did. Consider giving the Sanctum a non-Ice Vowbound, or moving Ice back to Cloudloom's high passes and finding the Sanctum a stillness motif that isn't ice.
+  - should-fix: `docs/kb/story/beats/act3_ending.md:14` and :83 contradict SPEC §3.5, as locked in §0 rule 6: "every glimmer-light … released **in the same instant**". H09 shows every lamp in Maresh going dark at once, yet the Kite's *bound* lamps dim over E1 → E4 (about 10 min) as the countdown. Line 83 also says each farewell is "lit only by the rising motes of the person leaving", while the lamps are at 100% in E1. Fix: let the Kite's lamps die in H09 with everything else and carry the countdown on the dead's rising light and the sea-glow ramp alone. Or record a Lead ADR explaining why the Kite holds.
+  - should-fix: act3_ending.md:101 (E6). The payoff, "she draws breath… lets it go unsung, and **smiles**", is staged as "one locked shot from 1.0 m **behind** her", so the smile can't be seen. Fix: a locked three-quarter or profile frame from the dock's side, with her face against the star-filled sea (still no cut and no push), or a reflection read if behind is kept.
+  - should-fix: `game/data/dialogue/ch02/ch02_girl_on_the_beach.dlg:70-71`. After the branch at 026 ("Get up"), Rhen is standing and leaning on Toma (027–029), but the scene cuts back to H05, which is Rhen's POV at 0.4–0.9 m lying or sitting (haluna.md:167), and Asha `offer_hand`s to help him up. Fix: branch the camera (a standing H05 variant) and the anim, or have 026 end with him sinking back to his knees.
+  - should-fix (Art follow-up, already flagged): `docs/kb/art/environments/haluna.md:200` still specifies "the 3 s recognition blend" for S10, which contradicts the cut and ≥ 6 s hold in the .dlg. Lighting will be tuned to the wrong shot description.
+  - nit: act3_ending.md:85. Kerrid's breath fogging on a tropical night reads as cold, not warm, unless everyone's breath fogs. Use a different "alive for a moment" cue: his reflection appearing, or a shadow under the motes.
+  - nit: H02–H07 promise that Dace's face is unseen until E3, but H04–H07 are playable fights. Give Combat/Cinematics the constraint that battle cameras never frame Dace from Imra's side.
+  - nit: `ch03_the_first_verse.dlg:23,30`. `walk_to_chamber` plays before the exchange, then `@mark … walk` walks again. S07 (haluna.md:197) wants her to turn back for the exchange, then walk in. Use `turn_back` first.
+  - nit (banned list, for the Lead): add Farplane, Maester, Yunalesca, Valefor, Via Purifico, Thunder Plains, Moonflow, Celestial Weapon, Final Aeon, Final Summoning and Cloister of Trials to `tools/banned_terms.txt`. None are used today.
+- 2026-10-23 lead: closing on review-sweep-C approve-with-fixes; the remaining IP near-miss and staging items are in M1-NAR-08.

@@ -11,6 +11,8 @@ const TAG_SUNG := "sung"
 const TAG_NOTR := "notr"
 ## Reserved @music track id: fade the music bed out (cues.json "reserved").
 const MUSIC_SILENCE := &"silence"
+## Reserved @camera shot id: hand the camera back to the field volumes (M1-ARC-07, cues.json "reserved").
+const CAMERA_RELEASE := &"release"
 
 var kind: Kind = Kind.END
 ## Source line in the .dlg file, for debugging.
@@ -76,6 +78,11 @@ func is_music_wait() -> bool:
 ## True for `@music silence`.
 func is_music_silence() -> bool:
 	return kind == Kind.CUE and cue == &"music" and not args.is_empty() and StringName(str(args[0])) == MUSIC_SILENCE
+
+
+## True for `@camera release [blend=] [ease=]` (FieldCameraDirector.release), not a shot id.
+func is_camera_release() -> bool:
+	return kind == Kind.CUE and cue == &"camera" and not args.is_empty() and StringName(str(args[0])) == CAMERA_RELEASE
 
 
 static func make_end() -> DialogueStep:

@@ -69,12 +69,26 @@ EMO_BEFORE_ALIAS_RE = re.compile(
 )
 # `Name as Alias [emotion]:` (the alias needs double quotes)
 UNQUOTED_ALIAS_RE = re.compile(r"""^([A-Za-z][A-Za-z0-9_]*)\s+as\s+([^"\[\]:]*?)\s*(\[[^\]]*\])?\s*:""")
-# `[emotion] narration` (narration takes an emotion only through `Narrator [emotion]:`)
-EMO_NARRATION_RE = re.compile(r"^\[([^\]]*)\]\s*:?\s*(.*)$")
-# The heuristic: up to SPEAKER_LIKE_MAX_WORDS words that start with a capital letter and carry no
-# sentence punctuation, then an unescaped colon. Real narration that reads like that takes #narration.
-SPEAKER_LIKE_RE = re.compile(r"""^([A-Z][^:.!?;,…—]*?)(?<!\\):""")
+# `[emotion] narration` (narration takes an emotion only through `Narrator [emotion]:`). Only a single
+# identifier-like word in the brackets counts: `[The page is water-stained.]` is prose (M1-NAR-07).
+EMO_NARRATION_RE = re.compile(r"^\[\s*([A-Za-z][A-Za-z0-9_]*)\s*\]\s*:?\s*(.*)$")
+# `Asha [sad] Hi.` / `Asha as "The girl" Hi.`: a speaker line with its colon missing (M1-NAR-07). The name
+# must be in speakers.json (or Narrator), and the brackets hold one identifier-like word.
+MISSING_COLON_RE = re.compile(
+    r"""^([A-Za-z][A-Za-z0-9_]*)(\([^)]*\))?(?:\s+as\s+"((?:[^"\\]|\\.)*)")?"""
+    r"""(?:\s*\[\s*([A-Za-z][A-Za-z0-9_]*)\s*\])?\s*(?=[^\s:])(.*)$"""
+)
+# `Asha: [sad] Hi.`: the emotion after the colon would ship as text (M1-NAR-07).
+EMO_AFTER_COLON_RE = re.compile(r"^\[\s*([A-Za-z][A-Za-z0-9_]*)\s*\]\s*(.*)$")
+# The heuristic (M1-NAR-06, tiered by M1-NAR-07): text up to the first unescaped colon that starts with a
+# capital letter, has no sentence punctuation, and reads like a name: every word capitalized (or a
+# `(...)`/`{...}` group), with lowercase NAME_JOINERS allowed inside. A colon between digits (6:20, 3:1)
+# is never a speaker colon. 1-2 words is the typo shape (`Old Toma:`) and an error; 3-6 words is a WARN.
+SPEAKER_LIKE_RE = re.compile(r"""^([A-Z][^:.!?;,…—"]*?)(?<!\\):""")
+SPEAKER_LIKE_ERROR_WORDS = 2
 SPEAKER_LIKE_MAX_WORDS = 6
+NAME_WORD_RE = re.compile(r"[A-Z][A-Za-z0-9_]*|\([^()]*\)|\{[^{}]*\}")
+NAME_JOINERS = frozenset({"of", "the", "from", "in", "on", "at", "and", "by", "de", "van", "von"})
 TAG_NARRATION = "narration"  # compiler-only: "this is narration, as written"; not kept in the op
 ARG_ID_RE = re.compile(r"[A-Za-z0-9_]+")
 COMMAND_RE = re.compile(r"^<<\s*(.*?)\s*>>$")
@@ -462,6 +476,11 @@ def check_cue(cue: str, args: list[Any], kwargs: dict[str, Any], vocab: Vocab, l
                              f"new cues go in {CUES_JSON.as_posix()})")
     check_positional(f"@{cue}", spec.get("args", []), args, vocab, line)
     allowed: dict[str, dict] = spec.get("kwargs", {})
+    reserved = vocab.reserved.get(cue, {}).get(args[0]) if args and isinstance(args[0], str) else None
+    if isinstance(reserved, dict) and "kwargs" in reserved:
+        # M1-ARC-07: a reserved command (`@camera release`) allows only its own keys.
+        allowed = {k: v for k, v in allowed.items() if k in reserved["kwargs"]}
+        cue = f"{cue} {args[0]}"
     for k, v in kwargs.items():
         if k not in allowed:
             known = ", ".join(f"{a}=" for a in sorted(allowed)) or "none"
@@ -681,6 +700,14 @@ class BodyParser:
                 if identity is not None:
                     raise DlgError(ln.no, f"'{name}({identity})': only Narrator takes a voice identity")
             body, line_id, tags, note = split_tags(text, ln.no, ln.raw)
+            late = EMO_AFTER_COLON_RE.match(body)
+            if late:
+                emo2, rest = late.groups()
+                head = name + (f' as "{alias}"' if alias is not None else "")
+                fix = f"{head} [{emo2}]: {_clip(rest)}"
+                known = "" if emo2 in self.ctx.emotions else f"; '{emo2}' is not in {EMOTIONS_JSON.as_posix()} either"
+                raise DlgError(ln.no, f"the emotion goes before the colon: did you mean '{fix}'? (as written, "
+                                      f"'[{emo2}]' would show as text{known})")
             if TAG_NARRATION in tags:
                 raise DlgError(ln.no, f"#{TAG_NARRATION} marks narration that looks like a speaker line; "
                                       f"this line has a speaker ('{name}:')")
@@ -705,39 +732,75 @@ class BodyParser:
         return out
 
     def check_near_miss(self, body: str, line: int) -> None:
-        """M1-NAR-06: a narration line (tags already popped, escapes kept) that nearly matches a speaker
+        """M1-NAR-06/07: a narration line (tags already popped, escapes kept) that nearly matches a speaker
         line is an error, so a typo never ships its raw `Name [emo]:` text. `#narration` skips this."""
-        allow = f"tag the line #{TAG_NARRATION} if it really is narration"
+        allow = f"write '\\:' for a colon in narration, or tag the line #{TAG_NARRATION} if it really is narration"
         m = EMO_BEFORE_ALIAS_RE.match(body)
         if m:
             name, identity, emo, alias = m.groups()
             fix = f'{name}{identity or ""} as "{alias}" [{emo.strip()}]:'
             raise DlgError(line, f"the emotion goes after the alias: did you mean '{fix}'? "
-                                 "(as written, this line would compile as narration)")
+                                 f"(as written, this line would compile as narration; {allow})")
         m = UNQUOTED_ALIAS_RE.match(body)
         if m and m.group(1).lower() in self.ctx.speakers and m.group(2):
             name, alias, emo = m.groups()
             fix = f'{name} as "{alias}"' + (f" {emo}" if emo else "") + ":"
             raise DlgError(line, f"an alias needs double quotes: did you mean '{fix}'? "
-                                 "(as written, this line would compile as narration)")
+                                 f"(as written, this line would compile as narration; {allow})")
+        m = MISSING_COLON_RE.match(body)
+        if m and m.group(1).lower() in self.ctx.speakers | {NARRATOR} and (m.group(3) is not None or m.group(4)):
+            name, identity, alias, emo, rest = m.groups()
+            fix = (name + (identity or "") + (f' as "{alias}"' if alias is not None else "")
+                   + (f" [{emo}]" if emo else "") + ": " + _clip(rest))
+            raise DlgError(line, f"a speaker line needs a ':' after the name: did you mean '{fix}'? "
+                                 f"(as written, this line would compile as narration; {allow})")
         m = EMO_NARRATION_RE.match(body)
         if m:
-            emo = m.group(1).strip()
+            emo = m.group(1)
             known = "" if emo in self.ctx.emotions else f"; '{emo}' is not in {EMOTIONS_JSON.as_posix()} either"
             raise DlgError(line, f"narration takes an emotion only through Narrator: did you mean "
                                  f"'Narrator [{emo}]: {_clip(m.group(2))}'? (or 'Narrator(<speaker id>) [{emo}]:' "
-                                 f"for a voice-over{known}; {allow})")
-        m = SPEAKER_LIKE_RE.match(body)
-        if m and len(m.group(1).split()) <= SPEAKER_LIKE_MAX_WORDS:
-            prefix = m.group(1).strip()
-            first = re.match(r"[A-Za-z0-9_]+", prefix)
-            hint = ""
-            if first and first.group(0).lower() in self.ctx.speakers | {NARRATOR}:
-                hint = f" Did you mean '{first.group(0)}:' or '{first.group(0)} [emotion]:'?"
-            raise DlgError(line, f"'{prefix}:' looks like a speaker, but this line would compile as narration "
-                                 "(a speaker line is 'Name [emotion]: text' or 'Name as \"Alias\" [emotion]: "
-                                 f"text', Name one word from {SPEAKERS_JSON.as_posix()}).{hint} For narration, "
-                                 f"write '\\:' for the colon or {allow}")
+                                 f"for a voice-over{known}; tag the line #{TAG_NARRATION} if it really is narration)")
+        prefix = speaker_like_prefix(body)
+        if prefix is None:
+            return
+        words = len(_name_tokens(prefix))
+        first = re.match(r"[A-Za-z0-9_]+", prefix)
+        hint = ""
+        if first and first.group(0).lower() in self.ctx.speakers | {NARRATOR}:
+            hint = f" Did you mean '{first.group(0)}:' or '{first.group(0)} [emotion]:'?"
+        msg = (f"'{prefix}:' looks like a speaker, but this line would compile as narration (a speaker line is "
+               f"'Name [emotion]: text' or 'Name as \"Alias\" [emotion]: text', Name one word from "
+               f"{SPEAKERS_JSON.as_posix()}).{hint} For narration, {allow}")
+        if words <= SPEAKER_LIKE_ERROR_WORDS:
+            raise DlgError(line, msg)
+        self.ctx.warn(line, msg)
+
+
+def _name_tokens(prefix: str) -> list[str]:
+    return re.findall(r"\([^()]*\)|\{[^{}]*\}|\S+", prefix)
+
+
+def speaker_like_prefix(body: str) -> str | None:
+    """The text before the first unescaped colon if it reads like a speaker name (see SPEAKER_LIKE_RE),
+    else None. A colon between digits (`6:20`, `3:1`) never counts (M1-NAR-07)."""
+    m = SPEAKER_LIKE_RE.match(body)
+    if not m:
+        return None
+    colon = m.end() - 1
+    if colon > 0 and body[colon - 1].isdigit() and body[colon + 1: colon + 2].isdigit():
+        return None
+    prefix = m.group(1).strip()
+    tokens = _name_tokens(prefix)
+    if not tokens or len(tokens) > SPEAKER_LIKE_MAX_WORDS:
+        return None
+    for i, tok in enumerate(tokens):
+        if NAME_WORD_RE.fullmatch(tok):
+            continue
+        if 0 < i < len(tokens) - 1 and tok in NAME_JOINERS:
+            continue
+        return None
+    return prefix
 
 
 # ---------------------------------------------------------------- codegen (statement tree -> ops)

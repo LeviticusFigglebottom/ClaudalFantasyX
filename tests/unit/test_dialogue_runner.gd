@@ -321,6 +321,16 @@ func test_options_with_none_available_are_skipped() -> void:
 	assert_eq(runner.next().line_id, &"x")
 
 
+func test_camera_release_is_a_reserved_command() -> void:
+	var release := DialogueStep.from_cue_op({"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {"blend": 2}})
+	assert_true(release.is_camera_release())
+	assert_false(release.is_music_silence())
+	var shot := DialogueStep.from_cue_op({"op": "cue", "cue": "camera", "args": ["H06"], "kwargs": {}})
+	assert_false(shot.is_camera_release(), "a shot id is not a release")
+	var music := DialogueStep.from_cue_op({"op": "cue", "cue": "music", "args": ["release"], "kwargs": {}})
+	assert_false(music.is_camera_release(), "only @camera reserves 'release'")
+
+
 ## Counts push_warning calls.
 class _WarningTally:
 	extends Logger

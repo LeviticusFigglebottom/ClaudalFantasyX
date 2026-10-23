@@ -18,6 +18,12 @@ extends Node3D
 ## and capture scenes drive it deterministically.
 
 signal shot_changed(shot: CameraShot, hard_cut: bool, blend_sec: float)
+## The camera has settled on `shot` (M1-ARC-07: the sequencer contract). Fires once per transition
+## that lands: when a blend completes (or snap() cuts it short), at the end of the update() that
+## first applies a cut, and at the end of the next update() after a play_shot()/release() that did
+## not move the camera. Never synchronously inside
+## play_shot()/release()/a volume change, so `play_shot(...)` then `await blend_finished` cannot
+## miss it. A transition superseded before it lands does not fire; the one that replaced it does.
 signal blend_finished(shot: CameraShot)
 ## A scripted shot took the camera (play_shot). blend_sec is 0 for a cut.
 signal scripted_shot_started(shot: CameraShot, blend_sec: float)
@@ -68,6 +74,8 @@ var _scripted_shot: CameraShot
 var _return_shot: CameraShot
 var _return_volume: CameraVolume
 var _aim_warned: Dictionary = {}
+## A cut or a no-move scripted transition landed; the next update() emits blend_finished.
+var _settle_pending := false
 
 
 func _ready() -> void:
@@ -138,6 +146,8 @@ func snap() -> void:
 ## honours the shot's hard_cut; an explicit blend_sec wins over both, and 0 cuts. `ease` names an
 ## ease from field_camera.json for this blend only (empty = the shot's own curve or ease). Calling
 ## it again while held moves on to the next scripted shot, blending from wherever the camera is.
+## Playing the shot already active is a no-move (a cut onto it ends any blend into it); either way
+## blend_finished follows on the next update(), so a sequencer can always await it.
 func play_shot(shot: CameraShot, blend_sec: float = CameraShot.USE_DEFAULT, ease: StringName = &"") -> void:
 	if shot == null:
 		push_error("FieldCameraDirector: play_shot(null)")
@@ -153,14 +163,21 @@ func play_shot(shot: CameraShot, blend_sec: float = CameraShot.USE_DEFAULT, ease
 		_return_volume = active_volume
 	_scripted_shot = shot
 	var moves := shot != active_shot
-	_activate(shot, null, cut, dur, ease)
+	if moves:
+		_activate(shot, null, cut, dur, ease)
+	else:
+		_settle_in_place(cut)
+		active_volume = null
 	scripted_shot_started.emit(shot, dur if moves and not cut else 0.0)
 
 
 ## Hands the camera back to the volumes: blends to the winning volume's shot (or, outside every
 ## volume, to the shot that was active before play_shot). blend_sec < 0 resolves like a volume
-## entry (volume override, shot, default) but always blends, whatever the hard_cut settings; pass
-## 0 to cut. Returns false, and does nothing, when no scripted shot is held.
+## entry (volume override, shot, default) and blends even onto a shot whose own hard_cut is set;
+## pass 0 to cut. The returning volume's force_hard_cut always wins (it marks a set where a blend
+## would sweep through geometry or flip the screen axis), even over an explicit blend_sec.
+## blend_finished follows like any other transition. Returns false, and does nothing, when no
+## scripted shot is held.
 func release(blend_sec: float = CameraShot.USE_DEFAULT, ease: StringName = &"") -> bool:
 	if _scripted_shot == null:
 		return false
@@ -182,11 +199,21 @@ func release(blend_sec: float = CameraShot.USE_DEFAULT, ease: StringName = &"") 
 		dur = shot.blend_sec
 	if dur < 0.0:
 		dur = float(data.get("default_blend_sec", 0.0))
-	var cut := dur <= 0.0
+	var cut := dur <= 0.0 or (v != null and v.force_hard_cut)
 	var moves := shot != active_shot
-	_activate(shot, v, cut, dur, ease)
+	if moves:
+		_activate(shot, v, cut, dur, ease)
+	else:
+		_settle_in_place(cut)
+		active_volume = v
 	scripted_shot_released.emit(shot, dur if moves and not cut else 0.0)
 	return true
+
+
+## True when no blend is running and no blend_finished is still owed: the camera is on its shot.
+## A sequencer that may already be settled checks this before awaiting blend_finished.
+func is_settled() -> bool:
+	return not _blending and not _settle_pending
 
 
 ## True while play_shot() holds the camera.
@@ -225,6 +252,9 @@ func update(delta: float) -> void:
 		current_pose = to_pose
 	if camera != null:
 		current_pose.apply_to(camera)
+	if _settle_pending:
+		_settle_pending = false
+		blend_finished.emit(active_shot)
 
 
 func is_blending() -> bool:
@@ -428,6 +458,7 @@ func _activate(shot: CameraShot, v: CameraVolume, cut: bool, dur: float, ease: S
 	_blend_duration = 0.0 if cut else dur
 	_blend_weight = 1.0 if cut else 0.0
 	_blend_ease = ease
+	_settle_pending = cut
 	if cut:
 		_previous_shot = null
 	history.append(shot.id)
@@ -435,6 +466,15 @@ func _activate(shot: CameraShot, v: CameraVolume, cut: bool, dur: float, ease: S
 
 
 # --- Helpers -------------------------------------------------------------------------------------
+
+
+## A scripted transition onto the shot already active: a cut ends any blend into it; then, unless a
+## blend is still running (it will emit when it lands), blend_finished is owed on the next update().
+func _settle_in_place(cut: bool) -> void:
+	if cut and _blending:
+		_end_blend()
+	if not _blending:
+		_settle_pending = true
 
 
 func _end_blend() -> void:

@@ -344,6 +344,8 @@ def check_dialogue(root: Path, files: dict[str, object], rep: Report) -> list[st
 
     for e in dialogue_vocab_errors(files.get(f"{base}/cues.json"), files.get(f"{base}/events.json")):
         rep.err(e)
+    for e in camera_ease_errors(files.get(f"{base}/cues.json"), files.get("game/data/world/field_camera.json")):
+        rep.err(e)
     errors, warnings = dlgc.check_report(root)
     for e in errors:
         rep.err(f"dlgc: {e}")
@@ -385,6 +387,35 @@ def _positional_errors(args: object, where: str, sets: dict) -> list[str]:
     return errs
 
 
+def _reserved_value_errors(cue: str, values: dict, spec: object, cw: str) -> list[str]:
+    """M1-ARC-07: a reserved value is a meaning string or {doc, kwargs: [keys of this cue]}."""
+    errs: list[str] = []
+    keys = set(spec.get("kwargs", {})) if isinstance(spec, dict) else set()
+    for value, meaning in values.items():
+        where = f"{cw}: reserved.{cue}.{value}"
+        if isinstance(meaning, str) and meaning.strip():
+            continue
+        if not isinstance(meaning, dict) or not isinstance(meaning.get("doc"), str) or not meaning["doc"].strip():
+            errs.append(f"{where}: needs a meaning string or an object with a 'doc'")
+            continue
+        only = meaning.get("kwargs", [])
+        if not isinstance(only, list) or any(k not in keys for k in only):
+            errs.append(f"{where}.kwargs: must list keys of @{cue} ({', '.join(sorted(keys)) or 'none'})")
+    return errs
+
+
+def camera_ease_errors(cues: object, field_camera: object) -> list[str]:
+    """M1-ARC-07: cues.json's camera_eases set mirrors the eases in game/data/world/field_camera.json."""
+    sets = cues.get("sets", {}) if isinstance(cues, dict) else {}
+    eases = field_camera.get("eases", {}) if isinstance(field_camera, dict) else {}
+    want = sorted(k for k, v in eases.items() if isinstance(v, dict)) if isinstance(eases, dict) else []
+    got = sorted(sets.get("camera_eases", [])) if isinstance(sets, dict) else []
+    if got != want:
+        return [f"game/data/dialogue/cues.json: sets.camera_eases {got} must match the eases in "
+                f"game/data/world/field_camera.json {want}"]
+    return []
+
+
 def dialogue_vocab_errors(cues: object, events: object) -> list[str]:
     """Shape of game/data/dialogue/cues.json and events.json (dlgc enforces their contents on .dlg files)."""
     errs: list[str] = []
@@ -420,6 +451,8 @@ def dialogue_vocab_errors(cues: object, events: object) -> list[str]:
     for cue, values in (cues.get("reserved") or {}).items():
         if cue not in cues["cues"] or not isinstance(values, dict):
             errs.append(f"{cw}: reserved.{cue} must name a cue and map values to their meaning")
+            continue
+        errs += _reserved_value_errors(cue, values, cues["cues"][cue], cw)
     rows = events.get("events") if isinstance(events, dict) else None
     if not isinstance(rows, list) or not rows:
         return errs + [f"{ew}: missing non-empty list 'events'"]
