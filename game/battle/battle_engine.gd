@@ -836,8 +836,15 @@ func _roll_drops() -> void:
 				_drops[iid] = int(_drops.get(iid, 0)) + 1
 
 
+## The enemies.json row id of an enemy combatant ("reef_crab#2" -> &"reef_crab"). The one rule for
+## an enemy's id: its row (stats, drops, Read's reveal) and its bestiary entry (Read and victory
+## credit, BattleBestiary) both go through it, so they cannot drift if combatant ids change.
+static func enemy_id(e: BattleCombatant) -> StringName:
+	return StringName(String(e.id).get_slice("#", 0))
+
+
 func _enemy_row(e: BattleCombatant) -> Dictionary:
-	return db.enemies.get(StringName(String(e.id).get_slice("#", 0)), {})
+	return db.enemies.get(enemy_id(e), {})
 
 
 func _field() -> Array[BattleCombatant]:
