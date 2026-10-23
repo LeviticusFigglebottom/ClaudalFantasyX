@@ -22,7 +22,7 @@ ADR 0005 consequence.
 - `--all` takes **95 s** on this sandbox (4 vCPU, load ~4): base_body 33 s, asha 45 s, shader_test 2 s, vegetation 5 s, haluna_kit 8 s. In changed-only mode, a change that touches no Blender source costs ~0 s. This checkout has no `main` ref, so the default falls back to every job (95 s). Agents can set `HYMN_BLENDER_BASE=<integration branch>`.
 - **Findings** (both are expected failures, reported as `KNOWN`; the gate fails again once they pass, until the marker goes):
   - **M1-CHR-05**: the committed `base_body_*.glb` don't match their source (POSITION is up to ~3 mm off, and the indices differ). Base-body rebuilds also wobble one tangent by 1e-4 from run to run, hence the TANGENT tolerance of 1e-3 on that job only.
-  - **M1-RND-12**: `build_shader_test_meshes.py` fails on Blender 5.0.1 (`bm.faces.sort` key must be a number).
+  - **M1-RND-14**: `build_shader_test_meshes.py` fails on Blender 5.0.1 (`bm.faces.sort` key must be a number).
   - asha (2 `.glb`), vegetation (7) and haluna_kit (30 `.glb` + manifest) are **byte-identical**.
 - Proposed CLAUDE.md §3 text for the Lead is in the 2026-10-23 qa-1 handoff.
 

@@ -40,7 +40,7 @@ Exit 3 (no Blender, or not the pinned 5.0.1) prints `SKIP`, as the screenshot st
 |---|---|---|---|
 | `base_body` (3 variants) | character | 33 s | **KNOWN (M1-CHR-05)**: the committed `.glb` files don't match their source. POSITION min/max differ by up to ~3 mm, and the indices differ too. Run to run, the rebuild is stable except for Blender's tangent export (1 vertex in 14.5k moves by 1e-4), hence the TANGENT tolerance of 1e-3 |
 | `asha` (`asha.glb`, `asha_lod1.glb`) | character | 45 s | identical |
-| `shader_test` | rendering | 2 s | **KNOWN (M1-RND-12)**: `build_shader_test_meshes.py` fails on Blender 5.0.1 (`bm.faces.sort(key=...)`: "the value returned by the 'key' function is not a number") |
+| `shader_test` | rendering | 2 s | **KNOWN (M1-RND-14)**: `build_shader_test_meshes.py` fails on Blender 5.0.1 (`bm.faces.sort(key=...)`: "the value returned by the 'key' function is not a number") |
 | `vegetation` (7 `.glb`) | environment | 5 s | identical |
 | `haluna_kit` (30 `.glb` + `kit_manifest.json`) | environment | 8 s | identical |
 
