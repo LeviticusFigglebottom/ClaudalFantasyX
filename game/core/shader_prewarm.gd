@@ -16,6 +16,10 @@ extends Node
 ##   "draw_material": for a particles material, the draw pass's material (billboard pipelines)
 ## The stage viewport copies the game viewport's AA (TAA, MSAA, screen-space AA, 3D scaling mode),
 ## so motion-vector and upscaler pipeline variants are compiled too.
+## With "scene_materials": true the incoming scene itself is instanced off-tree (no _ready runs) and
+## every material on its geometry is drawn on that geometry's own mesh (or MultiMesh), plus its
+## WorldEnvironment sky: inline sub-resource materials and real vertex formats need no registry
+## entry. Materials scenes build at runtime in _ready still need their registry entries.
 ##
 ## Hook-up (autoload-free): `ShaderPrewarm.install(SceneRouter)` connects to
 ## SceneRouter.prewarm_requested and spawns this scene as a child of the router (which survives the
@@ -105,6 +109,8 @@ func start(for_scene: String = "") -> int:
 			_instanced += 1
 		else:
 			_skipped += 1
+	if bool(config.get("scene_materials", false)) and for_scene != "" and ResourceLoader.exists(for_scene):
+		_instanced += _instance_scene_materials(for_scene, int(config.get("max_scene_materials", 0)))
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_running = true
 	_stage_alive = true
@@ -312,6 +318,83 @@ func _instance(mat: Material, entry: Dictionary = {}) -> bool:
 	(_stage_2d if node is Control else _stage_3d).add_child(node)
 	_spawned.append(node)
 	return true
+
+
+## Draws every (material, mesh) pair on the incoming scene's geometry, and its sky. Returns how
+## many draws were staged (capped at `cap`, deduplicated).
+func _instance_scene_materials(path: String, cap: int) -> int:
+	var packed := load(path) as PackedScene
+	if packed == null:
+		return 0
+	var inst := packed.instantiate(PackedScene.GEN_EDIT_STATE_DISABLED)
+	var seen := {}
+	var count := 0
+	var in_front := Vector3.FORWARD * float(config.get("quad_distance", 0.0))
+	for n in inst.find_children("*", "", true, false) + [inst]:
+		if count >= cap:
+			break
+		if n is WorldEnvironment:
+			var env := (n as WorldEnvironment).environment
+			if env != null and env.sky != null and env.sky.sky_material != null:
+				var sky := Sky.new()
+				sky.sky_material = env.sky.sky_material
+				_ensure_stage_env().background_mode = Environment.BG_SKY
+				_stage_env.sky = sky
+			continue
+		if not (n is GeometryInstance3D):
+			continue
+		for pair in _geometry_draws(n as GeometryInstance3D):
+			var key := [pair[0], pair[1]]
+			if seen.has(key) or count >= cap:
+				continue
+			seen[key] = true
+			var node: GeometryInstance3D
+			if n is MultiMeshInstance3D:
+				var mm := MultiMesh.new()
+				var src := (n as MultiMeshInstance3D).multimesh
+				mm.transform_format = src.transform_format
+				mm.use_colors = src.use_colors
+				mm.use_custom_data = src.use_custom_data
+				mm.mesh = pair[1] as Mesh
+				mm.instance_count = int(config.get("multimesh_instances", 1))
+				var mmi := MultiMeshInstance3D.new()
+				mmi.multimesh = mm
+				node = mmi
+			else:
+				var mi := MeshInstance3D.new()
+				mi.mesh = pair[1] as Mesh
+				node = mi
+			node.material_override = pair[0] as Material
+			node.position = in_front
+			_stage_3d.add_child(node)
+			_spawned.append(node)
+			count += 1
+	inst.free()
+	return count
+
+
+## [material, mesh] pairs a GeometryInstance3D draws (override, per-surface overrides, mesh materials).
+static func _geometry_draws(g: GeometryInstance3D) -> Array:
+	var mesh: Mesh = null
+	if g is MeshInstance3D:
+		mesh = (g as MeshInstance3D).mesh
+	elif g is MultiMeshInstance3D and (g as MultiMeshInstance3D).multimesh != null:
+		mesh = (g as MultiMeshInstance3D).multimesh.mesh
+	if mesh == null:
+		return []
+	var out := []
+	if g.material_override != null:
+		out.append([g.material_override, mesh])
+		return out
+	for i in mesh.get_surface_count():
+		var m: Material = null
+		if g is MeshInstance3D:
+			m = (g as MeshInstance3D).get_surface_override_material(i)
+		if m == null:
+			m = mesh.surface_get_material(i)
+		if m != null:
+			out.append([m, mesh])
+	return out
 
 
 func _ensure_stage_env() -> Environment:

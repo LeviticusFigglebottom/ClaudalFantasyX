@@ -196,6 +196,65 @@ func test_entries_draw_real_meshes_multimesh_and_particle_passes() -> void:
 	DirAccess.remove_absolute(TMP_DIR)
 
 
+## M1-RND-07: with scene_materials the incoming scene's own (inline) materials are staged on their
+## own meshes, MultiMeshes included, without a registry entry.
+func test_scene_materials_are_harvested_from_the_incoming_scene() -> void:
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var root := Node3D.new()
+	var box := MeshInstance3D.new()
+	box.mesh = BoxMesh.new()
+	var inline := StandardMaterial3D.new()
+	inline.albedo_color = Color.RED
+	box.material_override = inline
+	root.add_child(box)
+	box.owner = root
+	var grass := MultiMeshInstance3D.new()
+	grass.multimesh = MultiMesh.new()
+	grass.multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	grass.multimesh.use_colors = true
+	var blade := QuadMesh.new()
+	blade.material = StandardMaterial3D.new()
+	grass.multimesh.mesh = blade
+	root.add_child(grass)
+	grass.owner = root
+	var packed := PackedScene.new()
+	packed.pack(root)
+	root.free()
+	var scene_path := TMP_DIR + "/harvest.tscn"
+	ResourceSaver.save(packed, scene_path)
+	var reg := {
+		"frames_to_render": 1,
+		"measure_frames": 2,
+		"hitch_budget_ms": 50.0,
+		"viewport_width": 32,
+		"viewport_height": 32,
+		"quad_size": 1.0,
+		"quad_distance": 1.5,
+		"particle_amount": 1,
+		"multimesh_instances": 2,
+		"scene_materials": true,
+		"max_scene_materials": 16,
+		"materials": [],
+	}
+	var reg_path := TMP_DIR + "/registry_harvest.json"
+	var f := FileAccess.open(reg_path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(reg))
+	f.close()
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	_host().add_child(node)
+	assert_eq(node.start(scene_path), 2, "the box's inline material and the grass blade's")
+	var stage := node.get_node("Viewport/Stage3D")
+	assert_eq(stage.find_children("*", "MultiMeshInstance3D", true, false).size(), 1, "grass through a MultiMesh")
+	var boxes := stage.find_children("*", "MeshInstance3D", true, false)
+	assert_true(boxes.any(func(n: Node) -> bool: return (n as MeshInstance3D).mesh is BoxMesh), "on its own mesh")
+	node.tick(5.0)
+	node.tick(5.0)
+	for file in DirAccess.get_files_at(TMP_DIR):
+		DirAccess.remove_absolute(TMP_DIR + "/" + file)
+	DirAccess.remove_absolute(TMP_DIR)
+
+
 func test_install_hooks_scene_router_signal() -> void:
 	var router: Node = SceneRouter
 	assert_true(router.has_meta(ShaderPrewarm.HOOK_META), "SceneRouter installs the hook in _ready()")

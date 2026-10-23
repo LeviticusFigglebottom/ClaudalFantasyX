@@ -8,6 +8,8 @@
   "quad_size": 1.0,
   "quad_distance": 1.5,
   "multimesh_instances": 2,
+  "scene_materials": true,
+  "max_scene_materials": 256,
   "particle_amount": 1,
   "materials": [
     {
