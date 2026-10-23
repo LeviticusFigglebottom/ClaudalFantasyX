@@ -2,10 +2,11 @@
 id: M1-ENV-06
 title: Move the Haluna location rows to the playable zone when it lands
 role: environment
-status: done
+status: review
 owner_session: "worktree-agent-aa764c62452184711"
 depends_on: [M1-ENV-04]
 milestone: M1
+reviewer: architect
 request-from: "architect"
 ---
 ## Goal
@@ -40,6 +41,7 @@ marked `"playable": false`; `default_location` and `new_game` must be playable.
     instances the mood scene without editing it (game/levels/ch02/haluna/README.md), so the shrine is in the
     zone through that instance and the mood test keeps its shrine dressing. Moving it would change the five
     haluna_* mood shots for no play benefit. Revisit if the mood scene stops being the zone's base.
-  Closed at the Lead's direction (the work was reviewed with M2-FP-02).
+  To close at the Lead's direction: `done` needs a Review log entry (taskboard --check), so it is in review
+  for the architect (who filed it) to confirm and move to done.
 
 ## Review log
