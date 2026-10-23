@@ -104,6 +104,8 @@ func _presets(names: Array[StringName]) -> Array[Dictionary]:
 func _check_line(step: DialogueStep, where: String) -> void:
 	var at := "%s (%s)" % [step.line_id, where]
 	assert_ne(tr(step.text_key), String(step.text_key), "translated: " + at)
+	if "lamptongue" in step.tags:
+		assert_true(step.is_do_not_translate(), "Lamptongue is never translated (#notr): " + at)
 	if step.speaker == &"":
 		assert_true("vo" in step.tags, "narration is tagged #vo: " + at)
 	else:

@@ -113,6 +113,54 @@ func test_narration_has_no_name_and_no_blip() -> void:
 	_done()
 
 
+func test_alias_name_replaces_speaker_name() -> void:
+	box.show_text(&"asha", LINE_KEY, &"DLG_NAME_ASHA_THE_GIRL")
+	assert_eq(box.speaker_name(), "The girl")
+	box.advance(0.3)
+	assert_between((box.get_node(^"%Blip") as AudioStreamPlayer).pitch_scale, 1.179, 1.181, "still Asha's pitch")
+	_done()
+
+
+func test_alias_from_runner_step() -> void:
+	var runner := DialogueRunner.new(DialogueFlagAccess.new())
+	runner.forward_events_to_bus = false
+	runner.load_scene(&"test_dialogue_fixture")
+	runner.start(&"features")
+	box.show_line(runner.next())
+	assert_eq(box.speaker_name(), "The girl")
+	box.show_line(runner.next())
+	assert_eq(box.speaker_name(), "Asha", "the alias lasts one line")
+	_done()
+
+
+func test_sung_line_has_no_blips_or_flaps() -> void:
+	box.show_text(&"asha", LINE_KEY, &"", true)
+	var body := box.get_node(^"%Body") as Label
+	assert_eq(body.theme_type_variation, DialogueBox.SUNG_VARIATION)
+	box.advance(100.0)
+	assert_eq(box.shown_text(), LINE_TEXT, "the text still reveals")
+	assert_eq(box.blips_played, 0)
+	assert_eq(flaps.size(), 0, "no lip-flap while singing")
+	assert_eq(finished_count[0], 1)
+	box.show_text(&"asha", LINE_KEY)
+	assert_eq(body.theme_type_variation, &"", "the style resets on the next line")
+	box.advance(0.3)
+	assert_true(box.blips_played > 0, "blips come back")
+	_done()
+
+
+func test_narrator_identity_picks_blip_pitch_when_narration_blips() -> void:
+	box.settings.narration_blip = true
+	box.show_text(&"", &"DLG_CH02_BEACH_001", &"", false, &"toma")
+	box.advance(0.3)
+	assert_eq(box.speaker_name(), "", "narration still shows no name")
+	assert_true(box.blips_played > 0)
+	assert_between((box.get_node(^"%Blip") as AudioStreamPlayer).pitch_scale, 0.779, 0.781, "toma's pitch")
+	box.show_text(&"", &"DLG_CH02_BEACH_001", &"DLG_NAME_ASHA_THE_GIRL")
+	assert_eq(box.speaker_name(), "", "an alias never names narration")
+	_done()
+
+
 func test_skip_reveal_is_silent() -> void:
 	box.show_text(&"asha", LINE_KEY)
 	box.advance(0.2)
