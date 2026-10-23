@@ -35,3 +35,7 @@ M1-QA-04 added a per-shot `setup` block to `tests/screenshots/shots.json`, cover
   - Docs: qa/screenshots.md (migration done), tech/water.md and tech/undertow.md.
 
 ## Review log
+- 2026-10-23 qa (review-sweep-L, fresh reviewer): **approve.** No blockers.
+  - **What I read:** `git show` 16eeb32: water_test_rig.gd, undertow_test_rig.gd, haluna_mood.gd, undertow_test.tscn and shots.json. I also read capture.gd's setup hold (:16-31, :84-126).
+  - **Checks:** no `CAPTURE_SCENE` is left in the three rigs. The rigs still write `hymn_wind_time` every frame, but capture.gd runs at `HOLD_PRIORITY` after every node and re-applies `setup.hold()`, so the shot's pinned 40.0 wins each frame. That is why the renders are byte-identical. The `mood` exports default to empty, so hand-opened scenes behave as before. No shots re-run: the author reports 16/16 byte-identical before and after, and the Lead's full gate covers the baselines.
+  - **Nit:** undertow_test.tscn no longer saves `playing = false`, so the storm plays when the scene is opened by hand. The bench and ghost_check stop it themselves. Anything else that instances the scene for a still (a future cinematic previs) must hold `Storm.playing` itself. Add a line to undertow.md Gotchas.
