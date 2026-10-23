@@ -663,3 +663,56 @@ func test_the_help_line_wraps_only_when_one_line_cannot_hold_it() -> void:
 	ctl.run_script(BattleController.SCRIPT_STATUSES)
 	assert_true(ctl.hud.help_wraps(), "Reflect + Provoke notes take a second line instead of being cut")
 	_free()
+
+
+# --- M1-UI-03: staged build (scene-swap frame budget) ----------------------------------
+
+
+func test_staged_build_spreads_over_frames_and_ends_like_the_one_shot_build() -> void:
+	var seen: Array[Dictionary] = []
+	ctl.frame_wait = func() -> void:
+		(
+			seen
+			. append(
+				{
+					"engine": ctl.engine != null,
+					"pooled": ctl.hud.timeline.pooled_count(),
+					"rows": ctl.hud.party.rows().size(),
+					"slots": ctl.hud.timeline.slots.size(),
+					"state": ctl.state,
+				}
+			)
+		)
+	ctl.start_sandbox(-1, true)
+	assert_eq(seen.size(), 4, "lattice | engine + 8 chips | party + 8 chips | first order | first turn")
+	assert_false(seen[0]["engine"], "frame 0 only loads the Lattice progress")
+	assert_eq(seen[1]["pooled"], CtbTimeline.PREVIEW_LENGTH / 2, "half the chips are built hidden in frame 1")
+	assert_eq(seen[1]["rows"], 0, "the party panel waits for frame 2")
+	assert_eq(seen[2]["pooled"], CtbTimeline.PREVIEW_LENGTH, "the rest in frame 2")
+	assert_eq(seen[3]["slots"], CtbTimeline.PREVIEW_LENGTH, "frame 3 shows the order from the pool")
+	assert_eq(seen[3]["pooled"], 0, "every pooled chip was used, none built then")
+	for snap in seen:
+		assert_eq(snap["state"], BattleController.STATE_IDLE, "no input until the first turn is open")
+	assert_false(ctl.building)
+	assert_true(ctl.state in [BattleController.STATE_COMMAND, BattleController.STATE_RESULT])
+	var staged_ids := _slot_ids()
+	var staged_actor := ctl.current_actor_id()
+	_free()
+	before_each()
+	ctl.start_sandbox()
+	assert_eq(_slot_ids(), staged_ids, "same order as the one-shot build")
+	assert_eq(ctl.current_actor_id(), staged_actor)
+	_free()
+
+
+func test_prebuilt_chips_are_reused_not_duplicated() -> void:
+	var tl := ctl.hud.timeline
+	var before := tl.get_child_count()
+	tl.prebuild(CtbTimeline.PREVIEW_LENGTH)
+	assert_eq(tl.get_child_count(), before + CtbTimeline.PREVIEW_LENGTH)
+	_start()
+	assert_eq(tl.pooled_count(), 0)
+	assert_eq(tl.get_child_count(), before + CtbTimeline.PREVIEW_LENGTH, "the first order made no new chips")
+	for s in tl.slots:
+		assert_true(tl.chip_for_key(str(s["key"])).visible, "pooled chips are shown when used")
+	_free()
