@@ -1,6 +1,6 @@
 # 0022 — Dace and Imra are strangers until the Corrow stair; Kerrid is a fisher-watch captain, not a hero; the sweep-F residuals
 
-- **Status:** proposed (Narrative, for Lead sign-off). The decision that Dace is no longer Imra's guardian is the Lead's (M1-NAR-11). The re-staging below is Narrative's.
+- **Status:** accepted (Lead sign-off 2026-10-23, including the accepted residuals)
 - **Date:** 2026-10-23
 - **Roles affected:** Narrative; Cinematics (the Ch8 stair foot, the Ch9 cutaway, the Ch14 water-steps, the Ch16 confrontation, the E2 look); Character Art (Kerrid's cord and palette, the rope-burn light, Liss's arm); Art and Rendering (palette.json `sea_glow_rule`, the rope-burn hue, color script `ch08`, `ch15`, `ch21` and `ending_unbinding` notes); Audio (none; every cue id is unchanged); Lead (sign-off; ADR 0020's "Back: Dace was Imra's guardian" row, which the Lead had accepted, is superseded here)
 - **Author role:** Narrative (M1-NAR-11, from review-sweep-F on M1-NAR-09 and M1-NAR-08)
@@ -146,3 +146,5 @@ Review-sweep-F (the M1-NAR-09 and M1-NAR-08 Review logs) approved ADR 0020 with 
 - **Supersedes:**
   - in 0020: (a)'s "Stillguard captain" and "Imra and her guardian Dace ... his guests"; (b)'s "Stillguard stair-law"; (c)'s "the gold shader cue"; (d)'s Ch6 reason ("the Order knows his face ... Hero of Corrow"), its Ch12 "every Stillguard cadet", its Ch16 "the place he once sent Imra", and its Sefir "the Order's dead Hero of Corrow"; and the rows "Back: Kerrid, Corrow's Stillguard captain" (now the watch captain) and "Back: Dace was Imra's guardian" (now re-staged);
   - in decisions_log: N-02 item 4's "her mother's guardian"; N-11's "Dace met her" and "why he went with her as a guardian"; N-21's "Stillguard captain" and "guests for eight days".
+
+- 2026-10-23 Lead: accepted as written, including Sefir and Kesh as the founding couple and the Ch3 song recognition, for the reasons given.
