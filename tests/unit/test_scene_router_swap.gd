@@ -12,6 +12,8 @@ const PROBE_TAG := "SCENE_SWAP_PROBE "
 const GODOT_NAME_HINT := "godot"
 const GODOT_ON_PATH := "godot"
 const GODOT_ENV := "GODOT"
+## Set by tools/coverage/run_coverage.py for the instrumented run.
+const COVERAGE_ENV := "HYMN_COV_OUT"
 
 
 func test_budget_data_has_headroom_below_the_spec_budget() -> void:
@@ -26,6 +28,10 @@ func test_budget_data_has_headroom_below_the_spec_budget() -> void:
 
 
 func test_swap_frame_stays_under_threshold_for_every_target() -> void:
+	# Wall-clock budgets are meaningless under coverage instrumentation (ADR 0013: every probe
+	# call slows the code). The plain test step still enforces this budget.
+	if OS.has_environment(COVERAGE_ENV):
+		return
 	var cfg := SceneSwapProbe.budgets()
 	var threshold := float(cfg.get("test_threshold_ms", 0.0))
 	for t: Variant in cfg.get("targets", []):
