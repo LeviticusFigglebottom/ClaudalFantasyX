@@ -1293,6 +1293,21 @@ def scene_spawns(text: str) -> set[str]:
     return out
 
 
+PLAYER_GROUP_RE = re.compile(r'^\[node [^\n]*groups=\[[^\]\n]*"player"', re.M)
+
+
+def scene_has_player(text: str) -> bool:
+    """True when WorldReturn.place_player can find a player in a .tscn: a node named Player
+    directly under the root, or a node in group "player" (M1-ARC-11, review-sweep-G on ENV-04)."""
+    if PLAYER_GROUP_RE.search(text):
+        return True
+    for m in TSCN_HEADER_RE.finditer(text):
+        a = _tscn_attrs(m.group(0))
+        if a.get("name") == "Player" and a.get("parent") == ".":
+            return True
+    return False
+
+
 def shrine_instances(text: str) -> list[dict[str, str]]:
     """SaveShrine instances in a .tscn: [{node, location_id, network_id}] (empty values if unset)."""
     ids = set()
@@ -1358,6 +1373,12 @@ def locations_errors(doc: object, scenes: dict[str, str], loc: set[str], statuse
             errs.append(f"{rw}: scene '{scene}' does not exist")
         elif row.get("spawn") not in scene_spawns(scenes[scene]):
             errs.append(f"{rw}: spawn '{row.get('spawn')}' is not a node under Spawns in {scene}")
+        playable = row.get("playable", True)
+        if not isinstance(playable, bool):
+            errs.append(f"{rw}: 'playable' must be true or false")
+        elif playable and isinstance(scene, str) and scene in scenes and not scene_has_player(scenes[scene]):
+            errs.append(f"{rw}: {scene} has no player (a Player node under the root, or a node in group "
+                        f"\"player\"); mark a stand-in scene \"playable\": false")
         if row.get("name_key") not in loc:
             errs.append(f"{rw}: name_key '{row.get('name_key')}' has no localization entry")
     if not locs:
@@ -1374,6 +1395,9 @@ def locations_errors(doc: object, scenes: dict[str, str], loc: set[str], statuse
     point(f"{w}: default_location", doc.get("default_location"), "")
     ng = doc.get("new_game") if isinstance(doc.get("new_game"), dict) else {}
     point(f"{w}: new_game", ng.get("location_id"), ng.get("spawn", ""))
+    for where, lid in (("default_location", doc.get("default_location")), ("new_game", ng.get("location_id"))):
+        if lid in locs and locs[str(lid)].get("playable", True) is False:
+            errs.append(f"{w}: {where}: location '{lid}' is not playable (every fallback must have a player)")
     network: set[str] = set()
     for i, row in enumerate(doc.get("shrines") if isinstance(doc.get("shrines"), list) else []):
         rw = f"{w}: shrines[{i}]"

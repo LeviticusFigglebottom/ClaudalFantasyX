@@ -275,6 +275,154 @@ func test_temp_is_newer_rules() -> void:
 	_done()
 
 
+# --- M1-ARC-11 rework (QA review-sweep-G) ------------------------------------------------------------
+
+
+## A chapter `chapter` save wearing `equipment` (rhen in the party), as a file's text.
+func _slot_text(chapter: int, play_sec: float, equipment: Dictionary, saved_at: int) -> String:
+	var st := _state(chapter, play_sec)
+	st.party_ids = [&"rhen"] as Array[StringName]
+	var data := SaveSystem.serialize(st)
+	(data["state"] as Dictionary)["equipment"] = equipment
+	var meta := SaveSystem.make_meta(st, SaveSystem.REASON_CHAPTER)
+	meta["saved_at"] = saved_at
+	data["meta"] = meta
+	return JSON.stringify(data)
+
+
+func _renamed_weapon() -> Dictionary:
+	return {
+		"next_uid": 2, "owned": {"1": {"base": "old_reef_hooks", "abilities": []}}, "loadout": {"rhen": {"weapon": 1}}
+	}
+
+
+## Damaged in a way no table change explains: one piece worn in two slots.
+func _worn_twice() -> Dictionary:
+	var hooks := {"base": "rhen_salvage_hooks", "abilities": []}
+	return {"next_uid": 2, "owned": {"1": hooks}, "loadout": {"rhen": {"weapon": 1, "armor": 1}}}
+
+
+## B1 probe P1: slot 0 at chapter 7 wears a weapon a later equipment.json renamed. It used to read
+## as corrupt, so a chapter 2 autosave replaced it with no copy. Now it loads (the weapon is
+## repaired) and the further-along rule keeps it.
+func test_b1_a_renamed_weapon_never_lets_an_earlier_autosave_replace_slot_zero() -> void:
+	var text := _slot_text(7, 99999.0, _renamed_weapon(), T_OLD)
+	_write_raw(SaveSystem.slot_path(SaveSystem.AUTOSAVE_SLOT), text)
+	assert_eq(SaveSystem.slot_info(SaveSystem.AUTOSAVE_SLOT)["status"], SaveSystem.STATUS_OK, "repairable, not corrupt")
+	assert_true(SaveSystem.autosave_is_further_along(_state(2, 100.0)))
+	Game.state = _state(1, 100.0)
+	Game.set_chapter(2)
+	assert_eq(SaveSystem.poll_pending_autosave(), ERR_ALREADY_EXISTS, "the chapter 2 autosave is skipped")
+	assert_eq(FileAccess.get_file_as_string(SaveSystem.slot_path(SaveSystem.AUTOSAVE_SLOT)), text, "slot 0 untouched")
+	var back := SaveSystem.load_from_slot(SaveSystem.AUTOSAVE_SLOT)
+	assert_eq(back.chapter, 7)
+	var bag := EquipmentBag.new(ItemDB.load_default(), back.equipment)
+	assert_eq(bag.base_of(bag.equipped(&"rhen", ItemDB.SLOT_WEAPON)), &"rhen_salvage_hooks", "rhen is armed again")
+	_done()
+
+
+## B1 probe P3: a chapter 1 temp beside a chapter 9 slot with a renamed weapon is not recoverable.
+func test_b1_a_renamed_weapon_never_lets_an_older_temp_recover_over_the_slot() -> void:
+	var text := _slot_text(9, 99999.0, _renamed_weapon(), T_NEW)
+	_write_raw(SaveSystem.slot_path(1), text)
+	_write_temp(1, _state(1, 10.0), T_OLD)
+	assert_false(SaveSystem.leftover_temp_info(1)["recoverable"], "the slot reads, and is newer")
+	assert_eq(SaveSystem.recover_temp(1), ERR_FILE_CORRUPT)
+	assert_eq(FileAccess.get_file_as_string(SaveSystem.slot_path(1)), text, "slot untouched")
+	_done()
+
+
+## B1(b): a slot that really is corrupt is still replaced by the autosave, but moved to a numbered
+## .corrupt copy first, every time.
+func test_b1_an_autosave_over_a_corrupt_slot_keeps_a_numbered_copy() -> void:
+	var first := _slot_text(7, 99999.0, _worn_twice(), T_OLD)
+	_write_raw(SaveSystem.slot_path(SaveSystem.AUTOSAVE_SLOT), first)
+	assert_eq(SaveSystem.slot_info(SaveSystem.AUTOSAVE_SLOT)["status"], SaveSystem.STATUS_CORRUPT)
+	Game.state = _state(1, 100.0)
+	Game.set_chapter(2)
+	assert_eq(SaveSystem.poll_pending_autosave(), OK, "a corrupt slot 0 is never further along")
+	assert_eq(SaveSystem.load_from_slot(SaveSystem.AUTOSAVE_SLOT).chapter, 2)
+	var aside := SaveSystem.corrupt_path(SaveSystem.AUTOSAVE_SLOT)
+	assert_eq(aside, SaveSystem.slot_path(SaveSystem.AUTOSAVE_SLOT) + SaveSystem.CORRUPT_SUFFIX)
+	assert_eq(FileAccess.get_file_as_string(aside), first, "the unreadable save is kept byte for byte")
+	var second := "{torn"
+	_write_raw(SaveSystem.slot_path(SaveSystem.AUTOSAVE_SLOT), second)
+	assert_eq(SaveSystem.save_to_slot(SaveSystem.AUTOSAVE_SLOT, _state(3, 200.0), SaveSystem.REASON_CHAPTER), OK)
+	assert_eq(FileAccess.get_file_as_string(aside), first, "the first copy is never replaced")
+	assert_eq(FileAccess.get_file_as_string(SaveSystem.corrupt_path(SaveSystem.AUTOSAVE_SLOT, 2)), second)
+	assert_eq(
+		SaveSystem.free_corrupt_path(SaveSystem.AUTOSAVE_SLOT), SaveSystem.corrupt_path(SaveSystem.AUTOSAVE_SLOT, 3)
+	)
+	assert_eq(SaveSystem.save_to_slot(SaveSystem.AUTOSAVE_SLOT, _state(3, 300.0)), OK)
+	assert_false(
+		FileAccess.file_exists(SaveSystem.corrupt_path(SaveSystem.AUTOSAVE_SLOT, 3)), "a readable slot is not copied"
+	)
+	_done()
+
+
+func test_b1_recover_temp_over_a_corrupt_slot_keeps_a_copy() -> void:
+	var text := _slot_text(9, 99999.0, _worn_twice(), T_NEW)
+	_write_raw(SaveSystem.slot_path(1), text)
+	_write_temp(1, _state(1, 10.0), T_OLD)
+	assert_true(SaveSystem.leftover_temp_info(1)["recoverable"], "nothing readable in the slot")
+	assert_eq(SaveSystem.recover_temp(1), OK)
+	assert_eq(SaveSystem.load_from_slot(1).chapter, 1)
+	assert_eq(FileAccess.get_file_as_string(SaveSystem.corrupt_path(1)), text, "the corrupt slot was moved, not lost")
+	_done()
+
+
+func test_an_empty_slot_file_is_replaced_without_a_copy() -> void:
+	_write_raw(SaveSystem.slot_path(1), "")
+	assert_eq(SaveSystem.save_to_slot(1, _state(2, 100.0)), OK)
+	assert_false(FileAccess.file_exists(SaveSystem.corrupt_path(1)), "nothing to keep")
+	_done()
+
+
+## S2 probe P2: a temp file written by a newer build, beside an ordinary slot, is kept and logged,
+## then set aside by the next write; never silently overwritten.
+func test_a_newer_build_temp_is_set_aside_not_overwritten() -> void:
+	assert_eq(SaveSystem.save_to_slot(1, _state(2, 100.0)), OK)
+	var v99 := JSON.stringify({"version": 99, "state": {"chapter": 9}, "meta": {"saved_at": 1}})
+	_write_raw(SaveSystem.slot_path(1) + SaveSystem.TEMP_SUFFIX, v99)
+	var info := SaveSystem.leftover_temp_info(1)
+	assert_eq(info["status"], SaveSystem.STATUS_NEWER)
+	assert_false(info["recoverable"], "this build cannot restore it")
+	assert_true(info["keep"], "but it is kept")
+	assert_eq(SaveSystem.kept_leftover_temps(), [1] as Array[int], "logged at startup")
+	assert_eq(SaveSystem.report_leftover_temps(), [] as Array[int], "not advised for recover_temp")
+	assert_eq(SaveSystem.save_to_slot(1, _state(2, 150.0)), OK)
+	assert_eq(FileAccess.get_file_as_string(SaveSystem.recovered_path(1)), v99, "set aside before the write")
+	assert_eq(SaveSystem.load_from_slot(1).play_time_sec, 150.0)
+	_done()
+
+
+## A readable temp beside a newer build's slot cannot be compared either: kept too.
+func test_a_temp_beside_a_newer_build_slot_is_kept() -> void:
+	_write_raw(SaveSystem.slot_path(5), JSON.stringify({"version": 99, "state": {}}))
+	_write_temp(5, _state(3, 200.0), T_NEW)
+	assert_true(SaveSystem.leftover_temp_info(5)["keep"])
+	SaveSystem.clock = func() -> int: return T_NEW
+	assert_eq(SaveSystem.save_to_slot(1, _state(2, 100.0)), OK)
+	_write_temp(1, _state(1, 50.0), T_OLD)
+	assert_false(SaveSystem.leftover_temp_info(1)["keep"], "older than a readable slot: superseded")
+	_done()
+
+
+func test_temp_worth_keeping_rules() -> void:
+	var ok_main := {"status": SaveSystem.STATUS_OK, "version": 4, "saved_at": 9, "play_time_sec": 9.0}
+	var newer_main := {"status": SaveSystem.STATUS_NEWER, "version": 99, "saved_at": 0, "play_time_sec": 0.0}
+	var tmp := {"status": SaveSystem.STATUS_OK, "version": 4, "saved_at": 1, "play_time_sec": 1.0}
+	assert_false(SaveSystem.temp_worth_keeping(tmp, ok_main), "older than a readable slot")
+	assert_true(SaveSystem.temp_worth_keeping(tmp, newer_main), "cannot compare with a newer build's slot")
+	tmp["saved_at"] = 10
+	assert_true(SaveSystem.temp_worth_keeping(tmp, ok_main), "recoverable")
+	tmp["status"] = SaveSystem.STATUS_NEWER
+	assert_true(SaveSystem.temp_worth_keeping(tmp, ok_main), "a newer build's temp")
+	tmp["status"] = SaveSystem.STATUS_CORRUPT
+	assert_false(SaveSystem.temp_worth_keeping(tmp, ok_main), "a torn write")
+	_done()
+
+
 # --- helpers ---------------------------------------------------------------------------------------
 
 

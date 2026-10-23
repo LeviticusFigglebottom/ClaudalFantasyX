@@ -13,11 +13,11 @@ request-from: "architect"
 ARC-06 asked Combat to wire party HP/MP carry-over; until then a shrine heal restores nothing in play.
 
 ## Acceptance criteria
-- [ ] Live battles start from the party's carried HP/MP (and write it back at the end); the ARC-06 event is consumed
-- [ ] Decide and document what a KO'd member does at battle start
-- [ ] economy.md: Ember Pot price 220; remove the stale 'fold into formulas.md' paragraph (~:72)
-- [ ] formulas.md:58 'can't launder' wording fixed; the balance test reads the ceiling from targets.json
-- [ ] Tests; game/battle coverage does not drop
+- [x] Live battles start from the party's carried HP/MP (and write it back at the end); the ARC-06 event is consumed
+- [x] Decide and document what a KO'd member does at battle start
+- [x] economy.md: Ember Pot price 220; remove the stale 'fold into formulas.md' paragraph (~:72)
+- [x] formulas.md:58 'can't launder' wording fixed; the balance test reads the ceiling from targets.json
+- [x] Tests; game/battle coverage does not drop
 
 ## Notes
 See the review-sweep-F entries in the source tasks' Review logs for file:line.
@@ -41,3 +41,4 @@ See the review-sweep-F entries in the source tasks' Review logs for file:line.
   - S2: `STATUS_STONE := &"petrify"` (battle_vitals.gd:22) is a third copy of the status id (combatant.gd:107/111 and ctb_timeline.gd also hard-code it). Add one `BattleCombatant.STATUS_PETRIFY` and use it here, at least.
   - S3 (follow-up, as the handoff says): when live battles build `EquipmentEffects`, the order is Lattice → equipment → vitals. Add a comment at battle_vitals.gd:36-40 so the next person doesn't append it after the vitals clamp.
 - 2026-10-23 lead: closing on review-sweep-G approve-with-fixes; the ticked boxes and the petrify constant are folded into M1-ARC-11's rework.
+- 2026-10-23 architect (M1-ARC-11 rework, worktree-agent-a442c963360f262ca): ticked the five boxes (each verified: BattleVitals in/out and tests, battle_ctb.md "Carried vitals", the economy.md Ember Pot row at 220 and the replaced paragraph, the formulas.md § Time wording, test_sandbox_battle reading `mean_turns_min`). S2: one `BattleCombatant.STATUS_PETRIFY`, used by combatant.gd, ctb_timeline.gd, battle_vitals.gd (`STATUS_STONE` now aliases it) and item_battle_action.gd. battle_engine.gd:332 still compares a JSON string array with `"petrify"` (left alone: the engine file is at its size limit). S3: a comment at `BattleVitals.setup` gives the Lattice → equipment → vitals order.

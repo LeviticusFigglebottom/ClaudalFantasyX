@@ -154,7 +154,7 @@ func test_grant_starting_replaces_a_vanished_weapon() -> void:
 
 
 ## M1-ARC-11 (review-sweep-F nit on M1-PRG-03): a slot holding a piece the hero cannot wear is not
-## "filled"; grant_starting gives them a proper one (a save like this is also rejected on load).
+## "filled"; grant_starting gives them a proper one (on load, repair_loadout takes it off first).
 func test_grant_starting_replaces_another_heros_weapon() -> void:
 	var staff := {"base": "asha_vigil_staff", "abilities": []}
 	var bag := EquipmentBag.new(db, {"next_uid": 2, "owned": {"1": staff}, "loadout": {"rhen": {"weapon": 1}}})
@@ -162,6 +162,33 @@ func test_grant_starting_replaces_another_heros_weapon() -> void:
 	assert_true(bag.grant_starting(&"rhen"))
 	assert_eq(bag.base_of(bag.equipped(&"rhen", ItemDB.SLOT_WEAPON)), &"rhen_salvage_hooks")
 	assert_eq(bag.loadout_problem(), "", "the loadout is one equip() could make again")
+
+
+## M1-ARC-11 (QA review-sweep-G B1): table drift is repaired, never fatal.
+func test_repair_loadout_takes_off_misfits_and_drops_unknown_pieces() -> void:
+	var owned := {
+		"1": {"base": "asha_vigil_staff", "abilities": []},
+		"2": {"base": "rhen_salvage_hooks", "abilities": []},
+		"3": {"base": "old_reef_hooks", "abilities": []},
+		"4": {"base": "gone_too", "abilities": []},
+		"5": {"base": "asha_cord_bangle", "abilities": []},
+	}
+	var loadout := {"rhen": {"weapon": 1, "armor": 2}, "toma": {"weapon": 3}, "asha": {"armor": 5}}
+	var bag := EquipmentBag.new(db, {"next_uid": 6, "owned": owned, "loadout": loadout})
+	var notes := bag.repair_loadout()
+	assert_eq(notes.size(), 5, "three taken off, two dropped: %s" % [notes])
+	assert_eq(bag.misfit(&"rhen", &"weapon", 1), EquipmentBag.ERR_WRONG_CHARACTER)
+	assert_eq(bag.equipped(&"rhen", ItemDB.SLOT_WEAPON), EquipmentBag.NO_PIECE, "asha's staff came off")
+	assert_true(bag.has_piece(1), "and stays in the bag")
+	assert_eq(bag.equipped(&"rhen", ItemDB.SLOT_ARMOR), EquipmentBag.NO_PIECE, "hooks in the armor slot came off")
+	assert_true(bag.has_piece(2))
+	assert_false(bag.has_piece(3), "an unknown worn base is dropped")
+	assert_false(bag.has_piece(4), "an unknown unworn base is dropped")
+	assert_eq(bag.equipped(&"asha", ItemDB.SLOT_ARMOR), 5, "a fitting piece is untouched")
+	assert_eq(bag.repair_loadout(), [] as Array[String], "idempotent")
+	assert_true(bag.grant_starting(&"rhen"))
+	assert_eq(bag.equipped(&"rhen", ItemDB.SLOT_WEAPON), 2, "the weapon is refilled from the bag")
+	assert_eq(bag.loadout_problem(), "")
 
 
 func test_party_goods_ensures_gear_for_joined_members_only() -> void:

@@ -10,7 +10,9 @@ const PREVIEW_LENGTH := 16
 const TIMED_STATUSES: Array[StringName] = [&"haste", &"slow", &"stop", &"sleep", &"doom"]
 ## Statuses a candidate action can inflict that the preview shows: the timed ones, plus
 ## Petrify, which takes the target off the timeline at once.
-const PREVIEW_STATUSES: Array[StringName] = [&"haste", &"slow", &"stop", &"sleep", &"doom", &"petrify"]
+const PREVIEW_STATUSES: Array[StringName] = [
+	&"haste", &"slow", &"stop", &"sleep", &"doom", BattleCombatant.STATUS_PETRIFY
+]
 ## Pseudo-status for status_changes: the candidate action KOs this unit (e.g. a revive item on
 ## a Zombie), so it leaves the preview like Petrify.
 const FALLS := &"_falls"
@@ -74,7 +76,7 @@ func predict(
 		if not c.is_alive() and not revived.has(c):
 			continue
 		var changes: Dictionary = status_changes.get(c, {})
-		if changes.has(&"petrify") or changes.has(FALLS):
+		if changes.has(BattleCombatant.STATUS_PETRIFY) or changes.has(FALLS):
 			continue
 		var timed := _timed_copy(c)
 		if changes.has(WAKES):

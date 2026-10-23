@@ -35,6 +35,10 @@ func test_the_registry_resolves_haluna_and_its_shrine() -> void:
 	assert_eq(
 		reg.shrine_point(NETWORK), {LocationRegistry.KEY_LOCATION: LOCATION, LocationRegistry.KEY_SPAWN: &"Shrine"}
 	)
+	# M1-ARC-11 (review-sweep-G S1): the mood zone has no player, so the row is marked
+	# "playable": false and Continue goes to the default until M1-ENV-06 moves it.
+	assert_false(reg.can_enter(LOCATION), "the stand-in is never entered")
 	var to := reg.resolve(LOCATION)
-	assert_false(bool(to["fallback"]), "a Haluna save no longer falls back to the test level")
-	assert_eq(to[LocationRegistry.KEY_SPAWN], &"Shrine")
+	assert_true(bool(to["fallback"]))
+	assert_eq(to["reason"], LocationRegistry.REASON_NOT_PLAYABLE)
+	assert_eq(to[LocationRegistry.KEY_LOCATION], reg.default_location)

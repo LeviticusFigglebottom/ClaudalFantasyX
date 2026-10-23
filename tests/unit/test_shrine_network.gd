@@ -26,12 +26,20 @@ func before_each() -> void:
 				[
 					{"id": "isle", "scene": ZONE, "spawn": "Lane", "name_key": "LOCATION_FIELD_TEST"},
 					{"id": "court", "scene": ZONE, "spawn": "Court", "name_key": "LOCATION_FIELD_TEST"},
+					{
+						"id": "mood",
+						"scene": ZONE,
+						"spawn": "Lane",
+						"name_key": "LOCATION_FIELD_TEST",
+						"playable": false
+					},
 				],
 				"shrines":
 				[
 					{"id": "isle_shrine", "location_id": "isle", "spawn": "Shrine"},
 					{"id": "court_shrine", "location_id": "court", "spawn": ""},
 					{"id": "broken_shrine", "location_id": "missing"},
+					{"id": "mood_shrine", "location_id": "mood", "spawn": "Lane"},
 				],
 			}
 		)
@@ -98,6 +106,8 @@ func test_teleport_refusals() -> void:
 	assert_false(ShrineNetwork.request_teleport(here, &"court_shrine"), "not attuned")
 	assert_false(ShrineNetwork.request_teleport(here, &"isle_shrine"), "not to itself")
 	assert_false(ShrineNetwork.request_teleport(here, &"broken_shrine"), "its location is unknown")
+	ShrineNetwork.attune_id(&"mood_shrine")
+	assert_false(ShrineNetwork.request_teleport(here, &"mood_shrine"), "a stand-in scene with no player")
 	ShrineNetwork.attune_id(&"court_shrine")
 	ShrineNetwork.travel = func(_l: StringName, _s: StringName) -> bool: return false
 	assert_false(ShrineNetwork.request_teleport(here, &"court_shrine"), "the swap was refused")

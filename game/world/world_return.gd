@@ -35,14 +35,24 @@ func _ready() -> void:
 		EventBus.game_loaded.connect(_on_game_loaded)
 
 
-## Where `state` continues: its respawn point, else its current location, else the default.
+## Where `state` continues: its respawn point, else its current location (at the location's own
+## spawn), else the default. A respawn that cannot be entered (not listed, or not playable) is
+## skipped in favour of a good location_id (M1-ARC-11, review-sweep-G S3). Besides
+## LocationRegistry.resolve's keys the result has "asked" (the id the result stands for, which a
+## fallback replaced) and "respawn_skipped" (the respawn id that was passed over, or &"").
 func resolve(state: GameStateData) -> Dictionary:
-	var loc := state.respawn_location_id
-	var spawn := state.respawn_spawn
-	if loc == &"":
-		loc = state.location_id
-		spawn = &""
-	return _registry().resolve(loc, spawn)
+	var reg := _registry()
+	var respawn := state.respawn_location_id
+	if respawn != &"" and reg.can_enter(respawn):
+		var at := reg.resolve(respawn, state.respawn_spawn)
+		at["asked"] = respawn
+		at["respawn_skipped"] = &""
+		return at
+	var to := reg.resolve(state.location_id)
+	if not to.is_empty():
+		to["asked"] = state.location_id if state.location_id != &"" else respawn
+		to["respawn_skipped"] = respawn
+	return to
 
 
 ## Sends the party to `location_id` (at `spawn`, or the location's own spawn). Updates
@@ -85,14 +95,23 @@ func _on_game_loaded(_slot: int) -> void:
 	if to.is_empty():
 		push_error("WorldReturn: no location to return to (check %s)" % LocationRegistry.DATA_PATH)
 		return
-	var wanted := Game.state.respawn_location_id
-	_travel(to, wanted if wanted != &"" else Game.state.location_id)
+	var wanted := StringName(str(to.get("asked", "")))
+	var skipped := StringName(str(to.get("respawn_skipped", "")))
+	if skipped != &"" and skipped != wanted:
+		push_warning(
+			(
+				"WorldReturn: respawn '%s' %s; trying the saved location '%s'"
+				% [skipped, _why_not(skipped), Game.state.location_id]
+			)
+		)
+	_travel(to, wanted)
 
 
 ## Changes scene to a resolved location. Game.state.location_id becomes the location only when it
-## resolved as asked: a fallback (a location missing from locations.json, or renamed) warns and
-## keeps the state's own location_id, so the next save never records the stand-in (the test level)
-## as where the party is (M1-ARC-11, after QA review-sweep-F on M1-ARC-06).
+## resolved as asked: a fallback (a location missing from locations.json, renamed, or marked not
+## playable) warns and keeps the state's own location_id, so the next save never records the
+## stand-in (the test level) as where the party is (M1-ARC-11, after QA review-sweep-F on M1-ARC-06
+## and review-sweep-G on M1-ENV-04).
 func _travel(to: Dictionary, wanted: StringName = &"") -> bool:
 	if to.is_empty():
 		return false
@@ -101,8 +120,8 @@ func _travel(to: Dictionary, wanted: StringName = &"") -> bool:
 	if fallback and wanted != &"":
 		push_warning(
 			(
-				"WorldReturn: location '%s' is not in %s; going to the default '%s' and keeping the saved location"
-				% [wanted, LocationRegistry.DATA_PATH, to[LocationRegistry.KEY_LOCATION]]
+				"WorldReturn: location '%s' %s; going to the default '%s' and keeping the saved location"
+				% [wanted, _why_not(wanted), to[LocationRegistry.KEY_LOCATION]]
 			)
 		)
 	var swap := change_scene
@@ -119,6 +138,13 @@ func _travel(to: Dictionary, wanted: StringName = &"") -> bool:
 	travel_requested.emit(loc, scene, spawn)
 	swap.call(scene, spawn)
 	return true
+
+
+## Why the party cannot be sent to `id`, for a warning.
+func _why_not(id: StringName) -> String:
+	if _registry().has_location(id):
+		return 'has no player to place (marked "playable": false in %s)' % LocationRegistry.DATA_PATH
+	return "is not in %s" % LocationRegistry.DATA_PATH
 
 
 func _registry() -> LocationRegistry:

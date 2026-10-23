@@ -33,7 +33,8 @@ extends RefCounted
 ## reach), next_uid is present and greater than every owned uid (add_piece would otherwise
 ## overwrite a piece), and every loadout uid is NO_PIECE (0) or an owned piece, worn in one
 ## loadout slot at most (M1-ARC-11). Whether a piece fits its wearer and slot needs the item
-## tables, so SaveSystem checks that after this (EquipmentBag.loadout_problem).
+## tables, which a later build may change, so it is never a shape problem: SaveSystem repairs a
+## misfit after loading (EquipmentBag.repair_loadout; review-sweep-G B1).
 
 const OK_SHAPE := ""
 ## The largest whole number a save may hold: 2^53, the last float that every smaller whole number

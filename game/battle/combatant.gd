@@ -9,6 +9,9 @@ const TEAM_ENEMY := &"enemy"
 ## equipment data: {attack_elements, on_hit_statuses, status_wards, low_hp_statuses, abilities}.
 ## Must equal EquipmentEffects.META_KEY (a test checks it).
 const EQUIPMENT_META := &"equipment_effects"
+## The petrify (stone) status id (statuses.json). The one copy in code: the engine, the timeline
+## and BattleVitals all use it (M1-ARC-11, after review-sweep-G on M1-CMB-08).
+const STATUS_PETRIFY := &"petrify"
 
 var id: StringName
 var name_key: String
@@ -104,11 +107,11 @@ func sim_copy() -> BattleCombatant:
 ## Still in the fight: HP above 0 and not turned to stone. Petrify counts as KO for the
 ## timeline, targeting, outcome checks and XP credit (formulas.md § Statuses).
 func is_alive() -> bool:
-	return hp > 0 and not statuses.has(&"petrify")
+	return hp > 0 and not statuses.has(STATUS_PETRIFY)
 
 
 func is_petrified() -> bool:
-	return hp > 0 and statuses.has(&"petrify")
+	return hp > 0 and statuses.has(STATUS_PETRIFY)
 
 
 ## Engine-facing equipment data (see EQUIPMENT_META), {} for enemies and bare heroes.
@@ -205,7 +208,7 @@ func fall() -> void:
 func add_status(status: StringName, duration: int) -> bool:
 	if not is_alive() or is_warded(status):
 		return false
-	if status == &"petrify":
+	if status == STATUS_PETRIFY:
 		statuses.clear()
 		provoker_id = &""
 	statuses[status] = duration

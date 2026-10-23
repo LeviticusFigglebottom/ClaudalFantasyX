@@ -79,7 +79,7 @@ func can_target(c: BattleCombatant) -> bool:
 	if targets_fallen:
 		return c.hp <= 0
 	if c.is_petrified():
-		return cures(&"petrify")
+		return cures(BattleCombatant.STATUS_PETRIFY)
 	return c.is_alive()
 
 

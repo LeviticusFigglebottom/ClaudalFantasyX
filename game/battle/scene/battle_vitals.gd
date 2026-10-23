@@ -19,7 +19,7 @@ const KEY_RESERVE := "reserve"
 const KEY_RAISE := "raise"
 const KEY_ENCOUNTER := "encounter"
 const KEY_SEED := "seed"
-const STATUS_STONE := &"petrify"
+const STATUS_STONE := BattleCombatant.STATUS_PETRIFY
 
 
 ## Builds `engine` for `plan` ({active, reserve, encounter, seed}, BattleController._setup). With
@@ -33,6 +33,9 @@ static func setup(
 	carry: bool,
 	state: GameStateData = null
 ) -> void:
+	# Order matters: Lattice, then equipment, then the carried vitals LAST, because the vitals clamp HP
+	# and MP to the final maxima. When live battles build EquipmentEffects, put fx.modifier() here,
+	# between the Lattice and the vitals (review-sweep-G S3 on M1-CMB-08), never after them.
 	var hooks: Array[Callable] = []
 	if progress != null:
 		hooks.append(progress.apply_to)

@@ -11,6 +11,11 @@ const DATA_PATH := "res://game/data/world/locations.json"
 const KEY_LOCATION := "location_id"
 const KEY_SPAWN := "spawn"
 const KEY_SCENE := "scene"
+const KEY_PLAYABLE := "playable"
+## resolve()'s "reason" when it falls back: the id is empty, not listed, or not playable.
+const REASON_EMPTY := &"empty"
+const REASON_UNKNOWN := &"unknown"
+const REASON_NOT_PLAYABLE := &"not_playable"
 
 var default_location: StringName = &""
 var new_game_location: StringName = &""
@@ -55,6 +60,18 @@ func location_ids() -> Array[StringName]:
 	return out
 
 
+## False for a location row marked `"playable": false`: its scene stages the place (a mood or
+## art stand-in) but has no player to put there (M1-ARC-11, after review-sweep-G on M1-ENV-04).
+## The validator requires the mark on every location whose scene has no player.
+func is_playable(id: StringName) -> bool:
+	return has_location(id) and bool((_locations[id] as Dictionary).get(KEY_PLAYABLE, true))
+
+
+## True when the party can be sent to `id`: it is listed and playable.
+func can_enter(id: StringName) -> bool:
+	return is_playable(id)
+
+
 func scene_of(id: StringName) -> String:
 	return str((_locations.get(id, {}) as Dictionary).get(KEY_SCENE, ""))
 
@@ -83,15 +100,21 @@ func shrine_point(network_id: StringName) -> Dictionary:
 	return {KEY_LOCATION: loc, KEY_SPAWN: spawn if spawn != &"" else spawn_of(loc)}
 
 
-## Where to put the party for (location_id, spawn): {location_id, scene, spawn, fallback}.
-## An unknown or empty location falls back to default_location (fallback = true); an empty spawn
-## becomes the location's own spawn. Returns {} when not even the default resolves.
+## Where to put the party for (location_id, spawn): {location_id, scene, spawn, fallback, reason}.
+## An empty, unknown or not playable location falls back to default_location (fallback = true,
+## reason REASON_*; &"" when it resolved as asked); an empty spawn becomes the location's own
+## spawn. Returns {} when not even the default resolves.
 func resolve(location_id: StringName, spawn: StringName = &"") -> Dictionary:
 	var loc := location_id
-	var fallback := false
-	if not has_location(loc):
+	var reason: StringName = &""
+	if not can_enter(loc):
+		if loc == &"":
+			reason = REASON_EMPTY
+		elif has_location(loc):
+			reason = REASON_NOT_PLAYABLE
+		else:
+			reason = REASON_UNKNOWN
 		loc = default_location
-		fallback = true
 		spawn = &""
 	if not has_location(loc):
 		return {}
@@ -99,5 +122,6 @@ func resolve(location_id: StringName, spawn: StringName = &"") -> Dictionary:
 		KEY_LOCATION: loc,
 		KEY_SCENE: scene_of(loc),
 		KEY_SPAWN: spawn if spawn != &"" else spawn_of(loc),
-		"fallback": fallback,
+		"fallback": reason != &"",
+		"reason": reason,
 	}

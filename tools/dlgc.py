@@ -795,19 +795,32 @@ class BodyParser:
 
     def check_bare_speaker(self, body: str, line: int, narr: str) -> None:
         """M1-NAR-10: `Asha [sad]` or `Kerid as "The Stranger"` with nothing after is a speaker head whose
-        ': text' is missing. A misspelt name needs a known emotion or a quoted alias as evidence."""
+        ': text' is missing. A misspelt name needs a known emotion or a quoted alias as evidence. A Narrator head
+        with a known (speaker id) identity is evidence too (review-sweep-G: `Narrator(asha)` alone)."""
         m = BARE_SPEAKER_RE.match(body)
-        if not m or (m.group(3) is None and not m.group(4)):
+        if not m:
             return
         name, identity, alias, emo = m.groups()
+        voiced = self.narrator_identity(name, identity)
+        if alias is None and not emo and not voiced:
+            return
         exact = name.lower() in self.ctx.speakers or name.lower() == NARRATOR
-        typo = "" if exact or not (self.known_emotion(emo) or alias is not None) else self.ctx.typo_of(name)
+        evidence = self.known_emotion(emo) or alias is not None or voiced
+        typo = "" if exact or not evidence else self.ctx.typo_of(name)
         if not exact and not typo:
             return
         spelt = f"'{name}' is not a speaker and " if typo else ""
         head = ((typo.capitalize() if typo else name) + (identity or "")
                 + (f' as "{alias}"' if alias is not None else "") + (f" [{self.known_emotion(emo) or emo}]" if emo else ""))
         raise DlgError(line, f"{spelt}a speaker line needs ': text' after the name: did you mean '{head}: ...'? {narr}")
+
+    def narrator_identity(self, name: str, identity: str | None) -> bool:
+        """True when `name(identity)` reads as a narrator voice-over head: the name is Narrator or a close
+        misspelling of it, and the parentheses hold a speaker id (review-sweep-G on M1-NAR-10)."""
+        if not identity or identity.strip("() ").lower() not in self.ctx.speakers:
+            return False
+        low = name.lower()
+        return low == NARRATOR or (low not in self.ctx.speakers and self.ctx.typo_of(name) == NARRATOR)
 
     def check_near_miss(self, body: str, line: int) -> None:
         """M1-NAR-06/07: a narration line (tags already popped, escapes kept) that nearly matches a speaker
@@ -831,6 +844,8 @@ class BodyParser:
             name, alias, emo = m.groups()
             fix = f'{name} as "{alias}"' + (f" {emo}" if emo else "") + ":"
             raise DlgError(line, f"an alias needs double quotes: did you mean '{fix}'? {narr}")
+        # Before the bracket checks, so `Narrator(asha) [grief]` with no text gets the bare-head fix.
+        self.check_bare_speaker(body, line, narr)
         m = WRONG_BRACKET_RE.match(body)
         typo = ""
         if m and m.group(1).lower() not in names:
@@ -877,12 +892,14 @@ class BodyParser:
                 name = typo.capitalize() if typo else name
                 raise DlgError(line, f"{spelt}stray '{junk}' between the name and the emotion: did you mean "
                                      f"'{name} [{known or emo}]: {_clip(rest)}'? {narr}")
-        self.check_bare_speaker(body, line, narr)
         m = MISSING_COLON_RE.match(body)
         typo = ""
-        if m and m.group(1).lower() not in names and (self.known_emotion(m.group(4)) or m.group(3) is not None):
+        if m and m.group(1).lower() not in names and (
+            self.known_emotion(m.group(4)) or m.group(3) is not None or self.narrator_identity(m.group(1), m.group(2))
+        ):
             # review-sweep-E: `Kerid [sad] Hi.` (a misspelt speaker and no colon). A known emotion (in any case,
             # M1-NAR-10: `Kerid [Sad] Hi.`) or a quoted alias is the evidence, so `Rain [sic] fell.` stays prose.
+            # review-sweep-G: so is a (speaker id) after a Narrator misspelling: `Narator(asha) The bell.`
             typo = self.ctx.typo_of(m.group(1))
         if m and (m.group(1).lower() in names or typo) and (m.group(2) or m.group(3) is not None or m.group(4)):
             name, identity, alias, emo, rest = m.groups()

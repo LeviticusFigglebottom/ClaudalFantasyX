@@ -63,7 +63,8 @@ static func destinations_from(shrine: SaveShrine) -> Array[StringName]:
 
 
 ## Travels to `destination_id`. Refused (false) when the shrine is not in the network, the
-## destination is not one of destinations_from(shrine), or its location does not resolve.
+## destination is not one of destinations_from(shrine), or its location cannot be entered (not
+## listed, or a stand-in scene marked "playable": false; LocationRegistry.can_enter).
 ## On success the destination becomes the respawn point.
 static func request_teleport(shrine: SaveShrine, destination_id: StringName) -> bool:
 	if not destinations_from(shrine).has(destination_id):
@@ -71,7 +72,7 @@ static func request_teleport(shrine: SaveShrine, destination_id: StringName) -> 
 	var point := _registry().shrine_point(destination_id)
 	var loc := StringName(str(point.get(LocationRegistry.KEY_LOCATION, "")))
 	var spawn := StringName(str(point.get(LocationRegistry.KEY_SPAWN, "")))
-	if not _registry().has_location(loc):
+	if not _registry().can_enter(loc):
 		return false
 	var go := travel if travel.is_valid() else _router_travel()
 	if not go.is_valid() or not bool(go.call(loc, spawn)):
