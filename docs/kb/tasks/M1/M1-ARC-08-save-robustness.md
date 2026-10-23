@@ -2,8 +2,8 @@
 id: M1-ARC-08
 title: Save robustness: write-check before rename, deep shape check, deferred autosave, New Game slot policy
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a8ea331609fe60dd4"
 depends_on: [M1-ARC-03, M1-ARC-06]
 milestone: M1
 request-from: "qa"
