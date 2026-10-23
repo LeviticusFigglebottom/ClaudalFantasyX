@@ -24,6 +24,31 @@ step "gdlint";                 gdlint game tests
 step "gdformat --check";       gdformat -l 120 --check game tests
 step "Screenshot manifest";    python3 tools/screenshots/compare.py --manifest-only
 
+step "Blender asset rebuild + compare (M1-QA-02, docs/kb/qa/blender_builds.md)"
+# Rebuilds the Blender jobs whose assets_src/ or outputs changed since the merge-base with
+# $HYMN_BLENDER_BASE (else main / origin/main; with no base ref, every job) in a scratch copy, and
+# compares each output with the committed file. HYMN_BLENDER_ALL=1 runs every job;
+# HYMN_SKIP_BLENDER=1 skips the step; HYMN_BLENDER_TIMEOUT bounds it (s, default 1800).
+if [ "${HYMN_SKIP_BLENDER:-0}" = "1" ]; then
+  echo "SKIP Blender rebuild: HYMN_SKIP_BLENDER=1"
+else
+  blender_args=(--log-dir "$L" --report "$L/blender_builds.json")
+  if [ "${HYMN_BLENDER_ALL:-0}" = "1" ]; then blender_args+=(--all); fi
+  bl_t0=$SECONDS
+  set +e
+  timeout "${HYMN_BLENDER_TIMEOUT:-1800}" python3 tools/dev/verify_blender_builds.py "${blender_args[@]}"
+  bl=$?
+  set -e
+  echo "blender step: $((SECONDS - bl_t0))s"
+  if [ "$bl" -eq 3 ]; then
+    echo "SKIP Blender rebuild: no pinned Blender (python3 tools/dev/fetch_blender.py)"
+  elif [ "$bl" -eq 124 ]; then
+    echo "Blender rebuild timed out after ${HYMN_BLENDER_TIMEOUT:-1800} s (logs: $L/blender_*.log)"; exit 1
+  elif [ "$bl" -ne 0 ]; then
+    echo "Blender rebuild does not reproduce the committed assets (logs: $L/blender_*.log)"; exit 1
+  fi
+fi
+
 if ! command -v "$GODOT" > /dev/null; then
   echo "SKIP Godot steps: '$GODOT' not found (python3 tools/dev/fetch_godot.py)"; exit 1
 fi
