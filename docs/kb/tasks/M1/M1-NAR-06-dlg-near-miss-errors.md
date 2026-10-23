@@ -2,8 +2,8 @@
 id: M1-NAR-06
 title: dlgc: near-miss speaker lines must error, not become narration
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: architect-stream-7
 depends_on: [M1-NAR-04]
 milestone: M1
 request-from: "narrative"
