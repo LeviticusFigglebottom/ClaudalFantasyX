@@ -1,0 +1,25 @@
+{
+  "accessibility": {
+    "doc": "UI accessibility settings (SPEC §6.11; docs/kb/art/ui.md §4.2, §5 and §9; docs/kb/tech/ui.md § Accessibility). UiSettings reads this file; the settings menu lists `settings` in order and shows each option through its loc key.",
+    "config_section": "accessibility",
+    "settings": [
+      {"id": "reduced_motion", "type": "bool", "default": false, "label_key": "SET_REDUCED_MOTION",
+       "help_key": "SET_REDUCED_MOTION_HELP"},
+      {"id": "text_scale", "type": "enum", "default": 1.0, "options": [1.0, 1.15, 1.3],
+       "option_keys": ["SET_TEXT_SCALE_100", "SET_TEXT_SCALE_115", "SET_TEXT_SCALE_130"],
+       "label_key": "SET_TEXT_SCALE", "help_key": "SET_TEXT_SCALE_HELP"},
+      {"id": "palette", "type": "enum", "default": "standard", "options": ["standard", "colorblind"],
+       "option_keys": ["SET_PALETTE_STANDARD", "SET_PALETTE_COLORBLIND"],
+       "label_key": "SET_PALETTE", "help_key": "SET_PALETTE_HELP"}
+    ],
+    "palettes": {
+      "standard": {},
+      "colorblind": {"danger": ["#F08A24", 1.0], "enemy_chip": ["#2A2414", 0.85]}
+    },
+    "motion": {
+      "translate_scale_reduced": 0.5,
+      "crossfade_sec": 0.12,
+      "crossfade_from_alpha": 0.25
+    }
+  }
+}

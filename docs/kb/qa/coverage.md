@@ -12,7 +12,7 @@ It runs as a step in `tools/ci_local.sh` (after "Godot tests") and in the CI `go
 
 ## What is measured
 
-- **Files:** every `.gd` under `game/battle/` and `game/progression/`, found by globbing on each run, so new files are picked up automatically. `game/battle/scene/**` is excluded because it is UI glue, covered by screenshots and the sandbox scene. The list lives in `MEASURED_DIRS` / `EXCLUDE` in `run_coverage.py`.
+- **Files:** every `.gd` under `game/battle/` and `game/progression/`, found by globbing on each run, so new files are picked up automatically. `game/battle/scene/**` is excluded because it is UI glue, covered by screenshots and the sandbox scene. The list lives in `MEASURED_DIRS` / `EXCLUDE` in `run_coverage.py`. Nothing else is excluded. Command-line entry scripts (`extends SceneTree`, run with `godot -s`) belong outside the measured directories and must stay thin process-I/O wrappers: for example, `tools/balance/sim_main.gd` only calls `BattleSim.parse_args()` / `run_cli()`, which are measured and tested in `tests/unit/test_battle_sim.gd`.
 - **Lines:** the first line of every statement inside a function body, lambda, setter or getter. That includes `var`, expressions, `return`, `pass`, `break`, `continue`, and the header lines of `if`/`elif`/`while`/`for`/`match`.
 - **Not counted:** `else:` lines, `match` patterns, continuation lines of a multi-line statement, `func` headers, comments, and class-level `var`/`const` initializers.
 - **Test suite:** `res://tests/run_tests.tscn`, the full unit and integration suite. Every test counts, including integration tests.

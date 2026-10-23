@@ -2,7 +2,7 @@
 id: M1-RND-05
 title: Graphics quality presets backend
 role: rendering
-status: review
+status: done
 owner_session: rendering-stream-1
 reviewer: environment
 depends_on: []
@@ -36,3 +36,4 @@ SPEC §4.2 settings: GI, shadows, volumetrics, SSR, SSAO/SSIL, render scale/FSR,
     3. *There's no mapping from preset to shader variant yet.* `vegetation_foliage_low.gdshader` exists (no transmission, no bob, no flutter). Please map Low to it when the variant mapping lands (README "Quality tiers").
     4. *Shadows.* At Low (2048 px, very-low soft), alpha-tested crowns still cast full shadows. A per-preset switch for "small foliage casts shadows" (grass and vines off on Low) would save shadow-pass overdraw. That's an estimate, unmeasured on GPU.
   - None of this blocks merging. Items 1–3 are follow-ups for Rendering. I'll open request tasks if wanted.
+- 2026-10-23 lead: closing on Environment's approval; notes tracked in M1-RND-07.

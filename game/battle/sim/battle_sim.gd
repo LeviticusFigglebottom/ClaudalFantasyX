@@ -103,6 +103,59 @@ func run_many(
 	return out
 
 
+## Runs a command-line request (sim_main.gd): {encounter, active, reserve, policies, seeds,
+## first-seed} as parsed by parse_args(). Returns {ok, error, results}; each result is a
+## summarize() aggregate plus encounter, policy, first_seed and the per-seed "runs".
+func run_cli(args: Dictionary) -> Dictionary:
+	var encounter := StringName(str(args.get("encounter", "")))
+	var active := split_ids(str(args.get("active", "")))
+	var reserve := split_ids(str(args.get("reserve", "")))
+	var policies := split_ids(str(args.get("policies", ",".join(POLICY_NAMES))))
+	var seeds := int(args.get("seeds", "0"))
+	var first := int(args.get("first-seed", "1"))
+	var out := {"ok": false, "error": "", "results": []}
+	if not db.encounters.has(encounter) or active.is_empty() or seeds <= 0:
+		out["error"] = "need --encounter=<known id> --active=a,b --seeds=N (got %s)" % str(args)
+		return out
+	for p in policies:
+		if not p in POLICY_NAMES:
+			out["error"] = "unknown policy '%s'" % p
+			return out
+	var results: Array = []
+	for p in policies:
+		var policy := make_policy(p)
+		var runs: Array[Dictionary] = []
+		for s in range(first, first + seeds):
+			runs.append(run_one(encounter, active, reserve, policy, s))
+		var agg := summarize(runs)
+		agg["encounter"] = String(encounter)
+		agg["policy"] = String(p)
+		agg["first_seed"] = first
+		agg["runs"] = runs
+		results.append(agg)
+	out["ok"] = true
+	out["results"] = results
+	return out
+
+
+## "--key=value" arguments to {key: value}; anything else is ignored.
+static func parse_args(argv: PackedStringArray) -> Dictionary:
+	var out: Dictionary = {}
+	for a in argv:
+		if a.begins_with("--") and a.contains("="):
+			out[a.substr(2, a.find("=") - 2)] = a.substr(a.find("=") + 1)
+	return out
+
+
+## "a, b,,c" -> [&"a", &"b", &"c"].
+static func split_ids(csv: String) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for part in csv.split(",", false):
+		if part.strip_edges() != "":
+			out.append(StringName(part.strip_edges()))
+	return out
+
+
 ## Aggregates run_one() results: n, wins, win_pct, mean/p90 turns, mean party KOs, items.
 static func summarize(runs: Array[Dictionary]) -> Dictionary:
 	var n := runs.size()

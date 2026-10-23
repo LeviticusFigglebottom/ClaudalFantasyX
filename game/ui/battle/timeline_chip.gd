@@ -4,6 +4,8 @@ extends Control
 ## as fill: allies have a square left edge, enemies a chevron cut pointing left. A ghost is the
 ## acting fighter's predicted next turn (dashed gold frame, half alpha); a skipped turn
 ## (Stop/Sleep) is hatched and dimmed; `moved` draws a ▲/▼ for chips the preview shifts.
+## A Doomed turn carries an hourglass and its count (TurnEntry.doom). The chip acting now has a
+## heavier focus frame with an outer glow and a caption ("Acting now", or why it acts alone).
 
 const TEAM_ENEMY := &"enemy"
 
@@ -18,12 +20,19 @@ var skipped := false
 var moved := 0
 var targeted := false
 var target_color := Color.WHITE
+## Doom count shown on this turn (0 = none).
+var doom := 0
+## Slot 0 caption under the name ("" hides it).
+var caption := ""
 ## The running slide/fade, killed when a newer layout arrives (TurnTimeline._move).
 var move_tween: Tween
 
 var _metrics: Dictionary = {}
 var _name: Label
 var _initial: Label
+var _caption: Label
+var _doom_glyph: StatusGlyph
+var _doom_label: Label
 
 
 func _init() -> void:
@@ -39,6 +48,22 @@ func _init() -> void:
 	_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_name.clip_text = true
 	add_child(_name)
+	_caption = Label.new()
+	_caption.theme_type_variation = &"DimLabel"
+	_caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_caption.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_caption.clip_text = true
+	_caption.visible = false
+	add_child(_caption)
+	_doom_glyph = StatusGlyph.new(&"doom")
+	_doom_glyph.visible = false
+	add_child(_doom_glyph)
+	_doom_label = Label.new()
+	_doom_label.theme_type_variation = &"BadgeNumber"
+	_doom_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_doom_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_doom_label.visible = false
+	add_child(_doom_label)
 
 
 func setup(metrics: Dictionary) -> void:
@@ -53,11 +78,15 @@ func apply(slot: Dictionary, identity: Dictionary, current: bool) -> void:
 	skipped = bool(slot["skipped"])
 	moved = int(slot["moved"])
 	targeted = bool(slot.get("targeted", false))
+	doom = int(slot.get("doom", 0))
+	caption = str(slot.get("caption", "")) if current else ""
 	is_current = current
 	label_text = str(identity.get("label", String(combatant_id)))
 	tint = identity.get("tint", Color.WHITE)
 	_name.text = label_text
 	_initial.text = label_text.left(1)
+	_caption.text = caption
+	_doom_label.text = str(doom) if doom > 0 else ""
 	_layout_children()
 	queue_redraw()
 
@@ -75,13 +104,48 @@ func _layout_children() -> void:
 	var side := size.y - pad * 2.0
 	_initial.position = Vector2(left + pad, pad)
 	_initial.size = Vector2(side, side)
-	var arrow := HudLayout.num(_metrics, "arrow_px") + pad * 2.0
+	var right := _marks_width()
 	var name_x := left + pad * 2.0 + side
+	var name_w := maxf(size.x - name_x - right, 0.0)
+	var show_caption := caption != "" and size.y > HudLayout.num(_metrics, "chip_height")
+	var cap_h := HudLayout.num(_metrics, "caption_height") if show_caption else 0.0
 	_name.position = Vector2(name_x, 0.0)
-	_name.size = Vector2(maxf(size.x - name_x - arrow, 0.0), size.y)
+	_name.size = Vector2(name_w, size.y - cap_h)
+	_caption.visible = show_caption
+	_caption.position = Vector2(name_x, size.y - cap_h - pad)
+	_caption.size = Vector2(name_w, cap_h)
+	_layout_doom(right)
 	var dim := skipped or ghost
 	_name.modulate = Color(1, 1, 1, HudLayout.num(_metrics, "skipped_alpha")) if skipped else Color.WHITE
 	_name.add_theme_color_override(&"font_color", _name_color() if not dim else _theme(&"text_dim"))
+
+
+## Width reserved at the right edge for the arrow, the target mark and the Doom badge.
+func _marks_width() -> float:
+	var pad := HudLayout.num(_metrics, "pad")
+	var w := HudLayout.num(_metrics, "arrow_px") + pad * 2.0
+	if targeted:
+		w += HudLayout.num(_metrics, "target_mark_px") * 2.0 + pad
+	if doom > 0:
+		w += HudLayout.num(_metrics, "doom_glyph_px") + HudLayout.num(_metrics, "doom_label_width") + pad
+	return w
+
+
+func _layout_doom(right: float) -> void:
+	var on := doom > 0
+	_doom_glyph.visible = on
+	_doom_label.visible = on
+	if not on:
+		return
+	var pad := HudLayout.num(_metrics, "pad")
+	var g := HudLayout.num(_metrics, "doom_glyph_px")
+	var lw := HudLayout.num(_metrics, "doom_label_width")
+	var x := size.x - right + pad
+	var y := (minf(size.y, HudLayout.num(_metrics, "chip_height")) - g) * 0.5
+	_doom_glyph.position = Vector2(x, y)
+	_doom_glyph.size = Vector2(g, g)
+	_doom_label.position = Vector2(x + g, 0.0)
+	_doom_label.size = Vector2(lw, minf(size.y, HudLayout.num(_metrics, "chip_height")))
 
 
 func _draw() -> void:
@@ -98,7 +162,10 @@ func _draw() -> void:
 	if ghost:
 		_draw_dashed(shape, _theme(&"focus_gold"))
 	elif is_current:
-		_draw_loop(shape, _theme(&"focus"), float(_theme_k(&"focus_px")))
+		# The fighter acting now: an outer glow, a heavier frame, and a solid lamp bar on the edge.
+		var glow := HudLayout.num(_metrics, "current_glow_px")
+		_draw_loop(_inset(shape, -glow), _theme(&"focus_glow"), glow)
+		_draw_loop(shape, _theme(&"focus"), HudLayout.num(_metrics, "current_frame_px"))
 	if moved != 0:
 		_draw_arrow()
 	if targeted:

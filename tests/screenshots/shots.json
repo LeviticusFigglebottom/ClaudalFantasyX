@@ -283,6 +283,37 @@
       ]
     },
     {
+      "id": "battle_statuses",
+      "scene": "res://game/battle/scene/shots/battle_statuses.tscn"
+    },
+    {
+      "id": "save_shrine_field",
+      "scene": "res://game/levels/_tests/save_shrine/shot_save_field.tscn",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "save_menu",
+      "scene": "res://game/levels/_tests/save_shrine/shot_save_menu.tscn",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "save_menu_overwrite",
+      "scene": "res://game/levels/_tests/save_shrine/shot_save_menu_overwrite.tscn",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
       "id": "swatch_card",
       "scene": "res://game/levels/_tests/swatches/swatch_card.tscn",
       "camera": "ShotCamera",

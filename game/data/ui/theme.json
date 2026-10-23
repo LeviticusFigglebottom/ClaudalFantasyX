@@ -30,7 +30,9 @@
       "outline": ["night_sky", 1.0],
       "enemy_chip": ["#2A1420", 0.85],
       "ally_chip": ["ui_panel_raised", 0.85],
-      "scrim": ["night_sky", 0.55]
+      "scrim": ["night_sky", 0.55],
+      "stone": ["coral_stone_weathered", 1.0],
+      "stone_crack": ["volcanic_stone", 1.0]
     },
     "constants": {
       "line_px": 1,
@@ -77,6 +79,8 @@
       "DimLabel": {"base": "Label", "font": "sans_medium", "size": 22, "color": "text_dim"},
       "DamageNumber": {"base": "Label", "font": "sans_bold", "size": 44, "tabular": true, "outline": true},
       "DamageNumberCrit": {"base": "Label", "font": "sans_bold", "size": 56, "tabular": true, "outline": true},
+      "FloatText": {"base": "Label", "font": "sans_bold", "size": 28, "outline": true},
+      "BadgeNumber": {"base": "Label", "font": "sans_bold", "size": 22, "tabular": true, "outline": true},
       "CommandButton": {"base": "Button", "font": "sans_medium", "size": 26},
       "PanelSmall": {"base": "PanelContainer", "chamfer": "chamfer_small_px"}
     }

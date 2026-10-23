@@ -1,37 +1,53 @@
 class_name PartyRow
 extends Control
-## One active fighter in the PartyPanel: name, status strip, HP and MP numbers with bars.
-## Reads a BattleCombatant; never writes to it.
+## One active fighter in the PartyPanel: portrait, name, status strip, HP and MP numbers with
+## bars. Reads a BattleCombatant; never writes to it.
+## - The fighter acting now gets a raised fill, a solid focus bar on the left edge and a ▶ mark
+##   (hollow when Berserk/Confuse plays the turn for them).
+## - Petrify greys the row and turns the portrait to stone (strata lines, not hue alone).
+## - Doom shows its count beside the hourglass glyph; Regen under Zombie shows inverted.
 
 var combatant: BattleCombatant
 var is_current := false
+## Why the current turn plays itself (&"berserk" / &"confuse"), or &"" when the player chooses.
+var auto_reason: StringName = &""
 var is_targeted := false
+var tint := Color.WHITE
 
 var _m: Dictionary = {}
 var _name: Label
+var _initial: Label
 var _hp_label: Label
 var _mp_label: Label
 var _hp: HudGauge
 var _mp: HudGauge
 var _status_strip: HBoxContainer
 var _statuses: Array[StringName] = []
+var _status_key := ""
+var _doom_label: Label
 
 
-func setup(metrics: Dictionary, c: BattleCombatant, label: String) -> void:
+func setup(metrics: Dictionary, c: BattleCombatant, label: String, portrait_tint: Color = Color.WHITE) -> void:
 	_m = metrics
 	combatant = c
+	tint = portrait_tint
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var pad := HudLayout.num(_m, "pad_x")
 	var gap := HudLayout.num(_m, "column_gap")
 	var strip := HudLayout.num(_m, "status_strip_px")
 	var name_w := HudLayout.num(_m, "name_width")
-	var hp_x := pad + name_w + gap
+	var portrait := portrait_rect()
+	var name_x := portrait.end.x + HudLayout.num(_m, "portrait_gap")
+	var hp_x := name_x + name_w + gap
 	var hp_w := HudLayout.num(_m, "hp_width")
 	var mp_x := hp_x + hp_w + gap
 	var mp_w := HudLayout.num(_m, "mp_width")
 	var h := HudLayout.num(_m, "row_height")
 	var bar_y := h - strip * 0.5 - HudLayout.num(_m, "hp_bar_px")
-	_name = _label(&"HudName", Rect2(pad, strip * 0.5, name_w, h - strip * 0.5 * 2.0))
+	_initial = _label(&"HudNumber", portrait)
+	_initial.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_initial.text = label.left(1)
+	_name = _label(&"HudName", Rect2(name_x, strip * 0.5, name_w, h - strip * 0.5 * 2.0))
 	_name.text = label
 	_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_name.clip_text = true
@@ -68,10 +84,15 @@ func refresh(animate: bool, drain_sec: float = 0.0) -> void:
 	_mp.set_value(combatant.mp, combatant.max_mp, sec)
 	_hp_label.text = "%d/%d" % [combatant.hp, combatant.max_hp]
 	_mp_label.text = "%d" % combatant.mp
-	var low := _hp.is_low() or not combatant.is_alive()
-	var danger := get_theme_color(&"danger", HymnThemeBuilder.PALETTE_TYPE)
-	if low:
-		_hp_label.add_theme_color_override(&"font_color", danger)
+	var low := _hp.is_low() or combatant.hp <= 0
+	if is_stone():
+		_initial.add_theme_color_override(&"font_color", _c(&"stone_crack"))
+	else:
+		_initial.remove_theme_color_override(&"font_color")
+	if is_stone():
+		_hp_label.add_theme_color_override(&"font_color", _c(&"text_dim"))
+	elif low:
+		_hp_label.add_theme_color_override(&"font_color", _c(&"danger"))
 	else:
 		_hp_label.remove_theme_color_override(&"font_color")
 	_sync_statuses()
@@ -86,37 +107,102 @@ func status_ids() -> Array[StringName]:
 	return _statuses.duplicate()
 
 
+func is_stone() -> bool:
+	return combatant != null and combatant.is_petrified()
+
+
+## The Doom count shown beside the hourglass ("" when not doomed).
+func doom_text() -> String:
+	return _doom_label.text if _doom_label != null and is_instance_valid(_doom_label) else ""
+
+
+func portrait_rect() -> Rect2:
+	var px := HudLayout.num(_m, "portrait_px")
+	var h := HudLayout.num(_m, "row_height")
+	return Rect2(HudLayout.num(_m, "pad_x"), (h - px) * 0.5, px, px)
+
+
 func _sync_statuses() -> void:
 	var ids: Array[StringName] = []
 	for sid: StringName in combatant.statuses:
 		if ids.size() < int(HudLayout.num(_m, "max_status_icons")):
 			ids.append(sid)
-	if ids == _statuses:
+	var key := "%s|%d|%s" % [",".join(ids), combatant.doom_count(), combatant.has_status(&"zombie")]
+	if key == _status_key:
 		return
+	_status_key = key
 	_statuses = ids
+	_doom_label = null
 	for ch in _status_strip.get_children():
+		_status_strip.remove_child(ch)
 		ch.queue_free()
 	var px := HudLayout.num(_m, "status_icon_px")
 	for sid in ids:
-		var g := StatusGlyph.new(sid)
+		var g := StatusGlyph.new(sid, StatusGlyph.inverted_for(combatant, sid))
 		g.custom_minimum_size = Vector2(px, px)
+		g.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		_status_strip.add_child(g)
+		if sid == &"doom":
+			_doom_label = Label.new()
+			_doom_label.theme_type_variation = &"BadgeNumber"
+			_doom_label.text = str(combatant.doom_count())
+			_doom_label.custom_minimum_size = Vector2(HudLayout.num(_m, "doom_label_width"), px)
+			_doom_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			_doom_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			_status_strip.add_child(_doom_label)
 
 
 func _draw() -> void:
 	if is_current or is_targeted:
-		var raised := get_theme_color(&"panel_raised", HymnThemeBuilder.PALETTE_TYPE)
-		draw_rect(Rect2(Vector2.ZERO, size), raised)
-		var edge := get_theme_color(&"focus", HymnThemeBuilder.PALETTE_TYPE)
+		draw_rect(Rect2(Vector2.ZERO, size), _c(&"panel_raised"))
+		var edge := _c(&"focus")
 		var w := float(get_theme_constant(&"focus_px", HymnThemeBuilder.PALETTE_TYPE))
 		if is_targeted:
 			draw_rect(Rect2(Vector2.ONE * w * 0.5, size - Vector2.ONE * w), edge, false, w)
-		else:
-			draw_rect(Rect2(0, 0, w, size.y), edge)
+		if is_current:
+			_draw_current_mark(edge)
+	_draw_portrait()
+	var out := combatant != null and not combatant.is_alive()
+	if _name != null:
+		_name.modulate = Color(1, 1, 1, _c(&"text_disabled").a) if out else Color.WHITE
+
+
+## The current-actor mark: a solid lamp bar on the left edge and a ▶ beside the portrait.
+func _draw_current_mark(col: Color) -> void:
+	var bar := HudLayout.num(_m, "current_bar_px")
+	draw_rect(Rect2(0, 0, bar, size.y), col)
+	var m := HudLayout.num(_m, "current_mark_px")
+	var x0 := bar + (HudLayout.num(_m, "pad_x") - bar - m) * 0.5
+	var cy := size.y * 0.5
+	var tri := PackedVector2Array([Vector2(x0, cy - m), Vector2(x0 + m, cy), Vector2(x0, cy + m)])
+	if auto_reason == &"":
+		draw_colored_polygon(tri, col)
+	else:
+		# The turn plays itself (Berserk/Confuse): the same mark, hollow.
+		tri.append(tri[0])
+		draw_polyline(tri, col, 1.0, true)
+
+
+func _draw_portrait() -> void:
+	if _m.is_empty():
+		return
+	var r := portrait_rect()
+	if is_stone():
+		draw_rect(r, _c(&"stone"))
+		var crack := _c(&"stone_crack")
+		var third := r.size.y / 3.0
+		draw_line(r.position + Vector2(0, third), r.position + Vector2(r.size.x, third * 0.8), crack, 1.0)
+		draw_line(r.position + Vector2(0, third * 2.0), r.position + Vector2(r.size.x, third * 2.2), crack, 1.0)
+		draw_rect(r, crack, false, 1.0)
+		return
+	var col := tint
 	if combatant != null and not combatant.is_alive():
-		_name.modulate = Color(1, 1, 1, get_theme_color(&"text_disabled", HymnThemeBuilder.PALETTE_TYPE).a)
-	elif _name != null:
-		_name.modulate = Color.WHITE
+		col.a *= _c(&"text_disabled").a
+	draw_rect(r, col)
+
+
+func _c(role: StringName) -> Color:
+	return get_theme_color(role, HymnThemeBuilder.PALETTE_TYPE)
 
 
 func _label(variation: StringName, r: Rect2) -> Label:
