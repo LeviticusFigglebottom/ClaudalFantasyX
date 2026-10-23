@@ -2,8 +2,8 @@
 id: M1-ARC-12
 title: Never drop equipment when the item tables are missing or fail to parse
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a5a8cfa05f7795b89"
 depends_on: [M1-ARC-11]
 milestone: M1
 request-from: "qa"
