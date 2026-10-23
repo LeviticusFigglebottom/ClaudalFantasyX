@@ -2,8 +2,8 @@
 id: M1-NAR-12
 title: Story nits from review-sweep-I on NAR-11
 role: narrative
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-ae77f8e225d2b48a3"
 depends_on: [M1-NAR-11]
 milestone: M1
 request-from: "cinematics"
