@@ -106,7 +106,7 @@ light_color = Color(1, 0.722, 0.482, 1)
 light_energy = 2.4
 shadow_enabled = true
 shadow_bias = 0.02
-shadow_normal_bias = 2.5
+shadow_normal_bias = 4.5
 shadow_blur = 0.6
 directional_shadow_max_distance = 8.0
 
@@ -116,7 +116,7 @@ light_color = Color(0.949, 0.651, 0.29, 1)
 light_energy = 1.8
 shadow_enabled = true
 shadow_bias = 0.02
-shadow_normal_bias = 2.5
+shadow_normal_bias = 4.5
 directional_shadow_max_distance = 8.0
 
 [node name="Floor" type="MeshInstance3D" parent="."]

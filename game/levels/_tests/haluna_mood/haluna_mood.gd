@@ -85,6 +85,6 @@ func _write_globals() -> void:
 	var wind := direction_from_angles(0.0, wind_azimuth_deg) * wind_speed_m_s
 	RenderingServer.global_shader_parameter_set(GLOBAL_WIND, Vector4(wind.x, 0.0, wind.z, wind_gust))
 	RenderingServer.global_shader_parameter_set(GLOBAL_WIND_TIME, _clock)
-	RenderingServer.global_shader_parameter_set(GLOBAL_SUN, direction_from_angles(sun_elevation_deg, sun_azimuth_deg))
+	ShaderGlobals.set_value(GLOBAL_SUN, direction_from_angles(sun_elevation_deg, sun_azimuth_deg))
 	RenderingServer.global_shader_parameter_set(GLOBAL_TIME_OF_DAY, time_of_day_h)
 	RenderingServer.global_shader_parameter_set(GLOBAL_GLIMMER, Vector4(1.0, 0.91, 0.72, 0.0))

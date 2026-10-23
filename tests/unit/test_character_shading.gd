@@ -13,8 +13,9 @@ const STAGE_SCENE := "res://game/levels/_tests/character_shading/shading_test.ts
 const ASHA_STAGE := "res://game/levels/_tests/characters/asha/asha_stage.tscn"
 const ASHA_CLOTH := "res://assets/characters/asha/materials/cloth.tres"
 ## Shadow normal bias that clears the shadow-terminator banding on Asha's cheeks at dialogue range
-## (M1-QA-05 / M1-CHR-04 GPU sweep: 1.0 bands, 2.0 leaves a faint residue, 2.5 is clean).
-const MIN_CLOSEUP_NORMAL_BIAS := 2.5
+## (M1-QA-05 / M1-CHR-04 GPU sweep: 1.0 bands, 2.0 leaves a faint residue, 2.5 is clean on the cheek;
+## M1-RND-20 raised it to 4.5 for the smiling mouth corner's fold, which still striped at 2.5 and 3.5).
+const MIN_CLOSEUP_NORMAL_BIAS := 4.5
 ## Lacquered leather, not patent plastic (M1-CHR-04): the vest coat may not go back to a mirror.
 const MIN_VEST_COAT_ROUGHNESS := 0.12
 const FIT_TOLERANCE := 1e-6

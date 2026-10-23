@@ -247,7 +247,7 @@ func _write_globals() -> void:
 	RenderingServer.global_shader_parameter_set(GLOBAL_WIND, Vector4(wind.x, 0.0, wind.z, wind_gust))
 	RenderingServer.global_shader_parameter_set(GLOBAL_WIND_TIME, _weather_s)
 	var dir := WaterTestRig.direction_from_angles(float(m.get("elevation", 0.0)), float(m.get("azimuth", 0.0)))
-	RenderingServer.global_shader_parameter_set(GLOBAL_SUN, dir)
+	ShaderGlobals.set_value(GLOBAL_SUN, dir)
 	RenderingServer.global_shader_parameter_set(GLOBAL_TIME_OF_DAY, float(m.get("tod", 12.0)))
 
 

@@ -31,6 +31,29 @@ From the review-sweep-I entries (file:line references there).
 - **Outstanding (PC GPU):** Low-TAA foliage ghosting with the wind **on**, at a 30 fps cap (`tools/gpu_bench/aa_shimmer` with the wind running, plus a trail metric). This cannot be measured on lavapipe. It is the last open part of criterion 4, together with the prewarm worst frame.
 - Not done here: RND-08 S5 (Art sign-off on caustics, halo chroma and noon crests) belongs to M1-ART-04 / Art.
 
+- 2026-10-23 PC GPU session (session_01778wbLbDFnRRLTKjnawv3T, branch `gpu/rnd-15-prewarm`): **criterion 4 measured.**
+  Report: `docs/kb/qa/gpu/2026-10-23-rnd-15-prewarm.md`.
+  - **(a) Prewarm worst frame.** Measured after a field scene, cold and warm, at Low, High and Ultra.
+    - It is **still over 50 ms**: ~230 ms (warm) to ~310 ms (cold) for the stage set-up, and 90–430 ms for a single
+      Undertow material load (a shader compile).
+    - Neither can be fixed with the slice constants. Batch size made no difference to the set-up frame (1–12 all
+      measured).
+    - Done: materials now load in their batch (lazy entries), the first tick no longer halves the batch (S3), and
+      `materials_per_frame` is 2. Undertow's worst frame drops from 1.58 s to 0.62 s (cold).
+    - Recommended: export with Godot's shader baker, keep one stage alive from boot, and register active-tier variants
+      only.
+  - **(b) Low-TAA foliage ghosting, wind on, 30 fps.** Measured: TAA departs from the instant 30–40 % more than its
+    static softening (vegetation Wide 0.115 → 0.149, FrangipaniClose 0.113 → 0.158). It shows as soft blades and faint
+    double edges, with no long trails. Acceptable for Low; nothing to tune.
+  - **Follow-up (first frame vs steady):**
+    - Asha: first ~0.3 s, steady ≤ 10 ms.
+    - Undertow merged: first 1.5 s, steady ≤ 111 ms.
+    - Undertow lazy: first 0.6 s, but 7 steady frames of 0.1–0.3 s.
+    - The router's split_swap wait doesn't enter the bench, which traces frames directly.
+    - Details are in the report's follow-up section.
+  - So both measurements are done. The 50 ms limit itself is **not met**: that needs the shader baker or a boot-time
+    stage (Lead / Systems decision), so the checkbox stays unticked.
+
 ## Review log
 - 2026-10-23 environment (review-sweep-J, fresh reviewer): **approve the lavapipe-side work with should-fixes. Not done:** criterion 4 is still unticked. It needs the PC GPU numbers: the prewarm worst frame against 50 ms, and Low-TAA ghosting with the wind on. Keep the task in review until they land, or have the Lead split them into a gpu task.
   - **What I read:** the task, handoff rendering-2, and `git diff 4d12869^1 4d12869` (scene_router.gd, shader_prewarm.gd, glimmer_field.gd, water_surface.gd, the shader includes, the validator, the tests, shots.json). I viewed `glimmer_bound.png` (see M1-RND-08). I checked that no shader or script reads `hymn_zone_sea_glow` outside `hymn_sea_glow_zone` (grep: only glimmer.gdshaderinc:82-85).
@@ -69,3 +92,19 @@ From the review-sweep-I entries (file:line references there).
     - criterion 4's two measurements;
     - the sweep-J should-fixes S1–S5. S1 (scene_router.gd's non-split profile now counts the prewarm wait) and S3 (the first tick halves the batch) affect how the prewarm number will read, so fix them **before** the PC measures.
   - **Next:** the Lead re-orders the PC queue if prewarm should go before 2a, or splits criterion 4 into a gpu task so the lavapipe-side work can close.
+- 2026-10-23 environment (review-sweep-N, fresh reviewer): **criterion 4 is measured and the numbers are sound; the 50 ms limit is not met. Close RND-15 only by splitting that limit out.**
+  - **What I read:** `docs/kb/qa/gpu/2026-10-23-rnd-15-prewarm.md`, including the Lead follow-up; `git diff eee8f1f^1 eee8f1f` (shader_prewarm.gd, prewarm_materials.json, the bench tools); scene_router.gd:100-135; and SPEC §4.2 (SPEC.md:110).
+  - **Checks:** Godot 1174/0 (includes `shader_prewarm` and `scene_router`). No shot can change, because the prewarm stage is off-screen.
+  - **What passes:**
+    - **The method.** It traces the spawn frame, which the old `max_frame_ms` missed, and `--pre-scene` removes the one-time first-TAA cost. Cold and warm runs cover every preset.
+    - **The diagnosis.** The floor is the stage set-up (about 230–310 ms) plus single-shader compiles (90–430 ms). The slice constants can't move either.
+    - **The code.** Lazy entry loading is right. Sweep-J S3 is fixed (shader_prewarm.gd, `_frames_measured > 1`). `_build_entry` keeps the instanced and skipped counts consistent.
+    - **Ghosting.** The Low-TAA ghosting measure is reasonable: +30–40 % over static, with no trails. Low keeps TAA.
+  - **Verdict on criterion 4:** don't tick it. SPEC §4.2 ("No hitch over 50 ms during battle transitions") is a spec target, so missing it needs a decision, not a tuning pass.
+    - The Lead files a task (Systems + Rendering) covering the shader baker on export, a boot-time warm stage, and active-tier-only registration.
+    - If release builds can't meet 50 ms even after that, the Lead writes an ADR.
+    - Once that task exists, criterion 4 reads "measured; limit moved to <task>", and RND-15 can close.
+  - **Should-fix:**
+    - **S1: the lazy/batch-2 choice trades one 1.5 s freeze for seven 0.1–0.3 s stutters in Undertow** (the follow-up table). Under a black fade, the single freeze is less visible than repeated stutters. Unless the transition shows motion, I'd revert to batch 12 for Undertow-class scenes. The Lead's call: record it in the follow-up task.
+    - **S2: try `ResourceLoader.load_threaded_request` for the registry entries** (shader_prewarm.gd:233, :362). That moves the material load and front-end compile off the main thread. It's the one lever this report didn't measure.
+    - **S3: sweep-J S1 is still open in the code** (scene_router.gd:106, :129). With `split_swap` off, `swap_frame_start` is taken before the prewarm wait, so `frames[0]` includes the waited frames. The report is right that the bench doesn't go through the router, but the router's own profile is still skewed. Re-take the timestamp after the wait.

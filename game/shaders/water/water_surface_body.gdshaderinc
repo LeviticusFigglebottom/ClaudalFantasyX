@@ -251,6 +251,19 @@ uniform float sss_distortion : hint_range(0.0, 1.0) = 0.35;
 // Crest thickness term: crest = smoothstep(lo, hi, height / water_amplitude_sum).
 uniform float sss_crest_lo : hint_range(-1.0, 1.0) = 0.0;
 uniform float sss_crest_hi : hint_range(-1.0, 1.0) = 0.35;
+// The crest term fades with the steepness of the view ray (M1-RND-18): full at |view.y| below lo
+// (grazing low cameras), gone above hi. A high camera (40 m up, 39 deg down) otherwise lit every
+// crest of the swell into pale-teal sheets over deep water. sin(6 deg) and sin(16 deg).
+uniform float sss_view_fade_lo : hint_range(0.0, 1.0) = 0.10;
+uniform float sss_view_fade_hi : hint_range(0.0, 1.0) = 0.28;
+// ...and only for a camera this high above the shaded water (metres, from lo to hi): a 5.5 m camera
+// sees its near water steeply too, and keeps its crests (the low shots stay as approved).
+uniform float sss_view_height_lo_m : hint_range(0.0, 500.0) = 10.0;
+uniform float sss_view_height_hi_m : hint_range(0.0, 500.0) = 25.0;
+// The lift the crest SSS used to give deep water seen from above, given back evenly: the deep end of
+// the in-scatter (col_deep) grows by this share over the same view-steepness ramp, never as crest
+// patches, and the shallow bands keep their colour. 0 = off.
+uniform float scatter_view_lift : hint_range(0.0, 4.0) = 1.5;
 
 group_uniforms sea_glow;
 // Color script rule 3: this surface's own sea-glow energy (0.04-0.15 at night; 0 = use the zone's
@@ -577,10 +590,16 @@ void fragment() {
 
 	// --- Outputs --------------------------------------------------------------------------------
 	float water = 1.0 - foam;
-	vec3 col_scatter = mix(col_scatter_shallow, col_deep, smoothstep(0.0, scatter_depth_m, vdepth));
+	float view_steep = abs((INV_VIEW_MATRIX * vec4(VIEW, 0.0)).y);
+	float view_high = smoothstep(sss_view_height_lo_m, max(sss_view_height_hi_m, sss_view_height_lo_m + HYMN_EPSILON),
+			view_dist * view_steep);
+	float view_keep = 1.0 - smoothstep(sss_view_fade_lo, max(sss_view_fade_hi, sss_view_fade_lo + HYMN_EPSILON), view_steep)
+			* view_high;
+	vec3 deep_lit = col_deep * (1.0 + scatter_view_lift * (1.0 - view_keep));
+	vec3 col_scatter = mix(col_scatter_shallow, deep_lit, smoothstep(0.0, scatter_depth_m, vdepth));
 	v_foam = foam;
 	v_crest = use_sss ? smoothstep(sss_crest_lo, sss_crest_hi, v_height / max(water_amplitude_sum, HYMN_EPSILON))
-			* water : 0.0;
+			* water * view_keep : 0.0;
 	float rough = mix(roughness_near, roughness_far, clamp(view_dist / roughness_far_m, 0.0, 1.0));
 	rough = min(rough + storm_roughness * storm_k, 1.0);
 	float storm_dim = 1.0 - storm_darken * storm_k;

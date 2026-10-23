@@ -5,7 +5,8 @@ extends RefCounted
 ## Deterministic: seed s always plays the same battle. Driven by sim_main.gd (`godot -s`),
 ## which tools/balance/sim.py wraps, and by tests/integration/test_sandbox_battle.gd.
 
-const POLICY_NAMES: Array[StringName] = [&"naive", &"lowest_hp", &"role_answer", &"smart"]
+## naive_swell (M2-NIT-03) is report only: naive plus the Swell row (balance_targets.md).
+const POLICY_NAMES: Array[StringName] = [&"naive", &"naive_swell", &"lowest_hp", &"role_answer", &"smart"]
 const CONFIG_PATH := "res://game/data/battle/sim_policies.json"
 
 var db: BattleDB
@@ -29,6 +30,8 @@ func make_policy(policy: StringName) -> SimPolicy:
 	match policy:
 		&"naive":
 			p = SimPolicyNaive.new()
+		&"naive_swell":
+			p = SimPolicyNaiveSwell.new()
 		&"lowest_hp":
 			p = SimPolicyLowestHp.new()
 		&"role_answer":
