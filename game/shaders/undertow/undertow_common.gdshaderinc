@@ -21,6 +21,7 @@
 #define UNDERTOW_WOUND_OFFSET vec3(13.7, -41.3, 27.1)
 #define UNDERTOW_PRESENCE_OFFSET vec3(-71.9, 5.3, 33.8)
 #define UNDERTOW_DETAIL_OFFSET vec3(5.17, 19.3, -8.71)
+#define UNDERTOW_STRIATION_OFFSET vec3(-23.3, 11.9, 47.6)
 // Second wound octave: frequency ratio and weight (a lacunarity just off 2 hides the lattice).
 #define UNDERTOW_WOUND_LACUNARITY 2.03
 #define UNDERTOW_WOUND_DETAIL 0.35
@@ -81,6 +82,12 @@ uniform float striation_spacing_m : hint_range(10.0, 10000.0) = 1500.0;
 uniform float striation_starts : hint_range(0.0, 8.0) = 2.0;
 uniform float striation_strength : hint_range(0.0, 1.0) = 0.55;
 uniform float striation_sharpness : hint_range(0.5, 8.0) = 1.6;
+// Irregular striations (M2-RND-01): one low-frequency noise sample in the rotating frame bends the
+// helix by up to striation_warp turns of phase and flattens it by up to striation_vary, so the plates
+// read as torn fluid instead of a machined thread. Scale of that field in metres. 0, 0 = the pure helix.
+uniform float striation_warp : hint_range(0.0, 2.0) = 0.0;
+uniform float striation_vary : hint_range(0.0, 1.0) = 0.0;
+uniform float striation_warp_scale_m : hint_range(100.0, 40000.0) = 5000.0;
 
 group_uniforms wounds;
 uniform float wound_intensity : hint_range(0.0, 4.0) = 1.0;
@@ -147,11 +154,26 @@ float undertow_spiral_phase(vec2 xz) {
 }
 
 // Helical striation in [0, 1] at p: bands that wind up the wall and turn with the eyewall (rigidly,
-// so they never wind up). Phase = height / spacing + starts * angle / tau.
+// so they never wind up). Phase = height / spacing + starts * angle / tau, bent by the warp field.
 float undertow_striation(vec3 p) {
-	float a = atan(p.z, p.x) - rotation_rad_s * storm_time_s;
+	float spin = -rotation_rad_s * storm_time_s;
+	float a = atan(p.z, p.x) + spin;
 	float phase = p.y / striation_spacing_m + striation_starts * a / HYMN_TAU;
-	return pow(0.5 + 0.5 * cos(HYMN_TAU * phase), striation_sharpness);
+	float depth = 1.0;
+	if (striation_warp > 0.0 || striation_vary > 0.0) {
+		// Sampled in the frame that turns with the eyewall, so the bends ride the helix.
+		vec2 xz = undertow_rotate(p.xz, spin);
+		vec3 q = vec3(xz.x, p.y, xz.y) / striation_warp_scale_m + UNDERTOW_STRIATION_OFFSET;
+#ifdef UNDERTOW_BAKED_NOISE
+		// The body's baked lattice: two decorrelated channels for one fetch.
+		vec2 n = undertow_lattice(q).rg;
+#else
+		vec2 n = vec2(hymn_value_noise3(q), hymn_value_noise3(q + UNDERTOW_PRESENCE_OFFSET));
+#endif
+		phase += striation_warp * (2.0 * n.x - 1.0);
+		depth = 1.0 - striation_vary * n.y;
+	}
+	return mix(1.0, pow(0.5 + 0.5 * cos(HYMN_TAU * phase), striation_sharpness), depth);
 }
 
 // Analytic coverage envelope parts in [0, 1] (no noise): x = the eyewall, y = the anvil canopy,
@@ -169,7 +191,9 @@ vec3 undertow_envelope_parts(vec3 p) {
 	float wall = smoothstep(ri - wall_softness_m * 0.25, ri + wall_softness_m, r)
 			* (1.0 - smoothstep(ro - wall_softness_m, ro + wall_softness_m, r));
 	wall *= 1.0 - smoothstep(1.0 - top_softness, 1.0, h);
-	wall *= mix(1.0, undertow_striation(p), striation_strength);
+	if (wall > 0.0) {
+		wall *= mix(1.0, undertow_striation(p), striation_strength);
+	}
 	if (skirt_height_m > 0.0) {
 		float sh = clamp(p.y / skirt_height_m, 0.0, 1.0);
 		float reach = ro + skirt_reach_m * (1.0 - sh) * (1.0 - sh);

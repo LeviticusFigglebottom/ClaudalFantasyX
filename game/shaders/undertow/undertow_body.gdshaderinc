@@ -13,6 +13,7 @@
 //   UNDERTOW_LIGHT_NOISE    1 = those samples include noise, 0 = envelope only
 //   UNDERTOW_CURL           1 = curl-noise domain warp (turbulence), 0 = none
 //   UNDERTOW_OCTAVES        fBm octaves of the cloud noise
+//   UNDERTOW_BILLOW_SHADE   1 = sun-ward derivative shading of the surface billows, 0 = none
 
 render_mode blend_premul_alpha, unshaded, cull_front, depth_draw_never, depth_test_disabled, fog_disabled,
 		shadows_disabled;
@@ -40,6 +41,9 @@ float undertow_noise(vec3 p) {
 	return undertow_lattice(p).r;
 }
 
+// The common include's striation warp fetches this lattice instead of hashing.
+#define UNDERTOW_BAKED_NOISE
+
 #include "res://game/shaders/undertow/undertow_common.gdshaderinc"
 
 #ifndef UNDERTOW_MAX_STEPS
@@ -56,6 +60,9 @@ float undertow_noise(vec3 p) {
 #endif
 #ifndef UNDERTOW_OCTAVES
 #define UNDERTOW_OCTAVES 4
+#endif
+#ifndef UNDERTOW_BILLOW_SHADE
+#define UNDERTOW_BILLOW_SHADE 1
 #endif
 
 // Interleaved gradient noise (Jimenez 2014, "Next Generation Post Processing in Call of Duty"):
@@ -74,6 +81,10 @@ float undertow_noise(vec3 p) {
 #define UNDERTOW_LIGHT_OCTAVES 2
 // Finite-difference step of the baked curl, in lattice cells.
 #define UNDERTOW_CURL_H 0.125
+// Decorrelates the billow field from the cloud and detail fields (arbitrary, fixed).
+#define UNDERTOW_BILLOW_OFFSET vec3(-31.7, 8.9, 14.3)
+// Mean of |2n - 1| over the quintic value-noise lattice (measured: 0.330 over 4e5 samples).
+#define UNDERTOW_BILLOW_MEAN 0.33
 
 uniform sampler2D depth_tex : hint_depth_texture, filter_nearest, repeat_disable;
 
@@ -108,6 +119,15 @@ uniform float erosion_contrast : hint_range(0.1, 20.0) = 4.0;
 // skirt and the low wall tear into ragged horizontal rags between the sea and the cloud base.
 uniform float scud_height_m : hint_range(0.0, 8000.0) = 0.0;
 uniform float scud_stretch : hint_range(1.0, 8.0) = 1.0;
+// Billows (M2-RND-01): on the cloud's eroding fringe (density between 0 and 1, the surface a view sees) a
+// noise field of billow_scale_m (between the cloud and detail scales, so the lumps read kilometres away) is
+// folded into billow noise |2n - 1|, rounded lumps between creases, and added (zero-mean) x billow_weight.
+// Its sun-ward difference over billow_shade_step_m shades each lump like a surface (billow_shade = the
+// optical depth removed per unit of difference). billow_weight 0 = the M1 look.
+uniform float billow_weight : hint_range(0.0, 1.0) = 0.0;
+uniform float billow_scale_m : hint_range(10.0, 10000.0) = 1000.0;
+uniform float billow_shade : hint_range(0.0, 8.0) = 0.0;
+uniform float billow_shade_step_m : hint_range(1.0, 2000.0) = 150.0;
 
 group_uniforms lighting;
 // Sun (or moon) radiance: the zone's key light colour x energy (UndertowStorm copies it).
@@ -215,10 +235,20 @@ vec2 bound_interval(vec3 ro, vec3 rd, float radius, float top) {
 	return vec2(max(tc.x, ty.x), min(tc.y, ty.y));
 }
 
+// Density in [0, 1] from the envelope eroded by noise: the full envelope keeps everything but the
+// noise troughs, a thin envelope only the crests (billows at the wall's surface, wisps outside).
+float cloud_density(float env, float n) {
+	return clamp((n + erosion_envelope * env - erosion_threshold - coverage_bias) * erosion_contrast, 0.0, 1.0);
+}
+
 // Cloud noise in [0, 1] at storm-local p, two-phase advected along the vortex flow. With the curl
 // warp on, warp_a / warp_b carry the two phases' warp vectors between calls; they are recomputed only
-// when fresh_warp is true (the march decides, see curl_reuse).
-float cloud_noise(vec3 p, int octaves, bool fresh_warp, inout vec3 warp_a, inout vec3 warp_b) {
+// when fresh_warp is true (the march decides, see curl_reuse). env is the envelope at p (the billows
+// grow on the cloud's eroding fringe); lean gets the billows' drop toward the sun L there (positive =
+// the lump faces the sun), 0 elsewhere.
+float cloud_noise(vec3 p, int octaves, bool fresh_warp, inout vec3 warp_a, inout vec3 warp_b, float env, vec3 L,
+		out float lean) {
+	lean = 0.0;
 	float ta;
 	float tb;
 	float wa;
@@ -247,6 +277,26 @@ float cloud_noise(vec3 p, int octaves, bool fresh_warp, inout vec3 warp_a, inout
 		float db = undertow_noise(pb / detail_scale_m + UNDERTOW_DETAIL_OFFSET);
 		n = mix(n, mix(db, da, wa), detail_weight);
 	}
+	// The fringe: cloud that is there but not yet solid (density in (0, 1)). The billows reshape it and
+	// never grow cloud where the noise has eroded it all, so they cost nothing in empty steps.
+	float d0 = billow_weight > 0.0 ? cloud_density(env, n) : 0.0;
+	float surface = d0 > 0.0 ? 1.0 - d0 : 0.0;
+	if (surface > 0.0) {
+		float ba = undertow_noise(pa / billow_scale_m + UNDERTOW_BILLOW_OFFSET);
+		float bb = undertow_noise(pb / billow_scale_m + UNDERTOW_BILLOW_OFFSET);
+		float billow = abs(2.0 * mix(bb, ba, wa) - 1.0);
+		// Zero-mean, so the lumps reshape the fringe without thinning the storm's coverage.
+		n += billow_weight * surface * (billow - UNDERTOW_BILLOW_MEAN);
+#if UNDERTOW_BILLOW_SHADE
+		if (billow_shade > 0.0) {
+			vec3 step_l = L * billow_shade_step_m;
+			float la = undertow_noise((pa + step_l) / billow_scale_m + UNDERTOW_BILLOW_OFFSET);
+			float lb = undertow_noise((pb + step_l) / billow_scale_m + UNDERTOW_BILLOW_OFFSET);
+			// The lump here minus the lump one step toward the sun (through the same fold).
+			lean = (billow - abs(2.0 * mix(lb, la, wa) - 1.0)) * surface;
+		}
+#endif
+	}
 	return n;
 }
 
@@ -260,12 +310,6 @@ float cloud_noise_coarse(vec3 p) {
 	float na = undertow_noise(undertow_flow_point(p, ta) / noise_scale_m);
 	float nb = undertow_noise(undertow_flow_point(p, tb) / noise_scale_m);
 	return mix(nb, na, wa);
-}
-
-// Density in [0, 1] from the envelope eroded by noise: the full envelope keeps everything but the
-// noise troughs, a thin envelope only the crests (billows at the wall's surface, wisps outside).
-float cloud_density(float env, float n) {
-	return clamp((n + erosion_envelope * env - erosion_threshold - coverage_bias) * erosion_contrast, 0.0, 1.0);
 }
 
 // Sun-ward optical depth at p (extinction units: transmittance = exp(-it)).
@@ -351,7 +395,8 @@ void fragment() {
 		}
 		bool fresh_warp = warp_age >= curl_reuse;
 		warp_age = fresh_warp ? 1 : warp_age + 1;
-		float d = cloud_density(env, cloud_noise(p, UNDERTOW_OCTAVES, fresh_warp, warp_a, warp_b));
+		float lean;
+		float d = cloud_density(env, cloud_noise(p, UNDERTOW_OCTAVES, fresh_warp, warp_a, warp_b, env, L, lean));
 		// Nothing below draws where the cloud is eroded away (a rent only thins it further), so the
 		// wound noise is only evaluated where there is cloud (M1-RND-10: same image, fewer hashes).
 		if (d <= 0.0) {
@@ -375,7 +420,8 @@ void fragment() {
 		vec3 glow = col_wound * seam * wound_per_m * (0.3 + 2.8 * d * (1.0 - d));
 		float sigma = d * density_per_m;
 		float ts = exp(-sigma * ds);
-		float tau_sun = sun_optical_depth(p, L);
+		// A lump facing the sun has less of itself between p and the light (lean > 0), one facing away more.
+		float tau_sun = max(sun_optical_depth(p, L) - billow_shade * lean, 0.0);
 		// Sum of the octaves: transmittance exp(-tau b^i) weighted by energy x phase.
 		float sun_ms = 0.0;
 		float ms_b = 1.0;

@@ -70,7 +70,10 @@
     "striation_spacing_m": 2400.0,
     "striation_starts": 2.0,
     "striation_strength": 0.45,
-    "striation_sharpness": 1.2
+    "striation_sharpness": 1.2,
+    "striation_warp": 0.35,
+    "striation_vary": 0.6,
+    "striation_warp_scale_m": 4500.0
   },
   "flow": {
     "_note": "Differential rotation: omega(r) = rotation_rad_s * (eye_radius / r)^falloff. Two-phase advection over cycle_s keeps the noise from winding up forever.",
@@ -113,7 +116,11 @@
     "ms_extinction": 0.25,
     "ms_eccentricity": 0.6,
     "empty_step": 2.5,
-    "dense_step": 0.55
+    "dense_step": 0.55,
+    "billow_weight": 0.8,
+    "billow_scale_m": 1000.0,
+    "billow_shade": 3.0,
+    "billow_shade_step_m": 300.0
   },
   "wounds": {
     "_note": "Rents where held light bleeds out (bible \u00a79). Seams drift DOWN the wall (held light sinks, colour script rule 1).",
