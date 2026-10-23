@@ -2,8 +2,9 @@
 id: M1-UI-03
 title: Spread battle HUD construction over frames (swap-frame budget)
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: worktree-agent-a442bf3baa0b90315
+reviewer: lead
 depends_on: [M1-UI-02]
 milestone: M1
 request-from: "lead"
