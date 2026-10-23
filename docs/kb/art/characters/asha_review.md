@@ -29,7 +29,7 @@ python3 assets_src/characters/asha/sdf_preview.py out.png --look face   # sculpt
 
 ### Review-sweep-B fixes (M1-CHR-01), all done before the blendshapes
 - **Loop flow:** concentric orbicularis-oculi and oris loops, a nasolabial loop, and poles only at the block corners (pipeline.md §3).
-- **Split normals at seams:** normals are computed on the welded body and exported as custom normals on both the head and body objects, so the head/body cut and every UV seam shade continuously. The old neck/trapezius line came from a fold in the neck bridge, not from normals; the neck hole is now centred under the neck column.
+- **Split normals at seams:** normals are computed on the welded body and exported as custom normals on both the head and body objects, so the head/body cut and every UV seam shade continuously. The jagged line under the jaw came from a fold in the neck bridge, not from normals; the neck hole is now centred under the neck column. A small dark mark at the left trapezius remains on the base bodies. It is geometry near the shoulder-yoke pole (§5), and on Asha it is under the collar.
 - **Jaw-underside shelf:** the jaw is now the loft cut by the mandible's lower border (a tilted plane with an 8.5% h fillet), and the head/neck fillet is 2 cm. There's no shelf and no web.
 - **Heavy variant reshaped,** and **extreme-pose baseline** added (`asha_extreme_pose`).
 
