@@ -2,8 +2,8 @@
 id: M1-ART-05
 title: Art sign-off on caustics, dusk halo chroma and noon crests (RND-08 S5)
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-aac106b1f5eef6855 (Art Director)"
 depends_on: [M1-RND-08]
 milestone: M1
 request-from: "environment"
