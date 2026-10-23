@@ -23,6 +23,7 @@ From the PC GPU session's RND-20 follow-up (docs/kb/qa/gpu/2026-10-23-rnd-18-20-
 - A shot is close when `distance × tan(fov/2) ≤ 1.0 m`: Haluna's H05 and H06 key, H01 doesn't. The cast moves to render layer 20, the sun stops lighting it, and the key (sun direction and colour, orthogonal, 6 m, normal bias 4.5) lights only it. The sun keeps casting the cast's ground shadows.
 - Shot data is the override path; no `@camera` kwargs were added (cues.json unchanged).
 - Tests: `tests/unit/test_cutscene_key_light.gd` (8), plus Haluna's shot classification in `test_haluna_zone.gd`.
+- Lavapipe A/B of Haluna H05 at 960×540 (a scratch scene, not committed; no manifest shot covers cutscenes). Key on vs the sun: the same colour and brightness, so the cut doesn't pop. With the key, Asha's face gains a nose shadow and the shoulder occludes. Toma's spear (also cast) throws a crisp shadow across her forearm that the 400 m cascade loses entirely. Mean absolute difference about 1.2/255.
 - **Open:** the GPU check of Cutscene A (nose and mouth-corner artefacts, cost) is with the PC session via the Lead. Also worth judging there: whether Haluna's `face_key_shadow_normal_bias = 3.0` on the zone sun can go back to the mood scene's 1.0 now that close-ups no longer use the sun on faces (RND-20 S1 recommends 1.0).
 
 ## Review log

@@ -8,6 +8,9 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 - **Un-pushed state:** none.
 - **Integration merge:** not yet. The Lead is merging `claude/first-playable` into the integration branch; once that's in, merge the integration branch into this one before the next code item. The FP-10 task file was taken verbatim from the integration branch, so it should merge cleanly.
 
+## For the Lead (send_message to the Lead is refused: elevated_session_untrusted_device, so this file is the report)
+- **M2-FP-10 is review-ready at c818bc8.** Please ask the PC GPU session to check Cutscene A (H05/H06): nose and mouth-corner shadows with the key on, the key's cost (a second shadowed directional light shares the directional atlas), and whether Haluna's `face_key_shadow_normal_bias` 3.0 on the zone sun can return to 1.0 (RND-20 S1).
+
 ## Exact next step
 Item 2 of the queue: the Drownbell follow-ups (M2-FP-06). Read its task file and Review log, then the boss feel (telegraphs, HUD, defeat/retry), keeping `tools/balance/sim.py --check` green.
 
