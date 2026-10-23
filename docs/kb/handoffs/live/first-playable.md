@@ -64,6 +64,7 @@ Wait for the Lead's review and the human's playtest notes, and turn the notes in
 - `battle_controller.gd` on this branch only moved two static helpers out into `BattleIds`. Boss presentation lives in `BattleBossHud` and field-battle flow in `game/flow/field_battle.gd`, both helpers.
 
 ### Known issues (candidate follow-ups)
+- **`game/battle/battle_engine.gd` is at exactly 1000 lines**, the lint cap, after the CMB-02 merge. To get there I condensed my own boss-signal doc comments; the full signal docs are in battle_ctb.md. The next growth needs a split, which is Combat's to do. `battle_controller.gd` is at about 990 lines.
 - **Correction (ARC-15 agent):** the exit-time errors also reproduce on the base commit when `haluna.tscn` is simply loaded and freed on the main thread, so they predate the threaded prebuild. They come from something in the zone or the mood scene. Quitting the game after Haluna has been loaded logs 8 engine errors, `Condition "p_elem->_root != this"` (self_list.h). They come from resources built during the worker-thread prebuild. They appear only at process exit, and scene swaps stay clean. Before the prebuild there were none. A bisect that ran each prebuild step on a worker thread outside the router (`.scratch/bisect.gd`, local only) did not reproduce them: dress, all and asha timed out under CPU load, and collision and water were clean. So far they reproduce only through the real SceneRouter flow. The likely culprit is a material or mesh created off the main thread; next, try creating those resources on the main thread in `_ready` while keeping the heavy mesh build threaded.
 - `battle_controller.gd` sits at exactly the 1000-line lint cap after FP-06. Split it before growing it.
 - The balance sim doesn't model Toma's Lattice skills.
@@ -82,6 +83,7 @@ None that matters. `.scratch/` (excluded through `.git/info/exclude`) holds the 
 5. Read the M2-FP task files and `docs/kb/handoffs/2026-10-23-first-playable-1.md`.
 
 ## History
+- 2026-10-23: ci_local green after the CMB-02 merge: 1244 tests; game/battle 99.95%, progression 96.52%; battle and title shots unchanged. The Drownbell is mergeable now.
 - 2026-10-23: merged integration (M2-CMB-02 Shallows Verse, M2-NIT-03, the M2 UI). I kept the `_show_pick` target-kind line in battle_controller.gd as merged (no conflict there).
   - My Drownbell handoff is now **combat-8**, because theirs took 6 and 7.
   - In the validator, the AI vocabulary (field_active, largest_ally) and SKILL_ONLY_TARGETS are both kept.
