@@ -2,8 +2,8 @@
 id: M2-CMB-02
 title: Swell second-life loop (design): a masher with Swell still wins 32%
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a64f55e43791c2ef3"
 depends_on: [M2-NIT-03]
 milestone: M2
 request-from: "lead"
