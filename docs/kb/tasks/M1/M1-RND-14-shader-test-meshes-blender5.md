@@ -2,7 +2,7 @@
 id: M1-RND-14
 title: Shader-test mesh build fails on Blender 5.0.1
 role: rendering
-status: review
+status: done
 owner_session: "worktree-agent-a361fe4924e35dfcf"
 depends_on: [M1-QA-02]
 milestone: M1
@@ -36,3 +36,4 @@ BMesh's `sort(key=...)` needs a number, not a tuple. One deterministic fix is to
 - 2026-10-23 character (review-sweep-L, fresh reviewer): **approve.** No blockers.
   - **Checks:** `python3 tools/dev/verify_blender_builds.py --job shader_test`: **`2 identical`**, rc 0, on Blender 5.0.1. The rank-based `bm.faces.sort(key=rank)` gives the order the tuple key intended, as an int. The recommit is justified: the old bust came from an unsorted, pointer-order build that can't be reproduced. The four `char_*` shots were within their limits at ≤ 0.0008, per the notes. I did not re-render, because the Lead's gate covers it.
   - **Nit:** the bust now shares the L and R eye index accessors (43 accessors where there were 45). That's fine for Godot, but note it in character_shading.md in case a tool ever edits one eye's indices in place.
+- 2026-10-23 lead: closing on review-sweep-L approve; the should-fixes are in M1-NIT-02.

@@ -2,7 +2,7 @@
 id: M1-UI-09
 title: Toast when the chapter autosave keeps a further-along journey
 role: ui
-status: review
+status: done
 owner_session: "worktree-agent-aa764c62452184711"
 depends_on: [M1-ARC-08]
 milestone: M1
@@ -53,3 +53,4 @@ Wording is UI and Narrative's call. Filed from M1-ARC-11 (architect); see ADR 00
     - `tr()` runs once at `_show` (:115), so a language change during the 5.3 s notice keeps the old text. Harmless.
     - A second skip during the notice restarts the fade-in from 0 (:114-118), so the panel blinks. Keep the alpha if it is already showing.
     - Narrative should confirm the wording ("still holds a journey further along"), as the task says.
+- 2026-10-23 lead: closing on review-sweep-L approve; the should-fixes are in M1-NIT-02.

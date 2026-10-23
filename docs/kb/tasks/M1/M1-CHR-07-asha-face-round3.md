@@ -2,7 +2,7 @@
 id: M1-CHR-07
 title: Asha face round 3: smile driver, lip shape, hairline, brows, hair colour
 role: character
-status: review
+status: done
 reviewer: rendering
 owner_session: "worktree-agent-a092b4032f6c64db4 (session_01Bg3iP7cPGyjbX4CyniBahc)"
 depends_on: [M1-CHR-04]
@@ -62,3 +62,4 @@ Details are in asha_review.md §8; there is a note on ADR 0021.
     - **S1: only the `skin_head` primitive gets morph normals** (asha_glb.py:191, `material="skin_head"`). The `mouth` primitive moves 88 vertices under `mouth_smile` with unchanged normals (Godot surface 1). It is small, but the inner lip corners shade at rest when the smile is on.
     - **S2: diagonal striations at the smiling mouth corner** (asha_face_smile, toward the shadow side). They look like the QA-05 shadow-terminator pattern on the deformed corner. Check with sun shadows off on lavapipe (QA-05 showed lavapipe and GPU agree at scene settings, so a GPU isn't needed for this).
   - **Hairline criterion:** unticked and partial, as recorded. CHR-09 carries it.
+- 2026-10-23 lead: closing the round on review-sweep-L approve; the SPEC §14 work continues in M1-CHR-10.

@@ -2,7 +2,7 @@
 id: M1-CHR-06
 title: Pin Blender's thread count in the base_body and Asha build scripts
 role: character
-status: review
+status: done
 owner_session: "worktree-agent-a361fe4924e35dfcf"
 depends_on: [M1-QA-06]
 milestone: M1
@@ -32,3 +32,4 @@ M1-QA-06 pinned Blender's thread count in the rebuild gate (tools/dev/blender_bu
     - **S1: the test still covers base_body only** (tools/tests/test_blender_builds.py:120-125). Its docstring still says Asha "is folded in by the Asha line". The task asked for the test to be extended to `asha/build.sh` once the flag landed; without that, nothing ties build.sh to the gate.
     - **S2: the Asha rows in assets/PROVENANCE.md:158-167 still show `blender --background --factory-startup --python ...` with no `--threads 4`.** The base_body rows were updated. Append-only rules allow fixing the owner's own rows.
     - **S3: the second criterion's box is still `[ ]`,** although the Lead's log line says it is closed. Tick it when S1 lands.
+- 2026-10-23 lead: closing on review-sweep-L approve; the should-fixes are in M1-NIT-02.

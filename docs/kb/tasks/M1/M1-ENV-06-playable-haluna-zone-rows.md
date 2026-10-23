@@ -2,7 +2,7 @@
 id: M1-ENV-06
 title: Move the Haluna location rows to the playable zone when it lands
 role: environment
-status: review
+status: done
 owner_session: "worktree-agent-aa764c62452184711"
 depends_on: [M1-ENV-04]
 milestone: M1
@@ -48,3 +48,4 @@ marked `"playable": false`; `default_location` and `new_game` must be playable.
 - 2026-10-23 architect (review-sweep-L, fresh reviewer): **approve; move to done.**
   - **Checks:** locations.json:21-29 points `ch02/haluna` at `game/levels/ch02/haluna/haluna.tscn`, with no `playable: false` and no `_note`. `haluna_shrine` resolves there. haluna.tscn has `Player` in group `player` (:325) and `Spawns/Shrine` (:448). validate_data 0/0. Godot `--filter=haluna` 7/0 failed and `--filter=world_return` 17/0, including `test_the_real_haluna_zone_is_entered`.
   - **The departure is accepted:** the shrine stays in haluna_mood.tscn and reaches the zone through the instance, which keeps the five mood shots stable. **Nit:** the shipped zone now depends on a scene under `game/levels/_tests/`. Before content lock, open a task to promote the mood scene (or its shrine and dressing) out of `_tests/`, so a test-scene edit can't break the playable zone unnoticed.
+- 2026-10-23 lead: closing on review-sweep-L approve; the should-fixes are in M1-NIT-02.

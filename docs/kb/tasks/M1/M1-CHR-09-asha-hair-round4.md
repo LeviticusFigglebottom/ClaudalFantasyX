@@ -2,7 +2,7 @@
 id: M1-CHR-09
 title: "Asha round 4: crown hair card layout, face-framing lock, lips, doll-like read"
 role: character
-status: review
+status: done
 reviewer: rendering
 owner_session: "worktree-agent-aaf1e4bd7d4a529a9 (session_01Bg3iP7cPGyjbX4CyniBahc)"
 depends_on: [M1-CHR-07]
@@ -79,3 +79,4 @@ Out of scope (the PC GPU session owns them): shadow settings, and the cloth, ves
     - **S2:** the hair lobe against asha.md §5 (exponent 400 against 120). Settle it with Art and write an ADR or amend asha.md. Don't leave the spec and the asset disagreeing.
     - **S3:** the S2 smile-corner striation from M1-CHR-07.
     - **S4:** record this §14 FAIL-as-built in STATUS.md's risks for the Lead's M1 fidelity question, with the ADR 0019 stylised path as the mitigation SPEC §14 names.
+- 2026-10-23 lead: closing the round on review-sweep-L approve; the SPEC §14 work continues in M1-CHR-10.

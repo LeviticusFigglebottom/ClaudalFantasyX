@@ -2,7 +2,7 @@
 id: M1-CHR-05
 title: Base body .glb files do not reproduce from source
 role: character
-status: review
+status: done
 owner_session: "worktree-agent-a361fe4924e35dfcf"
 depends_on: [M1-QA-02]
 milestone: M1
@@ -31,3 +31,4 @@ The Blender rebuild gate (M1-QA-02, `docs/kb/qa/blender_builds.md`) rebuilds `as
   - **The 11 re-approved baselines, viewed one by one:** I rebuilt old/new/diff sheets for each from `git show 10c060d^` against 10c060d. The RMSE against the old baseline is 0.012 to 0.019, which matches the notes. I looked closely at slender front, face and posed, heavy side and q34, and a 3x crop of slender's feet in front and q34. What moved is the silhouette (by 1–2 px at the hips, thighs and arms), the feet, and the lip line in `slender_face`. The new toes are better separated than the old blobby ones. There are no holes, flipped faces, shading seams or new artefacts. The ankle-to-heel notch in the front view is in both, so it is not a regression. **The re-approval is justified:** the new images are the true output of the committed source.
   - **Not re-run:** the 11 shots on my lavapipe. The baselines are the author's renders of the bytes I just verified, and the Lead's full gate covers the comparison.
   - **Nit:** the third criterion (dropping exported tangents) is unticked and explained. Since the build is byte-stable at `--threads 1`, I'd keep it that way. Close it as won't-do rather than leave an unticked box.
+- 2026-10-23 lead: closing on review-sweep-L approve; the should-fixes are in M1-NIT-02.

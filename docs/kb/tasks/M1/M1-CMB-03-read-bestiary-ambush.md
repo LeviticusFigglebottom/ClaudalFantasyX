@@ -2,7 +2,7 @@
 id: M1-CMB-03
 title: Read ability, bestiary log, preemptive/ambush openings
 role: combat
-status: review
+status: done
 owner_session: worktree-agent-ac6e2c29473e13d13
 depends_on: [M1-CMB-00]
 milestone: M1
@@ -34,3 +34,4 @@ SPEC §6.1 Read/Scan plus opening-tick modifiers.
     - **S1: ADR 0023:24 says "Retry replays the same opening, because the seed is the same". That is false.** Retry restarts at `seed + 1` (battle_controller.gd:605), so a live Retry rerolls the opening and the tick order. Either correct the ADR line (an append-only note) or keep the seed on Retry. A design call either way: rerolling lets a player retry out of an ambush.
     - **S2: victory credits every enemy in `engine.enemies` (battle_bestiary.gd:74-75), by the combatant id before `#`.** That is right today. But the reveal uses the enemies.json row id (`_enemy_row`, battle_read.gd:41), so one rule should be shared, or the two paths drift if combatant ids change. Also say in the docstring what happens to a foe removed mid-battle.
   - **Nits:** `Bestiary.from_saved` (bestiary.gd:66-79) normalises `defeated` but copies other keys through. That's harmless after SaveShape, but say so in the ADR next to "unknown ids are kept".
+- 2026-10-23 lead: closing on review-sweep-L approve; the should-fixes are in M1-NIT-02.

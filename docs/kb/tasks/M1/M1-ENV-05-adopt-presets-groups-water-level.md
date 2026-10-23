@@ -2,7 +2,7 @@
 id: M1-ENV-05
 title: Adopt vegetation_detail groups, preset tiers and hymn_water_level in Environment scenes
 role: environment
-status: review
+status: done
 owner_session: "worktree-agent-aa764c62452184711"
 depends_on: [M1-RND-07, M1-RND-08]
 milestone: M1
@@ -55,3 +55,4 @@ Rendering tested all hooks with synthetic nodes; see tests/unit/test_graphics_se
     - **S1: a sea that doesn't publish leaves the shaders on a stale level.** If `water` is set but `publishes_water_level` is false, `_ready` only warns (weathering_tide.gd:49-50), and `_push` moves the sea but writes no global (:81-85). Every weathering and ground material then reads 0,0 or the previous zone's value. Fall back to writing the global when `water` doesn't publish, as the no-sea branch already does.
     - **S2: the level lags one frame after a tide move.** WaterSurface publishes in `_process` only (water_surface.gd:126-128), so the wet line trails a flood rig's `water_height_y` by a frame, and is 0,0 before the first frame. That's invisible at tide speed. Note it in haluna_mood/README.md for the Drownbell flood rig.
   - **Nits:** env_weathering_body.gdshaderinc:12-14 keeps "the old note" naming the removed uniforms. Delete it rather than annotate it. vegetation_plant.gd:41 tags only LODs that are `visible` when `apply()` runs, so a mesh hidden by `force_lod` then and shown later is never tagged `vegetation_lod`.
+- 2026-10-23 lead: closing on review-sweep-L approve; the should-fixes are in M1-NIT-02.
