@@ -36,6 +36,7 @@ We're building *Hymn of the Undertow*: an original, cinematic, turn-based JRPG i
 5. **The shared machine is oversubscribed** with parallel agents (load 10-20 on 4 CPUs). Mitigated with `HYMN_SHOTS`, per-run `user://`, and a load-aware perf test.
 
 ## Blockers / questions for the human
+- **Playtest the first minutes** (docs/PLAYTEST.md; the PC session prepares C:\Users\Aaron\Hymn_Playtest\PLAY.bat). Report what confuses, drags or feels wrong, and say whether Asha's close-up face is acceptable as a direction (SPEC §14 risk; ADR 0019 stylisation is the fallback).
 - **Listen to the music** (docs/kb/audio/listening_notes.md, §16 Q3).
 - **Reefball arena form:** keep the spec's suspended water sphere, differentiated as narrative proposes in story/decisions_log.md N-12, or switch to the alternative "Weir"? Default: keep.
 - **Git LFS:** may we enable it (quota)?

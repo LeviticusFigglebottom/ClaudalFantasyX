@@ -1,6 +1,6 @@
 # CONSOLIDATED HANDOFF: start here
 
-**Last updated:** 2026-10-23 ~17:30 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
+**Last updated:** 2026-10-23 ~19:00 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
 A new account, Lead or environment should be able to resume from this file and the files it links. Keep it current after every merge batch (CLAUDE.md §7a).
 
 ## 1. What this is
@@ -53,6 +53,18 @@ These are lost if the container restarts. Re-launch from the task files if so.
   - review sweep K1 (the M2-FP thread, ARC-14, NIT-01, RND-12, RND-15, QA-05);
   - M1-CHR-09, Asha hair round 4 (crown shell, face-framing lock, lip thickness, doll-like eyes).
 - **Rule learned:** Asha's materials change only through write_materials.py.
+
+## 4b. Latest (Lead, ~19:00 UTC)
+- **Merged:**
+  - sweep K1 at 7f4c76b: M2-FP-01 to 04 closed; PLAYTEST.md fixed;
+  - M1-CHR-09 at 20082e3: Asha crown clumps, temple lock, lips, eye whites; LOD0 at 62,290.
+- **Asha:** the Lead judges her not yet at final fidelity at dialogue range. She reads as polished CG, and the costume is still glossy. The GPU re-check (PC, QA-05b) and the human's playtest are the next judges. The human question is recorded in STATUS.
+- **Lead subagents now running** (local worktrees):
+  - M1-CMB-03 Read/bestiary/ambush;
+  - the Blender pipeline set (CHR-05, CHR-06, RND-14, ENV-07);
+  - the integration batch (ENV-05, ENV-06, RND-13, RND-16, UI-09).
+- **First Playable session queue:** cutscene skip, load hitch, loss retry → M2-FP-05 thread hardening → M1-ARC-15 (presets never applied in play) → Drownbell boss → animation request.
+- **PC queue:** M2-RND-01 Undertow production → ENV-03 → perf sweep → RND-15 prewarm and ghosting → RND-17 → RND-18 → QA-05b Asha GPU recheck; plus refresh the playtest copy (PLAY.bat).
 
 ## 5. Exact next steps for a Lead
 1. `git fetch origin` and merge every finished `gpu/*` branch and `claude/first-playable` into `claude/new-session-mj8c3c`.
