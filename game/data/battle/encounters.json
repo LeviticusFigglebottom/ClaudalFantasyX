@@ -1,6 +1,8 @@
 {
   "encounters": [
     {"id": "sandbox_reef", "name_key": "ENC_SANDBOX_REEF", "scripted": false,
-     "enemies": ["reef_crab", "lantern_eel", "gull_harrier"]}
+     "enemies": ["reef_crab", "lantern_eel", "gull_harrier"]},
+    {"id": "ch02_tideline", "name_key": "ENC_CH02_TIDELINE", "scripted": false,
+     "enemies": ["reef_crab", "lantern_eel"]}
   ]
 }

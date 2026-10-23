@@ -1325,7 +1325,10 @@ def scene_has_player(text: str, scenes: dict[str, str] | None = None, scripts: d
         is_root = "parent" not in a
         if a.get("name") == "Player" and a.get("parent") == ".":
             return True
-        if is_root and scripts and PLACE_AT_RE.search(scripts.get(ext.get(a.get("script", ""), ""), "")):
+        # Godot writes a node's script as a property line under the header (`script = ExtResource(..)`),
+        # not in the header itself; both forms count (M2-FP-03).
+        script_id = a.get("script", "") or _node_script_id(text, m.end())
+        if is_root and scripts and PLACE_AT_RE.search(scripts.get(ext.get(script_id, ""), "")):
             return True
         sub = (scenes or {}).get(ext.get(a.get("instance", ""), ""))
         if sub is None:
@@ -1335,6 +1338,17 @@ def scene_has_player(text: str, scenes: dict[str, str] | None = None, scripts: d
         if not is_root and _scene_in_player_group(sub, scenes, _depth + 1):
             return True
     return False
+
+
+TSCN_SCRIPT_PROP_RE = re.compile(r'^script = ExtResource\("([^"]+)"\)', re.M)
+
+
+def _node_script_id(text: str, header_end: int) -> str:
+    """The ext_resource id of the `script = ExtResource("..")` property in the node block that starts
+    at `header_end` (up to the next `[` section), or ""."""
+    nxt = text.find("\n[", header_end)
+    m = TSCN_SCRIPT_PROP_RE.search(text[header_end: nxt if nxt >= 0 else len(text)])
+    return m.group(1) if m else ""
 
 
 def _scene_in_player_group(text: str, scenes: dict[str, str] | None, depth: int) -> bool:
