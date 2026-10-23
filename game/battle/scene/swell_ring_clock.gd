@@ -10,12 +10,18 @@ extends RefCounted
 ##   (clamped the same way), so a press is graded against "now", not against the previous frame.
 ##   The next rendered frame subtracts what was caught up, so no time is counted twice.
 ## - step(delta, false): simulated time (tests and capture scripts): exact, never clamped.
+## - One clock (M1-NIT-01, review-sweep-J S1 for UI-05): a frame's delta is game time, which
+##   Engine.time_scale scales, so press() scales its wall-clock catch-up by the same time_scale
+##   before clamping it. Under a slow-mo or a frozen capture (time_scale 0) the ring and the
+##   catch-up then agree; pacing (BattleController) still never scales the ring.
 
 const USEC_PER_SEC := 1000000.0
 
 var ring: SwellTimingRing
 ## The wall clock in microseconds. Tests inject a fake one.
 var now_usec := Callable(Time, &"get_ticks_usec")
+## Engine.time_scale (game seconds per wall-clock second). Tests inject a fake one.
+var time_scale := func() -> float: return Engine.time_scale
 
 var _last_usec := 0
 var _caught_up := 0.0
@@ -44,7 +50,8 @@ func step(delta: float, frame: bool) -> void:
 func press(catch_up: bool = true) -> StringName:
 	var now := int(now_usec.call())
 	if catch_up:
-		var dt := ring.clamp_step(float(now - _last_usec) / USEC_PER_SEC)
+		var scale := float(time_scale.call())
+		var dt := ring.clamp_step(float(now - _last_usec) / USEC_PER_SEC * scale)
 		ring.advance(dt)
 		_caught_up += dt
 	_last_usec = now

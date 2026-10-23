@@ -42,7 +42,8 @@
     "aa": {"type": "enum", "label_key": "GFX_ANTI_ALIASING", "options": ["none", "fxaa", "smaa", "taa", "msaa_2x", "msaa_4x"]},
     "lod_threshold": {"type": "float", "label_key": "GFX_LOD_BIAS", "options": [0.5, 1.0, 2.0, 4.0]},
     "anisotropic_filtering": {"type": "enum", "label_key": "GFX_ANISOTROPIC", "options": ["off", "2x", "4x", "8x", "16x"]},
-    "vegetation_detail": {"type": "enum", "label_key": "GFX_VEGETATION_DETAIL", "options": ["low", "medium", "high", "ultra"]}
+    "vegetation_detail": {"type": "enum", "label_key": "GFX_VEGETATION_DETAIL", "options": ["low", "medium", "high", "ultra"]},
+    "sky_detail": {"type": "enum", "label_key": "GFX_SKY_DETAIL", "options": ["low", "medium", "high", "ultra"]}
   },
   "enums": {
     "voxel_gi_quality": {
@@ -77,6 +78,12 @@
     }
   },
   "levels": {
+    "sky_detail": {
+      "low": {"cloud_steps": 32, "cloud_erosion_octaves": 2, "cloud_light_detail": 0.0, "cloud_cubemap_steps": 16},
+      "medium": {"cloud_steps": 32, "cloud_erosion_octaves": 3, "cloud_light_detail": 0.0, "cloud_cubemap_steps": 24},
+      "high": {"cloud_steps": 40, "cloud_erosion_octaves": 4, "cloud_light_detail": 0.0, "cloud_cubemap_steps": 24},
+      "ultra": {"cloud_steps": 64, "cloud_erosion_octaves": 4, "cloud_light_detail": 1.0, "cloud_cubemap_steps": 24}
+    },
     "vegetation_detail": {
       "low": {"visibility_scale": 0.6, "multimesh_fraction": 0.5, "small_foliage_shadows": false},
       "medium": {"visibility_scale": 0.8, "multimesh_fraction": 0.75, "small_foliage_shadows": true},
@@ -151,6 +158,7 @@
     "temporal_upscaler_note": "FSR2 runs its own temporal AA, so use_taa is forced off while it is active."
   },
   "system_tiers_note": "presets[].tiers: per-system quality tier for systems that keep their own variants (water: WaterSurface.quality_for_preset; vegetation: shader_families; weathering: Environment's WeatheringTide). Undertow, glimmer and character tiers map 1:1 from the preset id in their own data files (M1-RND-07).",
+  "sky_detail_note": "M1-RND-12: levels.sky_detail holds sky-material uniforms (march steps, erosion octaves, how much erosion the sun samples see, radiance-cubemap steps). GraphicsSettings sets each one on the Environment's sky material when its shader declares it (env_sky_cumulus.gdshader), so other skies are untouched. Measured costs: docs/kb/qa/gpu/2026-10-23-rnd-12-sky.md.",
   "vegetation_groups": {
     "_note": "M1-RND-07 vegetation_detail: zones tag nodes with these groups. lod: GeometryInstance3D whose visibility_range_begin/end scale (authored values captured once); multimesh: MultiMeshInstance3D whose visible_instance_count is the fraction; small_shadows: small foliage whose cast_shadow the setting may turn off.",
     "lod": "vegetation_lod",
@@ -194,7 +202,8 @@
         "aa": "taa",
         "lod_threshold": 2.0,
         "anisotropic_filtering": "4x",
-        "vegetation_detail": "low"
+        "vegetation_detail": "low",
+        "sky_detail": "low"
       },
       "tiers": {"water": "low", "vegetation": "low", "weathering": "low"}
     },
@@ -226,7 +235,8 @@
         "aa": "taa",
         "lod_threshold": 1.0,
         "anisotropic_filtering": "8x",
-        "vegetation_detail": "medium"
+        "vegetation_detail": "medium",
+        "sky_detail": "medium"
       },
       "tiers": {"water": "medium", "vegetation": "high", "weathering": "medium"}
     },
@@ -258,7 +268,8 @@
         "aa": "taa",
         "lod_threshold": 1.0,
         "anisotropic_filtering": "16x",
-        "vegetation_detail": "high"
+        "vegetation_detail": "high",
+        "sky_detail": "high"
       },
       "tiers": {"water": "high", "vegetation": "high", "weathering": "high"}
     },
@@ -290,7 +301,8 @@
         "aa": "taa",
         "lod_threshold": 0.5,
         "anisotropic_filtering": "16x",
-        "vegetation_detail": "ultra"
+        "vegetation_detail": "ultra",
+        "sky_detail": "ultra"
       },
       "tiers": {"water": "ultra", "vegetation": "high", "weathering": "ultra"}
     }

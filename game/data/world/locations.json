@@ -2,8 +2,15 @@
   "version": 1,
   "doc": "Location registry (M1-ARC-06; docs/kb/tech/architecture.md, Saves). Each location: the scene that stages it, the spawn marker (a Node3D under the scene's Spawns node) used when no spawn is named, and the name_key menus show. default_location is where a save with no usable respawn returns (an empty respawn from the v3->v4 migration resolves here). new_game is where New Game starts. shrines maps a ShrineNetwork id to its location and the spawn the party appears at when it teleports there or continues from it. Only locations whose scene exists are listed; Environment adds Haluna, the Saltgrass Causeway and the Shell Shrine with their scenes. tools/validate_data.py checks scenes, spawns, name keys, shrine rows, and every SaveShrine instance's location_id.",
   "default_location": "field_test",
-  "new_game": {"location_id": "field_test", "spawn": "Lane"},
+  "new_game": {"location_id": "prologue", "spawn": "Start"},
   "locations": [
+    {
+      "id": "prologue",
+      "scene": "res://game/levels/prologue/prologue.tscn",
+      "spawn": "Start",
+      "name_key": "LOCATION_PROLOGUE",
+      "_note": "M2-FP-03: New Game starts here. The prologue plays its cutscene and sends the party to ch02/haluna at Beach; its root script defines place_at, so it counts as playable."
+    },
     {
       "id": "field_test",
       "scene": "res://game/levels/_tests/save_shrine/save_shrine_test.tscn",
@@ -12,11 +19,9 @@
     },
     {
       "id": "ch02/haluna",
-      "scene": "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+      "scene": "res://game/levels/ch02/haluna/haluna.tscn",
       "spawn": "Shrine",
-      "name_key": "LOCATION_CH02_HALUNA",
-      "playable": false,
-      "_note": "Stand-in: the Haluna mood-test zone has no player, so Continue and teleports go to default_location (warned, location kept) until the playable zone game/levels/ch02/haluna/ exists (M1-ENV-06)."
+      "name_key": "LOCATION_CH02_HALUNA"
     }
   ],
   "shrines": [

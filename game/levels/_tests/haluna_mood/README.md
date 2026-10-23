@@ -66,6 +66,14 @@ sky reflection keeps `sky_energy` 1.0, so ground, shade and water values are unc
 (haluna.md §0), and the volumetric fog also hazed the sky (`volumetric_fog_sky_affect` 1), which was most of
 the zenith's lost chroma.
 
+**Cost and quality tiers (M1-RND-12).** The clouds read two baked lattices, `cloud_lattice`
+(assets/vfx/undertow/undertow_noise3d.png) and `cloud_lattice2` (assets/vfx/sky/cloud_lattice2.png); both are bound
+in `haluna_noon_environment.tres`, and an unbound lattice reads 0. The march's quality comes from the graphics preset
+(`sky_detail` in graphics_presets.json, applied by GraphicsSettings to the sky material). The sky's
+`process_mode` is Incremental, so a moving sun or drifting `cloud_offset_m` re-renders the radiance cubemap over
+several frames. Measured on an RX 9070 XT: the clouds cost 0.23 ms at Low 1080p and 0.40 ms at High 1440p (they were
+2.4 and 3.7 ms); see docs/kb/qa/gpu/2026-10-23-rnd-12-sky.md.
+
 `tests/screenshots/palette_checks.json` holds the numeric targets the five baselines must meet (zenith on
 `sky_zenith_noon` +1, lit tops at `cumulus_lit` +1 L, chromatic blue-lilac undersides, cloud grain, the
 chapel on `order_marble` 0, the banyan roots above the toe, planks on `timber_weathered` +1, the red budget).

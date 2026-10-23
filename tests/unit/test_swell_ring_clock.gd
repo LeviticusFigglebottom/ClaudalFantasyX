@@ -95,3 +95,31 @@ func test_the_default_clock_is_the_engine_clock() -> void:
 	var clock := SwellRingClock.new(_ring())
 	assert_true(clock.now_usec.is_valid())
 	assert_true(int(clock.now_usec.call()) >= 0)
+	assert_eq(float(clock.time_scale.call()), Engine.time_scale)
+
+
+## M1-NIT-01 (review-sweep-J S1): frames and the press catch-up run on one clock under time_scale.
+func test_the_catch_up_is_on_the_frame_clock_under_time_scale() -> void:
+	_now = 0
+	var ring := _ring()
+	var clock := SwellRingClock.new(ring, _clock_usec)
+	clock.time_scale = func() -> float: return 0.5
+	clock.step(ring.peak_time(0) - 0.05, false)
+	var at := ring.elapsed
+	_now += _sec(0.04)  # 0.04 s of wall clock is 0.02 s of game time at half speed
+	clock.press()
+	_near(ring.elapsed, at + 0.02, "caught up in game time, as a frame delta would be")
+	_now += _sec(0.04)
+	clock.step(0.04, true)  # the frame's (scaled) delta: 0.02 s covered by the catch-up
+	_near(ring.elapsed, at + 0.04, "nothing counted twice or lost")
+
+
+func test_a_frozen_time_scale_does_not_catch_up() -> void:
+	_now = 0
+	var ring := _ring()
+	var clock := SwellRingClock.new(ring, _clock_usec)
+	clock.time_scale = func() -> float: return 0.0
+	clock.step(ring.peak_time(0), false)
+	_now += _sec(1.0)
+	assert_eq(clock.press(), SwellTimingRing.GRADE_PERFECT, "a frozen engine freezes the ring")
+	_near(ring.elapsed, ring.peak_time(0))

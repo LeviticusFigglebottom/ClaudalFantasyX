@@ -155,3 +155,15 @@ func test_run_along_polyline() -> void:
 	assert_eq(HalunaDresser._along(pts, 15.0), Vector2(10, 5))
 	assert_eq(HalunaDresser._along(pts, 99.0), Vector2(10, 10))
 	assert_eq(HalunaDresser._nearest_segment(pts, 2.0, 10, Vector2(10.2, 7.0)), 8)
+
+
+## M1-RND-12: the Haluna sky binds both baked lattices (unbound, the noise reads 0) and re-renders its
+## radiance cubemap time-sliced, so a moving sun or drifting offset never re-renders it in one frame.
+func test_haluna_sky_binds_its_lattices_and_slices_the_cubemap() -> void:
+	var env := load("res://game/levels/_tests/haluna_mood/haluna_noon_environment.tres") as Environment
+	var mat := env.sky.sky_material as ShaderMaterial
+	assert_true(mat.get_shader_parameter("cloud_lattice") is Texture3D, "3D erosion lattice")
+	assert_true(mat.get_shader_parameter("cloud_lattice2") is Texture2D, "2D height-field lattice")
+	var lattice2 := mat.get_shader_parameter("cloud_lattice2") as Texture2D
+	assert_eq(lattice2.get_width(), 512, "bake_cloud_lattice2.py SIZE = cloud_lattice2_cells")
+	assert_eq(env.sky.process_mode, Sky.PROCESS_MODE_INCREMENTAL)

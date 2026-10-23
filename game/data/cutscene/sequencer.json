@@ -1,0 +1,33 @@
+{
+  "doc": "CutsceneSequencer tuning (M2-FP-01; docs/kb/tech/cutscenes.md). Times in seconds, distances in metres, sizes as a fraction of the screen height. music_stand_ins maps a cue's track id to an existing file under music_dir until Audio ships the real cue (placeholders for the first playable; nobody has approved them as final). vfx rows give the placeholder mote look per @vfx effect (colours from docs/kb/tech/glimmer.md).",
+  "layer": 32,
+  "letterbox_ratio": 0.11,
+  "letterbox_sec": 0.6,
+  "walk_mps": 1.3,
+  "run_mps": 3.2,
+  "turn_sec": 0.45,
+  "fade_color": "#05080B",
+  "fade_back_sec": 0.8,
+  "music_wait_fallback_sec": 4.0,
+  "music_dir": "res://assets/audio/music/",
+  "sfx_dir": "res://assets/audio/sfx/",
+  "music_fade_default_sec": 1.0,
+  "music_volume_db": -8.0,
+  "silent_db": -60.0,
+  "music_stand_ins": {
+    "haluna_dawn": "hush_theme_sketch",
+    "haluna_village": "hush_theme_sketch",
+    "shell_shrine_interior": "temple_trial",
+    "hush_first_verse": "hush_theme_v2"
+  },
+  "choices": {"right_px": 200, "bottom_px": 330, "min_width_px": 560, "font_size": 30, "separation": 10},
+  "vfx_default_count": 9,
+  "vfx": {
+    "glimmer_held": {"color": "#7FC6D9", "energy": 3.0, "size_m": 0.05, "spread_m": 1.2, "life_sec": 9.0,
+                     "velocity": [0.0, -0.06, 0.12]},
+    "glimmer_lift": {"color": "#FFE9B8", "energy": 3.0, "size_m": 0.05, "spread_m": 0.5, "life_sec": 10.0,
+                     "velocity": [0.0, 0.28, 0.0], "spiral_radius_m": 0.4, "spiral_turn_sec": 6.0},
+    "glimmer_bound": {"color": "#4FB3B0", "energy": 2.5, "size_m": 0.06, "spread_m": 0.8, "life_sec": 6.0,
+                      "velocity": [0.0, 0.0, 0.0]}
+  }
+}

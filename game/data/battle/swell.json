@@ -14,7 +14,7 @@
     ],
     "inputs": [
       {"id": "timing_ring", "kind": "timing_ring", "name_key": "SWELL_INPUT_TIMING_RING",
-       "help_key": "SWELL_INPUT_TIMING_RING_HELP",
+       "help_key": "SWELL_INPUT_TIMING_RING_HELP_LAMP",
        "beats": 3, "lead_in_sec": 0.6, "beat_sec": 0.8, "peak_at": 0.7,
        "perfect_sec": 0.06, "good_sec": 0.15, "max_step_sec": 0.05,
        "grades": {"perfect": 30, "good": 15, "miss": 0}}
