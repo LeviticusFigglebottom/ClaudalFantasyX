@@ -114,7 +114,7 @@ class ManifestTest(unittest.TestCase):
 
     def test_repo_known_failures_are_pinned(self) -> None:
         kinds = {j["id"]: j["expected_failure"]["kind"] for j in self.manifest["jobs"] if "expected_failure" in j}
-        self.assertEqual(kinds, {"base_body": "mismatch", "shader_test": "build_error"})
+        self.assertEqual(kinds, {"base_body": "mismatch"})  # M1-RND-14 fixed
 
     def test_python_runs_use_this_interpreter(self) -> None:
         run = ["{python}", "assets_src/x/t.py", "--bake-dir", "{scratch}/b"]

@@ -47,9 +47,6 @@
       "owner": "rendering",
       "sources": ["assets_src/characters/shader_test/build_shader_test_meshes.py", "assets_src/characters/shader_test/layout.py"],
       "outputs": ["assets/characters/shader_test/*.glb"],
-      "expected_failure": {"task": "M1-RND-14", "why": "build_shader_test_meshes.py fails on Blender 5.0.1: bm.faces.sort(key=...) must return a number",
-        "kind": "build_error",
-        "log_contains": "ValueError: the value returned by the 'key' function is not a number"},
       "runs": [
         ["{blender}", "--python", "assets_src/characters/shader_test/build_shader_test_meshes.py"]
       ]
