@@ -2,8 +2,8 @@
 id: M1-ARC-07
 title: Camera contract fixes for the cutscene sequencer
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-abeb0cfc8970d95d3"
 depends_on: [M1-ARC-05]
 milestone: M1
 request-from: "cinematics"
