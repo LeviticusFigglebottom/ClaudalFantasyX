@@ -55,3 +55,6 @@ GitHub is reachable from the sandbox now (`git ls-remote https://github.com/make
   2. Rhen and Toma use the same path; their faces need their own `donor_mix_*` and face sliders.
   3. The donor's ears keep the native density (budget). A GPU review should check them at dialogue range.
   4. The macro mix includes ethnic blends. Choose them for each character with Art and Narrative, from the sheet, and never as a stereotype.
+
+## Note, 2026-10-23 (M1-CHR-07, append-only)
+"Morph-target normals are no longer exported" is partly reversed. Without them the cheek raise and lid squint shaded as at rest and did not read (the review-sweep-J smile gap). `assets_src/characters/asha/asha_glb.py` now adds sparse NORMAL deltas after the export, for the 30 expression shapes only (+0.53 MB; `asha.glb` 4.56 MB). The 10 visemes still have none, for the 5 MB cap. The pass is deterministic and covered by the asha rebuild gate, and `tools/tests/test_asha_face_drive.py` asserts it. Rhen and Toma get the same pass when they are built.

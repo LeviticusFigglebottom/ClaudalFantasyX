@@ -29,6 +29,11 @@ import asha_mouth
 PAIRED = ["brow_inner_up", "brow_down", "brow_outer_up", "lid_close", "lid_wide", "lid_squint", "cheek_raise",
           "nose_sneer", "mouth_smile", "mouth_frown", "mouth_stretch", "mouth_dimple"]
 SINGLE = ["mouth_press", "mouth_pucker", "lip_upper_up", "lip_lower_down", "jaw_open", "jaw_clench"]
+# M1-CHR-07: the shapes that get morph-target normals (asha_glb.add_morph_normals): all 30
+# expression shapes (12 paired + 6 single). A cheek raise, squint or brow knit reads by how the skin shades, and without
+# normals it shaded as at rest. The visemes are left out (GLB cap); they move the lips, whose
+# silhouette carries them.
+MORPH_NORMAL_SHAPES = [f"{b}_{s}" for b in PAIRED for s in ("L", "R")] + SINGLE
 VISEMES = {
     "vis_rest": {"jaw_open": 0.02},
     "vis_aa": {"jaw_open": 0.50, "lip_lower_down": 0.30, "mouth_stretch": 0.10},
@@ -61,7 +66,37 @@ DONOR_UNITS = {
 }
 
 
-def donor_unit_shapes(unit_delta, used: np.ndarray, V: np.ndarray, tags: np.ndarray, lower: np.ndarray) -> dict:
+# M1-CHR-07: shapes whose lips must stay sealed at the contact. The donor's corner puller parts the
+# lips at the centre, which showed the dark mouth interior as a slit in `asha_face_smile`. A
+# closed-mouth smile or frown moves both lips together, and the smile's lip_upper_up 0.10 lifts the
+# upper lip's body without parting it (0.5 mm of parting read as a slit). Opening is jaw_open's job.
+SEALED = ("mouth_smile", "mouth_frown", "lip_upper_up")
+SEAL_BAND = 0.0025  # m at s = 1: the height round the contact line that moves as one
+SEAL_BIN = 0.0015  # m: x spacing of the contact line's delta profile
+
+
+def seal_contact(d: np.ndarray, x: np.ndarray, lip: dict, s: float) -> np.ndarray:
+    """Blend `d` near the contact line toward the contact line's own delta at that x, so the upper
+    and lower lip move as one there. `lip`: per-vertex "contact" (1 on the line), "dz" (height above
+    it) and "front" (the lip roll), as bb_donor.lip_rest exports them."""
+    on = lip["contact"] > 0.6
+    if on.sum() < 4:
+        return d
+    xs = x[on]
+    lo, hi = float(xs.min()), float(xs.max())
+    centres = np.arange(lo, hi + SEAL_BIN * s, SEAL_BIN * s)
+    prof = np.zeros((len(centres), 3))
+    for k, c in enumerate(centres):
+        w = np.exp(-(((xs - c) / (SEAL_BIN * s)) ** 2)) * lip["contact"][on]
+        prof[k] = (d[on] * w[:, None]).sum(axis=0) / max(float(w.sum()), 1e-12)
+    dc = np.stack([np.interp(x, centres, prof[:, j]) for j in range(3)], axis=1)
+    near = np.exp(-((lip["dz"] / (SEAL_BAND * s)) ** 2)) * np.clip(lip["front"], 0.0, 1.0)
+    near *= smoothstep(hi + 0.002 * s, hi - 0.001 * s, np.abs(x))
+    return d + near[:, None] * (dc - d)
+
+
+def donor_unit_shapes(unit_delta, used: np.ndarray, V: np.ndarray, tags: np.ndarray, lower: np.ndarray,
+                      lip: dict | None = None, s: float = 1.0) -> dict:
     """{API shape: delta (len(V), 3)} for the head object's vertices. `used` maps the first
     len(used) head vertices (the skin) to the body's vertices; the other head parts take the delta
     of their nearest skin vertex (brow cards ride the brow), except teeth and tongue (still)."""
@@ -94,6 +129,8 @@ def donor_unit_shapes(unit_delta, used: np.ndarray, V: np.ndarray, tags: np.ndar
             out[f"{api}_L"], out[f"{api}_R"] = full(unit(src[0])), full(unit(src[1]))
             continue
         d = unit(src)
+        if lip is not None and api in SEALED:
+            d = seal_contact(d, skin[:, 0], {k: np.asarray(v)[:n] for k, v in lip.items()}, s)
         if api == "lip_lower_down":
             d = d * lower[:n, None]
         if api in SINGLE:
@@ -197,6 +234,49 @@ class ShapeBuilder:
         w = np.where(self.skinlike, w, 0.0)
         return w[:, None] * (disp * self.s)[None, :]
 
+    def cheek(self, side: str) -> np.ndarray:
+        """M1-CHR-07 cheek raise (FACS AU6 at full weight). The CHR-02 field moved the cheek 3.6 mm
+        under a 24 mm falloff and the lower lid by 0.8 mm. At the smile's 0.45 that was 1.6 mm of
+        smooth displacement, invisible on screen. Now:
+        * the malar mass lifts 6.5 mm and comes forward 2.8 mm, apex below the outer half of the eye;
+        * its medial edge stops at the nasolabial line (ala to just outside the mouth corner), so
+          the lift bunches against it and the fold deepens instead of the whole lower face sliding;
+        * it fades out below the mouth-corner height and toward the ear;
+        * the lower lid is pushed up (rotated on the globe, 2.9 mm at the margin) with a soft roll
+          of bunched skin just under it."""
+        fr = self.face.eyes[side]
+        sg = fr.sgn
+        V, s = self.V, self.s
+        x, z = V[:, 0], V[:, 2]
+        apex = np.array([fr.E[0] + sg * 0.004 * s, 0.0, fr.E[2] - 0.024 * s])
+        w = g2(x - apex[0], z - apex[2], 0.021 * s, 0.017 * s) * self.front
+        # the nasolabial line: from beside the ala to just outside and below the mouth corner
+        sub = self.lm.P("subnasale")
+        a = np.array([sg * 0.017 * s, sub[2] + 0.006 * s])
+        b = np.array([sg * (self.W + 0.004 * s), self.M[2] - 0.003 * s])
+        t = b - a
+        nrm = np.array([t[1], -t[0]]) / np.linalg.norm(t)
+        if nrm[0] * sg < 0:
+            nrm = -nrm  # the normal points away from the midline
+        dist = (x - a[0]) * nrm[0] + (z - a[1]) * nrm[1]
+        w *= smoothstep(-0.0015 * s, 0.0045 * s, dist)
+        w *= smoothstep(self.M[2] - 0.004 * s, self.M[2] + 0.008 * s, z)
+        # the lid itself is moved by the rotation below, not by this field
+        r, _t = fr.field(x, z)
+        w *= smoothstep(1.15, 1.9, r)
+        w = np.where(self.skinlike & (self.tags == 0), w, 0.0)
+        d = np.zeros_like(V)
+        d[:, 0] = sg * 0.0008 * s * w
+        d[:, 1] = -0.0028 * s * w
+        d[:, 2] = 0.0065 * s * w
+        # the bunched roll under the lower lid, and the lid pushed up on the globe
+        roll = np.exp(-((r - 1.55) / 0.22) ** 2) * (z < fr.E[2]) * self.front
+        roll = np.where(self.skinlike & (self.tags == 0), roll, 0.0)
+        roll *= np.linalg.norm(V - fr.E, axis=1) < 0.030 * s
+        d[:, 1] += -0.0012 * s * roll
+        d[:, 2] += 0.0012 * s * roll
+        return d + self.lid(side, 0.0, -0.22)
+
     def lip_line_z(self, x: np.ndarray) -> np.ndarray:
         lift = float(self.lm.p["mouth_corner_lift"])
         return self.M[2] + lift * (x / self.W) ** 2
@@ -251,15 +331,14 @@ class ShapeBuilder:
             S[f"brow_down_{sd}"] = self.brow(sd, -0.004, -0.0034, 0.0018, -0.0006, 0.017) + self.lid(sd, 0.06, 0.0)
             S[f"brow_outer_up_{sd}"] = self.brow(sd, 0.016, 0.0040, -0.0005, 0.0, 0.014)
             S[f"lid_close_{sd}"] = self.lid(sd, self.blink_angle(sd), -0.05)
-            S[f"lid_wide_{sd}"] = self.lid(sd, -0.20, 0.05)
-            sq = self.lid(sd, 0.07, -0.20)
+            # M1-CHR-07: the full-weight lid shapes are FACS maxima. CHR-02's were a third of that
+            # (the squint lifted the lower lid 2.6 mm; the smile's 0.25 moved it 0.65 mm)
+            S[f"lid_wide_{sd}"] = self.lid(sd, -0.30, 0.06)
+            sq = self.lid(sd, 0.10, -0.34)
             sq += self.field(np.array([fr.E[0] + sg * 0.004 * self.s, 0, fr.E[2] - 0.012 * self.s]), 0.014, 0.008,
-                             np.array([0.0, -0.0005, 0.0012]))
+                             np.array([0.0, -0.0010, 0.0020]))
             S[f"lid_squint_{sd}"] = sq
-            ck = np.array([sg * 0.17 * self.h, 0.0, self.zc + (self.face.ve - 0.12) * self.h])
-            cr = self.field(ck, 0.022, 0.020, np.array([sg * 0.0006, -0.0016, 0.0032]))
-            cr += self.lid(sd, 0.0, -0.10) * 0.6
-            S[f"cheek_raise_{sd}"] = cr
+            S[f"cheek_raise_{sd}"] = self.cheek(sd)
             al = np.array([sg * 0.012 * self.s, 0.0, self.lm.P("subnasale")[2] + 0.014 * self.s])
             S[f"nose_sneer_{sd}"] = self.field(al, 0.009, 0.012, np.array([sg * 0.0008, -0.0004, 0.0030])) + \
                 self.field(al + np.array([sg * 0.008, 0, -0.012]) * self.s, 0.010, 0.012, np.array([0.0, 0.0, 0.0018]))
@@ -302,10 +381,12 @@ class ShapeBuilder:
         for sd in ("L", "R"):
             sg = 1.0 if sd == "L" else -1.0
             # masseter bulge at the jaw angle (its own weight: the face mask fades out there)
+            # M1-CHR-07: the depth falloff was centred 7 mm off the masseter's surface, so the
+            # 1.5 mm bulge peaked at 0.57 mm; now it is centred on the side of the jaw, 4 mm out
             w = g2(V[:, 0] - sg * 0.21 * self.h, V[:, 2] - (self.zc + 0.22 * self.h), 0.018 * self.s, 0.022 * self.s)
-            w *= g2(V[:, 1] - (self.yc - 0.03 * self.h), 0.0, 0.03 * self.s, 1.0) * self.skinlike
-            jc[:, 0] += sg * 0.0014 * self.s * w
-        jc += press * 0.15
+            w *= g2(V[:, 1] - self.yc, 0.0, 0.05 * self.s, 1.0) * self.skinlike
+            jc[:, 0] += sg * 0.0040 * self.s * w
+        jc += press * 0.30
         S["jaw_clench"] = jc
         # extra parts used only by visemes
         fv = np.zeros_like(V)

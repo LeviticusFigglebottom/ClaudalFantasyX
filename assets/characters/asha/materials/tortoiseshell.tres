@@ -2,6 +2,8 @@
 
 [resource]
 resource_name = "tortoiseshell"
-albedo_color = Color(0.42, 0.227, 0.118, 1)
-roughness = 0.15
+albedo_color = Color(0.30, 0.16, 0.08, 1)
+roughness = 0.35
 clearcoat_enabled = true
+clearcoat = 0.5
+clearcoat_roughness = 0.3

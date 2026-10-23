@@ -35,7 +35,11 @@ def hairline_v(lm, P: np.ndarray) -> np.ndarray:
     phi = np.degrees(np.arctan2(P[:, 0], -(P[:, 1] - yc)))
     a = np.abs(phi)
     xs = [0, 30, 50, 66, 76, 84, 96, 112, 135, 160, 180]
-    vs = [0.765, 0.752, 0.712, 0.655, 0.60, 0.585, 0.635, 0.50, 0.32, 0.25, 0.24]  # M1-CHR-03: front -0.035 h (donor forehead)
+    # M1-CHR-03: front -0.035 h (donor forehead). M1-CHR-07: the temples 0.01-0.02 h lower, so hair
+    # frames them; the bare temple skin on the silhouette read as a very high forehead and, lit from
+    # behind, as a pinkish streak (review sweep J). The front stays: lowered, a hairline card rooted
+    # on the bare forehead and ran down across the brow
+    vs = [0.765, 0.752, 0.695, 0.635, 0.59, 0.585, 0.635, 0.50, 0.32, 0.25, 0.24]
     # M1-CHR-04: a natural hairline is not a clean curve; it wanders by up to ~2.5 mm (cards, the
     # scalp underpaint and the skin maps all read this, so they agree)
     t = np.radians(phi)
@@ -420,9 +424,9 @@ def front_strands(lm, body, params: dict, rng: np.random.Generator, scalp=None) 
         for c in range(3):
             ctrl = np.array([
                 root + np.array([0.003 * c, 0.0, 0.0]) * s,
-                root + np.array([-0.008 - 0.002 * c, -0.010, -0.030]) * s,
-                root + np.array([-0.012 - 0.003 * c, -0.012, -0.065]) * s,
-                root + np.array([-0.010 - 0.004 * c, -0.008, -0.095 - 0.01 * k]) * s,
+                root + np.array([-0.008 - 0.004 * c, -0.010, -0.030]) * s,
+                root + np.array([-0.012 - 0.006 * c, -0.012, -0.062 + 0.004 * c]) * s,
+                root + np.array([-0.010 - 0.008 * c, -0.008, -0.085 - 0.01 * k + 0.008 * c]) * s,
             ])
             pts = catmull_rom(ctrl, 12)
             # keep clear of the face
@@ -431,8 +435,11 @@ def front_strands(lm, body, params: dict, rng: np.random.Generator, scalp=None) 
                 nrm = scalp.normal(pts)
                 pts = pts + nrm * np.maximum(0.004 * s - d, 0.0)[:, None]
             nrm = scalp.normal(pts)
-            _ribbon(part, pts, nrm, rng.uniform(0.006, 0.010) * s, int(rng.integers(CLUMPS)),
-                    lambda t, ph=float(rng.random()): (0.9 * t, 0.6 * t, ph, 0.4 * t), taper=0.55)
+            # M1-CHR-07: narrower ribbons on full clumps only, fanned apart toward the tips, so the
+            # strand reads as a lock of hair, not one flat dark card (review sweep J). The sparse and
+            # hairline columns left gaps that showed the skin through as a pinkish streak.
+            _ribbon(part, pts, nrm, rng.uniform(0.0035, 0.0055) * s, int(rng.integers(SLOTS_FULL)),
+                    lambda t, ph=float(rng.random()): (0.9 * t, 0.6 * t, ph, 0.4 * t), taper=0.65)
     return part
 
 
@@ -443,7 +450,9 @@ def comb(lm, body, scalp=None) -> Part:
     G = _gather(lm)
     scalp = scalp or Scalp(body)
     c = G + np.array([-0.006, -0.026, 0.040]) * s
-    c = scalp.project(c[None, :], 0.010 * s)[0]
+    # M1-CHR-07: seated in the hair (the top card layer is lifted 4 mm), not floating 10 mm off the
+    # scalp, where it read as a pale card above the ear (review sweep J)
+    c = scalp.project(c[None, :], 0.0045 * s)[0]
     nrm = scalp.normal(c[None, :])[0]
     up = np.array([0.0, 0.0, 1.0])
     side = np.cross(nrm, up)

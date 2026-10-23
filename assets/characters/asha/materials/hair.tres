@@ -10,4 +10,7 @@ render_priority = 0
 shader = ExtResource("sh")
 shader_parameter/tex_hair = ExtResource("t0")
 shader_parameter/tex_hairflow = ExtResource("t1")
+shader_parameter/indirect_specular = 0.1
+shader_parameter/spec_primary_exponent = 400.0
 shader_parameter/spec_secondary_intensity = 0.3
+shader_parameter/spec_shift_jitter = 0.25
