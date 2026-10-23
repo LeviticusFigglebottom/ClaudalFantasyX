@@ -475,6 +475,73 @@ class LongLineTests(DlgcTestBase):
         self.assertEqual(dlgc.count_words("Don't look—it's the raft-town, 2 hulls."), 7)
 
 
+class NearMissTests(DlgcTestBase):
+    """M1-NAR-06: lines that nearly match a speaker line are errors, never silent narration."""
+
+    def test_emotion_before_alias(self) -> None:
+        self.assert_error('Asha [smile] as "The girl": Hello. #line:t_001',
+                          "the emotion goes after the alias: did you mean 'Asha as \"The girl\" [smile]:'?", 3)
+
+    def test_unquoted_alias(self) -> None:
+        self.assert_error("Asha as The girl: Hello. #line:t_001",
+                          "an alias needs double quotes: did you mean 'Asha as \"The girl\":'?", 3)
+        self.assert_error("Asha as The girl [smile]: Hello. #line:t_001",
+                          "did you mean 'Asha as \"The girl\" [smile]:'?", 3)
+
+    def test_emotion_on_plain_narration_points_to_narrator(self) -> None:
+        self.assert_error("[grief] The bell rang. #line:t_001",
+                          "did you mean 'Narrator [grief]: The bell rang.'? (or 'Narrator(<speaker id>) [grief]:'", 3)
+        self.assert_error("[smug] The bell rang. #line:t_001", "'smug' is not in", 3)
+
+    def test_speaker_like_narration_is_an_error(self) -> None:
+        for line in ("Old Toma: Lie still.", "Then she said: go home.", "Rain as cold as iron: hm."):
+            with self.subTest(line=line):
+                self.assert_error(f"{line} #line:t_001", "looks like a speaker, but this line would compile as "
+                                                         "narration", 3)
+
+    def test_speaker_like_hint_names_a_known_speaker(self) -> None:
+        self.assert_error("Asha (sad): Hi. #line:t_001", "Did you mean 'Asha:' or 'Asha [emotion]:'?", 3)
+        self.assert_error("Old Toma: Hi. #line:t_001", "'Old Toma:' looks like a speaker", 3)
+        self.assertNotIn("Did you mean", self.scene("Old Toma: Hi. #line:t_001")[0])
+
+    def test_narration_tag_allows_it_and_is_not_kept(self) -> None:
+        ops = self.ops("Then she said: go home. #line:t_001 #narration\n"
+                       "[Static.] The radio hissed. #line:t_002 #narration #vo")
+        self.assertNotIn("tags", ops[0])
+        self.assertEqual(ops[1]["tags"], ["vo"])
+        self.assertEqual(dlgc.compile_project(self.tmp).loc_rows,
+                         [("DLG_T_001", "Then she said: go home."), ("DLG_T_002", "[Static.] The radio hissed.")])
+
+    def test_narration_tag_only_on_narration(self) -> None:
+        self.assert_error("Asha: Hi. #line:t_001 #narration", "this line has a speaker ('Asha:')", 3)
+        self.assert_error("-> Go. #line:t_001 #narration", "an option is never narration", 3)
+
+    def test_plain_narration_still_compiles(self) -> None:
+        self.ops("Dawn\\: grey and long. #line:t_001\n"
+                 "The tide went out. It said: nothing. #line:t_002\n"
+                 "the bell: lower case is narration. #line:t_003\n"
+                 "One two three four five six seven: too long to be a name. #line:t_004")
+
+    def test_repo_scenes_need_no_new_tags(self) -> None:
+        self.assertEqual(dlgc.compile_project(ROOT).errors, [])
+
+
+class NoteCommentTests(DlgcTestBase):
+    """M1-NAR-06: ` //` inside a #tn:"..." note starts a comment; say so, not "use double quotes"."""
+
+    def test_comment_inside_a_note(self) -> None:
+        self.assert_error('Asha: Vey. #line:t_001 #tn:"keep this // as is"', '" //" starts a comment', 3)
+        self.assert_error('-> Vey. #line:t_001 #tn:"a // b"', '" //" starts a comment', 3)
+        errors = self.scene('Asha: Vey. #line:t_001 #tn:"keep this // as is"')
+        self.assertNotIn("double quotes", errors[0])
+
+    def test_slashes_without_a_space_are_fine(self) -> None:
+        self.ops('Asha: Vey. #line:t_001 #tn:"see http://example.org"')
+
+    def test_comment_after_a_note_is_fine(self) -> None:
+        self.ops('Asha: Vey. #line:t_001 #tn:"keep it"   // writer comment')
+
+
 class AssignIdsTests(DlgcTestBase):
     def assign(self, body: str, prefix: str | None = None) -> tuple[dlgc.AssignResult, Path]:
         p = self.write("t_scene", "title: t_scene\n---\n" + textwrap.dedent(body).strip("\n") + "\n===\n")
@@ -512,6 +579,27 @@ class AssignIdsTests(DlgcTestBase):
         self.assertEqual(res.assigned, [(4, "ch99_new_001")])
         res, _ = self.assign("Rhen: One.", prefix="Bad-Prefix")
         self.assertIsNone(res.text)
+
+    def test_fallback_prefix_is_short_and_hinted(self) -> None:
+        p = self.write("ch09_review_scene", "title: ch09_review_scene\n---\nRhen: One.\n===\n")
+        res = dlgc.assign_ids(self.tmp, p)
+        self.assertEqual(res.assigned, [(3, "ch09_scene_001")])
+        self.assertIn("pass --prefix", res.hint)
+        self.assertEqual(dlgc.assign_ids(self.tmp, p, "ch09_review").hint, "")
+        self.assertEqual(self.assign("Rhen: One. #line:t_x_001\nRhen: Two.")[0].hint, "")
+
+    def test_short_scene_prefix(self) -> None:
+        self.assertEqual(dlgc.short_scene_prefix("ch02_girl_on_the_beach"), "ch02_beach")
+        self.assertEqual(dlgc.short_scene_prefix("ch03_the_first_verse"), "ch03_verse")
+        self.assertEqual(dlgc.short_scene_prefix("t_scene"), "t_scene")
+        self.assertEqual(dlgc.short_scene_prefix("prologue"), "prologue")
+
+    def test_cli_prints_the_prefix_hint(self) -> None:
+        p = self.write("ch09_review_scene", "title: ch09_review_scene\n---\nRhen: One.\n===\n")
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            dlgc.main(["--root", str(self.tmp), "--assign-ids", str(p)])
+        self.assertIn("NOTE  no <prefix>_<NNN> ids", out.getvalue())
 
     def test_skips_ids_used_in_other_files_and_keeps_width(self) -> None:
         self.write("other", "title: other\n---\nRhen: Elsewhere. #line:t_x_0012\n===\n")

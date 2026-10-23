@@ -46,10 +46,10 @@ The sea gave me back at dawn. #line:ch02_beach_001
 
 - `Speaker [emotion]: text #line:<id>`. The speaker is written as a name (`Asha`) and stored as its lowercase id (`asha`), which must exist in `speakers.json`.
 - `[emotion]` is optional. When present it must be an id in **`game/data/dialogue/emotions.json`** (the single source of truth; the compiler and validator read it). Empty means "no change" (neutral by default). It drives the expression blends (SPEC §8.3).
-- A line **without** `Speaker:` is narration (Rhen's older voice-over, captions).
+- A line **without** `Speaker:` is narration (Rhen's older voice-over, captions). A line that *nearly* matches a speaker line is an error, not narration ([below](#near-miss-speaker-lines)).
 - **Every line needs `#line:<id>`**: lowercase letters, digits, and `_`, unique across the whole project. The loc key is `DLG_<ID>` upper-cased (`DLG_CH02_BEACH_002`).
 - Other trailing `#tags` (e.g. `#whisper`) are kept in a `tags` list for the UI or Cinematics. Tags with a meaning are listed [below](#tags-with-a-meaning).
-- Escapes: `\:` for a colon right after a narration line's first word (otherwise `Dawn: grey.` reads as speaker "Dawn"), and `\#` for a literal `#` at the end of a line.
+- Escapes: `\:` for a colon in narration that would otherwise read as a speaker (`Dawn: grey.` reads as speaker "Dawn", and `Then she said: go.` is a [near miss](#near-miss-speaker-lines)), and `\#` for a literal `#` at the end of a line.
 - One line of text per line; there are no multi-line strings. Keep to the voice guide's length rules: the compiler **warns** (it never fails) on a line or option over **25 words**. Tag a line `#long` when the length is earned (Kerrid in Ch14, Sefir in Ch16, Rhen's narration). Words are counted as `tools/dialogue_stats.py` counts them: runs of letters and digits, where an inner `'` or `-` doesn't split a word.
 
 ### Speaker alias (before an introduction)
@@ -74,14 +74,34 @@ Narrator [grief]: The bell rang under the water. #line:ch03_x_001
 - `[emotion]` works as on spoken lines. `(identity)` is optional and must be a `speakers.json` id: it is the voice of a voice-over (`narrator: "rhen"` in the op). Leave it off for captions. The box uses it only for the blip pitch, and only if narration blips are on. `dialogue_stats.py` counts it as `(narration: rhen)`.
 - Only `Narrator` takes `(identity)`, and `Narrator` takes no `as "..."` alias. Plain narration (no `Narrator:`) is unchanged.
 
+### Near-miss speaker lines
+
+A typo in a speaker line used to compile silently to narration, and its raw `Name [emo]:` text shipped to players. Now each of these is a `path:line:` error with a "did you mean" hint:
+
+| Written | Error |
+|---|---|
+| `Asha [smile] as "The girl": Hello.` | `the emotion goes after the alias: did you mean 'Asha as "The girl" [smile]:'?` |
+| `Asha as The girl: Hello.` | `an alias needs double quotes: did you mean 'Asha as "The girl":'?` (only when `Asha` is in `speakers.json`) |
+| `[grief] The bell rang.` | `narration takes an emotion only through Narrator: did you mean 'Narrator [grief]: The bell rang.'? (or 'Narrator(<speaker id>) [grief]:' for a voice-over; ...)` |
+| `Old Toma: Lie still.`, `Asha (sad): Hi.`, `Then she said: go.` | `'Old Toma:' looks like a speaker, but this line would compile as narration (...)`, plus `Did you mean 'Asha:' or 'Asha [emotion]:'?` when the first word is a speaker |
+
+The last row is a **heuristic**: narration whose text (tags aside) starts with a capital letter and has an unescaped `:` within its first 6 words, with no `.`, `!`, `?`, `,`, `;`, `…` or `—` before it. Options are never checked. When such a line really is narration, write `\:` for the colon, or tag it **`#narration`**, which skips every near-miss check on that line and is not kept in the op's `tags`:
+
+```
+Then she said: go home. #line:ch05_x_012 #narration
+```
+
+`#narration` on a speaker line or an option is an error.
+
 ### Tags with a meaning
 
 | Tag | Meaning |
 |---|---|
 | `#sung` | A sung line. `DialogueBox` reveals it with **no blips and no lip-flap**, and gives the body label the theme type variation `DialogueBodySung` (UI styles it; until then it looks like a normal line). Pace it to the score with `@wait music=<marker>`. |
 | `#notr` | Do not translate: the text stays as written in every locale. It **needs** a `#tn:"..."` note saying why. The line still goes to `dialogue.csv` (Godot needs a source string). |
-| `#tn:"note"` | A translator note (any line or option, with or without `#notr`). Double quotes, `\"` inside. It is not a tag in the op. Don't put ` //` in a note (that starts a comment). |
+| `#tn:"note"` | A translator note (any line or option, with or without `#notr`). Double quotes, `\"` inside. It is not a tag in the op. ` //` starts a comment even inside a note, so it cuts the note off; the compiler then reports `translator note cut off: " //" starts a comment...`. `//` with no space before it (`http://`) is fine. |
 | `#long` | Silences the over-25-words warning for this line. |
+| `#narration` | This narration only looks like a speaker line; skip the [near-miss checks](#near-miss-speaker-lines). Not kept in the op. Narration lines only. |
 | `#vo` | Narration that is voice-over (checked by `test_dialogue_vs_scenes.gd`). |
 
 `#notr` and `#tn` lines are written to **`game/data/dialogue/compiled/translator_notes.tsv`** (tab-separated, generated): `keys`, `scene`, `do_not_translate` (`yes` or empty), `note`, `en`. It is a `.tsv` so that Godot doesn't import it as a translation. Hand it to translators beside `dialogue.csv`, and keep a `#notr` key's translation identical to `en`.
@@ -190,14 +210,14 @@ python3 tools/dlgc.py --assign-ids game/data/dialogue/ch02/ch02_girl_on_the_beac
 
 This fills in every spoken line and option that lacks a `#line:` id, **rewriting the file in place**, and then you run `python3 tools/dlgc.py` as usual.
 
-- **Prefix:** `--prefix`, or else the most common `<prefix>` among the file's `<prefix>_<NNN>` ids (the first one seen wins a tie), or else the scene name.
+- **Prefix:** `--prefix`, or else the most common `<prefix>` among the file's `<prefix>_<NNN>` ids (the first one seen wins a tie), or else the scene name's first and last words (`ch02_girl_on_the_beach` → `ch02_beach`; a one- or two-word name as is). In that last case it prints a `NOTE` suggesting `--prefix <chapter>_<scene-short>`, since the guess (`ch09_review_scene` → `ch09_scene`) may not be the short name you want.
 - **Counter:** it continues from the highest number that prefix uses **anywhere in the project**, in file order, zero-padded to 3 digits (or wider, if the prefix already is). It skips any id already in use. Existing ids are **never** renumbered or moved, so gaps stay gaps.
 - **Placement:** ` #line:<id>` goes after the line's text and tags (after an option's `<<if>>`), before any `// comment`.
 - It is deterministic, and a second run changes nothing. Any other compile error in the project (an unknown speaker, say) aborts it without touching the file.
 
 ## Errors the compiler reports (`path:line: message`)
 
-Missing `#line` on spoken text or an option; duplicate line ids (with the first location); unknown speaker, emotion, or narrator identity; an alias whose key clashes; `#notr` without `#tn`, or a malformed or empty note; unknown cue, a wrong arg count, an unknown `key=`, or a value outside its type or option set (`cues.json`); an unknown `grade:` header; an unknown event or wrong event args (`events.json`); unknown jump target; unbalanced `<<if>>` (missing `<<endif>>`, stray `<<else>>`/`<<endif>>`, `<<else>>` twice, misaligned keywords); bad indentation; tabs; unknown commands; malformed expressions; a node missing `===`; a first title that doesn't match the file name; duplicate node titles or scene names.
+Missing `#line` on spoken text or an option; a [near-miss speaker line](#near-miss-speaker-lines), or `#narration` on a speaker line or option; duplicate line ids (with the first location); unknown speaker, emotion, or narrator identity; an alias whose key clashes; `#notr` without `#tn`, or a malformed or empty note (or one cut off by ` //`); unknown cue, a wrong arg count, an unknown `key=`, or a value outside its type or option set (`cues.json`); an unknown `grade:` header; an unknown event or wrong event args (`events.json`); unknown jump target; unbalanced `<<if>>` (missing `<<endif>>`, stray `<<else>>`/`<<endif>>`, `<<else>>` twice, misaligned keywords); bad indentation; tabs; unknown commands; malformed expressions; a node missing `===`; a first title that doesn't match the file name; duplicate node titles or scene names.
 
 **Warnings** (`WARN path:line: ...`, never fatal; also shown by `validate_data.py`): a line or option over 25 words without `#long`.
 
