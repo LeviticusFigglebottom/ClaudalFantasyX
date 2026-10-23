@@ -45,6 +45,12 @@ From the review-sweep-I entries (file:line references there).
   - **(b) Low-TAA foliage ghosting, wind on, 30 fps.** Measured: TAA departs from the instant 30–40 % more than its
     static softening (vegetation Wide 0.115 → 0.149, FrangipaniClose 0.113 → 0.158). It shows as soft blades and faint
     double edges, with no long trails. Acceptable for Low; nothing to tune.
+  - **Follow-up (first frame vs steady):**
+    - Asha: first ~0.3 s, steady ≤ 10 ms.
+    - Undertow merged: first 1.5 s, steady ≤ 111 ms.
+    - Undertow lazy: first 0.6 s, but 7 steady frames of 0.1–0.3 s.
+    - The router's split_swap wait doesn't enter the bench, which traces frames directly.
+    - Details are in the report's follow-up section.
   - So both measurements are done. The 50 ms limit itself is **not met**: that needs the shader baker or a boot-time
     stage (Lead / Systems decision), so the checkbox stays unticked.
 
