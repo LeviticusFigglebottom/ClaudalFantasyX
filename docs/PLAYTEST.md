@@ -10,7 +10,7 @@ This is a rough but complete thread through the first minutes of *Hymn of the Un
 4. **Haluna, free to walk.** Talk to the three villagers (at the market, the chapel court and the dock). Each one has a line that hints at what a "Cantor" is.
 5. **First battle.** Walking up the beach path toward the village starts a fight against a reef crab and a lantern eel, with Rhen and Asha (Toma in reserve). Win it, and you return to the beach path.
 6. **Save** at the shrine: the glowing teal stone with a shell canopy, near the beach palms. Resting there heals the party and opens the save menu.
-7. **The causeway head.** Once you have saved, walk to the causeway head at the edge of the village. This plays **Cutscene B, "The First Verse"**, at the Shell Shrine at sunset.
+7. **The causeway head.** Once you have saved, walk north along the beach, past the dock, to the causeway head at its far end. This plays **Cutscene B, "The First Verse"**, at the Shell Shrine at sunset.
 8. **End card.** Press accept to return to the title. **Continue** loads your save.
 
 ## Running it
