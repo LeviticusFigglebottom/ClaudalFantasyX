@@ -236,6 +236,62 @@ func test_overlay_routes_function_keys_and_lists() -> void:
 	_restore()
 
 
+func test_game_input_passes_through_on_pages_without_lists() -> void:
+	# M1-ARC-05: F2 (turn order) and F7 (camera) stay open while playing, so Enter / Space / Up /
+	# Down must reach the battle HUD and the field (field_interact shares Enter and Space).
+	var overlay := (load(DebugOverlay.SCENE_PATH) as PackedScene).instantiate() as DebugOverlay
+	_host().add_child(overlay)
+	FieldInput.ensure_actions()
+	var game_keys: Array[Key] = [KEY_ENTER, KEY_SPACE, KEY_UP, KEY_DOWN]
+	assert_true(_key(KEY_ENTER).is_action_pressed(FieldInput.INTERACT), "Enter is game input in the field")
+	for page_key: Key in [KEY_F2, KEY_F7]:
+		assert_true(overlay.handle_input(_key(page_key)), "page key opens")
+		assert_true(overlay.is_open())
+		assert_false(overlay.is_list_page(overlay.page))
+		for k in game_keys:
+			assert_false(
+				overlay.handle_input(_key(k)), "%s passes through on %s" % [OS.get_keycode_string(k), overlay.page]
+			)
+		assert_true(overlay.is_open(), "and the page stays open")
+		overlay.close()
+	for page_key: Key in [KEY_F4, KEY_F5, KEY_F6]:
+		overlay.handle_input(_key(page_key))
+		assert_true(overlay.is_list_page(overlay.page), "%s is a list page" % overlay.page)
+		assert_true(overlay.handle_input(_key(KEY_DOWN)), "list keys work on %s" % overlay.page)
+		overlay.close()
+	assert_false(overlay.handle_input(_key(KEY_ENTER)), "closed: passes through")
+	overlay.free()
+	_restore()
+
+
+func test_lattice_cheat_respects_facet_stack_caps() -> void:
+	var cfg := DebugReadouts.config()["lattice_cheat"] as Dictionary
+	var db := ItemDB.load_default()
+	var cap := db.cap_of(&"facet_power")
+	assert_true(cap > int(cfg["facets_each"]), "a cap the cheat can reach")
+	Game.state.lattice = {}
+	Game.state.inventory = {"facet_power": cap - 2}
+	Game.state.party_ids = [&"rhen"] as Array[StringName]
+	var r := DebugReadouts.apply_lattice_cheat(null, cfg)
+	var inv := FacetInventory.new(Game.state.inventory)
+	assert_eq(inv.count(&"facet_power"), cap, "clamped to the stack cap")
+	for i in 30:
+		DebugReadouts.apply_lattice_cheat(null, cfg)
+	var rules := LatticeRules.load_file()
+	for fid: StringName in rules.facets:
+		assert_true(inv.count(fid) <= db.cap_of(fid), "%s at most its cap after many presses" % fid)
+		assert_eq(inv.count(fid), db.cap_of(fid), "%s full" % fid)
+	assert_true((r["facets"] as Array).has(&"facet_power"))
+	var again := DebugReadouts.apply_lattice_cheat(null, cfg)
+	assert_true((again["facets"] as Array).is_empty(), "nothing granted once every stack is full")
+	var screen := FakeLatticeScreen.new()
+	screen.progress = LatticeProgress.new(LatticeBoard.load_board(), LatticeRules.load_file())
+	screen.inventory = FacetInventory.new({"facet_mind": cap})
+	DebugReadouts.apply_lattice_cheat(screen, cfg)
+	assert_eq(screen.inventory.count(&"facet_mind"), cap, "a live screen's bag is capped too")
+	_restore()
+
+
 func test_install_is_idempotent() -> void:
 	var host := Node.new()
 	_host().add_child(host)
@@ -279,6 +335,7 @@ func _engine() -> BattleEngine:
 
 func _key(code: Key) -> InputEventKey:
 	var k := InputEventKey.new()
+	k.keycode = code
 	k.physical_keycode = code
 	k.pressed = true
 	return k
