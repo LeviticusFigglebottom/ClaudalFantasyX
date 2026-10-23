@@ -708,6 +708,20 @@ class NearMissTests(DlgcTestBase):
         self.assert_error('Kerid as "The Stranger" #line:t_001', "did you mean 'Kerrid as \"The Stranger\": ...'?", 3)
         self.ops("Asha #line:t_001\nRain [sic] #line:t_002\nKerid [sic] #line:t_003")
 
+    def test_narrator_identity_is_evidence(self) -> None:
+        """review-sweep-G S1/S2 (M1-ARC-11): a known (speaker id) after Narrator, or after a Narrator misspelling,
+        is as strong evidence of a speaker head as an emotion or an alias."""
+        self.assert_error("Narrator(asha) #line:t_001", "a speaker line needs ': text' after the name: did you mean "
+                                                        "'Narrator(asha): ...'?", 3)
+        self.assert_error("Narrator(asha) [grief] #line:t_001", "did you mean 'Narrator(asha) [grief]: ...'?", 3)
+        self.assert_error("Narator(asha) #line:t_001", "'Narator' is not a speaker and a speaker line needs ': text'", 3)
+        self.assert_error("Narator(asha) The bell. #line:t_001", "'Narator' is not a speaker and a speaker line needs "
+                                                                 "a ':' after the name: did you mean "
+                                                                 "'Narrator(asha): The bell.'?", 3)
+        # No evidence: no identity, or one that is not a speaker id, or a name that is not Narrator.
+        self.ops("Narator The bell. #line:t_001\nNarrator(kerid) #line:t_002\nToma(rhen) #line:t_003")
+        self.assertEqual(dlgc.compile_project(self.tmp).warnings, [])
+
     def test_stray_punctuation_without_a_colon(self) -> None:
         """M1-NAR-10 nit: `Kerid, [sad] Hi.` compiled silently. Without a colon, only a known emotion counts."""
         self.assert_error("Kerid, [sad] Hi. #line:t_001", "'Kerid' is not a speaker; stray ',' between the name and "
