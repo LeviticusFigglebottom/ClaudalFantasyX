@@ -109,7 +109,10 @@ A cutscene animates it by tweening these properties (`create_tween().tween_prope
 
 | | Low | Medium | High (default) | Ultra |
 |---|---|---|---|---|
-| Body | **3 lathe shells + canopy shell** (alpha-hash) | raymarch, 28 steps | raymarch, 44 steps | raymarch, 72 steps |
+| Body | **3 lathe shells + canopy shell** (alpha-hash) | raymarch, 28 steps | raymarch, 32 steps | raymarch, 72 steps |
+| Cloud noise (M1-RND-10) | hashed | baked lattice | baked lattice | baked lattice |
+| Curl warp shared by N dense steps (`curl_reuse`) | – | – (no curl) | 2 | 2 |
+| Per-frame step jitter (`temporal_jitter`, TAA/FSR2 resolves it) | no (Low has FXAA) | yes | yes | yes |
 | Light samples | wrap-lit with a noise self-shadow | 1, envelope only | 2, coarse noise | 3, coarse noise |
 | Curl turbulence | no | no | yes | yes |
 | Cloud octaves | 3 (on the shell) | 3 | 4 + detail | 5 + detail |
@@ -121,7 +124,23 @@ A cutscene animates it by tweening these properties (`create_tween().tween_prope
 
 ## Cost
 
-> **"GPU" figures are estimates.** The only renderer here is lavapipe (Forward+ on the CPU, ADR 0009). Its cost per ALU op and per pixel is not a GPU's. Use the *ratios* between configurations to rank the parts, and replace the absolute figures with GPU-runner numbers (M1-QA-01 follow-up).
+### Measured on a GPU (M1-RND-10, RX 9070 XT, whole frame of `undertow_test.tscn`, GPU median ms)
+
+| Preset (tier) | Res | Horizon | Eye | Night | Before M1-RND-10 (Horizon / Eye / Night) |
+|---|---|---:|---:|---:|---|
+| Low (shells) | 1440p | 1.70 | 2.25 | 1.99 | unchanged |
+| Medium | 1440p | 2.90 | 4.00 | 3.74 | 10.42 / 12.34 / 14.86 |
+| **High** | **1440p** | **3.95** | **5.35** | **5.04** | 25.80 / 28.35 / 35.72 |
+| Ultra | 1440p | 12.92 | 16.22 | 16.82 | 76.09 / 80.71 / 106.36 |
+| High | 1080p | 2.27 | 3.12 | 2.89 | 15.07 / 16.75 / 20.50 |
+
+The frame without the storm costs 0.6–1.4 ms of these. Target for High at 1440p was ≤ 6.0 ms on this card (≈ 16.7 ms projected on an RTX 3060, see `docs/kb/qa/gpu/2026-10-23-gpu-report.md` for the projection factors). Per-lever numbers, look diffs and method: `docs/kb/qa/gpu/2026-10-23-rnd-10-undertow-perf.md`. What changed:
+- **Baked noise** (`assets_src/vfx/undertow/bake_noise3d.py` → `assets/vfx/undertow/undertow_noise3d.png`, a 64³ RGBA8 3D texture; `undertow.json "noise"`): the cloud fBm, detail, curl and light-sample noise are one trilinear fetch at a quintic-remapped coordinate instead of eight PCG3D hashes. Inside [0, 64)³ lattice cells it *is* the old noise (to 8 bits); outside it repeats, so the billow layout changed (same character). The **wounds keep hashing** (`undertow_common.gdshaderinc` is untouched): their fields span only a few cells, where a wrapped lattice moved the rents.
+- **Wounds evaluated only where the cloud has density** (bit-identical image).
+- **`curl_reuse`**: the curl warp is recomputed every N dense steps (reset after an empty stride).
+- **Fewer steps + `temporal_jitter`**: `jitter_phase` (UndertowState, an R1 sequence over frames) rotates the per-pixel IGN offset each frame, so TAA/FSR2 integrates several step phases.
+
+> The lavapipe tables below predate M1-RND-10 and stay as the record of the feature ranking. Their "GPU budget" estimates are superseded by the measurements above.
 
 ### Method (reproducible)
 ```bash
@@ -181,7 +200,7 @@ Calibrated against the water bench, the only ratio we have. Water High costs abo
 7. The lightning is glow only: no bolt geometry, no exposure flash (the colour script wants 2.0× exposure for 2 frames in Ch8).
 
 **What M2 must add** (in priority order):
-1. **Make the body affordable.** Render it at half or quarter resolution into its own buffer (a compositor effect or SubViewport) with temporal reprojection and a depth-aware upsample. Replace the hash noise with **baked tileable 3D noise textures** generated in-repo (`tools/` script → `.exr`/`.res`, with PROVENANCE rows): one fetch replaces about 150 ALU ops a sample. Use blue-noise jitter plus TAA, and early-out on opacity. Target ≤ 2–3 ms on High. Measure on the GPU runner (M1-QA-01).
+1. **Make the body affordable.** *Largely done in M1-RND-10 (baked noise, step jitter, curl reuse: High 1440p 25.8–35.7 → 4.0–5.4 ms on an RX 9070 XT). What remains here is headroom:* render it at half or quarter resolution into its own buffer (a compositor effect or SubViewport) with temporal reprojection and a depth-aware upsample. Replace the hash noise with **baked tileable 3D noise textures** generated in-repo (`tools/` script → `.exr`/`.res`, with PROVENANCE rows): one fetch replaces about 150 ALU ops a sample. Use blue-noise jitter plus TAA, and early-out on opacity. Target ≤ 2–3 ms on High. Measure on the GPU runner (M1-QA-01).
 2. **Surface detail:** an erosion/detail pass with curl-advected high-frequency noise at the cloud boundary only, a powder term, multiple-scattering approximation (octave-scaled extinction), and irregular striations (noise-modulated phase and spacing).
 3. **Wounds as rents:** a dark-edged seam profile, glow that pours *out* (in-scatter into the haze around the rent), km-scale held "streamers" (a storm-scale particle pass or a ribbon mesh) peeling off and sinking toward the sea, plus the zone-scale `GlimmerField` near the camera.
 4. **Integration:** capture the storm into the sky/reflection (a low-res storm-only cubemap or a reflection-probe pass) so the sea reflects it; darken the zone's sun and ambient by the storm's shadow along the light direction; add rain curtains, near-field spray and wind-driven chop that grows as `approach_distance_m` falls (the water's `hymn_wind` can carry part of this).
@@ -195,5 +214,7 @@ Calibrated against the water bench, the only ratio we have. Water High costs abo
 - **The lid hides transparent things below its height over the funnel** (lift + crest height, about 2–3 m): the ocean, as intended, but also any low transparent VFX placed on the storm's sea. Nothing gameplay-relevant lives there.
 - **The ocean needs an opaque floor in deep water.** With nothing under it, the water's refraction reads the sky. The test scene places a navy floor at −200 m outside the storm footprint. The funnel goes to −260 m, so keep floors out of the footprint.
 - **Water SSS at a low sun (finding for the water stream).** With the dusk sun at 5° *behind* the camera, `water_ocean`'s subsurface term painted saturated green bands across the open sea (rgb about 50/95/54). The test material sets `use_sss = false`. Water should look at the SSS view/sun geometry for grazing suns. I did not edit the water shader.
-- **Captures hold the storm.** The rig sets `playing = false` and fixes the clock per mood. Use the bench, or open the scene, to see it move.
+- **Captures hold the storm.** The rig sets `playing = false` and fixes the clock per mood. Use the bench, or open the scene, to see it move. A held storm also holds its `jitter_phase` (the frame counter only advances with the clock), so captures keep a static dither pattern.
+- **`temporal_jitter` needs temporal AA.** Without TAA or FSR2 the rotating jitter shows as crawling grain; the tier-to-preset test only allows it where the preset's AA is temporal. A player who overrides High to FXAA gets the grain.
+- **Keep the noise lattice lossless with no mipmaps** (`undertow_noise3d.png.import`: `compress/mode=0`, `mipmaps/generate=false`). VRAM compression or mips would blur the lattice; the import is tested. Regenerate it with the PROVENANCE command if the hash ever changes (`tools/tests/test_undertow_noise.py` fails on a stale asset).
 - **`spawn_wound` usage.** See "Palette note" above.
