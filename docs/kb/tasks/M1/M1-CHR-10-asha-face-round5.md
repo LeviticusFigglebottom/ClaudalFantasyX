@@ -82,3 +82,4 @@ From the review-sweep-L entries (file:line references there).
       - The table does not say which way `root_occlusion` and `depth_occlusion` run. Raising them "so the sky fill reaches the mass" implies that higher means less occlusion. State it.
       - `spec_shift_jitter` sits at the shader's cap (0.3). That says the cap is binding: Rendering should consider raising it rather than tuning against it.
     - Art must amend asha.md §5 to match, or supersede the ADR, before it moves to accepted. The Lead accepts it after both checks.
+- 2026-10-23 lead: stays in review until M1-QA-05c (the PC's 2x GPU capture). The sweep-M faults are recorded for the next round. ADR 0024 stays proposed: test a neutral cool highlight tint (about 0.88, 0.90, 0.95) first.

@@ -2,7 +2,7 @@
 id: M2-CMB-01
 title: Swell mode unlocks through play, and the other heroes' Swell inputs
 role: combat
-status: review
+status: done
 reviewer: progression
 owner_session: worktree-agent-a670939c5cb593976
 depends_on: [M1-CMB-04]
@@ -50,3 +50,4 @@ SPEC §6.2 follow-up to M1-CMB-04: players unlock new fill modes through play, a
     3. sim_policy.gd:63-99. A ready technique always goes first and aims at the lowest-HP foe, ignoring `role_answer`'s focus. That is why role_answer loses about 3 points at miss and good. It is a sim-policy artefact, not a balance fact. Let role_answer and smart pass their focus foe into `_swell_targets`, or record the artefact in balance_targets.md.
     4. swell.json:39 (`tether_from_ballast`, count 12). Every hero now has a Swell and every hit on any of them counts, so Tether will unlock in the first one or two sandbox fights. Note in formulas.md that the 12 was chosen for one Swell hero, or raise it.
     5. Brace UX for M2-UI-03 (swell_brace.gd:81-96). The technique is chosen with ui_accept, so the brace opens on a press the menu has already consumed. The first blow can land before the player re-presses. Make the lead-in long enough to re-press, or treat a held accept at open as `holding`.
+- 2026-10-23 lead: closing on review-sweep-M approve; the should-fixes are in M2-NIT-03.

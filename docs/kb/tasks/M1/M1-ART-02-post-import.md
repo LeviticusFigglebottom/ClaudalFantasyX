@@ -2,7 +2,7 @@
 id: M1-ART-02
 title: Godot post-import scripts per asset category
 role: character
-status: review
+status: done
 owner_session: "worktree-agent-a21af6e9e71ccbfda"
 depends_on: []
 milestone: M1
@@ -37,3 +37,4 @@ ADR 0005 step 4.
     2. docs/kb/tech/asset_import.md:16 says "Authored `<name><suffix>N` meshes get visibility ranges". The code applies them to every MeshInstance3D, including unchained LOD0s. Make the doc and the code agree, after fixing item 1.
     3. tests/unit/test_post_import.gd:156-157. The comment still says apply_to_tree mutates shared overrides, which M1-RND-19 fixed. Update it, and decide whether `shader_test` should get import materials now (optional, per asset_import.md:23).
     4. asset_import_rules.gd:117-119. The `convex` branch builds the shape from the proxy mesh in mesh space. The body takes `mi.transform * body.transform`, but the CollisionShape3D child keeps the transform Godot gave it. That is correct only while Godot's shape child is at identity. test_convex_rule_replaces_the_trimesh_and_keeps_the_transform builds that case by hand, so the test cannot catch a non-identity child. Add a one-line assert, or a comment that the child must be at identity.
+- 2026-10-23 lead: closing on review-sweep-M approve; the should-fixes are in M2-NIT-03.

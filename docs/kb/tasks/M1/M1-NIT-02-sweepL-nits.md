@@ -2,7 +2,7 @@
 id: M1-NIT-02
 title: Small fixes from review-sweep-L
 role: qa
-status: review
+status: done
 owner_session: "worktree-agent-ad32302c9926d0fee"
 depends_on: [M1-CMB-03, M1-ENV-05, M1-RND-16]
 milestone: M1
@@ -40,3 +40,4 @@ From the review-sweep-L entries (file:line references there).
     4. tests/unit/test_bestiary.gd:126. `assert_ne(enemy_id, foe.id)` holds only while the fixture's combatants all carry a `#n` suffix. A single-foe encounter whose id has no `#` would fail it for no reason. Assert on `enemy_id(foe) == foe.id.get_slice("#", 0)` instead.
     5. The task file has no `reviewer:` field (the reviewer is named only in Notes), so `taskboard --role lead` cannot route it. Add `reviewer: lead`.
   - **Nits left open, as the notes say:** env_weathering_body.gdshaderinc:12-14, vegetation_plant.gd:41, and the toast's `tr()` and wording nits. Carry them to the next nit sweep rather than dropping them.
+- 2026-10-23 lead: closing on review-sweep-M approve; the should-fixes are in M2-NIT-03.

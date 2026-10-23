@@ -2,7 +2,7 @@
 id: M2-ARC-01
 title: Carry Swell gauges and modes between battles and in saves
 role: architect
-status: review
+status: done
 reviewer: qa
 owner_session: worktree-agent-a670939c5cb593976
 depends_on: [M1-CMB-04, M1-CMB-08]
@@ -47,3 +47,4 @@ In M1-CMB-04, a Swell gauge lives only for one battle. It should follow the part
     1. tests/unit/test_swell_save.gd:276-320 covers victory and defeat but not **escape**. Criterion 1 names escape. send_back's branch covers it, but add an escape case that asserts the gauge and the record are written. That pins the criterion if send_back's outcome check is ever split.
     2. game/core/game.gd:161 vs :174. While swell.json is broken, `record_party` still writes gauges and modes but `record_swell` refuses the record. The result is harmless (saving is closed), but the two halves disagree. Either guard both or neither, and document which.
     3. The "Swell rides on vitals" design means a hero whose gauge is hidden by `SwellRingView.DRAWN_KINDS` (Asha, Toma, Ysolde until M2-UI-03) fills and saves a gauge the player cannot see. That is fine for M2 internals, but M2-UI-03 must land before the slice review, or a first visible gauge will appear already full. Add it to M2-UI-03's notes.
+- 2026-10-23 lead: closing on review-sweep-M approve; the should-fixes are in M2-NIT-03.

@@ -2,7 +2,7 @@
 id: M1-RND-19
 title: CharacterShaderTiers.apply_to_tree mutates shared materials and surface overrides
 role: rendering
-status: review
+status: done
 reviewer: character
 owner_session: "worktree-agent-aa89bf29c8049ad55"
 depends_on: [M1-ART-02]
@@ -36,3 +36,4 @@ From M1-ART-02 (handoff docs/kb/handoffs/2026-10-23-character-7.md): apply_to_tr
     1. character_shader_tiers.gd:104-132 still reaches only `material_override` and surface materials. `material_overlay` and `ShaderMaterial.next_pass` are neither swapped nor copied. That isn't a regression, but say so in the docstring, so nobody adds a tiered next_pass (a hair shell, an outline) and expects it to follow.
     2. A swap back to a material's source tier keeps the owned copy in the override slot rather than restoring the shared source. It is harmless (same shader and parameters), but the per-instance copies are never released while the instance lives. Note it in character_shading.md for when crowds use tiers.
     3. tests/unit/test_post_import.gd:156-157 (Character's file) still describes the old behaviour. Character fixes it under M1-ART-02's review (review-sweep-M S3 there).
+- 2026-10-23 lead: closing on review-sweep-M approve; the should-fixes are in M2-NIT-03.
