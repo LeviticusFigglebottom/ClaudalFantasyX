@@ -41,4 +41,32 @@ with costs, looks and drift: `docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md`.
   scattering, torn rents and mote streamers, the storm in sky/reflections and rain, lightning bolts, and per-chapter
   presets.
 
+## WIP handoff (PC GPU session, 2026-10-23): branch `gpu/m2-rnd-01-undertow`
+The project moved to new sessions mid-item. The branch compiles and the `undertow` tests pass (35/0). It has the
+integration branch merged in (d5cbda2) and isn't merged itself yet.
+- **Done on the branch:**
+  - The sweep-G ch08 wall foot.
+  - The half-res body (High 4.94 → 2.27 ms).
+  - 3-octave multiple scattering.
+  - Reports: `docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md`; design in undertow.md, "Half-resolution body".
+- **Two defects seen in a fresh 2× capture** of `undertow_day_ch08` (High, `--hold-storm`), not yet fixed:
+  1. The sea's storm wind streaks (`storm_*` water uniforms, `sea_response` in undertow.json) render as hard,
+     straight, parallel lines in the foreground. Soften them or noise-break them.
+  2. The teal wound glow shows a coarse dot stipple. It may be the half-res composite's tent filter on emissive
+     rents. Compare with `half_res_body_scale` 1.0 before changing the filter.
+- **Exact next step (billow surface detail and striation regularity), as planned:**
+  1. **Striations:** `undertow_striation()` in undertow_common.gdshaderinc is a pure cosine helix. Warp its phase
+     with one low-frequency `undertow_noise` sample, in the rotating frame (`striation_warp`, `striation_warp_scale_m`
+     in undertow.json `shape`, pushed by undertow_state.gd), and vary its strength along the helix. The shells and the
+     sea also include common, with hashed noise; cost it there.
+  2. **Billows:** in the body march, where the envelope is thin (the surface), add a billowy `1 - |2d - 1|` term from
+     the detail sample cloud_noise already takes. Have `cloud_noise` return it through an `out`. Add a cheap
+     sun-ward derivative shading term, `n(p) - n(p + L·eps)` with one extra lattice fetch, only on tiers where
+     `octaves > UNDERTOW_LIGHT_OCTAVES`. This aims at sweep-G's "uniform khaki lit tone".
+  3. **Validate** each with gpu_bench (High 1440p, the Day and Eye cameras; the budget is 6 ms, and the half-res
+     body sits at ~2.3 ms) and capture_preset drift on the five Undertow shots.
+- **After that:** compute-pass occlusion inside the volume (a CompositorEffect march with the game view's depth),
+  then the other criteria (torn rents and mote streamers, storm in sky/reflections/rain, lightning bolts and
+  exposure flash, per-chapter presets). Undertow High 1440p is AT RISK on an RTX 3060 (~3×).
+
 ## Review log

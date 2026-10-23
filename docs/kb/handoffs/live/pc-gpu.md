@@ -1,85 +1,144 @@
 # Live log: pc-gpu environment
 
-Seeded by the Lead on 2026-10-23. **This environment owns this file** (CLAUDE.md §7a). It is updated on each `gpu/*`
+Seeded by the Lead on 2026-10-23. **This environment owns this file** (CLAUDE.md §7a). It's updated on each `gpu/*`
 branch after every finished item, and it replaces `docs/kb/qa/gpu/2026-10-23-pc-queue-progress.md` as the canonical
 record. The newest copy is on the most recently pushed `gpu/*` branch.
 
-## Environment
+> **HANDOFF (2026-10-23).** session_01778wbLbDFnRRLTKjnawv3T stopped here at the Lead's request. The project moves to
+> a new account, with a new Remote Control session on this same PC as the GPU worker. **This copy, on
+> `gpu/m2-rnd-01-undertow`, is the newest.** Every `gpu/*` branch is pushed. The only local-only state is listed under
+> "Local-only state" below; none of it is needed.
 
-- **Machine:** Windows 10, AMD RX 9070 XT, 16 GB RAM.
-- **Session:** session_01778wbLbDFnRRLTKjnawv3T.
-- **Clone:** `C:\Users\Aaron\hymn_gpu`.
-- **Godot:** `C:\Users\Aaron\godot_463\Godot_v4.6.3-stable_win64_console.exe` (4.6.3-stable, Forward+/Vulkan).
-- **Keep-awake helper:** `keep_display_on.ps1`, run from the session scratchpad (SetThreadExecutionState). The monitor
-  must stay physically on, or Vulkan swapchain creation fails.
-- **Rules:**
-  - Work on new `gpu/*` branches only, each cut from `origin/claude/new-session-mj8c3c`. Never overwrite lavapipe
-    baselines; list the shots that drift.
-  - Keep the cumulative CPU, memory and GPU load at or below ~75 %, and run benchmarks and captures one at a time.
-  - Gate scope (CLAUDE.md §3): run only the checks a change can break.
-- **Gotchas:**
-  - After merging the integration branch, run `godot --headless --import` first. A stale class cache fails ~260 battle
-    tests.
-  - `tests/screenshots/capture.tscn` hung for 100 minutes on the Undertow shots here; use
-    `tools/gpu_bench/capture_preset.tscn` with `timeout`.
-  - Python generators write CRLF on Windows; normalise to LF before committing.
-  - `water_look_probe.tscn` needs its `--out` folder to exist, or it errors and hangs.
-  - A GDScript test file that fails to parse just drops out of the filtered run (the counts fall). Check the
-    `Tests: N run` count, not only `0 failed`.
-  - **Asha's materials change only through `assets_src/characters/asha/write_materials.py`**, run with plain
-    Python (no Blender). Commit both the script and its outputs. A hand edit to a `.tres` fails the Blender rebuild
-    gate (Lead, 6e09360).
-  - `tools/tests/test_blender_builds.py::test_python_runs_use_this_interpreter` fails on Windows (path separator
-    in `expand`), on the base too.
+## PC setup for a new session
 
-## Done (branches pushed)
+- **Machine:** Windows 10 Home, AMD RX 9070 XT, 16 GB RAM, user `Aaron`.
+  - Shells: PowerShell 5.1 and Git Bash.
+  - Python 3.14 on PATH as `python`, with gdtoolkit (`python -m gdtoolkit.linter` / `.formatter`).
+- **Clone:** `C:\Users\Aaron\hymn_gpu` (origin github.com/LeviticusFigglebottom/ClaudalFantasyX).
+- **Godot:** `C:\Users\Aaron\godot_463\Godot_v4.6.3-stable_win64_console.exe` (4.6.3-stable official, Forward+/Vulkan).
+  It isn't on PATH; set `G=/c/Users/Aaron/godot_463/Godot_v4.6.3-stable_win64_console.exe` in Git Bash.
+- **The monitor must stay physically ON.** If the display is off or asleep, Vulkan swapchain creation fails, and every
+  windowed run (gpu_bench, capture_preset) errors out.
+  - Run `powershell -ExecutionPolicy Bypass -File tools/dev/keep_display_on.ps1 -Hours 10` in the background. It calls
+    SetThreadExecutionState.
+  - It stops sleep, not a human pressing the monitor's power button.
+- **Load cap:** keep the cumulative CPU, memory and GPU load at or below ~75 %. Run benchmarks and captures one at a
+  time, never in parallel. Kill only PIDs you started (CLAUDE.md §8a).
 
-| Item | Branch | Task status | Summary |
-|---|---|---|---|
-| M1-CHR-04 rendering + material half | gpu/chr-04-materials | review | Face terminator: key/rim `shadow_normal_bias` 2.5. Vest lacquered leather 0.55/0.16/0.55, now in `write_materials.py`. Hair reads warm brown. All `asha_*` drift. Report: `docs/kb/qa/gpu/2026-10-23-chr-04-materials.md` |
-| M1-RND-12 Haluna sky tiers | gpu/rnd-12-sky | review | Clouds 3.7 → 0.4 ms (High 1440p) and 2.4 → 0.23 ms (Low 1080p) via baked lattices and `sky_detail` tiers. R2–R6 and palette_check done. All 5 `haluna_*` drift. Report: `docs/kb/qa/gpu/2026-10-23-rnd-12-sky.md` |
-| M2-RND-01 start (sweep-G ch08) | gpu/m2-rnd-01-undertow | doing (more criteria remain) | Wall foot (skirt, water-dark base, scud), outer spray over the body, the sea answers the storm, joined flanks. Day 4.95 ms High 1440p, all cameras ≤ 5.43. Undertow shots drift. Report: `docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md` |
-| M1-RND-15 criterion 4 (prewarm, Low-TAA ghosting) | gpu/rnd-15-prewarm | review (measured; 50 ms not met, needs a Lead/Systems decision) | Lazy material loads, batch 2, no halving on the first tick. Worst prewarm frame ~230–310 ms (set-up), up to 0.62 s (Undertow, cold). Ghosting mild. Report: `docs/kb/qa/gpu/2026-10-23-rnd-15-prewarm.md` |
-| M1-RND-17 dusk released motes | gpu/rnd-17-dusk-motes | review (character) | Streaks upright (median 37 → 6°) and the upper-sky halo is gold. Horizon and mirror hue targets not met (pale cores; the Art Director's call). New mote_halo/mote_streaks advisory checks. Drift: glimmer_dusk, glimmer_release. Report: `docs/kb/qa/gpu/2026-10-23-rnd-17-dusk-motes.md` |
-| M1-RND-18 SSS crest fade, high cameras | gpu/rnd-18-sss-crest | review (character) | Crest SSS fades with view steepness for cameras ≥ 10–25 m above the water; even `col_deep` lift. Survey: 0.06 % over 0.03, max 0.050, deep band ΔE 0.019. Low shots bit-identical. Report: `docs/kb/qa/gpu/2026-10-23-rnd-18-sss-crest.md` |
-| QA-05b Asha re-check (High, Ultra) | gpu/qa-05b-asha-recheck | done (note in the QA-05 report) | Cheek banding gone; faint smile-fold steps on Ultra only. Hair warm brown (scalp hue 20°, braid 23°), not black. |
-| M1-ENV-03 vegetation follow-ups | gpu/env-03-vegetation | review (rendering) | Eave glow removed (shelter auto-probe); FXAA capture + 0.008 threshold; 6 m LOD cross-fade (+0.04 ms); overdraw budget; PLACEHOLDER list; flutter cap. Drift: veg_*, haluna_h02/h03. Report: `docs/kb/qa/gpu/2026-10-23-env-03-vegetation.md` |
-| M1-RND-17 v2 (sweep-N blockers) | gpu/rnd-17-dusk-motes-v2 | review (character) | B1: gold halo only once released (smoothstep 0.6–1). B2: warm horizon halo per field (`warm_horizon_halo`, dusk only). Hue derived from colors.released; checks re-scoped (advisory). Drift: glimmer_dusk 0.0146, glimmer_release 0.0043 |
-| M1-ENV-03 v2 (sweep-N blockers) | gpu/env-03-vegetation-v2 | review (rendering) | Only the final 400 m cut fades (no ghost trunks). `Shelter` enum, `shelter_mask`, sun from `hymn_sun_direction` via the new `ShaderGlobals`, auto-detect test. Drift: veg_* purely TAA → FXAA (0.022–0.031); haluna_h02 0.0124 (a 120 m palm the base's hysteresis hid); h03 back to 0. Report: `docs/kb/qa/gpu/2026-10-23-env-03-vegetation.md` §v2 |
-| RND-18/20 follow-ups (sweep N) | gpu/rnd-18-20-followups | notes in both tasks (both still review) | RND-18 S1: the `col_deep` lift is gated by `use_sss` × sss_strength/1.4; no shot drifts. RND-20 S1: measured, not applied. Haluna's cascades make bias 1.0 already larger in world terms than the stage's 4.5; at 4.5 the nose shadow vanishes. Rule in character_shading.md; dialogue key light for M2. Filed M1-ENV-08 (LOD hysteresis hole). Report: `docs/kb/qa/gpu/2026-10-23-rnd-18-20-followups.md` |
-| M1-RND-21 mouth-interior fill | gpu/rnd-21-mouth-fill | review (character) | New `mouth` shader family (all heroes' mouth, teeth and tongue) with an unshadowed cavity bounce per light, on every tier. Grief interior median luminance 0.0121 → 0.0174; share < 0.01 halved. Drift: asha_face_grief 0.0023. Teeth still khaki (albedo, CHR-11). Report: `docs/kb/qa/gpu/2026-10-23-rnd-21-mouth-fill.md` |
-| Perf regression sweep | gpu/perf-sweep | done | 31 cameras × 4 presets × 2 res (`docs/kb/qa/gpu/perf_baseline.csv`). Nothing over or at risk against SPEC §4.2; worst High 1440p is Undertow Eye 5.3 ms (12.2–14.9 projected). Report: `docs/kb/qa/gpu/2026-10-23-perf-sweep.md` |
-| M1-RND-16 criterion 5 (cutscene AA override) | gpu/rnd-15-prewarm | measured | Override TAA + bilinear: dither −22 % vs native TAA, −0.40 ms. Recommended. Report: `docs/kb/qa/gpu/2026-10-23-rnd-16-aa-override.md` |
-| M1-QA-05c Asha §14 final judgement | gpu/qa-05c-asha-final | done | Neutral passes; smile passes after RND-20 (corner terminator); grief fails (mouth interior black, teeth read gold, faceted). Lashes and lid band are asset faults. Report: `docs/kb/qa/gpu/2026-10-23-qa-05c-asha.md` |
-| M1-RND-20 smile-corner terminator | gpu/rnd-20-smile-terminator | review (character) | Key and rim bias 2.5 → 4.5: corner clean, nose and contact intact. Shader band rejected (breaks the nose shadow). Drift: all `asha_*`. Report: `docs/kb/qa/gpu/2026-10-23-rnd-20-smile-terminator.md` |
-| Playtest checkout (Lead request) | – (clone of claude/new-session-mj8c3c, re-pulled to 7f4c76b) | done | `C:\Users\Aaron\Hymn_Playtest`, imported twice. 60-frame headless smoke boot: exit 0, no errors. **PLAY.bat is at `C:\Users\Aaron\Hymn_Playtest\PLAY.bat`** (EDITOR.bat next to it). Not launched. |
-| Earlier (merged by the Lead) | gpu/results-2026-10-23, gpu/rnd-10-undertow-perf, gpu/rnd-09-undertow-shading, gpu/rnd-08-water-glimmer, gpu/rnd-07-presets, gpu/qa-05-asha-gpu, gpu/rnd-11-undertow-params | – | – |
+### Commands
 
-## In progress
+```bash
+# after any merge of the integration branch: re-import first (a stale class cache fails ~260 tests)
+$G --headless --path . --import
+# tests, filtered to the area you touched (check the "Tests: N run" count: a file that fails to parse just drops out)
+$G --headless --path . res://tests/run_tests.tscn -- --filter=<area>
+python tools/validate_data.py; python tools/taskboard.py --check
+python -m gdtoolkit.linter game tests; python -m gdtoolkit.formatter -l 120 --check game tests
 
-Nothing; between items.
+# GPU frame time (windowed, never --headless). Full option list at the top of tools/gpu_bench/gpu_bench.gd.
+$G --path . --audio-driver Dummy --disable-vsync res://tools/gpu_bench/gpu_bench.tscn -- \
+  --scene=res://game/levels/_tests/undertow/undertow_test.tscn --camera=<path> \
+  --presets=high --res=2560x1440 --csv=C:/abs/out.csv [--png-dir=C:/abs/dir --hold-storm --undertow-half=0.5]
 
-## Queue, in order (exact next step first)
+# GPU screenshots of manifest shots at a preset (use this, not tests/screenshots/capture.tscn, for Undertow shots)
+$G --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync res://tools/gpu_bench/capture_preset.tscn -- \
+  --shots=id1,id2 --preset=high --out=C:/abs/dir [--scale=2 --hold-storm \
+  --manifest=res://docs/kb/qa/gpu/2026-10-23-rnd-09-pending-shots.json \
+  --light-set=prop=value,... --mat-set=uniform=value|#rrggbb,... --push-override=key=value]
 
-The Lead's queue of 2026-10-23 (after sweep N). Items 1–4 are done. **Next: M2-RND-01**, on `gpu/m2-rnd-01-undertow`.
+# drift between two captures: linear-light RMSE, the same as the lavapipe gate
+python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, pngio; \
+  print(compare.rmse_linear(pngio.read(sys.argv[1]), pngio.read(sys.argv[2])))" before.png after.png
+```
 
-1. ~~**RND-17 v2**~~ Done (`gpu/rnd-17-dusk-motes-v2`).
-2. ~~**ENV-03 v2**~~ Done (`gpu/env-03-vegetation-v2`).
-3. ~~**rnd-18/20 follow-ups**~~ Done (`gpu/rnd-18-20-followups`).
-4. ~~**M1-RND-21**~~ Done (`gpu/rnd-21-mouth-fill`).
-5. **M2-RND-01**, the remaining criteria: billow surface detail, striation regularity, and compute-pass occlusion
-   inside the volume. Undertow High 1440p is AT RISK on an RTX 3060 (~3×).
-6. **M1-RND-22:** the prewarm hitch floor at Low, High and Ultra. Draft an ADR if 50 ms is impossible.
-7. **M2-RND-03:** the battle VFX library (power tiers lesser, greater and grand; Narrative names them).
-8. **M2-RND-02:** underwater rendering.
-9. **M2-RND-04:** Drownbell boss VFX and flood rig. Read the First Playable boss data first.
-- Standing: GPU checks of shots before the Lead re-approves lavapipe baselines.
+- **Base vs branch drift:** capture both in a detached worktree of the base
+  (`git worktree add --detach <dir> origin/claude/new-session-mj8c3c`, then import it), and remove the worktree
+  afterwards.
+- **Metrics in `tools/`:** `mote_metrics.py` (glimmer halos/streaks), `aa_shimmer.py --ghost`, `sss_probe_metrics.py`,
+  `perf_budget.py`, plus `tools/gpu_bench/eave_glow.tscn` and `lod_pop.tscn`.
+- **GPU → min-spec projection:** RTX 3060 about 2.3–2.8× this card (the Lead uses ~3× for the Undertow); GTX 1060
+  4.2–5.0×.
+
+### Rules (from the Lead)
+
+- **Branches:** work on new `gpu/*` branches only, cut from `origin/claude/new-session-mj8c3c`. Never push to someone
+  else's branch.
+- **Baselines:** never overwrite lavapipe baselines; list the shots that drift. The Lead re-approves on lavapipe.
+- **Gate scope** (CLAUDE.md §3): run only the checks a change can break, and say in the report what was skipped.
+- **Tasks:** claim a task in its file (`status: doing`, `owner_session`) in the first commit, and set `status:
+  review` at the end.
+- **Asha's materials change only through `assets_src/characters/asha/write_materials.py`.** Run it with plain Python,
+  normalise CRLF to LF, and commit the script and its outputs together. A hand edit to a `.tres` fails the Blender
+  rebuild gate.
+- **Commit trailers:** messages end with the Co-Authored-By and Claude-Session lines the harness gives.
+- **Queue:** message the Lead when two queue items remain. Keep this file current after every item.
+
+### Gotchas
+
+- `tests/screenshots/capture.tscn` hung for 100 minutes on the Undertow shots here. Use `capture_preset.tscn` with
+  `timeout`.
+- **Line endings:** Python generators and gdformat write CRLF on Windows. Normalise to LF before committing.
+- `water_look_probe.tscn` needs its `--out` folder to exist, or it errors and hangs.
+- **Shell traps:**
+  - Don't run `cat > file` without input; it blocks on stdin.
+  - Inline heredoc Python with Windows backslashes or `\n` escapes breaks. Write a `.py` file instead.
+- **Godot behaviours:**
+  - Transparent materials write no motion vectors.
+  - TAA destroys a transparent SubViewport's alpha.
+  - `VISIBILITY_RANGE_FADE_SELF` alpha-blends the instance (it isn't a dither).
+  - `RenderingServer.global_shader_parameter_get` and `shader_get_parameter_default` don't work at runtime or headless.
+    Use `ShaderGlobals` (game/core/shader_globals.gd) for the globals.
+  - A shader uniform default must be a literal.
+  - `shadow_normal_bias` is in shadow texels, not metres.
+- The Undertow half-res body uses visual layer 20; don't use it for anything else in a storm scene.
+- **Known Windows-only failure:** `tools/tests/test_blender_builds.py::test_python_runs_use_this_interpreter`, filed
+  as M1-QA-07.
+
+## Branches (all pushed)
+
+| Branch | State | Content |
+|---|---|---|
+| gpu/m2-rnd-01-undertow | **WIP, not merged** (task `doing`) | M2-RND-01: wall foot / sea storm response / joined flanks; half-res body (High 4.94 → 2.27 ms); 3-octave multiple scattering; integration branch merged in (d5cbda2). WIP note and exact next step in the task file. Reports: `docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md` |
+| gpu/rnd-21-mouth-fill | in review (character); Lead running asha shots + Blender job | M1-RND-21: `mouth` shader family with a cavity bounce, all heroes; grief interior median luminance 0.0121 → 0.0174. Drift asha_face_grief 0.0023. Report: `docs/kb/qa/gpu/2026-10-23-rnd-21-mouth-fill.md` |
+| gpu/rnd-18-20-followups | in review; Lead's lavapipe check ci35 | RND-18 S1: deep lift gated by SSS (no drift). RND-20 S1: measured, Haluna stays at 1.0 (bias is in texels); rule in character_shading.md. Filed M1-ENV-08. Report: `docs/kb/qa/gpu/2026-10-23-rnd-18-20-followups.md` |
+| gpu/qa-07-windows-interpreter-test | new, not merged | Files M1-QA-07 (the Windows-only test failure), Lead request |
+| gpu/env-03-vegetation-v2, gpu/rnd-17-dusk-motes-v2 | merged + lavapipe-approved (c940d77) | ENV-03 v2 (final-cut-only LOD fade, Shelter enum/mask, ShaderGlobals); RND-17 v2 |
+| gpu/chr-04-materials, gpu/qa-05b-asha-recheck | pushed; not ancestors of the integration branch (the Lead took their content earlier, per the queue log; check before deleting) | CHR-04 material half; QA-05b note |
+| gpu/env-03-vegetation, gpu/rnd-17-dusk-motes, gpu/perf-sweep, gpu/qa-05-asha-gpu, gpu/qa-05c-asha-final, gpu/results-2026-10-23, gpu/rnd-07-presets, gpu/rnd-08-water-glimmer, gpu/rnd-09-undertow-shading, gpu/rnd-10-undertow-perf, gpu/rnd-11-undertow-params, gpu/rnd-12-sky, gpu/rnd-15-prewarm, gpu/rnd-18-sss-crest, gpu/rnd-20-smile-terminator | merged | Earlier items; reports under `docs/kb/qa/gpu/` |
+| gpu/grief-mouth-fill | **local only, abandoned** | An empty branch plus `stash@{0}` (a stage FillLight); superseded by the RND-21 shader family. Safe to delete. |
+
+## Unfinished queue, in order (exact next step first)
+
+1. **M2-RND-01** (`gpu/m2-rnd-01-undertow`, WIP). The exact next step is in
+   `docs/kb/tasks/M2/M2-RND-01-undertow-production.md`, under "WIP handoff":
+   - Noise-warp the striation helix.
+   - Add billowy surface detail with sun-ward derivative shading.
+   - Fix two defects from the fresh capture: the hard straight sea wind streaks and the teal wound stipple.
+   - Then the compute-pass occlusion inside the volume.
+   - Undertow High 1440p is AT RISK on an RTX 3060 (~3×).
+2. **M1-RND-22:** the prewarm hitch floor, measured at Low, High and Ultra. If 50 ms is impossible, draft an ADR
+   proposing a SPEC §4.2 clarification. The earlier finding (RND-15): the floor is ~230–310 ms of stage set-up plus
+   single heavy shader compiles. The fixes are the shader baker or a boot-time stage.
+3. **M2-RND-03:** the battle VFX library. SPEC v1.2 power tiers: lesser, greater and grand. Never use -ra/-ga style
+   suffixes; Narrative sets the in-game names.
+4. **M2-RND-02:** underwater rendering: fog volume, god rays, particulate, caustics on characters, Rhen's lantern as
+   the hero light.
+5. **M2-RND-04:** Drownbell boss VFX and flood rig. Read the First Playable boss data first (session
+   session_01ELR13ohWMPrprcpcgLa7UR, branch `claude/first-playable`).
+- **Standing:** GPU checks of shots before the Lead re-approves lavapipe baselines.
+- **Open findings to route** (filed or noted, not this queue):
+  - M1-ENV-08: the vegetation LOD hysteresis hole.
+  - The M2 dialogue key light: a few metres of shadow range, bias 4.5 (character_shading.md).
+  - Teeth albedo: M1-CHR-11.
 
 ## Local-only state (not in git)
 
-- **`C:\Users\Aaron\Hymn_Playtest`**: a separate clone for the human's playtest, with `PLAY.bat` and `EDITOR.bat`
-  (untracked, local only). Delete it freely after the playtest.
-- Scratch renders and CSVs under `C:\Users\Aaron\chr04`, `C:\Users\Aaron\rnd12` and `C:\Users\Aaron\m2rnd01`, `C:\Users\Aaron\rnd15`, `C:\Users\Aaron\rnd17`, `C:\Users\Aaron\rnd18`, `C:\Users\Aaron\qa05b`, `C:\Users\Aaron\env03`, and the session scratchpad's `env03v2/` (the v2 captures).
-  Everything quoted in the reports is reproducible from the commands in them; none of it is needed.
-- Edit scripts and the keep-awake helper live in the session scratchpad (temporary).
-- **`stash@{0}`** in `C:\Users\Aaron\hymn_gpu`: the RND-21 FillLight WIP. Superseded by the shader family and safe to drop.
+None of it is needed: everything quoted in the reports can be reproduced from the commands in them.
+- **`C:\Users\Aaron\Hymn_Playtest`:** a separate clone for the human's playtest, with untracked `PLAY.bat` and
+  `EDITOR.bat`. Delete it after the playtest.
+- **`C:\Users\Aaron\hymn_shots_gpu`:** 87 GPU screenshots (base body, Asha and others) from early QA passes.
+  Scratch.
+- **Scratch renders and CSVs:** `C:\Users\Aaron\chr04`, `rnd12`, `m2rnd01` (including `cur/undertow_day_ch08.png`, the
+  2× capture that shows the two defects above), `rnd15`, `rnd17`, `rnd18`, `qa05b` and `env03`, plus the old
+  session's scratchpad (temporary).
+- **`stash@{0}`** and the local branch `gpu/grief-mouth-fill` in `C:\Users\Aaron\hymn_gpu`: abandoned (see above).
