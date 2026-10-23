@@ -2,9 +2,9 @@
 id: M1-ENV-01
 title: Five-shot environment mood test (coastal village)
 role: environment
-status: todo
-owner_session: environment-stream-2
-reviewer: rendering
+status: doing
+owner_session: environment-stream-3 (worktree agent-aaa0dfc3de4f41ded)
+reviewer: rendering, art-director
 depends_on: [M1-RND-01, M1-ART-01]
 milestone: M1
 request-from: ""
