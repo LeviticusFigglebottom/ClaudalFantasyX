@@ -147,9 +147,14 @@ func test_the_technique_page_previews_its_input_and_its_turn() -> void:
 	assert_eq(ctl.hud.commands.page_id(), BattleMenus.PAGE_SWELL)
 	assert_eq(_row_ids(), [&"lamp_dive"] as Array[StringName])
 	var beats := int(ctl.swell.input_for(ctl.engine.current).get("beats", 0))
-	var how := tr("SWELL_INPUT_TIMING_RING_HELP").format({"beats": beats})
+	var how := tr("SWELL_INPUT_TIMING_RING_HELP_LAMP").format({"beats": beats})
 	assert_true(ctl.hud.help_text().begins_with(how), ctl.hud.help_text())
-	assert_true(how.contains(str(beats)) and not how.contains("{"), "the flare count comes from data: %s" % how)
+	# M1-NIT-01 (review-sweep-J S2): one metaphor with the ring's own hint, no ". ·" at the join.
+	assert_false(ctl.hud.help_text().contains(". ·"), ctl.hud.help_text())
+	assert_true(
+		how.contains("the ring meets the lamp") and tr("HUD_SWELL_RING_HINT").contains("the ring meets the lamp")
+	)
+	assert_true(how.contains(str(beats)) and not how.contains("{"), "the beat count comes from data: %s" % how)
 	var preview := ctl.engine.preview(
 		&"lamp_dive", ctl.default_targets(&"lamp_dive")[0], CtbTimeline.PREVIEW_LENGTH - 1
 	)
