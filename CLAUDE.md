@@ -85,6 +85,10 @@ Every session ends with `docs/kb/handoffs/<YYYY-MM-DD>-<role>-<n>.md` covering w
 - Commit messages are imperative and reference the task id, e.g. `M1-CMB-01: add swap preview`.
 - Never commit generated `.godot/` caches, large binaries over 5 MB (Git LFS is deferred, ADR 0005), or any copyrighted reference material.
 
+## 8a. Shared machine etiquette (parallel agents)
+- **Never kill processes by pattern** (`pkill -f capture.tscn`, `killall godot` and the like). Other agents run the same commands in their own worktrees. Kill only PIDs you started, for example by remembering `$!` or by checking `/proc/<pid>/cwd` is your worktree.
+- Use `HYMN_SHOTS` for screenshot gates in a worktree (see §3). Godot's `user://` is isolated per `ci_local.sh` run (`XDG_DATA_HOME`); if you run Godot outside it, set your own `XDG_DATA_HOME`.
+
 ## 9. Asking the human
 
 Only for the items in SPEC §16 or for an irreversible choice. Everything else: decide, write an ADR, and keep going.

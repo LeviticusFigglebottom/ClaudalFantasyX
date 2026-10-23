@@ -118,7 +118,7 @@ Option sets (`sets` in `cues.json`):
 
 | Set | Values | Notes |
 |---|---|---|
-| `grades` | `ch02`, `ch02_noon`, `ch02_night`, `ch03`, `ch03_causeway`, `ch03_boss`, `ch03_shrine_int` | Color-script frames and the Haluna sub-frames ([`color_script.md`](../art/color_script.md), [`haluna.md`](../art/environments/haluna.md)). Also checks the `grade:` header. Add a frame when Art defines it. |
+| `grades` | `ch02`, `ch02_noon`, `ch02_night`, `ch03`, `ch03_causeway`, `ch03_boss, ch03_steps`, `ch03_shrine_int` | Color-script frames and the Haluna sub-frames ([`color_script.md`](../art/color_script.md), [`haluna.md`](../art/environments/haluna.md)). Also checks the `grade:` header. Add a frame when Art defines it. |
 | `vfx_effects` | `glimmer_lift`, `glimmer_held`, `glimmer_bound` | Released, held, and bound light ([`glimmer.md`](glimmer.md)) |
 | `vfx_drift` | `down_seaward` | Held light sinks and drifts toward the water |
 | `vfx_motion` | `spiral_up` | Released light rises in a slow spiral |
