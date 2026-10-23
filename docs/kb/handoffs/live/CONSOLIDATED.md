@@ -1,6 +1,6 @@
 # CONSOLIDATED HANDOFF: start here
 
-**Last updated:** 2026-10-23 ~16:10 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
+**Last updated:** 2026-10-23 ~17:30 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
 A new account, Lead or environment should be able to resume from this file and the files it links. Keep it current after every merge batch (CLAUDE.md §7a).
 
 ## 1. What this is
@@ -45,7 +45,14 @@ After that, the Lead does the M1 review (M1-LEAD-01), then M2, the vertical slic
 These are lost if the container restarts. Re-launch from the task files if so.
 - **M1-CHR-07:** Asha face round 3. The smile driver gap comes first; then lips, hairline, black hair and brows.
 - (ARC-14 and NIT-01 merged at 823ad11.)
-- **Full gate ci27** is running on 823ad11 in the lead/integration worktree. Expect asha_* and haluna_* drift from CHR-04 materials and RND-12 sky; inspect it, then re-approve.
+- ci27 failed: cloth.tres had been hand-edited on the PC. Fixed at 6e09360, where the values now live in write_materials.py.
+- ci28 drift was expected: the haluna_h0* shots were re-approved at 23f0c79 (palette checks OK), and the asha_face_* shots were superseded by CHR-07's own re-approval.
+- M1-CHR-07 is merged at d7d56ea. It fixed the smile driver: missing morph normals and too-weak shapes. A new test, tools/tests/test_asha_face_drive.py, covers it.
+- **Running:**
+  - ci29, a scoped confirm of the haluna and asha shots;
+  - review sweep K1 (the M2-FP thread, ARC-14, NIT-01, RND-12, RND-15, QA-05);
+  - M1-CHR-09, Asha hair round 4 (crown shell, face-framing lock, lip thickness, doll-like eyes).
+- **Rule learned:** Asha's materials change only through write_materials.py.
 
 ## 5. Exact next steps for a Lead
 1. `git fetch origin` and merge every finished `gpu/*` branch and `claude/first-playable` into `claude/new-session-mj8c3c`.
