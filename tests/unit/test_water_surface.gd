@@ -182,6 +182,14 @@ func test_light_is_nan_safe_and_sss_is_view_dependent() -> void:
 	assert_true(light.contains("0.25 * wrap * toward_light"), "SSS wrap fades with the sun behind the viewer")
 
 
+func test_deep_lift_is_gated_by_sss() -> void:
+	# M1-RND-18 S1: the even col_deep lift stands in for crest SSS, so a material with SSS off (the
+	# storm sea) gets none and a weaker SSS gets less.
+	var body := FileAccess.get_file_as_string(SHADER_DIR.path_join("water_surface_body.gdshaderinc"))
+	assert_true(body.contains("float lift_gate = use_sss ? clamp(sss_strength / SSS_LIFT_TUNED_STRENGTH"), "gate")
+	assert_true(body.contains("scatter_view_lift * lift_gate * (1.0 - view_keep)"), "the lift uses the gate")
+
+
 # --- WaterSurface ---------------------------------------------------------------------------
 
 
