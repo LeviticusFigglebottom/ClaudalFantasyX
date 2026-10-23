@@ -37,7 +37,7 @@ Measured as numbers across the frames below, the key light runs ~5,600 K at noon
    4. Sky, then shadow.
 
    This is checked by three ratios, which hold at any exposure:
-   - **(a) Glow on/off ≥ 1.5×.** The sea with the frame's sea-glow must be at least 1.5× the luminance of the same view with sea-glow 0, so the glow is seen rather than inferred. Night frames therefore use **≥ 0.08** (measured 1.3× at 0.04 and 1.9× at 0.12, so 0.08 clears 1.5× by interpolation). The 0.04 floor stays for dusk frames where the sun is up and the glow is residual.
+   - **(a) Glow on/off ≥ 1.5×.** The sea with the frame's sea-glow must be at least 1.5× the luminance of the same view with sea-glow 0, so the glow is seen rather than inferred. Night frames therefore use **≥ 0.08** (measured 1.3× at 0.04 and 1.9× at 0.12, so 0.08 clears 1.5× by interpolation). The one named exception is `ending_unbinding` E4 0.07 and E5 0.06 (below). It is recorded in palette.json as `sea_glow_night_exceptions` and checked by `tools/tests/test_palette_rules.py` ([ADR 0022](../decisions/0022-dace-imra-strangers-sweep-f.md)). The 0.04 floor stays for dusk frames where the sun is up and the glow is residual.
    - **(b) Moonlit stone ≤ 2.5× the glowing sea.** The authoring rule that guarantees it is **moon key energy ≤ 2.5 × sea-glow energy**. Rims culled to characters (light layer 2) don't count. `ending_dock` and `post_credits` have no sea-glow by design, so (a)–(c) don't apply there.
    - **(c) Hue and chroma.** The sea reads teal (Oklab hue 190–230°) with chroma ≥ 0.05, above any moonlit stone's. A navy sky may match its chroma, but at a different hue.
 
@@ -331,7 +331,7 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Night sea-glow | energy 0.06 |
 | Exposure / contrast / saturation | exposure 0.80 (EV100 12.0 intent) · S-curve 0.65 · saturation x0.95 |
 | LUT intent | lut_ch08_storm: laterite kept warm against a slate sky; lightning frames flash to 2.0x exposure for 2 frames. Coilspire interior: copper green-cyan. |
-| Emotional note | Act I's warmth meets its first storm wall. Warm laterite, cold sky: the fight at the edge of the color arc. The figure in the storm wall is a single cyan silhouette. |
+| Emotional note | Act I's warmth meets its first storm wall. Warm laterite, cold sky: the fight at the edge of the color arc. The figure in the storm wall is a single cyan silhouette. **Kerrid at the stair foot:** no rope-burn glow in any Ch8 shot (his `glimmer_held` cue starts at Ch10, [ADR 0022](../decisions/0022-dace-imra-strangers-sweep-f.md) (g)), so the clue isn't spent at the place he died. |
 
 ### Ch9 "The Ebbing"
 `ch09` · zone `ch08/corrow (night)`
@@ -462,7 +462,7 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Sky zenith / horizon | `#050A14` / `#0B1630` |
 | Fog | albedo `#1C3A4A`, volumetric density 0.004 (night); 0.03 at the Hollowmere dawn |
 | Water | look `night_sea`, absorption_scale 1 (σ 2 / 0.5 / 0.42 m⁻¹); deep color `#061A2B`; validated at moon 0.25, sea-glow 0.12 (`ch02_night`) |
-| Glimmer | `glimmer_held`, emission energy 2.0, sideways/down (held): the shoal's held dead drifting toward Kerrid, and a few of his own motes leaving his hands sideways toward them (they never rise) |
+| Glimmer | `glimmer_held`, emission energy 2.0, sideways/down (held): the shoal's held dead drifting toward Kerrid, and a few of his own motes leaving his hands sideways toward them (they never rise). His rope-burns' faint leak is the same `glimmer_held`, never gold ([ADR 0022](../decisions/0022-dace-imra-strangers-sweep-f.md) (g)) |
 | Night sea-glow | energy 0.12 |
 | Exposure / contrast / saturation | exposure 1.10 (EV100 7.5 intent) · S-curve 0.5 · saturation x0.85 |
 | LUT intent | lut_ch15_unlamped: no warm source anywhere at night (no lamp may be struck), so skin takes only moon and sea. Toe tinted to night_sky. The Hollowmere dawn lifts to grey-rose with the first oil lamps on the hulls. |
@@ -602,7 +602,7 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 | Glimmer | `glimmer_lift`, emission energy 4.0, rising (released) |
 | Night sea-glow | energy **0.15 → 0.06**, stepped per scene: E1 0.15, E2 0.11, E3 0.08, E4 0.07, E5 0.06 held (act3_ending.md §0 rule 4), eased linearly through the rests. E5 holds at 0.06 (interpolated on/off about 1.45×, against 1.3× at 0.04) so that the cut to 0.0 is a visible step ([ADR 0020](../decisions/0020-kerrid-restaging.md)); Rendering to confirm on the mood frame. 0.0 only from the cut to `ending_dock`. After H09 this glow is released motes still rising through the water (act3_ending §0 rule 7), not held light. |
 | Exposure / contrast / saturation | exposure 1.15 (EV100 7.0 intent) · S-curve 0.5 · saturation x0.95 |
-| LUT intent | lut_ending_lift: warm motes over a navy world. sea_glow steps from 0.15 down to 0.06 over the sequence (steps in the Night sea-glow row) as the last released motes rise out of the sea. The Kite's bound lamps are dark from H09 on ([N-16](../story/decisions_log.md)): the farewell scenes (Imra, Dace, then Kerrid last, [ADR 0020](../decisions/0020-kerrid-restaging.md)) are keyed only by the leaving person's rising motes, other dead rise outside the key, and the sea-glow never lights a face. |
+| LUT intent | lut_ending_lift: warm motes over a navy world. sea_glow steps from 0.15 down to 0.06 over the sequence (steps in the Night sea-glow row) as the last released motes rise out of the sea. The Kite's bound lamps are dark from H09 on ([N-16](../story/decisions_log.md)): the farewell scenes (Imra, Dace, then Kerrid last, [ADR 0020](../decisions/0020-kerrid-restaging.md)) are keyed only by the leaving person's rising motes, other dead rise outside the key, and the sea-glow never lights a face. Kerrid's motes are `glimmer_lift` from H09 on, after rule 1's single 1.5 s lerp from his rope-burns' held cyan, so no held light shows in E3 ([ADR 0022](../decisions/0022-dace-imra-strangers-sweep-f.md) (g)). |
 | Emotional note | Everything lifts. The sea gives up its dead in slow vertical spirals. Goodbyes lit by the people leaving. |
 
 ### Ending, final image: Haluna dock
