@@ -55,6 +55,8 @@
       "swell_bar_px": 4,
       "swell_pulse_sec": 1.6,
       "swell_pulse_min": 0.55,
+      "swell_full_gap_px": 2,
+      "swell_full_frame_px": 2,
       "low_hp_fraction": 0.25,
       "hatch_px": 4
     },

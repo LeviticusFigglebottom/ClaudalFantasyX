@@ -1623,6 +1623,8 @@ SWELL_TRIGGERS = {"damage_taken", "damage_dealt", "ally_hurt", "heal_item"}
 SWELL_INPUT_KINDS = {"timing_ring"}
 SWELL_MIN_MODES = 3  # SPEC §6.2 / M1-CMB-04: at least three fill modes
 RING_SEC_FIELDS = ("lead_in_sec", "beat_sec", "perfect_sec", "good_sec")
+# M1-UI-05: SPEC §6.2 asks for a short input. The longest the ring may run if every beat runs out.
+RING_MAX_DURATION_SEC = 5.0
 
 
 def _num(v: object) -> bool:
@@ -1646,6 +1648,29 @@ def _swell_mode_errors(m: dict, w: str) -> list[str]:
     return errs
 
 
+def _ring_timing_errors(i: dict, w: str) -> list[str]:
+    """M1-UI-05: the grading window must sit inside its beat, or SwellTimingRing grades a miss before
+    a late press and that press lands on the next beat (and an early one is ignored before the beat
+    opens). The input stays short, and one frame's step never exceeds the perfect window."""
+    if not all(_num(i.get(k)) for k in (*RING_SEC_FIELDS, "peak_at")) or not _pos_int(i.get("beats")):
+        return []  # the field checks above already report it
+    errs: list[str] = []
+    peak = i["peak_at"] * i["beat_sec"]
+    if peak + i["good_sec"] > i["beat_sec"]:
+        errs.append(f"{w}: the good window ends after its beat (peak_at x beat_sec + good_sec = "
+                    f"{peak + i['good_sec']:.3g} > beat_sec {i['beat_sec']:g})")
+    if peak - i["good_sec"] < 0:
+        errs.append(f"{w}: the good window starts before its beat opens (peak_at x beat_sec - good_sec = "
+                    f"{peak - i['good_sec']:.3g} < 0)")
+    total = i["lead_in_sec"] + i["beats"] * i["beat_sec"]
+    if total > RING_MAX_DURATION_SEC:
+        errs.append(f"{w}: lasts {total:g} s (lead_in_sec + beats x beat_sec); keep it at most {RING_MAX_DURATION_SEC:g} s")
+    step = i.get("max_step_sec")
+    if not _num(step) or not 0 < step <= i["perfect_sec"]:
+        errs.append(f"{w}: max_step_sec must be a number in (0, perfect_sec]")
+    return errs
+
+
 def _swell_input_errors(i: dict, w: str) -> list[str]:
     if i.get("kind") not in SWELL_INPUT_KINDS:
         return [f"{w}: kind must be one of {sorted(SWELL_INPUT_KINDS)}"]
@@ -1659,6 +1684,7 @@ def _swell_input_errors(i: dict, w: str) -> list[str]:
         errs.append(f"{w}: peak_at must be a fraction in (0, 1)")
     if _num(i.get("perfect_sec")) and _num(i.get("good_sec")) and i["perfect_sec"] > i["good_sec"]:
         errs.append(f"{w}: perfect_sec must not exceed good_sec")
+    errs += _ring_timing_errors(i, w)
     grades = i.get("grades")
     if not isinstance(grades, dict) or set(grades) != {"perfect", "good", "miss"}:
         errs.append(f"{w}: grades must give perfect, good and miss")

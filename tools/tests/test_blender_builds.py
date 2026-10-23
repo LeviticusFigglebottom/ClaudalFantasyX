@@ -58,7 +58,7 @@ class ManifestTest(unittest.TestCase):
     def test_every_job_points_at_real_scripts_and_committed_outputs(self) -> None:
         for job in self.manifest["jobs"]:
             for run in job["runs"]:
-                script = run[run.index("--python") + 1]
+                script = vbb.run_script(run)
                 self.assertTrue((ROOT / script).is_file(), f"{job['id']}: {script}")
                 self.assertTrue(vbb.matches(script, job["sources"]), f"{job['id']}: {script} not in its sources")
             self.assertTrue(vbb.committed_outputs(job, ROOT), f"{job['id']}: no committed output")
@@ -83,6 +83,145 @@ class ManifestTest(unittest.TestCase):
             path.write_text(json.dumps(bad))
             with self.assertRaises(ValueError):
                 vbb.load_manifest(path)
+
+    def test_known_failures_must_carry_a_signature(self) -> None:  # M1-QA-06
+        job = {"id": "x", "sources": ["a/**"], "outputs": ["b/*.glb"], "runs": [["{blender}", "--python", "s.py"]]}
+        cases = [
+            ({"task": "T", "why": "w"}, "kind"),
+            ({"task": "T", "why": "w", "kind": "flaky"}, "kind"),
+            ({"task": "T", "why": "w", "kind": "build_error"}, "log_contains"),
+            ({"task": "T", "why": "w", "kind": "build_error", "log_contains": "  "}, "log_contains"),
+            ({"task": "T", "why": "w", "kind": "mismatch"}, "differs"),
+            ({"task": "T", "why": "w", "kind": "mismatch", "differs": {"b/x.glb": []}}, "differs"),
+            ({"task": "T", "why": "w", "kind": "mismatch", "differs": {"c/x.glb": ["m.POSITION"]}}, "outside its outputs"),
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "m.json"
+            for known, want in cases:
+                path.write_text(json.dumps({"jobs": [dict(job, expected_failure=known)]}))
+                with self.assertRaises(ValueError) as cm:
+                    vbb.load_manifest(path)
+                self.assertIn(want, str(cm.exception), known)
+            ok = {"task": "T", "why": "w", "kind": "mismatch", "differs": {"b/x.glb": ["m.POSITION"]}}
+            path.write_text(json.dumps({"jobs": [dict(job, expected_failure=ok)]}))
+            vbb.load_manifest(path)
+            path.write_text(json.dumps({"jobs": [dict(job, runs=[["{python}", "t.py"]])]}))
+            with self.assertRaises(ValueError):
+                vbb.load_manifest(path)  # a job opens with its Blender run
+            path.write_text(json.dumps({"jobs": [job], "coverage_exempt": [{"path": "assets/x.glb"}]}))
+            with self.assertRaises(ValueError):
+                vbb.load_manifest(path)  # an exemption needs a why
+
+    def test_repo_known_failures_are_pinned(self) -> None:
+        kinds = {j["id"]: j["expected_failure"]["kind"] for j in self.manifest["jobs"] if "expected_failure" in j}
+        self.assertEqual(kinds, {"base_body": "mismatch", "shader_test": "build_error"})
+
+    def test_python_runs_use_this_interpreter(self) -> None:
+        run = ["{python}", "assets_src/x/t.py", "--bake-dir", "{scratch}/b"]
+        self.assertEqual(vbb.expand(run, "/bin/blender", Path("/s")), [sys.executable, "assets_src/x/t.py", "--bake-dir", "/s/b"])
+        self.assertEqual(vbb.run_script(run), "assets_src/x/t.py")
+        self.assertEqual(vbb.expand(["{blender}", "--python", "a.py"], "/bin/blender", Path("/s"))[:2],
+                         ["/bin/blender", "--background"])
+
+    def test_blender_runs_with_a_pinned_thread_count(self) -> None:  # M1-QA-06 (Lead addition 1)
+        self.assertEqual(self.manifest["default_threads"], 4, "the count the committed files were built with")
+        cmd = vbb.expand(["{blender}", "--python", "a.py"], "/bin/blender", Path("/s"), 1)
+        self.assertEqual(cmd[:3], ["/bin/blender", "--threads", "1"])
+        self.assertNotIn("--threads", vbb.expand(["{python}", "t.py"], "/bin/blender", Path("/s"), 4))
+        for job in self.manifest["jobs"]:
+            self.assertGreater(vbb.job_threads(job, self.manifest), 0, f"{job['id']}: never the host's CPU count")
+
+    def test_jobs_that_export_tangents_run_single_threaded(self) -> None:
+        """Blender's threaded tangent export races: base_body differed run to run at 4 threads and was
+        byte-stable at 1 (2026-10-23). A new tangent-exporting build must not join a threaded job."""
+        for job in self.manifest["jobs"]:
+            # The scripts a job runs and the modules beside them (asha lists base_body/** as a source
+            # for its shared bb_* modules, but never runs base_body's build.py).
+            dirs = {str(Path(vbb.run_script(r)).parent) for r in job["runs"]}
+            scripts = [p for p in vbb._tracked(ROOT, "assets_src", ".py") if str(Path(p).parent) in dirs]
+            exports = [p for p in scripts if "export_tangents=True" in (ROOT / p).read_text(encoding="utf-8")]
+            if exports:
+                self.assertEqual(vbb.job_threads(job, self.manifest), 1, f"{job['id']}: {exports} export tangents")
+            self.assertNotIn("tolerance", job, f"{job['id']}: deterministic now; a tolerance is the last resort")
+
+    def test_rejects_a_bad_thread_count(self) -> None:
+        job = {"id": "x", "sources": ["a/**"], "outputs": ["b/*.glb"], "runs": [["{blender}", "--python", "s.py"]]}
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "m.json"
+            for bad in (-1, "4", True, 1.5):
+                path.write_text(json.dumps({"jobs": [dict(job, threads=bad)]}))
+                with self.assertRaises(ValueError, msg=bad):
+                    vbb.load_manifest(path)
+
+    def test_asha_textures_and_materials_are_verified(self) -> None:  # sweep I, S3 on M1-QA-02
+        asha = next(j for j in self.manifest["jobs"] if j["id"] == "asha")
+        self.assertTrue(vbb.matches("assets/characters/asha/textures/asha_head_albedo.png", asha["outputs"]))
+        self.assertTrue(vbb.matches("assets/characters/asha/materials/skin_head.tres", asha["outputs"]))
+        self.assertFalse(vbb.matches("assets/characters/asha/textures/asha_head_albedo.png.import", asha["outputs"]))
+        scripts = [vbb.run_script(r) for r in asha["runs"]]
+        self.assertIn("assets_src/characters/asha/asha_textures.py", scripts)
+        self.assertIn("{scratch}/asha_bake", asha["runs"][0], "the texture step reads the Blender run's dump")
+
+
+class CoverageTest(unittest.TestCase):  # M1-QA-06
+    def test_repo_is_fully_covered(self) -> None:
+        self.assertEqual(vbb.coverage_errors(vbb.load_manifest()), [])
+
+    def test_uncovered_glb_and_bpy_script_fail_unless_exempt(self) -> None:
+        manifest = {"jobs": [{"id": "a", "sources": ["assets_src/a/**"], "outputs": ["assets/a/*.glb"], "runs": []}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            files = {
+                "assets/a/ok.glb": "",
+                "assets/b/new.glb": "",
+                "assets_src/a/build.py": "import bpy\n",
+                "assets_src/b/gen.py": "def f():\n    import bmesh\n",
+                "assets_src/b/numpy_only.py": "import numpy\n# not bpy: 'import bpy' in a comment is not at line start\n",
+                "assets_src/c/also.py": "from mathutils import Vector\n",
+            }
+            for rel, text in files.items():
+                (root / rel).parent.mkdir(parents=True, exist_ok=True)
+                (root / rel).write_text(text)
+            errs = vbb.coverage_errors(manifest, root)
+            self.assertEqual(len(errs), 3, errs)
+            for want in ("assets/b/new.glb", "assets_src/b/gen.py", "assets_src/c/also.py"):
+                self.assertTrue(any(e.startswith(want) for e in errs), want)
+            manifest["coverage_exempt"] = [{"path": "assets/b/*.glb", "why": "t"}, {"path": "assets_src/**", "why": "t"}]
+            self.assertEqual(vbb.coverage_errors(manifest, root), [])
+
+
+class KnownVerdictTest(unittest.TestCase):  # M1-QA-06
+    BUILD = {"task": "T", "why": "w", "kind": "build_error", "log_contains": "ValueError: key"}
+    MISMATCH = {"task": "T", "why": "w", "kind": "mismatch", "differs": {"o/a.glb": ["m.indices", "m.POSITION"]}}
+
+    @staticmethod
+    def res(error: str = "", diffs: dict | None = None) -> dict:
+        files = [{"path": p, "status": "DIFF", "signature": sorted(s)} for p, s in (diffs or {}).items()]
+        files.append({"path": "o/same.glb", "status": "identical"})
+        return {"ok": False, "error": error, "files": files}
+
+    def test_build_error_needs_its_log_line(self) -> None:
+        self.assertTrue(vbb.known_verdict(self.BUILD, self.res("build exited 1"), "...\nValueError: key\n")[0])
+        ok, why = vbb.known_verdict(self.BUILD, self.res("build exited 1"), "ImportError: no module\n")
+        self.assertFalse(ok)
+        self.assertIn("does not contain", why)
+        self.assertFalse(vbb.known_verdict(self.BUILD, self.res("timed out after 900 s"), "ValueError: key")[0])
+        self.assertFalse(vbb.known_verdict(self.BUILD, self.res(diffs={"o/a.glb": ["m.POSITION"]}), "")[0],
+                         "a build that now runs but mismatches is a new failure")
+
+    def test_mismatch_must_be_the_same_files_and_accessors(self) -> None:
+        same = {"o/a.glb": ["m.POSITION", "m.indices"]}
+        self.assertTrue(vbb.known_verdict(self.MISMATCH, self.res(diffs=same), "")[0])
+        for diffs, want in (
+            ({"o/a.glb": ["m.POSITION", "m.indices", "m.JOINTS_0"]}, "now also differs in m.JOINTS_0"),
+            ({"o/a.glb": ["m.POSITION"]}, "no longer in m.indices"),
+            ({"o/a.glb": ["m.POSITION", "m.indices"], "o/b.glb": ["<bytes>"]}, "o/b.glb differs too"),
+            ({}, "o/a.glb no longer differs"),
+        ):
+            ok, why = vbb.known_verdict(self.MISMATCH, self.res(diffs=diffs), "")
+            self.assertFalse(ok, diffs)
+            self.assertIn(want, why)
+        self.assertFalse(vbb.known_verdict(self.MISMATCH, self.res("build exited 1"), "")[0], "a crash is not the mismatch")
 
 
 class SelectionTest(unittest.TestCase):
@@ -137,6 +276,24 @@ class CompareTest(unittest.TestCase):
         ok, why = vbb.compare_glb(make_glb(POS, TAN, IDX), make_glb(POS, TAN, IDX[::-1].copy()), TOL)
         self.assertFalse(ok)
         self.assertIn("m.indices", why)
+
+    def test_differences_name_every_accessor_not_only_the_first_kind(self) -> None:  # M1-QA-06
+        pos = POS.copy()
+        pos[2, 1] += 0.5  # changes POSITION data and its max
+        tan = TAN.copy()
+        tan[1, 0] -= 1e-4  # within tolerance: not a difference
+        a, b = make_glb(POS, TAN, IDX), make_glb(pos, tan, IDX[::-1].copy())
+        self.assertEqual(vbb.glb_differences(a, b, TOL), ["m.POSITION", "m.indices"])
+        self.assertEqual(vbb.glb_differences(a, b, None), ["m.POSITION", "m.TANGENT", "m.indices"])
+        self.assertEqual(vbb.glb_differences(a, a, TOL), [])
+        with tempfile.TemporaryDirectory() as tmp:
+            pa, pb = Path(tmp) / "a.glb", Path(tmp) / "b.glb"
+            pa.write_bytes(a)
+            pb.write_bytes(b)
+            status, _detail, sig = vbb.compare_file(pa, pb, TOL)
+            self.assertEqual((status, sig), ("DIFF", ["m.POSITION", "m.indices"]))
+            pb.write_bytes(b"not a glb at all")
+            self.assertEqual(vbb.compare_file(pa, pb, TOL)[2], [vbb.SIG_BYTES])
 
     def test_non_glb_needs_bytes(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

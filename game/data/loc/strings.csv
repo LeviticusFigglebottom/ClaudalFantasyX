@@ -418,7 +418,7 @@ SWELL_MODE_TETHER_DESC,The gauge fills as your allies are hurt.
 SWELL_MODE_SALVE,Salve
 SWELL_MODE_SALVE_DESC,The gauge fills each time you use a healing item.
 SWELL_INPUT_TIMING_RING,Lamp Ring
-SWELL_INPUT_TIMING_RING_HELP,"Press as the lamp flares brightest, three times."
+SWELL_INPUT_TIMING_RING_HELP,Press as each flare burns brightest. Flares: {beats}.
 HUD_CMD_SWELL,Swell
 HUD_HELP_SWELL_FMT,{name}'s Swell is full: unleash a technique
 HUD_SWELL_RING_HINT,Confirm: strike as the ring meets the lamp · Cancel: back

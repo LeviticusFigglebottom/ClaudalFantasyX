@@ -1,5 +1,5 @@
 ---
-id: M1-CHR-03
+id: M1-CHR-08
 title: Import the cloth band-id map without mipmaps
 role: character
 status: todo

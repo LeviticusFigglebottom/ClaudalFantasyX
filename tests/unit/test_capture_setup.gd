@@ -65,6 +65,42 @@ func test_nodes_are_set_held_against_the_scene_and_restored() -> void:
 	root.free()
 
 
+func test_held_values_win_over_a_tween_that_runs_after_process() -> void:  # M1-QA-06
+	var root := _scene()
+	var lamp := root.get_node("Lamp") as OmniLight3D
+	var cam := root.get_node("Cam") as Camera3D
+	var setup := CaptureSetup.new({"nodes": {"Lamp": {"light_energy": 3}, "Cam": {"position": [1, 2, 3]}}})
+	assert_eq(setup.attach(root), "")
+	var tw := root.create_tween().set_parallel()
+	tw.tween_property(lamp, "light_energy", 0.25, 1.0)
+	tw.tween_property(cam, "position", Vector3(9, 9, 9), 1.0)
+	tw.pause()  # stepped by hand, in the SceneTree's order: node _process (the hold), then Tweens
+	setup.hold()
+	tw.custom_step(0.5)
+	assert_ne(lamp.light_energy, 3.0, "the Tween wrote after the _process hold")
+	setup.pre_draw()  # RenderingServer.frame_pre_draw: after Tweens, before the frame is drawn
+	assert_eq(lamp.light_energy, 3.0, "the held value is the last write before drawing")
+	assert_eq(cam.position, Vector3(1, 2, 3))
+	assert_eq(cam.global_position, Vector3(1, 2, 3), "the held transform is current, not a frame late")
+	tw.kill()
+	setup.end()
+	root.free()
+
+
+func test_pre_draw_is_connected_only_while_a_nonempty_setup_runs() -> void:
+	var vp := _host().get_viewport()
+	var setup := CaptureSetup.new({"viewport": {"use_taa": false}})
+	assert_eq(setup.begin(vp), "")
+	assert_true(RenderingServer.frame_pre_draw.is_connected(setup.pre_draw))
+	setup.end()
+	assert_false(RenderingServer.frame_pre_draw.is_connected(setup.pre_draw), "disconnected when the shot ends")
+	var empty := CaptureSetup.new({})
+	assert_eq(empty.begin(vp), "")
+	assert_false(RenderingServer.frame_pre_draw.is_connected(empty.pre_draw), "no setup, no hook: baselines unchanged")
+	empty.pre_draw()  # harmless with nothing attached
+	empty.end()
+
+
 func test_viewport_and_time_scale_are_restored() -> void:
 	var vp := _host().get_viewport()
 	var taa := vp.use_taa

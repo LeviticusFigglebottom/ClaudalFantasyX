@@ -54,6 +54,16 @@ godot --headless --path . --import
 godot --headless --path . res://tests/run_tests.tscn       # add -- --filter=battle to narrow
 ```
 
+### Gate scope: run what your change can break (human directive, 2026-10-23)
+
+Long checks that block work should run only when they can catch something. They are not a ritual.
+- **Docs, story or task-board only:** `validate_data`, `taskboard --check`, `dlgc --check`, plus `unittest` only if you touched `tools/`. No Godot run.
+- **Code:** lint, format and data checks, plus the Godot tests filtered to your area (`-- --filter=<area>`). Run the coverage step only if you touched `game/battle/` or `game/progression/`.
+- **Screenshots:** only the shots your change can affect (`HYMN_SHOTS`). Never the whole manifest from a worktree.
+- **Blender:** the rebuild step runs only for jobs your branch touched. Set `HYMN_SKIP_BLENDER=1` when you touched no Blender source.
+- **Full `tools/ci_local.sh` with every shot:** the Lead runs it on the integration branch after a batch of code or render merges, not after every docs merge.
+- If a check can't catch anything in your diff, skip it and say so in your report. Skipping a check that *could* catch something is not allowed.
+
 ## 4. Claiming work — SPEC §13.3
 
 - Tasks are files: `docs/kb/tasks/<milestone>/<id>-<slug>.md` (see `docs/kb/tasks/README.md`).
@@ -77,6 +87,13 @@ Any choice that affects more than one role, or that departs from the spec, gets 
 ## 7. Handoffs — SPEC §13.5
 
 Every session ends with `docs/kb/handoffs/<YYYY-MM-DD>-<role>-<n>.md` covering what was done, what's in progress, **the exact next step**, known issues, and the files touched. The template is in `docs/kb/handoffs/README.md`.
+
+### 7a. Live handoff logs (human directive, 2026-10-23)
+
+The project will move to another account with new environments on the same repo. At any moment, a fresh Lead must be able to resume from the repo alone.
+- **`docs/kb/handoffs/live/CONSOLIDATED.md`** is the single entry point. The Lead keeps it current after every merge batch. It covers the state of every environment and branch, what's in flight, the exact next steps, open human questions, and gotchas.
+- **`docs/kb/handoffs/live/<environment>.md`** has one file per environment (`lead-cloud.md`, `pc-gpu.md`, `first-playable.md` and so on). Each environment updates its own file on its own branch after every finished item: what's done, what's in progress, the exact next step, and any un-pushed state. Never edit another environment's file; the Lead merges them.
+- A per-session handoff (§7) is still written at the end of each task.
 
 ## 8. Branches and merging
 
