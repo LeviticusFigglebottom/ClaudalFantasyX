@@ -30,3 +30,27 @@ Measured on an RX 9070 XT; full report `docs/kb/qa/gpu/2026-10-23-rnd-12-sky.md`
 - **Reviewers:** Environment (Rendering ↔ Environment pair, fidelity versus performance) and the Art Director for the new look.
 
 ## Review log
+- 2026-10-23 environment (review-sweep-K, fresh reviewer): **approve the Environment half, with should-fixes.** No blockers. The Art Director's verdict on the new look is still owed.
+  - **What I read:**
+    - the task and the GPU report `docs/kb/qa/gpu/2026-10-23-rnd-12-sky.md`;
+    - `git diff b44cfed^1 b44cfed`: env_sky_cumulus.gdshader, graphics_settings.gd, graphics_presets.json, haluna_noon_environment.tres, kit_net, materials.py, bake_cloud_lattice2.py, palette_check, the tests and PROVENANCE;
+    - the Lead's lavapipe re-approval of the five `haluna_h0*` baselines (23f0c79);
+    - the PC queue file on origin/gpu/m2-rnd-01-undertow.
+  - **Checks:** Godot `--filter=graphics_settings` 24/0 failed and `environment_shaders` 8/0. Tool tests 400 OK, which include test_cloud_lattice and the palette_check mutation tests. `validate_data` 0/0.
+    - I didn't re-render shots: the baselines were re-approved at 23f0c79 on the merged state, and this review changes nothing.
+  - **The report is convincing.**
+    - It measures before and after per tier and per camera, and gives a clean cloud-only figure (`sky − no_clouds`).
+    - Its drift test gives the R2 numbers: p99 drops from 11.36 to 3.13 ms.
+    - It explains why the 24-step tier was rejected, and the quintic gather beats hardware bilinear's 8 sub-texel bits for the reason it gives.
+    - The lattice imports correctly: lossless (`compress/mode=0`), no mipmaps, 8-bit grey, with a PROVENANCE row (:289).
+    - The Ultra tier equals the shader defaults, so the capture rig still renders what the baselines show.
+  - **Should-fix:**
+    - **S1: in the game, no runtime code applies a preset.** `GraphicsSettings.apply_current` and `apply` are called only from tools/gpu_bench/* (grep: no caller under game/). So `sky_detail` never reaches the sky in the game, and the first playable runs the shader defaults, which are the Ultra tier: 1.1–1.2 ms here, projected about 2.5–6 ms on the target cards.
+      - This is a pre-existing gap for every preset (vegetation_detail too), not RND-12's doing.
+      - But "High within budget" is true only in the bench until a boot or zone-entry hook applies the saved settings. File the hook (Systems or UI), and note it in graphics_settings.md.
+    - **S2: the sun-turn result is unexplained.** Report §7 (:88) says `--spin-sun` showed no re-render cost, either because "Godot's light-change check didn't fire" or because the cheap march hides it. With `process_mode = 2` (Incremental, haluna_noon_environment.tres:17), confirm that the radiance cubemap actually updates when the sun moves. Capture a water or metal reflection before and after a 30° sun turn. Dusk and time-of-day zones will rely on it.
+    - **S3: a shared resource is mutated.** `_apply_sky_uniform` (graphics_settings.gd:244-252) writes into the shared sky ShaderMaterial resource. Every zone that loads the same .tres inherits the last tier, which is fine. In an editor tool run it would dirty the resource. Say so in its doc comment.
+    - **S4: Art Director sign-off still owed.** The task names the AD as a reviewer for the new look: R4's brighter thin edges, the new billows, and the hashed net's stipple in H04 without TAA. The Lead's 23f0c79 re-approval doesn't record an AD verdict. Leave it in review for that, or record the AD call in the Review log.
+  - **Nits:**
+    - The projections to the RTX 3060 and GTX 1060 are scaled from the RX 9070 XT. The reference cards are still unmeasured (STATUS risk 3).
+    - The half-res sky pass is sized from the window, not `render_scale` (report "After"). FSR2 or a lower render scale therefore doesn't make the sky cheaper. Worth a line in graphics_settings.md.
