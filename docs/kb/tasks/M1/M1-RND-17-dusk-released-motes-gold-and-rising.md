@@ -2,7 +2,7 @@
 id: M1-RND-17
 title: Dusk released motes read gold and rising (halo chroma, streak axis)
 role: rendering
-status: review
+status: doing
 reviewer: character
 owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-17-dusk-motes)"
 depends_on: [M1-RND-08]
@@ -86,3 +86,33 @@ palette_check gained the `advisory` flag. Turn them strict when `glimmer_dusk` i
 **Reviewer:** character (Art Director).
 
 ## Review log
+- 2026-10-23 character (review-sweep-N, fresh reviewer, Art Director): **changes needed.** The streak fix and the dusk look are approved. The gold-halo floor breaks colour-script rule 1 in `glimmer_release`, so its baseline must not be re-approved as it stands.
+  - **What I read:** this task, `docs/kb/qa/gpu/2026-10-23-rnd-17-dusk-motes.md`, color_script.md "Art sign-off 2026-10-23", and `git diff c3517dc^1 c3517dc` (process and draw shaders, glimmer.json, glimmer_field.gd, palette_check.py, mote_metrics.py and its test).
+  - **Checks:** `HYMN_SKIP_BLENDER=1 HYMN_SHOTS=<glimmer_*, water_*, veg_*, haluna_h0*, asha_*, save_shrine_field> tools/ci_local.sh`: every gate up to the shots passes (Godot 1174/0). Lavapipe: `glimmer_dusk` **0.01471** and `glimmer_release` **0.01451** (both FAIL, as predicted). `glimmer_night_held` 0.00000, `glimmer_bound` 0.00000 and `save_shrine_field` 0.00160 pass. I ran `mote_metrics.py` on the lavapipe capture: it reproduces the GPU table to the third decimal.
+  - **What I viewed:** both glimmer captures against their baselines at full size, plus 4× crops of the release shot's right-hand sky and its horizon band.
+  - **What passes:**
+    - **The streaks read rising.** Median 5.9°, 83 % within 30°, 3 % beyond 60°. The dusk still frame now reads as an ascent, not the held grammar. Leaving the tangential term out of `CUSTOM.xyz` is the preferred fix, and `spiral_rate_rad_s` 1.0 is kept.
+    - **The upper sky reads gold.** Hue 76°, and coverage is 16.2 %, so the gold was not bought with size.
+    - **Horizon and mirror:** chroma under the halo is now at or above the sky's (0.044 against 0.043, and 0.045 against 0.036). The halo no longer bleaches the sky.
+    - Held and bound motes are untouched.
+  - **Art decision on the horizon and mirror hue (asked in the report).** I accept the gamut argument: on the peach band, added gold cannot pull Δab to 75–95°. I re-scope those two targets as follows:
+    - **horizon:** Δab hue ≤ 145° (from 175°), plus chroma not below the background;
+    - **mirror:** hue 75–110°, plus chroma not below the background.
+    - Keep the 0.04 |Δab| floor as advisory there.
+    - Heads-down: by this script, ≤ 0.07 is a non-regression (the baseline was 0.085). Drop the sign-off's 2 % figure, because its count method can't be reproduced.
+    - Don't tint the cores to chase the hue.
+  - **Blockers:**
+    - **B1: two hues per mote in `glimmer_release`** (glimmer_motes_draw_body.gdshaderinc:106-111). The floor is mixed in by `released` = `INSTANCE_CUSTOM.w`, the release blend, so mid-lerp motes get an amber halo around a cyan-white core. The 4× crop of x 600–960 shows it plainly; in the baseline those halos were white-cyan. Rule 1 and this task's own note say one hue per mote.
+      - Fix: drive the floor by the core's own warmth (its Oklab b, as the old `warm` term did), or by `smoothstep(0.6, 1.0, released)`, and not by the raw blend.
+    - **B2: the horizon hue band is geometric, not sky-aware** (:108-109). At night (`glimmer_release`, dark blue sky) the 8° band turns halos near the horizon a copper orange (55°). That is neither gold nor the held cyan. The 55° switch exists for a peach dusk sky only.
+      - Fix: gate it per field or per mood (a `halo_hue_horizon_deg` the zone sets, defaulting to `halo_hue_deg`), or weight it by the sky warmth the scene publishes.
+  - **Should-fix:**
+    - **S1:** the upper sky |Δab| is 0.0597 on lavapipe, a hair under the 0.06 target. Once the check goes strict, it fails. Raise `halo_chroma_min` slightly (about 0.23), or set `dab_min` to 0.059 with a note.
+    - **S2:** the halo hue is a fixed constant (`halo_hue_deg` 83), whatever the field's released palette is. A future released colour that isn't `glimmer_lift` (M2 Drownbell VFX) would still get a gold halo. Derive it from the released colour, or document the coupling in glimmer.md.
+    - **S3:** glimmer_field.gd:540-541 duplicates the shader defaults (83.0) as fallbacks. Read them from glimmer.json only, or name a constant.
+    - **S4:** turn `mote_halo` and `mote_streaks` strict, with the re-scoped targets above, in the same commit that re-approves `glimmer_dusk`.
+  - **Baselines:**
+    - **`glimmer_dusk` (0.0147): approve the look.** Re-approve it after B1/B2 land, because the fix will move it again.
+    - **`glimmer_release` (0.0145): reject** (B1, B2).
+  - **Still owed:** Art's numbers in color_script.md "Art sign-off" after the fix. This review log is the record until then.
+- 2026-10-23 lead: the code merge was REVERTED on the integration branch (e97dd41 / 9a57a8c) because the review-sweep-N blockers broke lavapipe shots. The reports and notes are kept. The PC reworks it on its gpu/ branch: rebase on the integration branch, fix the blockers, and resubmit.

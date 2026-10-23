@@ -123,7 +123,8 @@ func test_read_and_victory_credit_the_same_enemy_id() -> void:  # M1-NIT-02 (swe
 	for foe in e.enemies:
 		var rev := BattleRead.reveal(foe, e.db.enemies.get(BattleEngine.enemy_id(foe), {}))
 		assert_eq(StringName(str(rev["enemy_id"])), BattleEngine.enemy_id(foe), "%s" % foe.id)
-		assert_ne(String(BattleEngine.enemy_id(foe)), String(foe.id), "the row id, not the field id")
+		var row_id := StringName(String(foe.id).get_slice("#", 0))
+		assert_eq(BattleEngine.enemy_id(foe), row_id, "the row id, not the field id")  # M2-NIT-03
 	var bb := BattleBestiary.new()
 	bb.attach(e, true)
 	e.battle_finished.emit(BattleEngine.OUTCOME_VICTORY)

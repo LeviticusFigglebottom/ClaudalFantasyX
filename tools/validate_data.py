@@ -38,6 +38,9 @@ SKILL_TARGETS = {"single_foe", "all_foes", "single_ally", "all_allies", "self"}
 AI_TARGETS = {"random_foe", "lowest_hp_foe", "highest_hp_foe", "self", "random_ally", "all_foes", "all_allies",
               "largest_ally"}
 AI_CONDITIONS = {"self_hp_below_pct", "turn_mod", "foe_has_status", "allies_alive_below", "field_active"}
+# M2-CMB-02 (combat): target kinds only skills take (items keep SKILL_TARGETS). all_other_allies is
+# every living active ally but the user (Shallows Verse: a song for the others, never the singer).
+SKILL_ONLY_TARGETS = {"all_other_allies"}
 STAT_KEYS = {"level", "hp", "mp", "strength", "magic", "defense", "magic_defense",
              "agility", "accuracy", "evasion", "luck"}
 CANON_STATUSES = {"poison", "sleep", "silence", "darkness", "petrify", "slow", "haste", "stop",
@@ -153,8 +156,8 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
         w = f"skills.{s['id']}"
         if s.get("kind") not in SKILL_KINDS:
             rep.err(f"{w}: kind must be one of {sorted(SKILL_KINDS)}")
-        if s.get("target") not in SKILL_TARGETS:
-            rep.err(f"{w}: target must be one of {sorted(SKILL_TARGETS)}")
+        if s.get("target") not in SKILL_TARGETS | SKILL_ONLY_TARGETS:
+            rep.err(f"{w}: target must be one of {sorted(SKILL_TARGETS | SKILL_ONLY_TARGETS)}")
         if s.get("element", "none") not in ELEMENTS:
             rep.err(f"{w}: unknown element '{s.get('element')}'")
         rank = s.get("rank")

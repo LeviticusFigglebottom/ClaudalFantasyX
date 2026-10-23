@@ -60,6 +60,29 @@ func attack_as_answer(engine: BattleEngine, actor: BattleCombatant, target: Batt
 		use(engine, sid, target)
 
 
+## M2-NIT-03: a ready technique takes the foe this actor answers too (the weakest such foe, else
+## the weakest), instead of always the weakest: the Swell no longer pulls the answer off its focus.
+func swell_focus(engine: BattleEngine, actor: BattleCombatant) -> BattleCombatant:
+	return _target_for(engine, actor)
+
+
+## M2-NIT-03: the free swap to the focus foe's answer comes before a ready technique (the gauge
+## keeps its points in reserve), so the Swell never costs the answer its turn.
+func unleash_swell(engine: BattleEngine) -> bool:
+	if _swaps_out(engine, engine.current):
+		return false
+	return super.unleash_swell(engine)
+
+
+## True when decide() would swap `actor` out for the reserve member who answers its focus foe.
+func _swaps_out(engine: BattleEngine, actor: BattleCombatant) -> bool:
+	var target := _target_for(engine, actor)
+	if target == null:
+		return false
+	var answer := role_answer(engine, target)
+	return answer != actor.id and may_leave(engine, actor) and _reserve_ready(engine, answer)
+
+
 static func _reserve_ready(engine: BattleEngine, cid: StringName) -> bool:
 	for c in engine.party_reserve:
 		if c.id == cid:

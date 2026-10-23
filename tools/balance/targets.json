@@ -1,5 +1,5 @@
 {
-  "_doc": "Machine-readable target bands for tools/balance/sim.py. The prose and rationale live in docs/kb/design/balance_targets.md; change both together. Bands are inclusive [min, max] win percentages per policy; null = reported, no band. Each suite names the loadout (gear and consumables) its bands assume. mean_turns_min (optional) maps a policy to its ease ceiling: the fewest mean turns it may take, so a band that sits at 100% still catches a regression that makes the fight easier. swell (M2-CMB-01, optional): the quality every hero's Swell input is played at when a policy unleashes a full gauge (off, miss, good or perfect; default off). naive never unleashes.",
+  "_doc": "Machine-readable target bands for tools/balance/sim.py. The prose and rationale live in docs/kb/design/balance_targets.md; change both together. Bands are inclusive [min, max] win percentages per policy; null = reported, no band. Each suite names the loadout (gear and consumables) its bands assume. mean_turns_min (optional) maps a policy to its ease ceiling: the fewest mean turns it may take, so a band that sits at 100% still catches a regression that makes the fight easier. swell (M2-CMB-01, optional): the quality every hero's Swell input is played at when a policy unleashes a full gauge (off, miss, good or perfect; default off). naive never unleashes. naive_swell (M2-NIT-03) is naive plus the Swell row, always report only (null): balance_targets.md says when its rate needs a decision.",
   "suites": [
     {
       "id": "sandbox_reef",
@@ -19,6 +19,7 @@
           5,
           15
         ],
+        "naive_swell": null,
         "lowest_hp": null,
         "role_answer": [
           85,
@@ -54,6 +55,7 @@
           10,
           30
         ],
+        "naive_swell": null,
         "lowest_hp": null,
         "role_answer": [
           90,
@@ -87,6 +89,7 @@
           0,
           10
         ],
+        "naive_swell": null,
         "role_answer": [
           70,
           90

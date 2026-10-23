@@ -92,7 +92,13 @@ func _push() -> void:
 		water.position.y = water_height_y
 		water.tide_line_y = tide_line_y
 	if writes_water_level() and is_inside_tree():
-		RenderingServer.global_shader_parameter_set(GLOBAL_WATER_LEVEL, water_level())
+		_write_water_level(water_level())
+
+
+## Sets the `hymn_water_level` global. One seam, so a test can see the value written (reading a
+## global back is editor-only; M2-NIT-03).
+func _write_water_level(level: Vector2) -> void:
+	RenderingServer.global_shader_parameter_set(GLOBAL_WATER_LEVEL, level)
 
 
 func _apply_quality() -> void:

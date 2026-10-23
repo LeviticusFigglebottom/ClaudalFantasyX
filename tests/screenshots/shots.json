@@ -200,7 +200,8 @@
         960,
         540
       ],
-      "settle_frames": 16
+      "settle_frames": 16,
+      "threshold_rmse": 0.018
     },
     {
       "id": "veg_frangipani_close",
@@ -210,7 +211,8 @@
         960,
         540
       ],
-      "settle_frames": 16
+      "settle_frames": 16,
+      "threshold_rmse": 0.018
     },
     {
       "id": "veg_beach_wide",
@@ -220,7 +222,8 @@
         960,
         540
       ],
-      "settle_frames": 16
+      "settle_frames": 16,
+      "threshold_rmse": 0.018
     },
     {
       "id": "water_shallows",

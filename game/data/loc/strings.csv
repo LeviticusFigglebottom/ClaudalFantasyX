@@ -534,3 +534,5 @@ SWELL_INPUT_BRACE,Tide Brace
 SWELL_INPUT_BRACE_HELP,Hold Confirm through every blow and let go on the counter.
 SWELL_INPUT_GLYPH,Glyph Trace
 SWELL_INPUT_GLYPH_HELP,Trace the glyph's strokes in order. A clean quick trace burns brighter.
+HUD_TARGET_ALL_OTHER_ALLIES,all other allies
+HUD_GROUP_ALL_OTHER_ALLIES,All other allies

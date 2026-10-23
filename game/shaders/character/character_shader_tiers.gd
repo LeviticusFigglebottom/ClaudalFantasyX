@@ -101,6 +101,11 @@ static func apply_tier(material: Material, tier: String) -> bool:
 ## a material can sit at different tiers. Slots under `root` that shared one source share one copy,
 ## and calling again on the same root swaps its own copies in place instead of copying again.
 ## Each source material is visited once. Returns the number of source materials changed.
+## Not reached (M2-NIT-03): `GeometryInstance3D.material_overlay` and any `Material.next_pass`
+## chain are neither swapped nor copied. A tiered next_pass (a hair shell, an outline) or overlay
+## would stay at its authored tier; extend this walk before adding one. Swapping back to a material's
+## source tier keeps the owned copy in the slot rather than restoring the shared source (same shader
+## and parameters), so per-instance copies live as long as the instance (character_shading.md).
 static func apply_to_tree(root: Node, tier: String) -> int:
 	var done := {}
 	var changed := 0

@@ -36,7 +36,7 @@
        "grades": {"traced": 9, "swift": 45, "miss": 0}}
     ],
     "unlocks": [
-      {"id": "tether_from_ballast", "mode": "tether", "event": "damage_taken", "while_mode": "ballast", "count": 12},
+      {"id": "tether_from_ballast", "mode": "tether", "event": "damage_taken", "while_mode": "ballast", "count": 40},
       {"id": "salve_from_items", "mode": "salve", "event": "heal_item", "count": 5}
     ],
     "heroes": [

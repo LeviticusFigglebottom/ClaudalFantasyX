@@ -206,6 +206,8 @@ func _hit_set(sk: Dictionary, recipient: BattleCombatant) -> Array[BattleCombata
 			return living_foes_of(current)
 		"all_allies":
 			return living_allies_of(current)
+		"all_other_allies":
+			return living_other_allies_of(current)
 	var out: Array[BattleCombatant] = []
 	if recipient != null:
 		out.append(recipient)
@@ -655,6 +657,13 @@ func living_allies_of(c: BattleCombatant) -> Array[BattleCombatant]:
 	return _living(party_active if c.team == BattleCombatant.TEAM_PARTY else enemies)
 
 
+## Every living ally of `c` but `c` itself: the reach of an "all_other_allies" skill (M2-CMB-02).
+func living_other_allies_of(c: BattleCombatant) -> Array[BattleCombatant]:
+	var out := living_allies_of(c)
+	out.erase(c)
+	return out
+
+
 func find(cid: StringName) -> BattleCombatant:
 	for c in party_active + party_reserve + enemies:
 		if c.id == cid:
@@ -883,7 +892,8 @@ func _field() -> Array[BattleCombatant]:
 
 
 ## Filters `targets` to those `sk` may legally hit: alive, deduplicated, on the side its
-## "target" field names, and exactly one for single-target skills.
+## "target" field names (never the actor for "all_other_allies"), and exactly one for
+## single-target skills.
 func _valid_targets(actor: BattleCombatant, sk: Dictionary, targets: Array[BattleCombatant]) -> Array[BattleCombatant]:
 	var kind := String(sk.get("target", "single_foe"))
 	var out: Array[BattleCombatant] = []
@@ -895,8 +905,10 @@ func _valid_targets(actor: BattleCombatant, sk: Dictionary, targets: Array[Battl
 			"single_foe", "all_foes":
 				if not is_foe:
 					continue
-			"single_ally", "all_allies":
+			"single_ally", "all_allies", "all_other_allies":
 				if is_foe or not party_active.has(t) and t.team == BattleCombatant.TEAM_PARTY:
+					continue
+				if kind == "all_other_allies" and t == actor:
 					continue
 			"self":
 				if t != actor:

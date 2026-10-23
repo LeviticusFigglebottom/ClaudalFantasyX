@@ -83,3 +83,15 @@ From the review-sweep-L entries (file:line references there).
       - `spec_shift_jitter` sits at the shader's cap (0.3). That says the cap is binding: Rendering should consider raising it rather than tuning against it.
     - Art must amend asha.md §5 to match, or supersede the ADR, before it moves to accepted. The Lead accepts it after both checks.
 - 2026-10-23 lead: stays in review until M1-QA-05c (the PC's 2x GPU capture). The sweep-M faults are recorded for the next round. ADR 0024 stays proposed: test a neutral cool highlight tint (about 0.88, 0.90, 0.95) first.
+- 2026-10-23 rendering (review-sweep-N, fresh reviewer, applying M1-QA-05c): **still review; don't close.** QA-05c, the GPU judgement the Lead was waiting for, has landed: neutral passes, grief fails, and smile needed RND-20, which is now merged and clean on lavapipe.
+  - **What CHR-10 needs before closing:**
+    - Criterion 2 (the lid band) is still visible on the GPU: QA-05c fault 5, "orange, like make-up". Criterion 1's crown shell is still partial. Either finish them, or move them explicitly to a round-6 task, and tick or strike them here.
+    - Criterion 5's striation half is done by M1-RND-20 (bias 4.5). Mark it done, with that reference.
+  - **To file now** (Character, round 6):
+    - the grief teeth: cooler albedo, more roughness, tooth separation and smoother normals (QA-05c fault 3);
+    - the lash density and irregularity (fault 4);
+    - the notch at the inner corner of the grief brow (fault 6);
+    - the smile expression: eyes and cheeks;
+    - the ragged upper-lip border.
+  - **To file now** (Rendering): the cavity fill or AO floor for the grief mouth interior (QA-05c fault 2).
+  - **ADR 0024:** QA-05c confirms near-black with a dark-brown sheen on the GPU, which is check 2 of sweep-M. Check 1, the neutral-key R:B and the lock hue on lavapipe, plus the neutral cool tint trial, is still owed before the ADR is accepted.

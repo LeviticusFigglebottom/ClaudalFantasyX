@@ -82,13 +82,18 @@ None that matters. `.scratch/` (excluded through `.git/info/exclude`) holds the 
 5. Read the M2-FP task files and `docs/kb/handoffs/2026-10-23-first-playable-1.md`.
 
 ## History
+- 2026-10-23: merged integration (M2-CMB-02 Shallows Verse, M2-NIT-03, the M2 UI). I kept the `_show_pick` target-kind line in battle_controller.gd as merged (no conflict there).
+  - My Drownbell handoff is now **combat-8**, because theirs took 6 and 7.
+  - In the validator, the AI vocabulary (field_active, largest_ally) and SKILL_ONLY_TARGETS are both kept.
+  - Drownbell rebalance: with the Verse covering only two allies, smart fell to 77.3%, so Floodtide went from 15 to 14.
+  - `sim.py --check` at 5000 seeds passes every suite. Drownbell: naive 0%, role_answer 77.7%, smart 85.5%.
 - 2026-10-23: merged integration (SPEC v1.2, M2-CMB-01 Swell inputs, M2-ARC-01 save v6).
-  - Handoff renumbering: theirs took combat-5 and architect-16, so mine are now **combat-6** (Drownbell) and **architect-17** (ARC-15).
-  - Drownbell rebalance after Swell: with Swell, smart reached 95.5%, so Floodtide went from power 13 to 15. At 5000 seeds: naive 0%, role_answer 78.8%, smart 91.2%.
+  - Handoff renumbering: theirs took combat-5 and architect-16, so mine are now **combat-8** (Drownbell) and **architect-17** (ARC-15).
+  - Drownbell rebalance after Swell: with Swell, smart reached 95.5%, so Floodtide went from power 13 to 15 (since superseded: it is now 14, see above).
   - Added the VFX hook docs for M2-RND-04.
 - 2026-10-23: merged integration (the coverage ratchet 4c462ee, M1-NIT-02 enemy_id, ADR 0023 Amendment 1); clean merge. ci_local green: 1125 tests; game/battle 99.94% (baseline 99.93%), progression 96.52%.
 - 2026-10-23: merged integration c21dce5 (M1-CMB-03: save v5, Read, openings).
-  - The Drownbell's ADR is now **0024**, because CMB-03 took 0023. My combat handoff is now combat-6.
+  - The Drownbell's ADR is now **0024**, because CMB-03 took 0023. My combat handoff is now combat-8.
   - ch02_tideline and drownbell have `"opening": "normal"`.
   - The two id helpers moved out of BattleController into `BattleIds`, keeping it at 989 lines (under the cap).
   - ci_local green: 1094 tests, battle coverage 99.94%, battle and title shots unchanged.

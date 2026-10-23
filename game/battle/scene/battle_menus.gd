@@ -120,13 +120,15 @@ func skill_rows(engine: BattleEngine) -> Array[Dictionary]:
 
 
 ## The Swell page: the actor's techniques (BattleSwell.techniques: name and rank, no MP; greyed out
-## until the gauge is full), then one row per unlocked fill mode (M2-UI-01, swell_mode_rows).
+## until the gauge is full, or while nobody is in reach, e.g. a song for the others with no other ally
+## standing), then one row per unlocked fill mode (M2-UI-01, swell_mode_rows).
 func swell_rows(engine: BattleEngine, swell: BattleSwell) -> Array[Dictionary]:
 	var rows: Array[Dictionary] = []
 	var full := swell.is_full(engine.current)
 	for tid in swell.techniques(engine.current):
 		var rank := int(engine.db.skill(tid).get("rank", Formulas.DEFAULT_RANK))
-		rows.append(_row(tid, skill_name(engine, tid), _rank_text(rank), _rank_role(rank), full, tid))
+		var reach := not skill_candidates(engine, tid).is_empty()
+		rows.append(_row(tid, skill_name(engine, tid), _rank_text(rank), _rank_role(rank), full and reach, tid))
 	rows.append_array(swell_mode_rows(swell, engine.current))
 	return rows
 
@@ -247,7 +249,7 @@ func item_candidates(engine: BattleEngine, action: ItemBattleAction) -> Array[Ba
 
 
 ## Who the cursor may pick for `skill_id`: the provoker alone while Provoke forces it, otherwise
-## every living foe or ally the skill's reach allows.
+## every living foe or ally the skill's reach allows (never the actor for "all_other_allies").
 func skill_candidates(engine: BattleEngine, skill_id: StringName) -> Array[BattleCombatant]:
 	var kind := str(engine.db.skill(skill_id).get("target", "single_foe"))
 	var forced := engine.forced_target(engine.current, skill_id)
@@ -256,6 +258,8 @@ func skill_candidates(engine: BattleEngine, skill_id: StringName) -> Array[Battl
 		return only
 	if kind.ends_with("foe") or kind.ends_with("foes"):
 		return engine.living_foes_of(engine.current)
+	if kind == "all_other_allies":
+		return engine.living_other_allies_of(engine.current)
 	return engine.living_allies_of(engine.current)
 
 
@@ -488,8 +492,12 @@ func target_notes(
 	return out
 
 
-func group_label(hostile: bool) -> String:
-	return tr("HUD_GROUP_ALL_FOES") if hostile else tr("HUD_GROUP_ALL_ALLIES")
+## The group pick's name: all foes, all allies, or all other allies for a skill that skips its
+## user (`target` is the skill row's "target"; "" for items).
+func group_label(hostile: bool, target: String = "") -> String:
+	if hostile:
+		return tr("HUD_GROUP_ALL_FOES")
+	return tr("HUD_GROUP_ALL_OTHER_ALLIES") if target == "all_other_allies" else tr("HUD_GROUP_ALL_ALLIES")
 
 
 func _row(
@@ -529,6 +537,8 @@ func _target_text(target: String) -> String:
 			return tr("HUD_TARGET_SINGLE_ALLY")
 		"all_allies":
 			return tr("HUD_TARGET_ALL_ALLIES")
+		"all_other_allies":
+			return tr("HUD_TARGET_ALL_OTHER_ALLIES")
 		"self":
 			return tr("HUD_TARGET_SELF")
 	return tr("HUD_TARGET_SINGLE_FOE")

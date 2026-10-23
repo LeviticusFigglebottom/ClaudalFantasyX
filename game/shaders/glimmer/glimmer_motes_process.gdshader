@@ -5,10 +5,7 @@
 // Per-particle layout (read by glimmer_motes_draw*.gdshader):
 //   TRANSFORM  basis = uniform scale of the core radius (m), origin = world position
 //   COLOR      rgb = linear colour * energy (HDR), a = life/absorption envelope
-//   CUSTOM     xyz = streak velocity (m/s, for the stretched trail): VELOCITY without the released
-//              spiral's tangential term, so a rising mote's streak stands upright while the mote itself
-//              still circles (M1-RND-17), w = released share (blend x not bound), for the draw
-//              pass's gold halo
+//   CUSTOM     xyz = world velocity (m/s, for the stretched trail), w = unused
 //   USERDATA1  four uniform randoms fixed at spawn (motion)
 //   USERDATA3  four more (x = brightness)
 //   USERDATA2  x = age (s), y = spiral phase (rad), z = spiral sense (+-1), w = core radius (m)
@@ -218,10 +215,8 @@ void process() {
 	float spiral_r = mix(spiral_radius_min_m, spiral_radius_max_m, r.w);
 	float omega = spiral_rate_rad_s * USERDATA2.z;
 	float ang = USERDATA2.y + age * omega;
-	vec3 spiral_t = spiral_r * omega * vec3(-sin(ang), 0.0, cos(ang));
-	vec3 v_released = vec3(0.0, mix(rise_min_mps, rise_max_mps, r.x), 0.0) + spiral_t;
-	// Share of spiral_t that survives into the target below (the streak leaves it out).
-	float spiral_share = blend;
+	vec3 v_released = vec3(0.0, mix(rise_min_mps, rise_max_mps, r.x), 0.0)
+			+ spiral_r * omega * vec3(-sin(ang), 0.0, cos(ang));
 
 	vec3 target = mix(v_held, v_released, blend) + curl * mix(held_curl_scale, released_curl_scale, blend);
 
@@ -243,21 +238,17 @@ void process() {
 		weight = max(weight, o.w);
 	}
 	target = mix(target, pull + target * attractor_keep_drift, weight);
-	spiral_share *= mix(1.0, attractor_keep_drift, weight);
 
 	// Bound glimmer never moves.
 	target *= 1.0 - still;
-	spiral_share *= 1.0 - still;
 
 	float depth = max(water_height_m - pos.y, 0.0);
 	float response = response_rate + underwater_drag * step(HYMN_EPSILON, depth);
 	if (depth > 0.0) {
 		target *= 1.0 / (1.0 + underwater_drag);
-		spiral_share *= 1.0 / (1.0 + underwater_drag);
 	}
-	float follow = 1.0 - exp(-DELTA * response);
-	VELOCITY = mix(VELOCITY, world_to_field_basis * target, follow);
-	CUSTOM = vec4(mix(CUSTOM.xyz, world_to_field_basis * (target - spiral_t * spiral_share), follow), blend * (1.0 - still));
+	VELOCITY = mix(VELOCITY, world_to_field_basis * target, 1.0 - exp(-DELTA * response));
+	CUSTOM = vec4(VELOCITY, 0.0);
 
 	// Colour: hue lerp in Oklab (held -> released), whitening towards lift_hi as a released mote
 	// climbs out of its life into the sky; bound teal overrides both.
