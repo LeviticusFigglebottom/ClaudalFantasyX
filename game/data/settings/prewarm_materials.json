@@ -241,6 +241,83 @@
       ],
       "tier": "all",
       "note": "M1-RND-04 eye helper (one variant for every tier)."
+    },
+    {
+      "path": "res://assets/environments/kits/haluna/materials/kit_coral_stone.tres",
+      "scenes": [
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-ENV-01 weathering (High tier): coral stone, triplanar. Zones placing the Haluna kit add their scene paths."
+    },
+    {
+      "path": "res://assets/environments/kits/haluna/materials/kit_coral_concrete.tres",
+      "scenes": [
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-ENV-01 weathering: Lit Age coral-concrete ruins."
+    },
+    {
+      "path": "res://assets/environments/kits/haluna/materials/kit_mortar_white.tres",
+      "scenes": [
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-ENV-01 weathering: lime mortar (tide-wall caps, ridge rolls)."
+    },
+    {
+      "path": "res://assets/environments/kits/haluna/materials/kit_timber.tres",
+      "scenes": [
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-ENV-01 weathering, mesh-UV path: timber."
+    },
+    {
+      "path": "res://assets/environments/kits/haluna/materials/kit_thatch.tres",
+      "scenes": [
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-ENV-01 weathering, mesh-UV path: thatch."
+    },
+    {
+      "path": "res://assets/environments/kits/haluna/materials/kit_roof_tile.tres",
+      "scenes": [
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-ENV-01 weathering, mesh-UV path: red tile."
+    },
+    {
+      "path": "res://assets/environments/kits/haluna/materials/kit_wake_shell.tres",
+      "scenes": [
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-ENV-01 wake-shells (env_wake_shell.gdshader)."
+    },
+    {
+      "path": "res://game/shaders/environment/env_weathering_low.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-ENV-01 weathering Low tier: a separate pipeline (README 'Shader-cache prewarm')."
+    },
+    {
+      "path": "res://game/shaders/environment/env_weathering_medium.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-ENV-01 weathering Medium tier."
+    },
+    {
+      "path": "res://game/shaders/environment/env_weathering_ultra.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-ENV-01 weathering Ultra tier."
+    },
+    {
+      "path": "res://game/shaders/environment/env_ground.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+      ],
+      "note": "M1-ENV-01 zone ground (terrain is generated, so a quad prewarms a different vertex format)."
     }
   ]
 }

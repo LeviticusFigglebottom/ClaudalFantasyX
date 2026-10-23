@@ -1,0 +1,60 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_kit_sheet.gd" id="1_sheet"]
+[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_dresser.gd" id="2_dresser"]
+[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_mood.gd" id="3_rig"]
+[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/weathering_tide.gd" id="4_tide"]
+[ext_resource type="Environment" path="res://game/levels/_tests/haluna_mood/haluna_noon_environment.tres" id="5_env"]
+
+[sub_resource type="PlaneMesh" id="Ground"]
+size = Vector2(160, 160)
+
+[sub_resource type="StandardMaterial3D" id="GroundMat"]
+albedo_color = Color(0.82, 0.77, 0.66, 1)
+roughness = 0.95
+
+[node name="HalunaKitSheet" type="Node3D" node_paths=PackedStringArray("sun", "tide")]
+script = ExtResource("3_rig")
+sun = NodePath("Sun")
+tide = NodePath("Tide")
+water_height_m = -5.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("5_env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+light_color = Color(1, 0.945, 0.894, 1)
+light_energy = 3.2
+shadow_enabled = true
+sky_mode = 1
+directional_shadow_max_distance = 120.0
+
+[node name="Tide" type="Node" parent="."]
+script = ExtResource("4_tide")
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, -30)
+mesh = SubResource("Ground")
+surface_material_override/0 = SubResource("GroundMat")
+
+[node name="Sheet" type="Node3D" parent="." node_paths=PackedStringArray("dresser")]
+script = ExtResource("1_sheet")
+dresser = NodePath("Dresser")
+
+[node name="Dresser" type="Node3D" parent="Sheet" node_paths=PackedStringArray("tide")]
+script = ExtResource("2_dresser")
+layout_path = "res://game/levels/_tests/haluna_mood/haluna_kit_sheet.json"
+tide = NodePath("../../Tide")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Front" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 40, 28, 30)
+current = true
+fov = 50.0
+far = 800.0
+
+[node name="Close" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 8, 5, 12)
+fov = 50.0
+far = 800.0
