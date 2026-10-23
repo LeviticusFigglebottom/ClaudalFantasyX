@@ -108,6 +108,10 @@
     "scud_stretch": 3.0,
     "water_wall_height_m": 1400.0,
     "water_wall_mix": 0.55,
+    "ms_octaves": 3,
+    "ms_attenuation": 0.35,
+    "ms_extinction": 0.25,
+    "ms_eccentricity": 0.6,
     "empty_step": 2.5,
     "dense_step": 0.55
   },

@@ -13,7 +13,7 @@ The M1 prototype reads (horizon and eye shots) but its raymarched tiers are an e
 
 ## Acceptance criteria
 - [~] Body at half/quarter resolution with temporal reprojection (half-res done: High 4.94 → 2.27 ms; baked noise done in M1-RND-10; compute-pass occlusion inside the volume is the remaining step); baked 3D noise textures instead of hash noise; <= 2-3 ms estimated on the recommended tier
-- [ ] Billow surface detail and multiple scattering (no uniform khaki lit tone, less regular striations)
+- [~] Billow surface detail and multiple scattering (multiple scattering done: 3 octaves, free; billow surface detail and striation regularity still open) (no uniform khaki lit tone, less regular striations)
 - [ ] Wounds as real torn rents; storm-scale mote streamers
 - [ ] Storm in sky and reflections, shadowing the zone, rain
 - [ ] Lightning bolts plus exposure flash

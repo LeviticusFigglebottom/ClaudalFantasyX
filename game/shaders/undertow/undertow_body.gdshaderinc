@@ -127,6 +127,14 @@ uniform float back_scatter : hint_range(-0.95, 0.0) = -0.25;
 uniform float scatter_mix : hint_range(0.0, 1.0) = 0.7;
 uniform float light_step_m : hint_range(10.0, 5000.0) = 650.0;
 uniform float base_darkening : hint_range(0.0, 1.0) = 0.75;
+// Multiple scattering (M2-RND-01; Wrenninge et al. 2013, "Oz: The Great and Volumetric"): the sun term
+// is a sum of ms_octaves octaves, octave i with energy ms_attenuation^i, extinction ms_extinction^i and
+// phase eccentricity ms_eccentricity^i. Deeper light survives (lit interiors, soft silver edges, no flat
+// slab of single-scattered tone). 1 octave = single scattering (the M1 look).
+uniform int ms_octaves : hint_range(1, 4) = 1;
+uniform float ms_attenuation : hint_range(0.0, 1.0) = 0.5;
+uniform float ms_extinction : hint_range(0.0, 1.0) = 0.4;
+uniform float ms_eccentricity : hint_range(0.0, 1.0) = 0.6;
 // Direct light reaching the storm's lower body (a low sun has crossed the outer bands first):
 // full above sun_clear_height, sun_low_floor of it at sea level.
 uniform float sun_clear_height : hint_range(0.0, 1.0) = 0.8;
@@ -260,7 +268,8 @@ float cloud_density(float env, float n) {
 	return clamp((n + erosion_envelope * env - erosion_threshold - coverage_bias) * erosion_contrast, 0.0, 1.0);
 }
 
-float sun_transmittance(vec3 p, vec3 L) {
+// Sun-ward optical depth at p (extinction units: transmittance = exp(-it)).
+float sun_optical_depth(vec3 p, vec3 L) {
 	float od = 0.0;
 	for (int k = 1; k <= UNDERTOW_LIGHT_SAMPLES; k++) {
 		vec3 q = p + L * (light_step_m * float(k * k));
@@ -272,7 +281,7 @@ float sun_transmittance(vec3 p, vec3 L) {
 #endif
 		od += d * light_step_m * float(2 * k - 1);
 	}
-	return exp(-od * density_per_m * sun_extinction);
+	return od * density_per_m * sun_extinction;
 }
 
 void fragment() {
@@ -299,6 +308,18 @@ void fragment() {
 	vec3 L = normalize(hymn_sun_direction + vec3(0.0, HYMN_EPSILON, 0.0));
 	float cos_t = dot(rd, L);
 	float phase = mix(hg_phase(cos_t, back_scatter), hg_phase(cos_t, forward_scatter), scatter_mix);
+	// Per-octave energy x phase (cos_t is per pixel, so the octaves' phases are computed once here).
+	vec4 ms_weight = vec4(0.0);
+	float ms_a = 1.0;
+	float ms_c = 1.0;
+	for (int o = 0; o < 4; o++) {
+		if (o >= ms_octaves) {
+			break;
+		}
+		ms_weight[o] = ms_a * mix(hg_phase(cos_t, back_scatter * ms_c), hg_phase(cos_t, forward_scatter * ms_c), scatter_mix);
+		ms_a *= ms_attenuation;
+		ms_c *= ms_eccentricity;
+	}
 	vec3 sun = col_sun * sun_energy;
 	vec3 albedo = col_albedo * albedo_gain;
 	float wound_per_m = wound_energy / wound_scale_m;
@@ -354,7 +375,17 @@ void fragment() {
 		vec3 glow = col_wound * seam * wound_per_m * (0.3 + 2.8 * d * (1.0 - d));
 		float sigma = d * density_per_m;
 		float ts = exp(-sigma * ds);
-		float t_sun = sun_transmittance(p, L);
+		float tau_sun = sun_optical_depth(p, L);
+		// Sum of the octaves: transmittance exp(-tau b^i) weighted by energy x phase.
+		float sun_ms = 0.0;
+		float ms_b = 1.0;
+		for (int o = 0; o < 4; o++) {
+			if (o >= ms_octaves) {
+				break;
+			}
+			sun_ms += ms_weight[o] * exp(-tau_sun * ms_b);
+			ms_b *= ms_extinction;
+		}
 		vec3 amb = mix(col_ambient_bottom, col_ambient_top, smoothstep(0.0, 1.0, h)) * ambient_energy;
 		amb *= exp(-ambient_occlusion * env * d);
 		float base = mix(1.0 - base_darkening, 1.0, smoothstep(0.0, 0.45, h));
@@ -363,7 +394,7 @@ void fragment() {
 		if (water_wall_height_m > 0.0) {
 			alb = mix(albedo, col_water_wall, water_wall_mix * (1.0 - smoothstep(0.0, water_wall_height_m, p.y)));
 		}
-		vec3 lit = alb * (sun * t_sun * sun_reach * phase * HYMN_TAU * 2.0 + amb) * base;
+		vec3 lit = alb * (sun * sun_ms * sun_reach * HYMN_TAU * 2.0 + amb) * base;
 		// Inner light: lightning in the wall and held light pooled behind the wounds.
 		vec3 inner = undertow_lightning(p) + col_held * pocket * pocket_energy * wound_intensity * env;
 		vec3 s = lit + inner * (0.35 + 0.65 * d);

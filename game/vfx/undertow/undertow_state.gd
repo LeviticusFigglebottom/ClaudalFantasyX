@@ -115,6 +115,10 @@ const UNIFORM_MAP := {
 		"scud_stretch": "scud_stretch",
 		"water_wall_height_m": "water_wall_height_m",
 		"water_wall_mix": "water_wall_mix",
+		"ms_octaves": "ms_octaves",
+		"ms_attenuation": "ms_attenuation",
+		"ms_extinction": "ms_extinction",
+		"ms_eccentricity": "ms_eccentricity",
 	},
 	"wounds":
 	{
@@ -169,6 +173,8 @@ const UNIFORM_MAP := {
 		"sun": "spray_sun",
 	},
 }
+## Mapped uniforms declared int in the shaders (pushed as int, not float).
+const INT_UNIFORMS: Array[String] = ["ms_octaves"]
 ## sea_response keys that fade with the storm's intensity (a sleeping storm leaves the sea alone).
 const SEA_RESPONSE_SCALED: Array[String] = ["darken", "chop", "roughness", "streak_amount"]
 ## colors key -> shader uniform(s).
@@ -445,7 +451,7 @@ func static_parameters() -> Dictionary:
 		var keys := UNIFORM_MAP[section] as Dictionary
 		for key: String in keys:
 			if src.has(key):
-				out[keys[key]] = float(src[key])
+				out[keys[key]] = int(src[key]) if INT_UNIFORMS.has(keys[key]) else float(src[key])
 	var colors := _section("colors")
 	for key: String in COLOR_MAP:
 		for uniform_name: String in COLOR_MAP[key]:

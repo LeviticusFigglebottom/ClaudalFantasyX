@@ -60,7 +60,8 @@ Nothing; between items.
 
 1. **M2-RND-01** (`gpu/m2-rnd-01-undertow`), in progress.
    - Done: the half-res body (High 4.94 → 2.27 ms, glow dither 0.0092).
-   - Next: billow multiple scattering; then the compute-pass occlusion inside the volume.
+   - Done: multiple scattering (3 octaves, free).
+   - Next: billow surface detail and striation regularity; the compute-pass occlusion inside the volume. Then move on to item 2.
 2. **Grief mouth-interior fill** (QA-05c fault 2, rendering side; Asha materials only via write_materials.py). File
    the asset half (black interior, gold teeth) as a character task.
 3. **M2-RND-03**, the battle VFX library (claimed for this session). SPEC v1.2 power tiers are lesser, greater and
