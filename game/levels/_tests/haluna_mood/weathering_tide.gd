@@ -34,8 +34,11 @@ const TIER_NAMES := {"low": Quality.LOW, "medium": Quality.MEDIUM, "high": Quali
 	set(value):
 		water_height_y = value
 		_push()
-## The zone sea. It must publish the water level (publishes_water_level); without a sea this node
-## writes `hymn_water_level` itself.
+## The zone sea. It should publish the water level (publishes_water_level). Without a sea, or with
+## a sea that does not publish (a warning at _ready), this node writes `hymn_water_level` itself, so
+## the shaders never keep the previous zone's level (M1-NIT-02, review-sweep-L S1). The sea
+## publishes in its _process, so the wet line trails a water_height_y change by one frame, and reads
+## the cleared 0,0 before the sea's first frame (README "Tide").
 @export var water: WaterSurface
 @export var quality: Quality = Quality.HIGH:
 	set(value):
@@ -47,7 +50,9 @@ var _materials: Array[ShaderMaterial] = []
 
 func _ready() -> void:
 	if water != null and not water.publishes_water_level:
-		push_warning("WeatheringTide %s: the sea %s does not publish hymn_water_level" % [name, water.name])
+		push_warning(
+			"WeatheringTide %s: the sea %s does not publish hymn_water_level; writing it here" % [name, water.name]
+		)
 	_push()
 
 
@@ -77,11 +82,16 @@ static func quality_for_preset(preset_id: String) -> Quality:
 	return TIER_NAMES.get(GraphicsSettings.preset_tier(preset_id, PRESET_TIER_SYSTEM), Quality.HIGH)
 
 
+## True when this node writes `hymn_water_level` itself: there is no sea, or the sea does not publish.
+func writes_water_level() -> bool:
+	return water == null or not water.publishes_water_level
+
+
 func _push() -> void:
 	if water != null:
 		water.position.y = water_height_y
 		water.tide_line_y = tide_line_y
-	elif is_inside_tree():
+	if writes_water_level() and is_inside_tree():
 		RenderingServer.global_shader_parameter_set(GLOBAL_WATER_LEVEL, water_level())
 
 

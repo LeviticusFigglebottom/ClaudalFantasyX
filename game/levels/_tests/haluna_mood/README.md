@@ -60,6 +60,16 @@ flood rig animates one value and every wet line follows. Its tier comes from gra
 `presets[].tiers.weathering` (`WeatheringTide.quality_for_preset`). SceneRouter resets the global on
 every zone change, and the sea resets it when it leaves the tree.
 
+M1-NIT-02 (review-sweep-L on M1-ENV-05):
+- **A sea that doesn't publish.** If `WeatheringTide.water` is set but its `publishes_water_level`
+  is off, the tide still moves that sea, warns once at `_ready`, and writes `hymn_water_level`
+  itself. The no-sea branch does the same. The shaders therefore never keep 0,0 or the previous
+  zone's level.
+- **One-frame lag (for the Drownbell flood rig).** The sea publishes in its `_process`, so the wet
+  line trails a `water_height_y` change by one frame. Before the sea's first frame it reads the
+  cleared 0,0. At tide speed this can't be seen. A flood rig that cuts the water height in one jump
+  under a camera cut should make the jump one frame before the cut.
+
 ## Vegetation groups (M1-ENV-05)
 
 The dresser tags what `vegetation_detail` drives (graphics_presets.json `vegetation_groups`): plant LOD
