@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/swatches/swatch_measure.gd" id="measure"]
+
+[node name="SwatchMeasure" type="Node"]
+script = ExtResource("measure")

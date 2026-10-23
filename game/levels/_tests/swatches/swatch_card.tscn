@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/swatches/swatch_card.gd" id="card"]
+
+[sub_resource type="Environment" id="EnvReference"]
+background_mode = 1
+background_color = Color(0, 0, 0, 1)
+ambient_light_source = 1
+reflected_light_source = 1
+tonemap_mode = 4
+tonemap_exposure = 1.0
+tonemap_agx_white = 12.0
+glow_enabled = false
+
+[node name="SwatchCard" type="Node3D"]
+script = ExtResource("card")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("EnvReference")
+
+[node name="ShotCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+projection = 1
+size = 18.0
+near = 0.1
+far = 50.0
+current = true

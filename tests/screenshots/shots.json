@@ -281,6 +281,17 @@
         960,
         540
       ]
+    },
+    {
+      "id": "swatch_card",
+      "scene": "res://game/levels/_tests/swatches/swatch_card.tscn",
+      "camera": "ShotCamera",
+      "settle_frames": 8,
+      "resolution": [
+        1280,
+        720
+      ],
+      "threshold_rmse": 0.004
     }
   ]
 }
