@@ -412,6 +412,36 @@ class CueVocabularyTests(DlgcTestBase):
                     self.assertIn(arg["set"], cues["sets"], name)
 
 
+
+class CameraCueTests(DlgcTestBase):
+    """M1-ARC-07: `@camera <shot> [blend=] [ease=] [grade=]` and the reserved `@camera release [blend=] [ease=]`."""
+
+    def test_camera_takes_an_ease(self) -> None:
+        ops = self.ops("@camera H06 blend=1.5 ease=linear grade=ch02")
+        self.assertEqual(ops[0]["args"], ["H06"])
+        self.assertEqual(ops[0]["kwargs"], {"blend": 1.5, "ease": "linear", "grade": "ch02"})
+        self.assert_error("@camera H06 ease=bouncy", "'bouncy' is not one of linear", 3)
+
+    def test_release_compiles_with_blend_and_ease(self) -> None:
+        ops = self.ops("@camera release\n@camera release blend=0\n@camera release blend=2.5 ease=out_quart")
+        self.assertEqual([o["args"] for o in ops], [["release"]] * 3)
+        self.assertEqual([o["kwargs"] for o in ops], [{}, {"blend": 0}, {"blend": 2.5, "ease": "out_quart"}])
+
+    def test_release_allows_only_its_own_keys(self) -> None:
+        self.assert_error("@camera release grade=ch02", "@camera release: unknown key 'grade=' (allowed: blend=, ease=)",
+                          3)
+        self.assert_error("@camera release blend=-1", "@camera release blend=: -1 is below the minimum 0", 3)
+        self.assert_error("@camera release H06", "takes shot; got 2", 3)
+
+    def test_repo_camera_eases_match_field_camera_json(self) -> None:
+        import validate_data
+        cues = json.loads((ROOT / "game/data/dialogue/cues.json").read_text(encoding="utf-8"))
+        cam = json.loads((ROOT / "game/data/world/field_camera.json").read_text(encoding="utf-8"))
+        self.assertEqual(validate_data.camera_ease_errors(cues, cam), [])
+        cam["eases"]["out_back"] = {"trans": "TRANS_BACK", "ease": "EASE_OUT"}
+        self.assertIn("must match the eases", "\n".join(validate_data.camera_ease_errors(cues, cam)))
+
+
 class VocabShapeTests(unittest.TestCase):
     """validate_data.dialogue_vocab_errors over cues.json / events.json."""
 
@@ -435,6 +465,13 @@ class VocabShapeTests(unittest.TestCase):
                      "duplicate event 'zone_unlock'"):
             self.assertIn(want, errs)
         self.assertTrue(self.check({}, {}))
+
+    def test_reserved_values_are_checked(self) -> None:
+        self.cues["reserved"]["camera"]["release"]["kwargs"] = ["blend", "hold"]
+        self.cues["reserved"]["camera"]["cut"] = {"kwargs": []}
+        errs = "\n".join(self.check(self.cues, self.events))
+        self.assertIn("reserved.camera.release.kwargs: must list keys of @camera", errs)
+        self.assertIn("reserved.camera.cut: needs a meaning string or an object with a 'doc'", errs)
 
 
 class EventTests(DlgcTestBase):
