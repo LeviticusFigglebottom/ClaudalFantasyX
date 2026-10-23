@@ -136,14 +136,43 @@ func test_shrine_light_is_bound_and_still() -> void:
 	_done()
 
 
-func test_teleport_network_is_a_stub() -> void:
+func test_the_shrine_joins_the_teleport_network_when_used() -> void:
 	assert_eq(shrine.network_id, &"save_shrine_test")
 	assert_eq(ShrineNetwork.loaded_shrines().get(&"save_shrine_test"), shrine, "registered while loaded")
-	assert_eq(shrine.teleport_destinations(), [] as Array[StringName])
-	assert_false(shrine.request_teleport(&"anywhere"))
 	assert_false(ShrineNetwork.is_attuned(&"save_shrine_test"))
+	assert_eq(shrine.teleport_destinations(), [] as Array[StringName], "the only shrine: nowhere to go")
+	assert_false(shrine.request_teleport(&"anywhere"))
+	shrine.opens_menu = false
+	shrine.rest()
+	assert_true(ShrineNetwork.is_attuned(&"save_shrine_test"), "attuned by resting (M1-ARC-06)")
+	assert_eq(Game.state.attuned_shrines, [&"save_shrine_test"] as Array[StringName])
 	_done()
 	assert_false(ShrineNetwork.loaded_shrines().has(&"save_shrine_test"), "unregistered on exit")
+
+
+func test_resting_heals_the_saved_party_and_sets_the_respawn_point() -> void:
+	Game.state.party_vitals = {"rhen": {"hp": 3, "mp": 0, "statuses": ["poison", "petrify"]}, "asha": {"hp": 0}}
+	shrine.opens_menu = false
+	shrine.rest()
+	assert_eq(Game.state.party_vitals, {}, "full HP/MP and every shrine cure (party_rest.json)")
+	assert_eq(Game.state.respawn_location_id, &"field_test")
+	assert_eq(Game.state.respawn_spawn, &"Shrine", "the shrine's row in locations.json")
+	_done()
+
+
+func test_the_save_made_at_the_shrine_continues_at_the_shrine() -> void:
+	Game.state.party_vitals = {"toma": {"hp": 1}}
+	player.interact()
+	shrine.menu.handle_input(_action(&"ui_accept"))
+	var back := SaveSystem.load_from_slot(1)
+	assert_eq(back.party_vitals, {}, "the save holds the healed party")
+	assert_eq(back.attuned_shrines, [&"save_shrine_test"] as Array[StringName])
+	var wr := WorldReturn.new()
+	var to := wr.resolve(back)
+	assert_eq(to["scene"], ZONE)
+	assert_eq(to["spawn"], &"Shrine")
+	wr.free()
+	_done()
 
 
 func _action(action: StringName) -> InputEventAction:

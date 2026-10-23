@@ -8,14 +8,24 @@ extends Node
 ## deltas always give the same total. A single step is clamped to [0, PLAY_TIME_MAX_STEP_SEC],
 ## so a debugger break or a dragged window cannot add minutes at once. The title screen calls
 ## stop_play_clock(); new_game() and SaveSystem.load_into_game() start it again.
+##
+## Party vitals (M1-ARC-06): Game owns the live party's HP, MP and carried statuses between
+## battles (state.party_vitals, rules in game/data/world/party_rest.json):
+##   EventBus.party_full_heal_requested   -> heal_party(): full HP/MP, cures "shrine_cures"
+##   EventBus.battle_party_returned       -> record_party(): writes HP/MP/carried statuses back
+##   vitals_modifier()                    -> a BattleEngine.party_modifier that applies them; put
+##                                           it LAST in EquipmentEffects.compose([...])
 
 const FLAGS_PATH := "res://game/data/flags.tres"
 ## The largest single frame step counted towards play time, in seconds.
 const PLAY_TIME_MAX_STEP_SEC := 1.0
+const REST_RULES_PATH := "res://game/data/world/party_rest.json"
 
 var state: GameStateData = GameStateData.new()
 var registry: FlagRegistry
 var play_clock_running := true
+## party_rest.json: carried_statuses, carried_duration, shrine_cures.
+var rest_rules: Dictionary = {}
 
 
 func _ready() -> void:
@@ -24,6 +34,9 @@ func _ready() -> void:
 	if registry == null:
 		push_error("Game: failed to load flag registry at %s" % FLAGS_PATH)
 		registry = FlagRegistry.new()
+	rest_rules = load_rest_rules()
+	EventBus.party_full_heal_requested.connect(heal_party)
+	EventBus.battle_party_returned.connect(record_party)
 
 
 func _process(delta: float) -> void:
@@ -79,6 +92,70 @@ func stop_play_clock() -> void:
 
 func play_time_sec() -> float:
 	return state.play_time_sec
+
+
+# --- Party vitals (M1-ARC-06) -------------------------------------------------------------------
+
+
+static func load_rest_rules() -> Dictionary:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(REST_RULES_PATH))
+	if typeof(parsed) != TYPE_DICTIONARY:
+		push_error("Game: could not read %s" % REST_RULES_PATH)
+		return {}
+	return parsed as Dictionary
+
+
+## Statuses that outlast a battle and are saved per member.
+func carried_statuses() -> Array[StringName]:
+	return _ids(rest_rules.get("carried_statuses", []))
+
+
+## Statuses a save shrine's rest removes.
+func shrine_cures() -> Array[StringName]:
+	return _ids(rest_rules.get("shrine_cures", []))
+
+
+## Duration a carried status comes back with at battle setup (the engine's "until cured").
+func carried_duration() -> int:
+	return int(rest_rules.get("carried_duration", 0))
+
+
+## EventBus.party_full_heal_requested: fills every member's HP and MP and cures shrine_cures.
+## Returns the members whose saved vitals changed.
+func heal_party(_source_id: StringName = &"") -> Array[StringName]:
+	return state.full_heal(shrine_cures())
+
+
+## EventBus.battle_party_returned: writes each party combatant's HP, MP and carried statuses into
+## state.party_vitals. Entries that are not BattleCombatants are ignored.
+func record_party(_encounter_id: StringName, _outcome: StringName, party: Array) -> void:
+	var carried := carried_statuses()
+	for v: Variant in party:
+		if not v is BattleCombatant:
+			continue
+		var c: BattleCombatant = v
+		var held: Array[StringName] = []
+		for sid: StringName in c.statuses:
+			held.append(sid)
+		state.record_vitals(c.id, c.hp, c.max_hp, c.mp, c.max_mp, held, carried)
+
+
+## A BattleEngine.party_modifier that applies `for_state`'s vitals (default: the live state at the
+## time of the call). It holds the state, so it stays valid for the whole setup. Run it last:
+##   engine.party_modifier = EquipmentEffects.compose([progress.apply_to, fx.modifier(),
+##                                                     Game.vitals_modifier()])
+func vitals_modifier(for_state: GameStateData = null) -> Callable:
+	var st := for_state if for_state != null else state
+	var duration := carried_duration()
+	return func(c: BattleCombatant) -> void: st.apply_vitals_to(c, duration)
+
+
+static func _ids(list: Variant) -> Array[StringName]:
+	var out: Array[StringName] = []
+	if typeof(list) == TYPE_ARRAY:
+		for v: Variant in list:
+			out.append(StringName(str(v)))
+	return out
 
 
 func _check_declared(flag: StringName) -> void:

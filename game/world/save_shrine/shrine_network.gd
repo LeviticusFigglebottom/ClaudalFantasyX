@@ -1,19 +1,21 @@
 class_name ShrineNetwork
 extends RefCounted
-## Teleport-network hook for save shrines (SPEC §6.6: "later a teleport network"). STUB.
-##
-## The interface is fixed now so shrines, the field and a future travel menu can be written
-## against it; the behaviour is not:
-##   register(shrine) / unregister(shrine)  shrines in the loaded zone (SaveShrine does this)
-##   attune(shrine)                         a use attunes the shrine (no persistence yet: no-op)
-##   is_attuned(network_id)                 false until attunement is persisted
-##   destinations_from(shrine)              always [] for now
-##   request_teleport(shrine, destination)  always false for now (emits nothing)
-##
-## To build it: persist attuned network ids (a new GameStateData field and a SAVE_VERSION bump,
-## owned by the Systems Architect), add a node-id -> scene + spawn table under game/data/world/,
-## and route request_teleport through SceneRouter.change_scene + the zone's place_at(spawn).
+## The save shrines' teleport network (SPEC §6.6), M1-ARC-06.
+##   register(shrine) / unregister(shrine)   shrines in the loaded zone (SaveShrine does this)
+##   attune(shrine)                          a rest attunes the shrine: its network id is appended
+##                                           to Game.state.attuned_shrines (saved, v4)
+##   is_attuned(network_id)                  in Game.state.attuned_shrines
+##   destinations_from(shrine)               attuned shrines the registry can place the party at,
+##                                           in attunement order, without the shrine itself
+##   request_teleport(shrine, destination)   sends the party through the LocationRegistry to the
+##                                           destination's location and spawn (SceneRouter swap),
+##                                           and makes it the respawn point
+## Shrine rows live in game/data/world/locations.json ("shrines"). `registry` and `travel` are
+## static so tests can point them at fixtures; travel takes (location_id, spawn) and returns bool,
+## and defaults to SceneRouter.world_return.go_to.
 
+static var registry: LocationRegistry
+static var travel: Callable = Callable()
 static var _loaded: Dictionary = {}
 
 
@@ -32,17 +34,70 @@ static func loaded_shrines() -> Dictionary:
 	return _loaded.duplicate()
 
 
-static func attune(_shrine: SaveShrine) -> void:
-	pass
+## Records the shrine as attuned (once). Returns true when it was newly attuned.
+static func attune(shrine: SaveShrine) -> bool:
+	return attune_id(shrine.network_id)
 
 
-static func is_attuned(_network_id: StringName) -> bool:
-	return false
+static func attune_id(network_id: StringName) -> bool:
+	if network_id == &"" or Game.state.attuned_shrines.has(network_id):
+		return false
+	Game.state.attuned_shrines.append(network_id)
+	return true
 
 
-static func destinations_from(_shrine: SaveShrine) -> Array[StringName]:
-	return []
+static func is_attuned(network_id: StringName) -> bool:
+	return network_id != &"" and Game.state.attuned_shrines.has(network_id)
 
 
-static func request_teleport(_shrine: SaveShrine, _destination_id: StringName) -> bool:
-	return false
+## Attuned shrines the party could travel to from `shrine`: listed in the registry, not the
+## shrine itself, in attunement order. A shrine outside the network has no destinations.
+static func destinations_from(shrine: SaveShrine) -> Array[StringName]:
+	var out: Array[StringName] = []
+	if shrine == null or shrine.network_id == &"":
+		return out
+	for nid in Game.state.attuned_shrines:
+		if nid != shrine.network_id and _registry().has_shrine(nid):
+			out.append(nid)
+	return out
+
+
+## Travels to `destination_id`. Refused (false) when the shrine is not in the network, the
+## destination is not one of destinations_from(shrine), or its location does not resolve.
+## On success the destination becomes the respawn point.
+static func request_teleport(shrine: SaveShrine, destination_id: StringName) -> bool:
+	if not destinations_from(shrine).has(destination_id):
+		return false
+	var point := _registry().shrine_point(destination_id)
+	var loc := StringName(str(point.get(LocationRegistry.KEY_LOCATION, "")))
+	var spawn := StringName(str(point.get(LocationRegistry.KEY_SPAWN, "")))
+	if not _registry().has_location(loc):
+		return false
+	var go := travel if travel.is_valid() else _router_travel()
+	if not go.is_valid() or not bool(go.call(loc, spawn)):
+		return false
+	Game.state.respawn_location_id = loc
+	Game.state.respawn_spawn = spawn
+	return true
+
+
+static func _registry() -> LocationRegistry:
+	if registry == null:
+		registry = LocationRegistry.load_default()
+	return registry
+
+
+static func _router_travel() -> Callable:
+	var tree := Engine.get_main_loop() as SceneTree
+	var router := tree.root.get_node_or_null(^"SceneRouter") if tree != null else null
+	if router == null or bool(router.call(&"is_busy")):
+		return Callable()
+	var wr: Variant = router.get(&"world_return")
+	return Callable(wr as Object, &"go_to") if wr is WorldReturn else Callable()
+
+
+## The registry's {location_id, spawn} for a network id ({} when not listed or empty).
+static func registry_point(network_id: StringName) -> Dictionary:
+	if network_id == &"":
+		return {}
+	return _registry().shrine_point(network_id)

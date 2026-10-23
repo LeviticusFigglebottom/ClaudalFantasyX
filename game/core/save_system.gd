@@ -11,8 +11,14 @@ extends Node
 ##   delete_slot(slot), slot_exists(slot), location_name_key(id)
 ## The "meta" block is display data only (timestamp, reason, location key, shrine id). It is not
 ## part of GameStateData and is never needed to restore a game, so it needs no SAVE_VERSION bump.
+##
+## M1-ARC-06 (v4): party vitals, attuned shrines and the respawn point (GameStateData). Every
+## load (load_from_slot, deserialize) then runs the post-load step: joined heroes get any missing
+## starting gear (PartyGoods.ensure_starting_gear, M1-PRG-03). EventBus.game_loaded is emitted by
+## load_into_game once the save IS the live state (WorldReturn routes on it); a plain
+## load_from_slot (menus, tools, tests) only reads.
 
-const SAVE_VERSION := 3
+const SAVE_VERSION := 4
 const SAVE_DIR := "user://saves"
 const AUTOSAVE_SLOT := 0
 ## slot_path() formats two digits.
@@ -39,7 +45,10 @@ var _migrations: Dictionary = {
 	0: _migrate_v0_to_v1,
 	1: _migrate_v1_to_v2,
 	2: _migrate_v2_to_v3,
+	3: _migrate_v3_to_v4,
 }
+## Item tables for the post-load starting-gear step (loaded on first use).
+var _item_db: ItemDB
 
 
 func _ready() -> void:
@@ -89,10 +98,7 @@ func load_from_slot(slot: int) -> GameStateData:
 	if migrated.is_empty() or not state_shape_ok(migrated.get("state", {})):
 		push_error("SaveSystem: unreadable save in slot %d" % slot)
 		return null
-	var state := GameStateData.from_dict(migrated.get("state", {}) as Dictionary)
-	if state != null:
-		EventBus.game_loaded.emit(slot)
-	return state
+	return _post_load(GameStateData.from_dict(migrated.get("state", {}) as Dictionary))
 
 
 func serialize(state: GameStateData) -> Dictionary:
@@ -103,7 +109,18 @@ func deserialize(data: Dictionary) -> GameStateData:
 	var migrated := migrate(data)
 	if migrated.is_empty():
 		return null
-	return GameStateData.from_dict(migrated.get("state", {}) as Dictionary)
+	return _post_load(GameStateData.from_dict(migrated.get("state", {}) as Dictionary))
+
+
+## Runs after every load: joined heroes receive any missing starting gear (a v2 save migrated to
+## v3 has an empty bag, and "weapon" is a required slot). Idempotent.
+func _post_load(state: GameStateData) -> GameStateData:
+	if state == null:
+		return null
+	if _item_db == null:
+		_item_db = ItemDB.load_default()
+	PartyGoods.from_state(_item_db, state).ensure_starting_gear(state)
+	return state
 
 
 ## Runs migrations until the save reaches SAVE_VERSION. Returns {} if a step is missing
@@ -161,6 +178,21 @@ static func _migrate_v2_to_v3(d: Dictionary) -> Dictionary:
 				inv[str(k)] = n
 	st["inventory"] = inv
 	return {"version": 3, "state": st}
+
+
+## v4 (M1-ARC-06) adds party vitals, attuned shrines and the respawn point. A v3 save predates
+## them: everyone is at full HP and MP with no statuses (empty party_vitals), nothing is attuned,
+## and the respawn is the save's location_id with the location's own spawn (an empty location
+## resolves to locations.json "default_location" at load time). The literal is frozen on purpose.
+static func _migrate_v3_to_v4(d: Dictionary) -> Dictionary:
+	var st: Dictionary = (d.get("state", {}) as Dictionary).duplicate(true)
+	if not st.has("party_vitals"):
+		st["party_vitals"] = {}
+	if not st.has("attuned_shrines"):
+		st["attuned_shrines"] = []
+	if not st.has("respawn"):
+		st["respawn"] = {"location_id": str(st.get("location_id", "")), "spawn": ""}
+	return {"version": 4, "state": st}
 
 
 # --- M1-ARC-03: autosave, slot listing, load into the live game ---------------------------------
@@ -274,8 +306,8 @@ func delete_slot(slot: int) -> Error:
 	return DirAccess.remove_absolute(slot_path(slot))
 
 
-## Loads `slot` and makes it the live Game.state (and restarts the play clock). Moving to the
-## saved location is the listener's job (EventBus.game_loaded): there is no location registry yet.
+## Loads `slot`, makes it the live Game.state, restarts the play clock and emits
+## EventBus.game_loaded. Moving to the respawn point is WorldReturn's job (it listens there).
 func load_into_game(slot: int) -> Error:
 	if not slot_exists(slot):
 		return ERR_FILE_NOT_FOUND
@@ -284,6 +316,7 @@ func load_into_game(slot: int) -> Error:
 		return ERR_FILE_CORRUPT
 	Game.state = st
 	Game.start_play_clock()
+	EventBus.game_loaded.emit(slot)
 	return OK
 
 
@@ -292,10 +325,10 @@ static func state_shape_ok(st: Variant) -> bool:
 	if typeof(st) != TYPE_DICTIONARY:
 		return false
 	var d := st as Dictionary
-	for k: String in ["flags", "inventory", "lattice", "equipment"]:
+	for k: String in ["flags", "inventory", "lattice", "equipment", "party_vitals", "respawn"]:
 		if d.has(k) and typeof(d[k]) != TYPE_DICTIONARY:
 			return false
-	for k: String in ["party_ids", "reserve_ids"]:
+	for k: String in ["party_ids", "reserve_ids", "attuned_shrines"]:
 		if d.has(k) and typeof(d[k]) != TYPE_ARRAY:
 			return false
 	for k: String in ["currency", "play_time_sec", "chapter"]:
