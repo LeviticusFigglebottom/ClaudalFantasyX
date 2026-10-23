@@ -12,6 +12,11 @@ const PREWARM_JSON := "res://game/data/settings/prewarm_materials.json"
 const STAGE_SCENE := "res://game/levels/_tests/character_shading/shading_test.tscn"
 const ASHA_STAGE := "res://game/levels/_tests/characters/asha/asha_stage.tscn"
 const ASHA_CLOTH := "res://assets/characters/asha/materials/cloth.tres"
+## The sleeve band-id maps (M1-CHR-08): label textures, imported without mipmaps.
+const BAND_ID_MAPS: Array[String] = [
+	"res://assets/characters/shader_test/sleeve_bandid.png",
+	"res://assets/characters/asha/textures/asha_sleeve_bandid.png",
+]
 ## Shadow normal bias that clears the shadow-terminator banding on Asha's cheeks at dialogue range
 ## (M1-QA-05 / M1-CHR-04 GPU sweep: 1.0 bands, 2.0 leaves a faint residue, 2.5 is clean on the cheek;
 ## M1-RND-20 raised it to 4.5 for the smiling mouth corner's fold, which still striped at 2.5 and 3.5).
@@ -356,6 +361,19 @@ func test_asha_vest_lacquer_is_leather_not_plastic() -> void:
 	var m := load(ASHA_CLOTH) as ShaderMaterial
 	assert_true(float(m.get_shader_parameter("lacquer_coat_roughness")) >= MIN_VEST_COAT_ROUGHNESS, "coat")
 	assert_true(float(m.get_shader_parameter("lacquer_coat_strength")) < 1.0, "partial coat")
+
+
+## M1-CHR-08: id maps are labels, sampled nearest; they import (and load) without mipmaps.
+func test_band_id_maps_import_without_mipmaps() -> void:
+	for path: String in BAND_ID_MAPS:
+		var cfg := ConfigFile.new()
+		assert_eq(cfg.load(path + ".import"), OK, "%s.import" % path)
+		assert_false(bool(cfg.get_value("params", "mipmaps/generate", true)), "%s: mipmaps off" % path)
+		var tex := load(path) as Texture2D
+		assert_true(tex != null, "%s loads" % path)
+		var img := tex.get_image()
+		assert_true(img != null, "%s has an image" % path)
+		assert_false(img.has_mipmaps(), "%s: no mip levels" % path)
 
 
 func _table() -> Dictionary:
