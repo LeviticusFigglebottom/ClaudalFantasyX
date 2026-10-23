@@ -2,7 +2,7 @@
 id: M1-NAR-07
 title: dlgc near-miss heuristic: kill false positives, catch the remaining silent cases
 role: architect
-status: doing
+status: review
 reviewer: narrative
 owner_session: "agent-a82894145cf6d2aff"
 depends_on: [M1-NAR-06]
@@ -30,6 +30,15 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
   - Tests: `tools/tests/test_dlgc_narration_corpus.py` holds 38 lines (the review's 10 plus 28 more), each compiled alone, with 0 errors, 0 warnings, and an empty speaker. `NearMissTests` in `tools/tests/test_dlgc.py` gains tiering, digit-colon, missing-colon, emotion-after-colon, bracketed-prose, and escape-hint cases. Two old expectations (`Then she said: go home.` and `Rain as cold as iron: hm.` as errors) were the false-positive class, so they moved to the must-pass test.
   - Repo scenes: `dlgc --check` reports 0 errors and 0 warnings, and the outputs are byte-identical (all 3 `.dlg` files).
   - Doc: `docs/kb/tech/dialogue_format.md` (§Near-miss speaker lines, the escapes bullet, and the Warnings paragraph).
+- 2026-10-23 architect (agent-a82894145cf6d2aff): review-sweep-D changes done; back to review.
+  - **Blocker 1 (Lead decision):** a name-shaped prefix of 1–2 words errors only when a word is a speaker id, a speaker's display name (`name_key` text from `game/data/loc/*.csv`, via `load_speaker_names`), or `Narrator`. Every other name-shaped prefix of 1–6 words is a WARN with the `\:` / `#narration` hint. `Chapter Two: The Raft`, `Part One:`, `Day Three:`, `The Hollow:`, `Corrow Harbour:`, `Eleven Bells:` and `The Order of Lamps:` now warn. `Old Toma:`, `Toma Vell:` and `Asha Vell:` stay errors. (`Asha Vell:` was in fp.txt, but the review's own fix lists it as an error, so it is tested as one.)
+  - **Extension of the Lead rule to one bare word:** `Interlude: Ysolde` used to hit the base "unknown speaker" error. A bare `Word:` (no identity, alias or emotion) that is not a speaker and not a close misspelling of one (difflib ratio ≥ 0.7, `SPEAKER_TYPO_CUTOFF`) now compiles as narration with the same WARN. `Kerid:` and `Ahsa [sad]:` stay errors and now say "did you mean 'Kerrid'?". Trade-off: a new character's one-word lines warn rather than fail until the character is in `speakers.json`. This is in the doc.
+  - `Not Asha: me.` and `Only Kerrid: ...` (blocker-1 false positives that name a speaker): a prefix that starts with a prose leader (`Not`, `Only`, `Even`, `Then`, ...) is prose. `I` and compass points are never name words (`I Remember Corrow:`, `North of Corrow:`).
+  - **Blocker 2:** a `[...]` group is now a name token, and any name-shaped prefix that contains one errors (`Old Toma [sad]:`, `Mother Ilse [sad]:`).
+  - Should-fix: `WRONG_BRACKET_RE` catches `Asha (sad) Hi.`, `Asha "sad": Hi.`, `{sad}` and `<sad>`. With a colon it always errors; without one, only when the word is an emotion, so `Asha (again) laughed.` is prose. `Narrator (rhen):` suggests `Narrator(rhen):`. `STRAY_PUNCT_RE` catches `Asha, [sad]: Hi.`. Full-width colons (`：`, `﹕`) before a speaker error. `Asha [sad]:: Hi.` errors ("two colons"), and `Asha: \: Hi.` still compiles. `Kerrid [cold] as The Stranger:` now gets the emotion-after-alias hint with the quotes added. The missing-colon hint drops stray `; . - —`.
+  - Should-fix: `and` is out of `NAME_JOINERS`.
+  - Probes: all 31 fp.txt lines and all 30 miss.txt lines are in tests. The prose lines are in `CORPUS` (no error, no warning), the captions are in `CAPTIONS` (exactly one WARN, no error), and the miss lines are in `NearMissTests`. Known limits (no grammar), tested as narration: `Asha the girl: Hi.`, `Asha. Hi.`, `Asha - Hi.`.
+  - Checks: validate_data 0/0; unittest 260 OK; taskboard --check rc 0; `dlgc --check` 0 errors and 0 warnings, with the 3 repo `.dlg` files unchanged.
 
 ## Review log
 - 2026-10-23 narrative (review-sweep-D): **request-changes.** Checked: `python3 -m unittest discover -s tools/tests` gives 247 OK; `dlgc --check` gives 0 errors and 0 warnings; `validate_data` gives 0 errors and 0 warnings. I compiled 31 fresh narration lines and 30 near-miss lines one at a time, through the corpus harness. Rhen's first-person colon prose all passes (`I knew it then: ...`, `I had one job that winter: ...`, `What I said next: ...`, `I said the only thing I could: sorry.`, `"Run," she said: ...`, `Even now: ...`), and so do possessive and comma prefixes and `Chapter 2:`. Digit colons, the tiering, and the missing-colon and emotion-after-colon errors work as specified.
