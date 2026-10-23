@@ -2,9 +2,9 @@
 id: M1-NAR-11
 title: Story consistency and residual echoes after the Kerrid re-staging (review-sweep-F)
 role: narrative
-status: todo
+status: review
 reviewer: cinematics
-owner_session: "worktree-agent-afdcaea09c59ff37c"
+owner_session: "worktree-agent-a4c996b47ad5b3285"
 depends_on: [M1-NAR-09]
 milestone: M1
 request-from: "cinematics"
@@ -22,6 +22,7 @@ The review-sweep-F entries on M1-NAR-09 and M1-NAR-08.
 - [x] All .dlg compile; validators pass
 - [x] Review-sweep-G: B1 (Toma at Ansedra in 1001) and B2 (no "guarded since she was nine") fixed in the game text; B3 Lead verdict applied (ch03 051/052 cut, echo row in ADR 0022's append note)
 - [x] Review-sweep-G should-fix S1-S11 and the nits
+- [x] Review-sweep-H: B1 (Kell takes Rhen in unasked; the Ch1 wick re-checked; echo rows) and B2 (the lantern pair) fixed; S1-S4 and the nits
 
 ## Notes
 - 2026-10-23 narrative (worktree-agent-a34ff8effe727a250): everything is recorded in [ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md) (proposed) and decisions_log N-23. Append notes are on ADRs 0016, 0017 and 0020, and the glossary is appended.
@@ -56,6 +57,24 @@ The review-sweep-F entries on M1-NAR-09 and M1-NAR-08.
   - **S11:** act3_ending §0 rule 8. The three dead never share a frame from H02 to E3, E2's look is a shot and a reverse, and the line reads "Dace and Kerrid: one look, no words". It is extended to H02, whose wide had all three.
   - **Nits:** voice_guide's early slouch sample is cut. ADR 0016:92 is left as it is (append-only), and N-23 and N-24 carry the acceptance. A short append note on ADR 0020 points at the superseded lines.
   - **Not done:** the vertical_slice §8 per-path word range and mean are estimated from per-line deltas, because `dialogue_stats.py` gives only the written totals.
+- 2026-10-23 narrative (worktree-agent-a4c996b47ad5b3285), reopened on review-sweep-H. Everything is recorded in the sweep-H append note on [ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md), with seven new echo rows, and in decisions_log N-25 (N-24 S6 is corrected inline). The glossary is appended in its own commit.
+  - **B1:** Dace's one message is addressed to Rhen and left at Kell's stall. It says "helping a friend on a long trip" and asks nothing. Kell takes Rhen in unasked, and Dace hears of it a season later from a Hollowmere trader ("Kell. Of course.").
+    - The Ch1 wick is re-checked. It is Kell's own stock, which she gives "for luck" to every diver. It is never from or about Dace, and it is never fitted to his lantern. Rhen keeps it unburned until E7.
+    - New rows for the request (re-staged, with a watch that nobody keeps or raises Rhen at Dace's request) and for the gift before the opening calamity (re-staged, with the residual accepted and a watch).
+  - **B2:** Dace built his lanterns as a pair. Rhen wears the first one, which never left its hook at Oruvel. Dace had its twin at Corrow and Haluna. Nobody sent Rhen anything.
+    - Ch2's "That lantern." is unchanged, because it is recognition of the make. The Ch15 line is now "A man with a lantern like that brought me this. I was seven."
+    - E2, rhen_sallow, asha_velamir and vertical_slice follow. The ch02 `.dlg` comment is reworded on the same two lines, so the compiled JSON is unchanged.
+  - **S1:** Kell is Oruvel's chandler, who never learned to swim. The shipped `ch02_beach_023` stands.
+  - **S2:** the bible's Present row: named in 1009, sets out in 1012.
+  - **S3:** act3_ending §0 rule 8 is scoped.
+    - It is guaranteed by authoring in the C and E beats, and in the authored cameras of the P beats.
+    - In the player-driven cameras (H01, the H03 fight, H04, H06, H07 and R1), the centre is drawn as light, not figures.
+    - H05 gets a framing note: Kerrid is off-frame in every shot that holds the two lamps.
+  - **S4:** the Ch17 logs (act_outline) now give three reasons:
+    - why not Oruvel even once: every hull knew his face;
+    - why Haluna once: no name, and no-one at risk but him;
+    - why he never fetched Rhen: "a wright's son for life ... After the storm I'll go myself."
+  - **Nits:** the Ch19 grouping is marked as design prose, never VO. The Kell glossary rows are corrected by an appended row.
 
 ## Review log
 - 2026-10-23 cinematics + IP (review-sweep-G, fresh reviewer): **request-changes.** I read CLAUDE.md §2, SPEC v1.1 (§1-§3.5), ADRs 0015, 0016, 0017, 0020 and 0022, and then act_outline, act3_ending, bible, vertical_slice, voice_guide, decisions_log, glossary, every character sheet, color_script (`ch08`, `ch15`, `ending_unbinding`), palette.json `global_rules`, haluna.md, and both `.dlg` files with `dialogue.csv`. `validate_data.py` gives 0 errors and 0 warnings, `unittest discover -s tools/tests` gives 322 OK (including `test_palette_rules.py`), and `dlgc.py --check` gives 0 errors and 0 warnings.

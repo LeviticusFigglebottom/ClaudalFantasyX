@@ -203,7 +203,7 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
   - **S2, Kerrid and Imra:** he kept the stair-watch's wall-gate on the Coilspire path and opened it for her at dawn and dusk. They spoke at the gate, and he never walked beside her.
   - **S3:** "Somebody's still below." is said looking south, out to sea, not at Asha. "Below" is Imra under the storm and the held dead.
   - **S4:** in the Ch9 cutaway Kerrid is alone at the stair foot. The old watch is at the Ebbing on the shore.
-  - **S6:** Dace's sleeves were torn on the stair and Imra's escort saw his line-marks. A hunted Saltwright going home brings the Order to his son, so he never went home. His one message asked **Mother Kell** to keep Rhen, and she raised him from eight to nineteen. The player reads this in Dace's Ch17 logs.
+  - **S6:** Dace's sleeves were torn on the stair and Imra's escort saw his line-marks. A hunted Saltwright going home brings the Order to his son, so he never went home. ~~His one message asked **Mother Kell** to keep Rhen~~ (**corrected 2026-10-23 by N-25:** the message asks nothing, and Kell takes him in unasked), and she raised him from eight to nineteen. The player reads this in Dace's Ch17 logs.
   - **S7:** Toma came to the Corrow wall in 1002, at twenty-one.
   - **S8:** Kerrid's walk to Corrow began when the Undertow stirred early this year, not at Asha's naming.
   - **S9:** Rhen learns Dace's motive from the Ch17 logs, not at the Choir.
@@ -211,3 +211,18 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
   - **Nits:** voice_guide's early slouch sample is cut; the heading of N-11 and the status in N-23 are corrected inline.
 - **Why:** review-sweep-G found that the shipped Ch3 text still contradicted ADR 0022's timeline, and that the early lantern link, the drinking, the daily escort, the gaze on Asha and a three-dead frame each carried a trace of the inspiring game.
 - **Supersedes:** N-21's "walked Imra to Coilspire and drank with" (marked inline); N-23's Ch9 staging, which now carries an inline note.
+
+---
+
+## 2026-10-23 (narrative, M1-NAR-11 reopened): review-sweep-H fixes
+
+### N-25. Kell takes Rhen in unasked; the lantern is the first of a pair; Kell is a chandler (ADR 0022 sweep-H append note)
+- **Answer:** recorded in the review-sweep-H append note on [ADR 0022](../decisions/0022-dace-imra-strangers-sweep-f.md).
+  - **B1:** Dace's one message, addressed to Rhen, says only "helping a friend on a long trip" and asks nothing. Mother Kell takes Rhen in unasked. Dace hears of it a season later from a Hollowmere trader ("Kell. Of course."). Her Ch1 wick is her own stock, given "for luck" as she gives one to every diver, and it is never from or about Dace. New echo rows for the request and for the gift before the opening calamity.
+  - **B2:** Dace built his lanterns as a pair. Rhen's is the first one, left on its hook at Oruvel, and the one Asha saw at Haluna was its twin. Ch2 "That lantern." is unchanged (recognition of the make). The Ch15 line becomes "A man with a lantern like that brought me this. I was seven."
+  - **S1:** Kell is Oruvel's chandler, who never learned to swim. The shipped Ch2 line stands.
+  - **S2:** the bible's Present row: Asha was named in 1009 and sets out in 1012.
+  - **S3:** act3_ending §0 rule 8 is guaranteed by authoring in C and E beats. In player-driven cameras the two lamps are drawn as light, not figures. H05 keeps Kerrid off-frame. The Ch19 outline grouping is design prose, never VO.
+  - **S4:** the Ch17 logs say why not Oruvel even once (every hull knew his face), why Haluna once (no name, no-one at risk but him), and why he never fetched Rhen ("a wright's son for life ... After the storm I'll go myself").
+- **Why:** review-sweep-H found that the sweep-G S6 fix put back the father's request to have his son raised, which ADR 0020 had removed from Kerrid, and that nothing explained how Rhen came to wear the lantern Dace had at Haluna.
+- **Supersedes:** N-24's S6 "asked Mother Kell to keep Rhen" (marked inline); the "old diver" in every Kell row.
