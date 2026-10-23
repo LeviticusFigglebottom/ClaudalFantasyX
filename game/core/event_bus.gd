@@ -21,7 +21,8 @@ signal game_loaded(slot: int)
 signal field_interacted(interactable_id: StringName, kind: StringName, payload: Dictionary)
 @warning_ignore("unused_signal")
 signal field_trigger_entered(trigger_id: StringName, payload: Dictionary)
-## M1-ARC-03. Game.set_chapter() emits it; SaveSystem autosaves to slot 0 on it.
+## M1-ARC-03. Game.set_chapter() emits it; SaveSystem then requests the slot-0 autosave, which is
+## written at the next safe point (M1-ARC-08: never inside the emitting call or a cutscene).
 @warning_ignore("unused_signal")
 signal chapter_changed(chapter: int, previous: int)
 ## M1-ARC-03. A save shrine restores the party. M1-ARC-06: Game listens and fills every member's
@@ -40,3 +41,7 @@ signal autosave_finished(reason: StringName, error: int)
 ## architecture.md "Saves"); the engine core stays untouched.
 @warning_ignore("unused_signal")
 signal battle_party_returned(encounter_id: StringName, outcome: StringName, party: Array)
+## M1-ARC-08. Game.new_game() replaced the live state with a fresh one. SaveSystem drops any
+## autosave still waiting for a safe point (it was asked for the previous run).
+@warning_ignore("unused_signal")
+signal new_game_started

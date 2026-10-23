@@ -5,9 +5,12 @@ extends Control
 ## loc keys only) and input. The title stops the play clock while it is shown.
 ##   Continue  TitleSaveEntry.continue_game(): the newest readable record becomes Game.state;
 ##             EventBus.game_loaded then sends WorldReturn to the respawn point.
-##   New Game  Game.new_game() and WorldReturn.go_to(locations.json "new_game").
+##   New Game  Game.new_game() and WorldReturn.go_to(locations.json "new_game"). When slot 0 holds
+##             an autosave the new run would write over, it asks first (M1-ARC-08): the rows
+##             become Go back / Begin anew, "Go back" is the default, ui_cancel also goes back.
 ##   Load      the load list (SaveMenu, LOAD mode); a load routes the same way as Continue.
-## Input: ui_up / ui_down move, ui_accept chooses (keyboard and controller); a click chooses.
+## Input: ui_up / ui_down move, ui_accept chooses (keyboard and controller); a click chooses;
+## ui_cancel closes the New Game question.
 ## Layout: game/ui/title/title_menu.json.
 
 signal chosen(choice: StringName, error: int)
@@ -66,28 +69,43 @@ func handle_input(event: InputEvent) -> bool:
 		model.move(1)
 	elif event.is_action_pressed(&"ui_accept"):
 		choose(model.accept())
+	elif event.is_action_pressed(&"ui_cancel") and model.confirming:
+		choose(TitleMenuModel.CHOICE_CONFIRM_BACK)
 	else:
 		return false
 	return true
 
 
 ## Runs a choice. Returns OK, or why nothing happened (ERR_UNAVAILABLE for a greyed row or after
-## a scene change already started; a load error from Continue).
+## a scene change already started; a load error from Continue). New Game with an autosave at
+## risk only opens the question (OK, and `chosen` is not emitted until it is answered); "Begin
+## anew" then emits `chosen` as CHOICE_NEW_GAME.
 func choose(choice: StringName) -> Error:
 	var err: Error = ERR_UNAVAILABLE
+	var reported := choice
 	if not _launched and choice != &"" and model.is_enabled(choice):
 		match choice:
 			TitleMenuModel.CHOICE_CONTINUE:
 				err = TitleSaveEntry.continue_game(save_system)
 				_launched = err == OK
 			TitleMenuModel.CHOICE_NEW_GAME:
+				if model.needs_new_game_confirm():
+					model.begin_confirm()
+					return OK
+				err = start_new_game()
+			TitleMenuModel.CHOICE_CONFIRM_BACK:
+				model.end_confirm()
+				err = OK
+			TitleMenuModel.CHOICE_CONFIRM_BEGIN:
+				model.end_confirm()
+				reported = TitleMenuModel.CHOICE_NEW_GAME
 				err = start_new_game()
 			TitleMenuModel.CHOICE_LOAD:
 				open_load()
 				err = OK
 	if err != OK:
 		model.refresh()
-	chosen.emit(choice, err)
+	chosen.emit(reported, err)
 	return err
 
 
@@ -152,27 +170,46 @@ func _build_page() -> void:
 	var cm := _d.get("choices", {}) as Dictionary
 	_page = MenuPage.new()
 	var r := HudLayout.rect_of(cm)
+	var ids := model.row_ids()
 	_page.position = r.position
-	_page.size = Vector2(r.size.x, MenuPage.height_for(cm, TitleMenuModel.CHOICES.size(), false))
+	_page.size = Vector2(r.size.x, MenuPage.height_for(cm, ids.size(), false))
 	add_child(_page)
 	var rows: Array[Dictionary] = []
-	for id in TitleMenuModel.CHOICES:
+	for id in ids:
 		rows.append({"id": id, "label": tr(model.label_key(id)), "enabled": model.is_enabled(id)})
 	_page.setup(cm, &"title", "", rows)
 	_page.row_clicked.connect(_on_row_clicked)
 
 
 func _render() -> void:
-	for i in TitleMenuModel.CHOICES.size():
-		if bool(_page.rows[i]["enabled"]) != model.is_enabled(TitleMenuModel.CHOICES[i]):
-			_build_page()
-			break
-	_page.set_cursor(model.cursor, is_inside_tree())
+	if _page_is_stale():
+		_build_page()
+	_page.set_cursor(model.row_cursor(), is_inside_tree())
 	_help.text = tr(model.help_key())
 
 
+## True when the page shows other rows than the model (the New Game question opened or closed)
+## or a row's greyed look is out of date.
+func _page_is_stale() -> bool:
+	var ids := model.row_ids()
+	if _page.rows.size() != ids.size():
+		return true
+	for i in ids.size():
+		if StringName(_page.rows[i]["id"]) != ids[i] or bool(_page.rows[i]["enabled"]) != model.is_enabled(ids[i]):
+			return true
+	return false
+
+
+## The labels of the rows shown now (tests read them).
+func row_labels() -> Array[String]:
+	var out: Array[String] = []
+	for row in _page.rows:
+		out.append(str(row["label"]))
+	return out
+
+
 func _on_row_clicked(index: int) -> void:
-	if model.set_cursor(index) or model.cursor == index:
+	if model.set_cursor(index) or model.row_cursor() == index:
 		choose(model.accept())
 
 

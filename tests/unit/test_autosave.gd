@@ -1,6 +1,8 @@
 extends TestCase
 ## M1-ARC-03: the chapter-boundary autosave. Game.set_chapter -> EventBus.chapter_changed ->
-## SaveSystem.autosave -> slot 0. Runs against its own user:// folder, removed afterwards.
+## SaveSystem.request_autosave -> (a later frame, at a safe point) SaveSystem.autosave -> slot 0.
+## M1-ARC-08: the write is deferred, so these tests poll the pending request themselves
+## (SaveSystem._process does that on real frames). Runs against its own user:// folder.
 
 const TEST_DIR := "user://test_autosave"
 const FIXED_TIME := 1792489500
@@ -20,6 +22,7 @@ func before_each() -> void:
 	SaveSystem.save_dir = TEST_DIR
 	SaveSystem.clock = func() -> int: return FIXED_TIME
 	SaveSystem.autosave_enabled = true
+	SaveSystem.cancel_pending_autosave()
 	_clear()
 	Game.state = GameStateData.new()
 	Game.state.chapter = 2
@@ -45,6 +48,9 @@ func test_autosave_writes_slot_zero_with_its_reason() -> void:
 
 func test_chapter_change_autosaves_the_new_chapter() -> void:
 	assert_true(Game.set_chapter(3))
+	assert_false(SaveSystem.slot_exists(SaveSystem.AUTOSAVE_SLOT), "not inside set_chapter")
+	assert_true(SaveSystem.has_pending_autosave())
+	assert_eq(SaveSystem.poll_pending_autosave(), OK)
 	assert_true(SaveSystem.slot_exists(SaveSystem.AUTOSAVE_SLOT), "slot 0 written on the boundary")
 	var back := SaveSystem.load_from_slot(SaveSystem.AUTOSAVE_SLOT)
 	assert_eq(back.chapter, 3)
@@ -56,6 +62,8 @@ func test_chapter_change_autosaves_the_new_chapter() -> void:
 
 func test_same_chapter_is_not_a_boundary() -> void:
 	assert_false(Game.set_chapter(2))
+	assert_false(SaveSystem.has_pending_autosave())
+	assert_eq(SaveSystem.poll_pending_autosave(), ERR_DOES_NOT_EXIST)
 	assert_false(SaveSystem.slot_exists(SaveSystem.AUTOSAVE_SLOT))
 	assert_eq(finished.size(), 0)
 	_done()
@@ -64,6 +72,7 @@ func test_same_chapter_is_not_a_boundary() -> void:
 func test_disabled_autosave_writes_nothing() -> void:
 	SaveSystem.autosave_enabled = false
 	Game.set_chapter(4)
+	assert_eq(SaveSystem.poll_pending_autosave(), ERR_UNAVAILABLE)
 	assert_false(SaveSystem.slot_exists(SaveSystem.AUTOSAVE_SLOT))
 	assert_eq(finished, [[SaveSystem.REASON_CHAPTER, ERR_UNAVAILABLE]])
 	_done()
@@ -71,7 +80,9 @@ func test_disabled_autosave_writes_nothing() -> void:
 
 func test_each_boundary_replaces_the_previous_autosave() -> void:
 	Game.set_chapter(3)
+	SaveSystem.poll_pending_autosave()
 	Game.set_chapter(4)
+	SaveSystem.poll_pending_autosave()
 	assert_eq(SaveSystem.load_from_slot(SaveSystem.AUTOSAVE_SLOT).chapter, 4)
 	assert_eq(finished.size(), 2)
 	_done()
@@ -99,6 +110,7 @@ func test_meta_never_changes_the_restored_state() -> void:
 
 func _done() -> void:
 	EventBus.autosave_finished.disconnect(_on_finished)
+	SaveSystem.cancel_pending_autosave()
 	_clear()
 	SaveSystem.save_dir = _saved_dir
 	SaveSystem.clock = _saved_clock

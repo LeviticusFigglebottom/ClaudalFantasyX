@@ -57,10 +57,14 @@ func set_flag(flag: StringName, value: Variant = true) -> void:
 func new_game() -> void:
 	state = GameStateData.new()
 	start_play_clock()
+	EventBus.new_game_started.emit()
 
 
-## Moves the story to `chapter`. Emits EventBus.chapter_changed (which triggers the slot-0
-## autosave) only when the chapter actually changes. Returns true when it changed.
+## Moves the story to `chapter`. Emits EventBus.chapter_changed only when the chapter actually
+## changes, and returns true when it did. The slot-0 autosave it causes is NOT written here: it is
+## requested and written on a later frame at a safe point (SaveSystem.request_autosave, M1-ARC-08),
+## so a cutscene may call this at any beat. The sequencer holds the autosave for the whole cutscene
+## (SaveSystem.hold_autosave / release_autosave) so the save shows the state after the last beat.
 func set_chapter(chapter: int) -> bool:
 	var previous := state.chapter
 	if chapter == previous:
