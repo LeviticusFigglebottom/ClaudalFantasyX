@@ -17,6 +17,6 @@ compare_face = {
 }
 
 [node name="Compare" type="Camera3D" parent="Cameras"]
-transform = Transform3D(1, 0, 0, 0, 0.9986, 0.0523, 0, -0.0523, 0.9986, 0.21, 1.53, 0.78)
-fov = 22.0
+transform = Transform3D(1, 0, 0, 0, 0.9986, 0.0523, 0, -0.0523, 0.9986, 0.21, 1.53, 1.0)
+fov = 25.0
 near = 0.02
