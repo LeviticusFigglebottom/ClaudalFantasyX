@@ -59,8 +59,8 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
     "cornea": ("character_cornea", 1, {}, {}),
     "eye_occlusion": ("character_eye_occlusion", 2, {"upper_strength": "0.9", "corner_strength": "0.7"}, {}),
     "tear_line": ("character_tear_line", 3, {}, {}),
-    # M1-CHR-10: lashes and brows in the hair's black, with almost no sky reflection (at the shader's
-    # 0.2 the lash cards mirrored the bright sky into a pale fringe over the lid)
+    # M1-CHR-10: lashes and brows in the hair's black (they read brown), with almost no environment
+    # reflection (a near-black strand should not carry the sky's colour)
     "lash": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.06",
                                    "spec_secondary_intensity": "0.0", "transmission_strength": "0.1",
                                    "indirect_specular": "0.03", "col_root": HAIR_BLACK, "col_tip": HAIR_BLACK},
