@@ -8,6 +8,10 @@ const COMMON_INC := "res://game/shaders/include/common.gdshaderinc"
 const GLOBALS_INC := "res://game/shaders/include/globals.gdshaderinc"
 const TMP_DIR := "user://test_shader_prewarm"
 const STATIC_STAGE_NODES := 4
+const WATER_GRID := "res://game/world/water/prewarm/water_grid_prewarm.tres"
+const SALTGRASS_GLB := "res://assets/environments/vegetation/saltgrass_clumps.glb"
+const GLIMMER_PROCESS := "res://game/vfx/glimmer/materials/glimmer_motes_process.tres"
+const GLIMMER_DRAW := "res://game/vfx/glimmer/materials/glimmer_motes_draw.tres"
 
 
 ## Counts shader compiler errors reported through the engine log while a check runs.
@@ -131,6 +135,64 @@ func test_handles_every_material_kind_and_scene_filter() -> void:
 	assert_true(node.is_queued_for_deletion())
 	for file in DirAccess.get_files_at(TMP_DIR):
 		DirAccess.remove_absolute(TMP_DIR + "/" + file)
+	DirAccess.remove_absolute(TMP_DIR)
+
+
+## M1-RND-07: entries can carry the real mesh, the MultiMesh path and a particles draw material, and
+## the stage copies the game viewport's AA.
+func test_entries_draw_real_meshes_multimesh_and_particle_passes() -> void:
+	var quad := QuadMesh.new()
+	assert_eq(ShaderPrewarm.entry_mesh({}, quad), quad, "no mesh key: the quad")
+	assert_eq(ShaderPrewarm.entry_mesh({"mesh": "res://does/not/exist.tres"}, quad), quad)
+	var grid := ShaderPrewarm.entry_mesh({"mesh": WATER_GRID}, quad)
+	assert_true(grid is ArrayMesh, "a Mesh resource")
+	var built := WaterMeshBuilder.build(1.0, 0.5, 2.0, 1.1)
+	assert_eq(grid.surface_get_format(0), built.surface_get_format(0), "committed grid = the ocean's vertex format")
+	var grass := ShaderPrewarm.entry_mesh({"mesh": SALTGRASS_GLB, "mesh_node": "saltgrass_a"}, quad)
+	assert_ne(grass, quad, "a named MeshInstance3D inside a .glb")
+	var reg := {
+		"frames_to_render": 1,
+		"measure_frames": 2,
+		"hitch_budget_ms": 50.0,
+		"viewport_width": 32,
+		"viewport_height": 32,
+		"quad_size": 1.0,
+		"quad_distance": 1.5,
+		"particle_amount": 1,
+		"multimesh_instances": 2,
+		"materials":
+		[
+			{"path": TEST_MATERIAL, "mesh": WATER_GRID, "multimesh": true, "scenes": []},
+			{"path": GLIMMER_PROCESS, "draw_material": GLIMMER_DRAW, "scenes": []},
+		],
+	}
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var reg_path := TMP_DIR + "/registry_mesh.json"
+	var f := FileAccess.open(reg_path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(reg))
+	f.close()
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	_host().add_child(node)
+	var game := node.get_viewport()
+	var taa_was := game.use_taa
+	game.use_taa = true
+	assert_eq(node.start(""), 2)
+	assert_true((node.get_node("Viewport") as SubViewport).use_taa, "the stage matches the game's TAA")
+	game.use_taa = taa_was
+	var stage := node.get_node("Viewport/Stage3D")
+	var mmi := stage.find_children("*", "MultiMeshInstance3D", true, false)
+	assert_eq(mmi.size(), 1, "multimesh entry drawn through a MultiMeshInstance3D")
+	var mm := (mmi[0] as MultiMeshInstance3D).multimesh
+	assert_true(mm.use_colors and mm.use_custom_data)
+	assert_eq(mm.instance_count, 2)
+	var parts := stage.find_children("*", "GPUParticles3D", true, false)
+	assert_eq(parts.size(), 1)
+	var draw := ((parts[0] as GPUParticles3D).draw_pass_1 as QuadMesh).material as ShaderMaterial
+	assert_eq(draw.shader.resource_path, GlimmerField.DRAW_SHADER.resource_path, "the real draw pass")
+	node.tick(5.0)
+	node.tick(5.0)
+	DirAccess.remove_absolute(reg_path)
 	DirAccess.remove_absolute(TMP_DIR)
 
 
