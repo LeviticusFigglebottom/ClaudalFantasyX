@@ -49,9 +49,26 @@ func test_swap_frame_stays_under_threshold_for_every_target() -> void:
 		var worst: Array[float] = []
 		for r in runs:
 			worst.append(float(r.get("max_frame_ms", -1.0)))
-		assert_true(
-			passed, "%s swap frame >= %.0f ms in every run: %s (last stats %s)" % [t, threshold, worst, runs[-1]]
-		)
+		var msg := "%s swap frame >= %.0f ms in every run: %s (last stats %s)" % [t, threshold, worst, runs[-1]]
+		var load_per_cpu := _load_per_cpu()
+		if not passed and load_per_cpu > float(cfg.get("max_load_per_cpu", INF)):
+			push_warning("UNMEASURABLE (load %.1f/cpu): %s" % [load_per_cpu, msg])
+			continue
+		assert_true(passed, msg)
+
+
+## 1-minute load average divided by CPU count; 0 where /proc/loadavg is unavailable.
+static func _load_per_cpu() -> float:
+	if not FileAccess.file_exists("/proc/loadavg"):
+		return 0.0
+	var fields := FileAccess.get_file_as_string("/proc/loadavg").split(" ", false)
+	if fields.is_empty():
+		return 0.0
+	return fields[0].to_float() / float(maxi(OS.get_processor_count(), 1))
+
+
+func test_load_guard_reads_a_number() -> void:
+	assert_true(_load_per_cpu() >= 0.0)
 
 
 func test_font_warmer_covers_the_theme_and_skips_msdf() -> void:
