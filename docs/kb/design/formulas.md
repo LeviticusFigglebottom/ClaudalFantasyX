@@ -235,10 +235,10 @@ swell_fill(value, gain)              = clamp(value + gain, 0, SWELL_MAX)
 
 | Rule | Unlocks | Counts | While | Count |
 |---|---|---|---|---|
-| `tether_from_ballast` | **Tether** | a hit that takes HP from the hero (`damage_taken`) | Ballast | 12 |
+| `tether_from_ballast` | **Tether** | a hit that takes HP from the hero (`damage_taken`) | Ballast | 40 |
 | `salve_from_items` | **Salve** | the hero uses an item that restores HP or revives (`heal_item`) | any mode | 5 |
 
-Bearing blows yourself teaches you to feel your allies', and five healing items teach the gauge to answer care. The counts are first guesses: tune them against the slice's encounter count once it is playable. `ally_hurt` counts once per living active ally with a Swell, as Tether fills.
+Bearing blows yourself teaches you to feel your allies', and five healing items teach the gauge to answer care. The counts are first guesses: tune them against the slice's encounter count once it is playable. **Tether's 40 (M2-NIT-03; it was 12).** The 12 was chosen when only Rhen had a Swell: about 2 counted hits per sandbox fight for a careful player, so about six fights. With all four heroes counting, the same fights give 6 to 7 hits (smart 7.1, role answer 6.6, lowest HP 6.1, measured over 300 seeds), and 12 unlocked Tether in the second fight. 40 restores about six fights (5.6 to 6.6 by policy; a masher, hit 10 times a fight, gets there in four). `ally_hurt` counts once per living active ally with a Swell, as Tether fills.
 
 Examples: Ballast, 95 of 420 HP lost → 27 (27.1 floors). Wake, 152 dealt to a 380 HP foe → 20. Tether, an ally loses 95 of 300 → 19. 1 HP lost at rate 120 on 420 → 1. Gauge 90 + 27 → 100.
 
@@ -292,11 +292,13 @@ The first press in a beat is the one that counts, and a press before the beat op
 
 | Hero | Technique | Row | Played at good | Played perfectly |
 |---|---|---|---|---|
-| Asha | **Shallows Verse** | heal, power 12, every ally, magic (Silence blocks it) | power 17 | power 22 |
+| Asha | **Shallows Verse** | heal, power 4, every ally, magic (Silence blocks it) | power 5 | power 7 |
 | Toma | **Return Tide** | physical, power 14, one foe, accuracy 100 | power 20 | power 26 |
 | Ysolde | **Written Light** | magical, power 10, every foe, no element, magic | power 14 | power 19 |
 
-(`swell_power`: 12 × 145 / 100 = 17.4 → 17; 14 × 190 / 100 = 26.6 → 26.) For comparison, Chorus Mend heals every ally at power 6 for 14 MP.
+(`swell_power`: 4 × 145 / 100 = 5.8 → 5; 14 × 190 / 100 = 26.6 → 26.) `test_formulas.gd` pins every row of this table against `skills.json`.
+
+**Shallows Verse against Chorus Mend** (M2-NIT-03; the Verse was power 12). Chorus Mend heals every ally at power 6 for 14 MP and rank 4. From Asha (magic 18, level 5) at variance 100, Chorus Mend heals 138. The Verse heals 92 when missed and 115 at good, both less than a Chorus Mend. Only a perfect chant (161) beats it. At power 12 the Verse healed 391 at good, nearly three Chorus Mends for free, and it was the one Swell a masher could not lose with (balance_report.md, 2026-10-23 M2-NIT-03). The free song saves the 14 MP and a rank, and a well-sung one is the better heal, so the input still decides.
 
 **In the simulator** a suite's `swell` quality plays every input at miss, good or perfect (`SwellInput.scripted_result`); balance_targets.md has the policy rules and balance_report.md the effect (2026-10-23).
 

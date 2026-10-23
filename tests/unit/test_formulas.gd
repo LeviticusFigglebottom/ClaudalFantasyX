@@ -149,6 +149,32 @@ func test_swell_power_scales_with_the_input_bonus() -> void:
 	assert_eq(Formulas.swell_power(12, -10), 12, "a negative bonus counts as 0")
 
 
+## formulas.md § Swell, "Their techniques" (M2-NIT-03): every input earns +45% at good and +90%
+## played perfectly, so each technique's row power maps to the table's two columns.
+func test_technique_powers_at_good_and_perfect() -> void:
+	var db := BattleDB.load_default()
+	var table := {
+		&"shallows_verse": [4, 5, 7],
+		&"return_tide": [14, 20, 26],
+		&"written_light": [10, 14, 19],
+	}
+	for tid: StringName in table:
+		var want: Array = table[tid]
+		assert_eq(int(db.skill(tid).get("power", -1)), want[0], "%s row power" % tid)
+		assert_eq(Formulas.swell_power(want[0], 45), want[1], "%s played at good" % tid)
+		assert_eq(Formulas.swell_power(want[0], 90), want[2], "%s played perfectly" % tid)
+
+
+## The Verse against Chorus Mend, from Asha (magic 18, level 5) at variance 100: below a Chorus Mend
+## at miss and good, above it only when chanted perfectly (formulas.md § Swell, M2-NIT-03).
+func test_shallows_verse_beats_chorus_mend_only_when_perfect() -> void:
+	var chorus := Formulas.heal_amount(6, 18, 5, 100, false)
+	assert_eq(chorus, 138)
+	assert_eq(Formulas.heal_amount(4, 18, 5, 100, false), 92, "missed")
+	assert_eq(Formulas.heal_amount(Formulas.swell_power(4, 45), 18, 5, 100, false), 115, "good")
+	assert_eq(Formulas.heal_amount(Formulas.swell_power(4, 90), 18, 5, 100, false), 161, "perfect")
+
+
 func test_opening_chances_follow_mean_agility() -> void:
 	assert_eq(Formulas.preemptive_chance(15.0, 15.0), Formulas.OPENING_BASE_PCT, "equal agility: the base 8%")
 	assert_eq(Formulas.preemptive_chance(18.0, 46.0 / 3.0), 11, "sandbox: 8 + round(2.67) = 11")
