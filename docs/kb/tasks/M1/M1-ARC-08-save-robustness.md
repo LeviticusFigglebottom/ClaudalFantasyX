@@ -2,7 +2,7 @@
 id: M1-ARC-08
 title: Save robustness: write-check before rename, deep shape check, deferred autosave, New Game slot policy
 role: architect
-status: doing
+status: review
 owner_session: "worktree-agent-a35fbca43cd81575b"
 reviewer: qa
 depends_on: [M1-ARC-03, M1-ARC-06]
@@ -28,6 +28,14 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
 - **New Game policy**: a confirm prompt, chosen over an autosave per run (ADR 0018, proposed). It asks only when slot 0 is readable or from a newer build. "Go back" is the default, and `ui_cancel` also goes back. Loc keys `TITLE_CONFIRM_*` were appended to `strings.csv`. Tests: `tests/unit/test_title_menu.gd` and `tests/integration/test_save_new_run.gd`.
 - Docs: architecture.md, "Save robustness (M1-ARC-08)"; field_camera.md, the autosave-during-cutscene bullet.
 - Not done (QA nits outside the acceptance criteria): offering recovery from a valid stale `.tmp`, and the downward `set_chapter` autosave.
+
+- 2026-10-23 architect (worktree-agent-a35fbca43cd81575b, sweep-E fixes):
+  - **S1:** `SaveShape.is_whole` bounds the magnitude at `MAX_WHOLE` (2^53) for floats and ints, so `int()` is exact. `test_huge_whole_numbers_are_rejected` covers the probe cases (currency 1e300, chapter 1e19, inventory 1e20, vitals hp 1e300, lattice points, next_uid) and a slot on disk (corrupt in the menu, null on load).
+  - **S2:** `_owned` requires canonical keys (`str(int(k)) == k`, so `"05"`, `"+1"` and overflowing keys fail). `_equipment` requires `next_uid` present and greater than the highest owned uid, and every loadout uid to be 0 (empty) or owned. Test: `test_equipment_uids_must_be_consistent`.
+  - **S3:** fixed with M1-ARC-07 S2 (the hold follows the shot across a reparent).
+  - **S4:** keep the further-along autosave, as Amendment 1 to ADR 0018. The deferred chapter autosave is skipped (`ERR_ALREADY_EXISTS` on `autosave_finished`, plus a warning) when slot 0 has a later chapter, the same chapter with more play time, or a newer build. The exception is a run that New Game started, until its first autosave. Tests are in `tests/unit/test_save_recovery.gd` (older record, same chapter, overtaking, New Game exception, load ends it, empty/damaged/newer slot 0).
+  - **Nits:** architecture.md §Save robustness documents that `flush()` is not an fsync. A failed rename now warns and **keeps** the checked temp file for recovery (M1-ARC-10) instead of deleting it (`test_a_failed_rename_keeps_the_new_save_for_recovery`). The `party_ids` semantic nit is left open and noted in architecture.md.
+  - Godot `--filter=save`: 114 run, 0 failed.
 
 ## Review log
 - 2026-10-23 qa (review-sweep-E): **approve-with-fixes.** I read save_system.gd, save_shape.gd, the title model and menu diffs (4789d72), ADR 0018 and the architect-9 handoff. I ran `godot --headless res://tests/run_tests.tscn -- --filter=save` (own `XDG_DATA_HOME`): 100 run, 0 failed. I also probed `SaveShape.problem` directly with 11 malformed states (scratchpad `sweepE_godot/save_probe.gd`). gdlint and gdformat are clean.

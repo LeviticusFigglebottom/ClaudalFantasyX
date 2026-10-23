@@ -124,6 +124,61 @@ func test_whole_numbers() -> void:
 	assert_false(SaveShape.is_whole(INF))
 	assert_false(SaveShape.is_whole(NAN))
 	assert_false(SaveShape.is_whole("3"))
+	assert_true(SaveShape.is_whole(float(SaveShape.MAX_WHOLE)), "2^53 is the bound")
+	assert_true(SaveShape.is_whole(-float(SaveShape.MAX_WHOLE)))
+	assert_false(SaveShape.is_whole(float(SaveShape.MAX_WHOLE) * 2.0), "above 2^53")
+	assert_false(SaveShape.is_whole(1e19), "past int64: int() would wrap")
+	assert_false(SaveShape.is_whole(SaveShape.MAX_WHOLE + 1), "ints are bounded too")
+	_done()
+
+
+## QA review-sweep-E S1: each of these passed the old check and loaded as -9223372036854775808.
+func test_huge_whole_numbers_are_rejected() -> void:
+	var cases := {
+		"currency": 1e300,
+		"chapter": 1e19,
+		"inventory.potion": 1e20,
+		"party_vitals.rhen.hp": 1e300,
+		"lattice.characters.rhen.lattice_points": 1e19,
+		"equipment.next_uid": 1e300,
+	}
+	for path: String in cases:
+		var p := SaveShape.problem(_bad(path, cases[path]))
+		assert_ne(p, "", "%s = %s must be rejected" % [path, cases[path]])
+		assert_true(p.begins_with(path), "names the value: " + p)
+	var slot := _json_state()
+	slot["currency"] = 1e300
+	_write_raw(4, JSON.stringify({"version": SaveSystem.SAVE_VERSION, "state": slot}))
+	assert_eq(SaveSystem.slot_info(4)["status"], SaveSystem.STATUS_CORRUPT, "the menu shows it as damaged")
+	assert_eq(SaveSystem.load_from_slot(4), null, "it never loads with a negative purse")
+	assert_eq(SaveShape.problem(_bad("currency", float(SaveShape.MAX_WHOLE))), "", "the bound itself loads")
+	_done()
+
+
+## QA review-sweep-E S2: EquipmentBag trusts next_uid, the owned keys and the loadout uids.
+func test_equipment_uids_must_be_consistent() -> void:
+	var piece := {"base": "rhen_salvage_hooks", "abilities": ["", ""]}
+	var cases := {
+		"next_uid at the top uid would overwrite it": {"next_uid": 1, "owned": {"1": piece}, "loadout": {}},
+		"next_uid below the top uid": {"next_uid": 2, "owned": {"1": piece, "5": piece}, "loadout": {}},
+		"no next_uid with pieces owned": {"owned": {"1": piece}, "loadout": {}},
+		"a zero-padded key": {"next_uid": 9, "owned": {"05": piece}, "loadout": {}},
+		"a signed key": {"next_uid": 9, "owned": {"+1": piece}, "loadout": {}},
+		"a huge key": {"next_uid": 9, "owned": {"99999999999999999999": piece}, "loadout": {}},
+		"a loadout piece that is not owned": {"next_uid": 3, "owned": {"1": piece}, "loadout": {"rhen": {"weapon": 2}}},
+	}
+	for why: String in cases:
+		assert_ne(SaveShape.problem(_bad("equipment", cases[why])), "", why)
+	var p := SaveShape.problem(_bad("equipment", cases["next_uid at the top uid would overwrite it"]))
+	assert_eq(p, "equipment.next_uid: expected a whole number > 1 (the highest owned uid)")
+	var fine := {
+		"next_uid": 6.0,
+		"owned": {"1": piece, "5": piece},
+		"loadout": {"rhen": {"weapon": 5.0, "armor": 0.0}},
+	}
+	assert_eq(SaveShape.problem(_bad("equipment", fine)), "", "0 is an empty slot; JSON floats are fine")
+	assert_eq(SaveShape.problem(_bad("equipment", {"next_uid": 1, "owned": {}, "loadout": {}})), "", "empty bag")
+	assert_eq(SaveShape.problem(_bad("equipment", {})), "", "an empty record is filled by EquipmentBag")
 	_done()
 
 
