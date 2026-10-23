@@ -1,0 +1,21 @@
+{
+  "_about": "Asha's emotion tags -> face blendshape weights (docs/kb/art/characters/asha.md §6.3). A pair is [L, R]; a scalar sets both sides of a paired shape. Tags: game/data/dialogue/emotions.json. Read by AshaStage for the M1-CHR-02 review shots.",
+  "blend_in_s": 0.25,
+  "emotions": {
+    "neutral": {"mouth_smile": [0.08, 0.07]},
+    "soft_smile": {"mouth_smile": [0.35, 0.32], "cheek_raise": 0.15, "lid_squint": 0.10},
+    "smile": {"mouth_smile": [0.70, 0.64], "cheek_raise": 0.45, "lid_squint": 0.25, "lip_upper_up": 0.10},
+    "laugh": {"mouth_smile": [0.90, 0.82], "cheek_raise": 0.70, "jaw_open": 0.35, "lid_squint": 0.50, "brow_inner_up": 0.10},
+    "worried": {"brow_inner_up": 0.60, "brow_down": 0.15, "mouth_press": 0.20, "mouth_frown": 0.15},
+    "sad": {"brow_inner_up": 0.70, "lid_close": 0.25, "mouth_frown": 0.40},
+    "grief": {"brow_inner_up": 1.00, "brow_down": 0.30, "lid_squint": 0.40, "mouth_frown": 0.60, "mouth_stretch": 0.30, "jaw_open": 0.15},
+    "angry": {"brow_down": 0.70, "lid_squint": 0.30, "jaw_clench": 0.50, "mouth_press": 0.30},
+    "cold": {"brow_down": 0.15, "lid_close": 0.20, "mouth_press": 0.35},
+    "surprised": {"brow_inner_up": 0.60, "brow_outer_up": 0.80, "lid_wide": 0.55, "jaw_open": 0.25},
+    "afraid": {"brow_inner_up": 0.90, "brow_outer_up": 0.40, "lid_wide": 0.65, "mouth_stretch": 0.45, "jaw_open": 0.15},
+    "determined": {"brow_down": 0.35, "lid_squint": 0.15, "mouth_press": 0.40, "jaw_clench": 0.20},
+    "tender": {"brow_inner_up": 0.30, "mouth_smile": [0.25, 0.22], "lid_close": 0.20, "cheek_raise": 0.10},
+    "guilty": {"brow_inner_up": 0.40, "lid_close": 0.35, "mouth_press": 0.30},
+    "exhausted": {"lid_close": 0.45, "brow_inner_up": 0.20, "jaw_open": 0.08, "mouth_frown": 0.10}
+  }
+}

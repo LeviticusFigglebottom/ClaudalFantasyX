@@ -705,7 +705,7 @@ def catmull_clark(V: Arr, F: Arr, vpin: Arr, seams: set, vreg: list[str]) -> tup
     newV[nv:nv + len(E)][e_pin] = mids[e_pin]
     newV[nv + len(E):][f_pin] = FP[f_pin]
     new_pin = np.concatenate([pin, e_pin, f_pin])
-    new_reg = list(vreg) + [vreg[u] for u, _ in E] + ["face"] * m
+    new_reg = list(vreg) + [vreg[u] for u, _ in E] + [vreg[int(f[0])] for f in F]
     newF = []
     for fi, f in enumerate(F):
         fp = nv + len(E) + fi
@@ -846,4 +846,4 @@ def generate(params: dict, subdiv: int = 1, log=print) -> dict:
     V[:, 2] = np.maximum(V[:, 2], 0.0)  # soles stand exactly on the ground plane
     log(f"projected ({time.time() - t0:.1f}s)")
     return {"V": V, "F": F, "pin": pin, "seams": seams, "lm": lm, "body": body, "cage_V": V0, "cage_F": F0,
-            "groups": cg.groups, "n_cage_v": len(V0)}
+            "groups": cg.groups, "n_cage_v": len(V0), "reg": reg}

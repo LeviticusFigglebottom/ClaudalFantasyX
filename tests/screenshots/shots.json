@@ -453,6 +453,96 @@
         540
       ],
       "settle_frames": 24
+    },
+    {
+      "id": "asha_front",
+      "scene": "res://game/levels/_tests/characters/asha/asha_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_q34",
+      "scene": "res://game/levels/_tests/characters/asha/asha_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_profile",
+      "scene": "res://game/levels/_tests/characters/asha/asha_stage.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_face_neutral",
+      "scene": "res://game/levels/_tests/characters/asha/asha_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_face_smile",
+      "scene": "res://game/levels/_tests/characters/asha/asha_face_smile.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_face_grief",
+      "scene": "res://game/levels/_tests/characters/asha/asha_face_grief.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_sleeve_s0",
+      "scene": "res://game/levels/_tests/characters/asha/asha_stage.tscn",
+      "camera": "Cameras/Sleeve",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_sleeve_s4",
+      "scene": "res://game/levels/_tests/characters/asha/asha_sleeve_s4.tscn",
+      "camera": "Cameras/Sleeve",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_extreme_pose",
+      "scene": "res://game/levels/_tests/characters/asha/asha_extreme_pose.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }
