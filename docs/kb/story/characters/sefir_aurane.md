@@ -8,10 +8,10 @@ In the Lit Age, Sefir was the keeper of Iskarra's Lamp Engines, a brilliant arch
 
 Forty years later the next Cantor displaced Kesh. Sefir couldn't let her lift, so he bound her in the stones of the Choir. In doing so he learned to sustain himself from displaced glimmer, and he has never stopped. He designed the Ebbing to herd the dead seaward, wrote the doctrine of debt, struck the Eighth Verse, and has outlived everyone who ever knew him. He has held the High Warden seat under a dozen names and veils.
 
-He is not cruel by nature. He is someone who could not grieve, and he built a world in that image. **He believes stasis is mercy:** if nothing ends, nothing is lost. He wants to make the Calm unbroken by becoming the Undertow's eternal heart himself. He would then never die, never be apart from Kesh (whose light he would fold into his), and no one would ever have to lose anyone again, because no one would truly leave.
+He is not cruel by nature. He is someone who could not grieve, and he built a world in that image. **He believes stasis is mercy:** if nothing ends, nothing is lost. He wants the **Long Stillness**: a sea that never stirs again, because he has become the Undertow's eternal heart himself. He would then never die, never be apart from Kesh (whose light he would fold into his), and no one would ever have to lose anyone again, because no one would truly leave.
 
 ## Want / Need (as antagonist)
-- **Wants:** the Unbroken Calm, with himself as the eternal heart, Kesh beside him, and the world held still forever.
+- **Wants:** the Long Stillness, with himself as the eternal heart, Kesh beside him, and the world held still forever.
 - **Lack:** he never let Kesh go. Every horror he has done follows from that single refusal. He is what Rhen, Pell, and Ysolde could become.
 
 ## Arc Beats

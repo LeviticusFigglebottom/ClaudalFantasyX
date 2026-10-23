@@ -245,12 +245,19 @@ static func grant_movement(progress: LatticeProgress, cid: StringName, points: i
 	return t.movement_points
 
 
-## Adds `amount` of every Facet type the rules define. Returns the ids granted.
-static func grant_facets(progress: LatticeProgress, inventory: FacetInventory, amount: int) -> Array[StringName]:
+## Adds up to `amount` of every Facet type the rules define, never past the item's stack cap
+## (ItemDB.cap_of, from game/data/items; `db` defaults to the shipped tables). Facets with no item
+## row have cap 0 and get nothing. Returns the ids that received at least one.
+static func grant_facets(
+	progress: LatticeProgress, inventory: FacetInventory, amount: int, db: ItemDB = null
+) -> Array[StringName]:
+	var items := db if db != null else ItemDB.load_default()
 	var out: Array[StringName] = []
 	for fid: StringName in progress.rules.facets:
-		inventory.add(fid, amount)
-		out.append(fid)
+		var added := mini(amount, maxi(items.cap_of(fid) - inventory.count(fid), 0))
+		if added > 0:
+			inventory.add(fid, added)
+			out.append(fid)
 	return out
 
 
@@ -308,6 +315,8 @@ static func camera_lines(director: FieldCameraDirector) -> PackedStringArray:
 		return out
 	var s := director.state_snapshot()
 	out.append("shot %s  volume %s  inside %d" % [s["shot"], s["volume"], s["inside"]])
+	var aim := str(s["aim"]) if str(s["aim"]) != "" else "player"
+	out.append("scripted %s  aim %s" % [s["scripted"], aim])
 	out.append("blending %s  weight %.2f  over %.2f s" % [s["blending"], s["blend_weight"], s["blend_sec"]])
 	out.append("history: %s" % " > ".join(PackedStringArray(s["history"] as Array)))
 	return out

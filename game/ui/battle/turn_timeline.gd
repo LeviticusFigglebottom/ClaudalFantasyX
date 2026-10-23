@@ -27,6 +27,8 @@ var _identity: Dictionary = {}
 var _offsets: Dictionary = {}
 ## Slot key -> TimelineChip.
 var _chips: Dictionary = {}
+## Hidden chips built ahead of time (prebuild); a new turn takes one before making its own.
+var _pool: Array[TimelineChip] = []
 var _target_color := Color.WHITE
 var _panel: Panel
 
@@ -156,6 +158,35 @@ static func _keyed(entries: Array[TurnEntry], offsets: Dictionary, skip_first_of
 	return out
 
 
+## Builds `count` hidden chips now, so a later show_turns() only fills them in. Entering the
+## tree (theme propagation through each chip's labels) is most of a chip's cost, so a staged
+## battle build spreads this over frames before the first order is shown (M1-UI-03).
+func prebuild(count: int) -> void:
+	for i in count:
+		var chip := _new_chip()
+		chip.visible = false
+		_pool.append(chip)
+
+
+func pooled_count() -> int:
+	return _pool.size()
+
+
+func _take_chip() -> TimelineChip:
+	if _pool.is_empty():
+		return _new_chip()
+	var chip: TimelineChip = _pool.pop_front()
+	chip.visible = true
+	return chip
+
+
+func _new_chip() -> TimelineChip:
+	var chip := TimelineChip.new()
+	chip.setup(_metrics)
+	add_child(chip)
+	return chip
+
+
 func slot_rect(slot: int) -> Rect2:
 	var inset := HudLayout.num(_metrics, "inset")
 	var w := size.x - inset * 2.0
@@ -180,9 +211,7 @@ func _sync_chips(mode: StringName) -> void:
 		var r := slot_rect(int(s["slot"]))
 		var fresh := chip == null
 		if fresh:
-			chip = TimelineChip.new()
-			chip.setup(_metrics)
-			add_child(chip)
+			chip = _take_chip()
 			_chips[key] = chip
 			# A turn entering the bottom of the order rises in from one pitch below.
 			var from_below := HudLayout.num(_metrics, "chip_pitch") if mode == MODE_TURN else 0.0

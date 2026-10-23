@@ -10,11 +10,21 @@ extends Node3D
 ## shots keep moving while they blend. Leaving every volume keeps the current shot.
 ## There is no free orbit camera: CameraShot.Mode.ORBIT is honoured only with hub_orbit_enabled.
 ##
+## Scripted shots (M1-ARC-05): play_shot() takes the camera for a cutscene and suspends volume
+## selection until release(), which blends back to the winning volume's shot. This is the hook the
+## cutscene sequencer drives from `@camera` cues (contract in docs/kb/tech/field_camera.md).
+##
 ## Time passes only through update(delta) (called from _process when auto_update is on), so tests
 ## and capture scenes drive it deterministically.
 
 signal shot_changed(shot: CameraShot, hard_cut: bool, blend_sec: float)
 signal blend_finished(shot: CameraShot)
+## A scripted shot took the camera (play_shot). blend_sec is 0 for a cut.
+signal scripted_shot_started(shot: CameraShot, blend_sec: float)
+## release() handed the camera back; `shot` is the shot it returns to. blend_sec is 0 for a cut.
+signal scripted_shot_released(shot: CameraShot, blend_sec: float)
+## snap() finished: the camera is settled on `shot` with no blend.
+signal snapped(shot: CameraShot)
 
 const DATA_PATH := "res://game/data/world/field_camera.json"
 const TWEEN_CLASS := "Tween"
@@ -51,6 +61,13 @@ var _inside: Dictionary = {}
 var _seq := 0
 var _shot_state: Dictionary = {}
 var _orbit_warned := false
+var _blend_ease: StringName = &""
+## The shot play_shot() holds; null while volumes select the shot.
+var _scripted_shot: CameraShot
+## What was active when the script took over (release() falls back to it outside every volume).
+var _return_shot: CameraShot
+var _return_volume: CameraVolume
+var _aim_warned: Dictionary = {}
 
 
 func _ready() -> void:
@@ -87,18 +104,98 @@ func collect_volumes(explicit: Array[CameraVolume] = []) -> void:
 		volumes.append(n as CameraVolume)
 
 
-## Jumps straight to the shot for the target's current position (zone load, teleport, capture).
+## Jumps straight to the shot for the target's current position (zone load, teleport, capture):
+## a hard cut that also ends any blend in progress (even into the shot already active) and resets
+## tracking, then emits `snapped`. While a scripted shot is held, it snaps onto that shot instead.
 func snap() -> void:
 	if volumes.is_empty():
 		collect_volumes()
 	_inside.clear()
-	_update_occupancy()
-	var best := _pick_volume()
-	if best != null:
-		_enter(best, true)
-	elif active_shot == null and initial_shot != null:
-		_activate(initial_shot, null, true, 0.0)
+	if target != null:
+		_update_occupancy()
+	if _scripted_shot == null:
+		var best := _pick_volume()
+		if best != null:
+			_enter(best, true)
+		elif active_shot == null and initial_shot != null:
+			_activate(initial_shot, null, true, 0.0)
+	var was_blending := _blending
+	_end_blend()
+	if active_shot != null:
+		_shot_state.erase(active_shot)
 	update(0.0)
+	if was_blending:
+		blend_finished.emit(active_shot)
+	if active_shot != null:
+		snapped.emit(active_shot)
+
+
+# --- Scripted shots (cutscene sequencer) ---------------------------------------------------------
+
+
+## Takes the camera to `shot` until release(): volume selection is suspended while it is held.
+## blend_sec < 0 resolves like a volume entry (the shot's blend_sec, then default_blend_sec) and
+## honours the shot's hard_cut; an explicit blend_sec wins over both, and 0 cuts. `ease` names an
+## ease from field_camera.json for this blend only (empty = the shot's own curve or ease). Calling
+## it again while held moves on to the next scripted shot, blending from wherever the camera is.
+func play_shot(shot: CameraShot, blend_sec: float = CameraShot.USE_DEFAULT, ease: StringName = &"") -> void:
+	if shot == null:
+		push_error("FieldCameraDirector: play_shot(null)")
+		return
+	var dur := blend_sec
+	var cut := false
+	if dur < 0.0:
+		dur = shot.blend_sec if shot.blend_sec >= 0.0 else float(data.get("default_blend_sec", 0.0))
+		cut = shot.hard_cut
+	cut = cut or dur <= 0.0 or active_shot == null
+	if _scripted_shot == null:
+		_return_shot = active_shot
+		_return_volume = active_volume
+	_scripted_shot = shot
+	var moves := shot != active_shot
+	_activate(shot, null, cut, dur, ease)
+	scripted_shot_started.emit(shot, dur if moves and not cut else 0.0)
+
+
+## Hands the camera back to the volumes: blends to the winning volume's shot (or, outside every
+## volume, to the shot that was active before play_shot). blend_sec < 0 resolves like a volume
+## entry (volume override, shot, default) but always blends, whatever the hard_cut settings; pass
+## 0 to cut. Returns false, and does nothing, when no scripted shot is held.
+func release(blend_sec: float = CameraShot.USE_DEFAULT, ease: StringName = &"") -> bool:
+	if _scripted_shot == null:
+		return false
+	var held := _scripted_shot
+	_scripted_shot = null
+	if target != null:
+		_update_occupancy()
+	var best := _pick_volume()
+	var shot: CameraShot = best.shot if best != null else _return_shot
+	var v: CameraVolume = best if best != null else _return_volume
+	_return_shot = null
+	_return_volume = null
+	if shot == null:
+		shot = held
+	var dur := blend_sec
+	if dur < 0.0 and best != null:
+		dur = best.blend_sec_override
+	if dur < 0.0:
+		dur = shot.blend_sec
+	if dur < 0.0:
+		dur = float(data.get("default_blend_sec", 0.0))
+	var cut := dur <= 0.0
+	var moves := shot != active_shot
+	_activate(shot, v, cut, dur, ease)
+	scripted_shot_released.emit(shot, dur if moves and not cut else 0.0)
+	return true
+
+
+## True while play_shot() holds the camera.
+func is_scripted() -> bool:
+	return _scripted_shot != null
+
+
+func scripted_shot() -> CameraShot:
+	return _scripted_shot
 
 
 ## Advances selection, blends and tracking by `delta` seconds and applies the pose to the camera.
@@ -106,16 +203,17 @@ func update(delta: float) -> void:
 	if target == null:
 		return
 	_update_occupancy()
-	var best := _pick_volume()
-	if best != null and best != active_volume:
-		_enter(best, false)
+	if _scripted_shot == null:
+		var best := _pick_volume()
+		if best != null and best != active_volume:
+			_enter(best, false)
 	if active_shot == null:
 		return
 	var to_pose := evaluate(active_shot, delta)
 	if _blending:
 		_blend_elapsed += delta
 		var t := clampf(_blend_elapsed / _blend_duration, 0.0, 1.0) if _blend_duration > 0.0 else 1.0
-		_blend_weight = blend_curve_weight(active_shot, t)
+		_blend_weight = blend_curve_weight(active_shot, t, _blend_ease)
 		var from_pose := evaluate(_previous_shot, delta) if _previous_shot != null else _from_snapshot
 		current_pose = CameraPose.blend(from_pose, to_pose, _blend_weight)
 		if t >= 1.0:
@@ -163,6 +261,8 @@ func state_snapshot() -> Dictionary:
 		"blend_sec": _blend_duration,
 		"inside": _inside.size(),
 		"history": history.duplicate(),
+		"scripted": _scripted_shot != null,
+		"aim": String(active_shot.aim_node) if active_shot != null else "",
 	}
 
 
@@ -170,10 +270,12 @@ func state_snapshot() -> Dictionary:
 
 
 ## Where `shot` wants the camera this frame. Tracking state (smoothed aim, dolly progress) is kept
-## per shot, so an outgoing shot keeps tracking while it blends out.
+## per shot, so an outgoing shot keeps tracking while it blends out. A shot with an aim_node frames
+## that node (plus aim_offset) instead of the player in every mode; FIXED then looks at it.
 func evaluate(shot: CameraShot, delta: float) -> CameraPose:
 	var fov := shot.fov_deg if shot.fov_deg > 0.0 else float(data.get("default_fov_deg", 0.0))
-	var aim_target := target.global_position + shot.target_offset
+	var subject := subject_node(shot)
+	var aim_target := aim_point(shot)
 	match _effective_mode(shot):
 		CameraShot.Mode.PAN_FOLLOW:
 			var from := _to_world(shot.position)
@@ -190,8 +292,34 @@ func evaluate(shot: CameraShot, delta: float) -> CameraPose:
 			var dist := shot.orbit_distance if shot.orbit_distance > 0.0 else _orbit_value("distance_m")
 			var height := shot.orbit_height if shot.orbit_height > 0.0 else _orbit_value("height_m")
 			var offset := Basis(Vector3.UP, orbit_yaw) * Vector3(0.0, height, dist)
-			return CameraPose.looking(target.global_position + offset, aim_target, fov, shot.dof_dict(), shot.roll_deg)
-	return CameraPose.looking(_to_world(shot.position), _to_world(shot.look_at), fov, shot.dof_dict(), shot.roll_deg)
+			return CameraPose.looking(subject.global_position + offset, aim_target, fov, shot.dof_dict(), shot.roll_deg)
+	var fixed_aim := aim_target if subject != target else _to_world(shot.look_at)
+	return CameraPose.looking(_to_world(shot.position), fixed_aim, fov, shot.dof_dict(), shot.roll_deg)
+
+
+## The node `shot` frames: its aim_node (relative to the rail root, or absolute) when set and
+## found, else the player. A missing aim_node warns once per shot and falls back to the player.
+func subject_node(shot: CameraShot) -> Node3D:
+	if shot.aim_node.is_empty():
+		return target
+	var base: Node = rail_root if rail_root != null else self
+	var n := base.get_node_or_null(shot.aim_node) as Node3D
+	if n == null:
+		if not _aim_warned.has(shot):
+			_aim_warned[shot] = true
+			push_warning(
+				"FieldCameraDirector: shot %s aim_node %s not found; using the player" % [shot.id, shot.aim_node]
+			)
+		return target
+	return n
+
+
+## The world point `shot` aims at: its aim node plus aim_offset, or the player plus target_offset.
+func aim_point(shot: CameraShot) -> Vector3:
+	var subject := subject_node(shot)
+	if subject != target:
+		return subject.global_position + shot.aim_offset
+	return target.global_position + shot.target_offset
 
 
 ## Pan-follow aim: authored aim moved toward the player by `weight`, at most `max_deg` away.
@@ -212,7 +340,7 @@ func dolly_progress(shot: CameraShot) -> float:
 	var track := _path(shot.track_path if not shot.track_path.is_empty() else shot.dolly_path)
 	if track == null or track.curve == null or track.curve.get_baked_length() <= 0.0:
 		return 0.0
-	var local := track.to_local(target.global_position)
+	var local := track.to_local(subject_node(shot).global_position)
 	var progress := track.curve.get_closest_offset(local) / track.curve.get_baked_length()
 	return clampf(shot.progress_offset + progress * shot.progress_scale, 0.0, 1.0)
 
@@ -225,11 +353,14 @@ func dolly_position(shot: CameraShot, t: float) -> Vector3:
 	return dolly.to_global(dolly.curve.sample_baked(t * dolly.curve.get_baked_length()))
 
 
-## Curve weight for normalized blend time t: the shot's Curve, else its named ease, else default.
-func blend_curve_weight(shot: CameraShot, t: float) -> float:
-	if shot != null and shot.blend_curve != null:
+## Curve weight for normalized blend time t: `ease_override` (a play_shot/release ease), else the
+## shot's Curve, else its named ease, else default.
+func blend_curve_weight(shot: CameraShot, t: float, ease_override: StringName = &"") -> float:
+	if ease_override == &"" and shot != null and shot.blend_curve != null:
 		return clampf(shot.blend_curve.sample_baked(t), 0.0, 1.0)
-	var ease_name := String(shot.blend_ease) if shot != null and shot.blend_ease != &"" else ""
+	var ease_name := String(ease_override)
+	if ease_name == "" and shot != null and shot.blend_ease != &"":
+		ease_name = String(shot.blend_ease)
 	if ease_name == "":
 		ease_name = str(data.get("default_blend_ease", ""))
 	var spec := (data.get("eases", {}) as Dictionary).get(ease_name, {}) as Dictionary
@@ -279,7 +410,7 @@ func _enter(v: CameraVolume, force_cut: bool) -> void:
 	_activate(v.shot, v, cut, dur)
 
 
-func _activate(shot: CameraShot, v: CameraVolume, cut: bool, dur: float) -> void:
+func _activate(shot: CameraShot, v: CameraVolume, cut: bool, dur: float, ease: StringName = &"") -> void:
 	if shot == active_shot:
 		active_volume = v
 		return
@@ -296,6 +427,7 @@ func _activate(shot: CameraShot, v: CameraVolume, cut: bool, dur: float) -> void
 	_blend_elapsed = 0.0
 	_blend_duration = 0.0 if cut else dur
 	_blend_weight = 1.0 if cut else 0.0
+	_blend_ease = ease
 	if cut:
 		_previous_shot = null
 	history.append(shot.id)
@@ -303,6 +435,15 @@ func _activate(shot: CameraShot, v: CameraVolume, cut: bool, dur: float) -> void
 
 
 # --- Helpers -------------------------------------------------------------------------------------
+
+
+func _end_blend() -> void:
+	_blending = false
+	_previous_shot = null
+	_from_snapshot = null
+	_blend_elapsed = 0.0
+	_blend_duration = 0.0
+	_blend_weight = 1.0
 
 
 func _effective_mode(shot: CameraShot) -> CameraShot.Mode:

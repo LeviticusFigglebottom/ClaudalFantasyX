@@ -18,7 +18,7 @@ Our thesis (SPEC §7.1): **painterly realism, saturated by sun and water, lit by
 
 ### 1.2 Value structure
 - **High-key daylight:** about 60–70% of a daytime frame sits in the upper value range (sky, sand, sunlit stone). The darks are concentrated in one or two shapes (a doorway, foliage, a figure's hair) that frame the focal point.
-- **Night is not dark, it is blue.** Night scenes keep readable mid-values in blue and teal, with the spectral glow supplying the brightest values in the frame. Pure black is reserved for very small accents.
+- **Night is not dark, it is blue.** Night scenes keep readable mid-values in blue and teal, with the spectral glow (glimmer motes) and oil flames supplying the brightest values in the frame. Pure black is reserved for very small accents. The measurable night value order, in which the sea-glow is the brightest *water* value, is in the color script, rule 3.
 - **Figures read against the background by value first and hue second.** A dark-haired character is set against a bright sky, and a pale costume against dark foliage. *We take:* every composed shot gets a value-check (the grayscale debug view) before any color review.
 
 ### 1.3 Silhouette language
@@ -57,12 +57,12 @@ The remembered quality is luminous turquoise shallows over pale sand, deepening 
 | 15–30 m | deep teal | `deep_teal_shadow` `#0E4A55` |
 | > 30 m, or night | abyss | `abyss_navy` `#061A2B` |
 
-The shader gets there physically (absorption coefficients per frame are in the [color script](color_script.md)), and the art target checks the result against this ramp. Caustics are bright and sharp in the 0.3–4 m band.
+The shader gets there with tuned absorption (the validated water looks per frame are in the [color script](color_script.md), "Water looks"), and the art target checks the result against this ramp. The ramp's hexes are **inputs**. Compare screenshots against their `onscreen_hex` in palette.json (README.md, "Two kinds of colour value"). Caustics are bright and sharp in the 0.3–4 m band.
 
 ### 1.8 How light from the dead reads at night
 - In the inspiring art, the spirits of the dead appear as **drifting colored motes** that make night scenes feel sacred rather than frightening. They are soft and luminous, they gather in large numbers at rites, and they bloom gently.
 - **We change it** with our own story logic: mote *direction and hue* carry meaning. Rising, warm pale-gold motes mean released, and sinking, cool cyan motes mean held (see the color script's narrative light rules). And our sea always glows faintly at night, because the dead have been sinking into it for a thousand years.
-- At night the glow is the brightest value in the frame, and everything else is lit to support it: blue-navy fills, faint teal sea-glow from below, and warm oil-lamp pools as the only counterpoint.
+- At night the glimmer glow is the brightest value in the frame, and everything else is lit to support it: blue-navy fills, faint teal sea-glow from below (the brightest value *of the sea* and the frame's one teal field, not of the frame: color script rule 3), and warm oil-lamp pools as the only counterpoint.
 
 ### 1.9 UI quality
 A clean, translucent deep-blue menu style with thin light linework and soft gradients. We take only the *qualities* (translucency, deep blue, thin lines, calm motion), and redesign the layout, ornament, and iconography from scratch (see [ui.md](ui.md)).

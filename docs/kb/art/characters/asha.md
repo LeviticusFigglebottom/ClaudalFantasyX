@@ -67,8 +67,8 @@ The sleeve is one mesh and one texture set. States are driven by a single shader
 |---|---|---|---|
 | S0 | Ch2 to Ch3 before the shrine | 0 | Blank gauze. Gold cuff ring only. |
 | S1 | After Ilun (Ch3) | 1 | **Net-knot band**: a knotted-net lattice in `sea_blue_cloth` silk, with gold-thread knot points. |
-| S2 | After Kahre (Ch5) | 2 | **Hammer-and-ember band**: stepped flame tiers in `lacquer_red` silk, with gold edges. |
-| S3 | After Virel (Ch8) | 3 | **Kite-line band**: zigzag sailcloth panels in white-on-white satin stitch, with gold lightning lines. |
+| S2 | After Kahre (Ch5) | 2 | **Hammer-and-spark band**: stepped spark tiers in `lacquer_red` silk, with gold edges. |
+| S3 | After Virel (Ch8) | 3 | **Kite-line band**: zigzag sailcloth panels in white-on-white satin stitch, with gold flame lines. |
 | S4 | After Nhoa (Ch11) | 4 | **Root-and-mote band**: mangrove-root curls in `glimmer_bound`-tinted silk, with gold dots. |
 | S5 | After Hesk (Ch12) | 5 | **Cord-knot band**: keth-style knot rows in `bone` silk, with gold wrap. |
 | S6 | After Ethren (Ch13) | 6 | **Ring band**: interlocked rings in gold thread only (the only all-gold band, for Corran's ring). |

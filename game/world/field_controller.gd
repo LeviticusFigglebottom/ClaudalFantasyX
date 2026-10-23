@@ -46,6 +46,7 @@ func _ready() -> void:
 	director = get_node_or_null(director_path) as FieldCameraDirector
 	if director != null:
 		director.shot_changed.connect(_on_shot_changed)
+		director.snapped.connect(_on_snapped)
 
 
 func _physics_process(delta: float) -> void:
@@ -148,3 +149,8 @@ func _check_touch() -> void:
 
 func _on_shot_changed(_shot: CameraShot, hard_cut: bool, _blend_sec: float) -> void:
 	motor.on_camera_change(hard_cut)
+
+
+## A snap shows a new camera at once: re-read it rather than keep a latch to the old one.
+func _on_snapped(_shot: CameraShot) -> void:
+	motor.relatch(director.camera_yaw())

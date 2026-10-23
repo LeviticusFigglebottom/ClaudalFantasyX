@@ -5,6 +5,8 @@ extends TestCase
 ## reach END with no runner errors or warnings; every spoken line needs a known speaker, an
 ## emotion, and a translated key; narration is tagged #vo; cameras use haluna.md shot ids; and
 ## glimmer VFX obey the light rules (released rises, held sinks, bound stays still).
+## M1-NAR-05 staging: Asha's closing line stays on H05 and the walk is on H01; Rhen's recognition
+## cuts to S10 on the second sung line and holds there through his question.
 
 const BEACH := &"ch02_girl_on_the_beach"
 const VERSE := &"ch03_the_first_verse"
@@ -16,6 +18,8 @@ const VERSE_INPUTS: Array[StringName] = [
 ]
 ## Shot ids from docs/kb/art/environments/haluna.md §5 (H Haluna, C causeway, S shrine).
 const SHOT_ID_PATTERN := "^[HCS](0[1-9]|10)$"
+## M1-NAR-05 (decisions_log N-13): Rhen's recognition on S10 holds at least this long in @wait time.
+const S10_HOLD_SEC := 6.0
 
 var speakers: DialogueSpeakers
 var shot_re: RegEx
@@ -46,6 +50,8 @@ func _run(scene: StringName, preset: Dictionary, prefix: Array[int]) -> Dictiona
 	var choices: Array[int] = []
 	var sizes: Array[int] = []
 	var lines: Array[StringName] = []
+	## One entry per @camera: {shot, wait (seconds of @wait while on it), lines (ids spoken on it)}.
+	var shots: Array[Dictionary] = []
 	var letterbox := false
 	var ended := false
 	for _i in MAX_STEPS:
@@ -55,9 +61,15 @@ func _run(scene: StringName, preset: Dictionary, prefix: Array[int]) -> Dictiona
 			break
 		if step.is_cue():
 			letterbox = _check_cue(step, letterbox, where)
+			if step.cue == &"camera":
+				shots.append({"shot": str(step.args[0]), "wait": 0.0, "lines": [] as Array[StringName]})
+			elif step.cue == &"wait" and not step.args.is_empty() and not shots.is_empty():
+				shots[-1]["wait"] = float(shots[-1]["wait"]) + float(step.args[0])
 		elif step.is_line():
 			_check_line(step, where)
 			lines.append(step.line_id)
+			if not shots.is_empty():
+				(shots[-1]["lines"] as Array[StringName]).append(step.line_id)
 		elif step.is_options():
 			_check_options(step, where)
 			var pick := prefix[choices.size()] if choices.size() < prefix.size() else 0
@@ -69,7 +81,7 @@ func _run(scene: StringName, preset: Dictionary, prefix: Array[int]) -> Dictiona
 	assert_true(ended, "reaches END within %d steps: %s" % [MAX_STEPS, where])
 	assert_eq(problems, 0, "runner errors or warnings (%s): %s" % [tally.last_message, where])
 	assert_false(letterbox, "letterbox is off again at the end: " + where)
-	return {"choices": choices, "sizes": sizes, "lines": lines, "events": events, "flags": flags.values}
+	return {"choices": choices, "sizes": sizes, "lines": lines, "events": events, "flags": flags.values, "shots": shots}
 
 
 ## Every path through `scene` under `preset`, one result per distinct choice sequence.
@@ -150,6 +162,14 @@ func _flag(run: Dictionary, flag: String) -> Variant:
 	return (run["flags"] as Dictionary).get(flag, false)
 
 
+## The camera setup `line_id` was spoken on (empty if it never played).
+func _shot_of(run: Dictionary, line_id: String) -> Dictionary:
+	for s: Dictionary in run["shots"]:
+		if StringName(line_id) in (s["lines"] as Array[StringName]):
+			return s
+	return {}
+
+
 func _check_beach_run(run: Dictionary) -> void:
 	var c: Array[int] = run["choices"]
 	assert_eq(c.size(), 2, "two menus on the beach: %s" % [c])
@@ -165,6 +185,9 @@ func _check_beach_run(run: Dictionary) -> void:
 	var lines: Array[StringName] = run["lines"]
 	assert_eq(lines[0], &"ch02_beach_001", "opens on the dawn narration")
 	assert_eq(lines[-1], &"ch02_beach_035", "closes on the narration")
+	var closing := "ch02_beach_014" if named else "ch02_beach_015"
+	assert_eq(_shot_of(run, closing).get("shot"), "H05", "Asha's closing line stays on H05 %s" % [c])
+	assert_eq(_shot_of(run, "ch02_beach_035").get("shot"), "H01", "the walk-up narration is on H01 %s" % [c])
 
 
 func _check_verse_run(run: Dictionary, preset: Dictionary) -> void:
@@ -190,6 +213,11 @@ func _check_verse_run(run: Dictionary, preset: Dictionary) -> void:
 	assert_eq(_has(run, "ch03_verse_057"), not told and not lantern, "'twice' deflect " + at)
 	for sung in ["042", "043", "044", "045", "046"]:
 		assert_true(_has(run, "ch03_verse_" + sung), "verse and recognition always play %s %s" % [sung, at])
+	var s10 := _shot_of(run, "ch03_verse_043")
+	assert_eq(s10.get("shot"), "S10", "the cut to Rhen lands on the second sung line " + at)
+	for held in ["044", "045", "046"]:
+		assert_true(is_same(_shot_of(run, "ch03_verse_" + held), s10), "S10 holds through %s %s" % [held, at])
+	assert_true(float(s10.get("wait", 0.0)) >= S10_HOLD_SEC, "S10 holds >= %.1f s %s" % [S10_HOLD_SEC, at])
 	assert_eq(run["events"], [[&"start_battle", ["drownbell"]]], "hands off to the Drownbell " + at)
 
 

@@ -12,6 +12,9 @@ const COURT := &"court_pan"
 const CAUSEWAY := &"causeway_dolly"
 const AIM_TOLERANCE := 0.999
 const POS_TOLERANCE_M := 0.01
+const SCRIPTED := &"cutscene_h06"
+const SCRIPT_BLEND_SEC := 0.5
+const AIM_OFFSET := Vector3(0, 1.2, 0)
 
 var zone: Node3D
 var director: FieldCameraDirector
@@ -194,7 +197,224 @@ func test_interrupted_blend_continues_from_where_the_camera_is() -> void:
 	_free()
 
 
+# --- M1-ARC-05: scripted shots, aim nodes, snap ---------------------------------------------------
+
+
+func test_play_shot_suspends_volume_selection_until_release() -> void:
+	var started: Array[Dictionary] = []
+	var released: Array[Dictionary] = []
+	director.scripted_shot_started.connect(func(s: CameraShot, b: float) -> void: started.append({"id": s.id, "b": b}))
+	director.scripted_shot_released.connect(
+		func(s: CameraShot, b: float) -> void: released.append({"id": s.id, "b": b})
+	)
+	var shot := _scripted_shot()
+	director.play_shot(shot, SCRIPT_BLEND_SEC)
+	assert_true(director.is_scripted())
+	assert_eq(director.scripted_shot(), shot)
+	assert_eq(director.active_shot_id(), SCRIPTED)
+	assert_true(director.is_blending(), "blends in from the lane")
+	assert_between(director.blend_duration(), SCRIPT_BLEND_SEC - 0.001, SCRIPT_BLEND_SEC + 0.001)
+	assert_eq(started, [{"id": SCRIPTED, "b": SCRIPT_BLEND_SEC}] as Array[Dictionary])
+	_walk_to(Vector3(0, 0, -5))
+	assert_eq(director.active_shot_id(), SCRIPTED, "walking into the court does not take the camera back")
+	assert_eq(director.history, [LANE, SCRIPTED] as Array[StringName])
+	assert_eq(director.state_snapshot()["volume"], "", "no volume owns a scripted shot")
+	assert_true(director.camera.global_position.distance_to(shot.position) < POS_TOLERANCE_M, "settled on it")
+	var court := zone.get_node("CameraVolumes/CourtVolume") as CameraVolume
+	var court_blend := _volume_blend(court)
+	assert_true(director.release(), "released")
+	assert_false(director.is_scripted())
+	assert_eq(director.active_shot_id(), COURT, "back to the winning volume's shot")
+	assert_eq(director.active_volume, court)
+	assert_true(director.is_blending(), "with a blend")
+	assert_between(director.blend_duration(), court_blend - 0.001, court_blend + 0.001, "the volume's blend")
+	assert_eq(released, [{"id": COURT, "b": court_blend}] as Array[Dictionary])
+	assert_false(director.release(), "nothing held: no-op")
+	_walk_to(Vector3(0, 0, 5))
+	assert_eq(director.active_shot_id(), LANE, "volume selection resumed")
+	_free()
+
+
+func test_release_always_blends_unless_told_to_cut() -> void:
+	_walk_to(Vector3(0, 0, -20))
+	assert_eq(director.active_shot_id(), CAUSEWAY)
+	var causeway := zone.get_node("CameraVolumes/CausewayVolume") as CameraVolume
+	assert_true(causeway.shot.hard_cut, "the causeway cuts in from the court")
+	director.play_shot(_scripted_shot(), 0.0)
+	assert_false(director.is_blending(), "explicit 0 cuts")
+	assert_eq(events[-1], {"id": SCRIPTED, "cut": true, "blend": 0.0})
+	director.release()
+	assert_eq(director.active_shot_id(), CAUSEWAY)
+	assert_true(director.is_blending(), "release blends even onto a hard-cut shot")
+	var want := _volume_blend(causeway)
+	assert_between(director.blend_duration(), want - 0.001, want + 0.001, "the volume's resolved blend")
+	director.play_shot(_scripted_shot())
+	director.release(0.0)
+	assert_false(director.is_blending(), "release(0) cuts")
+	_free()
+
+
+func test_play_shot_defaults_and_chained_shots() -> void:
+	var a := _scripted_shot()
+	director.play_shot(a)
+	assert_between(director.blend_duration(), _default_blend() - 0.001, _default_blend() + 0.001, "default blend")
+	var b := _scripted_shot()
+	b.id = &"cutscene_reaction"
+	b.hard_cut = true
+	director.play_shot(b)
+	assert_false(director.is_blending(), "the shot's own hard_cut applies when no blend is given")
+	assert_eq(director.scripted_shot(), b, "the next scripted shot")
+	director.play_shot(a, SCRIPT_BLEND_SEC)
+	assert_true(director.is_blending(), "an explicit blend")
+	_move(Vector3(15, 0, -5))
+	assert_eq(director.state_snapshot()["inside"], 0)
+	director.release()
+	assert_eq(director.active_shot_id(), LANE, "outside every volume: back to the shot before the script")
+	_free()
+
+
+func test_play_shot_ease_overrides_the_shot_curve() -> void:
+	var shot := _scripted_shot()
+	shot.blend_ease = &"in_out_cubic"
+	director.play_shot(shot, 1.0, &"linear")
+	for i in 15:
+		director.update(DT)
+	assert_between(director.blend_weight(), 0.24, 0.26, "linear at a quarter of the blend")
+	director.play_shot(_scripted_shot(), 1.0)
+	for i in 15:
+		director.update(DT)
+	assert_true(director.blend_weight() < 0.2, "the default sine ease again on the next blend")
+	_free()
+
+
+func test_snap_mid_blend_into_the_active_shot_ends_the_blend() -> void:
+	var finished: Array[StringName] = []
+	director.blend_finished.connect(func(s: CameraShot) -> void: finished.append(s.id))
+	var snaps: Array[StringName] = []
+	director.snapped.connect(func(s: CameraShot) -> void: snaps.append(s.id))
+	_walk_to(Vector3(0, 0, 1.5), false)
+	for i in 3:
+		director.update(DT)
+	assert_eq(director.active_shot_id(), COURT)
+	assert_true(director.is_blending() and director.blend_weight() < 0.1, "early in the court blend")
+	zone.call("place_at", &"Court")
+	assert_eq(director.active_shot_id(), COURT, "same shot")
+	assert_false(director.is_blending(), "snap ended the blend")
+	assert_eq(director.blend_weight(), 1.0)
+	assert_eq(director.blend_duration(), 0.0)
+	assert_eq(finished, [COURT] as Array[StringName], "blend_finished fires for the cut-short blend")
+	assert_eq(snaps, [COURT] as Array[StringName])
+	var settled := director.evaluate((zone.get_node("CameraVolumes/CourtVolume") as CameraVolume).shot, 0.0)
+	assert_true(director.camera.global_position.distance_to(settled.origin) < POS_TOLERANCE_M, "on the court frame")
+	assert_true(-director.camera.global_basis.z.dot(settled.forward()) > AIM_TOLERANCE, "aim snapped too")
+	_free()
+
+
+func test_snap_while_scripted_stays_on_the_scripted_shot() -> void:
+	director.play_shot(_scripted_shot(), SCRIPT_BLEND_SEC)
+	zone.call("place_at", &"Causeway")
+	assert_eq(director.active_shot_id(), SCRIPTED)
+	assert_false(director.is_blending())
+	assert_true(director.is_scripted())
+	director.release(0.0)
+	assert_eq(director.active_shot_id(), CAUSEWAY, "release finds the volume the player was snapped into")
+	_free()
+
+
+func test_fixed_shot_aims_at_its_aim_node() -> void:
+	var mark := zone.get_node("Spawns/Court") as Node3D
+	var shot := _scripted_shot()
+	shot.aim_node = NodePath("Spawns/Court")
+	shot.aim_offset = AIM_OFFSET
+	director.play_shot(shot, 0.0)
+	director.update(DT)
+	var want := (mark.global_position + AIM_OFFSET - shot.position).normalized()
+	assert_true(-director.camera.global_basis.z.dot(want) > AIM_TOLERANCE, "looks at the mark, not look_at")
+	_move(Vector3(1.5, 0, 4))
+	assert_true(-director.camera.global_basis.z.dot(want) > AIM_TOLERANCE, "the player moving changes nothing")
+	assert_eq(director.state_snapshot()["aim"], "Spawns/Court")
+	_free()
+
+
+func test_pan_follow_turns_toward_the_aim_node_not_the_player() -> void:
+	var actor := _actor(Vector3(-3, 0, -6))
+	var shot := (zone.get_node("CameraVolumes/CourtVolume") as CameraVolume).shot.duplicate() as CameraShot
+	shot.aim_node = NodePath(actor.name)
+	shot.aim_offset = AIM_OFFSET
+	shot.follow_smoothing = 0.0
+	var authored := (shot.look_at - shot.position).normalized()
+	var to_actor := (actor.global_position + AIM_OFFSET - shot.position).normalized()
+	var fwd := director.evaluate(shot, DT).forward()
+	assert_true(fwd.angle_to(to_actor) < authored.angle_to(to_actor), "pans toward the actor")
+	_move(Vector3(4, 0, -2))
+	assert_true(director.evaluate(shot, DT).forward().dot(fwd) > AIM_TOLERANCE, "ignores the player")
+	_free()
+
+
+func test_dolly_tracks_and_aims_at_the_aim_node() -> void:
+	var actor := _actor(Vector3(0, 0, -14))
+	var shot := (zone.get_node("CameraVolumes/CausewayVolume") as CameraVolume).shot.duplicate() as CameraShot
+	shot.aim_node = NodePath(actor.name)
+	shot.aim_offset = AIM_OFFSET
+	shot.follow_smoothing = 0.0
+	var near := director.evaluate(shot, DT)
+	actor.global_position = Vector3(0, 0, -32)
+	var far := director.evaluate(shot, DT)
+	assert_true(far.origin.z < near.origin.z - 10.0, "the dolly follows the actor while the player stays put")
+	var to_actor := (actor.global_position + AIM_OFFSET - far.origin).normalized()
+	assert_true(far.forward().dot(to_actor) > AIM_TOLERANCE, "aims at the actor")
+	_free()
+
+
+func test_orbit_circles_the_aim_node() -> void:
+	var actor := _actor(Vector3(5, 0, -8))
+	var shot := CameraShot.new()
+	shot.mode = CameraShot.Mode.ORBIT
+	shot.aim_node = NodePath(actor.name)
+	director.hub_orbit_enabled = true
+	var pose := director.evaluate(shot, DT)
+	var dist := float((director.data["orbit"] as Dictionary)["distance_m"])
+	var flat := Vector2(pose.origin.x - actor.global_position.x, pose.origin.z - actor.global_position.z)
+	assert_between(flat.length(), dist - 0.01, dist + 0.01, "orbits the actor")
+	_free()
+
+
+func test_missing_aim_node_falls_back_to_the_player() -> void:
+	var shot := CameraShot.new()
+	shot.aim_node = NodePath("NoSuchActor")
+	assert_eq(director.subject_node(shot), player)
+	assert_true(director.aim_point(shot).distance_to(player.global_position + shot.target_offset) < POS_TOLERANCE_M)
+	_free()
+
+
 # --- helpers -------------------------------------------------------------------------------------
+
+
+func _scripted_shot() -> CameraShot:
+	var s := CameraShot.new()
+	s.id = SCRIPTED
+	s.mode = CameraShot.Mode.FIXED
+	s.position = Vector3(4, 1.0, 6)
+	s.look_at = Vector3(0, 1.0, 9)
+	return s
+
+
+func _actor(at: Vector3) -> Node3D:
+	var a := Marker3D.new()
+	a.name = "TestActor"
+	zone.add_child(a)
+	a.global_position = at
+	return a
+
+
+func _default_blend() -> float:
+	return float(director.data["default_blend_sec"])
+
+
+func _volume_blend(v: CameraVolume) -> float:
+	if v.blend_sec_override >= 0.0:
+		return v.blend_sec_override
+	return v.shot.blend_sec if v.shot.blend_sec >= 0.0 else _default_blend()
 
 
 func _walk_to(goal: Vector3, finish_blends: bool = true) -> void:

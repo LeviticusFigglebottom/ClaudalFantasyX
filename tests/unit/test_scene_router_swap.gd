@@ -59,9 +59,11 @@ func test_swap_frame_stays_under_threshold_for_every_target() -> void:
 
 ## 1-minute load average divided by CPU count; 0 where /proc/loadavg is unavailable.
 static func _load_per_cpu() -> float:
-	if not FileAccess.file_exists("/proc/loadavg"):
+	# procfs reports size 0, so get_file_as_string() returns "": read a line instead.
+	var f := FileAccess.open("/proc/loadavg", FileAccess.READ)
+	if f == null:
 		return 0.0
-	var fields := FileAccess.get_file_as_string("/proc/loadavg").split(" ", false)
+	var fields := f.get_line().split(" ", false)
 	if fields.is_empty():
 		return 0.0
 	return fields[0].to_float() / float(maxi(OS.get_processor_count(), 1))

@@ -9,6 +9,9 @@ T="timeout ${HYMN_STEP_TIMEOUT:-600}"
 # Per-run log dir so parallel worktrees never clobber each other's logs.
 export TMPDIR="${HYMN_LOG_DIR:-$(mktemp -d "${TMPDIR:-/tmp}/hymn_ci.XXXXXX")}"
 L="$TMPDIR"
+# Per-run Godot user:// (saves, settings.cfg): parallel worktrees must not share app_userdata.
+export XDG_DATA_HOME="$L/xdg_data"
+mkdir -p "$XDG_DATA_HOME"
 echo "logs: $L"   # no gate may hang forever
 
 step() { printf '\n== %s\n' "$*"; }

@@ -30,7 +30,7 @@ The dead of Maresh are not let go. Their light sinks into the sea, pools, and be
 
 ---
 
-## 3. History and the Calm Cycle
+## 3. History and the Cycle of Calms
 
 Dates are counted **AL ("after the Level")**, the Order's calendar, which starts from the founding of the faith. The present day is **1012 AL**, the end of the **61st Calm**.
 
@@ -97,7 +97,7 @@ Low coral islands, turquoise flats, and constant trade winds. Villages sit behin
 *Influences: Balinese and Javanese temple architecture and Thai/Burmese lacquer and gold leaf.*
 Steep green volcanoes cut into rice and taro terraces, with water channels running down every slope. Temples are **stair-mountains**: stepped, tiered platforms of dark volcanic stone that climb the hillside itself, each tier smaller than the last, crowned by a lacquered red pavilion. The gateways are **open-hand gates**, two carved stone forearms rising from the ground with the palms cupped toward each other. Pilgrims walk through the "held" space between them. Every household keeps a small lacquer shrine-box finished in black and red with gold-leaf figures. Terrace cemeteries sit beside the paddies, so festivals happen among graves (pillar 2).
 - **Pemakar town**: market terraces, smithies, and lacquer workshops. It hosts **Lanternfall**, a festival where a thousand leaf-boats are floated down the terrace channels at night, so the whole mountain becomes a waterfall of small fires.
-- **Ember Terrace**: the Fire temple, a stair-mountain built into the lip of a dormant caldera.
+- **Ashcrown**: the Lightning temple, a stair-mountain built into the lip of a caldera that still breathes ash. Dry storms crackle in the plume, and Lit Age copper veins the tiers, so the strikes run down the mountain like water down the terraces.
 
 ### 5.3 Tamsule (trade port, crossroads)
 *Influences: a mix of all the southern cultures, with Burmese/Thai gilded signboards.*
@@ -106,7 +106,7 @@ A stilt city on a river mouth, with gilded lacquer shop-signs, floating markets,
 ### 5.4 Corrow (the seawall coast)
 *Influences: Khmer stone masonry at military scale.*
 A great curved seawall of grey laterite blocks, carved with rows of faces looking out to sea (the **Watchers**: original carved figures with closed eyes and open mouths, as if humming). Corrow Bastion is a garrison town of Stillguard and conscripted fishers. It's the first place the party sees the Order tolerate forbidden machines when the need is great.
-- **Coilspire**: the Lightning temple, a hollow stone spire on the headland where storms always break. It is threaded with old copper.
+- **Coilspire**: the Fire temple, a hollow stone spire on the headland where storms always break. Corrow has kept a warning beacon burning at its top for nine hundred years, and the old copper flues coiled through its walls still draw the flame.
 
 ### 5.5 Ossa Fen (Kirru estuary)
 *Influences: original, a mangrove and reed-delta people.*
@@ -122,11 +122,11 @@ The largest Lit Age ruin still above water. Towered stone galleries stand chest-
 *Influences: Andean high-altitude culture.*
 Thin air, enormous skies, terraced high valleys, and mortarless fitted stone walls of many-sided blocks. The Ullari herd **woolbacks** (long-necked shaggy pack animals) and wear layered hand-woven cloth in dense patterns, many of them *tide patterns*, oddly, so far from the sea. They keep records on **keth**: knotted cord bundles read by touch. Their custom for the dead is to tie a knot for the person on the **pass-cords** strung across every mountain pass, and then *walk on without looking back*. Up here the dead lift quickly. The Ullari are stoic about death in a way the coast finds cold.
 - **Quellan**: a highland town of stone and woven awnings.
-- **Cloudloom**: the Ice temple, built into a glacier cave and hung with frozen keth.
+- **Cloudloom**: the Holy temple, built into a glacier cave whose roof has opened to the sky, hung with frozen keth. At noon the high sun comes straight down through the ice, and the cords cast their shadows like writing.
 
 ### 5.8 Ansedra (the holy city)
 *Influences: Thai and Burmese lacquer and gold leaf, plus Javanese tiered roofs, combined into an original city plan.*
-The Order's seat, built on a lagoon kept perfectly flat. No wind ripples it, and no wake is permitted (the stillness is maintained by forbidden glimmer machinery under the city, which the party discovers in Act II). Its skyline is **bowl-domes**: inverted gilded bowls on tiered red-lacquer bases, each crowned with a thin spire. Barges are poled, never rowed, so the water stays still. The city has no seabirds, no dogs, and no children's games in the squares. The **Lacquer Court** is the ceremonial heart. The **Sanctum of the Level** is the Holy temple. Below it all lies the **Underreach** and the **Cistern**.
+The Order's seat, built on a lagoon kept perfectly flat. No wind ripples it, and no wake is permitted (the stillness is maintained by forbidden glimmer machinery under the city, which the party discovers in Act II). Its skyline is **bowl-domes**: inverted gilded bowls on tiered red-lacquer bases, each crowned with a thin spire. Barges are poled, never rowed, so the water stays still. The city has no seabirds, no dogs, and no children's games in the squares. The **Lacquer Court** is the ceremonial heart. The **Sanctum of the Level** is the Ice temple: its inner basin is held so still that it has frozen, in the tropics, and the Order calls it a miracle. Below it all lies the **Underreach** and the **Cistern**.
 
 ### 5.9 Hollowmere (the Saltwright flotilla)
 See §7.
@@ -142,6 +142,7 @@ See §7.
 - **The Hush** is a song of **seven verses**, one learned at each Vowbound's resting place (six temples and the Drowned Choir). It is sung in **Lamptongue**, the old Iskarran liturgical language. Sung whole, at the Choir, by a voice that can *hear* glimmer, it pulls the singer's lamp into the storm's center and makes it the new heart.
 - **The Eighth Verse.** The Lamplighters wrote an eighth verse, the **Letting**, which lifts glimmer instead of gathering it. Sefir struck it out, and the Order teaches that the Hush has seven. Kesh hid its melody in the Choir stones. The Kirru farewell song carries it unknowingly, and Ama Quillo's keth record that it existed. Asha sings it at the Great Unbinding, and it costs her singing voice.
 - **Hearers.** Cantors are chosen from people who *hear* glimmer, as a faint hum near motes. Hearing runs in families, and the Order tracks those families quietly. The Velamir line of Haluna has given four Cantors, Imra the most recent. Asha has heard the dead since she was four.
+- **The Velamir lullaby.** An earlier Velamir Cantor sang the first verse toward home from the Shell Shrine door, and the women of the line have hummed its tune to their children ever since, without the words (only Cantors sing). Imra hummed it long before she was named. **Dace Sallow** heard it from her when he was a young wright trading salvage along the Low Reaches and putting in at Haluna, years before Rhen was born, and he took it home to Oruvel as his son's lullaby. It was also why he went with her when she was named. Neither child knows the other was sung to sleep with it ([decisions_log N-11](decisions_log.md)).
 - **Training.** A named Cantor is given a Lamptongue tutor (Ysolde), at least one sworn guardian (Toma), and a pilgrim's route set by the Order. She may take on any guardians she chooses, which is the custom that lets Rhen join.
 - **Lamptongue sound palette** (for Audio's constructed lyrics): open vowels, few hard stops, and roots that recur. *vey* water, *ish* light, *karra* gathering/city, *hal* shell, *ennu* sleep/hush, *mir* stay, *tash* let go, *re* again, *oan* home. The seven verses end on *mir* (stay). The Letting ends on *tash*.
 
@@ -192,7 +193,7 @@ See §7.
 
 ## 11. Canon Notes for Other Roles
 
-- **Terminology:** the spec's working word for the lingering dead is replaced by **unrisen** in all game text, because the original term is too close to existing IP. "The Calm" is kept because the spec uses it, but never build compounds on it that echo existing IP (the CI list in `tools/banned_terms.txt` names them). Use **Last Calm** (the Order's promise) and **Unbroken Calm** (Sefir's goal).
+- **Terminology:** the spec's working word for the lingering dead is replaced by **unrisen** in all game text, because the original term is too close to existing IP. "The Calm" is kept because the spec uses it, but never build new compounds on it (the CI list in `tools/banned_terms.txt` names the ones that echo existing IP). **Last Calm** (the Order's promise) is the only one in canon, and it stays because it is the Order's own phrase. Sefir's goal is **the Long Stillness**: the sea held still forever with himself as its heart. His earlier working name was a Calm compound and is now on the banned list ([decisions_log N-10](decisions_log.md)).
 - **Mote direction** carries meaning (see §2). Rendering and VFX should encode up = released and down/seaward = anchored.
 - **The Order hums and Cantors sing.** The choral hymn should be hummed or vocalised by the congregation, with Lamptongue words reserved for Cantor and Choir pieces.
 - **Night sea glow** is ambient in every night scene until the ending. Its absence in the final scene is the payoff, so do not cut it from earlier scenes for performance reasons without telling Narrative.

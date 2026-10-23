@@ -19,6 +19,9 @@ Environment-side findings on water and glimmer, scheduled after the Undertow and
 - [ ] Glimmer: local-space option so bound fields follow moving hosts
 - [ ] glimmer_bound baseline; spiral rate vs lifetime; .dlg cue args mapped to field params
 - [ ] Dusk released motes: warmer halo, density gradient; held motes spawn low over water
+- [ ] Water: NaN at the anti-solar pixel (sun about 5° up, behind the camera; suspect normalize(L+V)) blooms into a white disc (found by the Undertow stream)
+- [ ] Water: SSS paints saturated green bands across open sea with a low sun behind the camera
+- [ ] Water: SSS crests read as large pale patches from high cameras at noon (Art, M1-ART-04)
 
 ## Notes
 -

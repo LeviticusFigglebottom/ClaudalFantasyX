@@ -77,6 +77,32 @@ func test_frozen_player_ignores_the_stick() -> void:
 	zone.free()
 
 
+func test_teleport_snap_relatches_input_to_the_visible_camera() -> void:
+	# M1-ARC-05: a snap is a cut to a camera the player has not seen yet; keeping the old latch would
+	# map the stick to the lane camera while the causeway's side-on dolly is on screen.
+	zone.call("place_at", &"Lane")
+	var lane_yaw := director.camera_yaw()
+	player.input_override = Vector2(0, -1)
+	_step()
+	zone.call("place_at", &"Causeway")
+	assert_eq(director.active_shot_id(), CAUSEWAY)
+	assert_false(player.motor.latched, "no latch to the camera that left the screen")
+	assert_true(absf(angle_difference(director.camera_yaw(), lane_yaw)) > 0.5, "the cameras really differ")
+	_step()
+	assert_between(player.motor.reference_yaw, director.camera_yaw() - 0.001, director.camera_yaw() + 0.001)
+	assert_false(player.motor.latched)
+	zone.free()
+
+
+func test_a_walk_in_cut_still_latches() -> void:
+	zone.call("place_at", &"Court")
+	player.input_override = Vector2(0, -1)
+	_step()
+	director.play_shot(director.active_shot.duplicate() as CameraShot, 0.0)
+	assert_true(player.motor.latched, "a cut while the stick is held still latches (only snaps re-read)")
+	zone.free()
+
+
 func _step() -> void:
 	player.step(DT)
 	director.update(DT)

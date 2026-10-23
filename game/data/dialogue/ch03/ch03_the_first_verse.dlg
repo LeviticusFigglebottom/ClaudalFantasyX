@@ -1,9 +1,13 @@
 // Ch3 Cutscene B, "The First Verse". Beats B09-B11 in docs/kb/story/beats/vertical_slice.md.
 // Three nodes: Asha enters Ilun's chamber alone (S07, S08); Rhen and Toma wait on the steps (S06);
 // sunset, Asha comes out and sings the first verse toward home (S09, S10); the Drownbell tolls (C08).
-// Facial beats: Asha's exhausted joy; Rhen's slow recognition (S10, a 3 s blend, no cut away).
-// The verse is the lullaby Dace hummed. Imra sang it from this door when Asha was seven, and
-// hummed it to her the night before she left. Asha had forgotten it until Ilun gave it back.
+// Facial beats: Asha's exhausted joy; Rhen's recognition (S10 from the second sung line, held at
+// least 6 s with no cutaway: surprised, then grief, layered with two @face cues).
+// Camera grammar (decisions_log N-13): S07/S08 and S09/S10 are unrelated setups, so they cut.
+// The verse is a Velamir family lullaby (decisions_log N-11): the women of the line hum it to their
+// children. Imra hummed it long before she was named, and Dace heard it from her at Haluna years
+// before Rhen was born. She hummed it to Asha every night, and sang it from this door when Asha
+// was seven. Asha had forgotten it until Ilun gave it back.
 // Light rules (docs/kb/art/README.md): Ilun in his chamber is BOUND light (glimmer_bound: steady,
 // never drifting). The light that comes off Asha's skin at sunset is RELEASED (glimmer_lift: warm
 // gold, slow upward spirals). It is the first released light in the game. The Drownbell's wounds
@@ -24,7 +28,9 @@ Toma [neutral]: We will be here, Lady Cantor. #line:ch03_verse_004
 Asha [smile]: Toma. #line:ch03_verse_005
 Toma [tender]: ...Asha. #line:ch03_verse_006
 @mark asha chamber_pool walk
-@camera S08 blend=2.0
+@fade out 0.6
+@camera S08 blend=0.0
+@fade in 0.8
 @vfx glimmer_bound at=ilun_chamber form=ilun
 @wait 2.5
 @fade out 1.2
@@ -33,7 +39,7 @@ Toma [tender]: ...Asha. #line:ch03_verse_006
 ===
 title: steps
 location: ch03/shell_shrine
-grade: ch03_shrine_int
+grade: ch03_steps
 ---
 @camera S06
 @fade in 1.0
@@ -90,10 +96,10 @@ grade: ch03
 @vfx glimmer_lift at=asha motion=spiral_up rate=slow
 @face asha exhausted 1.0
 Asha [exhausted]: Oh. It's evening. #line:ch03_verse_030
-@camera S10 blend=0.6
+@camera S10 blend=0.0
 Rhen [surprised]: You're glowing. Is that normal? Toma, is that normal? #line:ch03_verse_031
 Toma [tender]: It is normal. #line:ch03_verse_032
-@camera S09 blend=0.6
+@camera S09 blend=0.0
 Asha [laugh]: It tickles. #line:ch03_verse_033
 <<if $ch02_heard_pila>>
     Rhen [worried]: Was it him? The boy from the shells. Teyo. #line:ch03_verse_034
@@ -113,17 +119,22 @@ Toma [neutral]: The verse. It is sung toward home first. #line:ch03_verse_040
 Asha [soft_smile]: I know, Toma. I watched it once. #line:ch03_verse_041
 @mark asha threshold_west walk
 @anim asha face_west
-@camera S09 blend=2.5
 @music hush_first_verse fade=0.5
 Asha [tender]: Vey ennu, vey ennu, #line:ch03_verse_042 #sung #lamptongue #notr #tn:"Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown."
+// S10 recognition: cut on the second phrase (he knows it from the first), Asha's voice over his
+// face. Hold >= 6 s of waits on S10 (test_dialogue_vs_scenes.gd checks it). Surprise is brief and
+// light; grief settles under it as he understands whose song it is.
+@camera S10 blend=0.0
+@face rhen surprised 0.3
 Asha [tender]: hal oan, ish karra. #line:ch03_verse_043 #sung #lamptongue #notr #tn:"Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown."
+@wait 1.5
+@face rhen grief 0.6
 Asha [tender]: Ennu re, ennu re... #line:ch03_verse_044 #sung #lamptongue #notr #tn:"Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown."
-@camera S10 blend=1.5
-@face rhen surprised 3.0
+@wait 1.5
 Asha [tender]: ...mir. #line:ch03_verse_045 #sung #lamptongue #notr #tn:"Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown."
-@wait 2.0
-Rhen [surprised]: ...where did you learn that? #line:ch03_verse_046
-@camera S09 blend=0.8
+@wait 3.0
+Rhen [grief]: ...where did you learn that? #line:ch03_verse_046
+@camera S09 blend=0.0
 Asha [surprised]: Just now. It's the first verse. #line:ch03_verse_047
 @face asha worried 0.6
 Asha [worried]: Rhen? #line:ch03_verse_048
@@ -136,9 +147,9 @@ Asha [worried]: Rhen? #line:ch03_verse_048
         Asha [neutral]: Your father. The one with the lantern. #line:ch03_verse_051
         Rhen [sad]: Yeah. #line:ch03_verse_052
     <<endif>>
-    Asha [tender]: My mother sang it from this door. I was seven. I'd forgotten it until he gave it back. #line:ch03_verse_053
-    @wait 1.0
-    Rhen [sad]: Small world. #line:ch03_verse_054
+    Asha [tender]: My mother hummed it to me every night, and sang it from this door. I was seven. I'd forgotten it until he gave it back. #line:ch03_verse_053
+    @wait 1.5
+    Rhen [sad]: ...He never said where he learned it. #line:ch03_verse_054
 -> Nowhere. Must have been the wind. #line:ch03_verse_055
     <<if $ch02_rhen_named_lantern>>
         Asha [soft_smile]: All right. Not today. #line:ch03_verse_056

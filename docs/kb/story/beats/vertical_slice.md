@@ -51,10 +51,10 @@ Time is in-world (one day). Minutes are the player's, at a first-time pace. **P*
 - **Open:** fade up on H05 (Rhen's eye-level in the shallows, dawn rim behind Asha). Rhen's older voice-over: *"The sea gave me back at dawn. Somebody was humming."* She's humming a **star-path**, a homecoming lullaby. That's the scene's quiet irony: she won't be coming home.
 - **The required facial beat (H06):** she smiles first. Toma's spear comes into frame right. Rhen's first words are a joke ("That's a very big spear for a very small conversation."). Asha laughs, sees the brass lantern, and goes **still for half a beat** (`@face asha neutral 0.2`, `@wait 0.6`), then smiles again. *Why she goes still:* she saw this lantern on her mother's guardian when she was seven. She never says so. Cinematics: play it as recognition, not alarm.
 - **Choice 1 (lantern):** "It was my father's" / "Good trade". Sets `ch02_rhen_named_lantern`, which changes the closing line and Cutscene B.
-- **The grief turn:** Toma tells him the storm went east. Then, on H06, **held motes** (`glimmer_held`, cyan, drifting down and seaward) are in the water around Rhen. A lamp-diver knows what they are: *"Those are ours. Aren't they."* Asha heard them before dawn, which is the first hint that she is a hearer, given without explanation.
+- **The grief turn:** Toma tells him the storm went east. Then, on H06, **held motes** (`glimmer_held`, cyan, drifting down and seaward) are in the water around Rhen. A lamp-diver knows what they are: *"Those are ours. Aren't they."* Asha heard them before dawn, which is the first hint that she is a hearer, given without explanation. Toma, gently: *"She woke the house before light. We came down so they would not come ashore alone."* The village keeps vigil for strangers' dead. That warmth is sincere, never a laugh, and it sets up the choice ([N-13](../decisions_log.md)).
 - **Choice 2 (grief):** "Stay with them a minute" / "Don't look at them. Get up." Staying sets `ch02_rhen_stayed_with_dead`: Rhen sits in the water and names Mother Kell, and Toma says "Be level, Oruvel" by reflex. *Thematic note (do not surface):* staying is loving and it is also what anchors the dead. Pell will say so in Act II ("The diver's light is held. Gently. But held."). Neither choice is wrong.
 - **Fragment 1 of "Cantor":** Toma starts "You are speaking to the Lady—" and Asha cuts him off with her name. Rhen: "Lady what?" Asha: "Later."
-- **Close:** H01 (the whole beach from the sea, dawn grade), the walk up. Voice-over: *"She smiled first. Every time. It took me a long while to understand why."* `@letterbox off`, then the `zone_unlock haluna_village` event.
+- **Close:** Asha's "Come up to the village" stays on H05, where her face reads. Then a **cut** to H01 (the whole beach from the sea, dawn grade) on the walk up. Every shot change in this scene is a cut, because the setups don't share an axis. Voice-over: *"She smiled first. Every time. It took me a long while to understand why."* `@letterbox off`, then the `zone_unlock haluna_village` event.
 
 ### B02. Neme's table (E, 1 min)
 Rhen wakes at noon in Asha's aunt Neme's house, to far too much food. Neme talks to him the way she'd talk to a stray dog she's decided to keep, and never once looks at Asha's packed bag by the door (a camera insert). Two to four lines, ~40 words. **New speaker needed:** `neme`.
@@ -65,7 +65,7 @@ The town loop: the lane (H02), the market (H09), the dock (H04), the chapel cour
 1. Market: *"Two days. Two days, and she's still helping me wrap fish."*
 2. Chapel court: a Reed sweeps the steps: *"The Lady Cantor's shell is cut. They'll set it at the wake."*
 3. Dock: two fishers: *"Her mother went from this dock too. Same age near enough."*
-4. Lane: a child singing a skipping rhyme that counts verses: *"one for the shell and two for the fire..."* (Audio: unaccompanied, diegetic).
+4. Lane: a child singing a skipping rhyme that counts verses: *"one for the shell and two for the ash..."* (Audio: unaccompanied, diegetic).
 
 Budget: ~140 words across all barks. NPC state changes after Ch3 (night variant): the barks become blessings for the guardian (`ch03_rhen_sworn_guardian`).
 
@@ -97,8 +97,8 @@ Three rotating shell-basins redirect water until the inner pool fills and the ch
 - **Branches:** if `ch02_heard_pila`, Rhen asks whether it was Teyo ("He's still frightened. He was kind to me anyway."). If `ch03_found_net_float`, Rhen gives her the float ("He carries one just like it... I think he'd like it to stay with someone who goes home." Rhen misses what that means).
 - **The rite:** the first verse is sung toward home first. The shrine faces west, toward Haluna and the sun.
 - **The verse** (four `#sung #lamptongue` lines, `hush_first_verse`): *Vey ennu, vey ennu, / hal oan, ish karra. / Ennu re, ennu re... / ...mir.* Constructed from the bible's Lamptongue roots, roughly "water, sleep / shell-home, the light gathers / sleep again / stay." The translation is never shown. Like every verse, it ends on *mir* (stay).
-- **S10, recognition:** a 3 s facial blend on Rhen with no cutaway, then "...where did you learn that?" before he can stop himself.
-- **Choice:** "My father hummed that. Every night." (sets `ch03_rhen_named_lullaby`; "Every night until he didn't.") If he also named the lantern at dawn, Asha goes still again: "Your father. The one with the lantern." Then Asha: "My mother sang it from this door. I was seven. I'd forgotten it until he gave it back." Or he deflects ("Must have been the wind"), and she lets him, warmly: "That's twice you haven't answered me, Rhen Sallow. I'm patient." (or "Not today" if he did answer about the lantern).
+- **S10, recognition:** he knows it from the first phrase, so the **cut** to S10 lands on the second sung line and holds through the rest of the verse and his question, at least 6 s, with Asha's voice over his face. The face is layered: surprise at 0.3 s, quick and light, then grief at 0.6 s settling under it. Never a full-weight "surprised", which reads as comic shock. Then "...where did you learn that?" before he can stop himself.
+- **Choice:** "My father hummed that. Every night." (sets `ch03_rhen_named_lullaby`; "Every night until he didn't.") If he also named the lantern at dawn, Asha goes still again: "Your father. The one with the lantern." Then Asha: "My mother hummed it to me every night, and sang it from this door. I was seven. I'd forgotten it until he gave it back." A held look, then Rhen: "...He never said where he learned it." (It is a Velamir family lullaby, and Dace knew Imra years before she was named: [N-11](../decisions_log.md). Neither of them knows that yet.) Or he deflects ("Must have been the wind"), and she lets him, warmly: "That's twice you haven't answered me, Rhen Sallow. I'm patient." (or "Not today" if he did answer about the lantern).
 - **The toll:** silence, then a bell tolls *under the water*. "The tide has turned." "Something heard that." Cut to C08 with the bell's hood breaking the surface, its wounds bleeding **held** cyan. Toma: "On my shield. Everyone, on my shield, now." The `start_battle drownbell` event follows.
 - *Story logic:* Undertow-spawn reach for the living, and the Drownbell rises because the verse was sung. Beauty draws the danger.
 
@@ -191,14 +191,14 @@ The shot ids are those of [haluna.md §5](../../art/environments/haluna.md) and 
 
 | Beat | Shots, in order | Notes for Cinematics |
 |---|---|---|
-| B01 | H05 → H06 → H05 → H06 → H05 → H01 | H06 carries the facial beat *and* the held motes around Rhen. H01 at the close runs under the `ch02` dawn grade (`grade=ch02` kwarg), not noon. |
+| B01 | H05 → H06 → H05 → H06 → H05 → H01 | **All cuts** (`blend=0.0`): the setups don't share an axis. H06 carries the facial beat *and* the held motes around Rhen. Asha's closing line (014/015) stays on H05, and the cut to H01 lands on the walk. H01 runs under the `ch02` dawn grade (`grade=ch02` kwarg), not noon. |
 | B03 | H02, H03, H04, H07, H09 | Rail cameras. H03 is a look-at point (the lintel-gull). |
 | B04 | H08 | One locked shot plus inserts on Osu's hand. Shallow depth of field, as specified. |
 | B05 | C01 | — |
 | B06 | C01, C02, C03, C04, C05, C06, C07 | C02 is the default rail. The banters fire on C04, C03, and C05. |
 | B07 | S01, S02, S03, S04, S05 | S03 is the puzzle overview, toggled by the player. |
-| B08 | S07 → S08 → S06 | S08 is a single held frame. Don't show Ilun's face (save it for C10). |
-| B09 | S09 → S10 → S09 → S10 → S09 → C08 | S10's 3 s facial blend on Rhen must stay on screen through the last sung line. Cut to C08 on the second toll. |
+| B08 | S07 → S08 → S06 | S07 → S08 cuts on a short fade, never a blend through the sinking door. S08 is a single held frame. Don't show Ilun's face (save it for C10). |
+| B09 | S09 → S10 → S09 → S10 → S09 → C08 | **All cuts** (shot/reverse-shot across the axis). The second S10 starts on sung line 043 and holds through 046 (≥ 6 s of `@wait`, checked by the test). Cut to C08 on the second toll. |
 | B10 | C08, C09, C10 | C10 is Ilun's summon cinematic. |
 | B11 | H10 | — |
 
@@ -212,11 +212,13 @@ Generated by `python3 tools/dialogue_stats.py` (it counts every branch's words o
 
 | Scene | Lines | Words written | Words a player reads (one path) |
 |---|---|---|---|
-| `ch02_girl_on_the_beach` | 35 | 323 | 256–261 (mean 258) |
-| `ch03_the_first_verse` | 60 | 412 | 266–356 (mean 310) |
-| **Both cutscenes** | 95 | **735** | ~568 |
+| `ch02_girl_on_the_beach` | 35 | 328 | 261–266 (mean 263) |
+| `ch03_the_first_verse` | 60 | 424 | 266–368 (mean 316) |
+| **Both cutscenes** | 95 | **752** | ~579 |
 
-**Per speaker** (both scenes): Asha 282 (38%), Toma 216 (29%), Rhen 151 (21%), player options 50 (7%), narration 36 (5%). Rhen reads light on purpose because he jokes in short bursts, and his options and voice-overs add another ~86 words.
+*(M1-NAR-05: +5 words on the beach from line 021, and +12 on the told path of the verse from lines 053 and 054. The rest of the slice's budget is unchanged.)*
+
+**Per speaker** (both scenes): Asha 289 (38%), Toma 221 (29%), Rhen 156 (21%), player options 50 (7%), narration 36 (5%). Rhen reads light on purpose because he jokes in short bursts, and his options and voice-overs add another ~86 words.
 
 **Against SPEC §3.6** (40–60k words, ceiling 80k): at 40 min of a 30 h main story, the slice is **2.22%** of the game, so its fair share is **889–1,333 words**. The rest of the slice is budgeted at: B02 40, B03 140, B04 150, B05 40, B06 90, B07 15, B10 35, B11 90, B12 25 = **625**, for a slice total of **~1,360 words written**, or ~1,050 on a typical path without the side scene.
 - Projected to the full game at the slice's density: **~61k words**, just over the 60k target and well under the 80k ceiling. That's right for the opening chapters, which carry every introduction. Later dungeon chapters should run thinner.
@@ -230,7 +232,7 @@ Generated by `python3 tools/dialogue_stats.py` (it counts every branch's words o
   1. Color script `ch02` says "glimmer: none on screen". Cutscene A needs **9 held motes** in the shallows around Rhen in H06 only (`glimmer_held`, energy ~0.6, under 1% of the frame). Please amend.
   2. `ch03_boss` is timed at 17:30, but the Drownbell comes *after* Cutscene B (18:05). Please re-time it to **~18:15** (sun at about 2°, afterglow), which also helps phase 2's cyan polyps read against dark water. If the gold must stay, compress Cutscene B's time instead and tell Narrative.
   3. Answers to your four open questions are in [decisions_log.md](../decisions_log.md).
-- **Cinematics (reviewer):** check the S10 hold, the H06 facial beat, and Ilun's single frame in S08. Actor marks and anim clip names in the scripts (`kneel_over_rhen`, `sit_in_shallows`, `threshold_west`, `drownbell_arena`...) are proposals. Rename them freely in the `.dlg`.
+- **Cinematics (reviewer):** check the S10 hold, the H06 facial beat, and Ilun's single frame in S08. *(M1-NAR-05: the review-sweep-B camera fixes are applied: all cuts, 014/015 on H05, and S10 from 043 held ≥ 6 s with a layered face. See [N-13](../decisions_log.md).)* Actor marks and anim clip names in the scripts (`kneel_over_rhen`, `sit_in_shallows`, `threshold_west`, `drownbell_arena`...) are proposals. Rename them freely in the `.dlg`.
 - **Audio:** the cue list in §6, especially `hush_first_verse` as a sung line.
 - **Combat:** the Drownbell spec in §5 (the timeline-preview toll and the polyp heal), plus `ch03_ilun_bound` as the summon gate.
 - **Systems:** the format requests in the M1-NAR-02 task notes. New speakers for M2: `neme`, `osu`, and a generic `villager` (name keys `CHAR_NEME`, `CHAR_OSU`, `CHAR_VILLAGER`), to be added when those scenes are scripted.
