@@ -1249,6 +1249,7 @@ def run(root: Path) -> Report:
     data_keys += check_locations(root, files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
+    check_undertow(root, files, rep)
     check_provenance(root, rep)
     check_banned(root, rep)
     check_binary_sizes(root, rep)
@@ -1415,6 +1416,82 @@ def check_locations(root: Path, files: dict[str, object], rep: Report) -> list[s
     for e in locations_errors(doc, scenes, loc, ids, files.get(PARTY_REST_FILE), shrines):
         rep.err(e)
     return []
+
+
+
+# --- M1-RND-11: Undertow quality tiers (game/data/vfx/undertow.json) ----------------------------
+
+UNDERTOW_FILE = "game/data/vfx/undertow.json"
+UNDERTOW_TIERS = ("low", "medium", "high", "ultra")
+UNDERTOW_BODIES = ("shells", "raymarch")
+# = UndertowState.MAX_CURL_REUSE and the shader's hint_range(1, 8).
+UNDERTOW_MAX_CURL_REUSE = 8
+# undertow_body.gdshaderinc's default when a variant does not define UNDERTOW_MAX_STEPS.
+UNDERTOW_DEFAULT_STEP_CAP = 48
+UNDERTOW_STEP_CAP_RE = re.compile(r"#define UNDERTOW_MAX_STEPS (\d+)")
+IMPORT_SLICES_RE = re.compile(r"^slices/(horizontal|vertical)=(\d+)", re.M)
+
+
+def _res_path(root: Path, res: str) -> Path:
+    return root / res.removeprefix("res://")
+
+
+def undertow_quality_errors(root: Path, doc: object, where: str = UNDERTOW_FILE) -> list[str]:
+    """Tier params the storm reads at runtime: types, ranges, the compiled step cap, the noise."""
+    if not isinstance(doc, dict):
+        return [f"{where}: not an object"]
+    errs: list[str] = []
+    quality = doc.get("quality", {})
+    shaders = doc.get("shaders", {})
+    if sorted(quality) != sorted(UNDERTOW_TIERS):
+        errs.append(f"{where}: quality tiers must be exactly {', '.join(UNDERTOW_TIERS)}")
+    for tier, t in quality.items():
+        w = f"{where}: quality.{tier}"
+        body = t.get("body")
+        if body not in UNDERTOW_BODIES:
+            errs.append(f"{w}.body must be one of {UNDERTOW_BODIES}")
+            continue
+        steps = t.get("march_steps")
+        if not _is_int(steps):
+            errs.append(f"{w}.march_steps must be an int")
+        elif body == "shells" and steps != 0:
+            errs.append(f"{w}.march_steps must be 0 for the shell body")
+        elif body == "raymarch":
+            shader = shaders.get(f"body_{tier}", "")
+            path = _res_path(root, shader) if shader else None
+            if path is None or not path.is_file():
+                errs.append(f"{w}: shaders.body_{tier} missing ({shader!r})")
+            else:
+                m = UNDERTOW_STEP_CAP_RE.search(path.read_text(encoding="utf-8"))
+                cap = int(m.group(1)) if m else UNDERTOW_DEFAULT_STEP_CAP
+                if not 1 <= steps <= cap:
+                    errs.append(f"{w}.march_steps {steps} outside 1..{cap} (the variant's UNDERTOW_MAX_STEPS)")
+        if "curl_reuse" in t:
+            r = t["curl_reuse"]
+            if not _is_int(r) or not 1 <= r <= UNDERTOW_MAX_CURL_REUSE:
+                errs.append(f"{w}.curl_reuse must be an int in 1..{UNDERTOW_MAX_CURL_REUSE}")
+        if "temporal_jitter" in t and not isinstance(t["temporal_jitter"], bool):
+            errs.append(f"{w}.temporal_jitter must be a bool")
+    noise = doc.get("noise")
+    if noise is not None:
+        tex = str(noise.get("texture", ""))
+        texels = noise.get("texels")
+        if not tex or not _res_path(root, tex).is_file():
+            errs.append(f"{where}: noise.texture missing ({tex!r})")
+        if not _is_int(texels) or texels <= 0:
+            errs.append(f"{where}: noise.texels must be a positive int")
+        imp = _res_path(root, tex + ".import") if tex else None
+        if imp is not None and imp.is_file() and _is_int(texels):
+            slices = {k: int(v) for k, v in IMPORT_SLICES_RE.findall(imp.read_text(encoding="utf-8"))}
+            if slices and slices.get("horizontal", 1) * slices.get("vertical", 1) != texels:
+                errs.append(f"{where}: noise.texels {texels} != the 3D texture's slice count in {tex}.import")
+    return errs
+
+
+def check_undertow(root: Path, files: dict[str, object], rep: Report) -> None:
+    if UNDERTOW_FILE in files:
+        for e in undertow_quality_errors(root, files[UNDERTOW_FILE]):
+            rep.err(e)
 
 
 if __name__ == "__main__":

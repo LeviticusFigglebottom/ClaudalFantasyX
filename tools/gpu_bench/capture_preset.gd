@@ -12,6 +12,9 @@ extends Node
 ## Diagnosis (M1-QA-05): --light-set=prop=value,... on every DirectionalLight3D (e.g.
 ## shadow_enabled=false, shadow_normal_bias=2.0, directional_shadow_max_distance=2.0);
 ## --mat-set=uniform=value,... on every ShaderMaterial that declares the uniform.
+## --manifest=res://...json reads another manifest (e.g. a pending-shots file); --hold-storm freezes
+## every UndertowStorm clock while its temporal jitter keeps advancing (deterministic, TAA integrates);
+## add --freeze-jitter to hold the jitter too (a static pattern, the control).
 
 const MANIFEST := "res://tests/screenshots/shots.json"
 
@@ -26,7 +29,7 @@ func _run() -> void:
 	_opts = _args()
 	var out := str(_opts.get("out", ""))
 	DirAccess.make_dir_recursive_absolute(out)
-	var manifest := JSON.parse_string(FileAccess.get_file_as_string(MANIFEST)) as Dictionary
+	var manifest := JSON.parse_string(FileAccess.get_file_as_string(str(_opts.get("manifest", MANIFEST)))) as Dictionary
 	var defaults := manifest.get("defaults", {}) as Dictionary
 	var wanted := str(_opts.get("shots", "")).split(",", false)
 	var preset := str(_opts.get("preset", "high"))
@@ -53,8 +56,17 @@ func _run() -> void:
 		gs.apply_current(get_viewport(), (envs[0] as WorldEnvironment).environment if envs.size() > 0 else null)
 		CharacterShaderTiers.apply_to_tree(scene, CharacterShaderTiers.tier_for_preset(preset))
 		_tweak(scene)
+		var held: Array[UndertowStorm] = []
+		if _opts.has("hold-storm"):
+			for n in scene.find_children("*", "", true, false):
+				if n is UndertowStorm:
+					(n as UndertowStorm).playing = false
+					held.append(n as UndertowStorm)
 		for i in maxi(int(shot.get("settle_frames", 1)), int(_opts.get("settle", 60))):
 			await get_tree().process_frame
+			if not _opts.has("freeze-jitter"):
+				for storm in held:
+					storm.state.frame += 1
 		await RenderingServer.frame_post_draw
 		var img := get_viewport().get_texture().get_image()
 		img.convert(Image.FORMAT_RGB8)
