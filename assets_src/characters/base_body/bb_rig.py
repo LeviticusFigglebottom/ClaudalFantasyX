@@ -206,6 +206,39 @@ def skin(body_ob: bpy.types.Object, rig: bpy.types.Object, skel: bpy.types.Objec
     return {"unweighted_fixed": len(unweighted), "groups": len(groups)}
 
 
+def donor_weight_matrix(skel: bpy.types.Object, weights: dict, nv: int) -> tuple[np.ndarray, list[str], list[str]]:
+    """M1-CHR-03: the donor's hand-made skin weights (already mapped onto our DEF bones by
+    bb_donor.bone_of), 4 strongest kept and normalised. Returns (W, bone names, dropped names)."""
+    known = {b.name for b in skel.data.bones}
+    names = sorted(n for n in weights if n in known)
+    dropped = sorted(n for n in weights if n not in known)
+    W = np.stack([np.asarray(weights[n])[:nv] for n in names], axis=1)
+    if W.shape[1] > 4:
+        thr = -np.sort(-W, axis=1)[:, 3:4]
+        W = np.where(W >= thr, W, 0.0)
+    W = W / np.maximum(W.sum(axis=1, keepdims=True), 1e-12)
+    return W, names, dropped
+
+
+def skin_with_weights(body_ob: bpy.types.Object, skel: bpy.types.Object, weights: dict) -> dict:
+    """Skin with the donor weights instead of bone heat (see donor_weight_matrix)."""
+    nv = len(body_ob.data.vertices)
+    W, names, dropped = donor_weight_matrix(skel, weights, nv)
+    unweighted = int((W.sum(axis=1) < 1e-6).sum())
+    for gi, n in enumerate(names):
+        col = W[:, gi]
+        nz = np.nonzero(col > 1e-4)[0]
+        if len(nz) == 0:
+            continue
+        vg = body_ob.vertex_groups.new(name=n)
+        for i in nz:
+            vg.add([int(i)], float(col[i]), "REPLACE")
+    mod = body_ob.modifiers.new("Armature", "ARMATURE")
+    mod.object = skel
+    body_ob.parent = skel
+    return {"weights": "donor", "groups": len(names), "dropped": dropped, "unweighted": unweighted}
+
+
 def attach_rigid(ob: bpy.types.Object, skel: bpy.types.Object, bone: str) -> None:
     vg = ob.vertex_groups.new(name=bone)
     vg.add(list(range(len(ob.data.vertices))), 1.0, "REPLACE")

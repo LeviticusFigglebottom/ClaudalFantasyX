@@ -58,6 +58,10 @@ DEFAULTS: dict[str, float | str] = {
     "lip_fullness": 1.0,
     "mouth_corner_lift": 0.0,  # metres at the corner (Asha: a slight natural upturn)
     "brow_ridge": 1.0,
+    # M1-CHR-03 donor macro mix (bb_donor, ADR 0021): the MakeHuman ethnic blend, normalised
+    "donor_mix_african": 1.0,
+    "donor_mix_asian": 1.0,
+    "donor_mix_caucasian": 1.0,
 }
 
 

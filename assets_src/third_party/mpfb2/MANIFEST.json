@@ -1,0 +1,433 @@
+{
+ "source": "https://github.com/makehumancommunity/mpfb2",
+ "commit": "b1a2dc98776da9d1eea751b159d42cf61778fe2e",
+ "license": "CC0 1.0 Universal (MPFB2 LICENSE.md section C, LICENSE.ASSETS.md); program code not vendored",
+ "files": [
+  {
+   "upstream": "LICENSE.md",
+   "stored": "LICENSE.md",
+   "sha256": "5cefb60680cb9efd4550a2e65d719021cfbec9dad3658481d11d48ae863ce04d",
+   "stored_sha256": "5cefb60680cb9efd4550a2e65d719021cfbec9dad3658481d11d48ae863ce04d"
+  },
+  {
+   "upstream": "LICENSE.ASSETS.md",
+   "stored": "LICENSE.ASSETS.md",
+   "sha256": "f6089cba01cb570a24712b41ab8a586ccd3cc5ef53dc266ca50b95c288956d2c",
+   "stored_sha256": "f6089cba01cb570a24712b41ab8a586ccd3cc5ef53dc266ca50b95c288956d2c"
+  },
+  {
+   "upstream": "src/mpfb/data/3dobjs/base.obj",
+   "stored": "data/3dobjs/base.obj",
+   "sha256": "8e761e6624b8f54536409135d1636da63b32486a90d4897f84e121d144f6fb4c",
+   "stored_sha256": "8e761e6624b8f54536409135d1636da63b32486a90d4897f84e121d144f6fb4c"
+  },
+  {
+   "upstream": "src/mpfb/data/rigs/rigify/weights.human_toes.json",
+   "stored": "data/rigs/rigify/weights.human_toes.json.gz",
+   "sha256": "edcbca3323b03080fe750caa292c673ecbacdd200ebf0062d00d3b425e13a999",
+   "stored_sha256": "2be37a8cdd46eb30172862f851b3cb0f0e48402877c1a28519c6f494db2c8323"
+  },
+  {
+   "upstream": "src/mpfb/data/uv_layers/lips_solid.json.gz",
+   "stored": "data/uv_layers/lips_solid.json.gz",
+   "sha256": "efc7e7a093db2bf42cc1c680ce009a807b1afd740dd5dc3927b4e244b30b5929",
+   "stored_sha256": "efc7e7a093db2bf42cc1c680ce009a807b1afd740dd5dc3927b4e244b30b5929"
+  },
+  {
+   "upstream": "src/mpfb/data/uv_layers/face_solid.json.gz",
+   "stored": "data/uv_layers/face_solid.json.gz",
+   "sha256": "c48b7adca1a5eacd725aefaddff703017f200682ea640caefec5fb14a9627ebe",
+   "stored_sha256": "c48b7adca1a5eacd725aefaddff703017f200682ea640caefec5fb14a9627ebe"
+  },
+  {
+   "upstream": "src/mpfb/data/uv_layers/scalp_solid.json.gz",
+   "stored": "data/uv_layers/scalp_solid.json.gz",
+   "sha256": "48698fe392dd2e184ca89e742960649f128f1d8b01f6968fdc55c7c9459715df",
+   "stored_sha256": "48698fe392dd2e184ca89e742960649f128f1d8b01f6968fdc55c7c9459715df"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/african-female-young.target.gz",
+   "stored": "data/targets/macrodetails/african-female-young.target.gz",
+   "sha256": "1147ae55ecb0f66bade3f45176b3af187e265878322db172ad1090e9f3108e84",
+   "stored_sha256": "1147ae55ecb0f66bade3f45176b3af187e265878322db172ad1090e9f3108e84"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/african-male-young.target.gz",
+   "stored": "data/targets/macrodetails/african-male-young.target.gz",
+   "sha256": "05ed84d6df36e788cdfa8da0be15376850524b960cf2f17f3e592b9cf7d21c85",
+   "stored_sha256": "05ed84d6df36e788cdfa8da0be15376850524b960cf2f17f3e592b9cf7d21c85"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/asian-female-young.target.gz",
+   "stored": "data/targets/macrodetails/asian-female-young.target.gz",
+   "sha256": "ee17da733288434e5b6fa120497f1fa6e72bf7faad5d694b0431d7275139170d",
+   "stored_sha256": "ee17da733288434e5b6fa120497f1fa6e72bf7faad5d694b0431d7275139170d"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/asian-male-young.target.gz",
+   "stored": "data/targets/macrodetails/asian-male-young.target.gz",
+   "sha256": "0928ed8b9f08f60afb9884cf9e9f33a939ed3a85d7f136de9ccc88a76981d6d7",
+   "stored_sha256": "0928ed8b9f08f60afb9884cf9e9f33a939ed3a85d7f136de9ccc88a76981d6d7"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/caucasian-female-young.target.gz",
+   "stored": "data/targets/macrodetails/caucasian-female-young.target.gz",
+   "sha256": "e9d6212373ac5f1e2c596fa145e363385f4d169c3c6c88ede3bab93b681af041",
+   "stored_sha256": "e9d6212373ac5f1e2c596fa145e363385f4d169c3c6c88ede3bab93b681af041"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/caucasian-male-young.target.gz",
+   "stored": "data/targets/macrodetails/caucasian-male-young.target.gz",
+   "sha256": "ffe69537e53148edff2776204ba48cf3bf1f3cbc72966592c8a562ab80b07333",
+   "stored_sha256": "ffe69537e53148edff2776204ba48cf3bf1f3cbc72966592c8a562ab80b07333"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-female-young-minmuscle-minweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-female-young-minmuscle-minweight.target.gz",
+   "sha256": "18ecff47c3606608472afab0f79a88afaf0c3d5c139bf81c1ef7867a9a9b78a5",
+   "stored_sha256": "18ecff47c3606608472afab0f79a88afaf0c3d5c139bf81c1ef7867a9a9b78a5"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-female-young-minmuscle-averageweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-female-young-minmuscle-averageweight.target.gz",
+   "sha256": "2d939513053fb4a58b6752457c00419c0a2b6a658f0f034dc079d59e19931627",
+   "stored_sha256": "2d939513053fb4a58b6752457c00419c0a2b6a658f0f034dc079d59e19931627"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-female-young-minmuscle-maxweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-female-young-minmuscle-maxweight.target.gz",
+   "sha256": "bb8da1aa94cecd782ae0d2b58067204589a06e55915717d5852452d60aa751e7",
+   "stored_sha256": "bb8da1aa94cecd782ae0d2b58067204589a06e55915717d5852452d60aa751e7"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-female-young-averagemuscle-minweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-female-young-averagemuscle-minweight.target.gz",
+   "sha256": "5c65527e5d6e83b98ffa3da5bd61372eff70f89e95585bdacd0e3f70e48062aa",
+   "stored_sha256": "5c65527e5d6e83b98ffa3da5bd61372eff70f89e95585bdacd0e3f70e48062aa"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-female-young-averagemuscle-maxweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-female-young-averagemuscle-maxweight.target.gz",
+   "sha256": "eaec00c7fe67738765170b94648e6cdf1078ff15a2c0f745645750eb6fef45bf",
+   "stored_sha256": "eaec00c7fe67738765170b94648e6cdf1078ff15a2c0f745645750eb6fef45bf"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-female-young-maxmuscle-minweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-female-young-maxmuscle-minweight.target.gz",
+   "sha256": "f67344b6aa1808737d78b619c062effe04aad0bfe67e9f80fa6294e2eb5342a5",
+   "stored_sha256": "f67344b6aa1808737d78b619c062effe04aad0bfe67e9f80fa6294e2eb5342a5"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-female-young-maxmuscle-averageweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-female-young-maxmuscle-averageweight.target.gz",
+   "sha256": "b1b77fc23f47ebe4a47b14651aadcedf44b2d9c2a1323fbda396952b98632627",
+   "stored_sha256": "b1b77fc23f47ebe4a47b14651aadcedf44b2d9c2a1323fbda396952b98632627"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-female-young-maxmuscle-maxweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-female-young-maxmuscle-maxweight.target.gz",
+   "sha256": "6a36ca389bd4ba5e2efe1f885d493e19096cd12d2ae7c810add715f6d9fff0f2",
+   "stored_sha256": "6a36ca389bd4ba5e2efe1f885d493e19096cd12d2ae7c810add715f6d9fff0f2"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-male-young-minmuscle-minweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-male-young-minmuscle-minweight.target.gz",
+   "sha256": "166a31465a2790a321e55e274a7f43c56bfe58ad1cf443afacd45a7a23abf407",
+   "stored_sha256": "166a31465a2790a321e55e274a7f43c56bfe58ad1cf443afacd45a7a23abf407"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-male-young-minmuscle-averageweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-male-young-minmuscle-averageweight.target.gz",
+   "sha256": "d1c0a768f42219e9630f08805939510efbe2a390b451fa52cc575205bc761d7e",
+   "stored_sha256": "d1c0a768f42219e9630f08805939510efbe2a390b451fa52cc575205bc761d7e"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-male-young-minmuscle-maxweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-male-young-minmuscle-maxweight.target.gz",
+   "sha256": "5cd87b8e6856a3e9e6b71d15580e1ae9b058f478ce8c1ea73c1b145df9c8e0e6",
+   "stored_sha256": "5cd87b8e6856a3e9e6b71d15580e1ae9b058f478ce8c1ea73c1b145df9c8e0e6"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-male-young-averagemuscle-minweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-male-young-averagemuscle-minweight.target.gz",
+   "sha256": "e4a993057e265088e082ee2aeccc860505e759b27251dc63a78314e1f8c78a16",
+   "stored_sha256": "e4a993057e265088e082ee2aeccc860505e759b27251dc63a78314e1f8c78a16"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-male-young-averagemuscle-maxweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-male-young-averagemuscle-maxweight.target.gz",
+   "sha256": "13b79074ecf00a0d028495a51865ae9e86c06b5801b6a614257b455ffbec7d10",
+   "stored_sha256": "13b79074ecf00a0d028495a51865ae9e86c06b5801b6a614257b455ffbec7d10"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-male-young-maxmuscle-minweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-male-young-maxmuscle-minweight.target.gz",
+   "sha256": "0323cb5c604d13207d1a10ade8ce165df1cbf14d91de48ad959a082297669905",
+   "stored_sha256": "0323cb5c604d13207d1a10ade8ce165df1cbf14d91de48ad959a082297669905"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-male-young-maxmuscle-averageweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-male-young-maxmuscle-averageweight.target.gz",
+   "sha256": "833caafc302bd9306de494f32ee1bc51d3a2e6641183329b031ac06ef0f4277e",
+   "stored_sha256": "833caafc302bd9306de494f32ee1bc51d3a2e6641183329b031ac06ef0f4277e"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/macrodetails/universal-male-young-maxmuscle-maxweight.target.gz",
+   "stored": "data/targets/macrodetails/universal-male-young-maxmuscle-maxweight.target.gz",
+   "sha256": "4c88d7850d64ae8a455bd375755769a2153cce98a7e0b1acce6fa0454083d14d",
+   "stored_sha256": "4c88d7850d64ae8a455bd375755769a2153cce98a7e0b1acce6fa0454083d14d"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/eyebrows-left-inner-up.target.gz",
+   "stored": "data/targets/expression/units/african/eyebrows-left-inner-up.target.gz",
+   "sha256": "bcbc99d31303df7855734d74dde0c1625e3a301dcdd9392d6b407616fd7679a8",
+   "stored_sha256": "bcbc99d31303df7855734d74dde0c1625e3a301dcdd9392d6b407616fd7679a8"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/eyebrows-right-inner-up.target.gz",
+   "stored": "data/targets/expression/units/african/eyebrows-right-inner-up.target.gz",
+   "sha256": "b5da946cba48308969c3f63a5d590e1ad5c0c47975b92f485b63526d42c2df92",
+   "stored_sha256": "b5da946cba48308969c3f63a5d590e1ad5c0c47975b92f485b63526d42c2df92"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/eyebrows-left-extern-up.target.gz",
+   "stored": "data/targets/expression/units/african/eyebrows-left-extern-up.target.gz",
+   "sha256": "341f6b75168ab9bdf12c424b47049750cb7ef97b9212ab1f48819215f2f41f7d",
+   "stored_sha256": "341f6b75168ab9bdf12c424b47049750cb7ef97b9212ab1f48819215f2f41f7d"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/eyebrows-right-extern-up.target.gz",
+   "stored": "data/targets/expression/units/african/eyebrows-right-extern-up.target.gz",
+   "sha256": "02f43c08f63ea9bcf4be13ca2a5b851c34c13731506e7ce5bb034644dab05e76",
+   "stored_sha256": "02f43c08f63ea9bcf4be13ca2a5b851c34c13731506e7ce5bb034644dab05e76"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/eyebrows-left-down.target.gz",
+   "stored": "data/targets/expression/units/african/eyebrows-left-down.target.gz",
+   "sha256": "f0cabdd8a225779806b8faabb1afcc4ee830a3eb3c6b1abe045d797328cff323",
+   "stored_sha256": "f0cabdd8a225779806b8faabb1afcc4ee830a3eb3c6b1abe045d797328cff323"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/eyebrows-right-down.target.gz",
+   "stored": "data/targets/expression/units/african/eyebrows-right-down.target.gz",
+   "sha256": "ac4ad201d160f1eb7dc076e012bccd41e191d2886fc1b327c8409d8b77d63082",
+   "stored_sha256": "ac4ad201d160f1eb7dc076e012bccd41e191d2886fc1b327c8409d8b77d63082"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/nose-left-elevation.target.gz",
+   "stored": "data/targets/expression/units/african/nose-left-elevation.target.gz",
+   "sha256": "7f9c3c9d0282e5f45849e45384978f4b0ed93f701dfd55a5f31f7c9ea6ad661e",
+   "stored_sha256": "7f9c3c9d0282e5f45849e45384978f4b0ed93f701dfd55a5f31f7c9ea6ad661e"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/nose-right-elevation.target.gz",
+   "stored": "data/targets/expression/units/african/nose-right-elevation.target.gz",
+   "sha256": "7c7dbaf3ad3884a629bf90fee99f7479a437311e8d356aba816b8fddee7018e6",
+   "stored_sha256": "7c7dbaf3ad3884a629bf90fee99f7479a437311e8d356aba816b8fddee7018e6"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/mouth-corner-puller.target.gz",
+   "stored": "data/targets/expression/units/african/mouth-corner-puller.target.gz",
+   "sha256": "5560c685cd55ae6a00830e539ac54135cb4dcfec6a28be90510c931dcfdca478",
+   "stored_sha256": "5560c685cd55ae6a00830e539ac54135cb4dcfec6a28be90510c931dcfdca478"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/mouth-depression.target.gz",
+   "stored": "data/targets/expression/units/african/mouth-depression.target.gz",
+   "sha256": "aa0afb7a1aceda1862405858dae89f1de2a5281c469f317da00912de60fb060b",
+   "stored_sha256": "aa0afb7a1aceda1862405858dae89f1de2a5281c469f317da00912de60fb060b"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/mouth-retraction.target.gz",
+   "stored": "data/targets/expression/units/african/mouth-retraction.target.gz",
+   "sha256": "33802b3905775666da60fed4da7fac457b8e54ddbde0b5d206f98f15a2a6287b",
+   "stored_sha256": "33802b3905775666da60fed4da7fac457b8e54ddbde0b5d206f98f15a2a6287b"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/mouth-pursing.target.gz",
+   "stored": "data/targets/expression/units/african/mouth-pursing.target.gz",
+   "sha256": "8ef9683ff25a301a879f5555393e35e80669f674042ac026cd1cea2705a1f2f9",
+   "stored_sha256": "8ef9683ff25a301a879f5555393e35e80669f674042ac026cd1cea2705a1f2f9"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/mouth-elevation.target.gz",
+   "stored": "data/targets/expression/units/african/mouth-elevation.target.gz",
+   "sha256": "cd1720c75ac84f30f26a335a202bac2bc1115cec71882b44b20934a7c7476f66",
+   "stored_sha256": "cd1720c75ac84f30f26a335a202bac2bc1115cec71882b44b20934a7c7476f66"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/african/mouth-depression-retraction.target.gz",
+   "stored": "data/targets/expression/units/african/mouth-depression-retraction.target.gz",
+   "sha256": "9c2c0ff2d37f3be0b1cc49114a4eb4c1a70e856ba033930631f0406fa0964160",
+   "stored_sha256": "9c2c0ff2d37f3be0b1cc49114a4eb4c1a70e856ba033930631f0406fa0964160"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/eyebrows-left-inner-up.target.gz",
+   "stored": "data/targets/expression/units/asian/eyebrows-left-inner-up.target.gz",
+   "sha256": "bcbc99d31303df7855734d74dde0c1625e3a301dcdd9392d6b407616fd7679a8",
+   "stored_sha256": "bcbc99d31303df7855734d74dde0c1625e3a301dcdd9392d6b407616fd7679a8"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/eyebrows-right-inner-up.target.gz",
+   "stored": "data/targets/expression/units/asian/eyebrows-right-inner-up.target.gz",
+   "sha256": "b5da946cba48308969c3f63a5d590e1ad5c0c47975b92f485b63526d42c2df92",
+   "stored_sha256": "b5da946cba48308969c3f63a5d590e1ad5c0c47975b92f485b63526d42c2df92"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/eyebrows-left-extern-up.target.gz",
+   "stored": "data/targets/expression/units/asian/eyebrows-left-extern-up.target.gz",
+   "sha256": "3c475b2d4f600b9c1c42d9f37e7e63e81644891e4bd21817d72ed460ef7cbc4a",
+   "stored_sha256": "3c475b2d4f600b9c1c42d9f37e7e63e81644891e4bd21817d72ed460ef7cbc4a"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/eyebrows-right-extern-up.target.gz",
+   "stored": "data/targets/expression/units/asian/eyebrows-right-extern-up.target.gz",
+   "sha256": "6acb23ce8972c33d8e8c6db3d9bc3c4ef6104dd53d8338a12e250c338d14e57e",
+   "stored_sha256": "6acb23ce8972c33d8e8c6db3d9bc3c4ef6104dd53d8338a12e250c338d14e57e"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/eyebrows-left-down.target.gz",
+   "stored": "data/targets/expression/units/asian/eyebrows-left-down.target.gz",
+   "sha256": "f0cabdd8a225779806b8faabb1afcc4ee830a3eb3c6b1abe045d797328cff323",
+   "stored_sha256": "f0cabdd8a225779806b8faabb1afcc4ee830a3eb3c6b1abe045d797328cff323"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/eyebrows-right-down.target.gz",
+   "stored": "data/targets/expression/units/asian/eyebrows-right-down.target.gz",
+   "sha256": "ac4ad201d160f1eb7dc076e012bccd41e191d2886fc1b327c8409d8b77d63082",
+   "stored_sha256": "ac4ad201d160f1eb7dc076e012bccd41e191d2886fc1b327c8409d8b77d63082"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/nose-left-elevation.target.gz",
+   "stored": "data/targets/expression/units/asian/nose-left-elevation.target.gz",
+   "sha256": "6a6665e8f5ddb3e61e977fee12d45607fb0186ae6081e71b09d0798c460fc7d9",
+   "stored_sha256": "6a6665e8f5ddb3e61e977fee12d45607fb0186ae6081e71b09d0798c460fc7d9"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/nose-right-elevation.target.gz",
+   "stored": "data/targets/expression/units/asian/nose-right-elevation.target.gz",
+   "sha256": "adebf11df33084107199f5ab159f807342fe731dc354c5e2a0041ef5f3d6a9e8",
+   "stored_sha256": "adebf11df33084107199f5ab159f807342fe731dc354c5e2a0041ef5f3d6a9e8"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/mouth-corner-puller.target.gz",
+   "stored": "data/targets/expression/units/asian/mouth-corner-puller.target.gz",
+   "sha256": "d881bb8feda2637bdaef2c7d7c6bed12f0be5914949e5a2cb9b06a583af412c0",
+   "stored_sha256": "d881bb8feda2637bdaef2c7d7c6bed12f0be5914949e5a2cb9b06a583af412c0"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/mouth-depression.target.gz",
+   "stored": "data/targets/expression/units/asian/mouth-depression.target.gz",
+   "sha256": "add8cc38bb25d257811476bf253052659ea7a52d6e03715a7a3da4ae5cc1316c",
+   "stored_sha256": "add8cc38bb25d257811476bf253052659ea7a52d6e03715a7a3da4ae5cc1316c"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/mouth-retraction.target.gz",
+   "stored": "data/targets/expression/units/asian/mouth-retraction.target.gz",
+   "sha256": "082173954f0ee4e40a878ebbd1a69d8037112bc50fc52e624ec677484c821ea7",
+   "stored_sha256": "082173954f0ee4e40a878ebbd1a69d8037112bc50fc52e624ec677484c821ea7"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/mouth-pursing.target.gz",
+   "stored": "data/targets/expression/units/asian/mouth-pursing.target.gz",
+   "sha256": "0a2a5159bda489ca2d4470dc0d7af0c9345f72d2b5ba21ececd7d53ede530101",
+   "stored_sha256": "0a2a5159bda489ca2d4470dc0d7af0c9345f72d2b5ba21ececd7d53ede530101"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/mouth-elevation.target.gz",
+   "stored": "data/targets/expression/units/asian/mouth-elevation.target.gz",
+   "sha256": "4d43b0dd40f37c39acbe4de04dda4fa8e1597d04287c1a994d2064b39e989dd2",
+   "stored_sha256": "4d43b0dd40f37c39acbe4de04dda4fa8e1597d04287c1a994d2064b39e989dd2"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/asian/mouth-depression-retraction.target.gz",
+   "stored": "data/targets/expression/units/asian/mouth-depression-retraction.target.gz",
+   "sha256": "e7dd3b97a70721295110f544de487dbb7a997f2fbbe32c262b9d554f04fbaf3e",
+   "stored_sha256": "e7dd3b97a70721295110f544de487dbb7a997f2fbbe32c262b9d554f04fbaf3e"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/eyebrows-left-inner-up.target.gz",
+   "stored": "data/targets/expression/units/caucasian/eyebrows-left-inner-up.target.gz",
+   "sha256": "bcbc99d31303df7855734d74dde0c1625e3a301dcdd9392d6b407616fd7679a8",
+   "stored_sha256": "bcbc99d31303df7855734d74dde0c1625e3a301dcdd9392d6b407616fd7679a8"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/eyebrows-right-inner-up.target.gz",
+   "stored": "data/targets/expression/units/caucasian/eyebrows-right-inner-up.target.gz",
+   "sha256": "b5da946cba48308969c3f63a5d590e1ad5c0c47975b92f485b63526d42c2df92",
+   "stored_sha256": "b5da946cba48308969c3f63a5d590e1ad5c0c47975b92f485b63526d42c2df92"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/eyebrows-left-extern-up.target.gz",
+   "stored": "data/targets/expression/units/caucasian/eyebrows-left-extern-up.target.gz",
+   "sha256": "3c475b2d4f600b9c1c42d9f37e7e63e81644891e4bd21817d72ed460ef7cbc4a",
+   "stored_sha256": "3c475b2d4f600b9c1c42d9f37e7e63e81644891e4bd21817d72ed460ef7cbc4a"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/eyebrows-right-extern-up.target.gz",
+   "stored": "data/targets/expression/units/caucasian/eyebrows-right-extern-up.target.gz",
+   "sha256": "6acb23ce8972c33d8e8c6db3d9bc3c4ef6104dd53d8338a12e250c338d14e57e",
+   "stored_sha256": "6acb23ce8972c33d8e8c6db3d9bc3c4ef6104dd53d8338a12e250c338d14e57e"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/eyebrows-left-down.target.gz",
+   "stored": "data/targets/expression/units/caucasian/eyebrows-left-down.target.gz",
+   "sha256": "f0cabdd8a225779806b8faabb1afcc4ee830a3eb3c6b1abe045d797328cff323",
+   "stored_sha256": "f0cabdd8a225779806b8faabb1afcc4ee830a3eb3c6b1abe045d797328cff323"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/eyebrows-right-down.target.gz",
+   "stored": "data/targets/expression/units/caucasian/eyebrows-right-down.target.gz",
+   "sha256": "ac4ad201d160f1eb7dc076e012bccd41e191d2886fc1b327c8409d8b77d63082",
+   "stored_sha256": "ac4ad201d160f1eb7dc076e012bccd41e191d2886fc1b327c8409d8b77d63082"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/nose-left-elevation.target.gz",
+   "stored": "data/targets/expression/units/caucasian/nose-left-elevation.target.gz",
+   "sha256": "6a6665e8f5ddb3e61e977fee12d45607fb0186ae6081e71b09d0798c460fc7d9",
+   "stored_sha256": "6a6665e8f5ddb3e61e977fee12d45607fb0186ae6081e71b09d0798c460fc7d9"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/nose-right-elevation.target.gz",
+   "stored": "data/targets/expression/units/caucasian/nose-right-elevation.target.gz",
+   "sha256": "adebf11df33084107199f5ab159f807342fe731dc354c5e2a0041ef5f3d6a9e8",
+   "stored_sha256": "adebf11df33084107199f5ab159f807342fe731dc354c5e2a0041ef5f3d6a9e8"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/mouth-corner-puller.target.gz",
+   "stored": "data/targets/expression/units/caucasian/mouth-corner-puller.target.gz",
+   "sha256": "d881bb8feda2637bdaef2c7d7c6bed12f0be5914949e5a2cb9b06a583af412c0",
+   "stored_sha256": "d881bb8feda2637bdaef2c7d7c6bed12f0be5914949e5a2cb9b06a583af412c0"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/mouth-depression.target.gz",
+   "stored": "data/targets/expression/units/caucasian/mouth-depression.target.gz",
+   "sha256": "add8cc38bb25d257811476bf253052659ea7a52d6e03715a7a3da4ae5cc1316c",
+   "stored_sha256": "add8cc38bb25d257811476bf253052659ea7a52d6e03715a7a3da4ae5cc1316c"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/mouth-retraction.target.gz",
+   "stored": "data/targets/expression/units/caucasian/mouth-retraction.target.gz",
+   "sha256": "082173954f0ee4e40a878ebbd1a69d8037112bc50fc52e624ec677484c821ea7",
+   "stored_sha256": "082173954f0ee4e40a878ebbd1a69d8037112bc50fc52e624ec677484c821ea7"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/mouth-pursing.target.gz",
+   "stored": "data/targets/expression/units/caucasian/mouth-pursing.target.gz",
+   "sha256": "9a5968be7a322d01db28490667746e711ca05d679aeaf7273b25f71c89d1bd49",
+   "stored_sha256": "9a5968be7a322d01db28490667746e711ca05d679aeaf7273b25f71c89d1bd49"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/mouth-elevation.target.gz",
+   "stored": "data/targets/expression/units/caucasian/mouth-elevation.target.gz",
+   "sha256": "c7698c8c82da348e8cace55aa991cf724d9123c92bedd3d6cf6174d72da88b81",
+   "stored_sha256": "c7698c8c82da348e8cace55aa991cf724d9123c92bedd3d6cf6174d72da88b81"
+  },
+  {
+   "upstream": "src/mpfb/data/targets/expression/units/caucasian/mouth-depression-retraction.target.gz",
+   "stored": "data/targets/expression/units/caucasian/mouth-depression-retraction.target.gz",
+   "sha256": "0c0e70e816ed8587cd8508807ae34526f49bbb623bc90a587b054b77bc178631",
+   "stored_sha256": "0c0e70e816ed8587cd8508807ae34526f49bbb623bc90a587b054b77bc178631"
+  }
+ ]
+}

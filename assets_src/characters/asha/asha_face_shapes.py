@@ -43,6 +43,66 @@ VISEMES = {
 }
 
 
+# M1-CHR-03 (ADR 0021): shapes driven by the donor's CC0 expression units (MakeHuman FACS-like
+# targets, re-targeted through bb_donor's macro mix, placement, subdivision and eye warp). A pair is
+# (left unit, right unit); a single name is a symmetric unit split L/R at the midline. The lids,
+# cheek raise, dimple, press, jaw and jaw clench stay procedural (the lids must slide on our globe).
+DONOR_UNITS = {
+    "brow_inner_up": ("eyebrows-left-inner-up", "eyebrows-right-inner-up"),
+    "brow_outer_up": ("eyebrows-left-extern-up", "eyebrows-right-extern-up"),
+    "brow_down": ("eyebrows-left-down", "eyebrows-right-down"),
+    "nose_sneer": ("nose-left-elevation", "nose-right-elevation"),
+    "mouth_smile": "mouth-corner-puller",
+    "mouth_frown": "mouth-depression",
+    "mouth_stretch": "mouth-retraction",
+    "mouth_pucker": "mouth-pursing",
+    "lip_upper_up": "mouth-elevation",
+    "lip_lower_down": "mouth-depression-retraction",  # its upper-lip part is masked off (lower only)
+}
+
+
+def donor_unit_shapes(unit_delta, used: np.ndarray, V: np.ndarray, tags: np.ndarray, lower: np.ndarray) -> dict:
+    """{API shape: delta (len(V), 3)} for the head object's vertices. `used` maps the first
+    len(used) head vertices (the skin) to the body's vertices; the other head parts take the delta
+    of their nearest skin vertex (brow cards ride the brow), except teeth and tongue (still)."""
+    n = len(used)
+    cache: dict = {}
+
+    def unit(name: str) -> np.ndarray:
+        if name not in cache:
+            cache[name] = unit_delta(name)[used]
+        return cache[name]
+
+    skin = V[:n]
+    rest = np.arange(n, len(V))
+    near = np.zeros(len(rest), dtype=int)
+    for a in range(0, len(rest), 512):
+        q = V[rest[a:a + 512]]
+        near[a:a + 512] = np.argmin(((q[:, None, :] - skin[None, :, :]) ** 2).sum(axis=2), axis=1)
+    still = np.isin(tags[rest], [asha_mouth.TAG_TEETH_UP, asha_mouth.TAG_TEETH_LO, asha_mouth.TAG_TONGUE])
+    side_l = smoothstep(-0.006, 0.006, skin[:, 0])
+
+    def full(d: np.ndarray) -> np.ndarray:
+        out = np.zeros_like(V)
+        out[:n] = d
+        out[rest] = np.where(still[:, None], 0.0, d[near])
+        return out
+
+    out = {}
+    for api, src in DONOR_UNITS.items():
+        if isinstance(src, tuple):
+            out[f"{api}_L"], out[f"{api}_R"] = full(unit(src[0])), full(unit(src[1]))
+            continue
+        d = unit(src)
+        if api == "lip_lower_down":
+            d = d * lower[:n, None]
+        if api in SINGLE:
+            out[api] = full(d)
+        else:
+            out[f"{api}_L"], out[f"{api}_R"] = full(d * side_l[:, None]), full(d * (1.0 - side_l)[:, None])
+    return out
+
+
 def smoothstep(e0, e1, x):
     t = np.clip((x - e0) / (e1 - e0), 0.0, 1.0)
     return t * t * (3.0 - 2.0 * t)
@@ -63,8 +123,13 @@ def rot_x(P: np.ndarray, pivot: np.ndarray, ang: np.ndarray) -> np.ndarray:
 
 
 class ShapeBuilder:
-    def __init__(self, face, lm, V: np.ndarray, tags: np.ndarray) -> None:
+    def __init__(self, face, lm, V: np.ndarray, tags: np.ndarray, masks: dict | None = None,
+                 units: dict | None = None) -> None:
+        self.units = units or {}
         self.face, self.lm, self.V, self.tags = face, lm, V, tags
+        # M1-CHR-03: on the donor topology the jaw and lip split come from the donor's own skin
+        # weights ("lower": jaw/chin/lower-lip weight, "lip": the lip face set), not a z threshold
+        self.masks = masks or {}
         self.s = lm.h / 0.222
         self.h = lm.h
         self.yc = float(lm.P("head_c")[1])
@@ -145,6 +210,11 @@ class ShapeBuilder:
         lat = 1.0 - smoothstep(0.85, 1.25, xr)
         up = smoothstep(-0.0002 * s, 0.0002 * s, dz) * (1 - smoothstep(0.004 * s, 0.014 * s, dz)) * lat * self.front
         lo = smoothstep(0.0002 * s, -0.0002 * s, dz) * (1 - smoothstep(0.005 * s, 0.015 * s, -dz)) * lat * self.front
+        if "lower" in self.masks and "lip" in self.masks:
+            low, lip = self.masks["lower"], self.masks["lip"]
+            near = (1 - smoothstep(0.010 * s, 0.016 * s, np.abs(dz))) * lat * self.front
+            up = np.clip(lip + 0.35 * near, 0, 1) * (1.0 - low) * near
+            lo = np.clip(lip + 0.35 * near, 0, 1) * low * near
         return np.where(self.skinlike, up, 0), np.where(self.skinlike, lo, 0)
 
     def jaw(self, ang: float) -> np.ndarray:
@@ -157,6 +227,8 @@ class ShapeBuilder:
         split = smoothstep(0.00018 * s, -0.00018 * s, dz)  # lower lip half and below
         cheek = smoothstep(0.002 * s, -0.016 * s, dz)  # beside the mouth: a soft blend
         w = split * in_mouth + cheek * (1.0 - in_mouth)
+        if "lower" in self.masks:
+            w = np.asarray(self.masks["lower"], dtype=float).copy()  # the donor's mandible weight
         # fade toward the ears and toward the head/neck seam under the jaw
         y_rel = (V[:, 1] - self.yc) / h
         w *= smoothstep(0.02, -0.16, y_rel)
@@ -201,6 +273,8 @@ class ShapeBuilder:
             S[f"mouth_stretch_{sd}"] = self.field(c, 0.014, 0.010, np.array([sg * 0.0050, 0.0012, -0.0010]))
             S[f"mouth_dimple_{sd}"] = self.field(c + np.array([sg * 0.004, 0, 0]) * self.s, 0.007, 0.007,
                                                  np.array([sg * 0.0005, 0.0022, 0.0]))
+        for k, d in self.units.items():  # M1-CHR-03 donor expression units replace the procedural ones
+            S[k] = d + (self.lid(k[-1], 0.06, 0.0) if k.startswith("brow_down_") else 0.0)
         up, lo = self.lips_weight()
         dz = V[:, 2] - self.lip_line_z(V[:, 0])
         press = np.zeros_like(V)
@@ -213,16 +287,16 @@ class ShapeBuilder:
         pk[:, 0] = -V[:, 0] * 0.28 * mw2
         pk[:, 1] = -0.0050 * self.s * mw2
         pk[:, 2] = -dz * 0.25 * mw
-        S["mouth_pucker"] = pk
+        S["mouth_pucker"] = self.units.get("mouth_pucker", pk)
         lu = np.zeros_like(V)
         xr = np.abs(V[:, 0]) / self.W
         lu[:, 2] = 0.0030 * self.s * up * (0.6 + 0.4 * smoothstep(0.0, 0.45, xr))
         lu[:, 1] = -0.0006 * self.s * up
-        S["lip_upper_up"] = lu
+        S["lip_upper_up"] = self.units.get("lip_upper_up", lu)
         ld = np.zeros_like(V)
         ld[:, 2] = -0.0030 * self.s * lo
         ld[:, 1] = -0.0010 * self.s * lo
-        S["lip_lower_down"] = ld
+        S["lip_lower_down"] = self.units.get("lip_lower_down", ld)
         S["jaw_open"] = self.jaw(0.36)
         jc = np.zeros_like(V)
         for sd in ("L", "R"):
@@ -264,5 +338,6 @@ class ShapeBuilder:
         return ordered
 
 
-def build_shapes(face, lm, V: np.ndarray, tags: np.ndarray) -> dict[str, np.ndarray]:
-    return ShapeBuilder(face, lm, V, np.asarray(tags)).build()
+def build_shapes(face, lm, V: np.ndarray, tags: np.ndarray, masks: dict | None = None,
+                 units: dict | None = None) -> dict[str, np.ndarray]:
+    return ShapeBuilder(face, lm, V, np.asarray(tags), masks, units).build()
