@@ -1,6 +1,6 @@
 # CONSOLIDATED HANDOFF: start here
 
-**Last updated:** 2026-10-23 ~21:15 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
+**Last updated:** 2026-10-23 ~23:00 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
 A new account, Lead or environment should be able to resume from this file and the files it links. Keep it current after every merge batch (CLAUDE.md §7a).
 
 ## 1. What this is
@@ -54,7 +54,17 @@ These are lost if the container restarts. Re-launch from the task files if so.
   - M1-CHR-09, Asha hair round 4 (crown shell, face-framing lock, lip thickness, doll-like eyes).
 - **Rule learned:** Asha's materials change only through write_materials.py.
 
-## 4d. Latest (Lead, ~21:15 UTC)
+## 4e. Latest (Lead, ~23:00 UTC)
+- **Merged:**
+  - M2-ARC-01 + M2-CMB-01 (save **v6**, Swell inputs for all four heroes, unlocks, Swell in the sim): 5b6243a;
+  - M1-ART-02 (post-import scripts): 99d2b26;
+  - M1-RND-19 (shader-tier copy-on-swap): 1ed245b;
+  - M1-CHR-10 (Asha round 5: black hair per ADR 0024 *proposed*, lashes, lid, brows, teeth, mouth normals): 3907e54.
+- **Pending merge:** M2-UI-01/02 (the UI agent is resolving conflicts with M2-CMB-01 in battle_controller, battle_menus, swell_timing_ring, formulas.md and strings.csv).
+- **Asha:** still fails strict §14 at dialogue range, with diminishing returns per round. **Asha rounds are paused** until the PC's 2x GPU capture (M1-QA-05c) and the human's playtest impression. If both say no, take ADR 0019's stronger-stylisation path and decide it with the human.
+- **PC queue front:** QA-05c, then RND-20 (smile-corner terminator), then the rest.
+
+## 4d. Earlier (Lead, ~21:15 UTC)
 - **Merged:** M1-NIT-02. The coverage baseline is ratcheted: battle 99.93%, progression 96.52% (4c462ee).
 - **Lead subagents running:**
   - M1-CHR-10 (Asha round 5);
