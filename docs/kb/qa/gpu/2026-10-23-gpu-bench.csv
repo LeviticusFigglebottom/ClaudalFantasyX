@@ -1,0 +1,209 @@
+scene,camera,variant,preset,res_w,res_h,internal_w,internal_h,frames,gpu_median_ms,gpu_p99_ms,gpu_mean_ms,cpu_median_ms,cpu_p99_ms,frame_median_ms,frame_p99_ms,adapter,driver
+water,Cameras/Shallows,scene,low,1920,1080,1478,832,300,0.641,0.692,0.624,0.100,0.198,0.810,1.006,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Shallows,scene,medium,1920,1080,1632,918,300,1.004,1.061,0.996,0.107,0.210,1.167,1.559,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Shallows,scene,high,1920,1080,1478,832,300,1.107,1.166,1.092,0.114,0.230,1.273,1.429,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Shallows,scene,ultra,1920,1080,1920,1080,300,1.876,1.971,1.879,0.103,0.206,2.071,2.363,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Shallows,scene,low,2560,1440,1971,1109,300,1.072,1.176,1.071,0.099,0.195,1.263,1.570,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Shallows,scene,medium,2560,1440,2176,1224,300,1.592,1.735,1.538,0.104,0.218,1.737,2.120,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Shallows,scene,high,2560,1440,1971,1109,300,1.844,1.957,1.858,0.115,0.246,2.043,2.396,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Shallows,scene,ultra,2560,1440,2560,1440,300,2.769,3.040,2.690,0.110,0.259,2.970,3.493,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Lagoon,scene,low,1920,1080,1478,832,300,0.687,0.726,0.691,0.099,0.194,0.862,0.986,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Lagoon,scene,medium,1920,1080,1632,918,300,1.084,1.128,1.090,0.103,0.203,1.265,1.441,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Lagoon,scene,high,1920,1080,1478,832,300,1.228,1.275,1.234,0.112,0.223,1.410,1.573,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Lagoon,scene,ultra,1920,1080,1920,1080,300,2.084,2.136,2.089,0.103,0.219,2.281,2.489,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Lagoon,scene,low,2560,1440,1971,1109,300,1.122,1.218,1.137,0.097,0.199,1.313,1.638,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Lagoon,scene,medium,2560,1440,2176,1224,300,1.734,1.839,1.754,0.105,0.217,1.937,2.247,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Lagoon,scene,high,2560,1440,1971,1109,300,1.985,2.091,2.005,0.115,0.228,2.207,2.531,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Lagoon,scene,ultra,2560,1440,2560,1440,300,3.276,3.332,3.261,0.102,0.201,3.514,3.777,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Horizon,scene,low,1920,1080,1478,832,300,0.546,0.584,0.549,0.089,0.175,0.720,0.885,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Horizon,scene,medium,1920,1080,1632,918,300,0.854,0.894,0.858,0.094,0.184,1.019,1.188,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Horizon,scene,high,1920,1080,1478,832,300,0.972,1.014,0.976,0.105,0.212,1.161,1.386,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Horizon,scene,ultra,1920,1080,1920,1080,300,1.476,1.530,1.482,0.093,0.192,1.658,1.835,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Horizon,scene,low,2560,1440,1971,1109,300,0.883,0.973,0.892,0.088,0.168,1.071,1.316,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Horizon,scene,medium,2560,1440,2176,1224,300,1.365,1.467,1.382,0.095,0.197,1.568,1.816,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Horizon,scene,high,2560,1440,1971,1109,300,1.580,1.683,1.599,0.104,0.219,1.782,2.037,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Horizon,scene,ultra,2560,1440,2560,1440,300,2.267,2.390,2.289,0.094,0.183,2.480,2.830,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Night,scene,low,1920,1080,1478,832,300,0.663,0.708,0.667,0.103,0.192,0.838,1.039,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Night,scene,medium,1920,1080,1632,918,300,1.001,1.047,1.008,0.106,0.199,1.181,1.412,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Night,scene,high,1920,1080,1478,832,300,1.104,1.154,1.110,0.119,0.227,1.291,1.438,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Night,scene,ultra,1920,1080,1920,1080,300,1.745,1.793,1.752,0.106,0.206,1.936,2.197,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Night,scene,low,2560,1440,1971,1109,300,1.081,1.196,1.099,0.101,0.199,1.264,1.549,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Night,scene,medium,2560,1440,2176,1224,300,1.629,1.757,1.654,0.108,0.223,1.829,2.157,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Night,scene,high,2560,1440,1971,1109,300,1.810,1.921,1.828,0.117,0.254,2.010,2.287,AMD Radeon RX 9070 XT,1.4.349
+water,Cameras/Night,scene,ultra,2560,1440,2560,1440,300,2.753,2.933,2.774,0.109,0.214,3.015,3.398,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Horizon,scene,low,1920,1080,1478,832,300,1.021,1.070,1.028,0.079,0.156,1.216,1.340,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Horizon,scene,medium,1920,1080,1632,918,300,6.138,6.187,6.137,0.084,0.164,6.345,6.579,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Horizon,scene,high,1920,1080,1478,832,300,15.181,15.311,15.183,0.103,0.250,15.485,15.855,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Horizon,scene,ultra,1920,1080,1920,1080,300,43.734,43.949,43.738,0.124,0.256,44.115,44.663,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Horizon,scene,low,2560,1440,1971,1109,300,1.699,1.796,1.719,0.079,0.162,1.908,2.178,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Horizon,scene,medium,2560,1440,2176,1224,300,10.466,10.543,10.465,0.090,0.338,10.732,10.971,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Horizon,scene,high,2560,1440,1971,1109,300,25.865,26.028,25.871,0.123,0.282,26.240,26.685,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Horizon,scene,ultra,2560,1440,2560,1440,300,76.152,76.554,76.161,0.145,0.332,76.577,77.395,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Eye,scene,low,1920,1080,1478,832,300,1.326,1.366,1.328,0.074,0.166,1.507,1.664,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Eye,scene,medium,1920,1080,1632,918,300,7.203,7.263,7.204,0.081,0.207,7.435,7.667,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Eye,scene,high,1920,1080,1478,832,300,16.760,16.920,16.762,0.100,0.341,17.055,17.465,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Eye,scene,ultra,1920,1080,1920,1080,300,46.492,46.806,46.484,0.112,0.291,46.852,47.478,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Eye,scene,low,2560,1440,1971,1109,300,2.257,2.346,2.271,0.074,0.150,2.469,2.794,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Eye,scene,medium,2560,1440,2176,1224,300,12.331,12.423,12.334,0.086,0.227,12.623,12.864,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Eye,scene,high,2560,1440,1971,1109,300,28.315,28.463,28.319,0.115,0.314,28.672,29.094,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Eye,scene,ultra,2560,1440,2560,1440,300,80.612,80.909,80.617,0.143,0.312,81.001,81.586,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Night,scene,low,1920,1080,1478,832,300,1.171,1.212,1.176,0.082,0.167,1.366,1.524,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Night,scene,medium,1920,1080,1632,918,300,8.529,8.595,8.530,0.091,0.291,8.758,9.069,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Night,scene,high,1920,1080,1478,832,300,20.476,20.553,20.477,0.118,0.350,20.792,21.047,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Night,scene,ultra,1920,1080,1920,1080,300,60.123,60.343,60.124,0.132,0.248,60.508,60.963,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Night,scene,low,2560,1440,1971,1109,300,1.997,2.113,2.017,0.082,0.158,2.207,2.569,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Night,scene,medium,2560,1440,2176,1224,300,14.865,14.938,14.865,0.131,0.372,15.129,15.427,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Night,scene,high,2560,1440,1971,1109,300,35.658,35.753,35.657,0.135,0.365,36.027,36.381,AMD Radeon RX 9070 XT,1.4.349
+undertow,Cameras/Night,scene,ultra,2560,1440,2560,1440,300,105.975,106.219,105.984,0.166,0.358,106.407,107.036,AMD Radeon RX 9070 XT,1.4.349
+glimmer_dusk,ShotCamera,scene,low,1920,1080,1478,832,300,0.293,0.326,0.294,0.137,0.198,0.572,0.748,AMD Radeon RX 9070 XT,1.4.349
+glimmer_dusk,ShotCamera,scene,medium,1920,1080,1632,918,300,0.612,0.654,0.616,0.118,0.230,0.784,0.963,AMD Radeon RX 9070 XT,1.4.349
+glimmer_dusk,ShotCamera,scene,high,1920,1080,1478,832,300,0.736,0.777,0.740,0.128,0.243,0.907,1.116,AMD Radeon RX 9070 XT,1.4.349
+glimmer_dusk,ShotCamera,scene,ultra,1920,1080,1920,1080,300,1.094,1.136,1.100,0.129,0.232,1.284,1.457,AMD Radeon RX 9070 XT,1.4.349
+glimmer_dusk,ShotCamera,scene,low,2560,1440,1971,1109,300,0.481,0.591,0.486,0.091,0.180,0.665,0.947,AMD Radeon RX 9070 XT,1.4.349
+glimmer_dusk,ShotCamera,scene,medium,2560,1440,2176,1224,300,0.913,1.021,0.927,0.122,0.242,1.093,1.413,AMD Radeon RX 9070 XT,1.4.349
+glimmer_dusk,ShotCamera,scene,high,2560,1440,1971,1109,300,1.192,1.296,1.208,0.130,0.248,1.392,1.641,AMD Radeon RX 9070 XT,1.4.349
+glimmer_dusk,ShotCamera,scene,ultra,2560,1440,2560,1440,300,1.521,1.668,1.540,0.119,0.238,1.731,2.041,AMD Radeon RX 9070 XT,1.4.349
+glimmer_night_held,ShotCamera,scene,low,1920,1080,1478,832,300,0.365,0.403,0.365,0.093,0.220,0.564,0.785,AMD Radeon RX 9070 XT,1.4.349
+glimmer_night_held,ShotCamera,scene,medium,1920,1080,1632,918,300,0.667,0.711,0.671,0.121,0.231,0.844,1.332,AMD Radeon RX 9070 XT,1.4.349
+glimmer_night_held,ShotCamera,scene,high,1920,1080,1478,832,300,0.762,0.805,0.767,0.130,0.262,0.932,1.144,AMD Radeon RX 9070 XT,1.4.349
+glimmer_night_held,ShotCamera,scene,ultra,1920,1080,1920,1080,300,1.165,1.211,1.171,0.121,0.231,1.350,1.526,AMD Radeon RX 9070 XT,1.4.349
+glimmer_night_held,ShotCamera,scene,low,2560,1440,1971,1109,300,0.542,0.653,0.550,0.092,0.186,0.726,1.001,AMD Radeon RX 9070 XT,1.4.349
+glimmer_night_held,ShotCamera,scene,medium,2560,1440,2176,1224,300,1.034,1.139,1.048,0.122,0.237,1.229,1.521,AMD Radeon RX 9070 XT,1.4.349
+glimmer_night_held,ShotCamera,scene,high,2560,1440,1971,1109,300,1.233,1.337,1.249,0.132,0.252,1.427,1.717,AMD Radeon RX 9070 XT,1.4.349
+glimmer_night_held,ShotCamera,scene,ultra,2560,1440,2560,1440,300,1.639,1.760,1.659,0.120,0.239,1.846,2.155,AMD Radeon RX 9070 XT,1.4.349
+glimmer_release,ShotCamera,scene,low,1920,1080,1478,832,300,0.366,0.404,0.367,0.093,0.220,0.566,0.760,AMD Radeon RX 9070 XT,1.4.349
+glimmer_release,ShotCamera,scene,medium,1920,1080,1632,918,300,0.658,0.702,0.663,0.121,0.232,0.827,1.005,AMD Radeon RX 9070 XT,1.4.349
+glimmer_release,ShotCamera,scene,high,1920,1080,1478,832,300,0.758,0.799,0.763,0.129,0.249,0.930,1.130,AMD Radeon RX 9070 XT,1.4.349
+glimmer_release,ShotCamera,scene,ultra,1920,1080,1920,1080,300,1.163,1.215,1.169,0.119,0.236,1.348,1.540,AMD Radeon RX 9070 XT,1.4.349
+glimmer_release,ShotCamera,scene,low,2560,1440,1971,1109,300,0.532,0.643,0.542,0.091,0.188,0.714,1.036,AMD Radeon RX 9070 XT,1.4.349
+glimmer_release,ShotCamera,scene,medium,2560,1440,2176,1224,300,1.002,1.098,1.013,0.122,0.227,1.187,1.485,AMD Radeon RX 9070 XT,1.4.349
+glimmer_release,ShotCamera,scene,high,2560,1440,1971,1109,300,1.227,1.334,1.242,0.136,0.270,1.433,1.723,AMD Radeon RX 9070 XT,1.4.349
+glimmer_release,ShotCamera,scene,ultra,2560,1440,2560,1440,300,1.610,1.733,1.631,0.120,0.245,1.824,2.102,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Backlit,scene,low,1920,1080,1478,832,300,0.394,0.434,0.396,0.094,0.179,0.565,0.747,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Backlit,scene,medium,1920,1080,1632,918,300,0.636,0.679,0.640,0.103,0.207,0.804,1.015,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Backlit,scene,high,1920,1080,1478,832,300,0.848,0.892,0.853,0.111,0.213,1.015,1.198,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Backlit,scene,ultra,1920,1080,1920,1080,300,1.295,1.343,1.301,0.110,0.218,1.477,1.659,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Backlit,scene,low,2560,1440,1971,1109,300,0.561,0.658,0.569,0.094,0.197,0.743,1.082,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Backlit,scene,medium,2560,1440,2176,1224,300,0.938,1.051,0.953,0.104,0.213,1.135,1.442,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Backlit,scene,high,2560,1440,1971,1109,300,1.297,1.396,1.311,0.115,0.235,1.495,1.793,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Backlit,scene,ultra,2560,1440,2560,1440,300,1.730,1.842,1.753,0.112,0.213,1.944,2.247,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/FrangipaniClose,scene,low,1920,1080,1478,832,300,0.593,0.634,0.596,0.095,0.188,0.769,0.936,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/FrangipaniClose,scene,medium,1920,1080,1632,918,300,0.965,1.011,0.972,0.104,0.196,1.143,1.377,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/FrangipaniClose,scene,high,1920,1080,1478,832,300,1.152,1.199,1.158,0.115,0.219,1.328,1.489,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/FrangipaniClose,scene,ultra,1920,1080,1920,1080,300,1.981,2.034,1.989,0.112,0.223,2.181,2.392,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/FrangipaniClose,scene,low,2560,1440,1971,1109,300,0.919,1.022,0.932,0.094,0.184,1.110,1.392,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/FrangipaniClose,scene,medium,2560,1440,2176,1224,300,1.450,1.566,1.471,0.104,0.216,1.638,1.926,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/FrangipaniClose,scene,high,2560,1440,1971,1109,300,1.742,1.849,1.760,0.116,0.241,1.966,2.260,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/FrangipaniClose,scene,ultra,2560,1440,2560,1440,300,2.717,2.832,2.738,0.111,0.211,3.002,3.304,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Wide,scene,low,1920,1080,1478,832,300,0.523,0.563,0.527,0.100,0.199,0.705,0.880,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Wide,scene,medium,1920,1080,1632,918,300,0.826,0.870,0.829,0.109,0.216,0.992,1.238,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Wide,scene,high,1920,1080,1478,832,300,1.014,1.063,1.019,0.118,0.219,1.184,1.421,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Wide,scene,ultra,1920,1080,1920,1080,300,1.561,1.610,1.569,0.116,0.233,1.756,1.941,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Wide,scene,low,2560,1440,1971,1109,300,0.853,0.950,0.866,0.100,0.199,1.033,1.307,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Wide,scene,medium,2560,1440,2176,1224,300,1.282,1.390,1.300,0.109,0.224,1.478,1.745,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Wide,scene,high,2560,1440,1971,1109,300,1.598,1.708,1.617,0.120,0.238,1.807,2.069,AMD Radeon RX 9070 XT,1.4.349
+vegetation,Cameras/Wide,scene,ultra,2560,1440,2560,1440,300,2.203,2.314,2.227,0.118,0.224,2.424,2.779,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/SkinEye,scene,low,1920,1080,1478,832,300,0.631,0.668,0.634,0.118,0.243,0.806,0.994,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/SkinEye,scene,medium,1920,1080,1632,918,300,0.864,0.905,0.869,0.125,0.247,1.047,1.232,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/SkinEye,scene,high,1920,1080,1478,832,300,1.297,1.342,1.303,0.137,0.269,1.482,1.728,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/SkinEye,scene,ultra,1920,1080,1920,1080,300,1.916,1.961,1.921,0.134,0.266,2.121,2.332,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/SkinEye,scene,low,2560,1440,1971,1109,300,0.787,0.875,0.795,0.117,0.241,0.968,1.305,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/SkinEye,scene,medium,2560,1440,2176,1224,300,1.330,1.429,1.347,0.126,0.245,1.506,1.793,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/SkinEye,scene,high,2560,1440,1971,1109,300,1.984,2.084,2.005,0.142,0.279,2.206,2.538,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/SkinEye,scene,ultra,2560,1440,2560,1440,300,2.750,2.855,2.779,0.133,0.253,3.034,3.333,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/HairBack,scene,low,1920,1080,1478,832,300,0.481,0.513,0.483,0.124,0.240,0.652,0.883,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/HairBack,scene,medium,1920,1080,1632,918,300,0.745,0.784,0.748,0.134,0.265,0.916,1.107,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/HairBack,scene,high,1920,1080,1478,832,300,1.048,1.087,1.053,0.149,0.282,1.234,1.376,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/HairBack,scene,ultra,1920,1080,1920,1080,300,1.433,1.484,1.440,0.139,0.276,1.626,1.839,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/HairBack,scene,low,2560,1440,1971,1109,300,0.681,0.766,0.689,0.125,0.246,0.854,1.117,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/HairBack,scene,medium,2560,1440,2176,1224,300,1.141,1.237,1.154,0.136,0.267,1.333,1.592,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/HairBack,scene,high,2560,1440,1971,1109,300,1.580,1.677,1.596,0.149,0.294,1.793,2.067,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/HairBack,scene,ultra,2560,1440,2560,1440,300,2.043,2.142,2.064,0.140,0.267,2.256,2.581,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/Cloth,scene,low,1920,1080,1478,832,300,0.490,0.530,0.493,0.123,0.225,0.661,0.819,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/Cloth,scene,medium,1920,1080,1632,918,300,0.813,0.859,0.818,0.130,0.251,0.986,1.172,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/Cloth,scene,high,1920,1080,1478,832,300,1.042,1.084,1.048,0.146,0.284,1.237,1.368,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/Cloth,scene,ultra,1920,1080,1920,1080,300,1.413,1.460,1.419,0.137,0.273,1.610,1.773,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/Cloth,scene,low,2560,1440,1971,1109,300,0.766,0.852,0.773,0.122,0.244,0.943,1.207,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/Cloth,scene,medium,2560,1440,2176,1224,300,1.265,1.361,1.280,0.134,0.266,1.461,1.720,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/Cloth,scene,high,2560,1440,1971,1109,300,1.654,1.751,1.673,0.146,0.295,1.868,2.111,AMD Radeon RX 9070 XT,1.4.349
+character_shading,Cameras/Cloth,scene,ultra,2560,1440,2560,1440,300,2.127,2.235,2.150,0.138,0.272,2.324,2.699,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Front,scene,low,1920,1080,1478,832,300,0.236,0.267,0.237,0.119,0.193,0.507,0.674,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Front,scene,medium,1920,1080,1632,918,300,0.355,0.389,0.357,0.079,0.158,0.515,0.746,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Front,scene,high,1920,1080,1478,832,300,0.554,0.588,0.557,0.091,0.177,0.721,0.886,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Front,scene,ultra,1920,1080,1920,1080,300,0.530,0.568,0.533,0.090,0.175,0.723,0.876,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Front,scene,low,2560,1440,1971,1109,300,0.378,0.457,0.382,0.073,0.148,0.557,0.801,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Front,scene,medium,2560,1440,2176,1224,300,0.627,0.725,0.635,0.082,0.173,0.811,1.074,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Front,scene,high,2560,1440,1971,1109,300,0.969,1.063,0.980,0.095,0.193,1.165,1.429,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Front,scene,ultra,2560,1440,2560,1440,300,0.924,1.021,0.936,0.089,0.179,1.125,1.394,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Face,scene,low,1920,1080,1478,832,300,0.236,0.271,0.238,0.118,0.159,0.504,0.701,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Face,scene,medium,1920,1080,1632,918,300,0.359,0.396,0.362,0.078,0.170,0.524,0.737,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Face,scene,high,1920,1080,1478,832,300,0.543,0.576,0.546,0.091,0.180,0.707,0.878,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Face,scene,ultra,1920,1080,1920,1080,300,0.524,0.563,0.528,0.088,0.177,0.702,0.849,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Face,scene,low,2560,1440,1971,1109,300,0.377,0.447,0.380,0.071,0.137,0.555,0.777,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Face,scene,medium,2560,1440,2176,1224,300,0.629,0.731,0.637,0.080,0.164,0.805,1.116,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Face,scene,high,2560,1440,1971,1109,300,0.962,1.053,0.973,0.095,0.188,1.161,1.417,AMD Radeon RX 9070 XT,1.4.349
+characters,Slender/Cameras/Face,scene,ultra,2560,1440,2560,1440,300,0.925,1.018,0.936,0.089,0.182,1.123,1.379,AMD Radeon RX 9070 XT,1.4.349
+characters,Heavy/Cameras/ThreeQuarter,scene,low,1920,1080,1478,832,300,0.228,0.260,0.231,0.115,0.188,0.502,0.709,AMD Radeon RX 9070 XT,1.4.349
+characters,Heavy/Cameras/ThreeQuarter,scene,medium,1920,1080,1632,918,300,0.358,0.392,0.360,0.077,0.152,0.520,0.704,AMD Radeon RX 9070 XT,1.4.349
+characters,Heavy/Cameras/ThreeQuarter,scene,high,1920,1080,1478,832,300,0.555,0.589,0.558,0.091,0.191,0.720,0.907,AMD Radeon RX 9070 XT,1.4.349
+characters,Heavy/Cameras/ThreeQuarter,scene,ultra,1920,1080,1920,1080,300,0.557,0.592,0.558,0.087,0.176,0.733,0.905,AMD Radeon RX 9070 XT,1.4.349
+characters,Heavy/Cameras/ThreeQuarter,scene,low,2560,1440,1971,1109,300,0.379,0.464,0.384,0.073,0.157,0.563,1.523,AMD Radeon RX 9070 XT,1.4.349
+characters,Heavy/Cameras/ThreeQuarter,scene,medium,2560,1440,2176,1224,300,0.629,0.727,0.638,0.081,0.172,0.814,1.080,AMD Radeon RX 9070 XT,1.4.349
+characters,Heavy/Cameras/ThreeQuarter,scene,high,2560,1440,1971,1109,300,0.976,1.065,0.986,0.096,0.192,1.170,1.417,AMD Radeon RX 9070 XT,1.4.349
+characters,Heavy/Cameras/ThreeQuarter,scene,ultra,2560,1440,2560,1440,300,0.935,1.039,0.948,0.089,0.184,1.132,1.380,AMD Radeon RX 9070 XT,1.4.349
+field_court,default,scene,low,1920,1080,1478,832,300,0.288,0.323,0.289,0.178,0.239,0.613,0.779,AMD Radeon RX 9070 XT,1.4.349
+field_court,default,scene,medium,1920,1080,1632,918,300,0.443,0.477,0.445,0.121,0.143,0.606,0.793,AMD Radeon RX 9070 XT,1.4.349
+field_court,default,scene,high,1920,1080,1478,832,300,0.651,0.686,0.654,0.131,0.151,0.822,1.085,AMD Radeon RX 9070 XT,1.4.349
+field_court,default,scene,ultra,1920,1080,1920,1080,300,0.802,0.841,0.804,0.131,0.228,0.980,1.157,AMD Radeon RX 9070 XT,1.4.349
+field_court,default,scene,low,2560,1440,1971,1109,300,0.458,0.522,0.461,0.115,0.166,0.638,0.915,AMD Radeon RX 9070 XT,1.4.349
+field_court,default,scene,medium,2560,1440,2176,1224,300,0.729,0.819,0.738,0.124,0.151,0.905,1.205,AMD Radeon RX 9070 XT,1.4.349
+field_court,default,scene,high,2560,1440,1971,1109,300,1.109,1.202,1.121,0.134,0.235,1.303,1.536,AMD Radeon RX 9070 XT,1.4.349
+field_court,default,scene,ultra,2560,1440,2560,1440,300,1.199,1.295,1.213,0.129,0.227,1.399,1.677,AMD Radeon RX 9070 XT,1.4.349
+battle_sandbox,default,scene,low,1920,1080,1478,832,300,0.296,0.330,0.297,0.235,0.327,0.757,1.063,AMD Radeon RX 9070 XT,1.4.349
+battle_sandbox,default,scene,medium,1920,1080,1632,918,300,0.424,0.459,0.425,0.173,0.344,0.670,1.077,AMD Radeon RX 9070 XT,1.4.349
+battle_sandbox,default,scene,high,1920,1080,1478,832,300,0.548,0.586,0.552,0.181,0.345,0.729,1.097,AMD Radeon RX 9070 XT,1.4.349
+battle_sandbox,default,scene,ultra,1920,1080,1920,1080,300,0.612,0.655,0.614,0.173,0.351,0.787,1.161,AMD Radeon RX 9070 XT,1.4.349
+battle_sandbox,default,scene,low,2560,1440,1971,1109,300,0.480,0.541,0.481,0.170,0.343,0.755,1.117,AMD Radeon RX 9070 XT,1.4.349
+battle_sandbox,default,scene,medium,2560,1440,2176,1224,300,0.657,0.747,0.667,0.173,0.353,0.829,1.198,AMD Radeon RX 9070 XT,1.4.349
+battle_sandbox,default,scene,high,2560,1440,1971,1109,300,0.883,0.968,0.893,0.185,0.368,1.071,1.314,AMD Radeon RX 9070 XT,1.4.349
+battle_sandbox,default,scene,ultra,2560,1440,2560,1440,300,0.861,0.952,0.870,0.174,0.344,1.043,1.295,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,no storm,low,1920,1080,1478,832,300,0.418,0.458,0.419,0.103,0.205,0.650,0.944,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,low (shells),low,1920,1080,1478,832,300,1.029,1.081,1.036,0.077,0.152,1.206,1.396,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,medium,low,1920,1080,1478,832,300,5.061,5.121,5.061,0.078,0.171,5.280,5.516,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high,low,1920,1080,1478,832,300,14.959,15.080,14.960,0.083,0.175,15.246,15.599,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,ultra,low,1920,1080,1478,832,300,27.152,27.393,27.157,0.094,0.205,27.505,28.064,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - body,low,1920,1080,1478,832,300,0.421,0.467,0.426,0.076,0.205,0.648,0.918,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - sea,low,1920,1080,1478,832,300,14.902,15.005,14.902,0.083,0.191,15.216,15.546,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - spray,low,1920,1080,1478,832,300,14.913,15.055,14.921,0.083,0.236,15.212,15.579,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - wounds,low,1920,1080,1478,832,300,14.915,15.045,14.918,0.083,0.195,15.198,15.553,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high; 22 steps,low,1920,1080,1478,832,300,7.538,7.618,7.538,0.079,0.155,7.781,8.035,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,no storm,high,1920,1080,1478,832,300,0.643,0.687,0.647,0.088,0.185,0.832,1.010,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,low (shells),high,1920,1080,1478,832,300,1.305,1.350,1.311,0.093,0.179,1.501,1.706,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,medium,high,1920,1080,1478,832,300,5.307,5.365,5.304,0.098,0.257,5.517,5.853,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high,high,1920,1080,1478,832,300,15.165,15.318,15.171,0.116,0.374,15.428,15.857,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,ultra,high,1920,1080,1478,832,300,27.540,27.854,27.526,0.126,0.397,27.856,28.785,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - body,high,1920,1080,1478,832,300,0.670,0.713,0.674,0.089,0.171,0.849,1.063,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - sea,high,1920,1080,1478,832,300,15.225,15.365,15.225,0.101,0.337,15.552,15.921,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - spray,high,1920,1080,1478,832,300,15.222,15.377,15.222,0.101,0.325,15.517,15.906,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - wounds,high,1920,1080,1478,832,300,15.215,15.345,15.215,0.101,0.210,15.511,15.843,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high; 22 steps,high,1920,1080,1478,832,300,7.783,7.872,7.787,0.097,0.259,8.055,8.778,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,no storm,low,2560,1440,1971,1109,300,0.600,0.607,0.601,0.072,0.141,0.777,0.956,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,low (shells),low,2560,1440,1971,1109,300,1.709,1.732,1.709,0.077,0.160,1.911,2.068,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,medium,low,2560,1440,1971,1109,300,8.498,8.558,8.498,0.080,0.184,8.786,9.017,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high,low,2560,1440,1971,1109,300,25.314,25.409,25.313,0.085,0.180,25.703,25.973,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,ultra,low,2560,1440,1971,1109,300,46.491,46.811,46.441,0.117,0.239,46.784,47.572,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - body,low,2560,1440,1971,1109,300,0.631,0.637,0.632,0.075,0.148,0.808,0.934,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - sea,low,2560,1440,1971,1109,300,25.291,25.420,25.294,0.085,0.209,25.695,26.096,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - spray,low,2560,1440,1971,1109,300,25.305,25.428,25.311,0.086,0.207,25.718,26.045,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - wounds,low,2560,1440,1971,1109,300,25.299,25.419,25.302,0.085,0.196,25.713,26.055,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high; 22 steps,low,2560,1440,1971,1109,300,12.761,12.817,12.762,0.085,0.172,13.111,13.297,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,no storm,high,2560,1440,1971,1109,300,1.081,1.102,1.082,0.087,0.177,1.274,1.414,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,low (shells),high,2560,1440,1971,1109,300,2.178,2.210,2.179,0.092,0.185,2.382,2.622,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,medium,high,2560,1440,1971,1109,300,9.013,9.093,9.014,0.093,0.177,9.348,9.621,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high,high,2560,1440,1971,1109,300,25.813,25.980,25.815,0.102,0.231,26.206,26.688,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,ultra,high,2560,1440,1971,1109,300,46.674,46.862,46.671,0.131,0.290,47.092,47.636,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - body,high,2560,1440,1971,1109,300,1.115,1.130,1.115,0.089,0.169,1.315,1.440,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - sea,high,2560,1440,1971,1109,300,25.677,25.816,25.684,0.100,0.205,26.088,26.474,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - spray,high,2560,1440,1971,1109,300,25.728,25.889,25.733,0.104,0.225,26.120,26.619,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high - wounds,high,2560,1440,1971,1109,300,25.815,25.967,25.813,0.105,0.221,26.228,26.607,AMD Radeon RX 9070 XT,1.4.349
+undertow_breakdown,Cameras/Horizon,high; 22 steps,high,2560,1440,1971,1109,300,13.198,13.275,13.200,0.096,0.192,13.538,13.791,AMD Radeon RX 9070 XT,1.4.349
