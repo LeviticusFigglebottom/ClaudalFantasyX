@@ -24,3 +24,15 @@ From M1-ART-02 (handoff docs/kb/handoffs/2026-10-23-character-7.md): apply_to_tr
 - Not changed: `CharacterShadingStage._build_compare` and `AshaStage._build_compare` still duplicate before swapping. That is harmless now, though redundant for the tier swap. `tests/unit/test_post_import.gd:156`'s comment describes the old behaviour (Character's file, left alone).
 
 ## Review log
+- 2026-10-23 character, fresh reviewer (review-sweep-M): **approve.** No blockers. All three criteria are met.
+  - **Checks run** (worktree at 449f856, own `XDG_DATA_HOME`): Godot `--filter=character_shading` 14/0 failed and `--filter=post_import` 15/0. gdlint and gdformat clean. I ran no shots: the author reports char_* ×4 and asha_* ×10 byte-identical, and the code is unchanged since.
+  - **What I read:** commit 2860034, the callers in character_shading_stage.gd:33/:110 and asha_stage.gd:59/:74, and handoff rendering-3.
+    - The copy-on-swap logic is right:
+      - the `[root id, copy id]` ownership meta means a duplicate of an owned copy is not owned (character_shader_tiers.gd:137);
+      - one copy per source per root (`done`, :143-155);
+      - materials already at the tier are not copied.
+    - AshaStage's `verse_count` and compare-skin duplicates are made after the swap, so they stay per-instance and are re-copied on the next swap. That is correct.
+  - **Should-fix (minor):**
+    1. character_shader_tiers.gd:104-132 still reaches only `material_override` and surface materials. `material_overlay` and `ShaderMaterial.next_pass` are neither swapped nor copied. That isn't a regression, but say so in the docstring, so nobody adds a tiered next_pass (a hair shell, an outline) and expects it to follow.
+    2. A swap back to a material's source tier keeps the owned copy in the override slot rather than restoring the shared source. It is harmless (same shader and parameters), but the per-instance copies are never released while the instance lives. Note it in character_shading.md for when crowds use tiers.
+    3. tests/unit/test_post_import.gd:156-157 (Character's file) still describes the old behaviour. Character fixes it under M1-ART-02's review (review-sweep-M S3 there).

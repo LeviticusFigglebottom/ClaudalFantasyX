@@ -50,3 +50,35 @@ From the review-sweep-L entries (file:line references there).
   - The GPU 2× High capture of asha_face_* (M1-QA-05c).
 
 ## Review log
+- 2026-10-23 rendering, fresh reviewer (review-sweep-M): **approve the round as delivered. Strict SPEC §14 verdict at dialogue range: FAIL. The task must not move to `done` with four criteria unticked.** Close it as a partial round only once the follow-ups below are filed. No merge blockers: the asset, the gate and the baselines are consistent.
+  - **Checks:**
+    - Tools unittest 431 OK, including test_asha and test_asha_face_drive. validate_data 0/0, taskboard --check OK.
+    - Godot `--filter=character_shading` 14/0 and `--filter=post_import` 15/0, which covers the asha `.tres` slot mapping.
+    - The four re-approved baselines are consistent with the materials diff in 3907e54.
+    - **Not run:** the Blender asha job (the author reports 44 identical on e863a98, and nothing has changed since) and the asha_* shots, because no scene or shader changed after the re-approval.
+  - **What I viewed:** `asha_face_neutral`, `smile`, `grief` and `stylized_compare` at full size, plus 4× crops of the eyes (neutral), the mouth (grief) and the right figure's temple (stylized_compare).
+  - **Confirmed fixed:** the hair and braid now read near-black, not auburn. The lashes are dark clumps on a lash line, not a comb. The brows have soft edges. The blue-grey tooth slab of CHR-09 is mostly gone.
+  - **Strict §14 faults I see, in order of cost.** These are in addition to, or sharper than, §10.4's list:
+    1. **Skin, and the hard nose shadow.** The face is evenly lit and smooth: §10.4 item 1, agreed. On top of that, the key casts a hard-edged dark wedge from the nose bridge over the inner corner of screen-right's eye and onto the cheek, in all three face shots. At 1× it reads as a bruise. It is the same shadow-terminator and hardness family as M1-RND-20, so add it to that task.
+    2. **Grief mouth.** At 4× the upper teeth read as a dark grey, faceted strip with hard polygon edges and a specular sheen. A saw-tooth shadow edge sits under the lower lip at the screen-right corner. "Slab gone" (§10.4) is too generous: it is reduced. With the hard inner lower-lip edge, this is still the most uncanny frame.
+    3. **The crown and hairline.** The crown is a sleek shell (agreed, criterion 1). The hairline is also one hard, even arc over a very tall forehead, with no wisps or fringe. Fold this into the crown geometry follow-up.
+    4. **The lid strip.** The tan band between the lash clumps and the crease is clearly visible at 1×, so the clumps read as a strip lash on a light eyeshadow. That is more than "reduced".
+    5. **Expression.** In `smile` the eyes, lids and cheeks do not move, so it reads as a smirk with dead eyes. In `grief` the brows barely lift at the inner ends. This is outside the named criteria, but §14 judges the expression set.
+    6. **A blue-grey hair lock** in `asha_face_stylized_compare` (right figure). The temple lock card reads silver-blue over a dark red-brown contact streak on the skin. That is ADR 0024 watch item 1, already visible under this warm key on the stylized skin.
+  - **Follow-ups to file before closing** (Character, unless noted):
+    - crown and hairline geometry;
+    - the lid strip and lash shadow;
+    - the grief mouth interior (teeth facets and specular, the inner lip edge);
+    - expression: eye and cheek participation in `smile`, inner-brow lift in `grief`;
+    - the nose cast shadow, added to M1-RND-20 (Rendering);
+    - the skin evenness on the GPU (Rendering, M1-QA-05c).
+  - **ADR 0024 opinion: accept the direction, but not yet the numbers. Keep it `proposed` until two checks are done.**
+    - The diagnosis is sound and well isolated. With every lobe off the crown was still auburn, so the base colour is the fault. Option 3 is the right physical fix, with no shader change and no light change.
+    - The neutral near-black base (#141417) and the dark-pigment secondary and transmission are the right choice, and I would accept them now.
+    - The primary tint `Color(0.76, 0.85, 1.0)` at 0.45 is strongly blue. The stylized_compare lock already reads silver-blue under the warm key, so under a neutral or cool key it will read blue-black. Try a near-neutral cool such as `Color(0.88, 0.90, 0.95)` before accepting.
+    - **Check 1, on lavapipe now, no GPU needed:** one render of `asha_face_neutral` under a neutral white key, to measure the crown's R:B and the lock's hue.
+    - **Check 2:** the M1-QA-05c GPU capture.
+    - Two smaller points:
+      - The table does not say which way `root_occlusion` and `depth_occlusion` run. Raising them "so the sky fill reaches the mass" implies that higher means less occlusion. State it.
+      - `spec_shift_jitter` sits at the shader's cap (0.3). That says the cap is binding: Rendering should consider raising it rather than tuning against it.
+    - Art must amend asha.md §5 to match, or supersede the ADR, before it moves to accepted. The Lead accepts it after both checks.
