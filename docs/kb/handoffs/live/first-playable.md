@@ -22,22 +22,29 @@ How the human plays it: [docs/PLAYTEST.md](../../../PLAYTEST.md) (Godot 4.6.3, o
 - After merging the integration branch (e9ae43a), I ran scoped checks per §3 "Gate scope": lint, format, data, and the filtered tests `fp_`, `cutscene`, `haluna`.
 - A real-runtime smoke run (throwaway script, not committed) went through the actual SceneRouter from New Game to the title with Enter mashed. No script errors.
 
-### In progress (Lead's queue of 2026-10-23, tasks M2-FP-05..08)
-- **M2-FP-05 polish:** the cutscene skip is **done** (hold Escape/B for 1 s; it stops at choices). The Haluna entry hitch and the lost-battle Retry / Return to last save are with a worktree agent (branch `worktree-agent-a6b0fa997cf23504d`, not merged yet).
-- **M2-FP-06 Drownbell boss:** a worktree agent (branch `worktree-agent-a930ab70519d670e7`) is building the engine phases, data, balance and docs. Not merged yet.
-- **M2-FP-07:** request task filed for Character (Asha's clips). No work here.
-- **M2-FP-08 @anim/@face drive:** **done**. `CutsceneFace` blends Asha's 40 shape keys from Character's `asha_face_poses.json` on `@face` and on each line's [emotion], with viseme lip-flap from `DialogueBox.mouth_flap`. Idle, talk, walk and run clips play when the rig has them. Tests: `tests/unit/test_cutscene_face.gd`.
+### In progress
+Nothing. The Lead's queue of 2026-10-23 (M2-FP-05..08) is done and pushed:
+- **M2-FP-05 polish (review):**
+  - Cutscene skip: hold Escape/B for 1 s; it stops at choices.
+  - Haluna entry: prebuilt on the router's worker thread, so the swap frame went from a median of 1684 ms to 33 ms.
+  - After a defeat: Fight again, or Return to last save (the title when there is no save). An escape returns to `BeforeBattle`, on the near side of the trigger.
+- **M2-FP-06 Drownbell (review):**
+  - The engine gains a phase mechanism (`game/battle/boss_mechanics.gd`).
+  - Phase 1, the Toll: a timeline push, telegraphed in the preview, that breaking the rim silences.
+  - Phase 2, the Flood: polyps heal the bell; Asha's Call Ilun clears the water. Call Ilun stands in for the Vowbound summon (ADR 0023).
+  - In balance: naive 0%, role_answer 80%, smart 90%.
+  - Wired into the thread: Cutscene B → `BattleRequest(drownbell)` with `return_scene` → end card.
+- **M2-FP-07:** a request task for Character (Asha's clips), still `todo`.
+- **M2-FP-08 (review):** `@face` and line emotions blend Asha's shape keys, with lip-flap; idle, talk, walk and run clips play when they exist.
 
 ### Exact next step
-Merge the two worktree branches as they finish (dialogue.csv and strings.csv conflicts: `python3 tools/dev/merge_union.py <file>` for strings, `python3 tools/dlgc.py` for dialogue). Then wire Cutscene B → BattleRequest(drownbell) → end card.
-
-Previously: The Lead merges `claude/first-playable` and runs the full screenshot manifest once. Then the human plays per PLAYTEST.md, and their notes become M2-FP follow-up tasks.
+Wait for the Lead's review and the human's playtest notes, and turn the notes into M2-FP-09+ tasks. The open follow-up on this branch is the shutdown-only engine errors described below.
 
 ### Known issues (candidate follow-ups)
-- The swap into Haluna has one ~1.5 s frame under the fade (mood dressing plus collision build).
-- Cutscene B's closing `start_battle drownbell` goes to the end card, because the Drownbell isn't built yet.
+- **New since FP-05:** quitting the game after Haluna has been loaded logs 8 engine errors, `Condition "p_elem->_root != this"` (self_list.h). They come from resources built during the worker-thread prebuild. They appear only at process exit, and scene swaps stay clean. Before the prebuild there were none. The likely culprit is a material or mesh created off the main thread; next, try creating those resources on the main thread in `_ready` while keeping the heavy mesh build threaded.
+- `battle_controller.gd` sits at exactly the 1000-line lint cap after FP-06. Split it before growing it.
+- The balance sim doesn't model Toma's Lattice skills.
 - Placeholders: stand-in music (`game/data/cutscene/sequencer.json` `music_stand_ins`); `@face` is recorded only; `@anim` uses `CutsceneStage.clip_marks`; motes are simple spheres; everyone except Asha is a capsule, and Asha holds her rest pose.
-- After a defeat, the party returns past the battle trigger, so the fight can be skipped.
 - `tools/validate_data.py` (Systems-owned) got a small `place_at` player-detection fix from FP-03. It's in its own commit with a test, and Systems should confirm it.
 
 ### Local-only state
@@ -52,6 +59,7 @@ None that matters. `.scratch/` (excluded through `.git/info/exclude`) holds the 
 5. Read the M2-FP task files and `docs/kb/handoffs/2026-10-23-first-playable-1.md`.
 
 ## History
+- 2026-10-23: merged FP-05 (prebuild, defeat retry) and FP-06 (Drownbell), wired the boss into the thread. ci_local green: 1043 tests, battle shots unchanged.
 - 2026-10-23: M2-FP-08 done (face shape keys, lip-flap, clip defaults); 16 cutscene tests.
 - 2026-10-23: merged integration 9508ade; claimed M2-FP-05..08; cutscene skip done (13 sequencer tests).
 - 2026-10-23: claimed M2-FP-01..04; CutsceneStage contract and sequencer API stub.

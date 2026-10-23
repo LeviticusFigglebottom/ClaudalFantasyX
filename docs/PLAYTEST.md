@@ -2,7 +2,7 @@
 
 This is a rough but complete thread through the first minutes of *Hymn of the Undertow*. Most of what you see is placeholder: capsules stand in for people (Asha is the only real model, and she has no animations yet), the Shell Shrine is grey stone primitives, and the music uses the three prototype cues in place of the scenes' own. **The point is to feel the flow.** Please note anything that confuses you, drags, or feels wrong.
 
-## What you play (about 10–15 minutes)
+## What you play (about 15–20 minutes)
 
 1. **Title.** Choose **New Game**.
 2. **Prologue.** A dead city at dusk, with one line of Rhen's narration.
@@ -11,7 +11,12 @@ This is a rough but complete thread through the first minutes of *Hymn of the Un
 5. **First battle.** Walking up the beach path toward the village starts a fight against a reef crab and a lantern eel, with Rhen and Asha (Toma in reserve). Win it, and you return to the beach path. Flee it, and you are back on the beach below the path, with the fight still ahead. Lose it, and you can **Fight again** or **Return to last save** (your newest save; with none yet, this reads **Return to title**).
 6. **Save** at the shrine: the glowing teal stone with a shell canopy, near the beach palms. Resting there heals the party and opens the save menu.
 7. **The causeway head.** Once you have saved, walk north along the beach, past the dock, to the causeway head at its far end. This plays **Cutscene B, "The First Verse"**, at the Shell Shrine at sunset.
-8. **End card.** Press accept to return to the title. **Continue** loads your save.
+8. **The Drownbell.** The bell answers the verse. It's a two-phase boss, with Rhen, Asha and Toma and no reserve.
+   - **Phase 1, the Toll:** watch the timeline. The bell gathers a toll that shoves everyone back, and the timeline shows it two turns out. Three fast strikes (Rhen's Attack or Quick Hit) break its rim and silence it.
+   - **Phase 2, the Flood:** at about 40% health the water rises, and polyps heal the bell faster than you can cut them down. Asha's **Call Ilun** (12 MP) clears the water.
+
+   Lose, and you can fight again or return to your last save.
+9. **End card.** Press accept to return to the title. **Continue** loads your save.
 
 ## Running it
 
@@ -53,7 +58,7 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - The music is a prototype stand-in: the hush theme sketch plays on the beach and in Haluna, the temple cue plays at the shrine, and the hush theme v2 plays for the verse. Nobody has signed off on any of them.
 - The glimmer motes in the cutscenes are simple glowing dots, not the real particle effect.
 - Haluna uses the art team's mood-test scene, with simple collision added. The camera mostly follows Rhen from behind; only a few spots use composed shots.
-- Cutscene B ends with the bell tolling and a call to battle. **The Drownbell boss isn't built yet**, so the end card comes next.
+- **Call Ilun** is a stand-in for the real Vowbound summon (ADR 0023). For now it is one of Asha's commands rather than a full summon that replaces the party, and the bell and polyps are placeholder shapes.
 - Entering Haluna holds the black fade for about a second and a half while the village builds itself; the picture no longer freezes when it appears.
 
 ## Reporting

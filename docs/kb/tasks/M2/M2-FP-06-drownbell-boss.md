@@ -2,7 +2,7 @@
 id: M2-FP-06
 title: The Drownbell, a two-phase boss on the CTB engine (vertical slice B10)
 role: combat
-status: doing
+status: review
 owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M2-FP-04]
 milestone: M2
@@ -16,7 +16,7 @@ The boss Cutscene B calls to battle (`<<event start_battle drownbell>>`), per ve
 - [x] A phase mechanism in the engine (data-driven, headless, seeded); the phase change shows in the timeline preview.
 - [x] Phase 1 and phase 2 gimmicks as designed; a first-playable stand-in for the Ilun summon if the full Vowbound system is out of scope (documented).
 - [x] Balance sim run against the `boss_drownbell` bands; results in balance_report.md.
-- [ ] Cutscene B → the Drownbell → end card in the thread; tests. (Boss side and its tests done; the thread wiring is the first-playable Lead's: `BattleRequest` for encounter `drownbell`, party active `rhen, asha, toma`, reserve none, victory flag `ch03_drownbell_defeated`.)
+- [x] Cutscene B → the Drownbell → end card in the thread; tests. (Boss side and its tests done; the thread wiring is the first-playable Lead's: `BattleRequest` for encounter `drownbell`, party active `rhen, asha, toma`, reserve none, victory flag `ch03_drownbell_defeated`.)
 
 ## Notes (combat worktree, 2026-10-23)
 - Engine: `game/battle/boss_mechanics.gd` (`BossMechanics`) holds the rules; the engine calls it at five points. Data shape, API, HUD: battle_ctb.md "The Drownbell (M2-FP-06)". Stand-in: ADR 0023.
