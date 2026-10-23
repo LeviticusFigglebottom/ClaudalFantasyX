@@ -2,8 +2,8 @@
 id: M1-NIT-01
 title: Small fixes from review-sweep-J (UI-05, QA-06, NAR-12)
 role: qa
-status: todo
-owner_session: ""
+status: doing
+owner_session: "agent-a0094ffbbf8563d67"
 depends_on: [M1-UI-05, M1-QA-06, M1-NAR-12]
 milestone: M1
 request-from: "lead"

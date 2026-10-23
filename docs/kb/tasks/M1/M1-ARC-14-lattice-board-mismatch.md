@@ -2,8 +2,8 @@
 id: M1-ARC-14
 title: Lattice: a save naming another board is frozen, not rewritten
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "agent-a0094ffbbf8563d67"
 depends_on: [M1-ARC-13]
 milestone: M1
 request-from: "qa"
