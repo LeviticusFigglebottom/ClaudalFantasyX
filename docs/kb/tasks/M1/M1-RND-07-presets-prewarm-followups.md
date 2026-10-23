@@ -2,8 +2,8 @@
 id: M1-RND-07
 title: Graphics presets and prewarm follow-ups from the Environment review
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-07-presets)
 depends_on: [M1-RND-05, M1-RND-06, M1-ENV-02]
 milestone: M1
 request-from: "environment"
