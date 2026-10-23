@@ -32,6 +32,16 @@ Delivered (how it works: `docs/kb/tech/ui.md`, "Battle sandbox"):
 
 Follow-ups: `BattleEngine.preview_swap(out, in)`, so the Swap menu can move timeline chips (today the help line explains the effect). Defeat still means every *active* member is KO'd, and the sandbox makes that readable: the result screen lists fallen fighters.
 
+Review follow-ups closed by M1-UI-02 (2026-10-23, `docs/kb/tasks/M1/M1-UI-02-battle-hud-followups.md`):
+- [x] 1. Unlocalized fail reasons: every reason maps to a `HUD_FAIL_*` line (`BattleMenus.fail_text`), and a test reads the reasons from the engine.
+- [x] 2. Provoke targeting: the cursor starts on and is locked to `forced_target()`, with a hook marker on the provoker.
+- [x] 3. Swap preview: the swap-in and swap-out steps show `preview_swap(out, in)`; the chips move.
+- [x] 4. Auto-turn copy: Berserk/Confuse turns are announced and reported from `auto_reason`, with their own pacing.
+- [x] 5. New status data: the Doom count is on chips and party rows, Reflect shows a bounce arc and "Reflected", Petrify shows a stone portrait and stand-in.
+- [x] 6. Victory capture encodes balance: every capture state runs on `game/data/ui/battle_fixtures.json` (frozen tables), so rebalancing no longer moves the baselines.
+- [x] 7. Flaky-risk captures: the baselines were re-approved on the fixture data. Repeat captures here measure RMSE 0.00000. Text anti-aliasing determinism on other stacks is still QA's question.
+- The swap follow-up above is closed by item 3.
+
 ## Review log
 - **2026-10-22, Progression-side reviewer (combat-stream-2), SPEC §12.3 pair: approve with follow-ups (none blocking).**
   Read `game/battle/scene/` (controller, menus, stage, stand-ins), `docs/kb/tech/ui.md` § Battle sandbox and `tests/unit/test_battle_controller.gd`. Ran the sandbox headlessly through its tests (15/15 pass, plus the 4 `party_modifier` hook tests in `test_battle_engine.gd`) and the full `tools/ci_local.sh`.
