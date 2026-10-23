@@ -45,6 +45,15 @@ Delivered (combat-stream-2). Rules are in formulas.md § Items, § Equipment in 
 - `Formulas.revive_hp` / `item_damage` mirror ItemBattleAction's, and a test keeps them equal.
 - **Dispel decision:** equipment "always" statuses are ordinary and may be dispelled (they don't return); low-HP ones return while the condition holds.
 - Tests: `test_battle_items.gd` (20), `test_battle_equipment.gd` (15), 3 in `test_formulas.gd`, 2 validator tests. Coverage: battle 99.53%, progression 95.42% (baselines ratcheted).
+Folded in (2026-10-23):
+- **UI requests (M1-UI-02):** `turn_ended(actor, changes)` plus `ActionResult.end_of_turn` (Poison, Regen, Zombie Regen, Doom tick and fall); `turn_lost(actor, reason, changes)` for Stop/Sleep turns, with Doom; `apply_fixture(state)`. UI switch: `BattleFixture.prepare(engine)` → `engine.apply_fixture(opening)`.
+- **Review fixes:**
+  - The Sleep-wake preview is now honest: damage wakes the target in the preview.
+  - A revive (and a Petrify cure) never rewinds time.
+  - "Revival KOs a Zombie" is reachable: a revive item may target a living Zombie.
+  - Petrify cure targeting: a minimal fix in Progression's `item_battle_action.gd` (`can_target` and `cures()`).
+  - Drag Net: rank 2 → 3 in `items.json` (Progression's data, one field), plus engine delay diminishing returns and `delay_immune`, with a lock check.
+  - Sim loadouts (gear and consumables per suite), the smart item rule, and a lume column; the bands are defined per loadout.
 For Progression: wire `InventoryItemSource` and `currency_multiplier = fx.currency_multiplier` into the sandbox glue (UI stream), and award `drop_awards()` / `currency_award()` into the inventory and wallet after victory.
 
 ## Review log

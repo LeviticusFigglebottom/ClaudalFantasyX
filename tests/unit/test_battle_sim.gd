@@ -199,6 +199,41 @@ func test_smart_replaces_a_fallen_member() -> void:
 	assert_true(engine.party_reserve.has(fallen))
 
 
+func test_basic_fallback_reports_a_stuck_actor() -> void:
+	var engine := BattleEngine.new()
+	var active: Array[StringName] = [&"mage"]
+	engine.setup(_fixture_db(), active, [] as Array[StringName], &"duo_scripted", 2)
+	engine.begin()
+	_to_party_turn(engine)
+	engine.current.mp = 0
+	var actor := engine.current
+	SimPolicy.new().take_turn(engine)
+	assert_eq(engine.current, actor, "no attack, no escape in a scripted fight: the error is reported")
+
+
+func test_smart_skips_fallen_reserves_when_replacing() -> void:
+	var engine := _real_engine(5)
+	var actor := engine.current
+	var fallen := engine.party_active[1] if engine.party_active[0] == actor else engine.party_active[0]
+	fallen.hp = 0
+	engine.find(&"toma").hp = 0
+	BattleSim.new().make_policy(&"smart").take_turn(engine)
+	assert_true(engine.find(&"ysolde") in engine.party_active, "the only living reserve came in")
+
+
+func test_smart_skips_items_that_can_not_reach_the_target() -> void:
+	var sim := BattleSim.new()
+	var engine := _real_engine(5)
+	var hurt := engine.current
+	hurt.hp = 5
+	var inv := Inventory.new(sim.items_db(), {})
+	inv.add(&"relighting_wick", 1)
+	var smart := sim.make_policy(&"smart")
+	smart.items = InventoryItemSource.new(sim.items_db(), inv)
+	assert_false(smart.use_item_with(engine, ItemBattleAction.EFFECT_HEAL_HP, hurt), "a wick can't heal the living")
+	assert_eq(BattleItemSource.new().usable(), [] as Array[StringName])
+
+
 func test_smart_prefers_a_reserve_who_answers_a_foe() -> void:
 	var engine := _real_engine(5)
 	var actor := engine.current
@@ -311,7 +346,11 @@ static func _fixture_db() -> BattleDB:
 					{"id": "mage", "stats": stats, "skills": ["zap"]},
 				],
 				"enemies": [{"id": "dummy", "stats": foe, "skills": ["attack"], "ai": ai, "xp": 1}],
-				"encounters": [{"id": "duo", "enemies": ["dummy", "dummy"]}],
+				"encounters":
+				[
+					{"id": "duo", "enemies": ["dummy", "dummy"]},
+					{"id": "duo_scripted", "enemies": ["dummy"], "scripted": true},
+				],
 			}
 		)
 	)
