@@ -12,6 +12,9 @@ var hatch_px := 4.0
 var shown := 1.0
 ## Lighter top edge of the fill gradient, as a lerp toward white.
 var sheen := 0.25
+## A full Swell gauge's glow, 0..1 (0 = none). Above 0 the fill brightens by glow x sheen and a
+## gold frame marks the gauge as full, so "full" never depends on the pulse alone.
+var glow := 0.0
 
 var _value := 1.0
 
@@ -46,12 +49,15 @@ func _draw() -> void:
 	var fill_w := floorf(size.x * shown)
 	if fill_w > 0.0:
 		var col := _c(&"danger") if is_low() else _c(fill_role)
+		col = col.lerp(Color.WHITE, glow * sheen)
 		var top := col.lerp(Color.WHITE, sheen)
 		var pts := PackedVector2Array([Vector2.ZERO, Vector2(fill_w, 0), Vector2(fill_w, size.y), Vector2(0, size.y)])
 		draw_polygon(pts, PackedColorArray([top, top, col, col]))
 		if is_low():
 			_hatch(fill_w, _c(&"outline"))
 	draw_rect(r, _c(&"gauge_border"), false, 1.0)
+	if glow > 0.0:
+		draw_rect(r.grow(1.0), _c(&"focus_gold"), false, 1.0)
 
 
 func _hatch(width: float, col: Color) -> void:

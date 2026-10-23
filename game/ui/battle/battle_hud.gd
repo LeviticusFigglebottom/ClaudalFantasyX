@@ -16,6 +16,8 @@ var help_history: PackedStringArray = []
 var settings: UiSettings
 ## The palette role the help line is drawn in (&"" = the theme's own text color).
 var help_role: StringName = &""
+## A hero's Swell input (Rhen's lantern ring, M1-CMB-04), hidden until a technique opens it.
+var swell_ring: SwellRingView
 
 var _damage_m: Dictionary = {}
 var _float_m: Dictionary = {}
@@ -38,6 +40,9 @@ func _ready() -> void:
 	var help_m := HudLayout.section(&"help_line")
 	HudLayout.place(_help_panel, help_m)
 	_help_label.max_lines_visible = int(HudLayout.num(help_m, "max_lines"))
+	swell_ring = SwellRingView.new()
+	swell_ring.name = &"SwellRing"
+	add_child(swell_ring)
 	set_help("")
 	if settings == null:
 		apply_settings(UiSettings.shared())
@@ -128,6 +133,7 @@ func set_combat_ui_visible(on: bool) -> void:
 	for c: CanvasItem in [timeline, party, commands, _help_panel]:
 		c.visible = on
 	if not on:
+		swell_ring.close()
 		target_cursor.clear()
 		target_cursor.show_actor(Vector2.ZERO, false)
 		target_cursor.show_provoker(Vector2.ZERO, false)
@@ -156,5 +162,7 @@ func _refresh_settings() -> void:
 	commands.reduced_motion = reduced
 	target_cursor.set_reduced_motion(reduced)
 	result.motion_scale = settings.motion_scale()
+	party.set_reduced_motion(reduced)
+	swell_ring.reduced_motion = reduced
 	party.refresh()
 	_apply_help_role()  # a palette switch recolors a warning already on screen

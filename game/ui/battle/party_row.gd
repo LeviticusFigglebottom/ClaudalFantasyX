@@ -6,9 +6,13 @@ extends Control
 ##   (hollow when Berserk/Confuse plays the turn for them).
 ## - Petrify greys the row and turns the portrait to stone (strata lines, not hue alone).
 ## - Doom shows its count beside the hourglass glyph; Regen under Zombie shows inverted.
+## - A hero with a Swell (BattleCombatant.swell_mode set) gets the Swell gauge under the name
+##   (docs/kb/art/ui.md §6.2: 64 x 4 px, ui_swell). Full, it is framed in gold and pulses on a
+##   1.6 s sine; with reduced motion it holds the full glow instead of pulsing.
 
 var combatant: BattleCombatant
 var is_current := false
+var reduced_motion := false
 ## Why the current turn plays itself (&"berserk" / &"confuse"), or &"" when the player chooses.
 var auto_reason: StringName = &""
 var is_targeted := false
@@ -21,6 +25,8 @@ var _hp_label: Label
 var _mp_label: Label
 var _hp: HudGauge
 var _mp: HudGauge
+var _swell: HudGauge
+var _pulse_t := 0.0
 var _status_strip: HBoxContainer
 var _statuses: Array[StringName] = []
 var _status_key := ""
@@ -72,6 +78,13 @@ func setup(metrics: Dictionary, c: BattleCombatant, label: String, portrait_tint
 	_mp.position = Vector2(mp_x, bar_y + HudLayout.num(_m, "hp_bar_px") - HudLayout.num(_m, "mp_bar_px"))
 	_mp.size = Vector2(mp_w, HudLayout.num(_m, "mp_bar_px"))
 	add_child(_mp)
+	if c.swell_mode != &"":
+		var swell_px := HudLayout.num(_m, "swell_bar_px")
+		_swell = HudGauge.new(&"swell")
+		_swell.position = Vector2(name_x, bar_y + HudLayout.num(_m, "hp_bar_px") - swell_px)
+		_swell.size = Vector2(HudLayout.num(_m, "swell_width"), swell_px)
+		add_child(_swell)
+	set_process(false)
 	refresh(false)
 
 
@@ -84,6 +97,7 @@ func refresh(animate: bool, drain_sec: float = 0.0) -> void:
 	_mp.set_value(combatant.mp, combatant.max_mp, sec)
 	_hp_label.text = "%d/%d" % [combatant.hp, combatant.max_hp]
 	_mp_label.text = "%d" % combatant.mp
+	_refresh_swell(sec)
 	var low := _hp.is_low() or combatant.hp <= 0
 	if is_stone():
 		_initial.add_theme_color_override(&"font_color", _c(&"stone_crack"))
@@ -101,6 +115,36 @@ func refresh(animate: bool, drain_sec: float = 0.0) -> void:
 
 func hp_text() -> String:
 	return _hp_label.text
+
+
+## The Swell gauge, or null for a fighter with no Swell (tests).
+func swell_gauge() -> HudGauge:
+	return _swell
+
+
+func _refresh_swell(sec: float) -> void:
+	if _swell == null:
+		return
+	_swell.set_value(combatant.swell, Formulas.SWELL_MAX, sec)
+	var full := combatant.swell >= Formulas.SWELL_MAX
+	set_process(full and not reduced_motion)
+	if not full:
+		_pulse_t = 0.0
+	_swell.glow = (_pulse_glow() if not reduced_motion else 1.0) if full else 0.0
+	_swell.queue_redraw()
+
+
+## The full gauge's glow on its sine pulse: swell_pulse_min..1 over swell_pulse_sec.
+func _pulse_glow() -> float:
+	var lo := HudLayout.num(_m, "swell_pulse_min")
+	var phase := TAU * _pulse_t / HudLayout.num(_m, "swell_pulse_sec")
+	return lo + (1.0 - lo) * 0.5 * (1.0 + cos(phase))
+
+
+func _process(delta: float) -> void:
+	_pulse_t += delta
+	_swell.glow = _pulse_glow()
+	_swell.queue_redraw()
 
 
 func status_ids() -> Array[StringName]:
