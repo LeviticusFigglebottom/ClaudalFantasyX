@@ -31,6 +31,22 @@ extends Node
 ##     a cutscene sequencer holds for the whole cutscene, and FieldCameraDirector holds while a
 ##     scripted shot has the camera), no scene change in progress and the tree not paused. New
 ##     Game and load_into_game drop a pending request.
+##
+## Review-sweep-E (M1-ARC-08 S4, M1-ARC-10; ADR 0018 amendment):
+##   - The chapter autosave keeps a further-along autosave: when slot 0 holds a later chapter (or
+##     the same chapter with more play time, or a newer build's save) than the live state, the
+##     pending write is skipped (ERR_ALREADY_EXISTS on autosave_finished), unless New Game
+##     started this run (the player confirmed replacing it). Loading an older record and crossing
+##     its next boundary therefore never overwrites the run that got further.
+##   - A downward Game.set_chapter (debug only) requests no autosave unless
+##     autosave_on_chapter_regress is set.
+##   - A leftover .tmp that is a complete, readable save newer than its slot (a crash, or a failed
+##     rename, between the write and the rename) is never silently discarded: it is logged at
+##     startup (report_leftover_temps), described by leftover_temp_info, restorable with
+##     recover_temp, and set aside as `.recovered` before the next write to that slot would reuse
+##     the temp name. A failed rename keeps the temp file for the same reason.
+##   - FileAccess.flush() is a stdio flush, not an fsync: a power cut right after the rename can
+##     still lose the newest write on some filesystems (architecture.md, Save robustness).
 
 const SAVE_VERSION := 4
 const SAVE_DIR := "user://saves"
@@ -38,6 +54,8 @@ const AUTOSAVE_SLOT := 0
 ## slot_path() formats two digits.
 const MAX_SLOT := 99
 const TEMP_SUFFIX := ".tmp"
+## A valid leftover temp file is moved here (beside the slot) before a new write reuses its name.
+const RECOVERED_SUFFIX := ".recovered"
 const REASON_MANUAL := &"manual"
 const REASON_CHAPTER := &"chapter_boundary"
 const STATUS_EMPTY := &"empty"
@@ -56,6 +74,9 @@ var autosave_enabled := true
 ## Writes `text` into an open file and returns true on success (FileAccess.store_string). Tests
 ## replace it to simulate a full disk or a short write; save_to_slot must then keep the old save.
 var store_text: Callable = _store_text
+## Debug only: let a downward Game.set_chapter request the chapter autosave (off: it never does,
+## so a debug jump back never writes an earlier chapter over slot 0).
+var autosave_on_chapter_regress := false
 
 ## Migrations keyed by the version they upgrade FROM. Each takes and returns a save dict.
 var _migrations: Dictionary = {
@@ -72,12 +93,21 @@ var _pending_reason: StringName = &""
 var _pending_frame := 0
 ## Objects holding the autosave back, by instance id (WeakRef, so a freed holder never blocks).
 var _holds: Dictionary = {}
+## True from New Game until this run's first autosave is written: the player confirmed that the
+## new run replaces slot 0 (ADR 0018), so the further-along rule does not protect the old run.
+var _new_run := false
 
 
 func _ready() -> void:
 	EventBus.chapter_changed.connect(_on_chapter_changed)
-	EventBus.new_game_started.connect(cancel_pending_autosave)
+	EventBus.new_game_started.connect(_on_new_game_started)
 	set_process(false)
+	report_leftover_temps.call_deferred()
+
+
+func _on_new_game_started() -> void:
+	cancel_pending_autosave()
+	_new_run = true
 
 
 func _process(_delta: float) -> void:
@@ -101,6 +131,7 @@ func save_to_slot(
 	DirAccess.make_dir_recursive_absolute(save_dir)
 	var path := slot_path(slot)
 	var tmp := path + TEMP_SUFFIX
+	_set_aside_leftover_temp(slot)
 	var data := serialize(state)
 	data["meta"] = make_meta(state, reason, extra_meta)
 	var err := _write_checked(tmp, JSON.stringify(data, "\t"))
@@ -110,7 +141,13 @@ func save_to_slot(
 		return err
 	err = DirAccess.rename_absolute(tmp, path)
 	if err != OK:
-		DirAccess.remove_absolute(tmp)
+		# The temp file is a complete, checked save: keep it for recovery (leftover_temp_info).
+		push_warning(
+			(
+				"SaveSystem: renaming the new save over slot %d failed (%s); the old save is kept and the new one is at %s"
+				% [slot, error_string(err), tmp]
+			)
+		)
 		return err
 	EventBus.game_saved.emit(slot)
 	return OK
@@ -136,6 +173,69 @@ func _write_checked(path: String, text: String) -> Error:
 
 static func _store_text(f: FileAccess, text: String) -> bool:
 	return f.store_string(text)
+
+
+# --- Leftover temp files (M1-ARC-10) -------------------------------------------------------------
+
+
+## What a leftover `slot_NN.json.tmp` holds, or {} when there is none: {status (STATUS_*),
+## chapter, play_time_sec, saved_at, recoverable}. `recoverable` is true when it is a readable
+## save that is newer than the slot (by meta saved_at), or the slot is missing or unreadable.
+func leftover_temp_info(slot: int) -> Dictionary:
+	var tmp := slot_path(slot) + TEMP_SUFFIX
+	if not FileAccess.file_exists(tmp):
+		return {}
+	var info := _file_info(tmp)
+	var main := slot_info(slot)
+	var newer: bool = main["status"] != STATUS_OK or int(info["saved_at"]) > int(main["saved_at"])
+	info["recoverable"] = info["status"] == STATUS_OK and newer
+	return info
+
+
+## Restores a recoverable leftover temp file over its slot. ERR_FILE_NOT_FOUND when there is
+## none, ERR_FILE_CORRUPT when it is not recoverable (see leftover_temp_info).
+func recover_temp(slot: int) -> Error:
+	var info := leftover_temp_info(slot)
+	if info.is_empty():
+		return ERR_FILE_NOT_FOUND
+	if not bool(info["recoverable"]):
+		return ERR_FILE_CORRUPT
+	var err := DirAccess.rename_absolute(slot_path(slot) + TEMP_SUFFIX, slot_path(slot))
+	if err == OK:
+		EventBus.game_saved.emit(slot)
+	return err
+
+
+## Logs every recoverable leftover temp file (runs once at startup). Returns their slots.
+func report_leftover_temps() -> Array[int]:
+	var found: Array[int] = []
+	if not DirAccess.dir_exists_absolute(save_dir):
+		return found
+	for slot in range(0, MAX_SLOT + 1):
+		var info := leftover_temp_info(slot)
+		if not info.is_empty() and bool(info["recoverable"]):
+			found.append(slot)
+			push_warning(
+				(
+					"SaveSystem: %s is a complete save newer than slot %d (chapter %d); recover_temp(%d) restores it"
+					% [slot_path(slot) + TEMP_SUFFIX, slot, int(info["chapter"]), slot]
+				)
+			)
+	return found
+
+
+## Before a write reuses the temp name: a recoverable leftover is moved to `.recovered` (and
+## logged) instead of being overwritten. An unreadable one is a torn write with nothing to keep.
+func _set_aside_leftover_temp(slot: int) -> void:
+	var info := leftover_temp_info(slot)
+	if info.is_empty() or not bool(info["recoverable"]):
+		return
+	var tmp := slot_path(slot) + TEMP_SUFFIX
+	var aside := slot_path(slot) + RECOVERED_SUFFIX
+	if DirAccess.rename_absolute(tmp, aside) == OK:
+		push_warning("SaveSystem: a newer unsaved write for slot %d was moved to %s before saving" % [slot, aside])
+	else:
+		push_warning("SaveSystem: could not move %s aside; it will be replaced" % tmp)
 
 
 func load_from_slot(slot: int) -> GameStateData:
@@ -305,7 +405,15 @@ func autosave(reason: StringName = REASON_CHAPTER) -> Error:
 	return err
 
 
-func _on_chapter_changed(_chapter: int, _previous: int) -> void:
+func _on_chapter_changed(chapter: int, previous: int) -> void:
+	if chapter < previous and not autosave_on_chapter_regress:
+		push_warning(
+			(
+				"SaveSystem: chapter %d -> %d goes backwards (debug); no autosave (autosave_on_chapter_regress)"
+				% [previous, chapter]
+			)
+		)
+		return
 	request_autosave(REASON_CHAPTER)
 
 
@@ -339,7 +447,29 @@ func poll_pending_autosave() -> Error:
 		return ERR_BUSY
 	var reason := _pending_reason
 	cancel_pending_autosave()
-	return autosave(reason)
+	if not _new_run and autosave_is_further_along(Game.state):
+		push_warning("SaveSystem: slot 0 holds a further-along journey; the %s autosave is skipped" % reason)
+		EventBus.autosave_finished.emit(reason, ERR_ALREADY_EXISTS)
+		return ERR_ALREADY_EXISTS
+	var err := autosave(reason)
+	if err == OK:
+		_new_run = false
+	return err
+
+
+## True when slot 0 holds a journey further along than `state` (ADR 0018 amendment): a later
+## chapter, the same chapter with more play time, or a save from a newer build. An empty or
+## damaged slot 0 is never further along.
+func autosave_is_further_along(state: GameStateData) -> bool:
+	var info := slot_info(AUTOSAVE_SLOT)
+	if info["status"] == STATUS_NEWER:
+		return true
+	if info["status"] != STATUS_OK:
+		return false
+	var chapter := int(info["chapter"])
+	if chapter != state.chapter:
+		return chapter > state.chapter
+	return float(info["play_time_sec"]) > state.play_time_sec
 
 
 ## True when an autosave may snapshot the game: nothing holds it, SceneRouter is not changing
@@ -411,8 +541,22 @@ func slot_info(slot: int) -> Dictionary:
 	var path := slot_path(slot)
 	if not FileAccess.file_exists(path):
 		return info
-	info["status"] = STATUS_CORRUPT
-	info["saved_at"] = int(FileAccess.get_modified_time(path))
+	info.merge(_file_info(path), true)
+	return info
+
+
+## slot_info's reading of one file (a slot or a temp file) that exists.
+func _file_info(path: String) -> Dictionary:
+	var info := {
+		"status": STATUS_CORRUPT,
+		"version": -1,
+		"chapter": 0,
+		"play_time_sec": 0.0,
+		"location_id": "",
+		"location_key": "",
+		"saved_at": int(FileAccess.get_modified_time(path)),
+		"reason": "",
+	}
 	var json := JSON.new()
 	if json.parse(FileAccess.get_file_as_string(path)) != OK:
 		return info
@@ -465,6 +609,7 @@ func load_into_game(slot: int) -> Error:
 	if st == null:
 		return ERR_FILE_CORRUPT
 	cancel_pending_autosave()
+	_new_run = false
 	Game.state = st
 	Game.start_play_clock()
 	EventBus.game_loaded.emit(slot)

@@ -24,9 +24,21 @@ extends RefCounted
 ##   party_vitals     {String: {hp, mp: whole numbers >= 0, statuses: [String]}}
 ##   respawn          {location_id: String, spawn: String}
 ## JSON loads every number as a float, so "whole number" means an int, or a finite float with no
-## fractional part.
+## fractional part, and at most MAX_WHOLE in size: above 2^53 a float no longer holds every whole
+## number, and int() of a float past the int64 range wraps to a negative number (QA review-sweep-E
+## S1: `currency: 1e300` loaded as -9223372036854775808). Game caps (currency_cap, stack_cap) are
+## applied by the domain objects; this bound only keeps int() honest.
+## Equipment is also checked as a whole (review-sweep-E S2), because EquipmentBag trusts it:
+## every owned key is a canonical uid ("5", never "05" or "+5", which str(uid) lookups never
+## reach), next_uid is present and greater than every owned uid (add_piece would otherwise
+## overwrite a piece), and every loadout uid is NO_PIECE (0) or an owned piece.
 
 const OK_SHAPE := ""
+## The largest whole number a save may hold: 2^53, the last float that every smaller whole number
+## also fits in exactly.
+const MAX_WHOLE := 9007199254740992
+## EquipmentBag.NO_PIECE: an empty loadout slot.
+const NO_PIECE := 0
 
 
 static func is_ok(st: Variant) -> bool:
@@ -58,14 +70,15 @@ static func problem(st: Variant) -> String:
 	return OK_SHAPE
 
 
-## A whole number: an int, or a finite float without a fractional part (JSON numbers).
+## A whole number: an int, or a finite float without a fractional part (JSON numbers), no larger
+## than MAX_WHOLE either way, so int() of it is exact.
 static func is_whole(v: Variant) -> bool:
 	if typeof(v) == TYPE_INT:
-		return true
+		return absi(int(v)) <= MAX_WHOLE
 	if typeof(v) != TYPE_FLOAT:
 		return false
 	var f := float(v)
-	return is_finite(f) and f == floorf(f)
+	return is_finite(f) and f == floorf(f) and absf(f) <= float(MAX_WHOLE)
 
 
 # --- Checkers: each takes (value, path) and returns "" or the problem ----------------------------
@@ -83,13 +96,13 @@ static func _string(v: Variant, path: String) -> String:
 
 static func _count(v: Variant, path: String) -> String:
 	if not is_whole(v) or float(v) < 0.0:
-		return "%s: expected a whole number >= 0" % path
+		return "%s: expected a whole number in 0..%d" % [path, MAX_WHOLE]
 	return OK_SHAPE
 
 
 static func _uid(v: Variant, path: String) -> String:
 	if not is_whole(v) or float(v) < 1.0:
-		return "%s: expected a whole number >= 1" % path
+		return "%s: expected a whole number in 1..%d" % [path, MAX_WHOLE]
 	return OK_SHAPE
 
 
@@ -183,8 +196,9 @@ static func _owned(v: Variant, path: String) -> String:
 	if p != OK_SHAPE:
 		return p
 	for k: Variant in v as Dictionary:
-		if not String(k).is_valid_int() or int(String(k)) < 1:
-			return "%s: key '%s' is not a piece uid" % [path, k]
+		var key := String(k)
+		if not key.is_valid_int() or _uid(int(key), path) != OK_SHAPE or str(int(key)) != key:
+			return "%s: key '%s' is not a piece uid (a whole number >= 1, written plainly)" % [path, k]
 	return OK_SHAPE
 
 
@@ -197,7 +211,24 @@ static func _loadout(v: Variant, path: String) -> String:
 
 
 static func _equipment(v: Variant, path: String) -> String:
-	return _record(v, path, {"next_uid": _uid, "owned": _owned, "loadout": _loadout})
+	var p := _record(v, path, {"next_uid": _uid, "owned": _owned, "loadout": _loadout})
+	if p != OK_SHAPE:
+		return p
+	var d := v as Dictionary
+	var owned := d.get("owned", {}) as Dictionary
+	var top := 0
+	for k: Variant in owned:
+		top = maxi(top, int(String(k)))
+	if top > 0 and (not d.has("next_uid") or int(d["next_uid"]) <= top):
+		return "%s.next_uid: expected a whole number > %d (the highest owned uid)" % [path, top]
+	var loadout := d.get("loadout", {}) as Dictionary
+	for cid: Variant in loadout:
+		var slots := loadout[cid] as Dictionary
+		for slot: Variant in slots:
+			var uid := int(slots[slot])
+			if uid != NO_PIECE and not owned.has(str(uid)):
+				return "%s.loadout.%s.%s: piece %d is not owned" % [path, cid, slot, uid]
+	return OK_SHAPE
 
 
 static func _vital(v: Variant, path: String) -> String:

@@ -651,6 +651,33 @@ class NearMissTests(DlgcTestBase):
         # Not a speaker, or not an identifier in the brackets: narration.
         self.ops("Rain [sic] fell. #line:t_001\nAsha [the girl] smiled. #line:t_002\nAsha smiled. #line:t_003")
 
+    def test_missing_colon_after_a_misspelt_speaker(self) -> None:
+        """review-sweep-E: a typo plus a missing colon used to ship `Kerid [sad] Hi.` as narration."""
+        self.assert_error("Kerid [sad] Hi. #line:t_001",
+                          "'Kerid' is not a speaker and a speaker line needs a ':' after the name: "
+                          "did you mean 'Kerrid [sad]: Hi.'?", 3)
+        self.assert_error('Ahsa as "The girl" Hello. #line:t_001', "did you mean 'Asha as \"The girl\": Hello.'?", 3)
+        self.assert_error("Kerid [sad] Hi. #line:t_001", "#narration", 3)
+        # A close name needs a known emotion (or a quoted alias) as evidence: these stay prose.
+        self.ops("Kerid [sic] was the word. #line:t_001\nRain [sad] fell. #line:t_002\nKerid smiled. #line:t_003")
+
+    def test_a_speaker_id_in_parentheses_is_not_an_emotion(self) -> None:
+        """review-sweep-E nit: `Toma (rhen):` used to suggest `Toma [rhen]:`."""
+        self.assert_error("Toma (rhen): Lie still. #line:t_001",
+                          "'rhen' is a speaker, not an emotion, and only Narrator takes a (speaker id) identity: "
+                          "did you mean 'Narrator(rhen): Lie still.' (a voice-over) or 'Toma [emotion]:'?", 3)
+        self.assertNotIn("[rhen]", self.scene("Toma (rhen): Lie still. #line:t_001")[0])
+
+    def test_narrator_identity_with_a_space_and_an_emotion(self) -> None:
+        """review-sweep-E nit: dialogue_format.md promises the Narrator(asha) hint with an emotion too."""
+        self.assert_error("Narrator (asha) [grief]: The bell. #line:t_001",
+                          "a narrator identity goes in parentheses right after Narrator, with no space: "
+                          "did you mean 'Narrator(asha) [grief]: The bell.'?", 3)
+        self.assert_error("Narrator (asha) [grief] The bell. #line:t_001", "did you mean 'Narrator(asha) [grief]: "
+                                                                           "The bell.'?", 3)
+        self.assert_error("Asha (sad) [grief]: Hi. #line:t_001", "did you mean 'Asha [grief]: Hi.'?", 3)
+        self.ops("Narrator(asha) [grief]: The bell. #line:t_001")
+
     def test_emotion_after_the_colon(self) -> None:
         self.assert_error("Asha: [sad] Hi. #line:t_001",
                           "the emotion goes before the colon: did you mean 'Asha [sad]: Hi.'?", 3)

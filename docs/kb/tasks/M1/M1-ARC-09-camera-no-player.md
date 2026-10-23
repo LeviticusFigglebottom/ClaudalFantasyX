@@ -2,9 +2,10 @@
 id: M1-ARC-09
 title: Camera director works without a player; missing aim_node is loud
 role: architect
-status: todo
-owner_session: ""
+status: review
+owner_session: "worktree-agent-a35fbca43cd81575b"
 depends_on: [M1-ARC-07]
+reviewer: cinematics
 milestone: M1
 request-from: "cinematics"
 ---
@@ -13,11 +14,13 @@ Leftover ARC-05 review items noted by M1-ARC-07, needed before the first cutscen
 
 ## Acceptance criteria
 - [x] FieldCameraDirector.update() applies shot poses and emits blend_finished when no player node is present (a cutscene staged without the player)
-- [ ] A shot whose aim_node is missing logs an error (or fails validation) instead of silently framing the player
-- [ ] Unit tests for both (no-player: test_no_player_still_applies_shots_and_lands, M1-ARC-07)
+- [x] A shot whose aim_node is missing logs an error (or fails validation) instead of silently framing the player
+- [x] Unit tests for both (no-player: test_no_player_still_applies_shots_and_lands, M1-ARC-07)
 
 ## Notes
 See M1-ARC-07's handoff docs/kb/handoffs/2026-10-23-architect-7.md.
 - 2026-10-23 architect: the no-player AC was done in M1-ARC-07 (review-sweep-D S2a). What remains is the loud aim_node miss, plus its test.
+
+- 2026-10-23 architect (worktree-agent-a35fbca43cd81575b): a missing `aim_node` is now `push_error` (naming the shot, the path and the rail root) rather than a warning, once per shot, and is recorded in `FieldCameraDirector.missing_aim_nodes()`. The fallback is unchanged: the player, or `look_at` with no player. Test: `test_missing_aim_node_is_loud_once_per_shot` (a Logger counts exactly one error over many evaluations, and a found aim_node is not reported). field_camera.md is updated.
 
 ## Review log

@@ -15,6 +15,8 @@ extends Node3D
 ## cutscene sequencer drives from `@camera` cues (contract in docs/kb/tech/field_camera.md).
 ## M1-ARC-08: while a scripted shot is held, the director also holds the chapter autosave
 ## (SaveSystem.hold_autosave), so a chapter change made mid-cutscene is saved after release().
+## The hold follows the shot across a reparent: leaving the tree drops it, re-entering with the
+## shot still held takes it again (M1-ARC-07 review-sweep-E S2).
 ##
 ## Time passes only through update(delta) (called from _process when auto_update is on), so tests
 ## and capture scenes drive it deterministically.
@@ -30,7 +32,8 @@ signal shot_changed(shot: CameraShot, hard_cut: bool, blend_sec: float)
 ## at once and emits (for a blend it cut short, or the cut it made) before it returns. A transition
 ## superseded before it lands does not fire; the one that replaced it does. Leaving the tree with a
 ## move still owed emits it too (see _exit_tree), so an awaiting sequencer never hangs on a zone
-## unload; it should check is_inside_tree() when it resumes.
+## unload. A coroutine resuming from that emit still sees is_inside_tree() == true (Godot runs it
+## inside _exit_tree), so it must check is_leaving() when it resumes and stop driving the camera.
 signal blend_finished(shot: CameraShot)
 ## A scripted shot took the camera (play_shot). blend_sec is 0 for a cut.
 signal scripted_shot_started(shot: CameraShot, blend_sec: float)
@@ -83,6 +86,8 @@ var _return_volume: CameraVolume
 var _aim_warned: Dictionary = {}
 ## A cut or a no-move scripted transition landed; the next update() emits blend_finished.
 var _settle_pending := false
+## True from _exit_tree until the director enters a tree again (M1-ARC-07 review-sweep-E S1).
+var _leaving := false
 
 
 func _ready() -> void:
@@ -168,7 +173,9 @@ func play_shot(shot: CameraShot, blend_sec: float = CameraShot.USE_DEFAULT, ease
 	if _scripted_shot == null:
 		_return_shot = active_shot
 		_return_volume = active_volume
-		_hold_autosave(true)
+		# Out of the tree, _enter_tree takes the hold when the director is added back.
+		if is_inside_tree():
+			_hold_autosave(true)
 	_scripted_shot = shot
 	var moves := shot != active_shot
 	if moves:
@@ -225,6 +232,13 @@ func is_settled() -> bool:
 	return not _blending and not _settle_pending
 
 
+## True while the director is leaving the tree, or out of it: a sequencer resuming from
+## `await blend_finished` checks this and stops, because the emit that woke it may be the one
+## _exit_tree pays, where is_inside_tree() still reads true. Re-entering a tree clears it.
+func is_leaving() -> bool:
+	return _leaving or not is_inside_tree()
+
+
 ## True while play_shot() holds the camera.
 func is_scripted() -> bool:
 	return _scripted_shot != null
@@ -236,7 +250,8 @@ func scripted_shot() -> CameraShot:
 
 ## M1-ARC-08: a held scripted shot is a cutscene in progress, so the autosave waits for it. Without
 ## the SaveSystem autoload (a bare script test) this does nothing. A freed director never blocks:
-## SaveSystem keeps holders by WeakRef. Leaving the tree releases the hold (the zone is unloading).
+## SaveSystem keeps holders by WeakRef. Leaving the tree releases the hold (the zone is unloading);
+## entering one again while a scripted shot is still held takes it back (_enter_tree).
 func _hold_autosave(on: bool) -> void:
 	var tree := Engine.get_main_loop() as SceneTree
 	var saves: Node = tree.root.get_node_or_null(^"SaveSystem") if tree != null else null
@@ -244,9 +259,20 @@ func _hold_autosave(on: bool) -> void:
 		saves.call(&"hold_autosave" if on else &"release_autosave", self)
 
 
+## A director re-parented mid-cutscene (remove_child, then add_child) still holds its scripted
+## shot, so it takes the autosave hold back: the hold follows the shot, not the tree.
+func _enter_tree() -> void:
+	_leaving = false
+	if _scripted_shot != null:
+		_hold_autosave(true)
+
+
 ## Leaving the tree (zone unload, the director freed mid-cutscene) ends any move in progress and
 ## pays an owed blend_finished, so a coroutine awaiting it resumes instead of hanging forever.
+## _leaving is set before the emit: the resumed coroutine runs inside it, where is_inside_tree()
+## is still true, and is_leaving() is how it knows to stop.
 func _exit_tree() -> void:
+	_leaving = true
 	_hold_autosave(false)
 	if is_settled() or active_shot == null:
 		return
@@ -267,6 +293,8 @@ func update(delta: float) -> void:
 		var best := _pick_volume()
 		if best != null and best != active_volume:
 			_enter(best, false)
+	# Safe to return before the landed snapshot below: every path that sets _settle_pending or
+	# starts a blend also sets active_shot, so nothing is owed here. Keep it that way.
 	if active_shot == null:
 		return
 	var to_pose := evaluate(active_shot, delta)
@@ -366,7 +394,9 @@ func evaluate(shot: CameraShot, delta: float) -> CameraPose:
 
 
 ## The node `shot` frames: its aim_node (relative to the rail root, or absolute) when set and
-## found, else the player. A missing aim_node warns once per shot and falls back to the player.
+## found, else the player. A missing aim_node is an authoring bug (the shot frames the wrong thing),
+## so it is loud (M1-ARC-09): push_error once per shot, recorded in missing_aim_nodes(), and the
+## shot falls back to the player (or, with no player, to its authored look_at).
 func subject_node(shot: CameraShot) -> Node3D:
 	if shot.aim_node.is_empty():
 		return target
@@ -375,11 +405,22 @@ func subject_node(shot: CameraShot) -> Node3D:
 	if n == null:
 		if not _aim_warned.has(shot):
 			_aim_warned[shot] = true
-			push_warning(
-				"FieldCameraDirector: shot %s aim_node %s not found; using the player" % [shot.id, shot.aim_node]
+			push_error(
+				(
+					"FieldCameraDirector: shot %s aim_node %s not found under %s; framing the player instead"
+					% [shot.id, shot.aim_node, base.name]
+				)
 			)
 		return target
 	return n
+
+
+## Ids of the shots whose aim_node was missing when evaluated (debug overlay, tests, M1-ARC-09).
+func missing_aim_nodes() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	for s: CameraShot in _aim_warned:
+		ids.append(s.id)
+	return ids
 
 
 ## The world point `shot` aims at: its aim node plus aim_offset, or the player plus target_offset.
