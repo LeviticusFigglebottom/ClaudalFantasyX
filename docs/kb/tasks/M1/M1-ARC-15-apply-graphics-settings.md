@@ -2,7 +2,7 @@
 id: M1-ARC-15
 title: The game never applies GraphicsSettings (presets have no effect in play)
 role: architect
-status: doing
+status: review
 owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M1-RND-12]
 milestone: M1

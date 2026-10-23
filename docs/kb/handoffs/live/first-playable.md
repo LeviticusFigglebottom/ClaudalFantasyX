@@ -39,13 +39,19 @@ Nothing. The Lead's queue of 2026-10-23 (M2-FP-05..08) is done and pushed:
 
 ### Queue of 2026-10-23 (second batch: the Lead's sweep K)
 - **M2-FP-09 thread hardening (review):** renumbered from a duplicate M2-FP-05. FlowRouting makes hand-offs safe while the router is busy. The thread test drives the real trigger and adds the defeat, save and load legs, plus a strip-walk test. The arrival flag comes from JSON. The zone sun follows the close-up shadow rule. A sequencer that leaves the tree returns from play(). Placeholder cue keys warn once.
-- **M1-ARC-15 apply GraphicsSettings:** with a worktree agent (branch `worktree-agent-ad4be3355309b7593`), not merged yet.
+- **M1-ARC-15 apply GraphicsSettings (review):**
+  - `GraphicsRuntime` (`game/core/graphics_runtime.gd`): boot applies the saved preset, or the default.
+  - `SceneRouter.attach_graphics_hook` re-applies the per-scene tiers on each zone's `ready`.
+  - Its select and override API is ready for the settings menu, which doesn't exist yet: M1-UI-10 was filed for UI.
+  - Finding on RND-12 S2: Haluna's sun is Light Only, so the sky never sees it. With Light and Sky, the incremental cubemap follows within about 64 frames. This needs an Art/Rendering decision; details in graphics_settings.md.
+  - Non-default presets aren't prewarmed (a Rendering follow-up).
+  - Handoff: `docs/kb/handoffs/2026-10-23-architect-16.md`.
 
 ### Exact next step
 Wait for the Lead's review and the human's playtest notes, and turn the notes into M2-FP-09+ tasks. The open follow-up on this branch is the shutdown-only engine errors described below.
 
 ### Known issues (candidate follow-ups)
-- **New since FP-05:** quitting the game after Haluna has been loaded logs 8 engine errors, `Condition "p_elem->_root != this"` (self_list.h). They come from resources built during the worker-thread prebuild. They appear only at process exit, and scene swaps stay clean. Before the prebuild there were none. A bisect that ran each prebuild step on a worker thread outside the router (`.scratch/bisect.gd`, local only) did not reproduce them: dress, all and asha timed out under CPU load, and collision and water were clean. So far they reproduce only through the real SceneRouter flow. The likely culprit is a material or mesh created off the main thread; next, try creating those resources on the main thread in `_ready` while keeping the heavy mesh build threaded.
+- **Correction (ARC-15 agent):** the exit-time errors also reproduce on the base commit when `haluna.tscn` is simply loaded and freed on the main thread, so they predate the threaded prebuild. They come from something in the zone or the mood scene. Quitting the game after Haluna has been loaded logs 8 engine errors, `Condition "p_elem->_root != this"` (self_list.h). They come from resources built during the worker-thread prebuild. They appear only at process exit, and scene swaps stay clean. Before the prebuild there were none. A bisect that ran each prebuild step on a worker thread outside the router (`.scratch/bisect.gd`, local only) did not reproduce them: dress, all and asha timed out under CPU load, and collision and water were clean. So far they reproduce only through the real SceneRouter flow. The likely culprit is a material or mesh created off the main thread; next, try creating those resources on the main thread in `_ready` while keeping the heavy mesh build threaded.
 - `battle_controller.gd` sits at exactly the 1000-line lint cap after FP-06. Split it before growing it.
 - The balance sim doesn't model Toma's Lattice skills.
 - Placeholders: stand-in music (`game/data/cutscene/sequencer.json` `music_stand_ins`); `@face` is recorded only; `@anim` uses `CutsceneStage.clip_marks`; motes are simple spheres; everyone except Asha is a capsule, and Asha holds her rest pose.
@@ -63,6 +69,7 @@ None that matters. `.scratch/` (excluded through `.git/info/exclude`) holds the 
 5. Read the M2-FP task files and `docs/kb/handoffs/2026-10-23-first-playable-1.md`.
 
 ## History
+- 2026-10-23: merged M1-ARC-15 (GraphicsRuntime). Area tests green: graphics, fp_, haluna, scene_router.
 - 2026-10-23: M2-FP-09 done. Merged integration 7f4c76b+ (sweep K). M1-ARC-15 with an agent.
 - 2026-10-23: merged FP-05 (prebuild, defeat retry) and FP-06 (Drownbell), wired the boss into the thread. ci_local green: 1043 tests, battle shots unchanged.
 - 2026-10-23: M2-FP-08 done (face shape keys, lip-flap, clip defaults); 16 cutscene tests.
