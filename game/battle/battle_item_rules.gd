@@ -80,7 +80,10 @@ static func preview_inputs(action: ItemBattleAction, recipient: BattleCombatant,
 					if recipient.has_status(&"sleep") and Formulas.affinity_hurts_more(aff, &"immune"):
 						mine[CtbTimeline.WAKES] = 0
 				ItemBattleAction.EFFECT_CURE:
-					if recipient.is_petrified() and (eff.get("statuses", []) as Array).has("petrify"):
+					if (
+						recipient.is_petrified()
+						and (eff.get("statuses", []) as Array).has(String(BattleCombatant.STATUS_PETRIFY))
+					):
 						revived.append(recipient)
 						overrides[recipient] = rejoin.call(recipient)
 					elif recipient.has_status(&"sleep") and (eff.get("statuses", []) as Array).has("sleep"):

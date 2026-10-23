@@ -863,9 +863,12 @@ class BodyParser:
             if not (paren and word.lower() in self.ctx.speakers):
                 word = self.known_emotion(word) or word
             emo_tag = f" [{emo}]" if emo else ""
-            if colon or emo or word in self.ctx.emotions:
-                if paren and word.lower() in self.ctx.speakers and name.lower() == NARRATOR:
-                    fix = f"{name}({word}){emo_tag}: {_clip(rest)}"
+            # review-sweep-H nit: `Narrator (asha)` and `Narrator (asha) The bell.` (a space before the identity,
+            # and no colon) are a voice-over head too: a (speaker id) after Narrator is the evidence.
+            spaced_identity = bool(paren) and word.lower() in self.ctx.speakers and name.lower() == NARRATOR
+            if colon or emo or word in self.ctx.emotions or spaced_identity:
+                if spaced_identity:
+                    fix = f"{name}({word}){emo_tag}: {_clip(rest) or '...'}"
                     what = "a narrator identity goes in parentheses right after Narrator, with no space"
                     if not body[len(m.group(1)):][:1].isspace():  # `Narrator(asha) [grief] The bell.`
                         what = "a speaker line needs a ':' after the name"

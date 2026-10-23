@@ -1298,14 +1298,55 @@ def scene_spawns(text: str) -> set[str]:
 PLAYER_GROUP_RE = re.compile(r'^\[node [^\n]*groups=\[[^\]\n]*"player"', re.M)
 
 
-def scene_has_player(text: str) -> bool:
-    """True when WorldReturn.place_player can find a player in a .tscn: a node named Player
-    directly under the root, or a node in group "player" (M1-ARC-11, review-sweep-G on ENV-04)."""
+PLACE_AT_RE = re.compile(r"^(?:static\s+)?func\s+place_at\s*\(", re.M)
+PLAYER_SCENE_MAX_DEPTH = 8
+
+
+def scene_has_player(text: str, scenes: dict[str, str] | None = None, scripts: dict[str, str] | None = None,
+                     _depth: int = 0) -> bool:
+    """True when WorldReturn.place_player can find a player in a .tscn (M1-ARC-11, review-sweep-G on
+    ENV-04): a node named Player directly under the root, a node in group "player", or a root whose
+    script defines place_at (the zone places its own player).
+    M1-ARC-12 (review-sweep-H nit): instanced scenes count too. `scenes` maps res:// paths to .tscn
+    text and `scripts` res:// paths to .gd text; with them, a node in group "player" inside any
+    instanced sub-scene is found (place_player searches the group under the root), and an inherited
+    scene (an instanced root) is judged by its base scene as well. A path missing from both maps is
+    treated as having no player, so the rule stays conservative."""
+    if _depth > PLAYER_SCENE_MAX_DEPTH:
+        return False
     if PLAYER_GROUP_RE.search(text):
         return True
+    ext: dict[str, str] = {}
+    for m in TSCN_EXT_RE.finditer(text):
+        a = _tscn_attrs(m.group(0))
+        ext[a.get("id", "")] = a.get("path", "")
     for m in TSCN_HEADER_RE.finditer(text):
         a = _tscn_attrs(m.group(0))
+        is_root = "parent" not in a
         if a.get("name") == "Player" and a.get("parent") == ".":
+            return True
+        if is_root and scripts and PLACE_AT_RE.search(scripts.get(ext.get(a.get("script", ""), ""), "")):
+            return True
+        sub = (scenes or {}).get(ext.get(a.get("instance", ""), ""))
+        if sub is None:
+            continue
+        if is_root and scene_has_player(sub, scenes, scripts, _depth + 1):
+            return True
+        if not is_root and _scene_in_player_group(sub, scenes, _depth + 1):
+            return True
+    return False
+
+
+def _scene_in_player_group(text: str, scenes: dict[str, str] | None, depth: int) -> bool:
+    """True when a node of this scene, or of a scene it instances, is in group "player"."""
+    if depth > PLAYER_SCENE_MAX_DEPTH:
+        return False
+    if PLAYER_GROUP_RE.search(text):
+        return True
+    ext = {a.get("id", ""): a.get("path", "") for a in (_tscn_attrs(m.group(0)) for m in TSCN_EXT_RE.finditer(text))}
+    for m in TSCN_HEADER_RE.finditer(text):
+        sub = (scenes or {}).get(ext.get(_tscn_attrs(m.group(0)).get("instance", ""), ""))
+        if sub is not None and _scene_in_player_group(sub, scenes, depth + 1):
             return True
     return False
 
@@ -1352,10 +1393,11 @@ def _rest_errors(rest: object, statuses: set[str]) -> list[str]:
 
 
 def locations_errors(doc: object, scenes: dict[str, str], loc: set[str], statuses: set[str],
-                     rest: object, shrines: dict[str, list[dict[str, str]]]) -> list[str]:
+                     rest: object, shrines: dict[str, list[dict[str, str]]],
+                     scripts: dict[str, str] | None = None) -> list[str]:
     """Validates locations.json and party_rest.json. `scenes` maps res:// paths to .tscn text (a
     missing path means the scene does not exist); `shrines` maps a scene file to its SaveShrine
-    instances (shrine_instances)."""
+    instances (shrine_instances); `scripts` maps res:// paths to .gd text (scene_has_player)."""
     w = LOCATIONS_FILE
     if not isinstance(doc, dict):
         return [f"{w}: must be an object"]
@@ -1378,9 +1420,11 @@ def locations_errors(doc: object, scenes: dict[str, str], loc: set[str], statuse
         playable = row.get("playable", True)
         if not isinstance(playable, bool):
             errs.append(f"{rw}: 'playable' must be true or false")
-        elif playable and isinstance(scene, str) and scene in scenes and not scene_has_player(scenes[scene]):
-            errs.append(f"{rw}: {scene} has no player (a Player node under the root, or a node in group "
-                        f"\"player\"); mark a stand-in scene \"playable\": false")
+        elif (playable and isinstance(scene, str) and scene in scenes
+              and not scene_has_player(scenes[scene], scenes, scripts)):
+            errs.append(f"{rw}: {scene} has no player (a Player node under the root, a node in group "
+                        f"\"player\" here or in an instanced scene, or a root script with place_at); mark a "
+                        f"stand-in scene \"playable\": false")
         if row.get("name_key") not in loc:
             errs.append(f"{rw}: name_key '{row.get('name_key')}' has no localization entry")
     if not locs:
@@ -1438,7 +1482,9 @@ def check_locations(root: Path, files: dict[str, object], rep: Report) -> list[s
     st = files.get("game/data/battle/statuses.json")
     ids = {r.get("id") for r in st.get("statuses", []) if isinstance(r, dict)} if isinstance(st, dict) else set()
     loc = load_loc_keys(root, Report())
-    for e in locations_errors(doc, scenes, loc, ids, files.get(PARTY_REST_FILE), shrines):
+    scripts = {"res://" + p.relative_to(root).as_posix(): p.read_text(encoding="utf-8")
+               for p in sorted((root / "game").rglob("*.gd"))}
+    for e in locations_errors(doc, scenes, loc, ids, files.get(PARTY_REST_FILE), shrines, scripts):
         rep.err(e)
     return []
 

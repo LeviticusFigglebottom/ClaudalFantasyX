@@ -822,6 +822,20 @@ class NearMissTests(DlgcTestBase):
         self.assert_error("Asha (sad) [grief]: Hi. #line:t_001", "did you mean 'Asha [grief]: Hi.'?", 3)
         self.ops("Narrator(asha) [grief]: The bell. #line:t_001")
 
+    def test_narrator_identity_with_a_space_and_no_colon(self) -> None:
+        """review-sweep-H nit (M1-ARC-12): the bare and missing-colon heads with a space shipped as narration."""
+        self.assert_error("Narrator (asha) #line:t_001",
+                          "a narrator identity goes in parentheses right after Narrator, with no space: "
+                          "did you mean 'Narrator(asha): ...'?", 3)
+        self.assert_error("Narrator (asha) The bell. #line:t_001",
+                          "a narrator identity goes in parentheses right after Narrator, with no space: "
+                          "did you mean 'Narrator(asha): The bell.'?", 3)
+        self.assert_error("Narrator (Asha) The bell. #line:t_001", "did you mean 'Narrator(Asha): The bell.'?", 3)
+        # Only a speaker id after Narrator is evidence; other parentheses stay prose.
+        for prose in ("Narrator (unseen) watches.", "Toma (rhen) waits."):
+            with self.subTest(prose=prose):
+                self.ops(f"{prose} #line:t_001")
+
     def test_emotion_after_the_colon(self) -> None:
         self.assert_error("Asha: [sad] Hi. #line:t_001",
                           "the emotion goes before the colon: did you mean 'Asha [sad]: Hi.'?", 3)

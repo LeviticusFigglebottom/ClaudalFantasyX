@@ -312,8 +312,8 @@ func test_a_piece_worn_twice_is_corrupt() -> void:
 
 ## M1-ARC-11 (QA review-sweep-G B1): what only the item tables make wrong (a later equipment.json
 ## renames or removes a base, or moves a gear type to another hero or slot) is repaired on load:
-## the piece comes off into the bag (or is dropped when its base is unknown), and the weapon slot
-## is refilled. The save lists as OK and loads; it is never corrupt.
+## the piece comes off into the bag, and the weapon slot is refilled. The save lists as OK and
+## loads; it is never corrupt. M1-ARC-12: a piece whose base is unknown is kept too, unworn.
 func test_a_loadout_the_tables_no_longer_fit_is_repaired_on_load() -> void:
 	var hooks := {"base": "rhen_salvage_hooks", "abilities": ["", ""]}
 	var coral := {"base": "rhen_coral_hooks", "abilities": []}
@@ -327,12 +327,12 @@ func test_a_loadout_the_tables_no_longer_fit_is_repaired_on_load() -> void:
 		"a weapon in the armor slot":
 		[{"next_uid": 2, "owned": {"1": hooks}, "loadout": {"rhen": {"armor": 1}}}, &"rhen_salvage_hooks", true],
 		"a renamed base":
-		[{"next_uid": 2, "owned": {"1": unknown}, "loadout": {"rhen": {"weapon": 1}}}, &"rhen_salvage_hooks", false],
+		[{"next_uid": 2, "owned": {"1": unknown}, "loadout": {"rhen": {"weapon": 1}}}, &"rhen_salvage_hooks", true],
 		"a renamed base with a spare that fits":
 		[
 			{"next_uid": 3, "owned": {"1": unknown, "2": coral}, "loadout": {"rhen": {"weapon": 1}}},
 			&"rhen_coral_hooks",
-			false
+			true
 		],
 	}
 	for why: String in cases:
@@ -350,7 +350,7 @@ func test_a_loadout_the_tables_no_longer_fit_is_repaired_on_load() -> void:
 				continue
 			var bag := EquipmentBag.new(ItemDB.load_default(), loaded.equipment)
 			assert_eq(bag.base_of(bag.equipped(&"rhen", &"weapon")), row[1], why + ": the weapon slot is refilled")
-			assert_eq(bag.has_piece(1), row[2], why + ": kept in the bag, or dropped when unknown")
+			assert_eq(bag.has_piece(1), row[2], why + ": kept in the bag, even when unknown")
 			assert_eq(bag.loadout_problem(), "", why + ": the loadout is one equip() could make")
 	var fine := {
 		"next_uid": 10,
@@ -360,7 +360,7 @@ func test_a_loadout_the_tables_no_longer_fit_is_repaired_on_load() -> void:
 	var back: GameStateData = saves.deserialize({"version": 4, "state": _bad("equipment", fine)})
 	assert_true(back != null, "a valid loadout loads")
 	assert_eq(back.equipment["loadout"]["rhen"], {"weapon": 1, "armor": 2}, "a fitting loadout is untouched")
-	assert_false((back.equipment["owned"] as Dictionary).has("9"), "an unworn piece of unknown gear is dropped")
+	assert_eq(back.equipment["owned"]["9"], unknown, "an unworn piece of unknown gear is kept as saved")
 	_done()
 
 

@@ -9,8 +9,9 @@ const TEAM_ENEMY := &"enemy"
 ## equipment data: {attack_elements, on_hit_statuses, status_wards, low_hp_statuses, abilities}.
 ## Must equal EquipmentEffects.META_KEY (a test checks it).
 const EQUIPMENT_META := &"equipment_effects"
-## The petrify (stone) status id (statuses.json). The one copy in code: the engine, the timeline
-## and BattleVitals all use it (M1-ARC-11, after review-sweep-G on M1-CMB-08).
+## The petrify (stone) status id (statuses.json). The one copy in code: the timeline, BattleVitals
+## and the item action use it, and the engine derives its String PETRIFY_ID from it (M1-ARC-11,
+## after review-sweep-G on M1-CMB-08; M1-ARC-12).
 const STATUS_PETRIFY := &"petrify"
 
 var id: StringName
