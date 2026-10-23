@@ -95,9 +95,10 @@ func test_low_preset_mapping() -> void:
 	assert_eq(_args(ops, "environment_set_ssil_quality"), null, "SSIL off issues no quality call")
 	assert_eq(_value(ops, "viewport", "scaling_3d_mode"), Viewport.SCALING_3D_MODE_FSR)
 	assert_true(is_equal_approx(float(_value(ops, "viewport", "scaling_3d_scale")), 0.77))
-	assert_eq(_value(ops, "viewport", "screen_space_aa"), Viewport.SCREEN_SPACE_AA_FXAA)
+	# M1-RND-07: TAA, not FXAA: measured 2.9x less foliage shimmer for ~0.12 ms on an RX 9070 XT.
+	assert_eq(_value(ops, "viewport", "screen_space_aa"), Viewport.SCREEN_SPACE_AA_DISABLED)
 	assert_eq(_value(ops, "viewport", "msaa_3d"), Viewport.MSAA_DISABLED)
-	assert_eq(_value(ops, "viewport", "use_taa"), false)
+	assert_eq(_value(ops, "viewport", "use_taa"), true)
 	assert_eq(_value(ops, "viewport", "anisotropic_filtering_level"), Viewport.ANISOTROPY_4X)
 	assert_eq(_value(ops, "viewport", "mesh_lod_threshold"), 2.0)
 
@@ -224,7 +225,8 @@ func test_apply_sets_viewport_and_gates_environment() -> void:
 	assert_eq(env.sdfgi_enabled, false)
 	assert_eq(env.ssil_enabled, false)
 	assert_eq(vp.scaling_3d_mode, Viewport.SCALING_3D_MODE_FSR)
-	assert_eq(vp.screen_space_aa, Viewport.SCREEN_SPACE_AA_FXAA)
+	assert_eq(vp.screen_space_aa, Viewport.SCREEN_SPACE_AA_DISABLED)
+	assert_eq(vp.use_taa, true, "Low uses TAA (M1-RND-07)")
 	gs.apply("ultra", vp, env)
 	assert_eq(env.sdfgi_enabled, true, "authored value restored when the setting allows it again")
 	GraphicsSettings.set_authored(env, "ssr_enabled", true)

@@ -74,7 +74,7 @@ Notes from the verification:
 | SSR | off | 32 steps, low roughness | 64 steps, medium | 128 steps, high |
 | SSAO / SSIL | very low / off | medium / off | high / medium | ultra / high |
 | Render scale | 0.77, FSR1 | 0.85, FSR1 | 0.77, FSR2 | 1.0 native |
-| AA | FXAA | TAA | FSR2 temporal | TAA |
+| AA | TAA (M1-RND-07: FXAA left alpha-tested foliage shimmering) | TAA | FSR2 temporal | TAA |
 | LOD threshold / aniso | 2 px / 4x | 1 px / 8x | 1 px / 16x | 0.5 px / 16x |
 
 Volumetric fog stays **on** even at Low, at the smallest volume. Light shafts and glimmer haze carry the art direction (SPEC §1 pillar 2 and §7.1), and a 64×32 froxel grid is cheap. Players can still turn it off.
@@ -107,7 +107,7 @@ High is the tight preset. If measurement shows it over budget, step down in this
 | GI | 0 |
 | Volumetric fog 64×32, no filter | 0.5 – 0.8 |
 | SSAO very low (half) | 0.4 – 0.6 |
-| FSR1 + FXAA | 0.4 – 0.6 |
+| FSR1 + TAA | 0.5 – 0.8 (TAA measured +0.12 ms on an RX 9070 XT at 1080p) |
 | **Total** | **≈ 8.1 – 12.5** (30 fps is safe; 60 fps likely in lighter scenes) |
 
 **Medium on the minimum tier (GTX 1060, 1080p, 0.85):** about 14 – 20 ms (VoxelGI 1–2 ms, SSR 0.8 ms, SSAO 0.7 ms, fog 0.8 ms, TAA 0.3 ms on top of a larger base). That's a 30–60 fps preset for the minimum tier, or 60 fps on GTX 1660 / RTX 2060 class cards.

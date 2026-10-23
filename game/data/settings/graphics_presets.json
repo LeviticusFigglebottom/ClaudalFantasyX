@@ -178,7 +178,7 @@
         "render_scale": 0.77,
         "scaling_mode": "fsr",
         "fsr_sharpness": 0.2,
-        "aa": "fxaa",
+        "aa": "taa",
         "lod_threshold": 2.0,
         "anisotropic_filtering": "4x"
       },
