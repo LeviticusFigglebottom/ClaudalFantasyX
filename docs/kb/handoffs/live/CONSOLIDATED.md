@@ -1,6 +1,6 @@
 # CONSOLIDATED HANDOFF: start here
 
-**Last updated:** 2026-10-23 ~19:00 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
+**Last updated:** 2026-10-23 ~20:30 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
 A new account, Lead or environment should be able to resume from this file and the files it links. Keep it current after every merge batch (CLAUDE.md §7a).
 
 ## 1. What this is
@@ -54,7 +54,19 @@ These are lost if the container restarts. Re-launch from the task files if so.
   - M1-CHR-09, Asha hair round 4 (crown shell, face-framing lock, lip thickness, doll-like eyes).
 - **Rule learned:** Asha's materials change only through write_materials.py.
 
-## 4b. Latest (Lead, ~19:00 UTC)
+## 4c. Latest (Lead, ~20:30 UTC)
+- **The full gate is green at fc3940c (ci30):** 1,063 tests, 60/60 shots, Blender --all byte-identical, and the known-failure list is EMPTY.
+- **Merged:**
+  - M1-CMB-03 (Read, bestiary, save **v5**, openings; ADR 0023);
+  - the integration batch (ENV-05, ENV-06, RND-13, RND-16 API, UI-09);
+  - the Blender pipeline set (CHR-05, CHR-06, RND-14, ENV-07).
+- **Sweep L1 closed 11 tasks.** Board: 86/107.
+- **Lead subagents running:**
+  - M1-CHR-10, Asha round 5: black hair, lashes and lid band, brows, teeth, mouth normals, skin lighting;
+  - M1-NIT-02, the sweep-L nits.
+- **Next:** when CHR-10 lands, the PC makes a 2x High GPU capture as the §14 final judge (file it as M1-QA-05c). The M1 review (M1-LEAD-01) follows once Asha passes or the human accepts the ADR 0019 stylisation.
+
+## 4b. Earlier (Lead, ~19:00 UTC)
 - **Merged:**
   - sweep K1 at 7f4c76b: M2-FP-01 to 04 closed; PLAYTEST.md fixed;
   - M1-CHR-09 at 20082e3: Asha crown clumps, temple lock, lips, eye whites; LOD0 at 62,290.
