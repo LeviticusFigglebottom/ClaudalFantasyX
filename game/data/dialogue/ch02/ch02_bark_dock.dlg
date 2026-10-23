@@ -1,0 +1,11 @@
+// Ch2 B03 "Haluna by day", fragment 3 of "Cantor" (docs/kb/story/beats/vertical_slice.md): the dock.
+// Two fishers at their net; the older one says it, the younger one answers with the weather.
+// Field bark, played on the field camera (no @camera cues).
+title: ch02_bark_dock
+location: ch02/haluna
+---
+Netmender [sad]: Her mother went from this dock too. Same age near enough. #line:ch02_bark_dock_001
+Fisher [neutral]: Then she'll have fair weather. Her mother did. #line:ch02_bark_dock_002
+Rhen [neutral]: Went where? #line:ch02_bark_dock_003
+Netmender [neutral]: Out. Pass me that float, would you? #line:ch02_bark_dock_004
+===

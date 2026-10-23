@@ -1,0 +1,686 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_zone.gd" id="1_zone"]
+[ext_resource type="PackedScene" path="res://game/levels/_tests/haluna_mood/haluna_mood.tscn" id="2_mood"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_collision.gd" id="3_col"]
+[ext_resource type="Script" path="res://game/world/field_controller.gd" id="4_fc"]
+[ext_resource type="Script" path="res://game/world/field_camera_director.gd" id="5_dir"]
+[ext_resource type="Script" path="res://game/world/camera_volume.gd" id="6_vol"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="7_shot"]
+[ext_resource type="Script" path="res://game/world/interactable.gd" id="8_int"]
+[ext_resource type="Script" path="res://game/cutscene/cutscene_stage.gd" id="9_stage"]
+[ext_resource type="Script" path="res://game/cutscene/cutscene_shot_node.gd" id="10_shotnode"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_actor_pose.gd" id="11_pose"]
+[ext_resource type="PackedScene" path="res://assets/characters/asha/asha.glb" id="12_asha"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_rhen"]
+albedo_color = Color(0.368627, 0.603922, 0.588235, 1)
+roughness = 0.7
+
+[sub_resource type="CapsuleMesh" id="Mesh_rhen"]
+material = SubResource("Mat_rhen")
+radius = 0.32
+height = 1.72
+
+[sub_resource type="CapsuleShape3D" id="Shape_rhen"]
+radius = 0.32
+height = 1.72
+
+[sub_resource type="StandardMaterial3D" id="Mat_facing"]
+albedo_color = Color(0.921569, 0.905882, 0.87451, 1)
+roughness = 0.6
+
+[sub_resource type="BoxMesh" id="Mesh_facing"]
+material = SubResource("Mat_facing")
+size = Vector3(0.14, 0.1, 0.22)
+
+[sub_resource type="StandardMaterial3D" id="Mat_lantern"]
+albedo_color = Color(0.690196, 0.552941, 0.341176, 1)
+roughness = 0.4
+emission_enabled = true
+emission = Color(1, 0.694118, 0.431373, 1)
+emission_energy_multiplier = 2
+
+[sub_resource type="SphereMesh" id="Mesh_lantern"]
+material = SubResource("Mat_lantern")
+radius = 0.08
+height = 0.16
+
+[sub_resource type="StandardMaterial3D" id="Mat_vendor"]
+albedo_color = Color(0.658824, 0.341176, 0.227451, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="Mat_reed"]
+albedo_color = Color(0.921569, 0.905882, 0.87451, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="Mat_netmender"]
+albedo_color = Color(0.494118, 0.415686, 0.333333, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="Mat_fisher"]
+albedo_color = Color(0.788235, 0.705882, 0.556863, 1)
+roughness = 0.8
+
+[sub_resource type="CapsuleMesh" id="Mesh_vendor"]
+material = SubResource("Mat_vendor")
+radius = 0.3
+height = 1.64
+
+[sub_resource type="CapsuleMesh" id="Mesh_reed"]
+material = SubResource("Mat_reed")
+radius = 0.27
+height = 1.7
+
+[sub_resource type="CapsuleMesh" id="Mesh_netmender"]
+material = SubResource("Mat_netmender")
+radius = 0.31
+height = 1.6
+
+[sub_resource type="CapsuleMesh" id="Mesh_fisher"]
+material = SubResource("Mat_fisher")
+radius = 0.29
+height = 1.74
+
+[sub_resource type="CapsuleShape3D" id="Shape_npc"]
+radius = 0.32
+height = 1.7
+
+[sub_resource type="BoxMesh" id="Mesh_npc_facing"]
+material = SubResource("Mat_facing")
+size = Vector3(0.12, 0.08, 0.18)
+
+[sub_resource type="StandardMaterial3D" id="Mat_broom"]
+albedo_color = Color(0.690196, 0.541176, 0.321569, 1)
+roughness = 0.8
+
+[sub_resource type="CylinderMesh" id="Mesh_broom"]
+material = SubResource("Mat_broom")
+top_radius = 0.02
+bottom_radius = 0.02
+height = 1.4
+
+[sub_resource type="SphereShape3D" id="Shape_talk"]
+radius = 1.7
+
+[sub_resource type="StandardMaterial3D" id="Mat_toma"]
+albedo_color = Color(0.168627, 0.227451, 0.419608, 1)
+roughness = 0.8
+
+[sub_resource type="CapsuleMesh" id="Mesh_toma"]
+material = SubResource("Mat_toma")
+radius = 0.42
+height = 1.9
+
+[sub_resource type="StandardMaterial3D" id="Mat_spear"]
+albedo_color = Color(0.494118, 0.415686, 0.333333, 1)
+roughness = 0.8
+
+[sub_resource type="CylinderMesh" id="Mesh_spear"]
+material = SubResource("Mat_spear")
+top_radius = 0.018
+bottom_radius = 0.022
+height = 2.3
+
+[sub_resource type="StandardMaterial3D" id="Mat_spearhead"]
+albedo_color = Color(0.690196, 0.552941, 0.341176, 1)
+roughness = 0.35
+
+[sub_resource type="CylinderMesh" id="Mesh_spearhead"]
+material = SubResource("Mat_spearhead")
+top_radius = 0.0
+bottom_radius = 0.035
+height = 0.22
+
+[sub_resource type="Resource" id="Shot_beach_shallows"]
+script = ExtResource("7_shot")
+id = &"beach_shallows"
+mode = 1
+position = Vector3(7, 2.4, 18)
+look_at = Vector3(-4, 0.9, 6)
+target_offset = Vector3(0, 1, 0)
+fov_deg = 37.8
+follow_weight = 0.75
+max_pan_deg = 45.0
+
+[sub_resource type="Resource" id="Shot_beach_path"]
+script = ExtResource("7_shot")
+id = &"beach_path"
+mode = 1
+position = Vector3(-6, 3.2, 15.5)
+look_at = Vector3(-27, 2.4, 6.5)
+target_offset = Vector3(0, 1, 0)
+fov_deg = 37.8
+follow_weight = 0.7
+max_pan_deg = 40.0
+
+[sub_resource type="Resource" id="Shot_H02"]
+script = ExtResource("7_shot")
+id = &"H02"
+mode = 1
+position = Vector3(-93.5, 3.98, -15.7)
+look_at = Vector3(-28, 3.4, 6)
+target_offset = Vector3(0, 1.2, 0)
+fov_deg = 37.8
+follow_weight = 0.35
+max_pan_deg = 18.0
+
+[sub_resource type="Resource" id="Shot_H09"]
+script = ExtResource("7_shot")
+id = &"H09"
+mode = 1
+position = Vector3(-30.5, 3.5, 5.5)
+look_at = Vector3(-50, 2.6, -2)
+target_offset = Vector3(0, 1, 0)
+fov_deg = 46.4
+follow_weight = 0.7
+max_pan_deg = 40.0
+
+[sub_resource type="Resource" id="Shot_H04"]
+script = ExtResource("7_shot")
+id = &"H04"
+mode = 1
+position = Vector3(-3.54, 2.6, 58.28)
+look_at = Vector3(43.1, 0.6, 25.6)
+target_offset = Vector3(0, 1, 0)
+fov_deg = 46.4
+follow_weight = 0.5
+max_pan_deg = 30.0
+
+[sub_resource type="Resource" id="Shot_H07"]
+script = ExtResource("7_shot")
+id = &"H07"
+mode = 1
+position = Vector3(-105, 4.3, 42.5)
+look_at = Vector3(-118, 5.4, 31.5)
+target_offset = Vector3(0, 1, 0)
+fov_deg = 53.1
+follow_weight = 0.5
+max_pan_deg = 30.0
+
+[sub_resource type="Resource" id="Shot_shrine"]
+script = ExtResource("7_shot")
+id = &"shrine"
+mode = 1
+position = Vector3(-55, 3.7, 43)
+look_at = Vector3(-67, 2.9, 46.5)
+target_offset = Vector3(0, 1, 0)
+fov_deg = 37.8
+follow_weight = 0.6
+max_pan_deg = 35.0
+
+[sub_resource type="Resource" id="Shot_hub_orbit"]
+script = ExtResource("7_shot")
+id = &"hub_orbit"
+mode = 3
+target_offset = Vector3(0, 1.2, 0)
+fov_deg = 46.4
+orbit_distance = 7.5
+orbit_height = 6.0
+
+[sub_resource type="Resource" id="Shot_cut_H05"]
+script = ExtResource("7_shot")
+id = &"H05"
+position = Vector3(-0.85, 0.44, 8)
+look_at = Vector3(0.2, 0.95, 7.79)
+fov_deg = 37.8
+hard_cut = true
+
+[sub_resource type="Resource" id="Shot_cut_H06"]
+script = ExtResource("7_shot")
+id = &"H06"
+position = Vector3(-0.4, 1.02, 4.5)
+look_at = Vector3(-0.4, 0.45, 8)
+fov_deg = 27.0
+hard_cut = true
+
+[sub_resource type="Resource" id="Shot_cut_H01"]
+script = ExtResource("7_shot")
+id = &"H01"
+position = Vector3(120, 8, -5)
+look_at = Vector3(0, 23.4, -8)
+fov_deg = 53.1
+hard_cut = true
+
+[sub_resource type="BoxShape3D" id="Box_BeachShallows"]
+size = Vector3(20.5, 8, 46)
+
+[sub_resource type="BoxShape3D" id="Box_BeachPath"]
+size = Vector3(21.5, 8, 30)
+
+[sub_resource type="BoxShape3D" id="Box_TidewallLane"]
+size = Vector3(30, 8, 6)
+
+[sub_resource type="BoxShape3D" id="Box_Market"]
+size = Vector3(31, 8, 12)
+
+[sub_resource type="BoxShape3D" id="Box_Dock"]
+size = Vector3(36, 6, 4.6)
+
+[sub_resource type="BoxShape3D" id="Box_ChapelCourt"]
+size = Vector3(25, 8, 27)
+
+[sub_resource type="BoxShape3D" id="Box_Shrine"]
+size = Vector3(16, 6, 10)
+
+[sub_resource type="BoxShape3D" id="Box_Hub"]
+size = Vector3(230, 60, 280)
+
+[sub_resource type="BoxShape3D" id="Box_strip0"]
+size = Vector3(42.823836, 5, 3.5)
+
+[sub_resource type="BoxShape3D" id="Box_strip1"]
+size = Vector3(42.256821, 5, 3.5)
+
+[sub_resource type="BoxShape3D" id="Box_strip2"]
+size = Vector3(42.01035, 5, 3.5)
+
+[sub_resource type="BoxShape3D" id="Box_strip3"]
+size = Vector3(42.092373, 5, 3.5)
+
+[sub_resource type="BoxShape3D" id="Box_strip4"]
+size = Vector3(42.500895, 5, 3.5)
+
+[sub_resource type="BoxShape3D" id="Box_strip5"]
+size = Vector3(22.508818, 5, 3.5)
+
+[sub_resource type="BoxShape3D" id="Box_causeway"]
+size = Vector3(32, 5, 6)
+
+[node name="Haluna" type="Node3D"]
+script = ExtResource("1_zone")
+
+[node name="HalunaMood" parent="." instance=ExtResource("2_mood")]
+
+[node name="Collision" type="Node3D" parent="." node_paths=PackedStringArray("terrain", "dresser")]
+script = ExtResource("3_col")
+terrain = NodePath("../HalunaMood/Terrain")
+dresser = NodePath("../HalunaMood/Dresser")
+walk_rect = Rect2(-160, -130, 200, 260)
+wade_m = 5.0
+shore_step_m = 2.0
+shore_gaps = Array[Vector3]([Vector3(7.9, 50.2, 1.6)])
+piece_rules = {
+"awning_cloth": {"shape": "none"},
+"banyan_placeholder": {"shape": "cylinder", "radius_m": 2.2, "height_m": 6.0},
+"beach_vine_patch": {"shape": "none"},
+"dock_haluna": {"shape": "trimesh", "extra_boxes": [[16.75, 1.25, 0.0, 33.5, 0.3, 2.6], [36.05, 1.25, 0.0, 5.1, 0.3, 4.4], [19.75, 1.4, 1.45, 27.5, 4.0, 0.3], [19.75, 1.4, -1.45, 27.5, 4.0, 0.3], [36.05, 1.4, 2.35, 5.1, 4.0, 0.3], [36.05, 1.4, -2.35, 5.1, 4.0, 0.3], [33.5, 1.4, 1.9, 0.3, 4.0, 1.2], [33.5, 1.4, -1.9, 0.3, 4.0, 1.2], [38.75, 1.4, 0.0, 0.3, 4.0, 5.0]], "ramps": [[-5.0, 0.72, 1.5, 1.4, 2.6]]},
+"frangipani_a": {"shape": "cylinder", "radius_m": 0.3, "height_m": 2.5},
+"frangipani_b": {"shape": "cylinder", "radius_m": 0.3, "height_m": 2.5},
+"garland_string": {"shape": "none"},
+"house_tile_a": {"shape": "box", "inset_m": 0.5},
+"house_tile_b": {"shape": "box", "inset_m": 0.5},
+"house_tile_c": {"shape": "box", "inset_m": 0.5},
+"lintel_gull_a": {"shape": "none"},
+"lintel_gull_b": {"shape": "none"},
+"lintel_gull_c": {"shape": "none"},
+"palm_coconut_a": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
+"palm_coconut_b": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
+"palm_coconut_c": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
+"tidewall_gate": {"shape": "none"},
+"windbreak_placeholder": {"shape": "cylinder", "radius_m": 1.0, "height_m": 6.0}
+}
+
+[node name="Player" type="CharacterBody3D" parent="." groups=["player"]]
+script = ExtResource("4_fc")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.04, 8)
+director_path = NodePath("../CameraDirector")
+
+[node name="Shape" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.86, 0)
+shape = SubResource("Shape_rhen")
+
+[node name="StandIn" type="MeshInstance3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.86, 0)
+mesh = SubResource("Mesh_rhen")
+
+[node name="Facing" type="MeshInstance3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -0.3)
+mesh = SubResource("Mesh_facing")
+
+[node name="Lantern" type="MeshInstance3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.95, -0.08)
+mesh = SubResource("Mesh_lantern")
+cast_shadow = 0
+
+[node name="LanternLight" type="OmniLight3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.95, -0.08)
+light_color = Color(1, 0.694118, 0.431373, 1)
+light_energy = 0.6
+omni_range = 2.5
+
+[node name="FieldCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.4, 18)
+current = true
+near = 0.1
+far = 6000.0
+
+[node name="CameraDirector" type="Node3D" parent="."]
+script = ExtResource("5_dir")
+camera_path = NodePath("../FieldCamera")
+target_path = NodePath("../Player")
+hub_orbit_enabled = true
+initial_shot = SubResource("Shot_hub_orbit")
+
+[node name="CameraVolumes" type="Node3D" parent="."]
+
+[node name="BeachShallows" type="Area3D" parent="CameraVolumes"]
+script = ExtResource("6_vol")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 1, 7)
+shot = SubResource("Shot_beach_shallows")
+shot_priority = 1
+
+[node name="Shape" type="CollisionShape3D" parent="CameraVolumes/BeachShallows"]
+shape = SubResource("Box_BeachShallows")
+
+[node name="BeachPath" type="Area3D" parent="CameraVolumes"]
+script = ExtResource("6_vol")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.25, 2, 5)
+shot = SubResource("Shot_beach_path")
+shot_priority = 2
+
+[node name="Shape" type="CollisionShape3D" parent="CameraVolumes/BeachPath"]
+shape = SubResource("Box_BeachPath")
+
+[node name="TidewallLane" type="Area3D" parent="CameraVolumes"]
+script = ExtResource("6_vol")
+transform = Transform3D(0.971961, 0, -0.235142, 0, 1, 0, 0.235142, 0, 0.971961, -76.5, 3, -10.7)
+shot = SubResource("Shot_H02")
+shot_priority = 1
+
+[node name="Shape" type="CollisionShape3D" parent="CameraVolumes/TidewallLane"]
+shape = SubResource("Box_TidewallLane")
+
+[node name="Market" type="Area3D" parent="CameraVolumes"]
+script = ExtResource("6_vol")
+transform = Transform3D(0.929776, 0, -0.368125, 0, 1, 0, 0.368125, 0, 0.929776, -46.5, 3, -0.5)
+shot = SubResource("Shot_H09")
+shot_priority = 1
+
+[node name="Shape" type="CollisionShape3D" parent="CameraVolumes/Market"]
+shape = SubResource("Box_Market")
+
+[node name="Dock" type="Area3D" parent="CameraVolumes"]
+script = ExtResource("6_vol")
+transform = Transform3D(0.819152, 0, 0.573576, 0, 1, 0, -0.573576, 0, 0.819152, 10.383041, 2, 48.528471)
+shot = SubResource("Shot_H04")
+shot_priority = 1
+
+[node name="Shape" type="CollisionShape3D" parent="CameraVolumes/Dock"]
+shape = SubResource("Box_Dock")
+
+[node name="ChapelCourt" type="Area3D" parent="CameraVolumes"]
+script = ExtResource("6_vol")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -119.5, 4, 37.5)
+shot = SubResource("Shot_H07")
+shot_priority = 1
+
+[node name="Shape" type="CollisionShape3D" parent="CameraVolumes/ChapelCourt"]
+shape = SubResource("Box_ChapelCourt")
+
+[node name="Shrine" type="Area3D" parent="CameraVolumes"]
+script = ExtResource("6_vol")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -67, 3, 44.5)
+shot = SubResource("Shot_shrine")
+shot_priority = 1
+
+[node name="Shape" type="CollisionShape3D" parent="CameraVolumes/Shrine"]
+shape = SubResource("Box_Shrine")
+
+[node name="Hub" type="Area3D" parent="CameraVolumes"]
+script = ExtResource("6_vol")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 0, 0)
+shot = SubResource("Shot_hub_orbit")
+shot_priority = 0
+
+[node name="Shape" type="CollisionShape3D" parent="CameraVolumes/Hub"]
+shape = SubResource("Box_Hub")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Beach" type="Marker3D" parent="Spawns"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -1, 0.04, 8)
+
+[node name="Village" type="Marker3D" parent="Spawns"]
+transform = Transform3D(-0.34202, 0, -0.939693, 0, 1, 0, 0.939693, 0, -0.34202, -52, 1.84, -2.6)
+
+[node name="Shrine" type="Marker3D" parent="Spawns"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -67, 2.02, 44.3)
+
+[node name="BattleReturn" type="Marker3D" parent="Spawns"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -24, 1.38, 6.5)
+
+[node name="CausewayHead" type="Marker3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.73, -118)
+
+[node name="NPCs" type="Node3D" parent="."]
+
+[node name="Market" type="Node3D" parent="NPCs"]
+
+[node name="Vendor" type="StaticBody3D" parent="NPCs/Market"]
+transform = Transform3D(-0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, -0.939693, -40, 1.84, 1.5)
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Market/Vendor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("Shape_npc")
+
+[node name="StandIn" type="MeshInstance3D" parent="NPCs/Market/Vendor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.82, 0)
+mesh = SubResource("Mesh_vendor")
+
+[node name="Facing" type="MeshInstance3D" parent="NPCs/Market/Vendor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.39, -0.26)
+mesh = SubResource("Mesh_npc_facing")
+
+[node name="Talk" type="Area3D" parent="NPCs/Market"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 2.7, 1.9)
+id = &"npc_market"
+prompt_key = "FIELD_PROMPT_LISTEN"
+payload = {
+"dialogue": "ch02_bark_market"
+}
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Market/Talk"]
+shape = SubResource("Shape_talk")
+
+[node name="Chapel" type="Node3D" parent="NPCs"]
+
+[node name="Reed" type="StaticBody3D" parent="NPCs/Chapel"]
+transform = Transform3D(-0.939693, 0, -0.34202, 0, 1, 0, 0.34202, 0, -0.939693, -116.3, 2.7, 33.6)
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Chapel/Reed"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("Shape_npc")
+
+[node name="StandIn" type="MeshInstance3D" parent="NPCs/Chapel/Reed"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+mesh = SubResource("Mesh_reed")
+
+[node name="Facing" type="MeshInstance3D" parent="NPCs/Chapel/Reed"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -0.26)
+mesh = SubResource("Mesh_npc_facing")
+
+[node name="Broom" type="MeshInstance3D" parent="NPCs/Chapel/Reed"]
+transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 0.22, 0.75, -0.3)
+mesh = SubResource("Mesh_broom")
+
+[node name="Talk" type="Area3D" parent="NPCs/Chapel"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -116.3, 3.5, 34)
+id = &"npc_chapel"
+prompt_key = "FIELD_PROMPT_LISTEN"
+payload = {
+"dialogue": "ch02_bark_chapel"
+}
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Chapel/Talk"]
+shape = SubResource("Shape_talk")
+
+[node name="Dock" type="Node3D" parent="NPCs"]
+
+[node name="Netmender" type="StaticBody3D" parent="NPCs/Dock"]
+transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 24.554541, 1.4, 39.826254)
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Dock/Netmender"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("Shape_npc")
+
+[node name="StandIn" type="MeshInstance3D" parent="NPCs/Dock/Netmender"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+mesh = SubResource("Mesh_netmender")
+
+[node name="Facing" type="MeshInstance3D" parent="NPCs/Dock/Netmender"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, -0.26)
+mesh = SubResource("Mesh_npc_facing")
+
+[node name="Fisher" type="StaticBody3D" parent="NPCs/Dock"]
+transform = Transform3D(-0.984808, 0, -0.173648, 0, 1, 0, 0.173648, 0, -0.984808, 22.260576, 1.4, 38.990957)
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Dock/Fisher"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("Shape_npc")
+
+[node name="StandIn" type="MeshInstance3D" parent="NPCs/Dock/Fisher"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 0)
+mesh = SubResource("Mesh_fisher")
+
+[node name="Facing" type="MeshInstance3D" parent="NPCs/Dock/Fisher"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.49, -0.26)
+mesh = SubResource("Mesh_npc_facing")
+
+[node name="Talk" type="Area3D" parent="NPCs/Dock"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.407558, 2.2, 39.408606)
+id = &"npc_dock"
+prompt_key = "FIELD_PROMPT_LISTEN"
+payload = {
+"dialogue": "ch02_bark_dock"
+}
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Dock/Talk"]
+shape = SubResource("Shape_talk")
+
+[node name="Triggers" type="Node3D" parent="."]
+
+[node name="TidelineBattle" type="Area3D" parent="Triggers"]
+script = ExtResource("8_int")
+id = &"tideline_battle"
+activation = 1
+requires_flag = &"ch02_met_asha"
+blocked_by_flag = &"ch02_tideline_won"
+payload = {
+"battle": "ch02_tideline"
+}
+
+[node name="Strip0" type="CollisionShape3D" parent="Triggers/TidelineBattle"]
+transform = Transform3D(-0.199883, 0, -0.97982, 0, 1, 0, 0.97982, 0, -0.199883, -11.481082, 1.5, -88.800701)
+shape = SubResource("Box_strip0")
+
+[node name="Strip1" type="CollisionShape3D" parent="Triggers/TidelineBattle"]
+transform = Transform3D(-0.112776, 0, -0.99362, 0, 1, 0, 0.99362, 0, -0.112776, -17.748277, 1.5, -49.323344)
+shape = SubResource("Box_strip1")
+
+[node name="Strip2" type="CollisionShape3D" parent="Triggers/TidelineBattle"]
+transform = Transform3D(-0.022744, 0, -0.999741, 0, 1, 0, 0.999741, 0, -0.022744, -20.436552, 1.5, -9.863535)
+shape = SubResource("Box_strip2")
+
+[node name="Strip3" type="CollisionShape3D" parent="Triggers/TidelineBattle"]
+transform = Transform3D(0.067843, 0, -0.997696, 0, 1, 0, 0.997696, 0, 0.067843, -19.543824, 1.5, 29.59294)
+shape = SubResource("Box_strip3")
+
+[node name="Strip4" type="CollisionShape3D" parent="Triggers/TidelineBattle"]
+transform = Transform3D(0.156787, 0, -0.987632, 0, 1, 0, 0.987632, 0, 0.156787, -15.069205, 1.5, 69.05928)
+shape = SubResource("Box_strip4")
+
+[node name="Strip5" type="CollisionShape3D" parent="Triggers/TidelineBattle"]
+transform = Transform3D(0.221368, 0, -0.97519, 0, 1, 0, 0.97519, 0, 0.221368, -9.698858, 1.5, 98.671791)
+shape = SubResource("Box_strip5")
+
+[node name="CausewayHead" type="Area3D" parent="Triggers"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1.5, -125)
+id = &"causeway_head"
+activation = 1
+requires_flag = &"ch02_saved_once"
+payload = {
+"cutscene": "ch03_the_first_verse"
+}
+
+[node name="Shape" type="CollisionShape3D" parent="Triggers/CausewayHead"]
+shape = SubResource("Box_causeway")
+
+[node name="CutsceneStage" type="Node3D" parent="."]
+script = ExtResource("9_stage")
+director_path = NodePath("../CameraDirector")
+player_path = NodePath("../Player")
+
+[node name="Shots" type="Node" parent="CutsceneStage"]
+
+[node name="H05" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("10_shotnode")
+shot = SubResource("Shot_cut_H05")
+
+[node name="H06" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("10_shotnode")
+shot = SubResource("Shot_cut_H06")
+
+[node name="H01" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("10_shotnode")
+shot = SubResource("Shot_cut_H01")
+
+[node name="Actors" type="Node3D" parent="CutsceneStage"]
+
+[node name="asha" type="Node3D" parent="CutsceneStage/Actors"]
+script = ExtResource("11_pose")
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0.2, -0.01, 8)
+world_pose = {
+"DEF-thigh.L": Vector3(-88, 0, 0),
+"DEF-shin.L": Vector3(92, 0, 0),
+"DEF-thigh.R": Vector3(-5, 0, 0),
+"DEF-shin.R": Vector3(95, 0, 0),
+"DEF-spine.002": Vector3(14, 0, 0),
+"DEF-spine.003": Vector3(8, 0, 0),
+"DEF-upper_arm.L": Vector3(-30, 0, -62),
+"DEF-forearm.L": Vector3(-35, 0, 0),
+"DEF-upper_arm.R": Vector3(-20, 0, 70),
+"DEF-forearm.R": Vector3(-20, 0, 0)
+}
+materials_dir = "res://assets/characters/asha/materials"
+ground_bones = PackedStringArray("DEF-shin.R", "DEF-foot.L")
+ground_clearance_m = 0.06
+
+[node name="Model" parent="CutsceneStage/Actors/asha" instance=ExtResource("12_asha")]
+
+[node name="toma" type="Node3D" parent="CutsceneStage/Actors"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -2.6, 0.11, 9.6)
+
+[node name="StandIn" type="MeshInstance3D" parent="CutsceneStage/Actors/toma"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+mesh = SubResource("Mesh_toma")
+
+[node name="Facing" type="MeshInstance3D" parent="CutsceneStage/Actors/toma"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, -0.4)
+mesh = SubResource("Mesh_npc_facing")
+
+[node name="Spear" type="MeshInstance3D" parent="CutsceneStage/Actors/toma"]
+transform = Transform3D(1, 0, 0, 0, -0.173648, 0.984808, 0, -0.984808, -0.173648, 0.38, 1.15, -0.75)
+mesh = SubResource("Mesh_spear")
+
+[node name="Spearhead" type="MeshInstance3D" parent="CutsceneStage/Actors/toma/Spear"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.26, 0)
+mesh = SubResource("Mesh_spearhead")
+
+[node name="Marks" type="Node3D" parent="CutsceneStage"]
+
+[node name="kneel_beside_rhen" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 0.04, 9)
+
+[node name="beach_path" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0.5, 7)
+
+[node name="rhen_shallows" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.15, 8.4)
+
+[node name="rhen_lantern" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.12, 7.6)

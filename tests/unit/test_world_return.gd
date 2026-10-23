@@ -322,11 +322,11 @@ func test_a_location_with_no_player_is_never_entered() -> void:
 	_done()
 
 
-## The real registry marks the Haluna mood stand-in (until game/levels/ch02/haluna/ exists).
-func test_the_real_haluna_stand_in_is_not_entered() -> void:
+## The real registry's Haluna row is the playable zone (M2-FP-02; it was the mood stand-in before).
+func test_the_real_haluna_zone_is_entered() -> void:
 	var reg := LocationRegistry.load_default()
 	assert_true(reg.has_location(&"ch02/haluna"))
-	assert_false(reg.can_enter(&"ch02/haluna"), "haluna_mood.tscn has no player")
+	assert_true(reg.can_enter(&"ch02/haluna"), "game/levels/ch02/haluna/haluna.tscn has a player")
 	assert_true(reg.can_enter(reg.default_location))
 	assert_true(reg.can_enter(reg.new_game_location))
 	_done()

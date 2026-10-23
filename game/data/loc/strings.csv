@@ -435,3 +435,8 @@ LOCATION_PROLOGUE,A Dead City at Dusk
 FLOW_END_CARD_TITLE,End of the first playable
 FLOW_END_CARD_LINE,Thank you for walking with them this far.
 FLOW_END_CARD_PROMPT,Confirm to return to the title
+CHAR_VENDOR,Fish Seller
+CHAR_REED,Reed
+CHAR_NETMENDER,Old Net-Mender
+CHAR_FISHER,Fisher
+FIELD_PROMPT_LISTEN,Listen
