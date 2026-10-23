@@ -2,8 +2,8 @@
 id: M1-RND-13
 title: Move test rigs' capture detection into shots.json setup
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-aa764c62452184711"
 depends_on: [M1-QA-04]
 milestone: M1
 request-from: "qa"

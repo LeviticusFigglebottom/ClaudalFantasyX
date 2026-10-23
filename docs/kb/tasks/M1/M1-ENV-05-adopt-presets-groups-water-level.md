@@ -2,8 +2,8 @@
 id: M1-ENV-05
 title: Adopt vegetation_detail groups, preset tiers and hymn_water_level in Environment scenes
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-aa764c62452184711"
 depends_on: [M1-RND-07, M1-RND-08]
 milestone: M1
 request-from: "rendering"

@@ -2,8 +2,8 @@
 id: M1-ENV-06
 title: Move the Haluna location rows to the playable zone when it lands
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-aa764c62452184711"
 depends_on: [M1-ENV-04]
 milestone: M1
 request-from: "architect"

@@ -2,8 +2,8 @@
 id: M1-UI-09
 title: Toast when the chapter autosave keeps a further-along journey
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-aa764c62452184711"
 depends_on: [M1-ARC-08]
 milestone: M1
 request-from: "architect"
