@@ -251,6 +251,32 @@ static func item_can_target(item: ItemBattleAction, c: BattleCombatant) -> bool:
 	return item.can_target(c)
 
 
+## Whether `item` fells `c` outright instead of acting on it: a revive on a living (Zombie)
+## target. _resolve_item_on uses the same rule, so the UI warning and play cannot disagree.
+static func item_fells(item: ItemBattleAction, c: BattleCombatant) -> bool:
+	return item.targets_fallen and c.is_alive()
+
+
+## Whether the current party member using `item_id` on `targets` would lose the battle on the
+## spot: every living active ally would be felled by it (M1-UI-04: a Zombie reviving itself
+## while it is the last one standing). Read-only; filters targets exactly as use_item() does,
+## and "living" is _check_outcome's rule (stone counts as down). False if the use is refused.
+func item_defeats_party(item_id: StringName, targets: Array[BattleCombatant], items: BattleItemSource) -> bool:
+	if items == null or not is_party_turn():
+		return false
+	var action := items.action_for(item_id)
+	if action == null or items.count(item_id) <= 0:
+		return false
+	var hit := _valid_item_targets(current, action, targets)
+	var standing := _living(party_active)
+	if hit.is_empty() or standing.is_empty():
+		return false
+	for c in standing:
+		if not hit.has(c) or not item_fells(action, c):
+			return false
+	return true
+
+
 ## Timeline if the current actor used `item_id` on `target`: the item's rank, its delay push,
 ## time statuses it adds, a revived ally rejoining, and a revived Zombie falling.
 func preview_item(
@@ -319,7 +345,7 @@ func _valid_item_targets(
 ## One item hit. A revive on a living Zombie fells it; a real revive rejoins the timeline a
 ## default-rank delay from now (time never runs backwards, as for a swap-in).
 func _resolve_item_on(action: ItemBattleAction, t: BattleCombatant) -> Dictionary:
-	if action.targets_fallen and t.is_alive():
+	if item_fells(action, t):
 		var before := t.hp
 		t.fall()
 		var felled := {"target_id": t.id, "hit": true, "crit": false, "amount": before, "statuses_added": []}

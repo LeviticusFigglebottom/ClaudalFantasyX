@@ -400,3 +400,10 @@ TITLE_HELP_NO_RECORD,No record has been written yet. Begin the pilgrimage from t
 TITLE_CONFIRM_NEW_GAME,A new journey writes over the autosave when its first chapter ends. Records are kept.
 TITLE_CONFIRM_BACK,Go back
 TITLE_CONFIRM_BEGIN,Begin anew
+HUD_CMD_ITEMS,Items
+HUD_HELP_ITEMS,"Tonics, salves and tools from the pack. Each use spends one."
+HUD_ITEM_COUNT_FMT,x{n}
+HUD_FAIL_NO_ITEM,None of those are left.
+HUD_FAIL_UNKNOWN_ITEM,That has no use in battle.
+HUD_HELP_ITEM_FELLS_FMT,{name} is a Zombie: this revive fells them
+HUD_HELP_ITEM_DEFEAT_FMT,"{name} is a Zombie and the last one standing: this revive fells them, and the fight is lost"

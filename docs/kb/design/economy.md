@@ -50,10 +50,24 @@ An item may override the global cap with `stack_cap`. The order of `rules.catego
 | `heal_hp` | `amount` | Restores a fixed amount of HP, up to max, through `restore_hp`, so it damages under Zombie. Living targets only. |
 | `restore_mp` | `amount` | Restores a fixed amount of MP, up to max. |
 | `cure` | `statuses` | Removes the listed statuses. |
-| `revive` | `hp_pct` | A KO'd target returns with `max(1, floor(max_hp × hp_pct / 100))` HP. The item targets **only** the fallen (HP 0). A petrified ally is neither alive nor fallen, so no current item reaches them. A Petrify cure is a follow-up for when Combat finalizes Petrify. |
+| `revive` | `hp_pct` | A KO'd target returns with `max(1, floor(max_hp × hp_pct / 100))` HP. It takes the fallen (HP 0) and, in battle, a **living Zombie**, whom it fells instead. It never reaches stone. See **Targeting in battle** below. |
 | `add_status` | `status`, `duration` | Like a skill's inflict, but certain to land. |
 | `delay` | `ranks` | Adds `base_delay(target.agi) × ranks` ticks to the target's `next_time` (the same rule as a skill's `delay_ranks`). |
 | `damage` | `amount`, `element` | Fixed damage that ignores stats, defense and barriers, takes the element ratio of the target's affinity (absorb heals), and is capped at `DAMAGE_CAP`. |
+
+#### Targeting in battle (merged engine behaviour, M1-CMB-06)
+
+These are the rules `BattleEngine.use_item` enforces (`BattleEngine.item_can_target` on top of `ItemBattleAction.can_target`). Tooltips and menus should be written from this list. A target the rules refuse is dropped, and if none is left the use is refused with `no_valid_target`, costing nothing.
+
+- **Side.** Ally items (`single_ally`, `all_allies`, `self`) reach the **active** party only, never the reserve. Foe items reach the enemies. A `self` item takes only the user.
+- **Life state.** Healing, MP, cure, status, delay, and damage items take **living** targets only. A petrified ally doesn't count as living.
+- **Revive** (`targets_fallen`) takes:
+  - **a fallen ally** (HP 0). They return with the revive HP above and rejoin the timeline `action_delay(agi, DEFAULT_RANK, speed)` after now, the same rule as a swap-in. A KO clears every status, Zombie included, so a fallen ex-Zombie revives normally.
+  - **a living Zombie ally**, who is **felled outright**: HP goes to 0 and no HP is restored. The hit reports `zombie_felled`, and its `amount` is the HP lost. The user may aim it at **themselves**. If the user is the last active member standing, that ends the battle in **defeat** on the spot. That's legal, and the preview drops them from the order. The battle item menu says so in the danger color before you confirm (M1-UI-04: `BattleEngine.item_defeats_party`).
+  - **never** a living non-Zombie or a petrified ally. Stone has HP above 0, so it isn't fallen, and Petrify clears Zombie.
+- **Petrify cure.** Only an item whose `cure` lists `petrify` reaches a petrified ally (`ItemBattleAction.cures`). The cured unit keeps its HP and rejoins `action_delay(agi, DEFAULT_RANK)` after now. Effects run in list order, so **list the cure first**: while the target is still stone, `add_status` is refused. **No shipped item cures Petrify yet.** Tidewash Salve does not.
+- **Zombie and healing.** A `heal_hp` item on a Zombie deals its amount as damage, so it can KO (a Zombie healing itself at low HP while it is the last one standing also loses the fight; the menu flags the harm but does not yet predict that KO). `restore_mp` and cures work normally on a Zombie.
+- Items ignore Silence, Provoke and Reflect. The Provoke lock does not apply to the item cursor.
 
 Item effects are fixed numbers, not stat-scaled. That is the genre convention, and it keeps an item's cost readable (pillar 4: "Salt Tonic: 200 HP" is the whole truth). **For Combat:** formulas.md lists "item formulas (Progression)" as unspecified. The two formulas above (revive HP, fixed damage) are the whole set. They are implemented in `ItemBattleAction.revive_hp` / `fixed_damage` and tested in `tests/unit/test_inventory_battle_items.gd`. Please fold them into formulas.md when you wire item use (M1-CMB-06).
 
@@ -172,5 +186,5 @@ Haluna's **inn** is not modelled yet (a price and a full heal). It is a one-fiel
 
 ### UI
 
-- An item menu (categories in `category_order`, `Inventory.ids_in`), a key-item menu, an equip screen (`EquipmentBag.pieces_for`, stat deltas from `EquipmentEffects.stat_bonuses`), a Customize screen (`Customize.candidates`, `cost`, `shortfall` to grey out what the party is missing), and a shop screen (`Shop.stock`, `buy_error`/`sell_error` messages from `ERR_*`, and the `CURRENCY_AMOUNT` string). Field item use needs persistent party HP/MP, which `GameStateData` doesn't hold yet (Architect).
+- **Done (M1-UI-04):** the battle **Items** command (`BattleController.items`, the rows come from `BattleMenus.item_rows`). It lists the bag's battle items in listing order with their count and rank, and greys out an item nobody on the field can take. Its cursor follows the rules under **Targeting in battle**, and it previews the timeline and warns about a felled Zombie and a self-defeating revive. Still to do: the field item menu (categories in `category_order`, `Inventory.ids_in`), a key-item menu, an equip screen (`EquipmentBag.pieces_for`, stat deltas from `EquipmentEffects.stat_bonuses`), a Customize screen (`Customize.candidates`, `cost`, `shortfall` to grey out what the party is missing), and a shop screen (`Shop.stock`, `buy_error`/`sell_error` messages from `ERR_*`, and the `CURRENCY_AMOUNT` string). Field item use needs persistent party HP/MP, which `GameStateData` doesn't hold yet (Architect).
 - World: grant the Glass Net-Float in the B07 pickup, call `grant_starting` when heroes join, and model the inn.
