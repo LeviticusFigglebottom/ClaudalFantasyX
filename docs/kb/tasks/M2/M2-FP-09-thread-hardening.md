@@ -1,9 +1,9 @@
 ---
-id: M2-FP-05
+id: M2-FP-09
 title: First-playable thread hardening (review-sweep-K)
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M2-FP-04]
 milestone: M2
 request-from: "qa"
@@ -17,3 +17,6 @@ request-from: "qa"
 - [ ] The sequencer host resumes, or is cancelled, if the sequencer leaves the tree; unsupported cue args warn
 
 ## Review log
+
+## Notes
+- Renumbered from M2-FP-05 by the first-playable session: that id was already taken by M2-FP-05-playable-polish (skip, Haluna prebuild, defeat retry).
