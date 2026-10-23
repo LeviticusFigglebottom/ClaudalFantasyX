@@ -1,6 +1,6 @@
 # CONSOLIDATED HANDOFF: start here
 
-**Last updated:** 2026-10-23 ~15:30 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
+**Last updated:** 2026-10-23 ~16:10 UTC by the Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`).
 A new account, Lead or environment should be able to resume from this file and the files it links. Keep it current after every merge batch (CLAUDE.md §7a).
 
 ## 1. What this is
@@ -24,15 +24,16 @@ After that, the Lead does the M1 review (M1-LEAD-01), then M2, the vertical slic
 | `gpu/*` | PC GPU session (the human's Windows PC, RX 9070 XT, Remote Control) | One branch per item. The Lead merges each when it's done. |
 | `lead/integration` (local worktree only) | Lead | Fast-forward copy of the integration branch, used to run the full gate without blocking the main checkout. |
 
-**Merged and closed `gpu/*` branches:** results-2026-10-23, rnd-10, rnd-09, rnd-08, rnd-07, rnd-11, qa-05.
-**Open `gpu/*` branches still to check and merge:** `gpu/chr-04-materials`, `gpu/rnd-12-sky`, `gpu/m2-rnd-01-undertow`, plus any newer ones.
+**Merged `gpu/*` branches:** results-2026-10-23, rnd-10, rnd-09, rnd-08, rnd-07, rnd-11, qa-05, rnd-12-sky, chr-04-materials.
+**Open `gpu/*` branches still to merge:** `gpu/m2-rnd-01-undertow` (doing), plus any newer ones.
+**`claude/first-playable` was merged at 823ad11. THE FIRST PLAYABLE THREAD WORKS END TO END;** see [`docs/PLAYTEST.md`](../../../PLAYTEST.md). The PC session is preparing `C:\Users\Aaron\Hymn_Playtest\PLAY.bat` for the human.
 
 ## 3. Environments and sessions
 | Environment | Session | What it does now | Its live log |
 |---|---|---|---|
 | Lead, cloud (4 CPUs) | `session_01Bg3iP7cPGyjbX4CyniBahc` | Orchestrates, merges, reviews (fresh reviewer agents, one "sweep" per batch), runs the full gate, approves baselines on lavapipe | [`lead-cloud.md`](lead-cloud.md) |
 | PC GPU (Windows, RX 9070 XT, official Godot 4.6.3) | `session_01778wbLbDFnRRLTKjnawv3T` (Remote Control; it cannot message back, so read its transcript or branches) | Standing queue, in order: CHR-04 materials and shadows → RND-12 sky tiers → M2-RND-01 Undertow production → ENV-03 vegetation → perf sweep → RND-15 prewarm and ghosting measurements → RND-17 dusk motes → RND-18 SSS crest fade. Its progress file is `docs/kb/qa/gpu/2026-10-23-pc-queue-progress.md` on its branches. | [`pc-gpu.md`](pc-gpu.md) |
-| First Playable, cloud (own container) | `session_01ELR13ohWMPrprcpcgLa7UR` | The thread boot → title → New Game → Prologue → Ch2 beach → playable Haluna → villagers → first battle → shrine save → Ch3 end card, plus `docs/PLAYTEST.md` for the human. Its progress is in `docs/kb/handoffs/first-playable-progress.md` on its branch. | [`first-playable.md`](first-playable.md) |
+| First Playable, cloud (own container) | `session_01ELR13ohWMPrprcpcgLa7UR` | **Thread done and merged.** Its new queue: cutscene skip, the Haluna load hitch, battle-loss retry, the Drownbell two-phase boss, an animation request for Character, and keeping PLAYTEST.md current. The original thread was boot → title → New Game → Prologue → Ch2 beach → playable Haluna → villagers → first battle → shrine save → Ch3 end card, plus `docs/PLAYTEST.md` for the human. Its progress is in `docs/kb/handoffs/first-playable-progress.md` on its branch. | [`first-playable.md`](first-playable.md) |
 
 **Rules the human set for environments:**
 - Keep every environment busy; give it a standing queue rather than one task at a time.
@@ -43,7 +44,8 @@ After that, the Lead does the M1 review (M1-LEAD-01), then M2, the vertical slic
 ## 4. In flight (Lead's own subagents, in local worktrees of the Lead's container)
 These are lost if the container restarts. Re-launch from the task files if so.
 - **M1-CHR-07:** Asha face round 3. The smile driver gap comes first; then lips, hairline, black hair and brows.
-- **M1-ARC-14 + M1-NIT-01:** the Lattice board-mismatch guard and the sweep-J nits.
+- (ARC-14 and NIT-01 merged at 823ad11.)
+- **Full gate ci27** is running on 823ad11 in the lead/integration worktree. Expect asha_* and haluna_* drift from CHR-04 materials and RND-12 sky; inspect it, then re-approve.
 
 ## 5. Exact next steps for a Lead
 1. `git fetch origin` and merge every finished `gpu/*` branch and `claude/first-playable` into `claude/new-session-mj8c3c`.
