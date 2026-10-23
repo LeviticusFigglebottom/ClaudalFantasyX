@@ -197,6 +197,84 @@ func test_a_failed_rename_keeps_the_new_save_for_recovery() -> void:
 	_done()
 
 
+# --- M1-ARC-11 (QA review-sweep-F on M1-ARC-10) -------------------------------------------------------
+
+
+## MUST: after a downgrade, a leftover temp file must never replace a newer build's save.
+func test_a_temp_never_recovers_over_a_newer_build_slot() -> void:
+	var v99 := JSON.stringify({"version": 99, "state": {"chapter": 9}, "meta": {"saved_at": 1}})
+	_write_raw(SaveSystem.slot_path(5), v99)
+	assert_eq(SaveSystem.slot_info(5)["status"], SaveSystem.STATUS_NEWER)
+	for at: int in [1, T_NEW]:
+		_write_temp(5, _state(3, 200.0), at)
+		var info := SaveSystem.leftover_temp_info(5)
+		assert_eq(info["status"], SaveSystem.STATUS_OK, "the temp file itself is readable (saved_at %d)" % at)
+		assert_false(info["recoverable"], "but the slot is a newer build's: never older (saved_at %d)" % at)
+		assert_eq(SaveSystem.report_leftover_temps(), [] as Array[int], "not advised at startup")
+		assert_eq(SaveSystem.recover_temp(5), ERR_FILE_CORRUPT, "recover_temp refuses")
+		assert_eq(FileAccess.get_file_as_string(SaveSystem.slot_path(5)), v99, "the v99 save is untouched")
+	_done()
+
+
+func test_a_temp_of_an_older_save_version_never_recovers_over_a_newer_one() -> void:
+	assert_eq(SaveSystem.save_to_slot(1, _state(2, 100.0)), OK)
+	var v3 := {"version": 3, "state": {"chapter": 5, "play_time_sec": 900.0}, "meta": {"saved_at": T_NEW}}
+	_write_raw(SaveSystem.slot_path(1) + SaveSystem.TEMP_SUFFIX, JSON.stringify(v3))
+	var info := SaveSystem.leftover_temp_info(1)
+	assert_eq(info["status"], SaveSystem.STATUS_OK, "a v3 temp still reads (it migrates)")
+	assert_false(info["recoverable"], "a v4 slot is a newer version than the v3 temp, whatever the time")
+	assert_eq(SaveSystem.recover_temp(1), ERR_FILE_CORRUPT)
+	assert_eq(SaveSystem.load_from_slot(1).chapter, 2)
+	_done()
+
+
+## review-sweep-F nit: whole-second saved_at; a same-second temp file with at least the slot's
+## play time is the later write (two quick saves, then a failed rename).
+func test_a_same_second_temp_stays_recoverable() -> void:
+	assert_eq(SaveSystem.save_to_slot(1, _state(2, 100.0)), OK)
+	_write_temp(1, _state(2, 150.0), T_OLD)
+	assert_true(SaveSystem.leftover_temp_info(1)["recoverable"], "same second, more play time")
+	_write_temp(1, _state(2, 100.0), T_OLD)
+	assert_true(SaveSystem.leftover_temp_info(1)["recoverable"], "same second, same play time (nothing lost)")
+	_write_temp(1, _state(2, 50.0), T_OLD)
+	assert_false(SaveSystem.leftover_temp_info(1)["recoverable"], "same second, less play time: the older one")
+	_write_temp(1, _state(2, 150.0), T_OLD)
+	assert_eq(SaveSystem.save_to_slot(1, _state(2, 160.0)), OK)
+	assert_true(FileAccess.file_exists(SaveSystem.recovered_path(1)), "set aside, not overwritten")
+	_done()
+
+
+## review-sweep-F nit: a second set-aside must not replace the first.
+func test_each_set_aside_gets_its_own_file() -> void:
+	assert_eq(SaveSystem.save_to_slot(1, _state(2, 100.0)), OK)
+	for chapter: int in [3, 4, 5]:
+		_write_temp(1, _state(chapter, 200.0 * chapter), T_NEW + chapter)
+		assert_eq(SaveSystem.save_to_slot(1, _state(2, 100.0)), OK)
+	assert_eq(SaveSystem.recovered_path(1), SaveSystem.slot_path(1) + SaveSystem.RECOVERED_SUFFIX)
+	for n: int in [1, 2, 3]:
+		var path := SaveSystem.recovered_path(1, n)
+		assert_true(FileAccess.file_exists(path), "copy %d kept" % n)
+		var kept := JSON.parse_string(FileAccess.get_file_as_string(path)) as Dictionary
+		assert_eq(int((kept["state"] as Dictionary)["chapter"]), n + 2, "copy %d holds its own write" % n)
+	assert_eq(SaveSystem.free_recovered_path(1), SaveSystem.recovered_path(1, 4))
+	_done()
+
+
+func test_temp_is_newer_rules() -> void:
+	var tmp := {"status": SaveSystem.STATUS_OK, "version": 4, "saved_at": 10, "play_time_sec": 5.0}
+	var main := {"status": SaveSystem.STATUS_OK, "version": 4, "saved_at": 9, "play_time_sec": 9.0}
+	assert_true(SaveSystem.temp_is_newer(tmp, main), "saved later")
+	main["saved_at"] = 11
+	assert_false(SaveSystem.temp_is_newer(tmp, main), "saved earlier")
+	for status: StringName in [SaveSystem.STATUS_EMPTY, SaveSystem.STATUS_CORRUPT]:
+		main["status"] = status
+		assert_true(SaveSystem.temp_is_newer(tmp, main), "nothing readable to lose: %s" % status)
+	main["status"] = SaveSystem.STATUS_NEWER
+	main["saved_at"] = 0
+	assert_false(SaveSystem.temp_is_newer(tmp, main), "a newer build's slot is never older")
+	_done()
+
+
 # --- helpers ---------------------------------------------------------------------------------------
 
 

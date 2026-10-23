@@ -56,6 +56,9 @@ const MAX_SLOT := 99
 const TEMP_SUFFIX := ".tmp"
 ## A valid leftover temp file is moved here (beside the slot) before a new write reuses its name.
 const RECOVERED_SUFFIX := ".recovered"
+## How many set-aside copies one slot keeps (`.recovered`, `.recovered.2`, ...) before the next
+## leftover is replaced instead (each is a whole save; this only bounds a pathological loop).
+const MAX_RECOVERED := 99
 const REASON_MANUAL := &"manual"
 const REASON_CHAPTER := &"chapter_boundary"
 const STATUS_EMPTY := &"empty"
@@ -179,17 +182,36 @@ static func _store_text(f: FileAccess, text: String) -> bool:
 
 
 ## What a leftover `slot_NN.json.tmp` holds, or {} when there is none: {status (STATUS_*),
-## chapter, play_time_sec, saved_at, recoverable}. `recoverable` is true when it is a readable
-## save that is newer than the slot (by meta saved_at), or the slot is missing or unreadable.
+## version, chapter, play_time_sec, saved_at, recoverable}. `recoverable` is true when it is a
+## readable save and the slot is missing or damaged, or holds an older save (temp_is_newer).
+## A slot written by a newer build (STATUS_NEWER) is never recovered over (M1-ARC-11): this build
+## cannot read it, so it cannot know the temp file is newer, and replacing it after a downgrade
+## would lose the newer build's save.
 func leftover_temp_info(slot: int) -> Dictionary:
 	var tmp := slot_path(slot) + TEMP_SUFFIX
 	if not FileAccess.file_exists(tmp):
 		return {}
 	var info := _file_info(tmp)
-	var main := slot_info(slot)
-	var newer: bool = main["status"] != STATUS_OK or int(info["saved_at"]) > int(main["saved_at"])
-	info["recoverable"] = info["status"] == STATUS_OK and newer
+	info["recoverable"] = info["status"] == STATUS_OK and temp_is_newer(info, slot_info(slot))
 	return info
+
+
+## True when a readable temp file (`tmp`, a _file_info) should replace the slot (`main`, a
+## slot_info): the slot is empty or damaged, or it is a readable save of the same or an older
+## version that was saved earlier. A save in the same second (two quick saves, then a failed
+## rename) is newer when it has at least the slot's play time. A STATUS_NEWER slot, or a slot of a
+## newer save version than the temp file, is never older.
+static func temp_is_newer(tmp: Dictionary, main: Dictionary) -> bool:
+	var status := StringName(str(main["status"]))
+	if status == STATUS_EMPTY or status == STATUS_CORRUPT:
+		return true
+	if status != STATUS_OK or int(main["version"]) > int(tmp["version"]):
+		return false
+	var tmp_at := int(tmp["saved_at"])
+	var main_at := int(main["saved_at"])
+	if tmp_at != main_at:
+		return tmp_at > main_at
+	return float(tmp["play_time_sec"]) >= float(main["play_time_sec"])
 
 
 ## Restores a recoverable leftover temp file over its slot. ERR_FILE_NOT_FOUND when there is
@@ -226,16 +248,33 @@ func report_leftover_temps() -> Array[int]:
 
 ## Before a write reuses the temp name: a recoverable leftover is moved to `.recovered` (and
 ## logged) instead of being overwritten. An unreadable one is a torn write with nothing to keep.
+## An earlier set-aside is never replaced: the next free name is used (recovered_path).
 func _set_aside_leftover_temp(slot: int) -> void:
 	var info := leftover_temp_info(slot)
 	if info.is_empty() or not bool(info["recoverable"]):
 		return
 	var tmp := slot_path(slot) + TEMP_SUFFIX
-	var aside := slot_path(slot) + RECOVERED_SUFFIX
-	if DirAccess.rename_absolute(tmp, aside) == OK:
+	var aside := free_recovered_path(slot)
+	if aside != "" and DirAccess.rename_absolute(tmp, aside) == OK:
 		push_warning("SaveSystem: a newer unsaved write for slot %d was moved to %s before saving" % [slot, aside])
 	else:
 		push_warning("SaveSystem: could not move %s aside; it will be replaced" % tmp)
+
+
+## The set-aside file name for slot `slot`, n-th copy: `slot_NN.json.recovered` for n = 1, then
+## `slot_NN.json.recovered.2`, `.recovered.3`, ...
+func recovered_path(slot: int, n: int = 1) -> String:
+	var base := slot_path(slot) + RECOVERED_SUFFIX
+	return base if n <= 1 else "%s.%d" % [base, n]
+
+
+## The first recovered_path that does not exist yet, or "" when all MAX_RECOVERED are taken.
+func free_recovered_path(slot: int) -> String:
+	for n in range(1, MAX_RECOVERED + 1):
+		var path := recovered_path(slot, n)
+		if not FileAccess.file_exists(path):
+			return path
+	return ""
 
 
 func load_from_slot(slot: int) -> GameStateData:
@@ -276,12 +315,30 @@ func _read_save(parsed: Variant) -> Dictionary:
 		return out
 	var migrated := migrate(d)
 	var problem := "migration failed" if migrated.is_empty() else SaveShape.problem(migrated.get("state"))
+	if problem == SaveShape.OK_SHAPE:
+		problem = _equipment_problem(migrated["state"] as Dictionary)
 	if problem != SaveShape.OK_SHAPE:
 		out["problem"] = problem
 		return out
 	out["status"] = STATUS_OK
 	out["state"] = migrated["state"]
 	return out
+
+
+## M1-ARC-11: a well-shaped loadout must also be one equip() could have made (no piece worn twice,
+## by the wrong hero or in the wrong slot). Checked on a copy, so a listing never mutates anything.
+func _equipment_problem(st: Dictionary) -> String:
+	if not st.has("equipment"):
+		return SaveShape.OK_SHAPE
+	var bag := EquipmentBag.new(_items(), (st["equipment"] as Dictionary).duplicate(true))
+	var problem := bag.loadout_problem()
+	return SaveShape.OK_SHAPE if problem == "" else "equipment.%s" % problem
+
+
+func _items() -> ItemDB:
+	if _item_db == null:
+		_item_db = ItemDB.load_default()
+	return _item_db
 
 
 ## Why a parsed save cannot be migrated ("" when it can). Fills out.version, and out.status
@@ -307,9 +364,7 @@ func _version_problem(d: Dictionary, out: Dictionary) -> String:
 func _post_load(state: GameStateData) -> GameStateData:
 	if state == null:
 		return null
-	if _item_db == null:
-		_item_db = ItemDB.load_default()
-	PartyGoods.from_state(_item_db, state).ensure_starting_gear(state)
+	PartyGoods.from_state(_items(), state).ensure_starting_gear(state)
 	return state
 
 
@@ -358,18 +413,24 @@ static func _migrate_v1_to_v2(d: Dictionary) -> Dictionary:
 ## empty bag; heroes receive their starting gear (EquipmentBag.grant_starting) when they next
 ## join. Inventory counts are made whole ints and empty stacks dropped, because JSON numbers load
 ## as floats and v2 never normalized them. The literal is frozen on purpose.
+## M1-ARC-11 (review-sweep-F): this runs before SaveShape, so it converts only what is already a
+## whole number >= 0 (SaveShape.is_whole). Anything else (a non-Dictionary inventory, a string, a
+## huge or negative count, a nested value) is passed through untouched, and the shape check that
+## follows reads the save as corrupt: never a crash (int() of a Dictionary) or a silent coercion.
 static func _migrate_v2_to_v3(d: Dictionary) -> Dictionary:
 	var st: Dictionary = (d.get("state", {}) as Dictionary).duplicate(true)
 	if not st.has("equipment"):
 		st["equipment"] = {"next_uid": 1, "owned": {}, "loadout": {}}
-	var inv: Dictionary = {}
 	var old: Variant = st.get("inventory", {})
 	if old is Dictionary:
+		var inv: Dictionary = {}
 		for k: Variant in old:
-			var n := int(old[k])
-			if n > 0:
-				inv[str(k)] = n
-	st["inventory"] = inv
+			var v: Variant = old[k]
+			if not SaveShape.is_whole(v) or float(v) < 0.0:
+				inv[k] = v
+			elif int(v) > 0:
+				inv[str(k)] = int(v)
+		st["inventory"] = inv
 	return {"version": 3, "state": st}
 
 

@@ -211,8 +211,92 @@ func test_real_registry_places_the_player_in_the_shrine_zone() -> void:
 	_done()
 
 
+## M1-ARC-11 (QA review-sweep-F S2 on M1-ARC-06): Continue from a location that is not in the
+## registry (not added yet, or renamed) warns, goes to the default, and keeps the saved location,
+## so the next save does not record the stand-in level. The respawn survives as well.
+func test_continue_from_an_unregistered_location_warns_and_keeps_it() -> void:
+	SaveSystem.save_dir = TEST_DIR
+	var s := GameStateData.new()
+	s.location_id = &"ch02/haluna"
+	s.respawn_location_id = &"ch02/haluna"
+	s.respawn_spawn = &"Pier"
+	assert_eq(SaveSystem.save_to_slot(1, s), OK)
+	wr.enabled = true
+	var tally := _WarningTally.new()
+	OS.add_logger(tally)
+	assert_eq(SaveSystem.load_into_game(1), OK)
+	OS.remove_logger(tally)
+	assert_eq(swaps, [[ZONE_A, &"Gate"]] as Array[Array], "the registry default stands in")
+	assert_eq(tally.matching("ch02/haluna"), 1, "the fallback is reported, naming the missing location")
+	assert_eq(Game.state.location_id, &"ch02/haluna", "the saved location is kept")
+	assert_eq(Game.state.respawn_location_id, &"ch02/haluna", "and so is the respawn")
+	assert_eq(SaveSystem.save_to_slot(2, Game.state), OK)
+	assert_eq(SaveSystem.slot_info(2)["location_id"], "ch02/haluna", "the next save records the real place")
+	SaveSystem.delete_slot(1)
+	SaveSystem.delete_slot(2)
+	_done()
+
+
+func test_go_to_an_unknown_location_keeps_the_state_location() -> void:
+	Game.state.location_id = &"zone_b"
+	var tally := _WarningTally.new()
+	OS.add_logger(tally)
+	assert_true(wr.go_to(&"nowhere"))
+	OS.remove_logger(tally)
+	assert_eq(tally.matching("nowhere"), 1, "warned")
+	assert_eq(Game.state.location_id, &"zone_b", "the default is not recorded as the location")
+	assert_true(wr.go_to(&"zone_a"))
+	assert_eq(Game.state.location_id, &"zone_a", "a resolved travel still records it")
+	_done()
+
+
+func test_an_empty_location_uses_the_default_without_a_warning() -> void:
+	wr.enabled = true
+	Game.state.location_id = &""
+	Game.state.respawn_location_id = &""
+	var tally := _WarningTally.new()
+	OS.add_logger(tally)
+	EventBus.game_loaded.emit(3)
+	OS.remove_logger(tally)
+	assert_eq(swaps, [[ZONE_A, &"Gate"]] as Array[Array], "the documented default for no location")
+	assert_eq(tally.matching("WorldReturn"), 0, "no warning: nothing was missing")
+	assert_eq(Game.state.location_id, &"", "the default is still not recorded")
+	_done()
+
+
 func _host() -> Node:
 	return (Engine.get_main_loop() as SceneTree).current_scene
+
+
+## Collects push_warning messages.
+class _WarningTally:
+	extends Logger
+	var messages: Array[String] = []
+	var _mutex := Mutex.new()
+
+	func _log_error(
+		_function: String,
+		_file: String,
+		_line: int,
+		code: String,
+		rationale: String,
+		_editor_notify: bool,
+		error_type: int,
+		_script_backtraces: Array[ScriptBacktrace]
+	) -> void:
+		if error_type == Logger.ERROR_TYPE_WARNING:
+			_mutex.lock()
+			messages.append("%s %s" % [code, rationale])
+			_mutex.unlock()
+
+	func matching(fragment: String) -> int:
+		_mutex.lock()
+		var n := 0
+		for m in messages:
+			if m.contains(fragment):
+				n += 1
+		_mutex.unlock()
+		return n
 
 
 func _done() -> void:
