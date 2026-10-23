@@ -1,0 +1,14 @@
+{
+  "doc": "Save slots written by save_shrine_shot.gd (screenshots) and the save menu tests. saved_at is Unix seconds (UTC); the menu shows it with a 0 time-zone bias in captures.",
+  "save_dir": "user://shot_saves",
+  "time_zone_bias_min": 0,
+  "slots": [
+    {"slot": 0, "chapter": 3, "location_id": "ch03/shell_shrine", "play_time_sec": 7712.0, "saved_at": 1792489500, "reason": "chapter_boundary"},
+    {"slot": 1, "chapter": 2, "location_id": "ch02/haluna", "play_time_sec": 2534.0, "saved_at": 1792411260, "reason": "manual"},
+    {"slot": 2, "chapter": 3, "location_id": "ch03/saltgrass_causeway", "play_time_sec": 6385.0, "saved_at": 1792486080, "reason": "manual"},
+    {"slot": 3, "corrupt": "{\"version\": 2, \"state\": {\"chapter\": 3, \"flags\": {\"ch03_ilun"}
+  ],
+  "spawn": "Shrine",
+  "spawn_yaw_deg": -155.0,
+  "overwrite_slot": 2
+}

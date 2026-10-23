@@ -147,6 +147,41 @@ HUD_RESULT_RETRY,Fight again
 HUD_RESULT_RETURN,Return
 HUD_TARGET_UNREAD,HP unknown until Read
 HUD_RESULT_FELL,Fell before the end: no XP
+SAVE_MENU_TITLE_SAVE,Record the Journey
+SAVE_MENU_TITLE_LOAD,Continue a Journey
+SAVE_SHRINE_PROMPT,Rest at the shrine
+SAVE_SHRINE_RESTORED,"In the shrine's still light, every wound closes."
+SAVE_SLOT_AUTOSAVE,Autosave
+SAVE_SLOT_NAME_FMT,Record {n}
+SAVE_SLOT_CHAPTER_FMT,Chapter {n}
+SAVE_SLOT_PLAY_TIME_FMT,{h}:{m}:{s}
+SAVE_SLOT_TIMESTAMP_FMT,{year}-{month}-{day}  {hour}:{minute}
+SAVE_SLOT_EMPTY,No record
+SAVE_SLOT_CORRUPT,This record is damaged and cannot be read.
+SAVE_SLOT_NEWER,This record was made by a newer version of the game.
+SAVE_LOCATION_UNKNOWN,An unnamed shore
+SAVE_HELP_EMPTY,Record your journey here.
+SAVE_HELP_OVERWRITE,Recording here replaces this record.
+SAVE_HELP_AUTOSAVE_LOCKED,The autosave is written at the end of each chapter. Choose another record.
+SAVE_HELP_CORRUPT,This record is damaged. Recording here replaces it.
+SAVE_HELP_NEWER,This record is from a newer version. Recording here replaces it.
+LOAD_HELP_READY,Continue from this record.
+LOAD_HELP_EMPTY,Nothing is recorded here.
+LOAD_HELP_CORRUPT,This record is damaged and cannot be read.
+LOAD_HELP_NEWER,This record was made by a newer version of the game and cannot be read here.
+SAVE_CONFIRM_OVERWRITE,Write over {slot}?
+SAVE_CONFIRM_OVERWRITE_CORRUPT,{slot} is damaged. Write over it?
+SAVE_CONFIRM_OVERWRITE_NEWER,{slot} is from a newer version. Write over it?
+SAVE_CONFIRM_YES,Write over it
+SAVE_CONFIRM_NO,Keep it
+SAVE_RESULT_CONTINUE,Continue
+SAVE_DONE,Your journey is recorded.
+SAVE_FAILED,The record could not be written.
+LOAD_FAILED,The record could not be read.
+LOCATION_FIELD_TEST,Field Test Court
+LOCATION_CH02_HALUNA,Haluna
+LOCATION_CH03_SALTGRASS_CAUSEWAY,Saltgrass Causeway
+LOCATION_CH03_SHELL_SHRINE,The Shell Shrine
 ITEM_SALT_TONIC,Salt Tonic
 ITEM_SALT_TONIC_DESC,"Brine, honey and bitter bark. Restores 200 HP to one ally."
 ITEM_REEF_DRAUGHT,Reef Draught

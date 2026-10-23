@@ -17,7 +17,7 @@ Built in M1: dialogue runner (`game/narrative/`, DialogueRunner) and text box (`
 
 Built in M1 (architect-stream-2): the field controller and camera rails (`game/world/`; see [field_camera.md](field_camera.md)) and the debug overlays F1–F12 (`game/core/debug/`; see "Debug overlays" below).
 
-Still planned: battle scene glue (`game/battle/scene/`, in progress by UI and Combat), random encounters (M2), and the save shrine (M1-ARC-03).
+Still planned: battle scene glue (`game/battle/scene/`, in progress by UI and Combat) and random encounters (M2). The save shrine and save/load menu landed in M1-ARC-03 (see "Saves" below).
 
 ## Debug overlays (M1-ARC-02)
 
@@ -96,3 +96,76 @@ The maxima are contention outliers. What's left of the battle swap frame (about 
 - *Project settings:* `gui/theme/default_font_multichannel_signed_distance_field=true` makes the engine fallback font MSDF. Either set it to `false`, or make sure no shipped text reaches the fallback. Label3D, debug text and untranslated `RichTextLabel` BBCode fonts are the usual leaks.
 - *UI and Combat:* `BattleController.start_sandbox` does about 25–30 ms of cold work in the first frame. Building the HUD rows over two or three frames behind the intro fade would leave a large margin.
 - *QA:* measure on a real GPU. Pipeline compiles add to these CPU numbers, and `ShaderPrewarm` exists for exactly that.
+
+## Saves (M1-ARC-03, architect-stream-4)
+
+SPEC §5.2 (versioned saves, save-point-only, chapter autosave) and §6.6 (shrines: full heal, a save menu, a teleport network later).
+
+### Pieces
+
+| Path | What it is |
+|---|---|
+| `game/core/save_system.gd` | Autoload. Existing format and migrations, plus the APIs below. |
+| `game/core/game.gd` | Play-time clock and `set_chapter()`. |
+| `game/core/event_bus.gd` | New signals: `chapter_changed(chapter, previous)`, `party_full_heal_requested(source_id)`, `save_shrine_used(shrine_id, location_id)`, `autosave_finished(reason, error)`. |
+| `game/world/save_shrine/` | `SaveShrine` (an `Interactable`), `save_shrine.tscn` (primitives + bound glimmer), and the `ShrineNetwork` stub. |
+| `game/ui/save/` | `SaveMenu` (view + input, `save_menu.tscn`), `SaveMenuModel` (logic, no nodes), `SaveSlotRow`, `SaveSlotInfo`, and the `TitleSaveEntry` stub. |
+| `game/data/ui/save_menu.json` | Slot count (autosave + 6 manual), layout at 1920 × 1080, and motion timings. |
+| `game/levels/_tests/save_shrine/` | A copy of the field test zone with a shrine, the capture driver `SaveShrineShot`, and `save_menu_fixtures.json`. |
+
+### SaveSystem APIs
+
+- `save_to_slot(slot, state, reason = &"manual", extra_meta = {})` writes `slot_NN.json.tmp` and renames it over the slot, so a crash mid-write keeps the old save. Slots run 0..`MAX_SLOT` (99).
+- **The `meta` block.** A save is `{"version", "state", "meta"}`. `meta` holds `saved_at` (Unix s, from the injectable `clock`), `reason`, `chapter`, `play_time_sec`, `location_id`, `location_key`, and anything from `extra_meta` (the shrine adds `shrine_id`). It is display data only. Loading never reads it, migrations ignore it, and it is not a `GameStateData` field, so it needed no `SAVE_VERSION` bump. Older saves without it list fine, using the file's modified time.
+- `slot_info(slot) -> Dictionary` and `list_slots(slots)` return what a menu shows: `status` is `empty`, `ok`, `corrupt` (unparseable, wrong types, or no migration path) or `newer` (saved by a newer build). They **never push errors**, so listing a damaged slot is quiet. `state_shape_ok()` guards both `slot_info` and `load_from_slot` against wrongly typed fields, which would otherwise crash `GameStateData.from_dict`.
+- `load_into_game(slot) -> Error` loads the slot into `Game.state` and restarts the play clock. It returns `ERR_FILE_NOT_FOUND` or `ERR_FILE_CORRUPT` and leaves the live game alone on failure.
+- `autosave(reason = &"chapter_boundary") -> Error` saves `Game.state` to slot 0 and reports on `EventBus.autosave_finished`. `SaveSystem._ready` connects it to `EventBus.chapter_changed`. `autosave_enabled = false` turns it off for tests and scripted sequences (`ERR_UNAVAILABLE`).
+- `save_dir` (default `user://saves`) and `clock` are vars so that tests and captures can use their own folder and fixed timestamps. Restore them afterwards; every test here does.
+- `location_name_key(id)`: `"ch02/haluna"` becomes `LOCATION_CH02_HALUNA`. Rows exist for the field test zone, Haluna, the Saltgrass Causeway and the Shell Shrine. A missing key shows "An unnamed shore".
+
+### Chapters and play time (`Game`)
+
+- `Game.set_chapter(n)` is the **only** way story code should change the chapter. It emits `chapter_changed` only on a real change, and that triggers the autosave.
+- **Play time.** `advance_play_time(delta)` adds a step clamped to [0, `PLAY_TIME_MAX_STEP_SEC` = 1 s] while `play_clock_running` is true. `_process` calls it, and `Game` runs with `PROCESS_MODE_ALWAYS`, so menus that pause the tree still count. The same deltas always give the same total (tests assert bit-equality). `new_game()` and `load_into_game()` start the clock. **The title screen must call `Game.stop_play_clock()`**, since the clock runs from boot otherwise.
+
+### The shrine
+
+On use (`FieldController.interact()` → `try_interact()`): the base `Interactable` effects run (`uses`, the instance's own `sets_flag`, `used`, and the `field_interacted` bus event). Then `rest()` runs:
+1. It sets `save_shrine_used`. Story shrines set their own flag as well; Haluna's sets `ch02_saved_once`.
+2. It sets `Game.state.location_id` from its export.
+3. It emits `party_full_heal_requested(id)`. **There is no persisted party HP yet**: the battle engine builds every fighter at full HP, so today the heal is already true. Whoever owns live party state (the party menu, or persistent HP) restores it when this fires.
+4. It emits `save_shrine_used(id, location_id)`.
+5. It calls `ShrineNetwork.attune()` (a no-op).
+6. It opens `SaveMenu` in SAVE mode with `{"shrine_id": id}` and the subtitle "In the shrine's still light, every wound closes."
+
+Shrines are never used up (`once = false`).
+
+The look follows color script rule 2 (bound light). A salt-glass core and a conduit ring are emissive `glimmer_bound` `#4FB3B0`. A `GlimmerField` in **MACHINE** mode holds perfectly still, with `follow_scene_intensity = false` (otherwise it would be invisible in day zones, where `hymn_glimmer.a` = 0) and `follow_global_focus = false` (bound motes never gather). Stone and verdigris primitives complete it, with a fan-shell canopy on two posts. It is a greybox stand-in for the Environment kit.
+
+### The menu
+
+- **Rows.** Slot 0 is the autosave, followed by Records 1–6. A readable row shows the slot name, "Chapter N", the location name, play time (H:MM:SS, tabular) and the save time (local; captures use a 0 bias). A damaged record shows a `ui_danger` status line, and an empty one shows "No record".
+- **Rules** (in `SaveMenuModel`, all headless-tested):
+  - The cursor visits every row and the help line explains each one.
+  - In SAVE mode the autosave row is refused ("written at the end of each chapter").
+  - Writing to an empty slot saves at once. A file that is already there (readable, damaged or newer) asks "Write over Record N?", with **"Keep it" as the default**. Saving over a damaged slot repairs it.
+  - In LOAD mode only readable rows load, and the cursor starts on the newest record.
+  - The result message closes the menu after a successful save. A failure returns to the list.
+- **Input.** `ui_up` / `ui_down` move, `ui_left` / `ui_right` also move inside dialogs, `ui_accept` chooses and `ui_cancel` backs out. That covers keyboard and controller through the built-in actions. A mouse click on a row or choice also works. The menu handles `_input` and marks events handled. While open it pauses the tree and restores the pause state on close or free.
+- `SaveMenu.open_in(host, mode, extra_meta, subtitle_key)` brings its own `CanvasLayer` (layer 64, under the router fade at 128), which frees itself on close.
+- **Title stub.** `TitleSaveEntry.can_continue()`, `continue_slot()` (the newest readable slot, autosave included), `continue_game()` and `open_load_menu(host)`. **After a load nothing moves the player yet**: there is no location → scene registry. Listen to `EventBus.game_loaded`.
+
+### Tests and shots
+
+- **Tests:** `tests/unit/test_save_shrine.gd`, `test_save_menu.gd`, `test_autosave.gd` and `test_play_time.gd`. Each test writes to its own `user://test_*` folder, which it removes. The corrupt fixture is a truncated JSON file in slot 3.
+- **Shots** (960 × 540): `save_shrine_field` (the player beside the shrine in the court), `save_menu` (opened through the shrine over fixture slots, with autosave, two records, a damaged one and empties), and `save_menu_overwrite` (the confirm dialog). The driver writes fixtures to `user://shot_saves` and restores everything in `_exit_tree`.
+
+### Open items (other owners)
+
+- **Persisted state still needed** (not added here: each needs a new `GameStateData` field and SAVE_VERSION 4):
+  - party HP/MP/statuses, for a real heal and for persistence between battles;
+  - the attuned shrine network ids, for the teleport network;
+  - a respawn point (`scene` + `spawn`), so a load can put the player back at the shrine. `meta.shrine_id` is recorded already, but it is display-only.
+- A location registry (`location_id` → scene, spawn, name key) under `game/data/world/`, used by load routing and by `ShrineNetwork`.
+- The title screen (UI) wires `TitleSaveEntry` and calls `Game.stop_play_clock()`.
+- The Haluna shrine instance sets `sets_flag = ch02_saved_once` and `location_id = ch02/haluna` (Environment / Narrative).

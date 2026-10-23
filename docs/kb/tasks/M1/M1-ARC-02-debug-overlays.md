@@ -2,7 +2,7 @@
 id: M1-ARC-02
 title: Debug overlays F1–F12 framework
 role: architect
-status: review
+status: done
 owner_session: architect-stream-2
 reviewer: qa
 depends_on: []
@@ -24,3 +24,9 @@ SPEC §5.4.
 - Reviewer (QA): check the page contents in the sandbox, and confirm the export filter once it's added.
 
 ## Review log
+- 2026-10-23 qa (review-sweep-A): **approve with fixes**. The release strip is now done and verified. `export_presets.cfg` excludes `game/core/debug/*, game/data/debug/*, game/levels/_tests/*` for both presets. A real `godot --headless --export-pack Linux` stored 348 files, none under `core/debug`, `data/debug`, `_tests`, `tests`, `tools` or `docs`, and logged no errors or warnings. No shipped code loads those paths (`boot.gd` checks `ResourceLoader.exists`). The readouts (F2 against `timeline.predict`, the F4 toggle, the F5 spawns, the F6 grant into state and into a live screen) are covered by `test_debug_overlay.gd`, and the full suite is green.
+  - **should-fix**: while any page is open, the overlay swallows `ui_accept`, `ui_up` and `ui_down`, even on pages with no list. `debug_overlay.gd:98-106` adds `_list_actions` whenever `page != PAGE_NONE`, and `_input` marks the event handled. A probe confirmed that Enter and Up are consumed on F2, and Space on F7. Scenario: open F2 in the battle sandbox to watch the turn order and confirm a command; `battle_controller._unhandled_input` never sees it. On F7, the field interact action, which shares Enter and Space, is swallowed too. Those are exactly the pages you keep open while playing. Fix: add `_list_actions` only for `PAGE_FLAGS`, `PAGE_TELEPORT` and `PAGE_LATTICE`, and add a test that `handle_input(Enter)` returns false on F2 and F7.
+  - **nit**: the F6 cheat adds Facets through `FacetInventory.add`, which bypasses the item stack cap of 99. Repeated presses go over the cap, and `Inventory.normalize()` later clamps the count on load. Use `Inventory.add` or clamp to `ItemDB.cap_of`.
+  - **nit**: the exported `global_script_class_cache.cfg` still lists `DebugOverlay`, `DebugReadouts`, `DebugHooks` and `SceneSwapProbe` pointing at stripped files. That is harmless while nothing names them (and the test enforces that), but add a line about it to the architecture doc's gotchas.
+  - The acceptance-criteria checkbox `[~]` for the export filter can become `[x]`.
+- 2026-10-23 lead: closing on review-sweep-A approve-with-fixes; release strip verified by a real export. Input-swallow fix is in M1-ARC-05.
