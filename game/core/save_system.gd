@@ -65,6 +65,16 @@ extends Node
 ##   - A piece whose base the tables do not know stays in the bag, unworn (repair_loadout).
 ##   - A slot written by a newer build is moved to a numbered `.newer` copy before a write
 ##     replaces it (the confirmed manual save, a New Game autosave), as a corrupt slot is.
+##
+## Review-sweep-I (M1-ARC-13; ADR 0018 Amendment 5):
+##   - The item-table guard above is now one of several checks behind a single data-tables gate,
+##     data_health() (DataHealth): the item tables, the Lattice board the save names and
+##     facets.json, the battle characters and statuses, locations.json, flags.tres and
+##     party_rest.json. While data_tables_problem() is non-empty, a load runs no post-load step
+##     and save_to_slot refuses every write with ERR_UNCONFIGURED. It is logged once at startup.
+##   - The tables are loaded on first use and cached on the DataHealth (the item tables stay in
+##     _item_db); tests replace one to simulate a broken build and set `_health` back to null to
+##     reload. Flags and party_rest are read from Game, which owns them.
 
 const SAVE_VERSION := 4
 const SAVE_DIR := "user://saves"
@@ -115,6 +125,8 @@ var _migrations: Dictionary = {
 }
 ## Item tables for the post-load starting-gear step (loaded on first use).
 var _item_db: ItemDB
+## The data-tables gate (built on first use by data_health(); M1-ARC-13).
+var _health: DataHealth
 ## The reason of the autosave waiting for a safe point, or &"" when none waits.
 var _pending_reason: StringName = &""
 ## The process frame the pending request was made on; it is written on a later frame.
@@ -131,6 +143,7 @@ func _ready() -> void:
 	EventBus.new_game_started.connect(_on_new_game_started)
 	set_process(false)
 	report_leftover_temps.call_deferred()
+	report_data_tables.call_deferred()
 
 
 func _on_new_game_started() -> void:
@@ -156,11 +169,11 @@ func save_to_slot(
 	if slot < 0 or slot > MAX_SLOT:
 		push_error("SaveSystem: slot %d is out of range 0..%d" % [slot, MAX_SLOT])
 		return ERR_PARAMETER_RANGE_ERROR
-	var tables := item_tables_problem()
+	var tables := data_tables_problem(state)
 	if tables != "":
 		push_error(
 			(
-				"SaveSystem: not saving slot %d: the item tables are broken (%s); every save on disk is kept as it is"
+				"SaveSystem: not saving slot %d: the data tables are broken (%s); every save on disk is kept as it is"
 				% [slot, tables]
 			)
 		)
@@ -480,6 +493,35 @@ func item_tables_problem() -> String:
 	return db.integrity_problem()
 
 
+# --- The data-tables gate (M1-ARC-13) -------------------------------------------------------------
+
+
+## The one gate every save write and every post-load step asks (DataHealth.standard: a check per
+## table that saved state refers to; the item check is item_tables_problem, so `_item_db` stays
+## the item tables' injection point). Tests replace a table on it, or set `_health` to null to
+## rebuild it from the shipped files.
+func data_health() -> DataHealth:
+	if _health == null:
+		_health = DataHealth.standard(func(_st: GameStateData) -> String: return item_tables_problem())
+	return _health
+
+
+## Why the data tables cannot be trusted with `state` right now ("" when they can). While this is
+## non-empty, loads skip the post-load step and save_to_slot refuses to write.
+func data_tables_problem(state: GameStateData = null) -> String:
+	return data_health().problem(state)
+
+
+## Pushes one error naming every broken table (runs once at startup, review-sweep-I S2 for
+## ARC-12): a build that can never save says so before the player has played a session.
+## Returns the problem ("" when healthy).
+func report_data_tables() -> String:
+	var problem := data_tables_problem()
+	if problem != "":
+		push_error("SaveSystem: saving is off until the data tables are fixed: %s" % problem)
+	return problem
+
+
 ## Why a parsed save cannot be migrated ("" when it can). Fills out.version, and out.status
 ## with STATUS_NEWER for a save from a newer build.
 func _version_problem(d: Dictionary, out: Dictionary) -> String:
@@ -506,14 +548,15 @@ func _version_problem(d: Dictionary, out: Dictionary) -> String:
 ## M1-ARC-12 (review-sweep-H S1): while the item tables are broken (item_tables_problem) every
 ## piece would read as unknown, so nothing here runs: the equipment stays exactly as saved, with
 ## a push_error, and save_to_slot refuses to write until the tables load again.
+## M1-ARC-13: the check is the whole data-tables gate (data_tables_problem), not only the items.
 func _post_load(state: GameStateData) -> GameStateData:
 	if state == null:
 		return null
-	var tables := item_tables_problem()
+	var tables := data_tables_problem(state)
 	if tables != "":
 		push_error(
 			(
-				"SaveSystem: the item tables are broken (%s); equipment is loaded as saved, unrepaired, and saving is off"
+				"SaveSystem: the data tables are broken (%s); the save is loaded as saved, unrepaired, and saving is off"
 				% tables
 			)
 		)

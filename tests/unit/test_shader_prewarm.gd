@@ -255,6 +255,61 @@ func test_scene_materials_are_harvested_from_the_incoming_scene() -> void:
 	DirAccess.remove_absolute(TMP_DIR)
 
 
+## M1-RND-15 (review-sweep-I on RND-07, S1): the stage is time-sliced. At most materials_per_frame
+## draws enter per frame, an over-budget frame halves the batch, the stage clears frames_to_render
+## frames after the last batch, and SceneRouter can see it is still staging.
+func test_stage_is_time_sliced_and_self_tunes() -> void:
+	var reg := {
+		"frames_to_render": 2,
+		"measure_frames": 2,
+		"hitch_budget_ms": 50.0,
+		"materials_per_frame": 4,
+		"slice_budget_ms": 33.0,
+		"viewport_width": 32,
+		"viewport_height": 32,
+		"quad_size": 1.0,
+		"quad_distance": 1.5,
+		"materials": [],
+	}
+	for i in 11:
+		(reg["materials"] as Array).append({"path": TEST_MATERIAL, "scenes": []})
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var reg_path := TMP_DIR + "/registry_slice.json"
+	var f := FileAccess.open(reg_path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(reg))
+	f.close()
+	var router := Node.new()
+	_host().add_child(router)
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	router.add_child(node)
+	assert_eq(node.start(""), 11, "every draw is built at start")
+	assert_eq(node.stage_node_count(), 4, "but only one batch is staged on the first frame")
+	assert_eq(node.pending_count(), 7)
+	assert_true(node.is_staging() and ShaderPrewarm.is_staging_under(router))
+	node.tick(20.0)  # under the slice budget: the next full batch goes in
+	assert_eq(node.stage_node_count(), 8)
+	node.tick(90.0)  # over budget: the batch halves
+	assert_eq(node.batch_size(), 2)
+	assert_eq(node.stage_node_count(), 10)
+	node.tick(10.0)
+	assert_eq(node.stage_node_count(), 11)
+	assert_eq(node.pending_count(), 0)
+	node.tick(10.0)
+	assert_true(node.is_staging(), "the last batch still renders frames_to_render frames")
+	node.tick(10.0)
+	assert_false(node.is_staging())
+	assert_false(ShaderPrewarm.is_staging_under(router))
+	assert_eq(node.stage_node_count(), 0, "stage cleared")
+	assert_eq(node.stats["batches"], 4)
+	assert_eq(node.stats["min_batch"], 2)
+	assert_eq(node.stats["materials"], 11)
+	assert_true(node.is_queued_for_deletion())
+	router.free()
+	DirAccess.remove_absolute(reg_path)
+	DirAccess.remove_absolute(TMP_DIR)
+
+
 func test_install_hooks_scene_router_signal() -> void:
 	var router: Node = SceneRouter
 	assert_true(router.has_meta(ShaderPrewarm.HOOK_META), "SceneRouter installs the hook in _ready()")

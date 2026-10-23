@@ -16,7 +16,7 @@ Small canon calls that Narrative owns: answers to other roles' open questions an
   1. In Ch1 the lantern is the right light in the drowned tower against the held cyan motes, which is the player's first lesson in the color language (color script Ch1). If it were bound, that lesson would invert.
   2. Oil is the last light the game shows (color script rule 4, the post-credits lamp). Rhen carrying honest light all game is what that ending rhymes with.
   3. It gives Dace a wordless character note: a wright who could have bound his own lamp and chose not to. Liss reads the housing as Saltwright work in Ch6 and will notice the wick. That's a scene seed.
-  4. Asha's stillness at the lantern in Cutscene A is *recognition* (she saw it ~~on her mother's guardian~~ when she was seven; **corrected 2026-10-23 by N-23:** on the stranger who brought her mother's comb home to Haluna), not her hearing someone inside it. That keeps the Dace mystery human.
+  4. Asha's stillness at the lantern in Cutscene A is *recognition* (she saw ~~it~~ ~~on her mother's guardian~~ when she was seven; **corrected 2026-10-23 by N-23:** on the stranger who brought her mother's comb home to Haluna; **corrected again 2026-10-23 by N-25:** what she saw was its **twin**, the second lamp of Dace's pair, so she recognises the make, not this lamp), not her hearing someone inside it. That keeps the Dace mystery human.
 
 ### N-03. The wake-shell wall stands at the causeway head: confirmed
 - **Answer:** approve Art's placement. The wall at the Haluna end of the Saltgrass Causeway **is** "the shrine wall" of bible §4 (the Pilgrim's Wake). In canon it is the Shell Shrine's *outer wall*, begun on the village side so the names can be visited and washed at any tide (the islet is reachable only at low water). Asha's shell is set there at the Ch4 wake. The Ch2 side scene happens there (H08).
@@ -197,7 +197,7 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
   - **Ch3 game text (B1, B2):**
     - Toma was at Ansedra in 1001: "I was at Ansedra then, at the temples. I heard of it by letter." (`ch03_verse_061`, replacing 010).
     - He has guarded Asha three years. Before that, home on leave, he had to find her in the net racks (`ch03_verse_062`, replacing 024). "Since she was nine" is gone from the game and the docs.
-  - **Lead verdict (B3):** `ch03_verse_051`/`052` ("Your father. The one with the lantern." "Yeah.") are cut. Act I never voices Asha's link between the lantern and Rhen's father. The Ch2 stillness stays wordless, and the link surfaces only in Kerrid's Ch15 confession ("A man with that lantern brought me this. I was seven.").
+  - **Lead verdict (B3):** `ch03_verse_051`/`052` ("Your father. The one with the lantern." "Yeah.") are cut. Act I never voices Asha's link between the lantern and Rhen's father. The Ch2 stillness stays wordless, and the link surfaces only in Kerrid's Ch15 confession (~~"A man with that lantern brought me this. I was seven."~~ **superseded 2026-10-23 by N-25:** "A man with a lantern like that brought me this. I was seven.").
   - **S5:** Asha's line now ends "until tonight" (`ch03_verse_063`, replacing 053), so "he" can no longer read as Dace.
   - **S1, Kerrid and Dace:** they did not drink together. For eight low tides they worked the rings, Dace under the water and Kerrid on the bottom step holding his line. "Dace slouched" stays.
   - **S2, Kerrid and Imra:** he kept the stair-watch's wall-gate on the Coilspire path and opened it for her at dawn and dusk. They spoke at the gate, and he never walked beside her.
@@ -223,6 +223,21 @@ SPEC §6.10 mandates "a suspended sphere of water", and Cinematics flagged that 
   - **S1:** Kell is Oruvel's chandler, who never learned to swim. The shipped Ch2 line stands.
   - **S2:** the bible's Present row: Asha was named in 1009 and sets out in 1012.
   - **S3:** act3_ending §0 rule 8 is guaranteed by authoring in C and E beats. In player-driven cameras the two lamps are drawn as light, not figures. H05 keeps Kerrid off-frame. The Ch19 outline grouping is design prose, never VO.
-  - **S4:** the Ch17 logs say why not Oruvel even once (every hull knew his face), why Haluna once (no name, no-one at risk but him), and why he never fetched Rhen ("a wright's son for life ... After the storm I'll go myself").
+  - **S4:** the Ch17 logs say why not Oruvel even once (every hull knew his face), why Haluna once (no name, no-one at risk but him), and why he never fetched Rhen ("a wright's son for life ... ~~After the storm I'll go myself~~"; **corrected 2026-10-23 by N-26:** the entry breaks off at "After the storm").
 - **Why:** review-sweep-H found that the sweep-G S6 fix put back the father's request to have his son raised, which ADR 0020 had removed from Kerrid, and that nothing explained how Rhen came to wear the lantern Dace had at Haluna.
-- **Supersedes:** N-24's S6 "asked Mother Kell to keep Rhen" (marked inline); the "old diver" in every Kell row.
+- **Supersedes:** N-24's S6 "asked Mother Kell to keep Rhen" (marked inline); the "old diver" in every Kell row; N-24's Lead-verdict quote "A man with that lantern brought me this" (marked inline, added by N-26); N-02 item 4's "saw it when she was seven" (marked inline, added by N-26).
+
+---
+
+## 2026-10-23 (narrative, M1-NAR-12): review-sweep-I nits on M1-NAR-11
+
+### N-26. Dace's Ch17 logs are a written ledger, never his voice; the "after the storm" entry breaks off; E2's lamp is the oil burner (ADR 0022 sweep-I append note)
+- **Answer:** recorded in the review-sweep-I append note on [ADR 0022](../decisions/0022-dace-imra-strangers-sweep-f.md).
+  - **S1, watch (IP):** the Ch17 logs are a **written ledger, read on screen in Rhen's hands**. They are never voiced in Dace's voice, never played back as a recording, a projection or a glimmer-echo, and never addressed to Rhen as a message ("if you're reading this", "son, ..."). Dace's voice is heard only in E2. An entry may name Rhen (his name is in every entry), but it is written about him, to nobody.
+  - **S1, the entry is cut short:** the quoted entry now ends "Let him be one. After the storm" and breaks off; the next page is blank. The irony stays, and the stated promise to come home is gone. Applied to act_outline Ch17 and rhen_sallow.md Act III; N-25 S4 is corrected inline.
+  - **S2:** act3_ending E2 now says Dace sees "his old lantern ... still the oil burner he fitted and not glimmer (N-02)". "The oil wick" there meant N-02's fitting, but it read as Kell's wick, which the sweep-H watch keeps off the lantern and unburned for E7. The E2 line now says so in a parenthesis.
+  - **S3:** decisions_log N-24's Lead-verdict quote ("A man with that lantern") is marked superseded inline, and N-02 item 4 now says Asha saw the lantern's **twin**. Both are added to N-25's Supersedes list.
+  - **Nits:** Kell's stall is "on Oruvel's second mooring" everywhere (rhen_sallow.md had "two hulls along"). vertical_slice.md (H06) says "She never says why", because she does say "That lantern." The same words in the ch02 `.dlg` source comment wait for the next narrative commit that touches game data (this task is docs only).
+  - **Watch carried from sweep I (concurred):** no Act I line has Asha connect the lantern's make to the man at Haluna aloud before Ch15.
+- **Why:** review-sweep-I (cinematics + IP) found that the sweep-H S4 log text gave the father his own words about his son, written before he goes into the calamity, which moves our ledger toward the inspiring game's recorded messages from the father. The reasons stay ours. The delivery must not drift, and an unfinished promise is ours where a stated one is not.
+- **Supersedes:** N-25 S4's quote "After the storm I'll go myself" (marked inline).

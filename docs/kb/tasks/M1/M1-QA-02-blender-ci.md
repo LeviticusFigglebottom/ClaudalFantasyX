@@ -2,7 +2,7 @@
 id: M1-QA-02
 title: Blender headless CI job to re-verify generated assets
 role: qa
-status: review
+status: done
 owner_session: "worktree-agent-aafc786bec1f4e2c5"
 depends_on: [M1-CHR-01]
 milestone: M1
@@ -27,3 +27,16 @@ ADR 0005 consequence.
 - Proposed CLAUDE.md §3 text for the Lead is in the 2026-10-23 qa-1 handoff.
 
 ## Review log
+- 2026-10-23 character (review-sweep-I, fresh reviewer): **approve-with-fixes.** No blockers.
+  - **What I read:** the task, handoff qa-1, tools/dev/verify_blender_builds.py (all of it), tools/dev/blender_builds.json, the ci_local.sh step and the `blender` CI job (merge ae733de), and docs/kb/qa/blender_builds.md.
+  - **Checks:** `unittest discover -s tools/tests` 359 OK, including test_blender_builds.py. I did not run Blender (the Lead's full gate was running). Every Blender-importing script under assets_src/ (8 files across the 5 build folders) is covered by a job, and so is every committed `.glb` (2 + 3 + 2 + 30 + 7).
+  - **What passes:** builds run in a temporary copy, so the working tree is never written. The pin is checked against `blender --version`. Byte-identity is the default. The TANGENT tolerance is scoped to one job and to named float attributes, and positions, indices, weights and images stay exact. "Committed but not produced" and "produced but not committed" are both failures. A KNOWN job that starts passing fails the gate until its marker is removed. SIGTERM kills the running Blender (subprocess.run kills the child on the raised exception).
+  - **Should-fix:**
+    - **S1 (KNOWN masks new failure modes).** verify_blender_builds.py:371-386 treats *any* failure of a job with `expected_failure` as KNOWN. base_body is expected to *mismatch* (CHR-05), but if a later edit makes it *crash*, or makes a different output differ, the gate still says KNOWN. shader_test is expected to *crash* (RND-14), so any further breakage hides behind that. Add the expected kind to the marker (`"kind": "mismatch"` or `"build_error"`, and for a mismatch, the expected paths), and fail when the actual failure differs. This matters most for base_body, whose sources are shared with asha.
+    - **S2 (coverage guard).** Nothing fails when a new Blender build script or a new committed `.glb` is outside every job. Today all are covered, but the next generator added will silently go unverified. Add a check (python, no Blender) that every tracked `assets/**/*.glb` matches some job's `outputs`, and every `assets_src/**/*.py` that imports `bpy` is under some job's `sources`, or is listed as exempt with a reason.
+    - **S3 (the Asha texture chain).** The asha job's `--bake-dir {scratch}/asha_bake` dump is thrown away, and `assets/characters/asha/textures/*.png` (from asha_textures.py, numpy) is not verified. This is known ("a `{python}` job type"). Please track it as a task, because the face textures are where §14 fidelity review happens.
+  - **Nits:**
+    - Handoff qa-1:12 and :26 still say "RND-12". The Lead renumbered it to M1-RND-14 (cc90db6). blender_builds.json and blender_builds.md are right.
+    - Exit 3 (no Blender, or the wrong version) prints SKIP and the local gate passes. That is fine for agents. The Lead's merge run should treat SKIP as a failure (`HYMN_BLENDER_REQUIRED=1`?), so a missing fetch never reads as green.
+    - `copy_into_sandbox` is only `assets_src`. A future build that reads `game/data` (a palette, for example) will fail in the sandbox with a confusing error. Mention it in blender_builds.md.
+- 2026-10-23 lead: closing on review-sweep-I approve-with-fixes; the known-failure masking and coverage gaps are in M1-QA-06.

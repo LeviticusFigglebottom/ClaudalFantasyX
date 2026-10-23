@@ -122,7 +122,7 @@ A cutscene animates it by tweening these properties (`create_tween().tween_prope
 | Body | **3 lathe shells + canopy shell** (alpha-hash) | raymarch, 28 steps | raymarch, 32 steps | raymarch, 72 steps |
 | Cloud noise (M1-RND-10) | hashed | baked lattice | baked lattice | baked lattice |
 | Curl warp shared by N dense steps (`curl_reuse`) | – | – (no curl) | 2 | 2 |
-| Per-frame step jitter (`temporal_jitter`, TAA/FSR2 resolves it) | no (Low has FXAA) | yes | yes | yes |
+| Per-frame step jitter (`temporal_jitter`, TAA/FSR2 resolves it) | no (Low is TAA since M1-RND-07, but its tier sets `temporal_jitter: false` and its shell body has no march to jitter) | yes | yes | yes |
 | Light samples | wrap-lit with a noise self-shadow | 1, envelope only | 2, coarse noise | 3, coarse noise |
 | Curl turbulence | no | no | yes | yes |
 | Cloud octaves | 3 (on the shell) | 3 | 4 + detail | 5 + detail |

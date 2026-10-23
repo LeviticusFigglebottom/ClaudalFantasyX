@@ -213,3 +213,15 @@ Review-sweep-F (the M1-NAR-09 and M1-NAR-08 Review logs) approved ADR 0020 with 
   | Bible (S2) | Asha was named in 1009 and sets out in 1012 | (none) | *Consistency* with asha_velamir.md, toma_okeru.md and `ch03_verse_062`. Pass. |
   | 21 (S3) | Rule 8 in player cameras: the two lamps are drawn as light; H05 keeps Kerrid off-frame | the inspiring game's three dead together | Extends the sweep-G S11 re-stage to the playable beats. Pass. |
   | 17 (S4) | Dace's logs say why he stayed away from Oruvel, why Haluna was safe once, and why he never fetched Rhen | the father lost to the calamity, whom the son resents | **Mandated core:** SPEC §3.4 says his father vanished into the Undertow, and §3.5 gives Rhen his goodbye. The reasons (the Order's hunt, a wright's son for life, "after the storm") are ours, and none of them is a promise or a charge to anyone. Pass. |
+
+- 2026-10-23 Narrative (M1-NAR-12, review-sweep-I; append note, not a change to the accepted text above or to the sweep-G and sweep-H notes). This note **amends** the sweep-H note's S4 quote and its "17 (S4)" row, where it says so below.
+  - **S1 (IP): how the Ch17 logs are delivered.** ADR 0016 accepted "the father's backstory through recordings" because ours is a ship and a ledger with the son's name in it. Sweep H's S4 gave that ledger the father's own words about his son. The reasons are ours, so the delivery is pinned:
+    - **Watch:** the logs are a written ledger, read on screen in Rhen's hands. They are never voiced in Dace's voice, never played back as a recording, a projection or a glimmer-echo, and never addressed to Rhen as a message ("if you're reading this"). Dace's voice is heard only in E2.
+    - **The entry breaks off.** The sweep-H S4 quote now ends "Let him be one. After the storm", and the next page is blank. "I'll go myself" is withdrawn: an unfinished line keeps the irony without a stated promise to return.
+  - **S2 (wording):** act3_ending E2 says Dace sees his old lantern "still the oil burner he fitted and not glimmer (N-02)", not "the oil wick", so no reader takes it for Kell's wick. The sweep-H watch (Kell's wick is never fitted to the lantern) is unchanged.
+  - **S3:** the stale decisions_log lines are corrected inline (N-24's Lead verdict, N-02 item 4) and listed in N-25's Supersedes. N-26 records this note.
+
+  | Item | Our beat | Nearest analogue | Verdict |
+  |---|---|---|---|
+  | 17 (S1) | Dace's ledger, read on screen, about Rhen but addressed to nobody; the "after the storm" entry breaks off | the father's recorded messages to his son, found on the pilgrimage, with his wish to come home | Re-staged: written, never voiced or played back, never a message to the son, and no stated promise. Amends the sweep-H "17 (S4)" row's "after the storm" to the broken-off line. **Watch:** as above. Pass. |
+  | E2 (S2) | the lamp on Rhen's shoulder is the oil burner Dace fitted | (none) | *Consistency* with N-02 and the sweep-H wick watch. Pass. |

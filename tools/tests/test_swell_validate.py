@@ -11,7 +11,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 import validate_data as vd  # noqa: E402
 
 RING = {"id": "ring", "kind": "timing_ring", "beats": 3, "lead_in_sec": 0.6, "beat_sec": 0.8, "peak_at": 0.7,
-        "perfect_sec": 0.06, "good_sec": 0.15, "grades": {"perfect": 30, "good": 15, "miss": 0}}
+        "perfect_sec": 0.06, "good_sec": 0.15, "max_step_sec": 0.05, "grades": {"perfect": 30, "good": 15, "miss": 0}}
 
 
 def _mode(mid: str, trigger: str, unlocked: bool = True, **num: int) -> dict:
@@ -91,6 +91,24 @@ class SwellValidateTests(unittest.TestCase):
         self.assertTrue(any("grade bonuses must be ints" in x for x in self.errs(d)))
         r["kind"] = "kazoo"
         self.assertTrue(any("kind must be one of" in x for x in self.errs(d)))
+
+    def test_ring_windows_fit_their_beat_and_the_input_stays_short(self) -> None:  # M1-UI-05
+        d = self.doc()
+        r = d["swell"]["inputs"][0]
+        r["peak_at"] = 0.9  # 0.72 + 0.15 = 0.87 > 0.8: a late press would land on the next beat
+        self.assertTrue(any("good window ends after its beat" in x for x in self.errs(d)))
+        r["peak_at"] = 0.1  # 0.08 - 0.15 < 0: an early press is ignored before the beat opens
+        self.assertTrue(any("good window starts before its beat opens" in x for x in self.errs(d)))
+        r["peak_at"] = 0.7
+        r["beats"] = 6  # 0.6 + 6 x 0.8 = 5.4 s
+        self.assertTrue(any("keep it at most" in x for x in self.errs(d)))
+        r["beats"] = 3
+        self.assertEqual(self.errs(d), [])
+        for bad in (None, 0, 0.07, True):
+            r["max_step_sec"] = bad
+            self.assertTrue(any("max_step_sec must be" in x for x in self.errs(d)), bad)
+        r["max_step_sec"] = 0.06  # == perfect_sec is allowed
+        self.assertEqual(self.errs(d), [])
 
     def test_hero_references(self) -> None:
         d = self.doc()

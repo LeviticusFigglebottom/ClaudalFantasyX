@@ -9,12 +9,21 @@ extends RefCounted
 ##   "time_scale": float  Engine.time_scale for the shot. 0.0 is a fixed time: delta-driven animation
 ##                 (AnimationPlayer, Tween, particles, `delta` in _process) and the shader TIME built-in
 ##                 stop at their first-frame values. Frame-counting rigs keep counting.
-## Globals, nodes and viewport are written before the first settle frame AND re-applied every frame
-## after the scene's own _process (ScreenshotCapture.HOLD_PRIORITY), so a rig that writes the same
-## value each frame cannot override them. Everything is restored when the shot ends; globals go back
-## to their project.godot default (the engine cannot read a global's live value outside the editor).
+## Globals, nodes and viewport are written before the first settle frame AND re-applied every frame,
+## twice: after the scene's own _process (ScreenshotCapture.HOLD_PRIORITY), and again on
+## RenderingServer.frame_pre_draw, which comes after the SceneTree's Tweens, timers, physics and
+## every AnimationPlayer callback mode (M1-QA-06). A rig, Tween or animation that writes the same
+## value each frame therefore cannot override them. A held Node3D (and its subtree) has its pending
+## transform notifications flushed at that point, so a held transform is drawn the same frame.
+## Everything is restored when the shot ends. Globals go back to their project.godot default, NOT
+## to the value the previous scene left: the engine cannot read a global's live value outside the
+## editor. So a capture scene must never rely on a global inherited from an earlier shot (set what it
+## needs in _ready, or name it in setup.globals): which shots a HYMN_SHOTS subset runs before it
+## would otherwise change its frame.
 ## JSON values are converted to the target's current type: numbers to int/float/bool, [x, y(, z, w)]
 ## to Vector2/3/4(i), Quaternion or Color, "#rrggbb" to Color, "res://..." to a loaded Resource.
+## Other types (Transform3D, Basis, Rect2, Plane, AABB...) are not converted, so a value for one fails
+## the shot's type check; Array and Dictionary properties take the JSON value as it is.
 ## An unknown key, node, property or global fails the shot (a typo must never pass silently).
 
 const KEYS: PackedStringArray = ["globals", "nodes", "viewport", "time_scale"]
@@ -73,6 +82,8 @@ func begin(viewport: Viewport) -> String:
 		return invalid
 	_viewport = viewport
 	_began = true
+	if not is_empty() and not RenderingServer.frame_pre_draw.is_connected(pre_draw):
+		RenderingServer.frame_pre_draw.connect(pre_draw)
 	_saved_time_scale = Engine.time_scale
 	if _spec.has("time_scale"):
 		Engine.time_scale = float(_spec["time_scale"])
@@ -120,8 +131,30 @@ func hold() -> void:
 		RenderingServer.global_shader_parameter_set(name, coerce(_saved_globals.get(name), globals[g]))
 
 
+## Just before each frame is drawn (RenderingServer.frame_pre_draw), after Tweens and animation: the
+## hold again, then the held Node3D subtrees' transform notifications, which the SceneTree would
+## otherwise only flush next frame (after that frame's Tweens wrote over them again).
+func pre_draw() -> void:
+	hold()
+	if _root == null or not is_instance_valid(_root) or not _root.is_inside_tree():
+		return
+	for path: Variant in (_spec.get("nodes", {}) as Dictionary).keys():
+		var node := _root.get_node_or_null(NodePath(String(path)))
+		if node != null:
+			_flush_transforms(node)
+
+
+static func _flush_transforms(node: Node) -> void:
+	if node is Node3D and (node as Node3D).is_inside_tree():
+		(node as Node3D).force_update_transform()
+	for child in node.get_children():
+		_flush_transforms(child)
+
+
 ## When the shot ends: restore everything this setup changed (viewport, globals, time scale).
 func end() -> void:
+	if RenderingServer.frame_pre_draw.is_connected(pre_draw):
+		RenderingServer.frame_pre_draw.disconnect(pre_draw)
 	for i in range(_saved_props.size() - 1, -1, -1):
 		var entry: Array = _saved_props[i]
 		var obj: Object = entry[0]
