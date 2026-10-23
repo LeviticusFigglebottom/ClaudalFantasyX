@@ -222,7 +222,7 @@ func _build_engine(
 	if fixture != null:
 		fixture.prepare(engine)
 	swell = BattleSwell.new(BattleSwell.load_config())
-	swell.attach(engine)
+	BattleSwellCarry.attach(swell, engine, persist_progress and fixture == null)  # M2-ARC-01
 	bestiary.attach(engine, persist_progress and fixture == null)
 	engine.action_resolved.connect(floats.on_action_resolved)
 	stage.spawn(engine)
@@ -499,7 +499,7 @@ func _show_result() -> void:
 	hud.set_combat_ui_visible(false)
 	stage.clear_rings()
 	if persist_progress and fixture == null:
-		BattleVitals.send_back(engine)
+		BattleVitals.send_back(engine, swell)
 	var rows: Array[Dictionary] = []
 	var title_key := "HUD_VICTORY"
 	var sub_key := "HUD_VICTORY_SUB"

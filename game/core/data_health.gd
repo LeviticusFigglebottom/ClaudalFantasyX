@@ -21,6 +21,7 @@ const LOCATIONS := &"locations"
 const FLAGS := &"flags"
 const PARTY_REST := &"party_rest"
 const BESTIARY := &"bestiary"
+const SWELL := &"swell"
 
 ## The tables behind standard()'s checks, loaded on first use and cached. Tests replace one with
 ## a broken copy (LatticeBoard.load_board_from, BattleDB.load_dir, LocationRegistry.load_path)
@@ -29,6 +30,10 @@ var lattice_boards: Dictionary = {}
 var lattice_rules: LatticeRules
 var battle_db: BattleDB
 var locations: LocationRegistry
+## swell.json's "swell" object (BattleSwell.load_config), read on first use. Tests set it, with
+## swell_loaded, to simulate a broken build.
+var swell_config: Dictionary = {}
+var swell_loaded := false
 
 ## Table name -> Callable(state: GameStateData) -> String, in the order they were added.
 var _checks: Dictionary = {}
@@ -46,6 +51,7 @@ static func standard(item_check: Callable) -> DataHealth:
 	h.add_check(FLAGS, h.flags_problem)
 	h.add_check(PARTY_REST, h.rest_problem)
 	h.add_check(BESTIARY, h.bestiary_problem)
+	h.add_check(SWELL, h.swell_problem)
 	return h
 
 
@@ -148,3 +154,12 @@ func bestiary_problem(_state: GameStateData = null) -> String:
 	if battle_db == null:
 		battle_db = BattleDB.load_default()
 	return battle_db.enemies_problem()
+
+
+## swell.json (the modes in party_vitals' swell_mode and the ids in swell; M2-ARC-01): missing,
+## torn, no modes, or a default mode it does not list (BattleSwell.config_problem).
+func swell_problem(_state: GameStateData = null) -> String:
+	if not swell_loaded:
+		swell_config = BattleSwell.load_config()
+		swell_loaded = true
+	return BattleSwell.config_problem(swell_config)
