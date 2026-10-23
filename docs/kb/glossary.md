@@ -253,3 +253,7 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 ### Added 2026-10-23 (M1-NAR-11, review-sweep-G; ADR 0022 append note, N-24)
 - **Mother Kell** (row above): the old Oruvel diver who kept Rhen from eight to nineteen, at Dace's one message. She drowns in Ch1.
 - **Dace Sallow** (rows above): he never went home after Corrow, because his line-marks were seen on the stair and a hunted Saltwright would bring the Order to his son.
+
+### Added 2026-10-23 (M1-NAR-11, review-sweep-H; ADR 0022 sweep-H append note, N-25)
+- **Mother Kell** (rows above): Oruvel's chandler, who sold the lamp-divers their oil and wicks and never learned to swim. She took Rhen in at eight, unasked, when nobody came for him. Dace's message asked nothing of her. She drowns in Ch1. Not a diver: this corrects the rows above.
+- **lantern pair**: a Saltwright wright builds lanterns two at a time, one to wear and one on the hook against a flooded housing. Rhen wears the first of Dace's pair, which never left Oruvel. The one Asha saw at Haluna was its twin.
