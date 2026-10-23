@@ -1,0 +1,36 @@
+{
+ "format": 1,
+ "scene": "test_cutscene_fixture",
+ "source": "game/data/dialogue/test/test_cutscene_fixture.dlg",
+ "start": "test_cutscene_fixture",
+ "nodes": {
+  "test_cutscene_fixture": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 5},
+    {"op": "cue", "cue": "camera", "args": ["wide"], "kwargs": {}, "src": 6},
+    {"op": "cue", "cue": "fade", "args": ["in", 1.0], "kwargs": {}, "src": 7},
+    {"op": "line", "id": "test_cutscene_001", "key": "DLG_TEST_CUTSCENE_001", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 8},
+    {"op": "cue", "cue": "camera", "args": ["close"], "kwargs": {"blend": 0.5, "ease": "linear"}, "src": 9},
+    {"op": "cue", "cue": "mark", "args": ["asha", "spot", "walk"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "anim", "args": ["asha", "look_at", "rhen"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "face", "args": ["asha", "neutral", 0.2], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [0.5], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "spot", "count": 4, "drift": "down_seaward"}, "src": 14},
+    {"op": "cue", "cue": "music", "args": ["hush_first_verse"], "kwargs": {"fade": 0.5}, "src": 15},
+    {"op": "cue", "cue": "sfx", "args": ["ui_confirm"], "kwargs": {}, "src": 16},
+    {"op": "options", "choices": [{"id": "test_cutscene_002", "key": "DLG_TEST_CUTSCENE_002", "to": 13, "src": 17}, {"id": "test_cutscene_003", "key": "DLG_TEST_CUTSCENE_003", "to": 15, "src": 19}], "src": 17, "next": 17},
+    {"op": "set", "flag": "test_flag", "value": ["lit", true], "src": 18},
+    {"op": "goto", "to": 17, "src": 17},
+    {"op": "set", "flag": "test_counter", "value": ["lit", 2], "src": 20},
+    {"op": "goto", "to": 17, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [], "kwargs": {"music": "bar_one", "max": 1.0}, "src": 21},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {"blend": 0.0}, "src": 22},
+    {"op": "line", "id": "test_cutscene_004", "key": "DLG_TEST_CUTSCENE_004", "speaker": "", "emotion": "", "voice": "", "src": 23},
+    {"op": "event", "name": "fixture_event", "args": ["closing", 1, true], "src": 24},
+    {"op": "cue", "cue": "fade", "args": ["out", 0.5], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 26}
+   ]
+  }
+ }
+}

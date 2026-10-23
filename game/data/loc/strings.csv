@@ -431,3 +431,13 @@ HUD_FAIL_SWELL_NOT_FULL_FMT,{name}'s Swell is not full yet.
 HUD_FAIL_UNKNOWN_TECHNIQUE,That is not a Swell technique.
 HUD_FAIL_SWELL_CANCELLED,The Swell was held back. Nothing was spent.
 GFX_SKY_DETAIL,Sky Detail
+ENC_CH02_TIDELINE,The Tideline
+LOCATION_PROLOGUE,A Dead City at Dusk
+FLOW_END_CARD_TITLE,End of the first playable
+FLOW_END_CARD_LINE,Thank you for walking with them this far.
+FLOW_END_CARD_PROMPT,Confirm to return to the title
+CHAR_VENDOR,Fish Seller
+CHAR_REED,Reed
+CHAR_NETMENDER,Old Net-Mender
+CHAR_FISHER,Fisher
+FIELD_PROMPT_LISTEN,Listen

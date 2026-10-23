@@ -28,3 +28,4 @@ Claim a path glob before editing `.tscn` or `.tres` files or assets (SPEC §5.3)
 | Systems (saves) | `game/world/save_shrine/**`, `game/ui/save/**`, `game/levels/_tests/save_shrine/**` | 2026-10-23 | architect-stream-4 |
 | Art (swatches) | `game/levels/_tests/swatches/**` | 2026-10-23 | art-stream-3 |
 | Rendering (sky perf, M1-RND-12) | `assets_src/vfx/sky/**`, `assets/vfx/sky/**` (plus the sky-quality edits to `game/shaders/environment/env_sky_cumulus.gdshader` and `haluna_noon_environment.tres`, routed by the Lead from review-sweep-H; Environment reviews) | 2026-10-23 | session_01778wbLbDFnRRLTKjnawv3T (PC GPU) |
+| First Playable (lead request) | `game/cutscene/**`, `game/flow/**`, `game/levels/ch02/**`, `game/levels/ch03/**`, `game/levels/prologue/**`, `docs/PLAYTEST.md` | 2026-10-23 | session_01ELR13ohWMPrprcpcgLa7UR |
