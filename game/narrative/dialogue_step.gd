@@ -5,6 +5,13 @@ extends RefCounted
 
 enum Kind { LINE, CUE, OPTIONS, END }
 
+## Tag on a sung line: DialogueBox plays no blips and no lip-flap for it.
+const TAG_SUNG := "sung"
+## Tag on a do-not-translate line (its translator note is in compiled/translator_notes.tsv).
+const TAG_NOTR := "notr"
+## Reserved @music track id: fade the music bed out (cues.json "reserved").
+const MUSIC_SILENCE := &"silence"
+
 var kind: Kind = Kind.END
 ## Source line in the .dlg file, for debugging.
 var src_line: int = 0
@@ -18,12 +25,20 @@ var speaker: StringName = &""
 var emotion: StringName = &""
 ## Reserved for voice files (ADR 0004); always empty for now.
 var voice: String = ""
+## Display-name override (`Asha as "The girl": ...`): show tr(name_key) instead of the speaker's
+## name. Empty means use the speaker's own name_key from speakers.json.
+var name_key: StringName = &""
+## Voice identity of narration (`Narrator(rhen): ...`), a speakers.json id; empty for captions.
+## Narration still shows no name; this picks the voice (and the blip pitch, if narration blips).
+var narrator: StringName = &""
 var tags: PackedStringArray = PackedStringArray()
 
 # CUE (numbers arrive as float, as JSON gives them)
 var cue: StringName = &""
 var args: Array = []
 var kwargs: Dictionary = {}
+## For `@wait music=<marker>`: the music marker to hold for; empty for every other cue.
+var wait_marker: StringName = &""
 
 # OPTIONS
 var options: Array[DialogueOption] = []
@@ -45,6 +60,24 @@ func is_end() -> bool:
 	return kind == Kind.END
 
 
+func is_sung() -> bool:
+	return TAG_SUNG in tags
+
+
+func is_do_not_translate() -> bool:
+	return TAG_NOTR in tags
+
+
+## True for `@wait music=<marker>` (see DialogueRunner.music_marker_reached).
+func is_music_wait() -> bool:
+	return kind == Kind.CUE and wait_marker != &""
+
+
+## True for `@music silence`.
+func is_music_silence() -> bool:
+	return kind == Kind.CUE and cue == &"music" and not args.is_empty() and StringName(str(args[0])) == MUSIC_SILENCE
+
+
 static func make_end() -> DialogueStep:
 	return DialogueStep.new()
 
@@ -58,6 +91,8 @@ static func from_line_op(op: Dictionary) -> DialogueStep:
 	s.speaker = StringName(str(op.get("speaker", "")))
 	s.emotion = StringName(str(op.get("emotion", "")))
 	s.voice = str(op.get("voice", ""))
+	s.name_key = StringName(str(op.get("name_key", "")))
+	s.narrator = StringName(str(op.get("narrator", "")))
 	for t: Variant in op.get("tags", []):
 		s.tags.append(str(t))
 	return s
@@ -70,6 +105,8 @@ static func from_cue_op(op: Dictionary) -> DialogueStep:
 	s.cue = StringName(str(op.get("cue", "")))
 	s.args = (op.get("args", []) as Array).duplicate(true)
 	s.kwargs = (op.get("kwargs", {}) as Dictionary).duplicate(true)
+	if s.cue == &"wait" and s.kwargs.has("music"):
+		s.wait_marker = StringName(str(s.kwargs["music"]))
 	return s
 
 

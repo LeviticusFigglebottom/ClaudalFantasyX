@@ -1,0 +1,21 @@
+{
+ "doc": "Declared <<event name args...>> names (docs/kb/tech/dialogue_format.md). tools/dlgc.py rejects unknown names and checks the positional args with the cue arg types (id, number, int, bool, string, emotion, enum). test_only events are allowed only in game/data/dialogue/test/.",
+ "events": [
+  {
+   "id": "zone_unlock",
+   "doc": "Open a zone for free movement once the scene ends.",
+   "args": [{"name": "zone", "type": "id"}]
+  },
+  {
+   "id": "start_battle",
+   "doc": "Hand off to a battle once the scene ends.",
+   "args": [{"name": "encounter", "type": "id"}]
+  },
+  {
+   "id": "fixture_event",
+   "doc": "Runner tests only (game/data/dialogue/test/test_dialogue_fixture.dlg).",
+   "test_only": true,
+   "args": [{"name": "word", "type": "id"}, {"name": "count", "type": "int"}, {"name": "on", "type": "bool"}]
+  }
+ ]
+}

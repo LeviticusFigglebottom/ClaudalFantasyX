@@ -1,0 +1,83 @@
+{
+ "doc": "The @cue vocabulary of .dlg files (docs/kb/tech/dialogue_format.md). tools/dlgc.py rejects unknown cues, unknown key= arguments, and values outside these types and option sets. Arg types: id (letters, digits, _), number, int, bool, string, emotion (game/data/dialogue/emotions.json), enum (values, or a named set). Positional args are listed in order; optional ones come last. one_of: exactly one of these names must be given. requires: key -> the name it needs.",
+ "sets": {
+  "grades": ["ch02", "ch02_noon", "ch02_night", "ch03", "ch03_causeway", "ch03_boss", "ch03_shrine_int"],
+  "vfx_effects": ["glimmer_lift", "glimmer_held", "glimmer_bound"],
+  "vfx_drift": ["down_seaward"],
+  "vfx_motion": ["spiral_up"],
+  "vfx_rate": ["slow", "normal", "fast"]
+ },
+ "reserved": {
+  "music": {"silence": "Not a track: fade the music bed out to nothing (fade= sets the time)."}
+ },
+ "cues": {
+  "camera": {
+   "doc": "Cut or blend to an authored shot. grade= also blends the color grade to that color-script frame.",
+   "args": [{"name": "shot", "type": "id"}],
+   "kwargs": {
+    "blend": {"type": "number", "min": 0},
+    "grade": {"type": "enum", "set": "grades"}
+   }
+  },
+  "anim": {
+   "doc": "Play a body animation, optionally aimed at a target (actor, mark, or prop).",
+   "args": [{"name": "actor", "type": "id"}, {"name": "clip", "type": "id"}, {"name": "target", "type": "id", "optional": true}],
+   "kwargs": {"loop": {"type": "bool"}}
+  },
+  "mark": {
+   "doc": "Move an actor to a scene mark.",
+   "args": [{"name": "actor", "type": "id"}, {"name": "mark", "type": "id"}, {"name": "gait", "type": "enum", "values": ["walk", "run"], "optional": true}],
+   "kwargs": {}
+  },
+  "face": {
+   "doc": "Override the facial expression over sec seconds (otherwise lines' [emotion] drives it).",
+   "args": [{"name": "actor", "type": "id"}, {"name": "expression", "type": "emotion"}, {"name": "sec", "type": "number", "min": 0, "optional": true}],
+   "kwargs": {}
+  },
+  "fade": {
+   "doc": "Screen fade.",
+   "args": [{"name": "direction", "type": "enum", "values": ["in", "out"]}, {"name": "sec", "type": "number", "min": 0}, {"name": "color", "type": "string", "optional": true}],
+   "kwargs": {}
+  },
+  "letterbox": {
+   "doc": "Cinematic bars.",
+   "args": [{"name": "state", "type": "enum", "values": ["on", "off"]}],
+   "kwargs": {}
+  },
+  "music": {
+   "doc": "Change the music bed. 'silence' is reserved (see reserved.music).",
+   "args": [{"name": "track", "type": "id"}],
+   "kwargs": {"fade": {"type": "number", "min": 0}}
+  },
+  "sfx": {
+   "doc": "Play a one-shot sound. vol is a linear gain (1.0 = as authored); at= places it on an actor or mark.",
+   "args": [{"name": "sound", "type": "id"}],
+   "kwargs": {
+    "vol": {"type": "number", "min": 0, "max": 1},
+    "at": {"type": "id"}
+   }
+  },
+  "vfx": {
+   "doc": "Trigger a VFX. Glimmer light rules: glimmer_lift rises (motion=spiral_up), glimmer_held sinks (drift=down_seaward), glimmer_bound is still.",
+   "args": [{"name": "effect", "type": "enum", "set": "vfx_effects"}],
+   "kwargs": {
+    "at": {"type": "id"},
+    "count": {"type": "int", "min": 1},
+    "drift": {"type": "enum", "set": "vfx_drift"},
+    "motion": {"type": "enum", "set": "vfx_motion"},
+    "rate": {"type": "enum", "set": "vfx_rate"},
+    "form": {"type": "id"}
+   }
+  },
+  "wait": {
+   "doc": "Pause the sequence for sec seconds, or until the music reaches marker (music=). max= is the sequencer's fallback timeout for a music wait.",
+   "args": [{"name": "sec", "type": "number", "min": 0, "optional": true}],
+   "kwargs": {
+    "music": {"type": "id"},
+    "max": {"type": "number", "min": 0}
+   },
+   "one_of": ["sec", "music"],
+   "requires": {"max": "music"}
+  }
+ }
+}

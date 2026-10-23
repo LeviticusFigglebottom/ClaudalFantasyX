@@ -8,8 +8,9 @@ Checks:
     unreachable nodes from each start, unknown skills, stat names, gate levels, coordinates)
   * localization: every *_key / tr("KEY") / dialogue #line: key exists in a loc CSV
   * story flags: every flag used in .gd / .dlg is declared in game/data/flags.tres
-  * dialogue: .dlg files compile (tools/dlgc.py), committed outputs are fresh, emotion tags
-    come from game/data/dialogue/emotions.json, speakers.json and text_box.json are well-formed
+  * dialogue: .dlg files compile (tools/dlgc.py), committed outputs are fresh, emotion tags, cues and
+    events come from game/data/dialogue/{emotions,cues,events}.json (long lines are warnings),
+    and those tables plus speakers.json and text_box.json are well-formed
   * provenance: every file under assets/ has a row in assets/PROVENANCE.md
   * banned terms (tools/banned_terms.txt) in game/, assets_src/, story docs, glossary
   * binary size limit while Git LFS is deferred (ADR 0005)
@@ -296,6 +297,8 @@ def check_dialogue(root: Path, files: dict[str, object], rep: Report) -> list[st
                 continue
             if sid in seen:
                 rep.err(f"{base}/speakers.json: duplicate speaker '{sid}'")
+            if sid == dlgc.NARRATOR:
+                rep.err(f"{base}/speakers.json: '{sid}' is reserved for narration lines (Narrator(id): ...)")
             seen.add(sid)
             if not isinstance(row.get("name_key"), str):
                 rep.err(f"speakers.{sid}: missing name_key")
@@ -326,9 +329,100 @@ def check_dialogue(root: Path, files: dict[str, object], rep: Report) -> list[st
         if not isinstance(cfg.get("flap_vowels"), str) or not cfg.get("flap_vowels"):
             rep.err("text_box.flap_vowels must be a non-empty string")
 
-    for e in dlgc.check(root):
+    for e in dialogue_vocab_errors(files.get(f"{base}/cues.json"), files.get(f"{base}/events.json")):
+        rep.err(e)
+    errors, warnings = dlgc.check_report(root)
+    for e in errors:
         rep.err(f"dlgc: {e}")
+    for w in warnings:
+        rep.warn(f"dlgc: {w}")
     return keys
+
+
+def _arg_spec_errors(spec: object, where: str, sets: dict) -> list[str]:
+    if not isinstance(spec, dict) or spec.get("type") not in dlgc.ARG_TYPES:
+        return [f"{where}: needs a 'type' from {', '.join(dlgc.ARG_TYPES)}"]
+    errs: list[str] = []
+    if spec["type"] == "enum":
+        if "set" in spec:
+            if spec["set"] not in sets:
+                errs.append(f"{where}: unknown set '{spec['set']}'")
+        elif not isinstance(spec.get("values"), list) or not spec["values"]:
+            errs.append(f"{where}: an enum needs 'values' or a 'set'")
+    for bound in ("min", "max"):
+        if bound in spec and (isinstance(spec[bound], bool) or not isinstance(spec[bound], (int, float))):
+            errs.append(f"{where}: '{bound}' must be a number")
+    return errs
+
+
+def _positional_errors(args: object, where: str, sets: dict) -> list[str]:
+    if not isinstance(args, list):
+        return [f"{where}: 'args' must be a list"]
+    errs: list[str] = []
+    seen_optional = False
+    for i, a in enumerate(args):
+        errs += _arg_spec_errors(a, f"{where}.args[{i}]", sets)
+        if isinstance(a, dict):
+            if not isinstance(a.get("name"), str):
+                errs.append(f"{where}.args[{i}]: needs a 'name'")
+            if a.get("optional"):
+                seen_optional = True
+            elif seen_optional:
+                errs.append(f"{where}.args[{i}]: a required arg after an optional one")
+    return errs
+
+
+def dialogue_vocab_errors(cues: object, events: object) -> list[str]:
+    """Shape of game/data/dialogue/cues.json and events.json (dlgc enforces their contents on .dlg files)."""
+    errs: list[str] = []
+    cw, ew = "game/data/dialogue/cues.json", "game/data/dialogue/events.json"
+    if not isinstance(cues, dict) or not isinstance(cues.get("cues"), dict) or not cues["cues"]:
+        errs.append(f"{cw}: missing non-empty object 'cues'")
+        cues = {"cues": {}}
+    sets = cues.get("sets", {})
+    if not isinstance(sets, dict) or any(not isinstance(v, list) or not v for v in sets.values()):
+        errs.append(f"{cw}: 'sets' must map names to non-empty lists")
+        sets = {}
+    for name, spec in cues["cues"].items():
+        where = f"cues.{name}"
+        if not re.fullmatch(r"[a-z][a-z0-9_]*", name):
+            errs.append(f"{where}: cue names are snake_case")
+        if not isinstance(spec, dict):
+            errs.append(f"{where}: must be an object")
+            continue
+        errs += _positional_errors(spec.get("args", []), where, sets)
+        kwargs = spec.get("kwargs", {})
+        if not isinstance(kwargs, dict):
+            errs.append(f"{where}: 'kwargs' must be an object")
+            kwargs = {}
+        for k, v in kwargs.items():
+            errs += _arg_spec_errors(v, f"{where}.kwargs.{k}", sets)
+        names = {a.get("name") for a in spec.get("args", []) if isinstance(a, dict)} | set(kwargs)
+        for n in spec.get("one_of", []):
+            if n not in names:
+                errs.append(f"{where}.one_of: '{n}' is not an arg or key of this cue")
+        for k, needed in spec.get("requires", {}).items():
+            if k not in names or needed not in names:
+                errs.append(f"{where}.requires: '{k}' and '{needed}' must both be args or keys of this cue")
+    for cue, values in (cues.get("reserved") or {}).items():
+        if cue not in cues["cues"] or not isinstance(values, dict):
+            errs.append(f"{cw}: reserved.{cue} must name a cue and map values to their meaning")
+    rows = events.get("events") if isinstance(events, dict) else None
+    if not isinstance(rows, list) or not rows:
+        return errs + [f"{ew}: missing non-empty list 'events'"]
+    seen: set[str] = set()
+    for i, row in enumerate(rows):
+        eid = row.get("id") if isinstance(row, dict) else None
+        if not isinstance(eid, str) or not re.fullmatch(r"[a-z][a-z0-9_]*", eid):
+            errs.append(f"{ew}[{i}]: needs a snake_case string 'id'")
+            continue
+        if eid in seen:
+            errs.append(f"{ew}: duplicate event '{eid}'")
+        seen.add(eid)
+        if not isinstance(row.get("doc"), str) or not row["doc"].strip():
+            errs.append(f"events.{eid}: needs a one-line 'doc'")
+        errs += _positional_errors(row.get("args", []), f"events.{eid}", sets)
+    return errs
 
 
 def _is_int(v: object) -> bool:

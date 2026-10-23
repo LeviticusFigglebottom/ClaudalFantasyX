@@ -12,11 +12,20 @@ extends RefCounted
 ## `set` and conditions go through `flags` (a DialogueFlagAccess). Cues are returned by next()
 ## and also emitted as cue_triggered. Events are emitted as event_triggered and forwarded to
 ## EventBus.dialogue_event when the autoload exists.
+##
+## Music waits (`@wait music=<marker>`): the runner returns the CUE step (step.is_music_wait()) and,
+## unless that marker was already reported since the last @music cue, enters a waiting state and
+## emits music_wait_requested(marker). The sequencer holds the dialogue (no next()) until it calls
+## music_marker_reached(marker) as the score passes the marker (or release_wait() on a skip or its
+## max= timeout), which emits music_wait_satisfied. Calling next() while still waiting is a
+## sequencer bug: it warns, releases the wait, and carries on, so dialogue never hangs.
 
 signal cue_triggered(cue: StringName, args: Array, kwargs: Dictionary)
 signal event_triggered(event_name: StringName, args: Array)
 signal node_started(node: StringName)
 signal finished
+signal music_wait_requested(marker: StringName)
+signal music_wait_satisfied(marker: StringName)
 
 const FORMAT_VERSION := 1
 const COMPILED_DIR := "res://game/data/dialogue/compiled"
@@ -36,6 +45,9 @@ var _pc: int = 0
 var _running: bool = false
 var _pending: DialogueStep = null
 var _pending_targets: Array[int] = []
+var _awaiting_marker: StringName = &""
+## Markers reported since the last @music cue (a set: marker -> true).
+var _reached_markers: Dictionary = {}
 
 
 func _init(flag_access: DialogueFlagAccess = null) -> void:
@@ -89,6 +101,8 @@ func start(node: StringName = &"") -> bool:
 		return false
 	_running = true
 	_pending = null
+	_awaiting_marker = &""
+	_reached_markers.clear()
 	_enter(target)
 	return true
 
@@ -113,6 +127,9 @@ func next() -> DialogueStep:
 		return _pending
 	if not _running:
 		return DialogueStep.make_end()
+	if _awaiting_marker != &"":
+		push_warning("DialogueRunner: next() before music marker '%s' was reached; continuing" % _awaiting_marker)
+		release_wait()
 	for _i in MAX_OPS_PER_STEP:
 		if _pc >= _ops.size():
 			return _finish()
@@ -136,6 +153,35 @@ func choose(index: int) -> bool:
 	_pc = _pending_targets[index]
 	_pending = null
 	_pending_targets.clear()
+	return true
+
+
+func is_waiting_for_marker() -> bool:
+	return _awaiting_marker != &""
+
+
+## The marker the current `@wait music=` holds for; empty when not waiting.
+func waiting_marker() -> StringName:
+	return _awaiting_marker
+
+
+## The sequencer reports each music marker as the score passes it. Returns true if this released
+## the current wait. A marker reported early still counts for a later wait, until the next @music.
+func music_marker_reached(marker: StringName) -> bool:
+	_reached_markers[marker] = true
+	if _awaiting_marker == &"" or marker != _awaiting_marker:
+		return false
+	release_wait()
+	return true
+
+
+## Ends the current music wait without its marker (player skip, or the cue's max= timeout).
+func release_wait() -> bool:
+	if _awaiting_marker == &"":
+		return false
+	var marker := _awaiting_marker
+	_awaiting_marker = &""
+	music_wait_satisfied.emit(marker)
 	return true
 
 
@@ -209,7 +255,12 @@ func _exec(op: Dictionary) -> DialogueStep:
 			return DialogueStep.from_line_op(op)
 		"cue":
 			var step := DialogueStep.from_cue_op(op)
+			if step.cue == &"music":
+				_reached_markers.clear()
 			cue_triggered.emit(step.cue, step.args, step.kwargs)
+			if step.is_music_wait() and not _reached_markers.has(step.wait_marker):
+				_awaiting_marker = step.wait_marker
+				music_wait_requested.emit(step.wait_marker)
 			return step
 		"options":
 			return _offer(op)

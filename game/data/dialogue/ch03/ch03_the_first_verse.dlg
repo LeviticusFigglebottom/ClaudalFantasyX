@@ -115,12 +115,12 @@ Asha [soft_smile]: I know, Toma. I watched it once. #line:ch03_verse_041
 @anim asha face_west
 @camera S09 blend=2.5
 @music hush_first_verse fade=0.5
-Asha [tender]: Vey ennu, vey ennu, #line:ch03_verse_042 #sung #lamptongue
-Asha [tender]: hal oan, ish karra. #line:ch03_verse_043 #sung #lamptongue
-Asha [tender]: Ennu re, ennu re... #line:ch03_verse_044 #sung #lamptongue
+Asha [tender]: Vey ennu, vey ennu, #line:ch03_verse_042 #sung #lamptongue #notr #tn:"Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown."
+Asha [tender]: hal oan, ish karra. #line:ch03_verse_043 #sung #lamptongue #notr #tn:"Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown."
+Asha [tender]: Ennu re, ennu re... #line:ch03_verse_044 #sung #lamptongue #notr #tn:"Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown."
 @camera S10 blend=1.5
 @face rhen surprised 3.0
-Asha [tender]: ...mir. #line:ch03_verse_045 #sung #lamptongue
+Asha [tender]: ...mir. #line:ch03_verse_045 #sung #lamptongue #notr #tn:"Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown."
 @wait 2.0
 Rhen [surprised]: ...where did you learn that? #line:ch03_verse_046
 @camera S09 blend=0.8
@@ -155,7 +155,7 @@ Asha [worried]: Something heard that. #line:ch03_verse_059
 @mark asha drownbell_arena run
 @mark toma drownbell_arena run
 @mark rhen drownbell_arena run
-@camera C08 blend=0.0
+@camera C08 blend=0.0 grade=ch03_boss
 @sfx drownbell_toll at=drownbell
 @vfx glimmer_held at=drownbell drift=down_seaward
 Toma [determined]: On my shield. Everyone, on my shield, now. #line:ch03_verse_060
