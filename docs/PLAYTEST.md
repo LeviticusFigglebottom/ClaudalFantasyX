@@ -8,8 +8,8 @@ This is a rough but complete thread through the first minutes of *Hymn of the Un
 2. **Prologue.** A dead city at dusk, with one line of Rhen's narration.
 3. **Cutscene A, "The Girl on the Beach".** Rhen wakes in the shallows at Haluna. There are two choices; both are fine.
 4. **Haluna, free to walk.** Talk to the three villagers (at the market, the chapel court and the dock). Each one has a line that hints at what a "Cantor" is.
-5. **First battle.** Walking up the beach path toward the village starts a fight against a reef crab and a lantern eel, with Rhen and Asha (Toma in reserve). Win it, and you return to the beach path. Flee it, and you are back on the beach below the path, with the fight still ahead. Lose it, and you can **Fight again** or **Return to last save** (your newest save; with none yet, this reads **Return to title**).
-6. **Save** at the shrine: the glowing teal stone with a shell canopy, near the beach palms. Resting there heals the party and opens the save menu.
+5. **First battle.** Walking up the beach path toward the village starts a fight against a reef crab and a lantern eel, with Rhen and Asha (Toma in reserve). Win it, and you're back on the path just inland of where the fight started. Flee it, and you're back on the beach below the path, with the fight still ahead. Lose it, and you can **Fight again** or **Return to last save** (your newest save; with none yet, this reads **Return to title**).
+6. **Save** at the shrine: the glowing teal stone with a shell canopy, on the third lane into the village (past the tide-wall lanes). Resting there heals the party and opens the save menu.
 7. **The causeway head.** Once you have saved, walk north along the beach, past the dock, to the causeway head at its far end. This plays **Cutscene B, "The First Verse"**, at the Shell Shrine at sunset.
 8. **The Drownbell.** The bell answers the verse. It's a two-phase boss, with Rhen, Asha and Toma and no reserve.
    - **Phase 1, the Toll:** watch the timeline. The bell gathers a toll that shoves everyone back, and the timeline shows it two turns out. Three fast strikes (Rhen's Attack or Quick Hit) break its rim and silence it.
@@ -23,7 +23,7 @@ This is a rough but complete thread through the first minutes of *Hymn of the Un
 ### Option A: the Godot editor (recommended)
 
 1. Download **Godot 4.6.3 stable**, the standard build (not .NET), for Windows: <https://godotengine.org/download/archive/4.6.3-stable/>. Unzip it anywhere. There is no installer.
-2. Get the project: clone the repository, or download the `claude/first-playable` branch as a ZIP from GitHub and unzip it.
+2. Get the project: clone the repository, or download the `claude/new-session-mj8c3c` branch (the integration branch, with the latest art) as a ZIP from GitHub and unzip it.
 3. Run `Godot_v4.6.3-stable_win64.exe`. In the Project Manager, click **Import**, choose the repository's `project.godot`, and click **Import & Edit**.
 4. **The first open imports every asset, which takes a few minutes.** Wait until the progress bar at the bottom of the editor finishes.
 5. Press **F5** (or the ▶ "Run Project" button at the top right). The game starts at the title.
@@ -60,6 +60,7 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - Haluna uses the art team's mood-test scene, with simple collision added. The camera mostly follows Rhen from behind; only a few spots use composed shots.
 - **Call Ilun** is a stand-in for the real Vowbound summon (ADR 0023). For now it is one of Asha's commands rather than a full summon that replaces the party, and the bell and polyps are placeholder shapes.
 - Entering Haluna holds the black fade for about a second and a half while the village builds itself; the picture no longer freezes when it appears.
+- In the field, Escape does nothing. **E** also advances dialogue.
 
 ## Reporting
 

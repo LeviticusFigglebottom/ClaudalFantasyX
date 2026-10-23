@@ -2,7 +2,7 @@
 id: M2-FP-03
 title: First-playable flow - prologue, New Game routing, battle hand-off and return, end card
 role: architect
-status: review
+status: done
 owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M1-ARC-06, M1-CMB-08]
 milestone: M2
@@ -31,3 +31,28 @@ New Game → Prologue (Rhen's narration over the dead city) → Haluna beach; a 
 - Ready for review by **qa**. `tools/validate_data.py` (Systems-owned, shared) got a small fix so a root script defining `place_at` counts as a player (own commit + test); Systems please confirm.
 
 ## Review log
+- 2026-10-23 qa (review-sweep-K, fresh reviewer): **approve with should-fixes.** No blockers. The flow can't soft-lock today, but the defeat path has no test.
+  - **What I read:** the task, handoff first-playable-1, `git diff 2ddca3f^1 2ddca3f -- game/flow game/levels/prologue game/data/flow tests/integration/test_fp_* tests/unit/test_fp_end_card.gd tools/validate_data.py tools/tests/test_fp_scene_place_at.py`, scene_router.gd:80-97 and world_return.gd:61-140.
+  - **Checks:** Godot `--filter=fp_` 15/0 failed, `world_return` 17/0. `validate_data` 0/0 and tool tests 400 OK.
+  - **Soft-lock walk (by reading):**
+    - **Loss.** Return goes to BattleReturn with the flag unset and the pre-fight vitals. Fight again reuses `request`.
+    - **Escape.** It returns to the village side, and the strip fires again on the way back to the beach.
+    - **Re-entry.** The victory flag blocks the trigger after a win.
+    - **Save and load mid-thread.** A save is only possible at the shrine, after the strip. A load at Shrine skips Cutscene A, because `begin()` checks `ch02_met_asha` (haluna_story.gd:55). The cutscene's autosave hold covers the arrival.
+    - **Data and strings.** Battle data and hand-offs are in first_playable.json. The end card and the Return labels are loc keys. The validator change (`_node_script_id`) is correct, and Systems can confirm from this entry.
+  - **Should-fix:**
+    - **S1: no defeat test.** test_fp_field_battle.gd covers victory (:92) and escape (:110), but not defeat. Add one for each outcome:
+      - Defeat, then Return: the flag stays unset, the vitals are the pre-fight ones, and the party travels to the return spawn.
+      - Defeat, then Fight again: the same encounter and seed start again, and `request` is kept.
+
+      This is the path most likely to strand a player.
+    - **S2: a hand-off is latched before it is known to go through.**
+      - field_battle.gd:64 sets `returned = true` before `go_to`.
+      - end_card.gd:84 sets `done = true` before `SceneRouter.change_scene`.
+      - haluna_story.gd:90 sets `busy = true` and never resets it.
+
+      `SceneRouter.change_scene` silently ignores a call while it is busy (scene_router.gd:81-83), and `WorldReturn._travel` still returns true (world_return.gd:139-140). So a Return that lands during a router swap leaves the result panel or the end card dead.
+
+      The current timings make that unlikely: the end card's 1.5 s hold is longer than FADE_SEC 0.35 plus 4 frames. Still, wait for `not SceneRouter.is_busy()` first, as prologue_scene.gd:89 does, or un-latch when the swap is refused.
+    - **S3: no test for a missing request.** No test covers `BattleRequest.submit` without a SceneRouter (battle_request.gd:72 push_error). The request stays pending and the field stays busy. Add a test, or clear `_pending` on that path.
+- 2026-10-23 lead: closing on review-sweep-K approve; the should-fixes are in M2-FP-05 (FP), M1-ARC-15 (graphics settings never applied) or the PC queue (QA-05 re-run).

@@ -2,7 +2,7 @@
 id: M1-NIT-01
 title: Small fixes from review-sweep-J (UI-05, QA-06, NAR-12)
 role: qa
-status: review
+status: done
 reviewer: lead
 owner_session: "agent-a0094ffbbf8563d67"
 depends_on: [M1-UI-05, M1-QA-06, M1-NAR-12]
@@ -37,3 +37,24 @@ From the review-sweep-J entries (file:line references there).
 - **Not in scope.** The ch02 .dlg "She never says so" nit is still open.
 
 ## Review log
+- 2026-10-23 lead-role reviewer (review-sweep-K, fresh reviewer): **approve.** No blockers or should-fixes.
+  - **What I read:**
+    - the task;
+    - `git show` 3128ed2 (swell_ring_clock.gd, swell.json, strings.csv, art/ui.md, tech/ui.md and the tests);
+    - `git show` 7787dd2 (verify_blender_builds.py, blender_builds.json, test_blender_builds.py and blender_builds.md);
+    - `git show` dbdf43f (ADR 0022 append note, act_outline Ch17, decisions_log N-02, the sweep-C Prologue line and N-26);
+    - `git show` a89f7ea (the battle_swell_ring baseline).
+  - **Checks:**
+    - Godot `--filter=swell` 48/0 failed, which includes test_swell_ring_clock and test_battle_swell_hud.
+    - Tool tests 400 OK, which include the 3 new blender ones.
+    - **Blender `--job base_body` re-run here: KNOWN, exit 0.** The rebuilt sha256 values match the pins: 4523ba…, 58142e… and 5da684…. That makes three stable single-thread runs on this host.
+  - **UI S1.** A frame's `delta` is already scaled by `time_scale`, and `press()` now scales its wall-clock catch-up the same way (swell_ring_clock.gd:53). With `time_scale` 0 both freeze.
+  - **UI S2.** The new key `SWELL_INPUT_TIMING_RING_HELP_LAMP` is appended. The old row is left unused, as append-only requires.
+  - **QA S1.** A `threads: 1` mismatch must pin content (verify_blender_builds.py:95). A changed hash inside the same accessors is reported as a new signature.
+  - **Narrative S1 and S2.**
+    - The ledger order is now consistent. In act_outline Ch17 "Kell. Of course." comes first, and the broken-off entry is last and is followed only by blank pages.
+    - No "oil wick" is left in story docs outside the struck-through corrections.
+  - **Still open (recorded, not blocking):**
+    - the `taskset -c 0,1` thread-independence proof run (QA S2);
+    - the ch02 `.dlg` "She never says so" source comment.
+- 2026-10-23 lead: closing on review-sweep-K approve; the should-fixes are in M2-FP-05 (FP), M1-ARC-15 (graphics settings never applied) or the PC queue (QA-05 re-run).

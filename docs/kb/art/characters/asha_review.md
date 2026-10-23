@@ -281,3 +281,115 @@ The four shots still inside their limit were re-approved anyway, so the baseline
 | Hair reads warm brown under the warm key | Shading (secondary and transmission lobes); not changed here |
 | `asha_hair.Scalp` (the field) is still the default when no mesh is given | `test_asha.test_part_budgets` uses it. `build_asha` always passes the head mesh |
 | Face texel density 69 px/cm in 2K; whole head 43 px/cm | 4K is still blocked by ADR 0005 (no LFS) |
+
+## 8. M1-CHR-07: face round 3 (smile driver, lips, hairline, brows, hair colour)
+
+The review-sweep-J progress note on M1-CHR-04 listed what still blocked §14 at dialogue range. This round takes the asset-side items. The cheek and forehead shadow banding, the shadow settings and the cloth, vest and bodice materials belong to the PC GPU session and were not touched. The branch merged the session branch (the PC's `shadow_normal_bias` 2.5 and the vest lacquer values in `write_materials.py`'s cloth row) before the final build, so the frames below include those changes.
+
+**Same lighting and cameras as §3. Every frame is lavapipe.** CHR-04 (the previous baselines) is on the left, CHR-07 (the re-approved baselines) on the right.
+
+### 8.1 The smile driver gap: root cause
+
+The data and the wiring were correct. `asha_face_poses.json` matches asha.md §6.3, AshaStage resolves every entry to `<shape>_L/_R`, and all 40 names are on the Head mesh. The gap was in the shapes and the export:
+
+1. **No morph-target normals.** CHR-03 dropped them to keep `asha.glb` under 5 MB (ADR 0021), because Blender's exporter writes normals for every shape key or for none. Without them, a shape that only bunches smooth skin shades exactly as at rest. The cheek raise and the lid squint changed silhouettes and lid margins only.
+2. **The amplitudes were too small to show even as displacement.** At full weight `cheek_raise` peaked at 3.6 mm under a 24 mm falloff, and `lid_squint` lifted the lower lid 2.6 mm. At the smile's 0.45 and 0.25, that is 1.6 mm and 0.65 mm. Measured on the committed GLB, the smile lifted the lower-lid margin 1.63 mm and the cheek 1.45 mm. Rendered alone, `cheek_raise` 0.45 changed 1,406 pixels and `lid_squint` 0.25 changed 1,301.
+3. The same audit for every tag (`tools/tests/test_asha_face_drive.py`) found one more dead shape: `jaw_clench` (angry 0.5, determined 0.2). Its depth falloff was centred 7 mm off the masseter, so the 1.5 mm bulge peaked at 0.57 mm.
+
+The fix:
+- `asha_glb.add_morph_normals` runs after the export and adds sparse NORMAL deltas to the 30 expression shapes only (+0.53 MB). The visemes stay without them, because the lips' silhouette carries those.
+- `cheek_raise` is rebuilt as FACS AU6 at full weight: a 6.5 mm malar lift and 2.8 mm forward, stopped at the nasolabial line so the fold deepens, plus the lower lid pushed up on the globe (−0.22 rad) and a bunched roll under it.
+- `lid_squint` (lower lid −0.34 rad, upper +0.10) and `lid_wide` (−0.30) go to FACS scale, and `jaw_clench` gets a 4 mm masseter bulge and a firmer press.
+- The emotion weights are unchanged. They are the asha.md API; the shapes at 1.0 are now full intensity.
+
+After: the smile lifts the lower lid **3.28 mm** and the cheek **2.98 mm**, and both now shade.
+
+The new test checks, for every tag and every shape it maps:
+- that the shape exists;
+- that it moves skin in its expected region (at least 60% of its motion there);
+- a full-weight floor and about a pixel (0.33 mm) at the tag's own weight;
+- normals on the expression shapes;
+- that the smile lifts the lid and the cheek by at least 2.5 mm, and neutral by under 0.2 mm.
+
+On the CHR-04 GLB the test fails 41 checks, on exactly these faults.
+
+### 8.2 What else changed
+
+- **Lips.**
+  - The donor's lip face set ran 12–13 mm above the contact and was jagged at its 1.9 mm quads, which read as a soft pink rectangle. The vermilion is now drawn in the frame of the sealed contact line (`bb_donor.lip_rest` exports `lip_dz`, `lip_u` and `lip_front` to the bake).
+  - The outline has a cupid's bow: an 18% dip over the philtrum, peaks at a quarter of the half-width, just under the upper lip's front-most ridge, where the donor geometry already has its bow.
+  - The colour edge is crisp (±0.35 mm). Outside the upper border there's a lighter white roll and a raised border ridge, and a philtrum groove between two columns sits in the normal map. The lower vermilion is 9 mm (s = 1).
+  - **The smile's slit:** the donor corner puller and the smile's `lip_upper_up` 0.10 parted the lips by up to 0.5 mm onto the dark interior. `mouth_smile`, `mouth_frown` and `lip_upper_up` are now sealed at the contact (`seal_contact`), and the smile's parting is 0.13 mm or less. Opening is `jaw_open`'s job; grief and the visemes still open.
+- **Brows.** One atlas column of hair strokes per card layer (CHR-02 drew one set of hairs that all three layers sampled, at alpha boost 2.2). The head is upright and fades in, the body's lower rows rise and the upper rows lie down, and the edges feather. Alpha boost is now 1.6. The arch had a step at the lateral third: `sin(π u/0.72)` was back at 0 where the falling branch started at 1. It's smooth now. The lower lashes sample a sparse third of the lash strands.
+- **Hairline.**
+  - The temples are 0.01–0.02 h lower, so hair frames them. The bare temple silhouette read as a high forehead and, lit from behind, as a pinkish streak.
+  - The underpaint transition is about 15 mm with fine, half-transparent first strands; CHR-04's 5 mm ramp drew the hard line.
+  - The front hairline is unchanged: lowered, one hairline card rooted on bare forehead and ran down across the brow.
+  - The two face-framing strands (asha.md §5) are thinner ribbons on full clumps, fanned apart as a lock.
+  - The pale rectangle above the left ear was the tortoiseshell comb, projected 10 mm off the scalp (above the 4 mm top layer) with a mirror clearcoat. It now sits in the hair at 4.5 mm, with a softer finish.
+- **Hair colour.** The albedo is on spec: the shader's `col_root` is `hair_black` #201A16, and so is the scalp underpaint. The warm-brown read was the **primary** Kajiya-Kay lobe; lavapipe diagnostics with it off turn the mass dark, while transmission had no visible effect. At exponent 120 on the smooth card shell the band spread over the whole lit side, and under the warm key its #E8D8C8 tint read as a broad gold sheen, which asha.md §5 rules out ("a thin ribbon, never a broad sheen"). The hair material now uses `spec_primary_exponent` 400, `spec_shift_jitter` 0.25 and `indirect_specular` 0.1. That departs from the sheet's exponent 120 and is **for Rendering and Art to confirm on a GPU**.
+
+### 8.3 The SPEC §14 dialogue-range review, side by side with CHR-04
+
+| | CHR-04 (left) | CHR-07 (right) |
+|---|---|---|
+| Smile | Mouth-only. Lids and cheeks as at rest; a black glossy slit on the shadow side | **The eyes smile.** The lower lids rise and the outer eyes narrow, and the cheeks bunch up against the nasolabial line on both sides. Lips closed, corners up, no slit. The upper face differs from neutral in 3,124 pixels (CHR-04: 1,980). The whole frame differs in 8,535 (CHR-04: 6,497), less than the eyes suggest, because the thinner lips move fewer pixels |
+| Grief | Brows knit as heavy bars | The knit reads through the stroke brows, though less forcefully than the bars did. The squint narrows the eyes. The teeth and open jaw are as before |
+| Lips, neutral | One swollen, uniformly pink roll; the colour spills onto the skin below | Thinner, with a defined vermilion edge, a cupid's bow and a lighter roll above it. The colour stays on the lip. The bow's shoulders still wobble slightly where the border crosses the donor lip's tubercle relief. The philtrum is too subtle to read at 960×540 |
+| Brows | Solid dark bars with blocky ends; a step in the arch | Hair strokes, soft head, feathered edges, smooth arch. The medial head of the left brow is slightly heavy (a dense tuft) |
+| Hairline | Hard dark edge over a high bare forehead; bare temples | Softer edge, strand fringe, temples framed. **Still a tight, smooth shell over the crown**: the cards follow the scalp closely, which is the pulled-back style, but at this framing the mass is still more "painted cap" than strands |
+| Stray cards | A dark card with a pinkish streak at her right temple; a pale card above the left ear | The comb is seated and dark. The pinkish temple streak is gone. **The framing lock still reads as a thin dark streak down her right temple** in the front-on figure of `asha_face_stylized_compare`. It is in the sheet, but it doesn't yet read as loose hair |
+| Hair colour | Warm brown to gold on the lit side | Near-black, with a thinner and broken warm highlight. Slight warmth remains on the lit side under this key |
+| Cheek and forehead banding | Strong | Much reduced: the merged PC change, not this task |
+| Costume | Glossy | The PC's vest values are merged. Not judged here |
+
+**Verdict: improved, and the smile driver gap is closed. It does not yet pass §14 at dialogue range as built. With the ADR 0019 close-range look it is close, but I would not call it a clean pass on these frames.**
+
+The expression read was the biggest uncanny cue, and it is fixed: the smile now involves the eyes and cheeks. The brows and the lip border were the next most visible faults, and both are fixed at the asset level.
+
+What still keeps it from a clean pass:
+1. **The hair mass** still reads as a smooth shell at the crown at this framing, and the face-framing lock reads as a streak, not loose hair. This needs a card-layout pass (lift and clump variation, a less regular top layer), which the 63,500-triangle cap leaves no room for unless triangles come from elsewhere. LOD0 is at exactly 63,500.
+2. **The lips** have the right shape and border, but they are thin now. Their shoulders wobble slightly, and the philtrum doesn't read.
+3. **Still frames.** Lip-flap, blinks and the smile blend (Cutscene A's smile → stillness → smile) need the motion review (ADR 0019 watch item 3).
+4. All of this is lavapipe. The hair lobe change and the morph normals' shading should be confirmed on the GPU 2× captures.
+
+### 8.4 Re-approved baselines
+
+All 10 `asha_*` shots were re-approved. I looked at each one side by side with its CHR-04 baseline. All of them also take the merged `shadow_normal_bias` 2.5, and every shot with the vest in frame takes the merged lacquer values.
+
+| Shot | RMSE against CHR-04 | Why it changed |
+|---|---:|---|
+| `asha_face_neutral` | 0.0206 | Lip outline and border, brow strokes, hairline and temples, darker hair, seated comb, thinner framing lock; less cheek banding (merged) |
+| `asha_face_smile` | 0.0224 | As neutral, plus the smile driver: lid squint, cheek raise with normals, sealed lips |
+| `asha_face_grief` | 0.0221 | As neutral, plus the stronger squint; the knit brows as strokes |
+| `asha_face_stylized_compare` | 0.0310 | All the face and hair changes under both skins; `soft_smile` now moves lids and cheeks |
+| `asha_sleeve_s0` | 0.0083 | Braid, hair and comb in frame; merged shadow bias on the sleeve and bodice. The sleeve is unchanged |
+| `asha_sleeve_s4` | 0.0083 | Same; the verse bands are unchanged (checked at full size) |
+| `asha_front` | 0.0061 (within its limit) | Hair colour and silhouette, shadow bias |
+| `asha_q34` | 0.0054 (within its limit) | Same |
+| `asha_profile` | 0.0048 (within its limit) | Same |
+| `asha_extreme_pose` | 0.0056 (within its limit) | Same |
+
+### 8.5 Numbers
+
+| | CHR-04 | CHR-07 |
+|---|---|---|
+| LOD0 | 63,444 | **63,500** (hair 15,584: the lower temple lengthens a few card paths); the target is 63,500 |
+| LOD1 | 29,862 | 29,891 |
+| `asha.glb` | 4,036,596 B | **4,555,480 B** (morph normals on 30 shapes: 37,563 sparse rows, +525,896 B) |
+| `asha_lod1.glb` | 1,427,336 B | 1,429,576 B |
+| Head maps | — | albedo 1.94 MB, normal 3.04 MB, ORM 1.34 MB, skinmask 3.29 MB (all under 5 MB) |
+| Rebuild | 44 identical | `verify_blender_builds.py --job asha`: **44 identical** (2 GLBs, 23 textures, 19 materials), 327 s |
+
+### 8.6 Known issues (CHR-07)
+
+| Item | Note |
+|---|---|
+| Hair mass reads as a smooth shell at the crown at dialogue range | Card layout pass; no triangle headroom (LOD0 63,500) |
+| The face-framing lock reads as a thin dark streak | Same pass. It's per asha.md §5, but it needs loose-strand behaviour |
+| Hair lobe values depart from asha.md §5 (exponent 400, not 120) | For Rendering and Art to confirm on a GPU, then update the sheet or revert |
+| Brow head slightly heavy on the left brow | Lower the head-hair density in `brow_hairs` |
+| Lips thin; bow shoulders wobble a little | `VERM_UP` and `VERM_DIP` in asha_textures; or smooth the donor tubercle relief under the border |
+| One flyaway sticks out sideways near the jaw by the braid | The hair RNG reshuffled with the lower temple; per spec, but a candidate to pin |
+| Visemes have no morph normals | GLB cap. The mouth's silhouette carries them; revisit with LFS |
+| `seal_contact` keeps the lips together under `lip_upper_up` | Intended for Asha. A hero who must bare teeth without opening the jaw needs it off |

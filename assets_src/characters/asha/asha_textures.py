@@ -211,7 +211,8 @@ def rasterise(npz: dict, size: int, mats: set[str]) -> dict:
     tags = npz["T"][tv[T]] if "T" in npz else np.zeros((len(T), 3), dtype=int)
     out = {"cov": cov, "tri": T, "P": pos, "N": N, "T": Tt, "B": Bt, "tags": np.max(tags, axis=1), "size": size,
            "bary": b}
-    for key in ("AO", "THK", "CAV", "LIP", "CONTACT", "CORNER"):  # per-vertex bake terms (CHR-03, CHR-04)
+    # per-vertex bake terms (CHR-03, CHR-04; the lip frame LIPDZ/LIPU/LIPFRONT is CHR-07)
+    for key in ("AO", "THK", "CAV", "LIP", "CONTACT", "CORNER", "LIPDZ", "LIPU", "LIPFRONT"):
         if key in npz:
             out[key] = np.einsum("ni,ni->n", b, np.asarray(npz[key], dtype=float)[tv[T]])
     return out
@@ -265,6 +266,7 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
     Ph = P.copy()
     Nh = N.copy()
     if key == "head":
+        r["verm"] = vermilion(r, s)
         r["zones"] = skin_zones(P, face, lm, r, hair_mod)
         e = 0.00012 * s
         hT = (detail_height(P + r["T"] * e, face, lm, r) - detail_height(P - r["T"] * e, face, lm, r)) / (2 * e)
@@ -364,9 +366,50 @@ def texel_report(r: dict, npz: dict, face_only: bool = False) -> None:
     print(f"head texel density{' (face mask)' if face_only else ''}: {dens:.1f} px/cm at {r['size']} px")
 
 
+# M1-CHR-07: the vermilion outline, drawn in the frame of the sealed contact line (bb_donor.lip_rest
+# dumps LIPDZ = height above the contact, LIPU = x over the mouth half-width, LIPFRONT = the lip roll
+# in front of the teeth). The donor's lip face set runs 12-13 mm above the contact and is jagged at
+# its 1.9 mm quads, which read as a soft pink rectangle with no bow. Heights in metres at s = 1.
+VERM_UP = 0.0088  # upper vermilion height at the bow's peaks: just under the upper lip's front-most ridge
+VERM_LO = 0.0090  # lower vermilion height (asha.md §6.1: a full lower lip)
+VERM_DIP = 0.18  # the bow's dip over the philtrum, as a fraction of the height
+VERM_PEAK_U = 0.25  # the bow's peaks (the philtral columns' feet), in half-widths
+VERM_EDGE = 0.00035  # half-width of the colour edge at the border
+PHILTRUM_H = 0.013  # philtrum height above the bow
+
+
+def vermilion(r: dict, s: float) -> dict | None:
+    """{"lips": 0..1 inside the vermilion, "bu"/"bl": 1 on the upper / lower border, "roll": the
+    skin's white roll just outside the upper border, "philtrum": signed relief (+ columns,
+    - groove)}, per texel; None without the CHR-07 lip frame."""
+    if "LIPDZ" not in r:
+        return None
+    u = r["LIPU"]
+    dz = r["LIPDZ"]
+    f = np.clip(r["LIPFRONT"], 0.0, 1.0)
+    au = np.abs(u)
+    taper = np.clip(1.0 - u * u, 0.0, 1.0)
+    bow = (1.0 - VERM_DIP * np.exp(-((u / 0.10) ** 2))) * (1.0 + 0.06 * np.exp(-(((au - VERM_PEAK_U) / 0.06) ** 2)))
+    hu = VERM_UP * s * taper ** 0.6 * bow
+    hl = VERM_LO * s * taper ** 0.55
+    e = VERM_EDGE * s
+    side = smoothstep(1.0, 0.93, au)
+    inside = smoothstep(hu + e, hu - e, dz) * smoothstep(-hl - e, -hl + e, dz) * side * f
+    bu = np.exp(-(((dz - hu) / (0.0005 * s)) ** 2)) * side * f * (dz > 0)
+    bl = np.exp(-(((dz + hl) / (0.0007 * s)) ** 2)) * side * f * (dz < 0)
+    above = dz - hu
+    roll = smoothstep(0.0, 0.0004 * s, above) * smoothstep(0.0018 * s, 0.0008 * s, above) * side * f
+    rise = smoothstep(0.0, 0.0015 * s, above) * smoothstep(PHILTRUM_H * s, 0.6 * PHILTRUM_H * s, above)
+    col = np.exp(-(((au - 0.19) / 0.06) ** 2)) - 1.3 * np.exp(-((u / 0.085) ** 2))
+    phil = col * rise * f * (au < 0.45)
+    return {"lips": inside, "bu": bu, "bl": bl, "roll": roll, "philtrum": phil}
+
+
 def lip_weight(Ph: np.ndarray, face, lm, r: dict) -> np.ndarray:
-    """The donor's lip face set (vertex weight LIP, interpolated) sharpened to the vermilion border;
-    the M1-CHR-02 analytic outline when no LIP term was dumped."""
+    """The vermilion (the M1-CHR-07 outline when the lip frame was dumped); before that, the donor's
+    lip face set sharpened to its border, and the M1-CHR-02 analytic outline when there was neither."""
+    if r.get("verm") is not None:
+        return r["verm"]["lips"]
     if "LIP" in r:
         return smoothstep(0.3, 0.7, r["LIP"])
     return lip_mask(Ph, face, lm)
@@ -397,6 +440,9 @@ def skin_zones(P: np.ndarray, face, lm, r: dict, hair_mod) -> dict:
         rr, _t = e.field(P[:, 0], P[:, 2])
         lids = np.maximum(lids, 1.0 - smoothstep(1.2, 1.9, rr))
     lips = smoothstep(0.2, 0.6, r["LIP"]) if "LIP" in r else np.zeros(len(P))
+    vm = r.get("verm")
+    if vm is not None:
+        lips = vm["lips"]
     dz_hair = v - hair_mod.hairline_v(lm, P)
     scalp = smoothstep(-0.01, 0.01, dz_hair)
     density = np.clip(0.45 + 0.55 * np.maximum(nose, cheek), 0.0, 1.0) * front
@@ -418,6 +464,8 @@ def skin_zones(P: np.ndarray, face, lm, r: dict, hair_mod) -> dict:
     corner = np.clip(r["CORNER"], 0.0, 1.0) if "CORNER" in r else np.zeros(len(P))
     border = np.exp(-(((r["LIP"] if "LIP" in r else np.zeros(len(P))) - 0.5) / 0.13) ** 2)
     border *= 1.0 - smoothstep(0.05, 0.3, contact)
+    if vm is not None:  # M1-CHR-07: the drawn border, not the donor face set's
+        border = np.maximum(vm["bu"], 0.6 * vm["bl"])
     relief_w = (1.0 - scalp) * (1.0 - lips) * front * (1.0 - 0.6 * lids)
     return {"density": density, "pit": pit, "line": line, "contact": contact, "corner": corner, "relief_w": relief_w,
             "border": border * front, "scalp": scalp, "lips": lips, "dz_hair": dz_hair}
@@ -445,6 +493,13 @@ def detail_height(P: np.ndarray, face, lm, r: dict) -> np.ndarray:
         h -= 0.000012 * s * relief * z["relief_w"]
         # the vermilion border: a slight raised roll where lip meets skin
         h += 0.000035 * s * z["border"]
+        vm = r.get("verm")
+        if vm is not None:
+            # M1-CHR-07: a crisper ridge on the upper border (it catches the key as a thin line),
+            # the white roll of skin above it, and the philtrum: a groove between two columns that
+            # rise from the bow's peaks toward the nose
+            h += 0.00005 * s * vm["bu"] + 0.00004 * s * vm["roll"]
+            h += 0.00030 * s * vm["philtrum"]
         # where the lips meet: a shallow groove (the geometry closes the slit; this is the line)
         h -= 0.00006 * s * z["contact"] ** 2
         # forehead: two faint horizontal lines, broken up
@@ -558,6 +613,13 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
             deep = hexc("#93544E")
             lipcol = lipc * (1 - 0.55 * z["contact"][:, None]) + deep * 0.55 * z["contact"][:, None]
             lipcol = lipcol * (1 + 0.04 * z["border"][:, None])
+            vm = r.get("verm")
+            if vm is not None:
+                # M1-CHR-07: the border reads as a colour edge: the vermilion a touch deeper just
+                # inside it, the white roll of skin just outside it a touch lighter
+                inner = np.maximum(vm["bu"], vm["bl"]) * lips
+                lipcol = lipcol * (1 - 0.06 * inner[:, None])
+                col = col * (1 + 0.05 * vm["roll"][:, None] * np.array([1.0, 0.95, 0.9]))
             col = col * (1 - lips[:, None]) + lipcol * lips[:, None]
             col *= 1 - (0.22 * z["contact"] ** 3 + 0.25 * z["corner"])[:, None]
         # lids slightly darker and pinker; the lid margin and caruncle wet pink
@@ -592,10 +654,14 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
             flow = hair_mod._flow_dir(lm, Ph, Nh, hair_mod._gather(lm))
             streak = 0.6 * aniso_noise(Ph, flow, 0.0008 * s, 14.0, 71) + 0.4 * aniso_noise(Ph, flow, 0.002 * s, 10.0, 72)
             wander = 0.012 * (fbm3(Ph, 0.012 * s, 73, octaves=3) - 0.5)  # an uneven line, +-1.3 mm
-            ramp = smoothstep(-0.03, 0.02, dz + wander)
-            cover = smoothstep(0.38, 0.62, streak + (ramp - 0.5) * 1.3) * smoothstep(-0.04, -0.018, dz + wander)
+            # M1-CHR-07: a longer, sparser transition (about 15 mm) whose first strands are fine and
+            # half transparent, as baby hairs are. CHR-04's 5 mm ramp to 95% hair colour drew the
+            # hard dark line the review called a helmet edge
+            ramp = smoothstep(-0.045, 0.03, dz + wander)
+            cover = smoothstep(0.40, 0.66, streak + (ramp - 0.5) * 1.2) * smoothstep(-0.055, -0.012, dz + wander)
             hcol = hexc("#201A16") * (0.75 + 0.5 * streak)[:, None]
-            col = col * (1 - 0.95 * cover[:, None]) + hcol * 0.95 * cover[:, None]
+            dens = (0.55 + 0.40 * ramp) * cover
+            col = col * (1 - dens[:, None]) + hcol * dens[:, None]
         # brow skin a touch darker
         col *= 1 - 0.12 * (np.exp(-((v - (ve + 0.072)) / 0.015) ** 2) * np.exp(-((np.abs(u) - 0.13) / 0.06) ** 2))[:, None]
         mouth = npz["mi"][r["tri"]] == list(npz["mats"]).index("mouth") if "mouth" in list(npz["mats"]) else np.zeros(n, bool)
@@ -796,43 +862,94 @@ def hair_atlas(size: int = 2048) -> None:
     write("asha_hairflow.png", small / 255.0)
 
 
+LASH_LOWER_U = 0.7  # asha_eyes.lashes: upper lashes sample U 0..0.7, lower lashes the sparse 0.7..1
+BROW_LAYERS = 3  # asha_eyes.brow's card layers; each samples its own column of the atlas
+BROW_LENGTH = 0.044  # m, medial -> lateral (asha_eyes.brow)
+BROW_HAIRS = 420  # strokes per layer column
+
+
+def brow_thickness(t: np.ndarray) -> np.ndarray:
+    """Brow card height (m) at t = 0 (medial) .. 1 (lateral), as asha_eyes.brow builds it."""
+    return 0.0068 * (1 - t) ** 0.8 + 0.0022 * t
+
+
+def brow_hairs(h2: int, size: int, rng) -> tuple[np.ndarray, np.ndarray]:
+    """(alpha, strand id) of the atlas's brow half: BROW_LAYERS columns of hair strokes."""
+    cw = size // BROW_LAYERS
+    alpha = np.zeros((h2, size))
+    sid = np.zeros((h2, size))
+    yy, xx = np.mgrid[0:h2, 0:cw]
+    for layer in range(BROW_LAYERS):
+        acc = np.zeros((h2, cw))
+        ids = np.zeros((h2, cw))
+        x0 = layer * cw
+        k = 0
+        while k < BROW_HAIRS:
+            t = rng.uniform(0.0, 1.0) ** 1.15  # root position along the brow (a touch denser medially)
+            b = rng.uniform(0.0, 1.0)  # root position across
+            head = smoothstep(0.0, 0.10, t)  # the head fades in
+            dens = np.exp(-(((b - 0.45) / 0.30) ** 2)) * (0.35 + 0.65 * head) * (1.0 - 0.45 * t)
+            if rng.random() > dens:
+                continue
+            k += 1
+            if t < 0.12:
+                ang = math.radians(rng.normal(68.0, 12.0))  # head: upright
+            else:
+                rise = (0.55 - b) * 70.0 * (1.0 - 0.6 * t)  # lower rows rise, upper rows lie down
+                ang = math.radians(rng.normal(12.0 + rise, 7.0))
+            ln = rng.uniform(0.004, 0.0075) * (1.0 - 0.35 * t)
+            th = brow_thickness(t)
+            da = ln * math.cos(ang) / BROW_LENGTH  # along, in V
+            db = ln * math.sin(ang) / th  # across, in card heights
+            cx, cy = b * cw, t * h2
+            ex, ey = cx + db * cw, cy + da * h2
+            dx, dy = ex - cx, ey - cy
+            ll = max(dx * dx + dy * dy, 1e-6)
+            m = (xx > min(cx, ex) - 4) & (xx < max(cx, ex) + 4) & (yy > min(cy, ey) - 4) & (yy < max(cy, ey) + 4)
+            if not m.any():
+                continue
+            u = np.clip(((xx[m] - cx) * dx + (yy[m] - cy) * dy) / ll, 0, 1)
+            d = np.hypot(xx[m] - (cx + u * dx), yy[m] - (cy + u * dy))
+            op = rng.uniform(0.65, 1.0)
+            prof = np.exp(-(d / (1.25 * (1 - 0.6 * u))) ** 2) * op * (1.0 - 0.5 * u ** 2)
+            acc[m] = acc[m] + prof * (1.0 - acc[m])
+            ids[m] = np.where(prof > 0.3, (k * 0.618 + layer * 0.31) % 1.0, ids[m])
+        alpha[:, x0:x0 + cw] = acc
+        sid[:, x0:x0 + cw] = ids
+    return alpha, sid
+
+
 def facehair_atlas(size: int = 1024) -> None:
-    """Top half: lash strands (V root -> tip, clumped). Bottom half: brow hairs along V."""
+    """Top half: lash strands (V root -> tip, clumped; the exported lash UVs are V 0..0.5, root at 0).
+    Bottom half: the brow columns (V 0.5 medial -> 1 lateral)."""
     rng = np.random.default_rng(43)
     h2 = size // 2
     img = np.zeros((size, size, 4))
     vv = ((np.arange(h2) + 0.5) / h2)[:, None]
-    a, sid, dep, _ = strand_layer(h2, size, 170, rng, (2.4, 3.8), 0.06, 0.0, length=(0.55, 1.0))
-    img[:h2, :, 0] = np.broadcast_to(vv, (h2, size))
-    img[:h2, :, 1] = sid
-    img[:h2, :, 2] = dep
-    img[:h2, :, 3] = np.clip(a * 1.3, 0, 1)
-    # brows: short hairs, slanted along V (lateral), denser toward the brow's centre line and head
-    b = np.zeros((h2, size))
-    bs = np.zeros((h2, size))
-    yy, xx = np.mgrid[0:h2, 0:size]
-    for k in range(2200):
-        u = rng.uniform(0.05, 0.95)
-        vstart = rng.uniform(0.0, 0.92)
-        dens = np.exp(-((u - 0.5) / 0.28) ** 2) * (1.15 - 0.6 * vstart)
-        if rng.random() > dens:
-            continue
-        L = rng.uniform(0.05, 0.11)
-        ang = rng.normal(0.0, 0.25) + (0.9 - 1.2 * vstart) * 0.6 * (u - 0.5)
-        cx, cy = u * size, vstart * h2
-        ex, ey = cx + math.sin(ang) * L * size * 0.35, cy + math.cos(ang) * L * h2
-        dx, dy = ex - cx, ey - cy
-        ll = dx * dx + dy * dy
-        m = (xx > min(cx, ex) - 4) & (xx < max(cx, ex) + 4) & (yy > min(cy, ey) - 4) & (yy < max(cy, ey) + 4)
-        t = np.clip(((xx[m] - cx) * dx + (yy[m] - cy) * dy) / ll, 0, 1)
-        d = np.hypot(xx[m] - (cx + t * dx), yy[m] - (cy + t * dy))
-        prof = np.exp(-(d / (2.3 * (1 - 0.55 * t))) ** 2)
-        b[m] = np.maximum(b[m], prof)
-        bs[m] = np.where(prof > 0.5, (k * 0.618) % 1.0, bs[m])
-    img[h2:, :, 0] = 0.5
-    img[h2:, :, 1] = bs
-    img[h2:, :, 2] = 0.5
-    img[h2:, :, 3] = np.clip(b * 1.2, 0, 1)
+    # M1-CHR-07: U 0.7..1 is a sparse strip (a third of the strands) for the lower lashes, which are
+    # fewer and finer than the upper ones; at full density they read as a drawn eyeliner
+    a, sid, dep, _ = strand_layer(h2, size, 170, rng, (2.4, 3.8), 0.06, 0.0, length=(0.55, 1.0),
+                                  density_profile=lambda u: 1.0 if u < LASH_LOWER_U else 0.33)
+    lash = np.zeros((h2, size, 4))
+    lash[:, :, 0] = np.broadcast_to(vv, (h2, size))
+    lash[:, :, 1] = sid
+    lash[:, :, 2] = dep
+    lash[:, :, 3] = np.clip(a * 1.3, 0, 1)
+    img[:h2] = lash
+    # M1-CHR-07 brows: one column per card layer (BROW_LAYERS), each its own set of hairs drawn as
+    # single strokes in the brow's physical frame (asha_eyes.brow: V along the brow medial -> lateral,
+    # U across it bottom -> top). At the head the hairs stand up; along the body the lower rows rise
+    # laterally and the upper rows lie down, so they converge on the brow's centre line; the tail
+    # lies nearly flat. The rows feather out at the top and bottom edges and the head fades in, so
+    # the brow has no hard outline. CHR-02 drew one set of hairs that every layer sampled, stacked
+    # at alpha boost 2.2: a solid bar.
+    b, bs = brow_hairs(h2, size, rng)
+    brow = np.zeros((h2, size, 4))
+    brow[:, :, 0] = 0.5
+    brow[:, :, 1] = bs
+    brow[:, :, 2] = 0.5
+    brow[:, :, 3] = np.clip(b, 0, 1)
+    img[h2:] = brow
     write("asha_facehair.png", img)
 
 
