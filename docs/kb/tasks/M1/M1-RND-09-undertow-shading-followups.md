@@ -2,8 +2,8 @@
 id: M1-RND-09
 title: Undertow placement and character-shader contract fixes
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-09-undertow-shading)
 depends_on: [M1-RND-03, M1-RND-04]
 milestone: M1
 request-from: "environment"
