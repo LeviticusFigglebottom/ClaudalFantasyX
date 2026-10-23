@@ -15,7 +15,40 @@
 ## Planned (M1+)
 Built in M1: dialogue runner (`game/narrative/`, DialogueRunner) and text box (`game/ui/dialogue/`, DialogueBox); see tech/dialogue_format.md.
 
-Still planned: dialogue runner (`game/narrative/`), battle scene glue (`game/battle/scene/`), Lattice (`game/progression/`), UI theme (`game/ui/`), and debug overlays F1–F12 (SPEC §5.4, task M1-ARC-02).
+Built in M1 (architect-stream-2): the field controller and camera rails (`game/world/`; see [field_camera.md](field_camera.md)) and the debug overlays F1–F12 (`game/core/debug/`; see "Debug overlays" below).
+
+Still planned: battle scene glue (`game/battle/scene/`, in progress by UI and Combat), random encounters (M2), and the save shrine (M1-ARC-03).
+
+## Debug overlays (M1-ARC-02)
+
+- **Where:** `game/core/debug/`. `DebugOverlay` (a CanvasLayer scene) holds the pages, `DebugReadouts` holds the pure page logic, and `DebugHooks` holds discovery and registration. `scene_swap_probe.tscn` is the hitch probe. Data lives in `game/data/debug/`: `debug_overlay.json` has the bindings, pages and cheat amounts, `teleports.json` has the teleport targets, and `perf_budgets.json` has the thresholds.
+- **Lifecycle:** this is not an autoload. `boot.gd` instances `debug_overlay.tscn` **by path** under the tree root when `OS.is_debug_build()` returns true, so the overlay survives scene changes. Nothing outside `game/core/debug/` names a debug class, and `test_debug_overlay.gd` enforces that. The folder can therefore be dropped from release exports. **This still needs an export filter**: add `game/core/debug/*, game/data/debug/*` to `exclude_filter` in both `export_presets.cfg` presets (Lead or Systems Architect).
+- **Keys** (added to the InputMap at runtime from `debug_overlay.json`; `project.godot` is untouched):
+
+| Key | Page |
+|---|---|
+| F1 | Help |
+| F2 | Turn-order internals |
+| F3 | Encounter rate |
+| F4 | Flag inspector |
+| F5 | Teleport |
+| F6 | Lattice cheat |
+| F7 | Field camera |
+| F9 | Battle sandbox (moved here from `boot.gd`) |
+| F12 | Hide |
+
+  Pressing a page's key again closes it. While the overlay is open, `ui_up`, `ui_down` and `ui_accept` move through lists and act on the selection.
+- **Hooks** (no coupling: game code joins a *group* and exposes a *method*, both plain strings):
+  - Battle: group `debug_battle_engine_source`, `debug_battle_engine() -> BattleEngine`. Without that, the overlay falls back to the first node in the current scene whose `engine` property holds a `BattleEngine`, which already finds `BattleController`.
+  - Encounters: group `debug_encounter_provider`, `debug_encounter_state() -> Dictionary`, with the keys in `DebugReadouts.ENCOUNTER_KEYS`. No provider exists until the M2 encounter system lands, so the page says so.
+  - Lattice: group `debug_lattice_source`, `debug_lattice() -> LatticeProgress`, and optionally `debug_facets() -> FacetInventory`. Without a source, the cheat rebuilds progress from `Game.state.lattice` and writes it back.
+  - Debug-side code and tests can also call `DebugHooks.register_battle_engine`, `register_encounter_provider` and `register_lattice_source`.
+- **What each page does:**
+  - Turn order shows the clock, the current actor, each fighter's agility, speed multiplier, `Formulas.base_delay`, next time and ticks until their turn, and the same 16-turn prediction the HUD shows.
+  - Flags lists every declared flag with its value and description. Enter toggles a bool through `Game.set_flag`.
+  - Teleport uses `SceneRouter.change_scene`, then the new root's `place_at(spawn)`.
+  - Lattice adds `movement_points` to each party member (or to `fallback_characters`), placing them on their start node, and adds `facets_each` of every Facet type, all through `LatticeProgress` / `FacetInventory`.
+- **Text is developer-facing and not localized.** It never ships.
 
 ## Scene-swap hitch (M1-RND-06 follow-up, architect-stream-2, 2026-10-22)
 
