@@ -2,7 +2,8 @@
 id: M1-RND-18
 title: SSS crest patches from high noon cameras (fade the crest term with view elevation)
 role: rendering
-status: doing
+status: review
+reviewer: character
 owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-18-sss-crest)"
 depends_on: [M1-RND-08]
 milestone: M1
@@ -51,5 +52,30 @@ So SSS supplies some of the lift the deep band needs, but it supplies it as patc
   ```
   Set your own `XDG_DATA_HOME`.
 - An optional probe flag, `--sss=#hex`, would make the control run possible without editing water_looks.json.
+
+## Notes (PC GPU session, branch gpu/rnd-18-sss-crest)
+
+Report: `docs/kb/qa/gpu/2026-10-23-rnd-18-sss-crest.md`. The GPU probe pair reproduces Art's "before" exactly:
+27.5 % / 22.5 % / max 0.174 / spread 0.166 / band `#15586E`.
+
+- **Fade.** The crest term is weighted by `1 − smoothstep(sss_view_fade_lo, hi, |view.y|) × smoothstep(height_lo,
+  height_hi, camera height above the point)`, with 0.10 / 0.28 and 10 / 25 m. All are material parameters with
+  shader defaults, applied on every tier.
+  - The height gate is needed because a 5.5 m camera sees its own near water steeply. Steepness alone moved
+    `water_lagoon` and `haluna_h01` past RMSE 0.004.
+- **Even lift.** `col_deep` gains `scatter_view_lift` 1.5 × the same fade. Lifting the whole in-scatter instead
+  pushed the 4–15 m band to ΔE 0.105 against `reef_blue`, so only the deep end is lifted.
+- **Survey, after:**
+  - Deep pixels where SSS adds ΔE > 0.05: **0.0004 %** (≤ 5). Over 0.03: **0.06 %** (≤ 10).
+  - Max added **0.050** (≤ 0.08).
+  - OkL p90 − p10 **0.075** (≤ 0.14).
+  - > 15 m band `#15627A`, **ΔE_ok 0.019** to `#106776` (≤ 0.07).
+  - 4–15 m band `#17808C`, unchanged, at 0.066 to `reef_blue`.
+- **Low cameras.** `water_shallows`, `water_lagoon`, `water_horizon`, `water_night`, `haluna_h01` and `haluna_h04` are
+  **bit-identical** (RMSE 0.00000) on the GPU capture rig, so the lagoon's pale-turquoise share is unchanged.
+- **Undertow.** Every shot ≤ RMSE 0.0004, measured before the height gate, which can only reduce it.
+- **Docs.** water.md has the subsurface row and a new gotcha. Art can close the colour script's first "Two findings
+  for Rendering" bullet.
+- **Reviewer:** character (Art Director), who re-runs the probe pair.
 
 ## Review log
