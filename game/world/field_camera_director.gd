@@ -19,11 +19,16 @@ extends Node3D
 
 signal shot_changed(shot: CameraShot, hard_cut: bool, blend_sec: float)
 ## The camera has settled on `shot` (M1-ARC-07: the sequencer contract). Fires once per transition
-## that lands: when a blend completes (or snap() cuts it short), at the end of the update() that
-## first applies a cut, and at the end of the next update() after a play_shot()/release() that did
-## not move the camera. Never synchronously inside
-## play_shot()/release()/a volume change, so `play_shot(...)` then `await blend_finished` cannot
-## miss it. A transition superseded before it lands does not fire; the one that replaced it does.
+## that lands, always as the last thing update() does, after that frame's pose is on the camera:
+## when a blend completes, in the update() that first applies a cut, and in the next update() after
+## a play_shot()/release() that did not move the camera. A move issued from a blend_finished
+## handler (a sequencer resuming from its await) therefore lands on a later update(), never the
+## one that is emitting. Never synchronously inside play_shot()/release()/a volume change, so
+## `play_shot(...)` then `await blend_finished` cannot miss it. snap() is the exception: it settles
+## at once and emits (for a blend it cut short, or the cut it made) before it returns. A transition
+## superseded before it lands does not fire; the one that replaced it does. Leaving the tree with a
+## move still owed emits it too (see _exit_tree), so an awaiting sequencer never hangs on a zone
+## unload; it should check is_inside_tree() when it resumes.
 signal blend_finished(shot: CameraShot)
 ## A scripted shot took the camera (play_shot). blend_sec is 0 for a cut.
 signal scripted_shot_started(shot: CameraShot, blend_sec: float)
@@ -225,11 +230,24 @@ func scripted_shot() -> CameraShot:
 	return _scripted_shot
 
 
-## Advances selection, blends and tracking by `delta` seconds and applies the pose to the camera.
-func update(delta: float) -> void:
-	if target == null:
+## Leaving the tree (zone unload, the director freed mid-cutscene) ends any move in progress and
+## pays an owed blend_finished, so a coroutine awaiting it resumes instead of hanging forever.
+func _exit_tree() -> void:
+	if is_settled() or active_shot == null:
 		return
-	_update_occupancy()
+	_end_blend()
+	_settle_pending = false
+	blend_finished.emit(active_shot)
+
+
+## Advances selection, blends and tracking by `delta` seconds and applies the pose to the camera.
+## Without a target (a cutscene staged without the player, M1-ARC-09) volumes are not consulted,
+## but the active shot is still evaluated, blended and applied, and blend_finished still fires.
+## Nothing else advances time: while the tree is paused, or with auto_update off, whoever owns the
+## director must call update() or an awaited blend_finished never comes.
+func update(delta: float) -> void:
+	if target != null:
+		_update_occupancy()
 	if _scripted_shot == null:
 		var best := _pick_volume()
 		if best != null and best != active_volume:
@@ -237,6 +255,7 @@ func update(delta: float) -> void:
 	if active_shot == null:
 		return
 	var to_pose := evaluate(active_shot, delta)
+	var landed := false
 	if _blending:
 		_blend_elapsed += delta
 		var t := clampf(_blend_elapsed / _blend_duration, 0.0, 1.0) if _blend_duration > 0.0 else 1.0
@@ -247,13 +266,16 @@ func update(delta: float) -> void:
 			_blending = false
 			_blend_weight = 1.0
 			_previous_shot = null
-			blend_finished.emit(active_shot)
+			landed = true
 	else:
 		current_pose = to_pose
 	if camera != null:
 		current_pose.apply_to(camera)
-	if _settle_pending:
-		_settle_pending = false
+	# Snapshot, clear, then emit last: a play_shot()/release() made by a handler sets its own flags,
+	# which wait for the next update() (M1-ARC-07 review-sweep-D S1).
+	landed = landed or _settle_pending
+	_settle_pending = false
+	if landed:
 		blend_finished.emit(active_shot)
 
 
@@ -322,7 +344,8 @@ func evaluate(shot: CameraShot, delta: float) -> CameraPose:
 			var dist := shot.orbit_distance if shot.orbit_distance > 0.0 else _orbit_value("distance_m")
 			var height := shot.orbit_height if shot.orbit_height > 0.0 else _orbit_value("height_m")
 			var offset := Basis(Vector3.UP, orbit_yaw) * Vector3(0.0, height, dist)
-			return CameraPose.looking(subject.global_position + offset, aim_target, fov, shot.dof_dict(), shot.roll_deg)
+			var centre := subject.global_position if subject != null else _to_world(shot.look_at)
+			return CameraPose.looking(centre + offset, aim_target, fov, shot.dof_dict(), shot.roll_deg)
 	var fixed_aim := aim_target if subject != target else _to_world(shot.look_at)
 	return CameraPose.looking(_to_world(shot.position), fixed_aim, fov, shot.dof_dict(), shot.roll_deg)
 
@@ -345,8 +368,11 @@ func subject_node(shot: CameraShot) -> Node3D:
 
 
 ## The world point `shot` aims at: its aim node plus aim_offset, or the player plus target_offset.
+## With neither (no player in the scene), the shot's authored look_at.
 func aim_point(shot: CameraShot) -> Vector3:
 	var subject := subject_node(shot)
+	if subject == null:
+		return _to_world(shot.look_at)
 	if subject != target:
 		return subject.global_position + shot.aim_offset
 	return target.global_position + shot.target_offset
@@ -370,6 +396,8 @@ func dolly_progress(shot: CameraShot) -> float:
 	var track := _path(shot.track_path if not shot.track_path.is_empty() else shot.dolly_path)
 	if track == null or track.curve == null or track.curve.get_baked_length() <= 0.0:
 		return 0.0
+	if subject_node(shot) == null:
+		return clampf(shot.progress_offset, 0.0, 1.0)
 	var local := track.to_local(subject_node(shot).global_position)
 	var progress := track.curve.get_closest_offset(local) / track.curve.get_baked_length()
 	return clampf(shot.progress_offset + progress * shot.progress_scale, 0.0, 1.0)
