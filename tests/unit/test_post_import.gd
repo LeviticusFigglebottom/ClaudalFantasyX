@@ -153,8 +153,10 @@ func test_vegetation_import_matches_vegetation_plant_defaults() -> void:
 	_done()
 
 
-## CharacterShaderTiers.apply_to_tree swaps the shader of every material it reaches (surface overrides
-## too), so shared import-time overrides would leak the Low comparison's tier into the High bust.
+## The bust keeps its glTF materials, with no import-time overrides (asset_import.md, "Shared
+## materials and shader tiers"). The rule dates from when CharacterShaderTiers.apply_to_tree swapped
+## shaders on shared materials in place. Since M1-RND-19 it copies before it swaps, so overrides
+## would now be safe. The bust stays without them because CharacterShadingStage assigns its own.
 func test_shader_test_meshes_get_no_import_materials() -> void:
 	var root := _scene(BUST)
 	assert_true((_rules("shader_test")["materials"] as Dictionary).is_empty(), "no material rules")
@@ -200,6 +202,23 @@ func test_convex_rule_replaces_the_trimesh_and_keeps_the_transform() -> void:
 		assert_eq(body.position, Vector3(1.0, 2.0, 3.0), "the proxy's transform")
 		var shape := (body.get_child(0) as CollisionShape3D).shape
 		assert_true(shape is ConvexPolygonShape3D, "vegetation proxies are convex")
+		assert_eq((body.get_child(0) as Node3D).transform, Transform3D.IDENTITY, "the shape child stays at identity")
+	_done()
+
+
+## M2-NIT-03: the convex shape is built in mesh space, so it must land where the proxy mesh was even
+## when Godot's body or shape child is not at identity.
+func test_convex_shape_stays_on_the_proxy_mesh_whatever_the_child_transforms() -> void:
+	var root := _proxy_tree("rock-col")
+	var mi := root.get_node("rock-col") as MeshInstance3D
+	var mesh_xform := mi.transform
+	var old_body := mi.get_child(0) as StaticBody3D
+	old_body.transform = Transform3D(Basis(Vector3.UP, 0.5), Vector3(0.0, 1.5, 0.0))
+	(old_body.get_child(0) as Node3D).transform = Transform3D(Basis(), Vector3(4.0, 0.0, 0.0))
+	AssetImportRules.apply(root, _rules("vegetation"), "res://x/rock.glb")
+	var body := root.get_node("rock-col") as StaticBody3D
+	var placed := body.transform * (body.get_child(0) as CollisionShape3D).transform
+	assert_true(placed.is_equal_approx(mesh_xform), "the convex shape sits on the mesh: %s" % placed)
 	_done()
 
 
@@ -252,6 +271,30 @@ func test_lods_past_the_table_are_hidden_and_mesh_extras_tag_placeholder() -> vo
 	assert_eq(
 		root.get_meta(AssetImportRules.NOTES_META, PackedStringArray()), PackedStringArray(), "a bare tag adds no note"
 	)
+	_done()
+
+
+## M2-NIT-03: a mesh with no `<name>-lodN` sibling past LOD0 gets no range, so it cannot vanish at
+## the LOD0 distance with nothing drawn behind it. A chain still gets every range.
+func test_a_mesh_without_a_lod_chain_gets_no_visibility_range() -> void:
+	var root := Node3D.new()
+	_nodes.append(root)
+	var names: Array[String] = ["loose", "tree", "tree-lod1"]
+	for n in names:
+		var mi := MeshInstance3D.new()
+		mi.name = n
+		mi.mesh = BoxMesh.new()
+		root.add_child(mi)
+	var report := AssetImportRules.apply(root, {"lods": {"suffix": "-lod", "end_m": [10.0, 20.0], "margin_m": 1.0}})
+	var loose := root.get_node("loose") as MeshInstance3D
+	assert_eq(loose.visibility_range_end, 0.0, "no range on an unchained mesh")
+	assert_true(loose.visible)
+	_assert_range(root.get_node("tree") as MeshInstance3D, 0.0, 10.0, 0.0, 1.0)
+	_assert_range(root.get_node("tree-lod1") as MeshInstance3D, 10.0, 20.0, 1.0, 1.0)
+	assert_eq(int(report["lods"]), 2, "only the chain is counted")
+	assert_eq(AssetImportRules.lod_base("tree-lod1", "-lod"), "tree")
+	assert_eq(AssetImportRules.lod_base("dock-lodx", "-lod"), "dock-lodx", "not a LOD suffix")
+	assert_eq(AssetImportRules.lod_base("tree", ""), "tree")
 	_done()
 
 

@@ -16,7 +16,8 @@ extends RefCounted
 ##                (HalunaDresser, VegetationPlant, AshaStage) still find the slot and win over the
 ##                import with their own override.
 ##   lods         authored `<name>-lodN` chains become visibility ranges (`end_m`, `margin_m`); LODs
-##                past the table are hidden. Auto-generated LODs are the .import option
+##                past the table are hidden. A mesh with no `-lod1` (or later) sibling gets no
+##                range, so it never vanishes with nothing behind it. Auto-generated LODs are the .import option
 ##                `meshes/generate_lods`, which the rules state so tests can check the wiring.
 ##   placeholder  glTF extras that declare PLACEHOLDER (`hymn_tag: "PLACEHOLDER"` or a `placeholder`
 ##                note, on a node, mesh or material) tag that node, and the asset root, with
@@ -66,10 +67,12 @@ static func apply(scene: Node, rules: Dictionary, source_file: String = "") -> D
 	_apply_collision(scene, rules.get("collision", {}), report)
 	var slot_dir := str(rules.get("materials", {}).get("slot_dir", ""))
 	slot_dir = slot_dir.replace(ASSET_DIR_TOKEN, source_file.get_base_dir())
-	for node: Node in scene.find_children("*", "MeshInstance3D", true, false):
+	var meshes := scene.find_children("*", "MeshInstance3D", true, false)
+	var chained := lod_chains(meshes, str(rules.get("lods", {}).get("suffix", "")))
+	for node: Node in meshes:
 		var mi := node as MeshInstance3D
 		_apply_materials(mi, rules.get("materials", {}), slot_dir, report)
-		_apply_lod(mi, rules.get("lods", {}), report)
+		_apply_lod(mi, rules.get("lods", {}), chained, report)
 	_apply_placeholder(scene, report)
 	for w: String in report["warnings"]:
 		push_warning("AssetImportRules %s: %s" % [source_file, w])
@@ -105,6 +108,10 @@ static func _proxy_to_body(scene: Node, mi: MeshInstance3D, rules: Dictionary, r
 	var proxy_name := mi.name
 	var at := mi.get_index()
 	var xform := mi.transform * body.transform
+	# A convex shape is built from the proxy mesh, in mesh space. Mesh space seen from the moved
+	# body is the inverse of the body's old local transform, whatever transform Godot gave the
+	# shape child (identity in every Godot 4.6 import, but nothing guarantees it).
+	var mesh_from_body := body.transform.affine_inverse()
 	var mesh := mi.mesh
 	_own(body, null)
 	mi.remove_child(body)
@@ -117,6 +124,7 @@ static func _proxy_to_body(scene: Node, mi: MeshInstance3D, rules: Dictionary, r
 	if str(rules.get("shape", SHAPE_TRIMESH)) == SHAPE_CONVEX and mesh != null:
 		for shape_node: Node in body.find_children("*", "CollisionShape3D", false, false):
 			(shape_node as CollisionShape3D).shape = mesh.create_convex_shape()
+			(shape_node as CollisionShape3D).transform = mesh_from_body
 	_own(body, scene)
 	report["collision"] = int(report["collision"]) + 1
 
@@ -166,11 +174,35 @@ static func lod_index(node_name: String, suffix: String) -> int:
 	return int(digits) if digits.is_valid_int() else 0
 
 
-static func _apply_lod(mi: MeshInstance3D, rules: Dictionary, report: Dictionary) -> void:
+## The base names (`<name>` of `<name><suffix>N`) that have at least one authored LOD past 0 among
+## `meshes`: only those chains get visibility ranges (M2-NIT-03).
+static func lod_chains(meshes: Array[Node], suffix: String) -> Dictionary:
+	var out: Dictionary = {}
+	if suffix == "":
+		return out
+	for node: Node in meshes:
+		var node_name := String(node.name)
+		if lod_index(node_name, suffix) > 0:
+			out[node_name.substr(0, node_name.rfind(suffix))] = true
+	return out
+
+
+## The chain a mesh belongs to: its name without `<suffix>N` (its whole name without the suffix).
+static func lod_base(node_name: String, suffix: String) -> String:
+	var at := node_name.rfind(suffix)
+	if suffix == "" or at < 0 or not node_name.substr(at + suffix.length()).is_valid_int():
+		return node_name
+	return node_name.substr(0, at)
+
+
+## Visibility ranges for one mesh of an authored chain. A mesh with no `<name><suffix>N` sibling
+## past LOD0 is left alone: a range on it would make it vanish with nothing drawn behind it.
+static func _apply_lod(mi: MeshInstance3D, rules: Dictionary, chained: Dictionary, report: Dictionary) -> void:
 	var ends: Array = rules.get("end_m", [])
-	if ends.is_empty():
+	var suffix := str(rules.get("suffix", ""))
+	if ends.is_empty() or not chained.has(lod_base(String(mi.name), suffix)):
 		return
-	var lod := lod_index(String(mi.name), str(rules.get("suffix", "")))
+	var lod := lod_index(String(mi.name), suffix)
 	var margin := float(rules.get("margin_m", 0.0))
 	if lod >= ends.size():
 		mi.visible = false
