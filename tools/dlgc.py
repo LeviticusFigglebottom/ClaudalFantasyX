@@ -72,10 +72,12 @@ EMO_BEFORE_ALIAS_RE = re.compile(
 )
 # `Name as Alias [emotion]:` (the alias needs double quotes)
 UNQUOTED_ALIAS_RE = re.compile(r"""^([A-Za-z][A-Za-z0-9_]*)\s+as\s+([^"\[\]:]*?)\s*(\[[^\]]*\])?\s*:""")
-# `Asha (sad): Hi.`, `Asha {sad} Hi.`, `Asha "sad": Hi.`, `Asha <sad>: Hi.` (an emotion takes square brackets)
+# `Asha (sad): Hi.`, `Asha {sad} Hi.`, `Asha "sad": Hi.`, `Asha <sad>: Hi.` (an emotion takes square brackets),
+# and `Narrator (asha) [grief]: ...` (a narrator identity takes no space; review-sweep-E): an optional
+# `[emotion]` may follow the wrong group.
 WRONG_BRACKET_RE = re.compile(
-    r"""^([A-Za-z][A-Za-z0-9_]*)\s*(?:\(\s*(W)\s*\)|\{\s*(W)\s*\}|"\s*(W)\s*"|<\s*(W)\s*>)\s*(:?)\s*(.*)$""".replace(
-        "W", WORD)
+    r"""^([A-Za-z][A-Za-z0-9_]*)\s*(?:\(\s*(W)\s*\)|\{\s*(W)\s*\}|"\s*(W)\s*"|<\s*(W)\s*>)"""
+    r"""(?:\s*\[\s*(W)\s*\])?\s*(:?)\s*(.*)$""".replace("W", WORD)
 )
 # `Asha, [sad]: Hi.` (stray punctuation between the name and the emotion)
 STRAY_PUNCT_RE = re.compile(r"^([A-Za-z][A-Za-z0-9_]*)\s*([,;.\-–—]+)\s*\[\s*(" + WORD + r")\s*\]\s*:\s*(.*)$")
@@ -797,12 +799,22 @@ class BodyParser:
             raise DlgError(line, f"an alias needs double quotes: did you mean '{fix}'? {narr}")
         m = WRONG_BRACKET_RE.match(body)
         if m and m.group(1).lower() in names:
-            name, paren, brace, quote, angle, colon, rest = m.groups()
+            name, paren, brace, quote, angle, emo, colon, rest = m.groups()
             word = paren or brace or quote or angle
-            if colon or word in self.ctx.emotions:
-                if name.lower() == NARRATOR and paren and word.lower() in self.ctx.speakers:
-                    fix = f"{name}({word}): {_clip(rest)}"
+            emo_tag = f" [{emo}]" if emo else ""
+            if colon or emo or word in self.ctx.emotions:
+                if paren and word.lower() in self.ctx.speakers and name.lower() == NARRATOR:
+                    fix = f"{name}({word}){emo_tag}: {_clip(rest)}"
                     what = "a narrator identity goes in parentheses right after Narrator, with no space"
+                elif paren and word.lower() in self.ctx.speakers:
+                    # `Toma (rhen): ...`: a speaker id in parentheses is a narrator identity, not an emotion.
+                    own = emo_tag or " [emotion]"
+                    fix = f"Narrator({word}){emo_tag}: {_clip(rest)}' (a voice-over) or '{name}{own}:"
+                    what = (f"'{word}' is a speaker, not an emotion, and only Narrator takes a (speaker id) "
+                            f"identity")
+                elif emo:
+                    fix = f"{name} [{emo}]: {_clip(rest)}"
+                    what = f"'({word})' is not speaker syntax here (only Narrator takes a (speaker id))"
                 else:
                     fix = f"{name} [{word}]: {_clip(rest)}"
                     what = "an emotion goes in square brackets, before the colon"
@@ -813,8 +825,15 @@ class BodyParser:
             raise DlgError(line, f"stray '{junk}' between the name and the emotion: did you mean "
                                  f"'{name} [{emo}]: {_clip(rest)}'? {narr}")
         m = MISSING_COLON_RE.match(body)
-        if m and m.group(1).lower() in names and (m.group(2) or m.group(3) is not None or m.group(4)):
+        typo = ""
+        if m and m.group(1).lower() not in names and (m.group(4) in self.ctx.emotions or m.group(3) is not None):
+            # review-sweep-E: `Kerid [sad] Hi.` (a misspelt speaker and no colon). A known emotion or a quoted
+            # alias is the evidence, so `Rain [sic] fell.` stays prose.
+            typo = self.ctx.typo_of(m.group(1))
+        if m and (m.group(1).lower() in names or typo) and (m.group(2) or m.group(3) is not None or m.group(4)):
             name, identity, alias, emo, rest = m.groups()
+            if typo:
+                name = typo.capitalize()
             if identity and name.lower() != NARRATOR and not emo:  # `Asha (sad) Hi.`: the emotion in parens
                 ident_word = identity.strip("() ")
                 if ident_word not in self.ctx.emotions:
@@ -824,7 +843,9 @@ class BodyParser:
             if identity or alias is not None or emo:
                 fix = (name + (identity or "") + (f' as "{alias}"' if alias is not None else "")
                        + (f" [{emo}]" if emo else "") + ": " + _clip(MISSING_COLON_JUNK_RE.sub("", rest)))
-                raise DlgError(line, f"a speaker line needs a ':' after the name: did you mean '{fix}'? {narr}")
+                spelt = f"'{m.group(1)}' is not a speaker and " if typo else ""
+                what = f"{spelt}a speaker line needs a ':' after the name"
+                raise DlgError(line, f"{what}: did you mean '{fix}'? {narr}")
         m = EMO_NARRATION_RE.match(body)
         if m:
             emo = m.group(1)
@@ -968,10 +989,15 @@ class FileCtx:
         self.in_test_dir = rel.startswith(TEST_DIR.as_posix() + "/")
         self.ok = True
 
+    def typo_of(self, name: str) -> str:
+        """The speaker id `name` is a close misspelling of (difflib, SPEAKER_TYPO_CUTOFF), else ''."""
+        close = difflib.get_close_matches(name.lower(), sorted(self.speakers), n=1, cutoff=SPEAKER_TYPO_CUTOFF)
+        return close[0] if close else ""
+
     def typo_hint(self, name: str) -> str:
         """`; did you mean 'Asha'?` when `name` is close to a speaker id (difflib), else ''."""
-        close = difflib.get_close_matches(name.lower(), sorted(self.speakers), n=1, cutoff=SPEAKER_TYPO_CUTOFF)
-        return f"; did you mean '{close[0].capitalize()}'?" if close else ""
+        close = self.typo_of(name)
+        return f"; did you mean '{close.capitalize()}'?" if close else ""
 
     def speaker_in(self, tokens: list[str]) -> str:
         """The speaker (as its one-word name, `Toma`) that a name-shaped prefix names: a token that is a

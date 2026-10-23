@@ -2,7 +2,7 @@
 id: M1-NAR-07
 title: dlgc near-miss heuristic: kill false positives, catch the remaining silent cases
 role: architect
-status: doing
+status: review
 reviewer: narrative
 owner_session: "worktree-agent-a35fbca43cd81575b"
 depends_on: [M1-NAR-06]
@@ -39,6 +39,12 @@ From review-sweep-C (see the source tasks' Review logs for file:line).
   - Should-fix: `and` is out of `NAME_JOINERS`.
   - Probes: all 31 fp.txt lines and all 30 miss.txt lines are in tests. The prose lines are in `CORPUS` (no error, no warning), the captions are in `CAPTIONS` (exactly one WARN, no error), and the miss lines are in `NearMissTests`. Known limits (no grammar), tested as narration: `Asha the girl: Hi.`, `Asha. Hi.`, `Asha - Hi.`.
   - Checks: validate_data 0/0; unittest 260 OK; taskboard --check rc 0; `dlgc --check` 0 errors and 0 warnings, with the 3 repo `.dlg` files unchanged.
+
+- 2026-10-23 architect (worktree-agent-a35fbca43cd81575b, sweep-E fixes):
+  - **Should-fix:** the missing-colon branch also accepts a close misspelling of a speaker id (`FileCtx.typo_of`, the same `SPEAKER_TYPO_CUTOFF`), but only with a known emotion or a quoted alias as evidence. `Kerid [sad] Hi.` → "'Kerid' is not a speaker and a speaker line needs a ':' after the name: did you mean 'Kerrid [sad]: Hi.'?". `Kerid [sic] was the word.`, `Rain [sad] fell.` and `Kerid smiled.` stay prose.
+  - **Nit:** `Toma (rhen): Lie still.` now says that 'rhen' is a speaker, not an emotion, and that only Narrator takes a (speaker id), and suggests `Narrator(rhen):` or `Toma [emotion]:`. It no longer suggests `[rhen]`.
+  - **Nit:** `WRONG_BRACKET_RE` takes an optional `[emotion]` after the wrong group, so `Narrator (asha) [grief]: The bell.` (with or without the colon) suggests `Narrator(asha) [grief]: The bell.`, as dialogue_format.md promises. `Asha (sad) [grief]:` suggests `Asha [grief]:`.
+  - Tests: three new `NearMissTests` cases. The tools suite, `dlgc --check` (0/0, repo `.dlg` unchanged), the corpus and validate_data are all clean. dialogue_format.md rows are updated.
 
 ## Review log
 - 2026-10-23 narrative (review-sweep-D): **request-changes.** Checked: `python3 -m unittest discover -s tools/tests` gives 247 OK; `dlgc --check` gives 0 errors and 0 warnings; `validate_data` gives 0 errors and 0 warnings. I compiled 31 fresh narration lines and 30 near-miss lines one at a time, through the corpus harness. Rhen's first-person colon prose all passes (`I knew it then: ...`, `I had one job that winter: ...`, `What I said next: ...`, `I said the only thing I could: sorry.`, `"Run," she said: ...`, `Even now: ...`), and so do possessive and comma prefixes and `Chapter 2:`. Digit colons, the tiering, and the missing-colon and emotion-after-colon errors work as specified.
