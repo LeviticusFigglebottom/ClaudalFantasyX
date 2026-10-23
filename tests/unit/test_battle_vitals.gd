@@ -219,6 +219,8 @@ func _controller(persist: bool, start: bool = true) -> void:
 	ctl.auto_start = false
 	ctl.pacing_scale = 0.0
 	ctl.persist_progress = persist
+	# Vitals, not openings (M1-CMB-03): a rolled ambush would play enemy turns before the checks.
+	ctl.bestiary.roll_openings = false
 	var tree := Engine.get_main_loop() as SceneTree
 	(tree.current_scene if tree.current_scene != null else tree.root).add_child(ctl)
 	if not start:
