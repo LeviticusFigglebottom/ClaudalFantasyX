@@ -69,7 +69,7 @@ These are the rules `BattleEngine.use_item` enforces (`BattleEngine.item_can_tar
 - **Zombie and healing.** A `heal_hp` item on a Zombie deals its amount as damage, so it can KO. The preview drops a Zombie the heal would KO, and a Zombie healing itself to a KO while it is the last living active member loses the fight: `item_defeats_party` predicts it, so the menu shows the defeat warning (M1-CMB-07). The prediction runs the item's effects in order on a copy, so a cure that lists `zombie` before the heal is a real heal. `restore_mp` and cures work normally on a Zombie.
 - Items ignore Silence, Provoke and Reflect. The Provoke lock does not apply to the item cursor.
 
-Item effects are fixed numbers, not stat-scaled. That is the genre convention, and it keeps an item's cost readable (pillar 4: "Salt Tonic: 200 HP" is the whole truth). **For Combat:** formulas.md lists "item formulas (Progression)" as unspecified. The two formulas above (revive HP, fixed damage) are the whole set. They are implemented in `ItemBattleAction.revive_hp` / `fixed_damage` and tested in `tests/unit/test_inventory_battle_items.gd`. Please fold them into formulas.md when you wire item use (M1-CMB-06).
+Item effects are fixed numbers, not stat-scaled. That is the genre convention, and it keeps an item's cost readable (pillar 4: "Salt Tonic: 200 HP" is the whole truth). The two formulas above (revive HP, fixed damage) are the whole set. They are in formulas.md § Items (M1-CMB-06), implemented in `ItemBattleAction.revive_hp` / `fixed_damage` and mirrored by `Formulas.revive_hp` / `item_damage`, and a test keeps the two equal.
 
 ### Equipment (`equipment.json`)
 
@@ -136,7 +136,8 @@ Anchors from the M1 sandbox: an early three-enemy fight credits 105 XP. **Propos
 |---|---|---|---|
 | Status cures (Bitterleaf 15, Eyewash 20, Honey 20, Salts 25) | 15–25 | about ⅓ | Cheap enough that a player never skips a cure out of thrift. Status is a lesson, not a tax. |
 | Salt Tonic | 40 | about ⅔ | One fight buys one heal plus change. 200 HP is about half of Rhen's 420. |
-| Drag Net / Quiet Tea / Ember Pot | 80–110 | about 1½ | Tactical items cost a fight or two, so using one is a decision. Drag Net is rank 3 since M1-CMB-06: at rank 2 it out-tempoed Rhen's Undertow Cut and could hold any slower foe. Repeated delays also diminish (formulas.md § Time). |
+| Drag Net / Quiet Tea | 80–110 | about 1½ | Tactical items cost a fight or two, so using one is a decision. Drag Net is rank 3 since M1-CMB-06: at rank 2 it out-tempoed Rhen's Undertow Cut and could hold any slower foe. Repeated delays also diminish (formulas.md § Time). |
+| Ember Pot | 220 | about 3½ | Fixed 150 fire damage at rank 2 ignores defence, so at 110 it would undercut the role-answer lesson. At 220 it is a deliberate emergency buy, and it is in no slice shop: its text points to the Pemakar kilns, so it belongs in Pemakar's shop (M1-PRG-03). |
 | Reef Draught, Tidewash Salve | 120–150 | 2–2½ | Post-boss stock for the next chapter. |
 | Relighting Wick | 300 | 5 | Revives are precious, but one is affordable before the first real boss of Act I. |
 | Tier-1 weapon / armor (2 slots, one ability pre-filled) | 380 / 340 | about 6 | A player finishing the slice (about 6–8 fights plus the boss, about 700 lume) can afford **one or two** upgrades, not all of them. The choice is the point. |

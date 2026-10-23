@@ -195,6 +195,8 @@ The v3 fields are unchanged. New in `state`:
 2. When a battle ends in victory or escape (defeat goes to the title), emit `EventBus.battle_party_returned.emit(engine.encounter_id, engine.outcome, engine.party_active + engine.party_reserve)`.
 3. Decide what a KO'd active member at battle start does (genre convention: a living reserve swaps in). The engine accepts a combatant built with HP 0; it is simply off the timeline.
 
+**Done in M1-CMB-08** (`game/battle/scene/battle_vitals.gd`, rules in battle_ctb.md "Carried vitals"): items 1–3 are wired for live battles (`persist_progress` on, no fixture). The live sandbox composes `progress.apply_to` then `Game.vitals_modifier()`. It has no `EquipmentEffects` yet, because the live battle does not build gear effects today, so add `fx.modifier()` between the two when it does. A KO'd or petrified active member trades places with the first living reserve member before `begin()`. With nobody standing at all, the active members get up with 1 HP.
+
 ### Location registry (`game/data/world/locations.json`; `LocationRegistry` in `game/world/world_return_registry.gd`)
 
 - `locations[]`: `{id, scene, spawn, name_key}`, plus `default_location`, `new_game: {location_id, spawn}`, and `shrines[]: {id (network id), location_id, spawn}`. Only locations whose scene exists are listed. Today that is `field_test` → the save-shrine copy of the field test zone, spawn `Shrine`.

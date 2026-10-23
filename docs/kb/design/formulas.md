@@ -55,7 +55,7 @@ Examples: agi 10: roll 0 → 300, roll 100 → 200. (Ambush and preemptive modif
 
 **Turn order**: the lowest `next_time` acts. Ties go to higher agility, then to roster order (party slots first, then enemies in encounter order). After acting: `next_time = now + action_delay(...)`.
 
-**Delay** (skills with `delay_ranks`, and delay items): adds `delay_push` ticks to the target's `next_time`, with diminishing returns so no foe can be held forever. `prior` counts the delays the target already took since its last own turn (acted or lost); acting resets it to 0, and so does rejoining the timeline after a KO or stone (revive, petrify cure, or swapping in for a fallen member). A swap-in that takes over a living member's slot takes over its count too, so swapping can't launder diminishing returns. A `delay_immune` enemy (`enemies.json`, for bosses) takes 0 and its count doesn't grow.
+**Delay** (skills with `delay_ranks`, and delay items): adds `delay_push` ticks to the target's `next_time`, with diminishing returns so no foe can be held forever. `prior` counts the delays the target already took since its last own turn (acted or lost); acting resets it to 0, and so does rejoining the timeline after a KO or stone (revive, petrify cure, or swapping in for a fallen member). A swap-in that takes over a living member's slot takes over its count too, because it also inherits that slot's delayed `next_time`: a fresh count would let the same slot be pushed back again at full strength. A `delay_immune` enemy (`enemies.json`, for bosses) takes 0 and its count doesn't grow.
 ```
 delay_push(agi, ranks, prior, immune) = immune ? 0 : floor(base_delay(agi) × ranks ÷ 2^min(prior, 16))
 ```
