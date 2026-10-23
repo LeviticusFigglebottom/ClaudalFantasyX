@@ -12,6 +12,8 @@ extends Node
 ## Diagnosis (M1-QA-05): --light-set=prop=value,... on every DirectionalLight3D (e.g.
 ## shadow_enabled=false, shadow_normal_bias=2.0, directional_shadow_max_distance=2.0);
 ## --mat-set=uniform=value,... on every ShaderMaterial that declares the uniform.
+## --push-override=key=value,... pushes a scoped GraphicsSettings override (M1-RND-16, e.g.
+## aa=taa,scaling_mode=fsr) on top of the preset for the shot, through the real API, and pops it after.
 ## --manifest=res://...json reads another manifest (e.g. a pending-shots file); --hold-storm freezes
 ## every UndertowStorm clock while its temporal jitter keeps advancing (deterministic, TAA integrates);
 ## add --freeze-jitter to hold the jitter too (a static pattern, the control).
@@ -55,6 +57,14 @@ func _run() -> void:
 		var envs := scene.find_children("*", "WorldEnvironment", true, false)
 		gs.apply_current(get_viewport(), (envs[0] as WorldEnvironment).environment if envs.size() > 0 else null)
 		CharacterShaderTiers.apply_to_tree(scene, CharacterShaderTiers.tier_for_preset(preset))
+		var handle := 0
+		if _opts.has("push-override"):
+			var values := {}
+			for pair in str(_opts["push-override"]).split(",", false):
+				var kv := pair.split("=", true, 1)
+				var parsed: Variant = str_to_var(kv[1])
+				values[kv[0]] = parsed if parsed is float or parsed is int else kv[1]
+			handle = GraphicsSettings.push_override(scene, values, get_viewport(), gs)
 		_tweak(scene)
 		var held: Array[UndertowStorm] = []
 		if _opts.has("hold-storm"):
@@ -72,6 +82,8 @@ func _run() -> void:
 		img.convert(Image.FORMAT_RGB8)
 		img.save_png(out.path_join("%s.png" % shot["id"]))
 		print("CAPTURE_PRESET ok %s %s %dx%d" % [shot["id"], preset, win.size.x, win.size.y])
+		if handle != 0:
+			GraphicsSettings.pop_override(handle)
 		scene.queue_free()
 		await get_tree().process_frame
 	get_tree().quit()
