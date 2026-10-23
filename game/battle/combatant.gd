@@ -82,6 +82,25 @@ static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> Ba
 	return c
 
 
+## A detached copy for read-only predictions (BattleEngine.item_downs): the state an item's
+## effects read or write (HP, MP, statuses, affinities, equipment wards), never the timeline.
+## Mutating it leaves this combatant untouched.
+func sim_copy() -> BattleCombatant:
+	var c := BattleCombatant.new()
+	c.id = id
+	c.team = team
+	c.max_hp = max_hp
+	c.hp = hp
+	c.max_mp = max_mp
+	c.mp = mp
+	c.agility = agility
+	c.affinities = affinities.duplicate()
+	c.statuses = statuses.duplicate()
+	c.delay_immune = delay_immune
+	c.set_meta(EQUIPMENT_META, equipment())
+	return c
+
+
 ## Still in the fight: HP above 0 and not turned to stone. Petrify counts as KO for the
 ## timeline, targeting, outcome checks and XP credit (formulas.md § Statuses).
 func is_alive() -> bool:
