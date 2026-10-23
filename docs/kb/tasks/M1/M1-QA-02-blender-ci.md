@@ -2,7 +2,7 @@
 id: M1-QA-02
 title: Blender headless CI job to re-verify generated assets
 role: qa
-status: review
+status: done
 owner_session: "worktree-agent-aafc786bec1f4e2c5"
 depends_on: [M1-CHR-01]
 milestone: M1
@@ -39,3 +39,4 @@ ADR 0005 consequence.
     - Handoff qa-1:12 and :26 still say "RND-12". The Lead renumbered it to M1-RND-14 (cc90db6). blender_builds.json and blender_builds.md are right.
     - Exit 3 (no Blender, or the wrong version) prints SKIP and the local gate passes. That is fine for agents. The Lead's merge run should treat SKIP as a failure (`HYMN_BLENDER_REQUIRED=1`?), so a missing fetch never reads as green.
     - `copy_into_sandbox` is only `assets_src`. A future build that reads `game/data` (a palette, for example) will fail in the sandbox with a confusing error. Mention it in blender_builds.md.
+- 2026-10-23 lead: closing on review-sweep-I approve-with-fixes; the known-failure masking and coverage gaps are in M1-QA-06.

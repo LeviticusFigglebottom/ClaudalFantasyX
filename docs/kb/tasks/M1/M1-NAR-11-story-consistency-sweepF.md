@@ -2,7 +2,7 @@
 id: M1-NAR-11
 title: Story consistency and residual echoes after the Kerrid re-staging (review-sweep-F)
 role: narrative
-status: review
+status: done
 reviewer: cinematics
 owner_session: "worktree-agent-a4c996b47ad5b3285"
 depends_on: [M1-NAR-09]
@@ -180,3 +180,4 @@ The review-sweep-F entries on M1-NAR-09 and M1-NAR-08.
     - vertical_slice.md:52 and the ch02 comment say "She never says so", while she does say "That lantern." Write "She never says why", so no one cuts the line as a contradiction.
   - **Residuals I concur with, unchanged:** the sweep-G and sweep-H lists. Those are the SPEC-mandated Act I order, the heart, the prologue vigil, Dace inside the storm, Sefir and Kesh, the Ch3 recognition, the Ch7 boyhood line and the Ch18 heirloom watch. I also accept the Ch2 "That lantern." / "Where did you get it?" / "It was my father's." exchange as recognition of the make with no voiced link, per the sweep-G Lead verdict. **Watch:** no later Act I line may have Asha connect the make to the man at Haluna aloud before Ch15.
   - **To clear:** M1, on merge. S1-S3 can land in the same narrative commit or the next one.
+- 2026-10-23 lead: closing on review-sweep-I approve-with-fixes; the must-fix line (asha_velamir.md:36) was fixed by the Lead on merge; the remaining should-fixes are in M1-NAR-12.

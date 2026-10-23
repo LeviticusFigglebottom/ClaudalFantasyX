@@ -2,7 +2,7 @@
 id: M1-RND-11
 title: Undertow tier-param hardening (review-sweep-G on RND-10)
 role: rendering
-status: review
+status: done
 reviewer: environment
 owner_session: session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-11-undertow-params)
 depends_on: [M1-RND-10]
@@ -35,3 +35,4 @@ request-from: "environment"
   - **Nits:**
     - undertow_storm.gd:488-491: `viewport_is_temporal` ignores `SCALING_3D_MODE_METALFX_TEMPORAL` (macOS, best effort). Not offered today, but add it beside FSR2 so the gate does not silently drop jitter if it ever is.
     - docs/kb/tech/undertow.md:125 still says "no (Low has FXAA)". Low is TAA since M1-RND-07. The tier's `temporal_jitter: false` and the shell body are the real reasons.
+- 2026-10-23 lead: closing on review-sweep-I approve-with-fixes; the nits are in M1-RND-15.

@@ -2,7 +2,7 @@
 id: M1-CMB-04
 title: Swell gauge modes and Rhen's interactive Swell input
 role: combat
-status: review
+status: done
 owner_session: worktree-agent-af3aaf0993fbaba55
 depends_on: [M1-CMB-01]
 milestone: M1
@@ -44,3 +44,4 @@ SPEC §6.2: gauge fill modes plus one unique interactive input (Rhen).
     - While the ring is open, the help line calls `swell_help(..., -1)`, so it drops "next in N". The timeline still shows the ghost slot, so this is minor.
   - **Deviations 8 and 9 (ui):** accepted. The gauge under the name is the right trade for the row width once S2 is fixed. The ring panel in the command menu's place never covers the fighters, and the timeline stays readable beside it. M2-UI-01 (timing assist) should land before the M2 slice review, because the ring is the only real-time input in the game.
   - **Formulas (Progression glance):** nothing in progression changes. § Swell is self-contained, and "Not yet specified" is updated.
+- 2026-10-23 lead: closing on review-sweep-I approve-with-fixes; the HUD and validator should-fixes are in M1-UI-05.

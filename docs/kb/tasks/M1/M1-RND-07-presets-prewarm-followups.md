@@ -2,7 +2,7 @@
 id: M1-RND-07
 title: Graphics presets and prewarm follow-ups from the Environment review
 role: rendering
-status: review
+status: done
 reviewer: environment
 owner_session: session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-07-presets)
 depends_on: [M1-RND-05, M1-RND-06, M1-ENV-02]
@@ -42,3 +42,4 @@ Environment's review notes on RND-05/06 plus the water stream's requests.
   - **Nits:**
     - The generated prewarm materials store every uniform as `null` (73 lines in water_ocean.tres). That is harmless, because uniforms do not change the pipeline, but it is noise, and a renamed uniform leaves a stale line. Save the materials without parameter entries, or add a test that re-running the builder reproduces the committed files.
     - `match_viewport()` copies the AA state once, at start. If the player changes AA in the settings menu during a session, the next prewarm should re-copy it. Check that it does.
+- 2026-10-23 lead: closing on review-sweep-I approve-with-fixes; the prewarm 50 ms frame and Low-TAA notes are in M1-RND-15.

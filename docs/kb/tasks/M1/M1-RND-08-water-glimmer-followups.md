@@ -2,7 +2,7 @@
 id: M1-RND-08
 title: Water and glimmer follow-ups (review-sweep-B)
 role: rendering
-status: review
+status: todo
 reviewer: environment
 owner_session: session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-08-water-glimmer; water items first)
 depends_on: [M1-RND-01, M1-RND-02, M1-RND-03, M1-ENV-01]
@@ -52,3 +52,4 @@ Environment-side findings on water and glimmer, scheduled after the Undertow and
       - `glimmer_dusk`: the released motes still read near-white against the dusk sky, not gold, and the `center_bias` 1.8 clustering is hard to see at this framing.
       Please get Art (M1-ART-04) to sign off, or open an Art task, before this goes to done.
   - **Nits:** the `local_space` field converts through `field_to_world` in the process shader. Record in glimmer.md which inputs stay world-space (attractors, the release wave, water), so Environment knows what follows a moving host.
+- 2026-10-23 lead: reopened on review-sweep-I request-changes: the glimmer_bound shot and baseline are missing; the should-fixes move into M1-RND-15 alongside it.

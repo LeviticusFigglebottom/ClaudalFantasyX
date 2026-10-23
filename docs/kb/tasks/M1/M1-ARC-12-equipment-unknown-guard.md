@@ -2,7 +2,7 @@
 id: M1-ARC-12
 title: Never drop equipment when the item tables are missing or fail to parse
 role: architect
-status: review
+status: done
 owner_session: "worktree-agent-a5a8cfa05f7795b89"
 depends_on: [M1-ARC-11]
 milestone: M1
@@ -50,3 +50,4 @@ From the review-sweep-H entries (file:line references there).
     - The `"rhenn": {}` empty loadout for an unknown hero is still saved (known, harmless).
     - The ADR 0018 Amendment 4 rationale "Customize cannot fit an ability to them (no slot)" is accurate only because `slot_of(unknown)` is empty. Say "no slot kind".
     - The dlgc `spaced_identity` hint and the `scene_has_player` instancing, inheritance and `place_at` handling are covered by their tests. Fine.
+- 2026-10-23 lead: closing on review-sweep-I approve-with-fixes; the Lattice data loss of the same kind is in M1-ARC-13 (must-fix).

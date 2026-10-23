@@ -2,7 +2,7 @@
 id: M1-QA-04
 title: Screenshot capture: per-shot setup hook
 role: qa
-status: review
+status: done
 owner_session: "worktree-agent-aafc786bec1f4e2c5"
 depends_on: [M1-QA-01]
 milestone: M1
@@ -36,3 +36,4 @@ A per-shot `setup` dictionary in shots.json (globals, node properties, time) ins
     - `coerce` passes unknown types through, so a `nodes` value for a Transform3D or Basis property fails only at `_set_prop`'s type check, with a generic message. Fine, but list the supported JSON shapes in the docs table.
     - `time_scale: 0` also freezes physics. Mention it beside "frame-counting rigs keep counting".
     - The M1-RND-13 request (move the rigs off `CAPTURE_SCENE`) is the real payoff. Please keep it on the board.
+- 2026-10-23 lead: closing on review-sweep-I approve-with-fixes; the Tween ordering and global restore are in M1-QA-06.
