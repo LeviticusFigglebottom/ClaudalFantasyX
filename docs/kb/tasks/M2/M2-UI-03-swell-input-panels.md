@@ -21,5 +21,9 @@ M2-CMB-01 gave Asha, Toma and Ysolde their own Swell inputs (SPEC §6.2: unique,
 ## Notes
 - Input APIs and grade tables: formulas.md § Swell; tests in `tests/unit/test_swell_inputs.gd`.
 - The timing-assist setting (M2-UI-01) should apply to these inputs' rows too (`good_sec`, `window_sec`, `swift_sec`).
+- **From review sweep M (filed by M2-NIT-03, combat):**
+  - **Brace lead-in** (M2-CMB-01 S5, swell_brace.gd:81-96). The technique is chosen with ui_accept, so the brace opens on a press the menu has already used, and the first blow can land before the player presses again. Make the lead-in long enough to press again, or count an accept still held when the brace opens as `holding`.
+  - **Land before the slice review** (M2-ARC-01 S3). Gauges hidden by `DRAWN_KINDS` (Asha, Toma, Ysolde) still fill and save. If this task lands after the slice has been played, the first visible gauge may already be full.
+  - Shallows Verse is now power 4 (balance_report.md, 2026-10-23 M2-NIT-03), so the chant's grades decide whether it beats a Chorus Mend. Make the panel's perfect feedback carry that weight.
 
 ## Review log

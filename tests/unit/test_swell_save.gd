@@ -139,6 +139,26 @@ func test_game_writes_no_record_while_swell_json_is_broken() -> void:
 	_done()
 
 
+## M2-NIT-03 (review-sweep-M on M2-ARC-01 S2): both halves refuse alike. While swell.json is broken,
+## record_party still writes HP and MP but keeps each member's saved gauge and mode.
+func test_game_keeps_the_saved_gauges_while_swell_json_is_broken() -> void:
+	Game.state.party_vitals = {"rhen": {"hp": 50, "swell": 30, "swell_mode": "tether"}}
+	var rhen := BattleCombatant.from_dict(&"rhen", BattleCombatant.TEAM_PARTY, {"stats": {"hp": 100, "mp": 10}})
+	rhen.hp = 70
+	rhen.swell = 80
+	rhen.swell_mode = &"wake"
+	var asha := BattleCombatant.from_dict(&"asha", BattleCombatant.TEAM_PARTY, {"hp": 100, "mp": 10})
+	asha.swell = 40
+	var kept: Dictionary = BattleSwell._cache.get(BattleSwell.DATA_PATH, {})
+	BattleSwell._cache[BattleSwell.DATA_PATH] = {}
+	Game.record_party(ENCOUNTER, BattleEngine.OUTCOME_VICTORY, [rhen, asha])
+	BattleSwell._cache[BattleSwell.DATA_PATH] = kept
+	assert_eq(
+		Game.state.party_vitals, {"rhen": {"hp": 70, "swell": 30, "swell_mode": "tether"}}, "HP moves, Swell stays"
+	)
+	_done()
+
+
 # --- saves -----------------------------------------------------------------------------------
 
 
@@ -295,6 +315,27 @@ func test_a_live_battle_carries_gauges_modes_and_unlocks_through_a_victory() -> 
 	_press(&"ui_accept")
 	assert_eq(ctl.battles_started, 2)
 	assert_eq(ctl.engine.find(&"rhen").swell, ended, "Retry starts from the saved gauge")
+	_done()
+
+
+## M2-NIT-03 (review-sweep-M on M2-ARC-01 S1): an escape writes gauges, modes and the record back,
+## as a victory does (formulas.md § Swell: "a won or escaped battle").
+func test_an_escape_carries_gauges_modes_and_the_record() -> void:
+	Game.state.party_vitals = {"rhen": {"swell": 60, "swell_mode": "tether"}, "toma": {"swell": 20}}
+	Game.state.swell = {"unlocked": ["tether"], "progress": {"old_rule": 7}}
+	_controller(true)
+	var guard := 0
+	while ctl.engine.outcome == &"" and guard < 200:
+		guard += 1
+		if not ctl.try_escape() and ctl.engine.outcome == &"" and not ctl.engine.is_party_turn():
+			ctl.engine.run_enemy_turn()
+	assert_eq(ctl.engine.outcome, BattleEngine.OUTCOME_ESCAPED)
+	assert_eq(_swell_returned.size(), 1, "the record goes out on an escape too")
+	for c in ctl.engine.party_active + ctl.engine.party_reserve:
+		assert_eq(Game.state.swell_of(c.id), c.swell, "%s's gauge is saved as it ended" % c.id)
+	assert_eq(Game.state.swell_mode_of(&"rhen"), &"tether")
+	assert_eq(Game.state.swell["unlocked"], ["tether"] as Array[String])
+	assert_eq(int(Game.state.swell["progress"]["old_rule"]), 7)
 	_done()
 
 

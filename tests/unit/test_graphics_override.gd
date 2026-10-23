@@ -158,6 +158,44 @@ func test_a_later_base_never_rebases_the_stack() -> void:  # M1-NIT-02 (review-s
 	_done()
 
 
+## M2-NIT-03 (review-sweep-M S1): a scene swap. Cutscene A has left the tree but its deferred pop has
+## not run when cutscene B pushes with its own base; B's layer must not end up on A's base.
+func test_a_push_after_every_older_owner_left_rebases_the_stack() -> void:
+	var low := GraphicsSettings.new()
+	low.set_preset("low")
+	var before := GraphicsSettings._viewport_state(_vp)
+	var planned := GraphicsSettings.override_state({"scaling_mode": "fsr"}, low)
+	var owner_a := _owner("A")
+	var a := GraphicsSettings.push_override(owner_a, {"aa": "taa"}, null, _base)
+	_vp.remove_child(owner_a)  # the old scene leaves; its pop is deferred to the end of the frame
+	var b := GraphicsSettings.push_override(_owner("B"), {"scaling_mode": "fsr"}, null, low)
+	assert_true(b > 0, "applied")
+	GraphicsSettings._owner_left(a)  # the end of the frame
+	assert_eq(GraphicsSettings.active_overrides(), 1, "only B is left")
+	assert_eq(GraphicsSettings.override_state(), planned, "B's layer on B's own Low base")
+	assert_true(GraphicsSettings.pop_override(b))
+	assert_eq(GraphicsSettings._viewport_state(_vp), before, "the state before A, exactly")
+	_vp.add_child(owner_a)
+	_done()
+
+
+## M2-NIT-03 (review-sweep-M S3): the stack keeps a copy of its base, so changing the caller's
+## settings afterwards (or the player's cached ones) cannot move an active override.
+func test_the_stack_keeps_a_copy_of_its_base() -> void:
+	var planned := GraphicsSettings.override_state(STORM_CLOSEUP, _base)
+	var h := GraphicsSettings.push_override(_owner("Cutscene"), STORM_CLOSEUP, null, _base)
+	_base.set_preset("low")
+	assert_eq(GraphicsSettings.override_state(), planned, "still on the High base it was pushed with")
+	assert_false(GraphicsSettings._override_settings == _base, "a copy, not the caller's instance")
+	assert_true(GraphicsSettings.pop_override(h))
+	var copy := _base.copy()
+	assert_true(copy.same_as(_base))
+	copy.set_preset("high")
+	assert_eq(_base.preset_id, "low", "a copy is independent")
+	assert_false(copy.same_as(_base))
+	_done()
+
+
 func test_the_player_settings_are_read_once() -> void:  # M1-NIT-02 (review-sweep-L S3)
 	var first := GraphicsSettings._override_settings_or_player()
 	assert_true(GraphicsSettings._override_settings_or_player() == first, "cached while settings.cfg is unchanged")

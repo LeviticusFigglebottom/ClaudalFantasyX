@@ -58,8 +58,9 @@ func decide(engine: BattleEngine) -> void:
 
 ## A ready Swell goes first (a player rarely sits on a full gauge; naive never opens it, see
 ## unleashes_swell): the actor's first technique with targets, its input played at swell_quality.
-## Damage techniques aim at the lowest-HP foe (the provoker when Provoked) or every foe; a healing
-## one waits for a hurt ally (swell_heal_below_pct). True when a technique was unleashed.
+## Single-foe techniques aim at the policy's focus foe (swell_focus; the provoker when Provoked),
+## group ones at every foe; a healing one waits for a hurt ally (swell_heal_below_pct). True when
+## a technique was unleashed.
 func unleash_swell(engine: BattleEngine) -> bool:
 	var actor := engine.current
 	if swell == null or not unleashes_swell() or not swell.is_ready(actor):
@@ -96,7 +97,14 @@ func _swell_targets(engine: BattleEngine, actor: BattleCombatant, tid: StringNam
 	if foes.is_empty():
 		return foes
 	var forced := engine.forced_target(actor, tid)
-	return _one(forced if forced != null else lowest_hp(foes))
+	var focus := forced if forced != null else swell_focus(engine, actor)
+	return _one(focus if focus != null else lowest_hp(foes))
+
+
+## Override: the foe a single-foe technique aims at when nothing forces one (M2-NIT-03), so a
+## policy's Swell follows the same target as its other actions. Default: the lowest-HP foe.
+func swell_focus(engine: BattleEngine, actor: BattleCombatant) -> BattleCombatant:
+	return lowest_hp(engine.living_foes_of(actor))
 
 
 ## Uses the first held item with an effect of `effect_type` that `target` may receive. Counts it.

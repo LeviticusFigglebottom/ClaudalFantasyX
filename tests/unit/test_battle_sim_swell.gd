@@ -53,6 +53,59 @@ func test_policies_unleash_but_naive_never_does() -> void:
 	assert_eq(naive_on, naive_off, "gauges that are never spent change nothing")
 	assert_false(sim.make_policy(&"naive").unleashes_swell())
 	assert_true(sim.make_policy(&"smart").unleashes_swell())
+	sim.swell_quality = SwellInput.QUALITY_GOOD
+	var masher := sim.run_many(REEF, ACTIVE, RESERVE, &"naive_swell", 30, 1, Callable(), kit)
+	assert_true(float(masher["mean_swells"]) > 0.0, "naive_swell presses the Swell row")
+	assert_true(sim.make_policy(&"naive_swell").unleashes_swell())
+
+
+# --- naive_swell and the role answer's focus (M2-NIT-03) ------------------------------------
+
+
+func test_naive_swell_aims_where_the_cursor_starts() -> void:
+	var e := _engine([&"rhen"])
+	var p := _attach(e, SimPolicyNaiveSwell.new())
+	assert_eq(p.policy_name(), &"naive_swell")
+	var foes := e.living_foes_of(e.current)
+	foes[1].hp = 5  # the weakest foe is not the first one
+	var first_hp := foes[0].hp
+	e.current.swell = Formulas.SWELL_MAX
+	assert_true(p.unleash_swell(e))
+	assert_true(foes[0].hp < first_hp, "Lamp Dive went to the first foe")
+	assert_eq(foes[1].hp, 5, "not to the weakest")
+
+
+func test_role_answer_swells_at_the_foe_it_answers() -> void:
+	var e := _engine([&"rhen"])
+	var p := _attach(e, SimPolicyRoleAnswer.new())
+	var crab := _foe(e, &"reef_crab")
+	var harrier := _foe(e, &"gull_harrier")
+	crab.hp = 5  # the weakest foe, but Rhen answers the harrier
+	var harrier_hp := harrier.hp
+	e.current.swell = Formulas.SWELL_MAX
+	assert_eq(p.swell_focus(e, e.current), harrier)
+	assert_true(p.unleash_swell(e))
+	assert_true(harrier.hp < harrier_hp, "Lamp Dive went to the answered foe")
+	assert_eq(crab.hp, 5)
+
+
+func test_role_answer_swaps_to_the_answer_before_unleashing() -> void:
+	var e := BattleEngine.new()
+	e.setup(BattleDB.load_default(), [&"rhen", &"asha"] as Array[StringName], [&"ysolde"] as Array[StringName], REEF, 3)
+	e.begin()
+	_turn_of(e, &"rhen")
+	var p := _attach(e, SimPolicyRoleAnswer.new())
+	var rhen := e.current
+	_foe(e, &"gull_harrier").hp = 0  # Rhen's own foe is down: his focus is the eel, Ysolde's answer
+	rhen.swell = Formulas.SWELL_MAX
+	assert_false(p.unleash_swell(e), "the free swap comes first")
+	p.take_turn(e)
+	assert_true(e.party_reserve.has(rhen), "Rhen stepped back for Ysolde")
+	assert_eq(rhen.swell, Formulas.SWELL_MAX, "the gauge waits in reserve")
+	assert_eq(p.swells_used, 0)
+	for f in e.enemies:
+		f.hp = 0
+	assert_false(p._swaps_out(e, e.current), "no foe left: no focus, no swap")
 
 
 func test_the_sandbox_bands_hold_with_swell_played_at_good() -> void:
@@ -154,10 +207,14 @@ func _engine(active: Array[StringName]) -> BattleEngine:
 
 ## A policy on `e` with Swell attached (held for the test: a signal does not keep it alive).
 func _policy(e: BattleEngine) -> SimPolicy:
+	return _attach(e, SimPolicy.new())
+
+
+## Attaches Swell rules to `e` and gives them to `p`, played at good.
+func _attach(e: BattleEngine, p: SimPolicy) -> SimPolicy:
 	var sw := BattleSwell.new(BattleSwell.load_config())
 	sw.attach(e)
 	_swell_keep.append(sw)
-	var p := SimPolicy.new()
 	p.swell = sw
 	p.swell_quality = SwellInput.QUALITY_GOOD
 	p.swell_heal_below_pct = 60
@@ -173,6 +230,14 @@ static func _turn_of(e: BattleEngine, cid: StringName) -> void:
 			e.perform(&"attack", [e.living_foes_of(e.current)[0]] as Array[BattleCombatant])
 		else:
 			e.run_enemy_turn()
+
+
+## The living foe whose enemies.json id is `base` (combatant ids carry a #n suffix).
+static func _foe(e: BattleEngine, base: StringName) -> BattleCombatant:
+	for f in e.enemies:
+		if BattleEngine.enemy_id(f) == base:
+			return f
+	return null
 
 
 static func _foe_hp(e: BattleEngine) -> Array[int]:
