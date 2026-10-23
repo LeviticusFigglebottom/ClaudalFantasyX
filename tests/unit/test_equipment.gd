@@ -164,26 +164,34 @@ func test_grant_starting_replaces_another_heros_weapon() -> void:
 	assert_eq(bag.loadout_problem(), "", "the loadout is one equip() could make again")
 
 
-## M1-ARC-11 (QA review-sweep-G B1): table drift is repaired, never fatal.
-func test_repair_loadout_takes_off_misfits_and_drops_unknown_pieces() -> void:
+## M1-ARC-11 (QA review-sweep-G B1): table drift is repaired, never fatal. M1-ARC-12 (review-sweep-H
+## S1): a piece of unknown equipment is taken off but kept, untouched; nothing is ever dropped.
+func test_repair_loadout_takes_off_misfits_and_keeps_unknown_pieces() -> void:
 	var owned := {
 		"1": {"base": "asha_vigil_staff", "abilities": []},
 		"2": {"base": "rhen_salvage_hooks", "abilities": []},
 		"3": {"base": "old_reef_hooks", "abilities": []},
-		"4": {"base": "gone_too", "abilities": []},
+		"4": {"base": "gone_too", "abilities": ["ember_edge", "retired_ability"]},
 		"5": {"base": "asha_cord_bangle", "abilities": []},
 	}
 	var loadout := {"rhen": {"weapon": 1, "armor": 2}, "toma": {"weapon": 3}, "asha": {"armor": 5}}
 	var bag := EquipmentBag.new(db, {"next_uid": 6, "owned": owned, "loadout": loadout})
 	var notes := bag.repair_loadout()
-	assert_eq(notes.size(), 5, "three taken off, two dropped: %s" % [notes])
+	assert_eq(notes.size(), 3, "three taken off, nothing dropped: %s" % [notes])
 	assert_eq(bag.misfit(&"rhen", &"weapon", 1), EquipmentBag.ERR_WRONG_CHARACTER)
 	assert_eq(bag.equipped(&"rhen", ItemDB.SLOT_WEAPON), EquipmentBag.NO_PIECE, "asha's staff came off")
 	assert_true(bag.has_piece(1), "and stays in the bag")
 	assert_eq(bag.equipped(&"rhen", ItemDB.SLOT_ARMOR), EquipmentBag.NO_PIECE, "hooks in the armor slot came off")
 	assert_true(bag.has_piece(2))
-	assert_false(bag.has_piece(3), "an unknown worn base is dropped")
-	assert_false(bag.has_piece(4), "an unknown unworn base is dropped")
+	assert_eq(bag.equipped(&"toma", ItemDB.SLOT_WEAPON), EquipmentBag.NO_PIECE, "an unknown worn base came off")
+	assert_eq(bag.unknown_uids(), [3, 4] as Array[int], "both unknown pieces are kept")
+	assert_eq(owned["3"], {"base": "old_reef_hooks", "abilities": []}, "untouched")
+	assert_eq(owned["4"], {"base": "gone_too", "abilities": ["ember_edge", "retired_ability"]}, "abilities kept")
+	assert_eq(bag.equip(&"toma", 3), EquipmentBag.ERR_UNKNOWN_EQUIPMENT, "only equipping one is refused")
+	assert_eq(bag.equip_error(&"rhen", 4), EquipmentBag.ERR_UNKNOWN_EQUIPMENT)
+	for cid: StringName in [&"rhen", &"toma", &"asha"]:
+		for slot: StringName in [ItemDB.SLOT_WEAPON, ItemDB.SLOT_ARMOR]:
+			assert_false(bag.pieces_for(cid, slot).has(3) or bag.pieces_for(cid, slot).has(4), "never offered")
 	assert_eq(bag.equipped(&"asha", ItemDB.SLOT_ARMOR), 5, "a fitting piece is untouched")
 	assert_eq(bag.repair_loadout(), [] as Array[String], "idempotent")
 	assert_true(bag.grant_starting(&"rhen"))

@@ -41,17 +41,46 @@ var sell_ratio_num: int = 0
 var sell_ratio_den: int = 1
 var min_sell_price: int = 0
 
+## One line per table that was missing or failed to parse when the DB was loaded (load_dir).
+## Such a table is read as empty, so the DB cannot describe what a save holds: see
+## integrity_problem (M1-ARC-12).
+var load_errors: Array[String] = []
+
 
 static func load_default() -> ItemDB:
+	return load_dir(DATA_DIR)
+
+
+## Loads every table in TABLES from `dir`. A missing or unparseable table is read as empty, with a
+## push_error and a line in load_errors. Tests point it at a folder with a broken table.
+static func load_dir(dir: String) -> ItemDB:
 	var raw: Dictionary = {}
+	var errors: Array[String] = []
 	for table in TABLES:
-		var path := "%s/%s.json" % [DATA_DIR, table]
-		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+		var path := "%s/%s.json" % [dir, table]
+		var parsed: Variant = null
+		if FileAccess.file_exists(path):
+			parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
 		if typeof(parsed) != TYPE_DICTIONARY:
+			errors.append("%s is missing or could not be parsed" % path)
 			push_error("ItemDB: could not parse %s" % path)
 			parsed = {}
 		raw[table] = parsed
-	return from_tables(raw)
+	var db := from_tables(raw)
+	db.load_errors = errors
+	return db
+
+
+## Why this DB must not be used to judge saved equipment ("" when it can be): a table was missing
+## or failed to parse (load_errors), or the equipment table has no equipment, gear types or equip
+## slots. Every owned piece would then read as unknown, so SaveSystem neither repairs a loadout
+## nor writes a save while this is non-empty (M1-ARC-12, QA review-sweep-H S1).
+func integrity_problem() -> String:
+	if not load_errors.is_empty():
+		return "; ".join(load_errors)
+	if equipment.is_empty() or gear_types.is_empty() or equip_slots.is_empty():
+		return "the equipment table has no equipment, gear types or equip slots"
+	return ""
 
 
 ## Builds a DB from {"items": items.json doc, "equipment": ..., "abilities": ..., "customize": ...,

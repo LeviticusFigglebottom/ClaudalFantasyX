@@ -123,6 +123,41 @@ class LocationValidatorTests(unittest.TestCase):
         grouped = no_player + '[node name="Hero" type="Node3D" parent="Rig" groups=["actors", "player"]]\n'
         self.assertTrue(vd.scene_has_player(grouped))
 
+    def test_scene_has_player_sees_instanced_players(self) -> None:
+        """M1-ARC-12 (review-sweep-H nit): a player inside an instanced sub-scene, an inherited scene,
+        and a zone that places its own player (place_at) are not false errors."""
+        no_player = ZONE_TEXT.replace('[node name="Player" type="CharacterBody3D" parent="."]\n', "")
+        rig = "res://game/actors/rig.tscn"
+        hero = "res://game/actors/hero.tscn"
+        scenes = {
+            hero: '[gd_scene format=3]\n\n[node name="Hero" type="CharacterBody3D" groups=["player"]]\n',
+            rig: (f'[gd_scene format=3]\n\n[ext_resource type="PackedScene" path="{hero}" id="1_h"]\n\n'
+                  '[node name="Rig" type="Node3D"]\n\n[node name="Body" parent="." instance=ExtResource("1_h")]\n'),
+        }
+        nested = no_player.replace('[node name="Zone" type="Node3D"]',
+                                   f'[ext_resource type="PackedScene" path="{rig}" id="9_rig"]\n\n'
+                                   '[node name="Zone" type="Node3D"]\n\n'
+                                   '[node name="Party" parent="." instance=ExtResource("9_rig")]')
+        self.assertFalse(vd.scene_has_player(nested), "without the scene map the rule stays conservative")
+        self.assertTrue(vd.scene_has_player(nested, scenes), "group player two instances deep")
+        scenes[hero] = scenes[hero].replace(' groups=["player"]', "")
+        self.assertFalse(vd.scene_has_player(nested, scenes), "an instanced scene with no player")
+        base = "res://game/levels/base_zone.tscn"
+        inherited = (f'[gd_scene format=3]\n\n[ext_resource type="PackedScene" path="{base}" id="1_b"]\n\n'
+                     '[node name="Zone2" instance=ExtResource("1_b")]\n')
+        self.assertTrue(vd.scene_has_player(inherited, {base: ZONE_TEXT}), "the base scene's Player")
+        self.assertFalse(vd.scene_has_player(inherited, {base: no_player}))
+        zone_gd = "res://game/levels/zone.gd"
+        scripted = no_player.replace(
+            '[node name="Zone" type="Node3D"]',
+            f'[ext_resource type="Script" path="{zone_gd}" id="2_s"]\n\n'
+            '[node name="Zone" type="Node3D" script=ExtResource("2_s")]')
+        place = "func place_at(spawn: StringName, yaw_deg: float = 0.0) -> bool:\n\treturn true\n"
+        self.assertTrue(vd.scene_has_player(scripted, {}, {zone_gd: place}), "the zone places its own player")
+        self.assertFalse(vd.scene_has_player(scripted, {}, {zone_gd: "func _ready() -> void:\n\tpass\n"}))
+        loop = {base: inherited.replace(base, base)}
+        self.assertFalse(vd.scene_has_player(inherited, loop), "a self-instancing scene ends")
+
     def test_a_scene_with_no_player_must_be_marked_not_playable(self) -> None:
         """M1-ARC-11 (review-sweep-G S1 on M1-ENV-04): Continue into a player-less scene strands
         the player, so the row must say so, and the fallbacks must be playable."""

@@ -113,7 +113,7 @@ func uids() -> Array[int]:
 	return out
 
 
-## Owned pieces `cid` could wear in `slot`, ascending uid.
+## Owned pieces `cid` could wear in `slot`, ascending uid (never one of unknown_uids).
 func pieces_for(cid: StringName, slot: StringName) -> Array[int]:
 	var out: Array[int] = []
 	for uid in uids():
@@ -149,9 +149,13 @@ func wearer_of(uid: int) -> StringName:
 	return &""
 
 
+## Why `cid` cannot wear owned piece `uid` (RESULT_OK when they can). A piece whose base the
+## item tables do not know is never worn (ERR_UNKNOWN_EQUIPMENT), though it stays in the bag.
 func equip_error(cid: StringName, uid: int) -> StringName:
 	if not has_piece(uid):
 		return ERR_UNKNOWN_PIECE
+	if not db.is_equipment(base_of(uid)):
+		return ERR_UNKNOWN_EQUIPMENT
 	if db.character_of(base_of(uid)) != cid:
 		return ERR_WRONG_CHARACTER
 	if not db.equip_slots.has(db.slot_of(base_of(uid))):
@@ -185,12 +189,15 @@ func loadout_problem() -> String:
 
 ## M1-ARC-11 (QA review-sweep-G B1): a loadout equip() made can stop fitting when the item tables
 ## change: a piece's base renamed or removed, or its gear type moved to another hero or slot. That
-## must never make a save unreadable, so SaveSystem calls this after every load:
-##   - a worn piece whose base is still known but no longer fits its wearer or slot is taken off;
-##     it stays in the bag (pieces_for offers it to whoever it now fits);
-##   - a piece whose base is no longer in the tables is taken off and dropped from the bag, since
-##     no menu, shop or battle can describe it.
-## grant_starting then refills a required slot left empty. Returns one note per change.
+## must never make a save unreadable, so SaveSystem calls this after every load: a worn piece that
+## no longer fits its wearer or slot is taken off, and it stays in the bag. A known piece is then
+## offered by pieces_for to whoever it now fits.
+## M1-ARC-12 (QA review-sweep-H S1): a piece whose base the tables do not know is kept too,
+## untouched (base and abilities), so a later build that restores or aliases the id gets it back.
+## It is unworn, hidden by pieces_for, and equip() refuses it (unknown_uids lists them). Nothing
+## here deletes a piece. SaveSystem never calls this while the tables failed to load
+## (ItemDB.integrity_problem). grant_starting then refills a required slot left empty. Returns one
+## note per change.
 ## SaveShape has already rejected what no table change can cause (a piece worn twice, an unowned
 ## uid), so every worn uid here is owned and worn once.
 func repair_loadout() -> Array[String]:
@@ -205,23 +212,26 @@ func repair_loadout() -> Array[String]:
 			if why != RESULT_OK:
 				lo.erase(slot)
 				notes.append("loadout.%s.%s: piece %d (%s) was taken off (%s)" % [cid, slot, uid, base_of(uid), why])
-	for uid in uids():
-		if not db.is_equipment(base_of(uid)) and wearer_of(uid) == &"":
-			notes.append("owned.%d: unknown equipment '%s' was dropped" % [uid, base_of(uid)])
-			_owned().erase(str(uid))
 	return notes
+
+
+## Owned pieces whose base the item tables do not know, ascending uid. They are kept in the bag as
+## saved and never worn (repair_loadout, equip_error).
+func unknown_uids() -> Array[int]:
+	var out: Array[int] = []
+	for uid in uids():
+		if not db.is_equipment(base_of(uid)):
+			out.append(uid)
+	return out
 
 
 ## Why owned piece `uid` cannot be worn by `cid` in loadout slot `slot` with the current tables:
 ## ERR_UNKNOWN_EQUIPMENT, ERR_WRONG_CHARACTER, ERR_UNKNOWN_SLOT, ERR_WRONG_SLOT, or RESULT_OK.
 func misfit(cid: StringName, slot: StringName, uid: int) -> StringName:
-	var base := base_of(uid)
-	if not db.is_equipment(base):
-		return ERR_UNKNOWN_EQUIPMENT
 	var err := equip_error(cid, uid)
 	if err != RESULT_OK:
 		return err
-	return RESULT_OK if db.slot_of(base) == slot else ERR_WRONG_SLOT
+	return RESULT_OK if db.slot_of(base_of(uid)) == slot else ERR_WRONG_SLOT
 
 
 ## Puts the piece in its slot for `cid`, replacing whatever was there.

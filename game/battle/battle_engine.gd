@@ -28,6 +28,9 @@ const MAX_ACTIVE := 3
 ## Consecutive turns lost to Stop/Sleep with nobody able to act before the battle is ruled a
 ## stalemate (only reachable with "until cured" durations on everyone; ends as defeat).
 const MAX_CONSECUTIVE_LOST_TURNS := 1000
+## BattleCombatant.STATUS_PETRIFY as a String, for item effect rows ("statuses" holds JSON
+## strings). Not a second copy of the id (M1-ARC-12, review-sweep-H nit).
+const PETRIFY_ID := String(BattleCombatant.STATUS_PETRIFY)
 
 var db: BattleDB
 var rng := RandomNumberGenerator.new()
@@ -329,7 +332,7 @@ func preview_item(
 					if recipient.has_status(&"sleep") and Formulas.affinity_hurts_more(aff, &"immune"):
 						mine[CtbTimeline.WAKES] = 0
 				ItemBattleAction.EFFECT_CURE:
-					if recipient.is_petrified() and (eff.get("statuses", []) as Array).has("petrify"):
+					if recipient.is_petrified() and (eff.get("statuses", []) as Array).has(PETRIFY_ID):
 						revived.append(recipient)
 						overrides[recipient] = _rejoin_time(recipient)
 					elif recipient.has_status(&"sleep") and (eff.get("statuses", []) as Array).has("sleep"):
