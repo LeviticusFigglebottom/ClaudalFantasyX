@@ -69,9 +69,13 @@ static var _override_stack: Array[Dictionary] = []
 ## The overridden viewport's state before the first override (restored by the last pop).
 static var _override_base: Dictionary = {}
 static var _override_viewport: Object = null
-## The base settings the whole stack layers on: the first push's, kept until the last pop.
+## The base settings the whole stack layers on: a copy of the first push's (M2-NIT-03), kept until the
+## last pop, so a caller that changes its own `base` later cannot move the stack under it.
 static var _override_settings: GraphicsSettings = null
 ## user://settings.cfg as last read for an override with no base, and its modified time (M1-NIT-02).
+## Private and read-only: it never leaves this class except as a copy (push_override stores one).
+## mtime has 1 s granularity, so a write that bypasses save_config within the same second is missed
+## until the next change; save_config itself invalidates it.
 static var _player_settings: GraphicsSettings = null
 static var _player_settings_mtime := -1
 static var _next_override_handle := 1
@@ -81,7 +85,10 @@ var preset_id: String = ""
 var overrides: Dictionary = {}
 
 
+## `data_path` "" builds an empty instance for copy() (no table is read).
 func _init(data_path: String = DATA_PATH) -> void:
+	if data_path == "":
+		return
 	var text := FileAccess.get_file_as_string(data_path)
 	var parsed: Variant = JSON.parse_string(text)
 	if typeof(parsed) != TYPE_DICTIONARY:
@@ -89,6 +96,20 @@ func _init(data_path: String = DATA_PATH) -> void:
 		return
 	data = parsed as Dictionary
 	preset_id = str(data.get("default_preset", ""))
+
+
+## An independent copy: the same presets table (never mutated), its own preset and override layer.
+func copy() -> GraphicsSettings:
+	var out := GraphicsSettings.new("")
+	out.data = data
+	out.preset_id = preset_id
+	out.overrides = overrides.duplicate(true)
+	return out
+
+
+## True when `other` selects the same preset and override layer (copy() of this is the same).
+func same_as(other: GraphicsSettings) -> bool:
+	return other != null and other.preset_id == preset_id and other.overrides == overrides
 
 
 # --- Presets and the override layer ------------------------------------------------------------
@@ -381,6 +402,9 @@ static func set_authored(obj: Object, property: String, value: Variant) -> void:
 ## settings the overrides layer on (default: user://settings.cfg, or the default preset); it is never
 ## saved. The first push's base holds for the whole stack: a later push with another base is applied
 ## on the first one's, with a warning, so it never re-bases an earlier owner's layer (M1-NIT-02).
+## The exception is a scene swap (M2-NIT-03): when every older owner has already left the tree (its
+## deferred pop is still pending), nobody's layer is left to protect, so the push re-bases the stack on
+## its own base, or on the player's settings when it gives none. The stack keeps a copy of the base.
 ## The owner leaving the tree pops its entry at the end of that frame, unless it is back in a tree
 ## by then: a reparent (remove_child then add_child, or Node.reparent) keeps the override. Call it at
 ## a cut: the pipeline switches on the next frame drawn. Returns the handle, or 0 when nothing was
@@ -395,8 +419,13 @@ static func push_override(
 	if vp == null:
 		push_warning("GraphicsSettings: push_override(%s) has no viewport" % owner.name)
 		return 0
-	var settings := base if base != null and _override_stack.is_empty() else _override_settings_or_player()
-	if base != null and base != settings:
+	var fresh := _override_stack.is_empty() or _older_owners_left()
+	var settings: GraphicsSettings = null
+	if base != null and fresh:
+		settings = base
+	else:
+		settings = _player_config() if fresh else _override_settings_or_player()
+	if base != null and base != settings and not base.same_as(settings):
 		push_warning("GraphicsSettings: push_override(%s): keeping the first override's base settings" % owner.name)
 	var invalid := settings.invalid_override(values)
 	if invalid != "":
@@ -408,7 +437,8 @@ static func push_override(
 	elif not is_instance_valid(_override_viewport) or _override_viewport != vp:
 		push_error("GraphicsSettings: push_override(%s): overrides already target another viewport" % owner.name)
 		return 0
-	_override_settings = settings
+	if fresh:
+		_override_settings = settings.copy()
 	var handle := _next_override_handle
 	_next_override_handle += 1
 	var on_exit := func() -> void: GraphicsSettings._owner_left.call_deferred(handle)
@@ -491,11 +521,27 @@ func invalid_override(values: Dictionary) -> String:
 	return ""
 
 
-## The stack's base, else the player's settings. settings.cfg is read again only when its modified
-## time changes or save_config wrote it, not on every push, pop and plan (M1-NIT-02). Read-only.
+## True when the stack has entries and every one's owner is freed or outside the tree, i.e. only
+## deferred pops are left (a scene swap between the old scene leaving and its pops running).
+static func _older_owners_left() -> bool:
+	for entry in _override_stack:
+		var owner := (entry["owner"] as WeakRef).get_ref() as Node
+		if owner != null and owner.is_inside_tree():
+			return false
+	return not _override_stack.is_empty()
+
+
+## The stack's base, else the player's settings (_player_config). Private and read-only: callers
+## outside this class only ever see the copy push_override stores.
 static func _override_settings_or_player() -> GraphicsSettings:
 	if _override_settings != null:
 		return _override_settings
+	return _player_config()
+
+
+## user://settings.cfg, read again only when its modified time changes or save_config wrote it, not
+## on every push, pop and plan (M1-NIT-02). The cached instance itself: never mutate it.
+static func _player_config() -> GraphicsSettings:
 	var mtime := FileAccess.get_modified_time(CONFIG_PATH) if FileAccess.file_exists(CONFIG_PATH) else 0
 	if _player_settings == null or mtime != _player_settings_mtime:
 		_player_settings = GraphicsSettings.new()
