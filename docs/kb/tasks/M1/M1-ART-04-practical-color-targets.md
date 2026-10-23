@@ -2,8 +2,8 @@
 id: M1-ART-04
 title: Make the art numbers renderable: on-screen targets, absorption, exposure units
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: art-stream-3
 depends_on: [M1-RND-01, M1-ART-03]
 milestone: M1
 request-from: "rendering"
