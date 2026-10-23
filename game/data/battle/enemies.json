@@ -42,6 +42,50 @@
       "xp": 30,
       "currency": 18,
       "drops": [{"item": "gull_quill", "chance": 50}, {"item": "salt_tonic", "chance": 10}]
+    },
+    {
+      "id": "drownbell", "name_key": "ENEMY_DROWNBELL", "role_answer": "rhen",
+      "lore_key": "LORE_DROWNBELL",
+      "stats": {"level": 6, "hp": 3000, "mp": 0, "strength": 18, "magic": 14, "defense": 30,
+                "magic_defense": 20, "agility": 12, "accuracy": 10, "evasion": 4, "luck": 8},
+      "affinities": {"water": "absorb", "lightning": "weak"},
+      "delay_immune": true,
+      "skills": ["hood_slam", "toll_gather", "toll"],
+      "weak_point": {"hits": 3, "max_delay": 200, "name_key": "PART_DROWNBELL_RIM"},
+      "ai": [
+        {"if": {"turn_mod": [3, 0]}, "pick": [{"skill": "toll_gather", "target": "self"}]},
+        {"pick": [{"skill": "hood_slam", "target": "random_foe"}]}
+      ],
+      "phases": [
+        {
+          "id": "flood", "at_hp_pct": 40, "name_key": "PHASE_DROWNBELL_FLOOD",
+          "prompt_key": "TUT_DROWNBELL_FLOOD",
+          "skills": ["hood_slam", "flood_surge", "undertow_surge", "rouse_polyp"],
+          "field": "flood",
+          "spawn": ["spawn_polyp", "spawn_polyp"],
+          "ai": [
+            {"if": {"field_active": "flood", "allies_alive_below": 3},
+             "pick": [{"skill": "rouse_polyp", "target": "self"}]},
+            {"if": {"field_active": "flood"}, "pick": [{"skill": "flood_surge", "target": "all_foes"}]},
+            {"if": {"turn_mod": [3, 2]}, "pick": [{"skill": "undertow_surge", "target": "all_foes"}]},
+            {"pick": [{"skill": "hood_slam", "target": "random_foe"}]}
+          ]
+        }
+      ],
+      "xp": 450,
+      "currency": 300
+    },
+    {
+      "id": "spawn_polyp", "name_key": "ENEMY_SPAWN_POLYP", "role_answer": "asha",
+      "lore_key": "LORE_SPAWN_POLYP",
+      "stats": {"level": 4, "hp": 180, "mp": 0, "strength": 6, "magic": 10, "defense": 6,
+                "magic_defense": 10, "agility": 8, "accuracy": 6, "evasion": 6, "luck": 4},
+      "affinities": {"water": "absorb"},
+      "field": "flood",
+      "skills": ["polyp_mend"],
+      "ai": [{"pick": [{"skill": "polyp_mend", "target": "largest_ally"}]}],
+      "xp": 0,
+      "currency": 0
     }
   ]
 }

@@ -49,13 +49,13 @@ CutsceneStage (director_path, player_path)
 | `@wait sec` | Waits. `@wait music=<m> max=<s>` waits `max` (no music markers are reported yet), then `release_wait()`. |
 | `@fade in\|out sec [color]` | Fades the overlay and waits for it. A scene whose first fade is `in` starts black. Fading out hides the box. |
 | `@letterbox on\|off` | Slides the bars (`letterbox_sec`) without waiting. |
-| `@mark actor mark [walk\|run]` | Turns the actor toward the mark and moves it there at `walk_mps`/`run_mps`, **without waiting**: the next lines play over the walk, and several actors can walk at once. The scene's end completes every move. |
+| `@mark actor mark [walk\|run]` | Plays the rig's `walk`/`run` clip if it has one (then `idle` on arrival). Turns the actor toward the mark and moves it there at `walk_mps`/`run_mps`, **without waiting**: the next lines play over the walk, and several actors can walk at once. The scene's end completes every move. |
 | `@anim actor look_at target` | Turns the actor toward a mark or actor over `turn_sec`. Other clips play a same-named animation when the actor has an `AnimationPlayer`, else nothing (placeholder). |
-| `@face` | Recorded in `faces` only (no face rig yet). |
+| `@face actor expr [sec]` | Blends the actor's face shape keys to the emotion's pose over `sec` (else the pose table's `blend_in_s`) through `CutsceneFace`, when the actor has blend shapes and a `face_poses` row in `sequencer.json` (Asha reads Character's `asha_face_poses.json`, read-only). Always recorded in `faces`. |
 | `@music track [fade]` | Plays `music_dir/<track>.ogg`, or its `music_stand_ins` row (placeholders until Audio ships the cues). `silence` fades out. |
 | `@sfx sound [vol]` | One-shot from `sfx_dir`. `at=` is ignored for now (2D). |
 | `@vfx effect [at] [count]` | `CutsceneMotes` at the mark or actor. `drift`, `motion` and `rate` come from the effect's row for now. |
-| lines | The `DialogueBox` shows the line; `ui_accept` skips the reveal, then advances. |
+| lines | The `DialogueBox` shows the line; `ui_accept` (or the field's interact key) skips the reveal, then advances. The speaker's `[emotion]` blends their face like `@face`, `DialogueBox.mouth_flap` drives the `lip_flap` shapes (visemes), and the speaker's `talk` clip plays (then `idle`) when the rig has them. |
 | options | `CutsceneChoices` over the box; the pick goes to `runner.choose()`. |
 
 ## Guarantees
@@ -65,8 +65,25 @@ CutsceneStage (director_path, player_path)
 - **After every `await blend_finished`** the sequencer checks `is_instance_valid(director)` and `director.is_leaving()`; a leaving director ends the cutscene at once (no further cues, overlay cleared).
 - Missing shots, actors, marks, tracks and sounds are soft failures: `warnings` lists each once (and `push_warning`), and the scene plays on. A rough stage can play a finished script.
 
+## Skipping (M2-FP-05)
+
+Holding `ui_cancel` (Escape, or B/Circle on a controller) for `skip_hold_sec` (1 s, in `sequencer.json`) shows a "Hold to skip" fill at the bottom right, then skips. Letting go resets the fill. `skip()` does the same from code.
+- **A skip fast-forwards to the next choice, or to the end.** Flags, branches and events run exactly as in a normal play. Camera moves snap, and waits, fades and walks complete at once. **At a choice the skip stops and the menu shows, so the player always makes their own choices.** Hold again after it to skip the rest.
+- The autosave hold, the player freeze and the camera hand-back end exactly as on a normal finish, because a skip is a normal play with no time passing. `skipped(scene_id)` fires once per skip.
+
+## Leaving the tree (M2-FP-09)
+
+Every await inside `play()` goes through one internal `resumed` signal: a line advance, a wait, a choice, or a camera landing. If the sequencer leaves the tree mid-scene, `_exit_tree` does four things:
+- releases the autosave hold;
+- gives the player back;
+- disconnects the pending hook;
+- releases the await.
+
+`play()` then returns `false` to its host instead of hanging, and `finished` still fires once.
+
+Cue keys the placeholder presentation doesn't perform warn once per scene (`UNSUPPORTED_KWARGS`): `@camera grade=`, `@anim loop=`, `@sfx at=`, and `@vfx drift=`/`motion=`/`rate=`/`form=`.
+
 ## Not yet
 
 - Music markers (`music_marker_reached`) need an adaptive music player (Audio).
-- `@face` and body clips need the character rigs (Character, Cinematics). `grade=` on `@camera` is ignored until the grading pipeline has frames per sub-frame.
-- No skip button. A held-skip that drains the scene through `instant` is a small addition when Cinematics asks.
+- Body clips (`idle`, `talk`, `walk`, `run` and the scripted ones) need Asha's rig to have them: request M2-FP-07. The sequencer already plays same-named clips. `grade=` on `@camera` is ignored until the grading pipeline has frames per sub-frame.

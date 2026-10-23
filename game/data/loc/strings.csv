@@ -442,6 +442,30 @@ CHAR_NETMENDER,Old Net-Mender
 CHAR_FISHER,Fisher
 FIELD_PROMPT_LISTEN,Listen
 SWELL_INPUT_TIMING_RING_HELP_LAMP,Strike each time the ring meets the lamp. Beats: {beats}
+CUTSCENE_HOLD_TO_SKIP,Hold to skip
+FLOW_RESULT_LAST_SAVE,Return to last save
+FLOW_RESULT_TITLE,Return to title
+ENC_DROWNBELL,The Drownbell
+ENEMY_DROWNBELL,The Drownbell
+LORE_DROWNBELL,"A temple bell the sea took and kept. It still rings for the drowned, and the drowned still answer. Strike its rim quickly and the toll dies in its throat."
+ENEMY_SPAWN_POLYP,Spawn-Polyp
+LORE_SPAWN_POLYP,"Soft cyan mouths that open in the floodwater around the bell and feed it. Kill one and the tide grows another."
+SKILL_HOOD_SLAM,Hood Slam
+SKILL_TOLL_GATHER,Gathering Toll
+SKILL_TOLL,The Toll
+SKILL_UNDERTOW_SURGE,Undertow Surge
+SKILL_FLOOD_SURGE,Floodtide
+SKILL_ROUSE_POLYP,Rouse the Spawn
+SKILL_POLYP_MEND,Feeding Tide
+SKILL_CALL_ILUN,Call Ilun
+PHASE_DROWNBELL_FLOOD,The Flood
+PART_DROWNBELL_RIM,Rim
+TUT_DROWNBELL_TOLL,The Drownbell's toll is coming. Strike its rim to silence it.
+TUT_DROWNBELL_FLOOD,The water is feeding it. Call on Ilun.
+HUD_FAIL_NO_FIELD,There is no water field to clear.
+HUD_CHARGE_BROKEN_FMT,{name}'s {part} breaks. {skill} is silenced.
+HUD_WEAK_POINT_FMT,{part} {hits}/{need}
+HUD_FIELD_CLEARED,The water field clears.
 SKILL_READ,Read
 HUD_OPENING_PREEMPTIVE,They have not seen you yet.
 HUD_OPENING_AMBUSH,They saw you first.

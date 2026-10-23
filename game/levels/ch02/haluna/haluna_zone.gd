@@ -14,6 +14,15 @@ extends Node3D
 @export var start_spawn: StringName = &"Shrine"
 ## Raised above the marker on placement so the capsule settles onto the ground.
 @export var spawn_lift_m: float = 0.02
+## The close-up lighting rule (character_shading.md "Shadows on characters", QA-05/CHR-04): the
+## sun keys Asha's face in Cutscene A, so it takes this shadow_normal_bias instead of the mood
+## scene's 1.0. 0 leaves the mood scene's value (the mood test's own baselines are unaffected).
+@export var face_key_shadow_normal_bias: float = 0.0
+
+## True once prebuild() has dressed the mood scene and built the collision (M2-FP-05).
+var prebuilt := false
+## Wall time of prebuild(), for the README and tests.
+var prebuild_msec := 0
 
 @onready var player: FieldController = $Player
 @onready var director: FieldCameraDirector = $CameraDirector
@@ -23,12 +32,54 @@ extends Node3D
 @onready var field_camera: Camera3D = $FieldCamera
 
 
+## M2-FP-05: PackedScene.instantiate() sends NOTIFICATION_SCENE_INSTANTIATED to the zone root once
+## every node exists, on the thread that instantiates it. SceneRouter instantiates on a
+## WorkerThreadPool thread under its opaque fade, so the ~1.5 s of dressing and collision happen
+## there, not in the frame that adds the zone to the tree (README, "Entry hitch"). An instance made
+## on the main thread (ShaderPrewarm's off-tree material scan, tests, the screenshot capture) is not
+## prebuilt here: it would only move the same cost into another main-thread frame, and the scan
+## would pay it a second time. Such an instance dresses in _ready as before, or calls prebuild().
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_SCENE_INSTANTIATED and OS.get_thread_caller_id() != OS.get_main_thread_id():
+		prebuild()
+
+
+## Dresses the mood scene, builds the walk collision and loads the cutscene cast's materials while
+## the zone is still off the tree (thread-safe: nothing here touches a node in the tree). The mood scene's
+## dresser is swapped to HalunaZoneDresser first so it does not dress again in _ready. Runs once,
+## synchronously; the zone's _ready then only skips what was done here.
+func prebuild() -> void:
+	if prebuilt or is_inside_tree():
+		return
+	var t0 := Time.get_ticks_msec()
+	var dresser := get_node(^"HalunaMood/Dresser") as HalunaDresser
+	HalunaZoneDresser.adopt(dresser).dress()
+	(get_node(^"Collision") as HalunaCollision).build()
+	for actor in get_node(^"CutsceneStage").find_children("*", "", true, false):
+		if actor is HalunaActorPose:
+			(actor as HalunaActorPose).assign_materials()
+	# The sea builds its ocean grid in _ready (~40 ms) unless handed one: hand it the same grid.
+	var water := get_node_or_null(^"HalunaMood/Water") as WaterSurface
+	if water != null and water.surface_mesh == null:
+		water.surface_mesh = WaterMeshBuilder.build(
+			water.core_half_extent_m, water.core_cell_m, water.outer_half_extent_m, water.cell_growth
+		)
+	prebuild_msec = Time.get_ticks_msec() - t0
+	prebuilt = true
+
+
 func _ready() -> void:
 	_release_mood_cameras()
-	collision.build()
+	if not prebuilt:
+		# Not prebuilt (instanced on the main thread): the mood dressed itself in its own _ready.
+		collision.build()
 	field_camera.make_current()
 	# After Cutscene A the girl and the guardian have walked up to the village.
-	set_beach_cast_visible(not bool(Game.get_flag(&"ch02_met_asha")))
+	_apply_face_key_bias()
+	var intro_flag := StringName(
+		str(FirstPlayableConfig.section(FirstPlayableConfig.SECTION_HALUNA).get("intro_flag", ""))
+	)
+	set_beach_cast_visible(intro_flag == &"" or not bool(Game.get_flag(intro_flag)))
 	place_at(start_spawn, spawn_yaw_deg(start_spawn))
 
 
@@ -71,6 +122,12 @@ func set_beach_cast_visible(on: bool) -> void:
 		return
 	for a in actors.get_children():
 		(a as Node3D).visible = on
+
+
+func _apply_face_key_bias() -> void:
+	var sun: Variant = mood.get(&"sun")
+	if face_key_shadow_normal_bias > 0.0 and sun is DirectionalLight3D:
+		(sun as DirectionalLight3D).shadow_normal_bias = face_key_shadow_normal_bias
 
 
 ## The mood scene's five composed HalunaShotCameras (H01 is current there) must not take the view.

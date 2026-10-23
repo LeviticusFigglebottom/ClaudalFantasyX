@@ -24,6 +24,8 @@ var target_color := Color.WHITE
 var doom := 0
 ## Slot 0 caption under the name ("" hides it).
 var caption := ""
+## The telegraphed skill this turn is committed to ("" = none), shown after the name (M2-FP-06).
+var intent_label := ""
 ## The running slide/fade, killed when a newer layout arrives (TurnTimeline._move).
 var move_tween: Tween
 
@@ -83,7 +85,8 @@ func apply(slot: Dictionary, identity: Dictionary, current: bool) -> void:
 	is_current = current
 	label_text = str(identity.get("label", String(combatant_id)))
 	tint = identity.get("tint", Color.WHITE)
-	_name.text = label_text
+	intent_label = str(slot.get("intent_label", ""))
+	_name.text = label_text if intent_label == "" else " · ".join([label_text, intent_label])
 	_initial.text = label_text.left(1)
 	_caption.text = caption
 	_doom_label.text = str(doom) if doom > 0 else ""

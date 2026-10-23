@@ -2,16 +2,21 @@
 
 This is a rough but complete thread through the first minutes of *Hymn of the Undertow*. Most of what you see is placeholder: capsules stand in for people (Asha is the only real model, and she has no animations yet), the Shell Shrine is grey stone primitives, and the music uses the three prototype cues in place of the scenes' own. **The point is to feel the flow.** Please note anything that confuses you, drags, or feels wrong.
 
-## What you play (about 10–15 minutes)
+## What you play (about 15–20 minutes)
 
 1. **Title.** Choose **New Game**.
 2. **Prologue.** A dead city at dusk, with one line of Rhen's narration.
 3. **Cutscene A, "The Girl on the Beach".** Rhen wakes in the shallows at Haluna. There are two choices; both are fine.
 4. **Haluna, free to walk.** Talk to the three villagers (at the market, the chapel court and the dock). Each one has a line that hints at what a "Cantor" is.
-5. **First battle.** Walking up the beach path toward the village starts a fight against a reef crab and a lantern eel, with Rhen and Asha (Toma in reserve). Win it, and you're back on the path just inland of where the fight started.
+5. **First battle.** Walking up the beach path toward the village starts a fight against a reef crab and a lantern eel, with Rhen and Asha (Toma in reserve). Win it, and you're back on the path just inland of where the fight started. Flee it, and you're back on the beach below the path, with the fight still ahead. Lose it, and you can **Fight again** or **Return to last save** (your newest save; with none yet, this reads **Return to title**).
 6. **Save** at the shrine: the glowing teal stone with a shell canopy, on the third lane into the village (past the tide-wall lanes). Resting there heals the party and opens the save menu.
 7. **The causeway head.** Once you have saved, walk north along the beach, past the dock, to the causeway head at its far end. This plays **Cutscene B, "The First Verse"**, at the Shell Shrine at sunset.
-8. **End card.** Press accept to return to the title. **Continue** loads your save.
+8. **The Drownbell.** The bell answers the verse. It's a two-phase boss, with Rhen, Asha and Toma and no reserve.
+   - **Phase 1, the Toll:** watch the timeline. The bell gathers a toll that shoves everyone back, and the timeline shows it two turns out. Three fast strikes (Rhen's Attack or Quick Hit) break its rim and silence it.
+   - **Phase 2, the Flood:** at about 40% health the water rises, and polyps heal the bell faster than you can cut them down. Asha's **Call Ilun** (12 MP) clears the water.
+
+   Lose, and you can fight again or return to your last save.
+9. **End card.** Press accept to return to the title. **Continue** loads your save.
 
 ## Running it
 
@@ -40,6 +45,7 @@ This needs the Godot 4.6.3 **export templates**: in the editor, open **Editor �
 | Advance dialogue, confirm | Enter or Space | A / Cross |
 | Choose an option | Up / Down, then Enter | D-pad, then A |
 | Back, cancel | Escape | B / Circle |
+| Skip a cutscene (it stops at each choice, so you still choose) | hold Escape for 1 s | hold B / Circle |
 | Battle menus | Up / Down / Left / Right, Enter, Escape | D-pad, A, B |
 
 In battle, the timeline on the right shows who acts next. Highlighting a command previews how it changes the order. Swap brings Toma in from the reserve.
@@ -48,14 +54,12 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 
 ## Known placeholders and limits
 
-- People are capsules, apart from Asha, who stands in a rest pose because she has no animations yet. Nobody's face moves. The `@face` and `@anim` cues are recorded but not performed.
+- People are capsules, apart from Asha, who stands in a rest pose because she has no animations yet. Asha's face does change: her expression follows each line's emotion, and her mouth moves as her text appears. Body animations are still missing.
 - The music is a prototype stand-in: the hush theme sketch plays on the beach and in Haluna, the temple cue plays at the shrine, and the hush theme v2 plays for the verse. Nobody has signed off on any of them.
 - The glimmer motes in the cutscenes are simple glowing dots, not the real particle effect.
 - Haluna uses the art team's mood-test scene, with simple collision added. The camera mostly follows Rhen from behind; only a few spots use composed shots.
-- Cutscene B ends with the bell tolling and a call to battle. **The Drownbell boss isn't built yet**, so the end card comes next.
-- There's no skip for cutscenes yet.
-- Entering Haluna freezes for about a second and a half behind the black fade while the village builds itself. That's expected for now.
-- After a lost battle (or an escape) you return on the village side of the fight. Choosing "Fight again" replays it, and crossing back toward the beach offers it again. The causeway head is past the beach's north end, so the fight comes up again on the way there until you win.
+- **Call Ilun** is a stand-in for the real Vowbound summon (ADR 0024). For now it is one of Asha's commands rather than a full summon that replaces the party, and the bell and polyps are placeholder shapes.
+- Entering Haluna holds the black fade for about a second and a half while the village builds itself; the picture no longer freezes when it appears.
 - In the field, Escape does nothing. **E** also advances dialogue.
 
 ## Reporting
