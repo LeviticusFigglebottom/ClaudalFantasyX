@@ -1497,9 +1497,13 @@ UNDERTOW_TIERS = ("low", "medium", "high", "ultra")
 UNDERTOW_BODIES = ("shells", "raymarch")
 # = UndertowState.MAX_CURL_REUSE and the shader's hint_range(1, 8).
 UNDERTOW_MAX_CURL_REUSE = 8
-# undertow_body.gdshaderinc's default when a variant does not define UNDERTOW_MAX_STEPS.
-UNDERTOW_DEFAULT_STEP_CAP = 48
+# The body include: its `#ifndef UNDERTOW_MAX_STEPS` default (a variant that defines none compiles
+# that cap) and the march_steps uniform's hint_range floor are parsed from it, never copied
+# (M1-RND-15, review-sweep-I on RND-11).
+UNDERTOW_BODY_INC = "game/shaders/undertow/undertow_body.gdshaderinc"
 UNDERTOW_STEP_CAP_RE = re.compile(r"#define UNDERTOW_MAX_STEPS (\d+)")
+UNDERTOW_DEFAULT_CAP_RE = re.compile(r"#ifndef UNDERTOW_MAX_STEPS\s*\n\s*#define UNDERTOW_MAX_STEPS (\d+)")
+UNDERTOW_STEPS_HINT_RE = re.compile(r"uniform int march_steps : hint_range\((\d+),\s*(\d+)\)")
 IMPORT_SLICES_RE = re.compile(r"^slices/(horizontal|vertical)=(\d+)", re.M)
 
 
@@ -1507,17 +1511,40 @@ def _res_path(root: Path, res: str) -> Path:
     return root / res.removeprefix("res://")
 
 
+def undertow_step_limits(root: Path) -> tuple[int, int] | None:
+    """(march_steps floor from the uniform's hint_range, default UNDERTOW_MAX_STEPS) from the body
+    include, or None when either cannot be parsed."""
+    path = root / UNDERTOW_BODY_INC
+    if not path.is_file():
+        return None
+    text = path.read_text(encoding="utf-8")
+    cap = UNDERTOW_DEFAULT_CAP_RE.search(text)
+    hint = UNDERTOW_STEPS_HINT_RE.search(text)
+    if cap is None or hint is None:
+        return None
+    return int(hint.group(1)), int(cap.group(1))
+
+
 def undertow_quality_errors(root: Path, doc: object, where: str = UNDERTOW_FILE) -> list[str]:
     """Tier params the storm reads at runtime: types, ranges, the compiled step cap, the noise."""
     if not isinstance(doc, dict):
         return [f"{where}: not an object"]
     errs: list[str] = []
+    limits = undertow_step_limits(root)
+    if limits is None:
+        errs.append(f"{UNDERTOW_BODY_INC}: cannot parse the march_steps hint_range or the UNDERTOW_MAX_STEPS default")
+    step_floor, default_cap = limits if limits is not None else (1, 0)
     quality = doc.get("quality", {})
     shaders = doc.get("shaders", {})
+    if not isinstance(quality, dict) or not isinstance(shaders, dict):
+        return errs + [f"{where}: quality and shaders must be objects"]
     if sorted(quality) != sorted(UNDERTOW_TIERS):
         errs.append(f"{where}: quality tiers must be exactly {', '.join(UNDERTOW_TIERS)}")
     for tier, t in quality.items():
         w = f"{where}: quality.{tier}"
+        if not isinstance(t, dict):
+            errs.append(f"{w} must be an object")
+            continue
         body = t.get("body")
         if body not in UNDERTOW_BODIES:
             errs.append(f"{w}.body must be one of {UNDERTOW_BODIES}")
@@ -1534,9 +1561,12 @@ def undertow_quality_errors(root: Path, doc: object, where: str = UNDERTOW_FILE)
                 errs.append(f"{w}: shaders.body_{tier} missing ({shader!r})")
             else:
                 m = UNDERTOW_STEP_CAP_RE.search(path.read_text(encoding="utf-8"))
-                cap = int(m.group(1)) if m else UNDERTOW_DEFAULT_STEP_CAP
-                if not 1 <= steps <= cap:
-                    errs.append(f"{w}.march_steps {steps} outside 1..{cap} (the variant's UNDERTOW_MAX_STEPS)")
+                cap = int(m.group(1)) if m else default_cap
+                if not step_floor <= steps <= cap:
+                    errs.append(
+                        f"{w}.march_steps {steps} outside {step_floor}..{cap}"
+                        " (the uniform's hint_range floor, the variant's UNDERTOW_MAX_STEPS)"
+                    )
         if "curl_reuse" in t:
             r = t["curl_reuse"]
             if not _is_int(r) or not 1 <= r <= UNDERTOW_MAX_CURL_REUSE:
@@ -1544,7 +1574,9 @@ def undertow_quality_errors(root: Path, doc: object, where: str = UNDERTOW_FILE)
         if "temporal_jitter" in t and not isinstance(t["temporal_jitter"], bool):
             errs.append(f"{w}.temporal_jitter must be a bool")
     noise = doc.get("noise")
-    if noise is not None:
+    if noise is not None and not isinstance(noise, dict):
+        errs.append(f"{where}: noise must be an object")
+    elif noise is not None:
         tex = str(noise.get("texture", ""))
         texels = noise.get("texels")
         if not tex or not _res_path(root, tex).is_file():
@@ -1560,9 +1592,14 @@ def undertow_quality_errors(root: Path, doc: object, where: str = UNDERTOW_FILE)
 
 
 def check_undertow(root: Path, files: dict[str, object], rep: Report) -> None:
-    if UNDERTOW_FILE in files:
-        for e in undertow_quality_errors(root, files[UNDERTOW_FILE]):
-            rep.err(e)
+    if UNDERTOW_FILE not in files:
+        # Invalid JSON is already reported by load_json_files; a missing file is an error too
+        # (the storm cannot pick a tier without it).
+        if not (root / UNDERTOW_FILE).is_file():
+            rep.err(f"{UNDERTOW_FILE}: missing (the Undertow quality tiers)")
+        return
+    for e in undertow_quality_errors(root, files[UNDERTOW_FILE]):
+        rep.err(e)
 
 
 # --- M1-CMB-04: Swell gauges (game/data/battle/swell.json, formulas.md § Swell) ------------------
