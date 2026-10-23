@@ -47,6 +47,16 @@ extends Node
 ##     the temp name. A failed rename keeps the temp file for the same reason.
 ##   - FileAccess.flush() is a stdio flush, not an fsync: a power cut right after the rename can
 ##     still lose the newest write on some filesystems (architecture.md, Save robustness).
+##
+## Review-sweep-G (M1-ARC-11 rework; ADR 0018 Amendment 3):
+##   - A loadout that no longer fits the item tables (a piece renamed or removed, or moved to
+##     another hero or slot by a later equipment.json) is repaired on load, never read as corrupt:
+##     the piece is taken off into the bag, or dropped when its base is unknown, with a warning
+##     (EquipmentBag.repair_loadout), and grant_starting refills the weapon.
+##   - No write replaces a non-empty slot that reads as corrupt: save_to_slot and recover_temp
+##     first move it to a numbered `.corrupt` copy (corrupt_path, free_corrupt_path).
+##   - A leftover temp that is not provably older than its slot (a newer build's temp included) is
+##     set aside before the next write, and logged at startup (kept_leftover_temps).
 
 const SAVE_VERSION := 4
 const SAVE_DIR := "user://saves"
@@ -59,6 +69,10 @@ const RECOVERED_SUFFIX := ".recovered"
 ## How many set-aside copies one slot keeps (`.recovered`, `.recovered.2`, ...) before the next
 ## leftover is replaced instead (each is a whole save; this only bounds a pathological loop).
 const MAX_RECOVERED := 99
+## A non-empty slot that reads as corrupt is moved here before a write replaces it (numbered like
+## RECOVERED_SUFFIX: `.corrupt`, `.corrupt.2`, ... up to MAX_CORRUPT).
+const CORRUPT_SUFFIX := ".corrupt"
+const MAX_CORRUPT := 99
 const REASON_MANUAL := &"manual"
 const REASON_CHAPTER := &"chapter_boundary"
 const STATUS_EMPTY := &"empty"
@@ -142,6 +156,10 @@ func save_to_slot(
 		DirAccess.remove_absolute(tmp)
 		push_warning("SaveSystem: writing slot %d failed (%s); the old save is kept" % [slot, error_string(err)])
 		return err
+	err = _set_aside_corrupt_slot(slot)
+	if err != OK:
+		DirAccess.remove_absolute(tmp)
+		return err
 	err = DirAccess.rename_absolute(tmp, path)
 	if err != OK:
 		# The temp file is a complete, checked save: keep it for recovery (leftover_temp_info).
@@ -192,8 +210,23 @@ func leftover_temp_info(slot: int) -> Dictionary:
 	if not FileAccess.file_exists(tmp):
 		return {}
 	var info := _file_info(tmp)
-	info["recoverable"] = info["status"] == STATUS_OK and temp_is_newer(info, slot_info(slot))
+	var main := slot_info(slot)
+	info["recoverable"] = info["status"] == STATUS_OK and temp_is_newer(info, main)
+	info["keep"] = temp_worth_keeping(info, main)
 	return info
+
+
+## M1-ARC-11 (review-sweep-G S2): true when a leftover temp file (`tmp`, a _file_info) must be set
+## aside rather than overwritten: it is recoverable, or it is a save this build cannot compare
+## with the slot (a newer build's temp, or a readable temp beside a newer build's slot). Only a
+## torn temp (unreadable) and one provably older than a readable slot are overwritten.
+static func temp_worth_keeping(tmp: Dictionary, main: Dictionary) -> bool:
+	var status := StringName(str(tmp["status"]))
+	if status == STATUS_NEWER:
+		return true
+	if status != STATUS_OK:
+		return false
+	return StringName(str(main["status"])) == STATUS_NEWER or temp_is_newer(tmp, main)
 
 
 ## True when a readable temp file (`tmp`, a _file_info) should replace the slot (`main`, a
@@ -222,36 +255,60 @@ func recover_temp(slot: int) -> Error:
 		return ERR_FILE_NOT_FOUND
 	if not bool(info["recoverable"]):
 		return ERR_FILE_CORRUPT
-	var err := DirAccess.rename_absolute(slot_path(slot) + TEMP_SUFFIX, slot_path(slot))
+	var err := _set_aside_corrupt_slot(slot)
+	if err != OK:
+		return err
+	err = DirAccess.rename_absolute(slot_path(slot) + TEMP_SUFFIX, slot_path(slot))
 	if err == OK:
 		EventBus.game_saved.emit(slot)
 	return err
 
 
-## Logs every recoverable leftover temp file (runs once at startup). Returns their slots.
+## Logs every leftover temp file worth keeping (runs once at startup). Returns the slots whose
+## temp is recoverable. A kept temp that is not recoverable (one this build cannot compare, such
+## as a newer build's) is logged too: the next write to its slot sets it aside.
 func report_leftover_temps() -> Array[int]:
 	var found: Array[int] = []
-	if not DirAccess.dir_exists_absolute(save_dir):
-		return found
-	for slot in range(0, MAX_SLOT + 1):
+	for slot in kept_leftover_temps():
 		var info := leftover_temp_info(slot)
-		if not info.is_empty() and bool(info["recoverable"]):
+		var tmp := slot_path(slot) + TEMP_SUFFIX
+		if bool(info["recoverable"]):
 			found.append(slot)
 			push_warning(
 				(
 					"SaveSystem: %s is a complete save newer than slot %d (chapter %d); recover_temp(%d) restores it"
-					% [slot_path(slot) + TEMP_SUFFIX, slot, int(info["chapter"]), slot]
+					% [tmp, slot, int(info["chapter"]), slot]
+				)
+			)
+		else:
+			push_warning(
+				(
+					"SaveSystem: %s (%s, v%d) cannot be compared with slot %d by this build; kept, set aside on the next write"
+					% [tmp, info["status"], int(info["version"]), slot]
 				)
 			)
 	return found
 
 
-## Before a write reuses the temp name: a recoverable leftover is moved to `.recovered` (and
-## logged) instead of being overwritten. An unreadable one is a torn write with nothing to keep.
-## An earlier set-aside is never replaced: the next free name is used (recovered_path).
+## Slots whose leftover temp file is worth keeping (temp_worth_keeping), ascending.
+func kept_leftover_temps() -> Array[int]:
+	var out: Array[int] = []
+	if not DirAccess.dir_exists_absolute(save_dir):
+		return out
+	for slot in range(0, MAX_SLOT + 1):
+		var info := leftover_temp_info(slot)
+		if not info.is_empty() and bool(info["keep"]):
+			out.append(slot)
+	return out
+
+
+## Before a write reuses the temp name: a leftover worth keeping (temp_worth_keeping) is moved to
+## `.recovered` (and logged) instead of being overwritten. An unreadable one is a torn write with
+## nothing to keep, and a readable one older than a readable slot is superseded. An earlier
+## set-aside is never replaced: the next free name is used (recovered_path).
 func _set_aside_leftover_temp(slot: int) -> void:
 	var info := leftover_temp_info(slot)
-	if info.is_empty() or not bool(info["recoverable"]):
+	if info.is_empty() or not bool(info["keep"]):
 		return
 	var tmp := slot_path(slot) + TEMP_SUFFIX
 	var aside := free_recovered_path(slot)
@@ -275,6 +332,45 @@ func free_recovered_path(slot: int) -> String:
 		if not FileAccess.file_exists(path):
 			return path
 	return ""
+
+
+## The copy a corrupt slot is moved to: `slot_NN.json.corrupt` for n = 1, then `.corrupt.2`, ...
+func corrupt_path(slot: int, n: int = 1) -> String:
+	var base := slot_path(slot) + CORRUPT_SUFFIX
+	return base if n <= 1 else "%s.%d" % [base, n]
+
+
+## The first corrupt_path that does not exist yet, or "" when all MAX_CORRUPT are taken.
+func free_corrupt_path(slot: int) -> String:
+	for n in range(1, MAX_CORRUPT + 1):
+		var path := corrupt_path(slot, n)
+		if not FileAccess.file_exists(path):
+			return path
+	return ""
+
+
+## M1-ARC-11 (review-sweep-G B1): before anything replaces a slot, a non-empty slot that reads as
+## corrupt is moved to the next free `.corrupt` copy, so a save this build cannot read (damaged,
+## or failing a check that a later build relaxes) is never destroyed. Returns OK when there was
+## nothing to keep or it was moved; otherwise the error, and the caller must not replace the slot.
+func _set_aside_corrupt_slot(slot: int) -> Error:
+	var path := slot_path(slot)
+	if not FileAccess.file_exists(path) or slot_info(slot)["status"] != STATUS_CORRUPT:
+		return OK
+	if FileAccess.get_file_as_bytes(path).is_empty():
+		return OK
+	var aside := free_corrupt_path(slot)
+	if aside == "":
+		push_warning("SaveSystem: slot %d is unreadable and all %d copies are taken; it is kept" % [slot, MAX_CORRUPT])
+		return ERR_ALREADY_EXISTS
+	var err := DirAccess.rename_absolute(path, aside)
+	if err != OK:
+		push_warning(
+			"SaveSystem: could not move unreadable slot %d to %s (%s); it is kept" % [slot, aside, error_string(err)]
+		)
+		return err
+	push_warning("SaveSystem: slot %d was unreadable; it was moved to %s before the new save" % [slot, aside])
+	return OK
 
 
 func load_from_slot(slot: int) -> GameStateData:
@@ -315,24 +411,12 @@ func _read_save(parsed: Variant) -> Dictionary:
 		return out
 	var migrated := migrate(d)
 	var problem := "migration failed" if migrated.is_empty() else SaveShape.problem(migrated.get("state"))
-	if problem == SaveShape.OK_SHAPE:
-		problem = _equipment_problem(migrated["state"] as Dictionary)
 	if problem != SaveShape.OK_SHAPE:
 		out["problem"] = problem
 		return out
 	out["status"] = STATUS_OK
 	out["state"] = migrated["state"]
 	return out
-
-
-## M1-ARC-11: a well-shaped loadout must also be one equip() could have made (no piece worn twice,
-## by the wrong hero or in the wrong slot). Checked on a copy, so a listing never mutates anything.
-func _equipment_problem(st: Dictionary) -> String:
-	if not st.has("equipment"):
-		return SaveShape.OK_SHAPE
-	var bag := EquipmentBag.new(_items(), (st["equipment"] as Dictionary).duplicate(true))
-	var problem := bag.loadout_problem()
-	return SaveShape.OK_SHAPE if problem == "" else "equipment.%s" % problem
 
 
 func _items() -> ItemDB:
@@ -359,12 +443,18 @@ func _version_problem(d: Dictionary, out: Dictionary) -> String:
 	return ""
 
 
-## Runs after every load: joined heroes receive any missing starting gear (a v2 save migrated to
-## v3 has an empty bag, and "weapon" is a required slot). Idempotent.
+## Runs after every load. First, a worn piece that no longer fits the item tables is taken off, or
+## dropped when its base is gone, with a warning (EquipmentBag.repair_loadout; review-sweep-G B1:
+## a balance patch must never brick a save). Then joined heroes receive any missing starting gear
+## (a v2 save migrated to v3 has an empty bag, "weapon" is a required slot, and a repaired slot
+## is empty). Idempotent.
 func _post_load(state: GameStateData) -> GameStateData:
 	if state == null:
 		return null
-	PartyGoods.from_state(_items(), state).ensure_starting_gear(state)
+	var goods := PartyGoods.from_state(_items(), state)
+	for note in goods.equipment.repair_loadout():
+		push_warning("SaveSystem: equipment.%s" % note)
+	goods.ensure_starting_gear(state)
 	return state
 
 
@@ -414,9 +504,12 @@ static func _migrate_v1_to_v2(d: Dictionary) -> Dictionary:
 ## join. Inventory counts are made whole ints and empty stacks dropped, because JSON numbers load
 ## as floats and v2 never normalized them. The literal is frozen on purpose.
 ## M1-ARC-11 (review-sweep-F): this runs before SaveShape, so it converts only what is already a
-## whole number >= 0 (SaveShape.is_whole). Anything else (a non-Dictionary inventory, a string, a
-## huge or negative count, a nested value) is passed through untouched, and the shape check that
+## whole number (SaveShape.is_whole). Anything else (a non-Dictionary inventory, a string, a huge
+## count, a fraction, a nested value) is passed through untouched, and the shape check that
 ## follows reads the save as corrupt: never a crash (int() of a Dictionary) or a silent coercion.
+## A whole count <= 0 is an empty stack and is dropped, as this step always did (review-sweep-G
+## S1: v2 never normalized its counts, so a negative one is legacy data, not damage); a negative
+## count also warns. From v3 on a negative count is corrupt (SaveShape).
 static func _migrate_v2_to_v3(d: Dictionary) -> Dictionary:
 	var st: Dictionary = (d.get("state", {}) as Dictionary).duplicate(true)
 	if not st.has("equipment"):
@@ -426,10 +519,14 @@ static func _migrate_v2_to_v3(d: Dictionary) -> Dictionary:
 		var inv: Dictionary = {}
 		for k: Variant in old:
 			var v: Variant = old[k]
-			if not SaveShape.is_whole(v) or float(v) < 0.0:
+			if not SaveShape.is_whole(v):
 				inv[k] = v
 			elif int(v) > 0:
 				inv[str(k)] = int(v)
+			elif int(v) < 0:
+				push_warning(
+					"SaveSystem: v2 inventory '%s' had a negative count (%d); the stack is dropped" % [k, int(v)]
+				)
 		st["inventory"] = inv
 	return {"version": 3, "state": st}
 

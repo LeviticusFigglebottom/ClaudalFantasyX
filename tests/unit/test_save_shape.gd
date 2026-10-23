@@ -245,7 +245,6 @@ func test_malformed_old_inventories_read_as_corrupt_never_coerced() -> void:
 		{"potion": {"x": 1}},
 		{"potion": 1e20, "ether": 7},
 		{"potion": 1, "ether": "7"},
-		{"potion": -2},
 		{"potion": 1.5},
 		[1, 2],
 		"potion",
@@ -268,20 +267,35 @@ func test_malformed_old_inventories_read_as_corrupt_never_coerced() -> void:
 	_done()
 
 
-## M1-ARC-11 (review-sweep-F nits on M1-ARC-08 and M1-PRG-03): a loadout equip() could not make.
-func test_a_piece_worn_twice_or_by_the_wrong_hero_is_corrupt() -> void:
+## M1-ARC-11 (review-sweep-G S1): a negative count in a v0, v1 or v2 inventory is an empty stack,
+## dropped as the v2 -> v3 step always did (v2 never normalized counts); from v3 on it is corrupt.
+func test_a_negative_legacy_count_is_dropped_not_corrupt() -> void:
+	for version: int in [0, 1, 2]:
+		var st := {"inventory": {"potion": -2, "ether": 3.0}, "chapter": 1}
+		var data: Dictionary = st.duplicate() if version == 0 else {"version": version, "state": st}
+		data["version"] = version
+		_write_raw(1, JSON.stringify(data))
+		assert_eq(SaveSystem.slot_info(1)["status"], SaveSystem.STATUS_OK, "v%d listing" % version)
+		var back := SaveSystem.load_from_slot(1)
+		assert_true(back != null, "v%d loads" % version)
+		if back != null:
+			assert_eq(back.inventory, {"ether": 3}, "v%d: the negative stack is dropped" % version)
+	_write_raw(1, JSON.stringify({"version": 3, "state": {"inventory": {"potion": -2}}}))
+	assert_eq(SaveSystem.slot_info(1)["status"], SaveSystem.STATUS_CORRUPT, "v3: corrupt")
+	_done()
+
+
+## M1-ARC-11 (review-sweep-F nits on M1-ARC-08 and M1-PRG-03): a piece worn twice is corrupt,
+## whatever the item tables say.
+func test_a_piece_worn_twice_is_corrupt() -> void:
 	var hooks := {"base": "rhen_salvage_hooks", "abilities": ["", ""]}
-	var tether := {"base": "rhen_patched_tether", "abilities": []}
 	var staff := {"base": "asha_vigil_staff", "abilities": []}
-	var unknown := {"base": "no_such_gear", "abilities": []}
 	var cases := {
 		"one piece worn by two heroes":
 		{"next_uid": 3, "owned": {"1": hooks, "2": staff}, "loadout": {"rhen": {"weapon": 1}, "asha": {"weapon": 1}}},
 		"one piece in two slots":
 		{"next_uid": 2, "owned": {"1": hooks}, "loadout": {"rhen": {"weapon": 1, "armor": 1}}},
-		"another hero's piece": {"next_uid": 2, "owned": {"1": staff}, "loadout": {"rhen": {"weapon": 1}}},
-		"a weapon in the armor slot": {"next_uid": 2, "owned": {"1": hooks}, "loadout": {"rhen": {"armor": 1}}},
-		"an unknown base": {"next_uid": 2, "owned": {"1": unknown}, "loadout": {"rhen": {"weapon": 1}}},
+		"an unowned piece": {"next_uid": 3, "owned": {"1": hooks}, "loadout": {"rhen": {"weapon": 2}}},
 	}
 	for why: String in cases:
 		var st := _bad("equipment", cases[why])
@@ -293,13 +307,60 @@ func test_a_piece_worn_twice_or_by_the_wrong_hero_is_corrupt() -> void:
 		SaveShape.problem(_bad("equipment", cases["one piece worn by two heroes"])).contains("already worn"),
 		"double wear is a shape problem"
 	)
+	_done()
+
+
+## M1-ARC-11 (QA review-sweep-G B1): what only the item tables make wrong (a later equipment.json
+## renames or removes a base, or moves a gear type to another hero or slot) is repaired on load:
+## the piece comes off into the bag (or is dropped when its base is unknown), and the weapon slot
+## is refilled. The save lists as OK and loads; it is never corrupt.
+func test_a_loadout_the_tables_no_longer_fit_is_repaired_on_load() -> void:
+	var hooks := {"base": "rhen_salvage_hooks", "abilities": ["", ""]}
+	var coral := {"base": "rhen_coral_hooks", "abilities": []}
+	var tether := {"base": "rhen_patched_tether", "abilities": []}
+	var staff := {"base": "asha_vigil_staff", "abilities": []}
+	var unknown := {"base": "old_reef_hooks", "abilities": []}
+	# [equipment, rhen's weapon base after load, is uid 1 still owned]
+	var cases := {
+		"another hero's piece (a re-assigned weapon)":
+		[{"next_uid": 2, "owned": {"1": staff}, "loadout": {"rhen": {"weapon": 1}}}, &"rhen_salvage_hooks", true],
+		"a weapon in the armor slot":
+		[{"next_uid": 2, "owned": {"1": hooks}, "loadout": {"rhen": {"armor": 1}}}, &"rhen_salvage_hooks", true],
+		"a renamed base":
+		[{"next_uid": 2, "owned": {"1": unknown}, "loadout": {"rhen": {"weapon": 1}}}, &"rhen_salvage_hooks", false],
+		"a renamed base with a spare that fits":
+		[
+			{"next_uid": 3, "owned": {"1": unknown, "2": coral}, "loadout": {"rhen": {"weapon": 1}}},
+			&"rhen_coral_hooks",
+			false
+		],
+	}
+	for why: String in cases:
+		var row: Array = cases[why]
+		var st := _bad("equipment", row[0])
+		st["party_ids"] = ["rhen"]
+		st["reserve_ids"] = []
+		_write_raw(1, JSON.stringify({"version": 4, "state": st}))
+		assert_eq(SaveSystem.slot_info(1)["status"], SaveSystem.STATUS_OK, why + " (listing)")
+		for loaded: GameStateData in [
+			SaveSystem.load_from_slot(1), saves.deserialize({"version": 4, "state": st.duplicate(true)})
+		]:
+			assert_true(loaded != null, why + " loads")
+			if loaded == null:
+				continue
+			var bag := EquipmentBag.new(ItemDB.load_default(), loaded.equipment)
+			assert_eq(bag.base_of(bag.equipped(&"rhen", &"weapon")), row[1], why + ": the weapon slot is refilled")
+			assert_eq(bag.has_piece(1), row[2], why + ": kept in the bag, or dropped when unknown")
+			assert_eq(bag.loadout_problem(), "", why + ": the loadout is one equip() could make")
 	var fine := {
 		"next_uid": 10,
 		"owned": {"1": hooks, "2": tether, "3": staff, "9": unknown},
 		"loadout": {"rhen": {"weapon": 1, "armor": 2}, "asha": {"weapon": 3, "armor": 0}},
 	}
 	var back: GameStateData = saves.deserialize({"version": 4, "state": _bad("equipment", fine)})
-	assert_true(back != null, "a valid loadout loads; an unworn piece of unknown gear is not a loadout problem")
+	assert_true(back != null, "a valid loadout loads")
+	assert_eq(back.equipment["loadout"]["rhen"], {"weapon": 1, "armor": 2}, "a fitting loadout is untouched")
+	assert_false((back.equipment["owned"] as Dictionary).has("9"), "an unworn piece of unknown gear is dropped")
 	_done()
 
 
