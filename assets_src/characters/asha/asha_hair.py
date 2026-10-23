@@ -280,13 +280,17 @@ def flyaways(lm, body, params: dict, rng: np.random.Generator, braid_spine_pts: 
     hc = np.array([0.0, yc, zc + 0.55 * lm.h])
     n = params["flyaways"]
     for i in range(n):
-        if i < n * 0.6:  # crown
-            d = rng.normal(size=3)
-            d[2] = abs(d[2]) + 0.8
-            d /= np.linalg.norm(d)
-            p = scalp.project((hc + d * 0.2 * lm.h)[None, :], 0.006 * s)[0]
+        if i < n * 0.6:  # crown: rooted well inside the hairline, lifting off along the hair flow
+            for _try in range(40):
+                d = rng.normal(size=3)
+                d[2] = abs(d[2]) + 0.8
+                d[1] = abs(d[1]) * 0.6  # the crown and the back, never over the forehead
+                d /= np.linalg.norm(d)
+                p = scalp.project((hc + d * 0.2 * lm.h)[None, :], 0.006 * s)[0]
+                if in_hair(lm, p[None, :], 0.08)[0]:
+                    break
             nrm = scalp.normal(p[None, :])[0]
-            tdir = rng.normal(size=3)
+            tdir = _flow_dir(lm, p[None, :], nrm[None, :], _gather(lm))[0] + 0.35 * rng.normal(size=3)
             tdir -= (tdir @ nrm) * nrm
             tdir /= np.linalg.norm(tdir)
             length = rng.uniform(0.03, 0.07) * s

@@ -259,7 +259,8 @@ class ShapeBuilder:
                     d += w * (S[f"{k}_L"] + S[f"{k}_R"])
             ordered[vis] = d
         for k in ordered:
-            ordered[k] = np.where(np.abs(ordered[k]) < 1e-7, 0.0, ordered[k])
+            # deltas under 0.02 mm are invisible; zeroing them keeps the sparse morph accessors small
+            ordered[k] = np.where(np.linalg.norm(ordered[k], axis=1, keepdims=True) < 2e-5, 0.0, ordered[k])
         return ordered
 
 

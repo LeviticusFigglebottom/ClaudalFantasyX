@@ -20,6 +20,13 @@ SH = "res://game/shaders/character"
 SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
     "skin_head": ("character_skin", 0, {
         "painterly": "0.2", "detail_tiling": "64.0", "detail_strength": "0.8", "normal_strength": "1.0",
+        "specular_scale": "0.85",
+    }, {"tex_albedo": "asha_head_albedo.png", "tex_normal": "asha_head_normal.png", "tex_orm": "asha_head_orm.png",
+        "tex_skin_mask": "asha_head_skinmask.png", "tex_detail_normal": "asha_skin_detail_normal.png"}),
+    # ADR 0016: dialogue / cinematic close-ups use the painterly mitigation (SPEC §14)
+    "skin_head_dialogue": ("character_skin", 0, {
+        "painterly": "0.6", "painterly_form": "0.3", "detail_tiling": "64.0", "detail_strength": "0.35",
+        "normal_strength": "0.8", "specular_scale": "0.85",
     }, {"tex_albedo": "asha_head_albedo.png", "tex_normal": "asha_head_normal.png", "tex_orm": "asha_head_orm.png",
         "tex_skin_mask": "asha_head_skinmask.png", "tex_detail_normal": "asha_skin_detail_normal.png"}),
     "skin_body": ("character_skin", 0, {
@@ -33,7 +40,7 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
     "lash": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.15",
                                    "spec_secondary_intensity": "0.1", "transmission_strength": "0.3"},
              {"tex_hair": "asha_facehair.png"}),
-    "brow": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.12",
+    "brow": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.12", "alpha_boost": "2.2",
                                    "spec_secondary_intensity": "0.1", "transmission_strength": "0.3",
                                    "root_occlusion": "0.2"},
              {"tex_hair": "asha_facehair.png"}),

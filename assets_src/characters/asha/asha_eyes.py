@@ -221,14 +221,15 @@ def brow(face, side: str, surface_fn, layers: int = 3, n: int = 16) -> Part:
     zc = E[2] + 0.0148 * s + arch - 0.0022 * s * u**2
     thick = (0.0068 * (1 - u) ** 0.8 + 0.0022 * u) * s
     for layer in range(layers):
-        lift = 0.0004 + 0.0007 * layer
+        lift = 0.0009 + 0.0008 * layer
         shrink = 1.0 - 0.18 * layer
         P = np.zeros((3, n, 3))
         for j, f in enumerate((-0.5, 0.0, 0.5)):
             z = zc + f * thick * shrink + 0.0006 * s * layer
             pts = surface_fn(np.stack([xs, z], axis=1))
             # lift along the surface normal approximated by the forward direction
-            P[j] = pts + np.array([0.0, -lift, 0.0])
+            # lift along the brow's surface normal (forward and up over the brow ridge)
+            P[j] = pts + np.array([0.0, -0.94, 0.34]) * lift
         # U across (rows j), V along (columns i) -> grid rows are U here
         v_off = 0.5 + 0.5 * (layer / max(layers, 1))
         grid(part, P, "brow", uv_fn=lambda j, i, vo=v_off: (j / 2.0, 0.5 + 0.5 * i / (n - 1)), tags=tag,

@@ -543,6 +543,16 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "asha_face_stylized_compare",
+      "scene": "res://game/levels/_tests/characters/asha/asha_face_compare.tscn",
+      "camera": "Cameras/Compare",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }

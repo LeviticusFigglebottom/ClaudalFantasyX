@@ -114,14 +114,16 @@ class TestCommittedAssets(unittest.TestCase):
         self.assertGreaterEqual(len(tex), 20)
         for p in tex:
             self.assertLess(p.stat().st_size, MAX_BYTES, p.name)
-            w, h = Image.open(p).size
+            with Image.open(p) as im:
+                w, h = im.size
             self.assertEqual(w & (w - 1), 0, p.name)
             self.assertEqual(h & (h - 1), 0, p.name)
             self.assertLessEqual(max(w, h), 2048, p.name)  # 2K face textures (ADR 0005, no LFS)
             imp = p.with_name(p.name + ".import")
             self.assertTrue(imp.exists(), imp.name)
             self.assertIn("mipmaps/generate=true", imp.read_text(), imp.name)
-        head = Image.open(OUT / "textures" / "asha_head_albedo.png").size
+        with Image.open(OUT / "textures" / "asha_head_albedo.png") as im:
+            head = im.size
         self.assertEqual(head, (2048, 2048))
 
 

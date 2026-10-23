@@ -267,6 +267,7 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
 
     Ph = P.copy()
     Nh = N.copy()
+    okmask = np.zeros(n, dtype=bool)
     idx = np.nonzero(in_field)[0]
     CH = 200000
     for a in range(0, len(idx), CH):
@@ -279,7 +280,19 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
         G = grad(Q)
         ok = (moved < 0.0035 * s) & (np.sum(G * N[ii], axis=1) > 0.2)
         Ph[ii[ok]] = Q[ok]
-        Nh[ii[ok]] = G[ok]
+        # the normal map only carries what the mesh can't: clamp its deviation from the mesh normal
+        # to 30 deg, and fade it out where the projection had to travel far (nostril and lip-corner
+        # undercuts the 13k-vertex head doesn't sample): those read as blotches, not detail
+        Nm = N[ii]
+        cosang = np.clip(np.sum(G * Nm, axis=1), -1.0, 1.0)
+        ang = np.arccos(cosang)
+        lim = np.radians(30.0)
+        perp = G - cosang[:, None] * Nm
+        perp /= np.maximum(np.linalg.norm(perp, axis=1, keepdims=True), 1e-12)
+        a2 = np.minimum(ang, lim) * (1.0 - smoothstep(0.0008 * s, 0.0025 * s, moved))
+        Gc = Nm * np.cos(a2)[:, None] + perp * np.sin(a2)[:, None]
+        Nh[ii[ok]] = Gc[ok]
+        okmask[ii[ok]] = True
     # tangent-space normal (OpenGL: +Y follows +V)
     ts = np.stack([np.sum(Nh * r["T"], axis=1), np.sum(Nh * r["B"], axis=1), np.sum(Nh * N, axis=1)], axis=1)
     ts /= np.maximum(np.linalg.norm(ts, axis=1, keepdims=True), 1e-12)
@@ -287,6 +300,9 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
     cav = np.ones(n)
     ao = np.ones(n)
     thick = np.ones(n)
+    # cavity, AO and thickness only where the texel found the sculpt surface: a texel left on the
+    # low mesh (inside a nostril or lid undercut) would sample the field from inside and go black
+    idx = np.nonzero(okmask)[0]
     for a in range(0, len(idx), CH):
         ii = idx[a:a + CH]
         Q, G = Ph[ii], Nh[ii]
@@ -393,7 +409,7 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
         warm += 0.8 * (np.exp(-(((np.abs(u) - 0.17) / 0.07) ** 2) - ((v - (ve - 0.12)) / 0.07) ** 2))
         warm = np.clip(warm, 0, 1) * front
         cool = smoothstep(0.30, 0.12, v) * smoothstep(0.08, 0.22, np.abs(u))
-        col = col * (1 + 0.045 * warm[:, None] * np.array([1.0, -0.25, -0.55]))
+        col = col * (1 + 0.025 * warm[:, None] * np.array([1.0, -0.25, -0.55]))
         col = col * (1 + 0.04 * cool[:, None] * np.array([-0.5, 0.15, 0.1]))
         # lips: a deeper, rosier brown; darker at the contact line
         lips = lip_mask(Ph, face, lm)
@@ -406,9 +422,9 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
         for e in face.eyes.values():
             rr, tt = e.field(Ph[:, 0], Ph[:, 2])
             near = (1 - smoothstep(1.0, 2.0, rr)) * front
-            col = col * (1 - 0.06 * near[:, None] * np.array([0.6, 1.0, 1.0]))
+            col = col * (1 - 0.03 * near[:, None] * np.array([0.6, 1.0, 1.0]))
             wall = (np.linalg.norm(Ph - e.E, axis=1) < e.R + 0.0016 * s) & (rr < 1.15)
-            col[wall] = col[wall] * 0.5 + hexc("#B87268") * 0.5
+            col[wall] = col[wall] * 0.7 + hexc("#B87268") * 0.3
             car = np.exp(-((rr - 1.0) / 0.12) ** 2) * smoothstep(-0.7, -0.98, np.cos(tt)) * front
             col = col * (1 - car[:, None]) + hexc("#B8786E") * car[:, None]
         # freckles across the nose bridge (12-20 dots, 0.8-1.5 mm, 8% darker)
@@ -425,9 +441,9 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
         # under the hair: tint the scalp toward the hair colour so cards read dense
         dz = (Ph[:, 2] - zc) / lm.h - hair_mod.hairline_v(lm, Ph)
         scalp = smoothstep(-0.005, 0.03, dz)
-        col = col * (1 - 0.85 * scalp[:, None]) + hexc("#2A211B") * 0.85 * scalp[:, None]
+        col = col * (1 - 0.95 * scalp[:, None]) + hexc("#201A16") * 0.95 * scalp[:, None]
         # brow skin a touch darker
-        col *= 1 - 0.04 * (np.exp(-((v - (ve + 0.07)) / 0.02) ** 2) * np.exp(-((np.abs(u) - 0.14) / 0.07) ** 2))[:, None]
+        col *= 1 - 0.12 * (np.exp(-((v - (ve + 0.072)) / 0.015) ** 2) * np.exp(-((np.abs(u) - 0.13) / 0.06) ** 2))[:, None]
         mouth = npz["mi"][r["tri"]] == list(npz["mats"]).index("mouth") if "mouth" in list(npz["mats"]) else np.zeros(n, bool)
         col[mouth] = hexc("#6A2F2C")
     else:
@@ -576,7 +592,7 @@ def facehair_atlas(size: int = 1024) -> None:
     h2 = size // 2
     img = np.zeros((size, size, 4))
     vv = ((np.arange(h2) + 0.5) / h2)[:, None]
-    a, sid, dep, _ = strand_layer(h2, size, 110, rng, (2.0, 3.4), 0.06, 0.0, length=(0.55, 1.0))
+    a, sid, dep, _ = strand_layer(h2, size, 170, rng, (2.4, 3.8), 0.06, 0.0, length=(0.55, 1.0))
     img[:h2, :, 0] = np.broadcast_to(vv, (h2, size))
     img[:h2, :, 1] = sid
     img[:h2, :, 2] = dep
@@ -585,7 +601,7 @@ def facehair_atlas(size: int = 1024) -> None:
     b = np.zeros((h2, size))
     bs = np.zeros((h2, size))
     yy, xx = np.mgrid[0:h2, 0:size]
-    for k in range(900):
+    for k in range(2200):
         u = rng.uniform(0.05, 0.95)
         vstart = rng.uniform(0.0, 0.92)
         dens = np.exp(-((u - 0.5) / 0.28) ** 2) * (1.15 - 0.6 * vstart)
@@ -600,7 +616,7 @@ def facehair_atlas(size: int = 1024) -> None:
         m = (xx > min(cx, ex) - 4) & (xx < max(cx, ex) + 4) & (yy > min(cy, ey) - 4) & (yy < max(cy, ey) + 4)
         t = np.clip(((xx[m] - cx) * dx + (yy[m] - cy) * dy) / ll, 0, 1)
         d = np.hypot(xx[m] - (cx + t * dx), yy[m] - (cy + t * dy))
-        prof = np.exp(-(d / (1.6 * (1 - 0.6 * t))) ** 2)
+        prof = np.exp(-(d / (2.3 * (1 - 0.55 * t))) ** 2)
         b[m] = np.maximum(b[m], prof)
         bs[m] = np.where(prof > 0.5, (k * 0.618) % 1.0, bs[m])
     img[h2:, :, 0] = 0.5
@@ -691,14 +707,14 @@ def cloth_atlas(size: int = 2048) -> None:
     alb[m] = black
     mask[m] = np.stack([np.zeros_like(fig), fig, np.ones_like(fig), np.zeros_like(fig)], axis=-1)[m]
     grain = periodic_noise(size, size, 300, 300, rng) * 0.5 + periodic_noise(size, size, 700, 700, rng) * 0.5
-    hgt[m] = (grain * 0.25 + fig * 0.3)[m]
+    hgt[m] = (grain * 0.07 + fig * 0.3)[m]
     orm[m, 1] = 0.4
     # collar: lacquer with a gold edge at the top and bottom
     m, iu, iv = island("collar")
     edge = smoothstep(0.10, 0.04, iv) + smoothstep(0.90, 0.96, iv)
     alb[m] = black
     mask[m] = np.stack([np.zeros_like(iv), edge, np.ones_like(iv), np.zeros_like(iv)], axis=-1)[m]
-    hgt[m] = (grain * 0.2 + edge * 0.3)[m]
+    hgt[m] = (grain * 0.06 + edge * 0.3)[m]
     # bodice: fine white cotton
     m, iu, iv = island("bodice")
     alb[m] = white * 0.97

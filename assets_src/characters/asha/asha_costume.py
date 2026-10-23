@@ -398,15 +398,16 @@ def verse_sleeve(fields: Fields, length: float, cuff_w: float, n_around: int = 3
         P += np.outer(0.006 * S * s * np.sin(5 * ang + 3 * s), np.array([1.0, 0.0, 0.0])) * down[:, None]
         rings.append(P)
     R = np.stack(rings)  # (n_rings, n_around, 3)
-    # UV.y from the arc length of the lowest line (the hanging edge)
-    low = R[:, n_around // 2]
-    L = np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(low, axis=0), axis=1))])
-    v = L / L[-1]
+    # UV.y = height below the shoulder seam (seam 0 -> cuff tip 1): bands stack down the hanging
+    # sheet as horizontal stripes (asha.md §3.1) and the S8 dissolve runs from the cuff upward
+    z_seam = float(seam[2])
+    z_tip = float(R[:, :, 2].min())
+    vv = np.clip((z_seam - R[:, :, 2]) / (z_seam - z_tip), 0.0, 1.0)
     cols = [[(s, s, 0.3, 0.8 * s)] * n_around for s in s_list]
-    # outer face: away from the body = the -X side of the right arm; u = 0 at the top of the arm
+    # u = 0 at the top of the arm; the hanging sheets (front and back) and the bottom are u 0.2-0.8
     grid(part, R, "cloth_sleeve", colors=cols, tags=TAG_CLOTH, closed_u=True,
-         uv_fn=lambda j, i: (i / n_around, float(v[j])))
-    part.sleeve_length = float(L[-1])
+         uv_fn=lambda j, i: (i / n_around, float(vv[j, i % n_around])))
+    part.sleeve_length = z_seam - z_tip
     _ = length
     return part
 

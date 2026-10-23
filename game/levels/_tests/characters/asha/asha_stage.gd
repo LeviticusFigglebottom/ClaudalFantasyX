@@ -34,6 +34,11 @@ extends Node3D
 @export var wind: Vector4 = Vector4.ZERO
 @export var wind_time: float = 0.0
 @export var tier: String = "high"
+## SPEC §14 comparison: a second Asha at `compare_offset` whose skin materials (duplicated) get
+## these shader parameters, e.g. {"painterly": 0.65}. Empty = no second character.
+@export var compare_offset: Vector3 = Vector3.ZERO
+@export var compare_skin: Dictionary = {}
+@export var compare_face: Dictionary = {}
 
 var _saved_globals: Dictionary = {}
 var _character: Node3D
@@ -55,6 +60,31 @@ func _ready() -> void:
 	_apply_face(_character)
 	_apply_pose(_character)
 	_aim_face_camera(_character)
+	if not compare_skin.is_empty() or not compare_face.is_empty():
+		_build_compare()
+
+
+func _build_compare() -> void:
+	var other := character_scene.instantiate() as Node3D
+	other.name = &"AshaCompare"
+	other.position = compare_offset
+	other.rotation_degrees.y = yaw_degrees
+	add_child(other)
+	_assign_materials(other)
+	CharacterShaderTiers.apply_to_tree(other, tier)
+	for mi: MeshInstance3D in _meshes(other):
+		for s: int in mi.get_surface_override_material_count():
+			var sm := mi.get_surface_override_material(s) as ShaderMaterial
+			if sm == null or sm.resource_name not in ["skin_head", "skin_body"]:
+				continue
+			var copy := sm.duplicate() as ShaderMaterial
+			for key: String in compare_skin:
+				copy.set_shader_parameter(StringName(key), compare_skin[key])
+			mi.set_surface_override_material(s, copy)
+	var saved := face_extra
+	face_extra = saved.merged(compare_face, true)
+	_apply_face(other)
+	face_extra = saved
 
 
 func _process(delta: float) -> void:

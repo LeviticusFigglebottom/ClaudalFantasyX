@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/asha/asha_stage.tscn" id="stage"]
+
+[node name="AshaStage" instance=ExtResource("stage")]
+emotion = "soft_smile"
+compare_offset = Vector3(0.42, 0, 0)
+compare_skin = {
+"painterly": 0.6,
+"painterly_form": 0.3,
+"detail_strength": 0.35,
+"normal_strength": 0.8
+}
+compare_face = {
+"lid_wide_L": 0.18,
+"lid_wide_R": 0.18
+}
+
+[node name="Compare" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.9986, 0.0523, 0, -0.0523, 0.9986, 0.21, 1.53, 0.78)
+fov = 22.0
+near = 0.02

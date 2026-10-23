@@ -75,10 +75,10 @@ LOFT_Z = [-0.08, 0.00, 0.06, 0.12, 0.20, 0.26, 0.32, 0.40, 0.48, 0.56, 0.64, 0.7
 LOFT_FRONT = [0.320, 0.338, 0.362, 0.352, 0.366, 0.378, 0.382, 0.372, 0.360, 0.396, 0.403, 0.390, 0.355, 0.285, 0.195,
               0.105, 0.030]
 LOFT_BACK = [0.00, 0.00, 0.02, 0.06, 0.12, 0.20, 0.28, 0.35, 0.39, 0.405, 0.41, 0.40, 0.372, 0.315, 0.235, 0.135, 0.05]
-LOFT_WIDTH = [0.172, 0.177, 0.192, 0.212, 0.230, 0.242, 0.262, 0.286, 0.298, 0.300, 0.315, 0.326, 0.313, 0.262, 0.192,
+LOFT_WIDTH = [0.180, 0.186, 0.202, 0.222, 0.238, 0.242, 0.262, 0.286, 0.298, 0.300, 0.315, 0.326, 0.313, 0.262, 0.192,
               0.115, 0.030]
 LOFT_YW = [0.00, 0.00, 0.00, 0.00, 0.01, 0.02, 0.03, 0.035, 0.035, 0.04, 0.05, 0.06, 0.06, 0.05, 0.045, 0.04, 0.04]
-LOFT_PF = [2.0, 2.0, 1.95, 1.95, 2.0, 2.08, 2.22, 2.35, 2.42, 2.4, 2.3, 2.15, 2.05, 2.0, 2.0, 2.0, 2.0]
+LOFT_PF = [2.15, 2.15, 2.05, 2.0, 2.0, 2.08, 2.22, 2.35, 2.42, 2.4, 2.3, 2.15, 2.05, 2.0, 2.0, 2.0, 2.0]
 LOFT_PB = [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.05, 2.1, 2.1, 2.05, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
 # The mandible's lower border: a plane through the chin bottom rising toward the jaw angle. It
 # closes the loft underneath (degenerate bottom sections would under-estimate distances and web
@@ -180,7 +180,7 @@ class EyeFrame:
         self.half_w = 0.47 * lm.fissure_w
         self.inner_extra = float(p["canthus_offset_m"]) + 0.0015 * lm.h / 0.222  # medial canthus, caruncle
         self.tilt = math.radians(float(p["eye_tilt_deg"]))
-        self.up = 0.36 * self.half_w  # upper lid arc height at its peak (covers ~1 mm of iris)
+        self.up = 0.37 * self.half_w  # upper lid arc height at its peak (covers ~1 mm of iris)
         self.lo = 0.26 * self.half_w  # lower lid just over the iris: no scleral show
 
     def contour(self, t: Arr) -> tuple[Arr, Arr]:
@@ -247,7 +247,7 @@ class EyeFrame:
         lid_cut = np.maximum(lid, -cut) + hh * hh * round_k * 0.25
         r, _t = self.field(P[:, 0], P[:, 2])
         a, _b = self.local(P[:, 0], P[:, 2])
-        r = r * (1.0 + 0.7 * smoothstep(-0.2 * self.half_w, -1.0 * self.half_w, a))  # medially the face takes over before the bridge
+        r = r * (1.0 + 0.35 * smoothstep(-0.2 * self.half_w, -1.3 * self.half_w, a))  # medially the face takes over before the bridge
         w = smoothstep(blend[0], blend[1], r)
         front = smoothstep(0.35 * self.R, -0.2 * self.R, P[:, 1] - self.E[1])
         w = 1.0 - (1.0 - w) * front
@@ -318,8 +318,12 @@ class Face:
         d -= 0.010 * mirrored(u, v, 0.30, ve + 0.10, 0.05, 0.08)  # temples
         # ---- orbits: the eyeball union fills the centre; the hollow shapes the socket ----
         d -= 0.004 * mirrored(u, v, ue * 1.02, ve + 0.0, 0.06, 0.04)
+        # bring the face up to the lid solid below and beside the eye, so lids flow into the cheek
+        # and the orbit rim instead of standing proud as a ring
+        d += 0.022 * mirrored(u, v, ue + 0.004, ve - 0.050, 0.065, 0.032)
+        d += 0.014 * mirrored(u, v, ue + 0.072, ve - 0.006, 0.030, 0.045)
         # nasal sidewall falling into the medial canthus (the base face is flat across the eyes)
-        d -= 0.030 * mirrored(u, v, ue - 0.075, ve - 0.004, 0.026, 0.05)
+        d -= 0.016 * mirrored(u, v, ue - 0.072, ve - 0.004, 0.048, 0.05)
         d -= 0.010 * mirrored(u, v, ue - 0.045, ve - 0.07, 0.04, 0.05)
         d += 0.004 * mirrored(u, v, ue + 0.065, ve + 0.05, 0.05, 0.025)  # lateral brow
         # ---- cheekbones (malar eminence) and the zygomatic body ----
@@ -328,7 +332,8 @@ class Face:
         d += 0.020 * mirrored(u, v, 0.205 * cw, ve - 0.105 + ch, 0.075, 0.06)
         d += 0.010 * mirrored(u, v, 0.115, ve - 0.105 + ch, 0.05, 0.035)  # infraorbital fill
         d -= 0.008 * masc * mirrored(u, v, 0.235, vm + 0.01, 0.05, 0.06)  # buccal hollow (masculine)
-        d += 0.016 * self.f * mirrored(u, v, 0.175, vm + 0.075, 0.075, 0.075)  # young malar / cheek fat
+        d += 0.022 * self.f * mirrored(u, v, 0.175, vm + 0.075, 0.08, 0.08)  # young malar / cheek fat
+        d += 0.010 * self.f * mirrored(u, v, 0.20, vm - 0.01, 0.06, 0.06)  # lower cheek, rounding the jaw
         # ---- the dental arch: the mouth sits on a cylinder, not a plane ----
         d += 0.012 * gauss2(u, v, 0.0, vm + 0.02, 0.13, 0.09)
         d += 0.006 * mirrored(u, v, 0.15, vm + 0.04, 0.05, 0.06)  # cheek fat over the fold
@@ -350,9 +355,9 @@ class Face:
         t = np.clip((v_n - v) / (v_n - v_st), 0.0, 1.0)  # 0 at the nasion .. 1 at the supratip
         inside = smoothstep(-0.10, 0.02, (v_n - v) / (v_n - v_st)) * smoothstep(1.25, 0.95, t + (v_st - v) * 0.0)
         height = (0.004 + 0.072 * t**1.25) * h  # ridge height above the base face
-        half = (0.034 + 0.024 * t) * h * bw  # half-width at the base
+        half = (0.044 + 0.016 * t) * h * bw  # half-width at the base (a soft, broad root)
         xr = np.abs(u * h) / half
-        prof = np.clip(1.0 - xr * xr, 0.0, 1.0) ** 1.6
+        prof = np.clip(1.0 - xr * xr, 0.0, 1.0) ** 2.4
         below = smoothstep(v_st - 0.005, v_st - 0.040, v)  # hand over to the tip lobule
         return height * prof * inside * (1.0 - below)
 
@@ -367,9 +372,9 @@ class Face:
             inner = smoothstep(0.2, -0.75, np.cos(t))  # 1 at the inner third
             # Asha: a low single crease, partly hidden at the inner third (asha.md §6.1)
             crease = np.exp(-(((r - 1.55) / 0.13) ** 2)) * upper * (1.0 - 0.7 * inner)
-            out -= 0.0010 * s * crease
+            out -= 0.0006 * s * crease
             fold = np.exp(-(((r - 1.9) / 0.3) ** 2)) * upper  # the fold of skin above the crease
-            out += 0.0012 * s * fold
+            out += 0.0006 * s * fold
             pretarsal = np.exp(-(((r - 1.3) / 0.18) ** 2)) * lower  # lower-lid orbicularis roll
             out += 0.0006 * s * pretarsal
             trough = np.exp(-(((r - 2.0) / 0.25) ** 2)) * lower * (0.4 + 0.6 * inner)
@@ -467,7 +472,7 @@ class Face:
         spec: list[tuple[str, dict]] = []
         # tip lobule: soft and rounded (asha.md §6.1), two domal halves merged
         tip = np.array([0.0, y_tip + 0.0054 * s, z(v_tip)])
-        spec.append(("ell", dict(c=tip, r=np.array([0.0066, 0.0056, 0.0058]) * s, k=0.0050 * s)))
+        spec.append(("ell", dict(c=tip, r=np.array([0.0060, 0.0054, 0.0056]) * s, k=0.0050 * s)))
         for sg in (1.0, -1.0):
             spec.append(("ell", dict(c=tip + np.array([sg * 0.0030 * s, 0.0006 * s, -0.0006 * s]),
                                      r=np.array([0.0040, 0.0048, 0.0046]) * s, k=0.0028 * s)))
@@ -479,7 +484,7 @@ class Face:
         for sg in (1.0, -1.0):
             zal = z(v_sub + 0.016)
             yb = surface_y(sg * 0.0135 * s, zal)
-            al = np.array([sg * 0.0112 * s, yb - 0.0042 * s, zal])
+            al = np.array([sg * 0.0104 * s, yb - 0.0040 * s, zal])
             spec.append(("ell", dict(c=al, r=np.array([0.0042, 0.0085, 0.0055]) * s, k=0.0024 * s,
                                      rot_z=sg * 30.0)))
             # lateral crus: fills between the ala and the tip lobule

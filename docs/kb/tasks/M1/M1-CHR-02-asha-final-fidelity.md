@@ -2,8 +2,9 @@
 id: M1-CHR-02
 title: Asha at final fidelity: modeled, rigged, shaded
 role: character
-status: todo
-owner_session: ""
+status: review
+owner_session: character-stream-3
+reviewer: rendering
 depends_on: [M1-CHR-01, M1-RND-04]
 milestone: M1
 request-from: ""
