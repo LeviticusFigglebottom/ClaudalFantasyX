@@ -1,9 +1,9 @@
 # STATUS
 
-- **Milestone:** M0 is reviewed (fresh-agent approve-with-fixes, fixes landed). **M1 is in progress** with parallel streams.
-- **Updated:** 2026-10-22 by Lead (lead-bootstrap)
-- **M0 progress:** done, pending the human's look. `tools/ci_local.sh` passes from a fresh checkout: 153 Godot tests, 96 tool tests, 3 screenshot baselines.
-- **M1 progress:** about 30%. 1 task done and 8 in review (story, audio PoC, art direction, dialogue system, Lattice, screenshots, graphics presets, prewarm). See `python3 tools/taskboard.py --milestone M1`.
+- **Milestone:** M1 (Tech & Look Prototypes) is in progress; M0 is done.
+- **Updated:** 2026-10-23 by Lead (lead-bootstrap)
+- **Gate:** `tools/ci_local.sh` is green on `claude/new-session-mj8c3c`: 659 Godot tests, coverage battle 99.75% / progression 95.46%, and 43 Forward+ screenshot baselines.
+- **M1 exit criteria (SPEC §10.2):** CTB battle sandbox ✅ · ocean/shallows water ✅ · glimmer ✅ · Undertow prototype ✅ (prototype; production cost is M2-RND-01) · five-shot mood test 🔄 (environment-stream-2) · **one hero at final fidelity 🔄 (M1-CHR-02, the §14 risk gate)**.
 
 ## The project in one page (Lead's reading of SPEC v1.0)
 
@@ -18,27 +18,24 @@ We're building *Hymn of the Undertow*: an original, cinematic, turn-based JRPG i
 **Process.** The Lead orchestrates role agents through the repo: the KB (`docs/kb/`), a file task board, ADRs, handoffs, and an ownership file. CI gates everything. Milestones run M0 → M7, and the **M2 vertical slice is a blocking human review** (Q7). The scale fallback is to cut zones and optional content before story beats or the graphical bar.
 
 ## What exists now
-- **Engine and tooling:** Godot 4.6.3 (Forward+). `tools/dev/fetch_godot.py` fetches it in the sandbox, and `tools/dev/fetch_render_deps.py` adds **software Forward+ rendering** (Mesa lavapipe plus Xvfb, ADR 0009). `tools/ci_local.sh` is the merge gate while Actions has no runner (ADR 0008).
-- **Core:** autoloads `EventBus`, `Game` (flags), `SaveSystem` (v2: versioned, migrating, with Lattice progress), and `SceneRouter` (async load, fade, shader prewarm installed).
-- **Battle:** a deterministic CTB engine (exact integer damage; a timeline that simulates status countdown; swap, escape and the XP rule; target validation; data-driven AI). Sandbox balance bands are asserted in tests.
-- **Progression:** Lattice data, logic, and editor (`tools/lattice_editor/`). The first 87-node section covers Rhen, Asha, and Toma. Movement and Facet rules are in formulas.md.
-- **Narrative tech:** the `.dlg` compiler (`tools/dlgc.py`), `DialogueRunner`, and a typewriter `DialogueBox` with per-speaker blips. Sample scene: ch02 "The Girl on the Beach".
-- **Rendering:** graphics presets (Low to Ultra, every API checked against 4.6.3), shader prewarm, shared shader includes and globals, and screenshot capture plus RMSE regression.
-- **Content docs:** story bible, characters, voice guide, act outline (vertical slice = Ch2–3 at Haluna), 7 Vowbound; art references, a 25-frame color script, `palette.json`, design sheets for Asha, Rhen and Toma, the Haluna brief, and UI rules.
-- **Audio:** a numpy synth library, a Hush theme sketch at −16 LUFS, and UI SFX. **Nobody has listened to it yet.**
+- **Engine and tooling:** Godot 4.6.3 and Blender 5.0.1 fetched from the Ubuntu archive (ADR 0008); software Forward+ capture (ADR 0009); coverage gate (ADR 0013); `tools/dev/merge_union.py` for append-only conflicts. Agents gate with `HYMN_SHOTS`, and the Lead runs the full manifest on merge.
+- **Battle:** a deterministic CTB engine with all 21 statuses, swap and item previews, equipment effects, item use, lume rewards, and a balance simulator with gear-aware bands. The HUD covers the timeline, statuses display, and accessibility settings, and its build is staged across five frames.
+- **Progression and economy:** the Lattice (first section), items, equipment with ability slots, Customize, shops (currency: lume), save v3. Save v4 is in progress.
+- **World:** field controller, camera rails with a cutscene `play_shot` API, debug overlays F1–F12, save shrine and save/load menu, autosave.
+- **Narrative:** a story bible free of the IP near-misses, the vertical-slice beat sheet, two full cutscenes, the Act III ending beats, and a strict `.dlg` compiler.
+- **Rendering:** water, glimmer, vegetation, character shaders (skin, hair, eye, cloth), the Undertow prototype, graphics presets, prewarm, a palette with on-screen targets (ADR 0014: default light units).
+- **Audio:** three cues (Hush v2, battle, temple) plus UI SFX. **Nobody has listened to them yet.**
 
 ## Top risks
-1. **No real GPU anywhere.** Software rendering proves correctness and look, but performance targets (§4.2) are still estimates. The CPU-side scene-swap frame already measures 51–71 ms on the dummy renderer, over the 50 ms budget. Investigate in M1-RND-06 follow-up.
-2. **Character fidelity** (§14): M1-CHR-01 and M1-CHR-02 must prove Asha before anything scales. Blender is being fetched the same way as Godot.
-3. **Generated music quality** (§14, Q3): the agent's self-assessment is about 30–40% of a commercial theme, with the piano the weakest part. It needs human ears.
-4. **Binary storage:** Git LFS is deferred (ADR 0005). Hero textures will need it.
-5. **GitHub Actions does not run** (runs stay queued). We gate locally instead, so the export job has never run.
+1. **Character fidelity (§14):** the base body face is uncanny up close; M1-CHR-02 decides between realism and stylisation (ADR 0015 to come).
+2. **Undertow cost:** an estimated 5-15× over budget at High (M2-RND-01).
+3. **No real GPU:** all costs are estimates; the CPU-renderer ratios are the guide.
+4. **Repo binaries:** the screenshot baselines are about 9 MB and every re-approval adds history. Git LFS (human decision) is increasingly needed.
+5. **The shared machine is oversubscribed** with parallel agents (load 10-20 on 4 CPUs). Mitigated with `HYMN_SHOTS`, per-run `user://`, and a load-aware perf test.
 
 ## Blockers / questions for the human
-- **Reefball arena form (IP judgment):** SPEC §6.10 specifies "a suspended sphere of water", and a fresh reviewer flagged it as the inspiring game's signature arena image. Keep the sphere (we differentiate its construction and ritual meaning; Narrative is drafting that in story/decisions_log.md), or change the form? The default is to keep it as the spec says.
-- **Listen to `assets/audio/music/hush_theme_sketch.ogg`** (69 s) and tell us whether the synthesized direction is acceptable, or whether you'd supply or commission music (§16 Q3, raised early per §14).
-- **GitHub Actions:** check Settings → Actions (are workflows allowed?) and the account's minutes when convenient.
-- **LFS:** may we enable Git LFS (quota)? It's needed before the M1-CHR-02 textures land.
-- **Q1 title/world:** proceeding with the defaults. "The Calm" overlaps a term from the inspiring game; Narrative kept it and banned the compounds. Say the word to rename it.
-- **Q2 (MPFB):** default is "allowed as a tool, heavily modified". The character stream records it in an ADR.
-- Q4, Q5, Q6 and Q7 are at their spec defaults.
+- **Listen to the music** (docs/kb/audio/listening_notes.md, §16 Q3).
+- **Reefball arena form:** keep the spec's suspended water sphere, differentiated as narrative proposes in story/decisions_log.md N-12, or switch to the alternative "Weir"? Default: keep.
+- **Git LFS:** may we enable it (quota)?
+- **GitHub Actions:** runs never leave `queued`; check Settings → Actions and minutes when convenient.
+- Q1 (title/world), Q2 (MPFB; default unused, built from scratch), Q4, Q5 and Q6 are at their defaults.
