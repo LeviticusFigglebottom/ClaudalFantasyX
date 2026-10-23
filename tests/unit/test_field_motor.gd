@@ -93,5 +93,16 @@ func test_deadzone_is_no_input() -> void:
 	assert_eq(v, Vector3.ZERO)
 
 
+func test_relatch_drops_the_latch_and_reads_the_given_camera() -> void:
+	m.step(UP, 0.0, DT)
+	m.on_camera_change(true)
+	assert_true(m.latched)
+	m.relatch(PI)
+	assert_false(m.latched, "relatch drops the latch")
+	assert_eq(m.reference_yaw, PI)
+	m.step(UP, PI, DT)
+	_near(FieldMotor.world_direction(UP, m.reference_yaw), Vector3.BACK, "up maps to the visible camera")
+
+
 func _near(a: Vector3, b: Vector3, msg: String) -> void:
 	assert_true(a.distance_to(b) < EPS, "%s: %s vs %s" % [msg, a, b])

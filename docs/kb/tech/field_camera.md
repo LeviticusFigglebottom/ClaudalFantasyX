@@ -30,15 +30,45 @@ SPEC §6.6 asks for a 3D field with directed, cinematic camera rails: zones are 
 - DOF fields (`dof_far_*`, `dof_near_*`, `dof_blur_amount`) become `CameraAttributesPractical`. A camera that already has `CameraAttributesPhysical` is left alone.
 - Positions and paths are in the director's **rail space**, which is `rail_root_path` and defaults to the level root. Shots can therefore be authored in level coordinates.
 
+### Aim nodes (actors and marks)
+
+By default every tracking mode frames the player (`target_path`) plus `target_offset`. Set `CameraShot.aim_node` to frame another node instead: an actor, or a `Marker3D` mark. The path resolves from the rail root, like the dolly paths, and absolute paths (`/root/...`) work too. `aim_offset` is added to that node's global position, in world space (eye height, or the midpoint of a two-shot when the node is one of the pair). `target_offset` is then ignored.
+
+| Mode | With `aim_node` |
+|---|---|
+| `FIXED` | Stays at `position` and looks straight at the node, instead of `look_at`. Use it for a mark, or for an actor who holds still. |
+| `PAN_FOLLOW` | Pans from `look_at` toward the node, with the same `follow_weight`, `max_pan_deg` and smoothing. |
+| `DOLLY` | Progress along `track_path` comes from the node's position, and the camera aims at the node. An actor walking the track drives the move. |
+| `ORBIT` | Circles the node (hub zones only, as before). |
+
+If the node can't be found, the director warns once per shot and frames the player. The Haluna two-shots and reaction shots (H05, H06, S07, S09) are authored this way: for example, H06 can be a `FIXED` 27° shot whose `aim_node` is a mark between Asha and Rhen. Timed moves such as the H05 crane (0.4 m to 0.9 m on `rhen sit_up`) are the sequencer's job: two `play_shot` calls, the second with a blend.
+
 ## Selection, blends and cuts
 
 1. **Containment.** Each `update(delta)`, the director tests the target's position against every `CameraVolume`'s `CollisionShape3D` children geometrically. It does not wait for physics overlap signals, which makes selection frame-exact, independent of signal order, and testable headlessly. Volumes turn physics monitoring off.
 2. **Priority.** The highest `shot_priority` wins. On a tie, the volume entered most recently wins. If the player leaves every volume, the **current shot stays**, so a composed frame is never dropped for a fallback.
 3. **Transition.** The camera cuts when the volume forces it (`force_hard_cut`), when the shot is marked `hard_cut`, or when the resolved duration is ≤ 0. Otherwise it blends over the duration resolved in this order: `blend_sec_override` on the volume, `blend_sec` on the shot, then `default_blend_sec` in `field_camera.json`. The blend weight comes from the shot's `blend_curve` (a `Curve`), then its `blend_ease` (a named ease in `field_camera.json` such as `linear`, `in_out_sine`, `in_out_cubic` or `out_quart`), then `default_blend_ease`.
 4. **Live blends.** A blend runs from the *live* outgoing shot to the *live* incoming shot, so tracking keeps moving during it. If a new change interrupts a blend, the next blend starts from a snapshot of the current pose, so there's no pop.
-5. **Snap.** `snap()` jumps straight to the right shot with a hard cut. Call it on zone load, after a teleport, and in capture scenes.
+5. **Snap.** `snap()` jumps straight to the right shot with a hard cut. Call it on zone load, after a teleport, and in capture scenes. It always ends a blend in progress, even when the target lands in the shot that is already blending in (a teleport mid-blend into the court), and it resets that shot's tracking (smoothed aim, dolly progress), so the frame is settled at once. A blend cut short this way still emits `blend_finished`. The snap then emits `snapped(shot)`. While a scripted shot is held, `snap()` settles on the scripted shot instead of choosing a volume.
 
-Signals: `shot_changed(shot, hard_cut, blend_sec)` and `blend_finished(shot)`. Introspection: `active_shot_id()`, `is_blending()`, `blend_weight()`, `blend_duration()`, `history`, `state_snapshot()` (shown in the debug overlay on F7), and `camera_yaw()`.
+Signals: `shot_changed(shot, hard_cut, blend_sec)`, `blend_finished(shot)`, `snapped(shot)`, `scripted_shot_started(shot, blend_sec)` and `scripted_shot_released(shot, blend_sec)`. Introspection: `active_shot_id()`, `is_blending()`, `blend_weight()`, `blend_duration()`, `is_scripted()`, `scripted_shot()`, `history`, `state_snapshot()` (shown in the debug overlay on F7, with `scripted` and `aim`), and `camera_yaw()`.
+
+## Scripted shots: the cutscene contract (M1-ARC-05)
+
+This is the API the cutscene sequencer drives from `@camera` cues ([dialogue_format.md](dialogue_format.md)). Nothing else in the director changes for cutscenes: the same shots, blends, eases, DOF and tracking apply.
+
+```gdscript
+director.play_shot(shot: CameraShot, blend_sec: float = -1, ease: StringName = &"")
+director.release(blend_sec: float = -1, ease: StringName = &"") -> bool
+```
+
+- **`play_shot` takes the camera.** From that call until `release()`, **volume selection is suspended**. The director still tracks which volumes contain the player, but it never switches shot because of them. Calling `play_shot` again while one is held moves to the next scripted shot. That's how a sequence of `@camera` cues plays out, and a blend that interrupts a blend starts from the live pose as usual.
+- **Blend resolution for `play_shot`.** An explicit `blend_sec ≥ 0` wins: `0` cuts, and anything else blends over that many seconds, even on a `hard_cut` shot. With `blend_sec < 0` (the default), the shot's `hard_cut` and `blend_sec` apply, then `default_blend_sec`. The first shot in a zone (nothing active yet) always cuts.
+- **`ease`** names an ease in `field_camera.json` (`linear`, `in_out_sine` and so on) for this one blend. It wins over the shot's `blend_curve` and `blend_ease`. Empty means the shot's own curve.
+- **`release` hands the camera back.** The camera returns to the shot of the volume that wins *now*, at the player's current position. Outside every volume, it returns to the shot that was active before the first `play_shot`. `release` **always blends** unless you pass `0`: `blend_sec < 0` resolves to the winning volume's `blend_sec_override`, then that shot's `blend_sec`, then `default_blend_sec`, ignoring `hard_cut` and `force_hard_cut`, so a cutscene never ends on an unintended pop. It returns `false` and does nothing when no scripted shot is held.
+- **Signals.** `play_shot` emits `shot_changed` (when the shot actually changes) and then `scripted_shot_started(shot, blend_sec)`. `release` emits `shot_changed` and then `scripted_shot_released(returned_to_shot, blend_sec)`. In both, `blend_sec` is `0` for a cut. Wait for `blend_finished(shot)` to know a move has landed. `is_scripted()` tells the sequencer, and the F7 page, who owns the camera.
+- **Mapping `@camera`.** `@camera <shot> blend=<sec>` becomes `play_shot(shot_by_id[shot], blend)`. The cue table says a missing `blend=` is a cut, so the sequencer passes `0` then. `-1` (the shot's own setting) is there for sequencer code that wants the authored default. The sequencer owns the id-to-`CameraShot` table for the cutscene (shots are scene sub-resources, like the volume shots) and calls `release()` when the cutscene ends. Shots that frame actors use `aim_node` (above).
+- **The player during a cutscene.** The sequencer freezes the player with `FieldController.accepts_input = false`. The director doesn't do this. Shot changes during a scripted sequence still notify `FieldMotor`, but the latch only engages while the stick is held, which a frozen player never does.
 
 ## Camera-relative input and the latch
 
@@ -49,6 +79,8 @@ The data (`field_movement.json` → `input_latch`) sets three things:
 - `release_on_turn_deg` (60) also releases the latch when the stick turns that far from where it pointed at the change, so a deliberate new direction re-reads the camera.
 
 Between changes, the reference follows the live camera. On a pan-follow shot, that means a gentle curve, which is expected.
+
+**Snaps re-read the camera.** A snap (teleport, `place_at`, zone load) cuts to a camera the player hasn't been walking under, so keeping a latch would map the stick to a camera that is no longer on screen. `FieldController` listens for `snapped` and calls `FieldMotor.relatch(camera_yaw)`, which drops any latch and maps the stick to the camera now visible. Cuts and blends caused by walking still latch as before.
 
 `test_field_controller.gd` walks due north through all three test volumes: a lane blend, then a court blend, then a hard cut onto the side-on dolly. It asserts that the latch held and the player stayed within 1.5 m of the line. Without the latch, the court's pan camera would bend the path by about 45°.
 
@@ -90,10 +122,11 @@ The `field_move_*`, `field_walk`, `field_interact` and `field_camera_left/right`
 
 Interactables: `Lever` (interact, sets `field_test_lever_pulled`, once) and `CausewayGate` (touch, sets `field_test_causeway_reached`). Screenshot baselines: `field_lane_fixed`, `field_court_pan` and `field_causeway_dolly`.
 
-Tests: `tests/unit/test_camera_director.gd` (shot sequence, blend duration and monotonic ease, cut, priority and recency, keep-on-exit, the fixed, pan and dolly framings, orbit gating, interrupted blends), `test_field_motor.gd` (mapping, latch, release-on-turn, speeds), `test_field_controller.gd` (walking through every volume, latch across the cut, runtime actions), and `test_field_interactables.gd`.
+Tests: `tests/unit/test_camera_director.gd` (shot sequence, blend duration and monotonic ease, cut, priority and recency, keep-on-exit, the fixed, pan and dolly framings, orbit gating, interrupted blends; and for M1-ARC-05, `play_shot`/`release` suspending and resuming volume selection, blend resolution and ease overrides, chained scripted shots, the return to the pre-script shot outside every volume, snap ending a blend into the active shot, snap while scripted, and `aim_node` in all four modes plus the missing-node fallback), `test_field_motor.gd` (mapping, latch, release-on-turn, speeds, `relatch`), `test_field_controller.gd` (walking through every volume, latch across the cut, runtime actions, a teleport snap re-reading the visible camera), and `test_field_interactables.gd`.
 
 ## Open items
 
 - Encounter steps: `FieldController` will feed the M2 encounter system's step counter. The debug overlay's F3 page already reads a provider (see `DebugHooks`).
 - Collision with camera geometry isn't handled. Shots are authored, so the frame is composed by hand, and this is deliberate.
 - Cinematics (reviewer): check that the blend eases and the latch feel right with a real stick, and review the shot conventions against the Haluna shot list.
+- The cutscene sequencer itself (reading `@camera` cues and calling `play_shot`/`release`) is a separate task. The director side of the contract is above.

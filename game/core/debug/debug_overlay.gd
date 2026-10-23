@@ -8,7 +8,9 @@ extends CanvasLayer
 ##   F1 help · F2 turn-order internals · F3 encounter rate · F4 flag inspector (Enter toggles a
 ##   bool) · F5 teleport (Enter goes) · F6 Lattice cheat (Enter grants) · F7 field camera ·
 ##   F9 battle sandbox · F12 hide. Pressing a page's key again hides the overlay.
-## Lists move with ui_up / ui_down and act with ui_accept while the overlay is open.
+## Lists move with ui_up / ui_down and act with ui_accept, only on list pages ("list": true in the
+## data: flags, teleport, Lattice). Every other page lets those keys through to the game, so F2 and
+## F7 can stay open while playing (M1-ARC-05).
 ## All logic lives in DebugReadouts / DebugHooks; this node only routes input and draws text.
 
 signal page_changed(page_id: StringName)
@@ -40,6 +42,7 @@ var _refresh_left := 0.0
 var _pending_spawn: StringName = &""
 var _global_actions: Dictionary = {}
 var _list_actions: Dictionary = {}
+var _list_pages: Dictionary = {}
 
 @onready var _panel: PanelContainer = $Panel
 @onready var _title: Label = $Panel/Margin/Rows/Title
@@ -94,10 +97,10 @@ func handle_input(event: InputEvent) -> bool:
 	return handler.is_valid()
 
 
-## The action an event triggers: page keys and F9/F12 always, list keys only while open.
+## The action an event triggers: page keys and F9/F12 always, list keys only on a list page.
 func _handler_for(event: InputEvent) -> Callable:
 	var tables: Array[Dictionary] = [_global_actions]
-	if page != PAGE_NONE:
+	if is_list_page(page):
 		tables.append(_list_actions)
 	for table in tables:
 		for action: StringName in table:
@@ -109,6 +112,8 @@ func _handler_for(event: InputEvent) -> Callable:
 func _build_action_tables() -> void:
 	for p in _pages:
 		_global_actions[StringName(str(p["action"]))] = toggle_page.bind(StringName(str(p["id"])))
+		if bool(p.get("list", false)):
+			_list_pages[StringName(str(p["id"]))] = true
 	_global_actions[ACTION_SANDBOX] = launch_battle_sandbox
 	_global_actions[ACTION_HIDE] = close
 	_list_actions = {&"ui_up": move_selection.bind(-1), &"ui_down": move_selection.bind(1), &"ui_accept": activate}
@@ -139,6 +144,11 @@ func close() -> void:
 
 func is_open() -> bool:
 	return page != PAGE_NONE
+
+
+## True for pages that take the list keys (ui_up / ui_down / ui_accept).
+func is_list_page(id: StringName) -> bool:
+	return _list_pages.has(id)
 
 
 func move_selection(step: int) -> void:
@@ -259,7 +269,7 @@ func _help_lines() -> PackedStringArray:
 		out.append("%-26s %s" % [_keys_for(StringName(str(p["action"]))), p["title"]])
 	out.append("%-26s battle sandbox" % _keys_for(ACTION_SANDBOX))
 	out.append("%-26s hide" % _keys_for(ACTION_HIDE))
-	out.append("lists: ui_up / ui_down, ui_accept acts")
+	out.append("list pages: ui_up / ui_down move, ui_accept acts; other pages pass those keys to the game")
 	return out
 
 

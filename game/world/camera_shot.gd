@@ -11,8 +11,9 @@ extends Resource
 ##   ORBIT       only honoured when the director's hub_orbit_enabled is set (hub zones); otherwise
 ##               the director treats it as PAN_FOLLOW and warns.
 ## Positions are in the director's rail space (the level root by default). Paths resolve relative
-## to that root too. FOV is vertical (Camera3D.keep_aspect = KEEP_HEIGHT); see the lens table in
-## docs/kb/art/environments/haluna.md §5.
+## to that root too. Every mode that aims at the player aims at `aim_node` instead when it is set
+## (cutscene two-shots and reaction shots, M1-ARC-05). FOV is vertical (Camera3D.keep_aspect =
+## KEEP_HEIGHT); see the lens table in docs/kb/art/environments/haluna.md §5.
 
 enum Mode { FIXED, PAN_FOLLOW, DOLLY, ORBIT }
 
@@ -26,6 +27,12 @@ const USE_DEFAULT := -1.0
 @export var look_at: Vector3 = Vector3.FORWARD
 ## Added to the player's position when a mode aims at the player (head height, look-ahead).
 @export var target_offset: Vector3 = Vector3.ZERO
+## Frame this node (an actor or a Marker3D mark) instead of the player: PAN_FOLLOW pans toward it,
+## DOLLY tracks and aims at it, ORBIT circles it, and FIXED looks straight at it instead of
+## `look_at`. Resolved from the director's rail root (absolute paths work too); empty = player.
+@export var aim_node: NodePath
+## Added to the aim node's global position (eye height, a two-shot's midpoint). World space.
+@export var aim_offset: Vector3 = Vector3.ZERO
 ## Vertical FOV in degrees; USE_DEFAULT = field_camera.json default_fov_deg.
 @export var fov_deg: float = USE_DEFAULT
 ## Roll in degrees around the view axis (dutch angle). Zero for almost every shot.

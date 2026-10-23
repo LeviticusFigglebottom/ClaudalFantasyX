@@ -59,6 +59,14 @@ func on_camera_change(hard_cut: bool) -> void:
 		latched = true
 
 
+## Called after the director snaps (teleport, zone load): drops any latch, which would point at a
+## camera no longer on screen, and maps the stick to the camera now visible (`camera_yaw`).
+func relatch(camera_yaw: float) -> void:
+	latched = false
+	reference_yaw = camera_yaw
+	_latched_stick = Vector2.ZERO
+
+
 ## Advances one step. `stick` uses Input.get_vector's convention (x right, y back/down);
 ## `camera_yaw` is the live camera's yaw. Returns the new horizontal velocity.
 func step(stick: Vector2, camera_yaw: float, delta: float, walk: bool = false) -> Vector3:
