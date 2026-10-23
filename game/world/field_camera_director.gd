@@ -13,6 +13,8 @@ extends Node3D
 ## Scripted shots (M1-ARC-05): play_shot() takes the camera for a cutscene and suspends volume
 ## selection until release(), which blends back to the winning volume's shot. This is the hook the
 ## cutscene sequencer drives from `@camera` cues (contract in docs/kb/tech/field_camera.md).
+## M1-ARC-08: while a scripted shot is held, the director also holds the chapter autosave
+## (SaveSystem.hold_autosave), so a chapter change made mid-cutscene is saved after release().
 ##
 ## Time passes only through update(delta) (called from _process when auto_update is on), so tests
 ## and capture scenes drive it deterministically.
@@ -166,6 +168,7 @@ func play_shot(shot: CameraShot, blend_sec: float = CameraShot.USE_DEFAULT, ease
 	if _scripted_shot == null:
 		_return_shot = active_shot
 		_return_volume = active_volume
+		_hold_autosave(true)
 	_scripted_shot = shot
 	var moves := shot != active_shot
 	if moves:
@@ -188,6 +191,7 @@ func release(blend_sec: float = CameraShot.USE_DEFAULT, ease: StringName = &"") 
 		return false
 	var held := _scripted_shot
 	_scripted_shot = null
+	_hold_autosave(false)
 	if target != null:
 		_update_occupancy()
 	var best := _pick_volume()
@@ -230,9 +234,20 @@ func scripted_shot() -> CameraShot:
 	return _scripted_shot
 
 
+## M1-ARC-08: a held scripted shot is a cutscene in progress, so the autosave waits for it. Without
+## the SaveSystem autoload (a bare script test) this does nothing. A freed director never blocks:
+## SaveSystem keeps holders by WeakRef. Leaving the tree releases the hold (the zone is unloading).
+func _hold_autosave(on: bool) -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var saves: Node = tree.root.get_node_or_null(^"SaveSystem") if tree != null else null
+	if saves != null:
+		saves.call(&"hold_autosave" if on else &"release_autosave", self)
+
+
 ## Leaving the tree (zone unload, the director freed mid-cutscene) ends any move in progress and
 ## pays an owed blend_finished, so a coroutine awaiting it resumes instead of hanging forever.
 func _exit_tree() -> void:
+	_hold_autosave(false)
 	if is_settled() or active_shot == null:
 		return
 	_end_blend()

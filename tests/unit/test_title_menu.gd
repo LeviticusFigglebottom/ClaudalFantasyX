@@ -160,8 +160,93 @@ func test_new_game_without_a_world_return_reports_it() -> void:
 	_done()
 
 
+func test_new_game_over_an_autosave_asks_first_and_going_back_is_the_default() -> void:
+	_write_record(SaveSystem.AUTOSAVE_SLOT, 5)
+	_open()
+	assert_true(menu.model.needs_new_game_confirm())
+	assert_true(menu.model.set_cursor(TitleMenuModel.CHOICES.find(TitleMenuModel.CHOICE_NEW_GAME)))
+	assert_true(menu.handle_input(_action(&"ui_accept")))
+	assert_true(menu.model.confirming, "asked, not started")
+	assert_eq(swaps, [] as Array[Array])
+	assert_eq(choices, [] as Array[Array], "no choice is reported until it is answered")
+	assert_eq(Game.state.chapter, 0, "the live state is untouched")
+	assert_eq(menu.model.current(), TitleMenuModel.CHOICE_CONFIRM_BACK, "Go back is the default")
+	assert_eq(menu.help_text(), tr(TitleMenuModel.CONFIRM_HELP_KEY))
+	assert_eq(menu.row_labels(), [tr("TITLE_CONFIRM_BACK"), tr("TITLE_CONFIRM_BEGIN")] as Array[String])
+	menu.handle_input(_action(&"ui_accept"))
+	assert_false(menu.model.confirming)
+	assert_eq(menu.model.current(), TitleMenuModel.CHOICE_NEW_GAME, "back on New Game")
+	assert_eq(menu.row_labels().size(), TitleMenuModel.CHOICES.size(), "the title rows are back")
+	assert_false(menu.is_launched())
+	assert_eq(SaveSystem.load_from_slot(SaveSystem.AUTOSAVE_SLOT).chapter, 5, "the autosave is kept")
+	_done()
+
+
+func test_cancel_closes_the_new_game_question() -> void:
+	_write_record(SaveSystem.AUTOSAVE_SLOT, 5)
+	_open()
+	menu.choose(TitleMenuModel.CHOICE_NEW_GAME)
+	assert_true(menu.model.confirming)
+	assert_true(menu.handle_input(_action(&"ui_cancel")))
+	assert_false(menu.model.confirming)
+	assert_false(menu.handle_input(_action(&"ui_cancel")), "nothing to cancel on the title")
+	assert_eq(swaps, [] as Array[Array])
+	_done()
+
+
+func test_begin_anew_starts_the_new_run() -> void:
+	_write_record(SaveSystem.AUTOSAVE_SLOT, 5)
+	_open()
+	menu.choose(TitleMenuModel.CHOICE_NEW_GAME)
+	assert_true(menu.model.move(1))
+	assert_eq(menu.model.current(), TitleMenuModel.CHOICE_CONFIRM_BEGIN)
+	assert_eq(menu.choose(menu.model.accept()), OK)
+	assert_true(menu.is_launched())
+	assert_eq(choices, [[TitleMenuModel.CHOICE_NEW_GAME, OK]] as Array[Array])
+	assert_eq(swaps.size(), 1)
+	assert_eq(SaveSystem.load_from_slot(SaveSystem.AUTOSAVE_SLOT).chapter, 5, "not written over by New Game")
+	_done()
+
+
+func test_no_question_without_an_autosave_to_lose() -> void:
+	_write_record(2, 3)
+	_open()
+	assert_false(menu.model.needs_new_game_confirm(), "manual records are never touched by a new run")
+	assert_eq(menu.choose(TitleMenuModel.CHOICE_NEW_GAME), OK)
+	assert_true(menu.is_launched(), "started at once")
+	_done()
+
+
+func test_a_damaged_autosave_is_not_worth_a_question() -> void:
+	DirAccess.make_dir_recursive_absolute(TEST_DIR)
+	var f := FileAccess.open(SaveSystem.slot_path(SaveSystem.AUTOSAVE_SLOT), FileAccess.WRITE)
+	f.store_string("{broken")
+	f.close()
+	assert_false(TitleSaveEntry.new_game_overwrites_autosave(SaveSystem))
+	f = FileAccess.open(SaveSystem.slot_path(SaveSystem.AUTOSAVE_SLOT), FileAccess.WRITE)
+	f.store_string(JSON.stringify({"version": SaveSystem.SAVE_VERSION + 1, "state": {}}))
+	f.close()
+	assert_true(TitleSaveEntry.new_game_overwrites_autosave(SaveSystem), "a newer build's run is still a run")
+	_done()
+
+
+func test_the_question_rows_are_clickable() -> void:
+	_write_record(SaveSystem.AUTOSAVE_SLOT, 5)
+	_open()
+	menu.choose(TitleMenuModel.CHOICE_NEW_GAME)
+	assert_true(menu.model.set_cursor(1))
+	assert_false(menu.model.set_cursor(2), "only two rows")
+	assert_eq(menu.model.row_cursor(), 1)
+	assert_false(menu.model.is_enabled(TitleMenuModel.CHOICE_LOAD), "title rows are inactive meanwhile")
+	menu.choose(TitleMenuModel.CHOICE_CONFIRM_BACK)
+	assert_false(menu.model.is_enabled(TitleMenuModel.CHOICE_CONFIRM_BEGIN), "and the question's after it")
+	_done()
+
+
 func test_title_strings_are_localized() -> void:
-	var keys: Array[String] = [TitleMenuModel.HELP_NO_RECORD_KEY]
+	var keys: Array[String] = [TitleMenuModel.HELP_NO_RECORD_KEY, TitleMenuModel.CONFIRM_HELP_KEY]
+	for id in TitleMenuModel.CONFIRM_CHOICES:
+		keys.append(str(TitleMenuModel.CONFIRM_LABEL_KEYS[id]))
 	for id in TitleMenuModel.CHOICES:
 		keys.append(str(TitleMenuModel.LABEL_KEYS[id]))
 		keys.append(str(TitleMenuModel.HELP_KEYS[id]))

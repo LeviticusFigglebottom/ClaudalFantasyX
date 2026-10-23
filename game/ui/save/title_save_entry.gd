@@ -33,6 +33,18 @@ static func continue_slot(save_system: Node = null) -> int:
 	return best
 
 
+## M1-ARC-08: true when slot 0 holds an autosave that a new run's first chapter autosave would
+## write over: a readable one, or one from a newer build (still somebody's run). An empty or
+## damaged slot 0 has nothing to lose. The title asks before New Game when this is true.
+static func new_game_overwrites_autosave(save_system: Node = null) -> bool:
+	var saves := _saves(save_system)
+	if saves == null:
+		return false
+	var info: Dictionary = saves.call(&"slot_info", SaveSystem.AUTOSAVE_SLOT)
+	var status := StringName(str(info.get("status", "")))
+	return status == SaveSystem.STATUS_OK or status == SaveSystem.STATUS_NEWER
+
+
 static func continue_game(save_system: Node = null) -> Error:
 	var slot := continue_slot(save_system)
 	if slot < 0:
