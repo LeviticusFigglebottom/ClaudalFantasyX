@@ -448,3 +448,91 @@ func test_storm_reuses_the_zone_water_and_key_light() -> void:
 	sun.visible = false
 	assert_eq(storm.mood_parameters()["sun_energy"], 0.0, "a hidden key light does not light the storm")
 	_free_nodes()
+
+
+## M2-RND-01: the zone sea answers the storm. The storm writes undertow.json "sea_response" onto its
+## water's material (centred on the storm; darkening, chop and streaks fade with intensity), every key
+## is a uniform of every water tier, and a storm leaving the tree lets go of the sea.
+func test_storm_drives_the_zone_sea_response() -> void:
+	var w := WaterSurface.new()
+	w.core_half_extent_m = 4.0
+	w.core_cell_m = 1.0
+	w.outer_half_extent_m = 16.0
+	w.material = (load("res://game/levels/_tests/undertow/storm_ocean_material.tres") as ShaderMaterial).duplicate()
+	w.wave_set = load("res://game/levels/_tests/undertow/storm_sea_waves.tres") as WaveSet
+	_add(w)
+	var storm := UndertowStorm.new()
+	storm.quality = "high"
+	storm.water = w
+	_add(storm)
+	storm.refresh()
+	var src := storm.state.config["sea_response"] as Dictionary
+	var reach := float(w.material.get_shader_parameter(&"storm_reach_m"))
+	assert_between(reach, float(src["reach_m"]) - 1e-3, float(src["reach_m"]) + 1e-3, "reach from the data")
+	var c := storm.storm_center()
+	assert_eq(w.material.get_shader_parameter(&"storm_center_xz"), Vector2(c.x, c.z), "centred on the storm")
+	var params := storm.state.sea_response_parameters()
+	for path in [
+		"res://game/shaders/water/water_ocean.gdshader",
+		"res://game/shaders/water/water_ocean_low.gdshader",
+		"res://game/shaders/water/water_ocean_medium.gdshader",
+		"res://game/shaders/water/water_ocean_ultra.gdshader",
+	]:
+		var names: Array = (load(path) as Shader).get_shader_uniform_list().map(
+			func(u: Dictionary) -> String: return str(u["name"])
+		)
+		for key: String in params:
+			assert_true(names.has(key), "%s lacks %s" % [path, key])
+	storm.state.intensity = 0.0
+	var calm := storm.state.sea_response_parameters()
+	assert_eq(calm["storm_darken"], 0.0, "a sleeping storm leaves the sea alone")
+	assert_eq(calm["storm_reach_m"], float(src["reach_m"]), "reach is not scaled")
+	storm.get_parent().remove_child(storm)
+	assert_eq(w.material.get_shader_parameter(&"storm_reach_m"), 0.0, "cleared on exit")
+	storm.free()
+	_free_nodes()
+
+
+## M2-RND-01: the outer spray curtain stands in front of the wall's foot, so it draws after the body
+## (which ignores depth) and only its near half; the inner curtain stays behind the wall.
+func test_outer_spray_draws_over_the_body_near_half_only() -> void:
+	var storm := UndertowStorm.new()
+	storm.quality = "high"
+	_add(storm)
+	var prio := storm.state.config["render_priority"] as Dictionary
+	assert_true(storm.spray_materials.size() >= 2, "two curtains on High")
+	var outer := storm.spray_materials[0]
+	var inner := storm.spray_materials[1]
+	assert_eq(outer.render_priority, int(prio["spray_outer"]))
+	assert_true(outer.render_priority > storm.body_material.render_priority, "outer spray after the body")
+	assert_true(int(prio["motes"]) > outer.render_priority, "motes still draw last")
+	assert_true(inner.render_priority < storm.body_material.render_priority, "inner spray behind the wall")
+	assert_true(bool(outer.get_shader_parameter(&"spray_front_only")), "near half only")
+	assert_false(bool(inner.get_shader_parameter(&"spray_front_only")))
+	var sp := storm.state.config["spray"] as Dictionary
+	var shape := storm.state.config["shape"] as Dictionary
+	var foot := float(shape["eye_radius_m"]) + float(shape["wall_thickness_m"]) + float(shape["skirt_reach_m"])
+	assert_true(float(sp["outer_radius_m"]) > foot, "the outer curtain stands outside the wall's skirt")
+	_free_nodes()
+
+
+## M2-RND-01: the wall's foot, the joined bands and the water-dark base are data-driven uniforms of the
+## shells and every body tier (the shells follow the same envelope, so the Low wall stands in the sea too).
+func test_wall_foot_uniforms_reach_every_tier() -> void:
+	var shared := ["skirt_height_m", "skirt_reach_m", "skirt_density", "band_join_m"]
+	var body_only := ["scud_height_m", "scud_stretch", "water_wall_height_m", "water_wall_mix", "col_water_wall"]
+	var shaders := UndertowState.load_config()["shaders"] as Dictionary
+	for key: String in shaders:
+		var path := str(shaders[key])
+		if not path.ends_with(".gdshader"):
+			continue
+		var names: Array = (load(path) as Shader).get_shader_uniform_list().map(
+			func(u: Dictionary) -> String: return str(u["name"])
+		)
+		var wanted: Array = shared + (body_only if key.begins_with("body") else [])
+		if key.begins_with("body") or key == "shell":
+			for u: String in wanted:
+				assert_true(names.has(u), "%s (%s) lacks %s" % [key, path, u])
+	var params := UndertowState.new().static_parameters()
+	for u: String in shared + body_only:
+		assert_true(params.has(u), "static_parameters carries %s" % u)

@@ -34,6 +34,8 @@ const BODY_NODE := "Body"
 const SHELL_NODE := "Shell"
 const SPRAY_NODE := "Spray"
 const PARAM_DEEP := &"col_deep"
+const PARAM_STORM_CENTER_XZ := &"storm_center_xz"
+const PARAM_STORM_REACH := &"storm_reach_m"
 const PARAM_FOAM := &"col_foam"
 const PARAM_SEA_GLOW := &"sea_glow_energy"
 const PARAM_NOISE_TEX := &"noise_tex"
@@ -150,6 +152,11 @@ func _ready() -> void:
 		push_warning("UndertowStorm: unknown quality '%s', using default" % quality)
 		set_quality(str(state.config.get("default_quality", "")))
 	_place()
+
+
+## A storm that leaves the tree takes its hold on the zone sea with it.
+func _exit_tree() -> void:
+	_clear_sea_response()
 
 
 func _process(delta: float) -> void:
@@ -296,6 +303,7 @@ func water_parameters() -> Dictionary:
 		var deep: Variant = water.material.get_shader_parameter(PARAM_DEEP)
 		if deep is Color:
 			out[&"col_sea_deep"] = deep
+			out[&"col_water_wall"] = deep
 		var foam: Variant = water.material.get_shader_parameter(PARAM_FOAM)
 		if foam is Color:
 			out[PARAM_FOAM] = foam
@@ -368,7 +376,12 @@ func _build() -> void:
 	elif body != null:
 		body.visible = false
 	_build_shells(plan, bound, full_height, str(shaders.get("shell", "")), int(prio.get("shells", 0)))
-	_build_sprays(int(plan["spray_layers"]), str(shaders.get("spray", "")), int(prio.get("spray", 0)))
+	_build_sprays(
+		int(plan["spray_layers"]),
+		str(shaders.get("spray", "")),
+		int(prio.get("spray", 0)),
+		int(prio.get("spray_outer", prio.get("spray", 0)))
+	)
 	# In the editor `motes` is a placeholder (GlimmerField is not @tool).
 	if motes != null and not Engine.is_editor_hint() and motes.draw_material != null:
 		motes.draw_material.render_priority = int(prio.get("motes", 0))
@@ -402,7 +415,9 @@ func _build_shells(plan: Dictionary, bound: float, height: float, shader_path: S
 		shell_materials.pop_back()
 
 
-func _build_sprays(layers: int, shader_path: String, prio: int) -> void:
+## Layer 0 is the outer curtain, in front of the wall's foot: it draws after the body (the body
+## ignores depth, so it would cover it) and only its near half (the far half is behind the wall).
+func _build_sprays(layers: int, shader_path: String, prio: int, outer_prio: int) -> void:
 	var sp := state.config.get("spray", {}) as Dictionary
 	var radii: Array[float] = [float(sp.get("outer_radius_m", 1.0)), float(sp.get("inner_radius_m", 1.0))]
 	var sh := state.config.get("shells", {}) as Dictionary
@@ -411,8 +426,10 @@ func _build_sprays(layers: int, shader_path: String, prio: int) -> void:
 		mi.name = "%s%d" % [SPRAY_NODE, _sprays.size()]
 		mi.mesh = UndertowMeshBuilder.unit_tube(1, int(sh.get("segments", 3)))
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		var mat := _material(shader_path, prio)
+		var outer := _sprays.is_empty()
+		var mat := _material(shader_path, outer_prio if outer else prio)
 		mat.set_shader_parameter(&"spray_radius_m", radii[_sprays.size()])
+		mat.set_shader_parameter(&"spray_front_only", outer)
 		mi.material_override = mat
 		var r := radii[_sprays.size()]
 		var h := float(sp.get("height_m", 1.0))
@@ -455,6 +472,23 @@ func _push_dynamic() -> void:
 		params[PARAM_SEA_GLOW] = water.sea_glow_energy
 	for m in _active_materials():
 		_set_all(m, params)
+	_push_sea_response()
+
+
+## The zone sea answers the storm (M2-RND-01): undertow.json "sea_response" onto the water's
+## material, centred on the storm and scaled by its intensity. Cleared when the storm leaves.
+func _push_sea_response() -> void:
+	if water == null or water.material == null:
+		return
+	for key: String in state.sea_response_parameters():
+		water.material.set_shader_parameter(key, state.sea_response_parameters()[key])
+	var c := storm_center()
+	water.material.set_shader_parameter(PARAM_STORM_CENTER_XZ, Vector2(c.x, c.z))
+
+
+func _clear_sea_response() -> void:
+	if water != null and water.material != null:
+		water.material.set_shader_parameter(PARAM_STORM_REACH, 0.0)
 
 
 ## Editor-only footprint gizmo under the visuals (internal, so it is never saved with the scene).

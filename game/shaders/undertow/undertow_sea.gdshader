@@ -38,6 +38,8 @@ group_uniforms sea_look;
 uniform vec3 col_sea_deep : source_color = vec3(0.0018, 0.0103, 0.0242);
 uniform vec3 col_foam : source_color = vec3(0.855, 0.922, 0.905);
 uniform float sea_darkening : hint_range(0.0, 1.0) = 0.55;
+// Share of the sky reflection the storm blots out (half at the rim, all of it under the storm).
+uniform float sea_reflection_dim : hint_range(0.0, 1.0) = 0.0;
 uniform float sea_roughness : hint_range(0.0, 1.0) = 0.16;
 uniform float foam_scale_m : hint_range(1.0, 5000.0) = 160.0;
 // Streak elongation along the inflow spiral (1 = round blobs).
@@ -127,7 +129,8 @@ void fragment() {
 	vec3 deep = col_sea_deep * (1.0 - sea_darkening * under_storm);
 	ALBEDO = mix(deep, col_foam * (0.55 + 0.45 * (1.0 - v_slope)), foam);
 	ROUGHNESS = mix(sea_roughness, 0.8, foam);
-	SPECULAR = UNDERTOW_WATER_SPECULAR;
+	// Near the wall the sky the sea would reflect is the storm itself (M2-RND-01).
+	SPECULAR = UNDERTOW_WATER_SPECULAR * (1.0 - sea_reflection_dim * mix(0.5, 1.0, under_storm));
 	METALLIC = 0.0;
 	// Held light sinking into the throat: cyan streaks spiralling down (never rising).
 	float throat = 1.0 - smoothstep(throat_radius_m * 0.3, funnel_radius_m * 0.75, r);

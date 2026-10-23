@@ -104,6 +104,10 @@ uniform float rent_depth : hint_range(0.0, 1.0) = 0.65;
 uniform float erosion_envelope : hint_range(0.0, 2.0) = 0.6;
 uniform float erosion_threshold : hint_range(0.0, 2.0) = 0.9;
 uniform float erosion_contrast : hint_range(0.1, 20.0) = 4.0;
+// Scud (M2-RND-01): below scud_height_m the noise is squashed vertically by scud_stretch, so the
+// skirt and the low wall tear into ragged horizontal rags between the sea and the cloud base.
+uniform float scud_height_m : hint_range(0.0, 8000.0) = 0.0;
+uniform float scud_stretch : hint_range(1.0, 8.0) = 1.0;
 
 group_uniforms lighting;
 // Sun (or moon) radiance: the zone's key light colour x energy (UndertowStorm copies it).
@@ -130,6 +134,12 @@ uniform float sun_low_floor : hint_range(0.0, 1.0) = 0.12;
 // Aerial perspective toward the zone's fog colour (the storm is kilometres away).
 uniform vec3 col_haze : source_color = vec3(0.35, 0.3, 0.32);
 uniform float haze_visibility_m : hint_range(100.0, 200000.0) = 26000.0;
+// Water lifted into the wall's foot (M2-RND-01): below water_wall_height_m the albedo turns toward
+// col_water_wall (the sea's own dark slate-teal), so the base reads as a wall of dark water rather
+// than more cloud. 0 = off.
+uniform vec3 col_water_wall : source_color = vec3(0.03, 0.06, 0.07);
+uniform float water_wall_height_m : hint_range(0.0, 8000.0) = 0.0;
+uniform float water_wall_mix : hint_range(0.0, 1.0) = 0.0;
 
 group_uniforms glow;
 uniform float wound_energy : hint_range(0.0, 64.0) = 5.0;
@@ -207,6 +217,11 @@ float cloud_noise(vec3 p, int octaves, bool fresh_warp, inout vec3 warp_a, inout
 	undertow_phases(ta, tb, wa);
 	vec3 pa = undertow_flow_point(p, ta);
 	vec3 pb = undertow_flow_point(p, tb);
+	if (scud_height_m > 0.0) {
+		float squash = mix(scud_stretch, 1.0, smoothstep(scud_height_m * 0.5, scud_height_m, p.y));
+		pa.y *= squash;
+		pb.y *= squash;
+	}
 #if UNDERTOW_CURL
 	// Turbulence: a divergence-free warp carried with the flow (common.gdshaderinc curl noise).
 	if (fresh_warp) {
@@ -344,7 +359,11 @@ void fragment() {
 		amb *= exp(-ambient_occlusion * env * d);
 		float base = mix(1.0 - base_darkening, 1.0, smoothstep(0.0, 0.45, h));
 		float sun_reach = mix(sun_low_floor, 1.0, smoothstep(0.0, sun_clear_height, h));
-		vec3 lit = albedo * (sun * t_sun * sun_reach * phase * HYMN_TAU * 2.0 + amb) * base;
+		vec3 alb = albedo;
+		if (water_wall_height_m > 0.0) {
+			alb = mix(albedo, col_water_wall, water_wall_mix * (1.0 - smoothstep(0.0, water_wall_height_m, p.y)));
+		}
+		vec3 lit = alb * (sun * t_sun * sun_reach * phase * HYMN_TAU * 2.0 + amb) * base;
 		// Inner light: lightning in the wall and held light pooled behind the wounds.
 		vec3 inner = undertow_lightning(p) + col_held * pocket * pocket_energy * wound_intensity * env;
 		vec3 s = lit + inner * (0.35 + 0.65 * d);

@@ -65,6 +65,16 @@ uniform float band_sharpness : hint_range(0.5, 8.0) = 2.2;
 uniform float band_density : hint_range(0.0, 1.0) = 0.55;
 // Fraction of its height a sleeping (intensity 0) storm keeps.
 uniform float calm_shrink : hint_range(0.0, 1.0) = 0.55;
+// The wall's foot (M2-RND-01): a skirt of lifted water and spray that flares out from the wall's base
+// by skirt_reach_m at sea level and closes at skirt_height_m, so the wall stands in the sea instead
+// of on a flat horizon. 0 = no skirt.
+uniform float skirt_height_m : hint_range(0.0, 8000.0) = 0.0;
+uniform float skirt_reach_m : hint_range(0.0, 20000.0) = 0.0;
+// Envelope of the skirt (below 1 the cloud noise tears it into rags of spray and scud).
+uniform float skirt_density : hint_range(0.0, 1.0) = 1.0;
+// The rain bands are continuous (their troughs filled) within band_join_m of the wall, so the flank
+// masses grow out of the wall instead of standing beside it. 0 = the plain spiral.
+uniform float band_join_m : hint_range(0.0, 20000.0) = 0.0;
 // Helical striations wound around the wall (the rotating "plates" that make a vortex read from the
 // side): vertical spacing, number of helix starts, depth of the modulation and its sharpness.
 uniform float striation_spacing_m : hint_range(10.0, 10000.0) = 1500.0;
@@ -160,11 +170,22 @@ vec3 undertow_envelope_parts(vec3 p) {
 			* (1.0 - smoothstep(ro - wall_softness_m, ro + wall_softness_m, r));
 	wall *= 1.0 - smoothstep(1.0 - top_softness, 1.0, h);
 	wall *= mix(1.0, undertow_striation(p), striation_strength);
+	if (skirt_height_m > 0.0) {
+		float sh = clamp(p.y / skirt_height_m, 0.0, 1.0);
+		float reach = ro + skirt_reach_m * (1.0 - sh) * (1.0 - sh);
+		float skirt = (1.0 - smoothstep(0.55, 1.0, sh))
+				* smoothstep(ri - wall_softness_m * 0.25, ri + wall_softness_m, r)
+				* (1.0 - smoothstep(reach - wall_softness_m, reach + wall_softness_m, r));
+		wall = max(wall, skirt * skirt_density);
+	}
 	float ch = canopy_height_m * H / height_m;
 	float canopy = (1.0 - smoothstep(0.0, canopy_thickness_m * 0.5, abs(p.y - ch)))
 			* (1.0 - smoothstep(canopy_radius_m - canopy_softness_m, canopy_radius_m, r))
 			* smoothstep(ri, ri + wall_softness_m, r);
 	float arm = pow(0.5 + 0.5 * cos(band_arms * undertow_spiral_phase(p.xz)), band_sharpness);
+	if (band_join_m > 0.0) {
+		arm = mix(1.0, arm, smoothstep(ro, ro + band_join_m, r));
+	}
 	float band = arm * band_density * (1.0 - smoothstep(0.0, band_height_m, p.y))
 			* smoothstep(ro - wall_softness_m, ro + wall_softness_m, r)
 			* (1.0 - smoothstep(band_radius_m * 0.55, band_radius_m, r));

@@ -64,6 +64,10 @@ const UNIFORM_MAP := {
 		"band_sharpness": "band_sharpness",
 		"band_density": "band_density",
 		"calm_shrink": "calm_shrink",
+		"skirt_height_m": "skirt_height_m",
+		"skirt_reach_m": "skirt_reach_m",
+		"skirt_density": "skirt_density",
+		"band_join_m": "band_join_m",
 		"striation_spacing_m": "striation_spacing_m",
 		"striation_starts": "striation_starts",
 		"striation_strength": "striation_strength",
@@ -104,6 +108,10 @@ const UNIFORM_MAP := {
 		"erosion_contrast": "erosion_contrast",
 		"sun_clear_height": "sun_clear_height",
 		"sun_low_floor": "sun_low_floor",
+		"scud_height_m": "scud_height_m",
+		"scud_stretch": "scud_stretch",
+		"water_wall_height_m": "water_wall_height_m",
+		"water_wall_mix": "water_wall_mix",
 	},
 	"wounds":
 	{
@@ -144,6 +152,7 @@ const UNIFORM_MAP := {
 		"foam_ring_spacing_m": "foam_ring_spacing_m",
 		"foam_ring_radius_m": "foam_ring_radius_m",
 		"darkening": "sea_darkening",
+		"reflection_dim": "sea_reflection_dim",
 		"roughness": "sea_roughness",
 		"throat_glow_energy": "throat_glow_energy",
 		"glow_sink_m_s": "glow_sink_m_s",
@@ -154,8 +163,11 @@ const UNIFORM_MAP := {
 		"scale_m": "spray_scale_m",
 		"rise_m_s": "spray_rise_m_s",
 		"density": "spray_density",
+		"sun": "spray_sun",
 	},
 }
+## sea_response keys that fade with the storm's intensity (a sleeping storm leaves the sea alone).
+const SEA_RESPONSE_SCALED: Array[String] = ["darken", "chop", "roughness", "streak_amount"]
 ## colors key -> shader uniform(s).
 const COLOR_MAP := {
 	"albedo": ["col_albedo"],
@@ -163,7 +175,7 @@ const COLOR_MAP := {
 	"held": ["col_held"],
 	"lightning": ["col_lightning"],
 	"foam": ["col_foam", "col_spray"],
-	"sea_deep": ["col_sea_deep"],
+	"sea_deep": ["col_sea_deep", "col_water_wall"],
 }
 
 var config: Dictionary = {}
@@ -439,6 +451,19 @@ func static_parameters() -> Dictionary:
 	out["curl_reuse"] = int(plan["curl_reuse"])
 	out.merge(look_parameters(look), true)
 	out["foam_octaves"] = int(plan["sea_foam_octaves"])
+	return out
+
+
+## Water-material uniforms of the zone sea's storm response (undertow.json "sea_response"; the
+## water shader's "storm" group). The darkening, chop and streaks scale with the storm's intensity.
+func sea_response_parameters() -> Dictionary:
+	var src := _section("sea_response")
+	var out := {}
+	for key: String in src:
+		if key.begins_with("_"):
+			continue
+		var v := float(src[key])
+		out["storm_" + key] = v * intensity if SEA_RESPONSE_SCALED.has(key) else v
 	return out
 
 
