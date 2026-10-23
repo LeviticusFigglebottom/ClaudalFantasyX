@@ -50,7 +50,7 @@ const LOW_TIER := "low"
 	MOOD_DUSK:
 	{
 		"elevation": 5.0,
-		"azimuth": 262.0,
+		"azimuth": 212.0,
 		"sun_color": Color(0.949, 0.651, 0.29),
 		"sun_energy": 2.2,
 		"tod": 18.4,

@@ -48,7 +48,7 @@ render_mode blend_premul_alpha, unshaded, cull_front, depth_draw_never, depth_te
 #define UNDERTOW_MIN_ENVELOPE 0.002
 // 1 / (4 pi): Henyey-Greenstein normalisation.
 #define UNDERTOW_INV_4PI 0.0795775
-// Coarse octaves the light samples use (they need shape, not detail).
+// Octave count at or below which cloud_noise() skips its detail octave.
 #define UNDERTOW_LIGHT_OCTAVES 2
 
 uniform sampler2D depth_tex : hint_depth_texture, filter_nearest, repeat_disable;
@@ -163,6 +163,18 @@ float cloud_noise(vec3 p, int octaves) {
 	return n;
 }
 
+// Coarse two-phase noise for the sun-ward light samples: one octave, no curl warp. Shadows only need
+// the billows' large shape, and these samples are the inner loop's inner loop.
+float cloud_noise_coarse(vec3 p) {
+	float ta;
+	float tb;
+	float wa;
+	undertow_phases(ta, tb, wa);
+	float na = hymn_value_noise3(undertow_flow_point(p, ta) / noise_scale_m);
+	float nb = hymn_value_noise3(undertow_flow_point(p, tb) / noise_scale_m);
+	return mix(nb, na, wa);
+}
+
 // Density in [0, 1] from the envelope eroded by noise: the full envelope keeps everything but the
 // noise troughs, a thin envelope only the crests (billows at the wall's surface, wisps outside).
 float cloud_density(float env, float n) {
@@ -175,7 +187,7 @@ float sun_transmittance(vec3 p, vec3 L) {
 		vec3 q = p + L * (light_step_m * float(k * k));
 		float e = undertow_envelope(q);
 #if UNDERTOW_LIGHT_NOISE
-		float d = e > UNDERTOW_MIN_ENVELOPE ? cloud_density(e, cloud_noise(q, UNDERTOW_LIGHT_OCTAVES)) : 0.0;
+		float d = e > UNDERTOW_MIN_ENVELOPE ? cloud_density(e, cloud_noise_coarse(q)) : 0.0;
 #else
 		float d = e * e;
 #endif
@@ -233,10 +245,13 @@ void fragment() {
 			continue;
 		}
 		// Wounds open in the skins of the eyewall only (the canopy and bands carry no rents).
-		float pocket;
+		float pocket = 0.0;
+		float seam = 0.0;
 		float skin = undertow_wall_skin(p) * parts.x;
-		float seam = undertow_wound(p, pocket) * skin;
-		pocket *= skin;
+		if (skin > 0.0) {
+			seam = undertow_wound(p, pocket) * skin;
+			pocket *= skin;
+		}
 		float d = cloud_density(env, cloud_noise(p, UNDERTOW_OCTAVES));
 		// A rent: the wall is torn open along the seam, and the light behind it shows.
 		d *= 1.0 - clamp(seam, 0.0, 1.0) * rent_depth;

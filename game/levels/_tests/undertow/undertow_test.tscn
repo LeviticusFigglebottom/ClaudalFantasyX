@@ -101,7 +101,7 @@ roughness = 1.0
 
 [sub_resource type="PlaneMesh" id="FloorMesh"]
 material = SubResource("FloorMat")
-size = Vector2(16000, 16000)
+size = Vector2(40000, 40000)
 
 [sub_resource type="BoxMesh" id="HullMesh"]
 material = SubResource("TimberMat")
@@ -187,10 +187,10 @@ material = ExtResource("ocean_mat")
 outer_half_extent_m = 20000.0
 
 [node name="Motes" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 2.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, 2.5, 0)
 script = ExtResource("field")
 quality = "high"
-emission_extents_m = Vector3(26, 2.5, 22)
+emission_extents_m = Vector3(35, 2.5, 30)
 amount_multiplier = 0.2
 sea_direction = Vector3(1, 0, 0)
 use_fixed_seed = true
@@ -212,7 +212,7 @@ ambient_energy = 0.6
 [node name="Props" type="Node3D" parent="."]
 
 [node name="SeaFloor" type="MeshInstance3D" parent="Props"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -200, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -300, 0)
 mesh = SubResource("FloorMesh")
 
 [node name="Boat" type="Node3D" parent="Props"]

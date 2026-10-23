@@ -38,6 +38,41 @@
       "path": "res://game/shaders/vegetation/vegetation_foliage_low.gdshader",
       "scenes": ["res://game/levels/_tests/vegetation/vegetation_test.tscn"],
       "note": "M1-ENV-02 Low-tier foliage variant: a separate pipeline (README 'Shader-cache prewarm')."
+    },
+    {
+      "path": "res://game/shaders/undertow/undertow_body.gdshader",
+      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "note": "M1-RND-03 Undertow raymarched body, High tier (default). Each tier is its own pipeline. Cutscene scenes that show the storm add their paths."
+    },
+    {
+      "path": "res://game/shaders/undertow/undertow_body_medium.gdshader",
+      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "note": "M1-RND-03 Undertow body, Medium tier."
+    },
+    {
+      "path": "res://game/shaders/undertow/undertow_body_ultra.gdshader",
+      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "note": "M1-RND-03 Undertow body, Ultra tier."
+    },
+    {
+      "path": "res://game/shaders/undertow/undertow_shell.gdshader",
+      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "note": "M1-RND-03 Undertow Low-tier body shells (alpha-hash opaque pipeline)."
+    },
+    {
+      "path": "res://game/shaders/undertow/undertow_spray.gdshader",
+      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "note": "M1-RND-03 Undertow spray curtains (every tier)."
+    },
+    {
+      "path": "res://game/shaders/undertow/undertow_sea.gdshader",
+      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "note": "M1-RND-03 Undertow maelstrom sea funnel (every tier)."
+    },
+    {
+      "path": "res://game/shaders/undertow/undertow_sea_lid.gdshader",
+      "scenes": ["res://game/levels/_tests/undertow/undertow_test.tscn"],
+      "note": "M1-RND-03 Undertow depth-only sea lid (every tier)."
     }
   ]
 }
