@@ -46,6 +46,18 @@ DEFAULTS: dict[str, float | str] = {
     "ipd_m": 0.063,
     "arm_abduction_deg": 47.0,  # A-pose: arm angle below horizontal
     "skin_hex": "#B08060",
+    # face sculpt sliders (bb_face; asha.md §9.1 "Head"): 1.0 / 0.0 = the neutral base face
+    "eye_tilt_deg": 2.0,  # canthal tilt, outer corner up
+    "canthus_offset_m": 0.0,  # inner canthus moved toward the midline (Asha: 1 mm)
+    "jaw_width": 1.0,
+    "cheekbone_height": 0.0,  # in head heights, + = higher
+    "cheekbone_width": 1.0,
+    "chin_size": 1.0,
+    "nose_bridge_width": 1.0,
+    "nose_tip_projection": 1.0,
+    "lip_fullness": 1.0,
+    "mouth_corner_lift": 0.0,  # metres at the corner (Asha: a slight natural upturn)
+    "brow_ridge": 1.0,
 }
 
 
