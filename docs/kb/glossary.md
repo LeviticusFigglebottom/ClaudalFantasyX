@@ -253,3 +253,7 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 ### Added 2026-10-23 (M1-NAR-11, review-sweep-G; ADR 0022 append note, N-24)
 - **Mother Kell** (row above): the old Oruvel diver who kept Rhen from eight to nineteen, at Dace's one message. She drowns in Ch1.
 - **Dace Sallow** (rows above): he never went home after Corrow, because his line-marks were seen on the stair and a hunted Saltwright would bring the Order to his son.
+
+### Added 2026-10-23 (M1-CMB-04, Combat)
+- **Swell modes** (how a gauge fills; formulas.md § Swell): **Ballast** (taking hits), **Wake** (striking foes), **Tether** (allies hurt), **Salve** (using a healing item). The names avoid the inspiring series' mode names on purpose.
+- **Lamp Ring**: Rhen's Swell input, a lantern that flares three times as a ring closes on it. **Lamp Dive**: his first Swell technique.
