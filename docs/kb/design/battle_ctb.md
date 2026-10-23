@@ -21,6 +21,7 @@ Owner: Combat Designer-Engineer. Formulas: [formulas.md](formulas.md).
 | `BattleOpening` | Preemptive and ambush openings (M1-CMB-03): which opening an encounter gets (`choose`, one RNG draw when rolled) and the tick shift `begin()` applies. |
 | `BattleRead` | What Read reveals (M1-CMB-03). The engine puts `reveal()` on a Read hit as `hit["read"]`. |
 | `Bestiary` | The bestiary log over `GameStateData.bestiary` (read flag and defeat count per enemy id; save v5). |
+| `BattleHits`, `BattleItemUse`, `BattleAutoTurn`, `BattleSpoils` | Static helpers split out of `BattleEngine` in M2-CMB-03 for the line cap, with no behaviour change: one skill hit on one target (damage, heal, Read, the skill's and the gear's statuses, delay); item use, its party-defeat check and its timeline preview; the attack and target pool of a Berserk or Confused turn; and the victory rewards (XP, lume, drops). The engine keeps every public name as a one-line wrapper and still owns the turn flow, and each helper draws on `engine.rng` in the old order, so a seed plays out exactly as before. |
 
 **Headless and deterministic:** no Nodes, no scene access, and all randomness through `engine.rng` (seeded in `setup`). The battle *scene* (UI, cameras, VFX) listens to the engine's signals and never mutates combat state directly.
 
