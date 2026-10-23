@@ -6,6 +6,7 @@ It resolves, if conflicted:
   tests/screenshots/shots.json            ours' shots, then theirs' new shots (ids unique)
   tests/screenshots/baselines/baselines.json  dict union (ours wins on equal keys)
   game/data/flags.tres                    union of the flags dictionary
+  game/data/settings/prewarm_materials.json  materials list union by path
   assets/PROVENANCE.md, game/data/loc/*.csv, tools/banned_terms.txt
                                           line union: ours' lines, then theirs' new lines
 and `git add`s each. Anything else stays conflicted for a human/agent to resolve.
@@ -21,6 +22,7 @@ from pathlib import Path
 JSON_SHOTS = "tests/screenshots/shots.json"
 JSON_BASELINES = "tests/screenshots/baselines/baselines.json"
 FLAGS_TRES = "game/data/flags.tres"
+PREWARM = "game/data/settings/prewarm_materials.json"
 LINE_UNION = ("assets/PROVENANCE.md", "tools/banned_terms.txt")
 LINE_UNION_GLOBS = ("game/data/loc/*.csv",)
 
@@ -70,6 +72,11 @@ def main() -> int:
             for k, v in t.items():
                 o.setdefault(k, v)
             text = json.dumps(dict(sorted(o.items())), indent=2) + "\n"
+        elif path == PREWARM:
+            o, t = json.loads(ours), json.loads(theirs)
+            seen = {m["path"] for m in o["materials"]}
+            o["materials"] += [m for m in t["materials"] if m["path"] not in seen]
+            text = json.dumps(o, indent=2, ensure_ascii=False) + "\n"
         elif path == FLAGS_TRES:
             text = union_flags(ours, theirs)
         elif path in LINE_UNION or any(Path(path).match(g) for g in LINE_UNION_GLOBS):
