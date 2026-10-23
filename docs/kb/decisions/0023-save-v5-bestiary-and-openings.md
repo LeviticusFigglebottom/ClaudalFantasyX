@@ -1,6 +1,6 @@
 # 0023 — Save v5: the bestiary log, and rolled battle openings
 
-- **Status:** proposed (the Lead accepts it on merge)
+- **Status:** accepted (Lead sign-off 2026-10-23)
 - **Date:** 2026-10-23
 - **Roles affected:** Combat, Systems Architect (saves), UI, Progression (review pair), QA
 - **Author role:** Combat (M1-CMB-03)
