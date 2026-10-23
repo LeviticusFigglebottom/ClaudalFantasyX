@@ -20,16 +20,11 @@ signal turn_ended(actor: BattleCombatant, changes: Array[Dictionary])
 ## A turn eaten by Stop or Sleep (reason &"stop" wins if both). Doom still ticks on it, so
 ## `changes` uses the turn_ended format (doom_tick / doom only).
 signal turn_lost(actor: BattleCombatant, reason: StringName, changes: Array[Dictionary])
-## Boss mechanics (BossMechanics; battle_ctb.md "The Drownbell"). An enemy crossed a phase
-## threshold; its skills, AI and stats are the phase's from now on.
+## Boss mechanics (BossMechanics). Each signal's meaning and arguments: battle_ctb.md "The Drownbell" (VFX hooks).
 signal phase_changed(enemy: BattleCombatant, phase_id: StringName)
-## Combatants added mid-battle (a phase's spawns, a summon). They are already on the timeline.
 signal combatants_joined(added: Array[BattleCombatant])
-## A telegraphed skill began gathering: it fires on `actor`'s turn `turns` acted turns from now.
 signal charge_started(actor: BattleCombatant, skill_id: StringName, turns: int)
-## A weak point broke `enemy`'s charge: the telegraphed skill will not fire.
 signal charge_broken(enemy: BattleCombatant, skill_id: StringName)
-## A field ended; `fallen` were bound to it and left the fight.
 signal field_cleared(field_id: StringName, fallen: Array[BattleCombatant])
 
 const OUTCOME_VICTORY := &"victory"
@@ -59,8 +54,7 @@ var party_modifier := Callable()
 ## Optional reward hook: (credited ids: Array[StringName]) -> int lume multiplier, e.g.
 ## `equipment_effects.currency_multiplier` (Full Net). Unset = x1. See currency_award().
 var currency_multiplier := Callable()
-## Story flags that are set, passed in before setup() (the engine never reads Game): a skill
-## whose row has "requires_flag" is only known when its flag is here (BossMechanics).
+## Set story flags, passed in before setup() (the engine never reads Game): "requires_flag" skills.
 var story_flags: Array[StringName] = []
 ## Fields in force (a phase row's "field", e.g. &"flood"); a "clears_field" skill ends one.
 var fields: Array[StringName] = []
