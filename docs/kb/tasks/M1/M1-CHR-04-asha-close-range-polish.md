@@ -2,8 +2,8 @@
 id: M1-CHR-04
 title: Asha close-range polish - lips, hair, skin micro-detail, costume materials
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: session_01778wbLbDFnRRLTKjnawv3T (PC GPU, rendering + material half; branch gpu/chr-04-materials). Mesh, lips and hair cards: cloud agent
 depends_on: [M1-CHR-03]
 milestone: M1
 request-from: "lead"
