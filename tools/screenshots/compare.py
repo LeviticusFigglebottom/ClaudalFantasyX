@@ -32,6 +32,7 @@ SHOTS = ROOT / "tests" / "screenshots" / "shots.json"
 BASELINES = ROOT / "tests" / "screenshots" / "baselines"
 OUT = ROOT / "tests" / "screenshots" / "out"
 REQUIRED = ("id", "scene", "camera", "resolution", "threshold_rmse")
+SETUP_KEYS = {"globals", "nodes", "viewport", "time_scale"}  # must match CaptureSetup.KEYS (M1-QA-04)
 BASELINE_META = "baselines.json"
 DIFF_GAIN = 8.0  # error 1/8 of full scale (linear) saturates the red channel in the diff image
 DIFF_BACKDROP = 0.35  # baseline brightness under the red error overlay
@@ -50,6 +51,9 @@ def load_shots(path: Path) -> list[dict]:
             raise ValueError(f"shot {shot.get('id', '?')}: missing {', '.join(missing)}")
         if shot["id"] in seen:
             raise ValueError(f"duplicate shot id {shot['id']}")
+        setup = shot.get("setup", {})
+        if not isinstance(setup, dict) or not set(setup) <= SETUP_KEYS:
+            raise ValueError(f"shot {shot['id']}: setup must be an object with keys from {sorted(SETUP_KEYS)}")
         seen.add(shot["id"])
         shots.append(shot)
     return shots
