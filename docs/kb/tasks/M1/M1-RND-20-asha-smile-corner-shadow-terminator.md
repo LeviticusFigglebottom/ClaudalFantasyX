@@ -2,8 +2,8 @@
 id: M1-RND-20
 title: Diagonal striations at Asha's smiling mouth corner (key-light shadow terminator)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-20-smile-terminator)"
 depends_on: [M1-CHR-10]
 milestone: M1
 request-from: "character"
