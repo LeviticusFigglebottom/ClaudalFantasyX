@@ -2,6 +2,8 @@
 
 **Written:** 2026-10-24 by the outgoing Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`), at the account handoff. Every session of the old account was told to stop, push and update its live log. Each environment's own detail is in this folder: [`lead-cloud.md`](lead-cloud.md), [`pc-gpu.md`](pc-gpu.md) and [`first-playable.md`](first-playable.md). **Fetch every branch first; the newest copy of each per-environment log may be on that environment's own branch** (see §2). The old running log is [`CONSOLIDATED-history-2026-10-23.md`](CONSOLIDATED-history-2026-10-23.md).
 
+> **UPDATE 2026-10-24 (new Lead, `session_019iimsngAgPLEram1wcbLpE`):** the integration branch is now **`claude/undertow-lead-handoff-423ixt`**. `claude/new-session-mj8c3c` is frozen at a504072. Live environments: pc-gpu = Remote Control `session_01UFcBRsk9M9EKtxJKdBU2mB`; m2-slice = cloud `session_01DQ9tdk8Uatb8Jr6raAkXiC` on `claude/m2-slice`. Progress on §5 is tracked in [`lead-cloud.md`](lead-cloud.md) until this file is rewritten after the merge batch.
+
 ## 0. Read these, in this order
 1. [`CLAUDE.md`](../../../CLAUDE.md): the operating rules for every agent. They include "Gate scope", §7a live logs, and §8a shared-machine and scratch rules.
 2. [`SPEC.md`](../../../SPEC.md) v1.2: the brief. Only the Lead edits it, and every change needs an ADR plus a version note.
