@@ -1,0 +1,285 @@
+class_name GpuBench
+extends Node
+## GPU frame-time benchmark (M1-QA-01 follow-up). Needs a real GPU and a real window, never --headless:
+##   godot --path . --audio-driver Dummy --disable-vsync res://tools/gpu_bench/gpu_bench.tscn -- \
+##     --scene=res://game/levels/_tests/water/water_test.tscn --camera=Cameras/Lagoon \
+##     --presets=low,medium,high,ultra --res=1920x1080,2560x1440 --csv=C:/abs/results.csv
+## Options (after `--`):
+##   --scene=res://...            scene to instance (required)
+##   --camera=default|<path>      Camera3D path relative to the scene root
+##   --presets=low,...            GraphicsSettings presets (game/data/settings/graphics_presets.json)
+##   --res=WxH,...                window sizes; the window is borderless at the screen origin
+##   --variants=scene|undertow|water   undertow/water run UndertowBench/WaterBench CONFIGS per preset
+##   --warmup=120 --frames=300    frames skipped after each change, then frames sampled
+##   --warmup-s=3.0               the warm-up also lasts at least this long (async pipeline compiles)
+##   --csv=<abs path>             append one row per measurement (header written for a new file)
+##   --label=<name>               scene label in the CSV (default: scene file name + camera)
+## Per configuration: apply the preset through GraphicsSettings (viewport + the scene's Environment),
+## then the matching tier of every WaterSurface, UndertowStorm, GlimmerField and character material,
+## skip `warmup` frames, then read RenderingServer.viewport_get_measured_render_time_gpu/_cpu after
+## each of `frames` frames. Reports median, p99 and mean. Frame wall time is reported too.
+
+const DEFAULT_PRESETS := "low,medium,high,ultra"
+const DEFAULT_RES := "1920x1080"
+const DEFAULT_WARMUP := 120
+const DEFAULT_FRAMES := 300
+const DEFAULT_WARMUP_S := 3.0
+## Frames after instancing for rigs that react to the current camera (undertow mood, its env swap).
+const SETTLE_FRAMES := 5
+const US_PER_MS := 1000.0
+const P99 := 0.99
+const CSV_HEADER := (
+	"scene,camera,variant,preset,res_w,res_h,internal_w,internal_h,frames,"
+	+ "gpu_median_ms,gpu_p99_ms,gpu_mean_ms,cpu_median_ms,cpu_p99_ms,frame_median_ms,frame_p99_ms,adapter,driver"
+)
+const WATER_TOGGLES := ["use_ssr", "use_caustics", "use_foam", "use_refraction", "use_detail_normals", "use_sss"]
+
+var _scene: Node
+var _opts: Dictionary = {}
+
+
+func _ready() -> void:
+	_run.call_deferred()
+
+
+func _run() -> void:
+	_opts = _args()
+	if DisplayServer.get_name() == "headless":
+		printerr("GPU_BENCH needs a real renderer and window, not --headless")
+		get_tree().quit(2)
+		return
+	var scene_path := str(_opts.get("scene", ""))
+	var packed := load(scene_path) as PackedScene if scene_path != "" else null
+	if packed == null:
+		printerr("GPU_BENCH cannot load --scene=%s" % scene_path)
+		get_tree().quit(2)
+		return
+	Engine.max_fps = 0
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+	var win := get_window()
+	win.borderless = true
+	win.position = DisplayServer.screen_get_position(win.current_screen)
+	_scene = packed.instantiate()
+	add_child(_scene)
+	var camera := str(_opts.get("camera", "default"))
+	if camera != "default":
+		var cam := _scene.get_node_or_null(NodePath(camera)) as Camera3D
+		if cam == null:
+			printerr("GPU_BENCH camera '%s' is not a Camera3D under the scene root" % camera)
+			get_tree().quit(2)
+			return
+		cam.make_current()
+	for i in SETTLE_FRAMES:
+		await get_tree().process_frame
+	var rid := get_viewport().get_viewport_rid()
+	RenderingServer.viewport_set_measure_render_time(rid, true)
+	var label := str(_opts.get("label", "%s:%s" % [scene_path.get_file().get_basename(), camera]))
+	print(
+		(
+			"GPU_BENCH %s on %s (%s %s), Godot %s"
+			% [
+				label,
+				RenderingServer.get_video_adapter_name(),
+				RenderingServer.get_current_rendering_driver_name(),
+				RenderingServer.get_video_adapter_api_version(),
+				Engine.get_version_info()["string"],
+			]
+		)
+	)
+	var variants := _variants(str(_opts.get("variants", "scene")))
+	for res_text in str(_opts.get("res", DEFAULT_RES)).split(",", false):
+		var size := _parse_res(res_text)
+		win.size = size
+		for preset in str(_opts.get("presets", DEFAULT_PRESETS)).split(",", false):
+			for v: Dictionary in variants:
+				var row := await _measure(preset, v, camera, label)
+				if win.size != size:
+					push_warning("GPU_BENCH window is %s, wanted %s (screen too small?)" % [win.size, size])
+				_emit(row)
+	get_tree().quit()
+
+
+func _measure(preset: String, variant: Dictionary, camera: String, label: String) -> Dictionary:
+	var gs := GraphicsSettings.new()
+	gs.set_preset(preset)
+	gs.apply_current(get_viewport(), _environment())
+	_apply_tiers(preset)
+	_apply_variant(variant)
+	var warmup := int(_opts.get("warmup", DEFAULT_WARMUP))
+	var frames := int(_opts.get("frames", DEFAULT_FRAMES))
+	var rid := get_viewport().get_viewport_rid()
+	var warmup_until := (
+		Time.get_ticks_usec() + int(float(_opts.get("warmup-s", DEFAULT_WARMUP_S)) * US_PER_MS * US_PER_MS)
+	)
+	var skipped := 0
+	while skipped < warmup or Time.get_ticks_usec() < warmup_until:
+		await RenderingServer.frame_post_draw
+		skipped += 1
+	var gpu := PackedFloat64Array()
+	var cpu := PackedFloat64Array()
+	var wall := PackedFloat64Array()
+	var last := Time.get_ticks_usec()
+	for i in frames:
+		await RenderingServer.frame_post_draw
+		var now := Time.get_ticks_usec()
+		wall.append(float(now - last) / US_PER_MS)
+		last = now
+		gpu.append(RenderingServer.viewport_get_measured_render_time_gpu(rid))
+		cpu.append(RenderingServer.viewport_get_measured_render_time_cpu(rid))
+	var size := get_window().size
+	var scale := get_viewport().scaling_3d_scale
+	return {
+		"scene": label.get_slice(":", 0),
+		"camera": camera,
+		"variant": str(variant["name"]),
+		"preset": preset,
+		"res_w": size.x,
+		"res_h": size.y,
+		"internal_w": roundi(size.x * scale),
+		"internal_h": roundi(size.y * scale),
+		"frames": frames,
+		"gpu_median_ms": _percentile(gpu, 0.5),
+		"gpu_p99_ms": _percentile(gpu, P99),
+		"gpu_mean_ms": _mean(gpu),
+		"cpu_median_ms": _percentile(cpu, 0.5),
+		"cpu_p99_ms": _percentile(cpu, P99),
+		"frame_median_ms": _percentile(wall, 0.5),
+		"frame_p99_ms": _percentile(wall, P99),
+		"adapter": RenderingServer.get_video_adapter_name(),
+		"driver": RenderingServer.get_video_adapter_api_version(),
+	}
+
+
+# --- Tiers and variants --------------------------------------------------------------------------
+
+
+## The subsystems that carry their own preset -> tier map (not yet in graphics_presets.json).
+func _apply_tiers(preset: String) -> void:
+	for n in _scene.find_children("*", "", true, false):
+		if n is WaterSurface:
+			(n as WaterSurface).quality = WaterSurface.quality_for_preset(preset)
+		elif n is UndertowStorm:
+			(n as UndertowStorm).set_quality(preset)
+		elif n is GlimmerField:
+			(n as GlimmerField).set_quality(preset)
+	CharacterShaderTiers.apply_to_tree(_scene, CharacterShaderTiers.tier_for_preset(preset))
+
+
+func _variants(kind: String) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	match kind:
+		"undertow":
+			for c in UndertowBench.CONFIGS:
+				out.append(c.merged({"kind": "undertow"}))
+		"water":
+			for c in WaterBench.CONFIGS:
+				out.append(c.merged({"kind": "water"}))
+		_:
+			out.append({"name": "scene", "kind": "scene"})
+	return out
+
+
+## Same toggles as UndertowBench._measure / WaterBench._measure, on top of the preset's tiers.
+func _apply_variant(v: Dictionary) -> void:
+	match str(v["kind"]):
+		"undertow":
+			var storm := _scene.get("storm") as UndertowStorm
+			storm.set_quality(str(v["quality"]))
+			storm.visuals.visible = bool(v["storm"])
+			for child in storm.visuals.get_children():
+				(child as Node3D).visible = true
+			storm.refresh()
+			for child in storm.visuals.get_children():
+				if (v["parts"] as Array).has(str(child.name)):
+					(child as Node3D).visible = false
+			var overrides := v["set"] as Dictionary
+			for m in storm.materials():
+				for key: String in overrides:
+					m.set_shader_parameter(key, overrides[key])
+			if overrides.has("wound_intensity"):
+				storm.wound_intensity = float(overrides["wound_intensity"])
+		"water":
+			var water := _scene.get("water") as WaterSurface
+			water.quality = WaterBench.QUALITY_NAMES.get(str(v["quality"]), WaterSurface.Quality.HIGH)
+			water.visible = bool(v["water"])
+			for key: String in WATER_TOGGLES:
+				water.material.set_shader_parameter(key, true)
+			var overrides := v["set"] as Dictionary
+			for key: String in overrides:
+				water.material.set_shader_parameter(key, overrides[key])
+
+
+func _environment() -> Environment:
+	var cam := get_viewport().get_camera_3d()
+	if cam != null and cam.environment != null:
+		return cam.environment
+	for n in _scene.find_children("*", "WorldEnvironment", true, false):
+		return (n as WorldEnvironment).environment
+	return null
+
+
+# --- Output --------------------------------------------------------------------------------------
+
+
+func _emit(row: Dictionary) -> void:
+	print(
+		(
+			"GPU_BENCH %-22s %-20s %-6s %4dx%-4d gpu med %6.2f p99 %6.2f | cpu med %5.2f p99 %5.2f | frame med %6.2f ms"
+			% [
+				row["scene"],
+				row["variant"],
+				row["preset"],
+				row["res_w"],
+				row["res_h"],
+				row["gpu_median_ms"],
+				row["gpu_p99_ms"],
+				row["cpu_median_ms"],
+				row["cpu_p99_ms"],
+				row["frame_median_ms"],
+			]
+		)
+	)
+	var path := str(_opts.get("csv", ""))
+	if path == "":
+		return
+	var is_new := not FileAccess.file_exists(path)
+	var f := FileAccess.open(path, FileAccess.READ_WRITE if not is_new else FileAccess.WRITE)
+	if f == null:
+		printerr("GPU_BENCH cannot write %s" % path)
+		return
+	f.seek_end()
+	if is_new:
+		f.store_line(CSV_HEADER)
+	var cells := PackedStringArray()
+	for key in CSV_HEADER.split(","):
+		var v: Variant = row[key]
+		cells.append("%.3f" % v if v is float else str(v).replace(",", ";"))
+	f.store_line(",".join(cells))
+
+
+static func _percentile(values: PackedFloat64Array, q: float) -> float:
+	if values.is_empty():
+		return 0.0
+	var sorted := values.duplicate()
+	sorted.sort()
+	return sorted[clampi(ceili(q * sorted.size()) - 1, 0, sorted.size() - 1)]
+
+
+static func _mean(values: PackedFloat64Array) -> float:
+	var total := 0.0
+	for v in values:
+		total += v
+	return total / maxf(1.0, values.size())
+
+
+static func _parse_res(text: String) -> Vector2i:
+	var wh := text.split("x")
+	return Vector2i(int(wh[0]), int(wh[1]))
+
+
+func _args() -> Dictionary:
+	var out := {}
+	for a in OS.get_cmdline_user_args():
+		var kv := a.trim_prefix("--").split("=", true, 1)
+		out[kv[0]] = kv[1] if kv.size() > 1 else true
+	return out

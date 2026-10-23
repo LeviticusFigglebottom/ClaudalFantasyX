@@ -390,3 +390,10 @@ SET_PALETTE,Color palette
 SET_PALETTE_HELP,Swaps red warnings and enemy fills for colors that stay distinct with red-green color blindness.
 SET_PALETTE_STANDARD,Standard
 SET_PALETTE_COLORBLIND,Colorblind-friendly
+TITLE_CONTINUE,Continue
+TITLE_NEW_GAME,New Game
+TITLE_LOAD,Load
+TITLE_HELP_CONTINUE,Return to your newest record.
+TITLE_HELP_NEW_GAME,Begin the pilgrimage from the first shore.
+TITLE_HELP_LOAD,Choose a record to return to.
+TITLE_HELP_NO_RECORD,No record has been written yet. Begin the pilgrimage from the first shore.

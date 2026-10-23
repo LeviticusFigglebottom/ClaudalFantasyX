@@ -2,13 +2,15 @@ class_name SaveShrine
 extends Interactable
 ## A save shrine (M1-ARC-03, SPEC §5.2, §6.6): an INTERACT Interactable that, when used,
 ##   1. sets `save_shrine_used` (and the instance's own `sets_flag`, e.g. Haluna's ch02_saved_once),
-##   2. records `location_id` (when set) as the party's location in Game.state,
-##   3. restores the party: EventBus.party_full_heal_requested(id). Party HP/MP/statuses are not
-##      persisted in GameStateData yet, and the battle engine builds every fighter at full HP, so
-##      the request is already true today; the party owner listens for it once HP persists,
+##   2. records `location_id` (when set) as the party's location in Game.state, and makes this
+##      shrine the respawn point (Game.state.respawn_*; spawn: respawn_spawn_name()),
+##   3. restores the party: EventBus.party_full_heal_requested(id). Game fills every member's HP
+##      and MP and cures party_rest.json "shrine_cures" (M1-ARC-06),
 ##   4. emits EventBus.save_shrine_used(id, location_id),
-##   5. opens the save menu (SaveMenu, SAVE mode) with {"shrine_id": id} in the save's meta,
-##   6. attunes the shrine in the teleport network (ShrineNetwork: a stub until SPEC §6.6 "later").
+##   5. attunes the shrine in the teleport network (ShrineNetwork; saved in Game.state),
+##   6. opens the save menu (SaveMenu, SAVE mode) with {"shrine_id": id} in the save's meta.
+## Steps 2, 3 and 5 all happen before the menu opens, so the save records the healed party,
+## the attunement and the respawn point.
 ## Its look is bound light (art color script rule 2): a salt-glass core in `glimmer_bound`, and a
 ## GlimmerField in MACHINE mode that holds perfectly still. Scene: save_shrine.tscn.
 
@@ -23,8 +25,11 @@ const RESTORED_KEY := "SAVE_SHRINE_RESTORED"
 @export var location_id: StringName = &""
 ## Off for shrines whose menu a cutscene opens itself (tests also use it).
 @export var opens_menu := true
-## Teleport network node id (later: travel between attuned shrines). Empty = not in the network.
+## Teleport network node id (a "shrines" row in locations.json). Empty = not in the network.
 @export var network_id: StringName = &""
+## Spawn marker the party respawns at after Continue. Empty: the shrine's registry row, else the
+## location's own spawn (game/data/world/locations.json).
+@export var respawn_spawn: StringName = &""
 
 var menu: SaveMenu
 
@@ -50,10 +55,22 @@ func rest() -> SaveMenu:
 	Game.set_flag(&"save_shrine_used", true)
 	if location_id != &"":
 		Game.state.location_id = location_id
+	Game.state.respawn_location_id = Game.state.location_id
+	Game.state.respawn_spawn = respawn_spawn_name()
 	EventBus.party_full_heal_requested.emit(id)
 	EventBus.save_shrine_used.emit(id, Game.state.location_id)
 	ShrineNetwork.attune(self)
 	return open_menu() if opens_menu else null
+
+
+## The spawn the party returns to after resting here (see respawn_spawn).
+func respawn_spawn_name() -> StringName:
+	if respawn_spawn != &"":
+		return respawn_spawn
+	var point := ShrineNetwork.registry_point(network_id)
+	if not point.is_empty():
+		return StringName(str(point[LocationRegistry.KEY_SPAWN]))
+	return &""
 
 
 func is_menu_open() -> bool:
@@ -69,15 +86,15 @@ func open_menu() -> SaveMenu:
 	return menu
 
 
-# --- Teleport network (stub) ---------------------------------------------------------------------
+# --- Teleport network ---------------------------------------------------------------------------
 
 
-## Shrine ids this shrine could send the party to. Always empty until the network exists.
+## Attuned shrine ids this shrine can send the party to (ShrineNetwork.destinations_from).
 func teleport_destinations() -> Array[StringName]:
 	return ShrineNetwork.destinations_from(self)
 
 
-## Asks to travel to another shrine. Returns false: not built yet (SPEC §6.6 "later").
+## Travels to another attuned shrine through the location registry. False when refused.
 func request_teleport(destination_id: StringName) -> bool:
 	return ShrineNetwork.request_teleport(self, destination_id)
 

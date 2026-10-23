@@ -2,6 +2,9 @@ extends Node
 ## Autoload "SceneRouter": async scene loading behind a fade, with a shader-prewarm hook.
 ##
 ## Public API (stable since M0): change_scene(path), is_busy(), signal prewarm_requested(path), FADE_SEC.
+## M1-ARC-06: change_scene(path, spawn) also places the player on Spawns/<spawn> once the new scene
+## is in the tree (still under the opaque fade), and `world_return` (a WorldReturn child) returns
+## the party to its respawn point on EventBus.game_loaded once boot.gd arms it.
 ## Added in the M1-RND-06 fix: signal swap_measured(stats) and last_swap_stats (see below).
 ##
 ## SPEC §4.2 allows no frame over 50 ms in a transition, so the expensive steps are kept out of the
@@ -39,6 +42,8 @@ var split_swap := true
 ## font_warm_ms, frame_ms: Array[float] (MEASURE_FRAMES frames from the swap), max_frame_ms,
 ## budget_ms, over_budget}.
 var last_swap_stats: Dictionary = {}
+## Return-to-world on load (M1-ARC-06). Disabled until boot.gd sets world_return.enabled.
+var world_return: WorldReturn
 
 var _fade_layer: CanvasLayer
 var _fade_rect: ColorRect
@@ -57,13 +62,18 @@ func _ready() -> void:
 	_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_fade_layer.add_child(_fade_rect)
 	ShaderPrewarm.install(self)
+	world_return = WorldReturn.new()
+	world_return.name = "WorldReturn"
+	add_child(world_return)
 
 
 func is_busy() -> bool:
 	return _busy
 
 
-func change_scene(scene_path: String) -> void:
+## `spawn` (optional): a marker under the new scene's Spawns node to place the player on
+## (WorldReturn.place_player) before the fade lifts.
+func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 	if _busy:
 		push_warning("SceneRouter: change already in progress, ignoring %s" % scene_path)
 		return
@@ -78,14 +88,14 @@ func change_scene(scene_path: String) -> void:
 	if packed == null:
 		push_error("SceneRouter: failed to load %s" % scene_path)
 	else:
-		await _swap(packed, scene_path, stats)
+		await _swap(packed, scene_path, stats, spawn)
 	await _fade_to(0.0)
 	_busy = false
 
 
 ## With split_swap off this reproduces the M0 router (prewarm, instantiate, free and add in one
 ## frame), which the profiler uses as the "before" case.
-func _swap(packed: PackedScene, scene_path: String, stats: Dictionary) -> void:
+func _swap(packed: PackedScene, scene_path: String, stats: Dictionary, spawn: StringName = &"") -> void:
 	while _font_warmer != null and not _font_warmer.done:
 		await get_tree().process_frame
 	var t := Time.get_ticks_usec()
@@ -115,6 +125,8 @@ func _swap(packed: PackedScene, scene_path: String, stats: Dictionary) -> void:
 		frames.append((now - t) / USEC_PER_MSEC)
 		t = now
 		if i == 0:
+			if spawn != &"" and node.is_inside_tree():
+				WorldReturn.place_player(node, spawn)
 			EventBus.scene_changed.emit(scene_path)
 	_record(stats, frames)
 

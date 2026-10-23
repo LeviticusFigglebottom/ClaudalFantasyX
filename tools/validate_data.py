@@ -1246,6 +1246,7 @@ def run(root: Path) -> Report:
     data_keys += check_progression(files, rep)
     data_keys += check_items(files, declared_flags_quiet(root), rep)
     data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
+    data_keys += check_locations(root, files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_provenance(root, rep)
@@ -1265,6 +1266,155 @@ def main() -> int:
         print(f"ERROR {e}")
     print(f"validate_data: {len(rep.errors)} error(s), {len(rep.warnings)} warning(s)")
     return 1 if rep.errors else 0
+
+
+# --- M1-ARC-06: location registry, party rest rules, shrine instances --------------------------
+
+LOCATIONS_FILE = "game/data/world/locations.json"
+PARTY_REST_FILE = "game/data/world/party_rest.json"
+SHRINE_SCENE = "res://game/world/save_shrine/save_shrine.tscn"
+TSCN_HEADER_RE = re.compile(r"^\[node [^\]]*\]", re.M)
+TSCN_ATTR_RE = re.compile(r'(\w+)=(?:"([^"]*)"|ExtResource\("([^"]+)"\))')
+TSCN_EXT_RE = re.compile(r"^\[ext_resource [^\]]*\]", re.M)
+TSCN_PROP_RE = re.compile(r'^(location_id|network_id) = &?"([^"]*)"', re.M)
+
+
+def _tscn_attrs(header: str) -> dict[str, str]:
+    return {k: (v or ref) for k, v, ref in TSCN_ATTR_RE.findall(header)}
+
+
+def scene_spawns(text: str) -> set[str]:
+    """Names of the nodes directly under the root's Spawns node in a .tscn's text."""
+    out: set[str] = set()
+    for m in TSCN_HEADER_RE.finditer(text):
+        a = _tscn_attrs(m.group(0))
+        if a.get("parent") == "Spawns" and a.get("name"):
+            out.add(a["name"])
+    return out
+
+
+def shrine_instances(text: str) -> list[dict[str, str]]:
+    """SaveShrine instances in a .tscn: [{node, location_id, network_id}] (empty values if unset)."""
+    ids = set()
+    for m in TSCN_EXT_RE.finditer(text):
+        a = _tscn_attrs(m.group(0))
+        if a.get("path") == SHRINE_SCENE:
+            ids.add(a.get("id", ""))
+    out: list[dict[str, str]] = []
+    if not ids:
+        return out
+    for block in re.split(r"(?m)^(?=\[)", text):
+        if not block.startswith("[node "):
+            continue
+        a = _tscn_attrs(block.split("\n", 1)[0])
+        if a.get("instance") in ids:
+            props = dict(TSCN_PROP_RE.findall(block))
+            out.append({"node": a.get("name", ""), "location_id": props.get("location_id", ""),
+                        "network_id": props.get("network_id", "")})
+    return out
+
+
+def _rest_errors(rest: object, statuses: set[str]) -> list[str]:
+    w = PARTY_REST_FILE
+    if not isinstance(rest, dict):
+        return [f"{w}: must be an object"]
+    errs: list[str] = []
+    carried = rest.get("carried_statuses")
+    cures = rest.get("shrine_cures")
+    for key, val in (("carried_statuses", carried), ("shrine_cures", cures)):
+        if not isinstance(val, list):
+            errs.append(f"{w}: {key} must be a list")
+            continue
+        errs += [f"{w}: {key} has unknown status '{sid}'" for sid in val if sid not in statuses]
+    if isinstance(carried, list) and isinstance(cures, list):
+        errs += [f"{w}: shrine cure '{sid}' is never carried out of battle"
+                 for sid in cures if sid in statuses and sid not in carried]
+    if not _is_int(rest.get("carried_duration")):
+        errs.append(f"{w}: carried_duration must be an integer")
+    return errs
+
+
+def locations_errors(doc: object, scenes: dict[str, str], loc: set[str], statuses: set[str],
+                     rest: object, shrines: dict[str, list[dict[str, str]]]) -> list[str]:
+    """Validates locations.json and party_rest.json. `scenes` maps res:// paths to .tscn text (a
+    missing path means the scene does not exist); `shrines` maps a scene file to its SaveShrine
+    instances (shrine_instances)."""
+    w = LOCATIONS_FILE
+    if not isinstance(doc, dict):
+        return [f"{w}: must be an object"]
+    errs: list[str] = []
+    locs: dict[str, dict] = {}
+    rows = doc.get("locations") if isinstance(doc.get("locations"), list) else []
+    for i, row in enumerate(rows):
+        rw = f"{w}: locations[{i}]"
+        if not isinstance(row, dict) or not isinstance(row.get("id"), str) or not row["id"]:
+            errs.append(f"{rw}: needs a string id")
+            continue
+        if row["id"] in locs:
+            errs.append(f"{rw}: duplicate location id '{row['id']}'")
+        locs[row["id"]] = row
+        scene = row.get("scene")
+        if not isinstance(scene, str) or scene not in scenes:
+            errs.append(f"{rw}: scene '{scene}' does not exist")
+        elif row.get("spawn") not in scene_spawns(scenes[scene]):
+            errs.append(f"{rw}: spawn '{row.get('spawn')}' is not a node under Spawns in {scene}")
+        if row.get("name_key") not in loc:
+            errs.append(f"{rw}: name_key '{row.get('name_key')}' has no localization entry")
+    if not locs:
+        errs.append(f"{w}: 'locations' must list at least one location")
+
+    def point(where: str, lid: object, spawn: object) -> None:
+        if lid not in locs:
+            errs.append(f"{where}: unknown location '{lid}'")
+            return
+        scene = locs[str(lid)].get("scene")
+        if spawn and scene in scenes and spawn not in scene_spawns(scenes[scene]):
+            errs.append(f"{where}: spawn '{spawn}' is not a node under Spawns in {scene}")
+
+    point(f"{w}: default_location", doc.get("default_location"), "")
+    ng = doc.get("new_game") if isinstance(doc.get("new_game"), dict) else {}
+    point(f"{w}: new_game", ng.get("location_id"), ng.get("spawn", ""))
+    network: set[str] = set()
+    for i, row in enumerate(doc.get("shrines") if isinstance(doc.get("shrines"), list) else []):
+        rw = f"{w}: shrines[{i}]"
+        if not isinstance(row, dict) or not isinstance(row.get("id"), str) or not row["id"]:
+            errs.append(f"{rw}: needs a string id")
+            continue
+        if row["id"] in network:
+            errs.append(f"{rw}: duplicate shrine id '{row['id']}'")
+        network.add(row["id"])
+        point(rw, row.get("location_id"), row.get("spawn", ""))
+    for path, found in sorted(shrines.items()):
+        for s in found:
+            sw = f"{path}: SaveShrine '{s['node']}'"
+            if s["location_id"] and s["location_id"] not in locs:
+                errs.append(f"{sw}: location_id '{s['location_id']}' is not in {w}")
+            if s["network_id"] and s["network_id"] not in network:
+                errs.append(f"{sw}: network_id '{s['network_id']}' has no 'shrines' row in {w}")
+    return errs + _rest_errors(rest, statuses)
+
+
+def check_locations(root: Path, files: dict[str, object], rep: Report) -> list[str]:
+    """Validates the location registry and party rest rules (M1-ARC-06). The name keys are checked
+    here, so it returns no extra loc keys."""
+    doc = files.get(LOCATIONS_FILE)
+    if doc is None:
+        return []
+    scenes: dict[str, str] = {}
+    shrines: dict[str, list[dict[str, str]]] = {}
+    for p in sorted((root / "game").rglob("*.tscn")):
+        rel = p.relative_to(root).as_posix()
+        text = p.read_text(encoding="utf-8")
+        scenes["res://" + rel] = text
+        found = shrine_instances(text)
+        if found:
+            shrines[rel] = found
+    st = files.get("game/data/battle/statuses.json")
+    ids = {r.get("id") for r in st.get("statuses", []) if isinstance(r, dict)} if isinstance(st, dict) else set()
+    loc = load_loc_keys(root, Report())
+    for e in locations_errors(doc, scenes, loc, ids, files.get(PARTY_REST_FILE), shrines):
+        rep.err(e)
+    return []
 
 
 if __name__ == "__main__":

@@ -1,0 +1,349 @@
+{
+  "generator": "assets_src/environments/kits/haluna/build.py",
+  "kit": "haluna",
+  "pieces": {
+    "awning_cloth": {
+      "budget": [
+        1800,
+        200
+      ],
+      "bytes": 45708,
+      "lods": {
+        "awning_cloth": 972,
+        "awning_cloth-lod1": 56
+      }
+    },
+    "banyan_placeholder": {
+      "budget": [
+        16000,
+        2400
+      ],
+      "bytes": 542624,
+      "lods": {
+        "banyan_placeholder": 8230,
+        "banyan_placeholder-lod1": 2020
+      },
+      "placeholder": "stand-in hero banyan (cluster-card crown); the vegetation stream builds the real tree (haluna.md 1.3, vegetation.md 'Not built')",
+      "tags": [
+        "PLACEHOLDER"
+      ]
+    },
+    "dock_haluna": {
+      "budget": [
+        26000,
+        1500
+      ],
+      "bytes": 593352,
+      "lods": {
+        "dock_haluna": 12630,
+        "dock_haluna-lod1": 152
+      }
+    },
+    "garland_string": {
+      "budget": [
+        3400,
+        600
+      ],
+      "bytes": 155876,
+      "lods": {
+        "garland_string": 1788,
+        "garland_string-lod1": 476
+      }
+    },
+    "house_tile_a": {
+      "budget": [
+        22000,
+        1600
+      ],
+      "bytes": 566472,
+      "lods": {
+        "house_tile_a": 13034,
+        "house_tile_a-lod1": 376
+      }
+    },
+    "house_tile_b": {
+      "budget": [
+        22000,
+        1600
+      ],
+      "bytes": 486348,
+      "lods": {
+        "house_tile_b": 11129,
+        "house_tile_b-lod1": 368
+      }
+    },
+    "house_tile_c": {
+      "budget": [
+        22000,
+        1600
+      ],
+      "bytes": 740252,
+      "lods": {
+        "house_tile_c": 17507,
+        "house_tile_c-lod1": 400
+      }
+    },
+    "lintel_gull_a": {
+      "budget": [
+        2400,
+        400
+      ],
+      "bytes": 89912,
+      "lods": {
+        "lintel_gull_a": 502,
+        "lintel_gull_a-lod1": 260
+      }
+    },
+    "lintel_gull_b": {
+      "budget": [
+        2400,
+        400
+      ],
+      "bytes": 89904,
+      "lods": {
+        "lintel_gull_b": 502,
+        "lintel_gull_b-lod1": 260
+      }
+    },
+    "lintel_gull_c": {
+      "budget": [
+        2400,
+        400
+      ],
+      "bytes": 95740,
+      "lods": {
+        "lintel_gull_c": 532,
+        "lintel_gull_c-lod1": 290
+      }
+    },
+    "net_rack": {
+      "budget": [
+        5000,
+        500
+      ],
+      "bytes": 80104,
+      "lods": {
+        "net_rack": 1673,
+        "net_rack-lod1": 112
+      }
+    },
+    "order_chapel": {
+      "budget": [
+        9000,
+        900
+      ],
+      "bytes": 199956,
+      "lods": {
+        "order_chapel": 3280,
+        "order_chapel-lod1": 406
+      }
+    },
+    "outrigger_7m": {
+      "budget": [
+        7000,
+        700
+      ],
+      "bytes": 102816,
+      "lods": {
+        "outrigger_7m": 1940,
+        "outrigger_7m-lod1": 300
+      }
+    },
+    "roof_fan_shell": {
+      "budget": [
+        18000,
+        2500
+      ],
+      "bytes": 668636,
+      "lods": {
+        "roof_fan_shell": 17456,
+        "roof_fan_shell-lod1": 984
+      }
+    },
+    "roof_thatch_hip": {
+      "budget": [
+        3500,
+        400
+      ],
+      "bytes": 121972,
+      "lods": {
+        "roof_thatch_hip": 2864,
+        "roof_thatch_hip-lod1": 328
+      }
+    },
+    "roof_tile_hip": {
+      "budget": [
+        12000,
+        600
+      ],
+      "bytes": 325448,
+      "lods": {
+        "roof_tile_hip": 8176,
+        "roof_tile_hip-lod1": 344
+      }
+    },
+    "ruin_column_broken": {
+      "budget": [
+        7000,
+        700
+      ],
+      "bytes": 87544,
+      "lods": {
+        "ruin_column_broken": 2403,
+        "ruin_column_broken-lod1": 36
+      }
+    },
+    "ruin_slab": {
+      "budget": [
+        5000,
+        300
+      ],
+      "bytes": 136760,
+      "lods": {
+        "ruin_slab": 3747,
+        "ruin_slab-lod1": 12
+      }
+    },
+    "ruin_wall_sunk": {
+      "budget": [
+        8000,
+        500
+      ],
+      "bytes": 91696,
+      "lods": {
+        "ruin_wall_sunk": 2235,
+        "ruin_wall_sunk-lod1": 12
+      }
+    },
+    "shell_shrine_massing": {
+      "budget": [
+        22000,
+        3500
+      ],
+      "bytes": 861928,
+      "lods": {
+        "shell_shrine_massing": 20796,
+        "shell_shrine_massing-lod1": 1516
+      },
+      "placeholder": "distant massing of the Shell Shrine (drum and steps); the shrine wall, column and channel kit is M2 (haluna.md 3.2)",
+      "tags": [
+        "PLACEHOLDER"
+      ]
+    },
+    "stilt_house": {
+      "budget": [
+        14000,
+        1300
+      ],
+      "bytes": 395024,
+      "lods": {
+        "stilt_house": 8534,
+        "stilt_house-lod1": 408
+      }
+    },
+    "storehouse_stilt": {
+      "budget": [
+        7000,
+        900
+      ],
+      "bytes": 193356,
+      "lods": {
+        "storehouse_stilt": 3738,
+        "storehouse_stilt-lod1": 364
+      }
+    },
+    "tidewall_gate": {
+      "budget": [
+        5600,
+        500
+      ],
+      "bytes": 118516,
+      "lods": {
+        "tidewall_gate": 2328,
+        "tidewall_gate-lod1": 24
+      }
+    },
+    "tidewall_straight": {
+      "budget": [
+        5600,
+        500
+      ],
+      "bytes": 215304,
+      "lods": {
+        "tidewall_straight": 4296,
+        "tidewall_straight-lod1": 24
+      }
+    },
+    "tidewall_windgap": {
+      "budget": [
+        5600,
+        500
+      ],
+      "bytes": 210040,
+      "lods": {
+        "tidewall_windgap": 4188,
+        "tidewall_windgap-lod1": 24
+      }
+    },
+    "timber_deck_2m": {
+      "budget": [
+        1400,
+        120
+      ],
+      "bytes": 24844,
+      "lods": {
+        "timber_deck_2m": 400,
+        "timber_deck_2m-lod1": 12
+      }
+    },
+    "timber_railing_2m": {
+      "budget": [
+        900,
+        120
+      ],
+      "bytes": 18260,
+      "lods": {
+        "timber_railing_2m": 222,
+        "timber_railing_2m-lod1": 48
+      }
+    },
+    "timber_stilt_post": {
+      "budget": [
+        400,
+        60
+      ],
+      "bytes": 10344,
+      "lods": {
+        "timber_stilt_post": 123,
+        "timber_stilt_post-lod1": 15
+      }
+    },
+    "wakeshell_wall": {
+      "budget": [
+        28000,
+        1500
+      ],
+      "bytes": 1207568,
+      "lods": {
+        "wakeshell_wall": 27240,
+        "wakeshell_wall-lod1": 96
+      }
+    },
+    "windbreak_placeholder": {
+      "budget": [
+        2600,
+        500
+      ],
+      "bytes": 76244,
+      "lods": {
+        "windbreak_placeholder": 583,
+        "windbreak_placeholder-lod1": 175
+      },
+      "placeholder": "stand-in windbreak tree (cluster-card crown); the vegetation stream builds the real tree (haluna.md 1.3)",
+      "tags": [
+        "PLACEHOLDER"
+      ]
+    }
+  },
+  "schema": "hymn-kit/1"
+}
