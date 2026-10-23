@@ -36,6 +36,7 @@ import asha_hair  # noqa: E402
 import asha_eyes  # noqa: E402
 import asha_face_shapes  # noqa: E402
 import asha_mouth  # noqa: E402
+import asha_staff  # noqa: E402
 import bb_anatomy  # noqa: E402
 import bb_cage  # noqa: E402
 import bb_params  # noqa: E402
@@ -64,6 +65,8 @@ MATERIALS = {
     "tortoiseshell": ((0.15, 0.04, 0.01), 0.15),
     "cloth": ((0.4, 0.4, 0.4), 0.7),
     "cloth_sleeve": ((0.8, 0.8, 0.78), 0.6),
+    "staff_wood": ((0.04, 0.025, 0.015), 0.45),
+    "brass": ((0.42, 0.26, 0.10), 0.35),
 }
 
 
@@ -135,7 +138,8 @@ def part_object(part: Part, normals: np.ndarray | None = None) -> bpy.types.Obje
     return make_object(part.name, part.varr(), part.F, part.UV, part.M, part.C or None, normals)
 
 
-def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None, margin: float = 0.003) -> None:
+def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None, margin: float = 0.003,
+                 shrink: tuple[np.ndarray, float] | None = None) -> None:
     """Conformal unwrap + pack of the faces using the given materials only (other parts keep their
     authored UVs)."""
     me = ob.data
@@ -158,7 +162,20 @@ def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None,
         p.select = names[p.material_index] in mats
     bpy.ops.object.mode_set(mode="EDIT")
     bpy.ops.uv.unwrap(method="CONFORMAL", margin=margin)
-    bpy.ops.uv.pack_islands(rotate=True, margin=margin)
+    if shrink is not None:
+        # lower texel density on some faces (the scalp under the hair): scale their loops about
+        # their centre before the final pack, which keeps relative island sizes
+        bpy.ops.object.mode_set(mode="OBJECT")
+        polys, factor = shrink
+        uvl = me.uv_layers.active.data
+        loops = [li for pi in polys for li in me.polygons[int(pi)].loop_indices]
+        uv = np.array([uvl[li].uv[:] for li in loops])
+        c = uv.mean(axis=0)
+        uv = c + (uv - c) * factor
+        for li, q in zip(loops, uv):
+            uvl[li].uv = (float(q[0]), float(q[1]))
+        bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.uv.pack_islands(rotate=True, margin=margin, scale=True)
     bpy.ops.object.mode_set(mode="OBJECT")
 
 
@@ -259,7 +276,7 @@ def main() -> int:
     face = body.face
     V, F = res["V"], np.asarray(res["F"])
     reg = np.array(res["reg"])
-    freg = reg[F[:, 0]]
+    freg = np.array(res["freg"])  # face regions: head (face mask), scalp, mouth (bag), torso, arm_L, ...
     log(f"body: {len(V)} verts, {len(F)} quads ({time.time() - t0:.1f}s)")
 
     # ---- rig and weights on the welded body ------------------------------------------------
@@ -274,16 +291,16 @@ def main() -> int:
     bpy.data.objects.remove(weld, do_unlink=True)
 
     # ---- split head / body --------------------------------------------------------------------
-    is_head = freg == "head"
+    is_head = np.isin(freg, ["head", "scalp", "mouth"])
     used_h, Fh, remap_h, Sh = submesh(V, F, is_head, res["seams"])
     Vh = V[used_h]
     M = lm.P("mouth")
     s = lm.h / 0.222
     line_y = float(np.mean(V[res["groups"]["lip_line"]][:, 1]))
-    cen = Vh[Fh].mean(axis=1)
-    in_mouth = (cen[:, 1] > line_y + 0.0035 * s) & (np.abs(cen[:, 0]) < face.mouth_half * 1.1) & (
-        np.abs(cen[:, 2] - M[2]) < 0.016 * s)
-    mats_h = ["mouth" if m else "skin_head" for m in in_mouth]
+    fh_reg = freg[is_head]
+    mats_h = ["mouth" if r == "mouth" else "skin_head" for r in fh_reg]
+    scalp_polys = np.nonzero(fh_reg == "scalp")[0]
+    _ = M
     head = Part("Head")
     for p in Vh:
         head.add_v(p, tag=0)
@@ -330,7 +347,7 @@ def main() -> int:
     me.vertices.foreach_get("normal", auto.ravel())
     auto[:n_skin] = np.array(normals_h)
     me.normals_split_custom_set_from_vertices([tuple(map(float, n)) for n in auto])
-    unwrap_faces(ob_head, {"skin_head", "mouth"}, Sh | ear_seams)
+    unwrap_faces(ob_head, {"skin_head", "mouth"}, Sh | ear_seams, shrink=(scalp_polys, 0.55))
     shapes = asha_face_shapes.build_shapes(face, lm, Vhead, np.array(head.T))
     ob_head.shape_key_add(name="Basis", from_mix=False)
     flat = Vhead.astype(np.float64)
@@ -403,6 +420,12 @@ def main() -> int:
         hair_tris = rigid_parts.tris() + flowing.tris()
         log(f"hair: {hair_tris} tris ({time.time() - t0:.1f}s)")
 
+    staff = asha_staff.staff(lm)
+    ob_staff = part_object(staff)
+    Wst = np.zeros((len(staff.V), len(wnames)), dtype=np.float32)
+    Wst[:, wnames.index("DEF-hand.R")] = 1.0
+    apply_weights(ob_staff, Wst, wnames, skel)
+
     # ---- body ---------------------------------------------------------------------------------
     used_b, Fb, remap_b, Sb = submesh(V, F, ~is_head & ~hidden, res["seams"])
     ob_body = make_object("Body", V[used_b], Fb.tolist(), None, ["skin_body"] * len(Fb), normals=Nw[used_b])
@@ -422,10 +445,11 @@ def main() -> int:
             eye_tris += part.tris()
     log(f"eyes: {eye_tris} tris")
 
-    export_objs = [ob_head, ob_body, *eye_objs, *garment_objs, *hair_objs, skel]
+    export_objs = [ob_head, ob_body, *eye_objs, *garment_objs, *hair_objs, ob_staff, skel]
     report = {
         "triangles": {"head": head.tris(), "body_skin": 2 * len(Fb), "eyes": eye_tris,
-                      "costume": sum(p.tris() for p in costume.values()), "hair": hair_tris},
+                      "costume": sum(p.tris() for p in costume.values()), "hair": hair_tris,
+                      "staff": staff.tris()},
         "seconds": 0.0,
     }
     report["triangles"]["total_lod0"] = sum(report["triangles"].values())
@@ -447,7 +471,7 @@ def main() -> int:
         export_all_vertex_colors=False,
     )
     report["glb_bytes"] = out.stat().st_size
-    lod_objs, lod_tris = make_lod1([ob_head, ob_body, *garment_objs, *hair_objs], skel)
+    lod_objs, lod_tris = make_lod1([ob_head, ob_body, *garment_objs, *hair_objs, ob_staff], skel)
     eye_lod = [ob for ob in eye_objs if ob.name.startswith(("Eye", "Cornea")) and not ob.name.startswith("EyeOcc")]
     report["triangles_lod1"] = lod_tris + sum(len(o.data.polygons) for o in eye_lod) * 2
     out1 = out.with_name(out.stem + "_lod1.glb")
@@ -469,7 +493,8 @@ def main() -> int:
     return 0
 
 
-LOD1_RATIO = {"Head": 0.42, "Body": 0.5, "Costume": 0.5, "VerseSleeve": 0.5, "HairHead": 0.5, "HairBraid": 0.45}
+LOD1_RATIO = {"Head": 0.42, "Body": 0.5, "Costume": 0.5, "VerseSleeve": 0.5, "HairHead": 0.5, "HairBraid": 0.45,
+              "Staff": 0.5}
 LOD1_DROP_MATS = {"teeth", "tongue", "lash"}
 
 

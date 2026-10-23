@@ -23,7 +23,7 @@ OUT = ROOT / "assets" / "characters" / "base_body"
 sys.path.insert(0, str(SRC))
 
 VARIANTS = ("slender", "athletic", "heavy")
-TRI_MIN, TRI_MAX = 15_000, 25_000  # body skin, before costume (task M1-CHR-01)
+TRI_MIN, TRI_MAX = 15_000, 27_000  # body skin before costume; M1-CHR-02 head loop flow adds ~4.6k
 MAX_BYTES = 5 * 1024 * 1024  # ADR 0005 plain-blob cap
 
 

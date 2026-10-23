@@ -168,7 +168,8 @@ class Cage:
         a, b = int(a), int(b)
         self.seams.add((min(a, b), max(a, b)))
 
-    def fill_grid(self, loop: Arr, a: int, b: int, reg: str, pin: bool = False, bulge: Arr | None = None) -> Arr:
+    def fill_grid(self, loop: Arr, a: int, b: int, reg: str, pin: bool = False, bulge: Arr | None = None,
+                  freg: str | None = None) -> Arr:
         """Fill a closed loop of 2(a+b) verts with an a x b quad grid (Coons patch)."""
         loop = np.asarray(loop)
         assert len(loop) == 2 * (a + b), (len(loop), a, b)
@@ -201,7 +202,7 @@ class Cage:
                 grid[r, c] = self.add(P, reg, pin)[0]
         for r in range(a):
             for c in range(b):
-                self.quad(grid[r, c], grid[r, c + 1], grid[r + 1, c + 1], grid[r + 1, c], reg)
+                self.quad(grid[r, c], grid[r, c + 1], grid[r + 1, c + 1], grid[r + 1, c], freg or reg)
         return grid
 
 
@@ -839,11 +840,13 @@ def generate(params: dict, subdiv: int = 1, log=print) -> dict:
     groups = {k: _remap(v) for k, v in cg.groups.items()}
     cg.groups = groups
     V, F = V0, F0
+    freg = list(cg.freg)
     for _ in range(subdiv):
+        freg = [r for r in freg for _k in range(4)]  # catmull_clark emits 4 quads per face, in order
         V, F, pin, seams, reg = catmull_clark(V, F, pin, seams, reg)
     log(f"subdivided: {len(V)} verts, {len(F)} quads ({time.time() - t0:.1f}s)")
     V = project(body, V, F, pin)
     V[:, 2] = np.maximum(V[:, 2], 0.0)  # soles stand exactly on the ground plane
     log(f"projected ({time.time() - t0:.1f}s)")
     return {"V": V, "F": F, "pin": pin, "seams": seams, "lm": lm, "body": body, "cage_V": V0, "cage_F": F0,
-            "groups": cg.groups, "n_cage_v": len(V0), "reg": reg}
+            "groups": cg.groups, "n_cage_v": len(V0), "reg": reg, "freg": np.array(freg)}

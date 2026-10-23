@@ -537,7 +537,7 @@
     {
       "id": "asha_extreme_pose",
       "scene": "res://game/levels/_tests/characters/asha/asha_extreme_pose.tscn",
-      "camera": "Cameras/ThreeQuarter",
+      "camera": "Cameras/Front",
       "resolution": [
         960,
         540

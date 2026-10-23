@@ -129,7 +129,7 @@ def scalp_cards(lm, body, params: dict, rng: np.random.Generator) -> Part:
     s = lm.h / 0.222
     layers = [(0.0016 * s, params["scalp_cards"][0], 0.0), (0.0034 * s, params["scalp_cards"][1], 0.5),
               (0.0055 * s, params["scalp_cards"][2], 1.0)]
-    seg = 12
+    seg = 9
     for li, (lift, count, layer) in enumerate(layers):
         # roots: a third of the base layer exactly on the hairline (a clean edge), the rest inside
         n_line = count // 3 if li == 0 else 0
@@ -169,7 +169,7 @@ def scalp_cards(lm, body, params: dict, rng: np.random.Generator) -> Part:
             nxt = np.where(alive[:, None] | newly[:, None], nxt, cur)
             paths.append(nxt)
         paths = np.stack(paths, axis=1)  # (n, seg+1, 3)
-        widths = rng.uniform(0.010, 0.020, n) * s * (1.25 if layer == 0.0 else 1.0)
+        widths = rng.uniform(0.014, 0.026, n) * s * (1.25 if layer == 0.0 else 1.0)
         slots = rng.integers(CLUMPS, size=n)
         phases = rng.random(n)
         for c in range(n):

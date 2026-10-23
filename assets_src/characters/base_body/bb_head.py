@@ -126,11 +126,12 @@ def build_head(cg, cast) -> Arr:
                 return True
         return False
 
+    front_faces = []
     faces = []
     for a in range(nx):
         for b in range(nz):
             if not skip("front", a, b):
-                faces.append((ids[(a, 0, b)], ids[(a + 1, 0, b)], ids[(a + 1, 0, b + 1)], ids[(a, 0, b + 1)]))
+                front_faces.append((ids[(a, 0, b)], ids[(a + 1, 0, b)], ids[(a + 1, 0, b + 1)], ids[(a, 0, b + 1)]))
             faces.append((ids[(a, ny, b)], ids[(a, ny, b + 1)], ids[(a + 1, ny, b + 1)], ids[(a + 1, ny, b)]))
     for a in range(ny):
         for b in range(nz):
@@ -141,8 +142,20 @@ def build_head(cg, cast) -> Arr:
             faces.append((ids[(a, b, nz)], ids[(a + 1, b, nz)], ids[(a + 1, b + 1, nz)], ids[(a, b + 1, nz)]))
             if not skip("bottom", a, b):
                 faces.append((ids[(a, b, 0)], ids[(a, b + 1, 0)], ids[(a + 1, b + 1, 0)], ids[(a + 1, b, 0)]))
-    for q in faces:
+    # face regions: "head" = the face mask (the lattice's front face and the feature loops), "scalp" =
+    # the rest of the skull (under the hair; it gets a lower texel density in the UV pack)
+    for q in front_faces:
         cg.quad(*q, "head")
+    for q in faces:
+        cg.quad(*q, "scalp")
+    # UV: the face mask is its own island (cut in front of the ears, along the hairline and under the
+    # chin), so a conformal unwrap does not shrink the face into the middle of a skull-sized island
+    for k in range(nz):
+        cg.seam(ids[(0, 0, k)], ids[(0, 0, k + 1)])
+        cg.seam(ids[(nx, 0, k)], ids[(nx, 0, k + 1)])
+    for i in range(nx):
+        cg.seam(ids[(i, 0, 0)], ids[(i + 1, 0, 0)])
+        cg.seam(ids[(i, 0, nz)], ids[(i + 1, 0, nz)])
     # back-of-head seam: x = mid on the back face, then over the top to the middle
     for k in range(0, nz):
         cg.seam(ids[(mid_x, ny, k)], ids[(mid_x, ny, k + 1)])
@@ -283,11 +296,12 @@ def _mouth(cg, B: Arr) -> None:
     gi = cg.add(bag, "head", pin=True)
     rings.append(gi)
     prev = B
-    for r in rings:
-        cg.bridge(prev, r, "head")
+    for k, r in enumerate(rings):
+        # faces behind the inner lip (the wet inner lip onward) are the mouth bag
+        cg.bridge(prev, r, "mouth" if k >= len(rings) - 2 else "head")
         prev = r
     cg.seam_loop(li)
     n = len(B)
-    cg.fill_grid(gi, 2, n // 2 - 2, "head", pin=True, bulge=v3(0, 0.010 * s, 0))
+    cg.fill_grid(gi, 2, n // 2 - 2, "head", pin=True, bulge=v3(0, 0.010 * s, 0), freg="mouth")
     cg.groups["lip_line"] = li.tolist()
     cg.groups["mouth_rings"] = [r.tolist() for r in rings]

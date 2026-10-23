@@ -255,13 +255,14 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
     in_field = np.isin(tags, [0])  # ears and accessories are not in the sculpt field
     sdf = body.sdf
 
+    tet = np.array([[1.0, -1.0, -1.0], [-1.0, -1.0, 1.0], [-1.0, 1.0, -1.0], [1.0, 1.0, 1.0]])
+
     def grad(Q):
+        """Tetrahedral central difference: 4 field evaluations instead of 6."""
         e = 2e-4
         g = np.zeros_like(Q)
-        for i in range(3):
-            d = np.zeros(3)
-            d[i] = e
-            g[:, i] = sdf(Q + d) - sdf(Q - d)
+        for k in tet:
+            g += k[None, :] * sdf(Q + k * e)[:, None]
         return g / np.maximum(np.linalg.norm(g, axis=1, keepdims=True), 1e-12)
 
     Ph = P.copy()
@@ -300,7 +301,7 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
         ao[ii] = np.clip(1.0 - 1.6 * occ, 0.25, 1.0)
         t_exit = np.full(len(ii), 0.020 * s)
         found = np.zeros(len(ii), dtype=bool)
-        for tt in np.linspace(0.0015, 0.020, 16) * s:
+        for tt in np.linspace(0.0015, 0.020, 9) * s:
             out = (sdf(Q - G * tt) > 0) & ~found
             t_exit[out] = tt
             found |= out

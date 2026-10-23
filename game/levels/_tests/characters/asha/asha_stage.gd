@@ -20,6 +20,9 @@ extends Node3D
 @export_range(0, 7) var verse_count: int = 0
 ## Deformation check: bone name -> local Euler rotation in degrees, applied once at _ready.
 @export var test_pose: Dictionary = {}
+## Deformation check in world terms: bone name -> Euler degrees about the stage axes (X her left,
+## Y up, Z the way she faces), applied in dictionary order (list parents before children).
+@export var world_pose: Dictionary = {}
 @export var spin_degrees_per_second: float = 0.0
 @export var yaw_degrees: float = 0.0
 ## Portrait camera (`Cameras/Face`) aimed at the eye midpoint.
@@ -155,7 +158,31 @@ func _skeleton(root: Node) -> Skeleton3D:
 
 func _apply_pose(root: Node) -> void:
 	var skel := _skeleton(root)
-	if skel == null or test_pose.is_empty():
+	if skel == null:
+		return
+	_apply_local_pose(skel)
+	_apply_world_pose(skel)
+
+
+func _apply_world_pose(skel: Skeleton3D) -> void:
+	for bone_name: Variant in world_pose:
+		var idx := skel.find_bone(String(bone_name))
+		if idx < 0:
+			push_warning("AshaStage: no bone %s" % bone_name)
+			continue
+		skel.force_update_all_bone_transforms()
+		var deg: Vector3 = world_pose[bone_name]
+		var turn := Basis.from_euler(Vector3(deg_to_rad(deg.x), deg_to_rad(deg.y), deg_to_rad(deg.z)))
+		var to_skel := skel.global_transform.basis.orthonormalized().inverse()
+		turn = to_skel * turn * to_skel.inverse()
+		var global_basis := turn * skel.get_bone_global_pose(idx).basis
+		var parent := skel.get_bone_parent(idx)
+		var parent_basis := Basis.IDENTITY if parent < 0 else skel.get_bone_global_pose(parent).basis
+		skel.set_bone_pose_rotation(idx, (parent_basis.inverse() * global_basis).get_rotation_quaternion())
+
+
+func _apply_local_pose(skel: Skeleton3D) -> void:
+	if test_pose.is_empty():
 		return
 	for bone_name: Variant in test_pose:
 		var idx := skel.find_bone(String(bone_name))

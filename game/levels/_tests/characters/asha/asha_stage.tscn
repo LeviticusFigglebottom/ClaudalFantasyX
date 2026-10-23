@@ -1,7 +1,25 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=28 format=3]
 
 [ext_resource type="Script" path="res://game/levels/_tests/characters/asha/asha_stage.gd" id="stage"]
 [ext_resource type="PackedScene" path="res://assets/characters/asha/asha.glb" id="asha"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/skin_head.tres" id="m_skin_head"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/skin_body.tres" id="m_skin_body"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/mouth.tres" id="m_mouth"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/teeth.tres" id="m_teeth"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/tongue.tres" id="m_tongue"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/lash.tres" id="m_lash"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/brow.tres" id="m_brow"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/eye.tres" id="m_eye"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/cornea.tres" id="m_cornea"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/eye_occlusion.tres" id="m_eye_occlusion"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/tear_line.tres" id="m_tear_line"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/hair.tres" id="m_hair"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/bone.tres" id="m_bone"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/tortoiseshell.tres" id="m_tortoiseshell"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/cloth.tres" id="m_cloth"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/cloth_sleeve.tres" id="m_cloth_sleeve"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/staff_wood.tres" id="m_staff_wood"]
+[ext_resource type="Material" path="res://assets/characters/asha/materials/brass.tres" id="m_brass"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
 sky_top_color = Color(0.46, 0.53, 0.63, 1)
@@ -55,6 +73,26 @@ cap_bottom = false
 [node name="AshaStage" type="Node3D"]
 script = ExtResource("stage")
 character_scene = ExtResource("asha")
+materials = {
+"skin_head": ExtResource("m_skin_head"),
+"skin_body": ExtResource("m_skin_body"),
+"mouth": ExtResource("m_mouth"),
+"teeth": ExtResource("m_teeth"),
+"tongue": ExtResource("m_tongue"),
+"lash": ExtResource("m_lash"),
+"brow": ExtResource("m_brow"),
+"eye": ExtResource("m_eye"),
+"cornea": ExtResource("m_cornea"),
+"eye_occlusion": ExtResource("m_eye_occlusion"),
+"tear_line": ExtResource("m_tear_line"),
+"hair": ExtResource("m_hair"),
+"bone": ExtResource("m_bone"),
+"tortoiseshell": ExtResource("m_tortoiseshell"),
+"cloth": ExtResource("m_cloth"),
+"cloth_sleeve": ExtResource("m_cloth_sleeve"),
+"staff_wood": ExtResource("m_staff_wood"),
+"brass": ExtResource("m_brass")
+}
 face_poses_path = "res://game/levels/_tests/characters/asha/asha_face_poses.json"
 wind = Vector4(2.4, 0, 1.2, 0.3)
 wind_time = 1.7
@@ -110,7 +148,7 @@ fov = 34.0
 near = 0.05
 
 [node name="Sleeve" type="Camera3D" parent="Cameras"]
-transform = Transform3D(0.613941, 0.093654, -0.783767, 0, 0.992913, 0.118646, 0.789352, -0.0728411, 0.609597, -1.85, 1.02, 1.32)
+transform = Transform3D(0.94, 0.04, -0.34, 0, 0.993, 0.117, 0.342, -0.11, 0.933, -0.95, 1.05, 2.0)
 fov = 34.0
 near = 0.05
 
