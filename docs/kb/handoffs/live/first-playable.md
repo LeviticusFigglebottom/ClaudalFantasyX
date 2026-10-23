@@ -69,6 +69,7 @@ None that matters. `.scratch/` (excluded through `.git/info/exclude`) holds the 
 5. Read the M2-FP task files and `docs/kb/handoffs/2026-10-23-first-playable-1.md`.
 
 ## History
+- 2026-10-23: merged integration (the coverage ratchet 4c462ee, M1-NIT-02 enemy_id, ADR 0023 Amendment 1); clean merge. ci_local green: 1125 tests; game/battle 99.94% (baseline 99.93%), progression 96.52%.
 - 2026-10-23: merged integration c21dce5 (M1-CMB-03: save v5, Read, openings).
   - The Drownbell's ADR is now **0024**, because CMB-03 took 0023. My combat handoff is now combat-5.
   - ch02_tideline and drownbell have `"opening": "normal"`.
