@@ -2,8 +2,8 @@
 id: M1-RND-18
 title: SSS crest patches from high noon cameras (fade the crest term with view elevation)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-18-sss-crest)"
 depends_on: [M1-RND-08]
 milestone: M1
 request-from: "character"
