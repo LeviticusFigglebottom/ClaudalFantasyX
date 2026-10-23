@@ -20,6 +20,10 @@ const PLAYER_ACTOR := &"rhen"
 @export var director_path: NodePath
 ## The zone's FieldController. Empty = the first node in group "player", or a sibling named Player.
 @export var player_path: NodePath
+## Placeholder staging until the rigs have clips: "<actor>/<clip>" -> mark id. When `@anim <actor>
+## <clip>` plays a listed clip, the actor is placed on that mark and turned to its facing (-Z), so
+## `@anim asha emerge_doorway` can put her in the doorway before there is an animation to walk her.
+@export var clip_marks: Dictionary = {}
 
 
 func director() -> FieldCameraDirector:
@@ -72,7 +76,13 @@ func mark(id: StringName) -> Node3D:
 	return get_node_or_null(NodePath("%s/%s" % [MARKS, id])) as Node3D
 
 
-## A mark, else an actor: `@anim asha look_at rhen_lantern` and `at=asha` both resolve here.
+## The mark a placeholder clip stands for (`clip_marks`), or null.
+func clip_mark(actor_id: StringName, clip: StringName) -> Node3D:
+	var key := "%s/%s" % [actor_id, clip]
+	return mark(StringName(str(clip_marks[key]))) if clip_marks.has(key) else null
+
+
+## A mark, else an actor:`@anim asha look_at rhen_lantern` and `at=asha` both resolve here.
 func place(id: StringName) -> Node3D:
 	var m := mark(id)
 	return m if m != null else actor(id)

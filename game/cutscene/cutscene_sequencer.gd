@@ -340,6 +340,14 @@ func _cue_anim(step: DialogueStep) -> void:
 	if actor == null:
 		return
 	var clip := StringName(str(step.args[1]))
+	var standin := _stage.clip_mark(StringName(str(step.args[0])), clip) if _stage != null else null
+	if standin != null:
+		# A placeholder clip: stand on its mark, facing the mark's -Z (CutsceneStage.clip_marks).
+		_motions.erase(&"move:%s" % step.args[0])
+		_place(actor, standin.global_position)
+		var fwd := -standin.global_basis.z
+		_face(actor, fwd)
+		return
 	if clip == ANIM_LOOK_AT and step.args.size() > 2:
 		var tid := StringName(str(step.args[2]))
 		var target := _stage.place(tid) if _stage != null else null

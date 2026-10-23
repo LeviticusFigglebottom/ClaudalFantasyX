@@ -38,6 +38,8 @@ CutsceneStage (director_path, player_path)
 └── Marks/beach_path   Marker3D
 ```
 
+`clip_marks` (an export on the stage) maps `"<actor>/<clip>"` to a mark id. Until the rigs have clips, `@anim asha emerge_doorway` with `{"asha/emerge_doorway": "doorway"}` places Asha on `Marks/doorway`, facing the mark's -Z. Unlisted clips do nothing.
+
 ## Cue mapping
 
 | Cue | What the sequencer does |

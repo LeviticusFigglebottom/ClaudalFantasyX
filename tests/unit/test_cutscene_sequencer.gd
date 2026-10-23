@@ -124,6 +124,17 @@ func test_instant_second_option_takes_the_other_branch() -> void:
 	_free()
 
 
+func test_clip_marks_stand_in_for_missing_animations() -> void:
+	var spot := stage.get_node("Marks/spot") as Marker3D
+	spot.rotation.y = PI / 2.0
+	stage.clip_marks = {"asha/look_at": "spot"}
+	seq.instant = true
+	_start(FIXTURE)
+	assert_true(asha.global_position.distance_to(SPOT) < 0.01, "on the clip's mark")
+	assert_between(angle_difference(asha.rotation.y, PI / 2.0), -0.01, 0.01, "facing the mark's -Z, not rhen")
+	_free()
+
+
 func test_missing_shot_is_a_soft_failure() -> void:
 	stage.free()
 	stage = _build_stage(false)
