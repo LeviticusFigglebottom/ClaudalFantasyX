@@ -14,6 +14,10 @@ extends Node3D
 @export var start_spawn: StringName = &"Shrine"
 ## Raised above the marker on placement so the capsule settles onto the ground.
 @export var spawn_lift_m: float = 0.02
+## The close-up lighting rule (character_shading.md "Shadows on characters", QA-05/CHR-04): the
+## sun keys Asha's face in Cutscene A, so it takes this shadow_normal_bias instead of the mood
+## scene's 1.0. 0 leaves the mood scene's value (the mood test's own baselines are unaffected).
+@export var face_key_shadow_normal_bias: float = 0.0
 
 ## True once prebuild() has dressed the mood scene and built the collision (M2-FP-05).
 var prebuilt := false
@@ -71,7 +75,11 @@ func _ready() -> void:
 		collision.build()
 	field_camera.make_current()
 	# After Cutscene A the girl and the guardian have walked up to the village.
-	set_beach_cast_visible(not bool(Game.get_flag(&"ch02_met_asha")))
+	_apply_face_key_bias()
+	var intro_flag := StringName(
+		str(FirstPlayableConfig.section(FirstPlayableConfig.SECTION_HALUNA).get("intro_flag", ""))
+	)
+	set_beach_cast_visible(intro_flag == &"" or not bool(Game.get_flag(intro_flag)))
 	place_at(start_spawn, spawn_yaw_deg(start_spawn))
 
 
@@ -114,6 +122,12 @@ func set_beach_cast_visible(on: bool) -> void:
 		return
 	for a in actors.get_children():
 		(a as Node3D).visible = on
+
+
+func _apply_face_key_bias() -> void:
+	var sun: Variant = mood.get(&"sun")
+	if face_key_shadow_normal_bias > 0.0 and sun is DirectionalLight3D:
+		(sun as DirectionalLight3D).shadow_normal_bias = face_key_shadow_normal_bias
 
 
 ## The mood scene's five composed HalunaShotCameras (H01 is current there) must not take the view.

@@ -4,8 +4,9 @@ extends TestCase
 ## not made yet), every branch plays to its end, and the end card follows.
 
 const SCENE := "res://game/levels/ch03/first_verse/first_verse.tscn"
-## Soft failures the set may report: sounds that do not exist yet.
-const ALLOWED_WARNINGS: Array[String] = ["no sound 'drownbell_toll'"]
+## Soft failures the set may report: sounds that do not exist yet, and cue keys the placeholder
+## presentation does not perform (grades, mote motion).
+const ALLOWED_WARNINGS: Array[String] = ["no sound 'drownbell_toll'", "is not performed yet"]
 
 var scene: FirstVerseScene
 var saved_state: GameStateData

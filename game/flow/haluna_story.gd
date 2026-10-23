@@ -101,7 +101,7 @@ func _go(kind: StringName, target: String) -> void:
 			StringName(str(cfg.get("battle_escape_spawn", "")))
 		)
 	else:
-		SceneRouter.change_scene(target)
+		FlowRouting.change_scene(target)
 
 
 func _free() -> bool:

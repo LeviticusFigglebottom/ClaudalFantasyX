@@ -123,7 +123,8 @@ func _travel(location_id: StringName, spawn: StringName) -> bool:
 		return bool(travel.call(location_id, spawn))
 	if not is_inside_tree():
 		return false
-	return SceneRouter.world_return.go_to(location_id, spawn)
+	FlowRouting.go_to(location_id, spawn)  # waits for an idle router, so the change is never lost
+	return true
 
 
 func _open_title() -> void:
@@ -135,7 +136,7 @@ func _open_scene(path: String) -> void:
 	if open_title.is_valid():
 		open_title.call(path)
 	elif is_inside_tree():
-		SceneRouter.change_scene(path)
+		FlowRouting.change_scene(path)
 
 
 func _world_return() -> WorldReturn:

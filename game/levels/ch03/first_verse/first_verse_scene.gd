@@ -50,7 +50,7 @@ func run() -> void:
 	if change_scene.is_valid():
 		change_scene.call(after)
 	else:
-		SceneRouter.change_scene(after)
+		FlowRouting.change_scene(after)
 
 
 func place_at(_spawn: StringName, _yaw_deg: float = 0.0) -> bool:

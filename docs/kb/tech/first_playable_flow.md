@@ -111,3 +111,21 @@ title) once.
 The prologue test relies on an `instant` sequencer finishing `play()` without yielding (true of the
 stub); if the presentation body ever yields in instant mode, drive it with `await` from a test that the
 runner can wait on, or keep instant mode synchronous.
+
+## Hand-offs never get lost (M2-FP-09, review-sweep-K)
+
+`SceneRouter.change_scene` ignores a request made while another swap is running (it warns and returns), and `WorldReturn.go_to` can't tell. A flow step that set its "done" latch before such a call could strand the player. So every first-playable hand-off goes through **`FlowRouting`** (`game/flow/flow_routing.gd`):
+- `when_free(change)` waits a frame at a time until the router is idle, then makes the change exactly once.
+- `change_scene(path)` and `go_to(location, spawn)` are its two forms.
+
+The callers are `FieldBattle` (return to the field, the last save, the title or the end card), `EndCard`, `BattleRequest.submit`, `HalunaStory` and `FirstVerseScene`. `tests/unit/test_flow_routing.gd` drives a busy router by hand, and fails if any of these files calls `SceneRouter.change_scene` directly. Test hooks: `busy`, `next_frame` and `record`.
+
+Also in M2-FP-09:
+- `HalunaZone` reads the arrival flag from `first_playable.json` (`haluna.intro_flag`).
+- The zone sun follows the close-up lighting rule (`face_key_shadow_normal_bias` 3.0 on the zone root; character_shading.md "Shadows on characters"), and so does the first-verse set's sun.
+- `tests/integration/test_fp_thread.gd` now covers the full loop on real data:
+  - it drives the story's real trigger and request;
+  - it loses twice, using Fight again between, then Return to last save;
+  - it wins, then saves at the shrine and loads the record back;
+  - it calls the Drownbell and reaches the end card.
+- `test_the_battle_strip_cannot_be_walked_around` checks that every line from the beach to the shrine crosses the strip, and that walking inland from the causeway head is stopped.

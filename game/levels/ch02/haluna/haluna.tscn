@@ -290,6 +290,7 @@ size = Vector3(32, 5, 6)
 
 [node name="Haluna" type="Node3D"]
 script = ExtResource("1_zone")
+face_key_shadow_normal_bias = 3.0
 
 [node name="HalunaMood" parent="." instance=ExtResource("2_mood")]
 

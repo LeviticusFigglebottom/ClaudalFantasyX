@@ -84,11 +84,10 @@ static func submit(r: BattleRequest) -> void:
 		change_scene.call(path)
 		return
 	var tree := Engine.get_main_loop() as SceneTree
-	var router := tree.root.get_node_or_null(^"SceneRouter") if tree != null else null
-	if router == null:
+	if tree == null or tree.root.get_node_or_null(^"SceneRouter") == null:
 		push_error("BattleRequest: no SceneRouter to open %s" % path)
 		return
-	router.call(&"change_scene", path)
+	FlowRouting.change_scene(path)  # waits for an idle router, so the request is always opened
 
 
 ## The field battle scene (first_playable.json field_battle.scene).

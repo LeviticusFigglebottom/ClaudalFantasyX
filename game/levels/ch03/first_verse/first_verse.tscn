@@ -171,6 +171,7 @@ transform = Transform3D(-0.120933, 0.109372, -0.986617, 0, 0.993912, 0.110181, 0
 light_color = Color(1, 0.72, 0.48, 1)
 light_energy = 1.6
 shadow_enabled = true
+shadow_normal_bias = 3.0
 directional_shadow_max_distance = 120.0
 
 [node name="Camera" type="Camera3D" parent="."]

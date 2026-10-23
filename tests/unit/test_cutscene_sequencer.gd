@@ -115,6 +115,29 @@ func test_instant_play_runs_every_cue_and_ends_clean() -> void:
 	_free()
 
 
+func test_leaving_mid_line_returns_to_the_host() -> void:
+	_start(FIXTURE)
+	_drive_until(func() -> bool: return lines_pending > 0)
+	play_result = true
+	zone.remove_child(seq)
+	assert_false(play_result, "released from the line's advance")
+	assert_false(seq.overlay.box.advance_requested.is_connected(seq._on_awaited_plain), "no stale hook left")
+	zone.add_child(seq)
+	seq.instant = true
+	finished_ids.clear()
+	_start(FIXTURE)
+	assert_true(play_result, "the next play works normally")
+	_free()
+
+
+func test_placeholder_cue_args_warn_once() -> void:
+	seq.instant = true
+	_start(FIXTURE)
+	var w := seq.warnings.filter(func(x: String) -> bool: return x.contains("@vfx drift= is not performed yet"))
+	assert_eq(w.size(), 1, str(seq.warnings))
+	_free()
+
+
 func test_instant_second_option_takes_the_other_branch() -> void:
 	seq.instant = true
 	seq.auto_choice = 1
@@ -277,7 +300,11 @@ func test_director_leaving_mid_blend_ends_the_cutscene() -> void:
 func test_sequencer_freed_mid_scene_releases_its_hold() -> void:
 	_start(FIXTURE)
 	assert_true(seq in SaveSystem.autosave_holders())
+	play_result = true
 	zone.remove_child(seq)
+	assert_false(seq.is_playing(), "the await in progress was released")
+	assert_false(play_result, "play() returned false to its host instead of hanging")
+	assert_eq(finished_ids, [FIXTURE] as Array[StringName], "finished still fires once")
 	assert_false(seq in SaveSystem.autosave_holders(), "leaving the tree drops the hold")
 	assert_true(player.accepts_input, "and gives the player back")
 	seq.free()

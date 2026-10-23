@@ -71,6 +71,18 @@ Holding `ui_cancel` (Escape, or B/Circle on a controller) for `skip_hold_sec` (1
 - **A skip fast-forwards to the next choice, or to the end.** Flags, branches and events run exactly as in a normal play. Camera moves snap, and waits, fades and walks complete at once. **At a choice the skip stops and the menu shows, so the player always makes their own choices.** Hold again after it to skip the rest.
 - The autosave hold, the player freeze and the camera hand-back end exactly as on a normal finish, because a skip is a normal play with no time passing. `skipped(scene_id)` fires once per skip.
 
+## Leaving the tree (M2-FP-09)
+
+Every await inside `play()` goes through one internal `resumed` signal: a line advance, a wait, a choice, or a camera landing. If the sequencer leaves the tree mid-scene, `_exit_tree` does four things:
+- releases the autosave hold;
+- gives the player back;
+- disconnects the pending hook;
+- releases the await.
+
+`play()` then returns `false` to its host instead of hanging, and `finished` still fires once.
+
+Cue keys the placeholder presentation doesn't perform warn once per scene (`UNSUPPORTED_KWARGS`): `@camera grade=`, `@anim loop=`, `@sfx at=`, and `@vfx drift=`/`motion=`/`rate=`/`form=`.
+
 ## Not yet
 
 - Music markers (`music_marker_reached`) need an adaptive music player (Audio).

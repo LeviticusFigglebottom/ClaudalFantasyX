@@ -37,6 +37,10 @@ Nothing. The Lead's queue of 2026-10-23 (M2-FP-05..08) is done and pushed:
 - **M2-FP-07:** a request task for Character (Asha's clips), still `todo`.
 - **M2-FP-08 (review):** `@face` and line emotions blend Asha's shape keys, with lip-flap; idle, talk, walk and run clips play when they exist.
 
+### Queue of 2026-10-23 (second batch: the Lead's sweep K)
+- **M2-FP-09 thread hardening (review):** renumbered from a duplicate M2-FP-05. FlowRouting makes hand-offs safe while the router is busy. The thread test drives the real trigger and adds the defeat, save and load legs, plus a strip-walk test. The arrival flag comes from JSON. The zone sun follows the close-up shadow rule. A sequencer that leaves the tree returns from play(). Placeholder cue keys warn once.
+- **M1-ARC-15 apply GraphicsSettings:** with a worktree agent (branch `worktree-agent-ad4be3355309b7593`), not merged yet.
+
 ### Exact next step
 Wait for the Lead's review and the human's playtest notes, and turn the notes into M2-FP-09+ tasks. The open follow-up on this branch is the shutdown-only engine errors described below.
 
@@ -59,6 +63,7 @@ None that matters. `.scratch/` (excluded through `.git/info/exclude`) holds the 
 5. Read the M2-FP task files and `docs/kb/handoffs/2026-10-23-first-playable-1.md`.
 
 ## History
+- 2026-10-23: M2-FP-09 done. Merged integration 7f4c76b+ (sweep K). M1-ARC-15 with an agent.
 - 2026-10-23: merged FP-05 (prebuild, defeat retry) and FP-06 (Drownbell), wired the boss into the thread. ci_local green: 1043 tests, battle shots unchanged.
 - 2026-10-23: M2-FP-08 done (face shape keys, lip-flap, clip defaults); 16 cutscene tests.
 - 2026-10-23: merged integration 9508ade; claimed M2-FP-05..08; cutscene skip done (13 sequencer tests).
