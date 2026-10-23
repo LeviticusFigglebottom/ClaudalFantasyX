@@ -50,6 +50,11 @@ var last_awards: Dictionary = {}
 var battles_started := 0
 ## The fixture the current battle started from (null for live data).
 var fixture: BattleFixture
+## True while a staged build (start_battle_staged) is still spreading its steps over frames.
+var building := false
+## How a staged build waits between frames. Unset = the next process frame; tests set a callable
+## that records the boundary and returns at once, so the whole build runs synchronously.
+var frame_wait := Callable()
 
 var _db: BattleDB
 var _live_db: BattleDB
@@ -92,7 +97,8 @@ func _ready() -> void:
 		hud.apply_settings(UiSettings.new())
 		run_script.call_deferred()
 	elif auto_start:
-		start_sandbox.call_deferred()
+		# Entered through SceneRouter: build over several frames behind its fade (M1-UI-03).
+		start_sandbox.call_deferred(-1, true)
 
 
 func _process(delta: float) -> void:
@@ -105,14 +111,22 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 ## Starts the configured sandbox fight (battle_sandbox.json) with the saved Lattice progress.
-func start_sandbox(rng_seed: int = -1) -> void:
+## `staged` spreads the build over frames (start_battle_staged); await it to know when it is done.
+func start_sandbox(rng_seed: int = -1, staged: bool = false) -> void:
 	fixture = null
 	_db = _live_db
 	var cfg := BattleStage.config()
 	var active: Array[StringName] = _ids(cfg.get("active", []))
 	var reserve: Array[StringName] = _ids(cfg.get("reserve", []))
 	var s := int(cfg.get("seed", 0)) if rng_seed < 0 else rng_seed
-	start_battle(active, reserve, StringName(str(cfg.get("encounter", ""))), s, _load_progress(active + reserve))
+	var encounter := StringName(str(cfg.get("encounter", "")))
+	if not staged:
+		start_battle(active, reserve, encounter, s, _load_progress(active + reserve))
+		return
+	building = true
+	var lattice := _load_progress(active + reserve)
+	await _wait_frame()
+	await start_battle_staged(active, reserve, encounter, s, lattice)
 
 
 ## Starts a capture/test fixture (BattleFixture): frozen tables, opening statuses, a fresh
@@ -123,12 +137,54 @@ func start_fixture(fx: BattleFixture) -> void:
 	start_battle(fx.active, fx.reserve, fx.encounter, fx.rng_seed, _fresh_progress(fx.active + fx.reserve))
 
 
+## Builds and starts a battle in one call (tests, captures, retry).
 func start_battle(
 	active: Array[StringName],
 	reserve: Array[StringName],
 	encounter: StringName,
 	rng_seed: int,
 	lattice: LatticeProgress = null
+) -> void:
+	_build_engine(active, reserve, encounter, rng_seed, lattice)
+	_build_hud()
+	_begin_battle()
+	_next_turn()
+
+
+## The same build as start_battle, one step per frame, so no single frame carries all of it
+## (SPEC §4.2 swap budget; the router keeps its fade up meanwhile). `building` is true until the
+## first turn is open; input is ignored until then (state stays idle).
+func start_battle_staged(
+	active: Array[StringName],
+	reserve: Array[StringName],
+	encounter: StringName,
+	rng_seed: int,
+	lattice: LatticeProgress = null
+) -> void:
+	building = true
+	# The 16 timeline chips are the heaviest part: build them hidden, half in each light frame.
+	var half := CtbTimeline.PREVIEW_LENGTH / 2
+	var frames: Array = [
+		[_build_engine.bind(active, reserve, encounter, rng_seed, lattice), hud.timeline.prebuild.bind(half)],
+		[_build_hud, hud.timeline.prebuild.bind(CtbTimeline.PREVIEW_LENGTH - half)],
+		[_begin_battle],
+		[_next_turn],
+	]
+	for i in frames.size():
+		if i > 0:
+			await _wait_frame()
+		for step: Callable in frames[i]:
+			step.call()
+	building = false
+
+
+## Step 1: the engine, fixture opening state and the 3D stand-ins.
+func _build_engine(
+	active: Array[StringName],
+	reserve: Array[StringName],
+	encounter: StringName,
+	rng_seed: int,
+	lattice: LatticeProgress
 ) -> void:
 	_setup = {"active": active, "reserve": reserve, "encounter": encounter, "seed": rng_seed}
 	battles_started += 1
@@ -145,14 +201,28 @@ func start_battle(
 	engine.action_resolved.connect(_on_action_resolved)
 	stage.spawn(engine)
 	stage.refresh_ko(engine)
+
+
+## Step 2: timeline identities and the party panel.
+func _build_hud() -> void:
 	for c in engine.party_active + engine.party_reserve + engine.enemies:
 		hud.timeline.set_identity(c.id, menus.display_name(c), _tint(c.id))
 	hud.result.visible = false
 	hud.set_combat_ui_visible(true)
 	_rebuild_party_panel()
+
+
+## Step 3: the first turn order and its 16 timeline chips.
+func _begin_battle() -> void:
 	engine.begin()
 	_show_timeline(TurnTimeline.MODE_TURN)
-	_next_turn()
+
+
+func _wait_frame() -> void:
+	if frame_wait.is_valid():
+		await frame_wait.call()
+	elif is_inside_tree():
+		await get_tree().process_frame
 
 
 ## Advances paced waits by `delta` seconds (called from _process; tests call it directly).
