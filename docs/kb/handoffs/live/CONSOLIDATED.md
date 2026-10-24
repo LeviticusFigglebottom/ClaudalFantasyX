@@ -59,7 +59,12 @@
 | ui | `session_01NyuYPSZn7o7gYirTvz4zjs` | `claude/ui` | M2-UI-03 → hide the Call row until bound → M2-UI-06 shop and inn → UI polish pass |
 | creatures | `session_01CYks9e592YBEfygyTawcJD` | `claude/creatures` | Enemy and boss models (all 5 enemies were primitive stand-ins): design sheets → creature pipeline → the `model` field in enemies.json → reef_crab, lantern_eel, gull_harrier, spawn_polyp, then the Drownbell → shots → bestiary art |
 | battle-presentation | `session_014EcW9e5tEmjDi5S2HmCECd` | `claude/battle-presentation` | Battle choreography (none existed: static fighters): a listen-only BattleChoreo sequencer, the clip contract with characters and creatures, a battle camera director, specials (Swell, Drownbell, Vowbound), battle intro and outro |
+| menus | `session_01Q26A4D653s52czT76QPURY` | `claude/menus` | Intro-audit M2 blockers: the Lattice board menu → Equip/Customize → field Items and Status pages → quit to title and battle pause → screenshots and tests. It merges claude/ui and adds its rows to the UI track's field-menu model |
 These were created in default permission mode; the human sets Auto in each one's mode dropdown. m2-slice was told that ENV-03, UI-06 and UI-03 moved off its queue.
+
+### Intro audit (2026-10-24): M2-review blockers, ahead of M3 in every queue
+- B06 Saltgrass Causeway route (m2-slice greybox, env-art final kit); the Lattice and Equip menus (menus); live battles pay lume and drops, and the slice party gets Read (a Lead combat agent).
+- Major items: objectives and map (ui, top priority); the interaction prompt, tutorials, title screen, area cards, dialogue-box polish and settings (ui); battle choreography, per-encounter arenas, the battle transition and the C10 summon cinematic (battle-presentation, with env-art for the arenas); the B12 end card and credits, plus chapter advance and an autosave before the shrine (m2-slice).
 
 ### 3a. Standing queues (2026-10-24, also sent by message; messages can arrive hours late, so this section is authoritative)
 - **m2-slice:**
