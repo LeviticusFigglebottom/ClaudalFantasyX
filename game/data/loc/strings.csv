@@ -895,3 +895,13 @@ SET_VOLUME_100,100%
 SHOP_MENU_COUNT_FMT,×{n}
 SET_MENU_AUDIO,Audio
 SET_MENU_HELP_AUDIO,"Music, effects and voice volume."
+BOSS_TITLE_HULLGNAW,Hullgnaw
+BOSS_EPITHET_HULLGNAW,"Storm-born, caged in a drowned ship's ribs"
+BOSS_TITLE_BOTTLE_HERMIT,Bottle Hermit
+BOSS_EPITHET_BOTTLE_HERMIT,It keeps house in the old lamp glass
+BOSS_TITLE_SPAR_WRAITH,Spar-Wraith
+BOSS_EPITHET_SPAR_WRAITH,It hauls a dead ship's lines
+BOSS_TITLE_CINDER_MATRON,The Cinder Matron
+BOSS_EPITHET_CINDER_MATRON,Woken by the anvil's ring
+BOSS_TITLE_DROWNBELL,The Drownbell
+BOSS_EPITHET_DROWNBELL,It still rings for the drowned

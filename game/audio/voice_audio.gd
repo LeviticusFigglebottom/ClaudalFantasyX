@@ -8,7 +8,7 @@ extends Node
 ##   leaves out sung lines, skipped reveals and (unless text_box.json says otherwise) narration, so this does too.
 ## - **The speaker.** A CutsceneSequencer's line_shown step gives it exactly (the speaker, else the narrator
 ##   identity). A box shown without a sequencer reports only mouth_flap(speaker), at its first vowel, so until then
-##   the previous voice stands; a request task asks the box for a public voice signal (M3-ARC-02).
+##   the previous voice stands; a request task asks the box for a public voice signal (M3-ARC-03).
 ## - **Recorded lines (VO).** A line with a line id looks for its file (the step's `voice`, else voices.json
 ##   vo.pattern). When it exists it plays on the Voice bus and the line's blips stay silent; a missing file falls
 ##   back to the blips. The next line, or the box closing, stops it.

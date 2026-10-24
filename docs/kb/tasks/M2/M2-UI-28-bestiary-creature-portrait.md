@@ -1,5 +1,5 @@
 ---
-id: M2-UI-26
+id: M2-UI-28
 title: "Bestiary page and Read panel: show the creature's live portrait (CreaturePortrait)"
 role: ui
 status: todo
@@ -28,5 +28,7 @@ page (`game/ui/bestiary/`) and, if it fits, the Read panel (`game/ui/battle/read
   container stretches its viewport, so size it in the layout.
 - Cost: one SubViewport rendering a ~5–20k-triangle model. Disable it (`clear()`) when the page closes.
 - Review shot of all portraits: `creature_portraits` (claude/creatures).
+
+- **Renumbered again (Lead merge, big8, 2026-10-24):** big7's M2-UI-26 collided with claude/ui's M2-UI-26 (input parity audit, ADR 0036). Now M2-UI-28, the next id free across all branches.
 
 ## Review log

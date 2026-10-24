@@ -121,7 +121,11 @@
                      "look_up_m": 0.9, "fov": 50.0},
         "push": {"anchor": "default", "push": 0.14, "look_at": 0.3, "look_up_m": 0.8},
         "summon": {"anchor": "target", "back_m": 4.2, "side_m": 2.6, "up_m": 0.35, "look_at": 1.0, "look_up_m": 1.6,
-                   "fov": 46.0}
+                   "fov": 46.0},
+        "boss": {"anchor": "target", "back_m": 3.3, "side_m": 3.1, "up_m": 0.45, "look_at": 1.0, "look_up_m": 0.15,
+                 "fov": 44.0},
+        "boss_tall": {"anchor": "target", "back_m": 5.6, "side_m": 5.4, "up_m": 0.5, "look_at": 1.0, "look_up_m": 0.2,
+                      "fov": 46.0}
       },
       "by_style": {
         "melee": {"lead": "actor", "contact": "target"},
@@ -141,9 +145,10 @@
       "enemy": {"lead": "push", "contact": ""}
     },
     "summon_cinematic": {
-      "doc": "M2-BPR-08 C10, BattleSummonCinematic: a Vowbound's first call in a live story battle (first_call_flags: its seen-flag, declared in flags.tres) with UiSettings summon_cinematic 'short' (the default) or 'full' ('full' also plays it on later calls, 'off' never: UiSettings.summon_cinematic_cut, M2-UI-23). entry replaces vowbound.entry: the water stills for delay_sec after the party steps off, then the Vowbound rises depth_m over sec, tipped lean_deg; hold_sec more after it stands. Bound light (color script C10: glimmer_bound, steady): an OmniLight3D light_height_m above its slot, light_energy reached over light_in_sec from light_at_sec, light_range_m. Camera: the 'summon' shot (camera.shots), in over camera_in_sec, back to the default over the last camera_out_sec.",
+      "doc": "M2-BPR-08 C10, BattleSummonCinematic: a Vowbound's first call in a live story battle (first_call_flags: its seen-flag, declared in flags.tres) under UiSettings summon_cinematic (the UI track's row): 'short' (default) = the first call only, 'full' = every call, 'off' = off_entry (no rise). entry replaces vowbound.entry: the water stills for delay_sec after the party steps off, then the Vowbound rises depth_m over sec, tipped lean_deg; hold_sec more after it stands. Bound light (color script C10: glimmer_bound, steady): an OmniLight3D light_height_m above its slot, light_energy reached over light_in_sec from light_at_sec, light_range_m. Camera: the 'summon' shot (camera.shots), in over camera_in_sec, back to the default over the last camera_out_sec.",
       "first_call_flags": {"ilun": "ch03_ilun_first_call_seen"},
       "entry": {"delay_sec": 1.4, "sec": 2.6, "back_m": 0.0, "depth_m": 2.6, "lean_deg": 6.0, "clip": "ready"},
+      "off_entry": {"delay_sec": 0.0, "sec": 0.0, "back_m": 0.0, "depth_m": 0.0, "lean_deg": 0.0, "clip": "idle"},
       "hold_sec": 0.9,
       "light_color": "#4FB3B0",
       "light_energy": 1.2,
@@ -154,6 +159,172 @@
       "camera_in_sec": 1.6,
       "camera_out_sec": 0.9,
       "swatches": {"light_color": "glimmer_bound"}
+    },
+    "placeholder_clips": {
+      "doc": "M2-BPR-10, BattlePlaceholderClips: until the heroes' battle clips land (M2-CHR-07), a model with a Skeleton3D and an AnimationPlayer gets a generated pose clip for every contract clip it lacks; a real clip of that name always wins. bones: role -> candidate bone names, the first the skeleton has wins (the MPFB2 rig as the characters track exports it, DEF-*, then MPFB2's default names). A skeleton that resolves fewer than min_roles roles (a creature) gets nothing. A pose is role -> [x, y, z] degrees, a turn in the model's axes (X = the fighter's left, Y = up, Z = the way it faces; composed YXZ) on top of what the bone inherits, as the characters' hero_clips.py writes them: +X bends the spine forward and swings a hanging limb backward, +Y turns to the fighter's left, +Z tilts to its right. base is the standing pose (arms down from the rest); a key's pose replaces base per role, a key with no pose is base, and hips_m moves the hips role (metres, model axes). Every clip keys every role named in base or any clip, so no limb is left in the last clip's pose. A strike clip's blow key sits at its main style's contact_at x strike_sec.",
+      "min_roles": 12,
+      "bones": {
+        "hips": ["DEF-spine", "root"],
+        "spine": ["DEF-spine.001", "spine04"],
+        "chest": ["DEF-spine.003", "spine02"],
+        "neck": ["DEF-spine.004", "neck01"],
+        "head": ["DEF-spine.006", "head"],
+        "upper_arm_l": ["DEF-upper_arm.L", "upperarm01.L"],
+        "forearm_l": ["DEF-forearm.L", "lowerarm01.L"],
+        "hand_l": ["DEF-hand.L", "wrist.L"],
+        "upper_arm_r": ["DEF-upper_arm.R", "upperarm01.R"],
+        "forearm_r": ["DEF-forearm.R", "lowerarm01.R"],
+        "hand_r": ["DEF-hand.R", "wrist.R"],
+        "thigh_l": ["DEF-thigh.L", "upperleg01.L"],
+        "shin_l": ["DEF-shin.L", "lowerleg01.L"],
+        "foot_l": ["DEF-foot.L", "foot.L"],
+        "thigh_r": ["DEF-thigh.R", "upperleg01.R"],
+        "shin_r": ["DEF-shin.R", "lowerleg01.R"],
+        "foot_r": ["DEF-foot.R", "foot.R"]
+      },
+      "base": {
+        "upper_arm_l": [4.0, 0.0, -40.0], "forearm_l": [-12.0, 0.0, 0.0],
+        "upper_arm_r": [4.0, 0.0, 40.0], "forearm_r": [-12.0, 0.0, 0.0]
+      },
+      "clips": {
+        "idle": {"length_sec": 3.0, "loop": true, "keys": [
+          {"t": 0.0},
+          {"t": 1.5, "pose": {"chest": [2.0, 0.0, 0.0], "head": [-1.5, 0.0, 0.0]}, "hips_m": [0.0, -0.005, 0.0]},
+          {"t": 3.0}
+        ]},
+        "ready": {"length_sec": 0.4, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.25, "hips_m": [0.0, -0.04, 0.0], "pose": {"spine": [6.0, 0.0, 0.0],
+            "thigh_l": [-12.0, 0.0, 0.0], "shin_l": [24.0, 0.0, 0.0], "foot_l": [-12.0, 0.0, 0.0],
+            "thigh_r": [-12.0, 0.0, 0.0], "shin_r": [24.0, 0.0, 0.0], "foot_r": [-12.0, 0.0, 0.0],
+            "upper_arm_l": [-15.0, 0.0, -36.0], "forearm_l": [-35.0, 0.0, 0.0],
+            "upper_arm_r": [-15.0, 0.0, 36.0], "forearm_r": [-35.0, 0.0, 0.0]}},
+          {"t": 0.4, "hips_m": [0.0, -0.04, 0.0], "pose": {"spine": [6.0, 0.0, 0.0],
+            "thigh_l": [-12.0, 0.0, 0.0], "shin_l": [24.0, 0.0, 0.0], "foot_l": [-12.0, 0.0, 0.0],
+            "thigh_r": [-12.0, 0.0, 0.0], "shin_r": [24.0, 0.0, 0.0], "foot_r": [-12.0, 0.0, 0.0],
+            "upper_arm_l": [-15.0, 0.0, -36.0], "forearm_l": [-35.0, 0.0, 0.0],
+            "upper_arm_r": [-15.0, 0.0, 36.0], "forearm_r": [-35.0, 0.0, 0.0]}}
+        ]},
+        "attack": {"length_sec": 0.55, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.08, "pose": {"spine": [-5.0, 0.0, 0.0], "chest": [0.0, -20.0, 0.0],
+            "upper_arm_r": [40.0, 0.0, 50.0], "forearm_r": [-60.0, 0.0, 0.0]}},
+          {"t": 0.17, "hips_m": [0.0, -0.03, 0.0], "pose": {"spine": [12.0, 0.0, 0.0], "chest": [0.0, 20.0, 0.0],
+            "upper_arm_r": [-85.0, 0.0, 30.0], "forearm_r": [-10.0, 0.0, 0.0],
+            "upper_arm_l": [20.0, 0.0, -40.0], "thigh_r": [-20.0, 0.0, 0.0], "shin_r": [25.0, 0.0, 0.0]}},
+          {"t": 0.3, "hips_m": [0.0, -0.03, 0.0], "pose": {"spine": [10.0, 0.0, 0.0], "chest": [0.0, 15.0, 0.0],
+            "upper_arm_r": [-75.0, 0.0, 32.0], "forearm_r": [-15.0, 0.0, 0.0],
+            "upper_arm_l": [16.0, 0.0, -40.0], "thigh_r": [-16.0, 0.0, 0.0], "shin_r": [20.0, 0.0, 0.0]}},
+          {"t": 0.55}
+        ]},
+        "cast": {"length_sec": 0.8, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.25, "pose": {"spine": [-3.0, 0.0, 0.0], "upper_arm_l": [-25.0, 0.0, 40.0],
+            "upper_arm_r": [-25.0, 0.0, -40.0], "forearm_l": [-20.0, 0.0, 0.0], "forearm_r": [-20.0, 0.0, 0.0]}},
+          {"t": 0.4, "pose": {"spine": [-6.0, 0.0, 0.0], "head": [-10.0, 0.0, 0.0],
+            "upper_arm_l": [-30.0, 0.0, 100.0], "upper_arm_r": [-30.0, 0.0, -100.0],
+            "forearm_l": [-10.0, 0.0, 0.0], "forearm_r": [-10.0, 0.0, 0.0]}},
+          {"t": 0.6, "pose": {"spine": [-6.0, 0.0, 0.0], "head": [-10.0, 0.0, 0.0],
+            "upper_arm_l": [-30.0, 0.0, 95.0], "upper_arm_r": [-30.0, 0.0, -95.0],
+            "forearm_l": [-10.0, 0.0, 0.0], "forearm_r": [-10.0, 0.0, 0.0]}},
+          {"t": 0.8}
+        ]},
+        "item": {"length_sec": 0.6, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.25, "pose": {"spine": [5.0, 0.0, 0.0], "upper_arm_r": [-75.0, 0.0, 25.0], "forearm_r": [-5.0, 0.0, 0.0]}},
+          {"t": 0.4, "pose": {"spine": [5.0, 0.0, 0.0], "upper_arm_r": [-72.0, 0.0, 25.0], "forearm_r": [-8.0, 0.0, 0.0]}},
+          {"t": 0.6}
+        ]},
+        "read": {"length_sec": 0.65, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.25, "pose": {"head": [5.0, 0.0, 10.0], "upper_arm_r": [-60.0, 0.0, -10.0], "forearm_r": [-110.0, 0.0, 0.0]}},
+          {"t": 0.45, "pose": {"head": [5.0, 6.0, 10.0], "upper_arm_r": [-60.0, 0.0, -10.0], "forearm_r": [-110.0, 0.0, 0.0]}},
+          {"t": 0.65}
+        ]},
+        "defend": {"length_sec": 0.4, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.24, "hips_m": [0.0, -0.08, 0.0], "pose": {"spine": [12.0, 0.0, 0.0], "head": [-6.0, 0.0, 0.0],
+            "thigh_l": [-25.0, 0.0, 0.0], "shin_l": [50.0, 0.0, 0.0], "foot_l": [-25.0, 0.0, 0.0],
+            "thigh_r": [-25.0, 0.0, 0.0], "shin_r": [50.0, 0.0, 0.0], "foot_r": [-25.0, 0.0, 0.0],
+            "upper_arm_l": [-60.0, 0.0, -30.0], "forearm_l": [-20.0, -80.0, 0.0],
+            "upper_arm_r": [-60.0, 0.0, 30.0], "forearm_r": [-20.0, 80.0, 0.0]}},
+          {"t": 0.4, "hips_m": [0.0, -0.08, 0.0], "pose": {"spine": [12.0, 0.0, 0.0], "head": [-6.0, 0.0, 0.0],
+            "thigh_l": [-25.0, 0.0, 0.0], "shin_l": [50.0, 0.0, 0.0], "foot_l": [-25.0, 0.0, 0.0],
+            "thigh_r": [-25.0, 0.0, 0.0], "shin_r": [50.0, 0.0, 0.0], "foot_r": [-25.0, 0.0, 0.0],
+            "upper_arm_l": [-60.0, 0.0, -30.0], "forearm_l": [-20.0, -80.0, 0.0],
+            "upper_arm_r": [-60.0, 0.0, 30.0], "forearm_r": [-20.0, 80.0, 0.0]}}
+        ]},
+        "finisher": {"length_sec": 0.85, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.15, "pose": {"spine": [-10.0, 0.0, 0.0], "chest": [0.0, -25.0, 0.0],
+            "upper_arm_l": [-160.0, 0.0, 0.0], "upper_arm_r": [-160.0, 0.0, 0.0],
+            "forearm_l": [-20.0, 0.0, 0.0], "forearm_r": [-20.0, 0.0, 0.0]}},
+          {"t": 0.34, "hips_m": [0.0, -0.06, 0.0], "pose": {"spine": [25.0, 0.0, 0.0], "chest": [0.0, 20.0, 0.0],
+            "upper_arm_l": [-60.0, 0.0, 0.0], "upper_arm_r": [-60.0, 0.0, 0.0],
+            "forearm_l": [-5.0, 0.0, 0.0], "forearm_r": [-5.0, 0.0, 0.0],
+            "thigh_l": [-20.0, 0.0, 0.0], "shin_l": [30.0, 0.0, 0.0]}},
+          {"t": 0.5, "hips_m": [0.0, -0.06, 0.0], "pose": {"spine": [22.0, 0.0, 0.0], "chest": [0.0, 18.0, 0.0],
+            "upper_arm_l": [-55.0, 0.0, 0.0], "upper_arm_r": [-55.0, 0.0, 0.0],
+            "forearm_l": [-8.0, 0.0, 0.0], "forearm_r": [-8.0, 0.0, 0.0],
+            "thigh_l": [-18.0, 0.0, 0.0], "shin_l": [28.0, 0.0, 0.0]}},
+          {"t": 0.85}
+        ]},
+        "hit": {"length_sec": 0.45, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.08, "hips_m": [0.0, 0.0, -0.04], "pose": {"spine": [-14.0, 0.0, 0.0], "head": [-10.0, 0.0, 0.0],
+            "upper_arm_l": [10.0, 0.0, -25.0], "upper_arm_r": [10.0, 0.0, 25.0]}},
+          {"t": 0.45}
+        ]},
+        "dodge": {"length_sec": 0.4, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.1, "pose": {"spine": [0.0, 0.0, 15.0], "head": [0.0, 0.0, -6.0],
+            "thigh_l": [0.0, 0.0, 8.0], "thigh_r": [0.0, 0.0, 8.0]}},
+          {"t": 0.4}
+        ]},
+        "ko": {"length_sec": 0.6, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.25, "hips_m": [0.0, -0.3, 0.0], "pose": {"spine": [25.0, 0.0, 0.0], "head": [10.0, 0.0, 0.0],
+            "thigh_l": [-50.0, 0.0, 0.0], "shin_l": [90.0, 0.0, 0.0], "foot_l": [-40.0, 0.0, 0.0],
+            "thigh_r": [-50.0, 0.0, 0.0], "shin_r": [90.0, 0.0, 0.0], "foot_r": [-40.0, 0.0, 0.0]}},
+          {"t": 0.6, "hips_m": [0.0, -0.5, 0.05], "pose": {"spine": [40.0, 0.0, 0.0], "chest": [20.0, 0.0, 0.0],
+            "head": [20.0, 0.0, 0.0],
+            "thigh_l": [-80.0, 0.0, 0.0], "shin_l": [110.0, 0.0, 0.0], "foot_l": [-30.0, 0.0, 0.0],
+            "thigh_r": [-80.0, 0.0, 0.0], "shin_r": [110.0, 0.0, 0.0], "foot_r": [-30.0, 0.0, 0.0],
+            "upper_arm_l": [-20.0, 0.0, -50.0], "upper_arm_r": [-20.0, 0.0, 50.0]}}
+        ]},
+        "victory": {"length_sec": 1.6, "loop": true, "keys": [
+          {"t": 0.0, "pose": {"head": [-8.0, 0.0, 0.0], "upper_arm_r": [-10.0, 0.0, -130.0], "forearm_r": [-10.0, 0.0, 0.0]}},
+          {"t": 0.8, "pose": {"head": [-10.0, 0.0, 0.0], "chest": [0.0, 5.0, 0.0],
+            "upper_arm_r": [-10.0, 0.0, -140.0], "forearm_r": [-5.0, 0.0, 0.0]}},
+          {"t": 1.6, "pose": {"head": [-8.0, 0.0, 0.0], "upper_arm_r": [-10.0, 0.0, -130.0], "forearm_r": [-10.0, 0.0, 0.0]}}
+        ]}
+      }
+    },
+    "boss_intro": {
+      "doc": "M3-BPR-02 BattleBossIntro (docs/kb/tech/battle_presentation.md, Boss intros): at a boss encounter's first turn, once the screen is uncovered and any opening banner is done (at most reveal_wait_max_sec), the camera eases from the default to the row's shot (camera.shots, framed on the row's enemy; a shot that fails the safe frame keeps the default) over camera_in_sec, holds hold_sec, and eases home over camera_out_sec. The title card (title_key over epithet_key, the UI theme) fades in over card_in_sec from card_at_sec and out over card_out_sec, ending as the camera turns home; it rises rise_px as it fades in (none under reduced motion, which also keeps the camera on the default). card: its CanvasLayer layer, its rect at the 1920x1080 reference (clear of the timeline), the label variations, the title's height, the gold rule under the name (rule_y, rule_length, rule_px) and the dark band behind it (band_alpha, band_fade). The first turn waits for it (BattleHud.holds_battle). Confirm or cancel skips it. on_retry: whether Fight again plays it again (default false). Instant pacing and skip animations play none.",
+      "camera_in_sec": 1.1,
+      "camera_out_sec": 0.8,
+      "card_at_sec": 0.7,
+      "card_in_sec": 0.5,
+      "card_out_sec": 0.45,
+      "rise_px": 10.0,
+      "reveal_wait_max_sec": 3.0,
+      "card": {"layer": 2, "rect": [560, 616, 800, 140], "title_variation": "TitleLabel", "epithet_variation": "FlavorLabel",
+               "title_height": 92, "rule_y": 96, "rule_length": 260, "rule_px": 1, "band_alpha": 0.62, "band_fade": 0.24},
+      "rows": {
+        "ch01_hullgnaw": {"enemy": "hullgnaw", "shot": "boss", "hold_sec": 2.0, "title_key": "BOSS_TITLE_HULLGNAW",
+                          "epithet_key": "BOSS_EPITHET_HULLGNAW", "on_retry": false},
+        "ch04_bottle_hermit": {"enemy": "bottle_hermit", "shot": "boss", "hold_sec": 1.6,
+                               "title_key": "BOSS_TITLE_BOTTLE_HERMIT", "epithet_key": "BOSS_EPITHET_BOTTLE_HERMIT",
+                               "on_retry": false},
+        "ch04_spar_wraith": {"enemy": "spar_wraith", "shot": "boss", "hold_sec": 2.0, "title_key": "BOSS_TITLE_SPAR_WRAITH",
+                             "epithet_key": "BOSS_EPITHET_SPAR_WRAITH", "on_retry": false},
+        "ch05_cinder_matron": {"enemy": "cinder_matron", "shot": "boss_tall", "hold_sec": 2.2,
+                               "title_key": "BOSS_TITLE_CINDER_MATRON", "epithet_key": "BOSS_EPITHET_CINDER_MATRON",
+                               "on_retry": false},
+        "drownbell": {"enemy": "drownbell", "shot": "boss_tall", "hold_sec": 2.2, "title_key": "BOSS_TITLE_DROWNBELL",
+                      "epithet_key": "BOSS_EPITHET_DROWNBELL", "on_retry": false}
+      }
     }
   }
 }

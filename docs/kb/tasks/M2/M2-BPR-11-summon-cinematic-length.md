@@ -1,5 +1,5 @@
 ---
-id: M2-BPR-09
+id: M2-BPR-11
 title: The Vowbound call cinematic reads the summon cinematic setting
 role: combat
 status: review
@@ -33,5 +33,7 @@ SPEC §6.3: each Vowbound's call cinematic plays in full on first use, then shor
   instant pacing plays none. Test: `tests/unit/test_battle_summon_cinematic.gd`
   `test_call_length_setting_full_short_off`. Open point: CUT_SHORT has no "middle beats skipped" cut of its own; it
   is the existing short entry. Reviewer: ui.
+
+- **Renumbered again (Lead merge, big8, 2026-10-24):** big7's M2-BPR-09 collided with claude/battle-presentation's M2-BPR-09 (battle mouse targeting). Now M2-BPR-11, the next id free across all branches.
 
 ## Review log

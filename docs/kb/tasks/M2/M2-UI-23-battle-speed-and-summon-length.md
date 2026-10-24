@@ -20,7 +20,7 @@ Intro audit item 6: two new settings. Battle speed scales how fast battle presen
 
 ## Notes
 - **The call cinematic is M2-BPR-08 (C10, on claude/battle-presentation),** which reads `summon_cinematic` with the same row and loc text: Short plays it in full on the first call (per-save flag `ch03_ilun_first_call_seen`) and shortened after, Full plays it every time, and Off goes straight to the arrival. **At merge,** keep one copy of the `summon_cinematic` row and keys and of the six `SET_BATTLE_SPEED*` rows, and keep their `battle_animations` row.
-- **Lead merge (big8):** the setting is read by BattleSummonCinematic, wired at the big7 merge under [M2-BPR-09](M2-BPR-09-summon-cinematic-length.md) (the renumbered request, kept as the record of that wiring).
+- **Lead merge (big8):** the setting is read by BattleSummonCinematic, wired at the big7 merge under [M2-BPR-11](M2-BPR-11-summon-cinematic-length.md) (the renumbered request, kept as the record of that wiring).
 - **Merge with claude/battle-presentation:** that branch (M2-BPR-03) already adds `battle_speed` and `battle_animations` rows to `accessibility.json` and the six `SET_BATTLE_SPEED*` loc rows. This branch adds the same `battle_speed` row and the same six loc rows, with identical text. When the branches meet, keep one copy of each: drop the duplicate loc rows, or validate_data and the CSV import see the key twice. Keep both their `battle_animations` row and this `summon_cinematic` row. Their `test_ui_settings` id list needs the union too.
 - BattleChoreo's `hold_after(base)` takes `max(base, remaining / speed)`. `base` comes from `_pace`, which is now divided by the speed too, so at Fastest both shrink together.
 

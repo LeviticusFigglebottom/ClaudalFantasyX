@@ -2000,6 +2000,55 @@
     {
       "id": "memories_menu",
       "scene": "res://game/ui/menus/memories/shots/memories_menu.tscn"
+    },
+    {
+      "id": "battle_arena_raft",
+      "scene": "res://game/battle/arenas/shots/arena_raft.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_arena_underway",
+      "scene": "res://game/battle/arenas/shots/arena_underway.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_arena_route",
+      "scene": "res://game/battle/arenas/shots/arena_route.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_arena_derelict",
+      "scene": "res://game/battle/arenas/shots/arena_derelict.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_arena_terrace",
+      "scene": "res://game/battle/arenas/shots/arena_terrace.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_boss_intro_hullgnaw",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_hullgnaw.tscn"
     }
   ]
 }

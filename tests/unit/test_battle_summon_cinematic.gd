@@ -69,9 +69,7 @@ func test_the_first_live_call_plays_in_full_once_and_sets_the_flag() -> void:
 	_free()
 
 
-## M2-UI-23's call length (Full / Short / Off) drives it: Short (the default) plays only the first call in full,
-## Full plays every call in full, Off never plays it.
-func test_call_length_setting_full_short_off() -> void:
+func test_the_three_settings() -> void:
 	_to_turn_of(&"asha")
 	ctl.pacing_scale = 1.0
 	_go_live()
@@ -80,11 +78,17 @@ func test_call_length_setting_full_short_off() -> void:
 	s.set_value(BattleSummonCinematic.SETTING, BattleSummonCinematic.SETTING_OFF)
 	assert_false(choreo.summon.wants_full(ILUN), "off skips it, even the first call")
 	s.set_value(BattleSummonCinematic.SETTING, BattleSummonCinematic.SETTING_SHORT)
-	assert_true(choreo.summon.wants_full(ILUN), "short: the first call plays in full")
+	assert_true(choreo.summon.wants_full(ILUN), "short: the first call in full")
 	Game.set_flag(FLAG, true)
-	assert_false(choreo.summon.wants_full(ILUN), "short: a later call plays the short entry")
+	assert_false(choreo.summon.wants_full(ILUN), "short: shortened after")
 	s.set_value(BattleSummonCinematic.SETTING, BattleSummonCinematic.SETTING_FULL)
-	assert_true(choreo.summon.wants_full(ILUN), "full: every call plays in full")
+	assert_true(choreo.summon.wants_full(ILUN), "full: every call")
+	s.set_value(BattleSummonCinematic.SETTING, BattleSummonCinematic.SETTING_OFF)
+	assert_false(choreo.summon.wants_full(ILUN), "off: never")
+	assert_eq(choreo.summon.entry_for(ILUN), cfg["off_entry"], "off: no rise")
+	assert_true(ctl.vow.call_vowbound(ILUN))
+	choreo.advance(0.0)
+	assert_false(choreo.is_entering(ILUN), "Ilun is simply there")
 	s.set_value(BattleSummonCinematic.SETTING, was)
 	_free()
 

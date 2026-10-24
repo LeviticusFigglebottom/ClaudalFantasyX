@@ -1,5 +1,5 @@
 ---
-id: M2-FP-28
+id: M2-FP-29
 title: Keep the slice's objective lines and map points current as beats change
 role: cinematics
 status: todo
@@ -19,5 +19,7 @@ The UI track built the objective system (M2-UI-16) and the zone map (M2-UI-18) w
 ## Notes
 - Renumbered at the Lead's big7 merge (2026-10-24): filed by claude/ui as M2-FP-25, which collided with m2-slice's M2-FP-25 (B06 the Saltgrass Causeway, referenced across code and tests). M2-FP-28 is the next id free across all branches.
 - Validation runs in `tools/validate_data.py`: flags declared, loc keys present, targets resolving to POIs.
+
+- **Renumbered again (Lead merge, big8, 2026-10-24):** big7's M2-FP-28 collided with claude/ui's M2-FP-28 (Ch1 tutorial lines name bindings by action). Now M2-FP-29, the next id free across all branches.
 
 ## Review log

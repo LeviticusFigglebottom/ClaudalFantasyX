@@ -23,4 +23,6 @@ The slice's one Vowbound and its first call must be unmissable (vertical_slice.m
 
 - 2026-10-24 (track lead): BattleSummonCinematic, the summon_cinematic setting (full/short, the Lead's toggle), flag ch03_ilun_first_call_seen, shot battle_choreo_summon. Staging: the water stills, a slow rise in steady bound light, a low camera; no orbit, no light burst, no party vanishing into light. Reviewer focus: cinematics (does the staging serve B10's "the dead step in front of the living"?).
 
+- 2026-10-24 (track lead): aligned with the UI track's summon_cinematic row (M2-UI-23): Short (default) = in full the first time then shortened, Full = every call, Off = no rise. One row and one set of loc keys in both branches now (same text), so the merge keeps one copy.
+
 ## Review log
