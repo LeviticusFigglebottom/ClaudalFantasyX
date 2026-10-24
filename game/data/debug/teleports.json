@@ -10,6 +10,7 @@
     {"id": "glimmer_dusk", "label": "Glimmer test: dusk", "scene": "res://game/levels/_tests/glimmer/glimmer_dusk.tscn"},
     {"id": "ch07_tamsule", "label": "Ch7: Tamsule, the river mouth (greybox)", "scene": "res://game/levels/ch07/tamsule/tamsule.tscn", "spawn": "RiverMouth"},
     {"id": "ch04_haluna_wake", "label": "Ch4: Haluna, the wake night (needs ch03_rhen_sworn_guardian)", "scene": "res://game/levels/ch04/haluna_wake/haluna_wake.tscn", "spawn": "NemeDoor"},
-    {"id": "ch04_brightwater_ferry", "label": "Ch4: Brightwater Crossing (needs ch04_left_haluna)", "scene": "res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn", "spawn": "Landing"}
+    {"id": "ch04_brightwater_ferry", "label": "Ch4: Brightwater Crossing (needs ch04_left_haluna)", "scene": "res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn", "spawn": "Landing"},
+    {"id": "ch09_corrow_night", "label": "Ch9: Corrow, the night of the Ebbing (greybox; Toma's side scene needs ch08_met_ivo)", "scene": "res://game/levels/ch09/corrow_night/corrow_night.tscn", "spawn": "Strand"}
   ]
 }
