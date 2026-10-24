@@ -8,6 +8,17 @@
   `--filter=character_shading` 17/17, hero_stage 6/6, post_import 19/19; `verify --job toma` 38 identical. Ready to merge.
   (send_message to the Lead was refused: "needs a trusted device", so this log is the channel.)
 - **M1-CHR-14 (top priority) is in progress:** braid attachment, clothing and staff clipping, limb seams, and automated guards.
+  - **Braid fixed and pushed:** the root is seated 4 mm off the scalp and ramps out to the full 24 mm clearance over the first
+    7 cm; scalp cards run to 12 mm from the root (they used to stop 3 cm short); scalp cards cut 138 → 122 so LOD0 stays at
+    63,440 tris. `verify --job asha` 44 identical. Rhen and Toma are not affected (own `_trace`, no `braid_spine`).
+  - **18 asha_* baselines re-approved after viewing.** RMSE: face_neutral .0311, face_smile .0316, face_grief .0314,
+    stylized_compare .0269, smile_variant .0270, sleeve_s0/s4 .0138, profile .0110, q34 .0108, clip_run .0107,
+    clip_face_west .0104, clip_walk .0103, front .0100, extreme_pose .0092, battle_idle .0078, clip_laugh .0077,
+    kneel .0075, offer_hand .0065. Includes CHR-10..13 drift (baselines last approved for RND-20), e.g. the wrist wrap
+    now shows after CHR-13's normal fix.
+  - **Next:** clothing and staff penetration across clip frames (under-trouser and foot poking through in walk and kneel),
+    limb seams, guards (subagent building `tools/dev/rig_probe.py`).
+- **M2-CHR-03 villagers:** the subagent finished (7 NPCs, 19 baselines); merging next, then a rebuild against CHR-13.
 
 ## Queue
 1. ~~M2-CHR-01 Rhen~~ (review) → 2. ~~M2-CHR-02 Toma~~ (review) → 3. ~~M2-FP-07 clips~~ (review) → 4. ~~M1-CHR-12~~ (review;

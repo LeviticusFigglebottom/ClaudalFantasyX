@@ -28,5 +28,8 @@ The human reported (2026-10-24) that Asha's braid has been visibly disconnected 
 ## Notes
 - The fix likely touches the shared `asha_costume` modules (see M1-CHR-13's `_outward()` sign flip and the `_panel` winding bug). Coordinate, or fold it into the same rebuild.
 - The PC GPU session re-checks it on hardware afterwards, as part of M1-QA-09.
+- 2026-10-24, braid (ddc5eb2 + baselines): root seated on the head SDF (BRAID_ROOT_SEAT 4 mm, ramp 7 cm to BRAID_CLEAR),
+  scalp cards stop 12 mm from the root (CARD_STOP_AT_ROOT), scalp_cards 122. LOD0 63,440. verify asha 44 identical.
+  18 asha_* baselines re-approved after viewing (RMSE list in live/characters.md).
 
 ## Review log
