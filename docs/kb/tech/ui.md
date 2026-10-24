@@ -437,6 +437,7 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
   - **The cursor snapped back after a wheel notch.** A page that rebuilds its rows under a still pointer got a fresh `mouse_entered`. MenuPage now takes a hover only when the pointer has moved (`_hover_at`).
   - **A right click could not stop the Controls page listening.** The mouse Cancel carries `cancel_device` (`UiInput.is_mouse_cancel`), so listening stops on it while a plain `ui_cancel` action is still swallowed.
   - **InputDriver uses viewport-local coordinates.** The headless window's stretch moved clicks onto the next row.
+- **Parity findings (shop, inn):** the mouse could not set how many to buy or sell; only Left and Right could. Buy and Sell now show ‹ ×N › keycap steppers at the right end of the status line (`shop_menu.json` `steppers`), and the wheel over the status line changes the count too.
 
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 

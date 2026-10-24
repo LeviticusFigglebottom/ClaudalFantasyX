@@ -21,7 +21,7 @@ The human's ask: every screen fully usable with the keyboard, the mouse and a co
   - [x] title and Settings hub;
   - [x] Settings pages (Accessibility, Controls; Graphics is the same SettingsPage);
   - [ ] field menu and its pages (Swell modes, Quit, Map, Bestiary; the Menus track's Items, Equip, Lattice, Status);
-  - [ ] shop and inn;
+  - [x] shop and inn;
   - [ ] save and load;
   - [ ] dialogue box, choices and backlog;
   - [ ] tips and prompts (the glyph switches with the device);
