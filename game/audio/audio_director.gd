@@ -78,6 +78,7 @@ func _ready() -> void:
 	if router != null and router.has_signal(&"scene_swapping"):
 		router.connect(&"scene_swapping", apply_zone)
 	_apply_first_scene.call_deferred()
+	follow_settings(UiSettings.shared())
 
 
 ## Builds the buses, the deck and the bank from the tables (tests call it with their own).
@@ -241,6 +242,32 @@ func duck_target_db(bus: StringName) -> float:
 	return db
 
 
+## Applies the player's volume settings (mix.json volume_settings: a UiSettings id, 0..1 -> its buses) and follows
+## `settings` from now on. M2-AUD-06.
+func follow_settings(settings: UiSettings) -> void:
+	if settings == null:
+		return
+	apply_volume_settings(settings)
+	if not settings.changed.is_connected(_on_setting_changed):
+		settings.changed.connect(_on_setting_changed.bind(settings))
+
+
+func apply_volume_settings(settings: UiSettings) -> void:
+	var rows := mix.get("volume_settings", {}) as Dictionary
+	for key: String in rows:
+		var value: Variant = settings.get_value(StringName(key))
+		if value == null:
+			continue
+		var v := clampf(float(value), 0.0, 1.0)
+		for bus: Variant in rows[key]:
+			set_user_volume(StringName(str(bus)), linear_to_db(v) if v > 0.0 else -80.0)
+
+
+func _on_setting_changed(key: StringName, settings: UiSettings) -> void:
+	if (mix.get("volume_settings", {}) as Dictionary).has(String(key)):
+		apply_volume_settings(settings)
+
+
 ## Sets the player's volume for `bus` (dB) and applies it.
 func set_user_volume(bus: StringName, db: float) -> void:
 	user_db[bus] = db
@@ -291,9 +318,9 @@ func _on_node_added(node: Node) -> void:
 	elif node is BattleController:
 		_battles.append(node)
 	elif node is BattleVfx:
-		attach_battle.call_deferred(node)
+		_later(attach_battle, node)
 	elif node is ShellShrineLevel:
-		attach_shrine.call_deferred(node)
+		_later(attach_shrine, node)
 	elif node is FieldController:
 		_later(attach_footsteps, node)
 	elif ui != null and ui.wants(node):
@@ -326,6 +353,10 @@ func _poll_hooks() -> void:
 	var seq_music := false
 	for p: AudioStreamPlayer in _seq_players:
 		if p.playing and p.volume_db > music.floor_db:
+			seq_music = true
+		# A scene that started music keeps the bed held to its end, even when its cue ends first.
+		var seq := p.get_parent() as CutsceneSequencer
+		if seq != null and seq.is_playing() and seq.music_track != &"":
 			seq_music = true
 	if seq_music != _seen_seq_music:
 		_seen_seq_music = seq_music

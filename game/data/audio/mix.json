@@ -1,19 +1,54 @@
 {
   "version": 1,
-  "doc": "The game's mix (M2-AUD-02; docs/kb/audio/mix.md §4, docs/kb/tech/audio_runtime.md). The Audio autoload (game/audio/audio_director.gd) builds `buses` in order on start when they are missing: each sends to `send`. Assets ship at their loudness targets, so every bus is 0 dB; never fix an asset's loudness with a fader. `master_limiter`: a safety limiter on Master. `ducks`: a reason (dialogue: a dialogue box is open; battle: a battle scene is running) lowers buses by these dB, ramping at `sec`; ducks of different reasons add. `music`: crossfade_sec is the default music change, battle_in_sec the field-to-battle cut, floor_db the level a fade counts as silent and stops at, cutscene_release_sec how fast the zone bed returns when a cutscene's music lets go.",
+  "doc": "The game's mix (M2-AUD-02; docs/kb/audio/mix.md §4, docs/kb/tech/audio_runtime.md). The Audio autoload (game/audio/audio_director.gd) builds `buses` in order on start when they are missing: each sends to `send`. Assets ship at their loudness targets, so every bus is 0 dB; never fix an asset's loudness with a fader. `master_limiter`: a safety limiter on Master. `ducks`: a reason (dialogue: a dialogue box is open; battle: a battle scene is running) lowers buses by these dB, ramping at `sec`; ducks of different reasons add. `music`: crossfade_sec is the default music change, battle_in_sec the field-to-battle cut, floor_db the level a fade counts as silent and stops at, cutscene_release_sec how fast the zone bed returns when a cutscene's music lets go. volume_settings: an accessibility.json setting (UiSettings, 0..1) -> the buses it scales (M2-AUD-06; 0 is silence, 1 is the asset's own level); Audio applies them live.",
   "buses": [
-    {"name": "Music", "send": "Master"},
-    {"name": "Ambience", "send": "Master"},
-    {"name": "SFX", "send": "Master"},
-    {"name": "UI", "send": "SFX"},
-    {"name": "World", "send": "SFX"},
-    {"name": "Combat", "send": "SFX"},
-    {"name": "Voice", "send": "Master"}
+    {
+      "name": "Music",
+      "send": "Master"
+    },
+    {
+      "name": "Ambience",
+      "send": "Master"
+    },
+    {
+      "name": "SFX",
+      "send": "Master"
+    },
+    {
+      "name": "UI",
+      "send": "SFX"
+    },
+    {
+      "name": "World",
+      "send": "SFX"
+    },
+    {
+      "name": "Combat",
+      "send": "SFX"
+    },
+    {
+      "name": "Voice",
+      "send": "Master"
+    }
   ],
-  "master_limiter": {"ceiling_db": -1.0, "threshold_db": -1.5},
+  "master_limiter": {
+    "ceiling_db": -1.0,
+    "threshold_db": -1.5
+  },
   "ducks": {
-    "dialogue": {"sec": 0.25, "buses": {"Music": -4.0, "Ambience": -2.0}},
-    "battle": {"sec": 0.5, "buses": {"Ambience": -3.0}}
+    "dialogue": {
+      "sec": 0.25,
+      "buses": {
+        "Music": -4.0,
+        "Ambience": -2.0
+      }
+    },
+    "battle": {
+      "sec": 0.5,
+      "buses": {
+        "Ambience": -3.0
+      }
+    }
   },
   "music": {
     "crossfade_sec": 1.5,
@@ -21,5 +56,20 @@
     "battle_out_sec": 1.2,
     "floor_db": -60.0,
     "cutscene_release_sec": 2.0
+  },
+  "volume_settings": {
+    "master_volume": [
+      "Master"
+    ],
+    "music_volume": [
+      "Music"
+    ],
+    "sfx_volume": [
+      "SFX",
+      "Ambience"
+    ],
+    "voice_volume": [
+      "Voice"
+    ]
   }
 }

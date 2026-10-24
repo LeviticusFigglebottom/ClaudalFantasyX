@@ -23,6 +23,7 @@ CLASSES = "@classes"  # load_files: {global class name: [its declared signals]} 
 NODE_SIGNALS = {"ready", "tree_entered", "tree_exiting", "tree_exited", "visibility_changed", "hidden",
                 "draw", "resized", "focus_entered", "focus_exited"}
 ENCOUNTERS = "game/data/battle/encounters.json"
+ACCESSIBILITY = "game/data/ui/accessibility.json"
 VFX_EFFECTS = "game/data/vfx/battle/effects.json"
 SILENCE = "silence"
 AUDIO_EXT = (".ogg", ".wav")
@@ -67,6 +68,9 @@ def mix_errors(mix: object) -> tuple[list[str], set[str]]:
     for k, v in (mix.get("music") or {}).items():
         if not _num(v):
             errs.append(f"{MIX} music.{k}: must be a number")
+    for k, v in (mix.get("volume_settings") or {}).items():
+        if not isinstance(v, list) or not v or any(b not in buses for b in v):
+            errs.append(f"{MIX} volume_settings.{k}: a non-empty list of buses ({v})")
     return errs, buses
 
 
@@ -325,6 +329,11 @@ def ui_hook_errors(doc: object, ids: set[str], classes: dict[str, list[str]] | N
 
 def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags: set[str]) -> list[str]:
     errs, buses = mix_errors(files.get(MIX))
+    acc = ((files.get(ACCESSIBILITY) or {}).get("accessibility") or {}).get("settings", [])
+    acc_ids = {r.get("id") for r in acc if isinstance(r, dict)}
+    for k in ((files.get(MIX) or {}).get("volume_settings") or {}):
+        if ACCESSIBILITY in files and k not in acc_ids:
+            errs.append(f"{MIX} volume_settings.{k}: not a setting in {ACCESSIBILITY}")
     enc_doc = files.get(ENCOUNTERS) or {}
     encounters = {e.get("id") for e in enc_doc.get("encounters", []) if isinstance(e, dict)}
     amb = files.get(AMBIENCE) or {}
@@ -364,7 +373,8 @@ def merged_sfx(files: dict[str, object]) -> dict:
 def load_files(root: Path) -> dict[str, object]:
     out = {}
     extra = [str(p.relative_to(root)) for p in sorted((root / SFX_DIR).glob("sfx_*.json"))]
-    for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, AMBIENCE, FOOTSTEPS, ENCOUNTERS, VFX_EFFECTS] + extra:
+    for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, AMBIENCE, FOOTSTEPS, ENCOUNTERS, VFX_EFFECTS,
+                ACCESSIBILITY] + extra:
         p = root / rel
         if p.is_file():
             out[rel] = json.loads(p.read_text(encoding="utf-8"))

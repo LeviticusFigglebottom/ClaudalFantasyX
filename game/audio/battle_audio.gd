@@ -132,8 +132,11 @@ func _on_charge_broken(_enemy: BattleCombatant, _skill_id: StringName) -> void:
 	play_key("events", "rim_break")
 
 
-func _on_called(_v: BattleCombatant) -> void:
+func _on_called(v: BattleCombatant) -> void:
 	play_key("events", "vowbound_call")
+	# The Vowbound's own sting (battle_sfx.json vowbound_stings; Ilun's is the ilun_summon music sting).
+	if v != null:
+		play_key("vowbound_stings", BattleVfx.base_id(v.id))
 
 
 func _on_field_cleared(field_id: StringName, _fallen: Array[BattleCombatant]) -> void:

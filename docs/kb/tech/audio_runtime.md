@@ -62,7 +62,7 @@ Assets ship at their loudness targets, so every bus sits at 0 dB plus the player
 
 | Node | What Audio does |
 |---|---|
-| An `AudioStreamPlayer` under a `CutsceneSequencer` | Its `Music` player goes to the Music bus, any other (an `@sfx`) to SFX. While the sequencer's music plays, the zone bed holds (fades out in 0.5 s) and comes back over `cutscene_release_sec` once it stops. |
+| An `AudioStreamPlayer` under a `CutsceneSequencer` | Its `Music` player goes to the Music bus, any other (an `@sfx`) to SFX. While the sequencer's music plays, and for the rest of a scene that started music (a cue may end before its scene), the zone bed holds (fades out in 0.5 s); it comes back over `cutscene_release_sec` once both are over. |
 | `DialogueBox` | Its `Blip` goes to Voice; while any box is visible, the `dialogue` duck is on. |
 | `BattleController` | While one is in the tree, the `battle` duck is on. |
 | `BattleVfx` under a `BattleController` | A `BattleAudio` (deferred, once the engine exists). A retry replaces the view, and with it the listener. |

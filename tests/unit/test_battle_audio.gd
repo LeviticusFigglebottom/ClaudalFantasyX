@@ -149,6 +149,20 @@ func test_the_vowbound_call_and_dismiss() -> void:
 	_teardown()
 
 
+func test_calling_ilun_plays_her_sting_on_the_music_bus() -> void:
+	_attach()
+	var ilun := BattleCombatant.new()
+	ilun.id = &"ilun"
+	engine.vowbound.called.emit(ilun)
+	assert_eq(audio.played, [&"vowbound_call", &"ilun_summon"] as Array[StringName], "the call, then Ilun's own sting")
+	var sting: AudioStreamPlayer = null
+	for p: Node in dir.sfx.get_children():
+		if String(p.name).begins_with("ilun_summon"):
+			sting = p as AudioStreamPlayer
+	assert_true(sting != null and sting.bus == &"Music", "the sting is music")
+	_teardown()
+
+
 func test_repeats_on_other_targets_layer_softer() -> void:
 	_attach()
 	vfx.effect_played.emit(&"heal", Vector3.ZERO)

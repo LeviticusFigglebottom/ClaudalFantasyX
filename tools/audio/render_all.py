@@ -40,7 +40,11 @@ from synth.mixer import read_audio  # noqa: E402
 
 SIZE_BUDGET = 16 * 1024 * 1024       # all shipped audio for the M2 slice (mix.md §5)
 NEW_AUDIO_BUDGET = 4 * 1024 * 1024   # the three M1-AUD-02 cues together
-M1_AUD_02 = ("hush_theme_v2", "battle_standard", "temple_trial")
+M1_AUD_02 = ("hush_theme_v2", "battle_standard.", "temple_trial")
+# M2-AUD-03's cues, held to the music targets (-16 +- 0.5 LUFS, true peak <= -1 dBTP). drownbell_p1 is one stem of a
+# stack measured whole by its source (the full stack is -16; stem 1 alone is quieter by design, mix.md §2).
+M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_verse", "hush_coda", "haluna_dawn",
+           "shell_shrine_interior", "ilun_summon")
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
@@ -74,6 +78,18 @@ JOBS = [
       "battle/rim_break.ogg", "battle/polyp_rise.ogg", "battle/polyp_mend.ogg", "battle/floodnet.ogg",
       "battle/flood.ogg", "battle/flood_soft.ogg", "battle/vowbound_call.ogg", "battle/vowbound_dismiss.ogg",
       "battle/victory.ogg", "battle/defeat.ogg", "battle/escape.ogg", "drownbell_toll.ogg"], "sfx"),
+    ("assets_src/music/haluna_village.py", "assets/audio/music",
+     ["haluna_village.ogg", "haluna_village.loop.json"], "music_loop"),
+    ("assets_src/music/haluna_night.py", "assets/audio/music",
+     ["haluna_night.ogg", "haluna_night.loop.json"], "music_loop"),
+    ("assets_src/music/battle_standard_v2.py", "assets/audio/music",
+     ["battle_standard_v2.ogg", "battle_standard_v2.loop.json"], "music_loop"),
+    ("assets_src/music/drownbell.py", "assets/audio/music",
+     ["drownbell_p1.ogg", "drownbell_p1.loop.json", "drownbell_p2.ogg", "drownbell_p2.loop.json"], "music_loop"),
+    ("assets_src/music/hush_first_verse.py", "assets/audio/music", ["hush_first_verse.ogg"], "music"),
+    ("assets_src/music/hush_coda.py", "assets/audio/music", ["hush_coda.ogg"], "music"),
+    ("assets_src/music/haluna_dawn.py", "assets/audio/music", ["haluna_dawn.ogg"], "music"),
+    ("assets_src/music/ilun_summon.py", "assets/audio/sfx", ["ilun_summon.ogg"], "music"),
     ("assets_src/sfx/field_ambience.py", "assets/audio/ambience",
      [f"{b}{ext}" for b in ("haluna_day", "haluna_night", "surf", "dock", "shrine_interior", "wind")
       for ext in (".ogg", ".loop.json")], "ambience_loop"),
@@ -203,7 +219,8 @@ def main() -> int:
             continue
         ils = f"{il:7.2f}" if il is not None else "      -"
         print(f"{path:48} {size:8d} {sec:6.2f} {ils} {mm:7.2f} {tp:6.2f}  {sha[:12]}")
-        if il is not None and os.path.basename(path).startswith(M1_AUD_02) and (abs(il + 16.0) > 0.5 or tp > -1.0):
+        held = os.path.basename(path).startswith(M1_AUD_02 + M2_CUES)
+        if il is not None and held and (abs(il + 16.0) > 0.5 or tp > -1.0):
             print(f"FAIL {path}: outside -16 +- 0.5 LUFS, or true peak above -1 dBTP")
             ok = False
         if path.startswith("assets/audio/ambience") and (abs(il - AMBIENCE_LUFS) > 0.5 or tp > AMBIENCE_MAX_TP):

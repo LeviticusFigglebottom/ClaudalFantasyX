@@ -182,6 +182,25 @@ func test_ducks_ramp_the_bus_and_release() -> void:
 	_done()
 
 
+func test_volume_settings_scale_their_buses_live() -> void:
+	var real := AudioData.table(AudioData.MIX)
+	dir.mix = MIX.duplicate(true)
+	dir.mix["volume_settings"] = real.get("volume_settings", {})
+	var s := UiSettings.new()
+	dir.follow_settings(s)
+	assert_eq(float(dir.user_db.get(&"Music", 99.0)), 0.0, "1.0 is the asset's own level")
+	assert_true(s.set_value(&"music_volume", 0.5))
+	assert_between(float(dir.user_db[&"Music"]), -6.03, -6.0, "half is -6 dB, applied on change")
+	assert_true(s.set_value(&"sfx_volume", 0.0))
+	assert_eq(float(dir.user_db[&"SFX"]), -80.0, "0 is silence")
+	assert_eq(float(dir.user_db[&"Ambience"]), -80.0, "the effects slider carries the ambience")
+	for key: String in dir.mix["volume_settings"]:
+		assert_true(s.settings().has(StringName(key)), "%s is an accessibility setting" % key)
+	for bus: StringName in [&"Music", &"SFX", &"Ambience"]:
+		dir.set_user_volume(bus, 0.0)
+	_done()
+
+
 func test_sfx_cooldown_voices_and_no_repeat() -> void:
 	assert_true(dir.play_sfx(&"tick") != null, "plays")
 	assert_true(dir.play_sfx(&"tick") == null, "a replay inside the cooldown is dropped")

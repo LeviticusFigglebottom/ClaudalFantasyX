@@ -3,7 +3,8 @@
   "doc": "Music cues and where they play (M2-AUD-02; docs/kb/tech/audio_runtime.md). cues: id -> file (one stream) or stems (synchronized layers of equal length; start_stems are audible at the start, the rest start silent), volume_db (0: assets ship at -16 LUFS), resume (a cue that comes back, after a battle say, carries on from where it stopped). Looping comes from each file's import settings (render_all.py writes them from the .loop.json sidecars). zones: scene -> the zone's music and ambience beds, switched under the router's fade (SceneRouter.scene_swapping). A missing `music` key leaves the music as it is; \"silence\" fades it out. variants: the first whose `flag` is set replaces the row's keys. battle: the cue per encounter (else default), and phases: an engine phase_changed id -> the stems to bring in or take out over sec. Cue ids are the .dlg @music ids (vertical_slice.md §6). tools/validate_data.py checks every file, scene and flag.",
   "cues": {
     "battle_standard": {
-      "file": "res://assets/audio/music/battle_standard.ogg"
+      "file": "res://assets/audio/music/battle_standard.ogg",
+      "_note": "the M1-AUD-02 prototype (v1), kept for A/B; battles play v2"
     },
     "shell_shrine_interior": {
       "file": "res://assets/audio/music/shell_shrine_interior.ogg"
@@ -14,29 +15,84 @@
     "temple_trial": {
       "file": "res://assets/audio/music/temple_trial.ogg",
       "_note": "the M1-AUD-02 prototype, kept for A/B"
+    },
+    "haluna_village": {
+      "file": "res://assets/audio/music/haluna_village.ogg",
+      "resume": true
+    },
+    "haluna_night": {
+      "file": "res://assets/audio/music/haluna_night.ogg",
+      "resume": true
+    },
+    "battle_standard_v2": {
+      "file": "res://assets/audio/music/battle_standard_v2.ogg"
+    },
+    "drownbell": {
+      "stems": [
+        "res://assets/audio/music/drownbell_p1.ogg",
+        "res://assets/audio/music/drownbell_p2.ogg"
+      ],
+      "start_stems": [
+        0
+      ]
+    },
+    "hush_first_verse": {
+      "file": "res://assets/audio/music/hush_first_verse.ogg",
+      "_note": "Cutscene B (B09); the sequencer plays it by name (@music hush_first_verse)"
+    },
+    "hush_coda": {
+      "file": "res://assets/audio/music/hush_coda.ogg",
+      "_note": "the slice end card (B12), piano alone"
+    },
+    "haluna_dawn": {
+      "file": "res://assets/audio/music/haluna_dawn.ogg",
+      "_note": "Cutscene A (B01); the sequencer plays it by name"
     }
   },
   "zones": [
     {
       "scene": "res://game/core/boot.tscn",
       "music": "hush_theme",
-      "ambience": [],
       "_note": "the title"
     },
     {
+      "scene": "res://game/levels/ch02/haluna/haluna.tscn",
+      "music": "haluna_village",
+      "variants": [
+        {
+          "flag": "ch03_drownbell_defeated",
+          "music": "haluna_night"
+        }
+      ],
+      "_note": "B03 by day; B11 the dock at night after the Drownbell. Beds: ambience.json"
+    },
+    {
       "scene": "res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
-      "music": "shell_shrine_interior",
-      "ambience": []
+      "music": "shell_shrine_interior"
     },
     {
       "scene": "res://game/flow/field_battle.tscn",
-      "ambience": [],
       "_note": "the battle's cue comes from `battle` when the battle starts"
+    },
+    {
+      "scene": "res://game/flow/end_card.tscn",
+      "music": "hush_coda",
+      "_note": "B12"
     }
   ],
   "battle": {
-    "default": "battle_standard",
-    "encounters": {},
-    "phases": {}
+    "default": "battle_standard_v2",
+    "encounters": {
+      "drownbell": "drownbell"
+    },
+    "phases": {
+      "flood": {
+        "stems_on": [
+          1
+        ],
+        "sec": 4.0,
+        "_note": "the Flood (phase 2): low strings and the rising water come in over 4 s"
+      }
+    }
   }
 }
