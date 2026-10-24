@@ -52,17 +52,9 @@ func make_policy(policy: StringName) -> SimPolicy:
 
 ## A named party loadout from sim_policies.json "loadouts": {gear: {character: [equipment ids]},
 ## items: {item id: count}, flags?: [story flags set], vowbound?: [ids bound]}. {} if unknown (the
-## bare party from characters.json). `flags` become BattleEngine.story_flags (flag-locked skills,
-## e.g. call_ilun); `vowbound` the Vowbound the party may call (M2-CMB-05; policies call by
-## sim_policies.json "call_vowbound"); `retire_skills` skills taken off the party (M2-FP-17: the
-## Drownbell suite retires the call_ilun stand-in, so its policies play the real call).
-## M2-FP-17: takes the loadout's "retire_skills" off every party member after setup.
-static func retire_skills(engine: BattleEngine, kit: Dictionary) -> void:
-	for sid: Variant in kit.get("retire_skills", []):
-		for c in engine.party_active + engine.party_reserve:
-			c.skills.erase(StringName(str(sid)))
-
-
+## bare party from characters.json). `flags` become BattleEngine.story_flags (flag-locked skills);
+## `vowbound` the Vowbound the party may call (M2-CMB-05; policies call by
+## sim_policies.json "call_vowbound").
 func loadout(loadout_name: StringName) -> Dictionary:
 	return ((_config.get("loadouts", {}) as Dictionary).get(String(loadout_name), {}) as Dictionary).duplicate(true)
 
@@ -100,7 +92,6 @@ func run_one(
 	for f: Variant in kit.get("flags", []):
 		engine.story_flags.append(StringName(str(f)))
 	engine.setup(db, active, reserve, encounter, rng_seed)
-	retire_skills(engine, kit)
 	var bound: Array[StringName] = []
 	for v: Variant in kit.get("vowbound", []):
 		bound.append(StringName(str(v)))
