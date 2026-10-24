@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "doc": "Debug chapter select (F8; M3-ARC-02; debug builds only, developer text, not localized). Each start begins a fresh game (Game.new_game), sets `flags` true (the story so far: what the chapters before it leave set on a straight playthrough), the chapter and the party, then goes to `location` at `spawn` (locations.json ids; WorldReturn.go_to). The chapter's own zone story takes it from there. Checked by tools/chapter_flow_check.py.",
+  "starts": [
+    {
+      "id": "ch01",
+      "label": "Ch1: the Underway (a New Game after the prologue)",
+      "location": "ch01/oruvel_underway",
+      "spawn": "Drop",
+      "chapter": 1,
+      "party": ["rhen"],
+      "flags": []
+    },
+    {
+      "id": "ch02",
+      "label": "Ch2: Haluna (the M2 slice)",
+      "location": "ch02/haluna",
+      "spawn": "Beach",
+      "chapter": 2,
+      "party": ["rhen"],
+      "flags": ["ch01_started", "ch01_underway_done", "ch01_went_under", "ch01_hullgnaw_defeated", "ch01_children_safe"]
+    },
+    {
+      "id": "ch03",
+      "label": "Ch3: the Saltgrass Causeway, then the Shell Shrine",
+      "location": "ch03/saltgrass_causeway",
+      "spawn": "FromHaluna",
+      "chapter": 3,
+      "party": ["rhen", "asha", "toma"],
+      "flags": ["ch01_started", "ch01_underway_done", "ch01_went_under", "ch01_hullgnaw_defeated", "ch01_children_safe", "ch02_met_asha", "ch02_tideline_won"]
+    },
+    {
+      "id": "ch04",
+      "label": "Ch4: Haluna, the wake night",
+      "location": "ch04/haluna_wake",
+      "spawn": "NemeDoor",
+      "chapter": 4,
+      "party": ["rhen", "asha", "toma"],
+      "flags": ["ch01_started", "ch01_underway_done", "ch01_went_under", "ch01_hullgnaw_defeated", "ch01_children_safe", "ch02_met_asha", "ch02_tideline_won", "ch03_causeway_arrived", "ch03_shrine_door_open", "ch03_drownbell_defeated", "ch03_ilun_bound", "ch03_first_verse_sung", "ch03_rhen_sworn_guardian"]
+    },
+    {
+      "id": "ch05",
+      "label": "Ch5: Pemakar",
+      "location": "ch05/pemakar",
+      "spawn": "Harbour",
+      "chapter": 5,
+      "party": ["rhen", "asha", "toma"],
+      "flags": ["ch01_started", "ch01_underway_done", "ch01_went_under", "ch01_hullgnaw_defeated", "ch01_children_safe", "ch02_met_asha", "ch02_tideline_won", "ch03_causeway_arrived", "ch03_shrine_door_open", "ch03_drownbell_defeated", "ch03_ilun_bound", "ch03_first_verse_sung", "ch03_rhen_sworn_guardian", "ch04_started", "ch04_left_haluna", "ch04_ysolde_joined", "ch04_boarded_derelict", "ch04_spar_wraith_defeated"]
+    },
+    {
+      "id": "ch06",
+      "label": "Ch6: the Brine Shoals",
+      "location": "ch06/brine_shoals",
+      "spawn": "Entry",
+      "chapter": 6,
+      "party": ["rhen", "asha", "kerrid"],
+      "flags": ["ch01_started", "ch01_underway_done", "ch01_went_under", "ch01_hullgnaw_defeated", "ch01_children_safe", "ch02_met_asha", "ch02_tideline_won", "ch03_causeway_arrived", "ch03_shrine_door_open", "ch03_drownbell_defeated", "ch03_ilun_bound", "ch03_first_verse_sung", "ch03_rhen_sworn_guardian", "ch04_started", "ch04_left_haluna", "ch04_ysolde_joined", "ch04_boarded_derelict", "ch04_spar_wraith_defeated", "ch05_arrived", "ch05_met_kerrid", "ch05_trial_begun", "ch05_matron_quieted", "ch05_kahre_bound", "ch05_second_verse_sung", "ch05_done"]
+    },
+    {
+      "id": "ch07",
+      "label": "Ch7: Tamsule, the river mouth",
+      "location": "ch07/tamsule",
+      "spawn": "RiverMouth",
+      "chapter": 7,
+      "party": ["rhen", "asha", "toma"],
+      "flags": ["ch01_started", "ch01_underway_done", "ch01_went_under", "ch01_hullgnaw_defeated", "ch01_children_safe", "ch02_met_asha", "ch02_tideline_won", "ch03_causeway_arrived", "ch03_shrine_door_open", "ch03_drownbell_defeated", "ch03_ilun_bound", "ch03_first_verse_sung", "ch03_rhen_sworn_guardian", "ch04_started", "ch04_left_haluna", "ch04_ysolde_joined", "ch04_boarded_derelict", "ch04_spar_wraith_defeated", "ch05_arrived", "ch05_met_kerrid", "ch05_trial_begun", "ch05_matron_quieted", "ch05_kahre_bound", "ch05_second_verse_sung", "ch05_done", "ch06_arrived", "ch06_inquisitor_yielded", "ch06_liss_joined", "ch06_done"]
+    },
+    {
+      "id": "ch09",
+      "label": "Ch9: Corrow by night (Ch8 is not built yet)",
+      "location": "ch09/corrow_night",
+      "spawn": "Strand",
+      "chapter": 9,
+      "party": ["rhen", "asha", "toma"],
+      "flags": ["ch01_started", "ch01_underway_done", "ch01_went_under", "ch01_hullgnaw_defeated", "ch01_children_safe", "ch02_met_asha", "ch02_tideline_won", "ch03_causeway_arrived", "ch03_shrine_door_open", "ch03_drownbell_defeated", "ch03_ilun_bound", "ch03_first_verse_sung", "ch03_rhen_sworn_guardian", "ch04_started", "ch04_left_haluna", "ch04_ysolde_joined", "ch04_boarded_derelict", "ch04_spar_wraith_defeated", "ch05_arrived", "ch05_met_kerrid", "ch05_trial_begun", "ch05_matron_quieted", "ch05_kahre_bound", "ch05_second_verse_sung", "ch05_done", "ch06_arrived", "ch06_inquisitor_yielded", "ch06_liss_joined", "ch06_done", "ch07_arrived", "ch07_met_tavi", "ch07_saw_galleries", "ch07_tidecup_played"]
+    }
+  ]
+}

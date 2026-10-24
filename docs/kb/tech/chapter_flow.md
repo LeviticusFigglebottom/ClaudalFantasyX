@@ -193,3 +193,15 @@ Ch6 "Salt Edict" is built the same way: `game/data/flow/chapters/ch06.json`, one
 - `yield_at_hp_pct: 0` makes both foes yield on their feet at 0 HP: nobody dies. The encounter's `victory_key` sets the banner's title: "The Inquisitor yields."
 
 **Random fights.** The layout has one table for the whole road. It runs between `ch06_arrived` and `ch06_sheltered_liss`, so the camp has none. GreyboxZone has a single `encounters` block, so the ridges and the flats share it; separate tables for the flats need a zone-root feature (M3-C06-05).
+
+## Debug chapter select (M3-ARC-02)
+F8 in the debug overlay (debug builds only) lists the starts in `game/data/debug/chapter_select.json`: Ch1, then each built chapter. Enter on a start:
+1. begins a fresh game;
+2. sets that start's `flags` (the story so far);
+3. sets its `chapter` and `party`;
+4. goes to its `location` at `spawn`. The chapter's zone story takes over from there.
+
+`tools/chapter_flow_check.py` checks the starts: locations, spawns on greybox zones, heroes and declared flags. When a new chapter lands, add its start, and add its completion flags to every later start.
+
+The slice's end card leads on to `end_card.next_location` / `next_spawn` in `first_playable.json` when they are set (M3-C04-04). They are empty for the M2 review build, so the card returns to the title.
+
