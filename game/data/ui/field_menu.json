@@ -1,0 +1,42 @@
+{
+  "field_menu": {
+    "doc": "The field menu (M2-UI-04; docs/kb/tech/ui.md section Field menu). Rects are top-left x, y, w, h at the 1920 x 1080 reference, multiples of 3 so every edge lands on a whole pixel at 1280 x 720. 'root' and 'detail' are MenuPage metrics blocks (the same keys as battle_hud.json commands); a page is as tall as its rows need (MenuPage.height_for), 'detail' up to max_rows. 'desc' holds the line about the highlighted row: at the top of the right column on the root, else 'gap' under the right page, which is as tall as its rows. canvas_layer sits under the bestiary's (64), which opens over it.",
+    "canvas_layer": 60,
+    "panel": {"rect": [399, 219, 1122, 600], "pad": 27, "title_height": 56, "help_height": 40},
+    "root": {
+      "rect": [426, 318, 339, 168],
+      "header_height": 0,
+      "row_pitch": 48,
+      "max_rows": 3,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 60,
+      "rank_width": 60,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "detail": {
+      "rect": [801, 318, 693, 0],
+      "header_height": 45,
+      "row_pitch": 48,
+      "max_rows": 4,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 220,
+      "rank_width": 200,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "desc": {"height": 120, "gap": 16}
+  }
+}

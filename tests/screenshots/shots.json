@@ -749,6 +749,14 @@
     {
       "id": "bestiary_menu",
       "scene": "res://game/ui/bestiary/shots/bestiary_menu.tscn"
+    },
+    {
+      "id": "field_menu",
+      "scene": "res://game/ui/field_menu/shots/field_menu.tscn"
+    },
+    {
+      "id": "field_menu_swell_modes",
+      "scene": "res://game/ui/field_menu/shots/field_menu_swell_modes.tscn"
     }
   ]
 }

@@ -766,7 +766,7 @@ func _show_pick() -> void:
 			"screen_pos": head_pos(cid),
 			"hostile": foe,
 			"combatant": c,
-			"revealed": false,
+			"revealed": bestiary.knows(c),
 			"forced": forced != null and forced == c,
 		}
 		var land := engine.reflect_recipient(engine.current, c, sk) if ids.size() == 1 else c
