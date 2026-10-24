@@ -3,6 +3,10 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **NOT merge-ready past a30b664 yet.** The full ci_local on 1c07667b failed:
+  - **Cause:** a `sed` that reordered the causeway's shallows fight also rewrote `sandbox_reef`'s identical foe list, which moved the sandbox bands and broke five battle tests.
+  - **Fixed:** in the commit after 1b405ad2.
+  - **Next:** a full ci_local plus `sim --check` re-run is under way. The MERGE-READY line comes when it's green. Don't merge anything between a30b664 and that line.
 - **The Lead's 13:09 M2-review blockers 1–3 are done, for review:**
   - **M2-FP-25, B06 the Saltgrass Causeway:** the route, its rails, banters, the harrier lesson and random fights, all in band.
   - **M2-FP-26, the B12 end card:** the voice-over and credits. The coda is audio's `hush_coda` zone cue, which arrives with claude/audio.
