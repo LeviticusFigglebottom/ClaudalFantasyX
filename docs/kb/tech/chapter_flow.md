@@ -91,6 +91,25 @@ A battle step's own `party` is not a `party` step.
 
 **The exit to Haluna.** Ch1 leaves an empty party, so Haluna seats Rhen, Asha and Toma after Cutscene A exactly as it did from a prologue start. Nothing in Ch2 changes.
 
+## Ch5 (M3-C05-02)
+Ch5 "Terraces of Ash" follows Ch1's pattern: `game/data/flow/chapters/ch05.json`, two zones under `game/levels/ch05/`, scripts in `game/data/dialogue/ch05/`, loc rows in `game/data/loc/ch05.csv`, and the test `tests/integration/test_ch05_thread.gd`.
+
+**The zone roots.**
+- `Ch05Zone` extends `Ch01Zone`, so it keeps `rest`, `give`, `prompt` and `hide_block`/`show_block`. It adds:
+  - `give_if(flag, items, lume)`: `give` only while the flag is set. B04's "Not yet" gives the key item `pemakar_leaf_boat` this way, since an `if_event` would end the run.
+  - `place_actor(id, mark)`: a cut, not a walk. Kerrid is at the inn gate when the party comes back in B11.
+  - The layout's `variants`: rows of `{when, sun, environment, hide, show}`, applied over the layout's own light on `_ready` (and by `apply_variant()`). Pemakar's layout is Lanternfall night; the day after the binding is a variant.
+- `Ch05AshcrownZone` is the view of `AshcrownTrial` (`game/levels/ch05/ashcrown/ashcrown_trial.gd`; data `game/data/trials/ashcrown.json`), like ShellShrineLevel and ShellShrineTrial.
+  - Its triggers carry `{"trial": catch|turn|stand|release, "id": piece}` payloads. The zone root listens for them itself (ZoneStory ignores them), and only while `ch05_trial_begun` is set and the story is free.
+  - It reports the metres the player walks to the trial: the stud ring is a step budget, not a timer.
+  - It sets the trial's flags: `ch05_quench_alcove_open` on the sealed vein, `ch05_strike_landed` on the landing.
+  - A zone entered after the landing builds the trial solved.
+
+**Entry and exit.**
+- **Entry:** `ch05/pemakar` at `Harbour`, which is also the location's own spawn, so Ch5 can be entered directly (F5). Ch4 (M3-C04-02) should hand off with `{"go": {"location": "ch05/pemakar", "spawn": "Harbour"}}`. A party Ch4 leaves is kept. An empty one is filled with Rhen, Asha and Toma, with Ysolde in reserve.
+- **Kerrid** joins with a `party` step at the end of B05: active Rhen, Asha and Kerrid; reserve Toma and Ysolde.
+- **Exit:** Ch6's `ch06/brine_shoals` isn't built, so the dawn beat ends on the end card. Repoint its last step to a `go` when Ch6 lands.
+
 ## Ch7 (M3-C07-02)
 Ch7 "The Tidecup" is built the same way: `game/data/flow/chapters/ch07.json`, two zones under `game/levels/ch07/`, scripts in `game/data/dialogue/ch07/`, the loc table `game/data/loc/ch07.csv`, and the test `tests/integration/test_ch07_thread.gd`.
 

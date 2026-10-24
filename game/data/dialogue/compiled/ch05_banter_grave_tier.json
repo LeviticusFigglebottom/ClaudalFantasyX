@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch05_banter_grave_tier",
+ "source": "game/data/dialogue/ch05/ch05_banter_grave_tier.dlg",
+ "start": "ch05_banter_grave_tier",
+ "nodes": {
+  "ch05_banter_grave_tier": {
+   "headers": {"location": "ch05/ashcrown"},
+   "ops": [
+    {"op": "line", "id": "ch05_banter_graves_001", "key": "DLG_CH05_BANTER_GRAVES_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 5},
+    {"op": "line", "id": "ch05_banter_graves_002", "key": "DLG_CH05_BANTER_GRAVES_002", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

@@ -114,6 +114,33 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - **Ch1 is greybox:** blocks and capsules, and a teal stand-in for the underwater look. Its music and sounds don't exist yet, so the chapter plays mostly silent. The sea between the hulls is a floor you can walk on. Ch1 has no save shrine (its chapter start autosaves).
 - **Ch7 is greybox too**, and its Reefball match is a stand-in that skips straight to the result. The port has no shop, inn or save shrine yet (its chapter start and the pool steps autosave). Liss and Kerrid appear only as capsules: they can't join the party yet.
 
+## Ch5, "Terraces of Ash" (greybox; about 35–45 minutes)
+
+Ch5 isn't on the New Game thread yet: Ch4, which brings the ferry in, is being built alongside it. From an editor run, press **F5** (teleport) and pick **Pemakar** (`ch05/pemakar`). The party starts as Rhen, Asha and Toma, with Ysolde in reserve. Everything is grey blocks and capsules, and the chapter has no music or sounds yet.
+
+1. **The ferry comes in** at night. Rhen notices Asha's first band, and Ysolde reads the Tenders' letter.
+2. **Pemakar before the boats.** Walk up the town from the harbour. You overhear people as you pass: an old ferryman by the boats, the boat-folders and a lacquer shop in the market, a child in the forge lane counting the thunder, and a woman and a child on the grave terraces (east, by the paddies).
+   - **Optional, "The Smith's Question":** talk to **Garo** at the forge on the west side of the forge lane. If you miss him tonight, he's there again the next afternoon.
+3. **Lanternfall.** Walk to the bell at the top of the town (past the open-hand gate). The boats go down the mountain, and Rhen chooses who his boat is for: **For Mother Kell**, **For Oruvel** or **Not yet** (which keeps it; check **Items**). Then the party walks down to the weir by the harbour, and a stranger joins at the back of the line.
+4. **Ashcrown, the next day.** You start at the foot of the pilgrim stair with Rhen, Asha and Kerrid (Toma and Ysolde in reserve).
+   - The first fight is two **slag tortoises**. Their shells turn blows aside; Kerrid's **Fluke Cleave** breaks them for a while, and the timeline shows how long.
+   - Further up, the stair can throw a fight at you every so often: ashwings (fire hurts them; their dust brings sleep), a vein sparker (magic finds it), and more tortoises.
+5. **The trial.** At the top, walk east into the red crown pavilion, and the Tender gives the rite. Then the strike goes down four tiers, south along the copper.
+   - On each tier, use the **catch-rod** (west side) to charge the bowl, turn the bronze **vein-gates** (**E**) until the copper runs from the bowl to the tier's edge, then pull the **release** (east side). The strike pours down to the next tier's bowl, and the stair down opens.
+   - The charge fades as you **walk** (about 64 m per charge), not while you stand and think. If it fades, or you route it into an ash drift, catch it again at the same tier's rod.
+   - On tier 3, the two outer gates turn together. One of their positions runs the strike into a sealed vein in the east wall: it costs the charge, but it opens an alcove with the **Quench Charm** in it.
+   - On tier 4, a gate only passes while someone stands on its plate. Use a plate to send Toma there.
+   - Stuck on a tier for a minute and a half? The Tender gives one hint.
+6. **The Cinder Matron.** Walk on south into the anvil court when the strike lands. She's a two-phase boss: break her crust with Kerrid, then hit hard while it's broken. At half health she pours slag on everyone. In this phase, water and cold (Ysolde's Frost, or calling Ilun) harden her again.
+7. **Kahre.** Asha goes into the chamber alone, and the party waits. Then she sings the second verse.
+8. **Pemakar, after.** You're back in town in the afternoon. A few things have changed, and Garo is there if you didn't meet him. Walk down to the harbour road for the dawn. The chapter ends on the **end card** for now; Ch6 isn't built yet.
+
+**Ch5 placeholders:**
+- **Kerrid's battle kit and Kahre's are provisional**, so expect odd numbers. Kahre can't be called yet in practice: no battle after the binding uses him.
+- **The Quench Charm is a key item** for now, not the Fire ward it will become.
+- **The trial has no lightning yet:** a charged bowl just glows pale violet.
+- **The Matron's two phases:** there's no slag on the floor, and her timeline telegraph for the re-crust uses the standard charge marker.
+
 ## Reporting
 
 Write a line per issue: what you did, what you saw, and what you expected. Screenshots help (Windows + Shift + S). Small impressions count too: "this part felt long" is useful.

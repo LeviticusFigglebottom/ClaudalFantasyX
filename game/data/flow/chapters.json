@@ -4,6 +4,7 @@
     "files": [
       "res://game/data/flow/chapters/ch01.json",
       "res://game/data/flow/chapters/ch03.json",
+      "res://game/data/flow/chapters/ch05.json",
       "res://game/data/flow/chapters/ch07.json"
     ]
   }

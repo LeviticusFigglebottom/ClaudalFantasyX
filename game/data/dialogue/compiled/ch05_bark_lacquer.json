@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch05_bark_lacquer",
+ "source": "game/data/dialogue/ch05/ch05_bark_lacquer.dlg",
+ "start": "ch05_bark_lacquer",
+ "nodes": {
+  "ch05_bark_lacquer": {
+   "headers": {"location": "ch05/pemakar"},
+   "ops": [
+    {"op": "line", "id": "ch05_bark_lacquer_001", "key": "DLG_CH05_BARK_LACQUER_001", "speaker": "townsfolk", "emotion": "worried", "voice": "", "src": 6, "name_key": "DLG_NAME_TOWNSFOLK_LACQUERER"}
+   ]
+  }
+ }
+}

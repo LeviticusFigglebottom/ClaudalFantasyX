@@ -407,6 +407,192 @@
       "p90_turns_max": 30,
       "loadout": "m1_starting",
       "swell": "good"
+    },
+    {
+      "id": "ch05_stair_tortoises",
+      "chapter": "Ch5 route (Ashcrown pilgrim stair): the scripted slag tortoise pair, Kerrid's Armor Break lesson",
+      "kind": "regular",
+      "encounter": "ch05_stair_tortoises",
+      "active": [
+        "rhen",
+        "asha",
+        "kerrid"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ]
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch05_ashcrown",
+      "swell": "good"
+    },
+    {
+      "id": "ch05_stair_ashwings",
+      "chapter": "Ch5 route: random stair fight, two ashwings (Rhen answers fliers)",
+      "kind": "regular",
+      "encounter": "ch05_stair_ashwings",
+      "active": [
+        "rhen",
+        "asha",
+        "kerrid"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ]
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch05_ashcrown",
+      "swell": "good"
+    },
+    {
+      "id": "ch05_stair_tortoise_sparker",
+      "chapter": "Ch5 route: random stair fight, a vein sparker and a slag tortoise (Ysolde, Kerrid)",
+      "kind": "regular",
+      "encounter": "ch05_stair_tortoise_sparker",
+      "active": [
+        "rhen",
+        "asha",
+        "kerrid"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ]
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch05_ashcrown",
+      "swell": "good"
+    },
+    {
+      "id": "ch05_stair_tortoise_ashwing",
+      "chapter": "Ch5 route: random stair fight, a slag tortoise and an ashwing (Kerrid, Ysolde)",
+      "kind": "regular",
+      "encounter": "ch05_stair_tortoise_ashwing",
+      "active": [
+        "rhen",
+        "asha",
+        "kerrid"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ]
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch05_ashcrown",
+      "swell": "good"
+    },
+    {
+      "id": "ch05_cinder_matron",
+      "chapter": "Ch5 boss (the Cinder Matron, Ashcrown's anvil court)",
+      "kind": "boss",
+      "encounter": "ch05_cinder_matron",
+      "active": [
+        "kerrid",
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          5
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          65,
+          85
+        ],
+        "smart": null
+      },
+      "p90_turns_max": 70,
+      "loadout": "ch05_matron",
+      "swell": "good",
+      "mean_turns_min": {
+        "smart": 40
+      }
+    },
+    {
+      "id": "ch05_cinder_matron_ilun",
+      "chapter": "Ch5 boss, Ilun called at once (the water mistake; report only)",
+      "kind": "vowbound",
+      "encounter": "ch05_cinder_matron",
+      "active": [
+        "kerrid",
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive_swell": null
+      },
+      "p90_turns_max": 70,
+      "loadout": "ch05_matron",
+      "swell": "good"
     }
   ]
 }
