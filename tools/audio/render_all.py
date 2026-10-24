@@ -47,8 +47,10 @@ M1_AUD_02 = ("hush_theme_v2", "battle_standard.", "temple_trial")
 # stack measured whole by its source (the full stack is -16; stem 1 alone is quieter by design, mix.md §2).
 M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_verse", "hush_coda", "haluna_dawn",
            "shell_shrine_interior", "ilun_summon", "saltgrass_causeway", "lamp_diver", "sefir_theme", "the_ebbing",
-           "tidecup_match", "terraces_of_ash", "corrow_seawall", "hullgnaw", "spar_wraith")
+           "tidecup_match", "terraces_of_ash", "corrow_seawall", "hullgnaw", "spar_wraith", "oruvel", "pilgrims_wake")
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
+# Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
+AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024)}  # M2-AUD-13: two q1 beds
 AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
 # (module source, output dir, output file names, kind)
@@ -134,6 +136,11 @@ JOBS = [
      [f"cinder_matron_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
     ("assets_src/music/undertows_reach.py", "assets/audio/music",
      [f"undertows_reach_p{i}{ext}" for i in (1, 2, 3) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/sfx/causeway_ambience.py", "assets/audio/ambience",
+     [f"{b}{ext}" for b in ("causeway_wind", "tidepools") for ext in (".ogg", ".loop.json")], "ambience_loop"),
+    ("assets_src/music/oruvel.py", "assets/audio/music", ["oruvel.ogg", "oruvel.loop.json"], "music_loop"),
+    ("assets_src/music/pilgrims_wake.py", "assets/audio/music",
+     ["pilgrims_wake.ogg", "pilgrims_wake.loop.json"], "music_loop"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
@@ -224,6 +231,7 @@ def main() -> int:
 
     jobs = [j for j in JOBS if not args.only or args.only in j[0]]
     rows, total, new_total, amb_total, ok = [], 0, 0, 0, True
+    amb_jobs: dict = {}
     for src, rel_dir, files, kind in jobs:
         m1 = JOBS.index((src, rel_dir, files, kind)) < M1_JOBS
         out_dir = os.path.join(ROOT, rel_dir)
@@ -237,7 +245,10 @@ def main() -> int:
                 continue
             size = os.path.getsize(p)
             total += size if m1 else 0
-            amb_total += size if kind == "ambience_loop" else 0
+            if kind == "ambience_loop" and src in AMBIENCE_JOB_BUDGETS:
+                amb_jobs[src] = amb_jobs.get(src, 0) + size
+            elif kind == "ambience_loop":
+                amb_total += size
             if f.startswith(M1_AUD_02):
                 new_total += size
             if f.endswith(".json"):
@@ -278,6 +289,11 @@ def main() -> int:
         print(f"ambience beds {amb_total / 1048576:.2f} MiB, budget {AMBIENCE_BUDGET / 1048576:.1f} MiB")
         if amb_total > AMBIENCE_BUDGET:
             print("FAIL: ambience beds over their size budget")
+            ok = False
+    for src, size in amb_jobs.items():
+        print(f"{os.path.basename(src)} beds {size / 1048576:.2f} MiB, budget {AMBIENCE_JOB_BUDGETS[src] / 1048576:.1f} MiB")
+        if size > AMBIENCE_JOB_BUDGETS[src]:
+            print(f"FAIL: {src}'s beds over their size budget")
             ok = False
     if not args.only:
         print(f"total {total} bytes ({total / 1048576:.2f} MiB), budget {SIZE_BUDGET / 1048576:.0f} MiB; "

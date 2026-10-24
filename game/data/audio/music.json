@@ -108,6 +108,16 @@
         0
       ],
       "_note": "Ch8 boss (M3-AUD-09). No encounter or phase rows until the fight exists; intended: battle.encounters undertows_reach -> undertows_reach, phase `reach_strikes` -> stems_on [1] over 4 s, phase `wall_falls` (the scripted escape) -> stems_on [2] over 2 s"
+    },
+    "oruvel": {
+      "file": "res://assets/audio/music/oruvel.ogg",
+      "resume": true,
+      "_note": "Ch1, the Oruvel raft-town before the storm (M3-AUD-10); no zone row until ch01/oruvel exists"
+    },
+    "pilgrims_wake": {
+      "file": "res://assets/audio/music/pilgrims_wake.ogg",
+      "resume": true,
+      "_note": "Ch4, Asha's living funeral at Haluna by night (M3-AUD-10); for the feast scene, no zone row until it exists"
     }
   },
   "zones": [

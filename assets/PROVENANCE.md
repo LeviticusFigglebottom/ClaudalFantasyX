@@ -475,3 +475,11 @@ Rules:
 | assets/audio/music/undertows_reach_p2.loop.json | assets_src/music/undertows_reach.py + tools/audio/synth/looping.py | python3 assets_src/music/undertows_reach.py | Audio (claude/audio, M3-AUD-09) | 2026-10-24 | original |
 | assets/audio/music/undertows_reach_p3.ogg | assets_src/music/undertows_reach.py + tools/audio/synth/ | python3 assets_src/music/undertows_reach.py | Audio (claude/audio, M3-AUD-09) | 2026-10-24 | original |
 | assets/audio/music/undertows_reach_p3.loop.json | assets_src/music/undertows_reach.py + tools/audio/synth/looping.py | python3 assets_src/music/undertows_reach.py | Audio (claude/audio, M3-AUD-09) | 2026-10-24 | original |
+| assets/audio/ambience/causeway_wind.ogg | assets_src/sfx/causeway_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only causeway_ambience | Audio (claude/audio, M2-AUD-13) | 2026-10-24 | original |
+| assets/audio/ambience/causeway_wind.loop.json | assets_src/sfx/causeway_ambience.py + tools/audio/synth/looping.py | python3 tools/audio/render_all.py --only causeway_ambience | Audio (claude/audio, M2-AUD-13) | 2026-10-24 | original |
+| assets/audio/ambience/tidepools.ogg | assets_src/sfx/causeway_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only causeway_ambience | Audio (claude/audio, M2-AUD-13) | 2026-10-24 | original |
+| assets/audio/ambience/tidepools.loop.json | assets_src/sfx/causeway_ambience.py + tools/audio/synth/looping.py | python3 tools/audio/render_all.py --only causeway_ambience | Audio (claude/audio, M2-AUD-13) | 2026-10-24 | original |
+| assets/audio/music/oruvel.ogg | assets_src/music/oruvel.py + tools/audio/synth/ | python3 assets_src/music/oruvel.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
+| assets/audio/music/oruvel.loop.json | assets_src/music/oruvel.py + tools/audio/synth/looping.py | python3 assets_src/music/oruvel.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
+| assets/audio/music/pilgrims_wake.ogg | assets_src/music/pilgrims_wake.py + tools/audio/synth/ | python3 assets_src/music/pilgrims_wake.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
+| assets/audio/music/pilgrims_wake.loop.json | assets_src/music/pilgrims_wake.py + tools/audio/synth/looping.py | python3 assets_src/music/pilgrims_wake.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
