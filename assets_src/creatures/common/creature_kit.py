@@ -245,7 +245,7 @@ def ellipsoid(center, radii, rings: int = 10, segs: int = 16) -> tuple[np.ndarra
     prof = []
     for i in range(rings + 1):
         th = math.pi * i / rings
-        prof.append((math.sin(th), -math.cos(th)))
+        prof.append((math.sin(th), math.cos(th)))  # top pole to bottom pole: lathe() winds that outward
     P, T = lathe(prof, segs)
     P = P * np.asarray(radii, dtype=np.float64) + np.asarray(center, dtype=np.float64)
     return P, T
@@ -283,7 +283,7 @@ def tube(path, radius, segs: int = 12, cap_start: bool = True, cap_end: bool = T
     ca, sa = np.cos(a), np.sin(a)
     rings = [path[k] + rad[k] * (np.outer(ca, nrm[k]) + squash * np.outer(sa, bin_[k])) for k in range(K)]
     P = np.vstack(rings)
-    T = grid_tris(K, segs, True)
+    T = flip(grid_tris(K, segs, True))  # outward-facing
     extra = []
     if cap_start:
         extra.append((path[0] - tan[0] * rad[0] * 0.35, 0))
@@ -297,7 +297,7 @@ def tube(path, radius, segs: int = 12, cap_start: bool = True, cap_end: bool = T
         cap = []
         for s in range(segs):
             s1 = (s + 1) % segs
-            cap.append((r0 + s, r0 + s1, idx) if ring == 0 else (r0 + s, idx, r0 + s1))
+            cap.append((r0 + s, idx, r0 + s1) if ring == 0 else (r0 + s, r0 + s1, idx))
         tris.append(np.asarray(cap, dtype=np.int64))
     return P, np.vstack(tris)
 
