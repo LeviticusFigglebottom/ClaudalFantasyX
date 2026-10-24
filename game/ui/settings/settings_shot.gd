@@ -5,9 +5,11 @@ extends Control
 ## baseline, and saves nothing:
 ##   - "hub": the hub, the cursor on Accessibility;
 ##   - "accessibility": the Accessibility page with the text size at 130%, the cursor on Text size
-##     (the page re-themes itself, so the shot shows the larger text the setting gives).
+##     (the page re-themes itself, so the shot shows the larger text the setting gives);
+##   - "controls" (M2-UI-13): the Controls page at the default bindings, listening for a new
+##     Confirm key (the wait mark in the keyboard column and the listening help line).
 
-## Which view to stage: &"hub" or &"accessibility".
+## Which view to stage: &"hub", &"accessibility" or &"controls".
 @export var view: StringName = &"hub"
 
 var hub: SettingsMenu
@@ -26,12 +28,22 @@ func _ready() -> void:
 	hub.save_path = ""
 	add_child(hub)
 	hub.handle_input(_ev(&"ui_down"))  # Graphics -> Accessibility
+	if view == &"controls":
+		_stage_controls()
 	if view != &"accessibility":
 		return
 	hub.handle_input(_ev(&"ui_accept"))
 	hub.handle_input(_ev(&"ui_down"))  # Reduced motion -> Text size
 	hub.handle_input(_ev(&"ui_right"))  # 115%
 	hub.handle_input(_ev(&"ui_right"))  # 130%
+
+
+func _stage_controls() -> void:
+	hub.handle_input(_ev(&"ui_down"))  # Accessibility -> Controls
+	hub.handle_input(_ev(&"ui_accept"))
+	var page := hub.page as ControlsMenu
+	page.model.set_cursor(page.model.row_ids().find(&"ui_accept"))
+	hub.handle_input(_ev(&"ui_accept"))  # listen for a new Confirm key
 
 
 func _ev(action: StringName) -> InputEventAction:

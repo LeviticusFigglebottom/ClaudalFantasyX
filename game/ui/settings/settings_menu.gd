@@ -1,7 +1,7 @@
 class_name SettingsMenu
 extends Control
-## The Settings hub (M2-UI-09): one short page, Graphics and Accessibility, each opening its
-## SettingsPage over the hub; closing a page comes back to the hub with the cursor where it was.
+## The Settings hub (M2-UI-09): one short page, Graphics, Accessibility and Controls (M2-UI-13),
+## each opening its SettingsPage over the hub; closing a page comes back to the hub with the cursor where it was.
 ## Opened from the title's Settings row (TitleMenu) and the field menu's Settings row (FieldMenu,
 ## through open_in, on its own CanvasLayer). Follows UiSettings like every settings page.
 ## Input: ui_up / ui_down move, ui_accept opens, ui_cancel closes; hover moves, a click opens.
@@ -12,15 +12,22 @@ signal closed
 
 const ROW_GRAPHICS := &"graphics"
 const ROW_ACCESSIBILITY := &"accessibility"
-const ROW_IDS: Array[StringName] = [ROW_GRAPHICS, ROW_ACCESSIBILITY]
-const LABEL_KEYS := {ROW_GRAPHICS: "SET_MENU_GRAPHICS", ROW_ACCESSIBILITY: "SET_MENU_ACCESSIBILITY"}
-const HELP_KEYS := {ROW_GRAPHICS: "SET_MENU_HELP_GRAPHICS", ROW_ACCESSIBILITY: "SET_MENU_HELP_ACCESSIBILITY"}
+const ROW_CONTROLS := &"controls"
+const ROW_IDS: Array[StringName] = [ROW_GRAPHICS, ROW_ACCESSIBILITY, ROW_CONTROLS]
+const LABEL_KEYS := {
+	ROW_GRAPHICS: "SET_MENU_GRAPHICS", ROW_ACCESSIBILITY: "SET_MENU_ACCESSIBILITY", ROW_CONTROLS: "SET_MENU_CONTROLS"
+}
+const HELP_KEYS := {
+	ROW_GRAPHICS: "SET_MENU_HELP_GRAPHICS",
+	ROW_ACCESSIBILITY: "SET_MENU_HELP_ACCESSIBILITY",
+	ROW_CONTROLS: "SET_MENU_HELP_CONTROLS",
+}
 
 ## The page open over the hub (null when none).
 var page: SettingsPage
 ## The accessibility settings the hub and its Accessibility page use (shared unless a test sets one).
 var ui_settings: UiSettings
-## Where the Accessibility page saves ("" = nowhere; tests).
+## Where the Accessibility and Controls pages save ("" = nowhere; tests).
 var save_path := UiSettings.CONFIG_PATH
 ## Where the Graphics page applies (null = this menu's viewport; tests pass their own).
 var graphics_viewport: Viewport
@@ -118,7 +125,7 @@ func current() -> StringName:
 	return StringName(str(_list.current_row().get("id", "")))
 
 
-## Opens page `row` (ROW_GRAPHICS or ROW_ACCESSIBILITY) over the hub. Returns it (null if unknown).
+## Opens page `row` (ROW_GRAPHICS, ROW_ACCESSIBILITY or ROW_CONTROLS) over the hub. Returns it (null if unknown).
 func open_page(row: StringName) -> SettingsPage:
 	if is_page_open():
 		return page
@@ -127,6 +134,9 @@ func open_page(row: StringName) -> SettingsPage:
 			page = GraphicsMenu.new(graphics_viewport)
 		ROW_ACCESSIBILITY:
 			page = AccessibilityMenu.new(ui_settings, save_path)
+		ROW_CONTROLS:
+			page = ControlsMenu.new(save_path)
+			page.ui_settings = ui_settings
 		_:
 			return null
 	_set_hub_visible(false)
