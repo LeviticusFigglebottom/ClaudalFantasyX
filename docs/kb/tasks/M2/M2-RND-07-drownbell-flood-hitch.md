@@ -2,7 +2,7 @@
 id: M2-RND-07
 title: The Drownbell's Flood phase is a visible 39-61 ms frame mid-battle (at risk of the 50 ms limit)
 role: rendering
-status: review
+status: done
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: combat
 depends_on: [M2-RND-04]
@@ -34,3 +34,4 @@ Report: `docs/kb/qa/gpu/2026-10-24-rnd-07-flood-hitch.md`.
   0.9–1.4 s: inside ADR 0029.
 
 ## Review log
+- 2026-10-24 review-sweep-R (environment): **approve.** The cause is pinned down by trace: the first turbulent ParticleProcessMaterial emitter costs about 32 ms of main-thread work in the battle tree. The staged prewarm was tried, gave nothing, and was reverted. `BattleVfx.prebuild()` runs at `attach`, under the router's opaque fade, and builds one pooled emitter per layer of every particle effect (28 today) without emitting. `polyp_rise` is among them in effects.json. The Flood's worst frame is 1.7–1.8 ms on Low, High and Ultra, warm and in a fresh-install release build, against the 33 ms target. Battle entries stay inside ADR 0029 (hidden 0.35–0.6 s). Test added in `test_battle_vfx.gd` (`--filter=battle_vfx` 8/0). The two re-approved battle shots differ only in particle phase and were viewed (8009387).

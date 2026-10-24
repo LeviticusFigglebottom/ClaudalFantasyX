@@ -2,7 +2,7 @@
 id: M2-UI-05
 title: Vowbound commands and HUD (call, the Vowbound's menu, Dismiss, the call preview)
 role: ui
-status: review
+status: done
 owner_session: "agent-a9031fbbea441e647"
 reviewer: lead
 depends_on: [M2-CMB-04]
@@ -39,6 +39,7 @@ M2-CMB-04 added the Vowbound engine rules (battle_ctb.md § Vowbound, ADR 0027):
 - **Shots:** new `battle_vowbound_call` and `battle_vowbound_out`. The other eight battle shots pass.
 
 ## Review log
+- 2026-10-24 review-sweep-R (lead): **approve-with-fixes.** Every criterion is verified. `BattleVowboundHud.bound_ids` binds through an injected `is_set` (live: `Game.get_flag`; fixtures: a frozen list), so the engine never reads `Game`, and validate_data checks each `bound_flag` is declared. `BattleVowbound.preview_call` and `preview_dismiss` are RefCounted, Node-free and read-only, and they're tested against the engine's real order. The menus, the greyed reasons (`HUD_FAIL_*`, `HUD_CALL_*` loc rows) and `BattleStage.sync_party` are covered by `test_battle_vowbound_hud.gd`, and the two new shots have baselines. `--filter=vowbound`: 50/0. **Fixes:** (1) The Lead's decision ("no Call row until a Vowbound is bound") is implemented in **5eda83b2, which is only on `origin/claude/ui`**. This branch still shows the greyed "Call · None bound" row and ADR 0030's superseded bullet, so merge that commit; it's the whole fix and has its test. ADR 0030 is accepted here with that amendment. (2) `battle_controller.gd` is at 995 of the 1000-line lint cap. The next controller change has to move glue out first (as BattleVowboundHud did); that's noted for the next UI task, not filed separately.
 
 ## Lead decision (2026-10-24)
 - **The Call row is hidden until a Vowbound is bound.** It should not appear greyed as "Call · None bound". Before Chapter 3 it would be a dead row that hints at a beat to come. "Silenced" and "Fallen" stay as greyed reasons, because they're tactical information. This is a one-line change in `BattleMenus.call_rows`; the next UI touch on the battle menu makes it, with a test.
