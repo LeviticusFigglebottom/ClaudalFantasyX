@@ -142,7 +142,10 @@ func refresh_ko(engine: BattleEngine) -> void:
 			c.is_petrified(), Color.html(str(stone.get("color", "#FFFFFF"))), float(stone.get("roughness", 1.0))
 		)
 		var ko := c.hp <= 0
-		f.set_ko(ko, float(cfg.get("ko_sink_m", 0.0)), float(cfg.get("ko_alpha", 1.0)))
+		var alpha := float(cfg.get("ko_alpha", 1.0))
+		if engine.enemies.has(c):  # a fallen foe fades out and is hidden (M2-BPR-11); the party stays to be revived
+			alpha = float(cfg.get("foe_ko_alpha", alpha))
+		f.set_ko(ko, float(cfg.get("ko_sink_m", 0.0)), alpha)
 		if choreo != null:
 			choreo.on_ko_state(c.id, ko)
 
