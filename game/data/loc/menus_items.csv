@@ -1,1 +1,65 @@
 keys,en
+MENUS_MP_FMT,{mp}/{max} MP
+ITEMS_MENU_HELP,Up and Down: choose · Left and Right: sort · Confirm: use · Cancel: back
+ITEMS_MENU_HELP_PICK,Up and Down: choose a hero · Confirm: use one · Cancel: back to the bag
+ITEMS_MENU_SORT_FMT,Sorted {sort}
+ITEMS_MENU_SORT_KIND,by kind
+ITEMS_MENU_SORT_NAME,by name
+ITEMS_MENU_SORT_COUNT,by count
+ITEMS_MENU_COUNT_FMT,×{count}
+ITEMS_MENU_HELD_FMT,{category} · {count} carried
+ITEMS_MENU_USE_HINT,Confirm: choose who takes it.
+ITEMS_MENU_EMPTY,The bag is empty.
+ITEMS_MENU_PICK_TITLE_FMT,{item}: for whom?
+ITEMS_MENU_PICK_ALL_TITLE_FMT,{item}: for everyone
+ITEMS_MENU_FALLEN_TAG," (fallen)"
+ITEMS_MENU_PREVIEW_FMT,{name}: {changes}
+ITEMS_MENU_PREVIEW_HP_FMT,HP {from} → {to}
+ITEMS_MENU_PREVIEW_MP_FMT,MP {from} → {to}
+ITEMS_MENU_PREVIEW_CURE_FMT,cures {statuses}
+ITEMS_MENU_PREVIEW_JOIN,", "
+ITEMS_MENU_LIST_JOIN," · "
+ITEMS_MENU_USED_FMT,Used {item}. {effects}
+ITEMS_MENU_ERR_NONE_LEFT_FMT,There is no {item} left.
+ITEMS_MENU_ERR_KEY_FMT,{item} is a key item. It is kept, not used.
+ITEMS_MENU_ERR_MATERIAL_FMT,{item} is a material. It is worked into gear through Customize.
+ITEMS_MENU_ERR_FACET_FMT,{item} is a Facet. It wakes a node on the Lattice page.
+ITEMS_MENU_ERR_BATTLE_ONLY_FMT,{item} can only be used in battle.
+ITEMS_MENU_ERR_FALLEN_FMT,{name} has fallen. Only a revive item reaches them.
+ITEMS_MENU_ERR_NOT_FALLEN_FMT,{name} is still standing. {item} is for the fallen.
+ITEMS_MENU_ERR_PETRIFIED_FMT,"{name} is stone. Only a cure for Petrify reaches them."
+ITEMS_MENU_ERR_FULL_HP_FMT,{name}'s HP is already full.
+ITEMS_MENU_ERR_FULL_MP_FMT,{name}'s MP is already full.
+ITEMS_MENU_ERR_NOTHING_TO_CURE_FMT,{name} has nothing {item} cures.
+ITEMS_MENU_ERR_WOULD_HURT_FMT,{item} would hurt {name} now.
+ITEMS_MENU_ERR_NO_EFFECT_FMT,{item} would do nothing for {name}.
+ITEMS_MENU_ERR_NO_ONE_FMT,{item} would do nothing for anyone.
+STATUS_MENU_HELP,Up and Down or Left and Right: hero · Cancel: back
+STATUS_MENU_LEVEL_FMT,Level {level}
+STATUS_MENU_FALLEN,Fallen
+STATUS_MENU_HP,HP
+STATUS_MENU_MP,MP
+STATUS_MENU_VITAL_FMT,{value} / {max}
+STATUS_MENU_MAX_HP,Max HP
+STATUS_MENU_MAX_MP,Max MP
+STATUS_MENU_COL_TOTAL,Total
+STATUS_MENU_COL_BASE,Base
+STATUS_MENU_COL_LATTICE,Lattice
+STATUS_MENU_COL_GEAR,Gear
+STATUS_MENU_PLUS_FMT,+{amount}
+STATUS_MENU_ZERO,—
+STATUS_MENU_SWELL,Swell
+STATUS_MENU_SWELL_FMT,{mode} · {points}/{max}
+STATUS_MENU_NO_SWELL,No Swell yet.
+STATUS_MENU_CARRIED,Carried
+STATUS_MENU_NONE,None
+STATUS_MENU_GEAR,Gear
+STATUS_MENU_WEAPON,Weapon
+STATUS_MENU_ARMOR,Armor
+STATUS_MENU_EMPTY_SLOT,Nothing worn
+STATUS_MENU_NO_ABILITIES,No abilities set
+STATUS_MENU_LATTICE,Lattice
+STATUS_MENU_MOVEMENT_FMT,Movement points banked: {count}
+STATUS_MENU_WOKEN_FMT,Nodes woken: {count}
+STATUS_MENU_SKILLS_FMT,Learned: {skills}
+STATUS_MENU_NO_LATTICE,Not on the Lattice yet.

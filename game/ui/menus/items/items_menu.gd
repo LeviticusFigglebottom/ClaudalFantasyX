@@ -331,6 +331,7 @@ func _page_step(direction: int) -> void:
 	if level != Level.LIST or _list.row_count() == 0:
 		return
 	var rows := int(HudLayout.num(_d.get("list", {}), "max_rows"))
+	_notice = {}
 	_list.set_cursor(clampi(_list.cursor + direction * rows, 0, _list.row_count() - 1), false)
 	_render()
 
