@@ -2,7 +2,7 @@
 id: M1-RND-15
 title: glimmer_bound shot plus rendering follow-ups (review-sweep-I on RND-07/08/11)
 role: rendering
-status: review
+status: done
 reviewer: environment
 owner_session: "worktree-agent-a94256e372f018240"
 depends_on: [M1-RND-08, M1-RND-07, M1-RND-11]
@@ -16,7 +16,7 @@ From the review-sweep-I entries (file:line references there).
 - [x] glimmer_bound added to shots.json, rendered on lavapipe, inspected and approved (closes M1-RND-08's missing criterion)
 - [x] A material's own sea-glow cannot override a zone value of 0 (Ending dark sea); the sea-glow and water-level globals reset on zone change; publishes_water_level defaults to false (rivers and pools opt in)
 - [x] Undertow: the march-steps floor matches the shader's range; the step cap is parsed, not copied; a missing undertow.json is an error; the FSR2 cutscene workaround is filed as a task
-- [ ] Prewarm stays within SPEC §4.2's 50 ms frame limit for battle transitions (time-slice it); the docs no longer assume Low uses FXAA; Low-TAA foliage ghosting measured with wind on. **Partial:** time-slicing and docs done; the two measurements need the PC GPU (see Notes)
+- [x] Prewarm stays within SPEC §4.2's 50 ms frame limit for battle transitions (time-slice it); the docs no longer assume Low uses FXAA; Low-TAA foliage ghosting measured with wind on. **Partial:** time-slicing and docs done; the two measurements need the PC GPU (see Notes). **Measured; the 50 ms limit moved to M1-RND-22 (review-sweep-O).**
 - [x] Stale shader comments fixed
 
 ## Notes
@@ -108,3 +108,9 @@ From the review-sweep-I entries (file:line references there).
     - **S1: the lazy/batch-2 choice trades one 1.5 s freeze for seven 0.1–0.3 s stutters in Undertow** (the follow-up table). Under a black fade, the single freeze is less visible than repeated stutters. Unless the transition shows motion, I'd revert to batch 12 for Undertow-class scenes. The Lead's call: record it in the follow-up task.
     - **S2: try `ResourceLoader.load_threaded_request` for the registry entries** (shader_prewarm.gd:233, :362). That moves the material load and front-end compile off the main thread. It's the one lever this report didn't measure.
     - **S3: sweep-J S1 is still open in the code** (scene_router.gd:106, :129). With `split_swap` off, `swap_frame_start` is taken before the prewarm wait, so `frames[0]` includes the waited frames. The report is right that the bench doesn't go through the router, but the router's own profile is still skewed. Re-take the timestamp after the wait.
+- 2026-10-24 review-sweep-O (environment): **approve with fixes.** Sweep-N's condition is met: the Lead filed **M1-RND-22**, which carries the 50 ms limit, the shader baker or boot-time stage, the router timing fault (sweep-J S1 and sweep-N S3) and an ADR if 50 ms can't be met. So criterion 4 now reads "measured; limit moved to M1-RND-22" and is ticked.
+  - **Checks:** Godot `--filter=` scene_router 7/0 failed, shader_prewarm 9/0, water_surface 14/0. scene_router.gd:103-129 still takes `swap_frame_start` before the prewarm wait when `split_swap` is off, as RND-22's criterion 2 says.
+  - **Still open, and in no task until now; filed as M1-RND-23:**
+    - sweep-J S4: `publishes_water_level` is still a plain export (water_surface.gd:77), so a runtime toggle skips the publisher group;
+    - sweep-J S2: the router names GlimmerField and WaterSurface directly;
+    - sweep-N S1 and S2: batch 12 against 2 for Undertow-class scenes, and `load_threaded_request`. These are to be measured inside RND-22's GPU run.

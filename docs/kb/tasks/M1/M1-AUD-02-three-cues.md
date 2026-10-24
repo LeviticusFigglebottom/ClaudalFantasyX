@@ -40,3 +40,10 @@ Delivered 2026-10-22 by audio-stream-2.
   may want to add one.
 
 ## Review log
+- 2026-10-24 review-sweep-O (qa): **approve the technical half. The task stays in `review` for the human-listening criterion only** (SPEC §16 Q3, which this sweep doesn't judge). Once the human answers, the Lead can close it without another code review.
+  - **Checks:**
+    - I decoded and re-measured the three cues. `hush_theme_v2` is −16.10 LUFS, −1.57 dBTP and 69.4 s long. `battle_standard` is −16.08 LUFS, −1.85 dBTP and 75.0 s (3 s intro + 72 s loop). `temple_trial` is −16.01 LUFS, −3.24 dBTP and 80.0 s. They total 2.66 MiB, as claimed and within the 4 MiB budget.
+    - `render_all.py --only temple` re-rendered `temple_trial.ogg` and its `.loop.json` byte-identical to the committed files: "seam jump x1.42, flux x0.49, tags ok". So the loop cues reproduce from source.
+    - The sidecars agree with the `.import` files (`loop=true`, `loop_offset` 3.0 and 0.0), and `test_audio_loops.gd` checks that.
+    - PROVENANCE rows 56-60 cover the three cues and both sidecars. The audio synth tests pass (9 OK).
+  - **Nit:** the Notes say no handoff was written. The task file and pipeline.md cover what a handoff would, so I'm not asking for one.

@@ -23,7 +23,7 @@ The full brief is [`SPEC.md`](SPEC.md). Only the Lead edits it, and every change
 
 - **No Square Enix / Final Fantasy names, terms, music, text, or pixel-copied UI.** The banned list is [`tools/banned_terms.txt`](tools/banned_terms.txt), and CI greps for it. If you notice a near-miss term, add it there.
 - **No reference images in the repo.** Describe references in words only, in `docs/kb/art/references.md`.
-- **No pre-made asset packs.** CC0 and public-domain meshes, textures, and audio are off-limits too. Only OFL fonts and permissively licensed code-only addons are allowed.
+- **No pre-made asset packs.** CC0 and public-domain meshes, textures, and audio are off-limits too. Only OFL fonts and permissively licensed code-only addons are allowed. The one exception is the MPFB2/MakeHuman CC0 *data*, which ADR 0021 vendors under `assets_src/third_party/mpfb2/` as a heavily modified base topology per the human's SPEC §16 Q2 answer. Its GPL code is never vendored.
 - **No AI image or audio generation** (SPEC §16 Q5) unless the human approves it.
 - **Every asset is reproducible from source** in `assets_src/` or `tools/`, and has a row in [`assets/PROVENANCE.md`](assets/PROVENANCE.md). CI fails on a missing row.
 - Original music only. Evoke a style; never imitate a melody.

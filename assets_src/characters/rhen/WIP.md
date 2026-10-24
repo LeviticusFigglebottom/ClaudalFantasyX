@@ -13,14 +13,14 @@ These are first-pass sources on Asha's pipeline. They use the MPFB2 CC0 donor on
 | `rhen_props.py` | Lantern, crossed reef-hooks, tether coil |
 | `rhen_textures.py` | Skin through `asha_textures.skin_maps`, plus Rhen's cloth atlas |
 | `build_rhen.py.wip` | Blender build. It reuses build_asha's helpers. |
-| `build.sh` | Blender at 2 threads, then textures, then materials |
+| `build.sh.wip` | (parked by the Lead: the tools manifest test rejects a build.sh that calls an unlisted script) Blender at 2 threads, then textures, then materials |
 
 ## Where it got to
 - **Blender build.** It ran once and succeeded in 28 s at 2 threads. The output was 53,300 LOD0 tris (rhen.md target 58,500) and 24,705 at LOD1, with `rhen.glb` at 4.06 MB. The outputs were deleted, since they had no PROVENANCE rows yet.
 - **Textures.** `rhen_textures.py` has never been run.
 
 ## To resume
-1. Rename `build_rhen.py.wip` to `build_rhen.py`.
+1. Rename `build_rhen.py.wip` to `build_rhen.py` and `build.sh.wip` to `build.sh`, and add the `rhen` job to `tools/dev/blender_builds.json`, in the same commit.
 2. Add a `rhen` job to `tools/dev/blender_builds.json`:
    - `"threads": 2`;
    - sources: `rhen/**`, `asha/**`, `base_body/**` and mpfb2;

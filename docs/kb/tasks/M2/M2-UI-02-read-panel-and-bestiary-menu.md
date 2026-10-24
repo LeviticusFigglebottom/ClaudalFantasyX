@@ -2,7 +2,7 @@
 id: M2-UI-02
 title: Read result panel, bestiary menu and opening banner
 role: ui
-status: review
+status: done
 owner_session: "worktree-agent-ab3d864d1e75fe481"
 depends_on: [M1-CMB-03]
 milestone: M2
@@ -33,3 +33,11 @@ SPEC §6.1 and §6.11. M1-CMB-03 ships Read, the bestiary log and preemptive/amb
 - **Gate after merging claude/new-session-mj8c3c (merge 9186104):** the scoped `tools/ci_local.sh` with all 9 battle and bestiary shots gives rc 0. 1169 Godot tests, 0 failed. Coverage: battle 99.94% (1770/1771), progression 96.52%, within baseline. All shots at rmse 0, so none needed re-approval.
 
 ## Review log
+- 2026-10-24 review-sweep-O (combat): **approve with fixes.** All four criteria hold.
+  - **What I read:** `git show --stat` of 0bd8d07, b2dbe53 and 1fb9241, plus enemy_page.gd, enemy_page_view.gd, read_panel.gd, opening_banner.gd and game/ui/bestiary/.
+    - Every size and timing comes from HudLayout data (`HudLayout.num`), so there are no magic numbers in the views.
+    - Every string is a loc key, appended in 1fb9241.
+    - "First Strike" and "Caught Unaware" are generic. They are not the source game's opening captions, and nothing in banned_terms.txt matches.
+  - **Checks:** Godot `--filter=` read_panel 12/0 failed, bestiary 27/0, opening 13/0, ui 87/0, battle 307/0. gdlint and gdformat are clean.
+  - **Battle time:** `BattleHud.holds_battle()` holds every wait in `tick()` while the panel is open. The Read pays its rank and nothing else, which matches battle_ctb.md.
+  - **Filed as M2-UI-04:** the bestiary menu isn't reachable in play (`BestiaryMenu.open_in` has no caller outside tests and shots). The task's own follow-up, the target panel's `"revealed": false` for a foe already Read (battle_controller.gd:769), had no task either.
