@@ -144,13 +144,32 @@ Ch5 isn't on the New Game thread yet: Ch4, which brings the ferry in, is being b
    - Stuck on a tier for a minute and a half? The Tender gives one hint.
 6. **The Cinder Matron.** Walk on south into the anvil court when the strike lands. She's a two-phase boss: break her crust with Kerrid, then hit hard while it's broken. At half health she pours slag on everyone. In this phase, water and cold (Ysolde's Frost, or calling Ilun) harden her again.
 7. **Kahre.** Asha goes into the chamber alone, and the party waits. Then she sings the second verse.
-8. **Pemakar, after.** You're back in town in the afternoon. A few things have changed, and Garo is there if you didn't meet him. Walk down to the harbour road for the dawn. The chapter ends on the **end card** for now; Ch6 isn't built yet.
+8. **Pemakar, after.** You're back in town in the afternoon. A few things have changed, and Garo is there if you didn't meet him. Walk down to the harbour road for the dawn, and the road goes on to the Brine Shoals (Ch6, below).
 
 **Ch5 placeholders:**
 - **Kerrid's battle kit and Kahre's are provisional**, so expect odd numbers. Kahre can't be called yet in practice: no battle after the binding uses him.
 - **The Quench Charm is a key item** for now, not the Fire ward it will become.
 - **The trial has no lightning yet:** a charged bowl just glows pale violet.
 - **The Matron's two phases:** there's no slag on the floor, and her timeline telegraph for the re-crust uses the standard charge marker.
+
+## Ch6, "Salt Edict" (greybox; about 25–30 minutes)
+
+Ch6 follows Ch5's dawn. To start it on its own from an editor run, press **F5** (teleport) and pick **Ch6: The Brine Shoals**: the party starts as Rhen, Asha and Kerrid, with Toma and Ysolde in reserve. Everything is grey blocks and capsules, and the chapter has no music or sounds yet.
+
+1. **The Brine Shoals.** Walk north along the dark wreck-ridges. You overhear the party at a brass wreck and at a chalk-marked hull, and there's a midday stop on a hull. The road throws a fight at you every so often: shoal skippers (quick, hard to hit; Rhen's), wreck crabs (shells; Kerrid's Fluke Cleave cracks them) and gull harriers. The paler mud-flats to the west are the same road for now.
+2. **The smoke and the raid.** At the last ridge, Toma stops first. Then the camp burning, the brine-irons, a girl running into Rhen, and the hold.
+3. **The Stillguard Inquisitor and his hound.** Toma, Rhen and Asha are on the field, Kerrid and Ysolde in reserve. **Toma will not strike the Stillguard:** his Attack and Shell Breaker are greyed out, and the help says why. He still has his guard (Stand Fast, Brace, Challenge, Shield Wall), or you can swap him for a striker. At half health the Inquisitor fires the hulk, and the smoke blinds the party now and then (Ysolde's magic still lands). Nobody dies: both of them give up at the end, and the banner says so.
+4. **The barge.** A white barge comes up the channel. Watch it all the way through; there's one choice for Rhen, and both are fine.
+5. **After the barge.** The wrights are led away, and Liss joins on Toma's papers (in reserve; she has no fights until Ch8). Then she looks at Rhen's lantern.
+6. **Camp at dusk.** On the high hull east of the camp: the shrine in the wreck's bow (it rests the party and saves), the vendor's boat, and three people to talk to by the fire. Kerrid keeps watch at the seaward end.
+   - **Optional, "The Burned Lamp":** walk down to the tideline below the camp. There's one choice; both are fine.
+7. **The channel at dawn.** Walk to the north end of the channel (west of the camp) to wade out toward Tamsule. Ch7 starts at its river mouth.
+
+**Ch6 placeholders:**
+- **Liss's battle kit is provisional** (two stand-in gadgets), and so are the Inquisitor's and the hound's. The hound doesn't guard the Inquisitor or pounce on whoever strikes him yet, and the smoke is a status every third turn, not a field.
+- **Toma's "No. Not them."** shows as his first-turn prompt in the fight, not as a bark when you pick a greyed command.
+- **The barge's look** (no wake, no water sound, Sefir's stillness) needs the water shader and the character art. In the greybox it's a white block with capsules on it.
+- **The flats** have the same random fights as the ridges.
 
 ## Reporting
 
