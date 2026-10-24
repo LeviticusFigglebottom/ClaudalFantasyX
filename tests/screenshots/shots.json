@@ -892,6 +892,18 @@
           }
         }
       }
+    },
+    {
+      "id": "battle_swell_chant",
+      "scene": "res://game/battle/scene/shots/battle_swell_chant.tscn"
+    },
+    {
+      "id": "battle_swell_brace",
+      "scene": "res://game/battle/scene/shots/battle_swell_brace.tscn"
+    },
+    {
+      "id": "battle_swell_glyph",
+      "scene": "res://game/battle/scene/shots/battle_swell_glyph.tscn"
     }
   ]
 }

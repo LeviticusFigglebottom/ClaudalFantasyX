@@ -81,7 +81,7 @@ func root_rows(engine: BattleEngine, items: BattleItemSource = null, swell: Batt
 		return vowbound_root_rows(engine)
 	var actor := engine.current
 	var rows: Array[Dictionary] = [_attack_row(engine)]
-	# Only an input the HUD draws (SwellRingView.draws; the other kinds wait for M2-UI-03).
+	# Only an input the HUD draws (SwellRingView.draws: every kind since M2-UI-03).
 	var has_page := swell != null and swell.has_swell(actor) and actor.is_alive()
 	if has_page and not swell.techniques(actor).is_empty() and SwellRingView.draws(swell.input_for(actor)):
 		var input_key := str(swell.input_for(actor).get("name_key", ""))
@@ -329,13 +329,9 @@ func swell_result_text(grades: Array, bonus_pct: int) -> String:
 	return tr("HUD_SWELL_RESULT_FMT").format({"grades": " · ".join(words), "pct": bonus_pct})
 
 
+## Any kind's grade in words (Perfect, Good, Braced, Traced, Swift; anything else reads as Miss).
 func grade_text(grade: StringName) -> String:
-	match grade:
-		SwellTimingRing.GRADE_PERFECT:
-			return tr("HUD_SWELL_GRADE_PERFECT")
-		SwellTimingRing.GRADE_GOOD:
-			return tr("HUD_SWELL_GRADE_GOOD")
-	return tr("HUD_SWELL_GRADE_MISS")
+	return tr(SwellRingView.grade_key(grade))
 
 
 ## Battle items the party holds, in bag order: name, count, rank. A row is greyed out while

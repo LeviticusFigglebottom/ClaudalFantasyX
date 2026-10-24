@@ -107,7 +107,7 @@ func test_the_vowbounds_menu_has_its_finisher_and_dismiss_and_greys_the_rest() -
 	_free()
 
 
-func test_a_bag_and_a_call_row_make_a_six_row_root_that_fits_its_panel() -> void:
+func test_a_bag_and_a_call_row_make_a_seven_row_root_that_fits_its_panel() -> void:
 	_start_fixture()
 	var item_db := ItemDB.load_default()
 	var inv := Inventory.new(item_db, {})
@@ -116,7 +116,7 @@ func test_a_bag_and_a_call_row_make_a_six_row_root_that_fits_its_panel() -> void
 	_to_turn_of(&"asha")
 	ctl._open_command()  # the bag was set after the menu opened
 	var page := ctl.hud.commands.top_page()
-	assert_eq(page.rows.size(), 6, "Attack, Skills, Call, Items, Escape, Swap")
+	assert_eq(page.rows.size(), 7, "Attack, Swell, Skills, Call, Items, Escape, Swap (M2-UI-03)")
 	var last := page.row_rect(page.rows.size() - 1)
 	assert_true(last.end.y <= page.size.y, "the last row sits inside the page (%s in %s)" % [last, page.size])
 	var foot := HudLayout.rect_of(HudLayout.section(&"commands")).end.y

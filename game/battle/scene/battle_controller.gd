@@ -230,6 +230,7 @@ func _build_engine(
 	vow = BattleVowboundHud.attached(self, engine)  # engine.vowbound from the story or the fixture
 	swell = BattleSwell.new(BattleSwell.load_config())
 	BattleSwellCarry.attach(swell, engine, persist_progress and fixture == null)  # M2-ARC-01
+	swell.mode_unlocked.connect(SwellModeRows.announce.bind(self))  # "Tether unlocked" (M2-UI-03)
 	bestiary.attach(engine, persist_progress and fixture == null)
 	engine.action_resolved.connect(floats.on_action_resolved)
 	boss = BattleBossHud.attached(self, engine)
@@ -715,7 +716,8 @@ func _commit_skill(skill_id: StringName, target_ids: Array[StringName]) -> void:
 	_ring_clock = SwellRingClock.new(_ring)
 	_set_state(STATE_SWELL_INPUT)
 	hud.commands.visible = false
-	hud.swell_ring.open(_ring, menus.skill_name(engine, skill_id), tr("HUD_SWELL_RING_HINT"))
+	SwellInputKeys.carry_held(_ring_clock)  # an accept still held from the menu starts Toma's brace
+	hud.swell_ring.open(_ring, menus.skill_name(engine, skill_id), tr(SwellRingView.hint_key(_ring.kind, false)))
 	hud.set_help(menus.swell_help(engine, swell, skill_id, -1))
 
 
@@ -733,7 +735,7 @@ func _handle_ring_input(event: InputEvent) -> bool:
 func _after_ring() -> void:
 	hud.swell_ring.refresh()
 	if not _ring.grades.is_empty():
-		hud.swell_ring.set_hint(tr("HUD_SWELL_RING_HINT_LOCKED"))
+		hud.swell_ring.set_hint(tr(SwellRingView.hint_key(_ring.kind, true)))
 	if not _ring.is_done():
 		return
 	hud.swell_ring.close()

@@ -16,6 +16,12 @@ const SCRIPT_VOWBOUND_CALL := &"vowbound_call"
 const SCRIPT_VOWBOUND_OUT := &"vowbound_out"
 const VOWBOUND_ID := &"ilun"
 const CALLER_ID := &"asha"
+## M2-UI-03: the chant, brace and glyph panels, each frozen mid-input (their fixtures share the id).
+const SCRIPT_SWELL_CHANT := &"swell_chant"
+const SCRIPT_SWELL_BRACE := &"swell_brace"
+const SCRIPT_SWELL_GLYPH := &"swell_glyph"
+## The glyph shot freezes this long after the second stroke, with time still left for Swift.
+const GLYPH_SHOT_AFTER_SEC := 0.3
 
 
 ## Plays `ctl`'s already-started fixture `sid` (a BattleController.SCRIPT_* id) to its state.
@@ -40,7 +46,7 @@ static func play(ctl: BattleController, sid: StringName) -> void:
 			# Ysolde is provoked by the reflecting Lantern Eel: Ember must go at it and bounces
 			# onto Rhen (Doom, Zombie, Regen turned to harm); Asha stands as stone.
 			_to_turn_of(ctl, &"ysolde")
-			_press(ctl, &"ui_down")
+			ctl.hud.commands.select(BattleMenus.ROW_SKILLS)  # past her Swell row (M2-UI-03)
 			_press(ctl, &"ui_accept")
 			ctl.hud.commands.select(&"ember")
 			_press(ctl, &"ui_accept")
@@ -75,6 +81,28 @@ static func play(ctl: BattleController, sid: StringName) -> void:
 			ctl.hud.commands.select(BattleMenus.ROW_SWELL)
 			_press(ctl, &"ui_accept")
 			ctl.hud.commands.select(StringName(BattleMenus.ROW_SWELL_MODE_PREFIX + "wake"))
+		SCRIPT_SWELL_CHANT:
+			# Asha sings Shallows Verse: the first note perfect, the second closing on the line.
+			var chant := _open_technique(ctl, &"asha", &"")
+			ctl.tick(chant.time_to_peak())
+			_press(ctl, &"ui_up")
+			ctl.tick(chant.time_to_peak() - RING_SHOT_BEFORE_PEAK_SEC)
+			ctl.swell_input_live = false
+		SCRIPT_SWELL_BRACE:
+			# Toma braces for Return Tide: Confirm held, the first blow braced, the second coming.
+			var brace := _open_technique(ctl, &"toma", &"gull_harrier")
+			_press(ctl, &"ui_accept")
+			ctl.tick(brace.time_to_peak())
+			ctl.tick(brace.time_to_peak() - RING_SHOT_BEFORE_PEAK_SEC)
+			ctl.swell_input_live = false
+		SCRIPT_SWELL_GLYPH:
+			# Ysolde traces Written Light: two strokes made, the third asked for, Swift still in reach.
+			var glyph := _open_technique(ctl, &"ysolde", &"")
+			ctl.tick(glyph.lead_in_sec)
+			_press(ctl, &"ui_down")
+			_press(ctl, &"ui_right")
+			ctl.tick(GLYPH_SHOT_AFTER_SEC)
+			ctl.swell_input_live = false
 		SCRIPT_VOWBOUND_CALL:
 			# Asha's turn with Ilun bound: the Call row shows the order with Ilun in the party's place.
 			_to_turn_of(ctl, CALLER_ID)
@@ -97,6 +125,19 @@ static func _to_turn_of(ctl: BattleController, cid: StringName) -> void:
 		guard += 1
 		if engine.is_party_turn():
 			ctl.act(BattleMenus.ATTACK_SKILL, [ctl.default_targets(BattleMenus.ATTACK_SKILL)[0].id])
+
+
+## Plays to `cid`'s turn, opens its Swell technique (the page's first row) on `target` (&"": the
+## technique's default targets) and returns the open input.
+static func _open_technique(ctl: BattleController, cid: StringName, target: StringName) -> SwellInput:
+	_to_turn_of(ctl, cid)
+	ctl.hud.commands.select(BattleMenus.ROW_SWELL)
+	_press(ctl, &"ui_accept")
+	_press(ctl, &"ui_accept")
+	if target != &"":
+		ctl.aim_at(target)
+	_press(ctl, &"ui_accept")
+	return ctl.swell_input()
 
 
 ## The sandbox's "elegant answer" policy: bring Toma in for Asha, then hit the weakest foe.

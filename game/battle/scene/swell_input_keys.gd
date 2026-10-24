@@ -34,3 +34,13 @@ static func feed(event: InputEvent, clock: SwellRingClock, live: bool) -> bool:
 			clock.release(live, BUTTONS[action])
 			return true
 	return false
+
+
+## A hold-and-release input (SwellBrace) opened by a ui_accept press the menu has just used: if
+## that accept is still held, it starts the hold, so the player does not have to press again
+## before the first blow (M2-NIT-03 / M2-UI-03). `is_held` reads Input; tests inject their own.
+static func carry_held(clock: SwellRingClock, is_held: Callable = Input.is_action_pressed) -> bool:
+	if not (clock.ring is SwellBrace) or not bool(is_held.call(&"ui_accept")):
+		return false
+	clock.press(false, SwellInput.BUTTON_ACCEPT)
+	return true

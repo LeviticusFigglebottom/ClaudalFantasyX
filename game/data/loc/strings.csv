@@ -616,12 +616,12 @@ HUD_FAIL_NOT_BOUND_FMT,{name} has bound no Vowbound yet.
 HUD_FAIL_NOT_CALLER_FMT,{name} cannot call that Vowbound.
 HUD_FAIL_VOWBOUND_FALLEN,That Vowbound has fallen and cannot answer again this battle.
 HUD_FAIL_NO_VOWBOUND,No Vowbound is on the field.
-HUD_SWELL_CHANT_HINT,Directions: sing each note as it meets the line · Cancel: back
-HUD_SWELL_CHANT_HINT_LOCKED,Directions: sing each note as it meets the line
-HUD_SWELL_BRACE_HINT,Hold Confirm through the blows · let go on the counter · Cancel: back
-HUD_SWELL_BRACE_HINT_LOCKED,Hold Confirm through the blows · let go on the counter
-HUD_SWELL_GLYPH_HINT,Directions: trace each stroke in order · Cancel: back
-HUD_SWELL_GLYPH_HINT_LOCKED,Directions: trace each stroke in order
+HUD_SWELL_CHANT_HINT,Directions: each note on the line · Cancel: back
+HUD_SWELL_CHANT_HINT_LOCKED,Directions: each note on the line
+HUD_SWELL_BRACE_HINT,Hold Confirm · let go on the counter · Cancel: back
+HUD_SWELL_BRACE_HINT_LOCKED,Hold Confirm · let go on the counter
+HUD_SWELL_GLYPH_HINT,Directions: trace each stroke · Cancel: back
+HUD_SWELL_GLYPH_HINT_LOCKED,Directions: trace each stroke
 HUD_SWELL_GRADE_BRACED,Braced
 HUD_SWELL_GRADE_TRACED,Traced
 HUD_SWELL_GRADE_SWIFT,Swift
