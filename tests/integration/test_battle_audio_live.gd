@@ -404,7 +404,12 @@ func test_the_encounter_bark_plays_its_sting_from_the_real_stinger() -> void:
 	var s := BattleStinger.make(false, c, &"sandbox_reef")
 	_host().add_child(s)
 	s.set_process(false)
-	assert_eq(dir.stings.played, [&"sting_bark"] as Array[StringName], "the lead-in line's sting, once")
+	# battle-presentation's stinger also announces the tide line (battle_stinger, bcc8e94c): its sting comes first.
+	assert_eq(
+		dir.stings.played,
+		[&"sting_tideline", &"sting_bark"] as Array[StringName],
+		"the tide line's sting, then the lead-in line's, once each"
+	)
 	s.free()
 	_teardown()
 
