@@ -56,6 +56,7 @@ func setup(host: Node3D, body: MeshInstance3D, render_priority: int) -> void:
 		effect = UndertowBodyEffect.new()
 		composite_material.set_shader_parameter(&"body_tex", effect.body_texture)
 		composite_material.set_shader_parameter(&"front_tex", effect.front_texture)
+		composite_material.set_shader_parameter(&"front_smooth", effect.front_texture)
 		composite_material.set_shader_parameter(&"use_front", true)
 		return
 	viewport = SubViewport.new()

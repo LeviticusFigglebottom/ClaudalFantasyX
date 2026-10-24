@@ -76,70 +76,72 @@ layout(set = 0, binding = 0, std140) uniform UndertowParams {
 	float rent_lip_dark; // offset 196
 	float rent_halo_width; // offset 200
 	float rent_halo_energy; // offset 204
-	vec3 col_wound; // offset 208
-	vec3 col_held; // offset 224
-	vec4 lightning_sites[4]; // offset 240
-	float lightning_radius_m; // offset 304
-	vec3 col_lightning; // offset 320
-	float lightning_energy; // offset 332
-	float noise_texels; // offset 336
-	int march_steps; // offset 340
-	float jitter; // offset 344
-	float jitter_phase; // offset 348
-	float bound_margin_m; // offset 352
-	float empty_step; // offset 356
-	float dense_step; // offset 360
-	int curl_reuse; // offset 364
-	float skin_step; // offset 368
-	float noise_scale_m; // offset 372
-	float detail_scale_m; // offset 376
-	float detail_weight; // offset 380
-	float coverage_bias; // offset 384
-	float density_per_m; // offset 388
-	float curl_scale_m; // offset 392
-	float curl_warp_m; // offset 396
-	float rent_depth; // offset 400
-	float erosion_envelope; // offset 404
-	float erosion_threshold; // offset 408
-	float erosion_contrast; // offset 412
-	float scud_height_m; // offset 416
-	float scud_stretch; // offset 420
-	float billow_weight; // offset 424
-	float billow_scale_m; // offset 428
-	float billow_shade; // offset 432
-	float billow_shade_step_m; // offset 436
-	vec3 col_sun; // offset 448
-	float sun_energy; // offset 460
-	vec3 col_ambient_top; // offset 464
-	vec3 col_ambient_bottom; // offset 480
-	float ambient_energy; // offset 492
-	vec3 col_albedo; // offset 496
-	float albedo_gain; // offset 508
-	float sun_extinction; // offset 512
-	float ambient_occlusion; // offset 516
-	float forward_scatter; // offset 520
-	float back_scatter; // offset 524
-	float scatter_mix; // offset 528
-	float light_step_m; // offset 532
-	float base_darkening; // offset 536
-	int ms_octaves; // offset 540
-	float ms_attenuation; // offset 544
-	float ms_extinction; // offset 548
-	float ms_eccentricity; // offset 552
-	float sun_clear_height; // offset 556
-	float sun_low_floor; // offset 560
-	vec3 col_haze; // offset 576
-	float haze_visibility_m; // offset 588
-	vec3 col_water_wall; // offset 592
-	float water_wall_height_m; // offset 604
-	float water_wall_mix; // offset 608
-	float wound_energy; // offset 612
-	float pocket_energy; // offset 616
-	vec3 hymn_sun_direction; // offset 624
-	mat4 view_inv_projection; // offset 640
-	mat4 view_camera; // offset 704
-	vec2 view_out_size; // offset 768
-	vec2 view_depth_size; // offset 776
+	float rent_core_gain; // offset 208
+	float rent_lip_gain; // offset 212
+	vec3 col_wound; // offset 224
+	vec3 col_held; // offset 240
+	vec4 lightning_sites[4]; // offset 256
+	float lightning_radius_m; // offset 320
+	vec3 col_lightning; // offset 336
+	float lightning_energy; // offset 348
+	float noise_texels; // offset 352
+	int march_steps; // offset 356
+	float jitter; // offset 360
+	float jitter_phase; // offset 364
+	float bound_margin_m; // offset 368
+	float empty_step; // offset 372
+	float dense_step; // offset 376
+	int curl_reuse; // offset 380
+	float skin_step; // offset 384
+	float noise_scale_m; // offset 388
+	float detail_scale_m; // offset 392
+	float detail_weight; // offset 396
+	float coverage_bias; // offset 400
+	float density_per_m; // offset 404
+	float curl_scale_m; // offset 408
+	float curl_warp_m; // offset 412
+	float rent_depth; // offset 416
+	float erosion_envelope; // offset 420
+	float erosion_threshold; // offset 424
+	float erosion_contrast; // offset 428
+	float scud_height_m; // offset 432
+	float scud_stretch; // offset 436
+	float billow_weight; // offset 440
+	float billow_scale_m; // offset 444
+	float billow_shade; // offset 448
+	float billow_shade_step_m; // offset 452
+	vec3 col_sun; // offset 464
+	float sun_energy; // offset 476
+	vec3 col_ambient_top; // offset 480
+	vec3 col_ambient_bottom; // offset 496
+	float ambient_energy; // offset 508
+	vec3 col_albedo; // offset 512
+	float albedo_gain; // offset 524
+	float sun_extinction; // offset 528
+	float ambient_occlusion; // offset 532
+	float forward_scatter; // offset 536
+	float back_scatter; // offset 540
+	float scatter_mix; // offset 544
+	float light_step_m; // offset 548
+	float base_darkening; // offset 552
+	int ms_octaves; // offset 556
+	float ms_attenuation; // offset 560
+	float ms_extinction; // offset 564
+	float ms_eccentricity; // offset 568
+	float sun_clear_height; // offset 572
+	float sun_low_floor; // offset 576
+	vec3 col_haze; // offset 592
+	float haze_visibility_m; // offset 604
+	vec3 col_water_wall; // offset 608
+	float water_wall_height_m; // offset 620
+	float water_wall_mix; // offset 624
+	float wound_energy; // offset 628
+	float pocket_energy; // offset 632
+	vec3 hymn_sun_direction; // offset 640
+	mat4 view_inv_projection; // offset 656
+	mat4 view_camera; // offset 720
+	vec2 view_out_size; // offset 784
+	vec2 view_depth_size; // offset 792
 };
 // ---- end game/shaders/undertow/undertow_compute_params.glslinc ----
 
@@ -724,6 +726,11 @@ uniform float rent_lip_width : hint_range(1.0, 8.0) = 2.5;
 uniform float rent_lip_dark : hint_range(0.0, 1.0) = 0.6;
 uniform float rent_halo_width : hint_range(1.0, 16.0) = 6.0;
 uniform float rent_halo_energy : hint_range(0.0, 4.0) = 0.35;
+// M2-RND-10: the share of the seam's core glow and of the lip's darkening the body draws itself. A half-res
+// body (Medium, High) lowers both: its 0.35-0.5 scale smears a slit into a blotch, so the composite draws
+// the core and the lip at full resolution instead (undertow_composite.gdshader).
+uniform float rent_core_gain : hint_range(0.0, 1.0) = 1.0;
+uniform float rent_lip_gain : hint_range(0.0, 1.0) = 1.0;
 uniform vec3 col_wound : source_color = vec3(0.0497, 0.7454, 0.5776);
 uniform vec3 col_held : source_color = vec3(0.2122, 0.5647, 0.6939);
 
@@ -1204,7 +1211,8 @@ vec4 undertow_march(vec3 ro, vec3 rd, float t_opaque, vec2 frag_coord, out float
 		}
 		// The rent glows where the wall is: through its depth, strongest at mid density. Its halo is the
 		// light poured out of it, scattered by the cloud beside the rent (so it needs density).
-		vec3 glow = col_wound * wound_per_m * (seam * (0.3 + 2.8 * d * (1.0 - d)) + halo * rent_halo_energy * d);
+		vec3 glow = col_wound * wound_per_m
+				* (seam * rent_core_gain * (0.3 + 2.8 * d * (1.0 - d)) + halo * rent_halo_energy * d);
 		float sigma = d * density_per_m;
 		float ts = exp(-sigma * ds);
 		// A lump facing the sun has less of itself between p and the light (lean > 0), one facing away more.
@@ -1228,13 +1236,13 @@ vec4 undertow_march(vec3 ro, vec3 rd, float t_opaque, vec2 frag_coord, out float
 			alb = mix(albedo, col_water_wall, water_wall_mix * (1.0 - smoothstep(0.0, water_wall_height_m, p.y)));
 		}
 		// The torn lip around a rent is dark: shredded cloud in the rent's own shadow (M2-RND-05).
-		vec3 lit = alb * (sun * sun_ms * sun_reach * HYMN_TAU * 2.0 + amb) * base * (1.0 - rent_lip_dark * lip);
+		vec3 lit = alb * (sun * sun_ms * sun_reach * HYMN_TAU * 2.0 + amb) * base * (1.0 - rent_lip_dark * rent_lip_gain * lip);
 		// ...and a little thicker, torn cloud heaped at the edge.
 		d = min(d * (1.0 + 0.5 * lip), 1.0);
 		// Inner light: lightning in the wall and held light pooled behind the wounds.
 		vec3 inner = undertow_lightning(p) + col_held * pocket * pocket_energy * wound_intensity * env;
 		// The torn lip is dark through: the pooled light shows at the open core, not in the shredded edge.
-		vec3 s = lit + inner * (0.35 + 0.65 * d) * (1.0 - rent_lip_dark * lip);
+		vec3 s = lit + inner * (0.35 + 0.65 * d) * (1.0 - rent_lip_dark * rent_lip_gain * lip);
 		sum += T * (s * (1.0 - ts) + glow * ds);
 		t_acc += T * (1.0 - ts) * t_here;
 		t_weight += T * (1.0 - ts);

@@ -2,10 +2,11 @@
 id: M2-RND-10
 title: "Undertow events: Art's changes from M2-ART-03 (rents, curtains, rain, landfall dark, Letting, per-chapter flash)"
 role: rendering
-status: doing
+status: review
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 depends_on: [M2-ART-03]
 milestone: M2
+reviewer: character
 request-from: character
 ---
 ## Goal
@@ -34,5 +35,32 @@ M2-ART-03 approved the Undertow's storm events (M2-RND-05) with changes. Lightni
 ## Notes
 - Values confirmed as built (M2-ART-03): the bolt colour `#C4D6FF` (on screen `#CED6E2`), `min_px` 2, forks 1/2/3/3, the 2-frame flash and the 0.5 s photosensitivity cap; the reflection; `ch01_arrival`, `ch08_seawall`, `ch20_interior`, `ch21_heart` numbers (ch20/21 again at their mood frames); `ch21_letting` intensity 0.6 and rotation 0.006.
 - Nit, not blocking: the bolt is a bare line with no glow. A soft 3–4× width halo at about 25% would seat it in the rain.
+
+## Notes (PC GPU, session_01UFcBRsk9M9EKtxJKdBU2mB, 2026-10-24)
+Key frames: `docs/kb/qa/gpu/rnd10/` (960×540; `before_after_high.png` is before on the left, after on the
+right). The details are in docs/kb/tech/undertow.md, "Art's changes (M2-RND-10)". Reviewer: **Art (character)**.
+
+| # | Criterion | Result |
+|---|---|---|
+| 1 | Rents are slits with a dark lip on Medium and High | **Pass on shape, close on the lip.** The half-res body hands its seam cores and lips to the composite, at full resolution. Largest rents: 12.6–23:1 (day), 8.4–14.7:1 (night); they were 1.2–5.7:1. `eye_high` has no blocky rents. The lip: the ring beside the core is 0.86× (day) and 0.95× (night) the cloud's OkL, against Art's ≤ 0.8 and 1.0–1.46× before. Wider lips didn't lower it; please judge by eye. |
+| 2 | Curtains are hanging sheets | Done: 900 m, Gaussian edge, a soft 2-octave pattern over a veil, full to the sea's last 10%. Energy is **0.2**: Art's 0.4 measured about 4× the old total light. New: curtains within 1.5–4 km of the camera fade (from under the canopy they were a sky-wide smear). |
+| 3 | Rain reads as rain | **Pass:** `landfall_ch08` bright-streak coverage is 11.6% (≤ 12%; it was 26.7%). Inner alpha 0.08, `overcast_slate`, length ±40%, the outer layers are veils. |
+| 4 | Landfall near-night and slate-teal | **Close.** Frame mean OkL 0.211 (≤ 0.22; it was 0.263). Sky C 0.028 at h 225° (pass). Sea C 0.018 at h 236°, just short of 0.02. **Found:** at 10 km the zone was only 0.65 in shadow (the canopy's soft edge), so `ch08_landfall` is now 9.6 km. A sky-sourced ambient ignores `ambient_light_color`, so the tint goes in through the sky contribution. The visible sea is mostly the zone sky's reflection, which the storm doesn't tint. |
+| 5 | The Letting stays gold | **Pass** at `wound_intensity` **0.9**, not 1.8: the brightest 200 px are OkL 0.898, C 0.020, h 85°, clipped 0%. The shot now carries the preset's intensity 0.6, wound intensity 0.9 and bolts off. |
+| 6 | `rise_ratio` 2.0 | Done. |
+| 7 | Per-chapter lightning | Done, matching Art's table. The sites' glow fades over unbinding 0.5–0.7, so the Letting has no bolt. |
+| 8 | No rain underwater | Done: `UnderwaterRig.camera_submerged`. |
+
+- **Cost (1440p, the storm's own, same build):** High +0.07–0.12 ms (0.67–0.91 ms), Medium +0.06–0.14 ms
+  (0.83–1.19 ms).
+- **Found:**
+  - `capture_preset` ignores a shot's `setup` block. The storm's rnd05 frames came from the capture rig, which
+    applies it.
+  - An "Uniforms supplied for set (3)" Vulkan error, twice per run, is already on the integration branch (the
+    compute body's warm-up). It goes into M2-RND-11.
+- **Lavapipe baselines that will drift** (for the Lead to re-approve; I didn't touch them): every `undertow_*` shot,
+  above all `undertow_letting_ch21` (its setup changed) and `undertow_landfall_ch08`.
+- **Checks:** gdlint and gdformat, validate_data, `gen_undertow_compute.py --check`, the Godot `undertow` filter
+  (57/0, 6 of them new in `test_undertow_art_fixes.gd`), and the full suite.
 
 ## Review log

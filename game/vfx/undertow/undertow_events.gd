@@ -44,6 +44,14 @@ var _sun_base: float = -1.0
 var _sun_written: float = -1.0
 var _ambient_base: float = -1.0
 var _ambient_written: float = -1.0
+# The zone's ambient colour before the zone shadow's tint (M2-RND-10), and what was written.
+var _ambient_col_base := Color(-1.0, 0.0, 0.0)
+var _ambient_col_written := Color(-1.0, 0.0, 0.0)
+var _sky_share_base := 1.0
+var _fog_col_base := Color(-1.0, 0.0, 0.0)
+var _fog_col_written := Color(-1.0, 0.0, 0.0)
+var _sky_base: float = -1.0
+var _sky_written: float = -1.0
 var _exposure_base: float = -1.0
 var _exposure_frames: int = 0
 var _last_flash_s: float = -INF
@@ -103,6 +111,19 @@ func update() -> void:
 	_push_reflection()
 
 
+## The zone shadow's tint colour (undertow.json zone_shadow.tint) and how far toward it the light is now.
+## Normalised to full brightness (its hue and saturation only): the dim already darkens, and a lerp toward
+## a dark swatch would only darken more, not colour.
+func shadow_tint() -> Color:
+	var c := Color.from_string(str(_cfg("zone_shadow").get("tint", "")), Color.WHITE)
+	var top := maxf(maxf(c.r, c.g), c.b)
+	return Color(c.r / top, c.g / top, c.b / top) if top > 0.0 else Color.WHITE
+
+
+func shadow_tint_amount() -> float:
+	return clampf(shadow * float(_cfg("zone_shadow").get("tint_amount", 0.0)), 0.0, 1.0)
+
+
 ## The key light's energy before the zone shadow (what the storm's own lighting uses).
 func sun_energy() -> float:
 	if storm.sun == null:
@@ -124,11 +145,21 @@ func restore_zone() -> void:
 	if env != null:
 		if _ambient_base >= 0.0 and is_equal_approx(env.ambient_light_energy, _ambient_written):
 			env.ambient_light_energy = _ambient_base
+		if _ambient_col_base.r >= 0.0 and env.ambient_light_color.is_equal_approx(_ambient_col_written):
+			env.ambient_light_color = _ambient_col_base
+			env.ambient_light_sky_contribution = _sky_share_base
+		if _sky_base >= 0.0 and is_equal_approx(env.background_energy_multiplier, _sky_written):
+			env.background_energy_multiplier = _sky_base
+		if _fog_col_base.r >= 0.0 and env.fog_light_color.is_equal_approx(_fog_col_written):
+			env.fog_light_color = _fog_col_base
 		if _exposure_frames > 0:
 			env.tonemap_exposure = _exposure_base
 	_exposure_frames = 0
 	_sun_base = -1.0
 	_ambient_base = -1.0
+	_ambient_col_base = Color(-1.0, 0.0, 0.0)
+	_sky_base = -1.0
+	_fog_col_base = Color(-1.0, 0.0, 0.0)
 	if storm.water != null and storm.water.material != null:
 		storm.water.material.set_shader_parameter(PARAM_REFLECT, 0.0)
 		storm.water.material.set_shader_parameter(&"storm_body_ready", false)
@@ -165,6 +196,12 @@ func _build_streamers(count: int, shader_path: String, prio: int) -> void:
 	streamer_material.set_shader_parameter(&"streamer_energy", float(cfg.get("energy", 0.0)))
 	streamer_material.set_shader_parameter(&"streamer_mote_scale_m", float(cfg.get("mote_scale_m", 1.0)))
 	streamer_material.set_shader_parameter(&"streamer_mote_cover", float(cfg.get("mote_cover", 0.0)))
+	streamer_material.set_shader_parameter(&"streamer_veil", float(cfg.get("veil", 0.25)))
+	streamer_material.set_shader_parameter(&"streamer_edge_sigma", float(cfg.get("edge_sigma", 0.38)))
+	streamer_material.set_shader_parameter(&"streamer_mote_octaves", int(cfg.get("mote_octaves", 1)))
+	streamer_material.set_shader_parameter(&"streamer_sea_fade", float(cfg.get("sea_fade", 0.1)))
+	var nf := cfg.get("near_fade_m", [0.0, 1.0]) as Array
+	streamer_material.set_shader_parameter(&"streamer_near_fade_m", Vector2(float(nf[0]), float(nf[1])))
 
 
 ## Anchors (radius, height, angle) on the wall's outer face inside the wounds' height window,
@@ -206,6 +243,8 @@ func _build_bolts(shader_path: String, prio: int) -> void:
 ## (most of the storm's flashes stay inside the cloud), and only on the camera's half of the storm (a
 ## stroke behind the wall is hidden by it, and the body cannot occlude a transparent bolt).
 func strike_shows_bolt(site: int, t: float) -> bool:
+	if not storm.bolts:
+		return false
 	var cam := get_viewport().get_camera_3d() if is_inside_tree() else null
 	if cam != null:
 		var s := storm.state.flash_sites(t)[site]
@@ -288,13 +327,24 @@ func _on_strike(_level: float) -> void:
 	if now - _last_flash_s < float(cfg.get("min_interval_s", 0.0)):
 		flashes_suppressed += 1
 		return
-	var reduced := UiSettings.shared() != null and UiSettings.shared().reduced_motion()
-	var gain := float(cfg.get("reduced_motion_gain" if reduced else "gain", 1.0))
+	var gain := flash_gain()
+	if gain <= 1.0:
+		return
 	_exposure_base = env.tonemap_exposure
 	env.tonemap_exposure = _exposure_base * gain
 	_exposure_frames = int(cfg.get("frames", 0))
 	_last_flash_s = now
 	flashes += 1
+
+
+## The exposure flash's gain now: the preset's (UndertowStorm.exposure_flash_gain; < 0 = exposure_flash.gain),
+## under reduced motion its reduced_motion_gain capped at that. 1 = no flash (M2-RND-10).
+func flash_gain() -> float:
+	var cfg := _cfg("exposure_flash")
+	var gain := storm.exposure_flash_gain if storm.exposure_flash_gain >= 0.0 else float(cfg.get("gain", 1.0))
+	if UiSettings.shared() != null and UiSettings.shared().reduced_motion():
+		gain = minf(float(cfg.get("reduced_motion_gain", 1.0)), gain)
+	return gain
 
 
 func _update_exposure() -> void:
@@ -336,8 +386,14 @@ func _build_rain(layers: int, shader_path: String, prio: int) -> void:
 		var mat := _material(shader_path, prio + i)
 		mat.set_shader_parameter(&"rain_radius_m", r)
 		mat.set_shader_parameter(&"rain_height_m", h)
-		for key: String in ["fall_m_s", "slant", "streak_m", "drop_m", "density", "alpha"]:
+		for key: String in ["fall_m_s", "slant", "streak_m", "drop_m", "density", "alpha", "length_var"]:
 			mat.set_shader_parameter(StringName("rain_" + key), float(cfg.get(key, 0.0)))
+		# Per-layer veils (M2-RND-10): the outer curtains softer, coarser and fainter.
+		var per := cfg.get("layers", []) as Array
+		var lc := (per[i] if i < per.size() else {}) as Dictionary
+		mat.set_shader_parameter(&"rain_alpha", float(cfg.get("alpha", 0.0)) * float(lc.get("alpha_scale", 1.0)))
+		mat.set_shader_parameter(&"rain_drop_m", float(cfg.get("drop_m", 0.0)) * float(lc.get("drop_scale", 1.0)))
+		mat.set_shader_parameter(&"rain_softness", float(lc.get("softness", 0.0)))
 		mi.material_override = mat
 		rain.add_child(mi)
 		rain_materials.append(mat)
@@ -364,13 +420,14 @@ func _update_rain() -> void:
 	if not rain.visible:
 		return
 	rain.global_position = cam.global_position
-	var amount := rain_amount(cam.global_position)
+	# Rain is a camera effect: none while an UnderwaterRig has the camera submerged (ch20, ch21; M2-RND-10).
+	var amount := 0.0 if UnderwaterRig.camera_submerged(get_tree()) else rain_amount(cam.global_position)
 	rain.visible = amount > 0.0
 	var cfg := _cfg("rain")
 	var flash := 0.0
 	for l in storm.state.flash_levels(storm.state.time_s):
 		flash = maxf(flash, l)
-	var base := Color.from_string(str(cfg.get("color", "")), Color.GRAY)
+	var base := Color.from_string(str(cfg.get("color", "")), Color.GRAY).lerp(shadow_tint(), shadow_tint_amount())
 	var lit := base * storm.ambient_energy * (1.0 - shadow * float(_cfg("zone_shadow").get("ambient_dim", 0.0)))
 	var col := (
 		lit
@@ -443,6 +500,26 @@ func _update_shadow() -> void:
 			_ambient_base = env.ambient_light_energy
 		_ambient_written = _ambient_base * (1.0 - float(cfg.get("ambient_dim", 0.0)) * shadow)
 		env.ambient_light_energy = _ambient_written
+		# What light is left under the storm is tinted toward the storm's slate-teal (colour script rule 5:
+		# never neutral; M2-RND-10). A sky-sourced ambient ignores its colour unless the sky's share drops,
+		# so the tint goes in as the ambient colour plus that share.
+		if _ambient_col_base.r < 0.0 or not env.ambient_light_color.is_equal_approx(_ambient_col_written):
+			_ambient_col_base = env.ambient_light_color
+			_sky_share_base = env.ambient_light_sky_contribution
+		var tk := shadow_tint_amount()
+		_ambient_col_written = _ambient_col_base.lerp(shadow_tint(), tk)
+		env.ambient_light_color = _ambient_col_written
+		env.ambient_light_sky_contribution = _sky_share_base * (1.0 - tk)
+		# The zone's fog (most of the far sky and sea in a storm) leans the same way.
+		if _fog_col_base.r < 0.0 or not env.fog_light_color.is_equal_approx(_fog_col_written):
+			_fog_col_base = env.fog_light_color
+		_fog_col_written = _fog_col_base.lerp(shadow_tint(), tk)
+		env.fog_light_color = _fog_col_written
+		# The zone's own sky darkens under the canopy too (the storm is most of it there).
+		if _sky_base < 0.0 or not is_equal_approx(env.background_energy_multiplier, _sky_written):
+			_sky_base = env.background_energy_multiplier
+		_sky_written = _sky_base * (1.0 - float(cfg.get("sky_dim", 0.0)) * shadow)
+		env.background_energy_multiplier = _sky_written
 
 
 # --- Reflection --------------------------------------------------------------------------------

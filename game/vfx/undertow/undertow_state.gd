@@ -420,7 +420,14 @@ func flash_level(site: int, t: float) -> float:
 	if hash01(site, k, SALT_CHANCE) < float(lt.get("chance", 0.0)) * intensity:
 		var start := k * period + hash01(site, k, SALT_START) * maxf(period - duration, 0.0)
 		level = _pulse(t - start)
-	return maxf(level, _pulse(t - _forced_start[site]))
+	return maxf(level, _pulse(t - _forced_start[site])) * unbinding_glow()
+
+
+## The lightning sites' glow at the current unbinding (M2-RND-10): 1, fading to 0 as unbinding crosses
+## lightning.unbinding_fade (the Letting is an exhale, not violence).
+func unbinding_glow() -> float:
+	var fade := _section("lightning").get("unbinding_fade", [1.0, 1.0]) as Array
+	return 1.0 - smoothstep(float(fade[0]), maxf(float(fade[1]), float(fade[0]) + 1e-4), unbinding)
 
 
 func flash_levels(t: float) -> PackedFloat32Array:

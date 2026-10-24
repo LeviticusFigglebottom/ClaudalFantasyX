@@ -126,6 +126,11 @@ const GIZMO_COLOR := Color(0.25, 0.88, 0.78)
 ## The colour script's lightning frames: the zone Environment's exposure jumps at a strike
 ## (undertow.json "exposure_flash"; capped like battle flashes, gentler under reduced motion).
 @export var exposure_flash: bool = true
+## The exposure flash's gain for this chapter (M2-RND-10; presets set it): 1 = no flash, < 0 = undertow.json
+## exposure_flash.gain. Reduced motion caps it at exposure_flash.reduced_motion_gain.
+@export var exposure_flash_gain: float = -1.0
+## Whether strikes draw cloud-to-sea bolts (M2-RND-10: off for the Letting, an exhale, not violence).
+@export var bolts: bool = true
 ## The zone's environment: its ambient for the zone shadow, its exposure for the lightning frames.
 @export var world_environment: WorldEnvironment
 
@@ -416,13 +421,24 @@ func mood_parameters() -> Dictionary:
 		sun_col = sun.light_color
 		# The storm is lit by the zone's undimmed key: the zone shadow is the storm's own (M2-RND-05).
 		sun_e = events.sun_energy() if events != null else sun.light_energy
+	# Seen from under its own canopy the storm's sky light dims and tints with the zone shadow (M2-RND-10).
+	var dim := 1.0
+	var tint_k := 0.0
+	var tint := Color.WHITE
+	var sun_dim := 1.0
+	if events != null:
+		var zs := state.config.get("zone_shadow", {}) as Dictionary
+		dim = 1.0 - events.shadow * float(zs.get("storm_ambient_dim", 0.0))
+		sun_dim = 1.0 - events.shadow * float(zs.get("storm_sun_dim", 0.0))
+		tint_k = events.shadow_tint_amount()
+		tint = events.shadow_tint()
 	return {
 		"col_sun": sun_col,
-		"sun_energy": sun_e * float(cloud.get("sun_energy", 1.0)),
-		"col_ambient_top": ambient_top,
-		"col_ambient_bottom": ambient_bottom,
-		"ambient_energy": ambient_energy * float(cloud.get("ambient_energy", 1.0)),
-		"col_haze": haze_color,
+		"sun_energy": sun_e * float(cloud.get("sun_energy", 1.0)) * sun_dim,
+		"col_ambient_top": ambient_top.lerp(tint, tint_k),
+		"col_ambient_bottom": ambient_bottom.lerp(tint, tint_k),
+		"ambient_energy": ambient_energy * float(cloud.get("ambient_energy", 1.0)) * dim,
+		"col_haze": haze_color.lerp(tint, tint_k),
 		"haze_visibility_m":
 		haze_visibility_m if haze_visibility_m > 0.0 else float(cloud.get("haze_visibility_m", 1.0)),
 	}
@@ -616,6 +632,23 @@ func _push_static() -> void:
 		m.set_shader_parameter(PARAM_NOISE_TEX, _noise_texture())
 	if lid_material != null:
 		lid_material.set_shader_parameter(&"lid_height_m", lid_height())
+	_push_rent_split()
+
+
+## M2-RND-10: a half-res compute body smears a rent into a blotch, so it draws only a share of the seam's
+## core and lip (undertow.json wounds.half_res) and the composite draws them at full resolution. Any other
+## body (Low's shells, Ultra's full-resolution body, the SubViewport fallback) draws them whole.
+func _push_rent_split() -> void:
+	var hr := (state.config.get("wounds", {}) as Dictionary).get("half_res", {}) as Dictionary
+	var split := half_res != null and half_res.effect != null and not hr.is_empty()
+	if body_material != null:
+		body_material.set_shader_parameter(&"rent_core_gain", float(hr.get("body_core_gain", 1.0)) if split else 1.0)
+		body_material.set_shader_parameter(&"rent_lip_gain", float(hr.get("body_lip_gain", 1.0)) if split else 1.0)
+	if half_res != null and half_res.composite_material != null:
+		var cm := half_res.composite_material
+		cm.set_shader_parameter(&"full_res_rents", split)
+		cm.set_shader_parameter(&"rent_core_energy", float(hr.get("core_energy", 0.0)))
+		cm.set_shader_parameter(&"rent_lip_share", 1.0 - float(hr.get("body_lip_gain", 1.0)))
 
 
 func _push_dynamic() -> void:
@@ -707,6 +740,8 @@ func _active_materials() -> Array[ShaderMaterial]:
 			out.append(spray_materials[i])
 	if events != null:
 		out.append_array(events.materials())
+	if half_res != null and half_res.composite_material != null:
+		out.append(half_res.composite_material)
 	return out
 
 

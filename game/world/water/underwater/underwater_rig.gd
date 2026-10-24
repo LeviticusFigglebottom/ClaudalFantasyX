@@ -21,6 +21,8 @@ const UNDERSIDE_SHADER := "res://game/shaders/water/water_underside.gdshader"
 const SHAFTS_SHADER := "res://game/shaders/water/underwater_shafts.gdshader"
 const SNOW_DRAW := "res://game/world/water/underwater/underwater_snow_draw.tres"
 const TIER_SYSTEM := "underwater"
+## Every rig in the tree joins this group (camera_submerged; M2-RND-10).
+const GROUP := &"underwater_rig"
 const POST_SIMPLE := "simple"
 ## The post draws after every other transparent: the multiply pass, then the add pass.
 const PRIORITY_MUL := 126
@@ -113,7 +115,26 @@ func plan() -> Dictionary:
 	return (data.get("quality", {}) as Dictionary).get(quality, {}) as Dictionary
 
 
+## Whether an active rig in the tree has the current camera under its water's rest plane (rain, a camera
+## effect, stops underwater: M2-RND-10).
+static func camera_submerged(tree: SceneTree) -> bool:
+	if tree == null:
+		return false
+	for n in tree.get_nodes_in_group(GROUP):
+		var rig := n as UnderwaterRig
+		if rig != null and rig.active and rig.submerged():
+			return true
+	return false
+
+
+## This rig's camera is below its water's rest plane.
+func submerged() -> bool:
+	var cam := get_viewport().get_camera_3d() if is_inside_tree() else null
+	return water != null and cam != null and cam.global_position.y < water.global_position.y
+
+
 func _ready() -> void:
+	add_to_group(GROUP)
 	data = load_data()
 	_build()
 	_apply_quality()

@@ -489,6 +489,55 @@ Measured: RX 9070 XT, 2560×1440, GPU median, the storm's own cost by `gpu_bench
 The shells' billow layout changes, because the lattice repeats outside its cells; the read doesn't.
 `undertow_horizon_low` drifts 0.025 on the GPU, and the Low night view 0.028.
 
+## Art's changes (M2-RND-10, from M2-ART-03)
+
+Key frames: `docs/kb/qa/gpu/rnd10/` (with `before_after_high.png`). All numbers are Oklab means on 960×540 frames.
+
+- **Full-resolution rents (Medium, High).** A 0.35–0.5 scale body smears a seam a few pixels wide into a blotch,
+  and narrowing it (`width` 0.05) only made it a smaller blotch. So the work is split:
+  - The half-res compute body draws `wounds.half_res.body_core_gain` (0.15) of the seam's core glow and none of
+    its lip (`rent_core_gain`, `rent_lip_gain`).
+  - The composite rebuilds each pixel's cloud point from the body's front distance (`front_tex`, tent-filtered so
+    the march jitter doesn't stipple the edge) and evaluates the same cylinder-mapped `undertow_wound()` there. It
+    adds the core (`core_energy` × `col_wound`) and darkens the torn lip (`lip_dark` 0.9), both at full
+    resolution.
+  - Low's shells and Ultra's full-resolution body draw rents whole, as before.
+  - Results: the largest rents are 8–23:1 slits (they were 1.2–5.7:1), with the cloud beside them darker than
+    the cloud further out: 0.86× by day, 0.95× at night (the halo used to make it 1.0–1.46× brighter).
+  - Cost: +0.06–0.14 ms; the High storm is 0.67–0.91 ms at 1440p.
+- **Curtains** are sheets:
+  - 900 m wide with a Gaussian edge (`edge_sigma`), 2-octave motes squared over a 0.45 `veil`.
+  - Full brightness down to the last `sea_fade` (10%) at the sea, and faded within `near_fade_m` (1.5–4 km) of
+    the camera: from under the canopy they were a smear across the sky.
+  - Energy 0.2, not Art's starting 0.4. At the new width 0.4 measured about 4× the old total light.
+- **Rain.**
+  - Inner alpha 0.08, colour `overcast_slate`, and each column's streak length ±40%.
+  - Per-layer `layers[]`: the outer curtains are veils (`softness` widens the streak's edge, coarser columns,
+    lower alpha).
+  - Landfall's bright-streak coverage is 11.6% (it was 26.7%).
+  - None while an `UnderwaterRig` reports the camera submerged (`UnderwaterRig.camera_submerged`).
+- **The zone shadow's tint.** At full shadow:
+  - `ambient_dim` 0.7, `storm_ambient_dim` 0.5, `storm_sun_dim` 0.5, `sky_dim` 0.35.
+  - The zone's ambient, fog and rain, and the storm's own ambient and haze, lean `tint_amount` 0.6 toward
+    `deep_teal_shadow`'s hue at full brightness. The swatch itself is so dark that lerping toward it only darkens.
+  - A sky-sourced ambient takes the tint through `ambient_light_sky_contribution`.
+  - Everything is restored when the storm leaves.
+  - `ch08_landfall` is at 9.6 km. At 10 km the canopy's soft edge left the zone only 0.65 in shadow.
+  - Landfall's frame mean OkL is 0.211 (it was 0.263). The sky is C 0.028 at h 225°. The sea is C 0.018 at
+    h 236°, just short of 0.02: the visible sea is mostly the zone sky's reflection, which the storm doesn't tint.
+- **Lightning per chapter.**
+  - Presets set `UndertowStorm.exposure_flash_gain` (1 = no flash) and `bolts`. Reduced motion is capped at the
+    preset's gain.
+  - The sites' glow fades out over `lightning.unbinding_fade` (unbinding 0.5–0.7), so the Letting has no
+    lightning.
+- **The Letting.**
+  - `rise_ratio` 2.0.
+  - `ch21_letting.wound_intensity` 0.9. Art's starting 1.8 left the brightest rents at OkL 0.95 and C 0.013,
+    white, once the full-resolution cores came in. At 0.9 they're OkL 0.898, C 0.020, h 85°, at `glimmer_lift`
+    +1, with nothing clipped.
+  - The `undertow_letting_ch21` shot now carries the preset's intensity 0.6, wound intensity and bolts. The preset
+    itself can't be applied there: its `approach_distance_m` 0 puts the Night camera inside the storm.
+
 ## Gotchas
 - **Unshaded additive shaders write ALBEDO, not EMISSION (M2-RND-05).** With `unshaded` Godot outputs ALBEDO
   alone; EMISSION is dropped, so `blend_add` of EMISSION over a black ALBEDO drew nothing (the streamers and

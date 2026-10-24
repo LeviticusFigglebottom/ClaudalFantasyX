@@ -86,6 +86,11 @@ uniform float rent_lip_width : hint_range(1.0, 8.0) = 2.5;
 uniform float rent_lip_dark : hint_range(0.0, 1.0) = 0.6;
 uniform float rent_halo_width : hint_range(1.0, 16.0) = 6.0;
 uniform float rent_halo_energy : hint_range(0.0, 4.0) = 0.35;
+// M2-RND-10: the share of the seam's core glow and of the lip's darkening the body draws itself. A half-res
+// body (Medium, High) lowers both: its 0.35-0.5 scale smears a slit into a blotch, so the composite draws
+// the core and the lip at full resolution instead (undertow_composite.gdshader).
+uniform float rent_core_gain : hint_range(0.0, 1.0) = 1.0;
+uniform float rent_lip_gain : hint_range(0.0, 1.0) = 1.0;
 uniform vec3 col_wound : source_color = vec3(0.0497, 0.7454, 0.5776);
 uniform vec3 col_held : source_color = vec3(0.2122, 0.5647, 0.6939);
 

@@ -124,9 +124,9 @@
     "billow_shade_step_m": 300.0
   },
   "wounds": {
-    "_note": "Rents where held light bleeds out (bible §9). Seams drift DOWN the wall (held light sinks, colour script rule 1). M2-RND-05 torn rents: a dark torn lip lip_width seam widths wide around each open core (lit colour x (1 - lip_dark)), and a halo halo_width wide where the light pouring out scatters in the cloud beside it (halo_energy x the seam glow).",
+    "_note": "Rents where held light bleeds out (bible §9). Seams drift DOWN the wall (held light sinks, colour script rule 1). M2-RND-05 torn rents: a dark torn lip lip_width seam widths wide around each open core (lit colour x (1 - lip_dark)), and a halo halo_width wide where the light pouring out scatters in the cloud beside it (halo_energy x the seam glow). M2-RND-10 (Art, M2-ART-03): width 0.05, lip_dark 0.9, halo_energy 0.06, so a rent reads as a slit with a dark lip on the half-res body too.",
     "scale_m": 1600.0,
-    "width": 0.08,
+    "width": 0.05,
     "coverage": 0.4,
     "presence_scale_m": 4200.0,
     "sink_m_s": 5.0,
@@ -138,12 +138,18 @@
     "height_min": 0.15,
     "height_max": 0.85,
     "lip_width": 3.0,
-    "lip_dark": 0.8,
+    "lip_dark": 0.9,
     "halo_width": 3.5,
-    "halo_energy": 0.12
+    "halo_energy": 0.06,
+    "half_res": {
+      "_note": "M2-RND-10: on a half-res compute body (Medium, High) the body draws body_core_gain of the seam's core glow and body_lip_gain of the lip's darkening; the composite draws the rest at full resolution (core_energy x col_wound).",
+      "body_core_gain": 0.15,
+      "body_lip_gain": 0.0,
+      "core_energy": 2.0
+    }
   },
   "lightning": {
-    "_note": "Deterministic schedule (UndertowState.flash_levels). Sites ride the eyewall and rotate with it.",
+    "_note": "Deterministic schedule (UndertowState.flash_levels). Sites ride the eyewall and rotate with it. M2-RND-10: the sites' glow fades out as UndertowStorm.unbinding goes from unbinding_fade[0] to [1] (the Letting is an exhale, not violence).",
     "sites": 4,
     "period_s": 5.5,
     "period_spread": 0.37,
@@ -155,7 +161,11 @@
     "radius_m": 1300.0,
     "energy": 1.6,
     "height_min": 0.15,
-    "height_max": 0.7
+    "height_max": 0.7,
+    "unbinding_fade": [
+      0.5,
+      0.7
+    ]
   },
   "sea": {
     "_note": "The maelstrom: the sea pulled down into the eye. Profile = funnel (depth_m, Gaussian-ish throat) + lip (surge heaped against the wall).",
@@ -317,19 +327,27 @@
     "margin_m": 0.5
   },
   "unbinding": {
-    "_note": "The Letting (UndertowStorm.unbinding, Ch21; M2-RND-05). Over its first half the wounds' and throat streaks' drift reverses from sinking to rising at rise_ratio x their sink speeds; over its second half their colours lerp to colors.lift (colour script rule 1).",
-    "rise_ratio": 0.6
+    "_note": "The Letting (UndertowStorm.unbinding, Ch21; M2-RND-05). Over its first half the wounds' and throat streaks' drift reverses from sinking to rising at rise_ratio x their sink speeds; over its second half their colours lerp to colors.lift (colour script rule 1). M2-RND-10: rise_ratio 2.0 (colour script rule 1: released light rises about 2x faster than held light drifts).",
+    "rise_ratio": 2.0
   },
   "streamers": {
-    "_note": "M2-RND-05: curtains of held light hanging off the wall's wounds (anchors on the outer face inside the wounds' height window) down to the sea: they fall as (1 - t)^drop, bulge reach_m out from the face toward the foot, trail twist_rad sideways and widen from 0.5 to 1.5 x width_m; motes slide down them with the wounds' drift. Count per tier in quality.streamers.",
+    "_note": "M2-RND-05: curtains of held light hanging off the wall's wounds (anchors on the outer face inside the wounds' height window) down to the sea: they fall as (1 - t)^drop, bulge reach_m out from the face toward the foot, trail twist_rad sideways and widen from 0.5 to 1.5 x width_m; motes slide down them with the wounds' drift. Count per tier in quality.streamers. M2-RND-10: hanging sheets, not rods: width_m 900 with a Gaussian edge (edge_sigma of the half-width), mote_cover 0.6 on a 2-octave pattern over a veil share of the light, energy 0.4 (about the same total light), and full brightness down to the sea (only the last sea_fade of the curtain fades). energy 0.2 keeps the total light about where it was at the new width (Art's 0.4 was a start; measured ~4x the old total); near_fade_m: a curtain within this range of the camera fades (from under the canopy it would be a smear overhead).",
     "reach_m": 1400.0,
     "drop": 1.0,
     "twist_rad": 0.15,
-    "width_m": 380.0,
+    "width_m": 900.0,
     "segments": 16,
-    "energy": 0.6,
+    "energy": 0.2,
     "mote_scale_m": 140.0,
-    "mote_cover": 0.35
+    "mote_cover": 0.6,
+    "veil": 0.45,
+    "edge_sigma": 0.38,
+    "mote_octaves": 2,
+    "sea_fade": 0.1,
+    "near_fade_m": [
+      1500.0,
+      4000.0
+    ]
   },
   "bolts": {
     "_note": "M2-RND-05: cloud-to-sea strokes at a flash site's strike (UndertowEvents). A scheduled strike shows one with `chance`; force_flash always does. From the cloud base (top_m) over the site's wall angle to the sea sea_reach_m (x 0.5..1.5) beyond the wall, angle spread spread_rad; jag = sideways kink per step; width_m with a min_px pixel floor. Forks per tier in quality.bolt_branches.",
@@ -345,14 +363,14 @@
     "energy": 9.0
   },
   "exposure_flash": {
-    "_note": "M2-RND-05: the colour script's lightning frames (Ch8: 2.0x exposure for 2 frames) on UndertowStorm.world_environment at each strike. Photosensitivity as battle flashes (battle_vfx.md): at least min_interval_s apart (at most two a second, under WCAG 2.3.1's three), and reduced_motion_gain under UiSettings reduced motion.",
+    "_note": "M2-RND-05: the colour script's lightning frames (Ch8: 2.0x exposure for 2 frames) on UndertowStorm.world_environment at each strike. Photosensitivity as battle flashes (battle_vfx.md): at least min_interval_s apart (at most two a second, under WCAG 2.3.1's three), and reduced_motion_gain under UiSettings reduced motion. M2-RND-10: presets set UndertowStorm.exposure_flash_gain (1 = off; -1 = this gain) and bolts; reduced motion uses reduced_motion_gain capped at the preset's gain.",
     "gain": 2.0,
     "frames": 2,
     "min_interval_s": 0.5,
     "reduced_motion_gain": 1.33
   },
   "rain": {
-    "_note": "M2-RND-05: near-field rain curtains on the camera (UndertowRain), full within full_m of the eye, none beyond reach_m (the outer rain bands), times intensity; UndertowStorm.rain_amount overrides. Layers per tier in quality.rain_layers (radii_m, inner first). color = lit rain at ambient 1; flash_gain = how much a strike lights it. ceiling_m: none with the camera above it (over the sea), so a camera over the storm stays dry.",
+    "_note": "M2-RND-05: near-field rain curtains on the camera (UndertowRain), full within full_m of the eye, none beyond reach_m (the outer rain bands), times intensity; UndertowStorm.rain_amount overrides. Layers per tier in quality.rain_layers (radii_m, inner first). color = lit rain at ambient 1; flash_gain = how much a strike lights it. ceiling_m: none with the camera above it (over the sea), so a camera over the storm stays dry. M2-RND-10: alpha 0.10 (inner), colour overcast_slate, streak length varied by length_var (+-40%) per column, and layers[] per curtain (inner first): the outer ones are veils (softness widens the streak's edge, drop_scale its columns, alpha_scale its share). No rain while an UnderwaterRig reports the camera submerged.",
     "radii_m": [
       5.0,
       12.0,
@@ -365,19 +383,42 @@
     "streak_m": 0.9,
     "drop_m": 0.035,
     "density": 0.55,
-    "alpha": 0.18,
+    "alpha": 0.08,
     "full_m": 10000.0,
     "reach_m": 16000.0,
-    "color": "#7A8794",
+    "color": "#6F7E8E",
     "flash_gain": 0.25,
-    "ceiling_m": 1500.0
+    "ceiling_m": 1500.0,
+    "length_var": 0.4,
+    "layers": [
+      {
+        "alpha_scale": 1.0,
+        "softness": 0.0,
+        "drop_scale": 1.0
+      },
+      {
+        "alpha_scale": 0.4,
+        "softness": 0.6,
+        "drop_scale": 2.5
+      },
+      {
+        "alpha_scale": 0.25,
+        "softness": 1.0,
+        "drop_scale": 5.0
+      }
+    ]
   },
   "zone_shadow": {
-    "_note": "M2-RND-05: the zone's key light and ambient dim (sun_dim, ambient_dim at full shadow) while the storm's canopy is overhead (overhead x the canopy footprint, soft over soft_m) or the canopy or wall stands between the zone marker (the storm node) and the sun; times intensity. The storm itself stays lit by the undimmed key.",
+    "_note": "M2-RND-05: the zone's key light and ambient dim (sun_dim, ambient_dim at full shadow) while the storm's canopy is overhead (overhead x the canopy footprint, soft over soft_m) or the canopy or wall stands between the zone marker (the storm node) and the sun; times intensity. The storm itself stays lit by the undimmed key. M2-RND-10: ambient_dim 0.7 (near-night under the canopy). tint (deep_teal_shadow's hue, at full brightness) x tint_amount at full shadow: the zone's ambient, fog and rain and the storm's own sky light and haze lean slate-teal (colour script rule 5); storm_ambient_dim: the storm's ambient seen from under its canopy. storm_sun_dim: the storm's own key under its canopy (the wall overhead is lit from above, not seen from it); sky_dim: the zone sky's energy. A sky-sourced ambient takes the tint through ambient_light_sky_contribution.",
     "sun_dim": 0.75,
-    "ambient_dim": 0.45,
+    "ambient_dim": 0.7,
     "soft_m": 2500.0,
-    "overhead": 1.0
+    "overhead": 1.0,
+    "tint": "#0E4A55",
+    "tint_amount": 0.6,
+    "storm_ambient_dim": 0.5,
+    "storm_sun_dim": 0.5,
+    "sky_dim": 0.35
   },
   "reflection": {
     "_note": "M2-RND-05: the storm in the zone water's reflection (water shader storm group). Where the half-res body's frame exists (Medium, High), the reflected ray's point at the storm's distance is projected to the screen and the storm's own pixel is reflected. Elsewhere (off screen, Low shells, Ultra's full-res body) an impostor of two vertical cylinders (wall and canopy ring) the reflected ray tests, coloured low = ambient bottom x low_gain at the sea to high = albedo x key x sun_gain + ambient top x low_gain at the top, plus lightning (flash_gain) and the wounds (wound_gain); the gains are matched to the body's measured on-screen colour (it is several times darker than a naive albedo x key). Where the storm is reflected the sky reflection gives way to it. strength x intensity; edges soft over soft_m.",
@@ -389,7 +430,7 @@
     "wound_gain": 0.03
   },
   "presets": {
-    "_note": "M2-RND-05: chapter presets (UndertowStorm.preset / apply_preset): storm property -> value. Starting points from the colour script, for Art's sign-off (M2-ART-03); a cutscene tweens between them. The zone still owns its light (key, fog, exposure: color_script.md).",
+    "_note": "M2-RND-05: chapter presets (UndertowStorm.preset / apply_preset): storm property -> value. Starting points from the colour script, for Art's sign-off (M2-ART-03); a cutscene tweens between them. The zone still owns its light (key, fog, exposure: color_script.md). M2-RND-10: exposure_flash_gain and bolts per chapter (Art, M2-ART-03); ch21_letting wound_intensity 0.9 (Art's 1.8 start, measured: with the full-resolution rent cores the brightest rents only stay gold, OkL <= 0.93 at C >= 0.02, up to about 0.9 at the preset's intensity 0.6).",
     "ch01_arrival": {
       "_note": "Ch1 'Lamp-Diver': the storm arrives at 11:10 out of a clear sky over the raft-town (day look, still far off, wounds held back).",
       "look": "day_storm",
@@ -398,7 +439,9 @@
       "wound_intensity": 0.7,
       "approach_distance_m": 18000.0,
       "unbinding": 0.0,
-      "rain_amount": -1.0
+      "rain_amount": -1.0,
+      "exposure_flash_gain": 1.0,
+      "bolts": true
     },
     "ch08_seawall": {
       "_note": "Ch8 'The Seawall', 16:00: the daylight storm wall standing on the sea (the undertow_day_ch08 reference).",
@@ -408,17 +451,21 @@
       "wound_intensity": 1.2,
       "approach_distance_m": 14000.0,
       "unbinding": 0.0,
-      "rain_amount": -1.0
+      "rain_amount": -1.0,
+      "exposure_flash_gain": 2.0,
+      "bolts": true
     },
     "ch08_landfall": {
-      "_note": "Ch8 by 16:40: the storm 'darkens to near-night'; the zone is under the canopy's edge, just outside the wall (9.2 km at the sea), so the zone shadow is full and the rain heavy.",
+      "_note": "Ch8 by 16:40: the storm 'darkens to near-night'; the zone is under the canopy's edge, just outside the wall (9.2 km at the sea), so the zone shadow is full and the rain heavy. M2-RND-10: 9.6 km (was 10 km, where the canopy's soft edge left the zone only 0.65 in shadow).",
       "look": "day_storm",
       "intensity": 1.0,
       "rotation_rad_s": 0.014,
       "wound_intensity": 1.6,
-      "approach_distance_m": 10000.0,
+      "approach_distance_m": 9600.0,
       "unbinding": 0.0,
-      "rain_amount": -1.0
+      "rain_amount": -1.0,
+      "exposure_flash_gain": 2.0,
+      "bolts": true
     },
     "ch20_interior": {
       "_note": "Ch20 'Undertow': inside the storm, no sun; the wounds and lightning are the light.",
@@ -428,7 +475,9 @@
       "wound_intensity": 2.5,
       "approach_distance_m": 0.0,
       "unbinding": 0.0,
-      "rain_amount": 0.6
+      "rain_amount": 0.6,
+      "exposure_flash_gain": 1.5,
+      "bolts": true
     },
     "ch21_heart": {
       "_note": "Ch21 'The Heart', phases 1-2: the core, every wound open, all of it held.",
@@ -438,17 +487,21 @@
       "wound_intensity": 3.0,
       "approach_distance_m": 0.0,
       "unbinding": 0.0,
-      "rain_amount": 0.5
+      "rain_amount": 0.5,
+      "exposure_flash_gain": 1.5,
+      "bolts": true
     },
     "ch21_letting": {
       "_note": "Ch21 phase 3, the Letting: held light turns to released (tween unbinding 0 -> 1 over the countdown); the storm unwinds.",
       "look": "",
       "intensity": 0.6,
       "rotation_rad_s": 0.006,
-      "wound_intensity": 3.5,
+      "wound_intensity": 0.9,
       "approach_distance_m": 0.0,
       "unbinding": 1.0,
-      "rain_amount": 0.0
+      "rain_amount": 0.0,
+      "exposure_flash_gain": 1.0,
+      "bolts": false
     }
   }
 }
