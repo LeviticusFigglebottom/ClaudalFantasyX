@@ -302,6 +302,8 @@ def walk_pose(t: float, persona: dict, stride: float, knee: float, arm: float, b
 
 
 def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    if persona.get("hands_joined"):  # M3-CHR-02: Sefir's own clips (sefir_pose_at, below)
+        return sefir_pose_at(clip, t, length, sk, persona)
     sway = persona["sway"]
     u = t / length
     if clip == "idle":
@@ -433,6 +435,101 @@ LENGTHS = {"idle": 6.0, "walk": 1.1, "run": 0.7, "talk": 3.2, "kneel_over_rhen":
            "rise_to_stand": 2.0, "offer_hand": 1.4, "take_hand": 1.2, "walk_to_chamber": 1.4, "emerge_doorway": 2.4,
            "face_west": 1.6, "spear_level": 1.6, "lower_spear": 1.6, "palms_level": 2.0, "catch_rhen": 1.4,
            "sit_steps": 2.0, "turn_seaward": 1.6}
+
+
+# ---------------------------------------------------------------------------------------------
+# Sefir (M3-CHR-02, act1_npcs.md §1.8): plumb and still, no breath, the hands joined loosely before the navel, right
+# over left. A persona with `hands_joined` takes these clips in place of the shared ones (pose_at dispatches), so the
+# other heroes' libraries do not change. `breath` scales the breath term of his idle (0: absent, as the story asks).
+# ---------------------------------------------------------------------------------------------
+PERSONA["sefir"] = {"sway": 0.0, "lean": 0.0, "staff": False, "arms_down": 30.0, "breath": 0.0, "hands_joined": True}
+CLIPS["sefir"] = ["idle", "talk", "raise_palm", "incline_head", "glance", "pivot", "walk_glide"]
+LOOPS.add("walk_glide")
+LENGTHS.update({"raise_palm": 4.5, "incline_head": 2.4, "glance": 2.0, "pivot": 1.4, "walk_glide": 1.4})
+# the joined hands (world-axis turns on his skeleton, solved for the wrists 6-7 cm in front of the robe at the navel,
+# 14 cm apart; the right forearm a little higher and 2.5 cm further forward, so the right hand lies over the left)
+SEFIR_JOINED = {"DEF-upper_arm.L": (0.0, -1.5, -29.5), "DEF-forearm.L": (-60.0, -61.5, 0.0),
+                "DEF-upper_arm.R": (-0.5, 4.5, 34.0), "DEF-forearm.R": (-59.0, 48.5, 0.0)}
+# raise_palm: the Order's gesture with the left palm only, flat and face down at chest height
+SEFIR_PALM = {"DEF-upper_arm.L": (-46.0, -8.0, -14.0), "DEF-forearm.L": (-48.0, -12.0, 0.0),
+              "DEF-hand.L": (0.0, 0.0, -70.0)}
+
+
+def sefir_still(sk: Skeleton, persona: dict) -> dict:
+    p = stand(persona)
+    p.update(SEFIR_JOINED)
+    return p
+
+
+def euler_yxz(q: np.ndarray) -> tuple:
+    """Degrees (x, y, z) of a quaternion, the inverse of qeuler (Y * X * Z)."""
+    x, y, z, w = q
+    r02 = 2 * (x * z + w * y)
+    r12 = 2 * (y * z - w * x)
+    r22 = 1 - 2 * (x * x + y * y)
+    r10 = 2 * (x * y + w * z)
+    r11 = 1 - 2 * (x * x + z * z)
+    return (math.degrees(math.asin(max(-1.0, min(1.0, -r12)))), math.degrees(math.atan2(r02, r22)),
+            math.degrees(math.atan2(r10, r11)))
+
+
+def sefir_turned(pose: dict, yaw: float) -> dict:
+    """The pose with his whole body turned `yaw` degrees about the vertical at the hips: the root takes the turn,
+    and every other bone's world-axis turn is carried round with it (conjugated), so the joined hands stay joined."""
+    r = qaxis((0, 1, 0), yaw)
+    out = {}
+    for b, v in pose.items():
+        if b == "hips":
+            out[b] = v
+        elif b == HIPS:
+            out[b] = euler_yxz(qmul(r, qeuler(v)))
+        else:
+            out[b] = euler_yxz(qmul(r, qmul(qeuler(v), qinv(r))))
+    if HIPS not in out:
+        out[HIPS] = (0.0, yaw, 0.0)
+    return out
+
+
+def sefir_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    u = t / length
+    base = sefir_still(sk, persona)
+    if clip == "idle":
+        # no motion: the loop exists so the AnimationPlayer has something to hold (the breath term is 0 for him)
+        return add(base, {"DEF-spine.003": (0.7 * persona.get("breath", 1.0) * math.sin(4 * math.pi * u), 0.0, 0.0)})
+    if clip == "talk":
+        # the least gesture in the cast: the left hand parts from the right and opens 10 degrees once per loop; the
+        # head moves under a degree
+        g = 0.5 - 0.5 * math.cos(2 * math.pi * u)
+        return add(base, {"DEF-forearm.L": (-6.0 * g, 10.0 * g, 0.0), "DEF-hand.L": (0.0, 0.0, -10.0 * g),
+                          "DEF-spine.006": (0.6 * math.sin(4 * math.pi * u), 0.8 * math.sin(2 * math.pi * u), 0.0)})
+    if clip == "raise_palm":
+        # up flat to chest height in 0.6 s, held through the sentence, lowered over 2.4 s ("settling the water")
+        w = smooth(t / 0.6) * (1.0 - smooth((t - 2.1) / 2.4))
+        palm = dict(base)
+        palm.update(SEFIR_PALM)
+        return add(blend(base, palm, w), {"DEF-spine.006": (3.0 * w, 0.0, 0.0)})
+    if clip == "incline_head":
+        # a 10 degree bow and a 3 degree tilt, held 1 s, rising over 0.8 s
+        w = smooth(t / 0.6) * (1.0 - smooth((t - 1.6) / 0.8))
+        return add(base, {"DEF-spine.005": (3.0 * w, 0.0, 0.0), "DEF-spine.006": (7.0 * w, 0.0, 3.0 * w)})
+    if clip == "glance":
+        # head (and eyes) 22 degrees to his left and back; the body does not follow (the @mark picks the side)
+        w = smooth(t / 0.45) * (1.0 - smooth((t - 1.25) / 0.75))
+        return add(base, {"DEF-spine.005": (0.0, 6.0 * w, 0.0), "DEF-spine.006": (0.0, 16.0 * w, 0.0)})
+    if clip == "pivot":
+        # a 30 degree turn in place on the heels, no step, no bob (the barge does the travelling)
+        return sefir_turned(base, 30.0 * smooth(u / 0.9))
+    if clip == "walk_glide":
+        # Act II (Ch13): a 14 degree stride, no vertical bob, hips level, no arm swing (the hands stay joined)
+        ph = 2 * math.pi * u
+        swing_l = max(0.0, math.sin(ph + math.pi * 0.5))
+        swing_r = max(0.0, math.sin(ph - math.pi * 0.5))
+        return add(base, {"DEF-spine": (0.0, 1.5 * math.sin(ph), 0.0), "DEF-spine.002": (0.0, -1.5 * math.sin(ph), 0.0),
+                          "DEF-thigh.L": (-7.0 * math.cos(ph), 0.0, 0.0), "DEF-thigh.R": (7.0 * math.cos(ph), 0.0, 0.0),
+                          "DEF-shin.L": (3.0 + 10.0 * swing_l, 0.0, 0.0), "DEF-shin.R": (3.0 + 10.0 * swing_r, 0.0, 0.0),
+                          "DEF-foot.L": (-3.0 * swing_l + 3.0 * math.cos(ph), 0.0, 0.0),
+                          "DEF-foot.R": (-3.0 * swing_r - 3.0 * math.cos(ph), 0.0, 0.0)})
+    raise KeyError(clip)
 
 
 # ---------------------------------------------------------------------------------------------

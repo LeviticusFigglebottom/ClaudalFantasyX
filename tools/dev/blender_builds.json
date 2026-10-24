@@ -176,6 +176,19 @@
       "runs": [
         ["{blender}", "--python", "assets_src/environments/kits/haluna/build.py", "--", "--all", "--out-dir", "assets/environments/kits/haluna", "--manifest", "assets/environments/kits/haluna/kit_manifest.json"]
       ]
+    },
+    {
+      "id": "sefir",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-02: Sefir reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs) and Rhen's and Toma's costume helpers (rhen_costume, toma_costume), so their sources are his too. The texture run sets asha_textures.PRE_ROUND (host-independent PNGs, M1-CHR-14).",
+      "sources": ["assets_src/characters/sefir/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/sefir/*.glb", "assets/characters/sefir/textures/*.png", "assets/characters/sefir/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/sefir/build_sefir.py", "--", "--out", "assets/characters/sefir/sefir.glb", "--bake-dir", "{scratch}/sefir_bake"],
+        ["{python}", "assets_src/characters/sefir/sefir_textures.py", "--bake-dir", "{scratch}/sefir_bake"],
+        ["{python}", "assets_src/characters/sefir/write_materials.py"]
+      ]
     }
   ]
 }
