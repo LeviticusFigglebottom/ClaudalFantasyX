@@ -95,6 +95,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	if old != null:
 		controller.stage.remove_child(old)
 		old.queue_free()
+	BattleArena.apply(controller, engine.encounter_id)  # M2-BPR-07: before the VFX attach (the flood rig's Sun, Sea)
 	var c := BattleChoreo.new()
 	c.name = NODE_NAME
 	controller.stage.add_child(c)

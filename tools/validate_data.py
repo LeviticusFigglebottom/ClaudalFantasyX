@@ -2261,6 +2261,11 @@ def check_choreo(files: dict[str, object], rep: Report) -> None:
         return
     for e in vc.choreo_errors(doc, files.get(vc.SKILLS_FILE)):
         rep.err(e)
+    arenas = files.get(vc.ARENAS_FILE)
+    if arenas is not None:
+        root = Path(__file__).resolve().parent.parent
+        for e in vc.arena_errors(arenas, files.get(vc.ENCOUNTERS_FILE), lambda r: _res_path(root, r).is_file()):
+            rep.err(e)
 
 
 if __name__ == "__main__":

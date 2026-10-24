@@ -246,3 +246,25 @@ is checked on the key shots; blends between two passing shots stay between them 
 exist, anchors are known, placed shots carry back/side/up and stay on the viewer's side, fovs in range, every
 choreography style has a lead/contact pair naming real shots, times ≥ 0, safe-frame margins in [0, 0.5).
 Tests: `tests/unit/test_battle_camera_director.gd`.
+
+## Arenas (M2-BPR-07)
+
+Each story encounter fights in its own place. **`BattleArena`** (`game/battle/scene/battle_arena.gd`) reads
+`game/data/battle/arenas.json` (`by_encounter` → `scenes`) and moves the children of the arena's scene into the
+battle scene, each replacing the node of the same name (`WorldEnvironment`, `Sun`, `Arena`) or added beside them
+(the causeway's cool `Fill`). `BattleChoreo.attached` applies it before BattleVfx attaches, so the Drownbell's
+flood rig finds the arena's `Sun` (scaled to 0.6x in the Flood) and `Arena/Sea` (the flat sea it replaces). A
+retry of the same encounter keeps the arena (the `hymn_arena` meta on the battle scene).
+
+| Arena | Encounter | Grade (color_script.md) | Greybox |
+|---|---|---|---|
+| `tideline_noon` | `ch02_tideline` | ch02_noon: sun 74°, 3.2, exposure 0.65, saturation 1.12; the lagoon sky | dry sand behind the party, a wet band and rocks before the lagoon |
+| `causeway_dusk` | `drownbell` | Ch3: sun 6° over the western sea, key `#FFAE67` 2.6, fill `#6E8FC0` 0.4, sky `#46609A` / `#F0A35C`, fog `#D9A27A`, exposure 0.80 | a stone road along the battle axis, water both sides, leaning posts and salt-grass tufts; the flood takes the road |
+
+- **Unchanged:** the sandbox's own encounters and every capture fixture (`fixture_reef`) have no row, so no
+  battle baseline moved except `drownbell_flood` (now on the causeway at sunset, as battle_vfx.md's "the arena is
+  the noon sandbox" asked).
+- **Shots:** `battle_arena_tideline`, `battle_arena_causeway` (`game/battle/arenas/shots/`).
+- **Final kits:** env-art, M2-ENV-11 (the contract is in that task). The tideline's sand albedo is darker than the
+  sandbox's: under the ch02_noon key (k 2.1) the sandbox's pale sand blew out.
+- **Checked by** `tools/validate_choreo.py` `arena_errors` (from validate_data).

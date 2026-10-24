@@ -74,5 +74,24 @@ class ChoreoValidateTest(unittest.TestCase):
         self.assertFalse(self._errs(lambda c: c["camera"]["by_style"]["melee"].update(contact="")))
 
 
+class ArenaValidateTest(unittest.TestCase):
+    DOC = json.loads((ROOT / vc.ARENAS_FILE).read_text(encoding="utf-8"))
+    ENC = json.loads((ROOT / vc.ENCOUNTERS_FILE).read_text(encoding="utf-8"))
+
+    def _exists(self, res: str) -> bool:
+        return vd._res_path(ROOT, res).is_file()
+
+    def test_shipped_data_passes(self) -> None:
+        self.assertEqual(vc.arena_errors(self.DOC, self.ENC, self._exists), [])
+
+    def test_bad_rows(self) -> None:
+        doc = copy.deepcopy(self.DOC)
+        doc["arenas"]["by_encounter"]["no_such_fight"] = "causeway_dusk"
+        doc["arenas"]["by_encounter"]["drownbell"] = "nowhere"
+        doc["arenas"]["scenes"]["ghost"] = "res://game/battle/arenas/ghost.tscn"
+        self.assertEqual(len(vc.arena_errors(doc, self.ENC, self._exists)), 3)
+        self.assertTrue(vc.arena_errors({}, self.ENC, self._exists))
+
+
 if __name__ == "__main__":
     unittest.main()

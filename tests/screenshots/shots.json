@@ -783,6 +783,16 @@
       "scene": "res://game/battle/scene/shots/battle_choreo_swap.tscn"
     },
     {
+      "id": "battle_arena_tideline",
+      "scene": "res://game/battle/arenas/shots/arena_tideline.tscn",
+      "setup": {"globals": {"hymn_wind_time": 12.0}}
+    },
+    {
+      "id": "battle_arena_causeway",
+      "scene": "res://game/battle/arenas/shots/arena_causeway.tscn",
+      "setup": {"globals": {"hymn_wind_time": 12.0}}
+    },
+    {
       "id": "bestiary_menu",
       "scene": "res://game/ui/bestiary/shots/bestiary_menu.tscn"
     },

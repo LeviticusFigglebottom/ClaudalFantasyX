@@ -1,0 +1,125 @@
+[gd_scene load_steps=12 format=3]
+
+; M2-BPR-07: the Ch2 tideline below Haluna at noon (greybox; env-art dresses it). Grade from
+; docs/kb/art/color_script.md ch02_noon: sun 74 deg, 3.2, exposure 0.65, saturation x1.12; the sandbox's lagoon
+; sky. BattleArena moves this scene's children into the battle scene in place of its WorldEnvironment, Sun and
+; Arena. The fight is on the wet sand where the tide has just gone out: dry sand behind the party, a dark wet band,
+; then the lagoon behind the foes.
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
+sky_top_color = Color(0.18, 0.498, 0.839, 1)
+sky_horizon_color = Color(0.663, 0.863, 0.949, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.055, 0.29, 0.333, 1)
+ground_horizon_color = Color(0.663, 0.863, 0.949, 1)
+sun_angle_max = 20.0
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("Sky_mat")
+
+[sub_resource type="Environment" id="Env_main"]
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+ambient_light_color = Color(0.055, 0.29, 0.333, 1)
+ambient_light_sky_contribution = 0.7
+tonemap_mode = 4
+tonemap_exposure = 0.65
+glow_enabled = true
+glow_intensity = 0.4
+glow_bloom = 0.05
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.663, 0.863, 0.949, 1)
+fog_density = 0.35
+fog_depth_begin = 18.0
+fog_depth_end = 90.0
+adjustment_enabled = true
+adjustment_saturation = 1.12
+
+[sub_resource type="StandardMaterial3D" id="Mat_sand"]
+albedo_color = Color(0.737, 0.651, 0.502, 1.0)
+roughness = 0.95
+
+[sub_resource type="PlaneMesh" id="Mesh_sand"]
+material = SubResource("Mat_sand")
+size = Vector2(60, 30)
+
+[sub_resource type="StandardMaterial3D" id="Mat_wet"]
+albedo_color = Color(0.478, 0.416, 0.333, 1.0)
+roughness = 0.35
+
+[sub_resource type="PlaneMesh" id="Mesh_wet"]
+material = SubResource("Mat_wet")
+size = Vector2(60, 6)
+
+[sub_resource type="StandardMaterial3D" id="Mat_rock"]
+albedo_color = Color(0.369, 0.353, 0.322, 1.0)
+roughness = 0.9
+
+[sub_resource type="SphereMesh" id="Mesh_rock"]
+material = SubResource("Mat_rock")
+radius = 0.6
+height = 0.7
+radial_segments = 10
+rings = 5
+
+[sub_resource type="StandardMaterial3D" id="Mat_sea"]
+albedo_color = Color(0.122, 0.639, 0.651, 1)
+metallic_specular = 0.8
+roughness = 0.12
+
+[sub_resource type="PlaneMesh" id="Mesh_sea"]
+material = SubResource("Mat_sea")
+size = Vector2(400, 400)
+
+[node name="TidelineNoon" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_main")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.554700, -0.799818, 0.229344, 0.000000, 0.275637, 0.961262, -0.832050, -0.533212, 0.152896, 0.000000, 9.000000, 0.000000)
+light_color = Color(1, 0.957, 0.878, 1)
+light_energy = 3.2
+shadow_enabled = true
+directional_shadow_max_distance = 30.0
+
+[node name="Arena" type="Node3D" parent="."]
+
+[node name="Sand" type="MeshInstance3D" parent="Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, 9.0)
+mesh = SubResource("Mesh_sand")
+
+[node name="WetSand" type="MeshInstance3D" parent="Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.01, -5.5)
+mesh = SubResource("Mesh_wet")
+
+[node name="Rock0" type="MeshInstance3D" parent="Arena"]
+transform = Transform3D(1.4, 0, 0, 0, 1.12, 0, 0, 0, 1.4, -7.5, 0.0, -4.5)
+mesh = SubResource("Mesh_rock")
+
+[node name="Rock1" type="MeshInstance3D" parent="Arena"]
+transform = Transform3D(0.8, 0, 0, 0, 0.64, 0, 0, 0, 0.8, -6.6, 0.0, -5.2)
+mesh = SubResource("Mesh_rock")
+
+[node name="Rock2" type="MeshInstance3D" parent="Arena"]
+transform = Transform3D(1.1, 0, 0, 0, 0.88, 0, 0, 0, 1.1, 7.8, 0.0, -3.8)
+mesh = SubResource("Mesh_rock")
+
+[node name="Rock3" type="MeshInstance3D" parent="Arena"]
+transform = Transform3D(0.9, 0, 0, 0, 0.72, 0, 0, 0, 0.9, 9.5, 0.0, 1.5)
+mesh = SubResource("Mesh_rock")
+
+[node name="Rock4" type="MeshInstance3D" parent="Arena"]
+transform = Transform3D(1.6, 0, 0, 0, 1.28, 0, 0, 0, 1.6, -10.0, 0.0, 2.5)
+mesh = SubResource("Mesh_rock")
+
+[node name="Rock5" type="MeshInstance3D" parent="Arena"]
+transform = Transform3D(0.7, 0, 0, 0, 0.56, 0, 0, 0, 0.7, 5.2, 0.0, -6.5)
+mesh = SubResource("Mesh_rock")
+
+[node name="Sea" type="MeshInstance3D" parent="Arena"]
+cast_shadow = 0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
+mesh = SubResource("Mesh_sea")
