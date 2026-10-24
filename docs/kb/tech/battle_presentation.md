@@ -88,6 +88,21 @@ hero actor scene, M2-UI-07, or a creature actor, M2-CRE-03). A creature actor pl
   `clip_by_kind` names its own clips per skill kind; until those rows map onto the contract names, the creature
   plays its clip through BattleActorMotion and the sequencer only moves its root.
 
+**Placeholder clips (M2-BPR-10).** Until the heroes' battle clips land (M2-CHR-07), `BattlePlaceholderClips`
+(`game/battle/scene/battle_placeholder_clips.gd`) gives a model with a `Skeleton3D` and an `AnimationPlayer` a
+generated pose clip for every contract name it lacks. `BattleClips.player_of` calls it the first time it finds the
+player. The poses are data, in `choreo.json` `placeholder_clips`: per clip a `length_sec`, `loop`, and keys of
+role → `[x, y, z]` degrees at times. A pose is a turn in the model's axes on top of what the bone inherits, the same
+convention as the characters' `hero_clips.py`. Roles map to bone names with alternatives: the MPFB2 rig as the
+characters track exports it (`DEF-spine.003`, `DEF-upper_arm.R`, ...), then MPFB2's default names. The clips are
+added to the player's own copy of its default library, and **only for missing names**, so a real clip always wins and
+M2-CHR-07 replaces them with no code change. A skeleton that resolves fewer than `min_roles` roles (a creature) and a
+creature actor get nothing; a primitive stand-in has no player and keeps the procedural motion. A placeholder counts
+as a clip everywhere (`has_clip`), so the strike's lunge and lean are skipped and the travel still moves the root.
+The hero's `ko` clip now plays on the collapse beat and holds its last frame (`BattleClips.play_ko`). On a revive the
+hero idles again (`ko_changed`). `tools/validate_choreo.py` checks the rows: every contract clip present, positive
+lengths, key times within the clip, poses naming known roles.
+
 ## Encounter transition
 
 M2-BPR-05 part 1: the beat between a field battle being asked for and the battle's first turn, and the

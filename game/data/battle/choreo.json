@@ -155,6 +155,146 @@
       "camera_in_sec": 1.6,
       "camera_out_sec": 0.9,
       "swatches": {"light_color": "glimmer_bound"}
+    },
+    "placeholder_clips": {
+      "doc": "M2-BPR-10, BattlePlaceholderClips: until the heroes' battle clips land (M2-CHR-07), a model with a Skeleton3D and an AnimationPlayer gets a generated pose clip for every contract clip it lacks; a real clip of that name always wins. bones: role -> candidate bone names, the first the skeleton has wins (the MPFB2 rig as the characters track exports it, DEF-*, then MPFB2's default names). A skeleton that resolves fewer than min_roles roles (a creature) gets nothing. A pose is role -> [x, y, z] degrees, a turn in the model's axes (X = the fighter's left, Y = up, Z = the way it faces; composed YXZ) on top of what the bone inherits, as the characters' hero_clips.py writes them: +X bends the spine forward and swings a hanging limb backward, +Y turns to the fighter's left, +Z tilts to its right. base is the standing pose (arms down from the rest); a key's pose replaces base per role, a key with no pose is base, and hips_m moves the hips role (metres, model axes). Every clip keys every role named in base or any clip, so no limb is left in the last clip's pose. A strike clip's blow key sits at its main style's contact_at x strike_sec.",
+      "min_roles": 12,
+      "bones": {
+        "hips": ["DEF-spine", "root"],
+        "spine": ["DEF-spine.001", "spine04"],
+        "chest": ["DEF-spine.003", "spine02"],
+        "neck": ["DEF-spine.004", "neck01"],
+        "head": ["DEF-spine.006", "head"],
+        "upper_arm_l": ["DEF-upper_arm.L", "upperarm01.L"],
+        "forearm_l": ["DEF-forearm.L", "lowerarm01.L"],
+        "hand_l": ["DEF-hand.L", "wrist.L"],
+        "upper_arm_r": ["DEF-upper_arm.R", "upperarm01.R"],
+        "forearm_r": ["DEF-forearm.R", "lowerarm01.R"],
+        "hand_r": ["DEF-hand.R", "wrist.R"],
+        "thigh_l": ["DEF-thigh.L", "upperleg01.L"],
+        "shin_l": ["DEF-shin.L", "lowerleg01.L"],
+        "foot_l": ["DEF-foot.L", "foot.L"],
+        "thigh_r": ["DEF-thigh.R", "upperleg01.R"],
+        "shin_r": ["DEF-shin.R", "lowerleg01.R"],
+        "foot_r": ["DEF-foot.R", "foot.R"]
+      },
+      "base": {
+        "upper_arm_l": [4.0, 0.0, -40.0], "forearm_l": [-12.0, 0.0, 0.0],
+        "upper_arm_r": [4.0, 0.0, 40.0], "forearm_r": [-12.0, 0.0, 0.0]
+      },
+      "clips": {
+        "idle": {"length_sec": 3.0, "loop": true, "keys": [
+          {"t": 0.0},
+          {"t": 1.5, "pose": {"chest": [2.0, 0.0, 0.0], "head": [-1.5, 0.0, 0.0]}, "hips_m": [0.0, -0.005, 0.0]},
+          {"t": 3.0}
+        ]},
+        "ready": {"length_sec": 0.4, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.25, "hips_m": [0.0, -0.04, 0.0], "pose": {"spine": [6.0, 0.0, 0.0],
+            "thigh_l": [-12.0, 0.0, 0.0], "shin_l": [24.0, 0.0, 0.0], "foot_l": [-12.0, 0.0, 0.0],
+            "thigh_r": [-12.0, 0.0, 0.0], "shin_r": [24.0, 0.0, 0.0], "foot_r": [-12.0, 0.0, 0.0],
+            "upper_arm_l": [-15.0, 0.0, -36.0], "forearm_l": [-35.0, 0.0, 0.0],
+            "upper_arm_r": [-15.0, 0.0, 36.0], "forearm_r": [-35.0, 0.0, 0.0]}},
+          {"t": 0.4, "hips_m": [0.0, -0.04, 0.0], "pose": {"spine": [6.0, 0.0, 0.0],
+            "thigh_l": [-12.0, 0.0, 0.0], "shin_l": [24.0, 0.0, 0.0], "foot_l": [-12.0, 0.0, 0.0],
+            "thigh_r": [-12.0, 0.0, 0.0], "shin_r": [24.0, 0.0, 0.0], "foot_r": [-12.0, 0.0, 0.0],
+            "upper_arm_l": [-15.0, 0.0, -36.0], "forearm_l": [-35.0, 0.0, 0.0],
+            "upper_arm_r": [-15.0, 0.0, 36.0], "forearm_r": [-35.0, 0.0, 0.0]}}
+        ]},
+        "attack": {"length_sec": 0.55, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.08, "pose": {"spine": [-5.0, 0.0, 0.0], "chest": [0.0, -20.0, 0.0],
+            "upper_arm_r": [40.0, 0.0, 50.0], "forearm_r": [-60.0, 0.0, 0.0]}},
+          {"t": 0.17, "hips_m": [0.0, -0.03, 0.0], "pose": {"spine": [12.0, 0.0, 0.0], "chest": [0.0, 20.0, 0.0],
+            "upper_arm_r": [-85.0, 0.0, 30.0], "forearm_r": [-10.0, 0.0, 0.0],
+            "upper_arm_l": [20.0, 0.0, -40.0], "thigh_r": [-20.0, 0.0, 0.0], "shin_r": [25.0, 0.0, 0.0]}},
+          {"t": 0.3, "hips_m": [0.0, -0.03, 0.0], "pose": {"spine": [10.0, 0.0, 0.0], "chest": [0.0, 15.0, 0.0],
+            "upper_arm_r": [-75.0, 0.0, 32.0], "forearm_r": [-15.0, 0.0, 0.0],
+            "upper_arm_l": [16.0, 0.0, -40.0], "thigh_r": [-16.0, 0.0, 0.0], "shin_r": [20.0, 0.0, 0.0]}},
+          {"t": 0.55}
+        ]},
+        "cast": {"length_sec": 0.8, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.25, "pose": {"spine": [-3.0, 0.0, 0.0], "upper_arm_l": [-25.0, 0.0, 40.0],
+            "upper_arm_r": [-25.0, 0.0, -40.0], "forearm_l": [-20.0, 0.0, 0.0], "forearm_r": [-20.0, 0.0, 0.0]}},
+          {"t": 0.4, "pose": {"spine": [-6.0, 0.0, 0.0], "head": [-10.0, 0.0, 0.0],
+            "upper_arm_l": [-30.0, 0.0, 100.0], "upper_arm_r": [-30.0, 0.0, -100.0],
+            "forearm_l": [-10.0, 0.0, 0.0], "forearm_r": [-10.0, 0.0, 0.0]}},
+          {"t": 0.6, "pose": {"spine": [-6.0, 0.0, 0.0], "head": [-10.0, 0.0, 0.0],
+            "upper_arm_l": [-30.0, 0.0, 95.0], "upper_arm_r": [-30.0, 0.0, -95.0],
+            "forearm_l": [-10.0, 0.0, 0.0], "forearm_r": [-10.0, 0.0, 0.0]}},
+          {"t": 0.8}
+        ]},
+        "item": {"length_sec": 0.6, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.25, "pose": {"spine": [5.0, 0.0, 0.0], "upper_arm_r": [-75.0, 0.0, 25.0], "forearm_r": [-5.0, 0.0, 0.0]}},
+          {"t": 0.4, "pose": {"spine": [5.0, 0.0, 0.0], "upper_arm_r": [-72.0, 0.0, 25.0], "forearm_r": [-8.0, 0.0, 0.0]}},
+          {"t": 0.6}
+        ]},
+        "read": {"length_sec": 0.65, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.25, "pose": {"head": [5.0, 0.0, 10.0], "upper_arm_r": [-60.0, 0.0, -10.0], "forearm_r": [-110.0, 0.0, 0.0]}},
+          {"t": 0.45, "pose": {"head": [5.0, 6.0, 10.0], "upper_arm_r": [-60.0, 0.0, -10.0], "forearm_r": [-110.0, 0.0, 0.0]}},
+          {"t": 0.65}
+        ]},
+        "defend": {"length_sec": 0.4, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.24, "hips_m": [0.0, -0.08, 0.0], "pose": {"spine": [12.0, 0.0, 0.0], "head": [-6.0, 0.0, 0.0],
+            "thigh_l": [-25.0, 0.0, 0.0], "shin_l": [50.0, 0.0, 0.0], "foot_l": [-25.0, 0.0, 0.0],
+            "thigh_r": [-25.0, 0.0, 0.0], "shin_r": [50.0, 0.0, 0.0], "foot_r": [-25.0, 0.0, 0.0],
+            "upper_arm_l": [-60.0, 0.0, -30.0], "forearm_l": [-20.0, -80.0, 0.0],
+            "upper_arm_r": [-60.0, 0.0, 30.0], "forearm_r": [-20.0, 80.0, 0.0]}},
+          {"t": 0.4, "hips_m": [0.0, -0.08, 0.0], "pose": {"spine": [12.0, 0.0, 0.0], "head": [-6.0, 0.0, 0.0],
+            "thigh_l": [-25.0, 0.0, 0.0], "shin_l": [50.0, 0.0, 0.0], "foot_l": [-25.0, 0.0, 0.0],
+            "thigh_r": [-25.0, 0.0, 0.0], "shin_r": [50.0, 0.0, 0.0], "foot_r": [-25.0, 0.0, 0.0],
+            "upper_arm_l": [-60.0, 0.0, -30.0], "forearm_l": [-20.0, -80.0, 0.0],
+            "upper_arm_r": [-60.0, 0.0, 30.0], "forearm_r": [-20.0, 80.0, 0.0]}}
+        ]},
+        "finisher": {"length_sec": 0.85, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.15, "pose": {"spine": [-10.0, 0.0, 0.0], "chest": [0.0, -25.0, 0.0],
+            "upper_arm_l": [-160.0, 0.0, 0.0], "upper_arm_r": [-160.0, 0.0, 0.0],
+            "forearm_l": [-20.0, 0.0, 0.0], "forearm_r": [-20.0, 0.0, 0.0]}},
+          {"t": 0.34, "hips_m": [0.0, -0.06, 0.0], "pose": {"spine": [25.0, 0.0, 0.0], "chest": [0.0, 20.0, 0.0],
+            "upper_arm_l": [-60.0, 0.0, 0.0], "upper_arm_r": [-60.0, 0.0, 0.0],
+            "forearm_l": [-5.0, 0.0, 0.0], "forearm_r": [-5.0, 0.0, 0.0],
+            "thigh_l": [-20.0, 0.0, 0.0], "shin_l": [30.0, 0.0, 0.0]}},
+          {"t": 0.5, "hips_m": [0.0, -0.06, 0.0], "pose": {"spine": [22.0, 0.0, 0.0], "chest": [0.0, 18.0, 0.0],
+            "upper_arm_l": [-55.0, 0.0, 0.0], "upper_arm_r": [-55.0, 0.0, 0.0],
+            "forearm_l": [-8.0, 0.0, 0.0], "forearm_r": [-8.0, 0.0, 0.0],
+            "thigh_l": [-18.0, 0.0, 0.0], "shin_l": [28.0, 0.0, 0.0]}},
+          {"t": 0.85}
+        ]},
+        "hit": {"length_sec": 0.45, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.08, "hips_m": [0.0, 0.0, -0.04], "pose": {"spine": [-14.0, 0.0, 0.0], "head": [-10.0, 0.0, 0.0],
+            "upper_arm_l": [10.0, 0.0, -25.0], "upper_arm_r": [10.0, 0.0, 25.0]}},
+          {"t": 0.45}
+        ]},
+        "dodge": {"length_sec": 0.4, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.1, "pose": {"spine": [0.0, 0.0, 15.0], "head": [0.0, 0.0, -6.0],
+            "thigh_l": [0.0, 0.0, 8.0], "thigh_r": [0.0, 0.0, 8.0]}},
+          {"t": 0.4}
+        ]},
+        "ko": {"length_sec": 0.6, "loop": false, "keys": [
+          {"t": 0.0},
+          {"t": 0.25, "hips_m": [0.0, -0.3, 0.0], "pose": {"spine": [25.0, 0.0, 0.0], "head": [10.0, 0.0, 0.0],
+            "thigh_l": [-50.0, 0.0, 0.0], "shin_l": [90.0, 0.0, 0.0], "foot_l": [-40.0, 0.0, 0.0],
+            "thigh_r": [-50.0, 0.0, 0.0], "shin_r": [90.0, 0.0, 0.0], "foot_r": [-40.0, 0.0, 0.0]}},
+          {"t": 0.6, "hips_m": [0.0, -0.5, 0.05], "pose": {"spine": [40.0, 0.0, 0.0], "chest": [20.0, 0.0, 0.0],
+            "head": [20.0, 0.0, 0.0],
+            "thigh_l": [-80.0, 0.0, 0.0], "shin_l": [110.0, 0.0, 0.0], "foot_l": [-30.0, 0.0, 0.0],
+            "thigh_r": [-80.0, 0.0, 0.0], "shin_r": [110.0, 0.0, 0.0], "foot_r": [-30.0, 0.0, 0.0],
+            "upper_arm_l": [-20.0, 0.0, -50.0], "upper_arm_r": [-20.0, 0.0, 50.0]}}
+        ]},
+        "victory": {"length_sec": 1.6, "loop": true, "keys": [
+          {"t": 0.0, "pose": {"head": [-8.0, 0.0, 0.0], "upper_arm_r": [-10.0, 0.0, -130.0], "forearm_r": [-10.0, 0.0, 0.0]}},
+          {"t": 0.8, "pose": {"head": [-10.0, 0.0, 0.0], "chest": [0.0, 5.0, 0.0],
+            "upper_arm_r": [-10.0, 0.0, -140.0], "forearm_r": [-5.0, 0.0, 0.0]}},
+          {"t": 1.6, "pose": {"head": [-8.0, 0.0, 0.0], "upper_arm_r": [-10.0, 0.0, -130.0], "forearm_r": [-10.0, 0.0, 0.0]}}
+        ]}
+      }
     }
   }
 }

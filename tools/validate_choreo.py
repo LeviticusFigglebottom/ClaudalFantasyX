@@ -267,6 +267,82 @@ def choreo_errors(doc: object, skills: object) -> list[str]:
     if not isinstance(sp, dict) or not _num(sp.get("min")) or not _num(sp.get("max")) or not 0 < sp["min"] <= sp["max"]:
         errs.append(f"{CHOREO_FILE}: speeds needs 0 < min <= max")
     errs += camera_errors(c.get("camera"), styles)
+    if "placeholder_clips" in c:
+        errs += placeholder_errors(c["placeholder_clips"])
+    return errs
+
+
+# --- M2-BPR-10: placeholder hero clips (choreo.json placeholder_clips; BattlePlaceholderClips) -------------
+
+
+def _euler(v: object) -> bool:
+    return isinstance(v, list) and len(v) == 3 and all(_num(x) for x in v)
+
+
+def _pose_errors(w: str, pose: object, roles: set[str]) -> list[str]:
+    if not isinstance(pose, dict):
+        return [f"{w}: must be an object of role -> [x, y, z] degrees"]
+    errs: list[str] = []
+    for role, v in pose.items():
+        if role not in roles:
+            errs.append(f"{w}.{role}: not a role in placeholder_clips.bones")
+        elif not _euler(v):
+            errs.append(f"{w}.{role}: must be [x, y, z] degrees")
+    return errs
+
+
+def placeholder_errors(pc: object) -> list[str]:
+    """Problems in placeholder_clips: every contract clip has a row, roles have bone names, lengths are positive,
+    key times lie within the clip, poses name known roles as [x, y, z]."""
+    w = f"{CHOREO_FILE}: placeholder_clips"
+    if not isinstance(pc, dict):
+        return [f"{w}: must be an object"]
+    errs: list[str] = []
+    bones = pc.get("bones")
+    if not isinstance(bones, dict) or not bones:
+        return [f"{w}.bones: needs role -> [bone names]"]
+    for role, names in bones.items():
+        if not isinstance(names, list) or not names or not all(isinstance(n, str) and n for n in names):
+            errs.append(f"{w}.bones.{role}: needs a non-empty list of bone names")
+    roles = set(bones)
+    mr = pc.get("min_roles")
+    if not isinstance(mr, int) or isinstance(mr, bool) or not 1 <= mr <= len(roles):
+        errs.append(f"{w}.min_roles: must be an integer in [1, {len(roles)}]")
+    errs += _pose_errors(f"{w}.base", pc.get("base", {}), roles)
+    clips = pc.get("clips")
+    if not isinstance(clips, dict):
+        return errs + [f"{w}.clips: must be an object"]
+    for name in sorted(CLIPS - set(clips)):
+        errs.append(f"{w}.clips: no placeholder for contract clip '{name}'")
+    for name, clip in clips.items():
+        cw = f"{w}.clips.{name}"
+        if name not in CLIPS:
+            errs.append(f"{cw}: not a contract clip")
+        if not isinstance(clip, dict):
+            errs.append(f"{cw}: must be an object")
+            continue
+        length = clip.get("length_sec")
+        if not _num(length) or length <= 0:
+            errs.append(f"{cw}.length_sec: must be a number > 0")
+            length = None
+        if not isinstance(clip.get("loop"), bool):
+            errs.append(f"{cw}.loop: must be true or false")
+        keys = clip.get("keys")
+        if not isinstance(keys, list) or not keys:
+            errs.append(f"{cw}.keys: needs at least one key")
+            continue
+        for i, key in enumerate(keys):
+            kw = f"{cw}.keys[{i}]"
+            if not isinstance(key, dict):
+                errs.append(f"{kw}: must be an object")
+                continue
+            t = key.get("t")
+            if not _num(t) or t < 0 or (length is not None and t > length):
+                errs.append(f"{kw}.t: must be a time within [0, length_sec]")
+            if "pose" in key:
+                errs += _pose_errors(f"{kw}.pose", key["pose"], roles)
+            if "hips_m" in key and not _euler(key["hips_m"]):
+                errs.append(f"{kw}.hips_m: must be [x, y, z] metres")
     return errs
 
 
