@@ -347,6 +347,12 @@
     "rendering_driver": "vulkan",
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
+  "creature_squall_wing": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
   "creature_stormgull": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_method": "forward_plus",
@@ -377,7 +383,19 @@
     "rendering_driver": "vulkan",
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
+  "creature_wall_polyp": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
   "creature_wallcrab": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
+  "creature_wreck_crab": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",

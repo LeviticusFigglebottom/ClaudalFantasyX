@@ -14,8 +14,8 @@ The Ch8 seawall creatures. `model` on m2-slice's rows (M3-C08-02). Waves of 3 / 
 
 ## Acceptance criteria
 - [x] tide_crawler (first pass: 2.7k triangles)
-- [ ] squall_wing (gull harrier's rig, a spawn body)
-- [ ] wall_polyp (variant of spawn_polyp)
+- [x] squall_wing (gull harrier's rig, a spawn body; first pass 5.5k triangles, a steep stoop for the hoist)
+- [x] wall_polyp (variant of spawn_polyp, on a Watcher's carved block; first pass 7.8k triangles)
 - [x] undertows_reach (first pass: 10.9k triangles, six-fingered grip, the three states as phases `dark` and `breach`; the water look is the PC GPU session's)
 - [x] flue_moth (m2-slice act1_ch08 §9: a soot-moth with wings folded like a roof, ember hindwings on the flare; 3.1k triangles)
 - [x] stormgull and wallcrab (m2-slice's headland-path variants: imports of the gull harrier and reef crab builds with a palette override; jobs list the base folders)
