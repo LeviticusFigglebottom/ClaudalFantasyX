@@ -1,4 +1,5 @@
-"""Raid-hound, the Ch6 boss pair's hound (M3-CRE-05): docs/kb/art/creatures/act1/raid_hound.md.
+"""Raid-hound, the Ch6 boss pair's hound (M3-CRE-05): docs/kb/art/creatures/act1/raid_hound.md and m2-slice's act1_ch06 §9
+(mud-coloured, a greyhound's legs under a mastiff's chest, a red-lacquered muzzle cage).
 
 blender --background --factory-startup --python assets_src/creatures/raid_hound/build_raid_hound.py -- \
     --out assets/creatures/raid_hound/raid_hound.glb
@@ -23,7 +24,8 @@ import creature_kit as ck  # noqa: E402
 SEED = 6203
 PAL = {k: ck.hexrgb(v) for k, v in {
     "overcast_slate": "#6F7E8E", "storm_slate": "#3E4A57", "bone": "#E6DAC0", "tortoiseshell": "#6B3A1E",
-    "order_marble": "#E4DED3", "lacquer_black": "#1D1916", "brass": "#B08D57",
+    "order_marble": "#E4DED3", "lacquer_black": "#1D1916", "brass": "#B08D57", "sand_wet": "#B59D74",
+    "lacquer_red": "#B3261E",
 }.items()}
 
 HIP = np.array([0.0, 0.72, -0.42])
@@ -70,7 +72,7 @@ def build_rig() -> ck.Rig:
 
 def coat(P: np.ndarray, seed: int) -> np.ndarray:
     n = ck.fbm(P * 12.0, seed)
-    col = ck.mix(PAL["overcast_slate"], PAL["storm_slate"], (0.4 + 0.4 * n)[:, None])
+    col = ck.mix(PAL["sand_wet"] * 0.8, PAL["tortoiseshell"], (0.35 + 0.4 * n)[:, None])  # mud-coloured
     return col
 
 
@@ -78,14 +80,14 @@ def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
     path = ck.bezier([HIP + np.array([0, 0.0, -0.08]), HIP + np.array([0, 0.02, 0.25]),
                       SHOULDER + np.array([0, -0.06, -0.2]), SHOULDER + np.array([0, 0.0, 0.08])], 20)
     u = np.linspace(0, 1, 20)
-    rad = 0.12 + 0.06 * ck.smoothstep(0.35, 0.85, u)  # a narrow waist, a deep chest
+    rad = 0.11 + 0.1 * ck.smoothstep(0.35, 0.8, u)  # a greyhound's waist under a mastiff's chest
     P, T = ck.tube(path, rad, 16, squash=0.8, up_hint=(1.0, 0.0, 0.0))
     # deepen the chest downward (a keel), tuck the belly up
     below = ck.smoothstep(0.0, -0.1, P[:, 1] - np.interp(P[:, 2], path[:, 2], path[:, 1]))
-    keel = 0.08 * ck.smoothstep(0.55, 0.9, np.interp(P[:, 2], path[:, 2], u))
+    keel = 0.12 * ck.smoothstep(0.55, 0.9, np.interp(P[:, 2], path[:, 2], u))
     P[:, 1] -= below * keel
     under = ck.smoothstep(0.66, 0.55, P[:, 1])
-    col = ck.mix(coat(P, SEED), PAL["bone"], (0.8 * under)[:, None])
+    col = ck.mix(coat(P, SEED), PAL["sand_wet"], (0.5 * under)[:, None])
     skin = rig.chain(["hips", "chest"], [HIP, HIP + np.array([0, 0, 0.3]), SHOULDER])
     ck.finish(mesh, P, T, "coat", col, skin, cavity=0.2)
     # neck and head: a long narrow head
@@ -127,6 +129,20 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
             under = ck.smoothstep(0.35, 0.1, P[:, 1])
             col = ck.mix(coat(P, SEED + 5), PAL["bone"] * 0.9, (0.6 * under)[:, None])
             ck.finish(mesh, P, T, "coat", col, rig.rigid(f"{name}_{seg}"), cavity=0.2)
+
+
+def muzzle_cage(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    """The Order's red-lacquered muzzle cage: three hoops along the snout and two straps back over the head."""
+    for k, (z, r) in enumerate(((0.36, 0.085), (0.44, 0.07), (0.52, 0.055))):
+        c = SHOULDER + np.array([0, 0.18 - 0.03 * k, z])
+        ang = np.linspace(0, 2 * math.pi, 18)
+        path = c + np.column_stack([np.sin(ang) * r * 1.05, np.cos(ang) * r * 0.95, np.zeros_like(ang)])
+        P, T = ck.tube(path, 0.007, 4, cap_start=False, cap_end=False)
+        ck.finish(mesh, P, T, "leather", PAL["lacquer_red"], rig.rigid("head"), cavity=0.2)
+    for s in (-1.0, 1.0):
+        sp = np.array([SHOULDER + [s * 0.06, 0.2, 0.52], SHOULDER + [s * 0.08, 0.27, 0.36], SHOULDER + [s * 0.07, 0.3, 0.22]])
+        P, T = ck.tube(sp, 0.006, 4)
+        ck.finish(mesh, P, T, "leather", PAL["lacquer_red"], rig.rigid("head"))
 
 
 def harness(mesh: ck.Mesh, rig: ck.Rig) -> None:
@@ -208,6 +224,7 @@ def main() -> None:
     body(mesh, rig)
     legs(mesh, rig)
     harness(mesh, rig)
+    muzzle_cage(mesh, rig)
     info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "raid_hound"})
     print(f"raid_hound: {info}")
 

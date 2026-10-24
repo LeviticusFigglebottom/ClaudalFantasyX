@@ -1,5 +1,5 @@
 {
-  "_doc": "Raid-hound (act1/raid_hound.md): coat (salt-grey, pale underparts), leather (the harness, the Order's mark, brass rings), eye. No weak-point glow, on purpose. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "_doc": "Raid-hound (act1/raid_hound.md): coat (mud-coloured), leather (the harness, the red-lacquered muzzle cage, the Order's mark, brass rings), eye. No weak-point glow, on purpose. write_materials.py on game/shaders/creature/creature.gdshader.",
   "slots": {
     "coat": {
       "roughness_dry": 0.9,

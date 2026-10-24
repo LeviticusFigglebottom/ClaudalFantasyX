@@ -9,3 +9,5 @@ the weak point a `spawn_wound` speck in each eye-spot's pupil (it fed on grave-o
 
 **Clips.** `idle`: slow flutter with glides. `attack`: a buffet, the wings clapping. `cast`: it hovers and shakes
 dust (VFX). `hit`: it tumbles. `ko`: it spirals down, wings closing. Budget ≤ 5k.
+
+*Update (m2-slice act1_ch05 §9): the eye-spots are ember (`ember_orange` toward `dusk_gold`), reading like a leaf-boat's flame in the dark.*

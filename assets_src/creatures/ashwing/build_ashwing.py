@@ -24,6 +24,7 @@ SEED = 5101
 PAL = {k: ck.hexrgb(v) for k, v in {
     "overcast_slate": "#6F7E8E", "storm_slate": "#3E4A57", "bone": "#E6DAC0", "timber_weathered": "#7E6A55",
     "lacquer_black": "#1D1916", "spawn_wound": "#3FE0C8", "sand_cloth": "#C9B48E", "coral_stone_weathered": "#B9AE98",
+    "ember_orange": "#E0702E", "dusk_gold": "#F2A64A",
 }.items()}
 
 BODY_Y = 0.2
@@ -76,7 +77,7 @@ def wing(mesh: ck.Mesh, rig: ck.Rig, side: float, tag: str, fore: bool) -> None:
     col = ck.mix(col, PAL["storm_slate"] * 0.7, (0.6 * ck.smoothstep(0.8, 1.0, rr))[:, None])
     col = ck.mix(col, PAL["coral_stone_weathered"], (0.25 * ck.smoothstep(0.1, 0.5, n))[:, None])
     col = col * (1.0 - 0.25 * veins)[:, None]
-    col = ck.mix(col, PAL["bone"], ring[:, None])
+    col = ck.mix(col, ck.mix(PAL["ember_orange"], PAL["dusk_gold"], 0.4), ring[:, None])  # ember eyespots (act1_ch05 §9)
     col = ck.mix(col, PAL["lacquer_black"], pupil[:, None])
     col = ck.mix(col, PAL["spawn_wound"] * 0.6, speck[:, None])
     bone = rig.rigid(f"{'fore' if fore else 'hind'}_{tag}")
