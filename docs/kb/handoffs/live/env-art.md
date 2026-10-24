@@ -131,9 +131,20 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
         0.03 from its position in the run alone. Isolated captures are byte-identical run to run.
       - The ten arena and flood baselines I had approved from shared runs are re-approved from isolated captures,
         each viewed.
-    - **Running (worktree agents):** M3-ENV-10 Coilspire, M3-ENV-07B the Oruvel storm and Hullgnaw's split,
-      M3-ENV-11 the close-range plume.
-    - **Next:** M3-ENV-700 (the ferry's transom).
+    - **M3-ENV-10 Coilspire temple: in review, merged here** (44c3bac5).
+      - Kit: 12 pieces, 16 materials, Blender job `coilspire_kit` (29 identical). Its import kind `coilspire_kit`
+        needs Character + Tools sign-off.
+      - It is the same building as Corrow's far spire (reads `cw_far`, checked by tests). Its K08 view is shot
+        from Corrow's C01 camera.
+      - Baselines: `coilspire_k01_headland_path` and `coilspire_k03_well`; isolated re-capture gives rmse 0.
+      - Checks: coilspire 5/5, post_import 21/21.
+      - For m2-slice: the 10 flue-key wheels are tagged in the layout for the trial. Liss's wright's mark is a decal
+        for m2-slice or VFX.
+      - For Art: a `ch08_day` colour-script row.
+    - **All four Act I zones filed as M3-ENV-07..10 are in review.**
+    - **Running (worktree agents):** M3-ENV-07B the Oruvel storm and Hullgnaw's split, M3-ENV-11 the close-range
+      plume, M3-ENV-700 the ferry's transom.
+    - **Next:** nothing queued. When these land: a merge-ready batch, then the next item from the Lead's queue.
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
