@@ -64,7 +64,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Haluna kit pass 1 (M2-ENV-06):** nothing to do. Same piece names, same materials and slots; `env_ground.gdshader` gained a `breakup` uniform group with defaults (no scene edit needed).
 
 ## Exact next step
-Merge each worktree agent's branch as it reports (M1-ENV-10, M2-ENV-03, M2-ENV-07), gate it, push. Then M2-ENV-06's last items (house infill framing at H02, a look at the dock for `ending_dock`) and `haluna_h10_dock_night` once it reaches the integration branch.
+**Blocked, waiting:** (1) the Lead's answer to the question above (merge `claude/m2-slice` for M2-ENV-09, or wait for the integration branch); (2) `haluna_h10_dock_night` and the shrine kit reaching the integration branch (not there at 19118fba). When either lands: build M2-ENV-09 on `shrine_interior.py` (salvage per `assets_src/environments/kits/shell_shrine_salvage/README.md`); re-capture h10, view, re-approve if it drifts, close M2-ENV-06. Session handoff: `docs/kb/handoffs/2026-10-24-environment-6.md`.
 
 ## Queue
 1. M2-ENV-03: Shell Shrine interior kit (agent)
@@ -74,6 +74,7 @@ Merge each worktree agent's branch as it reports (M1-ENV-10, M2-ENV-03, M2-ENV-0
 5. ~~M2-ENV-08: the route and village props~~ (review); greybox flagged by the m2-slice playthrough (none reported to env-art yet)
 
 ## History
+- 2026-10-24: ENV-03 verdict (m2-slice kit adopted, M2-ENV-09 filed), salvage kept (5274d59a), handoff environment-6, merged the integration branch (53ddbc36; no overlap with env-art files; validate_data and taskboard clean).
 - 2026-10-24: merged M1-ENV-10 and M2-ENV-07 (2236fab2). Gates: verify haluna_kit 49 + vegetation 7 identical; tools unittest OK; Godot haluna 16, post_import 19, vegetation 17, lod 3, import 19; validate_data; haluna shots re-captured, viewed, h01/h02/h07 re-approved, palette 19/19.
 - 2026-10-24: M2-ENV-08 (fa4c666) and M2-ENV-06 passes 2–3 (15ce492, a6d3974). Merged the integration branch (856c43f).
 - 2026-10-24: M2-ENV-06 pass 1 (6436775). Gates: verify_blender_builds haluna_kit 31 identical; Godot environment 11, haluna 13, post_import 17; validate_data; taskboard --check; the five haluna shots captured, viewed and re-approved.
