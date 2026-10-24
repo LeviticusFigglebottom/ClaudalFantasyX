@@ -86,6 +86,16 @@
         ["{blender}", "--python", "assets_src/creatures/hullgnaw/build_hullgnaw.py", "--", "--out", "assets/creatures/hullgnaw/hullgnaw.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "hullgnaw"]
       ]
+    },
+    {
+      "id": "creature_tower_limpet",
+      "owner": "character",
+      "sources": ["assets_src/creatures/tower_limpet/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/tower_limpet/*.glb", "assets/creatures/tower_limpet/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/tower_limpet/build_tower_limpet.py", "--", "--out", "assets/creatures/tower_limpet/tower_limpet.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "tower_limpet"]
+      ]
     }
   ]
 }

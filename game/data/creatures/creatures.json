@@ -15,6 +15,7 @@
     "portrait": {"clip": "idle", "clip_time": 0.0, "yaw_deg": 30.0, "pitch_deg": 14.0, "fov_deg": 28.0, "margin": 0.7}
   },
   "creatures": {
+    "tower_limpet": {"scene": "res://game/creatures/tower_limpet/tower_limpet_battle.tscn"},
     "drownbell": {
       "scene": "res://game/creatures/drownbell/drownbell_battle.tscn",
       "loop": ["idle", "idle_flood"],

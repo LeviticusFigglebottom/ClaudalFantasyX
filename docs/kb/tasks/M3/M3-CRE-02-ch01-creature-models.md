@@ -17,7 +17,7 @@ rows once m2-slice adds them (M3-C01-02).
 ## Acceptance criteria
 - [x] hullgnaw (first pass: 5.4k triangles, 17 bones, the five clips; review shot creature_hullgnaw)
 - [ ] wickfry
-- [ ] tower_limpet
+- [x] tower_limpet (first pass: 8.5k triangles, 3 bones, the five clips; review shot creature_tower_limpet)
 - [ ] oil_slug
 
 ## Notes
