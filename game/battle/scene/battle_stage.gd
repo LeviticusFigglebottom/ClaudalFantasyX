@@ -11,6 +11,8 @@ static var _config: Dictionary = {}
 
 ## Camera shakes started (tests read it).
 var shakes_started := 0
+## The choreography sequencer for the current engine (BattleChoreo.attached sets it; M2-BPR-01).
+var choreo: BattleChoreo
 
 var _party_slots: Array[Marker3D] = []
 var _enemy_slots: Array[Marker3D] = []
@@ -116,6 +118,8 @@ func sync_party(engine: BattleEngine) -> void:
 		if not _fighters.has(cid):
 			var slot := clampi(int(config().get("vowbound_slot", i)), 0, _party_slots.size() - 1) if out else i
 			_place(cid, _party_slots[slot])
+			if choreo != null:
+				choreo.enter(cid)
 
 
 func refresh_ko(engine: BattleEngine) -> void:
@@ -123,13 +127,20 @@ func refresh_ko(engine: BattleEngine) -> void:
 	var stone: Dictionary = cfg.get("stone", {})
 	for c in engine.party_active + engine.enemies:
 		var f := stand_in(c.id)
-		if f == null:
-			continue
+		if f == null or (choreo != null and choreo.holds_ko(c.id)):
+			continue  # BattleChoreo shows this KO on its collapse beat
 		f.set_stone(
 			c.is_petrified(), Color.html(str(stone.get("color", "#FFFFFF"))), float(stone.get("roughness", 1.0))
 		)
 		var ko := c.hp <= 0
 		f.set_ko(ko, float(cfg.get("ko_sink_m", 0.0)), float(cfg.get("ko_alpha", 1.0)))
+		if choreo != null:
+			choreo.on_ko_state(c.id, ko)
+
+
+## How long the controller holds after an action: `base`, or longer while the choreography plays.
+func hold_after(base: float) -> float:
+	return choreo.hold_after(base) if choreo != null else base
 
 
 ## A short, decaying side-to-side camera nudge (deterministic: no randomness).

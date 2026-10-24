@@ -1,0 +1,51 @@
+{
+  "choreo": {
+    "doc": "M2-BPR-01/02: battle choreography (docs/kb/tech/battle_presentation.md). BattleChoreo plays each resolved action as beats: approach (the actor travels), strike (the action's clip, or its procedural motion), contact (at strike start + contact_at x strike_sec: the target reacts, damage floats and hit VFX land), recover, return. A KO collapses ko.delay_sec after contact. All times are seconds at battle speed 1.0; distances are metres. travel: 'target' runs to stop_short_m in front of the target(s); 'step' steps step_m toward them; 'none' stays on the mark. lunge_m, lift_m, crouch_m and lean_deg shape the procedural strike on a stand-in with no clip.",
+    "styles": {
+      "melee": {"travel": "target", "stop_short_m": 1.0, "approach_sec": 0.3, "strike_sec": 0.3, "contact_at": 0.55,
+                "recover_sec": 0.15, "return_sec": 0.32, "clip": "attack", "lunge_m": 0.35, "lift_m": 0.0,
+                "crouch_m": 0.06, "lean_deg": 14.0},
+      "cast": {"travel": "step", "step_m": 0.45, "approach_sec": 0.2, "strike_sec": 0.5, "contact_at": 0.8,
+               "recover_sec": 0.2, "return_sec": 0.24, "clip": "cast", "lunge_m": 0.0, "lift_m": 0.12,
+               "crouch_m": 0.0, "lean_deg": -6.0},
+      "support": {"travel": "step", "step_m": 0.3, "approach_sec": 0.16, "strike_sec": 0.4, "contact_at": 0.7,
+                  "recover_sec": 0.16, "return_sec": 0.2, "clip": "cast", "lunge_m": 0.0, "lift_m": 0.08,
+                  "crouch_m": 0.0, "lean_deg": -4.0},
+      "guard": {"travel": "none", "approach_sec": 0.0, "strike_sec": 0.4, "contact_at": 0.6, "recover_sec": 0.2,
+                "return_sec": 0.0, "clip": "defend", "lunge_m": 0.0, "lift_m": 0.0, "crouch_m": 0.14,
+                "lean_deg": 8.0},
+      "item": {"travel": "step", "step_m": 0.35, "approach_sec": 0.18, "strike_sec": 0.36, "contact_at": 0.7,
+               "recover_sec": 0.14, "return_sec": 0.22, "clip": "item", "lunge_m": 0.12, "lift_m": 0.0,
+               "crouch_m": 0.0, "lean_deg": 6.0},
+      "read": {"travel": "step", "step_m": 0.25, "approach_sec": 0.16, "strike_sec": 0.5, "contact_at": 0.6,
+               "recover_sec": 0.14, "return_sec": 0.2, "clip": "read", "lunge_m": 0.0, "lift_m": 0.0,
+               "crouch_m": 0.0, "lean_deg": 4.0},
+      "finisher": {"travel": "target", "stop_short_m": 1.1, "approach_sec": 0.38, "strike_sec": 0.55,
+                   "contact_at": 0.62, "recover_sec": 0.25, "return_sec": 0.4, "clip": "finisher", "lunge_m": 0.5,
+                   "lift_m": 0.25, "crouch_m": 0.1, "lean_deg": 18.0},
+      "chant": {"travel": "step", "step_m": 0.4, "approach_sec": 0.22, "strike_sec": 0.75, "contact_at": 0.8,
+                "recover_sec": 0.25, "return_sec": 0.26, "clip": "finisher", "lunge_m": 0.0, "lift_m": 0.2,
+                "crouch_m": 0.0, "lean_deg": -8.0}
+    },
+    "style_by_kind": {"physical": "melee", "magical": "cast", "heal": "support", "support": "support"},
+    "style_by_target": {"self": "guard"},
+    "style_by_skill": {"read": "read", "lamp_dive": "finisher", "return_tide": "finisher", "brine_lash": "finisher",
+                       "shallows_verse": "chant", "written_light": "chant", "tidal_ward": "chant",
+                       "floodnet": "chant", "breakwater": "finisher"},
+    "item_style": "item",
+    "reaction": {
+      "doc": "The target's reaction on the contact beat. damage: recoil_m away from the actor and tilt_deg back, out and back over sec; heal: a lift_m rise; miss: a sidestep of dodge_m. clip names the model clip tried first (the clip contract).",
+      "damage": {"sec": 0.32, "recoil_m": 0.28, "tilt_deg": 9.0, "clip": "hit"},
+      "heal": {"sec": 0.4, "lift_m": 0.08, "clip": "ready"},
+      "miss": {"sec": 0.3, "dodge_m": 0.32, "clip": "dodge"}
+    },
+    "ko": {"delay_sec": 0.12, "collapse_sec": 0.5, "tilt_deg": 62.0, "drop_m": 0.18, "clip": "ko"},
+    "enter": {"doc": "A fighter swapped or called in walks onto its mark from back_m behind it.", "back_m": 1.4,
+              "sec": 0.34, "clip": "ready"},
+    "settle_sec": 0.2,
+    "reduced_motion": {"doc": "UiSettings reduced motion: shorter travel and leans, no tilt on reactions.",
+                       "travel_scale": 0.4, "lean_scale": 0.5, "tilt_scale": 0.0},
+    "speeds": {"doc": "UiSettings battle_speed values (accessibility.json) the sequencer accepts.",
+               "min": 0.5, "max": 3.0}
+  }
+}

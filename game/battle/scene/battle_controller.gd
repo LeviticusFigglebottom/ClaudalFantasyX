@@ -231,7 +231,7 @@ func _build_engine(
 	swell = BattleSwell.new(BattleSwell.load_config())
 	BattleSwellCarry.attach(swell, engine, persist_progress and fixture == null)  # M2-ARC-01
 	bestiary.attach(engine, persist_progress and fixture == null)
-	engine.action_resolved.connect(floats.on_action_resolved)
+	BattleChoreo.attached(self, engine)  # M2-BPR-01: listen-only choreography; it lands the floats
 	boss = BattleBossHud.attached(self, engine)
 	BattleVfx.attached(self, engine)  # M2-RND-03: listen-only battle VFX (docs/kb/tech/battle_vfx.md)
 	stage.spawn(engine)
@@ -488,7 +488,7 @@ func after_action(actor_id: StringName, hold: StringName = &"action_hold_sec") -
 	hud.target_cursor.show_provoker(Vector2.ZERO, false)
 	hud.party.refresh(pacing_scale > 0.0, _pace(&"action_hold_sec") * 0.5)
 	stage.refresh_ko(engine)
-	_wait(_pace(hold), _next_turn)
+	_wait(stage.hold_after(_pace(hold)), _next_turn)  # the choreography finishes first (M2-BPR-01)
 
 
 func _open_command() -> void:

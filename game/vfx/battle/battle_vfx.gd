@@ -82,7 +82,12 @@ func _init() -> void:
 func attach(controller: BattleController, engine: BattleEngine) -> void:
 	_ctl = controller
 	_engine = engine
-	engine.action_resolved.connect(_on_action_resolved)
+	# M2-BPR-01: with a choreography sequencer the hit lands on its contact beat (instant when it isn't playing).
+	var choreo := controller.stage.choreo
+	if choreo != null:
+		choreo.contact.connect(_on_action_resolved)
+	else:
+		engine.action_resolved.connect(_on_action_resolved)
 	var settings := UiSettings.shared()
 	if settings != null:
 		reduced_motion = settings.reduced_motion()

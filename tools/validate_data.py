@@ -1262,6 +1262,7 @@ def run(root: Path) -> Report:
     check_flags(root, load_flags(root, rep), rep)
     check_undertow(root, files, rep)
     check_zone_weather(root, files, rep)
+    check_choreo(files, rep)
     check_provenance(root, rep)
     check_banned(root, rep)
     check_binary_sizes(root, rep)
@@ -2247,6 +2248,19 @@ def check_zone_weather(root: Path, files: dict[str, object], rep: Report) -> Non
     for e in zone_weather_errors(doc, lambda res: _res_path(root, res).is_file()):
         rep.err(e)
 
+
+# --- M2-BPR-01: battle choreography (game/data/battle/choreo.json; tools/validate_choreo.py) ----
+
+
+def check_choreo(files: dict[str, object], rep: Report) -> None:
+    import validate_choreo as vc  # noqa: E402
+
+    doc = files.get(vc.CHOREO_FILE)
+    if doc is None:
+        rep.err(f"{vc.CHOREO_FILE}: missing")
+        return
+    for e in vc.choreo_errors(doc, files.get(vc.SKILLS_FILE)):
+        rep.err(e)
 
 
 if __name__ == "__main__":
