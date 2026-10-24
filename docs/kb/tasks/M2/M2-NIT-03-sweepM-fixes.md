@@ -2,7 +2,7 @@
 id: M2-NIT-03
 title: Review-sweep-M follow-ups (balance risk, import LOD ranges, override layering, test hygiene)
 role: combat
-status: review
+status: done
 owner_session: "agent-a14a20707d2ef004e"
 depends_on: [M2-CMB-01, M1-ART-02, M1-NIT-02]
 milestone: M2
@@ -35,3 +35,13 @@ reviewer: progression
   - **Gates.** See the handoff.
 
 ## Review log
+- 2026-10-24 review-sweep-O (progression): **approve.** All seven criteria hold in the code.
+  - **Balance:** the Shallows Verse power 4 and Tether 40 choices stand. M2-CMB-02 then removed the residual loop structurally, and my 1000-seed re-run (`sim.py --check`, rc 0) shows every band holding on today's data: `naive_swell` 23.8% and 39.1%, against this task's 32.1% and 47.7% before CMB-02. test_formulas.gd pins every technique power against skills.json.
+  - **What I read:**
+    - 5ee5dc0: `push_override` re-bases when only deferred pops remain (`_older_owners_left`), and stores `base.copy()`; `same_as` compares the warning by value.
+    - 724e749: `lod_chains` gives ranges to authored chains only, and the convex shape child gets `body.transform.affine_inverse()`.
+    - a190b98: the tide test asserts the written value and restores the global.
+    - 053587e: with swell.json broken, `record_party` keeps the saved gauge and mode, which matches `record_swell`; there is an escape-path test.
+    - c31a878: the CharacterShaderTiers limits are documented.
+  - **Checks:** Godot `--filter=` graphics_override 15/0 failed, graphics_settings 24/0, post_import 17/0, weathering 2/0, save 186/0, swell 124/0, battle 307/0. gdlint and gdformat are clean.
+  - **Nit (no task):** `_older_owners_left` treats an owner briefly outside the tree mid-reparent as departed. A push in exactly that window would re-base. It's harmless in practice, because reparents are rare during cutscene swaps.
