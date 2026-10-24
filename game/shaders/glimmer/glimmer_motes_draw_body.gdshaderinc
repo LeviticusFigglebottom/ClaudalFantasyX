@@ -60,7 +60,18 @@ uniform float near_fade_end_m : hint_range(0.0, 20.0) = 2.0;
 // Soft particles: fade over this distance in front of opaque geometry.
 uniform float soft_depth_m : hint_range(0.01, 5.0) = 0.35;
 uniform sampler2D depth_texture : hint_depth_texture, filter_nearest;
-#ifdef GLIMMER_MIRROR
+#ifndef GLIMMER_MIRROR
+group_uniforms underwater;
+// M2-RND-09: path compensation for a camera underwater, set each frame by UnderwaterRig (0 = none, the
+// default). The underwater post absorbs every mote along the path; the core and halo are divided back by
+// that transmittance, mixed by the mote's state (released lift 1.0, held 0.6), so rising light reads
+// through the water while the in-scatter haze still hides far motes. Capped per channel at uw_max_gain.
+uniform float uw_comp_lift = 0.0;
+uniform float uw_comp_held = 0.0;
+uniform vec3 uw_sigma = vec3(0.0);
+uniform float uw_rest_y = 0.0;
+uniform float uw_max_gain = 8.0;
+#else
 group_uniforms reflection;
 uniform float mirror_plane_y = 0.0;
 uniform float reflection_gain : hint_range(0.0, 4.0) = 1.0;      // multiplies the Fresnel reflectance
@@ -116,6 +127,20 @@ void vertex() {
 	vec2 gold = c_gold * vec2(cos(hue), sin(hue));
 	lab.yz = mix(lab.yz, gold, released * step(HYMN_EPSILON, halo_chroma_min));
 	v_halo_color = max(hymn_oklab_to_linear_srgb(lab), vec3(0.0));
+#ifndef GLIMMER_MIRROR
+	float uw_comp = mix(uw_comp_held, uw_comp_lift, clamp(INSTANCE_CUSTOM.w, 0.0, 1.0));
+	if (uw_comp > 0.0 && CAMERA_POSITION_WORLD.y < uw_rest_y) {
+		vec3 to_mote = center_w - CAMERA_POSITION_WORLD;
+		float path = length(to_mote);
+		vec3 rd = to_mote / max(path, HYMN_EPSILON);
+		if (rd.y > HYMN_EPSILON) {
+			path = min(path, (uw_rest_y - CAMERA_POSITION_WORLD.y) / rd.y);
+		}
+		vec3 uw_gain = min(vec3(1.0) + uw_comp * (exp(uw_sigma * path) - vec3(1.0)), vec3(uw_max_gain));
+		v_color *= uw_gain;
+		v_halo_color *= uw_gain;
+	}
+#endif
 	// Spread the same light over a longer streak instead of adding energy with speed.
 	float near = smoothstep(near_fade_start_m, max(near_fade_end_m, near_fade_start_m + HYMN_EPSILON), -center.z);
 	v_alpha = COLOR.a * gain * near / (1.0 + TRAIL_ENERGY_SPREAD * trail) / (soft * soft);

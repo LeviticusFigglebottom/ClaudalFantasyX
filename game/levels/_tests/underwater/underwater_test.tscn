@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://game/levels/_tests/water/water_test.tscn" id="world"]
 [ext_resource type="Script" path="res://game/world/water/underwater/underwater_rig.gd" id="rig"]
 [ext_resource type="Script" path="res://game/vfx/glimmer/glimmer_field.gd" id="field"]
+[ext_resource type="Script" path="res://game/levels/_tests/underwater/waterline_camera.gd" id="waterline"]
 
 [sub_resource type="CapsuleMesh" id="RhenMesh"]
 radius = 0.32
@@ -62,10 +63,14 @@ transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 
 fov = 60.0
 far = 600.0
 
-[node name="Waterline" type="Camera3D" parent="UnderwaterCameras"]
+[node name="Waterline" type="Camera3D" parent="UnderwaterCameras" node_paths=PackedStringArray("water", "clock")]
 transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0.5, -0.02, -52)
 fov = 60.0
 far = 600.0
+script = ExtResource("waterline")
+water = NodePath("../../World/Water")
+offset_m = 0.03
+clock = NodePath("../../World")
 
 [node name="UpWindow" type="Camera3D" parent="UnderwaterCameras"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -4, -60)

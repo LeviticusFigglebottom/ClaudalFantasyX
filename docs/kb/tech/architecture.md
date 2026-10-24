@@ -125,7 +125,7 @@ screen *was* the title, so the PC measured 168–265 ms frames on the visible me
   covers the title with a card, turns off the title's `_unhandled_input`, then (deferred) starts the resident
   warm-up (`GraphicsRuntime.warm_resident_shaders`) and the theme font warm-up (`SceneRouter.warm_fonts_now()`,
   the router's `FontWarmer`, once per run) and has the card wait for both (`wait_for_node`, `wait_until(fonts_ready)`).
-  When they are done (or after `BootCard.MAX_WAIT_MS`, 10 s, with a warning) the card opens, the title gets its
+  When they are done (or when the wait gives up on a stall or its safety cap, with a warning, M2-ARC-08 below) the card opens, the title gets its
   keys back, and:
   - **At launch** (no change running) the card lifts over `SceneRouter.FADE_SEC`, and boot calls
     `SceneRouter.measure_reveal(path, card.is_lifted, card_stats)`: ADR 0029's visible window (the lift, then 60
@@ -134,7 +134,7 @@ screen *was* the title, so the PC measured 168–265 ms frames on the visible me
     `visible_measured`.
   - **Through a change** (the end card, a game over, the slice sweep) the router's opaque fade is already the cover.
     The card holds the router's reveal (`SceneRouter.hold_reveal`) and is cut when it opens; the router keeps its fade
-    opaque after the swap while anything holds the reveal (at most `REVEAL_WAIT_MAX_MS`, 10 s), then lifts it and
+    opaque after the swap while anything holds the reveal (until a stall or the safety cap, M2-ARC-08 below), then lifts it and
     starts its own visible window. The wait is recorded as `reveal_wait_frames`, `reveal_wait_ms` and
     `reveal_wait_max_frame_ms`, each frame against the 1 s hidden budget, and is **not** in `entry_ms` (the title is
     not a zone entry; the boot warm-up's 1.3–3.1 s would otherwise read as an entry over 3 s).
@@ -151,6 +151,57 @@ screen *was* the title, so the PC measured 168–265 ms frames on the visible me
   `BootCard.cover(root, SceneRouter.FADE_SEC, SceneRouter.FADE_SEC)`; on `covered`, select the preset and
   `wait_for_node(GraphicsRuntime.current_warm_up())`; `arm()`; on `opened`, give the menu its input back and call
   `SceneRouter.measure_reveal(...)` with `card.is_lifted`. `cancel_visible_window()` ends a window early.
+- **The wait gives up on a stall, not after 10 s (M2-ARC-08).** M1-RND-29's first launch (`ShaderPrewarm.first_run`)
+  took 9.5 s on Low on an RX 9070 XT, within 0.5 s of the old fixed 10 s caps (`BootCard.MAX_WAIT_MS`,
+  `SceneRouter.REVEAL_WAIT_MAX_MS`, both gone), and a min-spec card is slower. A fixed cap scaled to the work would
+  still be a guess about the slowest card, so the choice is **"the cap applies only while the work makes no
+  progress"**, plus a generous absolute cap as a safety net:
+  - `ProgressWait` (`game/core/progress_wait.gd`, pure) is fed each frame's wall ms (FrameClock, M2-ARC-05) and a
+    progress count. It ends `stalled` when the count has not changed for `stall_timeout_ms` (10 s), or `capped` after
+    `max_wait_ms` (180 s, about 19 times the measured first launch). Both are data: `game/data/settings/boot_card.json`.
+  - The count is `BootCard.wait_progress()`: each waited node's `wait_progress()` (`ShaderPrewarm`: its frames of
+    work; every tick is one step of a finite run, so a warm-up that still ticks is progressing however long its
+    frames are), each condition's progress Callable (`wait_until(cond, progress)`; the fonts report
+    `SceneRouter.font_warm_progress()`), plus one per finished item. Work that reports nothing (a plain node or
+    condition) stalls after 10 s, as before.
+  - The router's reveal hold uses the same ProgressWait on `SceneRouter.holders_progress(reveal_holders())`, so a
+    card holding a change's fade is judged the same way. Both record `reveal_wait_end` (`done`, `stalled` or
+    `capped`) in their stats.
+  - **When it gives up, the warm-up is stopped**, not left staging under the title: the card calls `cancel()` on each
+    waited node that has one before it opens. `ShaderPrewarm.cancel()` clears the stage, releases the swap hold,
+    emits no `finished` and writes no first-run marker, so the next launch runs the first-run warm-up again.
+  - **The first-launch cue** (pillar 1): on a first run boot calls `BootCard.show_first_run_cue()`: one line,
+    `BOOT_FIRST_RUN_NOTE` ("Preparing the graphics for first use. This happens only once."), and a thin bar of
+    `ShaderPrewarm.progress_fraction()` (never moving back), near the bottom of the card, low alpha. It appears only
+    after `cue.delay_ms` (1.5 s, so a quick first launch shows nothing), fades in over `cue.fade_in_ms`, and lifts with
+    the card. Later launches show the bare card as before. Layout and alphas are in `boot_card.json`'s `cue`.
+  - Tests: `tests/unit/test_progress_wait.gd`; `test_boot_card.gd` (fake clock: 60 s of 500 ms frames that progress,
+    and one 12 s frame that progresses, keep the card closed; a stall opens it, `stalled`, with the worker cancelled;
+    the cap opens a progressing wait; the cue); `test_shader_prewarm.gd` (progress and `cancel()`).
+
+### Frame times are wall time, never `delta` (M2-ARC-05, ADR 0029)
+Godot caps the process `delta` at about 140–150 ms (4.6.3 and 4.7.2; a 500 ms stall reports 135–147 ms, found by
+M1-RND-29). A statistic summed or maxed from `delta` can never see a frame over that, so ADR 0029's 1 s hidden-frame
+budget could never trip, and the launch's `reveal_wait_max_frame_ms` read ~149 ms where the sweep measured 1266 ms.
+
+- **`FrameClock`** (`game/core/frame_clock.gd`) is the one helper: `reset()` / `reset_at(usec)` start a window,
+  `lap()` / `lap_at(usec)` return the wall ms since the last mark (Time.get_ticks_usec) and move it, `since_ms()`
+  reads without moving it. Tests inject a fake clock: `FrameClock.new(fake.now)`.
+- **Users.** `BootCard` (its `clock`, started in `_ready`, feeds `step()`, so the wait stats, its stall and cap (M2-ARC-08), the
+  fade-in and the lift run on real time); `SceneRouter`'s hidden frames, reveal wait and `VisibleWindow`. The
+  router already timed by wall clock; it now does so through FrameClock. `ShaderPrewarm` switched to
+  `Time.get_ticks_usec` in M1-RND-29 on its own (`_last_frame_usec`); moving it onto FrameClock is a small
+  follow-up once that branch has merged.
+- **Rule.** Anything that judges a frame against a budget (SPEC §4.2, ADR 0029) times it with a FrameClock.
+  Animation and gameplay may keep `delta`; tools/gpu_bench already read `Time.get_ticks_usec`.
+- **No FrameClock as a coroutine local in an autoload.** A quit that lands mid-`await` leaves the coroutine
+  suspended, and a script object it holds outlives Godot's exit check: the boot smoke failed with "1 resources
+  still in use at exit" (frame_clock.gd, and the Time class its default Callable pinned). The router owns its
+  clocks (`_reveal_clock`, `_swap_clock`, and its `ProgressWait`) as members, `VisibleWindow` keeps a plain usec
+  mark, and FrameClock's default clock stores no Callable (it calls `Time.get_ticks_usec()` directly).
+- **Tests.** `tests/unit/test_frame_clock.gd` (fake clock: a 500 ms stall laps at 500 ms; the router's
+  VisibleWindow); `test_boot_card.gd` (a 500 ms stall handed a 147 ms `delta` reads 500 ms; a real
+  `OS.delay_msec(400)` reads ≥ 400 ms; the time-out is wall time).
 
 ## Saves (M1-ARC-03, architect-stream-4)
 

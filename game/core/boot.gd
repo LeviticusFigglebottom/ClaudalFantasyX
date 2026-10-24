@@ -18,6 +18,8 @@ extends Node
 ## through a change, the card also holds the router's reveal (hold_reveal), so the router's opaque fade is
 ## the cover and lifts instead. Elsewhere (the boot_title capture, tests) boot is not the current scene:
 ## no card, and the warm-up starts as before.
+## M2-ARC-08: the card waits while the warm-up progresses (no fixed cap), and on a first launch shows a quiet
+## cue (BootCard.show_first_run_cue).
 
 const DEBUG_OVERLAY_SCENE := "res://game/core/debug/debug_overlay.tscn"
 const DEBUG_OVERLAY_NAME := "DebugOverlay"
@@ -67,10 +69,14 @@ func _cover_until_warm() -> void:
 
 ## Deferred: at launch the root is still adding its children.
 func _start_warm(router: Node) -> void:
-	_card.wait_for_node(GraphicsRuntime.warm_resident_shaders(get_tree().root))
+	var warm := GraphicsRuntime.warm_resident_shaders(get_tree().root)
+	_card.wait_for_node(warm)
+	# M2-ARC-08: a first launch builds every pipeline here, for seconds; the card says so, quietly.
+	if warm != null and warm.first_run:
+		_card.show_first_run_cue()
 	if router != null:
 		router.call(&"warm_fonts_now")
-		_card.wait_until(Callable(router, &"fonts_ready"))
+		_card.wait_until(Callable(router, &"fonts_ready"), Callable(router, &"font_warm_progress"))
 	_card.arm()
 
 

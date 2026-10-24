@@ -858,3 +858,4 @@ CTRL_ACT_DIALOGUE_BACKLOG,Dialogue backlog
 BACKLOG_TITLE,Backlog
 BACKLOG_HELP,Up and Down: scroll · Page keys: a page · Cancel: close
 BACKLOG_EMPTY,Nothing has been said yet.
+BOOT_FIRST_RUN_NOTE,Preparing the graphics for first use. This happens only once.
