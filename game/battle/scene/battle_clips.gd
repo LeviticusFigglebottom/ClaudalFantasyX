@@ -21,6 +21,13 @@ const VICTORY := &"victory"
 const ALL: Array[StringName] = [IDLE, READY, ATTACK, CAST, ITEM, READ, DEFEND, FINISHER, HIT, DODGE, KO, VICTORY]
 ## A creature actor plays clips through this method, so it idles again afterwards.
 const ACTOR_PLAY_METHOD := &"play_clip"
+## The creature track's API (M2-CRE-03, claude/creatures): FighterStandIn.creature() -> CreatureActor, with
+## clip_for(skill, kind), play_action(skill, kind) and contact_time(clip). Called by name so this works before and
+## after that branch merges.
+const STAND_IN_CREATURE := &"creature"
+const CREATURE_CLIP_FOR := &"clip_for"
+const CREATURE_PLAY_ACTION := &"play_action"
+const CREATURE_CONTACT := &"contact_time"
 
 
 ## The fighter's AnimationPlayer (the first under its model), or null for a primitive stand-in.
@@ -53,3 +60,37 @@ static func play(f: Node, clip: StringName, speed: float = 1.0) -> bool:
 	if clip != IDLE and clip != KO and p.has_animation(IDLE):
 		p.queue(IDLE)
 	return true
+
+
+## The fighter's creature actor (claude/creatures' CreatureActor), or null.
+static func creature_of(f: Node) -> Node:
+	if f == null or not is_instance_valid(f) or not f.has_method(STAND_IN_CREATURE):
+		return null
+	return f.call(STAND_IN_CREATURE) as Node
+
+
+## The clip a creature plays for an action (its clip_by_skill, else clip_by_kind); "" for anything else, or when
+## the creature has no such clip.
+static func action_clip(f: Node, skill_id: StringName, kind: StringName) -> StringName:
+	var cr := creature_of(f)
+	if cr == null or not cr.has_method(CREATURE_CLIP_FOR):
+		return &""
+	var clip := StringName(str(cr.call(CREATURE_CLIP_FOR, skill_id, kind)))
+	return clip if has_clip(f, clip) else &""
+
+
+## Plays an action's strike: a creature's own clip for it, else the style's `clip` (the contract name).
+static func play_action(f: Node, skill_id: StringName, kind: StringName, clip: StringName, speed: float = 1.0) -> bool:
+	var cr := creature_of(f)
+	if cr != null and action_clip(f, skill_id, kind) != &"":
+		player_of(f).speed_scale = speed
+		return bool(cr.call(CREATURE_PLAY_ACTION, skill_id, kind))
+	return play(f, clip, speed)
+
+
+## Seconds into `clip` where its blow lands, from the creature's data; -1 when the fighter can't say.
+static func contact_sec(f: Node, clip: StringName) -> float:
+	var cr := creature_of(f)
+	if cr == null or not cr.has_method(CREATURE_CONTACT):
+		return -1.0
+	return float(cr.call(CREATURE_CONTACT, clip))

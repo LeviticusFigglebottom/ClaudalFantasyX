@@ -330,7 +330,11 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 	plan["to"] = to
 	plan["dir"] = dir
 	plan["aim"] = aim
-	plan["actor_clip"] = BattleClips.has_clip(_ctl.stage.stand_in(actor_id), StringName(str(st.get("clip", ""))))
+	var actor_f := _ctl.stage.stand_in(actor_id)
+	var cr_clip := BattleClips.action_clip(actor_f, _result.skill_id, _kind())
+	plan["actor_clip"] = cr_clip != &"" or BattleClips.has_clip(actor_f, StringName(str(st.get("clip", ""))))
+	if cr_clip != &"" and BattleClips.contact_sec(actor_f, cr_clip) >= 0.0:
+		_retime(plan, float(plan["approach_end"]) + BattleClips.contact_sec(actor_f, cr_clip))
 	for r: Dictionary in plan["reactions"]:
 		var tid := StringName(str(r["target"]))
 		var away := _flat(_home_of(tid).origin - from)
@@ -424,7 +428,29 @@ func _beat_approach() -> void:
 
 func _beat_strike() -> void:
 	var clip := StringName(str(style(str(_plan["style"])).get("clip", "")))
-	BattleClips.play(_ctl.stage.stand_in(StringName(str(_plan["actor"]))), clip, speed)
+	BattleClips.play_action(
+		_ctl.stage.stand_in(StringName(str(_plan["actor"]))), _result.skill_id, _kind(), clip, speed
+	)
+
+
+## The action's skill kind ("" for an item).
+func _kind() -> StringName:
+	if _result == null or _result.skill_id == &"" or _engine == null:
+		return &""
+	return StringName(str(_engine.db.skill(_result.skill_id).get("kind", "")))
+
+
+## Moves the contact beat to `contact` (a creature clip's own contact second), pushing every later beat by as much
+## as it moved past the strike's end, so the blow lands on the clip's frame.
+func _retime(plan: Dictionary, contact: float) -> void:
+	var late := maxf(contact - float(plan["strike_end"]), 0.0)
+	plan["contact"] = maxf(contact, float(plan["approach_end"]))
+	for key in ["strike_end", "recover_end", "return_end", "total"]:
+		plan[key] = float(plan[key]) + late
+	plan["ko_at"] = float(plan["contact"]) + float((data.get("ko", {}) as Dictionary).get("delay_sec", 0.0))
+	var ko_end := float(plan["ko_at"]) + float((data.get("ko", {}) as Dictionary).get("collapse_sec", 0.0))
+	if not (plan["kos"] as Array).is_empty():
+		plan["total"] = maxf(float(plan["total"]), ko_end)
 
 
 func _beat_contact() -> void:

@@ -417,6 +417,38 @@ func test_a_model_with_the_clip_plays_it_and_idles_after() -> void:
 	_free()
 
 
+func test_a_creature_actor_strikes_with_its_own_clip_on_its_own_contact_frame() -> void:
+	var f := _FakeStandIn.new()
+	var cr := _FakeCreature.new()
+	var player := AnimationPlayer.new()
+	var lib := AnimationLibrary.new()
+	for clip in [BattleClips.IDLE, BattleClips.ATTACK, BattleClips.HIT, BattleClips.KO]:
+		var a := Animation.new()
+		a.length = 1.5
+		lib.add_animation(clip, a)
+	player.add_animation_library(&"", lib)
+	cr.add_child(player)
+	f.add_child(cr)
+	f.fake = cr
+	ctl.add_child(f)
+	assert_eq(BattleClips.creature_of(f), cr)
+	assert_eq(BattleClips.action_clip(f, &"pinch", &"physical"), BattleClips.ATTACK)
+	assert_eq(BattleClips.action_clip(f, &"brine_spit", &"magical"), &"", "no cast clip: the style's fallback")
+	assert_eq(BattleClips.contact_sec(f, BattleClips.ATTACK), _FakeCreature.CONTACT)
+	assert_true(BattleClips.play_action(f, &"pinch", &"physical", BattleClips.ATTACK))
+	assert_eq(cr.actions, [&"pinch"] as Array[StringName], "the creature plays its own action clip")
+	assert_eq(BattleClips.contact_sec(ctl.stage.stand_in(&"rhen"), BattleClips.ATTACK), -1.0, "a primitive can't say")
+	var plan := choreo.plan_for(_result(&"attack", [_hit(_foe(), 10)]))
+	var strike_end := float(plan["strike_end"])
+	var late := float(plan["approach_end"]) + 1.2
+	choreo._retime(plan, late)
+	assert_eq(float(plan["contact"]), late, "the blow lands on the clip's frame")
+	assert_between(float(plan["strike_end"]), late - EPS, late + EPS, "later beats move with it")
+	assert_true(float(plan["total"]) > float(plan["return_end"]) - EPS and float(plan["strike_end"]) > strike_end)
+	f.queue_free()
+	_free()
+
+
 func test_a_primitive_stand_in_has_no_clips() -> void:
 	var f := ctl.stage.stand_in(&"rhen")
 	assert_eq(BattleClips.player_of(f), null)
@@ -476,3 +508,30 @@ func _assert_eq_v(a: Vector3, b: Vector3, msg: String) -> void:
 func _free() -> void:
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
+
+
+class _FakeCreature:
+	extends Node3D
+	const CONTACT := 0.9
+	var actions: Array[StringName] = []
+
+	func clip_for(_skill: StringName, kind: StringName) -> StringName:
+		return BattleClips.ATTACK if kind == &"physical" else BattleClips.CAST
+
+	func play_action(skill: StringName, _kind: StringName) -> bool:
+		actions.append(skill)
+		return true
+
+	func play_clip(_clip: StringName) -> bool:
+		return true
+
+	func contact_time(_clip: StringName) -> float:
+		return CONTACT
+
+
+class _FakeStandIn:
+	extends Node3D
+	var fake: Node
+
+	func creature() -> Node:
+		return fake
