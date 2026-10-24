@@ -1,0 +1,10 @@
+config_version=5
+
+[application]
+
+config/name="qa10_race"
+run/main_scene="res://race.tscn"
+
+[rendering]
+
+renderer/rendering_method="forward_plus"

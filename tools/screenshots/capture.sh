@@ -47,17 +47,31 @@ run_one() {
   "$render" --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync --rendering-driver "$driver" "${method[@]}" \
     res://tests/screenshots/capture.tscn -- "${user_args[@]}" "--shots=$1" >> "$log" 2>&1
 }
+# M1-QA-10: a process that exits non-zero (an engine abort at exit, say, after its shot was written)
+# is named here, so a gate failure says which shot's process it was.
+failed_runs=()
 set +e
 if [ "${HYMN_CAPTURE_SHARED:-0}" = "1" ]; then
-  run_one "$shot_list" || status=$?
+  run_one "$shot_list"
+  rc=$?
+  if [ $rc -ne 0 ]; then status=$rc; failed_runs+=("$shot_list (exit $rc)"); fi
 else
   IFS=',' read -ra ids <<< "$shot_list"
   for id in "${ids[@]}"; do
-    run_one "$id" || status=$?
+    run_one "$id"
+    rc=$?
+    if [ $rc -ne 0 ]; then
+      status=$rc
+      failed_runs+=("$id (exit $rc)")
+      echo "CAPTURE PROCESS EXIT $rc: $id" >> "$log"
+    fi
   done
 fi
 set -e
 grep -E "^(Vulkan|OpenGL)|CAPTURE|Capture:|SCRIPT ERROR" "$log" || true
 echo "capture wall time: $(( $(date +%s) - start )) s (log: $log)"
+if [ ${#failed_runs[@]} -gt 0 ]; then
+  echo "capture process(es) exited non-zero: ${failed_runs[*]}"
+fi
 if grep -q "SCRIPT ERROR" "$log"; then exit 1; fi
 exit $status

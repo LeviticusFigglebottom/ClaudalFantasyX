@@ -16,6 +16,15 @@
   "particle_amount": 1,
   "_note_compute_twin": "M1-RND-27: an entry with \"compute_twin\" true (the Undertow body shaders) is not drawn when the preset's storm tier marches the body in compute (ShaderPrewarm.undertow_uses_compute: a RenderingDevice and a body_scale under 1); its compute twin's pipeline is created instead (UndertowBodyEffect.warm_pipeline). Ultra (full-resolution body) still draws it.",
   "_note_resident_presets": "An entry with \"resident\" true is held from the boot warm-up on every preset, or only on those its optional \"resident_presets\" lists (ShaderPrewarm.entry_resident). Asha's materials are resident on all four: holding them takes Haluna's entry from 2.9-3.6 s to 2.1-2.8 s (Low streaming was 3.5-3.6 s, over ADR 0029's 3 s) for ~245 MB of texture memory from the title on (Low: 285 MB against 39). Drop a preset from the list to stream her materials on it.",
+  "_note_first_run": "M1-RND-29: the boot run on a launch with no first_run_marker for this engine, GPU, driver and preset (ShaderPrewarm.needs_first_run) stages every entry the preset wants and harvests first_run_scenes, behind the boot card, then writes the marker. A fresh install then builds its pipelines once, at boot.",
+  "first_run_marker": "user://pipeline_warm.cfg",
+  "first_run_scenes": [
+    "res://game/levels/ch02/haluna/haluna.tscn",
+    "res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
+    "res://game/flow/field_battle.tscn",
+    "res://game/levels/ch03/first_verse/first_verse.tscn",
+    "res://game/levels/prologue/prologue.tscn"
+  ],
   "_note_preset_tier": "M1-RND-22: an entry with \"preset_tier\" {system, tier} is staged only when the active preset selects that tier (system character: CharacterShaderTiers.tier_for_preset; undertow: the preset id; else the preset's \"tiers\" in graphics_presets.json). Untagged entries are staged on every preset. A preset change runs its own prewarm for the new tier.",
   "materials": [
     {

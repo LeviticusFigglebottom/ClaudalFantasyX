@@ -33,3 +33,10 @@
   - the full gate, re-approving every baseline after viewing;
   - CLAUDE.md §3 and docs/kb/tech/engine.md updated.
 - **Watch:** the Haluna entry against ADR 0029's 3 s, and any 4.7 shader-compile or pipeline-cache changes against M1-RND-28/29.
+
+## Update (2026-10-24, PC GPU, gpu/godot-472-port-check @ 41f4172a)
+The apparent Haluna regression on 4.7.2 (3.1 → 5.4 s) was an artefact: the runs being compared started from different cache states. With the same launch → title → Haluna sequence, the worker-thread instance is 1.06–1.74 s on 4.7.2 against 1.63–1.89 s on 4.6.3, and the main-thread steps cost the same. **The port has no known engine regression.** The variable costs on both engines are the cutscene cast's material load and worker-thread dressing contention (M2-ENV-05).
+
+## Update (2026-10-24, M1-QA-10 / M1-ARC-17): an engine race only 4.7 fixes
+M1-QA-10 traced the intermittent lavapipe capture abort to a **data race in Godot 4.6.3's RenderingDevice**. Background pipeline compiles read `vertex_formats` without the lock in `render_pipeline_create()`, which can produce an empty vertex layout ("vertex input location (0) not provided"), and then a segfault at shutdown. Godot 4.7 and master take the lock; the 4.6 branch never got the fix. It can hit real GPUs too, rarely.
+**Lead decision on M1-ARC-17:** no locally built 4.6.3 with the backport, because of its cost and the toolchain divergence. Accept the rare risk until this ADR's port, which brings the fix. Meanwhile, a gate failure with this signature (capture.sh now names the shot) is re-run once for that shot; never re-approve its baseline (docs/kb/qa/screenshots.md, "Engine race"). This raises the port's value; it stays scheduled for the first M3 task.
