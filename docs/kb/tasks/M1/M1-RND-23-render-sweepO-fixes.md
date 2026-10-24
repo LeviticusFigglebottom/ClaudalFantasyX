@@ -2,8 +2,8 @@
 id: M1-RND-23
 title: Rendering should-fixes left open on RND-15, RND-16, RND-18 and RND-20 (review-sweep-O)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a7c54615acb434f4e"
 depends_on: [M1-RND-15, M1-RND-16, M1-RND-18, M1-RND-20]
 milestone: M1
 request-from: "lead"
