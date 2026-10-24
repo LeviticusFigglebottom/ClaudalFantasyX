@@ -622,7 +622,7 @@ shape = SubResource("Shape_talk")
 [node name="Neme" type="Node3D" parent="NPCs"]
 
 [node name="Neme" type="StaticBody3D" parent="NPCs/Neme"]
-transform = Transform3D(0.3355, 0, 0.942, 0, 1, 0, -0.942, 0, 0.3355, -54.1, 1.86, -1.85)
+transform = Transform3D(0.3355, 0, -0.942, 0, 1, 0, 0.942, 0, 0.3355, -54.1, 1.86, -1.85)
 
 [node name="Shape" type="CollisionShape3D" parent="NPCs/Neme/Neme"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)

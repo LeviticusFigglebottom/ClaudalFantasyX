@@ -1,6 +1,6 @@
 {
   "shell_shrine": {
-    "doc": "The Shell Shrine trial (M2-FP-16; vertical_slice.md B07, haluna.md §3; logic in ShellShrineTrial). Water from the spring pours into `source_into`. Each basin pours out of one lip, which faces outlets[rotation]: another basin, `goal` (the inner pool), `drain` (the side pool's sluice) or `spill` (a floor grate, lost). An interaction turns a basin one step (90°) clockwise; rotation counts 0..steps-1. While the traced water reaches the goal, the inner pool fills over fill_sec and, once full, the chamber door floods open (it stays open). The first time water reaches the drain, the side pool empties for good and the net-float charm can be picked up. hint_scene plays once after hint_idle_sec with no turn. solution_moves is the band the shortest solution must sit in (checked by tools/tests/test_shell_shrine_trial.py). layout: greybox placement in metres for the level (x east, z south; the entrance is west, the door east).",
+    "doc": "The Shell Shrine trial (M2-FP-16; vertical_slice.md B07, haluna.md \u00a73; logic in ShellShrineTrial). Water from the spring pours into `source_into`. Each basin pours out of one lip, which faces outlets[rotation]: another basin, `goal` (the inner pool), `drain` (the side pool's sluice) or `spill` (a floor grate, lost). An interaction turns a basin one step (90\u00b0) clockwise; rotation counts 0..steps-1. While the traced water reaches the goal, the inner pool fills over fill_sec and, once full, the chamber door floods open (it stays open). The first time water reaches the drain, the side pool empties for good and the net-float charm can be picked up. hint_scene plays once after hint_idle_sec with no turn. solution_moves is the band the shortest solution must sit in (checked by tools/tests/test_shell_shrine_trial.py). layout: greybox placement in metres for the level (x east, z south; the entrance is west, the door east). greybox: the stand-in geometry until Environment's shrine kit (haluna.md \u00a73.2) exists: sizes in metres, colours as hex. inserts: the camera shots held for insert_sec when the water first reaches the pool (S04) and when the side pool drains (S05). The level's flags: drained_flag lets the charm be picked up, door_flag opens the way to Cutscene B.",
     "source_into": "b1",
     "goal": "inner_pool",
     "drain": "side_sluice",
@@ -10,22 +10,137 @@
     "fill_sec": 6.0,
     "hint_idle_sec": 90.0,
     "hint_scene": "ch03_trial_hint",
-    "solution_moves": [3, 8],
+    "solution_moves": [
+      3,
+      8
+    ],
     "basins": {
-      "b1": {"rotation": 0, "outlets": ["spill", "b2", "spill", "b3"]},
-      "b2": {"rotation": 0, "outlets": ["b3", "spill", "side_sluice", "spill"]},
-      "b3": {"rotation": 1, "outlets": ["spill", "b2", "spill", "inner_pool"]}
+      "b1": {
+        "rotation": 0,
+        "outlets": [
+          "spill",
+          "b2",
+          "spill",
+          "b3"
+        ]
+      },
+      "b2": {
+        "rotation": 0,
+        "outlets": [
+          "b3",
+          "spill",
+          "side_sluice",
+          "spill"
+        ]
+      },
+      "b3": {
+        "rotation": 1,
+        "outlets": [
+          "spill",
+          "b2",
+          "spill",
+          "inner_pool"
+        ]
+      }
     },
     "layout": {
-      "source": [-8.0, -3.0],
-      "b1": [-4.5, -3.0],
-      "b2": [-4.5, 3.0],
-      "b3": [1.5, 0.0],
-      "inner_pool": [7.5, 0.0],
-      "side_sluice": [-4.5, 6.0],
-      "side_pool": [-1.5, 8.0],
-      "door": [12.0, 0.0],
-      "spill_len_m": 1.6
+      "source": [
+        -8.0,
+        -3.0
+      ],
+      "b1": [
+        -4.5,
+        -3.0
+      ],
+      "b2": [
+        -4.5,
+        3.0
+      ],
+      "b3": [
+        1.5,
+        0.0
+      ],
+      "inner_pool": [
+        7.5,
+        0.0
+      ],
+      "side_sluice": [
+        -4.5,
+        6.0
+      ],
+      "side_pool": [
+        -1.5,
+        8.0
+      ],
+      "door": [
+        14.0,
+        0.0
+      ],
+      "spill_len_m": 1.6,
+      "spawn": [
+        -12.5,
+        0.0
+      ]
+    },
+    "drained_flag": "ch03_side_pool_drained",
+    "door_flag": "ch03_shrine_door_open",
+    "insert_sec": 2.5,
+    "door_sink_sec": 1.5,
+    "greybox": {
+      "floor": [
+        28.0,
+        20.0
+      ],
+      "wall_h": 4.0,
+      "wall_t": 0.6,
+      "entrance_w": 3.0,
+      "door_w": 3.0,
+      "basin_r": 1.1,
+      "basin_h": 0.9,
+      "lip": [
+        0.5,
+        0.15,
+        0.3
+      ],
+      "channel_w": 0.4,
+      "channel_h": 0.12,
+      "pool": [
+        6.0,
+        6.0
+      ],
+      "pool_low": 0.02,
+      "pool_high": 0.42,
+      "side_pool": [
+        3.0,
+        3.0
+      ],
+      "side_low": 0.02,
+      "door": [
+        0.6,
+        3.4,
+        3.0
+      ],
+      "door_sink": -3.6,
+      "charm_r": 0.08,
+      "colors": {
+        "stone": "#C9C1AE",
+        "basin": "#D8D0BC",
+        "lip": "#E9E4D8",
+        "channel": "#8F8A7C",
+        "water": "#3FD0C9",
+        "door": "#B8AE96",
+        "charm": "#CFE8E6"
+      },
+      "water_alpha": 0.7,
+      "water_emission": 0.6,
+      "side_high": 0.38,
+      "rim_h": 0.45,
+      "rim_t": 0.25,
+      "floor_t": 0.5,
+      "water_t": 0.02,
+      "basin_foot": 0.8,
+      "reach_m": 0.9,
+      "exit_depth_m": 1.8
     }
   }
 }

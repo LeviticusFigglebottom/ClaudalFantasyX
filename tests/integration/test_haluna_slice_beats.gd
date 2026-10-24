@@ -1,7 +1,7 @@
 extends TestCase
 ## M2-FP-13: Haluna's slice beats on the real zone. B02 Neme's table on the first arrival after the
 ## tideline win, B03's four "Cantor" fragments overheard on walk-past (Rhen keeps walking, nothing
-## else is blocked), and B05 Low tide at the causeway head before Cutscene B.
+## else is blocked), and B05 Low tide at the causeway head before the Shell Shrine trial.
 
 const ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
 const FRAGMENTS := {
@@ -105,7 +105,9 @@ func test_low_tide_plays_before_cutscene_b() -> void:
 	assert_true(&"toma" in speakers and &"asha" in speakers, "Toma and Asha at low tide")
 	assert_eq(hand_offs.size(), 1, "then the hand-off")
 	assert_eq(hand_offs[0][0], StringName(HalunaStory.KEY_CUTSCENE))
-	assert_eq(hand_offs[0][1], "res://game/levels/ch03/first_verse/first_verse.tscn")
+	assert_eq(
+		hand_offs[0][1], "res://game/levels/ch03/shell_shrine/shell_shrine.tscn", "the Shell Shrine trial (M2-FP-16)"
+	)
 	_done()
 
 
