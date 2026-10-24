@@ -24,6 +24,8 @@ model is checked against it. The pipeline that builds them is [`pipeline.md`](pi
    (released dead) or `glimmer_bound` (a Vowbound). A creature's **weak point** glows `spawn_wound` `#3FE0C8`, the
    swatch reserved for creature weak points, and the motes an Undertow-spawn sheds are `glimmer_held` `#7FC6D9`
    (sinking, seaward). A reef beast's own bioluminescence uses sea colours (`salt_glass`, `sea_glow`), never glimmer.
+   The one exception is a Lit Age construct: it is a machine, so what the Lit Age bound into it is `glimmer_bound`
+   (color_script.md rule 2), steady and unpulsing. The Cinder Matron's heart is the first case.
 4. **Undertow-spawn read at a glance** (SPEC §7.5): dark, wet, lacquer-black carapace (`lacquer_black` to
    `abyss_navy`, clearcoated) and drifting `spawn_wound` wounds. Reef beasts are sun-faded and dry-topped, with only a
    small `spawn_wound` weak point.
