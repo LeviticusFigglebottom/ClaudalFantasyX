@@ -39,3 +39,6 @@ M2-CMB-04 added the Vowbound engine rules (battle_ctb.md § Vowbound, ADR 0027):
 - **Shots:** new `battle_vowbound_call` and `battle_vowbound_out`. The other eight battle shots pass.
 
 ## Review log
+
+## Lead decision (2026-10-24)
+- **The Call row is hidden until a Vowbound is bound.** It should not appear greyed as "Call · None bound". Before Chapter 3 it would be a dead row that hints at a beat to come. "Silenced" and "Fallen" stay as greyed reasons, because they're tactical information. This is a one-line change in `BattleMenus.call_rows`; the next UI touch on the battle menu makes it, with a test.
