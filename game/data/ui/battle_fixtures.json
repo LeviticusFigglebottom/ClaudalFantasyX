@@ -1336,6 +1336,21 @@
     "vowbound": [
      "ilun"
     ]
+   },
+   "choreo_summon": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "vowbound": [
+     "ilun"
+    ]
    }
   }
  }

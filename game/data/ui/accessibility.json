@@ -20,7 +20,10 @@
        "label_key": "SET_BATTLE_SPEED", "help_key": "SET_BATTLE_SPEED_HELP"},
       {"id": "battle_animations", "type": "enum", "default": "full", "options": ["full", "skip"],
        "option_keys": ["SET_BATTLE_ANIMATIONS_FULL", "SET_BATTLE_ANIMATIONS_SKIP"],
-       "label_key": "SET_BATTLE_ANIMATIONS", "help_key": "SET_BATTLE_ANIMATIONS_HELP"}
+       "label_key": "SET_BATTLE_ANIMATIONS", "help_key": "SET_BATTLE_ANIMATIONS_HELP"},
+      {"id": "summon_cinematic", "type": "enum", "default": "full", "options": ["full", "short"],
+       "option_keys": ["SET_SUMMON_CINEMATIC_FULL", "SET_SUMMON_CINEMATIC_SHORT"],
+       "label_key": "SET_SUMMON_CINEMATIC", "help_key": "SET_SUMMON_CINEMATIC_HELP"}
     ],
     "palettes": {
       "standard": {},

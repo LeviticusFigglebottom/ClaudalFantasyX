@@ -117,6 +117,17 @@ class ChoreoValidateTest(unittest.TestCase):
         self.assertTrue(self._errs(lambda c: c["vowbound"]["return"].update(share=2)))
         self.assertTrue(self._errs(lambda c: c.update(vowbound=[])))
 
+    def test_summon_cinematic(self) -> None:
+        flags = vc.declared_flags((ROOT / vc.FLAGS_FILE).read_text(encoding="utf-8"))
+        self.assertIn("ch03_ilun_first_call_seen", flags)
+        self.assertEqual(vc.summon_errors(DOC, flags), [])
+        doc = copy.deepcopy(DOC)
+        doc["choreo"]["summon_cinematic"]["first_call_flags"]["ilun"] = "never_declared"
+        doc["choreo"]["summon_cinematic"]["hold_sec"] = -1
+        doc["choreo"]["summon_cinematic"]["entry"]["clip"] = "twirl"
+        doc["choreo"]["camera"]["shots"].pop("summon")
+        self.assertEqual(len(vc.summon_errors(doc, flags)), 4)
+
 
 class ArenaValidateTest(unittest.TestCase):
     DOC = json.loads((ROOT / vc.ARENAS_FILE).read_text(encoding="utf-8"))

@@ -41,6 +41,9 @@ const TOLL_FREEZE_AFTER_CONTACT_SEC := 0.75
 ## M2-BPR-04: Ilun rising at his slot after Asha's call, frozen at this share of the rise.
 const CHOREO_VOWBOUND_RISE := &"choreo_vowbound_rise"
 const RISE_FREEZE_SHARE := 0.5
+## M2-BPR-08: C10, Ilun's first call in full, frozen this far into its rise (the bound light up, the camera low).
+const CHOREO_SUMMON := &"choreo_summon"
+const SUMMON_FREEZE_SHARE := 0.7
 ## A Swell technique in a freeze-frame skips its input with this result (Rhen's three-flare ring).
 const SWELL_FREEZE_GRADES: Array[StringName] = [
 	SwellInput.GRADE_PERFECT, SwellInput.GRADE_GOOD, SwellInput.GRADE_PERFECT
@@ -134,6 +137,17 @@ static func play(ctl: BattleController, sid: StringName) -> void:
 			choreo.advance(
 				(-float(rise.get("t", 0.0)) + float(spec.get("sec", 0.0)) * RISE_FREEZE_SHARE) / choreo.speed
 			)
+		CHOREO_SUMMON:
+			_to_turn_of(ctl, CALLER_ID)
+			var choreo := _force_choreo(ctl)
+			choreo.summon.force_full = true
+			choreo.summon.live = false
+			ctl.vow.call_vowbound(VOWBOUND_ID)
+			var rise := choreo.entering(VOWBOUND_ID)
+			var spec := rise.get("spec", {}) as Dictionary
+			var t := (-float(rise.get("t", 0.0)) + float(spec.get("sec", 0.0)) * SUMMON_FREEZE_SHARE) / choreo.speed
+			choreo.advance(t)
+			choreo.summon.advance(t)
 		_:
 			if CHOREO_FREEZES.has(sid):
 				_freeze_action(ctl, CHOREO_FREEZES[sid] as Array)

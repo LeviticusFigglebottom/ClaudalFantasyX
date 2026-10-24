@@ -27,5 +27,6 @@ flags = {
 "ch02_tideline_won": "The first scripted battle on Haluna's tideline was won (first-playable thread).",
 "ch02_ate_at_nemes": "Ch2 B02 'Neme's table' has played (set by ch02_nemes_table, M2-FP-13): Rhen woke at noon at Neme's after the walk up from the beach.",
 "ch03_side_pool_drained": "Shell Shrine trial (M2-FP-16): water reached the side sluice and the side pool emptied, so the net-float charm can be picked up.",
-"ch03_shrine_door_open": "Shell Shrine trial (M2-FP-16): the inner pool filled and the chamber door flooded open (the way on to Cutscene B)."
+"ch03_shrine_door_open": "Shell Shrine trial (M2-FP-16): the inner pool filled and the chamber door flooded open (the way on to Cutscene B).",
+"ch03_ilun_first_call_seen": "Ilun's first call in battle (C10) has played in full; later calls play the short entry (M2-BPR-08)."
 }

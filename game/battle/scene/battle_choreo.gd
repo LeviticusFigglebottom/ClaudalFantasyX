@@ -65,6 +65,8 @@ var outro: BattleOutro
 var camera: BattleCameraDirector
 ## The Vowbound's call, entry, dismissal and fall (attached() builds it; M2-BPR-04).
 var vow: BattleVowboundChoreo
+## A Vowbound's first-call cinematic (C10; M2-BPR-08).
+var summon: BattleSummonCinematic
 ## A boss's set-piece motion (null without a boss row in choreo.json bosses; M2-BPR-04).
 var boss: BattleBossChoreo
 
@@ -118,6 +120,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	c.camera = BattleCameraDirector.attached(controller, c)
 	c.vow = BattleVowboundChoreo.new(c, engine)  # M2-BPR-04: listen-only, like the sequencer
 	c.boss = BattleBossChoreo.attached_if_boss(c, engine)
+	c.summon = BattleSummonCinematic.attached(c, controller, engine)  # M2-BPR-08: C10
 	return c
 
 
@@ -203,7 +206,7 @@ func busy_sec() -> float:
 	var left := 0.0
 	for e: Dictionary in _entering.values() + _leaving + _accents.values():
 		left = maxf(left, float((e["spec"] as Dictionary).get("sec", 0.0)) - float(e["t"]))
-	return left / speed
+	return maxf(left / speed, summon.remaining_sec() if summon != null else 0.0)
 
 
 ## Runs `cb` once the current sequence has finished (at once when none plays).
@@ -736,6 +739,19 @@ func enter(cid: StringName) -> void:
 		spec = data.get("enter", {}) as Dictionary
 	_entering[cid] = {"t": -float(spec.get("delay_sec", 0.0)), "spec": spec, "fwd": _facing(cid), "clip": false}
 	_advance_entering(0.0)
+
+
+## Ends `cid`'s entrance now: it stands on its mark (a skipped cinematic).
+func skip_entering(cid: StringName) -> void:
+	if _entering.has(cid):
+		var e: Dictionary = _entering[cid]
+		e["t"] = float((e["spec"] as Dictionary).get("sec", 0.0))
+		_advance_entering(0.0)
+
+
+## Where `cid` stands when the stage placed it, in its parent's space.
+func home_origin(cid: StringName) -> Vector3:
+	return _home_of(cid).origin
 
 
 func is_entering(cid: StringName) -> bool:

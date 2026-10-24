@@ -292,3 +292,40 @@ def arena_errors(doc: object, encounters: object, scene_exists) -> list[str]:
         if isinstance(r, dict) and "arena" in r and r["arena"] not in scenes:
             errs.append(f"{ENCOUNTERS_FILE}: {r.get('id')}.arena names an unknown arena '{r['arena']}'")
     return errs
+
+
+# --- M2-BPR-08: C10, the first-call cinematic (choreo.json summon_cinematic) ---------------------
+
+FLAGS_FILE = "game/data/flags.tres"
+
+
+def declared_flags(text: str) -> set[str]:
+    """Flag names declared in flags.tres (its `flags = { "name": "doc", ... }` dictionary)."""
+    import re
+
+    return set(re.findall(r'^"([a-z0-9_]+)":', text, re.M))
+
+
+def summon_errors(doc: object, flags: set[str]) -> list[str]:
+    """Problems in choreo.json summon_cinematic: its seen-flags declared, its numbers, its entry."""
+    c = doc.get("choreo", {}) if isinstance(doc, dict) else {}
+    s = c.get("summon_cinematic")
+    w = f"{CHOREO_FILE}: summon_cinematic"
+    if not isinstance(s, dict):
+        return [f"{w}: missing"]
+    errs: list[str] = []
+    fl = s.get("first_call_flags")
+    if not isinstance(fl, dict) or not fl:
+        errs.append(f"{w}.first_call_flags: needs at least one Vowbound -> flag")
+    else:
+        errs += [f"{w}.first_call_flags.{v}: flag '{f}' is not declared in {FLAGS_FILE}" for v, f in fl.items() if f not in flags]
+    for k in ("hold_sec", "light_energy", "light_at_sec", "light_in_sec", "light_range_m", "light_height_m",
+              "camera_in_sec", "camera_out_sec"):
+        if not _num(s.get(k)) or s[k] < 0:
+            errs.append(f"{w}.{k}: must be a number >= 0")
+    e = s.get("entry")
+    if not isinstance(e, dict) or any(not _num(e.get(k)) or e[k] < 0 for k in ENTRY_NUMS) or e.get("clip") not in CLIPS:
+        errs.append(f"{w}.entry: needs numbers >= 0 for {', '.join(ENTRY_NUMS)} and a contract clip")
+    if "summon" not in (c.get("camera", {}).get("shots", {}) if isinstance(c.get("camera"), dict) else {}):
+        errs.append(f"{CHOREO_FILE}: camera.shots needs the 'summon' shot")
+    return errs

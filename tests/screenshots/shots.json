@@ -806,6 +806,10 @@
       "scene": "res://game/battle/scene/shots/battle_choreo_vowbound_rise.tscn"
     },
     {
+      "id": "battle_choreo_summon",
+      "scene": "res://game/battle/scene/shots/battle_choreo_summon.tscn"
+    },
+    {
       "id": "bestiary_menu",
       "scene": "res://game/ui/bestiary/shots/bestiary_menu.tscn"
     },

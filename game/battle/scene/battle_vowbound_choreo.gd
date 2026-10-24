@@ -28,6 +28,13 @@ func _init(sequencer: BattleChoreo, battle: BattleEngine) -> void:
 
 func _on_called(vowbound: BattleCombatant) -> void:
 	_summoned[vowbound.id] = vowbound
+	if choreo.animating():  # pillar 4: the help line says what is happening, not the last menu preview
+		var ctl := choreo._ctl
+		var caller := engine.find(
+			StringName(str((engine.vowbound.rows.get(vowbound.id, {}) as Dictionary).get("caller", "")))
+		)
+		var who := ctl.menus.display_name(caller) if caller != null else ""
+		ctl.hud.set_help(tr("HUD_CALLS_FMT").format({"name": who, "vowbound": ctl.menus.display_name(vowbound)}))
 
 
 ## What fighter `cid` plays as the stage takes it off ({} = it goes at once).
@@ -52,6 +59,8 @@ func leave_spec(cid: StringName) -> Dictionary:
 func enter_spec(cid: StringName) -> Dictionary:
 	var vb := engine.vowbound
 	if vb.is_out() and vb.summon != null and vb.summon.id == cid:
+		if choreo.summon != null and choreo.summon.wants_full(cid):  # C10: the first call (M2-BPR-08)
+			return choreo.summon.begin(cid)
 		return cfg.get("entry", {}) as Dictionary
 	for vid: StringName in vb.rows:
 		var gone := choreo.leaving(vid)

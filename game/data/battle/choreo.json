@@ -119,7 +119,9 @@
                  "fov": 50.0},
         "finisher": {"anchor": "strike", "back_m": 2.2, "side_m": 2.8, "up_m": 1.2, "look_at": 0.75,
                      "look_up_m": 0.9, "fov": 50.0},
-        "push": {"anchor": "default", "push": 0.14, "look_at": 0.3, "look_up_m": 0.8}
+        "push": {"anchor": "default", "push": 0.14, "look_at": 0.3, "look_up_m": 0.8},
+        "summon": {"anchor": "target", "back_m": 4.2, "side_m": 2.6, "up_m": 0.35, "look_at": 1.0, "look_up_m": 1.6,
+                   "fov": 46.0}
       },
       "by_style": {
         "melee": {"lead": "actor", "contact": "target"},
@@ -137,6 +139,21 @@
         "toll": {"lead": "push", "contact": ""}
       },
       "enemy": {"lead": "push", "contact": ""}
+    },
+    "summon_cinematic": {
+      "doc": "M2-BPR-08 C10, BattleSummonCinematic: a Vowbound's first call in a live story battle (first_call_flags: its seen-flag, declared in flags.tres) with UiSettings summon_cinematic 'full'. entry replaces vowbound.entry: the water stills for delay_sec after the party steps off, then the Vowbound rises depth_m over sec, tipped lean_deg; hold_sec more after it stands. Bound light (color script C10: glimmer_bound, steady): an OmniLight3D light_height_m above its slot, light_energy reached over light_in_sec from light_at_sec, light_range_m. Camera: the 'summon' shot (camera.shots), in over camera_in_sec, back to the default over the last camera_out_sec.",
+      "first_call_flags": {"ilun": "ch03_ilun_first_call_seen"},
+      "entry": {"delay_sec": 1.4, "sec": 2.6, "back_m": 0.0, "depth_m": 2.6, "lean_deg": 6.0, "clip": "ready"},
+      "hold_sec": 0.9,
+      "light_color": "#4FB3B0",
+      "light_energy": 1.2,
+      "light_at_sec": 1.2,
+      "light_in_sec": 1.6,
+      "light_range_m": 4.5,
+      "light_height_m": 1.4,
+      "camera_in_sec": 1.6,
+      "camera_out_sec": 0.9,
+      "swatches": {"light_color": "glimmer_bound"}
     }
   }
 }

@@ -16,7 +16,7 @@ func before_each() -> void:
 func test_defaults_come_from_the_data_file() -> void:
 	var s := UiSettings.new()
 	var ids: Array[StringName] = [&"reduced_motion", &"text_scale", &"palette", &"timing_assist"]
-	ids.append_array([&"battle_speed", &"battle_animations"] as Array[StringName])  # M2-BPR-03
+	ids.append_array([&"battle_speed", &"battle_animations", &"summon_cinematic"] as Array[StringName])  # M2-BPR-03/08
 	assert_eq(s.settings(), ids)
 	assert_false(s.reduced_motion())
 	assert_eq(s.text_scale(), 1.0)

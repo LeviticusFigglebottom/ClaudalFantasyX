@@ -382,3 +382,23 @@ moments with no combat state changed, the call (step-off, the caller's beat, Ilu
 dismissal (the sink, the party walking back in slot order), the fall (the blow, then drawn under), instant at
 pacing 0, and the three capture states. `tools/tests/test_choreo_validate.py` covers the new fields and blocks
 (`tools/validate_choreo.py`).
+
+## Ilun's first call: C10 (M2-BPR-08)
+
+The slice's one Vowbound and its first call must be unmissable (vertical_slice.md B10, C10). **`BattleSummonCinematic`**
+(`game/battle/scene/battle_summon_cinematic.gd`), attached by `BattleChoreo.attached`, gives the Vowbound's entrance
+when `BattleVowboundChoreo.enter_spec` asks:
+- **When:** the first call of each Vowbound in a live story battle (its `first_call_flags` seen-flag,
+  `ch03_ilun_first_call_seen`, is unset; the cinematic sets it), with the accessibility setting **Summon
+  cinematic** on Full (the default). Short, a capture fixture, instant pacing and "skip animations" play the short
+  entry (`vowbound.entry`), and so does every later call.
+- **What:** the water stills (`entry.delay_sec` 1.4 s after the party steps off), Ilun rises slowly (2.6 s), and a
+  steady bound light (`glimmer_bound`, color script C10: no flicker, no drift, no trails) fades in at his slot and
+  stays while he is out. The camera eases to the low `summon` frame (camera.shots), holds, and is back on the
+  default by the end (`hold_sec` after he stands). Reduced motion keeps the camera on the default. Nothing flashes.
+- **Skip:** confirm or cancel ends it; Ilun stands on his mark. The controller's hand-off waits for it
+  (`BattleChoreo.busy_sec` includes it).
+- **The help line** says "Asha calls Ilun." while any call plays (pillar 4), not the last menu preview.
+- **Shot:** `battle_choreo_summon` (the capture forces the full version). Checked by `validate_choreo.summon_errors`
+  (the flag declared, the numbers, the `summon` shot).
+- **Not here:** a line for Ilun or Asha (Narrative has none for C10 yet) and his face (save it for the model).
