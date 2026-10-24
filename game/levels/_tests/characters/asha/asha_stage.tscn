@@ -93,7 +93,7 @@ materials = {
 "staff_wood": ExtResource("m_staff_wood"),
 "brass": ExtResource("m_brass")
 }
-face_poses_path = "res://game/levels/_tests/characters/asha/asha_face_poses.json"
+face_poses_path = "res://game/data/cutscene/asha_face_poses.json"
 wind = Vector4(2.4, 0, 1.2, 0.3)
 wind_time = 1.7
 
