@@ -141,7 +141,7 @@ func refresh_ko(engine: BattleEngine) -> void:
 		f.set_stone(
 			c.is_petrified(), Color.html(str(stone.get("color", "#FFFFFF"))), float(stone.get("roughness", 1.0))
 		)
-		var ko := c.hp <= 0 or c.yielded  # a foe that yielded or ran has left the fight
+		var ko := c.hp <= 0
 		var alpha := float(cfg.get("ko_alpha", 1.0))
 		if engine.enemies.has(c):  # a fallen foe fades out and is hidden (M2-BPR-11); the party stays to be revived
 			alpha = float(cfg.get("foe_ko_alpha", alpha))
