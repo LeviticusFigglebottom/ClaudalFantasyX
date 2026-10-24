@@ -12,8 +12,8 @@ dest_files=["res://.godot/imported/haluna_night.ogg-f81c212147b6cecc3f70a29756a6
 
 [params]
 
-loop=false
-loop_offset=0
-bpm=0
-beat_count=0
-bar_beats=4
+loop=true
+loop_offset=0.0
+bpm=69.0
+beat_count=96
+bar_beats=2

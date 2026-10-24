@@ -27,8 +27,9 @@ class AudioLoudnessTest(unittest.TestCase):
     def _decode(self, p: Path) -> np.ndarray:
         """The decoded file; a mono file (both channels equal) as mono, so it measures as its own target says."""
         if p not in self.decoded:
+            # ffmpeg upmixes mono at -3 dB per channel, so a mono file is decoded again as mono.
             y = read_audio(str(p), channels=2)
-            self.decoded[p] = y[:, 0].copy() if np.array_equal(y[:, 0], y[:, 1]) else y
+            self.decoded[p] = read_audio(str(p), channels=1) if np.array_equal(y[:, 0], y[:, 1]) else y
         return self.decoded[p]
 
     def test_every_file_has_a_target(self) -> None:
