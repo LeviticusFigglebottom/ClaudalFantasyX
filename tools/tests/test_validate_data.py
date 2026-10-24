@@ -1,26 +1,18 @@
 """Unit tests for tools/validate_data.py. Run: python3 -m unittest discover -s tools/tests"""
 import shutil
 import sys
-import tempfile
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
 import validate_data as vd  # noqa: E402
+from tree_mirror import scratch_repo  # noqa: E402
 
 
 class ValidatorTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.tmp = Path(tempfile.mkdtemp())
-        for rel in ("game", "assets", "tools/banned_terms.txt", "docs/kb/glossary.md"):
-            src = ROOT / rel
-            dst = self.tmp / rel
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            if src.is_dir():
-                shutil.copytree(src, dst)
-            elif src.exists():
-                shutil.copy(src, dst)
+        self.tmp = scratch_repo("validate_data_")  # game/ copied, assets/ symlinked, in RAM (M2-NIT-06)
 
     def tearDown(self) -> None:
         shutil.rmtree(self.tmp)

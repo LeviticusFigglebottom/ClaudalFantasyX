@@ -14,8 +14,9 @@
     },
     "prologue": {
       "scene_id": "prologue_dead_city",
-      "next_location": "ch01/oruvel_underway",
-      "next_spawn": "Drop"
+      "_next_note": "The M2 review switch (Lead, 2026-10-24): the slice route, ch02/haluna at Beach, until the human signs off the M2 review; then Act I, ch01/oruvel_underway at Drop (M3-C01-02), together with end_card.next_location. The debug chapter select (F8) reaches Ch1 meanwhile.",
+      "next_location": "ch02/haluna",
+      "next_spawn": "Beach"
     },
     "end_card": {
       "return_scene": "res://game/core/boot.tscn",
