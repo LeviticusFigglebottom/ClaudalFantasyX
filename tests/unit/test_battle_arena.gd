@@ -1,10 +1,25 @@
 extends TestCase
 ## M2-BPR-07: per-encounter arenas. Data names real encounters and scenes; a story encounter's arena replaces the
 ## sandbox's WorldEnvironment, Sun and Arena (keeping Arena/Sea for the flood rig); the sandbox and the capture
-## fixtures keep the sandbox's own arena; a retry keeps the arena it has.
+## fixtures keep the sandbox's own arena; a retry keeps the arena it has. M3-BPR-01: every arena keeps the scene
+## contract, and every Act I encounter names one.
 
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const PARTY: Array[StringName] = [&"rhen", &"asha"]
+## Arenas with no open water in view, so no Sea.
+const DRY_ARENAS: Array[String] = ["underway_tower", "ash_terrace_lanternfall"]
+## Spot checks of the Act I mapping (M3-BPR-01's table); every row with one of ACT_ONE_PREFIXES is checked too.
+const ACT_ONE := {
+	&"ch01_wickfry": &"underway_tower",
+	&"ch01_oil_slug": &"underway_tower",
+	&"ch01_underway_limpet": &"underway_tower",
+	&"ch01_scuttlers": &"oruvel_raft_morning",
+	&"ch01_hullgnaw": &"oruvel_raft_morning",
+	&"ch03_causeway_shore": &"causeway_route_afternoon",
+	&"ch04_spar_wraith": &"derelict_deck_night",
+	&"ch05_cinder_matron": &"ash_terrace_lanternfall",
+}
+const ACT_ONE_PREFIXES: Array[String] = ["ch01_", "ch03_", "ch04_", "ch05_"]
 
 var ctl: BattleController
 
@@ -21,13 +36,47 @@ func before_each() -> void:
 func test_data_names_real_encounters_and_scenes() -> void:
 	var db := BattleDB.load_default()
 	for enc: StringName in [&"ch02_tideline", &"drownbell"]:
-		var path := BattleArena.scene_for(db, enc)
-		assert_true(ResourceLoader.exists(path), "%s has an arena scene" % enc)
-		var arena := (load(path) as PackedScene).instantiate()
-		for n in ["WorldEnvironment", "Sun", "Sea"]:
-			assert_true(arena.get_node_or_null(NodePath(n)) != null, "%s has %s" % [path, n])
-		arena.free()
+		assert_true(ResourceLoader.exists(BattleArena.scene_for(db, enc)), "%s has an arena scene" % enc)
 	assert_eq(BattleArena.scene_for(db, &"sandbox_reef"), "", "the sandbox keeps its own arena")
+	_free()
+
+
+## M3-BPR-01: every arena scene loads and keeps the contract (a WorldEnvironment, a DirectionalLight3D Sun, and a
+## Sea where the place has open water).
+func test_every_arena_scene_keeps_the_contract() -> void:
+	var scenes := BattleArena.data().get("scenes", {}) as Dictionary
+	assert_true(scenes.size() >= 7, "the two slice arenas and the five Act I ones")
+	for id: String in scenes:
+		var path := BattleArena.scene_of(id)
+		assert_true(ResourceLoader.exists(path), "%s: %s exists" % [id, path])
+		var arena := (load(path) as PackedScene).instantiate()
+		assert_true(arena.get_node_or_null(^"WorldEnvironment") is WorldEnvironment, "%s has a WorldEnvironment" % id)
+		assert_true(arena.get_node_or_null(^"Sun") is DirectionalLight3D, "%s has a Sun" % id)
+		var has_sea := arena.get_node_or_null(^"Sea") != null
+		assert_eq(has_sea, not DRY_ARENAS.has(id), "%s: a Sea only over open water" % id)
+		arena.free()
+	_free()
+
+
+## M3-BPR-01: every Act I story encounter fights in an arena (the task table; the Underway fights underwater).
+func test_act_one_encounters_have_arenas() -> void:
+	var db := BattleDB.load_default()
+	for enc: StringName in ACT_ONE:
+		assert_eq(BattleArena.scene_for(db, enc), BattleArena.scene_of(String(ACT_ONE[enc])), "%s's arena" % enc)
+	for key: Variant in db.encounters:
+		var enc := String(key)
+		if ACT_ONE_PREFIXES.any(func(p: String) -> bool: return enc.begins_with(p)):
+			assert_ne(BattleArena.scene_for(db, StringName(enc)), "", "%s fights in an arena" % enc)
+	_free()
+
+
+func test_an_arena_without_a_sea_applies() -> void:
+	var empty: Array[StringName] = []
+	ctl.start_battle(PARTY, empty, &"ch01_wickfry", 7)
+	assert_eq(str(ctl.get_meta(BattleArena.META_ARENA, "")), BattleArena.scene_of("underway_tower"))
+	assert_true(ctl.get_node_or_null(^"Arena/OilLamp") is OmniLight3D, "the lamp came with the arena")
+	assert_true(ctl.get_node_or_null(^"Arena/Sea") == null, "no sea in the drowned tower")
+	assert_eq(ctl.get_children().filter(func(n: Node) -> bool: return n.name == &"Sun").size(), 1, "one sun")
 	_free()
 
 
