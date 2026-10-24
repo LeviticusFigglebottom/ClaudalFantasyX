@@ -18,6 +18,8 @@ const REDUCED_MOTION := &"reduced_motion"
 const TEXT_SCALE := &"text_scale"
 const PALETTE := &"palette"
 const TIMING_ASSIST := &"timing_assist"
+const TEXT_SPEED := &"text_speed"
+const DIALOGUE_BACKING := &"dialogue_backing"
 const KIND_BOOL := "bool"
 const KIND_ENUM := "enum"
 const PALETTE_STANDARD := &"standard"
@@ -139,6 +141,20 @@ func palette() -> StringName:
 
 func timing_assist() -> StringName:
 	return StringName(str(get_value(TIMING_ASSIST)))
+
+
+## The dialogue reveal speed for this text_speed (M2-UI-12): `default_cps` times the option's
+## multiplier (accessibility.json "text_speeds"), clamped to [min_cps, max_cps]; 0 = instant.
+func dialogue_chars_per_sec(default_cps: float, min_cps: float, max_cps: float) -> float:
+	var k := float((data.get("text_speeds", {}) as Dictionary).get(str(get_value(TEXT_SPEED)), 1.0))
+	if k <= 0.0:
+		return 0.0
+	return clampf(default_cps * k, min_cps, max_cps)
+
+
+## The alpha of the band behind dialogue and cutscene lines (M2-UI-12; 0 = no band).
+func dialogue_backing_alpha() -> float:
+	return float((data.get("dialogue_backings", {}) as Dictionary).get(str(get_value(DIALOGUE_BACKING)), 0.0))
 
 
 ## The short on-screen tag of the timing assist in force (its "tag_key"; "" when it is off).

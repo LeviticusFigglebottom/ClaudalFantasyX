@@ -15,7 +15,13 @@ func before_each() -> void:
 
 func test_defaults_come_from_the_data_file() -> void:
 	var s := UiSettings.new()
-	assert_eq(s.settings(), [&"reduced_motion", &"text_scale", &"palette", &"timing_assist"] as Array[StringName])
+	assert_eq(
+		s.settings(),
+		(
+			[&"reduced_motion", &"text_scale", &"palette", &"timing_assist", &"text_speed", &"dialogue_backing"]
+			as Array[StringName]
+		)
+	)
 	assert_false(s.reduced_motion())
 	assert_eq(s.text_scale(), 1.0)
 	assert_eq(s.palette(), &"standard")

@@ -14,8 +14,22 @@
       {"id": "timing_assist", "type": "enum", "default": "off", "options": ["off", "wide", "auto", "hold"],
        "option_keys": ["SET_TIMING_ASSIST_OFF", "SET_TIMING_ASSIST_WIDE", "SET_TIMING_ASSIST_AUTO",
                        "SET_TIMING_ASSIST_HOLD"],
-       "label_key": "SET_TIMING_ASSIST", "help_key": "SET_TIMING_ASSIST_HELP"}
+       "label_key": "SET_TIMING_ASSIST", "help_key": "SET_TIMING_ASSIST_HELP"},
+      {"id": "text_speed", "type": "enum", "default": "normal", "options": ["slow", "normal", "fast", "instant"],
+       "option_keys": ["SET_TEXT_SPEED_SLOW", "SET_TEXT_SPEED_NORMAL", "SET_TEXT_SPEED_FAST", "SET_TEXT_SPEED_INSTANT"],
+       "label_key": "SET_TEXT_SPEED", "help_key": "SET_TEXT_SPEED_HELP"},
+      {"id": "dialogue_backing", "type": "enum", "default": "soft", "options": ["off", "soft", "solid"],
+       "option_keys": ["SET_BACKING_OFF", "SET_BACKING_SOFT", "SET_BACKING_SOLID"],
+       "label_key": "SET_BACKING", "help_key": "SET_BACKING_HELP"}
     ],
+    "text_speeds": {
+      "doc": "M2-UI-12: text_speed option -> multiplier of the dialogue box's default chars_per_sec (text_box.json), clamped to its min/max; 0 = instant (the box shows the whole line at once).",
+      "slow": 0.6, "normal": 1.0, "fast": 1.8, "instant": 0.0
+    },
+    "dialogue_backings": {
+      "doc": "M2-UI-12: dialogue_backing option -> the alpha of the panel_low band behind dialogue and cutscene lines (0 = none).",
+      "off": 0.0, "soft": 0.45, "solid": 0.85
+    },
     "palettes": {
       "standard": {},
       "colorblind": {"danger": ["#F08A24", 1.0], "enemy_chip": ["#2A2414", 0.85]}

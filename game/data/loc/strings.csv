@@ -690,3 +690,14 @@ INN_ERR_CLOSED,The door is barred. No rooms for now.
 INN_ERR_NO_FUNDS_FMT,"Not enough lume: a rest costs {price}, and the purse holds {purse}."
 SET_TIMING_ASSIST_HOLD,Hold Confirm to play
 HUD_SWELL_ASSIST_HOLD,Assist: hold Confirm to play
+SET_TEXT_SPEED,Text speed
+SET_TEXT_SPEED_HELP,How fast dialogue and cutscene lines appear. Instant shows each line whole.
+SET_TEXT_SPEED_SLOW,Slow
+SET_TEXT_SPEED_NORMAL,Normal
+SET_TEXT_SPEED_FAST,Fast
+SET_TEXT_SPEED_INSTANT,Instant
+SET_BACKING,Subtitle backing
+SET_BACKING_HELP,A dark band behind dialogue and cutscene lines so they stay readable over bright scenes.
+SET_BACKING_OFF,Off
+SET_BACKING_SOFT,Soft
+SET_BACKING_SOLID,Solid
