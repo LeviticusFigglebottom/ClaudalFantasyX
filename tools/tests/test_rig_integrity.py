@@ -160,7 +160,7 @@ class _HeroGuards:
     def test_poses_sampled(self):
         cfg, result, _ = run_probe(self.hero)
         clips = {p.split("@")[0] for p in result["poses"] if "@" in p}
-        self.assertEqual(clips, set(hero_clips.CLIPS[self.hero]))
+        self.assertEqual(clips, set(rig_probe.clip_names(self.hero)))
         self.assertIn("rest", result["poses"])
         for label in cfg["stage_poses"]:
             self.assertIn(label, result["poses"])
@@ -220,6 +220,24 @@ class TestRigIntegritySefir(_HeroGuards, unittest.TestCase):
 
 class TestRigIntegrityYsolde(_HeroGuards, unittest.TestCase):
     hero = "ysolde"
+
+
+# M3-CHR-03: villager builds with a `"villager": true` entry in rig_checks.json (GLB under assets/characters/villagers/,
+# clips from villager_clips.py)
+class TestRigIntegrityTavi(_HeroGuards, unittest.TestCase):
+    hero = "tavi"
+
+
+class TestRigIntegrityKell(_HeroGuards, unittest.TestCase):
+    hero = "kell"
+
+
+class TestVillagerProbeWiring(unittest.TestCase):
+    def test_villagers_read_their_own_glb_and_clips(self):
+        self.assertEqual(rig_probe.villagers(), ["kell", "tavi"])
+        self.assertIn("villagers/kell/kell.glb", rig_probe.hero_glb("kell").as_posix())
+        self.assertIn("press_wick", rig_probe.clip_names("kell"))
+        self.assertEqual(rig_probe.hero_glb("asha").parent.name, "asha")  # heroes unchanged
 
 
 if __name__ == "__main__":

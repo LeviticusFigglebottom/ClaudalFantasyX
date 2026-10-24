@@ -7,7 +7,8 @@
              "res://assets/characters/villagers/child/", "res://assets/characters/villagers/vendor/",
              "res://assets/characters/villagers/reed/", "res://assets/characters/villagers/netmender/",
              "res://assets/characters/villagers/fisher/", "res://assets/characters/sefir/",
-             "res://assets/characters/ysolde/"],
+             "res://assets/characters/ysolde/", "res://assets/characters/villagers/tavi/",
+             "res://assets/characters/villagers/kell/", "res://assets/characters/props/wick/"],
   "adoption_pending": {},
   "generate_lods": true,
   "materials": {

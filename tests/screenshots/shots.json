@@ -1181,6 +1181,96 @@
       "settle_frames": 30
     },
     {
+      "id": "villager_tavi_front",
+      "scene": "res://game/levels/_tests/characters/villagers/tavi_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tavi_face",
+      "scene": "res://game/levels/_tests/characters/villagers/tavi_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_kell_front",
+      "scene": "res://game/levels/_tests/characters/villagers/kell_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_kell_face",
+      "scene": "res://game/levels/_tests/characters/villagers/kell_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tavi_idle",
+      "scene": "res://game/levels/_tests/characters/villagers/tavi_idle.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_kell_idle",
+      "scene": "res://game/levels/_tests/characters/villagers/kell_idle.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tavi_clip_name_rite",
+      "scene": "res://game/levels/_tests/characters/villagers/tavi_name_rite.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_kell_clip_press_wick",
+      "scene": "res://game/levels/_tests/characters/villagers/kell_press_wick.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_lineup_act1",
+      "scene": "res://game/levels/_tests/characters/villagers/villagers_lineup_act1.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "battle_swell_ring",
       "scene": "res://game/battle/scene/shots/battle_swell_ring.tscn"
     },

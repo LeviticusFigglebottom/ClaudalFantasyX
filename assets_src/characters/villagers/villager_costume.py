@@ -58,6 +58,8 @@ TROUSER_OFF = 0.009
 APRON_EXTRA = 0.008  # over the skirt
 WRAP_OFF = 0.0055
 TOP_MARGIN = 0.012  # m at S = 1: body hidden this far inside the top's neckline and armholes
+ARMHOLE_DROP = 0.085  # m at S = 1 below the shoulder joint: a sleeveless top's armhole (the M2-CHR-03 default)
+KEEP_ABOVE_KNEE = 0.16  # m at S = 1 of thigh kept above the knee under a skirt with keep_legs (asha_costume's)
 HEADWRAP_OFF = 0.010  # over the scalp (hair is flattened under the wrap)
 HEADWRAP_EDGE = 0.006  # extra roll at the edge
 BACK_BULGE = 2.6  # x puff: the hair bundled inside the wrap fills it out behind
@@ -113,7 +115,9 @@ def top_line(lm, chart: TorsoChart, th_deg: np.ndarray, top: dict) -> np.ndarray
     v = float(lm.P("notch")[2] - float(top.get("neck_v_m", 0.06)) * S)
     if float(top.get("sleeve", 0.0)) > 0.0:
         return RC._sym_interp(th_deg, [0, 12, 30, 60, 180], [v, v + 0.03 * S, neck - 0.012 * S, neck, neck])
-    arm = float(lm.P("shoulder")[2] - 0.085 * S)
+    # `armhole_drop_m` below the shoulder joint (M3-CHR-03: 0.115 as M1-CHR-14's vest and tunic; 0.085 sits at the
+    # armpit, where a lowered arm cuts it)
+    arm = float(lm.P("shoulder")[2] - float(top.get("armhole_drop_m", ARMHOLE_DROP)) * S)
     strap = chart.z_sh + math.radians(24) * chart.k
     return RC._sym_interp(th_deg, [0, 12, 28, 50, 74, 92, 112, 132, 150, 180],
                           [v, v + 0.025 * S, neck - 0.015 * S, strap, arm, arm, strap, neck, neck, neck])
@@ -356,8 +360,10 @@ def build_costume(body, params: dict) -> dict[str, Part]:
     return out
 
 
-def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
-    """True for body vertices hidden under opaque clothing (with a margin), asha.md §8.1."""
+def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray, keep_legs: bool = False) -> np.ndarray:
+    """True for body vertices hidden under opaque clothing (with a margin), asha.md §8.1. `keep_legs` (M1-CHR-14,
+    the `garment_fit` builds): the knees and shins stay under a skirt, so a stride or a reach that carries a leg out
+    through the cloth shows a whole leg, not a hole."""
     lm = body.lm
     S = lm.S
     chart = TorsoChart(lm)
@@ -371,7 +377,8 @@ def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
     top = params.get("top")
     if top:
         hem = hem_z(lm, top.get("hem", "hip"))
-        under = torso & (H < top_line(lm, chart, th_deg, top) - TOP_MARGIN * S) & (V[:, 2] > hem + m)
+        margin = float(top.get("cover_margin_m", TOP_MARGIN))  # M3-CHR-03: deeper armholes want a wider margin
+        under = torso & (H < top_line(lm, chart, th_deg, top) - margin * S) & (V[:, 2] > hem + m)
         od = float(top.get("open_deg", 0.0))
         if od > 0.0:
             a = np.abs(((th_deg + 180.0) % 360.0) - 180.0)
@@ -394,7 +401,11 @@ def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
     sk = params.get("skirt")
     if sk:
         hem = hem_z(lm, sk.get("hem", "ankle"))
-        hidden |= legs & (V[:, 2] < z_waist - 0.02 * S - 0.5 * m) & (V[:, 2] > hem + 0.045 * S)
+        lo = hem + 0.045 * S
+        if keep_legs:
+            keep = float(sk.get("keep_above_knee_m", KEEP_ABOVE_KNEE))
+            lo = max(lo, max(float(lm.side_pt("knee", sd)[2]) for sd in ("L", "R")) + keep * S)
+        hidden |= legs & (V[:, 2] < z_waist - 0.02 * S - 0.5 * m) & (V[:, 2] > lo)
     wr = params.get("wraps")
     if wr:
         w0, w1 = (float(x) for x in wr["span"])

@@ -24,7 +24,9 @@ STAGE = ROOT / "game" / "levels" / "_tests" / "characters" / "villagers"
 for sub in ("villagers", "toma", "rhen", "asha", "base_body"):
     sys.path.insert(0, str(ROOT / "assets_src" / "characters" / sub))
 
-NPCS = ["neme", "osu", "child", "vendor", "reed", "netmender", "fisher"]
+NPCS = ["neme", "osu", "child", "vendor", "reed", "netmender", "fisher", "tavi", "kell"]
+M2_SEVEN = NPCS[:7]  # M2-CHR-03; tavi and kell are M3-CHR-03 (params opt-ins, per-NPC clips)
+PROPS = ROOT / "assets" / "characters" / "props" / "wick"
 MAX_BYTES = 5 * 1024 * 1024  # ADR 0005 plain-blob cap
 GLB_MAX = 3 * 1024 * 1024  # M2-CHR-03: "well under" the cap
 LOD0_RANGE = (20_000, 36_000)  # the NPC budget, about 25-35k
@@ -89,6 +91,31 @@ class TestParams(unittest.TestCase):
                 self.assertIn(hp["kind"], ("short", "cropped", "bun", "wrap"))
                 st = villager_hair.style(hp)
                 self.assertIn(st.table, villager_hair.HAIRLINES.values())
+
+    def test_m3_opt_ins_only_on_the_new_villagers(self):
+        # M3-CHR-03: host_snaps / garment_fit change the build, so the M2 seven never carry them (byte-identical)
+        for npc in NPCS:
+            with self.subTest(npc=npc):
+                b = params(npc)["_build"]
+                on = npc not in M2_SEVEN
+                self.assertEqual(bool(b.get("host_snaps")), on)
+                self.assertEqual(bool(b.get("garment_fit")), on)
+
+    def test_kell_and_tavi_follow_the_sheet(self):
+        # act1_npcs.md §3-§4: Kell is short with a female short crop and nearly bare arms; Tavi has her nose and iris;
+        # Tavi's sleeveless top has M1-CHR-14's armhole drop; Kell's skirt is calf length, not ankle
+        import villager_hair
+
+        k, t = params("kell"), params("tavi")
+        self.assertEqual((k["_hair"]["kind"], k["_hair"]["hairline"]), ("short", "female"))
+        self.assertIs(villager_hair.style(k["_hair"]).table, villager_hair.HAIRLINES["female"])
+        self.assertEqual(k["_skin"]["reach_bands"], {"L": 2, "R": 1})
+        self.assertEqual(k["_costume"]["skirt"]["hem"], "calf")
+        self.assertGreater(k["_skin"]["fingertip_oil"], 0.0)
+        self.assertEqual(k["nose_bridge_width"], t["nose_bridge_width"])
+        self.assertEqual(k["_eyes"]["iris"], t["_eyes"]["iris"])
+        self.assertGreaterEqual(t["_costume"]["top"]["armhole_drop_m"], 0.115)
+        self.assertNotIn("headwrap", k["_costume"])  # no wrap: she must not read as Osu
 
     def test_the_child_has_child_proportions(self):
         p = params("child")
@@ -220,6 +247,19 @@ class TestClips(unittest.TestCase):
                 for clip in ("idle", "talk", "walk"):
                     self.assertIn(f'resource_name = &"{clip}"', path.read_text(encoding="utf-8"))
 
+    def test_scene_clips_per_villager(self):
+        # M3-CHR-03: Tavi's and Kell's scene clips (act1_npcs.md §3.5, §4.6); the M2 seven keep exactly three
+        import villager_clips
+
+        want = {"tavi": ["hand_on_shoulder", "hear_news", "name_rite"],
+                "kell": ["press_wick", "trim_wick", "haggle_laugh"]}
+        for npc in NPCS:
+            with self.subTest(npc=npc):
+                text = villager_clips.out_path(npc).read_text(encoding="utf-8")
+                self.assertEqual(villager_clips.clips_for(npc), ["idle", "talk", "walk"] + want.get(npc, []))
+                self.assertEqual(text.count('[sub_resource type="Animation"'), 3 + len(want.get(npc, [])))
+        self.assertIn("trim_wick", villager_clips.EXTRA_LOOPS)
+
     def test_every_villager_has_a_persona(self):
         for npc in NPCS:
             with self.subTest(npc=npc):
@@ -258,6 +298,43 @@ class TestWiring(unittest.TestCase):
         for npc in NPCS:
             self.assertIn(f"assets/characters/villagers/{npc}/", text)
         self.assertIn("assets/characters/villagers/textures/", text)
+        self.assertIn("assets/characters/props/wick/", text)
+
+
+class TestWickProps(unittest.TestCase):
+    """M3-CHR-03: one wick source (assets_src/characters/props/wick.py) for Kell's hand, her bundle, Rhen's tin and the
+    E7 lamp (act1_npcs.md §4.4)."""
+
+    def test_props_job_outputs_and_import(self):
+        jobs = {j["id"]: j for j in json.loads((ROOT / "tools/dev/blender_builds.json").read_text())["jobs"]}
+        job = jobs["props_wick"]
+        self.assertEqual(job["threads"], 4)
+        self.assertIn("assets_src/characters/props/wick.py", job["sources"])
+        rules = json.loads((ROOT / "game/data/import/characters.json").read_text(encoding="utf-8"))
+        self.assertIn("res://assets/characters/props/wick/", rules["assets"])
+        for stem in ("wick", "wick_bundle", "trimming_shears"):
+            with self.subTest(prop=stem):
+                glb = PROPS / f"{stem}.glb"
+                self.assertLess(glb.stat().st_size, 512 * 1024)
+                js = glb_json(glb)
+                self.assertLess(tris(js), 4000)
+                for m in js["materials"]:
+                    self.assertTrue((PROPS / "materials" / f"{m['name']}.tres").exists(), m["name"])
+                self.assertIn("characters_post_import.gd", (PROPS / f"{stem}.glb.import").read_text())
+
+    def test_the_wick_is_nine_centimetres(self):
+        import numpy as np
+
+        sys.path.insert(0, str(ROOT / "assets_src" / "characters" / "asha"))
+        import asha_glb
+
+        js, bin_ = asha_glb.read_glb(PROPS / "wick.glb")
+        P = asha_glb.accessor(js, bin_, js["meshes"][0]["primitives"][0]["attributes"]["POSITION"])
+        for prim in js["meshes"][0]["primitives"][1:]:
+            P = np.concatenate([P, asha_glb.accessor(js, bin_, prim["attributes"]["POSITION"])])
+        ext = P.max(axis=0) - P.min(axis=0)
+        self.assertAlmostEqual(float(ext[1]), 0.09, delta=0.002)  # glTF +Y: the length
+        self.assertLess(float(max(ext[0], ext[2])), 0.006)  # about 4 mm thick
 
 
 if __name__ == "__main__":
