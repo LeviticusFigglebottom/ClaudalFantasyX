@@ -81,6 +81,20 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
 ## For the Lead
+- **MERGE-READY @ 74c6dc0e, for big8.** It includes the integration branch at 8f808cc6 (big7).
+  - **Items:**
+    - All seven final arenas swap in through `game/data/battle/arenas.json`.
+    - `battle_arena_tideline`, `battle_arena_causeway` and `drownbell_flood` were re-captured, viewed and
+      re-approved.
+    - `test_battle_arena.gd` now checks the contract's `CameraHints` instead of the greybox's `Fill`.
+    - The M3-ENV-07..10 task files are filed.
+  - **Checks run:** full Godot suite 1988 run / 0 failed; full tools unittests 838 OK (4 skipped); lint, format,
+    validate_data and taskboard clean.
+  - **Checks skipped:** the full screenshot manifest (only the three arena shots can move) and coverage.
+  - **Noted for battle-presentation, and present on the greybox too:**
+    - In multi-shot captures, AudioDirector.attach_battle logs a freed-instance error.
+    - The loader logs an owner warning when it reparents the WorldEnvironment.
+    - The final arenas capture 5–8× slower than the greybox.
 - **MERGE-READY @ 169445e9** (claude/env-art; it includes the integration branch at 1e3ff5d6).
   - **Items since ba7679c1, all in review:**
     - M3-ENV-03 Terraces of Ash.
