@@ -2,8 +2,8 @@
 id: M2-FP-15
 title: B11 "The dock at night" (in-engine, after the Drownbell, before the end card)
 role: cinematics
-status: todo
-owner_session: ""
+status: doing
+owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M2-FP-13, M2-ENV-02]
 milestone: M2
 request-from: lead
