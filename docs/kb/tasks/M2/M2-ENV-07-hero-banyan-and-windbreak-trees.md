@@ -103,7 +103,11 @@ shots gave 0.0008 / 0.0019 / 0.0033)
 - Shots on the merged tree (with M1-ENV-10), viewed and re-approved: h07 rmse 0.26145 (the banyan
   frames the chapel with trunk, prop pillar and root curtains), h01 0.01872 (windbreak columns), h02
   0.03102 (windbreaks, plus the ENV-10 house that sat in the old LOD hole). Palette checks 19/19.
-- **Follow-up (open, for the review):** at H07 the banyan's crown hardly enters the top of frame; the shot
-  reads as trunks and roots under open sky. A denser, lower crown edge over the court would finish it.
+- **Follow-up done (env-art parent):** at H07 the crown hardly entered the frame. `hero_low_clumps` 3 → 8,
+  centred on the hero limbs instead of 0.8–1.1 m above them, paid for by `root_bunches` 70 → 55: banyan
+  54651 / 7351 tris (budget 60000 / 10000). Leaves now drape across H07's top edge. h07 rmse 0.24771 against
+  the merge capture (the tree's random draws shift too), viewed and re-approved; h01 0.00434, h02 0. The H07
+  zenith palette check sampled (0, 0)–(250, 120), which the trunk and leaves now cover (sky 0.77 < 0.9):
+  moved to the clear patch (0, 40)–(150, 110); still ΔE_ok 0.036 to `sky_zenith_noon` +1. Palette 19/19.
 
 ## Review log

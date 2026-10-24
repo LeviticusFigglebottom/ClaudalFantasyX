@@ -18,10 +18,10 @@
         60000,
         10000
       ],
-      "bytes": 3559288,
+      "bytes": 3375764,
       "lods": {
-        "banyan_placeholder": 59949,
-        "banyan_placeholder-lod1": 6999
+        "banyan_placeholder": 54651,
+        "banyan_placeholder-lod1": 7351
       }
     },
     "basket_set": {

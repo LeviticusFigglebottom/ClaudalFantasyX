@@ -43,11 +43,11 @@ VARIANTS: dict[str, dict] = {
         # (asset azimuth ~135); the 180 limb runs low (~4 m) over the court, so it arches across the top
         # of H07 with its root curtains.
         "hero_limbs": ((180.0, 0.9, 3, 4.75, 2.0, 0.5), (106.0, 0.8, 2, 4.8, 4.0, 0.4)),
-        "hero_low_clumps": 3,  # small leaf clumps sitting on each hero limb (leaves down to its height)
+        "hero_low_clumps": 8,  # leaf clumps draped round each hero limb (env-art: so leaves enter H07's top edge)
         "hero_root_share": 0.5,  # share of the hanging-root bunches on the hero limbs
         "foliage_floor_m": 4.0,  # lowest leaf cluster
         "extra_props": 5,
-        "root_bunches": 70,
+        "root_bunches": 55,  # 70 -> 55 pays for the low clumps (budget 60000)
         "cluster_density": 0.75,  # twig clusters per m2 of clump surface
         "branch_spacing_m": (1.5, 2.1),
         "top_clumps": 5,
@@ -260,7 +260,7 @@ def make_tree(p: dict) -> Tree:
             n_low = int(p["hero_low_clumps"])
             for k in range(n_low):
                 at, _rl = _point_on(limb, 0.3 + 0.55 * (k + rng.uniform(0.2, 0.8)) / n_low)
-                c = Clump(at + UP * rng.uniform(0.8, 1.1), np.array([1.7, 1.5, 1.0]) * rng.uniform(0.9, 1.15),
+                c = Clump(at + UP * rng.uniform(-0.1, 0.35), np.array([1.7, 1.5, 1.0]) * rng.uniform(0.9, 1.15),
                           limb.phase, at, 0.12, canopy.random_waves(rng, 4, 0.16), float(rng.random()))
                 tree.clumps.append(c)
     n_top = int(p["top_clumps"])
