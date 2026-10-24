@@ -191,7 +191,7 @@ The tags come from [`tech/dialogue_format.md`](../../tech/dialogue_format.md). W
 
 ## 8. Budgets (SPEC §7.3)
 
-### 8.1 Triangles (LOD0 target 64k; the hard ceiling is 70k)
+### 8.1 Triangles (LOD0 target 65k; the hard ceiling is 70k)
 | Part | Triangles |
 |---|---|
 | Head and face (skin) | 9,000 |
@@ -208,7 +208,7 @@ The tags come from [`tech/dialogue_format.md`](../../tech/dialogue_format.md). W
 | Lantern-staff (shaft, cage, 5 bells, cords) | 6,000 |
 | **Total** | **63,500** |
 
-**LODs:** LOD1 at 32k (used from 6 m, which covers the typical battle camera), LOD2 at 14k (from 15 m), and LOD3 at 5k (from 35 m). **LOD1 must keep the silhouette:** staff, sleeve, braid, and collar. Cut detail (flyaways, mouth interior, toggles), never shape. Hidden body under clothing is **deleted**, not counted.
+**LODs:** LOD1 at 32k (used from 6 m, which covers the typical battle camera), LOD2 at 14k (from 15 m), and LOD3 at 5k (from 35 m). **LOD1 must keep the silhouette:** staff, sleeve, braid, and collar. Cut detail (flyaways, mouth interior, toggles), never shape. Hidden body under clothing is **deleted**, not counted, except the knees and shins under the skirts (about 1.2k triangles, M1-CHR-14): a stride or a kneel carries a leg out through the cloth, and a deleted shin left a floating foot. That exception is why the LOD0 target is 65k against the table's 63.5k.
 
 ### 8.2 Textures
 | Set | Resolution | Maps | Texel target |

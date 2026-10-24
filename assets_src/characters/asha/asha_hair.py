@@ -26,6 +26,10 @@ from asha_mesh import Part, arclen, catmull_rom, frames_along, grid, tube
 
 CLUMPS = 16
 TAG_HAIR = 41
+HAIRLINE_SWING = 0.006  # head heights (M1-CHR-12)
+# M1-CHR-12: near the front hairline the hair is drawn up and back before it turns toward the braid
+FRONT_LIFT = 1.2  # weight of the up-and-back pull at the hairline
+FRONT_LIFT_BAND = 0.12  # head heights above the hairline over which it fades out
 
 
 def hairline_v(lm, P: np.ndarray) -> np.ndarray:
@@ -39,11 +43,16 @@ def hairline_v(lm, P: np.ndarray) -> np.ndarray:
     # frames them; the bare temple skin on the silhouette read as a very high forehead and, lit from
     # behind, as a pinkish streak (review sweep J). The front stays: lowered, a hairline card rooted
     # on the bare forehead and ran down across the brow
-    vs = [0.765, 0.752, 0.695, 0.635, 0.59, 0.585, 0.635, 0.50, 0.32, 0.25, 0.24]
+    # M1-CHR-12: the front 0.027 h (6 mm) lower and the temple corners a touch lower, so the forehead
+    # is not "very tall" (QA-08); the flow now lifts off the front hairline (_flow_dir), which is what
+    # used to run a lowered hairline's cards down across the brow
+    vs = [0.738, 0.731, 0.689, 0.632, 0.59, 0.585, 0.635, 0.50, 0.32, 0.25, 0.24]
     # M1-CHR-04: a natural hairline is not a clean curve; it wanders by up to ~2.5 mm (cards, the
-    # scalp underpaint and the skin maps all read this, so they agree)
+    # scalp underpaint and the skin maps all read this, so they agree). M1-CHR-12: plus a slow,
+    # asymmetric swing (+-1.3 mm), so the arc over the forehead is not even from temple to temple
     t = np.radians(phi)
     wander = 0.005 * np.sin(7.0 * t + 1.1) + 0.0035 * np.sin(13.0 * t + 2.3) + 0.002 * np.sin(29.0 * t + 0.4)
+    wander = wander + HAIRLINE_SWING * np.sin(3.0 * t + 0.9)
     return np.interp(a, xs, vs) + wander
 
 
@@ -142,6 +151,10 @@ def _flow_dir(lm, P: np.ndarray, N: np.ndarray, G: np.ndarray) -> np.ndarray:
     away = np.stack([np.sign(P[:, 0] - px), np.zeros(len(P)), np.zeros(len(P))], axis=1)
     back = np.array([0.0, 1.0, -0.2])
     d = d + away * near[:, None] * 0.5 + back * 0.35
+    zc = lm.P("chin")[2]
+    v = (P[:, 2] - zc) / lm.h
+    lift = np.clip((hairline_v(lm, P) + FRONT_LIFT_BAND - v) / FRONT_LIFT_BAND, 0.0, 1.0) * np.clip(front, 0.0, 1.0)
+    d = d + np.outer(FRONT_LIFT * lift, np.array([0.0, 0.6, 1.0]))
     d = d - np.sum(d * N, axis=1, keepdims=True) * N
     return d / np.maximum(np.linalg.norm(d, axis=1, keepdims=True), 1e-9)
 
@@ -188,12 +201,13 @@ def _trace(scalp, lm, roots: np.ndarray, length: np.ndarray, lift: float, G: np.
     paths = [scalp.project(roots, lift)]
     alive = np.ones(len(roots), dtype=bool)
     stop = np.full(len(roots), seg)
+    Gs = scalp.project(G[None, :])[0]  # M1-CHR-14: the gather on the scalp, where the braid root is seated
     for k in range(seg):
         cur = paths[-1]
         N = scalp.normal(cur)
         fdir = _flow_dir(lm, cur, N, G)
         nxt = scalp.project(cur + fdir * step[:, None], lift, iters=3)
-        near = np.linalg.norm(nxt - G, axis=1) < 0.03 * s
+        near = np.linalg.norm(nxt - Gs, axis=1) < CARD_STOP_AT_ROOT * s
         newly = alive & near
         stop[newly] = k + 1
         alive &= ~near
@@ -293,8 +307,10 @@ def scalp_cards(lm, body, params: dict, rng: np.random.Generator, scalp=None) ->
 # of their length (hair clumps where it is combed together), rise off the scalp in an arc of up to a
 # few millimetres, and twist a little about their length, so each clump catches its own highlight.
 CLUMP_LIFT = 0.0036  # m at s = 1: the clump paths' lift at the root and the tip (the old top layer's 4 mm)
-CLUMP_RISE = (0.0008, 0.0037)  # extra lift at mid-length, m (a few clumps are looser, below)
-CLUMP_LOOSE = (0.18, 0.0055)  # share of clumps that stand further off, and their extra rise, m
+# M1-CHR-12: QA-08 still read the crown as a sleek shell, so the clumps stand further off and more of
+# them are loose (CHR-09: rise 0.8-3.7 mm, 18% loose by 5.5 mm)
+CLUMP_RISE = (0.0012, 0.0050)  # extra lift at mid-length, m (a few clumps are looser, below)
+CLUMP_LOOSE = (0.30, 0.0090)  # share of clumps that stand further off, and their extra rise, m
 CLUMP_SPREAD = (0.003, 0.006)  # half-spread of the member cards at the root, m
 CLUMP_GATHER = 0.55  # how far the members close up at mid-length (0 = parallel)
 CLUMP_TWIST = 0.35  # rad, the most a member card rolls about its length
@@ -344,6 +360,21 @@ def crown_clumps(part: Part, scalp, lm, params: dict, rng: np.random.Generator, 
                     taper=0.35, v_range=(0.0, 0.85))
 
 
+BRAID_ROOT_SEAT = 0.004  # m at s = 1: the braid's root centre off the skin, inside the scalp cards' lift
+BRAID_ROOT_RAMP = 0.07  # m along the braid over which the clearance grows to BRAID_CLEAR
+BRAID_CLEAR = 0.024  # m: the braid's clearance from the body below the root
+CARD_STOP_AT_ROOT = 0.012  # m at s = 1: scalp cards stop this close to the braid root (CHR-04: 0.03)
+
+
+def _sdf_grad(fn, P: np.ndarray, e: float = 3e-4) -> np.ndarray:
+    g = np.zeros_like(P)
+    for i in range(3):
+        d = np.zeros(3)
+        d[i] = e
+        g[:, i] = fn(P + d) - fn(P - d)
+    return g / np.maximum(np.linalg.norm(g, axis=1, keepdims=True), 1e-12)
+
+
 def braid_spine(lm, body, params: dict) -> np.ndarray:
     s = lm.h / 0.222
     G = _gather(lm)
@@ -360,20 +391,33 @@ def braid_spine(lm, body, params: dict) -> np.ndarray:
         np.array([nip[0] * 0.95, nip[1] - 0.02 * s, lm.P("waist")[2] - 0.02 * s]),
         np.array([nip[0] * 1.0, nip[1] + 0.0 * s, lm.P("waist")[2] - 0.25 * s]),
     ])
+    # M1-CHR-14: the root is seated in the hair, not hung beside it. G sits 15 mm off the donor scalp
+    # (bb_donor), and the clearance pass below used to push every spine point, the root included,
+    # 24 mm off the body (the head is part of it), so the braid floated beside the nape. The root now
+    # starts BRAID_ROOT_SEAT off the skin (inside the scalp cards' lift) and the clearance ramps up
+    # from that to the full value over the first BRAID_ROOT_RAMP of the braid.
+    head = body.regions["head"]
+    gh = _sdf_grad(head.sdf, G[None, :])[0]
+    root = G - gh * (float(head.sdf(G[None, :])[0]) - BRAID_ROOT_SEAT * s)
+    ctrl[0] = root
     C = catmull_rom(ctrl, 400)
     L = arclen(C)
     total = params["braid_length_m"] * s + params["tail_m"] * s
     C = C[L <= total]
+    L = L[L <= total]
     # keep it clear of the body (+ the vest on the chest) and the costume
-    clear = 0.024 * s
+    ramp = np.clip(L / (BRAID_ROOT_RAMP * s), 0.0, 1.0)
+    ramp = ramp * ramp * (3.0 - 2.0 * ramp)
+    clear = (BRAID_ROOT_SEAT + (BRAID_CLEAR - BRAID_ROOT_SEAT) * ramp) * s
     for _ in range(6):
         d = body.sdf(C)
         g = body.grad(C)
         g /= np.maximum(np.linalg.norm(g, axis=1, keepdims=True), 1e-9)
         push = np.maximum(clear - d, 0.0)
         C = C + g * push[:, None]
-        # smooth
+        # smooth (the root stays where it is seated)
         C[1:-1] = 0.5 * C[1:-1] + 0.25 * (C[:-2] + C[2:])
+        C[0] = root
     _ = zc
     return catmull_rom(C, 200)
 
@@ -435,7 +479,7 @@ def braid(lm, body, params: dict, rng: np.random.Generator) -> tuple[Part, Part,
     return part, acc, Cb
 
 
-FLY_LIFT = (0.004, 0.011)  # m at s = 1: how far a crown flyaway's tip stands off the hair
+FLY_LIFT = (0.006, 0.016)  # m at s = 1: how far a crown flyaway's tip stands off the hair (M1-CHR-12: was 4-11 mm)
 FLY_BRAID_FROM = 30  # braid spine sample (of 200) where the braid's flyaways start: the shoulder
 
 
@@ -573,6 +617,44 @@ def comb(lm, body, scalp=None) -> Part:
     return part
 
 
+# M1-CHR-12: fine wisps at the front hairline (baby hairs and a few escaped strands), so the hairline
+# is broken by individual hairs instead of being one hard, even arc (QA-08)
+WISP_AZIMUTH = 72.0  # deg either side of the front
+WISP_LENGTH = (0.006, 0.020)  # m at s = 1
+WISP_LIFT = (0.0004, 0.0025)  # m: how far the tip stands off the skin
+WISP_WIDTH = (0.0012, 0.0020)  # m
+
+
+def hairline_wisps(lm, body, params: dict, rng: np.random.Generator, scalp=None) -> Part:
+    part = Part("HairWisps")
+    n = int(params.get("hairline_wisps", 0))
+    if not n:
+        return part
+    scalp = scalp or Scalp(body)
+    s = lm.h / 0.222
+    G = _gather(lm)
+    phi = np.radians(rng.uniform(-WISP_AZIMUTH, WISP_AZIMUTH, n))
+    roots = _hairline_roots(scalp, lm, phi, rng.uniform(0.002, 0.016, n))
+    for i in range(n):
+        p = roots[i]
+        nrm = scalp.normal(p[None, :])[0]
+        # out of the hair mass and down over the hairline onto the skin, fanning sideways
+        down = np.array([0.0, 0.0, -1.0]) - nrm * (-nrm[2])
+        tdir = down / max(np.linalg.norm(down), 1e-9) + 0.7 * rng.normal(size=3) - 0.3 * _flow_dir(
+            lm, p[None, :], nrm[None, :], G)[0]
+        tdir -= (tdir @ nrm) * nrm
+        tdir /= np.linalg.norm(tdir)
+        length = rng.uniform(*WISP_LENGTH) * s
+        up = rng.uniform(*WISP_LIFT) * s
+        curl = rng.normal(size=3) * 0.3
+        pts = np.array([p + nrm * 0.0006 * s + (tdir + curl * t) * length * t + nrm * up * t ** 1.8
+                        for t in np.linspace(0, 1, 6)])
+        _ribbon(part, pts, np.tile(nrm, (len(pts), 1)), float(rng.uniform(*WISP_WIDTH) * s),
+                int(rng.choice(SLOTS_SPARSE)), lambda t, ph=float(rng.random()): (0.0, 0.0, ph, 0.0), taper=0.5,
+                v_range=(0.15, 0.9), u_range=(0.3, 0.7))
+    return part
+
+
 def build_hair(lm, body, params: dict, scalp=None) -> dict[str, Part]:
     """`scalp`: what the scalp cards, flyaways, front strands and comb sit on (MeshScalp on the
     shipped head in build_asha; the anatomy field when omitted)."""
@@ -586,6 +668,7 @@ def build_hair(lm, body, params: dict, scalp=None) -> dict[str, Part]:
     out["HairFlyaways"] = flyaways(lm, body, params, np.random.default_rng([seed, 2]), spine, scalp)
     out["HairFront"] = front_strands(lm, body, params, np.random.default_rng([seed, 3]), scalp)
     out["HairComb"] = comb(lm, body, scalp)
+    out["HairScalp"].extend(hairline_wisps(lm, body, params, np.random.default_rng([seed, 4]), scalp))
     for p in out.values():  # wind colours everywhere (accessories are pinned)
         p.C = p.C + [(0.0, 0.0, 0.0, 0.0)] * (len(p.V) - len(p.C))
     return out

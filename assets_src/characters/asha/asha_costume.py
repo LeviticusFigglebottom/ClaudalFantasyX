@@ -118,11 +118,13 @@ def _grid_normals(P: np.ndarray, closed: bool) -> np.ndarray:
 
 
 def _outward(P: np.ndarray, N: np.ndarray, centre: np.ndarray) -> np.ndarray:
-    """Flip normals that point toward the body axis."""
+    """Orient a grid's normals away from the body axis: the whole grid flips by the majority sign.
+    M1-CHR-13: flipping each vertex by sign(N . q), q horizontal from the axis, flipped vertex by
+    vertex along a staircase wherever the normal is near vertical (the top of the shoulder), which
+    pushed the inset back layer in and out by its thickness and creased the vest's normals."""
     q = P - centre
     q[..., 2] = 0.0
-    s = np.sign(np.sum(N * q, axis=-1, keepdims=True))
-    s[s == 0] = 1.0
+    s = 1.0 if float(np.sum(N * q)) >= 0.0 else -1.0
     return N * s
 
 
@@ -139,11 +141,13 @@ def _uvf(rect, nj: int, ni: int, closed: bool):
 def _panel(part: Part, P: np.ndarray, rect, colors, closed: bool, back_inset: float | None, centre) -> np.ndarray:
     """Front grid (outward-facing) plus an optional back layer. P[j, i]: rows j top -> bottom."""
     N = _outward(P, _grid_normals(P, closed), centre)
-    # make sure the grid's own winding faces outward: test one face
-    flip = False
-    a, b, d = P[0, 0], P[0, 1 % P.shape[1]], P[1, 0]
-    if np.cross(b - a, d - a) @ N[0, 0] > 0:
-        flip = True
+    # make sure the grid's own winding faces outward. M1-CHR-13: grid() winds (j, i), (j, i+1),
+    # (j+1, i+1), (j+1, i), whose normal is (b - a) x (d - a); the old test flipped when that already
+    # agreed with N, so the front layer faced inward and only the inset back layer was ever seen.
+    # Summed over the grid, so one degenerate corner face cannot decide it.
+    dU = np.diff(P, axis=1)[:-1]
+    dV = np.diff(P, axis=0)[:, :-1]
+    flip = bool(np.sum(np.cross(dU, dV) * N[:-1, :-1]) < 0.0)
     uvf = _uvf(rect, P.shape[0], P.shape[1], closed)
     ids = grid(part, P, part._mat, colors=colors, tags=TAG_CLOTH, flip=flip, uv_fn=uvf, closed_u=closed)
     if back_inset:
@@ -184,12 +188,28 @@ class TorsoChart:
         return th, H
 
 
+VEST_ARMHOLE_DROP = 0.115  # m below the shoulder joint (M1-CHR-14: 0.085 sat at the armpit and wrapped onto the arm)
+
+
+BODICE_UNDERARM_DROP = 0.045  # m: the bodice's top dips this far under each arm (M1-CHR-14: a lowered arm cut it)
+BODICE_UNDERARM_HALF = 40.0  # degrees either side of the side line over which the dip fades
+
+
+def bodice_top(lm, th_deg: np.ndarray) -> np.ndarray:
+    """The under-bodice's top edge: level just above the bust, dipping under the arms."""
+    S = lm.S
+    side = np.abs(np.mod(np.asarray(th_deg, dtype=float), 180.0) - 90.0)  # 0 on either side line
+    w = np.clip(1.0 - side / BODICE_UNDERARM_HALF, 0.0, 1.0)
+    w = w * w * (3.0 - 2.0 * w)
+    return float(lm.P("nipple")[2] + 0.075 * S) - BODICE_UNDERARM_DROP * S * w
+
+
 def vest_top(lm, chart: TorsoChart, th_deg: np.ndarray) -> np.ndarray:
     """The vest's top edge: the neckline all round, except the halter cut-away at the left shoulder
     and the deep scoop at the back (asha.md §2.4, §4.1 #5)."""
     S = lm.S
     neck = chart.z_sh + _deg(58) * chart.k
-    arm = float(lm.P("shoulder")[2] - 0.085 * S)
+    arm = float(lm.P("shoulder")[2] - VEST_ARMHOLE_DROP * S)
     scoop = float(lm.P("notch")[2] - 0.135 * S)
     xs = [0, 22, 40, 62, 90, 118, 145, 165, 180, 198, 220, 242, 260, 360]
     vs = [neck, neck, chart.z_sh + _deg(32) * chart.k, chart.z_sh + _deg(4) * chart.k, arm, arm + 0.01 * S,
@@ -494,7 +514,7 @@ def build_costume(body, params: dict) -> dict[str, Part]:
     out: dict[str, Part] = {}
     # 1. under-bodice: waist to just above the bust, under the vest
     out["Bodice"] = torso_panel(fields, chart, "Bodice", "cloth", ATLAS["bodice"], z_waist - 0.02 * S,
-                                lambda th: np.full_like(th, float(lm.P("nipple")[2] + 0.075 * S)), 0.003 * S, 40, 8,
+                                lambda th: bodice_top(lm, th), 0.003 * S, 40, 8,
                                 None)
     # 5. vest
     vest_hem = z_waist - 0.035 * S
@@ -542,6 +562,9 @@ def build_costume(body, params: dict) -> dict[str, Part]:
     return out
 
 
+KEEP_ABOVE_KNEE = 0.16  # m (at s = 1) of thigh kept above the knee joint under the skirts
+
+
 def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
     """True for body vertices hidden under opaque clothing (with a margin), asha.md §8.1."""
     lm = body.lm
@@ -553,9 +576,13 @@ def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
     m = 0.03 * S
     torso = reg == "torso"
     vest = torso & (H > z_waist - 0.035 * S + m) & (H < vest_top(lm, chart, th_deg) - m)
-    bodice = torso & (V[:, 2] > z_waist - 0.02 * S + m) & (V[:, 2] < lm.P("nipple")[2] + 0.075 * S - m)
+    bodice = torso & (V[:, 2] > z_waist - 0.02 * S + m) & (V[:, 2] < bodice_top(lm, th_deg) - m)
     hl, hr = float(params["hem_left_m"]) * S, float(params["hem_right_m"]) * S
     hem = 0.5 * (hl + hr) + 0.5 * (hl - hr) * np.sin(th)
     legs = (reg == "leg_L") | (reg == "leg_R") | torso
-    skirt = legs & (V[:, 2] < z_waist - 0.03 * S - m * 0.5) & (V[:, 2] > np.maximum(hem, 0.065 * S) + 0.045 * S)
+    # M1-CHR-14: the knees and shins stay under the skirts (a stride or a kneel carries them out through the
+    # cloth, and a deleted shin left a floating foot); only the thighs and hips are cut
+    z_keep = max(float(lm.side_pt("knee", sd)[2]) for sd in ("L", "R")) + KEEP_ABOVE_KNEE * S
+    lo = np.maximum(np.maximum(hem, 0.065 * S) + 0.045 * S, z_keep)
+    skirt = legs & (V[:, 2] < z_waist - 0.03 * S - m * 0.5) & (V[:, 2] > lo)
     return vest | bodice | skirt

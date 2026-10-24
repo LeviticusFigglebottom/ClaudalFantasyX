@@ -1,6 +1,10 @@
 {
   "_about": "Asha's emotion tags -> face blendshape weights (docs/kb/art/characters/asha.md §6.3). A pair is [L, R]; a scalar sets both sides of a paired shape. Tags: game/data/dialogue/emotions.json. Read by AshaStage for the M1-CHR-02 review shots.",
   "blend_in_s": 0.25,
+  "variants": {
+    "_about": "M2-CHR-05: optional pose sets for the human to judge (asha_review.md §12.4); a variant replaces only the tags it lists, and nothing reads it unless asked (AshaStage.face_variant). The default tags are unchanged.",
+    "duchenne_open": {"smile": {"mouth_smile": [0.67, 0.67], "cheek_raise": 0.60, "lid_squint": 0.30, "lip_upper_up": 0.20, "jaw_open": 0.04}}
+  },
   "emotions": {
     "neutral": {"mouth_smile": [0.08, 0.07]},
     "soft_smile": {"mouth_smile": [0.35, 0.32], "cheek_raise": 0.15, "lid_squint": 0.10},

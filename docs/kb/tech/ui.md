@@ -350,7 +350,7 @@ The human's top priority for the slice: the player always knows the next step. A
 - **Rows.** `game/data/flow/objectives.json` lists the rows in story order: `{id, line_key, requires: [flags], until: flag, zone?, target?: {zone, poi}, side?}`.
   - A row applies when every `requires` flag is set and its `until` flag is not. A row with a `zone` applies only in that zone, and never in a scene with no map, so test zones and shot scenes show nothing.
   - The main objective is the first main row that applies; `side` rows are optional errands.
-  - First pass by UI for B01–B11. m2-slice keeps the rows current (M2-FP-25).
+  - First pass by UI for B01–B11. m2-slice keeps the rows current (M2-FP-28).
   - `validate_data.py` (`check_objectives`) checks that flags are declared, loc keys exist, and zones and targets resolve.
 - **Places.** `game/data/ui/zone_maps.json` (`ZoneMaps`) lists the zones (scene, name, map bounds, shape source) and the pilgrimage route. Each point of interest has a world `at` and a `source` (a node in the zone scene, or a point in the trial layout). `tools/tests/test_zone_map_pois.py` fails when a point drifts from its source.
 - **`ObjectiveTracker`** (game/ui/objectives/) is node-free. `current(zone)`, `side(zone)`, `line(zone)` and `target(zone)` read flags through a callable: `Game.get_flag` in play, a scratch set in tests.
