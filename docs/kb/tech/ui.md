@@ -181,6 +181,7 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
 - **The target info panel knows a Read foe.** `BattleController._show_pick` now takes `revealed` from `BattleBestiary.knows(c)`, which is `book.is_read(BattleEngine.enemy_id(c))` for a foe. A foe the party has Read, in this battle or before it (a live battle's book is `Game.state.bestiary`), shows its HP gauge instead of "HP unknown until Read". The controller line count is unchanged (994). Capture fixtures log into a scratch book, so no battle baseline moves.
 
 - **Last saved (M2-MNU-300).** There is no save row; saving stays at shrines and the chapter autosaves (the Lead's call, 2026-10-24). The root shows the newest loadable save's place and time above the objective (`FieldMenuModel.last_save_line`, through `TitleSaveEntry.continue_slot` and `SaveSlotInfo`), with a shrine reminder. The tutorial tip `menu_save` says the same once.
+- **Party cards (M2-MNU-304).** The root shows the active line as `PartyCard`s (portrait, name, HP and MP) between the row line and Last saved (`field_menu.json` "party"); they hide off the root and refresh when a party page closes.
 
 ## The Vowbound (M2-UI-05, ADR 0030)
 

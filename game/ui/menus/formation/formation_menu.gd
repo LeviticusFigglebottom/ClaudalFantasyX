@@ -272,6 +272,8 @@ func _layout_detail() -> void:
 	_portrait.position = Vector2(r.position.x, y)
 	_portrait.size = Vector2(side, side)
 	var indent := side + HudLayout.num(pm, "gap")
+	var full := r  # lines that start below the portrait take the whole width (130 % text)
+	var portrait_end := y + side
 	r = Rect2(r.position.x + indent, r.position.y, r.size.x - indent, r.size.y)
 	var line_gap := HudLayout.num(dm, "line_gap")
 	_name.position = Vector2(r.position.x, y)
@@ -281,6 +283,8 @@ func _layout_detail() -> void:
 	_place.size = Vector2(r.size.x, HudLayout.num(dm, "line_height"))
 	y += _place.size.y + line_gap
 	for l: Label in [_chosen_line, _plan, _warn]:
+		if y >= portrait_end:
+			r = full
 		l.position = Vector2(r.position.x, y)
 		l.size = Vector2(r.size.x, 0.0)
 		l.visible = l.text != "" and y < bottom
