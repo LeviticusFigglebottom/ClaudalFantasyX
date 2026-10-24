@@ -1277,6 +1277,7 @@ def run(root: Path) -> Report:
     check_undertow(root, files, rep)
     check_zone_weather(root, files, rep)
     check_chapter_flow(root, files, declared_flags_quiet(root), rep)
+    check_choreo(files, rep)
     check_provenance(root, rep)
     check_banned(root, rep)
     check_binary_sizes(root, rep)
@@ -2293,6 +2294,27 @@ def check_zone_weather(root: Path, files: dict[str, object], rep: Report) -> Non
     for e in zone_weather_errors(doc, lambda res: _res_path(root, res).is_file()):
         rep.err(e)
 
+
+# --- M2-BPR-01: battle choreography (game/data/battle/choreo.json; tools/validate_choreo.py) ----
+
+
+def check_choreo(files: dict[str, object], rep: Report) -> None:
+    import validate_choreo as vc  # noqa: E402
+
+    doc = files.get(vc.CHOREO_FILE)
+    if doc is None:
+        rep.err(f"{vc.CHOREO_FILE}: missing")
+        return
+    for e in vc.choreo_errors(doc, files.get(vc.SKILLS_FILE)):
+        rep.err(e)
+    flags_text = (Path(__file__).resolve().parent.parent / vc.FLAGS_FILE).read_text(encoding="utf-8")
+    for e in vc.summon_errors(doc, vc.declared_flags(flags_text)):
+        rep.err(e)
+    arenas = files.get(vc.ARENAS_FILE)
+    if arenas is not None:
+        root = Path(__file__).resolve().parent.parent
+        for e in vc.arena_errors(arenas, files.get(vc.ENCOUNTERS_FILE), lambda r: _res_path(root, r).is_file()):
+            rep.err(e)
 
 
 # --- M2-UI-06: inns (shops.json "inns": a price for a full rest, game/progression/inn.gd) ---------

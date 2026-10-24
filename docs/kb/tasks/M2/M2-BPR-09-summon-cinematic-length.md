@@ -1,9 +1,9 @@
 ---
-id: M2-BPR-07
+id: M2-BPR-09
 title: The Vowbound call cinematic reads the summon cinematic setting
 role: combat
-status: todo
-owner_session: ""
+status: review
+owner_session: lead/big7
 depends_on: [M2-UI-23]
 milestone: M2
 request-from: ui
@@ -21,5 +21,17 @@ SPEC §6.3: each Vowbound's call cinematic plays in full on first use, then shor
 - Depends on M2-BPR-04 too (it lives on claude/battle-presentation, so it is not listed in depends_on here).
 - Setting data: `game/data/ui/accessibility.json` `summon_cinematics`. Docs: `docs/kb/tech/ui.md` § Battle speed and the Vowbound call cinematic.
 - The default is Short, which plays the first call in full, so the slice's first Ilun call (vertical_slice.md B10) stays unmissable unless the player turns calls Off.
+
+- **Renumbered (Lead merge, big7, 2026-10-24):** filed by claude/ui as M2-BPR-07, which collided with
+  claude/battle-presentation's M2-BPR-07 (per-encounter arenas). Renumbered to M2-BPR-09, the next id free across all
+  branches.
+- **Wired at the big7 merge:** `BattleSummonCinematic.wants_full` asks `UiSettings.summon_cinematic_cut(first_call)`
+  (first_call = the Vowbound's `first_call_flags` seen-flag, a save flag, is unset). CUT_FULL plays BPR-08's C10
+  cinematic; CUT_SHORT plays the short entry (`choreo.json vowbound.entry`, BPR-08's "short"); CUT_NONE (Off) never
+  plays the cinematic and also plays the short entry (the arrival). So Short (the default) = the first call in full,
+  later calls short; Full = every call in full; Off = never. Battle speed scales whichever plays (BattleChoreo.speed);
+  instant pacing plays none. Test: `tests/unit/test_battle_summon_cinematic.gd`
+  `test_call_length_setting_full_short_off`. Open point: CUT_SHORT has no "middle beats skipped" cut of its own; it
+  is the existing short entry. Reviewer: ui.
 
 ## Review log

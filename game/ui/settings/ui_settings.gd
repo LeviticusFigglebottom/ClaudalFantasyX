@@ -192,7 +192,7 @@ func battle_time_scale() -> float:
 
 ## The cut a Vowbound's call cinematic plays (M2-UI-23; SPEC §6.3): CUT_FULL, CUT_SHORT (skip the
 ## middle beats) or CUT_NONE (straight to the effect), for that Vowbound's first call or a later one
-## (accessibility.json "summon_cinematics"). The cinematic that reads it is M2-BPR-07.
+## (accessibility.json "summon_cinematics"). The cinematic that reads it is BattleSummonCinematic (M2-BPR-08/09).
 func summon_cinematic_cut(first_call: bool) -> StringName:
 	var row := (data.get("summon_cinematics", {}) as Dictionary).get(str(get_value(SUMMON_CINEMATIC)), {}) as Dictionary
 	return StringName(str(row.get("first" if first_call else "again", CUT_FULL)))

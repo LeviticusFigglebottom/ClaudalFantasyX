@@ -61,5 +61,6 @@ flags = {
 "tut_objective_seen": "Tutorial seen-flag (M2-UI-24, game/data/ui/tutorial_tips.json): the tip about the objective line and the map has been shown.",
 "tut_field_menu_seen": "Tutorial seen-flag (M2-UI-24): the tip about the field menu has been shown.",
 "tut_save_shrine_seen": "Tutorial seen-flag (M2-UI-24): the tip about save shrines has been shown.",
-"tut_shop_seen": "Tutorial seen-flag (M2-UI-24): the tip about shops has been shown."
+"tut_shop_seen": "Tutorial seen-flag (M2-UI-24): the tip about shops has been shown.",
+"ch03_ilun_first_call_seen": "Ilun's first call in battle (C10) has played in full; later calls play the short entry (M2-BPR-08)."
 }

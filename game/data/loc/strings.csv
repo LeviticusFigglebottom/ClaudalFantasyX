@@ -859,3 +859,10 @@ CTRL_ACT_DIALOGUE_BACKLOG,Dialogue backlog
 BACKLOG_TITLE,Backlog
 BACKLOG_HELP,Up and Down: scroll · Page keys: a page · Cancel: close
 BACKLOG_EMPTY,Nothing has been said yet.
+HUD_TL_NEXT,Next
+SET_BATTLE_ANIMATIONS,Battle animations
+SET_BATTLE_ANIMATIONS_HELP,"Full plays each action with movement and camera framing; Skip lands every action at once on a still camera."
+SET_BATTLE_ANIMATIONS_FULL,Full
+SET_BATTLE_ANIMATIONS_SKIP,Skip
+BARK_LINE_FMT,{name}: {line}
+HUD_CALLS_FMT,{name} calls {vowbound}.
