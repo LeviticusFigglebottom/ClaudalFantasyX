@@ -283,13 +283,25 @@ the fighters. A retry of the same encounter keeps the arena (the `hymn_arena` me
 |---|---|---|---|
 | `tideline_dawn` | `ch02_tideline` | Ch2 dawn: 06:20, sun 6° over the eastern sea, key `#FFB87B` 2.4, fill `#7FA6CC` 0.5, sky `#4E7FB8` / `#F6C9A0`, fog `#E9C9A8`, exposure 0.75 | dry sand behind the party, a wet band and rocks before the lagoon |
 | `causeway_disc_sunset` | `drownbell` | Ch3: sun 6° over the western sea, key `#FFAE67` 2.6, fill `#6E8FC0` 0.4, sky `#46609A` / `#F0A35C`, fog `#D9A27A`, exposure 0.80 | a stone road along the battle axis, water both sides, leaning posts and salt-grass tufts; the flood takes the road |
+| `oruvel_raft_morning` | `ch01_scuttlers`, `ch01_hullgnaw` | Ch1 10:30: sun 58°, key `#FFEFE1` 3.0, fill `#8FC3E0` 0.6, sky `#2E7FD6` / `#A9DCF2`, fog `#BFDDE8`, exposure 0.65, sat ×1.12; `lagoon_clear` sea | the net-pen hull: a lashed plank deck, the Reefball net behind the foes, the plank bridge to the keel-hull (Kell's beacon lit) behind the party, raft huts, the storm wall low on the horizon under a blue sky |
+| `underway_tower` | `ch01_wickfry`, `ch01_oil_slug`, `ch01_shaft_limpet`, `ch01_underway_shoals`, `ch01_underway_limpet` | Ch1 Underway note: only Rhen's `oil_lamp` (`#FFB16E` omni by the party) and held cyan (`#7FC6D9`) points; a `deep_teal_shadow` colour background, exponential fog 0.055, a dim cyan Sun from above; no Sea | a gallery floor, a ring of pillars and lintels behind the fighters, fallen blocks and coral, the dark shaft beyond the foes |
+| `causeway_route_afternoon` | `ch03_causeway_shore`, `ch03_causeway_harrier` | haluna.md `ch03_causeway` 14:30: sun 52°, key `#FFEAD8` 3.0, sky fill `#A9DCF2` 0.6, `lut_ch02_noon` (+200 K): exposure 0.65, sat ×1.12, a far haze only | low tide: a slab landing on the stone path over tidal flats, coral boulders, tidepools and salt-grass, the lagoon at the horizon |
+| `derelict_deck_night` | `ch04_sail_leeches`, `ch04_bottle_hermit`, `ch04_spar_wraith`, `ch04_derelict_*` | Ch4: key `#FFB16E` lamp 1.2 (the Sun), fill `#2A4A6E` 0.2, rim `#9DB4D9` 0.5, sky `#0B1630` / `#1E2E4E`, fog `#22354F`, exposure 1.10, sat ×0.95; `night_sea` with sea-glow 0.12 | a planked deck, mainmast and foremast behind the fighters (yards and set sails above the frame), the far bulwark only (no near rail), two hung deck lamps, the ferry's lamps far off |
+| `ash_terrace_lanternfall` | `ch05_stair_*`, `ch05_cinder_matron` | Ch5: key `#FFA757` lamp 1.6 (the Sun), fill `#3A4A6A` 0.25, rim `#E0702E` 0.9, sky `#101A33` / `#3A2A3A`, fog `#5A3A2E`, exposure 1.05, sat ×1.15; no Sea | a volcanic-stone terrace, four tiers stepping up behind the foes with graves and small warm lanterns on their lips, a leaf-boat channel down the steps, the mountain's cone and plume beyond |
+
+- **Act I (M3-BPR-01):** the Underway's scripted fights (`ch01_wickfry`, `ch01_oil_slug`) are underwater in the
+  drowned tower (act1_ch01.md C1-04, C1-06), so they take `underway_tower`, not the raft. Two grades are the
+  chapter's frame, not the fight's hour: the derelict is boarded at 07:40 (act1_ch04.md C4-12) and the stair and
+  anvil court are fought on day 2 at 11:30–13:40 (act1_ch05.md B07–B09); a morning-ferry and an Ashcrown-day
+  sub-frame are open with Art and env-art (M3-ENV-06).
 
 - **Env-art's kits** land at `assets/environments/arenas/<id>/<id>.tscn`; they repoint `arenas.json` then (M2-ENV-11
   / their own task). The greybox stays as the fallback until they do.
 - **Unchanged:** the sandbox's own encounters and every capture fixture (`fixture_reef`) have no arena, so no
   battle baseline moved except `drownbell_flood` (now on the causeway at sunset, as battle_vfx.md's "the arena is
   the noon sandbox" asked).
-- **Shots:** `battle_arena_tideline`, `battle_arena_causeway` (`game/battle/arenas/shots/`).
+- **Shots:** `battle_arena_tideline`, `battle_arena_causeway`, `battle_arena_raft`, `battle_arena_underway`,
+  `battle_arena_route`, `battle_arena_derelict`, `battle_arena_terrace` (`game/battle/arenas/shots/`).
 - **Checked by** `tools/validate_choreo.py` `arena_errors` (from validate_data): every scene exists, every
   encounter's `arena` is a known id.
 
