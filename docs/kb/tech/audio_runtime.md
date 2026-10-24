@@ -222,3 +222,86 @@ SPEC §16 Q4: no voice acting yet, but the architecture is ready for it. Every s
   (−23): crossfade the two crowd beds with play via `Audio.set_ambience`. Stop the crowd beds while
   `reefball_naming_rite` plays (it carries its own crowd going quiet), and stop the lantern hum's player when Rhen
   surfaces.
+
+## M3 menus (M3-AUD-15)
+
+`assets_src/sfx/menu_sfx.py` renders twelve UI sounds to `assets/audio/sfx/ui_*.ogg` (rows in `sfx_ui_menus.json`,
+UI bus, −20 LUFS momentary max, the `sfx/ui_*.ogg` rule in `tools/audio/targets.py`). `ui_sfx.json` plays them by
+listening. The menus are on claude/ui and claude/menus, not on claude/audio, so their hooks are `pending`:
+
+| Class (claude/ui) | What plays |
+|---|---|
+| `TitleMenu` (live) | `on_enter` `ui_title_swell`; `is_launched()` turning true plays `ui_title_confirm` (Begin or Continue), which outranks `chosen`'s `ui_confirm` |
+| `FieldSubmenu` | open / `closed`, for the Items and Status pages (Lattice and Equip have their own rows; `hook_for` takes the most derived class) |
+| `LatticeMenu` | open / `closed`; `cursor` ticks; `model.hero_index` is a page; `is_confirming()` true/false is confirm/cancel; `lattice_woken(progress)` rising is `ui_lattice_node`; `progress.opened_gates.size()` rising is `ui_lattice_unlock`; `lattice_places(progress)` changing is `ui_lattice_step`; a status line equal to the plan line (a refused Confirm) is `ui_error` |
+| `EquipMenu` | open / `closed`; `level` up/down is confirm/cancel; the three pages' cursors tick; `worn_count(bag)` up/down is `ui_equip` / `ui_unequip`; `gear_signature(bag)` changing (a swap or a craft) is `ui_equip`; `status_is_refusal()` is `ui_error` |
+| `ZoneMapMenu` | `on_enter` `ui_map_open`, `closed` `ui_map_close`, `current_poi()` changing `ui_map_tick` |
+| `ZoneMapView` | `poi_clicked` `ui_map_marker` (outranks the tick it causes) |
+| `TipCard` | `phase` becoming 1 (`Phase.IN`) is `ui_tip` |
+
+- **Helpers** (UiAudio, in scope in `watch`): `lattice_woken` and `lattice_places` read every traveler of a
+  LatticeProgress, so showing another hero plays a page and not a wake or a walk. `worn_count` and `gear_signature`
+  read an EquipmentBag through `uids()`, `wearer_of()` and `abilities_of()`.
+- **Priority** (one row a frame): the new rows sit above `ui_cancel` where an action also closes a level or the
+  Lattice question (wake, unlock, step, equip, unequip, marker), and `ui_title_confirm` sits above `ui_confirm`.
+- **Stand-ins:** a node's `audio_class` meta names its hook in place of its script class (UiAudio and
+  ReefballAudio). `tests/unit/test_field_audio.gd` drives runtime-built stand-ins carrying only the names the
+  hooks read; no `class_name` stubs, which would collide with the real classes on merge.
+- **The checker** now gives a class the signals of the script classes it extends (LatticeMenu's `closed` is
+  FieldSubmenu's), so a hook can name an inherited signal once its pending flag comes off.
+- **Once claude/ui merges:** remove `pending` from the six hooks; validate_data then checks the class and signal
+  names. Run `tests/unit/test_field_audio.gd` against the real LatticeMenu and EquipMenu (a follow-up test like
+  the FieldMenu one). The M2 `ShopMenu` / `InnMenu` guesses are wrong on claude/ui: both extend `TownMenu`, which
+  declares only `closed`, and they have no `bought` / `sold` / `rested` signals. A follow-up should rewrite those
+  hooks against the real models.
+
+**Listening notes (rendered and measured, not auditioned on speakers).** All decoded at −20.0 ± 0.6 LUFS
+momentary max, true peak −3.0 to −13.1 dBTP, byte-identical across two renders.
+- `ui_lattice_node` (1.7 s): a small bell, padded, a minor-third tierce over a warm hum, with a bar an octave up as
+  its glint. It sounds like the one earned sound in the menus and blooms for about a second in a small room.
+- `ui_lattice_unlock` (1.5 s): a soft low gong, a dry latch and three bars rising D-A-D over a breath that climbs:
+  a door, not a fanfare.
+- `ui_lattice_step` (0.36 s): two quiet taps a third apart, lighter than the cursor's confirm.
+- `ui_equip` / `ui_unequip` (0.5 / 0.45 s): a clasp's click and a low bar landing, then the lighter click and a bar
+  falling a fourth. They read as a pair.
+- `ui_map_open` / `ui_map_close` (0.85 / 0.57 s): dry paper crackle that rises in band, then bars a fifth apart;
+  the close is shorter and falls. `ui_map_tick` (0.15 s) is a small wooden tick, softer than `ui_cursor`, so
+  scrolling a long legend doesn't nag. `ui_map_marker` (0.65 s): a pin's muted tap and a small bell.
+- `ui_tip` (0.8 s): a glass ping with a slow beat on a breath, the quietest peak of the set (−13 dBTP), so it
+  doesn't startle during play.
+- `ui_title_confirm` (2.0 s): a low gong under a rolled D-A-D-A chord of bars, with the longest room in the set.
+- `ui_title_swell` (3.2 s): a pad swell on D-A-E (an open sonority, not a tune) with a rubbed-glass tone fading in
+  above it. It sits under the title cue at the same momentary target as every UI sound. If it masks the title
+  music's first bar, lower its row's `volume_db` rather than re-rendering it.
+
+## Reefball (M3-AUD-17)
+
+`ReefballAudio` (`game/audio/reefball_audio.gd`) listens to the arena with `game/data/audio/reefball_hooks.json`.
+The director builds it in `setup`, configures it in `_ready`, steps it in `advance`, and hands it nodes from
+`_on_node_added` (two lines, before the UI branch). The play, place and bed callables come from
+`bind_director`.
+- **Matching:** by the script's global class name (or a base class's, or the `audio_class` meta). Signals are
+  connected by name only when the node has them (`has_signal`), with 0 to 3+ arguments, so the listener loads and
+  runs whether or not the classes exist.
+- **Actions:** `sfx_at` plays at the signal's first Vector3 or Node3D argument (else the hooked node), and `sfx`
+  plays flat. `crowd` moves the stands (`murmur`, `excited`, `silence`) and keeps the zone's other beds. `restore`
+  with `restore_after_sec` brings a state back later.
+- **The sphere:** `WaterSphereRig` (gpu/m3-rnd-01-reefball) is a render rig with no signals, so entry, exit and
+  strokes come from positions. Once a frame, each Node3D in `swim.groups` (`reefball_swimmer`, `player`) is
+  measured against the rig's centre and `radius_m()`:
+  - crossing inward plays `reefball_sphere_enter`, outward `reefball_sphere_exit`, with ±0.3 m of hysteresis;
+  - every 1.6 m swum inside plays `reefball_swim`;
+  - a jump over 4 m is not swum;
+  - the first read is a baseline.
+  The sphere's arrival brings the murmur, and its leaving silences the stands.
+- **The match** (`ReefballMatch`, `ReefballBall`, `ReefballGoal`) is a guess at the minigame's names, because no
+  ball, goals or match flow exist on any branch yet. Kickoff whistles and excites the crowd; contacts and shots
+  play at the ball; a goal plays the score at the ball with a cheer (or a groan); the end whistle brings the murmur
+  back. `naming_rite_started` plays the rite, cuts the beds in 0.8 s and restores the murmur after the rite's 12 s
+  (or on `naming_rite_ended`).
+- `tools/audio/data_check.py` checks the rows, the crowd beds, the crowd states, the swim numbers, and the class
+  and signal names (except a pending hook's). `tests/unit/test_reefball_audio.gd` drives stand-ins.
+- **Once gpu/m3-rnd-01-reefball merges:** drop `pending` from `WaterSphereRig`. The arena's swimmers must be in
+  the `reefball_swimmer` group (the test scene's players are bare MeshInstance3Ds today). When the minigame lands,
+  rename the match, ball and goal hooks' classes and signals to the real ones. Use either the match's contact
+  signals or the ball's, not both.
