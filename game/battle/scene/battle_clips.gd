@@ -30,12 +30,18 @@ const CREATURE_PLAY_ACTION := &"play_action"
 const CREATURE_CONTACT := &"contact_time"
 
 
-## The fighter's AnimationPlayer (the first under its model), or null for a primitive stand-in.
+## The fighter's AnimationPlayer (the first under its model), or null for a primitive stand-in. The first time it
+## finds a skinned model's player, the contract clips the model lacks get placeholders (BattlePlaceholderClips,
+## M2-BPR-10; real clips always win).
 static func player_of(f: Node) -> AnimationPlayer:
 	if f == null or not is_instance_valid(f):
 		return null
 	var found := f.find_children("*", "AnimationPlayer", true, false)
-	return found[0] as AnimationPlayer if not found.is_empty() else null
+	if found.is_empty():
+		return null
+	var p := found[0] as AnimationPlayer
+	BattlePlaceholderClips.ensure(f, p)
+	return p
 
 
 static func has_clip(f: Node, clip: StringName) -> bool:
@@ -60,6 +66,26 @@ static func play(f: Node, clip: StringName, speed: float = 1.0) -> bool:
 	if clip != IDLE and clip != KO and p.has_animation(IDLE):
 		p.queue(IDLE)
 	return true
+
+
+## A felled fighter's KO on its collapse beat: true when its model has a KO clip (the stage then applies the KO
+## without the procedural collapse). A hero actor plays it here and holds its last frame; a creature actor plays its
+## own in its set_ko, so it is left alone.
+static func play_ko(f: Node, speed: float = 1.0) -> bool:
+	if not has_clip(f, KO):
+		return false
+	if creature_of(f) == null:
+		play(f, KO, speed)
+	return true
+
+
+## The stage's KO state for a fighter: on a revive, a hero actor still holding its KO clip stands into idle.
+static func ko_changed(f: Node, ko: bool) -> void:
+	if ko or creature_of(f) != null:
+		return
+	var p := player_of(f)
+	if p != null and p.assigned_animation == KO and p.has_animation(IDLE):
+		p.play(IDLE)
 
 
 ## The fighter's creature actor (claude/creatures' CreatureActor), or null.

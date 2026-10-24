@@ -222,10 +222,9 @@ func holds_ko(cid: StringName) -> bool:
 	return _held_ko.has(cid)
 
 
-## Pillar 4 while an action plays: the controller has already moved the order on, so the timeline head is who
-## acts next ("Next", not "Acting now"), and the help line names the action being played (the enemy and
-## automatic turns, and a Swell's input grade, already say it). hold_after calls it, right after the hand-off
-## has redrawn the order.
+## Pillar 4 while an action plays: the controller has already moved the order on, so the timeline head is who acts
+## next ("Next", not "Acting now"), and the help line names the action being played (the enemy and automatic turns,
+## and a Swell's input grade, already say it). hold_after calls it, right after the hand-off has redrawn the order.
 func _announce() -> void:
 	if _announced or _result == null:
 		return
@@ -525,11 +524,11 @@ func _react(r: Dictionary) -> void:
 		BattleClips.play(_ctl.stage.stand_in(StringName(str(r["target"]))), StringName(str(def["clip"])), speed)
 
 
-## A KO with a clip on the model just lets the stage apply it (the model plays its own KO); a stand-in
+## A KO with a clip on the model plays it (BattleClips.play_ko) and lets the stage apply it; a stand-in
 ## collapses procedurally in _apply until ko_end.
 func _beat_ko() -> void:
 	for k: StringName in _plan["kos"]:
-		if BattleClips.has_clip(_ctl.stage.stand_in(k), BattleClips.KO):
+		if BattleClips.play_ko(_ctl.stage.stand_in(k), speed):
 			_held_ko.erase(k)
 	_ctl.stage.refresh_ko(_engine)
 
@@ -547,6 +546,7 @@ func _release_kos() -> void:
 
 ## A revive: a fighter left collapsed by a procedural KO stands up on its mark again.
 func on_ko_state(cid: StringName, ko: bool) -> void:
+	BattleClips.ko_changed(_ctl.stage.stand_in(cid), ko)
 	if not ko and _ko_pose.has(cid) and not _held_ko.has(cid):
 		_ko_pose.erase(cid)
 		_rest(cid)

@@ -43,6 +43,19 @@ class ChoreoValidateTest(unittest.TestCase):
         self.assertTrue(self._errs(lambda c: c.update(item_style="nope")))
         self.assertTrue(self._errs(lambda c: c["styles"].pop("melee")))
 
+    def test_placeholder_clips(self) -> None:
+        pc = lambda c: c["placeholder_clips"]  # noqa: E731
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"].update(twirl=copy.deepcopy(pc(c)["clips"]["hit"]))))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"].pop("ko")))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"]["hit"].update(length_sec=0)))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"]["hit"]["keys"].append({"t": 9.0})))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"]["hit"]["keys"][1]["pose"].update(tail=[0, 0, 0])))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"]["hit"]["keys"][1]["pose"].update(head=[0, 0])))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"]["hit"]["keys"][1].update(hips_m="down")))
+        self.assertTrue(self._errs(lambda c: pc(c)["bones"].update(head=[])))
+        self.assertTrue(self._errs(lambda c: pc(c).update(min_roles=0)))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"]["victory"].update(loop="yes")))
+
     def test_travel_needs_its_distance(self) -> None:
         self.assertTrue(self._errs(lambda c: c["styles"]["melee"].pop("stop_short_m")))
         self.assertTrue(self._errs(lambda c: c["styles"]["cast"].pop("step_m")))
