@@ -2,7 +2,7 @@
 id: M1-ENV-09
 title: Vegetation follow-ups from review-sweep-O (last-LOD hysteresis gap, ShaderGlobals cache)
 role: environment
-status: review
+status: done
 owner_session: "worktree-agent-a573ddba06eb06eb2"
 depends_on: [M1-ENV-03]
 milestone: M1
@@ -16,7 +16,7 @@ These are review-sweep-O's findings on M1-ENV-03 v2 (commit 4ca20cc). None block
 - [x] **The last switch has a hysteresis gap** (vegetation_plant.gd `_apply_lod`, ~:143-150). With `lod_end_m` 45/120/400, LOD1 ends at 120 with an end margin of `lod_margin_m` (2 m). Now that the last LOD fades, its begin margin is 0. Under `FADE_DISABLED`, Godot's margin is hysteresis: a hidden LOD1 only reappears under 118 m, while LOD2 hides under 120 m. So a camera moving in through 118-120 m draws **neither** LOD of the palm, and a camera moving out through 120-122 m draws **both**. The 45 m switch is symmetric and fine. Fix it: when the last LOD fades, give the LOD before it an end margin of 0 too, or move the fade onto a separate instance. Then add a test that, for every switch, the outgoing end margin equals the incoming begin margin.
 - [x] **ShaderGlobals goes stale.** vegetation_test.gd:54-57 restores `PINNED_GLOBALS`, including `hymn_sun_direction`, through `RenderingServer.global_shader_parameter_set` directly. `ShaderGlobals` then still returns the test's sun to the next scene's AUTO plants. Restore through `ShaderGlobals.set_value`, and make `get_value`'s fallback the project setting's default (`shader_globals/<name>`), not `Vector3.UP`.
 - [x] **The shelter probe runs once.** Note in vegetation.md "Shelter" that a time-of-day change doesn't re-probe, or re-probe when ShaderGlobals writes a new sun.
-- [ ] Check the AUTO shelter against the Haluna collision the first-playable branch builds (`haluna_zone.gd` `collision.build()`), once that branch merges: confirm which physics layer it uses against `shelter_mask` = 1. **Routed** (Lead, 2026-10-24): the cloud track
+- [moved to M1-ENV-11] Check the AUTO shelter against the Haluna collision the first-playable branch builds (`haluna_zone.gd` `collision.build()`), once that branch merges: confirm which physics layer it uses against `shelter_mask` = 1. **Routed** (Lead, 2026-10-24): the cloud track
   on `claude/m2-slice` owns Haluna (`game/levels/ch02/**`), so this item is theirs. See Notes.
 
 ## Notes (2026-10-24, environment, worktree-agent-a573ddba06eb06eb2; M1-ENV-08 folded in)
@@ -74,3 +74,4 @@ These are review-sweep-O's findings on M1-ENV-03 v2 (commit 4ca20cc). None block
     palm).
   - The shelter-against-Haluna criterion is still open: it waits on the first-playable branch. So I'm leaving the
     status at review.
+- 2026-10-24 review-sweep-Q (rendering): **approve-with-fixes.** Criteria 1–3 verified in code. `VegetationPlant.lod_range` and `lod_mesh` handle the chain, including saltgrass's two chains. `ShaderGlobals.reset`, `default_value` and the listener group are there, and `get_value` falls back to the project.godot default. Shelter re-probes coalesce through a one-shot physics_frame connection, with a 0.5° threshold. The missing `node_paths` for `sun_node` is fixed. The PC's GPU check is rigorous: still, in and out sweeps, a real palm moving at 5 m/s, and the crossfade's cost per palm. Criterion 4 (the Haluna shelter) was routed to m2-slice, but nothing carried it, so it moves to **M1-ENV-11**, together with the capture_setup.gd ShaderGlobals bypass the notes found. M1-ENV-10 (the same hole in haluna_dresser and asset_import_rules) is already filed.
