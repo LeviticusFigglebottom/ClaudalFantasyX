@@ -2,7 +2,7 @@
   "_about": "M2-CRE-02 post-import rules for battle creatures (game/core/import/creatures_post_import.gd, AssetImportRules). Each glTF material slot maps to <asset dir>/materials/<slot>.tres, written by assets_src/creatures/common/write_materials.py. Godot's auto LODs; no authored LOD chains and no collision. The clips stay in the GLB's AnimationPlayer; CreatureActor sets their loop modes from game/data/creatures/creatures.json at runtime (docs/kb/art/creatures/pipeline.md).",
   "kind": "creatures",
   "script": "res://game/core/import/creatures_post_import.gd",
-  "assets": ["res://assets/creatures/drownbell/", "res://assets/creatures/reef_crab/"],
+  "assets": ["res://assets/creatures/drownbell/", "res://assets/creatures/hullgnaw/", "res://assets/creatures/reef_crab/"],
   "adoption_pending": {},
   "generate_lods": true,
   "materials": {

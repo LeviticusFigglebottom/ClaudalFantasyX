@@ -898,6 +898,7 @@
     {"id": "creature_drownbell", "scene": "res://game/levels/_tests/creatures/shots/creature_drownbell.tscn", "resolution": [960, 720]},
     {"id": "creature_drownbell_rim_broken", "scene": "res://game/levels/_tests/creatures/shots/creature_drownbell_rim_broken.tscn", "resolution": [960, 720]},
     {"id": "creature_drownbell_toll", "scene": "res://game/levels/_tests/creatures/shots/creature_drownbell_toll.tscn", "resolution": [960, 720]},
-    {"id": "creature_portraits", "scene": "res://game/levels/_tests/creatures/creature_portraits_shot.tscn", "resolution": [1280, 720]}
+    {"id": "creature_portraits", "scene": "res://game/levels/_tests/creatures/creature_portraits_shot.tscn", "resolution": [1280, 720]},
+    {"id": "creature_hullgnaw", "scene": "res://game/levels/_tests/creatures/shots/creature_hullgnaw.tscn", "resolution": [960, 720]}
   ]
 }

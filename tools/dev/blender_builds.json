@@ -76,6 +76,16 @@
         ["{blender}", "--python", "assets_src/creatures/drownbell/build_drownbell.py", "--", "--out", "assets/creatures/drownbell/drownbell.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "drownbell"]
       ]
+    },
+    {
+      "id": "creature_hullgnaw",
+      "owner": "character",
+      "sources": ["assets_src/creatures/hullgnaw/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/hullgnaw/*.glb", "assets/creatures/hullgnaw/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/hullgnaw/build_hullgnaw.py", "--", "--out", "assets/creatures/hullgnaw/hullgnaw.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "hullgnaw"]
+      ]
     }
   ]
 }

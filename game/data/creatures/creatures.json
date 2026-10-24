@@ -25,6 +25,10 @@
       },
       "break_parts": {"toll": {"whole": ["Rim"], "broken": ["RimBroken"]}}
     },
+    "hullgnaw": {
+      "scene": "res://game/creatures/hullgnaw/hullgnaw_battle.tscn",
+      "ko_fade_sec": 0.8
+    },
     "reef_crab": {
       "scene": "res://game/creatures/reef_crab/reef_crab_battle.tscn",
       "clip_by_skill": {"brine_spit": "cast"}
