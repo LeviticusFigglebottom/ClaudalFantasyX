@@ -2,7 +2,7 @@
 id: M2-FP-10
 title: Dialogue-range character key light in the cutscene rig
 role: cinematics
-status: review
+status: done
 reviewer: rendering
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M2-FP-01, M1-RND-20]
@@ -27,6 +27,7 @@ From the PC GPU session's RND-20 follow-up (docs/kb/qa/gpu/2026-10-23-rnd-18-20-
 - **Open:** the GPU check of Cutscene A (nose and mouth-corner artefacts, cost) is with the PC session via the Lead. Also worth judging there: whether Haluna's `face_key_shadow_normal_bias = 3.0` on the zone sun can go back to the mood scene's 1.0 now that close-ups no longer use the sun on faces (RND-20 S1 recommends 1.0).
 
 ## Review log
+- 2026-10-24 review-sweep-Q (rendering): **approve.** Both of the PC's requested changes are in. H05 and H06 carry `key_pitch_deg = 30`. The key light is on layer **19**, which `layer_mask()` turns into `1 << 18`, while `UndertowHalfRes.BODY_LAYER` is `1 << 19` (layer 20). So they differ, and `test_the_key_layer_is_not_the_undertow_body_layer` checks against the class constant itself. No other system uses layer 19. The PC's GPU check (no nose or mouth-corner artefacts, ≤ 0.03 ms) is adequate. `--filter=cutscene`: 33/0.
 
 ## Follow-ups done (m2-slice, 2026-10-24)
 - H05 and H06 set `key_pitch_deg = 30` (haluna.tscn); `test_haluna_zone` asserts it.
