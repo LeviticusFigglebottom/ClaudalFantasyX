@@ -125,7 +125,8 @@ The plan in §4 is now the game's mix: the `Audio` autoload (ADR 0031; docs/kb/t
 - **The loudness gate:** `tools/audio/targets.py` lists every file's target (the table in §2, made exact per
   family), and `tools/tests/test_audio_loudness.py` decodes every shipped `.ogg` and checks its integrated or
   momentary loudness and its true peak, that each file is at most 5 MB, and that all audio stays inside the slice
-  budget (24 MiB). The boss stems are checked as a stack (−16 together; stem 1 alone quieter).
+  budget (24 MiB for the slice; 48 MiB now, for the Act I cues: see "Budget" below). The boss stems are checked as a stack
+  per cue (−16 together; stem 1 alone quieter).
 - **Encoding exceptions:** the ambience beds are Vorbis q1 (noise-like beds lose nothing audible there; at q3 the six
   came to 3.1 MiB against their 2.5 MiB budget). Battle v2 and the Drownbell are q3.5 like v1; the piano cues q4.
 

@@ -20,6 +20,11 @@ const LOOPING_CUES: Array[String] = [
 	"res://assets/audio/music/corrow_seawall.ogg",
 	"res://assets/audio/music/hullgnaw.ogg",
 	"res://assets/audio/music/spar_wraith.ogg",
+	"res://assets/audio/music/cinder_matron_p1.ogg",
+	"res://assets/audio/music/cinder_matron_p2.ogg",
+	"res://assets/audio/music/undertows_reach_p1.ogg",
+	"res://assets/audio/music/undertows_reach_p2.ogg",
+	"res://assets/audio/music/undertows_reach_p3.ogg",
 ]
 const SAMPLE_RATE := 44100
 const MIN_LENGTH_S := 60.0

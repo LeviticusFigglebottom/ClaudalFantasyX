@@ -87,6 +87,27 @@
     "spar_wraith": {
       "file": "res://assets/audio/music/spar_wraith.ogg",
       "_note": "Ch4 boss, the Spar-Wraith on the drowned trader's deck (M3-AUD-08); no battle.encounters row until the encounter exists"
+    },
+    "cinder_matron": {
+      "stems": [
+        "res://assets/audio/music/cinder_matron_p1.ogg",
+        "res://assets/audio/music/cinder_matron_p2.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch5 boss (M3-AUD-09). No encounter or phase row until the fight exists; intended: battle.encounters cinder_matron -> cinder_matron, and phase `crust_broken` (Kerrid breaks its armour) -> stems_on [1] over 3 s"
+    },
+    "undertows_reach": {
+      "stems": [
+        "res://assets/audio/music/undertows_reach_p1.ogg",
+        "res://assets/audio/music/undertows_reach_p2.ogg",
+        "res://assets/audio/music/undertows_reach_p3.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch8 boss (M3-AUD-09). No encounter or phase rows until the fight exists; intended: battle.encounters undertows_reach -> undertows_reach, phase `reach_strikes` -> stems_on [1] over 4 s, phase `wall_falls` (the scripted escape) -> stems_on [2] over 2 s"
     }
   },
   "zones": [

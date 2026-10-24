@@ -465,3 +465,13 @@ Rules:
 | assets/audio/music/hullgnaw.loop.json | assets_src/music/hullgnaw.py + tools/audio/synth/looping.py | python3 assets_src/music/hullgnaw.py | Audio (claude/audio, M3-AUD-08) | 2026-10-24 | original |
 | assets/audio/music/spar_wraith.ogg | assets_src/music/spar_wraith.py + tools/audio/synth/ | python3 assets_src/music/spar_wraith.py | Audio (claude/audio, M3-AUD-08) | 2026-10-24 | original |
 | assets/audio/music/spar_wraith.loop.json | assets_src/music/spar_wraith.py + tools/audio/synth/looping.py | python3 assets_src/music/spar_wraith.py | Audio (claude/audio, M3-AUD-08) | 2026-10-24 | original |
+| assets/audio/music/cinder_matron_p1.ogg | assets_src/music/cinder_matron.py + tools/audio/synth/ | python3 assets_src/music/cinder_matron.py | Audio (claude/audio, M3-AUD-09) | 2026-10-24 | original |
+| assets/audio/music/cinder_matron_p1.loop.json | assets_src/music/cinder_matron.py + tools/audio/synth/looping.py | python3 assets_src/music/cinder_matron.py | Audio (claude/audio, M3-AUD-09) | 2026-10-24 | original |
+| assets/audio/music/cinder_matron_p2.ogg | assets_src/music/cinder_matron.py + tools/audio/synth/ | python3 assets_src/music/cinder_matron.py | Audio (claude/audio, M3-AUD-09) | 2026-10-24 | original |
+| assets/audio/music/cinder_matron_p2.loop.json | assets_src/music/cinder_matron.py + tools/audio/synth/looping.py | python3 assets_src/music/cinder_matron.py | Audio (claude/audio, M3-AUD-09) | 2026-10-24 | original |
+| assets/audio/music/undertows_reach_p1.ogg | assets_src/music/undertows_reach.py + tools/audio/synth/ | python3 assets_src/music/undertows_reach.py | Audio (claude/audio, M3-AUD-09) | 2026-10-24 | original |
+| assets/audio/music/undertows_reach_p1.loop.json | assets_src/music/undertows_reach.py + tools/audio/synth/looping.py | python3 assets_src/music/undertows_reach.py | Audio (claude/audio, M3-AUD-09) | 2026-10-24 | original |
+| assets/audio/music/undertows_reach_p2.ogg | assets_src/music/undertows_reach.py + tools/audio/synth/ | python3 assets_src/music/undertows_reach.py | Audio (claude/audio, M3-AUD-09) | 2026-10-24 | original |
+| assets/audio/music/undertows_reach_p2.loop.json | assets_src/music/undertows_reach.py + tools/audio/synth/looping.py | python3 assets_src/music/undertows_reach.py | Audio (claude/audio, M3-AUD-09) | 2026-10-24 | original |
+| assets/audio/music/undertows_reach_p3.ogg | assets_src/music/undertows_reach.py + tools/audio/synth/ | python3 assets_src/music/undertows_reach.py | Audio (claude/audio, M3-AUD-09) | 2026-10-24 | original |
+| assets/audio/music/undertows_reach_p3.loop.json | assets_src/music/undertows_reach.py + tools/audio/synth/looping.py | python3 assets_src/music/undertows_reach.py | Audio (claude/audio, M3-AUD-09) | 2026-10-24 | original |
