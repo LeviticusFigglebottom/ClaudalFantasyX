@@ -54,6 +54,7 @@
 | audio | `session_01FtDSYm5dJHkdC3RqXsDjif` | `claude/audio` | M2-AUD-01 → the slice's 3 final music cues (the human judges, §16 Q3) → battle SFX for the VFX library → field ambience → the mixing pass |
 | env-art | `session_01QmWUfYxd8DMg7XM3MyR6ps` | `claude/env-art` | M2-ENV-03 shrine kit → M1-ENV-10 → Haluna final-quality kit → Art sign-offs M2-ART-01/02/03 → the route |
 | ui | `session_01NyuYPSZn7o7gYirTvz4zjs` | `claude/ui` | M2-UI-03 → hide the Call row until bound → M2-UI-06 shop and inn → UI polish pass |
+| creatures | `session_01CYks9e592YBEfygyTawcJD` | `claude/creatures` | Enemy and boss models (all 5 enemies were primitive stand-ins): design sheets → creature pipeline → the `model` field in enemies.json → reef_crab, lantern_eel, gull_harrier, spawn_polyp, then the Drownbell → shots → bestiary art |
 These were created in default permission mode; the human sets Auto in each one's mode dropdown. m2-slice was told that ENV-03, UI-06 and UI-03 moved off its queue.
 
 ### 3a. Standing queues (2026-10-24, also sent by message; messages can arrive hours late, so this section is authoritative)

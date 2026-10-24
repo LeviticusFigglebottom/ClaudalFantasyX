@@ -6,7 +6,7 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 > **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
 > session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
-> **This copy, on `gpu/arc-03-remeasure`, is the newest.**
+> **This copy, on `gpu/m1-rnd-29-first-launch`, is the newest.**
 
 ## PC setup for a new session
 
@@ -115,6 +115,7 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/m1-rnd-29-first-launch | **M1-RND-29 in review** (reviewer Environment) | First-run pipeline warm-up behind the boot card (marker `user://pipeline_warm.cfg`); fresh-install zone entries 0.46-1.33 s (Haluna was 2.5-4.3 s), hidden ≤ 221 ms, visible ≤ 23 ms. One frame left: Low's first 3D frame 1.35 s on the first launch only. ShaderPrewarm measures wall time (Godot caps delta at ~150 ms; BootCard filed M2-ARC-05). |
 | gpu/arc-03-remeasure | **done** (Lead request) | M2-ARC-03 re-measured on hardware, recorded in its Review log: title visible worst 0.6-0.8 ms on Low/High/Ultra (was 168-265); a real perf-build launch reports reveal true, max_visible_frame_ms 7.95 cold / 2.11 warm, reveal wait 1.7-1.9 s (worst frame 148-150 ms). The slice sweep gains a `launch` segment and prints the router's last_swap_stats. |
 | gpu/m2-rnd-08-low-storm-cost | **M2-RND-08 in review** (reviewer Environment) | Low's storm shells read the baked lattice (shared `undertow_lattice.gdshaderinc`) and skip wounds off the wall band: Low storm cost 1.32-1.65 → 0.31-0.66 ms at 1440p, under High's. `undertow_horizon_low` drifts 0.025 (re-approve). |
 | gpu/m2-rnd-07-flood-hitch | **M2-RND-07 in review** (reviewer Combat) | The Drownbell Flood's mid-battle hitch was the first turbulent particle emitter (31-32 ms of main-thread build) of polyp_rise. `BattleVfx.prebuild()` at attach builds every effect layer's emitter under the fade. Flood 1.7-1.8 ms on Low/High/Ultra, warm and fresh install (was 39-44, 79 cold); battle entries' hidden worst frame 0.35-0.6 s. Report: `docs/kb/qa/gpu/2026-10-24-rnd-07-flood-hitch.md` |
@@ -151,7 +152,7 @@ lands; until then, base on the current head (a514c06, then 54425e2).
 - **4. ADR 0029 follow-ups: in review** as M1-RND-27 on `gpu/adr-0029-prewarm-followups` (export baker waiting on export templates).
 - **5. Slice perf sweep: done** on `gpu/slice-perf-sweep`; filed M2-ENV-05, M2-ARC-03 and M2-RND-07.
 - **5b. M1-RND-28: in review** on `gpu/m1-rnd-28-shader-baker`; filed M2-ARC-04 (a release-build blocker) and M1-RND-29.
-- **Lead's queue after it (2026-10-24):** M2-RND-07 (in review on `gpu/m2-rnd-07-flood-hitch`), then the Low-preset storm cost (M2-RND-08, in review), then the M2-ARC-03 re-measure (done), then M1-RND-29 (next) (file and fix), then M1-RND-29 (first-launch pipelines), then M1-QA-09 when the Lead says M1-CHR-14 has landed (check the braid attachment, clipping and limb seams across the clips).
+- **Lead's queue after it (2026-10-24):** M2-RND-07 (in review on `gpu/m2-rnd-07-flood-hitch`), then the Low-preset storm cost (M2-RND-08, in review), then the M2-ARC-03 re-measure (done), then M1-RND-29 (in review); the owner's direction (2026-10-24): the game ships on the latest Godot (4.7.2 at C:/Users/Aaron/Tools/godot-4.7.2); a port check in a worktree is next (file and fix), then M1-RND-29 (first-launch pipelines), then M1-QA-09 when the Lead says M1-CHR-14 has landed (check the braid attachment, clipping and limb seams across the clips).
 - **6. M1-QA-09:** only after M1-CHR-12 merges (the Lead will say).
 
 Merge notes from the previous queue:

@@ -611,6 +611,9 @@ func _push_static() -> void:
 		_set_all(m, params)
 	if body_material != null:
 		body_material.set_shader_parameter(PARAM_NOISE_TEX, _noise_texture())
+	# The Low shells read the same lattice (M2-RND-08).
+	for m in shell_materials:
+		m.set_shader_parameter(PARAM_NOISE_TEX, _noise_texture())
 	if lid_material != null:
 		lid_material.set_shader_parameter(&"lid_height_m", lid_height())
 

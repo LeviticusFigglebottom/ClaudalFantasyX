@@ -11,6 +11,10 @@ render_mode blend_mix, unshaded, cull_disabled, depth_draw_opaque, fog_disabled,
 
 #define HYMN_QUALITY HYMN_QUALITY_LOW
 #include "res://game/shaders/include/globals.gdshaderinc"
+// The baked lattice (M2-RND-08): one fetch per octave instead of eight hashes, as on the other tiers.
+uniform highp sampler3D noise_tex : filter_linear, repeat_enable;
+uniform float noise_texels = 64.0;
+#include "res://game/shaders/undertow/undertow_lattice.gdshaderinc"
 #include "res://game/shaders/undertow/undertow_common.gdshaderinc"
 
 #define UNDERTOW_UNIT_HALF 0.5
@@ -78,18 +82,19 @@ void fragment() {
 	float tb;
 	float wa;
 	undertow_phases(ta, tb, wa);
-	float na = hymn_fbm3(undertow_flow_point(p, ta) / noise_scale_m, UNDERTOW_SHELL_OCTAVES, 2.0, 0.5);
-	float nb = hymn_fbm3(undertow_flow_point(p, tb) / noise_scale_m, UNDERTOW_SHELL_OCTAVES, 2.0, 0.5);
+	float na = undertow_fbm(undertow_flow_point(p, ta) / noise_scale_m, UNDERTOW_SHELL_OCTAVES);
+	float nb = undertow_fbm(undertow_flow_point(p, tb) / noise_scale_m, UNDERTOW_SHELL_OCTAVES);
 	float n = mix(nb, na, wa);
 	float env = max(undertow_envelope(p), shell_kind == 1 ? 0.6 : 0.0);
 	float d = clamp((n + env - 1.0 - coverage_bias) * 2.0 * (1.0 + env), 0.0, 1.0);
-	float pocket;
-	float lip;
-	float halo;
+	float pocket = 0.0;
+	float lip = 0.0;
+	float halo = 0.0;
 	float H = undertow_height();
 	float h = p.y / H;
 	float on_wall = (shell_kind == 0 ? 1.0 : 0.0) * undertow_wound_band(h);
-	float seam = undertow_wound(p, pocket, lip, halo) * on_wall;
+	// Wounds open on the wall shells' band only: the canopy and the rest skip the wound noise.
+	float seam = on_wall > 0.0 ? undertow_wound(p, pocket, lip, halo) * on_wall : 0.0;
 	pocket *= on_wall;
 	lip *= on_wall;
 	halo *= on_wall;
