@@ -48,6 +48,54 @@ class ShellShrineKitTest(unittest.TestCase):
         cls.d = json.loads(DATA.read_text(encoding="utf-8"))["shell_shrine"]
         cls.layout = cls.d["layout"]
 
+    def test_no_roof_shell_shades_a_shaft(self) -> None:
+        roof = si.build_roof_fan()[0]
+        p = np.asarray(roof.pos)
+        t = np.asarray(roof.tris)
+        a, b, c = p[t[:, 0]], p[t[:, 1]], p[t[:, 2]]
+        d = -si.sun_travel()
+        for key, (x, z) in si.SHRINE_LAYOUT["oculi"].items():
+            r = si.OCULUS_R_M[key] * 0.5
+            for dx, dz in ((0.0, 0.0), (r, 0.0), (-r, 0.0), (0.0, r), (0.0, -r)):
+                o = np.array([x + dx, si.OCULUS_TARGET_Y[key], z + dz])
+                self.assertFalse(_rays_hit(o, d, a, b, c), f"a roof shell shades the {key} shaft at {dx}, {dz}")
+
+    def test_roof_shells_ride_above_the_vault(self) -> None:
+        p = np.asarray(si.build_roof_fan()[0].pos)
+        inside = si.hall_distance(p[:, 0], p[:, 2]) < si.HALL_R_M
+        self.assertEqual(int((inside & (p[:, 1] < si.vault_y(p[:, 0], p[:, 2]))).sum()), 0, "a shell pierces the vault")
+
+    def test_shrine_generators_are_deterministic(self) -> None:
+        for name in ("shrine_basin_bowl", "shrine_channel_straight", "shrine_wall_curved"):
+            with self.subTest(target=name):
+                x, y = si.TARGETS[name](), si.TARGETS[name]()
+                for p, q in zip(x, y):
+                    self.assertEqual(p.tris, q.tris)
+                    np.testing.assert_array_equal(np.asarray(p.pos), np.asarray(q.pos))
+
+    def test_the_bowl_lip_faces_minus_z(self) -> None:
+        """The level yaws the bowl so -Z points at the outlet: the open spout must be there."""
+        mb = si.build_basin_bowl()[0]
+        p = np.asarray(mb.pos)
+        self.assertLess(p[:, 2].min(), -si.BASIN_R_M - 0.3, "the spout reaches past the rim at -Z")
+        self.assertLess(p[:, 2].max(), si.BASIN_R_M + 0.1)
+
+
+
+def _level_uses_kit() -> bool:
+    return "room" in json.loads(DATA.read_text(encoding="utf-8"))["shell_shrine"]
+
+
+@unittest.skipUnless(_level_uses_kit(), "the shrine level is on its greybox until the Lead picks a kit (M2-ENV-03 notes)")
+class ShellShrineLevelUsesKitTest(unittest.TestCase):
+    """The level side: the trial's JSON and scene agree with the kit. Runs once the level is dressed with
+    this kit (the JSON has its `room` block)."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.d = json.loads(DATA.read_text(encoding="utf-8"))["shell_shrine"]
+        cls.layout = cls.d["layout"]
+
     def test_the_hall_is_cut_for_the_trial_layout(self) -> None:
         for key in ("inner_pool", "side_pool", "b3"):
             self.assertEqual(tuple(self.layout[key]), si.SHRINE_LAYOUT[key], f"{key}: rebuild the kit for the move")
@@ -92,38 +140,6 @@ class ShellShrineKitTest(unittest.TestCase):
         want = si.sun_travel()
         angle = math.degrees(math.acos(float(np.clip(np.dot(travel, want) / np.linalg.norm(travel), -1.0, 1.0))))
         self.assertLess(angle, 0.5, "re-aim the Oculus light (or rebuild the vault for the new sun)")
-
-    def test_no_roof_shell_shades_a_shaft(self) -> None:
-        roof = si.build_roof_fan()[0]
-        p = np.asarray(roof.pos)
-        t = np.asarray(roof.tris)
-        a, b, c = p[t[:, 0]], p[t[:, 1]], p[t[:, 2]]
-        d = -si.sun_travel()
-        for key, (x, z) in si.SHRINE_LAYOUT["oculi"].items():
-            r = si.OCULUS_R_M[key] * 0.5
-            for dx, dz in ((0.0, 0.0), (r, 0.0), (-r, 0.0), (0.0, r), (0.0, -r)):
-                o = np.array([x + dx, si.OCULUS_TARGET_Y[key], z + dz])
-                self.assertFalse(_rays_hit(o, d, a, b, c), f"a roof shell shades the {key} shaft at {dx}, {dz}")
-
-    def test_roof_shells_ride_above_the_vault(self) -> None:
-        p = np.asarray(si.build_roof_fan()[0].pos)
-        inside = si.hall_distance(p[:, 0], p[:, 2]) < si.HALL_R_M
-        self.assertEqual(int((inside & (p[:, 1] < si.vault_y(p[:, 0], p[:, 2]))).sum()), 0, "a shell pierces the vault")
-
-    def test_shrine_generators_are_deterministic(self) -> None:
-        for name in ("shrine_basin_bowl", "shrine_channel_straight", "shrine_wall_curved"):
-            with self.subTest(target=name):
-                x, y = si.TARGETS[name](), si.TARGETS[name]()
-                for p, q in zip(x, y):
-                    self.assertEqual(p.tris, q.tris)
-                    np.testing.assert_array_equal(np.asarray(p.pos), np.asarray(q.pos))
-
-    def test_the_bowl_lip_faces_minus_z(self) -> None:
-        """The level yaws the bowl so -Z points at the outlet: the open spout must be there."""
-        mb = si.build_basin_bowl()[0]
-        p = np.asarray(mb.pos)
-        self.assertLess(p[:, 2].min(), -si.BASIN_R_M - 0.3, "the spout reaches past the rim at -Z")
-        self.assertLess(p[:, 2].max(), si.BASIN_R_M + 0.1)
 
 
 if __name__ == "__main__":
