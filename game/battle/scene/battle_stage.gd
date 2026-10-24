@@ -16,6 +16,8 @@ var _party_slots: Array[Marker3D] = []
 var _enemy_slots: Array[Marker3D] = []
 ## Combatant id -> FighterStandIn.
 var _fighters: Dictionary = {}
+## Enemy combatant id -> the enemy slot index it stands on.
+var _enemy_slot_of: Dictionary = {}
 var _shake_tween: Tween
 
 @onready var camera: Camera3D = %BattleCamera
@@ -68,8 +70,35 @@ func spawn(engine: BattleEngine) -> void:
 	_fighters.clear()
 	for i in engine.party_active.size():
 		_place(engine.party_active[i].id, _party_slots[i])
+	_enemy_slot_of.clear()
 	for i in engine.enemies.size():
-		_place(engine.enemies[i].id, _enemy_slots[mini(i, _enemy_slots.size() - 1)])
+		_seat_enemy(engine.enemies[i].id, mini(i, _enemy_slots.size() - 1))
+
+
+## Seats an enemy that joined mid-battle (BossMechanics spawns and summons) in the first enemy
+## slot nobody standing holds; a fallen fighter's stand-in there gives way. If every slot is
+## held, it shares the last one.
+func add_enemy(c: BattleCombatant, engine: BattleEngine) -> void:
+	var held: Dictionary = {}
+	for e in engine.enemies:
+		if e != c and e.is_alive() and _enemy_slot_of.has(e.id):
+			held[int(_enemy_slot_of[e.id])] = true
+	var slot := _enemy_slots.size() - 1
+	for i in _enemy_slots.size():
+		if not held.has(i):
+			slot = i
+			break
+	for cid: StringName in _enemy_slot_of.keys():
+		if int(_enemy_slot_of[cid]) == slot and not held.has(slot) and _fighters.has(cid):
+			(_fighters[cid] as FighterStandIn).queue_free()
+			_fighters.erase(cid)
+			_enemy_slot_of.erase(cid)
+	_seat_enemy(c.id, slot)
+
+
+func _seat_enemy(cid: StringName, slot: int) -> void:
+	_place(cid, _enemy_slots[slot])
+	_enemy_slot_of[cid] = slot
 
 
 ## Re-seats the active party after a swap (slot i shows party_active[i]).

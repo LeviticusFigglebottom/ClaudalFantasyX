@@ -2,7 +2,7 @@
 id: M2-CMB-02
 title: Swell second-life loop (design): a masher with Swell still wins 32%
 role: combat
-status: review
+status: done
 owner_session: "worktree-agent-a64f55e43791c2ef3"
 depends_on: [M2-NIT-03]
 milestone: M2
@@ -28,3 +28,13 @@ M2-NIT-03 cut Shallows Verse to power 4; the masher-with-Swell rate fell from 37
   - the one controller line (`_show_pick`'s `group_label`).
 
 ## Review log
+- 2026-10-24 review-sweep-O (progression): **approve.** Option (a) removes the loop rather than moving it, and the numbers reproduce.
+  - **Re-run:** `tools/balance/sim.py --seeds 1000 --check` with the report in scratch, so the repo is untouched, gives rc 0. `naive_swell` is **23.8%** on `sandbox_reef` and **39.1%** on `sandbox_reef_tier1`, exactly as recorded, under the 25% and 45% lines. Every band holds: naive 10.9 / 25.1, role_answer 97.1 / 98.4, smart 100 / 100 with the mean-turn ease floors met. Drownbell is pending (not authored on this branch).
+  - **What I read:** fb49cc0, ef096bb and b1fdfdd. These cover:
+    - battle_engine.gd `living_other_allies_of`, `_hit_set` and `_valid_targets` (the actor is filtered out for `all_other_allies`);
+    - battle_menus.gd `skill_candidates`, `swell_rows` (greyed with nobody else standing), `group_label` and `_target_text`;
+    - the one controller line, sim_policy.gd and validate_data's skill-only target;
+    - the two loc keys, and the formulas trio (formulas.md row, test_formulas.gd pin, formulas.gd unchanged, so the rule holds).
+  - **Other `all_allies` switches:** I grepped them all. enemy_ai.gd uses selectors, not skill targets. ItemBattleAction has its own target set. `begins_with("all_")` in the controller and menus covers the new kind. Nothing is missed.
+  - **Checks:** Godot `--filter=` battle 307/0 failed, swell 124/0 (includes test_battle_swell_others.gd). gdlint and gdformat are clean.
+  - **Note for the Lead (no task):** the cost is that careful players see the Verse about 0.09 times a fight. A playtest should judge whether that is too rare, and the task already names the lever (the fill, not the target).

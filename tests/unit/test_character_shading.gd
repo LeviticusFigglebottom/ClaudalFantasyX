@@ -12,6 +12,11 @@ const PREWARM_JSON := "res://game/data/settings/prewarm_materials.json"
 const STAGE_SCENE := "res://game/levels/_tests/character_shading/shading_test.tscn"
 const ASHA_STAGE := "res://game/levels/_tests/characters/asha/asha_stage.tscn"
 const ASHA_CLOTH := "res://assets/characters/asha/materials/cloth.tres"
+## The sleeve band-id maps (M1-CHR-08): label textures, imported without mipmaps.
+const BAND_ID_MAPS: Array[String] = [
+	"res://assets/characters/shader_test/sleeve_bandid.png",
+	"res://assets/characters/asha/textures/asha_sleeve_bandid.png",
+]
 ## Shadow normal bias that clears the shadow-terminator banding on Asha's cheeks at dialogue range
 ## (M1-QA-05 / M1-CHR-04 GPU sweep: 1.0 bands, 2.0 leaves a faint residue, 2.5 is clean on the cheek;
 ## M1-RND-20 raised it to 4.5 for the smiling mouth corner's fold, which still striped at 2.5 and 3.5).
@@ -28,6 +33,8 @@ const REQUIRED := {
 	"eye": ["tex_iris", "ior", "anterior_depth_m", "iris_radius_m", "pupil_dilation"],
 	"cloth": ["tex_cloth_mask", "sheen_roughness", "gold_anisotropy", "lacquer_coat_roughness", "verse_count"],
 	"cloth_sheer": ["tex_band_id", "verse_count", "sleeve_dissolve", "transmission", "wind_response"],
+	"mouth":
+	["col_albedo", "tex_orm", "roughness", "specular", "ao_light_affect", "cavity_bounce", "col_cavity_bounce"],
 }
 
 
@@ -358,6 +365,19 @@ func test_asha_vest_lacquer_is_leather_not_plastic() -> void:
 	assert_true(float(m.get_shader_parameter("lacquer_coat_strength")) < 1.0, "partial coat")
 
 
+## M1-CHR-08: id maps are labels, sampled nearest; they import (and load) without mipmaps.
+func test_band_id_maps_import_without_mipmaps() -> void:
+	for path: String in BAND_ID_MAPS:
+		var cfg := ConfigFile.new()
+		assert_eq(cfg.load(path + ".import"), OK, "%s.import" % path)
+		assert_false(bool(cfg.get_value("params", "mipmaps/generate", true)), "%s: mipmaps off" % path)
+		var tex := load(path) as Texture2D
+		assert_true(tex != null, "%s loads" % path)
+		var img := tex.get_image()
+		assert_true(img != null, "%s has an image" % path)
+		assert_false(img.has_mipmaps(), "%s: no mip levels" % path)
+
+
 func _table() -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string(TIERS_JSON)) as Dictionary
 
@@ -395,3 +415,22 @@ func _preint(e: Dictionary, x: float, u: float) -> Vector3:
 
 func _host() -> Node:
 	return (Engine.get_main_loop() as SceneTree).current_scene
+
+
+func test_hero_mouth_interiors_use_the_mouth_family_with_a_cavity_bounce() -> void:
+	# M1-RND-21: the lips shadow an open mouth from every light, so the interior needs the bounce term
+	# (on every tier, not gated by quality) or grief goes near-black.
+	var family: Array[String] = []
+	for tier: String in CharacterShaderTiers.tiers():
+		family.append(CharacterShaderTiers.shader_path("mouth", tier))
+	for mat_name: String in ["mouth", "teeth", "tongue"]:
+		var mat := load("res://assets/characters/asha/materials/%s.tres" % mat_name) as ShaderMaterial
+		assert_true(mat != null and family.has(mat.shader.resource_path), "Asha's %s uses the mouth family" % mat_name)
+	var body := FileAccess.get_file_as_string("res://game/shaders/character/character_mouth_body.gdshaderinc")
+	var light := body.substr(body.find("void light()"))
+	var bounce := light.find("cavity_bounce")
+	assert_true(bounce > 0, "light() adds the cavity bounce")
+	assert_false(light.substr(0, bounce).contains("#if"), "the bounce is on every tier")
+	var decl := body.substr(body.find("uniform float cavity_bounce"))
+	var default := float(decl.substr(decl.find("=") + 1, decl.find(";") - decl.find("=") - 1).strip_edges())
+	assert_true(default > 0.0, "the bounce is on by default")

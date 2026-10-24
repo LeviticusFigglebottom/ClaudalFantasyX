@@ -19,6 +19,9 @@ const FALLS := &"_falls"
 ## Pseudo-status for status_changes: the candidate action damages this sleeping unit, which
 ## wakes it (applied before any statuses the action adds).
 const WAKES := &"_wakes"
+## Pseudo-status for status_changes: the candidate action breaks this unit's charge (its weak
+## point's last hit), so the telegraphed skill leaves the preview.
+const BREAKS_CHARGE := &"_breaks_charge"
 
 var _roster: Array[BattleCombatant] = []
 
@@ -60,6 +63,9 @@ func next_actor() -> BattleCombatant:
 ## prediction only (BattleEngine.preview_swap uses it; nothing is mutated).
 ## `revived` lists fallen combatants the candidate action brings back (revive items): they are
 ## predicted from their time_overrides entry.
+## A charging unit (BattleCombatant.charge_skill, e.g. the Drownbell's toll) shows the charged
+## skill as the `intent` of the own turn it fires on, acts with that skill's rank, and an
+## all-foes delay push in it pushes every predicted foe (diminishing returns as in play).
 func predict(
 	count: int = PREVIEW_LENGTH,
 	preview_actor: BattleCombatant = null,
@@ -84,15 +90,23 @@ func predict(
 		for sid: StringName in changes:
 			_sim_add_status(timed, sid, int(changes[sid]))
 		var t: int = time_overrides.get(c, c.next_time)
+		var prior := c.delays_taken
 		var first_is_preview := false
 		if c == preview_actor:
 			t += Formulas.action_delay(c.agility, preview_rank, _sim_speed(timed))
 			first_is_preview = true
+			prior = 0
 			if _sim_tick(timed):
 				continue  # Doom runs out at the end of this very action
 		if delay_target != null and c == delay_target and delay_ranks > 0:
-			t += Formulas.delay_push(c.agility, delay_ranks, c.delays_taken, c.delay_immune)
-		sims.append({"c": c, "idx": i, "t": t, "first_preview": first_is_preview, "timed": timed})
+			var push := Formulas.delay_push(c.agility, delay_ranks, prior, c.delay_immune)
+			t += push
+			prior += 1 if push > 0 else 0
+		var charge_k := c.charge_left - 1 if c.is_charging() and not changes.has(BREAKS_CHARGE) else -1
+		var sim := {"c": c, "idx": i, "t": t, "first_preview": first_is_preview, "timed": timed}
+		sim["prior"] = prior
+		sim["charge_k"] = charge_k
+		sims.append(sim)
 	var out: Array[TurnEntry] = []
 	while out.size() < count and not sims.is_empty():
 		var bi := 0
@@ -104,12 +118,36 @@ func predict(
 		var timed: Dictionary = s["timed"]
 		var skipped := timed.has(&"stop") or timed.has(&"sleep")
 		var doom := maxi(int(timed.get(&"doom", 0)), 0)
-		out.append(TurnEntry.new(c.id, int(s["t"]), c.team, skipped, bool(s["first_preview"]), doom))
+		var intent := c.charge_skill if not skipped and int(s["charge_k"]) == 0 else &""
+		out.append(TurnEntry.new(c.id, int(s["t"]), c.team, skipped, bool(s["first_preview"]), doom, intent))
 		s["first_preview"] = false
-		s["t"] = int(s["t"]) + Formulas.action_delay(c.agility, Formulas.DEFAULT_RANK, _sim_speed(timed))
+		s["prior"] = 0
+		var rank := Formulas.DEFAULT_RANK
+		if intent != &"":
+			rank = int(c.charge_row.get("rank", Formulas.DEFAULT_RANK))
+			_sim_charge_push(sims, c)
+		if not skipped:
+			s["charge_k"] = int(s["charge_k"]) - 1
+		s["t"] = int(s["t"]) + Formulas.action_delay(c.agility, rank, _sim_speed(timed))
 		if _sim_tick(timed):
 			sims.remove_at(bi)
 	return out
+
+
+## A charged all-foes skill with a delay push (the toll) firing in the prediction: every foe of
+## `actor` still predicted is pushed back as BattleEngine.push_delay would push it.
+static func _sim_charge_push(sims: Array[Dictionary], actor: BattleCombatant) -> void:
+	var ranks := int(actor.charge_row.get("delay_ranks", 0))
+	if ranks <= 0 or str(actor.charge_row.get("target", "")) != "all_foes":
+		return
+	for other in sims:
+		var o: BattleCombatant = other["c"]
+		if o.team == actor.team:
+			continue
+		var push := Formulas.delay_push(o.agility, ranks, int(other["prior"]), o.delay_immune)
+		other["t"] = int(other["t"]) + push
+		if push > 0:
+			other["prior"] = int(other["prior"]) + 1
 
 
 ## Copies the time-relevant statuses of `c` ({status: turns left, -1 = until cured}).

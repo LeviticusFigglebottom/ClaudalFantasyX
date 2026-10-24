@@ -94,22 +94,29 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
                      {"tex_albedo": "asha_sleeve_albedo.png", "tex_normal": "asha_sleeve_normal.png",
                       "tex_cloth_mask": "asha_sleeve_clothmask.png", "tex_band_id": "asha_sleeve_bandid.png",
                       "tex_detail_normal": "asha_thread_detail_normal.png"}),
-}
-STANDARD_MATERIALS = {
+    # M1-RND-21: the mouth interior uses the shared character_mouth family (a cavity bounce from the lit
+    # lips, so an open grief mouth is not near-black). Same values as the StandardMaterial3D they were:
     # M1-CHR-04: warmer and rougher; at 0.35 the teeth mirrored the cool sky and read blue-grey in grief.
     # M1-CHR-10: still a grey slab. A diagnostic render (teeth albedo pure red, specular 0) showed the
     # slab was the teeth's specular: the sky's reflection, which the lips should hide and nothing
     # occluded. Specular 0.06 (inside the mouth only the key's own highlight should survive), and the
     # colour, roughness and occlusion now come from the teeth patch of the head atlas
     # (asha_textures.teeth_patch); the occlusion also dims the key a little (the lips shade it).
-    "teeth": "albedo_color = Color(1, 1, 1, 1)\nroughness = 1.0\nroughness_texture_channel = 1\n"
-             "metallic_specular = 0.06\nao_enabled = true\nao_light_affect = 0.35\nao_texture_channel = 0\n",
+    "teeth": ("character_mouth", 0, {
+        "col_albedo": "Color(1, 1, 1, 1)", "roughness": "1.0", "specular": "0.06", "ao_light_affect": "0.35",
+    }, {"tex_albedo": "asha_head_albedo.png", "tex_orm": "asha_head_orm.png"}),
     # M1-CHR-10: the pale streak along the open grief mouth was the tongue mirroring the sky
-    "tongue": "albedo_color = Color(0.55, 0.26, 0.25, 1)\nroughness = 0.6\nmetallic_specular = 0.25\n",
+    "tongue": ("character_mouth", 0, {
+        "col_albedo": "Color(0.55, 0.26, 0.25, 1)", "roughness": "0.6", "specular": "0.25",
+    }, {}),
     # M1-CHR-10: the mouth interior takes the head bake's occlusion (its UVs are in the head atlas),
     # so the bag darkens away from the lips instead of meeting them as one flat dark red
-    "mouth": "albedo_color = Color(0.28, 0.10, 0.09, 1)\nroughness = 0.5\nao_enabled = true\n"
-             "ao_light_affect = 0.5\nao_texture_channel = 0\n",
+    "mouth": ("character_mouth", 0, {
+        "col_albedo": "Color(0.28, 0.1, 0.09, 1)", "roughness": "0.5", "roughness_from_orm": "0.0",
+        "ao_light_affect": "0.5",
+    }, {"tex_orm": "asha_head_orm.png"}),
+}
+STANDARD_MATERIALS = {
     "staff_wood": "albedo_color = Color(0.227, 0.165, 0.125, 1)\nroughness = 0.45\n",
     "brass": "albedo_color = Color(0.69, 0.553, 0.341, 1)\nmetallic = 1.0\nroughness = 0.35\n",
     "bone": "albedo_color = Color(0.902, 0.855, 0.753, 1)\nroughness = 0.4\n",
@@ -119,11 +126,7 @@ STANDARD_MATERIALS = {
                      "clearcoat = 0.5\nclearcoat_roughness = 0.3\n",
 }
 # textures of the StandardMaterial3D entries: {name: {property: texture file}}
-STANDARD_TEXTURES = {
-    "teeth": {"albedo_texture": "asha_head_albedo.png", "roughness_texture": "asha_head_orm.png",
-              "ao_texture": "asha_head_orm.png"},
-    "mouth": {"ao_texture": "asha_head_orm.png"},
-}
+STANDARD_TEXTURES: dict[str, dict] = {}
 
 
 def write_shader_material(name: str, shader: str, prio: int, params: dict, textures: dict) -> None:

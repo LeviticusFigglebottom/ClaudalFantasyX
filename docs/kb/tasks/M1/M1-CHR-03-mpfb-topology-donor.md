@@ -2,7 +2,7 @@
 id: M1-CHR-03
 title: Rebuild the hero head and base body on the MPFB2 CC0 topology (SPEC §16 Q2 = yes)
 role: character
-status: review
+status: done
 reviewer: rendering
 owner_session: "character-stream-4 (worktree-agent-ab3226d3af8f7c29e)"
 depends_on: [M1-CHR-02]
@@ -30,3 +30,11 @@ The human answered SPEC §16 Q2 on 2026-10-23: MPFB/MakeHuman may be used **as a
 - Follow-ups: a lip pass; skin colour zones and creases; hair; a GPU and motion review; Rhen and Toma `donor_mix` and face sliders.
 
 ## Review log
+- 2026-10-24 review-sweep-O (rendering): **approve with fixes.** The donor pipeline is sound and its guardrails hold. The §14 "passes" in criterion 5 has since been overtaken: rounds 4-6 (M1-CHR-04 to 11) and M1-QA-05c judged Asha **not** to pass strict §14 at dialogue range, and M1-CHR-12 carries that now. I'm closing CHR-03 as the topology round it was.
+  - **Checks:**
+    - `tools/fetch_mpfb2.py --check`: "mpfb2 vendored data: OK" (pinned b1a2dc9).
+    - assets_src/third_party/mpfb2/ holds only data (68 .gz targets and weights, 1 .obj, 1 .json manifest, 3 licence and readme .md). There is **no MPFB2 code**, so no GPL enters the repo. LICENSE.md and LICENSE.ASSETS.md are vendored with it.
+    - PROVENANCE has 86 `third_party/mpfb2` rows. ADR 0021 records the Q2 answer and the CC0/GPL split. ADR 0019 has its append-only note. SPEC v1.1 records Q2.
+    - `asha.glb` is now 4.60 MB (rounds 5 and 6 added to CHR-03's 3.94 MB). It's under 5 MB, but with only 0.4 MB of headroom; M1-CHR-12 watches it.
+  - **Filed:** M2-CHR-01, for Rhen's and Toma's `donor_mix` and face sliders. This item from the follow-up list never became a task. The lip, skin, hair and GPU follow-ups were covered by CHR-04 to 11, and the rest are in M1-CHR-12.
+  - **For the Lead:** CLAUDE.md §2 still says "CC0 meshes are off-limits" with no pointer to the ADR 0021 exception. A one-line note there would keep the next agent from flagging the vendored data as a guardrail breach.

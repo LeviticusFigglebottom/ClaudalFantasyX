@@ -19,6 +19,9 @@ var crossfade_sec := 0.0
 var crossfade_from_alpha := 0.0
 ## Caption under the name on slot 0 ("Acting now", or why the fighter acts on its own).
 var caption := ""
+## Skill id -> label for turns already committed to a telegraphed skill (TurnEntry.intent, e.g. the
+## Drownbell's toll): such a chip reads "<name> · <label>" in the danger color (M2-FP-06).
+var intent_labels: Dictionary = {}
 
 var _metrics: Dictionary = {}
 ## Combatant id -> {label: String, tint: Color}.
@@ -72,6 +75,7 @@ func show_turns(
 	for s in slots:
 		s["targeted"] = targets.has(s["id"]) and not bool(s["is_current"])
 		s["caption"] = caption if bool(s["is_current"]) else ""
+		s["intent_label"] = str(intent_labels.get(s.get("intent", &""), ""))
 	_sync_chips(mode)
 
 
@@ -152,6 +156,7 @@ static func _keyed(entries: Array[TurnEntry], offsets: Dictionary, skip_first_of
 					"skipped": e.skipped,
 					"ghost": e.is_preview,
 					"doom": e.doom,
+					"intent": e.intent,
 				}
 			)
 		)

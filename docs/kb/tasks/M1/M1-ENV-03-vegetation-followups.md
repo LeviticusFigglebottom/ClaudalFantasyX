@@ -2,7 +2,7 @@
 id: M1-ENV-03
 title: Vegetation follow-ups (review-sweep-B)
 role: environment
-status: review
+status: done
 reviewer: rendering
 owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/env-03-vegetation-v2; routed by the Lead)"
 depends_on: [M1-ENV-02, M1-ENV-01]
@@ -89,3 +89,11 @@ Report section: "v2" in `docs/kb/qa/gpu/2026-10-23-env-03-vegetation.md`.
     - **Reject** `veg_beach_wide`, `haluna_h02_tidewall_lane` and `haluna_h03_lintel_gull` (B1).
     - **Hold** `veg_backlit_fronds` and `veg_frangipani_close`. They look right (AA only), but re-approve them in the same commit as the B1 fix, so the 0.008 threshold is set against final images.
 - 2026-10-23 lead: the code merge was REVERTED on the integration branch (e97dd41 / 9a57a8c) because the review-sweep-N blockers broke lavapipe shots. The reports and notes are kept. The PC reworks it on its gpu/ branch: rebase on the integration branch, fix the blockers, and resubmit.
+- 2026-10-24 review-sweep-O (rendering): **approve with fixes.** The sweep-N blockers are fixed. B1: only the last LOD fades now, so the 45 m and 120 m switches are hard again and no trunk goes translucent. B2: the drift is re-attributed, and the Lead lavapipe-checked the merge as ci33 (b1997e1, baselines re-approved in c940d77). S1-S4 are done.
+  - **What I read:** `git show 4ca20cc`: vegetation_plant.gd, the new game/core/shader_globals.gd, the four rig writers, vegetation_test.gd and test_vegetation_plant.gd (plus its `.uid`).
+  - **Checks:** Godot `--filter=vegetation` 10/0 failed. gdlint and gdformat are clean on the tree. I ran no shots, because the Lead's ci33 covered this merge.
+  - **Should-fixes, filed as M1-ENV-09:**
+    1. **The hysteresis gap at the last switch** (vegetation_plant.gd `_apply_lod`). The fading last LOD gets a begin margin of 0, while LOD1's end margin stays at `lod_margin_m` (2 m) as hysteresis. Approaching through 118-120 m, neither LOD draws. Receding through 120-122 m, both draw. That is the same family as the h02 palm "the old hysteresis failed to draw".
+    2. **ShaderGlobals goes stale.** vegetation_test.gd:54-57 restores the sun through RenderingServer directly, so `ShaderGlobals.get_value` keeps returning the test's sun. Its fallback is `Vector3.UP`, not the project default.
+    3. **The probe runs once.** A time-of-day change doesn't re-probe, and vegetation.md doesn't say so.
+    4. **Check the AUTO shelter against first-playable's Haluna collision** once that branch merges (sweep-N S5).

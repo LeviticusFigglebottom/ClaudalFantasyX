@@ -4,12 +4,14 @@ extends TestCase
 ## not made yet), every branch plays to its end, and the end card follows.
 
 const SCENE := "res://game/levels/ch03/first_verse/first_verse.tscn"
-## Soft failures the set may report: sounds that do not exist yet.
-const ALLOWED_WARNINGS: Array[String] = ["no sound 'drownbell_toll'"]
+## Soft failures the set may report: sounds that do not exist yet, and cue keys the placeholder
+## presentation does not perform (grades, mote motion).
+const ALLOWED_WARNINGS: Array[String] = ["no sound 'drownbell_toll'", "is not performed yet"]
 
 var scene: FirstVerseScene
 var saved_state: GameStateData
 var changes: Array[String] = []
+var requests: Array[BattleRequest] = []
 
 
 func before_each() -> void:
@@ -18,21 +20,30 @@ func before_each() -> void:
 	scene = (load(SCENE) as PackedScene).instantiate() as FirstVerseScene
 	scene.autoplay = false
 	scene.change_scene = func(path: String) -> void: changes.append(path)
+	scene.start_battle = func(r: BattleRequest) -> void: requests.append(r)
 	_host().add_child(scene)
 	scene.sequencer.instant = true
 
 
-func test_every_branch_plays_on_a_complete_stage_then_the_end_card() -> void:
+func test_every_branch_plays_on_a_complete_stage_then_calls_the_drownbell() -> void:
 	for flags: Array in [[], [&"ch02_heard_pila", &"ch03_found_net_float", &"ch02_rhen_stayed_with_dead"]]:
 		for choice in 2:
 			Game.state = GameStateData.new()
 			for f: StringName in flags:
 				Game.set_flag(f)
 			changes.clear()
+			requests.clear()
 			scene.sequencer.auto_choice = choice
 			scene.run()
 			assert_false(scene.sequencer.is_playing(), "instant play finishes")
-			assert_eq(changes, [FirstVerseScene.END_CARD_SCENE], "the end card follows")
+			assert_eq(changes, [] as Array[String], "no scene change of its own")
+			assert_eq(requests.size(), 1, "the Drownbell is called to battle")
+			var r := requests[0]
+			assert_eq(r.encounter, &"drownbell")
+			assert_eq(r.active, [&"rhen", &"asha", &"toma"] as Array[StringName], "all three, no reserve")
+			assert_eq(r.reserve, [] as Array[StringName])
+			assert_eq(r.victory_flag, &"ch03_drownbell_defeated")
+			assert_eq(r.return_scene, EndCard.SCENE, "a win goes on to the end card")
 			assert_true(bool(Game.get_flag(&"ch03_ilun_bound")), "the scene ran its flag writes")
 			for w in scene.sequencer.warnings:
 				assert_true(ALLOWED_WARNINGS.any(func(a: String) -> bool: return w.contains(a)), "stage gap: %s" % w)

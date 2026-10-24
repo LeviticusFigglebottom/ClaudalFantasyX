@@ -7,7 +7,7 @@ extends TestCase
 const ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
 const LOCATION := &"ch02/haluna"
 const DT := 1.0 / 60.0
-const SPAWNS: Array[StringName] = [&"Beach", &"Village", &"Shrine", &"BattleReturn", &"CausewayHead"]
+const SPAWNS: Array[StringName] = [&"Beach", &"Village", &"Shrine", &"BattleReturn", &"BeforeBattle", &"CausewayHead"]
 ## Collision build budget on the shared CI CPU (the brief asks for under about a second).
 const BUILD_BUDGET_MSEC := 1000
 ## How far a spawn marker may sit from the floor found under it.
@@ -152,6 +152,14 @@ func test_villagers_and_triggers_fire_their_payloads() -> void:
 	zone.place_at(&"Beach")
 	_walk(Vector3.LEFT, 6.0)
 	assert_eq(fired.size(), 1, "won once, it stays quiet")
+	# M2-FP-05: an escape returns the party to BeforeBattle, on the beach side: clear of the strip,
+	# and the way on to the village crosses it again.
+	assert_false(battle.contains_point(zone.spawn_marker(&"BeforeBattle").global_position), "escape lands clear")
+	Game.set_flag(&"ch02_tideline_won", false)
+	fired.clear()
+	zone.place_at(&"BeforeBattle", zone.spawn_yaw_deg(&"BeforeBattle"))
+	_walk(Vector3.LEFT, 6.0)
+	assert_eq(fired, [&"tideline_battle"] as Array[StringName], "from BeforeBattle the way on is the fight")
 	# The causeway head waits for the first save.
 	Game.set_flag(&"ch02_saved_once", false)
 	zone.place_at(&"CausewayHead")
@@ -233,6 +241,64 @@ func test_the_registry_enters_the_playable_zone() -> void:
 		reg.shrine_point(&"haluna_shrine"),
 		{LocationRegistry.KEY_LOCATION: LOCATION, LocationRegistry.KEY_SPAWN: &"Shrine"}
 	)
+
+
+## M2-FP-05: the prebuild (what SceneRouter's worker thread runs at instantiate time) gives the same
+## zone as building in the tree, and nothing is built twice when the prebuilt zone enters it. The
+## runner is synchronous, so prebuild() is called here on the main thread; the threaded path itself
+## is measured by the swap probe (README, "Entry hitch").
+func test_the_prebuild_matches_the_in_tree_build() -> void:
+	_load_into_tree()
+	var built := _build_snapshot(zone)
+	assert_false(zone.prebuilt, "a main-thread instance is not prebuilt")
+	_done()
+
+	zone = (load(ZONE) as PackedScene).instantiate() as HalunaZone
+	assert_false(zone.prebuilt)
+	zone.prebuild()
+	assert_true(zone.prebuilt)
+	var dresser := zone.get_node("HalunaMood/Dresser")
+	assert_true(dresser is HalunaZoneDresser, "the dresser no longer dresses in _ready")
+	var dressed := dresser.get_child_count()
+	assert_true(dressed > 0, "dressed off the tree")
+	assert_true((zone.get_node("Collision") as HalunaCollision).shape_count > 0, "collision built off the tree")
+	print("    haluna prebuild: %d ms" % zone.prebuild_msec)
+	_host().add_child(zone)
+	zone.director.auto_update = false
+	zone.player.set_physics_process(false)
+	assert_eq(dresser.get_child_count(), dressed, "entering the tree dressed nothing again")
+	var pre := _build_snapshot(zone)
+	assert_eq(pre["shapes"], built["shapes"], "same shape count")
+	assert_eq(pre["kinds"], built["kinds"], "same pieces given collision")
+	assert_eq(pre["pieces"], built["pieces"], "same dressing")
+	assert_eq(pre["terrain"], built["terrain"], "same terrain meshes")
+	assert_true(pre["water_mesh"] and built["water_mesh"], "the sea has its grid")
+	assert_between(float(pre["asha_y"]), float(built["asha_y"]) - 1e-4, float(built["asha_y"]) + 1e-4, "Asha posed")
+	var a: Array = pre["xforms"]
+	var b: Array = built["xforms"]
+	var worst := 0.0
+	for i in mini(a.size(), b.size()):
+		worst = maxf(worst, ((a[i] as Transform3D).origin - (b[i] as Transform3D).origin).length())
+	assert_true(worst < 1e-3, "every shape where the in-tree build put it (worst %.5f m)" % worst)
+	assert_true(zone.place_at(&"Beach", zone.spawn_yaw_deg(&"Beach")))
+	_done()
+
+
+static func _build_snapshot(z: HalunaZone) -> Dictionary:
+	var xforms: Array[Transform3D] = []
+	for cs in z.collision.find_children("*", "CollisionShape3D", true, false):
+		xforms.append((cs as CollisionShape3D).transform)
+	var water := z.get_node("HalunaMood/Water") as WaterSurface
+	var asha := z.stage.get_node("Actors/asha") as HalunaActorPose
+	return {
+		"shapes": z.collision.shape_count,
+		"kinds": z.collision.kinds.duplicate(),
+		"pieces": z.get_node("HalunaMood/Dresser").get_child_count(),
+		"terrain": z.get_node("HalunaMood/Terrain").get_child_count(),
+		"water_mesh": water.get_child_count(true) > 0,
+		"asha_y": asha.model.position.y if asha.model != null else INF,
+		"xforms": xforms,
+	}
 
 
 ## The floor under a point: where Rhen's capsule lands when dropped from 1 m above it (a shape cast

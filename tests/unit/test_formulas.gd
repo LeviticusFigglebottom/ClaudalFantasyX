@@ -182,6 +182,16 @@ func test_shallows_verse_beats_chorus_mend_only_when_perfect() -> void:
 	assert_eq(Formulas.heal_amount(Formulas.swell_power(4, 90), 18, 5, 100, false), 161, "perfect")
 
 
+## M2-CMB-04: a Vowbound's stats from its caller (formulas.md § Vowbound, Ilun from Asha at level 5).
+func test_vowbound_stat_grows_from_the_caller() -> void:
+	assert_eq(Formulas.vowbound_stat(60, 300, 100), 360, "Ilun's HP")
+	assert_eq(Formulas.vowbound_stat(4, 6, 50), 7, "STR: 4 + floor(6 x 50 / 100)")
+	assert_eq(Formulas.vowbound_stat(4, 14, 50), 11, "AGI")
+	assert_eq(Formulas.vowbound_stat(2, 9, 50), 6, "floored: 2 + floor(4.5)")
+	assert_eq(Formulas.vowbound_stat(14, 6, 0), 14, "a 0% scale keeps the base")
+	assert_eq(Formulas.vowbound_stat(-5, -9, -50), 0, "negative inputs count as 0")
+
+
 func test_opening_chances_follow_mean_agility() -> void:
 	assert_eq(Formulas.preemptive_chance(15.0, 15.0), Formulas.OPENING_BASE_PCT, "equal agility: the base 8%")
 	assert_eq(Formulas.preemptive_chance(18.0, 46.0 / 3.0), 11, "sandbox: 8 + round(2.67) = 11")
