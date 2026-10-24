@@ -15,7 +15,7 @@ extends Ch05Zone
 ## Ch9 has no fights, no encounters and no tutorial prompts.
 
 const CH09_FIELD_PATH := "res://game/data/flow/ch09_field.json"
-const KEY_HOLD := "hold"
+const KEY_CH09_HOLD := "hold"
 const KEY_CLIP_MARKS := "clip_marks"
 const KEY_PLACE := "place"
 
@@ -38,7 +38,7 @@ func build() -> void:
 
 func _ready() -> void:
 	super()
-	hold_gate.setup(story.sequencer, ch09_field.get(KEY_HOLD, {}))
+	hold_gate.setup(story.sequencer, ch09_field.get(KEY_CH09_HOLD, {}))
 
 
 ## Ch05Zone's variants, then each holding row's "place": its actors stand on their marks (shown).
