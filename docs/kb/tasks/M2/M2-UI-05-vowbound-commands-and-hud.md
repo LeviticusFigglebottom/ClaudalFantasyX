@@ -2,8 +2,8 @@
 id: M2-UI-05
 title: Vowbound commands and HUD (call, the Vowbound's menu, Dismiss, the call preview)
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "agent-a9031fbbea441e647"
 depends_on: [M2-CMB-04]
 milestone: M2
 request-from: combat
