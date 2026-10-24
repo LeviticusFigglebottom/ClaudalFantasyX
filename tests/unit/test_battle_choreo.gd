@@ -523,7 +523,9 @@ func test_a_hero_strike_lands_on_its_clips_contact_marker() -> void:
 
 
 func test_a_primitive_stand_in_has_no_clips() -> void:
-	var f := ctl.stage.stand_in(&"rhen")
+	var f := FighterStandIn.new()  # Ysolde is still a capsule; the heroes and foes are actor scenes (M2-UI-07)
+	f.setup(&"ysolde", BattleStage.stand_in_spec(&"ysolde"), {})
+	ctl.add_child(f)
 	assert_eq(BattleClips.player_of(f), null)
 	for clip in BattleClips.ALL:
 		assert_false(BattleClips.play(f, clip))

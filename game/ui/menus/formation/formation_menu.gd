@@ -270,6 +270,7 @@ func _layout_detail() -> void:
 		if not l.visible:
 			continue
 		var h := _text_height(l)
+		l.update_minimum_size()  # its wrapped height at the new width, not at the last one (M2-UI-29)
 		l.size = Vector2(r.size.x, minf(h, maxf(bottom - y, 0.0)))
 		y += h + line_gap
 

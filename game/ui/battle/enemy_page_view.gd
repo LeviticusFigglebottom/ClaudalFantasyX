@@ -7,6 +7,10 @@ extends VBoxContainer
 ## Metrics: battle_hud.json "enemy_page" (1920x1080 reference). A view only.
 
 var page: Dictionary = {}
+## The widest the page may be: its panel's inner width (0 = no limit). When stat_columns pairs a
+## row would not fit (a longer language, a larger text size), the stat grid takes fewer pairs a
+## row and more rows, instead of pushing the panel past its frame (M2-UI-28).
+var max_width := 0.0
 
 var _m: Dictionary = {}
 var _title: Label
@@ -74,6 +78,7 @@ func show_page(p: Dictionary) -> void:
 		value.custom_minimum_size = Vector2(HudLayout.num(_m, "stat_value_width"), 0.0)
 		_stats.add_child(value)
 	_stats.visible = _stats.get_child_count() > 0
+	_fit_stat_columns()
 	_clear(_facts)
 	for row: Variant in p.get("affinities", []):
 		var d := row as Dictionary
@@ -96,6 +101,15 @@ func shown_text() -> PackedStringArray:
 	var out: PackedStringArray = []
 	_collect(self, out)
 	return out
+
+
+## stat_columns pairs a row, halved until the grid fits max_width (one pair a row at the least).
+func _fit_stat_columns() -> void:
+	var pairs := int(HudLayout.num(_m, "stat_columns"))
+	_stats.columns = pairs * 2
+	while max_width > 0.0 and pairs > 1 and _stats.get_combined_minimum_size().x > max_width:
+		pairs = ceili(pairs / 2.0)
+		_stats.columns = pairs * 2
 
 
 func _fact(label_text: String, text: String, empty: bool) -> void:

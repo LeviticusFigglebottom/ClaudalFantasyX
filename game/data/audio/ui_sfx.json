@@ -167,14 +167,12 @@
     },
     {
       "class": "FieldSubmenu",
-      "pending": true,
       "on_enter": "ui_menu_open",
       "signals": {"closed": "ui_menu_close"},
       "_note": "M3-AUD-15: the field menu's party pages (Status; claude/ui) open and close; Lattice, Equip, Items and Formation have their own rows"
     },
     {
       "class": "LatticeMenu",
-      "pending": true,
       "on_enter": "ui_menu_open",
       "signals": {"closed": "ui_menu_close"},
       "watch": [
@@ -191,7 +189,6 @@
     },
     {
       "class": "EquipMenu",
-      "pending": true,
       "on_enter": "ui_menu_open",
       "signals": {"closed": "ui_menu_close"},
       "watch": [
@@ -235,7 +232,6 @@
     },
     {
       "class": "ItemsMenu",
-      "pending": true,
       "on_enter": "ui_menu_open",
       "signals": {"closed": "ui_menu_close"},
       "watch": [
@@ -250,7 +246,6 @@
     },
     {
       "class": "FormationMenu",
-      "pending": true,
       "on_enter": "ui_menu_open",
       "signals": {"closed": "ui_menu_close"},
       "watch": [
@@ -262,6 +257,54 @@
          "_note": "the line-up changed: two heroes traded places, or one took an open place"}
       ],
       "_note": "M2-AUD-14: claude/menus' Formation page (M2-MNU-07); no signals of its own beyond FieldSubmenu.closed"
+    },
+    {
+      "class": "SettingsPage",
+      "_note": "M2-AUD-08 via M3-UI-02 (UI track): the Audio, Accessibility and Controls pages (GraphicsMenu keeps its own row). A value step plays ui_cursor at the new level.",
+      "on_enter": "ui_menu_open",
+      "signals": {
+        "closed": "ui_menu_close"
+      },
+      "watch": [
+        {
+          "expr": "node.model.cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.model.value_text(node.model.current())",
+          "sfx": "ui_cursor"
+        }
+      ]
+    },
+    {
+      "class": "StatusMenu",
+      "on_enter": "ui_menu_open",
+      "signals": {"closed": "ui_menu_close"},
+      "watch": [
+        {"expr": "node.list_page().cursor", "sfx": "ui_cursor", "_note": "another hero shown (keys, the wheel, a hover)"}
+      ],
+      "_note": "M2-MNU-303: claude/menus' Status page (M2-MNU-03) had only FieldSubmenu's open and close"
+    },
+    {
+      "class": "MemoriesMenu",
+      "on_enter": "ui_menu_open",
+      "signals": {"closed": "ui_menu_close", "memory_chosen": "ui_confirm"},
+      "watch": [
+        {"expr": "node.column", "rise": "ui_confirm", "fall": "ui_cancel", "_note": "MemoriesMenu.Column CHAPTERS / MEMORIES"},
+        {"expr": "node.chapters_page().cursor", "sfx": "ui_cursor"},
+        {"expr": "node.memories_page().cursor", "sfx": "ui_cursor"}
+      ],
+      "_note": "M2-MNU-303: claude/menus' Memories page (M3-MNU-02) had only FieldSubmenu's open and close"
+    },
+    {
+      "class": "BattlePauseMenu",
+      "on_enter": "ui_menu_open",
+      "signals": {"closed": "ui_menu_close"},
+      "watch": [
+        {"expr": "node.level", "rise": "ui_confirm", "fall": "ui_cancel", "_note": "BattlePauseMenu.Level ROOT / QUIT (the confirm)"},
+        {"expr": "node.rows_page().cursor", "sfx": "ui_cursor"}
+      ],
+      "_note": "M2-MNU-303: claude/menus' battle pause page (M2-MNU-04) had only FieldSubmenu's open and close"
     }
   ]
 }

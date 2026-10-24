@@ -271,7 +271,7 @@ func test_the_hub_has_a_controls_row_that_opens_the_page() -> void:
 	hub.ui_settings = s
 	hub.save_path = ""
 	_add(hub)
-	var at := hub.row_ids().find(SettingsMenu.ROW_CONTROLS)
+	var at := hub.row_ids().find(SettingsMenu.ROW_CONTROLS)  # by id: Audio shows when its rows exist (M3-UI-02)
 	assert_eq(hub.row_labels()[at], tr("SET_MENU_CONTROLS"))
 	for i in at:
 		hub.handle_input(_ev(&"ui_down"))

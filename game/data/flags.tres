@@ -140,5 +140,6 @@ flags = {
 "ch06_dug_without_asking": "Ch6 B09 choice: Rhen knelt and dug beside Liss without asking whose lamp it was. Ch11: 'You dug. You didn't ask.'",
 "ch06_done": "Ch6 B10: the party waded the shoal channel at dawn toward Tamsule (the chapter's end).",
 "ch08_hoist_rigged": "Ch8 B11: Liss has rigged the hoist on the Fisher Stair (unlocks her Haul in the set-piece battles: skills.json hoist_haul requires_flag; M3-CMB-01).",
-"ch08_virel_bound": "Ch8 B06: Asha has bound Virel, the Fire Vowbound (vowbound.json bound_flag; Virel is callable from B16 on; M3-CMB-01)."
+"ch08_virel_bound": "Ch8 B06: Asha has bound Virel, the Fire Vowbound (vowbound.json bound_flag; Virel is callable from B16 on; M3-CMB-01).",
+"tut_menu_save_seen": "Tutorial seen-flag (M2-MNU-300): the tip that saving happens at shrines, not in the menu, has been shown."
 }

@@ -71,6 +71,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	UiSettings.shared().follow(self)
 	_build()
+	UiFrame.centre(self)  # M2-UI-29
 	refresh()
 	if pause_tree and not get_tree().paused:
 		get_tree().paused = true
@@ -246,6 +247,7 @@ func _build() -> void:
 		margin.add_theme_constant_override(side, int(HudLayout.num(gm, "pad")))
 	page_panel.add_child(margin)
 	_view = EnemyPageView.new()
+	_view.max_width = HudLayout.rect_of(gm).size.x - HudLayout.num(gm, "pad") * 2.0
 	margin.add_child(_view)
 
 

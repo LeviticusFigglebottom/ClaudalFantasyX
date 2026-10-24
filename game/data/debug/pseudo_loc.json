@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "doc": "M2-UI-28: the debug pseudo-localisation (docs/kb/tech/ui.md 'Pseudo-localisation'). Debug builds only (game/core/debug/pseudo_loc.gd, which release exports strip). Every source-locale string of the loc CSVs is rewritten into a translation for `locale`: letters swapped for accented ones (`accents`), each line padded by `expansion` of its visible length in `pad_char` groups of `pad_group` after a space, the whole string between `prefix` and `suffix`. {placeholders}, %-formats, BBCode tags and newlines are copied untouched. Turned on by the `flag` launch argument (after `--` or before it), by the `env_var` environment variable (any value but 0 or false), or by `toggle_key` in the debug overlay. Godot's own pseudolocalization is not used: it accents {placeholders} and BBCode tags, so String.format and RichTextLabel markup break.",
+  "locale": "en_XA",
+  "source_locale": "en",
+  "loc_dir": "res://game/data/loc",
+  "expansion": 0.4,
+  "pad_char": "·",
+  "pad_group": 5,
+  "prefix": "[",
+  "suffix": "]",
+  "flag": "--pseudo-loc",
+  "env_var": "HYMN_PSEUDO_LOC",
+  "env_off": ["", "0", "false", "no", "off"],
+  "accents": {
+    "a": "á", "c": "ç", "d": "ď", "e": "é", "g": "ĝ", "h": "ĥ", "i": "î", "j": "ĵ", "k": "ķ", "l": "ļ",
+    "n": "ñ", "o": "ö", "r": "ŕ", "s": "š", "t": "ţ", "u": "ü", "w": "ŵ", "y": "ý", "z": "ž",
+    "A": "Å", "C": "Ç", "D": "Ď", "E": "É", "G": "Ĝ", "H": "Ĥ", "I": "Î", "J": "Ĵ", "K": "Ķ", "L": "Ļ",
+    "N": "Ñ", "O": "Ö", "R": "Ŕ", "S": "Š", "T": "Ţ", "U": "Ü", "W": "Ŵ", "Y": "Ý", "Z": "Ž"
+  }
+}

@@ -242,6 +242,11 @@ func _build_overview_button() -> void:
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	HudLayout.place(frame, bm)
 	add_child(frame)
+	# M2-MNU-11: the banner title ends before the button's frame (it spanned the panel, under the button).
+	if _title_label != null:
+		_title_label.size.x = maxf(frame.position.x - _title_label.position.x - HudLayout.num(bm, "title_gap"), 0.0)
+		_title_label.clip_text = true
+		_title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_overview_button = Button.new()
 	_overview_button.theme_type_variation = &"CommandButton"
 	_overview_button.focus_mode = Control.FOCUS_NONE

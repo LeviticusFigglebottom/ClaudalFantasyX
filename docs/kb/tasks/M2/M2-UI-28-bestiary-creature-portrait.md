@@ -2,8 +2,8 @@
 id: M2-UI-28
 title: "Bestiary page and Read panel: show the creature's live portrait (CreaturePortrait)"
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "claude/ui"
 reviewer: character
 depends_on: [M2-CRE-10]
 milestone: M2

@@ -2,8 +2,8 @@
 id: M3-C05-07
 title: Show the Cinder Matron's Crust when she re-crusts (a battle-presentation hook, not a phase)
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "claude/ui"
 depends_on: [M3-C05-02]
 milestone: M3
 request-from: cinematics

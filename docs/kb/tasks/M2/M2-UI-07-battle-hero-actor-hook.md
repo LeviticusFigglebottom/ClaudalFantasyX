@@ -2,7 +2,7 @@
 id: M2-UI-07
 title: "FighterStandIn: show a hero actor scene when the stand-in spec names one (battle-scale Asha, Rhen, Toma)"
 role: ui
-status: doing
+status: review
 owner_session: "claude/ui"
 reviewer: character
 depends_on: [M2-CHR-06]
@@ -21,8 +21,8 @@ hook is yours.
       that scene instead of the primitive mesh, keeping the ring, the head position (use the scene's AABB or a spec
       height) and the KO/stone presentation (tint the surfaces or swap a pose; the scene's root has
       `metadata/hymn_battle_actor`).
-- [ ] The hero specs in battle_sandbox.json name the three scenes; the AnimationPlayer plays `idle` while waiting.
-- [ ] The battle shots that show heroes are re-approved after viewing.
+- [x] The hero specs in battle_sandbox.json name the three scenes; the AnimationPlayer plays `idle` while waiting.
+- [x] The battle shots that show heroes are re-approved after viewing.
 
 ## Notes
 - Depends on M2-CHR-06 (claude/characters). It reached the integration branch with the big7 merge (2026-10-24), so it is back in `depends_on`.
@@ -39,5 +39,10 @@ hook is yours.
   - A missing scene falls back to the primitive with a warning.
 - **Tests:** `tests/unit/test_fighter_actor.gd` (4), over a tiny test actor (`tests/fixtures/battle_actor/test_actor.tscn`: two boxes and an `idle` clip). The battle suite is 412/0. The battle shots `battle_hud_preview`, `battle_statuses`, `battle_victory`, `battle_vowbound_out` and `drownbell_flood` are unchanged (the primitive path is the same).
 - **Still to do, once M2-CHR-06's scenes reach the integration branch:** add `"scene"` (and `"yaw_deg"` if the stage needs the heroes turned toward the foes) to the asha, rhen and toma rows of `battle_sandbox.json` `stand_ins`. Then re-approve the battle shots after viewing them. Captures play `idle` frame by frame, so check that the baselines are stable across two runs; if not, pause the AnimationPlayer at a fixed time in captures.
+
+- **Done (after big7, 2026-10-24):** the rhen, asha and toma rows of `battle_sandbox.json` name their `*_battle.tscn` with `"yaw_deg": -90.0` (facing the foes) and their real heights (1.77 / 1.63 / 1.89).
+  - Two tests assumed capsule heroes. `test_battle_choreo.gd::test_a_primitive_stand_in_has_no_clips` now builds Ysolde, the one capsule left. In the Creatures track's `test_creature_actor.gd`, the assertion now reads "a hero's scene is not a CreatureModels entry", not "a hero has no scene".
+  - **Shots:** every battle shot plus drownbell_flood (31) was captured twice, and the two runs were pixel-identical, so the idle clip is stable in captures. The shots were viewed and 27 re-approved (heroes now models; HUD unchanged). Unchanged: battle_pause, battle_vowbound_out, battle_choreo_summon and battle_choreo_vowbound_rise (no hero on screen).
+  - **For Character:** in lamp_dive and melee the actor moves procedurally (no attack, cast, hit or KO clips yet). Those clips would replace the slides.
 
 ## Review log
