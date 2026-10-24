@@ -1,0 +1,84 @@
+// Ch7 B09, the optional side scene "The Empty Moorings" (docs/kb/story/beats/act1_ch07.md §4).
+// Oruvel's moorings under the Bell's skirt on the river side: six empty iron rings in the timber, in
+// the Bell's shade, the drop's bound light on the water (R08 wide; R09 low at the rings, with inserts
+// on Asha's hand on the iron and the band being tied). Opened by talking to Tavi at his boat after
+// B07. Tavi names the boats, Rhen names the people who sailed them, and Asha kneels at each ring,
+// touches the iron, and says each name back once. No song: Cantors sing only the Hush, and this isn't
+// that. The naming belongs to Reefball, not the Order; Asha leads nothing but it. The last ring was
+// the Gull's: Tavi can't name it, and Rhen says it for him, and ties Pio's side-band to the ring
+// (naming him with the others is accepting what "hasn't come back" means; it is Rhen who does it).
+// If Rhen kept the Pemakar leaf-boat (ch05_kept_leaf_boat) he lights its own wick from his lantern's
+// burner (NEVER Kell's wick: ADR 0022 sweep-H watch) and sets it on the water at the Wicklight's
+// ring; it turns once in the eddy and drifts out toward the sea, and Asha says nothing. Kerrid is
+// knee-deep at the far end of the moorings, back to them; he doesn't turn. No jokes; no more than
+// four lines from anyone in a row. The boat names after the Gull, the Second Mooring and the
+// Wicklight, and the families, are this script's (the Oruvel side's proposed names, act1_ch07.md
+// §5.2: Mae Ketter, Brann Ollo, Dovic Saan, Tull Arro). The chapter flow takes the band (and the
+// leaf-boat) out of the bag after it.
+title: ch07_empty_moorings
+location: ch07/tamsule_bell_galleries
+---
+@letterbox on
+@camera R08
+@music oruvel_theme fade=2.0
+@mark tavi tavi_boat
+@mark kerrid kerrid_far
+@mark rhen rhen_moorings walk
+@mark asha asha_ring_1 walk
+@wait 1.5
+Tavi [worried]: Would you bless them? The moorings. Gran would want it done by somebody proper. #line:ch07_moor_001
+Asha [sad]: I'm not a priest, Tavi. #line:ch07_moor_002
+Tavi [neutral]: You're the Cantor. #line:ch07_moor_003
+Asha [tender]: Then I'll do it the way we do it at home. Tell me what tied up here. #line:ch07_moor_004
+@camera R09
+Tavi [neutral]: The Tallow Hen. #line:ch07_moor_005
+Rhen [sad]: Ollo's. Brann's uncle, and his wife. #line:ch07_moor_006
+@anim asha kneel_touch_ring
+@sfx mooring_ring
+Asha [tender]: Brann's uncle, and his wife. #line:ch07_moor_007
+Tavi [neutral]: The Second Mooring. #line:ch07_moor_008
+Rhen [sad]: The Ketters. All of them but Mae. #line:ch07_moor_009
+@sfx mooring_ring
+Asha [tender]: The Ketters. #line:ch07_moor_010
+@mark asha asha_ring_3 walk
+Tavi [sad]: The Wicklight. #line:ch07_moor_011
+Rhen [grief]: Kell. #line:ch07_moor_012
+@sfx mooring_ring
+Asha [tender]: Kell. #line:ch07_moor_013
+Tavi [neutral]: The Brass Thrush. The Low Lantern. #line:ch07_moor_014
+Rhen [sad]: Dovic's brothers. Old Arro and his daughter. #line:ch07_moor_015
+@sfx mooring_ring
+Asha [tender]: Dovic's brothers. Old Arro, and his daughter. #line:ch07_moor_016
+@mark asha asha_ring_6 walk
+@wait 2.0
+@anim tavi look_at ring_gull
+@wait 2.0
+@mark rhen rhen_ring_6 walk
+Rhen [grief]: Pio. #line:ch07_moor_017
+@wait 2.5
+Tavi [grief]: ...Yes. Pio. #line:ch07_moor_018
+@anim rhen untie_band
+@anim rhen tie_band ring_gull
+@sfx mooring_ring
+@wait 1.5
+Asha [tender]: Pio. #line:ch07_moor_019
+@wait 1.0
+Asha [tender]: Salt and stone keep you. Come up when you can. #line:ch07_moor_020
+<<set $ch07_blessed_moorings = true>>
+<<if $ch05_kept_leaf_boat>>
+    @mark rhen rhen_moorings walk
+    @anim rhen light_from_lantern
+    @wait 1.5
+    @anim rhen set_on_water ring_wicklight
+    <<set $ch07_set_leaf_boat = true>>
+    @wait 2.0
+    @anim asha look_at river_mouth
+    @wait 2.5
+<<endif>>
+@camera R08
+Tavi [tender]: Thank you. #line:ch07_moor_021
+@mark tavi river_mouth walk
+@wait 2.0
+@letterbox off
+@camera release
+===

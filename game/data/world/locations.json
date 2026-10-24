@@ -50,6 +50,20 @@
       "spawn": "ScaleHull",
       "name_key": "LOCATION_CH01_ORUVEL",
       "_note": "M3-C01-02: the raft-town by day and in the storm (C1-07 to C1-15), a greybox zone (Ch01OruvelZone). Ch1 ends by sending the party to ch02/haluna at Beach."
+    },
+    {
+      "id": "ch07/tamsule",
+      "scene": "res://game/levels/ch07/tamsule/tamsule.tscn",
+      "spawn": "RiverMouth",
+      "name_key": "LOCATION_CH07_TAMSULE",
+      "_note": "M3-C07-02: Ch7's port (B01-B03, B08, B10), a greybox zone (Ch07Zone). Ch6 (not built) hands off here at RiverMouth; until then it is reached from this row. B10 hands off to the end card until ch08/corrow exists."
+    },
+    {
+      "id": "ch07/tamsule_bell_galleries",
+      "scene": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn",
+      "spawn": "Entrance",
+      "name_key": "LOCATION_CH07_TAMSULE_BELL_GALLERIES",
+      "_note": "M3-C07-02: the story's greybox stand-in for the Bell's galleries, catch-pool and moorings (B04, B05, B07, B09). The Reefball match returns here at CatchPool. The arena, ch07/tamsule_bell, is env-art's and the Reefball agent's."
     }
   ],
   "shrines": [

@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch07_bark_board",
+ "source": "game/data/dialogue/ch07/ch07_bark_board.dlg",
+ "start": "ch07_bark_board",
+ "nodes": {
+  "ch07_bark_board": {
+   "headers": {"location": "ch07/tamsule"},
+   "ops": [
+    {"op": "line", "id": "ch07_bark_board_001", "key": "DLG_CH07_BARK_BOARD_001", "speaker": "vendor", "emotion": "neutral", "voice": "", "src": 7, "name_key": "DLG_NAME_VENDOR_BOARD_CALLER"},
+    {"op": "line", "id": "ch07_bark_board_002", "key": "DLG_CH07_BARK_BOARD_002", "speaker": "vendor", "emotion": "neutral", "voice": "", "src": 8, "name_key": "DLG_NAME_VENDOR_BOARD_CALLER"}
+   ]
+  }
+ }
+}

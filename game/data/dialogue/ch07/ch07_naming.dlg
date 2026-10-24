@@ -1,0 +1,46 @@
+// Ch7 B05 "The naming" (docs/kb/story/beats/act1_ch07.md §2 B05; decisions_log N-12). Played when
+// Rhen comes down to the catch-pool's rim. Before each Tidecup match the two captains stand on the
+// rim stones under the weeping column and each names one person the sea has taken. NO ONE PRESIDES:
+// no Order official blesses or opens anything (ADR 0017 Ch7 watch). R03: the crowd falls silent from
+// the pool outward until there is real silence (Audio: no music, no bed, only the column's weep).
+// Ione Sabe, Sorrin's captain, names her brother; the whole Bell answers with one word. R04, Tavi
+// names the whole town; a long hold; the answer is louder and ragged at the edges because some
+// people are crying. Asha says it quietly with them in the third gallery, Toma too, and Rhen in the
+// water, looking up the column at the drop; if he lit his Pemakar boat for Oruvel, he says it a beat
+// before anyone (a face cue, no extra line). "Up." is what you call to a diver who should be
+// surfacing, and a score is bringing the float up; the game never says it is also the direction of
+// the dead (bible §2). Played completely straight. R05: from inside the column looking down as the
+// two sides swim up into it, the hand-off frame. The last op is the hand-off to the Reefball match
+// (§5): `start_reefball tidecup_opening` (the Reefball agent's story-match id). The chapter flow reads
+// it (if_event) and runs ch07.json's `reefball_match` beat.
+title: ch07_naming
+location: ch07/tamsule_bell_galleries
+---
+@letterbox on
+@camera R03
+@music silence fade=3.0
+@wait 3.0
+@sfx column_weep
+@wait 1.5
+Ione [neutral]: Aldo Sabe. My brother. #line:ch07_naming_001
+@wait 1.0
+Crowd [neutral]: Up. #line:ch07_naming_002 #tn:"The call to a diver who should be surfacing. One word, said low and together by ten thousand people."
+@sfx crowd_up
+@wait 2.0
+@camera R04
+@wait 1.5
+Tavi [grief]: Oruvel. #line:ch07_naming_003
+@wait 2.5
+<<if $ch05_boat_for_oruvel>>
+    @face rhen grief 0.5
+<<endif>>
+Crowd [grief]: Up. #line:ch07_naming_004 #tn:"The same answer, louder this time and ragged at the edges: some of the crowd are crying."
+@sfx crowd_up vol=1.0
+@face asha grief
+@face toma grief
+@anim rhen look_at drop
+@wait 2.0
+@camera R05
+@wait 2.0
+<<event start_reefball tidecup_opening>>
+===
