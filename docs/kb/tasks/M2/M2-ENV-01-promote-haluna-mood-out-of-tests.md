@@ -2,8 +2,8 @@
 id: M2-ENV-01
 title: Promote the Haluna mood scene's shared content out of _tests/ before content lock
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M2-FP-04]
 milestone: M2
 request-from: "qa"
@@ -21,5 +21,8 @@ carried by M1-NIT-02; docs/kb/tech/architecture.md "Location registry").
 - [ ] The five `haluna_*` shots re-render byte-identical, or any difference is explained and accepted by Rendering.
 - [ ] locations.json, `SaveShrine` ids, ownership.md globs and PROVENANCE paths follow the move. `validate_data`, `--filter=haluna` and `--filter=world_return` pass.
 - [ ] Done before content lock.
+
+## Notes
+- 2026-10-24 m2-slice: the Lead assigned this to the m2-slice track (queue top-up, item c, 00:40), since the playable zone is this track's. It touches Environment's `_tests/haluna_mood/**` claim: files move with `git mv`, so in-flight edits merge through rename detection.
 
 ## Review log
