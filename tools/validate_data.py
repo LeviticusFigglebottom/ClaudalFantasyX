@@ -1251,6 +1251,7 @@ def run(root: Path) -> Report:
     data_keys += check_dialogue(root, files, rep)
     data_keys += check_progression(files, rep)
     data_keys += check_items(files, declared_flags_quiet(root), rep)
+    check_inns(files, declared_flags_quiet(root), rep)
     data_keys += check_vowbound(files, rep)
     check_vowbound_flags(files, declared_flags_quiet(root), rep)
     data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
@@ -2253,6 +2254,54 @@ def check_zone_weather(root: Path, files: dict[str, object], rep: Report) -> Non
     for e in zone_weather_errors(doc, lambda res: _res_path(root, res).is_file()):
         rep.err(e)
 
+
+
+# --- M2-UI-06: inns (shops.json "inns": a price for a full rest, game/progression/inn.gd) ---------
+
+INN_KEYS = ("id", "name_key", "price")
+
+
+def inns_errors(doc: object, flags: set[str], where: str = "game/data/items/shops.json") -> list[str]:
+    """Each inn row: a unique id, a name_key (desc_key optional), a non-negative int price, and a
+    declared requires_flag when it has one. A shops.json without "inns" is fine."""
+    if not isinstance(doc, dict) or "inns" not in doc:
+        return []
+    rows = doc["inns"]
+    if not isinstance(rows, list):
+        return [f"{where}: 'inns' must be a list"]
+    errs: list[str] = []
+    seen: set[str] = set()
+    for i, row in enumerate(rows):
+        w = f"{where}: inns[{i}]"
+        if not isinstance(row, dict):
+            errs.append(f"{w}: must be an object")
+            continue
+        missing = [k for k in INN_KEYS if k not in row]
+        if missing:
+            errs.append(f"{w}: missing {', '.join(missing)}")
+        iid = row.get("id")
+        if not isinstance(iid, str) or not iid:
+            errs.append(f"{w}: id must be a non-empty string")
+        elif iid in seen:
+            errs.append(f"{w}: duplicate inn id '{iid}'")
+        else:
+            seen.add(iid)
+        for key in ("name_key", "desc_key", "location"):
+            if key in row and (not isinstance(row[key], str) or not row[key]):
+                errs.append(f"{w}: {key} must be a non-empty string")
+        price = row.get("price")
+        if "price" in row and not (_is_int(price) and price >= 0):
+            errs.append(f"{w}: price must be a non-negative int (lume)")
+        flag = row.get("requires_flag", "")
+        if flag and flag not in flags:
+            errs.append(f"{w}: undeclared story flag '{flag}' (declare it in game/data/flags.tres)")
+    return errs
+
+
+def check_inns(files: dict[str, object], flags: set[str], rep: Report) -> None:
+    """Inn rows in shops.json. Their loc keys are checked with the rest of the shops file."""
+    for e in inns_errors(files.get(f"{ITEMS_DIR}/shops.json"), flags):
+        rep.err(e)
 
 
 if __name__ == "__main__":

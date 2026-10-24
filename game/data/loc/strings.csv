@@ -618,3 +618,51 @@ HUD_FAIL_NOT_CALLER_FMT,{name} cannot call that Vowbound.
 HUD_FAIL_VOWBOUND_FALLEN,That Vowbound has fallen and cannot answer again this battle.
 HUD_FAIL_NO_VOWBOUND,No Vowbound is on the field.
 GFX_MENU_APPLYING,Applying the preset…
+SHOP_PROMPT,Browse the wares
+SHOP_MENU_BUY,Buy
+SHOP_MENU_SELL,Sell
+SHOP_MENU_LEAVE,Leave
+SHOP_MENU_BUY_DESC,"See what is for sale, and buy it with lume."
+SHOP_MENU_SELL_DESC,Sell what you carry. A shop pays less than it asks.
+SHOP_MENU_LEAVE_DESC,Step back out into the street.
+SHOP_MENU_PURSE_FMT,Purse: {amount}
+SHOP_MENU_HELD_FMT,Held {count}
+SHOP_MENU_NO_PRICE,—
+SHOP_MENU_BUY_TITLE,For sale
+SHOP_MENU_SELL_TITLE,Your goods
+SHOP_MENU_BUY_EMPTY,Nothing is for sale today.
+SHOP_MENU_SELL_EMPTY,You carry nothing to sell.
+SHOP_MENU_BUY_PREVIEW_FMT,Buy {count} × {name} for {price}.
+SHOP_MENU_SELL_PREVIEW_FMT,Sell {count} × {name} for {price}.
+SHOP_MENU_BOUGHT_FMT,Bought {count} × {name} for {price}.
+SHOP_MENU_SOLD_FMT,Sold {count} × {name} for {price}.
+SHOP_MENU_PURSE_FULL_FMT,Your purse is full: {lost} of it would be lost.
+SHOP_MENU_FOR_FMT,For {name}.
+SHOP_MENU_UNKNOWN_TITLE,A shuttered stall
+SHOP_MENU_HELP_ROOT,Up and Down: choose · Confirm: open · Cancel: leave
+SHOP_MENU_HELP_DEAL,Up and Down: choose · Left and Right: how many · Confirm: trade · Cancel: back
+SHOP_ERR_UNKNOWN_SHOP,No one is keeping this stall.
+SHOP_ERR_CLOSED,The shutters are down. Come back later.
+SHOP_ERR_NOT_IN_STOCK,{name} is not for sale here.
+SHOP_ERR_BAD_COUNT,Choose how many first.
+SHOP_ERR_NO_ROOM_FMT,Your bag has room for only {room} more {name}.
+SHOP_ERR_NO_FUNDS_FMT,"Not enough lume: this costs {price}, and the purse holds {purse}."
+SHOP_ERR_NOT_SELLABLE_FMT,No one here will buy {name}.
+SHOP_ERR_NOT_ENOUGH_FMT,You hold only {held} {name}.
+SHOP_ERR_UNKNOWN_PIECE,That piece is no longer in your pack.
+SHOP_ERR_EQUIPPED_FMT,{wearer} is wearing it. Take it off first.
+INN_PROMPT,Ask for a room
+INN_HALUNA,The Mooring Lamp
+INN_HALUNA_DESC,"Salt-stiff blankets, fish broth, and a lamp left low in the window."
+INN_MENU_REST,Rest
+INN_MENU_LEAVE,Leave
+INN_MENU_LEAVE_DESC,Step back out into the street.
+INN_MENU_REST_DESC,"Everyone wakes with full HP and MP, cured as a shrine would cure them."
+INN_MENU_NO_SAVE,An inn keeps no record of your journey. Save at a shrine.
+INN_MENU_RESTED,"The party rests, and wakes restored."
+INN_MENU_PREVIEW_FMT,A rest costs {price}.
+INN_MENU_UNKNOWN_TITLE,An empty room
+INN_MENU_HELP,Up and Down: choose · Confirm: choose · Cancel: leave
+INN_ERR_UNKNOWN,No one keeps this house.
+INN_ERR_CLOSED,The door is barred. No rooms for now.
+INN_ERR_NO_FUNDS_FMT,"Not enough lume: a rest costs {price}, and the purse holds {purse}."
