@@ -84,8 +84,9 @@ func setup(zone: GreyboxZone, block: Dictionary, defaults: Dictionary = {}) -> v
 	next_m = float(saved["next_m"])
 	grace_m = float(saved["grace_m"])
 	rng.state = int(saved["rng_state"])
+	# The gap was scaled at the rate it was kept with; a rate changed since (gear, the party) rescales the rest of it.
 	rate_pct = float(saved.get("rate_pct", rate_pct))
-	refresh_rate()  # gear changed since (M2-MNU-08) rescales the kept gap
+	refresh_rate()
 
 
 ## Forgets where Rhen was, so the next frame's position starts the walk afresh (after a placement).

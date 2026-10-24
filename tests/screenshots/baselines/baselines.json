@@ -1210,5 +1210,17 @@
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
+  },
+  "cutscene_act_card": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
+  "cutscene_hold_prompt": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   }
 }

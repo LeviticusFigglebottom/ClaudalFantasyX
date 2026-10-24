@@ -23,4 +23,7 @@ Creature portraits for the bestiary: all 27 Act I creatures plus the slice's fiv
 - Framing overrides in `tools/portraits/portraits.json` (creatures.json is the creatures track's, untouched): ashwing and sail_leech pitch 40 (flat, edge-on otherwise); gull_harrier, stormgull and squall_wing margin 0.75 (wingspans made them small); lantern_eel yaw 70 and margin 1.0 (its profile, lure in frame); reef_crab, wallcrab, wreck_crab, tide_crawler, spar_wraith and wall_polyp margin 0.95 (legs or frame cut at 0.85).
 - The portrait is 184 px at the 1920 reference: wider pushed the page panel past its rect (the English stat row needs about 690 px).
 
+## Merge note (menus, after the agent)
+The UI track built a live bestiary portrait the same day (M2-UI-26, `BestiaryPortraitSlot` over the creatures track's `CreaturePortrait`, silhouette for an unread foe). The bestiary is the UI track's page, so the merge into claude/menus keeps their page and drops this task's page wiring and its page test. Kept: the renderer's creature support, the 27 baked PNGs with PROVENANCE rows, `CreaturePortraits` and `CreaturePortraitFrame` (tested), ready for any screen that wants a still picture without a viewport. For the Lead / UI: if the live slot costs too much on a weak machine, the baked PNGs can stand in for it (ADR 0120).
+
 ## Review log

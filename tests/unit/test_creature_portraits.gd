@@ -2,25 +2,13 @@ extends TestCase
 ## M2-MNU-302 (ADR 0120): the bestiary's baked creature portraits. Every creature in the renderer's manifest
 ## (tools/portraits/portraits.json) has its PNG and a PROVENANCE row and names its creatures.json scene; every
 ## creatures.json row and every enemy with a model is in the manifest (a new model fails here until it is
-## rendered); CreaturePortraits finds an enemy's picture through its model; and the bestiary page shows a
-## Read foe's portrait, an unread foe's silhouette and no frame for a foe without a model, beside the words.
-## The runner has no after_each: each test that opens the menu frees it itself (_free).
+## rendered); CreaturePortraits finds an enemy's picture through its model; and CreaturePortraitFrame shows the
+## picture, a silhouette or nothing. (The bestiary page itself uses the UI track's live BestiaryPortraitSlot.)
 
 const MANIFEST := "res://tools/portraits/portraits.json"
 const PROVENANCE := "res://assets/PROVENANCE.md"
-const LOG := {
-	"reef_crab": {"read": false, "defeated": 2},
-	"lantern_eel": {"read": true, "defeated": 1},
-	"no_model_foe": {"read": true, "defeated": 1},
-}
 const NO_MODEL := &"no_model_foe"
 const THEME := "res://game/ui/theme/hymn_theme.tres"
-
-var menu: BestiaryMenu
-
-
-func before_each() -> void:
-	menu = null
 
 
 func test_every_manifest_creature_exists_with_a_provenance_row() -> void:
@@ -96,53 +84,6 @@ func test_the_frame_shows_the_picture_a_silhouette_or_nothing() -> void:
 	assert_false(frame.visible)
 	_root().remove_child(frame)
 	frame.free()
-
-
-func test_the_bestiary_shows_a_read_foe_an_unread_silhouette_and_no_frame_without_a_model() -> void:
-	_open()
-	var frame := menu.portrait()
-	assert_eq(menu.current_id, &"reef_crab", "the first entry: defeated, never Read")
-	assert_true(frame.visible)
-	assert_eq(frame.enemy(), &"reef_crab")
-	assert_eq(frame.is_silhouette(), CreaturePortraits.silhouette_unread(), "an unread foe: its silhouette")
-	menu.select(1)
-	assert_eq(menu.current_id, &"lantern_eel")
-	assert_true(frame.visible)
-	assert_false(frame.is_silhouette(), "a Read foe in full")
-	assert_eq(frame.picture().texture, CreaturePortraits.texture(&"lantern_eel"))
-	var gm: Dictionary = BestiaryMenu.load_data()["page"]
-	var inner := HudLayout.rect_of(gm).size.x - HudLayout.num(gm, "pad") * 2.0
-	var beside := HudLayout.num(gm, "portrait_size") + HudLayout.num(gm, "portrait_gap")
-	var view := menu.page_view()
-	assert_eq(view.max_width, inner - beside, "the words make room for the portrait")
-	assert_true(view.get_combined_minimum_size().x <= view.max_width, "and fit beside it")
-	assert_true(frame.get_parent() == view.get_parent(), "the portrait shares the page's row")
-	assert_true(frame.get_index() > view.get_index(), "at the right of the words")
-	menu.select(2)
-	assert_eq(menu.current_id, NO_MODEL)
-	assert_false(frame.visible, "no model: no frame")
-	assert_eq(view.max_width, inner, "the words take the whole width")
-	_free()
-
-
-func _open() -> void:
-	var enemies: Dictionary = BattleFixture.load_fixture(&"read_panel").db.enemies.duplicate()
-	for key: Variant in enemies.keys():
-		if str(key) == "lantern_eel":  # a copy of a Read foe's row, under an id no model names
-			var row := (enemies[key] as Dictionary).duplicate(true)
-			row.erase("model")
-			enemies[StringName(NO_MODEL) if key is StringName else String(NO_MODEL)] = row
-	menu = (load(BestiaryMenu.SCENE_PATH) as PackedScene).instantiate() as BestiaryMenu
-	menu.pause_tree = false
-	menu.configure(BestiaryMenuModel.new(Bestiary.new(LOG.duplicate(true)), enemies))
-	_root().add_child(menu)
-
-
-func _free() -> void:
-	if menu != null:
-		menu.get_parent().remove_child(menu)
-		menu.free()
-		menu = null
 
 
 func _role(c: Control, key: String) -> Color:

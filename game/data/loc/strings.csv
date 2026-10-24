@@ -1014,3 +1014,6 @@ MAP_POI_C_STILLGUARD_ROW,The Stillguard row
 MAP_POI_C_LANDING,The raft's landing
 MAP_POI_C_GATE,The landward gate
 MAP_POI_C_MILESTONE,The milestone
+CHAR_PELL_UNNAMED,The Kirru
+ACT_CARD_2_LABEL,Act II
+ACT_CARD_2_TITLE,The Truth
