@@ -1988,6 +1988,16 @@
         960,
         720
       ]
+    },
+    {
+      "id": "hero_cutscene_turn_strip",
+      "scene": "res://game/levels/_tests/hero_motion/cutscene_turn_strip.tscn",
+      "camera": "Camera",
+      "resolution": [
+        1280,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }
