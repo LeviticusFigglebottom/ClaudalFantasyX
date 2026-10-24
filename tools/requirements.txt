@@ -2,3 +2,4 @@
 # CI installs this file; keep it small and pinned.
 numpy==2.5.3
 gdtoolkit==4.5.0
+Pillow==12.3.0
