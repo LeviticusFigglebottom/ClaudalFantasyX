@@ -791,6 +791,46 @@
       "settle_frames": 30
     },
     {
+      "id": "asha_smile_variant_compare",
+      "scene": "res://game/levels/_tests/characters/asha/asha_smile_variant_compare.tscn",
+      "camera": "Cameras/Compare",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_battle_idle",
+      "scene": "res://game/levels/_tests/characters/asha/asha_battle_idle.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_battle_idle",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_idle.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_battle_idle",
+      "scene": "res://game/levels/_tests/characters/toma/toma_battle_idle.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "rhen_front",
       "scene": "res://game/levels/_tests/characters/rhen/rhen_stage.tscn",
       "camera": "Cameras/Front",

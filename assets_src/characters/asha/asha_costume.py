@@ -118,11 +118,13 @@ def _grid_normals(P: np.ndarray, closed: bool) -> np.ndarray:
 
 
 def _outward(P: np.ndarray, N: np.ndarray, centre: np.ndarray) -> np.ndarray:
-    """Flip normals that point toward the body axis."""
+    """Orient a grid's normals away from the body axis: the whole grid flips by the majority sign.
+    M1-CHR-13: flipping each vertex by sign(N . q), q horizontal from the axis, flipped vertex by
+    vertex along a staircase wherever the normal is near vertical (the top of the shoulder), which
+    pushed the inset back layer in and out by its thickness and creased the vest's normals."""
     q = P - centre
     q[..., 2] = 0.0
-    s = np.sign(np.sum(N * q, axis=-1, keepdims=True))
-    s[s == 0] = 1.0
+    s = 1.0 if float(np.sum(N * q)) >= 0.0 else -1.0
     return N * s
 
 
@@ -139,11 +141,13 @@ def _uvf(rect, nj: int, ni: int, closed: bool):
 def _panel(part: Part, P: np.ndarray, rect, colors, closed: bool, back_inset: float | None, centre) -> np.ndarray:
     """Front grid (outward-facing) plus an optional back layer. P[j, i]: rows j top -> bottom."""
     N = _outward(P, _grid_normals(P, closed), centre)
-    # make sure the grid's own winding faces outward: test one face
-    flip = False
-    a, b, d = P[0, 0], P[0, 1 % P.shape[1]], P[1, 0]
-    if np.cross(b - a, d - a) @ N[0, 0] > 0:
-        flip = True
+    # make sure the grid's own winding faces outward. M1-CHR-13: grid() winds (j, i), (j, i+1),
+    # (j+1, i+1), (j+1, i), whose normal is (b - a) x (d - a); the old test flipped when that already
+    # agreed with N, so the front layer faced inward and only the inset back layer was ever seen.
+    # Summed over the grid, so one degenerate corner face cannot decide it.
+    dU = np.diff(P, axis=1)[:-1]
+    dV = np.diff(P, axis=0)[:, :-1]
+    flip = bool(np.sum(np.cross(dU, dV) * N[:-1, :-1]) < 0.0)
     uvf = _uvf(rect, P.shape[0], P.shape[1], closed)
     ids = grid(part, P, part._mat, colors=colors, tags=TAG_CLOTH, flip=flip, uv_fn=uvf, closed_u=closed)
     if back_inset:

@@ -197,3 +197,10 @@ twist segments), so a clip change never leaves a limb in the previous clip's pos
 
 Review shots: `asha_clip_kneel_over_rhen`, `asha_clip_walk`, `asha_clip_offer_hand`, `asha_clip_face_west`,
 `asha_clip_laugh`, `asha_clip_run` (AshaStage `clip` and `clip_time`).
+
+## 14. Battle-scale heroes (M2-CHR-06)
+
+`game/characters/heroes/<hero>_battle.tscn` instances `<hero>_lod1.glb` (about 27–29k triangles, under 1.5 MB). The import
+rule's `animations.strip_suffixes` lets the LOD file share its hero's clip library, so the battle actor has the same
+`AnimationPlayer` clips as the dialogue model. The battle's capsules are swapped by UI+Combat (task M2-UI-07: a `"scene"`
+key in the stand-in spec of `game/data/ui/battle_sandbox.json`).

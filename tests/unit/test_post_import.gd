@@ -364,7 +364,7 @@ func test_asha_adopts_the_character_rules() -> void:
 		assert_eq(str(cfg.get_value("params", "import_script/path", "")), str(rules["script"]), path)
 
 
-## M2-FP-07: a hero with a clip library gets an AnimationPlayer at its root; its LOD1 file does not.
+## M2-FP-07: a hero with a clip library gets an AnimationPlayer at its root (M2-CHR-06: its LOD1 file too).
 func test_hero_clips_become_an_animation_player() -> void:
 	var rules := _rules("characters")
 	var root := Node3D.new()
@@ -377,10 +377,16 @@ func test_hero_clips_become_an_animation_player() -> void:
 			assert_true(ap.has_animation(clip), clip)
 		assert_eq(ap.playback_default_blend_time, float(rules["animations"]["default_blend_s"]))
 		assert_eq(int(report["animations"]), ap.get_animation_list().size())
+	# M2-CHR-06: the LOD1 file (the battle-scale model) shares the hero's library
 	var lod := Node3D.new()
 	_nodes.append(lod)
 	AssetImportRules.apply(lod, rules, ASHA_DIR + "asha_lod1.glb")
-	assert_true(lod.get_node_or_null(^"AnimationPlayer") == null, "no library, no player")
+	var lod_ap := lod.get_node_or_null(^"AnimationPlayer") as AnimationPlayer
+	assert_true(lod_ap != null and lod_ap.has_animation(&"idle"), "the LOD1 file gets the hero's clips")
+	var other := Node3D.new()
+	_nodes.append(other)
+	AssetImportRules.apply(other, rules, "res://assets/characters/nobody/nobody.glb")
+	assert_true(other.get_node_or_null(^"AnimationPlayer") == null, "no library, no player")
 	_done()
 
 

@@ -34,3 +34,4 @@ Claim a path glob before editing `.tscn` or `.tres` files or assets (SPEC §5.3)
 | M2 slice (trials data, M2-FP-16) | `game/data/trials/**` | 2026-10-24 | m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC) |
 | Rendering (underwater, M2-RND-02) | `game/world/water/underwater/**`, `game/levels/_tests/underwater/**` (shaders under the water stream's `game/shaders/water/**`) | 2026-10-24 | session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU) |
 | Rendering (battle VFX, M2-RND-03/04) | `game/vfx/battle/**`, `game/data/vfx/battle/**` (inside the glimmer stream's `game/data/vfx/**`), `game/shaders/vfx/**`, `game/levels/_tests/drownbell/**` | 2026-10-24 | session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU) |
+| Character (hero actor scenes for gameplay: battle-scale heroes, M2-CHR-06; villagers M2-CHR-03) | `game/characters/**` | 2026-10-24 | characters (session_01JqzzxgJU9Dmu7fRhmCG9aQ) |

@@ -14,6 +14,8 @@ extends Node3D
 @export var character_name: StringName = &"Asha"
 ## Emotion tag from game/data/dialogue/emotions.json, resolved through `face_poses`.
 @export var emotion: String = "neutral"
+## M2-CHR-05: a pose set from the table's "variants" that replaces the tags it lists ("" = none).
+@export var face_variant: String = ""
 ## Extra blendshape weights on top of the emotion (shape name -> weight), like a Cinematics @face.
 @export var face_extra: Dictionary = {}
 ## JSON with {"emotions": {tag: {shape: weight | [L, R]}}} (asha.md §6.3).
@@ -46,6 +48,8 @@ extends Node3D
 @export var compare_offset: Vector3 = Vector3.ZERO
 @export var compare_skin: Dictionary = {}
 @export var compare_face: Dictionary = {}
+## M2-CHR-05: the comparison character's face variant ("" = the same pose as the main one).
+@export var compare_variant: String = ""
 
 var _saved_globals: Dictionary = {}
 var _character: Node3D
@@ -68,7 +72,7 @@ func _ready() -> void:
 	_apply_pose(_character)
 	_apply_clip(_character)
 	_aim_face_camera(_character)
-	if not compare_skin.is_empty() or not compare_face.is_empty():
+	if not compare_skin.is_empty() or not compare_face.is_empty() or compare_variant != "":
 		_build_compare()
 
 
@@ -90,9 +94,13 @@ func _build_compare() -> void:
 				copy.set_shader_parameter(StringName(key), compare_skin[key])
 			mi.set_surface_override_material(s, copy)
 	var saved := face_extra
+	var saved_variant := face_variant
 	face_extra = saved.merged(compare_face, true)
+	if compare_variant != "":
+		face_variant = compare_variant
 	_apply_face(other)
 	face_extra = saved
+	face_variant = saved_variant
 
 
 func _process(delta: float) -> void:
@@ -158,6 +166,12 @@ func _face_weights() -> Dictionary:
 		if data is Dictionary:
 			var emotions: Dictionary = (data as Dictionary).get("emotions", {})
 			var pose: Dictionary = emotions.get(emotion, {})
+			var variants: Dictionary = (data as Dictionary).get("variants", {})
+			if face_variant != "":
+				var variant: Dictionary = variants.get(face_variant, {})
+				if variant.is_empty():
+					push_warning("AshaStage: no face variant %s" % face_variant)
+				pose = variant.get(emotion, pose)
 			for shape: String in pose:
 				_put_weight(weights, shape, pose[shape])
 	for shape: String in face_extra:

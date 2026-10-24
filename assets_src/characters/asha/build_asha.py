@@ -259,6 +259,28 @@ def delete_hidden_socket(ob: bpy.types.Object, face) -> int:
     return before - len(me.loop_triangles)
 
 
+# M1-RND-25 (QA-08 grief fault A): the lips' inner roll is skin that the lips shade when the mouth
+# opens, and the skin shader has no cavity bounce, so an open mouth was ringed by a hard black band.
+# Those faces move to the `mouth` material (the mouth family, with the bounce); the head atlas keeps
+# their painted mucosa (asha_textures reads the INNERLIP bake term).
+INNER_LIP_DZ = 0.0050  # m above/below the contact line (at s = 1)
+INNER_LIP_HALF = 0.85  # of the mouth's half-width (the corners stay skin: from the side they face the camera)
+INNER_LIP_FACING = 0.25  # a vertex is on the inner roll when its normal points less than this much forward
+
+
+def inner_lip_vertices(V: np.ndarray, N: np.ndarray, dz: np.ndarray, mouth_half: float, s: float) -> np.ndarray:
+    """True for skin vertices on the lips' inner roll, chosen by facing: near the contact line's height,
+    inside the mouth's width, and with a normal that does not face forward (-Y), as the lips' outer
+    surfaces do. (Depth behind the contact line picked up the lower lip's front at the corners.)"""
+    return (np.abs(dz) < INNER_LIP_DZ * s) & (np.abs(V[:, 0]) < INNER_LIP_HALF * mouth_half) & (-N[:, 1] < INNER_LIP_FACING)
+
+
+def head_materials(F: np.ndarray, freg: np.ndarray, inner_v: np.ndarray) -> list[str]:
+    """Material per head face: the mouth cavity and the inner lip roll (every corner on it) are `mouth`."""
+    inner_f = np.where(F >= 0, inner_v[np.maximum(F, 0)], True).all(axis=1)
+    return ["mouth" if (r == "mouth" or inn) else "skin_head" for r, inn in zip(freg, inner_f)]
+
+
 def head_seams(F: np.ndarray, cat: np.ndarray, V: np.ndarray, lm) -> set:
     """Seam edges of the head: between face categories (face mask, rest of head, sockets, mouth
     cavity) and down the back midline of the rest of the head."""
@@ -457,7 +479,8 @@ def main() -> int:
     used_h, Fh, remap_h, Sh = submesh(V, F, is_head, res["seams"])
     Vh = V[used_h]
     fh_reg = freg[is_head]
-    mats_h = ["mouth" if r == "mouth" else "skin_head" for r in fh_reg]
+    inner_v = inner_lip_vertices(Vh, Nw[used_h], res["lip_dz"][used_h], face.mouth_half, lm.h / 0.222)
+    mats_h = head_materials(Fh, fh_reg, inner_v)
     head = Part("Head")
     for p in Vh:
         head.add_v(p, tag=0)
@@ -629,6 +652,7 @@ def main() -> int:
         face_v = np.zeros(len(Vhead))  # the face-mask island's vertices (texel report)
         face_v[np.unique(Fh[cat == 1][Fh[cat == 1] >= 0])] = 1.0
         lip_terms["FACE"] = face_v
+        lip_terms["INNERLIP"] = np.concatenate([inner_v.astype(float), pad])
         dump_bake(Path(args.bake_dir), {"head": ob_head, "body": ob_body}, lm, {"head": np.array(head.T)},
                   {"head": {"LIP": masks["lip"], **lip_terms}})
     removed = delete_hidden_socket(ob_head, face)  # after the bake: the AO still sees a closed socket

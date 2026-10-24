@@ -705,6 +705,7 @@ def teeth_patch(albi: np.ndarray, ormi: np.ndarray, size: int) -> None:
     ormi[y0:y1, x0:x1, 2] = 0.0
 
 
+MOUTH_BAG = "#471A17"  # M1-RND-25: the mouth material's old flat colour, now painted (it samples the atlas)
 INNER_LIP = "#7A3834"  # wet mucosa behind the lips' contact line (the mouth bag is #6A2F2C)
 INNER_LIP_MIX = 0.8
 INNER_LIP_DEPTH = (0.0004, 0.0025)  # m behind the contact line (at s = 1) over which it takes over
@@ -872,13 +873,19 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
         # brow skin a touch darker
         col *= 1 - 0.12 * (np.exp(-((v - (ve + 0.072)) / 0.015) ** 2) * np.exp(-((np.abs(u) - 0.13) / 0.06) ** 2))[:, None]
         mouth = npz["mi"][r["tri"]] == list(npz["mats"]).index("mouth") if "mouth" in list(npz["mats"]) else np.zeros(n, bool)
-        col[mouth] = hexc("#6A2F2C")
+        # M1-RND-25: the inner lip roll is on the `mouth` material now (build_asha.head_materials), and
+        # the mouth material samples this atlas: the bag is painted the flat colour that material had
+        # (Color(0.28, 0.10, 0.09) = #471A17), the inner lip keeps its mucosa below
+        lipin = (r["INNERLIP"] > 0.5) if "INNERLIP" in r else np.zeros(n, bool)
+        bag = mouth & ~lipin
+        col[bag] = hexc(MOUTH_BAG) if "INNERLIP" in r else hexc("#6A2F2C")
         # M1-CHR-11: the inner lip (the skin behind the contact line, which only an open mouth shows)
         # was painted the vermilion's outer colour. In grief, lit, it read as a long khaki-gold band
         # under the upper teeth that the QA-05c capture took for the teeth (a diagnostic render with
         # the teeth pure green showed the band is not teeth). Wet mucosa: darker and redder, toward
         # the mouth bag's colour the deeper it goes behind the contact
-        inner = inner_lip_weight(Ph, r, face, s) * (~mouth)
+        inner = inner_lip_weight(Ph, r, face, s) * (~bag)
+        inner = np.maximum(inner, lipin.astype(float))  # every texel on the inner-lip faces is mucosa
         col = col * (1 - INNER_LIP_MIX * inner[:, None]) + hexc(INNER_LIP) * INNER_LIP_MIX * inner[:, None]
     else:
         # body: knuckles, elbows and knees a little redder, palms and soles paler

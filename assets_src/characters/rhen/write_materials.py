@@ -84,9 +84,9 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
         "col_albedo": "Color(0.55, 0.26, 0.25, 1)", "roughness": "0.6", "specular": "0.25",
     }, {}),
     "mouth": ("character_mouth", 0, {
-        "col_albedo": "Color(0.28, 0.1, 0.09, 1)", "roughness": "0.5", "roughness_from_orm": "0.0",
+        "col_albedo": "Color(1, 1, 1, 1)", "roughness": "0.5", "roughness_from_orm": "0.0",
         "ao_light_affect": "0.5",
-    }, {"tex_orm": R + "rhen_head_orm.png"}),
+    }, {"tex_albedo": R + "rhen_head_albedo.png", "tex_orm": R + "rhen_head_orm.png"}),
     "cloth": ("character_cloth", 0, {"detail_tiling": "140.0"},
               {"tex_albedo": R + "rhen_cloth_albedo.png", "tex_normal": R + "rhen_cloth_normal.png",
                "tex_orm": R + "rhen_cloth_orm.png", "tex_cloth_mask": R + "rhen_cloth_clothmask.png",

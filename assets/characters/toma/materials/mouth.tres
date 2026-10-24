@@ -1,12 +1,16 @@
-[gd_resource type="StandardMaterial3D" load_steps=2 format=3]
+[gd_resource type="ShaderMaterial" load_steps=4 format=3]
 
-[ext_resource type="Texture2D" path="res://assets/characters/toma/textures/toma_head_orm.png" id="t0"]
+[ext_resource type="Shader" path="res://game/shaders/character/character_mouth.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/characters/toma/textures/toma_head_albedo.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/characters/toma/textures/toma_head_orm.png" id="t1"]
 
 [resource]
 resource_name = "mouth"
-albedo_color = Color(0.28, 0.10, 0.09, 1)
-roughness = 0.5
-ao_enabled = true
-ao_light_affect = 0.5
-ao_texture_channel = 0
-ao_texture = ExtResource("t0")
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_albedo = ExtResource("t0")
+shader_parameter/tex_orm = ExtResource("t1")
+shader_parameter/ao_light_affect = 0.5
+shader_parameter/col_albedo = Color(1, 1, 1, 1)
+shader_parameter/roughness = 0.5
+shader_parameter/roughness_from_orm = 0.0

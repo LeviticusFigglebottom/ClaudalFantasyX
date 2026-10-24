@@ -116,7 +116,9 @@ def main() -> int:
     used_h, Fh, remap_h, Sh = hb.submesh(V, F, is_head, res["seams"])
     Vh = V[used_h]
     fh_reg = freg[is_head]
-    mats_h = ["mouth" if r == "mouth" else "skin_head" for r in fh_reg]
+    inner_v = hb.inner_lip_vertices(Vh, Nw[used_h], res["lip_dz"][used_h], face.mouth_half,
+                                    lm.h / 0.222)
+    mats_h = hb.head_materials(Fh, fh_reg, inner_v)
     head = Part("Head")
     for p in Vh:
         head.add_v(p, tag=0)
@@ -273,6 +275,7 @@ def main() -> int:
         face_v = np.zeros(len(Vhead))
         face_v[np.unique(Fh[cat == 1][Fh[cat == 1] >= 0])] = 1.0
         lip_terms["FACE"] = face_v
+        lip_terms["INNERLIP"] = np.concatenate([inner_v.astype(float), pad])
         hb.dump_bake(Path(args.bake_dir), {"head": ob_head, "body": ob_body}, lm, {"head": np.array(head.T)},
                      {"head": {"LIP": masks["lip"], **lip_terms}})
     removed = hb.delete_hidden_socket(ob_head, face)

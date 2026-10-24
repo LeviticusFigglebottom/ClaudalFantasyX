@@ -12,8 +12,9 @@
   },
   "lods": {},
   "animations": {
-    "_about": "M2-FP-07: the hero's body clips (assets_src/characters/asha/hero_clips.py) on an AnimationPlayer at the asset root, played by name by CutsceneSequencer. Only files with a library get one (the LOD1 files have none).",
+    "_about": "M2-FP-07: the hero's body clips (assets_src/characters/asha/hero_clips.py) on an AnimationPlayer at the asset root, played by name by CutsceneSequencer. Only files with a library get one; M2-CHR-06: a <hero>_lod1.glb (the battle-scale model) shares its hero's library through strip_suffixes.",
     "library": "{asset_dir}/anim/{asset_stem}_clips.tres",
+    "strip_suffixes": ["_lod1"],
     "default_blend_s": 0.3
   },
   "collision": {}

@@ -89,24 +89,26 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
                {"tex_albedo": T + "toma_shield_albedo.png", "tex_normal": T + "toma_shield_normal.png",
                 "tex_orm": T + "toma_shield_orm.png", "tex_cloth_mask": T + "toma_shield_clothmask.png",
                 "tex_detail_normal": A + "asha_thread_detail_normal.png"}),
+    # M1-RND-21 / M1-RND-25: Asha's mouth family (character_mouth, the cavity bounce), same values, reading
+    # Toma's head atlas; the mouth surface also carries the lips' inner roll, its colour from the atlas
+    "teeth": ("character_mouth", 0, {
+        "col_albedo": "Color(1, 1, 1, 1)", "roughness": "1.0", "specular": "0.06", "ao_light_affect": "0.35",
+    }, {"tex_albedo": T + "toma_head_albedo.png", "tex_orm": T + "toma_head_orm.png"}),
+    "tongue": ("character_mouth", 0, {
+        "col_albedo": "Color(0.55, 0.26, 0.25, 1)", "roughness": "0.6", "specular": "0.25",
+    }, {}),
+    "mouth": ("character_mouth", 0, {
+        "col_albedo": "Color(1, 1, 1, 1)", "roughness": "0.5", "roughness_from_orm": "0.0",
+        "ao_light_affect": "0.5",
+    }, {"tex_albedo": T + "toma_head_albedo.png", "tex_orm": T + "toma_head_orm.png"}),
 }
 STANDARD_MATERIALS = {
-    # Asha's mouth family (M1-CHR-10/11), reading Toma's head atlas
-    "teeth": "albedo_color = Color(1, 1, 1, 1)\nroughness = 1.0\nroughness_texture_channel = 1\n"
-             "metallic_specular = 0.06\nao_enabled = true\nao_light_affect = 0.35\nao_texture_channel = 0\n",
-    "tongue": "albedo_color = Color(0.55, 0.26, 0.25, 1)\nroughness = 0.6\nmetallic_specular = 0.25\n",
-    "mouth": "albedo_color = Color(0.28, 0.10, 0.09, 1)\nroughness = 0.5\nao_enabled = true\n"
-             "ao_light_affect = 0.5\nao_texture_channel = 0\n",
     # toma.md §4: bronze_patina buckles and boss (#5F8A78 patina over bronze: a dull green-bronze metal)
     "bronze": "albedo_color = Color(0.45, 0.42, 0.30, 1)\nmetallic = 0.85\nroughness = 0.5\n",
     # toma.md §4 #8: the spear's steel #5A6066
     "steel": "albedo_color = Color(0.353, 0.376, 0.40, 1)\nmetallic = 1.0\nroughness = 0.38\n",
 }
-STANDARD_TEXTURES = {
-    "teeth": {"albedo_texture": T + "toma_head_albedo.png", "roughness_texture": T + "toma_head_orm.png",
-              "ao_texture": T + "toma_head_orm.png"},
-    "mouth": {"ao_texture": T + "toma_head_orm.png"},
-}
+STANDARD_TEXTURES: dict[str, dict] = {}
 
 
 def main() -> int:

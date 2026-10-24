@@ -107,3 +107,30 @@ func _meshes(root: Node) -> Array[MeshInstance3D]:
 
 func _host() -> Node:
 	return (Engine.get_main_loop() as SceneTree).current_scene
+
+
+## M2-CHR-06: the battle-scale hero scenes instance the LOD1 model, which the import rule gives the hero's clips.
+func test_battle_scale_heroes_carry_their_clips() -> void:
+	for hero: String in ["asha", "rhen"]:
+		var node := (load("res://game/characters/heroes/%s_battle.tscn" % hero) as PackedScene).instantiate()
+		var ap := node.find_child("AnimationPlayer", true, false) as AnimationPlayer
+		assert_true(ap != null and ap.has_animation(&"idle"), "%s battle actor plays idle" % hero)
+		assert_true(node.find_child("Skeleton3D", true, false) != null, "%s battle actor is skinned" % hero)
+		node.free()
+
+
+## M2-CHR-05: a face variant replaces only the tags it lists; the default smile is unchanged.
+func test_smile_variant_is_opt_in_data() -> void:
+	var data: Dictionary = JSON.parse_string(
+		FileAccess.get_file_as_string("res://game/levels/_tests/characters/asha/asha_face_poses.json")
+	)
+	var variant: Dictionary = data["variants"]["duchenne_open"]
+	assert_eq(variant.keys(), ["smile"], "the variant lists the smile only")
+	assert_ne(variant["smile"], data["emotions"]["smile"], "and differs from the default")
+	var stage := (
+		(load("res://game/levels/_tests/characters/asha/asha_smile_variant_compare.tscn") as PackedScene).instantiate()
+	)
+	_host().add_child(stage)
+	var compare := stage.find_child("AshaCompare", true, false)
+	assert_true(compare != null, "the comparison character is built")
+	stage.free()

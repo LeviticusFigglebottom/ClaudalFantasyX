@@ -2,7 +2,7 @@
 id: M1-RND-25
 title: Grief mouth's black rim is the lip shadow on the inner-lip skin, which gets no cavity bounce (QA-08 fault A)
 role: rendering
-status: doing
+status: review
 owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
 reviewer: character
 depends_on: [M1-RND-24]
@@ -29,5 +29,18 @@ down to the asset or texture and asked for a key-shadow-off check first. M1-RND-
         (vertex colour or an ORM channel).
 - [ ] lavapipe and GPU: the rim is gone or softened in `asha_face_grief` at High and Low. Closed-mouth shots are
       unchanged. List the drift and RMSE for the Lead.
+
+## Delivery (2026-10-24, characters: option (a), the Character fix, as the Lead asked)
+- The lips' inner roll moves to the `mouth` material (the mouth family, with the cavity bounce):
+  `build_asha.inner_lip_vertices` picks skin vertices within 5 mm of the contact line, inside 0.85 of the mouth's
+  half-width, whose normal does not face forward (depth behind the contact picked up the lower lip's front at the
+  corners); `head_materials` assigns faces whose corners are all on it. Asha, Rhen and Toma use the same helper.
+- The `mouth` material now samples the head atlas (`tex_albedo`, white tint): asha_textures paints the bag its old flat
+  colour (#471A17, `MOUTH_BAG`) and the inner-lip faces (the `INNERLIP` bake term) as mucosa. Toma's mouth family moved
+  from StandardMaterial3D to character_mouth too.
+- **Result (lavapipe):** the grief rim is softened: the lower lip's inner edge reads red instead of black. The upper
+  edge stays darker (the upper lip's own shadow on the teeth and its inner roll). Closed-mouth shots: only a thin sliver
+  along the seam changes material. GPU check (High and Low) goes to the PC.
+- Asha's GLB 4.65 MB (+0.04), Rhen 4.41, Toma 4.90 MB (all under 5 MB; Toma's is tight).
 
 ## Review log

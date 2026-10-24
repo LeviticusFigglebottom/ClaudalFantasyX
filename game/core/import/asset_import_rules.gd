@@ -19,10 +19,10 @@ extends RefCounted
 ##                past the table are hidden. A mesh with no `-lod1` (or later) sibling gets no
 ##                range, so it never vanishes with nothing behind it. Auto-generated LODs are the .import option
 ##                `meshes/generate_lods`, which the rules state so tests can check the wiring.
-##   animations   `animations.library` (with {asset_dir} and {asset_stem}) names an AnimationLibrary
-##                resource; when it exists the asset root gets an AnimationPlayer carrying it (M2-FP-07:
-##                the heroes' body clips, which CutsceneSequencer plays by name), with the rules'
-##                `default_blend_s` between clips.
+##   animations   `animations.library` (with {asset_dir} and {asset_stem}, minus any `strip_suffixes`)
+##                names an AnimationLibrary resource; when it exists the asset root gets an
+##                AnimationPlayer carrying it (M2-FP-07: the heroes' body clips, which
+##                CutsceneSequencer plays by name), with the rules' `default_blend_s` between clips.
 ##   placeholder  glTF extras that declare PLACEHOLDER (`hymn_tag: "PLACEHOLDER"` or a `placeholder`
 ##                note, on a node, mesh or material) tag that node, and the asset root, with
 ##                meta `hymn_tag = &"PLACEHOLDER"`; the root also lists the notes (SPEC §8.4).
@@ -97,6 +97,10 @@ static func animation_library_path(rules: Dictionary, source_file: String) -> St
 	if pattern == "":
 		return ""
 	var stem := source_file.get_file().get_basename()
+	# M2-CHR-06: a LOD file (`asha_lod1`) shares its hero's library (`asha`); the suffixes are data
+	for suffix: Variant in rules.get("strip_suffixes", []):
+		if stem.ends_with(str(suffix)):
+			stem = stem.trim_suffix(str(suffix))
 	return pattern.replace(ASSET_DIR_TOKEN, source_file.get_base_dir()).replace(ASSET_STEM_TOKEN, stem)
 
 
