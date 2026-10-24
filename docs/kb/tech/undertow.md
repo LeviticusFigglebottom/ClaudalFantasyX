@@ -418,6 +418,12 @@ The engine's sky reflection never sees the storm, so the water shader's storm gr
 - **Medium and High:** the reflected ray's point at the storm's distance is projected to the screen, and the
   half-res body's own pixel there (compute or SubViewport `body_tex`, ready before the water draws) is the
   reflection. That includes the wounds and the lightning, which reflect as glints in the chop.
+- **Ultra's budget (M2-RND-12, the Lead's decision):** the storm's own cost is at most 4 ms at 1440p. At full
+  resolution and 72 steps it was 15–18 ms, the whole 60 fps frame. Ultra's compute body now runs at
+  `body_scale` 0.5 with 56 steps: 3.47 / 2.55 / 3.69 ms on the Day, Horizon and Eye cameras (RX 9070 XT, 2560×1440,
+  the frame minus `--hide-storms`). That's still about 2× High's resolution, with 1.75× its steps. Measured
+  alternatives: 0.5 / 64 = 3.9–4.1 ms, 0.6 / 44 = 3.0–4.2, 0.7 / 32 = 3.1–4.3, full resolution / 16 = 4.7–6.0 (and
+  banded). The key frames of Ultra against High read alike, with Ultra a little crisper.
 - **Ultra (M2-RND-11):** the same. The tier's `compute_body` runs the compute body at full resolution
   (scale 1.0) where compute runs, so its frame is a texture the sea reflects, as High's is. On the RX 9070 XT
   at 1440p the compute body is also about 1 ms faster than Ultra's spatial body (Day 15.2 against 16.2 ms, Eye

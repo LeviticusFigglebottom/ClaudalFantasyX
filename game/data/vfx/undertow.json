@@ -270,17 +270,18 @@
     },
     "ultra": {
       "body": "raymarch",
-      "march_steps": 72,
+      "march_steps": 56,
       "spray_layers": 2,
       "sea_foam_octaves": 5,
       "curl_reuse": 2,
       "temporal_jitter": true,
-      "body_scale": 1.0,
+      "body_scale": 0.5,
       "streamers": 24,
       "rain_layers": 3,
       "bolt_branches": 3,
       "compute_body": true
-    }
+    },
+    "_note": " M2-RND-12 (the Lead's budget, the storm <= 4 ms at 1440p): Ultra's compute body at body_scale 0.5 and 56 steps (was 1.0 and 72, 15-18 ms): 3.5 / 2.6 / 3.7 ms on the Day, Horizon and Eye cameras."
   },
   "looks": {
     "_note": "Named storm looks (UndertowStorm.look): shader uniform -> value, pushed on top of the tunables to every storm material. '#hex' strings are sRGB colours. M1-RND-09.",
