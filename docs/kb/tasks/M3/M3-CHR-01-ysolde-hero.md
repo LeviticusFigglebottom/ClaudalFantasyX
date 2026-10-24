@@ -2,8 +2,8 @@
 id: M3-CHR-01
 title: "Ysolde, the fourth hero, on the MPFB2 hero path (design, build, face poses, clips, shots)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
 depends_on: [M2-CHR-01, M2-CHR-02, M1-CHR-14]
 milestone: M3
 request-from: lead
