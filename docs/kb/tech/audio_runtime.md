@@ -212,3 +212,13 @@ SPEC §16 Q4: no voice acting yet, but the architecture is ready for it. Every s
 - **Headless runs** (CI, tests) don't auto-apply the first scene's zone row: with no audio device, a music playback
   still live in the dummy driver when `--quit-after` ends the run is reported as leaked resources (the boot smoke
   test). Swaps (`scene_swapping`) and `apply_zone` work as usual. The autoload also stops its players on exit.
+
+## M3 data waiting for scenes (M3-AUD-06)
+
+- `game/data/audio/sfx_reefball.json` (15 rows: ball, sphere water, crowd reactions, the reed-pipe whistle, the
+  naming rite) and `sfx_dive.json` (5 rows: entry, surfacing, bubble burst, strokes, the lantern's underwater hum as
+  a 6 s loop). Play them with `Audio.play_sfx` / `play_sfx_at` once the Reefball and dive scenes exist.
+- ambience.json beds `underwater_deep`, `drowned_tower`, `reefball_crowd_murmur` (−26) and `reefball_crowd_excited`
+  (−23): crossfade the two crowd beds with play via `Audio.set_ambience`. Stop the crowd beds while
+  `reefball_naming_rite` plays (it carries its own crowd going quiet), and stop the lantern hum's player when Rhen
+  surfaces.

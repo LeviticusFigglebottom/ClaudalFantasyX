@@ -19,9 +19,14 @@ at f95b27cb. Items: M2-AUD-01..06 and M2-AUD-10/11, M3-AUD-01..07 (all `status: 
   measured bus loudness (hush_theme_v2._bus_stats). corrow_seawall and saltgrass_causeway start a sixteenth before
   their downbeat (sidecar `downbeat_offset_s`).
 
+- **In progress (worktree agents, scoped checks per the new gate rules):** M3-AUD-08 Hullgnaw + Spar-Wraith; M3-AUD-09
+  Cinder Matron + Undertow's Reach (stems); M2-AUD-13 causeway beds + M3-AUD-10 Oruvel and the living funeral.
+- **Filed for m2-slice:** M2-AUD-12 (B06 causeway music/beds zone rows, the B05 crossfade, B12 end card plays only
+  hush_coda).
+
 ## Exact next step
-File the m2-slice hand-offs (B06 causeway route ambience + music zone row; B12 end-card coda) and continue with the
-next Act I cues (bosses) per the Lead's queue.
+Merge the three agents' branches as they report, run the audio-filtered tests, then one full Godot suite in the
+background and a batch MERGE-READY line.
 
 ## Un-pushed state
 None.
