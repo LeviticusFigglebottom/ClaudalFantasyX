@@ -153,5 +153,6 @@ Rhen fights alone all chapter (act1_ch01.md §9 Combat), with `active: [rhen]` a
 - **Tutorial fights:** each teaches one thing (the command menu, items, escape), and a first-time masher shouldn't lose one.
 - **Hullgnaw's `role_answer`:** the policy never uses items, and in a one-hero fight nobody can swap in, so it measures only the masher plus MP skills and the Swell. Rhen's answer is tempo plus a Salt Tonic when the Coil telegraphs the Gnaw, and only `smart` plays that.
 - **Kick Off:** the encounter lends it (`party_skills`), because the second phase teaches it.
+- **Tempo (M3-CMB-02):** no Ch1 regular should routinely double-turn a solo Rhen. A foe's rank × base delay should be no shorter than about 0.85 of Rhen's Attack (174 ticks): the Wickfry is 150, and every other regular is slower. Only Hullgnaw's second phase out-tempos him, by design. The timeline shows each foe at its AI's rank (ADR 0038).
 
 Numbers are in the 2026-10-24 tuning log entry in balance_report.md.
