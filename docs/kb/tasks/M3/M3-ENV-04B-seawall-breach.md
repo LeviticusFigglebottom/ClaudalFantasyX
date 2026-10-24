@@ -2,8 +2,8 @@
 id: M3-ENV-04B
 title: Ch8 the Seawall falls: the breach state of the Corrow kit (and the Ch9 night pass)
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: env-art worktree
 depends_on: [M3-ENV-04]
 milestone: M3
 request-from: environment
