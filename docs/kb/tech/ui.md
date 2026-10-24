@@ -20,6 +20,7 @@ Owner: UI/UX + Combat (M1-UI-01, M1-CMB-01, M1-UI-02). Art rules: [`docs/kb/art/
 | `game/battle/scene/` | `battle_sandbox.tscn`, `BattleController`, `BattleStage`, `BattleMenus`, `BattleFixture`, `FighterStandIn`, `ground_ring.gdshader`, and `shots/` (capture entry scenes). |
 | `assets/fonts/` | Source Sans 3 and EB Garamond, each with its `OFL.txt`. |
 | `game/ui/bestiary/` | `BestiaryMenu` (+ `bestiary_menu.tscn`), `BestiaryMenuModel`, and the `bestiary_menu` capture driver (`BestiaryShot`, `shots/`). Layout: `game/data/ui/bestiary_menu.json` (M2-UI-02). |
+| `game/ui/field_menu/` | `FieldMenu` (+ `field_menu.tscn`), `FieldMenuModel`, and the `field_menu` / `field_menu_swell_modes` capture driver (`FieldMenuShot`, `shots/`). Layout: `game/data/ui/field_menu.json` (M2-UI-04). |
 
 ## Theme
 
@@ -149,15 +150,30 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
   - The right side shows the entry under the cursor. A Read foe gets the full page from its row (`EnemyPage.from_row`: stats, weaknesses, lore, "Defeated: N"). A foe defeated but never Read shows its name, its count and how to learn more.
   - Ids the table no longer lists are skipped on screen and never removed from the save (`skipped_ids()`).
   - Up and down choose, hover shows, cancel closes.
-  - **Not reachable in play yet:** there is no field or party menu to hang it on. Whoever builds that menu calls `BestiaryMenu.open_in(self)`.
+  - **Reached from the field menu** (M2-UI-04, § Field menu below): Bestiary calls `BestiaryMenu.open_in(field_menu)`.
 - **Captures:** `battle_read_panel` (fixture `read_panel`: Ysolde, quick and taught `read`, Reads the reflecting Lantern Eel; the fixture adds the enemies' `lore_key`s and a `read` row to the frozen tables), `battle_opening_banner` (fixture `opening_banner`: an ambush), `bestiary_menu` (`BestiaryShot`: a fixed log over the frozen enemies, the Lantern Eel's page on show).
 
 ## Swell fill modes (M2-UI-01)
 
 - The **Swell** page lists the techniques (greyed out until the gauge is full), then one row per unlocked mode (`BattleMenus.swell_mode_rows`, in swell.json order). Each row shows the mode's `name_key`, and "In use" or "No time" on the right. Highlighting a mode row puts its `desc_key` on the help line with "Choosing it costs no time", and the timeline shows the order unchanged (no ghost). Choosing one calls `BattleSwell.set_mode` (the engine's rule), redraws the page and the root row in place, and leaves the turn with the same fighter. `SwellModeRows` is the glue; the controller reaches it through one-condition hooks on two existing lines.
-- Since the merge with M2-ARC-01 a mode chosen in battle is carried out of it with the gauge (`BattleSwellCarry`). The out-of-battle API exists (`BattleSwellCarry.mode_rows` / `set_mode`, battle_ctb.md), but there is no party or Customize menu to put a chooser in yet. That chooser is the follow-up, and it can reuse `BattleMenus.swell_mode_rows`'s row shape.
+- Since the merge with M2-ARC-01 a mode chosen in battle is carried out of it with the gauge (`BattleSwellCarry`). The out-of-battle API exists (`BattleSwellCarry.mode_rows` / `set_mode`, battle_ctb.md), and the field menu's Swell page is its chooser (M2-UI-04, § Field menu below).
 - **Timing assist:** see § Accessibility. The controller builds the ring from `hud.settings.timing_input(row)`, and the ring panel shows the tag ("Assist: wider window" / "Assist: misses count as Good") at its top left. `SwellInput.assist_floor` (every kind grades through `SwellInput._record`) is the one engine-side addition.
 - **Capture:** `battle_swell_modes` (fixture `swell_modes`: Rhen at 40, the Swell page with Wake highlighted).
+
+## Field menu (M2-UI-04)
+
+- **Opening it.** In the field, `ui_cancel` (Escape, B / Circle) opens `FieldMenu.open_in(player)`. That's a three-line `elif` in `FieldController._unhandled_input`, under the same `accepts_input` guard as interact, so a cutscene or a conversation (the sequencer turns `accepts_input` off) never opens it. Like `SaveMenu`, it brings its own CanvasLayer (layer 60, under the bestiary's 64) and pauses the tree while open, so the player can't get a second Escape.
+- **Three levels.** All three are `MenuPage`s, with words from `FieldMenuModel` and loc keys `FIELD_MENU_*`:
+  - **Root** (left): Bestiary, Swell, Return to the path.
+  - **Heroes** (right): each Swell hero, with the mode in use on the right.
+  - **Modes** (right, headed "Rhen's fill mode"): `BattleSwellCarry.mode_rows(cid)`. Each row shows its `name_key`, and the current one also says "In use" (`HUD_SWELL_MODE_IN_USE`, the battle page's word).
+
+  A line under the right page says what the highlighted row does: the root row's purpose, a hero's mode and its `desc_key`, or a mode's `desc_key` ("… is in use: …" for the current one). On the root the line sits at the top of the right column. Choosing a mode calls `BattleSwellCarry.set_mode` and redraws in place. The line then confirms the change until the cursor moves: "Rhen's gauge now fills by Wake. It keeps what it holds." The gauge keeps its points (battle_ctb.md "Carried Swell").
+- **Input.** Up and down move. Confirm chooses. Cancel goes back a level, and closes the menu from the root. Hovering moves the cursor, and a click chooses (a click on the root page from a deeper level goes back to the root). While the bestiary is open it takes every input, and the field menu hides until the bestiary closes. The field menu keeps holding the pause, so the field stays still in between.
+- **Heroes.** `PartyGoods.joined_members(Game.state)`, minus anyone with no Swell. The first playable never writes `Game.state.party_ids` (its party comes from first_playable.json `field_battle`), so when no one has joined, that party stands in. Remove the fallback once the flow fills `party_ids`. With no Swell hero, the Swell row is off and the line says why.
+- **Layout.** `field_menu.json`. Every rect is a multiple of 3 at the 1080p reference, so the 1280 x 720 captures (2/3 scale) draw each frame edge on a whole pixel. Before that, the page borders broke up at fractional pixels. The right page is only as tall as its rows (`MenuPage.height_for`). `MenuPage.set_header` is new: the right page is set up titled once and renamed per level.
+- **Captures:** `field_menu` (the root, cursor on Swell) and `field_menu_swell_modes` (Rhen's modes with Tether unlocked and Wake in use, cursor on Tether). Both come from `FieldMenuShot` on a scratch `GameStateData`. The modes come from swell.json, as they do in play.
+- **The target info panel knows a Read foe.** `BattleController._show_pick` now takes `revealed` from `BattleBestiary.knows(c)`, which is `book.is_read(BattleEngine.enemy_id(c))` for a foe. A foe the party has Read, in this battle or before it (a live battle's book is `Game.state.bestiary`), shows its HP gauge instead of "HP unknown until Read". The controller line count is unchanged (994). Capture fixtures log into a scratch book, so no battle baseline moves.
 
 ## Swell (M1-CMB-04)
 

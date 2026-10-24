@@ -66,6 +66,12 @@ static func weakness_text(reveal: Dictionary) -> String:
 	return TranslationServer.translate(READ_WEAK_KEY).format({"list": ", ".join(names)})
 
 
+## True when the log holds a Read of foe `c`'s kind, in this battle or before it (M2-UI-04): the
+## target info panel then shows its HP instead of "HP unknown until Read". False for the party.
+func knows(c: BattleCombatant) -> bool:
+	return c != null and c.team == BattleCombatant.TEAM_ENEMY and book.is_read(BattleEngine.enemy_id(c))
+
+
 func _on_action_resolved(result: ActionResult) -> void:
 	for hit in result.hits:
 		if not hit.has("read"):
