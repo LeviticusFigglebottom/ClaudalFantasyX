@@ -3,6 +3,16 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
+- **MERGE-READY @ b6d98d1c (+ this log).** Since 0eb5a1a9: the spar_wraith's two phases (d2848fbd) and the minor
+  polish (the Matron's slag cells in mixed sizes, salt bands and barnacles on the wreck crab's legs, smoothed rent edges
+  on the squall wing). Checks: validate_data, taskboard, lint and format, tools creature tests, Godot creature 14/0
+  and battle 412/0, Blender verify of each changed job (identical). 4 creature shots compared and passing:
+  creature_spar_wraith was re-approved at 0.03089, the Matron 0.02893, the crab 0.02448, the wing 0.00742, each after
+  viewing. Skipped: other shots and coverage (no shared code beyond CreatureActor's phase keys, which the creature
+  tests cover).
+  - **Queue:** every item is done or blocked. Blocked: enemy `model` lines (m2-slice adds them once this branch is on
+    the integration branch) and the Matron's re-crust hook (battle-presentation). Nothing open on the creatures side
+    beyond optional finesse (the wreck crab's leg tubes are coarse; only 58 triangles of budget left).
 - **Resumed after the usage-limit stop (17:30).** Integration 81651b7e merged. The Lead's resume list (Ch6–Ch9, clips,
   slice polish) was already done (see the entries below). New since then: m2-slice's Ch4 boss phase `hauled_down` for
   the spar_wraith is built at d2848fbd (Shroud, drop, water Sheath, deck strikes; new `show_after` phase key; the
