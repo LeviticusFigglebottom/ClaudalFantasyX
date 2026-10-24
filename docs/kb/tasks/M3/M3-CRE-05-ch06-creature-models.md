@@ -15,7 +15,7 @@ The Ch6 creatures (m2-slice: the shoals reuse gull_harrier as their flier). `mod
 ## Acceptance criteria
 - [x] shoal_skipper (first pass: 1.6k triangles)
 - [x] raid_hound (first pass: 3.1k triangles; no weak point; KO lies down)
-- [ ] wreck_crab (variant of reef_crab: lives in broken lamp housings, glows bound teal per m2-slice act1_ch06 §9; check the bound-teal glow against color_script rule 1 with art first)
+- [x] wreck_crab (variant of reef_crab: lives in broken lamp housings, glows bound teal per m2-slice act1_ch06 §9; first pass 7.8k triangles. The bound teal is the lamp housing's own light, steady per color_script rule 2, recorded as the one sanctioned creature use in act1/wreck_crab.md: art to confirm in review)
 
 ## Notes
 - The Inquisitor (Hadric Moll) is the character track's.

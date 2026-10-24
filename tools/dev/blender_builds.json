@@ -246,6 +246,36 @@
         ["{blender}", "--python", "assets_src/creatures/tide_crawler/build_tide_crawler.py", "--", "--out", "assets/creatures/tide_crawler/tide_crawler.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "tide_crawler"]
       ]
+    },
+    {
+      "id": "creature_squall_wing",
+      "owner": "character",
+      "sources": ["assets_src/creatures/squall_wing/**", "assets_src/creatures/gull_harrier/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/squall_wing/*.glb", "assets/creatures/squall_wing/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/squall_wing/build_squall_wing.py", "--", "--out", "assets/creatures/squall_wing/squall_wing.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "squall_wing"]
+      ]
+    },
+    {
+      "id": "creature_wreck_crab",
+      "owner": "character",
+      "sources": ["assets_src/creatures/wreck_crab/**", "assets_src/creatures/reef_crab/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/wreck_crab/*.glb", "assets/creatures/wreck_crab/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/wreck_crab/build_wreck_crab.py", "--", "--out", "assets/creatures/wreck_crab/wreck_crab.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wreck_crab"]
+      ]
+    },
+    {
+      "id": "creature_wall_polyp",
+      "owner": "character",
+      "sources": ["assets_src/creatures/wall_polyp/**", "assets_src/creatures/spawn_polyp/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/wall_polyp/*.glb", "assets/creatures/wall_polyp/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/wall_polyp/build_wall_polyp.py", "--", "--out", "assets/creatures/wall_polyp/wall_polyp.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wall_polyp"]
+      ]
     }
   ]
 }

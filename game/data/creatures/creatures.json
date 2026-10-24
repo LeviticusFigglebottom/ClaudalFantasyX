@@ -16,6 +16,9 @@
     "portrait": {"clip": "idle", "clip_time": 0.0, "yaw_deg": 30.0, "pitch_deg": 14.0, "fov_deg": 28.0, "margin": 0.85}
   },
   "creatures": {
+    "wall_polyp": {"scene": "res://game/creatures/wall_polyp/wall_polyp_battle.tscn", "contact": {"attack": 0.46, "cast": 0.6}},
+    "wreck_crab": {"scene": "res://game/creatures/wreck_crab/wreck_crab_battle.tscn", "contact": {"attack": 0.5, "cast": 0.7}},
+    "squall_wing": {"scene": "res://game/creatures/squall_wing/squall_wing_battle.tscn", "contact": {"attack": 0.62}, "stand_in": {"yaw_deg": 60.0}},
     "tide_crawler": {"scene": "res://game/creatures/tide_crawler/tide_crawler_battle.tscn", "contact": {"attack": 0.55}},
     "raid_hound": {"scene": "res://game/creatures/raid_hound/raid_hound_battle.tscn", "contact": {"attack": 0.5}},
     "shoal_skipper": {"scene": "res://game/creatures/shoal_skipper/shoal_skipper_battle.tscn", "contact": {"attack": 0.5}},

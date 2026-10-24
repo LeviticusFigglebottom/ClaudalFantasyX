@@ -915,6 +915,9 @@
     {"id": "creature_cinder_matron", "scene": "res://game/levels/_tests/creatures/shots/creature_cinder_matron.tscn", "resolution": [960, 720]},
     {"id": "creature_shoal_skipper", "scene": "res://game/levels/_tests/creatures/shots/creature_shoal_skipper.tscn", "resolution": [960, 720]},
     {"id": "creature_raid_hound", "scene": "res://game/levels/_tests/creatures/shots/creature_raid_hound.tscn", "resolution": [960, 720]},
-    {"id": "creature_tide_crawler", "scene": "res://game/levels/_tests/creatures/shots/creature_tide_crawler.tscn", "resolution": [960, 720]}
+    {"id": "creature_tide_crawler", "scene": "res://game/levels/_tests/creatures/shots/creature_tide_crawler.tscn", "resolution": [960, 720]},
+    {"id": "creature_squall_wing", "scene": "res://game/levels/_tests/creatures/shots/creature_squall_wing.tscn", "resolution": [960, 720]},
+    {"id": "creature_wreck_crab", "scene": "res://game/levels/_tests/creatures/shots/creature_wreck_crab.tscn", "resolution": [960, 720]},
+    {"id": "creature_wall_polyp", "scene": "res://game/levels/_tests/creatures/shots/creature_wall_polyp.tscn", "resolution": [960, 720]}
   ]
 }
