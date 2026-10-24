@@ -47,4 +47,8 @@ SPEC §10 M2: "three final music cues". The beat sheet (vertical_slice.md §6) n
     .import synced, `test_audio_loops.gd`.
   - Bus balance: each cue's bus gains were set from measured bus loudness (comments above each `render()`).
 
+- 2026-10-24 later, correction: `hush_first_verse`'s piano was ~31 LU too quiet and `haluna_dawn`'s metallophone
+  ~16 LU too loud (balanced by guess; the grand model's raw level is far below the flute's and the bars'). Both now
+  use measured bus levels (hush_theme_v2._bus_stats) and are re-rendered; listening_notes.md flags it.
+
 ## Review log

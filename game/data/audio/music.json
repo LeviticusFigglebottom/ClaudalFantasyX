@@ -47,6 +47,24 @@
     "haluna_dawn": {
       "file": "res://assets/audio/music/haluna_dawn.ogg",
       "_note": "Cutscene A (B01); the sequencer plays it by name"
+    },
+    "saltgrass_causeway": {
+      "file": "res://assets/audio/music/saltgrass_causeway.ogg",
+      "resume": true,
+      "_note": "B06; m2-slice adds the zone row when ch03/saltgrass_causeway exists"
+    },
+    "lamp_diver": {
+      "file": "res://assets/audio/music/lamp_diver.ogg",
+      "resume": true,
+      "_note": "M3 Ch1, the drowned-tower dive"
+    },
+    "sefir_theme": {
+      "file": "res://assets/audio/music/sefir_theme.ogg",
+      "_note": "M3 Ch6, Sefir's barge; his motif"
+    },
+    "the_ebbing": {
+      "file": "res://assets/audio/music/the_ebbing.ogg",
+      "_note": "M3 Ch9, the Ebbing (through-composed)"
     }
   },
   "zones": [

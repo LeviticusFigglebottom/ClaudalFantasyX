@@ -44,7 +44,7 @@ M1_AUD_02 = ("hush_theme_v2", "battle_standard.", "temple_trial")
 # M2-AUD-03's cues, held to the music targets (-16 +- 0.5 LUFS, true peak <= -1 dBTP). drownbell_p1 is one stem of a
 # stack measured whole by its source (the full stack is -16; stem 1 alone is quieter by design, mix.md §2).
 M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_verse", "hush_coda", "haluna_dawn",
-           "shell_shrine_interior", "ilun_summon")
+           "shell_shrine_interior", "ilun_summon", "saltgrass_causeway", "lamp_diver", "sefir_theme", "the_ebbing")
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
@@ -90,6 +90,11 @@ JOBS = [
     ("assets_src/music/hush_coda.py", "assets/audio/music", ["hush_coda.ogg"], "music"),
     ("assets_src/music/haluna_dawn.py", "assets/audio/music", ["haluna_dawn.ogg"], "music"),
     ("assets_src/music/ilun_summon.py", "assets/audio/sfx", ["ilun_summon.ogg"], "music"),
+    ("assets_src/music/saltgrass_causeway.py", "assets/audio/music",
+     ["saltgrass_causeway.ogg", "saltgrass_causeway.loop.json"], "music_loop"),
+    ("assets_src/music/lamp_diver.py", "assets/audio/music", ["lamp_diver.ogg", "lamp_diver.loop.json"], "music_loop"),
+    ("assets_src/music/sefir_theme.py", "assets/audio/music", ["sefir_theme.ogg", "sefir_theme.loop.json"], "music_loop"),
+    ("assets_src/music/the_ebbing.py", "assets/audio/music", ["the_ebbing.ogg"], "music"),
     ("assets_src/sfx/field_ambience.py", "assets/audio/ambience",
      [f"{b}{ext}" for b in ("haluna_day", "haluna_night", "surf", "dock", "shrine_interior", "wind")
       for ext in (".ogg", ".loop.json")], "ambience_loop"),

@@ -3,24 +3,16 @@
 Environment: cloud session `session_01FtDSYm5dJHkdC3RqXsDjif`, branch `claude/audio` (from the integration branch
 `claude/undertow-lead-handoff-423ixt` at 1023a25). Role: Audio. The Lead reads this file; newest state first.
 
-## State (2026-10-24): queue done; everything in review
-- **Review (reviewer qa):** M2-AUD-01 shrine, M2-AUD-02 runtime, M2-AUD-03 three final cue families, M2-AUD-04 battle
-  SFX, M2-AUD-05 ambience/footsteps/UI, M2-AUD-06 mixing pass. M2-AUD-03's "final" also needs the human's ears:
-  docs/kb/audio/listening_notes.md "M2: the slice's three final cues" (+ "M2: Shell Shrine").
-- **Gates at the last commit:** validate_data 0 errors; taskboard --check OK; gdlint/gdformat clean; tools/tests
-  audio files OK (test_audio_data, test_audio_loudness: every shipped .ogg on its target); Godot full suite
-  1466 run, 0 failed after updating two other-role tests (see M2-AUD-02 notes). No screenshots (no scene/shader
-  touched). Byte-reproducibility: every new job was rendered and checked; `render_all.py --only <cue> --determinism`
-  on all eight M2-AUD-03 jobs: every file byte-identical (and identical to the committed files).
-- **Requests filed:** M2-AUD-07 (cinematics: sequencer -> Audio.play_music; drop music_volume_db −8), M2-AUD-08
-  (ui: Audio section in settings), M2-AUD-09 (cinematics: footstep surface markers in Haluna).
-- **Touched outside audio paths (Lead, please note):** project.godot autoload line; one `check_audio` call in
-  tools/validate_data.py; appended rows in game/data/ui/accessibility.json (reduced_audio + 4 volume rows),
-  game/data/loc/strings.csv, assets/PROVENANCE.md, docs/kb/ownership.md (Audio runtime claim);
-  tests/unit/test_ui_settings.gd and test_cutscene_sequencer.gd expectations. ADR 0031 (number checked free on
-  all branches at the time).
-- **Gotcha:** tools/tests/test_audio_loudness.py takes ~4 min (decodes every file); ffmpeg upmixes mono at −3 dB,
-  so it decodes mono files as mono.
+## State (2026-10-24, the Lead's M3 standing queue)
+- **New queue filed and claimed:** M2-AUD-10 world reverb (worktree agent: done, merged), M2-AUD-11 saltgrass_causeway
+  (me: done), M3-AUD-01 lamp_diver (me: done), M3-AUD-02 Tidecup match + M3-AUD-04 Terraces of Ash and Seawall
+  (worktree agent: running), M3-AUD-03 Sefir's motif (me: done), M3-AUD-05 the Ebbing (me: done), M3-AUD-06 Reefball /
+  underwater / dive SFX (worktree agent: running), M3-AUD-07 voice-ready blips (worktree agent: done, merged; filed
+  request M3-ARC-01 for a DialogueBox blip/line hook).
+- **Two items remain** (M3-AUD-02/04 and M3-AUD-06, both with agents).
+- **Fix in flight:** `hush_first_verse`'s piano was ~31 LU too quiet and `haluna_dawn`'s metallophone too loud (M2
+  cues, balanced by guess); re-rendering with measured levels. listening_notes.md flags it for the human.
+- **M2 items** all in review (see the task files); the human's listening verdict decides "final" (§16 Q3).
 
 ## Exact next step
 Merge `claude/audio` into the integration branch. Then: the human's listening verdict (§16 Q3) per cue;

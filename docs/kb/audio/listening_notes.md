@@ -183,3 +183,34 @@ listen in this order (about 15 minutes). **Your verdict on each decides "final"*
   (the temple cue's Cantor, the same voice model), say so and I'll render that version for comparison.
 - **hush_coda:** the same phrase on the piano alone, slower. Too sentimental, or right for the end card?
 - **ilun_summon:** the Hush's first six notes, two octaves up on glass, over gathering water. Beautiful, or shrill?
+
+**Correction (2026-10-24, later the same day):** in the first render of `hush_first_verse.ogg` the piano was mixed
+about 31 LU too quietly (the grand-piano model's raw level is far below the breath flute's, and I balanced it by
+guess instead of by measurement), so the piano "entering on *mir*" was almost inaudible. `haluna_dawn.ogg` had the
+opposite fault: its low metallophone sat about 6 LU over the piano instead of 10 under. Both are re-rendered with
+measured bus levels. If you listened to the earlier files, please listen to these two again.
+
+## M2/M3: the causeway, the dive, Sefir, the Ebbing (M2-AUD-11, M3-AUD-01, -03, -05)
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/saltgrass_causeway.ogg` | 80 s loop | B06, the slice's route |
+| 2 | `music/lamp_diver.ogg` | 90 s loop | Ch1, Rhen's dive in the drowned tower |
+| 3 | `music/sefir_theme.ogg` | 71 s loop | Ch6, Sefir's barge; his motif |
+| 4 | `music/the_ebbing.ogg` | 114 s | Ch9, Asha's first great Ebbing |
+
+- **saltgrass_causeway:** wind, a walking pulse of plucked open fifths (no thirds, so neither warm nor sad), and a
+  sparse high plucked melody. Brief: *three voices walking; the path leads somewhere that doesn't come back.* Does
+  the wind read as wind (not hiss)? Does it make you want to keep walking?
+- **lamp_diver:** everything heard through water (a hard low-pass on all but the glints), a sub-bass pressure, a
+  warm swelling "lantern" chord, a muffled heartbeat, bubble trains, and once a loop, far below, a single hummed
+  voice with one long note and a fall of a third (the opening gesture of our own Hush: Rhen's father's
+  current-song). **Did you notice the voice? You shouldn't be sure.** Is it too murky to bear for a whole dungeon?
+- **sefir_theme:** the only cue in C major (the Order's pure key), and nothing with an attack (his barge "leaves no
+  wake"): a congregation humming, a glass harmonica. His motif rises calmly to D, then slips to C# and holds it over
+  F major: one wrong note in a beautiful line. **Is it beautiful first and unsettling second, in that order?** That
+  is the whole character.
+- **the_ebbing:** the Hush theme danced. The Cantor's line (the same vocalise instrument as the first verse), the
+  piano, a slow 3/4 dance of interlocking metallophones and a soft drum, and glass "motes" whose every figure falls,
+  because the motes go *down and seaward* (Pell: "Beautiful. And pointing the wrong way."). Is it the most beautiful
+  thing in Act I? If not, what is missing?

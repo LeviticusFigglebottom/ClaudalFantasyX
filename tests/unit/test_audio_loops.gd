@@ -12,6 +12,9 @@ const LOOPING_CUES: Array[String] = [
 	"res://assets/audio/music/battle_standard_v2.ogg",
 	"res://assets/audio/music/drownbell_p1.ogg",
 	"res://assets/audio/music/drownbell_p2.ogg",
+	"res://assets/audio/music/saltgrass_causeway.ogg",
+	"res://assets/audio/music/lamp_diver.ogg",
+	"res://assets/audio/music/sefir_theme.ogg",
 ]
 const SAMPLE_RATE := 44100
 const MIN_LENGTH_S := 60.0
