@@ -2,8 +2,8 @@
 id: M3-C09-02
 title: Ch9 "The Ebbing" playable (dialogue, flow, greybox levels, encounters, cutscenes)
 role: cinematics
-status: todo
-owner_session: ""
+status: doing
+owner_session: "m2-slice subagent (C09 build)"
 depends_on: [M3-C09-01, M3-ARC-01]
 reviewer: narrative
 milestone: M3
