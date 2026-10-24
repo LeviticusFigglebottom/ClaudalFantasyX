@@ -1,14 +1,14 @@
 {
   "arenas": {
-    "doc": "M2-BPR-07: battle arena scenes by id; an encounter names its arena in encounters.json `arena` (docs/kb/tech/battle_presentation.md, Arenas; env-art's docs/kb/tech/battle_arenas.md). The scene's WorldEnvironment and Sun replace the battle scene's; every other child goes under a new Arena node (a child named Sea is the flat sea the Drownbell's flood rig hides). An encounter with no arena fights on the sandbox's own (the sandbox and every capture fixture). These paths are the greybox; env-art repoints them to assets/environments/arenas/<id>/<id>.tscn as its kits land.",
+    "doc": "M2-BPR-07: battle arena scenes by id; an encounter names its arena in encounters.json `arena` (docs/kb/tech/battle_presentation.md, Arenas; env-art's docs/kb/tech/battle_arenas.md). The scene's WorldEnvironment and Sun replace the battle scene's; every other child goes under a new Arena node (a child named Sea is the flat sea the Drownbell's flood rig hides). An encounter with no arena fights on the sandbox's own (the sandbox and every capture fixture). Every path is env-art's arena scene, assets/environments/arenas/<id>/<id>.tscn (BattleArenaRoot.path_for; M2-ENV-11, M3-ENV-06), repointed from the greybox at the big8 Lead merge; the greybox scenes under game/battle/arenas/ stay for their preview shots.",
     "scenes": {
-      "tideline_dawn": "res://game/battle/arenas/tideline_dawn.tscn",
-      "causeway_disc_sunset": "res://game/battle/arenas/causeway_disc_sunset.tscn",
-      "oruvel_raft_morning": "res://game/battle/arenas/oruvel_raft_morning.tscn",
-      "underway_tower": "res://game/battle/arenas/underway_tower.tscn",
-      "causeway_route_afternoon": "res://game/battle/arenas/causeway_route_afternoon.tscn",
-      "derelict_deck_night": "res://game/battle/arenas/derelict_deck_night.tscn",
-      "ash_terrace_lanternfall": "res://game/battle/arenas/ash_terrace_lanternfall.tscn"
+      "tideline_dawn": "res://assets/environments/arenas/tideline_dawn/tideline_dawn.tscn",
+      "causeway_disc_sunset": "res://assets/environments/arenas/causeway_disc_sunset/causeway_disc_sunset.tscn",
+      "oruvel_raft_morning": "res://assets/environments/arenas/oruvel_raft_morning/oruvel_raft_morning.tscn",
+      "underway_tower": "res://assets/environments/arenas/underway_tower/underway_tower.tscn",
+      "causeway_route_afternoon": "res://assets/environments/arenas/causeway_route_afternoon/causeway_route_afternoon.tscn",
+      "derelict_deck_night": "res://assets/environments/arenas/derelict_deck_night/derelict_deck_night.tscn",
+      "ash_terrace_lanternfall": "res://assets/environments/arenas/ash_terrace_lanternfall/ash_terrace_lanternfall.tscn"
     },
     "staging": {
       "doc": "M3-BPR-01: per-arena choreography (BattleChoreo): travel_scale scales every run, step, walk-in and exit (with reduced motion's on top); tempo scales the battle speed (under 1 = slower). Arenas with no row stage as the sandbox.",
