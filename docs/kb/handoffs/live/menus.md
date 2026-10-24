@@ -30,6 +30,8 @@ The scene-swap regression test now measures the real swap on an injected per-fra
 | M2-MNU-07 party formation menu | **review** (merged b25ac94): active line / reserve swaps saved to party_ids and reserve_ids; BattleRequest.make now starts live fights from the saved line once the party has gathered (Haluna's tideline fight included; scripted party overrides still win); formation_menu and the 11-row field_menu shots viewed and approved |
 | M2-MNU-08 Light Step into the field encounter meter | **review** (41ec8dc): m2-slice's meter already applied it at zone setup; now the Equip page refreshes the gap in progress and the stand-in party's gear counts; m2-slice told |
 | M2-MNU-09 Customize on spare pieces | **review** (merged 131c507): a '· Customize' row under each spare with an empty slot; equip_menu re-approved after viewing |
+| M3-MNU-03 Key items view on the Items page | agent running (handed over by the UI track) |
+| M3-MNU-04 Lattice overview (whole board, every hero) | agent running (handed over by the UI track) |
 | M3-MNU-02 Memories gallery (SPEC §6.11, handed over by the UI track) | merged (c585f2f, HUD fix after it); 8 Act I memories, a title row when any is unlocked, replays on a copy of the record with the scene's original flags (replay_flags), no field HUD over a replay; memories_menu viewed and approved; **review**. Earlier: m2-slice built the replay hooks (ReplayStage, CutsceneSequencer.replay, d034c31) and listed the Act I scenes; claude/m2-slice merged here (ebce449, full suite 1892/0) |
 | ~~M3-MNU-01 Lore codex~~ | **withdrawn**: the UI track built it as M3-UI-03 at the same time (no task claimed when I checked); my agent was stopped before any commit landed here, and the task file is removed |
 | M2-MNU-10 Lattice: walk to a sealed gate | **review** (merged bbd45c8): the cheapest neighbour, cost shown, then the open confirm |
@@ -54,6 +56,7 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 - 2026-10-24: Lattice and Equip 130% fixes merged and viewed; M2-MNU-05 to review. Merged the integration branch and claude/ui (M2-UI-17/18: objective line and a Map row, ten root rows; field_menu shots still rmse 0). Full ci_local started.
 
 ## Follow-ups (not in this queue)
+- **For the Lead:** a save row in the field menu would be a design change (saving is shrine-only; SaveMenu and the shrine flow are Systems'). Not started; rule on it if you want it.
 - Formation page: a hero's role word needs a role field in characters.json (Story/Design).
 - ~~`battle_pause` into controls.json~~ done by claude/ui (dce9ab43).
 - Light Step (`encounter_rate_pct`) is not read by the field encounter meter yet.
@@ -73,3 +76,4 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 - 2026-10-24: merged claude/m2-slice @ d034c31 for the Memories replay hooks (flags.tres and the loc list: append-only unions); full suite 1892/0. Memories agent started; UI track told about the title row.
 - 2026-10-24: merged claude/ui (Cancel opens the battle pause, the pointer reset in InputDriver.clear_screen) and the Memories gallery. Full suite 1913/1: test_memory_replay's 'nothing is waiting to be written' sees an autosave an earlier test left pending; sent back to the agent.
 - 2026-10-24: Memories test fix merged (the replay test measures its own autosave requests); integration branch merged (ADR 0037). Full suite 1913/0. MERGE-READY @ cd93db79. Queue empty: next pick from SPEC §6.11/§8 menu work, checked against the UI track's list first.
+- 2026-10-24: UI track handed over the key-items view and a Lattice overview (both pages are this track's); claimed M3-MNU-03/04; the two original page agents are on them. A field-menu save is left for the Lead (design change).
