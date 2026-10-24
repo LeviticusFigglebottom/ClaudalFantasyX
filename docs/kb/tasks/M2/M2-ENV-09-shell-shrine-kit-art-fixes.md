@@ -49,7 +49,7 @@ working branch (it is on `claude/m2-slice` at f38edea until the integration bran
   and `haluna_h10_dock_night` pass unchanged.
 - **S01 exterior:** the steps already had the offering shelf (six leaf-boats) and five boats; 20 more now
   line the treads in loose pairs, clear of the walking line (`shrine_steps_offerings` rng; steps 5889 tris,
-  budget 16000). At S01's ~30 m a 0.25 m boat is about 3 px, so they show as specks there (s01 rmse 0.00x,
+  budget 16000). At S01's ~30 m a 0.25 m boat is about 3 px, so they show as specks there (s01 rmse 0.00268,
   under the limit, not re-approved); I didn't enlarge them. They're built for S06 (Cutscene B on the steps,
   1.3 m). The islet's stepping stones and boulders already read in S01.
 - **Channel bends and T-junctions:** not built. The trial's layout runs straight channels that meet at the
