@@ -757,6 +757,62 @@
     {
       "id": "field_menu_swell_modes",
       "scene": "res://game/ui/field_menu/shots/field_menu_swell_modes.tscn"
+    },
+    {
+      "id": "underwater_below",
+      "scene": "res://game/levels/_tests/underwater/underwater_test.tscn",
+      "camera": "UnderwaterCameras/Below",
+      "resolution": [
+        960,
+        540
+      ],
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "underwater_window",
+      "scene": "res://game/levels/_tests/underwater/underwater_test.tscn",
+      "camera": "UnderwaterCameras/UpWindow",
+      "resolution": [
+        960,
+        540
+      ],
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "underwater_waterline",
+      "scene": "res://game/levels/_tests/underwater/underwater_test.tscn",
+      "camera": "UnderwaterCameras/Waterline",
+      "resolution": [
+        960,
+        540
+      ],
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "drownbell_flood",
+      "scene": "res://game/levels/_tests/drownbell/drownbell_flood.tscn",
+      "camera": "Stage/BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
     }
   ]
 }
