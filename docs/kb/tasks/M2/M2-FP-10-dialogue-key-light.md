@@ -15,7 +15,7 @@ From the PC GPU session's RND-20 follow-up (docs/kb/qa/gpu/2026-10-23-rnd-18-20-
 ## Acceptance criteria
 - [x] The cutscene sequencer, or the camera shot data, spawns or enables a per-shot character key light at dialogue and portrait framing, aligned to the zone sun's direction and colour (so lighting continuity holds), with a short shadow range and bias 4.5; it is disabled outside close shots
 - [x] Cue or shot data can override the angle and intensity
-- [ ] A GPU check by the PC session of Cutscene A (Asha's close-ups) for nose and mouth-corner artefacts; the cost is measured
+- [x] A GPU check by the PC session of Cutscene A (Asha's close-ups) for nose and mouth-corner artefacts; the cost is measured
 - [x] Tests
 
 ## Notes (m2-slice, 2026-10-23)
@@ -27,6 +27,10 @@ From the PC GPU session's RND-20 follow-up (docs/kb/qa/gpu/2026-10-23-rnd-18-20-
 - **Open:** the GPU check of Cutscene A (nose and mouth-corner artefacts, cost) is with the PC session via the Lead. Also worth judging there: whether Haluna's `face_key_shadow_normal_bias = 3.0` on the zone sun can go back to the mood scene's 1.0 now that close-ups no longer use the sun on faces (RND-20 S1 recommends 1.0).
 
 ## Review log
+
+## Follow-ups done (m2-slice, 2026-10-24)
+- H05 and H06 set `key_pitch_deg = 30` (haluna.tscn); `test_haluna_zone` asserts it.
+- The key layer moved from 20 to **19** (`sequencer.json` `key_light.layer`). `test_cutscene_key_light::test_the_key_layer_is_not_the_undertow_body_layer` rejects layer 20, and once `UndertowHalfRes` is in the project it also checks the class's own `BODY_LAYER`.
 
 ## Lead note (2026-10-24): PC GPU check results (gpu/fp-10-keylight-check, c1b54ad)
 - No nose or mouth-corner artefacts at High or Ultra. The key costs ≤ 0.03 ms. The Haluna sun is at bias 1.0 at runtime, with no face regression.

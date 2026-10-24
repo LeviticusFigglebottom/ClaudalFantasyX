@@ -217,6 +217,9 @@ func test_the_cutscene_stage_resolves_cutscene_a() -> void:
 		var shot := stage.shot(id)
 		var close := CutsceneKeyLight.is_close(shot.position, shot.look_at, shot.fov_deg, key_cfg)
 		assert_eq(close, id != &"H01", "%s keyed: %s" % [id, close])
+	# The PC's FP-10 check: under the 74° noon sun the close shots lower the key 30°.
+	for id: StringName in [&"H05", &"H06"]:
+		assert_eq(stage.shot_node(id).key_pitch_deg, 30.0, "%s key pitch" % id)
 	zone.free()
 	zone = null
 

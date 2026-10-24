@@ -755,10 +755,12 @@ player_path = NodePath("../Player")
 [node name="H05" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("10_shotnode")
 shot = SubResource("Shot_cut_H05")
+key_pitch_deg = 30.0
 
 [node name="H06" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("10_shotnode")
 shot = SubResource("Shot_cut_H06")
+key_pitch_deg = 30.0
 
 [node name="H01" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("10_shotnode")

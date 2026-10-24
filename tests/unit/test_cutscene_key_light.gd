@@ -140,6 +140,20 @@ func test_shot_overrides_turn_and_scale_the_key() -> void:
 	_free()
 
 
+## The PC's FP-10 check: the key's layer must not be UndertowHalfRes.BODY_LAYER (layer 20), which the
+## main camera culls, or a close shot in a storm zone would hide the cast. Checked against the class
+## itself once it is in the project.
+func test_the_key_layer_is_not_the_undertow_body_layer() -> void:
+	var key := CutsceneKeyLight.new(cfg)
+	assert_ne(key.layer_mask(), 1 << 19, "layer 20 is UndertowHalfRes.BODY_LAYER")
+	for row: Dictionary in ProjectSettings.get_global_class_list():
+		if str(row.get("class", "")) == "UndertowHalfRes":
+			var body := int((load(str(row["path"])) as Script).get_script_constant_map().get("BODY_LAYER", 0))
+			assert_eq(key.layer_mask() & body, 0, "the key layer and the storm's body layer differ")
+	key.free()
+	_free()
+
+
 func test_stage_finds_the_zone_sun_and_the_cast() -> void:
 	assert_eq(stage.sun(), sun, "the first shadow-casting DirectionalLight3D beside the stage")
 	var cast := stage.cast()
