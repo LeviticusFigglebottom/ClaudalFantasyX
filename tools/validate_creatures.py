@@ -18,7 +18,7 @@ SKILLS_FILE = "game/data/battle/skills.json"
 SCENE_PREFIX = "res://game/creatures/"
 
 DEFAULT_KEYS = {"idle", "hit", "ko", "loop", "blend_sec", "clip_by_kind", "clip_by_skill", "ko_fade_sec",
-                "stand_in", "phases", "break_parts", "portrait"}
+                "stand_in", "phases", "break_parts", "portrait", "contact"}
 ROW_KEYS = DEFAULT_KEYS | {"scene"}
 STAND_IN_KEYS = {"yaw_deg"}
 PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec"}
@@ -54,6 +54,9 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str]) -> lis
         errs += [f"{w}.stand_in: unknown key '{k}'" for k in sorted(set(st) - STAND_IN_KEYS)]
         if "yaw_deg" in st and not _num(st["yaw_deg"]):
             errs.append(f"{w}.stand_in.yaw_deg: must be a number")
+    con = row.get("contact", {})
+    if not (isinstance(con, dict) and all(isinstance(k, str) and _num(v) and v >= 0 for k, v in con.items())):
+        errs.append(f"{w}.contact: must map clip names to seconds >= 0")
     por = row.get("portrait", {})
     if not isinstance(por, dict):
         errs.append(f"{w}.portrait: must be an object")

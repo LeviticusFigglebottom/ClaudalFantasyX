@@ -60,6 +60,10 @@ func test_an_action_plays_its_clip_and_the_actor_idles_again() -> void:
 	assert_eq(a.current_clip, &"idle", "back to idle when the clip ends")
 	assert_true(a.play_hit())
 	assert_eq(a.current_clip, &"hit")
+	assert_true(is_equal_approx(a.contact_time(&"attack"), 0.5), "the pinch lands at 0.5 s")
+	assert_eq(a.contact_time(&"hit"), -1.0)
+	assert_true(a.clip_length(&"attack") > a.contact_time(&"attack"))
+	assert_eq(a.clip_length(&"no_such_clip"), 0.0)
 
 
 func test_ko_holds_its_pose_and_a_revive_returns_to_idle() -> void:

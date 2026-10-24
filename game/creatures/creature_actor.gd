@@ -98,6 +98,17 @@ func play_clip(clip: StringName) -> bool:
 	return true
 
 
+## When `clip` lands its blow (creatures.json `contact`, seconds into the clip), for presentation that syncs hit
+## reactions and VFX to it (the battle-presentation track's choreography). -1 when the clip has no contact beat.
+func contact_time(clip: StringName) -> float:
+	return float((_row.get("contact", {}) as Dictionary).get(String(clip), -1.0))
+
+
+## The clip's length in seconds (0 if the actor has no such clip).
+func clip_length(clip: StringName) -> float:
+	return _player.get_animation(clip).length if has_clip(clip) else 0.0
+
+
 func is_ko() -> bool:
 	return _ko
 

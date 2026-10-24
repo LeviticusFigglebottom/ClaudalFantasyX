@@ -12,17 +12,18 @@
     "stand_in": {"yaw_deg": 90.0},
     "phases": {},
     "break_parts": {},
+    "contact": {},
     "portrait": {"clip": "idle", "clip_time": 0.0, "yaw_deg": 30.0, "pitch_deg": 14.0, "fov_deg": 28.0, "margin": 0.85}
   },
   "creatures": {
-    "spar_wraith": {"scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn"},
-    "sail_leech": {"scene": "res://game/creatures/sail_leech/sail_leech_battle.tscn"},
-    "bottle_hermit": {"scene": "res://game/creatures/bottle_hermit/bottle_hermit_battle.tscn"},
-    "wickfry": {"scene": "res://game/creatures/wickfry/wickfry_battle.tscn"},
-    "oil_slug": {"scene": "res://game/creatures/oil_slug/oil_slug_battle.tscn"},
-    "tower_limpet": {"scene": "res://game/creatures/tower_limpet/tower_limpet_battle.tscn"},
+    "spar_wraith": {"scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn", "contact": {"attack": 0.8}},
+    "sail_leech": {"scene": "res://game/creatures/sail_leech/sail_leech_battle.tscn", "contact": {"attack": 0.7}},
+    "bottle_hermit": {"scene": "res://game/creatures/bottle_hermit/bottle_hermit_battle.tscn", "contact": {"attack": 0.45}},
+    "wickfry": {"scene": "res://game/creatures/wickfry/wickfry_battle.tscn", "contact": {"attack": 0.55}},
+    "oil_slug": {"scene": "res://game/creatures/oil_slug/oil_slug_battle.tscn", "contact": {"attack": 0.55, "cast": 0.6}},
+    "tower_limpet": {"scene": "res://game/creatures/tower_limpet/tower_limpet_battle.tscn", "contact": {"attack": 0.55}},
     "drownbell": {
-      "scene": "res://game/creatures/drownbell/drownbell_battle.tscn",
+      "scene": "res://game/creatures/drownbell/drownbell_battle.tscn", "contact": {"attack": 0.8, "cast": 1.0},
       "loop": ["idle", "idle_flood"],
       "clip_by_skill": {"toll": "cast"},
       "ko_fade_sec": 1.2,
@@ -32,22 +33,22 @@
       "break_parts": {"toll": {"whole": ["Rim"], "broken": ["RimBroken"]}}
     },
     "hullgnaw": {
-      "scene": "res://game/creatures/hullgnaw/hullgnaw_battle.tscn",
+      "scene": "res://game/creatures/hullgnaw/hullgnaw_battle.tscn", "contact": {"attack": 0.8},
       "ko_fade_sec": 0.8
     },
     "reef_crab": {
-      "scene": "res://game/creatures/reef_crab/reef_crab_battle.tscn",
+      "scene": "res://game/creatures/reef_crab/reef_crab_battle.tscn", "contact": {"attack": 0.5, "cast": 0.7},
       "clip_by_skill": {"brine_spit": "cast"}
     },
     "lantern_eel": {
-      "scene": "res://game/creatures/lantern_eel/lantern_eel_battle.tscn",
+      "scene": "res://game/creatures/lantern_eel/lantern_eel_battle.tscn", "contact": {"attack": 0.55, "cast": 0.9},
       "clip_by_skill": {"lure_glow": "cast"}
     },
     "spawn_polyp": {
-      "scene": "res://game/creatures/spawn_polyp/spawn_polyp_battle.tscn"
+      "scene": "res://game/creatures/spawn_polyp/spawn_polyp_battle.tscn", "contact": {"attack": 0.46, "cast": 0.6}
     },
     "gull_harrier": {
-      "scene": "res://game/creatures/gull_harrier/gull_harrier_battle.tscn",
+      "scene": "res://game/creatures/gull_harrier/gull_harrier_battle.tscn", "contact": {"attack": 0.75},
       "stand_in": {"yaw_deg": 60.0}
     }
   }
