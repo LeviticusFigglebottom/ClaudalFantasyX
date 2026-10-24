@@ -1,22 +1,24 @@
 {
-  "_doc": "The Cinder Matron (act1/cinder_matron.md): stone (laterite blocks, ember seams), crust (cooled magma, ember cracks; its own `Crust` mesh for phase 2). Ember emission is the mountain's fire, not glimmer. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "_doc": "The Cinder Matron (act1/cinder_matron.md): metal (riveted brass and copper plates, iron hoops; ember emission for the firebox, the mouth grille, the ladle's slag and the molten seams), crust (cooled slag, ember cracks; its own `Crust` mesh, hidden in phase 2), heart (her bound heart: glimmer_bound, steady, never pulsing, color_script.md rule 2). Ember emission is the mountain's fire, not glimmer. write_materials.py on game/shaders/creature/creature.gdshader.",
   "slots": {
-    "stone": {
-      "roughness_dry": 0.88,
-      "roughness_wet": 0.5,
-      "detail_scale": 14.0,
-      "detail_albedo": 0.18,
-      "detail_bump": 0.6,
-      "cavity_albedo": 0.5,
+    "metal": {
+      "metallic": 0.55,
+      "roughness_dry": 0.42,
+      "roughness_wet": 0.3,
+      "specular": 0.6,
+      "detail_scale": 18.0,
+      "detail_albedo": 0.14,
+      "detail_bump": 0.45,
+      "cavity_albedo": 0.55,
       "emission_color": "#E0702E",
-      "emission_energy": 2.0,
-      "emission_pulse_hz": 0.2,
-      "emission_pulse_depth": 0.35
+      "emission_energy": 2.4,
+      "emission_pulse_hz": 0.3,
+      "emission_pulse_depth": 0.3
     },
     "crust": {
-      "roughness_dry": 0.35,
-      "roughness_wet": 0.2,
-      "specular": 0.6,
+      "roughness_dry": 0.72,
+      "roughness_wet": 0.4,
+      "specular": 0.35,
       "detail_scale": 20.0,
       "detail_albedo": 0.15,
       "detail_bump": 0.7,
@@ -25,6 +27,14 @@
       "emission_energy": 1.8,
       "emission_pulse_hz": 0.25,
       "emission_pulse_depth": 0.4
+    },
+    "heart": {
+      "roughness_dry": 0.3,
+      "specular": 0.5,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0,
+      "emission_color": "#4FB3B0",
+      "emission_energy": 1.6
     }
   }
 }
