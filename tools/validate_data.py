@@ -1515,10 +1515,11 @@ UNDERTOW_TIERS = ("low", "medium", "high", "ultra")
 UNDERTOW_BODIES = ("shells", "raymarch")
 # = UndertowState.MAX_CURL_REUSE and the shader's hint_range(1, 8).
 UNDERTOW_MAX_CURL_REUSE = 8
-# The body include: its `#ifndef UNDERTOW_MAX_STEPS` default (a variant that defines none compiles
-# that cap) and the march_steps uniform's hint_range floor are parsed from it, never copied
-# (M1-RND-15, review-sweep-I on RND-11).
-UNDERTOW_BODY_INC = "game/shaders/undertow/undertow_body.gdshaderinc"
+# The body includes: the march's `#ifndef UNDERTOW_MAX_STEPS` default (a variant that defines none
+# compiles that cap) and the march_steps uniform's hint_range floor are parsed from them, never copied
+# (M1-RND-15, review-sweep-I on RND-11). M2-RND-01 split the uniforms into their own file.
+UNDERTOW_BODY_INC = "game/shaders/undertow/undertow_body_march.gdshaderinc"
+UNDERTOW_BODY_UNIFORMS_INC = "game/shaders/undertow/undertow_body_uniforms.gdshaderinc"
 UNDERTOW_STEP_CAP_RE = re.compile(r"#define UNDERTOW_MAX_STEPS (\d+)")
 UNDERTOW_DEFAULT_CAP_RE = re.compile(r"#ifndef UNDERTOW_MAX_STEPS\s*\n\s*#define UNDERTOW_MAX_STEPS (\d+)")
 UNDERTOW_STEPS_HINT_RE = re.compile(r"uniform int march_steps : hint_range\((\d+),\s*(\d+)\)")
@@ -1532,12 +1533,11 @@ def _res_path(root: Path, res: str) -> Path:
 def undertow_step_limits(root: Path) -> tuple[int, int] | None:
     """(march_steps floor from the uniform's hint_range, default UNDERTOW_MAX_STEPS) from the body
     include, or None when either cannot be parsed."""
-    path = root / UNDERTOW_BODY_INC
-    if not path.is_file():
+    paths = (root / UNDERTOW_BODY_INC, root / UNDERTOW_BODY_UNIFORMS_INC)
+    if not all(p.is_file() for p in paths):
         return None
-    text = path.read_text(encoding="utf-8")
-    cap = UNDERTOW_DEFAULT_CAP_RE.search(text)
-    hint = UNDERTOW_STEPS_HINT_RE.search(text)
+    cap = UNDERTOW_DEFAULT_CAP_RE.search(paths[0].read_text(encoding="utf-8"))
+    hint = UNDERTOW_STEPS_HINT_RE.search(paths[1].read_text(encoding="utf-8"))
     if cap is None or hint is None:
         return None
     return int(hint.group(1)), int(cap.group(1))

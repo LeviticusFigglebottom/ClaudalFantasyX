@@ -35,7 +35,7 @@ const SALT_HEIGHT := 4
 const SALT_SITE := 7919
 ## Golden-ratio step of the per-frame march jitter (R1 low-discrepancy sequence): TAA integrates it.
 const JITTER_STEP := 0.6180339887
-## Upper bounds of the tier parameters = the body shader's uniform hint ranges (undertow_body.gdshaderinc
+## Upper bounds of the tier parameters = the body shader's uniform hint ranges (undertow_body_uniforms.gdshaderinc
 ## march_steps hint_range(4, 128), curl_reuse hint_range(1, 8); tested). The per-variant compiled cap
 ## UNDERTOW_MAX_STEPS still limits the loop inside the shader.
 const MAX_MARCH_STEPS := 128

@@ -116,7 +116,7 @@ func test_tier_params_are_clamped_both_ways() -> void:
 	plan = s.quality_plan("high")
 	assert_eq(plan["curl_reuse"], 1)
 	assert_eq(plan["march_steps"], 0)
-	var body := FileAccess.get_file_as_string("res://game/shaders/undertow/undertow_body.gdshaderinc")
+	var body := FileAccess.get_file_as_string("res://game/shaders/undertow/undertow_body_uniforms.gdshaderinc")
 	assert_true(body.contains("march_steps : hint_range(4, %d)" % UndertowState.MAX_MARCH_STEPS), "march cap = hint")
 	assert_true(body.contains("curl_reuse : hint_range(1, %d)" % UndertowState.MAX_CURL_REUSE), "reuse cap = hint")
 
