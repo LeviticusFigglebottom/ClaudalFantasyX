@@ -138,5 +138,7 @@ flags = {
 "ch06_camp_made": "Ch6 B08: the party has made camp on the high wreck-ridge at dusk (the shrine, the vendor, the barks; the tideline and the channel open).",
 "ch06_saw_lamp_buried": "Ch6 B09 (optional side scene): Rhen saw Liss bury a burned lamp at the tideline; she never says whose name was on it. Opens Ch11's lamp-repair truce.",
 "ch06_dug_without_asking": "Ch6 B09 choice: Rhen knelt and dug beside Liss without asking whose lamp it was. Ch11: 'You dug. You didn't ask.'",
-"ch06_done": "Ch6 B10: the party waded the shoal channel at dawn toward Tamsule (the chapter's end)."
+"ch06_done": "Ch6 B10: the party waded the shoal channel at dawn toward Tamsule (the chapter's end).",
+"ch08_hoist_rigged": "Ch8 B11: Liss has rigged the hoist on the Fisher Stair (unlocks her Haul in the set-piece battles: skills.json hoist_haul requires_flag; M3-CMB-01).",
+"ch08_virel_bound": "Ch8 B06: Asha has bound Virel, the Fire Vowbound (vowbound.json bound_flag; Virel is callable from B16 on; M3-CMB-01)."
 }

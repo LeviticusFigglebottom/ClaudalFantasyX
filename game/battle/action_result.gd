@@ -21,6 +21,9 @@ var end_of_turn: Array[Dictionary] = []
 var auto_reason: StringName = &""
 ## Set for a Swell technique (BattleSwell.perform): the power bonus its input earned, in percent.
 var swell_bonus_pct := 0
+## Set when a foe's ward skill landed on a guard instead of the ward (M3-CMB-01: the coverer of
+## Hold the Stair, or the actor's provoker); hits then name that guard.
+var intercepted_by: StringName = &""
 
 
 static func failed(actor: StringName, skill: StringName, reason: StringName) -> ActionResult:

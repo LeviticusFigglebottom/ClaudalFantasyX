@@ -1046,3 +1046,5 @@ MAP_POI_C_GATE,The landward gate
 MAP_POI_C_MILESTONE,The milestone
 BOSS_TITLE_INQUISITOR,Inquisitor Hadric Moll
 BOSS_EPITHET_INQUISITOR,A tired officer who still believes the Edict
+HUD_SCRIPTED_ESCAPE,You held.
+HUD_SCRIPTED_ESCAPE_SUB,There was no winning it. Only getting them out.
