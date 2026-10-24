@@ -4,10 +4,9 @@ Seeded by the Lead on 2026-10-23. **This environment owns this file** (CLAUDE.md
 branch after every finished item, and it replaces `docs/kb/qa/gpu/2026-10-23-pc-queue-progress.md` as the canonical
 record. The newest copy is on the most recently pushed `gpu/*` branch.
 
-> **HANDOFF (2026-10-23).** session_01778wbLbDFnRRLTKjnawv3T stopped here at the Lead's request. The project moves to
-> a new account, with a new Remote Control session on this same PC as the GPU worker. **This copy, on
-> `gpu/m2-rnd-01-undertow`, is the newest.** Every `gpu/*` branch is pushed. The only local-only state is listed under
-> "Local-only state" below; none of it is needed.
+> **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
+> session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
+> **This copy, on `gpu/m2-rnd-01-undertow`, is the newest.**
 
 ## PC setup for a new session
 
@@ -52,8 +51,8 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 ```
 
 - **Base vs branch drift:** capture both in a detached worktree of the base
-  (`git worktree add --detach <dir> origin/claude/new-session-mj8c3c`, then import it), and remove the worktree
-  afterwards.
+  (`git worktree add --detach <dir> origin/claude/undertow-lead-handoff-423ixt`, then import it), and remove the
+  worktree afterwards. For a drift that covers only uncommitted work: `git stash`, capture, `git stash pop`.
 - **Metrics in `tools/`:** `mote_metrics.py` (glimmer halos/streaks), `aa_shimmer.py --ghost`, `sss_probe_metrics.py`,
   `perf_budget.py`, plus `tools/gpu_bench/eave_glow.tscn` and `lod_pop.tscn`.
 - **GPU → min-spec projection:** RTX 3060 about 2.3–2.8× this card (the Lead uses ~3× for the Undertow); GTX 1060
@@ -61,8 +60,9 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 ### Rules (from the Lead)
 
-- **Branches:** work on new `gpu/*` branches only, cut from `origin/claude/new-session-mj8c3c`. Never push to someone
-  else's branch.
+- **Branches:** work on new `gpu/*` branches only, one per item, cut from
+  `origin/claude/undertow-lead-handoff-423ixt`. That's the integration branch from 2026-10-23; it replaces
+  `claude/new-session-mj8c3c`, which is frozen at a504072. Never push to someone else's branch.
 - **Baselines:** never overwrite lavapipe baselines; list the shots that drift. The Lead re-approves on lavapipe.
 - **Gate scope** (CLAUDE.md §3): run only the checks a change can break, and say in the report what was skipped.
 - **Tasks:** claim a task in its file (`status: doing`, `owner_session`) in the first commit, and set `status:
@@ -72,6 +72,11 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
   rebuild gate.
 - **Commit trailers:** messages end with the Co-Authored-By and Claude-Session lines the harness gives.
 - **Queue:** message the Lead when two queue items remain. Keep this file current after every item.
+- **Reports to the Lead:** after each pushed item, send the branch, the commit and the shots that drift.
+- **Standing interrupt:** GPU checks before a lavapipe re-approval (captures at High and Ultra, compared against the
+  base). These jump the queue.
+- **Gate before every push:** validate_data, the tools unittests, lint and format, and Godot tests filtered to the
+  area.
 
 ### Gotchas
 
@@ -79,6 +84,10 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
   `timeout`.
 - **Line endings:** Python generators and gdformat write CRLF on Windows. Normalise to LF before committing.
 - `water_look_probe.tscn` needs its `--out` folder to exist, or it errors and hangs.
+- **`capture_preset --mat-set` doesn't reach the Undertow body.** The body renders in the half-res SubViewport.
+  Edit undertow.json for the run instead, and restore it afterwards.
+- **The capture size:** `capture_preset` writes 960×540 by default and 1920×1080 with `--scale=2`. Compare like with
+  like.
 - **Shell traps:**
   - Don't run `cat > file` without input; it blocks on stdin.
   - Inline heredoc Python with Windows backslashes or `\n` escapes breaks. Write a `.py` file instead.
@@ -98,8 +107,11 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
-| gpu/m2-rnd-01-undertow | **WIP, not merged** (task `doing`) | M2-RND-01: wall foot / sea storm response / joined flanks; half-res body (High 4.94 → 2.27 ms); 3-octave multiple scattering; integration branch merged in (d5cbda2). WIP note and exact next step in the task file. Reports: `docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md` |
-| gpu/rnd-21-mouth-fill | in review (character); Lead running asha shots + Blender job | M1-RND-21: `mouth` shader family with a cavity bounce, all heroes; grief interior median luminance 0.0121 → 0.0174. Drift asha_face_grief 0.0023. Report: `docs/kb/qa/gpu/2026-10-23-rnd-21-mouth-fill.md` |
+| gpu/m2-rnd-01b-undertow-compute | **WIP** (from gpu/m2-rnd-01-undertow) | M2-RND-01 compute pass. Step A is done: the body's uniforms are split from `undertow_march()` (bit-identical render). Next: a generator for the compute UBO, then the CompositorEffect march at PRE_TRANSPARENT into a Texture2DRD that the composite samples. |
+| gpu/m2-rnd-01-undertow | **WIP, not merged** (task `doing`) | M2-RND-01. Earlier: the wall foot, the sea's storm response, joined flanks, the half-res body and 3-octave multiple scattering. This session: noise-warped striations, fringe billows with sun-ward shading, softer sea streaks, and the wound-stipple fix (skin step refinement). High 1440p: Day 2.56, Eye 3.11 ms. All 5 Undertow shots drift. Integration branch merged in (a504072). Report: `docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md` |
+| gpu/qa-08-asha-recheck | task `review` (reviewer: character) | M1-QA-08: Asha GPU recheck at 2× High and Ultra (96a6585 / 9a133ee). Neutral passes; smile passes on shading but reads as a smirk at 1×; grief still fails on two Character mouth faults (black rim, peg teeth). CHR-12: crown, lid band (R:B 3.7 against 2.0–2.5) and smile eyes fail; lip bow and skin pass. ADR 0024 check 2 confirmed. Report: `docs/kb/qa/gpu/2026-10-24-qa-08-asha.md` |
+| gpu/qa-05d-asha-recheck | superseded by qa-08 | The first cut of the same recheck, before the task file existed. Don't merge. |
+| gpu/rnd-21-mouth-fill | merged (96a6585) | M1-RND-21: the `mouth` shader family's cavity bounce. Report: `docs/kb/qa/gpu/2026-10-23-rnd-21-mouth-fill.md` |
 | gpu/rnd-18-20-followups | in review; Lead's lavapipe check ci35 | RND-18 S1: deep lift gated by SSS (no drift). RND-20 S1: measured, Haluna stays at 1.0 (bias is in texels); rule in character_shading.md. Filed M1-ENV-08. Report: `docs/kb/qa/gpu/2026-10-23-rnd-18-20-followups.md` |
 | gpu/qa-07-windows-interpreter-test | new, not merged | Files M1-QA-07 (the Windows-only test failure), Lead request |
 | gpu/env-03-vegetation-v2, gpu/rnd-17-dusk-motes-v2 | merged + lavapipe-approved (c940d77) | ENV-03 v2 (final-cut-only LOD fade, Shelter enum/mask, ShaderGlobals); RND-17 v2 |
@@ -109,13 +121,13 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 ## Unfinished queue, in order (exact next step first)
 
-1. **M2-RND-01** (`gpu/m2-rnd-01-undertow`, WIP). The exact next step is in
-   `docs/kb/tasks/M2/M2-RND-01-undertow-production.md`, under "WIP handoff":
-   - Noise-warp the striation helix.
-   - Add billowy surface detail with sun-ward derivative shading.
-   - Fix two defects from the fresh capture: the hard straight sea wind streaks and the teal wound stipple.
-   - Then the compute-pass occlusion inside the volume.
-   - Undertow High 1440p is AT RISK on an RTX 3060 (~3×).
+1. **M2-RND-01** (`gpu/m2-rnd-01-undertow`, WIP). The billows, striations and both sweep defects are done. The
+   exact next step is in the task file's "WIP handoff":
+   - Compute-pass occlusion inside the volume: a `CompositorEffect` march with the game view's depth and its own
+     reprojected history.
+   - Win back min-spec cost there (quarter res + reprojection). Undertow High 1440p is AT RISK on an RTX 3060
+     (~3×: Day ~7.7, Eye ~9.3 ms).
+   - Then torn rents and mote streamers; the storm in sky, reflections and rain; lightning; per-chapter presets.
 2. **M1-RND-22:** the prewarm hitch floor, measured at Low, High and Ultra. If 50 ms is impossible, draft an ADR
    proposing a SPEC §4.2 clarification. The earlier finding (RND-15): the floor is ~230–310 ms of stage set-up plus
    single heavy shader compiles. The fixes are the shader baker or a boot-time stage.
@@ -132,6 +144,9 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
   - Teeth albedo: M1-CHR-11.
 
 ## Local-only state (not in git)
+
+- **This session's scratch:** captures, CSVs and the helper scripts `bench.sh`, `cap.sh`, `cap5.sh`, `capd.sh` and `jset.py`.
+  It's in `C:/Users/Aaron/AppData/Local/Temp/claude/C--Users-Aaron/d3383506-5a83-49e1-8dcf-15422406b087/scratchpad/m2rnd01`. Temporary.
 
 None of it is needed: everything quoted in the reports can be reproduced from the commands in them.
 - **`C:\Users\Aaron\Hymn_Playtest`:** a separate clone for the human's playtest, with untracked `PLAY.bat` and
