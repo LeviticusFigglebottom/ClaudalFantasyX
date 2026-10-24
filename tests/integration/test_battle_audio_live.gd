@@ -22,6 +22,7 @@ const MELEE_WHOOSH := &"whoosh_melee"
 const KO_ROW := &"ko_collapse"
 const SANDBOX_CREATURES: Array[String] = ["reef_crab", "lantern_eel", "gull_harrier"]
 const BOSS_ENCOUNTER := &"drownbell"
+const LATER_ACTIONS := 3
 
 var ctl: BattleController
 var choreo: BattleChoreo
@@ -281,6 +282,40 @@ func test_a_ko_collapses_once() -> void:
 	var base := BattleVfx.base_id(foe.id)
 	assert_eq(creatures.played.count("%s:death" % base), 1, "its death cry once, under the KO")
 	assert_eq(creatures.played.count("%s:hurt" % base), 0, "no hurt for a felling blow")
+	_teardown()
+
+
+## M3-AUD-803 (with battle-presentation's M2-BPR-11): a KO is heard once. The stage re-applies every fighter's KO
+## state after every action, and later actions must never replay the fallen foe's collapse, death cry or release.
+func test_a_ko_is_heard_once_through_later_actions() -> void:
+	_to_turn_of(RHEN)
+	ctl.pacing_scale = 1.0
+	var foe := _foe()
+	foe.hp = 1
+	heard.clear()
+	creatures.played.clear()
+	battle.played.clear()
+	ctl.act(&"attack", [foe.id])
+	_play_out()
+	var base := BattleVfx.base_id(foe.id)
+	var release := _count(battle.played, &"ko_release")
+	assert_eq(_count(_ids(), KO_ROW), 1, "one collapse")
+	assert_eq(creatures.played.count("%s:death" % base), 1, "one death cry")
+	assert_true(release <= 1, "at most one glimmer release")
+	for e in ctl.engine.enemies:
+		if e.is_alive():
+			e.hp = e.max_hp  # the battle goes on through the later actions
+	for i in LATER_ACTIONS:
+		ctl.stage.refresh_ko(ctl.engine)
+		_to_turn_of(RHEN)
+		var living := ctl.engine.living_foes_of(ctl.engine.current)
+		if living.is_empty():
+			break
+		ctl.act(&"attack", [living[0].id])
+		_play_out()
+	assert_eq(_count(_ids(), KO_ROW), 1, "later actions never replay the collapse")
+	assert_eq(creatures.played.count("%s:death" % base), 1, "nor the death cry")
+	assert_eq(_count(battle.played, &"ko_release"), release, "nor the release")
 	_teardown()
 
 
