@@ -159,8 +159,10 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
   - **M3-UI-01 (Reefball HUD):** no Reefball engine on any branch yet.
 
 ## Exact next step
-- When big8 (Reefball) lands on integration, merge it and do M3-UI-01, the Reefball HUD.
-- Until then, the queue is empty apart from big8. Pick M3 UI work from `python3 tools/taskboard.py --role ui`.
+- When big8 is on integration, merge integration into claude/ui, then merge `ui/reefball-big8`. Recapture the battle shots, then view and re-approve them.
+- When claude/hero-integration is on integration, repoint the hero `stand_ins` at the `*_battle_actor.tscn` wrappers and re-approve the battle shots.
+- When M3-CRE-201 lands, drop the temporary model registration in `test_battle_part_cues.gd`.
+- Otherwise, pick M3 UI work from `python3 tools/taskboard.py --role ui`.
 
 ## Un-pushed state
 - Local branch `ui/reefball-big8` @ fb685ac1 (M3-UI-01 on top of the big8 gate). It cannot be pushed to claude/ui before big8 is on integration; see above.
