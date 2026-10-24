@@ -3,6 +3,15 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **The human's playtest fixes (M2-FP-28; the Lead's URGENT list)**
+  1. **Back-to-back random battles: fixed** (a9b8033b). Both of the Lead's causes were real:
+     - **The return jump counted as walking.** The first physics frame of the re-instanced zone anchored at the default spawn, then `place_at` jumped to the return spot. `place_at` now re-anchors, and a frame's move over `max_step_m` never counts.
+     - **The same first gap came back.** `setup()` reseeded on every instance. The meter is now kept per location in `FieldEncounters.meters`; a new or loaded game clears it.
+     - **Post-battle grace:** 12 m of `grace_m` (data: greybox_defaults.json `encounters`).
+     - **Test:** battle → return → walk in test_zone_story.
+  2. **New Game route: fixed** (399651ca). The prologue goes to ch02/haluna at Beach again. Act I's Ch1 is the `prologue.next_location` switch; the Lead flips it with `end_card.next_location` (22d62298, empty) once the human signs off M2. F8 chapter select (M3-ARC-02, 9368791b) reaches every built chapter meanwhile.
+  3. **Greyscale opening: under investigation** (a subagent).
+  4. **big7** (characters, creatures, battle presentation): I'll merge it as soon as it reaches the integration branch.
 - **The test_scene_router_swap regression is fixed on this branch** (reported by battle-presentation).
   - **The cause:** my M2-ENV-05 resident flags on top of M2-ARC-05/08.
     - **With the 17 Haluna `"resident": true` flags** merged onto 29b1dbfa, boot.tscn and battle_sandbox ran hidden swap frames of 156–196 ms against the 40 ms limit, failing 4 of 4 warm runs.
