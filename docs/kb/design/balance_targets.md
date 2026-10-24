@@ -155,3 +155,28 @@ Rhen fights alone all chapter (act1_ch01.md §9 Combat), with `active: [rhen]` a
 - **Kick Off:** the encounter lends it (`party_skills`), because the second phase teaches it.
 
 Numbers are in the 2026-10-24 tuning log entry in balance_report.md.
+
+### Ch5: the pilgrim stair and the Cinder Matron (M3-C05-02)
+
+The story party from the end of B05: active Rhen, Asha and Kerrid, with Toma and Ysolde in reserve. The Matron fight starts Kerrid, Rhen and Asha. Swell is `good`.
+
+Loadouts are `ch05_ashcrown` (2 Salt Tonic) and `ch05_matron` (4 Salt Tonic, 1 Relighting Wick, Ilun bound). Both carry the best gear a Ch5 player can own. Pemakar's shop tier doesn't exist yet, so that's Haluna's post-Drownbell weapons (Tidewalker Hooks, Dawnwick Staff, Saltgrass Pike), the tier-1 armour, Ysolde's tier-1 pieces and Kerrid's starting pieces.
+- **The Coral Hooks are left out on purpose.** Their Ember Edge makes Rhen's attacks fire, which the Matron absorbs. The policies can't change gear, and with them equipped every policy loses.
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch05_stair_tortoises` (scripted: two slag tortoises, Kerrid's lesson) | Ch4–Ch9 regular | 20–60% | ≥ 92% | ≥ 97% | ≤ 35 |
+| `ch05_stair_ashwings`, `ch05_stair_tortoise_sparker`, `ch05_stair_tortoise_ashwing` (the random stair table) | Ch4–Ch9 regular | 20–60% | ≥ 92% | ≥ 97% | ≤ 35 |
+| `ch05_cinder_matron` | Ch4–Ch9 boss | ≤ 5% | 65–85% | **report only**, ≥ 40 mean turns | ≤ 70 |
+| `ch05_cinder_matron_ilun` (`naive_swell`: Ilun called at once, the water mistake) | report only | | | | ≤ 70 |
+
+- **The Matron's `smart` band is report only.** With two reserves, Asha's Mend and the items, `smart` won every seed of every tuning tried: 100% even where `role_answer` won 0%. A boss with no time pressure can't push a healing five-hero party below 92%.
+  - The table's 75–92% needs a mechanic that punishes a long fight, such as an escalation by turn count. That's the combat request M3-C05-06.
+  - Until then, `mean_turns_min` (`smart` ≥ 40 actions) is the ease ceiling, as in the M1 sandbox.
+- **Foe order matters.** `naive` hits the first foe:
+  - both mixed groups put the slag tortoise first;
+  - `[vein_sparker, slag_tortoise]` gave a masher 78%, and `[ashwing, slag_tortoise]` 64%.
+- **The cut 3-foe group.** The sheet's "2 ashwings + 1 vein sparker" was cut from the table. All three foes are answered by Ysolde, who starts in reserve, so `role_answer` won only 48%. The stair stays at two foes for now (sheet §9 Creatures 15; M3-C05-05).
+- **Ashwings name Ysolde as their answer** (fire weak), not Rhen. The sheet allows either, and only Ysolde gives `role_answer` a swap to make.
+
+Numbers are in the 2026-10-24 tuning-log entry in balance_report.md.
