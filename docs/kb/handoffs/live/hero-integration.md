@@ -103,6 +103,18 @@ and ADR 0190 "hero motion layer", proposed).
     reads at the right scale with his feet on the floor. The party trails on his curve. The walk pose itself is
     stiff; that's the clip, which M2-CHR-12 replaces.
   - **Haluna** (viewed, not a baseline): Rhen at the spawn, with no capsule left.
+  - **The field camera shots re-approved after viewing** (e758a9a5+):
+
+    | Shot | RMSE before |
+    |---|---|
+    | field_lane_fixed | 0.063 |
+    | field_court_pan | 0.022 |
+    | field_causeway_dolly | 0.063 |
+
+    In all three the only change is Rhen replacing the capsule: grounded, shadow right, framing kept.
+    shrine_s01..s05 pass unchanged (no player in frame).
+  - **Rhen carries the zone's LanternLight** in his own lantern glass (bone-attached), and Haluna's duplicate capsule
+    lantern mesh is hidden (e758a9a5).
   - **Known limits:** after a teleport, a follower can briefly stand inside a wall until the trail fills in. The
     Haluna Lantern turns with the controller, not the eased body.
 
@@ -128,8 +140,8 @@ and ADR 0190 "hero motion layer", proposed).
   - coverage: no `game/battle` or `game/progression` change;
   - Blender: no source touched;
   - tools unittest: no `tools/` change;
-  - other shots: no other scene changed. Every zone shows Rhen instead of a capsule, so **zone shots will drift**;
-    the Lead's full run will flag those and they need viewing.
+  - other shots: the field_* camera shots were re-approved after viewing (see above). The remaining zone shots don't
+    show the player.
 - **Full Godot suite on 555714d3: 1996 run, 0 failed.** The shrine audio test passes in the full run, so it's an
   ordering race in the filtered run, not this change.
 
