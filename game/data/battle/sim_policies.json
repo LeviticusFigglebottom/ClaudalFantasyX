@@ -1,15 +1,20 @@
 {
-  "_doc": "Tunables for the balancing simulator's party policies (game/battle/sim/, docs/kb/design/balance_targets.md). Not game data: nothing in play reads this file. loadouts: the gear (equipment ids per character) and consumables a suite's party carries (balance_targets.md, Party assumptions). swell_heal_below_pct (M2-CMB-01): a ready healing Swell technique waits until an active ally is below this share of max HP.",
+  "_doc": "Tunables for the balancing simulator's party policies (game/battle/sim/, docs/kb/design/balance_targets.md). Not game data: nothing in play reads this file. loadouts: the gear (equipment ids per character) and consumables a suite's party carries (balance_targets.md, Party assumptions). swell_heal_below_pct (M2-CMB-01): a ready healing Swell technique waits until an active ally is below this share of max HP. call_vowbound (M2-CMB-05): when a policy calls a Vowbound its loadout lists under 'vowbound' (at_once: as soon as the caller may; on_field: while a field is up); unset: never.",
   "policies": {
     "naive": {},
+    "naive_swell": {
+      "call_vowbound": "at_once"
+    },
     "lowest_hp": {},
     "role_answer": {
-      "clear_field_skill": "call_ilun"
+      "clear_field_skill": "call_ilun",
+      "call_vowbound": "on_field"
     },
     "smart": {
       "heal_below_pct": 45,
       "keep_healer_below_pct": 70,
-      "clear_field_skill": "call_ilun"
+      "clear_field_skill": "call_ilun",
+      "call_vowbound": "on_field"
     }
   },
   "max_actions": 2000,
@@ -83,6 +88,13 @@
       },
       "flags": [
         "ch03_ilun_bound"
+      ]
+    },
+    "sandbox_vowbound": {
+      "gear": {},
+      "items": {},
+      "vowbound": [
+        "ilun"
       ]
     }
   }

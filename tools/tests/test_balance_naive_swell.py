@@ -1,5 +1,6 @@
 """The report-only naive_swell policy (M2-NIT-03): every suite reports it with no band, next to naive.
 Run: python3 -m unittest discover -s tools/tests"""
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -14,10 +15,23 @@ class NaiveSwellTest(unittest.TestCase):
         for suite in sim.load_targets():
             bands = suite["bands"]
             self.assertIn("naive_swell", bands, suite["id"])
-            self.assertIsNone(bands["naive_swell"], f"{suite['id']}: naive_swell is report only")
+            if suite.get("kind") != "vowbound":
+                self.assertIsNone(bands["naive_swell"], f"{suite['id']}: naive_swell is report only")
             order = list(bands)
             self.assertEqual(order.index("naive_swell"), order.index("naive") + 1,
                              f"{suite['id']}: naive_swell sits next to naive in the report")
+
+    def test_the_vowbound_suite_caps_the_calling_masher_at_40(self):
+        """ADR 0027 (accepted): the provisional Vowbound masher line, a ceiling, not a band to aim at."""
+        suites = [s for s in sim.load_targets() if s.get("kind") == "vowbound"]
+        self.assertEqual([s["id"] for s in suites], ["sandbox_reef_vowbound"])
+        s = suites[0]
+        self.assertEqual(s["bands"]["naive_swell"], [0, 40])
+        self.assertIsNone(s["bands"]["naive"], "naive never opens the Vowbound row")
+        policies = json.loads((ROOT / "game/data/battle/sim_policies.json").read_text())
+        self.assertEqual(policies["loadouts"][s["loadout"]]["vowbound"], ["ilun"])
+        self.assertEqual(policies["loadouts"][s["loadout"]]["gear"], {}, "no gear")
+        self.assertEqual(policies["policies"]["naive_swell"]["call_vowbound"], "at_once")
 
     def test_a_report_only_row_is_never_out_of_band(self):
         suite = {"id": "s", "chapter": "c", "encounter": "e", "bands": {"naive_swell": None}, "p90_turns_max": 40}

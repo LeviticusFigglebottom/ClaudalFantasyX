@@ -53,6 +53,9 @@ var known: Array[StringName] = []
 var summon: BattleCombatant
 ## The active party that stood down for it, in slot order (KO'd members included).
 var stood_down: Array[BattleCombatant] = []
+## The caller's end-of-turn changes at the last call (BattleEngine.turn_ended format): the call
+## ends the caller's turn at once (ADR 0027 A3), so Poison, Regen and Doom tick then.
+var call_changes: Array[Dictionary] = []
 
 ## Each stood-down member's ticks left before its turn when the Vowbound was called.
 var _offsets: Array[int] = []
@@ -116,10 +119,11 @@ func refusal(engine: BattleEngine, vowbound_id: StringName) -> StringName:
 
 
 ## Calls `vowbound_id` (BattleEngine.summon does the rest): the active party stands down and
-## the Vowbound takes the current turn. The call is the caller's action: the caller will wait
-## the row's `call_rank` delay once the party is back, while every other member keeps the ticks
-## it had left. The first call this battle builds the Vowbound from the caller's stats at full
-## HP and MP; a later call brings it back as it left. False, changing nothing, on a refusal.
+## the Vowbound takes the current turn. The call is the caller's action: its end of turn runs at
+## once (BattleEngine.summon, ADR 0027 A3), and it will wait the row's `call_rank` delay once the
+## party is back, while every other member keeps the ticks it had left. The first call this
+## battle builds the Vowbound from the caller's stats at full HP and MP; a later call brings it
+## back as it left. False, changing nothing, on a refusal.
 func call_in(engine: BattleEngine, vowbound_id: StringName) -> bool:
 	if refusal(engine, vowbound_id) != &"":
 		return false
@@ -134,6 +138,7 @@ func call_in(engine: BattleEngine, vowbound_id: StringName) -> bool:
 		var wait := c.next_time - engine.now
 		if c == caller:
 			wait = Formulas.action_delay(c.agility, rank, c.speed_mult())
+			c.delays_taken = 0  # it acted: as BattleEngine._end_turn
 		_offsets.append(maxi(wait, 0))
 	s.next_time = engine.now
 	s.delays_taken = 0
@@ -224,17 +229,20 @@ static func build(row: Dictionary, vowbound_id: StringName, caller: BattleCombat
 	return BattleCombatant.from_dict(vowbound_id, BattleCombatant.TEAM_PARTY, d)
 
 
-## The Vowbound's gauge fills from HP it loses to hits (formulas.md § Vowbound): Formulas.swell_gain
-## over its own max HP at its row's "swell.rate". Party Swell gauges never see it (BattleSwell).
+## The Vowbound's gauge fills from HP it loses to hits and, by ADR 0027 A1, from the HP it drinks
+## by absorbing a hit's element (the hit's "absorbed": the rolled amount, so it counts at full HP
+## too; formulas.md § Vowbound): Formulas.swell_gain over its own max HP at its row's
+## "swell.rate". A heal does not count. Party Swell gauges never see it (BattleSwell).
 func _on_action_resolved(result: ActionResult) -> void:
 	if not is_out():
 		return
 	var swell: Dictionary = _row_of(summon).get("swell", {})
 	var rate := int(swell.get("rate", 0))
 	for hit in result.hits:
-		var amount := int(hit.get("amount", 0))
-		if StringName(str(hit.get("target_id", ""))) == summon.id and amount > 0:
-			summon.swell = Formulas.swell_fill(summon.swell, Formulas.swell_gain(amount, summon.max_hp, rate))
+		if StringName(str(hit.get("target_id", ""))) != summon.id:
+			continue
+		var amount := maxi(int(hit.get("amount", 0)), int(hit.get("absorbed", 0)))
+		summon.swell = Formulas.swell_fill(summon.swell, Formulas.swell_gain(amount, summon.max_hp, rate))
 
 
 func _row_of(c: BattleCombatant) -> Dictionary:

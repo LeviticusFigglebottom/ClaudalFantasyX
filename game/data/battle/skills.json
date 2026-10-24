@@ -108,7 +108,7 @@
      "element": "none", "target": "self", "mp_cost": 6, "magic": true,
      "statuses": [{"id": "protect", "chance": 100}, {"id": "shell", "chance": 100}]},
     {"id": "floodnet", "name_key": "SKILL_FLOODNET", "kind": "magical", "power": 16, "rank": 3,
-     "element": "water", "target": "all_foes", "mp_cost": 0, "magic": true, "swell": true,
-     "vowbound": true}
+     "element": "none", "target": "all_foes", "mp_cost": 0, "magic": true, "swell": true,
+     "vowbound": true, "clears_field": "flood"}
   ]
 }

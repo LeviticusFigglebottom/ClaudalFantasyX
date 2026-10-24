@@ -36,7 +36,7 @@ func reset() -> void:
 func take_turn(engine: BattleEngine) -> void:
 	var actor := engine.current
 	var now := engine.now
-	if unleash_swell(engine):
+	if unleash_vowbound(engine) or unleash_swell(engine):
 		return
 	decide(engine)
 	if engine.outcome == &"" and engine.current == actor and engine.now == now and engine.is_party_turn():
@@ -75,6 +75,34 @@ func unleash_swell(engine: BattleEngine) -> bool:
 			swells_used += 1
 			return true
 	return false
+
+
+## M2-CMB-05: a called Vowbound's full gauge goes first too, its finisher aimed like a technique
+## (_swell_targets; Floodnet hits every foe). Only a policy that opens the Swell row. True if unleashed.
+func unleash_vowbound(engine: BattleEngine) -> bool:
+	var vb := engine.vowbound
+	if not unleashes_swell() or vb.unleash_refusal(engine) != &"":
+		return false
+	var targets := _swell_targets(engine, engine.current, vb.finisher(engine.current))
+	if targets.is_empty() or not vb.unleash(engine, targets).ok:
+		return false
+	swells_used += 1
+	return true
+
+
+## M2-CMB-05, the call rule (sim_policies.json "call_vowbound"): "at_once" calls the first
+## Vowbound the actor may call (vowbound.callable_ids) as soon as it may, and it stays out until it
+## falls or the battle ends. "on_field" calls only while a field is up (the flood rises; the
+## Drownbell's clear_field_skill is the model), keeps it out while the field holds, and dismisses
+## it on its first turn after the field is gone. Unset: never. True if it called or dismissed.
+func call_vowbound(engine: BattleEngine) -> bool:
+	var rule := StringName(str(config.get("call_vowbound", "")))
+	if rule == &"on_field" and engine.fields.is_empty():
+		return engine.vowbound.dismiss_refusal(engine) == &"" and engine.dismiss()
+	if rule == &"":
+		return false
+	var ids := engine.vowbound.callable_ids(engine)
+	return not ids.is_empty() and engine.summon(ids[0])
 
 
 func _swell_targets(engine: BattleEngine, actor: BattleCombatant, tid: StringName) -> Array[BattleCombatant]:

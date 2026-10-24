@@ -46,8 +46,10 @@ func make_policy(policy: StringName) -> SimPolicy:
 
 
 ## A named party loadout from sim_policies.json "loadouts": {gear: {character: [equipment ids]},
-## items: {item id: count}, flags?: [story flags set]}. {} if unknown (the bare party from
-## characters.json). `flags` become BattleEngine.story_flags (flag-locked skills, e.g. call_ilun).
+## items: {item id: count}, flags?: [story flags set], vowbound?: [ids bound]}. {} if unknown (the
+## bare party from characters.json). `flags` become BattleEngine.story_flags (flag-locked skills,
+## e.g. call_ilun); `vowbound` the Vowbound the party may call (M2-CMB-05; policies call by
+## sim_policies.json "call_vowbound").
 func loadout(loadout_name: StringName) -> Dictionary:
 	return ((_config.get("loadouts", {}) as Dictionary).get(String(loadout_name), {}) as Dictionary).duplicate(true)
 
@@ -85,6 +87,11 @@ func run_one(
 	for f: Variant in kit.get("flags", []):
 		engine.story_flags.append(StringName(str(f)))
 	engine.setup(db, active, reserve, encounter, rng_seed)
+	var bound: Array[StringName] = []
+	for v: Variant in kit.get("vowbound", []):
+		bound.append(StringName(str(v)))
+	if not bound.is_empty():
+		engine.vowbound = BattleVowbound.new(BattleVowbound.load_config(), bound)
 	policy.reset()
 	# Held for the whole battle, like fx: the signal connection does not keep it alive.
 	var swell: BattleSwell = null
