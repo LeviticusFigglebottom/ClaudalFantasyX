@@ -43,7 +43,18 @@ GOOD = {
          "watch": [{"expr": "node.level", "rise": "tick", "values": {"2": "tick"}}]},
         {"class": "ShopMenu", "pending": True, "signals": {"bought": "tick"}},
     ]},
-    dc.CLASSES: {"Menu": ["closed"]},
+    dc.CLASSES: {"Menu": ["closed"], "Sphere": []},
+    dc.REEFBALL_HOOKS: {
+        "crowd": {"murmur": "gulls", "excited": "surf", "fade_sec": 2.0, "rite_fade_sec": 0.5},
+        "swim": {"groups": ["swimmer"], "edge_m": 0.3, "stroke_m": 1.5, "teleport_m": 4.0, "enter": "tick",
+                 "exit": "tick", "stroke": "tick"},
+        "hooks": [
+            {"class": "Sphere", "sphere": {"radius_method": "radius_m"}, "on_enter": {"crowd": "murmur"}},
+            {"class": "Match", "pending": True, "signals": {
+                "kickoff": {"sfx": "tick", "crowd": "excited"}, "goal": {"sfx_at": "tick", "sfx": ["tick"]},
+                "rite": {"sfx": "tick", "crowd": "silence", "restore": "murmur", "restore_after_sec": 12.0}}},
+        ],
+    },
 }
 
 
@@ -159,6 +170,37 @@ class AudioDataTest(unittest.TestCase):
                      "fanfare is not an sfx.json row"):
             self.assertTrue(any(want in e for e in errs), (want, errs))
         self.assertFalse(any("ShopMenu" in e and "class_name" in e for e in errs), "a pending hook's class waits")
+
+    def test_reefball_hooks_check_rows_beds_crowd_and_classes(self) -> None:
+        def edit(r: dict) -> None:
+            r["crowd"]["excited"] = "roar"
+            r["swim"]["stroke_m"] = 0
+            r["swim"]["exit"] = "splash"
+            r["hooks"][0]["signals"] = {"popped": {"sfx": "tick"}}
+            r["hooks"][0]["sphere"] = {}
+            r["hooks"][1]["signals"]["kickoff"]["crowd"] = "loud"
+            r["hooks"][1]["signals"]["foul"] = {"note": "nothing"}
+            r["hooks"][1]["signals"]["rite"]["restore_after_sec"] = 0
+            r["hooks"].append({"class": "Ghost", "on_exit": {"sfx_at": "boom"}})
+        errs = self._broken(dc.REEFBALL_HOOKS, edit)
+        for want in ("crowd.excited: roar is not an ambience bed", "swim.stroke_m", "swim.exit: splash",
+                     "Sphere declares no such signal", "needs radius_method or radius_m", "loud is not murmur",
+                     "foul: does nothing", "restore needs a time", "no script declares class_name Ghost",
+                     "boom is not an sfx.json row"):
+            self.assertTrue(any(want in e for e in errs), (want, errs))
+        self.assertFalse(any("Match" in e and "class_name" in e for e in errs), "a pending hook's class waits")
+
+    def test_script_classes_inherit_their_base_classes_signals(self) -> None:
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as d:
+            game = Path(d) / "game"
+            game.mkdir()
+            (game / "base.gd").write_text("class_name BasePage\nextends Control\nsignal closed\n", encoding="utf-8")
+            (game / "page.gd").write_text("class_name LeafPage\nextends BasePage\nsignal moved\n", encoding="utf-8")
+            got = dc.script_classes(Path(d))
+        self.assertEqual(got["BasePage"], ["closed"])
+        self.assertEqual(sorted(got["LeafPage"]), ["closed", "moved"])
 
     def test_sfx_rows_play_on_real_buses(self) -> None:
         errs = self._broken(dc.SFX, lambda s: s["sfx"]["tick"].update({"bus": "Nowhere", "pitch_jitter": 0.9}))
