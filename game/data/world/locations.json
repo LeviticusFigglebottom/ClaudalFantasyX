@@ -50,6 +50,20 @@
       "spawn": "ScaleHull",
       "name_key": "LOCATION_CH01_ORUVEL",
       "_note": "M3-C01-02: the raft-town by day and in the storm (C1-07 to C1-15), a greybox zone (Ch01OruvelZone). Ch1 ends by sending the party to ch02/haluna at Beach."
+    },
+    {
+      "id": "ch05/pemakar",
+      "scene": "res://game/levels/ch05/pemakar/pemakar.tscn",
+      "spawn": "Harbour",
+      "name_key": "LOCATION_CH05_PEMAKAR",
+      "_note": "M3-C05-02: Pemakar on Lanternfall night and the day after (Ch5 B01-B06, B11), a greybox zone (Ch05Zone). Ch4's ferry hands off here at Harbour. Ch5 ends at the end card until Ch6's ch06/brine_shoals exists."
+    },
+    {
+      "id": "ch05/ashcrown",
+      "scene": "res://game/levels/ch05/ashcrown/ashcrown.tscn",
+      "spawn": "StairFoot",
+      "name_key": "LOCATION_CH05_ASHCROWN",
+      "_note": "M3-C05-02: Ashcrown, the stair-mountain temple (Ch5 B07-B10): the pilgrim stair, the strike trial, the anvil court; a greybox zone (Ch05AshcrownZone)."
     }
   ],
   "shrines": [
