@@ -10,7 +10,9 @@ extends Node
 ##   overheard_hold_sec  how long an overheard bark's line stays up (optional).
 ## `when` is {"set": [flags], "unset": [flags]}, all of which must hold (missing = holds).
 ## Steps run in order, one key each:
-##   {"play": id}       plays a compiled .dlg scene on the stage and waits for it.
+##   {"play": id}       plays a compiled .dlg scene on the stage and waits for it. Right before a
+##                      battle, go or scene step it doesn't fade back in at its end (restore_fade), so
+##                      a scene that ends on black hands off on black (M3-C01-02: Ch1's going under).
 ##   {"place": spawn}   puts Rhen on a spawn, facing its marker.
 ##   {"set": flag}      sets a declared flag through Game.set_flag.
 ##   {"party": {"party": [...], "reserve": [...]}} replaces the party.
@@ -123,13 +125,16 @@ func variant(scene_id: StringName) -> StringName:
 ## Returns true when the run should stop (a hand-off, or an if_event that fired).
 func _steps(steps: Array) -> bool:
 	var stop := false
-	for step: Dictionary in steps:
+	for i in steps.size():
+		var step: Dictionary = steps[i]
 		if handed_off or stop:
 			return true
 		if _hands_off(step):
 			return true
 		if step.has("play"):
+			sequencer.restore_fade = not (i + 1 < steps.size() and _ends_run(steps[i + 1]))
 			await sequencer.play(StringName(str(step["play"])), _stage())
+			sequencer.restore_fade = true
 		elif step.has("beat"):
 			var beat: Dictionary = (cfg.get("beats", {}) as Dictionary).get(str(step["beat"]), {})
 			stop = await _steps(beat.get("steps", []))
@@ -157,6 +162,11 @@ func _apply(step: Dictionary) -> void:
 			_zone.callv(method, step.get("args", []))
 	else:
 		push_warning("ZoneStory: unknown step %s" % step)
+
+
+## True for the steps that end a run (battle, go, scene).
+static func _ends_run(step: Dictionary) -> bool:
+	return step.has("battle") or step.has("go") or step.has("scene")
 
 
 ## Hands off for a battle, go or scene step (true); false for any other step.

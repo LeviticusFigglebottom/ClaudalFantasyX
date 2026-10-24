@@ -88,6 +88,20 @@ func test_zone_calls_and_travel_hand_off() -> void:
 	_done()
 
 
+func test_a_scene_right_before_a_hand_off_stays_on_black() -> void:
+	var restores: Array[bool] = []
+	story.sequencer.line_shown.connect(func(_s: DialogueStep) -> void: restores.append(story.sequencer.restore_fade))
+	zone.place_at(&"AfterFight")
+	story.play_beat(&"leave")
+	assert_true(not restores.is_empty() and restores.back(), "a scene with more steps after it fades back in")
+	restores.clear()
+	story.play_beat(&"fade_hand_off")
+	assert_true(not restores.is_empty() and not restores.back(), "one right before a hand-off does not (M3-C01-02)")
+	assert_true(story.sequencer.restore_fade, "and the sequencer fades back in again afterwards")
+	assert_eq(hand_offs, [[ZoneStory.KIND_GO, {"location": "zone_story_b", "spawn": "In"}]] as Array[Array])
+	_done()
+
+
 func test_barks_swap_by_flag_and_overheard_ones_block_nothing() -> void:
 	assert_eq(story.variant(&"test_dialogue_fixture"), &"test_dialogue_fixture")
 	Game.set_flag(&"test_flag", true)
