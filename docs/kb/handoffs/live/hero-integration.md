@@ -40,8 +40,10 @@ and ADR 0190 "hero motion layer", proposed).
   - **Tests:** 15 new, plus the hero filter at 30/0.
   - **Shot `hero_cutscene_turn_strip`** (viewed): Asha through a 120° turn on M2-FP-29's curve. The head visibly
     leads the torso at ¼ and ¾ and settles over the body at the end.
-  - **Open for m2-slice:** Haluna's posed Asha faces +Z under her root, while the sequencer treats -Z as forward. A
-    `_turn_to` would turn her back to the target. Her root or body needs a 180° offset.
+  - **Haluna's Asha facing: fixed by m2-slice** (claude/m2-slice 74ed95b4). Her Model is turned 180° with the pose
+    conjugated, and the root's -Z is now her face.
+  - **m2-slice applies the patch after the Lead gates claude/hero-integration onto the integration branch.** The human
+    plays claude/m2-slice. **Lead: the patch waits on this branch's merge.**
 
 ## In progress
 - Field: HeroFieldActor via one hook line in FieldController._ready (no zone scene edits), AnimationTree BlendSpace1D,
