@@ -56,7 +56,6 @@ func test_saltgrass_is_baked_multimeshes() -> void:
 
 func test_the_sea_is_at_low_water() -> void:
 	var zone := _zone()
-	await (Engine.get_main_loop() as SceneTree).process_frame
 	var water := zone.get_node("Water") as Node3D
 	assert_between(water.global_position.y, LOW_WATER_M - EPS, LOW_WATER_M + EPS, "the sea sits at low water")
 	_drop(zone)
