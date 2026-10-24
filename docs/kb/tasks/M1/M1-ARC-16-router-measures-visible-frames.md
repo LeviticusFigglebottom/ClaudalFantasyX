@@ -2,8 +2,8 @@
 id: M1-ARC-16
 title: SceneRouter measures ADR 0029's two budgets (hidden frames under the fade, the first 60 visible frames)
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a30d6e9e3e395d6ec"
 reviewer: rendering
 depends_on: [M1-RND-22]
 milestone: M1

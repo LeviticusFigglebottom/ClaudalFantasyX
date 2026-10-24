@@ -2,8 +2,8 @@
 id: M2-RND-06
 title: Rendering nits from review-sweep-Q (battle VFX safety test bounds, Undertow open items, orphan fixture import)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a30d6e9e3e395d6ec"
 reviewer: environment
 depends_on: [M2-RND-01, M2-RND-03]
 milestone: M2
