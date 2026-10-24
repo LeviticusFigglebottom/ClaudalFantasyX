@@ -272,6 +272,7 @@ func _line(r: Rect2, text: String, role: StringName, wrap: bool = false, variati
 		l.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 		l.max_lines_visible = int(HudLayout.num(sec, "wrap_lines"))
 		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		l.size = Vector2(r.size.x, h)  # M2-MNU-11: the text, set before autowrap, had widened it to one line
 		return r.position.y + line_h * maxf(1.0, float(mini(l.get_line_count(), l.max_lines_visible)))
 	l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	return r.position.y + h

@@ -604,6 +604,24 @@ func _set_changes(lines: Array[Dictionary]) -> void:
 		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		l.add_theme_color_override(&"font_color", _c(line.get("role", &"text")))
 		_changes.add_child(l)
+	_fit_changes()
+
+
+## M2-MNU-11: the change list never runs past its box. Each line keeps the lines that still fit, the cut
+## one ending in an ellipsis, and a line with no room left is hidden (clip_contents alone cut text silently).
+func _fit_changes() -> void:
+	var room := _changes.size.y
+	var gap := float(_changes.get_theme_constant(&"separation"))
+	for c in _changes.get_children():
+		var l := c as Label
+		var line_h := float(l.get_line_height())
+		var lines := l.get_line_count()
+		var fit := int(floor(room / line_h)) if line_h > 0.0 else lines
+		l.visible = fit >= 1
+		if fit < lines:
+			l.max_lines_visible = maxi(fit, 1)
+			l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		room -= line_h * mini(lines, maxi(fit, 0)) + gap
 
 
 # --- mouse ---------------------------------------------------------------------------------------

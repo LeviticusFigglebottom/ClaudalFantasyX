@@ -21,6 +21,8 @@ const DEFAULT_CANVAS_LAYER := 64
 
 ## This page's layout block (data_section of data_path).
 var _d: Dictionary = {}
+## The banner title _framed_panel made (null before it runs); a page with something in its title bar narrows it.
+var _title_label: Label
 var _owns_pause := false
 var _is_closed := false
 
@@ -126,6 +128,7 @@ func _framed_panel(metrics: Dictionary, title_text: String) -> Label:
 	var title := _label(&"BannerLabel", Rect2(pr.position + Vector2(pad, pad), Vector2(pr.size.x - pad * 2.0, 0.0)))
 	title.size.y = HudLayout.num(metrics, "title_height")
 	title.text = title_text
+	_title_label = title
 	_title_rule(Rect2(title.position, Vector2(pr.size.x * 0.5, title.size.y)))
 	var help_h := HudLayout.num(metrics, "help_height")
 	var help_at := Vector2(pr.position.x + pad, pr.end.y - pad - help_h)

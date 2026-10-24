@@ -76,7 +76,7 @@
       "name_step_px": 33,
       "name_pad": [6, 1],
       "initials_offset": [3, 2],
-      "button": {"rect": [741, 81, 375, 48]}
+      "button": {"rect": [741, 81, 375, 48], "title_gap": 24}
     },
     "confirm": {
       "rect": [1305, 783, 492, 0],
