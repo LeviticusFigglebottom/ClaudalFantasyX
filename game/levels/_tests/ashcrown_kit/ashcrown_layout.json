@@ -102,7 +102,7 @@
  ],
  "borrowed": [
   {
-   "glb": "res://assets/environments/kits/pemakar/ash_plume.glb",
+   "glb": "res://assets/environments/kits/pemakar/ash_plume_near.glb",
    "at": [
     0.0,
     -56.717,
@@ -112,7 +112,7 @@
    "materials": {
     "kit_plume": "res://assets/environments/kits/ashcrown/materials/ac_plume_day.tres"
    },
-   "lod1_from_m": 2500.0
+   "lod1_from_m": 900.0
   },
   {
    "glb": "res://assets/environments/kits/pemakar/open_hand_gate.glb",

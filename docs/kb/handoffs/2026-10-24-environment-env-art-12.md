@@ -37,7 +37,7 @@ agent's own handoff is listed below.
 1. Merge M3-ENV-11 when it lands. Gate it on the Pemakar, Ashcrown and arena tests, the Blender jobs it touched,
    and `capture.sh` for the five Pemakar, Ashcrown and Lanternfall shots. Then write a MERGE-READY line.
 2. Take the next item from the Lead's queue. New task ids come from M3-ENV-701 onwards, ADRs from 0160, and
-   handoffs are named `-env-art-<n>` (13 and up).
+   handoffs are named `-env-art-<n>` (14 and up).
 
 ## Known issues
 - Five UI and dialogue shots drift from the wetter Haluna tidewalls: `field_objective_line`,
