@@ -4,7 +4,7 @@
 
 ## 0. Read these, in this order
 1. [`CLAUDE.md`](../../../CLAUDE.md): the operating rules for every agent. They include "Gate scope", §7a live logs, and §8a shared-machine and scratch rules.
-2. [`SPEC.md`](../../../SPEC.md) v1.2: the brief. Only the Lead edits it, and every change needs an ADR plus a version note.
+2. [`SPEC.md`](../../../SPEC.md) v1.3: the brief. Only the Lead edits it, and every change needs an ADR plus a version note.
 3. [`docs/kb/STATUS.md`](../../STATUS.md): milestone, risks, and questions for the human.
 4. This file, then `python3 tools/taskboard.py` for the live task board (about 91 of 121 done).
 5. ADRs 0001–0024 in [`docs/kb/decisions/`](../../decisions/), skimming the titles.
