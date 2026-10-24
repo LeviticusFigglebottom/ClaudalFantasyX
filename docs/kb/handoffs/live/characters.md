@@ -65,7 +65,9 @@
     - test_villagers, test_rig_integrity (7 characters), test_blender_builds, test_hero_clips, test_hero_battle_clips: OK;
     - post_import 19/19, hero_stage 9/9;
     - all five hero clip libraries regenerate byte-identical.
-- **In flight, two worktree sub-agents:** M3-CHR-03 hero half, Liss (hero path, with the battle clip set), and M1-CHR-15, skirt and corrective bones (Asha, Rhen, Toma).
+- **In flight, three worktree sub-agents:** M3-CHR-03 hero half (Liss), M1-CHR-15 skirt and corrective bones, and M3-CHR-05 Kerrid (hero build).
+- **Kerrid and Pell design sheets merged** (kerrid.md, pell.md; M3-CHR-05 and 06).
+  - Pell (M3-CHR-06) waits on **M3-NAR-01**: in outline, Pell's arc is close to the inspiring series' beast-folk guardian; the costume avoids every visual cue, but Narrative must rule on the arc. That task also carries the sheets' story questions and the stale ADR 0020 and glossary rows.
 - **From the M3 sheets:**
   - Liss is a party member, so she is on the hero path; she stays in M3-CHR-03.
   - Mother Kell is Oruvel's chandler, not the diver. The story corrected this; glossary rows 195 and 254 are stale.
