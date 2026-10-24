@@ -6,7 +6,7 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 > **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
 > session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
-> **This copy, on `gpu/m2-rnd-05-undertow-events`, is the newest.**
+> **This copy, on `gpu/adr-0029-prewarm-followups`, is the newest.**
 
 ## PC setup for a new session
 
@@ -115,6 +115,7 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/adr-0029-prewarm-followups | **M1-RND-27 in review** (reviewer Environment) | ADR 0029 follow-ups. Boot warm-up worst frame **0.86-0.89 s cold / 0.47-0.66 s warm** (was 1.06-1.20 / ~0.75): a plain-first stage bring-up, residents loaded in their batch, and the Undertow body's compute twin warmed instead of the never-drawn spatial shader on Medium/High. The SceneState harvest and primitive-mesh materials read unbuilt take Haluna's start() from 664 to 353 ms cold. materials_per_frame 2 is kept (measured). The export baker needs export templates (not installed). Report: `docs/kb/qa/gpu/2026-10-24-rnd-27-prewarm.md` |
 | gpu/m2-rnd-05-undertow-events | **M2-RND-05 in review** (reviewer Environment; Art's sign-off is M2-ART-03) | The Undertow as an event: torn rents (dark lip, halo), curtains of held light off the wounds, cloud-to-sea bolts on the camera's half plus a capped 2.0x/2-frame exposure flash, camera rain, the zone shadow, the storm in the sea's reflection (the half-res body's own pixels), six chapter presets and `unbinding` (the Ch21 Letting). Storm cost at High 1440p **0.59-0.84 ms** (was 0.55-0.76). All 4 `undertow_*` baselines drift by design; 3 pending shots in `docs/kb/qa/gpu/2026-10-24-rnd-05-pending-shots.json`. Report: `docs/kb/qa/gpu/2026-10-24-rnd-05-undertow-events.md` |
 | gpu/m1-env-09-lod-check | **done** (queue item 2; the review entry is in the ENV-09 task, whose status stays review for the shelter-against-Haluna criterion) | M1-ENV-09 GPU check of the `visibility_parent` LOD chain. `lod_sweep_probe` gives LOD_SWEEP PASS on Vulkan. The real palm, stepped and with a moving camera at 5 m/s, in and out: no pop, no hole, an opaque trunk; one LOD outside 118.5–122 m and LOD1 plus the fading LOD2 inside. The band costs +0.07/0.09/0.11 ms at Low/High/Ultra 1440p for 40 palms (about 2 µs each). `lod_pop.tscn` gains `--direction`, `--solo`, draw counts, `--png-every`, `--hide-lod` and `--bench --clones`. Report: `docs/kb/qa/gpu/2026-10-24-env-09-lod-check.md` |
 | gpu/m1-rnd-24-gpu-check | **done** (queue item 1 of the 2026-10-24 top-up; the RND-24 task stays in review with its owner) | M1-RND-24 criterion 2 on the GPU. A shadowed spot key: the grief interior median goes from fallback 0.0145 to pass 0.0194 at High (from 0.0144 to 0.0185 at Low); the share below 0.01 goes 0.16 → 0.10 at High and 0.19 → 0.07 at Low; this matches the key-shadow-off control. Closed mouths: RMSE ≤ 0.0001. QA-08 fault A doesn't change (it's RND-25's). Cost: none measurable (< 0.005 ms at 1440p). **Finding: M1-RND-26**, where under FSR2 (High) the pass softens the mouth's edges even with no positional light; lavapipe isn't affected. New tool `tools/gpu_bench/mouth_bounce_probe.tscn`. Report: `docs/kb/qa/gpu/2026-10-24-rnd-24-bounce-gpu.md` |
@@ -142,9 +143,8 @@ lands; until then, base on the current head (a514c06, then 54425e2).
 - **1. M1-RND-24 criterion 2 (GPU): done** on `gpu/m1-rnd-24-gpu-check`.
 - **2. M1-ENV-09 GPU check: done** on `gpu/m1-env-09-lod-check`: it passes.
 - **3. M2-RND-05: in review** on `gpu/m2-rnd-05-undertow-events` (Art: M2-ART-03).
-- **4. ADR 0029 follow-ups (next):** slice the boot warm-up (worst frame 0.5–1.7 s) and the SceneState harvest for big
-  zones. **No threaded loads** (they segfault on Haluna).
-- **5. Slice perf sweep:** title → Haluna → Drownbell → Shell Shrine at Low/High/Ultra 1440p; worst frames and per-zone
+- **4. ADR 0029 follow-ups: in review** as M1-RND-27 on `gpu/adr-0029-prewarm-followups` (export baker waiting on export templates).
+- **5. Slice perf sweep (next):** title → Haluna → Drownbell → Shell Shrine at Low/High/Ultra 1440p; worst frames and per-zone
   averages go in perf_baseline.csv, and anything over budget becomes a new task.
 - **6. M1-QA-09:** only after M1-CHR-12 merges (the Lead will say).
 
