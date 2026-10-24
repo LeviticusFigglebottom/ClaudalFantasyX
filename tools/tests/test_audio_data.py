@@ -245,6 +245,64 @@ class LoopImportTest(unittest.TestCase):
         self.assertEqual(bad, [])
 
 
+class ChoreoSfxTest(unittest.TestCase):
+    """M3-AUD-13: choreo_sfx.json (data_check.choreo_errors). The shipped table passes; a hook names its class and
+    signals (checked once the class exists, pending until then), sounds are Combat-bus rows, weapons have accents,
+    whooshes have a crest time, and styles are choreo.json's once that table is present."""
+
+    ROWS = {"whoosh": {"files": [OGG], "bus": "Combat"}, "hit": {"files": [OGG], "bus": "Combat"},
+            "ui": {"files": [OGG], "bus": "UI"}}
+    DOC = {
+        "hooks": [{"class": "BattleChoreo", "pending": True, "signals": {"beat": "beat", "contact": "contact"}}],
+        "styles": {"melee": {"approach": "hit", "approach_steps": 3, "strike": "whoosh", "contact": "@weapon",
+                             "contact_by_weapon": {"hooks": "hit"}, "needs_hit": True}},
+        "peaks": {"whoosh": 0.1}, "skills": {"toll": "hit", "spit": ""},
+        "weapons": {"rhen": "hooks"}, "weapon_default": "claw", "accents": {"hooks": "hit", "claw": "hit"},
+        "ko": "hit", "enter": {"sfx": "hit", "steps": 2}, "step_off": {"sfx": "hit", "steps": 2},
+        "vowbound": {"call": "hit", "rise": "hit", "rise_long": "hit", "long_sec": 2.0, "sink": "hit", "fall": "hit"},
+        "flood": {"phase": "flood", "sfx": "hit", "stagger_sec": 0.12}, "reduced_skip": ["contact", "steps"],
+    }
+
+    def _errs(self, doc, classes=None, choreo=None):
+        return dc.choreo_errors(doc, self.ROWS, classes if classes is not None else {}, choreo)
+
+    def test_good_and_shipped(self) -> None:
+        self.assertEqual(self._errs(self.DOC), [])
+        files = dc.load_files(ROOT)
+        rows = dc.merged_sfx(files)["sfx"]
+        self.assertIn(dc.CHOREO_SFX, files)
+        self.assertEqual(dc.choreo_errors(files[dc.CHOREO_SFX], rows, files[dc.CLASSES], files.get(dc.CHOREO)), [])
+
+    def test_hooks_are_checked_once_the_class_exists(self) -> None:
+        bad = copy.deepcopy(self.DOC)
+        bad["hooks"][0].pop("pending")
+        self.assertTrue(any("class_name BattleChoreo" in e for e in self._errs(bad)))
+        known = {"BattleChoreo": ["beat", "sequence_finished"]}
+        errs = self._errs(self.DOC, known)
+        self.assertTrue(any("declares no signal contact" in e for e in errs), errs)
+        self.assertEqual(self._errs(self.DOC, {"BattleChoreo": ["beat", "contact"]}), [])
+        bad["hooks"][0]["signals"]["swing"] = "beat"
+        self.assertTrue(any("not a role" in e for e in self._errs(bad, {"BattleChoreo": ["beat", "contact"]})))
+
+    def test_sounds_weapons_and_peaks(self) -> None:
+        bad = copy.deepcopy(self.DOC)
+        bad["styles"]["melee"]["strike"] = "hit"  # a whoosh with no crest time
+        bad["styles"]["melee"]["return"] = "ui"  # not on the Combat bus
+        bad["styles"]["melee"]["strike_by_weapon"] = {"spoon": ""}
+        bad["weapons"]["asha"] = "staff"
+        bad["vowbound"]["fall"] = "nope"
+        bad["reduced_skip"] = ["music"]
+        errs = " | ".join(self._errs(bad))
+        for want in ("whoosh hit has no crest time", "row ui must play on the Combat bus", "spoon is not a weapon",
+                     "staff has no accent", "nope is not an sfx.json row", "music is not one of"):
+            self.assertIn(want, errs)
+
+    def test_styles_follow_choreo_json_when_present(self) -> None:
+        choreo = {"choreo": {"styles": {"cast": {}}}}
+        self.assertTrue(any("not a style in" in e for e in self._errs(self.DOC, choreo=choreo)))
+        self.assertEqual(self._errs(self.DOC, choreo={"choreo": {"styles": {"melee": {}}}}), [])
+
+
 def load_tests(loader: unittest.TestLoader, tests: unittest.TestSuite, pattern: str) -> unittest.TestSuite:
     """Also runs tools/audio/tests (the synth regression tests), which the discovery root does not reach."""
     import importlib.util
