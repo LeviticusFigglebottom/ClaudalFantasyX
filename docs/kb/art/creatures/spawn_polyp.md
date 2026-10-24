@@ -20,7 +20,7 @@ bell.
 ## Silhouette
 
 - **A cluster, not a single form**: a low cracked black base 0.5 m across, five tube-mouths of different lengths
-  rising from it (the tallest to 0.6 m) and leaning outward and toward the bell, like fingers of a half-open hand.
+  rising from it (the tallest to 0.6 m) and leaning outward and toward +Z, like fingers of a half-open hand.
 - **The mouths** are the only bright shapes: five cyan rings.
 - It is meant to be seen **under the flood water** (the flood rises to +0.6 m, so a polyp is just covered): the glow
   must carry through the water, and the silhouette is mostly the glowing rings and the dark mass.
@@ -40,8 +40,10 @@ bell.
   feeding* because the rings pulse in turn.
 - **Idle:** the tubes sway as if in a current (a slow wave across the five), and the mouths open and close out of
   phase with each other, a ripple of light.
-- **Facing:** the mouths lean toward the bell (the stage turns it to face the party's side; the lean is in the model's
-  pose, toward its −X, so it reads as turned toward the bell beside it).
+- **Facing:** the mouths lean outward and toward the model's **+Z**, like a half-open hand (the stage turns +Z to face
+  the party). A lean toward the bell can't be built into the pose: polyps spawn in any enemy slot, so the bell may be
+  on either side. The feeding read comes from the cast clip and BattleBossVfx's mote stream, which is aimed at the
+  bell at play time (M2-CRE-07).
 
 ## Clips
 
@@ -57,6 +59,7 @@ bell.
 
 - Tubes: tapered tubes along short curves, each with a lip ring and an inner emissive cap; base: a cracked dome of
   beveled black plates (shares the Drownbell's carapace treatment).
-- Bones: base, and three per tube (15), plus one per mouth for the open/close scale.
+- Bones: root, base, three per tube (15), and a ring of six lip bones per mouth (30) that flare out or pinch shut
+  for the open/close (the kit keys rotation and location only, so not a scale).
 - Budget: ≤ 5k triangles: up to five can be on stage with the bell.
 - Battle VFX anchors (fractions of 0.6 m): chest 0.36 m is the mouths' height, where the polyp light sits.

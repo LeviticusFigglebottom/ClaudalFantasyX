@@ -38,6 +38,9 @@
     "lantern_eel": {
       "scene": "res://game/creatures/lantern_eel/lantern_eel_battle.tscn",
       "clip_by_skill": {"lure_glow": "cast"}
+    },
+    "spawn_polyp": {
+      "scene": "res://game/creatures/spawn_polyp/spawn_polyp_battle.tscn"
     }
   }
 }

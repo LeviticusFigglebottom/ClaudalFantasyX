@@ -83,6 +83,7 @@
     {
       "id": "spawn_polyp", "name_key": "ENEMY_SPAWN_POLYP", "role_answer": "asha",
       "lore_key": "LORE_SPAWN_POLYP",
+      "model": "res://game/creatures/spawn_polyp/spawn_polyp_battle.tscn",
       "stats": {"level": 4, "hp": 180, "mp": 0, "strength": 6, "magic": 10, "defense": 6,
                 "magic_defense": 10, "agility": 8, "accuracy": 6, "evasion": 6, "luck": 4},
       "affinities": {"water": "absorb"},
