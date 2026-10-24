@@ -1,6 +1,6 @@
 # 0027 — Vowbound battle rules: the call stands the party down and costs the caller's rank
 
-- **Status:** proposed (Design or Lead to accept in the M2-CMB-04 review)
+- **Status:** accepted with amendments A1–A3 (review-sweep-P, Design, 2026-10-24; see "Acceptance" below)
 - **Date:** 2026-10-24
 - **Roles affected:** Combat, UI, Narrative, the m2-slice track (the Drownbell)
 - **Author role:** Combat (M2-CMB-04)
@@ -31,3 +31,23 @@ Option 2, with `call_rank` 3 for Ilun.
 - **Pillar 4.** The UI must show the call's cost: a timeline preview with the caller's delay (M2-UI-05).
 - **The Drownbell.** The real call replaces `call_ilun` on claude/m2-slice. Its bands must be re-run.
 - **Not decided here:** carrying a Vowbound's HP, MP and gauge between battles; summon cinematics; and growth from item-taught abilities (SPEC §6.3).
+
+## Acceptance (review-sweep-P, Design, 2026-10-24)
+**Accepted: Option 2, the turn rules, the stat formula, Silence blocking the call, and the `caller` field.**
+- **The call's rank, not MP or a gauge.** It taxes the policy that abuses a free action (the masher) and not the careful player. The probe isolates this well: a 1 HP call drops from 20 points to 8.
+- **Silence blocks the call.** The call is a verse (story/vowbound.md: each Vowbound teaches one), and Silence has a counter on sale before the Drownbell. Pillar 4: the greyed command must name the reason (M2-UI-05).
+- **The 40% Vowbound masher line is accepted as a provisional ceiling.** It holds for the sandbox with no gear, a masher calling at once. It is not a band. The binding per-encounter line is set once the simulator models the call (M2-CMB-05). The basis: Ilun falls in 99.6% of those runs, so he rescues and does not replace.
+- **Wording.** "Once-a-battle rescue" should read "**one HP pool per battle**". A dismissed Vowbound can be called again as it left; only a fallen one cannot.
+
+**Amendments.** They are binding, and M2-CMB-05 implements them. They were found by checking Ilun against the fight he exists for, the Drownbell's flood phase:
+- The bell and its polyps absorb water, so Brine Lash and Floodnet heal them, and Ilun's Attack (STR 7) barely scratches DEF 30.
+- Every flood-phase attack but Hood Slam is water, and Ilun absorbs water.
+- His gauge filled only from HP lost.
+
+So a called Ilun was immortal and harmless, Floodnet never came, the flood never cleared, and the party could wait out the phase out of reach.
+
+- **A1. Absorbed HP fills the Vowbound's gauge.** It fills at the same `swell.rate`, through `Formulas.swell_gain` on the HP restored by an `absorb` hit. This replaces "fills only from HP it loses". Ilun drinks the tide and turns it into the net: calling him into the flood is the answer, not a hiding place.
+- **A2. Floodnet is non-elemental and carries `clears_field: flood`.** The net binds; it is not a wave. Brine Lash stays water, so Read teaches the player not to lash an absorber.
+- **A3. The call runs the caller's end of turn at the moment of the call.** That means Poison and Regen, the status countdown, Doom, `turns_taken` and `turn_ended`. Only the caller's `next_time` waits for the party's return, at the `call_rank` delay. Before this, every call skipped one tick of Doom or Poison.
+
+The Drownbell's bands must then include a policy that calls Ilun when the flood rises and stays out (M2-FP-17).

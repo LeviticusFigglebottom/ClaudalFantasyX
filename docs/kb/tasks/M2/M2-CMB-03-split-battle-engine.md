@@ -2,7 +2,7 @@
 id: M2-CMB-03
 title: Split battle_engine.gd under the lint cap (no behaviour change)
 role: combat
-status: review
+status: done
 owner_session: "worktree-agent-a8a3feee9300b5a1b"
 depends_on: []
 milestone: M2
@@ -36,3 +36,11 @@ reviewer: lead
 - **Reviewer focus:** `BattleItemUse.use` (the Callable turn end), `BattleHits.resolve` against the old `_resolve_on`, and that the engine's wrappers keep their doc comments.
 
 ## Review log
+- 2026-10-24 review-sweep-P (lead): **approve.** I diffed 183a2bf hunk by hunk, and there is no behaviour change.
+  - **RNG order.** `BattleHits.resolve` is the old `_resolve_on` line for line: the same draws in the same order (hit, crit, variance, on-hit strikes, then inflicts). The only reshaping is that the inflict loop moved into `_inflict`, which runs at the same point. `_roll_on_hit` and `_variance` take the engine's `rng`, so no second generator exists.
+  - **Turn flow.** `BattleItemUse.use` keeps the old order: fail checks, hits, `consume`, `action_resolved.emit`, then the engine's `_end_turn` through the Callable. `_finish` still rolls drops before `battle_finished` is emitted. `BattleAutoTurn.pool` still makes its one Confuse roll on `engine.rng` (`living_other_allies_of` is the old `erase(actor)`).
+  - **No Node deps.** The four helpers are `extends RefCounted` and static, with no Node, scene or Game reference.
+  - **Wrappers.** Every public name stays on the engine as a one-line wrapper, and the doc comments are kept or shortened with a pointer. The commit touches no test.
+  - **Re-run here.** `--filter=battle` gives 357/0, and gdlint on `game/battle` is clean. `run_coverage.py` gives battle 99.95% (2126/2127) and progression 96.52%, within the baseline.
+  - **Not re-run.** The byte-identical sim claim is heavy, so I did not re-run it; the diff review backs it up.
+  - **Size.** The engine is now 784 lines after the first-playable merge: still under the 800 target, with room below the cap.
