@@ -143,6 +143,14 @@ func root_enabled(id: StringName) -> bool:
 	return true
 
 
+## The current objective in words for the root's Objective block (M2-UI-17), or "" where the zone
+## has no map (test rooms, shots): the same line the field's ObjectiveHud shows.
+func objective_line() -> String:
+	if not has_map():
+		return ""
+	return map.tracker.line(map.zone_id)
+
+
 ## What the highlighted root row opens, in words (or why it is off).
 func root_desc(id: StringName) -> String:
 	if id == ROW_SWELL and swell_heroes().is_empty():

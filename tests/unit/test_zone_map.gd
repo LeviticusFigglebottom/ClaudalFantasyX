@@ -246,11 +246,24 @@ func test_the_map_row_is_off_where_there_is_no_map() -> void:
 	assert_true(m.root_rows()[at]["enabled"])
 	assert_false(m.root_rows()[at].has("right"))
 	_open_menu(null)
-	menu.root_page().set_cursor(1, false)
+	menu.root_page().set_cursor(FieldMenuModel.ROOT_IDS.find(FieldMenuModel.ROW_MAP) - 1, false)
 	menu.handle_input(_ev(&"ui_down"))
 	assert_ne(menu.root_page().current_row()["id"], FieldMenuModel.ROW_MAP, "the cursor passes the row by")
 	menu._accept_root(FieldMenuModel.ROW_MAP)
 	assert_true(menu.map_menu == null, "and it opens nothing")
+	_free_menu()
+
+
+func test_the_root_shows_the_objective_where_there_is_a_map() -> void:
+	_open_menu(_haluna())
+	assert_eq(menu.objective_text(), _haluna().tracker.line(HALUNA), "M2-UI-17: the objective on the root")
+	assert_ne(menu.objective_text(), "")
+	menu.root_page().set_cursor(FieldMenuModel.ROOT_IDS.find(FieldMenuModel.ROW_SWELL), false)
+	menu.accept()
+	assert_eq(menu.objective_text(), "", "only on the root")
+	_free_menu()
+	_open_menu(null)
+	assert_eq(menu.objective_text(), "", "no map, no objective block")
 	_free_menu()
 
 

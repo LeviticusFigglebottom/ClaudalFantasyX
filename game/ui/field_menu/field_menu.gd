@@ -66,6 +66,8 @@ var _root: MenuPage
 var _detail: MenuPage
 var _desc: Label
 var _help: Label
+var _objective_head: Label
+var _objective: Label
 var _owns_pause := false
 var _is_closed := false
 ## A line that stays on the description until the cursor moves ("Rhen's gauge now fills by ...").
@@ -216,6 +218,11 @@ func desc_text() -> String:
 	return _desc.text
 
 
+## The root's Objective block ("" when hidden).
+func objective_text() -> String:
+	return _objective.text if _objective.visible else ""
+
+
 func help_text() -> String:
 	return _help.text
 
@@ -357,6 +364,9 @@ func _render() -> void:
 		_:
 			_detail.set_header(model.heroes_title())
 	_place_detail(at_root)
+	_objective.text = model.objective_line()
+	_objective.visible = at_root and _objective.text != ""
+	_objective_head.visible = _objective.visible
 	var id := StringName(str((_root if at_root else _detail).current_row().get("id", "")))
 	match level:
 		Level.ROOT:
@@ -427,6 +437,14 @@ func _build() -> void:
 	_desc = _label(&"BodyLabel", Rect2(dr.position, Vector2(dr.size.x, HudLayout.num(_d.get("desc", {}), "height"))))
 	_desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var om: Dictionary = _d.get("objective", {})
+	var orr := HudLayout.rect_of(om)
+	var head_h := HudLayout.num(om, "label_height")
+	_objective_head = _label(&"DimLabel", Rect2(orr.position, Vector2(orr.size.x, head_h)))
+	_objective_head.text = tr("OBJ_LABEL")
+	_objective = _label(&"BodyLabel", Rect2(orr.position + Vector2(0.0, head_h), orr.size - Vector2(0.0, head_h)))
+	_objective.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 
 ## A MenuPage at its block's rect, as tall as `rows` rows need (0 = the root's three).
