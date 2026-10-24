@@ -20,7 +20,6 @@
   "hooks": [
     {
       "class": "WaterSphereRig",
-      "pending": true,
       "sphere": {"radius_method": "radius_m", "radius_m": 16.0},
       "on_enter": {"crowd": "murmur"},
       "on_exit": {"crowd": "silence"},
