@@ -486,3 +486,7 @@ Rules:
 | assets/audio/music/tamsule.ogg | assets_src/music/tamsule.py + assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 assets_src/music/tamsule.py | Audio (claude/audio, M3-AUD-12) | 2026-10-24 | original |
 | assets/audio/music/tamsule.loop.json | assets_src/music/tamsule.py + tools/audio/synth/looping.py | python3 assets_src/music/tamsule.py | Audio (claude/audio, M3-AUD-12) | 2026-10-24 | original |
 | assets/audio/music/iskarra_vigil.ogg | assets_src/music/iskarra_vigil.py + assets_src/music/hush_theme_v2.py + assets_src/music/hush_first_verse.py + tools/audio/synth/ | python3 assets_src/music/iskarra_vigil.py | Audio (claude/audio, M3-AUD-12) | 2026-10-24 | original |
+| assets/audio/music/brightwater_ferry.ogg | assets_src/music/brightwater_ferry.py + tools/audio/synth/ | python3 assets_src/music/brightwater_ferry.py | Audio (claude/audio, M3-AUD-11) | 2026-10-24 | original |
+| assets/audio/music/brightwater_ferry.loop.json | assets_src/music/brightwater_ferry.py + tools/audio/synth/looping.py | python3 assets_src/music/brightwater_ferry.py | Audio (claude/audio, M3-AUD-11) | 2026-10-24 | original |
+| assets/audio/music/brine_shoals.ogg | assets_src/music/brine_shoals.py + tools/audio/synth/ | python3 assets_src/music/brine_shoals.py | Audio (claude/audio, M3-AUD-11) | 2026-10-24 | original |
+| assets/audio/music/brine_shoals.loop.json | assets_src/music/brine_shoals.py + tools/audio/synth/looping.py | python3 assets_src/music/brine_shoals.py | Audio (claude/audio, M3-AUD-11) | 2026-10-24 | original |
