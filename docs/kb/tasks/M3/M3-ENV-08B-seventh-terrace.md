@@ -2,8 +2,8 @@
 id: M3-ENV-08B
 title: "The Seventh Terrace: one hero ship for Ch1's mooring and Ch4's derelict (boardable, sails set and lowered)"
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M3-ENV-08, M3-ENV-07]
 milestone: M3
 request-from: environment
