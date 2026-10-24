@@ -1,5 +1,5 @@
 ---
-id: M3-CHR-05
+id: M3-CHR-505
 title: "Old Kerrid, the fifth party hero, on the MPFB2 hero path (build, face poses, story and battle clips, shots)"
 role: character
 status: doing
@@ -68,7 +68,7 @@ the scars on the forearms, the left forearm wrapped, the watch cord in faded wat
   changed; the rig probe and the hero-clip tests; `HYMN_SHOTS` limited to the shots above.
 - IP watches (ADR 0020, 0022; kerrid.md §4.2): no hat, no mask or high collar, no eye effect, no eyewear, no coat off one
   arm, no gourd, no Order insignia; the cleaver is never rested on the shoulder in any clip.
-- Liss (act1_npcs.md §2) and Pell ([`pell.md`](../../art/characters/pell.md), M3-CHR-06) belong in the silhouette lineup
+- Liss (act1_npcs.md §2) and Pell ([`pell.md`](../../art/characters/pell.md), M3-CHR-506) belong in the silhouette lineup
   once built; until then, use their sheets' proportions as flat stand-ins.
 - 2026-10-24: design sheet written (docs-only worktree subagent of the characters session); no build yet.
 

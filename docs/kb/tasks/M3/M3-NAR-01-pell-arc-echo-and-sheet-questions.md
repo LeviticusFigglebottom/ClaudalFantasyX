@@ -10,7 +10,7 @@ request-from: character
 priority: high
 ---
 ## Goal
-Writing the Kerrid and Pell art sheets (docs/kb/art/characters/kerrid.md and pell.md) turned up one guardrail risk and a set of open story questions. The character builds (M3-CHR-05, M3-CHR-06) wait on the answers.
+Writing the Kerrid and Pell art sheets (docs/kb/art/characters/kerrid.md and pell.md) turned up one guardrail risk and a set of open story questions. The character builds (M3-CHR-505, M3-CHR-506) wait on the answers.
 
 **1. Echo check (SPEC §2, CLAUDE.md §2; pillar 1).** In outline, Pell is:
 - a tall non-human who learns enemy abilities;

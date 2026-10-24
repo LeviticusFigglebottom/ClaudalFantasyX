@@ -1,6 +1,6 @@
 # Pell: Design Sheet
 
-Owner: Character Artist (M3-CHR-06, design). Build: Character Artist (M3-CHR-06). Shaders: Rendering (the existing
+Owner: Character Artist (M3-CHR-506, design). Build: Character Artist (M3-CHR-506). Shaders: Rendering (the existing
 `character_*` shaders; one open question on fur, §12). Story source: [`story/characters/pell.md`](../../story/characters/pell.md),
 with [bible §8](../../story/bible.md) (the Kirru), [`vowbound.md`](../../story/vowbound.md) §5 (Nhoa),
 [`act1_ch08.md`](../../story/beats/act1_ch08.md) (the seawall, Storm-Call), [`act1_ch09.md`](../../story/beats/act1_ch09.md)
@@ -268,7 +268,7 @@ held `neutral`. The two-shot holds; nothing else moves.
 
 ## 7. Color Callouts
 
-Swatches marked *(proposed)* are not yet in `palette.json`; Art adds them (M3-CHR-06 acceptance) with their on-screen
+Swatches marked *(proposed)* are not yet in `palette.json`; Art adds them (M3-CHR-506 acceptance) with their on-screen
 values measured on the swatch card.
 
 | Area | Swatch | Hex | Share of his silhouette |
@@ -495,7 +495,7 @@ Battle-scale actor: `game/characters/heroes/pell_battle.tscn` on `pell_lod1.glb`
 
 ---
 
-## 11. Acceptance Checklist (M3-CHR-06)
+## 11. Acceptance Checklist (M3-CHR-506)
 
 - [ ] Silhouette test in the flat-black view at 64, 128 and 256 px, and at battle scale (LOD1), beside Asha, Rhen, Toma,
       Ysolde, Liss, Kerrid and Sefir: identifiable by the neck's S, the crest, the thin staff on the left and the soft

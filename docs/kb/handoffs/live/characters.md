@@ -70,11 +70,15 @@
   2. **M2-CHR-12, field locomotion** (new): idle variants, walk and run with starts and stops, turns in place. Worktree sub-agent.
   3. **M2-CHR-11, host snaps** (new): rhen and toma are folded into M1-CHR-15, which is rebuilding them anyway; base_body and the seven villagers go to a worktree sub-agent.
   - The hero-integration track's live log is read each cycle. The branch didn't exist at 2026-10-24 ~20:00.
+- **Id blocks (the Lead's rule, CONSOLIDATED §4):** my new task ids are 500–599, ADRs 0140–0149, and handoffs are named `<date>-character-characters-<n>.md`.
+  - Kerrid and Pell are renumbered M3-CHR-05/06 → **M3-CHR-505/506**, so they don't collide with big8's M3-CHR-05 (the 32 Ch4–Ch9 clips). That task folds into the clip work when it lands.
+  - The duplicate M2-CHR-11 is removed. The canonical `M2-CHR-11-host-snaps-heroes-villagers.md` is claimed, with the PC evidence that hair positions and the LOD1 decimate inputs differ too.
+  - Kerrid's paused branch still names the task M3-CHR-05; rename it when it resumes.
 - **Un-pushed paused WIP (local worktree branches; not merged on purpose):**
-  - **Kerrid, M3-CHR-05:** branch `worktree-agent-a163619bbd2d21786` @ e67e6aba. The build runs end to end, but the GLB is 5.30 MB (cap 5) and LOD1 is 35k (budget ~28k). His hero_clips block makes a no-argument `hero_clips.py` run fail until kerrid.glb exists, so he isn't merged. The next step is in the task's Notes.
+  - **Kerrid, M3-CHR-505:** branch `worktree-agent-a163619bbd2d21786` @ e67e6aba. The build runs end to end, but the GLB is 5.30 MB (cap 5) and LOD1 is 35k (budget ~28k). His hero_clips block makes a no-argument `hero_clips.py` run fail until kerrid.glb exists, so he isn't merged. The next step is in the task's Notes.
   - **Liss, M3-CHR-03 hero half:** branch `worktree-agent-a61329e979970a83f` @ c5e3a320. LOD0 55,820, about 4.1 MB, with the 10 story clips and 11 battle clips. Not merged: two source edits (`TAIL_ROOT_H`, `SLEEVE_KEEP_NEAR_TORSO`) aren't built into the committed files yet, and the probe, Godot tests, shots and verify are still to run. The next step is in the task's Notes.
-- **Kerrid and Pell design sheets merged** (kerrid.md, pell.md; M3-CHR-05 and 06).
-  - Pell (M3-CHR-06) waits on **M3-NAR-01**: in outline, Pell's arc is close to the inspiring series' beast-folk guardian; the costume avoids every visual cue, but Narrative must rule on the arc. That task also carries the sheets' story questions and the stale ADR 0020 and glossary rows.
+- **Kerrid and Pell design sheets merged** (kerrid.md, pell.md; M3-CHR-505 and 06).
+  - Pell (M3-CHR-506) waits on **M3-NAR-01**: in outline, Pell's arc is close to the inspiring series' beast-folk guardian; the costume avoids every visual cue, but Narrative must rule on the arc. That task also carries the sheets' story questions and the stale ADR 0020 and glossary rows.
 - **From the M3 sheets:**
   - Liss is a party member, so she is on the hero path; she stays in M3-CHR-03.
   - Mother Kell is Oruvel's chandler, not the diver. The story corrected this; glossary rows 195 and 254 are stale.

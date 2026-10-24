@@ -1,6 +1,6 @@
 # Old Kerrid: Design Sheet
 
-Owner: Character Artist (M3-CHR-05, design). Build: Character Artist (M3-CHR-05). Shaders: Rendering (the existing
+Owner: Character Artist (M3-CHR-505, design). Build: Character Artist (M3-CHR-505). Shaders: Rendering (the existing
 `character_*` shaders; no new shader). Story source: [`story/characters/kerrid.md`](../../story/characters/kerrid.md),
 with [ADR 0020](../../decisions/0020-kerrid-restaging.md) (c) as amended by [ADR 0022](../../decisions/0022-dace-imra-strangers-sweep-f.md)
 (b), (g) and its sweep-G notes, [`act1_ch05.md`](../../story/beats/act1_ch05.md) B05-B07, [`act1_ch06.md`](../../story/beats/act1_ch06.md),
@@ -255,7 +255,7 @@ on Rhen's face; on Kerrid, hold `guilty` and let `jaw_clench` fall to 0 over the
 
 ## 7. Color Callouts
 
-Swatches marked *(proposed)* are not yet in `palette.json`; Art adds them (M3-CHR-05 acceptance) with their on-screen
+Swatches marked *(proposed)* are not yet in `palette.json`; Art adds them (M3-CHR-505 acceptance) with their on-screen
 values measured on the swatch card.
 
 | Area | Swatch | Hex | Share of his silhouette (front / back) |
@@ -480,7 +480,7 @@ cleaver swap of §9.
 
 ---
 
-## 11. Acceptance Checklist (M3-CHR-05)
+## 11. Acceptance Checklist (M3-CHR-505)
 
 - [ ] Silhouette test in the flat-black view at 64, 128 and 256 px, and at battle scale (LOD1), beside Asha, Rhen, Toma,
       Ysolde, Liss, Pell and Sefir: identifiable by the ragged mound, the hunch, the ring above the left shoulder, the

@@ -1,5 +1,5 @@
 ---
-id: M3-CHR-06
+id: M3-CHR-506
 title: "Pell, the Kirru party hero, on the MPFB2 hero path with a Kirru head warp (build, face poses, story and battle clips, shots)"
 role: character
 status: todo

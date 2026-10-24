@@ -271,5 +271,5 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 - **Tide Brace**: Toma's Swell input: hold through the blows, let go on the counter. **Return Tide**: his first Swell technique.
 - **Glyph Trace**: Ysolde's Swell input: trace a Lamptongue glyph's strokes before the window closes (*swift* for a clean, quick trace). **Written Light**: her first Swell technique (strikes every foe).
 
-### Added 2026-10-24 (M3-CHR-06, Character Art)
+### Added 2026-10-24 (M3-CHR-506, Character Art)
 - **shell-tile wraps**: the cords of small square shell tiles on Pell's forearms (the art sheet's reading of his "beaded cord wraps"). The left wrap's sequence is the call and the right's the mirrored response, echoing his call-and-response Swell input. *art/characters/pell.md §3*
