@@ -2,8 +2,8 @@
 id: M2-HER-1105
 title: "Clip gaps for natural hero motion: run, turn-in-place, walk start and stop (request to the characters track)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "characters (claude/characters, as M2-CHR-12 locomotion and the battle fixes)"
 reviewer: cinematics
 depends_on: []
 milestone: M2

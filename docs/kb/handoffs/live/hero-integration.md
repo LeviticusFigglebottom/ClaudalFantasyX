@@ -67,6 +67,11 @@ and ADR 0190 "hero motion layer", proposed).
     after this branch reaches the integration branch. Their files stay off this branch.
   - **Shots** `battle_heroes_*` wait until the three branches are merged.
 
+- **M2-HER-1105 was taken by characters in full.** M2-CHR-12 covers the locomotion clips under our names, plus
+  run_start, idle_breathe, a better walk and run, `game/data/characters/locomotion.json` (stride_m and speed_mps per
+  clip) and foot-down markers. The battle fixes follow it: victory, a lying KO, Rhen's hooks in hand, and a revive.
+  They'll message each landing sha.
+
 ## In progress
 - Field: HeroFieldActor via one hook line in FieldController._ready (no zone scene edits), AnimationTree BlendSpace1D,
   measured clip speeds, followers; tuning the field acceleration and deceleration (field_movement.json) with m2-slice.
