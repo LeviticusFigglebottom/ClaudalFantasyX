@@ -6,7 +6,8 @@
       "res://game/data/flow/chapters/ch03.json",
       "res://game/data/flow/chapters/ch04.json",
       "res://game/data/flow/chapters/ch05.json",
-      "res://game/data/flow/chapters/ch07.json"
+      "res://game/data/flow/chapters/ch07.json",
+      "res://game/data/flow/chapters/ch09.json"
     ]
   }
 }
