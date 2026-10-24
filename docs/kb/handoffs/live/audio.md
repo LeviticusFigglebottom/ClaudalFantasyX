@@ -43,28 +43,30 @@ at f95b27cb. Items: M2-AUD-01..06 and M2-AUD-10/11, M3-AUD-01..07 (all `status: 
 - **Skipped (the Lead runs these at merge):** screenshots and Blender. Coverage was skipped too, because game/battle/
   and game/progression/ weren't touched.
 
-## State (2026-10-24, newest queue)
-- **Done and merged into claude/audio (all `review`, reviewer qa):**
-  - M3-AUD-13 battle choreography SFX (55 files). `ChoreoAudio` hooks BattleChoreo by name and is `pending` until
-    claude/battle-presentation merges.
-  - M3-AUD-14 creature voices and movement (194 files, 27 creatures). Hooked in BattleAudio; models by
-    `CreatureActor` name.
-  - M3-AUD-15 menu UI SFX (12 files). The title screen is live; Lattice, Equip, the map and tips are `pending`
-    until claude/ui or claude/menus merges.
-  - M3-AUD-16 Act I zone beds (6 beds).
-  - M3-AUD-17 Reefball crowd and sphere hooks, `pending` until gpu/m3-rnd-01-reefball merges. The match, ball and
-    goal names are guesses until the minigame exists.
-  - M3-AUD-18 stings on battle-presentation's `battle_stinger`, `battle_bark` and `boss_intro` EventBus events. They
-    go live when that branch merges.
-- **To check at those merges:**
-  - Drop the `pending` flags; validate_data then checks the real class and signal names.
-  - claude/ui's ShopMenu and InnMenu hooks name signals those classes don't have, and need a rewrite.
-  - Reefball swimmers must join the `reefball_swimmer` group.
-  - BattleStage's creature actors must be under the BattleController.
-  - The task Notes have the full lists.
+## Note to the Lead (the cross-session reply was refused: "needs a trusted device")
+Your queue of five is taken:
+- **(1) M2-AUD-14:** I filed it, since it wasn't on any branch I could see. M3-AUD-15 already covers the Lattice,
+  Equip and the map open; M2-AUD-14 adds item use and sort, the formation swap, customize, and the map pan.
+- **(2) Act I music:** the Ch1, Ch4, Ch5 Pemakar, Ch7, Ch8 Corrow and Ch9 cues, and the Hullgnaw, Spar-Wraith,
+  Cinder Matron and Reach themes, are already on claude/audio. The new work is M3-AUD-19 (the Ashcrown and Coilspire
+  temples, the Bell galleries) and M3-AUD-20 (the Stillguard Inquisitor and raid-hound). **No sea-floor scene
+  exists on claude/m2-slice: name its path if it is a real zone.**
+- **(3) M3-AUD-21:** done (syllable blips).
+- **(4) M3-AUD-22:** done (muffle inside the sphere). The goal swells were already in M3-AUD-17.
+- **(5) M3-AUD-23:** the mix pass, done apart from a re-run once the new cues land.
+
+## State (2026-10-24, latest)
+- **Done since MERGE-READY @ e24a98cd (all `review`):**
+  - M3-AUD-21 syllable blips: they follow the box's mouth_flap and so rest with the reveal's pauses.
+  - M3-AUD-22 BusMuffle and Reefball's ear inside the sphere. Also fixed an intermittent test leak.
+  - M3-AUD-23 (report written; waits on the agents' cues): mix_report.py and mix.md §8. The blip stream is up 6 dB
+    via voices.json `mix_db`.
+- **In progress (worktree agents):** M2-AUD-14 menu-page SFX, M3-AUD-19 temple music, M3-AUD-20 Stillguard theme.
+  **Two items remain after these agents report:** merge them, then the mix re-run and MERGE-READY.
 
 ## Exact next step
-Queue empty. Waiting on: the human's listening verdict (listening_notes.md M2 and M3 sections; revise when it comes);
+Merge the three agents' branches, re-run `tools/audio/mix_report.py --out docs/kb/audio/mix_report.md`, set M3-AUD-23 to
+review, and run the full suite, then MERGE-READY. After that, the queue is empty. Waiting on: the human's listening verdict (listening_notes.md M2 and M3 sections; revise when it comes);
 the merges of claude/battle-presentation, claude/creatures, claude/ui and claude/menus, gpu/m3-rnd-01-reefball and
 claude/m2-slice, after which the pending hooks are switched on and tested against the real classes; and
 M2-AUD-07/08/09/12 and M3-ARC-01 (requests to other roles).
