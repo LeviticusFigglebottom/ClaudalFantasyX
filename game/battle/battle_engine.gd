@@ -51,6 +51,9 @@ var currency_multiplier := Callable()
 ## How the battle opens (BattleOpening: normal, preemptive or ambush). Set it after setup() and
 ## before begin(); live play uses BattleOpening.choose(self). Normal leaves the rolled ticks be.
 var opening: StringName = BattleOpening.NORMAL
+## Vowbound summons (SPEC §6.3): the rows and bound ids, and who is on the field. Set it before
+## begin(); the default has no Vowbound. See summon() and BattleVowbound.
+var vowbound := BattleVowbound.new()
 
 ## Item drops rolled once at victory (item id -> count). See drop_awards().
 var _drops: Dictionary = {}
@@ -423,9 +426,42 @@ func preview_swap(out_id: StringName, in_id: StringName, count: int = CtbTimelin
 	return tl.predict(count, null, Formulas.DEFAULT_RANK, null, 0, {}, {entering: _swap_in_time(leaving, entering)})
 
 
-## Attempts to flee. A failed attempt costs the actor a default-rank turn.
+## Vowbound (SPEC §6.3, battle_ctb.md § Vowbound): the current party member calls `vowbound_id`.
+## The whole active party stands down and the Vowbound takes the turn; the caller pays the
+## call's rank when the party comes back. False, changing nothing, on a refusal (vowbound.refusal()).
+func summon(vowbound_id: StringName) -> bool:
+	return vowbound.call_in(self, vowbound_id) and _field_changed(true)
+
+
+## On the Vowbound's own turn, sends it away, which spends that turn: the party comes back and
+## the next turn begins. False on a refusal (vowbound.dismiss_refusal()).
+func dismiss() -> bool:
+	if not (vowbound.recall(self, true) and _field_changed(false)):
+		return false
+	if not _check_outcome():
+		_advance()
+	return true
+
+
+## A fallen Vowbound, or one still out at victory, gives the field back to the party.
+func _recall() -> bool:
+	return vowbound.recall(self, false) and _field_changed(false)
+
+
+## After a summon changed who stands on the field: the order, Provoke and low-HP statuses, and
+## the turn the new actor took over (`took_turn`).
+func _field_changed(took_turn: bool) -> bool:
+	timeline.set_roster(_field())
+	_prune_provoke()
+	_sync_low_hp()
+	if took_turn:
+		turn_started.emit(current)
+	return true
+
+
+## Attempts to flee (never while a Vowbound is out). A failed attempt costs a default-rank turn.
 func escape() -> bool:
-	if not is_party_turn() or scripted:
+	if not is_party_turn() or scripted or vowbound.is_out():
 		return false
 	var chance := Formulas.escape_chance(_mean_agility(party_active), _mean_agility(enemies))
 	if rng.randi_range(1, 100) <= chance:
@@ -491,7 +527,7 @@ func living_other_allies_of(c: BattleCombatant) -> Array[BattleCombatant]:
 
 
 func find(cid: StringName) -> BattleCombatant:
-	for c in party_active + party_reserve + enemies:
+	for c in party_active + party_reserve + enemies + vowbound.stood_down:
 		if c.id == cid:
 			return c
 	return null
@@ -583,12 +619,13 @@ func _advance() -> void:
 func _check_outcome() -> bool:
 	if _living(enemies).is_empty():
 		_finish(OUTCOME_VICTORY)
-	elif _living(party_active).is_empty():
+	elif _living(party_active).is_empty() and not _recall():  # a fallen Vowbound is no defeat
 		_finish(OUTCOME_DEFEAT)
 	return outcome != &""
 
 
 func _finish(result: StringName) -> void:
+	_recall()  # the party, not a Vowbound, is on the field when a battle ends
 	outcome = result
 	current = null
 	if result == OUTCOME_VICTORY:
@@ -664,7 +701,7 @@ func _valid_provoker(c: BattleCombatant) -> BattleCombatant:
 
 ## (active index, reserve index) for a legal swap, or (-1, -1) when swap() must refuse.
 func _swap_indices(out_id: StringName, in_id: StringName) -> Vector2i:
-	if not is_party_turn():
+	if not is_party_turn() or vowbound.is_out():
 		return Vector2i(-1, -1)
 	var out_idx := _index_of(party_active, out_id)
 	var in_idx := _index_of(party_reserve, in_id)

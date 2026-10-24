@@ -512,3 +512,7 @@ SWELL_INPUT_GLYPH,Glyph Trace
 SWELL_INPUT_GLYPH_HELP,Trace the glyph's strokes in order. A clean quick trace burns brighter.
 HUD_TARGET_ALL_OTHER_ALLIES,all other allies
 HUD_GROUP_ALL_OTHER_ALLIES,All other allies
+VOWBOUND_ILUN,Ilun
+SKILL_BRINE_LASH,Brine Lash
+SKILL_TIDAL_WARD,Tidal Ward
+SKILL_FLOODNET,Floodnet

@@ -21,6 +21,8 @@ static func use(
 	var action: ItemBattleAction = null
 	if not engine.is_party_turn():
 		fail = &"not_your_turn"
+	elif engine.vowbound.is_out():
+		fail = BattleVowbound.FAIL_OUT  # a Vowbound uses no items
 	elif items == null or items.action_for(item_id) == null:
 		fail = &"unknown_item"
 	elif items.count(item_id) <= 0:
@@ -51,7 +53,7 @@ static func use(
 static func defeats_party(
 	engine: BattleEngine, item_id: StringName, targets: Array[BattleCombatant], items: BattleItemSource
 ) -> bool:
-	if items == null or not engine.is_party_turn():
+	if items == null or not engine.is_party_turn() or engine.vowbound.is_out():
 		return false
 	var action := items.action_for(item_id)
 	if action == null or items.count(item_id) <= 0:

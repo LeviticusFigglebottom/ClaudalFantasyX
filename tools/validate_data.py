@@ -1248,6 +1248,7 @@ def run(root: Path) -> Report:
     data_keys += check_dialogue(root, files, rep)
     data_keys += check_progression(files, rep)
     data_keys += check_items(files, declared_flags_quiet(root), rep)
+    data_keys += check_vowbound(files, rep)
     data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
     data_keys += check_locations(root, files, rep)
     data_keys += check_swell(files, rep)
@@ -1749,7 +1750,7 @@ def swell_errors(doc: object, skills: dict[str, dict], char_ids: set[str]) -> li
     for h in heroes:
         errs += _swell_hero_errors(h, f"{w0}: heroes.{h['id']}", skills, refs, used)
     for sid, row in skills.items():
-        if row.get("swell") is True and sid not in used:
+        if row.get("swell") is True and sid not in used and row.get("vowbound") is not True:  # M2-CMB-04
             errs.append(f"skills.{sid}: a Swell row that no hero in {w0} lists")
     return errs
 
@@ -1947,6 +1948,89 @@ def check_read_openings(files: dict[str, object], rep: Report) -> None:
     for e in read_openings_errors(rows("skills"), rows("enemies"), rows("encounters")):
         rep.err(e)
 
+
+
+# --- Vowbound summons (M2-CMB-04, game/data/battle/vowbound.json, battle_ctb.md § Vowbound) --------
+
+VOWBOUND_FILE = "game/data/battle/vowbound.json"
+VOWBOUND_STATS = STAT_KEYS - {"level"}  # a Vowbound takes its caller's level
+
+
+def _vowbound_row_errors(r: dict, skills: dict[str, dict], char_ids: set[str], learned: set[str]) -> list[str]:
+    w = f"{VOWBOUND_FILE}: {r['id']}"
+    errs: list[str] = []
+    if r["id"] in char_ids:
+        errs.append(f"{w}: id clashes with a character id")
+    if not isinstance(r.get("name_key"), str) or not r["name_key"]:
+        errs.append(f"{w}: needs a name_key")
+    if r.get("caller") not in char_ids:
+        errs.append(f"{w}: caller must be a character id")
+    rank = r.get("call_rank")
+    if not _is_int(rank) or not 1 <= rank <= 8:
+        errs.append(f"{w}: call_rank must be an int in 1..8 (the caller's action)")
+    for block in ("base", "scale_pct"):
+        got = r.get(block)
+        if not isinstance(got, dict) or set(got) != VOWBOUND_STATS:
+            errs.append(f"{w}: {block} must give exactly {sorted(VOWBOUND_STATS)}")
+        elif any(not _is_int(v) or v < 0 for v in got.values()):
+            errs.append(f"{w}: {block} values must be ints >= 0")
+        elif block == "base" and got["hp"] < 1:
+            errs.append(f"{w}: base hp must be >= 1")
+    sk = r.get("skills")
+    if not isinstance(sk, list) or not sk:
+        errs.append(f"{w}: skills must be a non-empty list")
+    else:
+        for sid in sk:
+            if sid not in skills:
+                errs.append(f"{w}: unknown skill '{sid}'")
+            elif skills[sid].get("swell") is True:
+                errs.append(f"{w}: '{sid}' is a Swell technique; name it in swell.technique")
+    aff = r.get("affinities", {})
+    if not isinstance(aff, dict) or any(k not in ELEMENTS - {"none"} or v not in AFFINITIES for k, v in aff.items()):
+        errs.append(f"{w}: affinities must map elements to one of {sorted(AFFINITIES)}")
+    sw = r.get("swell")
+    if not isinstance(sw, dict):
+        errs.append(f"{w}: needs a swell block with rate and technique")
+        return errs
+    if not _pos_int(sw.get("rate")):
+        errs.append(f"{w}: swell.rate must be a positive int")
+    tech = sw.get("technique")
+    if not isinstance(tech, str) or skills.get(tech, {}).get("swell") is not True:
+        errs.append(f"{w}: swell.technique must be a skills.json row with swell true")
+    elif skills[tech].get("vowbound") is not True:
+        errs.append(f"{w}: swell.technique '{tech}' needs \"vowbound\": true (no hero's swell.json lists it)")
+    elif tech in learned:
+        errs.append(f"{w}: swell.technique '{tech}' is learned by a character or enemy")
+    return errs
+
+
+def vowbound_errors(doc: object, skills: dict[str, dict], char_ids: set[str], learned: set[str]) -> list[str]:
+    """Errors in vowbound.json against the skill rows (by id), the hero ids and the skills any
+    character or enemy learns. Each row needs a name_key, a hero caller, a call_rank, int base and scale_pct
+    for every stat but level (base hp >= 1), known skills that are not Swell techniques, valid
+    affinities, and a swell block: a positive rate and a finisher that is a Swell technique nobody
+    learns."""
+    if not isinstance(doc, dict) or not isinstance(doc.get("vowbound"), list):
+        return [f"{VOWBOUND_FILE}: needs a 'vowbound' array"]
+    errs: list[str] = []
+    for r in _rows(doc, "vowbound", VOWBOUND_FILE, errs):
+        errs += _vowbound_row_errors(r, skills, char_ids, learned)
+    return errs
+
+
+def check_vowbound(files: dict[str, object], rep: Report) -> list[str]:
+    """Validates vowbound.json (M2-CMB-04). Returns its *_key values for the loc check."""
+    doc = files.get(VOWBOUND_FILE)
+    if doc is None:
+        rep.err(f"{VOWBOUND_FILE}: missing")
+        return []
+    sk = files.get("game/data/battle/skills.json")
+    rows = sk.get("skills", []) if isinstance(sk, dict) else []
+    skills = {r["id"]: r for r in rows if isinstance(r, dict) and isinstance(r.get("id"), str)}
+    chars = _ids(files, "game/data/battle/characters.json", "characters")
+    for e in vowbound_errors(doc, skills, chars, _learned_skills(files)):
+        rep.err(e)
+    return collect_keys(doc)
 
 if __name__ == "__main__":
     sys.exit(main())
