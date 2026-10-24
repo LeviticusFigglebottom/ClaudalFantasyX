@@ -37,7 +37,8 @@ API for other roles (all optional; nothing needs to call it):
   `music`, `ambience`, flag `variants`), `battle` (cue per encounter, `phases` -> stems in or out).
 - `sfx.json`: the sound rows. `battle_sfx.json`, `shrine_sfx.json` and `ui_sfx.json` map hooks to these rows.
 - `ambience.json` (M2-AUD-05): field beds, zone beds and the wind mapping. See "Ambience" below.
-- `sfx_field.json`: the footstep rows (World) and the new menus' rows (UI). `footsteps.json`: strides, surfaces and
+- `sfx_field.json`: the first footstep rows (World) and the new menus' rows (UI). `sfx_foley.json` (M3-AUD-802): the
+  heroes' steps, scuffs and foley. `footsteps.json`: contacts, strides, surfaces, foley and
   the surface per scene.
 - `ui_sfx.json`: menu hooks by class name (see "Menus" below).
 - `tools/audio/data_check.py` (called by `tools/validate_data.py`) checks every file, bus, cue, bed, scene, flag,
@@ -123,6 +124,37 @@ budget.
 - The surface is `footsteps.json` `scenes[zone]`, else `default`: Haluna is sand and the shrine is stone. Wood is
   rendered and has a row, but a dock region inside Haluna needs a per-area surface, a later step.
 
+**Hero footsteps and foley (M3-AUD-802).** The same listener keys its steps to the real hero's foot contacts when the
+walker carries a body (claude/hero-integration's `HeroFieldActor`, the walker's `HeroBody` child), and adds movement
+foley. Everything it reads is by name, guarded, and listen-only:
+- **Contact source**, looked for every `contacts.retry_sec` until found (the body arrives after the controller), on
+  the `HeroBody` child, else the walker:
+  1. a `foot_contact` signal (any argument count; the arguments are dropped): each emission is a step;
+  2. else the first `AnimationTree` under it whose clip nodes (walked through blend trees and 1D blend spaces) carry
+     the contact markers `foot_l_down` / `foot_r_down` (M2-CHR-12, `locomotion.json` `markers`, also Animation
+     markers). Each frame it reads every clip node's `parameters/<path>/current_position`; a marker crossed (with
+     the loop wrap) is a contact. In a blend space only the dominant clip counts, and only at `min_weight` or over
+     (its weight comes from `blend_position`). Empty action slots are skipped;
+  3. else a playing `AnimationPlayer` with marked clips (`current_animation`, `current_animation_position`).
+  A clip in `contacts.run_clips` is a run; with the signal the gait is the walker's speed. Contacts closer than
+  `min_interval_sec` are one step (a cross-fade plays two clips). A body that stops animating while the walker
+  moves still steps every `stall_m`. No contacts (today's clips): the distance stepper above.
+- **Rows** (`sfx_foley.json`, files `assets/audio/sfx/foley/` from `assets_src/sfx/hero_foley.py`): each surface
+  has `walk`, `run`, `stop` and `turn` rows. Steps are six variants per surface and gait, at −18 LUFS momentary
+  max and played at `walk_db` / `run_db`. Scuffs are two variants: the halt at −20 and the turn at −21. Foley is
+  layered on each step at −24: cloth on every step (`hero_cloth_walk` / `_run`), and the hero's gear every
+  `gear_every` steps, chosen by the body's `hero_id`, else `gear_default`. Rhen has his lantern, Asha her
+  bell-shells and Toma his belt leather.
+- **Halt:** a walk that slowed from `stop.from_m_s` to under `stop.below_m_s` (or stood still `stop_sec`) after
+  `stop.min_steps` steps plays the surface's stop row once. **Turn:** a travel heading change of `turn.min_deg`
+  within `turn.window_sec`, at `turn.min_m_s` or faster, plays the turn row (`cooldown_sec` apart).
+- **Ground surface:** at each sound the surface is the ground's. It is taken from the highest `surface_priority`
+  node in group `footstep_surface` (with a `surface` meta: M2-AUD-09's request) or in group
+  `audio_surface_<surface>`, whose `CollisionShape3D` boxes, spheres, cylinders or capsules hold the feet. Otherwise
+  it is the scene's. The surfaces are `sand`, `stone`, `wood` and `water` (shallow wading). No level marks an area
+  yet; M3-AUD-810 asks for them.
+- Followers (`HeroFieldParty`) take no steps: only the leader's controller has a listener.
+
 **Menus (M2-AUD-05).** `UiAudio` watches each node whose script's global class (or a base class) has a hook in
 `ui_sfx.json`, deferred so that the menu's `_ready` has built it:
 - `signals`: signal -> row. The arguments are dropped with `Callable.unbind`.
@@ -152,8 +184,8 @@ classes, signals or expressions are never read as sfx ids.
 - The cutscene sequencer keeps its own music player and plays it at `music_volume_db` −8 dB (its stand-in
   setting). A request task asks m2-slice to call `Audio.play_music` instead (M2-AUD-07).
 - The area reverb is per zone, not per position inside a zone (see "Area reverb" below).
-- Footstep surfaces are per scene. Haluna's dock planks (wood) need an area lookup, such as a group on the dock's
-  collision or a surface map, from whoever owns Haluna.
+- Footstep surfaces are per scene until a level marks its areas (M3-AUD-802's reader is in; M2-AUD-09 and M3-AUD-810
+  ask Haluna's owners for the dock, the jetty and the shallows).
 - UI hooks that read a menu's state through `watch` depend on public names (`level`, `root_page()`,
   `model.cursor`). Renaming one silences that sound, which is why `tests/unit/test_field_audio.gd` drives the real
   CommandMenu and FieldMenu.
