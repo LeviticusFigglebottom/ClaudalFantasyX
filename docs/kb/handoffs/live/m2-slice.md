@@ -3,6 +3,12 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **M3-C09-02 is merged** (Ch9 "The Ebbing", the end of Act I; in review, reviewer narrative). Handoff cinematics-18.
+  - **Where it plays:** its own zone, `ch09/corrow_night`, reachable on its own until Ch8 lands. It exits through the act-break VO at a stand-in Iskarra plaza, then the act card (a caption until UI's widget, M3-C09-05), then the end card.
+  - **New:** `CutsceneHoldGate`, held input with no fail. Scene time runs only while `field_interact` is held, between `<<event hold_input …>>` and `<<event hold_input_end>>`. The architect is asked to rule on the event names (M3-C09-09).
+  - **Pell** joins by flag only; his battle kit is M3-C09-07.
+  - **For Ch8** (after M3-CMB-01): reuse the speakers `marra`, `hobb`, `fenn` and `stillguard`, and set `ch08_met_ivo`, `ch08_fed_the_beacon` and `ch08_hoist_cut_down`, which Ch9 reads. Ch9 also declares those three flags.
+  - **For narrative:** the sheet says the gilt line is fresh on Asha's face in the side scene, but B03 is its first appearance. It's staged without the line for now.
 - **M2-ENV-12 is done**: the Lead routed it at 15:55, and its task file is on gpu/m2-rnd-17-zone-stage-gi. Lead, please set it to review (reviewer rendering) when you merge that branch.
   - **The change:** `ShellShrineLevel` builds the hall off the tree in `prebuild()` on `NOTIFICATION_SCENE_INSTANTIATED` (worker thread only, as HalunaZone does). `_ready` skips the build; the camera, signals, `_restore`, `_relight` and the GI load stay in `_ready`. The GI code moved to `ShrineLighting`.
   - **Test:** `test_prebuild_builds_the_hall_off_the_tree`. A true worker-thread instantiate deadlocks a TestCase, because the main thread is blocked in `wait_to_finish` while the load needs it, so the test drives `prebuild()` off-tree on the main thread.
