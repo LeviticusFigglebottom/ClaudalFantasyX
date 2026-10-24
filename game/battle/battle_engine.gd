@@ -92,6 +92,7 @@ func setup(
 	var enc: Dictionary = db.encounters.get(encounter, {})
 	scripted = bool(enc.get("scripted", false))
 	BossMechanics.lend_skills(self, enc)
+	BossMechanics.forbid_skills(self, enc)
 	var n := 0
 	for eid: Variant in enc.get("enemies", []):
 		n += 1
@@ -353,6 +354,9 @@ func _checked(
 	var valid := _valid_targets(actor, sk, targets)
 	if valid.is_empty():
 		return ActionResult.failed(actor.id, skill_id, &"no_valid_target")
+	for t in valid:
+		if BossMechanics.forbids(actor, sk, t):
+			return ActionResult.failed(actor.id, skill_id, BossMechanics.FAIL_FORBIDDEN)
 	var forced := forced_target(actor, skill_id)
 	if forced != null and valid[0] != forced:
 		return ActionResult.failed(actor.id, skill_id, &"provoked")
