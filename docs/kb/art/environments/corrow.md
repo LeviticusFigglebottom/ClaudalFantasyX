@@ -219,6 +219,72 @@ the stair and hoist, 38 houses round the stair-foot lane and the back lane. Read
   second head variant would help C03's long row); the houses reuse the Haluna roof generator, so the low
   town reads a touch Haluna; the inland apron is a plain.
 
+## 7. The Wall Falls and the Ch9 Night (M3-ENV-04B)
+
+**The feeling in one line:** the same warm, carved wall the morning after, opened like a wound to the grey
+sea, its faces still humming in the rubble; then, at night, a half moon through the gap and nobody at the
+stair foot but one man and the dark.
+
+**Story constraints.** Ch8: "The wall falls anyway. The stair was not wide enough"; the Stillguard cut Liss's
+hoist down because it was bolted into the Watchers (its strap-plates stay in the head). Ch9 plays at the
+stair foot at slack water while the motes go out to sea (VFX, not the kit). ADR 0022 (g): no glow of any kind
+at the stair foot, in either frame: no emissive in any breach piece, and in `ch09` the sea stands at
++0.1 m, below the breach's sill, so neither water nor sea-glow reaches the lanes.
+
+**The breach (kit pieces, all on the 12 m slots of the R = 300 m arc).** A breach is a run of slots:
+`seawall_breach_end_w`, one or more of `seawall_breach_a` / `_b`, `seawall_breach_end_e`. The ends are the
+seawall's own generator and seed, torn at their gap side, so they join their intact neighbours exactly.
+- **The tear** (`cw_breach.Tear`): the courses step back by half a block (0.6 m) per course and per 0.9 m
+  block across the section; the toe of the lowest courses reaches the gap; the surge undercut the middle
+  (up to about 4 m back at +7 m); the walk's top course (+11.5 .. +12 m) bridges the undercut (at most
+  1.2 m torn) and a few of its slabs hang off the break; the parapet course and the kerb are torn only
+  0.3 m, so the last head on each side keeps its footing. Below +0.5 m the wall's stump runs through.
+- **The section** shows a skin of laterite blocks (within about 1 m of either face) round a dark rubble core
+  (`cw_rubble`), raw where it broke: `cw_laterite_broken` (laterite toward ochre_earth, no salt skin, no weed,
+  wet low). The raw rust against the 900-year salt-grey skin is what says *new*.
+- **The gap**: the floor is the stump at +0.36 .. +0.48 m (below the town's +1.0 m: the sea comes into the
+  lanes through it), a debris cone of the wall's own mass (2.6 m at each torn end, gone 4.8 m into the gap,
+  where the sea scoured a channel), the lowest sea-face courses left as a ragged sill, about 60 blocks
+  thrown inland into the low town and out onto the rip-rap, and bonded lumps of masonry. `a` carries a run
+  of the walk's slabs and kerb down in the gap; `b` a broken relief panel (the second carving) face-up.
+- **The heads**: `watcher_head_cracked` (the row's carving, leaning 12 deg out of the line toward the sea,
+  a crack down through its face, a crown corner gone) stands at a breach's edge; `watcher_head_fallen` (the
+  second carving, down on its side, face turned up, neck sheared raw) lies in the gap, in the lanes and on
+  the rip-rap. `watcher_head_b` is the second carving whole, for the zone to mix along the row.
+- **The stair** (`fisher_stair_broken`, fisher_stair's frame): in the preview the breach takes the wall under
+  the stair's middle (s -36 .. -24), so the first 12 steps stand (to +3.4 m) and break off raw; the landing
+  and the middle went with the wall; the upper flight's top 15 steps hang from the head landing, swung down
+  24 deg; the hand-line hangs slack in a deep bight across the gap.
+- **The hoist** (`liss_hoist_cut`, the head's frame): the spar down on the walk, the cut tails of the
+  head-rope hanging from the two strap-plates still bolted into the head, the guys cut at their ring-bolts,
+  the block and its cut fall lying with the spar, the empty shoe on the kerb.
+- **The lanes** (`lowtown_rubble`, a 24 m cell at +1.0 m): silt banks and wall blocks along the lane's sides,
+  roof-tile spills and timbers out of the crushed houses, thickest at the wall-foot end; the lane down its
+  centre line stays clear, so the stair foot still reads.
+
+**Budgets (LOD0 / LOD1):** breach 14,000 / 1,100; breach ends 16,000 / 1,100 (a seawall_curve plus its
+section); broken heads 9,000 / 600; head b as watcher_head; broken stair as fisher_stair; cut hoist 3,000 / 300;
+rubble cell 9,000 / 700.
+
+| Sub-frame | Use | Time | Key | Fill / sky | Fog | Water | LUT |
+|---|---|---|---|---|---|---|---|
+| `ch08_after` (this kit; no colour-script row yet) | The morning after: the breach, the cut hoist | ~07:30 | the sun 11 deg / 112 deg behind a flat overcast, `#E2E6EC` at 0.6 | ambient `#7A8695` 1.25; pewter overcast sky (`env_sky_low_sun`, coverage 0.9, no disc), exposure 1.0 | `#6E767E` 0.003 | `storm_grey` at +0.45 m (the sea gone back out through the gap) | `lut_ch08_storm` (the laterite stays warm) |
+| `ch09` (colour script) | The stair foot at slack water, the Ebbing offshore | 22:00 | the Moon `#D2DFFF` 0.35, low (14 deg / 140 deg), half (`env_sky_night` `moon_lit_fraction` 0.5) | ambient `#1C6B78` 0.7 (the script's 0.3 fill left the stair foot unreadable at exposure 1.15); zenith `#060E20`, horizon `#14243E`, stars | `#1C3A4A` | `night_sea`, sea-glow 0.15, at +0.1 m | `lut_ch09_ebbing` (cw_zone_lut.py --frame ch09: teal-navy toe, sat x1.05, S 0.5, gold cut) |
+
+**Composed views (preview).** **C10** ◆ (baseline `corrow_c10_breach_fallen`, `fallen`): from the bay, 7.5 m
+up, looking north-west into the stair breach: both torn ends, the walk bridging its undercut, the debris
+cone, the low town seen through the gap, the reliefs and the heads running on either side. **C11** (`ch09`):
+from the stair foot's lane, looking south-east through the breach: the half moon on the gap's torn edge,
+the slack hand-line across it, rubble and timbers in the lane; the stair foot dark.
+
+**Read of the final captures (lavapipe, 960 x 540).** C10: the breach reads at once: two stepped, undercut
+ends, raw rust in the section against the grey-salted skin, the cone of the wall's own blocks, grey morning
+light; pillar 6 is the empty gap where the heads were. Weak: the faces of the fallen heads barely read in the
+flat overcast (their relief needs raking light), and at 30 m the laterite block texture reads small, like
+brick (the M3-ENV-04 map, not changed here). C11: the strongest frame of the pass: the moon set in the gap's
+torn silhouette, stars, the slack rope, and a dark stair foot with no light in it; the low town's side of the
+frame is mostly shadow (night), the sea-glow only a thin teal line at the horizon.
+
 ## Revisions
 - 2026-10-24 (env-art, M3-ENV-04): first version, written against the act outline Ch8 and Ch9, bible §5.4
   and its 1001 AL row, ADRs 0017, 0020 and 0022, and the colour script `ch08` row before any geometry.
@@ -230,3 +296,6 @@ the stair and hoist, 38 houses round the stair-foot lane and the back lane. Read
   read as modern brick); rebuilt courses are a second slot; the run-off stains are matte (wet ones read as
   glossy stripes); the review kit row was dropped for C08; the Sun's sky mode is light-and-sky (the storm
   sky needs the sun's direction).
+- 2026-10-24 (env-art, M3-ENV-04B): §7, the wall falls (the breach pieces, the broken heads and stair, the cut
+  hoist, the rubble cell, a second head carving) and the `ch08_after` and `ch09` frames on them. §1.4's
+  "three segments have gone" becomes a run of slots (two torn ends and one or more gaps).
