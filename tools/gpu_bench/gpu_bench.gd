@@ -19,6 +19,7 @@ extends Node
 ##   --png-dir=<abs dir>          save the last sampled frame of each measurement as a PNG
 ##   --override=key=value,...     GraphicsSettings overrides on top of each preset (e.g. vegetation_detail=low)
 ##   --undertow-half=<scale>     render every UndertowStorm's body at this resolution fraction (M2-RND-01)
+##   --node-set=Path:prop=value,...   set a property on a node of the scene (e.g. Underwater:active=false)
 ##   --hide-storms                hide every UndertowStorm (the frame without the storm: its own cost by difference)
 ##   --debug-draw=overdraw      render Viewport.DEBUG_DRAW_OVERDRAW (pair with --png-dir; M1-ENV-03 budget)
 ##   --tag-vegetation             tag MultiMeshes (vegetation_multimesh, small_foliage) and range-limited
@@ -89,6 +90,14 @@ func _run() -> void:
 		for n in _scene.find_children("*", "", true, false):
 			if n is UndertowStorm:
 				(n as UndertowStorm).half_res_body_scale = float(_opts["undertow-half"])
+	for pair in str(_opts.get("node-set", "")).split(",", false):
+		var kv := pair.split("=", true, 1)
+		var at := kv[0].split(":", true, 1)
+		var node := _scene.get_node_or_null(NodePath(at[0]))
+		if node == null or at.size() < 2 or kv.size() < 2:
+			push_error("--node-set: cannot apply '%s'" % pair)
+			continue
+		node.set(at[1], str_to_var(kv[1]))
 	if _opts.has("hide-storms"):
 		for n in _scene.find_children("*", "", true, false):
 			if n is UndertowStorm:
@@ -215,16 +224,11 @@ func _measure(preset: String, variant: Dictionary, camera: String, label: String
 # --- Tiers and variants --------------------------------------------------------------------------
 
 
-## The subsystems that carry their own preset -> tier map (not yet in graphics_presets.json).
+## The subsystems that carry their own preset -> tier map, exactly as the game sets them on scene entry
+## (GraphicsRuntime.apply_system_tiers: water, weathering, the Undertow, glimmer, the underwater rig and
+## character materials; M2-RND-02 replaced a hand list that had fallen behind).
 func _apply_tiers(preset: String) -> void:
-	for n in _scene.find_children("*", "", true, false):
-		if n is WaterSurface:
-			(n as WaterSurface).quality = WaterSurface.quality_for_preset(preset)
-		elif n is UndertowStorm:
-			(n as UndertowStorm).set_quality(preset)
-		elif n is GlimmerField:
-			(n as GlimmerField).set_quality(preset)
-	CharacterShaderTiers.apply_to_tree(_scene, CharacterShaderTiers.tier_for_preset(preset))
+	GraphicsRuntime.apply_system_tiers(_scene, preset)
 
 
 func _variants(kind: String) -> Array[Dictionary]:

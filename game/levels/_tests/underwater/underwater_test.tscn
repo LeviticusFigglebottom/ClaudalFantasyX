@@ -1,0 +1,73 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/water/water_test.tscn" id="world"]
+[ext_resource type="Script" path="res://game/world/water/underwater/underwater_rig.gd" id="rig"]
+[ext_resource type="Script" path="res://game/vfx/glimmer/glimmer_field.gd" id="field"]
+
+[sub_resource type="CapsuleMesh" id="RhenMesh"]
+radius = 0.32
+height = 1.72
+
+[sub_resource type="StandardMaterial3D" id="RhenMat"]
+albedo_color = Color(0.368627, 0.603922, 0.588235, 1)
+roughness = 0.7
+
+[sub_resource type="SphereMesh" id="LampMesh"]
+radius = 0.09
+height = 0.18
+
+[sub_resource type="StandardMaterial3D" id="LampMat"]
+albedo_color = Color(1, 0.694118, 0.431373, 1)
+emission_enabled = true
+emission = Color(1, 0.694118, 0.431373, 1)
+emission_energy_multiplier = 4.0
+
+[node name="UnderwaterTest" type="Node3D"]
+
+[node name="World" parent="." instance=ExtResource("world")]
+
+[node name="Rhen" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, -5, -62)
+mesh = SubResource("RhenMesh")
+surface_material_override/0 = SubResource("RhenMat")
+
+[node name="Lamp" type="MeshInstance3D" parent="Rhen"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0.42)
+cast_shadow = 0
+mesh = SubResource("LampMesh")
+surface_material_override/0 = SubResource("LampMat")
+
+[node name="Underwater" type="Node3D" parent="." node_paths=PackedStringArray("water", "lantern_target")]
+script = ExtResource("rig")
+water = NodePath("../World/Water")
+lantern_target = NodePath("../Rhen/Lamp")
+
+[node name="HeldGlimmer" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, -4.6, -61.4)
+script = ExtResource("field")
+mode = 0
+emission_extents_m = Vector3(2.5, 1.5, 2.5)
+water_height_m = 0.0
+
+[node name="UnderwaterCameras" type="Node3D" parent="."]
+
+[node name="Below" type="Camera3D" parent="UnderwaterCameras"]
+transform = Transform3D(0.939693, -0.0593911, -0.336824, 0, 0.984808, -0.173648, 0.34202, 0.163176, 0.925417, -2.6, -5.6, -55.5)
+current = true
+fov = 60.0
+far = 600.0
+
+[node name="Deep" type="Camera3D" parent="UnderwaterCameras"]
+transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 0, -6.5, -54)
+fov = 60.0
+far = 600.0
+
+[node name="Waterline" type="Camera3D" parent="UnderwaterCameras"]
+transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0.5, -0.02, -52)
+fov = 60.0
+far = 600.0
+
+[node name="UpWindow" type="Camera3D" parent="UnderwaterCameras"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -4, -60)
+fov = 70.0
+far = 600.0

@@ -6,7 +6,7 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 > **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
 > session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
-> **This copy, on `gpu/m2-rnd-01-undertow`, is the newest.**
+> **This copy, on `gpu/m2-rnd-02-underwater`, is the newest.**
 
 ## PC setup for a new session
 
@@ -115,7 +115,10 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/m2-rnd-02-underwater | **M2-RND-02 in review** (reviewer Environment) | Underwater look: `UnderwaterRig` (`game/world/water/underwater/`) gives a per-pixel absorption and scatter post with a wave-following waterline (a meniscus, no pop at the crossing); the underside (the Snell window with the refracted sun, and TIR); volumetric god rays on High and Ultra; marine snow; Rhen's oil-lamp lantern. The light level follows the scene's sun, so night dives are dark. Tiers: `tiers.underwater` in graphics_presets.json. **The rig costs +0.32 ms at High 1440p; the whole frame is 1.1–1.5 ms.** On Low: +0.14 ms. gpu_bench and capture_preset now apply every system tier (`GraphicsRuntime.apply_system_tiers`), so their Low, Medium and Ultra captures of water scenes can change. Three new pending shots: `docs/kb/qa/gpu/2026-10-24-rnd-02-pending-shots.json`. Art sign-off is **M2-ART-02**. Docs: `docs/kb/tech/underwater.md` |
 | gpu/fp-10-keylight-check | pushed (from origin/claude/m2-slice 0408806; Lead request) | M2-FP-10 GPU check. No artefacts; cost ≤ 0.03 ms; Haluna sun at bias 1.0, no face regression. H05's 74° sun leaves the face in brow and nose shadow, so set `key_pitch_deg` 30 on H05 and H06. **Layer 20 conflict** between the key light and the Undertow half-res body. New tool `tools/gpu_bench/keylight_probe.tscn`. Report: `docs/kb/qa/gpu/2026-10-24-fp-10-keylight.md` |
+| gpu/m2-rnd-03-battle-vfx | **M2-RND-03 in review** (reviewer Environment) | Battle VFX library: `BattleVfx`, listen-only (one controller line). The data (`effects.json`) holds 14 effects: element hits, Lamp Dive, Shallows Verse, Read, heal, status, KO into released glimmer, and the opening flashes. Flashes are photosensitivity-capped and below the HUD; reduced motion is supported. The worst 3v3 burst costs +0.04 ms at High 1440p. Battle shots move ≤ 0.0022 on the GPU (under the gate). Docs: `docs/kb/tech/battle_vfx.md` |
+| gpu/m1-rnd-22-prewarm | **M1-RND-22 in review** (reviewer Environment) | Prewarm hitch floor. Battle transitions now 34–46 ms on every preset (before 308–371). The floor was a test material in every transition, other presets' tier variants, and variant compiles on first draw. Fixes: the `preset_tier` filter, a boot warm-up of resident shaders, the FSR2 stage size (no more FFX error spam), and the router frame-0 timing. Zone and storm entries are 142–312 ms behind the fade: ADR 0029 (proposed). Threaded loads and harvest were tried and crash Godot, so they were reverted. Report: `docs/kb/qa/gpu/2026-10-24-rnd-22-prewarm.md` |
 | gpu/m2-rnd-01b-undertow-compute | **M2-RND-01 in review** (contains gpu/m2-rnd-01-undertow; merge that first) | Compute body (ADR 0028): exact occlusion; High body_scale 0.35 (motion-checked). The storm's own cost is 0.58–0.80 ms at High 1440p. All 5 Undertow shots drift. Follow-up task M2-RND-05. Report: m2-rnd-01-start.md, the last two sections |
 | gpu/m2-rnd-01-undertow | **WIP, not merged** (task `doing`) | M2-RND-01. Earlier: the wall foot, the sea's storm response, joined flanks, the half-res body and 3-octave multiple scattering. This session: noise-warped striations, fringe billows with sun-ward shading, softer sea streaks, and the wound-stipple fix (skin step refinement). High 1440p: Day 2.56, Eye 3.11 ms. All 5 Undertow shots drift. Integration branch merged in (a504072). Report: `docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md` |
 | gpu/qa-08-asha-recheck | task `review` (reviewer: character) | M1-QA-08: Asha GPU recheck at 2× High and Ultra (96a6585 / 9a133ee). Neutral passes; smile passes on shading but reads as a smirk at 1×; grief still fails on two Character mouth faults (black rim, peg teeth). CHR-12: crown, lid band (R:B 3.7 against 2.0–2.5) and smile eyes fail; lip bow and skin pass. ADR 0024 check 2 confirmed. Report: `docs/kb/qa/gpu/2026-10-24-qa-08-asha.md` |
@@ -136,14 +139,15 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
    - The storm's own cost is 0.58–0.80 ms at High 1440p, ~2–2.4 ms projected on an RTX 3060.
    - All 5 Undertow shots drift: re-approve them on lavapipe.
    - The storm-event criteria moved to **M2-RND-05** (todo).
-2. **M1-RND-22:** the prewarm hitch floor, measured at Low, High and Ultra. If 50 ms is impossible, draft an ADR
-   proposing a SPEC §4.2 clarification. The earlier finding (RND-15): the floor is ~230–310 ms of stage set-up plus
-   single heavy shader compiles. The fixes are the shader baker or a boot-time stage.
-3. **M2-RND-03:** the battle VFX library. SPEC v1.2 power tiers: lesser, greater and grand. Never use -ra/-ga style
-   suffixes; Narrative sets the in-game names.
-4. **M2-RND-02:** underwater rendering: fog volume, god rays, particulate, caustics on characters, Rhen's lantern as
-   the hero light.
-5. **M2-RND-04:** Drownbell boss VFX and flood rig. Read the First Playable boss data first (session
+2. **M1-RND-22: in review** (`gpu/m1-rnd-22-prewarm`). Battle transitions are in budget. Follow-ups are in ADR 0029: the
+   export shader baker (needs export templates on the PC), a SceneState harvest for big zones, and slicing the
+   boot warm-up.
+3. **M2-RND-03: in review** (`gpu/m2-rnd-03-battle-vfx`). Next passes are in battle_vfx.md: an art pass for the pale effects, and contact-frame timing once body clips exist.
+4. **M2-RND-02: in review** (`gpu/m2-rnd-02-underwater`). The Lead adds the 3 pending shots on lavapipe. Open:
+   - the glimmer-motes boost underwater (Art's call, in M2-ART-02);
+   - caustics on characters;
+   - a splash at the crossing.
+5. **M2-RND-04 (next, the last queue item):** Drownbell boss VFX and flood rig. Read the First Playable boss data first (session
    session_01ELR13ohWMPrprcpcgLa7UR, branch `claude/first-playable`).
 - **Standing:** GPU checks of shots before the Lead re-approves lavapipe baselines.
 - **Open findings to route** (filed or noted, not this queue):
@@ -154,7 +158,7 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 ## Local-only state (not in git)
 
 - **This session's scratch:** captures, CSVs and the helper scripts `bench.sh`, `cap.sh`, `cap5.sh`, `capd.sh` and `jset.py`.
-  It's in `C:/Users/Aaron/AppData/Local/Temp/claude/C--Users-Aaron/d3383506-5a83-49e1-8dcf-15422406b087/scratchpad/m2rnd01`. Temporary.
+  It's in `C:/Users/Aaron/AppData/Local/Temp/claude/C--Users-Aaron/d3383506-5a83-49e1-8dcf-15422406b087/scratchpad/m2rnd01` and `.../rnd02`. Temporary.
 
 None of it is needed: everything quoted in the reports can be reproduced from the commands in them.
 - **`C:\Users\Aaron\Hymn_Playtest`:** a separate clone for the human's playtest, with untracked `PLAY.bat` and

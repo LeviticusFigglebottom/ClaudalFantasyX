@@ -100,7 +100,7 @@ static func scene_environment(root: Node) -> Environment:
 
 
 ## Tiers of the systems that keep their own preset maps (graphics_presets.json "system_tiers_note"):
-## WaterSurface, WeatheringTide, UndertowStorm, GlimmerField, and character materials. Only nodes
+## WaterSurface, WeatheringTide, UndertowStorm, GlimmerField, UnderwaterRig, and character materials. Only nodes
 ## whose tier differs are touched (a storm or glimmer change rebuilds). Returns how many changed.
 static func apply_system_tiers(root: Node, preset: String) -> int:
 	var changed := 0
@@ -126,6 +126,10 @@ static func apply_system_tiers(root: Node, preset: String) -> int:
 		elif n is GlimmerField:
 			var field := n as GlimmerField
 			if field.get_quality() != preset and field.set_quality(preset):
+				changed += 1
+		elif n is UnderwaterRig:
+			var rig := n as UnderwaterRig
+			if rig.get_quality() != UnderwaterRig.tier_for_preset(preset) and rig.set_quality(preset):
 				changed += 1
 	return changed + CharacterShaderTiers.apply_to_tree(root, CharacterShaderTiers.tier_for_preset(preset))
 
