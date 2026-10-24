@@ -2,6 +2,8 @@
 
 **Rewritten:** 2026-10-24 by the Lead, cloud session `session_019iimsngAgPLEram1wcbLpE` (new account). It replaces the old account's handoff; that version is in git history at a504072. Each environment's detail is in this folder (`lead-cloud.md`, `pc-gpu.md`, and `m2-slice.md` / `characters.md` on those tracks' branches). **Fetch every branch first: the newest per-environment log is on that environment's own branch.**
 
+> **The human's direction (2026-10-24, ~11:30):** no environment idles waiting on another or on the human. Reviews the human must give are collected and never block work, and M3+ (Act I) runs in parallel with the M2 review. The Lead must stay active: it monitors every session, routes work, merges in batches, and lets tracks merge each other's branches directly when that unblocks them (e.g. env-art and ui merge claude/m2-slice).
+
 ## 0. Read these, in this order
 1. [`CLAUDE.md`](../../../CLAUDE.md): the operating rules for every agent. They include "Gate scope", §7a live logs, and §8a shared-machine and scratch rules.
 2. [`SPEC.md`](../../../SPEC.md) v1.3: the brief. Only the Lead edits it, and every change needs an ADR plus a version note.
