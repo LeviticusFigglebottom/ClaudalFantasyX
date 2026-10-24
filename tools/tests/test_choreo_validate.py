@@ -128,6 +128,29 @@ class ChoreoValidateTest(unittest.TestCase):
         doc["choreo"]["camera"]["shots"].pop("summon")
         self.assertEqual(len(vc.summon_errors(doc, flags)), 4)
 
+    def test_boss_intro(self) -> None:
+        enc = json.loads((ROOT / vc.ENCOUNTERS_FILE).read_text(encoding="utf-8"))
+        loc = vd.load_loc_keys(ROOT, vd.Report())
+        self.assertEqual(vc.boss_intro_errors(DOC, enc, loc), [])
+        rows = DOC["choreo"]["boss_intro"]["rows"]
+        for eid in ("ch01_hullgnaw", "ch04_bottle_hermit", "ch04_spar_wraith", "ch05_cinder_matron", "drownbell"):
+            self.assertIn(eid, rows, f"{eid} has an intro row")
+            self.assertFalse(rows[eid].get("on_retry", False), "Fight again skips the intro by default")
+        doc = copy.deepcopy(DOC)
+        b = doc["choreo"]["boss_intro"]
+        b["rows"]["ch01_hullgnaw"]["shot"] = "nowhere"
+        b["rows"]["ch01_hullgnaw"]["title_key"] = "BOSS_TITLE_NEVER"
+        b["rows"]["drownbell"]["enemy"] = "hullgnaw"
+        b["rows"]["drownbell"]["hold_sec"] = 0
+        b["rows"]["no_such_fight"] = dict(rows["drownbell"])
+        b["card"]["band_alpha"] = 2
+        b["camera_in_sec"] = "x"
+        self.assertEqual(len(vc.boss_intro_errors(doc, enc, loc)), 7)
+        b["rows"]["drownbell"]["hold_sec"] = 0.1
+        b["camera_in_sec"] = 0.0
+        self.assertTrue(any("must fit" in e for e in vc.boss_intro_errors(doc, enc, loc)), "the card fits the hold")
+        self.assertTrue(vc.boss_intro_errors({"choreo": {"boss_intro": []}}, enc, loc))
+
 
 class ArenaValidateTest(unittest.TestCase):
     DOC = json.loads((ROOT / vc.ARENAS_FILE).read_text(encoding="utf-8"))

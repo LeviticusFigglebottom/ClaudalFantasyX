@@ -418,3 +418,64 @@ adds the pick:
 - Non-candidates, empty space and every other state: the mouse does nothing here.
 - Tests: `tests/unit/test_battle_mouse_pick.gd`. When UiInput merges, the UI track's `InputDriver` parity walk can
   drive the battle with real mouse events through the viewport.
+
+## Boss intros (M3-BPR-02)
+
+A boss fight opens with a short, quiet intro: the camera finds the boss, its name and an epithet show, and the first
+turn follows. **`BattleBossIntro`** (`game/battle/scene/battle_boss_intro.gd`) is built by `BattleChoreo.attached`
+(one line; the controller is untouched) and listens to the engine's first `turn_started`.
+
+**When.** An encounter with a row in `choreo.json → boss_intro.rows`: Hullgnaw (`ch01_hullgnaw`), the Bottle Hermit
+(`ch04_bottle_hermit`), the Spar-Wraith (`ch04_spar_wraith`), the Cinder Matron (`ch05_cinder_matron`) and the
+Drownbell (`drownbell`). Once per battle.
+- **Sequenced, never on top of anything.** At the first turn it waits while the router's fade covers the screen
+  (`SceneRouter.is_busy`) and while the opening banner is pending or showing, at most `reveal_wait_max_sec`. The boss
+  encounters open `normal`, so in practice no banner shows; the order is still fixed.
+- **Fight again** rebuilds the engine on the same controller; the intro plays again only when the row says
+  `on_retry` (every row says false). The controller's meta `hymn_boss_intro_played` remembers the encounter.
+- **Instant** at pacing 0 and with "skip animations"; `force_play` overrides that (its capture).
+
+**What** (all times data; the battle speed scales them):
+
+| Beat | When | What happens |
+|---|---|---|
+| in | 0 → `camera_in_sec` | The camera eases from the default to the row's `shot` (`boss`, or `boss_tall` for the Matron and the Drownbell), placed on the boss's slot like any placed shot: a low 3/4 view from the party's side, on the viewer's side of the axis. |
+| card | from `card_at_sec`, in over `card_in_sec` | The title card fades in (and rises `rise_px`). |
+| hold | `hold_sec` (per row) | The boss holds the frame; the card is fully shown. The card fades out over `card_out_sec`, ending as the camera turns home. |
+| home | the last `camera_out_sec` | The camera eases back to the default and stands exactly on it at the end. |
+
+- **The shot is checked**: the boss's feet and head must sit in the camera's `safe_frame` (as every director shot);
+  a shot that fails keeps the default for the intro and only the card plays. A test checks every row passes.
+- **The title card** is its own `CanvasLayer` (`card.layer` 2, above the HUD, below the router's fade) in the HUD's
+  current theme: the name in `TitleLabel` over a thin `focus_gold` rule and the epithet in `FlavorLabel`, on a dark
+  band that fades at both ends (art/ui.md §9 contrast). It sits centre-low (`card.rect` 560, 616, 800 × 140 at the
+  1920 × 1080 reference), under the framed boss's feet and clear of the timeline, the party panel, the help line,
+  the target info and the opening banner (tested). Text: `BOSS_TITLE_*` and `BOSS_EPITHET_*` (strings.csv), drawn
+  from the story beats and the bestiary lore: *Storm-born, caged in a drowned ship's ribs*; *It keeps house in the
+  old lamp glass*; *It hauls a dead ship's lines*; *Woken by the anvil's ring*; *It still rings for the drowned*.
+- **Original staging.** A slow ease to a still frame and a fading card: no screen break, no spin, no flash, no
+  name plate sweeping in, no letterbox bars.
+
+**The first turn waits.** While the intro waits or plays, `BattleHud.holds_battle()` is true through a new generic
+hook, `BattleHud.holds` (name → Callable; the intro registers `boss_intro`, a retried battle's replaces it, a freed
+owner holds nothing), so `BattleController.tick` holds its first wait: an enemy's think time never runs under it.
+A party first turn's command menu, help line and actor marker are hidden by modulate (the controller's own
+visibility is untouched) and come back when it ends; the timeline and party panel stay. While it holds, the intro
+takes every input (`_input`): **confirm or cancel skips it** (the card goes, the camera is home at once), the rest is
+dropped.
+
+**Accessibility.** Reduced motion keeps the camera on the default (as the director and the summon do) and the card
+only fades, no rise. Nothing flashes.
+
+**Data:** `choreo.json → boss_intro` and two shots in `camera.shots`, checked by `validate_choreo.boss_intro_errors`
+(from `validate_data`): real encounters listing the row's enemy, known shots, `hold_sec` > 0 with room for the card's
+fades, loc keys that exist, a boolean `on_retry`, the card's numbers.
+
+**Tests and shot.** `tests/unit/test_battle_boss_intro.gd` (rows and keys, every boss framed, the card's place, the
+first turn waits and nobody acts, the fade and banner waits and the cap, confirm skips, instant pacing and skip
+animations, reduced motion, the camera home, retry, no row no intro); `tools/tests/test_choreo_validate.py`.
+Shot `battle_boss_intro_hullgnaw` (`game/battle/scene/shots/boss_intro_shot.gd`, a live-data fixture like the arena
+shots: Rhen alone against Hullgnaw, the intro forced and frozen half way through its hold).
+
+**Open.** No sound cue yet (Audio may hang a sting on the intro's start); the stand-ins stand still under it, and a
+creature actor could play a `ready` or roar clip at the hold when the creatures track has one.
