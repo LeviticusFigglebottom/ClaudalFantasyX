@@ -63,6 +63,7 @@ const HOOK_META := &"shader_prewarm_hook"
 const HOLD_METHOD := &"hold_swap"
 const RELEASE_METHOD := &"release_swap"
 const MSEC_PER_SEC := 1000.0
+const USEC_PER_MSEC := 1000.0
 const LOG_PREFIX := "ShaderPrewarm"
 const MODE_UNSUPPORTED := -1
 ## How deep the scene harvest follows instanced scenes (M1-RND-27).
@@ -94,12 +95,18 @@ var viewport_state: Dictionary = {}
 var preset_id: String = ""
 ## Boot run (M1-RND-22): stage every "resident" entry, whatever its scenes, and nothing else.
 var resident_only := false
+## First-run boot (M1-RND-29): on a launch with no pipeline cache yet for this engine, GPU, driver and preset
+## (needs_first_run), the boot run stages every entry the preset wants, whatever its scenes, and harvests
+## the registry's "first_run_scenes" too, so a fresh install builds its pipelines behind the boot card,
+## not in its first zone entries. It writes the "first_run_marker" when it finishes.
+var first_run := false
 ## Diagnosis (M1-RND-27, tools/gpu_bench/prewarm_bench): when true, `trace` gets one row per frame,
 ## [frame_ms, the paths staged on the frame before it], so a slow frame names the draws that cost it.
 var record_trace := false
 var trace: Array = []
 
 var _running := false
+var _last_frame_usec := 0
 var _stage_alive := false
 var _frames_to_render := 0
 var _measure_frames := 0
@@ -178,6 +185,8 @@ func start(for_scene: String = "") -> int:
 	if _running:
 		push_warning("%s: start() called twice; ignored" % LOG_PREFIX)
 		return 0
+	# The first frame measured includes start() itself (it builds the stage in this frame).
+	_last_frame_usec = Time.get_ticks_usec()
 	config = _load_registry(registry_path)
 	scene_path = for_scene
 	_frames_to_render = int(config.get("frames_to_render", 0))
@@ -194,7 +203,7 @@ func start(for_scene: String = "") -> int:
 		var e := entry as Dictionary
 		var scenes := e.get("scenes", []) as Array
 		if resident_only:
-			if not bool(e.get("resident", false)):
+			if not first_run and not bool(e.get("resident", false)):
 				continue
 		elif not (scenes.is_empty() or scenes.has(for_scene)):
 			continue
@@ -209,6 +218,10 @@ func start(for_scene: String = "") -> int:
 		else:
 			push_warning("%s: registered material not found: %s" % [LOG_PREFIX, e.get("path", "")])
 			_skipped += 1
+	if first_run:
+		for path: Variant in config.get("first_run_scenes", []):
+			if ResourceLoader.exists(str(path)):
+				_instanced += _instance_scene_materials(str(path), int(config.get("max_scene_materials", 0)))
 	if bool(config.get("scene_materials", false)) and for_scene != "" and ResourceLoader.exists(for_scene):
 		_instanced += _instance_scene_materials(for_scene, int(config.get("max_scene_materials", 0)))
 	var per_frame := int(config.get("materials_per_frame", 0))
@@ -260,10 +273,43 @@ static func spawn_resident(parent: Node, preset: String, with_trace := false) ->
 	var node := (load(SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
 	node.resident_only = true
 	node.preset_id = preset
+	node.first_run = needs_first_run(preset)
 	node.record_trace = with_trace
 	parent.add_child(node)
 	node.start("")
 	return node
+
+
+## The first-run key (M1-RND-29): what a pipeline cache depends on. Godot rebuilds its pipelines for another
+## engine, GPU or driver, and another preset stages other tier variants.
+static func first_run_key(preset: String) -> String:
+	return (
+		"%s|%s|%s|%s"
+		% [
+			Engine.get_version_info().get("string", ""),
+			RenderingServer.get_video_adapter_name(),
+			RenderingServer.get_video_adapter_api_version(),
+			preset,
+		]
+	)
+
+
+## True when this launch has not finished a first-run warm-up for first_run_key (M1-RND-29).
+static func needs_first_run(preset: String, path: String = REGISTRY_PATH) -> bool:
+	var marker := str(_load_registry(path).get("first_run_marker", ""))
+	if marker == "":
+		return false
+	var cfg := ConfigFile.new()
+	return cfg.load(marker) != OK or str(cfg.get_value("pipelines", "key", "")) != first_run_key(preset)
+
+
+func _write_first_run_marker() -> void:
+	var marker := str(config.get("first_run_marker", ""))
+	if marker == "":
+		return
+	var cfg := ConfigFile.new()
+	cfg.set_value("pipelines", "key", first_run_key(active_preset()))
+	cfg.save(marker)
 
 
 ## The resources load_resident() holds (tests).
@@ -399,8 +445,14 @@ func _stage_next_batch() -> void:
 	_frames_since_batch = 0
 
 
-func _process(delta: float) -> void:
-	tick(delta * MSEC_PER_SEC)
+## Wall time since the last frame (M1-RND-29): Godot 4.6 caps the process `delta` at about 150 ms (a
+## 516 ms stall reports 147 ms), so a delta-based max_frame_ms under-reported every long prewarm frame
+## and the batch never halved on them.
+func _process(_delta: float) -> void:
+	var now := Time.get_ticks_usec()
+	var frame_ms := float(now - _last_frame_usec) / USEC_PER_MSEC if _last_frame_usec > 0 else 0.0
+	_last_frame_usec = now
+	tick(frame_ms)
 
 
 func _notification(what: int) -> void:
@@ -414,6 +466,8 @@ func _notification(what: int) -> void:
 
 func _finish() -> void:
 	_running = false
+	if first_run:
+		_write_first_run_marker()
 	var budget := float(config.get("hitch_budget_ms", 0.0))
 	stats = {
 		"scene_path": scene_path,
@@ -428,6 +482,7 @@ func _finish() -> void:
 		"batches": _batches,
 		"min_batch": _min_batch_seen,
 		"computes": _computes,
+		"first_run": first_run,
 	}
 	var line := (
 		"%s: '%s' warmed %d material(s) (%d skipped); max frame %.1f ms over %d frames (budget %.0f ms)"
