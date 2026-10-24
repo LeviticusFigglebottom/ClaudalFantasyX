@@ -12,7 +12,7 @@
       "detail_bump": 0.25,
       "cavity_albedo": 0.4,
       "emission_color": "#3FE0C8",
-      "emission_energy": 2.2,
+      "emission_energy": 3.5,
       "emission_pulse_hz": 0.3,
       "emission_pulse_depth": 0.4
     },
@@ -26,7 +26,7 @@
       "detail_bump": 0.3,
       "cavity_albedo": 0.5,
       "emission_color": "#3FE0C8",
-      "emission_energy": 2.6,
+      "emission_energy": 5.0,
       "emission_pulse_hz": 0.3,
       "emission_pulse_depth": 0.45
     },
@@ -42,7 +42,7 @@
       "cavity_albedo": 0.4,
       "rim_sheen": 0.3,
       "emission_color": "#3FE0C8",
-      "emission_energy": 2.4,
+      "emission_energy": 5.0,
       "emission_pulse_hz": 0.36,
       "emission_pulse_depth": 0.3
     },
@@ -57,7 +57,7 @@
       "cavity_albedo": 0.2,
       "cavity_ao": 0.2,
       "emission_color": "#3FE0C8",
-      "emission_energy": 9.0,
+      "emission_energy": 12.0,
       "emission_pulse_hz": 0.36,
       "emission_pulse_depth": 0.25
     }

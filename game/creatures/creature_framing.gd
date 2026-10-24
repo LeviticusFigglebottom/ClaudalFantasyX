@@ -37,6 +37,30 @@ static func frame(camera: Camera3D, box: AABB, yaw_deg: float, pitch_deg: float,
 	camera.look_at(c, Vector3.UP)
 
 
+## Like frame(), but the distance fits every corner of `box` inside the view (vertical FOV `fov_deg`, `aspect`
+## width over height), times `margin`: tall and wide creatures fill the frame alike (CreaturePortrait).
+static func frame_fit(
+	camera: Camera3D, box: AABB, yaw_deg: float, pitch_deg: float, fov_deg: float, margin: float, aspect: float = 1.0
+) -> void:
+	var c := box.get_center()
+	var yaw := deg_to_rad(yaw_deg)
+	var pitch := deg_to_rad(pitch_deg)
+	var back := Vector3(sin(yaw) * cos(pitch), sin(pitch), cos(yaw) * cos(pitch))
+	var right := Vector3.UP.cross(back).normalized()
+	var up := back.cross(right)
+	var tv := tan(deg_to_rad(fov_deg * 0.5))
+	var th := tv * aspect
+	var dist := 0.0
+	for i in 8:
+		var p := box.get_endpoint(i) - c
+		var z := p.dot(back)
+		dist = maxf(dist, z + absf(p.dot(up)) * margin / tv)
+		dist = maxf(dist, z + absf(p.dot(right)) * margin / th)
+	camera.fov = fov_deg
+	camera.position = c + back * dist
+	camera.look_at(c, Vector3.UP)
+
+
 ## Holds `clip` at `time` on the creature's AnimationPlayer (paused), so a still is the same every run.
 static func hold(actor: Node, clip: StringName, time: float) -> bool:
 	var players := actor.find_children("*", "AnimationPlayer", true, false)

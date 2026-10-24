@@ -138,11 +138,11 @@ def ring_profile(height: float, length: float, closed: bool = False):
         flare = ck.smoothstep(0.62, 1.0, u)
         r = rw + (r0 - rw) * taper + (rl - rw) * float(flare)
         r *= 1.0 - 0.07 * math.sin(u * math.pi * 3.0) ** 8  # two soft constrictions, like a sea-squirt's neck
-        out.append((u, 0.0, r, "tube", 0.0, "chain"))
+        out.append((u, 0.0, r, "tube", 0.4 * u ** 2, "chain"))
     lip_c = rl if not closed else rl * 0.35
     for phi in (-50.0, 10.0, 70.0, 125.0):
         a = math.radians(phi)
-        out.append((1.0, lip_t * math.sin(a), lip_c + lip_t * math.cos(a), "tube", 0.0, "lip"))
+        out.append((1.0, lip_t * math.sin(a), lip_c + lip_t * math.cos(a), "tube", 0.55, "lip"))
     inner = [(1.0, lip_t * math.sin(math.radians(125.0)), lip_c + lip_t * math.cos(math.radians(125.0)), "mouth",
               0.1, "lip"),
              (1.0, 0.0, lip_c - lip_t, "mouth", 0.22, "lip"),

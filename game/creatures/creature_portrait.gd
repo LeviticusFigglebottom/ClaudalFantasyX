@@ -27,7 +27,7 @@ func show_enemy(id: StringName) -> bool:
 	_holder.add_child(actor)
 	var cfg: Dictionary = CreatureActor.row_for(actor.creature_id).get("portrait", {})
 	CreatureFraming.hold(actor, StringName(str(cfg.get("clip", "idle"))), float(cfg.get("clip_time", 0.0)))
-	CreatureFraming.frame(
+	CreatureFraming.frame_fit(
 		_camera,
 		CreatureFraming.bounds([actor]),
 		float(cfg.get("yaw_deg", 0.0)),
