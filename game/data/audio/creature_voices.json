@@ -233,6 +233,19 @@
         "move": "cre_glassfry_shimmer"
       }
     },
+    "wickfry": {
+      "family": "swarm",
+      "variant_of": "glassfry",
+      "pitch": 1.12,
+      "events": {
+        "idle": "cre_glassfry_idle",
+        "attack": "cre_glassfry_attack",
+        "hurt": "cre_glassfry_hurt",
+        "death": "cre_glassfry_death",
+        "move": "cre_glassfry_shimmer"
+      },
+      "_note": "Lead big8 placeholder: m2-slice's Ch1 wickfry (M3-C01-02) plays the glassfry set higher; M3-AUD-24 asks audio to tune it"
+    },
     "shoal_skipper": {
       "family": "skipper",
       "events": {
@@ -300,6 +313,7 @@
         "death": "cre_gull_harrier_death",
         "move": "cre_gull_harrier_wingbeat"
       }
-    }
+    },
+    "stillguard_inquisitor": "silent"
   }
 }

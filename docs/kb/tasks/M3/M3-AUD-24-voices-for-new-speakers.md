@@ -23,4 +23,6 @@ failed that check. The Lead's merge added placeholder rows so the gate passes: `
 
 - **Renumbered (Lead merge, big8, 2026-10-24):** big7 filed this as M3-AUD-13, which collided with claude/audio's M3-AUD-13 (battle choreography SFX). Now M3-AUD-24, the next id free across all branches.
 
+- **big8 (Lead merge):** seventeen more placeholder rows the same way (voice_soft at each speaker's blip_pitch): tavi, ione, poolkeeper, boatman, crowd, garo, tender, ferryman, townsfolk, ferrymaster, marra, hobb, fenn, stillguard, inquisitor, clerk, wright (m2-slice's Ch4-Ch9 speakers). creature_voices.json: wickfry plays the glassfry set at pitch 1.12 (placeholder), and stillguard_inquisitor, a man, is "silent". Please tune these too.
+
 ## Review log

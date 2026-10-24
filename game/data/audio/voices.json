@@ -199,6 +199,159 @@
       "rate_ms": 60,
       "jitter": 0.05,
       "volume_db": 0.0
+    },
+    "tavi": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.9,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "ione": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.94,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "poolkeeper": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.84,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "boatman": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.88,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "crowd": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.8,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "garo": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.74,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "tender": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.92,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "ferryman": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.8,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "townsfolk": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 1.0,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "ferrymaster": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.88,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "marra": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.86,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "hobb": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.78,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "fenn": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.74,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "stillguard": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.82,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "inquisitor": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.76,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "clerk": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.96,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "wright": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 1.04,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
     }
   }
 }
