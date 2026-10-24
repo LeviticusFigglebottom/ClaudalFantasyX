@@ -218,7 +218,9 @@ func _build() -> void:
 	_line = Label.new()
 	_line.theme_type_variation = &"HelpLabel"
 	_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_line.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	# No overrun trim: a trimming Label asks for no height, so the panel would never grow for a
+	# wrapped line. It grows (PanelContainer) up to max_lines, then the rest is cut.
+	_line.max_lines_visible = int(HudLayout.num(pm, "max_lines"))
 	_line.custom_minimum_size.x = r.size.x - HudLayout.num(pm, "pad") * 2.0
 	box.add_child(_line)
 

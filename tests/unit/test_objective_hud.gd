@@ -39,6 +39,16 @@ func test_it_shows_once_when_the_field_first_takes_input_then_fades() -> void:
 	_done()
 
 
+func test_the_line_has_height_and_wraps_inside_the_panel() -> void:
+	hud.advance(0.0)
+	var line: Label = hud._line
+	assert_true(line.get_line_count() >= 1)
+	assert_true(line.get_minimum_size().y >= line.get_line_height(), "the line asks for its height")
+	var panel: PanelContainer = hud._panel
+	assert_true(panel.get_combined_minimum_size().y <= panel.size.y, "the panel holds every line")
+	_done()
+
+
 func test_a_new_objective_shows_and_on_demand_shows_again() -> void:
 	hud.advance(100.0)
 	hud.advance(100.0)
