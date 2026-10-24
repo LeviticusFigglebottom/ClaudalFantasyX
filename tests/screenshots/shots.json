@@ -1095,6 +1095,14 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "field_menu_map_haluna",
+      "scene": "res://game/ui/map/shots/field_menu_map_haluna.tscn"
+    },
+    {
+      "id": "field_menu_map_shrine",
+      "scene": "res://game/ui/map/shots/field_menu_map_shrine.tscn"
     }
   ]
 }

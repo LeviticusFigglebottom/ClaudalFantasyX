@@ -23,11 +23,12 @@ func before_each() -> void:
 func test_the_root_names_its_rows_and_swell_is_off_without_a_swell_hero() -> void:
 	var m := _model([&"rhen"])
 	var rows := m.root_rows()
-	assert_eq(rows.size(), 4)
+	assert_eq(rows.size(), 5)
 	assert_eq(rows[0]["label"], tr("FIELD_MENU_BESTIARY"))
 	assert_eq(rows[1]["label"], tr("FIELD_MENU_SWELL"))
-	assert_eq(rows[2]["label"], tr("FIELD_MENU_SETTINGS"), "M2-UI-09")
-	assert_eq(rows[3]["label"], tr("FIELD_MENU_CLOSE"))
+	assert_eq(rows[2]["label"], tr("FIELD_MENU_MAP"), "M2-UI-18")
+	assert_eq(rows[3]["label"], tr("FIELD_MENU_SETTINGS"), "M2-UI-09")
+	assert_eq(rows[4]["label"], tr("FIELD_MENU_CLOSE"))
 	assert_true(rows[1]["enabled"])
 	assert_eq(m.root_desc(FieldMenuModel.ROW_BESTIARY), tr("FIELD_MENU_BESTIARY_DESC"))
 	var nobody := _model([&"no_such_hero"])
@@ -157,7 +158,7 @@ func test_the_bestiary_opens_over_it_and_hands_back_on_cancel() -> void:
 
 func test_close_row_and_clicks_choose() -> void:
 	_open()
-	menu._on_clicked(3, FieldMenu.Level.ROOT)
+	menu._on_clicked(FieldMenuModel.ROOT_IDS.find(FieldMenuModel.ROW_CLOSE), FieldMenu.Level.ROOT)
 	assert_false(menu.is_open(), "Return to the path closes it")
 	_free()
 	_open()

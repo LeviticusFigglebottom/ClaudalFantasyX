@@ -794,3 +794,23 @@ OBJ_CUE_FAR,Far
 SET_OBJECTIVE_CUE,Destination cue
 SET_OBJECTIVE_CUE_HELP,"A marker over where the objective points, or an arrow at the screen's edge when it is out of view."
 CTRL_ACT_FIELD_OBJECTIVE,Show the objective
+FIELD_MENU_MAP,Map
+FIELD_MENU_MAP_DESC,"Where you stand, where your errand leads, and the road ahead."
+FIELD_MENU_MAP_NONE,There is no map of this place.
+FIELD_MENU_MAP_NONE_TAG,No map
+MAP_PLACES,Places
+MAP_ERRANDS,Errands
+MAP_ERRANDS_NONE,No errands here.
+MAP_HELP,Up and Down: choose a place · Cancel: back
+MAP_NORTH,N
+MAP_POI_LINE_FMT,{name}: {m} m to the {dir}.
+MAP_POI_HERE_FMT,{name}: you are here.
+MAP_POI_GOAL,Your errand leads here.
+MAP_DIR_N,north
+MAP_DIR_NE,north-east
+MAP_DIR_E,east
+MAP_DIR_SE,south-east
+MAP_DIR_S,south
+MAP_DIR_SW,south-west
+MAP_DIR_W,west
+MAP_DIR_NW,north-west
