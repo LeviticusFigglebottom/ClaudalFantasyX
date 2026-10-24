@@ -851,6 +851,66 @@
       "settle_frames": 30
     },
     {
+      "id": "toma_front",
+      "scene": "res://game/levels/_tests/characters/toma/toma_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_q34",
+      "scene": "res://game/levels/_tests/characters/toma/toma_stage.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_profile",
+      "scene": "res://game/levels/_tests/characters/toma/toma_stage.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_back",
+      "scene": "res://game/levels/_tests/characters/toma/toma_stage.tscn",
+      "camera": "Cameras/Back",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_face_neutral",
+      "scene": "res://game/levels/_tests/characters/toma/toma_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_face_smile",
+      "scene": "res://game/levels/_tests/characters/toma/toma_face_smile.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "battle_swell_ring",
       "scene": "res://game/battle/scene/shots/battle_swell_ring.tscn"
     },

@@ -43,6 +43,18 @@
       ]
     },
     {
+      "id": "toma",
+      "owner": "character",
+      "_note": "M2-CHR-02: Toma reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs) and Rhen's costume helpers (rhen_costume), so their sources are his too.",
+      "sources": ["assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/toma/*.glb", "assets/characters/toma/textures/*.png", "assets/characters/toma/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/toma/build_toma.py", "--", "--out", "assets/characters/toma/toma.glb", "--bake-dir", "{scratch}/toma_bake"],
+        ["{python}", "assets_src/characters/toma/toma_textures.py", "--bake-dir", "{scratch}/toma_bake"],
+        ["{python}", "assets_src/characters/toma/write_materials.py"]
+      ]
+    },
+    {
       "id": "shader_test",
       "owner": "rendering",
       "sources": ["assets_src/characters/shader_test/build_shader_test_meshes.py", "assets_src/characters/shader_test/layout.py"],

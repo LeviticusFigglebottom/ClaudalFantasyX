@@ -1,8 +1,8 @@
 {
-  "_about": "M1-ART-02 post-import rules for hero characters (game/core/import/characters_post_import.gd, AssetImportRules). Each glTF material slot maps to <asset dir>/materials/<slot>.tres, the table AshaStage applies at runtime. LODs: Godot's auto LODs inside each file plus a separate <hero>_lod1.glb (no authored -lodN chains). Characters have no static collision. Asha adopted them in M2-FP-07 (docs/kb/tech/asset_import.md); Rhen (M2-CHR-01) from the start.",
+  "_about": "M1-ART-02 post-import rules for hero characters (game/core/import/characters_post_import.gd, AssetImportRules). Each glTF material slot maps to <asset dir>/materials/<slot>.tres, the table AshaStage applies at runtime. LODs: Godot's auto LODs inside each file plus a separate <hero>_lod1.glb (no authored -lodN chains). Characters have no static collision. Asha adopted them in M2-FP-07 (docs/kb/tech/asset_import.md); Rhen (M2-CHR-01) and Toma (M2-CHR-02) from the start.",
   "kind": "characters",
   "script": "res://game/core/import/characters_post_import.gd",
-  "assets": ["res://assets/characters/asha/", "res://assets/characters/rhen/"],
+  "assets": ["res://assets/characters/asha/", "res://assets/characters/rhen/", "res://assets/characters/toma/"],
   "adoption_pending": {},
   "generate_lods": true,
   "materials": {

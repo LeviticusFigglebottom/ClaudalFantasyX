@@ -164,6 +164,14 @@ A new hero is a folder `assets_src/characters/<hero>/` that **imports** Asha's m
   re-verifies every hero), PROVENANCE rows, a stage `game/levels/_tests/characters/<hero>/` on `asha_stage.gd`
   (`character_name`), and shots. Rhen's review: [`rhen_review.md`](rhen_review.md).
 
+Toma (M2-CHR-02, [`toma_review.md`](toma_review.md)) is the second hero on this layout. Two additions worth reusing:
+- **Face hair in the Head object.** A beard (or any card layer that must follow the face shapes) goes into the Head's
+  extras before the shapes are built; after `build_shapes`, each of its vertices takes the delta (and the skin weights)
+  of its nearest skin vertex, with deltas under 0.15 mm zeroed so the sparse morph accessors stay small (`build_toma.py`).
+  Every Head vertex carries 40 morph targets, so the card count there is bounded by the 5 MB GLB cap, not the triangles.
+- **Hero costume helpers are importable too:** `toma_costume` imports `rhen_costume` (`torso_sheet`, `limb_tube`,
+  `bandolier`, `wrapped_sandal`), so the `toma` job lists `assets_src/characters/rhen/**` among its sources.
+
 ## 13. Body clips (M2-FP-07)
 
 `assets_src/characters/asha/hero_clips.py` (pure Python, no Blender) writes each hero's body clips as a Godot
