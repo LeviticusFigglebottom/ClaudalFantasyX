@@ -4,7 +4,16 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 
 ## Now
 - **Playtest round 2 (Lead, ~20:00)**
-  1. **The prologue's "everyone is still here" segment is still grey.** It's the same single shot, P01, while the line is up. The subagent is back on it; leads are the near-black vigil capsules (the line's subject), saturation per the colour script, and every preset. **In progress.**
+  1. **The prologue's "everyone is still here" segment: fixed in-scene** (583759c0).
+     - **Presets are not the cause:** low, medium, high and ultra render the same, and nothing desaturates.
+     - **The grey read came from:**
+       - the 7 vigil figures the line is about, which were near-black `Mat_shadow` (L 0.33, chroma 0.045);
+       - the dialogue panel plus the letterbox, which cover about 42% of the frame in navy and black while the line is up.
+     - **Fix:** the figures wear palette cloth colours (Rhen faded teal, Asha sea blue, Toma indigo, the rest sand). Rhen's lantern is an oil-lamp OmniLight, and there is a dusk grade stand-in (gold mid-tones, teal toe) until Rendering's LUT.
+     - **Measured:** figures L 0.33 → 0.59 and chroma 0.045 → 0.058; the scene above the box 0.061 → 0.070.
+     - **Test:** `test_the_figures_and_the_grade_carry_colour_while_the_line_is_up`. prologue 6 and prewarm 18 runs, 0 failed.
+     - **Still covering the frame: the dialogue panel** (UI's file). Request M2-UI-100 (10ba388e) asks for voice-over and narrator lines as subtitles.
+     - **Follow-up:** the colour script lights Rhen's lantern as the line lands. That needs a `@light` sequencer cue; for now the lantern is lit throughout.
   2. **Cutscene motion eases: done** (716c2db4, M2-FP-29). New `CutsceneMotion`:
      - Turns ease in and out, over a time scaled by the angle.
      - Walks have a beat of anticipation, then accelerate, cruise and decelerate, and turn into their heading instead of snapping.
@@ -23,6 +32,7 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
     - Waves 1–3: 89.8 / 15.4%, 87.8 / 53.2% and 93.0 / 33.2%;
     - the Reach: 80.7% / 0.3%.
   - **Battle coverage:** 99.96%, against a 99.93% baseline.
+  - **ADR renumbered to 0100** (m2-slice's block; hero-integration keeps 0038).
   - **Lead to confirm:** the waves' naive band is 10–60%, not the beat sheet's 40–60%. Wave 1's masher sits at 15%, and raising it pushed role_answer past 95%.
   - **UI still to do** (needs a UI task): entries on the timeline, Swap and formation greyed for locked or unavailable heroes, floats for intercepts and withdrawals, and the stair-meter HUD.
 - **MERGE-READY @ a851364c** (plus this log commit)
