@@ -2,8 +2,8 @@
 id: M1-QA-10
 title: Intermittent lavapipe pipeline-creation error and abort at exit in the asha_face_stylized_compare capture
 role: qa
-status: todo
-owner_session: ""
+status: doing
+owner_session: "agent-a2c65f9a3e5a1acdb"
 depends_on: []
 milestone: M1
 request-from: "lead"
