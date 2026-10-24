@@ -19,6 +19,9 @@ extends Node
 ## --override=key=value,...: GraphicsSettings overrides on top of --preset (M2-RND-14; e.g. aa=fxaa, TAA off).
 ## Diagnosis (M2-RND-15): --pipeline-trace prints SLICE_PIPE for every frame over 50 ms or with a draw-time pipeline
 ## compile, with the frame's Performance pipeline-compilation counts (canvas, mesh, surface, draw, specialization).
+## --budget (M2-RND-19): checks every segment against ADR 0029 as amended by ADR 0037 and prints SLICE_BUDGET; the
+## run exits 1 if one is over. A hidden frame drawn behind the boot card's first-run cue (a cold first launch) may
+## take 1.7 s, any other hidden frame 1 s, a visible frame 50 ms. tools/gpu_bench/run_cold_launch.sh runs it cold.
 ## Diagnosis (M2-RND-07): --flood-trace prints the Flood's first 12 frames; --flood-variant=no_boss_vfx forces
 ## the phase without the set piece (BattleBossVfx freed first).
 
@@ -51,6 +54,11 @@ const TRANSITION_TIMEOUT_S := 30.0
 ## reporting a hidden first-run frame (825 ms) as a visible one.
 const LAUNCH_TIMEOUT_S := 300.0
 const FLOOD_HP_SHARE := 0.4
+## ADR 0037: a hidden frame behind the boot card's first-run cue (a cold first launch only).
+const FIRST_RUN_HIDDEN_MAX_MS := 1700.0
+## ADR 0029: every other hidden frame, and every visible frame.
+const HIDDEN_MAX_MS := 1000.0
+const VISIBLE_MAX_MS := 50.0
 ## --pipeline-trace: frames over this (ms) are printed, and any frame with a draw-time pipeline compile.
 const PIPELINE_TRACE_MS := 50.0
 const PIPELINE_MONITORS: Array[Performance.Monitor] = [
@@ -86,6 +94,12 @@ var _opts: Dictionary = {}
 var _rid: RID
 var _pipe_prev := PackedInt64Array()
 var _segment_id := ""
+## Per hidden frame of the current segment: drawn behind the boot card's first-run cue (ADR 0037). _frames_until
+## fills _last_cued for its frames; the segment keeps the hidden window's.
+var _hidden_cued := PackedByteArray()
+var _last_cued := PackedByteArray()
+var _over_budget: Array[String] = []
+var _cue: Node
 
 
 func _ready() -> void:
@@ -126,12 +140,17 @@ func _run() -> void:
 			for f in SEEN_FLAGS:
 				Game.set_flag(f)
 		await _segment(seg, gs.preset_id)
+	if _opts.has("budget") and not _over_budget.is_empty():
+		printerr("SLICE_BUDGET over in: %s" % ", ".join(_over_budget))
+		get_tree().quit(1)
+		return
 	get_tree().quit()
 
 
 func _segment(seg: Array, preset: String) -> void:
 	var id := str(seg[0])
 	_segment_id = id
+	_hidden_cued.clear()
 	var kind := str(seg[1])
 	var spawn := StringName(str(seg[3]))
 	var hidden := PackedFloat64Array()
@@ -148,6 +167,7 @@ func _segment(seg: Array, preset: String) -> void:
 				BattleRequest.start(StringName(str(seg[2])), HALUNA_ID, spawn if spawn != &"" else &"BattleReturn")
 			# M2-ARC-03: the title's warm-up holds the router's reveal; its frames are under the fade too.
 			hidden = await _frames_until(func() -> bool: return bool(swapped[0]) and not _reveal_held(router))
+			_hidden_cued = _last_cued.duplicate()
 			EventBus.scene_changed.disconnect(on_swap)
 			visible = await _frames_until(func() -> bool: return not bool(router.call(&"is_busy")))
 			visible.append_array(await _frames(VISIBLE_FRAMES))
@@ -172,6 +192,7 @@ func _segment(seg: Array, preset: String) -> void:
 				func() -> bool: return bool((router.get(&"last_swap_stats") as Dictionary).get("reveal", false)),
 				LAUNCH_TIMEOUT_S
 			)
+			_hidden_cued = _last_cued.duplicate()
 			visible = await _frames(VISIBLE_FRAMES)
 			# The router closes its visible window a little after the card lifts; wait for its record.
 			await _frames_until(
@@ -267,6 +288,47 @@ func _segment(seg: Array, preset: String) -> void:
 		)
 	)
 	_write_csv(row)
+	if _opts.has("budget"):
+		_check_budget(id, hidden, visible)
+
+
+## ADR 0029 / 0037 for one segment: the worst cued hidden frame, the worst other hidden frame, the worst visible.
+func _check_budget(id: String, hidden: PackedFloat64Array, visible: PackedFloat64Array) -> void:
+	var cued := 0.0
+	var other := 0.0
+	for i in hidden.size():
+		if i < _hidden_cued.size() and _hidden_cued[i] == 1:
+			cued = maxf(cued, hidden[i])
+		else:
+			other = maxf(other, hidden[i])
+	var vis := _pct(visible, 1.0)
+	var ok := cued <= FIRST_RUN_HIDDEN_MAX_MS and other <= HIDDEN_MAX_MS and vis <= VISIBLE_MAX_MS
+	print(
+		(
+			"SLICE_BUDGET %s %s | first-run hidden max %.1f / %.0f (%d) | hidden max %.1f / %.0f | visible max %.1f / %.0f"
+			% [
+				id,
+				"ok" if ok else "OVER",
+				cued,
+				FIRST_RUN_HIDDEN_MAX_MS,
+				_hidden_cued.count(1),
+				other,
+				HIDDEN_MAX_MS,
+				vis,
+				VISIBLE_MAX_MS,
+			]
+		)
+	)
+	if not ok:
+		_over_budget.append(id)
+
+
+## True while the boot card shows its first-run cue (BootCard.show_first_run_cue, M2-ARC-08): the frames ADR 0037
+## lets take 1.7 s. Found by name, wherever the card is (at launch the boot isn't the current scene yet).
+func _first_run_cue_showing() -> bool:
+	if not is_instance_valid(_cue) or not _cue.is_inside_tree():
+		_cue = get_tree().root.find_child("FirstRunCue", true, false)
+	return _cue != null and _cue.is_inside_tree()
 
 
 ## True while something holds the router's fade opaque after its swap (SceneRouter.hold_reveal, M2-ARC-03).
@@ -278,6 +340,7 @@ static func _reveal_held(router: Node) -> bool:
 ## are not the visible window the caller then measures).
 func _frames_until(done: Callable, timeout_s: float = TRANSITION_TIMEOUT_S) -> PackedFloat64Array:
 	var out := PackedFloat64Array()
+	_last_cued.clear()
 	var start := Time.get_ticks_usec()
 	var prev := start
 	while not bool(done.call()):
@@ -288,6 +351,8 @@ func _frames_until(done: Callable, timeout_s: float = TRANSITION_TIMEOUT_S) -> P
 		var now := Time.get_ticks_usec()
 		out.append(float(now - prev) / 1000.0)
 		prev = now
+		# A frame's cue state is read after it's drawn: the card lifts (and frees its cue) on a frame of its own.
+		_last_cued.append(1 if _first_run_cue_showing() else 0)
 		_trace_pipelines("hidden", out.size() - 1, out[-1])
 	return out
 
