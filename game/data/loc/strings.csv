@@ -759,3 +759,31 @@ CTRL_PAD_RSTICK_UP,Right stick up
 CTRL_PAD_RSTICK_DOWN,Right stick down
 CTRL_PAD_LEFT_TRIGGER,Left trigger
 CTRL_PAD_RIGHT_TRIGGER,Right trigger
+OBJ_UP_THE_BEACH,Follow Asha and Toma up the beach toward the village.
+OBJ_TO_NEMES,Go up into Haluna. Asha's aunt Neme has a table waiting.
+OBJ_SAVE_AT_SHRINE,Find the save shrine by the chapel court and record the journey.
+OBJ_TO_CAUSEWAY_HEAD,"Meet Asha and Toma at the causeway head, north of the beach, while the tide is low."
+OBJ_SHRINE_TRIAL,Turn the shell-basins until the water fills the inner pool.
+OBJ_SHRINE_DOOR,The chamber door stands open. Go through to Asha.
+OBJ_FIND_ASHA_ON_DOCK,Find Asha on the dock.
+OBJ_SIDE_TOWN,"Walk Haluna and listen. The market, the forge and the inn are open."
+OBJ_SIDE_NET_FLOAT,Something glints in the drained side pool.
+OBJ_NONE,No errand calls just now. Haluna's lanes are yours to walk.
+MAP_ROUTE_HALUNA,Haluna
+MAP_ROUTE_CAUSEWAY,Saltgrass Causeway
+MAP_ROUTE_SHELL_SHRINE,The Shell Shrine
+MAP_POI_BEACH,The beach
+MAP_POI_NEMES_HOUSE,Neme's house
+MAP_POI_MARKET,The market
+MAP_POI_SHOP,Haluna Market stall
+MAP_POI_FORGE,The forge
+MAP_POI_INN,The Mooring Lamp (inn)
+MAP_POI_SAVE_SHRINE,Save shrine
+MAP_POI_CHAPEL_COURT,The chapel court
+MAP_POI_TIDEWALL_LANE,Tidewall lane
+MAP_POI_DOCK,The dock
+MAP_POI_CAUSEWAY_HEAD,The causeway head
+MAP_POI_SHRINE_ENTRANCE,The entrance
+MAP_POI_SIDE_POOL,The side pool
+MAP_POI_INNER_POOL,The inner pool
+MAP_POI_CHAMBER_DOOR,The chamber door
