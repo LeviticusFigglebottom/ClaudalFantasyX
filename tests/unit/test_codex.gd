@@ -303,15 +303,12 @@ func test_the_mouse_can_reach_a_record_from_the_categories_in_one_click() -> voi
 	InputDriver.click(menu.categories_page().row_node(3))
 	assert_eq(menu.column, CodexMenu.Column.ENTRIES)
 	assert_eq(menu.current_id, &"causeway_notice")
-	# Headless, the viewport's mouse position stays (0, 0), so MenuPage's "the pointer moved" guard
-	# would take this second hover on the same page for a still pointer: forget the last one.
-	menu.categories_page()._hover_at = Vector2.INF
+	# The categories page is dimmed now: hover passes it by (M2-UI-26), a click still reaches it.
 	InputDriver.hover(menu.categories_page().row_node(0))
-	assert_eq(menu.column, CodexMenu.Column.CATEGORIES, "hovering a category takes the cursor back")
-	assert_eq(menu.category, &"world")
-	# The entry under the list's cursor (MenuPage takes a hover only onto another row): a click.
-	InputDriver.click(menu.entries_page().row_node(0))
-	assert_eq(menu.column, CodexMenu.Column.ENTRIES, "clicking an entry takes the cursor into the entries")
+	assert_eq(menu.column, CodexMenu.Column.ENTRIES, "a dimmed page ignores hover")
+	InputDriver.click(menu.categories_page().row_node(0))
+	assert_eq(menu.category, &"world", "a click on another category opens it")
+	assert_eq(menu.column, CodexMenu.Column.ENTRIES)
 	assert_eq(menu.current_id, &"glimmer")
 	menu.close()
 
