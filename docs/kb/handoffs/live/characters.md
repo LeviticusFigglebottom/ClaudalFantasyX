@@ -7,13 +7,14 @@
 - **M2-CHR-02 Toma** (doing): a worktree subagent builds it; it merges into this branch when it reports.
 - **M1-CHR-12 → review** (see Done). **Ready for the PC GPU re-check (M1-QA-09)** of neutral, smile and grief; grief fault
   A waits on M1-RND-24.
-- **Two items remain** after Toma: Toma's clips (hero_clips persona), and M1-ART-06 if the queue runs dry.
+- **One item remains** after Toma: Toma's clips (hero_clips persona). Then CHR-12 fault A once M1-RND-24 merges. **The queue is nearly dry: send more.**
 
 ## Queue
 1. ~~M2-CHR-01 Rhen~~ (review) → 2. M2-CHR-02 Toma (doing) → 3. ~~M2-FP-07 clips~~ (review) → 4. ~~M1-CHR-12~~ (review;
-   fault A after RND-24) → 5. M1-ART-06.
+   fault A after RND-24) → 5. ~~M1-ART-06~~ (review).
 
 ## Done
+- **M1-ART-06 → review** (reviewer: rendering): RND-18's survey numbers are recorded as the Art sign-off in color_script.md, and the crest finding is closed (a1cc542).
 - **M1-CHR-12 Asha round 7 → review** (reviewer: rendering). Details: asha_review.md §12.
   - Lower and uneven hairline with wisps; looser crown.
   - Lid band: the lit eye's R:B is 2.61 against the cheek's 2.32 (passes); the far eye is still 3.23 against 2.00. The
