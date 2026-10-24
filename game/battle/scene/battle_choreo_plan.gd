@@ -121,3 +121,25 @@ static func melee_gap(
 		if side < need:
 			gap = minf(gap, along - sqrt(need * need - side * side))
 	return maxf(gap, 0.0)
+
+
+## A fighter model's footprint radius on the ground (M3-BPR-402): the mean of its visible meshes' half-width and
+## half-depth about the stand-in's origin, times spacing.footprint_k. -1 for a primitive stand-in (no model).
+static func footprint(f: Node3D, data: Dictionary) -> float:
+	if f == null or (BattleClips.player_of(f) == null and BattleClips.creature_of(f) == null):
+		return -1.0
+	var lo := Vector3.INF
+	var hi := -Vector3.INF
+	var inv := f.global_transform.affine_inverse()
+	for n in f.find_children("*", "VisualInstance3D", true, false):
+		var vi := n as VisualInstance3D
+		if not vi.is_visible_in_tree() or vi is Light3D:
+			continue
+		var box := (inv * vi.global_transform) * vi.get_aabb()
+		lo = lo.min(box.position)
+		hi = hi.max(box.end)
+	if not lo.is_finite() or not hi.is_finite():
+		return -1.0
+	var half_x := maxf(-lo.x, hi.x)
+	var half_z := maxf(-lo.z, hi.z)
+	return (half_x + half_z) * 0.5 * float((data.get("spacing", {}) as Dictionary).get("footprint_k", 1.0))

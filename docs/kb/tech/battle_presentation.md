@@ -573,7 +573,12 @@ BattleChoreo, listen-only) adds weight on the contact beat. Every number is in `
 ## Spacing: no overlaps (M3-BPR-402)
 A melee run used to stop a fixed `stop_short_m` short of the target's centre, so a big creature (the Drownbell,
 radius 0.85) or the lunge put the actor inside it. `BattleChoreoPlan.melee_gap` now also stops it so that, at the end
-of its lunge, the actor keeps its radius + each body's radius (`battle_sandbox.json` `stand_ins` radius) +
-`spacing.clearance_m` from every living fighter in its path (a body off the path changes nothing). The test samples a
+of its lunge, the actor keeps its radius + each body's radius + `spacing.clearance_m` from every living fighter in
+its path (a body off the path changes nothing). A radius is the model's real footprint (`BattleChoreoPlan.footprint`:
+the mean of its visible meshes' half-width and half-depth about the stand-in's origin, times `footprint_k`; the eel
+about 0.5 m, the gull harrier about 1.0 m), else the primitive's `stand_ins` radius. The test samples a
 hero on a creature and a creature on a hero across the whole sequence and asserts no two footprints overlap. With
-the real hero rigs (claude/hero-integration), set each hero's `radius` to its footprint; the rule follows.
+the real hero rigs (claude/hero-integration) the footprint comes from their meshes too. **Open:** the enemy line-up
+slots were sized for the primitives, so some real models overlap each other on their marks (the reef crab and the
+gull harrier); a run never brings an actor closer to such a body than it started. Spreading the slots by footprint
+is M3-BPR-403.

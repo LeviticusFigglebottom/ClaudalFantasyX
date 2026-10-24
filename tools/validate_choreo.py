@@ -272,8 +272,9 @@ def choreo_errors(doc: object, skills: object) -> list[str]:
     if "impact" in c:
         errs += impact_errors(c["impact"])
     sp_ = c.get("spacing")
-    if sp_ is not None and (not isinstance(sp_, dict) or not _num(sp_.get("clearance_m")) or sp_["clearance_m"] < 0):
-        errs.append(f"{CHOREO_FILE}: spacing needs clearance_m >= 0")
+    if sp_ is not None and (not isinstance(sp_, dict) or not _num(sp_.get("clearance_m")) or sp_["clearance_m"] < 0
+                            or not _num(sp_.get("footprint_k", 1.0)) or sp_.get("footprint_k", 1.0) <= 0):
+        errs.append(f"{CHOREO_FILE}: spacing needs clearance_m >= 0 and footprint_k > 0")
     return errs
 
 

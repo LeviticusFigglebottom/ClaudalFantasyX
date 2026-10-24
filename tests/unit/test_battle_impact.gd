@@ -231,18 +231,18 @@ func test_no_actor_overlaps_another_during_a_melee_run() -> void:
 		choreo._on_action_resolved(r)
 		var plan := choreo.current()
 		assert_eq(str(plan["style"]), "melee", "%s runs in" % actor)
-		var ra := float(BattleStage.stand_in_spec(actor).get("radius", 0.0))
+		var ra := choreo._radius(actor)
 		var steps := 40
 		for i in steps + 1:
 			choreo.seek(float(plan["total"]) * i / steps)
 			for c: BattleCombatant in ctl.engine.party_active + ctl.engine.enemies:
 				if c.id == actor or not c.is_alive():
 					continue
-				var rb := float(BattleStage.stand_in_spec(c.id).get("radius", 0.0))
+				# Never inside a body; one already that close on its mark (the line-up, not the run) never closer.
+				var at_home := _flat_dist(choreo._home_of(actor).origin, choreo._home_of(c.id).origin)
+				var need := minf(choreo._radius(c.id) + ra, at_home)
 				var d := _flat_dist(ctl.stage.stand_in(actor).position, ctl.stage.stand_in(c.id).position)
-				assert_true(
-					d >= ra + rb - EPS, "%s and %s at %.2f: %.2f >= %.2f" % [actor, c.id, choreo.time(), d, ra + rb]
-				)
+				assert_true(d >= need - EPS, "%s and %s at %.2f: %.2f >= %.2f" % [actor, c.id, choreo.time(), d, need])
 		choreo.finish()
 	_free()
 
@@ -266,3 +266,16 @@ func test_a_big_target_stops_the_run_further_out() -> void:
 
 func _flat_dist(a: Vector3, b: Vector3) -> float:
 	return Vector2(a.x - b.x, a.z - b.z).length()
+
+
+func test_a_creature_models_footprint_is_its_real_size() -> void:
+	var foe := _foe()
+	var f := ctl.stage.stand_in(foe)
+	assert_true(BattleClips.creature_of(f) != null, "the sandbox's foes are models")
+	var r := BattleChoreoPlan.footprint(f, choreo.data)
+	assert_true(
+		r > float(BattleStage.stand_in_spec(foe).get("radius", 0.0)), "%s: %.2f, bigger than its primitive" % [foe, r]
+	)
+	assert_true(r < 3.0, "but a sane size")
+	assert_eq(choreo._radius(foe), r, "the run uses it")
+	_free()

@@ -96,6 +96,7 @@ var _entering: Dictionary = {}
 var _leaving: Array[Dictionary] = []
 ## Accents on fighters' roots: combatant id -> {t, spec, back, clip}.
 var _accents: Dictionary = {}
+var _radii: Dictionary = {}  # combatant id -> footprint radius (M3-BPR-402)
 
 
 static func load_data() -> Dictionary:
@@ -176,8 +177,12 @@ func _bodies(skip: StringName) -> Array:
 	return out
 
 
+## A fighter's footprint: its model's (BattleChoreoPlan.footprint, cached), else its stand-in spec radius.
 func _radius(cid: StringName) -> float:
-	return float(BattleStage.stand_in_spec(cid).get("radius", 0.0))
+	if not _radii.has(cid):
+		var r := BattleChoreoPlan.footprint(_ctl.stage.stand_in(cid), data)
+		_radii[cid] = r if r > 0.0 else float(BattleStage.stand_in_spec(cid).get("radius", 0.0))
+	return float(_radii[cid])
 
 
 ## True when actions play as choreography (not instant).
