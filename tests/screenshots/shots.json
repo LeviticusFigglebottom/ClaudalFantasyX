@@ -755,6 +755,34 @@
       "scene": "res://game/battle/scene/shots/battle_vowbound_out.tscn"
     },
     {
+      "id": "battle_choreo_melee",
+      "scene": "res://game/battle/scene/shots/battle_choreo_melee.tscn"
+    },
+    {
+      "id": "battle_choreo_hit",
+      "scene": "res://game/battle/scene/shots/battle_choreo_hit.tscn"
+    },
+    {
+      "id": "battle_choreo_cast",
+      "scene": "res://game/battle/scene/shots/battle_choreo_cast.tscn"
+    },
+    {
+      "id": "battle_choreo_support",
+      "scene": "res://game/battle/scene/shots/battle_choreo_support.tscn"
+    },
+    {
+      "id": "battle_choreo_read",
+      "scene": "res://game/battle/scene/shots/battle_choreo_read.tscn"
+    },
+    {
+      "id": "battle_choreo_ko",
+      "scene": "res://game/battle/scene/shots/battle_choreo_ko.tscn"
+    },
+    {
+      "id": "battle_choreo_swap",
+      "scene": "res://game/battle/scene/shots/battle_choreo_swap.tscn"
+    },
+    {
       "id": "bestiary_menu",
       "scene": "res://game/ui/bestiary/shots/bestiary_menu.tscn"
     },
