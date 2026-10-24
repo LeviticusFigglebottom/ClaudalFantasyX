@@ -1080,6 +1080,14 @@
     {
       "id": "battle_pause",
       "scene": "res://game/ui/menus/battle_pause/shots/battle_pause.tscn"
+    },
+    {
+      "id": "equip_menu",
+      "scene": "res://game/ui/menus/equip/shots/equip_menu.tscn"
+    },
+    {
+      "id": "equip_customize",
+      "scene": "res://game/ui/menus/equip/shots/equip_customize.tscn"
     }
   ]
 }

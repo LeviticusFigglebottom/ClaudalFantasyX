@@ -1,17 +1,80 @@
 {
   "equip_menu": {
-    "doc": "The equip page (M2-MNU-02; docs/kb/tech/ui.md section Party pages). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3.",
+    "doc": "The equip page (M2-MNU-02; docs/kb/tech/ui.md section 'Equip and Customize pages'). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'heroes' (left), 'gear' (the hero's slots and ability slots, middle) and 'choice' (the pieces for a slot, or the Customize recipes, in the gear page's place) are MenuPage metrics blocks, each as tall as its rows up to max_rows. 'desc' is the line about the highlighted row under the heroes page, with the status line (a refusal in the danger color) 'status' gap under it. 'preview' (right) holds a header, the stat table ('stat_pitch' per row; 'cols' are x offsets and widths inside it: name, now, arrow, next, delta) and, 'changes_gap' under it, the abilities gained and lost or the recipe.",
     "canvas_layer": 64,
     "panel": {
-      "rect": [
-        219,
-        111,
-        1482,
-        858
-      ],
+      "rect": [219, 111, 1482, 858],
       "pad": 27,
       "title_height": 56,
       "help_height": 40
+    },
+    "heroes": {
+      "rect": [246, 216, 372, 0],
+      "header_height": 45,
+      "row_pitch": 48,
+      "max_rows": 4,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 60,
+      "rank_width": 60,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "gear": {
+      "rect": [645, 216, 540, 0],
+      "header_height": 45,
+      "row_pitch": 48,
+      "max_rows": 12,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 252,
+      "rank_width": 252,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "choice": {
+      "rect": [645, 216, 540, 0],
+      "header_height": 45,
+      "row_pitch": 48,
+      "max_rows": 12,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 168,
+      "rank_width": 168,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "desc": {"rect": [258, 504, 351, 249]},
+    "status": {"height": 144, "gap": 15},
+    "preview": {
+      "rect": [1212, 216, 462, 690],
+      "header_height": 45,
+      "stat_top": 66,
+      "stat_pitch": 39,
+      "cols": {
+        "name": [12, 192],
+        "now": [204, 63],
+        "arrow": [270, 39],
+        "next": [312, 63],
+        "delta": [378, 72]
+      },
+      "changes_gap": 18,
+      "changes_height": 192
     }
   }
 }
