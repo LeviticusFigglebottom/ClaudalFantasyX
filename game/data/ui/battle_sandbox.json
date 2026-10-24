@@ -26,7 +26,11 @@
       "drownbell": {"shape": "cylinder", "color": "#4A3A26", "radius": 0.85, "height": 2.4, "tint": "#8C6A3E",
                     "emission": "#3FC7C9", "emission_energy": 0.35},
       "spawn_polyp": {"shape": "capsule", "color": "#2C8A92", "radius": 0.22, "height": 0.6, "tint": "#4FD2D6",
-                      "emission": "#4FD2D6", "emission_energy": 0.9}
-    }
+                      "emission": "#4FD2D6", "emission_energy": 0.9},
+      "ilun": {"shape": "capsule", "color": "#0E4A55", "radius": 0.5, "height": 2.3, "tint": "#BFE6E0",
+               "emission": "#1FA3A6", "emission_energy": 0.45}
+    },
+    "vowbound_doc": "M2-UI-05: a called Vowbound stands on party slot vowbound_slot (the middle one) while the party is off the field.",
+    "vowbound_slot": 1
   }
 }

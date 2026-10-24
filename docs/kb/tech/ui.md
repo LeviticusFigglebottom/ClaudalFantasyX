@@ -175,6 +175,37 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
 - **Captures:** `field_menu` (the root, cursor on Swell) and `field_menu_swell_modes` (Rhen's modes with Tether unlocked and Wake in use, cursor on Tether). Both come from `FieldMenuShot` on a scratch `GameStateData`. The modes come from swell.json, as they do in play.
 - **The target info panel knows a Read foe.** `BattleController._show_pick` now takes `revealed` from `BattleBestiary.knows(c)`, which is `book.is_read(BattleEngine.enemy_id(c))` for a foe. A foe the party has Read, in this battle or before it (a live battle's book is `Game.state.bestiary`), shows its HP gauge instead of "HP unknown until Read". The controller line count is unchanged (994). Capture fixtures log into a scratch book, so no battle baseline moves.
 
+## The Vowbound (M2-UI-05, ADR 0030)
+
+`BattleVowboundHud` (`game/battle/scene/battle_vowbound_hud.gd`) is the glue, built like `BattleBossHud`. The controller reaches it through one-line hooks: the attach in `_build_engine`, `vow.perform` in `act()`, `vow.highlight` in the highlight guard, `vow.choose` as the root `match`'s default, and `vow.show_note` in `_open_command`. `_after_action` is now the public `after_action`, so the glue can end a call or a dismissal the way an action ends. Engine rules: battle_ctb.md § Vowbound.
+- **Binding.** `attach()` builds `engine.vowbound` before `begin()`.
+  - A live battle binds every vowbound.json row whose `bound_flag` is set (`Game.get_flag`; Ilun's is `ch03_ilun_bound`; `validate_data.py` checks that the flag is declared).
+  - A fixture binds its `vowbound` list from the frozen `tables.vowbound`. Fixture `overrides` merge into those rows too.
+  - Any other battle loads the rows with nothing bound.
+- **The caller's Call row** (`BattleMenus.call_rows`) comes after Skills: "Call Ilun", with the call's rank (`R3`) on the right.
+  - Refused, it is greyed and the reason replaces the rank: "Silenced", "Fallen", or, with nothing bound yet, a nameless "Call · None bound". Disabled rows cannot be highlighted, so the reason has to sit on the row.
+  - Highlighting it shows the whole order after the call (`BattleVowbound.preview_call`, a full preview as for Swap): Ilun takes slot 0 and the party is gone.
+  - The help line says what the call costs: "Ilun answers and takes this turn, and the party stands down. When it returns, Asha waits a rank 3 delay; the others keep their place." The return cannot be drawn before the call, because it depends on when Ilun leaves.
+- **The Vowbound's own page** (`vowbound_root_rows`, titled with its name) has these rows:
+  - **Attack.**
+  - **Floodnet.** Greyed until the gauge is full, with the right column saying how full ("38%"); full, it shows its rank.
+  - **Skills:** Brine Lash and Tidal Ward.
+  - **Dismiss** ("Ends turn").
+  - **Escape and Swap**, greyed (the engine refuses them with `vowbound_out`). Items is left off ("a Vowbound uses no items"), so the page never needs more than six rows.
+- **The root page grows upward.** Its rect (`commands.rect`, 272 px) holds five rows, and a sixth used to spill below the frame. That could already happen to live Rhen with a bag (Attack, Swell, Skills, Items, Escape, Swap), and now to Asha with a bag and her Call row. `CommandMenu.open_root` now sizes the page to `MenuPage.height_for(rows)` when that is taller, from the same foot. Five-row pages, and so every baseline, are unchanged. A seventh row would scroll (`max_rows` 6). Asha reaches seven once her Swell input is drawn (M2-UI-03), so that task should revisit the root.
+
+  Floodnet goes through the normal target pick, and `act()` hands it to `BattleVowbound.unleash` (`vow.perform`). Highlighting Dismiss shows the whole order with the party back (`preview_dismiss`), the caller after its call delay, and the help line says when the caller acts again.
+- **The field.**
+  - `called` and `departed` re-seat the stage. `BattleStage.sync_party` now takes off any party stand-in not on the field, and seats a called Vowbound on `battle_sandbox.json` `vowbound_slot` (the middle slot). Ilun's greybox stand-in is a tall deep-teal capsule with a lagoon glow.
+  - They also rebuild the party panel: the Vowbound alone, with HP, MP and a Swell gauge (`PartyRow.show_swell`; it has no fill mode), and a dim note at the panel's foot, "Standing down: Rhen, Asha" (`PartyPanel.set_note`, `party.note_height`).
+  - A departure leads the next command menu's help line: "Ilun has fallen and cannot answer again this battle. The party returns." or "Ilun has left the field. The party returns." A boss prompt waiting for the same menu wins.
+- **Refusals in words.** `BattleMenus.FAIL_REASONS` gains the six Vowbound reasons, each with its own `HUD_FAIL_*` line.
+- **No flash or new motion.** The call has no cinematic yet (SPEC §6.3; a cinematics task), so nothing here flashes. The panel and timeline use their existing reduced-motion paths.
+- **Captures:**
+  - `battle_vowbound_call` (fixture `vowbound_call`): Asha's turn, the Call row highlighted.
+  - `battle_vowbound_out` (fixture `vowbound_out`): Ilun out after one exchange, Dismiss highlighted. The fixture makes Ilun quicker, so he lives to a second turn with some gauge.
+- **Tests:** `tests/unit/test_battle_vowbound_hud.gd` (scene) and `test_battle_vowbound_preview.gd` (each preview against the engine's real order after the action); `tools/tests/test_vowbound_flag_validate.py`.
+
 ## Swell (M1-CMB-04)
 
 - **Gauge:** `PartyRow.swell_gauge()`, a `HudGauge` with the `swell` role (see deviation 8). `HudGauge.glow` (0..1) brightens the fill and adds the full frame (`HudGauge.full_frame_rects()`: night gap, white line).

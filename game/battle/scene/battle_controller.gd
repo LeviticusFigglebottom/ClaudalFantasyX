@@ -73,6 +73,8 @@ var swell: BattleSwell
 var swell_input_live := true
 ## Boss mechanics on the stage and HUD (phases, spawns, the toll, the field; M2-FP-06).
 var boss: BattleBossHud
+## The Vowbound's call, menu, stage and panel (M2-UI-05; BattleVowboundHud).
+var vow: BattleVowboundHud
 
 var _db: BattleDB
 var _live_db: BattleDB
@@ -225,6 +227,7 @@ func _build_engine(
 	BattleVitals.setup(engine, _db, _setup, progress, persist_progress and fixture == null)
 	if fixture != null:
 		fixture.prepare(engine)
+	vow = BattleVowboundHud.attached(self, engine)  # engine.vowbound from the story or the fixture
 	swell = BattleSwell.new(BattleSwell.load_config())
 	BattleSwellCarry.attach(swell, engine, persist_progress and fixture == null)  # M2-ARC-01
 	bestiary.attach(engine, persist_progress and fixture == null)
@@ -294,7 +297,7 @@ func act(skill_id: StringName, target_ids: Array[StringName]) -> ActionResult:
 		return _refuse_off_turn(skill_id)
 	var actor := engine.current
 	var targets := _found(target_ids)
-	var result := engine.perform(skill_id, targets)
+	var result := vow.perform(skill_id, targets)  # engine.perform, or a Vowbound's finisher
 	_clear_targets()
 	if not result.ok:
 		_open_command()
@@ -302,7 +305,7 @@ func act(skill_id: StringName, target_ids: Array[StringName]) -> ActionResult:
 		return result
 	if targets.size() == 1 and targets[0].team == BattleCombatant.TEAM_ENEMY:
 		_last_foe = targets[0].id
-	_after_action(actor.id)
+	after_action(actor.id)
 	return result
 
 
@@ -323,7 +326,7 @@ func use_item_on(item_id: StringName, target_ids: Array[StringName]) -> ActionRe
 		return result
 	if targets.size() == 1 and targets[0].team == BattleCombatant.TEAM_ENEMY:
 		_last_foe = targets[0].id
-	_after_action(actor.id)
+	after_action(actor.id)
 	return result
 
 
@@ -341,7 +344,7 @@ func unleash(technique: StringName, target_ids: Array[StringName], input: Dictio
 		hud.set_help(menus.fail_text(result.fail_reason, actor))
 		return result
 	hud.set_help(menus.swell_result_text(input.get(BattleSwell.RESULT_GRADES, []), result.swell_bonus_pct))
-	_after_action(actor.id)
+	after_action(actor.id)
 	return result
 
 
@@ -387,7 +390,7 @@ func try_escape() -> bool:
 		_wait(_pace(&"result_delay_sec"), _show_result)
 		return true
 	hud.set_help(tr("HUD_ESCAPE_FAILED"))
-	_after_action(actor)
+	after_action(actor)
 	return false
 
 
@@ -468,10 +471,11 @@ func _run_enemy() -> void:
 			)
 		)
 	var hold := &"auto_hold_sec" if auto != &"" and actor.team == BattleCombatant.TEAM_PARTY else &"action_hold_sec"
-	_after_action(actor.id, hold)
+	after_action(actor.id, hold)
 
 
-func _after_action(actor_id: StringName, hold: StringName = &"action_hold_sec") -> void:
+## After `actor_id`'s action (or a Vowbound's call or dismissal): the order moves on, then the next turn.
+func after_action(actor_id: StringName, hold: StringName = &"action_hold_sec") -> void:
 	_set_state(STATE_BUSY)
 	hud.commands.active = false
 	hud.commands.visible = false
@@ -498,6 +502,7 @@ func _open_command() -> void:
 	hud.commands.open_root(
 		BattleMenus.PAGE_ROOT, menus.display_name(engine.current), menus.root_rows(engine, items, swell)
 	)
+	vow.show_note()  # a Vowbound's departure ("the party returns"), unless a boss prompt waits
 	boss.show_prompt()  # a phase's one tutorial line, over the first highlight's help
 
 
@@ -529,7 +534,7 @@ func _show_result() -> void:
 
 
 func _on_menu_highlighted(_page: StringName, row: Dictionary) -> void:
-	if engine == null or not engine.is_party_turn() or SwellModeRows.highlight(self, row):  # M2-UI-01
+	if engine == null or not engine.is_party_turn() or SwellModeRows.highlight(self, row) or vow.highlight(row):
 		return
 	var rid := StringName(str(row.get("id", "")))
 	match state:
@@ -548,8 +553,9 @@ func _on_menu_highlighted(_page: StringName, row: Dictionary) -> void:
 
 func _highlight_root(rid: StringName) -> void:
 	match rid:
-		BattleMenus.ROW_ATTACK:
-			_preview_skill(BattleMenus.ATTACK_SKILL, default_targets(BattleMenus.ATTACK_SKILL))
+		BattleMenus.ROW_ATTACK, BattleMenus.ROW_UNLEASH:  # Attack, or a Vowbound's finisher (M2-UI-05)
+			var sid := menus.root_skill(engine, rid)
+			_preview_skill(sid, default_targets(sid))
 		BattleMenus.ROW_ESCAPE:
 			# A failed attempt costs a default-rank turn: preview exactly that.
 			var failed := engine.timeline.predict(CtbTimeline.PREVIEW_LENGTH - 1, engine.current, Formulas.DEFAULT_RANK)
@@ -590,6 +596,8 @@ func _on_menu_chosen(_page: StringName, row: Dictionary) -> void:
 				BattleMenus.ROW_SWAP:
 					_set_state(STATE_SWAP_IN)
 					hud.commands.push(BattleMenus.PAGE_SWAP, tr("HUD_PAGE_RESERVE"), menus.reserve_rows(engine))
+				_:  # Call, Dismiss and a Vowbound's finisher (M2-UI-05)
+					vow.choose(row, _begin_target)
 		STATE_SKILLS, STATE_SWELL:  # a Swell fill-mode row sets the mode instead (M2-UI-01)
 			SwellModeRows.pick(self, row, _begin_target.bind(StringName(str(row.get("skill", rid)))))
 		STATE_ITEMS:

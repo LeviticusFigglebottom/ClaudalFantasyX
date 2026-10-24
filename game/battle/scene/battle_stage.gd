@@ -101,16 +101,21 @@ func _seat_enemy(cid: StringName, slot: int) -> void:
 	_enemy_slot_of[cid] = slot
 
 
-## Re-seats the active party after a swap (slot i shows party_active[i]).
+## Re-seats the active party after a swap (slot i shows party_active[i]) or a Vowbound's call or
+## departure (M2-UI-05): every party stand-in no longer on the field steps off, and a called
+## Vowbound stands alone on battle_sandbox.json's vowbound_slot.
 func sync_party(engine: BattleEngine) -> void:
-	for c in engine.party_reserve:
-		if _fighters.has(c.id):
-			(_fighters[c.id] as FighterStandIn).queue_free()
-			_fighters.erase(c.id)
+	var on_field := BattleIds.of(engine.party_active)
+	for cid: StringName in _fighters.keys():
+		if not _enemy_slot_of.has(cid) and not on_field.has(cid):
+			(_fighters[cid] as FighterStandIn).queue_free()
+			_fighters.erase(cid)
+	var out := engine.vowbound.is_out()
 	for i in engine.party_active.size():
 		var cid := engine.party_active[i].id
 		if not _fighters.has(cid):
-			_place(cid, _party_slots[i])
+			var slot := clampi(int(config().get("vowbound_slot", i)), 0, _party_slots.size() - 1) if out else i
+			_place(cid, _party_slots[slot])
 
 
 func refresh_ko(engine: BattleEngine) -> void:

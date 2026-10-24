@@ -1252,6 +1252,7 @@ def run(root: Path) -> Report:
     data_keys += check_progression(files, rep)
     data_keys += check_items(files, declared_flags_quiet(root), rep)
     data_keys += check_vowbound(files, rep)
+    check_vowbound_flags(files, declared_flags_quiet(root), rep)
     data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
     data_keys += check_locations(root, files, rep)
     data_keys += check_swell(files, rep)
@@ -1260,6 +1261,7 @@ def run(root: Path) -> Report:
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_undertow(root, files, rep)
+    check_zone_weather(root, files, rep)
     check_provenance(root, rep)
     check_banned(root, rep)
     check_binary_sizes(root, rep)
@@ -2168,6 +2170,84 @@ def check_vowbound(files: dict[str, object], rep: Report) -> list[str]:
     for e in vowbound_errors(doc, skills, chars, _learned_skills(files)):
         rep.err(e)
     return collect_keys(doc)
+
+
+def vowbound_flag_errors(doc: object, declared: set[str]) -> list[str]:
+    """M2-UI-05: a vowbound row's optional bound_flag (the story flag that binds it; the battle
+    scene reads it with Game.get_flag) must be a declared flag."""
+    rows = doc.get("vowbound", []) if isinstance(doc, dict) else []
+    errs: list[str] = []
+    for r in rows:
+        if not isinstance(r, dict) or "bound_flag" not in r:
+            continue
+        f = r["bound_flag"]
+        if not isinstance(f, str) or f not in declared:
+            errs.append(
+                f"{VOWBOUND_FILE}: {r.get('id')}: bound_flag '{f}' is not a declared flag (game/data/flags.tres)"
+            )
+    return errs
+
+
+def check_vowbound_flags(files: dict[str, object], declared: set[str], rep: Report) -> None:
+    for e in vowbound_flag_errors(files.get(VOWBOUND_FILE), declared):
+        rep.err(e)
+
+
+# --- M2-ARC-02: zone wind for the weather clock owner (game/data/world/zone_weather.json) --------
+
+ZONE_WEATHER_FILE = "game/data/world/zone_weather.json"
+ZONE_WEATHER_NUMS = ("toward_azimuth_deg", "wind_m_s", "gust")
+
+
+def _wind_row_errors(row: object, w: str) -> list[str]:
+    if not isinstance(row, dict):
+        return [f"{w}: must be an object"]
+    errs: list[str] = []
+    for k in ZONE_WEATHER_NUMS:
+        if not _num(row.get(k)):
+            errs.append(f"{w}.{k}: must be a number")
+    if _num(row.get("wind_m_s")) and row["wind_m_s"] < 0:
+        errs.append(f"{w}.wind_m_s: must be >= 0")
+    if _num(row.get("gust")) and not 0 <= row["gust"] <= 1:
+        errs.append(f"{w}.gust: must be in 0..1")
+    return errs
+
+
+def zone_weather_errors(doc: object, scene_exists) -> list[str]:
+    """zone_weather.json: a default wind row, and zone rows that each name an existing, unique scene.
+    `scene_exists(res_path) -> bool`."""
+    w0 = ZONE_WEATHER_FILE
+    if not isinstance(doc, dict):
+        return [f"{w0}: must be an object"]
+    errs = _wind_row_errors(doc.get("default"), f"{w0} default")
+    zones = doc.get("zones", [])
+    if not isinstance(zones, list):
+        return errs + [f"{w0} zones: must be a list"]
+    seen: set[str] = set()
+    for i, row in enumerate(zones):
+        w = f"{w0} zones[{i}]"
+        errs += _wind_row_errors(row, w)
+        scene = row.get("scene") if isinstance(row, dict) else None
+        if not isinstance(scene, str) or not scene.startswith("res://") or not scene.endswith(".tscn"):
+            errs.append(f"{w}.scene: must be a res://...tscn path")
+            continue
+        if scene in seen:
+            errs.append(f"{w}.scene: {scene} has two rows")
+        seen.add(scene)
+        if not scene_exists(scene):
+            errs.append(f"{w}.scene: {scene} does not exist")
+    return errs
+
+
+def check_zone_weather(root: Path, files: dict[str, object], rep: Report) -> None:
+    doc = files.get(ZONE_WEATHER_FILE)
+    if doc is None:
+        rep.err(f"{ZONE_WEATHER_FILE}: missing")
+        return
+    for e in zone_weather_errors(doc, lambda res: _res_path(root, res).is_file()):
+        rep.err(e)
+
+
 
 if __name__ == "__main__":
     sys.exit(main())
