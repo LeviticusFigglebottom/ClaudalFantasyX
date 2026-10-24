@@ -9,6 +9,8 @@ Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD),
     turn to face the player (reusing hero-integration's HeroLocomotion and HeroIdleMicro) and walk routes. It is built
     on a LOCAL merge of claude/hero-integration (not yet on the integration branch); only the NPC commits land here,
     after hero-integration merges. Zones stay m2-slice's: they add the node (docs/kb/tech/field_npc.md).
+    **Done and parked (22:10):** 3 commits as patches in docs/kb/tasks/M3/M3-CRE-610-parked/ (`git am` after
+    hero-integration merges). field_npc 10/0, hero 35/0; the npc_stage_field shot was viewed and approved.
   - **611 ambient wildlife** (worktree agent): gulls, shore crabs and fish shoals; a WildlifeLayer node plus per-zone
     data for the zone owners to add.
   - **612 battle polish** (here): hit_b and idle_b derived for every creature (f426c0e8), hit rotation, and an idle
