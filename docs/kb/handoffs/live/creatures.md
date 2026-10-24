@@ -61,6 +61,11 @@ Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD),
   its frames are now their own `Ribs` mesh, a `phase_break` clip has them burst off and fall, and a new phase key
   `hide_after` (CreatureActor, validator, test) hides them once the clip has played. Its shot is unchanged (RMSE 0)
   and its job is identical. The Matron's re-crust can be a phase with `show: ["Crust"]` once m2-slice names it.
+  **15:20, m2-slice: the re-crust is not a phase.** She stays in `pour`. The `Crust` comes back when her `recrust`
+  skill resolves, or on a water or ice hit with `reacted: true` (game/battle/boss_mechanics.gd on claude/m2-slice).
+  It hides again when the armour break lands. That hook is battle-presentation's (m2-slice logged the request), and no
+  creatures.json row is needed. If they want a CreatureActor call for it, `set_part_broken` already shows and hides
+  named nodes per key; a `break_parts` entry could carry it.
   Checks: creature 13/0, battle 412/0, validate_data, tools creature tests, lint, format.
 
 ## Exact next step

@@ -58,7 +58,6 @@ low, the tools sagging. The rig keeps the first pass's bone names (root, torso, 
 columns for the firebox, port and mask, shingled plate courses, pillowed crust cells), `materials.json` (`metal`,
 `crust`, `heart`).
 
-**Re-crust (m2-slice act1_ch05: a water or ice hit during the Pour re-crusts her).** The `Crust` mesh can come back at
-any time with a phase `show: ["Crust"]`. If the encounter models the re-crust as a phase (for example `pour` →
-`recrust` → `pour`), the creatures.json row only needs a `recrust` phase with `show: ["Crust"]` and `pour` keeps
-`hide: ["Crust"]`. The phase id has to come from the enemy row.
+**Re-crust (m2-slice, 2026-10-24).** It is not a phase change: she stays in `pour`. The `Crust` mesh comes back
+when her `recrust` skill resolves, or on a water or ice hit with `reacted: true`, and hides again when the armour
+break lands. That event hook is battle-presentation's; the mesh needs nothing new.
