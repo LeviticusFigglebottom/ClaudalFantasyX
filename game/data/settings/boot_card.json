@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "_note": "M2-ARC-08: how long the boot card (BootCard) and the router's reveal hold (SceneRouter._wait_for_reveal) wait for the boot warm-up. They wait while the work reports progress (ProgressWait). They give up on a stall: stall_timeout_ms with no progress. max_wait_ms is an absolute safety cap, far above any first launch measured (9.5 s on Low, RX 9070 XT, M1-RND-29). On a stall or the cap, the card stops the warm-up (ShaderPrewarm.cancel) before it lifts, so nothing stages under the title.",
+  "stall_timeout_ms": 10000.0,
+  "max_wait_ms": 180000.0,
+  "cue": {
+    "_note": "The first-launch cue: one quiet line and a thin progress bar near the bottom of the card, only while ShaderPrewarm.first_run is staging. It appears after delay_ms, so a fast first launch shows nothing, and fades in over fade_in_ms.",
+    "text_key": "BOOT_FIRST_RUN_NOTE",
+    "delay_ms": 1500.0,
+    "fade_in_ms": 1200.0,
+    "text_alpha": 0.6,
+    "bar_width_px": 280.0,
+    "bar_height_px": 2.0,
+    "bar_track_alpha": 0.15,
+    "bar_fill_alpha": 0.5,
+    "gap_px": 14.0,
+    "bottom_margin_px": 120.0
+  }
+}

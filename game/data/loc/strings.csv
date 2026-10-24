@@ -616,3 +616,4 @@ HUD_FAIL_NOT_BOUND_FMT,{name} has bound no Vowbound yet.
 HUD_FAIL_NOT_CALLER_FMT,{name} cannot call that Vowbound.
 HUD_FAIL_VOWBOUND_FALLEN,That Vowbound has fallen and cannot answer again this battle.
 HUD_FAIL_NO_VOWBOUND,No Vowbound is on the field.
+BOOT_FIRST_RUN_NOTE,Preparing the graphics for first use. This happens only once.
