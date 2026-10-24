@@ -9,10 +9,17 @@ The gap (the human's playtest note): battles had no action animation. This track
 |---|---|
 | M2-BPR-01 BattleChoreo sequencer | **core pushed (0cfa455)**: beats from `game/data/battle/choreo.json`, floats and hit VFX land on contact, KO collapse, swap walk-in; the controller hand-off waits `BattleStage.hold_after` (in place; battle_controller.gd still 995 lines). 20 new tests; all 412 battle tests pass. |
 | M2-BPR-02 clip contract | names in battle_presentation.md § Clip contract and `BattleClips`; requests sent to characters and creatures |
-| M2-BPR-03 camera director, speed/skip settings | worktree agent running |
+| M2-BPR-03 camera director, speed/skip settings | **review** (merged 9f27810; target shot widened after viewing: it hid the foe behind the attacker) |
 | M2-BPR-04 specials (Swell finishers, Drownbell, Vowbound) | worktree agent running |
 | M2-BPR-05 intro stinger, banner timing, victory pose | **review** (04417ea stinger "tide line" + banner waits for the router fade; 4e052f8 BattleOutro victory hops / escape walk-off) |
-| M2-BPR-06 freeze-frame shots | capture states + fixtures pushed (choreo_melee/hit/cast/support/read/ko/swap); shots.json entries and baselines land after the camera merge (the camera reframes them) |
+| M2-BPR-06 freeze-frame shots | 7 shots approved (bd0d3c0, RMSE 0 run-to-run); specials shots pending |
+| M2-BPR-07 per-encounter arenas (intro audit) | **review** (a672c46): tideline noon + causeway sunset greybox; env-art request M2-ENV-11 |
+| M2-BPR-08 C10 Ilun first-call cinematic (intro audit) | after the specials merge |
+
+## Baselines changed (viewed)
+- New: battle_choreo_melee/hit/cast/support/read/ko/swap, battle_arena_tideline, battle_arena_causeway.
+- Changed: **drownbell_flood** (RMSE 0.161): the fight is now on the causeway at the ch03_boss sunset, not the noon sandbox (battle_vfx.md's open item). PC: your GPU key frames for RND-04 predate this.
+- Pre-existing in this container (same on base 499f074): battle_vowbound_call 0.00798 (limit 0.008), battle_victory 0.00463, battle_read_panel 0.00542. vowbound_call is one particle away from failing; worth re-baselining on the Lead's container.
 
 ## For other tracks
 - **PC GPU (battle VFX owner):** `BattleVfx.attach` now connects to `BattleChoreo.contact` when the stage has a sequencer (one `if`), so hit effects land on the blow, not at resolve. With pacing 0 it fires synchronously as before. BattleBossVfx is unchanged for now (BPR-04 will coordinate the toll beats).
