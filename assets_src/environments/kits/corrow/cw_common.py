@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import math
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -70,6 +71,7 @@ M_COPPER = "cw_copper"
 M_HEADLAND = "cw_headland"
 M_BEACON = "cw_beacon"
 M_MORTAR = "cw_mortar"
+M_BROKEN = "cw_laterite_broken"  # M3-ENV-04B: fresh breaks, the raw stone inside the 900-year skin
 
 # Haluna generator slots reused by import -> this kit's slots.
 RENAME = {
@@ -191,8 +193,47 @@ def _blob(x, y, cx, cy, rx, ry, power: float = 2.0):
     return np.clip(1.0 - r2, 0.0, 1.0) ** power
 
 
+@dataclass(frozen=True)
+class FaceCarving:
+    """The constants of one Watcher carving (M3-ENV-04B). `CARVING_A` is the M3-ENV-04 face exactly (the
+    same numbers in the same arithmetic, so the committed heads are unchanged); `CARVING_B` is a second
+    hand: an older, heavier face with lower, more downcast lids, a broader nose, a wider humming mouth and a
+    crown of three long waves instead of five."""
+
+    jaw: float = 0.43
+    jaw_narrow: float = 0.16
+    brow_y: float = 0.655
+    brow_curve: float = 0.22
+    brow_m: float = 0.016
+    eye_x: float = 0.158
+    eye_y: float = 0.572
+    lid_rx: float = 0.1
+    lid_ry: float = 0.038
+    lid_m: float = 0.02
+    crease_droop: float = 0.22
+    nose_w0: float = 0.03
+    nose_w1: float = 0.045
+    tip_rx: float = 0.052
+    wing_x: float = 0.056
+    mouth_rx: float = 0.058
+    mouth_ry: float = 0.03
+    mouth_y: float = 0.236
+    cheek_m: float = 0.014
+    waves: float = 5.0
+    wave_rise: float = 0.72
+    wave_fall: float = 0.28
+    wave_m: float = 0.08
+
+
+CARVING_A = FaceCarving()
+CARVING_B = FaceCarving(jaw=0.45, jaw_narrow=0.12, brow_y=0.665, brow_curve=0.3, brow_m=0.022, eye_x=0.165,
+                        eye_y=0.56, lid_rx=0.108, lid_ry=0.034, lid_m=0.024, crease_droop=0.34, nose_w0=0.036,
+                        nose_w1=0.058, tip_rx=0.062, wing_x=0.066, mouth_rx=0.066, mouth_ry=0.032, mouth_y=0.232,
+                        cheek_m=0.018, waves=3.0, wave_rise=0.64, wave_fall=0.36, wave_m=0.1)
+
+
 def watcher_face(u: np.ndarray, v: np.ndarray, height: float, *, crown: bool = True,
-                 fade: bool = True) -> np.ndarray:
+                 fade: bool = True, carving: FaceCarving = CARVING_A) -> np.ndarray:
     """Displacement (m, outward from the carving's base plane) of a Watcher's face.
 
     `u` across (m, 0 on the centre line; the face is symmetric), `v` up from the chin's base (m);
@@ -207,40 +248,41 @@ def watcher_face(u: np.ndarray, v: np.ndarray, height: float, *, crown: bool = T
     ax = np.abs(x)
     # The face plane: wrapped horizontally like a shallow cylinder, set forward from the chin to the
     # crown, the jaw narrowing toward the chin.
-    jaw = 0.43 - 0.16 * (1.0 - kc.smoothstep(0.05, 0.42, y))
+    k = carving
+    jaw = k.jaw - k.jaw_narrow * (1.0 - kc.smoothstep(0.05, 0.42, y))
     wrap = np.clip(1.0 - (x / jaw) ** 2, 0.0, 1.0) ** 1.2
     vert = kc.smoothstep(0.0, 0.14, y) * (1.0 - kc.smoothstep(0.80, 0.86, y))
     plane = wrap * vert * 0.06
     # Brow: one crisp ridge over both eyes, the forehead flat above it.
-    brow_y = 0.655 - 0.22 * x ** 2
+    brow_y = k.brow_y - k.brow_curve * x ** 2
     brow = (kc.smoothstep(brow_y - 0.035, brow_y, y) * (1.0 - kc.smoothstep(brow_y + 0.004, brow_y + 0.03, y))) \
-        * (1.0 - kc.smoothstep(0.27, 0.36, ax)) * 0.016
+        * (1.0 - kc.smoothstep(0.27, 0.36, ax)) * k.brow_m
     # Eye sockets and closed lids: a soft hollow under the brow; a convex almond lid; its lower edge a
     # thin crease curving down toward the outer corner (the eyes closed, at rest).
     eyes = np.zeros_like(x)
     for sx in (-1.0, 1.0):
-        ex, ey = 0.158 * sx, 0.572
+        ex, ey = k.eye_x * sx, k.eye_y
         dx = x - ex
         socket = _blob(x, y, ex, ey + 0.012, 0.14, 0.075, 2.0)
-        lid = _blob(x, y, ex, ey + 0.014, 0.1, 0.038, 1.5)
-        crease_y = ey - 0.004 - 1.5 * dx ** 2 - 0.22 * np.maximum(dx * sx, 0.0)
+        lid = _blob(x, y, ex, ey + 0.014, k.lid_rx, k.lid_ry, 1.5)
+        crease_y = ey - 0.004 - 1.5 * dx ** 2 - k.crease_droop * np.maximum(dx * sx, 0.0)
         crease = _g(y - crease_y, 0.007) * (1.0 - kc.smoothstep(0.075, 0.11, np.abs(dx)))
-        eyes += -socket * 0.024 + lid * 0.02 - crease * 0.009
+        eyes += -socket * 0.024 + lid * k.lid_m - crease * 0.009
     # Nose: a straight ridge from between the brows to a broad, rounded tip; wings and nostril shadows.
     t = np.clip((0.625 - y) / 0.26, 0.0, 1.0)
-    w = 0.03 + 0.045 * t
+    w = k.nose_w0 + k.nose_w1 * t
     on = kc.smoothstep(0.345, 0.375, y) * (1.0 - kc.smoothstep(0.615, 0.65, y))
     nose = _g(x, w) ** 1.5 * (0.012 + 0.05 * t ** 1.4) * on
-    tip = _blob(x, y, 0.0, 0.378, 0.052, 0.036, 2.0) * 0.022
-    wings = (_blob(x, y, -0.056, 0.372, 0.034, 0.03) + _blob(x, y, 0.056, 0.372, 0.034, 0.03)) * 0.022
+    tip = _blob(x, y, 0.0, 0.378, k.tip_rx, 0.036, 2.0) * 0.022
+    wings = (_blob(x, y, -k.wing_x, 0.372, 0.034, 0.03) + _blob(x, y, k.wing_x, 0.372, 0.034, 0.03)) * 0.022
     nostrils = (_blob(x, y, -0.028, 0.353, 0.02, 0.011) + _blob(x, y, 0.028, 0.353, 0.02, 0.011)) * 0.02
     # Cheeks: broad and full, low; a soft fold from the nose wings toward the mouth corners.
-    cheeks = (_blob(x, y, -0.2, 0.37, 0.15, 0.13) + _blob(x, y, 0.2, 0.37, 0.15, 0.13)) * 0.014
+    cheeks = (_blob(x, y, -0.2, 0.37, 0.15, 0.13) + _blob(x, y, 0.2, 0.37, 0.15, 0.13)) * k.cheek_m
     fx = 0.088 + 0.3 * (0.37 - y)
     fold = (_g(ax - fx, 0.014)) * kc.smoothstep(0.22, 0.27, y) * (1.0 - kc.smoothstep(0.33, 0.37, y)) * 0.006
     # The mouth: open and rounded as if humming. Full lips around a deep oval hollow, the upper lip a
     # little longer; a philtrum groove above.
-    mr = np.sqrt((x / 0.058) ** 2 + ((y - 0.236) / 0.03) ** 2)
+    mr = np.sqrt((x / k.mouth_rx) ** 2 + ((y - k.mouth_y) / k.mouth_ry) ** 2)
     lips = _g(mr - 1.15, 0.45) * 0.019
     hollow = (1.0 - kc.smoothstep(0.4, 1.0, mr)) * 0.04
     philtrum = _g(x, 0.016) * kc.smoothstep(0.276, 0.29, y) * (1.0 - kc.smoothstep(0.322, 0.345, y)) * 0.004
@@ -249,14 +291,14 @@ def watcher_face(u: np.ndarray, v: np.ndarray, height: float, *, crown: bool = T
     if crown:
         # Crown: a proud band (0.80 to a scalloped top edge); each scallop a breaking wave, a long rise to a
         # rounded crest that curls forward and drops, with a hollow under the curl. Five waves across.
-        n = 5.0
+        n = k.waves
         cw = 0.5
         ph = (x / (2.0 * cw) + 0.5) * n
         f = ph - np.floor(ph)
-        rise = np.sin(0.5 * np.pi * np.clip(f / 0.72, 0.0, 1.0)) ** 1.5
-        drop = np.cos(0.5 * np.pi * np.clip((f - 0.72) / 0.28, 0.0, 1.0)) ** 0.7
-        crest = np.where(f < 0.72, rise, drop)
-        top = 0.88 + 0.08 * crest
+        rise = np.sin(0.5 * np.pi * np.clip(f / k.wave_rise, 0.0, 1.0)) ** 1.5
+        drop = np.cos(0.5 * np.pi * np.clip((f - k.wave_rise) / k.wave_fall, 0.0, 1.0)) ** 0.7
+        crest = np.where(f < k.wave_rise, rise, drop)
+        top = 0.88 + k.wave_m * crest
         inside = 1.0 - kc.smoothstep(cw - 0.03, cw, ax)
         band = kc.smoothstep(0.795, 0.81, y) * (1.0 - kc.smoothstep(top - 0.01, top + 0.003, y)) * inside
         # The wave's inner line: a groove following the crest down into the curl.

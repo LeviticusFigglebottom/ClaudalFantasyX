@@ -20,7 +20,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+import cw_breach  # noqa: E402
 import cw_common as cw  # noqa: E402
+import cw_fallen  # noqa: E402
 import cw_far  # noqa: E402
 import cw_stair  # noqa: E402
 import cw_town  # noqa: E402
@@ -29,7 +31,7 @@ import cw_watchers  # noqa: E402
 
 kc = cw.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
-MODULES = (cw_wall, cw_watchers, cw_stair, cw_town, cw_far)
+MODULES = (cw_wall, cw_watchers, cw_stair, cw_town, cw_far, cw_breach, cw_fallen)  # the last two: M3-ENV-04B
 
 
 def targets() -> dict:

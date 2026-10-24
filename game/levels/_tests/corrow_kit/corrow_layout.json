@@ -3153,5 +3153,491 @@
    "y": 0.946,
    "yaw_deg": -1.42
   }
- ]
+ ],
+ "states": {
+  "fallen": {
+   "_about": "M3-ENV-04B: the wall fallen (CorrowPreview phases fallen and ch09). `hide` names the dressed pieces this state replaces (piece + position); `pieces` are placed like the layout's own.",
+   "hide": [
+    {
+     "piece": "seawall_curve",
+     "at": [
+      -41.863,
+      2.935
+     ],
+     "y": 0.0
+    },
+    {
+     "piece": "watcher_relief",
+     "at": [
+      -38.183,
+      7.939
+     ],
+     "y": 7.0
+    },
+    {
+     "piece": "seawall_curve",
+     "at": [
+      -29.95,
+      1.499
+     ],
+     "y": 0.0
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      -34.011,
+      5.558
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      -31.065,
+      5.232
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      -28.116,
+      4.936
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      -25.164,
+      4.67
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_relief",
+     "at": [
+      -32.241,
+      8.079
+     ],
+     "y": 3.0
+    },
+    {
+     "piece": "watcher_relief",
+     "at": [
+      -26.473,
+      6.646
+     ],
+     "y": 7.0
+    },
+    {
+     "piece": "seawall_curve",
+     "at": [
+      -17.989,
+      0.54
+     ],
+     "y": 0.0
+    },
+    {
+     "piece": "watcher_relief",
+     "at": [
+      -20.542,
+      7.024
+     ],
+     "y": 3.0
+    },
+    {
+     "piece": "seawall_curve",
+     "at": [
+      29.95,
+      1.499
+     ],
+     "y": 0.0
+    },
+    {
+     "piece": "watcher_relief",
+     "at": [
+      32.335,
+      7.234
+     ],
+     "y": 7.0
+    },
+    {
+     "piece": "seawall_curve",
+     "at": [
+      41.863,
+      2.935
+     ],
+     "y": 0.0
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      36.954,
+      5.913
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      39.893,
+      6.297
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      42.828,
+      6.71
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      45.758,
+      7.153
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_relief",
+     "at": [
+      38.073,
+      8.783
+     ],
+     "y": 3.0
+    },
+    {
+     "piece": "watcher_relief",
+     "at": [
+      44.016,
+      8.762
+     ],
+     "y": 7.0
+    },
+    {
+     "piece": "seawall_curve",
+     "at": [
+      53.709,
+      4.847
+     ],
+     "y": 0.0
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      48.684,
+      7.626
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      51.606,
+      8.127
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      54.522,
+      8.658
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      57.432,
+      9.217
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_relief",
+     "at": [
+      49.688,
+      10.538
+     ],
+     "y": 3.0
+    },
+    {
+     "piece": "watcher_relief",
+     "at": [
+      55.628,
+      10.755
+     ],
+     "y": 7.0
+    },
+    {
+     "piece": "seawall_curve",
+     "at": [
+      65.469,
+      7.231
+     ],
+     "y": 0.0
+    },
+    {
+     "piece": "watcher_relief",
+     "at": [
+      61.224,
+      12.757
+     ],
+     "y": 3.0
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      -36.954,
+      5.913
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      -22.209,
+      4.433
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      34.011,
+      5.558
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "watcher_head",
+     "at": [
+      60.337,
+      9.806
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "liss_hoist",
+     "at": [
+      -16.294,
+      4.048
+     ],
+     "y": 12.9
+    },
+    {
+     "piece": "fisher_stair",
+     "at": [
+      -39.882,
+      2.663
+     ],
+     "y": 0.0
+    },
+    {
+     "piece": "lowtown_house_b",
+     "at": [
+      -34.838,
+      -12.348
+     ],
+     "y": 0.942
+    }
+   ],
+   "pieces": [
+    {
+     "piece": "seawall_breach_end_w",
+     "at": [
+      -41.863,
+      2.935
+     ],
+     "y": 0.0,
+     "yaw_deg": 8.021
+    },
+    {
+     "piece": "seawall_breach_a",
+     "at": [
+      -29.95,
+      1.499
+     ],
+     "y": 0.0,
+     "yaw_deg": 5.73
+    },
+    {
+     "piece": "seawall_breach_end_e",
+     "at": [
+      -17.989,
+      0.54
+     ],
+     "y": 0.0,
+     "yaw_deg": 3.438
+    },
+    {
+     "piece": "seawall_breach_end_w",
+     "at": [
+      29.95,
+      1.499
+     ],
+     "y": 0.0,
+     "yaw_deg": -5.73
+    },
+    {
+     "piece": "seawall_breach_b",
+     "at": [
+      41.863,
+      2.935
+     ],
+     "y": 0.0,
+     "yaw_deg": -8.021
+    },
+    {
+     "piece": "seawall_breach_a",
+     "at": [
+      53.709,
+      4.847
+     ],
+     "y": 0.0,
+     "yaw_deg": -10.313
+    },
+    {
+     "piece": "seawall_breach_end_e",
+     "at": [
+      65.469,
+      7.231
+     ],
+     "y": 0.0,
+     "yaw_deg": -12.605
+    },
+    {
+     "piece": "watcher_head_cracked",
+     "at": [
+      -36.954,
+      5.913
+     ],
+     "y": 12.9,
+     "yaw_deg": 7.162
+    },
+    {
+     "piece": "watcher_head_cracked",
+     "at": [
+      -22.209,
+      4.433
+     ],
+     "y": 12.9,
+     "yaw_deg": 4.297
+    },
+    {
+     "piece": "watcher_head_cracked",
+     "at": [
+      34.011,
+      5.558
+     ],
+     "y": 12.9,
+     "yaw_deg": -6.589
+    },
+    {
+     "piece": "watcher_head_cracked",
+     "at": [
+      60.337,
+      9.806
+     ],
+     "y": 12.9,
+     "yaw_deg": -11.746
+    },
+    {
+     "piece": "watcher_head_fallen",
+     "at": [
+      -29.453,
+      2.454
+     ],
+     "y": 0.479,
+     "yaw_deg": 29.653
+    },
+    {
+     "piece": "watcher_head_fallen",
+     "at": [
+      -27.826,
+      -8.347
+     ],
+     "y": 1.0,
+     "yaw_deg": -56.843
+    },
+    {
+     "piece": "watcher_head_fallen",
+     "at": [
+      -25.171,
+      10.291
+     ],
+     "y": 0.145,
+     "yaw_deg": 49.966
+    },
+    {
+     "piece": "watcher_head_fallen",
+     "at": [
+      42.062,
+      11.955
+     ],
+     "y": 0.319,
+     "yaw_deg": 131.692
+    },
+    {
+     "piece": "watcher_head_fallen",
+     "at": [
+      55.515,
+      3.35
+     ],
+     "y": 0.415,
+     "yaw_deg": -25.6
+    },
+    {
+     "piece": "liss_hoist_cut",
+     "at": [
+      -16.294,
+      4.048
+     ],
+     "y": 12.9,
+     "yaw_deg": 3.151
+    },
+    {
+     "piece": "fisher_stair_broken",
+     "at": [
+      -39.882,
+      2.663
+     ],
+     "y": 0.0,
+     "yaw_deg": 7.639
+    },
+    {
+     "piece": "lowtown_rubble",
+     "at": [
+      -41.839,
+      -12.473
+     ],
+     "y": 1.0,
+     "yaw_deg": 0.0
+    },
+    {
+     "piece": "lowtown_rubble",
+     "at": [
+      -25.333,
+      -15.986
+     ],
+     "y": 1.0,
+     "yaw_deg": 4.584
+    },
+    {
+     "piece": "lowtown_rubble",
+     "at": [
+      50.504,
+      -12.951
+     ],
+     "y": 1.0,
+     "yaw_deg": -9.167
+    }
+   ]
+  }
+ }
 }

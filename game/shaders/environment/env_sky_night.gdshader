@@ -36,6 +36,12 @@ uniform float moon_disc_deg : hint_range(0.1, 5.0) = 1.1;
 uniform float moon_disc_energy : hint_range(0.0, 40.0) = 6.0;
 uniform float moon_halo : hint_range(0.0, 2.0) = 0.25;
 uniform float moon_halo_deg : hint_range(1.0, 40.0) = 12.0;
+// M3-ENV-04B: the lit share of the disc (1 = full, as before; 0.5 = a half moon, `ch09`). The terminator is a
+// straight chord across the disc, perpendicular to `moon_lit_angle_deg` (the lit side's direction on the
+// disc, clockwise from the disc's up); the unlit part keeps `moon_earthshine` of the disc's light.
+uniform float moon_lit_fraction : hint_range(0.0, 1.0) = 1.0;
+uniform float moon_lit_angle_deg : hint_range(-180.0, 180.0) = 0.0;
+uniform float moon_earthshine : hint_range(0.0, 0.2) = 0.03;
 group_uniforms;
 
 vec3 gradient(vec3 dir) {
@@ -72,6 +78,15 @@ void sky() {
 		if (LIGHT0_ENABLED) {
 			float cos_a = dot(dir, LIGHT0_DIRECTION);
 			float disc = smoothstep(cos(radians(moon_disc_deg)), cos(radians(moon_disc_deg * 0.85)), cos_a);
+			if (moon_lit_fraction < 1.0) {
+				vec3 right = normalize(cross(LIGHT0_DIRECTION, vec3(0.0, 1.0, 0.0)));
+				vec3 up_d = cross(right, LIGHT0_DIRECTION);
+				float a = radians(moon_lit_angle_deg);
+				vec2 q = vec2(dot(dir, right), dot(dir, up_d)) / sin(radians(moon_disc_deg));
+				float along = dot(q, vec2(sin(a), cos(a)));
+				float edge = 1.0 - 2.0 * moon_lit_fraction;
+				disc *= mix(moon_earthshine, 1.0, smoothstep(edge - 0.06, edge + 0.06, along));
+			}
 			float halo = pow(max(cos_a, 0.0), 90.0 / moon_halo_deg) * moon_halo;
 			col += col_moon.rgb * (disc * moon_disc_energy + halo);
 		}

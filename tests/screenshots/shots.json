@@ -1286,6 +1286,30 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "corrow_c10_breach_fallen",
+      "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+      "camera": "Cameras/C10",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "phase": "fallen"
+          }
+        }
+      }
     }
   ]
 }

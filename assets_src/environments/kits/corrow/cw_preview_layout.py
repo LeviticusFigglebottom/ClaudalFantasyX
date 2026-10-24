@@ -27,6 +27,7 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
 sys.path.insert(0, str(HERE))
+import cw_breach  # noqa: E402
 import cw_common as cw  # noqa: E402
 import cw_far  # noqa: E402
 import cw_stair  # noqa: E402
@@ -146,6 +147,100 @@ def town() -> list[dict]:
     return out
 
 
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-04B: the wall's fallen state (CorrowPreview phases `fallen` and `ch09`)
+# ---------------------------------------------------------------------------------------------
+# Two breaches, each a run of segment slots (k: centre s = 6 + 12 k) swapped one for one. The stair breach
+# takes the wall under the stair's middle (the gap s -36 .. -24: the lower flight stands to its 12th step,
+# the upper flight hangs from the head landing, Liss's hoist head two heads east of the gap still stands);
+# the east breach is wider, two gap segments, along the curve in C01's eye line.
+BREACHES = (
+    (("seawall_breach_end_w", -4), ("seawall_breach_a", -3), ("seawall_breach_end_e", -2)),
+    (("seawall_breach_end_w", 2), ("seawall_breach_b", 3), ("seawall_breach_a", 4), ("seawall_breach_end_e", 5)),
+)
+# The heads at a breach's edge that lean out of the line (their parapet kept only its footing): the intact
+# head at (k, offset from the segment centre) swapped for watcher_head_cracked. Not at the stair breach's
+# east end's second head in: that one carries Liss's hoist.
+CRACKED = ((-4, 4.5), (-2, -4.5), (2, 4.5), (5, -4.5))
+# Fallen heads: (s, wall-frame z, yaw offset deg, where): on the gap's stump, tumbled into the low town,
+# down on the rip-rap.
+FALLEN = ((-29.6, 1.0, 24.0, "floor"), (-27.0, -9.6, -62.0, "town"), (-26.0, 9.2, 45.0, "apron"),
+          (43.5, 8.9, 140.0, "apron"), (55.5, -1.8, -15.0, "floor"))
+FAN_SHIFT_M = (6.0, 0.0)  # the stair breach's fan sits east of its gap, clear of the stair foot's own cell
+FAN_HOUSE_CLEAR_M = 11.0  # houses whose centre is this close to a breach's rubble fan were crushed
+
+
+def _segment_s(k: int) -> float:
+    return 6.0 + 12.0 * k
+
+
+def fallen_state(town_pieces: list[dict]) -> dict:
+    """The fallen wall: the breach pieces, the broken heads, the cut hoist, the broken stair and the rubble
+    cells, and every dressed piece they replace (hidden)."""
+    hide: list[dict] = []
+    pieces: list[dict] = []
+
+    def hide_spec(d: dict) -> None:
+        hide.append({"piece": d["piece"], "at": d["at"], "y": d["y"]})
+
+    for run in BREACHES:
+        for piece, k in run:
+            s = _segment_s(k)
+            hide_spec(put_arc("seawall_curve", s))
+            pieces.append(put_arc(piece, s))
+            gap = not piece.startswith("seawall_breach_end")
+            if gap:
+                for dh in (-4.5, -1.5, 1.5, 4.5):
+                    hide_spec(put_arc("watcher_head", s + dh, HEAD_Y, HEAD_Z))
+            for ds, y0 in RELIEF_ROWS:
+                torn = gap or (piece.endswith("_w") and ds > 0) or (piece.endswith("_e") and ds < 0)
+                if torn:
+                    hide_spec(put_arc("watcher_relief", s + ds, y0, float(cw_wall.sea_z(y0))))
+    for k, dh in CRACKED:
+        hide_spec(put_arc("watcher_head", _segment_s(k) + dh, HEAD_Y, HEAD_Z))
+        pieces.append(put_arc("watcher_head_cracked", _segment_s(k) + dh, HEAD_Y, HEAD_Z))
+    apron_noise = kc.Noise3(kc.rng_for("wall_apron", 811))
+    for s, z, dyaw, where in FALLEN:
+        if where == "floor":
+            y = float(cw_breach.floor_base(np.array(z)))
+        elif where == "apron":
+            # On the boulders, not in the mound under them.
+            y = float(cw_wall.apron_mound_y(apron_noise, np.array(0.0), np.array(z))) + 0.45
+        else:
+            y = cw.TOWN_Y
+        d = put_arc("watcher_head_fallen", s, y, z)
+        d["yaw_deg"] = round(d["yaw_deg"] + dyaw, 3)
+        pieces.append(d)
+    # Liss's hoist, cut down; the stair, broken.
+    hide_spec(put_arc("liss_hoist", HOIST_HEAD_S, HEAD_Y, HEAD_Z))
+    pieces.append(put_arc("liss_hoist_cut", HOIST_HEAD_S, HEAD_Y, HEAD_Z))
+    hide_spec(put_arc("fisher_stair", STAIR_S))
+    pieces.append(put_arc("fisher_stair_broken", STAIR_S))
+    # Rubble in the lanes: the stair foot's lane (centred on it, its +Z end at the wall's foot), and a fan
+    # inland of each breach (+Z toward the wall); the houses under a fan were crushed (hidden).
+    foot_x, _y, foot_z, _yaw = arc_pose(STAIR_S, 0.0, -cw_stair.WIDTH_M - 4.0)
+    cells = [((foot_x - 1.0, foot_z - cw_breach.RUBBLE_HALF + 4.0), 0.0)]
+    for run, shift in zip(BREACHES, FAN_SHIFT_M):
+        gaps = [_segment_s(k) for piece, k in run if not piece.startswith("seawall_breach_end")]
+        s_mid = 0.5 * (gaps[0] + gaps[-1]) + shift
+        x, _yy, z, yaw = arc_pose(s_mid, 0.0, -cw_breach.RUBBLE_HALF - 5.0)
+        cells.append(((x, z), yaw))
+    for (x, z), yaw in cells:
+        pieces.append({"piece": "lowtown_rubble", "at": [round(x, 3), round(z, 3)], "y": cw.TOWN_Y,
+                       "yaw_deg": round(yaw, 3)})
+    for (x, z), _yaw in cells[1:]:
+        for d in town_pieces:
+            near = math.hypot(d["at"][0] - x, d["at"][1] - z) < FAN_HOUSE_CLEAR_M
+            if d["piece"].startswith("lowtown_house") and near:
+                hide_spec(d)
+    return {
+        "_about": "M3-ENV-04B: the wall fallen (CorrowPreview phases fallen and ch09). `hide` names the dressed "
+                  "pieces this state replaces (piece + position); `pieces` are placed like the layout's own.",
+        "hide": hide,
+        "pieces": pieces,
+    }
+
+
 def headland() -> tuple[list[dict], list[float]]:
     hx, hz, yaw = HEADLAND
     piece = {"piece": "coilspire_headland", "at": [hx, hz], "y": 0.0, "yaw_deg": yaw, "lod1_from_m": 2500.0}
@@ -161,7 +256,8 @@ def headland() -> tuple[list[dict], list[float]]:
 def main() -> int:
     head_pieces, beacon = headland()
     pieces = [{"piece": "corrow_far", "at": [0.0, 0.0], "y": 0.0, "yaw_deg": 0.0, "lod1_from_m": 5000.0}]
-    pieces += head_pieces + wall() + stair() + town()
+    town_pieces = town()
+    pieces += head_pieces + wall() + stair() + town_pieces
     layout = {
         "schema": "hymn-zone-layout/1",
         "zone": "ch08/corrow preview (M3-ENV-04): the kit composed for the design notes' key shots",
@@ -178,6 +274,7 @@ def main() -> int:
         "fire_lights": [beacon],
         "fire_light_color": "#E0702E",
         "pieces": pieces,
+        "states": {"fallen": fallen_state(town_pieces)},
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(layout, indent=1) + "\n", encoding="utf-8")

@@ -9,6 +9,10 @@
 * The stair: 3.2 m wide, from the town to the head landing over the kerb, risers about 0.2 m.
 * Committed assets: one .glb per target, each inside its budget, every file under 5 MB, every slot has a
   material, every file has a PROVENANCE row, and the preview layout names only kit pieces.
+* M3-ENV-04B, the wall falls: the first carving is unchanged and the second is a different, still closed-eyed,
+  humming face; the breach floor sits below the town at the stump and meets itself at every joint; the tear
+  keeps the stump and the last head's footing; the broken pieces carry nothing bound; the broken stair still
+  reaches the head landing; the preview's fallen state swaps exactly the pieces it names.
 """
 
 from __future__ import annotations
@@ -41,7 +45,9 @@ def _load(name: str):
 
 
 BUILD = _load("build")
+import cw_breach  # noqa: E402
 import cw_common as cw  # noqa: E402
+import cw_fallen  # noqa: E402
 import cw_stair  # noqa: E402
 import cw_wall  # noqa: E402
 
@@ -180,6 +186,91 @@ class StairTests(unittest.TestCase):
         lo, hi = mb.bounds()
         self.assertLess(float(hi[2]), float(cw.KERB[1]) + 3.0, "it stays against the inner face")
         self.assertAlmostEqual(float(hi[1]), cw_stair.HEAD_Y, delta=0.05)
+
+
+class FallenWallTests(unittest.TestCase):
+    """M3-ENV-04B: the breach state of the kit."""
+
+    def test_first_carving_is_the_parapet_rows(self) -> None:
+        u = np.linspace(-1.2, 1.2, 41)
+        v = np.linspace(-0.1, 3.1, 41)
+        U, V = np.meshgrid(u, v)
+        np.testing.assert_array_equal(cw.watcher_face(U, V, 3.0), cw.watcher_face(U, V, 3.0, carving=cw.CARVING_A))
+        self.assertGreater(float(np.abs(cw.watcher_face(U, V, 3.0, carving=cw.CARVING_B)
+                                        - cw.watcher_face(U, V, 3.0)).max()), 0.02, "a second hand")
+
+    def test_second_carving_is_closed_eyed_and_humming(self) -> None:
+        h, k = 3.0, cw.CARVING_B
+        f = lambda u, v: float(cw.watcher_face(np.array(u), np.array(v), h, carving=k))  # noqa: E731
+        mouth, lips = f(0.0, k.mouth_y * h), f(0.0, (k.mouth_y + k.mouth_ry + 0.005) * h)
+        self.assertLess(mouth, lips, "the mouth is a hollow inside its lips")
+        lid, rim = f(k.eye_x * h, (k.eye_y + 0.014) * h), f(k.eye_x * h, 0.66 * h)
+        self.assertGreater(lid, rim - 0.03 * h, "closed lids")
+        U, V = np.meshgrid(np.linspace(-1.2, 1.2, 41), np.linspace(0.0, 0.78 * h, 41))
+        d = cw.watcher_face(U, V, h, carving=k)
+        np.testing.assert_allclose(d, d[:, ::-1], atol=1e-9)
+
+    def test_breach_floor_is_below_the_town_and_meets_at_the_joints(self) -> None:
+        z = np.linspace(-3.0, 5.0, 33)
+        self.assertLess(float(cw_breach.floor_base(z).max()), cw.TOWN_Y, "broken through below the town's level")
+        zs = np.linspace(cw_breach.FLOOR_Z[0], cw_breach.FLOOR_Z[1], 41)
+        noise = cw.kc.Noise3(cw.kc.rng_for("x", 1))
+        gap_w = cw_breach.floor_y(np.full_like(zs, -cw_breach.HALF_X), zs, noise, 0.0)
+        end_w = cw_breach.floor_y(np.full_like(zs, cw_breach.HALF_X), zs, noise, 1.0)
+        gap_e = cw_breach.floor_y(np.full_like(zs, cw_breach.HALF_X), zs, noise, 0.0)
+        end_e = cw_breach.floor_y(np.full_like(zs, -cw_breach.HALF_X), zs, noise, -1.0)
+        np.testing.assert_allclose(gap_w, end_w, atol=1e-9)
+        np.testing.assert_allclose(gap_e, end_e, atol=1e-9)
+
+    def test_tear_keeps_the_stump_and_the_last_heads_footing(self) -> None:
+        tear = cw_breach.Tear(1.0, 931)
+        z = np.linspace(-4.0, 6.0, 21)
+        self.assertTrue((tear.length(np.full_like(z, 0.2), z) == 0.0).all(), "the stump runs through")
+        self.assertTrue(np.allclose(tear.length(np.full_like(z, 11.9), np.full_like(z, 3.6)), cw_breach.TOP_TEAR_M))
+        steps = tear.length(np.linspace(1.0, 11.0, 41), np.zeros(41)) / cw_breach.TEAR_STEP_M
+        np.testing.assert_allclose(steps, np.round(steps), atol=1e-9, err_msg="torn in half-block steps")
+        self.assertGreater(float(tear.length(np.array(7.0), np.array(0.0))), 1.5, "the surge undercut it")
+
+    def test_broken_pieces_carry_nothing_bound(self) -> None:
+        names = list(cw_breach.TARGETS) + list(cw_fallen.TARGETS)
+        for name in names:
+            for mb in built(name):
+                with self.subTest(mesh=mb.name):
+                    self.assertNotIn(cw.M_BEACON, mb.materials)
+        lod0, _lod1 = built("liss_hoist_cut")
+        self.assertEqual(sorted(lod0.materials), ["cw_iron", "cw_rope", "cw_timber"], "plain rope and iron, cut")
+
+    def test_heads_keep_the_watcher_frame(self) -> None:
+        lo, hi = built("watcher_head_b")[0].bounds()
+        lo_a, hi_a = built("watcher_head")[0].bounds()
+        np.testing.assert_allclose(hi[1] - lo[1], hi_a[1] - lo_a[1], atol=0.05)
+        lo, hi = built("watcher_head_cracked")[0].bounds()
+        self.assertGreater(float(hi[2]), float(hi_a[2]) + 0.2, "it leans out of the line, toward the sea")
+        lo, hi = built("watcher_head_fallen")[0].bounds()
+        self.assertLess(float(hi[1]), 2.2, "down on its side")
+        self.assertLess(float(lo[1]), 0.0, "sunk in the rubble")
+
+    def test_broken_stair_hangs_from_the_head_landing(self) -> None:
+        mb = built("fisher_stair_broken")[0]
+        lo, hi = mb.bounds()
+        self.assertAlmostEqual(float(hi[1]), cw_stair.HEAD_Y + cw_stair.STANCHION_H, delta=0.1)
+        self.assertLess(float(lo[1]), cw.TOWN_Y, "the lower steps still stand in the lane")
+        self.assertAlmostEqual(cw_fallen.BREAK_X, 12 * cw_stair.GOING_M, places=9)
+
+    def test_fallen_state_swaps_exactly_what_it_names(self) -> None:
+        layout = json.loads(LAYOUT.read_text())
+        state = layout["states"]["fallen"]
+        placed = {(p["piece"], tuple(p["at"]), p["y"]) for p in layout["pieces"]}
+        for h in state["hide"]:
+            self.assertIn((h["piece"], tuple(h["at"]), h["y"]), placed, h)
+        for p in state["pieces"]:
+            self.assertIn(p["piece"], TARGETS, p)
+        n_breach = sum(p["piece"].startswith("seawall_breach") for p in state["pieces"])
+        n_hidden = sum(h["piece"] == "seawall_curve" for h in state["hide"])
+        self.assertEqual(n_breach, n_hidden, "one breach piece per segment it replaces")
+        for piece in ("fisher_stair_broken", "liss_hoist_cut", "watcher_head_fallen", "watcher_head_cracked",
+                      "lowtown_rubble", "seawall_breach_end_w", "seawall_breach_end_e"):
+            self.assertTrue(any(p["piece"] == piece for p in state["pieces"]), piece)
 
 
 class CommittedAssetTests(unittest.TestCase):
