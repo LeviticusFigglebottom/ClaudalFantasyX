@@ -2,8 +2,8 @@
 id: M3-ENV-02
 title: Ch6 Brine Shoals: the route of wrecks and mud-flats, and the burning Saltwright camp (kit at final quality)
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M2-ENV-06]
 milestone: M3
 request-from: lead
