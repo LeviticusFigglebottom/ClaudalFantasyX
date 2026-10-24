@@ -2,7 +2,7 @@
 id: M1-ENV-08
 title: Vegetation LOD hysteresis hole (a plant at a switch distance can be invisible from a still camera)
 role: environment
-status: doing
+status: review
 reviewer: rendering
 owner_session: "worktree-agent-a573ddba06eb06eb2"
 depends_on: [M1-ENV-03]
@@ -18,11 +18,11 @@ switch was missing from `haluna_h02_tidewall_lane`. v2 fades the last LOD, which
 it. The 45 m switch (LOD0 → 1) still has the hole.
 
 ## Acceptance criteria
-- [ ] No plant within `lod_margin_m` of a switch is invisible on the first frame from a still camera. One way: overlap
+- [x] No plant within `lod_margin_m` of a switch is invisible on the first frame from a still camera. One way: overlap
       the ranges (LOD *n* ends at switch + margin, LOD *n+1* begins at switch − margin, no hysteresis), or keep the
       hysteresis on one side only.
-- [ ] The switches still don't flicker when a camera dithers at the switch distance (`tools/gpu_bench/lod_pop.tscn`).
-- [ ] A test (below), and GPU drift listed for the veg_* and haluna_* shots.
+- [x] The switches still don't flicker when a camera dithers at the switch distance (`tools/gpu_bench/lod_pop.tscn`).
+- [x] A test (below), and GPU drift listed for the veg_* and haluna_* shots.
 
 ## Notes
 - **Repro:** with `tools/gpu_bench/lod_pop.tscn` or the vegetation test scene, park the camera so one palm is at
@@ -34,5 +34,12 @@ it. The 45 m switch (LOD0 → 1) still has the hole.
   (`capture_preset`) of a one-palm scene with the camera at switch ± 1 m.
 - **Cost:** an overlap draws both LODs over a 4 m band (a few plants), so it's negligible next to the 6 m alpha
   fade it replaces.
+- **Done in M1-ENV-09 (2026-10-24, worktree-agent-a573ddba06eb06eb2).** See that task's Notes. Each LOD is now the
+  `visibility_parent` child of the next, so the hysteresis stays on one side only (the parent's begin), and there is
+  no overlap. On lavapipe, `game/levels/_tests/vegetation/lod_sweep_probe.gd` gives: still camera, LOD0 up to 47 m
+  and LOD1 from 48 m; sweeping in, LOD1 down to 44 m and LOD0 from 43 m; sweeping out, LOD0 up to 47 m. That's 4 m
+  of hysteresis, so dithering at 45 m doesn't flicker. I did not run `tools/gpu_bench/lod_pop.tscn` (it's a GPU
+  bench); the probe's in/out sweeps measure the same thing. Shot drift: only `veg_beach_wide` (rmse 0.030), which
+  is the missing palm now drawn. haluna_* are all within limits.
 
 ## Review log
