@@ -82,7 +82,7 @@
     },
     "hullgnaw": {
       "file": "res://assets/audio/music/hullgnaw.ogg",
-      "_note": "Ch1 boss, Hullgnaw on the breaking raft at Oruvel (M3-AUD-08); no battle.encounters row until the encounter exists"
+      "_note": "Ch1 boss, Hullgnaw on the breaking raft at Oruvel (M3-AUD-08); battle.encounters ch01_hullgnaw plays it (M3-AUD-801)"
     },
     "spar_wraith": {
       "file": "res://assets/audio/music/spar_wraith.ogg",
@@ -196,7 +196,8 @@
   "battle": {
     "default": "battle_standard_v2",
     "encounters": {
-      "drownbell": "drownbell"
+      "drownbell": "drownbell",
+      "ch01_hullgnaw": "hullgnaw"
     },
     "phases": {
       "flood": {
