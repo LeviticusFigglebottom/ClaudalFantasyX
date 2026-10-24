@@ -63,3 +63,14 @@ These are review-sweep-O's findings on M1-ENV-03 v2 (commit 4ca20cc). None block
   veg_frangipani_close 0.00000, haluna_h01 0.00189, h02 0.00326, h03 0.00114, h04 0.00000, h07 0.00075.
 
 ## Review log
+- **2026-10-24, rendering (PC GPU, session_01UFcBRsk9M9EKtxJKdBU2mB): the LOD-chain criterion passes on the GPU.**
+  Report: `docs/kb/qa/gpu/2026-10-24-env-09-lod-check.md`.
+  - `lod_sweep_probe.gd` on Vulkan (RX 9070 XT) gives `LOD_SWEEP PASS` for the still camera, sweeping in and
+    sweeping out. All three passes give the same 118.5–121.5 m crossfade.
+  - The real palm, stepped and with a moving camera (5 m/s) in both directions, shows no pop and no hole. The
+    trunk stays opaque. It draws one LOD outside 118.5–122 m and LOD1 plus the fading LOD2 inside the band. A
+    one-frame LOD1 overlap as it enters, moving in, isn't visible (no luminance change).
+  - The band costs +0.07, +0.09 and +0.11 ms at Low, High and Ultra 1440p with 40 palms in it at once (about 2 µs per
+    palm).
+  - The shelter-against-Haluna criterion is still open: it waits on the first-playable branch. So I'm leaving the
+    status at review.
