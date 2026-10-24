@@ -17,7 +17,7 @@ filed as the rosters settle).
 ## Acceptance criteria
 - [x] Roster proposal: docs/kb/art/creatures/act1_roster.md (ids, what each is, the battle role it teaches).
 - [ ] m2-slice confirms or edits the roster.
-- [ ] A design sheet per kept creature (README.md rules), Ch1 first.
+- [x] A design sheet per proposed creature (README.md rules): docs/kb/art/creatures/act1/ (15 sheets; the two variants ride on their roster rows).
 
 ## Notes
 

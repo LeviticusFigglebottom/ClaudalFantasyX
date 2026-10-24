@@ -38,7 +38,7 @@ in line with Act I's share of the game.
 
 ## Order of work (art)
 
-1. Design sheets for all of them (this file's ids), Ch1 first (it opens the game), in `act1/<id>.md`. Done: Ch1 (`hullgnaw`, `wickfry`, `tower_limpet`, `oil_slug`).
+1. Design sheets for all of them (this file's ids), Ch1 first (it opens the game), in `act1/<id>.md`. All written ([`act1/README.md`](act1/README.md)).
 2. Models in chapter order: Ch1 (wickfry, tower_limpet, oil_slug, Hullgnaw), Ch4, Ch5, Ch6, Ch8. Variants are cheap
    and go with their chapter. The Reach needs the PC GPU session (the storm limb is theirs; the creature part is
    ours).
