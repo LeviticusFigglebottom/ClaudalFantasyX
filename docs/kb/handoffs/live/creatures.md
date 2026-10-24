@@ -3,6 +3,19 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
+- **M3 Act I batch in progress (2026-10-24 ~14:30 UTC), after MERGE-READY @ 2f36b275.** Pushed on `claude/creatures`:
+  - Ch1 glassfry (renamed from wickfry) and scuttler; Ch5 ashwing (ember eye-spots), slag_tortoise, cinder_matron (first
+    pass; a dedicated redesign is in a worktree agent), vein_sparker (optional caster lizard, starlight charge);
+    Ch6 shoal_skipper, raid_hound (mud coat, red-lacquered muzzle cage); Ch8 tide_crawler.
+  - CreatureActor phases gained `show`/`hide` node lists (the Matron's `crust_breaks` hides `Crust`).
+  - Scoped checks per item: validate_data, taskboard, gdlint/gdformat, tools creature tests, Godot `--filter=creature`
+    (12/0), Blender verify for every creature job (24 identical before vein_sparker). Shots approved after viewing:
+    glassfry, scuttler, slag_tortoise, shoal_skipper, tide_crawler. Pending view: raid_hound, ashwing (recapturing after
+    the restyle), vein_sparker, cinder_matron (after the redesign).
+  - In worktree agents: the Matron redesign (kiln forge-construct, ladle and tongs, glimmer_bound heart) and three
+    variants (squall_wing, wall_polyp on Watcher stones, wreck_crab in a lamp housing).
+  - No enemy row uses these models yet; `model` lands on m2-slice's rows as they arrive (Ch1 first).
+  - A batch MERGE-READY line follows once the agents' work is merged and every new shot is approved.
 - **MERGE-READY @ 2f36b275: ci_local exit 0, 1467 tests, 91 shots, Blender identical.** Branch `claude/creatures`, with `origin/claude/undertow-lead-handoff-423ixt` e9938ed merged in at 4cfc523.
   - Full `tools/ci_local.sh` in this container (2026-10-24, about 13:00–13:50 UTC), every shot, Blender required.
   - Blender: 17 jobs, 0 failed, 0 uncovered, all identical. The change base was `main`, which ran every job, a superset of the integration base. Every creature job is pinned at `default_threads` 4.
@@ -34,7 +47,9 @@ Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD),
 - **Task ids:** M2-CRE-* (free on every branch at the claim).
 
 ## Exact next step
-Act I continues after MERGE-READY: the wickfry rename, scuttler, then Ch5/Ch6/Ch8 from the drafts, with `model` on m2-slice's rows as they land.
+Merge the Matron-redesign and variants worktrees (union creatures.json, the import rule, jobs, PROVENANCE, shots.json),
+view and approve the pending creature shots, run the Blender verify for the new jobs, then write the batch MERGE-READY
+line. After that: the Undertow's Reach (with the PC GPU session), and `model` on m2-slice's Ch1 rows when they land.
 
 ## Previous next step (done)
 Merge the three creature worktrees as they finish (they append to creatures.json, enemies.json, the import rule, blender_builds.json and PROVENANCE.md: union the rows). Then capture every battle shot and the creature shots, view each, approve the creature baselines, and re-approve the battle shots whose change is the models (list each RMSE in M2-CRE-09).
