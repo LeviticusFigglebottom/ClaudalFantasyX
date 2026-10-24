@@ -98,7 +98,8 @@ class BroadleafGeometryTest(unittest.TestCase):
     def test_banyan_shape_roots_and_clear_walk(self) -> None:
         p = banyan.VARIANTS["hero"]
         tree = banyan.make_tree(p)
-        lo, hi = np.asarray(self.built["banyan"][0].pos).min(axis=0), np.asarray(self.built["banyan"][0].pos).max(axis=0)
+        pos = np.asarray(self.built["banyan"][0].pos)
+        lo, hi = pos.min(axis=0), pos.max(axis=0)
         self.assertLessEqual(hi[2], p["height"] + 0.5)
         self.assertGreater(min(hi[0] - lo[0], hi[1] - lo[1]), 18.0, "a broad crown")
         self.assertGreater(len(tree.roots), 150, "hanging aerial roots")

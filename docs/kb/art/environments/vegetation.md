@@ -13,6 +13,7 @@ Owner: Environment. Reviewer: Rendering. This covers the coconut palm, frangipan
 | Runtime helpers | `game/levels/_tests/vegetation/vegetation_plant.gd` (materials + LODs), `vegetation_scatter.gd` (MultiMesh) |
 | Test scene | `game/levels/_tests/vegetation/vegetation_test.tscn` (shots `veg_backlit_fronds`, `veg_frangipani_close`, `veg_beach_wide`) |
 | Tests | `tools/tests/test_vegetation.py` |
+| Broadleaf trees (M2-ENV-07) | `banyan.py`, `windbreak.py`, `canopy.py` (shared crown helpers); exported as Haluna kit pieces by `assets_src/environments/kits/haluna/trees.py` (job `haluna_kit`); tests `tools/tests/test_broadleaf_trees.py`. See "Broadleaf trees" below. |
 
 ## Rebuilding
 
@@ -109,6 +110,8 @@ On the GPU (`tools/gpu_bench/eave_glow.tscn`, a roof over a frangipani) the floo
 | frangipani_b | 7,934 | 2,260 | 575 | | 0.82 MB |
 | saltgrass_a / _b | 84 / 72 | 18 / 16 | — | 120 / 24 | 24 KB (both) |
 | beach_vine_patch | 708 | 414 | — | 3,000 / 900 | 0.11 MB |
+| hero banyan (`banyan_placeholder`, Haluna kit) | 59,949 | 6,999 | — | 60,000 / 10,000 | 3.4 MB |
+| windbreak tree (`windbreak_placeholder`, Haluna kit) | 5,785 | 430 | — | 6,500 / 1,000 | 0.42 MB |
 
 Textures are 1K maximum. The palm frond atlas is 1024², palm bark 512×1024 (tiles every 1.6 m), the frangipani leaf/flower atlas 1024², frangipani bark 512², and saltgrass and beach vine 512². Their PNGs total about 3.5 MB, and no file exceeds 1 MB. Normal maps are **8-bit**, not the 16-bit that ADR 0005 suggests: foliage normals are low-amplitude detail, and 16-bit would roughly double the size for no visible gain. Promote them if a hero needs it.
 
@@ -132,6 +135,34 @@ The dense layers are the near salt-grass clumps (8–16 layers). Thin those firs
 
 **Wind flutter and TAA.** `flutter_amplitude_m` 0.02 at 3.5 Hz is the cap for TAA presets. Measured at a fixed 30 fps on Low (M1-RND-15, `docs/kb/qa/gpu/2026-10-23-rnd-15-prewarm.md`), TAA with the wind on departs from the instant 30–40 % more than its static softening: soft blades and faint double edges, with no trails. Raise the flutter only together with a ghosting re-measure (`aa_shimmer --wind` plus `aa_shimmer.py --ghost`).
 
+## Broadleaf trees (M2-ENV-07): the hero banyan and the windbreak tree
+
+Both are grown by vegetation generators in this folder and exported as Haluna kit pieces, so the Haluna dresser places them with no layout or scene change. `assets_src/environments/kits/haluna/trees.py` replaced the old `placeholders.py`. It converts the vegetation frame (+Z up) to the kit's (+Y up) and renames the material slots to kit materials. **The piece names `banyan_placeholder` and `windbreak_placeholder` are kept** because they are the scene contract: `haluna_layout.json`, the zone's collision table in `haluna.tscn`, and `test_haluna_zone.gd` all name them. They are no longer placeholders: they have no PLACEHOLDER extras and no manifest tag. Renaming them is a layout change for the zone's owners.
+
+- **Structure.** Each tree is grown once, with every random draw made in a fixed order (`make_tree`), and then meshed per LOD with no further randomness, so LOD0 and LOD1 are the same tree. Rebuilds are byte-identical (`verify_blender_builds --job haluna_kit`).
+- **Hero banyan** (`banyan.py`, variant `hero`, 14 m tall, about 25 m across):
+  - The trunk is seven twisted stems fused round a core column, with seven buttress flanges (tall, thin elliptical sections that stand on the sand). Each flange runs on as a half-buried surface root, and more surface roots run out between them.
+  - Seven near-horizontal limbs sag and then curl up. Branches rise alternately from each limb to 41 leaf clumps.
+  - Each clump is a flattened ellipsoid of twig clusters: branchlets, then a twig per cluster, then 2–4 leaf sprays per cluster (2,682 sprays in all). The underside is sparser and darker, so you look *up into* a crown.
+  - It has 23 prop-root strands: one to three twisted strands per pillar, flared at the foot and where they leave the limb. It also has 329 hanging aerial-root strands in braided bunches, and a few long ones reach the ground.
+  - **Art direction for H07.** `hero_limbs` fixes two great limbs (asset azimuths 180° and 106°) that reach either side of the chapel court. At yaw 30 in Haluna, the court lies at asset azimuth ~135°. The 180° limb runs low, at about 4.75 m, with three small leaf clumps on it, so it arches across the top of H07. Its root curtains hang between the two prop pillars that bracket the chapel. The `path` capsule is the walk from the lane to the chapel door. The village keeps it clear: no prop root stands in it, and hanging roots over it are cut at 2.4 m (`path_cut_m`).
+- **Windbreak tree** (`windbreak.py`, variant `a`, 8 m tall, 4.2 m across). This is an original thick-leaved coastal evergreen. A short, stout trunk forks at about 1.6 m into three upright leaders. Short ascending branches run all the way up them (a fastigiate habit), so the crown is an upright oval, widest at 42 % of its height (`profile`). It carries 784 sprays of leathery obovate leaves crowded in rosettes. An opaque lumpy core (an inner shell mapped to a leaf mosaic) keeps the crown dense: shrunk to 55 % at LOD0 so the sprays own the silhouette, and 72 % at LOD1 so a row 250 m away still reads as one dark mass.
+- **Textures** (`textures.py --only trees`, plain python3, about 20 s):
+  - `coastal_tree_leaf_*` is a 1024² atlas (`veg_common.COASTAL_ATLAS`). It holds two banyan sprays (0.8 m cells: forked twigs with 25–35 elliptic, drip-tipped 10–15 cm leaves, pale midribs and laterals, 10 % pale undersides, a few laterite figs), two windbreak sprays (0.62 m: 3–5 shoots with spiral rosettes of obovate leaves), and two opaque tiling leaf mosaics for the cores. Each leaf is painted at its own size, back to front, with a contact shadow on the leaves below. The normal map's B channel holds translucency (banyan 0.55, windbreak 0.32).
+  - `banyan_bark_*` is 512×1024 and tiles at 0.7 m round by 1.4 m along. It shows fused root strands (vertical ridges that merge and part, each its own tone), dark crevices, horizontal lenticel dashes, and pale lichen and crust. The painted mean is about #8C8477.
+- **Materials** (appended to the kit's `materials.py`): `kit_banyan_bark`, `kit_banyan_root`, `kit_banyan_leaf`, `kit_windbreak_bark`, `kit_windbreak_leaf`. Bark and leaves of one tree share every wind uniform, the secondary bob included, because twigs hand their bob on to the sprays (a unit test checks this). The roots are tinted warmer and a little darker than the trunk (0.84–0.92 gain, warm), so in H07 they read as mid-value brown: neither white sticks nor black poles. The older `kit_canopy_*` materials and the kit's `canopy_cluster` texture are now unused. They are left for the kit owner to delete, because those files are being edited elsewhere.
+- **Budgets and why.**
+  - The banyan has one instance in the game: the hero tree, seen from 7 m in H07 with the camera inside its crown footprint. LOD0 is 59,949 triangles (budget 60,000): sprays 21.5k (8 triangles each: 2 rows × 2 columns, cupped), hanging roots 17.1k (the H07 feature), limbs, branches and branchlets 8.1k, twigs 5.4k, props 4.0k, trunk, flanges and surface roots 3.9k. The .glb is 3.4 MB, under the 5 MB cap. LOD1 is 6,999 (budget 10,000): 25 % of the sprays at 1.75× size round 41 opaque clump cores, 20 % of the hanging roots, and one strand per prop.
+  - There are 49 windbreak instances in rows, about 15–25 of them inside 75 m in a given view. LOD0 is 5,785 (budget 6,500): sprays with 4 triangles each. LOD1 is 430 (budget 1,000): 14 % of the sprays at 1.7× round the core.
+  - Textures add 1.9 MB of PNG, and no file exceeds 1 MB.
+- **LODs.** Kit pieces carry exactly `<piece>` and `<piece>-lod1`. The Haluna dresser draws LOD1 beyond `lod1_from_m` (75 m) and does not chain them with `visibility_parent` the way `VegetationPlant` does ("One LOD at every distance" above). Every kit piece shares this pre-existing dresser behaviour. A tree first seen from a still camera within the 2 m margin of the switch can draw neither LOD until the camera leaves the margin. The fix belongs in `haluna_dresser.gd`: set `visibility_parent` of `<piece>` to `<piece>-lod1`, with the margin on LOD1's begin only. That file now lives with the zone track, so it is noted for them and not changed here.
+- **Honest assessment.** In H07 the banyan reads as a hero tree. The twisted multi-strand prop pillars and the fused, fluted trunk bracket the white chapel, braided root curtains hang from the low limb, and the crown throws dappled shade on the court. Sprays read as individual leaves at 3–5 m. The windbreak rows read as dark, dense, upright ovals in H01 and H07. Weak points:
+  - The root strands are 4-sided, and their bands show up close.
+  - The fig notes are invisible at game distance.
+  - Every windbreak is the same tree, varied only by yaw and scale.
+  - The low limb's underside at the top of H07 is plain bark, with no epiphytes or moss.
+  - Lavapipe only: the GPU cost is unmeasured.
+
 ## Honest quality assessment
 
 What works:
@@ -144,5 +175,5 @@ What is weak (about 55–65% of a shipped AAA tropical set):
 - **The wing cards read as cards** at grazing angles near the crown centre. There are no leaflet-level geometric silhouettes at LOD0.
 - **Frangipani bark is too smooth and uniform** (it looks like a grey pipe in shade). The forks have no branch collars. The tips are capped with flat-ish cones. Flowers face only upward-ish, so side views show slivers.
 - **Saltgrass is one colour family**, with no seed heads and no ground debris. The clump fans can show their radial structure from above.
-- **Not built:** windbreak tree, screw-pine, sea hibiscus, hero banyan, seagrass, mangrove (later tasks). No impostors or billboards for more than 400 m. No wind interaction with characters. No collision meshes. **PLACEHOLDER until Art Director sign-off** (M1-ENV-03): `docs/kb/art/environments/vegetation_placeholders.md` lists every asset and moves each to "Signed off" when Art approves it.
+- **Not built:** screw-pine, sea hibiscus, seagrass, mangrove (later tasks). The hero banyan and the windbreak tree were built in M2-ENV-07 (below). No impostors or billboards for more than 400 m. No wind interaction with characters. No collision meshes. **PLACEHOLDER until Art Director sign-off** (M1-ENV-03): `docs/kb/art/environments/vegetation_placeholders.md` lists every asset and moves each to "Signed off" when Art approves it.
 - **Unverified on GPU:** cost, alpha-scissor shimmer under motion, and the shadow-acne settings. Lavapipe only.

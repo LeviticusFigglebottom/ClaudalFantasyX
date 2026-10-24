@@ -909,8 +909,8 @@ def paint_windbreak_spray(shape, rng, cell_m: float):
         rosettes.append(shoot)
         if rng.random() < 0.6:  # a side shoot with its own rosette
             i = int(rng.integers(1, 3))
-            side = _polyline(shoot[i], ang + rng.choice([-1.0, 1.0]) * rng.uniform(0.5, 0.9), hm * rng.uniform(0.16, 0.26),
-                             0.0, 3)
+            turn = rng.choice([-1.0, 1.0]) * rng.uniform(0.5, 0.9)
+            side = _polyline(shoot[i], ang + turn, hm * rng.uniform(0.16, 0.26), 0.0, 3)
             cv.twig(side, 0.004, 0.003, TWIG)
             rosettes.append(side)
     items = []
