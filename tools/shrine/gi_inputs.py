@@ -16,6 +16,7 @@ INPUT_GLOBS = [
     "game/levels/ch03/shell_shrine/*.tscn",
     "game/levels/ch03/shell_shrine/*.tres",
     "game/levels/ch03/shell_shrine/shell_shrine_level.gd",
+    "game/levels/ch03/shell_shrine/shrine_lighting.gd",
     "game/data/trials/shell_shrine.json",
     "assets/environments/kits/haluna/shrine_*.glb",
     "assets/environments/kits/haluna/materials/*.tres",

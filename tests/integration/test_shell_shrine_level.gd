@@ -85,6 +85,27 @@ func test_the_lighting_ships_baked_and_entry_never_bakes() -> void:
 	_done()
 
 
+func test_prebuild_builds_the_hall_off_the_tree() -> void:
+	# M2-ENV-12: on the router's (or the warm-up's) worker-thread instantiate, prebuild() builds the
+	# hall off the tree and _ready skips it. Driven here on an off-tree instance (a worker thread would
+	# need the main thread running frames, which a test can't give it).
+	var off := (load(SCENE) as PackedScene).instantiate() as ShellShrineLevel
+	assert_false(off.prebuilt, "a main-thread instance waits for _ready")
+	off.prebuild()
+	assert_true(off.prebuilt, "built off the tree")
+	assert_true(off.room != null and off.door != null and off.pool_water != null, "the hall exists off the tree")
+	assert_eq(off.basin_pivots.size(), off.trial.basin_ids().size(), "every basin")
+	assert_false(off.is_inside_tree())
+	off.autostart = false
+	_host().add_child(off)
+	assert_eq(off.find_children("Room", "Node3D", false, false).size(), 1, "_ready did not build a second hall")
+	assert_true(off.gi_states.get("closed") is VoxelGIData, "and the rest of _ready ran")
+	_host().remove_child(off)
+	off.free()
+	assert_false(level.prebuilt, "a main-thread instance still builds in _ready")
+	_done()
+
+
 func test_spill_lips_face_their_layout_bearings() -> void:
 	var b := deg_to_rad(122.0)
 	assert_true(level.spill_dir(&"b1", 2).is_equal_approx(Vector3(sin(b), 0.0, -cos(b))), "b1's third lip")

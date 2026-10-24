@@ -13,10 +13,8 @@ extends Node3D
 ## shows, the nacre shimmers, the lips pour), raises the inner pool, sinks the door, empties the side
 ## pool and offers the charm. Through the open door, the exit trigger hands off to Cutscene B
 ## (first_playable.json "shell_shrine" next_scene).
-## M2-FP-27: the shrine is a location (ch03/shell_shrine; Spawns/Entry, Spawns/Exit, place_at). When the
-## pool fills, the respawn point moves to the open door (checkpoint_location / checkpoint_spawn) and a
-## checkpoint autosave is requested, so a Drownbell loss and "Return to last save" resume past the
-## trial (the door and side pool restore from their flags).
+## M2-FP-27: a location (Spawns/Entry, Spawns/Exit, place_at). Filling the pool moves the respawn to the
+## open door and requests a checkpoint autosave, so a Drownbell loss resumes past the trial.
 ##
 ## Hooks (VFX, audio, HUD): the trial's own signals (`trial.rotated`, `flow_changed`, `pool_filled`,
 ## `side_pool_drained`, `hint_due`) plus `charm_taken` here. Time passes only through advance(delta),
@@ -74,8 +72,10 @@ var room: Node3D
 var missing_pieces: Array[String] = []
 ## The last GI bake's wall time (ms, both states), -1 before any bake.
 var gi_bake_ms := -1
-## Milliseconds bake_gi() took at entry (loading the shipped states, or the fallback bake).
-var gi_load_ms := -1
+## prebuild() built the hall off the tree (M2-ENV-12), and how long it took (ms, -1 when not).
+var prebuilt := false
+var prebuild_msec := -1
+var gi_load_ms := -1  # bake_gi()'s ms at entry (the shipped states' load, or the fallback bake)
 ## "closed" / "open" -> the VoxelGIData baked with the door up / down.
 var gi_states: Dictionary = {}
 
@@ -100,13 +100,29 @@ var _door_tween: Tween
 @onready var field_camera: Camera3D = $FieldCamera
 
 
-func _ready() -> void:
-	cfg = FirstPlayableConfig.section(FirstPlayableConfig.SECTION_SHELL_SHRINE)
-	trial = ShellShrineTrial.new()
-	_g = trial.data.get("room", {})
-	_layout = trial.data.get("layout", {})
-	field_camera.make_current()
+## M2-ENV-12: on a worker-thread instantiate (the router, the first-run warm-up's harvest) the hall is
+## built off the tree, so the warm-up can stage its meshes; a main-thread instance builds in _ready.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_SCENE_INSTANTIATED and OS.get_thread_caller_id() != OS.get_main_thread_id():
+		prebuild()
+
+
+## Loads the trial data and builds the hall while off the tree (touches no node in the tree). Once.
+func prebuild() -> void:
+	if prebuilt or is_inside_tree():
+		return
+	var t0 := Time.get_ticks_msec()
+	_load_trial()
 	_build()
+	prebuild_msec = Time.get_ticks_msec() - t0
+	prebuilt = true
+
+
+func _ready() -> void:
+	if not prebuilt:
+		_load_trial()
+		_build()
+	field_camera.make_current()
 	trial.rotated.connect(_on_rotated)
 	trial.flow_changed.connect(_on_flow_changed)
 	trial.pool_filled.connect(_on_pool_filled)
@@ -124,19 +140,20 @@ func _ready() -> void:
 	bake_gi()
 
 
-## Bakes the hall's VoxelGI for both lighting states at load (the door up, and down once the pool
-## has flooded it open; only the second after a reload past the trial), so opening the door swaps the
-## data instead of baking mid-play. Needs a rendering device (no-op in headless tests).
+func _load_trial() -> void:
+	cfg = FirstPlayableConfig.section(FirstPlayableConfig.SECTION_SHELL_SHRINE)
+	trial = ShellShrineTrial.new()
+	_g = trial.data.get("room", {})
+	_layout = trial.data.get("layout", {})
+
+
+## Loads the two shipped lighting states and shows the current one (ShrineLighting, M2-ENV-10).
 func bake_gi() -> void:
 	if gi == null:
 		return
 	var t0 := Time.get_ticks_msec()
-	var paths := gi_data_paths()
-	for state: String in paths.keys():
-		var path := str(paths[state])
-		if ResourceLoader.exists(path):
-			gi_states[state] = load(path) as VoxelGIData
-	if gi_states.size() < paths.size() and bake_at_load and RenderingServer.get_rendering_device() != null:
+	gi_states = ShrineLighting.load_states(gi_data_paths())
+	if gi_states.size() < gi_data_paths().size() and bake_at_load and RenderingServer.get_rendering_device() != null:
 		gi_states["open"] = bake_state(true)
 		if not trial.door_open:
 			gi_states["closed"] = bake_state(false)
@@ -154,17 +171,10 @@ func gi_data_paths() -> Dictionary:
 ## Bakes one lighting state (the door down when `open`) on the hall's VoxelGI and returns its data.
 func bake_state(open: bool) -> VoxelGIData:
 	var keep := door.position
-	var h := float((_g["door"] as Array)[1])
-	door.position = Vector3(keep.x, float(_g["door_sink"]) if open else h * 0.5, keep.z)
+	door.position = Vector3(keep.x, ShrineLighting.door_height(_g, open), keep.z)
 	gi.bake()
 	door.position = keep
-	var data := gi.data
-	if data != null:
-		data.interior = true  # no sky light through the vault: the oculi's sun and its bounce only
-		data.use_two_bounces = true
-		data.energy = float(_g.get("gi_energy", 1.0))
-		data.propagation = float(_g.get("gi_propagation", 0.5))
-	return data
+	return ShrineLighting.tune(gi.data, _g)
 
 
 func _show_gi_state() -> void:

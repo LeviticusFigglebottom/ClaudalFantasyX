@@ -3,6 +3,11 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **M2-ENV-12 is done**: the Lead routed it at 15:55, and its task file is on gpu/m2-rnd-17-zone-stage-gi. Lead, please set it to review (reviewer rendering) when you merge that branch.
+  - **The change:** `ShellShrineLevel` builds the hall off the tree in `prebuild()` on `NOTIFICATION_SCENE_INSTANTIATED` (worker thread only, as HalunaZone does). `_ready` skips the build; the camera, signals, `_restore`, `_relight` and the GI load stay in `_ready`. The GI code moved to `ShrineLighting`.
+  - **Test:** `test_prebuild_builds_the_hall_off_the_tree`. A true worker-thread instantiate deadlocks a TestCase, because the main thread is blocked in `wait_to_finish` while the load needs it, so the test drives `prebuild()` off-tree on the main thread.
+  - **GI unchanged:** the rebake is byte-identical, and the inputs sidecar is updated.
+  - **PC: ONE re-measure of the shrine entry covers both M2-ENV-10 (GI shipped) and M2-ENV-12 (off-tree build).** On a cold first launch with `first_run_live_scenes` including the shrine: first frame, hidden worst frame, and entry total.
 - **MERGE-READY @ 651cdb93** (on top of MERGE-READY f2c5fc1b; no new integration merge since 14:15).
   - **Items:**
     - M3-C07-02 (Ch7's story), M3-C05-02 (Ch5) and M3-C04-02 (Ch4, with Ch4 → Ch5 wired);
