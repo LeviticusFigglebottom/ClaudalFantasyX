@@ -2,8 +2,8 @@
 id: M2-ENV-05
 title: Haluna's zone entry takes 3.1-3.5 s, over ADR 0029's 3 s (instance and prebuild 1.6-2.1 s)
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 reviewer: rendering
 depends_on: []
 milestone: M2
