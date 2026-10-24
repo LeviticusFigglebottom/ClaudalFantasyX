@@ -2,7 +2,7 @@
 id: M1-CHR-10
 title: Asha round 5: hair black and strand-broken, lashes, lid band, brows, teeth, mouth normals
 role: character
-status: review
+status: done
 reviewer: rendering
 owner_session: "worktree-agent-a109a5ba219573018"
 depends_on: [M1-CHR-09]
@@ -13,13 +13,13 @@ request-from: "rendering"
 From the review-sweep-L entries (file:line references there).
 
 ## Acceptance criteria
-- [ ] Hair reads black (asha.md:121), not auburn: check albedo, the hair shader primary tint and anisotropic highlight colour; the crown is no longer a smooth shell. **Partial:** black is done, but the crown is still a sleek shell. The cause was the base colour, not the shader, so no shader change was needed (ADR 0024, proposed). The card geometry is unchanged.
-- [ ] Lashes: tapered clumps, not comb teeth; the pale upper-lid band is gone (albedo, AO, or lid geometry). **Partial:** the lashes are tapered clumps; the band is reduced, not gone: a tan strip still shows between the lashes and the crease (asha_review.md §10.4).
+- [ ] Hair reads black (asha.md:121), not auburn: check albedo, the hair shader primary tint and anisotropic highlight colour; the crown is no longer a smooth shell. **Partial:** black is done, but the crown is still a sleek shell. The cause was the base colour, not the shader, so no shader change was needed (ADR 0024, proposed). The card geometry is unchanged. **→ The crown shell moved to M1-CHR-12 (review-sweep-O).**
+- [ ] Lashes: tapered clumps, not comb teeth; the pale upper-lid band is gone (albedo, AO, or lid geometry). **Partial:** the lashes are tapered clumps; the band is reduced, not gone: a tan strip still shows between the lashes and the crease (asha_review.md §10.4). **→ The lid band was reduced again in M1-CHR-11; the rest moved to M1-CHR-12 (review-sweep-O).**
 - [x] Brows: soft edges, hair-stroke density falloff
 - [x] Grief: no blue-grey tooth slab (teeth albedo and occlusion; mouth-interior AO). The hard inner lower-lip edge remains.
-- [ ] Morph normals on the mouth surface as well as skin_head (88 vertices); no diagonal striations at the smiling mouth corner. **Split:** the mouth normals are done (16 shapes). The striations are a key-light shadow terminator, not normals, and they remain. Handed to M1-RND-20 (§10.3).
-- [ ] Evenly lit skin: work with the shading (cavity, roughness breakup, the painterly close-range look per ADR 0019). **Partial:** the material levers are used (roughness range, cavity, micro-roughness, a head mottle). At 1× the skin still reads smooth and evenly lit.
-- [ ] Blender gate byte-identical; under 5 MB; §14 review strict in asha_review.md §10; then a 2x High GPU capture by the PC session (M1-QA-05c) as final judge. **Done except the GPU capture:** the gate passes (see Notes), every file is under 5 MB, and the review is written. The GPU capture is still to come.
+- [x] Morph normals on the mouth surface as well as skin_head (88 vertices); no diagonal striations at the smiling mouth corner. **Split:** the mouth normals are done (16 shapes). The striations are a key-light shadow terminator, not normals, and they remain. Handed to M1-RND-20 (§10.3). **Done:** M1-RND-20 fixed the striations (key and rim `shadow_normal_bias` 4.5, merged and re-approved on lavapipe).
+- [ ] Evenly lit skin: work with the shading (cavity, roughness breakup, the painterly close-range look per ADR 0019). **Partial:** the material levers are used (roughness range, cavity, micro-roughness, a head mottle). At 1× the skin still reads smooth and evenly lit. **→ Moved to M1-CHR-12, judged on the M1-QA-08 GPU capture (review-sweep-O).**
+- [x] Blender gate byte-identical; under 5 MB; §14 review strict in asha_review.md §10; then a 2x High GPU capture by the PC session (M1-QA-05c) as final judge. **Done except the GPU capture:** the gate passes (see Notes), every file is under 5 MB, and the review is written. The GPU capture is still to come. **Done:** M1-QA-05c delivered the GPU capture.
 
 ## Notes
 - **Verdict** (asha_review.md §10.4):
@@ -95,3 +95,13 @@ From the review-sweep-L entries (file:line references there).
     - the ragged upper-lip border.
   - **To file now** (Rendering): the cavity fill or AO floor for the grief mouth interior (QA-05c fault 2).
   - **ADR 0024:** QA-05c confirms near-black with a dark-brown sheen on the GPU, which is check 2 of sweep-M. Check 1, the neutral-key R:B and the lock hue on lavapipe, plus the neutral cool tint trial, is still owed before the ADR is accepted.
+- 2026-10-24 review-sweep-O (rendering): **approve with fixes, accepted as a round. The strict §14 judgement stays with the GPU (M1-QA-08) and the human.** Every follow-up sweeps M and N asked for now has a home:
+  - **Round 6, M1-CHR-11:** the grief teeth, the lashes, the brow notch, the smile's eyes and cheeks, and the upper-lip border.
+  - **M1-RND-21:** the cavity fill for the mouth interior.
+  - **M1-RND-20:** the striations and the nose wedge. Criterion 5 is now ticked against it.
+  - **M1-CHR-12 (new):** the crown shell (criterion 1), the residue of the lid band (criterion 2), skin evenness (criterion 6) and ADR 0024 check 1.
+  - **M1-QA-08 (new):** the GPU re-capture.
+  - Criterion 7's GPU capture was M1-QA-05c, which has landed, so criterion 7 is ticked too.
+  - **What I viewed:** the current `asha_face_smile` and `asha_face_grief` baselines, which now carry round 6, at full size. The crown is still a sleek shell with a hard, even hairline arc. The nose wedge on screen-right's cheek is softer than at sweep-M, but still a hard-edged shadow.
+  - **Not re-run:** the Blender gate and the asha shots. Nothing in CHR-10's scope changed after round 6's re-approval.
+  - **ADR 0024:** it stays `proposed` until M1-CHR-12 records check 1.
