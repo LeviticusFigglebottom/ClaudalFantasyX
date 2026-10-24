@@ -31,9 +31,10 @@ class TestHeroClips(unittest.TestCase):
 
     def test_asha_has_every_requested_clip(self):
         expected = REQUESTED | set(hero_clips.BATTLE_CLIPS)  # M2-CHR-07: plus the battle clip contract
+        expected |= set(hero_clips.LOCO_NEW)  # M2-CHR-12: plus the field locomotion clips
         self.assertEqual(set(hero_clips.CLIPS["asha"]), expected)
         text = hero_clips.out_path("asha").read_text(encoding="utf-8")
-        names = set(re.findall(r'resource_name = &"([a-z_]+)"', text))
+        names = set(re.findall(r'resource_name = &"([a-z_0-9]+)"', text))
         self.assertEqual(names, expected)
         self.assertIn("take_hand", hero_clips.CLIPS["rhen"])  # the request lists Rhen's clip for the shared rig
 
@@ -112,7 +113,7 @@ class TestTomaClips(unittest.TestCase):
         self.assertTrue(called, "the dialogue calls Toma's clips")
         self.assertEqual(called - set(hero_clips.CLIPS["toma"]), set())
         self.assertTrue({"idle", "walk", "run", "talk"} <= set(hero_clips.CLIPS["toma"]))
-        names = set(re.findall(r'resource_name = &"([a-z_]+)"', hero_clips.out_path("toma").read_text(encoding="utf-8")))
+        names = set(re.findall(r'resource_name = &"([a-z_0-9]+)"', hero_clips.out_path("toma").read_text(encoding="utf-8")))
         self.assertEqual(names, set(hero_clips.CLIPS["toma"]))
 
     def test_persona_sway_and_wide_planted_stance(self):
@@ -167,7 +168,7 @@ class TestSefirClips(unittest.TestCase):
                                         "hands_joined": True})
         self.assertEqual(hero_clips.CLIPS["sefir"], ["idle", "talk", "raise_palm", "incline_head", "glance", "pivot",
                                                      "walk_glide"])
-        names = set(re.findall(r'resource_name = &"([a-z_]+)"', hero_clips.out_path("sefir").read_text(encoding="utf-8")))
+        names = set(re.findall(r'resource_name = &"([a-z_0-9]+)"', hero_clips.out_path("sefir").read_text(encoding="utf-8")))
         self.assertEqual(names, set(hero_clips.CLIPS["sefir"]))
         called = set()
         for dlg in (ROOT / "game" / "data" / "dialogue").rglob("*.dlg"):
@@ -259,7 +260,7 @@ class TestYsoldeClips(unittest.TestCase):
         self.assertEqual(hero_clips.CLIPS["ysolde"], ["idle", "walk", "run", "talk", "board_step", "vigil_book_shut",
                                                       "reink_shell", "stand_apart", "book_fan", "cast_glyph"])
         text = hero_clips.out_path("ysolde").read_text(encoding="utf-8")
-        self.assertEqual(set(re.findall(r'resource_name = &"([a-z_]+)"', text)), set(hero_clips.CLIPS["ysolde"]))
+        self.assertEqual(set(re.findall(r'resource_name = &"([a-z_0-9]+)"', text)), set(hero_clips.CLIPS["ysolde"]))
         for hero in ("asha", "rhen", "toma"):  # the new keys are off by default
             self.assertNotIn("book", hero_clips.PERSONA[hero])
             self.assertNotIn("breath", hero_clips.PERSONA[hero])

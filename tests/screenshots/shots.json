@@ -2268,6 +2268,66 @@
         960,
         720
       ]
+    },
+    {
+      "id": "asha_clip_walk_cycle",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_walk_cycle.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_clip_turn",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_turn.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_walk_cycle",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_walk_cycle.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_turn",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_turn.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_walk_cycle",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_walk_cycle.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_turn",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_turn.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }
