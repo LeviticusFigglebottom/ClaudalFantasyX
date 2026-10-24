@@ -491,6 +491,49 @@ func test_compile_check_detects_a_broken_shader() -> void:
 ## M1-RND-27 (ADR 0029 follow-up 3): a boot run draws its stage plain first and turns the game
 ## viewport's TAA and upscaler on one a frame before it stages anything; it holds each resident entry
 ## as its batch loads it, not all in the spawn frame.
+## M2-RND-14: with TAA off (and no FSR2) the boot still turns Forward+'s advanced shader group on under the card:
+## one frame of TAA on the stage right after the plain first frame, then TAA off again, before anything stages. With
+## the group switched on lazily, a TAA-off player's first VoxelGI frame (the Shell Shrine) could deadlock 4.6.3.
+func test_a_taa_off_boot_turns_the_advanced_shader_group_on_before_staging() -> void:
+	var reg_path := _write_registry(
+		"registry_adv.json", {"materials": [{"path": TEST_SHADER, "scenes": [], "resident": true}]}
+	)
+	var game := get_viewport_for_test()
+	var was := [game.use_taa, game.scaling_3d_mode, game.screen_space_aa]
+	game.use_taa = false
+	game.scaling_3d_mode = Viewport.SCALING_3D_MODE_BILINEAR
+	game.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	node.resident_only = true
+	node.preset_id = "high"
+	_host().add_child(node)
+	node.start("")
+	var vp := node.get_node("Viewport") as SubViewport
+	assert_false(vp.use_taa, "the first frame is plain")
+	node.tick(5.0)
+	assert_true(vp.use_taa, "one frame of TAA: the advanced shader group comes on under the card")
+	assert_eq(node.stage_node_count(), 0, "before anything stages")
+	node.tick(5.0)
+	assert_false(vp.use_taa, "then the player's AA again")
+	node.free()
+	# With TAA on the game has motion vectors already: no extra frame.
+	game.use_taa = true
+	var on := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	on.registry_path = reg_path
+	on.resident_only = true
+	on.preset_id = "high"
+	_host().add_child(on)
+	on.start("")
+	var taa_steps := on._bring_up.filter(func(step: Array) -> bool: return step[0] == &"use_taa")
+	assert_eq(taa_steps.size(), 1, "TAA on: only its own TAA step, no extra frame")
+	on.free()
+	game.use_taa = was[0]
+	game.scaling_3d_mode = was[1]
+	game.screen_space_aa = was[2]
+	_clean_tmp()
+
+
 func test_boot_brings_the_stage_up_one_feature_a_frame_and_holds_residents_in_their_batch() -> void:
 	var reg_path := _write_registry(
 		"registry_boot.json",

@@ -16,6 +16,9 @@ extends Node
 ## It prints "SLICE_SWEEP <segment> ..." and appends one row per segment to --csv: perf_baseline.csv's
 ## columns (scene = "slice:<segment>", camera = the spawn) plus gpu_mean_ms, frame_max_ms,
 ## hidden_max_ms, hidden_total_ms (the whole load under the fade) and visible_max_ms.
+## --override=key=value,...: GraphicsSettings overrides on top of --preset (M2-RND-14; e.g. aa=fxaa, TAA off).
+## Diagnosis (M2-RND-15): --pipeline-trace prints SLICE_PIPE for every frame over 50 ms or with a draw-time pipeline
+## compile, with the frame's Performance pipeline-compilation counts (canvas, mesh, surface, draw, specialization).
 ## Diagnosis (M2-RND-07): --flood-trace prints the Flood's first 12 frames; --flood-variant=no_boss_vfx forces
 ## the phase without the set piece (BattleBossVfx freed first).
 
@@ -43,7 +46,20 @@ const SEGMENTS := [
 ]
 const VISIBLE_FRAMES := 60
 const TRANSITION_TIMEOUT_S := 30.0
+## The launch waits for the boot card this long (M2-RND-15): a cold first launch (an empty driver cache) holds the
+## card for 30-36 s, and at the 30 s transition timeout the sweep's "visible" window used to start under the card,
+## reporting a hidden first-run frame (825 ms) as a visible one.
+const LAUNCH_TIMEOUT_S := 300.0
 const FLOOD_HP_SHARE := 0.4
+## --pipeline-trace: frames over this (ms) are printed, and any frame with a draw-time pipeline compile.
+const PIPELINE_TRACE_MS := 50.0
+const PIPELINE_MONITORS: Array[Performance.Monitor] = [
+	Performance.PIPELINE_COMPILATIONS_CANVAS,
+	Performance.PIPELINE_COMPILATIONS_MESH,
+	Performance.PIPELINE_COMPILATIONS_SURFACE,
+	Performance.PIPELINE_COMPILATIONS_DRAW,
+	Performance.PIPELINE_COMPILATIONS_SPECIALIZATION,
+]
 const CSV_FIELDS := [
 	"scene",
 	"camera",
@@ -68,6 +84,8 @@ const CSV_FIELDS := [
 
 var _opts: Dictionary = {}
 var _rid: RID
+var _pipe_prev := PackedInt64Array()
+var _segment_id := ""
 
 
 func _ready() -> void:
@@ -89,6 +107,11 @@ func _run() -> void:
 	win.size = Vector2i(int(res[0]), int(res[1]))
 	var gs := GraphicsSettings.new()
 	gs.set_preset(str(_opts.get("preset", "high")))
+	# --override=key=value,... (M2-RND-14): a player's settings on top of the preset, e.g. aa=fxaa (TAA off).
+	for pair in str(_opts.get("override", "")).split(",", false):
+		var kv := pair.split("=", true, 1)
+		if kv.size() == 2:
+			gs.set_override(kv[0], kv[1].to_float() if kv[1].is_valid_float() else kv[1])
 	GraphicsRuntime.set_settings(gs)
 	_rid = get_viewport().get_viewport_rid()
 	RenderingServer.viewport_set_measure_render_time(_rid, true)
@@ -108,6 +131,7 @@ func _run() -> void:
 
 func _segment(seg: Array, preset: String) -> void:
 	var id := str(seg[0])
+	_segment_id = id
 	var kind := str(seg[1])
 	var spawn := StringName(str(seg[3]))
 	var hidden := PackedFloat64Array()
@@ -145,7 +169,8 @@ func _segment(seg: Array, preset: String) -> void:
 			var router := get_tree().root.get_node(^"SceneRouter")
 			get_tree().change_scene_to_file(str(seg[2]))
 			hidden = await _frames_until(
-				func() -> bool: return bool((router.get(&"last_swap_stats") as Dictionary).get("reveal", false))
+				func() -> bool: return bool((router.get(&"last_swap_stats") as Dictionary).get("reveal", false)),
+				LAUNCH_TIMEOUT_S
 			)
 			visible = await _frames(VISIBLE_FRAMES)
 			# The router closes its visible window a little after the card lifts; wait for its record.
@@ -249,16 +274,21 @@ static func _reveal_held(router: Node) -> bool:
 	return router.has_method(&"reveal_holders") and not (router.call(&"reveal_holders") as Array).is_empty()
 
 
-## Wall time of every frame until `done` is true (or TRANSITION_TIMEOUT_S passes).
-func _frames_until(done: Callable) -> PackedFloat64Array:
+## Wall time of every frame until `done` is true (or `timeout_s` passes, which is reported: the frames after it
+## are not the visible window the caller then measures).
+func _frames_until(done: Callable, timeout_s: float = TRANSITION_TIMEOUT_S) -> PackedFloat64Array:
 	var out := PackedFloat64Array()
 	var start := Time.get_ticks_usec()
 	var prev := start
-	while not bool(done.call()) and float(Time.get_ticks_usec() - start) / 1e6 < TRANSITION_TIMEOUT_S:
+	while not bool(done.call()):
+		if float(Time.get_ticks_usec() - start) / 1e6 >= timeout_s:
+			push_warning("SLICE_TIMEOUT %s: gave up waiting after %.0f s" % [_segment_id, timeout_s])
+			break
 		await get_tree().process_frame
 		var now := Time.get_ticks_usec()
 		out.append(float(now - prev) / 1000.0)
 		prev = now
+		_trace_pipelines("hidden", out.size() - 1, out[-1])
 	return out
 
 
@@ -270,7 +300,28 @@ func _frames(n: int) -> PackedFloat64Array:
 		var now := Time.get_ticks_usec()
 		out.append(float(now - prev) / 1000.0)
 		prev = now
+		_trace_pipelines("visible", i, out[-1])
 	return out
+
+
+## --pipeline-trace (M2-RND-15): the frame's pipeline compiles by source, from Performance's counters.
+func _trace_pipelines(window: String, i: int, ms: float) -> void:
+	if not _opts.has("pipeline-trace"):
+		return
+	var now := PackedInt64Array()
+	for m in PIPELINE_MONITORS:
+		now.append(int(Performance.get_monitor(m)))
+	var d := PackedInt64Array()
+	for k in now.size():
+		d.append(now[k] - (_pipe_prev[k] if _pipe_prev.size() == now.size() else 0))
+	_pipe_prev = now
+	if ms > PIPELINE_TRACE_MS or d[3] > 0:
+		print(
+			(
+				"SLICE_PIPE %s %s f=%d ms=%.1f canvas=%d mesh=%d surface=%d draw=%d spec=%d"
+				% [_segment_id, window, i, ms, d[0], d[1], d[2], d[3], d[4]]
+			)
+		)
 
 
 func _write_csv(row: Dictionary) -> void:

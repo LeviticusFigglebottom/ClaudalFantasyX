@@ -689,11 +689,23 @@ static func entry_mesh(entry: Dictionary, fallback: Mesh) -> Mesh:
 ## Draws the stage plain first and queues the game viewport's features to come on one a frame
 ## (M1-RND-27); a feature the game viewport does not use is not a step.
 func _begin_bring_up() -> void:
+	var taa_wanted := bool(_viewport.get(&"use_taa"))
+	var fsr2 := int(_viewport.get(&"scaling_3d_mode")) == Viewport.SCALING_3D_MODE_FSR2
 	for prop in BRING_UP_PROPS:
 		var want: Variant = _viewport.get(prop)
 		if want != BRING_UP_PLAIN[prop]:
 			_bring_up.append([prop, want])
 			_viewport.set(prop, BRING_UP_PLAIN[prop])
+	# M2-RND-14: Forward+ turns its advanced shader group on (motion vectors, VoxelGI, SSS, lightmaps) lazily, on the
+	# first frame that needs it, and in Godot 4.6.3 that can deadlock: version_get_shader() holds a shader's version
+	# mutex while it waits for the shader's compile tasks, and pipeline compiles of the same shader fill every worker
+	# waiting on that mutex. With TAA off the first such frame was the Shell Shrine's first post-bake frame, with the
+	# whole hall loaded (the lavapipe capture hang). So every boot turns it on here, under the card, with one frame of
+	# TAA on the stage, whatever the player's AA (with TAA or FSR2 the game already has motion vectors). It goes
+	# right after the plain first frame, so everything staged after it compiles with the group on.
+	if not taa_wanted and not fsr2:
+		_bring_up.push_front([&"use_taa", false])
+		_bring_up.push_front([&"use_taa", true])
 	_bring_up_total = _bring_up.size()
 	if _bring_up.is_empty():
 		_stage_next_batch()
