@@ -2,8 +2,8 @@
 id: M1-RND-29
 title: A fresh install's first launch is over ADR 0029 even with the shader baker (pipelines; Haluna 8 s, hidden 2 s)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M1-RND-28, M2-ARC-04]
 milestone: M1
