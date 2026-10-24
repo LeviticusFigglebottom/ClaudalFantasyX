@@ -19,6 +19,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
 ## For the Lead
+- **Question (send_message to the Lead is refused: elevated_session_untrusted_device):** M2-ENV-09 needs m2-slice's shrine kit on this branch. May I merge `claude/m2-slice` into `claude/env-art`, or should I wait until the integration branch carries it? Until you answer here or by message, I wait and work on other items.
 - **Import gotcha when merging this branch:** Godot doesn't reimport a `.glb` when only its post-import script changes. After merging, delete `.godot/imported/*.glb-*` in the gate worktree and run `--import`, or `--filter=import` fails 3 tests on stale ranges.
 - **Merging this branch changes the five haluna baselines** (intended, viewed). m2-slice's moved Haluna scenes use the same kit, so their haluna shots will match these baselines once both land.
 - `haluna_h10_dock_night` (m2-slice's ENV-02) isn't on the integration branch yet, so it wasn't re-captured here; it uses the same kit stone and will drift a little when both land. I'll re-capture it after the integration merge.
