@@ -40,6 +40,7 @@ This needs the Godot 4.6.3 **export templates**: in the editor, open **Editor â†
 | Advance dialogue, confirm | Enter or Space | A / Cross |
 | Choose an option | Up / Down, then Enter | D-pad, then A |
 | Back, cancel | Escape | B / Circle |
+| Field menu (bestiary, Swell fill modes) | Escape in the field | B / Circle |
 | Battle menus | Up / Down / Left / Right, Enter, Escape | D-pad, A, B |
 
 In battle, the timeline on the right shows who acts next. Highlighting a command previews how it changes the order. Swap brings Toma in from the reserve.
@@ -56,7 +57,7 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - There's no skip for cutscenes yet.
 - Entering Haluna freezes for about a second and a half behind the black fade while the village builds itself. That's expected for now.
 - After a lost battle (or an escape) you return on the village side of the fight. Choosing "Fight again" replays it, and crossing back toward the beach offers it again. The causeway head is past the beach's north end, so the fight comes up again on the way there until you win.
-- In the field, Escape does nothing. **E** also advances dialogue.
+- In the field, Escape opens the field menu, which pauses the game. From it you can open the bestiary or choose each hero's Swell fill mode. Escape backs out a step at a time and then closes it. It doesn't open during a cutscene or a conversation. **E** also advances dialogue.
 
 ## Reporting
 
