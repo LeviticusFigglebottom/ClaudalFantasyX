@@ -37,3 +37,4 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 - Light Step (`encounter_rate_pct`) is not read by the field encounter meter yet.
 - Lattice page: no overview zoom or drag-pan; a sealed gate not next to the hero doesn't offer to walk there.
 - Customize works only on worn pieces (equip a spare first).
+- 2026-10-24: full ci_local on 8c2b427 stopped at the tool unit tests: 541 run, 1 failed, `test_release_excludes_tests::test_no_shipped_file_names_a_tests_path` -> `game/ui/objectives/objective_shot.gd` (claude/ui M2-UI-17's capture driver loads `res://game/levels/_tests/haluna_mood/haluna_mood.tscn`, which release presets exclude). Not this track's code; reported to the UI track with a proposed fix (move the driver under game/levels/_tests/). Re-running every other step with that one test recorded instead of fatal.
