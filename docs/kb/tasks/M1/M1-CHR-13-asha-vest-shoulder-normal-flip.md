@@ -2,8 +2,8 @@
 id: M1-CHR-13
 title: Asha's vest shoulder has a stair-stepped vertex-normal crease (QA-08 polish item F)
 role: character
-status: todo
-owner_session: ""
+status: review
+owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
 reviewer: rendering
 depends_on: []
 milestone: M1
@@ -32,11 +32,11 @@ to 0, and the sign flips vertex by vertex along a staircase. The flipped vertice
 is darker.
 
 ## Acceptance criteria
-- [ ] The vest's shoulder normals are continuous: no per-vertex sign flips. For example, orient the whole panel by
+- [x] The vest's shoulder normals are continuous: no per-vertex sign flips. For example, orient the whole panel by
       its winding or one reference face, instead of per vertex, or fall back to the vertical when `|N · q|` is small.
-- [ ] Rebuilt through the normal pipeline (`assets_src/characters/asha/build.sh`); PROVENANCE row updated if the
+- [x] Rebuilt through the normal pipeline (`assets_src/characters/asha/build.sh`); PROVENANCE row updated if the
       outputs change.
-- [ ] The stair-step is gone in `asha_face_stylized_compare` (lavapipe, and the GPU crop when the PC next runs it). List the
+- [x] The stair-step is gone in `asha_face_stylized_compare` (lavapipe, and the GPU crop when the PC next runs it). List the
       drifting Asha shots with their RMSE for the Lead to re-approve.
 
 ## Reproduce (lavapipe)
@@ -44,5 +44,21 @@ is darker.
 A/B flags are `--light-set=shadow_enabled=false`, `--mat-set=normal_strength=0.0` and `--preset=low`. The
 normals-as-colour probe (an unshaded `ALBEDO = world normal × 0.5 + 0.5` override on the `cloth` surfaces) is
 described in the M1-RND-23 handoff.
+
+## Delivery (2026-10-24, characters)
+- **Cause confirmed and fixed in `asha_costume.py`:** `_outward()` flipped each vertex by sign(N · q); now the whole grid
+  flips by its majority sign. Together with the `_panel` winding bug (its test flipped when the winding already faced
+  outward, so the front layer faced inward and only the inset back layer was seen; the per-vertex flips pushed that
+  back layer in and out by its thickness, which is the staircase). Now the outer layer faces out and the back layer
+  sits inside.
+- Rebuilt Asha, Rhen and Toma (they share the helpers): `verify --job asha --job rhen --job toma` 44 / 31 / 37 identical.
+- The black staircase along the vest's shoulder edge is gone in `asha_face_stylized_compare` (lavapipe); the jagged
+  dark shape left in the middle of the shoulder is the braid's cast shadow. The GPU crop is the PC's next check.
+- Drift after the rebuild (lavapipe rmse; all re-approved after viewing, except the ones that still pass):
+  asha_face_neutral/smile/grief 0.0160, asha_face_stylized_compare 0.0263, asha_sleeve_s0/s4 0.0094, asha_clip_kneel 0.0095,
+  asha_clip_offer_hand 0.0088, asha_clip_laugh 0.0093; rhen_front 0.0151, q34 0.0115, profile 0.0113, back 0.0120,
+  face_neutral/smile 0.0199; toma_front 0.0159, q34 0.0109, profile 0.0106, back 0.0112. Passing, not re-approved:
+  asha_front 0.0061, asha_q34 0.0071, asha_profile 0.0074, asha_extreme_pose 0.0073, asha_clip_walk 0.0061,
+  asha_clip_face_west 0.0067, asha_clip_run 0.0077, toma_face_neutral/smile 0.0026.
 
 ## Review log

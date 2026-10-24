@@ -4,9 +4,8 @@ extends TestCase
 ## router's font warmer covers the project theme without ever touching MSDF fonts.
 ##
 ## The swap is measured in a child Godot process (game/core/debug/scene_swap_probe.tscn): the test
-## runner calls tests synchronously, and a real swap would replace the runner's own scene. Shared
-## CI machines are noisy, so each target gets up to `attempts` runs and passes on the first run
-## under the threshold; every run's numbers are kept in the failure message.
+## runner calls tests synchronously, and a real swap would replace the runner's own scene. M2-MNU-06: the
+## probe measures on an injected per-frame clock (--frame-usec), so no result depends on the machine's load.
 
 const PROBE_TAG := "SCENE_SWAP_PROBE "
 const GODOT_NAME_HINT := "godot"
@@ -19,6 +18,8 @@ const FRAME_USEC := 16667
 const LIFT_FRAMES := 21
 const HITCH_FRAME_MS := 70.0
 const HIDDEN_STALL_MS := 1200.0
+## A fake-clock frame time is FRAME_USEC exactly; this only absorbs the usec -> ms float conversion.
+const STEP_EPS_MS := 0.001
 const BOOT_SCENE := "res://game/core/boot.tscn"
 
 
@@ -27,52 +28,37 @@ func test_budget_data_has_headroom_below_the_spec_budget() -> void:
 	assert_false(cfg.is_empty(), "perf_budgets.json scene_swap section")
 	assert_true(float(cfg.get("budget_ms", 0.0)) <= SceneRouter.SWAP_BUDGET_MS, "budget may not exceed SPEC §4.2")
 	assert_true(float(cfg.get("test_threshold_ms", INF)) < float(cfg.get("budget_ms", 0.0)), "threshold has headroom")
-	assert_true(int(cfg.get("attempts", 0)) >= 1)
 	assert_true(ResourceLoader.exists(str(cfg.get("probe_scene", ""))), "probe scene exists")
 	for t: Variant in cfg.get("targets", []):
 		assert_true(ResourceLoader.exists(str(t)), "target exists: %s" % t)
 
 
+## M2-MNU-06: the real swap of every target runs in the child process on an injected clock that advances
+## FRAME_USEC per process frame (scene_swap_probe.gd --frame-usec, SceneRouter.set_measure_clock). Every
+## measured frame is then exactly one step, so the router's bookkeeping and its ADR 0029 verdicts are checked
+## deterministically: a loaded or freshly restarted machine changes nothing here. (The old wall-clock version
+## held the hidden frames to 40 ms, which load and cold caches broke: 73-186 ms under the fade, all visible
+## frames ~7 ms. Real-time hitches are the PC perf sweep's to measure, on real hardware.)
 func test_swap_frame_stays_under_threshold_for_every_target() -> void:
-	# Wall-clock budgets are meaningless under coverage instrumentation (ADR 0013: every probe
-	# call slows the code). The plain test step still enforces this budget.
-	if OS.has_environment(COVERAGE_ENV):
-		return
 	var cfg := SceneSwapProbe.budgets()
 	var threshold := float(cfg.get("test_threshold_ms", 0.0))
+	var step_ms := FRAME_USEC / SceneRouter.USEC_PER_MSEC
 	for t: Variant in cfg.get("targets", []):
-		var runs: Array[Dictionary] = []
-		var passed := false
-		for i in int(cfg.get("attempts", 1)):
-			var stats := _probe(str(cfg.get("probe_scene", "")), str(t))
-			runs.append(stats)
-			if stats.is_empty():
-				continue
-			_assert_fix_shape(stats, str(t))
-			if float(stats.get("max_frame_ms", INF)) < threshold:
-				passed = true
-				break
-		var worst: Array[float] = []
-		for r in runs:
-			worst.append(float(r.get("max_frame_ms", -1.0)))
-		var msg := "%s swap frame >= %.0f ms in every run: %s (last stats %s)" % [t, threshold, worst, runs[-1]]
-		var load_per_cpu := _load_per_cpu()
-		if not passed and load_per_cpu > float(cfg.get("max_load_per_cpu", INF)):
-			push_warning("UNMEASURABLE (load %.1f/cpu): %s" % [load_per_cpu, msg])
+		var target := str(t)
+		var stats := _run_probe(
+			str(cfg.get("probe_scene", "")), ["--to=" + target, "--frame-usec=%d" % FRAME_USEC], target
+		)
+		if stats.is_empty():
 			continue
-		assert_true(passed, msg)
-
-
-## 1-minute load average divided by CPU count; 0 where /proc/loadavg is unavailable.
-static func _load_per_cpu() -> float:
-	# procfs reports size 0, so get_file_as_string() returns "": read a line instead.
-	var f := FileAccess.open("/proc/loadavg", FileAccess.READ)
-	if f == null:
-		return 0.0
-	var fields := f.get_line().split(" ", false)
-	if fields.is_empty():
-		return 0.0
-	return fields[0].to_float() / float(maxi(OS.get_processor_count(), 1))
+		_assert_fix_shape(stats, target)
+		for f: Variant in stats.get("frame_ms", []):
+			assert_between(float(f), step_ms - STEP_EPS_MS, step_ms + STEP_EPS_MS, "%s hidden frame is one step" % t)
+		for f: Variant in stats.get("visible_frame_ms", []):
+			assert_between(float(f), step_ms - STEP_EPS_MS, step_ms + STEP_EPS_MS, "%s visible frame is one step" % t)
+		assert_true(float(stats.get("max_frame_ms", INF)) < threshold, "%s worst hidden frame: %s" % [t, stats])
+		assert_false(bool(stats.get("over_budget", true)), "%s: no hidden frame over 1 s" % t)
+		assert_false(bool(stats.get("visible_over_budget", true)), "%s: no visible frame over 50 ms" % t)
+		assert_false(bool(stats.get("entry_over_budget", true)), "%s: the entry is under 3 s" % t)
 
 
 ## review-sweep-J S1 (M1-RND-22): without split_swap, a prewarm wait doesn't land inside frame 0.
@@ -152,10 +138,6 @@ func test_a_visible_hitch_warns_against_50_ms() -> void:
 	assert_eq(warnings.size(), 1)
 	assert_true(warnings[0].contains("50 ms budget"), "%s" % warnings)
 	assert_true(warnings[0].contains("frame %d " % (LIFT_FRAMES + 2)), "names the frame: %s" % warnings)
-
-
-func test_load_guard_reads_a_number() -> void:
-	assert_true(_load_per_cpu() >= 0.0)
 
 
 func test_font_warmer_covers_the_theme_and_skips_msdf() -> void:
@@ -299,10 +281,6 @@ func _assert_fix_shape(stats: Dictionary, target: String) -> void:
 		assert_true(held > 0, "%s: the fade stays opaque while the title warms up (%d frames)" % [target, held])
 	else:
 		assert_eq(held, 0, "%s: nothing holds the reveal" % target)
-
-
-func _probe(probe_scene: String, target: String) -> Dictionary:
-	return _run_probe(probe_scene, ["--to=" + target], target)
 
 
 func _run_probe(probe_scene: String, user_args: Array[String], target: String) -> Dictionary:

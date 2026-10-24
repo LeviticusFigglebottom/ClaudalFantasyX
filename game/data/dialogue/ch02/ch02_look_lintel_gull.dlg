@@ -1,0 +1,11 @@
+// Ch2 B03 H03, the lintel-gull look-at (docs/kb/story/beats/vertical_slice.md, "The town loop"): a
+// carved wooden seabird on the ridge, facing the sea, said to cry warning before the Undertow
+// (bible.md, the Low Reaches). In-engine: the camera holds on the gull, one line from Rhen.
+title: ch02_look_lintel_gull
+location: ch02/haluna
+---
+@camera H03 blend=0.8
+@wait 1.4
+Rhen [neutral]: Every roof's got one, and every one faces the sea. Nobody carves a gull to watch the land. #line:ch02_look_lintel_gull_001
+@wait 0.6
+===

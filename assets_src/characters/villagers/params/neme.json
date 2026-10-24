@@ -1,0 +1,115 @@
+{
+  "_about": "Neme, Asha's aunt (her mother's sister), about 46; she mends nets and pretends not to be afraid (asha_velamir.md; vertical_slice.md B02). A sturdy, short woman. Hair drawn back into a low knot, a little grey. A faded sea-blue wrap top with short sleeves, an indigo wrap skirt and sash, an undyed apron. Reach-bands from a few voyages (left 3, right 2). Face sliders relative to the MakeHuman donor (ADR 0021). Keys starting with '_' are read by the villager_* modules, not by bb_params.",
+  "name": "neme",
+  "height_m": 1.58,
+  "heads_tall": 7.05,
+  "shoulder_width_heads": 1.62,
+  "chest_width_heads": 1.26,
+  "chest_depth_heads": 0.98,
+  "waist_width_heads": 1.2,
+  "hip_width_heads": 1.52,
+  "crotch_height_heads": 3.35,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.78,
+  "foot_length_ratio": 0.148,
+  "neck_length_heads": 0.38,
+  "neck_width_ratio": 0.54,
+  "head_width_ratio": 0.68,
+  "femininity": 0.9,
+  "muscle": 0.45,
+  "mass": 0.55,
+  "breast": 0.5,
+  "eye_scale": 1.08,
+  "ipd_m": 0.062,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#A87454",
+  "eye_tilt_deg": 1.0,
+  "jaw_width": 1.04,
+  "cheekbone_height": 0.0,
+  "cheekbone_width": 1.03,
+  "chin_size": 1.0,
+  "nose_bridge_width": 1.06,
+  "nose_tip_projection": 0.95,
+  "lip_fullness": 0.78,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.74,
+  "mouth_corner_lift": 0.0,
+  "brow_ridge": 1.0,
+  "donor_mix_african": 0.4,
+  "donor_mix_asian": 0.4,
+  "donor_mix_caucasian": 0.2,
+  "_skin": {
+    "hex": "#A87454",
+    "age": 0.45,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 3,
+      "R": 2
+    },
+    "ink_opacity": 0.6,
+    "seed": 101,
+    "lip": "#86503F"
+  },
+  "_hair": {
+    "kind": "bun",
+    "seed": 21,
+    "scalp_cards": [
+      170,
+      130,
+      90
+    ],
+    "hairline_cards": 70,
+    "bun_r_m": 0.036,
+    "bun_ribbons": 34,
+    "grey_share": 0.12,
+    "colour": "#141417",
+    "grey": "#8C867D",
+    "underpaint": "#16161A"
+  },
+  "_eyes": {
+    "iris": "#2A1A10"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_c",
+      "hem": "hip",
+      "sleeve": 0.24,
+      "neck_v_m": 0.07
+    },
+    "skirt": {
+      "mat": "cloth_b",
+      "hem": "ankle",
+      "folds": 9,
+      "fold_amp": 0.008,
+      "flare": 0.15,
+      "seed": 11
+    },
+    "apron": {
+      "mat": "cloth_a",
+      "hem": "knee",
+      "half_deg": 48,
+      "seed": 12
+    },
+    "sash": {
+      "mat": "cloth_b",
+      "width_m": 0.09,
+      "turns": 2
+    },
+    "sandals": "leather"
+  },
+  "_tints": {
+    "cloth_a": "#D6CBB4",
+    "cloth_b": "#36457A",
+    "cloth_c": "#5B8FB4",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all"
+  },
+  "_persona": {
+    "sway": 0.8,
+    "lean": 1.0,
+    "arms_down": 41.0
+  }
+}

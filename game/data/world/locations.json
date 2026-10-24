@@ -9,7 +9,7 @@
       "scene": "res://game/levels/prologue/prologue.tscn",
       "spawn": "Start",
       "name_key": "LOCATION_PROLOGUE",
-      "_note": "M2-FP-03: New Game starts here. The prologue plays its cutscene and sends the party to ch02/haluna at Beach; its root script defines place_at, so it counts as playable."
+      "_note": "M2-FP-03: New Game starts here. The prologue plays its cutscene and sends the party to ch01/oruvel_underway at Drop (M3-C01-02; Ch1 then goes on to ch02/haluna at Beach); its root script defines place_at, so it counts as playable."
     },
     {
       "id": "field_test",
@@ -22,6 +22,34 @@
       "scene": "res://game/levels/ch02/haluna/haluna.tscn",
       "spawn": "Shrine",
       "name_key": "LOCATION_CH02_HALUNA"
+    },
+    {
+      "id": "ch03/saltgrass_causeway",
+      "scene": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn",
+      "spawn": "FromHaluna",
+      "name_key": "LOCATION_CH03_SALTGRASS_CAUSEWAY",
+      "_note": "M2-FP-25: the slice's route (B06), a greybox zone (GreyboxZone + ZoneStory, ADR 0035)."
+    },
+    {
+      "id": "ch03/shell_shrine",
+      "scene": "res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
+      "spawn": "Entry",
+      "name_key": "LOCATION_CH03_SHELL_SHRINE",
+      "_note": "M2-FP-27: a location so the trial's checkpoint autosave can resume at Exit, past the solved trial."
+    },
+    {
+      "id": "ch01/oruvel_underway",
+      "scene": "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
+      "spawn": "Drop",
+      "name_key": "LOCATION_CH01_ORUVEL_UNDERWAY",
+      "_note": "M3-C01-02: Ch1's dive (C1-02 to C1-07), a greybox zone (Ch01UnderwayZone). The prologue hands off here at Drop."
+    },
+    {
+      "id": "ch01/oruvel",
+      "scene": "res://game/levels/ch01/oruvel/oruvel.tscn",
+      "spawn": "ScaleHull",
+      "name_key": "LOCATION_CH01_ORUVEL",
+      "_note": "M3-C01-02: the raft-town by day and in the storm (C1-07 to C1-15), a greybox zone (Ch01OruvelZone). Ch1 ends by sending the party to ch02/haluna at Beach."
     }
   ],
   "shrines": [

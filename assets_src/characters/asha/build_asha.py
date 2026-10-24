@@ -47,6 +47,9 @@ from asha_mesh import Part  # noqa: E402
 
 PARAMS = HERE / "asha_params.json"
 HEAD_BONE = "DEF-spine.006"
+MIDLINE_SNAP = 1e-9  # m: coordinates smaller than this are float noise from the face solve
+SHAPE_GRID = 1e-6  # m: shape-key deltas are rounded to this (host-independent morph targets)
+UV_GRID = 2.0 ** -16  # UVs are rounded to this (1/32 texel at 2K; host-independent unwrap)
 
 # material name -> (preview linear rgb, roughness). Godot replaces these by name with the hero
 # shader materials (game/levels/_tests/characters/asha/materials/).
@@ -259,6 +262,28 @@ def delete_hidden_socket(ob: bpy.types.Object, face) -> int:
     return before - len(me.loop_triangles)
 
 
+# M1-RND-25 (QA-08 grief fault A): the lips' inner roll is skin that the lips shade when the mouth
+# opens, and the skin shader has no cavity bounce, so an open mouth was ringed by a hard black band.
+# Those faces move to the `mouth` material (the mouth family, with the bounce); the head atlas keeps
+# their painted mucosa (asha_textures reads the INNERLIP bake term).
+INNER_LIP_DZ = 0.0050  # m above/below the contact line (at s = 1)
+INNER_LIP_HALF = 0.85  # of the mouth's half-width (the corners stay skin: from the side they face the camera)
+INNER_LIP_FACING = 0.25  # a vertex is on the inner roll when its normal points less than this much forward
+
+
+def inner_lip_vertices(V: np.ndarray, N: np.ndarray, dz: np.ndarray, mouth_half: float, s: float) -> np.ndarray:
+    """True for skin vertices on the lips' inner roll, chosen by facing: near the contact line's height,
+    inside the mouth's width, and with a normal that does not face forward (-Y), as the lips' outer
+    surfaces do. (Depth behind the contact line picked up the lower lip's front at the corners.)"""
+    return (np.abs(dz) < INNER_LIP_DZ * s) & (np.abs(V[:, 0]) < INNER_LIP_HALF * mouth_half) & (-N[:, 1] < INNER_LIP_FACING)
+
+
+def head_materials(F: np.ndarray, freg: np.ndarray, inner_v: np.ndarray) -> list[str]:
+    """Material per head face: the mouth cavity and the inner lip roll (every corner on it) are `mouth`."""
+    inner_f = np.where(F >= 0, inner_v[np.maximum(F, 0)], True).all(axis=1)
+    return ["mouth" if (r == "mouth" or inn) else "skin_head" for r, inn in zip(freg, inner_f)]
+
+
 def head_seams(F: np.ndarray, cat: np.ndarray, V: np.ndarray, lm) -> set:
     """Seam edges of the head: between face categories (face mask, rest of head, sockets, mouth
     cavity) and down the back midline of the rest of the head."""
@@ -384,6 +409,62 @@ def transfer_weights(P: np.ndarray, src_P: np.ndarray, src_W: np.ndarray, k: int
     return limit4(out)
 
 
+SKIRT_PARTS = ("SkirtOuter", "SkirtInner")
+TORSO_PARTS = ("Bodice", "Vest", "Collar")
+SKIRT_SIDE_BLEND = 0.07  # m (at s = 1): half-width of the band across the middle where a skirt follows both legs
+SKIRT_LEG_FROM = 0.03  # m above the crotch where a skirt starts to hand over from the hips to the legs
+SKIRT_LEG_RAMP = 0.14  # m over which the handover completes
+SKIRT_PELVIS_SHARE = 0.0  # of the weight below the handover kept on the pelvis (eases the stretch between the legs)
+
+
+def skirt_weights(P: np.ndarray, W0: np.ndarray, V: np.ndarray, W: np.ndarray, reg: np.ndarray, lm,
+                  spine_i: int) -> np.ndarray:
+    """M1-CHR-14: below the crotch a skirt follows the legs, not the pelvis. Each vertex blends its nearest
+    left-leg and right-leg skin weights by its side (+x is her left), so the front and back middles stretch
+    between the knees instead of one leg passing through the cloth."""
+    S = lm.S
+    z_c = float(lm.P("crotch")[2])
+    WL = transfer_weights(P, V[reg == "leg_L"], W[reg == "leg_L"], k=8)
+    WR = transfer_weights(P, V[reg == "leg_R"], W[reg == "leg_R"], k=8)
+    t = np.clip(0.5 + P[:, 0] / (2.0 * SKIRT_SIDE_BLEND * S), 0.0, 1.0)
+    t = t * t * (3.0 - 2.0 * t)
+    legs = WL * t[:, None] + WR * (1.0 - t[:, None])
+    d = np.clip((z_c + SKIRT_LEG_FROM * S - P[:, 2]) / (SKIRT_LEG_RAMP * S), 0.0, 1.0)
+    d = d * d * (3.0 - 2.0 * d)
+    legs = legs * (1.0 - SKIRT_PELVIS_SHARE) + np.eye(W.shape[1])[spine_i] * SKIRT_PELVIS_SHARE
+    return limit4(W0 * (1.0 - d[:, None]) + legs * d[:, None])
+
+
+def quantize_uvs(ob: bpy.types.Object) -> None:
+    """UVs on a UV_GRID grid, before the bake dump and the export. Blender's unwrap left one head UV a float32
+    ULP apart between hosts (the Lead's gate, M1-CHR-14), and the texture raster turned that into texel flips."""
+    uvl = ob.data.uv_layers.active.data
+    uv = np.zeros(len(uvl) * 2, dtype=np.float64)
+    uvl.foreach_get("uv", uv)
+    uvl.foreach_set("uv", np.round(uv / UV_GRID) * UV_GRID)
+
+
+def snap_shape_noise(ob: bpy.types.Object) -> None:
+    """Shape-key deltas on a SHAPE_GRID grid. Their last bits are host-dependent float noise (0 or ~1e-16, or a
+    float32 rounding flip of a tiny delta, by the host CPU's SIMD paths); on the grid the exported morph targets
+    are the same on every host."""
+    keys = getattr(ob.data, "shape_keys", None)
+    if keys is None:
+        return
+    n = len(ob.data.vertices)
+    basis = np.zeros(n * 3, dtype=np.float32)
+    keys.reference_key.data.foreach_get("co", basis)
+    for kb in keys.key_blocks:
+        if kb == keys.reference_key:
+            continue
+        co = np.zeros(n * 3, dtype=np.float32)
+        kb.data.foreach_get("co", co)
+        d = np.round((co.astype(np.float64) - basis) / SHAPE_GRID) * SHAPE_GRID
+        q = (basis + d).astype(np.float32)
+        if not np.array_equal(q, co):
+            kb.data.foreach_set("co", q)
+
+
 def limit4(W: np.ndarray) -> np.ndarray:
     if W.shape[1] > 4:
         thr = -np.sort(-W, axis=1)[:, 3:4]
@@ -456,8 +537,12 @@ def main() -> int:
     is_head = np.isin(freg, ["head", "scalp", "mouth"])
     used_h, Fh, remap_h, Sh = submesh(V, F, is_head, res["seams"])
     Vh = V[used_h]
+    # midline coordinates come out of the face solve as 0 or ~1e-16 depending on the host CPU's SIMD paths
+    # (numpy dispatch); snap them so the head, its unwrap and its bakes are the same on every host
+    Vh[np.abs(Vh) < MIDLINE_SNAP] = 0.0
     fh_reg = freg[is_head]
-    mats_h = ["mouth" if r == "mouth" else "skin_head" for r in fh_reg]
+    inner_v = inner_lip_vertices(Vh, Nw[used_h], res["lip_dz"][used_h], face.mouth_half, lm.h / 0.222)
+    mats_h = head_materials(Fh, fh_reg, inner_v)
     head = Part("Head")
     for p in Vh:
         head.add_v(p, tag=0)
@@ -500,6 +585,7 @@ def main() -> int:
                                                        np.where(fh_reg == "mouth", 4, 2)))
     unwrap_faces(ob_head, {"skin_head", "mouth"}, head_seams(Fh, cat, Vh, lm),
                  shrink=(np.nonzero(cat != 1)[0], 0.45))
+    quantize_uvs(ob_head)
     pad = np.zeros(len(Vhead) - n_skin)
     masks = {"lower": np.concatenate([res["lower"][used_h], pad]), "lip": np.concatenate([res["lip_w"][used_h], pad])}
     lip_frame = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("contact", "lip_contact"), ("dz", "lip_dz"),
@@ -531,16 +617,23 @@ def main() -> int:
     spine_i = wnames.index("DEF-spine")
     garment_objs = []
     if costume:
-        src_mask = np.isin(reg, ["torso", "leg_L", "leg_R", "arm_L", "arm_R"])
+        src_mask = np.isin(reg, ["torso", "leg_L", "leg_R", "arm_L", "arm_R", "foot_L", "foot_R"])  # feet: the sandals
         opaque = Part("Costume")
+        is_skirt = []
+        is_torso = []
         for key, p in costume.items():
             if key != "VerseSleeve":
                 opaque.extend(p)
+                is_skirt += [key in SKIRT_PARTS] * len(p.V)
+                is_torso += [key in TORSO_PARTS] * len(p.V)
         Pc = opaque.varr()
         Wc = transfer_weights(Pc, V[src_mask], W[src_mask])
-        z_crotch = float(lm.P("crotch")[2])
-        low = np.clip((z_crotch + 0.05 - Pc[:, 2]) / 0.25, 0.0, 1.0) * 0.5  # long skirts follow the pelvis
-        Wc = limit4(Wc * (1.0 - low[:, None]) + np.outer(low, np.eye(len(wnames))[spine_i]))
+        # M1-CHR-14: the bodice, vest and collar ride the torso only; arm weights at the armholes dragged
+        # the side panels out past a lowered arm
+        tm = np.array(is_torso, bool)
+        Wc[tm] = transfer_weights(Pc[tm], V[reg == "torso"], W[reg == "torso"])
+        sk = np.array(is_skirt, bool)
+        Wc[sk] = skirt_weights(Pc[sk], Wc[sk], V, W, reg, lm, spine_i)
         ob = part_object(opaque)
         apply_weights(ob, Wc, wnames, skel)
         garment_objs.append(ob)
@@ -592,6 +685,7 @@ def main() -> int:
     ob_body = make_object("Body", V[used_b], Fb_l, UVb, ["skin_body"] * len(Fb), normals=Nw[used_b])
     apply_weights(ob_body, W[used_b], wnames, skel)
     unwrap_faces(ob_body, {"skin_body"}, uv_seams(Fb_l, UVb))  # the donor's islands, re-flattened and packed
+    quantize_uvs(ob_body)
     dense = np.isin(reg[used_b], ["hand_L", "hand_R", "foot_L", "foot_R"])
     t_all = sum(len(f) - 2 for f in Fb_l)
     t_dense = sum(len(f) - 2 for f in Fb_l if dense[list(f)].all())
@@ -620,6 +714,8 @@ def main() -> int:
         "seconds": 0.0,
     }
     report["triangles"]["total_lod0"] = sum(report["triangles"].values())
+    for ob in export_objs:
+        snap_shape_noise(ob)
     if args.bake_dir:
         # M1-CHR-04: the lip contact line and the commissures (bb_donor.lip_rest) for the lip bake
         lip_terms = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("CONTACT", "lip_contact"),
@@ -629,6 +725,7 @@ def main() -> int:
         face_v = np.zeros(len(Vhead))  # the face-mask island's vertices (texel report)
         face_v[np.unique(Fh[cat == 1][Fh[cat == 1] >= 0])] = 1.0
         lip_terms["FACE"] = face_v
+        lip_terms["INNERLIP"] = np.concatenate([inner_v.astype(float), pad])
         dump_bake(Path(args.bake_dir), {"head": ob_head, "body": ob_body}, lm, {"head": np.array(head.T)},
                   {"head": {"LIP": masks["lip"], **lip_terms}})
     removed = delete_hidden_socket(ob_head, face)  # after the bake: the AO still sees a closed socket

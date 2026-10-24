@@ -1,0 +1,95 @@
+[gd_scene load_steps=24 format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_mood.gd" id="1_rig"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="2_tide"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_terrain.gd" id="3_terrain"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_dresser.gd" id="4_dresser"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="7_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="8_waves"]
+[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="9_water_mat"]
+[ext_resource type="Environment" path="res://game/levels/ch02/haluna/haluna_noon_environment.tres" id="10_env"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_ground.gdshader" id="11_ground"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/sand_albedo.png" id="12_sand"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/sand_normal.png" id="13_sand_n"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/coral_stone_albedo.png" id="14_stone"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/coral_stone_normal.png" id="15_stone_n"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/weathering_detail.png" id="16_detail"]
+[ext_resource type="PackedScene" path="res://game/world/save_shrine/save_shrine.tscn" id="17_shrine"]
+[ext_resource type="Environment" path="res://game/levels/ch02/haluna/haluna_night_environment.tres" id="18_night_env"]
+
+[sub_resource type="ShaderMaterial" id="GroundMat"]
+resource_name = "haluna_ground"
+shader = ExtResource("11_ground")
+shader_parameter/tex_sand = ExtResource("12_sand")
+shader_parameter/tex_sand_normal = ExtResource("13_sand_n")
+shader_parameter/tex_stone = ExtResource("14_stone")
+shader_parameter/tex_stone_normal = ExtResource("15_stone_n")
+shader_parameter/tex_detail = ExtResource("16_detail")
+
+[node name="HalunaMood" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water", "moon", "world_environment", "dresser")]
+script = ExtResource("1_rig")
+sun = NodePath("Sun")
+tide = NodePath("Tide")
+water = NodePath("Water")
+moon = NodePath("Moon")
+world_environment = NodePath("WorldEnvironment")
+dresser = NodePath("Dresser")
+night_environment = ExtResource("18_night_env")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("10_env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+light_color = Color(1, 0.945, 0.894, 1)
+light_energy = 3.2
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.2
+sky_mode = 1
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.04
+directional_shadow_split_2 = 0.12
+directional_shadow_split_3 = 0.35
+directional_shadow_max_distance = 400.0
+
+[node name="Moon" type="DirectionalLight3D" parent="."]
+visible = false
+light_color = Color(0.615686, 0.705882, 0.85098, 1)
+light_energy = 0.25
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+directional_shadow_mode = 2
+directional_shadow_max_distance = 120.0
+
+[node name="Water" type="Node3D" parent="."]
+script = ExtResource("7_water")
+publishes_water_level = true
+wave_set = ExtResource("8_waves")
+material = ExtResource("9_water_mat")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("2_tide")
+water = NodePath("../Water")
+
+[node name="Terrain" type="Node3D" parent="."]
+script = ExtResource("3_terrain")
+
+[node name="Dresser" type="Node3D" parent="." node_paths=PackedStringArray("terrain", "tide")]
+script = ExtResource("4_dresser")
+terrain = NodePath("../Terrain")
+tide = NodePath("../Tide")
+ground_material = SubResource("GroundMat")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Shrine" type="Marker3D" parent="Spawns"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -67, 2.02, 44.3)
+
+[node name="SaveShrine" parent="." instance=ExtResource("17_shrine")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -67, 2.04, 46.6)
+id = &"haluna_shrine"
+sets_flag = &"ch02_saved_once"
+location_id = &"ch02/haluna"
+network_id = &"haluna_shrine"

@@ -61,4 +61,14 @@ makes the cap fire sooner.
 - **Also on this branch (Lead's request):** the boot smoke's "1 resources still in use at exit" from ARC-05's
   FrameClock in suspended router coroutines is fixed (commit `M2-ARC-05: fix the boot smoke ...`).
 
+## Notes (PC GPU re-measure, 2026-10-24)
+On the integration branch at e1d4f3e1, a baked release, with every cache cleared, the driver's included. Report:
+`docs/kb/qa/gpu/2026-10-24-arc-08-first-launch.md`.
+- `reveal_wait_end` was **done** in all four runs. The wait took 26.6–32.2 s on a cold first launch and 2.5–3.5 s
+  on the second.
+- `reveal_wait_max_frame_ms`: 1570 (Low) and 2890 (High) on the first launch, 304–389 on the second.
+- The cue shows after 1.5 s.
+- Still over ADR 0029, on the cold first launch only: Low's 825 ms visible frame just after the lift, and Haluna's
+  1.6–1.7 s first-entry frame (4.4 s entry on Low).
+
 ## Review log

@@ -43,3 +43,25 @@ The sheet's *intent* is kept: black hair, and a primary that reads as "a thin, c
   2. The GPU 2× High capture (M1-QA-05c) is the final judge.
   3. Rhen's copper hair (`col_tip` #A65A2A) is not affected.
 - **Art:** amend asha.md §5 to these values, or overturn this ADR with another. Until then, this table is the reference.
+
+## Append: watch item 1, measured (M1-CHR-12, 2026-10-24)
+Review-sweep-M asked for the cool-key check. `asha_face_neutral` was rendered on lavapipe with the stage's key and rim
+set to white (a temporary scene, not committed), once with the built primary tint and once with the near-neutral
+`Color(0.88, 0.90, 0.95)`, and again under the normal warm stage key. Mean sRGB of the crown box (470–610, 15–55) and of
+the brightest 5% of hair pixels on the crown (the highlight):
+
+| Key | Primary tint | Crown R:B | Highlight sRGB | Highlight R:B, hue, saturation |
+|---|---|---|---|---|
+| white | `Color(0.76, 0.85, 1.0)` (built) | 0.89 | (98, 108, 121) | 0.81, 215°, 0.10: **reads blue-black** |
+| white | `Color(0.88, 0.90, 0.95)` | 0.91 | (104, 106, 111) | 0.94, 223°, 0.03: neutral |
+| warm stage | built | 2.70 | (118, 82, 40) | 2.94, 33°, 0.49 |
+| warm stage | `Color(0.88, 0.90, 0.95)` | 2.73 | (108, 68, 30) | 3.59, 29°, 0.56: more gold |
+
+- **Watch item 1 is real:** under a neutral key the built tint's highlight reads blue-black. Under the warm key (every
+  slice scene, SPEC §7.1) the near-neutral tint pushes the highlight toward gold (R:B 2.94 → 3.59), which is the
+  fault CHR-07 and CHR-10 fixed. **Keep the built tint** for the warm-key scenes; the first cool-key scene (night,
+  overcast, Act II) needs a per-lighting value (a material variant or a scene-driven parameter, Rendering's call).
+- **The occlusion uniforms run the other way from their names:** `root_occlusion` and `depth_occlusion` are the AO
+  value *kept* at the root and at the innermost layer (`AO = mix(root_occlusion, 1, …) * mix(depth_occlusion, 1, …)` in
+  character_hair_body.gdshaderinc), so 1.0 means no occlusion and raising them brightens. CHR-10's 0.7 / 0.75 is
+  *less* occlusion than the shader defaults (0.5 / 0.45), as the table above says.

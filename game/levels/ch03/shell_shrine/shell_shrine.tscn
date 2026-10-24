@@ -4,15 +4,15 @@
 [ext_resource type="Script" path="res://game/world/field_controller.gd" id="2_fc"]
 [ext_resource type="Script" path="res://game/world/field_camera_director.gd" id="3_dir"]
 [ext_resource type="Script" path="res://game/world/camera_volume.gd" id="4_vol"]
-[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="5_shot"]
-
-[sub_resource type="Environment" id="Env"]
-background_mode = 1
-background_color = Color(0.5, 0.66, 0.78, 1)
-ambient_light_source = 2
-ambient_light_color = Color(0.54, 0.64, 0.63, 1)
-ambient_light_energy = 0.7
-tonemap_mode = 4
+[ext_resource type="PackedScene" path="res://game/levels/ch03/shell_shrine/shell_shrine_dressing.tscn" id="5_dressing"]
+[ext_resource type="Environment" path="res://game/levels/ch03/shell_shrine/shell_shrine_environment.tres" id="6_env"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="7_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="8_waves"]
+[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="9_water_mat"]
+[ext_resource type="Resource" path="res://game/levels/ch03/shell_shrine/shots/S02.tres" id="10_s02"]
+[ext_resource type="Resource" path="res://game/levels/ch03/shell_shrine/shots/S03.tres" id="11_s03"]
+[ext_resource type="Resource" path="res://game/levels/ch03/shell_shrine/shots/S04.tres" id="12_s04"]
+[ext_resource type="Resource" path="res://game/levels/ch03/shell_shrine/shots/S05.tres" id="13_s05"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_rhen"]
 albedo_color = Color(0.368627, 0.603922, 0.588235, 1)
@@ -30,46 +30,84 @@ height = 1.72
 [sub_resource type="BoxMesh" id="Mesh_facing"]
 size = Vector3(0.14, 0.08, 0.2)
 
-[sub_resource type="Resource" id="Shot_S03"]
-script = ExtResource("5_shot")
-id = &"S03"
-position = Vector3(0, 15.5, 10.5)
-look_at = Vector3(0.5, 0, 0.5)
-fov_deg = 67.4
-
-[sub_resource type="Resource" id="Shot_S04"]
-script = ExtResource("5_shot")
-id = &"S04"
-position = Vector3(4.5, 1.2, 2.6)
-look_at = Vector3(7.5, 0.3, 0)
-fov_deg = 27.0
-hard_cut = true
-
-[sub_resource type="Resource" id="Shot_S05"]
-script = ExtResource("5_shot")
-id = &"S05"
-position = Vector3(-3.6, 1.3, 5.4)
-look_at = Vector3(-1.5, 0.1, 8)
-fov_deg = 33.4
-hard_cut = true
-
 [sub_resource type="BoxShape3D" id="Box_hall"]
-size = Vector3(28, 4, 20)
+size = Vector3(28, 6, 18)
 
-[node name="ShellShrine" type="Node3D"]
+[sub_resource type="BoxShape3D" id="Box_threshold"]
+size = Vector3(3.2, 4, 6)
+
+[sub_resource type="FogMaterial" id="Fog_hall"]
+density = 0.02
+albedo = Color(1, 0.98, 0.95, 1)
+height_falloff = 0.0
+
+[node name="ShellShrine" type="Node3D" node_paths=PackedStringArray("gi")]
 script = ExtResource("1_level")
-insert_pool = SubResource("Shot_S04")
-insert_side = SubResource("Shot_S05")
+gi = NodePath("GI")
+insert_pool = ExtResource("12_s04")
+insert_side = ExtResource("13_s05")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Env")
+environment = ExtResource("6_env")
 
 [node name="Oculus" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.34, 0.94, 0, -0.94, 0.34, 0, 10, 0)
+transform = Transform3D(0.258819, 0.819152, -0.511863, 0, 0.529919, 0.848048, 0.965926, -0.219491, 0.137153, 0, 20, 0)
 light_color = Color(1, 0.945098, 0.894118, 1)
-light_energy = 1.4
+light_energy = 3.0
 shadow_enabled = true
-directional_shadow_max_distance = 60.0
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 0.6
+directional_shadow_mode = 1
+directional_shadow_max_distance = 70.0
+sky_mode = 1
+
+[node name="Dressing" parent="." instance=ExtResource("5_dressing")]
+
+[node name="Sea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+script = ExtResource("7_water")
+wave_set = ExtResource("8_waves")
+material = ExtResource("9_water_mat")
+tide_line_y = -2
+publishes_water_level = true
+
+[node name="ShaftFog" type="FogVolume" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, 0)
+size = Vector3(25, 7.2, 13.4)
+shape = 0
+material = SubResource("Fog_hall")
+
+[node name="GI" type="VoxelGI" parent="." groups=["gi_voxel"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.4, 0)
+subdiv = 1
+size = Vector3(30, 11.6, 20.4)
+
+[node name="Bounce" type="Node3D" parent="."]
+
+[node name="Shaft_b1" type="OmniLight3D" parent="Bounce"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 1.42, -3)
+light_color = Color(1, 0.93, 0.84, 1)
+light_energy = 0.5
+omni_range = 7.0
+omni_attenuation = 1.2
+shadow_enabled = false
+
+[node name="Shaft_side_pool" type="OmniLight3D" parent="Bounce"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.15, 6.5)
+light_color = Color(1, 0.93, 0.84, 1)
+light_energy = 0.5
+omni_range = 7.0
+omni_attenuation = 1.2
+shadow_enabled = false
+
+[node name="Shaft_b3_lip" type="OmniLight3D" parent="Bounce"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 0.9, 0)
+light_color = Color(1, 0.93, 0.84, 1)
+light_energy = 0.5
+omni_range = 7.0
+omni_attenuation = 1.2
+shadow_enabled = false
 
 [node name="Player" type="CharacterBody3D" parent="." groups=["player"]]
 script = ExtResource("2_fc")
@@ -89,24 +127,41 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -0.3)
 mesh = SubResource("Mesh_facing")
 
 [node name="FieldCamera" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.5, 10.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 6)
 current = true
-near = 0.1
-far = 400.0
+near = 0.05
+far = 600.0
 
 [node name="CameraDirector" type="Node3D" parent="."]
 script = ExtResource("3_dir")
 camera_path = NodePath("../FieldCamera")
 target_path = NodePath("../Player")
-initial_shot = SubResource("Shot_S03")
+initial_shot = ExtResource("10_s02")
 
 [node name="CameraVolumes" type="Node3D" parent="."]
 
 [node name="Hall" type="Area3D" parent="CameraVolumes"]
 script = ExtResource("4_vol")
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-shot = SubResource("Shot_S03")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+shot = ExtResource("11_s03")
 shot_priority = 1
 
 [node name="Shape" type="CollisionShape3D" parent="CameraVolumes/Hall"]
 shape = SubResource("Box_hall")
+
+[node name="Threshold" type="Area3D" parent="CameraVolumes"]
+script = ExtResource("4_vol")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.4, 2, 0)
+shot = ExtResource("10_s02")
+shot_priority = 2
+
+[node name="Shape" type="CollisionShape3D" parent="CameraVolumes/Threshold"]
+shape = SubResource("Box_threshold")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="Entry" type="Marker3D" parent="Spawns"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -12.5, 0.05, 0)
+
+[node name="Exit" type="Marker3D" parent="Spawns"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 12.3, 0.05, 0)

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Zone wind (M2-ARC-02; docs/kb/tech/architecture.md, The weather clock). WeatherClock (game/core/weather_clock.gd, a child SceneRouter installs) writes hymn_wind on every scene swap: the zones row whose scene is the new scene, else default. A row is the downwind heading toward_azimuth_deg (clockwise from north = -Z, the convention the water and Haluna rigs use), the speed wind_m_s, and gust 0..1; hymn_wind = (sin(az) * speed, 0, -cos(az) * speed, gust). The clock itself (hymn_wind_time) is never reset. tools/validate_data.py checks every row and that each scene exists.",
+  "doc": "Zone wind (M2-ARC-02; docs/kb/tech/architecture.md, The weather clock). WeatherClock (game/core/weather_clock.gd, a child SceneRouter installs) writes hymn_wind on every scene swap: the zones row whose scene is the new scene, else default. A row is the downwind heading toward_azimuth_deg (clockwise from north = -Z, the convention the water and Haluna rigs use), the speed wind_m_s, and gust 0..1; hymn_wind = (sin(az) * speed, 0, -cos(az) * speed, gust). The clock itself (hymn_wind_time) is never reset. tools/validate_data.py checks every row and that each scene exists. A zone row may carry variants (name -> a wind row) that its own scene applies in place (m2-slice: Haluna's \"night\", HalunaZone.set_night); validate_data checks them too.",
   "default": {
     "_note": "Any scene without a row, the battle scene included: a moderate onshore breeze, the Drownbell flood rig's breeze direction (boss_vfx.json flood.weather) on the Haluna trade-wind heading.",
     "toward_azimuth_deg": 250.0,
@@ -13,7 +13,29 @@
       "_note": "The Haluna trade wind, as the haluna_mood rig sets it (vegetation.md reference 6 m/s).",
       "toward_azimuth_deg": 250.0,
       "wind_m_s": 6.0,
-      "gust": 0.35
+      "gust": 0.35,
+      "variants": {
+        "night": {
+          "_note": "B11, the dock at night (HalunaZone.set_night, m2-slice): the trade wind has dropped and the land breeze blows softly out to sea, so the palms barely stir and the sea-glow lies calm.",
+          "toward_azimuth_deg": 70.0,
+          "wind_m_s": 2.0,
+          "gust": 0.15
+        }
+      }
+    },
+    {
+      "scene": "res://game/levels/ch03/first_verse/first_verse.tscn",
+      "_note": "Cutscene B on the shrine steps at sunset (18:05; m2-slice): the trade wind easing toward evening, on the same heading.",
+      "toward_azimuth_deg": 250.0,
+      "wind_m_s": 3.5,
+      "gust": 0.25
+    },
+    {
+      "scene": "res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
+      "_note": "The Shell Shrine trial, indoors (m2-slice): near-still air under the fan-shell roof; only the oculus lets a draught in.",
+      "toward_azimuth_deg": 250.0,
+      "wind_m_s": 0.6,
+      "gust": 0.05
     }
   ]
 }

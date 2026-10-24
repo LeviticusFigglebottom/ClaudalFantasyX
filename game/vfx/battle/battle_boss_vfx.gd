@@ -97,7 +97,12 @@ func attach(player: BattleVfx, controller: BattleController, engine: BattleEngin
 	engine.phase_changed.connect(_on_phase_changed)
 	engine.combatants_joined.connect(_on_joined)
 	engine.field_cleared.connect(_on_field_cleared)
-	engine.action_resolved.connect(_on_action_resolved)
+	# M2-BPR-04: with a choreography sequencer the toll (and rim hits, the mend) land on its contact beat.
+	var choreo := controller.stage.choreo if controller != null else null
+	if choreo != null:
+		choreo.contact.connect(_on_action_resolved)
+	else:
+		engine.action_resolved.connect(_on_action_resolved)
 	_build_glow()
 	_build_ring()
 	if cfg.has("flood"):

@@ -1,0 +1,257 @@
+class_name ZoneMapShapes
+extends RefCounted
+## The zone map's shapes in world space (M2-UI-18), node-free, derived from the zone's own data so
+## the map follows the zone as Environment and the slice change it. ZoneMapView draws them.
+##
+## haluna_layout (game/levels/ch02/haluna/haluna_layout.json):
+##   land / foam  the waterline is HalunaTerrain.inland_m's shore curve (terrain.shore_tip_x_m,
+##                shore_half_len_m, tip_recede), sampled along z every shore_step_m and closed
+##                inland past the visible edge; islets are land discs.
+##   sand         the beach between the waterline and the tidewall (runs "beach_head").
+##   walls        every wall run's path (the beach head and the lane walls).
+##   lanes        the layout's lanes, terrain.lane_width_m wide; pads are its flat yards (discs).
+##   buildings / structures  each placed piece listed in zone_map_menu.json "pieces": its
+##                footprint turned by yaw_deg (Basis(UP, yaw), as HalunaDresser places it), scaled.
+## shell_shrine_trial (game/data/trials/shell_shrine.json "room" and "layout"):
+##   floors       the hall: a stadium of two straight walls (hall_half_m) and two half circles
+##                (hall_r_m), as ShellShrineLevel builds its collision, plus the passage behind the door.
+##   walls        its outline, open where the chamber door stands (door_w).
+##   water        the spring, the four basins, the octagonal inner pool and the side pool.
+##   rims         the basins' and pools' kerbs; channels: the troughs between them (channel_w).
+##   structures   the chamber door.
+## Every polygon is a PackedVector2Array of world (x, z) points.
+
+const KIND_HALUNA := &"haluna_layout"
+const KIND_SHRINE := &"shell_shrine_trial"
+const STYLE_BUILDING := "building"
+const OCTAGON := 8
+
+var land: Array[PackedVector2Array] = []
+var floors: Array[PackedVector2Array] = []
+var sand: Array[PackedVector2Array] = []
+var foam: Array[PackedVector2Array] = []
+var pads: Array[PackedVector2Array] = []
+var lanes: Array[PackedVector2Array] = []
+var lane_width_m := 0.0
+var water: Array[PackedVector2Array] = []
+var rims: Array[PackedVector2Array] = []
+var channels: Array[PackedVector2Array] = []
+var channel_width_m := 0.0
+var buildings: Array[PackedVector2Array] = []
+var structures: Array[PackedVector2Array] = []
+var walls: Array[PackedVector2Array] = []
+## True when open water surrounds the zone (the view fills its background with the sea).
+var sea := false
+
+
+## The shapes of a zone whose source is `source` (MapModel.shape_source), read as `kind`.
+## `visible`: the world rectangle the view can show (land closes past it). `metrics`: the map
+## block of zone_map_menu.json; `pieces`: its "pieces" block.
+static func build(
+	kind: StringName, source: Dictionary, visible: Rect2, metrics: Dictionary, pieces: Dictionary
+) -> ZoneMapShapes:
+	var s := ZoneMapShapes.new()
+	match kind:
+		KIND_HALUNA:
+			s._haluna(source, visible, metrics, pieces)
+		KIND_SHRINE:
+			s._shrine(source, metrics)
+	return s
+
+
+## A circle of `segments` points around `at`.
+static func disc(at: Vector2, radius: float, segments: int) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for i in segments:
+		out.append(at + Vector2.from_angle(TAU * i / segments) * radius)
+	return out
+
+
+## A rectangle [x, z, w, d] in a piece's frame, turned by `yaw` (radians, Basis(UP, yaw)), scaled
+## by `scale` and placed at `at`.
+static func footprint(at: Vector2, rect: Array, yaw: float, scale: float) -> PackedVector2Array:
+	var x0 := float(rect[0])
+	var z0 := float(rect[1])
+	var x1 := x0 + float(rect[2])
+	var z1 := z0 + float(rect[3])
+	var out := PackedVector2Array()
+	for c: Vector2 in [Vector2(x0, z0), Vector2(x1, z0), Vector2(x1, z1), Vector2(x0, z1)]:
+		var l := c * scale
+		out.append(at + Vector2(l.x * cos(yaw) + l.y * sin(yaw), -l.x * sin(yaw) + l.y * cos(yaw)))
+	return out
+
+
+static func _vec(a: Variant) -> Vector2:
+	var arr := a as Array
+	return Vector2(float(arr[0]), float(arr[1])) if arr != null and arr.size() >= 2 else Vector2.ZERO
+
+
+static func _path(points: Variant) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for p: Variant in points as Array:
+		out.append(_vec(p))
+	return out
+
+
+# --- Haluna --------------------------------------------------------------------------------------
+
+
+func _haluna(layout: Dictionary, visible: Rect2, metrics: Dictionary, pieces: Dictionary) -> void:
+	sea = true
+	var t: Dictionary = layout.get("terrain", {})
+	var segments := int(metrics.get("circle_segments", OCTAGON))
+	var step := maxf(float(metrics.get("shore_step_m", 1.0)), 0.1)
+	# The waterline, north to south across what the view shows.
+	var shore := PackedVector2Array()
+	var z := visible.position.y
+	while z < visible.end.y + step:
+		shore.append(Vector2(shore_x(t, z), z))
+		z += step
+	var land_poly := shore.duplicate()
+	land_poly.append(Vector2(visible.position.x, shore[shore.size() - 1].y))
+	land_poly.append(Vector2(visible.position.x, shore[0].y))
+	land.append(land_poly)
+	foam.append(shore)
+	for il: Variant in layout.get("islets", []):
+		var a := il as Array
+		land.append(disc(Vector2(float(a[0]), float(a[1])), float(a[2]), segments))
+	for run: Variant in layout.get("runs", []):
+		var path := _path((run as Dictionary).get("path", []))
+		if path.size() < 2:
+			continue
+		walls.append(path)
+		if str((run as Dictionary).get("name", "")) == "beach_head":
+			sand.append(_beach(t, path))
+	lane_width_m = float(t.get("lane_width_m", 0.0))
+	for lane: Variant in layout.get("lanes", []):
+		lanes.append(_path(lane))
+	for p: Variant in layout.get("pads", []):
+		var a := p as Array
+		pads.append(disc(Vector2(float(a[0]), float(a[1])), float(a[2]), segments))
+	for piece: Variant in layout.get("pieces", []):
+		var row := piece as Dictionary
+		var spec: Dictionary = pieces.get(str(row.get("piece", "")), {})
+		if spec.is_empty():
+			continue
+		var at := _vec(row.get("at", [0.0, 0.0]))
+		var yaw := deg_to_rad(float(row.get("yaw_deg", 0.0)))
+		var poly := footprint(at, spec.get("footprint", [0, 0, 0, 0]), yaw, float(row.get("scale", 1.0)))
+		if str(spec.get("style", "")) == STYLE_BUILDING:
+			buildings.append(poly)
+		else:
+			structures.append(poly)
+
+
+## The x of the waterline at `z` (HalunaTerrain.inland_m == 0): a parabola that recedes past the
+## crescent's tips.
+static func shore_x(terrain: Dictionary, z: float) -> float:
+	var tip := float(terrain.get("shore_tip_x_m", 0.0))
+	var half := maxf(float(terrain.get("shore_half_len_m", 1.0)), 0.001)
+	var az := absf(z)
+	var x := tip * pow(minf(az, half) / half, 2.0)
+	if az > half:
+		x -= float(terrain.get("tip_recede", 0.0)) * (az - half)
+	return x
+
+
+## The sand: from the tidewall `head` (north to south) out to the waterline and back.
+static func _beach(terrain: Dictionary, head: PackedVector2Array) -> PackedVector2Array:
+	var out := head.duplicate()
+	for i in range(head.size() - 1, -1, -1):
+		out.append(Vector2(shore_x(terrain, head[i].y), head[i].y))
+	return out
+
+
+# --- The Shell Shrine ----------------------------------------------------------------------------
+
+
+func _shrine(trial: Dictionary, metrics: Dictionary) -> void:
+	var g: Dictionary = trial.get("room", {})
+	var lay: Dictionary = trial.get("layout", {})
+	var segments := int(metrics.get("circle_segments", OCTAGON))
+	var half := float(g.get("hall_half_m", 0.0))
+	var r := float(g.get("hall_r_m", 0.0))
+	var hall := PackedVector2Array()
+	var arc := maxi(segments / 2, 2)
+	for i in arc + 1:  # the east end, north to south
+		var a := PI * i / arc
+		hall.append(Vector2(half + r * sin(a), -r * cos(a)))
+	for i in arc + 1:  # the west end, south to north
+		var a := PI * i / arc
+		hall.append(Vector2(-half - r * sin(a), r * cos(a)))
+	floors.append(hall)
+	var door := _vec(lay.get("door", [0.0, 0.0]))
+	var door_w := float(g.get("door_w", 0.0))
+	var depth := float(g.get("exit_depth_m", 0.0)) + float(g.get("wall_t", 0.0))
+	var out := door.normalized()
+	var across := Vector2(-out.y, out.x) * door_w * 0.5
+	var passage := PackedVector2Array(
+		[door - across, door + out * depth - across, door + out * depth + across, door + across]
+	)
+	floors.append(passage)
+	walls.append_array(_open_outline(hall, door, door_w * 0.5))
+	walls.append(passage)
+	var d: Array = g.get("door", [0.0, 0.0, 0.0])
+	structures.append(footprint(door, [-float(d[0]) * 0.5, -float(d[2]) * 0.5, d[0], d[2]], 0.0, 1.0))
+	var basin_r := float(g.get("basin_r", 0.0))
+	for b: Variant in (trial.get("basins", {}) as Dictionary).keys():
+		var c := disc(_vec(lay.get(str(b), [0.0, 0.0])), basin_r, segments)
+		water.append(c)
+		rims.append(c)
+	var spout: Array = g.get("spring_spout", [0.0, 0.0])
+	water.append(disc(_vec(lay.get("source", [0.0, 0.0])), float(spout[0]), segments))
+	var pool_ap := float((g.get("pool", [0.0]) as Array)[0]) * 0.5
+	var pool := _octagon(_vec(lay.get(str(trial.get("goal", "")), [0.0, 0.0])), pool_ap)
+	water.append(pool)
+	rims.append(_octagon(_vec(lay.get(str(trial.get("goal", "")), [0.0, 0.0])), pool_ap + float(g.get("rim_t", 0.0))))
+	var side := disc(
+		_vec(lay.get("side_pool", [0.0, 0.0])), float((g.get("side_pool", [0.0]) as Array)[0]) * 0.5, segments
+	)
+	water.append(side)
+	rims.append(side)
+	channel_width_m = float(g.get("channel_w", 0.0))
+	_shrine_channels(trial, lay)
+
+
+## An octagon with apothem `ap` whose faces look along the axes' 45-degree steps, as the inner
+## pool's rim is built (ShellShrineLevel._build_inner_pool).
+static func _octagon(at: Vector2, ap: float) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	var corner := ap / cos(PI / OCTAGON)
+	for i in OCTAGON:
+		out.append(at + Vector2.from_angle(TAU * (i + 0.5) / OCTAGON) * corner)
+	return out
+
+
+## The troughs: the spring into its basin, and each basin to every basin, pool or sluice it can
+## pour toward (spill grates lead nowhere and are left off). A trough used both ways is one line.
+func _shrine_channels(trial: Dictionary, lay: Dictionary) -> void:
+	var into := str(trial.get("source_into", ""))
+	channels.append(PackedVector2Array([_vec(lay.get("source", [0.0, 0.0])), _vec(lay.get(into, [0.0, 0.0]))]))
+	var seen := {}
+	var basins: Dictionary = trial.get("basins", {})
+	for b: Variant in basins.keys():
+		for to: Variant in (basins[b] as Dictionary).get("outlets", []):
+			var key := [str(b), str(to)]
+			key.sort()
+			if not lay.has(str(to)) or seen.has(str(key)):
+				continue
+			seen[str(key)] = true
+			channels.append(PackedVector2Array([_vec(lay[str(b)]), _vec(lay[str(to)])]))
+
+
+## The closed outline `loop` as open polylines, leaving out every stretch within `gap` of `at`.
+static func _open_outline(loop: PackedVector2Array, at: Vector2, gap: float) -> Array[PackedVector2Array]:
+	var out: Array[PackedVector2Array] = []
+	var cur := PackedVector2Array()
+	for i in loop.size() + 1:
+		var p := loop[i % loop.size()]
+		if p.distance_to(at) < gap:
+			if cur.size() >= 2:
+				out.append(cur)
+			cur = PackedVector2Array()
+			continue
+		cur.append(p)
+	if cur.size() >= 2:
+		out.append(cur)
+	return out

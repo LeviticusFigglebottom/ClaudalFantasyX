@@ -1,0 +1,9 @@
+{
+  "chapters": {
+    "doc": "M3-ARC-01 (docs/kb/tech/chapter_flow.md): the Act I chapter files ZoneStory reads, in story order. Each file's \"zones\" block is keyed by locations.json id. The slice (ch02/haluna, the Shell Shrine, the first verse) still runs from first_playable.json.",
+    "files": [
+      "res://game/data/flow/chapters/ch01.json",
+      "res://game/data/flow/chapters/ch03.json"
+    ]
+  }
+}

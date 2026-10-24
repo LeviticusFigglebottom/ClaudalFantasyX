@@ -9,9 +9,14 @@ extends RefCounted
 ## M2-FP-18 adds two layers over the expression, each taken as the max with the pose's weight:
 ##   blinks   configure_blink(): a seeded timer closes the lids every interval_s (a range), and
 ##            blink_now() (called on every emotion change when on_emotion_change) adds one more.
-##   visemes  say(text) loads the line's FaceVisemes track; each set_mouth_open(true) shows the next
-##            syllable's vowel shape and each set_mouth_open(false) its closing shape. With no
-##            track, or a rig without those shapes, lip-flap holds the `mouth` shapes as before.
+##   visemes  say(text, cps, seed) starts the line's LipSync (M2-CHR-10): co-articulated visemes
+##            from the text, timed to the reveal speed, scaled by the current `emotion`; end_line()
+##            releases it when the reveal is skipped. While lip sync runs, set_mouth_open() is
+##            ignored. A rig without every viseme shape keeps the old lip-flap (`mouth` shapes held
+##            while the DialogueBox reports the mouth open).
+
+## The emotion tag the face shows now (the sequencer sets it); it scales the lip sync.
+var emotion: StringName = &""
 
 ## blend shape name -> [MeshInstance3D, index] for every mesh under the actor that has it.
 var _slots: Dictionary = {}
@@ -23,11 +28,9 @@ var _elapsed := 0.0
 var _duration := 0.0
 var _mouth: Dictionary = {}
 var _mouth_open := false
-## sequencer.json "visemes" (vowels, closers, shapes) and the current line's track.
-var _visemes: Dictionary = {}
-var _track: Array[Dictionary] = []
-var _track_i := 0
-## The viseme shapes held now (shape -> weight), or empty for lip-flap / closed.
+## lipsync.json, or null when there is none or the rig lacks a viseme shape.
+var _lip: LipSync
+## The lip-sync shapes now (shape -> weight), or empty for lip-flap / closed.
 var _mouth_now: Dictionary = {}
 ## sequencer.json "blink"; empty = no blinks.
 var _blink: Dictionary = {}
@@ -39,10 +42,9 @@ var _blink_t := -1.0
 
 
 ## `mouth` is sequencer.json "lip_flap": {shape: weight} applied while the mouth is open;
-## `visemes` is sequencer.json "visemes" (M2-FP-18).
-func _init(actor: Node, mouth: Dictionary = {}, visemes: Dictionary = {}) -> void:
+## `lipsync` is game/data/cutscene/lipsync.json (LipSync.load_config(); M2-CHR-10).
+func _init(actor: Node, mouth: Dictionary = {}, lipsync: Dictionary = {}) -> void:
 	_mouth = mouth
-	_visemes = visemes
 	for n in actor.find_children("*", "MeshInstance3D", true, false):
 		var mi := n as MeshInstance3D
 		var am := mi.mesh as ArrayMesh  # only ArrayMesh has blend shapes (primitives never do)
@@ -54,6 +56,12 @@ func _init(actor: Node, mouth: Dictionary = {}, visemes: Dictionary = {}) -> voi
 				_slots[shape] = []
 			(_slots[shape] as Array).append([mi, i])
 			_now[shape] = mi.get_blend_shape_value(i)
+	if not lipsync.is_empty():
+		_lip = LipSync.new(lipsync)
+		for shape in _lip.viseme_shapes():
+			if not _slots.has(shape):
+				_lip = null
+				break
 
 
 func has_shapes() -> bool:
@@ -76,27 +84,43 @@ func blend_to(pose: Dictionary, sec: float) -> void:
 	advance(0.0)
 
 
+## The DialogueBox's lip-flap (open on a vowel, closed after it). Only a rig without lip sync
+## follows it.
 func set_mouth_open(open: bool) -> void:
+	if _lip != null:
+		return
 	_mouth_open = open
-	_mouth_now = {}
-	if not _track.is_empty() and _track_i < _track.size():
-		var row: Dictionary = _track[_track_i]
-		_mouth_now = _viseme_shapes(row["open"] if open else row["close"])
-		if not open:
-			_track_i += 1
 	_apply()
 
 
-## Loads `text`'s viseme track for the lip-flap to follow (M2-FP-18). An empty text clears it.
-func say(text: String) -> void:
-	_track = []
-	if not _visemes.is_empty() and _has_visemes():
-		_track = FaceVisemes.track(text, _visemes)
-	_track_i = 0
+## Starts lip sync on `text`, revealed at `cps` characters per second (M2-CHR-10); `rng_seed`
+## places the idle drift. An empty text, or cps <= 0 (an instant reveal), says nothing.
+func say(text: String, cps: float = 0.0, rng_seed: int = 0) -> void:
+	if _lip == null:
+		return
+	_lip.start(text, cps, emotion, rng_seed)
+	_mouth_now = expand(_lip.weights())
+	_apply()
 
 
+## The reveal ended early (skipped): the mouth releases to rest from where it is. `grace`: see
+## LipSync.stop().
+func end_line(grace: float = 0.0) -> void:
+	if _lip != null:
+		_lip.stop(grace)
+
+
+func has_lip_sync() -> bool:
+	return _lip != null
+
+
+func is_speaking() -> bool:
+	return _lip != null and _lip.is_active()
+
+
+## The current line's viseme segments (FaceVisemes), or empty without lip sync.
 func viseme_track() -> Array[Dictionary]:
-	return _track
+	return _lip.segments() if _lip != null else ([] as Array[Dictionary])
 
 
 ## Turns blinks on: `cfg` is sequencer.json "blink"; `rng_seed` keeps each actor's timing fixed.
@@ -121,6 +145,10 @@ func is_blinking() -> bool:
 ## Moves the expression blend and the blink on by `delta` seconds.
 func advance(delta: float) -> void:
 	var changed := _advance_blink(delta)
+	if _lip != null and (_lip.is_active() or not _mouth_now.is_empty()):
+		_lip.advance(delta)
+		_mouth_now = expand(_lip.weights())
+		changed = true
 	if not _to.is_empty():
 		_elapsed += delta
 		var t := 1.0 if _duration <= 0.0 else clampf(_elapsed / _duration, 0.0, 1.0)
@@ -193,19 +221,6 @@ func _next_wait() -> float:
 	return _rng.randf_range(float(r[0]), float(r[1]))
 
 
-func _viseme_shapes(viseme: StringName) -> Dictionary:
-	return expand((_visemes.get("shapes", {}) as Dictionary).get(String(viseme), {}))
-
-
-## True when the rig has every shape some viseme row names (else the plain lip-flap is used).
-func _has_visemes() -> bool:
-	for row: Variant in (_visemes.get("shapes", {}) as Dictionary).values():
-		for shape: StringName in expand(row as Dictionary).keys():
-			if not _slots.has(shape):
-				return false
-	return true
-
-
 func _same_pose(target: Dictionary) -> bool:
 	for shape: StringName in _slots.keys():
 		var to := float(target.get(shape, 0.0))
@@ -226,7 +241,7 @@ func _apply() -> void:
 	var blink := blink_amount()
 	for shape: StringName in _slots.keys():
 		var w := float(_now.get(shape, 0.0))
-		if _mouth_open and _mouth_now.is_empty() and _mouth.has(String(shape)):
+		if _mouth_open and _lip == null and _mouth.has(String(shape)):
 			w = maxf(w, float(_mouth[String(shape)]))
 		if _mouth_now.has(shape):
 			w = maxf(w, float(_mouth_now[shape]))

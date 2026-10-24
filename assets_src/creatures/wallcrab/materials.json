@@ -1,0 +1,38 @@
+{
+  "_doc": "wallcrab (act1/wallcrab.md): the reef_crab slots unchanged (a palette variant; the colours are vertex data). write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "shell": {
+      "roughness_dry": 0.9,
+      "roughness_wet": 0.35,
+      "wet_darken": 0.72,
+      "clearcoat_wet": 0.3,
+      "detail_scale": 26.0,
+      "detail_albedo": 0.16,
+      "detail_bump": 0.08,
+      "cavity_albedo": 0.35,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 1.4,
+      "emission_pulse_hz": 0.35,
+      "emission_pulse_depth": 0.35,
+      "specular": 0.35
+    },
+    "chitin": {
+      "roughness_dry": 0.5,
+      "roughness_wet": 0.22,
+      "wet_darken": 0.7,
+      "clearcoat_wet": 0.55,
+      "detail_scale": 30.0,
+      "detail_albedo": 0.08,
+      "detail_bump": 0.2,
+      "cavity_albedo": 0.5
+    },
+    "eye": {
+      "roughness_dry": 0.12,
+      "roughness_wet": 0.06,
+      "specular": 0.7,
+      "clearcoat_wet": 1.0,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0
+    }
+  }
+}

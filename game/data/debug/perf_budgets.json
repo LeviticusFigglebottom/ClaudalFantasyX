@@ -10,10 +10,7 @@
       "res://game/core/boot.tscn",
       "res://game/battle/scene/battle_sandbox.tscn"
     ],
-    "attempts": 3,
     "settle_frames": 10,
-    "timeout_frames": 2400,
-    "max_load_per_cpu": 1.5,
-    "load_note": "Above this 1-minute load average per CPU the machine is oversubscribed (e.g. many parallel agents rendering on CPU) and wall-clock budgets are not measurable: the test reports the numbers as a warning instead of failing. Real CI runners stay far below it."
+    "timeout_frames": 2400
   }
 }

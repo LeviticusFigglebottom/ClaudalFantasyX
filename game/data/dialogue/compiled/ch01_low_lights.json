@@ -1,0 +1,23 @@
+{
+ "format": 1,
+ "scene": "ch01_low_lights",
+ "source": "game/data/dialogue/ch01/ch01_low_lights.dlg",
+ "start": "ch01_low_lights",
+ "nodes": {
+  "ch01_low_lights": {
+   "headers": {"location": "ch01/oruvel_underway"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["U06"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "stair_down", "count": 24, "drift": "down_seaward", "rate": "slow"}, "src": 10},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "touch_cord"], "kwargs": {}, "src": 12},
+    {"op": "line", "id": "ch01_low_001", "key": "DLG_CH01_LOW_001", "speaker": "rhen", "emotion": "worried", "voice": "", "src": 13},
+    {"op": "line", "id": "ch01_low_002", "key": "DLG_CH01_LOW_002", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch01_low_003", "key": "DLG_CH01_LOW_003", "speaker": "", "emotion": "neutral", "voice": "", "src": 16, "narrator": "rhen", "tags": ["vo"]},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 18}
+   ]
+  }
+ }
+}

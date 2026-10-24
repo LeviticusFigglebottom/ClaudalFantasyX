@@ -1,0 +1,11 @@
+{
+  "_doc": "Oil slug surfaces (docs/kb/art/creatures/act1/oil_slug.md): body (the spawn_wound gill rosette glows from its mask), frill (the cerata, whose tips glow the oil_lamp colour it ate: the creature's own light, never glimmer). write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "body": {"roughness_dry": 0.35, "roughness_wet": 0.15, "clearcoat_wet": 0.7, "detail_scale": 40.0,
+             "detail_albedo": 0.14, "detail_bump": 0.4, "cavity_albedo": 0.4,
+             "emission_color": "#3FE0C8", "emission_energy": 1.8, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.4},
+    "frill": {"roughness_dry": 0.3, "roughness_wet": 0.15, "clearcoat_wet": 0.5, "detail_albedo": 0.08,
+              "detail_bump": 0.1, "rim_sheen": 0.5,
+              "emission_color": "#FFB16E", "emission_energy": 2.4, "emission_pulse_hz": 0.45, "emission_pulse_depth": 0.3}
+  }
+}

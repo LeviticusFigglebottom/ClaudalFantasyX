@@ -13,6 +13,12 @@
   {"id": "netmender", "name_key": "CHAR_NETMENDER", "blip_pitch": 0.84, "portrait_id": "portrait_villager_placeholder"},
   {"id": "fisher", "name_key": "CHAR_FISHER", "blip_pitch": 0.96, "portrait_id": "portrait_villager_placeholder"},
   {"id": "neme", "name_key": "CHAR_NEME", "blip_pitch": 0.9, "portrait_id": "portrait_villager_placeholder"},
-  {"id": "child", "name_key": "CHAR_CHILD", "blip_pitch": 1.3, "portrait_id": "portrait_villager_placeholder"}
+  {"id": "child", "name_key": "CHAR_CHILD", "blip_pitch": 1.3, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "osu", "name_key": "CHAR_OSU", "blip_pitch": 0.85, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "kell", "name_key": "CHAR_KELL", "blip_pitch": 0.82, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "scaleman", "name_key": "CHAR_SCALEMAN", "blip_pitch": 0.86, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "cook", "name_key": "CHAR_COOK", "blip_pitch": 0.94, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "sabe", "name_key": "CHAR_SABE", "blip_pitch": 0.8, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "skipper_sadi", "name_key": "CHAR_SKIPPER_SADI", "blip_pitch": 1.02, "portrait_id": "portrait_villager_placeholder"}
  ]
 }

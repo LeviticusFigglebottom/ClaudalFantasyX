@@ -57,7 +57,10 @@ func slot_name() -> String:
 	return tr("SAVE_SLOT_NAME_FMT").format({"n": slot})
 
 
+## "Chapter n"; a save from before Chapter 1 (the prologue, chapter 0) reads "Prologue" (M2-FP-27).
 func chapter_text() -> String:
+	if chapter <= 0:
+		return tr("SAVE_SLOT_PROLOGUE")
 	return tr("SAVE_SLOT_CHAPTER_FMT").format({"n": chapter})
 
 

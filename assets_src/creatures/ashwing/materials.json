@@ -1,0 +1,32 @@
+{
+  "_doc": "Ashwing (act1/ashwing.md): wing membranes (the spawn_wound speck in the forewing pupils from the mask), fur (body, antennae), eye. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "wing": {
+      "roughness_dry": 0.85,
+      "roughness_wet": 0.5,
+      "detail_scale": 40.0,
+      "detail_albedo": 0.18,
+      "detail_bump": 0.2,
+      "cavity_albedo": 0.4,
+      "rim_sheen": 0.1,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 1.6
+    },
+    "fur": {
+      "roughness_dry": 0.95,
+      "roughness_wet": 0.6,
+      "detail_scale": 90.0,
+      "detail_albedo": 0.3,
+      "detail_bump": 0.8,
+      "cavity_albedo": 0.5
+    },
+    "eye": {
+      "roughness_dry": 0.12,
+      "roughness_wet": 0.06,
+      "specular": 0.7,
+      "clearcoat_wet": 1.0,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0
+    }
+  }
+}

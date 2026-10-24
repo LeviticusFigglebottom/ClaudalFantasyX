@@ -78,8 +78,17 @@ func _on_action_resolved(result: ActionResult) -> void:
 			continue
 		last_reveal = hit["read"]
 		book.record_read(StringName(str(last_reveal.get("enemy_id", ""))))
-		_float(StringName(str(hit["target_id"])), weakness_text(last_reveal))
-		_open_panel(last_reveal)
+		var shown := _show_read.bind(StringName(str(hit["target_id"])), last_reveal)
+		var choreo := ctl.stage.choreo if ctl != null and ctl.stage != null else null
+		if choreo != null:  # M2-BPR-01: on the Read's contact beat (at once when nothing plays)
+			choreo.contact.connect(func(_r: ActionResult) -> void: shown.call(), CONNECT_ONE_SHOT)
+		else:
+			shown.call()
+
+
+func _show_read(cid: StringName, reveal: Dictionary) -> void:
+	_float(cid, weakness_text(reveal))
+	_open_panel(reveal)
 
 
 func _on_battle_finished(outcome: StringName) -> void:

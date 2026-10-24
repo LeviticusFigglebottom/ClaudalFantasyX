@@ -1,0 +1,46 @@
+{
+  "battle_transition": {
+    "doc": "M2-BPR-05 encounter stinger: BattleStinger (game/flow/battle_stinger.gd) plays it in the field before SceneRouter's opaque fade, when BattleRequest.submit opens a battle. A tide line of dark water rises from the bottom edge with a thin foam crest while the field above it dims and greys, holds, then the router fades to black as before (its hidden build and ADR 0029 budgets are unchanged). docs/kb/tech/battle_presentation.md 'Encounter transition'. Times in seconds; crest, wave_amplitude, foam_width and refract are fractions of the screen; wave_frequency is waves across the screen, wave_speed cycles a second; rise_ease is Godot's ease() curve (under 1 = ease out). Colours are palette.json swatches (named in `swatches`, tested). foam_alpha stays at or under battle_vfx's flash cap (effects.json safety.flash_max_alpha). layer sits under SceneRouter.FADE_LAYER. reduced_motion: no rise, no ripple: a plain cross-fade to the deep colour, then the same hold.",
+    "enabled": true,
+    "layer": 120,
+    "shader": "res://game/shaders/vfx/battle_tideline.gdshader",
+    "rise_sec": 0.5,
+    "rise_ease": 0.45,
+    "hold_sec": 0.25,
+    "crest": 0.62,
+    "wave_amplitude": 0.014,
+    "wave_frequency": 2.6,
+    "wave_speed": 0.45,
+    "wave_detail": 2.3,
+    "wave_detail_weight": 0.35,
+    "foam_width": 0.008,
+    "foam_alpha": 0.28,
+    "water_alpha_top": 0.5,
+    "water_alpha": 0.82,
+    "refract": 0.004,
+    "refract_frequency": 9.0,
+    "dim": 0.32,
+    "desaturate": 0.55,
+    "water_deep": "#061A2B",
+    "water_edge": "#0E4A55",
+    "foam": "#EEF6F4",
+    "swatches": {
+      "water_deep": "abyss_navy",
+      "water_edge": "deep_teal_shadow",
+      "foam": "foam_white"
+    },
+    "reduced_motion": {
+      "crossfade_sec": 0.35,
+      "hold_sec": 0.15,
+      "alpha": 0.6,
+      "color": "water_deep"
+    },
+    "barks": {
+      "doc": "Lead-in barks (Lead's intro audit 2026-10-24): rows by encounter id, {line_key, speaker_key, hold_extra_sec}. The line shows over the rising water (BARK_LINE_FMT, the UI theme, bottom_px above the bottom edge, height_px tall), the stinger holds hold_extra_sec longer, and EventBus.dialogue_event('battle_bark', [encounter, line_key, speaker_key]) tells audio. The lines are Narrative's (request M2-NAR-01); an encounter with no row has no bark.",
+      "theme": "res://game/ui/theme/hymn_theme.tres",
+      "bottom_px": 150,
+      "height_px": 60,
+      "rows": {}
+    }
+  }
+}

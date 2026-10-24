@@ -1,0 +1,18 @@
+// Ch1 C1-11 "The lintel-gulls": at the dive mooring Rhen clips on for the second dive and the wind
+// turns. It comes from the sea, against the trade wind, which it never does. Every carved lintel-gull
+// on every ridge faces the sea with a hollow throat, so the wind goes through them: for the first time
+// in eleven years every roof in the town cries at once (lintel_gull_cry). The sky is clear (O10: 85 mm,
+// low, past Rhen's shoulder to the nearest gull, sun high, not a cloud; hold through the first cry).
+// The bed cuts to silence on the first cry and stays silent until the wall appears (C1-12).
+title: ch01_gulls
+location: ch01/oruvel
+---
+@camera O10
+@sfx lintel_gull_cry
+@music silence fade=0.2
+@wait 3.0
+Rhen [afraid]: ...That's the gulls. #line:ch01_gulls_001
+@sfx lintel_gull_cry
+Sabe [afraid]: Lines in! Everybody off the low hulls! #line:ch01_gulls_002
+<<set $ch01_gulls_cried = true>>
+===

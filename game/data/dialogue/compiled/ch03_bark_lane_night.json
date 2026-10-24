@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch03_bark_lane_night",
+ "source": "game/data/dialogue/ch03/ch03_bark_lane_night.dlg",
+ "start": "ch03_bark_lane_night",
+ "nodes": {
+  "ch03_bark_lane_night": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "line", "id": "ch03_bark_lane_night_001", "key": "DLG_CH03_BARK_LANE_NIGHT_001", "speaker": "child", "emotion": "smile", "voice": "", "src": 5},
+    {"op": "line", "id": "ch03_bark_lane_night_002", "key": "DLG_CH03_BARK_LANE_NIGHT_002", "speaker": "rhen", "emotion": "soft_smile", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

@@ -1,0 +1,47 @@
+{
+  "zone_maps": {
+    "doc": "M2-UI-16/18: the zones the objective system and the field menu's map know. Each zone: its scene (the field's current scene is matched against it), its name_key, its route_index on the pilgrimage strip (Haluna -> the Saltgrass Causeway -> the Shell Shrine), the world rectangle the map shows ([x, z, width, depth] in metres), its shape source (Haluna: its layout JSON; the Shell Shrine: its trial JSON), and its points of interest. A POI is {id, name_key, kind, at: [x, z], source}: `at` is a world position (x east, z south), `source` names where it comes from ('node:<path in the zone scene>' or 'layout:<key in the shape source>'), and tools/tests/test_zone_map_pois.py checks the two agree. Kinds draw as glyphs: shrine, shop, inn, talk, path, door, pool, dock, home. route lists the pilgrimage strip in order; a route stop with no zone is a place the party passes through without a map of its own yet.",
+    "route": [
+      {"id": "ch02/haluna", "name_key": "MAP_ROUTE_HALUNA"},
+      {"id": "causeway", "name_key": "MAP_ROUTE_CAUSEWAY"},
+      {"id": "ch03/shell_shrine", "name_key": "MAP_ROUTE_SHELL_SHRINE"}
+    ],
+    "zones": [
+      {
+        "id": "ch02/haluna",
+        "scene": "res://game/levels/ch02/haluna/haluna.tscn",
+        "name_key": "LOCATION_CH02_HALUNA",
+        "shapes": "res://game/levels/ch02/haluna/haluna_layout.json",
+        "shape_kind": "haluna_layout",
+        "bounds": [-150.0, -150.0, 210.0, 230.0],
+        "pois": [
+          {"id": "beach", "name_key": "MAP_POI_BEACH", "kind": "path", "at": [-1.0, 8.0], "source": "node:Spawns/Beach"},
+          {"id": "village", "name_key": "MAP_POI_NEMES_HOUSE", "kind": "home", "at": [-54.1, -1.9], "source": "node:NPCs/Neme/Neme"},
+          {"id": "market", "name_key": "MAP_POI_MARKET", "kind": "talk", "at": [-40.0, 1.5], "source": "node:NPCs/Market/Vendor"},
+          {"id": "shop", "name_key": "MAP_POI_SHOP", "kind": "shop", "at": [-35.5, -0.6], "source": "node:NPCs/Town/Shopkeeper"},
+          {"id": "forge", "name_key": "MAP_POI_FORGE", "kind": "shop", "at": [-12.0, 50.0], "source": "node:NPCs/Town/Smith"},
+          {"id": "inn", "name_key": "MAP_POI_INN", "kind": "inn", "at": [-30.0, 58.5], "source": "node:NPCs/Town/Innkeeper"},
+          {"id": "shrine", "name_key": "MAP_POI_SAVE_SHRINE", "kind": "shrine", "at": [-67.0, 44.3], "source": "node:Spawns/Shrine"},
+          {"id": "chapel", "name_key": "MAP_POI_CHAPEL_COURT", "kind": "talk", "at": [-116.3, 33.6], "source": "node:NPCs/Chapel/Reed"},
+          {"id": "lane", "name_key": "MAP_POI_TIDEWALL_LANE", "kind": "talk", "at": [-70.0, -9.5], "source": "node:NPCs/Lane/Child"},
+          {"id": "dock", "name_key": "MAP_POI_DOCK", "kind": "dock", "at": [13.7, 46.2], "source": "node:Spawns/DockNight"},
+          {"id": "causeway_head", "name_key": "MAP_POI_CAUSEWAY_HEAD", "kind": "path", "at": [7.0, -125.0], "source": "node:Triggers/CausewayHead"}
+        ]
+      },
+      {
+        "id": "ch03/shell_shrine",
+        "scene": "res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
+        "name_key": "LOCATION_CH03_SHELL_SHRINE",
+        "shapes": "res://game/data/trials/shell_shrine.json",
+        "shape_kind": "shell_shrine_trial",
+        "bounds": [-15.0, -10.5, 32.0, 21.0],
+        "pois": [
+          {"id": "entrance", "name_key": "MAP_POI_SHRINE_ENTRANCE", "kind": "path", "at": [-12.5, 0.0], "source": "layout:spawn"},
+          {"id": "side_pool", "name_key": "MAP_POI_SIDE_POOL", "kind": "pool", "at": [-1.5, 6.5], "source": "layout:side_pool"},
+          {"id": "inner_pool", "name_key": "MAP_POI_INNER_POOL", "kind": "pool", "at": [7.5, 0.0], "source": "layout:inner_pool"},
+          {"id": "chamber_door", "name_key": "MAP_POI_CHAMBER_DOOR", "kind": "door", "at": [14.3, 0.0], "source": "layout:door"}
+        ]
+      }
+    ]
+  }
+}

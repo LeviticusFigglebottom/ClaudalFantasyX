@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_actor.gd" id="1_actor"]
+[ext_resource type="PackedScene" uid="uid://btg7s4q0r7ilj" path="res://assets/creatures/vein_sparker/vein_sparker.glb" id="2_model"]
+
+[node name="VeinSparker" type="Node3D"]
+script = ExtResource("1_actor")
+creature_id = &"vein_sparker"
+metadata/hymn_battle_actor = true
+
+[node name="Model" parent="." instance=ExtResource("2_model")]

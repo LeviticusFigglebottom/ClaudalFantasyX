@@ -10,17 +10,29 @@ extends Control
 ## ends carry the timeline's side shapes, square for the party (a preemptive strike) and a
 ## chevron for the foes (an ambush), and the words say which. Reduced motion keeps the fades but
 ## drops the rise.
+##
+## M2-BPR-05: the banner waits for the battle to be visible. A battle opened through SceneRouter
+## starts its first turn under the router's fade (the staged build), so while the router is busy the
+## banner stays pending (hidden, no timer) and holds the battle (BattleHud.holds_battle: an ambush's
+## first foe does not act unseen), then plays its fade-in, hold and fade-out once the fade has lifted,
+## or after "reveal_wait_max_sec" at most. Every timing is battle_hud.json "opening_banner".
 
 const KIND_PREEMPTIVE := &"preemptive"
 const KIND_AMBUSH := &"ambush"
+const ROUTER_PATH := ^"SceneRouter"
 
 var kind: StringName = &""
 var reduced_motion := false
+## Whether the screen is still covered by a transition: () -> bool. Unset = SceneRouter.is_busy().
+## Tests set their own.
+var screen_covered: Callable = Callable()
 
 var _m: Dictionary = {}
 var _title: Label
 var _caption: Label
 var _tween: Tween
+var _pending := false
+var _pending_sec := 0.0
 
 
 func _ready() -> void:
@@ -31,6 +43,7 @@ func _ready() -> void:
 	_title = _label(&"BannerLabel", Rect2(0.0, 0.0, size.x, title_h))
 	_caption = _label(&"HelpLabel", Rect2(0.0, title_h, size.x, size.y - title_h))
 	visible = false
+	set_process(false)
 
 
 ## Shows the banner for opening `opening` (a BattleOpening id; a normal opening shows nothing).
@@ -52,15 +65,57 @@ func show_opening(opening: StringName, animate: bool = true) -> void:
 	queue_redraw()
 	if _tween != null and _tween.is_valid():
 		_tween.kill()
+	_set_pending(false)
 	if animate and is_inside_tree():
-		_play()
+		if is_screen_covered():
+			modulate.a = 0.0
+			_set_pending(true)
+		else:
+			_play()
 
 
 func hide_banner() -> void:
 	if _tween != null and _tween.is_valid():
 		_tween.kill()
+	_set_pending(false)
 	visible = false
 	kind = &""
+
+
+## True while the banner waits for a transition to lift before it plays (it holds the battle then).
+func is_pending() -> bool:
+	return _pending
+
+
+## True while the screen is covered by a transition (screen_covered, else SceneRouter.is_busy()).
+func is_screen_covered() -> bool:
+	if screen_covered.is_valid():
+		return bool(screen_covered.call())
+	if not is_inside_tree():
+		return false
+	var router := get_tree().root.get_node_or_null(ROUTER_PATH)
+	return router != null and bool(router.call(&"is_busy"))
+
+
+## Waits out a pending banner (`delta` seconds; _process calls it, tests too): it plays once the screen
+## is uncovered, or after reveal_wait_max_sec.
+func step_pending(delta: float) -> void:
+	if not _pending:
+		return
+	_pending_sec += delta
+	if not is_screen_covered() or _pending_sec >= HudLayout.num(_m, "reveal_wait_max_sec"):
+		_set_pending(false)
+		_play()
+
+
+func _process(delta: float) -> void:
+	step_pending(delta)
+
+
+func _set_pending(on: bool) -> void:
+	_pending = on
+	_pending_sec = 0.0
+	set_process(on)
 
 
 func is_showing() -> bool:

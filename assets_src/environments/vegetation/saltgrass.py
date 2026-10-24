@@ -3,7 +3,7 @@
 A clump is a fan of curved alpha cards (each card carries 18-22 painted blades, GRASS_ATLAS), set
 like spokes around the clump centre and leaning outward. Two clump shapes ship in one .glb:
 `saltgrass_a` (tall, 0.55-0.8 m) and `saltgrass_b` (short and dense, 0.3-0.45 m), each with -lod1.
-Scatter them with a MultiMesh (game/levels/_tests/vegetation/vegetation_scatter.gd).
+Scatter them with a MultiMesh (game/world/vegetation/vegetation_scatter.gd).
 Normals are bent towards "up and out of the clump" so a clump shades as one soft mass.
 """
 

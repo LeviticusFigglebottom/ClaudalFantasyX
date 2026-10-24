@@ -214,7 +214,7 @@ Marker names belong to the music cue's authored markers (Audio). The compiler ch
 | `<<if expr>>` … `<<elseif expr>>` … `<<else>>` … `<<endif>>` | Branch. `<<elseif>>`/`<<else>>`/`<<endif>>` must align with their `<<if>>`. Branch bodies may sit at the same column or be indented. |
 | `<<set $flag = expr>>` | Write a flag (through `Game.set_flag` in the game). |
 | `<<jump node>>` | Continue at another node of this file. |
-| `<<event name args...>>` | Emit `event_triggered(name, args)` and `EventBus.dialogue_event(name, args)`. Positional args only, typed like cue args. **`name` must be declared in [`game/data/dialogue/events.json`](../../../game/data/dialogue/events.json)**, and its args are checked against the row's `args` (same types as cues). Declared now: `zone_unlock zone` and `start_battle encounter`. A row with `test_only: true` (`fixture_event`) is allowed only under `game/data/dialogue/test/`. |
+| `<<event name args...>>` | Emit `event_triggered(name, args)` and `EventBus.dialogue_event(name, args)`. Positional args only, typed like cue args. **`name` must be declared in [`game/data/dialogue/events.json`](../../../game/data/dialogue/events.json)**, and its args are checked against the row's `args` (same types as cues). Declared now: `zone_unlock zone`, `start_battle encounter` and `departure_declined` (no args; B05's "Not yet", M2-FP-21). A row with `test_only: true` (`fixture_event`) is allowed only under `game/data/dialogue/test/`. |
 | `<<stop>>` | End the dialogue here. Reaching the end of a node also ends it. |
 
 ### Expressions
