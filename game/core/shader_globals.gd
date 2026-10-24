@@ -7,7 +7,8 @@ extends RefCounted
 ## restore it through reset(), so the copy never goes stale (M1-ENV-09).
 ##
 ## A node in LISTENERS_GROUP gets `LISTENER_METHOD(name, value)` whenever set_value() or reset() changes
-## a global's value (VegetationPlant re-probes its shelter when the sun moves).
+## a global's value (VegetationPlant re-probes its shelter when the sun moves). FRAME_GLOBALS, which change
+## every frame, never notify: a group call per frame over every listener would cost more than it tells.
 ##
 ## Zone globals (M1-RND-23, review-sweep-J S2): ZONE_GLOBALS are written back to their project.godot
 ## defaults on every scene swap, so a zone that never writes one does not inherit the last zone's
@@ -18,6 +19,9 @@ extends RefCounted
 ## The per-zone globals: the zone night sea-glow (GlimmerField.set_scene_sea_glow) and the water level
 ## (the zone sea's WaterSurface, or a WeatheringTide without one).
 const ZONE_GLOBALS: Array[StringName] = [&"hymn_zone_sea_glow", &"hymn_water_level"]
+## Globals written every frame (the weather clock, WeatherClock, M2-ARC-02): set_value() and reset() never call
+## the listeners for them.
+const FRAME_GLOBALS: Array[StringName] = [&"hymn_wind_time"]
 const ROUTER_SIGNAL := &"scene_swapping"
 const SETTINGS_PREFIX := "shader_globals/"
 const LISTENERS_GROUP := &"shader_globals_listeners"
@@ -90,6 +94,8 @@ static func _on_scene_swapping(_scene_path: String) -> void:
 
 
 static func _notify(name: StringName, value: Variant) -> void:
+	if FRAME_GLOBALS.has(name):
+		return
 	var tree := Engine.get_main_loop() as SceneTree
 	if tree != null:
 		tree.call_group(LISTENERS_GROUP, LISTENER_METHOD, name, value)

@@ -18,6 +18,8 @@ extends Node
 ##     new scene waits under the opaque fade, at most PREWARM_WAIT_MAX_FRAMES frames (the time-sliced
 ##     ShaderPrewarm stage holds it while staging). Callers can see a change take up to that many
 ##     frames (2 s at 60 fps) longer; the wait is recorded in last_swap_stats["prewarm_wait_frames"].
+## M2-ARC-02: WeatherClock.install(self) adds the weather clock's owner as a child (it advances
+##   hymn_wind_time every frame and writes the zone's hymn_wind on scene_swapping), the same way.
 ##
 ## SPEC §4.2 allows no frame over 50 ms in a transition, so the expensive steps are kept out of the
 ## frame that shows the new scene (docs/kb/tech/architecture.md, "Scene-swap hitch"):
@@ -84,6 +86,7 @@ func _ready() -> void:
 	_fade_layer.add_child(_fade_rect)
 	ShaderPrewarm.install(self)
 	ShaderGlobals.install(self)
+	WeatherClock.install(self)
 	world_return = WorldReturn.new()
 	world_return.name = "WorldReturn"
 	add_child(world_return)

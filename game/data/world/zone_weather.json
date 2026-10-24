@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "doc": "Zone wind (M2-ARC-02; docs/kb/tech/architecture.md, The weather clock). WeatherClock (game/core/weather_clock.gd, a child SceneRouter installs) writes hymn_wind on every scene swap: the zones row whose scene is the new scene, else default. A row is the downwind heading toward_azimuth_deg (clockwise from north = -Z, the convention the water and Haluna rigs use), the speed wind_m_s, and gust 0..1; hymn_wind = (sin(az) * speed, 0, -cos(az) * speed, gust). The clock itself (hymn_wind_time) is never reset. tools/validate_data.py checks every row and that each scene exists.",
+  "default": {
+    "_note": "Any scene without a row, the battle scene included: a moderate onshore breeze, the Drownbell flood rig's breeze direction (boss_vfx.json flood.weather) on the Haluna trade-wind heading.",
+    "toward_azimuth_deg": 250.0,
+    "wind_m_s": 4.0,
+    "gust": 0.3
+  },
+  "zones": [
+    {
+      "scene": "res://game/levels/ch02/haluna/haluna.tscn",
+      "_note": "The Haluna trade wind, as the haluna_mood rig sets it (vegetation.md reference 6 m/s).",
+      "toward_azimuth_deg": 250.0,
+      "wind_m_s": 6.0,
+      "gust": 0.35
+    }
+  ]
+}

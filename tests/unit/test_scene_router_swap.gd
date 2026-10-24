@@ -160,10 +160,17 @@ func test_scene_swapping_resets_the_zone_globals() -> void:
 	GlimmerField.set_scene_sea_glow(0.0)
 	ShaderGlobals.set_value(WaterSurface.GLOBAL_WATER_LEVEL, Vector2(0.6, 0.4))
 	SceneRouter.scene_swapping.emit("res://nowhere.tscn")
+	# The swap also wrote the default zone wind (M2-ARC-02, WeatherClock); later tests get the project default.
+	ShaderGlobals.reset(WeatherClock.GLOBAL_WIND)
 	assert_eq(ShaderGlobals.get_value(GlimmerField.GLOBAL_SEA_GLOW), GlimmerField.SEA_GLOW_ZONE_UNSET, "sea-glow unset")
 	assert_eq(ShaderGlobals.get_value(WaterSurface.GLOBAL_WATER_LEVEL), Vector2.ZERO, "water level back to 0, 0")
 	assert_true(ShaderGlobals.install(SceneRouter), "install is idempotent")
-	assert_eq(SceneRouter.scene_swapping.get_connections().size(), 1, "and connects once")
+	var hook := Callable(ShaderGlobals, &"_on_scene_swapping")
+	var hooks := 0
+	for c: Dictionary in SceneRouter.scene_swapping.get_connections():
+		if c["callable"] == hook:
+			hooks += 1
+	assert_eq(hooks, 1, "and connects once")
 	var src := FileAccess.get_file_as_string("res://game/core/scene_router.gd")
 	for banned: String in ["GlimmerField", "WaterSurface", "is_staging_under"]:
 		assert_false(src.contains(banned), "the router does not name %s" % banned)

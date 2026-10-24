@@ -23,6 +23,11 @@ var _setup: CaptureSetup = null
 
 func _ready() -> void:
 	process_priority = HOLD_PRIORITY
+	# M2-ARC-02: the game's weather clock writes nothing for the whole run, so a shot's pinned globals and a
+	# rig's own writes win, and no shot sees a clock or zone wind that moved between shots.
+	var clock := WeatherClock.current()
+	if clock != null:
+		clock.hold(self)
 	_run.call_deferred()
 
 

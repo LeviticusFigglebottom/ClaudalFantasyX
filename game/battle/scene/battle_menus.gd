@@ -17,6 +17,12 @@ const ROW_SWELL := &"swell"
 ## A Swell page row that chooses a fill mode (M2-UI-01) carries the mode id under this key.
 const KEY_SWELL_MODE := "swell_mode"
 const ROW_SWELL_MODE_PREFIX := "swell_mode_"
+## Vowbound rows (M2-UI-05): the caller's Call rows ("call_<id>", the id under KEY_VOWBOUND), and
+## the Vowbound's own Dismiss and finisher rows.
+const ROW_CALL_PREFIX := "call_"
+const KEY_VOWBOUND := "vowbound"
+const ROW_DISMISS := &"dismiss"
+const ROW_UNLEASH := &"unleash"
 const ATTACK_SKILL := &"attack"
 const AUTO_BERSERK := &"berserk"
 const AUTO_CONFUSE := &"confuse"
@@ -37,6 +43,12 @@ const FAIL_REASONS: Array[StringName] = [
 	&"swell_not_full",
 	&"unknown_technique",
 	&"swell_cancelled",
+	&"vowbound_out",
+	&"unknown_vowbound",
+	&"not_bound",
+	&"not_caller",
+	&"vowbound_fallen",
+	&"no_vowbound",
 ]
 
 ## Ranks at or above this show in the swell color (docs/kb/art/ui.md §6.1).
@@ -61,21 +73,14 @@ func skill_name(engine: BattleEngine, skill_id: StringName) -> String:
 ## Root page: Attack, Swell (for a hero with a Swell, M1-CMB-04; M2-UI-01 keeps it on the menu
 ## while the gauge fills, so the fill mode can be chosen: the right column names the input when
 ## the gauge is full, else the mode in force), Skills, Items (only when the battle has a bag:
-## capture fixtures have none), Escape, then Swap (always the last row).
+## capture fixtures have none), Escape, then Swap (always the last row). A caller gets its Call
+## rows after Skills (call_rows); while a Vowbound holds the field the page is its own
+## (vowbound_root_rows).
 func root_rows(engine: BattleEngine, items: BattleItemSource = null, swell: BattleSwell = null) -> Array[Dictionary]:
+	if engine.vowbound.is_out():
+		return vowbound_root_rows(engine)
 	var actor := engine.current
-	var rows: Array[Dictionary] = []
-	var attack := engine.db.skill(ATTACK_SKILL)
-	rows.append(
-		_row(
-			ROW_ATTACK,
-			tr("HUD_CMD_ATTACK"),
-			_rank_text(int(attack.get("rank", Formulas.DEFAULT_RANK))),
-			_rank_role(int(attack.get("rank", Formulas.DEFAULT_RANK))),
-			actor.skills.has(ATTACK_SKILL),
-			ATTACK_SKILL
-		)
-	)
+	var rows: Array[Dictionary] = [_attack_row(engine)]
 	# Only an input the HUD draws (SwellRingView.draws; the other kinds wait for M2-UI-03).
 	var has_page := swell != null and swell.has_swell(actor) and actor.is_alive()
 	if has_page and not swell.techniques(actor).is_empty() and SwellRingView.draws(swell.input_for(actor)):
@@ -86,6 +91,7 @@ func root_rows(engine: BattleEngine, items: BattleItemSource = null, swell: Batt
 			var mode_name := swell_mode_name(swell, actor.swell_mode)
 			rows.append(_row(ROW_SWELL, tr("HUD_CMD_SWELL"), mode_name, &"text_dim", true))
 	rows.append(_row(ROW_SKILLS, tr("HUD_CMD_SKILLS"), "", &"text_dim", not skill_ids(actor).is_empty()))
+	rows.append_array(call_rows(engine))
 	if items != null:
 		rows.append(_row(ROW_ITEMS, tr("HUD_CMD_ITEMS"), "", &"text_dim", _any_usable(engine, items)))
 	var chance := escape_chance(engine)
@@ -93,6 +99,138 @@ func root_rows(engine: BattleEngine, items: BattleItemSource = null, swell: Batt
 	rows.append(esc)
 	rows.append(_row(ROW_SWAP, tr("HUD_CMD_SWAP"), tr("HUD_COST_FREE"), &"focus", _has_living_reserve(engine)))
 	return rows
+
+
+func _attack_row(engine: BattleEngine) -> Dictionary:
+	var rank := int(engine.db.skill(ATTACK_SKILL).get("rank", Formulas.DEFAULT_RANK))
+	var known := engine.current.skills.has(ATTACK_SKILL)
+	return _row(ROW_ATTACK, tr("HUD_CMD_ATTACK"), _rank_text(rank), _rank_role(rank), known, ATTACK_SKILL)
+
+
+## The acting caller's Call rows (M2-UI-05, ADR 0027): one per Vowbound it has bound, in data
+## order. Open, a row shows the call's rank (the caller pays it once the party is back); greyed,
+## it names the refusal on the right ("Silenced", "Fallen"). A caller with none bound yet gets one
+## greyed "Call · None bound". A fighter who calls no Vowbound gets no row.
+func call_rows(engine: BattleEngine) -> Array[Dictionary]:
+	var vb := engine.vowbound
+	var mine: Array[StringName] = []
+	var bound: Array[StringName] = []
+	for vid: StringName in vb.rows:
+		if StringName(str((vb.rows[vid] as Dictionary).get("caller", ""))) == engine.current.id:
+			mine.append(vid)
+			if vb.known.has(vid):
+				bound.append(vid)
+	var rows: Array[Dictionary] = []
+	if mine.is_empty():
+		return rows
+	if bound.is_empty():
+		var none := _row(StringName(ROW_CALL_PREFIX + String(mine[0])), tr("HUD_CMD_CALL"), "", &"text_dim", false)
+		none["right"] = call_refusal_word(BattleVowbound.FAIL_NOT_BOUND)
+		none[KEY_VOWBOUND] = mine[0]
+		rows.append(none)
+		return rows
+	for vid in bound:
+		var fail := vb.refusal(engine, vid)
+		var rank := int((vb.rows[vid] as Dictionary).get("call_rank", Formulas.DEFAULT_RANK))
+		var label := tr("HUD_CMD_CALL_FMT").format({"name": vowbound_name(vb, vid)})
+		var row := _row(StringName(ROW_CALL_PREFIX + String(vid)), label, _rank_text(rank), _rank_role(rank), true)
+		if fail != &"":
+			row["right"] = call_refusal_word(fail)
+			row["right_role"] = &"text_dim"
+			row["enabled"] = false
+		row[KEY_VOWBOUND] = vid
+		rows.append(row)
+	return rows
+
+
+## The short word a greyed Call row shows for `reason` (BattleVowbound.refusal).
+func call_refusal_word(reason: StringName) -> String:
+	match reason:
+		BattleVowbound.FAIL_SILENCED:
+			return tr("HUD_CALL_SILENCED")
+		BattleVowbound.FAIL_FALLEN:
+			return tr("HUD_CALL_FALLEN")
+		BattleVowbound.FAIL_NOT_BOUND:
+			return tr("HUD_CALL_NOT_BOUND")
+	return tr("HUD_CALL_REFUSED")
+
+
+## The root page while a Vowbound holds the field (M2-UI-05): Attack, its finisher (greyed until
+## the gauge is full, the right column showing how full), Skills and Dismiss, then Escape and Swap
+## greyed out (refused while it is out: vowbound_out). Items is left off ("a Vowbound uses no
+## items"), so the page stays at six rows, the most the root shows.
+func vowbound_root_rows(engine: BattleEngine) -> Array[Dictionary]:
+	var vb := engine.vowbound
+	var s := engine.current
+	var rows: Array[Dictionary] = [_attack_row(engine)]
+	var tid := vb.finisher(s)
+	if tid != &"":
+		var rank := int(engine.db.skill(tid).get("rank", Formulas.DEFAULT_RANK))
+		var ready := vb.unleash_refusal(engine) == &"" and not skill_candidates(engine, tid).is_empty()
+		var right := _rank_text(rank)
+		if not ready:
+			right = tr("HUD_VOWBOUND_GAUGE_FMT").format(
+				{"pct": roundi(float(Formulas.PCT) * s.swell / Formulas.SWELL_MAX)}
+			)
+		rows.append(
+			_row(ROW_UNLEASH, skill_name(engine, tid), right, _rank_role(rank) if ready else &"text_dim", ready, tid)
+		)
+	rows.append(_row(ROW_SKILLS, tr("HUD_CMD_SKILLS"), "", &"text_dim", not skill_ids(s).is_empty()))
+	var can_go := vb.dismiss_refusal(engine) == &""
+	rows.append(_row(ROW_DISMISS, tr("HUD_CMD_DISMISS"), tr("HUD_DISMISS_COST"), &"text_dim", can_go))
+	rows.append(_row(ROW_ESCAPE, tr("HUD_CMD_ESCAPE"), "", &"text_dim", false))
+	rows.append(_row(ROW_SWAP, tr("HUD_CMD_SWAP"), "", &"text_dim", false))
+	return rows
+
+
+## The skill a root row plays: Attack, or the Vowbound's finisher on ROW_UNLEASH.
+func root_skill(engine: BattleEngine, rid: StringName) -> StringName:
+	if rid == ROW_UNLEASH and engine.vowbound.is_out():
+		return engine.vowbound.finisher(engine.vowbound.summon)
+	return ATTACK_SKILL
+
+
+func vowbound_name(vb: BattleVowbound, vid: StringName) -> String:
+	var key := str((vb.rows.get(vid, {}) as Dictionary).get("name_key", ""))
+	return tr(key) if key != "" else String(vid)
+
+
+## The help line on a Call row: who takes the turn, and what the call costs the caller once the
+## party is back (pillar 4; the timeline shows the order with the Vowbound in it).
+func call_help(engine: BattleEngine, vid: StringName) -> String:
+	var vb := engine.vowbound
+	var rank := int((vb.rows.get(vid, {}) as Dictionary).get("call_rank", Formulas.DEFAULT_RANK))
+	var words := {"vowbound": vowbound_name(vb, vid), "caller": display_name(engine.current), "rank": rank}
+	return tr("HUD_HELP_CALL_FMT").format(words)
+
+
+## The help line on Dismiss: the turn is spent and the party is back, and when the caller acts
+## again in `after` (BattleVowbound.preview_dismiss).
+func dismiss_help(engine: BattleEngine, after: Array[TurnEntry]) -> String:
+	var vb := engine.vowbound
+	var s := vb.summon
+	var parts: PackedStringArray = [tr("HUD_HELP_DISMISS_FMT").format({"vowbound": display_name(s)})]
+	var caller := engine.find(StringName(str((vb.rows.get(s.id, {}) as Dictionary).get("caller", ""))))
+	for i in after.size():
+		if caller != null and after[i].combatant_id == caller.id:
+			parts.append(next_turn_text(display_name(caller), i))
+			break
+	return " · ".join(parts)
+
+
+## What happened when a Vowbound left the field: it fell (and cannot be called again this battle),
+## or it was dismissed or the battle was won.
+func departed_text(s: BattleCombatant, fell: bool) -> String:
+	var key := "HUD_VOWBOUND_FELL_FMT" if fell else "HUD_VOWBOUND_LEFT_FMT"
+	return tr(key).format({"vowbound": display_name(s)})
+
+
+## The party panel's note while a Vowbound is out: who stood down for it.
+func stood_down_text(engine: BattleEngine) -> String:
+	var names: PackedStringArray = []
+	for c in engine.vowbound.stood_down:
+		names.append(display_name(c))
+	return tr("HUD_VOWBOUND_STOOD_DOWN_FMT").format({"names": ", ".join(names)})
 
 
 ## The actor's skills other than Attack, in their learned order.
@@ -440,6 +578,18 @@ func fail_text(reason: StringName, actor: BattleCombatant, provoker: BattleComba
 			text = tr("HUD_FAIL_SWELL_CANCELLED")
 		BossMechanics.FAIL_NO_FIELD:
 			text = tr("HUD_FAIL_NO_FIELD")
+		BattleVowbound.FAIL_OUT:
+			text = tr("HUD_FAIL_VOWBOUND_OUT")
+		BattleVowbound.FAIL_UNKNOWN:
+			text = tr("HUD_FAIL_UNKNOWN_VOWBOUND")
+		BattleVowbound.FAIL_NOT_BOUND:
+			text = tr("HUD_FAIL_NOT_BOUND_FMT")
+		BattleVowbound.FAIL_NOT_CALLER:
+			text = tr("HUD_FAIL_NOT_CALLER_FMT")
+		BattleVowbound.FAIL_FALLEN:
+			text = tr("HUD_FAIL_VOWBOUND_FALLEN")
+		BattleVowbound.FAIL_NONE_OUT:
+			text = tr("HUD_FAIL_NO_VOWBOUND")
 	return text.format({"name": display_name(actor), "provoker": display_name(provoker)})
 
 

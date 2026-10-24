@@ -747,6 +747,14 @@
       "scene": "res://game/battle/scene/shots/battle_swell_modes.tscn"
     },
     {
+      "id": "battle_vowbound_call",
+      "scene": "res://game/battle/scene/shots/battle_vowbound_call.tscn"
+    },
+    {
+      "id": "battle_vowbound_out",
+      "scene": "res://game/battle/scene/shots/battle_vowbound_out.tscn"
+    },
+    {
       "id": "bestiary_menu",
       "scene": "res://game/ui/bestiary/shots/bestiary_menu.tscn"
     },
