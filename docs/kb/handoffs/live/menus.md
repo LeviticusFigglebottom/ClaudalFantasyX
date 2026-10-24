@@ -20,6 +20,18 @@ Why this track exists: the progression and equipment systems (Lattice, equipment
 - **Lead / combat agent (live payouts):** M2-MNU-02 edits `BattleVitals.setup` (game/battle/scene/battle_vitals.gd): worn gear (EquipmentEffects.modifier between the Lattice and the vitals) and `engine.currency_multiplier` (Full Net) in live battles. If your live-payout change touches the same function, keep both.
 - **Controls:** `battle_pause` is added to the InputMap at runtime (FieldInput.add_actions), not yet in `controls.json`, so it can't be remapped yet. Follow-up for the UI track's Controls page (a `battle` context).
 
+## For the Lead: Architect code changed at your request (M2-MNU-06, commit 1df83a4)
+The scene-swap regression test now measures the real swap on an injected per-frame clock: `SceneRouter.set_measure_clock(now_usec)` (default unchanged), `scene_swap_probe.gd --frame-usec=<n>`, the test asserts exact frame steps and the router's ADR 0029 verdicts with the same 40 ms threshold. Root cause of the 1785/1: a wall-time limit on the hidden (loading) frames, which scale with load and cold caches. Passes under six busy loops on 4 CPUs; boot smoke unchanged. `perf_budgets.json` loses `attempts` and `max_load_per_cpu`. Details: docs/kb/tech/architecture.md and the task file.
+
+## Second queue (from the Lead, 2026-10-24)
+| Task | State |
+|---|---|
+| M2-MNU-06 scene-router swap test on an injected clock | **review** (1df83a4) |
+| M2-MNU-07 party formation menu | worktree agent running |
+| M2-MNU-08 Light Step into the field encounter meter | next (me) |
+| M2-MNU-09 Customize on spare pieces | worktree agent running |
+| M2-MNU-10 Lattice: walk to a sealed gate | worktree agent running |
+
 ## Exact next step
 
 **MERGE-READY @ 674ec39e** (claude/ui @ 4c083290, M2-UI-26 input parity, plus the integration branch, plus one help-line commit): items M2-MNU-01..05 as in the line it replaces (Lattice page; Equip + Customize with live battles wearing gear and paying Full Net; Items + Status; Quit to Title + battle pause; the screenshot/navigation/accessibility sweep), all in review. Checks run on 674ec39e: validate_data 0/0, the Lattice shots re-approved after viewing (help line only; 100% and 130% fit), full Godot suite 1785 run / 1 failed. The failure is test_scene_router_swap::test_swap_frame_stays_under_threshold_for_every_target (hidden swap frames ~150 ms against 40 ms for boot.tscn and the battle sandbox). It fails the same on 4c083290 without this track's commit, the container had restarted minutes before (cold caches), and it passed in the full run on c9d47562; this track touched no scene router, boot or swap code. Treat it as environmental unless the Lead's gate reproduces it. The UI track confirms it also fails on a clean worktree of the integration branch before today's UI merges (boot 73-186 ms, sandbox 77-169 ms); they will re-time boot on a quiet machine because of the new title backdrop. Earlier on this branch: gdlint/gdformat clean, taskboard OK, tool tests, audio synth, coverage within baseline (battle 99.95%, progression 96.69%), every new shot viewed and approved. Skipped: the full screenshot manifest (Lead at merge), a fresh coverage run (no game/progression change), the Blender step (no Blender source).
@@ -36,7 +48,6 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 - 2026-10-24: Lattice and Equip 130% fixes merged and viewed; M2-MNU-05 to review. Merged the integration branch and claude/ui (M2-UI-17/18: objective line and a Map row, ten root rows; field_menu shots still rmse 0). Full ci_local started.
 
 ## Follow-ups (not in this queue)
-- Party formation menu (SPEC §6.11), suggested for this track by the UI track: waiting on the Lead's yes.
 - ~~`battle_pause` into controls.json~~ done by claude/ui (dce9ab43).
 - Light Step (`encounter_rate_pct`) is not read by the field encounter meter yet.
 - Lattice page: ~~no zoom or drag-pan~~ (done by claude/ui M2-UI-26); a sealed gate not next to the hero doesn't offer to walk there.
@@ -45,3 +56,4 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 - 2026-10-24: merged claude/ui (fast-forward to bfd4436a; includes the sandbox_reef foe-order fix 667c4d56 that had made test_battle_vowbound loop forever on this branch, and the objective_shot move). Full Godot suite 1700/1 (claude/ui's interact-prompt leak, bisected and reported). MERGE-READY written.
 - 2026-10-24: claude/ui fixed the interact-prompt test leak (a FieldController left in the tree); merged with the integration branch at c9d47562: full Godot suite 1719/0. MERGE-READY moved to c9d47562.
 - 2026-10-24: merged claude/ui @ 4c083290 (M2-UI-26: Lattice drag-pan and wheel zoom, shoulders = page up/down, right-click = Cancel, parity tests over my pages). Lattice help line names the shoulders. Full suite 1785/1 (scene-router swap timing, also failing without my commit after a container restart). MERGE-READY moved to 674ec39e.
+- 2026-10-24: the Lead's second queue claimed (M2-MNU-06..10; 674ec39 went into Lead batch big7). M2-MNU-06 done (1df83a4). Three agents running (formation, Customize spares, gate walk).
