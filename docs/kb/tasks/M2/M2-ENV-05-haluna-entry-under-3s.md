@@ -28,3 +28,17 @@ from the change request to the scene being in, under the opaque fade:
 
 ## Lead routing (2026-10-24)
 Routed to the **m2-slice** track, which owns Haluna (game/levels/ch02/haluna/**). M1-ARC-16's router now reports `max_visible_frame_ms`, the hidden frames and the entry time, in `SceneRouter.last_swap_stats`; use them to verify. Don't use threaded loads: they crashed Haluna (ADR 0029).
+- **2026-10-24, rendering (PC GPU, session_01UFcBRsk9M9EKtxJKdBU2mB): one cause found and fixed, outside the Haluna
+  scenes** (`gpu/hero-materials-resident`, Lead-approved).
+  - **The cause.** The worker-thread prebuild loads the cutscene cast's materials (`HalunaActorPose.assign_materials`,
+    ~0.7 s) unless they're already loaded.
+  - **The fix.** Asha's 11 material entries in prewarm_materials.json are `resident` (held from the boot warm-up),
+    per preset through `resident_presets`.
+  - **Haluna's entry** (launch → title → Haluna, 4.6.3, 1440p, router `entry_ms`):
+    - High: 2.94–3.00 s → 2.09–2.33 s.
+    - Low: 3.48–3.58 s streaming → 2.31–2.76 s resident. Low streaming is over 3 s, so per the Lead's rule her
+      materials are resident on Low too.
+  - **The VRAM cost** (texture memory from the title on): Low 285 MB against 39 MB, and High 289 MB against 44 MB.
+    Video memory on Low: 464 MB against 189.
+  - **What's left** is the dressing itself on the worker thread: 0.65–1.3 s, against 0.37 s on the main thread
+    (contention with the fade, fonts and prewarm). A high-priority WorkerThreadPool task helped only within noise.

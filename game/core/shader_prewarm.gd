@@ -194,7 +194,7 @@ func start(for_scene: String = "") -> int:
 		var e := entry as Dictionary
 		var scenes := e.get("scenes", []) as Array
 		if resident_only:
-			if not bool(e.get("resident", false)):
+			if not entry_resident(e, preset):
 				continue
 		elif not (scenes.is_empty() or scenes.has(for_scene)):
 			continue
@@ -239,7 +239,7 @@ static func load_resident(preset: String, path: String = REGISTRY_PATH) -> int:
 	var count := 0
 	for entry: Variant in _load_registry(path).get("materials", []):
 		var e := entry as Dictionary
-		if not bool(e.get("resident", false)) or not entry_wanted(e, preset):
+		if not entry_resident(e, preset) or not entry_wanted(e, preset):
 			continue
 		var res_path := str(e.get("path", ""))
 		if not ResourceLoader.exists(res_path):
@@ -269,6 +269,16 @@ static func spawn_resident(parent: Node, preset: String, with_trace := false) ->
 ## The resources load_resident() holds (tests).
 static func resident_count() -> int:
 	return _resident.size()
+
+
+## Whether a registry entry is held from boot on `preset`: "resident" true, and `preset` in its optional
+## "resident_presets" (absent = every preset). Data, so a tier's VRAM can opt out without code (the heroes'
+## materials, gpu/hero-materials-resident).
+static func entry_resident(entry: Dictionary, preset: String) -> bool:
+	if not bool(entry.get("resident", false)):
+		return false
+	var only: Variant = entry.get("resident_presets")
+	return typeof(only) != TYPE_ARRAY or preset == "" or (only as Array).has(preset)
 
 
 ## Whether a registry entry is staged for `preset`: an entry with "preset_tier" {system, tier} only when

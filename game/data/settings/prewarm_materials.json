@@ -15,6 +15,7 @@
   "max_scene_materials": 256,
   "particle_amount": 1,
   "_note_compute_twin": "M1-RND-27: an entry with \"compute_twin\" true (the Undertow body shaders) is not drawn when the preset's storm tier marches the body in compute (ShaderPrewarm.undertow_uses_compute: a RenderingDevice and a body_scale under 1); its compute twin's pipeline is created instead (UndertowBodyEffect.warm_pipeline). Ultra (full-resolution body) still draws it.",
+  "_note_resident_presets": "An entry with \"resident\" true is held from the boot warm-up on every preset, or only on those its optional \"resident_presets\" lists (ShaderPrewarm.entry_resident). Asha's materials are resident on all four: holding them takes Haluna's entry from 2.9-3.6 s to 2.1-2.8 s (Low streaming was 3.5-3.6 s, over ADR 0029's 3 s) for ~245 MB of texture memory from the title on (Low: 285 MB against 39). Drop a preset from the list to stream her materials on it.",
   "_note_preset_tier": "M1-RND-22: an entry with \"preset_tier\" {system, tier} is staged only when the active preset selects that tier (system character: CharacterShaderTiers.tier_for_preset; undertow: the preset id; else the preset's \"tiers\" in graphics_presets.json). Untagged entries are staged on every preset. A preset change runs its own prewarm for the new tier.",
   "materials": [
     {
@@ -592,7 +593,13 @@
       ],
       "tier": "high",
       "note": "M1-CHR-02 Asha hero material (skin_head). Add her battle and dialogue scene paths when they exist.",
-      "resident": true
+      "resident": true,
+      "resident_presets": [
+        "low",
+        "medium",
+        "high",
+        "ultra"
+      ]
     },
     {
       "path": "res://assets/characters/asha/materials/skin_body.tres",
@@ -601,7 +608,13 @@
       ],
       "tier": "high",
       "note": "M1-CHR-02 Asha hero material (skin_body). Add her battle and dialogue scene paths when they exist.",
-      "resident": true
+      "resident": true,
+      "resident_presets": [
+        "low",
+        "medium",
+        "high",
+        "ultra"
+      ]
     },
     {
       "path": "res://assets/characters/asha/materials/eye.tres",
@@ -610,7 +623,13 @@
       ],
       "tier": "high",
       "note": "M1-CHR-02 Asha hero material (eye). Add her battle and dialogue scene paths when they exist.",
-      "resident": true
+      "resident": true,
+      "resident_presets": [
+        "low",
+        "medium",
+        "high",
+        "ultra"
+      ]
     },
     {
       "path": "res://assets/characters/asha/materials/cornea.tres",
@@ -619,7 +638,13 @@
       ],
       "tier": "high",
       "note": "M1-CHR-02 Asha hero material (cornea). Add her battle and dialogue scene paths when they exist.",
-      "resident": true
+      "resident": true,
+      "resident_presets": [
+        "low",
+        "medium",
+        "high",
+        "ultra"
+      ]
     },
     {
       "path": "res://assets/characters/asha/materials/eye_occlusion.tres",
@@ -628,7 +653,13 @@
       ],
       "tier": "high",
       "note": "M1-CHR-02 Asha hero material (eye_occlusion). Add her battle and dialogue scene paths when they exist.",
-      "resident": true
+      "resident": true,
+      "resident_presets": [
+        "low",
+        "medium",
+        "high",
+        "ultra"
+      ]
     },
     {
       "path": "res://assets/characters/asha/materials/tear_line.tres",
@@ -637,7 +668,13 @@
       ],
       "tier": "high",
       "note": "M1-CHR-02 Asha hero material (tear_line). Add her battle and dialogue scene paths when they exist.",
-      "resident": true
+      "resident": true,
+      "resident_presets": [
+        "low",
+        "medium",
+        "high",
+        "ultra"
+      ]
     },
     {
       "path": "res://assets/characters/asha/materials/lash.tres",
@@ -646,7 +683,13 @@
       ],
       "tier": "high",
       "note": "M1-CHR-02 Asha hero material (lash). Add her battle and dialogue scene paths when they exist.",
-      "resident": true
+      "resident": true,
+      "resident_presets": [
+        "low",
+        "medium",
+        "high",
+        "ultra"
+      ]
     },
     {
       "path": "res://assets/characters/asha/materials/brow.tres",
@@ -655,7 +698,13 @@
       ],
       "tier": "high",
       "note": "M1-CHR-02 Asha hero material (brow). Add her battle and dialogue scene paths when they exist.",
-      "resident": true
+      "resident": true,
+      "resident_presets": [
+        "low",
+        "medium",
+        "high",
+        "ultra"
+      ]
     },
     {
       "path": "res://assets/characters/asha/materials/hair.tres",
@@ -664,7 +713,13 @@
       ],
       "tier": "high",
       "note": "M1-CHR-02 Asha hero material (hair). Add her battle and dialogue scene paths when they exist.",
-      "resident": true
+      "resident": true,
+      "resident_presets": [
+        "low",
+        "medium",
+        "high",
+        "ultra"
+      ]
     },
     {
       "path": "res://assets/characters/asha/materials/cloth.tres",
@@ -673,7 +728,13 @@
       ],
       "tier": "high",
       "note": "M1-CHR-02 Asha hero material (cloth). Add her battle and dialogue scene paths when they exist.",
-      "resident": true
+      "resident": true,
+      "resident_presets": [
+        "low",
+        "medium",
+        "high",
+        "ultra"
+      ]
     },
     {
       "path": "res://assets/characters/asha/materials/cloth_sleeve.tres",
@@ -682,7 +743,13 @@
       ],
       "tier": "high",
       "note": "M1-CHR-02 Asha hero material (cloth_sleeve). Add her battle and dialogue scene paths when they exist.",
-      "resident": true
+      "resident": true,
+      "resident_presets": [
+        "low",
+        "medium",
+        "high",
+        "ultra"
+      ]
     },
     {
       "path": "res://game/world/water/prewarm/water_ocean_low.tres",

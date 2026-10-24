@@ -639,6 +639,21 @@ func _clean_tmp() -> void:
 	DirAccess.remove_absolute(TMP_DIR)
 
 
+## A resident entry can be limited to some presets (resident_presets, data); Asha's materials are resident
+## on every preset (Low measured over ADR 0029's 3 s Haluna entry without them).
+func test_residency_can_be_limited_per_preset() -> void:
+	var e := {"path": TEST_MATERIAL, "resident": true, "resident_presets": ["high", "ultra"]}
+	assert_true(ShaderPrewarm.entry_resident(e, "high"))
+	assert_false(ShaderPrewarm.entry_resident(e, "low"), "streamed on a preset the list leaves out")
+	assert_true(ShaderPrewarm.entry_resident({"resident": true}, "low"), "no list: every preset")
+	assert_false(ShaderPrewarm.entry_resident({"resident_presets": ["low"]}, "low"), "not resident at all")
+	var reg := JSON.parse_string(FileAccess.get_file_as_string(ShaderPrewarm.REGISTRY_PATH)) as Dictionary
+	for entry: Dictionary in reg["materials"]:
+		if str(entry.get("path", "")).begins_with("res://assets/characters/asha/materials/"):
+			for preset in ["low", "medium", "high", "ultra"]:
+				assert_true(ShaderPrewarm.entry_resident(entry, preset), "%s held on %s" % [entry["path"], preset])
+
+
 func _host() -> Node:
 	# The tree root is busy while the runner scene is readying, so attach under the running scene.
 	return (Engine.get_main_loop() as SceneTree).current_scene
