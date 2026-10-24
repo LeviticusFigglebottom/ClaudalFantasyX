@@ -22,7 +22,7 @@ materials, kit geometry) and `game/shaders/environment/**`. Set dressing in the 
       spread, thinner spray-zone salt on village walls; flat-faced broken-coral blocks, not pillows.
 - [x] Ground: broad value drift on dry sand, a high-water wrack line, leaf litter on turf (env_ground).
 - [x] Drowned ruins: biofilm drip stains, less salt, greyed below lit_ceramic.
-- [ ] House infill, timber and thatch checked at H02/H04 range; props checked for placeholders.
+- [x] House infill, timber and thatch checked at H02/H04 range; props checked for placeholders (the two trees are M2-ENV-07).
 - [ ] The five haluna shots (and `haluna_h10_dock_night` once it is on the integration branch)
       re-captured, viewed side by side with the old baselines, each drift listed with its RMSE and why,
       palette checks (`tests/screenshots/palette_checks.json`) still passing, then re-approved.
@@ -78,5 +78,11 @@ materials, kit geometry) and `game/shaders/environment/**`. Set dressing in the 
   on `timber_weathered`, p05 0.24). h03 rmse 0.01308, viewed and re-approved; h01 0.00150, h02 0.00042,
   h07 0.00048, h04 0 (distant gulls; left).
 - Gates: haluna 13, post_import 17; verify haluna_kit 31 identical; tools unittest 495 OK; validate_data.
+
+### Pass 4 (2026-10-24, env-art)
+- **House infill** (`village.house`): a sill girt over the coral base in every woven bay and a batten in each
+  blind bay (`frame_wall`, the piece's own `<name>_frame` rng, so windows and doors don't move). house_tile_a
+  13978, _b 11753, _c 18547 tris (budget 22000). Mostly under the eave shadow at H02 range: h02 rmse 0.00044
+  (baseline left). verify haluna_kit identical; kit unittests OK.
 
 ## Review log

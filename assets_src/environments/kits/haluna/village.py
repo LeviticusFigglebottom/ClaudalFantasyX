@@ -355,7 +355,7 @@ def panel(mb: kc.MeshBuilder, a, b, y0: float, y1: float, mat_name: str, rng, *,
 
 
 def frame_wall(mb: kc.MeshBuilder, a, b, y0: float, y1: float, outward, rng, noise, *, girts: int = 3,
-               batten_pitch_m: float = 0.85, window: bool = False) -> None:
+               batten_pitch_m: float = 0.85, window: bool = False, battens: bool = True) -> None:
     """Timber framing on the outside face of a woven infill panel (M2 final pass): horizontal girts
     and vertical battens lashed over the mat, and optionally a window with a propped shutter, so a
     wall reads as built, not as one flat card. `outward` is the (x, z) direction away from the house.
@@ -372,7 +372,7 @@ def frame_wall(mb: kc.MeshBuilder, a, b, y0: float, y1: float, outward, rng, noi
         y = y0 + 0.08 + (y1 - y0 - 0.14) * (k / max(girts - 1, 1))
         kc.plank(mb, a3 + off + [0.0, y, 0.0], b3 + off + [0.0, y, 0.0], 0.07, 0.035, tm, up=out,
                  variation=float(rng.random()), noise=noise, sag_m=rng.uniform(0.0, 0.008), seg=2)
-    n_bat = max(0, int(ln / batten_pitch_m) - 1)
+    n_bat = max(0, int(ln / batten_pitch_m) - 1) if battens else 0
     win_lo, win_hi = (0.35, 0.65) if window else (2.0, 2.0)
     for k in range(n_bat):
         t = (k + 1) / (n_bat + 1) + rng.uniform(-0.04, 0.04)
@@ -445,6 +445,7 @@ def house(name: str, w: float, d: float, seed: int, *, lod: bool = False) -> kc.
                  lod=True, center=(0.0, DECK_DEPTH_M * 0.5))
         return mb
     coral_base(mb, w, d, rng, noise)
+    frame_rng = kc.rng_for(name + "_frame", seed)
     # Post frame: corners + every ~1.6 m; plus deck posts along the front edge of the shade deck.
     xs = np.linspace(-hw, hw, max(2, int(round(w / 1.6)) + 1))
     zs = np.linspace(-hd, hd, max(2, int(round(d / 1.6)) + 1))
@@ -482,7 +483,15 @@ def house(name: str, w: float, d: float, seed: int, *, lod: bool = False) -> kc.
                 panel(mb, hinge, leaf_end, 0.08, 2.05, M_TIMBER, rng, thick=0.035)
                 continue
             panel(mb, a, b, BASE_WALL_M, WALL_TOP_M - 0.08, M_WOVEN, rng, thick=0.03)
-            if rng.random() < 0.55:
+            has_window = rng.random() < 0.55
+            # A sill girt over the coral base and, in a blind bay, a batten (M2 final pass; own rng).
+            bay_along = kc.normalize(np.array([b[0] - a[0], 0.0, b[1] - a[1]]))
+            frame_wall(mb, a, b, BASE_WALL_M, BASE_WALL_M + 0.14, (-bay_along[2] * out, bay_along[0] * out),
+                       frame_rng, noise, girts=1, battens=False)
+            if not has_window:
+                frame_wall(mb, a, b, BASE_WALL_M + 0.1, WALL_TOP_M - 0.1, (-bay_along[2] * out, bay_along[0] * out),
+                           frame_rng, noise, girts=0, batten_pitch_m=float(np.linalg.norm(b - a)) * 0.5)
+            if has_window:
                 # A window: dark opening with one propped shutter.
                 c = (a + b) * 0.5
                 along = kc.normalize(np.array([b[0] - a[0], 0.0, b[1] - a[1]]))

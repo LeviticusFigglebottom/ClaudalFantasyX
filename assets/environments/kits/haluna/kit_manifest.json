@@ -143,9 +143,9 @@
         22000,
         1600
       ],
-      "bytes": 566472,
+      "bytes": 617496,
       "lods": {
-        "house_tile_a": 13034,
+        "house_tile_a": 13978,
         "house_tile_a-lod1": 376
       }
     },
@@ -154,9 +154,9 @@
         22000,
         1600
       ],
-      "bytes": 486348,
+      "bytes": 519900,
       "lods": {
-        "house_tile_b": 11129,
+        "house_tile_b": 11753,
         "house_tile_b-lod1": 368
       }
     },
@@ -165,9 +165,9 @@
         22000,
         1600
       ],
-      "bytes": 740252,
+      "bytes": 795308,
       "lods": {
-        "house_tile_c": 17507,
+        "house_tile_c": 18547,
         "house_tile_c-lod1": 400
       }
     },
