@@ -42,3 +42,18 @@ Routed to the **m2-slice** track, which owns Haluna (game/levels/ch02/haluna/**)
     Video memory on Low: 464 MB against 189.
   - **What's left** is the dressing itself on the worker thread: 0.65–1.3 s, against 0.37 s on the main thread
     (contention with the fade, fonts and prewarm). A high-priority WorkerThreadPool task helped only within noise.
+- **2026-10-24, rendering (PC GPU): the worker-thread dressing is not prewarm contention.** That's the finding for
+  m2-slice; I didn't touch the Haluna scenes or scripts.
+  - **Prewarm serialized:** with the router's prewarm moved after the instance (a temporary router edit, reverted),
+    the dressing still takes 1.0 s on the worker thread. Overlapped it takes 0.7–0.9 s, and the entry is no faster
+    (2.24 against 2.07–2.34 s).
+  - **The same work off the worker thread** takes 0.37 s (headless, `HalunaZoneDresser.adopt(...).dress()`).
+  - **So the 2–3× is the dresser's own work on a worker thread.** The likeliest cause is its RenderingServer and
+    resource calls (MultiMesh and mesh building, material and texture loads). From a worker thread Godot routes
+    those through its command queue and locks, call by call.
+  - **Suggestions:**
+    - profile `HalunaDresser.dress()` on the worker (Godot's profiler, or `Time.get_ticks_usec` per pass) to find
+      the costly pass;
+    - batch per-instance MultiMesh writes into one `multimesh.buffer` assignment;
+    - load the dresser's materials and meshes up front (or make them resident like Asha's), not inside the loops.
+  - A high-priority WorkerThreadPool task didn't help either.
