@@ -2,7 +2,7 @@
 id: M2-FP-05
 title: First-playable polish - cutscene skip, Haluna entry hitch, retry after a lost battle
 role: architect
-status: review
+status: done
 owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M2-FP-04]
 milestone: M2
@@ -46,3 +46,4 @@ test_fp_field_battle's escape and defeat tests, plus the prebuild and BeforeBatt
 test_haluna_zone.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (lead): **approve.** Hold-to-skip: `skip_hold_sec` comes from sequencer.json, and letting go resets the fill (tested). **One deviation, accepted:** a skip stops at the next choice instead of taking the default branch, so the player still makes the choice, and the test asserts that the choice stands. That's better for the pilgrimage's agency than the criterion's wording. The Haluna prebuild runs on `NOTIFICATION_SCENE_INSTANTIATED` off the main thread (1684 → 33 ms median), and a test checks the prebuilt zone matches the in-tree build. After a defeat the result panel offers Fight again or Return to last save, with the FLOW_RESULT_* keys, and `return_to_field()` refuses after a loss. `--filter=fp_` 22/0 and `haluna` 13/0.
