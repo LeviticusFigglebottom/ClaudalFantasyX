@@ -39,4 +39,8 @@ wrapped trousers, sandals, the tide-shield on his back and the hooked spear.
   and honest §14 notes: `docs/kb/art/characters/toma_review.md`. Rig extras (sash tails, pauldron hinge, shield
   unsling, spear bone) are follow-ups.
 
+- **Rebuilt after the merge into claude/characters** (2026-10-24): M1-CHR-12 changed the shared face shapes, teeth and
+  skin socket term, so toma.glb, toma_lod1.glb, toma_head_albedo/orm were rebuilt (`verify --job toma` 37 identical;
+  58,168 LOD0 tris, 4.86 MB). The six toma_* baselines are refreshed (≤ 0.0023 rmse; this branch's own new baselines).
+
 ## Review log

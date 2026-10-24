@@ -4,16 +4,24 @@
 `claude/characters` (cut from `claude/undertow-lead-handoff-423ixt` at 952ef7c). The Lead reads it hourly.
 
 ## Now
-- **M2-CHR-02 Toma** (doing): a worktree subagent builds it; it merges into this branch when it reports.
-- **M1-CHR-12 → review** (see Done). **Ready for the PC GPU re-check (M1-QA-09)** of neutral, smile and grief; grief fault
-  A waits on M1-RND-24.
-- **One item remains** after Toma: Toma's clips (hero_clips persona). Then CHR-12 fault A once M1-RND-24 merges. **The queue is nearly dry: send more.**
+- **The queue is dry except two follow-ups:** Toma's clips (a `toma` persona in hero_clips.py) and M1-CHR-12 fault A
+  (once M1-RND-24 merges). **Send more work.**
+- **M1-CHR-12 is ready for the PC's GPU re-check (M1-QA-09).**
 
 ## Queue
-1. ~~M2-CHR-01 Rhen~~ (review) → 2. M2-CHR-02 Toma (doing) → 3. ~~M2-FP-07 clips~~ (review) → 4. ~~M1-CHR-12~~ (review;
+1. ~~M2-CHR-01 Rhen~~ (review) → 2. ~~M2-CHR-02 Toma~~ (review) → 3. ~~M2-FP-07 clips~~ (review) → 4. ~~M1-CHR-12~~ (review;
    fault A after RND-24) → 5. ~~M1-ART-06~~ (review).
 
 ## Done
+- **M2-CHR-02 Toma → review** (reviewer: rendering). Built by a worktree subagent, merged at this branch's Toma merge
+  commit, then rebuilt for CHR-12's shared modules. 58,168 LOD0 tris (budget 66,000), `toma.glb` 4.86 MB (near the cap:
+  each beard vertex carries all 40 morph targets), 16 textures; costume atlas 2K, not toma.md's 4K (5 MB cap).
+  - **To merge:** `verify --job toma` 37 identical; **6 new baselines** toma_{front,q34,profile,back,face_neutral,face_smile};
+    Godot hero_stage 4, post_import 19, character_shading 16 green; tools test_toma.
+  - The scar is one depth field that both cuts the plates and paints red → black → bone; a test checks no lacquer survives
+    inside it (no emblem shape can remain).
+  - Open (toma_review.md): hair and beard cards read as flakes up close; stiff sash tails; thin sandal soles; rig extras;
+    a shared `asha_costume._panel` winding bug (the front layer faces inward; fixing it changes Asha and Rhen).
 - **M1-ART-06 → review** (reviewer: rendering): RND-18's survey numbers are recorded as the Art sign-off in color_script.md, and the crest finding is closed (a1cc542).
 - **M1-CHR-12 Asha round 7 → review** (reviewer: rendering). Details: asha_review.md §12.
   - Lower and uneven hairline with wisps; looser crown.
