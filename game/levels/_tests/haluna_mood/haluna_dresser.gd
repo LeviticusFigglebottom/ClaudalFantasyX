@@ -119,17 +119,14 @@ func instance_piece(piece: String, overrides: Dictionary = {}, lod1_from_m: floa
 	var node := packed.instantiate() as Node3D
 	node.name = piece
 	var lod_from := lod1_from_m if lod1_from_m > 0.0 else float(layout.get("lod1_from_m", 70.0))
-	var lod_end := float(layout.get("lod_end_m", 2000.0))
+	var ends := PackedFloat32Array([lod_from, float(layout.get("lod_end_m", 2000.0))])
 	var margin := float(layout.get("lod_margin_m", 2.0))
 	for child: Node in node.find_children("*", "MeshInstance3D", true, false):
 		var mi := child as MeshInstance3D
 		_apply_materials(mi, overrides)
-		var is_lod := String(mi.name).ends_with(LOD_SUFFIX)
-		mi.visibility_range_begin = lod_from if is_lod else 0.0
-		mi.visibility_range_end = lod_end if is_lod else lod_from
-		mi.visibility_range_begin_margin = margin if is_lod else 0.0
-		mi.visibility_range_end_margin = margin
-		mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+		# M1-ENV-10: `<piece>` is the visibility child of `<piece>-lod1`, so exactly one draws.
+		var lod := 1 if String(mi.name).ends_with(LOD_SUFFIX) else 0
+		LodChain.apply(mi, lod, ends, margin, 0.0, LodChain.sibling(mi, lod + 1))
 	placed[piece] = int(placed.get(piece, 0)) + 1
 	return node
 
