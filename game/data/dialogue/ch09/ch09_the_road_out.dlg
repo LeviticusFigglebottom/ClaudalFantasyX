@@ -21,6 +21,10 @@ location: ch09/corrow_night
 @camera D01
 @music dawn_road fade=2.0
 @mark rhen road_rhen walk
+@mark asha near_asha walk
+@mark toma near_toma walk
+@mark ysolde near_ysolde walk
+@mark liss near_liss walk
 @wait 2.5
 Rhen [neutral]: Thought Corrow was where you were going. #line:ch09_road_001
 Kerrid [neutral]: It was. #line:ch09_road_002

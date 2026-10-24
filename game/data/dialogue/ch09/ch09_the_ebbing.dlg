@@ -20,6 +20,7 @@ location: ch09/corrow_night
 // water. Rhen kneels at the waterline if he sat with his own dead at Haluna, else at the back of the
 // strand. Pell is not in the frame.
 @letterbox on
+@anim asha stand_gilt
 @camera N06
 @music corrow_night fade=1.0
 @anim tender paint_gilt asha
@@ -30,6 +31,7 @@ Ysolde [tender]: Keep the lamp above your shoulder, not your head. They follow t
 @wait 1.0
 @camera N07
 @mark asha raft_step walk
+@mark toma strand_toma walk
 <<if $ch02_rhen_stayed_with_dead>>
     @mark rhen kneel_waterline walk
 <<else>>
