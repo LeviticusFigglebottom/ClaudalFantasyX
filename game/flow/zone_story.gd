@@ -10,9 +10,10 @@ extends Node
 ##   overheard_hold_sec  how long an overheard bark's line stays up (optional).
 ## `when` is {"set": [flags], "unset": [flags]}, all of which must hold (missing = holds).
 ## Steps run in order, one key each:
-##   {"play": id}       plays a compiled .dlg scene on the stage and waits for it. Right before a
-##                      battle, go or scene step it doesn't fade back in at its end (restore_fade), so
-##                      a scene that ends on black hands off on black (M3-C01-02: Ch1's going under).
+##   {"play": id}       plays a compiled .dlg scene on the stage and waits for it. When the run hands
+##                      off after it with no other scene between (only set, place, party or zone steps),
+##                      it doesn't fade back in at its end (restore_fade): a scene that ends on black
+##                      hands off on black (M3-C01-02: Ch1's rise to the surface and going under).
 ##   {"place": spawn}   puts Rhen on a spawn, facing its marker.
 ##   {"set": flag}      sets a declared flag through Game.set_flag.
 ##   {"party": {"party": [...], "reserve": [...]}} replaces the party.
@@ -132,7 +133,7 @@ func _steps(steps: Array) -> bool:
 		if _hands_off(step):
 			return true
 		if step.has("play"):
-			sequencer.restore_fade = not (i + 1 < steps.size() and _ends_run(steps[i + 1]))
+			sequencer.restore_fade = not _hands_off_after(steps, i)
 			await sequencer.play(StringName(str(step["play"])), _stage())
 			sequencer.restore_fade = true
 		elif step.has("beat"):
@@ -164,9 +165,16 @@ func _apply(step: Dictionary) -> void:
 		push_warning("ZoneStory: unknown step %s" % step)
 
 
-## True for the steps that end a run (battle, go, scene).
-static func _ends_run(step: Dictionary) -> bool:
-	return step.has("battle") or step.has("go") or step.has("scene")
+## True when the steps after steps[i] reach a battle, go or scene step before any other scene could
+## play (a play, beat or if_event step).
+static func _hands_off_after(steps: Array, i: int) -> bool:
+	for j in range(i + 1, steps.size()):
+		var s: Dictionary = steps[j]
+		if s.has("battle") or s.has("go") or s.has("scene"):
+			return true
+		if s.has("play") or s.has("beat") or s.has("if_event"):
+			return false
+	return false
 
 
 ## Hands off for a battle, go or scene step (true); false for any other step.
