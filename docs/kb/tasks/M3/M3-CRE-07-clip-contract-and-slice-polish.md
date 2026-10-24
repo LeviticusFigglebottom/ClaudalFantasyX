@@ -2,7 +2,7 @@
 id: M3-CRE-07
 title: "Creature clips to the battle clip contract; slice creature polish (LOD1, shading, portraits)"
 role: character
-status: doing
+status: review
 owner_session: "creatures (cloud session_01CYks9e592YBEfygyTawcJD, branch claude/creatures)"
 reviewer: combat
 depends_on: [M2-CRE-03]
@@ -20,7 +20,7 @@ and the bestiary portrait renders.
 - [x] Strike clips in place: the kit drops the root's horizontal travel in `attack` and `cast` (17 GLBs changed, 10 byte-identical); re-audited at 0.00 m
 - [x] LOD1: Godot's import LODs verified on every slice mesh (about 50% per level); `tools/dev/creature_lods.gd`; pipeline.md §4
 - [x] Portraits: per-creature framing for the gull harrier (and stormgull) and the lantern eel, chosen from a yaw and pitch grid
-- [ ] Shots: the creature and battle shots re-compared, and any change viewed and approved
+- [x] Shots: 42 creature and battle shots re-compared; 37 unchanged. 5 re-approved after side-by-side viewing: battle_opening_banner 0.02548, battle_vowbound_call 0.01484 and battle_vowbound_out 0.01482 (the crab and gull mid-strike, now in place), creature_reef_crab_attack 0.07724 (the same strike pose without the lunge), creature_portraits 0.01443 (the gull and eel framing)
 
 ## Notes
 - Optional contract clips (`dodge`, `defend`, `ready`, `victory`) are left to the sequencer's procedural fallback.

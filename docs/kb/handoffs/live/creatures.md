@@ -73,7 +73,7 @@ The Lead's queue (15:30):
 1. **Ch6–Ch9 creatures:** done. Ch6 (shoal_skipper, raid_hound, wreck_crab, plus the reused gull_harrier) and Ch8
    are built. m2-slice's sheets confirm that Ch7 has no foes and Ch9 has no fight.
 2. **Clip contract** (M3-CRE-07): audited, and strikes made in place (kit `IN_PLACE_CLIPS`, 17 GLBs rebuilt).
-   Shots are being re-compared.
+   Shots re-compared: 5 re-approved after viewing (RMSE in M3-CRE-07).
 3. **Slice polish** (M3-CRE-07): LOD1 verified as Godot's import LODs; portrait framing for the gull and the eel.
    Next: approve the changed shots, then the polish notes (the Matron's crack lines, the squall wing's tears, the
    wreck crab's crust).
