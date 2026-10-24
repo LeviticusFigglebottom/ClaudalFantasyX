@@ -130,7 +130,8 @@ Q/R steer) at priority 0 frames Rhen everywhere else.
 | `NPCs/Chapel/Talk` (a Reed sweeping at (−116.3, 2.7, 33.6)) | `npc_chapel` | interact | `{"dialogue": "ch02_bark_chapel"}` |
 | `NPCs/Dock/Talk` (two fishers on the dock's end platform) | `npc_dock` | interact | `{"dialogue": "ch02_bark_dock"}` |
 | `Triggers/TidelineBattle` (six boxes, a strip 6 m seaward of the beach-head tide wall, z −110…110) | `tideline_battle` | touch | `{"battle": "ch02_tideline"}`, requires `ch02_met_asha`, blocked by `ch02_tideline_won` |
-| `Triggers/CausewayHead` ((7, 1.5, −125), 32 × 6 m) | `causeway_head` | touch | `{"cutscene": "ch03_the_first_verse"}`, requires `ch02_saved_once` |
+| `Triggers/CausewayHead` ((7, 1.5, −125), 32 × 6 m) | `causeway_head` | touch | `{"cutscene": "ch03_the_first_verse"}`, requires `ch02_saved_once`. B05 (`ch02_low_tide`) opens on a "Go now" / "Not yet" choice; "Not yet" (`<<event departure_declined>>`) returns Rhen to `Spawns/CausewayHead` with nothing handed off, and the trigger stays armed (M2-FP-21) |
+| `Triggers/CausewayHeadUnsaved` (same box) | `causeway_head_unsaved` | touch | `{"dialogue": "ch02_bark_causeway_unsaved", "overheard": true}`, requires `ch02_met_asha`, blocked by `ch02_saved_once`; not `once`: it plays on every walk-in before the first save, never over itself (M2-FP-20) |
 
 The strip spans every lane gate, so any way up from the beach to the village crosses it once Asha has
 been met. The barks are `game/data/dialogue/ch02/ch02_bark_{market,chapel,dock}.dlg`.

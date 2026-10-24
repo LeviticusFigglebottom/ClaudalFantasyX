@@ -1049,6 +1049,21 @@ payload = {
 [node name="Shape" type="CollisionShape3D" parent="Triggers/CausewayHead"]
 shape = SubResource("Box_causeway")
 
+[node name="CausewayHeadUnsaved" type="Area3D" parent="Triggers"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1.5, -125)
+id = &"causeway_head_unsaved"
+activation = 1
+requires_flag = &"ch02_met_asha"
+blocked_by_flag = &"ch02_saved_once"
+payload = {
+"dialogue": "ch02_bark_causeway_unsaved",
+"overheard": true
+}
+
+[node name="Shape" type="CollisionShape3D" parent="Triggers/CausewayHeadUnsaved"]
+shape = SubResource("Box_causeway")
+
 [node name="OverhearMarket" type="Area3D" parent="Triggers"]
 script = ExtResource("8_int")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42, 2.7, 0)

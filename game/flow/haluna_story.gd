@@ -22,8 +22,10 @@ extends Node
 ##             scene in-engine, then night_end_scene (the end card). Once sworn, barks play their
 ##             night_barks variant.
 ##   ending    a trigger whose payload has "cutscene" plays the low-tide beat in-engine (M2-FP-13,
-##             B05, before_ending_scene_id), then opens Cutscene B on its own set
-##             (game/levels/ch03/first_verse/), which ends on the end card.
+##             B05, before_ending_scene_id), then opens the Shell Shrine trial (ending_scene). B05
+##             opens on "Go now" / "Not yet" (M2-FP-21): "Not yet" (ending_decline_event) steps
+##             Rhen back to ending_decline_spawn and hands nothing off. Before the first save the
+##             same box plays an overheard bark instead (M2-FP-20, Triggers/CausewayHeadUnsaved).
 ## The zone's interactables only author ids, payloads and flags; nothing in them knows this script.
 
 const KEY_DIALOGUE := "dialogue"
@@ -152,15 +154,33 @@ func _variant(scene_id: StringName) -> StringName:
 	return StringName(str((cfg.get("night_barks", {}) as Dictionary).get(String(scene_id), scene_id)))
 
 
-## B05 at the causeway head, then Cutscene B.
+## B05 at the causeway head, then Cutscene B. B05 opens on a choice (M2-FP-21): when it reports
+## ending_decline_event ("Not yet"), Rhen steps back to ending_decline_spawn, short of the trigger,
+## and control returns with nothing handed off; the trigger stays armed for the next approach.
 func _end() -> void:
 	busy = true
 	_hush()
 	var low_tide := StringName(str(cfg.get("before_ending_scene_id", "")))
 	if low_tide != &"":
 		await sequencer.play(low_tide, _stage())
+		if _declined():
+			var spawn := StringName(str(cfg.get("ending_decline_spawn", "")))
+			_zone.call(&"place_at", spawn, _zone.call(&"spawn_yaw_deg", spawn))
+			busy = false
+			return
 	if is_inside_tree():
 		_go(KEY_CUTSCENE, str(cfg.get("ending_scene", "")))
+
+
+## True when the last scene reported ending_decline_event (B05's "Not yet").
+func _declined() -> bool:
+	var ev := StringName(str(cfg.get("ending_decline_event", "")))
+	if ev == &"":
+		return false
+	for e: Dictionary in sequencer.events:
+		if StringName(str(e.get("name", ""))) == ev:
+			return true
+	return false
 
 
 ## Cuts an overheard bark off (something else is starting): a sequencer that leaves the tree ends

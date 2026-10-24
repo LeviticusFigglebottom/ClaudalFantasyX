@@ -1,4 +1,6 @@
 keys,en
+DLG_CH02_BARK_CAUSEWAY_UNSAVED_001,"Hold, Rhen. No one walks the causeway without resting at the town shrine first."
+DLG_CH02_BARK_CAUSEWAY_UNSAVED_002,"It only takes a moment. Sit at the little shrine in town, then we'll go."
 DLG_CH02_BARK_CHAPEL_001,The Lady Cantor's shell is cut. They'll set it at the wake.
 DLG_CH02_BARK_CHAPEL_002,I'm sorry. Was she very old?
 DLG_CH02_BARK_CHAPEL_003,"Mind the steps, please. I've only just swept them."
@@ -50,6 +52,10 @@ DLG_CH02_BEACH_014,"Come up to the village. Bring your father's light. You'll ea
 DLG_CH02_BEACH_015,"Come up to the village. You'll eat first, and then we'll tell you what we know."
 DLG_CH02_BEACH_035,She smiled first. Every time. It took me a long while to understand why.
 DLG_CH02_LOOK_LINTEL_GULL_001,"Every roof's got one, and every one faces the sea. Nobody carves a gull to watch the land."
+DLG_CH02_LOW_TIDE_005,"Once we cross, we won't be back before dark. Is there anyone you want to see first?"
+DLG_CH02_LOW_TIDE_006,Go now.
+DLG_CH02_LOW_TIDE_007,Not yet.
+DLG_CH02_LOW_TIDE_008,Then go and see them. The tide will hold a while yet.
 DLG_CH02_LOW_TIDE_001,The tide-readers set the day. The causeway opens this far twice a month.
 DLG_CH02_LOW_TIDE_002,"Come and see it, Rhen. It's the most beautiful thing we have."
 DLG_CH02_LOW_TIDE_003,"He is not sworn to anything, Asha."

@@ -114,6 +114,8 @@ title) once.
   - Anything else that starts (a villager bark, the battle, the causeway) cuts it off with `_hush()`.
   - Talking to the villager still plays the bark. The lane child (`ch02_bark_lane`) is new.
 - **B05, Low tide** (`before_ending_scene_id` `ch02_low_tide`). The causeway-head trigger plays it, then hands off to Cutscene B.
+  - **M2-FP-21:** B05 opens on Asha's question and a "Go now" / "Not yet" choice. "Not yet" plays her reply and `<<event departure_declined>>` (`haluna.ending_decline_event`); `HalunaStory._end()` then puts Rhen at `ending_decline_spawn` (`CausewayHead`, short of the box), clears `busy` and hands nothing off. The trigger is not `once`, so the next walk-in asks again. "Go now" runs B05 to its end and hands off as before (tests take it by default: `auto_choice = 0`).
+  - **M2-FP-20:** before the first save, `Triggers/CausewayHeadUnsaved` (the same box, blocked by `ch02_saved_once`) plays the overheard `ch02_bark_causeway_unsaved` (Toma and Asha point Rhen to the town shrine). It is not `once`: it plays on every walk-in until the save, but never over itself (the overhear sequencer must be idle).
 
 New speakers: `neme`, `child`. Tests: `tests/integration/test_haluna_slice_beats.gd`.
 
