@@ -191,6 +191,19 @@ class TorsoChart:
 VEST_ARMHOLE_DROP = 0.115  # m below the shoulder joint (M1-CHR-14: 0.085 sat at the armpit and wrapped onto the arm)
 
 
+BODICE_UNDERARM_DROP = 0.045  # m: the bodice's top dips this far under each arm (M1-CHR-14: a lowered arm cut it)
+BODICE_UNDERARM_HALF = 40.0  # degrees either side of the side line over which the dip fades
+
+
+def bodice_top(lm, th_deg: np.ndarray) -> np.ndarray:
+    """The under-bodice's top edge: level just above the bust, dipping under the arms."""
+    S = lm.S
+    side = np.abs(np.mod(np.asarray(th_deg, dtype=float), 180.0) - 90.0)  # 0 on either side line
+    w = np.clip(1.0 - side / BODICE_UNDERARM_HALF, 0.0, 1.0)
+    w = w * w * (3.0 - 2.0 * w)
+    return float(lm.P("nipple")[2] + 0.075 * S) - BODICE_UNDERARM_DROP * S * w
+
+
 def vest_top(lm, chart: TorsoChart, th_deg: np.ndarray) -> np.ndarray:
     """The vest's top edge: the neckline all round, except the halter cut-away at the left shoulder
     and the deep scoop at the back (asha.md §2.4, §4.1 #5)."""
@@ -501,7 +514,7 @@ def build_costume(body, params: dict) -> dict[str, Part]:
     out: dict[str, Part] = {}
     # 1. under-bodice: waist to just above the bust, under the vest
     out["Bodice"] = torso_panel(fields, chart, "Bodice", "cloth", ATLAS["bodice"], z_waist - 0.02 * S,
-                                lambda th: np.full_like(th, float(lm.P("nipple")[2] + 0.075 * S)), 0.003 * S, 40, 8,
+                                lambda th: bodice_top(lm, th), 0.003 * S, 40, 8,
                                 None)
     # 5. vest
     vest_hem = z_waist - 0.035 * S
@@ -563,7 +576,7 @@ def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
     m = 0.03 * S
     torso = reg == "torso"
     vest = torso & (H > z_waist - 0.035 * S + m) & (H < vest_top(lm, chart, th_deg) - m)
-    bodice = torso & (V[:, 2] > z_waist - 0.02 * S + m) & (V[:, 2] < lm.P("nipple")[2] + 0.075 * S - m)
+    bodice = torso & (V[:, 2] > z_waist - 0.02 * S + m) & (V[:, 2] < bodice_top(lm, th_deg) - m)
     hl, hr = float(params["hem_left_m"]) * S, float(params["hem_right_m"]) * S
     hem = 0.5 * (hl + hr) + 0.5 * (hl - hr) * np.sin(th)
     legs = (reg == "leg_L") | (reg == "leg_R") | torso
