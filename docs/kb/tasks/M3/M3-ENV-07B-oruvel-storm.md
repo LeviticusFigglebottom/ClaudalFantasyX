@@ -2,8 +2,8 @@
 id: M3-ENV-07B
 title: "Ch1 Oruvel in the storm: the breaking-raft state of the raft-town kit (and Hullgnaw's split deck)"
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M3-ENV-07]
 milestone: M3
 request-from: environment
