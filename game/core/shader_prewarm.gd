@@ -309,11 +309,17 @@ static func needs_first_run(preset: String, path: String = REGISTRY_PATH) -> boo
 	# headless boot (CI's smoke test, tools) would stage and harvest the whole first launch for nothing.
 	if is_headless():
 		return false
+	return str(_load_registry(path).get("first_run_marker", "")) != "" and not marker_current(preset, path)
+
+
+## Whether the registry's first_run_marker holds this engine, GPU, driver and preset's key (the key logic
+## of needs_first_run, without its headless guard; M2-RND-11 tests it headless).
+static func marker_current(preset: String, path: String = REGISTRY_PATH) -> bool:
 	var marker := str(_load_registry(path).get("first_run_marker", ""))
 	if marker == "":
 		return false
 	var cfg := ConfigFile.new()
-	return cfg.load(marker) != OK or str(cfg.get_value("pipelines", "key", "")) != first_run_key(preset)
+	return cfg.load(marker) == OK and str(cfg.get_value("pipelines", "key", "")) == first_run_key(preset)
 
 
 func _write_first_run_marker() -> void:
@@ -657,6 +663,8 @@ func _build_entry(entry: Dictionary) -> Node:
 		var twin := UndertowBodyEffect.compute_path_for(path)
 		if twin != "":
 			RenderingServer.call_on_render_thread(UndertowBodyEffect.warm_pipeline.bind(twin))
+			# The holder frees the warm pipelines with the tree (M2-RND-11).
+			_holder(true)
 			_computes += 1
 			return null
 	if resident_only:
@@ -843,7 +851,8 @@ func _ensure_stage_env() -> Environment:
 	return _stage_env
 
 
-## The node that holds the resident resources (RESIDENT_HOLDER). Its references go when the tree frees it.
+## The node that holds the resident resources (RESIDENT_HOLDER). Its references go when the tree frees it,
+## and so do the warm compute pipelines (UndertowBodyEffect.release_warm; M2-RND-11).
 class ResidentHolder:
 	extends Node
 	var held: Array[Resource] = []
@@ -851,3 +860,6 @@ class ResidentHolder:
 	func _notification(what: int) -> void:
 		if what == NOTIFICATION_PREDELETE:
 			held.clear()
+			# At exit the render thread no longer takes queued calls: the main thread frees them (single-safe
+			# threading, the project default, renders on it).
+			UndertowBodyEffect.release_warm()

@@ -559,7 +559,13 @@ func test_half_res_body_follows_the_tier() -> void:
 	assert_true(storm.half_res.composite != null and storm.half_res.composite.mesh == storm.body.mesh)
 	storm.quality = "ultra"
 	storm.refresh()
-	assert_true(storm.half_res == null, "Ultra renders at full resolution")
+	# M2-RND-11: Ultra runs the compute body at full resolution where compute runs (its frame is the sea's
+	# reflection); without a RenderingDevice (headless) it keeps the full-resolution spatial body.
+	if UndertowHalfRes.use_compute(storm.body):
+		assert_true(storm.half_res != null and storm.half_res.effect != null, "Ultra: the compute body")
+		assert_eq(storm.half_res.scale, 1.0, "at full resolution")
+	else:
+		assert_true(storm.half_res == null, "Ultra renders at full resolution")
 	# M2-RND-01: High then Low (shells) must drop the half-res body, or its compute pass keeps marching
 	# the hidden body (seen on undertow_horizon_low).
 	storm.quality = "high"

@@ -278,7 +278,8 @@
       "body_scale": 1.0,
       "streamers": 24,
       "rain_layers": 3,
-      "bolt_branches": 3
+      "bolt_branches": 3,
+      "compute_body": true
     }
   },
   "looks": {
