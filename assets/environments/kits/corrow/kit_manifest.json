@@ -1,0 +1,128 @@
+{
+  "generator": "assets_src/environments/kits/corrow/build.py",
+  "kit": "corrow",
+  "pieces": {
+    "coilspire_headland": {
+      "budget": [
+        9000,
+        1500
+      ],
+      "bytes": 282552,
+      "lods": {
+        "coilspire_headland": 7268,
+        "coilspire_headland-lod1": 658
+      }
+    },
+    "corrow_far": {
+      "budget": [
+        3600,
+        900
+      ],
+      "bytes": 123444,
+      "lods": {
+        "corrow_far": 3200,
+        "corrow_far-lod1": 600
+      }
+    },
+    "fisher_stair": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 352652,
+      "lods": {
+        "fisher_stair": 7990,
+        "fisher_stair-lod1": 543
+      }
+    },
+    "liss_hoist": {
+      "budget": [
+        3000,
+        300
+      ],
+      "bytes": 76740,
+      "lods": {
+        "liss_hoist": 1352,
+        "liss_hoist-lod1": 162
+      }
+    },
+    "lowtown_ground": {
+      "budget": [
+        4800,
+        320
+      ],
+      "bytes": 127924,
+      "lods": {
+        "lowtown_ground": 3200,
+        "lowtown_ground-lod1": 288
+      }
+    },
+    "lowtown_house_a": {
+      "budget": [
+        16000,
+        1400
+      ],
+      "bytes": 380064,
+      "lods": {
+        "lowtown_house_a": 8824,
+        "lowtown_house_a-lod1": 368
+      }
+    },
+    "lowtown_house_b": {
+      "budget": [
+        16000,
+        1400
+      ],
+      "bytes": 380060,
+      "lods": {
+        "lowtown_house_b": 8824,
+        "lowtown_house_b-lod1": 368
+      }
+    },
+    "seawall_curve": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 374596,
+      "lods": {
+        "seawall_curve": 11200,
+        "seawall_curve-lod1": 96
+      }
+    },
+    "wall_apron": {
+      "budget": [
+        6000,
+        500
+      ],
+      "bytes": 199920,
+      "lods": {
+        "wall_apron": 3392,
+        "wall_apron-lod1": 16
+      }
+    },
+    "watcher_head": {
+      "budget": [
+        8000,
+        500
+      ],
+      "bytes": 249504,
+      "lods": {
+        "watcher_head": 7502,
+        "watcher_head-lod1": 304
+      }
+    },
+    "watcher_relief": {
+      "budget": [
+        7000,
+        300
+      ],
+      "bytes": 225712,
+      "lods": {
+        "watcher_relief": 6912,
+        "watcher_relief-lod1": 288
+      }
+    }
+  },
+  "schema": "hymn-kit/1"
+}
