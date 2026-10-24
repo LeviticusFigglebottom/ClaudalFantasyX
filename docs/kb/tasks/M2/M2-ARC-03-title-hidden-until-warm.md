@@ -33,3 +33,25 @@ docs/kb/qa/gpu/2026-10-24-slice-perf-sweep.md).
 - **Gate:** `tools/ci_local.sh` with `HYMN_SHOTS=boot_title` and `HYMN_SKIP_BLENDER=1`: all gates passed, 1449 Godot tests with 0 failed, and coverage unchanged (battle 99.95 %, progression 96.52 %).
 
 ## Review log
+- **2026-10-24, rendering (PC GPU, session_01UFcBRsk9M9EKtxJKdBU2mB): measured on hardware; passes.** RX 9070 XT,
+  2560×1440. `tools/gpu_bench/slice_sweep.tscn -- --segments=title` covers a change to boot.tscn through the router.
+  The new `launch` segment covers boot.tscn as the main scene, as a real launch: the card lifts and the router's
+  `measure_reveal` window runs.
+  - **The title's visible window** (sweep `visible_max_ms` / router `max_visible_frame_ms`, ms):
+
+    | Preset | Visible worst | Reveal wait (ms) | Its worst frame (ms) |
+    |---|---|---:|---:|
+    | Low | 0.8 / 0.80 | 1706 | 213 |
+    | High | 0.6 / 0.64 | 1106 | 159 |
+    | Ultra | 0.6 / 0.62 | 1360 | 306 |
+
+    Before the card it was 168–265 ms (docs/kb/qa/gpu/2026-10-24-slice-perf-sweep.md).
+  - **A real launch of the perf build** (`Windows Perf`, baked release, High), `SceneRouter.last_swap_stats`:
+
+    | Launch | `reveal` | `max_visible_frame_ms` | `reveal_wait_ms` | `reveal_wait_max_frame_ms` |
+    |---|---|---:|---:|---:|
+    | Fresh install (user caches cleared) | true | 7.95 | 1886 | 148 |
+    | Second launch | true | 2.11 | 1741 | 150 |
+
+    Every visible frame is far under 50 ms, and every hidden frame under ADR 0029's 1 s. The sweep's own worst
+    hidden frame for the launch, 470 ms cold, includes the process's first frames before the card.

@@ -23,10 +23,13 @@ const SHELL_SHRINE := "res://game/levels/ch03/shell_shrine/shell_shrine.tscn"
 const HALUNA_ID := &"ch02/haluna"
 ## Flags whose cutscenes would otherwise play on arrival (first_playable.json; flags.tres).
 const SEEN_FLAGS: Array[StringName] = [&"prologue_seen", &"ch02_met_asha", &"ch02_tideline_won", &"ch02_ate_at_nemes"]
-## [segment id, kind, argument, spawn]. Kinds: scene (change to a scene path), place (move the player to
+## [segment id, kind, argument, spawn]. Kinds: launch (boot.tscn as the main scene, no router change: the
+## boot card and the router's reveal window, M2-ARC-03; only as the first segment), scene (change to a scene
+## path), place (move the player to
 ## a spawn of the current scene), battle (a field battle on an encounter), flood (the Drownbell's Flood
 ## phase, forced in the current battle).
 const SEGMENTS := [
+	["launch", "launch", BOOT_SCENE, ""],
 	["title", "scene", BOOT_SCENE, ""],
 	["haluna_beach", "scene", HALUNA, "Beach"],
 	["haluna_village", "place", "", "Village"],
@@ -122,6 +125,22 @@ func _segment(seg: Array, preset: String) -> void:
 			EventBus.scene_changed.disconnect(on_swap)
 			visible = await _frames_until(func() -> bool: return not bool(router.call(&"is_busy")))
 			visible.append_array(await _frames(VISIBLE_FRAMES))
+			# The router's own record of the change (M1-ARC-16 visible window, M2-ARC-03 reveal fields).
+			print("SLICE_SWAP_STATS %s %s" % [id, JSON.stringify(router.get(&"last_swap_stats"))])
+		"launch":
+			# As the game launches (boot.tscn is the main scene; no router change): the boot card holds the
+			# title until the warm-ups end, then SceneRouter.measure_reveal records the window (M2-ARC-03).
+			var router := get_tree().root.get_node(^"SceneRouter")
+			get_tree().change_scene_to_file(str(seg[2]))
+			hidden = await _frames_until(
+				func() -> bool: return bool((router.get(&"last_swap_stats") as Dictionary).get("reveal", false))
+			)
+			visible = await _frames(VISIBLE_FRAMES)
+			# The router closes its visible window a little after the card lifts; wait for its record.
+			await _frames_until(
+				func() -> bool: return (router.get(&"last_swap_stats") as Dictionary).has("max_visible_frame_ms")
+			)
+			print("SLICE_SWAP_STATS %s %s" % [id, JSON.stringify(router.get(&"last_swap_stats"))])
 		"place":
 			WorldReturn.place_player(get_tree().current_scene, spawn)
 			visible = await _frames(VISIBLE_FRAMES)
