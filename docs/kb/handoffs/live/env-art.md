@@ -15,8 +15,14 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
   - **M3-ENV-02, Brine Shoals: in review, merged here** (c2bb5563). Its own import category
     `brine_shoals_kit` needs Character + Tools sign-off (M3-RND-21 filed). **M3-ENV-01 Tidecup:** in review
     (M3-RND-01 filed).
-  - **Running (worktree agents):** M3-ENV-03 Terraces of Ash (resuming the paused WIP) and M3-ENV-04 Seawall.
-    **Queue after them:** M3-ENV-05, the lamp-diver sea floor. **Two items remain after the running pair.**
+  - **M3-ENV-03 Terraces of Ash (Pemakar): in review, merged here** (f5c35191).
+    - Kit: 25 pieces, 27 materials, Blender job `pemakar_kit` (61 identical). Its import kind `pemakar_kit`
+      needs Character + Tools sign-off.
+    - Baselines: `pemakar_p01_waterfall_of_fires` and `pemakar_p03_among_the_graves`.
+    - Checks: its unittests, `--filter=pemakar` 5/5, `--filter=post_import` 19/19, release exclusion OK.
+    - Weaker views (P02, P05, P06, P08) are listed in its task file. Swap-in note there.
+  - **Running (worktree agents):** M3-ENV-04 Seawall and M3-ENV-05 the lamp-diver sea floor. **These are the last
+    two queue items.**
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
