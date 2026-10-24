@@ -61,9 +61,10 @@ func test_a_turn_grinds_and_the_water_sounds_where_it_ends() -> void:
 
 
 func test_the_side_pool_drains_audibly_and_the_charm_glints() -> void:
-	_interactable(&"basin_b1").try_interact()
-	_interactable(&"basin_b2").try_interact()
-	_interactable(&"basin_b2").try_interact()
+	var turns := _turns_to(level.trial.drain())
+	assert_false(turns.is_empty(), "the data has a way to the sluice that doesn't fill the pool first")
+	for b in turns:
+		_interactable(StringName("basin_%s" % b)).try_interact()
 	assert_eq(_events().back(), "reach_drain", "the water into the sluice")
 	level.advance(0.1)
 	assert_true(_events().has("side_drain"), "the side pool empties")
@@ -102,6 +103,34 @@ func _last_player(id: StringName) -> AudioStreamPlayer3D:
 		if n is AudioStreamPlayer3D and String(n.name).begins_with(String(id)) and (n as AudioStreamPlayer3D).playing:
 			out = n
 	return out
+
+
+## The shortest turn sequence (basin ids) from the current state that brings the water to `target` without passing
+## a state that reaches the inner pool (so the pool never fills on the way). Derived from the trial data, so the
+## test follows the puzzle when its layout changes. [] when there is none within 10 turns.
+func _turns_to(target: StringName) -> Array[StringName]:
+	var start := level.trial.rotations.duplicate()
+	var queue: Array = [[start, [] as Array[StringName]]]
+	var seen := {str(start): true}
+	while not queue.is_empty():
+		var item: Array = queue.pop_front()
+		var path: Array[StringName] = item[1]
+		if path.size() >= 10:
+			continue
+		for b in level.trial.basin_ids():
+			var probe := ShellShrineTrial.new(level.trial.data)
+			probe.rotations = (item[0] as Dictionary).duplicate()
+			probe.rotate(b)
+			var key := str(probe.rotations)
+			if seen.has(key) or probe.reaches(probe.goal()):
+				continue
+			seen[key] = true
+			var next: Array[StringName] = path.duplicate()
+			next.append(b)
+			if probe.reaches(target):
+				return next
+			queue.append([probe.rotations.duplicate(), next])
+	return [] as Array[StringName]
 
 
 func _solve() -> void:
