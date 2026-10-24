@@ -19,8 +19,13 @@
     },
     "end_card": {
       "return_scene": "res://game/core/boot.tscn",
-      "min_hold_sec": 1.5,
-      "fade_in_sec": 1.2
+      "voice_key": "FLOW_END_CARD_VOICE",
+      "voice_sec": 7.0,
+      "voice_fade_sec": 1.0,
+      "fade_in_sec": 1.2,
+      "credits": ["CREDITS_GAME", "CREDITS_SLICE", "CREDITS_MUSIC", "CREDITS_ENGINE", "CREDITS_FONTS", "CREDITS_THANKS"],
+      "credit_line_sec": 1.1,
+      "min_hold_sec": 16.0
     },
     "haluna": {
       "location_id": "ch02/haluna",
