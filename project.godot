@@ -18,6 +18,7 @@ Game="*res://game/core/game.gd"
 SaveSystem="*res://game/core/save_system.gd"
 SceneRouter="*res://game/core/scene_router.gd"
 UiInput="*res://game/ui/input/ui_input.gd"
+Audio="*res://game/audio/audio_director.gd"
 
 [display]
 

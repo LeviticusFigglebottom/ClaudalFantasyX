@@ -862,3 +862,36 @@ BOOT_FIRST_RUN_NOTE,Preparing the graphics for first use. This happens only once
 SHOP_MENU_COUNT_FMT,×{n}
 SET_MENU_AUDIO,Audio
 SET_MENU_HELP_AUDIO,"Music, effects and voice volume."
+HUD_RESULT_LUME,Lume
+HUD_RESULT_LUME_FMT,+{n} lume
+HUD_RESULT_PURSE_FMT,purse {n} lume
+HUD_RESULT_DROP_FMT,×{n}
+HUD_RESULT_BAG_FULL,"bag full, left behind"
+HUD_TL_NEXT,Next
+SET_BATTLE_ANIMATIONS,Battle animations
+SET_BATTLE_ANIMATIONS_HELP,"Full plays each action with movement and camera framing; Skip lands every action at once on a still camera."
+SET_BATTLE_ANIMATIONS_FULL,Full
+SET_BATTLE_ANIMATIONS_SKIP,Skip
+BARK_LINE_FMT,{name}: {line}
+HUD_CALLS_FMT,{name} calls {vowbound}.
+SET_REDUCED_AUDIO,Reduced audio
+SET_REDUCED_AUDIO_HELP,"Battles sound gentler: one sound per action, no deep rumble, and effects a little quieter."
+SET_VOLUME_MASTER,Master volume
+SET_VOLUME_MASTER_HELP,Everything the game plays.
+SET_VOLUME_MUSIC,Music volume
+SET_VOLUME_MUSIC_HELP,The score and the cutscenes' music.
+SET_VOLUME_SFX,Effects volume
+SET_VOLUME_SFX_HELP,"Battle and world sounds, menus, and the sea and wind around you."
+SET_VOLUME_VOICE,Voice volume
+SET_VOLUME_VOICE_HELP,The voice sounds under each line of dialogue.
+SET_VOLUME_0,0%
+SET_VOLUME_10,10%
+SET_VOLUME_20,20%
+SET_VOLUME_30,30%
+SET_VOLUME_40,40%
+SET_VOLUME_50,50%
+SET_VOLUME_60,60%
+SET_VOLUME_70,70%
+SET_VOLUME_80,80%
+SET_VOLUME_90,90%
+SET_VOLUME_100,100%

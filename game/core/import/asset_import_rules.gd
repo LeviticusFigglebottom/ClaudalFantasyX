@@ -19,6 +19,10 @@ extends RefCounted
 ##                past the table are hidden. A mesh with no `-lod1` (or later) sibling gets no
 ##                range, so it never vanishes with nothing behind it. Auto-generated LODs are the .import option
 ##                `meshes/generate_lods`, which the rules state so tests can check the wiring.
+##   animations   `animations.library` (with {asset_dir} and {asset_stem}, minus any `strip_suffixes`)
+##                names an AnimationLibrary resource; when it exists the asset root gets an
+##                AnimationPlayer carrying it (M2-FP-07: the heroes' body clips, which
+##                CutsceneSequencer plays by name), with the rules' `default_blend_s` between clips.
 ##   placeholder  glTF extras that declare PLACEHOLDER (`hymn_tag: "PLACEHOLDER"` or a `placeholder`
 ##                note, on a node, mesh or material) tag that node, and the asset root, with
 ##                meta `hymn_tag = &"PLACEHOLDER"`; the root also lists the notes (SPEC §8.4).
@@ -37,6 +41,8 @@ const EXTRAS_NOTE_KEYS: Array[String] = ["placeholder", "hymn_note"]
 const ASSET_DIR_TOKEN := "{asset_dir}"
 const SHAPE_TRIMESH := "trimesh"
 const SHAPE_CONVEX := "convex"
+const ASSET_STEM_TOKEN := "{asset_stem}"
+const ANIM_PLAYER := &"AnimationPlayer"
 
 
 ## Loads `game/data/import/<kind>.json`; an empty Dictionary (and an error) if it is missing or torn.
@@ -62,7 +68,9 @@ static func run(scene: Node, kind: String, source_file: String) -> Node:
 
 ## Applies `rules` to an imported scene. Returns a report (counts, placeholder notes, warnings).
 static func apply(scene: Node, rules: Dictionary, source_file: String = "") -> Dictionary:
-	var report := {"collision": 0, "materials": 0, "lods": 0, "placeholder": false, "notes": [], "warnings": []}
+	var report := {
+		"collision": 0, "materials": 0, "lods": 0, "animations": 0, "placeholder": false, "notes": [], "warnings": []
+	}
 	scene.set_meta(KIND_META, StringName(str(rules.get("kind", ""))))
 	_apply_collision(scene, rules.get("collision", {}), report)
 	var slot_dir := str(rules.get("materials", {}).get("slot_dir", ""))
@@ -73,10 +81,48 @@ static func apply(scene: Node, rules: Dictionary, source_file: String = "") -> D
 		var mi := node as MeshInstance3D
 		_apply_materials(mi, rules.get("materials", {}), slot_dir, report)
 		_apply_lod(mi, rules.get("lods", {}), chained, report)
+	_apply_animations(scene, rules.get("animations", {}), source_file, report)
 	_apply_placeholder(scene, report)
 	for w: String in report["warnings"]:
 		push_warning("AssetImportRules %s: %s" % [source_file, w])
 	return report
+
+
+# ---- animations ------------------------------------------------------------------------------
+
+
+## The AnimationLibrary path the rules name for `source_file` ("" when the rules name none).
+static func animation_library_path(rules: Dictionary, source_file: String) -> String:
+	var pattern := str(rules.get("library", ""))
+	if pattern == "":
+		return ""
+	var stem := source_file.get_file().get_basename()
+	# M2-CHR-06: a LOD file (`asha_lod1`) shares its hero's library (`asha`); the suffixes are data
+	for suffix: Variant in rules.get("strip_suffixes", []):
+		if stem.ends_with(str(suffix)):
+			stem = stem.trim_suffix(str(suffix))
+	return pattern.replace(ASSET_DIR_TOKEN, source_file.get_base_dir()).replace(ASSET_STEM_TOKEN, stem)
+
+
+static func _apply_animations(scene: Node, rules: Dictionary, source_file: String, report: Dictionary) -> void:
+	var path := animation_library_path(rules, source_file)
+	if path == "" or not ResourceLoader.exists(path):
+		return
+	var lib := load(path) as AnimationLibrary
+	if lib == null:
+		report["warnings"].append("%s is not an AnimationLibrary" % path)
+		return
+	var ap := scene.get_node_or_null(NodePath(String(ANIM_PLAYER))) as AnimationPlayer
+	if ap == null:
+		ap = AnimationPlayer.new()
+		ap.name = ANIM_PLAYER
+		scene.add_child(ap)
+		ap.owner = scene
+	if ap.has_animation_library(&""):
+		ap.remove_animation_library(&"")
+	ap.add_animation_library(&"", lib)
+	ap.playback_default_blend_time = float(rules.get("default_blend_s", 0.0))
+	report["animations"] = lib.get_animation_list().size()
 
 
 # ---- collision -------------------------------------------------------------------------------

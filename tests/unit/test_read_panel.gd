@@ -101,6 +101,7 @@ func test_the_battle_waits_while_the_panel_is_open_and_goes_on_after_confirm() -
 	_sandbox()
 	ctl.pacing_scale = 1.0  # real holds, so there is something to wait on
 	_read_the_eel()
+	ctl.stage.choreo.finish()  # M2-BPR-01: the panel opens on the Read's contact beat
 	assert_true(ctl.is_waiting(), "the post-action hold is pending")
 	var state := ctl.state
 	var order := _order()

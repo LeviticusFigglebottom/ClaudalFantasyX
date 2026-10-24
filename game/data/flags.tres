@@ -125,5 +125,6 @@ flags = {
 "ch09_pell_joined": "Ch9 B08: Pell asked to walk where Asha walks and Toma let him (party from Ch10; Pell has no battle row yet).",
 "ch09_pell_named": "Ch9 B09: Pell told Rhen his name on the dawn road (UI labels: 'The Kirru' becomes 'Pell').",
 "ch09_kerrid_on_road": "Ch9 B09 (critical): Kerrid was waiting on the road out of Corrow and walks last in the line (Ch15 payoff).",
-"ch09_act_one_complete": "Ch9 B10: the Iskarra vigil has played; Act I is over (Ch10 gate, save summary)."
+"ch09_act_one_complete": "Ch9 B10: the Iskarra vigil has played; Act I is over (Ch10 gate, save summary).",
+"ch03_ilun_first_call_seen": "Ilun's first call in battle (C10) has played in full; later calls play the short entry (M2-BPR-08)."
 }

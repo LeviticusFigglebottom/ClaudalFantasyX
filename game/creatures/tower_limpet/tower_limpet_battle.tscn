@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_actor.gd" id="1_actor"]
+[ext_resource type="PackedScene" uid="uid://cm34ip1qaa153" path="res://assets/creatures/tower_limpet/tower_limpet.glb" id="2_model"]
+
+[node name="TowerLimpet" type="Node3D"]
+script = ExtResource("1_actor")
+creature_id = &"tower_limpet"
+metadata/hymn_battle_actor = true
+
+[node name="Model" parent="." instance=ExtResource("2_model")]

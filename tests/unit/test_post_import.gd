@@ -12,7 +12,22 @@ const VEG_DIR := "res://assets/environments/vegetation/"
 const BASE_BODY := "res://assets/characters/base_body/base_body_slender.glb"
 const BUST := "res://assets/characters/shader_test/shader_test_bust.glb"
 const ASHA_DIR := "res://assets/characters/asha/"
-const KINDS: Array[String] = ["base_body", "characters", "haluna_kit", "shader_test", "vegetation"]
+const KINDS: Array[String] = ["base_body", "characters", "creatures", "haluna_kit", "shader_test", "vegetation"]
+## M2-FP-07: the clip names the first-playable scripts call (`@anim asha <clip>`).
+const HERO_CLIPS: Array[String] = [
+	"idle",
+	"walk",
+	"run",
+	"talk",
+	"kneel_over_rhen",
+	"laugh",
+	"rise_to_stand",
+	"offer_hand",
+	"walk_to_chamber",
+	"emerge_doorway",
+	"face_west"
+]
+const LOOPED_CLIPS: Array[String] = ["idle", "walk", "run", "talk", "walk_to_chamber"]
 const EPS := 1e-4
 
 var _nodes: Array[Node] = []
@@ -338,13 +353,67 @@ func test_every_glb_import_runs_its_category_script() -> void:
 			assert_true(covered.has(path), "%s belongs to an import category" % path)
 
 
-func test_asha_is_pending_adoption_and_untouched() -> void:
+## M2-FP-07: Asha has adopted the character rules (asset_import.md); nothing is pending.
+func test_asha_adopts_the_character_rules() -> void:
 	var rules := _rules("characters")
-	assert_true((rules["adoption_pending"] as Dictionary).has(ASHA_DIR), "Asha is listed as pending")
+	assert_true((rules["adoption_pending"] as Dictionary).is_empty(), "no hero is pending")
+	assert_true((rules["assets"] as Array).has(ASHA_DIR), "Asha is a character asset")
 	for path in _import_files(ASHA_DIR):
 		var cfg := ConfigFile.new()
 		cfg.load(path)
-		assert_eq(str(cfg.get_value("params", "import_script/path", "")), "", "%s is not wired yet" % path)
+		assert_eq(str(cfg.get_value("params", "import_script/path", "")), str(rules["script"]), path)
+
+
+## M2-FP-07: a hero with a clip library gets an AnimationPlayer at its root (M2-CHR-06: its LOD1 file too).
+func test_hero_clips_become_an_animation_player() -> void:
+	var rules := _rules("characters")
+	var root := Node3D.new()
+	_nodes.append(root)
+	var report := AssetImportRules.apply(root, rules, ASHA_DIR + "asha.glb")
+	var ap := root.get_node_or_null(^"AnimationPlayer") as AnimationPlayer
+	assert_true(ap != null, "AnimationPlayer added")
+	if ap != null:
+		for clip: String in HERO_CLIPS:
+			assert_true(ap.has_animation(clip), clip)
+		assert_eq(ap.playback_default_blend_time, float(rules["animations"]["default_blend_s"]))
+		assert_eq(int(report["animations"]), ap.get_animation_list().size())
+	# M2-CHR-06: the LOD1 file (the battle-scale model) shares the hero's library
+	var lod := Node3D.new()
+	_nodes.append(lod)
+	AssetImportRules.apply(lod, rules, ASHA_DIR + "asha_lod1.glb")
+	var lod_ap := lod.get_node_or_null(^"AnimationPlayer") as AnimationPlayer
+	assert_true(lod_ap != null and lod_ap.has_animation(&"idle"), "the LOD1 file gets the hero's clips")
+	var other := Node3D.new()
+	_nodes.append(other)
+	AssetImportRules.apply(other, rules, "res://assets/characters/nobody/nobody.glb")
+	assert_true(other.get_node_or_null(^"AnimationPlayer") == null, "no library, no player")
+	_done()
+
+
+## M2-FP-07: the imported Asha carries her clips, loops where the request says, and every track
+## names a bone of her skeleton.
+func test_imported_asha_plays_her_clips() -> void:
+	var asha := _scene(ASHA_DIR + "asha.glb")
+	var ap := asha.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	assert_true(ap != null, "the import gives Asha an AnimationPlayer")
+	if ap == null:
+		_done()
+		return
+	var skel := asha.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+	for clip: String in HERO_CLIPS:
+		assert_true(ap.has_animation(clip), clip)
+		if not ap.has_animation(clip):
+			continue
+		var anim := ap.get_animation(clip)
+		var looped := anim.loop_mode == Animation.LOOP_LINEAR
+		assert_eq(looped, clip in LOOPED_CLIPS, "%s loop mode" % clip)
+		for t: int in anim.get_track_count():
+			var path := anim.track_get_path(t)
+			assert_true(
+				asha.get_node_or_null(NodePath(path.get_concatenated_names())) == skel, "%s track %d" % [clip, t]
+			)
+			assert_true(skel.find_bone(String(path.get_concatenated_subnames())) >= 0, "%s bone %s" % [clip, path])
+	_done()
 
 
 func _asset_dirs(dir: String) -> PackedStringArray:

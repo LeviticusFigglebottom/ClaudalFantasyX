@@ -18,6 +18,6 @@ The human's top priority: the playable intro never tells the player where to go.
 - [x] First-pass rows for the slice; a request task to m2-slice to keep them current as beats change.
 
 ## Notes
-objectives.json + check_objectives in validate_data; ObjectiveTracker (node-free) with tests over every slice step (test_objective_tracker.gd); first-pass rows B01-B11; request task M2-FP-25 to m2-slice.
+objectives.json + check_objectives in validate_data; ObjectiveTracker (node-free) with tests over every slice step (test_objective_tracker.gd); first-pass rows B01-B11; request task M2-FP-28 (filed as M2-FP-25; renumbered at the big7 merge) to m2-slice.
 
 ## Review log

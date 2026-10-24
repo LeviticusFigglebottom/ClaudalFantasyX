@@ -87,6 +87,8 @@ static func from_dict(d: Dictionary) -> GameStateData:
 	for id: Variant in d.get("reserve_ids", []):
 		s.reserve_ids.append(StringName(str(id)))
 	s.inventory = (d.get("inventory", {}) as Dictionary).duplicate(true)
+	for k: Variant in s.inventory:  # JSON loads counts as floats; the bag holds whole numbers
+		s.inventory[k] = int(s.inventory[k])
 	s.currency = int(d.get("currency", 0))
 	s.play_time_sec = float(d.get("play_time_sec", 0.0))
 	s.location_id = StringName(str(d.get("location_id", "")))

@@ -113,7 +113,7 @@ At Rendering's values, the probe reproduces the `water_shallows` baseline to RMS
 Not validated yet (stated in the frame rows): underwater views (ch20, ch21), which wait for the underwater shader; enclosed or other light on a validated material (ch05 shore, ch13 mirror, ch14 dusk, ch18 from altitude, post_credits blue hour, the `ending_dock` mirror). Each is re-checked when its mood frame is built.
 
 Two findings for Rendering:
-- From the high survey view at noon, `col_sss` lights the 62 m swell crests as large pale-turquoise patches over deep water. That is the SSS crest term at full strength, seen from above. Zones with a high camera should lower `sss_strength`, or the term should fade with view elevation.
+- ~~From the high survey view at noon, `col_sss` lights the 62 m swell crests as large pale-turquoise patches over deep water. That is the SSS crest term at full strength, seen from above. Zones with a high camera should lower `sss_strength`, or the term should fade with view elevation.~~ **Closed** (M1-RND-18, signed off in M1-ART-06): the crest term now fades with the camera's height above the water it looks at; see "Art sign-off 2026-10-24" below.
 - With physical units off, `CameraAttributesPractical.exposure_multiplier` didn't change the swatch card at all (ADR 0014).
 
 ## Key frames
@@ -681,3 +681,24 @@ The numbers are Oklab, from lavapipe 960×540, measured with `palette_check.py` 
 - The noon crest term for high cameras (M1-RND-18).
 
 No baseline changes in this sign-off.
+
+## Art sign-off 2026-10-24: M1-RND-18's survey numbers
+M1-ART-06 (characters track), closing M1-RND-18's last criterion and the first "Two findings for Rendering" bullet.
+The numbers are the GPU pair from docs/kb/qa/gpu/2026-10-23-rnd-18-sss-crest.md (RX 9070 XT; its "before" and "SSS
+off" runs match Art's lavapipe probe within the reported precision: 27.5 % / 22.5 % / 0.174 / 0.166 / `#15586E`, and
+`#134E69` off). Review-sweep-N accepted that pair. The probe is the 40 m survey view of `ch02_noon`, deep water only,
+ΔE in Oklab, measured against a control run with the SSS crest term off.
+
+| Measure | Before | After RND-18 | Goal | Verdict |
+|---|---:|---:|---|---|
+| Deep pixels where SSS adds ΔE_ok > 0.05 | 22.5 % | **0.0004 %** | ≤ 5 % | Pass |
+| … > 0.03 | 27.5 % | **0.06 %** | ≤ 10 % | Pass |
+| Max added ΔE_ok | 0.174 | **0.050** | ≤ 0.08 | Pass |
+| OkL spread (p90 − p10) | 0.166 | **0.075** | ≤ 0.14 | Pass |
+| > 15 m band median | `#15586E` (0.046) | **`#15627A` (ΔE 0.019)** | ≤ 0.07 to `#106776` | Pass |
+| 4–15 m band median | `#17808C` (0.066) | `#17808C` (0.066) | ≤ 0.07 to `reef_blue` | Pass (unchanged) |
+
+**Verdict: approve.** The noon crests no longer light the deep water as pale-turquoise patches from a high camera,
+the deep band moved toward `deep_teal_shadow` +1 (ΔE 0.046 → 0.019), and low cameras are untouched by design (the
+gate is the camera's height above the water it looks at). Values confirmed: the RND-18 view gate and
+`scatter_view_lift` 1.5 on `col_deep` only. No baseline changes in this sign-off.

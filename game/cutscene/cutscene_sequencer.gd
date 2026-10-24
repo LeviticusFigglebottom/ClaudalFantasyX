@@ -70,8 +70,8 @@ var events: Array[Dictionary] = []
 ## Soft failures (a missing shot, actor, mark or track), each reported once.
 var warnings: Array[String] = []
 ## Every @face cue of the last play(), [actor, expression, sec]. Actors whose meshes have blend
-## shapes and a sequencer.json "face_poses" row also show it (CutsceneFace), and blink and shape
-## their mouths to each line's text (M2-FP-18: sequencer.json "blink" and "visemes").
+## shapes and a sequencer.json "face_poses" row also show it (CutsceneFace), blink (M2-FP-18,
+## sequencer.json "blink") and lip-sync each line's text to its reveal (M2-CHR-10, lipsync.json).
 var faces: Array = []
 var config: Dictionary = {}
 var overlay: CutsceneOverlay
@@ -103,6 +103,10 @@ var _await_cb: Callable = Callable()
 var _face_rigs: Dictionary = {}
 ## actor id -> face-poses JSON "emotions" + "blend_in_s", per play().
 var _pose_tables: Dictionary = {}
+## game/data/cutscene/lipsync.json, read on the first face rig.
+var _lipsync: Dictionary = {}
+## The rig lip-syncing the line on screen, if any.
+var _speaking: CutsceneFace
 ## The close-shot key light (M2-FP-10), made on the first close shot, freed when the scene ends.
 var _key: CutsceneKeyLight
 
@@ -233,6 +237,9 @@ func play(scene_id: StringName, stage: CutsceneStage) -> bool:
 
 ## Advances every timed thing by `delta` seconds: waits, fades, letterbox, moves, turns, music.
 func advance(delta: float) -> void:
+	# A reveal that ended early (skipped) releases the mouth; a natural end runs its own tail.
+	if _speaking != null and overlay != null and not overlay.box.is_revealing():
+		_speaking.end_line(delta)
 	for rig: Variant in _face_rigs.values():
 		if rig != null:
 			(rig as CutsceneFace).advance(delta)
@@ -275,6 +282,7 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 	events.clear()
 	faces.clear()
 	_face_rigs.clear()
+	_speaking = null
 	# Every actor with a face table gets its rig now, so it blinks before its first line (M2-FP-18).
 	for actor_id: String in (config.get("face_poses", {}) as Dictionary).keys():
 		_face_of(StringName(actor_id))
@@ -334,8 +342,12 @@ func _line(step: DialogueStep) -> void:
 			_set_face(step.speaker, step.emotion, -1.0)
 		_play_clip(speaker, &"talk")
 		var rig := _face_of(step.speaker) if not step.is_sung() else null
+		if _speaking != null and _speaking != rig:
+			_speaking.end_line()
+		_speaking = rig
 		if rig != null:
-			rig.say(tr(String(step.text_key)))
+			var cps := overlay.box.settings.chars_per_sec if overlay.box.settings != null else 0.0
+			rig.say(tr(String(step.text_key)), 0.0 if _fast() else cps, hash(step.text_key))
 	if _fast():
 		overlay.box.skip_reveal()
 		return
@@ -636,6 +648,7 @@ func _set_face(actor_id: StringName, expr: StringName, sec: float) -> void:
 	var poses: Dictionary = table.get("emotions", {})
 	if rig == null or not poses.has(String(expr)):
 		return
+	rig.emotion = expr
 	var t := sec if sec >= 0.0 else float(table.get("blend_in_s", 0.0))
 	rig.blend_to(poses[String(expr)], 0.0 if _fast() else t)
 
@@ -650,7 +663,9 @@ func _face_of(actor_id: StringName) -> CutsceneFace:
 		if not _pose_tables.has(actor_id):
 			var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 			_pose_tables[actor_id] = parsed if parsed is Dictionary else {}
-		rig = CutsceneFace.new(actor, config.get("lip_flap", {}), config.get("visemes", {}))
+		if _lipsync.is_empty():
+			_lipsync = LipSync.load_config()
+		rig = CutsceneFace.new(actor, config.get("lip_flap", {}), _lipsync)
 		rig.configure_blink(config.get("blink", {}), DEFAULT_SEED + hash(actor_id))
 		if not rig.has_shapes():
 			rig = null
