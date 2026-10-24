@@ -133,6 +133,131 @@
      "screen_space_aa": 1
     }
    }
+  },
+  {
+   "id": "brightwater_d01_gap",
+   "scene": "res://game/levels/_tests/brightwater_ferry_kit/brightwater_derelict_preview.tscn",
+   "camera": "Cameras/D01",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "brightwater_d02_deck_sails_set",
+   "scene": "res://game/levels/_tests/brightwater_ferry_kit/brightwater_derelict_preview.tscn",
+   "camera": "Cameras/D02",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "brightwater_d03_galley_bowls",
+   "scene": "res://game/levels/_tests/brightwater_ferry_kit/brightwater_derelict_preview.tscn",
+   "camera": "Cameras/D03",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "brightwater_d04_hold",
+   "scene": "res://game/levels/_tests/brightwater_ferry_kit/brightwater_derelict_preview.tscn",
+   "camera": "Cameras/D04",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "brightwater_d06_name_board",
+   "scene": "res://game/levels/_tests/brightwater_ferry_kit/brightwater_derelict_preview.tscn",
+   "camera": "Cameras/D06",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "brightwater_d09_sails_lowered",
+   "scene": "res://game/levels/_tests/brightwater_ferry_kit/brightwater_derelict_preview.tscn",
+   "camera": "Cameras/D09",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    },
+    "nodes": {
+     "SailsSet": {
+      "visible": false
+     },
+     "SailsLowered": {
+      "visible": true
+     },
+     "NameBoard": {
+      "visible": false
+     }
+    }
+   }
   }
  ]
 }

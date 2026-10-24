@@ -3,6 +3,8 @@ extends TestCase
 ## night mood with the colour script's `ch04` values (the Moon, sea-glow 0.12, the ch04 Environment with the kit's
 ## `lut_ch04_crossing`) and the deck lanterns' lights from the layout; every lantern light keeps the volumetric fog
 ## dark (the Lead's fog-lamp rule); the layout names only kit pieces whose materials load.
+## M3-ENV-08B: the daylight derelict view (the Seventh Terrace alongside, on HalunaMood's day mood at the provisional
+## ch04_derelict frame): its four dressers place only kit pieces, the lowered sails start hidden, no lamp is lit.
 
 const LAYOUT := "res://game/levels/_tests/brightwater_ferry_kit/brightwater_ferry_layout.json"
 const SCENE := "res://game/levels/_tests/brightwater_ferry_kit/brightwater_ferry_preview.tscn"
@@ -10,6 +12,10 @@ const ENVIRONMENT := "res://game/levels/_tests/brightwater_ferry_kit/brightwater
 const LUT := "res://assets/environments/kits/brightwater_ferry/lut_ch04_crossing.png"
 const MATERIALS := "res://assets/environments/kits/brightwater_ferry/materials"
 const WEATHERING := "res://game/shaders/environment/env_weathering.gdshader"
+## The Seventh Terrace's copper sheathing draws with the copper-alloy stack (M3-ENV-08B).
+const BRONZE := "res://game/shaders/environment/env_bronze.gdshader"
+const DERELICT_SCENE := "res://game/levels/_tests/brightwater_ferry_kit/brightwater_derelict_preview.tscn"
+const DERELICT_DRESSERS: Array[String] = ["Dresser", "SailsSet", "SailsLowered", "NameBoard"]
 
 
 func test_lamps_follow_the_layout_and_never_light_the_fog() -> void:
@@ -79,7 +85,8 @@ func test_layout_pieces_exist_and_materials_load() -> void:
 		var mat := load(MATERIALS.path_join(f)) as Material
 		assert_true(mat != null, "%s loads" % f)
 		if mat is ShaderMaterial:
-			assert_eq((mat as ShaderMaterial).shader.resource_path, WEATHERING, "%s draws with env_weathering" % f)
+			var expect := BRONZE if f == "bf_copper_sheathing.tres" else WEATHERING
+			assert_eq((mat as ShaderMaterial).shader.resource_path, expect, "%s draws with its stack" % f)
 		count += 1
 	assert_true(count >= 20, "kit materials present (%d)" % count)
 
@@ -88,3 +95,24 @@ func test_lantern_glass_glows_oil_lamp() -> void:
 	var glass := load(MATERIALS.path_join("bf_lamp_glass.tres")) as StandardMaterial3D
 	assert_true(glass != null and glass.emission_enabled, "the lit chimney emits")
 	assert_eq(glass.emission.to_html(false), "ffb16e", "oil_lamp")
+
+
+func test_derelict_scene_is_the_day_with_the_seventh_terrace_alongside() -> void:
+	var scene := (load(DERELICT_SCENE) as PackedScene).instantiate()
+	var rig := scene as HalunaMood
+	assert_true(rig != null, "the derelict view's root is the HalunaMood rig")
+	assert_eq(rig.mood, HalunaMood.MOOD_DAY, "by day (the provisional ch04_derelict frame)")
+	assert_between(rig.sun_elevation_deg, 10.0, 20.0, "a low morning sun (~15 deg)")
+	assert_eq(scene.get_node("Cameras").get_child_count(), 6, "D01-D04, D06, D09 (brightwater_ferry.md section 7.4)")
+	for node: String in DERELICT_DRESSERS:
+		var dresser := scene.get_node(node) as HalunaDresser
+		assert_true(dresser != null, "%s is a dresser" % node)
+		var layout := HalunaDresser._load_json(dresser.layout_path)
+		var kit_dir := String(layout["kit_dir"])
+		for spec: Dictionary in layout["pieces"]:
+			var piece := String(spec["piece"])
+			assert_true(ResourceLoader.exists(kit_dir + piece + ".glb"), "%s: piece %s exists" % [node, piece])
+			assert_false(piece == "ferry_lantern", "by day no lantern is lit")
+	assert_false((scene.get_node("SailsLowered") as Node3D).visible, "the lowered state waits for C4-14 (D09's setup)")
+	assert_true((scene.get_node("SailsSet") as Node3D).visible, "under sail by default")
+	scene.free()
