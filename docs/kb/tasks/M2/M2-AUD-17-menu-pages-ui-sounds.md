@@ -1,5 +1,5 @@
 ---
-id: M2-AUD-15
+id: M2-AUD-17
 title: UI sounds inside the field menu's pages (Items, Equip, Lattice, Status) and the battle pause
 role: audio
 status: todo
@@ -21,5 +21,7 @@ row. Inside the pages nothing is heard yet.
 - [ ] A test walks at least one page's rows and hears each sound.
 
 - **Renumbered (Lead merge, big8, 2026-10-24):** big7 filed this as M2-AUD-14, which collided with claude/audio's own M2-AUD-14 (menu-page SFX: item use and sort, formation swap, customize, map pan). Now M2-AUD-15, the next id free across all branches. Overlap: audio's M2-AUD-14 and M3-AUD-15 (Lattice, Equip, FieldSubmenu open and close) cover most of this; what is left here is the Status page and BattlePauseMenu.
+
+- **Renumbered again (Lead merge, big8, 2026-10-24):** M2-AUD-15 collided with claude/audio's M2-AUD-15 (the menus public-reads request) and M2-AUD-16 is audio's too. Now M2-AUD-17.
 
 ## Review log

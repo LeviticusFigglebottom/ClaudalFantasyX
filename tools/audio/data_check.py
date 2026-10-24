@@ -647,7 +647,7 @@ def voice_errors(doc: object, speakers: object, rows: dict) -> list[str]:
         table = {}
     known = {r.get("id") for r in ((speakers or {}).get("speakers") or []) if isinstance(r, dict)}
     for sid, row in table.items():
-        if speakers is not None and sid not in known:
+        if speakers is not None and sid not in known and not (isinstance(row, dict) and row.get("pending")):
             errs.append(f"{VOICES} speakers.{sid}: not a speaker in {SPEAKERS}")
         voice(row, f"{VOICES} speakers.{sid}", False)
     for sid in sorted(k for k in known if isinstance(k, str)):

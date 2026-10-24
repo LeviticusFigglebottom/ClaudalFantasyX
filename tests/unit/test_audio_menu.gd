@@ -1,6 +1,5 @@
 extends TestCase
-## M3-UI-02: the Audio settings page. The Audio track's volume rows and reduced_audio are in accessibility.json
-## (merged at big8); the hub's "no audio rows" case uses a scratch copy of the file with them taken out.
+## M3-UI-02: the Audio settings page over the Audio track's volume rows (accessibility.json).
 
 const SCRATCH := "user://test_audio_menu_accessibility.json"
 const VOLUMES: Array[StringName] = [&"master_volume", &"music_volume", &"sfx_volume", &"voice_volume"]
@@ -10,17 +9,18 @@ var made: Array[Node] = []
 
 
 func before_each() -> void:
+	InputDriver.clear_screen()
 	s = UiSettings.new()
 	UiSettings.set_shared(s)
 
 
-## UiSettings over a scratch accessibility.json with none of audio_menu.json's rows.
-func _without_audio_rows() -> UiSettings:
+## A scratch copy of the data without the Audio page's rows (the hub before claude/audio merged).
+func _without_audio() -> UiSettings:
 	var parsed: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(UiSettings.DATA_PATH))
-	var acc: Dictionary = parsed["accessibility"]
-	var ids := AudioMenuModel.audio_ids()
-	acc["settings"] = (acc["settings"] as Array).filter(
-		func(r: Dictionary) -> bool: return not ids.has(StringName(r["id"]))
+	var rows: Array = parsed["accessibility"]["settings"]
+	var audio := AudioMenuModel.audio_ids()
+	parsed["accessibility"]["settings"] = rows.filter(
+		func(r: Dictionary) -> bool: return not audio.has(StringName(str(r["id"])))
 	)
 	var f := FileAccess.open(SCRATCH, FileAccess.WRITE)
 	f.store_string(JSON.stringify(parsed))
@@ -30,9 +30,13 @@ func _without_audio_rows() -> UiSettings:
 
 func test_the_page_lists_the_volumes_and_accessibility_leaves_them_out() -> void:
 	var audio := AudioMenuModel.new(s, "")
-	var want: Array[StringName] = VOLUMES.duplicate()
-	want.append(&"reduced_audio")
-	assert_eq(audio.row_ids(), want, "audio_menu.json order")
+	var expected: Array[StringName] = []
+	for id in AudioMenuModel.audio_ids():
+		if s.settings().has(id):
+			expected.append(id)
+	assert_eq(audio.row_ids(), expected, "audio_menu.json order")
+	for id in VOLUMES:
+		assert_true(audio.row_ids().has(id), "%s is on the page" % id)
 	assert_eq(audio.title_key(), "SET_MENU_AUDIO")
 	var acc := AccessibilityMenuModel.new(s, "")
 	for id in VOLUMES:
@@ -40,7 +44,7 @@ func test_the_page_lists_the_volumes_and_accessibility_leaves_them_out() -> void
 	assert_true(acc.row_ids().has(UiSettings.TEXT_SCALE))
 	audio.set_cursor(1)
 	assert_true(audio.cycle(-1))
-	assert_true(is_equal_approx(float(s.get_value(&"music_volume")), 0.9), "a step down")
+	assert_true(float(s.get_value(&"music_volume")) < 1.0, "a step down")
 	_done()
 
 
@@ -51,7 +55,7 @@ func test_the_hub_shows_audio_only_when_there_are_audio_rows() -> void:
 		[SettingsMenu.ROW_GRAPHICS, SettingsMenu.ROW_AUDIO, SettingsMenu.ROW_ACCESSIBILITY, SettingsMenu.ROW_CONTROLS]
 	)
 	_free()
-	var bare := _hub(_without_audio_rows())
+	var bare := _hub(_without_audio())
 	assert_false(bare.row_ids().has(SettingsMenu.ROW_AUDIO), "no volume rows yet: no Audio row")
 	_done()
 

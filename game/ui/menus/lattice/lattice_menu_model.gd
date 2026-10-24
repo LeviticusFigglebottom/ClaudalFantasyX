@@ -241,6 +241,15 @@ func woken_by(nid: StringName) -> Array[StringName]:
 	return out
 
 
+## M3-MNU-04: the first letter of each hero's name who woke it, in traveler order ("RA"; "" for
+## none), for the overview's marks beside each woken node.
+func woken_initials(nid: StringName) -> String:
+	var out := ""
+	for cid in woken_by(nid):
+		out += hero_name(cid).left(1)
+	return out
+
+
 ## Who woke it, in words; a gate says whether it stands open for everyone.
 func woken_line(nid: StringName) -> String:
 	var n := board().lattice_node(nid)

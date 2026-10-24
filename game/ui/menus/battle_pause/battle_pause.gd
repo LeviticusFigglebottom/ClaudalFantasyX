@@ -19,7 +19,9 @@ var _blocked: Array[StringName] = []
 
 
 func _ready() -> void:
-	var d: Dictionary = BattlePauseMenu.create().load_layout()
+	var probe := BattlePauseMenu.create()  # read its layout only; never enters the tree (M2-AUD-16)
+	var d: Dictionary = probe.load_layout()
+	probe.free()
 	FieldInput.add_actions(d.get("action", {}) as Dictionary, 0.0)
 	for s: Variant in d.get("blocked_states", []):
 		_blocked.append(StringName(str(s)))

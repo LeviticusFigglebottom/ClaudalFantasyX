@@ -171,22 +171,6 @@ class AudioDataTest(unittest.TestCase):
             self.assertTrue(any(want in e for e in errs), (want, errs))
         self.assertFalse(any("ShopMenu" in e and "class_name" in e for e in errs), "a pending hook's class waits")
 
-    def test_script_classes_inherit_their_game_base_signals(self) -> None:
-        """A hook may name a signal its class inherits (GraphicsMenu's `closed` comes from SettingsPage)."""
-        import tempfile
-
-        with tempfile.TemporaryDirectory() as tmp:
-            game = Path(tmp) / "game"
-            game.mkdir()
-            (game / "page.gd").write_text("class_name Page\nextends Control\nsignal closed\n", encoding="utf-8")
-            (game / "menu.gd").write_text("class_name Menu\nextends Page\nsignal picked\n", encoding="utf-8")
-            (game / "loop_a.gd").write_text("class_name LoopA\nextends LoopB\n", encoding="utf-8")
-            (game / "loop_b.gd").write_text("class_name LoopB\nextends LoopA\nsignal b\n", encoding="utf-8")
-            classes = dc.script_classes(Path(tmp))
-        self.assertEqual(classes["Page"], ["closed"])
-        self.assertEqual(classes["Menu"], ["picked", "closed"])
-        self.assertEqual(classes["LoopA"], ["b"], "a cycle stops")
-
     def test_reefball_hooks_check_rows_beds_crowd_and_classes(self) -> None:
         def edit(r: dict) -> None:
             r["crowd"]["excited"] = "roar"
@@ -217,6 +201,22 @@ class AudioDataTest(unittest.TestCase):
             got = dc.script_classes(Path(d))
         self.assertEqual(got["BasePage"], ["closed"])
         self.assertEqual(sorted(got["LeafPage"]), ["closed", "moved"])
+
+    def test_script_classes_inherit_their_game_base_signals(self) -> None:
+        """A hook may name a signal its class inherits (GraphicsMenu's `closed` comes from SettingsPage)."""
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            game = Path(tmp) / "game"
+            game.mkdir()
+            (game / "page.gd").write_text("class_name Page\nextends Control\nsignal closed\n", encoding="utf-8")
+            (game / "menu.gd").write_text("class_name Menu\nextends Page\nsignal picked\n", encoding="utf-8")
+            (game / "loop_a.gd").write_text("class_name LoopA\nextends LoopB\n", encoding="utf-8")
+            (game / "loop_b.gd").write_text("class_name LoopB\nextends LoopA\nsignal b\n", encoding="utf-8")
+            classes = dc.script_classes(Path(tmp))
+        self.assertEqual(classes["Page"], ["closed"])
+        self.assertEqual(classes["Menu"], ["picked", "closed"])
+        self.assertEqual(classes["LoopA"], ["b"], "a cycle stops")
 
     def test_sfx_rows_play_on_real_buses(self) -> None:
         errs = self._broken(dc.SFX, lambda s: s["sfx"]["tick"].update({"bus": "Nowhere", "pitch_jitter": 0.9}))
@@ -484,3 +484,16 @@ class MuffleTest(unittest.TestCase):
         errs = dc.muffle_errors(mix, rb, buses)
         for frag in ("leave Music out", "cutoff_hz < open_hz", "muffle.reason", "names the ear"):
             self.assertTrue(any(frag in e for e in errs), (frag, errs))
+
+
+class VoicePendingTest(unittest.TestCase):
+    """M3-AUD-24: a voices.json row marked pending may name a speaker this branch's speakers.json lacks."""
+
+    def test_pending_rows(self) -> None:
+        files = dc.load_files(ROOT)
+        rows = dc.merged_sfx(files)["sfx"]
+        doc = copy.deepcopy(files[dc.VOICES])
+        doc["speakers"]["nobody_yet"] = {"blips": ["voice_soft"], "pending": True}
+        self.assertFalse([e for e in dc.voice_errors(doc, files.get(dc.SPEAKERS), rows) if "nobody_yet" in e])
+        doc["speakers"]["nobody_yet"].pop("pending")
+        self.assertTrue(any("nobody_yet" in e for e in dc.voice_errors(doc, files.get(dc.SPEAKERS), rows)))

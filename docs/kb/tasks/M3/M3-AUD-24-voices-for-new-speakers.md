@@ -2,8 +2,9 @@
 id: M3-AUD-24
 title: Tune the placeholder voices of six speakers added after M3-AUD-07
 role: audio
-status: todo
-owner_session: ""
+status: review
+reviewer: qa
+owner_session: "audio (claude/audio)"
 depends_on: [M3-AUD-07]
 milestone: M3
 request-from: lead
@@ -15,14 +16,25 @@ failed that check. The Lead's merge added placeholder rows so the gate passes: `
 `speakers.json` `blip_pitch` as `pitch`, and the default rate, jitter and volume.
 
 ## Acceptance criteria
-- [ ] Each of the six gets a voice chosen for the character (blip set, pitch, rate, jitter), like the other villagers.
-- [ ] `python3 tools/validate_data.py` stays 0/0.
+- [x] Each of the six gets a voice chosen for the character (blip set, pitch, rate, jitter), like the other villagers.
+- [x] `python3 tools/validate_data.py` stays 0/0.
 
 ## Notes
+- 2026-10-24 audio (claude/audio): renumbered from M3-AUD-13 (the id was already claude/audio's battle choreography
+  SFX). Voices from the story docs, using the villagers' blip sets:
+  - osu, who washes the shells on the wall for tonight: voice_breathy 0.90, 75 ms (quiet, slow);
+  - kell, Oruvel's gruff, warm chandler: voice_low 1.15, 70 ms;
+  - scaleman, a brisk market weigher: voice_low 0.95, 60 ms;
+  - cook, chatty, feeds Rhen on credit: voice_bright 0.90, 55 ms, jitter 0.08;
+  - sabe, Ione Sabe, a terse grieving captain: voice_low 1.05, 80 ms, jitter 0.03;
+  - skipper_sadi, Sadi Moru, an amiable haggler: voice_bright 1.00, 55 ms.
+  validate_data 0/0; test_voice_audio covers every speaker.
+- 2026-10-24: the menus track flagged claude/m2-slice's Ch4–Ch9 cast (17 speakers with no voice). They are added as
+  `"pending": true` rows: tavi (child), ione (= sabe), poolkeeper, boatman, crowd, garo (the Pemakar smith), tender,
+  ferryman, townsfolk, ferrymaster, marra, hobb (the watch captain), fenn (old beacon keeper), stillguard and
+  inquisitor (the Order: low, slow, almost no jitter), clerk and wright. data_check skips the speaker-exists check for
+  a pending row (VoicePendingTest). With m2-slice's speakers.json swapped in, validate_data reports no voice errors.
+  Drop the flags when m2-slice merges.
 - Speakers: `game/data/dialogue/speakers.json`; voices: `docs/kb/tech/audio_runtime.md` "Voices".
-
-- **Renumbered (Lead merge, big8, 2026-10-24):** big7 filed this as M3-AUD-13, which collided with claude/audio's M3-AUD-13 (battle choreography SFX). Now M3-AUD-24, the next id free across all branches.
-
-- **big8 (Lead merge):** seventeen more placeholder rows the same way (voice_soft at each speaker's blip_pitch): tavi, ione, poolkeeper, boatman, crowd, garo, tender, ferryman, townsfolk, ferrymaster, marra, hobb, fenn, stillguard, inquisitor, clerk, wright (m2-slice's Ch4-Ch9 speakers). creature_voices.json: wickfry plays the glassfry set at pitch 1.12 (placeholder), and stillguard_inquisitor, a man, is "silent". Please tune these too.
 
 ## Review log

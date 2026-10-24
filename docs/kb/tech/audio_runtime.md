@@ -274,6 +274,50 @@ momentary max, true peak −3.0 to −13.1 dBTP, byte-identical across two rende
   above it. It sits under the title cue at the same momentary target as every UI sound. If it masks the title
   music's first bar, lower its row's `volume_db` rather than re-rendering it.
 
+### The menus track's pages (M2-AUD-14)
+
+`assets_src/sfx/menu_page_sfx.py` renders seven more UI sounds with `menu_sfx.py`'s own helpers and palette (rows in
+`sfx_ui_pages.json`, the same UI rule). The hooks name claude/menus' classes and are `pending`:
+
+| Class (claude/menus) | What plays |
+|---|---|
+| `ItemsMenu` | open / `closed`; `level` (LIST 0, PICK 1) up/down is confirm/cancel; `list_page().cursor` and `picker_page().cursor` tick; `model.sort` changing is `ui_item_sort`; `item_total(model.inventory())` falling is `ui_item_use` |
+| `FormationMenu` | open / `closed`; `focus_page().cursor` and `focus` (the other list) tick; `chosen.size()` rising is `ui_formation_pick`, falling `ui_cancel`; `model.active + model.reserve` changing (a swap, or a hero to an open place) is `ui_formation_swap` |
+| `EquipMenu` (Customize) | `level` becoming 3 (`Level.RECIPES`) is `ui_customize_open`; `crafted_count(model.bag)` rising is `ui_craft`, which outranks `gear_signature`'s `ui_equip` and the level's cancel |
+| `ZoneMapView` | `pans(node, map_point(Vector2(0, 0)), map_scale(), 2.0)` rising is `ui_map_pan` (2 px or more at the same scale; a resize or a zoom is not a pan) |
+
+- **Helpers:** `item_total` sums an Inventory's `counts`; `crafted_count` counts `abilities_of(uid)` across a bag's
+  `uids()`; `pans` keeps its own memory per view (by instance id, forgotten once the view is freed), so small moves
+  add up to a pan and nothing is written to the view.
+- **Priority:** `ui_craft`, `ui_item_use` and `ui_formation_swap` sit just under the Lattice wake and unlock, above
+  `ui_cancel` and `ui_equip`; `ui_customize_open` and `ui_formation_pick` above `ui_confirm`; `ui_item_sort` above
+  the cursor; `ui_map_pan` just under `ui_map_tick`. `ui_map_pan` has a 110 ms cooldown and `volume_db` −6, so a drag
+  is a sparse train of soft slides under the cursor.
+- **Not heard:** a refused use on the Items picker and a refused pick or move on Formation. Both pages show the
+  refusal before Confirm, and Confirm changes nothing public that a watch can read (the result sits in a private
+  `_notice`). Customize's first, arming Confirm is silent for the same reason (`_armed`). If these need sounds, the
+  pages should expose a public read (`last_refused()`), or a signal.
+- **The zone map has no pan on claude/menus yet.** `ZoneMapView` fits the whole zone (`MapModel.fit`) and only
+  re-lays out on resize, which the scale check keeps quiet. The pannable board on claude/menus is the Lattice's
+  `LatticeBoardView` (`pan`, `zoom`, a mouse drag, a follow slide on every cursor move). It has no hook: a watch on
+  `pan` would tick after every cursor move, and the drag flag is private.
+- **Once claude/menus merges:** remove `pending` from `ItemsMenu` and `FormationMenu` (and the M3-AUD-15 hooks), let
+  validate_data check the names, and run the hooks against the real pages. Check that `ItemsMenu.Level` and
+  `EquipMenu.Level` still number LIST/PICK and HEROES/GEAR/PIECES/RECIPES from 0, that `model.inventory()` returns
+  an Inventory with `counts`, and that `FormationMenuModel.active` and `reserve` are still public arrays.
+
+**Listening notes (rendered and measured, not auditioned on speakers).** Decoded at −20.0 to −20.4 LUFS momentary
+max, true peak −2.96 to −10.7 dBTP, byte-identical across two renders.
+- `ui_item_use` (0.97 s): a small glass ping on A6 with a slow beat, three tiny bubble chirps and a soft D6 bar
+  settling under them. It is the quietest peak of the seven (−10.7 dBTP).
+- `ui_item_sort` (0.32 s): two quick paper flicks and a tiny wooden tick, like a hand squaring a stack.
+- `ui_formation_pick` / `ui_formation_swap` (0.45 / 0.6 s): a cloth lift and one E6 bar with a faint octave glint;
+  then a soft low tap, an air swish falling and two bars crossing (D6-A5 answered by A5-D6), so two people trade
+  places.
+- `ui_customize_open` (0.75 s): a dark small-bell hum, a rising breath and an E6 bar, a workbench uncovered.
+- `ui_craft` (1.15 s): two padded hammer taps, then an E6 bell glint and a B6 bar. Smaller than `ui_lattice_node`.
+- `ui_map_pan` (0.18 s): a soft paper slide with no pitch, 6 dB under the other UI rows in game.
+
 ## Reefball (M3-AUD-17)
 
 `ReefballAudio` (`game/audio/reefball_audio.gd`) listens to the arena with `game/data/audio/reefball_hooks.json`.

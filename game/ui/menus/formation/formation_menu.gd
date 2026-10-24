@@ -378,3 +378,8 @@ static func _wheel(event: InputEvent) -> int:
 	if mb.button_index == MOUSE_BUTTON_WHEEL_UP:
 		return -1
 	return 1 if mb.button_index == MOUSE_BUTTON_WHEEL_DOWN else 0
+
+
+## M2-AUD-15 (audio listens, never edits; ADR 0031): true while the line on show is a refused pick or move.
+func is_refused() -> bool:
+	return not _notice.is_empty() and not bool(_notice.get("ok", true))

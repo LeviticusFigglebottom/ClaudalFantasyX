@@ -638,3 +638,14 @@ func _on_clicked(index: int, page_level: Level) -> void:
 				_armed = &""
 			_choice.set_cursor(index, false)
 	accept()
+
+
+## M2-AUD-15 (audio listens, never edits; ADR 0031): true while a Customize craft is armed (the first of its two
+## Confirms is in; the next one crafts).
+func is_armed() -> bool:
+	return _armed != &""
+
+
+## M2-AUD-15: true while the line on show is a refusal (equip, unequip or Customize).
+func is_refused() -> bool:
+	return not _notice.is_empty() and not bool(_notice.get("ok", true))

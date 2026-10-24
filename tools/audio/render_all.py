@@ -48,7 +48,8 @@ M1_AUD_02 = ("hush_theme_v2", "battle_standard.", "temple_trial")
 M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_verse", "hush_coda", "haluna_dawn",
            "shell_shrine_interior", "ilun_summon", "saltgrass_causeway", "lamp_diver", "sefir_theme", "the_ebbing",
            "tidecup_match", "terraces_of_ash", "corrow_seawall", "hullgnaw", "spar_wraith", "oruvel", "pilgrims_wake",
-           "tamsule", "iskarra_vigil", "brightwater_ferry", "brine_shoals")
+           "tamsule", "iskarra_vigil", "brightwater_ferry", "brine_shoals", "ashcrown", "coilspire",
+           "tamsule_bell_galleries", "stillguard_inquisitor")
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
 AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
@@ -187,6 +188,18 @@ JOBS = [
     # M3-AUD-14: creature voices and movement (the file list is the source's own, like battle_sfx's)
     ("assets_src/sfx/creature_sfx.py", "assets/audio/sfx/creatures", _source_files("assets_src/sfx/creature_sfx.py"),
      "sfx"),
+    # M2-AUD-14: the menus track's pages (Items, Formation, Customize, the zone map's pan)
+    ("assets_src/sfx/menu_page_sfx.py", "assets/audio/sfx",
+     [f"{u}.ogg" for u in ("ui_item_use", "ui_item_sort", "ui_formation_pick", "ui_formation_swap",
+                           "ui_customize_open", "ui_craft", "ui_map_pan")], "sfx"),
+    # M3-AUD-19: Act I temple and dungeon music (Ch5 Ashcrown, Ch8 Coilspire, Ch7 the Tamsule Bell's galleries)
+    ("assets_src/music/ashcrown.py", "assets/audio/music", ["ashcrown.ogg", "ashcrown.loop.json"], "music_loop"),
+    ("assets_src/music/coilspire.py", "assets/audio/music", ["coilspire.ogg", "coilspire.loop.json"], "music_loop"),
+    ("assets_src/music/tamsule_bell_galleries.py", "assets/audio/music",
+     ["tamsule_bell_galleries.ogg", "tamsule_bell_galleries.loop.json"], "music_loop"),
+    # M3-AUD-20: the Ch6 boss, the Stillguard Inquisitor and the raid-hound
+    ("assets_src/music/stillguard_inquisitor.py", "assets/audio/music",
+     ["stillguard_inquisitor.ogg", "stillguard_inquisitor.loop.json"], "music_loop"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 

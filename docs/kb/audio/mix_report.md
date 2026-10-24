@@ -117,12 +117,14 @@ Bus faders, ducks and the player's volume settings come on top at runtime and ar
 
 | Set | Files | Metric | Effective median | Min | Max | Row volume_db |
 |---|---|---|---|---|---|---|
+| `music/ashcrown` | 1 | integrated | -16.0 | -16.0 | -16.0 | +0.0 |
 | `music/battle_standard` | 1 | integrated | -16.1 | -16.1 | -16.1 | +0.0 |
 | `music/battle_standard_v2` | 1 | integrated | -16.1 | -16.1 | -16.1 | +0.0 |
 | `music/brightwater_ferry` | 1 | integrated | -16.0 | -16.0 | -16.0 | +0.0 |
 | `music/brine_shoals` | 1 | integrated | -16.0 | -16.0 | -16.0 | +0.0 |
 | `music/cinder_matron_p1` | 1 | integrated | -18.1 | -18.1 | -18.1 | +0.0 |
 | `music/cinder_matron_p2` | 1 | integrated | -20.3 | -20.3 | -20.3 | +0.0 |
+| `music/coilspire` | 1 | integrated | -16.0 | -16.0 | -16.0 | +0.0 |
 | `music/corrow_seawall` | 1 | integrated | -16.1 | -16.1 | -16.1 | +0.0 |
 | `music/drownbell_p1` | 1 | integrated | -17.8 | -17.8 | -17.8 | +0.0 |
 | `music/drownbell_p2` | 1 | integrated | -20.7 | -20.7 | -20.7 | +0.0 |
@@ -141,7 +143,9 @@ Bus faders, ducks and the player's volume settings come on top at runtime and ar
 | `music/sefir_theme` | 1 | integrated | -16.0 | -16.0 | -16.0 | +0.0 |
 | `music/shell_shrine_interior` | 1 | integrated | -16.0 | -16.0 | -16.0 | +0.0 |
 | `music/spar_wraith` | 1 | integrated | -16.1 | -16.1 | -16.1 | +0.0 |
+| `music/stillguard_inquisitor` | 1 | integrated | -16.1 | -16.1 | -16.1 | +0.0 |
 | `music/tamsule` | 1 | integrated | -16.0 | -16.0 | -16.0 | +0.0 |
+| `music/tamsule_bell_galleries` | 1 | integrated | -16.0 | -16.0 | -16.0 | +0.0 |
 | `music/temple_trial` | 1 | integrated | -16.0 | -16.0 | -16.0 | +0.0 |
 | `music/terraces_of_ash` | 1 | integrated | -16.1 | -16.1 | -16.1 | +0.0 |
 | `music/the_ebbing` | 1 | integrated | -16.0 | -16.0 | -16.0 | +0.0 |
@@ -170,16 +174,23 @@ Bus faders, ducks and the player's volume settings come on top at runtime and ar
 | `sfx/ui_buy` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_cancel` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_confirm` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
+| `sfx/ui_craft` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_cursor` | 1 | momentary | -20.5 | -20.5 | -20.5 | +0.0 |
+| `sfx/ui_customize_open` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_equip` | 1 | momentary | -20.4 | -20.4 | -20.4 | +0.0 |
 | `sfx/ui_error` | 1 | momentary | -20.2 | -20.2 | -20.2 | +0.0 |
+| `sfx/ui_formation_pick` | 1 | momentary | -20.4 | -20.4 | -20.4 | +0.0 |
+| `sfx/ui_formation_swap` | 1 | momentary | -20.2 | -20.2 | -20.2 | +0.0 |
 | `sfx/ui_inn_rest` | 1 | momentary | -19.9 | -19.9 | -19.9 | +0.0 |
+| `sfx/ui_item_sort` | 1 | momentary | -20.2 | -20.2 | -20.2 | +0.0 |
+| `sfx/ui_item_use` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_lattice_node` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_lattice_step` | 1 | momentary | -20.2 | -20.2 | -20.2 | +0.0 |
 | `sfx/ui_lattice_unlock` | 1 | momentary | -20.2 | -20.2 | -20.2 | +0.0 |
 | `sfx/ui_map_close` | 1 | momentary | -20.2 | -20.2 | -20.2 | +0.0 |
 | `sfx/ui_map_marker` | 1 | momentary | -20.5 | -20.5 | -20.5 | +0.0 |
 | `sfx/ui_map_open` | 1 | momentary | -20.1 | -20.1 | -20.1 | +0.0 |
+| `sfx/ui_map_pan` | 1 | momentary | -26.1 | -26.1 | -26.1 | -6.0 |
 | `sfx/ui_map_tick` | 1 | momentary | -20.1 | -20.1 | -20.1 | +0.0 |
 | `sfx/ui_menu_close` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |
 | `sfx/ui_menu_open` | 1 | momentary | -20.0 | -20.0 | -20.0 | +0.0 |

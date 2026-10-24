@@ -1,6 +1,6 @@
 keys,en
 MENUS_MP_FMT,{mp}/{max} MP
-ITEMS_MENU_HELP,Up and Down: choose · Left and Right: sort · Confirm: use · Cancel: back
+ITEMS_MENU_HELP,Up and Down: choose · Left and Right: sort · Page Up and Down: key items · Confirm: use · Cancel: back
 ITEMS_MENU_HELP_PICK,Up and Down: choose a hero · Confirm: use one · Cancel: back to the bag
 ITEMS_MENU_SORT_FMT,Sorted {sort}
 ITEMS_MENU_SORT_KIND,by kind
@@ -63,3 +63,8 @@ STATUS_MENU_MOVEMENT_FMT,Movement points banked: {count}
 STATUS_MENU_WOKEN_FMT,Nodes woken: {count}
 STATUS_MENU_SKILLS_FMT,Learned: {skills}
 STATUS_MENU_NO_LATTICE,Not on the Lattice yet.
+ITEMS_MENU_VIEW_BAG,Bag
+ITEMS_MENU_VIEW_KEY,Key Items
+ITEMS_MENU_HELP_KEY,Up and Down: choose · Page Up and Down: the bag · Cancel: back
+ITEMS_MENU_KEY_NOTE,"A key item. It is kept, not used."
+ITEMS_MENU_KEY_EMPTY,No key items yet.

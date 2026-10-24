@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "doc": "The menus track's page sounds (M2-AUD-14; assets_src/sfx/menu_page_sfx.py; docs/kb/tech/audio_runtime.md \"M3 menus\"). Same row format as sfx.json; AudioData.sfx_rows merges this file in. All on the UI bus at -20 LUFS momentary max. ui_sfx.json's hooks play them by listening: the Items page (ItemsMenu: an item used, the bag re-sorted), Formation (FormationMenu: a hero picked up, two heroes trading places or one moving to an open place), Customize inside EquipMenu (its recipes opening, an ability crafted into a piece) and the zone map (ZoneMapView: the map panned, a sparse train of soft paper slides under its cooldown, 6 dB under the other UI rows). Those classes are on claude/menus, not here yet, so their hooks are pending.",
+  "sfx": {
+    "ui_item_use": {"files": ["res://assets/audio/sfx/ui_item_use.ogg"], "bus": "UI", "voices": 2, "cooldown_ms": 120},
+    "ui_item_sort": {"files": ["res://assets/audio/sfx/ui_item_sort.ogg"], "bus": "UI", "voices": 1, "cooldown_ms": 80},
+    "ui_formation_pick": {"files": ["res://assets/audio/sfx/ui_formation_pick.ogg"], "bus": "UI", "voices": 1, "cooldown_ms": 80},
+    "ui_formation_swap": {"files": ["res://assets/audio/sfx/ui_formation_swap.ogg"], "bus": "UI", "voices": 1, "cooldown_ms": 120},
+    "ui_customize_open": {"files": ["res://assets/audio/sfx/ui_customize_open.ogg"], "bus": "UI", "voices": 1, "cooldown_ms": 200},
+    "ui_craft": {"files": ["res://assets/audio/sfx/ui_craft.ogg"], "bus": "UI", "voices": 1, "cooldown_ms": 200},
+    "ui_map_pan": {"files": ["res://assets/audio/sfx/ui_map_pan.ogg"], "bus": "UI", "voices": 2, "cooldown_ms": 110, "volume_db": -6.0}
+  }
+}

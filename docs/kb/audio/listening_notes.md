@@ -588,3 +588,107 @@ in this order, a creature at a time (`ffplay -autoexit <file>`):
   they read as legs and glass, or as digital clicks?
 - **Variants:** the wreck crab, wallcrab, wall polyp and stormgull play their parent's set at another pitch. Is
   that distinct enough, or does each want its own?
+
+## M2: the menus' pages (M2-AUD-14)
+
+Seven UI sounds in `assets/audio/sfx/`, from `assets_src/sfx/menu_page_sfx.py`, in the palette of the M3 menu set
+(bars on D-A-E, dry paper, soft air, a small room): `ui_item_use`, `ui_item_sort`, `ui_formation_pick`,
+`ui_formation_swap`, `ui_customize_open`, `ui_craft` and `ui_map_pan`. All at −20 LUFS momentary; the pan plays 6 dB
+under that in game. Listen with `ffplay -autoexit <file>`, then next to `ui_cursor`, `ui_confirm` and `ui_equip`.
+
+**What to listen for:**
+- **Do they belong with the menu set?** `ui_craft` should read as a smaller cousin of `ui_lattice_node`, and
+  `ui_formation_swap` as a relative of `ui_equip`, not as a new instrument.
+- **Repetition:** a player uses five tonics in a row and re-sorts the bag twice. Do `ui_item_use`'s bubbles or
+  `ui_item_sort`'s flicks get tiring? If so, they get quieter, or a second variant.
+- **`ui_map_pan`** plays at most every 110 ms while the map moves. Does it read as paper sliding, or as noise
+  hiss? Does the train sound like a slide or like a ticking clock?
+- **`ui_customize_open`'s low hum:** is it too heavy for opening a list?
+
+## M3: Act I temples (M3-AUD-19)
+
+Three loops for the temples and the Bell's galleries. None of their scenes is built on this branch yet, so for now
+you can only hear them on their own. The scenes are in act_outline.md (Ch5, Ch7 and Ch8). About 4 minutes in all.
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/ashcrown.ogg` | 80.0 s loop | Ch5: the Ashcrown temple, the Cinder Matron's home, under the falling ash |
+| 2 | `music/coilspire.ogg` | 73.0 s loop | Ch8: the Coilspire temple at Corrow, the beacon's trial, before the storm |
+| 3 | `music/tamsule_bell_galleries.ogg` | 80.0 s loop | Ch7: the galleries inside the Tamsule Bell, around the arena (not the match) |
+
+### (1) Ashcrown: the heat under the stone
+
+- **The band:** a breathy flute in its warm middle plays a call (Bb, C, Db, held) and its falling answer. Under it
+  is a dark, low string pad that swells and sinks with each chord: the embers. Soft copper bowls, long and slowly
+  beating, fall in short figures where the flute rests: the copper veins carrying the strike down. Kettle gongs sound
+  on 1 and 3, a large gong every four bars, and a big drum's slow heartbeat. In the second half the men hum Bb under
+  it, and in bars 13-16 a low rumble of the plume swells twice.
+- **The key:** B-flat minor, 4/4 at 60 BPM, the slowest metred loop in Act I. Every note of the Terraces' five-note
+  scale is in this key, so the temple should sound like the same mountain, higher up and closer to the fire. **Does
+  it feel warm-dark and ritual, or only slow?** If it drags, I'd add bowls before I'd raise the tempo.
+- **The plume rumble** is meant to be felt more than heard. On speakers without bass you may not hear it at all.
+  If it does come through, does it read as the mountain, or as wind noise?
+- Is the drum heartbeat too regular? It should be a procession, not a clock.
+
+### (2) Coilspire: everything climbs, nothing arrives
+
+- **The idea:** one two-bar flute cell (up a fourth, then back down by step) comes back a step higher each time,
+  the way the beacon's fire climbs the spire. Under it, damped copper bars run eighths in a 3+3+2 pattern, each group
+  starting a step higher (the flues opening and shutting). A bass and drums keep the same 3+3+2. In the middle
+  section men and women hum the rising bass in long notes, and the music brightens for one bar into B major. In bars
+  21-24 the flute climbs to its top note (the fire at the top). Then it falls away, and C-sharp major leads back to
+  the start.
+- **The key:** F-sharp minor, 4/4 at 92 BPM. That is the dominant of the seawall's B minor, so it should sound like
+  Corrow's question left open. **Is it tense without being a battle?** If it sounds like a fight, the drums are too
+  forward. If it sounds calm, the flues are too soft.
+- **The surf** washes against the spire's foot every two bars, low and wide, left then right. Is it salt and stone,
+  or a hiss?
+- The flute is high and hard-blown here (up to E6). Is it a wind in the flues (good), or shrill (bad)?
+- Mastering: the big drum's hits take up to about 2 dB of fast limiting on 0.3 % of samples. Do the downbeats sound
+  flattened?
+
+### (3) The Bell's galleries: inside an instrument
+
+- **The idea:** the drone is the Tamsule Bell's own partials, held: its hum, prime, minor-third tierce, fifth and
+  octave. A struck bell also has a major third an octave higher up (the deciem). In the middle eight bars the minor
+  third sinks and the major third rises, so the music turns from A minor to A major and back. The Bell itself, the
+  same padded bell as in the Tidecup and the town, strikes at bars 1, 13 and 21.
+- **The band:** a slow flute song in 3/4 at 54 BPM, with no drums at all. Each long note comes back a beat later
+  from the other side, darker and quieter: the sound running round the gallery's curved wall. Soft glass bars double
+  the song's long notes an octave up in the second half, and a low plucked string marks each root.
+- **The key question:** does it feel resonant and hollow, like being inside a bell, or just empty? Does the echo
+  read as the room, or as a mistake?
+- **Tuning:** the drone's thirds are a bell's (a just minor third, about 15 cents sharp of the piano's C), so the
+  flute's C and C# rub very slightly against it. This is deliberate. If it sounds out of tune rather than like
+  bronze, I'll tune the drone to the flute.
+- Does the major middle section sound like a memory (Toma played here as a boy) or like a different piece?
+
+**For all three:** can you hear the loop wrap? The seams are at 80.0 s, 73.0 s and 80.0 s. Each file starts a
+sixteenth before its first downbeat, so the wrap falls between notes.
+
+## M3: the Ch6 boss, the Stillguard Inquisitor and the raid-hound (M3-AUD-20)
+
+`music/stillguard_inquisitor.ogg`: a 4.6 s intro and a 73.8 s loop (78.5 s in all), from
+`assets_src/music/stillguard_inquisitor.py`. The fight isn't built yet, so for now it can only be heard on its own.
+The scene is act_outline.md Ch6: an Order raid burning a Saltwright salvage camp in the Brine Shoals. It is the
+first fight against the Order's own people, and Toma refuses to strike to kill. So it must not sound like a monster
+fight. It should sound lawful and cold, with sorrow under it.
+
+- **The brief in sound:** a march in A minor, 4/4 at 104 BPM. It keeps to the white notes (the Order's C major seen
+  from below) except for the G# of the cadences. The drill drums are barely humanized (1 ms), unlike every other
+  battle cue: the Order keeps exact time.
+- **The band:** frame drums in a strict march pattern, with the big drum on 1 and 3. Shields (a hand-damped kettle
+  gong under a hard slap) strike on beat 4, and three times ("Hold. On my shield.") at each cadence. A low piano
+  marches in octaves on eighths. The edict theme is on piano in octaves, marcato. A men's hum holds the chord roots
+  under the whole loop, because the Order hums and only Cantors sing.
+- **The people (bars 13-20):** the drums thin to the dum. A breath flute plays the lament in C major over
+  F C G Am, and women hum above the men. In A'' (bars 25-32) the edict drops an octave and the flute's counterline
+  sits over it: law and sorrow at once.
+- **The hound (bars 21-24):** the drill breaks into running sixteenths, the bass snaps through the flattened second
+  (Bb) in eighths, and the shields strike on 2 and 4.
+- **The key questions:** does it read as **people** (the Order's discipline) and not a beast? Does the sorrow
+  come through, or is it only stern? **Does the strict drill sound disciplined, or mechanical?** If it's
+  mechanical, I'd add a little timing spread before changing the pattern. **Is the piano edict cold, or thin
+  against the drums?** If it's thin, I'd double it on the flute an octave up in A rather than raise the piano.
+- **Do the shields sound like a struck shield,** or like a pot or a gong? If they're a gong, the plate gets shorter.
+- **Can you hear the loop wrap?** The seam is 73.8 s after the intro, a sixteenth before bar 1's downbeat.

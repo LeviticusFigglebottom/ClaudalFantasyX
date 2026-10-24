@@ -11,6 +11,19 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 6. (Found on claude/characters) **M2-UI-07**, the hero actor hook: **hook done and pushed (08c872c)**. It is **blocked** on M2-CHR-06's scenes reaching the integration branch; after that it needs three `"scene"` lines in battle_sandbox.json and shot re-approval.
 
 ## Now (Lead queue of 15:13 and 15:46)
+- **Lead queue of 17:40 (items 1–7):**
+  1. **Lip sync on the reveal timing: done, on local branch `ui/lipsync`** (commit 038bf8bc, on lead/gate-big7 plus M2-UI-27). It can't go to claude/ui until big7 lands, because `lip_sync.gd` is only on the gate.
+     - `LipSync.start(..., reveal_times)` uses `starts_for`; `CutsceneFace.say` passes the times on; `CutsceneSequencer._line` passes `overlay.box.reveal_times()`.
+     - **Test:** the mouth is near rest mid-comma.
+     - **Next step when big7 is on integration:** merge integration into claude/ui, then `git cherry-pick 038bf8bc` (a patch copy is in the scratchpad's `ui/lipsync-patch/`).
+  2. **M2-UI-07:** waits for big7.
+  3. **Pseudo-localisation (M2-UI-28):** worktree agent, in progress.
+  4. **Resolution and aspect audit (M2-UI-29):** worktree agent, in progress.
+  5. **Subtitles (M2-UI-30): review.** The box follows the text size with a backing and gold names.
+     - The colour-vision check found no four palette colours that stay apart, so names are not colour-coded per hero.
+     - This covers part of M2-ARC-06/07 from UI code.
+  6. **Act I area maps and objectives (M3-UI-04):** worktree agent, in progress.
+  7. **The Reefball HUD:** waits for big8.
 - **17:20:** claude/ui fast-forwarded to claude/menus @ 6f192c17. That includes everything above, the Menus track's Memories gallery, m2-slice d034c31d and the integration branch. The Menus track's full suite there: 1913 run, 0 failed.
   - **Queue:** all UI items are done or in review.
   - **Blocked:** M2-UI-07 (M2-CHR-06 is not on integration yet) and M3-UI-01 (no Reefball engine). **Lead: please queue more.**

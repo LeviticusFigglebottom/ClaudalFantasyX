@@ -137,6 +137,26 @@
       "file": "res://assets/audio/music/brine_shoals.ogg",
       "resume": true,
       "_note": "Ch6, the Brine Shoals route of wrecks and mud-flats (M3-AUD-11); no zone row until ch06/brine_shoals exists"
+    },
+    "ashcrown": {
+      "file": "res://assets/audio/music/ashcrown.ogg",
+      "resume": true,
+      "_note": "Ch5, the Ashcrown temple under the falling ash (M3-AUD-19); no zone row until ch05/ashcrown/ashcrown.tscn exists"
+    },
+    "coilspire": {
+      "file": "res://assets/audio/music/coilspire.ogg",
+      "resume": true,
+      "_note": "Ch8, the Coilspire temple at Corrow before the storm (M3-AUD-19); no zone row until ch08/coilspire exists"
+    },
+    "tamsule_bell_galleries": {
+      "file": "res://assets/audio/music/tamsule_bell_galleries.ogg",
+      "resume": true,
+      "_note": "Ch7, the galleries inside the Tamsule Bell around the Reefball arena, not the match (that is tidecup_match) (M3-AUD-19); no zone row until ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn exists"
+    }
+,
+    "stillguard_inquisitor": {
+      "file": "res://assets/audio/music/stillguard_inquisitor.ogg",
+      "_note": "Ch6 boss, the Stillguard Inquisitor and a raid-hound in the Brine Shoals (M3-AUD-20); no battle.encounters row until the encounter exists; intended: battle.encounters stillguard_inquisitor -> stillguard_inquisitor"
     }
   },
   "zones": [

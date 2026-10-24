@@ -55,21 +55,29 @@ Your queue of five is taken:
 - **(4) M3-AUD-22:** done (muffle inside the sphere). The goal swells were already in M3-AUD-17.
 - **(5) M3-AUD-23:** the mix pass, done apart from a re-run once the new cues land.
 
+## MERGE-READY @ 4dbcfc1f
+- **Items:** M2-AUD-14 menu-page SFX, M3-AUD-19 Act I temple loops, M3-AUD-20 the Stillguard Inquisitor boss theme,
+  M3-AUD-21 syllable blips, M3-AUD-22 the Reefball sphere muffle, M3-AUD-23 the mix pass (mix_report.md, mix.md §8;
+  blips +6 dB), and pending zone beds for Brine Shoals and Corrow at night. All are `review`. Integration branch
+  merged.
+- **Checks run:** the full Godot suite (1570 run, 0 failed); the loudness test (OK); validate_data (0 errors);
+  taskboard --check; test_audio_data; gdlint and gdformat. Every new set was re-rendered byte-identical with
+  `--determinism`.
+- **Skipped (the Lead runs these at merge):** screenshots and Blender. Coverage was skipped because game/battle/ and
+  game/progression/ weren't touched.
+
 ## State (2026-10-24, latest)
-- **Done since MERGE-READY @ e24a98cd (all `review`):**
-  - M3-AUD-21 syllable blips: they follow the box's mouth_flap and so rest with the reveal's pauses.
-  - M3-AUD-22 BusMuffle and Reefball's ear inside the sphere. Also fixed an intermittent test leak.
-  - M3-AUD-23 (report written; waits on the agents' cues): mix_report.py and mix.md §8. The blip stream is up 6 dB
-    via voices.json `mix_db`.
-- **In progress (worktree agents):** M2-AUD-14 menu-page SFX, M3-AUD-19 temple music, M3-AUD-20 Stillguard theme.
-  **Two items remain after these agents report:** merge them, then the mix re-run and MERGE-READY.
+- **Queue empty.**
+- **Requests out:**
+  - M2-AUD-15 (menus: public reads for refusals, Customize's arming, board and map pans).
+  - M2-AUD-07/08/09/12 and M3-ARC-01.
+- **Pending hooks go live when these merge:** claude/battle-presentation, claude/creatures, claude/ui and
+  claude/menus, gpu/m3-rnd-01-reefball, claude/m2-slice. The checks for each merge are in the task Notes.
+- **Open question for the Lead:** is there a "sea floor" zone? No such scene is on claude/m2-slice.
 
 ## Exact next step
-Merge the three agents' branches, re-run `tools/audio/mix_report.py --out docs/kb/audio/mix_report.md`, set M3-AUD-23 to
-review, and run the full suite, then MERGE-READY. After that, the queue is empty. Waiting on: the human's listening verdict (listening_notes.md M2 and M3 sections; revise when it comes);
-the merges of claude/battle-presentation, claude/creatures, claude/ui and claude/menus, gpu/m3-rnd-01-reefball and
-claude/m2-slice, after which the pending hooks are switched on and tested against the real classes; and
-M2-AUD-07/08/09/12 and M3-ARC-01 (requests to other roles).
+Wait for those merges and drop each `pending` flag as its classes land (validate_data then checks the names). Wait
+for the human's listening verdict (listening_notes.md) and revise when it comes.
 
 ## Un-pushed state
 None.
