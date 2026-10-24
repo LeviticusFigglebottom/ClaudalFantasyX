@@ -13,6 +13,7 @@ Plays a compiled `.dlg` scene ([dialogue_format.md](dialogue_format.md)) in the 
 | `CutsceneChoices` | `cutscene_choices.gd` | Option buttons: focus with `ui_up`/`ui_down`, pick with `ui_accept` or a click. |
 | `CutsceneMotes` | `cutscene_motes.gd` | Placeholder `@vfx` motes (held sinks seaward, released spirals up, bound holds still). |
 | `CutsceneKeyLight` | `cutscene_key_light.gd` | The close-shot character key light (M2-FP-10; "Key light" below). |
+| `CutsceneFace`, `FaceVisemes` | `cutscene_face.gd`, `face_visemes.gd` | Emotion poses, blinks and text-driven visemes on an actor's blend shapes ("Faces" below). |
 
 ## Using it
 
@@ -83,6 +84,17 @@ Every await inside `play()` goes through one internal `resumed` signal: a line a
 `play()` then returns `false` to its host instead of hanging, and `finished` still fires once.
 
 Cue keys the placeholder presentation doesn't perform warn once per scene (`UNSUPPORTED_KWARGS`): `@camera grade=`, `@anim loop=`, `@sfx at=`, and `@vfx drift=`/`motion=`/`rate=`/`form=`.
+
+## Faces (M2-FP-08, M2-FP-18)
+
+Every actor with a `face_poses` row in sequencer.json gets a `CutsceneFace` when the scene starts. It drives the actor's blend shapes in three layers. Each shape takes the highest of the three, so a blink or a viseme never fights the expression.
+- **Expression.** `@face` and each line's `[emotion]` blend to that emotion's pose (Character's face-poses JSON).
+- **Blinks.** These come from sequencer.json `blink`. A seeded timer per actor (`DEFAULT_SEED + hash(actor id)`) closes `lid_close` every 2.2–5 s, over 0.06 s, holds 0.03 s and opens over 0.11 s. Every change of expression adds a blink (`on_emotion_change`), which reads as a thought landing.
+- **Visemes.** These come from sequencer.json `visemes`. On each line the rig loads `FaceVisemes.track(text)`: one row per vowel run. Each `mouth_flap` opening shows that syllable's vowel shape (a → `vis_aa`, e → `vis_e`, i/y → `vis_i`, o → `vis_o`, u → `vis_u`, each with a little `jaw_open`). Each closing shows the lips' shape before the next vowel: m/b/p → `vis_mbp`, f/v → `vis_fv`, else rest. Sung lines have no flap.
+  - A rig that lacks any viseme shape keeps the old one-shape lip-flap (`lip_flap`).
+  - The weights are first values, checked on lavapipe on Asha's stage (`aa` and `o` were narrowed from the first try so the tongue doesn't show). Character owns their final tuning.
+
+Not yet: gaze (eye targets), and faces for Rhen and Toma, which are capsules until M2-CHR-01. B09's layered S10 beat (surprise at 0.3 s, then grief at 0.6 s) is Rhen's face, so it waits for his rig.
 
 ## Key light (M2-FP-10)
 

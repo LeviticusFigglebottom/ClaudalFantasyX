@@ -4,6 +4,8 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 
 ## Now
 - **Done, in review:** M2-FP-10 dialogue key light (`CutsceneKeyLight`; docs/kb/tech/cutscenes.md "Key light"). Needs the PC GPU check of Cutscene A.
+- **Done, in review:** M2-FP-18, Cutscene A/B facial animation (seeded blinks, a blink on each expression change, text-driven visemes on Asha's viseme shapes; checked on lavapipe).
+- **Waiting:** M2-FP-17 (the Drownbell with the real Vowbound call, filed by the Lead for this track) depends on M2-CMB-05, which is still todo on the integration branch.
 - **Done, in review:** M2-FP-16, the Shell Shrine trial (B07). The puzzle rules are headless and data-driven; the room is a greybox built from JSON. The thread now runs the causeway head → low tide → the trial → Cutscene B. Filed M2-ENV-03 (the shrine kit) and M2-AUD-01 (the trial audio).
 - **Done, in review:** M2-FP-13, Haluna by day (B02 Neme's table after the tideline win, B03's four fragments overheard on walk-past, B05 Low tide). Filed M2-FP-14, M2-FP-15, M2-ENV-02 and M2-UI-06.
 - **Done, in review:** M2-FP-11 (the integration branch's task: zone suns back to bias 1.0, FlowRouting serving waiters in turn). I took it because it lives in my scenes and pairs with FP-10. The file is taken verbatim from the integration branch, so it should merge clean, apart from my status and notes.
@@ -20,7 +22,11 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 - **M2-FP-10 is review-ready at c818bc8.** Please ask the PC GPU session to check Cutscene A (H05/H06): nose and mouth-corner shadows with the key on, the key's cost (a second shadowed directional light shares the directional atlas), and whether Haluna's `face_key_shadow_normal_bias` 3.0 on the zone sun can return to 1.0 (RND-20 S1).
 
 ## Exact next step
-Queue item 6: the first Vowbound (Ilun as a real summon that replaces the party, superseding ADR 0026's Call Ilun stand-in; SPEC §6.3, docs/kb/story/vowbound.md §1), then Cutscene A/B facial animation. File task files first. M2-FP-14 (B04) is blocked on the wake-shell wall being out of reach (see its notes).
+**The standing queue is done apart from blocked items.**
+- M2-FP-17 waits on M2-CMB-05. When CMB-05 merges: merge the integration branch, replace `call_ilun` with `engine.summon(&"ilun")`, add the "call into the flood" sim policy, and re-band.
+- M2-FP-14 (B04) waits on the wake-shell wall being reachable.
+- M2-FP-15 (B11) waits on M2-ENV-02.
+Lead: please queue more slice work.
 
 ## Queue
 1. ~~M2-FP-10 dialogue key light~~ (review)
@@ -28,13 +34,14 @@ Queue item 6: the first Vowbound (Ilun as a real summon that replaces the party,
 3. ~~M2-FP-05 and M1-ARC-15 follow-ups; M1-UI-10~~: FP-05 and ARC-15 had no open review items (their known gaps are documented). M1-UI-10 is done (review).
 4. Haluna at vertical-slice quality: M2-FP-13 in review; M2-FP-14 (B04) next, M2-FP-15 (B11) once M2-ENV-02 lands
 5. ~~Shell Shrine temple trial~~: M2-FP-16 (review)
-6. First Vowbound; Cutscene A/B facial animation
+6. First Vowbound → M2-FP-17 (blocked on M2-CMB-05; the engine side is Combat's M2-CMB-04/05, ADR 0027); Cutscene A/B faces → M2-FP-18 (review)
 
 ## Setup notes
 - `fetch_godot.py` doesn't put Godot on PATH: `ln -s /root/.cache/hymn/godot-4.6.3+ds-2/godot ~/.local/bin/godot` (and `godot-render`).
 - `pip install -r tools/requirements.txt` for gdlint/gdformat.
 
 ## History
+- 2026-10-24: M2-FP-18 done (faces). Gates: lint and format, the full Godot suite (1311 green), validate_data, taskboard --check. I checked five lavapipe renders of Asha's face by eye.
 - 2026-10-24: M2-FP-16 done (the Shell Shrine trial). Gates: dlgc, validate_data, lint and format, Godot shell_shrine 11, fp_ 22 and haluna 13, plus the full Godot suite (1280 green) and tools unittest (452 OK). I checked three lavapipe renders by eye.
 - 2026-10-24: M2-FP-13 done. Gates: dlgc and `--check`; validate_data; lint and format; the full Godot suite, 1269 green. Filed FP-14, FP-15, ENV-02 and UI-05.
 - 2026-10-24: M2-FP-11 done (bias and FlowRouting). Gates: lint and format; Godot flow_routing 4, fp_ 22, haluna 8. Renumbered the Drownbell task to FP-12.
