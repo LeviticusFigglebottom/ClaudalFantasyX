@@ -310,7 +310,8 @@ func error_text(code: StringName, ctx: Dictionary = {}) -> String:
 
 ## What Confirm on `nid` would do for the hero on show, what it costs, and why it can't be done.
 ## {action (ACT_*), error (RESULT_OK or an ERR_* / &"broken" / &"nothing"), ok, path, cost, left,
-##  text (the line under the node's details), confirm (the confirm row's label)}.
+##  text (the line under the node's details), confirm (the confirm row's label); a walk beside a far sealed
+##  gate (M2-MNU-10) also names its end, beside}.
 func plan(nid: StringName) -> Dictionary:
 	var p := {
 		"action": ACT_NONE,
@@ -453,6 +454,8 @@ func _plan_here(p: Dictionary, n: LatticeNode) -> Dictionary:
 
 
 func _plan_gate(p: Dictionary, n: LatticeNode) -> Dictionary:
+	if not board().are_adjacent(position(), n.id):
+		return _plan_walk_to_gate(p, n)
 	p["action"] = ACT_OPEN
 	var err := progress().open_gate_error(hero(), n.id, facets())
 	if err != LatticeProgress.RESULT_OK:
@@ -461,6 +464,55 @@ func _plan_gate(p: Dictionary, n: LatticeNode) -> Dictionary:
 	p["ok"] = true
 	p["text"] = tr("LATTICE_MENU_PLAN_OPEN_FMT").format(ctx)
 	p["confirm"] = tr("LATTICE_MENU_CONFIRM_OPEN_FMT").format(ctx)
+	return p
+
+
+## M2-MNU-10: a sealed gate away from the hero. The first step walks beside it: to the gate's
+## neighbour that cheapest_path reaches for the fewest movement points (then the fewest steps, then
+## the board's edge order). Confirm on the gate again then opens it (_plan_gate, now adjacent).
+## Refused, in words, when no neighbour can be reached or the walk costs more than the hero has.
+## {beside} names the neighbour.
+func _plan_walk_to_gate(p: Dictionary, n: LatticeNode) -> Dictionary:
+	p["action"] = ACT_WALK
+	var best: Array[StringName] = []
+	var best_cost := 0
+	for nb in board().neighbors(n.id):
+		var path := progress().cheapest_path(hero(), nb)
+		if path.is_empty():
+			continue
+		var cost := path_cost(path)
+		if best.is_empty() or cost < best_cost or (cost == best_cost and path.size() < best.size()):
+			best = path
+			best_cost = cost
+	if best.is_empty():
+		return _refused(p, LatticeProgress.ERR_GATE_CLOSED, tr("LATTICE_MENU_GATE_NO_WAY"))
+	var have := movement_points()
+	p["path"] = best
+	p["beside"] = best[best.size() - 1]
+	p["cost"] = best_cost
+	p["left"] = have - best_cost
+	var fid := rules().facet_for(n)
+	var words := {
+		"cost": best_cost,
+		"have": have,
+		"left": have - best_cost,
+		"name": hero_name(),
+		"need": rules().facet_cost(n),
+		"facet": facet_name(fid),
+		"held": facets().count(fid),
+	}
+	if best_cost > have:
+		return _refused(p, LatticeProgress.ERR_NO_MOVEMENT, tr("LATTICE_MENU_GATE_TOO_FAR_FMT").format(words))
+	var walk_line := tr("LATTICE_MENU_PLAN_GATE_WALK_FMT").format(words)
+	p["confirm"] = tr("LATTICE_MENU_CONFIRM_GATE_WALK_FMT").format(words)
+	if best_cost == 0:
+		walk_line = tr("LATTICE_MENU_PLAN_GATE_WALK_FREE")
+		p["confirm"] = tr("LATTICE_MENU_CONFIRM_GATE_WALK_FREE")
+	var key_line := tr("LATTICE_MENU_PLAN_GATE_KEY_FMT").format(words)
+	if not facets().has(fid, rules().facet_cost(n)):
+		key_line = tr("LATTICE_MENU_PLAN_GATE_NO_KEY_FMT").format(words)
+	p["ok"] = true
+	p["text"] = walk_line + " " + key_line
 	return p
 
 
