@@ -14,7 +14,7 @@ flow interface asha_textures reads to paint the scalp (`hairline_v`, `in_hair`, 
 
 Cards use Asha's 2K hair atlas (asha_hair columns: full, sparse, hairline). `grey_share` sends a
 share of the cards to the `hair_grey` material. Vertex colour = wind; short and tied hair is pinned
-(toma_hair._emit). Seeded, deterministic.
+(`_emit`, the card emitter toma_hair had before M2-CHR-04). Seeded, deterministic.
 """
 from __future__ import annotations
 
@@ -24,7 +24,32 @@ import numpy as np
 
 from asha_hair import ROOT_CAST_H, SLOTS_FULL, SLOTS_HAIRLINE, SLOTS_SPARSE, _ribbon
 from asha_mesh import Part
-from toma_hair import CARD_U, CARD_V, STILL, _emit, _still
+
+STILL = (0.0, 0.0, 0.0, 0.0)  # no wind on short or tied hair
+# cards sample the tip zone and dense middle of the atlas columns (a short card over a whole column
+# reads as a square chip up close)
+CARD_V = (0.62, 0.96)
+CARD_U = (0.22, 0.78)
+
+
+def _still(t: float) -> tuple:
+    return STILL
+
+
+def _emit(part: Part, surface, paths: np.ndarray, widths, slots, rng, taper: float, v_range, mats=None,
+          twist: float = 0.3, u_range=(0.0, 1.0)) -> None:
+    """One ribbon card per path, rolled a random amount about its length, normals from `surface`."""
+    for c in range(len(paths)):
+        pts = paths[c]
+        nrm = surface.normal(pts)
+        T = np.gradient(pts, axis=0)
+        T /= np.maximum(np.linalg.norm(T, axis=1, keepdims=True), 1e-12)
+        side = np.cross(T, nrm)
+        a = rng.uniform(-twist, twist)
+        nrm = nrm * math.cos(a) - side * math.sin(a)
+        _ribbon(part, pts, nrm, float(widths[c]), int(slots[c]), _still, taper=taper, v_range=v_range,
+                mat="hair" if mats is None else mats[c], u_range=u_range)
+
 
 # hairline tables (head heights above the chin) by |azimuth| (0 front, 90 the side, 180 the back)
 HAIRLINES = {
