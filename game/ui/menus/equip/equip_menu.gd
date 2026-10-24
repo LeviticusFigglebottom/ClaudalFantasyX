@@ -310,6 +310,8 @@ func _build_page() -> void:
 	_choice = _menu_page(cm, &"equip_choice", " ", int(HudLayout.num(cm, "max_rows")))
 	_choice.row_hovered.connect(_on_hovered.bind(Level.PIECES))
 	_choice.row_clicked.connect(_on_clicked.bind(Level.PIECES))
+	for page in [_heroes, _gear, _choice]:
+		_fit_in_rect(page.header_label())  # a long piece name stays in its own page (M2-MNU-05)
 	_build_lines()
 	_build_preview()
 	if not model.heroes().is_empty():
@@ -323,13 +325,11 @@ func _build_lines() -> void:
 	_desc = _label(&"BodyLabel", HudLayout.rect_of(_d.get("desc", {})))
 	_desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_desc.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	var dr := HudLayout.rect_of(_d.get("desc", {}))
 	var sh := HudLayout.num(_d.get("status", {}), "height")
 	_status = _label(&"BodyLabel", Rect2(dr.position + Vector2(0.0, dr.size.y), Vector2(dr.size.x, sh)))
 	_status.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_status.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART  # never cut: a refusal must be read whole
 
 
 func _build_preview() -> void:
@@ -361,14 +361,46 @@ func _build_preview() -> void:
 			l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT if col == "name" else HORIZONTAL_ALIGNMENT_RIGHT
 			if col == "arrow":
 				l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			if col == "name":
+				_fit_in_rect(l)  # at a large text size the name ellipsizes; the numbers keep their columns
 			cells.append(l)
 		_stat_cells.append(cells)
 	_changes = VBoxContainer.new()
 	_changes.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var changes_top := top + EquipMenuModel.STAT_KEYS.size() * pitch + HudLayout.num(pm, "changes_gap")
-	_changes.position = Vector2(pr.position.x + float(name_col[0]), changes_top)
-	_changes.size = Vector2(pr.size.x - float(name_col[0]) * 2.0, HudLayout.num(pm, "changes_height"))
+	_changes.position.x = pr.position.x + float(name_col[0])
+	_changes.size.x = pr.size.x - float(name_col[0]) * 2.0
+	_changes.clip_contents = true  # never past the panel's frame, whatever the text size
 	add_child(_changes)
+	_layout_preview()
+
+
+## The stat rows' pitch: the data pitch, or the font's line height when the text size needs more
+## (UiSettings text scale), so rows never overlap. The changes sit under the last row.
+func _layout_preview() -> void:
+	var pm: Dictionary = _d.get("preview", {})
+	var pitch := preview_pitch()
+	var top := HudLayout.rect_of(pm).position.y + HudLayout.num(pm, "stat_top")
+	for i in _stat_cells.size():
+		for l: Label in _stat_cells[i]:
+			l.position.y = top + i * pitch
+			l.size.y = pitch
+	_changes.position.y = top + _stat_cells.size() * pitch + HudLayout.num(pm, "changes_gap")
+	_changes.size.y = maxf(HudLayout.rect_of(pm).end.y - HudLayout.num(pm, "changes_pad") - _changes.position.y, 0.0)
+
+
+## The row pitch the stat table uses now (reference pixels).
+func preview_pitch() -> float:
+	var pitch := HudLayout.num(_d.get("preview", {}), "stat_pitch")
+	if _stat_cells.is_empty():
+		return pitch
+	for l: Label in _stat_cells[0]:
+		pitch = maxf(pitch, ceilf(l.get_line_height()))
+	return pitch
+
+
+static func _fit_in_rect(l: Label) -> void:
+	l.clip_text = true
+	l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 
 
 # --- rendering -----------------------------------------------------------------------------------
@@ -455,7 +487,7 @@ func _render_recipes() -> void:
 		model.ability_desc(aid), _notice if not _notice.is_empty() else model.recipe_line(piece_uid, ability_index, aid)
 	)
 	_show_preview(model.ability_name(aid), model.preview_craft(hero, piece_uid, ability_index, aid), true)
-	var lines: Array[Dictionary] = [{"text": tr("EQUIP_MENU_RECIPE_TITLE"), "role": &"focus_gold"}]
+	var lines: Array[Dictionary] = []
 	for part in model.recipe_parts(aid):
 		lines.append({"text": part["text"], "role": &"text" if int(part["short"]) == 0 else &"danger"})
 	_set_changes(lines)
@@ -478,18 +510,22 @@ func _set_lines(desc: String, line: Dictionary) -> void:
 	_status.text = str(line.get("text", ""))
 	_refused = not bool(line.get("ok", true))
 	_status.add_theme_color_override(&"font_color", _c(&"danger" if _refused else &"text_dim"))
-	var cap := HudLayout.rect_of(_d.get("desc", {})).size.y
-	_desc.size.y = cap
-	var lines := _desc.get_line_count()
-	var spacing := float(_desc.get_theme_constant(&"line_spacing"))
-	var need := lines * _desc.get_line_height() + maxi(lines - 1, 0) * spacing
-	_desc.size.y = minf(ceilf(need), cap) if desc != "" else 0.0
+	# Both wrap whole, as tall as their text (no cap, no ellipsis: M2-MNU-05 at 130% text).
+	_desc.size.y = _text_height(_desc) if desc != "" else 0.0
 	var gap := HudLayout.num(_d.get("status", {}), "gap") if desc != "" else 0.0
 	_status.position.y = _desc.position.y + _desc.size.y + gap
+	_status.size.y = maxf(_text_height(_status), HudLayout.num(_d.get("status", {}), "height"))
+
+
+static func _text_height(l: Label) -> float:
+	var lines := l.get_line_count()
+	var spacing := float(l.get_theme_constant(&"line_spacing"))
+	return ceilf(lines * l.get_line_height() + maxi(lines - 1, 0) * spacing)
 
 
 ## Fills the stat table: now only (compare false), or now -> next with the signed delta.
 func _show_preview(title: String, preview: Dictionary, compare: bool) -> void:
+	_layout_preview()
 	_preview_title.text = title
 	var stats: Array = preview.get("stats", [])
 	for i in _stat_cells.size():

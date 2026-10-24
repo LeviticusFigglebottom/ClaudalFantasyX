@@ -101,6 +101,11 @@ func set_header(title: String) -> void:
 	_header.text = title
 
 
+## The header Label (pages that need a long title to ellipsize in its rect, M2-MNU-05).
+func header_label() -> Label:
+	return _header
+
+
 func row_count() -> int:
 	return rows.size()
 

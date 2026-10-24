@@ -335,7 +335,7 @@ func test_customize_asks_twice_then_crafts_and_a_filled_slot_says_why() -> void:
 	assert_eq(menu.help_text(), tr("EQUIP_MENU_HELP_RECIPES"))
 	assert_eq(menu.choice_page().current_row()["ability"], &"tide_edge")
 	assert_eq(menu.desc_text(), tr("ABILITY_TIDE_EDGE_DESC"), "what the ability does")
-	assert_eq(menu.changes_lines()[0], tr("EQUIP_MENU_RECIPE_TITLE"))
+	assert_eq(menu.changes_lines()[0], model.recipe_parts(&"tide_edge")[0]["text"], "the recipe, held and short")
 	menu.accept()
 	assert_eq(menu.status_text(), model.craft_confirm_text(hooks, &"tide_edge"), "asks first")
 	assert_eq(bag.slots_of(hooks)[1], &"", "nothing crafted yet")
@@ -359,7 +359,7 @@ func test_a_short_recipe_is_refused_in_red() -> void:
 	assert_true(menu.status_is_refusal(), "nothing held: the line says what is missing")
 	menu.accept()
 	assert_eq(bag.slots_of(hooks)[1], &"")
-	assert_eq(menu.changes_lines()[1], model.recipe_parts(&"tide_edge")[0]["text"])
+	assert_eq(menu.changes_lines()[0], model.recipe_parts(&"tide_edge")[0]["text"])
 	_done()
 
 
@@ -375,6 +375,39 @@ func test_mouse_clicks_choose_a_hero_a_slot_and_a_piece() -> void:
 	assert_eq(sheet.goods.equipment.equipped(&"toma", ItemDB.SLOT_WEAPON), spare)
 	menu.hero_page()._on_row_input(_click(), 0)
 	assert_eq(menu.hero, &"rhen", "a click on the party goes back to it")
+	_done()
+
+
+func test_at_130_percent_text_the_preview_rows_never_overlap_and_lines_wrap_whole() -> void:
+	var saved := UiSettings.shared()
+	UiSettings.set_shared(UiSettings.new())
+	UiSettings.shared().set_value(UiSettings.TEXT_SCALE, 1.3)
+	var hooks := sheet.goods.equipment.add_piece(&"rhen_coral_hooks")
+	sheet.goods.equipment.equip(&"rhen", hooks)
+	sheet.goods.inventory.add(&"tide_pearl", 1)
+	_open()
+	menu.accept()
+	menu.handle_input(_ev(&"ui_down"))
+	menu.handle_input(_ev(&"ui_down"))
+	menu.accept()  # Customize, Tide Edge short: a long refusal
+	var cells := menu._stat_cells
+	for i in cells.size():
+		for l: Label in cells[i]:
+			assert_true(l.get_line_height() <= l.size.y, "row %d is as tall as its text" % i)
+		if i > 0:
+			var above := cells[i - 1][0] as Label
+			var here := cells[i][0] as Label
+			assert_true(
+				above.position.y + above.size.y <= here.position.y, "row %d does not overlap row %d" % [i, i - 1]
+			)
+	assert_true(menu.preview_pitch() > HudLayout.num(menu._d["preview"], "stat_pitch"), "the pitch grew with the text")
+	var status := menu._status
+	assert_eq(status.text_overrun_behavior, TextServer.OVERRUN_NO_TRIMMING, "a refusal is never cut")
+	assert_true(status.get_line_count() * status.get_line_height() <= status.size.y + 1.0, "tall enough for every line")
+	var header := menu.choice_page().header_label()
+	assert_eq(header.text_overrun_behavior, TextServer.OVERRUN_TRIM_ELLIPSIS, "a long title stays in its page")
+	assert_true(header.clip_text)
+	UiSettings.set_shared(saved)
 	_done()
 
 

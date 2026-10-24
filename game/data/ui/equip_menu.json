@@ -1,6 +1,6 @@
 {
   "equip_menu": {
-    "doc": "The equip page (M2-MNU-02; docs/kb/tech/ui.md section 'Equip and Customize pages'). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'heroes' (left), 'gear' (the hero's slots and ability slots, middle) and 'choice' (the pieces for a slot, or the Customize recipes, in the gear page's place) are MenuPage metrics blocks, each as tall as its rows up to max_rows. 'desc' is the line about the highlighted row under the heroes page, with the status line (a refusal in the danger color) 'status' gap under it. 'preview' (right) holds a header, the stat table ('stat_pitch' per row; 'cols' are x offsets and widths inside it: name, now, arrow, next, delta) and, 'changes_gap' under it, the abilities gained and lost or the recipe.",
+    "doc": "The equip page (M2-MNU-02; docs/kb/tech/ui.md section 'Equip and Customize pages'). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'heroes' (left), 'gear' (the hero's slots and ability slots, middle) and 'choice' (the pieces for a slot, or the Customize recipes, in the gear page's place) are MenuPage metrics blocks, each as tall as its rows up to max_rows. 'desc' is the line about the highlighted row under the heroes page, with the status line (a refusal in the danger color) 'status' gap under it. 'preview' (right) holds a header, the stat table ('stat_pitch' per row; 'cols' are x offsets and widths inside it: name, now, arrow, next, delta) and, 'changes_gap' under it, the abilities gained and lost or the recipe, down to 'changes_pad' above the panel's foot (clipped there). M2-MNU-05: the stat rows' pitch grows to the font's line height at a large text size, and the stat name ellipsizes in its column.",
     "canvas_layer": 64,
     "panel": {
       "rect": [219, 111, 1482, 858],
@@ -64,7 +64,7 @@
     "preview": {
       "rect": [1212, 216, 462, 690],
       "header_height": 45,
-      "stat_top": 66,
+      "stat_top": 60,
       "stat_pitch": 39,
       "cols": {
         "name": [12, 192],
@@ -73,8 +73,8 @@
         "next": [312, 63],
         "delta": [378, 72]
       },
-      "changes_gap": 18,
-      "changes_height": 192
+      "changes_gap": 9,
+      "changes_pad": 12
     }
   }
 }
