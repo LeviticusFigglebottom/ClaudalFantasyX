@@ -692,3 +692,114 @@ fight. It should sound lawful and cold, with sorrow under it.
   against the drums?** If it's thin, I'd double it on the flute an octave up in A rather than raise the piano.
 - **Do the shields sound like a struck shield,** or like a pot or a gong? If they're a gong, the plate gets shorter.
 - **Can you hear the loop wrap?** The seam is 73.8 s after the intro, a sixteenth before bar 1's downbeat.
+
+## M3: Act II sketches I (M3-AUD-804)
+
+Six **sketches**, one per Act II place in Ch10-12. They're for judging direction: is each place's colour right,
+and do the six feel like one act? They aren't finished cues. None of the scenes exists yet, so for now you can only
+hear them on their own. The scenes are in act_outline.md (Ch10, Ch11, Ch12), and the places in bible §5.5-5.7 and
+§8. Each is a seamless loop of about a minute (about 6 minutes in all). Act II's colour is overcast, storm,
+moonlight and cold blue stone, so all six sit darker and slower than Act I, except Quellan, which is the warm room
+after the cold road.
+
+The new instruments are in `assets_src/music/act2_voices.py`: a fen reed pipe; the Kirru's whistle, root-harp,
+water-gourd and tongue-clicks; a glass harmonica (Sefir's recipe); the Lamp Engine's stroke and its hum; a highland
+ten-string lute; woolback bells; and seamless textures (insects, wind, the pass-cords, the deep's cold).
+
+| # | File | Length | Key, metre | Plays |
+|---|---|---|---|---|
+| 1 | `music/ossa_fen.ogg` | 61.9 s loop | G Dorian, 4/4 at 62 | Ch10: Ossa Fen, the mangrove channels |
+| 2 | `music/reedhollow.ogg` | 61.5 s loop | the Kirru mode on A (A B C# D# F#), 5/4 (3+2) at 78 | Ch10: Reedhollow, the Kirru village |
+| 3 | `music/sunken_vey.ogg` | 62.6 s loop | E-flat Dorian, 3/4 at 46 | Ch11: Sunken Vey, the drowned galleries |
+| 4 | `music/lowlight.ogg` | 62.1 s loop | C minor, 4/4 at 58 | Ch11: the Lowlight temple and the Lamp Engine |
+| 5 | `music/keth_pass.ogg` | 62.6 s loop | E minor, 6/8 at 46 | Ch12: Keth Pass, the mountain route |
+| 6 | `music/quellan.ogg` | 62.6 s loop | F major, 4/4 at 92 | Ch12: Quellan, the highland town |
+
+### (1) Ossa Fen: humid and still
+
+- **The band:** a nasal double-reed pipe (new) plays a low, swaying tune over a still drone on G and D and a very
+  dark string pad. A muted low string on 1 and the "and" of 3 is a pole finding the mud. Insects are made from
+  texture, not samples: clustered high chirps, a faint bed, and now and then a far frog's purr. Drips fall from the
+  roots. In bars 13-16 the pipe stops and a low, soft flute answers.
+- **The key:** G Dorian. Its E natural is the fen's colour, heard in the C major chords. **Does it feel humid and
+  still, or only slow?** **Is the reed pipe a reed** (nasal, a little buzzy, a touch flat at the ends of long
+  notes), or does it sound like a cheap synth oboe? That's the biggest risk in this sketch.
+- **The insects:** do they read as insects in the heat, or as hiss or tinnitus? If they're tiring over a long
+  explore, they come down or thin out.
+
+### (2) Reedhollow: a people with their own music
+
+- **The idea:** the Kirru aren't human, and the Order calls them soulless. Their music shouldn't sound like the
+  coast's. So no metallophones and no D pentatonic (Haluna's), and a mode of their own: **A B C# D# F#. It has no
+  fifth**, so it never sits down on a home chord. It floats, rises, and ends its phrases in silence instead of
+  cadences.
+- **The band, all new:** two **whistlers** (a low, near-pure whistle that glides between notes and slides *up* into
+  its long ones, with a tongue-click at each phrase start), the first left and the answer right. The **root-harp**
+  is gut strings on a mangrove-root frame over the water: on some notes the player presses the string up into
+  pitch after the pluck, so the harp rises too. **Water-gourds** play on the two group starts of the 3+2 bar, and
+  **tongue-clicks** on the offbeats are the Kirru talking. In bars 11-14 the clutch hums a wordless line that rises
+  one step a bar and never comes down: the farewell-tide's *shape* (not the song itself; that scene isn't scored
+  yet). Bar 16 is only clicks and the harp's root: the backs turned.
+- **Key questions:** **does it sound like a people with their own music, and not "exotic"?** Is the fifthless mode
+  beautiful, or does it just sound unresolved? Do the whistles read as voices (good) or as a theremin (bad)? Is the
+  5/4 unhurried, or does it limp?
+- The farewell-tide is meant to carry the Eighth Verse without knowing it (bible §7). This sketch doesn't decide
+  that melody. If you like the rising line, it's a candidate seed.
+
+### (3) Sunken Vey: under the water, among the dead
+
+- **The band:** a glass harmonica sings a slow song in 3/4 at 46 (the slowest 3/4 in the game). From bar 9 a
+  second glass doubles its long notes an octave below. Everything else is heard as if through water, low-passed
+  hard: a drone on Eb and Bb, a very dark pad, a drowned bell at bars 1 and 9, and a low root pluck every other
+  bar. The conduits' bound light is a faint pair of high tones that swell once every two beats. Bubbles rise in
+  short strings.
+- **The key:** E-flat Dorian. The C natural (the top of the song over A-flat major) is the light still in the
+  conduits. **Does it sound submerged, glassy and dead-but-gorgeous, or just muffled?** Is the conduits' pulse
+  audible enough to read as *light*, or is it lost?
+- **Glass here and in Sefir's motif:** the glass harmonica is the game's voice for glimmer, and Sefir's theme uses it
+  too. Does it point at the Order too early? If so, I'll swap it for bowed glass bars.
+
+### (4) Lowlight: a dead machine still keeping time
+
+- **The engine:** a muffled piston stroke through water on every beat, with a valve clank. Beat 4 limps late,
+  beat 2 stutters every fourth bar, and in the last bar the engine **stalls for two beats** before it catches again
+  on the loop's downbeat. Under it is the conduits' choked hum on C, which flickers and sometimes nearly fails, and
+  a very low heave of the deep's cold. Glints of drowned glimmer drift down in register like silt.
+- **The motifs (the game's own, developed):** the low flute plays **the Kirru call from Reedhollow**, moved to C
+  and sinking at the end: Nhoa is Ressa, the only Kirru Cantor, held at the foot of the well-shaft. The glass plays
+  **the Hush's outline** (the long held note, the fall of a third, the turn a sixth below) in C minor: the
+  Cantor's song she was given. In bars 12-15 they sound together and don't quite agree (the call's E against the
+  Hush's E-flat). **Is that clash the point (Kirru against Order, in one drowned woman), or does it just sound
+  wrong?** If it's wrong, I'd keep the two apart.
+- **Is the pulse dead (mechanical, wrong, tired) or just a drum?** Does the stall read as the machine failing, or
+  as a glitch in the file? Pell kneels before his sister in this temple. Does the cue leave room for that?
+
+### (5) Keth Pass: cold, wind-borne, wide
+
+- **The band:** two breathy pipes, hard left and right, play the tune **in hocket**. Each plays every other note,
+  so the tune exists only between them. The wind never stops. The pass-cords whistle in it: very narrow bands of
+  wind-noise on E, G, B and E, each swelling on its own gust. An open-fifth string pad sits wide, a big drum sounds
+  far below every four bars, and a soft frame-drum step falls on the second dotted quarter. In bars 13-16 one pipe
+  plays alone, lower and slower (C D G Em). In A' (bars 17-20) the hocket goes up an octave.
+- **The key:** E minor, 6/8 at 46 dotted quarters, the slowest 6/8 in the game. **Does it feel high, cold and
+  huge?** Does the hocket sound like two players, or like a broken-up line? **Do the cords sound like cords
+  singing,** or like a whistle-tone fault? Is the wind tiring?
+- **Toma notices Kerrid's breath doesn't fog.** That beat isn't scored here; the verse (bars 13-16) is the place
+  a later cutscene cue could branch from.
+
+### (6) Quellan: warm against the cold
+
+- **The band:** a warm breath flute in its middle plays a tune in F major (the only cue in F major). A second flute
+  a third below joins in A'. The **ten-string** (new) is a small, deep-backed lute of paired wire courses, strummed
+  long-short-short on every beat. Under it are a fingered bass on 1 and 3, a big drum on 1, and a frame-drum slap
+  on the "and" of 2. Outside, the woolbacks' wooden-clappered bells clonk in small, uneven clusters. A C7
+  turnaround in the last half-bar leads home.
+- **Key questions:** **is it warm (a hearth after the pass), or just cheerful?** The Ullari are stoic about death,
+  but at home they're a town. Does the strum read as a highland lute, or as a ukulele? (If it's a ukulele, the
+  body gets deeper and the courses lower.) Do the herd bells sound like animals passing in the street, or like a
+  clock?
+- Quellan sits next to Keth Pass (E minor, 6/8, cold). Does going from one to the other feel like coming inside?
+
+**For all six:** can you hear any loop wrap? Every file starts a sixteenth before its first downbeat, so the wrap
+falls between notes. And as a set: **do the six sound like one act** (darker, colder, slower than Act I) **and like
+six different places?**
