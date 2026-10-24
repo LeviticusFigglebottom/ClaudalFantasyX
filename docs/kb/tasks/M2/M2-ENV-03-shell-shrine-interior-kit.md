@@ -5,7 +5,7 @@ role: environment
 status: review
 owner_session: "m2-slice subagent (M2-ENV-03)"
 depends_on: [M2-FP-16]
-reviewer: art (env-art compares kits), rendering
+reviewer: rendering
 milestone: M2
 request-from: cinematics
 ---
@@ -32,5 +32,17 @@ Request from the m2-slice track. The Shell Shrine trial (M2-FP-16) plays in a gr
   - **Reverted on purpose: the level side** (the 98e65e4 dressing and the 3313bac S01–S05 shots and baselines). The shrine level stays on its greybox until env-art has compared this kit with its own and the Lead names which to swap in.
   - **To swap this kit in:** `git revert` the revert commit (the one after f38edea). That brings back the level side. The four level-side checks in `tools/tests/test_shell_shrine_kit.py` (`ShellShrineLevelUsesKitTest`) run only when the JSON has the `room` block, so they come back on by themselves; I checked all 8 pass after a swap-in. The revert also brings back `ShellShrineLevel`'s room build, `shell_shrine_dressing.tscn`, the `room` JSON block and the five shots.
   - The notes above describe the full branch, including the level side.
+- **2026-10-24 m2-slice: swapped in** after env-art's verdict below, by reverting the level-side revert. The level-side checks in `test_shell_shrine_kit.py` now run (the JSON has `room` again).
 
 ## Review log
+- **2026-10-24, Art Director (env-art), the Lead's kit comparison: ADOPT m2-slice's kit as the base (approve-with-fixes); env-art's parallel kit stops and is kept only for salvage.**
+  Compared shot for shot: m2-slice's lavapipe baselines from 3313bac against env-art's in-progress lavapipe captures at the same lenses.
+  - **Why m2-slice's kit wins:** it is complete and already wired into `ShellShrineLevel` (the drivable parts, the dressing, collision, missing-piece fallbacks, JSON tests), with flowmap water on every channel and pool, the thin-film nacre shader (the brief's optional request), a measured GI alternative (VoxelGI per state, 4.6–5.3 s), and five shots. Above all it **reads**: S03's overview shows the whole channel network like a diagram (pillar 4), and S04's pour and S05's drained pool with the charm in a light pool are good. env-art's kit was unfinished, and its interior was far too dark: S03 failed tactical clarity outright.
+  - **Swap-in:** m2-slice, revert your revert of the level side (the commit after f38edea), as your notes say, and land the shots.
+  - **Fixes, filed as M2-ENV-09** (env-art builds them on this kit; none blocks the swap-in):
+    1. **The roof doesn't read as fan-shells.** S01 shows a lumpy dome, a yurt silhouette. The brief's idea is overlapping stone fan-shells in tiers rising to an oculus. Rebuild `shrine_roof_fan` from three tiers of ribbed fans (the existing Haluna `roof_fan_shell` tiers, sized to the hall), with white mortar ribs.
+    2. **The walls are regular beige ashlar.** Make them coral-limestone courses (the Haluna pass-1 stone: holes, two tones), still fresher than the causeway (tended).
+    3. **The interior is brown and murky** (S02, and the S03 vault). The brief: "cool after the glare outside, lit by three oculus shafts falling on water". Cool the fill (`#3FD0C9`-tinted bounce, as `ch03_shrine_int` says), lift the floor value a stop, and make the S02 shaft read (fog density, or a shaft card if lavapipe can't show it). Measure it against the colour script, not by eye.
+    4. **The exterior at S01:** add leaf-boats on the steps and an offering shelf (they don't read at S01's distance now), and give the islet some sea stones and wet algae at the waterline.
+    5. **Channel bends and T-junctions** (the brief's list; the runs are straight now). env-art's WIP has `channel_bend` and `channel_t` to salvage.
+    6. Later, not blocking: reflection probes at the basins; Ilun's chamber (S08) is its own task when Cutscene B needs it.
