@@ -67,6 +67,22 @@
       "runs": [
         ["{blender}", "--python", "assets_src/environments/kits/tamsule_bell/build.py", "--", "--all", "--out-dir", "assets/environments/kits/tamsule_bell", "--manifest", "assets/environments/kits/tamsule_bell/kit_manifest.json"]
       ]
+    },
+    {
+      "id": "brine_shoals_kit",
+      "owner": "environment",
+      "_doc": "M3-ENV-02: the Brine Shoals kit. Geometry reuses the Haluna kit's core (kit_common, causeway, village) read-only; the two {python} steps rebuild its maps and materials, so they are verified too.",
+      "sources": ["assets_src/environments/kits/brine_shoals/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/causeway.py", "assets_src/environments/kits/haluna/village.py",
+                  "assets_src/environments/kits/haluna/kit_textures.py", "assets_src/environments/kits/haluna/materials.py",
+                  "assets_src/environments/vegetation/textures.py"],
+      "outputs": ["assets/environments/kits/brine_shoals/*.glb", "assets/environments/kits/brine_shoals/kit_manifest.json",
+                  "assets/environments/kits/brine_shoals/textures/*.png", "assets/environments/kits/brine_shoals/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/brine_shoals/build.py", "--", "--all", "--out-dir", "assets/environments/kits/brine_shoals", "--manifest", "assets/environments/kits/brine_shoals/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/brine_shoals/bs_textures.py"],
+        ["{python}", "assets_src/environments/kits/brine_shoals/bs_materials.py"]
+      ]
     }
   ]
 }

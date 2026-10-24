@@ -1124,6 +1124,44 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "brine_b01_arrival",
+      "scene": "res://game/levels/_tests/brine_shoals_kit/brine_shoals_preview.tscn",
+      "camera": "Cameras/B01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "brine_b05_barge_channel",
+      "scene": "res://game/levels/_tests/brine_shoals_kit/brine_shoals_preview.tscn",
+      "camera": "Cameras/B05",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }

@@ -13,7 +13,9 @@ const VEG_DIR := "res://assets/environments/vegetation/"
 const BASE_BODY := "res://assets/characters/base_body/base_body_slender.glb"
 const BUST := "res://assets/characters/shader_test/shader_test_bust.glb"
 const ASHA_DIR := "res://assets/characters/asha/"
-const KINDS: Array[String] = ["base_body", "characters", "haluna_kit", "shader_test", "tamsule_bell_kit", "vegetation"]
+const KINDS: Array[String] = [
+	"base_body", "brine_shoals_kit", "characters", "haluna_kit", "shader_test", "tamsule_bell_kit", "vegetation"
+]
 const EPS := 1e-4
 
 var _nodes: Array[Node] = []
