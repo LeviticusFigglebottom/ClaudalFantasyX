@@ -34,3 +34,9 @@ ADR 0027 is accepted (review-sweep-P). The m2-slice track's `call_ilun` stand-in
 
 ## Lead note (2026-10-24)
 M2-CMB-05 is **merged** on the integration branch (3e59f8d): absorb fills the gauge (A1, read as the rolled absorb), Floodnet is non-elemental and clears the flood (A2), and the call runs the caller's end-of-turn ticks (A3). The sim has the call rule (`call_vowbound` in sim_policies.json) and a `sandbox_reef_vowbound` suite. The exact steps for this task are in handoff `2026-10-24-combat-13.md` § "What m2-slice needs for M2-FP-17". Start from the scratch results there: role_answer 72.0%, smart 87.0% (p90 60, at the ceiling).
+
+## Lead note 2 (2026-10-24): M2-UI-05 is in the same merge batch
+- **Don't wire the bind flag again.** Every live battle already binds Ilun from `ch03_ilun_bound`, through `bound_flag` in vowbound.json. M2-UI-05 adds Asha's "Call Ilun" row (R3; greyed with a reason when refused) and Ilun's own menu (Attack, Floodnet, Skills, Dismiss).
+- **Remove the `call_ilun` stand-in:** from Asha's kit, skills.json with its loc key, and `clear_field_skill` in sim_policies.json. Until then, Asha in the Drownbell has both the real Call row and the stand-in under Skills.
+- **Take the integration branch's CMB-05 mechanics** (the rolled absorb, HP 100%, rate 150). See review-sweep-Q and M2-CMB-06. Then re-band the Drownbell.
+- **Optional:** a Drownbell shot can bind Ilun with `"vowbound": ["ilun"]` in its fixture.

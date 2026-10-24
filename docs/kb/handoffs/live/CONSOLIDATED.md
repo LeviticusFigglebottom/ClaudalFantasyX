@@ -4,7 +4,7 @@
 
 ## 0. Read these, in this order
 1. [`CLAUDE.md`](../../../CLAUDE.md): the operating rules for every agent. They include "Gate scope", §7a live logs, and §8a shared-machine and scratch rules.
-2. [`SPEC.md`](../../../SPEC.md) v1.2: the brief. Only the Lead edits it, and every change needs an ADR plus a version note.
+2. [`SPEC.md`](../../../SPEC.md) v1.3: the brief. Only the Lead edits it, and every change needs an ADR plus a version note.
 3. [`docs/kb/STATUS.md`](../../STATUS.md): milestone, risks, and questions for the human.
 4. This file, then `python3 tools/taskboard.py` for the live task board (about 91 of 121 done).
 5. ADRs 0001–0024 in [`docs/kb/decisions/`](../../decisions/), skimming the titles.
@@ -47,6 +47,26 @@
 3. **m2-slice:** cloud `session_01DQ9tdk8Uatb8Jr6raAkXiC`, branch `claude/m2-slice`, Auto mode, 2–3 subagents allowed. Queue: M2-FP-10 dialogue key light → M2-FP-11 (undo FP-09's zone-sun bias 3.0; two waiting router callers) → Drownbell follow-ups (its boss status strip is being renumbered from a colliding FP-11 to FP-12) → FP-05/ARC-15 follow-ups → Haluna at slice quality → Shell Shrine trial → first Vowbound, Cutscene A/B faces. Log: `m2-slice.md` on its branch.
 4. **characters:** cloud `session_01JqzzxgJU9Dmu7fRhmCG9aQ`, branch `claude/characters`, Auto mode, 2–3 subagents allowed. Queue: **M1-CHR-12 Asha round 7 first** (grief lip-edge rim and peg teeth, lid band, smile eyes, crown; from QA-08), with M2-CHR-01 Rhen and Toma in parallel (parked WIP in assets_src/characters/rhen/, see WIP.md) → Asha's clips (M2-FP-07) → M1-ART-06. Log: `characters.md` on its branch.
 - **Permissions:** `.claude/settings.json` allow-lists the read-only checks and cross-session messaging (the human's directive). Sessions pick it up after merging the integration branch.
+
+### 3a. Standing queues (2026-10-24, also sent by message; messages can arrive hours late, so this section is authoritative)
+- **m2-slice:**
+  0. CMB-05 reconciliation: take the integration branch's mechanics (rolled absorb, HP 100%, rate 150), keep the FP-17 wiring, remove `call_ilun` (UI-05's Call row is merged), do M2-CMB-06.
+  1. M2-FP-22, M1-UI-11, M1-ENV-11.
+  2. M2-FP-20, M2-FP-21.
+  3. M2-ENV-04 (wake-shell wall), M2-ENV-03 (shrine interior kit).
+  4. M2-UI-06 (shop and inn).
+  5. zone_weather.json rows for first_verse, shell_shrine and Haluna-night.
+  6. Swap the capsules for Rhen, Toma and the villagers when the characters branch merges.
+  7. Another playthrough pass.
+- **characters:**
+  1. M1-CHR-13 (vest normals, plus the shared `_panel` winding fix; rebuild Asha, Rhen and Toma).
+  2. M1-RND-25 (the inner lip onto the mouth material).
+  3. Toma follow-ups, plus Toma's clips.
+  4. M2-CHR-03 (the Haluna villagers: Neme, Osu, Pila, the lane child, plus 3 generic).
+  5. The CHR-12 smile §12.4 as a switchable variant, for the human.
+  6. Battle-scale hero LODs.
+- **pc-gpu:** the ADR 0029 follow-ups (no threaded loads) → the slice perf sweep → M1-QA-09 (Asha re-check, after CHR-12 merges) → the night GPU cost at Haluna H10 (M2-ENV-02) → the Low-preset storm cost (Low's full-res shells cost 1.36 ms against High's 0.66 ms compute; file it).
+- **Wake-ups:** the hourly routine `trig_01LJyLo42xCq3WVmAza3BMhe` FAILS with ACCESS_DENIED (as in the old account). The Lead keeps a background `sleep 2700` heartbeat in its own session instead, and re-arms it on each wake.
 
 ## 4. Process that works (keep it)
 - **Standing queues:** never one task at a time; ask each environment to message when it's two items from the end.

@@ -59,7 +59,7 @@
         "water_core_cell_m": 0.25,
         "water_outer_half_extent_m": 600.0,
         "weather": {
-          "_note": "No shipped scene drives the weather clock (hymn_wind_time) or hymn_wind outside test rigs, so a battle's water would stand still. While no other node does, the flood rig runs the clock on from its last value and sets a breeze when the wind is calm; leaving, it puts the wind back.",
+          "_note": "The weather clock (hymn_wind_time) is WeatherClock's alone (M2-ARC-02: SceneRouter's child runs it, and writes each zone's hymn_wind from game/data/world/zone_weather.json); the flood rig never writes it. drive_clock: when the wind is calm (a scene with no zone wind, e.g. the drownbell_flood test rig), the rig sets this breeze; leaving, it puts the wind back.",
           "drive_clock": true,
           "wind_m_s": 4.0,
           "wind_azimuth_deg": 250.0,

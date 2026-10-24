@@ -22,6 +22,11 @@ var opening: Dictionary = {}
 ## The battle's opening (BattleOpening: preemptive or ambush; &"" = normal), so a capture can show
 ## the opening banner without a roll (M2-UI-02). "battle_opening" in the fixture row.
 var battle_opening: StringName = &""
+## The Vowbound the party has bound (M2-UI-05; "vowbound" in the fixture row), and the frozen
+## vowbound rows (tables.vowbound) they come from. Both empty unless the fixture names one, so
+## every other fixture keeps the root menu its baseline shows.
+var vowbound: Array[StringName] = []
+var vowbound_rows: Array = []
 
 
 static func load_fixture(fixture_id: StringName, path: String = DATA_PATH) -> BattleFixture:
@@ -33,13 +38,17 @@ static func load_fixture(fixture_id: StringName, path: String = DATA_PATH) -> Ba
 	var spec := row as Dictionary
 	var fx := BattleFixture.new()
 	fx.id = fixture_id
-	fx.db = BattleDB.from_tables(merged_tables(root.get("tables", {}) as Dictionary, spec.get("overrides", {})))
+	var tables := merged_tables(root.get("tables", {}) as Dictionary, spec.get("overrides", {}))
+	fx.db = BattleDB.from_tables(tables)
 	fx.active = _names(spec.get("active", []))
 	fx.reserve = _names(spec.get("reserve", []))
 	fx.encounter = StringName(str(spec.get("encounter", "")))
 	fx.rng_seed = int(spec.get("seed", 0))
 	fx.opening = (spec.get("opening", {}) as Dictionary).duplicate(true)
 	fx.battle_opening = StringName(str(spec.get("battle_opening", "")))
+	fx.vowbound = _names(spec.get("vowbound", []))
+	if not fx.vowbound.is_empty():
+		fx.vowbound_rows = tables.get("vowbound", []) as Array  # overrides merge into these rows too
 	return fx
 
 

@@ -19,7 +19,6 @@ const DATA_PATH := "res://game/data/vfx/battle/boss_vfx.json"
 const SHOCKWAVE_SHADER := "res://game/shaders/vfx/battle_shockwave.gdshader"
 const FLOODNET_SHADER := "res://game/shaders/vfx/battle_floodnet.gdshader"
 const GLOBAL_WIND := &"hymn_wind"
-const GLOBAL_WIND_TIME := &"hymn_wind_time"
 
 static var _data_cache: Dictionary = {}
 
@@ -52,9 +51,6 @@ var _sun_tween: Tween
 var _sun: DirectionalLight3D
 var _sun_energy := 0.0
 var _hidden: Array[Node3D] = []
-## True while this rig runs the weather clock (flood.weather.drive_clock).
-var _clock_on := false
-var _clock := 0.0
 var _wind_before: Variant = null
 
 
@@ -128,10 +124,7 @@ func glow_level() -> float:
 	return _glow_level
 
 
-func _process(delta: float) -> void:
-	if _clock_on:
-		_clock += delta
-		ShaderGlobals.set_value(GLOBAL_WIND_TIME, _clock)
+func _process(_delta: float) -> void:
 	if glow == null:
 		return
 	var t := _cfg("telegraph")
@@ -328,12 +321,12 @@ static func _wave_set(waves: Dictionary) -> WaveSet:
 	return ws
 
 
-## Runs the weather clock on from its last value, and sets a breeze when the wind is calm (see the data's note).
+## Sets a breeze when the wind is calm (see the data's note). The rig never writes the weather clock
+## (hymn_wind_time): WeatherClock, SceneRouter's child, is its one writer (M2-ARC-02), and the flood water
+## reads it from the global like any WaterSurface.
 func _start_weather(w: Dictionary) -> void:
 	if not bool(w.get("drive_clock", false)):
 		return
-	_clock_on = true
-	_clock = float(ShaderGlobals.get_value(GLOBAL_WIND_TIME, 0.0))
 	var wind := ShaderGlobals.get_value(GLOBAL_WIND, Vector4.ZERO) as Vector4
 	if Vector2(wind.x, wind.z).length() < 0.01:
 		_wind_before = wind
@@ -343,7 +336,6 @@ func _start_weather(w: Dictionary) -> void:
 
 
 func _exit_tree() -> void:
-	_clock_on = false
 	if _wind_before != null:
 		ShaderGlobals.set_value(GLOBAL_WIND, _wind_before)
 		_wind_before = null

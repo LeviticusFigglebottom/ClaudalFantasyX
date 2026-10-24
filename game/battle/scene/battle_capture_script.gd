@@ -11,6 +11,11 @@ const RING_SHOT_BEFORE_PEAK_SEC := 0.2
 const SCRIPT_READ_PANEL := &"read_panel"
 const SCRIPT_OPENING_BANNER := &"opening_banner"
 const SCRIPT_SWELL_MODES := &"swell_modes"
+## M2-UI-05: Asha's Call row highlighted (the call's preview), and Ilun out with Dismiss highlighted.
+const SCRIPT_VOWBOUND_CALL := &"vowbound_call"
+const SCRIPT_VOWBOUND_OUT := &"vowbound_out"
+const VOWBOUND_ID := &"ilun"
+const CALLER_ID := &"asha"
 
 
 ## Plays `ctl`'s already-started fixture `sid` (a BattleController.SCRIPT_* id) to its state.
@@ -70,6 +75,18 @@ static func play(ctl: BattleController, sid: StringName) -> void:
 			ctl.hud.commands.select(BattleMenus.ROW_SWELL)
 			_press(ctl, &"ui_accept")
 			ctl.hud.commands.select(StringName(BattleMenus.ROW_SWELL_MODE_PREFIX + "wake"))
+		SCRIPT_VOWBOUND_CALL:
+			# Asha's turn with Ilun bound: the Call row shows the order with Ilun in the party's place.
+			_to_turn_of(ctl, CALLER_ID)
+			ctl.hud.commands.select(StringName(BattleMenus.ROW_CALL_PREFIX + String(VOWBOUND_ID)))
+		SCRIPT_VOWBOUND_OUT:
+			# Asha calls Ilun, who strikes once and takes the foes' turns; on his next turn Dismiss
+			# shows the party's return, Asha after her call delay.
+			_to_turn_of(ctl, CALLER_ID)
+			ctl.vow.call_vowbound(VOWBOUND_ID)
+			ctl.act(BattleMenus.ATTACK_SKILL, [ctl.default_targets(BattleMenus.ATTACK_SKILL)[0].id])
+			_to_turn_of(ctl, VOWBOUND_ID)
+			ctl.hud.commands.select(BattleMenus.ROW_DISMISS)
 
 
 ## Plays (party: Attack the first living foe) until it is `cid`'s turn.
