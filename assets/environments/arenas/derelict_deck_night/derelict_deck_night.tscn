@@ -166,6 +166,7 @@ light_color = Color(1, 0.6941, 0.4314, 1)
 light_energy = 2.2
 omni_range = 9.0
 omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
 shadow_enabled = true
 shadow_bias = 0.05
 
@@ -180,6 +181,7 @@ light_color = Color(1, 0.6941, 0.4314, 1)
 light_energy = 2.2
 omni_range = 9.0
 omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
 shadow_enabled = true
 shadow_bias = 0.05
 
@@ -194,6 +196,7 @@ light_color = Color(1, 0.6941, 0.4314, 1)
 light_energy = 2.2
 omni_range = 9.0
 omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
 
 [node name="Flame2" type="MeshInstance3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 1.76, -4.8)
@@ -206,6 +209,7 @@ light_color = Color(1, 0.6941, 0.4314, 1)
 light_energy = 2.2
 omni_range = 9.0
 omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
 
 [node name="Flame3" type="MeshInstance3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.76, -7.6)
@@ -218,6 +222,7 @@ light_color = Color(1, 0.6941, 0.4314, 1)
 light_energy = 2.2
 omni_range = 9.0
 omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
 
 [node name="Flame4" type="MeshInstance3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 2.7, -9.7)
@@ -230,6 +235,7 @@ light_color = Color(1, 0.6941, 0.4314, 1)
 light_energy = 4.0
 omni_range = 12.0
 omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
 shadow_enabled = true
 shadow_bias = 0.05
 
@@ -244,6 +250,7 @@ light_color = Color(1, 0.6941, 0.4314, 1)
 light_energy = 2.6
 omni_range = 8.0
 omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
 
 [node name="Flame6" type="MeshInstance3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.62, -5.75)

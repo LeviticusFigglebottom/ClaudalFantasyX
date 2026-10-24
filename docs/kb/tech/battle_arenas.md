@@ -35,6 +35,15 @@ An arena is the scene **`assets/environments/arenas/<arena_id>/<arena_id>.tscn`*
    - `FloodAnchor`: the flood rig's water origin (x, z) and its starting height (y).
 8. **Presentation only.** Nothing in an arena reads or writes combat state; the engine stays headless.
 
+### Lamps never light the fog (the Lead's rule, 2026-10-24)
+Every OmniLight3D and SpotLight3D in an arena sets `light_volumetric_fog_energy = 0`. Godot's default is 1.0, and
+an arena can host a dense FogVolume at runtime: a boss's god rays, the Reefball's shafts, or the underwater rig.
+At 1.0 nearby lamps band that volume bright; on the PC's Reefball night (M3-RND-05) four lamps turned the god rays
+into green bars that read as daytime. Rhen's lantern is the same trap. `arena_scenes.py` writes 0 on every lamp.
+`tools/tests/test_fog_lamps.py` checks every arena scene, and every other environment or level scene that holds
+its own FogVolume. A light in a scene Environment doesn't own goes in its `KNOWN_EXCEPTIONS` with the request task
+that fixes it. Directional lights are out of scope: the sun's fog energy is a grade choice.
+
 ## The arenas
 
 | Arena id | Encounter | Sub-frame | Light (colour script) | What is there |

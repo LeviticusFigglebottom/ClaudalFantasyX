@@ -98,6 +98,11 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **New standing queue started** (your message): M3-ENV-01 Tidecup, M3-ENV-02 Brine Shoals, M3-ENV-03 Terraces of Ash with worktree agents now; M3-ENV-04 Seawall and M3-ENV-05 the lamp-diver sea floor next.
 
 ## Swap-in notes for m2-slice
+- **Fog-lamp rule (the Lead, 2026-10-24):** a light near a dense FogVolume keeps `light_volumetric_fog_energy = 0`.
+  In `ch03/shell_shrine/shell_shrine.tscn` I set it on my own `Bounce/Skylight` (the light added under M2-ENV-09;
+  no registered baseline shows the shrine). Your three `Bounce/Shaft_*` lights and `_pool_bounce()` in
+  `shell_shrine_level.gd` are still on the default 1.0 inside `ShaftFog`. **M3-ARC-02** is filed for you;
+  `tools/tests/test_fog_lamps.py` lists them as known exceptions until it lands.
 - **M2-ENV-10, B06 Saltgrass Causeway:** instance
   `assets/environments/zones/saltgrass_causeway/saltgrass_causeway_dressing.tscn`. Rails and triggers come from
   `$Dresser.path_points()`. Banter beats, examine points and the B10 trigger (`drownbell_disc`, r < 15.1 m)

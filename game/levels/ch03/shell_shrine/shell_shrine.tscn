@@ -93,6 +93,7 @@ light_specular = 0.2
 omni_range = 18.0
 omni_attenuation = 0.6
 shadow_enabled = false
+light_volumetric_fog_energy = 0.0
 
 [node name="Shaft_b1" type="OmniLight3D" parent="Bounce"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 1.42, -3)

@@ -101,4 +101,9 @@ spots, collision shapes and the prewarm registration are listed there).
 **Asked of others:** PC GPU, M3-RND-01 (accept or amend the drop contract, then the look); Character + Tools,
 sign-off on the new import kind.
 
+- **Fog-lamp rule (Lead, 2026-10-24; env-art):** the Tidecup preview has no omni or spot lamps yet; it is a noon
+  scene. Any lamp added for the Reefball night must set `light_volumetric_fog_energy = 0`, because the ball's god
+  rays are a dense FogVolume (M3-RND-05). `tools/tests/test_fog_lamps.py` enforces it once the lamps sit in a
+  scene with the volume or in an arena (docs/kb/tech/battle_arenas.md).
+
 ## Review log

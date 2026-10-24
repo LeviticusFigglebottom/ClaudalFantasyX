@@ -723,7 +723,11 @@ def _write_lamps(sc: Scene, a: dict) -> None:
         energy = round(lp.get("energy", spec["energy"]) * (1.0 if lp.get("own", False) else scale), 3)
         props = {"transform": _xyz(at), "light_color": hexc(lp.get("color", spec["color"])),
                  "light_energy": energy, "omni_range": lp.get("range", spec["range_m"]),
-                 "omni_attenuation": spec["attenuation"]}
+                 "omni_attenuation": spec["attenuation"],
+                 # Never light the volumetric fog: an arena can host a dense FogVolume (a boss's god rays, the
+                 # Reefball's shafts, the underwater rig's), and a lamp at the default 1.0 bands it bright
+                 # (the Lead's fog-lamp rule; docs/kb/tech/battle_arenas.md).
+                 "light_volumetric_fog_energy": 0.0}
         if lp.get("shadow", False):
             props["shadow_enabled"] = "true"
             props["shadow_bias"] = 0.05
