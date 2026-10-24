@@ -946,6 +946,14 @@
         "res://game/flow/field_battle.tscn"
       ],
       "note": "M2-RND-04 Ilun's Floodnet over the flood."
+    },
+    {
+      "path": "res://game/shaders/vfx/battle_tideline.gdshader",
+      "scenes": [
+        "res://game/levels/ch02/haluna/haluna.tscn",
+        "res://game/levels/ch03/first_verse/first_verse.tscn"
+      ],
+      "note": "M2-BPR-05 the encounter stinger's tide line (built at runtime by BattleStinger, drawn in the field before the router's fade). The zones that open a battle list their scenes here."
     }
   ]
 }

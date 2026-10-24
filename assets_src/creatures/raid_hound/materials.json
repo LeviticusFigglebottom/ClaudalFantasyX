@@ -1,0 +1,29 @@
+{
+  "_doc": "Raid-hound (act1/raid_hound.md): coat (mud-coloured), leather (the harness, the red-lacquered muzzle cage, the Order's mark, brass rings), eye. No weak-point glow, on purpose. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "coat": {
+      "roughness_dry": 0.9,
+      "roughness_wet": 0.6,
+      "detail_scale": 120.0,
+      "detail_albedo": 0.18,
+      "detail_bump": 0.6,
+      "cavity_albedo": 0.4
+    },
+    "leather": {
+      "roughness_dry": 0.55,
+      "roughness_wet": 0.35,
+      "detail_scale": 60.0,
+      "detail_albedo": 0.15,
+      "detail_bump": 0.3,
+      "cavity_albedo": 0.4
+    },
+    "eye": {
+      "roughness_dry": 0.12,
+      "roughness_wet": 0.06,
+      "specular": 0.7,
+      "clearcoat_wet": 1.0,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0
+    }
+  }
+}

@@ -31,6 +31,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import chapter_flow_check  # noqa: E402
 import dlgc  # noqa: E402
+from validate_creatures import check_creatures  # noqa: E402
 
 ELEMENTS = {"none", "fire", "water", "lightning", "ice", "holy", "glimmer"}
 AFFINITIES = {"normal", "weak", "resist", "immune", "absorb"}
@@ -947,6 +948,11 @@ def _items_table_errors(doc: object, refs: dict[str, set[str]], w0: str, errs: l
     order = rules.get("category_order")
     if not isinstance(order, list) or sorted(order) != sorted(ITEM_CATEGORIES):
         errs.append(f"{w0}: rules.category_order must list each of {sorted(ITEM_CATEGORIES)} once")
+    # M2-CMB-07: the new-game purse (optional) is a whole number between 0 and the currency cap.
+    if "starting_currency" in rules:
+        start, cap = rules["starting_currency"], rules.get("currency_cap")
+        if not _is_int(start) or start < 0 or (_is_int(cap) and start > cap):
+            errs.append(f"{w0}: rules.starting_currency must be an int from 0 to rules.currency_cap")
     items: dict[str, dict] = {}
     for it in _rows(doc, "items", w0, errs):
         w = f"{w0}: item '{it['id']}'"
@@ -1279,9 +1285,12 @@ def run(root: Path) -> Report:
     check_undertow(root, files, rep)
     check_zone_weather(root, files, rep)
     check_chapter_flow(root, files, declared_flags_quiet(root), rep)
+    check_choreo(files, rep)
+    check_audio(root, rep)
     check_provenance(root, rep)
     check_banned(root, rep)
     check_binary_sizes(root, rep)
+    check_creatures(root, files, rep)
     return rep
 
 
@@ -2295,6 +2304,37 @@ def check_zone_weather(root: Path, files: dict[str, object], rep: Report) -> Non
     for e in zone_weather_errors(doc, lambda res: _res_path(root, res).is_file()):
         rep.err(e)
 
+
+# --- M2-BPR-01: battle choreography (game/data/battle/choreo.json; tools/validate_choreo.py) ----
+
+
+def check_choreo(files: dict[str, object], rep: Report) -> None:
+    import validate_choreo as vc  # noqa: E402
+
+    doc = files.get(vc.CHOREO_FILE)
+    if doc is None:
+        rep.err(f"{vc.CHOREO_FILE}: missing")
+        return
+    for e in vc.choreo_errors(doc, files.get(vc.SKILLS_FILE)):
+        rep.err(e)
+    flags_text = (Path(__file__).resolve().parent.parent / vc.FLAGS_FILE).read_text(encoding="utf-8")
+    for e in vc.summon_errors(doc, vc.declared_flags(flags_text)):
+        rep.err(e)
+    arenas = files.get(vc.ARENAS_FILE)
+    if arenas is not None:
+        root = Path(__file__).resolve().parent.parent
+        for e in vc.arena_errors(arenas, files.get(vc.ENCOUNTERS_FILE), lambda r: _res_path(root, r).is_file()):
+            rep.err(e)
+
+
+def check_audio(root: Path, rep: Report) -> None:
+    """M2-AUD-02: the audio tables (tools/audio/data_check.py)."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent / "audio"))  # the checker's code, not the root's
+    import data_check  # noqa: E402
+
+    for e in data_check.audio_errors(data_check.load_files(root), lambda res: _res_path(root, res).is_file(),
+                                     declared_flags_quiet(root)):
+        rep.err(e)
 
 
 # --- M2-UI-06: inns (shops.json "inns": a price for a full rest, game/progression/inn.gd) ---------

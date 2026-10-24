@@ -1,0 +1,10 @@
+{
+  "_doc": "Tower limpet surfaces (docs/kb/art/creatures/act1/tower_limpet.md): shell is the ribbed cone and the shutter it grew over (the spawn_wound seam where they meet), foot the wet muscle. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "shell": {"roughness_dry": 0.8, "roughness_wet": 0.35, "wet_darken": 0.72, "clearcoat_wet": 0.3,
+              "detail_scale": 26.0, "detail_albedo": 0.16, "detail_bump": 0.35, "cavity_albedo": 0.45,
+              "emission_color": "#3FE0C8", "emission_energy": 1.8, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.4},
+    "foot": {"roughness_dry": 0.3, "roughness_wet": 0.15, "clearcoat_wet": 0.8, "detail_scale": 30.0,
+             "detail_albedo": 0.1, "detail_bump": 0.3, "cavity_albedo": 0.4}
+  }
+}

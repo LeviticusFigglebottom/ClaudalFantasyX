@@ -1,0 +1,23 @@
+# M2-QA-02: the Lead's hung shrine_s01_approach capture process (batch-5 gate, 2026-10-24), symbolised offline.
+# Pinned build f7bcf5186cd245063b93392f28d2764e5f38dc94 (Debian 4.6.3+ds-2), Ubuntu debuginfod symbols.
+# The godot image's load base, 0x7f38c5e00000, came from matching return addresses to pthread_mutex_lock@plt
+# call sites (the only page-aligned base that put every frame inside .text). The gdb backtrace had no
+# symbols or unwind info, so its frames come from a stack scan. Only the frames that fall in the godot image
+# are listed here; the libc and lavapipe frames above them are left out. Frame numbers are gdb's.
+# Main: #12 is probably a stale stack slot. #3 -> #6 -> #15 is the real chain (shader_rd.h:201, the
+# _compile_version_end call inside version_get_shader, which is inlined into _get_shader_variant).
+
+Thread 1 (main / render thread): pthread_cond_wait in
+  #3  WorkerThreadPool::wait_for_group_task_completion(long) + 460      (semaphore.h:75)
+  #6  ShaderRD::_compile_version_end(ShaderRD::Version*, int) + 143
+  #12 RenderingDevice::framebuffer_format_create_multipass(...) + 817   (stale?)
+  #15 SceneShaderForwardClustered::ShaderData::_get_shader_variant(unsigned short) const + 608   (shader_rd.h:201)
+
+WorkerThread 0, 1, 2, 3 (identical): pthread_mutex_lock in
+  #2  SceneShaderForwardClustered::ShaderData::_get_shader_variant(unsigned short) const + 215   (<mutex>:130, the version mutex)
+  #10 SceneShaderForwardClustered::ShaderData::_create_pipeline(PipelineKey) + 1873
+
+Idle: llvmpipe-0..3 and the lavapipe queue thread (pthread_cond_wait in libvulkan_lvp), godot:disk$0/$1,
+WSI swapchain threads, DisplayServerX11::_wait_for_events, FreeDesktopPortalDesktop::_thread_monitor,
+_IP_ResolverPrivate::_thread_function, the ThorVG task scheduler, and an OS_Unix::delay_usec sleeper (most
+likely the Dummy audio driver's thread). No audio, resource-load, VoxelGI-bake or GDScript frame is anywhere in the process.

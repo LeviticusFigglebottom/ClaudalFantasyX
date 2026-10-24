@@ -160,9 +160,10 @@ func opening_banner() -> OpeningBanner:
 
 
 ## True while a modal HUD panel (the Read panel) is open: BattleController.tick() then holds every
-## wait, so the battle does not move on under it and the panel costs no battle time.
+## wait, so the battle does not move on under it and the panel costs no battle time. M2-BPR-05: also
+## while the opening banner waits for the router's fade to lift (OpeningBanner.is_pending).
 func holds_battle() -> bool:
-	return _read_panel != null and _read_panel.is_open()
+	return (_read_panel != null and _read_panel.is_open()) or (_banner != null and _banner.is_pending())
 
 
 ## Closes the Read panel and the opening banner (a new battle, the result screen).

@@ -1,0 +1,42 @@
+{
+  "_doc": "The Undertow's Reach (act1/undertows_reach.md): water (the forearm: black water, slate streaks, the door-sized wounds), crust (the spawn-crust hand and the drowned spawn bodies, spawn_wound seams), wreck (spars driven through it). The storm's own water look is the PC GPU session's; this is the creature-shader stand-in. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "water": {
+      "roughness_dry": 0.12,
+      "roughness_wet": 0.05,
+      "specular": 0.6,
+      "clearcoat_wet": 1.0,
+      "wet_darken": 0.2,
+      "detail_scale": 3.0,
+      "detail_albedo": 0.1,
+      "detail_bump": 0.6,
+      "rim_sheen": 0.6,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 3.0,
+      "emission_pulse_hz": 0.4,
+      "emission_pulse_depth": 0.35
+    },
+    "crust": {
+      "roughness_dry": 0.45,
+      "roughness_wet": 0.15,
+      "clearcoat_wet": 0.8,
+      "detail_scale": 6.0,
+      "detail_albedo": 0.15,
+      "detail_bump": 0.7,
+      "cavity_albedo": 0.5,
+      "cavity_ao": 0.6,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 2.4,
+      "emission_pulse_hz": 0.4,
+      "emission_pulse_depth": 0.35
+    },
+    "wreck": {
+      "roughness_dry": 0.7,
+      "roughness_wet": 0.3,
+      "detail_scale": 8.0,
+      "detail_albedo": 0.2,
+      "detail_bump": 0.5,
+      "cavity_albedo": 0.4
+    }
+  }
+}

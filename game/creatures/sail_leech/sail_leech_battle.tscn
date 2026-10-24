@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_actor.gd" id="1_actor"]
+[ext_resource type="PackedScene" uid="uid://cy5ov8sgom5hs" path="res://assets/creatures/sail_leech/sail_leech.glb" id="2_model"]
+
+[node name="SailLeech" type="Node3D"]
+script = ExtResource("1_actor")
+creature_id = &"sail_leech"
+metadata/hymn_battle_actor = true
+
+[node name="Model" parent="." instance=ExtResource("2_model")]

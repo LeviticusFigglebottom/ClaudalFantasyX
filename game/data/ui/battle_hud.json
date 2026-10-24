@@ -112,7 +112,7 @@
     "opening_banner": {"rect": [560, 156, 800, 120], "title_height": 72, "rule_top": 6, "rule_bottom": 66,
                        "rule_length": 320, "rule_px": 1, "mark_px": 10, "chevron_px": 2, "rise_px": 8,
                        "fade_in_sec": 0.3, "hold_sec": 1.8, "fade_out_sec": 0.5, "band_alpha": 0.72,
-                       "band_fade": 0.22},
+                       "band_fade": 0.22, "reveal_wait_max_sec": 3.0},
     "boss_status": {"rect": [48, 156, 480, 0], "line_gap": 2}
   }
 }

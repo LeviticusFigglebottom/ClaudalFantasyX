@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "doc": "Diving rows (M3-AUD-06; assets_src/sfx/underwater_sfx.py): Rhen's dives (Ch1's drowned tower and later dives) and any zone with an UnderwaterRig (M2-RND-02). Same row format as sfx.json; AudioData.sfx_rows merges this file in. Positional on World at the diver. dive_lantern_hum is a seamless loop (it imports with loop on): play it once when the lit lantern goes under and stop the returned player when it comes up. The underwater beds (underwater_deep, drowned_tower) are ambience.json beds. No dive scene exists yet, so these rows wait for one.",
+  "sfx": {
+    "dive_entry": {
+      "files": ["res://assets/audio/sfx/dive/dive_entry.ogg"],
+      "bus": "World", "pitch_jitter": 0.03, "voices": 2, "unit_size_m": 10.0
+    },
+    "dive_surface": {
+      "files": ["res://assets/audio/sfx/dive/dive_surface.ogg"],
+      "bus": "World", "pitch_jitter": 0.02, "voices": 1, "unit_size_m": 10.0
+    },
+    "dive_bubble_burst": {
+      "files": ["res://assets/audio/sfx/dive/dive_bubble_burst.ogg"],
+      "bus": "World", "pitch_jitter": 0.06, "cooldown_ms": 200, "voices": 2, "unit_size_m": 6.0
+    },
+    "dive_stroke": {
+      "files": [
+        "res://assets/audio/sfx/dive/dive_stroke_1.ogg",
+        "res://assets/audio/sfx/dive/dive_stroke_2.ogg",
+        "res://assets/audio/sfx/dive/dive_stroke_3.ogg",
+        "res://assets/audio/sfx/dive/dive_stroke_4.ogg"
+      ],
+      "bus": "World", "pitch_jitter": 0.05, "cooldown_ms": 250, "voices": 2, "unit_size_m": 6.0
+    },
+    "dive_lantern_hum": {
+      "files": ["res://assets/audio/sfx/dive/dive_lantern_hum.ogg"],
+      "bus": "World", "voices": 1, "unit_size_m": 4.0
+    }
+  }
+}

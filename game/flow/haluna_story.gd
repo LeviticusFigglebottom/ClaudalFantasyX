@@ -5,7 +5,7 @@ extends Node
 ## `place_at(spawn)`. What it plays and where comes from first_playable.json "haluna".
 ##   arrival   while `ch02_met_asha` is unset: Rhen on the Beach spawn, Cutscene A
 ##             (ch02_girl_on_the_beach), then free play. Asha and Toma join Rhen there: once
-##             `ch02_met_asha` is set, an empty party is filled from party_after_intro (party and
+##             `ch02_met_asha` is set, they join (PartyJoins: first_playable.json "party" joins, party and
 ##             reserve ids, M2 slice), which the field menu's Heroes page reads (M2-UI-04). Once the
 ##             tideline battle is won (its victory flag) and until after_battle_flag is set, an
 ##             arrival plays B02 instead (M2-FP-13): Rhen at the after_battle spawn and Neme's table in-engine.
@@ -99,16 +99,13 @@ func begin() -> void:
 		busy = false
 
 
-## Asha and Toma join once Cutscene A has played: an empty party is filled from party_after_intro.
-## A save from before this existed (the flag set, no party) is filled on its next arrival.
+## Asha and Toma join when Cutscene A sets intro_flag (PartyJoins, first_playable.json "party" joins, through
+## Game's flag hook). A save from before joins existed (the flag set, no party) joins them on its next arrival,
+## through the same row, so they get their starting gear too.
 func _join_party() -> void:
 	if not _flag(&"intro_flag") or not Game.state.party_ids.is_empty():
 		return
-	var join: Dictionary = cfg.get("party_after_intro", {})
-	for id: Variant in join.get("party", []):
-		Game.state.party_ids.append(StringName(str(id)))
-	for id: Variant in join.get("reserve", []):
-		Game.state.reserve_ids.append(StringName(str(id)))
+	PartyJoins.on_flag(Game.state, StringName(str(cfg.get("intro_flag", ""))), true)
 
 
 func _autostart() -> void:

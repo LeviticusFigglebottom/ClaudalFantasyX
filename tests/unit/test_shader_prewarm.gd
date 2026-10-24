@@ -681,6 +681,62 @@ func test_headless_skips_the_first_run_and_an_interrupted_warm_up_leaves_nothing
 	_clean_tmp()
 
 
+## M2-RND-11: what a first run does. A resident_only + first_run boot stages every entry the preset wants
+## (not only the resident ones) and harvests first_run_scenes; when it finishes it writes the marker with
+## this preset's key, which then matches (no second first run) while another preset's key does not.
+func test_a_first_run_stages_every_wanted_entry_harvests_its_scenes_and_writes_its_key() -> void:
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var mi := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color.CORAL
+	box.material = mat
+	mi.mesh = box
+	var packed := PackedScene.new()
+	packed.pack(mi)
+	mi.free()
+	var scene_path := TMP_DIR + "/first_run_scene.tscn"
+	ResourceSaver.save(packed, scene_path)
+	var marker := TMP_DIR + "/pipeline_warm.cfg"
+	var reg := {
+		"materials":
+		[{"path": TEST_MATERIAL, "scenes": [], "resident": true}, {"path": TEST_MATERIAL, "scenes": ["res://x.tscn"]}],
+		"first_run_scenes": [scene_path],
+		"first_run_marker": marker,
+		"max_scene_materials": 8,
+	}
+	var reg_path := _write_registry("registry_first_run.json", reg)
+	assert_false(ShaderPrewarm.marker_current("high", reg_path), "no marker yet")
+	var plain := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	plain.registry_path = reg_path
+	plain.resident_only = true
+	plain.preset_id = "high"
+	_host().add_child(plain)
+	assert_eq(plain.start(""), 1, "a later boot: the resident entry only")
+	plain.free()
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	node.resident_only = true
+	node.first_run = true
+	node.preset_id = "high"
+	_host().add_child(node)
+	assert_eq(node.start(""), 3, "the first run: both entries, and the harvested scene's material")
+	for i in 400:
+		if not node.is_running():
+			break
+		node.tick(4.0)
+	assert_false(node.is_running(), "the first run finishes")
+	assert_true(FileAccess.file_exists(marker), "and writes its marker")
+	var cfg := ConfigFile.new()
+	assert_eq(cfg.load(marker), OK)
+	assert_eq(str(cfg.get_value("pipelines", "key", "")), ShaderPrewarm.first_run_key("high"), "the preset's key")
+	assert_true(ShaderPrewarm.marker_current("high", reg_path), "so the next launch skips the first run")
+	assert_false(ShaderPrewarm.marker_current("low", reg_path), "another preset still needs one")
+	if is_instance_valid(node):
+		node.free()
+	_clean_tmp()
+
+
 func _host() -> Node:
 	# The tree root is busy while the runner scene is readying, so attach under the running scene.
 	return (Engine.get_main_loop() as SceneTree).current_scene

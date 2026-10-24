@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "doc": "Field SFX rows (M2-AUD-05; docs/kb/tech/audio_runtime.md): footsteps by surface on World (FootstepAudio plays them at the walker's feet; footsteps.json picks the row per scene) and the new menus' sounds on UI (ui_sfx.json hooks, played by UiAudio). Same row format as sfx.json; AudioData.sfx_rows merges this file in. The files come from assets_src/sfx/field_sfx.py. ui_buy and ui_inn_rest wait for the shop and inn menus (M2-UI-06): ui_sfx.json carries their pending hooks.",
+  "sfx": {
+    "step_sand": {
+      "files": [
+        "res://assets/audio/sfx/step_sand_01.ogg",
+        "res://assets/audio/sfx/step_sand_02.ogg",
+        "res://assets/audio/sfx/step_sand_03.ogg",
+        "res://assets/audio/sfx/step_sand_04.ogg",
+        "res://assets/audio/sfx/step_sand_05.ogg"
+      ],
+      "bus": "World", "pitch_jitter": 0.04, "cooldown_ms": 120, "voices": 3, "unit_size_m": 10.0
+    },
+    "step_stone": {
+      "files": [
+        "res://assets/audio/sfx/step_stone_01.ogg",
+        "res://assets/audio/sfx/step_stone_02.ogg",
+        "res://assets/audio/sfx/step_stone_03.ogg",
+        "res://assets/audio/sfx/step_stone_04.ogg",
+        "res://assets/audio/sfx/step_stone_05.ogg"
+      ],
+      "bus": "World", "pitch_jitter": 0.04, "cooldown_ms": 120, "voices": 3, "unit_size_m": 10.0
+    },
+    "step_wood": {
+      "files": [
+        "res://assets/audio/sfx/step_wood_01.ogg",
+        "res://assets/audio/sfx/step_wood_02.ogg",
+        "res://assets/audio/sfx/step_wood_03.ogg",
+        "res://assets/audio/sfx/step_wood_04.ogg",
+        "res://assets/audio/sfx/step_wood_05.ogg"
+      ],
+      "bus": "World", "pitch_jitter": 0.04, "cooldown_ms": 120, "voices": 3, "unit_size_m": 10.0
+    },
+    "ui_menu_open": {"files": ["res://assets/audio/sfx/ui_menu_open.ogg"], "bus": "UI", "voices": 2},
+    "ui_menu_close": {"files": ["res://assets/audio/sfx/ui_menu_close.ogg"], "bus": "UI", "voices": 2},
+    "ui_page": {"files": ["res://assets/audio/sfx/ui_page.ogg"], "bus": "UI", "cooldown_ms": 60, "voices": 2},
+    "ui_buy": {"files": ["res://assets/audio/sfx/ui_buy.ogg"], "bus": "UI", "cooldown_ms": 80, "voices": 2},
+    "ui_inn_rest": {"files": ["res://assets/audio/sfx/ui_inn_rest.ogg"], "bus": "UI", "voices": 1},
+    "ui_error": {"files": ["res://assets/audio/sfx/ui_error.ogg"], "bus": "UI", "cooldown_ms": 80, "voices": 2},
+    "ui_vowbound_open": {"files": ["res://assets/audio/sfx/ui_vowbound_open.ogg"], "bus": "UI", "voices": 1}
+  }
+}

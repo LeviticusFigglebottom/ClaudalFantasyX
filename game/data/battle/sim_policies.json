@@ -72,14 +72,14 @@
       "gear": {
         "rhen": [
           "rhen_coral_hooks",
-          "rhen_reefline_harness"
+          "rhen_patched_tether"
         ],
         "asha": [
-          "asha_bellshell_staff",
-          "asha_pearl_bangle"
+          "asha_vigil_staff",
+          "asha_cord_bangle"
         ],
         "toma": [
-          "toma_net_rack_spear",
+          "toma_boarding_spear",
           "toma_chiselled_shield"
         ]
       },

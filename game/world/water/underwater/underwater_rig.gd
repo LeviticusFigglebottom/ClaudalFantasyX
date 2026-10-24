@@ -395,6 +395,10 @@ func _build_lantern(shadows: bool) -> void:
 		lantern = OmniLight3D.new()
 		lantern.name = "RhenLantern"
 		lantern_target.add_child(lantern)
+		# A positional light near the cast: the mouths' bounce passes now draw (M1-RND-26).
+		var root := _scene_root()
+		if root != null:
+			CharacterShaderTiers.refresh_bounce_passes.call_deferred(root)
 	var ln := data.get("lantern", {}) as Dictionary
 	lantern.light_color = Color(str(colors().get("lantern", "#FFB16E")))
 	lantern.light_energy = float(ln.get("energy", 5.0))

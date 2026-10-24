@@ -52,6 +52,8 @@ var menus: BattleMenus
 var state: StringName = STATE_IDLE
 ## Last victory: id -> {xp, moves}; moves is -1 for a fighter with no Lattice start yet.
 var last_awards: Dictionary = {}
+## Last victory's lume and drops, paid into Game.state when live (BattleRewards.pay, M2-CMB-07).
+var last_spoils: Dictionary = {}
 var battles_started := 0
 ## The fixture the current battle started from (null for live data).
 var fixture: BattleFixture
@@ -217,6 +219,7 @@ func _build_engine(
 	_setup = {"active": active, "reserve": reserve, "encounter": encounter, "seed": rng_seed}
 	battles_started += 1
 	last_awards = {}
+	last_spoils = {}
 	_after_wait = Callable()
 	floats.reset()
 	progress = lattice
@@ -232,7 +235,7 @@ func _build_engine(
 	BattleSwellCarry.attach(swell, engine, persist_progress and fixture == null)  # M2-ARC-01
 	swell.mode_unlocked.connect(SwellModeRows.announce.bind(self))  # "Tether unlocked" (M2-UI-03)
 	bestiary.attach(engine, persist_progress and fixture == null)
-	engine.action_resolved.connect(floats.on_action_resolved)
+	BattleChoreo.attached(self, engine)  # M2-BPR-01: listen-only choreography; it lands the floats
 	boss = BattleBossHud.attached(self, engine)
 	BattleVfx.attached(self, engine)  # M2-RND-03: listen-only battle VFX (docs/kb/tech/battle_vfx.md)
 	stage.spawn(engine)
@@ -388,7 +391,7 @@ func try_escape() -> bool:
 	if engine.escape():
 		_set_state(STATE_BUSY)
 		hud.commands.visible = false
-		_wait(_pace(&"result_delay_sec"), _show_result)
+		_wait(stage.outro_hold(_pace(&"result_delay_sec")), _show_result)  # M2-BPR-05 victory pose
 		return true
 	hud.set_help(tr("HUD_ESCAPE_FAILED"))
 	after_action(actor)
@@ -439,7 +442,7 @@ func _next_turn() -> void:
 	if engine.outcome != &"":
 		_set_state(STATE_BUSY)
 		hud.commands.visible = false
-		_wait(_pace(&"result_delay_sec"), _show_result)
+		_wait(stage.outro_hold(_pace(&"result_delay_sec")), _show_result)  # M2-BPR-05 victory pose
 		return
 	var auto := _auto_reason()
 	hud.party.set_current(current_actor_id(), auto)
@@ -489,7 +492,7 @@ func after_action(actor_id: StringName, hold: StringName = &"action_hold_sec") -
 	hud.target_cursor.show_provoker(Vector2.ZERO, false)
 	hud.party.refresh(pacing_scale > 0.0, _pace(&"action_hold_sec") * 0.5)
 	stage.refresh_ko(engine)
-	_wait(_pace(hold), _next_turn)
+	_wait(stage.hold_after(_pace(hold)), _next_turn)  # the choreography finishes first (M2-BPR-01)
 
 
 func _open_command() -> void:
@@ -955,7 +958,7 @@ func _drain() -> void:
 
 
 func _pace(key: StringName) -> float:
-	return HudLayout.num(_pacing, String(key)) * pacing_scale / hud.battle_speed()  # M2-UI-23 battle speed
+	return HudLayout.num(_pacing, String(key)) * pacing_scale / stage.battle_speed(hud.battle_speed())  # M2-UI-23/BPR-03
 
 
 func _set_state(s: StringName) -> void:

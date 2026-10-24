@@ -40,7 +40,7 @@ Every suite names a **loadout** in `game/data/battle/sim_policies.json` (`loadou
 | M1 sandbox (early Ch2) | `m1_starting` | Starting gear (`equipment.json` `starting`) | 2 Salt Tonic |
 | M1 sandbox, geared (measured, its own bands) | `m1_tier1` | Every hero's tier-1 piece, weapon and armor, with their pre-filled ability | 4 Salt Tonic, 1 Relighting Wick |
 | M1 sandbox, Ilun called (stress test) | `sandbox_vowbound` | None | None; `vowbound: [ilun]` |
-| Ch3 boss (Drownbell) | `ch03_drownbell` | A slice player can afford one or two tier-1 pieces; we assume all of them, the generous case. Plus the story flag `ch03_ilun_bound` (Call Ilun). | as above |
+| Ch3 boss (Drownbell) | `ch03_drownbell` | Starting gear plus the two most likely tier-1 buys, Rhen's Coral-Bitten Hooks and Toma's Chiselled Shield (720 lume of the slice's 800–900; M2-CMB-07 follow-up, balance_report.md 2026-10-24). Plus the story flag `ch03_ilun_bound` (Call Ilun). | as above |
 | Later chapters | add one loadout per chapter: the gear that chapter's shops sell, and about one consumable per expected fight | | |
 
 Only `smart` uses items. Its rule: a heal item on the most hurt ally below `heal_below_pct` when the actor can't heal by skill, and a revive item on a fallen active member when no reserve is left to swap in. Gear moves `naive` by about 14 points in the sandbox (10.9% → 25.1%), which is the point of buying it; the showcase bands are defined for starting gear.
@@ -129,14 +129,14 @@ ADR 0027 accepted a **provisional ceiling of 40%** for a masher who calls the Vo
 
 ### Ch3 boss: Drownbell (vertical slice), `drownbell`
 
-From [act_outline.md](../story/beats/act_outline.md): two phases on the causeway. Phase 1's toll delays the whole party on the timeline, and breaking its rim (Rhen's precise strikes) silences the toll. In phase 2 the polyps heal it and summoning Ilun clears the water field. Party: Rhen, Asha, Toma, with no reserve. Loadout `ch03_drownbell`: the `m1_tier1` gear and consumables plus the story flag `ch03_ilun_bound` (a loadout's `flags` become `BattleEngine.story_flags`), so Asha knows Call Ilun. Mechanics and data: [battle_ctb.md § The Drownbell](battle_ctb.md#the-drownbell-m2-fp-06).
+From [act_outline.md](../story/beats/act_outline.md): two phases on the causeway. Phase 1's toll delays the whole party on the timeline, and breaking its rim (Rhen's precise strikes) silences the toll. In phase 2 the polyps heal it and summoning Ilun clears the water field. Party: Rhen, Asha, Toma, with no reserve. Loadout `ch03_drownbell`: starting gear plus two tier-1 pieces (the table above), the `m1_tier1` consumables, and the story flag `ch03_ilun_bound` (a loadout's `flags` become `BattleEngine.story_flags`), so Asha knows Call Ilun. Mechanics and data: [battle_ctb.md § The Drownbell](battle_ctb.md#the-drownbell-m2-fp-06).
 
 | Policy | Band | Why |
 |---|---|---|
 | `naive` | 0–10% | A boss is never beaten by mashing. |
 | `role_answer` | 70–90% | Rhen on the rim is enough to win most of the time, but not without risk. |
 | `smart` | 80–95% | Healing and replacement close most of the gap; a 5% or greater loss rate keeps it a boss. |
-| p90 turns | ≤ 60 | Two phases, still a slice-length fight. |
+| p90 turns | ≤ 66 | Two phases, still a slice-length fight. Raised from 60 (Lead, 2026-10-24, big7): Ilun's real call adds his own actions to the count, and the affordable party (M2-CMB-07) fights longer. Smart's p90 is 65 at 1000 seeds, and no stat change got it below 61. |
 
 The encounter landed in M2-FP-06 with a first-playable stand-in for the Vowbound summon (ADR 0026). Both `role_answer` and `smart` carry the "clear the field" rule: `sim_policies.json` `clear_field_skill: call_ilun`, so whoever can use it does so as soon as a field is up (`smart` heals first if someone is below 45%). Measured at 1000 seeds: naive 0.0%, role answer 79.7%, smart 89.6%, p90 51 actions (balance_report.md). `tests/integration/test_drownbell_battle.gd` asserts loose bands at 200 seeds on every run.
 

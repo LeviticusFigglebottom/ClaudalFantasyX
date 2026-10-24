@@ -28,8 +28,14 @@ func test_defaults_come_from_the_data_file() -> void:
 				&"objective_cue",
 				&"tutorial_tips",
 				&"battle_speed",
+				&"battle_animations",
 				&"summon_cinematic",
-				&"dialogue_auto"
+				&"dialogue_auto",
+				&"reduced_audio",
+				&"master_volume",
+				&"music_volume",
+				&"sfx_volume",
+				&"voice_volume"
 			]
 			as Array[StringName]
 		)

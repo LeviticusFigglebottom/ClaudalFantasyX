@@ -47,7 +47,7 @@ BattleRequest.start(&"ch02_tideline", &"ch02/haluna", &"Beach", &"some_declared_
 
 | API | Meaning |
 |---|---|
-| `static start(encounter, return_location, return_spawn, victory_flag := &"", escape_at := &"") -> BattleRequest` | `make()` + `submit()`: records the request and opens the field battle scene through `SceneRouter.change_scene`. Returns the request (adjust `active`/`reserve`/`rng_seed` at once if needed). |
+| `static start(encounter, return_location, return_spawn, victory_flag := &"", escape_at := &"") -> BattleRequest` | `make()` + `submit()`: records the request, plays the encounter stinger in the field (`BattleStinger`, M2-BPR-05, battle_presentation.md) and then opens the field battle scene through `SceneRouter.change_scene`. Returns the request (adjust `active`/`reserve`/`rng_seed` at once if needed). |
 | `static make(...) -> BattleRequest` | Builds one with the data file's party (`active` [rhen, asha], `reserve` [toma]) and `seed`; records nothing. |
 | `static submit(r)` | Records `r` and opens `field_battle.scene`. |
 | `static pending()`, `take()`, `clear()` | The one waiting request; `take()` returns and forgets it. |
@@ -179,4 +179,8 @@ The thread now runs: Haluna's causeway head → **the Saltgrass Causeway** (B06)
 - The Shell Shrine is a location now (`ch03/shell_shrine`; `Spawns/Entry` and `Spawns/Exit`, `ShellShrineLevel.place_at`).
 - When the inner pool fills, the respawn point moves to `Exit` (`shell_shrine.checkpoint_location` and `checkpoint_spawn`) and a checkpoint autosave is requested.
 - A Drownbell loss followed by **Return to last save** resumes at the open door. The door and the side pool restore from their flags, so the trial isn't replayed. `test_fp_thread` walks that path.
+
+## Party joins (M2-CMB-07 follow-up)
+
+`first_playable.json` "party" says who joins `Game.state.party_ids`: `new_game` (Rhen) on `Game.new_game()`, and `joins[flag]` (Asha and Toma on `ch02_met_asha`, which Cutscene A sets) the first time the flag is set truthy, through `EventBus.flag_changed`. `PartyJoins` (`game/flow/party_joins.gd`) calls `PartyGoods.join`, which adds the hero once and grants their starting gear without replacing worn pieces. Field battles still take their party from "field_battle" and "first_verse"; live battles now wear the joined heroes' gear (`BattleVitals.live_gear`). A save made before this change has no joined heroes and stays that way (nothing back-fills `party_ids` on load). Tests: `tests/unit/test_party_joins.gd`.
 

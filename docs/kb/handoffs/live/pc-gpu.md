@@ -6,7 +6,7 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 > **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
 > session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
-> **This copy, on `gpu/m2-rnd-09-underwater-art`, is the newest.**
+> **This copy, on `gpu/m3-rnd-01-reefball`, is the newest.**
 
 ## PC setup for a new session
 
@@ -115,6 +115,16 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/m3-rnd-01-reefball | **M3-RND-01 in review** (reviewer Art/character) | Reefball water sphere prototype (WaterSphereRig): refraction + Fresnel outside, Snell window/TIR inside, god rays, a clean crossing; +0.1-0.5 ms. Key frames docs/kb/qa/gpu/reefball/. |
+| gpu/arc-08-first-launch | report (Lead request) | ARC-08 re-measure, every cache cleared (the driver's too): the wait ends done in all runs, the cue shows; cold-driver frames still over ADR 0029 (Low 825 ms visible just after the lift, Haluna 1.6-1.7 s first entry). |
+| gpu/shrine-gi-hang-probe | report (Lead request) | Shrine load + GI bake: no hang in 25 GPU loads; the bake's 4.2-5.6 s hidden frame breaks ADR 0029 (routed to m2-slice). |
+| gpu/m2-rnd-13-set3-error | **M2-RND-13** (merged into lead/gpu6) | The set-3 Vulkan error: old targets freed before the Texture2DRDs got the new RIDs; retired now. 0 error lines. |
+| gpu/m2-rnd-12-ultra-storm | **M2-RND-12** (merged into lead/gpu6) | Ultra storm <= 4 ms at 1440p: compute body 0.5 / 56 steps (3.47/2.55/3.69 ms). |
+| gpu/m3-rnd-tasks | tasks | Filed M3-RND-01/02/03 and M2-QA-01 (capture_preset ignores a shot's setup). |
+| gpu/godot-472-port | **long-lived, not to merge until the Lead calls it** | 4.7.2 port prep: fetch_godot.py --official (SHA-512), the import churn (45 .import), templates installed and verified, suite 1451/0 on 4.7.2, baked 4.7.2 level with 4.6.3; workaround re-checks in docs/kb/qa/gpu/2026-10-24-godot-472-port-prep.md. Worktree C:/Users/Aaron/hymn_472port. |
+| gpu/m1-rnd-26-bounce-gate | **M1-RND-26 in review** (reviewer Character) | Option (a): the mouth bounce pass draws only while an omni/spot light reaches the mouth (CharacterShaderTiers.refresh_bounce_passes). High, directional: the mouth matches no-pass within capture noise (was up to 74/255); a shadowed spot keeps the bounce. |
+| gpu/m2-rnd-11-sweep-r | **M2-RND-11 in review** (reviewer Environment) | First-run tests; warm compute pipelines freed at exit (0 leaks); named literals; Ultra reflects the real body via a full-res compute body (also ~1 ms faster; Ultra's storm is 15-18 ms at 1440p: budget call); M2-ENV-05 lead: Haluna + character entries resident -> second-launch entry 1.6/1.9 s. |
+| gpu/m2-rnd-10-storm-art | **M2-RND-10 in review** (reviewer Art/character) | Storm Art fixes: full-res rent cores and lips in the composite (12-23:1 slits on High), sheet curtains, softer rain (landfall 11.6%), landfall near-night slate-teal (OkL 0.211; sea C 0.018 just short), Letting gold at wound 0.9, rise_ratio 2.0, per-chapter flash/bolts, no rain underwater. +0.07-0.12 ms High. Lavapipe drift: all undertow_* shots. |
 | gpu/m2-rnd-09-underwater-art | **M2-RND-09 in review** (reviewer Art/character) | Underwater Art fixes: lagoon swatches + night_sea look, TIR off sea_glow, night sea-glow in the column (on/off 2.2×), the lantern halo moved into the post (warm: h 72-75°, 0 green px), glimmer compensation (and the field's own absorption off underwater), the waterline camera and an antialiased meniscus. Lavapipe drift: underwater_below/window/waterline. |
 | gpu/rnd-29-headless-fix | **gate fix, ready** (Lead-urgent) | CI boot smoke (headless, fresh user://, --quit-after 60) was 225 resources still in use: headless ran the first-launch warm-up every boot, and residents sat in a static. Now headless skips it and residents live on a ShaderPrewarmResident root node. Smoke: 0 ERROR lines × 5, also merged into gpu/hero-materials-resident (conflicts resolved there, 1452/0). |
 | gpu/hero-materials-resident | **ready to merge after RND-29** (Lead-approved) | Asha's 11 materials resident from boot, per preset via `resident_presets` (ShaderPrewarm.entry_resident). Haluna's entry High 2.9-3.0 → 2.1-2.3 s; Low 3.5-3.6 → 2.3-2.8 s (so resident on Low too); ~245 MB texture memory (Low 285 vs 39). Now merged with the gate fix (conflicts resolved). |
@@ -206,7 +216,10 @@ None of it is needed: everything quoted in the reports can be reproduced from th
 
 ## Queue (Lead, 2026-10-24 deep queue)
 1. M2-RND-09 underwater Art fixes: **review** (`gpu/m2-rnd-09-underwater-art`).
-2. M2-RND-10 storm Art fixes: next.
+2. M2-RND-10 storm Art fixes: **review** (`gpu/m2-rnd-10-storm-art`).
+2a. M2-RND-11 (review sweep R follow-ups): **review** (`gpu/m2-rnd-11-sweep-r`).
+3. M1-RND-26: **review** (`gpu/m1-rnd-26-bounce-gate`).
+4. Next: M3-RND-02 (min-spec proxy, waiting on the owner's OK for a GPU clock/power limit); M1-QA-09 and the slice re-sweep when the characters merge; M3-RND-03 when the zones are named.
 3. M1-RND-26 the mouth-bounce pass's FSR2 softening at High.
 4. M1-QA-09 Asha on hardware: starts on the Lead's "characters merged".
 5. The 4.7.2 port prep on the long-lived `gpu/godot-472-port` (not merged until the Lead calls it).

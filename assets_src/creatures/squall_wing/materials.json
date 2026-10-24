@@ -1,0 +1,50 @@
+{
+  "_doc": "Squall wing surfaces (docs/kb/art/creatures/act1/squall_wing.md). Slots are the glTF material names; write_materials.py writes assets/creatures/squall_wing/materials/<slot>.tres on game/shaders/creature/creature.gdshader. Wet lacquer-black membrane and shell (Undertow-spawn); the tears' edges, the eye slits and the held light inside the hollow body glow spawn_wound (the weak point). The glimmer_held motes it sheds are VFX.",
+  "slots": {
+    "membrane": {
+      "roughness_dry": 0.3,
+      "roughness_wet": 0.12,
+      "specular": 0.6,
+      "wet_darken": 0.85,
+      "clearcoat_wet": 1.0,
+      "detail_scale": 26.0,
+      "detail_albedo": 0.1,
+      "detail_bump": 0.3,
+      "cavity_albedo": 0.4,
+      "rim_sheen": 0.25,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 3.0,
+      "emission_pulse_hz": 0.45,
+      "emission_pulse_depth": 0.4
+    },
+    "shell": {
+      "roughness_dry": 0.28,
+      "roughness_wet": 0.1,
+      "specular": 0.6,
+      "wet_darken": 0.85,
+      "clearcoat_wet": 1.0,
+      "detail_scale": 30.0,
+      "detail_albedo": 0.1,
+      "detail_bump": 0.25,
+      "cavity_albedo": 0.4,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 3.5,
+      "emission_pulse_hz": 0.45,
+      "emission_pulse_depth": 0.4
+    },
+    "core": {
+      "roughness_dry": 0.4,
+      "roughness_wet": 0.2,
+      "wet_darken": 1.0,
+      "clearcoat_wet": 0.4,
+      "detail_scale": 30.0,
+      "detail_albedo": 0.2,
+      "detail_bump": 0.2,
+      "cavity_albedo": 0.3,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 8.0,
+      "emission_pulse_hz": 0.45,
+      "emission_pulse_depth": 0.35
+    }
+  }
+}

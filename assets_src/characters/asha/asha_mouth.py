@@ -31,10 +31,13 @@ TEETH_UV_INSET = 0.004  # keeps the samples off the patch border (mip bleed)
 # the same arch, so the rows break into teeth; the visible ones (the incisors and canines,
 # TOOTH_FINE per side) are rounder and finer. +864 triangles.
 TOOTH_PITCH = 0.92  # slot / crown width (unchanged: the arch must stay inside the mouth bag)
-TOOTH_WIDTH = 0.86  # crown width / crown table width: a 0.06-width gap (about 0.5 mm) between neighbours
+# M1-CHR-12, grief fault B (QA-08): with the 0.06-width gap and the shaded gaps the rounder crowns read
+# as separate pegs. The crowns now meet (0.93 against the 0.92 pitch); their rounded corners still leave
+# the interproximal notch, so the row is not the CHR-10 band either
+TOOTH_WIDTH = 0.93  # crown width / crown table width (CHR-11: 0.86)
 TOOTH_FINE = 3
 TOOTH_FINE_NU, TOOTH_FINE_NV = 12, 6
-TOOTH_ROUND = 0.62  # superellipsoid exponent of the fine teeth (1 = an ellipsoid, 0.45 = boxy)
+TOOTH_ROUND = 0.56  # superellipsoid exponent of the fine teeth (1 = an ellipsoid, 0.45 = boxy; CHR-11: 0.62)
 TOOTH_U_SPAN = 0.45  # half of each tooth's U cell its side-to-side extent covers (teeth_patch's gaps)
 
 

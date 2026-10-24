@@ -58,11 +58,25 @@ UPPER_LID_AO = 0.18  # ambient occlusion on the upper lid (the lashes and the br
 LASH_LINE_RR = 1.05  # lid-field radius of the lash line (1 = the margin)
 LASH_LINE_W = 0.04
 LASH_LINE_DARKEN = 0.30
+# M1-CHR-12: the band between the lash tips and the brow (QA-08: lid R:B 3.7 against the cheek's 2.2
+# on the GPU, 3.5 against 2.0-2.3 on lavapipe). Unshaded, its albedo already matches the cheek (R:B
+# 1.64 against 1.63; diagnostic renders turning off scatter, transmission and the occlusion shell moved
+# nothing): it reads warm because the brow shades it, and this stage's warm key and tonemapper push
+# dark skin toward orange. The socket under the brow is painted a little lighter and cooler (thin
+# skin over the orbit shows the blue of the veins under it), so it lands near the cheek's hue when lit.
+SOCKET_LIFT = 0.2  # value lift at the band's centre
+SOCKET_TINT = (0.3, 0.85, 1.8)  # per-channel share of the lift (R, G, B): mostly blue
+SOCKET_RR = (1.35, 1.7, 2.1, 2.7)  # lid-field radius: fade in, full, full, fade out (1 = the lid margin)
 # M1-CHR-10: the scalp underpaint matches the hair's new neutral near-black (write_materials.py
 # HAIR_BLACK); #201A16 read auburn between the cards under the warm key, as the cards did
 HAIR_UNDERPAINT = "#16161A"
 SKIN_MOTTLE = 0.26  # M1-CHR-10: head albedo mottle amplitude (fbm spans about +-0.25: +-6.5% value)
 SKIN_MOTTLE_SCALE = 0.009  # m (times the head scale): the mottle's base cell
+# M2-CHR-01: the per-hero knobs. rhen_textures (and later heroes) import this module and set them
+# before calling skin_maps; the defaults are Asha's, so her maps are unchanged.
+PREFIX = "asha"  # file prefix of the skin maps
+SKIN_HEX = "#B9876A"  # base skin albedo (asha.md §6.1 skin_asha)
+FRECKLES = 18  # freckles across the nose bridge (asha.md §6.1: 12-20)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -101,8 +115,18 @@ def check_id_map(name: str, labels: np.ndarray) -> None:
         raise SystemExit(f"{name}: a label region is {run} texel(s) wide (id maps need >= {ID_MAP_MIN_RUN})")
 
 
+# Decimals the float image is rounded to before its 8-bit rounding. Without it, a texel that lands on an
+# x.5 boundary rounds either way by the host CPU's SIMD paths (numpy dispatch): 6 head-normal texels
+# differed between AVX-512 and AVX2 hosts (M1-CHR-14). Asha's run sets it; heroes and villagers that share
+# write() opt in at their next rebuild.
+PRE_ROUND_DECIMALS = 6
+PRE_ROUND: int | None = None
+
+
 def write(name: str, img: np.ndarray, mode: str | None = None) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
+    if PRE_ROUND is not None:
+        img = np.round(np.asarray(img, dtype=np.float64), PRE_ROUND)
     a = np.clip(np.round(img * 255.0), 0, 255).astype(np.uint8)
     if a.ndim == 2:
         im = Image.fromarray(a, "L")
@@ -377,8 +401,8 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
     ormi = dilate(scatter(r, orm, np.array([1.0, 0.5, 0.0])), cov, 6)
     if key == "head":
         teeth_patch(albi, ormi, size)
-    write(f"asha_{key}_albedo.png", albi)
-    write(f"asha_{key}_normal.png", nrm)
+    write(f"{PREFIX}_{key}_albedo.png", albi)
+    write(f"{PREFIX}_{key}_normal.png", nrm)
     maski = dilate(scatter(r, mask, np.array([1.0, 1.0, 0.5, 1.0])), cov, 6)
     if size_small != big:
         ormi = np.asarray(Image.fromarray((np.clip(ormi, 0, 1) * 255).astype(np.uint8)).resize(
@@ -396,8 +420,8 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
         maski = maski.copy()
         maski[..., 1] = levels(maski[..., 1], 64)
         maski[..., 2] = levels(maski[..., 2], 32)
-    write(f"asha_{key}_orm.png", ormi)
-    write(f"asha_{key}_skinmask.png", maski)
+    write(f"{PREFIX}_{key}_orm.png", ormi)
+    write(f"{PREFIX}_{key}_skinmask.png", maski)
     if key == "head":
         texel_report(r, npz)
         texel_report(r, npz, face_only=True)
@@ -655,9 +679,10 @@ TEETH_AO_BACK = 0.4  # the last teeth get this fraction of the front teeth's amb
 TEETH_ROUGH = 0.55  # ORM G (the teeth material's roughness texture): satin; 0.45 read glossy and metallic
 # M1-CHR-11: each tooth spans its own fifth of the patch in U (asha_mouth.TOOTH_U_SPAN); its sides
 # (toward the neighbours) are darker and more occluded, so the row reads as separate teeth
-TEETH_GAP_W = 0.16  # of a tooth's U cell, at each side
-TEETH_GAP_DARKEN = 0.45
-TEETH_GAP_AO = 0.5
+# M1-CHR-12: softer, narrower gaps (CHR-11: 0.16 / 0.45 / 0.5 drew dark lines between pegs, QA-08 fault B)
+TEETH_GAP_W = 0.10  # of a tooth's U cell, at each side
+TEETH_GAP_DARKEN = 0.22
+TEETH_GAP_AO = 0.75
 TEETH_GAP_ROUGH = 0.75
 
 
@@ -690,6 +715,7 @@ def teeth_patch(albi: np.ndarray, ormi: np.ndarray, size: int) -> None:
     ormi[y0:y1, x0:x1, 2] = 0.0
 
 
+MOUTH_BAG = "#471A17"  # M1-RND-25: the mouth material's old flat colour, now painted (it samples the atlas)
 INNER_LIP = "#7A3834"  # wet mucosa behind the lips' contact line (the mouth bag is #6A2F2C)
 INNER_LIP_MIX = 0.8
 INNER_LIP_DEPTH = (0.0004, 0.0025)  # m behind the contact line (at s = 1) over which it takes over
@@ -738,7 +764,7 @@ def lip_mask(Ph: np.ndarray, face, lm) -> np.ndarray:
 
 def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
     s = lm.h / 0.222
-    base = hexc("#B9876A")
+    base = hexc(SKIN_HEX)
     n = len(Ph)
     col = np.tile(base, (n, 1))
     zc = lm.P("chin")[2]
@@ -815,13 +841,17 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
             # roots sit (it frames the eye; without it the lid read as one pale strip down to the iris)
             line = np.exp(-((rr - LASH_LINE_RR) / LASH_LINE_W) ** 2) * smoothstep(0.0, 0.35, np.sin(tt)) * front
             col = col * (1 - LASH_LINE_DARKEN * line[:, None] * np.array([1.0, 1.0, 0.9]))  # M1-CHR-11: not orange
+            sock = (smoothstep(SOCKET_RR[0], SOCKET_RR[1], rr) * smoothstep(SOCKET_RR[3], SOCKET_RR[2], rr)
+                    * smoothstep(0.05, 0.45, np.sin(tt)) * smoothstep(-0.55, -0.1, np.cos(tt))
+                    * smoothstep(0.9, 0.5, np.cos(tt)) * front)
+            col = col * (1 + SOCKET_LIFT * sock[:, None] * np.array(SOCKET_TINT))
             wall = (np.linalg.norm(Ph - e.E, axis=1) < e.R + 0.0016 * s) & (rr < 1.15)
             col[wall] = col[wall] * 0.7 + hexc("#B87268") * 0.3
             car = np.exp(-((rr - 1.0) / 0.12) ** 2) * smoothstep(-0.7, -0.98, np.cos(tt)) * front
             col = col * (1 - car[:, None]) + hexc("#B8786E") * car[:, None]
         # freckles across the nose bridge (12-20 dots, 0.8-1.5 mm, 8% darker)
         rng = np.random.default_rng(31)
-        nf = 18
+        nf = FRECKLES
         fx = rng.normal(0.0, 0.022, nf) * s
         fz = lm.P("eye")[2] - 0.012 * s - np.abs(rng.normal(0.0, 0.009, nf)) * s
         fr = rng.uniform(0.0004, 0.00075, nf) * s
@@ -853,13 +883,19 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
         # brow skin a touch darker
         col *= 1 - 0.12 * (np.exp(-((v - (ve + 0.072)) / 0.015) ** 2) * np.exp(-((np.abs(u) - 0.13) / 0.06) ** 2))[:, None]
         mouth = npz["mi"][r["tri"]] == list(npz["mats"]).index("mouth") if "mouth" in list(npz["mats"]) else np.zeros(n, bool)
-        col[mouth] = hexc("#6A2F2C")
+        # M1-RND-25: the inner lip roll is on the `mouth` material now (build_asha.head_materials), and
+        # the mouth material samples this atlas: the bag is painted the flat colour that material had
+        # (Color(0.28, 0.10, 0.09) = #471A17), the inner lip keeps its mucosa below
+        lipin = (r["INNERLIP"] > 0.5) if "INNERLIP" in r else np.zeros(n, bool)
+        bag = mouth & ~lipin
+        col[bag] = hexc(MOUTH_BAG) if "INNERLIP" in r else hexc("#6A2F2C")
         # M1-CHR-11: the inner lip (the skin behind the contact line, which only an open mouth shows)
         # was painted the vermilion's outer colour. In grief, lit, it read as a long khaki-gold band
         # under the upper teeth that the QA-05c capture took for the teeth (a diagnostic render with
         # the teeth pure green showed the band is not teeth). Wet mucosa: darker and redder, toward
         # the mouth bag's colour the deeper it goes behind the contact
-        inner = inner_lip_weight(Ph, r, face, s) * (~mouth)
+        inner = inner_lip_weight(Ph, r, face, s) * (~bag)
+        inner = np.maximum(inner, lipin.astype(float))  # every texel on the inner-lip faces is mucosa
         col = col * (1 - INNER_LIP_MIX * inner[:, None]) + hexc(INNER_LIP) * INNER_LIP_MIX * inner[:, None]
     else:
         # body: knuckles, elbows and knees a little redder, palms and soles paler
@@ -1481,6 +1517,8 @@ def sleeve_maps(w: int = 1024, h: int = 2048, band_px: int = 512, length_m: floa
 
 # ---------------------------------------------------------------------------------------------
 def main() -> int:
+    global PRE_ROUND
+    PRE_ROUND = PRE_ROUND_DECIMALS
     ap = argparse.ArgumentParser()
     ap.add_argument("--bake-dir")
     ap.add_argument("--only", default="skin,eyes,detail,hair,cloth,sleeve")

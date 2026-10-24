@@ -4,7 +4,7 @@
       "id": "rhen", "name_key": "CHAR_RHEN",
       "stats": {"level": 5, "hp": 420, "mp": 24, "strength": 16, "magic": 6, "defense": 10,
                 "magic_defense": 6, "agility": 22, "accuracy": 14, "evasion": 14, "luck": 18},
-      "skills": ["attack", "quick_hit", "undertow_cut"]
+      "skills": ["attack", "quick_hit", "undertow_cut", "read"]
     },
     {
       "id": "asha", "name_key": "CHAR_ASHA",
