@@ -2,8 +2,8 @@
 id: M2-ENV-12
 title: "Haluna lintel-gulls render dark: village.lintel_gull builds its body inside-out"
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M2-ENV-06]
 milestone: M2
 request-from: environment
