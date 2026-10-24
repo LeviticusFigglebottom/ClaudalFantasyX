@@ -152,6 +152,68 @@
       "p90_turns_max": 40,
       "loadout": "sandbox_vowbound",
       "swell": "good"
+    },
+    {
+      "id": "ch03_causeway_shore",
+      "chapter": "Ch3 route (Saltgrass Causeway): random shallows fight (crab, eel, harrier)",
+      "kind": "regular",
+      "encounter": "ch03_causeway_shore",
+      "active": [
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "toma"
+      ],
+      "bands": {
+        "naive": [
+          40,
+          80
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          95,
+          100
+        ],
+        "smart": [
+          98,
+          100
+        ]
+      },
+      "p90_turns_max": 30,
+      "loadout": "m1_starting",
+      "swell": "good"
+    },
+    {
+      "id": "ch03_causeway_harrier",
+      "chapter": "Ch3 route: the gull harrier lesson (Rhen answers fliers)",
+      "kind": "regular",
+      "encounter": "ch03_causeway_harrier",
+      "active": [
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "toma"
+      ],
+      "bands": {
+        "naive": [
+          40,
+          80
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          95,
+          100
+        ],
+        "smart": [
+          98,
+          100
+        ]
+      },
+      "p90_turns_max": 30,
+      "loadout": "m1_starting",
+      "swell": "good"
     }
   ]
 }

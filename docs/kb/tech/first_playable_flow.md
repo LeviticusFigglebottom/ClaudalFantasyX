@@ -154,3 +154,29 @@ Also in M2-FP-09:
   - it wins, then saves at the shrine and loads the record back;
   - it calls the Drownbell and reaches the end card.
 - `test_the_battle_strip_cannot_be_walked_around` checks that every line from the beach to the shrine crosses the strip, and that walking inland from the causeway head is stopped.
+
+## The Saltgrass Causeway, chapters and the trial checkpoint (M2-FP-25, M2-FP-27)
+
+The thread now runs: Haluna's causeway head → **the Saltgrass Causeway** (B06) → the Shell Shrine trial → Cutscene B → the Drownbell → the dock at night → the end card.
+
+**The causeway** (`ch03/saltgrass_causeway`) is the first zone on the data-driven chapter flow (ADR 0033): a GreyboxZone at `game/levels/ch03/saltgrass_causeway/` with its story in `game/data/flow/chapters/ch03.json`.
+- **Getting there:** B05's "Go now" travels there instead of opening the trial (`haluna.ending_location` and `ending_spawn`, `HalunaStory.KEY_GO`), so the location is recorded.
+- **Arriving** sets chapter 3, and the chapter autosave follows.
+- **The fights:**
+  - The gull harrier at C07 is a scripted strip fight, `ch03_causeway_harrier`: the flier lesson, with `TUT_FLIER_RHEN` as its prompt. A win sets `ch03_harrier_won`; an escape steps Rhen back to `BeforeHarrier`.
+  - After it, `FieldEncounters` rolls `ch03_causeway_shore` every 25–45 m.
+  - Both fights are banded in `tools/balance/targets.json` (Ch1–Ch3 regular). Foe order matters to the naive policy, so leave the order as authored.
+- **The three banters** (`ch03_bark_causeway_posts`, `_tidepool`, `_ring`) are overheard, once each.
+- **Camera:** C02 is the default side-on dolly; C01 and C03–C07 are beat frames.
+- **The islet steps** go to `ch03/shell_shrine` at `Entry`.
+
+**Chapters:**
+- `HalunaStory.begin()` moves the story to `haluna.chapter` (2) when it's behind it.
+- The causeway's arrival moves it to 3.
+- Save slots read "Chapter n", and "Prologue" for 0 (`SaveSlotInfo.chapter_text`).
+
+**The trial checkpoint:**
+- The Shell Shrine is a location now (`ch03/shell_shrine`; `Spawns/Entry` and `Spawns/Exit`, `ShellShrineLevel.place_at`).
+- When the inner pool fills, the respawn point moves to `Exit` (`shell_shrine.checkpoint_location` and `checkpoint_spawn`) and a checkpoint autosave is requested.
+- A Drownbell loss followed by **Return to last save** resumes at the open door. The door and the side pool restore from their flags, so the trial isn't replayed. `test_fp_thread` walks that path.
+

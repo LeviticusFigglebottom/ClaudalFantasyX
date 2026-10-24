@@ -1,0 +1,11 @@
+// Ch3 B06 (M2-FP-25), marker posts (C04): the first walking banter on the Saltgrass Causeway. An
+// overheard field bark (no @camera cues): Rhen keeps walking. Toma does not say why the posts are
+// never mended; the player is meant to notice that he doesn't.
+title: ch03_bark_causeway_posts
+location: ch03/saltgrass_causeway
+---
+Rhen [neutral]: That one's snapped clean through. Nobody's put up a new one? #line:ch03_bark_causeway_posts_001
+Toma [neutral]: Nobody mends the posts. #line:ch03_bark_causeway_posts_002
+Rhen [neutral]: Why not? #line:ch03_bark_causeway_posts_003
+Toma [neutral]: Mind the shells, Rhen. They cut. #line:ch03_bark_causeway_posts_004
+===

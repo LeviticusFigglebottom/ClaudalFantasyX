@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch03_bark_causeway_ring",
+ "source": "game/data/dialogue/ch03/ch03_bark_causeway_ring.dlg",
+ "start": "ch03_bark_causeway_ring",
+ "nodes": {
+  "ch03_bark_causeway_ring": {
+   "headers": {"location": "ch03/saltgrass_causeway"},
+   "ops": [
+    {"op": "line", "id": "ch03_bark_causeway_ring_001", "key": "DLG_CH03_BARK_CAUSEWAY_RING_001", "speaker": "rhen", "emotion": "surprised", "voice": "", "src": 7},
+    {"op": "line", "id": "ch03_bark_causeway_ring_002", "key": "DLG_CH03_BARK_CAUSEWAY_RING_002", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch03_bark_causeway_ring_003", "key": "DLG_CH03_BARK_CAUSEWAY_RING_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

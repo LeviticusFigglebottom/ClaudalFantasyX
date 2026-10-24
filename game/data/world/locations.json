@@ -22,6 +22,20 @@
       "scene": "res://game/levels/ch02/haluna/haluna.tscn",
       "spawn": "Shrine",
       "name_key": "LOCATION_CH02_HALUNA"
+    },
+    {
+      "id": "ch03/saltgrass_causeway",
+      "scene": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn",
+      "spawn": "FromHaluna",
+      "name_key": "LOCATION_CH03_SALTGRASS_CAUSEWAY",
+      "_note": "M2-FP-25: the slice's route (B06), a greybox zone (GreyboxZone + ZoneStory, ADR 0033)."
+    },
+    {
+      "id": "ch03/shell_shrine",
+      "scene": "res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
+      "spawn": "Entry",
+      "name_key": "LOCATION_CH03_SHELL_SHRINE",
+      "_note": "M2-FP-27: a location so the trial's checkpoint autosave can resume at Exit, past the solved trial."
     }
   ],
   "shrines": [

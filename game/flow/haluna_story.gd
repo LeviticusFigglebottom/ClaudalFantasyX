@@ -26,12 +26,17 @@ extends Node
 ##             opens on "Go now" / "Not yet" (M2-FP-21): "Not yet" (ending_decline_event) steps
 ##             Rhen back to ending_decline_spawn and hands nothing off. Before the first save the
 ##             same box plays an overheard bark instead (M2-FP-20, Triggers/CausewayHeadUnsaved).
+##   chapter   M2-FP-27: every arrival moves the story to cfg.chapter (2) when it is behind it, so
+##             Haluna's saves read "Chapter 2" and the chapter autosave runs.
+##   route     M2-FP-25: when cfg has ending_location, "Go now" travels there (the Saltgrass
+##             Causeway, B06) at ending_spawn instead of opening ending_scene.
 ## The zone's interactables only author ids, payloads and flags; nothing in them knows this script.
 
 const KEY_DIALOGUE := "dialogue"
 const KEY_BATTLE := "battle"
 const KEY_CUTSCENE := "cutscene"
 const KEY_OVERHEARD := "overheard"
+const KEY_GO := "go"
 
 ## Go live on _ready when the zone is the current scene (the game). Tests turn it off, set
 ## `active` and call begin() themselves, so a zone instanced by a test never hands off.
@@ -72,6 +77,9 @@ func _exit_tree() -> void:
 
 ## Plays the arrival (Cutscene A) or B02 when either is due. Await it.
 func begin() -> void:
+	var chapter := int(cfg.get("chapter", 0))
+	if chapter > Game.state.chapter:
+		Game.set_chapter(chapter)
 	if not _flag(&"intro_flag"):
 		busy = true
 		_zone.call(&"place_at", StringName(str(cfg.get("intro_spawn", ""))))
@@ -168,7 +176,11 @@ func _end() -> void:
 			_zone.call(&"place_at", spawn, _zone.call(&"spawn_yaw_deg", spawn))
 			busy = false
 			return
-	if is_inside_tree():
+	if not is_inside_tree():
+		return
+	if str(cfg.get("ending_location", "")) != "":
+		_go(KEY_GO, str(cfg["ending_location"]))
+	else:
 		_go(KEY_CUTSCENE, str(cfg.get("ending_scene", "")))
 
 
@@ -219,6 +231,8 @@ func _go(kind: StringName, target: String) -> void:
 			StringName(str(cfg.get("battle_victory_flag", ""))),
 			StringName(str(cfg.get("battle_escape_spawn", "")))
 		)
+	elif kind == KEY_GO:
+		FlowRouting.go_to(StringName(target), StringName(str(cfg.get("ending_spawn", ""))))
 	else:
 		FlowRouting.change_scene(target)
 

@@ -92,6 +92,23 @@ Loadout `m1_starting`. Rhen and Asha active, Toma and Ysolde in reserve, against
 
 **Ease ceiling (M1-CMB-07).** `smart` wins every seed (100.0%), so a win band can't see a regression that makes the sandbox *easier*. A win ceiling below 100% would fail today's numbers. The suite sets `mean_turns_min` in targets.json instead: `smart` must still average at least 16 actions per fight (measured 17.9 at 1000 seeds and 18.1 at the 200 seeds CI uses, so the floor allows about a 10% shorter fight). The geared suite `sandbox_reef_tier1` floors `smart` at 14.5 (measured 16.1 and 16.3). `sim.py` marks a row out of band when it misses the floor, and `test_sandbox_battle.gd` asserts the starting-gear floor at 200 seeds. Mean turns is used rather than party KOs because KOs are rare for `smart` (0.07 to 0.12 per fight) and too noisy at 200 seeds. If a deliberate change makes the fight shorter, re-measure and move the floor with a tuning-log note.
 
+### Ch3 route: `ch03_causeway_harrier` and `ch03_causeway_shore` (regular, M2-FP-25)
+
+These are the Saltgrass Causeway's two fights (B06): the scripted flier lesson at C07, and the random shallows fight after it. Both put a Gull Harrier, a Reef Crab and a Lantern Eel against Rhen and Asha, with Toma in reserve, on loadout `m1_starting`. They take the Ch1–Ch3 **regular** band from the curve above.
+
+| Policy | Band | Measured (1000 seeds), harrier / shore |
+|---|---|---|
+| `naive` | 40–80% | 65.8% / 71.3% |
+| `role_answer` | ≥ 95% | 95.3% / 95.3% |
+| `smart` | ≥ 98% | 100% / 99.9% |
+| p90 turns | ≤ 30 | 18 / 19 |
+
+**Notes:**
+- **Foe order matters.** The naive policy strikes the first foe, so the harrier-first lesson and the eel-first shallows land in band. The same three foes with the crab first fall to 10.9% for naive, and that's out of band.
+- **Two foes are too easy.** Every pair tried gave naive 96–100%.
+- **The other three-foe mixes miss.** With two crabs, or two harriers, the role answer falls short, because the crab's answer (Toma) starts in reserve and the eel's (Ysolde) hasn't joined yet.
+- Leave the order as authored, and re-measure if a foe moves.
+
 ### Vowbound masher line: `sandbox_reef_vowbound` (stress test, M2-CMB-05)
 
 ADR 0027 accepted a **provisional ceiling of 40%** for a masher who calls the Vowbound at once, on the sandbox with no gear. It is a ceiling, not a band to aim at, and the sandbox is pre-Ilun content. Suite: `sandbox_reef`, Rhen and Asha active and Toma in reserve (the probe's lineup), loadout `sandbox_vowbound` (no gear, no items, Ilun bound), `kind: vowbound`.

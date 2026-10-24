@@ -35,6 +35,9 @@
       "after_battle_scene_id": "ch02_nemes_table",
       "after_battle_flag": "ch02_ate_at_nemes",
       "ending_scene": "res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
+      "ending_location": "ch03/saltgrass_causeway",
+      "ending_spawn": "FromHaluna",
+      "chapter": 2,
       "before_ending_scene_id": "ch02_low_tide",
       "ending_decline_event": "departure_declined",
       "ending_decline_spawn": "CausewayHead",
@@ -109,7 +112,10 @@
       "after_spawn": "DockNight"
     },
     "shell_shrine": {
-      "next_scene": "res://game/levels/ch03/first_verse/first_verse.tscn"
+      "next_scene": "res://game/levels/ch03/first_verse/first_verse.tscn",
+      "checkpoint_location": "ch03/shell_shrine",
+      "checkpoint_spawn": "Exit",
+      "checkpoint_reason": "checkpoint"
     }
   }
 }
