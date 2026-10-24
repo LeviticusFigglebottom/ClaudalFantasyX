@@ -483,7 +483,7 @@ func attach_battle(vfx: Node) -> void:
 		ctl = ctl.get_parent()
 	if ctl == null or (ctl as BattleController).engine == null:
 		return
-	for key: Object in listeners.keys():
+	for key: Variant in listeners.keys():  # a key may be a freed view (a capture swaps battles)
 		if listeners[key] is BattleAudio:  # a retry replaces the VFX view: one battle listener at a time
 			(listeners[key] as Node).queue_free()
 			listeners.erase(key)
