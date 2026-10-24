@@ -12,15 +12,35 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
   scene and the swap-in layout below). The Haluna shots don't drift.
   - **M2-ENV-06 pass 2 and 3** (merge-ready): framed stilt-house walls and shutters, thatch onto its swatch
     (h04 re-approved), the lintel-gulls in their own carved-wood material (h03 re-approved).
-- **In progress (worktree agents):** M2-ENV-03 (Shell Shrine kit), M1-ENV-10 (LOD chain; running its shot gate), M2-ENV-07 (real banyan and windbreak trees, replacing the two PLACEHOLDER trees).
+- **Done, in review (merged here):** **M1-ENV-10** (LOD chain via a shared `LodChain`; Character + Tools sign-off on `asset_import_rules.gd` pending) and **M2-ENV-07** (the real hero banyan and windbreak; h01, h02, h07 re-approved after viewing).
+- **In progress (worktree agent):** M2-ENV-03, the Shell Shrine kit.
+- **Two queue items remain** (M2-ENV-03, and M2-ENV-06's wrap-up: re-capture `haluna_h10_dock_night` once it's on the integration branch, and the banyan crown at H07's top edge). Lead: please queue more env-art work.
 - **Coordination:** m2-slice replied (10:02): agreed; it will push its own ENV-03 subagent's kit WIP as `m2-slice/env03-wip` and leave the kit to env-art (I'll compare it with my agent's kit when both exist). env-art may edit the moved `game/levels/ch02/haluna/haluna_dresser.gd` directly (Environment content). **M2-ARC-04 may move VegetationPlant and more Haluna files out of `_tests/`**: merge `claude/m2-slice` before touching them. Settled as well: The Lead's CONSOLIDATED §3b moved ENV-03 off m2-slice's queue to env-art. Split: env-art builds the shrine kit (assets, materials, drivable nodes, a dressing prefab, a swap-in note); m2-slice swaps its `ch03/shell_shrine` greybox for it.
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
 ## For the Lead
+- **Import gotcha when merging this branch:** Godot doesn't reimport a `.glb` when only its post-import script changes. After merging, delete `.godot/imported/*.glb-*` in the gate worktree and run `--import`, or `--filter=import` fails 3 tests on stale ranges.
 - **Merging this branch changes the five haluna baselines** (intended, viewed). m2-slice's moved Haluna scenes use the same kit, so their haluna shots will match these baselines once both land.
 - `haluna_h10_dock_night` (m2-slice's ENV-02) isn't on the integration branch yet, so it wasn't re-captured here; it uses the same kit stone and will drift a little when both land. I'll re-capture it after the integration merge.
 
 ## Swap-in notes for m2-slice
+- **M1-ENV-10, the LOD chain in your moved `game/levels/ch02/haluna/haluna_dresser.gd`** (you OK'd env-art
+  editing it; I'm handing it over instead so neither of us has to merge the other's unreviewed work).
+  Once `game/levels/_tests/vegetation/lod_chain.gd` (`LodChain`) is on your branch via the integration
+  branch, replace the per-mesh range block in `instance_piece` with:
+  ```gdscript
+  	var ends := PackedFloat32Array([lod_from, float(layout.get("lod_end_m", 2000.0))])
+  	...
+  		# M1-ENV-10: `<piece>` is the visibility child of `<piece>-lod1`, so exactly one draws.
+  		var lod := 1 if String(mi.name).ends_with(LOD_SUFFIX) else 0
+  		LodChain.apply(mi, lod, ends, margin, 0.0, LodChain.sibling(mi, lod + 1))
+  ```
+  (it replaces `lod_end` and the six `visibility_range_*` lines; `git diff 565030e^ 2236fab2 --
+  game/levels/_tests/haluna_mood/haluna_dresser.gd` on claude/env-art is the exact patch, which applies to
+  your copy at +57 lines). If M2-ARC-04 moves VegetationPlant, move `lod_chain.gd` with it; it depends on
+  nothing but its class_name.
+- **M2-ENV-07, the real banyan and windbreak:** nothing to do. They keep the old piece names
+  (`banyan_placeholder`, `windbreak_placeholder`), so the layout and your collision rules pick them up.
 - **The route, north lane → causeway head (M2-ENV-08, review).** Copy the 36 entries of
   `game/levels/_tests/haluna_mood/route_layout.json` `pieces` into `game/levels/ch02/haluna/haluna_layout.json`
   `pieces` (they are in zone coordinates: slab steps at the trigger (7, -126), 14 slabs and 8 coral heads
@@ -46,6 +66,7 @@ Merge each worktree agent's branch as it reports (M1-ENV-10, M2-ENV-03, M2-ENV-0
 5. ~~M2-ENV-08: the route and village props~~ (review); greybox flagged by the m2-slice playthrough (none reported to env-art yet)
 
 ## History
+- 2026-10-24: merged M1-ENV-10 and M2-ENV-07 (2236fab2). Gates: verify haluna_kit 49 + vegetation 7 identical; tools unittest OK; Godot haluna 16, post_import 19, vegetation 17, lod 3, import 19; validate_data; haluna shots re-captured, viewed, h01/h02/h07 re-approved, palette 19/19.
 - 2026-10-24: M2-ENV-08 (fa4c666) and M2-ENV-06 passes 2–3 (15ce492, a6d3974). Merged the integration branch (856c43f).
 - 2026-10-24: M2-ENV-06 pass 1 (6436775). Gates: verify_blender_builds haluna_kit 31 identical; Godot environment 11, haluna 13, post_import 17; validate_data; taskboard --check; the five haluna shots captured, viewed and re-approved.
 - 2026-10-24: merged the Art sign-offs (3c3fa19, aa3b4ca, f067ba4). Gates: validate_data, taskboard --check, palette.json parses (docs only, no Godot run).
