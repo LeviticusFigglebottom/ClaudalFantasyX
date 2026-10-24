@@ -9,6 +9,7 @@ const BELL := "res://game/creatures/drownbell/drownbell_battle.tscn"
 const GNAW := "res://game/creatures/hullgnaw/hullgnaw_battle.tscn"
 const MATRON := "res://game/creatures/cinder_matron/cinder_matron_battle.tscn"
 const REACH := "res://game/creatures/undertows_reach/undertows_reach_battle.tscn"
+const WRAITH := "res://game/creatures/spar_wraith/spar_wraith_battle.tscn"
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -231,6 +232,16 @@ func test_phase_nodes_hide_at_once_or_after_the_clip() -> void:
 	var h := _actor(GNAW)
 	h.enter_phase(&"breaking", true)
 	assert_false((h.find_child("Ribs", true, false) as Node3D).visible, "an instant phase change hides them at once")
+	var w := _actor(WRAITH)
+	var shroud := w.find_child("Shroud", true, false) as Node3D
+	var sheath := w.find_child("Sheath", true, false) as Node3D
+	assert_true(shroud.visible and not sheath.visible, "shrouded in the rigging; the sheath starts hidden")
+	assert_true(w.enter_phase(&"hauled_down"))
+	assert_false(shroud.visible, "the shroud burns away at once")
+	assert_false(sheath.visible, "the sea comes up its lines after the drop")
+	w.settle()
+	assert_true(sheath.visible, "show_after: sheathed once the drop has played")
+	assert_eq(w.phase_clip(&"attack"), &"attack_deck", "it strikes from the deck")
 
 
 func test_a_phase_plays_its_own_strikes() -> void:

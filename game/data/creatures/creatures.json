@@ -42,7 +42,14 @@
     "slag_tortoise": {"scene": "res://game/creatures/slag_tortoise/slag_tortoise_battle.tscn", "contact": {"attack": 0.55}},
     "ashwing": {"scene": "res://game/creatures/ashwing/ashwing_battle.tscn", "contact": {"attack": 0.6}},
     "scuttler": {"scene": "res://game/creatures/scuttler/scuttler_battle.tscn", "contact": {"attack": 0.45}},
-    "spar_wraith": {"scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn", "contact": {"attack": 0.8}},
+    "spar_wraith": {
+      "scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn", "contact": {"attack": 0.8, "attack_deck": 0.8},
+      "loop": ["idle", "idle_deck"],
+      "phases": {
+        "hauled_down": {"clip": "phase_drop", "idle": "idle_deck", "hide": ["Shroud"], "show_after": ["Sheath"], "sec": 0,
+                        "clips": {"attack": "attack_deck", "cast": "cast_deck", "hit": "hit_deck"}}
+      }
+    },
     "sail_leech": {"scene": "res://game/creatures/sail_leech/sail_leech_battle.tscn", "contact": {"attack": 0.7}},
     "bottle_hermit": {"scene": "res://game/creatures/bottle_hermit/bottle_hermit_battle.tscn", "contact": {"attack": 0.45}},
     "glassfry": {"scene": "res://game/creatures/glassfry/glassfry_battle.tscn", "contact": {"attack": 0.55}},

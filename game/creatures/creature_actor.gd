@@ -27,6 +27,7 @@ var _fade: Tween
 var _phase_tween: Tween
 var _phase_pose: Array = []  # [position, rotation] the phase moves the model to
 var _hide_after: Array = []  # nodes a phase hides once its clip has played (hullgnaw's falling frames)
+var _show_after: Array = []  # nodes a phase shows once its clip has played (the spar-wraith's water sheath)
 ## Charge skill -> broken (the boss's breakable parts).
 var _broken: Dictionary = {}
 
@@ -67,6 +68,11 @@ func _ready() -> void:
 		_player.animation_finished.connect(_on_clip_finished)
 	for part: Variant in _row.get("break_parts", {}):
 		_show_part(StringName(str(part)), false)
+	for p: Variant in (_row.get("phases", {}) as Dictionary).values():  # what a phase brings in starts hidden
+		for n: Variant in (p as Dictionary).get("show", []) + (p as Dictionary).get("show_after", []):
+			var node := find_child(str(n), true, false) as Node3D
+			if node != null:
+				node.visible = false
 	_play(_idle)
 
 
@@ -162,10 +168,10 @@ func set_frozen(on: bool) -> void:
 
 
 ## A boss's phase change (creatures.json `phases`): plays its clip, hides and shows its listed nodes (the Cinder
-## Matron's crust bursting off), hides its `hide_after` nodes once the clip has played (the hullgnaw's frames fall
-## first), moves the model by its offset and tilt over
-## its time (at once when `instant`, for captures), and idles on the phase's idle clip afterwards. An unknown phase
-## does nothing.
+## Matron's crust bursting off), hides its `hide_after` and shows its `show_after` nodes once the clip has played
+## (the hullgnaw's frames fall first; the spar-wraith's water sheath comes after its drop), moves the model by its
+## offset and tilt over its time (at once when `instant`, for captures), and idles on the phase's idle clip
+## afterwards. An unknown phase does nothing.
 func enter_phase(phase_id: StringName, instant := false) -> bool:
 	var phases: Dictionary = _row.get("phases", {})
 	if not phases.has(String(phase_id)) or phase_id == _phase:
@@ -204,6 +210,7 @@ func enter_phase(phase_id: StringName, instant := false) -> bool:
 	if not _ko and not _frozen:
 		_play(clip if has_clip(clip) else _idle)
 	_hide_after = p.get("hide_after", [])
+	_show_after = p.get("show_after", [])
 	if is_inside_tree() and not instant and has_clip(clip):
 		get_tree().create_timer(clip_length(clip)).timeout.connect(_apply_hide_after.bind(phase_id))
 	else:
@@ -218,6 +225,10 @@ func _apply_hide_after(phase_id: StringName) -> void:
 		var node := find_child(str(n), true, false) as Node3D
 		if node != null:
 			node.visible = false
+	for n: Variant in _show_after:
+		var node := find_child(str(n), true, false) as Node3D
+		if node != null:
+			node.visible = true
 
 
 func phase() -> StringName:

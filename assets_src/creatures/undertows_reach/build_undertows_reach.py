@@ -213,33 +213,12 @@ def build_clips() -> list[ck.Clip]:
             curl(c, 0.0, curl_amt)
         return build
 
-    dark_full = pose_of(held(dark_pose, 0.8))
-    breach_full = pose_of(held(breach_pose, -1.1))
-    variants = [in_pose(c, f"{c.name}_dark", dark_full) for c in (attack, cast, hit)]
-    variants += [in_pose(c, f"{c.name}_breach", breach_full) for c in (attack, cast)]
+    dark_full = ck.pose_of(held(dark_pose, 0.8))
+    breach_full = ck.pose_of(held(breach_pose, -1.1))
+    variants = [ck.in_pose(c, f"{c.name}_dark", dark_full) for c in (attack, cast, hit)]
+    variants += [ck.in_pose(c, f"{c.name}_breach", breach_full) for c in (attack, cast)]
     return [idle, attack, cast, hit, ko, phase_dark, idle_dark, phase_breach, idle_breach] + variants
 
-
-def pose_of(build) -> dict:
-    """A pose as {bone: (rot, loc)}, read from a one-key scratch clip that `build` keys at t = 0."""
-    c = ck.Clip("_pose", 1.0)
-    build(c)
-    return {b: (np.asarray(ks[0][1], float), np.asarray(ks[0][2], float)) for b, ks in c.keys.items()}
-
-
-def in_pose(base: ck.Clip, name: str, pose: dict) -> ck.Clip:
-    """`base` played from `pose`: the pose is added to every key of its bones, and held on bones `base` leaves alone."""
-    out = ck.Clip(name, base.length, loop=base.loop)
-    zero = (np.zeros(3), np.zeros(3))
-    for b, ks in base.keys.items():
-        pr, pl = pose.get(b, zero)
-        for t, r, l in ks:
-            out.key(b, t, tuple(np.asarray(r, float) + pr), tuple(np.asarray(l, float) + pl))
-    for b, (pr, pl) in pose.items():
-        if b not in base.keys:
-            out.key(b, 0.0, tuple(pr), tuple(pl))
-            out.key(b, base.length, tuple(pr), tuple(pl))
-    return out
 
 
 def main() -> None:

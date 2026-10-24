@@ -459,6 +459,29 @@ class Clip:
 G2B = np.array([[1.0, 0.0, 0.0], [0.0, 0.0, -1.0], [0.0, 1.0, 0.0]])  # Godot (x, y, z) -> Blender (x, -z, y)
 
 
+
+def pose_of(build) -> dict:
+    """A pose as {bone: (rot, loc)}, read from a one-key scratch clip that `build` keys at t = 0."""
+    c = Clip("_pose", 1.0)
+    build(c)
+    return {b: (np.asarray(ks[0][1], float), np.asarray(ks[0][2], float)) for b, ks in c.keys.items()}
+
+
+def in_pose(base: Clip, name: str, pose: dict) -> Clip:
+    """`base` played from `pose`: the pose is added to every key of its bones, and held on bones `base` leaves alone."""
+    out = Clip(name, base.length, loop=base.loop)
+    zero = (np.zeros(3), np.zeros(3))
+    for b, ks in base.keys.items():
+        pr, pl = pose.get(b, zero)
+        for t, r, l in ks:
+            out.key(b, t, tuple(np.asarray(r, float) + pr), tuple(np.asarray(l, float) + pl))
+    for b, (pr, pl) in pose.items():
+        if b not in base.keys:
+            out.key(b, 0.0, tuple(pr), tuple(pl))
+            out.key(b, base.length, tuple(pr), tuple(pl))
+    return out
+
+
 def _g2b(v) -> np.ndarray:
     return np.asarray(v, dtype=np.float64) @ G2B.T
 
