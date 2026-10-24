@@ -112,14 +112,16 @@ var trace: Array = []
 var _running := false
 # M2-RND-15: the first run's live scenes (first_run_live_scenes), instanced on worker threads: [task id, [instance]].
 var _live_tasks: Array = []
+# Their threaded loads in flight (M2-RND-910).
+var _live_loading: PackedStringArray = PackedStringArray()
 var _live_seen := {}
 # A first run's live scenes start once the regular staging has drained: started with it, their worker-thread
 # instancing (loads, dressing) piled onto the boot's heaviest frames (2.9 s against 1.05 on a cold driver).
 var _live_pending := false
-# A first run's first_run_scenes, harvested one at a time before the stage's batches (M2-RND-18), each loaded on a
-# worker thread: [task id, [PackedScene]] while one loads.
+# A first run's first_run_scenes, harvested one at a time before the stage's batches (M2-RND-18), each through
+# ResourceLoader's threaded request (M2-RND-910); _harvest_requested while the queue's head is loading.
 var _harvest_queue: PackedStringArray = PackedStringArray()
-var _harvest_task: Array = []
+var _harvest_requested := false
 var _last_frame_usec := 0
 var _stage_alive := false
 var _frames_to_render := 0
@@ -532,16 +534,34 @@ func tick(frame_ms: float) -> void:
 		_finish()
 
 
-## M2-RND-15, a cold first launch: a zone that builds its geometry at runtime (Haluna's dresser MultiMeshes, ocean
-## grid and cast materials) has surfaces no SceneState lists, and on an empty driver cache its first frame compiled
-## 92 surface pipelines at once (1.6-1.7 s). A first run instances each registry "first_run_live_scenes" entry on a
-## worker thread, as SceneRouter does (so a zone prebuilds itself off the tree, never running _ready), stages a
-## draw of every mesh, MultiMesh and material the live instance holds, and frees it.
+## M2-RND-15: a zone that builds geometry at runtime (Haluna's dresser, ocean grid, cast materials) has surfaces no
+## SceneState lists; cold, its first frame compiled 92 surface pipelines (1.6-1.7 s). A first run instances each
+## "first_run_live_scenes" entry off the tree (as SceneRouter does), stages every draw it holds, and frees it.
+## M2-RND-910: each loads by ResourceLoader's threaded request (polled), then instances on a worker. A raw load()
+## on a worker task could sit in the loader while the main thread waited on it: a quit mid-warm-up never exited.
 func _start_live_scenes() -> void:
 	for path: Variant in config.get("first_run_live_scenes", []):
-		if ResourceLoader.exists(str(path)):
-			var box := [null]
-			_live_tasks.append([WorkerThreadPool.add_task(PrewarmHarvest.instance_live.bind(str(path), box)), box])
+		if ResourceLoader.exists(str(path)) and ResourceLoader.load_threaded_request(str(path)) == OK:
+			_live_loading.append(str(path))
+
+
+## Hands every live scene whose threaded load is in to a worker that instances it.
+func _poll_live_loads() -> void:
+	for i in range(_live_loading.size() - 1, -1, -1):
+		var path := _live_loading[i]
+		var status := ResourceLoader.load_threaded_get_status(path)
+		if status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			continue
+		_live_loading.remove_at(i)
+		var packed := (
+			ResourceLoader.load_threaded_get(path) as PackedScene
+			if status == ResourceLoader.THREAD_LOAD_LOADED
+			else null
+		)
+		if packed == null:
+			continue
+		var box := [null]
+		_live_tasks.append([WorkerThreadPool.add_task(PrewarmHarvest.instance_live.bind(packed, box)), box])
 
 
 ## Harvests every finished live scene into the pending draws. True while any is still instancing (the stage stays).
@@ -549,7 +569,8 @@ func _poll_live_scenes() -> bool:
 	if _live_pending:
 		_live_pending = false
 		_start_live_scenes()
-		return not _live_tasks.is_empty()
+		return not _live_loading.is_empty()
+	_poll_live_loads()
 	var cap := int(config.get("max_live_materials", 0))
 	for i in range(_live_tasks.size() - 1, -1, -1):
 		var task: Array = _live_tasks[i]
@@ -577,10 +598,12 @@ func _poll_live_scenes() -> bool:
 		inst.free()
 		if added > 0:
 			_stage_next_batch()
-	return not _live_tasks.is_empty()
+	return not (_live_tasks.is_empty() and _live_loading.is_empty())
 
 
+## At quit: a load in flight stays with ResourceLoader; an instancing worker (it only instantiates) is waited for.
 func _drop_live_scenes() -> void:
+	_live_loading.clear()
 	for task: Array in _live_tasks:
 		WorkerThreadPool.wait_for_task_completion(int(task[0]))
 		var inst := (task[1] as Array)[0] as Node
@@ -589,20 +612,22 @@ func _drop_live_scenes() -> void:
 	_live_tasks.clear()
 
 
-## M2-RND-18: loading a first_run_scenes entry (its meshes and materials) compiled its mesh pipelines in the frame
-## that loaded it (1.96 s on a cold High). Each loads on a worker thread, as SceneRouter loads a zone, and its
-## SceneState is read here once it's in: one scene at a time, the main thread drawing the card meanwhile.
+## M2-RND-18: loading a first_run_scenes entry compiled its mesh pipelines in that frame (1.96 s, cold High). Each
+## loads off the main thread, one at a time, and its SceneState is read here once it's in.
 func _harvest_next_scene() -> void:
-	if _harvest_task.is_empty():
-		var box := [null]
-		var path := _harvest_queue[0]
-		_harvest_task = [WorkerThreadPool.add_task(func() -> void: box[0] = load(path)), box]
+	var path := _harvest_queue[0]
+	if not _harvest_requested:
+		_harvest_requested = ResourceLoader.load_threaded_request(path) == OK
+		if not _harvest_requested:
+			_harvest_queue.remove_at(0)
 		return
-	if not WorkerThreadPool.is_task_completed(int(_harvest_task[0])):
+	var status := ResourceLoader.load_threaded_get_status(path)
+	if status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
 		return
-	WorkerThreadPool.wait_for_task_completion(int(_harvest_task[0]))
-	var packed := (_harvest_task[1] as Array)[0] as PackedScene
-	_harvest_task = []
+	var packed := (
+		ResourceLoader.load_threaded_get(path) as PackedScene if status == ResourceLoader.THREAD_LOAD_LOADED else null
+	)
+	_harvest_requested = false
 	_harvest_queue.remove_at(0)
 	if packed == null:
 		return
@@ -651,9 +676,7 @@ func _process(_delta: float) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
-		if not _harvest_task.is_empty():
-			WorkerThreadPool.wait_for_task_completion(int(_harvest_task[0]))
-		_drop_live_scenes()
+		_drop_live_scenes()  # M2-RND-910: never waits on a load
 		for n: Variant in _pending:
 			if is_instance_valid(n) and n is Node:
 				n.free()
@@ -780,13 +803,10 @@ func _begin_bring_up() -> void:
 		if want != BRING_UP_PLAIN[prop]:
 			_bring_up.append([prop, want])
 			_viewport.set(prop, BRING_UP_PLAIN[prop])
-	# M2-RND-14: Forward+ turns its advanced shader group on (motion vectors, VoxelGI, SSS, lightmaps) lazily, on the
-	# first frame that needs it, and in Godot 4.6.3 that can deadlock: version_get_shader() holds a shader's version
-	# mutex while it waits for the shader's compile tasks, and pipeline compiles of the same shader fill every worker
-	# waiting on that mutex. With TAA off the first such frame was the Shell Shrine's first post-bake frame, with the
-	# whole hall loaded (the lavapipe capture hang). So every boot turns it on here, under the card, with one frame of
-	# TAA on the stage, whatever the player's AA (with TAA or FSR2 the game already has motion vectors). It goes
-	# right after the plain first frame, so everything staged after it compiles with the group on.
+	# M2-RND-14: Forward+ turns its advanced shader group on lazily, and in 4.6.3 that can deadlock (version_get_shader
+	# holds the version mutex while compiles of the same shader fill every worker). With TAA off it hit the Shell
+	# Shrine's first post-bake frame. So a boot turns it on here, under the card, with one frame of TAA on the stage
+	# right after the plain first frame (with TAA or FSR2 the game already has it).
 	if not taa_wanted and not fsr2:
 		_bring_up.push_front([&"use_taa", false])
 		_bring_up.push_front([&"use_taa", true])

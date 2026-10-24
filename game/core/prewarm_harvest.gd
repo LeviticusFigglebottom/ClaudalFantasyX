@@ -50,7 +50,7 @@ static func live_draws(g: GeometryInstance3D) -> Array:
 	return out
 
 
-## Instances `path` into box[0] (on a worker thread: a zone prebuilds itself off the tree, as under SceneRouter).
-static func instance_live(path: String, box: Array) -> void:
-	var packed := load(path) as PackedScene
-	box[0] = packed.instantiate() if packed != null else null
+## Instances `packed` into box[0] on a worker thread (a zone prebuilds itself off the tree, as under SceneRouter).
+## It's already loaded: a worker that loads could stall a quit (M2-RND-910).
+static func instance_live(packed: PackedScene, box: Array) -> void:
+	box[0] = packed.instantiate()

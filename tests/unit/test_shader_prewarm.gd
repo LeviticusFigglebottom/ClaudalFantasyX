@@ -6,6 +6,9 @@ const TEST_MATERIAL := "res://game/shaders/test/prewarm_test_material.tres"
 const TEST_SHADER := "res://game/shaders/test/prewarm_test.gdshader"
 const COMMON_INC := "res://game/shaders/include/common.gdshaderinc"
 const GLOBALS_INC := "res://game/shaders/include/globals.gdshaderinc"
+## M2-RND-910: a first run's warm-up frees within this at a quit (Haluna takes seconds to load).
+const QUIT_MS := 500
+const HALUNA_SCENE := "res://game/levels/ch02/haluna/haluna.tscn"
 const TMP_DIR := "user://test_shader_prewarm"
 const STATIC_STAGE_NODES := 4
 const WATER_GRID := "res://game/world/water/prewarm/water_grid_prewarm.tres"
@@ -862,6 +865,36 @@ func test_a_first_run_spreads_its_harvest_and_leaves_the_frame_after_bring_up_em
 	assert_eq(int(node.stats.get("materials", 0)), 1, "the harvested scene's material was staged")
 	if is_instance_valid(node):
 		node.free()
+	_clean_tmp()
+
+
+## M2-RND-910: quitting during a first run's warm-up exits promptly. Its scene loads run on ResourceLoader's threaded
+## requests, which teardown never waits on: a raw load() on a worker task, waited on in predelete, hung the quit.
+func test_quitting_mid_first_run_never_waits_on_its_scene_loads() -> void:
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var reg_path := _write_registry(
+		"registry_quit.json",
+		{
+			"first_run_scenes": [HALUNA_SCENE],
+			"first_run_live_scenes": [HALUNA_SCENE],
+			"max_scene_materials": 8,
+			"materials_per_frame": 4,
+		}
+	)
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	node.resident_only = true
+	node.first_run = true
+	node.preset_id = "high"
+	_host().add_child(node)
+	node.start("")
+	for i in 3:
+		node.tick(4.0)
+	assert_true(node.is_running(), "the warm-up is mid-load")
+	var t0 := Time.get_ticks_msec()
+	node.free()
+	var took := Time.get_ticks_msec() - t0
+	assert_true(took < QUIT_MS, "freed without waiting on the scene loads (%d ms)" % took)
 	_clean_tmp()
 
 

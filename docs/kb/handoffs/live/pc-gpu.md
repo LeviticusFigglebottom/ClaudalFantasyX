@@ -6,7 +6,7 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 > **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
 > session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
-> **This copy, on `gpu/m3-rnd-05-reefball-night`, is the newest.**
+> **This copy, on `gpu/m2-rnd-910-quit-mid-warmup`, is the newest.**
 
 ## PC setup for a new session
 
@@ -115,6 +115,9 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/m2-rnd-910-quit-mid-warmup | **M2-RND-910 in review** (reviewer Architect; based on lead/gate-big8) | Quit during a first-run warm-up hung (predelete waited on RND-18's worker-thread load()). Loads now via ResourceLoader threaded requests; predelete never waits on a load. boot_title first-run capture exits in 5 s (was killed); new test. |
+| gpu/m2-gate-runner | **Gate runner** (for the Lead) | WSL2 `hymn` + tools/dev/pc_gate/ + tools/dev/gate_runner.md. Parity proved (196/196 on d6a0886d). Filed M2-CHR-11 (Blender AVX2 DIFFs) and M2-ARC-12 (stall tests' clock margin). |
+| gpu/m2-rnd-16-release-exit-leak | **M2-RND-16 in review** (reviewer Architect) | The exit leak (130 in use): a Godot 4.6.3 GDScript compiler bug: a function naming HalunaDresser then HalunaZoneDresser (its subclass) pins the class graph. Not release-only. Fix: haluna_zone.gd names the subclass first; 0 in use (editor and release). New tool: slice_sweep --leak-probe. |
 | gpu/m3-rnd-05-reefball-night | **M3-RND-05 in review** (reviewer Art) | The night match: the ball's water column carries the rule-3 sea-glow (on/off 1.56-5.0x, stone <= 2.36x the sea), lamp-keyed players; arena lamps need light_volumetric_fog_energy 0 (they lit the god-ray fog green). +0.01-0.08 ms. Stacked on RND-04. Two new pending shots. |
 | gpu/m2-nit-05-blender-test-windows | **M2-NIT-05** (accepted) | test_blender_builds on Windows: the expectation uses the scratch Path's own spelling. With NIT-04 merged, all tools tests are green on Windows (498, 6 skipped). |
 | gpu/m3-rnd-04-reefball-caustics | **M3-RND-04 in review** (reviewer Character) | Caustics on the Reefball players: the ocean's caustic web in the sphere's multiply pass, projected along the sun, sun-facing faces only; every tier (<= 0.013 ms at 1440p). Stacked on M3-RND-01. The four reefball shots change: re-approve on lavapipe with RND-01's. |
@@ -123,7 +126,6 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 | gpu/m2-rnd-17-zone-stage-gi | **M2-RND-17 in review** | The shrine's cold first frame is its runtime-built hall: first_run_live_scenes + M2-ENV-12 (m2-slice builds it off the tree): 1918 -> 188 ms. |
 | gpu/m2-rnd-14-advanced-group | **M2-RND-14** (accepted) | Boot turns Forward+'s advanced shader group on (a frame of TAA) for TAA-off players: the 4.6.3 deadlock's trigger off the shrine. |
 | gpu/m2-nit-04-capture-test-windows | fix (accepted) | test_capture_sh on Windows: Git Bash + POSIX paths. |
-| gpu/m2-rnd-16-release-exit-leak | **M2-RND-16 doing** (last in the queue) | Release-only exit leak after Haluna, narrowed (not statics, not threading). |
 | gpu/m2-rnd-15-cold-first-entry | **M2-RND-15 in review** (reviewer Environment) | Cold first launch: the first run also instances Haluna live (worker thread) and stages its runtime-built surfaces; Haluna's cold first entry 637/2312 ms Low, 407/2045 High (was 1771/4426, 1607/3767). The '825 ms visible' frame was the sweep timing out under the card (fixed: LAUNCH_TIMEOUT_S, SLICE_TIMEOUT); new --pipeline-trace. |
 | gpu/m3-rnd-01-reefball | **M3-RND-01 in review** (reviewer Art/character) | Reefball water sphere prototype (WaterSphereRig): refraction + Fresnel outside, Snell window/TIR inside, god rays, a clean crossing; +0.1-0.5 ms. Key frames docs/kb/qa/gpu/reefball/. |
 | gpu/arc-08-first-launch | report (Lead request) | ARC-08 re-measure, every cache cleared (the driver's too): the wait ends done in all runs, the cue shows; cold-driver frames still over ADR 0029 (Low 825 ms visible just after the lift, Haluna 1.6-1.7 s first entry). |
@@ -235,3 +237,22 @@ None of it is needed: everything quoted in the reports can be reproduced from th
 5. The 4.7.2 port prep on the long-lived `gpu/godot-472-port` (not merged until the Lead calls it).
 6. The slice perf re-sweep, once the characters and creatures land.
 7. M3 R&D: the Reefball arena look, a minimum-spec proxy, and Act I look-dev support.
+
+## Gate runner results (WSL2 distro `hymn`; tools/dev/gate_runner.md)
+- **GATE d6a0886d@d6a0886d: FAIL (host-only), wall 16.3 min.** Lane A: data, unittests, audio, taskboard, lint,
+  format and manifest ok. Godot **1940 run, 2 failed**: `test_frame_clock::test_a_real_stall_reads_past_the_cap` and
+  `test_boot_card::test_a_real_stall_under_the_card_reads_at_least_its_length`, a WSL2 clock skew under load. They pass
+  3/3 idle; **M2-ARC-12**. Coverage and smoke didn't run (the gate stops at the first failure). Lane B: **196/196 shots
+  pass** (parity with the container). Blender `--all`: **41 jobs, 31 identical, 10 DIFF** (base_body, rhen, toma and
+  seven villagers: an AVX2 host without M1-CHR-14's snaps; **M2-CHR-11**).
+- **GATE lead/gate-big7@ab048d51: FAIL, wall 18.2 min** (cross-check). Blender, 39 changed jobs: 9 DIFF, the same
+  M2-CHR-11 set. Shots: 196 compared, 2 failed: `save_shrine_field` 0.07021 and `settings_accessibility` 0.04817, the two
+  the Lead re-approved after viewing in d0e0c5a3 and a7350535. So the container and the runner agree.
+- Parity proof on 81651b7e: 75/75 shots; llvmpipe "LLVM 22.1.8, 256 bits"; drifts identical to the container's
+  (water_horizon 0.00507, water_night 0.00306, haluna_h01 0.00189); output independent of LP_NUM_THREADS.
+- **GATE lead/gate-cmb02@7c424c3b: FAIL (shots only), wall 15.8 min.** Lane A green: Godot 1948/0 (M2-ARC-12's margin
+  holds under WSL load), coverage OK, smoke OK, Blender 0 changed jobs. Shots: 196 compared, 24 failed, all the
+  timeline order. In 22 of them 100% of the changed pixels lie in the timeline column. battle_hud_preview also has the
+  "acts again in 4 -> 5 turns" hint; battle_swell_ring also has the Lamp Dive ring state ("Perfect"), which the Lead
+  is viewing. The 061b0361 run was stopped at the Lead's request.
+
