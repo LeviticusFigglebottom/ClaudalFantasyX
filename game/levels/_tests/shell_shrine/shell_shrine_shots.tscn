@@ -1,6 +1,6 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://game/levels/ch03/shell_shrine/shell_shrine_shots.gd" id="1_rig"]
+[ext_resource type="Script" path="res://game/levels/_tests/shell_shrine/shell_shrine_shots.gd" id="1_rig"]
 [ext_resource type="PackedScene" path="res://game/levels/ch03/shell_shrine/shell_shrine.tscn" id="2_level"]
 [ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_shot_camera.gd" id="3_cam"]
 [ext_resource type="Resource" path="res://game/levels/ch03/shell_shrine/shots/S01.tres" id="4_S01"]

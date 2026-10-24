@@ -10,7 +10,7 @@
 | `shell_shrine_dressing.tscn` | The hall, placed once: floor, vault, fan-shell roof, steps, islet, the wall modules and the whorl columns (M2-ENV-03 kit). |
 | `shell_shrine_environment.tres`, `shrine_water_material.tres` | The interior grade (`ch03_shrine_int`) and the shrine's water look (`lagoon_clear` ×1.5, river shader). |
 | `shots/S01.tres`–`S05.tres` | The composed shots of haluna.md §5.3. The director uses S02–S05; `shell_shrine_shots.tscn` frames all five. |
-| `shell_shrine_shots.tscn` (`ShellShrineShots`) | The screenshot rig: the level held in one trial state (`start`, `flow`, `drained`) and the five cameras. |
+| `game/levels/_tests/shell_shrine/shell_shrine_shots.tscn` (`ShellShrineShots`, test-only; M2-ARC-04 keeps rigs out of the release) | The screenshot rig: the level held in one trial state (`start`, `flow`, `drained`) and the five cameras. |
 | `game/data/trials/shell_shrine.json` | Puzzle data, layout and room metrics (see its `doc`). |
 
 **Puzzle.** The spring pours into `b1`. Each basin pours out of one lip, toward `outlets[rotation]`: another basin, the inner pool, the side sluice, or a spill grate. Using a basin turns it 90° clockwise. While the water reaches the inner pool, the pool fills over `fill_sec`; when it's full the door sinks and stays open (`ch03_shrine_door_open`). The first time the water reaches the sluice, the side pool empties for good (`ch03_side_pool_drained`), and the net-float charm can be taken: the `net_float_charm` key item and `ch03_found_net_float`, which Cutscene B reads. Toma's one hint (`ch03_trial_hint`) comes after `hint_idle_sec` with no turn. Water that loops is lost.
