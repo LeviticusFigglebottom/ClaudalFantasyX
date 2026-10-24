@@ -18,7 +18,7 @@ SPEC §8.2 item 1, the signature element. Owner: Rendering. Consumers: Environme
 ## Placing water in a zone
 
 1. Add a `Node3D` with `water_surface.gd` (class `WaterSurface`). Keep it **unrotated and unscaled**: waves live in world XZ, and only its Y (the tide level, `tide_line_y` + the current tide) offsets the rest plane.
-2. `wave_set`: a `WaveSet` `.tres` with up to 8 `WaveComponent`s (direction, wavelength, amplitude, steepness, phase). Copy `game/levels/_tests/water/lagoon_waves.tres` (trade-wind lagoon chop plus a 62 m swell) and adjust it. Point the main components along the zone's prevailing wind.
+2. `wave_set`: a `WaveSet` `.tres` with up to 8 `WaveComponent`s (direction, wavelength, amplitude, steepness, phase). Copy `game/world/water/lagoon_waves.tres` (trade-wind lagoon chop plus a 62 m swell) and adjust it. Point the main components along the zone's prevailing wind.
 3. `material`: a `ShaderMaterial` `.tres` next to the zone, holding the **look** (colours, absorption, foam, caustics). Copy `water_lagoon_material.tres`. Its `shader` is replaced by the tier variant at runtime, and every authored parameter survives.
 4. `quality`: set from the graphics preset with `WaterSurface.quality_for_preset(preset_id)` after the zone loads (and from the settings menu).
 5. The mesh is generated: a uniform 0.5 m core of ±48 m, then cells growing ×1.1 out to ±3 km (≈107k vertices, one draw call). For a zone where the camera roams far, set `follow_target` to the camera. The grid then follows it, snapped to whole core cells. For rivers, pools and channels, set `surface_mesh` to the authored mesh (it needs UVs for the flowmap) and `river = true`.

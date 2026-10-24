@@ -186,7 +186,7 @@ func test_battle_scale_heroes_carry_their_clips() -> void:
 ## M2-CHR-05: a face variant replaces only the tags it lists; the default smile is unchanged.
 func test_smile_variant_is_opt_in_data() -> void:
 	var data: Dictionary = JSON.parse_string(
-		FileAccess.get_file_as_string("res://game/levels/_tests/characters/asha/asha_face_poses.json")
+		FileAccess.get_file_as_string("res://game/data/cutscene/asha_face_poses.json")
 	)
 	var variant: Dictionary = data["variants"]["duchenne_open"]
 	assert_eq(variant.keys(), ["smile"], "the variant lists the smile only")

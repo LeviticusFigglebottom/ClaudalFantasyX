@@ -40,7 +40,7 @@ Every suite names a **loadout** in `game/data/battle/sim_policies.json` (`loadou
 | M1 sandbox (early Ch2) | `m1_starting` | Starting gear (`equipment.json` `starting`) | 2 Salt Tonic |
 | M1 sandbox, geared (measured, its own bands) | `m1_tier1` | Every hero's tier-1 piece, weapon and armor, with their pre-filled ability | 4 Salt Tonic, 1 Relighting Wick |
 | M1 sandbox, Ilun called (stress test) | `sandbox_vowbound` | None | None; `vowbound: [ilun]` |
-| Ch3 boss (Drownbell) | `ch03_drownbell` | A slice player can afford one or two tier-1 pieces; we assume all of them, the generous case. Plus the story flag `ch03_ilun_bound` (Call Ilun). | as above |
+| Ch3 boss (Drownbell) | `ch03_drownbell` | Starting gear plus the two most likely tier-1 buys, Rhen's Coral-Bitten Hooks and Toma's Chiselled Shield (720 lume of the slice's 800–900; M2-CMB-07 follow-up, balance_report.md 2026-10-24). Plus the story flag `ch03_ilun_bound` (Call Ilun). | as above |
 | Later chapters | add one loadout per chapter: the gear that chapter's shops sell, and about one consumable per expected fight | | |
 
 Only `smart` uses items. Its rule: a heal item on the most hurt ally below `heal_below_pct` when the actor can't heal by skill, and a revive item on a fallen active member when no reserve is left to swap in. Gear moves `naive` by about 14 points in the sandbox (10.9% → 25.1%), which is the point of buying it; the showcase bands are defined for starting gear.
@@ -92,6 +92,23 @@ Loadout `m1_starting`. Rhen and Asha active, Toma and Ysolde in reserve, against
 
 **Ease ceiling (M1-CMB-07).** `smart` wins every seed (100.0%), so a win band can't see a regression that makes the sandbox *easier*. A win ceiling below 100% would fail today's numbers. The suite sets `mean_turns_min` in targets.json instead: `smart` must still average at least 16 actions per fight (measured 17.9 at 1000 seeds and 18.1 at the 200 seeds CI uses, so the floor allows about a 10% shorter fight). The geared suite `sandbox_reef_tier1` floors `smart` at 14.5 (measured 16.1 and 16.3). `sim.py` marks a row out of band when it misses the floor, and `test_sandbox_battle.gd` asserts the starting-gear floor at 200 seeds. Mean turns is used rather than party KOs because KOs are rare for `smart` (0.07 to 0.12 per fight) and too noisy at 200 seeds. If a deliberate change makes the fight shorter, re-measure and move the floor with a tuning-log note.
 
+### Ch3 route: `ch03_causeway_harrier` and `ch03_causeway_shore` (regular, M2-FP-25)
+
+These are the Saltgrass Causeway's two fights (B06): the scripted flier lesson at C07, and the random shallows fight after it. Both put a Gull Harrier, a Reef Crab and a Lantern Eel against Rhen and Asha, with Toma in reserve, on loadout `m1_starting`. They take the Ch1–Ch3 **regular** band from the curve above.
+
+| Policy | Band | Measured (1000 seeds), harrier / shore |
+|---|---|---|
+| `naive` | 40–80% | 65.8% / 71.3% |
+| `role_answer` | ≥ 95% | 95.3% / 95.3% |
+| `smart` | ≥ 98% | 100% / 99.9% |
+| p90 turns | ≤ 30 | 18 / 19 |
+
+**Notes:**
+- **Foe order matters.** The naive policy strikes the first foe, so the harrier-first lesson and the eel-first shallows land in band. The same three foes with the crab first fall to 10.9% for naive, and that's out of band.
+- **Two foes are too easy.** Every pair tried gave naive 96–100%.
+- **The other three-foe mixes miss.** With two crabs, or two harriers, the role answer falls short, because the crab's answer (Toma) starts in reserve and the eel's (Ysolde) hasn't joined yet.
+- Leave the order as authored, and re-measure if a foe moves.
+
 ### Vowbound masher line: `sandbox_reef_vowbound` (stress test, M2-CMB-05)
 
 ADR 0027 accepted a **provisional ceiling of 40%** for a masher who calls the Vowbound at once, on the sandbox with no gear. It is a ceiling, not a band to aim at, and the sandbox is pre-Ilun content. Suite: `sandbox_reef`, Rhen and Asha active and Toma in reserve (the probe's lineup), loadout `sandbox_vowbound` (no gear, no items, Ilun bound), `kind: vowbound`.
@@ -104,17 +121,37 @@ ADR 0027 accepted a **provisional ceiling of 40%** for a masher who calls the Vo
 
 **The suite plays the heroes' Swell `off`**, unlike every other suite (`good`). The 40% line was accepted on the probe, which had no hero Swell, so the suite measures what was accepted. **With the heroes' Swell at `good`, the same masher wins 46.2%**: above the line. That number needs a decision from Design or the Lead (the levers are Ilun's HP scale and `call_rank`, battle_ctb.md § Vowbound). The binding per-encounter line is set on the Drownbell (M2-FP-17).
 
+**The Swell-on line: `sandbox_reef_vowbound_good` (M2-CMB-06, review-sweep-Q design verdict).** It's the same suite with the heroes' Swell at `good`, as play has it: a player can't turn hero Swell off, and the masher who finds the Vowbound row unleashes the heroes' gauges too. The ceiling for `naive_swell` is **50%**, set just above the measured **46.2%** (1000 seeds), and is accepted as is. Both suites are engine regression ceilings on pre-Ilun content, not player experiences. The Swell-off line isolates the Vowbound's own lift; the Swell-on line would catch a change in how hero Swell and the Vowbound interact (a technique that feeds Ilun's gauge, say). The binding per-encounter check stays on the Drownbell, with the heroes' Swell at `good`.
+
 **The Drownbell with the real call (scratch probe, M2-CMB-05; not a suite yet).** The `drownbell` suite with Asha's `call_ilun` stand-in removed (no `ch03_ilun_bound` flag) and `"vowbound": ["ilun"]` in the loadout, 300 seeds: naive 0.0%, naive_swell 1.0%, **role_answer 72.0%** (p90 46 actions), **smart 87.0%** (p90 60), and no timeouts. Both sit in the boss bands, but smart's p90 is at the 60 ceiling. Two engine and policy choices got it there. The first is A1 counting the rolled absorb: with only the HP actually restored, a called Ilun at full HP filled nothing in the flood, so Floodnet never came and the flood never cleared (role_answer 0.0% and smart 0.0%, about 80% of fights timed out). The second is the `on_field` dismissal. M2-FP-17 owns the suite and its bands.
+
+**The Drownbell suite plays the real call (M2-FP-17, m2-slice).** `ch03_drownbell` binds Ilun (`"vowbound": ["ilun"]`). The `call_ilun` stand-in is gone from the game, and so are the policies' `clear_field_skill` rule and the loadout's story flag: M2-UI-05's Call row is the only way. The bands are unchanged. Measured at 1000 seeds on the canonical CMB-05 mechanics: naive 0.0%, naive_swell 0.7%, **role_answer 71.0%** (p90 47), **smart 85.3%** (p90 60, at the ceiling), and no timeouts. A new policy, **`flood_call`**, is the masher who calls Ilun the moment the flood rises and leaves him out until he falls or the bell dies (`call_vowbound: field_up`). It wins **38.8%** (p90 38). Its band is [0, 95], the suite's `smart` ceiling: calling into the flood must never beat the careful player, and the fight must never stall.
 
 ### Ch3 boss: Drownbell (vertical slice), `drownbell`
 
-From [act_outline.md](../story/beats/act_outline.md): two phases on the causeway. Phase 1's toll delays the whole party on the timeline, and breaking its rim (Rhen's precise strikes) silences the toll. In phase 2 the polyps heal it and summoning Ilun clears the water field. Party: Rhen, Asha, Toma, with no reserve. Loadout `ch03_drownbell`: the `m1_tier1` gear and consumables plus the story flag `ch03_ilun_bound` (a loadout's `flags` become `BattleEngine.story_flags`), so Asha knows Call Ilun. Mechanics and data: [battle_ctb.md § The Drownbell](battle_ctb.md#the-drownbell-m2-fp-06).
+From [act_outline.md](../story/beats/act_outline.md): two phases on the causeway. Phase 1's toll delays the whole party on the timeline, and breaking its rim (Rhen's precise strikes) silences the toll. In phase 2 the polyps heal it and summoning Ilun clears the water field. Party: Rhen, Asha, Toma, with no reserve. Loadout `ch03_drownbell`: starting gear plus two tier-1 pieces (the table above), the `m1_tier1` consumables, and the story flag `ch03_ilun_bound` (a loadout's `flags` become `BattleEngine.story_flags`), so Asha knows Call Ilun. Mechanics and data: [battle_ctb.md § The Drownbell](battle_ctb.md#the-drownbell-m2-fp-06).
 
 | Policy | Band | Why |
 |---|---|---|
 | `naive` | 0–10% | A boss is never beaten by mashing. |
 | `role_answer` | 70–90% | Rhen on the rim is enough to win most of the time, but not without risk. |
 | `smart` | 80–95% | Healing and replacement close most of the gap; a 5% or greater loss rate keeps it a boss. |
-| p90 turns | ≤ 60 | Two phases, still a slice-length fight. |
+| p90 turns | ≤ 66 | Two phases, still a slice-length fight. Raised from 60 (Lead, 2026-10-24, big7): Ilun's real call adds his own actions to the count, and the affordable party (M2-CMB-07) fights longer. Smart's p90 is 65 at 1000 seeds, and no stat change got it below 61. |
 
 The encounter landed in M2-FP-06 with a first-playable stand-in for the Vowbound summon (ADR 0026). Both `role_answer` and `smart` carry the "clear the field" rule: `sim_policies.json` `clear_field_skill: call_ilun`, so whoever can use it does so as soon as a field is up (`smart` heals first if someone is below 45%). Measured at 1000 seeds: naive 0.0%, role answer 79.7%, smart 89.6%, p90 51 actions (balance_report.md). `tests/integration/test_drownbell_battle.gd` asserts loose bands at 200 seeds on every run.
+
+### Ch1: solo Rhen (M3-C01-02, ADR 0034)
+
+Rhen fights alone all chapter (act1_ch01.md §9 Combat), with `active: [rhen]` and no reserve. The loadouts are `ch01_underway` (starting gear, 2 Salt Tonic, 1 Brine Eyewash) and `ch01_hullgnaw` (the same). Swell is `good`.
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch01_wickfry`, `ch01_oil_slug`, `ch01_shaft_limpet`, and the random `ch01_underway_shoals` and `ch01_underway_limpet` | tutorial (logged exception) | 80–100% | ≥ 95% | ≥ 98% | ≤ 30 |
+| `ch01_scuttlers` | Ch1–Ch3 regular | 40–80% | ≥ 95% | ≥ 98% | ≤ 30 |
+| `ch01_hullgnaw` | Ch1–Ch3 boss | 0–10% | report only | 80–95% | ≤ 60 |
+
+- **Tutorial fights:** each teaches one thing (the command menu, items, escape), and a first-time masher shouldn't lose one.
+- **Hullgnaw's `role_answer`:** the policy never uses items, and in a one-hero fight nobody can swap in, so it measures only the masher plus MP skills and the Swell. Rhen's answer is tempo plus a Salt Tonic when the Coil telegraphs the Gnaw, and only `smart` plays that.
+- **Kick Off:** the encounter lends it (`party_skills`), because the second phase teaches it.
+
+Numbers are in the 2026-10-24 tuning log entry in balance_report.md.

@@ -10,7 +10,7 @@ Owner: Environment. Reviewer: Rendering. This covers the coconut palm, frangipan
 | Godot import settings | `assets_src/environments/vegetation/import_settings.py` |
 | Outputs | `assets/environments/vegetation/*.glb`, `*.png`, `materials/*.tres` |
 | Shaders | `game/shaders/vegetation/` (`vegetation_wind.gdshaderinc`, `vegetation_foliage_body.gdshaderinc`, `vegetation_foliage.gdshader`, `vegetation_foliage_low.gdshader`, `vegetation_bark.gdshader`) |
-| Runtime helpers | `game/levels/_tests/vegetation/vegetation_plant.gd` (materials + LODs), `vegetation_scatter.gd` (MultiMesh) |
+| Runtime helpers | `game/world/vegetation/vegetation_plant.gd` (materials + LODs), `vegetation_scatter.gd` (MultiMesh) |
 | Test scene | `game/levels/_tests/vegetation/vegetation_test.tscn` (shots `veg_backlit_fronds`, `veg_frangipani_close`, `veg_beach_wide`) |
 | Tests | `tools/tests/test_vegetation.py` |
 

@@ -55,7 +55,7 @@ class TestParams(unittest.TestCase):
         self.assertAlmostEqual(lm.mouth_w / lm.head_w, 0.40, places=3)  # asha.md §6.1
 
     def test_face_pose_table_uses_the_shared_api(self):
-        poses = json.loads((ROOT / "game/levels/_tests/characters/asha/asha_face_poses.json").read_text())
+        poses = json.loads((ROOT / "game/data/cutscene/asha_face_poses.json").read_text())
         tags = {e["id"] for e in json.loads((ROOT / "game/data/dialogue/emotions.json").read_text())["emotions"]}
         self.assertEqual(set(poses["emotions"]), tags)
         for tag, pose in poses["emotions"].items():

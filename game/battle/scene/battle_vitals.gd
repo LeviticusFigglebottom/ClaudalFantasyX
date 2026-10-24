@@ -14,7 +14,9 @@ extends RefCounted
 ##                M2-ARC-01: the combatants also carry their Swell gauge and mode, and with the
 ##                battle's BattleSwell it emits EventBus.battle_swell_returned (unlocks) too.
 ## Capture fixtures and tests (persist_progress off) never read or write vitals.
-## Glue, not engine core: it only sets the engine's party_modifier and calls setup().
+## M2-CMB-07: setup() also puts the party's equipped gear between the Lattice and the vitals, and
+## sets the engine's currency_multiplier from it (Full Net), as the balance simulator does.
+## Glue, not engine core: it only sets the engine's hooks and calls setup().
 
 const KEY_ACTIVE := "active"
 const KEY_RESERVE := "reserve"
@@ -36,12 +38,16 @@ static func setup(
 	state: GameStateData = null
 ) -> void:
 	# Order matters: Lattice, then equipment, then the carried vitals LAST, because the vitals clamp HP
-	# and MP to the final maxima. When live battles build EquipmentEffects, put fx.modifier() here,
-	# between the Lattice and the vitals (review-sweep-G S3 on M1-CMB-08), never after them.
+	# and MP to the final maxima (review-sweep-G S3 on M1-CMB-08). M2-MNU-02 / M2-CMB-07: a live battle wears
+	# the save's gear (EquipmentEffects, owning hooks) and its lume multiplier (Full Net).
 	var hooks: Array[Callable] = []
 	if progress != null:
 		hooks.append(progress.apply_to)
 	if carry:
+		# M2-CMB-07: a live battle wears the party's gear, and Full Net multiplies its lume.
+		var fx := live_gear(state if state != null else Game.state)
+		hooks.append(fx.modifier())
+		engine.currency_multiplier = func(ids: Array[StringName]) -> int: return fx.currency_multiplier(ids)
 		hooks.append(Game.vitals_modifier(state))
 	var active: Array[StringName] = plan.get(KEY_ACTIVE, [])
 	var reserve: Array[StringName] = plan.get(KEY_RESERVE, [])
@@ -60,6 +66,13 @@ static func setup(
 		engine.party_modifier = EquipmentEffects.compose(hooks)
 	# setup() is deterministic and rolls nothing, so building again only moves the members.
 	engine.setup(db, order[KEY_ACTIVE], order[KEY_RESERVE], encounter, rng_seed)
+
+
+## The party's equipped gear in `state` as battle effects (EquipmentEffects over a copy of the
+## equipment, so a battle never writes to the save's bag).
+static func live_gear(state: GameStateData) -> EquipmentEffects:
+	var item_db := ItemDB.load_default()
+	return EquipmentEffects.new(item_db, EquipmentBag.new(item_db, state.equipment.duplicate(true)))
 
 
 ## The battle-start lineup rule for carried KO and stone (battle_ctb.md "Carried vitals"):

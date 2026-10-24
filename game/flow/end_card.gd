@@ -3,6 +3,10 @@ extends Control
 ## The end of the first playable (M2-FP-03; docs/kb/tech/first_playable_flow.md): a black screen
 ## with a title, one line and a small prompt (loc keys FLOW_END_CARD_*, theme variations only).
 ## After first_playable.json end_card.min_hold_sec, ui_accept returns to the title (boot.tscn).
+## M2-FP-26 (B12): it opens on Rhen's voice-over line alone (voice_key, held voice_sec, faded by
+## voice_fade_sec), then the title and line fade in (fade_in_sec) and the short credits roll in one
+## row at a time (credits: loc keys, credit_line_sec apart). The piano coda (hush_coda) is the end
+## card's zone music (game/data/audio/music.json zones). Every alpha is a function of `elapsed`.
 ## Show it with EndCard.open() (or FlowRouting.change_scene(EndCard.SCENE)).
 
 ## Emitted once, when accept starts the return to the title.
@@ -21,11 +25,18 @@ var done := false
 
 var _min_hold := 0.0
 var _return_scene := DEFAULT_RETURN_SCENE
+var _voice_sec := 0.0
+var _voice_fade := 0.0
+var _fade_in := 0.0
+var _credit_step := 0.0
+var _credit_rows: Array[Label] = []
 
 @onready var _title: Label = %Title
 @onready var _line: Label = %Line
 @onready var _prompt: Label = %Prompt
 @onready var _content: Control = %Content
+@onready var _voice: Label = %Voice
+@onready var _credits: VBoxContainer = %Credits
 
 
 ## Opens the end card through the router.
@@ -40,11 +51,21 @@ func _ready() -> void:
 	_title.text = tr("FLOW_END_CARD_TITLE")
 	_line.text = tr("FLOW_END_CARD_LINE")
 	_prompt.text = tr("FLOW_END_CARD_PROMPT")
+	var voice_key := str(cfg.get("voice_key", ""))
+	_voice.text = tr(voice_key) if voice_key != "" else ""
+	_voice_sec = float(cfg.get("voice_sec", 0.0)) if voice_key != "" else 0.0
+	_voice_fade = float(cfg.get("voice_fade_sec", 0.0))
+	_fade_in = float(cfg.get("fade_in_sec", 0.0))
+	_credit_step = float(cfg.get("credit_line_sec", 0.0))
+	for key: Variant in cfg.get("credits", []):
+		var row := Label.new()
+		row.theme_type_variation = &"HelpLabel"
+		row.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		row.text = tr(str(key))
+		_credits.add_child(row)
+		_credit_rows.append(row)
 	_show_prompt(false)
-	var fade := float(cfg.get("fade_in_sec", 0.0))
-	if fade > 0.0:
-		_content.modulate.a = 0.0
-		create_tween().tween_property(_content, "modulate:a", 1.0, fade)
+	_pace()
 
 
 func _process(delta: float) -> void:
@@ -59,7 +80,40 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Passes `delta` seconds; the prompt shows once accept is allowed (it keeps its place meanwhile).
 func advance(delta: float) -> void:
 	elapsed += delta
+	_pace()
 	_show_prompt(can_accept())
+
+
+## The voice-over line alone first, then the card and the credits row by row.
+func voice_alpha() -> float:
+	if _voice_sec <= 0.0:
+		return 0.0
+	var up := _ramp(elapsed, 0.0, _voice_fade)
+	var down := 1.0 - _ramp(elapsed, _voice_sec - _voice_fade, _voice_fade)
+	return minf(up, down)
+
+
+## How many credit rows are fully in.
+func credits_shown() -> int:
+	var n := 0
+	for row in _credit_rows:
+		if row.modulate.a >= 1.0:
+			n += 1
+	return n
+
+
+func _pace() -> void:
+	_voice.modulate.a = voice_alpha()
+	_content.modulate.a = _ramp(elapsed, _voice_sec, _fade_in)
+	for i in _credit_rows.size():
+		_credit_rows[i].modulate.a = _ramp(elapsed, _voice_sec + _fade_in + _credit_step * i, _fade_in)
+
+
+## 0 before `start`, rising to 1 over `length` seconds (a step when length is 0).
+static func _ramp(t: float, start: float, length: float) -> float:
+	if length <= 0.0:
+		return 1.0 if t >= start else 0.0
+	return clampf((t - start) / length, 0.0, 1.0)
 
 
 func can_accept() -> bool:

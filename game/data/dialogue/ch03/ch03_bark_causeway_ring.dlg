@@ -1,0 +1,10 @@
+// Ch3 B06 (M2-FP-25), the Lit Age ring (C05): a half-buried ceramic ring with a faint teal glint in
+// its crack (bound light, glimmer_bound): the slice's only sight of it outside the shrine. Rhen
+// prices it; Toma tells him to leave it, and he does. Overheard field bark.
+title: ch03_bark_causeway_ring
+location: ch03/saltgrass_causeway
+---
+Rhen [surprised]: There's light in that crack. Lit Age ceramic, still lit. That's a month of food, sitting in the sand. #line:ch03_bark_causeway_ring_001
+Toma [neutral]: Leave it. #line:ch03_bark_causeway_ring_002
+Rhen [neutral]: ...Leaving it. #line:ch03_bark_causeway_ring_003
+===

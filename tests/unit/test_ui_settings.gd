@@ -15,7 +15,31 @@ func before_each() -> void:
 
 func test_defaults_come_from_the_data_file() -> void:
 	var s := UiSettings.new()
-	assert_eq(s.settings(), [&"reduced_motion", &"text_scale", &"palette", &"timing_assist"] as Array[StringName])
+	assert_eq(
+		s.settings(),
+		(
+			[
+				&"reduced_motion",
+				&"text_scale",
+				&"palette",
+				&"timing_assist",
+				&"text_speed",
+				&"dialogue_backing",
+				&"objective_cue",
+				&"tutorial_tips",
+				&"battle_speed",
+				&"battle_animations",
+				&"summon_cinematic",
+				&"dialogue_auto",
+				&"reduced_audio",
+				&"master_volume",
+				&"music_volume",
+				&"sfx_volume",
+				&"voice_volume"
+			]
+			as Array[StringName]
+		)
+	)
 	assert_false(s.reduced_motion())
 	assert_eq(s.text_scale(), 1.0)
 	assert_eq(s.palette(), &"standard")
@@ -110,8 +134,12 @@ func test_colorblind_palette_swaps_danger_and_enemy_fill() -> void:
 	s.set_value(UiSettings.PALETTE, &"colorblind")
 	var t := s.theme_for(base)
 	assert_ne(t, base)
-	assert_eq(t.get_color(&"danger", &"Hymn").to_html(false).to_upper(), "F08A24", "art/ui.md §9")
-	assert_eq(t.get_color(&"enemy_chip", &"Hymn").to_html(false).to_upper(), "2A2414", "art/ui.md §9")
+	assert_eq(
+		t.get_color(&"danger", &"Hymn").to_html(false).to_upper(), "D15E1F", "art/ui.md §9 as amended by M2-UI-11"
+	)
+	assert_eq(
+		t.get_color(&"enemy_chip", &"Hymn").to_html(false).to_upper(), "2A2414", "art/ui.md §9 as amended by M2-UI-11"
+	)
 	assert_eq(t.get_color(&"focus", &"Hymn"), base.get_color(&"focus", &"Hymn"), "buffs and allies keep ui_focus")
 	assert_eq(s.theme_for(base), t, "built once per palette and scale")
 
@@ -141,7 +169,7 @@ func test_hud_follows_the_settings_live() -> void:
 	assert_eq(ctl.hud.result.motion_scale, 0.5)
 	s.set_value(UiSettings.PALETTE, &"colorblind")
 	assert_ne(ctl.hud.theme, base, "palette swap re-themes the HUD")
-	assert_eq(ctl.hud.get_theme_color(&"danger", &"Hymn").to_html(false).to_upper(), "F08A24")
+	assert_eq(ctl.hud.get_theme_color(&"danger", &"Hymn").to_html(false).to_upper(), "D15E1F")
 	s.reset()
 	assert_eq(ctl.hud.theme, base, "back to the defaults: the saved theme again")
 	assert_false(ctl.hud.timeline.reduced_motion)

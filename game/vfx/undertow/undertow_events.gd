@@ -17,6 +17,17 @@ const BOLT_NODE := "Bolt"
 const RAIN_NODE := "UndertowRain"
 const SALT_BOLT := 11
 const SALT_BOLT_SEED := 12
+## Streamer anchors sit in the lower ANCHOR_HEIGHT_SHARE of the wounds' height window (curtains hang from
+## the lower rents down to the sea), spread round the storm by the golden angle (radians) so none bunch up.
+const ANCHOR_HEIGHT_SHARE := 0.6
+const GOLDEN_ANGLE_RAD := 2.39996323
+## A shown bolt hides once its site's flash falls below this share of bolts.threshold (the stroke outlives
+## the flash's peak by a little, as the eye holds it).
+const BOLT_HIDE_SHARE := 0.25
+## A stroke lands bolts.sea_reach_m x (BOLT_REACH_MIN + a hash in [0, 1)) beyond the wall's foot.
+const BOLT_REACH_MIN := 0.5
+## Scales a [0, 1) hash to a positive 31-bit seed for the bolt's mesh.
+const SEED_SCALE := 2147483647.0
 ## _bolt_keys entry of a site with no stroke drawn.
 const NO_STRIKE := -9223372036854775807
 ## The storm-local AABB head-room of a bolt mesh (m): its width grows by the pixel floor.
@@ -176,8 +187,8 @@ func _streamer_anchors(count: int) -> PackedVector3Array:
 	var top := storm.state.height_now()
 	var out := PackedVector3Array()
 	for i in count:
-		var h := lerpf(h_min, lerpf(h_min, h_max, 0.6), UndertowState.hash01(i, 0, SALT_BOLT_SEED))
-		var a := fposmod(float(i) * 2.39996323 + UndertowState.hash01(i, 1, SALT_BOLT_SEED), TAU)
+		var h := lerpf(h_min, lerpf(h_min, h_max, ANCHOR_HEIGHT_SHARE), UndertowState.hash01(i, 0, SALT_BOLT_SEED))
+		var a := fposmod(float(i) * GOLDEN_ANGLE_RAD + UndertowState.hash01(i, 1, SALT_BOLT_SEED), TAU)
 		out.append(Vector3(storm.state.wall_radius(h), h * top, a))
 	return out
 
@@ -227,7 +238,7 @@ func bolt_ends(site: int, t: float) -> Array[Vector3]:
 	var top_m := float(cfg.get("top_m", 0.0))
 	var r := storm.state.wall_radius(top_m / maxf(storm.state.height_now(), 1.0))
 	var k := storm.state.flash_period(site, t)
-	var reach := float(cfg.get("sea_reach_m", 0.0)) * (0.5 + UndertowState.hash01(site, k, SALT_BOLT_SEED))
+	var reach := float(cfg.get("sea_reach_m", 0.0)) * (BOLT_REACH_MIN + UndertowState.hash01(site, k, SALT_BOLT_SEED))
 	var da := (UndertowState.hash01(site, k, SALT_BOLT) - 0.5) * float(cfg.get("spread_rad", 0.0))
 	var top := Vector3(r * cos(a), top_m, r * sin(a))
 	var bottom := Vector3((r + reach) * cos(a + da), 0.0, (r + reach) * sin(a + da))
@@ -252,7 +263,7 @@ func _update_bolts() -> void:
 		if level > threshold and _prev_levels[i] <= threshold:
 			_on_strike(level)
 			storm.lightning_struck.emit(i, drawn)
-		if level <= threshold * 0.25 and bolts[i].visible:
+		if level <= threshold * BOLT_HIDE_SHARE and bolts[i].visible:
 			bolts[i].visible = false
 			_bolt_keys[i] = NO_STRIKE
 		bolt_materials[i].set_shader_parameter(&"bolt_level", level)
@@ -262,7 +273,7 @@ func _update_bolts() -> void:
 func _strike(site: int, t: float) -> void:
 	var cfg := _cfg("bolts")
 	var ends := bolt_ends(site, t)
-	var seed := int(UndertowState.hash01(site, storm.state.flash_period(site, t), SALT_BOLT_SEED) * 2147483647.0)
+	var seed := int(UndertowState.hash01(site, storm.state.flash_period(site, t), SALT_BOLT_SEED) * SEED_SCALE)
 	var mi := bolts[site]
 	mi.mesh = UndertowMeshBuilder.bolt(
 		seed,

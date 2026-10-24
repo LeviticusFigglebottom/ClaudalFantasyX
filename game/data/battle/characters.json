@@ -4,13 +4,13 @@
       "id": "rhen", "name_key": "CHAR_RHEN",
       "stats": {"level": 5, "hp": 420, "mp": 24, "strength": 16, "magic": 6, "defense": 10,
                 "magic_defense": 6, "agility": 22, "accuracy": 14, "evasion": 14, "luck": 18},
-      "skills": ["attack", "quick_hit", "undertow_cut"]
+      "skills": ["attack", "quick_hit", "undertow_cut", "read"]
     },
     {
       "id": "asha", "name_key": "CHAR_ASHA",
       "stats": {"level": 5, "hp": 300, "mp": 60, "strength": 6, "magic": 18, "defense": 6,
                 "magic_defense": 14, "agility": 14, "accuracy": 8, "evasion": 10, "luck": 12},
-      "skills": ["attack", "mend", "hasten", "ward", "call_ilun"]
+      "skills": ["attack", "mend", "hasten", "ward"]
     },
     {
       "id": "toma", "name_key": "CHAR_TOMA",

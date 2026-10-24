@@ -1,0 +1,19 @@
+// Ch1 C1-03 "The first bell-room" (docs/kb/story/beats/act1_ch01.md): up through a still mirror of
+// water (the air surface seen from below, U03) into a room of trapped air. The sound changes: drips,
+// his breathing, the lantern's hiss. The only place underwater where he speaks out loud: to the room,
+// to the lantern, to nobody, which is how a lonely, funny person talks. In-engine.
+// The bell-room is a rest point (full heal on entry, no save); the zone heals before this plays.
+// Teaches interact: the brass hinge he talks about is the cut prop beside the door.
+title: ch01_bell_room
+location: ch01/oruvel_underway
+---
+@camera U03
+@sfx bell_room_drip
+@wait 1.0
+Rhen [soft_smile]: Morning. Don't get up. #line:ch01_bell_001
+Rhen [neutral]: Air's stale. Air's always stale. Four hundred years and nobody thought to open a window. #line:ch01_bell_002
+@anim rhen look_at hinge
+Rhen [smile]: Brass in the door hinges. Somebody in the Lit Age loved a hinge. #line:ch01_bell_003
+Rhen [smile]: I'll take that off your hands. You won't miss it. #line:ch01_bell_004
+@camera release
+===

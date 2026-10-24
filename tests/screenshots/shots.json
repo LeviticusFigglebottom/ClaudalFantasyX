@@ -1622,6 +1622,652 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "battle_choreo_melee",
+      "scene": "res://game/battle/scene/shots/battle_choreo_melee.tscn"
+    },
+    {
+      "id": "battle_choreo_hit",
+      "scene": "res://game/battle/scene/shots/battle_choreo_hit.tscn"
+    },
+    {
+      "id": "battle_choreo_cast",
+      "scene": "res://game/battle/scene/shots/battle_choreo_cast.tscn"
+    },
+    {
+      "id": "battle_choreo_support",
+      "scene": "res://game/battle/scene/shots/battle_choreo_support.tscn"
+    },
+    {
+      "id": "battle_choreo_read",
+      "scene": "res://game/battle/scene/shots/battle_choreo_read.tscn"
+    },
+    {
+      "id": "battle_choreo_ko",
+      "scene": "res://game/battle/scene/shots/battle_choreo_ko.tscn"
+    },
+    {
+      "id": "battle_choreo_swap",
+      "scene": "res://game/battle/scene/shots/battle_choreo_swap.tscn"
+    },
+    {
+      "id": "battle_arena_tideline",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_tideline.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_arena_causeway",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_causeway.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_choreo_lamp_dive",
+      "scene": "res://game/battle/scene/shots/battle_choreo_lamp_dive.tscn"
+    },
+    {
+      "id": "battle_choreo_toll",
+      "scene": "res://game/battle/scene/shots/battle_choreo_toll.tscn",
+      "settle_frames": 45
+    },
+    {
+      "id": "battle_choreo_vowbound_rise",
+      "scene": "res://game/battle/scene/shots/battle_choreo_vowbound_rise.tscn"
+    },
+    {
+      "id": "battle_choreo_summon",
+      "scene": "res://game/battle/scene/shots/battle_choreo_summon.tscn"
+    },
+    {
+      "id": "battle_swell_chant",
+      "scene": "res://game/battle/scene/shots/battle_swell_chant.tscn"
+    },
+    {
+      "id": "battle_swell_brace",
+      "scene": "res://game/battle/scene/shots/battle_swell_brace.tscn"
+    },
+    {
+      "id": "battle_swell_glyph",
+      "scene": "res://game/battle/scene/shots/battle_swell_glyph.tscn"
+    },
+    {
+      "id": "settings_hub",
+      "scene": "res://game/ui/settings/shots/settings_hub.tscn"
+    },
+    {
+      "id": "settings_accessibility",
+      "scene": "res://game/ui/settings/shots/settings_accessibility.tscn"
+    },
+    {
+      "id": "settings_controls",
+      "scene": "res://game/ui/settings/shots/settings_controls.tscn"
+    },
+    {
+      "id": "haluna_h10_dock_night",
+      "scene": "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+      "camera": "Cameras/H10",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "night"
+          }
+        }
+      }
+    },
+    {
+      "id": "shop_menu_buy",
+      "scene": "res://game/ui/shop/shots/shop_buy.tscn"
+    },
+    {
+      "id": "shop_menu_sell",
+      "scene": "res://game/ui/shop/shots/shop_sell.tscn"
+    },
+    {
+      "id": "inn_menu",
+      "scene": "res://game/ui/shop/shots/inn.tscn"
+    },
+    {
+      "id": "shrine_s01_approach",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "warm_shader_groups": true,
+      "camera": "Cameras/S01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "start"
+          }
+        }
+      }
+    },
+    {
+      "id": "shrine_s02_threshold",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "warm_shader_groups": true,
+      "camera": "Cameras/S02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "start"
+          }
+        }
+      }
+    },
+    {
+      "id": "shrine_s03_overview",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "warm_shader_groups": true,
+      "camera": "Cameras/S03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "start"
+          }
+        }
+      }
+    },
+    {
+      "id": "shrine_s04_lip",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "warm_shader_groups": true,
+      "camera": "Cameras/S04",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "flow"
+          }
+        }
+      }
+    },
+    {
+      "id": "shrine_s05_side_pool",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "warm_shader_groups": true,
+      "camera": "Cameras/S05",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "drained"
+          }
+        }
+      }
+    },
+    {
+      "id": "battle_statuses_colorblind",
+      "scene": "res://game/battle/scene/shots/battle_statuses_colorblind.tscn"
+    },
+    {
+      "id": "field_objective_line",
+      "scene": "res://game/levels/_tests/ui_shots/field_objective_line.tscn",
+      "camera": "Haluna/Cameras/H02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_menu_map_haluna",
+      "scene": "res://game/ui/map/shots/field_menu_map_haluna.tscn"
+    },
+    {
+      "id": "field_menu_map_shrine",
+      "scene": "res://game/ui/map/shots/field_menu_map_shrine.tscn"
+    },
+    {
+      "id": "battle_pause",
+      "scene": "res://game/ui/menus/battle_pause/shots/battle_pause.tscn"
+    },
+    {
+      "id": "items_menu",
+      "scene": "res://game/ui/menus/items/shots/items_menu.tscn"
+    },
+    {
+      "id": "items_menu_use",
+      "scene": "res://game/ui/menus/items/shots/items_menu_use.tscn"
+    },
+    {
+      "id": "status_menu",
+      "scene": "res://game/ui/menus/status/shots/status_menu.tscn"
+    },
+    {
+      "id": "lattice_menu",
+      "scene": "res://game/ui/menus/lattice/shots/lattice_menu.tscn"
+    },
+    {
+      "id": "lattice_menu_activate",
+      "scene": "res://game/ui/menus/lattice/shots/lattice_menu_activate.tscn"
+    },
+    {
+      "id": "equip_menu",
+      "scene": "res://game/ui/menus/equip/shots/equip_menu.tscn"
+    },
+    {
+      "id": "equip_customize",
+      "scene": "res://game/ui/menus/equip/shots/equip_customize.tscn"
+    },
+    {
+      "id": "field_interact_prompt",
+      "scene": "res://game/levels/_tests/ui_shots/field_interact_prompt.tscn",
+      "camera": "Haluna/Cameras/H02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_area_title",
+      "scene": "res://game/levels/_tests/ui_shots/field_area_title.tscn",
+      "camera": "Haluna/Cameras/H02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_tip_card",
+      "scene": "res://game/levels/_tests/ui_shots/field_tip_card.tscn",
+      "camera": "Haluna/Cameras/H02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "dialogue_continue",
+      "scene": "res://game/levels/_tests/ui_shots/dialogue_continue.tscn",
+      "camera": "Haluna/Cameras/H02",
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "dialogue_backlog",
+      "scene": "res://game/levels/_tests/ui_shots/dialogue_backlog.tscn",
+      "camera": "Haluna/Cameras/H02",
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "creature_reef_crab",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_reef_crab.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_reef_crab_attack",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_reef_crab_attack.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_drownbell",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_drownbell.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_drownbell_rim_broken",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_drownbell_rim_broken.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_drownbell_toll",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_drownbell_toll.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_portraits",
+      "scene": "res://game/levels/_tests/creatures/creature_portraits_shot.tscn",
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "creature_hullgnaw",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_hullgnaw.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_tower_limpet",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_tower_limpet.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_lantern_eel",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_lantern_eel.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_oil_slug",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_oil_slug.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_spawn_polyp",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_spawn_polyp.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_glassfry",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_glassfry.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_bottle_hermit",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_bottle_hermit.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_gull_harrier",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_gull_harrier.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_sail_leech",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_sail_leech.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_spar_wraith",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_spar_wraith.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_scuttler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_scuttler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_ashwing",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_ashwing.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_slag_tortoise",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_slag_tortoise.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_cinder_matron",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_cinder_matron.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_shoal_skipper",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_shoal_skipper.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_raid_hound",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_raid_hound.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_tide_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_tide_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_vein_sparker",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_vein_sparker.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_undertows_reach",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_undertows_reach.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_flue_moth",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_flue_moth.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_wallcrab",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_wallcrab.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_stormgull",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_stormgull.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_squall_wing",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_squall_wing.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_wreck_crab",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_wreck_crab.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_wall_polyp",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_wall_polyp.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch01_tut_shutter",
+ "source": "game/data/dialogue/ch01/ch01_tut_shutter.dlg",
+ "start": "ch01_tut_shutter",
+ "nodes": {
+  "ch01_tut_shutter": {
+   "headers": {"location": "ch01/oruvel_underway"},
+   "ops": [
+    {"op": "line", "id": "ch01_tut_003", "key": "DLG_CH01_TUT_003", "speaker": "", "emotion": "", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

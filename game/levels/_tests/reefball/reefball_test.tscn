@@ -1,0 +1,173 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://game/world/water/sphere/water_sphere_rig.gd" id="rig"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat"]
+sky_top_color = Color(0.180392, 0.498039, 0.839216, 1)
+sky_horizon_color = Color(0.678431, 0.807843, 0.882353, 1)
+ground_bottom_color = Color(0.243137, 0.290196, 0.341176, 1)
+ground_horizon_color = Color(0.678431, 0.807843, 0.882353, 1)
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_energy = 0.65
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.65
+tonemap_agx_white = 12.0
+
+[sub_resource type="PlaneMesh" id="Ground"]
+size = Vector2(240, 240)
+
+[sub_resource type="StandardMaterial3D" id="Sand"]
+albedo_color = Color(0.85098, 0.784314, 0.666667, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="Stand"]
+size = Vector3(22, 10, 8)
+
+[sub_resource type="StandardMaterial3D" id="Lacquer"]
+albedo_color = Color(0.647059, 0.180392, 0.156863, 1)
+roughness = 0.5
+
+[sub_resource type="CylinderMesh" id="Pillar"]
+top_radius = 0.8
+bottom_radius = 1.2
+height = 12.0
+
+[sub_resource type="StandardMaterial3D" id="Stone"]
+albedo_color = Color(0.894118, 0.866667, 0.811765, 1)
+roughness = 0.8
+
+[sub_resource type="CapsuleMesh" id="Player"]
+radius = 0.32
+height = 1.72
+
+[sub_resource type="StandardMaterial3D" id="TeamA"]
+albedo_color = Color(0.94902, 0.796078, 0.278431, 1)
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="TeamB"]
+albedo_color = Color(0.168627, 0.32549, 0.65098, 1)
+roughness = 0.6
+
+[node name="ReefballTest" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.383022, 0.321394, 0, 0.642788, 0.766044, -0.5, -0.663414, 0.556670, 0, 40, 0)
+light_color = Color(1, 0.96, 0.9, 1)
+light_energy = 3.0
+shadow_enabled = true
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+mesh = SubResource("Ground")
+surface_material_override/0 = SubResource("Sand")
+
+[node name="Stands" type="Node3D" parent="."]
+
+[node name="StandN" type="MeshInstance3D" parent="Stands"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -44)
+mesh = SubResource("Stand")
+surface_material_override/0 = SubResource("Lacquer")
+
+[node name="StandS" type="MeshInstance3D" parent="Stands"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 44)
+mesh = SubResource("Stand")
+surface_material_override/0 = SubResource("Lacquer")
+
+[node name="StandE" type="MeshInstance3D" parent="Stands"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 44, 5, 0)
+mesh = SubResource("Stand")
+surface_material_override/0 = SubResource("Lacquer")
+
+[node name="StandW" type="MeshInstance3D" parent="Stands"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -44, 5, 0)
+mesh = SubResource("Stand")
+surface_material_override/0 = SubResource("Lacquer")
+
+[node name="PillarNE" type="MeshInstance3D" parent="Stands"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 6, -30)
+mesh = SubResource("Pillar")
+surface_material_override/0 = SubResource("Stone")
+
+[node name="PillarNW" type="MeshInstance3D" parent="Stands"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 6, -30)
+mesh = SubResource("Pillar")
+surface_material_override/0 = SubResource("Stone")
+
+[node name="PillarSE" type="MeshInstance3D" parent="Stands"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 6, 30)
+mesh = SubResource("Pillar")
+surface_material_override/0 = SubResource("Stone")
+
+[node name="PillarSW" type="MeshInstance3D" parent="Stands"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 6, 30)
+mesh = SubResource("Pillar")
+surface_material_override/0 = SubResource("Stone")
+
+[node name="Sphere" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 22, 0)
+script = ExtResource("rig")
+
+[node name="Players" type="Node3D" parent="."]
+
+[node name="A1" type="MeshInstance3D" parent="Players"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, -4, 23, -2)
+mesh = SubResource("Player")
+surface_material_override/0 = SubResource("TeamA")
+
+[node name="A2" type="MeshInstance3D" parent="Players"]
+transform = Transform3D(1, 0, 0, 0, 0.5, -0.866025, 0, 0.866025, 0.5, -7, 18, 3)
+mesh = SubResource("Player")
+surface_material_override/0 = SubResource("TeamA")
+
+[node name="A3" type="MeshInstance3D" parent="Players"]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, -2, 28, 5)
+mesh = SubResource("Player")
+surface_material_override/0 = SubResource("TeamA")
+
+[node name="B1" type="MeshInstance3D" parent="Players"]
+transform = Transform3D(0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0, 1, 4, 22, 1)
+mesh = SubResource("Player")
+surface_material_override/0 = SubResource("TeamB")
+
+[node name="B2" type="MeshInstance3D" parent="Players"]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 8, 17, -3)
+mesh = SubResource("Player")
+surface_material_override/0 = SubResource("TeamB")
+
+[node name="B3" type="MeshInstance3D" parent="Players"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 27, -6)
+mesh = SubResource("Player")
+surface_material_override/0 = SubResource("TeamB")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Outside" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0, 18, 58)
+current = true
+fov = 55.0
+far = 800.0
+
+[node name="Inside" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21, 10)
+fov = 60.0
+far = 800.0
+
+[node name="LookUp" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.5, -0.866025, 0, 0.866025, 0.5, 0, 16, 4)
+fov = 70.0
+far = 800.0
+
+[node name="Crossing" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.500000, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.500000, 7.98, 22, 13.87)
+fov = 60.0
+far = 800.0

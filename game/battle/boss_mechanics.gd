@@ -22,6 +22,9 @@ extends RefCounted
 ##                 that one is never refused and clears the field only when it is up.
 ##                 "requires_flag": story flag: party members only know the skill when the flag is
 ##                 in BattleEngine.story_flags (passed in at setup; the engine never reads Game).
+##   encounters.json "party_skills": {hero id: [skill ids]}: skills that hero knows for this fight only
+##                 (a tutorial fight teaching one: Ch1's Hullgnaw lends Rhen Kick Off; ADR 0034).
+##                 Added at setup after the Lattice and the flag locks, never twice.
 
 ## Stats a phase row may override ("hp", "mp" and "level" never change mid-fight).
 const PHASE_STATS: Array[String] = [
@@ -36,6 +39,16 @@ static func lock_skills(c: BattleCombatant, db: BattleDB, flags: Array[StringNam
 		var flag := StringName(str(db.skill(sid).get("requires_flag", "")))
 		if flag != &"" and not flags.has(flag):
 			c.skills.erase(sid)
+
+
+## Adds encounter row `enc`'s "party_skills" to the party members it names (see the class comment).
+static func lend_skills(engine: BattleEngine, enc: Dictionary) -> void:
+	var lent: Dictionary = enc.get("party_skills", {})
+	for c in engine.party_active + engine.party_reserve:
+		for sid: Variant in lent.get(String(c.id), []):
+			var skill_id := StringName(str(sid))
+			if not c.skills.has(skill_id):
+				c.skills.append(skill_id)
 
 
 ## Why skill row `sk` cannot be used now, or &"" if it can: a field clear with that field down

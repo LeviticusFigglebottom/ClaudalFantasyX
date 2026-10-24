@@ -32,6 +32,7 @@ var _body: MeshInstance3D
 var _connected := false
 # The camera whose Compositor holds the effect, and the Compositor we created for it (if we did).
 var _effect_camera: Camera3D
+var _textures_bound := false
 var _own_compositor: Compositor
 
 
@@ -54,9 +55,11 @@ func setup(host: Node3D, body: MeshInstance3D, render_priority: int) -> void:
 		_connected = true
 	if allow_compute and use_compute(body):
 		effect = UndertowBodyEffect.new()
-		composite_material.set_shader_parameter(&"body_tex", effect.body_texture)
-		composite_material.set_shader_parameter(&"front_tex", effect.front_texture)
 		composite_material.set_shader_parameter(&"use_front", true)
+		# The effect's Texture2DRDs have no RD texture until its first dispatch on the render thread: a material
+		# built over them then lacks those bindings ("Uniforms supplied for set (3) are not the same format",
+		# M2-RND-12). They're bound, and the composite shown, once the textures exist (_bind_effect_textures).
+		composite.visible = false
 		return
 	viewport = SubViewport.new()
 	viewport.name = "HalfResBody"
@@ -151,7 +154,21 @@ func _sync() -> void:
 	camera.v_offset = cam.v_offset
 
 
+## Hands the effect's textures to the composite once they exist (see setup), and shows it. True once bound.
+func _bind_effect_textures() -> bool:
+	if _textures_bound:
+		return true
+	if not (effect.body_texture.texture_rd_rid.is_valid() and effect.front_texture.texture_rd_rid.is_valid()):
+		return false
+	composite_material.set_shader_parameter(&"body_tex", effect.body_texture)
+	composite_material.set_shader_parameter(&"front_tex", effect.front_texture)
+	composite.visible = true
+	_textures_bound = true
+	return true
+
+
 func _sync_effect(cam: Camera3D) -> void:
+	_bind_effect_textures()
 	if cam != _effect_camera:
 		_detach_effect()
 		_effect_camera = cam

@@ -1,15 +1,20 @@
 extends TestCase
 ## M2-FP-04, hardened in M2-FP-09: the whole first-playable thread, headless, with instant cutscenes
 ## and every scene change recorded instead of made (FlowRouting.record, BattleRequest.change_scene,
-## the battle's travel hooks): New Game → prologue → Haluna (Cutscene A) → three villagers → walk up
+## the battle's travel hooks): New Game → prologue (which hands off to Ch1, M3-C01-02; Ch1 itself is
+## tests/integration/test_ch01_thread.gd) → Haluna (Cutscene A) → three villagers → walk up
 ## the beach into the story's real tideline trigger → lose, Fight again, lose, Return to last save
 ## (none yet: the title) → walk in again and win → back at BattleReturn (not re-triggered) → save at
-## the shrine, load it back → the causeway head → the Shell Shrine trial → Cutscene B → the Drownbell → end card.
+## the shrine, load it back → the causeway head → the Saltgrass Causeway (M2-FP-25: Ch3 starts, the
+## harrier lesson) → the Shell Shrine trial (its checkpoint autosave, M2-FP-27) → Cutscene B → lose the
+## Drownbell and Return to last save (back at the shrine's open door, not the trial) → win it → the
+## dock at night → end card.
 
 const ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
 const PROLOGUE := "res://game/levels/prologue/prologue.tscn"
 const FIRST_VERSE := "res://game/levels/ch03/first_verse/first_verse.tscn"
 const SHRINE := "res://game/levels/ch03/shell_shrine/shell_shrine.tscn"
+const CAUSEWAY := "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn"
 const BATTLE := "res://game/flow/field_battle.tscn"
 const DT := 1.0 / 60.0
 const WALK_SEC := 30.0
@@ -38,6 +43,7 @@ func before_each() -> void:
 
 
 func _done() -> void:
+	SaveSystem.cancel_pending_autosave()
 	BattleRequest.clear()
 	BattleRequest.change_scene = Callable()
 	FlowRouting.record = Callable()
@@ -47,7 +53,7 @@ func _done() -> void:
 
 
 func test_the_first_playable_thread_end_to_end() -> void:
-	# New Game lands on the prologue, which hands off to the beach.
+	# New Game lands on the prologue, which hands off to Ch1; Ch1's end brings the party to the beach.
 	var reg := LocationRegistry.load_default()
 	assert_eq(reg.new_game_location, &"prologue")
 	var prologue := (load(PROLOGUE) as PackedScene).instantiate() as PrologueScene
@@ -57,7 +63,7 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	prologue.travel = _record_travel
 	prologue.play()
 	assert_true(bool(Game.get_flag(&"prologue_seen")))
-	assert_eq(travels, [[&"ch02/haluna", &"Beach"]] as Array[Array])
+	assert_eq(travels, [[&"ch01/oruvel_underway", &"Drop"]] as Array[Array], "on to Ch1 (M3-C01-02)")
 	prologue.free()
 	var beach := reg.resolve(&"ch02/haluna", &"Beach")
 	assert_eq(beach.get("scene"), ZONE, "the registry enters the playable zone")
@@ -86,7 +92,7 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	var lost := _lose_battle()
 	assert_eq(lost, [TITLE] as Array[String], "no save yet: Return to last save is the title")
 	assert_false(bool(Game.get_flag(&"ch02_tideline_won")), "a defeat never sets the flag")
-	assert_eq(travels, [[&"ch02/haluna", &"Beach"]] as Array[Array], "and never travels to the field")
+	assert_eq(travels, [[&"ch01/oruvel_underway", &"Drop"]] as Array[Array], "and never travels to the field")
 
 	# Continue would find nothing; New Game's way back is the prologue, so walk in again and win.
 	assert_eq(TitleSaveEntry.continue_slot(SaveSystem), -1, "no record to continue")
@@ -121,9 +127,30 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	var wr := WorldReturn.new()
 	assert_eq(wr.resolve(Game.state).get("spawn"), &"Shrine", "and continues at the shrine")
 	wr.free()
+	assert_eq(Game.state.chapter, 2, "Haluna is Chapter 2 (M2-FP-27)")
 	assert_true(causeway.on_touched(), "after a save the causeway head opens")
-	assert_eq(routed.back(), [SHRINE], "the causeway head opens the Shell Shrine trial (M2-FP-16)")
+	assert_eq(routed.back(), [&"ch03/saltgrass_causeway", &"FromHaluna"], "onto the Saltgrass Causeway (M2-FP-25)")
 	_free(zone)
+
+	# B06, the Saltgrass Causeway: arriving starts Ch3, the harrier at C07 is the first fight, and the
+	# islet steps open the trial.
+	var route := _load_route()
+	route.story.begin()
+	assert_eq(Game.state.chapter, 3, "Ch3 starts on the causeway (the chapter autosave)")
+	assert_true(_interactable(route, &"harrier").on_touched())
+	assert_true(BattleRequest.pending() != null and BattleRequest.pending().encounter == &"ch03_causeway_harrier")
+	_free(route)
+	_win_battle(&"ch03_causeway_harrier")
+	assert_eq(travels.back(), [&"ch03/saltgrass_causeway", &"AfterHarrier"], "back on the causeway past C07")
+	assert_true(bool(Game.get_flag(&"ch03_harrier_won")), "the flier lesson is won")
+	route = _load_route()
+	route.place_at(&"AfterHarrier")
+	route.story.begin()
+	assert_eq(route.encounters.walked(route.encounters.next_m + 0.1), &"ch03_causeway_shore", "then random fights")
+	assert_true(_interactable(route, &"to_shrine").on_touched())
+	assert_eq(routed.back(), [&"ch03/shell_shrine", &"Entry"], "the islet steps open the Shell Shrine trial")
+	_free(route)
+	Game.state.location_id = &"ch03/shell_shrine"
 
 	# The trial: turn basins until the water reaches the inner pool, let it fill, go through the door.
 	var trial_level := (load(SHRINE) as PackedScene).instantiate() as ShellShrineLevel
@@ -139,6 +166,11 @@ func test_the_first_playable_thread_end_to_end() -> void:
 		trial_level.trial.rotate(_next_turn(trial_level.trial))
 	trial_level.advance(float(trial_level.trial.data["insert_sec"]) + float(trial_level.trial.data["fill_sec"]) + 0.1)
 	assert_true(trial_level.trial.door_open, "the trial is solved")
+	assert_eq(Game.state.respawn_location_id, &"ch03/shell_shrine", "the checkpoint moves the respawn (M2-FP-27)")
+	assert_eq(Game.state.respawn_spawn, &"Exit")
+	assert_true(SaveSystem.has_pending_autosave(), "and asks for the checkpoint autosave")
+	SaveSystem.cancel_pending_autosave()
+	assert_eq(SaveSystem.autosave(&"checkpoint"), OK, "written at the next safe point (here, at once)")
 	assert_true(_interactable(trial_level, &"shrine_exit").on_touched())
 	assert_eq(routed.back(), [FIRST_VERSE], "through the door, Cutscene B")
 	_host().remove_child(trial_level)
@@ -156,10 +188,26 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	assert_true(bool(Game.get_flag(&"ch03_ilun_bound")), "Ilun answers Asha in the fight")
 	verse.free()
 	assert_eq(requests.size(), 1, "Cutscene B calls the Drownbell")
+	# Lose it, then Return to last save: the checkpoint, at the shrine's open door, not the trial.
+	BattleRequest.submit(requests[0])
+	_lose_battle()
+	assert_eq(travels.back(), [&"ch03/shell_shrine", &"Exit"], "Return to last save resumes past the trial")
+	assert_true(bool(Game.get_flag(&"ch03_shrine_door_open")), "with the door open")
 	BattleRequest.submit(requests[0])
 	var opened := _win_battle(&"drownbell")
 	assert_true(bool(Game.get_flag(&"ch03_drownbell_defeated")))
-	assert_eq(opened, [EndCard.SCENE] as Array[String], "after the Drownbell, the end card")
+	assert_eq(opened, [] as Array[String], "no scene opens: the party travels")
+	assert_eq(travels.back(), [&"ch02/haluna", &"DockNight"], "after the Drownbell, Haluna's dock at night (M2-FP-15)")
+
+	# B11: the dock at night, then the end card.
+	zone = _load_zone()
+	zone.place_at(&"DockNight", zone.spawn_yaw_deg(&"DockNight"))
+	var night_story := zone.get_node("Story") as HalunaStory
+	night_story.begin()
+	assert_true(zone.is_night, "Haluna at night")
+	assert_true(bool(Game.get_flag(&"ch03_rhen_sworn_guardian")), "Rhen is sworn")
+	assert_eq(routed.back(), [EndCard.SCENE], "then the end card")
+	_free(zone)
 	_done()
 
 
@@ -227,6 +275,20 @@ func _lose_battle() -> Array[String]:
 	_host().remove_child(ctl)
 	ctl.free()
 	return opened
+
+
+func _load_route() -> GreyboxZone:
+	var route := (load(CAUSEWAY) as PackedScene).instantiate() as GreyboxZone
+	route.story.autostart = false
+	_host().add_child(route)
+	route.director.auto_update = false
+	route.player.set_physics_process(false)
+	route.encounters.set_physics_process(false)
+	route.encounters.on_encounter = func(_id: StringName) -> void: pass
+	route.story.active = true
+	route.story.sequencer.instant = true
+	route.story.overhear.instant = true
+	return route
 
 
 func _load_zone() -> HalunaZone:

@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_portrait.gd" id="1_portrait"]
+
+[sub_resource type="Environment" id="Env_portrait"]
+background_mode = 1
+background_color = Color(0, 0, 0, 0)
+ambient_light_source = 2
+ambient_light_color = Color(0.247, 0.471, 0.537, 1)
+ambient_light_energy = 0.6
+tonemap_mode = 4
+
+[sub_resource type="World3D" id="World_portrait"]
+environment = SubResource("Env_portrait")
+
+[node name="CreaturePortrait" type="SubViewportContainer"]
+custom_minimum_size = Vector2(256, 256)
+stretch = true
+script = ExtResource("1_portrait")
+
+[node name="Viewport" type="SubViewport" parent="."]
+own_world_3d = true
+world_3d = SubResource("World_portrait")
+transparent_bg = true
+handle_input_locally = false
+msaa_3d = 1
+size = Vector2i(256, 256)
+render_target_update_mode = 0
+
+[node name="Key" type="DirectionalLight3D" parent="Viewport"]
+transform = Transform3D(0.707107, -0.454519, 0.541675, 0, 0.766044, 0.642788, -0.707107, -0.454519, 0.541675, 0, 0, 0)
+light_color = Color(1, 0.957, 0.878, 1)
+light_energy = 1.4
+
+[node name="Rim" type="DirectionalLight3D" parent="Viewport"]
+transform = Transform3D(-0.866025, 0.12941, -0.482963, 0, 0.965926, 0.258819, 0.5, 0.224144, -0.836516, 0, 0, 0)
+light_color = Color(0.663, 0.863, 0.949, 1)
+light_energy = 0.8
+
+[node name="Camera" type="Camera3D" parent="Viewport"]
+current = true
+fov = 30.0
+
+[node name="Holder" type="Node3D" parent="Viewport"]

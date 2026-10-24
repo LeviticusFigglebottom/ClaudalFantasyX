@@ -26,7 +26,7 @@ Code lives in `game/flow/` and `game/levels/prologue/`; tunables in
      tests inject an `instant` one);
   3. waits until `SceneRouter.is_busy()` is false (a short cutscene can end while the router is still
      finishing its own swap, and the router drops a change made meanwhile);
-  4. `hand_off()`: `SceneRouter.world_return.go_to(&"ch02/haluna", &"Beach")` (from the data file),
+  4. `hand_off()`: `SceneRouter.world_return.go_to(&"ch01/oruvel_underway", &"Drop")` (from the data file; it was `ch02/haluna` `Beach` until M3-C01-02, and Ch1's own end now goes there),
      emitting `handed_off(location_id, spawn)`. It happens once.
 - Injection points: `autoplay` (export), `sequencer`, `travel: Callable(location_id, spawn) -> bool`.
 - The script is `game/data/dialogue/prologue/prologue_dead_city.dlg`: letterbox, `@camera P01`, fade in,
@@ -47,7 +47,7 @@ BattleRequest.start(&"ch02_tideline", &"ch02/haluna", &"Beach", &"some_declared_
 
 | API | Meaning |
 |---|---|
-| `static start(encounter, return_location, return_spawn, victory_flag := &"", escape_at := &"") -> BattleRequest` | `make()` + `submit()`: records the request and opens the field battle scene through `SceneRouter.change_scene`. Returns the request (adjust `active`/`reserve`/`rng_seed` at once if needed). |
+| `static start(encounter, return_location, return_spawn, victory_flag := &"", escape_at := &"") -> BattleRequest` | `make()` + `submit()`: records the request, plays the encounter stinger in the field (`BattleStinger`, M2-BPR-05, battle_presentation.md) and then opens the field battle scene through `SceneRouter.change_scene`. Returns the request (adjust `active`/`reserve`/`rng_seed` at once if needed). |
 | `static make(...) -> BattleRequest` | Builds one with the data file's party (`active` [rhen, asha], `reserve` [toma]) and `seed`; records nothing. |
 | `static submit(r)` | Records `r` and opens `field_battle.scene`. |
 | `static pending()`, `take()`, `clear()` | The one waiting request; `take()` returns and forgets it. |
@@ -114,8 +114,20 @@ title) once.
   - Anything else that starts (a villager bark, the battle, the causeway) cuts it off with `_hush()`.
   - Talking to the villager still plays the bark. The lane child (`ch02_bark_lane`) is new.
 - **B05, Low tide** (`before_ending_scene_id` `ch02_low_tide`). The causeway-head trigger plays it, then hands off to Cutscene B.
+  - **M2-FP-21:** B05 opens on Asha's question and a "Go now" / "Not yet" choice. "Not yet" plays her reply and `<<event departure_declined>>` (`haluna.ending_decline_event`); `HalunaStory._end()` then puts Rhen at `ending_decline_spawn` (`CausewayHead`, short of the box), clears `busy` and hands nothing off. The trigger is not `once`, so the next walk-in asks again. "Go now" runs B05 to its end and hands off as before (tests take it by default: `auto_choice = 0`).
+  - **M2-FP-20:** before the first save, `Triggers/CausewayHeadUnsaved` (the same box, blocked by `ch02_saved_once`) plays the overheard `ch02_bark_causeway_unsaved` (Toma and Asha point Rhen to the town shrine). It is not `once`: it plays on every walk-in until the save, but never over itself (the overhear sequencer must be idle).
 
 New speakers: `neme`, `child`. Tests: `tests/integration/test_haluna_slice_beats.gd`.
+
+## The Shell Shrine trial and the dock at night (M2-FP-16, M2-FP-15)
+
+The thread's end now runs: the causeway head → B05 → **the Shell Shrine trial** (`haluna.ending_scene`; game/levels/ch03/shell_shrine/README.md) → through its door, Cutscene B (`shell_shrine.next_scene`) → the Drownbell → **Haluna's dock at night** → the end card.
+- After the Drownbell, `first_verse.after_location` / `after_spawn` send the party back to `ch02/haluna` at `DockNight` instead of opening the end card. (`after_scene` is now used only on the no-battle path.)
+- On that arrival, `HalunaStory.begin()` plays B11, because `night_flag` (`ch03_drownbell_defeated`) is set and `sworn_flag` (`ch03_rhen_sworn_guardian`) isn't:
+  - `HalunaZone.set_night(haluna.night, haluna.night_hide)` puts up the **stand-in night** until M2-ENV-02. The mood sun is dimmed and turned moonlight blue. A *copy* of the mood's Environment gets a darker sky and less ambient light, so the shared `.tres` is never touched. Warm lamps go up, and the dock villagers are gone home.
+  - `place_cast(night_cast, night_marks)` sits Asha at the end of the dock and puts Toma at the landward end, with the mark he walks to.
+  - `ch03_dock_at_night` plays in-engine; Toma's `@mark` walk is his arrival. The scene sets the sworn flag, and the story hands off to `night_end_scene` (the end card).
+- Once sworn, the villagers' barks (and the overheard fragments) play their `night_barks` blessings.
 
 ## Tests
 
@@ -142,3 +154,33 @@ Also in M2-FP-09:
   - it wins, then saves at the shrine and loads the record back;
   - it calls the Drownbell and reaches the end card.
 - `test_the_battle_strip_cannot_be_walked_around` checks that every line from the beach to the shrine crosses the strip, and that walking inland from the causeway head is stopped.
+
+## The Saltgrass Causeway, chapters and the trial checkpoint (M2-FP-25, M2-FP-27)
+
+The thread now runs: Haluna's causeway head → **the Saltgrass Causeway** (B06) → the Shell Shrine trial → Cutscene B → the Drownbell → the dock at night → the end card.
+
+**The causeway** (`ch03/saltgrass_causeway`) is the first zone on the data-driven chapter flow (ADR 0035): a GreyboxZone at `game/levels/ch03/saltgrass_causeway/` with its story in `game/data/flow/chapters/ch03.json`.
+- **Getting there:** B05's "Go now" travels there instead of opening the trial (`haluna.ending_location` and `ending_spawn`, `HalunaStory.KEY_GO`), so the location is recorded.
+- **Arriving** sets chapter 3, and the chapter autosave follows.
+- **The fights:**
+  - The gull harrier at C07 is a scripted strip fight, `ch03_causeway_harrier`: the flier lesson, with `TUT_FLIER_RHEN` as its prompt. A win sets `ch03_harrier_won`; an escape steps Rhen back to `BeforeHarrier`.
+  - After it, `FieldEncounters` rolls `ch03_causeway_shore` every 25–45 m.
+  - Both fights are banded in `tools/balance/targets.json` (Ch1–Ch3 regular). Foe order matters to the naive policy, so leave the order as authored.
+- **The three banters** (`ch03_bark_causeway_posts`, `_tidepool`, `_ring`) are overheard, once each.
+- **Camera:** C02 is the default side-on dolly; C01 and C03–C07 are beat frames.
+- **The islet steps** go to `ch03/shell_shrine` at `Entry`.
+
+**Chapters:**
+- `HalunaStory.begin()` moves the story to `haluna.chapter` (2) when it's behind it.
+- The causeway's arrival moves it to 3.
+- Save slots read "Chapter n", and "Prologue" for 0 (`SaveSlotInfo.chapter_text`).
+
+**The trial checkpoint:**
+- The Shell Shrine is a location now (`ch03/shell_shrine`; `Spawns/Entry` and `Spawns/Exit`, `ShellShrineLevel.place_at`).
+- When the inner pool fills, the respawn point moves to `Exit` (`shell_shrine.checkpoint_location` and `checkpoint_spawn`) and a checkpoint autosave is requested.
+- A Drownbell loss followed by **Return to last save** resumes at the open door. The door and the side pool restore from their flags, so the trial isn't replayed. `test_fp_thread` walks that path.
+
+## Party joins (M2-CMB-07 follow-up)
+
+`first_playable.json` "party" says who joins `Game.state.party_ids`: `new_game` (Rhen) on `Game.new_game()`, and `joins[flag]` (Asha and Toma on `ch02_met_asha`, which Cutscene A sets) the first time the flag is set truthy, through `EventBus.flag_changed`. `PartyJoins` (`game/flow/party_joins.gd`) calls `PartyGoods.join`, which adds the hero once and grants their starting gear without replacing worn pieces. Field battles still take their party from "field_battle" and "first_verse"; live battles now wear the joined heroes' gear (`BattleVitals.live_gear`). A save made before this change has no joined heroes and stays that way (nothing back-fills `party_ids` on load). Tests: `tests/unit/test_party_joins.gd`.
+

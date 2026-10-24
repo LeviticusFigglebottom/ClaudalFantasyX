@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_actor.gd" id="1_actor"]
+[ext_resource type="PackedScene" uid="uid://c4sj50mum132w" path="res://assets/creatures/spawn_polyp/spawn_polyp.glb" id="2_model"]
+
+[node name="SpawnPolyp" type="Node3D"]
+script = ExtResource("1_actor")
+creature_id = &"spawn_polyp"
+metadata/hymn_battle_actor = true
+
+[node name="Model" parent="." instance=ExtResource("2_model")]

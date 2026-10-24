@@ -1,0 +1,15 @@
+{
+  "interact_prompt": {
+    "doc": "M2-UI-20 (intro audit 1): the field interaction prompt. When the player stands within reach of an interactable, a small plate floats over it: a keycap with the field_interact binding (the first key, or the first pad button after the pad was last used; generic names from controls.json pad_button_keys) and the interactable's prompt_key verb (default_key when it has none). The plate sits lift_m above the interactable, centred, gap_px above that point; when that point is behind the camera or within edge_px of the screen edge it docks at the bottom centre (dock_y, from the top) instead. It fades in and out over fade_sec, never shows while the field refuses input (cutscenes, conversations) or the tree is paused (menus), and follows UiSettings. Pixels are at the 1920 x 1080 reference. plate: the PanelSmall plate, sep_px between keycap and verb. keycap: the key's box (min_width, border_px, radius_px, pad_x).",
+    "canvas_layer": 41,
+    "default_key": "FIELD_PROMPT_DEFAULT",
+    "lift_m": 1.8,
+    "gap_px": 12,
+    "edge_px": 72,
+    "dock_y": 900,
+    "fade_sec": 0.15,
+    "pad_deadzone": 0.5,
+    "plate": {"sep_px": 12},
+    "keycap": {"min_width": 39, "border_px": 2, "radius_px": 6, "pad_x": 9}
+  }
+}

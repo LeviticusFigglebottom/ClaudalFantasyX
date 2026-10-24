@@ -1,0 +1,25 @@
+// Ch3 B11 "The dock at night" (docs/kb/story/beats/vertical_slice.md): after the Drownbell, Haluna at
+// night (H10: lamps in the windows, sea-glow, stars). Rhen finds Asha at the end of the dock and asks
+// to come as a guardian. She says yes before Toma, arriving, can object; his objection becomes a sigh
+// and "Then you walk behind me." Nobody speaks of what the pilgrimage ends in (that's Ch4). If Rhen
+// asked Toma on the steps (ch03_rhen_asked_after), he almost asks her too, and she asks about his day
+// first, her tell (voice_guide.md), and he lets her. In-engine; Toma walks up the dock mid-scene.
+title: ch03_dock_at_night
+location: ch02/haluna
+---
+<<if $ch03_rhen_asked_after>>
+Rhen [neutral]: Asha. On the shrine steps, Toma said... #line:ch03_dock_001
+Asha [soft_smile]: How was your day, Rhen? Truly. #line:ch03_dock_002
+Rhen [tender]: ...Long. Good, mostly. #line:ch03_dock_003
+<<endif>>
+Rhen [neutral]: You leave the day after tomorrow. #line:ch03_dock_004
+Asha [neutral]: At first tide. The causeway won't wait for me. #line:ch03_dock_005
+@mark toma dock_toma walk
+Rhen [determined]: Then let me come. As your guardian. I can dive, and I can carry, and I don't scare. #line:ch03_dock_006
+Asha [smile]: Yes. #line:ch03_dock_007
+Toma [worried]: Asha. A guardian is not chosen on a dock, at night— #line:ch03_dock_008
+Asha [tender]: This one was, Toma. #line:ch03_dock_009
+Toma [exhausted]: ... #line:ch03_dock_010
+Toma [neutral]: Then you walk behind me. #line:ch03_dock_011
+<<set $ch03_rhen_sworn_guardian = true>>
+===

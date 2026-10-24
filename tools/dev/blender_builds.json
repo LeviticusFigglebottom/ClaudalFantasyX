@@ -241,6 +241,276 @@
         ["{python}", "assets_src/characters/ysolde/ysolde_textures.py", "--bake-dir", "{scratch}/ysolde_bake"],
         ["{python}", "assets_src/characters/ysolde/write_materials.py"]
       ]
+    },
+    {
+      "id": "creature_reef_crab",
+      "owner": "character",
+      "sources": ["assets_src/creatures/reef_crab/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/reef_crab/*.glb", "assets/creatures/reef_crab/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/reef_crab/build_reef_crab.py", "--", "--out", "assets/creatures/reef_crab/reef_crab.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "reef_crab"]
+      ]
+    },
+    {
+      "id": "creature_drownbell",
+      "owner": "character",
+      "sources": ["assets_src/creatures/drownbell/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/drownbell/*.glb", "assets/creatures/drownbell/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/drownbell/build_drownbell.py", "--", "--out", "assets/creatures/drownbell/drownbell.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "drownbell"]
+      ]
+    },
+    {
+      "id": "creature_hullgnaw",
+      "owner": "character",
+      "sources": ["assets_src/creatures/hullgnaw/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/hullgnaw/*.glb", "assets/creatures/hullgnaw/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/hullgnaw/build_hullgnaw.py", "--", "--out", "assets/creatures/hullgnaw/hullgnaw.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "hullgnaw"]
+      ]
+    },
+    {
+      "id": "creature_tower_limpet",
+      "owner": "character",
+      "sources": ["assets_src/creatures/tower_limpet/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/tower_limpet/*.glb", "assets/creatures/tower_limpet/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/tower_limpet/build_tower_limpet.py", "--", "--out", "assets/creatures/tower_limpet/tower_limpet.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "tower_limpet"]
+      ]
+    },
+    {
+      "id": "creature_lantern_eel",
+      "owner": "character",
+      "sources": ["assets_src/creatures/lantern_eel/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/lantern_eel/*.glb", "assets/creatures/lantern_eel/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/lantern_eel/build_lantern_eel.py", "--", "--out", "assets/creatures/lantern_eel/lantern_eel.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "lantern_eel"]
+      ]
+    },
+    {
+      "id": "creature_oil_slug",
+      "owner": "character",
+      "sources": ["assets_src/creatures/oil_slug/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/oil_slug/*.glb", "assets/creatures/oil_slug/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/oil_slug/build_oil_slug.py", "--", "--out", "assets/creatures/oil_slug/oil_slug.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "oil_slug"]
+      ]
+    },
+    {
+      "id": "creature_spawn_polyp",
+      "owner": "character",
+      "sources": ["assets_src/creatures/spawn_polyp/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/spawn_polyp/*.glb", "assets/creatures/spawn_polyp/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/spawn_polyp/build_spawn_polyp.py", "--", "--out", "assets/creatures/spawn_polyp/spawn_polyp.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "spawn_polyp"]
+      ]
+    },
+    {
+      "id": "creature_glassfry",
+      "owner": "character",
+      "sources": ["assets_src/creatures/glassfry/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/glassfry/*.glb", "assets/creatures/glassfry/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/glassfry/build_glassfry.py", "--", "--out", "assets/creatures/glassfry/glassfry.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "glassfry"]
+      ]
+    },
+    {
+      "id": "creature_bottle_hermit",
+      "owner": "character",
+      "sources": ["assets_src/creatures/bottle_hermit/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/bottle_hermit/*.glb", "assets/creatures/bottle_hermit/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/bottle_hermit/build_bottle_hermit.py", "--", "--out", "assets/creatures/bottle_hermit/bottle_hermit.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "bottle_hermit"]
+      ]
+    },
+    {
+      "id": "creature_gull_harrier",
+      "owner": "character",
+      "sources": ["assets_src/creatures/gull_harrier/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/gull_harrier/*.glb", "assets/creatures/gull_harrier/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/gull_harrier/build_gull_harrier.py", "--", "--out", "assets/creatures/gull_harrier/gull_harrier.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "gull_harrier"]
+      ]
+    },
+    {
+      "id": "creature_sail_leech",
+      "owner": "character",
+      "sources": ["assets_src/creatures/sail_leech/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/sail_leech/*.glb", "assets/creatures/sail_leech/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/sail_leech/build_sail_leech.py", "--", "--out", "assets/creatures/sail_leech/sail_leech.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "sail_leech"]
+      ]
+    },
+    {
+      "id": "creature_spar_wraith",
+      "owner": "character",
+      "sources": ["assets_src/creatures/spar_wraith/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/spar_wraith/*.glb", "assets/creatures/spar_wraith/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/spar_wraith/build_spar_wraith.py", "--", "--out", "assets/creatures/spar_wraith/spar_wraith.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "spar_wraith"]
+      ]
+    },
+    {
+      "id": "creature_scuttler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/scuttler/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/scuttler/*.glb", "assets/creatures/scuttler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/scuttler/build_scuttler.py", "--", "--out", "assets/creatures/scuttler/scuttler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "scuttler"]
+      ]
+    },
+    {
+      "id": "creature_ashwing",
+      "owner": "character",
+      "sources": ["assets_src/creatures/ashwing/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/ashwing/*.glb", "assets/creatures/ashwing/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/ashwing/build_ashwing.py", "--", "--out", "assets/creatures/ashwing/ashwing.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "ashwing"]
+      ]
+    },
+    {
+      "id": "creature_slag_tortoise",
+      "owner": "character",
+      "sources": ["assets_src/creatures/slag_tortoise/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/slag_tortoise/*.glb", "assets/creatures/slag_tortoise/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/slag_tortoise/build_slag_tortoise.py", "--", "--out", "assets/creatures/slag_tortoise/slag_tortoise.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "slag_tortoise"]
+      ]
+    },
+    {
+      "id": "creature_cinder_matron",
+      "owner": "character",
+      "sources": ["assets_src/creatures/cinder_matron/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/cinder_matron/*.glb", "assets/creatures/cinder_matron/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/cinder_matron/build_cinder_matron.py", "--", "--out", "assets/creatures/cinder_matron/cinder_matron.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "cinder_matron"]
+      ]
+    },
+    {
+      "id": "creature_shoal_skipper",
+      "owner": "character",
+      "sources": ["assets_src/creatures/shoal_skipper/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/shoal_skipper/*.glb", "assets/creatures/shoal_skipper/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/shoal_skipper/build_shoal_skipper.py", "--", "--out", "assets/creatures/shoal_skipper/shoal_skipper.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "shoal_skipper"]
+      ]
+    },
+    {
+      "id": "creature_raid_hound",
+      "owner": "character",
+      "sources": ["assets_src/creatures/raid_hound/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/raid_hound/*.glb", "assets/creatures/raid_hound/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/raid_hound/build_raid_hound.py", "--", "--out", "assets/creatures/raid_hound/raid_hound.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "raid_hound"]
+      ]
+    },
+    {
+      "id": "creature_tide_crawler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/tide_crawler/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/tide_crawler/*.glb", "assets/creatures/tide_crawler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/tide_crawler/build_tide_crawler.py", "--", "--out", "assets/creatures/tide_crawler/tide_crawler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "tide_crawler"]
+      ]
+    },
+    {
+      "id": "creature_vein_sparker",
+      "owner": "character",
+      "sources": ["assets_src/creatures/vein_sparker/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/vein_sparker/*.glb", "assets/creatures/vein_sparker/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/vein_sparker/build_vein_sparker.py", "--", "--out", "assets/creatures/vein_sparker/vein_sparker.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "vein_sparker"]
+      ]
+    },
+    {
+      "id": "creature_undertows_reach",
+      "owner": "character",
+      "sources": ["assets_src/creatures/undertows_reach/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/undertows_reach/*.glb", "assets/creatures/undertows_reach/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/undertows_reach/build_undertows_reach.py", "--", "--out", "assets/creatures/undertows_reach/undertows_reach.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "undertows_reach"]
+      ]
+    },
+    {
+      "id": "creature_flue_moth",
+      "owner": "character",
+      "sources": ["assets_src/creatures/flue_moth/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/flue_moth/*.glb", "assets/creatures/flue_moth/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/flue_moth/build_flue_moth.py", "--", "--out", "assets/creatures/flue_moth/flue_moth.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "flue_moth"]
+      ]
+    },
+    {
+      "id": "creature_wallcrab",
+      "owner": "character",
+      "sources": ["assets_src/creatures/wallcrab/**", "assets_src/creatures/reef_crab/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/wallcrab/*.glb", "assets/creatures/wallcrab/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/wallcrab/build_wallcrab.py", "--", "--out", "assets/creatures/wallcrab/wallcrab.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wallcrab"]
+      ]
+    },
+    {
+      "id": "creature_stormgull",
+      "owner": "character",
+      "sources": ["assets_src/creatures/stormgull/**", "assets_src/creatures/gull_harrier/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/stormgull/*.glb", "assets/creatures/stormgull/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/stormgull/build_stormgull.py", "--", "--out", "assets/creatures/stormgull/stormgull.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "stormgull"]
+      ]
+    },
+    {
+      "id": "creature_squall_wing",
+      "owner": "character",
+      "sources": ["assets_src/creatures/squall_wing/**", "assets_src/creatures/gull_harrier/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/squall_wing/*.glb", "assets/creatures/squall_wing/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/squall_wing/build_squall_wing.py", "--", "--out", "assets/creatures/squall_wing/squall_wing.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "squall_wing"]
+      ]
+    },
+    {
+      "id": "creature_wreck_crab",
+      "owner": "character",
+      "sources": ["assets_src/creatures/wreck_crab/**", "assets_src/creatures/reef_crab/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/wreck_crab/*.glb", "assets/creatures/wreck_crab/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/wreck_crab/build_wreck_crab.py", "--", "--out", "assets/creatures/wreck_crab/wreck_crab.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wreck_crab"]
+      ]
+    },
+    {
+      "id": "creature_wall_polyp",
+      "owner": "character",
+      "sources": ["assets_src/creatures/wall_polyp/**", "assets_src/creatures/spawn_polyp/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/wall_polyp/*.glb", "assets/creatures/wall_polyp/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/wall_polyp/build_wall_polyp.py", "--", "--out", "assets/creatures/wall_polyp/wall_polyp.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wall_polyp"]
+      ]
     }
   ]
 }

@@ -55,3 +55,19 @@ static func _show_unchanged_order(ctl: BattleController) -> void:
 	tl.caption = ctl.menus.turn_caption(&"")
 	var color := ctl.hud.get_theme_color(&"focus", HymnThemeBuilder.PALETTE_TYPE)
 	tl.show_turns(ctl.current_actor_id(), ctl.engine.preview(), [], [], color, TurnTimeline.MODE_PREVIEW)
+
+
+## A fill mode unlocked through play (BattleSwell.mode_unlocked, connected with `ctl` bound) floats
+## "{mode} unlocked" over the field in the swell color (M2-UI-03, pillar 5: growth you can see).
+## Floats follow show_damage_numbers, so captures stay still.
+static func announce(mode: StringName, ctl: BattleController) -> void:
+	if not ctl.show_damage_numbers:
+		return
+	var text := unlocked_text(ctl, mode)
+	var at: Array = HudLayout.section(&"swell_ring").get("unlock_at", [0, 0])
+	ctl.hud.pop_info(text, Vector2(float(at[0]), float(at[1])), &"swell")
+
+
+## "{mode} unlocked" for `mode`, in words.
+static func unlocked_text(ctl: BattleController, mode: StringName) -> String:
+	return ctl.tr("HUD_SWELL_MODE_UNLOCKED_FMT").format({"mode": ctl.menus.swell_mode_name(ctl.swell, mode)})

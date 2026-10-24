@@ -1,0 +1,185 @@
+{
+  "version": 1,
+  "doc": "Menu sounds by listening (M2-AUD-05; ADR 0031; docs/kb/tech/audio_runtime.md). UiAudio (game/audio/ui_audio.gd) watches every node whose script's global class (or a base class) has a hook here, and never writes it. signals: signal -> sfx row (the signal's arguments are dropped). on_enter / on_exit: a row when the menu is attached (deferred, after its _ready) or leaves the tree. watch: Expressions over `node` read once a frame (the first read is the baseline; a failed read changes nothing): a change plays sfx; rise / fall when a number goes up / down; values maps the new value (as text) to a row; on_true plays only when the new value is truthy. page_with_row(page, row_id) is in scope: the page's instance id when it shows that row, else 0. priority: one frame plays at most one UI row, the first of this list among those asked for (unlisted rows come last). pending: the class has not landed yet (M2-UI-06's shop and inn); the checker skips its class and signal names until it does, and the hook does nothing until then. tools/audio/data_check.py checks every row, class and signal.",
+  "priority": [
+    "ui_error",
+    "ui_menu_close",
+    "ui_cancel",
+    "ui_vowbound_open",
+    "ui_menu_open",
+    "ui_inn_rest",
+    "ui_buy",
+    "ui_confirm",
+    "ui_page",
+    "ui_cursor"
+  ],
+  "hooks": [
+    {
+      "class": "CommandMenu",
+      "signals": {
+        "highlighted": "ui_cursor",
+        "chosen": "ui_confirm",
+        "cancelled": "ui_cancel"
+      },
+      "watch": [
+        {
+          "expr": "page_with_row(node.top_page(), 'dismiss')",
+          "sfx": "ui_vowbound_open",
+          "on_true": true,
+          "_note": "the Vowbound's own root page (BattleMenus.vowbound_root_rows carries Dismiss)"
+        }
+      ]
+    },
+    {
+      "class": "FieldMenu",
+      "on_enter": "ui_menu_open",
+      "signals": {
+        "closed": "ui_menu_close"
+      },
+      "watch": [
+        {
+          "expr": "node.level",
+          "rise": "ui_confirm",
+          "fall": "ui_cancel"
+        },
+        {
+          "expr": "node.root_page().cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.detail_page().cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.model.current_mode_row(node.hero).get('id', '')",
+          "sfx": "ui_confirm",
+          "_note": "a Swell fill mode chosen"
+        },
+        {
+          "expr": "node.child != null",
+          "values": {
+            "true": "ui_confirm",
+            "false": "ui_cancel"
+          },
+          "_note": "M2-MNU-01..03: Items, Equip, Lattice and Status open a FieldSubmenu child (big7 merge); its own rows have no hooks yet (M2-AUD-14)"
+        }
+      ]
+    },
+    {
+      "class": "BestiaryMenu",
+      "on_enter": "ui_page",
+      "signals": {
+        "closed": "ui_page"
+      },
+      "watch": [
+        {
+          "expr": "node.current_id",
+          "sfx": "ui_cursor"
+        }
+      ]
+    },
+    {
+      "class": "SaveMenu",
+      "on_enter": "ui_menu_open",
+      "signals": {
+        "saved": "ui_confirm",
+        "loaded": "ui_confirm",
+        "closed": "ui_menu_close"
+      },
+      "watch": [
+        {
+          "expr": "node.model.cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.model.dialog_cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.model.phase",
+          "rise": "ui_confirm",
+          "fall": "ui_cancel"
+        },
+        {
+          "expr": "node.model.last_outcome",
+          "values": {
+            "2": "ui_error",
+            "6": "ui_error",
+            "8": "ui_error"
+          },
+          "_note": "SaveMenuModel.Outcome REFUSED, SAVE_FAILED, LOAD_FAILED"
+        }
+      ]
+    },
+    {
+      "class": "TitleMenu",
+      "signals": {
+        "chosen": "ui_confirm"
+      },
+      "watch": [
+        {
+          "expr": "node.model.cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.model.confirm_cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.model.confirming",
+          "on_true": true,
+          "sfx": "ui_page"
+        }
+      ]
+    },
+    {
+      "class": "GraphicsMenu",
+      "on_enter": "ui_menu_open",
+      "signals": {
+        "closed": "ui_menu_close"
+      },
+      "watch": [
+        {
+          "expr": "node.model.cursor",
+          "sfx": "ui_cursor"
+        }
+      ]
+    },
+    {
+      "class": "ShopMenu",
+      "pending": true,
+      "on_enter": "ui_menu_open",
+      "signals": {
+        "bought": "ui_buy",
+        "sold": "ui_buy",
+        "refused": "ui_error",
+        "tab_changed": "ui_page",
+        "closed": "ui_menu_close"
+      },
+      "watch": [
+        {
+          "expr": "node.model.cursor",
+          "sfx": "ui_cursor"
+        }
+      ],
+      "_note": "M2-UI-06 has not landed: class and signal names are a guess to correct when it does"
+    },
+    {
+      "class": "InnMenu",
+      "pending": true,
+      "on_enter": "ui_menu_open",
+      "signals": {
+        "rested": "ui_inn_rest",
+        "refused": "ui_error",
+        "closed": "ui_menu_close"
+      },
+      "watch": [
+        {
+          "expr": "node.model.cursor",
+          "sfx": "ui_cursor"
+        }
+      ],
+      "_note": "M2-UI-06 has not landed: class and signal names are a guess to correct when it does"
+    }
+  ]
+}
