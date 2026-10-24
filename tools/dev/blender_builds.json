@@ -21,6 +21,7 @@
     },
     {
       "id": "asha",
+      "threads": 4,
       "owner": "character",
       "sources": ["assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
       "outputs": ["assets/characters/asha/*.glb", "assets/characters/asha/textures/*.png", "assets/characters/asha/materials/*.tres"],
@@ -32,6 +33,7 @@
     },
     {
       "id": "rhen",
+      "threads": 4,
       "owner": "character",
       "_note": "M2-CHR-01: Rhen reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs), so her sources are his too.",
       "sources": ["assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
@@ -44,6 +46,7 @@
     },
     {
       "id": "toma",
+      "threads": 4,
       "owner": "character",
       "_note": "M2-CHR-02: Toma reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs) and Rhen's costume helpers (rhen_costume), so their sources are his too.",
       "sources": ["assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
@@ -56,6 +59,7 @@
     },
     {
       "id": "villager_neme",
+      "threads": 4,
       "owner": "character",
       "_note": "M2-CHR-03: one parametric villager build (build_villager.py --npc, params/<npc>.json) on Asha's modules (build_asha as a helper library, asha_textures with per-villager knobs), Rhen's and Toma's costume and hair helpers, so all their sources are this job's too. The first job also writes the cloth atlas every villager shares (villager_textures.cloth_atlas, tinted per villager in its materials).",
       "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
@@ -70,6 +74,7 @@
     },
     {
       "id": "villager_osu",
+      "threads": 4,
       "owner": "character",
       "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
       "outputs": ["assets/characters/villagers/osu/*.glb", "assets/characters/villagers/osu/textures/*.png", "assets/characters/villagers/osu/materials/*.tres", "assets/characters/villagers/osu/*.tscn", "assets/characters/villagers/osu/anim/*.tres"],
@@ -82,6 +87,7 @@
     },
     {
       "id": "villager_child",
+      "threads": 4,
       "owner": "character",
       "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
       "outputs": ["assets/characters/villagers/child/*.glb", "assets/characters/villagers/child/textures/*.png", "assets/characters/villagers/child/materials/*.tres", "assets/characters/villagers/child/*.tscn", "assets/characters/villagers/child/anim/*.tres"],
@@ -94,6 +100,7 @@
     },
     {
       "id": "villager_vendor",
+      "threads": 4,
       "owner": "character",
       "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
       "outputs": ["assets/characters/villagers/vendor/*.glb", "assets/characters/villagers/vendor/textures/*.png", "assets/characters/villagers/vendor/materials/*.tres", "assets/characters/villagers/vendor/*.tscn", "assets/characters/villagers/vendor/anim/*.tres"],
@@ -106,6 +113,7 @@
     },
     {
       "id": "villager_reed",
+      "threads": 4,
       "owner": "character",
       "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
       "outputs": ["assets/characters/villagers/reed/*.glb", "assets/characters/villagers/reed/textures/*.png", "assets/characters/villagers/reed/materials/*.tres", "assets/characters/villagers/reed/*.tscn", "assets/characters/villagers/reed/anim/*.tres"],
@@ -118,6 +126,7 @@
     },
     {
       "id": "villager_netmender",
+      "threads": 4,
       "owner": "character",
       "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
       "outputs": ["assets/characters/villagers/netmender/*.glb", "assets/characters/villagers/netmender/textures/*.png", "assets/characters/villagers/netmender/materials/*.tres", "assets/characters/villagers/netmender/*.tscn", "assets/characters/villagers/netmender/anim/*.tres"],
@@ -130,6 +139,7 @@
     },
     {
       "id": "villager_fisher",
+      "threads": 4,
       "owner": "character",
       "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
       "outputs": ["assets/characters/villagers/fisher/*.glb", "assets/characters/villagers/fisher/textures/*.png", "assets/characters/villagers/fisher/materials/*.tres", "assets/characters/villagers/fisher/*.tscn", "assets/characters/villagers/fisher/anim/*.tres"],
