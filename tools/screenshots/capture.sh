@@ -43,27 +43,44 @@ if [ -z "$shot_list" ]; then
 fi
 : > "$log"
 status=0
-run_one() {
-  "$render" --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync --rendering-driver "$driver" "${method[@]}" \
-    res://tests/screenshots/capture.tscn -- "${user_args[@]}" "--shots=$1" >> "$log" 2>&1
+# M2-QA-01: a per-process hang guard. A capture still running after HYMN_SHOT_TIMEOUT seconds per shot
+# (default 600; a cold lavapipe shot takes under 2 min) is killed. timeout(1) runs it in its own process
+# group and signals that group (TERM, then KILL 30 s later), so Godot and the wrapper's Xvfb go, and no
+# other shot's or agent's process does. It exits 124 (or 137) and is named as hung below, so a deadlocked
+# shot fails the gate in minutes instead of stalling it to the gate's one-hour limit.
+shot_timeout="${HYMN_SHOT_TIMEOUT:-600}"
+run_one() { # $1 = shot list, $2 = time limit (s)
+  timeout -k 30 "$2" "$render" --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync --rendering-driver "$driver" \
+    "${method[@]}" res://tests/screenshots/capture.tscn -- "${user_args[@]}" "--shots=$1" >> "$log" 2>&1
+}
+# The exit code for the CAPTURE PROCESS EXIT line: "<rc>", or "<rc> (hung: killed after <limit> s)".
+exit_note() { # $1 = rc, $2 = limit (s)
+  if [ "$1" -eq 124 ] || [ "$1" -eq 137 ]; then echo "$1 (hung: killed after $2 s)"; else echo "$1"; fi
 }
 # M1-QA-10: a process that exits non-zero (an engine abort at exit, say, after its shot was written)
 # is named here, so a gate failure says which shot's process it was.
 failed_runs=()
 set +e
 if [ "${HYMN_CAPTURE_SHARED:-0}" = "1" ]; then
-  run_one "$shot_list"
+  IFS=',' read -ra ids <<< "$shot_list"
+  limit=$((shot_timeout * ${#ids[@]}))
+  run_one "$shot_list" "$limit"
   rc=$?
-  if [ $rc -ne 0 ]; then status=$rc; failed_runs+=("$shot_list (exit $rc)"); fi
+  if [ $rc -ne 0 ]; then
+    status=$rc
+    failed_runs+=("$shot_list (exit $(exit_note $rc $limit))")
+    # M2-NIT-04: the same signature as per-shot mode, naming the shared run's whole shot list.
+    echo "CAPTURE PROCESS EXIT $(exit_note $rc $limit): $shot_list" >> "$log"
+  fi
 else
   IFS=',' read -ra ids <<< "$shot_list"
   for id in "${ids[@]}"; do
-    run_one "$id"
+    run_one "$id" "$shot_timeout"
     rc=$?
     if [ $rc -ne 0 ]; then
       status=$rc
-      failed_runs+=("$id (exit $rc)")
-      echo "CAPTURE PROCESS EXIT $rc: $id" >> "$log"
+      failed_runs+=("$id (exit $(exit_note $rc $shot_timeout))")
+      echo "CAPTURE PROCESS EXIT $(exit_note $rc $shot_timeout): $id" >> "$log"
     fi
   done
 fi
