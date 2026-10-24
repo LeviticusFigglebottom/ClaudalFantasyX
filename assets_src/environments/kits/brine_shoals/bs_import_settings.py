@@ -5,8 +5,8 @@
     godot --headless --path . --import          # re-imports with these settings
 
 Same values as assets_src/environments/kits/haluna/import_settings.py (imported read-only), plus the
-post-import script: the kit is in the `haluna_kit` import category (game/data/import/haluna_kit.json),
-whose `{asset_dir}/materials/` slot rule maps every slot to this kit's own materials.
+post-import script: the kit has its own import category (game/data/import/brine_shoals_kit.json), whose
+slot rule maps every slot to this kit's own materials.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ sys.path.insert(0, str(HERE.parent / "haluna"))
 import import_settings as hs  # noqa: E402
 
 ASSET_DIR = ROOT / "assets" / "environments" / "kits" / "brine_shoals"
-GLB = dict(hs.GLB, **{"import_script/path": '"res://game/core/import/haluna_kit_post_import.gd"'})
+GLB = dict(hs.GLB, **{"import_script/path": '"res://game/core/import/brine_shoals_kit_post_import.gd"'})
 
 
 def main() -> int:

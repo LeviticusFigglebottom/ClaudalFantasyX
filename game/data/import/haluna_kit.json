@@ -1,12 +1,12 @@
 {
-  "_about": "M1-ART-02 post-import rules for the procedural environment kits (Haluna; M3-ENV-02 added the Brine Shoals kit, whose slots map to its own materials folder through {asset_dir}) (game/core/import/haluna_kit_post_import.gd, AssetImportRules). Materials and LOD ranges match HalunaDresser's defaults, which still override them at runtime with the layout's values. Walk collision for the playable zone is built at runtime by HalunaCollision; the kit exports no -col proxies yet, so the collision rules apply only when a piece gains one.",
+  "_about": "M1-ART-02 post-import rules for the Haluna kit (game/core/import/haluna_kit_post_import.gd, AssetImportRules). Materials and LOD ranges match HalunaDresser's defaults, which still override them at runtime with the layout's values. Walk collision for the playable zone is built at runtime by HalunaCollision; the kit exports no -col proxies yet, so the collision rules apply only when a piece gains one.",
   "kind": "haluna_kit",
   "script": "res://game/core/import/haluna_kit_post_import.gd",
-  "assets": ["res://assets/environments/kits/haluna/", "res://assets/environments/kits/brine_shoals/"],
+  "assets": ["res://assets/environments/kits/haluna/"],
   "adoption_pending": {},
   "generate_lods": false,
   "materials": {
-    "slot_dir": "{asset_dir}/materials/",
+    "slot_dir": "res://assets/environments/kits/haluna/materials/",
     "by_node": {},
     "warn_unmapped": true
   },
