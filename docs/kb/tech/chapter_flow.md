@@ -146,3 +146,22 @@ Ch4 "The Pilgrim's Wake" is built the same way: `game/data/flow/chapters/ch04.js
 **The ferry is never attacked (ADR 0017 (d)).** There is no walkway between the ferry and the derelict, and the layout's random fights run only while `ch04_boarded_derelict` is set and `ch04_spar_wraith_defeated` isn't. The test walks 500 m on the ferry and asserts that nothing fires.
 
 **Battle prompts in sequence.** An encounter may name a second prompt for one hero's first turn (`turn_prompt_hero`, `turn_prompt_key`; BattleBossHud). The bottle-hermit opens on the swap prompt and shows Read on Ysolde's first turn.
+
+## Ch6 (M3-C06-02)
+Ch6 "Salt Edict" is built the same way: `game/data/flow/chapters/ch06.json`, one zone under `game/levels/ch06/`, scripts in `game/data/dialogue/ch06/`, loc rows in `game/data/loc/ch06.csv`, and the test `tests/integration/test_ch06_thread.gd`.
+
+**The zone.** `ch06/brine_shoals` holds the whole chapter: the wreck-ridges and the mud-flats (the road), the last ridge and the hold, the burning Saltwright camp, the shoal channel, the ridge camp and the tideline. Its root, `Ch06Zone`, extends Ch04Zone, so the layout's flag-driven `states` keep the raid's cast, the barge, the party and Liss right after the battle or a load. It adds two things:
+- the layout's `lights`: rows of `{flag, sun, environment}` applied in order over the layout's own light, on `_ready` and in `refresh_states()`. The ridge camp's dusk uses it.
+- `checkpoint(spawn)`: B08's shrine. It moves the respawn point and requests an autosave, as Ch7's does. The shrine beat is `rest` then `checkpoint`.
+
+**Entry and exit.**
+- **Entry:** `Entry`, which is also the location's own spawn. Ch5's dawn now hands off with `{"go": {"location": "ch06/brine_shoals", "spawn": "Entry"}}`. Ch5's party is kept (Rhen, Asha and Kerrid; Toma and Ysolde in reserve).
+- **Exit:** B10 hands off to `ch07/tamsule` at `RiverMouth`.
+
+**The fight and the barge.** The `raid` beat plays B02 and B03 and ends on the battle step for `ch06_inquisitor`, with Toma, Rhen and Asha on the field and Kerrid and Ysolde in reserve. The battle returns to `CampWaterline` with `ch06_inquisitor_yielded`, and the zone's first arrival row then plays B05 to B08 in one run: the barge, a `party` step that seats Liss in reserve after B06, the lantern, and the ridge camp. A `zone: refresh_states` step follows each scene that sets a flag a state reads.
+
+**Two encounter rules (BossMechanics; battle_ctb.md "Encounter rules: forbidden skills and yielding foes").**
+- `forbidden_skills` greys Toma's offensive skills against foes tagged `stillguard` (both the Inquisitor and the hound), and the engine refuses them with `forbidden`. `party_skills` lends him his guard (Stand Fast, Brace, Challenge, Shield Wall) so the fight works without a Lattice.
+- `yield_at_hp_pct: 0` makes both foes yield on their feet at 0 HP: nobody dies. The encounter's `victory_key` sets the banner's title: "The Inquisitor yields."
+
+**Random fights.** The layout has one table for the whole road. It runs between `ch06_arrived` and `ch06_sheltered_liss`, so the camp has none. GreyboxZone has a single `encounters` block, so the ridges and the flats share it; separate tables for the flats need a zone-root feature (M3-C06-05).
