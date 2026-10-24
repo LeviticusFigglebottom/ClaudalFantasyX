@@ -3,6 +3,10 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **Item 7 is done:** the playthrough pass (handoff cinematics-11). PLAYTEST.md is current (shops and inn, the real shrine room, four basins, ENV-04 and ENV-05), and filed **M2-FP-24**, the shrine's channel curbs have no collision. **Two items remain from the 07:56 queue:** item 6, which waits on characters, and nothing else. **Next: M3 Act I** (the Lead's 12:00 message, human-authorised).
+  - Act I is Ch1 Lamp-Diver, Ch4, Ch5, Ch6 up to the Brine Shoals and Sefir, Ch8 and Ch9.
+  - **Story only:** Ch7 Tidecup's story beats and cutscenes are mine; its gameplay is another Lead agent's.
+  - **Order for each chapter:** a beat sheet, then .dlg, flow, a greybox level, encounters, then cutscenes.
 - **M2-ENV-03, the Shell Shrine kit, is swapped in** (770090f), after env-art's verdict at 11:28 (Art Director, the kit comparison you asked for): adopt the m2-slice kit.
   - The level is dressed with it, and shots S01–S05 and their baselines are back. env-art's Review log entry is in the task file.
   - Art fixes are M2-ENV-09 (env-art, on this kit): the fan-shell roof tiers, coral walls, a cooler S02 interior, the S01 leaf-boats and shelf, channel bends.
