@@ -43,6 +43,7 @@ Lead: please queue more slice work.
 - `pip install -r tools/requirements.txt` for gdlint/gdformat.
 
 ## History
+- 2026-10-24: merged the integration branch (e7270ca: RND-01 undertow compute, the GPU key-light check, the Lead's merge of this branch). Clean, no conflicts. Gates on the merged tree: validate_data, taskboard --check, lint and format, the full Godot suite (1347 green).
 - 2026-10-24: M2-CMB-05 and M2-FP-17 done. Gates: lint and format, validate_data, taskboard --check, the full Godot suite under coverage (1337 tests; battle 99.95%, progression 96.52%), `sim.py --check` passing every band, tools unittest 483 OK. No shots (none cover a boss fight).
 - 2026-10-24: M2-FP-15 done (B11). Gates: dlgc and `--check`, validate_data, lint and format, the full Godot suite (1316 green). I checked a lavapipe render of the night stand-in by eye.
 - 2026-10-24: merged the integration branch (763faeb), then finished the PC's FP-10 follow-ups (pitch 30 on H05/H06; key layer 19 with a guard test). Godot key_light 9, test_haluna_zone 6.
