@@ -5,7 +5,7 @@ role: ui
 status: doing
 owner_session: "claude/ui"
 reviewer: character
-depends_on: [M2-CHR-06]
+depends_on: []
 milestone: M2
 request-from: character
 ---
@@ -25,6 +25,7 @@ hook is yours.
 - [ ] The battle shots that show heroes are re-approved after viewing.
 
 ## Notes
+- Depends on M2-CHR-06, which is on claude/characters (in review). The id is left out of `depends_on` until that task reaches the integration branch, so `taskboard --check` passes here.
 - Character owns the scenes and the clips (pipeline.md §13); ask the characters track for more clips (attack, cast,
   hit, KO) once the hook exists. The scenes face +Z, at real-world scale (1.63 / 1.77 / 1.89 m).
 
