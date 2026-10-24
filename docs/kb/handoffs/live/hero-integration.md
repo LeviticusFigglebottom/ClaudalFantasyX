@@ -152,6 +152,9 @@ and ADR 0190 "hero motion layer", proposed).
     hero_motion.json keys;
   - HeroMotion: `play(actor, clip, blend)`, `add_micro_motion`, `set_locomotion_speed`;
   - HeroIdleMicro.
+- **audio's FootstepAudio** (M3-AUD-802/810, claude/audio) listens to `HeroFieldActor.foot_contact(foot, run)`
+  (696fa2f9). It also reads the `HeroBody` name, `hero_id`, and the tree layout (`loco` 0/1/2, `act_a`/`act_b`,
+  `ts_a`/`ts_b`, `mode`).
 - **m2-slice's sequencer patch** uses `HeroMotion.play` and `set_locomotion_speed`, and HeroFieldActor's `play_clip`.
 
 ## In progress
