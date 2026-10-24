@@ -1,4 +1,4 @@
-"""Battle choreography data checks (M2-BPR-01/02): game/data/battle/choreo.json.
+"""Battle choreography data checks (M2-BPR-01/02/03): game/data/battle/choreo.json.
 
 validate_data.py calls choreo_errors(); tools/tests/test_choreo_validate.py tests it.
 Docs: docs/kb/tech/battle_presentation.md.
@@ -14,6 +14,13 @@ TRAVELS = {"target", "step", "none"}
 STYLE_TIMES = ("approach_sec", "recover_sec", "return_sec")
 STYLE_SHAPES = ("lunge_m", "lift_m", "crouch_m", "lean_deg")
 REACTIONS = ("damage", "heal", "miss")
+## M2-BPR-03: the battle camera director (game/battle/scene/battle_camera_director.gd).
+CAMERA_SHOTS = ("default", "actor", "target", "cast", "finisher")
+CAMERA_ANCHORS = {"actor", "strike", "target", "default"}
+CAMERA_TIMES = ("blend_in_sec", "to_contact_sec", "hold_contact_sec", "blend_out_sec")
+CAMERA_PLACED = ("back_m", "side_m", "up_m")
+SAFE_SIDES = ("left", "right", "top", "bottom")
+FOV_RANGE = (10, 90)
 
 
 def _num(v: object) -> bool:
@@ -44,6 +51,68 @@ def _style_errors(sid: str, st: object) -> list[str]:
         errs.append(f"{w}.step_m: a 'step' style needs a number")
     if st.get("clip") not in CLIPS:
         errs.append(f"{w}.clip: '{st.get('clip')}' is not in the clip contract")
+    return errs
+
+
+def _shot_errors(sid: str, shot: object) -> list[str]:
+    w = f"{CHOREO_FILE}: camera.shots.{sid}"
+    if not isinstance(shot, dict):
+        return [f"{w}: must be an object"]
+    errs: list[str] = []
+    anchor = shot.get("anchor")
+    if anchor not in CAMERA_ANCHORS:
+        errs.append(f"{w}.anchor: must be one of {sorted(CAMERA_ANCHORS)}")
+    keys = ("push", "look_at") if anchor == "default" else CAMERA_PLACED + ("look_at",)
+    for k in keys + ("look_up_m",):
+        if not _num(shot.get(k)):
+            errs.append(f"{w}.{k}: must be a number")
+    for k in ("push", "look_at"):
+        if _num(shot.get(k)) and not 0 <= shot[k] <= 1:
+            errs.append(f"{w}.{k}: must be in [0, 1]")
+    if anchor != "default" and _num(shot.get("side_m")) and shot["side_m"] < 0:
+        errs.append(f"{w}.side_m: must be >= 0 (the viewer's side: the line is never crossed)")
+    if "fov" in shot and (not _num(shot["fov"]) or not FOV_RANGE[0] <= shot["fov"] <= FOV_RANGE[1]):
+        errs.append(f"{w}.fov: must be a number in {list(FOV_RANGE)}")
+    return errs
+
+
+def camera_errors(cam: object, styles: dict) -> list[str]:
+    """Problems in choreo.json's "camera" section (M2-BPR-03)."""
+    w = f"{CHOREO_FILE}: camera"
+    if not isinstance(cam, dict):
+        return [f"{w}: must be an object"]
+    errs: list[str] = []
+    for k in CAMERA_TIMES:
+        if not _num(cam.get(k)) or cam[k] < 0:
+            errs.append(f"{w}.{k}: must be a number >= 0")
+    for k in ("default_look_m", "near_m"):
+        if not _num(cam.get(k)) or cam[k] <= 0:
+            errs.append(f"{w}.{k}: must be a number > 0")
+    safe = cam.get("safe_frame")
+    if not isinstance(safe, dict) or any(not _num(safe.get(k)) or not 0 <= safe[k] < 0.5 for k in SAFE_SIDES):
+        errs.append(f"{w}.safe_frame: needs {', '.join(SAFE_SIDES)} in [0, 0.5)")
+    shots = cam.get("shots")
+    if not isinstance(shots, dict):
+        return errs + [f"{w}.shots: must be an object"]
+    for sid in CAMERA_SHOTS:
+        if sid not in shots:
+            errs.append(f"{w}.shots: the '{sid}' shot is missing")
+    for sid, shot in shots.items():
+        errs += _shot_errors(sid, shot)
+    by_style = cam.get("by_style") if isinstance(cam.get("by_style"), dict) else {}
+    for sid in sorted(set(styles) - set(by_style)):
+        errs.append(f"{w}.by_style: style '{sid}' has no shots")
+    for sid in sorted(set(by_style) - set(styles)):
+        errs.append(f"{w}.by_style: '{sid}' is not a style")
+    pairs = [(f"by_style.{k}", v) for k, v in by_style.items()] + [("enemy", cam.get("enemy"))]
+    for where, pair in pairs:
+        if not isinstance(pair, dict):
+            errs.append(f"{w}.{where}: must be an object with lead and contact")
+            continue
+        for slot in ("lead", "contact"):
+            shot = pair.get(slot)
+            if not isinstance(shot, str) or (shot != "" and shot not in shots):
+                errs.append(f"{w}.{where}.{slot}: must name a shot or be ''")
     return errs
 
 
@@ -105,4 +174,5 @@ def choreo_errors(doc: object, skills: object) -> list[str]:
     sp = c.get("speeds")
     if not isinstance(sp, dict) or not _num(sp.get("min")) or not _num(sp.get("max")) or not 0 < sp["min"] <= sp["max"]:
         errs.append(f"{CHOREO_FILE}: speeds needs 0 < min <= max")
+    errs += camera_errors(c.get("camera"), styles)
     return errs

@@ -18,6 +18,8 @@ extends Node
 signal contact(result: ActionResult)
 signal beat(kind: StringName, actor_id: StringName)
 signal sequence_finished(actor_id: StringName)
+## After every pose of a sequence, with its time (the camera director frames from it; M2-BPR-03).
+signal posed(t: float)
 
 const DATA_PATH := "res://game/data/battle/choreo.json"
 const NODE_NAME := "BattleChoreo"
@@ -55,6 +57,8 @@ var frozen := false
 var played: Array[Dictionary] = []
 ## The victory pose and the escape (M2-BPR-05).
 var outro: BattleOutro
+## The battle camera director following this sequencer (M2-BPR-03).
+var camera: BattleCameraDirector
 
 var _ctl: BattleController
 var _engine: BattleEngine
@@ -97,6 +101,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	controller.stage.choreo = c
 	c.attach(controller, engine)
 	c.outro = BattleOutro.attached(c, engine)
+	c.camera = BattleCameraDirector.attached(controller, c)
 	return c
 
 
@@ -145,6 +150,11 @@ func playing() -> bool:
 ## The plan playing now ({} when none).
 func current() -> Dictionary:
 	return _plan
+
+
+## Seconds into the current sequence, in plan time (0 when none plays).
+func time() -> float:
+	return _t if not _plan.is_empty() else 0.0
 
 
 ## Seconds of the current sequence still to play, at the battle speed (0 when none plays).
@@ -317,6 +327,7 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 	plan["from"] = from
 	plan["to"] = to
 	plan["dir"] = dir
+	plan["aim"] = aim
 	plan["actor_clip"] = BattleClips.has_clip(_ctl.stage.stand_in(actor_id), StringName(str(st.get("clip", ""))))
 	for r: Dictionary in plan["reactions"]:
 		var tid := StringName(str(r["target"]))
@@ -496,6 +507,7 @@ func _apply() -> void:
 	for tid: StringName in poses:
 		var q: Array = poses[tid]
 		_pose(tid, q[0] as Vector3, q[1] as Vector3, float(q[2]))
+	posed.emit(_t)
 
 
 ## [offset, toward, lean_deg] for a target's reaction at the current time (home when it has a clip).

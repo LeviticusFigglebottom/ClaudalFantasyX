@@ -184,3 +184,65 @@ waits; the controller is still 995 lines. Instant pacing and "skip animations" s
 The field's own arrival is the field camera's business (field_camera.md), so nothing new plays here.
 
 **Data:** `choreo.json` `outro` (validated with the rest of the file).
+
+## Camera director (M2-BPR-03)
+
+**`BattleCameraDirector`** (`game/battle/scene/battle_camera_director.gd`) frames each action on `%BattleCamera`.
+- **Listens only.** `BattleChoreo.attached` builds it under the sequencer (`c.camera = BattleCameraDirector.attached(
+  controller, c)`); the controller is untouched. It follows the sequencer's `posed(t)` (emitted after every pose
+  of a sequence) and `sequence_finished`, and writes only the camera's `transform` and `fov`. BattleStage.shake()
+  still tweens `h_offset`, which composes on top.
+- **The default** is the camera's authored transform and fov, stored on the camera (meta
+  `battle_camera_default`) at the first attach, so a retry mid-shot still returns to the authored frame.
+
+**Shots** (`choreo.json → camera.shots`):
+
+| Shot | Anchor | Used for |
+|---|---|---|
+| `default` | the authored camera | the readable wide; every sequence starts and ends on it |
+| `actor` | the actor's mark | a party melee, item, read or guard: behind the actor's shoulder, 3/4 toward the foes |
+| `target` | the targets' middle | a party action's contact (melee, cast, read, finisher, chant): the target(s) with the actor at its strike point |
+| `cast` | the actor's mark | cast, chant, support: lower and wider |
+| `finisher` | the actor's strike point | finisher: closer, a wider lens |
+| `push` | the default | every enemy action: a gentle push and turn toward the target, nothing more |
+
+- **One axis, never crossed.** Placed shots are built off the battle axis taken from the authored default
+  (party → foes is the default's screen-left): `back_m` behind the anchor along it, `side_m` toward the default
+  camera's side (always ≥ 0, checked), `up_m` up, looking at `look_at` of the way from the actor's mark to the
+  targets, raised `look_up_m`. So the party stays screen-right and the foes screen-left in every frame, the
+  camera never rolls (look-at with world up), and there is no orbit or sweep around the party: a shot is a
+  short eased dolly between fixed framings.
+- **Per style** (`camera.by_style`): a lead shot (approach and strike) and a contact shot (`""` holds the lead).
+  Enemy actions use `camera.enemy`. Clarity first: an enemy turn is the player's to read, not a showcase.
+- **Safe frame.** When a sequence starts, each shot is checked at the design aspect (the project viewport, so
+  tests, captures and play agree): every target's feet and head must sit inside `safe_frame` (screen fractions
+  kept clear for the timeline on the right and the party panel at the bottom), and the actor's head at its strike
+  point must be on screen. A shot that fails becomes the default for that sequence (`shot_ids` says which shots
+  framed it).
+
+**Timing, and the clock.** The camera is a pure function of the plan and its plan time
+(`BattleCameraDirector.frame_at(t)`, `BattleChoreo.time()`): eased weights blend default → lead over
+`blend_in_sec`, → contact over `to_contact_sec` ending on the contact, and → default over `blend_out_sec`, ending
+**exactly on the sequence end** (held at least `hold_contact_sec` after the contact). Position, look-at point and
+fov blend; the basis is rebuilt with world up. So:
+- `seek(t)` gives the same frame every time (freeze-frame captures), and the battle speed only changes the pace.
+- The default is back when the sequence ends; `BattleController.after_action` waits the sequence plus
+  `settle_sec` before the next command menu opens, so input never starts on a moving or framed camera (pillar 4).
+- With pacing 0 (tests, captures) or skip animations no sequence plays and the camera never leaves the default.
+
+**Accessibility** (`game/data/ui/accessibility.json`, rows appended at the end):
+- `battle_speed` (0.75, 1.0, 1.5, 2.0; default 1.0): BattleChoreo `speed`, inside `choreo.json speeds`.
+- `battle_animations` (`full`, `skip`; default `full`): `skip` lands every action at once (BattleChoreo `skip`).
+- **Reduced motion keeps the camera on the default** (no travel and no cuts) — chosen over cutting to a still
+  framing, because a cut is itself a jolt and the default already shows everyone. The shake is already off under
+  reduced motion (BattleFloats checks `animations_enabled()`). The director draws nothing, so it adds no flash.
+- There is no accessibility settings screen yet (only the graphics menu), so no screenshot lists these rows.
+
+**Known limits.** Damage numbers spawn at the target's screen position on contact while the camera may still be
+blending; they rise in screen space, so they drift a little from the target during the out blend. The safe frame
+is checked on the key shots; blends between two passing shots stay between them and are sampled by the tests.
+
+**Data:** `choreo.json → camera`, checked by `tools/validate_choreo.py` (`camera_errors`): the five named shots
+exist, anchors are known, placed shots carry back/side/up and stay on the viewer's side, fovs in range, every
+choreography style has a lead/contact pair naming real shots, times ≥ 0, safe-frame margins in [0, 0.5).
+Tests: `tests/unit/test_battle_camera_director.gd`.

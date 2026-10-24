@@ -13,7 +13,14 @@
        "label_key": "SET_PALETTE", "help_key": "SET_PALETTE_HELP"},
       {"id": "timing_assist", "type": "enum", "default": "off", "options": ["off", "wide", "auto"],
        "option_keys": ["SET_TIMING_ASSIST_OFF", "SET_TIMING_ASSIST_WIDE", "SET_TIMING_ASSIST_AUTO"],
-       "label_key": "SET_TIMING_ASSIST", "help_key": "SET_TIMING_ASSIST_HELP"}
+       "label_key": "SET_TIMING_ASSIST", "help_key": "SET_TIMING_ASSIST_HELP"},
+      {"id": "battle_speed", "type": "enum", "default": 1.0, "options": [0.75, 1.0, 1.5, 2.0],
+       "option_keys": ["SET_BATTLE_SPEED_075", "SET_BATTLE_SPEED_100", "SET_BATTLE_SPEED_150",
+                       "SET_BATTLE_SPEED_200"],
+       "label_key": "SET_BATTLE_SPEED", "help_key": "SET_BATTLE_SPEED_HELP"},
+      {"id": "battle_animations", "type": "enum", "default": "full", "options": ["full", "skip"],
+       "option_keys": ["SET_BATTLE_ANIMATIONS_FULL", "SET_BATTLE_ANIMATIONS_SKIP"],
+       "label_key": "SET_BATTLE_ANIMATIONS", "help_key": "SET_BATTLE_ANIMATIONS_HELP"}
     ],
     "palettes": {
       "standard": {},

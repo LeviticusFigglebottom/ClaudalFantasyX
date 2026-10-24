@@ -52,6 +52,39 @@
       "victory": {"delay_sec": 0.15, "sec": 0.9, "hops": 2, "hop_m": 0.16, "stagger_sec": 0.1, "clip": "victory"},
       "escape": {"delay_sec": 0.0, "sec": 0.55, "back_m": 2.2, "stagger_sec": 0.05, "clip": "ready"},
       "settle_sec": 0.25
+    },
+    "camera": {
+      "doc": "M2-BPR-03: the battle camera director (docs/kb/tech/battle_presentation.md, Camera director). Every shot is framed off the battle axis (party to foes, from the camera's authored default) so the party stays screen-right and the foes screen-left: the line is never crossed and the camera never rolls. anchor 'actor' is the actor's mark, 'strike' its strike point, 'target' the targets' middle, 'default' the authored default. A placed shot sits back_m behind the anchor along the axis, side_m toward the default camera's side and up_m above it, and looks at the point look_at of the way from the actor's mark to the targets, raised look_up_m. A 'default' shot moves push of the way from the default toward the raised targets and turns look_at of the way to them. fov (degrees) is optional: none keeps the default's. Blends: in over blend_in_sec from the sequence start, to the contact shot over to_contact_sec ending on the contact, out over blend_out_sec ending exactly on the sequence end (held at least hold_contact_sec after the contact). A shot that would put a target outside safe_frame (fractions of the screen kept clear for the HUD, at the design aspect) or the actor's head at its strike point off screen falls back to the default. by_style: a party action's lead and contact shots per style ('' holds the lead); enemy: every enemy action.",
+      "blend_in_sec": 0.24,
+      "to_contact_sec": 0.2,
+      "hold_contact_sec": 0.18,
+      "blend_out_sec": 0.36,
+      "default_look_m": 8.0,
+      "near_m": 0.1,
+      "safe_frame": {"left": 0.04, "right": 0.15, "top": 0.1, "bottom": 0.26},
+      "shots": {
+        "default": {"anchor": "default", "push": 0.0, "look_at": 0.0, "look_up_m": 0.0},
+        "actor": {"anchor": "actor", "back_m": 2.6, "side_m": 3.4, "up_m": 1.9, "look_at": 0.6, "look_up_m": 0.8,
+                  "fov": 44.0},
+        "target": {"anchor": "target", "back_m": 3.8, "side_m": 3.6, "up_m": 1.7, "look_at": 0.8, "look_up_m": 1.0,
+                   "fov": 44.0},
+        "cast": {"anchor": "actor", "back_m": 3.2, "side_m": 4.6, "up_m": 1.0, "look_at": 0.45, "look_up_m": 1.1,
+                 "fov": 50.0},
+        "finisher": {"anchor": "strike", "back_m": 2.2, "side_m": 2.8, "up_m": 1.2, "look_at": 0.75,
+                     "look_up_m": 0.9, "fov": 50.0},
+        "push": {"anchor": "default", "push": 0.14, "look_at": 0.3, "look_up_m": 0.8}
+      },
+      "by_style": {
+        "melee": {"lead": "actor", "contact": "target"},
+        "cast": {"lead": "cast", "contact": "target"},
+        "support": {"lead": "cast", "contact": ""},
+        "guard": {"lead": "actor", "contact": ""},
+        "item": {"lead": "actor", "contact": ""},
+        "read": {"lead": "actor", "contact": "target"},
+        "finisher": {"lead": "finisher", "contact": "target"},
+        "chant": {"lead": "cast", "contact": "target"}
+      },
+      "enemy": {"lead": "push", "contact": ""}
     }
   }
 }
