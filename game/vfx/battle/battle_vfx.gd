@@ -38,6 +38,8 @@ var reduced_motion := false
 var played: Array[StringName] = []
 ## Flashes refused by the photosensitivity interval.
 var flashes_suppressed := 0
+## The boss's own VFX and set piece (M2-RND-04), when the encounter has one (else null).
+var boss: BattleBossVfx
 var _ctl: BattleController
 var _engine: BattleEngine
 var _flash_layer: CanvasLayer
@@ -61,6 +63,11 @@ static func load_data() -> Dictionary:
 
 ## Builds the view under the controller's stage and connects it to `engine` (after setup).
 static func attached(controller: BattleController, engine: BattleEngine) -> BattleVfx:
+	# A retry builds a new engine: the previous view (its flood water publishes hymn_water_level) goes.
+	var old := controller.stage.get_node_or_null(^"BattleVfx")
+	if old != null:
+		controller.stage.remove_child(old)
+		old.queue_free()
 	var view := BattleVfx.new()
 	view.name = "BattleVfx"
 	controller.stage.add_child(view)
@@ -81,6 +88,7 @@ func attach(controller: BattleController, engine: BattleEngine) -> void:
 		reduced_motion = settings.reduced_motion()
 		settings.changed.connect(func(_key: StringName) -> void: reduced_motion = settings.reduced_motion())
 	_build_flash_layer(controller)
+	boss = BattleBossVfx.attached_if_boss(self, controller, engine)
 	var opening_event := _opening_event(engine.opening)
 	if opening_event != &"":
 		play_event.call_deferred(opening_event, &"")
@@ -116,7 +124,8 @@ func effects_for(result: ActionResult) -> Array[Dictionary]:
 		if not (hit.get("statuses_added", []) as Array).is_empty():
 			out.append({"effect": StringName(str(events.get("status", ""))), "target": target})
 		if amount > 0 and _is_down(target):
-			out.append({"effect": StringName(str(events.get("ko", ""))), "target": target})
+			var ko := str((map.get("ko_overrides", {}) as Dictionary).get(base_id(target), events.get("ko", "")))
+			out.append({"effect": StringName(ko), "target": target})
 	return out.filter(func(e: Dictionary) -> bool: return e["effect"] != &"")
 
 
@@ -128,7 +137,7 @@ func play_event(event: StringName, target: StringName) -> void:
 
 
 ## Plays effect `effect_id` at fighter `target`. Returns the emitter (null for a flash, or when skipped).
-func play(effect_id: StringName, target: StringName) -> GPUParticles3D:
+func play(effect_id: StringName, target: StringName, aim := Vector3.ZERO) -> GPUParticles3D:
 	var def := (data.get("effects", {}) as Dictionary).get(String(effect_id), {}) as Dictionary
 	if def.is_empty():
 		push_warning("BattleVfx: unknown effect %s" % effect_id)
@@ -136,14 +145,14 @@ func play(effect_id: StringName, target: StringName) -> GPUParticles3D:
 	if str(def.get("kind", "")) == KIND_FLASH:
 		_flash(effect_id, def)
 		return null
-	var at := _anchor(target, str(def.get("at", "chest")))
-	return play_at(effect_id, at)
+	return play_at(effect_id, anchor(target, str(def.get("at", "chest"))), aim)
 
 
 ## Plays a particle effect at a world position (the probe tool and tests). An effect is one emitter, or
 ## one per entry of its "layers" (each a particle definition; the layer inherits the effect's keys it
-## doesn't set). Returns the first layer's emitter.
-func play_at(effect_id: StringName, at: Vector3) -> GPUParticles3D:
+## doesn't set). A non-zero `aim` replaces the layers' direction (a stream from one fighter to another).
+## Returns the first layer's emitter.
+func play_at(effect_id: StringName, at: Vector3, aim := Vector3.ZERO) -> GPUParticles3D:
 	var def := (data.get("effects", {}) as Dictionary).get(String(effect_id), {}) as Dictionary
 	if str(def.get("kind", "")) != KIND_PARTICLES:
 		return null
@@ -153,6 +162,8 @@ func play_at(effect_id: StringName, at: Vector3) -> GPUParticles3D:
 		var layer := def.merged(layers[i] as Dictionary, true)
 		var key := StringName("%s#%d" % [effect_id, i])
 		var p := _emitter(key, layer)
+		if aim != Vector3.ZERO:
+			(p.process_material as ParticleProcessMaterial).direction = aim.normalized()
 		p.global_position = at
 		p.restart()
 		p.emitting = true
@@ -177,6 +188,11 @@ func _on_action_resolved(result: ActionResult) -> void:
 		play(e["effect"], e["target"])
 
 
+## The table id of a combatant id ("drownbell#1" -> "drownbell").
+static func base_id(cid: StringName) -> String:
+	return String(cid).get_slice("#", 0)
+
+
 static func _opening_event(opening: StringName) -> StringName:
 	match opening:
 		BattleOpening.AMBUSH:
@@ -193,7 +209,9 @@ func _is_down(target: StringName) -> bool:
 	return c != null and c.hp <= 0
 
 
-func _anchor(target: StringName, at: String) -> Vector3:
+## A fighter's point at `at` (an anchor_heights key: feet, rim, chest, hood, head); this node's position
+## when the fighter is not on the stage.
+func anchor(target: StringName, at: String) -> Vector3:
 	var frac := float((data.get("anchor_heights", {}) as Dictionary).get(at, 0.5))
 	if _ctl == null or not _ctl.stage.has_fighter(target):
 		return global_position
@@ -274,6 +292,12 @@ func _process_for(effect_id: StringName, def: Dictionary) -> ParticleProcessMate
 	mat.color_ramp = tex
 	_process_cache[effect_id] = mat
 	return mat
+
+
+func _exit_tree() -> void:
+	if _flash_layer != null and is_instance_valid(_flash_layer):
+		_flash_layer.queue_free()
+		_flash_layer = null
 
 
 func _build_flash_layer(controller: Node) -> void:

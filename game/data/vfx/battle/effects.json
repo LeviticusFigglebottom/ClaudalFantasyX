@@ -4,7 +4,9 @@
   "anchor_heights": {
     "feet": 0.05,
     "chest": 0.6,
-    "head": 1.0
+    "head": 1.0,
+    "rim": 0.12,
+    "hood": 0.85
   },
   "safety": {
     "doc": "Photosensitivity: every flash is capped at flash_max_alpha, and two flashes are at least flash_min_interval_s apart (at most 2 a second, under WCAG 2.3.1's 3). Flashes draw on a CanvasLayer below the HUD, so the timeline is never covered (pillar 4).",
@@ -779,6 +781,286 @@
         "lacquer_red_deep"
       ],
       "note": "Ambush opening (the foes move first)."
+    },
+    "toll_gather": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "hood",
+      "layers": [
+        {
+          "color": "#7FC6D9",
+          "color_end": "#3FE0C8",
+          "swatches": [
+            "glimmer_held",
+            "spawn_wound"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.6,
+          "explosiveness": 0.2,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 60,
+          "gravity": [
+            0,
+            -0.15,
+            0
+          ],
+          "size_m": [
+            0.05,
+            0.1
+          ],
+          "energy": 1.1,
+          "emission_radius_m": 0.9,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The toll gathering: held motes drawn down over the hood toward the rim (held: down, never rising; color_script.md rule 1)."
+    },
+    "rim_crack": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "rim",
+      "layers": [
+        {
+          "color": "#EEF6F4",
+          "color_end": "#E0702E",
+          "swatches": [
+            "foam_white",
+            "ember_orange"
+          ],
+          "amount": 14,
+          "lifetime_s": 0.35,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            1.2,
+            2.6
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -6,
+            0
+          ],
+          "size_m": [
+            0.03,
+            0.06
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 0.25,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            0.3,
+            1
+          ]
+        }
+      ],
+      "note": "A landed weak-point hit on the rim: a spray of struck sparks."
+    },
+    "rim_break": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "rim",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.5,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            2.2,
+            2.8
+          ],
+          "energy": 1.0,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0
+        },
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 48,
+          "lifetime_s": 1.2,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.0,
+            2.4
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.5,
+            0
+          ],
+          "size_m": [
+            0.06,
+            0.12
+          ],
+          "energy": 1.2,
+          "emission_radius_m": 0.6,
+          "turbulence": 0.2
+        }
+      ],
+      "note": "The rim breaks (charge broken): a cyan burst; the toll is lost."
+    },
+    "polyp_rise": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 24,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.8,
+          "velocity_m_s": [
+            0.3,
+            0.8
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.05,
+            0.1
+          ],
+          "energy": 1.0,
+          "emission_radius_m": 0.25,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A spawn-polyp roused: a cyan swirl at its foot, settling back down."
+    },
+    "polyp_mend": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#7FC6D9",
+          "color_end": "#3FE0C8",
+          "swatches": [
+            "glimmer_held",
+            "spawn_wound"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.8,
+          "explosiveness": 0.1,
+          "velocity_m_s": [
+            1.2,
+            1.8
+          ],
+          "spread_deg": 8,
+          "gravity": [
+            0,
+            -0.25,
+            0
+          ],
+          "size_m": [
+            0.05,
+            0.09
+          ],
+          "energy": 1.1,
+          "emission_radius_m": 0.12,
+          "turbulence": 0.15,
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        }
+      ],
+      "note": "Held motes flowing from the polyp to the bell (aimed at play time); sinking, never rising."
+    },
+    "bell_release": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#7FC6D9",
+          "color_end": "#1C6B78",
+          "swatches": [
+            "glimmer_held",
+            "sea_glow"
+          ],
+          "amount": 90,
+          "lifetime_s": 3.2,
+          "explosiveness": 0.25,
+          "velocity_m_s": [
+            0.3,
+            0.7
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            -0.08,
+            0
+          ],
+          "size_m": [
+            0.06,
+            0.14
+          ],
+          "energy": 1.1,
+          "emission_radius_m": 0.8,
+          "turbulence": 0.3,
+          "direction": [
+            -1,
+            -0.25,
+            0
+          ]
+        }
+      ],
+      "note": "The bell dies: its motes slide seaward and down; they do not rise (vertical_slice.md section 5)."
+    },
+    "flash_toll": {
+      "kind": "flash",
+      "color": "#EEF6F4",
+      "alpha": 0.18,
+      "in_s": 0.06,
+      "out_s": 0.5,
+      "swatches": [
+        "foam_white"
+      ],
+      "note": "The toll: a pale pulse (photosensitivity-capped like every flash)."
     }
   },
   "map": {
@@ -803,6 +1085,10 @@
       "ko": "ko_release",
       "ambush": "flash_ambush",
       "preemptive": "flash_preemptive"
-    }
+    },
+    "ko_overrides": {
+      "drownbell": "bell_release"
+    },
+    "ko_overrides_doc": "Enemy ids whose KO plays another effect than events.ko (the Drownbell's motes are held: they slide seaward, they never rise)."
   }
 }
