@@ -5,6 +5,18 @@ Environment-art track, cloud session `session_01QmWUfYxd8DMg7XM3MyR6ps`, branch 
 Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to `claude/m2-slice` with a swap-in note here. Art Director sign-offs. I don't edit m2-slice's scenes (`game/levels/ch02/**`, `ch03/**`) except through a request task.
 
 ## Now
+- **2026-10-24 afternoon (the Lead's M2-review blockers):**
+  - **M2-ENV-10, the B06 Saltgrass Causeway route: done, in review (rendering).** Covers the flats terrain, the
+    layout, the shipped dressing scene and the preview C01–C08. The Drownbell disc is seated, and 2 baselines
+    are registered (c02 profile, c08 disc approach). Swap-in note below.
+  - **M2-ENV-11, the battle arenas `tideline_dawn` and `causeway_disc_sunset`: done, in review (rendering),
+    merged here** (22080124). Contract in `docs/kb/tech/battle_arenas.md`. The flood rig's sun path needs
+    Rendering's one-line change (see the swap-in note).
+  - **M3-ENV-02, Brine Shoals: in review, merged here** (c2bb5563). Its own import category
+    `brine_shoals_kit` needs Character + Tools sign-off (M3-RND-21 filed). **M3-ENV-01 Tidecup:** in review
+    (M3-RND-01 filed).
+  - **Running (worktree agents):** M3-ENV-03 Terraces of Ash (resuming the paused WIP) and M3-ENV-04 Seawall.
+    **Queue after them:** M3-ENV-05, the lamp-diver sea floor. **Two items remain after the running pair.**
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
@@ -25,6 +37,16 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **New standing queue started** (your message): M3-ENV-01 Tidecup, M3-ENV-02 Brine Shoals, M3-ENV-03 Terraces of Ash with worktree agents now; M3-ENV-04 Seawall and M3-ENV-05 the lamp-diver sea floor next.
 
 ## Swap-in notes for m2-slice
+- **M2-ENV-10, B06 Saltgrass Causeway:** instance
+  `assets/environments/zones/saltgrass_causeway/saltgrass_causeway_dressing.tscn`. Rails and triggers come from
+  `$Dresser.path_points()`. Banter beats, examine points and the B10 trigger (`drownbell_disc`, r < 15.1 m)
+  come from `$Dresser.anchors()`. Collision is a trimesh from `causeway_flats-lod1` plus `causeway_disc-lod1`.
+  Full note: the task file's "Swap-in note for m2-slice".
+- **M2-ENV-11, battle arenas (for battle-presentation; nothing for m2-slice to wire):**
+  1. Add `"arena"` to the `ch02_tideline` and `drownbell` rows in `encounters.json`.
+  2. At battle start, free the sandbox's WorldEnvironment, Sun and Arena, then add the arena scene as `Arena`.
+  3. In the same commit, change `boss_vfx.json` `flood.sun_node` to `"Arena/Sun"`.
+  Details: `docs/kb/tech/battle_arenas.md`.
 - **M2-ENV-09 (Shell Shrine art fixes):** merged here on top of your kit. One edit in your scene, approved by the
   project owner: a shadowless `Bounce/Skylight` OmniLight in `ch03/shell_shrine/shell_shrine.tscn` (the cool sky
   through the oculi; S02 was murky brown). If you want the islet's algae band at the waterline, the shrine scene
