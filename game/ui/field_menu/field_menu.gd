@@ -73,6 +73,9 @@ var _desc: Label
 var _help: Label
 var _objective_head: Label
 var _objective: Label
+var _save_head: Label
+var _save_line: Label
+var _save_hint: Label
 var _owns_pause := false
 var _is_closed := false
 ## A line that stays on the description until the cursor moves ("Rhen's gauge now fills by ...").
@@ -229,6 +232,11 @@ func desc_text() -> String:
 ## The root's Objective block ("" when hidden).
 func objective_text() -> String:
 	return _objective.text if _objective.visible else ""
+
+
+## The root's Last saved line as shown ("" while hidden; M2-MNU-300).
+func last_save_text() -> String:
+	return _save_line.text if _save_line.visible else ""
 
 
 func help_text() -> String:
@@ -400,6 +408,9 @@ func _render() -> void:
 	_objective.text = model.objective_line()
 	_objective.visible = at_root and _objective.text != ""
 	_objective_head.visible = _objective.visible
+	_save_line.text = model.last_save_line()
+	for l: Label in [_save_head, _save_line, _save_hint]:
+		l.visible = at_root and _save_line.text != ""
 	var id := StringName(str((_root if at_root else _detail).current_row().get("id", "")))
 	match level:
 		Level.ROOT:
@@ -478,6 +489,21 @@ func _build() -> void:
 	_objective = _label(&"BodyLabel", Rect2(orr.position + Vector2(0.0, head_h), orr.size - Vector2(0.0, head_h)))
 	_objective.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_build_last_save(_d.get("last_save", {}))
+
+
+## M2-MNU-300: the root's Last saved block above the objective: a dim head, the place and time, and the
+## reminder that saving happens at shrines (there is no save row).
+func _build_last_save(sm: Dictionary) -> void:
+	var sr := HudLayout.rect_of(sm)
+	var line_h := HudLayout.num(sm, "line_height")
+	_save_head = _label(&"DimLabel", Rect2(sr.position, Vector2(sr.size.x, line_h)))
+	_save_head.text = tr(FieldMenuModel.LAST_SAVE_HEAD_KEY)
+	_save_line = _label(&"BodyLabel", Rect2(sr.position + Vector2(0.0, line_h), Vector2(sr.size.x, line_h)))
+	_save_line.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_save_hint = _label(&"HelpDimLabel", Rect2(sr.position + Vector2(0.0, line_h * 2.0), Vector2(sr.size.x, line_h)))
+	_save_hint.text = tr(FieldMenuModel.SAVE_HINT_KEY)
+	_save_hint.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 
 
 ## A MenuPage at its block's rect, as tall as `rows` rows need (0 = the root's three).

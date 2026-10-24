@@ -75,6 +75,10 @@ const ROOT_DESC_KEYS := {
 	ROW_CLOSE: "FIELD_MENU_CLOSE_DESC",
 }
 const NO_HEROES_KEY := "FIELD_MENU_NO_HEROES"
+const LAST_SAVE_HEAD_KEY := "FIELD_MENU_LAST_SAVE_HEAD"
+const LAST_SAVE_FMT_KEY := "FIELD_MENU_LAST_SAVE_FMT"
+const NOT_SAVED_KEY := "FIELD_MENU_NOT_SAVED"
+const SAVE_HINT_KEY := "FIELD_MENU_SAVE_HINT"
 ## The Quit confirm (FieldMenu Level.QUIT): Stay first, so a stray Confirm never quits.
 const QUIT_STAY := &"stay"
 const QUIT_GO := &"quit_go"
@@ -105,6 +109,11 @@ var map: MapModel
 var live_map := false
 ## The lore codex the Codex row opens (null = the game's).
 var codex: CodexModel
+## M2-MNU-300: the save system the root's Last saved block reads (null: the block is hidden). from_game
+## sets the SaveSystem autoload. There is no save row: saving stays at shrines and chapter autosaves.
+var save_system: Node
+## Minutes east of UTC for the last save's time (from_game: the system's zone; tests and captures: 0).
+var time_bias_min := 0
 
 
 func _init(with_state: GameStateData = null, hero_ids: Array[StringName] = [], hero_name_keys: Dictionary = {}) -> void:
@@ -117,6 +126,8 @@ func _init(with_state: GameStateData = null, hero_ids: Array[StringName] = [], h
 static func from_game() -> FieldMenuModel:
 	var m := FieldMenuModel.new(Game.state, field_heroes(), name_keys_from(BattleDB.load_default().characters))
 	m.live_map = true
+	m.save_system = (Engine.get_main_loop() as SceneTree).root.get_node_or_null(^"SaveSystem")
+	m.time_bias_min = int(Time.get_time_zone_from_system().get("bias", 0))
 	return m
 
 
@@ -172,6 +183,27 @@ func objective_line() -> String:
 	if not has_map():
 		return ""
 	return map.tracker.line(map.zone_id)
+
+
+## The newest readable save (the one Continue would load), or null when there is none or no save system.
+func last_save() -> SaveSlotInfo:
+	if save_system == null:
+		return null
+	var slot := TitleSaveEntry.continue_slot(save_system)
+	if slot < 0:
+		return null
+	return SaveSlotInfo.from_dict(save_system.call(&"slot_info", slot) as Dictionary)
+
+
+## The root's Last saved line: the place and the time of the newest save, or "Not saved yet"; "" without a
+## save system (the block is hidden).
+func last_save_line() -> String:
+	if save_system == null:
+		return ""
+	var info := last_save()
+	if info == null:
+		return _tr(NOT_SAVED_KEY)
+	return _tr(LAST_SAVE_FMT_KEY).format({"place": info.location_name(), "when": info.timestamp_text(time_bias_min)})
 
 
 ## What the highlighted root row opens, in words (or why it is off).
