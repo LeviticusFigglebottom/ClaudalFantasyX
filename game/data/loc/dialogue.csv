@@ -651,6 +651,86 @@ DLG_CH07_TAVI_015,Give me his band.
 DLG_CH07_TAVI_016,Asha. I'm so sorry about your grandmother.
 DLG_CH07_TAVI_017,Rhen is the Lady Cantor's sworn guardian.
 DLG_CH07_TAVI_018,...Gran would've liked that.
+DLG_CH08_BARK_HOBB_001,"First down, last up. Say it."
+DLG_CH08_BARK_HOBB_002,"First down, last up."
+DLG_CH08_BARK_HOBB_003,"Again, and mean it. The sea won't wait for you to wake up."
+DLG_CH08_BARK_KITES_001,Mine's higher. They like mine.
+DLG_CH08_BARK_KITES_002,"They can't even see yours, it's behind the cloud. Mine's got a tail."
+DLG_CH08_BARK_NETMENDER_001,Old Net-Mender [neutral]: Wall's been rebuilt after every Rising. You can count them in the stone.
+DLG_CH08_BARK_NETMENDER_002,Old Net-Mender [neutral]: The pale blocks are the last one.
+DLG_CH08_BARK_STILLGUARD_001,Beacon's been lit nine hundred years. Opened full maybe forty times. You'd think we'd get a better plan.
+DLG_CH08_BEACON_OPENED_001,Down. Now. The stair.
+DLG_CH08_BINDING_001,She's very warm.
+DLG_CH08_BINDING_002,I think she was a kind person. Somewhere under all that fire.
+DLG_CH08_CAPTAIN_001,Captain?
+DLG_CH08_CUT_ROPE_001,Cut it down. It is bolted into the Watchers.
+DLG_CH08_CUT_ROPE_002,Good rope. Seated true. She held.
+DLG_CH08_CUT_ROPE_003,Liss—
+DLG_CH08_CUT_ROPE_004,Don't.
+DLG_CH08_CUT_ROPE_005,Brannick? Has anyone seen Ivo Brannick?
+DLG_CH08_FIRST_DOWN_001,First down!
+DLG_CH08_FIRST_DOWN_002,Your shield. My wall. Same as ever.
+DLG_CH08_FIRST_DOWN_003,We're not going down after them?
+DLG_CH08_FIRST_DOWN_004,We hold the stair. That is all we do tonight.
+DLG_CH08_FLUE_HINT_001,It wants to climb. We keep letting it out the side.
+DLG_CH08_HOIST_001,Those are the Watchers!
+DLG_CH08_HOIST_002,Children first. Argue with the stone after.
+DLG_CH08_HOIST_003,Seat the pin. Seat it. She'll hold.
+DLG_CH08_FLAME_001,"Shut the door, Lady. She doesn't like a draught she didn't ask for."
+DLG_CH08_FLAME_002,May I?
+DLG_CH08_FLAME_003,Like you'd put a blanket on a sleeping child. Not a log on a fire.
+DLG_CH08_FLAME_004,There. She'll take that from you.
+DLG_CH08_FLAME_005,The last one fed her too. Eleven years back. Year of the last Rising.
+DLG_CH08_FLAME_006,My mother.
+DLG_CH08_FLAME_007,Said she had a girl at home. Said the girl'd be braver than her.
+DLG_CH08_FLAME_008,...She said that?
+DLG_CH08_FLAME_009,Said it to a fire. Fires don't carry tales. I do.
+DLG_CH08_FLAME_010,How long have you kept her?
+DLG_CH08_FLAME_011,Forty-one years. Never once let her out. Opened the beacon full twice.
+DLG_CH08_FLAME_012,Third time's coming. I can smell it.
+DLG_CH08_FLAME_013,Then I hope you're kept waiting a long while.
+DLG_CH08_LANDFALL_001,"The Cantor! Look up, look, they've put every kite out for you."
+DLG_CH08_LANDFALL_002,They're beautiful. Thank you. Are they all for the Watchers?
+DLG_CH08_LANDFALL_003,"So they've got something to look up at, Lady. Their eyes are shut all year."
+DLG_CH08_LANDFALL_004,Later.
+DLG_CH08_LANDFALL_005,Where's he—
+DLG_CH08_LANDFALL_006,He does that.
+DLG_CH08_OKERU_001,"Okeru! Level preserve us, they let you out of the village? You got fat on Haluna fish."
+DLG_CH08_OKERU_002,"Put me down, Brannick. You'll crack the shield."
+DLG_CH08_OKERU_003,Crack it? You still carry it like a tray of fish.
+DLG_CH08_OKERU_004,Lady Cantor. Be level.
+DLG_CH08_OKERU_005,"And still, Ivo. He's told us nothing about you."
+DLG_CH08_OKERU_006,He wouldn't. Seven years on this wall and I got four words a month out of him.
+DLG_CH08_OKERU_007,And this one's the diver? Good shoulders. Stand on my left at the beacon-fire tonight and I'll teach you to drink.
+DLG_CH08_OKERU_008,I'll hold you to that.
+DLG_CH08_OKERU_009,She's on my papers.
+DLG_CH08_OKERU_010,Then she's on mine.
+DLG_CH08_RUN_BACK_001,Where's Kerrid?
+DLG_CH08_RUN_BACK_002,He will be where he is needed.
+DLG_CH08_SPIRE_DOOR_001,The Lady Cantor's guardians may attend her.
+DLG_CH08_STORM_001,"Be level, be still, the Hush is over the water and the water— the water is—"
+DLG_CH08_STORM_002,"""...and the water is kept."" Go on. You have it."
+DLG_CH08_STORM_003,And the water is kept. And the keeping is still.
+DLG_CH08_STORM_004,You know the way of her now.
+DLG_CH08_STORM_005,"The great key, Lady Cantor. It has to be a Cantor's hand."
+DLG_CH08_STRANGER_001,They're going out. Toma. They're going out—
+DLG_CH08_STRANGER_002,I know. Stay on my shield.
+DLG_CH08_STRANGER_003,Is he— is he singing to them?
+DLG_CH08_STRANGER_004,No. He's sounding like it.
+DLG_CH08_STUCK_KEY_001,Don't. Don't force her.
+DLG_CH08_STUCK_KEY_002,"...There. She wants oil, not muscle."
+DLG_CH08_STUCK_KEY_003,Somebody seated this. A wright. In a temple.
+DLG_CH08_STUCK_KEY_004,I've seen marks like that on salvage. My—
+DLG_CH08_STUCK_KEY_005,Your what?
+DLG_CH08_STUCK_KEY_006,Nothing. Salvage.
+DLG_CH08_STUCK_KEY_007,Don't tell them.
+DLG_CH08_STUCK_KEY_008,Wasn't going to.
+DLG_CH08_THE_REACH_001,Hold.
+DLG_CH08_WALL_FALLS_001,Rhen. What did you see?
+DLG_CH08_WALL_FALLS_002,Someone. In the storm. Humming a current-song.
+DLG_CH08_WALL_FALLS_003,I heard them too. All of them.
+DLG_CH08_WALL_FALLS_004,Storm. Just the storm.
+DLG_CH08_WALL_FALLS_005,All right.
 DLG_CH09_BARK_HOBB_001,"Jory Sallow. Mag Sallow. Anni Tesk, nine years."
 DLG_CH09_BARK_HOBB_002,"Bren Coyle. The Coyle boys, both of them. Next row."
 DLG_CH09_BARK_LISS_001,Thirty-one baskets. I counted. Don't ask me to count anything else.

@@ -1,0 +1,39 @@
+// Ch8 B15 "Captain?" (act1_ch08.md §2 B15; W15 → W16 → W17 → W10 from below). Letterboxed, scripted,
+// staged EXACTLY as ADR 0022 (c) pins it. ALL CUTS (no blend=).
+// W15, low at the stair foot, 16:40, near-night: the sea in the low town to a man's waist, spray coming
+// over the wall in sheets. The last climbers on the bottom flights, backs to camera, FACING THE CLIMB,
+// hands on the hand-line rings. Waist-deep at the foot, a big man in a sodden straw cape pushing them up
+// one by one: Kerrid, his wrapped LEFT arm toward the lens. NO ROPE-BURN GLOW (ADR 0022 (g)): the only
+// light is the storm's cyan high above; no @vfx in this scene.
+// W16: Old Marra, of the 1001 stair-watch, the only one who looks back down. CU: rain, disbelief,
+// something like hope. W17: Kerrid's face, both eyes clear. One beat, no word, and he goes DOWN a step,
+// deeper, back to the people below her. She is pushed on up by the climber behind. No reaction close-up
+// after the step. W10 from below: the wall-head far above and tiny, the shield-line fighting in the
+// spray. Out of earshot: wind and surf only.
+// Rules: no music line on the word (the bed drops to wind before it), no VO, no other climber turns.
+// Toma and the Stillguard are never in a shot that also holds the stair foot (W10_below is the far
+// wall-head only). Sets ch08_fishwife_called (critical: Ch12, Ch15).
+title: ch08_captain
+location: ch08/corrow
+---
+@letterbox on
+@music silence fade=1.5
+@sfx surf_storm
+@camera W15
+@anim kerrid push_climber climber_a
+@wait 2.0
+@camera W16
+@anim marra look_back kerrid
+@wait 1.5
+Marra [surprised]: Captain? #line:ch08_captain_001 #whisper
+@camera W17
+@wait 1.0
+@mark kerrid foot_kerrid_deeper walk
+@camera W15
+@mark marra foot_marra_up walk
+@wait 1.5
+@camera W10_below
+@wait 2.5
+<<set $ch08_fishwife_called = true>>
+@letterbox off
+===

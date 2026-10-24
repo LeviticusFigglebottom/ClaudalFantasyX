@@ -1,0 +1,49 @@
+{
+ "format": 1,
+ "scene": "ch08_keeping_flame",
+ "source": "game/data/dialogue/ch08/ch08_keeping_flame.dlg",
+ "start": "ch08_keeping_flame",
+ "nodes": {
+  "ch08_keeping_flame": {
+   "headers": {"location": "ch08/coilspire"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["F01"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.5}, "src": 15},
+    {"op": "cue", "cue": "sfx", "args": ["hearth_crackle"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "anim", "args": ["fenn", "feed_fire"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 18},
+    {"op": "line", "id": "ch08_flame_001", "key": "DLG_CH08_FLAME_001", "speaker": "fenn", "emotion": "neutral", "voice": "", "src": 19},
+    {"op": "cue", "cue": "mark", "args": ["asha", "hearth_asha", "walk"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 21},
+    {"op": "line", "id": "ch08_flame_002", "key": "DLG_CH08_FLAME_002", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 22},
+    {"op": "cue", "cue": "camera", "args": ["F01_hands"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "anim", "args": ["fenn", "hand_driftwood", "asha"], "kwargs": {}, "src": 24},
+    {"op": "line", "id": "ch08_flame_003", "key": "DLG_CH08_FLAME_003", "speaker": "fenn", "emotion": "neutral", "voice": "", "src": 25},
+    {"op": "cue", "cue": "anim", "args": ["asha", "feed_fire"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "sfx", "args": ["hearth_settle"], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "camera", "args": ["F01"], "kwargs": {}, "src": 29},
+    {"op": "line", "id": "ch08_flame_004", "key": "DLG_CH08_FLAME_004", "speaker": "fenn", "emotion": "neutral", "voice": "", "src": 30},
+    {"op": "cue", "cue": "anim", "args": ["fenn", "look_at", "asha"], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 32},
+    {"op": "line", "id": "ch08_flame_005", "key": "DLG_CH08_FLAME_005", "speaker": "fenn", "emotion": "neutral", "voice": "", "src": 33},
+    {"op": "line", "id": "ch08_flame_006", "key": "DLG_CH08_FLAME_006", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 34},
+    {"op": "line", "id": "ch08_flame_007", "key": "DLG_CH08_FLAME_007", "speaker": "fenn", "emotion": "soft_smile", "voice": "", "src": 35},
+    {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 36},
+    {"op": "line", "id": "ch08_flame_008", "key": "DLG_CH08_FLAME_008", "speaker": "asha", "emotion": "surprised", "voice": "", "src": 37},
+    {"op": "line", "id": "ch08_flame_009", "key": "DLG_CH08_FLAME_009", "speaker": "fenn", "emotion": "neutral", "voice": "", "src": 38},
+    {"op": "cue", "cue": "face", "args": ["asha", "smile", 0.6], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "wait", "args": [1.2], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "face", "args": ["asha", "neutral", 1.0], "kwargs": {}, "src": 41},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 42},
+    {"op": "line", "id": "ch08_flame_010", "key": "DLG_CH08_FLAME_010", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 43},
+    {"op": "line", "id": "ch08_flame_011", "key": "DLG_CH08_FLAME_011", "speaker": "fenn", "emotion": "neutral", "voice": "", "src": 44},
+    {"op": "cue", "cue": "anim", "args": ["fenn", "feed_fire"], "kwargs": {}, "src": 45},
+    {"op": "line", "id": "ch08_flame_012", "key": "DLG_CH08_FLAME_012", "speaker": "fenn", "emotion": "soft_smile", "voice": "", "src": 46},
+    {"op": "line", "id": "ch08_flame_013", "key": "DLG_CH08_FLAME_013", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 47},
+    {"op": "set", "flag": "ch08_fed_the_beacon", "value": ["lit", true], "src": 48},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 49}
+   ]
+  }
+ }
+}

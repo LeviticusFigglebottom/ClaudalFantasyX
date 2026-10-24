@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch08_bark_hobb",
+ "source": "game/data/dialogue/ch08/ch08_bark_hobb.dlg",
+ "start": "ch08_bark_hobb",
+ "nodes": {
+  "ch08_bark_hobb": {
+   "headers": {"location": "ch08/corrow"},
+   "ops": [
+    {"op": "line", "id": "ch08_bark_hobb_001", "key": "DLG_CH08_BARK_HOBB_001", "speaker": "hobb", "emotion": "determined", "voice": "", "src": 7},
+    {"op": "line", "id": "ch08_bark_hobb_002", "key": "DLG_CH08_BARK_HOBB_002", "speaker": "fisher", "emotion": "determined", "voice": "", "src": 8},
+    {"op": "line", "id": "ch08_bark_hobb_003", "key": "DLG_CH08_BARK_HOBB_003", "speaker": "hobb", "emotion": "neutral", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

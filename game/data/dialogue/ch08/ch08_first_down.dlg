@@ -1,0 +1,25 @@
+// Ch8 B09 "The stair, first down" (act1_ch08.md §2 B09; W09 → W10). In-engine. W09: the wall-head over
+// the Fisher Stair; below, the low town is emptying into its lanes toward the stair foot. Hobb's voice,
+// "First down!", and the stair-watch goes DOWN the stair against the crowd coming up, to bring up the
+// slow. W10: the Stillguard shield-line at the stair-head. Ivo is in it. Toma takes the place beside
+// him without being asked. "We hold the stair. That is all we do tonight." is the set-piece's rule,
+// said in the fiction (§5a: Toma never goes on the offensive). The chapter flow autosaves here
+// (checkpoint), then opens Wave 1.
+title: ch08_first_down
+location: ch08/corrow
+---
+@camera W09
+@sfx crowd_on_stair
+Hobb [determined]: First down! #line:ch08_first_down_001
+@mark watch_a stair_down_a run
+@mark watch_b stair_down_b run
+@mark hobb stair_down_hobb run
+@wait 2.0
+@camera W10
+@mark toma shield_line_toma walk
+@anim toma shield_up
+Ivo [determined]: Your shield. My wall. Same as ever. #line:ch08_first_down_002
+Rhen [worried]: We're not going down after them? #line:ch08_first_down_003
+Toma [determined]: We hold the stair. That is all we do tonight. #line:ch08_first_down_004
+@music seawall_hold fade=1.0
+===
