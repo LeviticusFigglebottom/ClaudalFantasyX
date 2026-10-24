@@ -2,7 +2,7 @@
 id: M1-UI-10
 title: Graphics section of the settings menu (calls GraphicsRuntime)
 role: ui
-status: review
+status: done
 reviewer: architect
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M1-ARC-15]
@@ -37,3 +37,4 @@ API and behavior: docs/kb/tech/graphics_settings.md, "Applying in the game (M1-A
   - Not done: a scroll hint (the page shows 14 of 26 rows and scrolls with the cursor), and per-setting help text (one help line for every setting row).
 
 ## Review log
+- 2026-10-24 review-sweep-Q (architect): **approve-with-fixes.** The menu lists presets and settings from `GraphicsRuntime.settings()`, shows Custom, and calls `select_preset`/`set_override`, which save and apply. The GFX_* rows are in, and `test_graphics_menu_data.py` checks every option has a label. A test selects Low and checks the saved file. boot_title was re-approved. `--filter=graphics`: 51/0. **Fix (M1-UI-11):** the 'no fade, it can't hitch on the 2D title' premise stopped holding when M1-RND-22 merged. `select_preset` now spawns the resident warm-up (a 0.53–1.66 s worst frame at boot) in full view, so the hitch criterion 2 anticipated now happens.

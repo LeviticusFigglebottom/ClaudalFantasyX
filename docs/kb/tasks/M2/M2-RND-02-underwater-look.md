@@ -2,7 +2,7 @@
 id: M2-RND-02
 title: Underwater rendering (SPEC signature R&D): Rhen the lamp-diver's world
 role: rendering
-status: review
+status: done
 reviewer: environment
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU, branch gpu/m2-rnd-02-underwater; took over from session_01778wbLbDFnRRLTKjnawv3T)"
 depends_on: [M1-RND-08]
@@ -40,3 +40,4 @@ Design, tiers, cost and gotchas: `docs/kb/tech/underwater.md`. Key frames: `docs
 - **Not done:** caustics on characters; a splash at the crossing.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (environment): **approve.** The post and volume, the Snell window and TIR, the god rays and snow, the lantern, the half-submerged split and the tiers are all in `underwater_rig.gd`, `underwater.json` and `graphics_presets.json` `tiers.underwater` on every preset. `test_underwater.gd` checks the swatches against palette.json and a row for every preset. High costs +0.32 ms, well under the 3 ms. The three shots are in the manifest with lavapipe baselines (dcd6741). `--filter=underwater`: 5/0. Criterion 2 is partial on purpose: the motes' submerged boost is Art's call, and M2-ART-02 carries it. **Note:** 'validated' rests on the GDScript test. validate_data doesn't read underwater.json, effects.json or boss_vfx.json, which is acceptable while the tests cover the references.

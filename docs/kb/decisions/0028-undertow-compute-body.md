@@ -1,6 +1,6 @@
 # 0028 — The Undertow's half-resolution body is a compute pass on the game camera's Compositor
 
-- **Status:** proposed (Rendering; the Lead to accept on merge)
+- **Status:** accepted (review-sweep-Q, Environment, 2026-10-24; see "Acceptance" below)
 - **Date:** 2026-10-24
 - **Roles affected:** Rendering, Tech (cameras, cutscenes), Environment (zone scenes with a storm)
 - **Author role:** Rendering (PC GPU session, M2-RND-01)
@@ -50,3 +50,15 @@ the fallback (Compatibility, headless) and as the A/B control (`UndertowStorm.ha
 - **The compute pipeline is created on the first frame the storm draws** (from SPIR-V baked at import). It isn't
   in the M1-RND-15 prewarm list yet; M1-RND-22 (prewarm hitch floor) should cover it.
 - **Editing the storm's uniforms** means re-running the generator; the test catches a stale run.
+
+## Acceptance (review-sweep-Q, Environment, 2026-10-24)
+**Accepted.** Reasons:
+- Option 2 is the only option that gives this frame's opaque depth at half resolution. Option 1's frame-late depth would smear on any camera move, and Option 3 doesn't fit the recommended tier. The pillar test shows the occlusion bug was real, and it is fixed.
+- It is cheaper than the SubViewport path (Day 2.56 → 2.45 ms, Eye 3.11 → 2.84 ms at High 1440p), and the look matches it (RMSE 0.003–0.009).
+- The duplication risk is controlled. One `undertow_march()` serves both paths, and the generated glue is hash-stamped, with GDScript and Python tests that fail on a stale run. The SubViewport path stays as the Compatibility and headless fallback and as the A/B control.
+
+Conditions, both filed:
+- The compute pipeline must be prewarmed. M1-RND-22 didn't pick it up, so it is now M1-RND-27.
+- The compute body's own reprojected history and a min-spec quarter-res tier stay open (M2-RND-06 keeps them visible in undertow.md).
+
+Camera and cutscene code that sets `Camera3D.compositor` should append effects, not replace them, as the Consequences say. M2-FP-10's key light doesn't touch the compositor.

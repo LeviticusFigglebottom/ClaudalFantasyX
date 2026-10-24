@@ -2,7 +2,7 @@
 id: M2-FP-18
 title: Cutscene A/B facial animation at slice quality (blinks, text-driven visemes)
 role: cinematics
-status: review
+status: done
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M2-FP-08]
 milestone: M2
@@ -25,3 +25,4 @@ SPEC §10.2 asks the slice for "two cutscenes with facial animation". M2-FP-08 d
 - Tests: `tests/unit/test_cutscene_face_anim.gd` (6), and `test_cutscene_face.gd` unchanged and green. Full suite: 1311 green.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (character): **approve.** Blinks run on a per-actor `RandomNumberGenerator` seeded through `configure_blink` (no global randf), layer by max over the pose, and skip when the pose already closes the lids. An emotion change blinks once. Visemes take the next vowel from the text, and m/b/p and f/v close the lips. The tables are in sequencer.json, and a rig without the shapes keeps the old lip-flap (tested). Character accepts the values: 2.2–5 s intervals and a 0.06/0.03/0.11 s close/hold/open (about 200 ms, natural), with `aa` at 0.55/jaw 0.18 and `o` at 0.6/jaw 0.10, lowered because the tongue showed. Revisit after M1-CHR-12's grief mouth lands. `--filter=cutscene`: 33/0.

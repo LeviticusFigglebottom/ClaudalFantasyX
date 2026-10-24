@@ -2,7 +2,7 @@
 id: M1-ENV-08
 title: Vegetation LOD hysteresis hole (a plant at a switch distance can be invisible from a still camera)
 role: environment
-status: review
+status: done
 reviewer: rendering
 owner_session: "worktree-agent-a573ddba06eb06eb2"
 depends_on: [M1-ENV-03]
@@ -43,3 +43,4 @@ it. The 45 m switch (LOD0 → 1) still has the hole.
   is the missing palm now drawn. haluna_* are all within limits.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (rendering): **approve.** Folded into M1-ENV-09 and verified there. Each LOD is the `visibility_parent` child of the next, so there is one state machine per switch, and the 44–47 m still-camera hole is gone. On lavapipe `lod_sweep_probe` passes, and the base fails 16 rows. The PC got `LOD_SWEEP PASS` on Vulkan (2026-10-24-env-09-lod-check.md). `test_vegetation_plant.gd::test_a_distance_sweep_draws_exactly_one_lod` replaces the margin-equality test, which can't apply to a chain. `--filter=vegetation`: 17/0. veg_beach_wide was re-approved by the Lead (0bfac12).

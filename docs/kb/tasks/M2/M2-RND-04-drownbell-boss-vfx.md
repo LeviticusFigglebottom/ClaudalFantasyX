@@ -2,7 +2,7 @@
 id: M2-RND-04
 title: Drownbell boss: the flood rig and phase-change VFX
 role: rendering
-status: review
+status: done
 reviewer: environment
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 depends_on: [M2-RND-03]
@@ -43,3 +43,4 @@ Design, cost and gotchas: docs/kb/tech/battle_vfx.md, "The Drownbell". Key frame
   it.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (environment): **approve.** `BattleBossVfx` listens only to generic engine signals: `charge_started`, `charge_broken`, `phase_changed`, `combatants_joined`, `field_cleared` and `action_resolved`. So Floodnet's light keys on `field_cleared`, not on the `call_ilun` stand-in, and it will survive M2-FP-17's real call unchanged. Nothing was added to the battle core. The flood rig is the one `hymn_water_level` publisher across a retry (tested). The toll flash is capped through BattleVfx, and the rim glow pulses at 0.6 Hz, far below any flash threshold. Reduced motion is covered. The worst frame is 2.0 ms at High. The `drownbell_flood` shot and its baseline are in. `--filter=boss_vfx`: 6/0. The weather-clock finding is filed as M2-ARC-02.

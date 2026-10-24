@@ -2,7 +2,7 @@
 id: M1-RND-24
 title: Mouth cavity bounce is shadowed by positional lights (unshadow it; enforce the family for every hero)
 role: rendering
-status: review
+status: done
 owner_session: "worktree-agent-a7c54615acb434f4e"
 reviewer: character
 depends_on: [M1-RND-21]
@@ -54,3 +54,4 @@ Report: `docs/kb/qa/gpu/2026-10-24-rnd-24-bounce-gpu.md`. Tool: `tools/gpu_bench
   doesn't use FSR2.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (character): **approve.** The choice is well founded: a compile probe showed `light()` can't see a light's position or range, so the additive `shadows_disabled` pass is the only way to get Godot's exact distance and cone falloff without the shadow. It attaches to owned copies, so the `.tres` and write_materials.py stay untouched, and it is registered for prewarm. The mouth-family test now walks `assets/characters/*/materials/` for mouth, teeth and tongue, so Rhen and Toma inherit the rule. The PC's criterion 2 is rigorous. It used a matched-irradiance spot and omni rig, and the key-shadow-off control (0.0194–0.0205) proves the pass gives back the full bounce. Closed mouths stay within RMSE ≤ 0.0001, and the cost is under 0.005 ms. It also shows fault A is not this bug: the inner-lip skin shadow is M1-RND-25. The FSR2 softening finding is filed as M1-RND-26. `--filter=character_shading`: 17/0.

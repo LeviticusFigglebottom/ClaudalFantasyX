@@ -2,7 +2,7 @@
 id: M2-RND-01
 title: Undertow storm to production cost and quality
 role: rendering
-status: review
+status: done
 reviewer: environment
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU, branch gpu/m2-rnd-01-undertow; resumed from the WIP handoff)"
 depends_on: [M1-RND-03]
@@ -92,3 +92,4 @@ The `undertow` tests pass (35/0).
   - **Ultra:** full resolution.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (environment): **approve-with-fixes.** Criteria 1 and 2 are met, and the rest moved to M2-RND-05 with a stated reason (one re-approval of the baselines). At High's `body_scale` 0.35 the storm's own cost is 0.58–0.80 ms on the 9070 XT, about 2.0–2.4 ms projected on an RTX 3060, so within the 2–3 ms. The method (cost by difference with `--hide-storms`) and the FSR2 motion check per preset are sound: Medium stays at 0.5 because 0.35 crawls. `undertow.json` has 0.5/0.35/1.0. The generator and its stale-output tests are in (`test_undertow_compute.gd`, `tools/tests/test_gen_undertow_compute.py`). The baselines were re-approved and viewed (ead371d). `--filter=undertow`: 40/0. **Fixes (M2-RND-06):** undertow.md § Compute body still quotes '~7.4 ms on Day High' for min-spec, which predates 0.35. Keep the two open items (the compute body's own history, a quarter-res min-spec tier) visible. The compute pipeline isn't prewarmed: that's ADR 0028's consequence, now in M1-RND-27. ADR 0028 is **accepted** (see the ADR).

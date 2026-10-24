@@ -2,7 +2,7 @@
 id: M2-CMB-05
 title: Vowbound fixes from ADR 0027's acceptance (absorb fills the gauge, Floodnet clears the flood, the call's turn end, sim call rule)
 role: combat
-status: review
+status: done
 owner_session: "worktree-agent-a7aa8de557501f0a5"
 reviewer: lead
 depends_on: [M2-CMB-04]
@@ -33,3 +33,4 @@ Review-sweep-P (Design) accepted ADR 0027 with amendments A1–A3. A called Ilun
 - The renamed test is `test_the_call_replaces_the_party_and_hands_ilun_the_turn_at_once`.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (design): **approve-with-fixes.** All six criteria hold in the code on the integration branch. A1: `BattleHits._mark_absorbed` and `BattleVowbound._on_action_resolved` (`max(HP lost, absorbed)`). A2: Floodnet is `element: none` with `clears_field: flood`, a Swell finisher is never refused `no_field`, and `after_action` clears only a field that is up. A3: `summon()` runs `_turn_ticks(caller)`, and `_check_outcome` rules a defeat when a recall hands back a fallen party. The renamed test, the sim call rule and the `sandbox_reef_vowbound` suite are all present. `--filter=battle`: 390 run, 0 failed. I didn't re-run `sim.py --check` or coverage (CPU); the Lead's gate covers them. **Design verdict on A1: the rolled absorb is the right reading, and it is canonical.** The gauge measures what the hit gave Ilun, the same quantity the damage side measures, and the fiction is that he drinks the flood. The HP-restored reading fills nothing at full HP, so the flood stalls (0% wins, ~80% timeouts on the probe). One asymmetry is accepted: damage counts only the HP actually lost, while an absorb counts the uncapped roll. `swell_fill` caps the gauge either way. **On the Swell-on case: yes, a line is needed.** Hero Swell can't be off in play, and the masher who finds the Vowbound row is `naive_swell`, who also unleashes the heroes' gauges. A line measured only with Swell off watches a state the player can't reach. Keep the 40% Swell-off line as the Vowbound's own lift, and add a Swell-`good` ceiling at 50% (46.2% measured) with a tuning-log entry. The sandbox is pre-Ilun content, so this is a regression ceiling, not a target. Don't retune Ilun for it now. **URGENT for the Lead:** `claude/m2-slice` implemented M2-CMB-05 a second time (d396f57, d8c71d1, da6588c, with M2-FP-17), from a merge base that predates this copy. It reads A1 as HP restored and compensates with Ilun at HP 60% and rate 220. Filed **M2-CMB-06**: reconcile on merge (keep this engine and m2-slice's extras, re-derive Ilun's HP and rate), and add the Swell-on line.
