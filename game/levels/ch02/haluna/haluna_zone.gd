@@ -22,6 +22,8 @@ extends Node3D
 
 ## True once prebuild() has dressed the mood scene and built the collision (M2-FP-05).
 var prebuilt := false
+## True once set_night() has run (M2-FP-15).
+var is_night := false
 ## Wall time of prebuild(), for the README and tests.
 var prebuild_msec := 0
 
@@ -129,6 +131,62 @@ func _apply_face_key_bias() -> void:
 	var sun: Variant = mood.get(&"sun")
 	if face_key_shadow_normal_bias > 0.0 and sun is DirectionalLight3D:
 		(sun as DirectionalLight3D).shadow_normal_bias = face_key_shadow_normal_bias
+
+
+## M2-FP-15: Haluna at night for B11, a stand-in until Environment's night light (M2-ENV-02).
+## `night` is first_playable.json haluna.night: the sun dimmed and recoloured, the sky and the
+## ambient light scaled down (on a copy of the mood's Environment, never the shared resource), and
+## warm lamps. `hide` lists node paths (the dock villagers) that are gone home at night.
+func set_night(night: Dictionary, hide: Array = []) -> void:
+	var sun: Variant = mood.get(&"sun")
+	if sun is DirectionalLight3D:
+		var l := sun as DirectionalLight3D
+		l.light_energy *= float(night.get("sun_energy_scale", 1.0))
+		l.light_color = Color.html(str(night.get("sun_color", "#FFFFFF")))
+	var we := mood.find_children("*", "WorldEnvironment", true, false)
+	if not we.is_empty() and (we[0] as WorldEnvironment).environment != null:
+		var env := (we[0] as WorldEnvironment).environment.duplicate() as Environment
+		env.background_energy_multiplier *= float(night.get("sky_energy_scale", 1.0))
+		env.ambient_light_energy *= float(night.get("ambient_energy_scale", 1.0))
+		(we[0] as WorldEnvironment).environment = env
+	var lamps := Node3D.new()
+	lamps.name = "NightLamps"
+	add_child(lamps)
+	for p: Array in night.get("lamps", []):
+		var lamp := OmniLight3D.new()
+		lamp.position = Vector3(float(p[0]), float(p[1]), float(p[2]))
+		lamp.light_color = Color.html(str(night.get("lamp_color", "#FFFFFF")))
+		lamp.light_energy = float(night.get("lamp_energy", 1.0))
+		lamp.omni_range = float(night.get("lamp_range_m", 1.0))
+		lamps.add_child(lamp)
+	for path: Variant in hide:
+		var n := get_node_or_null(NodePath(str(path)))
+		if n != null:
+			n.get_parent().remove_child(n)
+			n.queue_free()
+	is_night = true
+
+
+## Puts the cast where `cast` says ([x, y, z, yaw°] per actor id) and shows them, and adds the scene's
+## marks (id -> [x, y, z]) to the stage (M2-FP-15, B11 on the dock).
+func place_cast(cast: Dictionary, marks: Dictionary) -> void:
+	for id: String in cast.keys():
+		var a := stage.actor(StringName(id))
+		var p: Array = cast[id]
+		if a == null or a is FieldController:
+			continue
+		a.global_position = Vector3(float(p[0]), float(p[1]), float(p[2]))
+		a.rotation.y = deg_to_rad(float(p[3]))
+		a.visible = true
+	var folder := stage.get_node_or_null(CutsceneStage.MARKS)
+	for id: String in marks.keys():
+		if folder == null or folder.has_node(NodePath(id)):
+			continue
+		var m := Marker3D.new()
+		m.name = id
+		var q: Array = marks[id]
+		folder.add_child(m)
+		m.global_position = Vector3(float(q[0]), float(q[1]), float(q[2]))
 
 
 ## The mood scene's five composed HalunaShotCameras (H01 is current there) must not take the view.

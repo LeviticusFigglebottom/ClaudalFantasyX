@@ -18,7 +18,8 @@ This is a rough but complete thread through the first minutes of *Hymn of the Un
    - **Phase 2, the Flood:** at about 40% health the water rises, and polyps heal the bell faster than you can cut them down. Asha's **Call Ilun** (12 MP) clears the water.
 
    Lose, and you can fight again or return to your last save.
-9. **End card.** Press accept to return to the title. **Continue** loads your save.
+9. **The dock at night.** Win, and you're back in Haluna after dark (a dimmed stand-in for the real night light). Rhen finds Asha at the end of the dock and asks to come with her.
+10. **End card.** Press accept to return to the title. **Continue** loads your save.
 
 ## Running it
 

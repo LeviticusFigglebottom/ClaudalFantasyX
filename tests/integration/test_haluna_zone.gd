@@ -7,7 +7,9 @@ extends TestCase
 const ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
 const LOCATION := &"ch02/haluna"
 const DT := 1.0 / 60.0
-const SPAWNS: Array[StringName] = [&"Beach", &"Village", &"Shrine", &"BattleReturn", &"BeforeBattle", &"CausewayHead"]
+const SPAWNS: Array[StringName] = [
+	&"Beach", &"Village", &"Shrine", &"BattleReturn", &"BeforeBattle", &"CausewayHead", &"DockNight"
+]
 ## Collision build budget on the shared CI CPU (the brief asks for under about a second).
 const BUILD_BUDGET_MSEC := 1000
 ## How far a spawn marker may sit from the floor found under it.
@@ -71,7 +73,8 @@ func test_the_zone_walks_frames_and_holds_rhen() -> void:
 		var p := marker.global_position
 		var floor_y := _floor_y(p)
 		assert_between(floor_y, p.y - GROUND_TOLERANCE_M, p.y + GROUND_TOLERANCE_M, "ground under %s" % spawn)
-		assert_between(col.ground_height(p.x, p.z), floor_y - 0.05, floor_y + 0.05, "height_at agrees (%s)" % spawn)
+		if spawn != &"DockNight":  # M2-FP-15: on the dock deck, over the water, not the terrain
+			assert_between(col.ground_height(p.x, p.z), floor_y - 0.05, floor_y + 0.05, "height_at agrees (%s)" % spawn)
 		assert_true(zone.place_at(spawn, zone.spawn_yaw_deg(spawn)), "place_at %s" % spawn)
 		var at := zone.player.global_position
 		assert_true(Vector2(at.x - p.x, at.z - p.z).length() < 0.01, "Rhen stands on %s" % spawn)

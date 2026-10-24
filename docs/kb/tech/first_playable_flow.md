@@ -117,6 +117,16 @@ title) once.
 
 New speakers: `neme`, `child`. Tests: `tests/integration/test_haluna_slice_beats.gd`.
 
+## The Shell Shrine trial and the dock at night (M2-FP-16, M2-FP-15)
+
+The thread's end now runs: the causeway head → B05 → **the Shell Shrine trial** (`haluna.ending_scene`; game/levels/ch03/shell_shrine/README.md) → through its door, Cutscene B (`shell_shrine.next_scene`) → the Drownbell → **Haluna's dock at night** → the end card.
+- After the Drownbell, `first_verse.after_location` / `after_spawn` send the party back to `ch02/haluna` at `DockNight` instead of opening the end card. (`after_scene` is now used only on the no-battle path.)
+- On that arrival, `HalunaStory.begin()` plays B11, because `night_flag` (`ch03_drownbell_defeated`) is set and `sworn_flag` (`ch03_rhen_sworn_guardian`) isn't:
+  - `HalunaZone.set_night(haluna.night, haluna.night_hide)` puts up the **stand-in night** until M2-ENV-02. The mood sun is dimmed and turned moonlight blue. A *copy* of the mood's Environment gets a darker sky and less ambient light, so the shared `.tres` is never touched. Warm lamps go up, and the dock villagers are gone home.
+  - `place_cast(night_cast, night_marks)` sits Asha at the end of the dock and puts Toma at the landward end, with the mark he walks to.
+  - `ch03_dock_at_night` plays in-engine; Toma's `@mark` walk is his arrival. The scene sets the sworn flag, and the story hands off to `night_end_scene` (the end card).
+- Once sworn, the villagers' barks (and the overheard fragments) play their `night_barks` blessings.
+
 ## Tests
 
 `tests/integration/test_fp_field_battle.gd`, `tests/integration/test_fp_prologue.gd`,

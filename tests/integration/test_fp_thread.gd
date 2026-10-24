@@ -4,7 +4,8 @@ extends TestCase
 ## the battle's travel hooks): New Game → prologue → Haluna (Cutscene A) → three villagers → walk up
 ## the beach into the story's real tideline trigger → lose, Fight again, lose, Return to last save
 ## (none yet: the title) → walk in again and win → back at BattleReturn (not re-triggered) → save at
-## the shrine, load it back → the causeway head → the Shell Shrine trial → Cutscene B → the Drownbell → end card.
+## the shrine, load it back → the causeway head → the Shell Shrine trial → Cutscene B → the Drownbell →
+## the dock at night → end card.
 
 const ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
 const PROLOGUE := "res://game/levels/prologue/prologue.tscn"
@@ -159,7 +160,18 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	BattleRequest.submit(requests[0])
 	var opened := _win_battle(&"drownbell")
 	assert_true(bool(Game.get_flag(&"ch03_drownbell_defeated")))
-	assert_eq(opened, [EndCard.SCENE] as Array[String], "after the Drownbell, the end card")
+	assert_eq(opened, [] as Array[String], "no scene opens: the party travels")
+	assert_eq(travels.back(), [&"ch02/haluna", &"DockNight"], "after the Drownbell, Haluna's dock at night (M2-FP-15)")
+
+	# B11: the dock at night, then the end card.
+	zone = _load_zone()
+	zone.place_at(&"DockNight", zone.spawn_yaw_deg(&"DockNight"))
+	var night_story := zone.get_node("Story") as HalunaStory
+	night_story.begin()
+	assert_true(zone.is_night, "Haluna at night")
+	assert_true(bool(Game.get_flag(&"ch03_rhen_sworn_guardian")), "Rhen is sworn")
+	assert_eq(routed.back(), [EndCard.SCENE], "then the end card")
+	_free(zone)
 	_done()
 
 

@@ -4,6 +4,7 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 
 ## Now
 - **Done, in review:** M2-FP-10, the dialogue key light. The PC's GPU check passed. Its two follow-ups are done: H05/H06 `key_pitch_deg` 30, and the key layer moved 20 → 19 (20 is `UndertowHalfRes.BODY_LAYER`), with a guard test.
+- **Done, in review:** M2-FP-15, B11 "The dock at night" (the Drownbell victory → Haluna at night under a stand-in light → B11 → the end card; night blessings for the barks). It doesn't wait for M2-ENV-02 any more: its criteria allow the stand-in.
 - **Done, in review:** M2-FP-18, Cutscene A/B facial animation (seeded blinks, a blink on each expression change, text-driven visemes on Asha's viseme shapes; checked on lavapipe).
 - **Waiting:** M2-FP-17 (the Drownbell with the real Vowbound call, filed by the Lead for this track) depends on M2-CMB-05, which is still todo on the integration branch.
 - **Done, in review:** M2-FP-16, the Shell Shrine trial (B07). The puzzle rules are headless and data-driven; the room is a greybox built from JSON. The thread now runs the causeway head → low tide → the trial → Cutscene B. Filed M2-ENV-03 (the shrine kit) and M2-AUD-01 (the trial audio).
@@ -25,14 +26,14 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 **The standing queue is done apart from blocked items.**
 - M2-FP-17 waits on M2-CMB-05. When CMB-05 merges: merge the integration branch, replace `call_ilun` with `engine.summon(&"ilun")`, add the "call into the flood" sim policy, and re-band.
 - M2-FP-14 (B04) waits on the wake-shell wall being reachable.
-- M2-FP-15 (B11) waits on M2-ENV-02.
+- M2-FP-15 (B11) is done with the stand-in night; swap in M2-ENV-02's light when it lands.
 Lead: please queue more slice work.
 
 ## Queue
 1. ~~M2-FP-10 dialogue key light~~ (review)
 2. ~~Drownbell follow-ups (M2-FP-06)~~ → M2-FP-12 (review)
 3. ~~M2-FP-05 and M1-ARC-15 follow-ups; M1-UI-10~~: FP-05 and ARC-15 had no open review items (their known gaps are documented). M1-UI-10 is done (review).
-4. Haluna at vertical-slice quality: M2-FP-13 in review; M2-FP-14 (B04) next, M2-FP-15 (B11) once M2-ENV-02 lands
+4. Haluna at vertical-slice quality: M2-FP-13 in review; M2-FP-14 (B04) next, M2-FP-15 (B11) in review (stand-in night)
 5. ~~Shell Shrine temple trial~~: M2-FP-16 (review)
 6. First Vowbound → M2-FP-17 (blocked on M2-CMB-05; the engine side is Combat's M2-CMB-04/05, ADR 0027); Cutscene A/B faces → M2-FP-18 (review)
 
@@ -41,6 +42,7 @@ Lead: please queue more slice work.
 - `pip install -r tools/requirements.txt` for gdlint/gdformat.
 
 ## History
+- 2026-10-24: M2-FP-15 done (B11). Gates: dlgc and `--check`, validate_data, lint and format, the full Godot suite (1316 green). I checked a lavapipe render of the night stand-in by eye.
 - 2026-10-24: merged the integration branch (763faeb), then finished the PC's FP-10 follow-ups (pitch 30 on H05/H06; key layer 19 with a guard test). Godot key_light 9, test_haluna_zone 6.
 - 2026-10-24: M2-FP-18 done (faces). Gates: lint and format, the full Godot suite (1311 green), validate_data, taskboard --check. I checked five lavapipe renders of Asha's face by eye.
 - 2026-10-24: M2-FP-16 done (the Shell Shrine trial). Gates: dlgc, validate_data, lint and format, Godot shell_shrine 11, fp_ 22 and haluna 13, plus the full Godot suite (1280 green) and tools unittest (452 OK). I checked three lavapipe renders by eye.

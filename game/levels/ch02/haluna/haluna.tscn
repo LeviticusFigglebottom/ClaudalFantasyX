@@ -482,6 +482,9 @@ transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -13, 0.71, 6.5)
 [node name="CausewayHead" type="Marker3D" parent="Spawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.73, -118)
 
+[node name="DockNight" type="Marker3D" parent="Spawns"]
+transform = Transform3D(0.573576, 0, -0.819152, 0, 1, 0, 0.819152, 0, 0.573576, 13.7, 1.42, 46.2)
+
 [node name="NPCs" type="Node3D" parent="."]
 
 [node name="Market" type="Node3D" parent="NPCs"]
