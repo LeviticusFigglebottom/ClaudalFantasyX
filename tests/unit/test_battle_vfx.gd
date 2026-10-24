@@ -150,6 +150,24 @@ func test_reduced_motion_thins_and_slows_particles() -> void:
 	vfx.free()
 
 
+## M2-RND-07: attach pre-builds one emitter per layer of every particle effect (none emitting), so no
+## effect's first emitter is built mid-fight (the Drownbell's polyp_rise cost 35-79 ms); nothing is played.
+func test_prebuild_makes_every_particle_emitter_without_playing() -> void:
+	_host().add_child(vfx)
+	var layers := 0
+	for id: String in vfx.data["effects"]:
+		var def := (vfx.data["effects"] as Dictionary)[id] as Dictionary
+		if str(def.get("kind", "")) == BattleVfx.KIND_PARTICLES:
+			layers += (def.get("layers", [{}]) as Array).size()
+	assert_eq(vfx.prebuild(), layers, "one emitter per particle layer")
+	assert_true(vfx.played.is_empty(), "prebuilding plays nothing")
+	var p := vfx.get_node(NodePath("polyp_rise#0_0")) as GPUParticles3D
+	assert_true(p != null and not p.emitting, "the Drownbell's polyp rise is built, not emitting")
+	assert_eq(vfx.play_at(&"polyp_rise", Vector3.ZERO), p, "the first play takes the prebuilt emitter")
+	_host().remove_child(vfx)
+	vfx.free()
+
+
 func _result(skill: StringName, hits: Array) -> ActionResult:
 	var r := ActionResult.new()
 	r.actor_id = engine.party_active[0].id

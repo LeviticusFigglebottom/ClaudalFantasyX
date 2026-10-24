@@ -63,6 +63,7 @@ const HOOK_META := &"shader_prewarm_hook"
 const HOLD_METHOD := &"hold_swap"
 const RELEASE_METHOD := &"release_swap"
 const MSEC_PER_SEC := 1000.0
+const USEC_PER_MSEC := 1000.0
 const LOG_PREFIX := "ShaderPrewarm"
 const MODE_UNSUPPORTED := -1
 ## How deep the scene harvest follows instanced scenes (M1-RND-27).
@@ -77,10 +78,14 @@ const BRING_UP_PLAIN := {
 	&"screen_space_aa": Viewport.SCREEN_SPACE_AA_DISABLED,
 }
 
-## Shaders and materials loaded at boot and held for the session (M1-RND-22, registry "resident"):
-## their load compiles the shader, 75-220 ms each, so it happens once under the boot screen instead of
-## in a transition. Held so the resource cache keeps them.
-static var _resident: Array[Resource] = []
+## Shaders and materials loaded at boot and held for the session (M1-RND-22, registry "resident"): their
+## load compiles the shader, 75-220 ms each, so it happens once under the boot screen instead of in a
+## transition. They are held by a node under the tree root (RESIDENT_HOLDER), not a static array: the
+## tree frees it on every exit, a quit in the middle of a warm-up included, so nothing is still in use at
+## exit (a static array outlived Godot's exit check: 225 resources on a headless boot, M1-RND-29 fix).
+const RESIDENT_HOLDER := "ShaderPrewarmResident"
+## A holder added (deferred) but not yet in the tree; a plain weak handle (is_instance_valid-checked).
+static var _pending_holder: Node = null
 
 var registry_path: String = REGISTRY_PATH
 var config: Dictionary = {}
@@ -94,12 +99,18 @@ var viewport_state: Dictionary = {}
 var preset_id: String = ""
 ## Boot run (M1-RND-22): stage every "resident" entry, whatever its scenes, and nothing else.
 var resident_only := false
+## First-run boot (M1-RND-29): on a launch with no pipeline cache yet for this engine, GPU, driver and preset
+## (needs_first_run), the boot run stages every entry the preset wants, whatever its scenes, and harvests
+## the registry's "first_run_scenes" too, so a fresh install builds its pipelines behind the boot card,
+## not in its first zone entries. It writes the "first_run_marker" when it finishes.
+var first_run := false
 ## Diagnosis (M1-RND-27, tools/gpu_bench/prewarm_bench): when true, `trace` gets one row per frame,
 ## [frame_ms, the paths staged on the frame before it], so a slow frame names the draws that cost it.
 var record_trace := false
 var trace: Array = []
 
 var _running := false
+var _last_frame_usec := 0
 var _stage_alive := false
 var _frames_to_render := 0
 var _measure_frames := 0
@@ -178,6 +189,8 @@ func start(for_scene: String = "") -> int:
 	if _running:
 		push_warning("%s: start() called twice; ignored" % LOG_PREFIX)
 		return 0
+	# The first frame measured includes start() itself (it builds the stage in this frame).
+	_last_frame_usec = Time.get_ticks_usec()
 	config = _load_registry(registry_path)
 	scene_path = for_scene
 	_frames_to_render = int(config.get("frames_to_render", 0))
@@ -194,7 +207,7 @@ func start(for_scene: String = "") -> int:
 		var e := entry as Dictionary
 		var scenes := e.get("scenes", []) as Array
 		if resident_only:
-			if not bool(e.get("resident", false)):
+			if not first_run and not bool(e.get("resident", false)):
 				continue
 		elif not (scenes.is_empty() or scenes.has(for_scene)):
 			continue
@@ -209,6 +222,10 @@ func start(for_scene: String = "") -> int:
 		else:
 			push_warning("%s: registered material not found: %s" % [LOG_PREFIX, e.get("path", "")])
 			_skipped += 1
+	if first_run:
+		for path: Variant in config.get("first_run_scenes", []):
+			if ResourceLoader.exists(str(path)):
+				_instanced += _instance_scene_materials(str(path), int(config.get("max_scene_materials", 0)))
 	if bool(config.get("scene_materials", false)) and for_scene != "" and ResourceLoader.exists(for_scene):
 		_instanced += _instance_scene_materials(for_scene, int(config.get("max_scene_materials", 0)))
 	var per_frame := int(config.get("materials_per_frame", 0))
@@ -245,8 +262,8 @@ static func load_resident(preset: String, path: String = REGISTRY_PATH) -> int:
 		if not ResourceLoader.exists(res_path):
 			continue
 		var res := load(res_path)
-		if res != null and not _resident.has(res):
-			_resident.append(res)
+		if res != null:
+			_hold(res)
 			count += 1
 	return count
 
@@ -260,15 +277,81 @@ static func spawn_resident(parent: Node, preset: String, with_trace := false) ->
 	var node := (load(SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
 	node.resident_only = true
 	node.preset_id = preset
+	node.first_run = needs_first_run(preset)
 	node.record_trace = with_trace
 	parent.add_child(node)
 	node.start("")
 	return node
 
 
+## The first-run key (M1-RND-29): what a pipeline cache depends on. Godot rebuilds its pipelines for another
+## engine, GPU or driver, and another preset stages other tier variants.
+static func first_run_key(preset: String) -> String:
+	return (
+		"%s|%s|%s|%s"
+		% [
+			Engine.get_version_info().get("string", ""),
+			RenderingServer.get_video_adapter_name(),
+			RenderingServer.get_video_adapter_api_version(),
+			preset,
+		]
+	)
+
+
+## True under the headless display server, whose dummy renderer compiles and draws nothing.
+static func is_headless() -> bool:
+	return DisplayServer.get_name() == "headless"
+
+
+## True when this launch has not finished a first-run warm-up for first_run_key (M1-RND-29).
+static func needs_first_run(preset: String, path: String = REGISTRY_PATH) -> bool:
+	# Headless (the dummy renderer) builds no pipelines and the run would never write its marker, so every
+	# headless boot (CI's smoke test, tools) would stage and harvest the whole first launch for nothing.
+	if is_headless():
+		return false
+	var marker := str(_load_registry(path).get("first_run_marker", ""))
+	if marker == "":
+		return false
+	var cfg := ConfigFile.new()
+	return cfg.load(marker) != OK or str(cfg.get_value("pipelines", "key", "")) != first_run_key(preset)
+
+
+func _write_first_run_marker() -> void:
+	var marker := str(config.get("first_run_marker", ""))
+	if marker == "":
+		return
+	var cfg := ConfigFile.new()
+	cfg.set_value("pipelines", "key", first_run_key(active_preset()))
+	cfg.save(marker)
+
+
+## Holds `res` for the session on the holder node (created under the tree root on first use).
+static func _hold(res: Resource) -> void:
+	var h := _holder(true)
+	if h != null and not h.held.has(res):
+		h.held.append(res)
+
+
+static func _holder(create: bool) -> ResidentHolder:
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null or tree.root == null:
+		return null
+	var h := tree.root.get_node_or_null(NodePath(RESIDENT_HOLDER)) as ResidentHolder
+	if h == null and is_instance_valid(_pending_holder):
+		h = _pending_holder as ResidentHolder
+	if h == null and create:
+		h = ResidentHolder.new()
+		h.name = RESIDENT_HOLDER
+		# Deferred: the root may still be adding its children (boot). Until it lands, _pending_holder finds it.
+		tree.root.add_child.call_deferred(h)
+		_pending_holder = h
+	return h
+
+
 ## The resources load_resident() holds (tests).
 static func resident_count() -> int:
-	return _resident.size()
+	var h := _holder(false)
+	return h.held.size() if h != null else 0
 
 
 ## Whether a registry entry is staged for `preset`: an entry with "preset_tier" {system, tier} only when
@@ -399,8 +482,14 @@ func _stage_next_batch() -> void:
 	_frames_since_batch = 0
 
 
-func _process(delta: float) -> void:
-	tick(delta * MSEC_PER_SEC)
+## Wall time since the last frame (M1-RND-29): Godot 4.6 caps the process `delta` at about 150 ms (a
+## 516 ms stall reports 147 ms), so a delta-based max_frame_ms under-reported every long prewarm frame
+## and the batch never halved on them.
+func _process(_delta: float) -> void:
+	var now := Time.get_ticks_usec()
+	var frame_ms := float(now - _last_frame_usec) / USEC_PER_MSEC if _last_frame_usec > 0 else 0.0
+	_last_frame_usec = now
+	tick(frame_ms)
 
 
 func _notification(what: int) -> void:
@@ -414,6 +503,8 @@ func _notification(what: int) -> void:
 
 func _finish() -> void:
 	_running = false
+	if first_run:
+		_write_first_run_marker()
 	var budget := float(config.get("hitch_budget_ms", 0.0))
 	stats = {
 		"scene_path": scene_path,
@@ -428,6 +519,7 @@ func _finish() -> void:
 		"batches": _batches,
 		"min_batch": _min_batch_seen,
 		"computes": _computes,
+		"first_run": first_run,
 	}
 	var line := (
 		"%s: '%s' warmed %d material(s) (%d skipped); max frame %.1f ms over %d frames (budget %.0f ms)"
@@ -569,8 +661,8 @@ func _build_entry(entry: Dictionary) -> Node:
 			return null
 	if resident_only:
 		var res := load(path) if ResourceLoader.exists(path) else null
-		if res != null and not _resident.has(res):
-			_resident.append(res)
+		if res != null:
+			_hold(res)
 	var mat := _load_material(path)
 	var node: Node = _instance(mat, entry) if mat != null else null
 	if mat == null or (node == null and _shader_mode(mat) != Shader.MODE_SKY):
@@ -749,3 +841,13 @@ func _ensure_stage_env() -> Environment:
 		_stage_env = Environment.new()
 		_camera.environment = _stage_env
 	return _stage_env
+
+
+## The node that holds the resident resources (RESIDENT_HOLDER). Its references go when the tree frees it.
+class ResidentHolder:
+	extends Node
+	var held: Array[Resource] = []
+
+	func _notification(what: int) -> void:
+		if what == NOTIFICATION_PREDELETE:
+			held.clear()

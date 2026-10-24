@@ -61,3 +61,12 @@ How the build meets it today:
 **Known non-compliance, accepted for now:** the boot warm-up's worst hidden frame is 0.53–1.66 s, over the new 1 s limit in 9 of 18 runs. Follow-ups 1–3 are filed as M1-RND-27. The same warm-up also runs, visible, when the player changes preset on the title (M1-UI-11).
 
 **For the Lead:** edit SPEC §4.2 with the proposed wording and add a version note, as CLAUDE.md requires for a SPEC change.
+
+## Exceptions (M1-RND-29, accepted by the Lead 2026-10-24)
+- **The process's first 3D frame on a first launch.** On a fresh install the renderer's own first-use pipelines are
+  built in one synchronous frame, behind the boot card. It takes 1.35 s on Low, and 0.53–0.54 s on High and Ultra
+  (RX 9070 XT, a baked release build; `docs/kb/qa/gpu/2026-10-24-rnd-29-first-launch.md`).
+- **Why it's accepted.** The project can't split it: RND-27 already draws that frame plain, and the shader baker
+  doesn't cover driver pipelines. It happens once per install. The second launch's worst launch frame is 0.23–0.37 s.
+- **Scope.** Only this frame is excepted. Every other hidden frame still answers to the 1 s limit, and every visible
+  frame to 50 ms.
