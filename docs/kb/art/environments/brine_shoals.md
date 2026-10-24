@@ -45,23 +45,25 @@ centuries, now black ribs and hull sections the wrights take apart.
   (route, from E) ← ← ← ← [tents/rack]≈  hull section   ← party arrives from the east
             |       tideline ≈≈≈≈≈≈        bow
             |  ~~~~ (to the sea, S)
-            S (+Z)                       wind from SW -> smoke leans NE across the channel
+            S (+Z)                       wind from ENE -> smoke lies SW across the channel
 ```
 
-- **The camp** stands on a **hard**: a low shingle-and-shell bank 0.5 m above the flats on the channel's
-  **west** bank, 20 × 14 m. It is the only dry ground for a long way, so the wrights' tents, racks, crates,
+- **The camp** stands on a **hard**: a low shingle-and-shell bank 1.1 m above the datum on the channel's
+  **east** bank, 24 × 18 m. It is the only dry ground for a long way, so the wrights' tents, racks, crates,
   salvage piles and brine vats crowd onto it. A plank walk leads to it across the mud from the east.
 - **The party arrives from the east** along the plank walk, walking **west, into the 240° sun**: the smoke is
   backlit and glows amber, and the burning tents throw long shadows toward the lens.
-- **The wind is from the south-west** (onshore sea breeze, 5 m/s). The smoke leans **north-east, across the
-  channel**, so the barge coming up the channel from the south passes *through* it (ADR 0017 (a)).
-- **The tideline** (high-water strand line) runs along the hard's south and west edges: a band of wrack weed,
+- **The wind is an offshore breeze from the east-north-east** (5 m/s, toward 240°). The smoke leans
+  **south-west, across the channel below the camp**, so the barge coming up the channel from the south is
+  poled *through* it before it reaches the hard (ADR 0017 (a)); from the arrival the columns lean away
+  toward the sun and glow.
+- **The tideline** (high-water strand line) runs along the hard's south and west flanks: a band of wrack weed,
   shell grit, sticks and salt crust at +0.9 m above the datum. Liss buries her lamp in it (side scene).
 
 **Tide datum:** `tide_line_y = 0.0` at mean sea level, as in Haluna. The raid happens at **low water, still
-falling: water at −0.35 m**. The flats lie at 0.0 to +0.3 m (damp by capillary rise, wet where VC.B is
-painted), the hard's top at +0.5 m, the strand line at +0.9 m. The channel bed is at −1.3 to −1.7 m, so the
-barge (draft 0.5 m) has a metre under its keel. Pools in the flats' dips hold water at the same −0.35 m.
+falling: water at −0.15 m**. The flats lie at 0.0 to +0.06 m (damp by capillary rise, wet where VC.B is
+painted), the hard's top at +1.1 m, the strand line at +0.9 m on its flanks. The channel bed is at −1.3 to −1.7 m, so the
+barge (draft 0.5 m) has a metre under its keel. Creeks and pools in the flats hold water at the same −0.15 m.
 
 **GI recommendation:** an open exterior, single lighting state: **SDFGI on GPU tiers, sky ambient + SSAO on
 Low and on lavapipe** (the Haluna README's finding: SDFGI on lavapipe loses the sky fill, which breaks rule
@@ -109,17 +111,17 @@ teal at best, and it is smoke-stained near the fire.
 
 | Kit | Pieces | Key dimensions and parameters |
 |---|---|---|
-| **Mud-flat ground** | `mudflat_patch_a`, `mudflat_patch_b` (24 × 24 m cells), `mudflat_far` (1.2 km apron with a hole for the cells) | Seeded low relief (±0.12 m), rivulets 0.3–0.8 m wide cut to −0.45 m (they hold water at −0.35), wind-and-tide ripple field (texture). Cell edges are exactly y = 0 so cells and channel cells tile. VC.B paints wetness into the low ground and the rivulets' margins. The apron slopes to −2 m toward the south so the sea shows at the horizon. |
-| **Shoal channel** | `channel_straight_a`, `channel_straight_b` (24 × 24 m cells) | The channel enters and leaves each cell on its centre line and meanders ±2.5 m inside it (variant b mirrored). Cross-section: levee lip +0.12 m at 8 m from the centre, a glistening mud bank down to the waterline (−0.35 m) at 6 m, then a steeper slumped bank to the bed (−1.6 m) at 3.5 m. Slump terraces and drainage runnels on the banks. |
-| **The hard** | `camp_hard` | A shingle-and-shell bank 20 × 14 m, top +0.5 m, edges tapering into the mud over 2 m. Material: shell grit. |
+| **Mud-flat ground** | `mudflat_patch_a`, `mudflat_patch_b` (24 × 24 m cells), `mudflat_far` (1.2 km apron with a hole for the cells) | Seeded low relief (±0.05 m), creeks 1–3 m wide and pools cut 3–5 cm below the low-water line (they hold a sheet of water at −0.15 m), a wind-and-tide ripple field (texture). Cell edges are exactly y = 0 so cells and channel cells tile. VC.B paints wetness into the low ground and the rivulets' margins. The apron slopes to −2 m toward the south so the sea shows at the horizon. |
+| **Shoal channel** | `channel_straight_a`, `channel_straight_b` (24 × 24 m cells) | The channel enters and leaves each cell on its centre line and meanders ±2.2 m inside it (a bulges east, b west; the centre line leaves every cell with zero slope, so any sequence joins smoothly). Cross-section: levee lip +0.12 m at 8 m from the centre, a glistening mud bank down to the waterline (−0.15 m) at 6 m, then a steeper slumped bank to the bed (−1.6 m) at 3.5 m. Slump terraces and drainage runnels on the banks. |
+| **The hard** | `camp_hard` | A shingle-and-shell bank 24 × 18 m, top +1.1 m over a 14 × 8 m core, its flanks easing into the mud over about 5 m along a wandering rim (the strand line lies on them at +0.9 m). Material: shell grit. |
 | **Tideline** | `tideline_wrack` (8 m strip), `lamp_burial` | A 0.6–1.2 m wide band of wrack: weed clumps, sticks, shells, a few rope ends, at +0.9 m. `lamp_burial`: a scooped hole 0.4 m across with its spoil mound, and a small **burned Saltwright lamp** (brass and iron, glass cracked, sooted) half set in it. |
 | **Plank walk** | `plank_walk` (4 m) | Salvage planks laid two wide over the mud on cross-sleepers, 0.9 m wide, a few boards missing or cracked: the route's line (pillar 3, and the readable path). |
-| **Wrecks** | `wreck_hull_section`, `wreck_bow`, `wreck_mast_fallen`, `wreck_mast_standing`, `wreck_ribs_large` | Hull section: a 10 m section of a carvel-built trader, 4.2 m beam, listing 18° to starboard, its broken end showing frames, planks sprung and missing, mud-filled. Bow: a 6 m bow half sunk, stem post rising 4.2 m. Fallen mast: 11 m with a yard and torn rope. Standing mast stub: 7.5 m leaning 14°, a vertical for silhouettes. Ribs: a big hull's frames (6.5 m), the Haluna `wreck_rib` generator scaled. All **tarred black timber** with an algae and barnacle band at the low-water line and salt crust above. |
+| **Wrecks** | `wreck_hull_section`, `wreck_bow`, `wreck_mast_fallen`, `wreck_mast_standing`, `wreck_ribs_large` | Hull section: a 10 m section of a carvel-built trader, 4.2 m beam, listing 28° to starboard, its broken end showing frames, planks sprung and missing, mud-filled. Bow: a 6 m bow half sunk, stem post rising 4.2 m. Fallen mast: 11 m with a yard and torn rope. Standing mast stub: 7.5 m leaning 14°, a vertical for silhouettes. Ribs: a big hull's frames (6.5 m), the Haluna `wreck_rib` generator scaled. All **tarred black timber** with an algae and barnacle band at the low-water line and salt crust above. |
 | **Saltwright camp, intact** | `camp_tent`, `salvage_rack`, `crate_stack`, `salvage_pile`, `brine_vat` | Tent: 3 × 4 m ridge tent of sail-cloth over oars (ridge 2.1 m), guy lines to driftwood stakes, a faded-teal patch. Rack: a 3 m lashed spar frame hung with rope coils, brass fittings, net-floats and Lit Age ceramic plates. Crates: 3–4 rope-bound crates of mixed size. Salvage pile: hull plating, brass, a Lit Age conduit shard, coiled rope. Brine vat: a 1.4 m coopered vat with iron hoops and a white salt rime, plus a shallow evaporation pan. |
 | **Saltwright camp, burned** | `camp_tent_burned`, `salvage_rack_burned`, `crate_stack_burned`, `salvage_pile_burned`, `brine_vat_burned` | The same layouts after the fire: frames **charred** (deep char near the fire's seat, smoke-stained above), the ridge **collapsed**, canvas burned to tatters with char edges, crates broken open and lids fallen, the rack down on one side, staves of the vat sprung and its salt spilled grey with ash. **Embers** (emissive `ember_orange`) glow in the salvage pile and the tent's ash bed. |
 | **The raid** | `branding_brazier` | The Order's brine-branding gear: an iron tripod brazier with live coals (emissive), three branding irons resting in it, their grips bound in `lacquer_red_deep` cord (the Order's colour, small). It is the only Order object the zone dresses. |
 | **Liss's crate** | `liss_crate` | A small iron-cornered crate (0.6 × 0.4 × 0.4 m). Its plank seams leak **bound** light (`glimmer_bound`, emission 1.2, steady, no motes: it is held light). ≤ 0.5% of any frame. |
-| **Smoke** | `smoke_plume` | A tapered, leaning column 14 m tall (1.2 m → 6 m across) as two crossed soft shells, drawn by `env_smoke_plume.gdshader` (in-repo, simple): scrolling noise breakup, soft edges, height fade, lit warm from below by the fire. **Request to Rendering:** a proper volumetric smoke column for the shipped zone (filed as a task). |
+| **Smoke** | `smoke_plume` | A column about 12 m tall that bends over downwind (0.9 m → 8 m across) as three nested soft shells, drawn by `env_smoke_plume.gdshader` (in-repo, simple): scrolling noise breakup, soft edges, height fade, lit warm from below by the fire. **Request to Rendering:** a proper volumetric smoke column for the shipped zone (filed as a task). |
 | **The barge** | `white_barge` | Sefir's progress barge: 12 m, 3.4 m beam, flat-bottomed and square-ended, draft 0.5 m, **white lacquer** (`order_marble`) with a thin `lacquer_red` sheer line and a low four-post canopy with a small gilded bowl-dome finial (gold ≤ 1% of a frame). Two pole-men stand at the stern; a 5 m pole lies in its crutch. It is poled, never rowed (bible §5). |
 
 **Budgets (triangles, LOD0 / LOD1):** ground cells 4,700 / 300, apron 3,500 / 900, wrecks 5,000–12,000 /
@@ -161,11 +163,11 @@ All at `ch06` unless noted. **◆** marks the preview shots built in `brine_shoa
 
 | # | Lens (vFOV) | Height | Framing | What the shot is about |
 |---|---|---|---|---|
-| B01 ◆ | 24 mm (53.1°) | 1.7 m, on the plank walk 45 m east of the camp, looking west-south-west | The plank walk leads from the bottom left to the camp on its hard at the right third; three smoke columns lean north-east (to frame right) against the hazed sun-side sky; wreck ribs in the left foreground; the channel a dull silver line beyond the camp. Sky ≈ 45%. | Arrival: the Order's violence in daylight. |
+| B01 ◆ | 24 mm (53.1°) | 1.7 m, on the plank walk 45 m east of the camp, looking west-south-west | The plank walk leads from the bottom left to the camp on its hard at the right third; three smoke columns lean away toward the hazed sun; wreck ribs in the left foreground; the channel a dull silver line beyond the camp. Sky ≈ 45%. | Arrival: the Order's violence in daylight. |
 | B02 ◆ | 35 mm (37.8°) | 1.6 m | The route of wrecks: the hull section large at the right third, the standing mast stub a vertical at the left third, the plank walk receding between them; wet mud mirrors the sky. | The pilgrimage through a graveyard of ships (pillars 2, 3). |
 | B03 ◆ | 28 mm (46.4°) | 1.4 m, on the hard | Inside the camp: a burned tent's charred frame in the foreground, the salvage pile glowing with embers, the brine vats and the branding brazier beyond, one tent still standing and catching. | The camp as a home being destroyed. |
 | B04 | 50 mm (27.0°) | 1.5 m | Toma frozen in the left third, the branding brazier's glow in the soft foreground at right, the captured wrights beyond. (Cinematics.) | He freezes. |
-| B05 ◆ | 85 mm (16.1°) | 1.2 m, at the hard's channel edge looking south | The channel recedes in the centre, smoke drifting across it from right to left in two soft bands; the white barge emerges between them, its reflection a still white shape in grey-green water. | Sefir's arrival: the only clean white, on water the smoke cannot stir. |
+| B05 ◆ | 65 mm (20.9°) | 1.3 m, on the channel's west bank 30 m south of the barge, looking north-north-east | The barge from astern in the centre, poled up the channel toward the burning camp (right third) and its dark smoke; the still water mirrors the barge and the camp; the near bank leads in from the lower left. | Sefir's arrival: the only clean white, on water the smoke cannot stir. |
 | B06 | 35 mm (37.8°) | 2.5 m | The barge alongside the hard, Sefir under the canopy, the party on the shingle; the burned camp behind the party. (Cinematics.) | Mercy that costs him nothing. |
 | B07 ◆ | 65 mm (20.9°) | 0.8 m | Liss's crate beside the burned rack, its seams leaking steady teal light; char and ash around; shallow DOF. | The thing he looks at a moment too long. |
 | B08 ◆ | 50 mm (27.0°) | 1.0 m, `ch06_after` | The tideline: the lamp burial in the strand line, the wet flats beyond as a sheet of amber light, thin smoke. | "He put the fire out once it had finished." |
@@ -185,6 +187,26 @@ All at `ch06` unless noted. **◆** marks the preview shots built in `brine_shoa
 - [ ] Liss's crate light is steady `glimmer_bound`, no motes, ≤ 0.5% of the frame.
 - [ ] No wake behind the barge.
 
+## 6. The Preview (M3-ENV-02)
+
+`game/levels/_tests/brine_shoals_kit/brine_shoals_preview.tscn` composes the kit for the ◆ shots (its README
+lists the files). Read of the final captures (lavapipe, 960 × 540):
+- **B01** (baseline): flat wet flats with creeks holding the sky, the plank walk leading to the camp on its
+  pale shingle hard at the right third, three columns leaning away into the haze. The wrecks and char are the
+  darks. The smoke reads warm brown against the sun (forward scatter), grey elsewhere.
+- **B05** (baseline): the strongest frame: the barge is the one clean white, mirrored in grey-green water
+  that does not move, against the dark smoke and the burning camp.
+- **B02** route of wrecks (the broken hull and the mast stub frame the walk), **B03** camp (burned frames,
+  ember beds, the one standing tent), **B07** Liss's crate (steady teal seams), **B08** tideline (`ch06_after`,
+  the burned lamp in its hole in the strand line), **B10** overview, **B11** the intact and burned kit pairs.
+- Known limits: the smoke is a stand-in column (a volumetric look is requested of Rendering, M3-RND-21);
+  the creeks' rims flash pale from high cameras (B10); the barge carries no pole-men (characters).
+
 ## Revisions
 - 2026-10-24 (env-art, M3-ENV-02): first version, written against the act outline Ch6, ADR 0017 (a), bible §5
   and §7 and the colour script `ch06` row before any geometry.
+- 2026-10-24 (env-art, M3-ENV-02, after the preview): the camp is on the channel's **east** bank and its
+  hard stands at +1.1 m (the strand line lies on its flanks); the raid's low water is **−0.15 m** (at −0.35
+  the creeks had to be cut 0.4 m deep and read as dunes); the wind is **offshore from the east-north-east**
+  so the smoke crosses the channel below the camp, where the barge comes up; **B05** is framed from astern
+  at 65 mm (bow-on at 85 mm the barge read as a pavilion on a raft); the wreck lists 28°.
