@@ -3,6 +3,17 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **MERGE-READY @ the replay-uid commit after d034c31d.**
+  - **Items:**
+    - M3-C09-02 (Ch9, the end of Act I);
+    - M2-ENV-12 (the shrine's hall built off the tree);
+    - the Memories replay hooks for the Menus track (`CutsceneSequencer.replay`, `ReplayStage.prepare`).
+  - **Checks run:**
+    - full Godot suite 1590/0, tools unittest OK and `sim.py --check` exit 0, all on 4ec9bd77 (Ch9 and ENV-12);
+    - the replay commit's own tests: cutscene_replay 3/0, cutscene_sequencer 15/0, zone_story 13/0;
+    - shrine tests 15/0;
+    - gdlint, gdformat, validate_data, taskboard and dlgc --check all clean.
+  - **Checks skipped:** the screenshot manifest and Blender. The shrine shots last passed after M2-ENV-10, and M2-ENV-12 doesn't change pixels (the GI rebake is byte-identical).
 - **The shrine test hang (16:00): stack taken from a scratch repro.** The original run was already killed. **It's not the M2-QA-02 ShaderRD deadlock.**
   - **Repro:** headless, with the main thread in `Thread.wait_to_finish()` on a GDScript Thread that instantiates `shell_shrine.tscn`. `gdb thread apply all bt` (the binary is stripped):
     - main thread: `std::thread::join` (`wait_to_finish`);
