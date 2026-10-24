@@ -14,8 +14,8 @@
     },
     "prologue": {
       "scene_id": "prologue_dead_city",
-      "next_location": "ch02/haluna",
-      "next_spawn": "Beach"
+      "next_location": "ch01/oruvel_underway",
+      "next_spawn": "Drop"
     },
     "end_card": {
       "return_scene": "res://game/core/boot.tscn",

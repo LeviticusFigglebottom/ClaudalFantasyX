@@ -7,8 +7,8 @@ extends Node3D
 ## registry (and tools/validate_data.py) count the scene as playable.
 ##
 ## When it is the current scene (and `autoplay` is on) it sets `prologue_seen`, plays the cutscene,
-## then sends the party to first_playable.json prologue.next_location / next_spawn (ch02/haluna at
-## Beach) through SceneRouter.world_return. Tests instance it with autoplay off and call play().
+## then sends the party to first_playable.json prologue.next_location / next_spawn (Ch1's
+## ch01/oruvel_underway at Drop since M3-C01-02) through SceneRouter.world_return. Tests instance it with autoplay off and call play().
 
 signal handed_off(location_id: StringName, spawn: StringName)
 
