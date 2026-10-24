@@ -81,7 +81,6 @@
     "robe_left_spring": {"stiffness": 0.8, "damping": 0.9},
     "mantle_neck_to_m": 0.068,
     "mantle_above_elbow_m": 0.09,
-    "mantle_drop_m": 0.20,
     "mantle_clearance_m": 0.025,
     "mantle_flare_m": 0.04,
     "mantle_hinge_deg": 6.0,

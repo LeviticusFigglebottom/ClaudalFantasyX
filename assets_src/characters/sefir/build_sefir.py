@@ -10,7 +10,8 @@ object -> the shared face blendshapes (asha_face_shapes; his face is fully symme
 pose table has no left/right difference) -> the under-robe, trousers, slippers, the over-robe with its four
 leg-following panels and the half-mantle (sefir_costume) -> the long hair: scalp cards and the draped fall over the
 mantle (sefir_hair) -> the bowl-crown (sefir_props) -> LOD1 -> glTF. build_asha is imported as a library; host
-determinism as Asha's (M1-CHR-14): the head's midline snapped, UVs quantised, shape-key noise snapped.
+determinism as Asha's (M1-CHR-14: the head's midline snapped, UVs quantised, shape-key noise snapped) plus every
+mesh position on a 1 µm grid (POS_GRID).
 
 Rig extras (act1_npcs.md §1.10), appended after the 75 standard DEF bones of bb_rig.build_game_skeleton:
 * the over-robe panels, 4 chains x 4 bones (DEF-robe_fl / _bl / _br / _fr and .001-.003), each hanging from its own
@@ -77,6 +78,17 @@ MANTLE_ARM_SHARE = 0.9  # the part over the upper arm follows the arm this much 
 CROWN_BONE = "DEF-crown"
 HAIR_LEAVE_RAMP = 0.12  # of a fall card's length: the head's weight hands over to the chain over this much
 HAIR_CROWN_LIFT = 0.008  # m: the band rides this far off the scalp (over the hair)
+POS_GRID = 1e-6  # m: vertex positions are rounded to this (host-independent meshes: the donor's near-midline
+# coordinates and the hair drape's last bits came out a few ULP apart with numpy's AVX2 and AVX-512 paths)
+
+
+def snap(P: np.ndarray) -> np.ndarray:
+    return np.round(np.asarray(P, dtype=np.float64) / POS_GRID) * POS_GRID
+
+
+def snap_part(part: Part) -> Part:
+    part.V = [p for p in snap(part.varr())]
+    return part
 
 
 def chain_names(root: str, n: int) -> list[str]:
@@ -195,7 +207,7 @@ def main() -> int:
     res = bb_donor.generate(params, log=log, subdiv_face=True)
     lm, body = res["lm"], res["body"]
     face = body.face
-    V, F = res["V"], np.asarray(res["F"])
+    V, F = snap(res["V"]), np.asarray(res["F"])
     reg = np.array(res["reg"])
     freg = np.array(res["freg"])
     UVc = np.asarray(res["uv"])
@@ -325,7 +337,7 @@ def main() -> int:
     Wc = widen(Wc)
     bone_specs = panel_weights(costume, anchors, offs, Pc, Wc, wnames_x, V, widen(W), reg, lm, spine_i,
                                float(cparams["robe_panel_bone_share"]))
-    ob_costume = hb.part_object(opaque)
+    ob_costume = hb.part_object(snap_part(opaque))
     hb.apply_weights(ob_costume, Wc, wnames_x, skel)
     # the half-mantle: half on its hinge, half on the chest; the part over the arm follows the upper arm
     minfo = anchors["mantle"]
@@ -335,7 +347,7 @@ def main() -> int:
     Wm[:, wnames_x.index(MANTLE_BONE)] = (1.0 - w_arm) * MANTLE_HINGE_SHARE
     Wm[:, wnames_x.index(CHEST_BONE)] = (1.0 - w_arm) * (1.0 - MANTLE_HINGE_SHARE)
     Wm[:, wnames_x.index(UPPER_ARM_BONE)] = w_arm
-    ob_mantle = hb.part_object(mantle)
+    ob_mantle = hb.part_object(snap_part(mantle))
     hb.apply_weights(ob_mantle, Wm, wnames_x, skel)
     if args.bake_dir:  # sefir_textures lays the Level scales on the mantle's chart in millimetres
         Path(args.bake_dir).mkdir(parents=True, exist_ok=True)
@@ -348,7 +360,7 @@ def main() -> int:
     hair, cards, groups = sefir_hair.build_hair(lm, body, hair_cfg, surf, avoid)
     rigid_parts = hair["HairScalp"]
     rigid_parts.name = "HairHead"
-    ob_hh = hb.part_object(rigid_parts)
+    ob_hh = hb.part_object(snap_part(rigid_parts))
     Wr = np.zeros((len(rigid_parts.V), len(wnames_x)), dtype=np.float32)
     Wr[:, head_i] = 1.0
     hb.apply_weights(ob_hh, Wr, wnames_x, skel)
@@ -365,7 +377,7 @@ def main() -> int:
         for b, bone in enumerate(chain_names(group_roots[gi], hair_bones)):
             Wb[sl, wnames_x.index(bone)] = cw[:, b] * (1.0 - wh)
     Wb = hb.limit4(Wb)
-    ob_hb = hb.part_object(back)
+    ob_hb = hb.part_object(snap_part(back))
     hb.apply_weights(ob_hb, Wb, wnames_x, skel)
     assert len(groups) == hair_groups_n
     for (gname, chain, _side), root in zip(groups, group_roots):
@@ -382,7 +394,7 @@ def main() -> int:
     near_head = hv[(hv[:, 2] > float(lm.P("chin")[2])) & (np.abs(hv[:, 0]) < 0.06 * S)]
     place = sefir_props.place_crown(lm, crp, float(near_head[:, 1].max()))
     crown = sefir_props.crown(lm, crp, place, sefir_hair.hair_surface(surf, HAIR_CROWN_LIFT * S))
-    ob_crown = hb.part_object(crown)
+    ob_crown = hb.part_object(snap_part(crown))
     Wcr = np.zeros((len(crown.V), len(wnames_x)), dtype=np.float32)
     Wcr[:, wnames_x.index(CROWN_BONE)] = 1.0
     hb.apply_weights(ob_crown, Wcr, wnames_x, skel)

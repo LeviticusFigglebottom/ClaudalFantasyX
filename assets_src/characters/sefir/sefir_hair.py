@@ -45,6 +45,8 @@ FALL_POINTS = 18  # points per fall card after resampling
 FALL_WIDTH = (0.012, 0.020)  # m, one fall card
 FRONT_WIDTH = (0.008, 0.013)
 LEAVE_SDF = 0.004  # m past its lift: the strand has left the scalp
+DRAPE_GRID = 1e-5  # m: the drape's state is rounded to this every step (the iteration amplified the last bits that
+# numpy's SIMD paths leave in the field and the projections, so hosts disagreed by a micron by the tips)
 HEAD_REACH = 0.04  # m: farther than this from the head skin a point is off the head
 BIAS_FADE = 0.18  # m of drop over which a group's back/forward bias fades
 COHESION = {"b": 0.35, "f": 0.6}  # how far a group's strands close up below the head, behind and in front
@@ -163,6 +165,10 @@ def _num_grad(fn, P: np.ndarray, e: float = 4e-4) -> np.ndarray:
     return g / np.maximum(np.linalg.norm(g, axis=1, keepdims=True), 1e-12)
 
 
+def _grid(P: np.ndarray) -> np.ndarray:
+    return np.round(P / DRAPE_GRID) * DRAPE_GRID
+
+
 def _head_sd(scalp, P: np.ndarray) -> np.ndarray:
     """The scalp's signed distance, large where P is not near the head (a MeshScalp's nearest head point far below
     the jaw says nothing about inside or outside)."""
@@ -179,7 +185,7 @@ def drape(scalp, avoid, roots: np.ndarray, lift: np.ndarray, length: np.ndarray,
     Returns (paths (n, FALL_POINTS, 3), arc length at which each strand leaves the scalp)."""
     n = len(roots)
     steps = int(math.ceil(float(length.max()) / FALL_STEP)) + 1
-    cur = scalp.project(roots, 0.0) + scalp.normal(roots) * lift[:, None]
+    cur = _grid(scalp.project(roots, 0.0) + scalp.normal(roots) * lift[:, None])
     pts = [cur]
     s = np.zeros(n)
     leave = np.full(n, np.nan)
@@ -205,7 +211,7 @@ def drape(scalp, avoid, roots: np.ndarray, lift: np.ndarray, length: np.ndarray,
         # keep the step length (the projections only redirect it)
         dv = nxt - cur
         dv = dv / np.maximum(np.linalg.norm(dv, axis=1, keepdims=True), 1e-12) * FALL_STEP
-        nxt = cur + dv
+        nxt = _grid(cur + dv)
         s = s + FALL_STEP
         off_scalp = (_head_sd(scalp, nxt) - lift) > LEAVE_SDF
         leave = np.where(np.isnan(leave) & off_scalp, s, leave)
@@ -216,7 +222,7 @@ def drape(scalp, avoid, roots: np.ndarray, lift: np.ndarray, length: np.ndarray,
     for c in range(n):
         arc = np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(P[c], axis=0), axis=1))])
         st = np.linspace(0.0, float(length[c]), FALL_POINTS)
-        out[c] = np.stack([np.interp(st, arc, P[c, :, k]) for k in range(3)], axis=1)
+        out[c] = _grid(np.stack([np.interp(st, arc, P[c, :, k]) for k in range(3)], axis=1))
     leave = np.where(np.isnan(leave), length, leave)
     return out, np.minimum(leave, length)
 
@@ -237,7 +243,7 @@ def _cohere(paths: np.ndarray, avoid, amount: float) -> np.ndarray:
         if not hit.any():
             break
         flat[hit] = flat[hit] - _num_grad(avoid, flat[hit]) * a[hit, None]
-    out = flat.reshape(n, m, 3)
+    out = _grid(flat.reshape(n, m, 3))
     out[:, 0] = paths[:, 0]  # the roots stay where they are
     return out
 
