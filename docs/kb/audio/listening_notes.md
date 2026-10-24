@@ -90,3 +90,33 @@ guitar and go metallophone-and-drums only."
 
 If you answer nothing, the SPEC default applies: **keep iterating and show samples
 again at the end of M2.**
+
+---
+
+# M2 listening notes (SPEC §16 Q3; the slice's cues and sounds)
+
+Same rules as above: everything is synthesized from code in this repo, nobody has heard it, and your ears decide
+what is "final". Each entry says what to play, what it should feel like, and the questions I most need answered.
+In the game they play by themselves (the `Audio` autoload, docs/kb/tech/audio_runtime.md); the files are in
+`assets/audio/`.
+
+## M2: Shell Shrine (B07, the temple trial)
+
+| File | Length | What it is |
+|---|---|---|
+| `music/shell_shrine_interior.ogg` | 72 s loop | The trial's interior cue |
+| `sfx/shrine/shrine_stone_turn_1.ogg` (and _2, _3) | ~1.7 s | A basin turning on its stone seat |
+| `sfx/shrine/shrine_pour.ogg`, `shrine_drain.ogg`, `shrine_spill.ogg` | ~1.8 s | The water reaching the pool, the sluice, a grate |
+| `sfx/shrine/shrine_side_drain.ogg`, `shrine_door.ogg`, `shrine_charm.ogg`, `shrine_pool_fill.ogg` | 1–4 s | The side pool emptying, the door's valve, the charm, the pool filling (a loop) |
+
+**Listen for (the cue):**
+- The brief is "a tended, loved place": warm, still, a little sacred. Does it feel *kinder* than the M1 temple cue
+  (`temple_trial.ogg`, which is meant to be ominous)? It should.
+- The drips are tuned to the drone's scale and each one rings its shell basin at the same pitch. Do the drips sound
+  like water, or like a glockenspiel? If the "ring" is too musical, I can drop it 6 dB in one number.
+- The far congregation hum (the Order hums): people, or an organ?
+- Can you hear the loop wrap (every 72 s)?
+
+**Listen for (the puzzle):** does the stone grind sound like heavy stone turning (not a creaking door)? Do the
+pour, the drain and the spill sound *different* enough that you'd know where the water went with your eyes shut?
+That is the point of them (pillar 4).

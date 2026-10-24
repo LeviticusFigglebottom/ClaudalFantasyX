@@ -6,11 +6,14 @@
       "file": "res://assets/audio/music/battle_standard.ogg"
     },
     "shell_shrine_interior": {
-      "file": "res://assets/audio/music/temple_trial.ogg",
-      "_note": "stand-in: the M1-AUD-02 temple ambience until M2-AUD-01's own cue"
+      "file": "res://assets/audio/music/shell_shrine_interior.ogg"
     },
     "hush_theme": {
       "file": "res://assets/audio/music/hush_theme_v2.ogg"
+    },
+    "temple_trial": {
+      "file": "res://assets/audio/music/temple_trial.ogg",
+      "_note": "the M1-AUD-02 prototype, kept for A/B"
     }
   },
   "zones": [

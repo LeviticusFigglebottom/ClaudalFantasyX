@@ -6,6 +6,7 @@ extends TestCase
 const LOOPING_CUES: Array[String] = [
 	"res://assets/audio/music/battle_standard.ogg",
 	"res://assets/audio/music/temple_trial.ogg",
+	"res://assets/audio/music/shell_shrine_interior.ogg",
 ]
 const SAMPLE_RATE := 44100
 const MIN_LENGTH_S := 60.0

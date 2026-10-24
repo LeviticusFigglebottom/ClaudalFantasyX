@@ -38,7 +38,7 @@ from synth.analysis import loop_seam_report  # noqa: E402
 from synth.loudness import integrated_lufs, momentary_max_lufs, self_test, true_peak_dbtp  # noqa: E402
 from synth.mixer import read_audio  # noqa: E402
 
-SIZE_BUDGET = 5 * 1024 * 1024        # all M1 audio (mix.md §5)
+SIZE_BUDGET = 16 * 1024 * 1024       # all shipped audio for the M2 slice (mix.md §5)
 NEW_AUDIO_BUDGET = 4 * 1024 * 1024   # the three M1-AUD-02 cues together
 M1_AUD_02 = ("hush_theme_v2", "battle_standard", "temple_trial")
 
@@ -52,6 +52,13 @@ JOBS = [
      ["battle_standard.ogg", "battle_standard.loop.json"], "music_loop"),
     ("assets_src/music/temple_trial.py", "assets/audio/music",
      ["temple_trial.ogg", "temple_trial.loop.json"], "music_loop"),
+    ("assets_src/music/shell_shrine_interior.py", "assets/audio/music",
+     ["shell_shrine_interior.ogg", "shell_shrine_interior.loop.json"], "music_loop"),
+    ("assets_src/sfx/shrine_sfx.py", "assets/audio/sfx/shrine",
+     ["shrine_stone_turn_1.ogg", "shrine_stone_turn_2.ogg", "shrine_stone_turn_3.ogg", "shrine_pour.ogg",
+      "shrine_spill.ogg", "shrine_drain.ogg", "shrine_side_drain.ogg", "shrine_door.ogg", "shrine_charm.ogg"], "sfx"),
+    ("assets_src/sfx/shrine_pool_fill.py", "assets/audio/sfx/shrine",
+     ["shrine_pool_fill.ogg", "shrine_pool_fill.loop.json"], "music_loop"),
 ]
 
 
