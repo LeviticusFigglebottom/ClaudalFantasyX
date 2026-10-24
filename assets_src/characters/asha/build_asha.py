@@ -47,6 +47,8 @@ from asha_mesh import Part  # noqa: E402
 
 PARAMS = HERE / "asha_params.json"
 HEAD_BONE = "DEF-spine.006"
+MIDLINE_SNAP = 1e-9  # m: coordinates smaller than this are float noise from the face solve
+SHAPE_GRID = 1e-6  # m: shape-key deltas are rounded to this (host-independent morph targets)
 
 # material name -> (preview linear rgb, roughness). Godot replaces these by name with the hero
 # shader materials (game/levels/_tests/characters/asha/materials/).
@@ -432,6 +434,27 @@ def skirt_weights(P: np.ndarray, W0: np.ndarray, V: np.ndarray, W: np.ndarray, r
     return limit4(W0 * (1.0 - d[:, None]) + legs * d[:, None])
 
 
+def snap_shape_noise(ob: bpy.types.Object) -> None:
+    """Shape-key deltas on a SHAPE_GRID grid. Their last bits are host-dependent float noise (0 or ~1e-16, or a
+    float32 rounding flip of a tiny delta, by the host CPU's SIMD paths); on the grid the exported morph targets
+    are the same on every host."""
+    keys = getattr(ob.data, "shape_keys", None)
+    if keys is None:
+        return
+    n = len(ob.data.vertices)
+    basis = np.zeros(n * 3, dtype=np.float32)
+    keys.reference_key.data.foreach_get("co", basis)
+    for kb in keys.key_blocks:
+        if kb == keys.reference_key:
+            continue
+        co = np.zeros(n * 3, dtype=np.float32)
+        kb.data.foreach_get("co", co)
+        d = np.round((co.astype(np.float64) - basis) / SHAPE_GRID) * SHAPE_GRID
+        q = (basis + d).astype(np.float32)
+        if not np.array_equal(q, co):
+            kb.data.foreach_set("co", q)
+
+
 def limit4(W: np.ndarray) -> np.ndarray:
     if W.shape[1] > 4:
         thr = -np.sort(-W, axis=1)[:, 3:4]
@@ -504,6 +527,9 @@ def main() -> int:
     is_head = np.isin(freg, ["head", "scalp", "mouth"])
     used_h, Fh, remap_h, Sh = submesh(V, F, is_head, res["seams"])
     Vh = V[used_h]
+    # midline coordinates come out of the face solve as 0 or ~1e-16 depending on the host CPU's SIMD paths
+    # (numpy dispatch); snap them so the head, its unwrap and its bakes are the same on every host
+    Vh[np.abs(Vh) < MIDLINE_SNAP] = 0.0
     fh_reg = freg[is_head]
     inner_v = inner_lip_vertices(Vh, Nw[used_h], res["lip_dz"][used_h], face.mouth_half, lm.h / 0.222)
     mats_h = head_materials(Fh, fh_reg, inner_v)
@@ -676,6 +702,8 @@ def main() -> int:
         "seconds": 0.0,
     }
     report["triangles"]["total_lod0"] = sum(report["triangles"].values())
+    for ob in export_objs:
+        snap_shape_noise(ob)
     if args.bake_dir:
         # M1-CHR-04: the lip contact line and the commissures (bb_donor.lip_rest) for the lip bake
         lip_terms = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("CONTACT", "lip_contact"),

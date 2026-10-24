@@ -115,8 +115,18 @@ def check_id_map(name: str, labels: np.ndarray) -> None:
         raise SystemExit(f"{name}: a label region is {run} texel(s) wide (id maps need >= {ID_MAP_MIN_RUN})")
 
 
+# Decimals the float image is rounded to before its 8-bit rounding. Without it, a texel that lands on an
+# x.5 boundary rounds either way by the host CPU's SIMD paths (numpy dispatch): 6 head-normal texels
+# differed between AVX-512 and AVX2 hosts (M1-CHR-14). Asha's run sets it; heroes and villagers that share
+# write() opt in at their next rebuild.
+PRE_ROUND_DECIMALS = 6
+PRE_ROUND: int | None = None
+
+
 def write(name: str, img: np.ndarray, mode: str | None = None) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
+    if PRE_ROUND is not None:
+        img = np.round(np.asarray(img, dtype=np.float64), PRE_ROUND)
     a = np.clip(np.round(img * 255.0), 0, 255).astype(np.uint8)
     if a.ndim == 2:
         im = Image.fromarray(a, "L")
@@ -1507,6 +1517,8 @@ def sleeve_maps(w: int = 1024, h: int = 2048, band_px: int = 512, length_m: floa
 
 # ---------------------------------------------------------------------------------------------
 def main() -> int:
+    global PRE_ROUND
+    PRE_ROUND = PRE_ROUND_DECIMALS
     ap = argparse.ArgumentParser()
     ap.add_argument("--bake-dir")
     ap.add_argument("--only", default="skin,eyes,detail,hair,cloth,sleeve")

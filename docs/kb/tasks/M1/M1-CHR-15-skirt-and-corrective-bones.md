@@ -26,5 +26,6 @@ M1-CHR-14 fixed every clip-frame fault that weighting and garment cuts can fix. 
 - [ ] Builds are reproducible.
 
 ## Notes
+- Rebuild hygiene (from M1-CHR-14): when Rhen, Toma or the villagers next rebuild, have their texture runs set `asha_textures.PRE_ROUND = PRE_ROUND_DECIMALS` the way Asha's run does. That makes their PNGs host-independent too (the 8-bit rounding flips; see live/characters.md). Their builds also need the shape-delta grid.
 
 ## Review log

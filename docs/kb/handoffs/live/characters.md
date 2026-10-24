@@ -7,6 +7,22 @@
 - **Blocker cleared (d523d43):** Toma's mouth/teeth/tongue are on `character_mouth`; the integration branch is merged;
   `--filter=character_shading` 17/17, hero_stage 6/6, post_import 19/19; `verify --job toma` 38 identical. Ready to merge.
   (send_message to the Lead was refused: "needs a trusted device", so this log is the channel.)
+- **To the Lead: the asha reproducibility gate (your two messages; send_message back to you is refused for "needs a trusted device").**
+  - **Threads aren't the cause.** `default_threads` is 4 in blender_builds.json, and verify applies it to every job without its own pin. This container is 4 vCPU, and my asha verify was 44 identical at ddc5eb2, 47b36c5 and again now.
+  - **The cause is the host CPU's SIMD level**, which numpy dispatches at runtime. I reproduced it here with `NPY_DISABLE_CPU_FEATURES="X86_V3 X86_V4"`:
+    - (a) the face solve leaves midline coordinates at 0 or ~1e-16;
+    - (b) float32 rounding of tiny morph deltas flips;
+    - (c) `asha_textures.write` rounds a few float texels that sit exactly on an 8-bit .5 boundary either way: 6 head-normal texels.
+  - **Fixed in the commit after this note:**
+    - Asha's head coordinates below 1e-9 snap to 0 (`MIDLINE_SNAP`).
+    - Shape-key deltas go on a 1 µm grid (`snap_shape_noise`).
+    - Asha's texture run pre-rounds to 6 decimals before the 8-bit rounding (`PRE_ROUND`).
+  - **Result:**
+    - Asha's GLBs, LOD1 and all 20 textures are byte-identical between the AVX-512 and AVX2-only numpy paths.
+    - `verify --job asha` is 44 identical.
+    - The asha_* shots are unchanged (RMSE ≤ 0.0003; no re-approval needed).
+  - **Other jobs:** rhen, toma and the villagers keep their bytes (they don't opt in to `PRE_ROUND` yet; see M1-CHR-15). They are identical on both our hosts.
+  - **Still to confirm:** your report also showed a Head `TEXCOORD_0` diff, which I couldn't reproduce on this host. The midline snap removes the likeliest trigger. Please re-run your gate at my latest head. If it still differs, push your rebuilt asha outputs to a scratch branch and I'll diff the UVs.
 - **M1-CHR-14 → review (reviewer: rendering). Ready to merge.** Handoff: 2026-10-24-character-8.md.
   - **Braid (ddc5eb2):** seated on the scalp; scalp cards run to within 12 mm of the root; scalp_cards 122. Probe gap 1.9 mm, drift 0.
   - **Guards:** `tools/dev/rig_probe.py`, `rig_checks.json`, `tools/tests/test_rig_integrity.py` (34 tests, passing). Docs: pipeline.md §16.
@@ -38,7 +54,9 @@
   - Godot `hero_stage` 6/6, `post_import` 19/19.
   - validate_data and taskboard: OK.
   - `test_rig_integrity` 34 OK; `test_asha` OK.
-  - Still running: verify for rhen, toma and the villager jobs, and the full tools/tests run. The next entry records the result.
+  - Verify, with the host-determinism fix in the tree: asha 44, rhen 31, toma 38, and all seven villager jobs (34/30/30/30/30/30/30) identical.
+  - Shots: the 37 rhen_/toma_/villager_ shots and the 18 asha_ shots all pass their baselines unchanged.
+  - Full `tools/tests`: 580 OK (4 skipped).
 
 ## Queue
 1. ~~M2-CHR-01 Rhen~~ (review) → 2. ~~M2-CHR-02 Toma~~ (review) → 3. ~~M2-FP-07 clips~~ (review) → 4. ~~M1-CHR-12~~ (review;
