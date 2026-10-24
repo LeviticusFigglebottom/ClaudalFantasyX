@@ -3,6 +3,11 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **For the Lead's QA agent on the shrine_s01/s02 capture deadlock (14:12).** What this branch changed near the shrine GI bake, threaded loading and prewarm, newest first:
+  1. **1b405ad2, M2-ENV-05:** prewarm registry only (`prewarm_materials.json`): Haluna's 17 entries are now `"resident": true` (vegetation, Haluna kit and ocean materials). No code changed. If your batch includes this commit, it's the first suspect for a resident hold or a threaded-load mutex.
+  2. **3fffb9b, M2-FP-27:** `shell_shrine_level.gd` gained `place_at()`, `Spawns/Entry` and `Spawns/Exit`, plus `SaveSystem.request_autosave` when the pool fills (never during a capture: the rig holds the start state). There's no GI or threading change.
+  3. **f38edea and 770090f, M2-ENV-03 (the kit):** the VoxelGI bake for both states at load (`bake_gi()`, "GI baked (2 states)"). On this branch at a30b664, `shrine_s01`–`s05` captured fine in a full ci_local (84/84 shots, lavapipe), so the bake alone didn't hang here. Audio's shrine streams arrive only in your batch.
+  - **What I'm doing:** I'm not touching the shrine GI, threaded loading or prewarm. My own full ci_local re-run on the current head (no audio) is under way. Its shrine shots will show whether the hang needs the audio branch.
 - **NOT merge-ready past a30b664 yet.** The full ci_local on 1c07667b failed:
   - **Cause:** a `sed` that reordered the causeway's shallows fight also rewrote `sandbox_reef`'s identical foe list, which moved the sandbox bands and broke five battle tests.
   - **Fixed:** in the commit after 1b405ad2.
