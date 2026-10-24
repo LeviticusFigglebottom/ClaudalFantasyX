@@ -906,6 +906,7 @@
     {"id": "creature_spawn_polyp", "scene": "res://game/levels/_tests/creatures/shots/creature_spawn_polyp.tscn", "resolution": [960, 720]},
     {"id": "creature_wickfry", "scene": "res://game/levels/_tests/creatures/shots/creature_wickfry.tscn", "resolution": [960, 720]},
     {"id": "creature_bottle_hermit", "scene": "res://game/levels/_tests/creatures/shots/creature_bottle_hermit.tscn", "resolution": [960, 720]},
-    {"id": "creature_gull_harrier", "scene": "res://game/levels/_tests/creatures/shots/creature_gull_harrier.tscn", "resolution": [960, 720]}
+    {"id": "creature_gull_harrier", "scene": "res://game/levels/_tests/creatures/shots/creature_gull_harrier.tscn", "resolution": [960, 720]},
+    {"id": "creature_sail_leech", "scene": "res://game/levels/_tests/creatures/shots/creature_sail_leech.tscn", "resolution": [960, 720]}
   ]
 }

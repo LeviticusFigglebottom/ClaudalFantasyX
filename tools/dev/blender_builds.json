@@ -156,6 +156,16 @@
         ["{blender}", "--python", "assets_src/creatures/gull_harrier/build_gull_harrier.py", "--", "--out", "assets/creatures/gull_harrier/gull_harrier.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "gull_harrier"]
       ]
+    },
+    {
+      "id": "creature_sail_leech",
+      "owner": "character",
+      "sources": ["assets_src/creatures/sail_leech/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/sail_leech/*.glb", "assets/creatures/sail_leech/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/sail_leech/build_sail_leech.py", "--", "--out", "assets/creatures/sail_leech/sail_leech.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "sail_leech"]
+      ]
     }
   ]
 }
