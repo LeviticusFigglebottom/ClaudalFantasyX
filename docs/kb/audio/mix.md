@@ -133,3 +133,16 @@ The plan in §4 is now the game's mix: the `Audio` autoload (ADR 0031; docs/kb/t
 each source's comment above `render()`): the lead instrument at 0 LU; accompaniment metallophones −7 to −8;
 plucked or struck accompaniment −9 to −11; bass −6 to −10; drums −4 (battle) to −8 (town); gongs −12 to −14;
 drones −9. In the Drownbell the bell sits −2 under the lead, and stem 2 lifts the full stack about +2 LU.
+
+**Area reverb (M2-AUD-10).** The WorldVerb of §4 is built, as one `AudioEffectReverb` on each of World and Combat
+(a Godot bus sends to one bus only), both set from a `mix.json` `reverb_presets` row chosen by the zone's `reverb`
+key and ramped over 0.5 s. A dry preset turns the effects off. Wet levels: `dry` 0, `open_sea` 4 %, `battle_beach`
+5 %, `stone_shrine` 5 %, `village_lanes` 10 %, `drowned_cave` 28 %. The shrine and battle presets stay low because
+those SFX are rendered in their own rooms (the shrine's at 22 % of a 1.5 s room): the bus adds a touch of the space,
+not a second room. The rule for a new area: the drier its rendered SFX, the more of the bus reverb it can take.
+Details: docs/kb/tech/audio_runtime.md "Area reverb".
+
+**Voices (M3-AUD-07).** Each speaker has a blip timbre and pitch (`game/data/audio/voices.json`) on the Voice bus,
+at the text blip's −27 LUFS momentary and the text box's `blip_volume_db`, one blip per 55–80 ms at most. Recorded
+lines, when they exist, play on Voice in place of the blips; a starting target is −16 LUFS integrated, like the
+music, over the −4 dB dialogue duck (to confirm once real lines exist). Details: audio_runtime.md "Voices".
