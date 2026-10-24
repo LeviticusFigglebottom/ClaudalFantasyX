@@ -6,8 +6,10 @@ extends FieldSubmenu
 ## game/data/ui/equip_menu.json. docs/kb/tech/ui.md "Equip and Customize pages".
 ##
 ## Four levels, left to right: HEROES (the party) -> GEAR (the hero's slots, each followed by its
-## piece's ability slots) -> PIECES (what the hero can wear in that slot, and "Take it off") or
-## RECIPES (Customize: what can be crafted into the chosen empty slot). The preview on the right
+## piece's ability slots) -> PIECES (what the hero can wear in that slot, a "· Customize" row under
+## each spare piece with an empty slot, and "Take it off") or RECIPES (Customize: what can be
+## crafted into the chosen empty slot, of a worn piece from GEAR or a spare from PIECES; Cancel and
+## a craft return where it came from, M2-MNU-09). The preview on the right
 ## shows each stat now -> after, the delta in the gain or loss color with its sign (not hue alone),
 ## and the abilities gained or lost, or the recipe with what is held and what is short.
 ##
@@ -36,6 +38,8 @@ var hero: StringName = &""
 var slot: StringName = &""
 var piece_uid := EquipmentBag.NO_PIECE
 var ability_index := -1
+## Where RECIPES returns to: GEAR (a worn piece's empty slot) or PIECES (a spare's "· Customize").
+var recipes_from := Level.GEAR
 
 var _heroes: MenuPage
 var _gear: MenuPage
@@ -168,6 +172,10 @@ func accept() -> void:
 			var row := _choice.current_row()
 			if row.is_empty():
 				return
+			if StringName(str(row.get("kind", ""))) == EquipMenuModel.KIND_CUSTOMIZE:
+				_open_recipes(int(row["uid"]), int(row["index"]), Level.PIECES)
+				_render()
+				return
 			var result := model.choose_piece(hero, slot, row)
 			_notice = result
 			if bool(result.get("ok", false)):
@@ -187,6 +195,8 @@ func back() -> void:
 		Level.GEAR:
 			level = Level.HEROES
 			_notice = {}
+		Level.RECIPES when recipes_from == Level.PIECES:
+			_back_to_pieces(piece_uid)
 		_:
 			_back_to_gear(_gear.current_row().get("id", &""))
 	_render()
@@ -224,14 +234,20 @@ func _accept_gear(row: Dictionary) -> void:
 				_notice = {"text": model.craft_refusal(Customize.ERR_SLOT_FILLED, uid, row["ability"]), "ok": false}
 				return
 			slot = StringName(str(row["slot"]))
-			piece_uid = int(row["uid"])
-			ability_index = int(row["index"])
-			level = Level.RECIPES
-			_notice = {}
-			_armed = &""
-			_choice.set_header(model.recipes_title(piece_uid))
-			_choice.replace_rows(model.recipe_rows(piece_uid, ability_index))
-			_choice.set_cursor(0, false)
+			_open_recipes(int(row["uid"]), int(row["index"]), Level.GEAR)
+
+
+## Customize: what can be crafted into slot `index` of piece `uid` (worn or spare).
+func _open_recipes(uid: int, index: int, from: Level) -> void:
+	piece_uid = uid
+	ability_index = index
+	recipes_from = from
+	level = Level.RECIPES
+	_notice = {}
+	_armed = &""
+	_choice.set_header(model.recipes_title(piece_uid))
+	_choice.replace_rows(model.recipe_rows(piece_uid, ability_index))
+	_choice.set_cursor(0, false)
 
 
 func _accept_recipe(row: Dictionary) -> void:
@@ -251,8 +267,21 @@ func _accept_recipe(row: Dictionary) -> void:
 	if not bool(result.get("ok", false)):
 		_notice = result
 		return
-	_back_to_gear(StringName("ability:%s:%d" % [slot, ability_index]))
+	if recipes_from == Level.PIECES:
+		_back_to_pieces(piece_uid)
+	else:
+		_back_to_gear(StringName("ability:%s:%d" % [slot, ability_index]))
 	_notice = result
+
+
+## Back to the pieces for `slot`, the cursor on piece `uid`.
+func _back_to_pieces(uid: int) -> void:
+	level = Level.PIECES
+	_armed = &""
+	_notice = {}
+	_choice.set_header(model.pieces_title(hero, slot))
+	_choice.replace_rows(model.piece_rows(hero, slot))
+	_choice.set_cursor(maxi(_index_of(_choice, StringName("piece:%d" % uid)), 0), false)
 
 
 func _back_to_gear(row_id: Variant) -> void:
@@ -467,6 +496,11 @@ func _render_pieces() -> void:
 		_set_changes([])
 		return
 	var uid := int(row.get("uid", EquipMenuModel.NO_PIECE))
+	if StringName(str(row.get("kind", ""))) == EquipMenuModel.KIND_CUSTOMIZE:
+		_set_lines(model.customize_desc(uid), _notice)
+		_show_preview(model.piece_name(uid), model.preview_none(hero), false)
+		_set_changes([])
+		return
 	var removing := StringName(str(row.get("kind", ""))) == EquipMenuModel.KIND_REMOVE
 	var desc := model.piece_desc(uid) if not removing else ""
 	_set_lines(desc, _notice if not _notice.is_empty() else model.piece_line(hero, slot, row))
