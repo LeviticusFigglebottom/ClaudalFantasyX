@@ -40,7 +40,7 @@
       "min": 0.5, "max": 2.0
     },
     "summon_cinematics": {
-      "doc": "M2-UI-23: summon_cinematic option -> the cut of a Vowbound's call cinematic (SPEC 6.3: full on first use, then shortened, with a skip toggle), for the first call of that Vowbound and for every later call. full = every beat, short = the cinematic's middle beats skipped, none = straight to the effect. UiSettings.summon_cinematic_cut(first_call) answers it; the cinematic itself is M2-BPR-07.",
+      "doc": "M2-UI-23: summon_cinematic option -> the cut of a Vowbound's call cinematic (SPEC 6.3: full on first use, then shortened, with a skip toggle), for the first call of that Vowbound and for every later call. full = every beat, short = the cinematic's middle beats skipped, none = straight to the effect. UiSettings.summon_cinematic_cut(first_call) answers it; the cinematic itself is M2-BPR-08.",
       "full": {"first": "full", "again": "full"},
       "short": {"first": "full", "again": "short"},
       "off": {"first": "none", "again": "none"}
