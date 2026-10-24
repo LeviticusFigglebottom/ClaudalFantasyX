@@ -63,7 +63,9 @@
         ]
       },
       "night_hide": [
-        "NPCs/Dock"
+        "NPCs/Dock",
+        "NPCs/Osu",
+        "NPCs/Neme/Bag"
       ],
       "night": {
         "sun_energy_scale": 0.12,
