@@ -6,7 +6,7 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 > **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
 > session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
-> **This copy, on `gpu/slice-perf-sweep`, is the newest.**
+> **This copy, on `gpu/m1-rnd-28-shader-baker`, is the newest.**
 
 ## PC setup for a new session
 
@@ -115,6 +115,7 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/m1-rnd-28-shader-baker | **M1-RND-28 in review** (reviewer Environment) | Official 4.6.3 export templates installed (SHA-512 verified). shader_baker on for Windows Desktop; a `Windows Perf` preset runs the slice sweep as its main scene. Release + baker, fresh install: Haluna 8.0 s (no baker 11.4), hidden worst 2.0 s, title 1.2 s, Flood 79 ms (no baker 1024): filed M1-RND-29. Second launch passes (Haluna 2.55 s). **Blocker filed M2-ARC-04:** release exports exclude game/levels/_tests, which shipped code depends on (SceneRouter fails). Report: `docs/kb/qa/gpu/2026-10-24-rnd-28-shader-baker.md` |
 | gpu/slice-perf-sweep | **done** (queue item 5) | First-playable thread end to end at Low/High/Ultra 1440p (`tools/gpu_bench/slice_sweep.tscn`): title, Haluna x3 spawns, tideline battle, Shell Shrine, Drownbell battle and its Flood. GPU well inside budget (worst: Haluna beach 3.1 ms High, 5.7 Ultra). Over or at risk, filed: Haluna entry 3.1-3.5 s > 3 s (M2-ENV-05); the title visible during the boot warm-up, 168-265 ms (M2-ARC-03); the Drownbell Flood 39-61 ms mid-battle (M2-RND-07). 24 rows in perf_baseline.csv. Report: `docs/kb/qa/gpu/2026-10-24-slice-perf-sweep.md` |
 | gpu/adr-0029-prewarm-followups | **M1-RND-27 in review** (reviewer Environment) | ADR 0029 follow-ups. Boot warm-up worst frame **0.86-0.89 s cold / 0.47-0.66 s warm** (was 1.06-1.20 / ~0.75): a plain-first stage bring-up, residents loaded in their batch, and the Undertow body's compute twin warmed instead of the never-drawn spatial shader on Medium/High. The SceneState harvest and primitive-mesh materials read unbuilt take Haluna's start() from 664 to 353 ms cold. materials_per_frame 2 is kept (measured). The export baker needs export templates (not installed). Report: `docs/kb/qa/gpu/2026-10-24-rnd-27-prewarm.md` |
 | gpu/m2-rnd-05-undertow-events | **M2-RND-05 in review** (reviewer Environment; Art's sign-off is M2-ART-03) | The Undertow as an event: torn rents (dark lip, halo), curtains of held light off the wounds, cloud-to-sea bolts on the camera's half plus a capped 2.0x/2-frame exposure flash, camera rain, the zone shadow, the storm in the sea's reflection (the half-res body's own pixels), six chapter presets and `unbinding` (the Ch21 Letting). Storm cost at High 1440p **0.59-0.84 ms** (was 0.55-0.76). All 4 `undertow_*` baselines drift by design; 3 pending shots in `docs/kb/qa/gpu/2026-10-24-rnd-05-pending-shots.json`. Report: `docs/kb/qa/gpu/2026-10-24-rnd-05-undertow-events.md` |
@@ -146,7 +147,8 @@ lands; until then, base on the current head (a514c06, then 54425e2).
 - **3. M2-RND-05: in review** on `gpu/m2-rnd-05-undertow-events` (Art: M2-ART-03).
 - **4. ADR 0029 follow-ups: in review** as M1-RND-27 on `gpu/adr-0029-prewarm-followups` (export baker waiting on export templates).
 - **5. Slice perf sweep: done** on `gpu/slice-perf-sweep`; filed M2-ENV-05, M2-ARC-03 and M2-RND-07.
-- **5b. M1-RND-28 (next; Lead-approved):** install the official export templates (SHA-512 checked), enable the shader baker, and measure a Windows release build against ADR 0029.
+- **5b. M1-RND-28: in review** on `gpu/m1-rnd-28-shader-baker`; filed M2-ARC-04 (a release-build blocker) and M1-RND-29.
+- **Lead's queue after it (2026-10-24):** M2-RND-07 (the Flood hitch, next), then the Low-preset storm cost (file and fix), then M1-QA-09 when the Lead says M1-CHR-14 has landed (check the braid attachment, clipping and limb seams across the clips).
 - **6. M1-QA-09:** only after M1-CHR-12 merges (the Lead will say).
 
 Merge notes from the previous queue:
