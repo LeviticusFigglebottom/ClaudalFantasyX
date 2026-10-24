@@ -131,7 +131,9 @@ func test_waking_a_node_spends_its_facet_and_saves() -> void:
 
 func test_a_gate_opens_from_beside_it_with_its_key() -> void:
 	var m := _model()
-	assert_eq(m.plan(&"rh_07")["error"], LatticeProgress.ERR_NOT_ADJACENT)
+	assert_eq(
+		m.plan(&"rh_07")["error"], LatticeProgress.ERR_NO_MOVEMENT, "M2-MNU-10: far away it offers the walk, unpaid"
+	)
 	assert_eq(m.plan(&"rh_08")["error"], LatticeProgress.ERR_GATE_CLOSED, "no way past a sealed gate")
 	m.traveler().movement_points = 6
 	assert_true(m.act(&"rh_06")["ok"])
@@ -146,6 +148,88 @@ func test_a_gate_opens_from_beside_it_with_its_key() -> void:
 	assert_true((m.sheet.state.lattice["opened_gates"] as Array).has("rh_07"), "saved")
 	assert_eq(m.woken_line(&"rh_07"), tr("LATTICE_MENU_GATE_OPEN"))
 	assert_eq(m.plan(&"rh_07")["cost"], 0, "an open gate is free to enter")
+
+
+## M2-MNU-10: a sealed gate away from the hero offers the walk beside it first (its cost shown), and
+## opens on the next Confirm; no new rules (cheapest_path, entry_cost, open_gate_error).
+func test_a_far_sealed_gate_offers_the_walk_beside_it_then_opens() -> void:
+	var m := _model({"facet_key_1": 1})
+	var far := m.plan(&"rh_07")
+	assert_false(far["ok"], "no movement points yet")
+	assert_eq(far["error"], LatticeProgress.ERR_NO_MOVEMENT)
+	assert_eq(far["beside"], &"rh_06", "the only neighbour Rhen can reach")
+	assert_eq(far["cost"], 6)
+	assert_eq(
+		far["text"],
+		tr("LATTICE_MENU_GATE_TOO_FAR_FMT").format({"cost": 6, "name": tr("CHAR_RHEN"), "have": 0}),
+		"refused in words"
+	)
+	m.traveler().movement_points = 8
+	var p := m.plan(&"rh_07")
+	assert_true(p["ok"])
+	assert_eq(p["action"], LatticeMenuModel.ACT_WALK, "first the walk")
+	var expect: Array[StringName] = []
+	var expect_cost := -1
+	for nb in m.board().neighbors(&"rh_07"):
+		var path := m.progress().cheapest_path(&"rhen", nb)
+		if not path.is_empty() and (expect_cost < 0 or m.path_cost(path) < expect_cost):
+			expect = path
+			expect_cost = m.path_cost(path)
+	assert_eq(p["path"], expect, "the cheapest reachable neighbour's cheapest path")
+	assert_eq(p["cost"], expect_cost)
+	assert_eq(p["left"], 8 - expect_cost)
+	var ctx := {"cost": 6, "left": 2, "need": 1, "facet": tr("FACET_KEY_1"), "held": 1}
+	assert_eq(
+		p["text"],
+		tr("LATTICE_MENU_PLAN_GATE_WALK_FMT").format(ctx) + " " + tr("LATTICE_MENU_PLAN_GATE_KEY_FMT").format(ctx)
+	)
+	assert_eq(p["confirm"], tr("LATTICE_MENU_CONFIRM_GATE_WALK_FMT").format(ctx))
+	assert_true(m.act(&"rh_07")["ok"])
+	assert_eq(m.position(), &"rh_06", "walked beside the gate")
+	assert_eq(m.movement_points(), 2, "spent exactly the walk")
+	assert_false(m.progress().is_gate_open(&"rh_07"), "not opened yet")
+	assert_eq(m.facets().count(&"facet_key_1"), 1, "the Key is still held")
+	assert_eq(m.plan(&"rh_07")["action"], LatticeMenuModel.ACT_OPEN, "then the opening")
+	assert_true(m.act(&"rh_07")["ok"])
+	assert_true(m.progress().is_gate_open(&"rh_07"))
+
+
+func test_a_far_gate_says_when_no_key_is_held_or_no_way_reaches_it() -> void:
+	var m := _model()
+	m.traveler().movement_points = 8
+	var p := m.plan(&"rh_07")
+	assert_true(p["ok"], "the walk is still offered")
+	var ctx := {"need": 1, "facet": tr("FACET_KEY_1"), "held": 0}
+	assert_true(
+		str(p["text"]).ends_with(tr("LATTICE_MENU_PLAN_GATE_NO_KEY_FMT").format(ctx)), "but says the Key is missing"
+	)
+	var none := m.plan(&"as_06")
+	assert_false(none["ok"], "Asha's gate lies beyond Rhen's sealed gates")
+	assert_eq(none["error"], LatticeProgress.ERR_GATE_CLOSED)
+	assert_eq(none["text"], tr("LATTICE_MENU_GATE_NO_WAY"))
+
+
+func test_confirm_on_a_far_gate_walks_then_opens_it() -> void:
+	_open({"facet_key_1": 1})
+	menu.model.traveler().movement_points = 8
+	menu.set_cursor(&"rh_07", false)
+	assert_eq(menu.board_view().path, menu.model.progress().cheapest_path(&"rhen", &"rh_06"), "the walk is drawn")
+	assert_eq(menu.board_view().tag_text, tr("LATTICE_MENU_TAG_COST_FMT").format({"n": 6}))
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_true(menu.is_confirming())
+	assert_eq(menu.confirm_page().current_row()["label"], tr("LATTICE_MENU_CONFIRM_GATE_WALK_FMT").format({"cost": 6}))
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_eq(menu.model.position(), &"rh_06")
+	assert_eq(menu.cursor, &"rh_07", "the cursor stays on the gate")
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_eq(
+		menu.confirm_page().current_row()["label"],
+		tr("LATTICE_MENU_CONFIRM_OPEN_FMT").format({"need": 1, "facet": tr("FACET_KEY_1")}),
+		"the second step opens it"
+	)
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_true(menu.model.progress().is_gate_open(&"rh_07"))
+	_teardown()
 
 
 func test_broken_tables_refuse_and_keep_the_save() -> void:
