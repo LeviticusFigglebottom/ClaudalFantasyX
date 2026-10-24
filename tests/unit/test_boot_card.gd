@@ -8,8 +8,23 @@ const BOOT_SCRIPT := "res://game/core/boot.gd"
 const FRAME_MS := 16.0
 const LIFT_SEC := 0.35
 const FADE_IN_SEC := 0.5
+## M2-ARC-05: what Godot hands _process for a long stall (it caps delta at ~150 ms; M1-RND-29).
+const CAPPED_DELTA_MS := 147.0
+const STALL_MS := 500.0
+const REAL_STALL_MS := 400.0
+const USEC_PER_MS := 1000.0
 
 var _nodes: Array[Node] = []
+
+
+## A clock the test moves by hand (microseconds).
+class FakeClock:
+	extends RefCounted
+
+	var t := 1_000_000
+
+	func now() -> int:
+		return t
 
 
 ## A stand-in for the ShaderPrewarm warm-up: busy until `running` is false.
@@ -110,6 +125,52 @@ func test_the_worst_hidden_frame_is_recorded() -> void:
 	warm.running = false
 	card.step(FRAME_MS)
 	assert_eq(float(card.wait_stats()["reveal_wait_max_frame_ms"]), 420.0, "a stall under the card is hidden time")
+	_done()
+
+
+## M2-ARC-05: a frame stalled past Godot's ~150 ms delta cap shows at its true length, timed by the card's
+## clock, whatever `delta` _process is handed.
+func test_a_stall_past_the_delta_cap_is_reported_at_its_true_length() -> void:
+	var fake := FakeClock.new()
+	var card := _cover()
+	card.clock = FrameClock.new(fake.now)
+	card.clock.reset()
+	var warm := _worker()
+	card.wait_for_node(warm)
+	card.arm()
+	fake.t += int(FRAME_MS * USEC_PER_MS)
+	card._process(FRAME_MS / BootCard.MSEC_PER_SEC)
+	fake.t += int(STALL_MS * USEC_PER_MS)
+	card._process(CAPPED_DELTA_MS / BootCard.MSEC_PER_SEC)
+	var stats := card.wait_stats()
+	assert_eq(float(stats["reveal_wait_max_frame_ms"]), STALL_MS, "the wall time, not the capped delta")
+	assert_eq(float(stats["reveal_wait_ms"]), STALL_MS + FRAME_MS)
+	assert_eq(int(stats["reveal_wait_frames"]), 2)
+	_done()
+
+
+## M2-ARC-05's acceptance: a real stall (OS.delay_msec) reads at least its length.
+func test_a_real_stall_under_the_card_reads_at_least_its_length() -> void:
+	var card := _cover()
+	card.wait_for_node(_worker())
+	card.arm()
+	card._process(FRAME_MS / BootCard.MSEC_PER_SEC)
+	OS.delay_msec(int(REAL_STALL_MS))
+	card._process(CAPPED_DELTA_MS / BootCard.MSEC_PER_SEC)
+	assert_true(float(card.wait_stats()["reveal_wait_max_frame_ms"]) >= REAL_STALL_MS, "%s" % card.wait_stats())
+	_done()
+
+
+## M2-ARC-05: the time-out is wall time too, so a few long stalls cannot stretch it past MAX_WAIT_MS.
+func test_the_time_out_counts_wall_time() -> void:
+	var fake := FakeClock.new()
+	var card := _cover()
+	card.clock = FrameClock.new(fake.now)
+	card.clock.reset()
+	card.wait_for_node(_worker())
+	card.arm()
+	fake.t += int((BootCard.MAX_WAIT_MS + 1.0) * USEC_PER_MS)
+	assert_true(card.step(card.clock.lap()), "one stalled frame past the time-out opens it")
 	_done()
 
 
