@@ -41,9 +41,9 @@ def build_rig() -> ck.Rig:
         for i in range(4):
             z = LEG_Z[i]
             hip = (side * 0.36, 0.33, z)
-            knee = (side * 0.66, 0.50, z * 1.7)
+            knee = (side * 0.62, 0.47, z * 1.7)
             rig.add(f"leg_{tag}{i}_a", hip, knee, "body")
-            rig.add(f"leg_{tag}{i}_b", knee, (side * 0.86, 0.0, z * 2.4), f"leg_{tag}{i}_a")
+            rig.add(f"leg_{tag}{i}_b", knee, (side * 0.80, 0.0, z * 2.3), f"leg_{tag}{i}_a")
     for side, tag, s in ((SIDE_R, "crusher", 1.0), (-SIDE_R, "cutter", 0.6)):
         sh = (side * 0.26, 0.36, 0.30)
         wr = (side * (0.36 + 0.14 * s), 0.40, 0.50 + 0.04 * s)
@@ -92,7 +92,7 @@ def shell(mesh: ck.Mesh, rig: ck.Rig, rng: np.random.Generator) -> None:
     teeth = front * 0.025 * np.maximum(np.cos(azim * 9.0), 0.0)
     c = cells[first]
     proj = unit * (0.96 / np.maximum((unit * c).sum(axis=1), 0.5))[:, None]
-    flat_w = 0.75 * bevel
+    flat_w = 0.92 * bevel
     unit_f = unit * (1.0 - flat_w)[:, None] + proj * flat_w[:, None]
     P = unit_f * np.asarray(SHELL_R)
     P[:, 2] += 0.04 * unit[:, 2] * (unit[:, 2] > 0)  # a broader front
@@ -103,7 +103,7 @@ def shell(mesh: ck.Mesh, rig: ck.Rig, rng: np.random.Generator) -> None:
     disp = lift[first] * bevel + rough + ridge - 0.008 * (1.0 - bevel) + teeth
     P = P + n_out * disp[:, None]
     P[:, 1] += BODY_Y
-    tone = rng.uniform(0.80, 1.04, len(cells))[first]
+    tone = rng.uniform(0.72, 0.96, len(cells))[first]
     warm = rng.uniform(0.0, 1.0, len(cells))[first]
     plate = ck.mix(PAL["coral_stone_weathered"], PAL["coral_stone"], (0.25 * warm)[:, None]) * tone[:, None]
     plate = plate * (1.0 + 0.08 * ck.fbm(P * 6.0, SEED + 2)[:, None])
@@ -278,11 +278,11 @@ def build_clips() -> list[ck.Clip]:
         s = 1.0 if leg[0] == "l" else -1.0
         delay = 0.15 * int(leg[1])
         ko.key(f"leg_{leg}_a", 0.0, (0, 0, 0))
-        ko.key(f"leg_{leg}_a", 0.4 + delay, (0, 0, 22 * s))
-        ko.key(f"leg_{leg}_a", 1.4, (0, 0, 30 * s))
+        ko.key(f"leg_{leg}_a", 0.4 + delay, (0, 0, -8 * s))
+        ko.key(f"leg_{leg}_a", 1.4, (0, 0, -14 * s))
         ko.key(f"leg_{leg}_b", 0.0, (0, 0, 0))
-        ko.key(f"leg_{leg}_b", 0.6 + delay, (0, 0, -40 * s))
-        ko.key(f"leg_{leg}_b", 1.4, (0, 0, -55 * s))
+        ko.key(f"leg_{leg}_b", 0.6 + delay, (0, 0, -35 * s))
+        ko.key(f"leg_{leg}_b", 1.4, (0, 0, -58 * s))
     for tag in ("crusher", "cutter"):
         ko.key(f"{tag}_arm", 0.0, (0, 0, 0))
         ko.key(f"{tag}_arm", 1.0, (14, 0, 0))
