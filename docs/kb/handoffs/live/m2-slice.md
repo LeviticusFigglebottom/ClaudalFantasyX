@@ -7,7 +7,10 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
   - **Item 0 done.** Merged batch 3 (74f28b8), removed the `call_ilun` stand-in (now that UI-05's Call row exists) and did **M2-CMB-06**: the new Swell-on line `sandbox_reef_vowbound_good`, ≤50%, measured 46.2%. Ilun stays at 100% HP and rate 150. Drownbell 71.0/85.3/38.8. sim --check rc 0; coverage battle 99.95%.
   - **Item 1 done:** FP-22, ENV-11, and M1-UI-11 (a subagent's work: a preset change is hidden behind an "Applying" card until the warm-up finishes; `boot_title` unmoved).
   - **Item 2 done:** FP-20 and FP-21 (subagent). The causeway head reminds Rhen to save first, and B05 opens with Asha's "Go now / Not yet". Narrative should review the 4 new lines.
-  - **Next:** item 5 (zone wind rows) and item 3 (ENV-04, ENV-03), item 4 (UI-06, via subagents), then 7. Item 6 waits on the characters track.
+  - **Item 5 done (M2-FP-23):** the slice's zone wind rows and the Haluna night variant. Also found and fixed HalunaMood being a second writer of the weather clock in play.
+  - **Item 3:** ENV-04 is done (the real wake-shell wall at the causeway head; Osu's stand-in is gone). ENV-03 (the Shell Shrine kit) is with a subagent.
+  - **Item 4:** UI-06 (shop and inn) is with a subagent.
+  - **Next:** merge them, place the shopkeeper and innkeeper, item 7. Item 6 waits on the characters track. Handoff cinematics-10.
 - **Done, in review:** M1-ENV-11. Found and fixed a real gap: Haluna's collision added its shapes *after* the bodies entered the tree, so the AUTO plants' first shelter probe (main-thread path) saw no collision at all. The bodies now enter with their shapes. capture_setup.gd now goes through ShaderGlobals, with shots byte-identical. Handoff cinematics-8. 
 - **Done, in review:** M2-FP-22, the Shell Shrine puzzle (sweep Q). Four basins, a loop to undo first, shortest 6 turns, and a random turner's median 75 (was 3 turns, solved by mashing). Data only, plus tests. 
 - **2026-10-24 ~08:30, the Lead's URGENT note (CMB-05 implemented twice) is done:** merged the integration branch at 4314dde and **took the canonical M2-CMB-05 everywhere** (engine, vowbound, boss mechanics, sim, data, docs, tests). This branch's own CMB-05 was dropped: HP-restored gauge, Ilun 60%, rate 220, `requires_field`, `bound_flag`, Floodtide 13.
