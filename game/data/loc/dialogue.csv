@@ -260,6 +260,132 @@ DLG_CH03_VERSE_058,The tide has turned.
 DLG_CH03_VERSE_059,Something heard that.
 DLG_CH03_VERSE_060,"On my shield. Everyone, on my shield, now."
 DLG_CH03_TRIAL_HINT_001,"Start at the spring. Follow the water, not the stone."
+DLG_CH04_BANTER_ENNU_001,"Vey enu, vey enu..."
+DLG_CH04_BANTER_ENNU_002,It is pronounced ennu. Two syllables. You will want to sing it correctly when it matters.
+DLG_CH04_BANTER_ENNU_003,"Thank you. Vey ennu, vey ennu."
+DLG_CH04_BANTER_ENNU_004,Yes.
+DLG_CH04_BANTER_ONCE_001,Tutor. Forgive me. Have you walked a pilgrimage before?
+DLG_CH04_BANTER_ONCE_002,Once.
+DLG_CH04_BANTER_ONCE_003,Then the road is level under you.
+DLG_CH04_BANTER_ONCE_004,"And still, Guardian. Thank you."
+DLG_CH04_BANTER_SALT_001,"You're no Haluna boy, with that tether-scar. Where are you out of?"
+DLG_CH04_BANTER_SALT_002,The raft-town. Oruvel.
+DLG_CH04_BANTER_SALT_003,"Salt and stone. I'm sorry, lad."
+DLG_CH04_BARK_REED_001,"Swept them twice. The steps. A Cantor's wake, and my chapel's steps."
+DLG_CH04_BARK_REED_002,The Order's tutor came over on the evening ebb. She's at the wall already.
+DLG_CH04_BARK_REED_003,Won't take a stool. Won't take a cup. Stands at the back like a heron.
+DLG_CH04_BARK_NET_001,"Last line, then I'm going up. Somebody has to sing the low part."
+DLG_CH04_BARK_NET_002,The low part of what?
+DLG_CH04_BARK_NET_003,The long way round. You'll know it when you hear it. Everyone does.
+DLG_CH04_BARK_BOWLS_001,Four bowls. They were at their food.
+DLG_CH04_BARK_BOWLS_002,"In a house where someone has died, you clear the table. That is all."
+DLG_CH04_BARK_HOUSING_001,That's the housing I sold Sadi. She paid me for half of it.
+DLG_CH04_BARK_HOUSING_002,...It goes where she stowed it.
+DLG_CH04_BARK_GLASS_001,"The glass was turned at the morning watch and never again. Three days ago, a little after eight."
+DLG_CH04_BARK_INN_001,"A slate hangs on the inn door: ""Closed. We are all at the wall."""
+DLG_CH04_BARK_RHYME_001,"You said teach you. So listen. ...three for the bell and four for the hush, and then you start again."
+DLG_CH04_BARK_RHYME_002,Start what again?
+DLG_CH04_BARK_RHYME_003,The rhyme. Everybody knows that.
+DLG_CH04_DOCK_001,Don't. Don't be kind about it. Just let me be angry for a minute.
+DLG_CH04_DOCK_002,Why did nobody tell me?
+DLG_CH04_DOCK_003,Everyone did. In pieces. And I let them.
+DLG_CH04_DOCK_004,You looked at me on the beach like I was a person. I wanted two days of that.
+DLG_CH04_DOCK_005,Tell me about Oruvel. What did it sound like in the morning?
+DLG_CH04_DOCK_006,Tell her about Oruvel.
+DLG_CH04_DOCK_007,Gulls. Rope on wood. Forty cookboats all burning breakfast at once.
+DLG_CH04_DOCK_008,"And Mother Kell, shouting at divers. She sold wicks. She sold everything."
+DLG_CH04_DOCK_009,She said the sea owed her a favour.
+DLG_CH04_DOCK_010,Mother Kell. You said it on the beach.
+DLG_CH04_DOCK_011,Not tonight.
+DLG_CH04_DOCK_012,Then another night. I'll still want to know.
+DLG_CH04_DOCK_013,I'm still coming.
+DLG_CH04_DOCK_014,I know. I said yes before Toma could stop me.
+DLG_CH04_DOCK_015,I can hear them. It's like someone humming in the next room. All the time.
+DLG_CH04_DOCK_016,Is Oruvel in there?
+DLG_CH04_DOCK_017,"Eat your cake, Rhen."
+DLG_CH04_DOCK_018,He'll sit there all night. He did it the night I was named.
+DLG_CH04_PLANK_001,Lady Cantor. Ysolde Ysel. The Conclave has appointed me to teach you Lamptongue on the road.
+DLG_CH04_PLANK_002,Be level.
+DLG_CH04_PLANK_003,And still.
+DLG_CH04_PLANK_004,I did not present myself at your wake. A wake belongs to the village.
+DLG_CH04_PLANK_005,Thank you. This is Rhen Sallow. My guardian.
+DLG_CH04_PLANK_006,"Guardian, porter, cake-carrier. I also do knots, badly."
+DLG_CH04_PLANK_007,"You are very funny, Master Sallow. I have decided not to notice."
+DLG_CH04_PLANK_008,You did the shells.
+DLG_CH04_PLANK_009,I am the Lady Cantor's tutor in Lamptongue.
+DLG_CH04_LAMPS_001,Where's everyone taking the lamps?
+DLG_CH04_LAMPS_002,To her.
+DLG_CH04_DAWN_001,Eat when they feed you.
+DLG_CH04_DAWN_002,I will.
+DLG_CH04_BOARD_001,The water keeps what it is given.
+DLG_CH04_BOARD_002,"Go down to the level, and be still."
+DLG_CH04_BOARD_003,The harbour at Pemakar pays a boarder for bringing a board home. That's custom.
+DLG_CH04_BOARD_004,Tell them it's paid.
+DLG_CH04_BOARD_005,Never heard a diver say that.
+DLG_CH04_BOARD_006,I'd sold drowned brass my whole life. That was the first thing I ever brought up for nothing.
+DLG_CH04_TERRACE_001,"Sail! Sail off the bow, and she's not answering!"
+DLG_CH04_TERRACE_002,That's the Seventh Terrace.
+DLG_CH04_TERRACE_003,She was tied up at Oruvel three days ago. Her skipper paid me short.
+DLG_CH04_TERRACE_004,"Then she drowned in the Rising, and she's still sailing."
+DLG_CH04_TERRACE_005,Sea-law. You don't pass a drowned hull without bringing her name-board home.
+DLG_CH04_TERRACE_006,"I'll lie alongside her, an oar's length off. Fenders and boathooks."
+DLG_CH04_TERRACE_007,You never lash a living hull to a drowned one. And my crew stays aboard.
+DLG_CH04_TERRACE_008,Look at her rigging. It's moving wrong.
+DLG_CH04_TERRACE_009,I'm a diver. I've been on more drowned hulls than anyone on this deck. I'll go.
+DLG_CH04_TERRACE_010,You're my guardian. Guardians walk behind. So I'll go first.
+DLG_CH04_TERRACE_011,Then I am going.
+DLG_CH04_TERRACE_012,Someone should say the Canticle over her correctly. I am the only one aboard who may.
+DLG_CH04_SHELL_001,Bring your lights close. It's time.
+DLG_CH04_SHELL_002,"The water keeps what it is given, and gives back what it keeps."
+DLG_CH04_SHELL_003,Mara Velamir. Ilse Velamir. Teodra Velamir. Imra Velamir.
+DLG_CH04_SHELL_004,Asha Velamir.
+DLG_CH04_SHELL_005,"Now. Each house, the one thing it keeps."
+DLG_CH04_SHELL_006,Her knots.
+DLG_CH04_SHELL_007,The way she laughs at the wrong part of a story.
+DLG_CH04_SHELL_008,She sang my mother out. I keep that.
+DLG_CH04_SHELL_009,She let me hold the shrine bell once.
+DLG_CH04_SHELL_010,She's going to keep my bad stool. The one that bites. Aren't you.
+DLG_CH04_SHELL_011,That stool. That terrible stool.
+DLG_CH04_SHELL_012,"Bring her round by the long way, by the reef and the weed and the light."
+DLG_CH04_SHELL_013,"Bring her round by the long way, and the tide will bring her home by night."
+DLG_CH04_SHELL_014,"Don't go the short way over, where the deep is cold and wide."
+DLG_CH04_SHELL_015,"Come round the long way, love, come round the long way, on the tide."
+DLG_CH04_SHELL_016,Everyone keeps saying she's going on a pilgrimage.
+DLG_CH04_SHELL_017,Nobody says she's coming back from one.
+DLG_CH04_SHELL_018,You asked me. On the steps.
+DLG_CH04_SHELL_019,And you said ask her. I'm asking the whole village.
+DLG_CH04_SHELL_020,No. They do not.
+DLG_CH04_SHELL_021,"Come round the long way, love, come round the long way, on the tide."
+DLG_CH04_SHELL_022,Let me.
+DLG_CH04_SHELL_023,It is your wake.
+DLG_CH04_SHELL_024,Then I can leave it if I like.
+DLG_CH04_WRAITH_001,"Stand back from the rigging, please."
+DLG_CH04_WRAITH_002,On my shield.
+DLG_CH04_INK_001,"Hold the lamp, if you are going to stand there."
+DLG_CH04_INK_002,What's wrong with the ink?
+DLG_CH04_INK_003,"They cut the name well. They inked it with fishing-ink, soot and oil. Salt lifts that in a season."
+DLG_CH04_INK_004,Ansedran lacquer outlasts the stone it is in.
+DLG_CH04_INK_005,So you go round villages fixing other people's spelling.
+DLG_CH04_INK_006,...Sorry.
+DLG_CH04_INK_007,That's her mother's.
+DLG_CH04_INK_008,Yes.
+DLG_CH04_INK_009,Have you done this before?
+DLG_CH04_INK_010,Once.
+DLG_CH04_INK_011,Go to sleep. The tide will not wait for anyone tomorrow.
+DLG_CH04_WAKE_001,"Come and eat, Rhen. Neme cooked for a village, and the village cooked for three."
+DLG_CH04_UNDER_WAY_001,Pemakar. Dusk.
+DLG_CH04_WAKE_FISHER_001,"Next boat I build, she's the Asha. Bow to stern, in paint."
+DLG_CH04_WAKE_FISHER_002,Nalu says you said that about the last three.
+DLG_CH04_WAKE_FISHER_003,Nalu's never built a boat.
+DLG_CH04_WAKE_NEME_001,"Nobody's eating. Eat, the pair of you. There's yam enough for the islet."
+DLG_CH04_WAKE_NEME_002,"We'll take some to the wall, Neme."
+DLG_CH04_WAKE_OSU_001,"Every shell on the wall, washed. Your mother's twice. She'd have wanted it done properly."
+DLG_CH04_WAKE_OSU_002,"She would. Thank you, Osu."
+DLG_CH04_WAKE_OSU_003,You said hello to him. Teyo. She told me.
+DLG_CH04_WAKE_OSU_004,It seemed rude not to.
+DLG_CH04_WAKE_VENDOR_001,"Here. The bowline you taught me, the year the nets came in torn. Tied it myself."
+DLG_CH04_WAKE_VENDOR_002,Your knots were always neater.
+DLG_CH04_WAKE_VENDOR_003,They still are. Thank you. I'll keep it.
 DLG_PROLOGUE_DEAD_CITY_001,"Everyone I'm going to tell you about is still here tonight. Remember that, later."
 DLG_TEST_CUTSCENE_001,First fixture line.
 DLG_TEST_CUTSCENE_002,Fixture option A.
