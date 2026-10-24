@@ -49,10 +49,7 @@ func test_the_shortest_solution_fills_the_pool_and_opens_the_door() -> void:
 
 
 func test_the_sluice_drains_the_side_pool_once() -> void:
-	# b1 toward b2, b2 toward the sluice (data: b1 outlet 1, b2 outlet 2).
-	trial.rotate(&"b1")
-	trial.rotate(&"b2")
-	trial.rotate(&"b2")
+	_solve(trial.drain())
 	assert_true(trial.reaches(trial.drain()))
 	trial.advance(0.1)
 	assert_true(trial.side_drained)
@@ -72,16 +69,19 @@ func test_the_hint_comes_once_after_idling() -> void:
 
 
 func test_a_loop_spills() -> void:
-	# b1 → b2, b2 → b3 (rotation 0), b3 → b2 (rotation 1, its start): round in circles.
-	trial.rotate(&"b1")
+	# The start (M2-FP-22 data): b1 → b4, and b4's lip points back at b1, round in circles.
 	var path := trial.trace()
+	assert_eq(path.slice(0, 2), [&"b1", &"b4"] as Array[StringName])
 	assert_eq(path.back(), StringName(str(trial.data["spill"])), "water going round is lost: %s" % [path])
 
 
-## Turns basins until the water reaches the goal, by the search's own shortest path (data-agnostic).
-func _solve() -> void:
+## Turns basins until the water reaches `target` (the goal by default), by the search's own shortest
+## path (data-agnostic).
+func _solve(target: StringName = &"") -> void:
+	if target == &"":
+		target = trial.goal()
 	var guard := 0
-	while not trial.reaches(trial.goal()) and guard < 16:
+	while not trial.reaches(target) and guard < 16:
 		guard += 1
 		var best := &""
 		var best_n := 1 << 20
@@ -89,7 +89,7 @@ func _solve() -> void:
 			var probe := ShellShrineTrial.new(trial.data)
 			probe.rotations = trial.rotations.duplicate()
 			probe.rotate(b)
-			var n := probe.min_turns_to(probe.goal())
+			var n := probe.min_turns_to(target)
 			if n >= 0 and n < best_n:
 				best_n = n
 				best = b

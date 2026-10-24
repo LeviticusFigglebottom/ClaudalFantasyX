@@ -221,7 +221,7 @@ func _build_engine(
 	floats.reset()
 	progress = lattice
 	engine = BattleEngine.new()
-	if persist_progress and fixture == null:  # flag-locked skills (call_ilun) follow the live story
+	if persist_progress and fixture == null:  # flag-locked skills (requires_flag) follow the live story
 		engine.story_flags = BattleBossHud.live_flags(_db)
 	# Live battles start from the carried HP/MP and line up past the fallen (BattleVitals).
 	BattleVitals.setup(engine, _db, _setup, progress, persist_progress and fixture == null)

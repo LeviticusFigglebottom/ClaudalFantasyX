@@ -1,0 +1,34 @@
+// Ch2 B04 "Pila's Granddaughter" (optional; docs/kb/story/beats/vertical_slice.md §4): Grandmother
+// Osu washes the wake-shells with fresh water, the way you'd wash a face. The newest gap waits for
+// Asha's shell; nobody explains it. Teyo Marrin's shell, found by touch: he went as Cantor at sixteen
+// so the Order would take him and not his sister Pila. Sets ch02_heard_pila, which B09 (Rhen asks
+// whether it was Teyo) and Ch20 (Asha can answer Ilun) read. In-engine, framed on H08 with an insert
+// on Osu's hand; staged at the causeway head (M2-FP-14 notes). A second visit gets one short line.
+title: ch02_pila_granddaughter
+location: ch02/haluna
+---
+<<if $ch02_heard_pila>>
+    Osu [soft_smile]: They don't need two washings, diver. Go on. She'll be waiting at the causeway. #line:ch02_pila_granddaughter_015
+    <<stop>>
+<<endif>>
+@camera H08 blend=0.6
+Osu [neutral]: Mind the bowl. That's fresh water, and it came a long way. #line:ch02_pila_granddaughter_001
+Rhen [smile]: Here, let me. I've scrubbed worse off a hull. ...That one was already clean, wasn't it? #line:ch02_pila_granddaughter_002
+Osu [soft_smile]: With the ridges, not against them. Gently. You'd wash a face that way. #line:ch02_pila_granddaughter_003
+Osu [neutral]: There. Shoulder height, clean-edged. Nobody is in that one yet. #line:ch02_pila_granddaughter_004
+@wait 1.2
+@camera H08_hand blend=0.0
+Osu [neutral]: And this one I can find with my eyes shut. Teyo Marrin. #line:ch02_pila_granddaughter_005
+Rhen [neutral]: Family? #line:ch02_pila_granddaughter_006
+Osu [neutral]: My grandmother Pila's big brother. He went as Cantor at sixteen, so the Order would take him and not her. She was the stronger hearer. #line:ch02_pila_granddaughter_007
+Osu [sad]: He was frightened the whole way. Grandmother said he went anyway. #line:ch02_pila_granddaughter_008
+@camera H08 blend=0.0
+Rhen [neutral]: And Pila? #line:ch02_pila_granddaughter_009
+Osu [smile]: Lived to ninety-one. Mended nets to the end, and never once sang. Not even to children, in case anyone was listening. #line:ch02_pila_granddaughter_010
+Osu [laugh]: Salt and stone. Ninety-one years of not singing. #line:ch02_pila_granddaughter_011
+@wait 0.8
+Osu [tender]: You'll go up to the shrine with her? Say hello to him for us. #line:ch02_pila_granddaughter_012
+Rhen [neutral]: To who? #line:ch02_pila_granddaughter_013
+@wait 1.5
+<<set $ch02_heard_pila = true>>
+===

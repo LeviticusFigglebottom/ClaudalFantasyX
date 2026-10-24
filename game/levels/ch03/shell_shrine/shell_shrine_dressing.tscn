@@ -1,0 +1,127 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_floor.glb" id="1_floor"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_vault.glb" id="2_vault"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_roof_fan.glb" id="3_roof_fan"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_steps.glb" id="4_steps"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_islet.glb" id="5_islet"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_wall_curved.glb" id="6_wall_curved"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_wall_portal.glb" id="7_wall_portal"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_wall_straight.glb" id="8_wall_straight"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_column_whorl.glb" id="9_column_whorl"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_passage"]
+resource_name = "chamber_passage_dark"
+cull_mode = 1
+albedo_color = Color(0.0627, 0.0745, 0.0745, 1)
+roughness = 1.0
+
+[sub_resource type="BoxMesh" id="Mesh_passage"]
+material = SubResource("Mat_passage")
+size = Vector3(2.5, 3.8, 3.4)
+
+[node name="ShellShrineDressing" type="Node3D"]
+[node name="Hall" type="Node3D" parent="."]
+
+[node name="Floor" parent="Hall" instance=ExtResource("1_floor")]
+
+[node name="Vault" parent="Hall" instance=ExtResource("2_vault")]
+
+[node name="RoofFan" parent="Hall" instance=ExtResource("3_roof_fan")]
+
+[node name="Steps" parent="Hall" instance=ExtResource("4_steps")]
+
+[node name="Islet" parent="Hall" instance=ExtResource("5_islet")]
+
+[node name="Walls" type="Node3D" parent="."]
+
+[node name="ArcW342" parent="Walls" instance=ExtResource("6_wall_curved")]
+transform = Transform3D(0.951057, 0, 0.309017, 0, 1, 0, -0.309017, 0, 0.951057, -5, 0, 0)
+
+[node name="ArcW306" parent="Walls" instance=ExtResource("6_wall_curved")]
+transform = Transform3D(0.587785, 0, 0.809017, 0, 1, 0, -0.809017, 0, 0.587785, -5, 0, 0)
+
+[node name="Entrance" parent="Walls" instance=ExtResource("7_wall_portal")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5, 0, 0)
+
+[node name="ArcW234" parent="Walls" instance=ExtResource("6_wall_curved")]
+transform = Transform3D(-0.587785, 0, 0.809017, 0, 1, 0, -0.809017, 0, -0.587785, -5, 0, 0)
+
+[node name="ArcW198" parent="Walls" instance=ExtResource("6_wall_curved")]
+transform = Transform3D(-0.951057, 0, 0.309017, 0, 1, 0, -0.309017, 0, -0.951057, -5, 0, 0)
+
+[node name="ArcE018" parent="Walls" instance=ExtResource("6_wall_curved")]
+transform = Transform3D(0.951057, 0, -0.309017, 0, 1, 0, 0.309017, 0, 0.951057, 5, 0, 0)
+
+[node name="ArcE054" parent="Walls" instance=ExtResource("6_wall_curved")]
+transform = Transform3D(0.587785, 0, -0.809017, 0, 1, 0, 0.809017, 0, 0.587785, 5, 0, 0)
+
+[node name="DoorPortal" parent="Walls" instance=ExtResource("7_wall_portal")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 5, 0, 0)
+
+[node name="ArcE126" parent="Walls" instance=ExtResource("6_wall_curved")]
+transform = Transform3D(-0.587785, 0, -0.809017, 0, 1, 0, 0.809017, 0, -0.587785, 5, 0, 0)
+
+[node name="ArcE162" parent="Walls" instance=ExtResource("6_wall_curved")]
+transform = Transform3D(-0.951057, 0, -0.309017, 0, 1, 0, 0.309017, 0, -0.951057, 5, 0, 0)
+
+[node name="RunNW" parent="Walls" instance=ExtResource("8_wall_straight")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, -9)
+
+[node name="RunNE" parent="Walls" instance=ExtResource("8_wall_straight")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, -9)
+
+[node name="RunSW" parent="Walls" instance=ExtResource("8_wall_straight")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -2.5, 0, 9)
+
+[node name="RunSE" parent="Walls" instance=ExtResource("8_wall_straight")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.5, 0, 9)
+
+[node name="Columns" type="Node3D" parent="."]
+
+[node name="WhorlW324" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.17251, 0, -7.11935)
+
+[node name="WhorlW288" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.369297, 0, -2.71935)
+
+[node name="WhorlW252" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.369297, 0, 2.71935)
+
+[node name="WhorlW216" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.17251, 0, 7.11935)
+
+[node name="WhorlE036" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.17251, 0, -7.11935)
+
+[node name="WhorlE072" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.369297, 0, -2.71935)
+
+[node name="WhorlE108" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.369297, 0, 2.71935)
+
+[node name="WhorlE144" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.17251, 0, 7.11935)
+
+[node name="WhorlNW" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -8.8)
+
+[node name="WhorlNC" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.8)
+
+[node name="WhorlNE" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -8.8)
+
+[node name="WhorlSW" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 8.8)
+
+[node name="WhorlSC" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8.8)
+
+[node name="WhorlSE" parent="Columns" instance=ExtResource("9_column_whorl")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 8.8)
+
+[node name="ChamberPassage" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.85, 1.9, 0)
+mesh = SubResource("Mesh_passage")
+cast_shadow = 0

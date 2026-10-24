@@ -11,6 +11,11 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 6. (Found on claude/characters) **M2-UI-07**, the hero actor hook: **hook done and pushed (08c872c)**. It is **blocked** on M2-CHR-06's scenes reaching the integration branch; after that it needs three `"scene"` lines in battle_sandbox.json and shot re-approval.
 
 ## Now
+- **Merged `origin/claude/m2-slice` (bf18e854, which contains 24894292) into claude/ui at the Lead's request.**
+  - **Graphics page:** kept both sides. It is a `SettingsPage` (M2-UI-09), and m2-slice's M1-UI-11 "Applying" veil now runs through two new SettingsPage hooks: `is_busy()` swallows input and blocks close while the veil is up, and `_change(delta)` lets a preset change go behind the veil. The model keeps m2-slice's warm-up tracking on top of `SettingsPageModel`. The json keeps both `hub` and `apply`.
+  - **strings.csv:** `merge_union.py`, then I dropped the two old texts it appended again (BESTIARY_HELP and TITLE_HELP_SETTINGS keep this branch's rewording). shots.json and baselines.json were merged by union.
+  - **Gates:** validate_data 0/0; gdlint and gdformat clean; filtered runs (graphics 54, settings 46, title 16, menu 125, ui_ 46) all 0 failed; full suite **1552 run, 0 failed**, log check clean. Coverage was not re-run: my side of the merge touched no battle or progression code.
+  - **Shots:** `boot_title`, `settings_hub`, `settings_accessibility`, `field_menu` and `bestiary_menu` are unchanged by the merge (rmse 0). m2-slice's `shop_menu_buy`, `shop_menu_sell` and `inn_menu` moved only because they now draw in the ADR 0033 theme; I viewed and re-approved them.
 - **The human asked directly for more flair in the menus and theme.** Done as **M2-UI-10** (ADR 0033), in review with reviewer character (Art):
   - Panel glint, corner ticks and tide lines.
   - A lamplit cursor whose row nudges right.

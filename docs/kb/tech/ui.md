@@ -23,6 +23,7 @@ Owner: UI/UX + Combat (M1-UI-01, M1-CMB-01, M1-UI-02). Art rules: [`docs/kb/art/
 | `assets/fonts/` | Source Sans 3 and EB Garamond, each with its `OFL.txt`. |
 | `game/ui/bestiary/` | `BestiaryMenu` (+ `bestiary_menu.tscn`), `BestiaryMenuModel`, and the `bestiary_menu` capture driver (`BestiaryShot`, `shots/`). Layout: `game/data/ui/bestiary_menu.json` (M2-UI-02). |
 | `game/ui/field_menu/` | `FieldMenu` (+ `field_menu.tscn`), `FieldMenuModel`, and the `field_menu` / `field_menu_swell_modes` capture driver (`FieldMenuShot`, `shots/`). Layout: `game/data/ui/field_menu.json` (M2-UI-04). |
+| `game/ui/shop/` | `ShopMenu` / `ShopMenuModel`, `InnMenu` / `InnMenuModel`, their shared base `TownMenu`, the zone-agnostic `TownServices` hook, and the `shop_menu_buy` / `shop_menu_sell` / `inn_menu` capture driver (`TownMenuShot`, `shots/`). Layout: `game/data/ui/shop_menu.json` (M2-UI-06). |
 
 ## Theme
 
@@ -281,6 +282,16 @@ At the human's request (more character, less plain), the theme adds faint, origi
   - **Below 20 fps** (a frame longer than `max_step_sec`) the ring runs slower than real time, by design: the ring draws its own `elapsed`, so what the player sees and what is graded still match.
 - **Help text:** `SWELL_INPUT_TIMING_RING_HELP` takes `{beats}` from the input row, so a tuning of `beats` never leaves the text wrong.
 - **Capture:** `battle_swell_ring` (fixture `swell_ring`) freezes the ring 0.2 s before the second peak, with the first beat perfect (`BattleController.swell_input_live = false`).
+
+## Shops and inns (M2-UI-06)
+
+- **Opening them.** Any field `Interactable` opens one by its payload: `{"shop": "<shops.json shops id>"}` opens `ShopMenu`, `{"inn": "<shops.json inns id>"}` opens `InnMenu`. The hook is `TownServices`, a plain `Node` that `FieldController._ready` adds as its child `TownServices` (three lines), so it is in every zone with a player and nothing in a zone script knows about it. It listens to `FieldEvents.INTERACTED` on the EventBus, ignores every other payload (HalunaStory and friends keep reading their own keys), and opens at most one town menu at a time. Give the Interactable `prompt_key` `SHOP_PROMPT` ("Browse the wares") or `INN_PROMPT` ("Ask for a room"). Don't also put `dialogue` in the same payload: HalunaStory would play the bark under the menu.
+- **Pause and layers.** `TownMenu` (the shared base) brings its own CanvasLayer (layer 60, like the field menu) and pauses the tree while open, as `FieldMenu` and `SaveMenu` do. Closing unpauses and frees the layer.
+- **Shop.** Root: Buy, Sell, Leave (Buy and Sell are off while the shop's `requires_flag` is unset, and the line says the shutters are down). Buy lists `Shop.stock` with "Held N" and the price; Sell lists the bag in listing order and then every owned piece with its wearer's name. Every row stays choosable, so the cursor can rest on a refused one: its price is in `text_disabled` (a key item or worn piece shows "—"), and the status line under the description says why in `danger`, word for word from `Shop.*_error` (`SHOP_ERR_*`, with the numbers: price, purse, room left, held count, wearer). Left and Right change how many (1 up to `max_count`, the bag's room or what is held; they wrap). A deal's receipt stays on the status line until the cursor or the count moves. Selling into a full purse warns how much would be lost.
+- **Inn.** Rest (the price on the right) and Leave. The description says what a rest restores and that **an inn does not save** (`INN_MENU_NO_SAVE`). Rest pays `Inn.price()` and requests `EventBus.party_full_heal_requested(inn id)`, the save shrine's own heal, so `Game.heal_party` fills HP and MP and cures `party_rest.json` `shrine_cures`. It writes no save, sets no shrine flag and leaves the respawn point alone. After a rest the cursor moves to Leave.
+- **Model/view split.** `ShopMenuModel` and `InnMenuModel` are Node-free and take their `Shop`/`Inn`, `PartyGoods`, `FlagReader` (and for the inn a `heal` Callable), so tests run them on a scratch `GameStateData`. `from_game(id)` wires the live save, `GameFlagAccess` flags and the EventBus heal.
+- **Captures:** `shop_menu_buy` (Haluna Market, 100 lume, asking for 3 Salt Tonics: the refusal in `danger`), `shop_menu_sell` (the cursor on Rhen's worn hooks), `inn_menu` (Haluna's inn, the cursor on Rest). All from `TownMenuShot` on a scratch save with fixed flags.
+- **Tests:** `test_shop_menu.gd`, `test_inn_menu.gd` (including "no save written"), `test_inn.gd` (the `Inn` logic) and `test_town_services.gd` (the payload hook in the plain field test zone).
 
 ## Known gaps
 

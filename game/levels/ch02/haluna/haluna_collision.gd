@@ -1,7 +1,7 @@
 class_name HalunaCollision
 extends Node3D
-## Walk collision for the playable Haluna zone (M2-FP-02), built at runtime from the instanced mood
-## scene, which has none (game/levels/_tests/haluna_mood is Environment's and is never edited):
+## Walk collision for the playable Haluna zone (M2-FP-02), built at runtime from the instanced
+## dressing (haluna_dressing.tscn, promoted from the mood test by M2-ENV-01), which has none:
 ##   Ground  one HeightMapShape3D sampled from HalunaTerrain.height_at over `walk_rect`, on the
 ##           terrain mesh's own 1 m grid, so the feet meet the drawn sand and turf.
 ##   Props   a shape per placed kit piece and plant, chosen by `piece_rules` (keyed by the piece's
@@ -71,6 +71,11 @@ func build() -> void:
 	_build_ground()
 	_build_props()
 	_build_bounds()
+	# M1-ENV-11: the bodies enter with their shapes. A shape added to a body already in the physics space
+	# is only queryable after the next physics step, and the plants' AUTO shelter probes on the first
+	# physics frame after entry, before that step: they would see an empty world and stay open.
+	for body in [ground, props, bounds]:
+		add_child(body)
 	build_msec = Time.get_ticks_msec() - t0
 	built.emit()
 
@@ -85,10 +90,10 @@ func covers(x: float, z: float) -> bool:
 	return walk_rect.has_point(Vector2(x, z))
 
 
+## A new body, not yet added (build() adds it once its shapes are in).
 func _body(body_name: StringName) -> StaticBody3D:
 	var b := StaticBody3D.new()
 	b.name = body_name
-	add_child(b)
 	return b
 
 
@@ -103,7 +108,7 @@ func _build_ground() -> void:
 	for j in nz:
 		var z := walk_rect.position.y + j * cell_m
 		for i in nx:
-			heights[j * nx + i] = terrain.height_at(walk_rect.position.x + i * cell_m, z)
+			heights[j * nx + i] = terrain.grid_height(walk_rect.position.x + i * cell_m, z)  # M2-ENV-05
 	heightmap = HeightMapShape3D.new()
 	heightmap.map_width = nx
 	heightmap.map_depth = nz

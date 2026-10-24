@@ -7,7 +7,9 @@ extends TestCase
 const ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
 const LOCATION := &"ch02/haluna"
 const DT := 1.0 / 60.0
-const SPAWNS: Array[StringName] = [&"Beach", &"Village", &"Shrine", &"BattleReturn", &"BeforeBattle", &"CausewayHead"]
+const SPAWNS: Array[StringName] = [
+	&"Beach", &"Village", &"Shrine", &"BattleReturn", &"BeforeBattle", &"CausewayHead", &"DockNight"
+]
 ## Collision build budget on the shared CI CPU (the brief asks for under about a second).
 const BUILD_BUDGET_MSEC := 1000
 ## How far a spawn marker may sit from the floor found under it.
@@ -19,7 +21,7 @@ const NPCS := {
 	&"npc_lane": "ch02_bark_lane",
 }
 const BARKS: Array[StringName] = [&"ch02_bark_market", &"ch02_bark_chapel", &"ch02_bark_dock", &"ch02_bark_lane"]
-const STAGE_SHOTS: Array[StringName] = [&"H05", &"H06", &"H01"]
+const STAGE_SHOTS: Array[StringName] = [&"H05", &"H06", &"H01", &"H08", &"H08_hand", &"H03", &"B02_bag"]
 ## In front of the chapel door (order_chapel at (-118, 27.5), 9.25 m deep: its south face is z 32.1).
 const CHAPEL_FRONT := Vector3(-119.5, 0.0, 35.0)
 const CHAPEL_SOUTH_WALL_Z := 32.0
@@ -71,7 +73,8 @@ func test_the_zone_walks_frames_and_holds_rhen() -> void:
 		var p := marker.global_position
 		var floor_y := _floor_y(p)
 		assert_between(floor_y, p.y - GROUND_TOLERANCE_M, p.y + GROUND_TOLERANCE_M, "ground under %s" % spawn)
-		assert_between(col.ground_height(p.x, p.z), floor_y - 0.05, floor_y + 0.05, "height_at agrees (%s)" % spawn)
+		if spawn != &"DockNight":  # M2-FP-15: on the dock deck, over the water, not the terrain
+			assert_between(col.ground_height(p.x, p.z), floor_y - 0.05, floor_y + 0.05, "height_at agrees (%s)" % spawn)
 		assert_true(zone.place_at(spawn, zone.spawn_yaw_deg(spawn)), "place_at %s" % spawn)
 		var at := zone.player.global_position
 		assert_true(Vector2(at.x - p.x, at.z - p.z).length() < 0.01, "Rhen stands on %s" % spawn)
@@ -216,7 +219,7 @@ func test_the_cutscene_stage_resolves_cutscene_a() -> void:
 		# The rail root is the zone root, at the origin.
 		var shot := stage.shot(id)
 		var close := CutsceneKeyLight.is_close(shot.position, shot.look_at, shot.fov_deg, key_cfg)
-		assert_eq(close, id != &"H01", "%s keyed: %s" % [id, close])
+		assert_eq(close, id not in [&"H01", &"H03"], "%s keyed: %s" % [id, close])  # the wides (H03: a roof gull)
 	# The PC's FP-10 check: under the 74° noon sun the close shots lower the key 30°.
 	for id: StringName in [&"H05", &"H06"]:
 		assert_eq(stage.shot_node(id).key_pitch_deg, 30.0, "%s key pitch" % id)

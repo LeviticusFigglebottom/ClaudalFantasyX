@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch03_bark_dock_night",
+ "source": "game/data/dialogue/ch03/ch03_bark_dock_night.dlg",
+ "start": "ch03_bark_dock_night",
+ "nodes": {
+  "ch03_bark_dock_night": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "line", "id": "ch03_bark_dock_night_001", "key": "DLG_CH03_BARK_DOCK_NIGHT_001", "speaker": "netmender", "emotion": "soft_smile", "voice": "", "src": 5},
+    {"op": "line", "id": "ch03_bark_dock_night_002", "key": "DLG_CH03_BARK_DOCK_NIGHT_002", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

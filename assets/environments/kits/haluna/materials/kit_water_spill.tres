@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_water_spill.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "kit_water_spill"
+shader = ExtResource("1_shader")
+shader_parameter/fall_speed_m_s = 2.4
+shader_parameter/opacity = 0.55

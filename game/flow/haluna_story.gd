@@ -4,9 +4,11 @@ extends Node
 ## A child of the zone root (HalunaZone), which provides `stage` (a CutsceneStage) and
 ## `place_at(spawn)`. What it plays and where comes from first_playable.json "haluna".
 ##   arrival   while `ch02_met_asha` is unset: Rhen on the Beach spawn, Cutscene A
-##             (ch02_girl_on_the_beach), then free play. Once the tideline battle is won (its
-##             victory flag) and until after_battle_flag is set, an arrival plays B02 instead
-##             (M2-FP-13): Rhen at the after_battle spawn and Neme's table in-engine.
+##             (ch02_girl_on_the_beach), then free play. Asha and Toma join Rhen there: once
+##             `ch02_met_asha` is set, an empty party is filled from party_after_intro (party and
+##             reserve ids, M2 slice), which the field menu's Heroes page reads (M2-UI-04). Once the
+##             tideline battle is won (its victory flag) and until after_battle_flag is set, an
+##             arrival plays B02 instead (M2-FP-13): Rhen at the after_battle spawn and Neme's table in-engine.
 ##   villagers an Interactable whose payload has "dialogue" plays that bark scene in-engine.
 ##   overheard a touch trigger whose payload has "dialogue" and "overheard" (M2-FP-13, B03's four
 ##             "Cantor" fragments) plays that bark on its own sequencer as Rhen walks past: he is
@@ -15,9 +17,15 @@ extends Node
 ##   battle    a trigger whose payload has "battle" opens that field battle (BattleRequest), which
 ##             returns the party to BattleReturn and sets the victory flag on a win; an escape
 ##             returns it to BeforeBattle, on the beach side of the trigger (M2-FP-05).
+##   night     after the Drownbell (night_flag) and until sworn_flag (M2-FP-15, B11): Haluna at
+##             night (HalunaZone.set_night), Rhen at night_spawn, the cast on the dock, the dock
+##             scene in-engine, then night_end_scene (the end card). Once sworn, barks play their
+##             night_barks variant.
 ##   ending    a trigger whose payload has "cutscene" plays the low-tide beat in-engine (M2-FP-13,
-##             B05, before_ending_scene_id), then opens Cutscene B on its own set
-##             (game/levels/ch03/first_verse/), which ends on the end card.
+##             B05, before_ending_scene_id), then opens the Shell Shrine trial (ending_scene). B05
+##             opens on "Go now" / "Not yet" (M2-FP-21): "Not yet" (ending_decline_event) steps
+##             Rhen back to ending_decline_spawn and hands nothing off. Before the first save the
+##             same box plays an overheard bark instead (M2-FP-20, Triggers/CausewayHeadUnsaved).
 ## The zone's interactables only author ids, payloads and flags; nothing in them knows this script.
 
 const KEY_DIALOGUE := "dialogue"
@@ -68,7 +76,12 @@ func begin() -> void:
 		busy = true
 		_zone.call(&"place_at", StringName(str(cfg.get("intro_spawn", ""))))
 		await sequencer.play(StringName(str(cfg.get("intro_scene_id", ""))), _stage())
+		_join_party()
 		busy = false
+		return
+	_join_party()
+	if _flag(&"night_flag") and not _flag(&"sworn_flag"):
+		await _night()
 	elif _flag(&"battle_victory_flag") and not _flag(&"after_battle_flag"):
 		# B02: noon at Neme's. The scene opens black, so the move to her door is never seen.
 		busy = true
@@ -76,6 +89,18 @@ func begin() -> void:
 		_zone.call(&"place_at", spawn, _zone.call(&"spawn_yaw_deg", spawn))
 		await sequencer.play(StringName(str(cfg.get("after_battle_scene_id", ""))), _stage())
 		busy = false
+
+
+## Asha and Toma join once Cutscene A has played: an empty party is filled from party_after_intro.
+## A save from before this existed (the flag set, no party) is filled on its next arrival.
+func _join_party() -> void:
+	if not _flag(&"intro_flag") or not Game.state.party_ids.is_empty():
+		return
+	var join: Dictionary = cfg.get("party_after_intro", {})
+	for id: Variant in join.get("party", []):
+		Game.state.party_ids.append(StringName(str(id)))
+	for id: Variant in join.get("reserve", []):
+		Game.state.reserve_ids.append(StringName(str(id)))
 
 
 func _autostart() -> void:
@@ -86,13 +111,13 @@ func _autostart() -> void:
 
 func _on_interacted(_id: StringName, _kind: StringName, payload: Dictionary) -> void:
 	if payload.has(KEY_DIALOGUE) and _free():
-		_bark(StringName(str(payload[KEY_DIALOGUE])))
+		_bark(_variant(StringName(str(payload[KEY_DIALOGUE]))))
 
 
 func _on_trigger(_id: StringName, payload: Dictionary) -> void:
 	if payload.has(KEY_DIALOGUE) and bool(payload.get(KEY_OVERHEARD, false)):
 		if _free() and not overhear.is_playing():
-			overhear.play(StringName(str(payload[KEY_DIALOGUE])), _stage())
+			overhear.play(_variant(StringName(str(payload[KEY_DIALOGUE]))), _stage())
 		return
 	if not _free():
 		return
@@ -109,15 +134,53 @@ func _bark(scene_id: StringName) -> void:
 	busy = false
 
 
-## B05 at the causeway head, then Cutscene B.
+## B11 (M2-FP-15): the dock at night, then the end card.
+func _night() -> void:
+	busy = true
+	_zone.call(&"set_night", cfg.get("night", {}), cfg.get("night_hide", []))
+	var spawn := StringName(str(cfg.get("night_spawn", "")))
+	_zone.call(&"place_at", spawn, _zone.call(&"spawn_yaw_deg", spawn))
+	_zone.call(&"place_cast", cfg.get("night_cast", {}), cfg.get("night_marks", {}))
+	sequencer.restore_fade = false
+	await sequencer.play(StringName(str(cfg.get("night_scene_id", ""))), _stage())
+	if is_inside_tree() or hand_off.is_valid():
+		_go(KEY_CUTSCENE, str(cfg.get("night_end_scene", "")))
+
+
+## A bark's night variant once Rhen is sworn (night_barks), else the bark itself.
+func _variant(scene_id: StringName) -> StringName:
+	if not _flag(&"sworn_flag"):
+		return scene_id
+	return StringName(str((cfg.get("night_barks", {}) as Dictionary).get(String(scene_id), scene_id)))
+
+
+## B05 at the causeway head, then Cutscene B. B05 opens on a choice (M2-FP-21): when it reports
+## ending_decline_event ("Not yet"), Rhen steps back to ending_decline_spawn, short of the trigger,
+## and control returns with nothing handed off; the trigger stays armed for the next approach.
 func _end() -> void:
 	busy = true
 	_hush()
 	var low_tide := StringName(str(cfg.get("before_ending_scene_id", "")))
 	if low_tide != &"":
 		await sequencer.play(low_tide, _stage())
+		if _declined():
+			var spawn := StringName(str(cfg.get("ending_decline_spawn", "")))
+			_zone.call(&"place_at", spawn, _zone.call(&"spawn_yaw_deg", spawn))
+			busy = false
+			return
 	if is_inside_tree():
 		_go(KEY_CUTSCENE, str(cfg.get("ending_scene", "")))
+
+
+## True when the last scene reported ending_decline_event (B05's "Not yet").
+func _declined() -> bool:
+	var ev := StringName(str(cfg.get("ending_decline_event", "")))
+	if ev == &"":
+		return false
+	for e: Dictionary in sequencer.events:
+		if StringName(str(e.get("name", ""))) == ev:
+			return true
+	return false
 
 
 ## Cuts an overheard bark off (something else is starting): a sequencer that leaves the tree ends

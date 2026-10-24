@@ -74,14 +74,16 @@ func _unhandled_input(event: InputEvent) -> void:
 func handle_input(event: InputEvent) -> bool:
 	if not _open:
 		return false
+	if is_busy():
+		return true  # a subclass holds the page (the Graphics page's apply veil): swallow input
 	if event.is_action_pressed(&"ui_up", true):
 		page_model.move(-1)
 	elif event.is_action_pressed(&"ui_down", true):
 		page_model.move(1)
 	elif event.is_action_pressed(&"ui_left", true):
-		page_model.cycle(-1)
+		_change(-1)
 	elif event.is_action_pressed(&"ui_right", true) or event.is_action_pressed(&"ui_accept"):
-		page_model.cycle(1)
+		_change(1)
 	elif event.is_action_pressed(&"ui_cancel"):
 		close()
 	else:
@@ -94,7 +96,7 @@ func is_open() -> bool:
 
 
 func close() -> void:
-	if not _open:
+	if not _open or is_busy():
 		return
 	_open = false
 	closed.emit()
@@ -105,6 +107,16 @@ func close() -> void:
 func value_shown(row: StringName) -> String:
 	var i := page_model.row_ids().find(row)
 	return str(_page.rows[i].get("right", "")) if i >= 0 and i < _page.rows.size() else ""
+
+
+## Override: true while the page must not take input or close (the Graphics page's apply veil).
+func is_busy() -> bool:
+	return false
+
+
+## Override: steps the current row's value (the Graphics page puts a preset change behind its veil).
+func _change(delta: int) -> void:
+	page_model.cycle(delta)
 
 
 func help_text() -> String:
@@ -137,7 +149,9 @@ func _on_row_hovered(index: int) -> void:
 
 
 func _on_row_clicked(index: int) -> void:
+	if is_busy():
+		return
 	if page_model.cursor == index:
-		page_model.cycle(1)
+		_change(1)
 	else:
 		page_model.set_cursor(index)

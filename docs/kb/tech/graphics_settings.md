@@ -232,8 +232,15 @@ GraphicsSettings.pop_override(h)   # at the cut out; also automatic when `self` 
   - A setting row calls `GraphicsRuntime.set_override`.
   - Both save `user://settings.cfg` and apply at once.
 - **Values.** Booleans read On or Off. String options read through `value_keys`, so `msaa_2x` shows as "MSAA 2×". `render_scale` reads as a percentage and `lod_threshold` as a multiplier; other numbers print as they are. `tools/tests/test_graphics_menu_data.py` fails if an option has no label or a key has no loc row.
-- **No fade.** The page lives on the title, a 2D screen, so nothing visible hitches when a change applies. An in-game pause menu would need the short fade the task describes (a shadow-atlas resize, SDFGI re-converging, glimmer emitters restarting); there's no pause menu yet.
-- **Tests:** `tests/unit/test_graphics_menu.gd`, including the title row. The `boot_title` baseline was re-approved for the fourth row.
+- **A preset change applies behind a veil (M1-UI-11).** Once boot has armed `GraphicsRuntime`, `select_preset` runs `warm_resident_shaders(viewport)` (M1-RND-22), and that warm-up froze a frame for 0.53–1.66 s on the PC. So with `GraphicsRuntime.armed` and the viewport in the tree, `GraphicsMenu` doesn't call the model at once:
+  1. It fades an opaque veil in over `apply.fade_out_sec` (the backdrop's `panel_low`, with the `GFX_MENU_APPLYING` card).
+  2. It lets `apply.settle_frames` opaque frames draw, so the freeze happens under a covered screen, and only then calls `GraphicsMenuModel.cycle`, which calls `select_preset`.
+  3. It holds while the warm-up lives. `GraphicsRuntime.last_warmup` is the node `warm_resident_shaders` returned, and the model tracks it if the change spawned a new one. `GraphicsMenuModel.warmup_done()` is true once its `finished` signal fired, or it freed or was queued for deletion, or it isn't running (a failed `start()`). `apply.max_hold_sec` is a safety net.
+  4. It fades back over `apply.fade_in_sec`.
+
+  Throughout, `handle_input` swallows every event, clicks on rows are ignored, `close()` waits, and the veil stops the mouse. When `GraphicsRuntime` is disarmed (tests, captures), nothing warms, so a preset applies at once, as before.
+- **A setting row spawns no warm-up, so it has no veil.** `set_override` only saves and runs `apply_now`. The tiers that pick shader variants (character, water, vegetation, weathering, Undertow, underwater) aren't settings: they come from the preset id (`presets[].tiers`, `CharacterShaderTiers.tier_for_preset`, the Undertow and glimmer preset maps). `settings` has no tier key, and an override can't change one. `vegetation_detail` only toggles the vegetation groups (LOD, MultiMesh, small shadows); the foliage shader family follows the preset's `vegetation` tier. What an override does change (a shadow-atlas resize, SDFGI re-converging) happens behind the 2D title with no shader compile. An in-game pause menu would want the same veil for those; there's no pause menu yet.
+- **Tests:** `tests/unit/test_graphics_menu.gd`, including the title row, and `tests/unit/test_graphics_menu_apply.gd` (M1-UI-11: armed, the page is inert while the warm-up lives, and the veil lifts after it finishes or frees; a setting row spawns no warm-up). The `boot_title` baseline was re-approved for the fourth row.
 
 ## Open items
 - **Measure** every row above on a GPU runner (M1-QA-01) and replace the estimates. Add a per-preset benchmark camera path to the vertical-slice zone when one exists.
