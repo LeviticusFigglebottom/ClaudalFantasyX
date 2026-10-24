@@ -490,3 +490,15 @@ Rules:
 | assets/audio/music/brightwater_ferry.loop.json | assets_src/music/brightwater_ferry.py + tools/audio/synth/looping.py | python3 assets_src/music/brightwater_ferry.py | Audio (claude/audio, M3-AUD-11) | 2026-10-24 | original |
 | assets/audio/music/brine_shoals.ogg | assets_src/music/brine_shoals.py + tools/audio/synth/ | python3 assets_src/music/brine_shoals.py | Audio (claude/audio, M3-AUD-11) | 2026-10-24 | original |
 | assets/audio/music/brine_shoals.loop.json | assets_src/music/brine_shoals.py + tools/audio/synth/looping.py | python3 assets_src/music/brine_shoals.py | Audio (claude/audio, M3-AUD-11) | 2026-10-24 | original |
+| assets/audio/sfx/ui_lattice_node.ogg | assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_sfx | Audio (claude/audio, M3-AUD-15) | 2026-10-24 | original |
+| assets/audio/sfx/ui_lattice_unlock.ogg | assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_sfx | Audio (claude/audio, M3-AUD-15) | 2026-10-24 | original |
+| assets/audio/sfx/ui_lattice_step.ogg | assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_sfx | Audio (claude/audio, M3-AUD-15) | 2026-10-24 | original |
+| assets/audio/sfx/ui_equip.ogg | assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_sfx | Audio (claude/audio, M3-AUD-15) | 2026-10-24 | original |
+| assets/audio/sfx/ui_unequip.ogg | assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_sfx | Audio (claude/audio, M3-AUD-15) | 2026-10-24 | original |
+| assets/audio/sfx/ui_map_open.ogg | assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_sfx | Audio (claude/audio, M3-AUD-15) | 2026-10-24 | original |
+| assets/audio/sfx/ui_map_close.ogg | assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_sfx | Audio (claude/audio, M3-AUD-15) | 2026-10-24 | original |
+| assets/audio/sfx/ui_map_tick.ogg | assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_sfx | Audio (claude/audio, M3-AUD-15) | 2026-10-24 | original |
+| assets/audio/sfx/ui_map_marker.ogg | assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_sfx | Audio (claude/audio, M3-AUD-15) | 2026-10-24 | original |
+| assets/audio/sfx/ui_tip.ogg | assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_sfx | Audio (claude/audio, M3-AUD-15) | 2026-10-24 | original |
+| assets/audio/sfx/ui_title_confirm.ogg | assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_sfx | Audio (claude/audio, M3-AUD-15) | 2026-10-24 | original |
+| assets/audio/sfx/ui_title_swell.ogg | assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_sfx | Audio (claude/audio, M3-AUD-15) | 2026-10-24 | original |
