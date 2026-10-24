@@ -180,6 +180,24 @@
         }
       ],
       "_note": "M2-UI-06 has not landed: class and signal names are a guess to correct when it does"
+    },
+    {
+      "class": "SettingsPage",
+      "_note": "M2-AUD-08 via M3-UI-02 (UI track): the Audio, Accessibility and Controls pages (GraphicsMenu keeps its own row). A value step plays ui_cursor at the new level.",
+      "on_enter": "ui_menu_open",
+      "signals": {
+        "closed": "ui_menu_close"
+      },
+      "watch": [
+        {
+          "expr": "node.model.cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.model.value_text(node.model.current())",
+          "sfx": "ui_cursor"
+        }
+      ]
     }
   ]
 }
