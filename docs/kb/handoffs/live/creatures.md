@@ -3,6 +3,17 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
+- **21:30, the Lead's new queue (M3-CRE-610..612, id block 600–699; ownership row added for game/world/npc,
+  game/world/wildlife and their data, tests and assets paths):**
+  - **610 villagers alive** (worktree agent): FieldNpc, which gives villager actors idle loops, a talk gesture, an eased
+    turn to face the player (reusing hero-integration's HeroLocomotion and HeroIdleMicro) and walk routes. It is built
+    on a LOCAL merge of claude/hero-integration (not yet on the integration branch); only the NPC commits land here,
+    after hero-integration merges. Zones stay m2-slice's: they add the node (docs/kb/tech/field_npc.md).
+  - **611 ambient wildlife** (worktree agent): gulls, shore crabs and fish shoals; a WildlifeLayer node plus per-zone
+    data for the zone owners to add.
+  - **612 battle polish** (here): hit_b and idle_b derived for every creature (f426c0e8), hit rotation, and an idle
+    fidget. In progress: Blender verify of all creature jobs, the 60 creature/battle shots, and a KO end-pose audit
+    (BPR-11 plays a KO once, then fades, so KOs must end grounded).
 - **19:50, m2-slice: the `model` lines are in** on claude/m2-slice (544958b1, after big7). 15 Act I enemies point at
   their creature scenes; the internal id `wickfry` is kept and points at glassfry's scene (flags and saves use it).
   stillguard_inquisitor is the character track's. spar_wraith's `hauled_down` row comes with big8. This unblocks the
