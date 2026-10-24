@@ -33,3 +33,6 @@
   - the full gate, re-approving every baseline after viewing;
   - CLAUDE.md §3 and docs/kb/tech/engine.md updated.
 - **Watch:** the Haluna entry against ADR 0029's 3 s, and any 4.7 shader-compile or pipeline-cache changes against M1-RND-28/29.
+
+## Update (2026-10-24, PC GPU, gpu/godot-472-port-check @ 41f4172a)
+The apparent Haluna regression on 4.7.2 (3.1 → 5.4 s) was an artefact: the runs being compared started from different cache states. With the same launch → title → Haluna sequence, the worker-thread instance is 1.06–1.74 s on 4.7.2 against 1.63–1.89 s on 4.6.3, and the main-thread steps cost the same. **The port has no known engine regression.** The variable costs on both engines are the cutscene cast's material load and worker-thread dressing contention (M2-ENV-05).
