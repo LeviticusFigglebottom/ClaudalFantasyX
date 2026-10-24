@@ -17,7 +17,9 @@ echo "logs: $L"   # no gate may hang forever
 step() { printf '\n== %s\n' "$*"; }
 
 step "Data validators";        python3 tools/validate_data.py
-step "Tool unit tests";        python3 -m unittest discover -s tools/tests
+# Same tests as `python3 -m unittest discover -s tools/tests`, one process per module (M2-NIT-06);
+# HYMN_TEST_JOBS caps the processes, HYMN_TEST_CACHE=off re-measures the audio loudness from scratch.
+step "Tool unit tests";        python3 tools/run_tool_tests.py
 step "Audio synth tests";       python3 -m unittest discover -s tools/audio/tests -p "test_*.py"
 step "Task board";             python3 tools/taskboard.py --check > /dev/null
 step "gdlint";                 gdlint game tests
