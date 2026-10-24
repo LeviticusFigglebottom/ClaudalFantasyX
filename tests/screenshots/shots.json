@@ -1080,6 +1080,14 @@
     {
       "id": "battle_pause",
       "scene": "res://game/ui/menus/battle_pause/shots/battle_pause.tscn"
+    },
+    {
+      "id": "lattice_menu",
+      "scene": "res://game/ui/menus/lattice/shots/lattice_menu.tscn"
+    },
+    {
+      "id": "lattice_menu_activate",
+      "scene": "res://game/ui/menus/lattice/shots/lattice_menu_activate.tscn"
     }
   ]
 }
