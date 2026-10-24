@@ -1234,6 +1234,10 @@
     {
       "id": "memories_menu",
       "scene": "res://game/ui/menus/memories/shots/memories_menu.tscn"
+    },
+    {
+      "id": "lattice_overview",
+      "scene": "res://game/ui/menus/lattice/shots/lattice_overview.tscn"
     }
   ]
 }

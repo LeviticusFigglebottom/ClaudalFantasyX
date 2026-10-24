@@ -64,3 +64,6 @@ LATTICE_MENU_PLAN_GATE_KEY_FMT,"Then open it with {need} {facet}."
 LATTICE_MENU_PLAN_GATE_NO_KEY_FMT,"Opening it then needs {need} {facet}, and the party holds {held}."
 LATTICE_MENU_CONFIRM_GATE_WALK_FMT,Walk beside the gate ({cost} movement)
 LATTICE_MENU_CONFIRM_GATE_WALK_FREE,Walk beside the gate (free)
+LATTICE_MENU_OVERVIEW_FMT,Whole board ({key})
+LATTICE_MENU_OVERVIEW_BACK_FMT,Back to the cursor ({key})
+CTRL_ACT_LATTICE_OVERVIEW,Lattice: whole board
