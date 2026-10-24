@@ -2,8 +2,8 @@
 id: M2-RND-05
 title: "Undertow storm, part 2: torn rents, storm in sky and reflections, rain, lightning, chapter presets"
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 depends_on: [M2-RND-01]
 milestone: M2
 request-from: "rendering"
