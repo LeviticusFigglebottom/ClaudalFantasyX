@@ -44,7 +44,9 @@ TRI_BUDGET = {"causeway_flats": (90000, 12000)}
 PATH_CTRL = np.array([[0.0, 0.0], [28.0, -14.0], [62.0, -40.0], [96.0, -58.0], [128.0, -86.0], [158.0, -118.0],
                       [190.0, -134.0], [216.0, -158.0], [236.0, -184.0]])
 DISC_AT_M = 205.0  # the Drownbell's widened disc (B10), along the path
-DISC_R_M = 15.0
+DISC_R_M = 15.1  # the causeway_disc kit piece's paving radius (arenas.py, M2-ENV-11)
+DISC_WALL_R_M = 15.85  # its foundation wall; the ground drops under it to the wall foot
+DISC_FOOT_M = -1.55
 ISLET = (262.0, -212.0, 26.0)  # x, z, radius: the Shell Shrine's tidal islet
 BED_HALF_W_M = 4.5
 SALTGRASS_ABOVE_M = -0.2  # haluna.md §2.3: saltgrass covers 70 % of the ground above -0.2 m
@@ -136,10 +138,12 @@ class Field:
         # The causeway's bed: a low ridge under the slabs, never cut by a channel.
         bed = -0.05 - 0.15 * kc.smoothstep(BED_HALF_W_M, BED_HALF_W_M + 6.0, d)
         h = np.where(d < BED_HALF_W_M + 6.0, np.maximum(h, bed), h)
-        # The Drownbell's disc: a flat round of old paving ground, its centre sunk (haluna.md §2.2).
+        # The Drownbell's disc is the causeway_disc kit piece on the tide datum (haluna.md §2.2): the ground runs
+        # under its foundation wall at the wall foot and comes up to a low apron of sand against the wall face.
         dd = np.hypot(x - self.disc[0], z - self.disc[1])
-        disc = np.where(dd < DISC_R_M * 0.35, -0.35, -0.02)
-        h = np.where(dd < DISC_R_M + 2.0, np.where(dd < DISC_R_M, disc, np.maximum(h, -0.15)), h)
+        apron = np.minimum(np.maximum(h, -0.35), -0.15)
+        h = np.where(dd < DISC_WALL_R_M, DISC_FOOT_M - 0.05,
+                     np.where(dd < DISC_WALL_R_M + 3.0, apron, h))
         # The islet rises out of the flats to the shrine's podium height.
         di = np.hypot(x - ISLET[0], z - ISLET[1])
         isl = -1.2 + 2.0 * (1.0 - kc.smoothstep(ISLET[2] * 0.4, ISLET[2], di)) + 0.15 * (self._n(x, z, 6.0, 2, 4.4) - 0.5)
@@ -194,17 +198,27 @@ def _yaw_deg(t: np.ndarray) -> float:
     return math.degrees(math.atan2(-t[0], -t[1]))
 
 
+def _walk_y(field: Field, x: float, z: float) -> float:
+    """The walked surface: the disc's paving top (y 0) inside its rim, else the ground."""
+    if math.hypot(x - field.disc[0], z - field.disc[1]) < DISC_R_M:
+        return 0.0
+    return float(field.height(np.array(x), np.array(z)))
+
+
 def build_layout(seed: int = SEED) -> dict:
     field = Field(seed)
     rng = kc.rng_for("causeway_layout", seed)
     pieces = []
 
-    def put(piece: str, x: float, z: float, yaw: float, dy: float = 0.0, **kw) -> None:
+    def put(piece: str, x: float, z: float, yaw: float, dy: float = 0.0, **kw) -> bool:
+        if math.hypot(x - field.disc[0], z - field.disc[1]) < DISC_WALL_R_M + 1.5:
+            return False  # nothing set down on the Drownbell's disc but the disc itself
         y = float(field.height(np.array(x), np.array(z))) + dy
         e = {"piece": piece, "at": [round(float(x), 2), round(float(z), 2)], "y": round(y, 3),
              "yaw_deg": round(float(yaw), 1)}
         e.update(kw)
         pieces.append(e)
+        return True
 
     total = float(PATH_S[-1])
     # The head: slab steps up off Haluna's beach onto the bed.
@@ -235,8 +249,8 @@ def build_layout(seed: int = SEED) -> dict:
         q = p + n * (BED_HALF_W_M - 1.6)
         piece = "pilgrim_marker_post_broken" if i == 2 else ("pilgrim_marker_post_leaning" if i % 4 == 1
                                                                else "pilgrim_marker_post")
-        put(piece, q[0], q[1], _yaw_deg(t) + 90.0 + float(rng.uniform(-10, 10)))
-        posts.append([round(float(q[0]), 2), round(float(q[1]), 2)])
+        if put(piece, q[0], q[1], _yaw_deg(t) + 90.0 + float(rng.uniform(-10, 10))):
+            posts.append([round(float(q[0]), 2), round(float(q[1]), 2)])
     # Coral heads: a few beside the path, more out on the flats and in the channels.
     for i in range(46):
         if i < 14:
@@ -259,6 +273,9 @@ def build_layout(seed: int = SEED) -> dict:
     # A wreck rib out on the flats, and the far shrine on its islet (C01's vista).
     put("wreck_rib", 84.0, -12.0, 140.0, -0.15)
     put("shell_shrine_massing", ISLET[0], ISLET[1], 25.0, 0.0)
+    # The Drownbell's disc sits on its own datum (paving top y 0), not on the ground it hollows out.
+    pieces.append({"piece": "causeway_disc", "at": [round(float(field.disc[0]), 2), round(float(field.disc[1]), 2)],
+                   "y": 0.0, "yaw_deg": 0.0, "on_datum": True})
     # Saltgrass: 70 % cover above the grass line, patchy, never on the bed or the disc.
     x0, z0, wx, wz = RECT
     srng = kc.rng_for("causeway_saltgrass", seed)
@@ -289,8 +306,7 @@ def build_layout(seed: int = SEED) -> dict:
         "pieces": [{"piece": "causeway_flats", "at": [0.0, 0.0], "y": 0.0, "yaw_deg": 0.0, "lod1_from_m": 160.0}]
         + pieces,
         "instances": instances,
-        "path": [[round(float(a), 2), round(float(field.height(np.array(a), np.array(b))) + 0.32, 3), round(float(b), 2)]
-                 for a, b in PATH[::4]],
+        "path": [[round(float(a), 2), round(_walk_y(field, a, b) + 0.32, 3), round(float(b), 2)] for a, b in PATH[::4]],
         "anchors": {
             "head": [0.0, 0.0], "islet_steps": [round(float(PATH[-1][0]), 2), round(float(PATH[-1][1]), 2)],
             "marker_posts": posts, "broken_post": posts[2], "tide_pools": tide_pools,

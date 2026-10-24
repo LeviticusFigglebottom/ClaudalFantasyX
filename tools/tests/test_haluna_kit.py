@@ -251,9 +251,22 @@ class CausewayZoneTests(unittest.TestCase):
         lay = json.loads(self.LAYOUT.read_text())
         field = self.cz.Field()
         for spec in lay["pieces"][1:]:
+            if spec.get("on_datum"):
+                continue
             x, z = spec["at"]
             ground = float(field.height(np.array(x), np.array(z)))
             self.assertLess(abs(spec["y"] - ground), 0.31, spec["piece"])
+
+    def test_ground_stays_under_the_drownbell_disc(self) -> None:
+        lay = json.loads(self.LAYOUT.read_text())
+        disc = [p for p in lay["pieces"] if p["piece"] == "causeway_disc"]
+        self.assertEqual(len(disc), 1)
+        field = self.cz.Field()
+        cx, cz_ = disc[0]["at"]
+        a = np.linspace(0.0, 2.0 * np.pi, 64)
+        for r in (0.0, 3.0, 8.0, 15.0, self.cz.DISC_WALL_R_M + 0.5, self.cz.DISC_WALL_R_M + 2.5):
+            h = field.height(cx + r * np.cos(a), cz_ + r * np.sin(a))
+            self.assertLess(float(h.max()), disc[0]["y"] - 0.1, r)
 
     def test_path_runs_head_to_islet_and_pools_hold_water(self) -> None:
         self.assertGreater(float(self.cz.PATH_S[-1]), 250.0)

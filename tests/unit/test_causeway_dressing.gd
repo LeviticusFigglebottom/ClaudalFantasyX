@@ -13,7 +13,7 @@ const MIN_PATH_M := 250.0
 
 func _zone() -> Node3D:
 	var zone := (load(SCENE) as PackedScene).instantiate() as Node3D
-	add_child(zone)
+	(Engine.get_main_loop() as SceneTree).current_scene.add_child(zone)
 	return zone
 
 
@@ -49,7 +49,7 @@ func test_saltgrass_is_baked_multimeshes() -> void:
 
 func test_the_sea_is_at_low_water() -> void:
 	var zone := _zone()
-	await get_tree().process_frame
+	await (Engine.get_main_loop() as SceneTree).process_frame
 	var water := zone.get_node("Water") as Node3D
 	assert_between(water.global_position.y, LOW_WATER_M - EPS, LOW_WATER_M + EPS, "the sea sits at low water")
 	zone.queue_free()

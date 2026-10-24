@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="PackedScene" path="res://assets/environments/zones/saltgrass_causeway/saltgrass_causeway_dressing.tscn" id="1_zone"]
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="2_cam"]
@@ -53,6 +53,13 @@ position = Vector3(75.97, 0.55, -47.42)
 look_at = Vector3(85.05, 4.42, -51.63)
 fov_deg = 53.1
 
+[sub_resource type="Resource" id="ShotC08"]
+script = ExtResource("3_shot")
+id = &"C08"
+position = Vector3(145.06, 1.55, -105.14)
+look_at = Vector3(164.15, -0.40, -122.75)
+fov_deg = 37.8
+
 [node name="SaltgrassCauseway" instance=ExtResource("1_zone")]
 
 [node name="Cameras" type="Node3D" parent="."]
@@ -98,3 +105,9 @@ near = 0.05
 far = 6000.0
 script = ExtResource("2_cam")
 shot = SubResource("ShotC07")
+
+[node name="C08" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotC08")

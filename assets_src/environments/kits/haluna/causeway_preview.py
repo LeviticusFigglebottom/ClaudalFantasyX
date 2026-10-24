@@ -64,6 +64,11 @@ def shots(field: cz.Field, anchors: dict) -> dict:
     # C07 24 mm, 0.6 m, tilted up 20 degrees: the flier's sky.
     p, t = cz.point_at(90.0)
     out["C07"] = (p, 0.6, p + t * 10.0, 0.6 + 10.0 * math.tan(math.radians(20.0)), 24)
+    # C08 35 mm, 1.6 m: arriving at the Drownbell's disc, its paving rings and sunk pool ahead (B10's approach).
+    dx, dz, _r = anchors["drownbell_disc"]
+    disc = np.array([dx, dz])
+    p, t = cz.point_at(cz.DISC_AT_M - cz.DISC_R_M - 9.0)
+    out["C08"] = (p, 1.6, disc + t * 2.0, -0.4, 35)
     return out
 
 
@@ -72,7 +77,7 @@ def main() -> int:
     anchors = json.loads(LAYOUT.read_text())["anchors"]
 
     def gy(x: float, z: float) -> float:
-        return max(float(field.height(np.array(x), np.array(z))), cz.LOW_WATER_M)
+        return max(cz._walk_y(field, float(x), float(z)), cz.LOW_WATER_M)
 
     subs, nodes = [], []
     table = shots(field, anchors)
