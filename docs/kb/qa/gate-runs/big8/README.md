@@ -3,9 +3,13 @@
 For each failing shot, `<id>_out.png` is the WSL2 lavapipe render and `<id>_diff.png` is compare.py's diff (the
 baseline darkened, per-pixel error in red). `compare.txt` lists the RMSE values. **238 compared, 29 failed.**
 
+These PNGs come from a **clean import cache** (re-rendered). The first run kept a stale `.godot/`; it failed the same 29
+shots, and only `battle_arena_tideline` (0.01622, now 0.00988) and `battle_arena_tideline_dawn` (0.03320, now 0.03069)
+moved.
+
 | Group | Shots | Note |
 |---|---|---|
-| Arenas (env-art kits, expected) | 16 `battle_arena_*` | 0.014 (underway_tower) to 0.247 (raft) |
+| Arenas (env-art kits, expected) | 16 `battle_arena_*` | 0.0099 (tideline) to 0.247 (raft) |
 | Arena-based battle shots (expected) | 6 `battle_boss_intro_*`, `drownbell_flood` | the boss intros stage in the kit arenas |
 | Creatures (expected) | `creature_portraits` | |
 | **Not on the expected list** | `field_area_title`, `field_interact_prompt`, `field_objective_line`, `field_tip_card`, `dialogue_continue` | **UI unchanged.** The difference is the Haluna backdrop (the tidewall stone and the sand): env-art's kit change. All at 0.057-0.069 |
