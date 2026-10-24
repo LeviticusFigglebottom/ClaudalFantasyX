@@ -100,6 +100,11 @@ hero actor scene, M2-UI-07, or a creature actor, M2-CRE-03). A creature actor pl
   track (`claude/creatures`, CreatureActor `clip_by_kind`, M2-CRE-03); see their live logs. A creature's
   `clip_by_kind` names its own clips per skill kind; until those rows map onto the contract names, the creature
   plays its clip through BattleActorMotion and the sequencer only moves its root.
+- **Part cues** (M3-C05-07, `BattlePartCues`). Model parts that battle events show and hide without a phase change,
+  from `battle_sandbox.json → part_cues` per creatures.json row: the Cinder Matron's `Crust` shows when `recrust`
+  lands on her or a hit on her `reacted` (her quench in the Pour), and hides when a hit adds `armor_break`. Applied on
+  the action's contact beat (`BattleChoreo.contact`), hides before shows within one hit (the engine's order).
+  `BattleStage`'s `choreo` setter attaches it, so a retry's new sequencer gets a fresh one. Listens only.
 
 **Placeholder clips (M2-BPR-10).** Until the heroes' battle clips land (M2-CHR-07), `BattlePlaceholderClips`
 (`game/battle/scene/battle_placeholder_clips.gd`) gives a model with a `Skeleton3D` and an `AnimationPlayer` a

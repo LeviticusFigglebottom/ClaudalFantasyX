@@ -336,8 +336,7 @@ func current_mode_row(cid: StringName) -> Dictionary:
 
 
 func hero_name(cid: StringName) -> String:
-	var key := str(name_keys.get(cid, ""))
-	return _tr(key) if key != "" else String(cid)
+	return CharacterNames.display(cid, str(name_keys.get(cid, "")))  # "The Kirru" until named (M3-C09-05)
 
 
 static func _tr(key: String) -> String:

@@ -28,7 +28,28 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
   7. **Reefball HUD (M3-UI-01): waits for big8.**
 - **Cross-track gap, for the Lead and Audio:** after big7, `validate_data` has 14 errors and `test_voice_audio` fails. voices.json has no rows for m2-slice's new speakers (boatman, crowd, fenn, ferryman, ferrymaster, garo, hobb, ione, marra, poolkeeper, stillguard, tavi, tender, townsfolk). claude/audio already has them; the gap closes when audio reaches integration. The Menus track has told Audio as well.
 - **Merge note:** after merging claude/ui, run `godot --import`; there are new class_names (UiFrame, TextFitProbe, PseudoLoc).
-- **MERGE-READY:** pending the full suite on the final head.
+- **MERGE-READY @ 62d38cad** (handoff and live-log commits since are docs only):
+  - **Items:**
+    - M2-UI-07 hero actor scenes, with the KO-clip no-sink fix from hero-integration;
+    - M2-UI-28 pseudo-loc;
+    - M2-UI-29 aspect audit;
+    - M2-UI-30 subtitles;
+    - M3-UI-04 Act I maps;
+    - M2-AUD-08 value-step tick;
+    - M2-UI-26 bestiary creature portrait;
+    - M3-C05-07 Matron Crust cues;
+    - M3-C09-05 Ch9 HoldPrompt / ActCard / CharacterNames;
+    - the lip sync on reveal times.
+  - **Requests filed:** M2-MNU-11, M2-FP-29, M2-ARC-09, M3-CRE-201, M3-C09-201.
+  - **Checks run:**
+    - gdlint and gdformat are clean;
+    - `taskboard --check` is OK;
+    - `validate_data` has only the 14 known voices errors;
+    - the full Godot suite is 2167 run, 1 failed: `test_voice_audio`, the same voices gap.
+    - **Shots:** the 31 battle shots were captured twice, pixel-identical, and 27 re-approved after viewing. The agents approved bestiary_menu, cutscene_hold_prompt, cutscene_act_card and the four aspect shots; I viewed them after merging.
+  - **Checks skipped:** the full screenshot manifest (the Lead runs it), Blender (no Blender sources touched), and coverage (no core `game/battle/` or `game/progression/` code).
+  - **After merging:** run `godot --import` for the new class_names.
+  - **Next step:** the hero-integration stand_ins repoint, once claude/hero-integration is on integration.
 - **Id blocks (Lead, 21:00):** this track's new task ids are 200–299 (any prefix, e.g. M2-UI-210), new ADRs 0110–0119, and handoffs are named `<date>-<role>-ui-<n>.md`.
 - **Since 20:45:**
   - **M2-AUD-08: review.** It is M3-UI-02's Audio page plus a `SettingsPage` sound hook in ui_sfx.json, so each value step ticks.
