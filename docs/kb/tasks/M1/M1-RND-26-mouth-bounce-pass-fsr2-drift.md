@@ -2,8 +2,8 @@
 id: M1-RND-26
 title: The mouth bounce pass changes FSR2's resolve of the mouth at High even when it adds nothing
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: character
 depends_on: [M1-RND-24]
 milestone: M1
