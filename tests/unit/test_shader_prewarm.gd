@@ -278,7 +278,7 @@ func test_stage_is_time_sliced_and_self_tunes() -> void:
 	var f := FileAccess.open(reg_path, FileAccess.WRITE)
 	f.store_string(JSON.stringify(reg))
 	f.close()
-	var router := Node.new()
+	var router := SwapHoldStub.new()
 	_host().add_child(router)
 	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
 	node.registry_path = reg_path
@@ -286,7 +286,7 @@ func test_stage_is_time_sliced_and_self_tunes() -> void:
 	assert_eq(node.start(""), 11, "every draw is built at start")
 	assert_eq(node.stage_node_count(), 4, "but only one batch is staged on the first frame")
 	assert_eq(node.pending_count(), 7)
-	assert_true(node.is_staging() and ShaderPrewarm.is_staging_under(router))
+	assert_true(node.is_staging() and router.holders.has(node), "staging holds the parent's swap (M1-RND-23)")
 	node.tick(20.0)  # under the slice budget: the next full batch goes in
 	assert_eq(node.stage_node_count(), 8)
 	node.tick(90.0)  # over budget: the batch halves
@@ -299,7 +299,7 @@ func test_stage_is_time_sliced_and_self_tunes() -> void:
 	assert_true(node.is_staging(), "the last batch still renders frames_to_render frames")
 	node.tick(10.0)
 	assert_false(node.is_staging())
-	assert_false(ShaderPrewarm.is_staging_under(router))
+	assert_false(router.holders.has(node), "and releases it when the stage clears")
 	assert_eq(node.stage_node_count(), 0, "stage cleared")
 	assert_eq(node.stats["batches"], 4)
 	assert_eq(node.stats["min_batch"], 2)
@@ -418,3 +418,16 @@ func _save(res: Resource, file_name: String) -> String:
 	var path := TMP_DIR + "/" + file_name
 	ResourceSaver.save(res, path)
 	return path
+
+
+## A parent with SceneRouter's hold API (hold_swap / release_swap), without the autoload.
+class SwapHoldStub:
+	extends Node
+	var holders: Array[Object] = []
+
+	func hold_swap(holder: Object) -> void:
+		if not holders.has(holder):
+			holders.append(holder)
+
+	func release_swap(holder: Object) -> void:
+		holders.erase(holder)
