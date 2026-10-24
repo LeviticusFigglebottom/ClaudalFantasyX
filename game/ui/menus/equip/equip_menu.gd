@@ -78,6 +78,13 @@ func data_section() -> String:
 	return "equip_menu"
 
 
+## M2-MNU-08: gear that changes the encounter rate (Light Step) reaches the zone's meter on the way out.
+func close() -> void:
+	if is_open() and is_inside_tree():
+		get_tree().call_group(FieldEncounters.GROUP, &"refresh_rate")
+	super()
+
+
 func hero_page() -> MenuPage:
 	return _heroes
 
