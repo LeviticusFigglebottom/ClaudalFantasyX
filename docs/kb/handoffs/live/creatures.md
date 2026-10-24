@@ -18,6 +18,10 @@ Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD),
     variants (squall_wing, wall_polyp on Watcher stones, wreck_crab in a lamp housing).
   - **To m2-slice (sent by message):** the `model` lines for their Act I rows, plus the placeholder phase ids
     (cinder_matron `crust_breaks`; undertows_reach `dark`, `breach`) to rename to theirs.
+    **Their reply (14:41):** they add the `model` lines in their first merge after claude/creatures reaches the
+    integration branch, since the scenes must exist for their validate_data. wickfry's row points at glassfry's scene,
+    and the id is renamed to glassfry in that merge. They will use `dark`/`breach` for the Reach, and the Matron's
+    phase ids come with their Ch5 build.
   - **To PC GPU (undertows_reach):** the `water` slot is a creature-shader stand-in; swap in the Undertow look. Notes
     are in act1/undertows_reach.md.
 - **MERGE-READY @ 2f36b275: ci_local exit 0, 1467 tests, 91 shots, Blender identical.** Branch `claude/creatures`, with `origin/claude/undertow-lead-handoff-423ixt` e9938ed merged in at 4cfc523.
