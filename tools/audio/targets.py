@@ -41,6 +41,15 @@ RULES = [
     ("sfx/dive/dive_lantern_hum.ogg", "integrated", -24.0, 0.5, -6.0, "the lantern's hum under water (a loop)"),
     ("sfx/dive/dive_stroke_*.ogg", "momentary", -20.0, 1.0, -1.0, "swimming strokes (they repeat)"),
     ("sfx/dive/*.ogg", "momentary", -18.0, 1.0, -1.0, "diving SFX"),
+    # M3-AUD-13 (assets_src/sfx/choreo_sfx.py): the battle choreography's layers under the -18 hits
+    ("sfx/choreo/whoosh_*.ogg", "momentary", -20.0, 1.0, -1.0, "strike whooshes (before the contact)"),
+    ("sfx/choreo/accent_*.ogg", "momentary", -21.0, 1.5, -1.0, "weapon accents, a layer under the hit"),
+    ("sfx/choreo/step_*.ogg", "momentary", -21.0, 1.5, -1.0, "battle footfalls on sand (they repeat)"),
+    ("sfx/choreo/flood_brace_*.ogg", "momentary", -21.0, 1.0, -1.0, "the party's brace at the Flood (staggered)"),
+    ("sfx/choreo/swell_*.ogg", "momentary", -19.0, 1.0, -1.0, "Swell finisher accents, over their own VFX sound"),
+    ("sfx/choreo/vowbound_beckon.ogg", "momentary", -19.0, 1.0, -1.0, "the caller's call, under vowbound_call"),
+    ("sfx/choreo/vowbound_sink.ogg", "momentary", -20.0, 1.0, -1.0, "the Vowbound's dismissal"),
+    ("sfx/choreo/*.ogg", "momentary", -18.0, 1.0, -1.0, "KO collapse, toll wave, surge, the Vowbound's rise and fall"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
 TOTAL_BUDGET = 48 * 1024 * 1024     # every shipped audio file (mix.md §5: the slice + Act I; ~1 MB per minute of music)

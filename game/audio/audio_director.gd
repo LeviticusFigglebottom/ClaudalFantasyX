@@ -418,6 +418,8 @@ func _on_node_added(node: Node) -> void:
 		_later(attach_footsteps, node)
 	elif reefball != null and reefball.wants(node):
 		_later(reefball.watch, node)
+	elif ChoreoAudio.wants(node):  # M3-AUD-13: the battle choreography's layers (choreo_sfx.json hooks)
+		_later(ChoreoAudio.attach_to.bind(self), node)
 	elif ui != null and ui.wants(node):
 		_later(ui.watch, node)
 

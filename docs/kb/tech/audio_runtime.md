@@ -305,3 +305,53 @@ The director builds it in `setup`, configures it in `_ready`, steps it in `advan
   the `reefball_swimmer` group (the test scene's players are bare MeshInstance3Ds today). When the minigame lands,
   rename the match, ball and goal hooks' classes and signals to the real ones. Use either the match's contact
   signals or the ball's, not both.
+
+## Choreography layers (M3-AUD-13)
+
+The battle-presentation track (`claude/battle-presentation`, docs/kb/tech/battle_presentation.md there) plays each
+action as beats through **BattleChoreo**. BattleVfx plays on its `contact`, so M2-AUD-04's element hits (BattleAudio)
+already land with the blow. **ChoreoAudio** (`game/audio/choreo_audio.gd`) adds the layers that have no particle,
+from `game/data/audio/choreo_sfx.json` (rows in `sfx_choreo.json`, Combat bus, files from
+`assets_src/sfx/choreo_sfx.py`).
+
+- **The hook, by name only.** `choreo_sfx.json` `hooks` names the class (`BattleChoreo`) and, per role, its signal:
+  `beat(kind, actor_id)` and `contact(result)`. The director's `_on_node_added` asks `ChoreoAudio.wants(node)` (the
+  node's script's global class name, walking base scripts, like UiAudio) and builds the listener deferred
+  (`ChoreoAudio.attach_to`), under the director, keyed in `listeners` so it is freed when the choreography leaves (a
+  retry builds a new one). Signals are connected by name (`has_signal`; extra arguments dropped with `unbind`); the
+  methods it reads are guarded too (`current`, `style_id_for`, `entering`, `leaving`, `animating`, `after_sequence`,
+  and `speed`). So this branch compiles and runs without the classes; the hook row says `pending` until they merge
+  (validate_data then checks the class's signals for real).
+- **BattleBossChoreo and BattleVowboundChoreo are RefCounted helpers, not nodes**, and emit no signals of their own,
+  so no node-added hook can see them. Their moments are heard from the engine (found as the `engine` of the
+  choreography's nearest ancestor that has one, the BattleController) and from BattleChoreo's own state:
+  - the Vowbound's **call**: `engine.vowbound.called` (when animating) plays `vowbound_beckon` under BattleAudio's
+    `vowbound_call`;
+  - its **rise**, **sink** and **fall**, and the party's **step-off and walk-in**: polled once a frame from
+    `entering(cid)` / `leaving(cid)`, as each move's clock reaches 0 (after its delay). A rise lasting `long_sec`
+    or more (the C10 summon entry, 2.6 s) plays `vowbound_rise_long`. Fall or sink comes from
+    `engine.vowbound.departed(v, fell)`;
+  - the **Flood brace**: `engine.phase_changed` to `flood.phase`, then `after_sequence`, then `flood_brace` for each
+    active member `stagger_sec` apart (BattleBossChoreo's brace; 0.12 s in both tables).
+- **Beats.** `approach` and `return` spread `*_steps` footfalls (`choreo_step`) over the beat's length (plan times
+  ÷ the battle speed); fighters in `no_steps` (fliers, the bell, Ilun) make none. `strike` starts the style's whoosh
+  (or `strike_by_weapon`: the anchor-cleaver and the bell's hood swing heavy) `peaks[whoosh]` seconds before the
+  contact, so its crest lands on the blow. `ko` plays `ko_collapse` for any felled fighter but a Vowbound.
+- **Contact.** `skills[skill]` first (the surges; `""` silences one), else the style's `contact_by_weapon` or
+  `contact`, where `@weapon` is the actor's weapon accent (`weapons` by base id → `accents`). `needs_hit` (default
+  for `@weapon`, and set on `cast`) plays it only when a blow landed for damage on someone else: a miss has the
+  whoosh and the dodge, no touch. The Swell styles play their hero's `swell_*` accent; `toll` plays `toll_wave` on
+  the toll's contact (the ring is still BattleBossVfx's, and the toll itself BattleAudio's). Contact uses
+  `style_id_for(result)`, so it also plays when actions land instantly (pacing 0, "skip animations"); the beats,
+  steps, call and brace need the choreography to be animating.
+- **No doubled hit.** Nothing here plays a BattleAudio row: the accents are a separate, softer layer (−21 LUFS
+  momentary against the hits' −18), and the whoosh ends on the contact. **Reduced audio** (`reduced_skip`) drops the
+  accents and the footfalls, so BattleAudio's one layer per action stays the only one; the whoosh, KO and set-piece
+  sounds stay.
+- **Checks:** `tools/audio/data_check.py` `choreo_errors` (hooks and roles, Combat-bus rows, weapons with accents,
+  whooshes with a crest time, style ids known to `game/data/battle/choreo.json` once present);
+  `tools/tests/test_audio_data.py` `ChoreoSfxTest`; `tests/unit/test_choreo_audio.gd` with a stand-in built at
+  runtime (a GDScript compiled in the test, no class_name, named BattleChoreo through `ChoreoAudio.matcher`).
+- **After the merge, verify:** the real BattleChoreo's `beat`/`contact` signatures match (validate_data does it once
+  the class exists; drop `pending`), the whoosh crest against a live melee at 1x and 2x, and that a retry leaves one
+  ChoreoAudio. Kerrid has no row in characters.json yet; his `anchor_cleaver` accent waits for him.

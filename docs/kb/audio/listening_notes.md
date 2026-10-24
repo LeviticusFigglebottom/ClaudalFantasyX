@@ -528,3 +528,25 @@ they play. Does each read as its place (a harbour; the inside of a great bell's 
 terrace water at a festival; a mountain under falling ash; a hard sea wall)? **Please check the wrap of
 `tamsule_bell.ogg`** (every 40 s): the Vorbis encoder leaves a tiny step at the file's ends that this quiet, humming
 bed shows more than the others; if you hear a tick, I'll mask it.
+
+## M3: the battle's motion (M3-AUD-13)
+
+Files in `assets/audio/sfx/choreo/` (from `assets_src/sfx/choreo_sfx.py`). In the game they sit **under** the hits
+you already know (`assets/audio/sfx/battle/hit_*`): play a hit right after its accent to hear the pair.
+
+- **Whooshes** (`whoosh_melee_*`, `heavy_*`, `cast_*`, `throw_*`, `guard_*`): each crests about 0.1–0.3 s in, on the
+  blow. Do they read as air moving, or as hiss? Is the heavy one heavy without being a roar?
+- **Weapons** (`accent_*`): Rhen's twin hooks with the lantern's glass ticking (`hooks`), Asha's wooden staff with the
+  shell-bell (`staff`), Toma's spear and his old turtle-shell shield (`spear`, `shield`), Ysolde's book struck flat and
+  her focus releasing a cast (`book`, `focus`), Kerrid's anchor-cleaver breaking armour (`cleaver`), claws, teeth,
+  and the Drownbell's hood. **Can you tell the four heroes apart with your eyes closed?** Are any of them too quiet
+  or too clicky to matter under a hit?
+- **Footfalls** (`step_sand_1..4`): damp battle sand. Do four in a row sound like one person, not a machine gun?
+- **The KO** (`ko_collapse_*`): the knees, then the body into shallow water. Too much splash for a sad moment?
+- **Swell accents** (`swell_rhen`, `asha`, `toma`, `ysolde`): short and bright, over each finisher's own sound. Do
+  they feel earned, or like a slot machine?
+- **The Drownbell:** `toll_wave` is the ring passing the party (play it right after `battle/drownbell_toll.ogg`);
+  `flood_surge` the surge attacks; `flood_brace_*` the water at the party's legs as they brace.
+- **Ilun:** `vowbound_beckon` (Asha's call: a breath rising a fifth), `vowbound_rise` and `vowbound_rise_long` (the
+  first call's slow rise), `vowbound_sink` (dismissed), `vowbound_fall` (struck down, drawn under). Does the fall
+  sound sadder than the sink?
