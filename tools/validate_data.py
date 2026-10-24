@@ -2327,7 +2327,7 @@ def check_choreo(files: dict[str, object], rep: Report) -> None:
 
 def check_audio(root: Path, rep: Report) -> None:
     """M2-AUD-02: the audio tables (tools/audio/data_check.py)."""
-    sys.path.insert(0, str(root / "tools" / "audio"))
+    sys.path.insert(0, str(Path(__file__).resolve().parent / "audio"))  # the checker's code, not the root's
     import data_check  # noqa: E402
 
     for e in data_check.audio_errors(data_check.load_files(root), lambda res: _res_path(root, res).is_file(),
