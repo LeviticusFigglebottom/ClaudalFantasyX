@@ -1,6 +1,6 @@
 {
   "lattice_menu": {
-    "doc": "The Lattice page (M2-MNU-01; docs/kb/tech/ui.md section Lattice page). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'board' holds the LatticeBoardView drawing metrics in reference px (unit_px: one lattice unit; node shapes are half-diagonals of a lozenge), the camera pan time, the mouse's zoom (zoom_min / zoom_max: the scale the wheel stops at; zoom_step: one notch's factor) and drag (drag_px: how far a press moves before it pans instead of clicking; M2-UI-26), the direction-pick cone (cone_cos: the cosine of the widest angle off the pressed direction; angle_weight: how much a slanted node counts as farther) and the palette role of each board region (theme colours of type Hymn, never hard-coded). 'side' is the details panel, 'legend' the key (each node look, drawn as the board draws it, and its meaning; its rect is where it sits when the lines above end higher, else it follows them, and it shows only its first rows that end side.foot_gap above the foot, hiding when fewer than min_rows fit), 'status' the foot (the last result or refusal), and 'confirm' the two-row MenuPage that takes its place before anything is spent.",
+    "doc": "The Lattice page (M2-MNU-01; docs/kb/tech/ui.md section Lattice page). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'board' holds the LatticeBoardView drawing metrics in reference px (unit_px: one lattice unit; node shapes are half-diagonals of a lozenge), the camera pan time, the mouse's zoom (zoom_min / zoom_max: the scale the wheel stops at; zoom_step: one notch's factor) and drag (drag_px: how far a press moves before it pans instead of clicking; M2-UI-26), the direction-pick cone (cone_cos: the cosine of the widest angle off the pressed direction; angle_weight: how much a slanted node counts as farther) and the palette role of each board region (theme colours of type Hymn, never hard-coded). 'portrait' (M2-MNU-301) is the hero on show's head (a face-cropped HeroPortraitFrame) right of the 'hero' line. 'side' is the details panel, 'legend' the key (each node look, drawn as the board draws it, and its meaning; its rect is where it sits when the lines above end higher, else it follows them, and it shows only its first rows that end side.foot_gap above the foot, hiding when fewer than min_rows fit), 'status' the foot (the last result or refusal), and 'confirm' the two-row MenuPage that takes its place before anything is spent.",
     "canvas_layer": 64,
     "panel": {
       "rect": [96, 54, 1728, 972],
@@ -8,7 +8,8 @@
       "title_height": 56,
       "help_height": 40
     },
-    "hero": {"rect": [1104, 81, 693, 56]},
+    "hero": {"rect": [1104, 81, 597, 56]},
+    "portrait": {"rect": [1713, 66, 84, 84]},
     "board": {
       "rect": [123, 153, 1158, 795],
       "unit_px": 51,
