@@ -29,6 +29,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import chapter_flow_check  # noqa: E402
 import dlgc  # noqa: E402
 
 ELEMENTS = {"none", "fire", "water", "lightning", "ice", "holy", "glimmer"}
@@ -262,6 +263,16 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
         for eid in lineup:
             if eid not in enemy_ids:
                 rep.err(f"encounters.{enc['id']}: unknown enemy '{eid}'")
+        lent = enc.get("party_skills", {})  # M3-C01-02, ADR 0034: skills a tutorial fight lends
+        if not isinstance(lent, dict):
+            rep.err(f"encounters.{enc['id']}: party_skills must be {{hero id: [skill ids]}}")
+            lent = {}
+        for cid, sks in lent.items():
+            if cid not in char_ids:
+                rep.err(f"encounters.{enc['id']}: party_skills names unknown hero '{cid}'")
+            for sk in sks if isinstance(sks, list) else [sks]:
+                if sk not in skill_ids:
+                    rep.err(f"encounters.{enc['id']}: party_skills lends unknown skill '{sk}'")
     return keys
 
 
@@ -1251,6 +1262,7 @@ def run(root: Path) -> Report:
     data_keys += check_dialogue(root, files, rep)
     data_keys += check_progression(files, rep)
     data_keys += check_items(files, declared_flags_quiet(root), rep)
+    check_inns(files, declared_flags_quiet(root), rep)
     data_keys += check_vowbound(files, rep)
     check_vowbound_flags(files, declared_flags_quiet(root), rep)
     data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
@@ -1258,10 +1270,13 @@ def run(root: Path) -> Report:
     data_keys += check_swell(files, rep)
     data_keys += check_boss(files, declared_flags_quiet(root), rep)
     check_read_openings(files, rep)
+    data_keys += check_objectives(files, declared_flags_quiet(root), rep)  # M2-UI-16/18
+    data_keys += check_tutorial_tips(files, declared_flags_quiet(root), rep)  # M2-UI-24
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_undertow(root, files, rep)
     check_zone_weather(root, files, rep)
+    check_chapter_flow(root, files, declared_flags_quiet(root), rep)
     check_provenance(root, rep)
     check_banned(root, rep)
     check_binary_sizes(root, rep)
@@ -1297,12 +1312,20 @@ def _tscn_attrs(header: str) -> dict[str, str]:
 
 
 def scene_spawns(text: str) -> set[str]:
-    """Names of the nodes directly under the root's Spawns node in a .tscn's text."""
+    """Names of the nodes directly under the root's Spawns node in a .tscn's text. A greybox zone
+    (M3-ARC-01) builds its Spawns from its layout file, so those are read from the layout."""
     out: set[str] = set()
     for m in TSCN_HEADER_RE.finditer(text):
         a = _tscn_attrs(m.group(0))
         if a.get("parent") == "Spawns" and a.get("name"):
             out.add(a["name"])
+    layout = chapter_flow_check.greybox_layout_path(text)
+    if layout is not None:
+        p = Path(__file__).resolve().parents[1] / layout.removeprefix("res://")
+        try:
+            out |= set(json.loads(p.read_text(encoding="utf-8")).get("spawns", {}))
+        except (OSError, json.JSONDecodeError, AttributeError):
+            pass
     return out
 
 
@@ -1339,7 +1362,7 @@ def scene_has_player(text: str, scenes: dict[str, str] | None = None, scripts: d
         # Godot writes a node's script as a property line under the header (`script = ExtResource(..)`),
         # not in the header itself; both forms count (M2-FP-03).
         script_id = a.get("script", "") or _node_script_id(text, m.end())
-        if is_root and scripts and PLACE_AT_RE.search(scripts.get(ext.get(script_id, ""), "")):
+        if is_root and scripts and _script_places(ext.get(script_id, ""), scripts):
             return True
         sub = (scenes or {}).get(ext.get(a.get("instance", ""), ""))
         if sub is None:
@@ -1352,6 +1375,23 @@ def scene_has_player(text: str, scenes: dict[str, str] | None = None, scripts: d
 
 
 TSCN_SCRIPT_PROP_RE = re.compile(r'^script = ExtResource\("([^"]+)"\)', re.M)
+SCRIPT_EXTENDS_RE = re.compile(r'^extends\s+"?([\w./:]+)"?', re.M)
+SCRIPT_CLASS_RE = re.compile(r'^class_name\s+(\w+)', re.M)
+
+
+def _script_places(path: str, scripts: dict[str, str], depth: int = 0) -> bool:
+    """True when the script at res:// `path`, or one it extends (by path or class_name), defines
+    place_at: a chapter's zone root inherits GreyboxZone's (M3-C01-02)."""
+    text = scripts.get(path, "")
+    if PLACE_AT_RE.search(text):
+        return True
+    m = SCRIPT_EXTENDS_RE.search(text)
+    if m is None or depth >= PLAYER_SCENE_MAX_DEPTH:
+        return False
+    parent = m.group(1)
+    if not parent.startswith("res://"):
+        parent = next((p for p, s in scripts.items() if (c := SCRIPT_CLASS_RE.search(s)) and c.group(1) == parent), "")
+    return parent != "" and _script_places(parent, scripts, depth + 1)
 
 
 def _node_script_id(text: str, header_end: int) -> str:
@@ -2227,6 +2267,12 @@ def zone_weather_errors(doc: object, scene_exists) -> list[str]:
     for i, row in enumerate(zones):
         w = f"{w0} zones[{i}]"
         errs += _wind_row_errors(row, w)
+        variants = row.get("variants", {}) if isinstance(row, dict) else {}  # m2-slice: e.g. Haluna at night
+        if not isinstance(variants, dict):
+            errs.append(f"{w}.variants: must be an object")
+        else:
+            for name, v in variants.items():
+                errs += _wind_row_errors(v, f"{w}.variants.{name}")
         scene = row.get("scene") if isinstance(row, dict) else None
         if not isinstance(scene, str) or not scene.startswith("res://") or not scene.endswith(".tscn"):
             errs.append(f"{w}.scene: must be a res://...tscn path")
@@ -2247,6 +2293,173 @@ def check_zone_weather(root: Path, files: dict[str, object], rep: Report) -> Non
     for e in zone_weather_errors(doc, lambda res: _res_path(root, res).is_file()):
         rep.err(e)
 
+
+
+# --- M2-UI-06: inns (shops.json "inns": a price for a full rest, game/progression/inn.gd) ---------
+
+INN_KEYS = ("id", "name_key", "price")
+
+
+def inns_errors(doc: object, flags: set[str], where: str = "game/data/items/shops.json") -> list[str]:
+    """Each inn row: a unique id, a name_key (desc_key optional), a non-negative int price, and a
+    declared requires_flag when it has one. A shops.json without "inns" is fine."""
+    if not isinstance(doc, dict) or "inns" not in doc:
+        return []
+    rows = doc["inns"]
+    if not isinstance(rows, list):
+        return [f"{where}: 'inns' must be a list"]
+    errs: list[str] = []
+    seen: set[str] = set()
+    for i, row in enumerate(rows):
+        w = f"{where}: inns[{i}]"
+        if not isinstance(row, dict):
+            errs.append(f"{w}: must be an object")
+            continue
+        missing = [k for k in INN_KEYS if k not in row]
+        if missing:
+            errs.append(f"{w}: missing {', '.join(missing)}")
+        iid = row.get("id")
+        if not isinstance(iid, str) or not iid:
+            errs.append(f"{w}: id must be a non-empty string")
+        elif iid in seen:
+            errs.append(f"{w}: duplicate inn id '{iid}'")
+        else:
+            seen.add(iid)
+        for key in ("name_key", "desc_key", "location"):
+            if key in row and (not isinstance(row[key], str) or not row[key]):
+                errs.append(f"{w}: {key} must be a non-empty string")
+        price = row.get("price")
+        if "price" in row and not (_is_int(price) and price >= 0):
+            errs.append(f"{w}: price must be a non-negative int (lume)")
+        flag = row.get("requires_flag", "")
+        if flag and flag not in flags:
+            errs.append(f"{w}: undeclared story flag '{flag}' (declare it in game/data/flags.tres)")
+    return errs
+
+
+def check_inns(files: dict[str, object], flags: set[str], rep: Report) -> None:
+    """Inn rows in shops.json. Their loc keys are checked with the rest of the shops file."""
+    for e in inns_errors(files.get(f"{ITEMS_DIR}/shops.json"), flags):
+        rep.err(e)
+
+
+
+# --- M3-ARC-01: Act I chapter flow (game/data/flow/chapters.json) and greybox zone layouts ---------
+
+def check_chapter_flow(root: Path, files: dict[str, object], flags: set[str], rep: Report) -> None:
+    """The chapter files chapters.json lists, and their zones' layouts (tools/chapter_flow_check.py)."""
+    for e in chapter_flow_check.check(root, files, flags):
+        rep.err(e)
+
+
+
+# --- M2-UI-16/18: objectives (game/data/flow/objectives.json) and zone maps (game/data/ui/zone_maps.json) ---
+
+OBJECTIVES_FILE = "game/data/flow/objectives.json"
+ZONE_MAPS_FILE = "game/data/ui/zone_maps.json"
+
+
+def objective_errors(objectives: object, zone_maps: object, declared: set[str]) -> tuple[list[str], list[str]]:
+    """(errors, loc keys) for the objective rows and the zone maps: flags declared, zones and
+    POI targets that exist, unique ids, and every line/name key collected for check_loc."""
+    errs: list[str] = []
+    keys: list[str] = []
+    zm = zone_maps.get("zone_maps") if isinstance(zone_maps, dict) else None
+    pois: dict[str, set[str]] = {}
+    if not isinstance(zm, dict):
+        return [f"{ZONE_MAPS_FILE}: missing the 'zone_maps' object"], keys
+    for z in zm.get("zones", []):
+        zid = str(z.get("id", "")) if isinstance(z, dict) else ""
+        if not zid:
+            errs.append(f"{ZONE_MAPS_FILE}: a zone has no id")
+            continue
+        keys.append(str(z.get("name_key", "")))
+        ids = pois.setdefault(zid, set())
+        for p in z.get("pois", []):
+            pid = str(p.get("id", ""))
+            if pid in ids:
+                errs.append(f"{ZONE_MAPS_FILE}: {zid}: duplicate POI '{pid}'")
+            ids.add(pid)
+            keys.append(str(p.get("name_key", "")))
+            at = p.get("at")
+            if not (isinstance(at, list) and len(at) == 2 and all(_num(v) for v in at)):
+                errs.append(f"{ZONE_MAPS_FILE}: {zid}/{pid}: 'at' must be [x, z]")
+    for r in zm.get("route", []):
+        keys.append(str(r.get("name_key", "")))
+    od = objectives.get("objectives") if isinstance(objectives, dict) else None
+    if not isinstance(od, dict):
+        return errs + [f"{OBJECTIVES_FILE}: missing the 'objectives' object"], keys
+    seen: set[str] = set()
+    for row in od.get("rows", []):
+        rid = str(row.get("id", ""))
+        w = f"{OBJECTIVES_FILE}: {rid}"
+        if not rid or rid in seen:
+            errs.append(f"{w}: missing or duplicate id")
+        seen.add(rid)
+        keys.append(str(row.get("line_key", "")))
+        for f in list(row.get("requires", [])) + ([row["until"]] if row.get("until") else []):
+            if f not in declared:
+                errs.append(f"{w}: flag '{f}' is not declared (game/data/flags.tres)")
+        if row.get("zone") and str(row["zone"]) not in pois:
+            errs.append(f"{w}: zone '{row['zone']}' is not in {ZONE_MAPS_FILE}")
+        t = row.get("target")
+        if t is not None:
+            tz, tp = str(t.get("zone", "")), str(t.get("poi", ""))
+            if tp not in pois.get(tz, set()):
+                errs.append(f"{w}: target {tz}/{tp} is not a POI in {ZONE_MAPS_FILE}")
+    return errs, keys
+
+
+def check_objectives(files: dict[str, object], declared: set[str], rep: Report) -> list[str]:
+    errs, keys = objective_errors(files.get(OBJECTIVES_FILE), files.get(ZONE_MAPS_FILE), declared)
+    for e in errs:
+        rep.err(e)
+    return [k for k in keys if k]
+
+
+TUTORIAL_TIPS_FILE = "game/data/ui/tutorial_tips.json"
+TIP_TRIGGERS = {"field_ready", "near", "flag"}
+
+
+def tutorial_tip_errors(doc: object, declared: set[str]) -> tuple[list[str], list[str]]:
+    """M2-UI-24: every tip has a known trigger, declared seen/required/when flags, its loc keys, and
+    no two tips share a seen flag. Returns (errors, loc keys)."""
+    errs: list[str] = []
+    keys: list[str] = []
+    if doc is None:
+        return errs, keys
+    tips = (doc or {}).get("tutorial_tips", {}).get("tips", []) if isinstance(doc, dict) else []
+    seen_flags: set[str] = set()
+    for i, t in enumerate(tips):
+        w = f"{TUTORIAL_TIPS_FILE} tips[{i}] ({t.get('id', '?')})"
+        on = t.get("on")
+        if on not in TIP_TRIGGERS:
+            errs.append(f"{w}: 'on' must be one of {sorted(TIP_TRIGGERS)}")
+        if on == "near" and not t.get("tag"):
+            errs.append(f"{w}: a 'near' tip needs a 'tag'")
+        if on == "flag" and not t.get("when"):
+            errs.append(f"{w}: a 'flag' tip needs 'when'")
+        flag = str(t.get("flag", ""))
+        if not flag:
+            errs.append(f"{w}: no seen 'flag'")
+        elif flag in seen_flags:
+            errs.append(f"{w}: seen flag '{flag}' is used by another tip")
+        seen_flags.add(flag)
+        for f in [flag, *t.get("requires", []), *([t["when"]] if t.get("when") else [])]:
+            if f and f not in declared:
+                errs.append(f"{w}: flag '{f}' is not declared in game/data/flags.tres")
+        for k in ("title_key", "body_key"):
+            if not t.get(k):
+                errs.append(f"{w}: no {k}")
+            keys.append(str(t.get(k, "")))
+    return errs, keys
+
+
+def check_tutorial_tips(files: dict[str, object], declared: set[str], rep: Report) -> list[str]:
+    errs, keys = tutorial_tip_errors(files.get(TUTORIAL_TIPS_FILE), declared)
+    for e in errs:
+        rep.err(e)
+    return [k for k in keys if k]
 
 
 if __name__ == "__main__":

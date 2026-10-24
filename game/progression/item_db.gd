@@ -27,6 +27,8 @@ var abilities: Dictionary = {}
 var recipes: Dictionary = {}
 ## Shop id -> row (shops.json "shops").
 var shops: Dictionary = {}
+## Inn id -> row (shops.json "inns": a price for a full rest; M2-UI-06, Inn).
+var inns: Dictionary = {}
 ## Character id -> {"weapon": equipment id, "armor": equipment id}.
 var starting: Dictionary = {}
 
@@ -139,6 +141,7 @@ static func from_tables(raw: Dictionary) -> ItemDB:
 	db.sell_ratio_den = maxi(int(sh_rules.get("sell_ratio_den", 1)), 1)
 	db.min_sell_price = int(sh_rules.get("min_sell_price", 0))
 	db.shops = _index(sh.get("shops", []))
+	db.inns = _index(sh.get("inns", []))
 	return db
 
 

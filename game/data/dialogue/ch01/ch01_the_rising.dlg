@@ -1,0 +1,39 @@
+// Ch1 C1-12 "Cutscene: the Rising", and the start of C1-13. O11: the far horizon under a clear blue
+// sky; the sea draws back off the outer reef; the Undertow stands up out of the sea, a wall of dark
+// water and cloud lit from within by cyan wounds, into a sky that stays blue (preset ch01_arrival).
+// O12: the town's drill, as old as the town, practised and fast, and frightening because it's
+// practised; Kell on her stall's roof lights the big beacon lamp so divers in the water can find the
+// keel-hull (her job in the drill). O13: the Seventh Terrace casting off for open water under full
+// sail (sea room beats a mooring); the last time anyone sees her crewed. All cuts.
+// Rhen's lines are few and short (a sudden short line when it matters). No VO.
+// After the letterbox: Kell, on her roof, sees him and points away from herself. The run's choice
+// (C1-13): "Kell first." sets ch01_ran_for_kell and reports <<event ch01_kell_first>>, so the
+// chapter flow starts the run at her bridge. Both paths end at the net-pen hull.
+title: ch01_the_rising
+location: ch01/oruvel
+---
+@letterbox on
+@camera O11
+@wait 2.0
+@sfx undertow_wall_roar
+@music undertow_rising fade=1.0
+@wait 3.0
+Rhen [afraid]: The reef's showing. #line:ch01_rising_001
+@wait 2.0
+@camera O12
+Sabe [determined]: Cut the low hulls loose! Everyone to the keel-hull! Children first! #line:ch01_rising_002
+Netmender [determined]: Lines in! Lines in! #line:ch01_rising_003
+@anim kell light_beacon
+Kell [determined]: Divers in the water, watch my lamp! Swim for the light! #line:ch01_rising_004
+@camera O13
+Skipper_Sadi [determined]: Cast off! Sea room, all of you, find sea room! #line:ch01_rising_005
+@wait 2.0
+@camera release
+@letterbox off
+Rhen [afraid]: Kell! #line:ch01_rising_006
+Kell [angry]: Not me, you fool! The net-pen! The little ones! #line:ch01_rising_007
+-> Go to the net-pen. #line:ch01_rising_008
+-> Kell first. #line:ch01_rising_009
+    <<set $ch01_ran_for_kell = true>>
+    <<event ch01_kell_first>>
+===

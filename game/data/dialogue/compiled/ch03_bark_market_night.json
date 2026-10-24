@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch03_bark_market_night",
+ "source": "game/data/dialogue/ch03/ch03_bark_market_night.dlg",
+ "start": "ch03_bark_market_night",
+ "nodes": {
+  "ch03_bark_market_night": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "line", "id": "ch03_bark_market_night_001", "key": "DLG_CH03_BARK_MARKET_NIGHT_001", "speaker": "vendor", "emotion": "soft_smile", "voice": "", "src": 6},
+    {"op": "line", "id": "ch03_bark_market_night_002", "key": "DLG_CH03_BARK_MARKET_NIGHT_002", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

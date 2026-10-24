@@ -2,7 +2,8 @@ class_name CaptureSetup
 extends RefCounted
 ## A shot's "setup" block from tests/screenshots/shots.json (M1-QA-04). It lets the manifest pin what
 ## a scene would otherwise have to detect the capture to pin (camera checks, CAPTURE_SCENE tests).
-##   "globals":    {name: value}  RenderingServer global shader parameters (hymn_wind_time, ...).
+##   "globals":    {name: value}  global shader parameters (hymn_wind_time, ...), written and restored
+##                                 through ShaderGlobals (M1-ENV-11).
 ##   "nodes":      {path: {property: value}}  properties of nodes under the shot's scene root
 ##                 ("." is the root itself).
 ##   "viewport":   {property: value}  properties of the capture viewport, e.g. use_taa, screen_space_aa.
@@ -128,7 +129,7 @@ func hold() -> void:
 	var globals: Dictionary = _spec.get("globals", {})
 	for g: Variant in globals.keys():
 		var name := StringName(String(g))
-		RenderingServer.global_shader_parameter_set(name, coerce(_saved_globals.get(name), globals[g]))
+		ShaderGlobals.set_value(name, coerce(_saved_globals.get(name), globals[g]))
 
 
 ## Just before each frame is drawn (RenderingServer.frame_pre_draw), after Tweens and animation: the
@@ -161,8 +162,11 @@ func end() -> void:
 		if is_instance_valid(obj):
 			obj.set(String(entry[1]), entry[2])
 	_saved_props.clear()
+	# Through ShaderGlobals (M1-ENV-11): its listeners (AUTO plant shelter on hymn_sun_direction) see
+	# the shot's value and the restore, and no stale copy outlives the shot. The saved value is the
+	# project.godot default, which is what reset() writes.
 	for name: Variant in _saved_globals.keys():
-		RenderingServer.global_shader_parameter_set(name as StringName, _saved_globals[name])
+		ShaderGlobals.reset(name as StringName)
 	_saved_globals.clear()
 	if _began:
 		Engine.time_scale = _saved_time_scale
@@ -237,7 +241,7 @@ func _apply_globals(first: bool) -> String:
 			var v: Variant = coerce(_saved_globals[name], globals[g])
 			if typeof(v) != typeof(_saved_globals[name]):
 				return "setup.globals.%s: cannot use %s for a %s" % [name, JSON.stringify(globals[g]), decl["type"]]
-		RenderingServer.global_shader_parameter_set(name, coerce(_saved_globals[name], globals[g]))
+		ShaderGlobals.set_value(name, coerce(_saved_globals[name], globals[g]))
 	return ""
 
 

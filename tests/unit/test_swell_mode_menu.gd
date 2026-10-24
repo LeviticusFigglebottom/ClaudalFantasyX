@@ -127,7 +127,7 @@ func test_mode_rows_mean_nothing_off_the_swell_page() -> void:
 func test_the_assist_is_a_setting_that_defaults_off() -> void:
 	var s := UiSettings.new()
 	assert_eq(s.timing_assist(), &"off")
-	assert_eq(s.options(UiSettings.TIMING_ASSIST), ["off", "wide", "auto"])
+	assert_eq(s.options(UiSettings.TIMING_ASSIST), ["off", "wide", "auto", "hold"])
 	assert_eq(s.timing_assist_tag_key(), "")
 	var row := _ring_row()
 	assert_eq(s.timing_input(row), row, "off: the row as swell.json has it")

@@ -53,6 +53,12 @@ var cancelled := false
 var assist_floor: StringName = &""
 ## Misses as played, before the assist (a kind that rewards a clean run reads this, not grades).
 var raw_misses := 0
+## Hold to confirm (M2-UI-14, the timing assist "hold"): assist_floor applies only while `held` is
+## true, so holding Confirm plays each step that comes up at the floor's grade and the input
+## finishes by itself; letting go hands the steps back to the player. SwellInputKeys sets `held`.
+var assist_hold := false
+## Confirm is held now (only read with assist_hold).
+var held := false
 
 
 func _init(input: Dictionary = {}) -> void:
@@ -60,6 +66,7 @@ func _init(input: Dictionary = {}) -> void:
 	lead_in_sec = float(input.get("lead_in_sec", lead_in_sec))
 	max_step_sec = float(input.get("max_step_sec", max_step_sec))
 	assist_floor = StringName(str(input.get("assist_floor", "")))
+	assist_hold = bool(input.get("assist_hold", false))
 
 
 ## The input for swell.json "inputs" row `input`, by its kind; null for an unknown kind.
@@ -159,11 +166,12 @@ func release(_button: StringName = BUTTON_ACCEPT) -> StringName:
 
 
 ## Records the next step's grade. Every kind grades through here, so the timing assist works the
-## same for all of them: a miss becomes assist_floor's grade for this step.
+## same for all of them: a miss becomes assist_floor's grade for this step (with assist_hold, only
+## while Confirm is held).
 func _record(grade: StringName) -> void:
 	if grade == GRADE_MISS:
 		raw_misses += 1
-		if assist_floor != &"":
+		if assist_floor != &"" and (held or not assist_hold):
 			grade = scripted_grades(assist_floor)[grades.size()]
 	grades.append(grade)
 

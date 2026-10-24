@@ -4,12 +4,14 @@ extends Control
 ## FieldMenu on a fixed scratch save, so the player's save never moves a baseline:
 ##   - "root": the root page, the cursor on Swell (its line under the right page);
 ##   - "swell_modes": Rhen's fill modes with Tether unlocked and Wake in use, the cursor on Tether.
-## The modes themselves come from swell.json (BattleSwellCarry), as in play.
+## The modes themselves come from swell.json (BattleSwellCarry), as in play. The party stands in
+## Haluna (a MapModel on no flags), so the Map row (M2-UI-18) is on, as it is there in play.
 
 const HEROES: Array[StringName] = [&"rhen", &"asha", &"toma"]
 const NAMES := {&"rhen": "CHAR_RHEN", &"asha": "CHAR_ASHA", &"toma": "CHAR_TOMA"}
 const SAVED_SWELL := {"unlocked": ["ballast", "wake", "tether"]}
 const RHEN_MODE := &"wake"
+const MAP_ZONE := &"ch02/haluna"
 
 ## Which view to stage: &"root" or &"swell_modes".
 @export var view: StringName = &"root"
@@ -27,11 +29,13 @@ func _ready() -> void:
 	state.swell = SAVED_SWELL.duplicate(true)
 	var model := FieldMenuModel.new(state, HEROES, NAMES)
 	model.choose_mode(&"rhen", RHEN_MODE)
+	model.map = MapModel.new(MAP_ZONE, Vector3.INF, 0.0, func(_f: StringName) -> bool: return false)
 	menu = (load(FieldMenu.SCENE_PATH) as PackedScene).instantiate() as FieldMenu
 	menu.pause_tree = false
 	menu.configure(model)
 	add_child(menu)
-	menu.handle_input(_ev(&"ui_down"))  # Bestiary -> Swell
+	for i in FieldMenuModel.ROOT_IDS.find(FieldMenuModel.ROW_SWELL):
+		menu.handle_input(_ev(&"ui_down"))  # down to Swell
 	if view != &"swell_modes":
 		return
 	menu.accept()  # the heroes, Rhen first

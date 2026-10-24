@@ -50,3 +50,24 @@ func test_accept_waits_for_the_hold_then_returns_to_the_title() -> void:
 	assert_false(card.handle_input(_accept_event()), "only once")
 	assert_eq(swaps.size(), 1)
 	_done()
+
+
+func test_it_opens_on_rhens_voice_over_then_rolls_the_credits() -> void:
+	var voice := card.get_node(^"%Voice") as Label
+	assert_eq(voice.text, tr("FLOW_END_CARD_VOICE"), "B12's voice-over line (M2-FP-26)")
+	assert_true("two days" in voice.text, "translated")
+	var content := card.get_node(^"%Content") as Control
+	card.advance(1.5)
+	assert_eq(card.voice_alpha(), 1.0, "the line alone on black")
+	assert_eq(content.modulate.a, 0.0, "before the card")
+	assert_eq(card.credits_shown(), 0)
+	card.advance(6.0)
+	assert_eq(card.voice_alpha(), 0.0, "the line has gone")
+	assert_true(content.modulate.a > 0.0, "the card comes up")
+	card.advance(PAST_HOLD_SEC)
+	var credits := card.get_node(^"%Credits") as VBoxContainer
+	assert_true(credits.get_child_count() >= 4, "a short credits roll")
+	assert_eq(card.credits_shown(), credits.get_child_count(), "every row in by the end of the hold")
+	assert_eq((credits.get_child(credits.get_child_count() - 1) as Label).text, tr("CREDITS_THANKS"))
+	assert_true(card.prompt_shown())
+	_done()

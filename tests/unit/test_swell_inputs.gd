@@ -1,7 +1,7 @@
 extends TestCase
 ## M2-CMB-01: the other heroes' Swell inputs (SwellChant for Asha, SwellBrace for Toma, SwellGlyph
 ## for Ysolde), the SwellInput factory and scripted results the simulator plays, the key mapping
-## (SwellInputKeys) and the HUD gate (SwellRingView.draws). Node-free and deterministic: time moves
+## (SwellInputKeys, carry_held) and the HUD gate (SwellRingView.draws). Node-free and deterministic: time moves
 ## only through advance(). Rhen's ring keeps its own tests (test_battle_swell_hud.gd).
 
 const CHANT := {
@@ -271,13 +271,42 @@ func test_keys_reach_only_the_buttons_an_input_uses() -> void:
 	assert_true(glyph.cancelled)
 
 
-func test_the_hud_draws_only_the_ring_for_now() -> void:
-	assert_true(SwellRingView.draws({"kind": "timing_ring"}))
-	for kind in ["chant", "brace", "glyph", ""]:
-		assert_false(SwellRingView.draws({"kind": kind}), "%s has no panel yet (M2-UI-03)" % kind)
-	assert_true(SwellRingView.draws_hero(&"rhen"))
-	for cid: StringName in [&"asha", &"toma", &"ysolde", &"nobody"]:
-		assert_false(SwellRingView.draws_hero(cid), String(cid))
+func test_the_hud_draws_every_kind() -> void:
+	# M2-UI-03 gave the chant, brace and glyph their panels.
+	for kind in ["timing_ring", "chant", "brace", "glyph"]:
+		assert_true(SwellRingView.draws({"kind": kind}), kind)
+	assert_false(SwellRingView.draws({"kind": ""}))
+	for cid: StringName in [&"rhen", &"asha", &"toma", &"ysolde"]:
+		assert_true(SwellRingView.draws_hero(cid), String(cid))
+	assert_false(SwellRingView.draws_hero(&"nobody"))
+
+
+func test_brace_a_release_in_the_lead_in_only_lets_go() -> void:
+	# M2-UI-03 (from M2-NIT-03): the tap that chose the technique cannot spoil the brace.
+	var b := SwellBrace.new(BRACE)
+	b.press()
+	b.advance(0.1)
+	assert_eq(b.release(), &"", "nothing is graded in the lead-in")
+	assert_false(b.holding)
+	assert_true(b.grades.is_empty())
+	b.press()
+	assert_true(b.holding, "pressing again holds again")
+	b.advance(0.65)
+	assert_eq(b.grades, [&"braced"] as Array[StringName])
+
+
+func test_an_accept_still_held_starts_the_brace() -> void:
+	var held := func(action: StringName) -> bool: return action == &"ui_accept"
+	var free := func(_action: StringName) -> bool: return false
+	var brace := SwellBrace.new(BRACE)
+	assert_true(SwellInputKeys.carry_held(SwellRingClock.new(brace, func() -> int: return 0), held))
+	assert_true(brace.holding)
+	var other := SwellBrace.new(BRACE)
+	assert_false(SwellInputKeys.carry_held(SwellRingClock.new(other, func() -> int: return 0), free))
+	assert_false(other.holding, "nothing held, nothing carried")
+	var chant := SwellChant.new(CHANT)
+	assert_false(SwellInputKeys.carry_held(SwellRingClock.new(chant, func() -> int: return 0), held))
+	assert_true(chant.grades.is_empty(), "only a hold-and-release input takes the held accept")
 
 
 # --- helpers --------------------------------------------------------------------------------

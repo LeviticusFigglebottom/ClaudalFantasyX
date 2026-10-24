@@ -1,0 +1,11 @@
+// Ch1 C1-09, bark 6 of 6: the keel-hull. An old diver, Sabe, sitting under the hull's carved
+// lintel-gull, says the gulls have been quiet all morning, which they always are. A plain
+// observation, not an omen. She gets it slightly wrong on purpose: the line is about the wind, which
+// is what C1-11 pays off (a wind off the sea goes through the gulls' hollow throats).
+title: ch01_bark_keel_hull
+location: ch01/oruvel
+---
+Sabe [neutral]: Gulls have been quiet all morning. #line:ch01_bark_sabe_001
+Rhen [smile]: Sabe, they're carved. They're always quiet. #line:ch01_bark_sabe_002
+Sabe [neutral]: Wind's at our backs, that's why. Wood only talks when the sea does. #line:ch01_bark_sabe_003
+===

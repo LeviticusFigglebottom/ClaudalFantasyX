@@ -1,0 +1,119 @@
+extends TestCase
+## M2-UI-24: first-time tips. TutorialTips on a scratch flag set and setting; TipCard driven by
+## advance() with its own TutorialTips (no FieldController).
+
+var flags: Dictionary = {}
+var on := true
+var made: Array[Node] = []
+
+
+func before_each() -> void:
+	for n in made:
+		if is_instance_valid(n):
+			n.get_parent().remove_child(n)
+			n.free()
+	made.clear()
+	(Engine.get_main_loop() as SceneTree).paused = false
+	UiSettings.set_shared(UiSettings.new())
+	flags = {}
+	on = true
+
+
+func test_each_trigger_raises_its_tip_once_per_save() -> void:
+	var t := _tips()
+	t.raise_field_ready()
+	assert_true(t.queue.is_empty(), "the objective tip waits for Asha to join")
+	flags[&"ch02_met_asha"] = true
+	t.raise_field_ready()
+	assert_eq(_ids(t), [&"objective"])
+	t.raise_field_ready()
+	assert_eq(_ids(t), [&"objective"], "never queued twice")
+	var shop := Interactable.new()
+	shop.payload = {"shop": "haluna_general"}
+	t.raise_near(TutorialTips.tags_of(shop))
+	shop.free()
+	t.raise_flag(&"ch02_tideline_won", true)
+	assert_eq(_ids(t), [&"objective", &"shop", &"field_menu"], "in the order raised")
+	assert_eq(t.take()["id"], "objective")
+	assert_true(flags.get(&"tut_objective_seen", false), "taking a tip marks it seen")
+	t.raise_field_ready()
+	assert_eq(_ids(t), [&"shop", &"field_menu"], "a seen tip never comes back")
+	_done()
+
+
+func test_a_shrine_is_tagged_and_the_setting_turns_tips_off() -> void:
+	var shrine := SaveShrine.new()
+	assert_true(TutorialTips.tags_of(shrine).has(TutorialTips.TAG_SHRINE))
+	shrine.free()
+	on = false
+	var t := _tips()
+	t.raise_near([TutorialTips.TAG_SHRINE] as Array[StringName])
+	assert_true(t.queue.is_empty(), "tips off: nothing raised")
+	assert_false(flags.get(&"tut_save_shrine_seen", false), "and nothing saved as seen")
+	_done()
+
+
+func test_the_card_shows_one_tip_reads_then_the_next() -> void:
+	flags[&"ch02_met_asha"] = true
+	var card := _card()
+	card.advance(0.0)
+	assert_true(card.is_showing(), "the field took input: the objective tip")
+	assert_eq(card.title_text(), tr("TIP_OBJECTIVE_TITLE"))
+	assert_false(card.body_text().contains("{"), "bindings filled in")
+	assert_true(card.body_text().contains(InputNames.first_name(&"field_objective")))
+	card.tips.raise_flag(&"ch02_tideline_won", true)
+	var d := TutorialTips.load_data()
+	card.advance(float(d["fade_sec"]) + 0.01)
+	card.advance(card.hold_for(card.body_text()) + 0.01)
+	card.advance(float(d["fade_sec"]) + 0.01)
+	assert_false(card.is_showing())
+	card.advance(0.0)
+	assert_eq(card.title_text(), tr("TIP_FIELD_MENU_TITLE"), "the next tip in turn")
+	(Engine.get_main_loop() as SceneTree).paused = true
+	var held := card._t
+	card.advance(5.0)
+	assert_false(card._panel.visible, "a menu hides it")
+	assert_eq(card._t, held, "and stops its clock")
+	(Engine.get_main_loop() as SceneTree).paused = false
+	_done()
+
+
+func test_input_names_fill_bindings() -> void:
+	FieldInput.ensure_actions()
+	var key := InputNames.first_name(FieldInput.INTERACT, false)
+	assert_ne(key, "")
+	assert_eq(InputNames.fill("Press {field_interact}.", false), "Press %s." % key)
+	assert_eq(InputNames.fill("{no_such_action}", false), "{no_such_action}", "unknown names stay")
+	assert_eq(InputNames.first_name(FieldInput.INTERACT, true), tr("CTRL_PAD_A"))
+	_done()
+
+
+func _tips() -> TutorialTips:
+	return TutorialTips.new(
+		func(f: StringName) -> bool: return bool(flags.get(f, false)),
+		func(f: StringName) -> void: flags[f] = true,
+		func() -> bool: return on
+	)
+
+
+func _card() -> TipCard:
+	FieldInput.ensure_actions()
+	ObjectiveHud.ensure_action()
+	var c := TipCard.new()
+	c.tips = _tips()
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(c)
+	made.append(c)
+	return c
+
+
+func _ids(t: TutorialTips) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for row in t.queue:
+		out.append(StringName(str(row["id"])))
+	return out
+
+
+func _done() -> void:
+	InputNames.using_pad = false
+	UiSettings.set_shared(null)

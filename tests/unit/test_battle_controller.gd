@@ -542,7 +542,7 @@ func test_a_heal_on_a_zombie_is_flagged_before_and_after() -> void:
 	_start_fixture(&"player_preview", {"rhen": {"statuses": [{"id": "zombie", "duration": -1}]}})
 	ctl.show_damage_numbers = true
 	_to_turn_of(&"asha")
-	_press(&"ui_down")
+	ctl.hud.commands.select(BattleMenus.ROW_SKILLS)  # past her Swell row (M2-UI-03)
 	_press(&"ui_accept")
 	ctl.hud.commands.select(&"mend")
 	_press(&"ui_accept")

@@ -4,7 +4,7 @@ extends TestCase
 ## back end is covered by the screenshot shots water_* and the parity probe).
 
 const MATERIAL := "res://game/levels/_tests/water/water_lagoon_material.tres"
-const LAGOON_WAVES := "res://game/levels/_tests/water/lagoon_waves.tres"
+const LAGOON_WAVES := "res://game/world/water/lagoon_waves.tres"
 const TEST_SCENE := "res://game/levels/_tests/water/water_test.tscn"
 const SHADER_DIR := "res://game/shaders/water"
 const TEST_SHADER_DIR := "res://game/shaders/water/test"

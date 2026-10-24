@@ -35,7 +35,8 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-02 foliage (default tier). Zones that place palms add their scene paths here."
+      "note": "M1-ENV-02 foliage (default tier). Zones that place palms add their scene paths here. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
+      "resident": true
     },
     {
       "path": "res://assets/environments/vegetation/materials/palm_bark.tres",
@@ -45,7 +46,8 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-02 bark."
+      "note": "M1-ENV-02 bark. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
+      "resident": true
     },
     {
       "path": "res://assets/environments/vegetation/materials/frangipani_leaf.tres",
@@ -55,7 +57,8 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-02 foliage (default tier)."
+      "note": "M1-ENV-02 foliage (default tier). M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
+      "resident": true
     },
     {
       "path": "res://assets/environments/vegetation/materials/saltgrass.tres",
@@ -67,7 +70,8 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-02 foliage; drawn as a MultiMesh in zones (a quad prewarms a different vertex format)."
+      "note": "M1-ENV-02 foliage; drawn as a MultiMesh in zones (a quad prewarms a different vertex format). M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
+      "resident": true
     },
     {
       "path": "res://assets/environments/vegetation/materials/frangipani_bark.tres",
@@ -77,7 +81,8 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-05 frangipani bark (applied at runtime by VegetationPlant)."
+      "note": "M1-ENV-05 frangipani bark (applied at runtime by VegetationPlant). M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
+      "resident": true
     },
     {
       "path": "res://assets/environments/vegetation/materials/beach_vine.tres",
@@ -87,7 +92,8 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-05 beach vine foliage (applied at runtime by VegetationPlant)."
+      "note": "M1-ENV-05 beach vine foliage (applied at runtime by VegetationPlant). M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
+      "resident": true
     },
     {
       "path": "res://game/shaders/vegetation/vegetation_foliage_low.gdshader",
@@ -487,8 +493,9 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering (High tier): coral stone, triplanar. Zones placing the Haluna kit add their scene paths.",
-      "mesh": "res://assets/environments/kits/haluna/tidewall_straight.glb"
+      "note": "M1-ENV-01 weathering (High tier): coral stone, triplanar. Zones placing the Haluna kit add their scene paths. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
+      "mesh": "res://assets/environments/kits/haluna/tidewall_straight.glb",
+      "resident": true
     },
     {
       "path": "res://assets/environments/kits/haluna/materials/kit_coral_concrete.tres",
@@ -496,8 +503,9 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering: Lit Age coral-concrete ruins.",
-      "mesh": "res://assets/environments/kits/haluna/ruin_slab.glb"
+      "note": "M1-ENV-01 weathering: Lit Age coral-concrete ruins. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
+      "mesh": "res://assets/environments/kits/haluna/ruin_slab.glb",
+      "resident": true
     },
     {
       "path": "res://assets/environments/kits/haluna/materials/kit_mortar_white.tres",
@@ -505,8 +513,9 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering: lime mortar (tide-wall caps, ridge rolls).",
-      "mesh": "res://assets/environments/kits/haluna/tidewall_straight.glb"
+      "note": "M1-ENV-01 weathering: lime mortar (tide-wall caps, ridge rolls). M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
+      "mesh": "res://assets/environments/kits/haluna/tidewall_straight.glb",
+      "resident": true
     },
     {
       "path": "res://assets/environments/kits/haluna/materials/kit_timber.tres",
@@ -514,8 +523,9 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering, mesh-UV path: timber.",
-      "mesh": "res://assets/environments/kits/haluna/timber_deck_2m.glb"
+      "note": "M1-ENV-01 weathering, mesh-UV path: timber. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
+      "mesh": "res://assets/environments/kits/haluna/timber_deck_2m.glb",
+      "resident": true
     },
     {
       "path": "res://assets/environments/kits/haluna/materials/kit_thatch.tres",
@@ -523,8 +533,9 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering, mesh-UV path: thatch.",
-      "mesh": "res://assets/environments/kits/haluna/roof_thatch_hip.glb"
+      "note": "M1-ENV-01 weathering, mesh-UV path: thatch. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
+      "mesh": "res://assets/environments/kits/haluna/roof_thatch_hip.glb",
+      "resident": true
     },
     {
       "path": "res://assets/environments/kits/haluna/materials/kit_roof_tile.tres",
@@ -532,8 +543,9 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 weathering, mesh-UV path: red tile.",
-      "mesh": "res://assets/environments/kits/haluna/roof_tile_hip.glb"
+      "note": "M1-ENV-01 weathering, mesh-UV path: red tile. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
+      "mesh": "res://assets/environments/kits/haluna/roof_tile_hip.glb",
+      "resident": true
     },
     {
       "path": "res://assets/environments/kits/haluna/materials/kit_wake_shell.tres",
@@ -541,8 +553,9 @@
         "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
         "res://game/levels/ch02/haluna/haluna.tscn"
       ],
-      "note": "M1-ENV-01 wake-shells (env_wake_shell.gdshader).",
-      "mesh": "res://assets/environments/kits/haluna/wakeshell_wall.glb"
+      "note": "M1-ENV-01 wake-shells (env_wake_shell.gdshader). M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
+      "mesh": "res://assets/environments/kits/haluna/wakeshell_wall.glb",
+      "resident": true
     },
     {
       "path": "res://game/shaders/environment/env_weathering_low.gdshader",
@@ -771,11 +784,12 @@
         "res://game/battle/scene/battle_sandbox.tscn",
         "res://game/flow/field_battle.tscn"
       ],
-      "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths.",
+      "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
       "preset_tier": {
         "system": "water",
         "tier": "low"
-      }
+      },
+      "resident": true
     },
     {
       "path": "res://game/world/water/prewarm/water_ocean_medium.tres",
@@ -788,11 +802,12 @@
         "res://game/battle/scene/battle_sandbox.tscn",
         "res://game/flow/field_battle.tscn"
       ],
-      "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths.",
+      "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
       "preset_tier": {
         "system": "water",
         "tier": "medium"
-      }
+      },
+      "resident": true
     },
     {
       "path": "res://game/world/water/prewarm/water_ocean.tres",
@@ -805,11 +820,12 @@
         "res://game/battle/scene/battle_sandbox.tscn",
         "res://game/flow/field_battle.tscn"
       ],
-      "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths.",
+      "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
       "preset_tier": {
         "system": "water",
         "tier": "high"
-      }
+      },
+      "resident": true
     },
     {
       "path": "res://game/world/water/prewarm/water_ocean_ultra.tres",
@@ -822,11 +838,12 @@
         "res://game/battle/scene/battle_sandbox.tscn",
         "res://game/flow/field_battle.tscn"
       ],
-      "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths.",
+      "note": "M1-RND-07: ocean tier variant drawn on the ocean grid's exact surface format (water_grid_prewarm.tres, tested equal to WaterMeshBuilder). Zones with a WaterSurface add their scene paths. M2-ENV-05 (Lead 2026-10-24): resident, so a second launch's Haluna entry stays under ADR 0029's 3 s (gpu/m2-rnd-11-sweep-r).",
       "preset_tier": {
         "system": "water",
         "tier": "ultra"
-      }
+      },
+      "resident": true
     },
     {
       "path": "res://game/world/water/prewarm/water_river_low.tres",

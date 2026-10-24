@@ -1,5 +1,5 @@
 {
-  "_doc": "Tunables for the balancing simulator's party policies (game/battle/sim/, docs/kb/design/balance_targets.md). Not game data: nothing in play reads this file. loadouts: the gear (equipment ids per character) and consumables a suite's party carries (balance_targets.md, Party assumptions). swell_heal_below_pct (M2-CMB-01): a ready healing Swell technique waits until an active ally is below this share of max HP. call_vowbound (M2-CMB-05): when a policy calls a Vowbound its loadout lists under 'vowbound' (at_once: as soon as the caller may; on_field: while a field is up); unset: never.",
+  "_doc": "Tunables for the balancing simulator's party policies (game/battle/sim/, docs/kb/design/balance_targets.md). Not game data: nothing in play reads this file. loadouts: the gear (equipment ids per character) and consumables a suite's party carries (balance_targets.md, Party assumptions). swell_heal_below_pct (M2-CMB-01): a ready healing Swell technique waits until an active ally is below this share of max HP. call_vowbound (M2-CMB-05): when a policy calls a Vowbound its loadout lists under 'vowbound' (at_once: as soon as the caller may; on_field: while a field is up); unset: never. field_up (M2-FP-17): call only while a field is up, never dismiss (the flood_call policy).",
   "policies": {
     "naive": {},
     "naive_swell": {
@@ -7,14 +7,15 @@
     },
     "lowest_hp": {},
     "role_answer": {
-      "clear_field_skill": "call_ilun",
       "call_vowbound": "on_field"
     },
     "smart": {
       "heal_below_pct": 45,
       "keep_healer_below_pct": 70,
-      "clear_field_skill": "call_ilun",
       "call_vowbound": "on_field"
+    },
+    "flood_call": {
+      "call_vowbound": "field_up"
     }
   },
   "max_actions": 2000,
@@ -86,8 +87,8 @@
         "salt_tonic": 4,
         "relighting_wick": 1
       },
-      "flags": [
-        "ch03_ilun_bound"
+      "vowbound": [
+        "ilun"
       ]
     },
     "sandbox_vowbound": {
@@ -96,6 +97,30 @@
       "vowbound": [
         "ilun"
       ]
+    },
+    "ch01_underway": {
+      "gear": {
+        "rhen": [
+          "rhen_salvage_hooks",
+          "rhen_patched_tether"
+        ]
+      },
+      "items": {
+        "salt_tonic": 2,
+        "brine_eyewash": 1
+      }
+    },
+    "ch01_hullgnaw": {
+      "gear": {
+        "rhen": [
+          "rhen_salvage_hooks",
+          "rhen_patched_tether"
+        ]
+      },
+      "items": {
+        "salt_tonic": 2,
+        "brine_eyewash": 1
+      }
     }
   }
 }

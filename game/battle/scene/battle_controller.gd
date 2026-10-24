@@ -114,8 +114,8 @@ func _ready() -> void:
 		pacing_scale = 0.0
 		show_damage_numbers = false
 		persist_progress = false
-		# Captures always render at the default accessibility settings, whatever the host saved.
-		hud.apply_settings(UiSettings.new())
+		# Captures render at the default accessibility settings (or their fixture's), never the host's.
+		hud.apply_settings(BattleFixture.capture_settings(scripted_state))
 		run_script.call_deferred()
 	elif auto_start:
 		# Entered through SceneRouter: build over several frames behind its fade (M1-UI-03).
@@ -221,7 +221,7 @@ func _build_engine(
 	floats.reset()
 	progress = lattice
 	engine = BattleEngine.new()
-	if persist_progress and fixture == null:  # flag-locked skills (call_ilun) follow the live story
+	if persist_progress and fixture == null:  # flag-locked skills (requires_flag) follow the live story
 		engine.story_flags = BattleBossHud.live_flags(_db)
 	# Live battles start from the carried HP/MP and line up past the fallen (BattleVitals).
 	BattleVitals.setup(engine, _db, _setup, progress, persist_progress and fixture == null)
@@ -230,6 +230,7 @@ func _build_engine(
 	vow = BattleVowboundHud.attached(self, engine)  # engine.vowbound from the story or the fixture
 	swell = BattleSwell.new(BattleSwell.load_config())
 	BattleSwellCarry.attach(swell, engine, persist_progress and fixture == null)  # M2-ARC-01
+	swell.mode_unlocked.connect(SwellModeRows.announce.bind(self))  # "Tether unlocked" (M2-UI-03)
 	bestiary.attach(engine, persist_progress and fixture == null)
 	engine.action_resolved.connect(floats.on_action_resolved)
 	boss = BattleBossHud.attached(self, engine)
@@ -715,7 +716,8 @@ func _commit_skill(skill_id: StringName, target_ids: Array[StringName]) -> void:
 	_ring_clock = SwellRingClock.new(_ring)
 	_set_state(STATE_SWELL_INPUT)
 	hud.commands.visible = false
-	hud.swell_ring.open(_ring, menus.skill_name(engine, skill_id), tr("HUD_SWELL_RING_HINT"))
+	SwellInputKeys.carry_held(_ring_clock)  # an accept still held from the menu starts Toma's brace
+	hud.swell_ring.open(_ring, menus.skill_name(engine, skill_id), tr(SwellRingView.hint_key(_ring.kind, false)))
 	hud.set_help(menus.swell_help(engine, swell, skill_id, -1))
 
 
@@ -733,7 +735,7 @@ func _handle_ring_input(event: InputEvent) -> bool:
 func _after_ring() -> void:
 	hud.swell_ring.refresh()
 	if not _ring.grades.is_empty():
-		hud.swell_ring.set_hint(tr("HUD_SWELL_RING_HINT_LOCKED"))
+		hud.swell_ring.set_hint(tr(SwellRingView.hint_key(_ring.kind, true)))
 	if not _ring.is_done():
 		return
 	hud.swell_ring.close()
@@ -950,7 +952,7 @@ func _drain() -> void:
 
 
 func _pace(key: StringName) -> float:
-	return HudLayout.num(_pacing, String(key)) * pacing_scale
+	return HudLayout.num(_pacing, String(key)) * pacing_scale / hud.battle_speed()  # M2-UI-23 battle speed
 
 
 func _set_state(s: StringName) -> void:

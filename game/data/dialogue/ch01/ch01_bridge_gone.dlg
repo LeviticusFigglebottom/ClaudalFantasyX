@@ -1,0 +1,11 @@
+// Ch1 C1-13, the "Kell first." path: he runs for her stall; the bridge to the second mooring goes as
+// he reaches it, and she's out of reach across open water, still shouting the same thing. He turns
+// back to the net-pen anyway. Nobody is saved or lost by the choice; it says who Rhen is.
+title: ch01_bridge_gone
+location: ch01/oruvel
+---
+@sfx raft_lashing_snap
+Rhen [afraid]: Kell! Kell, the bridge! #line:ch01_bridge_001
+Kell [angry]: The net-pen, Rhen! I said the net-pen! Go! #line:ch01_bridge_002
+Rhen [determined]: Going. I'm going. #line:ch01_bridge_003
+===

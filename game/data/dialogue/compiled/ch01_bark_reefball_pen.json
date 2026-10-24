@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch01_bark_reefball_pen",
+ "source": "game/data/dialogue/ch01/ch01_bark_reefball_pen.dlg",
+ "start": "ch01_bark_reefball_pen",
+ "nodes": {
+  "ch01_bark_reefball_pen": {
+   "headers": {"location": "ch01/oruvel"},
+   "ops": [
+    {"op": "line", "id": "ch01_bark_pen_001", "key": "DLG_CH01_BARK_PEN_001", "speaker": "child", "emotion": "determined", "voice": "", "src": 7},
+    {"op": "line", "id": "ch01_bark_pen_002", "key": "DLG_CH01_BARK_PEN_002", "speaker": "child", "emotion": "smile", "voice": "", "src": 8},
+    {"op": "line", "id": "ch01_bark_pen_003", "key": "DLG_CH01_BARK_PEN_003", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

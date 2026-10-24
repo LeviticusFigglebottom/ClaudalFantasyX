@@ -1,0 +1,38 @@
+{
+ "format": 1,
+ "scene": "ch01_scale_hull",
+ "source": "game/data/dialogue/ch01/ch01_scale_hull.dlg",
+ "start": "ch01_scale_hull",
+ "nodes": {
+  "ch01_scale_hull": {
+   "headers": {"location": "ch01/oruvel"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["O01"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "music", "args": ["oruvel_raft"], "kwargs": {"fade": 3.0}, "src": 13},
+    {"op": "cue", "cue": "fade", "args": ["in", 2.0], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "camera", "args": ["O02"], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ch01_scale_001", "key": "DLG_CH01_SCALE_001", "speaker": "scaleman", "emotion": "neutral", "voice": "", "src": 17},
+    {"op": "line", "id": "ch01_scale_002", "key": "DLG_CH01_SCALE_002", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 18},
+    {"op": "cue", "cue": "sfx", "args": ["scale_weigh"], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ch01_scale_003", "key": "DLG_CH01_SCALE_003", "speaker": "scaleman", "emotion": "neutral", "voice": "", "src": 20},
+    {"op": "line", "id": "ch01_scale_004", "key": "DLG_CH01_SCALE_004", "speaker": "rhen", "emotion": "surprised", "voice": "", "src": 21},
+    {"op": "options", "choices": [{"id": "ch01_scale_005", "key": "DLG_CH01_SCALE_005", "to": 11, "src": 22}, {"id": "ch01_scale_010", "key": "DLG_CH01_SCALE_010", "to": 17, "src": 28}], "src": 22, "next": 20},
+    {"op": "line", "id": "ch01_scale_006", "key": "DLG_CH01_SCALE_006", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 23},
+    {"op": "line", "id": "ch01_scale_007", "key": "DLG_CH01_SCALE_007", "speaker": "scaleman", "emotion": "neutral", "voice": "", "src": 24},
+    {"op": "line", "id": "ch01_scale_008", "key": "DLG_CH01_SCALE_008", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 25},
+    {"op": "line", "id": "ch01_scale_009", "key": "DLG_CH01_SCALE_009", "speaker": "scaleman", "emotion": "neutral", "voice": "", "src": 26},
+    {"op": "event", "name": "ch01_haggled", "args": [], "src": 27},
+    {"op": "goto", "to": 20, "src": 22},
+    {"op": "line", "id": "ch01_scale_011", "key": "DLG_CH01_SCALE_011", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 29},
+    {"op": "line", "id": "ch01_scale_012", "key": "DLG_CH01_SCALE_012", "speaker": "scaleman", "emotion": "neutral", "voice": "", "src": 30},
+    {"op": "goto", "to": 20, "src": 28},
+    {"op": "cue", "cue": "sfx", "args": ["chit_stamp"], "kwargs": {}, "src": 31},
+    {"op": "line", "id": "ch01_scale_013", "key": "DLG_CH01_SCALE_013", "speaker": "scaleman", "emotion": "neutral", "voice": "", "src": 32},
+    {"op": "line", "id": "ch01_scale_014", "key": "DLG_CH01_SCALE_014", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 33},
+    {"op": "line", "id": "ch01_scale_015", "key": "DLG_CH01_SCALE_015", "speaker": "scaleman", "emotion": "neutral", "voice": "", "src": 34},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 35}
+   ]
+  }
+ }
+}

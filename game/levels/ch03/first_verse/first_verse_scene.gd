@@ -61,7 +61,14 @@ func _battle(encounter: StringName, cfg: Dictionary, after: String) -> void:
 	var r := BattleRequest.make(encounter, &"", &"", StringName(str(cfg.get("victory_flag", ""))))
 	r.active = FirstPlayableConfig.ids(cfg.get("battle_active", []))
 	r.reserve = FirstPlayableConfig.ids(cfg.get("battle_reserve", []))
-	r.return_scene = after
+	# M2-FP-15: after the Drownbell the party goes back to Haluna for B11 (after_location), else to
+	# the scene named (after_scene).
+	var loc := StringName(str(cfg.get("after_location", "")))
+	if loc != &"":
+		r.return_location = loc
+		r.return_spawn = StringName(str(cfg.get("after_spawn", "")))
+	else:
+		r.return_scene = after
 	if start_battle.is_valid():
 		start_battle.call(r)
 	else:
