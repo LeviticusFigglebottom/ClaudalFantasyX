@@ -11,6 +11,21 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 6. (Found on claude/characters) **M2-UI-07**, the hero actor hook: **hook done and pushed (08c872c)**. It is **blocked** on M2-CHR-06's scenes reaching the integration branch; after that it needs three `"scene"` lines in battle_sandbox.json and shot re-approval.
 
 ## Now (Lead queue of 15:13 and 15:46)
+- **MERGE-READY @ d741a39a:**
+  - **Items:**
+    - M2-UI-26, input parity (all screens);
+    - M2-UI-27, dialogue reveal pauses and `time_of_char`;
+    - M3-UI-02, the Audio page;
+    - M3-UI-03, the lore codex;
+    - with claude/menus @ b5a92596 merged (its swap-test fix, Formation, m2-slice d034c31d).
+  - **Checks run:**
+    - full Godot suite **1848 run, 0 failed** (log check clean);
+    - tools unittest 552 OK on b5a92596 (no `tools/` change since);
+    - validate_data, taskboard, gdlint and gdformat clean;
+    - shots for each item, viewed and approved.
+  - **Checks skipped:** the full manifest, Blender and coverage (nothing in core `game/battle/` or `game/progression/` changed). The Lead runs them at merge.
+  - **The battle pause's mouse way in:** Cancel at the command root opens it (in BattlePause).
+  - **Test infrastructure:** parity tests clear stray screens and park the pointer before they start (`InputDriver.clear_screen`), because the runner has no after_each.
 - **M2-UI-26, the input parity audit (review, reviewer lead):** every screen has a keys, pad and mouse parity test (`tests/unit/test_input_parity_*.gd`, `InputDriver`, `ParityHost`).
   - **Shared fixes (ADR 0036):** the `UiInput` autoload (mouse cancel, held right click for skip, pad defaults everywhere, last device). MenuPage: wheel, hover only from pointer motion, a dimmed page ignores hover.
   - **Fixed along the way:**
@@ -29,13 +44,13 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
     - the Menus track has merged its part.
     - Request **M2-FP-28** is filed for the Ch1 tutorial lines.
   - **Lead decisions needed:**
-    1. The battle pause has no mouse way in. Open it on Cancel at the command root, or with a corner button?
+    1. Done: Cancel at the command root opens the battle pause. Say if you'd rather have a corner button.
     2. `battle_controller.gd` is at exactly 1000 lines.
 - **M2-UI-27, the dialogue reveal pauses (review):** pauses at punctuation live in `text_box.json`, scaled by the text speed and skipped on fast-forward and instant text. **For M2-CHR-10's lip sync:** `DialogueBox.time_of_char(i)` and `reveal_duration()`; switch from i/cps to them. The player's text speed now reaches the box (part of M2-ARC-07).
 - **M3-UI-02, the Audio page (review):** re-approve `settings_hub` after claude/audio merges.
 - **M3-UI-03, the lore codex:** in progress in a worktree agent.
 - **M3-UI-01, the Reefball HUD:** filed, blocked on M3-RBL-01.
-- **`test_scene_router_swap` fails here and on a clean integration worktree too** (boot 73–186 ms and battle sandbox 77–169 ms against 40 ms). It is environmental (a slow, shared container). I'll re-time it on a quiet machine. If boot stays worse, the new title backdrop is the suspect.
+- **`test_scene_router_swap`:** fixed by the Menus track (an injected clock). It is merged here and passes.
 - **Note:** sending messages to the Lead's session fails (it needs a trusted device), so this file is the channel.
 
 ### Earlier this session
