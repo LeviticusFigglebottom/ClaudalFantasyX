@@ -35,7 +35,7 @@ The human's ask: every screen fully usable with the keyboard, the mouse and a co
   - **Request M2-FP-28:** the Ch1 tutorial lines should name their bindings with `{action}`.
 
 ## Open
-- **The battle pause has no mouse way in** (P, Pause, pad Start only). An on-screen button would move every battle shot. Lead: decide whether Cancel at the command root should open it, or a small corner button should.
+- **The battle pause's mouse way in:** done. Cancel at the top of the command menu (Escape, pad B, or a right click) opens the pause, because there is nothing left to back out of there. It is wired in BattlePause through the command menu's `cancelled` signal, so no battle shot moves and `battle_controller.gd` is untouched. Lead: say if you'd rather have a corner button.
 - **`battle_controller.gd` is at exactly 1000 lines** after the targeting hook. The next change there must move logic into a helper first.
 
 ## Review log

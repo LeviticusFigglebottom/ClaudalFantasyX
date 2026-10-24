@@ -161,10 +161,10 @@ func test_the_battle_pause_with_each_device() -> void:
 		var d := InputDriver.new(kind)
 		_start(&"player_preview", &"rhen")
 		pauser = ctl.get_node("BattlePause") as BattlePause
-		# The mouse has no pause key of its own: it opens with the keyboard's (a finding, noted).
-		var opener := d if kind != InputDriver.Kind.MOUSE else InputDriver.new(InputDriver.Kind.KEYS)
-		opener.press(BattlePauseMenu.PAUSE_ACTION)
-		assert_true(pauser.is_paused(), "%s: the pause action opens the page" % d.label())
+		# Cancel at the top of the command menu opens it on every device (the mouse: a right click).
+		pauser._hook_commands()
+		_cancel(d, ctl.hud.commands.top_page())
+		assert_true(pauser.is_paused(), "%s: Cancel at the command root opens the pause" % d.label())
 		var page := pauser.menu
 		var rows := page.rows_page()
 		var settings_at := _row_index(rows, BattlePauseMenu.ROW_SETTINGS)
