@@ -3,27 +3,30 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
-- **M3 Act I batch in progress (2026-10-24 ~14:50 UTC), after MERGE-READY @ 2f36b275.** Pushed on `claude/creatures`
-  (integration branch 1a6f7645 merged in at 1ed50955, docs only):
-  - Ch1 glassfry (renamed from wickfry), scuttler; Ch5 ashwing (ember eye-spots), slag_tortoise, cinder_matron (first
-    pass), vein_sparker (optional caster lizard); Ch6 shoal_skipper, raid_hound (mud coat, red muzzle cage); Ch8
-    tide_crawler, **undertows_reach** (the boss's near part, 10.9k triangles, phases `dark`/`breach`), flue_moth,
-    and the palette variants stormgull and wallcrab (imports of the base builds).
-  - CreatureActor phases gained `show`/`hide` node lists (the Matron's `crust_breaks` hides `Crust`).
-  - Checks run per item: validate_data, taskboard, gdlint/gdformat, tools creature tests, Godot `--filter=creature`
-    (12/0), Blender verify of every changed job (all identical). Every new creature shot was approved after viewing.
-    Skipped: the full manifest and the full Godot suite (no shared code touched since 2f36b275 beyond the creature
-    test fix).
-  - In worktree agents: the Matron redesign (kiln forge-construct, ladle and tongs, glimmer_bound heart) and three
-    variants (squall_wing, wall_polyp on Watcher stones, wreck_crab in a lamp housing).
-  - **To m2-slice (sent by message):** the `model` lines for their Act I rows, plus the placeholder phase ids
-    (cinder_matron `crust_breaks`; undertows_reach `dark`, `breach`) to rename to theirs.
-    **Their reply (14:41):** they add the `model` lines in their first merge after claude/creatures reaches the
-    integration branch, since the scenes must exist for their validate_data. wickfry's row points at glassfry's scene,
-    and the id is renamed to glassfry in that merge. They will use `dark`/`breach` for the Reach, and the Matron's
-    phase ids come with their Ch5 build.
-  - **To PC GPU (undertows_reach):** the `water` slot is a creature-shader stand-in; swap in the Undertow look. Notes
-    are in act1/undertows_reach.md.
+- **MERGE-READY @ 0ce0bee6 (batch): the Act I bestiary, M3-CRE-02..06 in review.** Branch `claude/creatures`
+  (integration 1a6f7645 merged at 1ed50955, docs only).
+  - **Items:**
+    - Ch1: glassfry (renamed from wickfry), scuttler.
+    - Ch5: ashwing (ember eye-spots), slag_tortoise, **cinder_matron** (the kiln forge-construct with a ladle, tongs
+      and a steady glimmer_bound heart, 23.9k triangles), vein_sparker.
+    - Ch6: shoal_skipper, raid_hound (mud coat, red muzzle cage), wreck_crab (in a lamp housing, glimmer_bound).
+    - Ch8: tide_crawler, squall_wing, wall_polyp (on a Watcher block), **undertows_reach** (phases `dark`/`breach`),
+      flue_moth, stormgull, wallcrab.
+    - CreatureActor phases gained `show`/`hide`.
+  - **Checks run:** validate_data 0/0; taskboard OK; gdlint and gdformat clean; tools test_creatures and
+    test_post_import OK; Godot `--filter=creature` 12/0, `--filter=post_import` 17/0, `--filter=battle` 412/0;
+    Blender verify of every creature job added or changed in this batch (all identical). 27 creature shots, each new
+    one approved after viewing.
+  - **Checks skipped:** the full shot manifest (no battle scene, shader or HUD change since 2f36b275; only creature
+    review shots changed), the full Godot suite and coverage (nothing in `game/battle/` or `game/progression/` touched
+    since 2f36b275).
+  - **Review asks (art):** glimmer_bound on two creatures (the Matron's heart, the wreck_crab's lamp), both steady per
+    colour rule 2, and noted in creatures README rule 3 as Lit Age constructs only.
+  - **For m2-slice:** they add `model` lines after this lands on the integration branch (see below).
+  - **For PC GPU:** undertows_reach's `water` slot is a stand-in for the Undertow look (act1/undertows_reach.md).
+  - **m2-slice's reply (14:41):** `model` lines come in their first merge after claude/creatures reaches the
+    integration branch (the scenes must exist for their validate_data). wickfry's row points at glassfry and is
+    renamed. They use `dark`/`breach` for the Reach; the Matron's phase ids come with their Ch5 build.
 - **MERGE-READY @ 2f36b275: ci_local exit 0, 1467 tests, 91 shots, Blender identical.** Branch `claude/creatures`, with `origin/claude/undertow-lead-handoff-423ixt` e9938ed merged in at 4cfc523.
   - Full `tools/ci_local.sh` in this container (2026-10-24, about 13:00–13:50 UTC), every shot, Blender required.
   - Blender: 17 jobs, 0 failed, 0 uncovered, all identical. The change base was `main`, which ran every job, a superset of the integration base. Every creature job is pinned at `default_threads` 4.
@@ -55,9 +58,9 @@ Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD),
 - **Task ids:** M2-CRE-* (free on every branch at the claim).
 
 ## Exact next step
-Merge the Matron-redesign and variants worktrees (union creatures.json, the import rule, jobs, PROVENANCE, shots.json),
-view and approve the pending creature shots, run the Blender verify for the new jobs, then write the batch MERGE-READY
-line. After that: the Undertow's Reach (with the PC GPU session), and `model` on m2-slice's Ch1 rows when they land.
+Two items remain in this queue: (1) when m2-slice's Ch4/Ch5 rows land, check their phase ids against creatures.json
+(rename the Matron's `crust_breaks` if needed); (2) polish passes from the review notes (the Matron's crack lines and
+the mask's size; the squall wing's see-through tears; the wreck crab's crust). Daily: merge the integration branch.
 
 ## Previous next step (done)
 Merge the three creature worktrees as they finish (they append to creatures.json, enemies.json, the import rule, blender_builds.json and PROVENANCE.md: union the rows). Then capture every battle shot and the creature shots, view each, approve the creature baselines, and re-approve the battle shots whose change is the models (list each RMSE in M2-CRE-09).

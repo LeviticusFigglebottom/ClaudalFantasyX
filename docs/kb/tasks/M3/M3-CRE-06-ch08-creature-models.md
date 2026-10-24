@@ -2,7 +2,7 @@
 id: M3-CRE-06
 title: "Ch8 creature models: tide crawler, squall wing, the wall-polyp variant, the Undertow's Reach"
 role: character
-status: doing
+status: review
 owner_session: "creatures (cloud session_01CYks9e592YBEfygyTawcJD, branch claude/creatures)"
 reviewer: art
 depends_on: [M3-CRE-01]

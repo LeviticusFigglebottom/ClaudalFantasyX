@@ -2,7 +2,7 @@
 id: M3-CRE-05
 title: "Ch6 creature models: shoal skipper, raid-hound, the wreck-crab variant"
 role: character
-status: doing
+status: review
 owner_session: "creatures (cloud session_01CYks9e592YBEfygyTawcJD, branch claude/creatures)"
 reviewer: art
 depends_on: [M3-CRE-01]

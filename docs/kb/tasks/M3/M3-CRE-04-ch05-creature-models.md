@@ -2,7 +2,7 @@
 id: M3-CRE-04
 title: "Ch5 creature models: ashwing, slag tortoise, the Cinder Matron (vein sparker optional)"
 role: character
-status: doing
+status: review
 owner_session: "creatures (cloud session_01CYks9e592YBEfygyTawcJD, branch claude/creatures)"
 reviewer: art
 depends_on: [M3-CRE-01]
