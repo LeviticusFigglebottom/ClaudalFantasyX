@@ -78,10 +78,14 @@ const BRING_UP_PLAIN := {
 	&"screen_space_aa": Viewport.SCREEN_SPACE_AA_DISABLED,
 }
 
-## Shaders and materials loaded at boot and held for the session (M1-RND-22, registry "resident"):
-## their load compiles the shader, 75-220 ms each, so it happens once under the boot screen instead of
-## in a transition. Held so the resource cache keeps them.
-static var _resident: Array[Resource] = []
+## Shaders and materials loaded at boot and held for the session (M1-RND-22, registry "resident"): their
+## load compiles the shader, 75-220 ms each, so it happens once under the boot screen instead of in a
+## transition. They are held by a node under the tree root (RESIDENT_HOLDER), not a static array: the
+## tree frees it on every exit, a quit in the middle of a warm-up included, so nothing is still in use at
+## exit (a static array outlived Godot's exit check: 225 resources on a headless boot, M1-RND-29 fix).
+const RESIDENT_HOLDER := "ShaderPrewarmResident"
+## A holder added (deferred) but not yet in the tree; a plain weak handle (is_instance_valid-checked).
+static var _pending_holder: Node = null
 
 var registry_path: String = REGISTRY_PATH
 var config: Dictionary = {}
@@ -258,8 +262,8 @@ static func load_resident(preset: String, path: String = REGISTRY_PATH) -> int:
 		if not ResourceLoader.exists(res_path):
 			continue
 		var res := load(res_path)
-		if res != null and not _resident.has(res):
-			_resident.append(res)
+		if res != null:
+			_hold(res)
 			count += 1
 	return count
 
@@ -294,8 +298,17 @@ static func first_run_key(preset: String) -> String:
 	)
 
 
+## True under the headless display server, whose dummy renderer compiles and draws nothing.
+static func is_headless() -> bool:
+	return DisplayServer.get_name() == "headless"
+
+
 ## True when this launch has not finished a first-run warm-up for first_run_key (M1-RND-29).
 static func needs_first_run(preset: String, path: String = REGISTRY_PATH) -> bool:
+	# Headless (the dummy renderer) builds no pipelines and the run would never write its marker, so every
+	# headless boot (CI's smoke test, tools) would stage and harvest the whole first launch for nothing.
+	if is_headless():
+		return false
 	var marker := str(_load_registry(path).get("first_run_marker", ""))
 	if marker == "":
 		return false
@@ -312,9 +325,33 @@ func _write_first_run_marker() -> void:
 	cfg.save(marker)
 
 
+## Holds `res` for the session on the holder node (created under the tree root on first use).
+static func _hold(res: Resource) -> void:
+	var h := _holder(true)
+	if h != null and not h.held.has(res):
+		h.held.append(res)
+
+
+static func _holder(create: bool) -> ResidentHolder:
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null or tree.root == null:
+		return null
+	var h := tree.root.get_node_or_null(NodePath(RESIDENT_HOLDER)) as ResidentHolder
+	if h == null and is_instance_valid(_pending_holder):
+		h = _pending_holder as ResidentHolder
+	if h == null and create:
+		h = ResidentHolder.new()
+		h.name = RESIDENT_HOLDER
+		# Deferred: the root may still be adding its children (boot). Until it lands, _pending_holder finds it.
+		tree.root.add_child.call_deferred(h)
+		_pending_holder = h
+	return h
+
+
 ## The resources load_resident() holds (tests).
 static func resident_count() -> int:
-	return _resident.size()
+	var h := _holder(false)
+	return h.held.size() if h != null else 0
 
 
 ## Whether a registry entry is staged for `preset`: an entry with "preset_tier" {system, tier} only when
@@ -624,8 +661,8 @@ func _build_entry(entry: Dictionary) -> Node:
 			return null
 	if resident_only:
 		var res := load(path) if ResourceLoader.exists(path) else null
-		if res != null and not _resident.has(res):
-			_resident.append(res)
+		if res != null:
+			_hold(res)
 	var mat := _load_material(path)
 	var node: Node = _instance(mat, entry) if mat != null else null
 	if mat == null or (node == null and _shader_mode(mat) != Shader.MODE_SKY):
@@ -804,3 +841,13 @@ func _ensure_stage_env() -> Environment:
 		_stage_env = Environment.new()
 		_camera.environment = _stage_env
 	return _stage_env
+
+
+## The node that holds the resident resources (RESIDENT_HOLDER). Its references go when the tree frees it.
+class ResidentHolder:
+	extends Node
+	var held: Array[Resource] = []
+
+	func _notification(what: int) -> void:
+		if what == NOTIFICATION_PREDELETE:
+			held.clear()

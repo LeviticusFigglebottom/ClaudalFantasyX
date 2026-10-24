@@ -639,6 +639,33 @@ func _clean_tmp() -> void:
 	DirAccess.remove_absolute(TMP_DIR)
 
 
+## M1-RND-29 gate fix: a headless boot (CI's smoke test) never runs the first-launch warm-up, and a warm-up
+## freed mid-run leaves no stage nodes behind and holds its resources on a node the tree frees, not in a
+## static that outlives Godot's exit check (225 resources were still in use at exit).
+func test_headless_skips_the_first_run_and_an_interrupted_warm_up_leaves_nothing() -> void:
+	if ShaderPrewarm.is_headless():
+		assert_false(ShaderPrewarm.needs_first_run("high"), "headless: no first-launch staging or harvest")
+	var reg_path := _write_registry(
+		"registry_interrupt.json",
+		{"materials": [{"path": TEST_SHADER, "scenes": [], "resident": true}], "materials_per_frame": 1}
+	)
+	var nodes_before := Performance.get_monitor(Performance.OBJECT_NODE_COUNT)
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	node.resident_only = true
+	node.first_run = true
+	node.preset_id = "high"
+	_host().add_child(node)
+	node.start("")
+	node.tick(5.0)
+	assert_true(node.is_running(), "still mid warm-up")
+	node.free()
+	assert_eq(Performance.get_monitor(Performance.OBJECT_NODE_COUNT), nodes_before, "no stage node outlives it")
+	var holder := (Engine.get_main_loop() as SceneTree).root.find_child(ShaderPrewarm.RESIDENT_HOLDER, false, false)
+	assert_true(holder == null or holder is ShaderPrewarm.ResidentHolder, "residents live on a tree node")
+	_clean_tmp()
+
+
 func _host() -> Node:
 	# The tree root is busy while the runner scene is readying, so attach under the running scene.
 	return (Engine.get_main_loop() as SceneTree).current_scene
