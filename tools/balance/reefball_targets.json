@@ -1,0 +1,13 @@
+{
+  "_comment": "Reefball balance bands (M3-RBL-01, docs/kb/design/reefball.md § Balance). Win % of the player's side by policy; null is report only. tools/balance/reefball_sim.py --check enforces them at its seed count; tests/unit/test_reefball_sim.gd checks them at test_seeds with test_slack_pp of slack.",
+  "suites": [
+    {
+      "id": "tidecup_opening",
+      "match": "tidecup_opening",
+      "bands": {"naive": [10, 30], "smart": [55, 80], "story_opponent": null},
+      "max_draw_pct": 15,
+      "test_seeds": 200,
+      "test_slack_pp": 7
+    }
+  ]
+}
