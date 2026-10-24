@@ -87,6 +87,12 @@ func test_field_hud() -> void:
 	_sweep("field hud", _field_hud, _field_hud_pieces)
 
 
+## M3-C09-05: the held-input prompt keeps its bottom-centre place; the act card's black covers the
+## screen and its words stay centred.
+func test_hold_prompt_and_act_card() -> void:
+	_sweep("hold prompt and act card", _cutscene_cards, _cutscene_card_pieces)
+
+
 func test_battle_hud() -> void:
 	for script: StringName in [BattleController.SCRIPT_PLAYER_PREVIEW, BattleController.SCRIPT_SWELL_RING]:
 		_sweep("battle %s" % script, _battle.bind(script), _battle_pieces)
@@ -269,6 +275,17 @@ func _field_hud_pieces(root: Node) -> Array:
 	return out
 
 
+func _cutscene_card_pieces(root: Node) -> Array:
+	var out: Array = []
+	for c in root.get_children():
+		if c is HoldPrompt:
+			out.append(["hold prompt", (c as HoldPrompt).plate(), "bottom"])
+		elif c is ActCard:
+			out.append(["act card black", (c as ActCard).backing(), COVER])
+			out.append(["act card title", (c as ActCard).title_label(), "center"])
+	return out
+
+
 func _battle_pieces(h: Node) -> Array:
 	var hud := h as BattleHud
 	var out: Array = [
@@ -410,6 +427,30 @@ func _cutscene() -> Node:
 
 ## The field's HUD pieces on one themed layer, each held in: the objective line, a tip card, the
 ## area title and the codex notice.
+## The held-input prompt over an act card (both up at once, held in, so each is measured).
+func _cutscene_cards() -> Node:
+	var layer := CanvasLayer.new()
+	ParityHost.scene_root().add_child(layer)
+	var root := Control.new()
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(root)
+	_ui.follow(root)
+	FieldInput.ensure_actions()
+	var card := ActCard.new()
+	root.add_child(card)
+	card.show_act(2)
+	card.advance(float(ActCard.load_data()["in_sec"]))
+	card.set_process(false)
+	var prompt := HoldPrompt.new()
+	prompt.action = FieldInput.INTERACT
+	root.add_child(prompt)
+	prompt.show_prompt("FIELD_PROMPT_CH09_RAISE_STAFF")
+	prompt.advance(float(HoldPrompt.load_data()["fade_sec"]))
+	prompt.set_process(false)
+	return root
+
+
 func _field_hud() -> Node:
 	var layer := CanvasLayer.new()
 	ParityHost.scene_root().add_child(layer)

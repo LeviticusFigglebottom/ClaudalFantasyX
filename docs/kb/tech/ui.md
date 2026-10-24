@@ -686,3 +686,22 @@ SPEC §6.11: a "Memories" scene-replay gallery, reached from the title. It repla
   - `tests/unit/test_memories.gd`: data, model, records, the menu by `ui_*`, and the title row (hidden, shown from the live run or a save, upward growth, open and back).
   - `tests/integration/test_memory_replay.gd`: instant sequencer, synchronous load. First verse: its `start_battle` is recorded, never emitted; `Game.state` is the same object with the same dict; the stage is freed; no autosave is waiting; it returns to the title. Dock at night: night, Asha placed, Rhen on the dock, no encounters. Pila: `replay_flags` gives the full scene. Also a locked memory, `end()` mid-scene, and the title reopening the gallery on the memory.
   - `tests/unit/test_input_parity_memories.gd`: keys, pad and mouse from the title row, and the wheel.
+
+## Ch9: the held-input prompt, the act card, and names not yet learned (M3-C09-05)
+
+- **`HoldPrompt`** (`game/ui/prompts/hold_prompt.gd`; data `game/data/ui/hold_prompt.json`) is the no-fail held input's prompt: the Ebbing's "Hold to raise the staff", and act3_ending E4's later. It is one small plate at the bottom centre, holding a keycap and a verb. The keycap names the held action's binding for the device used last (`InputNames`; it follows UiInput's shared tracking, M2-UI-26).
+  - **No meter, no count, no fail.** Holding lights the keycap (`held_fill`/`held_border` palette roles). Letting go lets the plate breathe, easing between `breath_low` and full over `breath_sec`, while the scene waits. With reduced motion it stays steady.
+  - `CutsceneHoldGate` (`game/cutscene/`) instances it in place of its old `HintLabel`. Its data keeps the canvas layer and `bottom_px`. `gate.tick(delta, held)` passes `held` to `prompt.set_held`.
+  - API: `show_prompt(key)`, `set_held(bool)`, `hide_prompt()`, `advance(delta)`.
+- **`ActCard`** (`game/ui/cards/act_card.gd`; data `game/data/ui/act_card.json`) is a title card on black.
+  - `show_act(n)` shows the act's numeral line ("Act II", BannerLabel small caps) over a centred OrnamentRule and its name ("The Truth", TitleLabel), loc keys from `acts`. `show_caption(key)` shows one line alone: the Prologue's "One month earlier." is the same shape.
+  - The black is whole from the first frame and stays after the words fade out (`finished`), so the next scene fades in from it. `hide_card()` takes it away.
+  - `ActCard.open_in(parent)` gives it its own layer. `listen(seq)` shows the act from `<<event act_card N>>`.
+  - **Not wired yet:** the event is Systems' (M3-C09-09), and swapping B11's caption for it is M3-C09-201.
+- **`CharacterNames`** (`game/ui/names/character_names.gd`; data `game/data/ui/character_names.json` `until_named`) is the one resolver for the name a character goes by before the party learns theirs. Pell is "The Kirru" (`CHAR_PELL_UNNAMED`) until `ch09_pell_named` (Ch9 B09), read through `Game.get_flag`, or through a reader that is passed in.
+  - Asked by: the dialogue box's speaker name (and so the backlog), `FieldMenuModel.hero_name`, `PartySheet.hero_name` (the formation, status and other party pages), and `BattleMenus.display_name` (party side only: the timeline, the party bars, the help lines).
+  - Pell's own "Pell." on the dawn road is still spoken by "The Kirru": the flag is set after the line.
+  - A Memories replay reads the live flags, so after Ch9 it names him "Pell" from his first line.
+  - The bestiary and codex have no Pell entry yet. A future entry should ask CharacterNames too.
+- **Layout:** both widgets are pinned for 21:9 and 16:10 (`test_aspect_layouts.gd` `test_hold_prompt_and_act_card`: the prompt keeps its bottom-centre margin, the black covers the screen, the title stays centred). Both are in the pseudo-loc audit (`test_pseudo_loc_screens.gd` `test_cutscene_cards_and_prompts_fit`, with the unnamed name plate).
+- **Shots:** `cutscene_hold_prompt` and `cutscene_act_card` (drivers in `game/ui/prompts/shots/` and `game/ui/cards/shots/`). **Tests:** `test_hold_prompt.gd`, `test_act_card.gd`, `test_character_names.gd`, and `test_ch09_thread.gd` `test_the_ebbing_cannot_fail`, which is unchanged and green.

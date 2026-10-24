@@ -2031,6 +2031,14 @@
         1280,
         800
       ]
+    },
+    {
+      "id": "cutscene_hold_prompt",
+      "scene": "res://game/ui/prompts/shots/cutscene_hold_prompt.tscn"
+    },
+    {
+      "id": "cutscene_act_card",
+      "scene": "res://game/ui/cards/shots/cutscene_act_card.tscn"
     }
   ]
 }

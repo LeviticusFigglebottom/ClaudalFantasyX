@@ -62,7 +62,10 @@ func _init(swell_from: int = 3) -> void:
 func display_name(c: BattleCombatant) -> String:
 	if c == null:
 		return ""
-	return tr(c.name_key) if c.name_key != "" else String(c.id)
+	var key := c.name_key
+	if c.team == BattleCombatant.TEAM_PARTY:
+		key = CharacterNames.key_for(c.id, key)  # "The Kirru" until named (M3-C09-05)
+	return tr(key) if key != "" else String(c.id)
 
 
 func skill_name(engine: BattleEngine, skill_id: StringName) -> String:

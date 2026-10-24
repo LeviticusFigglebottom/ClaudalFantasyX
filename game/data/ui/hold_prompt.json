@@ -1,0 +1,15 @@
+{
+  "hold_prompt": {
+    "doc": "M3-C09-05 (act1_ch09.md §9 UI 1; shared with act3_ending E4): the held-input prompt a CutsceneHoldGate shows between <<event hold_input>> and <<event hold_input_end>>. One small plate, centred bottom_px above the bottom of the screen (the gate's own data may set bottom_px instead): a keycap with the held action's binding for the device used last (its first key, or its first pad button; InputNames, generic names, no brand glyphs) and the verb (\"Hold to raise the staff\"). There is no meter, no count and no fail state: holding only lights the keycap (held_fill, held_border palette roles), and letting go lets the plate breathe, its alpha easing between breath_low and 1 over breath_sec (reduced motion: steady at 1), while the dance waits. It fades in and out over fade_sec. Pixels are at the 1920 x 1080 reference; plate: sep_px between keycap and verb; keycap: min_width, border_px, radius_px, pad_x.",
+    "bottom_px": 96,
+    "fade_sec": 0.4,
+    "breath_sec": 4.0,
+    "breath_low": 0.6,
+    "held_fill": "lamp_node_glow",
+    "held_border": "focus_gold",
+    "rest_fill": "panel_low",
+    "rest_border": "line_gold",
+    "plate": {"sep_px": 12},
+    "keycap": {"min_width": 39, "border_px": 2, "radius_px": 6, "pad_x": 9}
+  }
+}

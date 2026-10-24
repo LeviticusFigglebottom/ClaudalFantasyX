@@ -252,6 +252,56 @@ func test_field_hud_fits() -> void:
 	_done("field HUD")
 
 
+## M3-C09-05: the held-input prompt (every hold prompt verb, key and pad button), every act card and
+## the one-line caption card, and the unnamed-character labels in the dialogue box's name plate.
+func test_cutscene_cards_and_prompts_fit() -> void:
+	FieldInput.ensure_actions()
+	var prompt_keys: Array[String] = ["FIELD_PROMPT_CH09_RAISE_STAFF"]
+	var acts := (ActCard.load_data().get("acts", {}) as Dictionary).keys()
+	for scale in _scales():
+		_settings_at(scale)
+		for key in prompt_keys:
+			for pad in [false, true]:
+				InputNames.using_pad = pad
+				var prompt := HoldPrompt.new()
+				prompt.action = FieldInput.INTERACT
+				_hud_root().add_child(prompt)
+				prompt.show_prompt(key)
+				prompt.set_held(true)
+				prompt.advance(float(HoldPrompt.load_data()["fade_sec"]))
+				prompt.set_process(false)
+				_probe(prompt, "hold prompt %s%s" % [key, " (pad)" if pad else ""])
+				_clear()
+		for n: Variant in acts:
+			var card := ActCard.new()
+			_hud_root().add_child(card)
+			card.show_act(int(str(n)))
+			card.advance(float(ActCard.load_data()["in_sec"]))
+			card.set_process(false)
+			_probe(card, "act card %s" % n)
+			_clear()
+		var caption := ActCard.new()
+		_hud_root().add_child(caption)
+		caption.show_caption("DLG_CH01_DROP_001")
+		caption.advance(float(ActCard.load_data()["in_sec"]))
+		caption.set_process(false)
+		_probe(caption, "caption card")
+		_clear()
+		for id: Variant in CharacterNames.rows():
+			var box := (load(BOX_SCENE) as PackedScene).instantiate() as DialogueBox
+			_host(box)
+			box.show_text(
+				StringName(str(id)),
+				&"DLG_CH09_ROAD_005",
+				StringName(str((CharacterNames.rows()[id] as Dictionary)["name_key"]))
+			)
+			box.skip_reveal()
+			_probe(box, "name plate %s unnamed" % id)
+			_clear()
+	InputNames.using_pad = false
+	_done("cutscene cards and prompts")
+
+
 ## Every battle capture state (the command menu and its pages, the target and read panels, the
 ## Swell panels, the Vowbound call, the result panel), then the pause page over a turn.
 func test_battle_fits() -> void:
