@@ -25,6 +25,7 @@ var _phase: StringName = &""
 var _surfaces: Array[GeometryInstance3D] = []
 var _fade: Tween
 var _phase_tween: Tween
+var _phase_pose: Array = []  # [position, rotation] the phase moves the model to
 ## Charge skill -> broken (the boss's breakable parts).
 var _broken: Dictionary = {}
 
@@ -138,8 +139,9 @@ func set_frozen(on: bool) -> void:
 
 
 ## A boss's phase change (creatures.json `phases`): plays its clip, moves the model by its offset and tilt over
-## its time, and idles on the phase's idle clip afterwards. An unknown phase does nothing.
-func enter_phase(phase_id: StringName) -> bool:
+## its time (at once when `instant`, for captures), and idles on the phase's idle clip afterwards. An unknown phase
+## does nothing.
+func enter_phase(phase_id: StringName, instant := false) -> bool:
 	var phases: Dictionary = _row.get("phases", {})
 	if not phases.has(String(phase_id)) or phase_id == _phase:
 		return false
@@ -157,7 +159,8 @@ func enter_phase(phase_id: StringName) -> bool:
 			_phase_tween.kill()
 		var sec := float(p.get("sec", 0.0))
 		var target := Vector3(float(off[0]), float(off[1]), float(off[2]))
-		if is_inside_tree() and sec > 0.0:
+		_phase_pose = [target, tilt]
+		if is_inside_tree() and sec > 0.0 and not instant:
 			_phase_tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 			_phase_tween.tween_property(model, "position", target, sec)
 			_phase_tween.tween_property(model, "rotation", tilt, sec)
@@ -172,6 +175,19 @@ func enter_phase(phase_id: StringName) -> bool:
 
 func phase() -> StringName:
 	return _phase
+
+
+## Jumps a phase change to its end (the model at its offset and tilt, the phase idle playing), as BattleBossVfx's
+## settle() does for the flood water: captures and fixtures that enter a phase need no wait.
+func settle() -> void:
+	if _phase_tween != null and _phase_tween.is_valid():
+		_phase_tween.kill()
+	var model := _model()
+	if model != null and not _phase_pose.is_empty():
+		model.position = _phase_pose[0]
+		model.rotation = _phase_pose[1]
+	if not _ko and not _frozen and _phase != &"":
+		_play(_idle)
 
 
 ## A breakable part (creatures.json `break_parts`, keyed by the charge skill it silences): broken shows the

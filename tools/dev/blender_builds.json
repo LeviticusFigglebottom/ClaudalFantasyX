@@ -66,6 +66,16 @@
         ["{blender}", "--python", "assets_src/creatures/reef_crab/build_reef_crab.py", "--", "--out", "assets/creatures/reef_crab/reef_crab.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "reef_crab"]
       ]
+    },
+    {
+      "id": "creature_drownbell",
+      "owner": "character",
+      "sources": ["assets_src/creatures/drownbell/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/drownbell/*.glb", "assets/creatures/drownbell/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/drownbell/build_drownbell.py", "--", "--out", "assets/creatures/drownbell/drownbell.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "drownbell"]
+      ]
     }
   ]
 }

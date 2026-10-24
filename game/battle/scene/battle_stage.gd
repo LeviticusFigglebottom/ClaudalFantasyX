@@ -158,6 +158,13 @@ func shake() -> void:
 	_shake_tween.tween_property(camera, "h_offset", 0.0, step_sec)
 
 
+## Jumps every creature's phase change to its end (CreatureActor.settle; M2-CRE-08), for captures.
+func settle_actors() -> void:
+	for f: FighterStandIn in _fighters.values():
+		if f.creature() != null:
+			f.creature().settle()
+
+
 func stand_in(cid: StringName) -> FighterStandIn:
 	return _fighters.get(cid) as FighterStandIn
 

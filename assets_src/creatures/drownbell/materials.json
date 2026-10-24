@@ -1,0 +1,59 @@
+{
+  "_doc": "The Drownbell's surfaces (docs/kb/art/creatures/drownbell.md). Slots are the glTF material names; write_materials.py writes assets/creatures/drownbell/materials/<slot>.tres on game/shaders/creature/creature.gdshader. bronze is the bell (worn brass and verdigris by vertex colour, half-metallic), rim the barnacled lip with the weak-point cracks, carapace the Undertow-spawn mass and legs, rope the rotten bell-rope. Colours are palette.json swatches (spawn_wound for the wounds).",
+  "slots": {
+    "bronze": {
+      "metallic": 0.45,
+      "roughness_dry": 0.55,
+      "roughness_wet": 0.25,
+      "wet_darken": 0.75,
+      "clearcoat_wet": 0.3,
+      "detail_scale": 18.0,
+      "detail_albedo": 0.16,
+      "detail_bump": 0.3,
+      "cavity_albedo": 0.5,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 2.2,
+      "emission_pulse_hz": 0.25,
+      "emission_pulse_depth": 0.4
+    },
+    "rim": {
+      "metallic": 0.2,
+      "roughness_dry": 0.7,
+      "roughness_wet": 0.3,
+      "wet_darken": 0.75,
+      "clearcoat_wet": 0.5,
+      "detail_scale": 30.0,
+      "detail_albedo": 0.18,
+      "detail_bump": 0.5,
+      "cavity_albedo": 0.4,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 3.0,
+      "emission_pulse_hz": 0.4,
+      "emission_pulse_depth": 0.45
+    },
+    "carapace": {
+      "roughness_dry": 0.3,
+      "roughness_wet": 0.12,
+      "specular": 0.6,
+      "clearcoat_wet": 0.9,
+      "detail_scale": 20.0,
+      "detail_albedo": 0.1,
+      "detail_bump": 0.3,
+      "cavity_albedo": 0.3,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 2.0,
+      "emission_pulse_hz": 0.3,
+      "emission_pulse_depth": 0.5
+    },
+    "rope": {
+      "roughness_dry": 0.9,
+      "roughness_wet": 0.45,
+      "wet_darken": 0.65,
+      "clearcoat_wet": 0.2,
+      "detail_scale": 60.0,
+      "detail_albedo": 0.25,
+      "detail_bump": 0.6,
+      "cavity_albedo": 0.5
+    }
+  }
+}

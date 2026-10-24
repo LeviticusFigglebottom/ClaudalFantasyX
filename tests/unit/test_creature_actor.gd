@@ -5,6 +5,7 @@ extends TestCase
 ## clips from the engine's signals (BattleActorMotion).
 
 const CRAB := "res://game/creatures/reef_crab/reef_crab_battle.tscn"
+const BELL := "res://game/creatures/drownbell/drownbell_battle.tscn"
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -159,6 +160,81 @@ func test_a_sandbox_battle_drives_the_crabs_clips() -> void:
 			e.run_enemy_turn()
 	assert_true(seen.has(&"hit"), "the crab flinched when struck")
 	assert_true(seen.has(&"attack") or seen.has(&"cast"), "the crab played its own action")
+	ctl.get_parent().remove_child(ctl)
+	ctl.free()
+	ctl = null
+	Game.state = _saved_state
+
+
+func test_the_drownbells_rim_breaks_and_mends() -> void:
+	var a := _actor(BELL)
+	var rim := a.find_child("Rim", true, false) as Node3D
+	var broken := a.find_child("RimBroken", true, false) as Node3D
+	assert_true(rim != null and broken != null, "the GLB carries both rims")
+	assert_true(rim.visible and not broken.visible, "whole at the start")
+	assert_true(a.set_part_broken(&"toll", true))
+	assert_true(a.is_part_broken(&"toll"))
+	assert_true(broken.visible and not rim.visible, "charge_broken shows the broken lip")
+	a.set_part_broken(&"toll", false)
+	assert_true(rim.visible and not broken.visible, "a new toll mends it")
+	assert_false(a.set_part_broken(&"hood_slam", true), "no part for that skill")
+
+
+func test_the_flood_phase_sinks_the_bell_and_idles_on_its_flood_clip() -> void:
+	var a := _actor(BELL)
+	assert_true(a.enter_phase(&"flood", true))
+	assert_eq(a.phase(), &"flood")
+	assert_eq(a.current_clip, &"phase_change")
+	var model := a.get_child(0) as Node3D
+	assert_true(is_equal_approx(model.position.y, -0.35), "it settles into the water")
+	assert_true(is_equal_approx(model.rotation_degrees.z, -6.0), "tilted seaward")
+	var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	player.advance(player.get_animation(&"phase_change").length + 0.05)
+	assert_eq(a.current_clip, &"idle_flood")
+	assert_true(a.play_action(&"toll", &"physical"), "toll swings (clip_by_skill)")
+	assert_eq(a.current_clip, &"cast")
+	player.advance(player.get_animation(&"cast").length + 0.05)
+	assert_eq(a.current_clip, &"idle_flood", "the flood idle after an action")
+	assert_false(a.enter_phase(&"flood"), "already flooded")
+	var b := _actor(BELL)
+	b.enter_phase(&"flood")
+	b.settle()
+	assert_true(is_equal_approx((b.get_child(0) as Node3D).position.y, -0.35), "settle() ends the sink at once")
+	assert_eq(b.current_clip, &"idle_flood")
+
+
+func test_a_drownbell_fight_breaks_the_rim_and_floods_the_bell() -> void:
+	_saved_state = Game.state
+	Game.state = GameStateData.new()
+	ctl = (load(SANDBOX) as PackedScene).instantiate() as BattleController
+	ctl.auto_start = false
+	ctl.pacing_scale = 0.0
+	ctl.persist_progress = false
+	_add(ctl)
+	var active: Array[StringName] = [&"rhen", &"asha", &"toma"]
+	var reserve: Array[StringName] = []
+	ctl.start_battle(active, reserve, &"drownbell", SEED, null)
+	var e := ctl.engine
+	var bell := ctl.stage.stand_in(e.enemies[0].id).creature()
+	assert_true(bell != null and bell.creature_id == &"drownbell", "the bell is its model")
+	var log: Array[String] = []
+	e.charge_broken.connect(
+		func(_c: BattleCombatant, _s: StringName) -> void: log.append("broken:%s" % bell.is_part_broken(&"toll"))
+	)
+	e.phase_changed.connect(func(_c: BattleCombatant, p: StringName) -> void: log.append("phase:%s" % bell.phase()))
+	var sim := BattleSim.new()
+	var policy := sim.make_policy(&"smart")
+	policy.reset()
+	var n := 0
+	while e.outcome == &"" and n < 400 and not log.has("phase:flood"):
+		n += 1
+		if e.is_party_turn():
+			policy.take_turn(e)
+		else:
+			e.run_enemy_turn()
+	assert_true(log.has("phase:flood"), "the bell flooded (%s)" % [log])
+	assert_true(log.has("broken:true"), "the smart party broke the toll, and the rim with it (%s)" % [log])
+	assert_false(log.has("broken:false"))
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
 	ctl = null

@@ -47,6 +47,7 @@
     {
       "id": "drownbell", "name_key": "ENEMY_DROWNBELL", "role_answer": "rhen",
       "lore_key": "LORE_DROWNBELL",
+      "model": "res://game/creatures/drownbell/drownbell_battle.tscn",
       "phase_name_key": "PHASE_DROWNBELL_TOLL",
       "field_name_key": "FIELD_DROWNBELL_FLOOD",
       "stats": {"level": 6, "hp": 3000, "mp": 0, "strength": 18, "magic": 14, "defense": 30,

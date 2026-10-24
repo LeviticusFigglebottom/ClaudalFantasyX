@@ -15,6 +15,9 @@ const CONFIG_PATH := "res://game/levels/_tests/creatures/creature_stage.json"
 @export var scale_bars := false
 ## Extra yaw for every creature (degrees); 0 shows each facing the camera's default +Z.
 @export var creature_yaw_deg: float = 0.0
+## A boss phase to show (CreatureActor.enter_phase, applied at once), and breakable parts to show broken.
+@export var phase: StringName = &""
+@export var broken_parts: Array[StringName] = []
 
 var actors: Array[CreatureActor] = []
 var _cfg: Dictionary = {}
@@ -34,6 +37,10 @@ func _ready() -> void:
 		a.position.x = x + w * 0.5 - _bounds([a]).get_center().x
 		x += w + gap
 		actors.append(a)
+		if phase != &"":
+			a.enter_phase(phase, true)
+		for part in broken_parts:
+			a.set_part_broken(part, true)
 		hold(a)
 	if scale_bars:
 		_add_scale_bars(x)
