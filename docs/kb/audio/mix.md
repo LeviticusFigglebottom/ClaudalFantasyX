@@ -146,3 +146,11 @@ Details: docs/kb/tech/audio_runtime.md "Area reverb".
 at the text blip's −27 LUFS momentary and the text box's `blip_volume_db`, one blip per 55–80 ms at most. Recorded
 lines, when they exist, play on Voice in place of the blips; a starting target is −16 LUFS integrated, like the
 music, over the −4 dB dialogue duck (to confirm once real lines exist). Details: audio_runtime.md "Voices".
+
+**Reefball and underwater (M3-AUD-06).** `assets_src/sfx/reefball_sfx.py` and `underwater_sfx.py` (render_all kind
+`sfx_set`: one-shots and loops in one job; a file listed with a `.loop.json` is checked as a loop). The underwater
+beds (`underwater_deep`, `drowned_tower`) are ambience beds at −26 LUFS, Vorbis q1. The Reefball crowd beds sit on
+Ambience too: the murmur at −26, the excited bed at **−23** (3 LU over the murmur, so a crossfade into play rises
+without a fader move). World SFX at −18 momentary max, swimming strokes at −20 (they repeat), the reed-pipe whistle
+at −17 (it has to cut through the crowd), and the lantern's underwater hum, a 6 s loop, at −24 integrated like the
+shrine's pool fill. Every rule is in `tools/audio/targets.py`.
