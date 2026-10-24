@@ -115,6 +115,7 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/fp-10-keylight-check | pushed (from origin/claude/m2-slice 0408806; Lead request) | M2-FP-10 GPU check. No artefacts; cost ≤ 0.03 ms; Haluna sun at bias 1.0, no face regression. H05's 74° sun leaves the face in brow and nose shadow, so set `key_pitch_deg` 30 on H05 and H06. **Layer 20 conflict** between the key light and the Undertow half-res body. New tool `tools/gpu_bench/keylight_probe.tscn`. Report: `docs/kb/qa/gpu/2026-10-24-fp-10-keylight.md` |
 | gpu/m2-rnd-01b-undertow-compute | **pushed, not merged** (contains gpu/m2-rnd-01-undertow; merge that first) | M2-RND-01 compute body (ADR 0027): the half-res march as a CompositorEffect against this frame's depth, giving exact occlusion inside the volume (the pillar test). High 1440p Day 2.45, Eye 2.84 ms (SubViewport 2.56 / 3.11). Generator `tools/rendering/gen_undertow_compute.py`. Fixed two half-res lifecycle bugs. Report: m2-rnd-01-start.md, "Compute body" |
 | gpu/m2-rnd-01-undertow | **WIP, not merged** (task `doing`) | M2-RND-01. Earlier: the wall foot, the sea's storm response, joined flanks, the half-res body and 3-octave multiple scattering. This session: noise-warped striations, fringe billows with sun-ward shading, softer sea streaks, and the wound-stipple fix (skin step refinement). High 1440p: Day 2.56, Eye 3.11 ms. All 5 Undertow shots drift. Integration branch merged in (a504072). Report: `docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md` |
 | gpu/qa-08-asha-recheck | task `review` (reviewer: character) | M1-QA-08: Asha GPU recheck at 2× High and Ultra (96a6585 / 9a133ee). Neutral passes; smile passes on shading but reads as a smirk at 1×; grief still fails on two Character mouth faults (black rim, peg teeth). CHR-12: crown, lid band (R:B 3.7 against 2.0–2.5) and smile eyes fail; lip bow and skin pass. ADR 0024 check 2 confirmed. Report: `docs/kb/qa/gpu/2026-10-24-qa-08-asha.md` |
@@ -131,8 +132,10 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 1. **M2-RND-01** (`gpu/m2-rnd-01b-undertow-compute`, WIP). The billows, striations, both sweep defects and the
    compute body (exact occlusion) are done. The exact next step is in the task file's "WIP handoff":
-   - Min-spec cost: `body_scale` 0.33–0.25 on High, with the compute pass's own reprojected history. Undertow
-     High 1440p is AT RISK on an RTX 3060 (~3×: Day ~7.4 ms).
+   - Min-spec cost. Day, High 1440p: `body_scale` 0.5 → 2.42 ms, 0.35 → 1.90, 0.25 → 1.69; the stills barely
+     change. Next: a motion check (pan, storm running, under FSR2) of 0.35 and 0.25, then pick High's default,
+     or add the compute pass's own history first. Undertow High 1440p is AT RISK on an RTX 3060 (~3×: Day ~7.4 ms
+     at 0.5, ~5.7 at 0.35).
    - Then put the compute pipeline on the prewarm list (with M1-RND-22).
    - Then torn rents and mote streamers; the storm in sky, reflections and rain; lightning; per-chapter presets.
 2. **M1-RND-22:** the prewarm hitch floor, measured at Low, High and Ultra. If 50 ms is impossible, draft an ADR

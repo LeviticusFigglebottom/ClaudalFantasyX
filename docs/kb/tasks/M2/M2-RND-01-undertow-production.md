@@ -62,8 +62,12 @@ The `undertow` tests pass (35/0).
   report section "Compute body". The pillar test passes. Cost: Day 2.45 ms, Eye 2.84 ms. Merge
   `gpu/m2-rnd-01-undertow` first, then this branch (it contains it).
 - **Exact next step (was: compute-pass occlusion, now done):** min-spec cost on the compute body.
-  - Try `body_scale` 0.33–0.25 on High, with the compute pass's own history (reproject last frame's body by its
-    front distance), so a quarter-res march holds up under FSR2.
+  - **Measured (2026-10-24, compute mode, Day, High 1440p, whole frame):** `body_scale` 0.5 → 2.42 ms, 0.35 →
+    1.90 ms, 0.25 → 1.69 ms. The held-storm stills barely change (RMSE 0.0024 and 0.0030 against 0.5; 0.25 only
+    softens the wound edges).
+  - **Next:** a motion check of 0.35 and 0.25 under FSR2: a pan, and the storm clock running (shimmer,
+    reprojection smear). If 0.35 holds, make it High's default; if it doesn't, give the compute pass its own
+    history (reproject last frame's body by its front distance) before going lower.
   - Then put the compute pipeline on the prewarm list (with M1-RND-22).
 - **After that:**
   - Torn rents and mote streamers.
