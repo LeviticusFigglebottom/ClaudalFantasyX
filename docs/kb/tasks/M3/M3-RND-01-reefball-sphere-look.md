@@ -5,7 +5,7 @@ role: rendering
 status: todo
 owner_session: ""
 reviewer: character
-depends_on: [M2-RND-09]
+depends_on: [M2-RND-02]
 milestone: M3
 request-from: "lead"
 ---
