@@ -731,6 +731,66 @@
       "settle_frames": 30
     },
     {
+      "id": "asha_clip_kneel_over_rhen",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_kneel_over_rhen.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_clip_walk",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_walk.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_clip_offer_hand",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_offer_hand.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_clip_face_west",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_face_west.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_clip_laugh",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_laugh.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_clip_run",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_run.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "rhen_front",
       "scene": "res://game/levels/_tests/characters/rhen/rhen_stage.tscn",
       "camera": "Cameras/Front",

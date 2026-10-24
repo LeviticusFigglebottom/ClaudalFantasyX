@@ -163,3 +163,29 @@ A new hero is a folder `assets_src/characters/<hero>/` that **imports** Asha's m
 - A job in `tools/dev/blender_builds.json` whose sources include `assets_src/characters/asha/**` (so a shared change
   re-verifies every hero), PROVENANCE rows, a stage `game/levels/_tests/characters/<hero>/` on `asha_stage.gd`
   (`character_name`), and shots. Rhen's review: [`rhen_review.md`](rhen_review.md).
+
+## 13. Body clips (M2-FP-07)
+
+`assets_src/characters/asha/hero_clips.py` (pure Python, no Blender) writes each hero's body clips as a Godot
+AnimationLibrary text resource, `assets/characters/<hero>/anim/<hero>_clips.tres`, from the skeleton rest read out of
+the hero's committed GLB. Poses are rotations in world axes on top of what each bone inherits (as `AshaStage.world_pose`),
+plus a hips offset, sampled at 15 fps; every clip keys the same 31 body bones (spine, neck, head, arms, legs and their
+twist segments), so a clip change never leaves a limb in the previous clip's pose. The `characters` import rule
+(`animations` in `game/data/import/characters.json`) puts the library on an `AnimationPlayer` at the asset root with a
+0.3 s default blend. `tools/tests/test_hero_clips.py` rebuilds the libraries and compares them byte for byte, so rerun
+`python3 assets_src/characters/asha/hero_clips.py` after any rebuild that moves a skeleton.
+
+| Clip | Loop | Notes |
+|---|---|---|
+| `idle` | yes | Stillness with breath and a slow weight shift (sway 40% for Asha, 130% for Rhen, his 4° lean) |
+| `walk`, `run`, `walk_to_chamber` | yes | In place (the sequencer moves the actor); Asha's staff arm swings less and its hand keeps the staff upright |
+| `talk` | yes | The free hand lifts and falls once per loop; head and shoulders move a little |
+| `kneel_over_rhen` | no | Onto the right knee, the left foot planted, leaning over someone lying in front; holds |
+| `laugh`, `offer_hand` | no | **Kneeling** (the beach scene plays them while she kneels); the head tilts back in the laugh |
+| `rise_to_stand` | no | From the kneel to standing |
+| `emerge_doorway` | no | A tired settle, one step, the head lifts (ADR 0017: on her own feet) |
+| `face_west` | no | A settle into the singing stance, the free hand to the breastbone; the facing comes from the `@mark` |
+| `take_hand` (Rhen) | no | From the kneel, the right hand reaches forward and up |
+
+Review shots: `asha_clip_kneel_over_rhen`, `asha_clip_walk`, `asha_clip_offer_hand`, `asha_clip_face_west`,
+`asha_clip_laugh`, `asha_clip_run` (AshaStage `clip` and `clip_time`).

@@ -25,6 +25,11 @@ extends Node3D
 ## Deformation check in world terms: bone name -> Euler degrees about the stage axes (X her left,
 ## Y up, Z the way she faces), applied in dictionary order (list parents before children).
 @export var world_pose: Dictionary = {}
+## M2-FP-07 clip check: the body clip to pose (an AnimationPlayer clip on the character, from the
+## `characters` import rule, else from `clip_library`) and the time to pose it at. Empty = none.
+@export var clip: StringName = &""
+@export var clip_time: float = 0.0
+@export var clip_library: AnimationLibrary
 @export var spin_degrees_per_second: float = 0.0
 @export var yaw_degrees: float = 0.0
 ## Portrait camera (`Cameras/Face`) aimed at the eye midpoint.
@@ -61,6 +66,7 @@ func _ready() -> void:
 	CharacterShaderTiers.apply_to_tree(_character, tier)
 	_apply_face(_character)
 	_apply_pose(_character)
+	_apply_clip(_character)
 	_aim_face_camera(_character)
 	if not compare_skin.is_empty() or not compare_face.is_empty():
 		_build_compare()
@@ -225,6 +231,23 @@ func _apply_local_pose(skel: Skeleton3D) -> void:
 		var extra := Basis.from_euler(Vector3(deg_to_rad(deg.x), deg_to_rad(deg.y), deg_to_rad(deg.z)))
 		var rest := skel.get_bone_rest(idx).basis
 		skel.set_bone_pose_rotation(idx, (rest * extra).get_rotation_quaternion())
+
+
+func _apply_clip(root: Node) -> void:
+	if clip == &"":
+		return
+	var ap := root.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	if ap == null and clip_library != null:
+		ap = AnimationPlayer.new()
+		ap.name = &"AnimationPlayer"
+		root.add_child(ap)
+		ap.add_animation_library(&"", clip_library)
+	if ap == null or not ap.has_animation(clip):
+		push_warning("AshaStage: no clip %s" % clip)
+		return
+	ap.play(clip)
+	ap.seek(clip_time, true)
+	ap.pause()
 
 
 func _aim_face_camera(root: Node) -> void:

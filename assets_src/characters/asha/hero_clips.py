@@ -1,0 +1,385 @@
+#!/usr/bin/env python3
+"""Body animation clips for the heroes (M2-FP-07), as a Godot AnimationLibrary text resource.
+
+    python3 assets_src/characters/asha/hero_clips.py --hero asha   # -> assets/characters/asha/anim/asha_clips.tres
+    python3 assets_src/characters/asha/hero_clips.py --hero rhen
+
+Pure Python (numpy), deterministic, no Blender: the skeleton's rest pose is read from the hero's committed GLB (the
+glTF joint nodes are Godot's bone rests), and every clip is written as keyed poses of one fixed set of body bones, so
+switching clips never leaves a bone in the previous clip's pose. The `characters` post-import rule
+(game/data/import/characters.json `animations`) gives the imported hero an AnimationPlayer with this library, and
+CutsceneSequencer plays a same-named clip on `@anim <actor> <clip>`.
+
+A pose is a set of rotations in **world axes** (the stage's: X = the hero's left, Y = up, Z = the way the hero faces),
+each applied on top of what the bone inherits from its parents, exactly as AshaStage.world_pose does: +X bends the
+spine forward and swings a hanging limb backward, +Y turns to the hero's left, +Z tilts to the hero's right. The hips
+also take a position offset. Poses are written as local bone rotations (rest x the inherited turn), which is what a
+Godot rotation_3d track holds.
+
+Clips (asha.md §1 posture: stillness, idle sway 40% of the party default; rhen.md §1: 130%, a 4 degree forward lean):
+`idle`, `walk`, `run`, `talk` (loops); Cutscene A: `kneel_over_rhen`, `laugh` and `offer_hand` (kneeling: that is where
+the beach scene plays them), `rise_to_stand` (from the kneel); Cutscene B: `walk_to_chamber` (loop), `emerge_doorway`,
+`face_west` (a settle into the singing stance; the facing itself comes from the `@mark`). Rhen gets the shared clips plus
+`take_hand`. Asha's staff hand counter-rotates so the staff stays upright as her arm moves.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import math
+import sys
+from pathlib import Path
+
+import numpy as np
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[2]
+sys.path.insert(0, str(HERE))
+
+import asha_glb  # noqa: E402
+
+FPS = 15.0
+# Every clip keys these bones (and the hips position), so a clip change resets all of them.
+# The twist segments (.001) are keyed at rest: they sit between keyed bones in the chain.
+BONES = ["DEF-spine", "DEF-spine.001", "DEF-spine.002", "DEF-spine.003", "DEF-spine.004", "DEF-spine.005",
+         "DEF-spine.006", "DEF-shoulder.L", "DEF-upper_arm.L", "DEF-upper_arm.L.001", "DEF-forearm.L",
+         "DEF-forearm.L.001", "DEF-hand.L", "DEF-shoulder.R", "DEF-upper_arm.R", "DEF-upper_arm.R.001",
+         "DEF-forearm.R", "DEF-forearm.R.001", "DEF-hand.R", "DEF-thigh.L", "DEF-thigh.L.001", "DEF-shin.L",
+         "DEF-shin.L.001", "DEF-foot.L", "DEF-toe.L", "DEF-thigh.R", "DEF-thigh.R.001", "DEF-shin.R",
+         "DEF-shin.R.001", "DEF-foot.R", "DEF-toe.R"]
+HIPS = "DEF-spine"
+PERSONA = {
+    "asha": {"sway": 0.4, "lean": 0.0, "staff": True, "arms_down": 40.0},
+    "rhen": {"sway": 1.3, "lean": 4.0, "staff": False, "arms_down": 42.0},
+}
+CLIPS = {
+    "asha": ["idle", "walk", "run", "talk", "kneel_over_rhen", "laugh", "rise_to_stand", "offer_hand",
+             "walk_to_chamber", "emerge_doorway", "face_west"],
+    "rhen": ["idle", "walk", "run", "talk", "kneel_over_rhen", "rise_to_stand", "take_hand"],
+}
+LOOPS = {"idle", "walk", "run", "talk", "walk_to_chamber"}
+
+
+# ---------------------------------------------------------------------------------------------
+# quaternions (x, y, z, w), as glTF and Godot store them
+# ---------------------------------------------------------------------------------------------
+def qmul(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    ax, ay, az, aw = a
+    bx, by, bz, bw = b
+    return np.array([aw * bx + ax * bw + ay * bz - az * by, aw * by - ax * bz + ay * bw + az * bx,
+                     aw * bz + ax * by - ay * bx + az * bw, aw * bw - ax * bx - ay * by - az * bz])
+
+
+def qinv(q: np.ndarray) -> np.ndarray:
+    return np.array([-q[0], -q[1], -q[2], q[3]])
+
+
+def qaxis(axis, deg: float) -> np.ndarray:
+    a = math.radians(deg) * 0.5
+    v = np.asarray(axis, dtype=float)
+    return np.concatenate([v * math.sin(a), [math.cos(a)]])
+
+
+def qeuler(e) -> np.ndarray:
+    """World-axis turn from degrees (x, y, z), composed as Godot's Basis.from_euler (YXZ): Y * X * Z."""
+    x, y, z = e
+    return qmul(qaxis((0, 1, 0), y), qmul(qaxis((1, 0, 0), x), qaxis((0, 0, 1), z)))
+
+
+def qrot(q: np.ndarray, v: np.ndarray) -> np.ndarray:
+    u = q[:3]
+    return v + 2.0 * np.cross(u, np.cross(u, v) + q[3] * v)
+
+
+# ---------------------------------------------------------------------------------------------
+# skeleton
+# ---------------------------------------------------------------------------------------------
+class Skeleton:
+    def __init__(self, glb: Path) -> None:
+        js, _ = asha_glb.read_glb(glb)
+        nodes = js["nodes"]
+        parent = {}
+        for i, n in enumerate(nodes):
+            for c in n.get("children", []):
+                parent[c] = i
+        idx = {n.get("name"): i for i, n in enumerate(nodes)}
+        hips = idx[HIPS]
+        self.root_name = nodes[parent[hips]]["name"]  # the armature node ("asha_skeleton")
+        self.rest_q: dict[str, np.ndarray] = {}
+        self.rest_t: dict[str, np.ndarray] = {}
+        self.parent: dict[str, str | None] = {}
+        for name in BONES:
+            n = nodes[idx[name]]
+            self.rest_q[name] = np.array(n.get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
+            self.rest_t[name] = np.array(n.get("translation", [0.0, 0.0, 0.0]), dtype=float)
+            p = parent.get(idx[name])
+            pn = nodes[p]["name"] if p is not None else None
+            self.parent[name] = pn if pn in BONES else None
+            if name != HIPS:
+                assert pn in BONES, f"{name}: parent {pn} not keyed"
+        # rest global positions (for leg lengths)
+        self.g_t = {}
+        g_q = {}
+        for name in BONES:
+            p = self.parent[name]
+            if p is None:
+                g_q[name], self.g_t[name] = self.rest_q[name], self.rest_t[name]
+            else:
+                g_q[name] = qmul(g_q[p], self.rest_q[name])
+                self.g_t[name] = self.g_t[p] + qrot(g_q[p], self.rest_t[name])
+        self.leg_thigh = float(np.linalg.norm(self.g_t["DEF-shin.L"] - self.g_t["DEF-thigh.L"]))
+        self.leg_shin = float(np.linalg.norm(self.g_t["DEF-foot.L"] - self.g_t["DEF-shin.L"]))
+        self.ankle_h = float(self.g_t["DEF-foot.L"][1])
+        self.hip_h = float(self.g_t["DEF-thigh.L"][1])
+
+    def local_pose(self, turns: dict) -> dict:
+        """World-axis turns (bone -> quaternion) -> local rotations, parents first."""
+        g = {}
+        out = {}
+        for name in BONES:
+            p = self.parent[name]
+            pg = np.array([0.0, 0.0, 0.0, 1.0]) if p is None else g[p]
+            inherited = qmul(pg, self.rest_q[name])
+            d = turns.get(name)
+            gq = inherited if d is None else qmul(d, inherited)
+            g[name] = gq
+            lq = qmul(qinv(pg), gq)
+            out[name] = lq / np.linalg.norm(lq)
+        return out
+
+
+# ---------------------------------------------------------------------------------------------
+# poses: {bone: (x, y, z) degrees} plus "hips": (dx, dy, dz) metres
+# ---------------------------------------------------------------------------------------------
+def smooth(t: float) -> float:
+    t = min(max(t, 0.0), 1.0)
+    return t * t * (3.0 - 2.0 * t)
+
+
+def blend(a: dict, b: dict, t: float) -> dict:
+    out = {}
+    for k in set(a) | set(b):
+        va = np.asarray(a.get(k, (0.0, 0.0, 0.0)), dtype=float)
+        vb = np.asarray(b.get(k, (0.0, 0.0, 0.0)), dtype=float)
+        out[k] = tuple(va + (vb - va) * t)
+    return out
+
+
+def add(a: dict, b: dict) -> dict:
+    out = dict(a)
+    for k, v in b.items():
+        out[k] = tuple(np.asarray(out.get(k, (0.0, 0.0, 0.0)), dtype=float) + np.asarray(v, dtype=float))
+    return out
+
+
+def staff_hold(pose: dict, persona: dict) -> dict:
+    """Asha's staff is rigid in her right hand: undo the arm's turns at the hand so it stays upright."""
+    if not persona["staff"]:
+        return pose
+    total = np.zeros(3)
+    for b in ("DEF-spine.001", "DEF-spine.002", "DEF-spine.003", "DEF-shoulder.R", "DEF-upper_arm.R",
+              "DEF-forearm.R"):
+        total += np.asarray(pose.get(b, (0.0, 0.0, 0.0)), dtype=float)
+    out = dict(pose)
+    out["DEF-hand.R"] = tuple(np.asarray(pose.get("DEF-hand.R", (0.0, 0.0, 0.0))) - total)
+    return out
+
+
+def stand(persona: dict) -> dict:
+    a = persona["arms_down"]
+    lean = persona["lean"]
+    p = {"DEF-upper_arm.L": (4.0, 0.0, -a), "DEF-forearm.L": (-12.0, 0.0, 0.0),
+         "DEF-upper_arm.R": (4.0, 0.0, a), "DEF-forearm.R": (-12.0, 0.0, 0.0),
+         "DEF-spine.001": (lean * 0.4, 0.0, 0.0), "DEF-spine.006": (-lean * 0.3, 0.0, 0.0),
+         "DEF-thigh.L": (-lean * 0.5, 0.0, 0.0), "DEF-thigh.R": (-lean * 0.5, 0.0, 0.0)}
+    if persona["staff"]:
+        p["DEF-upper_arm.R"] = (-6.0, 0.0, a - 8.0)  # the staff a little forward of the body (asha.md §2.3)
+        p["DEF-forearm.R"] = (-28.0, 0.0, 0.0)
+    return p
+
+
+def kneel(sk: Skeleton, persona: dict) -> dict:
+    """On the right knee, the left foot planted, leaning over someone lying in front (Cutscene A)."""
+    drop = sk.hip_h - (sk.leg_shin + sk.ankle_h) - 0.01
+    a = persona["arms_down"]
+    p = {"hips": (0.0, -drop, -0.04),
+         "DEF-thigh.L": (-84.0, 0.0, -4.0), "DEF-shin.L": (86.0, 0.0, 0.0), "DEF-foot.L": (-2.0, 0.0, 0.0),
+         "DEF-thigh.R": (6.0, 0.0, 3.0), "DEF-shin.R": (96.0, 0.0, 0.0), "DEF-foot.R": (-30.0, 0.0, 0.0),
+         "DEF-toe.R": (-40.0, 0.0, 0.0),
+         "DEF-spine.001": (14.0, 0.0, 0.0), "DEF-spine.002": (12.0, 0.0, 0.0), "DEF-spine.003": (6.0, 0.0, 0.0),
+         "DEF-spine.005": (6.0, 0.0, 0.0), "DEF-spine.006": (16.0, 0.0, 0.0),
+         "DEF-upper_arm.L": (-34.0, 0.0, -a + 6.0), "DEF-forearm.L": (-38.0, 0.0, 0.0),
+         "DEF-upper_arm.R": (-10.0, 0.0, a - 6.0), "DEF-forearm.R": (-30.0, 0.0, 0.0)}
+    return p
+
+
+def walk_pose(t: float, persona: dict, stride: float, knee: float, arm: float, bob: float, lean: float) -> dict:
+    """One cycle t in [0, 1): the left foot strikes at t = 0."""
+    ph = 2 * math.pi * t
+    s = math.sin(ph)
+    p = stand(persona)
+    swing_l = max(0.0, math.sin(ph + math.pi * 0.5))  # left leg in swing
+    swing_r = max(0.0, math.sin(ph - math.pi * 0.5))
+    p = add(p, {
+        "hips": (0.012 * s * persona["sway"] * 0.5, -bob * (0.5 + 0.5 * math.cos(2 * ph)), 0.0),
+        "DEF-spine": (0.0, 4.0 * s, -2.0 * math.cos(2 * ph)),
+        "DEF-spine.002": (lean, -5.0 * s, 0.0),
+        "DEF-spine.006": (-lean * 0.6, 1.5 * s, 0.0),
+        "DEF-thigh.L": (-stride * math.cos(ph), 0.0, 0.0), "DEF-thigh.R": (stride * math.cos(ph), 0.0, 0.0),
+        "DEF-shin.L": (8.0 + knee * swing_l, 0.0, 0.0), "DEF-shin.R": (8.0 + knee * swing_r, 0.0, 0.0),
+        "DEF-foot.L": (-6.0 * swing_l + 6.0 * math.cos(ph), 0.0, 0.0),
+        "DEF-foot.R": (-6.0 * swing_r - 6.0 * math.cos(ph), 0.0, 0.0),
+        "DEF-upper_arm.L": (arm * math.cos(ph), 0.0, 0.0),
+        "DEF-upper_arm.R": (-(arm * (0.35 if persona["staff"] else 1.0)) * math.cos(ph), 0.0, 0.0),
+    })
+    return p
+
+
+def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    sway = persona["sway"]
+    u = t / length
+    if clip == "idle":
+        ph = 2 * math.pi * u
+        return add(stand(persona), {
+            "hips": (0.010 * sway * math.sin(ph), -0.002 * sway * (1 - math.cos(2 * ph)), 0.0),
+            "DEF-spine.001": (0.0, 0.0, -1.6 * sway * math.sin(ph)),
+            "DEF-spine.003": (0.7 * math.sin(2 * ph), 0.0, 0.0),  # breath
+            "DEF-spine.006": (0.0, 1.5 * sway * math.sin(ph + 0.6), 0.6 * sway * math.sin(ph)),
+            "DEF-thigh.L": (0.0, 0.0, 1.2 * sway * math.sin(ph)), "DEF-thigh.R": (0.0, 0.0, 1.2 * sway * math.sin(ph)),
+            "DEF-upper_arm.L": (1.5 * math.sin(2 * ph + 0.4), 0.0, 0.0),
+        })
+    if clip == "walk":
+        return walk_pose(u, persona, 22.0, 38.0, 16.0, 0.018, 2.0)
+    if clip == "walk_to_chamber":
+        return add(walk_pose(u, persona, 15.0, 28.0, 7.0, 0.010, 4.0), {"DEF-spine.006": (6.0, 0.0, 0.0)})
+    if clip == "run":
+        p = walk_pose(u, persona, 38.0, 85.0, 34.0, 0.035, 10.0)
+        return add(p, {"DEF-forearm.L": (-60.0, 0.0, 0.0), "DEF-forearm.R": (-35.0 if persona["staff"] else -60.0, 0.0, 0.0),
+                       "DEF-upper_arm.L": (0.0, 0.0, 12.0), "DEF-upper_arm.R": (0.0, 0.0, -12.0)})
+    if clip == "talk":
+        ph = 2 * math.pi * u
+        g = 0.5 - 0.5 * math.cos(ph)  # the free hand rises and falls once per loop
+        return add(stand(persona), {
+            "hips": (0.006 * sway * math.sin(ph), 0.0, 0.0),
+            "DEF-spine.002": (0.0, 3.0 * math.sin(ph), 0.0),
+            "DEF-spine.006": (2.0 * math.sin(2 * ph), -2.5 * math.sin(ph), 1.5 * math.sin(ph + 1.0)),
+            "DEF-upper_arm.L": (-14.0 * g, 0.0, 8.0 * g), "DEF-forearm.L": (-34.0 * g, 0.0, 0.0),
+            "DEF-hand.L": (0.0, -20.0 * g, 0.0),
+        })
+    if clip == "kneel_over_rhen":
+        return blend(stand(persona), kneel(sk, persona), smooth(u / 0.85))
+    if clip == "laugh":
+        k = kneel(sk, persona)
+        env = math.sin(math.pi * min(u / 0.9, 1.0))  # the laugh rises and settles back into the kneel
+        shake = math.sin(2 * math.pi * 3.2 * t) * env
+        return add(k, {"DEF-spine.002": (-8.0 * env + 1.2 * shake, 0.0, 0.0), "DEF-spine.003": (1.5 * shake, 0.0, 0.0),
+                       "DEF-spine.006": (-14.0 * env, 0.0, 2.0 * env),  # asha.md §6.3: the head tilts back 6 degrees
+                       "DEF-shoulder.L": (0.0, 0.0, -2.0 * shake), "DEF-shoulder.R": (0.0, 0.0, 2.0 * shake)})
+    if clip == "offer_hand":
+        k = kneel(sk, persona)
+        e = smooth(u / 0.8)
+        return add(k, {"DEF-spine.002": (5.0 * e, 0.0, 0.0),
+                       "DEF-upper_arm.L": (-34.0 * e, 0.0, 14.0 * e), "DEF-forearm.L": (30.0 * e, 0.0, 0.0),
+                       "DEF-hand.L": (0.0, -60.0 * e, 0.0)})
+    if clip == "rise_to_stand":
+        k = kneel(sk, persona)
+        s0 = stand(persona)
+        e = smooth(u / 0.9)
+        mid = add(blend(k, s0, 0.35), {"DEF-spine.001": (14.0, 0.0, 0.0), "DEF-spine.002": (8.0, 0.0, 0.0)})
+        return blend(k, mid, e / 0.4) if e < 0.4 else blend(mid, s0, (e - 0.4) / 0.6)
+    if clip == "take_hand":
+        k = kneel(sk, persona)
+        e = smooth(u / 0.7)
+        return add(k, {"DEF-spine.002": (-4.0 * e, 0.0, 0.0), "DEF-spine.006": (-10.0 * e, 0.0, 0.0),
+                       "DEF-upper_arm.R": (-58.0 * e, 0.0, -18.0 * e), "DEF-forearm.R": (16.0 * e, 0.0, 0.0),
+                       "DEF-hand.R": (0.0, 50.0 * e, 0.0)})
+    if clip == "emerge_doorway":
+        # out of the chamber on her own feet (ADR 0017): a tired settle, one step, the head lifts
+        s0 = stand(persona)
+        tired = add(s0, {"DEF-spine.002": (8.0, 0.0, 0.0), "DEF-spine.006": (10.0, 0.0, 0.0),
+                         "DEF-upper_arm.L": (0.0, 0.0, 6.0), "DEF-upper_arm.R": (0.0, 0.0, -6.0)})
+        step = math.sin(math.pi * min(max((u - 0.25) / 0.45, 0.0), 1.0))
+        p = blend(tired, s0, smooth((u - 0.2) / 0.7))
+        return add(p, {"DEF-thigh.L": (-16.0 * step, 0.0, 0.0), "DEF-shin.L": (24.0 * step, 0.0, 0.0),
+                       "hips": (0.0, -0.01 * step, 0.03 * smooth((u - 0.25) / 0.5))})
+    if clip == "face_west":
+        # a settle into the singing stance: the chin lifts, the free hand comes to the breastbone
+        s0 = stand(persona)
+        e = smooth(u / 0.8)
+        return add(s0, {"DEF-spine.003": (-2.0 * e, 0.0, 0.0), "DEF-spine.006": (-4.0 * e, 0.0, 0.0),
+                        "DEF-upper_arm.L": (-18.0 * e, -10.0 * e, 16.0 * e),
+                        "DEF-forearm.L": (-78.0 * e, -72.0 * e, 0.0), "DEF-hand.L": (0.0, -20.0 * e, -10.0 * e)})
+    raise KeyError(clip)
+
+
+LENGTHS = {"idle": 6.0, "walk": 1.1, "run": 0.7, "talk": 3.2, "kneel_over_rhen": 1.8, "laugh": 2.2,
+           "rise_to_stand": 2.0, "offer_hand": 1.4, "take_hand": 1.2, "walk_to_chamber": 1.4, "emerge_doorway": 2.4,
+           "face_west": 1.6}
+
+
+# ---------------------------------------------------------------------------------------------
+# AnimationLibrary text resource
+# ---------------------------------------------------------------------------------------------
+def fmt(x: float) -> str:
+    s = f"{x:.6g}"
+    return "0" if s in ("-0", "0") else s
+
+
+def build(hero: str) -> str:
+    persona = PERSONA[hero]
+    sk = Skeleton(ROOT / "assets" / "characters" / hero / f"{hero}.glb")
+    base = f"{sk.root_name}/Skeleton3D:"
+    subs = []
+    names = CLIPS[hero]
+    for ci, clip in enumerate(names):
+        length = LENGTHS[clip]
+        loop = clip in LOOPS
+        n = int(round(length * FPS))
+        times = [i / FPS for i in range(n + 1)]
+        keys_q = {b: [] for b in BONES}
+        keys_p = []
+        for t in times:
+            tt = (t % length) if loop else t
+            pose = staff_hold(pose_at(clip, tt, length, sk, persona), persona)
+            turns = {b: qeuler(v) for b, v in pose.items() if b != "hips"}
+            local = sk.local_pose(turns)
+            for b in BONES:
+                keys_q[b].append((t, local[b]))
+            keys_p.append((t, sk.rest_t[HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)))
+        lines = [f'[sub_resource type="Animation" id="clip_{ci}"]', f'resource_name = &"{clip}"',
+                 f"length = {fmt(length)}", f"loop_mode = {1 if loop else 0}", f"step = {fmt(1.0 / FPS)}"]
+        tracks = [("position_3d", HIPS, [(t, list(p)) for t, p in keys_p])]
+        tracks += [("rotation_3d", b, [(t, list(q)) for t, q in keys_q[b]]) for b in BONES]
+        for ti, (kind, bone, keys) in enumerate(tracks):
+            vals = []
+            for t, v in keys:
+                vals += [fmt(t), "1"] + [fmt(x) for x in v]
+            lines += [f'tracks/{ti}/type = "{kind}"', f"tracks/{ti}/imported = false", f"tracks/{ti}/enabled = true",
+                      f'tracks/{ti}/path = NodePath("{base}{bone}")', f"tracks/{ti}/interp = 1",
+                      f"tracks/{ti}/loop_wrap = true", f"tracks/{ti}/keys = PackedFloat32Array({', '.join(vals)})"]
+        subs.append("\n".join(lines))
+    data = ",\n".join(f'&"{c}": SubResource("clip_{i}")' for i, c in enumerate(names))
+    head = f'[gd_resource type="AnimationLibrary" load_steps={len(names) + 1} format=3]\n\n'
+    return head + "\n\n".join(subs) + f"\n\n[resource]\n_data = {{\n{data}\n}}\n"
+
+
+def out_path(hero: str) -> Path:
+    return ROOT / "assets" / "characters" / hero / "anim" / f"{hero}_clips.tres"
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--hero", choices=sorted(PERSONA), action="append")
+    args = ap.parse_args()
+    for hero in args.hero or sorted(PERSONA):
+        p = out_path(hero)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        text = build(hero)
+        p.write_text(text, encoding="utf-8")
+        print(f"wrote {p.relative_to(ROOT)} ({len(text) / 1e6:.2f} MB, {len(CLIPS[hero])} clips)")
+    _ = json
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
