@@ -18,6 +18,8 @@ const LOOPING_CUES: Array[String] = [
 	"res://assets/audio/music/tidecup_match.ogg",
 	"res://assets/audio/music/terraces_of_ash.ogg",
 	"res://assets/audio/music/corrow_seawall.ogg",
+	"res://assets/audio/music/oruvel.ogg",
+	"res://assets/audio/music/pilgrims_wake.ogg",
 ]
 const SAMPLE_RATE := 44100
 const MIN_LENGTH_S := 60.0

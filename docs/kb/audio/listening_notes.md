@@ -277,3 +277,59 @@ minutes in all. The scenes are in act_outline.md (Ch5, Ch7, Ch8).
   samples). Do the footsteps sound natural, or clipped?
 
 **For all three:** can you hear the loop wrap? The seams are at 80 s, 68.6 s and 75.8 s.
+
+## M3: Oruvel, the living funeral, the causeway beds (M3-AUD-10, M2-AUD-13)
+
+Two music loops and two ambience beds. None of their scenes exist yet, so for now you can only hear them on their
+own. The beds play at the ambience level (−26 LUFS), so turn up to hear them, or play them under
+`saltgrass_causeway.ogg`. The scenes are in act_outline.md (Ch1, Ch4) and vertical_slice.md (B06).
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/oruvel.ogg` | 73.8 s loop | Ch1: the Oruvel raft-town before the storm |
+| 2 | `music/pilgrims_wake.ogg` | 83.5 s loop | Ch4: Haluna holds Asha's living funeral, a feast at night |
+| 3 | `ambience/causeway_wind.ogg` | 52 s loop | B06: wind over the saltgrass on the causeway |
+| 4 | `ambience/tidepools.ogg` | 46 s loop | B06: close to the tidepools at low tide |
+
+### (1) Oruvel: a town at home, just before it dies
+
+- **The band:** a squeezebox carries the tune. It is a new instrument, built for this cue: two reeds tuned a few
+  cents apart, so it beats like an old, salt-worn box, and bellows pressure that brightens the tone as it swells.
+  Its left hand plays an oom-pah (bass reed on 1 and 3, a short chord on 2 and 4). A small wire-strung cittern
+  (a "salvage" instrument) chops the off-beats and plays the tune alone at the end. The rope and trade sounds are
+  a wooden pulley block knocking on 2 and 4, a frame drum, three people clapping in the second verse, a rope
+  creaking on a cleat, and a ship's bell rung twice where the loop starts.
+- **The key:** G with a flat seventh (F natural), swung, at 104 BPM. It's a harbour dance. It isn't Haluna's 6/8
+  festival, and it has no flute and no bars. Unlike Haluna's tune, this one lands on its home note: a town that
+  is sure of itself. Only the middle eight bars turn to E minor, slower and lower. **Is it lively enough for Rhen
+  haggling and joking, and does the E minor passage make you feel, for a moment, what is coming?**
+- **The squeezebox** is the one thing most likely to sound synthetic. Does it sound like a squeezebox, a harmonium,
+  or a cheap organ? If it sounds like an organ, the fix is more bellows movement and air.
+- Is the swing right, or does the tune limp? Can you hear the loop wrap at 73.8 s?
+
+### (2) The Pilgrim's Wake: a feast that is a funeral
+
+- **The idea:** the feast and the funeral play at the same time at two speeds. The funeral moves in half notes: a
+  hymn in C minor over a descending ground bass. The piano plays the hymn first, then the village hums it (nobody
+  sings words, because only Cantors sing), and a low, dark bell tolls once each time round. The feast moves in
+  sixteenths: frame drums and a bright plucked harp in a 3+3+2 dance, with jingles and claps in the second round.
+  It's one harmony at two tempos.
+- **The end of each round:** the hymn stops on an unresolved note. In the third round the dance thins and stops,
+  the last two bars are bare (the feast forgetting itself for a moment), and the wrap brings the dance back as the
+  hymn resolves. **Does it feel like a celebration and a funeral at once? Or does one win?** If it sounds like
+  only a funeral, the harp and drums go up. If it sounds like only a party, the piano and hum go up.
+- **For the scene:** Rhen understands here that the Cantor doesn't come back, and he leaves the feast angry. The
+  cue doesn't play his anger. Should it? A short stinger for his exit would be a separate cue.
+- The hum: a village humming, or a choir? Is the funeral bell too loud?
+
+### (3) and (4) The causeway beds
+
+- **causeway_wind:** a low wind that breathes in gusts, the saltgrass's dry hiss, the fast flutter of blades
+  beating together (it speeds up in the gusts), a few long swishes of grass swept flat, and a faint hollow whistle
+  over the coral boulders at the strongest gusts. **Does it read as wind on grass, or as hiss?** It should be
+  brighter and drier than Haluna's `wind` bed.
+- **tidepools:** water trickling between pools, small pops and clicks in the rock, drips off the coral, a gurgle
+  now and then, and the surf line far out across the flat. Is it close and small enough? Do the pops sound like
+  creatures in the rock, or like clicks in the file?
+- **For both:** can you hear them wrap (52 s and 46 s)? Is anything distracting enough to notice on its tenth time
+  round?

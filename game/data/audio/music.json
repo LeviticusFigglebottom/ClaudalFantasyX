@@ -79,6 +79,16 @@
       "file": "res://assets/audio/music/corrow_seawall.ogg",
       "resume": true,
       "_note": "Ch8, Corrow Bastion before the storm (M3-AUD-04); no zone row until ch08/corrow exists"
+    },
+    "oruvel": {
+      "file": "res://assets/audio/music/oruvel.ogg",
+      "resume": true,
+      "_note": "Ch1, the Oruvel raft-town before the storm (M3-AUD-10); no zone row until ch01/oruvel exists"
+    },
+    "pilgrims_wake": {
+      "file": "res://assets/audio/music/pilgrims_wake.ogg",
+      "resume": true,
+      "_note": "Ch4, Asha's living funeral at Haluna by night (M3-AUD-10); for the feast scene, no zone row until it exists"
     }
   },
   "zones": [
