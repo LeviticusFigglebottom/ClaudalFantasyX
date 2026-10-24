@@ -51,16 +51,101 @@ func test_registry_parses_and_every_path_exists() -> void:
 	var paths: Array[String] = []
 	for entry: Variant in reg["materials"]:
 		paths.append(str((entry as Dictionary)["path"]))
-	assert_true(paths.has(TEST_MATERIAL))
+	# M1-RND-22: the test material is the tests' own; registered for every transition it cost 118 ms of each.
+	assert_false(paths.has(TEST_MATERIAL), "no test material in the production registry")
 	for p in paths:
 		assert_true(ResourceLoader.exists(p), "registered material missing: %s" % p)
+
+
+## M1-RND-22: a tier variant is staged only on the presets that select its tier; untagged entries always.
+func test_tier_variants_follow_the_active_preset() -> void:
+	var low_skin := {"path": "x", "preset_tier": {"system": "character", "tier": "low"}}
+	var high_skin := {"path": "x", "preset_tier": {"system": "character", "tier": "high"}}
+	assert_true(ShaderPrewarm.entry_wanted(low_skin, "low"))
+	assert_false(ShaderPrewarm.entry_wanted(low_skin, "high"))
+	assert_true(ShaderPrewarm.entry_wanted(high_skin, "ultra"), "Ultra uses the high character tier")
+	var body_med := {"path": "x", "preset_tier": {"system": "undertow", "tier": "medium"}}
+	assert_true(ShaderPrewarm.entry_wanted(body_med, "medium"))
+	assert_false(ShaderPrewarm.entry_wanted(body_med, "high"))
+	var ocean_low := {"path": "x", "preset_tier": {"system": "water", "tier": "low"}}
+	assert_true(ShaderPrewarm.entry_wanted(ocean_low, "low"))
+	assert_false(ShaderPrewarm.entry_wanted(ocean_low, "ultra"))
+	assert_true(ShaderPrewarm.entry_wanted({"path": "x"}, "high"), "untagged: every preset")
+	assert_true(ShaderPrewarm.entry_wanted(low_skin, ""), "no preset known: stage everything")
+	# Every tag in the registry names a tier some preset selects (a typo would never be staged).
+	var reg := JSON.parse_string(FileAccess.get_file_as_string(ShaderPrewarm.REGISTRY_PATH)) as Dictionary
+	for entry: Variant in reg["materials"]:
+		var e := entry as Dictionary
+		if not e.has("preset_tier"):
+			continue
+		var some := false
+		for preset in ["low", "medium", "high", "ultra"]:
+			some = some or ShaderPrewarm.entry_wanted(e, preset)
+		assert_true(some, "no preset stages %s" % e["path"])
+
+
+## M1-RND-22: boot holds the preset's resident entries and stages them once, whatever their scenes.
+func test_resident_entries_are_held_and_staged_at_boot() -> void:
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var reg := {
+		"frames_to_render": 1,
+		"measure_frames": 2,
+		"hitch_budget_ms": 50.0,
+		"viewport_width": 32,
+		"viewport_height": 32,
+		"quad_size": 1.0,
+		"quad_distance": 1.5,
+		"particle_amount": 1,
+		"materials":
+		[
+			{"path": TEST_MATERIAL, "scenes": ["res://only/battle.tscn"], "resident": true},
+			{
+				"path": "res://game/shaders/character/character_skin_low.gdshader",
+				"scenes": ["res://x.tscn"],
+				"resident": true,
+				"preset_tier": {"system": "character", "tier": "low"},
+			},
+			{"path": TEST_MATERIAL, "scenes": []},
+		],
+	}
+	var reg_path := TMP_DIR + "/registry_resident.json"
+	var f := FileAccess.open(reg_path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(reg))
+	f.close()
+	var before := ShaderPrewarm.resident_count()
+	ShaderPrewarm.load_resident("high", reg_path)
+	assert_eq(ShaderPrewarm.resident_count(), before + 1, "High holds the test material, not the Low skin")
+	ShaderPrewarm.load_resident("high", reg_path)
+	assert_eq(ShaderPrewarm.resident_count(), before + 1, "held once")
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	node.resident_only = true
+	node.preset_id = "high"
+	_host().add_child(node)
+	assert_eq(node.start(""), 1, "only the resident entry the preset wants, whatever its scenes")
+	node.free()
+	DirAccess.remove_absolute(reg_path)
+	DirAccess.remove_absolute(TMP_DIR)
 
 
 # --- Lifecycle ---------------------------------------------------------------------------------
 
 
 func test_prewarm_completes_reports_timing_and_frees() -> void:
-	var node := ShaderPrewarm.spawn("res://some/battle.tscn", _host())
+	# Its own registry (M1-RND-22: the production one no longer carries the test material): the live
+	# timing values, the test material for every transition, nothing else.
+	var live := JSON.parse_string(FileAccess.get_file_as_string(ShaderPrewarm.REGISTRY_PATH)) as Dictionary
+	live["materials"] = [{"path": TEST_MATERIAL, "scenes": []}]
+	live["scene_materials"] = false
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var reg_path := TMP_DIR + "/registry_lifecycle.json"
+	var f := FileAccess.open(reg_path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(live))
+	f.close()
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	_host().add_child(node)
+	node.start("res://some/battle.tscn")
 	var got: Array[Dictionary] = []
 	node.finished.connect(func(s: Dictionary) -> void: got.append(s))
 	assert_true(node.is_running())
@@ -88,6 +173,8 @@ func test_prewarm_completes_reports_timing_and_frees() -> void:
 	assert_eq(s["over_budget"], true)
 	node.tick(100.0)
 	assert_eq(got.size(), 1, "no stats after finishing")
+	DirAccess.remove_absolute(reg_path)
+	DirAccess.remove_absolute(TMP_DIR)
 
 
 func test_handles_every_material_kind_and_scene_filter() -> void:
