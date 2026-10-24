@@ -3,18 +3,29 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
-- **Review:** M2-CRE-01 (design sheets); M2-CRE-05 lantern eel and M2-CRE-07 spawn-polyp (worktree agents, merged); M3-CRE-02 (the Ch1 models: Hullgnaw, wickfry, tower limpet, oil slug; first passes, waiting on m2-slice's enemy rows for the `model` line).
-- **Pushed, in progress:** M2-CRE-02 pipeline, M2-CRE-03 battle hook, M2-CRE-04 reef crab, M2-CRE-08 Drownbell, M2-CRE-09 shots (baselines pending), M2-CRE-10 `CreaturePortrait` (request **M2-UI-16** filed).
-  - The hook rides on the UI track's M2-UI-07: I cherry-picked its three commits (ef3937c, bf37755, 08c872c from `claude/ui`), so the two branches carry identical `fighter_stand_in.gd` hook content. My additions on top are small delegations and `BattleStage.settle_actors()`.
-  - `enemies.json` now has `model` on reef_crab, lantern_eel, drownbell and spawn_polyp. battle_controller.gd is untouched.
-  - **For the PC GPU session:** `game/levels/_tests/drownbell/drownbell_flood_shot.gd` (your file) gained one line after `boss.settle()`: `ctl.stage.settle_actors()`. It jumps the bell model's 2.4 s flood sink to its end, as your settle does for the water.
-  - **Do not merge yet:** the 11 battle baselines that show the creatures (battle_* fixtures and drownbell_flood) are not re-approved, and the creature shots have no baselines. That waits on the gull harrier (the last worktree agent) so every battle shot is re-approved once.
-- **In progress:** M2-CRE-06 gull harrier (worktree agent).
-- **Coverage** (full suite under instrumentation, 1467 tests): battle 99.95%, progression 96.52%, within the baseline.
-- **Act I (M3, the Lead's queue tail):** M3-CRE-01 roster proposal and 15 design sheets (`docs/kb/art/creatures/act1_roster.md`, `act1/`), sent to m2-slice for their encounters (send_message 12:20). M3-CRE-02 Ch1 models pushed.
-- **Two queue items remain** for the slice: the shots and re-approvals (M2-CRE-09), and the polish passes. Then Act I continues with Ch4 (Spar-Wraith, bottle hermit, sail leech).
-- **Un-pushed state:** none.
-- **Integration merge:** merged `origin/claude/undertow-lead-handoff-423ixt` at d62f524 (clean).
+- **MERGE-READY @ 2f36b275: ci_local exit 0, 1467 tests, 91 shots, Blender identical.** Branch `claude/creatures`, with `origin/claude/undertow-lead-handoff-423ixt` e9938ed merged in at 4cfc523.
+  - Full `tools/ci_local.sh` in this container (2026-10-24, about 13:00–13:50 UTC), every shot, Blender required.
+  - Blender: 17 jobs, 0 failed, 0 uncovered, all identical. The change base was `main`, which ran every job, a superset of the integration base. Every creature job is pinned at `default_threads` 4.
+  - Godot tests 1467 run, 0 failed. Coverage: battle 99.95%, progression 96.52%, within the baseline. Boot smoke clean.
+  - Screenshots 91 compared, 0 failed.
+  - The 11 battle shots the models change were re-approved after side-by-side viewing; the RMSE list is in M2-CRE-09. They are battle_hud_preview, battle_swap_menu, battle_victory, battle_statuses, battle_swell_ring, battle_read_panel, battle_opening_banner, battle_swell_modes, battle_vowbound_call, battle_vowbound_out and drownbell_flood.
+  - New: 17 creature shots, approved after viewing.
+- **Contents of the batch:**
+  - Slice creatures: M2-CRE-01..10, all in review. The five slice creatures carry `model` in enemies.json.
+  - M3 first passes: M3-CRE-01 (roster and sheets), M3-CRE-02 (Ch1 models) and M3-CRE-03 (Ch4 models), all in review. Their models are not referenced by any enemy yet.
+- **Merge notes for the Lead:**
+  - `fighter_stand_in.gd` carries M2-UI-07's hook verbatim from `claude/ui` (ef3937c, bf37755, 08c872c), plus small creature delegations.
+  - `battle_stage.gd` gained the model merge, the `BattleActorMotion` attach and `settle_actors()`.
+  - The PC's `drownbell_flood_shot.gd` gained one line, `ctl.stage.settle_actors()`.
+  - Shared files got appends only: enemies.json `model` lines, PROVENANCE, blender_builds.json jobs, shots.json, and the validate_data.py import plus one call.
+- **Battle-presentation (agreed by message):** BattleChoreo will take the action and hit clip timing. `BattleActorMotion._on_action_resolved` defers to `stage.choreo` when it is present; they may make that change at merge time. Phase and rim handling stays in BattleActorMotion. The clip names match their contract (attack, cast, hit, ko, idle). `contact_time()` gives each strike's contact second. A creature's `ko` clip replaces their procedural collapse.
+- **m2-slice (by message):** they adopted the Act I roster. Pending on my side:
+  - rename `wickfry` (the word "wick" stays Mother Kell's);
+  - add `scuttler` (Ch1) and optional `vein_sparker` (Ch5);
+  - `wreck_crab` lives in broken lamp housings with a bound-teal glow;
+  - the bottle hermit's glass is a plain oil-lamp glass.
+  The per-zone foe counts are in their message, and their Ch1 enemy rows come first.
+- **Un-pushed state:** none. Drafts for Ch5 (ashwing, slag tortoise, Cinder Matron), Ch6 (shoal skipper, raid-hound), Ch8 (tide crawler) and the Ch1 scuttler build cleanly in the scratchpad. They land after this merge-ready point, on top of 2f36b27.
 
 ## Decisions so far
 - **Hook:** the UI track's M2-UI-07 (on `claude/ui`, 08c872c1) already makes `FighterStandIn` instance a spec's `"scene"`. The creatures build on that hook rather than a parallel one: the enemies.json `model` field becomes the stand-in spec's `scene`.
@@ -23,6 +34,9 @@ Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD),
 - **Task ids:** M2-CRE-* (free on every branch at the claim).
 
 ## Exact next step
+Act I continues after MERGE-READY: the wickfry rename, scuttler, then Ch5/Ch6/Ch8 from the drafts, with `model` on m2-slice's rows as they land.
+
+## Previous next step (done)
 Merge the three creature worktrees as they finish (they append to creatures.json, enemies.json, the import rule, blender_builds.json and PROVENANCE.md: union the rows). Then capture every battle shot and the creature shots, view each, approve the creature baselines, and re-approve the battle shots whose change is the models (list each RMSE in M2-CRE-09).
 
 ## Queue
