@@ -46,7 +46,7 @@ The full brief is [`SPEC.md`](SPEC.md). Only the Lead edits it, and every change
 ```bash
 pip install -r tools/requirements.txt
 python3 tools/validate_data.py
-python3 -m unittest discover -s tools/tests
+python3 tools/run_tool_tests.py -j 4      # the tools suite in parallel, 2–3 min (plain unittest discover also works)
 python3 tools/taskboard.py --check
 gdlint game tests && gdformat -l 120 --check game tests
 # With Godot 4.6.3 on PATH as `godot`:

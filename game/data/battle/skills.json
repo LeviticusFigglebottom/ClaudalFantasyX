@@ -107,7 +107,7 @@
     {"id": "floodnet", "name_key": "SKILL_FLOODNET", "kind": "magical", "power": 16, "rank": 3,
      "element": "none", "target": "all_foes", "mp_cost": 0, "magic": true, "swell": true,
      "vowbound": true, "clears_field": "flood"},
-    {"id": "shoal_nip", "name_key": "SKILL_SHOAL_NIP", "kind": "physical", "power": 3, "rank": 2,
+    {"id": "shoal_nip", "name_key": "SKILL_SHOAL_NIP", "kind": "physical", "power": 3, "rank": 3,
      "accuracy": 95, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false},
     {"id": "limpet_clamp", "name_key": "SKILL_LIMPET_CLAMP", "kind": "physical", "power": 3, "rank": 4,
      "accuracy": 90, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false,

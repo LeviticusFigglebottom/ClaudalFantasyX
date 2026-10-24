@@ -3,13 +3,13 @@ Run: python3 -m unittest discover -s tools/tests"""
 import json
 import shutil
 import sys
-import tempfile
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
 import validate_data as vd  # noqa: E402
+from tree_mirror import scratch_repo  # noqa: E402
 
 ITEMS = "game/data/items/items.json"
 EQUIP = "game/data/items/equipment.json"
@@ -20,14 +20,7 @@ SHOPS = "game/data/items/shops.json"
 
 class ItemsValidatorTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.tmp = Path(tempfile.mkdtemp())
-        for rel in ("game", "assets", "tools/banned_terms.txt", "docs/kb/glossary.md"):
-            src, dst = ROOT / rel, self.tmp / rel
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            if src.is_dir():
-                shutil.copytree(src, dst, ignore=shutil.ignore_patterns(".godot"))
-            elif src.exists():
-                shutil.copy(src, dst)
+        self.tmp = scratch_repo("items_validate_")  # game/ copied, assets/ symlinked, in RAM (M2-NIT-06)
 
     def tearDown(self) -> None:
         shutil.rmtree(self.tmp)

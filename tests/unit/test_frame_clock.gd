@@ -8,6 +8,9 @@ const CAPPED_DELTA_MS := 147.0
 const STALL_MS := 500.0
 const FRAME_MS := 16.0
 const USEC := 1000
+## M2-ARC-12: Godot's ticks (CLOCK_MONOTONIC_RAW) run about 1% slow against the sleep clock under WSL2, so a
+## real stall may read a little under its length. The test still tells a real stall from the ~150 ms capped delta.
+const CLOCK_SKEW_TOLERANCE := 0.95
 
 
 ## A clock the test moves by hand.
@@ -87,7 +90,7 @@ func test_a_real_stall_reads_past_the_cap() -> void:
 	var clock := FrameClock.new()
 	clock.reset()
 	OS.delay_msec(int(STALL_MS * 0.8))
-	assert_true(clock.lap() >= STALL_MS * 0.8, "the wall clock sees the whole stall")
+	assert_true(clock.lap() >= STALL_MS * 0.8 * CLOCK_SKEW_TOLERANCE, "the wall clock sees the whole stall")
 
 
 func test_the_router_visible_window_reports_a_stall_at_its_length() -> void:

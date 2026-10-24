@@ -73,21 +73,57 @@ static func select_targets(
 	return out
 
 
-static func _conditions_hold(engine: BattleEngine, actor: BattleCombatant, cond: Dictionary) -> bool:
+## The skill row `actor` will use `ahead` own turns from now, for the timeline's prediction (pillar 4:
+## the order shows when a foe really acts, and whom its delay pushes back). The first rule whose
+## conditions hold now (turn_mod counted `ahead` turns on) decides; of its options, the one with the
+## lowest rank (the soonest the foe can come back; the first on a tie). A Berserk/Confused foe uses its
+## basic attack. {} when no rule holds (the engine's idle turn, a standard one). Draws nothing from the
+## battle RNG: a prediction never changes the battle.
+static func predicted_skill(engine: BattleEngine, actor: BattleCombatant, ahead: int) -> Dictionary:
+	if BattleEngine.auto_reason(actor) != &"":
+		return engine.db.skill(engine.basic_attack(actor))
+	for rule: Variant in actor.ai_rules:
+		var r: Dictionary = rule
+		if not _conditions_hold(engine, actor, r.get("if", {}) as Dictionary, ahead):
+			continue
+		var best: Dictionary = {}
+		for o: Variant in r.get("pick", []) as Array:
+			var opt: Dictionary = o
+			var row := engine.db.skill(StringName(str(opt["skill"])))
+			if int(opt.get("weight", 1)) <= 0 or row.is_empty():
+				continue
+			if best.is_empty() or _rank(row) < _rank(best):
+				best = row
+		if not best.is_empty():
+			return best
+	return {}
+
+
+## The rank of the action predicted_skill() names.
+static func predicted_rank(engine: BattleEngine, actor: BattleCombatant, ahead: int) -> int:
+	var row := predicted_skill(engine, actor, ahead)
+	return _rank(row) if not row.is_empty() else Formulas.DEFAULT_RANK
+
+
+static func _rank(row: Dictionary) -> int:
+	return int(row.get("rank", Formulas.DEFAULT_RANK))
+
+
+static func _conditions_hold(engine: BattleEngine, actor: BattleCombatant, cond: Dictionary, ahead: int = 0) -> bool:
 	for key: Variant in cond:
-		if not _holds(engine, actor, StringName(str(key)), cond[key]):
+		if not _holds(engine, actor, StringName(str(key)), cond[key], ahead):
 			return false
 	return true
 
 
-static func _holds(engine: BattleEngine, actor: BattleCombatant, key: StringName, arg: Variant) -> bool:
+static func _holds(engine: BattleEngine, actor: BattleCombatant, key: StringName, arg: Variant, ahead: int = 0) -> bool:
 	var ok := true
 	match key:
 		&"self_hp_below_pct":
 			ok = actor.hp * 100 < actor.max_hp * int(arg)
 		&"turn_mod":
 			var a: Array = arg
-			ok = int(a[0]) > 0 and (actor.turns_taken - actor.ai_turn_base) % int(a[0]) == int(a[1])
+			ok = int(a[0]) > 0 and (actor.turns_taken + ahead - actor.ai_turn_base) % int(a[0]) == int(a[1])
 		&"foe_has_status":
 			ok = false
 			for f in engine.living_foes_of(actor):
