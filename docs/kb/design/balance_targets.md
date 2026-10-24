@@ -18,7 +18,8 @@ Each policy is a `SimPolicy` subclass. Policies use only the engine's public API
 | Policy | What it models | Rule |
 |---|---|---|
 | `naive` | A player mashing Attack | `attack` on the first living foe. Never swaps, and never opens Swell (mashing confirm picks the top row). |
-| `naive_swell` | The masher who finds the Swell row (M2-NIT-03) | `naive`, plus it unleashes a full gauge: a single-foe technique on the first living foe (where the cursor starts), a healing one under the shared rule below. **Report only, in every suite.** See "When the masher's Swell needs a decision" below. |
+| `naive_swell` | The masher who finds the Swell row (M2-NIT-03) | `naive`, plus it unleashes a full gauge: a single-foe technique on the first living foe (where the cursor starts), a healing one under the shared rule below. **Report only, in every suite but `sandbox_vowbound`** (the Vowbound masher line, M2-CMB-05), where it calls Ilun at once (`call_vowbound: at_once`). See "When the masher's Swell needs a decision" below. |
+| `flood_call` | The masher who answers a field with the Vowbound (M2-FP-17) | `naive_swell`, plus: the moment a field rises, the caller calls its Vowbound (`call_vowbound: field_up`), which stays out until it falls or the battle ends and mashes (Attack, its finisher when full). Banded only on the Drownbell, at no more than `smart`'s ceiling and with no timeouts. |
 | `lowest_hp` | Focus fire, no swaps | `attack` on the living foe with the least HP. |
 | `role_answer` | The elegant answer (SPEC §6.1) | If the actor answers a living foe (`enemies.json` `role_answer`), it takes the weakest such foe. Otherwise the focus is the weakest foe, and if that foe's answer is in reserve it swaps in for the actor (free) and takes the turn. An answerer opens with a Break skill its foe lacks, then uses its best expected damage per rank (MP permitting). |
 | `smart` | A careful player | `role_answer`, plus: replace a KO'd or petrified active member at once (preferring a reserve who answers a living foe); a healer heals the most hurt ally below `heal_below_pct` (45%) of max HP; a healer won't swap out while an ally is below `keep_healer_below_pct` (70%). |
@@ -98,6 +99,20 @@ From [act_outline.md](../story/beats/act_outline.md): two phases on the causeway
 | `naive` | 0–10% | A boss is never beaten by mashing. |
 | `role_answer` | 70–90% | Rhen on the rim is enough to win most of the time, but not without risk. |
 | `smart` | 80–95% | Healing and replacement close most of the gap; a 5% or greater loss rate keeps it a boss. |
-| p90 turns | ≤ 60 | Two phases, still a slice-length fight. |
+| `flood_call` | ≤ 95%, no timeouts | M2-FP-17: calling Ilun into the flood and leaving him there is a real answer, never better than playing well, and it must never stall the fight. |
+| p90 turns | ≤ 70 | Two phases, still a slice-length fight. M2-FP-17 raised it from 60: with the real call, Ilun fights the flood alone while the bell keeps acting (`smart`'s p90 is 67). |
+
+**Since M2-FP-17 the simulator plays the real Vowbound call.** Loadout `ch03_drownbell` retires the `call_ilun` stand-in (`retire_skills`). `role_answer` and `smart` call Ilun when the flood rises (`call_vowbound: field_up`), and send him home once it's cleared (`dismiss_when_clear`). The bell hood-slams a lone water absorber (`foes_all_absorb`). Retuned: Ilun's gauge rate 220, Floodtide power 13. Measured at 1000 seeds: naive 0.0%, role answer 72.8%, smart 89.0% (p90 67), flood_call 38.7% (balance_report.md). The live game keeps `call_ilun` until M2-UI-05's Call command (battle_ctb.md, "The real call").
 
 The encounter landed in M2-FP-06 with a first-playable stand-in for the Vowbound summon (ADR 0026). Both `role_answer` and `smart` carry the "clear the field" rule: `sim_policies.json` `clear_field_skill: call_ilun`, so whoever can use it does so as soon as a field is up (`smart` heals first if someone is below 45%). Measured at 1000 seeds: naive 0.0%, role answer 79.7%, smart 89.6%, p90 51 actions (balance_report.md). `tests/integration/test_drownbell_battle.gd` asserts loose bands at 200 seeds on every run.
+
+### M2 sandbox: Vowbound masher, `sandbox_vowbound` (M2-CMB-05)
+
+ADR 0027's acceptance set a provisional ceiling: a masher who calls the Vowbound at once, with no gear, wins at most 40% of the sandbox. The suite is `sandbox_reef`'s lineup with loadout `vowbound_bare` (no gear or items, flag `ch03_ilun_bound`). Only `naive_swell` is banded; the others are reported.
+
+| Policy | Band | Why |
+|---|---|---|
+| `naive_swell` | 0–40% | The call is a rescue, not a way to make mashing win. Above 40% Ilun is a second party. |
+
+Measured at 1000 seeds: 37.0% (Ilun at 60% of Asha's HP; battle_ctb.md § Vowbound has the tuning). A plain masher with no Vowbound wins 8.7%.
+

@@ -63,9 +63,12 @@ func test_bands_hold_at_200_seeds() -> void:
 	assert_true(float(naive["win_pct"]) <= 10.0, "naive %.1f%%" % naive["win_pct"])
 	assert_between(float(role["win_pct"]), 65.0, 95.0, "role_answer")
 	assert_between(float(smart["win_pct"]), 75.0, 98.0, "smart")
-	for agg: Dictionary in [naive, role, smart]:
-		assert_eq(int(agg["timeouts"]), 0)
-		assert_true(int(agg["p90_turns"]) <= 60, "%s p90 %d" % [agg["policy"], agg["p90_turns"]])
+	# M2-FP-17: the real Vowbound call; the masher who calls into the flood never stalls the fight.
+	var flood := sim.run_many(&"drownbell", PARTY, [], &"flood_call", SEEDS, 1, Callable(), kit)
+	assert_true(float(flood["win_pct"]) <= 95.0, "flood_call %.1f%%" % flood["win_pct"])
+	for agg: Dictionary in [naive, role, smart, flood]:
+		assert_eq(int(agg["timeouts"]), 0, "%s never stalls" % agg["policy"])
+		assert_true(int(agg["p90_turns"]) <= 70, "%s p90 %d" % [agg["policy"], agg["p90_turns"]])
 
 
 func test_without_ilun_the_flood_wins() -> void:

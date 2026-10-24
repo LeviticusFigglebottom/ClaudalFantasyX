@@ -454,6 +454,7 @@ static func _db() -> BattleDB:
 			"mp_cost": 5,
 			"magic": true,
 			"requires_flag": "bound",
+			"requires_field": "flood",
 			"clears_field": "flood",
 		},
 	]

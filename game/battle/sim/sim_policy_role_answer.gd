@@ -13,7 +13,7 @@ func policy_name() -> StringName:
 
 func decide(engine: BattleEngine) -> void:
 	var actor := engine.current
-	if clear_field(engine, actor):
+	if clear_field(engine, actor) or call_vowbound(engine):
 		return
 	var target := _target_for(engine, actor)
 	if target == null:

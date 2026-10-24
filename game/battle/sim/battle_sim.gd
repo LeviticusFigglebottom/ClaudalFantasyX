@@ -6,7 +6,9 @@ extends RefCounted
 ## which tools/balance/sim.py wraps, and by tests/integration/test_sandbox_battle.gd.
 
 ## naive_swell (M2-NIT-03) is report only: naive plus the Swell row (balance_targets.md).
-const POLICY_NAMES: Array[StringName] = [&"naive", &"naive_swell", &"lowest_hp", &"role_answer", &"smart"]
+const POLICY_NAMES: Array[StringName] = [
+	&"naive", &"naive_swell", &"lowest_hp", &"role_answer", &"smart", &"flood_call"
+]
 const CONFIG_PATH := "res://game/data/battle/sim_policies.json"
 
 var db: BattleDB
@@ -38,6 +40,8 @@ func make_policy(policy: StringName) -> SimPolicy:
 			p = SimPolicyRoleAnswer.new()
 		&"smart":
 			p = SimPolicySmart.new()
+		&"flood_call":
+			p = SimPolicyFloodCall.new()
 		_:
 			push_error("BattleSim: unknown policy '%s'" % policy)
 			return null
@@ -85,6 +89,13 @@ func run_one(
 	for f: Variant in kit.get("flags", []):
 		engine.story_flags.append(StringName(str(f)))
 	engine.setup(db, active, reserve, encounter, rng_seed)
+	# M2-CMB-05: the Vowbound the loadout's story flags bind (vowbound.json bound_flag).
+	var vb_rows := BattleVowbound.load_config()
+	engine.vowbound = BattleVowbound.new(vb_rows, BattleVowbound.bound_by(vb_rows, engine.story_flags))
+	# M2-FP-17: skills the loadout retires (call_ilun: the game after M2-UI-05's Call command).
+	for sid: Variant in kit.get("retire_skills", []):
+		for c in engine.party_active + engine.party_reserve:
+			c.skills.erase(StringName(str(sid)))
 	policy.reset()
 	# Held for the whole battle, like fx: the signal connection does not keep it alive.
 	var swell: BattleSwell = null
@@ -128,6 +139,7 @@ func run_one(
 		"items": policy.items_used,
 		"lume": engine.currency_award(),
 		"swells": policy.swells_used,
+		"calls": policy.calls_used,
 	}
 
 

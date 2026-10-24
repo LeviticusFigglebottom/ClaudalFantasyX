@@ -51,3 +51,8 @@ So a called Ilun was immortal and harmless, Floodnet never came, the flood never
 - **A3. The call runs the caller's end of turn at the moment of the call.** That means Poison and Regen, the status countdown, Doom, `turns_taken` and `turn_ended`. Only the caller's `next_time` waits for the party's return, at the `call_rank` delay. Before this, every call skipped one tick of Doom or Poison.
 
 The Drownbell's bands must then include a policy that calls Ilun when the flood rises and stays out (M2-FP-17).
+
+## Implementation (M2-CMB-05, m2-slice, 2026-10-24)
+- A1, A2 and A3 are implemented as written (battle_ctb.md § Vowbound, "M2-CMB-05"). To let Floodnet carry `clears_field` and still be usable anywhere, a skill's refusal while a field is down moved from `clears_field` to a new `requires_field` key (kept on the `call_ilun` stand-in). `clears_field` now only clears a field that is up.
+- "Once-a-battle rescue" now reads "one HP pool per battle" in battle_ctb.md: a dismissed Vowbound can be called again as it left.
+- The provisional masher ceiling (40%, no gear) is now a band (`sandbox_vowbound`). Meeting it took Ilun's HP scale from 100% to 60% (37.0% at 1000 seeds). M2-FP-17 then raised his gauge rate from 150 to 220 for the Drownbell, which doesn't move the masher line.

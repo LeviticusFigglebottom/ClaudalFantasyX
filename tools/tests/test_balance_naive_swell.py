@@ -9,12 +9,18 @@ sys.path.insert(0, str(ROOT / "tools" / "balance"))
 import sim  # noqa: E402
 
 
+# Suites that band the masher on purpose: sandbox_vowbound caps how far a masher who calls the
+# Vowbound at once gets (M2-CMB-05, balance_targets.md).
+BANDED = {"sandbox_vowbound"}
+
+
 class NaiveSwellTest(unittest.TestCase):
     def test_every_shipped_suite_reports_naive_swell_without_a_band(self):
         for suite in sim.load_targets():
             bands = suite["bands"]
             self.assertIn("naive_swell", bands, suite["id"])
-            self.assertIsNone(bands["naive_swell"], f"{suite['id']}: naive_swell is report only")
+            if suite["id"] not in BANDED:
+                self.assertIsNone(bands["naive_swell"], f"{suite['id']}: naive_swell is report only")
             order = list(bands)
             self.assertEqual(order.index("naive_swell"), order.index("naive") + 1,
                              f"{suite['id']}: naive_swell sits next to naive in the report")
@@ -26,6 +32,10 @@ class NaiveSwellTest(unittest.TestCase):
         row = sim.summary_rows(suite, [res])[0]
         self.assertTrue(row["in_band"])
         self.assertEqual(row["band"], "report only")
+
+    def test_only_the_vowbound_sandbox_bands_the_masher(self):
+        ids = {s["id"] for s in sim.load_targets() if s["bands"].get("naive_swell") is not None}
+        self.assertEqual(ids, BANDED)
 
 
 if __name__ == "__main__":

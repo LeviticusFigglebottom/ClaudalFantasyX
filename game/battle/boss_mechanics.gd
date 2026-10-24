@@ -36,9 +36,10 @@ static func lock_skills(c: BattleCombatant, db: BattleDB, flags: Array[StringNam
 			c.skills.erase(sid)
 
 
-## Why skill row `sk` cannot be used now, or &"" if it can: a field clear with that field down.
+## Why skill row `sk` cannot be used now, or &"" if it can: it needs a field (requires_field) that
+## is down. M2-CMB-05: a skill that clears_field but needs no field (Floodnet) is always usable.
 static func refusal(engine: BattleEngine, sk: Dictionary) -> StringName:
-	var f := StringName(str(sk.get("clears_field", "")))
+	var f := StringName(str(sk.get("requires_field", "")))
 	if f != &"" and not engine.fields.has(f):
 		return FAIL_NO_FIELD
 	return &""
@@ -102,7 +103,7 @@ static func after_action(engine: BattleEngine, actor: BattleCombatant, sk: Dicti
 			joined.append(c)
 			engine.combatants_joined.emit(joined)
 	var cleared := StringName(str(sk.get("clears_field", "")))
-	if cleared != &"":
+	if cleared != &"" and engine.fields.has(cleared):
 		clear_field(engine, cleared)
 
 

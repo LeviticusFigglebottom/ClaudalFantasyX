@@ -448,10 +448,16 @@ func preview_swap(out_id: StringName, in_id: StringName, count: int = CtbTimelin
 
 
 ## Vowbound (SPEC §6.3, battle_ctb.md § Vowbound): the current party member calls `vowbound_id`.
-## The whole active party stands down and the Vowbound takes the turn; the caller pays the
-## call's rank when the party comes back. False, changing nothing, on a refusal (vowbound.refusal()).
+## The whole active party stands down and the Vowbound takes the turn. The call is the caller's
+## action, so its end of turn runs now (ADR 0027 A3: Poison/Regen, the status countdown, Doom,
+## turns_taken, turn_ended); only its next turn waits, for the call's rank once the party is back.
+## False, changing nothing, on a refusal (vowbound.refusal()).
 func summon(vowbound_id: StringName) -> bool:
-	return vowbound.call_in(self, vowbound_id) and _field_changed(true)
+	var caller := current
+	if not vowbound.call_in(self, vowbound_id):
+		return false
+	_close_turn(caller)
+	return _field_changed(true)
 
 
 ## On the Vowbound's own turn, sends it away, which spends that turn: the party comes back and
@@ -572,6 +578,16 @@ func push_delay(target: BattleCombatant, ranks: int) -> int:
 func _end_turn(actor: BattleCombatant, rank: int) -> Array[Dictionary]:
 	actor.next_time = now + Formulas.action_delay(actor.agility, rank, actor.speed_mult())
 	actor.delays_taken = 0
+	var changes := _close_turn(actor)
+	BossMechanics.check_phases(self)
+	if not _check_outcome():
+		_advance()
+	return changes
+
+
+## The end of `actor`'s acted turn without its next delay: Poison/Regen, the status countdown
+## (Doom may fell it), turns_taken, turn_ended. _end_turn and a Vowbound call (A3) share it.
+func _close_turn(actor: BattleCombatant) -> Array[Dictionary]:
 	var changes: Array[Dictionary] = []
 	if actor.is_alive():
 		if actor.has_status(&"poison"):
@@ -582,9 +598,6 @@ func _end_turn(actor: BattleCombatant, rank: int) -> Array[Dictionary]:
 	changes.append_array(_tick(actor))
 	actor.turns_taken += 1
 	turn_ended.emit(actor, changes)
-	BossMechanics.check_phases(self)
-	if not _check_outcome():
-		_advance()
 	return changes
 
 

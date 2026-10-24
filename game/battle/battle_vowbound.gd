@@ -58,6 +58,8 @@ var stood_down: Array[BattleCombatant] = []
 var _offsets: Array[int] = []
 ## Every Vowbound called this battle, by id: HP, MP, statuses and gauge last while it is away.
 var _called: Dictionary = {}
+## The engine of the call in progress (the gauge reads skill rows to tell an absorb from a heal).
+var _engine: BattleEngine
 
 
 ## `config` is the "vowbound" array of vowbound.json (load_config()); `bound` lists the ids the
@@ -67,6 +69,18 @@ func _init(config: Array = [], bound: Array[StringName] = []) -> void:
 		var d: Dictionary = row
 		rows[StringName(str(d["id"]))] = d
 	known = bound.duplicate()
+
+
+## The ids of `config` rows whose "bound_flag" is among `flags` (M2-CMB-05: story flags, e.g.
+## ch03_ilun_bound, say which Vowbound the party has bound; the engine never reads Game).
+static func bound_by(config: Array, flags: Array[StringName]) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for row: Variant in config:
+		var d: Dictionary = row
+		var flag := StringName(str(d.get("bound_flag", "")))
+		if flag != &"" and flags.has(flag):
+			out.append(StringName(str(d["id"])))
+	return out
 
 
 ## The "vowbound" array of `path` (parsed once per path, then shared read-only).
@@ -141,6 +155,7 @@ func call_in(engine: BattleEngine, vowbound_id: StringName) -> bool:
 	engine.party_active.append(s)
 	summon = s
 	engine.current = s
+	_engine = engine
 	if not engine.action_resolved.is_connected(_on_action_resolved):
 		engine.action_resolved.connect(_on_action_resolved)
 	called.emit(s)
@@ -224,8 +239,9 @@ static func build(row: Dictionary, vowbound_id: StringName, caller: BattleCombat
 	return BattleCombatant.from_dict(vowbound_id, BattleCombatant.TEAM_PARTY, d)
 
 
-## The Vowbound's gauge fills from HP it loses to hits (formulas.md § Vowbound): Formulas.swell_gain
-## over its own max HP at its row's "swell.rate". Party Swell gauges never see it (BattleSwell).
+## The Vowbound's gauge fills from HP it loses to hits and, ADR 0027 A1, from HP an absorb hit
+## restores (formulas.md § Vowbound): Formulas.swell_gain over its own max HP at its row's
+## "swell.rate". A heal is not an absorb. Party Swell gauges never see it (BattleSwell).
 func _on_action_resolved(result: ActionResult) -> void:
 	if not is_out():
 		return
@@ -233,8 +249,19 @@ func _on_action_resolved(result: ActionResult) -> void:
 	var rate := int(swell.get("rate", 0))
 	for hit in result.hits:
 		var amount := int(hit.get("amount", 0))
-		if StringName(str(hit.get("target_id", ""))) == summon.id and amount > 0:
-			summon.swell = Formulas.swell_fill(summon.swell, Formulas.swell_gain(amount, summon.max_hp, rate))
+		if StringName(str(hit.get("target_id", ""))) != summon.id or amount == 0:
+			continue
+		if amount < 0 and not _deals_damage(result):
+			continue
+		summon.swell = Formulas.swell_fill(summon.swell, Formulas.swell_gain(absi(amount), summon.max_hp, rate))
+
+
+## True when `result` is a damaging skill (so a negative amount on its target was an absorb).
+func _deals_damage(result: ActionResult) -> bool:
+	if _engine == null or result.skill_id == &"" or result.item_id != &"":
+		return false
+	var kind := str(_engine.db.skill(result.skill_id).get("kind", ""))
+	return kind == "physical" or kind == "magical"
 
 
 func _row_of(c: BattleCombatant) -> Dictionary:
