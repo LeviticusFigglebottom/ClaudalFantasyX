@@ -3,13 +3,14 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **Done, in review:** M2-ENV-05 (Haluna entry over 3 s, routed by the Lead). Prebuild went 1.65 → 0.94 s locally: the cast's materials (about 0.9 s of texture decoding per entry) now load on threads during dressing, terrain rows build in parallel, and collision reuses the terrain's heights. **PC: please re-measure with slice_sweep `--segments=haluna_beach`.**
 - **Standing queue from the Lead's 07:56 message (received 08:38):**
   - **Item 0 done.** Merged batch 3 (74f28b8), removed the `call_ilun` stand-in (now that UI-05's Call row exists) and did **M2-CMB-06**: the new Swell-on line `sandbox_reef_vowbound_good`, ≤50%, measured 46.2%. Ilun stays at 100% HP and rate 150. Drownbell 71.0/85.3/38.8. sim --check rc 0; coverage battle 99.95%.
   - **Item 1 done:** FP-22, ENV-11, and M1-UI-11 (a subagent's work: a preset change is hidden behind an "Applying" card until the warm-up finishes; `boot_title` unmoved).
   - **Item 2 done:** FP-20 and FP-21 (subagent). The causeway head reminds Rhen to save first, and B05 opens with Asha's "Go now / Not yet". Narrative should review the 4 new lines.
   - **Item 5 done (M2-FP-23):** the slice's zone wind rows and the Haluna night variant. Also found and fixed HalunaMood being a second writer of the weather clock in play.
   - **Item 3:** ENV-04 is done (the real wake-shell wall at the causeway head; Osu's stand-in is gone). ENV-03 (the Shell Shrine kit) is with a subagent.
-  - **Item 4:** UI-06 (shop and inn) is with a subagent.
+  - **Item 4 done:** UI-06 (shop and inn; a subagent did the menus and the dispatcher, merged) plus the three Haluna keepers (`NPCs/Town`). Note: UI-06 also fixed `FlagReader.from_access`, which dropped its access object (Progression should review).
   - **Next:** merge them, place the shopkeeper and innkeeper, item 7. Item 6 waits on the characters track. Handoff cinematics-10.
 - **Done, in review:** M1-ENV-11. Found and fixed a real gap: Haluna's collision added its shapes *after* the bodies entered the tree, so the AUTO plants' first shelter probe (main-thread path) saw no collision at all. The bodies now enter with their shapes. capture_setup.gd now goes through ShaderGlobals, with shots byte-identical. Handoff cinematics-8. 
 - **Done, in review:** M2-FP-22, the Shell Shrine puzzle (sweep Q). Four basins, a loop to undo first, shortest 6 turns, and a random turner's median 75 (was 3 turns, solved by mashing). Data only, plus tests. 
