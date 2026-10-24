@@ -19,6 +19,7 @@ extends Node
 ##   --png-dir=<abs dir>          save the last sampled frame of each measurement as a PNG
 ##   --override=key=value,...     GraphicsSettings overrides on top of each preset (e.g. vegetation_detail=low)
 ##   --undertow-half=<scale>     render every UndertowStorm's body at this resolution fraction (M2-RND-01)
+##   --hide-storms                hide every UndertowStorm (the frame without the storm: its own cost by difference)
 ##   --debug-draw=overdraw      render Viewport.DEBUG_DRAW_OVERDRAW (pair with --png-dir; M1-ENV-03 budget)
 ##   --tag-vegetation             tag MultiMeshes (vegetation_multimesh, small_foliage) and range-limited
 ##                                meshes (vegetation_lod) before measuring, as a zone would (M1-RND-07)
@@ -88,6 +89,10 @@ func _run() -> void:
 		for n in _scene.find_children("*", "", true, false):
 			if n is UndertowStorm:
 				(n as UndertowStorm).half_res_body_scale = float(_opts["undertow-half"])
+	if _opts.has("hide-storms"):
+		for n in _scene.find_children("*", "", true, false):
+			if n is UndertowStorm:
+				(n as UndertowStorm).visible = false
 	if _opts.has("hold-storm"):
 		for n in _scene.find_children("*", "", true, false):
 			if n is UndertowStorm:

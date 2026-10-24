@@ -120,7 +120,7 @@ const GIZMO_COLOR := Color(0.25, 0.88, 0.78)
 ## The zone's ocean: its look is copied into the funnel, and the lid clears it over the funnel.
 @export var water: WaterSurface
 ## Resolution fraction of the raymarched body (M2-RND-01, UndertowHalfRes): -1 = the quality tier's
-## body_scale (undertow.json; 0.5 on Medium and High, 1 on Ultra), else this value (1 = full resolution).
+## body_scale (undertow.json; 0.5 on Medium, 0.35 on High, 1 on Ultra), else this value (1 = full resolution).
 @export_range(-1.0, 1.0) var half_res_body_scale: float = -1.0:
 	set(value):
 		half_res_body_scale = value

@@ -219,7 +219,7 @@ Calibrated against the water bench, the only ratio we have. Water High costs abo
 7. **Art review** against the colour script with paintovers, and the `spawn_wound` usage decision.
 
 ### Half-resolution body (M2-RND-01)
-Medium and High raymarch the body at `body_scale` 0.5 of the view (undertow.json `quality.*.body_scale`; Ultra 1).
+Medium raymarches the body at `body_scale` 0.5 of the view and High at 0.35 (undertow.json `quality.*.body_scale`, M2-RND-01 min-spec decision below; Ultra 1).
 `UndertowStorm.half_res_body_scale` overrides it (−1 = the tier).
 
 How it works (`UndertowHalfRes`, `undertow_composite.gdshader`):

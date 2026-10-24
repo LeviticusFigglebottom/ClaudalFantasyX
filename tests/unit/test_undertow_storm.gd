@@ -541,12 +541,12 @@ func test_wall_foot_uniforms_reach_every_tier() -> void:
 		assert_true(params.has(u), "static_parameters carries %s" % u)
 
 
-## M2-RND-01: the raymarched body renders at the tier's body_scale (Medium/High 0.5, Ultra 1), clamped
+## M2-RND-01: the raymarched body renders at the tier's body_scale (Medium 0.5, High 0.35, Ultra 1), clamped
 ## to the documented range; High builds the half-res renderer and moves the body off the game camera's
 ## layers, Ultra does not, and the export overrides the tier.
 func test_half_res_body_follows_the_tier() -> void:
 	var s := UndertowState.new()
-	assert_eq(s.quality_plan("high")["body_scale"], 0.5)
+	assert_eq(s.quality_plan("high")["body_scale"], 0.35)
 	assert_eq(s.quality_plan("ultra")["body_scale"], 1.0)
 	var cfg := UndertowState.load_config()
 	((cfg["quality"] as Dictionary)["high"] as Dictionary)["body_scale"] = 0.01

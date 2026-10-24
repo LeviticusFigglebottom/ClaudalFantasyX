@@ -249,7 +249,7 @@
       "sea_foam_octaves": 4,
       "curl_reuse": 2,
       "temporal_jitter": true,
-      "body_scale": 0.5
+      "body_scale": 0.35
     },
     "ultra": {
       "body": "raymarch",

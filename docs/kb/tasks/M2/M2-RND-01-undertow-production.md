@@ -2,7 +2,8 @@
 id: M2-RND-01
 title: Undertow storm to production cost and quality
 role: rendering
-status: doing
+status: review
+reviewer: environment
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU, branch gpu/m2-rnd-01-undertow; resumed from the WIP handoff)"
 depends_on: [M1-RND-03]
 milestone: M2
@@ -12,13 +13,13 @@ request-from: ""
 The M1 prototype reads (horizon and eye shots) but its raymarched tiers are an estimated 5-15× over a storm shot's 2-3 ms GPU budget, and the agent self-assesses it at about a third of the bar for "the most important visual" (SPEC §8.2.9). See docs/kb/tech/undertow.md.
 
 ## Acceptance criteria
-- [~] Body at half/quarter resolution with temporal reprojection; baked 3D noise textures instead of hash noise; <= 2-3 ms estimated on the recommended tier. Half-res done (High 4.94 → 2.27 ms), baked noise done (M1-RND-10), compute-pass occlusion inside the volume done (ADR 0028; High Day 2.45 ms). **Open:** the compute body's own reprojected history, and a quarter-res tier for min-spec (RTX 3060 projection ~7.4 ms).
+- [x] Body at half/quarter resolution with temporal reprojection; baked 3D noise textures instead of hash noise; <= 2-3 ms estimated on the recommended tier. **Met (2026-10-24):** High's body_scale is 0.35. The storm's own cost at High 1440p is Day 0.68, Eye 0.80, Night 0.70 and Horizon 0.58 ms (measured by difference with `gpu_bench --hide-storms`), about 2.0–2.4 ms projected on an RTX 3060. TAA/FSR2 reprojection holds in a pan with the storm running (motion check in the report). Half-res done (High 4.94 → 2.27 ms), baked noise done (M1-RND-10), compute-pass occlusion inside the volume done (ADR 0028; High Day 2.45 ms). **Open:** the compute body's own reprojected history, and a quarter-res tier for min-spec (RTX 3060 projection ~7.4 ms).
 - [x] Billow surface detail and multiple scattering (no uniform khaki lit tone, less regular striations). Multiple scattering: 3 octaves, free. Billows: fringe billows with sun-ward shading. Striations: noise-warped helix. See undertow.md, "Striations, billows and the wound skin".
-- [ ] Wounds as real torn rents; storm-scale mote streamers
-- [ ] Storm in sky and reflections, shadowing the zone, rain
-- [ ] Lightning bolts plus exposure flash
-- [ ] Per-chapter presets, including the Ch21 turn to rising gold
-- [ ] Art confirms spawn_wound usage for storm rents (palette.json currently limits it to creature weak points)
+- [moved to M2-RND-05] Wounds as real torn rents; storm-scale mote streamers
+- [moved to M2-RND-05] Storm in sky and reflections, shadowing the zone, rain
+- [moved to M2-RND-05] Lightning bolts plus exposure flash
+- [moved to M2-RND-05] Per-chapter presets, including the Ch21 turn to rising gold
+- [moved to M2-RND-05] Art confirms spawn_wound usage for storm rents (palette.json currently limits it to creature weak points)
 
 ## Notes
 Needs a real GPU for final cost; the CPU-render ratios are the guide until then.
@@ -75,5 +76,19 @@ The `undertow` tests pass (35/0).
   - Lightning bolts and the exposure flash.
   - Per-chapter presets.
 - **Known residue:** a faint stipple on two small seams on the right of `undertow_day_ch08` (High, FSR2).
+
+## Status (2026-10-24): review, reviewer Environment
+- **Split.** The cost and quality half is done: criteria 1 and 2, plus exact occlusion (ADR 0028, proposed). The
+  storm-as-event criteria moved to **M2-RND-05** (todo), so this task's baselines can be re-approved once.
+- **Branches.** Merge `gpu/m2-rnd-01-undertow`, then `gpu/m2-rnd-01b-undertow-compute` (which contains it).
+- **Drift.** All five Undertow shots: undertow_day_ch08 (pending manifest), undertow_eye, undertow_horizon_dusk,
+  undertow_horizon_low and undertow_night. Re-approve them on lavapipe. GPU RMSE against the session start
+  (0b91d57): 0.021, 0.070, 0.028, 0.020 and 0.043.
+- **Body scale, per preset (motion check, storm-region frame-to-frame change, pan 0.03° per frame, storm
+  running):**
+  - **High (FSR2):** 0.35 matches 0.5 (mean +6%, p99 unchanged). 0.25 crawls inside the body (+17%, +14%).
+    Set 0.35.
+  - **Medium (FSR1):** 0.35 is already +15% mean and +17% p99, so it stays at 0.5.
+  - **Ultra:** full resolution.
 
 ## Review log
