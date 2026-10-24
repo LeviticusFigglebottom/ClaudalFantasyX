@@ -27,6 +27,7 @@
       "intro_scene_id": "ch02_girl_on_the_beach",
       "intro_flag": "ch02_met_asha",
       "intro_spawn": "Beach",
+      "party_after_intro": {"party": ["rhen", "asha"], "reserve": ["toma"]},
       "battle_return_spawn": "BattleReturn",
       "battle_victory_flag": "ch02_tideline_won",
       "battle_escape_spawn": "BeforeBattle",

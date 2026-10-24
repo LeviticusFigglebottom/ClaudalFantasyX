@@ -4,9 +4,11 @@ extends Node
 ## A child of the zone root (HalunaZone), which provides `stage` (a CutsceneStage) and
 ## `place_at(spawn)`. What it plays and where comes from first_playable.json "haluna".
 ##   arrival   while `ch02_met_asha` is unset: Rhen on the Beach spawn, Cutscene A
-##             (ch02_girl_on_the_beach), then free play. Once the tideline battle is won (its
-##             victory flag) and until after_battle_flag is set, an arrival plays B02 instead
-##             (M2-FP-13): Rhen at the after_battle spawn and Neme's table in-engine.
+##             (ch02_girl_on_the_beach), then free play. Asha and Toma join Rhen there: once
+##             `ch02_met_asha` is set, an empty party is filled from party_after_intro (party and
+##             reserve ids, M2 slice), which the field menu's Heroes page reads (M2-UI-04). Once the
+##             tideline battle is won (its victory flag) and until after_battle_flag is set, an
+##             arrival plays B02 instead (M2-FP-13): Rhen at the after_battle spawn and Neme's table in-engine.
 ##   villagers an Interactable whose payload has "dialogue" plays that bark scene in-engine.
 ##   overheard a touch trigger whose payload has "dialogue" and "overheard" (M2-FP-13, B03's four
 ##             "Cantor" fragments) plays that bark on its own sequencer as Rhen walks past: he is
@@ -72,8 +74,11 @@ func begin() -> void:
 		busy = true
 		_zone.call(&"place_at", StringName(str(cfg.get("intro_spawn", ""))))
 		await sequencer.play(StringName(str(cfg.get("intro_scene_id", ""))), _stage())
+		_join_party()
 		busy = false
-	elif _flag(&"night_flag") and not _flag(&"sworn_flag"):
+		return
+	_join_party()
+	if _flag(&"night_flag") and not _flag(&"sworn_flag"):
 		await _night()
 	elif _flag(&"battle_victory_flag") and not _flag(&"after_battle_flag"):
 		# B02: noon at Neme's. The scene opens black, so the move to her door is never seen.
@@ -82,6 +87,18 @@ func begin() -> void:
 		_zone.call(&"place_at", spawn, _zone.call(&"spawn_yaw_deg", spawn))
 		await sequencer.play(StringName(str(cfg.get("after_battle_scene_id", ""))), _stage())
 		busy = false
+
+
+## Asha and Toma join once Cutscene A has played: an empty party is filled from party_after_intro.
+## A save from before this existed (the flag set, no party) is filled on its next arrival.
+func _join_party() -> void:
+	if not _flag(&"intro_flag") or not Game.state.party_ids.is_empty():
+		return
+	var join: Dictionary = cfg.get("party_after_intro", {})
+	for id: Variant in join.get("party", []):
+		Game.state.party_ids.append(StringName(str(id)))
+	for id: Variant in join.get("reserve", []):
+		Game.state.reserve_ids.append(StringName(str(id)))
 
 
 func _autostart() -> void:
