@@ -3,6 +3,17 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **MERGE-READY @ 651cdb93** (on top of MERGE-READY f2c5fc1b; no new integration merge since 14:15).
+  - **Items:**
+    - M3-C07-02 (Ch7's story), M3-C05-02 (Ch5) and M3-C04-02 (Ch4, with Ch4 → Ch5 wired);
+    - M2-ENV-10 (the shrine's shipped GI, the ADR 0029 fix);
+    - M3-C05-07 (request), and the Ch5 suite-kind fix.
+  - **Checks run:**
+    - full Godot suite 1582/0 (on ae3f5933; the only later code change is targets.json);
+    - tools unittest OK; `sim.py --check` exit 0;
+    - shrine_s01–s05 captured and passing (M2-ENV-10);
+    - gdlint, gdformat, validate_data, taskboard and dlgc --check all clean.
+  - **Checks skipped:** the full screenshot manifest and Blender. No other shots are affected; no Blender source was touched.
 - **Merged: M3-C04-02 (Ch4) and M3-C05-02 (Ch5).** Both are in review (narrative; combat for the bands); handoffs cinematics-14 and cinematics-15.
   - **The thread:** prologue → Ch1 → Haluna slice … Ch4 → Ch5 now play through (Ch4 exits to `ch05/pemakar` Harbour). Ch5 → the end card until Ch6 lands. Ch7 is reachable on its own.
   - **For combat's ruling** (M3-C04-06, M3-C05-06):
