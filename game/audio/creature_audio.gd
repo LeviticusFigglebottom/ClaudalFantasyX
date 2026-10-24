@@ -6,7 +6,10 @@ extends Node
 ## - **attack** on the creature's own action (`action_resolved`, the actor's base id);
 ## - **hurt** on a landed damaging hit that leaves it standing (once per creature kind per action), and **death**
 ##   when a hit or its own turn (poison) takes it to 0 HP, once until it stands again. Both play `under_db` softer and
-##   `delays_ms` after the moment, so they layer under battle_sfx.json's hit and KO sounds instead of doubling them;
+##   `delays_ms` after the moment, so they layer under battle_sfx.json's hit and KO sounds instead of doubling them.
+##   The moment is the blow's **contact**: when the battle has a choreography (a node under the scope that
+##   choreo_sfx.json's hook names, BattleChoreo), its contact signal, the one BattleVfx plays the hit and KO on (at
+##   once when actions land instantly); with none, the engine's action_resolved (M3-AUD-800);
 ## - **idle** when the battle opens (the first voiced enemy) and when creatures join, at most once per
 ##   `idle_cooldown_ms` per kind;
 ## - **move** from the model's clips: a node whose script's global class is a `model_classes` key (CreatureActor on
@@ -30,6 +33,8 @@ var data: Dictionary = {}
 var played: Array[String] = []
 ## Base id -> how many of its models are heard now.
 var models: Dictionary = {}
+## The choreography whose contact times the hurts and deaths (null: the engine's action_resolved does).
+var contact_source: Node
 var _battle: BattleAudio
 var _scope: Node
 ## [{at: msec, base, event}], in time order.
@@ -58,6 +63,8 @@ func attach(dir: AudioDirector, scope: Node, eng: BattleEngine, battle: BattleAu
 		if scope != null:
 			for n in scope.find_children("*", "", true, false):
 				_on_node_added(n)
+				if contact_source == null:
+					_hear_contacts(n)
 	var first := _first_voiced(eng.enemies)
 	if first != "":
 		_request(first, IDLE)
@@ -157,6 +164,16 @@ func _first_voiced(cs: Array[BattleCombatant]) -> String:
 	return ""
 
 
+## Times the hurts and deaths on `n`'s contact signal when `n` is the choreography (choreo_sfx.json's hook, by name).
+func _hear_contacts(n: Node) -> void:
+	var hook := ChoreoAudio.hook_for(AudioData.table(ChoreoAudio.TABLE), n)
+	var sig := StringName(str((hook.get("signals", {}) as Dictionary).get(ChoreoAudio.ROLE_CONTACT, "")))
+	if sig == &"" or not n.has_signal(sig):
+		return
+	contact_source = n
+	n.connect(sig, _on_contact)
+
+
 func _on_action_resolved(result: ActionResult) -> void:
 	if result == null or not result.ok:
 		return
@@ -165,6 +182,14 @@ func _on_action_resolved(result: ActionResult) -> void:
 		_request(actor, ATTACK)
 		if bool(data.get("move_on_action", false)) and int(models.get(actor, 0)) == 0:
 			_request(actor, MOVE)
+	if not is_instance_valid(contact_source):
+		_on_contact(result)
+
+
+## The blow lands (the choreography's contact, or the action itself when there is none): hurts and deaths.
+func _on_contact(result: ActionResult) -> void:
+	if result == null or not result.ok:
+		return
 	var hurt: Dictionary = {}
 	for h: Dictionary in result.hits:
 		var tid := StringName(str(h.get("target_id", "")))
