@@ -9,6 +9,7 @@ var state: GameStateData
 
 
 func before_each() -> void:
+	InputDriver.clear_screen()
 	menu = null
 	UiSettings.set_shared(UiSettings.new())
 	ItemsMenu.session_sort = ItemsMenuModel.SORT_KIND

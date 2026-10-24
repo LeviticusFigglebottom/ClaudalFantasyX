@@ -101,6 +101,7 @@ func test_a_record_payload_marks_it_found_and_the_notice_shows_its_title() -> vo
 	notice.advance(float(d["fade_sec"]) + 0.01)
 	assert_false(notice.is_showing(), "it fades out")
 	assert_true(notice.queue.is_empty())
+	_free_made()  # the runner has no after_each: no menu may outlive its test
 
 
 func test_the_notice_hears_the_event_bus_and_hides_while_a_menu_pauses() -> void:
@@ -115,6 +116,7 @@ func test_the_notice_hears_the_event_bus_and_hides_while_a_menu_pauses() -> void
 	notice.advance(0.0)
 	assert_true(notice.is_showing())
 	assert_eq(notice.name_text(), tr("CODEX_CAUSEWAY_NOTICE_TITLE"))
+	_free_made()  # the runner has no after_each: no menu may outlive its test
 
 
 func test_a_scratch_interactable_with_a_record_payload_adds_it() -> void:
@@ -128,8 +130,8 @@ func test_a_scratch_interactable_with_a_record_payload_adds_it() -> void:
 	notice.advance(0.0)
 	assert_eq(notice.name_text(), tr("CODEX_BASIN_STEPS_TITLE"))
 
-
 # --- the menu -----------------------------------------------------------------------------------
+	_free_made()  # the runner has no after_each: no menu may outlive its test
 
 
 func test_the_menu_lists_categories_with_counts_and_new_and_shows_a_category_line() -> void:
@@ -147,6 +149,7 @@ func test_the_menu_lists_categories_with_counts_and_new_and_shows_a_category_lin
 	assert_eq(menu.entries_page().rows[1]["right"], tr("CODEX_NEW_TAG"))
 	assert_eq(flags.get(&"codex_glimmer_read", false), false, "showing a category reads nothing")
 	assert_eq(menu.summary_text(), menu.model.summary())
+	_free_made()  # the runner has no after_each: no menu may outlive its test
 
 
 func test_opening_an_entry_shows_it_and_clears_its_new_marker() -> void:
@@ -177,6 +180,7 @@ func test_opening_an_entry_shows_it_and_clears_its_new_marker() -> void:
 	menu.handle_input(_ev(&"ui_cancel"))
 	assert_false(menu.is_open(), "Cancel on the categories closes")
 	assert_false(_tree().paused, "and gives the pause back")
+	_free_made()  # the runner has no after_each: no menu may outlive its test
 
 
 func test_a_record_reads_in_its_own_voice() -> void:
@@ -187,6 +191,7 @@ func test_a_record_reads_in_its_own_voice() -> void:
 	assert_eq(menu.current_id, &"basin_steps")
 	assert_eq(menu._body.theme_type_variation, &"FlavorLabel", "a record is quoted")
 	assert_eq(menu._sub.text, tr("CODEX_RECORD_TAG"))
+	_free_made()  # the runner has no after_each: no menu may outlive its test
 
 
 func test_long_text_scrolls_and_a_pad_can_read_it_through_the_text_column() -> void:
@@ -215,8 +220,8 @@ func test_long_text_scrolls_and_a_pad_can_read_it_through_the_text_column() -> v
 	menu.handle_input(_ev(&"ui_right"))
 	assert_eq(menu.column, CodexMenu.Column.ENTRIES, "a short text has nothing to scroll into")
 
-
 # --- the field menu row -------------------------------------------------------------------------
+	_free_made()  # the runner has no after_each: no menu may outlive its test
 
 
 func test_the_field_menu_codex_row_follows_the_bestiary_and_opens_the_codex() -> void:
@@ -243,6 +248,7 @@ func test_the_field_menu_codex_row_follows_the_bestiary_and_opens_the_codex() ->
 	assert_true(menu.visible, "back to the field menu")
 	assert_eq(menu.codex_menu, null)
 	assert_true(menu.is_open())
+	_free_made()  # the runner has no after_each: no menu may outlive its test
 
 
 # --- input parity (M2-UI-26) --------------------------------------------------------------------
@@ -295,6 +301,7 @@ func test_open_read_scroll_and_close_with_each_device() -> void:
 		assert_false(menu.is_open(), "%s: Cancel closes" % d.label())
 		_free_made()
 	_tree().paused = false
+	_free_made()  # the runner has no after_each: no menu may outlive its test
 
 
 func test_the_mouse_can_reach_a_record_from_the_categories_in_one_click() -> void:
@@ -312,8 +319,8 @@ func test_the_mouse_can_reach_a_record_from_the_categories_in_one_click() -> voi
 	assert_eq(menu.current_id, &"glimmer")
 	menu.close()
 
-
 # --- helpers ------------------------------------------------------------------------------------
+	_free_made()  # the runner has no after_each: no menu may outlive its test
 
 
 func _model(doc: Dictionary = {}) -> CodexModel:

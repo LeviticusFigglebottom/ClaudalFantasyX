@@ -11,6 +11,7 @@ var made: Array[Node] = []
 
 
 func before_each() -> void:
+	InputDriver.clear_screen()
 	db = ItemDB.load_default()
 	state = GameStateData.new()
 	flags = FlagReader.new()

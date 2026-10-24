@@ -8,6 +8,7 @@ var made: Array[Node] = []
 
 
 func before_each() -> void:
+	InputDriver.clear_screen()
 	s = UiSettings.new()
 	UiSettings.set_shared(s)
 
