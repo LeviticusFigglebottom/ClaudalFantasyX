@@ -28,6 +28,7 @@ const HELP_KEYS := {
 	Level.RECIPES: "EQUIP_MENU_HELP_RECIPES",
 }
 const PREVIEW_COLS: Array[String] = ["name", "now", "arrow", "next", "delta"]
+const PORTRAIT_PAGE := &"equip"
 
 var sheet: PartySheet
 var model: EquipMenuModel
@@ -47,6 +48,8 @@ var _choice: MenuPage
 var _help: Label
 var _desc: Label
 var _status: Label
+## M2-MNU-301: the shown hero's portrait beside the heroes page.
+var _portrait: HeroPortraitFrame
 var _preview_title: Label
 ## One row of Labels per stat (PREVIEW_COLS order).
 var _stat_cells: Array[Array] = []
@@ -87,6 +90,10 @@ func close() -> void:
 
 func hero_page() -> MenuPage:
 	return _heroes
+
+
+func portrait() -> HeroPortraitFrame:
+	return _portrait
 
 
 func gear_page() -> MenuPage:
@@ -348,6 +355,9 @@ func _build_page() -> void:
 	_choice.row_clicked.connect(_on_clicked.bind(Level.PIECES))
 	for page in [_heroes, _gear, _choice]:
 		_fit_in_rect(page.header_label())  # a long piece name stays in its own page (M2-MNU-05)
+	_portrait = HeroPortraitFrame.new()
+	HudLayout.place(_portrait, _d.get("portrait", {}))
+	add_child(_portrait)
 	_build_lines()
 	_build_preview()
 	if not model.heroes().is_empty():
@@ -454,6 +464,10 @@ func _render() -> void:
 	_gear.visible = not choosing
 	_gear.set_dimmed(level != Level.GEAR)
 	_gear.set_header(model.gear_title(_shown_hero()) if _shown_hero() != &"" else "")
+	var shown := _shown_hero()
+	_portrait.show_hero(
+		shown, model.hero_name(shown) if shown != &"" else "", HeroPortraits.page_emotion(PORTRAIT_PAGE)
+	)
 	_gear.size.y = MenuPage.height_for(_d.get("gear", {}), maxi(_gear.row_count(), 1), true)
 	_choice.visible = choosing
 	if choosing:

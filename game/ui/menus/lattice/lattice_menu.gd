@@ -25,6 +25,7 @@ const CONFIRM_PAGE_ID := &"lattice_confirm"
 ## M3-MNU-04: toggles the whole-board overview (lattice_menu.json overview.action; remappable).
 const OVERVIEW_ACTION := &"lattice_overview"
 const DATA_PATH := "res://game/data/ui/lattice_menu.json"
+const PORTRAIT_PAGE := &"lattice"
 
 var sheet: PartySheet
 var model: LatticeMenuModel
@@ -35,6 +36,8 @@ var _board: LatticeBoardView
 var _confirm: MenuPage
 var _plan: Dictionary = {}
 var _hero_label: Label
+## M2-MNU-301: the hero on show's head beside the hero line.
+var _portrait: HeroPortraitFrame
 var _points: Label
 var _facets: Label
 var _node_title: Label
@@ -63,6 +66,10 @@ static func open_in(host: Node, with_sheet: PartySheet = null) -> LatticeMenu:
 
 func data_path() -> String:
 	return DATA_PATH
+
+
+func portrait() -> HeroPortraitFrame:
+	return _portrait
 
 
 func data_section() -> String:
@@ -213,6 +220,10 @@ func _build_page() -> void:
 	_help.text = tr("LATTICE_MENU_HELP")
 	_hero_label = _label(&"HeaderLabel", HudLayout.rect_of(_d.get("hero", {})))
 	_hero_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_portrait = HeroPortraitFrame.new()
+	_portrait.crop = HeroPortraitFrame.Crop.FACE
+	HudLayout.place(_portrait, _d.get("portrait", {}))
+	add_child(_portrait)
 	var bm: Dictionary = _d.get("board", {})
 	_board = LatticeBoardView.new()
 	HudLayout.place(_board, bm)
@@ -388,10 +399,12 @@ func _refresh() -> void:
 	var list := model.heroes()
 	if list.is_empty():
 		_hero_label.text = ""
+		_portrait.show_hero(&"", "")
 	else:
 		_hero_label.text = tr("LATTICE_MENU_HERO_FMT").format(
 			{"name": model.hero_name(), "i": model.hero_index + 1, "n": list.size()}
 		)
+		_portrait.show_hero(model.hero(), model.hero_name(), HeroPortraits.page_emotion(PORTRAIT_PAGE))
 	_points.text = model.points_text()
 	_facets.text = model.facets_held_text()
 	_node_title.text = model.node_title(cursor)
