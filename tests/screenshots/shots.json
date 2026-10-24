@@ -2079,6 +2079,401 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "tamsule_t01_bell_from_the_mouth",
+      "scene": "res://game/levels/_tests/tamsule_bell_kit/tamsule_bell_kit.tscn",
+      "camera": "Cameras/T01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "tamsule_t03_oruvel_moorings",
+      "scene": "res://game/levels/_tests/tamsule_bell_kit/tamsule_bell_kit.tscn",
+      "camera": "Cameras/T03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_tideline_dawn",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_tideline_dawn.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_causeway_disc_sunset",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_causeway_disc_sunset.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_causeway_route_afternoon",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_causeway_route_afternoon.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_derelict_deck_night",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_derelict_deck_night.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_ash_terrace_lanternfall",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_ash_terrace_lanternfall.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_oruvel_raft_morning",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_oruvel_raft_morning.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_underway_tower",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_underway_tower.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "brine_b01_arrival",
+      "scene": "res://game/levels/_tests/brine_shoals_kit/brine_shoals_preview.tscn",
+      "camera": "Cameras/B01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "brine_b05_barge_channel",
+      "scene": "res://game/levels/_tests/brine_shoals_kit/brine_shoals_preview.tscn",
+      "camera": "Cameras/B05",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "causeway_c02_profile_against_the_lagoon",
+      "scene": "res://game/levels/_tests/saltgrass_causeway_kit/causeway_preview.tscn",
+      "camera": "Cameras/C02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "causeway_c08_drownbell_disc_approach",
+      "scene": "res://game/levels/_tests/saltgrass_causeway_kit/causeway_preview.tscn",
+      "camera": "Cameras/C08",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "pemakar_p01_waterfall_of_fires",
+      "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+      "camera": "Cameras/P01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "night"
+          }
+        }
+      }
+    },
+    {
+      "id": "pemakar_p03_among_the_graves",
+      "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+      "camera": "Cameras/P03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "dusk"
+          }
+        }
+      }
+    },
+    {
+      "id": "corrow_c01_wall_head",
+      "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+      "camera": "Cameras/C01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "corrow_c08_watcher_profile",
+      "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+      "camera": "Cameras/C08",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ou_u04_lamp_gallery",
+      "scene": "res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_preview.tscn",
+      "camera": "Cameras/U04",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ou_u12_terrace",
+      "scene": "res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_preview.tscn",
+      "camera": "Cameras/U12",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "corrow_c10_breach_fallen",
+      "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+      "camera": "Cameras/C10",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "phase": "fallen"
+          }
+        }
+      }
     }
   ]
 }

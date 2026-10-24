@@ -15,6 +15,35 @@ used to verify that (a capture with the identity LUT matches one with no LUT).
 
 Intent (haluna.md `ch02_noon`): saturation x1.12, S-curve 0.45, teal toe `#0E4A55`, highlights roll
 off to `#FFF8EE`; no (0, 0, 0) black point (colour script rule 5).
+
+M2-ENV-11 adds the battle arenas' grades (`--grade`; the default stays `ch02_noon`, byte-identical):
+  ch02_dawn     lut_ch02_dawn (colour script Ch2): peach highlights, lavender-teal shadows, gentle
+                S-curve 0.4, saturation x1.0.
+      python3 assets_src/environments/kits/haluna/zone_lut.py --grade ch02_dawn \
+          --out assets/environments/arenas/tideline_dawn/lut_ch02_dawn.png
+  ch03_sunset   lut_ch03_sunset (colour script Ch3, used at 100% by `ch03_boss`): gold gain in the
+                highlights, magenta-free (pink-magenta hues are pulled back towards red-orange and
+                desaturated, so skies never go pink), shadows held at deep_teal_shadow, S-curve 0.5,
+                saturation x1.08.
+      python3 assets_src/environments/kits/haluna/zone_lut.py --grade ch03_sunset \
+          --out assets/environments/arenas/causeway_disc_sunset/lut_ch03_sunset.png
+
+M3-ENV-06 adds the two night grades of the Act I arenas (practical-keyed night frames, colour script rule 3):
+  ch04_wake         lut_ch04_wake (colour script Ch4): the oil-lamp pools kept saturated, everything outside
+                    them (cool, grey or dark) cooled and desaturated 15%; S-curve 0.6, saturation x0.95;
+                    the black point lifted to night_sky, never 0.
+      python3 assets_src/environments/kits/haluna/zone_lut.py --grade ch04_wake \
+          --out assets/environments/arenas/derelict_deck_night/lut_ch04_wake.png
+  ch05_lanternfall  lut_ch05_lanternfall (colour script Ch5): oranges and reds boosted 12%, greens pulled
+                    towards teal, the neutral volcanic stone kept neutral-cool so the flames read; S-curve
+                    0.55, saturation x1.15, the black point at night_sky.
+      python3 assets_src/environments/kits/haluna/zone_lut.py --grade ch05_lanternfall \
+          --out assets/environments/arenas/ash_terrace_lanternfall/lut_ch05_lanternfall.png
+  ch01_raft         lut_ch01_raft (colour script Ch1, the raft-town at 10:30, and the Underway below it):
+                    neutral-warm, the cyans and the oranges +8% (`band_sat`), saturation x1.12, S-curve 0.45, a
+                    mild toe lift. Shared by the two Ch1 arenas, written next to the raft-town's:
+      python3 assets_src/environments/kits/haluna/zone_lut.py --grade ch01_raft \
+          --out assets/environments/arenas/oruvel_raft_morning/lut_ch01_raft.png
 """
 
 from __future__ import annotations
@@ -40,6 +69,7 @@ TOE_HEX = "#0E4A55"  # deep_teal_shadow
 TOE_STRENGTH = 0.35  # how far the darkest tones move to the teal (luminance-preserving)
 TOE_END = 0.38  # sRGB luminance where the toe tint has faded out
 BLACK_FLOOR = 0.12  # the darkest output is the teal at this fraction of its own value
+NIGHT_SKY_HEX = "#050A14"  # night_sky: the night frames' toe and black point (colour script rule 5)
 HIGHLIGHT_HEX = "#FFF8EE"  # cumulus_lit / highlight roll-off target
 HIGHLIGHT_START = 0.72
 HIGHLIGHT_STRENGTH = 0.55
@@ -55,38 +85,173 @@ def smoothstep(e0, e1, x):
     return t * t * (3.0 - 2.0 * t)
 
 
-def grade(srgb: np.ndarray) -> np.ndarray:
-    """srgb: (..., 3) in [0, 1] display-encoded -> graded display-encoded."""
-    lin = srgb_to_lin(srgb)
-    lum = (lin @ LUMA)[..., None]
-    # Saturation around luminance (linear light).
-    lin = np.clip(lum + (lin - lum) * SATURATION, 0.0, None)
-    out = lin_to_srgb(lin)
-    # S-curve on display values (contrast about mid-grey), per channel.
-    out = out + (smoothstep(0.0, 1.0, out) - out) * S_CURVE
-    # Teal toe: luminance-preserving tint of the shadows towards deep_teal_shadow.
-    lin = srgb_to_lin(np.clip(out, 0, 1))
-    lum = (lin @ LUMA)[..., None]
-    toe = hex_lin(TOE_HEX)
-    toe_tint = toe / max(float(toe @ LUMA), 1e-6) * lum
-    w = (1.0 - smoothstep(0.0, TOE_END, lin_to_srgb(lum))) * TOE_STRENGTH
-    lin = lin * (1.0 - w) + toe_tint * w
-    lin = np.maximum(lin, toe * BLACK_FLOOR)
-    # Highlights roll towards the warm white.
-    hi = hex_lin(HIGHLIGHT_HEX)
-    lum = (lin @ LUMA)[..., None]
-    h = smoothstep(HIGHLIGHT_START, 1.0, lin_to_srgb(lum)) * HIGHLIGHT_STRENGTH
-    lin = lin * (1.0 - h) + hi * lum / float(hi @ LUMA) * h
+# The grades by name: ch02_noon is the module constants above (unchanged); the others are M2-ENV-11's.
+GRADES = {
+    "ch02_noon": {"saturation": SATURATION, "s_curve": S_CURVE, "toe_hex": TOE_HEX, "toe_strength": TOE_STRENGTH,
+                  "toe_end": TOE_END, "black_floor": BLACK_FLOOR, "highlight_hex": HIGHLIGHT_HEX,
+                  "highlight_start": HIGHLIGHT_START, "highlight_strength": HIGHLIGHT_STRENGTH},
+    # Peach highlights, lavender-teal shadows (a toe between deep_teal_shadow and a dawn lavender).
+    "ch02_dawn": {"saturation": 1.0, "s_curve": 0.4, "toe_hex": "#24465E", "toe_strength": 0.4, "toe_end": 0.4,
+                  "black_floor": 0.12, "highlight_hex": "#FFE4CC", "highlight_start": 0.66,
+                  "highlight_strength": 0.5},
+    # Gold gain, magenta clipped, the toe held at deep_teal_shadow.
+    "ch03_sunset": {"saturation": 1.08, "s_curve": 0.5, "toe_hex": TOE_HEX, "toe_strength": 0.45, "toe_end": 0.4,
+                    "black_floor": 0.12, "highlight_hex": "#FFE0B0", "highlight_start": 0.6,
+                    "highlight_strength": 0.45, "magenta_clip": 0.85, "magenta_hue_deg": (285.0, 350.0),
+                    "magenta_target_deg": 12.0},
+    # M3-ENV-06. Lamp pools saturated, the rest cooled and 15% greyer; the toe and black point at night_sky.
+    "ch04_wake": {"saturation": 0.95, "s_curve": 0.6, "toe_hex": NIGHT_SKY_HEX, "toe_strength": 0.5, "toe_end": 0.3,
+                  "black_floor": 1.0, "highlight_hex": "#FFE6C8", "highlight_start": 0.7, "highlight_strength": 0.4,
+                  "warm_deg": (8.0, 58.0), "warm_sat": 1.0 / 0.95, "cool_sat": 0.85, "cool_hex": "#C8D6EE",
+                  "cool_strength": 0.35},
+    # M3-ENV-06. lut_ch01_raft (colour script Ch1): a neutral-warm day grade, +8% saturation in the cyans and the
+    # oranges, a mild toe lift (the teal toe a little higher off black than noon's).
+    "ch01_raft": {"saturation": 1.12, "s_curve": 0.45, "toe_hex": TOE_HEX, "toe_strength": 0.3, "toe_end": 0.36,
+                  "black_floor": 0.16, "highlight_hex": "#FFF4E8", "highlight_start": 0.72,
+                  "highlight_strength": 0.5, "band_sat": (((15.0, 50.0), 1.08), ((172.0, 205.0), 1.08))},
+    # Oranges and reds +12%, greens towards teal, neutral stone a touch cool; the toe at night_sky.
+    "ch05_lanternfall": {"saturation": 1.15, "s_curve": 0.55, "toe_hex": NIGHT_SKY_HEX, "toe_strength": 0.45,
+                         "toe_end": 0.3, "black_floor": 1.0, "highlight_hex": "#FFE2BC", "highlight_start": 0.7,
+                         "highlight_strength": 0.4, "warm_deg": (-25.0, 50.0), "warm_sat": 1.12, "cool_sat": 1.0,
+                         "cool_hex": "#D2DAE8", "cool_strength": 0.25, "green_deg": (70.0, 165.0),
+                         "green_target_deg": 178.0, "green_shift": 0.45},
+}
+
+
+def rgb_to_hsv(c: np.ndarray) -> np.ndarray:
+    mx = c.max(axis=-1)
+    mn = c.min(axis=-1)
+    d = mx - mn
+    h = np.zeros_like(mx)
+    safe = np.where(d > 1e-9, d, 1.0)
+    r, g, b = c[..., 0], c[..., 1], c[..., 2]
+    h = np.where(mx == r, ((g - b) / safe) % 6.0, h)
+    h = np.where(mx == g, (b - r) / safe + 2.0, h)
+    h = np.where(mx == b, (r - g) / safe + 4.0, h)
+    h = np.where(d > 1e-9, h * 60.0, 0.0)
+    s = np.where(mx > 1e-9, d / np.where(mx > 1e-9, mx, 1.0), 0.0)
+    return np.stack([h, s, mx], axis=-1)
+
+
+def hsv_to_rgb(hsv: np.ndarray) -> np.ndarray:
+    h, s, v = hsv[..., 0] / 60.0, hsv[..., 1], hsv[..., 2]
+    i = np.floor(h) % 6
+    f = h - np.floor(h)
+    p, q, t = v * (1 - s), v * (1 - s * f), v * (1 - s * (1 - f))
+    choices = [np.stack(x, axis=-1) for x in ((v, t, p), (q, v, p), (p, v, t), (p, q, v), (t, p, v), (v, p, q))]
+    out = np.zeros(hsv.shape)
+    for k in range(6):
+        out = np.where((i == k)[..., None], choices[k], out)
+    return out
+
+
+def clip_magenta(srgb: np.ndarray, g: dict) -> np.ndarray:
+    """Pulls pink-magenta hues back towards the red-orange target and takes saturation out of them, by
+    `magenta_clip` at the middle of the band, easing to nothing at its edges (so no hue edge appears)."""
+    hsv = rgb_to_hsv(srgb)
+    h0, h1 = g["magenta_hue_deg"]
+    mid = 0.5 * (h0 + h1)
+    w = g["magenta_clip"] * (1.0 - np.clip(np.abs(hsv[..., 0] - mid) / (0.5 * (h1 - h0)), 0.0, 1.0)) ** 0.5
+    w = np.where((hsv[..., 0] > h0) & (hsv[..., 0] < h1), w, 0.0)
+    target = g["magenta_target_deg"] + 360.0
+    hsv[..., 0] = (hsv[..., 0] + (target - hsv[..., 0]) * w * 0.5) % 360.0
+    hsv[..., 1] = hsv[..., 1] * (1.0 - 0.5 * w)
+    return hsv_to_rgb(hsv)
+
+
+def _hue_band(h: np.ndarray, band: tuple[float, float], soft: float = 12.0) -> np.ndarray:
+    """1 inside the hue band (degrees, may wrap through 0), easing to 0 over `soft` degrees outside it."""
+    h0, h1 = band
+    d = (h - h0) % 360.0  # 0 .. 360 from the band's start
+    width = (h1 - h0) % 360.0
+    inside = np.where(d <= width, 1.0, 0.0)
+    before = 1.0 - smoothstep(0.0, soft, 360.0 - d)
+    after = 1.0 - smoothstep(0.0, soft, d - width)
+    return np.maximum(inside, np.where(d > width, np.maximum(before, after), 0.0))
+
+
+def hue_pass(srgb: np.ndarray, g: dict) -> np.ndarray:
+    """The night grades' selective colour (M3-ENV-06): saturated warm hues (the flames and what they light) take
+    `warm_sat`, everything else `cool_sat` and a luminance-preserving cool tint (`cool_hex` x `cool_strength`);
+    with `green_deg`, greens turn towards `green_target_deg` by `green_shift`."""
+    hsv = rgb_to_hsv(srgb)
+    warm = _hue_band(hsv[..., 0], g["warm_deg"]) * smoothstep(0.08, 0.3, hsv[..., 1])
+    hsv[..., 1] = np.clip(hsv[..., 1] * (g["cool_sat"] + (g["warm_sat"] - g["cool_sat"]) * warm), 0.0, 1.0)
+    if "green_deg" in g:
+        wg = _hue_band(hsv[..., 0], g["green_deg"]) * (1.0 - warm)
+        hsv[..., 0] = hsv[..., 0] + (g["green_target_deg"] - hsv[..., 0]) * g["green_shift"] * wg
+    out = hsv_to_rgb(hsv)
+    lin = srgb_to_lin(np.clip(out, 0.0, 1.0))
+    tint = hex_lin(g["cool_hex"])
+    tint = tint / float(tint @ LUMA)
+    w = (g["cool_strength"] * (1.0 - warm))[..., None]
+    lin = lin * (1.0 - w) + lin * tint * w
     return np.clip(lin_to_srgb(lin), 0.0, 1.0)
 
 
-def table(identity: bool) -> np.ndarray:
+def band_saturation(srgb: np.ndarray, bands) -> np.ndarray:
+    """Selective saturation (M3-ENV-06, `band_sat`): each (hue band in degrees, gain) scales the saturation of the
+    colours inside the band (soft edges, and only colours already a little saturated, so greys stay grey)."""
+    hsv = rgb_to_hsv(srgb)
+    gain = np.ones(hsv.shape[:-1])
+    for band, k in bands:
+        gain = gain + (k - 1.0) * _hue_band(hsv[..., 0], band) * smoothstep(0.05, 0.2, hsv[..., 1])
+    hsv[..., 1] = np.clip(hsv[..., 1] * gain, 0.0, 1.0)
+    return np.clip(hsv_to_rgb(hsv), 0.0, 1.0)
+
+
+def grade_params(name: str) -> dict:
+    """The named grade. ch02_noon is read from the module constants at call time, so a kit that loads this module
+    and overrides SATURATION / S_CURVE (tamsule_bell/zone_lut.py) still gets its own grade."""
+    if name != "ch02_noon":
+        return GRADES[name]
+    return {"saturation": SATURATION, "s_curve": S_CURVE, "toe_hex": TOE_HEX, "toe_strength": TOE_STRENGTH,
+            "toe_end": TOE_END, "black_floor": BLACK_FLOOR, "highlight_hex": HIGHLIGHT_HEX,
+            "highlight_start": HIGHLIGHT_START, "highlight_strength": HIGHLIGHT_STRENGTH}
+
+
+def grade(srgb: np.ndarray, g: dict | None = None) -> np.ndarray:
+    """srgb: (..., 3) in [0, 1] display-encoded -> graded display-encoded, by grade `g` (default ch02_noon)."""
+    g = grade_params("ch02_noon") if g is None else g
+    lin = srgb_to_lin(srgb)
+    lum = (lin @ LUMA)[..., None]
+    # Saturation around luminance (linear light).
+    lin = np.clip(lum + (lin - lum) * g["saturation"], 0.0, None)
+    out = lin_to_srgb(lin)
+    # S-curve on display values (contrast about mid-grey), per channel.
+    out = out + (smoothstep(0.0, 1.0, out) - out) * g["s_curve"]
+    # Teal toe: luminance-preserving tint of the shadows towards deep_teal_shadow.
+    lin = srgb_to_lin(np.clip(out, 0, 1))
+    lum = (lin @ LUMA)[..., None]
+    toe = hex_lin(g["toe_hex"])
+    toe_tint = toe / max(float(toe @ LUMA), 1e-6) * lum
+    w = (1.0 - smoothstep(0.0, g["toe_end"], lin_to_srgb(lum))) * g["toe_strength"]
+    lin = lin * (1.0 - w) + toe_tint * w
+    lin = np.maximum(lin, toe * g["black_floor"])
+    # Highlights roll towards the warm white.
+    hi = hex_lin(g["highlight_hex"])
+    lum = (lin @ LUMA)[..., None]
+    h = smoothstep(g["highlight_start"], 1.0, lin_to_srgb(lum)) * g["highlight_strength"]
+    lin = lin * (1.0 - h) + hi * lum / float(hi @ LUMA) * h
+    out = np.clip(lin_to_srgb(lin), 0.0, 1.0)
+    if g.get("magenta_clip", 0.0) > 0.0:
+        out = np.clip(clip_magenta(out, g), 0.0, 1.0)
+    if "warm_deg" in g:
+        out = hue_pass(out, g)
+        # The pass may not lower the black point below the grade's floor.
+        out = np.maximum(out, lin_to_srgb(hex_lin(g["toe_hex"]) * g["black_floor"]))
+    if "band_sat" in g:
+        out = band_saturation(out, g["band_sat"])
+    return out
+
+
+def table(identity: bool, grade_name: str = "ch02_noon") -> np.ndarray:
     # Godot samples the 3D texture at the colour itself (no half-texel remap), so texel i holds the
     # grade of the input that lands on its centre, (i + 0.5) / SIZE.
     v = (np.arange(SIZE) + 0.5) / SIZE
     b, g, r = np.meshgrid(v, v, v, indexing="ij")  # [blue slice, green row, red column]
     rgb = np.stack([r, g, b], axis=-1)
-    graded = rgb if identity else grade(rgb)
+    graded = rgb if identity else grade(rgb, grade_params(grade_name))
     # Strip: slice k (blue) occupies columns k*SIZE..(k+1)*SIZE; rows = green, columns = red.
     strip = np.concatenate([graded[k] for k in range(SIZE)], axis=1)
     return np.round(strip * 255.0).astype(np.uint8)
@@ -96,10 +261,11 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--out", default=str(OUT_DEFAULT))
     ap.add_argument("--identity", action="store_true")
+    ap.add_argument("--grade", default="ch02_noon", choices=sorted(GRADES))
     args = ap.parse_args(argv)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    write_png(out, table(args.identity))
+    write_png(out, table(args.identity, args.grade))
     print(f"LUT {out} {SIZE}^3")
     return 0
 

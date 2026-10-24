@@ -1,0 +1,388 @@
+[gd_scene load_steps=28 format=3]
+
+[ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_cumulus.gdshader" id="2_r"]
+[ext_resource type="Texture3D" path="res://game/levels/ch02/haluna/lut_ch02_noon.png" id="3_r"]
+[ext_resource type="Texture3D" path="res://assets/vfx/undertow/undertow_noise3d.png" id="4_r"]
+[ext_resource type="Texture2D" path="res://assets/vfx/sky/cloud_lattice2.png" id="5_r"]
+[ext_resource type="Script" path="res://game/world/arenas/arena_sea.gd" id="6_r"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="7_r"]
+[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="8_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/arena_causeway_route_ground.glb" id="9_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/causeway_slab_flat.glb" id="10_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/causeway_slab_broken.glb" id="11_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/pilgrim_marker_post.glb" id="12_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/pilgrim_marker_post_leaning.glb" id="13_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/pilgrim_marker_post_broken.glb" id="14_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/coral_boulder_b.glb" id="15_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/coral_boulder_a.glb" id="16_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/coral_boulder_c.glb" id="17_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/wreck_rib.glb" id="18_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shell_shrine_massing.glb" id="19_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/vegetation/palm_coconut_c.glb" id="20_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/vegetation/palm_coconut_a.glb" id="21_r"]
+[ext_resource type="Script" path="res://game/world/vegetation/vegetation_scatter.gd" id="22_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/vegetation/saltgrass_clumps.glb" id="23_r"]
+[ext_resource type="Material" path="res://assets/environments/vegetation/materials/saltgrass.tres" id="24_r"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("2_r")
+shader_parameter/background_energy = 1.5
+shader_parameter/cloud_lattice = ExtResource("4_r")
+shader_parameter/cloud_lattice2 = ExtResource("5_r")
+shader_parameter/horizon_curve = 0.14
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[sub_resource type="Environment" id="Env"]
+resource_name = "causeway_route_afternoon_ch03_causeway"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_energy = 0.6
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.65
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.03
+glow_hdr_threshold = 1.2
+fog_enabled = true
+fog_mode = 0
+fog_light_color = Color(0.8118, 0.8863, 0.9176, 1)
+fog_density = 0.0007
+fog_sky_affect = 0.0
+fog_height = 0.0
+fog_height_density = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("3_r")
+
+[node name="CausewayRouteAfternoon" type="Node3D"]
+script = ExtResource("1_r")
+arena_id = &"causeway_route_afternoon"
+sub_frame = &"ch03_causeway"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.34202, 0.740488, -0.578533, -0, 0.615661, 0.788011, 0.939693, -0.269516, 0.210569, 0, 30, 0)
+light_color = Color(1, 0.9176, 0.8471, 1)
+light_energy = 3.0
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.06
+directional_shadow_split_2 = 0.18
+directional_shadow_split_3 = 0.45
+directional_shadow_max_distance = 120.0
+
+[node name="Sea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45, 0)
+script = ExtResource("6_r")
+wave_set = ExtResource("7_r")
+material = ExtResource("8_r")
+sea_glow_energy = 0.0
+tide_line_y = -0.45
+
+[node name="Ground" parent="." instance=ExtResource("9_r")]
+
+[node name="Dressing" type="Node3D" parent="."]
+
+[node name="causeway_slab_flat_1" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.992137, 0, 0.12516, 0, 1, 0, -0.12516, 0, -0.992137, -13.738, -0.414, 24.727)
+
+[node name="causeway_slab_flat_2" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.979575, 0, 0.201078, 0, 1, 0, -0.201078, 0, -0.979575, -13.206, -0.415, 22.144)
+
+[node name="causeway_slab_flat_3" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.981893, 0, 0.189438, 0, 1, 0, -0.189438, 0, -0.981893, -12.679, -0.395, 19.583)
+
+[node name="causeway_slab_flat_4" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.978796, 0, 0.204838, 0, 1, 0, -0.204838, 0, -0.978796, -12.151, -0.395, 17.021)
+
+[node name="causeway_slab_broken_1" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(-0.963397, 0, 0.268079, 0, 1, 0, -0.268079, 0, -0.963397, -11.626, -0.4, 14.47)
+
+[node name="causeway_slab_flat_5" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.984838, 0, 0.173476, 0, 1, 0, -0.173476, 0, -0.984838, -11.09, -0.415, 11.864)
+
+[node name="pilgrim_marker_post_1" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.228351, 0, -0.973579, 0, 1, 0, 0.973579, 0, -0.228351, -12.216, -0.351, 11.632)
+
+[node name="causeway_slab_flat_6" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.970253, 0, 0.242091, 0, 1, 0, -0.242091, 0, -0.970253, -10.564, -0.421, 9.311)
+
+[node name="causeway_slab_flat_7" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.995446, 0, 0.0953246, 0, 1, 0, -0.0953246, 0, -0.995446, -10.216, -0.425, 6.68)
+
+[node name="causeway_slab_flat_8" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.993807, 0, 0.111122, 0, 1, 0, -0.111122, 0, -0.993807, -9.894, -0.432, 4.045)
+
+[node name="causeway_slab_flat_9" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.990268, 0, 0.139173, 0, 1, 0, -0.139173, 0, -0.990268, -9.57, -0.416, 1.394)
+
+[node name="causeway_slab_flat_10" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.903859, 0, 0.427831, 0, 1, 0, -0.427831, 0, -0.903859, -8.966, -0.379, -1.136)
+
+[node name="causeway_slab_flat_11" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.901001, 0, 0.433816, 0, 1, 0, -0.433816, 0, -0.901001, -8.024, -0.383, -3.598)
+
+[node name="causeway_slab_flat_12" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.913474, 0, 0.406896, 0, 1, 0, -0.406896, 0, -0.913474, -7.086, -0.323, -6.051)
+
+[node name="pilgrim_marker_post_2" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.897258, 0, 0.441506, 0, 1, 0, -0.441506, 0, 0.897258, -6.012, -0.248, -5.641)
+
+[node name="causeway_slab_broken_2" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(-0.432086, 0, 0.901833, 0, 1, 0, -0.901833, 0, -0.432086, -5.196, -0.343, -7.696)
+
+[node name="causeway_slab_flat_13" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.562805, 0, 0.82659, 0, 1, 0, -0.82659, 0, -0.562805, -2.87, -0.373, -8.996)
+
+[node name="causeway_slab_flat_14" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.406896, 0, 0.913474, 0, 1, 0, -0.913474, 0, -0.406896, -0.548, -0.415, -10.294)
+
+[node name="causeway_slab_flat_15" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.389124, 0, 0.921185, 0, 1, 0, -0.921185, 0, -0.389124, 1.779, -0.397, -11.568)
+
+[node name="causeway_slab_flat_16" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.436959, 0, 0.899482, 0, 1, 0, -0.899482, 0, -0.436959, 4.128, -0.426, -12.847)
+
+[node name="causeway_slab_flat_17" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.51414, 0, 0.857706, 0, 1, 0, -0.857706, 0, -0.51414, 6.418, -0.392, -14.094)
+
+[node name="causeway_slab_flat_18" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.539506, 0, 0.841982, 0, 1, 0, -0.841982, 0, -0.539506, 8.712, -0.395, -15.343)
+
+[node name="causeway_slab_flat_19" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.596645, 0, 0.802505, 0, 1, 0, -0.802505, 0, -0.596645, 10.857, -0.389, -16.857)
+
+[node name="pilgrim_marker_post_3" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.98796, 0, -0.15471, 0, 1, 0, 0.15471, 0, -0.98796, 10.179, -0.345, -17.786)
+
+[node name="causeway_slab_flat_20" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.647987, 0, 0.761651, 0, 1, 0, -0.761651, 0, -0.647987, 12.997, -0.42, -18.421)
+
+[node name="causeway_slab_broken_3" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(-0.581839, 0, 0.813304, 0, 1, 0, -0.813304, 0, -0.581839, 15.143, -0.417, -19.989)
+
+[node name="causeway_slab_flat_21" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.558324, 0, 0.829623, 0, 1, 0, -0.829623, 0, -0.558324, 17.287, -0.378, -21.556)
+
+[node name="causeway_slab_flat_22" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.587362, 0, 0.809325, 0, 1, 0, -0.809325, 0, -0.587362, 19.439, -0.386, -23.129)
+
+[node name="causeway_slab_flat_23" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.58722, 0, 0.809427, 0, 1, 0, -0.809427, 0, -0.58722, 21.576, -0.439, -24.69)
+
+[node name="causeway_slab_flat_24" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.729327, 0, 0.684165, 0, 1, 0, -0.684165, 0, -0.729327, 23.439, -0.423, -26.529)
+
+[node name="causeway_slab_flat_25" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.741976, 0, 0.670427, 0, 1, 0, -0.670427, 0, -0.741976, 25.231, -0.408, -28.433)
+
+[node name="pilgrim_marker_post_leaning_1" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(-0.915663, 0, -0.401948, 0, 1, 0, 0.401948, 0, -0.915663, 26.069, -0.351, -27.645)
+
+[node name="causeway_slab_flat_26" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.689493, 0, 0.724292, 0, 1, 0, -0.724292, 0, -0.689493, 27.03, -0.409, -30.344)
+
+[node name="causeway_slab_flat_27" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.690756, 0, 0.723088, 0, 1, 0, -0.723088, 0, -0.690756, 28.845, -0.385, -32.272)
+
+[node name="causeway_slab_flat_28" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.771958, 0, 0.635674, 0, 1, 0, -0.635674, 0, -0.771958, 30.627, -0.439, -34.166)
+
+[node name="causeway_slab_broken_4" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(-0.718369, 0, 0.695662, 0, 1, 0, -0.695662, 0, -0.718369, 32.444, -0.388, -36.097)
+
+[node name="causeway_slab_flat_29" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.722123, 0, 0.691765, 0, 1, 0, -0.691765, 0, -0.722123, 34.236, -0.406, -38.001)
+
+[node name="causeway_slab_flat_30" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.733493, 0, 0.679697, 0, 1, 0, -0.679697, 0, -0.733493, 36.032, -0.403, -39.909)
+
+[node name="causeway_slab_flat_31" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.76233, 0, 0.647189, 0, 1, 0, -0.647189, 0, -0.76233, 37.827, -0.395, -41.816)
+
+[node name="causeway_slab_flat_32" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.827473, 0, 0.561506, 0, 1, 0, -0.561506, 0, -0.827473, 39.226, -0.372, -44.02)
+
+[node name="pilgrim_marker_post_4" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.323917, 0, 0.946085, 0, 1, 0, -0.946085, 0, -0.323917, 38.243, -0.337, -44.617)
+
+[node name="causeway_slab_flat_33" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.82105, 0, 0.570857, 0, 1, 0, -0.570857, 0, -0.82105, 40.593, -0.393, -46.271)
+
+[node name="causeway_slab_flat_34" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.802713, 0, 0.596365, 0, 1, 0, -0.596365, 0, -0.802713, 41.966, -0.417, -48.532)
+
+[node name="causeway_slab_flat_35" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.876475, 0, 0.481448, 0, 1, 0, -0.481448, 0, -0.876475, 43.353, -0.409, -50.817)
+
+[node name="causeway_slab_flat_36" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.828158, 0, 0.560494, 0, 1, 0, -0.560494, 0, -0.828158, 44.729, -0.405, -53.083)
+
+[node name="causeway_slab_broken_5" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(-0.881138, 0, 0.472858, 0, 1, 0, -0.472858, 0, -0.881138, 46.079, -0.386, -55.306)
+
+[node name="causeway_slab_flat_37" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.868285, 0, 0.496065, 0, 1, 0, -0.496065, 0, -0.868285, 47.464, -0.398, -57.588)
+
+[node name="causeway_slab_flat_38" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.862514, 0, 0.506034, 0, 1, 0, -0.506034, 0, -0.862514, 48.838, -0.446, -59.851)
+
+[node name="pilgrim_marker_post_broken_1" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(-0.0139622, 0, 0.999903, 0, 1, 0, -0.999903, 0, -0.0139622, 49.821, -0.341, -59.254)
+
+[node name="causeway_slab_flat_39" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.875549, 0, 0.48313, 0, 1, 0, -0.48313, 0, -0.875549, 50.212, -0.41, -62.114)
+
+[node name="causeway_slab_flat_40" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.842264, 0, 0.539065, 0, 1, 0, -0.539065, 0, -0.842264, 51.566, -0.422, -64.344)
+
+[node name="causeway_slab_flat_41" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.84311, 0, 0.537741, 0, 1, 0, -0.537741, 0, -0.84311, 52.938, -0.396, -66.604)
+
+[node name="causeway_slab_flat_42" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.967445, 0, 0.253083, 0, 1, 0, -0.253083, 0, -0.967445, 55.452, -0.435, -71.265)
+
+[node name="causeway_slab_flat_43" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.952768, 0, 0.303701, 0, 1, 0, -0.303701, 0, -0.952768, 56.346, -0.42, -73.769)
+
+[node name="causeway_slab_broken_6" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(-0.959314, 0, 0.282341, 0, 1, 0, -0.282341, 0, -0.959314, 57.241, -0.426, -76.275)
+
+[node name="causeway_slab_flat_44" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.91699, 0, 0.398909, 0, 1, 0, -0.398909, 0, -0.91699, 58.136, -0.374, -78.78)
+
+[node name="pilgrim_marker_post_5" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.987136, 0, -0.159881, 0, 1, 0, 0.159881, 0, -0.987136, 57.053, -0.349, -79.167)
+
+[node name="causeway_slab_flat_45" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.954031, 0, 0.299707, 0, 1, 0, -0.299707, 0, -0.954031, 59.013, -0.441, -81.237)
+
+[node name="causeway_slab_flat_46" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.926988, 0, 0.375092, 0, 1, 0, -0.375092, 0, -0.926988, 59.895, -0.417, -83.707)
+
+[node name="causeway_slab_flat_47" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.915452, 0, 0.402427, 0, 1, 0, -0.402427, 0, -0.915452, 60.791, -0.431, -86.216)
+
+[node name="causeway_slab_flat_48" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.951594, 0, 0.307357, 0, 1, 0, -0.307357, 0, -0.951594, 61.67, -0.403, -88.675)
+
+[node name="causeway_slab_flat_49" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.953085, 0, 0.302703, 0, 1, 0, -0.302703, 0, -0.953085, 62.569, -0.428, -91.192)
+
+[node name="causeway_slab_flat_50" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.941117, 0, 0.338081, 0, 1, 0, -0.338081, 0, -0.941117, 63.447, -0.394, -93.652)
+
+[node name="coral_boulder_b_1" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, 0.766044, 10.5, -0.56, -8.5)
+
+[node name="coral_boulder_a_1" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.845723, 0, 0.307818, 0, 0.9, 0, -0.307818, 0, -0.845723, 9.2, -0.44, -10.2)
+
+[node name="coral_boulder_c_1" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.258819, 0, 0.965926, 0, 1, 0, -0.965926, 0, 0.258819, 13.5, -0.74, -15)
+
+[node name="coral_boulder_a_2" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1.03366, 0, 0.376222, 0, 1.1, 0, -0.376222, 0, 1.03366, -12.5, -0.386, -12.5)
+
+[node name="coral_boulder_c_2" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.779423, 0, -0.45, 0, 0.9, 0, 0.45, 0, -0.779423, -15.5, -0.667, -14.5)
+
+[node name="coral_boulder_c_3" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.771345, 0, 0.919253, 0, 1.2, 0, -0.919253, 0, -0.771345, 6, -0.737, -29)
+
+[node name="coral_boulder_b_2" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(0.6, 0, -1.03923, 0, 1.2, 0, 1.03923, 0, 0.6, -21, -0.636, -38)
+
+[node name="coral_boulder_c_4" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1.06252, 0, 0.284701, 0, 1.1, 0, -0.284701, 0, 1.06252, 31, -0.74, -48)
+
+[node name="coral_boulder_b_3" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(-0.0871557, 0, 0.996195, 0, 1, 0, -0.996195, 0, -0.0871557, 18, -0.589, 2)
+
+[node name="wreck_rib_1" parent="Dressing" instance=ExtResource("18_r")]
+transform = Transform3D(0.422618, 0, 0.906308, 0, 1, 0, -0.906308, 0, 0.422618, 17, 0.101, -30)
+
+[node name="shell_shrine_massing_1" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 97, 2.221, -241)
+
+[node name="palm_coconut_c_1" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, -0.939693, 84, 1.968, -236)
+
+[node name="palm_coconut_a_1" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.845723, 0, -0.307818, 0, 0.9, 0, 0.307818, 0, -0.845723, 106, 1.293, -254)
+
+[node name="SaltgrassHummocks" type="MultiMeshInstance3D" parent="Dressing" node_paths=PackedStringArray("ground")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 0, -18.0)
+script = ExtResource("22_r")
+source_scene = ExtResource("23_r")
+mesh_node = &"saltgrass_a"
+material = ExtResource("24_r")
+count = 2200
+half_extents_m = Vector2(34.0, 24.0)
+seed_value = 61
+sea_side_falloff = 0.0
+patch_frequency = 0.09
+keep_clear = Array[Vector3]([Vector3(-0.2, 18.3, 7.6)])
+ground = NodePath("../../Ground")
+height_min_m = -0.2
+height_max_m = 3.0
+
+[node name="SaltgrassBar" type="MultiMeshInstance3D" parent="Dressing" node_paths=PackedStringArray("ground")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 0, 1.0)
+script = ExtResource("22_r")
+source_scene = ExtResource("23_r")
+mesh_node = &"saltgrass_b"
+material = ExtResource("24_r")
+count = 700
+half_extents_m = Vector2(14.0, 8.0)
+seed_value = 67
+sea_side_falloff = 0.0
+patch_frequency = 0.09
+keep_clear = Array[Vector3]([Vector3(-0.2, -0.7, 7.6)])
+ground = NodePath("../../Ground")
+height_min_m = -0.2
+height_max_m = 3.0
+
+[node name="SaltgrassIslet" type="MultiMeshInstance3D" parent="Dressing" node_paths=PackedStringArray("ground")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 97.0, 0, -241.0)
+script = ExtResource("22_r")
+source_scene = ExtResource("23_r")
+mesh_node = &"saltgrass_b"
+material = ExtResource("24_r")
+count = 700
+half_extents_m = Vector2(24.0, 24.0)
+seed_value = 71
+sea_side_falloff = 0.0
+patch_frequency = 0.09
+keep_clear = Array[Vector3]([])
+ground = NodePath("../../Ground")
+height_min_m = 0.2
+height_max_m = 6.0
+
+[node name="CameraHints" type="Node3D" parent="."]
+
+[node name="wide_high" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.994505, 0.0425537, -0.0956456, -0, 0.913654, 0.406494, 0.104685, -0.40426, 0.908633, -2, 8.5, 15)
+
+[node name="party_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.543251, -0.0331449, 0.838916, 0, 0.99922, 0.0394784, -0.83957, -0.0214467, 0.542828, 7, 1.6, 5)
+
+[node name="foe_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.485643, 0.0508571, -0.872677, -0, 0.998306, 0.0581784, 0.874157, -0.0282539, 0.48482, -7.5, 1.6, 5)
+
+[node name="from_the_causeway" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(-0.789352, 0.0268972, -0.613351, 0, 0.99904, 0.0438108, 0.613941, 0.0345821, -0.788594, -5.5, 1.5, -8)

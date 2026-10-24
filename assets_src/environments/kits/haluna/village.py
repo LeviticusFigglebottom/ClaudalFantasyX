@@ -51,6 +51,7 @@ TRI_BUDGET = {
 
 M_STONE = "kit_coral_stone"
 M_TIMBER = "kit_timber"
+M_CARVING = "kit_carved_wood"  # the lintel-gulls: adze-carved, sun-silvered, grain not stretched
 M_THATCH = "kit_thatch"
 M_TILE = "kit_roof_tile"
 M_MORTAR = "kit_mortar_white"
@@ -353,6 +354,52 @@ def panel(mb: kc.MeshBuilder, a, b, y0: float, y1: float, mat_name: str, rng, *,
                      radius=0.01, seg=1, variation=float(rng.random()), uv_scale=1.0)
 
 
+def frame_wall(mb: kc.MeshBuilder, a, b, y0: float, y1: float, outward, rng, noise, *, girts: int = 3,
+               batten_pitch_m: float = 0.85, window: bool = False, battens: bool = True) -> None:
+    """Timber framing on the outside face of a woven infill panel (M2 final pass): horizontal girts
+    and vertical battens lashed over the mat, and optionally a window with a propped shutter, so a
+    wall reads as built, not as one flat card. `outward` is the (x, z) direction away from the house.
+    Callers pass a dedicated rng, so the framing never shifts the rest of the piece's randomness."""
+    a = np.asarray(a, float)
+    b = np.asarray(b, float)
+    out = kc.normalize(np.array([outward[0], 0.0, outward[1]]))
+    off = out * 0.035
+    tm = mb.material(M_TIMBER)
+    a3, b3 = np.array([a[0], 0.0, a[1]]), np.array([b[0], 0.0, b[1]])
+    ln = float(np.linalg.norm(b3 - a3))
+    along = (b3 - a3) / max(ln, 1e-9)
+    for k in range(girts):
+        y = y0 + 0.08 + (y1 - y0 - 0.14) * (k / max(girts - 1, 1))
+        kc.plank(mb, a3 + off + [0.0, y, 0.0], b3 + off + [0.0, y, 0.0], 0.07, 0.035, tm, up=out,
+                 variation=float(rng.random()), noise=noise, sag_m=rng.uniform(0.0, 0.008), seg=2)
+    n_bat = max(0, int(ln / batten_pitch_m) - 1) if battens else 0
+    win_lo, win_hi = (0.35, 0.65) if window else (2.0, 2.0)
+    for k in range(n_bat):
+        t = (k + 1) / (n_bat + 1) + rng.uniform(-0.04, 0.04)
+        if win_lo < t < win_hi:
+            continue
+        p = a3 + along * (ln * t) + off * 1.4
+        kc.plank(mb, p + [0.0, y0 + 0.02, 0.0], p + [0.0, y1 - 0.02, 0.0], 0.05, 0.025, tm, up=out,
+                 variation=float(rng.random()), noise=noise)
+    if window:
+        c = a3 + along * (ln * 0.5)
+        ww = min(0.8, ln * 0.3)
+        wy0, wy1 = y0 + (y1 - y0) * 0.45, y0 + (y1 - y0) * 0.85
+        wa, wb = c - along * ww * 0.5 + out * 0.03, c + along * ww * 0.5 + out * 0.03
+        panel(mb, wa[[0, 2]], wb[[0, 2]], wy0, wy1, M_DARK, rng, thick=0.012)
+        # The shutter, hinged at the top and propped out on a stick.
+        yaw = math.atan2(-along[2], along[0])
+        side = 1.0 if np.dot(np.cross(along, [0.0, 1.0, 0.0]), out) < 0 else -1.0
+        tilt = kc.rot_y(yaw) @ kc.rot_x(0.55 * side)
+        half_h = (wy1 - wy0) * 0.5
+        c3 = c + [0.0, wy1, 0.0] + out * (0.04 + math.sin(0.55) * half_h) - [0.0, math.cos(0.55) * half_h, 0.0]
+        kc.rounded_block(mb, c3, (ww * 0.55, half_h, 0.016), tm, rot=tilt, radius=0.008, seg=1,
+                         variation=float(rng.random()))
+        foot = c + [0.0, wy0, 0.0] + out * 0.05
+        tip = c3 - [0.0, half_h * 0.9, 0.0] + out * 0.02
+        kc.plank(mb, foot, tip, 0.025, 0.025, tm, variation=float(rng.random()))
+
+
 def coral_base(mb: kc.MeshBuilder, w: float, d: float, rng, noise, *, door_w: float = 1.1,
                weather=kc.VILLAGE, height: float = BASE_WALL_M) -> None:
     """Coral base wall around a w x d footprint (0.3 m thick), with a door gap centred on the front."""
@@ -398,6 +445,7 @@ def house(name: str, w: float, d: float, seed: int, *, lod: bool = False) -> kc.
                  lod=True, center=(0.0, DECK_DEPTH_M * 0.5))
         return mb
     coral_base(mb, w, d, rng, noise)
+    frame_rng = kc.rng_for(name + "_frame", seed)
     # Post frame: corners + every ~1.6 m; plus deck posts along the front edge of the shade deck.
     xs = np.linspace(-hw, hw, max(2, int(round(w / 1.6)) + 1))
     zs = np.linspace(-hd, hd, max(2, int(round(d / 1.6)) + 1))
@@ -435,7 +483,15 @@ def house(name: str, w: float, d: float, seed: int, *, lod: bool = False) -> kc.
                 panel(mb, hinge, leaf_end, 0.08, 2.05, M_TIMBER, rng, thick=0.035)
                 continue
             panel(mb, a, b, BASE_WALL_M, WALL_TOP_M - 0.08, M_WOVEN, rng, thick=0.03)
-            if rng.random() < 0.55:
+            has_window = rng.random() < 0.55
+            # A sill girt over the coral base and, in a blind bay, a batten (M2 final pass; own rng).
+            bay_along = kc.normalize(np.array([b[0] - a[0], 0.0, b[1] - a[1]]))
+            frame_wall(mb, a, b, BASE_WALL_M, BASE_WALL_M + 0.14, (-bay_along[2] * out, bay_along[0] * out),
+                       frame_rng, noise, girts=1, battens=False)
+            if not has_window:
+                frame_wall(mb, a, b, BASE_WALL_M + 0.1, WALL_TOP_M - 0.1, (-bay_along[2] * out, bay_along[0] * out),
+                           frame_rng, noise, girts=0, batten_pitch_m=float(np.linalg.norm(b - a)) * 0.5)
+            if has_window:
                 # A window: dark opening with one propped shutter.
                 c = (a + b) * 0.5
                 along = kc.normalize(np.array([b[0] - a[0], 0.0, b[1] - a[1]]))
@@ -488,6 +544,11 @@ def build_storehouse(seed: int = 21) -> list[kc.MeshBuilder]:
     for a, b in (((-w / 2, -d / 2), (w / 2, -d / 2)), ((-w / 2, d / 2), (w / 2, d / 2)),
                  ((-w / 2, -d / 2), (-w / 2, d / 2)), ((w / 2, -d / 2), (w / 2, d / 2))):
         panel(mb, a, b, stilt + 0.12, stilt + 1.7, M_WOVEN, rng, thick=0.05)
+    frame_rng = kc.rng_for("storehouse_stilt_frame", seed)
+    for a, b in (((-w / 2, -d / 2), (w / 2, -d / 2)), ((-w / 2, d / 2), (w / 2, d / 2)),
+                 ((-w / 2, -d / 2), (-w / 2, d / 2)), ((w / 2, -d / 2), (w / 2, d / 2))):
+        frame_wall(mb, a, b, stilt + 0.12, stilt + 1.7, ((a[0] + b[0]) * 0.5, (a[1] + b[1]) * 0.5), frame_rng, noise,
+                   girts=2)
     for x, z in ((-w / 2, -d / 2), (w / 2, -d / 2), (-w / 2, d / 2), (w / 2, d / 2)):
         post(mb, (x, stilt + 0.1, z), (x, stilt + 1.8, z), 0.06, rng, noise, lash=False)
     hip_roof(mb, w + 1.4, d + 1.4, stilt + 1.65, rng, noise, kind="thatch", pitch_deg=34.0)
@@ -523,6 +584,11 @@ def build_stilt_house(seed: int = 22) -> list[kc.MeshBuilder]:
     for a, b in (((-hw, -hd), (hw, -hd)), ((-hw, -hd), (-hw, hd)), ((hw, -hd), (hw, hd)), ((-hw, hd), (-0.5, hd)),
                  ((0.5, hd), (hw, hd))):
         panel(mb, a, b, y, y + 2.0, M_WOVEN, rng, thick=0.05)
+    frame_rng = kc.rng_for("stilt_house_frame", seed)
+    for a, b in (((-hw, -hd), (hw, -hd)), ((-hw, -hd), (-hw, hd)), ((hw, -hd), (hw, hd)), ((-hw, hd), (-0.5, hd)),
+                 ((0.5, hd), (hw, hd))):
+        mid = ((a[0] + b[0]) * 0.5, (a[1] + b[1]) * 0.5)
+        frame_wall(mb, a, b, y, y + 2.0, mid, frame_rng, noise, window=abs(a[0] - b[0]) < 1e-6)
     panel(mb, (-0.5, hd - 0.1), (0.5, hd - 0.1), y, y + 1.9, M_DARK, rng, thick=0.02)
     for x, z in ((-hw, -hd), (hw, -hd), (-hw, hd), (hw, hd), (-0.5, hd), (0.5, hd)):
         post(mb, (x, y, z), (x, y + 2.1, z), 0.07, rng, noise, lash=False)
@@ -601,7 +667,7 @@ def lintel_gull(name: str, pose: str, length: float, seed: int, lod: bool = Fals
     rng = kc.rng_for(name, seed)
     noise = kc.Noise3(rng)
     mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
-    mat = mb.material(M_TIMBER)
+    mat = mb.material(M_CARVING)
     s = length / 0.72
     sides = 6 if lod else 9
     n = 5 if lod else 9
