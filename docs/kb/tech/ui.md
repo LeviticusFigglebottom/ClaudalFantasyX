@@ -437,6 +437,12 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
   - **The cursor snapped back after a wheel notch.** A page that rebuilds its rows under a still pointer got a fresh `mouse_entered`. MenuPage now takes a hover only when the pointer has moved (`_hover_at`).
   - **A right click could not stop the Controls page listening.** The mouse Cancel carries `cancel_device` (`UiInput.is_mouse_cancel`), so listening stops on it while a plain `ui_cancel` action is still swallowed.
   - **InputDriver uses viewport-local coordinates.** The headless window's stretch moved clicks onto the next row.
+- **Parity findings (field menu family: root, Swell, Quit, Map, Bestiary; Items, Equip, Lattice, Status):** `tests/parity_host.gd` (`ParityHost`) opens the field menu on a scratch state and walks any MenuPage with each device.
+  - **A hover was taken only once per page.** `_hover_at` compared `get_viewport().get_mouse_position()`, which a pushed event never changes (headless, and in any test), so after one hover a page ignored the mouse. MenuPage now takes a hover from a mouse *motion* over a row (`gui_input`), not from `mouse_entered`: a still pointer under rebuilt rows still takes nothing, and every real move does.
+  - **A dimmed page followed hover and the wheel.** The root under Swell, the bag under the hero picker, the heroes under the gear: hovering them moved a cursor that is meant to show the path taken. A dimmed MenuPage now ignores hover and the wheel; a click still reaches it (the screens use it to go back to that level).
+  - **The Lattice board had no mouse camera.** `LatticeBoardView` now pans by a left drag (a press that moves `drag_px` or more; a click acts on release, so a drag never clicks) and zooms by the wheel about the pointer between `zoom_min` and `zoom_max` (`lattice_menu.json` board), the drawing scaled by one transform, node picking and the pan bounds following the zoom.
+  - **The pad could not switch the Lattice's hero, nor jump a page.** `ui_page_up` / `ui_page_down` had keys only. `controls.json` `pad_defaults` gives them the shoulders (LB, RB), and ControlsModel now applies pad defaults to the fixed actions too.
+  - **Checked and fine:** the wheel over each page's backdrop (bestiary page, map, Items detail, Status detail) reaches its screen; right click backs out of every level; each parent takes the input again after a child page closes, its cursor where it was.
 
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 

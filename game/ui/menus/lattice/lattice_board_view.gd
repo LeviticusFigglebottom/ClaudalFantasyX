@@ -8,7 +8,9 @@ extends Control
 ## over the node they stand on; the cursor is a teal frame with gold ticks, and the planned path is a
 ## teal line with its cost tagged beside the cursor. Colours are theme roles (type Hymn) and every
 ## size is in lattice_menu.json "board". The camera pans to keep the cursor in view (no tween under
-## reduced motion). A click on a node emits node_clicked.
+## reduced motion). A click on a node emits node_clicked (on release, so a press that moves drag_px or
+## more pans the board instead: M2-UI-26); the wheel zooms between zoom_min and zoom_max about the
+## pointer, every shape and line scaling with it.
 
 signal node_clicked(node_id: StringName)
 
@@ -26,8 +28,18 @@ var pan := Vector2.ZERO:
 		pan = value
 		queue_redraw()
 
+## The board's scale on screen (1: as drawn at the reference; the wheel changes it).
+var zoom := 1.0:
+	set(value):
+		zoom = value
+		queue_redraw()
+
 var _m: Dictionary = {}
 var _pan_tween: Tween
+## A left press on the board: where it went down, and whether it has moved far enough to pan.
+var _pressing := false
+var _dragging := false
+var _press_at := Vector2.ZERO
 
 
 func setup(metrics: Dictionary, with_model: LatticeMenuModel) -> void:
@@ -43,15 +55,40 @@ func board_point(nid: StringName) -> Vector2:
 	return Vector2(n.position) * _num("unit_px") if n != null else Vector2.ZERO
 
 
-## Where node `nid` is drawn inside this view.
+## Where node `nid` is drawn inside this view (at the current zoom).
 func screen_point(nid: StringName) -> Vector2:
+	return size * 0.5 + (board_point(nid) - pan) * zoom
+
+
+## Where `nid` is drawn before the zoom's transform (_draw scales about the middle of the view).
+func _draw_point(nid: StringName) -> Vector2:
 	return size * 0.5 + board_point(nid) - pan
+
+
+func zoom_min() -> float:
+	return _num("zoom_min")
+
+
+func zoom_max() -> float:
+	return _num("zoom_max")
+
+
+## Scales the board by `factor` (held between zoom_min and zoom_max), keeping the board point under
+## `local` (a point in this view) where it is.
+func zoom_by(factor: float, local: Vector2) -> void:
+	var z := clampf(zoom * factor, zoom_min(), zoom_max())
+	if is_equal_approx(z, zoom):
+		return
+	_stop_pan()
+	var anchor := pan + (local - size * 0.5) / zoom
+	zoom = z
+	pan = _clamped_pan(anchor - (local - size * 0.5) / z)
 
 
 ## The node drawn nearest `local` (a point in this view), within pick_px; &"" for none.
 func node_at(local: Vector2) -> StringName:
 	var best := &""
-	var best_d := _num("pick_px")
+	var best_d := _num("pick_px") * zoom
 	for nid: StringName in model.board().nodes:
 		var d := screen_point(nid).distance_to(local)
 		if d <= best_d:
@@ -64,8 +101,7 @@ func node_at(local: Vector2) -> StringName:
 ## or motion is reduced.
 func center_on(nid: StringName, animate: bool) -> void:
 	var target := _clamped_pan(board_point(nid))
-	if _pan_tween != null and _pan_tween.is_valid():
-		_pan_tween.kill()
+	_stop_pan()
 	if not animate or reduced_motion or not is_inside_tree():
 		pan = target
 		return
@@ -74,13 +110,45 @@ func center_on(nid: StringName, animate: bool) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	var mb := event as InputEventMouseButton
-	if mb == null or not mb.pressed or mb.button_index != MOUSE_BUTTON_LEFT:
+	var mm := event as InputEventMouseMotion
+	if mm != null:
+		if not _pressing or mm.button_mask & MOUSE_BUTTON_MASK_LEFT == 0:
+			return
+		if not _dragging and mm.position.distance_to(_press_at) >= _num("drag_px"):
+			_dragging = true
+			_stop_pan()
+		if _dragging:
+			pan = _clamped_pan(pan - mm.relative / zoom)
+			accept_event()
 		return
-	var nid := node_at(mb.position)
-	if nid != &"":
+	var mb := event as InputEventMouseButton
+	if mb == null:
+		return
+	if mb.button_index == MOUSE_BUTTON_WHEEL_UP or mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		if mb.pressed:
+			var step := _num("zoom_step")
+			zoom_by(step if mb.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0 / step, mb.position)
 		accept_event()
+		return
+	if mb.button_index != MOUSE_BUTTON_LEFT:
+		return
+	accept_event()
+	if mb.pressed:
+		_pressing = true
+		_dragging = false
+		_press_at = mb.position
+		return
+	var clicked := _pressing and not _dragging
+	_pressing = false
+	_dragging = false
+	var nid := node_at(mb.position) if clicked else &""
+	if nid != &"":
 		node_clicked.emit(nid)
+
+
+func _stop_pan() -> void:
+	if _pan_tween != null and _pan_tween.is_valid():
+		_pan_tween.kill()
 
 
 func _clamped_pan(target: Vector2) -> Vector2:
@@ -95,9 +163,10 @@ func _clamped_pan(target: Vector2) -> Vector2:
 		hi = hi.max(p)
 	var margin := _num("pan_margin_px")
 	var out := target
+	var seen := size / zoom
 	for axis in 2:
-		var half := size[axis] * 0.5
-		if hi[axis] - lo[axis] + margin * 2.0 <= size[axis]:
+		var half := seen[axis] * 0.5
+		if hi[axis] - lo[axis] + margin * 2.0 <= seen[axis]:
 			out[axis] = (lo[axis] + hi[axis]) * 0.5
 		else:
 			out[axis] = clampf(target[axis], lo[axis] - margin + half, hi[axis] + margin - half)
@@ -111,6 +180,7 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), _role(&"line_gold", _num("frame_alpha")), false, _num("outline_px"))
 	if model == null or model.board().nodes.is_empty():
 		return
+	draw_set_transform(size * 0.5 * (1.0 - zoom), 0.0, Vector2(zoom, zoom))  # the zoom, about the middle
 	var b := model.board()
 	_draw_wash()
 	_draw_edges()
@@ -131,7 +201,7 @@ func _draw_wash() -> void:
 			if String(a) >= String(nb) or b.lattice_node(nb).region != na.region:
 				continue
 			var c := _faded(_region_color(na), _num("wash_alpha"))
-			draw_line(screen_point(a), screen_point(nb), c, _num("wash_px"), true)
+			draw_line(_draw_point(a), _draw_point(nb), c, _num("wash_px"), true)
 
 
 func _draw_edges() -> void:
@@ -144,17 +214,17 @@ func _draw_edges() -> void:
 			var lit := p.is_activated_by_anyone(a) and p.is_activated_by_anyone(nb)
 			var c := _role(&"line_gold", _num("edge_lit_alpha") if lit else _num("edge_alpha"))
 			var w := _num("edge_lit_px") if lit else _num("edge_px")
-			draw_line(screen_point(a), screen_point(nb), c, w, true)
+			draw_line(_draw_point(a), _draw_point(nb), c, w, true)
 
 
 func _draw_path() -> void:
 	var c := _role(&"focus") if path_ok else _role(&"danger")
 	for i in range(1, path.size()):
-		draw_line(screen_point(path[i - 1]), screen_point(path[i]), c, _num("path_px"), true)
+		draw_line(_draw_point(path[i - 1]), _draw_point(path[i]), c, _num("path_px"), true)
 
 
 func _draw_node(n: LatticeNode) -> void:
-	_draw_shape(n, screen_point(n.id), model.node_state(n.id), _region_color(n))
+	_draw_shape(n, _draw_point(n.id), model.node_state(n.id), _region_color(n))
 
 
 ## One node's shape at `at`, as it stands (`state`, LatticeMenuModel.STATE_*), edged in `region`.
@@ -236,7 +306,7 @@ func _ring_at(nid: StringName, pad: float, c: Color, glow: Color) -> void:
 	var n := model.board().lattice_node(nid)
 	if n == null:
 		return
-	_hero_ring(screen_point(nid), _half_size(n), pad, c, glow)
+	_hero_ring(_draw_point(nid), _half_size(n), pad, c, glow)
 
 
 ## The hero ring: a lozenge `pad` outside a node of half-size `half`, over a soft round glow.
@@ -256,7 +326,7 @@ func _draw_cursor() -> void:
 	var n := model.board().lattice_node(cursor)
 	if n == null:
 		return
-	var at := screen_point(cursor)
+	var at := _draw_point(cursor)
 	var half := _half_size(n) + Vector2.ONE * _num("cursor_pad_px")
 	var shape := _lozenge(at, half.x, half.y)
 	_outline(shape, _role(&"focus"), _num("cursor_px"))
@@ -272,7 +342,7 @@ func _draw_tag() -> void:
 	var fs := get_theme_font_size(&"font_size", &"RankLabel")
 	var text_size := font.get_string_size(tag_text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, fs)
 	var pad := _vec("tag_pad")
-	var box := Rect2(screen_point(cursor) + _vec("tag_offset"), text_size + pad * 2.0)
+	var box := Rect2(_draw_point(cursor) + _vec("tag_offset"), text_size + pad * 2.0)
 	var c := _role(&"focus") if path_ok else _role(&"danger")
 	draw_rect(box, _role(&"panel_deep"))
 	draw_rect(box, c, false, _num("outline_px"))

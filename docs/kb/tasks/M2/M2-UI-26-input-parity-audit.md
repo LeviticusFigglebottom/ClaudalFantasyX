@@ -20,7 +20,7 @@ The human's ask: every screen fully usable with the keyboard, the mouse and a co
 - [ ] A parity test per screen, walked with all three devices, with what fails fixed:
   - [x] title and Settings hub;
   - [x] Settings pages (Accessibility, Controls; Graphics is the same SettingsPage);
-  - [ ] field menu and its pages (Swell modes, Quit, Map, Bestiary; the Menus track's Items, Equip, Lattice, Status);
+  - [x] field menu and its pages (Swell modes, Quit, Map, Bestiary; the Menus track's Items, Equip, Lattice, Status): `test_input_parity_{field_menu,map,bestiary,items,equip,lattice,status}.gd`. Fixes in the Menus track's files (Lattice board drag and zoom, its click test) were sent to that track through the lead;
   - [ ] shop and inn;
   - [ ] save and load;
   - [ ] dialogue box, choices and backlog;

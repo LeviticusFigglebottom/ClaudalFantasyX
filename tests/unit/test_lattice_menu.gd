@@ -249,14 +249,14 @@ func test_a_click_puts_the_cursor_on_a_node_and_a_second_click_acts() -> void:
 	var at := view.screen_point(&"rh_01")
 	assert_eq(view.node_at(at), &"rh_01")
 	assert_eq(view.node_at(at + Vector2(1000.0, 1000.0)), &"", "nothing far from a node")
-	view._gui_input(_click(at))
+	_tap(view, at)
 	assert_eq(menu.cursor, &"rh_01")
 	assert_false(menu.is_confirming())
-	view._gui_input(_click(at))
+	_tap(view, at)
 	assert_true(menu.is_confirming(), "the second click on it asks to walk there")
 	menu.choose(0)
 	assert_eq(menu.model.position(), &"rh_01")
-	view._gui_input(_click(view.screen_point(&"rh_01")))
+	_tap(view, view.screen_point(&"rh_01"))
 	assert_true(menu.is_confirming(), "standing on it, a click asks to wake it")
 	assert_eq(
 		menu.confirm_page().current_row()["label"],
@@ -341,6 +341,15 @@ func _ev(action: StringName) -> InputEventAction:
 	ev.action = action
 	ev.pressed = true
 	return ev
+
+
+## A click on the board: press and release (a click acts on release, so a press can become a drag).
+func _tap(view: LatticeBoardView, at: Vector2) -> void:
+	var ev := _click(at)
+	view._gui_input(ev)
+	ev = ev.duplicate() as InputEventMouseButton
+	ev.pressed = false
+	view._gui_input(ev)
 
 
 func _click(at: Vector2) -> InputEventMouseButton:
