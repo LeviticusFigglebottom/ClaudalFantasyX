@@ -825,3 +825,5 @@ CREDITS_MUSIC,"Original music, in prototype"
 CREDITS_ENGINE,Made with the Godot Engine (MIT License)
 CREDITS_FONTS,EB Garamond and Source Sans 3 (SIL Open Font License)
 CREDITS_THANKS,Thank you for playing.
+FIELD_PROMPT_DEFAULT,Examine
+CTRL_ACT_BATTLE_PAUSE,Pause a battle

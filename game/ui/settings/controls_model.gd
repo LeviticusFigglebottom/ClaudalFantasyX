@@ -210,6 +210,9 @@ static func axes_of(action: StringName) -> Array[InputEventJoypadMotion]:
 static func _capture_defaults(d: Dictionary) -> void:
 	FieldInput.ensure_actions()
 	ObjectiveHud.ensure_action()  # M2-UI-17: show the objective
+	# M2-MNU-04: the battle pause (BattlePause adds it in battle; it must exist to be remapped)
+	var pause := FieldInput.load_json(BattlePauseMenu.DATA_PATH).get("battle_pause", {}) as Dictionary
+	FieldInput.add_actions(pause.get("action", {}) as Dictionary, 0.0)
 	var pad_defaults := d.get("pad_defaults", {}) as Dictionary
 	var all_devices := int(d.get("device_all", 0))
 	for action: StringName in action_ids(d):
