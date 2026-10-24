@@ -25,6 +25,8 @@ var priority: Array[StringName] = []
 ## Each watched node: {node, hook, watch: [{expr: Expression, row: Dictionary, last: Variant, seen: bool}]}.
 var watched: Array[Dictionary] = []
 var _pending: Array[StringName] = []
+## pans()'s memory: view instance id -> {origin, scale, count} (M2-AUD-14).
+var _pans: Dictionary = {}
 
 
 func _init(table: Dictionary = {}) -> void:
@@ -103,6 +105,9 @@ func step() -> void:
 			_read(w, true)
 			alive.append(w)
 	watched = alive
+	for id: Variant in _pans.keys():
+		if not is_instance_id_valid(int(id)):
+			_pans.erase(id)
 	if _pending.is_empty():
 		return
 	var best := _pending[0]
@@ -240,6 +245,53 @@ func gear_signature(bag: Variant) -> String:
 		var abilities: Variant = (bag as Object).call(&"abilities_of", uid) if _has(bag, &"abilities_of") else []
 		parts.append("%s:%s:%s" % [uid, (bag as Object).call(&"wearer_of", uid), abilities])
 	return ",".join(parts)
+
+
+## The abilities crafted into every piece of `bag` (an EquipmentBag: uids() and abilities_of(uid), which lists only
+## filled slots), so a craft raises it and a swap does not; -1 when it cannot be read (M2-AUD-14).
+func crafted_count(bag: Variant) -> int:
+	if not _has(bag, &"uids") or not _has(bag, &"abilities_of"):
+		return -1
+	var total := 0
+	for uid: Variant in (bag as Object).call(&"uids"):
+		for a: Variant in (bag as Object).call(&"abilities_of", uid):
+			if str(a) != "":
+				total += 1
+	return total
+
+
+## Every item in `inventory` (an Inventory: `counts`, item id -> count), so spending one lowers it; -1 when it
+## cannot be read (M2-AUD-14).
+func item_total(inventory: Variant) -> int:
+	if not inventory is Object or not is_instance_valid(inventory):
+		return -1
+	var counts: Variant = (inventory as Object).get(&"counts")
+	if not counts is Dictionary:
+		return -1
+	var total := 0
+	for c: Variant in (counts as Dictionary).values():
+		total += int(c)
+	return total
+
+
+## How many times `view` has panned since its first read: `origin` (a fixed map point on screen) moved `min_px` or
+## more at an unchanged `map_scale`. A resize or a zoom changes the scale too and is not a pan; small moves add up
+## until they reach `min_px`. This helper's own memory, by the view's instance id: nothing is written (M2-AUD-14).
+func pans(view: Object, origin: Vector2, map_scale: float, min_px: float) -> int:
+	if not is_instance_valid(view):
+		return -1
+	var id := view.get_instance_id()
+	if not _pans.has(id):
+		_pans[id] = {"origin": origin, "scale": map_scale, "count": 0}
+		return 0
+	var p := _pans[id] as Dictionary
+	if not is_equal_approx(float(p["scale"]), map_scale):
+		p["origin"] = origin
+		p["scale"] = map_scale
+	elif origin.distance_to(p["origin"] as Vector2) >= min_px:
+		p["origin"] = origin
+		p["count"] = int(p["count"]) + 1
+	return int(p["count"])
 
 
 static func _has(o: Variant, method: StringName) -> bool:
