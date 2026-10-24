@@ -81,6 +81,9 @@ MATERIALS: dict[str, dict] = {
                         col_tint=hexc("#CFCDC8"), normal_strength=1.2, roughness_base=0.8, specular_base=0.3,
                         cavity_darken=0.45, variation_value=0.24, variation_warmth=0.03, moss_min_height_m=1.0),
     "kit_thatch": stone("thatch_albedo.png", "thatch_normal.png", (1.6, 1.6), base_triplanar=False,
+                        # A blue-weighted gain (measured, M2 final pass): the roof rendered at Oklab C 0.098
+                        # against thatch's 0.070-0.079 on screen; this brings it back onto the swatch.
+                        col_tint="Color(1.0, 1.04, 1.16, 1)",
                         normal_strength=1.8, roughness_base=0.95, specular_base=0.2, cavity_darken=0.5,
                         variation_value=0.18, use_algae=False,
                         use_barnacles=False, use_salt=False, moss_normal_y=0.5),

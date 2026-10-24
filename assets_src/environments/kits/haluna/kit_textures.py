@@ -300,8 +300,16 @@ def build_thatch(out: Path, n: int) -> list[Path]:
     cav = np.clip(cavity_from_height(hgt, 4) * 1.2 + (1.0 - t) * 0.25, 0, 1)
     age = fbm(shape, (3, 3), rng, octaves=4)
     old = np.clip((age - 0.45) * 2.0, 0, 1)[..., None]
+    # M2 final pass (env-art): sea-village thatch greys fast and is patched course by course. Each
+    # course gets its own age (a re-laid course is paler and more golden), and rain runoff greys
+    # vertical runs, so a roof reads as tended and weathered, not as one ochre sheet at range.
+    course_age = np.sin(course_id * 12.9898 + 4.1) * 43758.5453 % 1.0
+    old = np.clip(old + 0.45 * (course_age[..., None] - 0.4), 0, 1)
+    runs = np.clip((value_noise(shape, (2, 14), rng) - 0.5) * 2.5, 0, 1)[..., None]
+    old = np.clip(old + 0.35 * runs, 0, 1)
     col = THATCH * (1 - old) + THATCH_OLD * old
     col = col * (0.75 + 0.35 * strands)[..., None] * (1.0 - 0.45 * cav)[..., None]
+    col = col * (0.9 + 0.12 * (course_age[..., None] > 0.82))  # the newest courses catch the sun
     return save_pair(out, "thatch", col, hgt, nx, ny, cav)
 
 

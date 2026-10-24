@@ -235,9 +235,9 @@
         14000,
         1300
       ],
-      "bytes": 395024,
+      "bytes": 454128,
       "lods": {
-        "stilt_house": 8534,
+        "stilt_house": 9590,
         "stilt_house-lod1": 408
       }
     },
@@ -246,9 +246,9 @@
         7000,
         900
       ],
-      "bytes": 193356,
+      "bytes": 232156,
       "lods": {
-        "storehouse_stilt": 3738,
+        "storehouse_stilt": 4442,
         "storehouse_stilt-lod1": 364
       }
     },

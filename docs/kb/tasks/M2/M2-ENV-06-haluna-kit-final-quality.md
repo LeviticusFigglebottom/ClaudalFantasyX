@@ -58,4 +58,17 @@ materials, kit geometry) and `game/shaders/environment/**`. Set dressing in the 
 - Gates: verify_blender_builds `--job haluna_kit` 31 identical; Godot `--filter=environment` 11,
   `haluna` 13, `post_import` 17, all green; validate_data 0 errors; taskboard --check clean.
 
+### Pass 2 (2026-10-24, env-art)
+- **Stilt house and storehouse walls** (`village.frame_wall`): timber girts and battens lashed over the
+  woven infill, and a window with a propped shutter on each side wall of the stilt house. Each piece
+  draws the framing from its own rng (`<piece>_frame`), so nothing else in the piece moves. stilt_house
+  9590 tris (budget 14000), storehouse_stilt 4442 (7000).
+- **Thatch:** per-course age (re-laid courses paler) and rain-runoff greying in the texture; a measured
+  blue-weighted gain on the material: the H04 roof read Oklab L 0.625 C 0.098 against `thatch` 0
+  (`#A78754`, L 0.642 C 0.079); now `#AA8453`, L 0.639 C 0.081.
+- H02 roof tile measured `#CF8773` (L 0.69, C 0.094), between `roof_clay` 0 and +1; left as is.
+- Shots: h04 rmse 0.00595 against pass 1 (viewed: the framed wall and greyer thatch), re-approved;
+  h01 0.00147 (stilt houses far off), h02, h03, h07 0.00000. Palette checks 19/19.
+  verify_blender_builds haluna_kit 31 identical.
+
 ## Review log
