@@ -4,9 +4,9 @@
   "col_pitch": 1.0,
   "row_pitch": 0.62,
   "ring_outer": 0.80,
-  "ring_width_range": [0.02, 0.30],
-  "bar_width": 0.14,
+  "ring_width_range": [0.0, 0.30],
+  "bar_width": 0.06,
   "bar_length": 0.80,
-  "rim_width": 0.05,
-  "edge_mm": 10.0
+  "rim_width": 0.0,
+  "edge_mm": 5.0
 }

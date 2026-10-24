@@ -148,6 +148,10 @@ def level_scales(x: np.ndarray, y: np.ndarray, motif: dict, ring_width: float) -
                       np.abs(dyv) / R)
            * smoothstep(float(motif["bar_length"]) + aa / R, float(motif["bar_length"]) - aa / R, np.abs(dxv) / R))
     rim = smoothstep(1.0 - float(motif["rim_width"]) - aa / R, 1.0 - float(motif["rim_width"]) + aa / R, r)
+    if rw <= 0.0:  # a zero-width stroke draws nothing (the antialiasing band alone would read as a hairline)
+        ring = np.zeros_like(ring)
+    if float(motif["rim_width"]) <= 0.0:
+        rim = np.zeros_like(rim)
     gold = np.clip(np.maximum(np.maximum(ring, bar), rim), 0.0, 1.0) * inside
     # each scale is a slightly domed shell; the overlap leaves a step at the lower scale's covered edge
     height = (1.0 - r ** 2) * inside

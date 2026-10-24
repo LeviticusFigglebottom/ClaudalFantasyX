@@ -248,15 +248,16 @@ class TestCommitted(unittest.TestCase):
             self.assertEqual(h & (h - 1), 0, f.name)
 
     def test_mantle_gold_share_is_the_budget_choice(self):
-        """act1_npcs.md §1.4 gold budget: the mantle's gold coverage is lowered to 40% (no exception claimed). The
-        clothmask's gold channel over the mantle's island is that share (the 1 px blur aside)."""
+        """act1_npcs.md §1.4 gold budget: the mantle's gold coverage is lowered (no exception claimed) to 14%, what a
+        front waist-up frame allows beside the crown (TestPosed). The clothmask's gold channel over the mantle's island
+        is that share (the 1 px blur aside)."""
         import numpy as np
         from PIL import Image
 
         import sefir_costume as C
 
         target = json.loads((SRC / "sefir_params.json").read_text())["_costume"]["mantle_gold_coverage"]
-        self.assertAlmostEqual(target, 0.40)
+        self.assertAlmostEqual(target, 0.14)
         with Image.open(OUT / "textures" / "sefir_cloth_clothmask.png") as im:
             m = np.asarray(im.convert("RGBA"), dtype=float) / 255.0
         n = m.shape[0]
@@ -377,6 +378,46 @@ class TestPosed(unittest.TestCase):
             idx = self.rp.nearest_index(C, M)[:, 0]
             d = float(np.linalg.norm(C - M[idx], axis=1).min())
             self.assertGreaterEqual(d, need, f"head turn {turn}: {d * 1000:.1f} mm")
+
+    def test_waist_up_frames_stay_inside_the_gold_budget(self):
+        """§1.4: a waist-up frame of Sefir alone (16:9, waist to the top of the crown, his idle pose) is at most 5%
+        gold: the crown's pixels plus the mantle's pixels x the mantle's gold share. Measured by geometry (flat ids,
+        nearest surface wins), in front and at the hero three-quarter."""
+        import numpy as np
+        from PIL import Image, ImageDraw
+
+        hc = self.rp.hero_clips
+        pose = hc.staff_hold(hc.pose_at("idle", 0.0, hc.LENGTHS["idle"], self.rig.skeleton, hc.PERSONA["sefir"]),
+                             hc.PERSONA["sefir"])
+        local = self.rig.skeleton.local_pose({b: hc.qeuler(v) for b, v in pose.items() if b != "hips"})
+        mats = self.rig.skin_matrices(local)
+        share = json.loads((SRC / "sefir_params.json").read_text())["_costume"]["mantle_gold_coverage"]
+        meshes = []
+        for name in self.rig.prims:
+            if name.startswith(("Eye", "Cornea", "Tear")):
+                continue
+            part = self.rig.part(name)
+            meshes.append((self.rig.skin(part, mats), part.F, 1 if name == "Crown" else (2 if name == "Mantle" else 3)))
+        W, H, y0, y1 = 480, 270, 1.15, 2.0
+        for yaw in (0.0, -45.0):
+            a = math.radians(yaw)
+            fwd = np.array([-math.sin(a), 0.0, -math.cos(a)])
+            right = np.array([math.cos(a), 0.0, -math.sin(a)])
+            half = (y1 - y0) * W / H / 2
+            tri = []
+            for P, F, cid in meshes:
+                depth = P[F].mean(axis=1) @ fwd
+                X = (P @ right + half) / (2 * half) * W
+                Y = (y1 - P[:, 1]) / (y1 - y0) * H
+                tri += [(float(d), cid, f) for d, f in zip(depth, np.stack([X[F], Y[F]], axis=-1))]
+            tri.sort(key=lambda t: -t[0])
+            img = Image.new("L", (W, H), 0)
+            dr = ImageDraw.Draw(img)
+            for _d, cid, f in tri:
+                dr.polygon([tuple(map(float, q)) for q in f], fill=cid)
+            ids = np.asarray(img)
+            gold = float((ids == 1).mean()) + share * float((ids == 2).mean())
+            self.assertLessEqual(gold, 0.05, f"yaw {yaw}: {100 * gold:.2f}% gold")
 
     def test_hair_stays_outside_the_mantle(self):
         """§1.5: the long hair clears the mantle at rest and through his clips (no hair vertex inside the closed
