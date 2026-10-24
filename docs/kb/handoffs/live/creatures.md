@@ -3,6 +3,11 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
+- **19:45: big7 merged into claude/creatures** (integration 8f808cc6). Conflicts were three battle baselines, taken from
+  the integration branch, then re-captured on the merged tree; the 60 creature and battle shots are being compared.
+  BattleActorMotion's action/hit handoff to BattleChoreo arrived as agreed. Checks after the merge: validate_data,
+  taskboard, lint, format, tools tests, Godot creature 14/0 and battle 527/0. m2-slice has been told the `model`
+  lines can land now (the scenes are on the integration branch). The polish batch rides big8.
 - **MERGE-READY @ b6d98d1c (+ this log).** Since 0eb5a1a9: the spar_wraith's two phases (d2848fbd) and the minor
   polish (the Matron's slag cells in mixed sizes, salt bands and barnacles on the wreck crab's legs, smoothed rent edges
   on the squall wing). Checks: validate_data, taskboard, lint and format, tools creature tests, Godot creature 14/0
