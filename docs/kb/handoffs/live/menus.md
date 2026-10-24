@@ -30,6 +30,7 @@ The scene-swap regression test now measures the real swap on an injected per-fra
 | M2-MNU-07 party formation menu | worktree agent running |
 | M2-MNU-08 Light Step into the field encounter meter | **review** (41ec8dc): m2-slice's meter already applied it at zone setup; now the Equip page refreshes the gap in progress and the stand-in party's gear counts; m2-slice told |
 | M2-MNU-09 Customize on spare pieces | **review** (merged 131c507): a '· Customize' row under each spare with an empty slot; equip_menu re-approved after viewing |
+| M3-MNU-01 Lore codex (SPEC §6.11; unclaimed elsewhere) | worktree agent running; Act I entries from canon only, Narrative review requested |
 | M2-MNU-10 Lattice: walk to a sealed gate | **review** (merged bbd45c8): the cheapest neighbour, cost shown, then the open confirm |
 
 ## Exact next step
@@ -58,3 +59,4 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 - 2026-10-24: merged claude/ui @ 4c083290 (M2-UI-26: Lattice drag-pan and wheel zoom, shoulders = page up/down, right-click = Cancel, parity tests over my pages). Lattice help line names the shoulders. Full suite 1785/1 (scene-router swap timing, also failing without my commit after a container restart). MERGE-READY moved to 674ec39e.
 - 2026-10-24: the Lead's second queue claimed (M2-MNU-06..10; 674ec39 went into Lead batch big7). M2-MNU-06 done (1df83a4). Three agents running (formation, Customize spares, gate walk).
 - 2026-10-24: M2-MNU-08, 09, 10 to review. Party formation (M2-MNU-07) agent still running. **Two items remain:** formation, then the batch MERGE-READY. After that: M3 SPEC §8 menu work.
+- 2026-10-24: queue nearly empty, so per the Lead's rule took M3 menu work: M3-MNU-01 lore codex (the Memories gallery is post-game; battle speed and summon length are already M2-UI-23 / M2-BPR-07).
