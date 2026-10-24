@@ -2,8 +2,8 @@
 id: M2-MNU-11
 title: Status ability line and Customize change list fit a longer language at 130% text (from M2-UI-28)
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "menus (claude/menus)"
 depends_on: [M2-UI-28]
 milestone: M2
 request-from: ui
