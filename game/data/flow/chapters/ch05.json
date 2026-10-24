@@ -1,0 +1,75 @@
+{
+  "doc": "Ch5 'Terraces of Ash' (M3-C05-02; docs/kb/story/beats/act1_ch05.md B01-B11; docs/kb/tech/chapter_flow.md 'Ch5'). Two greybox zones, played by ZoneStory. Entry: ch05/pemakar at Harbour (Ch4's Brightwater ferry hands off there; the location's own spawn is Harbour too, so Ch5 is reachable on its own). Pemakar, Lanternfall night: the ferry and Asha's first band (B01, the chapter becomes 5), the town's six barks (the ferryman's sets ch05_heard_straw_cape_tale, never in Kerrid's sight), Garo's side scene (B03), then the crown bell: the boats and Rhen's choice (B04: exactly one of three flags; 'Not yet' gives the key item pemakar_leaf_boat; Kell's wick is never touched), the weir and Kerrid (B05; he joins active), the inn gate (B06), and on to ch05/ashcrown at StairFoot. Ashcrown: the stair banters, the scripted slag tortoise pair (Kerrid's Armor Break lesson), random stair fights (the layout's encounters), the crown pavilion (B08's rite), the trial (Ch05AshcrownZone, AshcrownTrial; ashcrown.json), the optional quench charm, the Matron (B09) when the strike lands, Kahre (B10) on the return from the fight, and back to ch05/pemakar at FromAshcrown. Pemakar after (B11): the day variant, Kerrid at the inn gate, after-festival barks, the smith's fallback, and the harbour road at dawn. Exit: Ch6's ch06/brine_shoals is not built yet, so the dawn hands off to the end card as a stand-in; repoint the dawn beat's last step to {\"go\": {\"location\": \"ch06/brine_shoals\", \"spawn\": <Ch6's entry spawn>}} when Ch6 lands.",
+  "chapter": "ch05",
+  "zones": {
+    "ch05/pemakar": {
+      "party": {"party": ["rhen", "asha", "toma"], "reserve": ["ysolde"]},
+      "arrive": [
+        {"when": {"set": ["ch05_kahre_bound"], "unset": ["ch05_after_seen"]}, "steps": [
+          {"place": "FromAshcrown"},
+          {"zone": "place_actor", "args": ["kerrid", "inn_gate"]},
+          {"play": "ch05_pemakar_after"},
+          {"set": "ch05_after_seen"}
+        ]},
+        {"when": {"unset": ["ch05_arrived"]}, "steps": [
+          {"place": "Harbour"},
+          {"chapter": 5},
+          {"play": "ch05_ferry_comes_in"},
+          {"set": "ch05_arrived"}
+        ]}
+      ],
+      "beats": {
+        "smith": {"when": {"unset": ["ch05_told_the_smith"]}, "steps": [
+          {"play": "ch05_smiths_question"}
+        ]},
+        "lanternfall": {"when": {"set": ["ch05_arrived"], "unset": ["ch05_met_kerrid"]}, "steps": [
+          {"play": "ch05_lanternfall_boats"},
+          {"zone": "give_if", "args": ["ch05_kept_leaf_boat", {"pemakar_leaf_boat": 1}, 0]},
+          {"zone": "show_actor", "args": ["kerrid", true]},
+          {"place": "Weir"},
+          {"play": "ch05_lanternfall_weir"},
+          {"party": {"party": ["rhen", "asha", "kerrid"], "reserve": ["toma", "ysolde"]}},
+          {"place": "InnGate"},
+          {"play": "ch05_inn_gate"},
+          {"go": {"location": "ch05/ashcrown", "spawn": "StairFoot"}}
+        ]},
+        "dawn": {"when": {"set": ["ch05_kahre_bound"], "unset": ["ch05_done"]}, "steps": [
+          {"place": "HarbourRoad"},
+          {"play": "ch05_dawn_gate"},
+          {"set": "ch05_done"},
+          {"scene": "res://game/flow/end_card.tscn"}
+        ]}
+      }
+    },
+    "ch05/ashcrown": {
+      "party": {"party": ["rhen", "asha", "kerrid"], "reserve": ["toma", "ysolde"]},
+      "arrive": [
+        {"when": {"set": ["ch05_matron_quieted"], "unset": ["ch05_kahre_bound"]}, "steps": [
+          {"place": "AnvilCourt"},
+          {"play": "ch05_kahre"},
+          {"go": {"location": "ch05/pemakar", "spawn": "FromAshcrown"}}
+        ]}
+      ],
+      "beats": {
+        "tortoises": {"when": {"unset": ["ch05_tortoises_won"]}, "steps": [
+          {"play": "ch05_kerrid_steps_up"},
+          {"battle": "ch05_stair_tortoises", "return_spawn": "AfterTortoises", "victory_flag": "ch05_tortoises_won"}
+        ]},
+        "crown": {"when": {"unset": ["ch05_trial_begun"]}, "steps": [
+          {"play": "ch05_crown_pavilion"},
+          {"set": "ch05_trial_begun"},
+          {"place": "Crown"}
+        ]},
+        "quench_charm": {"steps": [
+          {"zone": "give", "args": [{"quench_charm": 1}, 0]}
+        ]},
+        "matron": {"when": {"set": ["ch05_strike_landed"], "unset": ["ch05_matron_quieted"]}, "steps": [
+          {"place": "AnvilCourt"},
+          {"play": "ch05_matron_wakes"},
+          {"battle": "ch05_cinder_matron", "party": ["kerrid", "rhen", "asha"], "reserve": ["toma", "ysolde"],
+           "return_spawn": "AnvilCourt", "victory_flag": "ch05_matron_quieted"}
+        ]}
+      }
+    }
+  }
+}

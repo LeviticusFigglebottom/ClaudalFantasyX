@@ -10,7 +10,50 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 5. Gaps the m2-slice playthrough files under role ui. **None filed yet:** m2-slice's playthrough (handoff cinematics-7) filed only M2-FP-20 and M2-FP-21, both its own. Its ui review request (M2-FP-12) is already approved and done.
 6. (Found on claude/characters) **M2-UI-07**, the hero actor hook: **hook done and pushed (08c872c)**. It is **blocked** on M2-CHR-06's scenes reaching the integration branch; after that it needs three `"scene"` lines in battle_sandbox.json and shot re-approval.
 
-## Now
+## Now (Lead queue of 15:13 and 15:46)
+- **MERGE-READY @ d741a39a:**
+  - **Items:**
+    - M2-UI-26, input parity (all screens);
+    - M2-UI-27, dialogue reveal pauses and `time_of_char`;
+    - M3-UI-02, the Audio page;
+    - M3-UI-03, the lore codex;
+    - with claude/menus @ b5a92596 merged (its swap-test fix, Formation, m2-slice d034c31d).
+  - **Checks run:**
+    - full Godot suite **1848 run, 0 failed** (log check clean);
+    - tools unittest 552 OK on b5a92596 (no `tools/` change since);
+    - validate_data, taskboard, gdlint and gdformat clean;
+    - shots for each item, viewed and approved.
+  - **Checks skipped:** the full manifest, Blender and coverage (nothing in core `game/battle/` or `game/progression/` changed). The Lead runs them at merge.
+  - **The battle pause's mouse way in:** Cancel at the command root opens it (in BattlePause).
+  - **Test infrastructure:** parity tests clear stray screens and park the pointer before they start (`InputDriver.clear_screen`), because the runner has no after_each.
+- **M2-UI-26, the input parity audit (review, reviewer lead):** every screen has a keys, pad and mouse parity test (`tests/unit/test_input_parity_*.gd`, `InputDriver`, `ParityHost`).
+  - **Shared fixes (ADR 0036):** the `UiInput` autoload (mouse cancel, held right click for skip, pad defaults everywhere, last device). MenuPage: wheel, hover only from pointer motion, a dimmed page ignores hover.
+  - **Fixed along the way:**
+    - shop count steppers;
+    - save menu hover and wheel;
+    - Controls listening;
+    - Lattice drag pan, wheel zoom and pad shoulders for Page Up/Down;
+    - mouse targeting and Swell play in battle;
+    - click to advance dialogue;
+    - choice hover;
+    - device-following glyphs.
+  - **Other owners to accept these hooks:**
+    - Systems: `game/ui/save/`;
+    - Architect: `dialogue_box.gd`;
+    - m2-slice: `cutscene_choices.gd`;
+    - the Menus track has merged its part.
+    - Request **M2-FP-28** is filed for the Ch1 tutorial lines.
+  - **Lead decisions needed:**
+    1. Done: Cancel at the command root opens the battle pause. Say if you'd rather have a corner button.
+    2. `battle_controller.gd` is at exactly 1000 lines.
+- **M2-UI-27, the dialogue reveal pauses (review):** pauses at punctuation live in `text_box.json`, scaled by the text speed and skipped on fast-forward and instant text. **For M2-CHR-10's lip sync:** `DialogueBox.time_of_char(i)` and `reveal_duration()`; switch from i/cps to them. The player's text speed now reaches the box (part of M2-ARC-07).
+- **M3-UI-02, the Audio page (review):** re-approve `settings_hub` after claude/audio merges.
+- **M3-UI-03, the lore codex:** in progress in a worktree agent.
+- **M3-UI-01, the Reefball HUD:** filed, blocked on M3-RBL-01.
+- **`test_scene_router_swap`:** fixed by the Menus track (an injected clock). It is merged here and passes.
+- **Note:** sending messages to the Lead's session fails (it needs a trusted device), so this file is the channel.
+
+### Earlier this session
 - **Lead gate rules from 14:14 apply** (scoped checks per item; one full Godot suite per batch in the background; the Lead runs the full manifest and Blender at merge).
 - **MERGE-READY @ 4d8798c7:**
   - **Items:** M2-UI-16..24 and the battle_pause Controls row.
@@ -31,20 +74,32 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
   - **M2-UI-21:** area title cards, once per change of place. The title screen resets them.
   - **M2-UI-22:** title screen (worktree agent). An original drawn logotype, light shafts and motes over the caustics, and a debug-only build label. **Removed boot's placeholder Label** in `game/core/boot.gd`/`.tscn` (Architect's files; please accept).
   - **M2-UI-23:** Battle speed (0.75 to 2x; presentation only, the engine and Swell windows untouched) and Vowbound call length (Full/Short/Off) (worktree agent).
-    - **No call cinematic exists yet:** request task **M2-BPR-07** for combat.
+    - **No call cinematic exists yet:** request task **M2-BPR-08** for combat.
     - **Expect a conflict with claude/battle-presentation's M2-BPR-03:** it adds the same `battle_speed` row and loc keys. Keep one copy of the six `SET_BATTLE_SPEED*` rows.
   - **M2-UI-24:** first-time tips. Data-driven, saved per journey by seen flags, with an Accessibility **Tips** off switch. There are four slice tips, and `validate_data` checks them.
   - **M2-UI-13 addendum:** `battle_pause` on the Controls page (the Menus track's ask).
 - **Fixes found by the full gate:**
   - **Field shot drivers moved to `game/levels/_tests/ui_shots/`:** they load `_tests` scenes, and `test_release_excludes_tests` failed. The Menus track reported it too.
   - **`test_town_services` leak:** a FieldController left behind by a test opened a second shop.
-- **In progress:** M2-UI-25, the dialogue box's continue glyph, backlog and auto-advance, in a worktree agent. These are UI-owned pieces in `game/ui/dialogue_assist/`, attached by one line in DialogueBox (Architect's file).
+- **M2-UI-25 (review, merged at 19838a8d):** the dialogue box's continue glyph, backlog (L / pad Y) and auto-advance setting (Off by default). UI-owned in `game/ui/dialogue_assist/`.
+  - **One line added to `dialogue_box.gd`** (Architect's file; please accept). Nothing of M2-ARC-06/07 is done there.
+  - **Shots:** `dialogue_continue` and `dialogue_backlog` are new; `settings_accessibility` is re-approved (11 rows).
+- **MERGE-READY @ 19838a8d:**
+  - **Items:** M2-UI-25 on top of the 4d8798c7 batch.
+  - **Checks run:**
+    - full Godot suite **1728 run, 0 failed** (log check clean);
+    - validate_data, taskboard, gdlint and gdformat clean;
+    - shots `dialogue_continue`, `dialogue_backlog` and `settings_accessibility` viewed and approved.
+  - **Checks skipped:**
+    - the tools unittest rerun, because M2-UI-25 changed nothing under `tools/` (its release-excludes and loc-literal tests passed in the agent's run);
+    - the full manifest, Blender and coverage, which the Lead runs at merge.
 - **Blocked:**
   - **M2-UI-07:** claude/characters (M2-CHR-06) is still not on the integration branch.
   - **M3-UI-01 (Reefball HUD):** no Reefball engine on any branch yet.
 
 ## Exact next step
-- Merge the M2-UI-25 agent branch when it reports. Then write the MERGE-READY line, and ask the Lead for more queue: after M2-UI-25 only the two blocked items remain.
+- Merge the three agent branches as they report (field-menu parity, battle/dialogue parity, codex). Run the full Godot suite in the background, then write the MERGE-READY line.
+- M2-UI-07 when claude/characters is on integration (Lead batch big7).
 
 ## Un-pushed state
 - None.

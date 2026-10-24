@@ -1,0 +1,45 @@
+// Ch4 C4-08 "Cutscene: the long way round" (docs/kb/story/beats/act1_ch04.md). 05:30, the dawn low
+// water (B11: "At first tide. The causeway won't wait for me."). The village is at the wall again,
+// its lamps guttering in the first light. H08 (dawn grade): Asha stops at the wall and touches her
+// shell. The ink on it and on her mother's is new and black and still glossy, always (the re-inking
+// happens whether or not the player watched it). She looks at her fingertip. She doesn't know who did
+// it. If ch04_saw_ysolde_ink, Rhen does, and a look is enough (no line).
+// Neme: in Ch2 she never once looked at Asha's packed bag (B02). Now she looks at her the whole time,
+// and says one thing.
+// The causeway (C01, C02 at dawn): by custom nobody walks past the wall with the Cantor but her
+// guardians. Toma leads, Asha in the middle, and Rhen walks behind, as Toma told him to in B11, without
+// a word about it. Hold C01 long as the three get small (pillar 3). Nobody looks back except Rhen, once.
+// Watch: not a dock farewell. Nobody waves a boat away; she walks out on her own feet.
+// Music: haluna_dawn (reprise). The chapter flow then goes to ch04/brightwater_ferry at Landing.
+title: ch04_long_way_round
+location: ch04/haluna_wake
+---
+@letterbox on
+@music haluna_dawn fade=3.0
+@fade in 2.0
+@camera H08 grade=ch02
+@anim asha touch_shell
+@wait 2.0
+@anim asha look_at_fingertip
+@wait 1.5
+<<if $ch04_saw_ysolde_ink>>
+@anim rhen look_away
+@wait 1.2
+<<endif>>
+@anim neme watch asha
+@wait 1.5
+Neme [sad]: Eat when they feed you. #line:ch04_dawn_001
+Asha [soft_smile]: I will. #line:ch04_dawn_002
+@wait 1.0
+@camera C01 grade=ch02
+@mark toma causeway_toma walk
+@mark asha causeway_asha walk
+@mark rhen causeway_rhen walk
+@wait 6.0
+@anim rhen look_back
+@wait 1.5
+@camera C02 grade=ch02
+@wait 3.0
+@fade out 2.0
+@letterbox off
+===

@@ -38,3 +38,12 @@
 **Hooks.** `trial.rotated`, `flow_changed`, `pool_filled`, `side_pool_drained`, `hint_due`, and the level's `charm_taken`.
 
 **Tests.** `tests/unit/test_shell_shrine_trial.gd`, `tests/integration/test_shell_shrine_level.gd` (including the kit pieces, the water and the shimmer), the whole thread in `test_fp_thread.gd`, `tools/tests/test_shell_shrine_trial.py` and `tools/tests/test_shell_shrine_kit.py`.
+
+## GI ships baked (M2-ENV-10, ADR 0029)
+The two VoxelGI states (the door up, and down after the flood) are baked offline and shipped:
+- **The data:** `assets/levels/ch03/shell_shrine/shrine_gi_{open,closed}.res`, named by `room.gi_data` in the trial data. Entry only loads them.
+- **Why:** baking both at load took 3.5–3.8 s in one frame on a GPU.
+- **To rebake** after changing this folder, the trial data or the kit's shrine pieces:
+  `godot-render --path . --audio-driver Dummy --rendering-driver vulkan res://tools/shrine/bake_shrine_gi.tscn && python3 tools/shrine/gi_inputs.py --write`
+- **The guard:** `tools/tests/test_shrine_gi_bake.py` fails until you rebake.
+

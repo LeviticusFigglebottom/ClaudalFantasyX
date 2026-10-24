@@ -16,6 +16,8 @@ const TRANSLATIONS_SETTING := "internationalization/locale/translations"
 ## Theme type variation of the body Label on #sung lines; UI styles it in the project theme
 ## (until then it falls back to the plain Label style).
 const SUNG_VARIATION := &"DialogueBodySung"
+## Float slack when comparing reveal times (a character due at exactly the elapsed time shows).
+const REVEAL_EPSILON_SEC := 0.000001
 
 static var _translation_added: bool = false
 
@@ -30,7 +32,9 @@ var _speaker: StringName = &""
 var _voice: StringName = &""
 var _sung: bool = false
 var _text: String = ""
-var _progress: float = 0.0
+var _elapsed: float = 0.0
+## When each character becomes visible (DialogueTextSettings.reveal_times; M2-UI-27).
+var _times := PackedFloat64Array()
 var _shown: int = 0
 var _revealing: bool = false
 var _mouth_open: bool = false
@@ -107,10 +111,11 @@ func show_text(
 	_name_label.text = tr(name_key) if name_key != &"" else ""
 	_name_label.visible = name_key != &""
 	_body_label.theme_type_variation = SUNG_VARIATION if sung else &""
-	_text = tr(text_key)
+	_text = InputNames.fill(tr(text_key))  # {action} names the binding, for the last device (M2-UI-26)
 	_body_label.text = _text
 	_body_label.visible_characters = 0
-	_progress = 0.0
+	_elapsed = 0.0
+	_times = settings.reveal_times(_text)
 	_shown = 0
 	_blip_chars = 0
 	_mouth_open = false
@@ -126,14 +131,31 @@ func advance(delta: float) -> void:
 	if settings.chars_per_sec <= 0.0:
 		skip_reveal()
 		return
-	_progress += delta * settings.chars_per_sec
-	_reveal_to(mini(int(_progress), _text.length()), true)
+	_elapsed += delta
+	var target := _shown
+	while target < _times.size() and _times[target] <= _elapsed + REVEAL_EPSILON_SEC:
+		target += 1
+	_reveal_to(target, true)
 
 
 ## Shows the rest of the line at once, without blips or flaps.
 func skip_reveal() -> void:
 	if _revealing:
 		_reveal_to(_text.length(), false)
+
+
+## When character `i` of the line on show becomes visible, in seconds from the line's start,
+## punctuation pauses included (M2-UI-27). Lip sync follows this instead of i / chars_per_sec.
+## 0 for an instant reveal.
+func time_of_char(i: int) -> float:
+	if _times.is_empty():
+		return 0.0
+	return _times[clampi(i, 0, _times.size() - 1)]
+
+
+## How long the whole line takes to reveal (seconds; 0 for an instant reveal).
+func reveal_duration() -> float:
+	return _times[_times.size() - 1] if not _times.is_empty() else 0.0
 
 
 func is_revealing() -> bool:

@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch05_bark_boat_folders",
+ "source": "game/data/dialogue/ch05/ch05_bark_boat_folders.dlg",
+ "start": "ch05_bark_boat_folders",
+ "nodes": {
+  "ch05_bark_boat_folders": {
+   "headers": {"location": "ch05/pemakar"},
+   "ops": [
+    {"op": "line", "id": "ch05_bark_fold_001", "key": "DLG_CH05_BARK_FOLD_001", "speaker": "townsfolk", "emotion": "neutral", "voice": "", "src": 6, "name_key": "DLG_NAME_TOWNSFOLK_BOAT_FOLDER"},
+    {"op": "line", "id": "ch05_bark_fold_002", "key": "DLG_CH05_BARK_FOLD_002", "speaker": "townsfolk", "emotion": "neutral", "voice": "", "src": 7, "name_key": "DLG_NAME_TOWNSFOLK_HER_DAUGHTER"},
+    {"op": "line", "id": "ch05_bark_fold_003", "key": "DLG_CH05_BARK_FOLD_003", "speaker": "townsfolk", "emotion": "neutral", "voice": "", "src": 8, "name_key": "DLG_NAME_TOWNSFOLK_BOAT_FOLDER"}
+   ]
+  }
+ }
+}

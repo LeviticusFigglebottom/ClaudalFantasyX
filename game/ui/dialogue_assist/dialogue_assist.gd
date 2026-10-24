@@ -10,6 +10,9 @@ extends Control
 ##   - Auto-advance: with the Accessibility setting `dialogue_auto` On, a waiting line advances by
 ##     itself after a hold that grows with its length, by emitting the box's advance_requested.
 ##     Never while choices are up, the backlog is open or the tree is paused; never an empty line.
+##   - The mouse (M2-UI-26, input parity): a left click on the box's panel does what Confirm does
+##     (finish the reveal, then advance), never under choices or the backlog; the wheel turned up
+##     over it opens the backlog, which the wheel then scrolls and a right click closes.
 ## Layout and timing: game/data/ui/dialogue_assist.json.
 
 const DATA_PATH := "res://game/data/ui/dialogue_assist.json"
@@ -30,6 +33,8 @@ var _waiting := false
 var _hold := 0.0
 var _hold_need := 0.0
 var _bob_t := 0.0
+## The box's own reveal speed before the player's text speed scales it (text_box.json).
+var _base_cps := 0.0
 
 
 ## Adds the assist under `b` (the box's _ready calls it), and returns it.
@@ -73,8 +78,30 @@ func _ready() -> void:
 	_glyph.visible = false
 	add_child(_glyph)
 	if box != null:
+		_base_cps = box.settings.chars_per_sec
+		apply_text_speed()
+		UiSettings.shared().changed.connect(_on_setting_changed)
 		box.reveal_finished.connect(_on_reveal_finished)
 		box.advance_requested.connect(_on_advance_requested)
+		var panel := box.get_node_or_null(PANEL_PATH) as Control
+		if panel != null:
+			panel.gui_input.connect(_on_panel_input.bind(panel))
+
+
+## Sets the box's reveal speed from the player's text speed (M2-UI-12; M2-UI-27): the box's own
+## speed times the setting's multiplier, or instant. The punctuation pauses scale with it.
+func apply_text_speed() -> void:
+	var t := box.settings
+	var cps := UiSettings.shared().dialogue_chars_per_sec(_base_cps, t.min_chars_per_sec, t.max_chars_per_sec)
+	if cps <= 0.0:
+		t.chars_per_sec = 0.0  # instant (the box shows the whole line at once); set_chars_per_sec clamps
+	else:
+		box.set_chars_per_sec(cps)
+
+
+func _on_setting_changed(key: StringName, _value: Variant = null) -> void:
+	if key == UiSettings.TEXT_SPEED and box != null:
+		apply_text_speed()
 
 
 func _exit_tree() -> void:
@@ -183,6 +210,29 @@ func open_backlog() -> DialogueBacklogPage:
 	var host := box.get_parent() if box.get_parent() != null else box
 	FieldSubmenu.mount(page, host)
 	return page
+
+
+## Confirm from the mouse: a click on the panel finishes the reveal, or advances a shown line, as
+## the box does for ui_accept. Under choices or the backlog it does nothing.
+func click_advance() -> bool:
+	if box == null or not box.is_visible_in_tree() or choices_up() or backlog_open():
+		return false
+	if box.is_revealing():
+		box.skip_reveal()
+	else:
+		box.advance_requested.emit()
+	return true
+
+
+func _on_panel_input(event: InputEvent, panel: Control) -> void:
+	var mb := event as InputEventMouseButton
+	if mb == null or not mb.pressed:
+		return
+	if mb.button_index == MOUSE_BUTTON_LEFT and click_advance():
+		panel.accept_event()
+	elif mb.button_index == MOUSE_BUTTON_WHEEL_UP and can_open_backlog():
+		open_backlog()
+		panel.accept_event()
 
 
 func _on_reveal_finished() -> void:

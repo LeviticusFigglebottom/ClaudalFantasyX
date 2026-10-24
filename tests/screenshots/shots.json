@@ -1988,6 +1988,18 @@
         960,
         720
       ]
+    },
+    {
+      "id": "field_menu_codex",
+      "scene": "res://game/ui/codex/shots/field_menu_codex.tscn"
+    },
+    {
+      "id": "formation_menu",
+      "scene": "res://game/ui/menus/formation/shots/formation_menu.tscn"
+    },
+    {
+      "id": "memories_menu",
+      "scene": "res://game/ui/menus/memories/shots/memories_menu.tscn"
     }
   ]
 }

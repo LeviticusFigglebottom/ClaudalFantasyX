@@ -1,0 +1,46 @@
+{
+ "format": 1,
+ "scene": "ch07_after_the_bell",
+ "source": "game/data/dialogue/ch07/ch07_after_the_bell.dlg",
+ "start": "ch07_after_the_bell",
+ "nodes": {
+  "ch07_after_the_bell": {
+   "headers": {"location": "ch07/tamsule_bell_galleries"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "camera", "args": ["R06"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "music", "args": ["tidecup_after"], "kwargs": {"fade": 1.5}, "src": 18},
+    {"op": "cue", "cue": "sfx", "args": ["crowd_warm"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "catch_breath"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "anim", "args": ["tavi", "catch_breath"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "mark", "args": ["poolkeeper", "poolkeeper_rim", "walk"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 24},
+    {"op": "line", "id": "ch07_after_001", "key": "DLG_CH07_AFTER_001", "speaker": "tavi", "emotion": "exhausted", "voice": "", "src": 25},
+    {"op": "cue", "cue": "anim", "args": ["poolkeeper", "chalk_slate"], "kwargs": {}, "src": 26},
+    {"op": "line", "id": "ch07_after_002", "key": "DLG_CH07_AFTER_002", "speaker": "poolkeeper", "emotion": "neutral", "voice": "", "src": 27},
+    {"op": "cue", "cue": "anim", "args": ["tavi", "look_at", "rhen"], "kwargs": {}, "src": 28},
+    {"op": "line", "id": "ch07_after_003", "key": "DLG_CH07_AFTER_003", "speaker": "tavi", "emotion": "soft_smile", "voice": "", "src": 29},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "untie_band"], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "anim", "args": ["tavi", "stop_hand", "rhen"], "kwargs": {}, "src": 31},
+    {"op": "line", "id": "ch07_after_004", "key": "DLG_CH07_AFTER_004", "speaker": "tavi", "emotion": "tender", "voice": "", "src": 32},
+    {"op": "line", "id": "ch07_after_005", "key": "DLG_CH07_AFTER_005", "speaker": "rhen", "emotion": "sad", "voice": "", "src": 33},
+    {"op": "line", "id": "ch07_after_006", "key": "DLG_CH07_AFTER_006", "speaker": "tavi", "emotion": "neutral", "voice": "", "src": 34},
+    {"op": "cue", "cue": "camera", "args": ["R07"], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "mark", "args": ["tavi", "tavi_boat", "walk"], "kwargs": {}, "src": 36},
+    {"op": "cue", "cue": "mark", "args": ["oruvel_diver_1", "divers_boat", "walk"], "kwargs": {}, "src": 37},
+    {"op": "cue", "cue": "mark", "args": ["oruvel_diver_2", "divers_boat", "walk"], "kwargs": {}, "src": 38},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "mark", "args": ["asha", "asha_rim", "walk"], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "mark", "args": ["toma", "toma_rim", "walk"], "kwargs": {}, "src": 41},
+    {"op": "cue", "cue": "mark", "args": ["liss", "liss_rim", "walk"], "kwargs": {}, "src": 42},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "ysolde_rim", "walk"], "kwargs": {}, "src": 43},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 44},
+    {"op": "cue", "cue": "anim", "args": ["asha", "hand_jacket", "rhen"], "kwargs": {}, "src": 45},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 46},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 47},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 48}
+   ]
+  }
+ }
+}

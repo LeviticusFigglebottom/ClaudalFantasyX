@@ -12,9 +12,14 @@ extends Node
 ## each metre walked by it, live. A due encounter waits while the story is busy. When one fires it
 ## remembers where Rhen stood, and the battle returns to the zone's "Encounter" spawn there
 ## (GreyboxZone.place_at). Time passes only through walked(), so tests drive it exactly.
+## M2-MNU-08: gear changed in the field (the Equip page) reaches the gap in progress: the meter joins
+## GROUP, and refresh_rate() rescales what is left of the gap by old rate / new rate (no new draw, so a run
+## stays deterministic). With no joined party (the first playable), the field menu's heroes count.
 
 const RETURN_SPAWN := &"Encounter"
 const FULL_RATE_PCT := 100.0
+## The SceneTree group of live meters; the Equip page calls refresh_rate() on it when it closes.
+const GROUP := &"field_encounters"
 
 ## Where the last encounter left Rhen, per location (the battle scene replaces the zone, so it is
 ## kept here for the return).
@@ -39,6 +44,7 @@ var _has_last := false
 
 func setup(zone: GreyboxZone, block: Dictionary) -> void:
 	_zone = zone
+	add_to_group(GROUP)
 	table = block.get("table", [])
 	min_m = float(block.get("min_m", 0.0))
 	max_m = float(block.get("max_m", min_m))
@@ -51,11 +57,22 @@ func setup(zone: GreyboxZone, block: Dictionary) -> void:
 ## The party's encounter rate in percent (100 = normal; Light Step halves it).
 static func party_rate_pct() -> float:
 	var db := ItemDB.load_default()
-	if db == null or Game.state.party_ids.is_empty():
+	var party := Game.state.party_ids if not Game.state.party_ids.is_empty() else FieldMenuModel.field_heroes()
+	if db == null or party.is_empty():
 		return FULL_RATE_PCT
 	var goods := PartyGoods.from_state(db, Game.state)
 	var fx := EquipmentEffects.new(db, goods.equipment)
-	return float(maxi(fx.encounter_rate_pct(Game.state.party_ids), 1))
+	return float(maxi(fx.encounter_rate_pct(party), 1))
+
+
+## Re-reads the party's rate (party_rate_pct, or `pct` when given) and rescales the rest of the gap in
+## progress: at half the rate, what is left to walk doubles. Returns the new rate.
+func refresh_rate(pct: float = -1.0) -> float:
+	var new_rate := pct if pct > 0.0 else party_rate_pct()
+	if not is_equal_approx(new_rate, rate_pct):
+		next_m = walked_m + maxf(next_m - walked_m, 0.0) * rate_pct / new_rate
+		rate_pct = new_rate
+	return rate_pct
 
 
 func _physics_process(_delta: float) -> void:

@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch05_pemakar_after",
+ "source": "game/data/dialogue/ch05/ch05_pemakar_after.dlg",
+ "start": "ch05_pemakar_after",
+ "nodes": {
+  "ch05_pemakar_after": {
+   "headers": {"location": "ch05/pemakar"},
+   "ops": [
+    {"op": "cue", "cue": "music", "args": ["pemakar_terraces"], "kwargs": {"fade": 2.0}, "src": 7},
+    {"op": "cue", "cue": "camera", "args": ["P04"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "fade", "args": ["in", 1.5], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 11}
+   ]
+  }
+ }
+}

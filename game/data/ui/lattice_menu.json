@@ -1,6 +1,6 @@
 {
   "lattice_menu": {
-    "doc": "The Lattice page (M2-MNU-01; docs/kb/tech/ui.md section Lattice page). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'board' holds the LatticeBoardView drawing metrics in reference px (unit_px: one lattice unit; node shapes are half-diagonals of a lozenge), the camera pan time, the direction-pick cone (cone_cos: the cosine of the widest angle off the pressed direction; angle_weight: how much a slanted node counts as farther) and the palette role of each board region (theme colours of type Hymn, never hard-coded). 'side' is the details panel, 'legend' the key (each node look, drawn as the board draws it, and its meaning; its rect is where it sits when the lines above end higher, else it follows them, and it shows only its first rows that end side.foot_gap above the foot, hiding when fewer than min_rows fit), 'status' the foot (the last result or refusal), and 'confirm' the two-row MenuPage that takes its place before anything is spent.",
+    "doc": "The Lattice page (M2-MNU-01; docs/kb/tech/ui.md section Lattice page). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'board' holds the LatticeBoardView drawing metrics in reference px (unit_px: one lattice unit; node shapes are half-diagonals of a lozenge), the camera pan time, the mouse's zoom (zoom_min / zoom_max: the scale the wheel stops at; zoom_step: one notch's factor) and drag (drag_px: how far a press moves before it pans instead of clicking; M2-UI-26), the direction-pick cone (cone_cos: the cosine of the widest angle off the pressed direction; angle_weight: how much a slanted node counts as farther) and the palette role of each board region (theme colours of type Hymn, never hard-coded). 'side' is the details panel, 'legend' the key (each node look, drawn as the board draws it, and its meaning; its rect is where it sits when the lines above end higher, else it follows them, and it shows only its first rows that end side.foot_gap above the foot, hiding when fewer than min_rows fit), 'status' the foot (the last result or refusal), and 'confirm' the two-row MenuPage that takes its place before anything is spent.",
     "canvas_layer": 64,
     "panel": {
       "rect": [96, 54, 1728, 972],
@@ -50,6 +50,10 @@
       "frame_alpha": 0.3,
       "pan_sec": 0.18,
       "pan_margin_px": 72,
+      "zoom_min": 0.5,
+      "zoom_max": 1.5,
+      "zoom_step": 1.15,
+      "drag_px": 6,
       "cone_cos": 0.42,
       "angle_weight": 2.0,
       "region_roles": {"rhen": "heal", "asha": "mp", "toma": "swell", "cross": "text_dim", "hub": "text"},
