@@ -47,7 +47,7 @@ BattleRequest.start(&"ch02_tideline", &"ch02/haluna", &"Beach", &"some_declared_
 
 | API | Meaning |
 |---|---|
-| `static start(encounter, return_location, return_spawn, victory_flag := &"", escape_at := &"") -> BattleRequest` | `make()` + `submit()`: records the request and opens the field battle scene through `SceneRouter.change_scene`. Returns the request (adjust `active`/`reserve`/`rng_seed` at once if needed). |
+| `static start(encounter, return_location, return_spawn, victory_flag := &"", escape_at := &"") -> BattleRequest` | `make()` + `submit()`: records the request, plays the encounter stinger in the field (`BattleStinger`, M2-BPR-05, battle_presentation.md) and then opens the field battle scene through `SceneRouter.change_scene`. Returns the request (adjust `active`/`reserve`/`rng_seed` at once if needed). |
 | `static make(...) -> BattleRequest` | Builds one with the data file's party (`active` [rhen, asha], `reserve` [toma]) and `seed`; records nothing. |
 | `static submit(r)` | Records `r` and opens `field_battle.scene`. |
 | `static pending()`, `take()`, `clear()` | The one waiting request; `take()` returns and forgets it. |
