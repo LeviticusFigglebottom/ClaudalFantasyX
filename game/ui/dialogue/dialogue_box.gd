@@ -153,6 +153,12 @@ func time_of_char(i: int) -> float:
 	return _times[clampi(i, 0, _times.size() - 1)]
 
 
+## When each character of the line on show becomes visible (a copy; empty for an instant reveal).
+## LipSync takes it whole (M2-CHR-10, LipSync.starts_for).
+func reveal_times() -> PackedFloat64Array:
+	return _times.duplicate()
+
+
 ## How long the whole line takes to reveal (seconds; 0 for an instant reveal).
 func reveal_duration() -> float:
 	return _times[_times.size() - 1] if not _times.is_empty() else 0.0
