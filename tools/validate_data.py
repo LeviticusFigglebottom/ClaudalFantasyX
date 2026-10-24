@@ -35,8 +35,9 @@ ELEMENTS = {"none", "fire", "water", "lightning", "ice", "holy", "glimmer"}
 AFFINITIES = {"normal", "weak", "resist", "immune", "absorb"}
 SKILL_KINDS = {"physical", "magical", "heal", "support"}
 SKILL_TARGETS = {"single_foe", "all_foes", "single_ally", "all_allies", "self"}
-AI_TARGETS = {"random_foe", "lowest_hp_foe", "highest_hp_foe", "self", "random_ally", "all_foes", "all_allies"}
-AI_CONDITIONS = {"self_hp_below_pct", "turn_mod", "foe_has_status", "allies_alive_below"}
+AI_TARGETS = {"random_foe", "lowest_hp_foe", "highest_hp_foe", "self", "random_ally", "all_foes", "all_allies",
+              "largest_ally"}
+AI_CONDITIONS = {"self_hp_below_pct", "turn_mod", "foe_has_status", "allies_alive_below", "field_active"}
 # M2-CMB-02 (combat): target kinds only skills take (items keep SKILL_TARGETS). all_other_allies is
 # every living active ally but the user (Shallows Verse: a song for the others, never the singer).
 SKILL_ONLY_TARGETS = {"all_other_allies"}
@@ -274,6 +275,8 @@ def _ai_arg_ok(cond: str, arg: object, status_ids: set[str]) -> bool:
         return isinstance(arg, int) and arg >= 1
     if cond == "foe_has_status":
         return arg in status_ids
+    if cond == "field_active":
+        return isinstance(arg, str) and bool(arg)
     return False
 
 
@@ -1251,6 +1254,7 @@ def run(root: Path) -> Report:
     data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
     data_keys += check_locations(root, files, rep)
     data_keys += check_swell(files, rep)
+    data_keys += check_boss(files, declared_flags_quiet(root), rep)
     check_read_openings(files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
@@ -1904,6 +1908,135 @@ def check_swell(files: dict[str, object], rep: Report) -> list[str]:
     return collect_keys(doc)
 
 
+# --- Boss mechanics: phases, charges, weak points, fields, summons (M2-FP-06, battle_ctb.md) -------
+
+BOSS_PHASE_STATS = {"strength", "magic", "defense", "magic_defense", "agility", "accuracy", "evasion", "luck"}
+BOSS_PHASE_KEYS = {"id", "at_hp_pct", "name_key", "prompt_key", "skills", "ai", "affinities", "stats",
+                   "delay_immune", "field", "spawn", "remove"}
+
+
+def _boss_ai_errors(ai: object, w: str, own: set[str], status_ids: set[str]) -> list[str]:
+    """The checks check_battle runs on a top-level ai list, for a phase's ai."""
+    errs: list[str] = []
+    if not isinstance(ai, list) or not ai:
+        return [f"{w}: needs at least one ai rule"]
+    for i, rule in enumerate(ai):
+        if not isinstance(rule, dict):
+            errs.append(f"{w}[{i}]: a rule must be an object")
+            continue
+        for cond, arg in rule.get("if", {}).items():
+            if cond not in AI_CONDITIONS:
+                errs.append(f"{w}[{i}]: unknown condition '{cond}'")
+            elif not _ai_arg_ok(cond, arg, status_ids):
+                errs.append(f"{w}[{i}]: bad argument {arg!r} for '{cond}'")
+        if not rule.get("pick"):
+            errs.append(f"{w}[{i}]: empty 'pick'")
+        for opt in rule.get("pick", []):
+            if opt.get("skill") not in own:
+                errs.append(f"{w}[{i}]: picks skill '{opt.get('skill')}' the phase does not have")
+            if opt.get("target", "random_foe") not in AI_TARGETS:
+                errs.append(f"{w}[{i}]: unknown target selector '{opt.get('target')}'")
+    return errs
+
+
+def _boss_skill_errors(s: dict, refs: dict[str, set[str]]) -> list[str]:
+    w = f"skills.{s['id']}"
+    errs: list[str] = []
+    if "charge" in s:
+        ch = s["charge"]
+        if not isinstance(ch, dict) or ch.get("skill") not in refs["skills"]:
+            errs.append(f"{w}: charge needs a known 'skill'")
+        elif not _is_int(ch.get("turns")) or ch["turns"] < 1:
+            errs.append(f"{w}: charge 'turns' must be an int >= 1")
+    if "summon" in s and s["summon"] not in refs["enemies"]:
+        errs.append(f"{w}: summons unknown enemy '{s['summon']}'")
+    if "clears_field" in s and (not isinstance(s["clears_field"], str) or not s["clears_field"]):
+        errs.append(f"{w}: clears_field must name a field")
+    if "requires_flag" in s and s["requires_flag"] not in refs["flags"]:
+        errs.append(f"{w}: undeclared story flag '{s['requires_flag']}' (declare it in game/data/flags.tres)")
+    return errs
+
+
+def _boss_phase_errors(e: dict, refs: dict[str, set[str]]) -> list[str]:
+    w = f"enemies.{e['id']}.phases"
+    errs: list[str] = []
+    phases = e.get("phases", [])
+    if not isinstance(phases, list):
+        return [f"{w}: must be a list"]
+    last = 100
+    seen: set[str] = set()
+    for i, p in enumerate(phases):
+        pw = f"{w}[{i}]"
+        if not isinstance(p, dict) or not isinstance(p.get("id"), str) or p["id"] in seen:
+            errs.append(f"{pw}: needs a unique string 'id'")
+            continue
+        seen.add(p["id"])
+        errs += [f"{pw}: unknown key '{k}'" for k in sorted(set(p) - BOSS_PHASE_KEYS)]
+        at = p.get("at_hp_pct")
+        if not _is_int(at) or not 1 <= at < last:
+            errs.append(f"{pw}: at_hp_pct must be an int in 1..{last - 1} (each phase below the last)")
+        else:
+            last = at
+        own = set(p.get("skills", e.get("skills", [])))
+        errs += [f"{pw}: unknown skill '{sk}'" for sk in sorted(own - refs["skills"])]
+        if "ai" in p:
+            errs += _boss_ai_errors(p["ai"], f"{pw}.ai", own, refs["statuses"])
+        for el, aff in p.get("affinities", {}).items():
+            if el not in ELEMENTS or aff not in AFFINITIES:
+                errs.append(f"{pw}: bad affinity {el}={aff}")
+        for k, v in p.get("stats", {}).items():
+            if k not in BOSS_PHASE_STATS or not _is_int(v) or v < 0:
+                errs.append(f"{pw}: stat '{k}' must be one of {sorted(BOSS_PHASE_STATS)}, a non-negative int")
+        if "delay_immune" in p and not isinstance(p["delay_immune"], bool):
+            errs.append(f"{pw}: delay_immune must be true or false")
+        for key in ("spawn", "remove"):
+            errs += [f"{pw}: {key} names unknown enemy '{x}'" for x in p.get(key, []) if x not in refs["enemies"]]
+    return errs
+
+
+def boss_errors(skills: list[dict], enemies: list[dict], refs: dict[str, set[str]]) -> tuple[list[str], list[str]]:
+    """(errors, warnings) for the boss fields of skills.json and enemies.json. refs: sets of known
+    'skills', 'enemies', 'statuses' and 'flags'."""
+    errs: list[str] = []
+    warns: list[str] = []
+    cleared = {s["clears_field"] for s in skills if isinstance(s.get("clears_field"), str)}
+    for s in skills:
+        errs += _boss_skill_errors(s, refs)
+    for e in enemies:
+        w = f"enemies.{e['id']}"
+        wp = e.get("weak_point")
+        if wp is not None and (not isinstance(wp, dict) or not _is_int(wp.get("hits")) or wp["hits"] < 1
+                               or not _is_int(wp.get("max_delay")) or wp["max_delay"] < 1):
+            errs.append(f"{w}: weak_point needs int 'hits' >= 1 and int 'max_delay' >= 1 (ticks)")
+        if "field" in e and (not isinstance(e["field"], str) or not e["field"]):
+            errs.append(f"{w}: field must name a field")
+        errs += _boss_phase_errors(e, refs)
+        for p in e.get("phases", []) if isinstance(e.get("phases"), list) else []:
+            if isinstance(p, dict) and p.get("field") and p["field"] not in cleared:
+                warns.append(f"{w}: phase '{p.get('id')}' raises field '{p['field']}' that no skill clears")
+    return errs, warns
+
+
+def check_boss(files: dict[str, object], flags: set[str], rep: Report) -> list[str]:
+    """Validates boss mechanics (M2-FP-06). Returns the phases' *_key values for the loc check."""
+    def rows(table: str) -> list[dict]:
+        doc = files.get(f"game/data/battle/{table}.json")
+        lst = doc.get(table, []) if isinstance(doc, dict) else []
+        return [r for r in lst if isinstance(r, dict) and isinstance(r.get("id"), str)]
+    skills, enemies = rows("skills"), rows("enemies")
+    refs = {"skills": {s["id"] for s in skills}, "enemies": {e["id"] for e in enemies},
+            "statuses": {s["id"] for s in rows("statuses")}, "flags": flags}
+    errs, warns = boss_errors(skills, enemies, refs)
+    for e in errs:
+        rep.err(e)
+    for w in warns:
+        rep.warn(w)
+    sim = files.get("game/data/battle/sim_policies.json")
+    for name, kit in (sim.get("loadouts", {}) if isinstance(sim, dict) else {}).items():
+        for f in kit.get("flags", []) if isinstance(kit, dict) else []:
+            if f not in flags:
+                rep.err(f"sim_policies.loadouts.{name}: undeclared story flag '{f}'")
+    return collect_keys([e.get("phases", []) for e in enemies] + [e.get("weak_point", {}) for e in enemies])
 # --- Read and openings (M1-CMB-03, formulas.md § Openings, battle_ctb.md § Read) -----------------
 
 OPENINGS = {"roll", "normal", "preemptive", "ambush"}

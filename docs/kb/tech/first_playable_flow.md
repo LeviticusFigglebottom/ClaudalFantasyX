@@ -47,12 +47,12 @@ BattleRequest.start(&"ch02_tideline", &"ch02/haluna", &"Beach", &"some_declared_
 
 | API | Meaning |
 |---|---|
-| `static start(encounter, return_location, return_spawn, victory_flag := &"") -> BattleRequest` | `make()` + `submit()`: records the request and opens the field battle scene through `SceneRouter.change_scene`. Returns the request (adjust `active`/`reserve`/`rng_seed` at once if needed). |
+| `static start(encounter, return_location, return_spawn, victory_flag := &"", escape_at := &"") -> BattleRequest` | `make()` + `submit()`: records the request and opens the field battle scene through `SceneRouter.change_scene`. Returns the request (adjust `active`/`reserve`/`rng_seed` at once if needed). |
 | `static make(...) -> BattleRequest` | Builds one with the data file's party (`active` [rhen, asha], `reserve` [toma]) and `seed`; records nothing. |
 | `static submit(r)` | Records `r` and opens `field_battle.scene`. |
 | `static pending()`, `take()`, `clear()` | The one waiting request; `take()` returns and forgets it. |
 | `static change_scene: Callable(path)` | Test hook; unset = the router. |
-| fields | `encounter`, `active`, `reserve`, `rng_seed`, `return_location`, `return_spawn`, `victory_flag` |
+| fields | `encounter`, `active`, `reserve`, `rng_seed`, `return_location`, `return_spawn`, `victory_flag`, `escape_spawn` (M2-FP-05; empty = `return_spawn`) |
 
 `FieldBattle` (`game/flow/field_battle.gd`, `extends BattleController`) and `field_battle.tscn`, an
 **inherited scene** of `battle_sandbox.tscn` whose root uses the script; no Combat or UI file is edited.
@@ -62,13 +62,25 @@ BattleRequest.start(&"ch02_tideline", &"ch02/haluna", &"Beach", &"some_declared_
   `persist_progress` stays on, so `BattleVitals` carries HP/MP in and out, items come from the real
   inventory and Lattice gains are saved. With no request pending it is the plain sandbox fight.
 - **Result panel:** after a victory or an escape it is re-shown with **Return only** (a story fight is not
-  replayed). After a defeat it keeps **Fight again** (same start; `BattleVitals` records nothing on a
-  defeat) and **Return**.
+  replayed). After a defeat (M2-FP-05) it offers **Fight again** (same start; `BattleVitals` records
+  nothing on a defeat) and **Return to last save** (`CHOICE_LAST_SAVE`, `FLOW_RESULT_LAST_SAVE`; it reads
+  **Return to title**, `FLOW_RESULT_TITLE`, when there is no save record).
 - **Return** → `return_to_field() -> bool`: sets `victory_flag` with `Game.set_flag` on a victory only,
-  then `SceneRouter.world_return.go_to(return_location, return_spawn)`. It runs once. After a defeat the
-  party goes back with the vitals it had before the fight and the flag unset, so the field can offer the
-  fight again (chosen over a forced reload: there is no save in the prologue-to-beach stretch to reload).
-- Injection points: `request`, `travel: Callable(location_id, spawn) -> bool`, plus the controller's own
+  then `SceneRouter.world_return.go_to(return_location, spawn)`, where `spawn` is `return_spawn`, or
+  `escape_spawn` after an escape when the request names one. It runs once, and never after a defeat, so
+  a field trigger cannot be walked past by losing.
+- **Return to last save** → `return_to_last_save() -> Error` (defeat only, once): loads the newest
+  readable record, autosave included, with `TitleSaveEntry.continue_game` (the title's Continue). In the
+  game `WorldReturn` is armed and routes on `EventBus.game_loaded`; when it is not (a scene opened on its
+  own, tests) FieldBattle travels to `WorldReturn.resolve(Game.state)` itself. With no record it opens
+  the title (`RETURN_SCENE`, `res://game/core/boot.tscn`).
+- **Haluna:** the story passes `first_playable.json` `haluna.battle_escape_spawn` (`BeforeBattle`, on the
+  beach 5 m seaward of the trigger strip, facing it) as the escape spawn, so the party reaches
+  `BattleReturn`, past the strip, only by winning. Known gap: a save record made in Haluna before the
+  win with no respawn (a chapter autosave; none is written in the first playable today) would continue at
+  the location's own spawn, `Shrine`, past the strip.
+- Injection points: `request`, `travel: Callable(location_id, spawn) -> bool`, `open_title: Callable(path)`,
+  `save_system` (null = the autoload), plus the controller's own
   `auto_start` / `pacing_scale`.
 - `WorldReturn.go_to` does not need `enabled` (that only gates the return on load), so field travel works
   in the game and is recorded in tests.
@@ -99,3 +111,21 @@ title) once.
 The prologue test relies on an `instant` sequencer finishing `play()` without yielding (true of the
 stub); if the presentation body ever yields in instant mode, drive it with `await` from a test that the
 runner can wait on, or keep instant mode synchronous.
+
+## Hand-offs never get lost (M2-FP-09, review-sweep-K)
+
+`SceneRouter.change_scene` ignores a request made while another swap is running (it warns and returns), and `WorldReturn.go_to` can't tell. A flow step that set its "done" latch before such a call could strand the player. So every first-playable hand-off goes through **`FlowRouting`** (`game/flow/flow_routing.gd`):
+- `when_free(change)` waits a frame at a time until the router is idle, then makes the change exactly once.
+- `change_scene(path)` and `go_to(location, spawn)` are its two forms.
+
+The callers are `FieldBattle` (return to the field, the last save, the title or the end card), `EndCard`, `BattleRequest.submit`, `HalunaStory` and `FirstVerseScene`. `tests/unit/test_flow_routing.gd` drives a busy router by hand, and fails if any of these files calls `SceneRouter.change_scene` directly. Test hooks: `busy`, `next_frame` and `record`.
+
+Also in M2-FP-09:
+- `HalunaZone` reads the arrival flag from `first_playable.json` (`haluna.intro_flag`).
+- The zone sun follows the close-up lighting rule (`face_key_shadow_normal_bias` 3.0 on the zone root; character_shading.md "Shadows on characters"), and so does the first-verse set's sun.
+- `tests/integration/test_fp_thread.gd` now covers the full loop on real data:
+  - it drives the story's real trigger and request;
+  - it loses twice, using Fight again between, then Return to last save;
+  - it wins, then saves at the shrine and loads the record back;
+  - it calls the Drownbell and reaches the end card.
+- `test_the_battle_strip_cannot_be_walked_around` checks that every line from the beach to the shrine crosses the strip, and that walking inland from the causeway head is stopped.

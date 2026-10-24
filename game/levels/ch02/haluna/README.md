@@ -11,8 +11,9 @@ quality: capsules for people, invisible collision, composed-but-rough camera vol
 | `haluna_zone.gd` (`HalunaZone`) | Root. Releases the mood scene's five shot cameras, builds collision, `place_at(spawn, yaw_deg)` (moves Rhen, snaps the director), `player` / `director` / `stage` accessors, `set_beach_cast_visible()` |
 | `haluna_collision.gd` (`HalunaCollision`) | Runtime walk collision from the mood scene (all tuning is its exports in the scene) |
 | `haluna_actor_pose.gd` (`HalunaActorPose`) | Holds a still bone pose on an imported character (Asha kneeling on the beach) |
+| `haluna_zone_dresser.gd` (`HalunaZoneDresser`) | The mood scene's `HalunaDresser` with `_ready` emptied: the zone dresses it before it enters the tree (see "Entry hitch") |
 
-## Collision (built in `_ready`, ~100 ms, ~550 shapes, deterministic)
+## Collision (~100 ms, ~550 shapes, deterministic; built off the tree, see "Entry hitch")
 
 - **Ground**: one `HeightMapShape3D` sampled from `HalunaTerrain.height_at` over `walk_rect`
   (x −160…40, z −130…130) on the terrain mesh's own 1 m grid.
@@ -24,12 +25,55 @@ quality: capsules for people, invisible collision, composed-but-rough camera vol
 - **Bounds**: a sea wall `wade_m` (5 m) past the waterline, open only where the dock crosses it
   (`shore_gaps`), and walls on the rect's north, south and west edges.
 
+## Entry hitch (M2-FP-05)
+
+Entering the zone through `SceneRouter` used to cost one frame of 1.6–1.9 s. Profiling each node's
+`_ready` showed where it went: the mood scene dressing itself (`HalunaDresser`, ~0.6 s), Asha's
+character materials loading in `HalunaActorPose` (~1 s), the sea building its ocean grid (~40 ms) and
+our collision (~0.1 s).
+
+All of it now happens in `HalunaZone.prebuild()`, which the zone runs on
+`NOTIFICATION_SCENE_INSTANTIATED` when it is instantiated **off the main thread**, i.e. on the
+`WorkerThreadPool` thread where `SceneRouter` instantiates scenes under its opaque fade. Nothing it
+touches is in the tree yet:
+
+1. the mood scene's `Dresser` node gets the `HalunaZoneDresser` script (`HalunaZoneDresser.adopt`
+   keeps its exported values), whose `_ready` does nothing, and `dress()` runs (terrain, kit, plants,
+   scatter); Environment's files are not edited;
+2. `HalunaCollision.build()` runs; it now takes every placement from local transforms
+   (`HalunaCollision.frame_in`) instead of global ones, so it works off the tree;
+3. `HalunaActorPose.assign_materials()` loads the cast's materials (the bone pose itself still runs in
+   `_ready`: off the tree the skeleton's global poses are not up to date);
+4. the sea (`WaterSurface`) is handed the same ocean grid through its public `surface_mesh`, so its
+   `_ready` builds nothing.
+
+An instance made on the main thread (tests, ShaderPrewarm's off-tree material scan, the screenshot
+capture) is not prebuilt automatically: that would only move the cost into another main-thread frame,
+and the prewarm scan would pay it twice. It builds in `_ready` as before, or the caller runs
+`prebuild()` first (`test_the_prebuild_matches_the_in_tree_build` does, and checks that the result is
+the same zone: shapes, their transforms, pieces, terrain, the pose). No router change was needed.
+
+Measured with the router's own `last_swap_stats` (`scene_swap_probe.tscn -- --to=res://game/levels/ch02/haluna/haluna.tscn`,
+boot → Haluna, headless, 4 shared CPUs, five fresh processes each, load average ~1.3):
+
+| | swap frames (`frame_ms[0]`, the frame that adds the zone) | median | `instantiate_ms` (worker thread, under the fade) |
+|---|---|---|---|
+| Before | 1850, 1869, 1607, 1665, 1684 | **1684 ms** | 7–9 |
+| After | 32, 33, 44, 33, 31 | **33 ms** (budget 50) | 1550–1730 |
+
+The transition is not shorter: the same ~1.6 s is spent behind the black fade instead of in one frozen
+frame. What is left in the swap frame is mostly the save shrine's glimmer field building its motes
+(12–20 ms) and the zone's other `_ready`s. The dummy renderer draws nothing, so pipeline compiles on a
+real GPU are not in these numbers; `ShaderPrewarm` covers those (its scan sees the undressed mood
+scene, as before this change).
+
 ## Spawns (`Spawns/`, root level)
 
 | Spawn | Position | Facing | What |
 |---|---|---|---|
 | `Beach` | (−1.0, 0.04, 8.0) | west | Where Rhen washes up, at the waterline (Cutscene A) |
-| `BattleReturn` | (−24.0, 1.38, 6.5) | west | After the tideline battle: just inland of the battle strip, before the lane-1 gate |
+| `BattleReturn` | (−24.0, 1.38, 6.5) | west | After winning the tideline battle: just inland of the battle strip, before the lane-1 gate |
+| `BeforeBattle` | (−13.0, 0.71, 6.5) | west, toward the strip | After fleeing it (M2-FP-05, `haluna.battle_escape_spawn`): on the beach about 5 m seaward of the strip, so the way on is the fight again. A defeat never comes back here: it offers Fight again or the last save |
 | `Village` | (−52.0, 1.84, −2.6) | east, down lane 1 | The lane by the market |
 | `Shrine` | (−67.0, 2.02, 44.3) | south, at the shrine | The location's default spawn (the shrine is at z 46.6) |
 | `CausewayHead` | (4.0, 0.73, −118.0) | north | The beach's north end, 4 m short of the causeway trigger |

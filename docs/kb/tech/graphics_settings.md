@@ -26,7 +26,56 @@ var ops := gs.plan("low")                 # pure: no side effects; what apply() 
 - **Gates.** A player setting can only turn a feature **off**. It never adds fog, SSR, or GI to a zone that wasn't authored with it. For gated properties, the zone's authored value is captured once in object metadata (`hymn_authored_<property>`), and the result is `authored AND allowed`. A cutscene that changes a gated property at runtime calls `GraphicsSettings.set_authored(env, "volumetric_fog_enabled", true)`.
 - **GI mode is a ceiling.** `off` disables SDFGI and hides every VoxelGI node in group `gi_voxel`. `voxel_gi` allows VoxelGI only. `sdfgi` allows both. Each zone still picks its technique (SPEC §8.1), and LightmapGI is baked and always on. **Zones must put VoxelGI nodes in group `gi_voxel`** (Environment role).
 - **FSR2 runs its own temporal AA**, so `plan()` forces `use_taa = false` whenever `scaling_mode` is `fsr2` (`rules.temporal_upscaler_modes` in the data).
-- **When to apply.** Call `apply` from the settings menu and after each zone load. A zone brings its own Environment, so its gates and quality need applying again. Shadow-atlas resizes reallocate GPU memory, and SDFGI changes make GI reconverge visibly, so apply behind a fade, never per frame. None of these settings needs a restart.
+- **When to apply.** The game does this through `GraphicsRuntime` (next section): boot, every SceneRouter zone load, and the settings menu. A zone brings its own Environment, so its gates and quality need applying again. Shadow-atlas resizes reallocate GPU memory, and SDFGI changes make GI reconverge visibly, so apply behind a fade, never per frame. None of these settings needs a restart.
+
+## Applying in the game (M1-ARC-15)
+
+Before M1-ARC-15 nothing in the game called `apply`, so every preset ran the authored (Ultra) paths. `game/core/graphics_runtime.gd` (`class_name GraphicsRuntime`, Systems-owned) now owns the game's one `GraphicsSettings` and applies it at three points:
+
+| When | Who calls | What runs |
+|---|---|---|
+| Boot, before the title draws | `boot.gd` `_ready`: `GraphicsRuntime.boot(get_viewport())` | Loads `user://settings.cfg` [graphics] (no file: `default_preset`). Applies the **global part**: the Viewport and RenderingServer operations. Arms the per-scene hook. |
+| Every zone load | `SceneRouter._swap` → `attach_graphics_hook(node, stats)`, which connects the new scene root's `ready` signal (one-shot) | `GraphicsRuntime.on_scene_entered(root)` → `apply_scene(root)`: the **per-scene part**. `stats["graphics_ops"]` records the count. |
+| A settings change | The settings menu (not built yet: M1-UI-10): `select_preset(id, viewport)` / `set_override(key, value, viewport)` | Saves `settings.cfg`, then `apply_now(viewport)`: the global part plus the per-scene part on `current_scene`. |
+
+The per-scene part, `apply_scene(root)`, does the following:
+- **Operations.** It runs the Environment, sky and group operations of `plan()` against the first `WorldEnvironment` under the root. Those are the gates, `sky_detail` uniforms, `gi_voxel` and the `vegetation_*` groups.
+- **Shader families.** It calls `apply_tiers(root)`, which swaps foliage to `vegetation_foliage_low` on Low.
+- **System tiers.** `apply_system_tiers(root, preset)` sets the tier of each system that keeps its own preset map:
+  - `WaterSurface.quality_for_preset`
+  - `WeatheringTide.quality_for_preset`
+  - `UndertowStorm.set_quality(preset)`
+  - `GlimmerField.set_quality(preset)`
+  - `CharacterShaderTiers.apply_to_tree`
+
+  A node whose tier already matches is not touched, so a storm or glimmer field is not rebuilt for nothing.
+
+Notes:
+- **Why the root's `ready`.** It fires on the main thread, with the scene in the tree, after every child's `_ready`, and before the first frame draws the scene. HalunaZone's worker-thread prebuild has finished by then. When Haluna is instanced on the main thread, its mood dresses itself in `_ready`, so the dressed nodes exist in either case. The hook adds no frame and runs under the opaque fade.
+- **Disarmed outside the game.** The test runner, screenshot captures (`tests/screenshots/capture.tscn`) and `tools/gpu_bench` never call `boot()`, so their scenes keep rendering their authored tiers, as before. `boot_title` renders `boot.tscn` and so does apply the default preset, but that is a 2D screen, which the viewport's 3D settings don't change.
+- **Tests.** `tests/integration/test_graphics_runtime.gd` covers every point above. It boots with Low saved, loads a fixture through the router hook (a cumulus sky with authored SSR and SDFGI, the three vegetation groups with a foliage-family material, a sea, a weathering tide and an Undertow storm) and asserts each tier against the data. It also checks the disarmed hook, the menu path (select High, then a `vegetation_detail` override, both saved) and the real Haluna zone (Low sky uniforms, water and weathering).
+- **Known gaps.**
+  - **ShaderPrewarm stages the incoming scene's authored materials.** On Low the swapped variants (water low, weathering low, foliage low, the character low shaders) compile on their first draw, which comes after the hook, under the fade. Making the prewarm stage the preset's variants is a Rendering follow-up.
+  - Characters spawned after the zone loads need `CharacterShaderTiers.apply_to_tree(node, CharacterShaderTiers.tier_for_preset(GraphicsRuntime.settings().preset_id))`.
+  - Zones still have to tag their vegetation groups (M1-ENV-05). `apply_tiers` after a zone load is now done here.
+
+### Sky radiance and a turning sun (RND-12 S2)
+
+This was measured on lavapipe with `tools/gpu_bench/sky_sun_probe.gd` (haluna_mood, H01, `Sky.process_mode` Incremental, the sun turned 120° about Y). Lavapipe draws through the same Forward+ sky path as a GPU, so the **behavior** carries over. The frame counts depend on the renderer.
+
+- **Haluna's sun never reaches the sky shader.** `Sun.sky_mode` is **Light Only** (`sky_mode = 1`), following the water.md convention that stops the sky's sun disc doubling the water's glint. In that mode Godot hides the light from sky shaders, so `env_sky_cumulus` always runs with `LIGHT0_ENABLED` false. Its sun glow, sun disc and cloud lighting use the fallback: light from the zenith, clouds at 0.3.
+  - Turning the sun changed neither the visible sky (pixel diff 0.0000) nor the radiance. The mirror sphere stayed at the noise floor (≈ 0.001) for 64 frames.
+  - This is why RND-12's `--spin-sun` measured no re-render cost. Nothing depends on the sun, so nothing re-renders.
+  - The same Light Only setting is on undertow_test, water_test and haluna_kit_sheet.
+- **With the sun visible to the sky** (`SKY_MODE_LIGHT_AND_SKY`), the Incremental radiance **does** follow it.
+  - Godot dirties the sky's reflection when a sky-visible directional light's direction, colour or energy changes.
+  - The mirror sphere's difference from its pre-turn image rose from 0.0027 (1 frame) to 0.0064 (64 frames). Its difference from the fully re-rendered reference fell from 0.0041 to 0.0012, the noise floor.
+  - So the cubemap is re-rendered and the roughness layers are filtered over the following frames. The mirror mean went from 0.664 to 0.666 against the reference's 0.666.
+  - The sky with the sun visible is also brighter: mirror mean 0.66 against 0.57 with Light Only.
+- **What to check on a GPU** (Rendering / Art Director):
+  1. Decide whether Haluna's sky should see the sun. Today the clouds are lit from the zenith whatever the time of day. Enabling it means re-solving the doubled glint another way, for example by hiding the sky's sun disc in the reflection pass with `AT_CUBEMAP_PASS`, which the shader already branches on. All five `haluna_*` baselines would drift.
+  2. If it does: run `gpu_bench --variants=sky --spin-sun=<deg>` with `Sun.sky_mode` set to Light and Sky. Check the frame p99 for the time-sliced re-render, and run this probe on the GPU to see how many frames the reflections take to converge.
+  3. A sun that moves continuously dirties the radiance every frame. Watch whether the Incremental mode's higher roughness layers ever finish, because ambient light comes from them. A slow time-of-day sun may need to be stepped, for example re-aimed every N frames.
 
 ## Settings and the 4.6 API each one drives
 

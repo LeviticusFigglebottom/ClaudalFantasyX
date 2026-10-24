@@ -20,6 +20,12 @@ signal turn_ended(actor: BattleCombatant, changes: Array[Dictionary])
 ## A turn eaten by Stop or Sleep (reason &"stop" wins if both). Doom still ticks on it, so
 ## `changes` uses the turn_ended format (doom_tick / doom only).
 signal turn_lost(actor: BattleCombatant, reason: StringName, changes: Array[Dictionary])
+## Boss mechanics (BossMechanics). Each signal's meaning and arguments: battle_ctb.md "The Drownbell" (VFX hooks).
+signal phase_changed(enemy: BattleCombatant, phase_id: StringName)
+signal combatants_joined(added: Array[BattleCombatant])
+signal charge_started(actor: BattleCombatant, skill_id: StringName, turns: int)
+signal charge_broken(enemy: BattleCombatant, skill_id: StringName)
+signal field_cleared(field_id: StringName, fallen: Array[BattleCombatant])
 
 const OUTCOME_VICTORY := &"victory"
 const OUTCOME_DEFEAT := &"defeat"
@@ -48,6 +54,10 @@ var party_modifier := Callable()
 ## Optional reward hook: (credited ids: Array[StringName]) -> int lume multiplier, e.g.
 ## `equipment_effects.currency_multiplier` (Full Net). Unset = x1. See currency_award().
 var currency_multiplier := Callable()
+## Set story flags, passed in before setup() (the engine never reads Game): "requires_flag" skills.
+var story_flags: Array[StringName] = []
+## Fields in force (a phase row's "field", e.g. &"flood"); a "clears_field" skill ends one.
+var fields: Array[StringName] = []
 ## How the battle opens (BattleOpening: normal, preemptive or ambush). Set it after setup() and
 ## before begin(); live play uses BattleOpening.choose(self). Normal leaves the rolled ticks be.
 var opening: StringName = BattleOpening.NORMAL
@@ -70,6 +80,7 @@ func setup(
 	party_active.clear()
 	party_reserve.clear()
 	enemies.clear()
+	fields.clear()
 	for cid in active_ids:
 		party_active.append(_make_party_member(cid))
 	for cid in reserve_ids:
@@ -82,7 +93,7 @@ func setup(
 		n += 1
 		var row: Dictionary = db.enemies[StringName(str(eid))]
 		enemies.append(BattleCombatant.from_dict(StringName("%s#%d" % [eid, n]), BattleCombatant.TEAM_ENEMY, row))
-	_rebuild_roster()
+	rebuild_roster()
 
 
 ## Starting state for tests and capture fixtures (never play). Call after setup() and before
@@ -173,6 +184,10 @@ func preview(
 			if not changes.has(t):
 				changes[t] = {}
 			changes[t][CtbTimeline.WAKES] = 0
+		if BossMechanics.would_break(current, t, sk):  # the weak point's last hit (assumed to land)
+			if not changes.has(t):
+				changes[t] = {}
+			changes[t][CtbTimeline.BREAKS_CHARGE] = 0
 	return timeline.predict(
 		count, current, int(sk.get("rank", Formulas.DEFAULT_RANK)), recipient, int(sk.get("delay_ranks", 0)), changes
 	)
@@ -368,11 +383,13 @@ func _rejoin_time(c: BattleCombatant) -> int:
 func run_enemy_turn() -> ActionResult:
 	if outcome != &"" or current == null:
 		return null
-	if is_auto_turn():
+	# A telegraphed skill counts down (or fires) on every acted enemy turn, as the timeline shows.
+	var charged := BossMechanics.charged_choice(self, current) if current.team == BattleCombatant.TEAM_ENEMY else {}
+	if is_auto_turn() and charged.is_empty():
 		return _run_auto_turn()
 	if current.team != BattleCombatant.TEAM_ENEMY:
 		return null
-	var choice := EnemyAI.choose(self, current)
+	var choice := charged if not charged.is_empty() else EnemyAI.choose(self, current)
 	if choice.is_empty():
 		var idle := ActionResult.failed(current.id, &"", &"no_valid_action")
 		_end_turn(current, Formulas.DEFAULT_RANK)
@@ -429,6 +446,9 @@ func _checked(
 ) -> ActionResult:
 	if bool(sk.get("magic", false)) and actor.has_status(&"silence"):
 		return ActionResult.failed(actor.id, skill_id, &"silenced")
+	var refused := BossMechanics.refusal(self, sk)
+	if refused != &"":
+		return ActionResult.failed(actor.id, skill_id, refused)
 	var valid := _valid_targets(actor, sk, targets)
 	if valid.is_empty():
 		return ActionResult.failed(actor.id, skill_id, &"no_valid_target")
@@ -454,6 +474,7 @@ func _execute(
 		if lands != t:
 			hit["reflected_from"] = t.id
 		result.hits.append(hit)
+	BossMechanics.after_action(self, actor, sk, result)
 	action_resolved.emit(result)
 	result.end_of_turn = _end_turn(actor, int(sk.get("rank", Formulas.DEFAULT_RANK)))
 	return result
@@ -528,7 +549,7 @@ func swap(out_id: StringName, in_id: StringName) -> bool:
 	entering.participated = true
 	party_active[out_idx] = entering
 	party_reserve[in_idx] = leaving
-	_rebuild_roster()
+	rebuild_roster()
 	_prune_provoke()
 	_sync_low_hp()
 	if current == leaving:
@@ -762,6 +783,7 @@ func _end_turn(actor: BattleCombatant, rank: int) -> Array[Dictionary]:
 	changes.append_array(_tick(actor))
 	actor.turns_taken += 1
 	turn_ended.emit(actor, changes)
+	BossMechanics.check_phases(self)
 	if not _check_outcome():
 		_advance()
 	return changes
@@ -934,12 +956,13 @@ func _swap_in_time(leaving: BattleCombatant, entering: BattleCombatant) -> int:
 	return now + Formulas.action_delay(entering.agility, Formulas.DEFAULT_RANK, entering.speed_mult())
 
 
-func _rebuild_roster() -> void:
+## Puts the field (active party, then enemies in order) back on the timeline after it changed.
+func rebuild_roster() -> void:
 	timeline.set_roster(_field())
 
 
 ## Hero `level` is the fixed value from characters.json (ADR 0012): growth comes only from
-## Lattice stats, so a modifier that touches `level` is undone.
+## Lattice stats, so a modifier that touches `level` is undone. Flag-locked skills are dropped.
 func _make_party_member(cid: StringName) -> BattleCombatant:
 	var c := BattleCombatant.from_dict(cid, BattleCombatant.TEAM_PARTY, db.characters[cid])
 	var fixed_level := c.level
@@ -948,6 +971,7 @@ func _make_party_member(cid: StringName) -> BattleCombatant:
 		if c.level != fixed_level:
 			push_error("BattleEngine: party_modifier changed %s's level; hero level is fixed (ADR 0012)" % cid)
 			c.level = fixed_level
+	BossMechanics.lock_skills(c, db, story_flags)
 	return c
 
 

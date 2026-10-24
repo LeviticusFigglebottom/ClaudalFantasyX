@@ -16,6 +16,7 @@ Owner: Combat Designer-Engineer. Formulas: [formulas.md](formulas.md).
 | `BattleItemRules` | Static item rules shared by play and previews (who an item may target, fells, downs). `BattleEngine` keeps its `item_*` names as wrappers. Split out in M1-CMB-04 for the line cap. |
 | `BattleSwell` | Swell gauges (M1-CMB-04): fill modes from `swell.json`, filled from `action_resolved`, and techniques resolved with their input's result passed in. |
 | `SwellTimingRing` | Rhen's Swell input logic (lantern-flicker timing ring). It is Node-free, and the HUD's `SwellRingView` draws it. |
+| `BossMechanics` | Boss rules from data (M2-FP-06): phases, telegraphed charges and weak points, summons, fields, flag-locked skills. See "The Drownbell" below. |
 | `SwellInput` | Base of every Swell input (M2-CMB-01): `advance`, `press(button)`, `release(button)`, `cancel`, `result`, `buttons_used`; `create(row)` builds one by kind and `scripted_result(row, quality)` plays one at a fixed quality for the simulator. |
 | `SwellChant`, `SwellBrace`, `SwellGlyph` | Asha's verse chant, Toma's tide brace and Ysolde's glyph trace (M2-CMB-01). Node-free; no HUD panel yet (M2-UI-03). |
 | `BattleOpening` | Preemptive and ambush openings (M1-CMB-03): which opening an encounter gets (`choose`, one RNG draw when rolled) and the tick shift `begin()` applies. |
@@ -59,7 +60,7 @@ Swapping remains the elegant answer (SPEC §6.1), but a naive party now wins abo
 
 **Items and rewards (M1-CMB-06):** `use_item(item_id, targets, items: BattleItemSource) -> ActionResult` (hits carry `amount`, `mp_amount`, `revived`, `statuses_removed`, `delay_ticks`, and `ActionResult.item_id` is set). For play, pass `InventoryItemSource.new(item_db, inventory)`; its `usable()` lists the Items menu. Use `item_can_target(action, c)` to filter the cursor. After victory, call `currency_award()` (set `currency_multiplier = equipment_effects.currency_multiplier` first) and `drop_awards()`. For equipment, compose `engine.party_modifier = EquipmentEffects.compose([progress.apply_to, fx.apply_to])`; skill hits then report `element`. Rules: formulas.md § Items, § Equipment in battle, § Rewards.
 
-`TurnEntry` fields: `combatant_id`, `time`, `team`, `skipped` (Stop/Sleep will eat it), `is_preview`, and `doom` (Doom countdown shown on that turn, 0 = none; the unit falls after the turn showing 1, so it has no later entries).
+`TurnEntry` fields: `combatant_id`, `time`, `team`, `skipped` (Stop/Sleep will eat it), `is_preview`, `doom` (Doom countdown shown on that turn, 0 = none; the unit falls after the turn showing 1, so it has no later entries), and `intent` (the telegraphed skill this turn is committed to, &"" otherwise; see "The Drownbell").
 
 ## Data
 
@@ -137,6 +138,55 @@ HP, MP and the carried statuses (`game/data/world/party_rest.json`: Poison, Ston
   2. If no living reserve member is left, the fallen member keeps its slot at 0 HP. It takes no turns, and the player can revive it or swap it out on any living member's turn.
   3. If nobody in the party is standing (only possible after a victory where the last foe and the last active member fell together), the active members get up with 1 HP and their stone breaks (`BattleVitals.raise_modifier`). A fight never opens already lost (pillar 4).
 - Tests: `tests/unit/test_battle_vitals.gd` (the lineup rule, in and out on a bare engine, and the live controller: carried HP and Poison, a carried KO swapped out, victory write-back with Retry starting from it and a shrine heal clearing it, defeat recording nothing, and fixtures and tests ignoring vitals).
+
+## The Drownbell (M2-FP-06)
+
+The slice boss (vertical_slice.md §5): encounter `drownbell` (scripted, no escape), the id Cutscene B's `<<event start_battle drownbell>>` names. Party Rhen, Asha and Toma, no reserve. Phase 1 is **the Toll**; at 40% HP it becomes **the Flood**. Everything below is data on generic engine rules in `game/battle/boss_mechanics.gd` (`BossMechanics`, static helpers the engine calls at fixed points; headless, all randomness on `engine.rng`), so later bosses reuse them.
+
+**Data shape.**
+
+| Where | Field | Meaning |
+|---|---|---|
+| `enemies.json` | `phases: [{id, at_hp_pct, name_key?, prompt_key?, skills?, ai?, affinities?, stats?, delay_immune?, field?, spawn?: [enemy ids], remove?: [enemy ids]}]` | Applied in order, once each, at the end of any turn that leaves the enemy alive at or below `at_hp_pct` of max HP (a killing blow skips it). `skills`, `ai` and `affinities` replace; `stats` overrides combat stats (never HP, MP or level); `field` raises a field; `spawn` adds fresh enemies; `remove` fells living ones. Any charge in progress ends. `turn_mod` in the AI counts from the phase's start (`ai_turn_base`). |
+| `enemies.json` | `weak_point: {hits, max_delay, name_key}` | While the enemy is charging, every landed **physical** hit from an attacker whose action delay for that skill (`action_delay(agi, rank, speed)`) is at most `max_delay` ticks counts. `hits` of them break the charge. |
+| `enemies.json` | `field: "flood"` | This combatant is bound to the field and falls when it clears. |
+| `skills.json` | `charge: {skill, turns}` | Telegraph: the user commits to `skill`, which fires on its own acted turn `turns` turns from now (the firing one counted), in place of its AI. Turns lost to Stop/Sleep do not count down. |
+| `skills.json` | `summon: enemy id` | Adds one enemy (it first acts a default-rank delay from now; ids keep counting, e.g. `spawn_polyp#4`). |
+| `skills.json` | `clears_field: field id` | After the hits, ends that field; every combatant bound to it falls. Refused at no cost (`no_field`) while the field is down. |
+| `skills.json` | `requires_flag: story flag` | A party member only knows the skill when the flag is in `BattleEngine.story_flags`. |
+| AI | condition `field_active: "flood"`, selector `largest_ally` | The living ally with the highest max HP (adds tending their boss). |
+
+**Engine API.** `BattleEngine.story_flags` (set before `setup()`; the engine never reads `Game`) and `fields` (fields in force). Signals: `phase_changed(enemy, phase_id)`, `combatants_joined(added)`, `charge_started(actor, skill_id, turns)`, `charge_broken(enemy, skill_id)`, `field_cleared(field_id, fallen)`. Hits carry `weak_point_hits` (the count so far) and `charge_broken` (the silenced skill). `rebuild_roster()` is public for spawns.
+
+**Phase 1, the Toll.** The bell (3000 HP, delay-immune, agility 12) opens with *Gathering Toll* (rank 2, `charge: {toll, 2}`) on its first turn and every third turn after. *The Toll* is an all-foes physical hit (power 8) with a 3-rank delay push: when it lands, the whole party slides back and the bell gets its next turns sooner. Its rim is the weak point: 3 hits at 200 ticks or less. In practice that is Rhen (Attack 174 ticks, Quick Hit 116); Toma (300) and Asha (240) only qualify under Haste. Toll is physical, so Toma's Shield Wall (Protect, from the Lattice) halves it, and Challenge (Provoke) pulls the *Hood Slam*s off Asha while Rhen works the rim.
+
+**Phase 2, the Flood** (40% HP). The phase raises the field `flood`, spawns two Spawn-Polyps (180 HP, bound to the field) and swaps the bell's kit: while the field is up it rouses a new polyp whenever fewer than two stand, otherwise it casts *Floodtide* (all foes, magical, power 14; retuned twice after the Swell merges, balance_report.md). Each polyp's *Feeding Tide* heals the bell (power 20) each of its turns, more than the party deals, and a killed polyp is replaced. Once the field is gone the bell falls back to *Hood Slam* and an *Undertow Surge* (power 5) every third turn.
+
+**The Ilun stand-in** ([ADR 0026](../decisions/0026-drownbell-ilun-stand-in.md)). The full Vowbound system (SPEC §6.3: the summon replaces the party, with its own HP and Swell) is out of scope for the first playable. Asha gets **Call Ilun** (`call_ilun`, 12 MP, rank 4, magical power 8 to all foes) with `requires_flag: ch03_ilun_bound` (Cutscene B sets it) and `clears_field: flood`: Ilun's *Floodnet* washes the polyps away and ends the field for good. The command is greyed out (and refused at no cost) while no field is up. When Vowbound land, replace the skill with the real summon and keep the field rule as Floodnet's effect.
+
+**Timeline honesty (pillar 4).** `TurnEntry.intent` is the skill a turn is already committed to. `CtbTimeline.predict()` marks the charge on the turn it fires, uses that skill's rank for the next delay, and applies its all-foes delay push to every predicted foe (with the diminishing returns of play). A candidate action that would land the breaking hit on the rim (`BossMechanics.would_break`) removes the toll from its preview (pseudo-status `BREAKS_CHARGE`, assumed to land like every preview). Spawns join the timeline the moment they appear. What the engine cannot predict: when a damage threshold will be crossed, and future gathers.
+
+**How the HUD shows it** (`game/battle/scene/battle_boss_hud.gd`, `BattleBossHud`, a view). The timeline chip of the toll's turn reads "The Drownbell · The Toll" (`TurnTimeline.intent_labels`). The encounter's `prompt_key` and each phase's `prompt_key` are the one tutorial line per phase (vertical_slice.md §5), shown on the help line when the next command menu opens. Float words over the bell: the gathered skill, "Rim 1/3" and so on for each rim hit, "The Drownbell's Rim breaks. The Toll is silenced." for a break, and "The water field clears." over each polyp Floodnet takes. New fighters take the first free enemy slot (`BattleStage.add_enemy`). Live battles pass the story flags in through `BattleBossHud.live_flags` (`Game.get_flag`); tests and capture fixtures pass none. Placeholder stand-ins: `battle_sandbox.json` `drownbell` (a large dark-bronze cylinder with a faint cyan emission) and `spawn_polyp` (small, cyan).
+
+**Balance** (balance_report.md, `drownbell` suite, loadout `ch03_drownbell` = tier-1 gear, 4 Salt Tonics, 1 Relighting Wick and the flag): naive 0.0%, role answer 79.7%, smart 89.6%, p90 51 actions, 1000 seeds (5000 seeds: 0.0 / 80.3 / 90.4%). The `role_answer` and `smart` policies call Ilun as soon as the field is up (`sim_policies.json` `clear_field_skill`); `smart` heals first when someone is below 45%, which is how most of its losses happen. Tests: `tests/unit/test_battle_boss.gd` (engine, fixture DB), `tests/unit/test_battle_boss_hud.gd` (scene), `tests/integration/test_drownbell_battle.gd` (real data, bands at 200 seeds), `tools/tests/test_boss_validate.py`.
+### VFX hook points (for M2-RND-04, the Drownbell's VFX and flood rig)
+
+Everything below is presentation. The boss's logic is in data and `BossMechanics`, and a VFX node only listens; it never writes combat state, just as `BattleBossHud` doesn't. The clean way to wire in is a new view class (`BattleBossVfx`, say) built the same way as `BattleBossHud`. `BattleController._build_engine` creates the HUD with `BattleBossHud.attached(self, engine)`, after `setup()`. One added line there (or in `BattleBossHud.attached`) can attach the VFX view to the same engine. Keep the controller edit to that one line, because it sits at the lint cap and three branches touch it.
+
+| Moment | Engine signal (`game/battle/battle_engine.gd`) | What it carries | Suggested VFX |
+|---|---|---|---|
+| Toll gathered (telegraph) | `charge_started(actor, skill_id, turns)` | the bell, `&"toll"`, the number of turns until it fires (the timeline marks the firing turn as `TurnEntry.intent`) | Rim glow building; held motes gathering on the hood |
+| Toll fires | `action_resolved(result)` with `result.skill_id == &"toll"` | the hits on all three, plus `delay_ranks` pushed | Shockwave ring over the water; the party's stand-ins knocked back |
+| Rim hit / rim breaks | `action_resolved` (a weak-point hit counts toward `weak_point.hits`), then `charge_broken(enemy, skill_id)` | the bell and the charge it lost | Cracks per hit; a cyan burst and a dull clank on the break |
+| Phase change to the Flood | `phase_changed(enemy, phase_id)`, with `phase_id == &"flood"` | the bell | **Start the flood rise.** haluna.md §2.2: the water goes from −0.7 to +0.6 m over 8 s. The bell submerges. |
+| Polyps appear | `combatants_joined(added)` | the new `spawn_polyp` combatants (the HUD has already seated them on the stage: `ctl.stage.fighter(id)`) | Polyps glowing `spawn_wound` cyan below the surface |
+| Polyp heals the bell | `action_resolved` with `result.skill_id == &"polyp_mend"` | the heal on the bell | Held motes flowing from the polyp to the bell (**held**: sinking and cyan, never rising) |
+| Call Ilun clears the water | `field_cleared(field_id, fallen)` with `field_id == &"flood"`; also `action_resolved` with `skill_id == &"call_ilun"` | the polyps that fell with the field | **Ilun's Floodnet**: **bound** light (steady teal, `glimmer_bound`). Then the water falls back. |
+| The bell dies | `battle_finished(&"victory")`, or `action_resolved` with the bell's `hp` at 0 | — | Its motes **slide seaward**; they do not rise (vertical_slice.md §5) |
+
+**Flood height.** Write it through the global `hymn_water_level` (x = water height now, y = datum; see `weathering_tide.gd` and M1-RND-15). There must be **one publisher per scene**. The battle scene (`battle_sandbox.tscn`, inherited by `game/flow/field_battle.tscn`) has no water today, so the flood rig would be that publisher. Restore the global when the battle leaves the tree; `SceneRouter` also resets the water globals before every swap.
+
+**Data and code paths:** `game/data/battle/encounters.json` (`drownbell`), `enemies.json` (`drownbell`, `spawn_polyp`, including `phases`, `weak_point` and `field`), `skills.json` (`toll_gather`, `toll`, `hood_slam`, `flood_surge`, `undertow_surge`, `rouse_polyp`, `polyp_mend`, `call_ilun`), the placeholder stand-ins in `game/data/ui/battle_sandbox.json` (`stand_ins.drownbell` and `stand_ins.spawn_polyp`), and `game/battle/boss_mechanics.gd` and `game/battle/scene/battle_boss_hud.gd`. Tests: `tests/unit/test_battle_boss.gd`, `test_battle_boss_hud.gd` and `tests/integration/test_drownbell_battle.gd`.
 
 ## Carried Swell (M2-ARC-01)
 

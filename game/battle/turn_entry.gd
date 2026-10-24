@@ -12,10 +12,19 @@ var is_preview := false
 ## Doom countdown shown on this turn (0 = not doomed). The combatant falls at the end of a
 ## turn showing 1, so no later entry for it follows.
 var doom := 0
+## The skill this turn is already committed to (a telegraphed charge, e.g. the Drownbell's
+## toll), or &"" when the combatant will choose then. Pillar 4: the threat shows ahead.
+var intent: StringName = &""
 
 
 func _init(
-	cid: StringName, t: int, team_id: StringName, skip: bool = false, preview: bool = false, doom_count: int = 0
+	cid: StringName,
+	t: int,
+	team_id: StringName,
+	skip: bool = false,
+	preview: bool = false,
+	doom_count: int = 0,
+	intent_skill: StringName = &""
 ) -> void:
 	combatant_id = cid
 	time = t
@@ -23,3 +32,4 @@ func _init(
 	skipped = skip
 	is_preview = preview
 	doom = doom_count
+	intent = intent_skill

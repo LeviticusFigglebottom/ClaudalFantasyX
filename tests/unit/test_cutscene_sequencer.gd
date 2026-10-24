@@ -115,6 +115,29 @@ func test_instant_play_runs_every_cue_and_ends_clean() -> void:
 	_free()
 
 
+func test_leaving_mid_line_returns_to_the_host() -> void:
+	_start(FIXTURE)
+	_drive_until(func() -> bool: return lines_pending > 0)
+	play_result = true
+	zone.remove_child(seq)
+	assert_false(play_result, "released from the line's advance")
+	assert_false(seq.overlay.box.advance_requested.is_connected(seq._on_awaited_plain), "no stale hook left")
+	zone.add_child(seq)
+	seq.instant = true
+	finished_ids.clear()
+	_start(FIXTURE)
+	assert_true(play_result, "the next play works normally")
+	_free()
+
+
+func test_placeholder_cue_args_warn_once() -> void:
+	seq.instant = true
+	_start(FIXTURE)
+	var w := seq.warnings.filter(func(x: String) -> bool: return x.contains("@vfx drift= is not performed yet"))
+	assert_eq(w.size(), 1, str(seq.warnings))
+	_free()
+
+
 func test_instant_second_option_takes_the_other_branch() -> void:
 	seq.instant = true
 	seq.auto_choice = 1
@@ -208,6 +231,50 @@ func test_the_interact_key_advances_lines_too() -> void:
 	_free()
 
 
+func test_skip_fast_forwards_to_the_choice_then_to_the_end() -> void:
+	_start(FIXTURE)
+	_drive_until(func() -> bool: return lines_pending > 0)
+	lines_pending = 0
+	var skips := [0]
+	seq.skipped.connect(func(_id: StringName) -> void: skips[0] += 1)
+	assert_true(seq.skip(), "skips from the first line")
+	assert_eq(skips[0], 1)
+	assert_true(seq.overlay.choices.visible, "the skip stopped at the choice")
+	assert_false(seq.is_skipping(), "and is over")
+	assert_eq(asha.global_position.distance_to(SPOT) < 0.01, true, "the walk before the choice completed")
+	assert_false(seq.skip(), "no skip while a choice is open")
+	seq.overlay.choices.pick(1)
+	assert_true(seq.is_playing(), "after the choice the scene plays on at its own pace")
+	assert_true(seq.skip())
+	_drive()
+	assert_false(seq.is_playing())
+	assert_eq(int(Game.get_flag(&"test_counter", 0)), 2, "the player's choice stood")
+	assert_eq(seq.events.size(), 1, "events after the choice still ran")
+	_assert_clean()
+	_free()
+
+
+func test_holding_cancel_skips_after_the_hold_time() -> void:
+	_start(FIXTURE)
+	_drive_until(func() -> bool: return lines_pending > 0)
+	var need := float(seq.config["skip_hold_sec"])
+	seq.set_skip_held(true)
+	seq.advance(need * 0.5)
+	assert_true(seq.overlay.skip_prompt.visible, "the fill shows while held")
+	assert_false(seq.overlay.choices.visible, "not yet skipped")
+	seq.set_skip_held(false)
+	assert_false(seq.overlay.skip_prompt.visible, "letting go resets it")
+	seq.set_skip_held(true)
+	seq.advance(need * 0.6)
+	assert_false(seq.overlay.choices.visible, "the hold restarted from zero")
+	seq.advance(need * 0.6)
+	assert_true(seq.overlay.choices.visible, "a full hold skipped to the choice")
+	seq.overlay.choices.pick(0)
+	lines_pending = 0
+	_drive()
+	_free()
+
+
 func test_real_time_blend_runs_and_fade_takes_its_time() -> void:
 	_start(FIXTURE)
 	var frames := _drive_until(func() -> bool: return director.active_shot_id() == &"close")
@@ -233,7 +300,11 @@ func test_director_leaving_mid_blend_ends_the_cutscene() -> void:
 func test_sequencer_freed_mid_scene_releases_its_hold() -> void:
 	_start(FIXTURE)
 	assert_true(seq in SaveSystem.autosave_holders())
+	play_result = true
 	zone.remove_child(seq)
+	assert_false(seq.is_playing(), "the await in progress was released")
+	assert_false(play_result, "play() returned false to its host instead of hanging")
+	assert_eq(finished_ids, [FIXTURE] as Array[StringName], "finished still fires once")
 	assert_false(seq in SaveSystem.autosave_holders(), "leaving the tree drops the hold")
 	assert_true(player.accepts_input, "and gives the player back")
 	seq.free()

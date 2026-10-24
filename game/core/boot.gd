@@ -7,6 +7,8 @@ extends Node
 ## Debug builds: installs the F1–F12 debug overlay (game/core/debug/, M1-ARC-02) under the tree
 ## root, where it survives scene changes. It is referenced only by path, so release exports can
 ## leave the whole debug folder out. F9 (battle sandbox) now lives in the overlay.
+## M1-ARC-15: applies the saved (or default) graphics preset before anything renders, and arms
+## SceneRouter's per-scene graphics hook (GraphicsRuntime).
 
 const DEBUG_OVERLAY_SCENE := "res://game/core/debug/debug_overlay.tscn"
 const DEBUG_OVERLAY_NAME := "DebugOverlay"
@@ -15,6 +17,7 @@ const DEBUG_OVERLAY_NAME := "DebugOverlay"
 
 
 func _ready() -> void:
+	GraphicsRuntime.boot(get_viewport())
 	_label.text = "%s\n%s" % [ProjectSettings.get_setting("application/config/name"), "bootstrap build"]
 	Game.stop_play_clock()
 	arm_world_return()

@@ -3,7 +3,7 @@ extends Control
 ## The end of the first playable (M2-FP-03; docs/kb/tech/first_playable_flow.md): a black screen
 ## with a title, one line and a small prompt (loc keys FLOW_END_CARD_*, theme variations only).
 ## After first_playable.json end_card.min_hold_sec, ui_accept returns to the title (boot.tscn).
-## Show it with EndCard.open() (or SceneRouter.change_scene(EndCard.SCENE)).
+## Show it with EndCard.open() (or FlowRouting.change_scene(EndCard.SCENE)).
 
 ## Emitted once, when accept starts the return to the title.
 signal returning(scene_path: String)
@@ -30,10 +30,7 @@ var _return_scene := DEFAULT_RETURN_SCENE
 
 ## Opens the end card through the router.
 static func open() -> void:
-	var tree := Engine.get_main_loop() as SceneTree
-	var router := tree.root.get_node_or_null(^"SceneRouter") if tree != null else null
-	if router != null:
-		router.call(&"change_scene", SCENE)
+	FlowRouting.change_scene(SCENE)
 
 
 func _ready() -> void:
@@ -86,7 +83,7 @@ func accept() -> bool:
 	if change_scene.is_valid():
 		change_scene.call(_return_scene)
 	elif is_inside_tree():
-		SceneRouter.change_scene(_return_scene)
+		FlowRouting.change_scene(_return_scene)  # waits for an idle router: `done` never strands it
 	return true
 
 

@@ -9,6 +9,7 @@ const SECTION_FIELD_BATTLE := &"field_battle"
 const SECTION_PROLOGUE := &"prologue"
 const SECTION_END_CARD := &"end_card"
 const SECTION_HALUNA := &"haluna"
+const SECTION_FIRST_VERSE := &"first_verse"
 
 
 ## One block of the file ({} with an error when the file or the block is missing).

@@ -29,6 +29,11 @@ signal line_shown(step: DialogueStep)
 signal cue_played(cue: StringName, args: Array, kwargs: Dictionary)
 ## Internal: a timed wait (`@wait`, a fade, an auto-advance hold) ran out.
 signal wait_elapsed
+## Internal: whatever play() awaited (a line advance, a wait, a choice, a camera landing) arrived,
+## or the sequencer left the tree and released it with null.
+signal resumed(value: Variant)
+## The player held ui_cancel long enough: the scene fast-forwarded to its next choice or its end.
+signal skipped(scene_id: StringName)
 
 const CONFIG_PATH := "res://game/data/cutscene/sequencer.json"
 const ANIM_LOOK_AT := &"look_at"
@@ -36,6 +41,13 @@ const GAIT_RUN := &"run"
 const FADE_OUT := &"out"
 const SWITCH_ON := &"on"
 const DEFAULT_SEED := 1
+## cues.json keys this sequencer accepts but does not perform yet; each warns once per scene.
+const UNSUPPORTED_KWARGS := {
+	&"camera": ["grade"],
+	&"anim": ["loop"],
+	&"sfx": ["at"],
+	&"vfx": ["drift", "motion", "rate", "form"],
+}
 
 ## Tests and captures: no waits, no typewriter, lines and options answer themselves.
 var instant := false
@@ -50,7 +62,8 @@ var restore_fade := true
 var events: Array[Dictionary] = []
 ## Soft failures (a missing shot, actor, mark or track), each reported once.
 var warnings: Array[String] = []
-## Every @face cue of the last play() (placeholder: no face rig yet), [actor, expression, sec].
+## Every @face cue of the last play(), [actor, expression, sec]. Actors whose meshes have blend
+## shapes and a sequencer.json "face_poses" row also show it (CutsceneFace).
 var faces: Array = []
 var config: Dictionary = {}
 var overlay: CutsceneOverlay
@@ -69,6 +82,19 @@ var _wait_left := 0.0
 ## key -> {elapsed, duration, apply: Callable(t: float)}; a new motion on a key replaces the old.
 var _motions: Dictionary = {}
 var _vfx_count := 0
+## True while a skip fast-forwards (until the next choice or the end).
+var _skipping := false
+var _skip_held := false
+var _hold := 0.0
+## What play() is awaiting right now: &"line", &"wait", &"land", &"choice" or &"" (none).
+var _awaiting: StringName = &""
+## The source signal and handler of the await in progress (disconnected when released early).
+var _await_sig: Signal
+var _await_cb: Callable = Callable()
+## actor id -> CutsceneFace (null when the actor has no face shapes), per play().
+var _face_rigs: Dictionary = {}
+## actor id -> face-poses JSON "emotions" + "blend_in_s", per play().
+var _pose_tables: Dictionary = {}
 
 
 static func load_config() -> Dictionary:
@@ -91,6 +117,10 @@ func _process(delta: float) -> void:
 ## The field's interact key (E, which starts a bark) also advances lines, like ui_accept does in
 ## the DialogueBox, so a player never has to switch keys mid-conversation.
 func _unhandled_input(event: InputEvent) -> void:
+	if _playing and event.is_action(&"ui_cancel"):
+		set_skip_held(event.is_pressed())
+		get_viewport().set_input_as_handled()
+		return
 	if not _playing or overlay == null or not overlay.box.visible or overlay.choices.visible:
 		return
 	if not InputMap.has_action(FieldInput.INTERACT):
@@ -104,16 +134,57 @@ func _unhandled_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 
+## Leaving the tree mid-scene ends it: the autosave hold and the player go back at once, and the
+## await in progress is released so play() returns false to its host instead of hanging.
 func _exit_tree() -> void:
 	if _playing:
 		_aborted = true
 		_restore_player()
 		SaveSystem.release_autosave(self)
-		_playing = false
+		if _awaiting != &"":
+			_release_await(null)
+		else:
+			_playing = false
 
 
 func is_playing() -> bool:
 	return _playing
+
+
+func is_skipping() -> bool:
+	return _skipping
+
+
+## Holding ui_cancel for `skip_hold_sec` (sequencer.json) skips; advance() counts the hold.
+func set_skip_held(held: bool) -> void:
+	_skip_held = held
+	if not held:
+		_hold = 0.0
+		if overlay != null:
+			overlay.set_skip_progress(0.0)
+
+
+## Fast-forwards to the next choice (which is then shown, so the player still chooses) or to the
+## end. Flags, branches and events run exactly as in a normal play; the camera snaps, waits and
+## moves complete at once. Returns false when nothing is playing or a skip is already running.
+func skip() -> bool:
+	if not _playing or _skipping or _awaiting == &"choice":
+		return false
+	_skipping = true
+	set_skip_held(false)
+	skipped.emit(_scene_id)
+	_complete_motions()
+	match _awaiting:
+		&"line":
+			overlay.box.skip_reveal()
+			overlay.box.advance_requested.emit()
+		&"wait":
+			_wait_left = 0.0
+			wait_elapsed.emit()
+		&"land":
+			if _director_alive():
+				_director.snap()
+	return true
 
 
 ## Plays `scene_id` (a compiled scene under game/data/dialogue/compiled/) to its end on `stage`.
@@ -133,7 +204,7 @@ func play(scene_id: StringName, stage: CutsceneStage) -> bool:
 			await _line(step)
 		elif step.is_options():
 			var picked: int = await _options(step)
-			if not _aborted:
+			if not _aborted and picked >= 0:
 				runner.choose(picked)
 		else:
 			await _cue(step)
@@ -145,6 +216,15 @@ func play(scene_id: StringName, stage: CutsceneStage) -> bool:
 
 ## Advances every timed thing by `delta` seconds: waits, fades, letterbox, moves, turns, music.
 func advance(delta: float) -> void:
+	for rig: Variant in _face_rigs.values():
+		if rig != null:
+			(rig as CutsceneFace).advance(delta)
+	if _playing and _skip_held and not _skipping and _awaiting != &"choice":
+		var need := float(config.get("skip_hold_sec", 0.0))
+		_hold += delta
+		overlay.set_skip_progress(clampf(_hold / need, 0.0, 1.0) if need > 0.0 else 1.0)
+		if _hold >= need:
+			skip()
 	for key: StringName in _motions.keys():
 		var m: Dictionary = _motions[key]
 		m["elapsed"] = float(m["elapsed"]) + delta
@@ -177,6 +257,7 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 	_aborted = false
 	events.clear()
 	faces.clear()
+	_face_rigs.clear()
 	SaveSystem.hold_autosave(self)
 	if _player != null:
 		_player_input_was = _player.accepts_input
@@ -188,6 +269,9 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 
 
 func _finish() -> void:
+	_skipping = false
+	_awaiting = &""
+	set_skip_held(false)
 	_complete_motions()
 	if overlay != null:
 		overlay.box.visible = false
@@ -220,28 +304,41 @@ func _line(step: DialogueStep) -> void:
 	overlay.box.visible = true
 	overlay.box.show_line(step)
 	line_shown.emit(step)
-	if instant:
+	var speaker := _stage.actor(step.speaker) if _stage != null and step.speaker != &"" else null
+	if speaker != null:
+		if step.emotion != &"":
+			_set_face(step.speaker, step.emotion, -1.0)
+		_play_clip(speaker, &"talk")
+	if _fast():
 		overlay.box.skip_reveal()
 		return
 	if auto_advance:
 		if overlay.box.is_revealing():
-			await overlay.box.reveal_finished
+			await _await_on(&"line", overlay.box.reveal_finished, _on_awaited_plain)
 		await _wait_for(auto_advance_hold_sec)
 		return
-	await overlay.box.advance_requested
+	await _await_on(&"line", overlay.box.advance_requested, _on_awaited_plain)
+	if speaker != null and is_instance_valid(speaker):
+		_on_mouth_flap(step.speaker, false)
+		_play_clip(speaker, &"idle")
 
 
 func _options(step: DialogueStep) -> int:
 	var pick := clampi(auto_choice, 0, step.options.size() - 1)
 	if instant or auto_advance:
 		return step.options[pick].index
+	# A skip stops here: the player makes every choice themselves.
+	_skipping = false
 	overlay.choices.show_options(step.options)
-	var chosen: int = await overlay.choices.chosen
-	return chosen
+	var chosen: Variant = await _await_on(&"choice", overlay.choices.chosen, _on_awaited_value)
+	return int(chosen) if chosen != null else -1
 
 
 func _cue(step: DialogueStep) -> void:
 	cue_played.emit(step.cue, step.args, step.kwargs)
+	for key: String in UNSUPPORTED_KWARGS.get(step.cue, []):
+		if step.kwargs.has(key):
+			_warn("@%s %s= is not performed yet (placeholder)" % [step.cue, key])
 	match step.cue:
 		&"camera":
 			await _cue_camera(step)
@@ -257,6 +354,8 @@ func _cue(step: DialogueStep) -> void:
 			_cue_anim(step)
 		&"face":
 			faces.append(step.args.duplicate())
+			var sec := float(step.args[2]) if step.args.size() > 2 else -1.0
+			_set_face(StringName(str(step.args[0])), StringName(str(step.args[1])), sec)
 		&"music":
 			_cue_music(step)
 		&"sfx":
@@ -299,11 +398,11 @@ func _cue_camera(step: DialogueStep) -> void:
 
 ## Waits for the director's move to land; a director that left the tree ends the cutscene.
 func _land() -> void:
-	if instant:
+	if _fast():
 		_director.snap()
 		return
 	if not _director.is_settled():
-		await _director.blend_finished
+		await _await_on(&"land", _director.blend_finished, _on_awaited_value)
 	if not is_instance_valid(_director) or _director.is_leaving():
 		_director = null
 		_aborted = true
@@ -348,7 +447,15 @@ func _cue_mark(step: DialogueStep) -> void:
 	if flat.length() > 0.01:
 		_face(actor, flat)
 	var dur := from.distance_to(to) / maxf(speed, 0.01)
-	_start_motion(&"move:%s" % step.args[0], dur, func(t: float) -> void: _place(actor, from.lerp(to, t)))
+	_play_clip(actor, gait)
+	_start_motion(
+		&"move:%s" % step.args[0],
+		dur,
+		func(t: float) -> void:
+			_place(actor, from.lerp(to, t))
+			if t >= 1.0 and is_instance_valid(actor):
+				_play_clip(actor, &"idle")
+	)
 
 
 func _cue_anim(step: DialogueStep) -> void:
@@ -440,10 +547,87 @@ func _ensure_overlay() -> void:
 	if overlay == null:
 		overlay = CutsceneOverlay.new(config)
 		add_child(overlay)
+	if not overlay.box.mouth_flap.is_connected(_on_mouth_flap):
+		overlay.box.mouth_flap.connect(_on_mouth_flap)
 	if music == null:
 		music = AudioStreamPlayer.new()
 		music.name = "Music"
 		add_child(music)
+
+
+## Blends `actor_id`'s face to emotion `expr` over `sec` (< 0: the pose table's blend_in_s).
+func _set_face(actor_id: StringName, expr: StringName, sec: float) -> void:
+	var rig := _face_of(actor_id)
+	var table: Dictionary = _pose_tables.get(actor_id, {})
+	var poses: Dictionary = table.get("emotions", {})
+	if rig == null or not poses.has(String(expr)):
+		return
+	var t := sec if sec >= 0.0 else float(table.get("blend_in_s", 0.0))
+	rig.blend_to(poses[String(expr)], 0.0 if _fast() else t)
+
+
+func _face_of(actor_id: StringName) -> CutsceneFace:
+	if _face_rigs.has(actor_id):
+		return _face_rigs[actor_id]
+	var rig: CutsceneFace = null
+	var path := str((config.get("face_poses", {}) as Dictionary).get(String(actor_id), ""))
+	var actor := _stage.actor(actor_id) if _stage != null else null
+	if actor != null and path != "" and FileAccess.file_exists(path):
+		if not _pose_tables.has(actor_id):
+			var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+			_pose_tables[actor_id] = parsed if parsed is Dictionary else {}
+		rig = CutsceneFace.new(actor, config.get("lip_flap", {}))
+		if not rig.has_shapes():
+			rig = null
+	_face_rigs[actor_id] = rig
+	return rig
+
+
+func _on_mouth_flap(speaker: StringName, open: bool) -> void:
+	var rig := _face_of(speaker) if _playing else null
+	if rig != null:
+		rig.set_mouth_open(open)
+
+
+## Plays the actor's AnimationPlayer clip for `role` (sequencer.json "clips": idle, talk, walk,
+## run) when the rig has it; nothing otherwise (M2-FP-07 asks Character for the clips).
+func _play_clip(actor: Node3D, role: StringName) -> void:
+	var clip := StringName(str((config.get("clips", {}) as Dictionary).get(String(role), "")))
+	var ap := actor.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	if ap != null and clip != &"" and ap.has_animation(clip):
+		ap.play(clip)
+
+
+## Awaits `sig` (connected one-shot to `handler`, which emits `resumed`), as `kind` for skip().
+## _exit_tree can release it early with null.
+func _await_on(kind: StringName, sig: Signal, handler: Callable) -> Variant:
+	_awaiting = kind
+	_await_sig = sig
+	_await_cb = handler
+	sig.connect(handler, CONNECT_ONE_SHOT)
+	var v: Variant = await resumed
+	_awaiting = &""
+	_await_cb = Callable()
+	return v
+
+
+func _on_awaited_plain() -> void:
+	resumed.emit(true)
+
+
+func _on_awaited_value(value: Variant) -> void:
+	resumed.emit(value)
+
+
+func _release_await(value: Variant) -> void:
+	if _await_cb.is_valid() and not _await_sig.is_null() and _await_sig.is_connected(_await_cb):
+		_await_sig.disconnect(_await_cb)
+	resumed.emit(value)
+
+
+## No time passes: a test (`instant`) or a skip in progress.
+func _fast() -> bool:
+	return instant or _skipping
 
 
 func _director_alive() -> bool:
@@ -458,14 +642,14 @@ func _actor(id: StringName) -> Node3D:
 
 
 func _wait_for(sec: float) -> void:
-	if instant or sec <= 0.0:
+	if _fast() or sec <= 0.0:
 		return
 	_wait_left = sec
-	await wait_elapsed
+	await _await_on(&"wait", wait_elapsed, _on_awaited_plain)
 
 
 func _start_motion(key: StringName, duration: float, apply: Callable) -> void:
-	if instant or duration <= 0.0:
+	if _fast() or duration <= 0.0:
 		_motions.erase(key)
 		apply.call(1.0)
 		return

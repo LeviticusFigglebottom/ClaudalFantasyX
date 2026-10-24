@@ -5,8 +5,10 @@ extends RefCounted
 ## The first rule whose conditions all hold wins; one option is drawn by weight.
 ## A rule without "if" always holds (use it last as the default).
 ## Conditions: self_hp_below_pct:int, turn_mod:[n, r], foe_has_status:String,
-##             allies_alive_below:int
-## Targets:    random_foe, lowest_hp_foe, highest_hp_foe, self, random_ally, all_foes, all_allies
+##             allies_alive_below:int, field_active:String (a field in BattleEngine.fields)
+## Targets:    random_foe, lowest_hp_foe, highest_hp_foe, self, random_ally, all_foes, all_allies,
+##             largest_ally (the living ally with the highest max HP: a boss its adds tend)
+## turn_mod counts the actor's turns since its current phase began (BossMechanics).
 ## A Provoked enemy's single-foe skills always target its provoker (formulas.md § Statuses).
 
 
@@ -45,6 +47,13 @@ static func select_targets(
 		&"random_foe":
 			if not foes.is_empty():
 				out.append(foes[engine.rng.randi_range(0, foes.size() - 1)])
+		&"largest_ally":
+			var big: BattleCombatant = null
+			for a in allies:
+				if big == null or a.max_hp > big.max_hp:
+					big = a
+			if big != null:
+				out.append(big)
 		&"random_ally":
 			if not allies.is_empty():
 				out.append(allies[engine.rng.randi_range(0, allies.size() - 1)])
@@ -66,29 +75,32 @@ static func select_targets(
 
 static func _conditions_hold(engine: BattleEngine, actor: BattleCombatant, cond: Dictionary) -> bool:
 	for key: Variant in cond:
-		var arg: Variant = cond[key]
-		match StringName(str(key)):
-			&"self_hp_below_pct":
-				if actor.hp * 100 >= actor.max_hp * int(arg):
-					return false
-			&"turn_mod":
-				var a: Array = arg
-				if int(a[0]) <= 0 or actor.turns_taken % int(a[0]) != int(a[1]):
-					return false
-			&"foe_has_status":
-				var any := false
-				for f in engine.living_foes_of(actor):
-					if f.has_status(StringName(str(arg))):
-						any = true
-				if not any:
-					return false
-			&"allies_alive_below":
-				if engine.living_allies_of(actor).size() >= int(arg):
-					return false
-			_:
-				push_error("EnemyAI: unknown condition '%s'" % key)
-				return false
+		if not _holds(engine, actor, StringName(str(key)), cond[key]):
+			return false
 	return true
+
+
+static func _holds(engine: BattleEngine, actor: BattleCombatant, key: StringName, arg: Variant) -> bool:
+	var ok := true
+	match key:
+		&"self_hp_below_pct":
+			ok = actor.hp * 100 < actor.max_hp * int(arg)
+		&"turn_mod":
+			var a: Array = arg
+			ok = int(a[0]) > 0 and (actor.turns_taken - actor.ai_turn_base) % int(a[0]) == int(a[1])
+		&"foe_has_status":
+			ok = false
+			for f in engine.living_foes_of(actor):
+				if f.has_status(StringName(str(arg))):
+					ok = true
+		&"allies_alive_below":
+			ok = engine.living_allies_of(actor).size() < int(arg)
+		&"field_active":
+			ok = engine.fields.has(StringName(str(arg)))
+		_:
+			push_error("EnemyAI: unknown condition '%s'" % key)
+			ok = false
+	return ok
 
 
 static func _weighted_pick(rng: RandomNumberGenerator, options: Array) -> Dictionary:

@@ -3,9 +3,10 @@ extends RefCounted
 ## A pending field battle (M2-FP-03; docs/kb/tech/first_playable_flow.md). Field code asks for a
 ## fight with BattleRequest.start(); the request waits here (one at a time) while SceneRouter
 ## swaps to the FieldBattle scene, which takes it on _ready, plays it live, and sends the party
-## back to `return_location` / `return_spawn` (setting `victory_flag` on a win).
+## back to `return_location` / `return_spawn` (setting `victory_flag` on a win; an escape goes to
+## `escape_spawn` when set; a defeat retries or loads the last save, M2-FP-05).
 ##
-##   BattleRequest.start(&"ch02_tideline", &"ch02/haluna", &"Beach", &"ch02_tideline_won")
+##   BattleRequest.start(&"ch02_tideline", &"ch02/haluna", &"BattleReturn", &"ch02_tideline_won", &"BeforeBattle")
 ##
 ## The party and the rng seed default to game/data/flow/first_playable.json "field_battle".
 
@@ -30,11 +31,21 @@ var return_location: StringName = &""
 var return_spawn: StringName = &""
 ## Set through Game.set_flag on a victory (never on an escape or a defeat). &"" = none.
 var victory_flag: StringName = &""
+## Where an escape returns the party (M2-FP-05): the near side of the field trigger, so fleeing
+## never carries the party past it. &"" = return_spawn.
+var escape_spawn: StringName = &""
+## After a victory or an escape, open this scene instead of travelling to return_location (M2-FP-06:
+## the Drownbell is the last fight of the first playable and goes to the end card). "" = travel.
+var return_scene: String = ""
 
 
 ## A request with the data file's party and seed; nothing is recorded or opened.
 static func make(
-	encounter_id: StringName, location: StringName, spawn: StringName, flag: StringName = &""
+	encounter_id: StringName,
+	location: StringName,
+	spawn: StringName,
+	flag: StringName = &"",
+	escape_at: StringName = &""
 ) -> BattleRequest:
 	var cfg := FirstPlayableConfig.section(FirstPlayableConfig.SECTION_FIELD_BATTLE)
 	var r := BattleRequest.new()
@@ -45,16 +56,22 @@ static func make(
 	r.return_location = location
 	r.return_spawn = spawn
 	r.victory_flag = flag
+	r.escape_spawn = escape_at
 	return r
 
 
-## Records a field battle on `encounter_id` and opens the FieldBattle scene. When it ends (victory
-## or escape, or Return after a defeat) the party goes back to `location` at `spawn`; a victory
-## also sets `flag`. Returns the recorded request (callers may adjust its party or seed at once).
+## Records a field battle on `encounter_id` and opens the FieldBattle scene. After a victory the
+## party goes back to `location` at `spawn` and `flag` is set; after an escape it goes to
+## `escape_at` (or `spawn` when empty); after a defeat it retries or returns to the last save
+## (FieldBattle). Returns the recorded request (callers may adjust its party or seed at once).
 static func start(
-	encounter_id: StringName, location: StringName, spawn: StringName, flag: StringName = &""
+	encounter_id: StringName,
+	location: StringName,
+	spawn: StringName,
+	flag: StringName = &"",
+	escape_at: StringName = &""
 ) -> BattleRequest:
-	var r := make(encounter_id, location, spawn, flag)
+	var r := make(encounter_id, location, spawn, flag, escape_at)
 	submit(r)
 	return r
 
@@ -67,11 +84,10 @@ static func submit(r: BattleRequest) -> void:
 		change_scene.call(path)
 		return
 	var tree := Engine.get_main_loop() as SceneTree
-	var router := tree.root.get_node_or_null(^"SceneRouter") if tree != null else null
-	if router == null:
+	if tree == null or tree.root.get_node_or_null(^"SceneRouter") == null:
 		push_error("BattleRequest: no SceneRouter to open %s" % path)
 		return
-	router.call(&"change_scene", path)
+	FlowRouting.change_scene(path)  # waits for an idle router, so the request is always opened
 
 
 ## The field battle scene (first_playable.json field_battle.scene).
