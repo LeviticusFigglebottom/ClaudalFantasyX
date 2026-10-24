@@ -11,27 +11,19 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 6. (Found on claude/characters) **M2-UI-07**, the hero actor hook: **hook done and pushed (08c872c)**. It is **blocked** on M2-CHR-06's scenes reaching the integration branch; after that it needs three `"scene"` lines in battle_sandbox.json and shot re-approval.
 
 ## Now
-- **The queue is empty apart from blocked work. Lead: please queue more.**
-- **Review-ready:**
-  - M2-UI-03 (handoff ui-7) and M2-UI-09 (handoff ui-8), reviewer lead.
-  - M2-UI-08 (handoff ui-8), reviewer character.
-  - ADR 0030's amendment.
-- **Blocked:** M2-UI-07 (the hook is done; the specs wait on M2-CHR-06's merge).
-- **The Lead's merge run should include these shots:**
-  - New: `battle_swell_chant`, `battle_swell_brace`, `battle_swell_glyph`, `settings_hub`, `settings_accessibility`.
-  - Re-approved: `battle_statuses`, `battle_vowbound_call`, `battle_opening_banner`, `battle_swell_ring`, `field_menu`, `field_menu_swell_modes`, `bestiary_menu`.
-- **Merge notes:**
-  - claude/ui carries copies of M2-UI-07 (from claude/characters) and M2-UI-08 (from claude/env-art), with this track's status and notes. Take claude/ui's version of those two files.
-  - M2-UI-06 is m2-slice's; this branch has the integration branch's copy.
-  - **strings.csv:** this branch appended 21 keys (HUD_SWELL_*, FIELD_MENU_SETTINGS*, SET_MENU_*, GFX_VALUE_*_FMT) and reworded BESTIARY_HELP and TITLE_HELP_SETTINGS. Use `tools/dev/merge_union.py` against m2-slice's shop keys.
-  - **hymn_theme.tres was regenerated** (the new HelpDimLabel). If another branch also regenerated it, rebuild from the merged theme.json instead of picking a side.
-- **Filed M2-ARC-06** (architect): the save menu and the dialogue box should follow UiSettings and the shared help style. It includes a save-dialog hover bug.
-- **For m2-slice:** the Graphics page is now reachable in the field (field menu → Settings), so M1-UI-11's fade matters in play.
-- **UI-06 port ideas** (from this track's dropped parallel build), for whoever next touches m2-slice's shop and inn:
-  - Equipment rows show who wears the item, the slot, its abilities, and each stat against what that hero wears now.
-  - A refused deal shows only the deal line.
-  - Up/Down change the count by 10, and the mouse wheel changes it too.
-  - The inn says plainly that it does not save, and Rest is greyed out with its reason before anything is chosen.
+- **The human asked directly for more flair in the menus and theme.** Done as **M2-UI-10** (ADR 0033), in review with reviewer character (Art):
+  - Panel glint, corner ticks and tide lines.
+  - A lamplit cursor whose row nudges right.
+  - Gold header rules.
+  - Caustic backdrops behind the full-screen menus.
+  - All of it is theme data. 21 baselines were re-approved after viewing them (every battle shot, menus, title, save dialog, Drownbell). The Settings hub and pages also had a zero-size anchoring bug, now fixed.
+- **Lead queue top-up (2026-10-24 11:00):**
+  1. M2-UI-08: **already done**, in review (reviewer character).
+  2. Accessibility audit and fixes: **next**. One task per item: colour-blind timeline and status chips, dialogue text size and speed, a subtitle background, full control remapping, and hold-to-confirm for timing inputs.
+  3. Localization-readiness pass: a pseudo-locale render test, and a tools test for strings without a loc key.
+  4. M2-UI-07 after the claude/characters merge.
+- **Review-ready:** M2-UI-03, M2-UI-08, M2-UI-09, M2-UI-10, and ADR 0030's amendment.
+- **Gates at the last push:** full suite 1483/0, godot_log_check clean.
 
 ## Exact next step
 - Wait for a new queue from the Lead.

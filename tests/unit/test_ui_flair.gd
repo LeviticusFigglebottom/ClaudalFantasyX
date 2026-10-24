@@ -78,6 +78,7 @@ func test_the_caustic_backdrop_fills_its_parent_and_stills_under_reduced_motion(
 	UiSettings.shared().set_value(UiSettings.REDUCED_MOTION, true)
 	c._process(1.0)
 	assert_eq(float(mat.get_shader_parameter(&"phase")), moved, "reduced motion holds it still")
+	UiSettings.set_shared(null)  # later suites read the shared settings (undertow_events)
 
 
 func _host() -> Control:
