@@ -588,3 +588,19 @@ in this order, a creature at a time (`ffplay -autoexit <file>`):
   they read as legs and glass, or as digital clicks?
 - **Variants:** the wreck crab, wallcrab, wall polyp and stormgull play their parent's set at another pitch. Is
   that distinct enough, or does each want its own?
+
+## M2: the menus' pages (M2-AUD-14)
+
+Seven UI sounds in `assets/audio/sfx/`, from `assets_src/sfx/menu_page_sfx.py`, in the palette of the M3 menu set
+(bars on D-A-E, dry paper, soft air, a small room): `ui_item_use`, `ui_item_sort`, `ui_formation_pick`,
+`ui_formation_swap`, `ui_customize_open`, `ui_craft` and `ui_map_pan`. All at −20 LUFS momentary; the pan plays 6 dB
+under that in game. Listen with `ffplay -autoexit <file>`, then next to `ui_cursor`, `ui_confirm` and `ui_equip`.
+
+**What to listen for:**
+- **Do they belong with the menu set?** `ui_craft` should read as a smaller cousin of `ui_lattice_node`, and
+  `ui_formation_swap` as a relative of `ui_equip`, not as a new instrument.
+- **Repetition:** a player uses five tonics in a row and re-sorts the bag twice. Do `ui_item_use`'s bubbles or
+  `ui_item_sort`'s flicks get tiring? If so, they get quieter, or a second variant.
+- **`ui_map_pan`** plays at most every 110 ms while the map moves. Does it read as paper sliding, or as noise
+  hiss? Does the train sound like a slide or like a ticking clock?
+- **`ui_customize_open`'s low hum:** is it too heavy for opening a list?
