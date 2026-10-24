@@ -680,20 +680,7 @@ func _begin_swap_out() -> void:
 
 
 func _handle_pick_input(event: InputEvent) -> bool:
-	var hit := BattlePointer.candidate_at(self, event)  # M2-UI-26: hovering a fighter or its row aims at it
-	if hit >= 0 and hit != _target_index:
-		_cycle_target(hit - _target_index)
-	if event.is_action_pressed(&"ui_left", true) or event.is_action_pressed(&"ui_up", true):
-		_cycle_target(-1)
-	elif event.is_action_pressed(&"ui_right", true) or event.is_action_pressed(&"ui_down", true):
-		_cycle_target(1)
-	elif event.is_action_pressed(&"ui_accept") or (hit >= 0 and BattlePointer.is_click(event)):
-		_confirm_pick()
-	elif event.is_action_pressed(&"ui_cancel"):
-		_cancel_pick()
-	else:
-		return hit >= 0
-	return true
+	return BattlePointer.handle_pick(self, event, _target_index)  # keys, pad and mouse (M2-UI-26)
 
 
 func _cycle_target(delta: int) -> void:
