@@ -31,11 +31,10 @@ agent's own handoff is listed below.
   - The union merge helper now refuses a job without an `id` or `runs`.
 
 ## In progress
-- M3-ENV-11, the close-range plume (worktree agent).
+- Nothing. M3-ENV-11 merged at d065835e (MERGE-READY in the live log).
 
 ## Exact next step
-1. Merge M3-ENV-11 when it lands. Gate it on the Pemakar, Ashcrown and arena tests, the Blender jobs it touched,
-   and `capture.sh` for the five Pemakar, Ashcrown and Lanternfall shots. Then write a MERGE-READY line.
+1. Done: M3-ENV-11 is merged and gated (MERGE-READY @ d065835e).
 2. Take the next item from the Lead's queue. New task ids come from M3-ENV-701 onwards, ADRs from 0160, and
    handoffs are named `-env-art-<n>` (14 and up).
 

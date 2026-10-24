@@ -145,7 +145,8 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
     - **Merged here, in review:** M3-ENV-07B the Oruvel storm (baseline `oruvel_o17_pen_split`; Art owes the
       `ch01_storm` row) and M3-ENV-700 the ferry's transom (`ferry_hull` and `derelict_hulk_a`; b03 moved by
       0.0007, under the limit). **M3-ENV-11, the close-range plume, is still running.**
-    - **Running:** M3-ENV-11 the close-range plume. Nothing is queued after it. Next: the Lead's queue, or the weaker views each task file lists.
+    - **M3-ENV-11 the close-range plume: in review, merged here** (d065835e). **No agents are running and the queue is
+      empty.** Next: the Lead's queue, or the weaker views each task file lists.
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
@@ -160,6 +161,12 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
 ## For the Lead
+- **MERGE-READY @ d065835e (supersedes 5ab6029c below).** It adds M3-ENV-11, the close-range Pemakar plume (review):
+  `ash_plume_near` and the shader's near group, which fades out by 400 to 800 m, so the 900 m read is unchanged.
+  - `ashcrown_a01` and `a04` were re-approved after viewing, and `ashcrown_a10_plume_from_the_rim` is new.
+  - Checks run: full Godot suite 2016 run, 0 failed; pemakar_kit 63 and ashcrown_kit 40 identical; P01, P03,
+    Lanternfall, A01, A04 and A10 all rmse 0 on isolated captures; the kit, arena and fog-lamp unittests OK.
+  - The full tools suite last ran at 5ab6029c (947 OK); this item touched only the tests that were re-run.
 - **MERGE-READY @ 5ab6029c** (claude/env-art; it includes the integration branch at 7fa22c77).
   - **Items since 74c6dc0e, all in review:**
     - M3-ENV-07 Oruvel raft-town (and the raft arena's town); 07B its storm state and Hullgnaw's split.
