@@ -94,6 +94,20 @@ Since M1-RND-07:
 - **Game AA.** The stage copies the game viewport's AA and 3D scaling (TAA, FSR2).
 - **Measured on a GPU** (docs/kb/qa/gpu/2026-10-23-rnd-07.md): without prewarm a test zone's first frame took 273–1471 ms even with warm caches; with it, ≤ 39 ms.
 
+Since M1-RND-22 (docs/kb/qa/gpu/2026-10-24-rnd-22-prewarm.md, ADR 0029):
+- **Tier filtering.** A quality variant entry carries `"preset_tier": {"system": ..., "tier": ...}` and is staged
+  only on the presets that select that tier:
+  - character: `CharacterShaderTiers.tier_for_preset`;
+  - undertow: the preset id;
+  - water, vegetation, weathering: `graphics_presets.json` `tiers`.
+  A new tier variant gets the tag; a default-tier material stays untagged (it also prewarms its mesh format).
+- **Resident shaders.** `"resident": true` entries are loaded at boot, held for the session, and drawn once under
+  the boot screen (`ShaderPrewarm.spawn_resident`, from boot and on a preset change). A shader variant compiles
+  the first time a material that uses it is drawn, not on load, and a held Shader keeps its variants. Every
+  registry `.gdshader` entry is resident.
+- **No test material in the production registry.** Tests use their own registries.
+- **Battle transitions** now measure 34–46 ms on every preset.
+
 ## Testing
 
 - Headless CI (dummy renderer) **does** run Godot's shader front end. Preprocessing, includes, parsing, and type and semantic checks all happen when a shader is first used (for example, `get_shader_uniform_list()`), not when `code` is assigned. Errors print `SHADER ERROR` and leave the shader with no uniforms.

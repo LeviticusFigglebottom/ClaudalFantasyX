@@ -79,7 +79,17 @@ static func select_preset(id: String, viewport: Viewport) -> bool:
 		return false
 	settings().save_config(config_path)
 	apply_now(viewport)
+	if armed and viewport != null and viewport.is_inside_tree():
+		warm_resident_shaders(viewport)  # the new preset's tier variants (M1-RND-22)
 	return true
+
+
+## Compiles the current preset's resident shaders under `parent` (ShaderPrewarm.spawn_resident): at boot,
+## and after a preset change. Returns the warm-up node (null without a parent in the tree).
+static func warm_resident_shaders(parent: Node) -> ShaderPrewarm:
+	if parent == null or not parent.is_inside_tree():
+		return null
+	return ShaderPrewarm.spawn_resident(parent, settings().preset_id)
 
 
 ## Settings menu: one custom value on top of the preset; saved and applied.

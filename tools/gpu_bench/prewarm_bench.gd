@@ -19,6 +19,8 @@ const CSV_HEADER := (
 	+ "prewarm_frames,prewarm_wall_max_ms,prewarm_trace_ms"
 )
 ## Prewarm frames listed in the trace column (M1-RND-15).
+## --resident: load the registry's resident entries first, as boot does (M1-RND-22).
+## Prints PREWARM_START_MS: the synchronous ShaderPrewarm.start() (in the spawn frame), M1-RND-22.
 const TRACE_FRAMES := 16
 ## Frames the --pre-scene (a field played before the transition, M1-RND-15) runs first.
 const PRE_FRAMES := 120
@@ -46,12 +48,29 @@ func _run() -> void:
 		return
 	var gs := GraphicsSettings.new()
 	gs.set_preset(str(_opts.get("preset", "high")))
+	GraphicsRuntime.set_settings(gs)  # the prewarm warms this preset's tier variants (M1-RND-22)
 	gs.apply_current(get_viewport(), null)
 	for i in 3:
 		await RenderingServer.frame_post_draw
 	# --pre-scene: play a field scene first (M1-RND-15), as a battle transition always follows one.
 	# The game viewport has then already run its AA and upscaler, so what the prewarm costs is the
 	# incoming scene's pipelines, not the engine's first use of TAA in this process.
+	if _opts.has("resident"):  # M1-RND-22: what boot loads and holds, before the field
+		var t_res := Time.get_ticks_usec()
+		var boot := ShaderPrewarm.spawn_resident(self, gs.preset_id)
+		var boot_max := 0.0
+		var prev_res := Time.get_ticks_usec()
+		while is_instance_valid(boot) and boot.is_running():
+			await RenderingServer.frame_post_draw
+			var now_res := Time.get_ticks_usec()
+			boot_max = maxf(boot_max, float(now_res - prev_res) / US_PER_MS)
+			prev_res = now_res
+		print(
+			(
+				"PREWARM_RESIDENT %d held; boot warm-up %.1f ms, worst frame %.1f ms"
+				% [ShaderPrewarm.resident_count(), float(Time.get_ticks_usec() - t_res) / US_PER_MS, boot_max]
+			)
+		)
 	if _opts.has("pre-scene"):
 		var field := (load(str(_opts["pre-scene"])) as PackedScene).instantiate()
 		add_child(field)
@@ -67,7 +86,9 @@ func _run() -> void:
 		# Wall time of every frame while the prewarm runs, the spawn frame included (M1-RND-15): what a
 		# player would see under the transition fade.
 		var t0 := Time.get_ticks_usec()
+		var t_start := Time.get_ticks_usec()
 		var pw := ShaderPrewarm.spawn(scene_path, self)
+		print("PREWARM_START_MS %.1f" % (float(Time.get_ticks_usec() - t_start) / US_PER_MS))
 		var done := {"stats": {}}
 		pw.finished.connect(func(st: Dictionary) -> void: done["stats"] = st, CONNECT_ONE_SHOT)
 		var prev := t0
