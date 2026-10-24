@@ -1234,6 +1234,10 @@
     {
       "id": "memories_menu",
       "scene": "res://game/ui/menus/memories/shots/memories_menu.tscn"
+    },
+    {
+      "id": "items_menu_key",
+      "scene": "res://game/ui/menus/items/shots/items_menu_key.tscn"
     }
   ]
 }
