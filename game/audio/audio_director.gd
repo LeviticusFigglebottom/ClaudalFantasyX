@@ -16,6 +16,10 @@ extends Node
 ##   live under this node, not in the other scene's tree, and never write game state.
 ## - **Ambience (M2-AUD-05):** ambience.json's beds join music.json's, and its zone beds apply where music.json's
 ##   row names none; the wind bed's level follows the zone's wind speed (WeatherClock.zone_wind).
+## - **Reverb (M2-AUD-10):** a WorldVerb puts an AudioEffectReverb on the World and Combat buses; the zone row's
+##   `reverb` key picks a mix.json preset, ramped.
+## - **Voices (M3-AUD-07):** each DialogueBox gets a VoiceAudio (voice_audio.gd): the speaker's own blips from
+##   voices.json, and a recorded line when its file exists. A CutsceneSequencer's line_shown tells it each line.
 ## It runs while the tree is paused (PROCESS_MODE_ALWAYS), so a menu that pauses the field keeps its music and
 ## sounds; nothing it drives moves the game.
 ## Time passes only through advance(delta), which _process calls; tests call it directly.
@@ -38,6 +42,10 @@ var bed_table: Dictionary = {}
 var wind_db := 0.0
 ## footsteps.json (each FieldController's FootstepAudio).
 var footstep_data: Dictionary = {}
+## voices.json (each DialogueBox's VoiceAudio; M3-AUD-07).
+var voice_data: Dictionary = {}
+## The World and Combat reverb (M2-AUD-10).
+var verb := WorldVerb.new()
 var ui: UiAudio
 var music: MusicDeck
 var sfx: SfxBank
@@ -61,6 +69,8 @@ var _battles: Array[Node] = []
 var _seen_seq_music := false
 var _seen_box_open := false
 var _seen_battle := false
+## A cue waiting for its files to load on a worker thread: {cue, sec, files} ({} when none).
+var _pending: Dictionary = {}
 
 
 func _ready() -> void:
@@ -73,6 +83,7 @@ func _ready() -> void:
 	)
 	ui.configure(AudioData.table(AudioData.UI_SFX))
 	footstep_data = AudioData.table(AudioData.FOOTSTEPS)
+	voice_data = AudioData.table(AudioData.VOICES)
 	get_tree().node_added.connect(_on_node_added)
 	var router := get_node_or_null(^"/root/SceneRouter")
 	if router != null and router.has_signal(&"scene_swapping"):
@@ -93,6 +104,7 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 		ui.player = func(id: StringName) -> void: play_sfx(id)
 		add_child(ui)
 	build_buses(mix)
+	verb.configure(mix)
 	if music == null:
 		music = MusicDeck.new()
 		music.name = "Music"
@@ -105,6 +117,19 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 	sfx.rows = sfx_table.get("sfx", {}) as Dictionary
 
 
+## Stops every player under this node as the game quits: a playback still running when its player is freed
+## outlives it in the AudioServer and is reported as a leak at exit (the boot smoke test's "resources still in use").
+func _exit_tree() -> void:
+	stop_all_players()
+
+
+func stop_all_players() -> void:
+	for p: Node in find_children("*", "AudioStreamPlayer", true, false):
+		(p as AudioStreamPlayer).stop()
+	for p: Node in find_children("*", "AudioStreamPlayer3D", true, false):
+		(p as AudioStreamPlayer3D).stop()
+
+
 func _process(delta: float) -> void:
 	advance(delta)
 
@@ -115,10 +140,16 @@ func advance(delta: float) -> void:
 	for bed: FadeVoice in beds.values():
 		bed.step(delta, music.floor_db)
 	_step_ducks(delta)
+	verb.advance(delta)
+	_poll_pending()
 	ui.step()
 	for l: Variant in listeners.values():
-		if l is FootstepAudio and is_instance_valid(l):
+		if not is_instance_valid(l):
+			continue
+		if l is FootstepAudio:
 			(l as FootstepAudio).advance(delta)
+		elif l is VoiceAudio:
+			(l as VoiceAudio).advance(delta)
 
 
 # --------------------------------------------------------------------------- music
@@ -138,7 +169,52 @@ func play_music(cue_id: StringName, sec: float = -1.0) -> bool:
 
 
 func stop_music(sec: float = -1.0) -> void:
+	_pending = {}
 	play_music(AudioData.SILENCE, sec)
+
+
+## play_music without loading on the main thread: a cue whose files aren't cached yet loads on a worker thread
+## (ResourceLoader.load_threaded_request) and starts once loaded, so a zone swap or a battle's first frames never
+## carry the decode-and-load of a music file (the router's swap-frame budget). A later request replaces a pending one.
+func play_music_async(cue_id: StringName, sec: float = -1.0) -> void:
+	_pending = {}
+	var row := AudioData.cue(music_data, cue_id)
+	var files := AudioData.cue_files(row)
+	var waiting: Array[String] = []
+	for f in files:
+		if ResourceLoader.exists(f) and not ResourceLoader.has_cached(f):
+			if ResourceLoader.load_threaded_request(f, "AudioStream") == OK:
+				waiting.append(f)
+	if waiting.is_empty() or cue_id == AudioData.SILENCE:
+		play_music(cue_id, sec)
+		return
+	_pending = {"cue": cue_id, "sec": sec, "files": waiting}
+
+
+## The cue a threaded load is still waiting on (&"" for none).
+func pending_cue() -> StringName:
+	return StringName(_pending.get("cue", &""))
+
+
+## Blocks until a pending cue has loaded and starts it (tests).
+func flush_pending() -> void:
+	if _pending.is_empty():
+		return
+	for f: String in _pending["files"]:
+		ResourceLoader.load_threaded_get(f)
+	var p := _pending
+	_pending = {}
+	play_music(p["cue"], float(p["sec"]))
+
+
+func _poll_pending() -> void:
+	if _pending.is_empty():
+		return
+	for f: String in _pending["files"]:
+		var st := ResourceLoader.load_threaded_get_status(f)
+		if st == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			return
+	flush_pending()
 
 
 ## Applies the zone row for `scene_path` (SceneRouter.scene_swapping calls this under the fade).
@@ -149,11 +225,14 @@ func apply_zone(scene_path: String) -> void:
 	)
 	var w := WeatherClock.zone_wind(scene_path)
 	wind_db = AudioData.wind_db(ambience_data, Vector3(w.x, w.y, w.z).length())
+	var room := verb.preset_for(zone)
+	if room != verb.preset:
+		verb.apply(room)
 	if zone.is_empty():
 		zone_applied.emit(scene_path, zone)
 		return
 	if zone.has("music"):
-		play_music(StringName(str(zone["music"])))
+		play_music_async(StringName(str(zone["music"])))
 	if zone.has("ambience"):
 		var ids: Array[StringName] = []
 		for a: Variant in zone["ambience"]:
@@ -307,7 +386,10 @@ func _apply_bus(bus: StringName) -> void:
 
 func _on_node_added(node: Node) -> void:
 	if node is CutsceneSequencer:
-		pass  # its players are routed as they enter (below)
+		# its players are routed as they enter (below); its lines tell the box's VoiceAudio who speaks
+		var seq := node as CutsceneSequencer
+		if not seq.line_shown.is_connected(_on_line_shown):
+			seq.line_shown.connect(_on_line_shown.bind(seq))
 	elif node is AudioStreamPlayer and node.get_parent() is CutsceneSequencer:
 		_route_sequencer_player(node as AudioStreamPlayer)
 	elif node is DialogueBox:
@@ -315,6 +397,7 @@ func _on_node_added(node: Node) -> void:
 		var blip := node.get_node_or_null(NodePath(String(BLIP_NODE))) as AudioStreamPlayer
 		if blip != null:
 			blip.bus = &"Voice"
+		_later(attach_voice, node)
 	elif node is BattleController:
 		_battles.append(node)
 	elif node is BattleVfx:
@@ -435,12 +518,41 @@ func attach_footsteps(walker: Node) -> void:
 	listeners[walker] = l
 
 
+## A VoiceAudio for dialogue box `box` (once; M3-AUD-07). Its blips play through play_sfx.
+func attach_voice(box: Node) -> VoiceAudio:
+	if not is_instance_valid(box) or not box is DialogueBox:
+		return null
+	if listeners.has(box):
+		return listeners[box] as VoiceAudio
+	var l := VoiceAudio.new(voice_data)
+	l.name = "VoiceAudio"
+	l.player = func(id: StringName, opts: Dictionary) -> void: play_sfx(id, opts)
+	add_child(l)
+	l.attach(box as DialogueBox)
+	listeners[box] = l
+	return l
+
+
+## A sequencer's line: its box's VoiceAudio learns the voice and looks for a recorded file.
+func _on_line_shown(step: DialogueStep, seq: CutsceneSequencer) -> void:
+	if not is_instance_valid(seq) or seq.overlay == null or not is_instance_valid(seq.overlay.box):
+		return
+	var l := attach_voice(seq.overlay.box)
+	if l != null:
+		l.on_line(step)
+
+
 ## ambience.json's wind bed id ("" when none).
 func wind_bed() -> String:
 	return str((ambience_data.get("wind", {}) as Dictionary).get("bed", ""))
 
 
+## The first scene's zone row (a scene run on its own, or the main scene). Not on a headless run (no audio device:
+## CI's boot smoke test quits after 60 frames, and a music playback still live in the dummy driver at exit is
+## reported as leaked resources); tests call apply_zone themselves.
 func _apply_first_scene() -> void:
+	if DisplayServer.get_name() == "headless":
+		return
 	var scene := get_tree().current_scene
 	if scene != null and zone_path == "" and scene.scene_file_path != "":
 		apply_zone(scene.scene_file_path)

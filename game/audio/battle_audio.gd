@@ -48,7 +48,7 @@ func attach(dir: AudioDirector, controller: BattleController, eng: BattleEngine,
 	_apply_reduced()
 	var cue := AudioData.battle_cue(dir.music_data, eng.encounter_id)
 	if cue != &"":
-		dir.play_music(cue, float(dir.music_cfg().get("battle_in_sec", 0.0)))
+		dir.play_music_async(cue, float(dir.music_cfg().get("battle_in_sec", 0.0)))
 	eng.phase_changed.connect(_on_phase_changed)
 	eng.battle_finished.connect(_on_battle_finished)
 	_connect_sfx()

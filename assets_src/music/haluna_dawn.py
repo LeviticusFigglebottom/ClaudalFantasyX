@@ -103,7 +103,9 @@ def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None)
     pedal = plan_pedal(changes, start=t0, end_release=end_t + BAR, release_len=4.0, g=g, half={0, 2, 27})
     mx = Mixer(end_t + 2 * BAR + 8.0)
     mx.bus("piano", 0.0, send=0.26, process=PianoBody(pedal))
-    mx.bus("metal", -9.0, send=0.45)
+    # Measured (hush_theme_v2._bus_stats): the piano leads; the low metallophone sits 10 LU under it. The grand
+    # model's raw level is far below a metallophone's, hence this low gain.
+    mx.bus("metal", -24.8, send=0.45)
     for nt, x in zip(notes, render_jobs(HFV._piano_jobs(notes, pedal, SEED + 5))):
         mx.add("piano", x, nt["t0"], pan=float(np.clip((nt["m"] - 64) / 60.0, -0.3, 0.3)))
     for i, (bar, p, v) in enumerate(METAL):

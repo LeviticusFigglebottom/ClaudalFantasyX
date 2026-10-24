@@ -16,6 +16,8 @@ the loudness standard is [`../audio/mix.md`](../audio/mix.md).
 | `shrine_audio.gd` (`ShrineAudio`) | The Shell Shrine trial's sounds (M2-AUD-01) |
 | `footstep_audio.gd` (`FootstepAudio`) | One per field walker: footsteps by stride and surface (M2-AUD-05) |
 | `ui_audio.gd` (`UiAudio`) | The menus' sounds from ui_sfx.json's hooks (M2-AUD-05) |
+| `world_verb.gd` (`WorldVerb`) | The area reverb on the World and Combat buses (M2-AUD-10) |
+| `voice_audio.gd` (`VoiceAudio`) | One per DialogueBox: the speaker's blips and recorded lines (M3-AUD-07) |
 
 **Time** passes only through `advance(delta)`, which `_process` calls; tests call it directly. `advance` also steps
 the UiAudio and every FootstepAudio. The autoload is `PROCESS_MODE_ALWAYS` (M2-AUD-05): the field menu pauses the
@@ -149,9 +151,74 @@ classes, signals or expressions are never read as sfx ids.
 ## Known limits
 - The cutscene sequencer keeps its own music player and plays it at `music_volume_db` −8 dB (its stand-in
   setting). A request task asks m2-slice to call `Audio.play_music` instead (M2-AUD-07).
-- No positional reverb per area yet (mix.md's WorldVerb); M2-AUD-06.
+- The area reverb is per zone, not per position inside a zone (see "Area reverb" below).
 - Footstep surfaces are per scene. Haluna's dock planks (wood) need an area lookup, such as a group on the dock's
   collision or a surface map, from whoever owns Haluna.
 - UI hooks that read a menu's state through `watch` depend on public names (`level`, `root_page()`,
   `model.cursor`). Renaming one silences that sound, which is why `tests/unit/test_field_audio.gd` drives the real
   CommandMenu and FieldMenu.
+
+## Area reverb (M2-AUD-10)
+
+mix.md §4 planned one `WorldVerb` bus that World and Combat send to. A Godot bus sends to one bus only, and both
+already send to SFX, so instead `WorldVerb` (`game/audio/world_verb.gd`) puts an `AudioEffectReverb` on each of
+mix.json `reverb.buses` (World and Combat), and both follow one preset. UI and Voice are never reverbed.
+- **Presets** (`mix.json` `reverb_presets`): every parameter of the effect (room_size, damping, spread, hipass, dry,
+  wet, predelay_msec, predelay_feedback), with a `_note`. `dry` (wet 0), `open_sea`, `village_lanes`,
+  `stone_shrine`, `drowned_cave` and `battle_beach`.
+- **Choice:** `apply_zone` reads the zone row's `reverb` key (music.json; a flag variant may override it). A row
+  without one, or a scene without a row, gets `reverb.default` (`dry`). Today Haluna is `village_lanes`, the Shell
+  Shrine `stone_shrine` and the field battle `battle_beach`; the title and the end card are dry. `open_sea` and
+  `drowned_cave` wait for M3's sea and cave zones.
+- **Ramp:** each parameter moves linearly over `reverb.ramp_sec` (0.5 s), under the router's fade. A preset with
+  no wet signal switches the effects off once the ramp reaches it, so a dry zone costs nothing.
+- **No doubled rooms:** the SFX are rendered with a room of their own. The shrine's are in its stone room (rt60
+  1.5 s, 22 % wet, `assets_src/sfx/shrine_sfx.py`), so `stone_shrine` adds only 5 % wet of a mid-size room: enough
+  to put the dry footsteps in the same stone, not a second hall on the stones and pours. Battle SFX carry 12–30 %
+  of a short room, so `battle_beach` is 5 % of a damped, open space. A new zone's preset should be chosen against
+  how wet its own SFX are rendered; `drowned_cave` (28 %) assumes SFX rendered dry or nearly.
+- `tools/audio/data_check.py` checks the bus names, the default, each preset's ranges, and every zone's `reverb`;
+  `tests/unit/test_audio_reverb.gd` drives a zone swap through the ramp.
+
+## Voices (M3-AUD-07)
+
+SPEC §16 Q4: no voice acting yet, but the architecture is ready for it. Every speaker has a voice in
+`game/data/audio/voices.json`, and every DialogueBox gets a `VoiceAudio` listener (attached deferred, so the box's
+`_ready` has run; the director keeps it in `listeners` and steps it in `advance`).
+- **The table:** `speakers.<id>` -> `blips` (sfx rows of `sfx_voice.json`, Voice bus; the set cycles), `pitch`,
+  `rate_ms` (the shortest gap between blips; mix.md §4's 55 ms), `jitter` (a seeded ± fraction per blip),
+  `volume_db` (added to text_box.json's `blip_volume_db`, so the dialogue's own level still rules). `default` is the
+  voice of an unknown id. `validate_data` fails a speakers.json id without a voice, a voice for an unknown speaker,
+  and a blip row that isn't on the Voice bus.
+- **The timbres** (`assets_src/sfx/voice_blips.py` -> `assets/audio/sfx/voice/`): five murmured-syllable voices,
+  soft, bright, low, breathy and child, three vowels each, at the text blip's −27 LUFS momentary. Rhen, Ysolde and
+  Sefir are soft; Asha, Liss, the vendor and Reed bright; Toma, Kerrid and the fisher low; Pell, the netmender and
+  Neme breathy; the child gets the child timbre. The shared `text_blip.ogg` stays in the box's scene but no longer sounds.
+- **How it hears the box** (listen-only): the box counts its blips (`blips_played`); VoiceAudio reads the count
+  once a frame and plays the voice's blip for a new one (at most one per frame, and none closer than `rate_ms`).
+  The box already leaves out sung lines, skipped reveals and narration (unless `narration_blip`), so the voices do
+  too. The box's own `Blip` player is kept at −80 dB. The voice comes from `CutsceneSequencer.line_shown(step)`
+  (the speaker, else the narrator identity); a box without a sequencer reports only `mouth_flap(speaker)` at its
+  first vowel. Request task **M3-ARC-01** asks the Architect for a `blip(voice)` signal and a switch that leaves the
+  box's player out, which would remove the poll and the muting.
+- **Recorded lines (VO), later:** a line's file is its compiled `voice` field (ADR 0004; empty today), else
+  `vo.pattern`, `res://assets/audio/vo/{speaker}/{line_id}.ogg` (`{speaker}` is the narrator identity for
+  narration, else `narrator`). When it exists it plays on the Voice bus, the line's blips stay silent
+  (`suppress_blips`), and the next line or the box closing stops it. A missing file falls back to the blips, so
+  lines can be recorded one at a time. To add VO: drop the `.ogg` at that path, import, add its PROVENANCE row. The
+  dialogue duck already lowers Music and Ambience under it.
+- `tests/unit/test_voice_audio.gd` covers the speaker table against speakers.json, the fallback, the rate limit,
+  the cycle and jitter, the sequencer hook and the VO preference with a fixture stream.
+- **Headless runs** (CI, tests) don't auto-apply the first scene's zone row: with no audio device, a music playback
+  still live in the dummy driver when `--quit-after` ends the run is reported as leaked resources (the boot smoke
+  test). Swaps (`scene_swapping`) and `apply_zone` work as usual. The autoload also stops its players on exit.
+
+## M3 data waiting for scenes (M3-AUD-06)
+
+- `game/data/audio/sfx_reefball.json` (15 rows: ball, sphere water, crowd reactions, the reed-pipe whistle, the
+  naming rite) and `sfx_dive.json` (5 rows: entry, surfacing, bubble burst, strokes, the lantern's underwater hum as
+  a 6 s loop). Play them with `Audio.play_sfx` / `play_sfx_at` once the Reefball and dive scenes exist.
+- ambience.json beds `underwater_deep`, `drowned_tower`, `reefball_crowd_murmur` (−26) and `reefball_crowd_excited`
+  (−23): crossfade the two crowd beds with play via `Audio.set_ambience`. Stop the crowd beds while
+  `reefball_naming_rite` plays (it carries its own crowd going quiet), and stop the lantern hum's player when Rhen
+  surfaces.

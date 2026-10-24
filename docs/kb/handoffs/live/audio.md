@@ -3,29 +3,25 @@
 Environment: cloud session `session_01FtDSYm5dJHkdC3RqXsDjif`, branch `claude/audio` (from the integration branch
 `claude/undertow-lead-handoff-423ixt` at 1023a25). Role: Audio. The Lead reads this file; newest state first.
 
-## State (2026-10-24): queue done; everything in review
-- **Review (reviewer qa):** M2-AUD-01 shrine, M2-AUD-02 runtime, M2-AUD-03 three final cue families, M2-AUD-04 battle
-  SFX, M2-AUD-05 ambience/footsteps/UI, M2-AUD-06 mixing pass. M2-AUD-03's "final" also needs the human's ears:
-  docs/kb/audio/listening_notes.md "M2: the slice's three final cues" (+ "M2: Shell Shrine").
-- **Gates at the last commit:** validate_data 0 errors; taskboard --check OK; gdlint/gdformat clean; tools/tests
-  audio files OK (test_audio_data, test_audio_loudness: every shipped .ogg on its target); Godot full suite
-  1466 run, 0 failed after updating two other-role tests (see M2-AUD-02 notes). No screenshots (no scene/shader
-  touched). Byte-reproducibility: every new job was rendered and checked; `render_all.py --only <cue> --determinism`
-  on all eight M2-AUD-03 jobs: every file byte-identical (and identical to the committed files).
-- **Requests filed:** M2-AUD-07 (cinematics: sequencer -> Audio.play_music; drop music_volume_db −8), M2-AUD-08
-  (ui: Audio section in settings), M2-AUD-09 (cinematics: footstep surface markers in Haluna).
-- **Touched outside audio paths (Lead, please note):** project.godot autoload line; one `check_audio` call in
-  tools/validate_data.py; appended rows in game/data/ui/accessibility.json (reduced_audio + 4 volume rows),
-  game/data/loc/strings.csv, assets/PROVENANCE.md, docs/kb/ownership.md (Audio runtime claim);
-  tests/unit/test_ui_settings.gd and test_cutscene_sequencer.gd expectations. ADR 0031 (number checked free on
-  all branches at the time).
-- **Gotcha:** tools/tests/test_audio_loudness.py takes ~4 min (decodes every file); ffmpeg upmixes mono at −3 dB,
-  so it decodes mono files as mono.
+## MERGE-READY @ c99e6f2b
+`tools/ci_local.sh` exit 0 (HYMN_SKIP_BLENDER=1: no Blender source touched): 1499 Godot tests, 0 failed; 75/75 shots
+(rmse 0); coverage battle 99.95 % / progression 96.52 % (within baseline); boot smoke clean. Integration branch merged
+at f95b27cb. Items: M2-AUD-01..06 and M2-AUD-10/11, M3-AUD-01..07 (all `status: review`). Since c99e6f2b only docs.
+
+## State (2026-10-24, later)
+- **Merged into claude/audio since the last MERGE-READY:** M3-AUD-08 Hullgnaw + Spar-Wraith, M3-AUD-09 Cinder Matron +
+  Undertow's Reach (stems), M2-AUD-13 causeway beds, M3-AUD-10 Oruvel + the living funeral (all `review`), and the
+  integration branch at f8b0db07.
+- **Fix:** every loop now imports with `beat_count=0`. Godot 4.6 loops an Ogg after `beat_count` beats counted from
+  the file start, so cues with an intro (both battle themes, the sea bosses) wrapped early by their intro and skipped
+  the end of their loop. The audio budget is 48 MiB (mix.md "Budget"; ~35 MiB used once these land: a repo-size
+  question, Git LFS).
+- **In progress:** M3-AUD-11 ferry + shoals routes and M3-AUD-12 Tamsule + the Iskarra vigil (worktree agents).
+  **Two items remain.** The full Godot suite and the loudness test are running in the background for the batch line.
+- **Filed for m2-slice:** M2-AUD-12 (causeway zone rows, the B05 crossfade, the B12 coda).
 
 ## Exact next step
-Merge `claude/audio` into the integration branch. Then: the human's listening verdict (§16 Q3) per cue;
-next audio items: `saltgrass_causeway` field bed (B06) when that zone exists, a per-area world reverb bus, the
-sung (formant voice) A/B of hush_first_verse if the human asks.
+Write the batch MERGE-READY line when the background suite passes; merge M3-AUD-11/12 as they report.
 
 ## Un-pushed state
 None.

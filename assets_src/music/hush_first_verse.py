@@ -139,6 +139,9 @@ def _finish(mx: Mixer, hall: ModFDNReverb, out_path: str, quality: float) -> dic
     return measure(master)
 
 
+# Bus gains from measured bus loudness (hush_theme_v2._bus_stats): the vocalise at L, the piano L-3 once it enters,
+# the drone L-9. The grand piano model's raw level is about 31 dB under the breath flute's (the first render of this
+# cue missed that, and the piano on *mir* was buried).
 def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None) -> dict:
     g = rng(SEED)
     verse, mir = verse_notes()
@@ -161,9 +164,9 @@ def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None)
     pedal = plan_pedal(changes, start=piano_t0, end_release=end_t + 3 * bar_s, release_len=3.0, g=g)
     length = end_t + 4 * bar_s + 8.0
     mx = Mixer(length)
-    mx.bus("piano", -3.0, send=0.24, process=PianoBody(pedal))
+    mx.bus("piano", 25.2, send=0.24, process=PianoBody(pedal))
     mx.bus("vocalise", 0.0, send=0.38, process=vocalise_bus)
-    mx.bus("drone", -11.0, send=0.25, process=lambda x: filt(x, [bq_highpass(35, 0.7), bq_lowpass(1500, 0.6)]))
+    mx.bus("drone", -6.4, send=0.25, process=lambda x: filt(x, [bq_highpass(35, 0.7), bq_lowpass(1500, 0.6)]))
     mx.add("drone", drone(length - 2.0, rng(SEED + 1)), 0.0)
     for i, (t0, d, m) in enumerate(verse):
         x = breath_flute(m, d + 0.06, 0.5, seed=SEED + 31 * i, breath=0.18, scoop_cents=40.0, vib_cents=16.0,

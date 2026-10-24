@@ -1,0 +1,15 @@
+{
+  "bar_beats": 7,
+  "beat_count": 336,
+  "bpm": 300.0,
+  "downbeat_offset_s": 0.1,
+  "loop_bars": 48,
+  "loop_length_samples": 2963520,
+  "loop_length_seconds": 67.2,
+  "loop_offset_seconds": 0.0,
+  "loop_start_samples": 0,
+  "meter": "7/8 (bpm counts eighths)",
+  "sample_rate": 44100,
+  "stems_of": "cinder_matron",
+  "total_samples": 2963520
+}

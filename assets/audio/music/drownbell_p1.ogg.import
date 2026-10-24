@@ -15,5 +15,5 @@ dest_files=["res://.godot/imported/drownbell_p1.ogg-1315eb2c52939b43ec73a79eb756
 loop=true
 loop_offset=0.0
 bpm=132.0
-beat_count=160
+beat_count=0
 bar_beats=4

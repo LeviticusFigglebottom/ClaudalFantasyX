@@ -125,7 +125,8 @@ The plan in §4 is now the game's mix: the `Audio` autoload (ADR 0031; docs/kb/t
 - **The loudness gate:** `tools/audio/targets.py` lists every file's target (the table in §2, made exact per
   family), and `tools/tests/test_audio_loudness.py` decodes every shipped `.ogg` and checks its integrated or
   momentary loudness and its true peak, that each file is at most 5 MB, and that all audio stays inside the slice
-  budget (24 MiB). The boss stems are checked as a stack (−16 together; stem 1 alone quieter).
+  budget (24 MiB for the slice; 48 MiB now, for the Act I cues: see "Budget" below). The boss stems are checked as a stack
+  per cue (−16 together; stem 1 alone quieter).
 - **Encoding exceptions:** the ambience beds are Vorbis q1 (noise-like beds lose nothing audible there; at q3 the six
   came to 3.1 MiB against their 2.5 MiB budget). Battle v2 and the Drownbell are q3.5 like v1; the piano cues q4.
 
@@ -133,3 +134,32 @@ The plan in §4 is now the game's mix: the `Audio` autoload (ADR 0031; docs/kb/t
 each source's comment above `render()`): the lead instrument at 0 LU; accompaniment metallophones −7 to −8;
 plucked or struck accompaniment −9 to −11; bass −6 to −10; drums −4 (battle) to −8 (town); gongs −12 to −14;
 drones −9. In the Drownbell the bell sits −2 under the lead, and stem 2 lifts the full stack about +2 LU.
+
+**Area reverb (M2-AUD-10).** The WorldVerb of §4 is built, as one `AudioEffectReverb` on each of World and Combat
+(a Godot bus sends to one bus only), both set from a `mix.json` `reverb_presets` row chosen by the zone's `reverb`
+key and ramped over 0.5 s. A dry preset turns the effects off. Wet levels: `dry` 0, `open_sea` 4 %, `battle_beach`
+5 %, `stone_shrine` 5 %, `village_lanes` 10 %, `drowned_cave` 28 %. The shrine and battle presets stay low because
+those SFX are rendered in their own rooms (the shrine's at 22 % of a 1.5 s room): the bus adds a touch of the space,
+not a second room. The rule for a new area: the drier its rendered SFX, the more of the bus reverb it can take.
+Details: docs/kb/tech/audio_runtime.md "Area reverb".
+
+**Voices (M3-AUD-07).** Each speaker has a blip timbre and pitch (`game/data/audio/voices.json`) on the Voice bus,
+at the text blip's −27 LUFS momentary and the text box's `blip_volume_db`, one blip per 55–80 ms at most. Recorded
+lines, when they exist, play on Voice in place of the blips; a starting target is −16 LUFS integrated, like the
+music, over the −4 dB dialogue duck (to confirm once real lines exist). Details: audio_runtime.md "Voices".
+
+**Reefball and underwater (M3-AUD-06).** `assets_src/sfx/reefball_sfx.py` and `underwater_sfx.py` (render_all kind
+`sfx_set`: one-shots and loops in one job; a file listed with a `.loop.json` is checked as a loop). The underwater
+beds (`underwater_deep`, `drowned_tower`) are ambience beds at −26 LUFS, Vorbis q1. The Reefball crowd beds sit on
+Ambience too: the murmur at −26, the excited bed at **−23** (3 LU over the murmur, so a crossfade into play rises
+without a fader move). World SFX at −18 momentary max, swimming strokes at −20 (they repeat), the reed-pipe whistle
+at −17 (it has to cut through the crowd), and the lantern's underwater hum, a 6 s loop, at −24 integrated like the
+shrine's pool fill. Every rule is in `tools/audio/targets.py`.
+
+**Budget (2026-10-24):** the slice plus the first Act I cues reached 23.5 MiB, so the total audio budget in
+`tools/audio/targets.py` is now 48 MiB (about 1 MB per minute of music; the full game's 60–80 cues land near 70–90 MB,
+which is a repository-size question for the Lead: Git LFS, STATUS.md). Each file stays under 5 MB.
+
+**Loop import rule:** `.import` files keep `beat_count=0`. Godot 4.6 loops an Ogg after `beat_count` beats counted
+from the start of the file (not from `loop_offset`), so a cue with an intro would wrap early by its intro's length.
+The sidecars keep the musical beat count; `tests/unit/test_audio_loops.gd` asserts the import keeps 0.

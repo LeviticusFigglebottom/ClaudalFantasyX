@@ -34,6 +34,8 @@ import tempfile
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 sys.path.insert(0, os.path.join(ROOT, "tools", "audio"))
 
+import numpy as np  # noqa: E402
+
 from synth.analysis import loop_seam_report  # noqa: E402
 from synth.loudness import integrated_lufs, momentary_max_lufs, self_test, true_peak_dbtp  # noqa: E402
 from synth.mixer import read_audio  # noqa: E402
@@ -44,8 +46,12 @@ M1_AUD_02 = ("hush_theme_v2", "battle_standard.", "temple_trial")
 # M2-AUD-03's cues, held to the music targets (-16 +- 0.5 LUFS, true peak <= -1 dBTP). drownbell_p1 is one stem of a
 # stack measured whole by its source (the full stack is -16; stem 1 alone is quieter by design, mix.md §2).
 M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_verse", "hush_coda", "haluna_dawn",
-           "shell_shrine_interior", "ilun_summon")
+           "shell_shrine_interior", "ilun_summon", "saltgrass_causeway", "lamp_diver", "sefir_theme", "the_ebbing",
+           "tidecup_match", "terraces_of_ash", "corrow_seawall", "hullgnaw", "spar_wraith", "oruvel", "pilgrims_wake",
+           "tamsule", "iskarra_vigil")
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
+# Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
+AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024)}  # M2-AUD-13: two q1 beds
 AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
 # (module source, output dir, output file names, kind)
@@ -90,6 +96,11 @@ JOBS = [
     ("assets_src/music/hush_coda.py", "assets/audio/music", ["hush_coda.ogg"], "music"),
     ("assets_src/music/haluna_dawn.py", "assets/audio/music", ["haluna_dawn.ogg"], "music"),
     ("assets_src/music/ilun_summon.py", "assets/audio/sfx", ["ilun_summon.ogg"], "music"),
+    ("assets_src/music/saltgrass_causeway.py", "assets/audio/music",
+     ["saltgrass_causeway.ogg", "saltgrass_causeway.loop.json"], "music_loop"),
+    ("assets_src/music/lamp_diver.py", "assets/audio/music", ["lamp_diver.ogg", "lamp_diver.loop.json"], "music_loop"),
+    ("assets_src/music/sefir_theme.py", "assets/audio/music", ["sefir_theme.ogg", "sefir_theme.loop.json"], "music_loop"),
+    ("assets_src/music/the_ebbing.py", "assets/audio/music", ["the_ebbing.ogg"], "music"),
     ("assets_src/sfx/field_ambience.py", "assets/audio/ambience",
      [f"{b}{ext}" for b in ("haluna_day", "haluna_night", "surf", "dock", "shrine_interior", "wind")
       for ext in (".ogg", ".loop.json")], "ambience_loop"),
@@ -97,6 +108,42 @@ JOBS = [
      [f"step_{s}_{v:02d}.ogg" for s in ("sand", "stone", "wood") for v in range(1, 6)]
      + [f"{u}.ogg" for u in ("ui_menu_open", "ui_menu_close", "ui_page", "ui_buy", "ui_inn_rest", "ui_error",
                              "ui_vowbound_open")], "sfx"),
+    ("assets_src/sfx/voice_blips.py", "assets/audio/sfx/voice",
+     [f"blip_{t}_{v}.ogg" for t in ("soft", "bright", "low", "breathy", "child") for v in (1, 2, 3)], "sfx"),
+    # M3-AUD-06. "sfx_set": one-shots and loops together; a file with a .loop.json in the list is checked as a loop.
+    ("assets_src/sfx/underwater_sfx.py", "assets/audio",
+     [f"ambience/{b}{ext}" for b in ("underwater_deep", "drowned_tower") for ext in (".ogg", ".loop.json")]
+     + [f"sfx/dive/{s}.ogg" for s in ("dive_entry", "dive_surface", "dive_bubble_burst", "dive_stroke_1",
+                                      "dive_stroke_2", "dive_stroke_3", "dive_stroke_4")]
+     + ["sfx/dive/dive_lantern_hum.ogg", "sfx/dive/dive_lantern_hum.loop.json"], "sfx_set"),
+    ("assets_src/sfx/reefball_sfx.py", "assets/audio/sfx/reefball",
+     [f"ball_{k}_{v}.ogg" for k, n in (("kick", 3), ("push", 2), ("catch", 2), ("shot", 2)) for v in range(1, n + 1)]
+     + ["ball_score.ogg", "sphere_enter.ogg", "sphere_exit.ogg", "sphere_swim_1.ogg", "sphere_swim_2.ogg",
+        "sphere_swim_3.ogg", "crowd_cheer_1.ogg", "crowd_cheer_2.ogg", "crowd_groan.ogg", "crowd_gasp.ogg",
+        "whistle_start.ogg", "whistle_short.ogg", "whistle_end.ogg", "naming_rite.ogg"]
+     + [f"crowd_{b}{ext}" for b in ("murmur", "excited") for ext in (".ogg", ".loop.json")], "sfx_set"),
+    ("assets_src/music/tidecup_match.py", "assets/audio/music",
+     ["tidecup_match.ogg", "tidecup_match.loop.json"], "music_loop"),
+    ("assets_src/music/terraces_of_ash.py", "assets/audio/music",
+     ["terraces_of_ash.ogg", "terraces_of_ash.loop.json"], "music_loop"),
+    ("assets_src/music/corrow_seawall.py", "assets/audio/music",
+     ["corrow_seawall.ogg", "corrow_seawall.loop.json"], "music_loop"),
+    ("assets_src/music/hullgnaw.py", "assets/audio/music", ["hullgnaw.ogg", "hullgnaw.loop.json"], "music_loop"),
+    ("assets_src/music/spar_wraith.py", "assets/audio/music",
+     ["spar_wraith.ogg", "spar_wraith.loop.json"], "music_loop"),
+    # M3-AUD-09: boss stems (like the Drownbell's, each stem alone is quieter; the stack is checked by
+    # tools/tests/test_audio_loudness.py)
+    ("assets_src/music/cinder_matron.py", "assets/audio/music",
+     [f"cinder_matron_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/undertows_reach.py", "assets/audio/music",
+     [f"undertows_reach_p{i}{ext}" for i in (1, 2, 3) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/sfx/causeway_ambience.py", "assets/audio/ambience",
+     [f"{b}{ext}" for b in ("causeway_wind", "tidepools") for ext in (".ogg", ".loop.json")], "ambience_loop"),
+    ("assets_src/music/oruvel.py", "assets/audio/music", ["oruvel.ogg", "oruvel.loop.json"], "music_loop"),
+    ("assets_src/music/pilgrims_wake.py", "assets/audio/music",
+     ["pilgrims_wake.ogg", "pilgrims_wake.loop.json"], "music_loop"),
+    ("assets_src/music/tamsule.py", "assets/audio/music", ["tamsule.ogg", "tamsule.loop.json"], "music_loop"),
+    ("assets_src/music/iskarra_vigil.py", "assets/audio/music", ["iskarra_vigil.ogg"], "music"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
@@ -162,7 +209,11 @@ def _sync_import(ogg: str, meta: dict) -> None:
     with open(imp, encoding="utf-8") as f:
         txt = f.read()
     want = {"loop": "true", "loop_offset": repr(float(meta["loop_offset_seconds"])),
-            "bpm": repr(float(meta["bpm"])), "beat_count": str(int(meta["beat_count"])),
+            # beat_count stays 0: with bpm and beat_count both set, Godot 4.6's Ogg playback loops after
+            # beat_count beats counted from the *file start* (audio_stream_ogg_vorbis.cpp, beat_length_frames),
+            # not from loop_offset, so a cue with an intro would wrap early by the intro's length. The sidecar keeps
+            # the musical beat count for tools; the engine loops at the file's end.
+            "bpm": repr(float(meta["bpm"])), "beat_count": "0",
             "bar_beats": str(int(meta["bar_beats"]))}
     new = txt
     for k, v in want.items():
@@ -183,6 +234,7 @@ def main() -> int:
 
     jobs = [j for j in JOBS if not args.only or args.only in j[0]]
     rows, total, new_total, amb_total, ok = [], 0, 0, 0, True
+    amb_jobs: dict = {}
     for src, rel_dir, files, kind in jobs:
         m1 = JOBS.index((src, rel_dir, files, kind)) < M1_JOBS
         out_dir = os.path.join(ROOT, rel_dir)
@@ -196,19 +248,29 @@ def main() -> int:
                 continue
             size = os.path.getsize(p)
             total += size if m1 else 0
-            amb_total += size if kind == "ambience_loop" else 0
+            if kind == "ambience_loop" and src in AMBIENCE_JOB_BUDGETS:
+                amb_jobs[src] = amb_jobs.get(src, 0) + size
+            elif kind == "ambience_loop":
+                amb_total += size
             if f.startswith(M1_AUD_02):
                 new_total += size
             if f.endswith(".json"):
                 rows.append((os.path.join(rel_dir, f), size, None, None, None, None, _sha(p)))
                 continue
+            looped = kind in ("music_loop", "ambience_loop")
+            one_shot = kind == "sfx"
+            if kind == "sfx_set":
+                looped = os.path.splitext(f)[0] + ".loop.json" in files
+                one_shot = not looped
             y = read_audio(p, channels=1 if kind == "sfx" else 2)
-            if kind in ("music_loop", "ambience_loop"):
+            if kind == "sfx_set" and np.array_equal(y[:, 0], y[:, 1]):
+                y = read_audio(p, channels=1)  # a mono file measures as mono (as test_audio_loudness does)
+            if looped:
                 for prob in _check_loop(p, y):
                     print(f"FAIL {f}: {prob}")
                     ok = False
             rows.append((os.path.join(rel_dir, f), size, len(y) / 44100,
-                         integrated_lufs(y) if kind != "sfx" else None, momentary_max_lufs(y), true_peak_dbtp(y),
+                         None if one_shot else integrated_lufs(y), momentary_max_lufs(y), true_peak_dbtp(y),
                          _sha(p)))
 
     print()
@@ -230,6 +292,11 @@ def main() -> int:
         print(f"ambience beds {amb_total / 1048576:.2f} MiB, budget {AMBIENCE_BUDGET / 1048576:.1f} MiB")
         if amb_total > AMBIENCE_BUDGET:
             print("FAIL: ambience beds over their size budget")
+            ok = False
+    for src, size in amb_jobs.items():
+        print(f"{os.path.basename(src)} beds {size / 1048576:.2f} MiB, budget {AMBIENCE_JOB_BUDGETS[src] / 1048576:.1f} MiB")
+        if size > AMBIENCE_JOB_BUDGETS[src]:
+            print(f"FAIL: {src}'s beds over their size budget")
             ok = False
     if not args.only:
         print(f"total {total} bytes ({total / 1048576:.2f} MiB), budget {SIZE_BUDGET / 1048576:.0f} MiB; "

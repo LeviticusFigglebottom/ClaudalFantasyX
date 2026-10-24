@@ -12,6 +12,22 @@ const LOOPING_CUES: Array[String] = [
 	"res://assets/audio/music/battle_standard_v2.ogg",
 	"res://assets/audio/music/drownbell_p1.ogg",
 	"res://assets/audio/music/drownbell_p2.ogg",
+	"res://assets/audio/music/saltgrass_causeway.ogg",
+	"res://assets/audio/music/lamp_diver.ogg",
+	"res://assets/audio/music/sefir_theme.ogg",
+	"res://assets/audio/music/tidecup_match.ogg",
+	"res://assets/audio/music/terraces_of_ash.ogg",
+	"res://assets/audio/music/corrow_seawall.ogg",
+	"res://assets/audio/music/hullgnaw.ogg",
+	"res://assets/audio/music/spar_wraith.ogg",
+	"res://assets/audio/music/cinder_matron_p1.ogg",
+	"res://assets/audio/music/cinder_matron_p2.ogg",
+	"res://assets/audio/music/undertows_reach_p1.ogg",
+	"res://assets/audio/music/undertows_reach_p2.ogg",
+	"res://assets/audio/music/undertows_reach_p3.ogg",
+	"res://assets/audio/music/oruvel.ogg",
+	"res://assets/audio/music/pilgrims_wake.ogg",
+	"res://assets/audio/music/tamsule.ogg",
 ]
 const SAMPLE_RATE := 44100
 const MIN_LENGTH_S := 60.0
@@ -85,7 +101,10 @@ func test_streams_load_and_take_loop_settings() -> void:
 		var bpm := float(meta["bpm"])
 		if bpm > 0.0:
 			assert_between(stream.bpm, bpm - 0.01, bpm + 0.01, "%s bpm" % path)
-			assert_eq(stream.beat_count, int(meta["beat_count"]), "%s beat_count" % path)
+		# With bpm and beat_count both set, Godot loops after beat_count beats counted from the file start, not from
+		# loop_offset, so a cue with an intro would wrap early by the intro: the import keeps beat_count 0 and the
+		# engine loops at the file's end (render_all.py _sync_import; the sidecar keeps the musical count).
+		assert_eq(stream.beat_count, 0, "%s imports with beat_count 0" % path)
 
 
 func test_playback_instantiates() -> void:

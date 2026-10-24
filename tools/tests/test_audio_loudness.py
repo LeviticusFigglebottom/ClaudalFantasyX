@@ -46,7 +46,7 @@ class AudioLoudnessTest(unittest.TestCase):
 
     def test_loudness_and_peaks(self) -> None:
         bad = []
-        stems = []
+        stems: dict[str, list] = {}     # one stack per "stem" rule (one boss cue each), in file order: p1, p2, ...
         for p in self.files:
             rel = str(p.relative_to(AUDIO))
             rule = targets.rule_for(rel)
@@ -58,18 +58,23 @@ class AudioLoudnessTest(unittest.TestCase):
             if tp > ceiling + 0.05:
                 bad.append(f"{rel}: true peak {tp:.2f} dBTP over {ceiling}")
             if metric == "stem":
-                stems.append(y)
+                stems.setdefault(rule[0], []).append(y)
                 continue
             lv = integrated_lufs(y) if metric == "integrated" else momentary_max_lufs(y)
             if abs(lv - target) > tol:
                 bad.append(f"{rel}: {metric} {lv:.2f} LUFS, target {target} +- {tol}")
-        if stems:
-            n = min(len(s) for s in stems)
-            full = integrated_lufs(sum(s[:n] for s in stems))
-            if abs(full + 16.0) > 0.5:
-                bad.append(f"boss stems together: {full:.2f} LUFS, target -16 +- 0.5")
-            if integrated_lufs(stems[0]) > full:
-                bad.append("boss stem 1 alone is louder than the stack")
+        for glob, group in stems.items():
+            _, _, target, tol, ceiling, _ = targets.rule_for(glob.replace("*", "1"))
+            n = min(len(s) for s in group)
+            stack = sum(s[:n] for s in group)
+            full = integrated_lufs(stack)
+            if abs(full - target) > tol:
+                bad.append(f"{glob} together: {full:.2f} LUFS, target {target} +- {tol}")
+            tp = true_peak_dbtp(stack)
+            if tp > ceiling + 0.05:
+                bad.append(f"{glob} together: true peak {tp:.2f} dBTP over {ceiling}")
+            if integrated_lufs(group[0]) > full:
+                bad.append(f"{glob}: stem 1 alone is louder than the stack")
         self.assertEqual(bad, [])
 
 

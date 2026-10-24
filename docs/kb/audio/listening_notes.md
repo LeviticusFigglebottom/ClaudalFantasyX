@@ -183,3 +183,298 @@ listen in this order (about 15 minutes). **Your verdict on each decides "final"*
   (the temple cue's Cantor, the same voice model), say so and I'll render that version for comparison.
 - **hush_coda:** the same phrase on the piano alone, slower. Too sentimental, or right for the end card?
 - **ilun_summon:** the Hush's first six notes, two octaves up on glass, over gathering water. Beautiful, or shrill?
+
+**Correction (2026-10-24, later the same day):** in the first render of `hush_first_verse.ogg` the piano was mixed
+about 31 LU too quietly (the grand-piano model's raw level is far below the breath flute's, and I balanced it by
+guess instead of by measurement), so the piano "entering on *mir*" was almost inaudible. `haluna_dawn.ogg` had the
+opposite fault: its low metallophone sat about 6 LU over the piano instead of 10 under. Both are re-rendered with
+measured bus levels. If you listened to the earlier files, please listen to these two again.
+
+## M2/M3: the causeway, the dive, Sefir, the Ebbing (M2-AUD-11, M3-AUD-01, -03, -05)
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/saltgrass_causeway.ogg` | 80 s loop | B06, the slice's route |
+| 2 | `music/lamp_diver.ogg` | 90 s loop | Ch1, Rhen's dive in the drowned tower |
+| 3 | `music/sefir_theme.ogg` | 71 s loop | Ch6, Sefir's barge; his motif |
+| 4 | `music/the_ebbing.ogg` | 114 s | Ch9, Asha's first great Ebbing |
+
+- **saltgrass_causeway:** wind, a walking pulse of plucked open fifths (no thirds, so neither warm nor sad), and a
+  sparse high plucked melody. Brief: *three voices walking; the path leads somewhere that doesn't come back.* Does
+  the wind read as wind (not hiss)? Does it make you want to keep walking?
+- **lamp_diver:** everything heard through water (a hard low-pass on all but the glints), a sub-bass pressure, a
+  warm swelling "lantern" chord, a muffled heartbeat, bubble trains, and once a loop, far below, a single hummed
+  voice with one long note and a fall of a third (the opening gesture of our own Hush: Rhen's father's
+  current-song). **Did you notice the voice? You shouldn't be sure.** Is it too murky to bear for a whole dungeon?
+- **sefir_theme:** the only cue in C major (the Order's pure key), and nothing with an attack (his barge "leaves no
+  wake"): a congregation humming, a glass harmonica. His motif rises calmly to D, then slips to C# and holds it over
+  F major: one wrong note in a beautiful line. **Is it beautiful first and unsettling second, in that order?** That
+  is the whole character.
+- **the_ebbing:** the Hush theme danced. The Cantor's line (the same vocalise instrument as the first verse), the
+  piano, a slow 3/4 dance of interlocking metallophones and a soft drum, and glass "motes" whose every figure falls,
+  because the motes go *down and seaward* (Pell: "Beautiful. And pointing the wrong way."). Is it the most beautiful
+  thing in Act I? If not, what is missing?
+
+## M3: Act I area and match themes (M3-AUD-02, M3-AUD-04)
+
+Three new loops for chapters that aren't built yet, so you can only hear them on their own for now. Each one has
+a different key and band from the slice cues, so a chapter change should sound like a change of place. About 4
+minutes in all. The scenes are in act_outline.md (Ch5, Ch7, Ch8).
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/terraces_of_ash.ogg` | 80 s loop | Ch5: Pemakar and the Lanternfall festival among the graves |
+| 2 | `music/tidecup_match.ogg` | 68.6 s loop | Ch7: the story Reefball match inside the Tamsule Bell |
+| 3 | `music/corrow_seawall.ogg` | 75.8 s loop | Ch8: walking Corrow Bastion and the seawall before the storm |
+
+### (1) Terraces of Ash: a festival held in a cemetery
+
+- **The band:** a plucked zither carries the tune, with low zither strings under it. High, soft bars fall in short
+  runs: the leaf-boat lanterns tipping over the terrace lips. Quiet tuned bubbles stand for the channels, and
+  copper gongs keep a slow eight-bar cycle (the stair-mountain). Through the second half, women hum the tune an
+  octave down: the mourners. There is no flute and there are no interlocking bars, so it shouldn't sound like
+  Haluna.
+- **The key:** F, on a five-note scale with a flat second and a flat sixth (F Gb Bb C Db), in a slow 3/4. **Is it
+  lovely and grave at the same time, or only gloomy?** If it's gloomy, the fix is to make the lanterns brighter
+  and more frequent, not to change the key.
+- **The zither** is a modelled string in a modelled box. Zither, harp, or "a guitar in a cave"? If it's the cave,
+  the box resonances are what to change.
+- **The lanterns:** small fires on water, or wind chimes? Too many, or too few?
+- **The hum:** does it make the second half feel like mourners joining in, or does it muddy the zither?
+
+### (2) The Tidecup: a sports theme that is also a lament
+
+- **The brief:** each captain names one person the sea has taken, and Oruvel's side plays "for the ones who didn't
+  come up". It should never sound triumphant. The piece sets two things against each other. Underneath is the
+  game's drive: 112 BPM, frame drums and a big drum, a running plucked ostinato and a walking bass. Over it is a
+  slow A-minor song on the flute, in long notes. While the drums are going, the song never lands on its home note.
+- **The Bell:** the arena is the Tamsule Bell, so a low padded bronze bell sounds at each section, and a soft
+  "salt-glass" bar doubles the song's long notes in the third section. In the second section the crowd **hums**
+  the song's outline under the drums. Nobody in the crowd sings, because only Cantors sing.
+- **The ending:** the last four bars drop to the big drum's heartbeat, the Bell, the glass and the flute's last
+  falling notes. That is "the naming". Then the loop picks the game back up.
+- **The key question:** does it make you want to watch a match **and** feel sad, or does one side win? If it
+  sounds like a battle theme, the drums are too forward. If it sounds like a funeral, the song is.
+- The crowd hum: a crowd in an arena, or a church choir? Is the bell too loud?
+- Mastering: the big drum's hits take up to about 3 dB of fast limiting on under 1 % of samples. If the downbeats
+  sound flattened, tell me and I'll lower the drums instead.
+
+### (3) The Seawall: nine hundred years of the same defence
+
+- **The idea:** a ground bass. One four-bar bass line (B D | A F# | G E G | F#) comes round six times without
+  changing, while everything above it varies. Each time round it ends on the dominant and climbs back to B, so
+  the loop has no last bar, only "the next time round". That is the image of the same defence kept for nine
+  hundred years. Above the bass, a low, dark flute (a fisher's whistle, not a festival flute) plays four phrases.
+  Muted plucks in eighths are the rope and block. The frame drum keeps a footstep on every beat (the stair). A
+  kettle gong (the beacon) marks each round.
+- **The Watchers:** the wall's carved faces hum, so in the fourth round the men hum a slow descending chorale over
+  the ground alone, and the women join a third above in the fifth.
+- **The key question:** does it feel steady and dutiful, not afraid yet and not hopeful either? Or does the
+  repetition get dull by the third time round? If it's dull, I'd vary the plucks before touching the bass, because
+  the unchanging bass is the point.
+- Does the flute's low register sound like a breathy whistle (good), or a flute played badly (bad)?
+- The step drum has the same fast limiting on its hits as the Tidecup's drums (up to about 4 dB on 0.5 % of
+  samples). Do the footsteps sound natural, or clipped?
+
+**For all three:** can you hear the loop wrap? The seams are at 80 s, 68.6 s and 75.8 s.
+
+## M3: Act I bosses (sea) (M3-AUD-08)
+
+Two boss loops for fights that aren't built yet, so for now you can only hear them on their own. Neither uses the
+Drownbell's tower bell or the gamelan bars of the ordinary battle theme, and each has its own key and meter. That
+way a boss should sound like a different kind of trouble, not the battle theme played louder. It takes about
+2.5 minutes in all. The scenes are in act_outline.md (Ch1, Ch4).
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/hullgnaw.ogg` | 2.7 s intro + 64.0 s loop | Ch1: Hullgnaw, on a breaking raft while Oruvel is torn apart |
+| 2 | `music/spar_wraith.ogg` | 2.8 s intro + 72.8 s loop | Ch4: the Spar-Wraith, on the deck of the drowned trader |
+
+### (1) Hullgnaw: the turn-order tutorial
+
+- **The brief:** an eel grown through a sunken ship's ribs. It's the first boss and teaches the timeline, so it
+  has to be easy to follow before it's heavy. It is in G minor and 6/8: two big beats a bar, like a raft heaving on
+  a swell. Only one tune plays at a time.
+- **The band:** a fingered bass is the eel. It sits on each chord root and then crawls chromatically into the next
+  one, so the low line is always coiling. Muted plucks through a small wooden body run in eighths (Oruvel is a town
+  of rope). Frame drums and a big drum keep the beat. A low gong groans at each section: the hull. The tune is a
+  hard-blown flute, and an open plucked counterline joins it when the tune comes back.
+- **The break (bars 33-40):** the drums drop out to the big drum and hard slaps (timbers cracking) over the eel,
+  then build back.
+- **The key question:** is it easy to follow while you learn the timeline, or busy? If it's busy, the plucks
+  should come down first. **Is it menacing enough for a first boss,** or does it sound like a jig? If it's a jig,
+  I'd make the eel's crawl slower and lower before touching the meter.
+- Mastering: one stack of drum, bass and flute in bar 27 takes about 4.6 dB of fast limiting, and other hits take
+  2-3 dB, on under 1 % of samples. If the downbeats sound flattened, tell me and I'll lower the drums.
+
+### (2) The Spar-Wraith: rope, wind and dead wood
+
+- **The brief:** a trader lost in the same storm as Oruvel, drifting with its sails set and nobody at the helm. A
+  spawn is tangled in its rigging. It should be eerie before it's loud. It is in F# Locrian, where the home chord
+  has a flat fifth, so it never settles. The meter is 7/8 counted 2+2+3: the ship's roll with nobody steering
+  always comes round a beat short.
+- **The rigging:** wind in the shrouds (a drifting noise band with a thin whistle on top) never stops. Rope creaks
+  under load on the long beat of the bar: a modelled stick-slip, a rapid run of tiny catches whose rate rises or
+  falls. A larger, slack drum is the hull knocking.
+- **The band:** a low, breathy flute (a whistle in the rigging) carries the tune. High open plucks (the shrouds)
+  answer it when it returns. The bass falls to the tritone C on the home chord. In the becalmed section (bars
+  33-44) the drums stop, and a low string chord (the dead sails) holds under the wind and the knocking.
+- **The key question:** is it eerie and still a fight, or just strange? **Do the rope creaks sound like rope and
+  wood,** or like a door hinge or a frog? If they're the hinge, I'd lower their rate. Is the wind too steady (a hiss)
+  or about right?
+- The dead sails are the old saw-ensemble pad, kept low. If they sound like a keyboard, tell me.
+
+**For both:** can you hear the loop wrap? The seams are at 64 s and 72.8 s after each intro.
+
+## M3: Act I bosses (land) (M3-AUD-09)
+
+Two boss cues for fights that aren't built yet, so the stems can only be heard on their own for now. Each is a set
+of synchronized stems like the Drownbell's: the game starts stem 1 and fades the others in at the fight's phase
+changes. To hear a phase, play its stems together (in Audacity: import them all, play). The scenes are in
+act_outline.md (Ch5 and Ch8). About 5 minutes in all, if you play each stack once.
+
+| # | Files | Length | Plays |
+|---|---|---|---|
+| 1 | `music/cinder_matron_p1.ogg` | 67.2 s loop | Ch5, the Cinder Matron, phase 1: the crust |
+| 2 | `cinder_matron_p1` **and** `_p2` together | 67.2 s loop | Phase 2: Kerrid breaks its armour and the fire shows |
+| 3 | `music/undertows_reach_p1.ogg` | 70 s loop | Ch8, the Undertow's Reach, phase 1: the limb rises |
+| 4 | `undertows_reach_p1` **and** `_p2` together | 70 s loop | Phase 2: the Reach strikes the wall |
+| 5 | all three `undertows_reach_p*` together | 70 s loop | The scripted escape: the wall falls anyway |
+
+### (1) The Cinder Matron: a temple guardian with fire under its crust
+
+- **The idea:** a magma-crusted construct on a stair-mountain with copper veins. It moves in an uneven 7/8 (two
+  short steps and a long one, 2+2+3): a limping, mechanical gait. The key is D with a flat second and a major third,
+  which reads as heat, not water. The theme is on a **copper chime**: tuned kettle gongs struck as a melody,
+  doubled an octave up by a hard bar. A hard, hand-damped high bar hits each step like an anvil. A low men's hum
+  (the temple) holds D and A in the intro and the breakdown.
+- **Phase 2 (the Fire):** when the crust breaks, a hard-blown flute enters high with a long counter-line over the
+  chime. Underneath, a low rumbling noise swells in each bar (the core), with magma crackle, jingles on every
+  eighth, and more drums on the long step. The stack is about 2 LU louder than phase 1.
+- **The key question:** does phase 1 sound like stone and copper, and phase 2 like the same thing on fire? If phase 2
+  just sounds "busier", the flute line is what to change.
+- Does the 7/8 feel heavy and purposeful, or does it trip? Is the chime clear as a tune, or does it read as
+  percussion? The crackle: fire, or vinyl noise?
+
+### (2) The Undertow's Reach: the sea's size against a stair that was not wide enough
+
+- **The idea:** Corrow has no weapon against the storm, so this is not a hero's fight. A new mode belongs to the
+  storm alone (G octatonic: it repeats at every minor third, so none of its chords is home). It is in a surging
+  12/8, grouped as two long swells and three short breakers. **Phase 1:** the drowned in the wave, a low men's
+  chorale (hummed) carrying the theme in long notes, each note struck on a low bar; the storm as a noise band that
+  swells through each bar; the bass and drums on the swell. Corrow's beacon gong from the seawall cue sounds every
+  four bars, on its own F#, the one note outside the storm's mode.
+- **Phase 2 (the Reach strikes):** two hard flutes play the theme a minor third apart, with muted plucks running in
+  eighths (the seawall cue's rope and block, now at speed).
+- **The escape (stem 3):** the drive. A big drum on every dotted quarter, the bass doubled in running eighths, a
+  slap roll and a riser into every four bars. Above it, high women's voices hum a slow line that never resolves:
+  the current-song Rhen hears inside the storm's wall. Each stem adds about 1.5–2 LU.
+- **The key question:** does it feel enormous and hopeless rather than heroic? Does the escape feel like running,
+  not like winning? If the escape sounds triumphant, the riser is the first thing to cut.
+- Is the beacon's F# a stubborn note against the storm (good), or just out of tune (bad)? Does the current-song
+  read as voices inside the storm, or as a synth pad?
+
+**For both:** can you hear the loop wrap? Both start a sixteenth before the downbeat, so the seam falls in a quiet
+spot. The seams are at 67.2 s and 70 s.
+
+## M3: Oruvel, the living funeral, the causeway beds (M3-AUD-10, M2-AUD-13)
+
+Two music loops and two ambience beds. None of their scenes exist yet, so for now you can only hear them on their
+own. The beds play at the ambience level (−26 LUFS), so turn up to hear them, or play them under
+`saltgrass_causeway.ogg`. The scenes are in act_outline.md (Ch1, Ch4) and vertical_slice.md (B06).
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/oruvel.ogg` | 73.8 s loop | Ch1: the Oruvel raft-town before the storm |
+| 2 | `music/pilgrims_wake.ogg` | 83.5 s loop | Ch4: Haluna holds Asha's living funeral, a feast at night |
+| 3 | `ambience/causeway_wind.ogg` | 52 s loop | B06: wind over the saltgrass on the causeway |
+| 4 | `ambience/tidepools.ogg` | 46 s loop | B06: close to the tidepools at low tide |
+
+### (1) Oruvel: a town at home, just before it dies
+
+- **The band:** a squeezebox carries the tune. It is a new instrument, built for this cue: two reeds tuned a few
+  cents apart, so it beats like an old, salt-worn box, and bellows pressure that brightens the tone as it swells.
+  Its left hand plays an oom-pah (bass reed on 1 and 3, a short chord on 2 and 4). A small wire-strung cittern
+  (a "salvage" instrument) chops the off-beats and plays the tune alone at the end. The rope and trade sounds are
+  a wooden pulley block knocking on 2 and 4, a frame drum, three people clapping in the second verse, a rope
+  creaking on a cleat, and a ship's bell rung twice where the loop starts.
+- **The key:** G with a flat seventh (F natural), swung, at 104 BPM. It's a harbour dance. It isn't Haluna's 6/8
+  festival, and it has no flute and no bars. Unlike Haluna's tune, this one lands on its home note: a town that
+  is sure of itself. Only the middle eight bars turn to E minor, slower and lower. **Is it lively enough for Rhen
+  haggling and joking, and does the E minor passage make you feel, for a moment, what is coming?**
+- **The squeezebox** is the one thing most likely to sound synthetic. Does it sound like a squeezebox, a harmonium,
+  or a cheap organ? If it sounds like an organ, the fix is more bellows movement and air.
+- Is the swing right, or does the tune limp? Can you hear the loop wrap at 73.8 s?
+
+### (2) The Pilgrim's Wake: a feast that is a funeral
+
+- **The idea:** the feast and the funeral play at the same time at two speeds. The funeral moves in half notes: a
+  hymn in C minor over a descending ground bass. The piano plays the hymn first, then the village hums it (nobody
+  sings words, because only Cantors sing), and a low, dark bell tolls once each time round. The feast moves in
+  sixteenths: frame drums and a bright plucked harp in a 3+3+2 dance, with jingles and claps in the second round.
+  It's one harmony at two tempos.
+- **The end of each round:** the hymn stops on an unresolved note. In the third round the dance thins and stops,
+  the last two bars are bare (the feast forgetting itself for a moment), and the wrap brings the dance back as the
+  hymn resolves. **Does it feel like a celebration and a funeral at once? Or does one win?** If it sounds like
+  only a funeral, the harp and drums go up. If it sounds like only a party, the piano and hum go up.
+- **For the scene:** Rhen understands here that the Cantor doesn't come back, and he leaves the feast angry. The
+  cue doesn't play his anger. Should it? A short stinger for his exit would be a separate cue.
+- The hum: a village humming, or a choir? Is the funeral bell too loud?
+
+### (3) and (4) The causeway beds
+
+- **causeway_wind:** a low wind that breathes in gusts, the saltgrass's dry hiss, the fast flutter of blades
+  beating together (it speeds up in the gusts), a few long swishes of grass swept flat, and a faint hollow whistle
+  over the coral boulders at the strongest gusts. **Does it read as wind on grass, or as hiss?** It should be
+  brighter and drier than Haluna's `wind` bed.
+- **tidepools:** water trickling between pools, small pops and clicks in the rock, drips off the coral, a gurgle
+  now and then, and the surf line far out across the flat. Is it close and small enough? Do the pops sound like
+  creatures in the rock, or like clicks in the file?
+- **For both:** can you hear them wrap (52 s and 46 s)? Is anything distracting enough to notice on its tenth time
+  round?
+
+## M3: Tamsule and the Iskarra vigil (M3-AUD-12)
+
+A town loop and the Act I break. Neither scene exists yet, so for now you can only hear them on their own. The
+scenes are in act_outline.md (Ch7, and the end of Ch9).
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/tamsule.ogg` | 70.0 s loop | Ch7: Tamsule port, the Reefball town of the Tamsule Bell |
+| 2 | `music/iskarra_vigil.ogg` | 93 s, plays once | The end of Ch9: Rhen's voice-over at the Iskarra vigil (the act break) |
+
+### (1) Tamsule: a busy port lit by machines nobody questions
+
+- **The band:** a hammered dulcimer carries the tune. It is new for this cue: three wire strings per note struck
+  together by a light hammer, ringing through a broad, thin soundboard, with long notes rolled (struck again every
+  quaver, softer). Under it a low lute runs every quaver, a bass plays each beat group, and frame drums play the
+  groups, with jingles in the second verse. The glimmer-tech lamps hum: a soft pair of high tones that pulse
+  slowly and never quite settle. Glass bars double the tune's long notes in the second verse. Rigging tinks against
+  a mast now and then. The **Tamsule Bell**, the same bell as in the Tidecup match, rings where the loop starts and
+  softly at the middle section.
+- **The metre:** 7/8 (2+2+3), A dorian, a quaver every quarter second. That makes it a hurrying market step, not
+  Haluna's 6/8 roll or Oruvel's swung 4/4. **Is it busy and bright enough for a port? Does the 7/8 feel natural,
+  or like a stumble?**
+- **The middle eight bars** are Oruvel's side waiting a week for news: the Tidecup's song, re-barred into 7/8 and
+  played slowly on rolled notes, with the drums down to a heartbeat. **Does it sound like waiting? Does it give
+  away the Tidecup's tune too early, or does it tie the town to the arena?**
+- **The dulcimer** is the part most likely to sound synthetic. Does it sound like a hammered string, a harpsichord, or
+  a plucked guitar? If it sounds plucked, the hammer should be softer and the board's ring longer. Is the lamps' hum
+  audible? It should be felt more than heard. Can you hear the loop wrap at 70 s?
+
+### (2) The Iskarra vigil: a bed for a voice
+
+- **The idea:** this cue plays under Rhen's voice-over, so it leaves the voice's range (about 300 Hz to 3 kHz) empty.
+  Everything sits below or above it. Below is the sea: a breathing drone on A, a slow swell of deep water, and the
+  Hush theme's first phrase played two octaves down on dark low strings, the theme heard from under the water
+  ("Somebody's still below"). Three deep piano octaves, muffled as if through the sea, mark the start, the end of the
+  phrase, and the close. Above are glass motes that **rise** (at the Ebbing they only fell), a faint high halo, and
+  once the Hush's first notes in the glass, the theme above answering the theme below. The voice's band measures
+  about 24 LU under the whole cue.
+- **With a voice:** read any line over it (the prologue's "Everyone I'm going to tell you about is still here
+  tonight" will do). **Does every word come through without the bed ducking? Does the bed still sound like music,
+  or only like rumble and tinkle?** If it's only rumble, the low strings go up. If the voice is crowded, the motes
+  go down.
+- **On its own:** is the hollow in the middle strange to listen to? It is meant to be filled. Is the deep Hush
+  phrase recognisable that low? Does the last rising figure, left open on B, feel like an act ending, or an
+  interruption?
