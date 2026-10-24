@@ -28,7 +28,14 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
   7. **Reefball HUD (M3-UI-01): waits for big8.**
 - **Cross-track gap, for the Lead and Audio:** after big7, `validate_data` has 14 errors and `test_voice_audio` fails. voices.json has no rows for m2-slice's new speakers (boatman, crowd, fenn, ferryman, ferrymaster, garo, hobb, ione, marra, poolkeeper, stillguard, tavi, tender, townsfolk). claude/audio already has them; the gap closes when audio reaches integration. The Menus track has told Audio as well.
 - **Merge note:** after merging claude/ui, run `godot --import`; there are new class_names (UiFrame, TextFitProbe, PseudoLoc).
-- **MERGE-READY @ 62d38cad** (handoff and live-log commits since are docs only):
+- **MERGE-READY @ 2bd80fe5** (supersedes 62d38cad):
+  - **What changed:** integration (M3-CMB-02, M2-ARC-12) is merged into claude/ui.
+  - **Conflicts:**
+    - `field_encounters.gd`: M2-MNU-08's rate refresh and M2-FP-28's kept meters are both kept. A kept meter now saves its `rate_pct` and rescales on return; test `test_a_kept_meter_rescales_to_the_rate_on_return`.
+    - Battle baselines: 23 recaptured on top of the merge, then viewed and re-approved (two captures pixel-identical).
+  - **Full suite:** 2176 run, 1 failed (`test_voice_audio`, the voices gap).
+  - **M3-UI-01 (Reefball HUD):** a worktree agent is building it on top of lead/gate-big8. It reaches claude/ui only after big8 lands on integration.
+- **Superseded MERGE-READY @ 62d38cad** (handoff and live-log commits since are docs only):
   - **Items:**
     - M2-UI-07 hero actor scenes, with the KO-clip no-sink fix from hero-integration;
     - M2-UI-28 pseudo-loc;
