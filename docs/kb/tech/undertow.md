@@ -255,7 +255,38 @@ Measured (RX 9070 XT, High 1440p, GPU including the SubViewport):
 **Next step (M2):** move the half-res march to a `CompositorEffect` compute pass. It would read the game view's depth
 for exact occlusion inside the volume, with its own reprojected history.
 
+### Striations, billows and the wound skin (M2-RND-01, criterion 2)
+Aimed at review-sweep-G's "uniform khaki lit tone" and "regular striations". Report:
+`docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md`, "Billows and striations".
+- **Striations** (`undertow_striation`, common include, so the Low shells follow). One low-frequency noise sample in
+  the frame that turns with the eyewall bends the helix phase by up to `shape.striation_warp` turns (0.35) and
+  flattens it by up to `striation_vary` (0.6), over `striation_warp_scale_m` (4.5 km). The body reads its baked
+  lattice (`UNDERTOW_BAKED_NOISE`, two channels in one fetch); the shells hash. Skipped where the wall envelope is 0.
+- **Billows** (body only). On the cloud's eroding fringe, where the density is between 0 and 1 (the surface a view
+  sees), a 1 km field (`cloud.billow_scale_m`) is folded into billow noise `|2n - 1|` and added **zero-mean** (its
+  mean over the lattice is 0.33, measured) × `billow_weight` 0.8 × `4 d0 (1 - d0)`. They reshape the fringe
+  without thinning coverage, and they leave the solid core and the outermost wisps alone.
+  - **Sun-ward shading:** the same fold one `billow_shade_step_m` (300 m) toward the sun, minus here, removes
+    optical depth × `billow_shade` (3). Each lump is lit on its sun side. Medium compiles it out
+    (`UNDERTOW_BILLOW_SHADE 0`).
+  - The envelope is not the surface: the wall's envelope reaches 1 about a kilometre before the eroded front the camera
+    sees, so an envelope-weighted billow did nothing.
+- **Wound skin refinement** (`wounds.skin_step` 0.25). The rents glow in a 900 m skin, and High's dense steps are
+  several hundred metres long. So 1–3 steps landed in it depending on the jitter, and that variance was the
+  rents' stipple: TAA averages it, FSR2 (High) keeps it (no reactive mask, see Gotchas). Inside the skin the
+  step is at most `wound_skin_m × skin_step`.
+  - **Step budget:** a refined step spends only `ds / dense stride` of the `march_steps` budget, with
+    `UNDERTOW_SKIN_LOOP` (2×) iteration headroom. Counting it as a whole step ended rays before they crossed the
+    wall, which showed as see-through holes on `undertow_horizon_dusk`.
+- **Cost (RX 9070 XT, High 1440p, GPU median):** Day 2.28 → 2.56 ms, Eye 2.79 → 3.11 ms. Ultra Day 16.1 → 17.7 ms.
+- **Sea wind streaks** (water `storm` group, `water_surface_body.gdshaderinc`): the lines meander across by up to
+  3 streak widths and break into foam flecks along their length, with a softer profile. Before, they were hard,
+  straight, parallel rails.
+
 ## Gotchas
+- **`capture_preset --mat-set` does not reach the half-res body (M2-RND-01).** The body renders in UndertowHalfRes's
+  SubViewport, so a `--mat-set` uniform shows no change (albedo_gain=0.1 left the frame as it was). To try a body
+  tunable, edit undertow.json for the run and restore it afterwards.
 - **The half-res body (M2-RND-01) puts the body on visual layer 20 and clears that bit from the game camera's
   `cull_mask` every frame.** Don't use layer 20 for anything else in a scene with a storm.
 - **Keep the node unrotated and unscaled.** The visuals are a top-level child placed at `storm_center()` in world axes. Its Y is irrelevant: see "Sea level".

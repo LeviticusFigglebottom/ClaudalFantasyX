@@ -13,7 +13,7 @@ The M1 prototype reads (horizon and eye shots) but its raymarched tiers are an e
 
 ## Acceptance criteria
 - [~] Body at half/quarter resolution with temporal reprojection (half-res done: High 4.94 → 2.27 ms; baked noise done in M1-RND-10; compute-pass occlusion inside the volume is the remaining step); baked 3D noise textures instead of hash noise; <= 2-3 ms estimated on the recommended tier
-- [~] Billow surface detail and multiple scattering (multiple scattering done: 3 octaves, free; billow surface detail and striation regularity still open) (no uniform khaki lit tone, less regular striations)
+- [x] Billow surface detail and multiple scattering (no uniform khaki lit tone, less regular striations). Multiple scattering: 3 octaves, free. Billows: fringe billows with sun-ward shading. Striations: noise-warped helix. See undertow.md, "Striations, billows and the wound skin".
 - [ ] Wounds as real torn rents; storm-scale mote streamers
 - [ ] Storm in sky and reflections, shadowing the zone, rain
 - [ ] Lightning bolts plus exposure flash
@@ -41,32 +41,32 @@ with costs, looks and drift: `docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md`.
   scattering, torn rents and mote streamers, the storm in sky/reflections and rain, lightning bolts, and per-chapter
   presets.
 
-## WIP handoff (PC GPU session, 2026-10-23): branch `gpu/m2-rnd-01-undertow`
-The project moved to new sessions mid-item. The branch compiles and the `undertow` tests pass (35/0). It has the
-integration branch merged in (d5cbda2) and isn't merged itself yet.
+## WIP handoff (PC GPU, session_01UFcBRsk9M9EKtxJKdBU2mB, 2026-10-23): branch `gpu/m2-rnd-01-undertow`
+The branch isn't merged. It has the integration branch merged in (a504072, `claude/undertow-lead-handoff-423ixt`).
+The `undertow` tests pass (35/0).
 - **Done on the branch:**
   - The sweep-G ch08 wall foot.
-  - The half-res body (High 4.94 → 2.27 ms).
+  - The half-res body.
   - 3-octave multiple scattering.
-  - Reports: `docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md`; design in undertow.md, "Half-resolution body".
-- **Two defects seen in a fresh 2× capture** of `undertow_day_ch08` (High, `--hold-storm`), not yet fixed:
-  1. The sea's storm wind streaks (`storm_*` water uniforms, `sea_response` in undertow.json) render as hard,
-     straight, parallel lines in the foreground. Soften them or noise-break them.
-  2. The teal wound glow shows a coarse dot stipple. It may be the half-res composite's tent filter on emissive
-     rents. Compare with `half_res_body_scale` 1.0 before changing the filter.
-- **Exact next step (billow surface detail and striation regularity), as planned:**
-  1. **Striations:** `undertow_striation()` in undertow_common.gdshaderinc is a pure cosine helix. Warp its phase
-     with one low-frequency `undertow_noise` sample, in the rotating frame (`striation_warp`, `striation_warp_scale_m`
-     in undertow.json `shape`, pushed by undertow_state.gd), and vary its strength along the helix. The shells and the
-     sea also include common, with hashed noise; cost it there.
-  2. **Billows:** in the body march, where the envelope is thin (the surface), add a billowy `1 - |2d - 1|` term from
-     the detail sample cloud_noise already takes. Have `cloud_noise` return it through an `out`. Add a cheap
-     sun-ward derivative shading term, `n(p) - n(p + L·eps)` with one extra lattice fetch, only on tiers where
-     `octaves > UNDERTOW_LIGHT_OCTAVES`. This aims at sweep-G's "uniform khaki lit tone".
-  3. **Validate** each with gpu_bench (High 1440p, the Day and Eye cameras; the budget is 6 ms, and the half-res
-     body sits at ~2.3 ms) and capture_preset drift on the five Undertow shots.
-- **After that:** compute-pass occlusion inside the volume (a CompositorEffect march with the game view's depth),
-  then the other criteria (torn rents and mote streamers, storm in sky/reflections/rain, lightning bolts and
-  exposure flash, per-chapter presets). Undertow High 1440p is AT RISK on an RTX 3060 (~3×).
+  - **This session:**
+    - Noise-warped striations.
+    - Fringe billows with sun-ward shading.
+    - The sea wind streaks: meander, flecks and a soft profile (sweep defect 1).
+    - The rents' stipple (sweep defect 2): wound-skin step refinement on a fractional step budget. The cause was
+      skin undersampling that FSR2 doesn't average, not the half-res tent.
+  - Report: `docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md`, last section.
+- **Cost, High 1440p:** Day 2.56 ms, Eye 3.11 ms. Within the 6 ms cap here, but about 7.7 and 9.3 ms projected on an
+  RTX 3060. **AT RISK** for min-spec High.
+- **Drift:** all five Undertow shots (table in the report). The Lead re-approves them on lavapipe.
+- **Exact next step:** compute-pass occlusion inside the volume.
+  - A `CompositorEffect` compute march that reads the game view's depth and keeps its own reprojected history,
+    replacing the SubViewport + composite (undertow.md, "Half-resolution body", "Next step").
+  - Aim to win back min-spec cost there: a quarter-res march plus temporal reprojection.
+- **After that:**
+  - Torn rents and mote streamers.
+  - Storm in the sky, in reflections and rain.
+  - Lightning bolts and the exposure flash.
+  - Per-chapter presets.
+- **Known residue:** a faint stipple on two small seams on the right of `undertow_day_ch08` (High, FSR2).
 
 ## Review log
