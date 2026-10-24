@@ -43,7 +43,8 @@ RULES = [
     ("sfx/dive/*.ogg", "momentary", -18.0, 1.0, -1.0, "diving SFX"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
-TOTAL_BUDGET = 24 * 1024 * 1024     # every shipped audio file (mix.md §5: the slice; about 1 MB per minute of music)
+TOTAL_BUDGET = 32 * 1024 * 1024     # every shipped audio file (mix.md §5; about 1 MB per minute of music; M3-AUD-09: was 24
+#                                     MiB for the slice, raised for the Act I cues and boss stems)
 
 
 def rule_for(rel: str):
