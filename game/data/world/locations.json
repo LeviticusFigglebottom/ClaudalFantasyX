@@ -9,7 +9,7 @@
       "scene": "res://game/levels/prologue/prologue.tscn",
       "spawn": "Start",
       "name_key": "LOCATION_PROLOGUE",
-      "_note": "M2-FP-03: New Game starts here. The prologue plays its cutscene and sends the party to ch01/oruvel_underway at Drop (M3-C01-02; Ch1 then goes on to ch02/haluna at Beach); its root script defines place_at, so it counts as playable."
+      "_note": "M2-FP-03: New Game starts here. The prologue plays its cutscene and sends the party to first_playable.json prologue.next_location: ch02/haluna at Beach for the M2 review build, ch01/oruvel_underway at Drop once Act I is switched on (M3-C01-02; Ch1 then goes on to ch02/haluna at Beach); its root script defines place_at, so it counts as playable."
     },
     {
       "id": "field_test",

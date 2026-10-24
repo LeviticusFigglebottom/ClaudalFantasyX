@@ -98,7 +98,7 @@
       "id": "wickfry", "name_key": "ENEMY_WICKFRY", "role_answer": "rhen",
       "lore_key": "LORE_WICKFRY",
       "stats": {"level": 2, "hp": 300, "mp": 0, "strength": 6, "magic": 2, "defense": 4,
-                "magic_defense": 4, "agility": 30, "accuracy": 8, "evasion": 12, "luck": 4},
+                "magic_defense": 4, "agility": 26, "accuracy": 8, "evasion": 12, "luck": 4},
       "affinities": {},
       "skills": ["shoal_nip"],
       "ai": [{"pick": [{"skill": "shoal_nip", "target": "random_foe"}]}],
