@@ -133,6 +133,14 @@ and ADR 0190 "hero motion layer", proposed).
 - **Full Godot suite on 555714d3: 1996 run, 0 failed.** The shrine audio test passes in the full run, so it's an
   ordering race in the filtered run, not this change.
 
+## API consumers (keep these stable; tell them before changing)
+- **creatures' FieldNpc** (M3-CRE-610, parked on claude/creatures until this branch merges) uses:
+  - HeroLocomotion: `new(data)`, `configure`, `reset_yaw`, `step_yaw`, `step_speed`, `weights`, and the
+    hero_motion.json keys;
+  - HeroMotion: `play(actor, clip, blend)`, `add_micro_motion`, `set_locomotion_speed`;
+  - HeroIdleMicro.
+- **m2-slice's sequencer patch** uses `HeroMotion.play` and `set_locomotion_speed`, and HeroFieldActor's `play_clip`.
+
 ## In progress
 - Battle: waiting on the three tracks (see M2-HER-1103) to merge; then the battle_heroes_* shots get approved.
 - Characters' M2-CHR-12 clips: when they land, feed `locomotion.json`'s speeds to the gait, and slot start, stop and
