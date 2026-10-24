@@ -7,6 +7,8 @@ extends Node3D
 ## writes combat state. FighterStandIn calls it; BattleActorMotion decides when.
 
 const DATA_PATH := "res://game/data/creatures/creatures.json"
+## Buckets a path hash is cut into for the fidget interval.
+const FIDGET_BUCKETS := 10007
 
 static var _data: Dictionary = {}
 
@@ -28,6 +30,12 @@ var _phase_tween: Tween
 var _phase_pose: Array = []  # [position, rotation] the phase moves the model to
 var _hide_after: Array = []  # nodes a phase hides once its clip has played (hullgnaw's falling frames)
 var _show_after: Array = []  # nodes a phase shows once its clip has played (the spar-wraith's water sheath)
+## Hits taken (rotates the row's `hit_variants`).
+var _hits := 0
+## Seconds idling since the last fidget, and when the next one plays (the row's `idle_variety`).
+var _idle_clock := 0.0
+var _next_fidget := 0.0
+var _fidgets := 0
 ## Charge skill -> broken (the boss's breakable parts).
 var _broken: Dictionary = {}
 
@@ -99,12 +107,27 @@ func play_hit() -> bool:
 
 ## Plays a one-shot clip, then idles again. Refused while KO'd or petrified. In a phase whose `clips` map names a
 ## stand-in for `clip` (the Undertow's Reach strikes from its lifted or drawn-back pose), that clip plays instead.
+## A hit rotates through the row's `hit_variants` (the hit, then its mirrored heavier `hit_b`, ...) outside phases
+## that map their own hit.
 func play_clip(clip: StringName) -> bool:
-	clip = phase_clip(clip)
-	if _ko or _frozen or not has_clip(clip):
+	var mapped := phase_clip(clip)
+	if mapped == clip and clip == StringName(str(_row.get("hit", "hit"))) and not _ko and not _frozen:
+		mapped = _next_hit(clip)
+	if _ko or _frozen or not has_clip(mapped):
 		return false
-	_play(clip)
+	_play(mapped)
 	return true
+
+
+func _next_hit(clip: StringName) -> StringName:
+	var options: Array[StringName] = []
+	for v: Variant in _row.get("hit_variants", []):
+		if has_clip(StringName(str(v))):
+			options.append(StringName(str(v)))
+	if options.is_empty():
+		return clip
+	_hits += 1
+	return options[(_hits - 1) % options.size()]
 
 
 ## The clip the current phase plays for `clip` (its `clips` map), or `clip` itself.
@@ -280,6 +303,33 @@ func _model() -> Node3D:
 		if c is Node3D:
 			return c as Node3D
 	return null
+
+
+## The idle fidget (the row's `idle_variety`): while it idles on its own idle clip, outside any phase, playing (a
+## portrait's held pose is paused, so it never fidgets) and neither KO'd nor frozen, it plays the fidget once every
+## `every_sec` [min, max], the interval picked from a hash of its node path, so a scene replays the same way.
+func _process(delta: float) -> void:
+	var cfg: Dictionary = _row.get("idle_variety", {})
+	var clip := StringName(str(cfg.get("clip", "")))
+	if clip == &"" or not has_clip(clip) or _ko or _frozen or _phase != &"" or current_clip != _idle:
+		_idle_clock = 0.0
+		return
+	if not _player.is_playing():
+		return
+	if _next_fidget <= 0.0:
+		_next_fidget = _fidget_interval(cfg)
+	_idle_clock += delta
+	if _idle_clock >= _next_fidget:
+		_idle_clock = 0.0
+		_fidgets += 1
+		_next_fidget = _fidget_interval(cfg)
+		_play(clip)
+
+
+func _fidget_interval(cfg: Dictionary) -> float:
+	var span: Array = cfg.get("every_sec", [1.0, 1.0])
+	var u := float(absi(hash("%s:%d" % [str(get_path()), _fidgets])) % FIDGET_BUCKETS) / float(FIDGET_BUCKETS)
+	return lerpf(float(span[0]), float(span[1]), u)
 
 
 func _play(clip: StringName) -> void:

@@ -22,8 +22,9 @@ import numpy as np
 
 FPS = 30
 # Strike clips play in place (battle-presentation's clip contract, M2-BPR-02): the sequencer moves the fighter to its
-# target, so the root bone keeps no horizontal travel in these. Vertical travel (a dive, a hop) and body leans stay.
-IN_PLACE_CLIPS = ("attack", "cast")
+# target, so the root bone keeps no horizontal travel in these (nor in the idle fidget). Vertical travel (a dive, a
+# hop) and body leans stay.
+IN_PLACE_CLIPS = ("attack", "cast", "idle_b")
 
 
 def hexrgb(h: str) -> np.ndarray:
@@ -482,6 +483,36 @@ def in_pose(base: Clip, name: str, pose: dict) -> Clip:
     return out
 
 
+def varied(base: Clip, name: str, amp: float = 1.0, mirror: bool = False, speed: float = 1.0) -> Clip:
+    """`base` re-timed by `speed` and scaled by `amp`; `mirror` flips its sideways rotations (y, z) and its x
+    offsets, so a recoil goes to the other side. Loops stay loops."""
+    out = Clip(name, base.length / speed, loop=base.loop)
+    flip = np.array([1.0, -1.0, -1.0]) if mirror else np.ones(3)
+    flip_loc = np.array([-1.0, 1.0, 1.0]) if mirror else np.ones(3)
+    for b, ks in base.keys.items():
+        for t, r, l in ks:
+            out.key(b, t / speed, tuple(np.asarray(r, float) * amp * flip), tuple(np.asarray(l, float) * amp * flip_loc))
+    return out
+
+
+# Battle variety (M3-CRE-612): unless a build authors its own, export_creature adds `hit_b` (the hit mirrored and
+# a little heavier, so a recoil can go to the other side) and `idle_b` (a small, quick echo of the special: a fidget
+# CreatureActor plays now and then between idles).
+HIT_B = {"amp": 1.35, "mirror": True, "speed": 1.0}
+IDLE_B = {"amp": 0.3, "mirror": False, "speed": 1.4}
+
+
+def with_variety(clips: list[Clip]) -> list[Clip]:
+    names = {c.name for c in clips}
+    by = {c.name: c for c in clips}
+    out = list(clips)
+    if "hit" in by and "hit_b" not in names:
+        out.append(varied(by["hit"], "hit_b", **HIT_B))
+    if "cast" in by and "idle_b" not in names:
+        out.append(varied(by["cast"], "idle_b", **IDLE_B))
+    return out
+
+
 def _g2b(v) -> np.ndarray:
     return np.asarray(v, dtype=np.float64) @ G2B.T
 
@@ -518,7 +549,7 @@ def export_creature(mesh: Mesh, rig: Rig, clips: list[Clip], out_path: str, extr
     rest = {b.name: np.array(arm_data.bones[b.name].matrix_local.to_3x3()) for b in rig.bones}
     arm.animation_data_create()
     names = []
-    for clip in clips:
+    for clip in with_variety(clips):
         act = bpy.data.actions.new(clip.name)
         act.use_fake_user = True
         arm.animation_data.action = act

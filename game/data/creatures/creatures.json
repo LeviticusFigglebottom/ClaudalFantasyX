@@ -1,5 +1,5 @@
 {
-  "_doc": "Battle creature actors (M2-CRE-03, docs/kb/art/creatures/pipeline.md). Presentation only: no combat numbers. enemies.json `model` names a row's `scene`; BattleStage turns it into the FighterStandIn spec's `scene` (the M2-UI-07 hook) and merges `stand_in`. CreatureActor reads the rest: which clip an action plays (clip_by_skill, else clip_by_kind by the skill's kind), which clips loop, the KO fade, the boss's phases and breakable parts.",
+  "_doc": "Battle creature actors (M2-CRE-03, docs/kb/art/creatures/pipeline.md). Presentation only: no combat numbers. enemies.json `model` names a row's `scene`; BattleStage turns it into the FighterStandIn spec's `scene` (the M2-UI-07 hook) and merges `stand_in`. CreatureActor reads the rest: which clip an action plays (clip_by_skill, else clip_by_kind by the skill's kind), which clips loop, the KO fade, the boss's phases and breakable parts, the hit variants it rotates through and the idle fidget it plays now and then (M3-CRE-612).",
   "defaults": {
     "idle": "idle",
     "hit": "hit",
@@ -13,6 +13,8 @@
     "phases": {},
     "break_parts": {},
     "contact": {},
+    "hit_variants": ["hit", "hit_b"],
+    "idle_variety": {"clip": "idle_b", "every_sec": [7.0, 13.0]},
     "portrait": {"clip": "idle", "clip_time": 0.0, "yaw_deg": 30.0, "pitch_deg": 14.0, "fov_deg": 28.0, "margin": 0.85}
   },
   "creatures": {
