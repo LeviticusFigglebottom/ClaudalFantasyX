@@ -64,9 +64,17 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
   - **M3-ENV-06: all five arenas merged** (169445e9). Request M3-RND-25 covers the underwater look.
   - **New queue (the Lead's no-idle directive; filed by env-art 2026-10-24 evening):** the last four Act I zones
     without kits.
-    - **Running (worktree agents):** M3-ENV-07 Oruvel raft-town (it also re-dresses the `oruvel_raft_morning`
-      arena's town), M3-ENV-08 Brightwater ferry deck, M3-ENV-09 Ashcrown temple.
-    - **Next:** M3-ENV-10 Coilspire temple. **Two items remain after the running three.**
+    - **M3-ENV-08 Brightwater ferry: in review, merged here** (e1f12963).
+      - Kit: 11 pieces, 27 materials, Blender job `brightwater_ferry_kit` (40 outputs identical). Its import kind
+        `brightwater_ferry_kit` needs Character + Tools sign-off.
+      - Baselines: `brightwater_b02_awning` and `brightwater_b03_rail_drowned`.
+      - Checks: brightwater 5/5, post_import 21/21, unittests OK.
+      - Calls to confirm: the moon sits low in the east (88°, 16°) so the hulks read on its path, and a new grade
+        `lut_ch04_crossing` keeps the sea's teal (`lut_ch04_wake` is untouched).
+      - Follow-up **M3-ENV-08B**: the boardable derelict *Seventh Terrace*. It depends on M3-ENV-07.
+      - For Rendering: the daylight `ch04_derelict` grade.
+    - **Running (worktree agents):** M3-ENV-07 Oruvel raft-town, M3-ENV-09 Ashcrown, M3-ENV-10 Coilspire.
+      **Next:** M3-ENV-08B, once 07 lands.
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
