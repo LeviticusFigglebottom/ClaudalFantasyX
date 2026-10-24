@@ -776,3 +776,9 @@ Rules:
 | assets/audio/sfx/ui_customize_open.ogg | assets_src/sfx/menu_page_sfx.py + assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_page_sfx | Audio (claude/audio, M2-AUD-14) | 2026-10-24 | original |
 | assets/audio/sfx/ui_craft.ogg | assets_src/sfx/menu_page_sfx.py + assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_page_sfx | Audio (claude/audio, M2-AUD-14) | 2026-10-24 | original |
 | assets/audio/sfx/ui_map_pan.ogg | assets_src/sfx/menu_page_sfx.py + assets_src/sfx/menu_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only menu_page_sfx | Audio (claude/audio, M2-AUD-14) | 2026-10-24 | original |
+| assets/audio/music/ashcrown.ogg | assets_src/music/ashcrown.py + tools/audio/synth/ | python3 assets_src/music/ashcrown.py | Audio (claude/audio, M3-AUD-19) | 2026-10-24 | original |
+| assets/audio/music/ashcrown.loop.json | assets_src/music/ashcrown.py + tools/audio/synth/looping.py | python3 assets_src/music/ashcrown.py | Audio (claude/audio, M3-AUD-19) | 2026-10-24 | original |
+| assets/audio/music/coilspire.ogg | assets_src/music/coilspire.py + tools/audio/synth/ | python3 assets_src/music/coilspire.py | Audio (claude/audio, M3-AUD-19) | 2026-10-24 | original |
+| assets/audio/music/coilspire.loop.json | assets_src/music/coilspire.py + tools/audio/synth/looping.py | python3 assets_src/music/coilspire.py | Audio (claude/audio, M3-AUD-19) | 2026-10-24 | original |
+| assets/audio/music/tamsule_bell_galleries.ogg | assets_src/music/tamsule_bell_galleries.py + tools/audio/synth/ | python3 assets_src/music/tamsule_bell_galleries.py | Audio (claude/audio, M3-AUD-19) | 2026-10-24 | original |
+| assets/audio/music/tamsule_bell_galleries.loop.json | assets_src/music/tamsule_bell_galleries.py + tools/audio/synth/looping.py | python3 assets_src/music/tamsule_bell_galleries.py | Audio (claude/audio, M3-AUD-19) | 2026-10-24 | original |

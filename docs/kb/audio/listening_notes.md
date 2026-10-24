@@ -604,3 +604,64 @@ under that in game. Listen with `ffplay -autoexit <file>`, then next to `ui_curs
 - **`ui_map_pan`** plays at most every 110 ms while the map moves. Does it read as paper sliding, or as noise
   hiss? Does the train sound like a slide or like a ticking clock?
 - **`ui_customize_open`'s low hum:** is it too heavy for opening a list?
+
+## M3: Act I temples (M3-AUD-19)
+
+Three loops for the temples and the Bell's galleries. None of their scenes is built on this branch yet, so for now
+you can only hear them on their own. The scenes are in act_outline.md (Ch5, Ch7 and Ch8). About 4 minutes in all.
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/ashcrown.ogg` | 80.0 s loop | Ch5: the Ashcrown temple, the Cinder Matron's home, under the falling ash |
+| 2 | `music/coilspire.ogg` | 73.0 s loop | Ch8: the Coilspire temple at Corrow, the beacon's trial, before the storm |
+| 3 | `music/tamsule_bell_galleries.ogg` | 80.0 s loop | Ch7: the galleries inside the Tamsule Bell, around the arena (not the match) |
+
+### (1) Ashcrown: the heat under the stone
+
+- **The band:** a breathy flute in its warm middle plays a call (Bb, C, Db, held) and its falling answer. Under it
+  is a dark, low string pad that swells and sinks with each chord: the embers. Soft copper bowls, long and slowly
+  beating, fall in short figures where the flute rests: the copper veins carrying the strike down. Kettle gongs sound
+  on 1 and 3, a large gong every four bars, and a big drum's slow heartbeat. In the second half the men hum Bb under
+  it, and in bars 13-16 a low rumble of the plume swells twice.
+- **The key:** B-flat minor, 4/4 at 60 BPM, the slowest metred loop in Act I. Every note of the Terraces' five-note
+  scale is in this key, so the temple should sound like the same mountain, higher up and closer to the fire. **Does
+  it feel warm-dark and ritual, or only slow?** If it drags, I'd add bowls before I'd raise the tempo.
+- **The plume rumble** is meant to be felt more than heard. On speakers without bass you may not hear it at all.
+  If it does come through, does it read as the mountain, or as wind noise?
+- Is the drum heartbeat too regular? It should be a procession, not a clock.
+
+### (2) Coilspire: everything climbs, nothing arrives
+
+- **The idea:** one two-bar flute cell (up a fourth, then back down by step) comes back a step higher each time,
+  the way the beacon's fire climbs the spire. Under it, damped copper bars run eighths in a 3+3+2 pattern, each group
+  starting a step higher (the flues opening and shutting). A bass and drums keep the same 3+3+2. In the middle
+  section men and women hum the rising bass in long notes, and the music brightens for one bar into B major. In bars
+  21-24 the flute climbs to its top note (the fire at the top). Then it falls away, and C-sharp major leads back to
+  the start.
+- **The key:** F-sharp minor, 4/4 at 92 BPM. That is the dominant of the seawall's B minor, so it should sound like
+  Corrow's question left open. **Is it tense without being a battle?** If it sounds like a fight, the drums are too
+  forward. If it sounds calm, the flues are too soft.
+- **The surf** washes against the spire's foot every two bars, low and wide, left then right. Is it salt and stone,
+  or a hiss?
+- The flute is high and hard-blown here (up to E6). Is it a wind in the flues (good), or shrill (bad)?
+- Mastering: the big drum's hits take up to about 2 dB of fast limiting on 0.3 % of samples. Do the downbeats sound
+  flattened?
+
+### (3) The Bell's galleries: inside an instrument
+
+- **The idea:** the drone is the Tamsule Bell's own partials, held: its hum, prime, minor-third tierce, fifth and
+  octave. A struck bell also has a major third an octave higher up (the deciem). In the middle eight bars the minor
+  third sinks and the major third rises, so the music turns from A minor to A major and back. The Bell itself, the
+  same padded bell as in the Tidecup and the town, strikes at bars 1, 13 and 21.
+- **The band:** a slow flute song in 3/4 at 54 BPM, with no drums at all. Each long note comes back a beat later
+  from the other side, darker and quieter: the sound running round the gallery's curved wall. Soft glass bars double
+  the song's long notes an octave up in the second half, and a low plucked string marks each root.
+- **The key question:** does it feel resonant and hollow, like being inside a bell, or just empty? Does the echo
+  read as the room, or as a mistake?
+- **Tuning:** the drone's thirds are a bell's (a just minor third, about 15 cents sharp of the piano's C), so the
+  flute's C and C# rub very slightly against it. This is deliberate. If it sounds out of tune rather than like
+  bronze, I'll tune the drone to the flute.
+- Does the major middle section sound like a memory (Toma played here as a boy) or like a different piece?
+
+**For all three:** can you hear the loop wrap? The seams are at 80.0 s, 73.0 s and 80.0 s. Each file starts a
+sixteenth before its first downbeat, so the wrap falls between notes.
