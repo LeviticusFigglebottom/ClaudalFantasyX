@@ -1,30 +1,14 @@
 {
-  "_note": "M2-RND-05: storm-event shots awaiting a lavapipe baseline. Lead: move each entry into tests/screenshots/shots.json (after the undertow shots) when approving its baseline. Render on a GPU with: capture.tscn -- --manifest=res://docs/kb/qa/gpu/2026-10-24-rnd-05-pending-shots.json. Each holds the storm clock, the weather clock and FXAA as the undertow shots do; exposure_flash is off so the 2-frame lightning exposure never lands in a capture.",
+  "_note": "M2-RND-05: storm-event shots awaiting a lavapipe baseline. Lead: move each entry into tests/screenshots/shots.json (after the undertow shots) when approving its baseline. Render on a GPU with: capture.tscn -- --manifest=res://docs/kb/qa/gpu/2026-10-24-rnd-05-pending-shots.json. Each holds the storm clock, the weather clock and FXAA as the undertow shots do; exposure_flash is off so the 2-frame lightning exposure never lands in a capture. (2026-10-24: moved into tests/screenshots/shots.json by the Lead.)",
   "defaults": {
     "camera": "default",
-    "resolution": [960, 540],
+    "resolution": [
+      960,
+      540
+    ],
     "settle_frames": 6,
     "seed": 1,
     "threshold_rmse": 0.008
   },
-  "shots": [
-    {
-      "id": "undertow_strike_ch08",
-      "scene": "res://game/levels/_tests/undertow/undertow_test.tscn",
-      "camera": "Cameras/Day",
-      "setup": {"globals": {"hymn_wind_time": 40.0}, "viewport": {"use_taa": false, "screen_space_aa": 1}, "nodes": {".": {"mood": "strike"}, "Storm": {"playing": false, "exposure_flash": false}}}
-    },
-    {
-      "id": "undertow_landfall_ch08",
-      "scene": "res://game/levels/_tests/undertow/undertow_test.tscn",
-      "camera": "Cameras/Day",
-      "setup": {"globals": {"hymn_wind_time": 40.0}, "viewport": {"use_taa": false, "screen_space_aa": 1}, "nodes": {".": {"mood": "day"}, "Storm": {"playing": false, "exposure_flash": false, "preset": "ch08_landfall"}}}
-    },
-    {
-      "id": "undertow_letting_ch21",
-      "scene": "res://game/levels/_tests/undertow/undertow_test.tscn",
-      "camera": "Cameras/Night",
-      "setup": {"globals": {"hymn_wind_time": 40.0}, "viewport": {"use_taa": false, "screen_space_aa": 1}, "nodes": {".": {"mood": "night"}, "Storm": {"playing": false, "exposure_flash": false, "unbinding": 1.0}}}
-    }
-  ]
+  "shots": []
 }
