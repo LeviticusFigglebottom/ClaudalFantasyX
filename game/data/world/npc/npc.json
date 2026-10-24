@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "doc": "Field villager behaviour (M3-CRE-610, docs/kb/tech/field_npc.md): FieldNpc (game/world/npc/field_npc.gd) idles, talks, turns to face the player and walks short routes. Metres, seconds, degrees. `defaults` apply to every villager; `villagers.<npc_id>` overrides any key (nested dictionaries merge). `locomotion` is merged over game/data/hero_motion/hero_motion.json and handed to HeroLocomotion, so the turn and the gait filter are the hero maths with villager tuning.",
+  "defaults": {
+    "locomotion": {
+      "doc": "Villagers turn slower and softer than the heroes, and their gait filter is longer so a start or a stop rolls through the walk. walk_clip_mps: the speed at which the villager walk clip's feet plant (measured from the M2-CHR-03 adult walk: ~0.37 m of foot travel per 0.55 s stance).",
+      "turn": {
+        "max_rate_deg_per_sec": 140.0,
+        "max_accel_deg_per_sec2": 520.0,
+        "settle_gain": 4.0
+      },
+      "gait": {
+        "walk_clip_mps": 0.66,
+        "speed_smoothing_sec": 0.3
+      }
+    },
+    "clips": {
+      "idle": "idle",
+      "talk": "talk",
+      "walk": "walk"
+    },
+    "idle_blend_sec": 0.45,
+    "talk_blend_sec": 0.35,
+    "walk_blend_sec": 0.4,
+    "gait_switch_weight": 0.25,
+    "walk_playback_min": 0.55,
+    "walk_playback_max": 1.2,
+    "walk_speed_mps": 0.6,
+    "walk_heading_tolerance_deg": 60.0,
+    "arrive_m": 0.06,
+    "arrive_ease_m": 0.45,
+    "arrive_min_speed_share": 0.3,
+    "pause_sec": 2.5,
+    "route_mode": "ping_pong",
+    "stop_radius_m": 2.2,
+    "face_radius_m": 1.6,
+    "release_radius_m": 4.0,
+    "return_delay_sec": 1.2
+  },
+  "villagers": {
+    "child": {
+      "locomotion": {
+        "turn": {
+          "max_rate_deg_per_sec": 200.0,
+          "max_accel_deg_per_sec2": 800.0
+        },
+        "gait": {
+          "walk_clip_mps": 0.46
+        }
+      },
+      "walk_speed_mps": 0.46,
+      "pause_sec": 1.4
+    },
+    "osu": {
+      "doc": "The elder: a slower turn, a longer settle back to rest.",
+      "locomotion": {
+        "turn": {
+          "max_rate_deg_per_sec": 110.0,
+          "max_accel_deg_per_sec2": 380.0
+        }
+      },
+      "walk_speed_mps": 0.5,
+      "return_delay_sec": 1.8,
+      "pause_sec": 3.5
+    },
+    "fisher": {
+      "pause_sec": 2.0
+    },
+    "netmender": {
+      "pause_sec": 3.0
+    }
+  }
+}
