@@ -196,6 +196,38 @@ uniform float foam_flow_speed_m_s : hint_range(0.0, 4.0) = 0.25;
 uniform float flow_cycle_s : hint_range(0.5, 20.0) = 4.0;
 uniform float foam_roughness : hint_range(0.0, 1.0) = 0.75;
 
+// Mean coverage of the streak profile below (line smoothstep(0.6, 0.88) x flecks) over value noise:
+// what unresolved streaks average to (measured: 0.114 over 5e5 samples).
+#define WATER_STREAK_MEAN 0.11
+// Patch size of the streak gate, in streak lengths.
+#define WATER_STREAK_PATCH 0.6
+// Meander (M2-RND-01): the lines wander across by up to this many streak widths, over a field this
+// many streak lengths wide, so they read as windrows on a moving sea instead of ruled rails.
+#define WATER_STREAK_MEANDER 3.0
+#define WATER_STREAK_MEANDER_SCALE 0.4
+// Flecks: along its length a line breaks into foam flecks this many per streak length, keeping
+// WATER_STREAK_FLECK_FLOOR of its coverage between them.
+#define WATER_STREAK_FLECKS 10.0
+#define WATER_STREAK_FLECK_FLOOR 0.3
+
+group_uniforms storm;
+// The sea answering the Undertow (M2-RND-01). UndertowStorm sets these on its zone water: within
+// storm_reach_m of the storm's centre the sea darkens toward it (body, in-scatter and the reflected
+// sky, which the storm itself blots out), turns choppier and rougher, and carries wind streaks drawn
+// in toward the storm. storm_reach_m 0 (the default, no storm) changes nothing.
+uniform vec2 storm_center_xz = vec2(0.0);
+uniform float storm_reach_m : hint_range(0.0, 200000.0) = 0.0;
+uniform float storm_darken : hint_range(0.0, 1.0) = 0.0;
+// How much of the reflected sky the storm blots out near it (it fills that sky).
+uniform float storm_reflection_dim : hint_range(0.0, 1.0) = 0.0;
+uniform float storm_chop : hint_range(0.0, 8.0) = 0.0;
+uniform float storm_roughness : hint_range(0.0, 1.0) = 0.0;
+uniform float storm_streak_amount : hint_range(0.0, 1.0) = 0.0;
+uniform float storm_streak_length_m : hint_range(1.0, 5000.0) = 240.0;
+uniform float storm_streak_width_m : hint_range(0.1, 500.0) = 9.0;
+uniform float storm_streak_fade_m : hint_range(10.0, 50000.0) = 2500.0;
+uniform float storm_streak_drift : hint_range(0.0, 4.0) = 0.05;
+
 group_uniforms caustics;
 uniform float caustic_strength : hint_range(0.0, 8.0) = 1.6;
 uniform float caustic_scale_per_m : hint_range(0.05, 10.0) = 0.9;
@@ -372,6 +404,16 @@ void fragment() {
 	float wind_speed = length(wind_xz);
 	vec2 wind_dir = wind_speed > HYMN_EPSILON ? wind_xz / wind_speed : normalize(calm_direction);
 	float chop = mix(1.0, wind_chop, clamp(wind_speed / wind_reference_m_s, 0.0, 1.0));
+	// Storm response weight (1 at the storm, 0 at storm_reach_m) and the inflow direction toward it.
+	float storm_k = 0.0;
+	vec2 to_storm = vec2(0.0, 1.0);
+	if (storm_reach_m > 0.0) {
+		vec2 dv = storm_center_xz - world.xz;
+		float d_storm = length(dv);
+		storm_k = 1.0 - smoothstep(0.0, storm_reach_m, d_storm);
+		to_storm = dv / max(d_storm, HYMN_EPSILON);
+		chop *= 1.0 + storm_chop * storm_k;
+	}
 	vec3 n_world = n_geo;
 	if (use_detail_normals) {
 		vec2 slope;
@@ -475,6 +517,25 @@ void fragment() {
 		foam *= mix(WATER_FOAM_FAR_KEEP, 1.0, exp(-view_dist / (detail_fade_m * WATER_FOAM_FADE_SCALE)));
 	}
 
+	// Wind streaks toward the storm: foam lines stretched along the inflow (every tier).
+	if (storm_k > 0.0 && storm_streak_amount > 0.0) {
+		vec2 across = vec2(-to_storm.y, to_storm.x);
+		vec2 q = vec2(dot(world.xz, to_storm) / storm_streak_length_m, dot(world.xz, across) / storm_streak_width_m);
+		q.y += WATER_STREAK_MEANDER
+				* (2.0 * hymn_value_noise2(world.xz / (storm_streak_length_m * WATER_STREAK_MEANDER_SCALE)) - 1.0);
+		vec2 qd = q + vec2(t * storm_streak_drift, 0.0);
+		float sn = hymn_value_noise2(qd);
+		// Past a few pixels per streak the lines alias: fade them to their mean coverage instead.
+		float resolved = 1.0 - smoothstep(0.2, 0.6, fwidth(q.y));
+		// Broken lines, not rails: a coarser patch field gates them along their length.
+		float patch = hymn_value_noise2(world.xz / (storm_streak_length_m * WATER_STREAK_PATCH));
+		float fleck = hymn_value_noise2(vec2(qd.x * WATER_STREAK_FLECKS, qd.y) + vec2(0.0, WATER_STREAK_FLECKS));
+		float line = smoothstep(0.6, 0.88, sn) * mix(WATER_STREAK_FLECK_FLOOR, 1.0, smoothstep(0.3, 0.7, fleck));
+		float cov = mix(WATER_STREAK_MEAN, line, resolved) * smoothstep(0.45, 0.75, patch);
+		float streak = cov * storm_k * storm_streak_amount * exp(-view_dist / storm_streak_fade_m);
+		foam = max(foam, streak);
+	}
+
 	// --- Screen-space reflection --------------------------------------------------------------
 	float fresnel = WATER_F0 + (1.0 - WATER_F0) * pow(1.0 - ndv, 5.0);
 	float ssr_hit = 0.0;
@@ -559,13 +620,17 @@ void fragment() {
 	v_crest = use_sss ? smoothstep(sss_crest_lo, sss_crest_hi, v_height / max(water_amplitude_sum, HYMN_EPSILON))
 			* water * view_keep : 0.0;
 	float rough = mix(roughness_near, roughness_far, clamp(view_dist / roughness_far_m, 0.0, 1.0));
+	rough = min(rough + storm_roughness * storm_k, 1.0);
+	float storm_dim = 1.0 - storm_darken * storm_k;
+	body *= storm_dim;
+	col_scatter *= storm_dim;
 
 	// Foam is a lit diffuse surface; so is the in-scattering column under the surface.
 	ALBEDO = col_foam * foam + col_scatter * inscatter * scatter_energy * water * (1.0 - fresnel);
 	ROUGHNESS = mix(rough, foam_roughness, foam);
 	METALLIC = 0.0;
 	// Engine reflection (sky, probes) only where SSR found nothing.
-	SPECULAR = WATER_SPECULAR * water * (1.0 - ssr_hit);
+	SPECULAR = WATER_SPECULAR * water * (1.0 - ssr_hit) * storm_dim * (1.0 - storm_reflection_dim * storm_k);
 	NORMAL = n_view;
 	EMISSION = body * water * (1.0 - fresnel * ssr_hit)
 			+ ssr_col * fresnel * ssr_hit * water + glow * water;

@@ -36,6 +36,10 @@ func _run() -> void:
 	if _opts.has("wind") and "animate_wind" in scene:
 		scene.set("animate_wind", true)
 	add_child(scene)
+	if _opts.has("undertow-half"):
+		for st in scene.find_children("*", "", true, false):
+			if st is UndertowStorm:
+				(st as UndertowStorm).half_res_body_scale = float(_opts["undertow-half"])
 	var cam := scene.get_node(NodePath(str(_opts.get("camera", "Cameras/Wide")))) as Camera3D
 	cam.make_current()
 	await get_tree().process_frame

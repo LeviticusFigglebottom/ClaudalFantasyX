@@ -1,0 +1,67 @@
+// Hymn of the Undertow: the storm body as a compute pass (M2-RND-01). Docs: docs/kb/tech/undertow.md,
+// "Compute body". UndertowBodyEffect (a CompositorEffect, PRE_TRANSPARENT) dispatches it on the game view
+// at body_scale of the internal resolution, after the opaque pass. So unlike the SubViewport body, it
+// reads THIS frame's opaque depth and clips the march at it exactly, inside the volume too.
+// It writes:
+// - out_body: premultiplied colour and alpha, as the spatial body blends;
+// - out_front: the mean distance of what each ray saw.
+// The composite (undertow_composite.gdshader) lays both over the frame in the transparent pass, so the
+// storm still sorts after the water.
+//
+// A variant (undertow_body*_compute.glsl) defines the same tier macros as its spatial twin
+// (undertow_body*.gdshader; tested), then includes this file. The march is the spatial body's own
+// (undertow_body_march.gdshaderinc); the uniforms are the generated UBO (undertow_compute_params.glslinc).
+
+#define UNDERTOW_COMPUTE
+
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+#include "res://game/shaders/undertow/undertow_compute_params.glslinc"
+
+layout(set = 0, binding = 1) uniform sampler3D noise_tex;
+// The game view's opaque depth at the internal resolution (reverse-Z: 0 = the sky).
+layout(set = 0, binding = 2) uniform sampler2D depth_tex;
+layout(set = 0, binding = 3, rgba16f) uniform restrict writeonly image2D out_body;
+layout(set = 0, binding = 4, r32f) uniform restrict writeonly image2D out_front;
+
+#include "res://game/shaders/undertow/undertow_body_march.gdshaderinc"
+
+void main() {
+	ivec2 px = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 size = ivec2(view_out_size);
+	if (px.x >= size.x || px.y >= size.y) {
+		return;
+	}
+	vec2 uv = (vec2(px) + 0.5) / view_out_size;
+	// The farthest opaque surface (reverse-Z: the smallest depth) over the full-resolution texels this
+	// pixel covers: the march stops there, and the composite drops the pixels whose own surface is nearer
+	// than what the storm shows (out_front), so occluder edges stay sharp at full resolution.
+	vec2 ratio = view_depth_size / view_out_size;
+	ivec2 last = ivec2(view_depth_size) - 1;
+	ivec2 d0 = min(ivec2(floor(vec2(px) * ratio)), last);
+	ivec2 d1 = clamp(ivec2(ceil(vec2(px + 1) * ratio)) - 1, d0, last);
+	float depth = 1.0;
+	for (int y = d0.y; y <= d1.y; y++) {
+		for (int x = d0.x; x <= d1.x; x++) {
+			depth = min(depth, texelFetch(depth_tex, ivec2(x, y), 0).r);
+		}
+	}
+	vec2 ndc = uv * 2.0 - 1.0;
+	float t_opaque = UNDERTOW_FAR_M;
+	if (depth > UNDERTOW_SKY_DEPTH) {
+		vec4 v = view_inv_projection * vec4(ndc, depth, 1.0);
+		t_opaque = length(v.xyz / v.w);
+	}
+	// The view ray: any point on it (the near plane, reverse-Z depth 1) gives its direction.
+	vec4 near_v = view_inv_projection * vec4(ndc, 1.0, 1.0);
+	vec3 rd = normalize(mat3(view_camera) * (near_v.xyz / near_v.w));
+	vec3 ro = undertow_local(view_camera[3].xyz);
+	float t_mean;
+	vec4 body = undertow_march(ro, rd, t_opaque, vec2(px) + 0.5, t_mean);
+	if (body.a < 0.0) {
+		body = vec4(0.0);
+		t_mean = UNDERTOW_FAR_M;
+	}
+	imageStore(out_body, px, body);
+	imageStore(out_front, px, vec4(t_mean, 0.0, 0.0, 0.0));
+}

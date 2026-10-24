@@ -50,8 +50,9 @@ class TestUndertowQuality(unittest.TestCase):
         # M1-RND-15: the floor is the uniform's hint_range minimum (4), not 1; the default cap is the
         # include's #ifndef value, not a copy in the validator.
         inc = (ROOT / vd.UNDERTOW_BODY_INC).read_text(encoding="utf-8")
+        uniforms = (ROOT / vd.UNDERTOW_BODY_UNIFORMS_INC).read_text(encoding="utf-8")
         floor, cap = vd.undertow_step_limits(ROOT)
-        self.assertIn(f"hint_range({floor},", inc)
+        self.assertIn(f"march_steps : hint_range({floor},", uniforms)
         self.assertIn(f"#define UNDERTOW_MAX_STEPS {cap}", inc)
         self.assertFalse(hasattr(vd, "UNDERTOW_DEFAULT_STEP_CAP"), "no copied constant")
         self.assertTrue(any(f"outside {floor}.." in e for e in errors(lambda d: d["quality"]["high"].update(march_steps=floor - 1))))

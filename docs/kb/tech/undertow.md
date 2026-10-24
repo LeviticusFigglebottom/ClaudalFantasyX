@@ -35,7 +35,7 @@ So the prototype is a **hybrid**: a raymarched volumetric body (Medium+), stacke
 - **Rotation and turbulence:** differential rotation, `omega(r) = rotation_rad_s * (eye / r)^rotation_falloff`, fastest at the eyewall. Noise is **two-phase advected** over `flow_cycle_s` (the flowmap trick): two samples rotated back by `omega(r) * t` with staggered resets, cross-faded, so the shear winds the pattern into spirals but never winds it up without bound. On High and Ultra a **curl-noise** warp (`hymn_curl_noise3`, divergence-free) is carried with the flow. An updraft lifts the pattern.
 - **Density:** the envelope eroded by fBm (`erosion_*`): a full envelope keeps all but the troughs, a thin one only the crests (billows at the surface, wisps outside).
 - **Marching:** `march_steps` per tier, a per-pixel interleaved-gradient-noise offset (TAA resolves it), and **adaptive strides** (`empty_step` × the mean step outside the envelope, `dense_step` inside). A uniform stride undersampled the billows and left streaks along the view rays in the high-angle shot.
-- **Lighting:** single scattering with a dual-lobe Henyey-Greenstein phase, sun transmittance from 1–3 sun-ward samples (envelope only on Medium, coarse noise above), ambient between `col_ambient_bottom` and `_top` with an occlusion term, and a **low-sun reach** (`sun_clear_height`, `sun_low_floor`): a low sun has crossed the outer bands first, so it gilds the upper storm while the lower wall stays dark slate. The albedo is a cool white. The mass reads as `storm_slate` through its own shadow, which is what lets its upper flanks catch the dusk gold (pillar 2: gorgeous and doomed).
+- **Lighting:** multiple scattering (M2-RND-01: `cloud.ms_octaves` 3 octaves after Wrenninge 2013; octave i has energy `ms_attenuation`^i 0.35, extinction `ms_extinction`^i 0.25 and phase eccentricity `ms_eccentricity`^i 0.6; 1 octave = the M1 single scattering; no measurable cost) with a dual-lobe Henyey-Greenstein phase, sun transmittance from 1–3 sun-ward samples (envelope only on Medium, coarse noise above), ambient between `col_ambient_bottom` and `_top` with an occlusion term, and a **low-sun reach** (`sun_clear_height`, `sun_low_floor`): a low sun has crossed the outer bands first, so it gilds the upper storm while the lower wall stays dark slate. The albedo is a cool white. The mass reads as `storm_slate` through its own shadow, which is what lets its upper flanks catch the dusk gold (pillar 2: gorgeous and doomed).
 - **Aerial perspective:** the storm is `fog_disabled` and hazes itself toward `col_haze` with `haze_visibility_m`, weighted by the mean scattering depth. Match `haze_color` to the zone's horizon/fog colour.
 
 ### Glimmer wounds (the light rules)
@@ -218,7 +218,127 @@ Calibrated against the water bench, the only ratio we have. Water High costs abo
 6. **Cinematics hooks:** an `UndertowStorm` preset per chapter (Ch1 arrival, Ch8 storm wall, Ch20 interior, Ch21 the Letting: wounds turning to `glimmer_lift` and rising via the rule-1 hue lerp), and a timeline/AnimationPlayer track that drives `approach_distance_m`, `intensity` and `force_flash`.
 7. **Art review** against the colour script with paintovers, and the `spawn_wound` usage decision.
 
+### Half-resolution body (M2-RND-01)
+Medium raymarches the body at `body_scale` 0.5 of the view and High at 0.35 (undertow.json `quality.*.body_scale`, M2-RND-01 min-spec decision below; Ultra 1).
+`UndertowStorm.half_res_body_scale` overrides it (−1 = the tier).
+
+How it works (`UndertowHalfRes`, `undertow_composite.gdshader`):
+- The body moves to visual layer 20, and the game camera stops drawing that layer.
+- A `SubViewport` that shares the world renders only that layer, through a camera that copies the game camera
+  every frame. The copy happens on `RenderingServer.frame_pre_draw`, after the camera has moved.
+  - The SubViewport is transparent, HDR (`use_hdr_2d`) and linear-tonemapped.
+  - Its TAA is off, because TAA does not keep a transparent viewport's alpha.
+- The composite is drawn on the body's own proxy cylinder in the game view, premultiplied, so it sorts as the body
+  did.
+  - It reads the half-res frame through a 3×3 tent, four bilinear taps. At half resolution each march-jitter
+    sample covers a 2×2 block, which narrows TAA's neighbourhood clamp so the history couldn't average the jitter
+    out; the tent removes the stipple before TAA sees it.
+  - **Occlusion:** the SubViewport sees no opaque geometry. So the composite drops a pixel whose opaque depth is
+    nearer than where the ray enters the capped cylinder of the wall's foot (eye + wall + skirt radius, slab
+    sea → top).
+  - Opaque geometry inside that cylinder isn't occluded (the old body clipped against the depth buffer per
+    sample). Nothing in the test scene is there. A boat inside the eyewall would need the M2 compute path (below).
+
+Measured (RX 9070 XT, High 1440p, GPU including the SubViewport):
+
+| Camera | Full res | Half res |
+|---|---:|---:|
+| Day | 4.94 ms | 2.27 ms |
+| Eye | 5.41 ms | 2.68 ms |
+| Night | 5.06 ms | 2.25 ms |
+| Horizon | 3.97 ms | 1.94 ms |
+
+- **Glow dither on High** (FSR2): 0.0092, against 0.0291 at full resolution. That's within 16 % of native TAA
+  without the M1-RND-16 cutscene override.
+- **Panning** at 0.15° a frame on Ultra reads like the full-res body.
+
+**Superseded as the default by the compute body (next section).** The SubViewport path remains the fallback
+(Compatibility, headless) and the A/B control (`UndertowStorm.half_res_compute = false`).
+
+### Compute body (M2-RND-01, ADR 0028)
+Where a RenderingDevice exists, the half-res body is `UndertowBodyEffect`, a CompositorEffect on the current
+game camera's Compositor; the SubViewport isn't built.
+- **Where it runs:** at PRE_TRANSPARENT, after the opaque pass, at `body_scale` of the *internal* resolution (so
+  under FSR2's render scale too).
+- **Occlusion:** it marches the same `undertow_march()` as the spatial body, clipped at the **farthest** opaque
+  surface in each low-res pixel's footprint, from this frame's depth. It writes `body_texture` (premultiplied,
+  RGBA16F) and `front_texture` (R32F, the opacity-weighted mean distance of what each ray saw).
+- **Composite:** `undertow_composite.gdshader` (`use_front`) samples both in the transparent pass, after the
+  water as before, and drops each full-resolution pixel whose own opaque surface is nearer than the front
+  distance.
+- **Result:** exact occlusion inside the volume, with sharp edges. A test pillar inside the wall (x 7600 m, Day
+  camera, `capture_preset --add-box`) is painted over completely by the SubViewport path and occludes the storm
+  correctly in the compute path.
+- **Source of truth:**
+  - The spatial uniforms (`undertow_common_uniforms.gdshaderinc`, `undertow_body_uniforms.gdshaderinc`).
+  - `tools/rendering/gen_undertow_compute.py` writes the std140 block (`undertow_compute_params.glslinc`),
+    `UndertowComputeLayout` (offsets, defaults, source_color flags), the flattened compute body and the three
+    tier twins (`undertow_body*_compute.glsl`, with the spatial variants' macros).
+  - Run it after editing a uniform; `tools/tests/test_gen_undertow_compute.py` fails on stale outputs.
+- **Packing:** each frame on the main thread (`frame_pre_draw`), from the body material's own parameters (an
+  unset one takes its declaration's default; source_color colours are converted to linear, as Godot does), plus
+  `hymn_sun_direction` from ShaderGlobals. The render thread adds the view: the camera projection and transform
+  and the sizes.
+- **Shells:** a hidden body (Low) has no half-res renderer, and the effect skips any frame where the body is
+  hidden.
+
+Measured (RX 9070 XT, High 1440p, GPU median, the whole frame):
+
+| Camera | SubViewport | Compute |
+|---|---:|---:|
+| Day | 2.56 ms | 2.45 ms |
+| Eye | 3.11 ms | 2.84 ms |
+| Night | – | 2.43 ms |
+| Horizon | – | 2.08 ms |
+| Day, Medium | – | 1.96 ms |
+
+The look matches the SubViewport path (RMSE 0.003–0.009 on the five Undertow shots at High), with a slightly
+smoother wound glow. **Still open:** its own reprojected history, and a quarter-resolution tier for min-spec
+(RTX 3060 projection ~7.4 ms on Day High).
+
+### Striations, billows and the wound skin (M2-RND-01, criterion 2)
+Aimed at review-sweep-G's "uniform khaki lit tone" and "regular striations". Report:
+`docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md`, "Billows and striations".
+- **Striations** (`undertow_striation`, common include, so the Low shells follow). One low-frequency noise sample in
+  the frame that turns with the eyewall bends the helix phase by up to `shape.striation_warp` turns (0.35) and
+  flattens it by up to `striation_vary` (0.6), over `striation_warp_scale_m` (4.5 km). The body reads its baked
+  lattice (`UNDERTOW_BAKED_NOISE`, two channels in one fetch); the shells hash. Skipped where the wall envelope is 0.
+- **Billows** (body only). On the cloud's eroding fringe, where the density is between 0 and 1 (the surface a view
+  sees), a 1 km field (`cloud.billow_scale_m`) is folded into billow noise `|2n - 1|` and added **zero-mean** (its
+  mean over the lattice is 0.33, measured) × `billow_weight` 0.8 × `4 d0 (1 - d0)`. They reshape the fringe
+  without thinning coverage, and they leave the solid core and the outermost wisps alone.
+  - **Sun-ward shading:** the same fold one `billow_shade_step_m` (300 m) toward the sun, minus here, removes
+    optical depth × `billow_shade` (3). Each lump is lit on its sun side. Medium compiles it out
+    (`UNDERTOW_BILLOW_SHADE 0`).
+  - The envelope is not the surface: the wall's envelope reaches 1 about a kilometre before the eroded front the camera
+    sees, so an envelope-weighted billow did nothing.
+- **Wound skin refinement** (`wounds.skin_step` 0.25). The rents glow in a 900 m skin, and High's dense steps are
+  several hundred metres long. So 1–3 steps landed in it depending on the jitter, and that variance was the
+  rents' stipple: TAA averages it, FSR2 (High) keeps it (no reactive mask, see Gotchas). Inside the skin the
+  step is at most `wound_skin_m × skin_step`.
+  - **Step budget:** a refined step spends only `ds / dense stride` of the `march_steps` budget, with
+    `UNDERTOW_SKIN_LOOP` (2×) iteration headroom. Counting it as a whole step ended rays before they crossed the
+    wall, which showed as see-through holes on `undertow_horizon_dusk`.
+- **Cost (RX 9070 XT, High 1440p, GPU median):** Day 2.28 → 2.56 ms, Eye 2.79 → 3.11 ms. Ultra Day 16.1 → 17.7 ms.
+- **Sea wind streaks** (water `storm` group, `water_surface_body.gdshaderinc`): the lines meander across by up to
+  3 streak widths and break into foam flecks along their length, with a softer profile. Before, they were hard,
+  straight, parallel rails.
+
 ## Gotchas
+- **Compute body: four Godot 4.6 traps (M2-RND-01).**
+  - A `.glsl` RDShaderFile expands one level of `#include` only, and is re-imported only when the `.glsl` itself
+    changes. Hence the generated flat body, and the hash in each twin.
+  - `RenderSceneData.get_cam_projection()` already carries the depth correction (reverse-Z, flipped Y). Applying
+    `Projection.create_depth_correction()` again turns every ray around.
+  - Set `Texture2DRD.texture_rd_rid` on the main thread (`set_deferred` from the render thread). Assigned on the
+    render thread, the material kept sampling the placeholder.
+  - Before freeing an RD texture, detach every Texture2DRD and material that uses it, or the material's uniform
+    set fails ("Texture (binding: 1, index 0) is not a valid texture").
+- **`capture_preset --mat-set` does not reach the half-res body (M2-RND-01).** The body renders in UndertowHalfRes's
+  SubViewport, so a `--mat-set` uniform shows no change (albedo_gain=0.1 left the frame as it was). To try a body
+  tunable, edit undertow.json for the run and restore it afterwards.
+- **The half-res body (M2-RND-01) puts the body on visual layer 20 and clears that bit from the game camera's
+  `cull_mask` every frame.** Don't use layer 20 for anything else in a scene with a storm.
 - **Keep the node unrotated and unscaled.** The visuals are a top-level child placed at `storm_center()` in world axes. Its Y is irrelevant: see "Sea level".
 - **Render priorities matter.** The lid must draw before the water (−1 < 0), and the body after the water. Anything transparent that should cover the storm (motes, rain near the lens, UI-like VFX) needs a priority above `render_priority.body` (2). The body ignores the transparent depth (`depth_test_disabled`, clipped against the *opaque* depth copy), so transparent things at lower priorities are painted over.
 - **The lid hides transparent things below its height over the funnel** (lift + crest height, about 2–3 m): the ocean, as intended, but also any low transparent VFX placed on the storm's sea. Nothing gameplay-relevant lives there.
