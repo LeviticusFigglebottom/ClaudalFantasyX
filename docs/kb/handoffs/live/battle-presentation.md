@@ -13,7 +13,7 @@ The gap (the human's playtest note): battles had no action animation. This track
 | M2-BPR-04 specials | review. Swell finishers (dive/verse/brace/glyph), Drownbell toll wave + gather/rim/flood beats (BattleBossVfx lands on contact), Vowbound call/rise/dismiss/fall. |
 | M2-BPR-05 stinger, banner timing, victory pose, escape, lead-in bark hook | review. Bark line: Narrative, M2-NAR-01. |
 | M2-BPR-06 freeze-frame shots | review. 11 freeze-frames + 2 arenas, all viewed, run-to-run RMSE 0. |
-| M2-BPR-07 per-encounter arenas | review. encounters.json `arena`; contract agreed with env-art; greybox tideline_dawn / causeway_disc_sunset; M2-ENV-11 for env-art. |
+| M2-BPR-07 per-encounter arenas | review. encounters.json `arena`; contract agreed with env-art; greybox tideline_dawn / causeway_disc_sunset; env-art M2-ENV-11 (their task). |
 | M2-BPR-08 C10 Ilun first call | review. Full on first live call (flag ch03_ilun_first_call_seen), Short setting, skippable. |
 
 ## Pillar-4 fixes found in the freeze-frames
@@ -21,7 +21,7 @@ The gap (the human's playtest note): battles had no action animation. This track
 - The Read panel opens on the Read's contact beat, not before the reader moves.
 
 ## Requests filed for other tracks
-- M2-ENV-11 (environment): final arena kits (env-art is building tideline_dawn / causeway_disc_sunset; repoint arenas.json).
+- Arena kits: env-art's own **M2-ENV-11** (docs/kb/tasks/M2/M2-ENV-11-battle-arenas.md on claude/env-art, in review); my duplicate task file was removed. Final scenes: assets/environments/arenas/{tideline_dawn,causeway_disc_sunset}/<id>.tscn (root: WorldEnvironment, Sun, Sea, dressing, CameraHints, BossAnchor, FloodAnchor; their root script is BattleArenaRoot, no name clash). **After the Lead merges both branches:** repoint the two paths in game/data/battle/arenas.json, then view and re-approve battle_arena_tideline, battle_arena_causeway, drownbell_flood. Whoever merges second (Lead or this track) does it.
 - M2-NAR-01 (narrative): the tideline lead-in bark line.
 - At the creatures merge: delete the action/hit calls in BattleActorMotion._on_action_resolved (agreed; whoever merges second).
 

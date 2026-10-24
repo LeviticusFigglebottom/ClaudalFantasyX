@@ -22,6 +22,6 @@ Battles all fight on the noon sandbox dais. Each story encounter gets its own ar
 ## Notes
 - From the Lead's intro audit (CONSOLIDATED.md, 2026-10-24).
 
-- 2026-10-24 (track lead): BattleArena + two greybox arenas; env-art request M2-ENV-11. drownbell_flood re-approved after viewing (RMSE 0.161 against the noon-sandbox baseline: the intended sunset causeway). Reviewer focus: the grades against the color script.
+- 2026-10-24 (track lead): BattleArena + two greybox arenas; env-art M2-ENV-11 (theirs). drownbell_flood re-approved after viewing (RMSE 0.161 against the noon-sandbox baseline: the intended sunset causeway). Reviewer focus: the grades against the color script.
 
 ## Review log
