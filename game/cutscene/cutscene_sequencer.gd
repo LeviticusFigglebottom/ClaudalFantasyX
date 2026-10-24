@@ -482,20 +482,35 @@ func _cue_mark(step: DialogueStep) -> void:
 		_warn("no mark '%s' on the stage" % target_id)
 		return
 	var gait := StringName(str(step.args[2])) if step.args.size() > 2 else &"walk"
-	var speed := float(config.get("run_mps" if gait == GAIT_RUN else "walk_mps", 1.0))
+	var speed := maxf(float(config.get("run_mps" if gait == GAIT_RUN else "walk_mps", 1.0)), 0.01)
 	var from := actor.global_position
 	var to := target.global_position
 	var flat := Vector3(to.x - from.x, 0.0, to.z - from.z)
 	if flat.length() > 0.01:
-		_face(actor, flat)
-	var dur := from.distance_to(to) / maxf(speed, 0.01)
-	_play_clip(actor, gait)
+		_turn_to(StringName(str(step.args[0])), actor, flat)  # turns into the walk, never snaps
+	# M2-FP-29: a beat of anticipation, then the walk speeds up, cruises and slows to a stop; the
+	# walk clip cross-fades in as it sets off and back to idle as it settles.
+	var dist := from.distance_to(to)
+	var accel := float(config.get("walk_accel_sec", 0.0))
+	var decel := float(config.get("walk_decel_sec", 0.0))
+	var lead := float(config.get("walk_anticipation_sec", 0.0))
+	var walk := CutsceneMotion.walk_duration(dist, speed, accel, decel)
+	var dur := lead + walk
+	var state := {"walking": false}
 	_start_motion(
 		&"move:%s" % step.args[0],
 		dur,
 		func(t: float) -> void:
-			_place(actor, from.lerp(to, t))
-			if t >= 1.0 and is_instance_valid(actor):
+			if not is_instance_valid(actor):
+				return
+			var sec := t * dur - lead
+			if sec > 0.0 and t < 1.0 and not state["walking"]:
+				state["walking"] = true
+				_play_clip(actor, gait)
+			_place(actor, from.lerp(to, CutsceneMotion.walk_fraction(sec, dist, speed, accel, decel)))
+			if t >= 1.0:
+				if not state["walking"]:
+					_play_clip(actor, gait)  # instant or skipped: the walk still happened
 				_play_clip(actor, &"idle")
 	)
 
@@ -508,10 +523,18 @@ func _cue_anim(step: DialogueStep) -> void:
 	var standin := _stage.clip_mark(StringName(str(step.args[0])), clip) if _stage != null else null
 	if standin != null:
 		# A placeholder clip: stand on its mark, facing the mark's -Z (CutsceneStage.clip_marks).
+		# M2-FP-29: glide onto it and turn, eased, rather than appear there.
 		_motions.erase(&"move:%s" % step.args[0])
-		_place(actor, standin.global_position)
-		var fwd := -standin.global_basis.z
-		_face(actor, fwd)
+		var start := actor.global_position
+		var end := standin.global_position
+		var glide := float(config.get("standin_glide_sec", 0.0)) if start.distance_to(end) > 0.01 else 0.0
+		var curve := float(config.get("turn_ease", 1.0))
+		_start_motion(
+			&"move:%s" % step.args[0],
+			glide,
+			func(t: float) -> void: _place(actor, start.lerp(end, CutsceneMotion.eased(t, curve)))
+		)
+		_turn_to(StringName(str(step.args[0])), actor, -standin.global_basis.z)
 		return
 	if clip == ANIM_LOOK_AT and step.args.size() > 2:
 		var tid := StringName(str(step.args[2]))
@@ -523,7 +546,7 @@ func _cue_anim(step: DialogueStep) -> void:
 		return
 	var ap := actor.find_child("AnimationPlayer", true, false) as AnimationPlayer
 	if ap != null and ap.has_animation(clip):
-		ap.play(clip)
+		ap.play(clip, _clip_blend())
 
 
 func _cue_music(step: DialogueStep) -> void:
@@ -680,12 +703,18 @@ func _on_mouth_flap(speaker: StringName, open: bool) -> void:
 
 
 ## Plays the actor's AnimationPlayer clip for `role` (sequencer.json "clips": idle, talk, walk,
-## run) when the rig has it; nothing otherwise (M2-FP-07 asks Character for the clips).
+## run) when the rig has it, cross-faded from the current one; nothing otherwise (M2-FP-07 asks
+## Character for the clips).
 func _play_clip(actor: Node3D, role: StringName) -> void:
 	var clip := StringName(str((config.get("clips", {}) as Dictionary).get(String(role), "")))
 	var ap := actor.find_child("AnimationPlayer", true, false) as AnimationPlayer
-	if ap != null and clip != &"" and ap.has_animation(clip):
-		ap.play(clip)
+	if ap != null and clip != &"" and ap.has_animation(clip) and ap.current_animation != clip:
+		ap.play(clip, _clip_blend())
+
+
+## The cross-fade between two clips (sequencer.json clip_blend_sec; none while skipping or instant).
+func _clip_blend() -> float:
+	return 0.0 if _fast() else float(config.get("clip_blend_sec", 0.0))
 
 
 ## Awaits `sig` (connected one-shot to `handler`, which emits `resumed`), as `kind` for skip().
@@ -799,10 +828,13 @@ func _turn_to(id: StringName, actor: Node3D, dir: Vector3) -> void:
 		return
 	var from := actor.rotation.y
 	var to := from + angle_difference(from, atan2(-dir.x, -dir.z))
+	# M2-FP-29: eased in and out, over a time that grows with the angle (turn_min_sec..turn_sec).
+	var curve := float(config.get("turn_ease", 1.0))
+	var sec := CutsceneMotion.turn_duration(
+		to - from, float(config.get("turn_min_sec", 0.0)), float(config.get("turn_sec", 0.0))
+	)
 	_start_motion(
-		&"turn:%s" % id,
-		float(config.get("turn_sec", 0.0)),
-		func(t: float) -> void: _face_yaw(actor, lerpf(from, to, t))
+		&"turn:%s" % id, sec, func(t: float) -> void: _face_yaw(actor, lerpf(from, to, CutsceneMotion.eased(t, curve)))
 	)
 
 
