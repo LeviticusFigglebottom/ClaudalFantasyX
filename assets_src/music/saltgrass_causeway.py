@@ -60,27 +60,34 @@ MEL_B = [[("G5", 2), ("A5", 2)], [("C6", 3), ("A5", 1)], [("G5", 2), ("E5", 1), 
          [("A5", 2), ("G5", 1), ("E5", 1)], [("D5", 2), ("C5", 2)], [("D5", 3), ("E5", 1)], [("A4", 4)]]
 
 
+## The file starts a sixteenth before bar 1's downbeat, so the wrap doesn't land on its heaviest attack (gong, pulse
+## and drum together); the loop is periodic, so nothing else changes. The sidecar records it.
+DOWNBEAT_OFFSET_S = BEAT / 4
+
+
 def t_of(bar: int, beat: float = 0.0) -> float:
-    return (bar - 1) * BAR + beat * BEAT
+    return (bar - 1) * BAR + beat * BEAT + DOWNBEAT_OFFSET_S
 
 
 def wind(sr: int = SR) -> np.ndarray:
-    """One loop of wind: noise through a slowly moving band, breathing on whole cycles per loop (so it wraps)."""
+    """One loop of wind: noise through a slowly moving band, breathing on whole cycles per loop. Rendered k samples
+    longer than the loop, and the extra k folded into the start with a crossfade, so the sample after the loop's
+    last one continues it (the wrap is seamless)."""
     g = rng(SEED + 3)
     N = int(round(LOOP_S * sr))
-    t = np.arange(N) / sr
-    out = np.zeros((N, 2))
+    k = int(0.5 * sr)
+    t = np.arange(N + k) / sr
+    out = np.zeros((N + k, 2))
     for ch in range(2):
-        x = g.standard_normal(N)
-        lo = filt(x, [bq_bandpass(380.0, 0.5), bq_lowpass(1500, 0.6)])
-        hi = filt(g.standard_normal(N), [bq_bandpass(1900.0, 1.2)])
+        lo = filt(g.standard_normal(N + k), [bq_bandpass(380.0, 0.5), bq_lowpass(1500, 0.6)])
+        hi = filt(g.standard_normal(N + k), [bq_bandpass(1900.0, 1.2)])
         breath = 0.55 + 0.45 * np.sin(2 * np.pi * 4 * t / LOOP_S + ch * 0.9) ** 2
         gust = 0.7 + 0.3 * np.sin(2 * np.pi * 11 * t / LOOP_S + 1.3 + ch) * np.sin(2 * np.pi * 3 * t / LOOP_S)
         out[:, ch] = (lo + 0.25 * hi * breath) * breath * gust
-    k = int(0.5 * sr)       # the noise is one loop long: crossfade its own ends so the wrap has no step
     w = np.linspace(0, 1, k)[:, None]
-    out[:k] = out[:k] * w + out[-k:] * (1 - w)
-    return out[: N] * 0.05
+    loop = out[:N].copy()
+    loop[:k] = out[:k] * w + out[N:] * (1 - w)
+    return loop * 0.05
 
 
 def build(mx: LoopMixer) -> None:
@@ -134,7 +141,8 @@ def render(out_path: str = OUT, verbose: bool = True, stats: dict | None = None)
     _, loop = master_loop(np.zeros((0, 2)), loop, TARGET_LUFS, ceiling_db=-2.0, report=rep)
     L = len(loop)
     write_ogg(out_path, loop, quality=3.0, tags={"LOOPSTART": "0", "LOOPLENGTH": str(L)})
-    write_loop_sidecar(os.path.splitext(out_path)[0] + ".loop.json", SR, 0, L, BPM, 4)
+    write_loop_sidecar(os.path.splitext(out_path)[0] + ".loop.json", SR, 0, L, BPM, 4,
+                       extra={"downbeat_offset_s": DOWNBEAT_OFFSET_S})
     m = measure(loop)
     if stats is not None:
         stats["bus_lufs"] = dict(mx.bus_lufs)

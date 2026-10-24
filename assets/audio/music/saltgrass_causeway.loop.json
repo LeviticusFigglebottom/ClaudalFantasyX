@@ -2,6 +2,7 @@
   "bar_beats": 4,
   "beat_count": 112,
   "bpm": 84.0,
+  "downbeat_offset_s": 0.17857142857142858,
   "loop_length_samples": 3528000,
   "loop_length_seconds": 80.0,
   "loop_offset_seconds": 0.0,
