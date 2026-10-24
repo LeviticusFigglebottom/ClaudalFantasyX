@@ -155,6 +155,11 @@ func set_dimmed(dim: bool) -> void:
 	_mote.visible = not dim
 
 
+## The Control of row `index` (null when out of range); input parity tests hover and click it.
+func row_node(index: int) -> Control:
+	return _row_nodes[index] if index >= 0 and index < _row_nodes.size() else null
+
+
 func row_rect(index: int) -> Rect2:
 	var inset := HudLayout.num(_m, "row_inset")
 	var pitch := HudLayout.num(_m, "row_pitch")
@@ -277,8 +282,16 @@ func _on_row_mouse(index: int) -> void:
 
 func _on_row_input(event: InputEvent, index: int) -> void:
 	var mb := event as InputEventMouseButton
-	if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+	if mb == null or not mb.pressed:
+		return
+	if mb.button_index == MOUSE_BUTTON_LEFT:
 		row_clicked.emit(index)
+	elif mb.button_index == MOUSE_BUTTON_WHEEL_UP or mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		# The wheel steps the cursor (M2-UI-26) and reports it like a hover, so every screen that
+		# follows hover follows the wheel too.
+		if move(-1 if mb.button_index == MOUSE_BUTTON_WHEEL_UP else 1):
+			row_hovered.emit(cursor)
+		accept_event()
 
 
 ## The row under the cursor shifts its text right by cursor_nudge_px; the others sit at rest. It

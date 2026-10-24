@@ -419,6 +419,20 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
 - **Data:** `game/data/ui/dialogue_assist.json`. **Shots:** `dialogue_continue`, `dialogue_backlog` (driver `game/levels/_tests/ui_shots/dialogue_assist_shot.gd`). **Tests:** `test_dialogue_assist.gd`.
 - **Not done here:** M2-ARC-06 and M2-ARC-07 (the box's own theme variations, `UiSettings.follow`, text speed and the backing band) stay with the Architect.
 
+## Input parity: keyboard, mouse and controller (M2-UI-26, ADR 0036)
+
+- **`UiInput`** (autoload, `game/ui/input/ui_input.gd`) does three things:
+  - Turns a right click or the mouse's back button into a `ui_cancel` press and release, so every screen's Cancel also takes the mouse.
+  - Runs `ControlsModel.defaults()` at startup, so pad A and B confirm and cancel in every scene and test.
+  - Tracks the last device (`InputNames.using_pad`, `device_changed`).
+- **`MenuPage`:**
+  - The wheel over a row steps the cursor and emits `row_hovered`.
+  - `row_node(i)` gives a row's Control for tests.
+- **`InputDriver`** (`tests/input_driver.gd`) pushes real events through the root viewport:
+  - `press(action)` uses the KEYS or PAD binding;
+  - for the mouse: `hover`, `click`, `right_click`, `wheel`, `drag`.
+- **Parity tests** (`tests/unit/test_input_parity_*.gd`) walk each screen with `InputDriver.KINDS`.
+
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 
 - **The field menu's root has ten rows** (`FieldMenuModel.ROOT_IDS`): Items, Equip, Lattice, Status, Swell, Map (M2-UI-18), Bestiary, Settings, Quit to Title, Close. Equip, Lattice and Status (`PARTY_ROWS`) are off, saying why, when nobody has joined. `field_menu.json` grew the panel to 639 px and the root page to nine rows; every rect is still a multiple of 3.
