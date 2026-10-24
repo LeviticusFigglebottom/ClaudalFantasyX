@@ -1,0 +1,18 @@
+{
+  "doc": "Ch1 field tunables (M3-C01-02; docs/kb/tech/chapter_flow.md 'Ch1'). Read by the Ch1 zone roots in game/levels/ch01/ (Ch01Zone and its two subclasses). prompts: the one-time tutorial prompts a {\"zone\": \"prompt\", \"args\": [id]} step shows: each plays its scene on the zone's hint sequencer (it advances by itself, holding each line hold_sec, and never holds the player) unless its seen-flag is set, then sets it. Gated by seen-flags, not by chapter (act1_ch01.md §9 Design 3). lantern: Rhen's oil lamp in the Underway and its shutter (C1-04): a held input (action, bound at runtime from actions when project.godot doesn't define it) opens it from narrow to open. Open widens the light, reveals the layout's lantern.reveals triggers and lantern.curtains blocks for good, and multiplies the encounter rate by encounter_rate_mult (read by the field encounter system once it exists, M3-C01-04; no fuel). color is the oil lamp's (decisions_log N-02), height_m its height above Rhen's feet.",
+  "prompts": {
+    "hold_sec": 3.5,
+    "movement": {"flag": "tut_movement_seen", "scene": "ch01_tut_movement"},
+    "tether": {"flag": "tut_tether_seen", "scene": "ch01_tut_tether"},
+    "shutter": {"flag": "tut_shutter_seen", "scene": "ch01_tut_shutter"}
+  },
+  "lantern": {
+    "action": "field_lantern_shutter",
+    "actions": {"field_lantern_shutter": {"keys": ["F"], "joy_buttons": [2]}},
+    "deadzone": 0.2,
+    "color": "#ffb46b",
+    "height_m": 1.6,
+    "narrow": {"range_m": 4.0, "energy": 1.6, "encounter_rate_mult": 1.0},
+    "open": {"range_m": 10.0, "energy": 3.2, "encounter_rate_mult": 2.5}
+  }
+}
