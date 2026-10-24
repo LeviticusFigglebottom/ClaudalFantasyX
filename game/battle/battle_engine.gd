@@ -448,10 +448,15 @@ func preview_swap(out_id: StringName, in_id: StringName, count: int = CtbTimelin
 
 
 ## Vowbound (SPEC §6.3, battle_ctb.md § Vowbound): the current party member calls `vowbound_id`.
-## The whole active party stands down and the Vowbound takes the turn; the caller pays the
-## call's rank when the party comes back. False, changing nothing, on a refusal (vowbound.refusal()).
+## The whole active party stands down and the Vowbound takes the turn. The caller's end of turn
+## runs at once (Poison/Regen, countdowns, Doom, turn_ended; ADR 0027 A3), and its next turn
+## waits the call's rank after the party comes back. False, changing nothing, on a refusal.
 func summon(vowbound_id: StringName) -> bool:
-	return vowbound.call_in(self, vowbound_id) and _field_changed(true)
+	var caller := current
+	if not vowbound.call_in(self, vowbound_id):
+		return false
+	vowbound.call_changes = _turn_ticks(caller)  # ADR 0027 A3: the call ends the caller's turn now
+	return _field_changed(true)
 
 
 ## On the Vowbound's own turn, sends it away, which spends that turn: the party comes back and
@@ -572,6 +577,17 @@ func push_delay(target: BattleCombatant, ranks: int) -> int:
 func _end_turn(actor: BattleCombatant, rank: int) -> Array[Dictionary]:
 	actor.next_time = now + Formulas.action_delay(actor.agility, rank, actor.speed_mult())
 	actor.delays_taken = 0
+	var changes := _turn_ticks(actor)
+	BossMechanics.check_phases(self)
+	if not _check_outcome():
+		_advance()
+	return changes
+
+
+## The end of `actor`'s turn that does not move the clock: Poison/Regen, the status countdown
+## (Doom may fell it), turns_taken and turn_ended. A Vowbound call runs it for the caller at once
+## (ADR 0027 A3); only the caller's next turn waits for the party's return.
+func _turn_ticks(actor: BattleCombatant) -> Array[Dictionary]:
 	var changes: Array[Dictionary] = []
 	if actor.is_alive():
 		if actor.has_status(&"poison"):
@@ -582,9 +598,6 @@ func _end_turn(actor: BattleCombatant, rank: int) -> Array[Dictionary]:
 	changes.append_array(_tick(actor))
 	actor.turns_taken += 1
 	turn_ended.emit(actor, changes)
-	BossMechanics.check_phases(self)
-	if not _check_outcome():
-		_advance()
 	return changes
 
 
@@ -641,8 +654,10 @@ func _advance() -> void:
 func _check_outcome() -> bool:
 	if _living(enemies).is_empty():
 		_finish(OUTCOME_VICTORY)
-	elif _living(party_active).is_empty() and not _recall():  # a fallen Vowbound is no defeat
-		_finish(OUTCOME_DEFEAT)
+	elif _living(party_active).is_empty():
+		_recall()  # a fallen Vowbound is no defeat, unless the party it hands back has fallen too
+		if _living(party_active).is_empty():
+			_finish(OUTCOME_DEFEAT)
 	return outcome != &""
 
 
