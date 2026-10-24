@@ -133,6 +133,7 @@
     "pocket_energy": 0.6,
     "rent_depth": 0.65,
     "skin_m": 900.0,
+    "skin_step": 0.25,
     "height_min": 0.15,
     "height_max": 0.85
   },

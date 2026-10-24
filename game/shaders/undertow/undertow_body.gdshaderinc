@@ -77,6 +77,8 @@ float undertow_noise(vec3 p) {
 #define UNDERTOW_MIN_ENVELOPE 0.002
 // 1 / (4 pi): Henyey-Greenstein normalisation.
 #define UNDERTOW_INV_4PI 0.0795775
+// Iteration headroom over UNDERTOW_MAX_STEPS for the skin-refined steps (they spend less budget).
+#define UNDERTOW_SKIN_LOOP 2
 // Octave count at or below which cloud_noise() skips its detail octave.
 #define UNDERTOW_LIGHT_OCTAVES 2
 // Finite-difference step of the baked curl, in lattice cells.
@@ -101,6 +103,10 @@ uniform float dense_step : hint_range(0.1, 2.0) = 0.55;
 // Dense steps that share one curl warp (M1-RND-10, undertow.json quality "curl_reuse"): the warp
 // field varies over curl_scale_m (km), the dense steps are hundreds of metres apart. 1 = every step.
 uniform int curl_reuse : hint_range(1, 8) = 1;
+// Longest dense step inside the wall skin the rents glow in, as a fraction of wound_skin_m (M2-RND-01).
+// A skin a few hundred-metre steps deep holds 1-3 steps by the jitter's whim, and that variance is the
+// rents' stipple, which TAA averages but FSR2 keeps. 1 = no refinement.
+uniform float skin_step : hint_range(0.05, 1.0) = 1.0;
 
 group_uniforms cloud;
 uniform float noise_scale_m : hint_range(10.0, 20000.0) = 2300.0;
@@ -277,10 +283,11 @@ float cloud_noise(vec3 p, int octaves, bool fresh_warp, inout vec3 warp_a, inout
 		float db = undertow_noise(pb / detail_scale_m + UNDERTOW_DETAIL_OFFSET);
 		n = mix(n, mix(db, da, wa), detail_weight);
 	}
-	// The fringe: cloud that is there but not yet solid (density in (0, 1)). The billows reshape it and
-	// never grow cloud where the noise has eroded it all, so they cost nothing in empty steps.
+	// The fringe: cloud that is there but not yet solid (density in (0, 1)). The billows reshape its
+	// middle, 4 d0 (1 - d0): never the solid core, and never the outermost wisps, which carving would cut
+	// loose into floating islands (seen on undertow_horizon_dusk). Nothing to do in empty steps.
 	float d0 = billow_weight > 0.0 ? cloud_density(env, n) : 0.0;
-	float surface = d0 > 0.0 ? 1.0 - d0 : 0.0;
+	float surface = 4.0 * d0 * (1.0 - d0);
 	if (surface > 0.0) {
 		float ba = undertow_noise(pa / billow_scale_m + UNDERTOW_BILLOW_OFFSET);
 		float bb = undertow_noise(pb / billow_scale_m + UNDERTOW_BILLOW_OFFSET);
@@ -378,14 +385,24 @@ void fragment() {
 	vec3 warp_b = vec3(0.0);
 	// Dense steps since the warp was computed; an empty stride forces a fresh one.
 	int warp_age = curl_reuse;
-	for (int i = 0; i < UNDERTOW_MAX_STEPS; i++) {
-		if (i >= steps || T < UNDERTOW_MIN_TRANSMITTANCE || t > t1) {
+	// Step budget: a skin-refined step spends only its share of a full dense stride, so the refinement
+	// never ends a ray before it crosses the wall (it did: see-through holes on undertow_horizon_dusk).
+	float budget = 0.0;
+	float dense_ds = dense_step * dt;
+	for (int i = 0; i < UNDERTOW_MAX_STEPS * UNDERTOW_SKIN_LOOP; i++) {
+		if (budget >= float(steps) || T < UNDERTOW_MIN_TRANSMITTANCE || t > t1) {
 			break;
 		}
 		vec3 p = ro + rd * t;
 		vec3 parts = undertow_envelope_parts(p);
 		float env = max(max(parts.x, parts.y), parts.z);
 		float ds = (env < UNDERTOW_MIN_ENVELOPE ? empty_step : dense_step) * dt;
+		// Wounds open in the skins of the eyewall only (the canopy and bands carry no rents).
+		float skin = env < UNDERTOW_MIN_ENVELOPE ? 0.0 : undertow_wall_skin(p) * parts.x;
+		if (skin > 0.0) {
+			ds = min(ds, wound_skin_m * skin_step);
+		}
+		budget += skin > 0.0 ? min(ds / dense_ds, 1.0) : 1.0;
 		ds = min(ds, t1 - t + HYMN_EPSILON);
 		float t_here = t;
 		t += ds;
@@ -402,10 +419,8 @@ void fragment() {
 		if (d <= 0.0) {
 			continue;
 		}
-		// Wounds open in the skins of the eyewall only (the canopy and bands carry no rents).
 		float pocket = 0.0;
 		float seam = 0.0;
-		float skin = undertow_wall_skin(p) * parts.x;
 		if (skin > 0.0) {
 			seam = undertow_wound(p, pocket) * skin;
 			pocket *= skin;

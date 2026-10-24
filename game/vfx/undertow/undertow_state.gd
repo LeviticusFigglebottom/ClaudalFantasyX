@@ -133,6 +133,7 @@ const UNIFORM_MAP := {
 		"width": "wound_width",
 		"coverage": "wound_coverage",
 		"skin_m": "wound_skin_m",
+		"skin_step": "skin_step",
 		"height_min": "wound_height_min",
 		"height_max": "wound_height_max",
 		"presence_scale_m": "wound_presence_scale_m",
