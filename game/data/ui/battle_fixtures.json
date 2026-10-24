@@ -1,6 +1,6 @@
 {
  "battle_fixtures": {
-  "doc": "Frozen battle data for the HUD capture states (tests/screenshots/shots.json) and their tests (docs/kb/tech/ui.md § Capture fixtures). A copy of the sandbox rows as of 2026-10-23: rebalancing game/data/battle/*.json never moves a screenshot baseline. Each fixture may override rows (deep merge by id) and set opening state (hp, statuses, provoked_by) before the first turn. Edit only to change what a shot shows, then re-approve its baseline. M2-UI-05: tables.vowbound is a frozen copy of vowbound.json (Ilun's three skills are appended to tables.skills); a fixture's \"vowbound\" lists the Vowbound the party has bound, and only such a fixture gets the call (the others keep their root menus).",
+  "doc": "Frozen battle data for the HUD capture states (tests/screenshots/shots.json) and their tests (docs/kb/tech/ui.md § Capture fixtures). A copy of the sandbox rows as of 2026-10-23: rebalancing game/data/battle/*.json never moves a screenshot baseline. Each fixture may override rows (deep merge by id) and set opening state (hp, statuses, provoked_by) before the first turn. Edit only to change what a shot shows, then re-approve its baseline. M2-UI-05: tables.vowbound is a frozen copy of vowbound.json (Ilun's three skills are appended to tables.skills); a fixture's \"vowbound\" lists the Vowbound the party has bound, and only such a fixture gets the call (the others keep their root menus). M2-BPR-04: tables carry a frozen Drownbell (its Toll phase only: no Flood phase, polyps or Flood kit), its three skills and the fixture_drownbell encounter, for the toll's freeze-frame.",
   "tables": {
    "characters": [
     {
@@ -232,6 +232,68 @@
       }
      ],
      "xp": 30
+    },
+    {
+     "id": "drownbell",
+     "name_key": "ENEMY_DROWNBELL",
+     "role_answer": "rhen",
+     "lore_key": "LORE_DROWNBELL",
+     "phase_name_key": "PHASE_DROWNBELL_TOLL",
+     "field_name_key": "FIELD_DROWNBELL_FLOOD",
+     "stats": {
+      "level": 6,
+      "hp": 3000,
+      "mp": 0,
+      "strength": 18,
+      "magic": 14,
+      "defense": 30,
+      "magic_defense": 20,
+      "agility": 12,
+      "accuracy": 10,
+      "evasion": 4,
+      "luck": 8
+     },
+     "affinities": {
+      "water": "absorb",
+      "lightning": "weak"
+     },
+     "delay_immune": true,
+     "skills": [
+      "hood_slam",
+      "toll_gather",
+      "toll"
+     ],
+     "weak_point": {
+      "hits": 3,
+      "max_delay": 200,
+      "name_key": "PART_DROWNBELL_RIM"
+     },
+     "ai": [
+      {
+       "if": {
+        "turn_mod": [
+         3,
+         0
+        ]
+       },
+       "pick": [
+        {
+         "skill": "toll_gather",
+         "target": "self"
+        }
+       ]
+      },
+      {
+       "pick": [
+        {
+         "skill": "hood_slam",
+         "target": "random_foe"
+        }
+       ]
+      }
+     ],
+     "xp": 450,
+     "currency": 300
     }
    ],
    "skills": [
@@ -499,6 +561,46 @@
      "swell": true,
      "vowbound": true,
      "clears_field": "flood"
+    },
+    {
+     "id": "hood_slam",
+     "name_key": "SKILL_HOOD_SLAM",
+     "kind": "physical",
+     "power": 4,
+     "rank": 3,
+     "accuracy": 95,
+     "element": "none",
+     "target": "single_foe",
+     "mp_cost": 0,
+     "magic": false
+    },
+    {
+     "id": "toll_gather",
+     "name_key": "SKILL_TOLL_GATHER",
+     "kind": "support",
+     "power": 0,
+     "rank": 2,
+     "element": "none",
+     "target": "self",
+     "mp_cost": 0,
+     "magic": false,
+     "charge": {
+      "skill": "toll",
+      "turns": 2
+     }
+    },
+    {
+     "id": "toll",
+     "name_key": "SKILL_TOLL",
+     "kind": "physical",
+     "power": 8,
+     "rank": 3,
+     "accuracy": 100,
+     "element": "none",
+     "target": "all_foes",
+     "mp_cost": 0,
+     "magic": false,
+     "delay_ranks": 3
     }
    ],
    "statuses": [
@@ -680,6 +782,16 @@
       "reef_crab",
       "lantern_eel",
       "gull_harrier"
+     ]
+    },
+    {
+     "id": "fixture_drownbell",
+     "name_key": "ENC_DROWNBELL",
+     "scripted": true,
+     "opening": "normal",
+     "prompt_key": "TUT_DROWNBELL_TOLL",
+     "enemies": [
+      "drownbell"
      ]
     }
    ],
@@ -1180,6 +1292,50 @@
       }
      }
     }
+   },
+   "choreo_lamp_dive": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "opening": {
+     "rhen": {
+      "swell": 100
+     }
+    }
+   },
+   "choreo_toll": {
+    "active": [
+     "toma",
+     "asha",
+     "ysolde"
+    ],
+    "reserve": [
+     "rhen"
+    ],
+    "encounter": "fixture_drownbell",
+    "seed": 20261023
+   },
+   "choreo_vowbound_rise": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "vowbound": [
+     "ilun"
+    ]
    }
   }
  }

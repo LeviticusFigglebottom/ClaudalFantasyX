@@ -1,4 +1,4 @@
-"""Battle choreography data checks (M2-BPR-01/02/03): game/data/battle/choreo.json.
+"""Battle choreography data checks (M2-BPR-01/02/03/04): game/data/battle/choreo.json.
 
 validate_data.py calls choreo_errors(); tools/tests/test_choreo_validate.py tests it.
 Docs: docs/kb/tech/battle_presentation.md.
@@ -21,6 +21,14 @@ CAMERA_TIMES = ("blend_in_sec", "to_contact_sec", "hold_contact_sec", "blend_out
 CAMERA_PLACED = ("back_m", "side_m", "up_m")
 SAFE_SIDES = ("left", "right", "top", "bottom")
 FOV_RANGE = (10, 90)
+
+## M2-BPR-04 optional style shapes: name -> the least value allowed (None: any number).
+STYLE_EXTRAS = {"arc_m": 0, "windup_m": None, "trace_m": None, "stagger_sec": 0, "wave_m_s": 0, "react_scale": 0}
+## Accent fields (BattleChoreo.accent), every one a number; clip optional.
+ACCENT_NUMS = ("lift_m", "crouch_m", "recoil_m", "tilt_deg", "sway_deg", "sways")
+## Vowbound exits (BattleChoreo.leave) and entrances (BattleChoreo.enter): number fields.
+EXIT_NUMS = ("delay_sec", "sec", "back_m", "depth_m", "tilt_deg")
+ENTRY_NUMS = ("delay_sec", "sec", "back_m", "depth_m", "lean_deg")
 
 
 def _num(v: object) -> bool:
@@ -51,6 +59,86 @@ def _style_errors(sid: str, st: object) -> list[str]:
         errs.append(f"{w}.step_m: a 'step' style needs a number")
     if st.get("clip") not in CLIPS:
         errs.append(f"{w}.clip: '{st.get('clip')}' is not in the clip contract")
+    for k, least in STYLE_EXTRAS.items():
+        if k in st and (not _num(st[k]) or (least is not None and st[k] < least)):
+            errs.append(f"{w}.{k}: must be a number" + (f" >= {least}" if least is not None else ""))
+    if _num(st.get("arc_m")) and st["arc_m"] > 0 and not (_num(st.get("approach_sec")) and st["approach_sec"] > 0):
+        errs.append(f"{w}.arc_m: a leap needs an approach_sec > 0 to rise in")
+    if "windup_at" in st and (not _num(st["windup_at"]) or not 0 < st["windup_at"] < 1):
+        errs.append(f"{w}.windup_at: must be in (0, 1)")
+    strokes = st.get("trace_strokes", 1)
+    if not isinstance(strokes, int) or isinstance(strokes, bool) or strokes < 1:
+        errs.append(f"{w}.trace_strokes: must be a whole number >= 1 (the glyph ends on the contact)")
+    if "shot" in st and not (isinstance(st["shot"], str) and st["shot"]):
+        errs.append(f"{w}.shot: must be a non-empty camera framing name")
+    return errs
+
+
+def _accent_errors(where: str, a: object) -> list[str]:
+    if not isinstance(a, dict) or not _num(a.get("sec")) or a["sec"] <= 0:
+        return [f"{where}: an accent needs sec > 0"]
+    errs = [f"{where}.{k}: must be a number" for k in ACCENT_NUMS if k in a and not _num(a[k])]
+    if "clip" in a and a["clip"] not in CLIPS:
+        errs.append(f"{where}.clip: '{a['clip']}' is not in the clip contract")
+    return errs
+
+
+def _move_errors(where: str, m: object, nums: tuple[str, ...]) -> list[str]:
+    if not isinstance(m, dict):
+        return [f"{where}: must be an object"]
+    errs = [f"{where}.{k}: must be a number >= 0" for k in nums if k != "lean_deg" and k != "tilt_deg"
+            and (not _num(m.get(k)) or m[k] < 0)]
+    errs += [f"{where}.{k}: must be a number" for k in ("lean_deg", "tilt_deg") if k in nums and not _num(m.get(k))]
+    if _num(m.get("sec")) and m["sec"] <= 0:
+        errs.append(f"{where}.sec: must be > 0")
+    if m.get("clip") not in CLIPS:
+        errs.append(f"{where}.clip: must be a contract clip")
+    return errs
+
+
+def _boss_errors(bosses: object, skill_ids: set[str]) -> list[str]:
+    w = f"{CHOREO_FILE}: bosses"
+    if not isinstance(bosses, dict):
+        return [f"{w}: must be an object"]
+    errs: list[str] = []
+    for bid, b in bosses.items():
+        if bid == "doc":
+            continue
+        if not isinstance(b, dict):
+            errs.append(f"{w}.{bid}: must be an object")
+            continue
+        if b.get("charge_skill") not in skill_ids:
+            errs.append(f"{w}.{bid}.charge_skill: '{b.get('charge_skill')}' is not a skill")
+        for key in ("gather", "break"):
+            errs += _accent_errors(f"{w}.{bid}.{key}", b.get(key))
+        f = b.get("flood")
+        if f is not None:
+            if not isinstance(f, dict) or not isinstance(f.get("phase"), str):
+                errs.append(f"{w}.{bid}.flood: needs a phase id")
+            else:
+                if not _num(f.get("stagger_sec")) or f["stagger_sec"] < 0:
+                    errs.append(f"{w}.{bid}.flood.stagger_sec: must be a number >= 0")
+                errs += _accent_errors(f"{w}.{bid}.flood.accent", f.get("accent"))
+    return errs
+
+
+def _vowbound_errors(v: object) -> list[str]:
+    w = f"{CHOREO_FILE}: vowbound"
+    if not isinstance(v, dict):
+        return [f"{w}: must be an object"]
+    errs = _accent_errors(f"{w}.call", v.get("call"))
+    errs += _move_errors(f"{w}.step_off", v.get("step_off"), EXIT_NUMS)
+    so = v.get("step_off")
+    if isinstance(so, dict) and (not _num(so.get("stagger_sec")) or so["stagger_sec"] < 0):
+        errs.append(f"{w}.step_off.stagger_sec: must be a number >= 0")
+    errs += _move_errors(f"{w}.entry", v.get("entry"), ENTRY_NUMS)
+    for key in ("dismiss", "fall"):
+        errs += _move_errors(f"{w}.{key}", v.get(key), EXIT_NUMS)
+    r = v.get("return")
+    if not isinstance(r, dict) or not _num(r.get("share")) or not 0 <= r["share"] <= 1:
+        errs.append(f"{w}.return.share: must be in [0, 1]")
+    elif not _num(r.get("stagger_sec")) or r["stagger_sec"] < 0:
+        errs.append(f"{w}.return.stagger_sec: must be a number >= 0")
     return errs
 
 
@@ -156,6 +244,10 @@ def choreo_errors(doc: object, skills: object) -> list[str]:
             errs.append(f"{CHOREO_FILE}: {block} needs numbers >= 0 for {', '.join(keys)}")
         elif b.get("clip") not in CLIPS:
             errs.append(f"{CHOREO_FILE}: {block}.clip must be a contract clip")
+    if "bosses" in c:
+        errs += _boss_errors(c["bosses"], skill_ids)
+    if "vowbound" in c:
+        errs += _vowbound_errors(c["vowbound"])
     if not _num(c.get("settle_sec")) or c["settle_sec"] < 0:
         errs.append(f"{CHOREO_FILE}: settle_sec must be a number >= 0")
     rm = c.get("reduced_motion")

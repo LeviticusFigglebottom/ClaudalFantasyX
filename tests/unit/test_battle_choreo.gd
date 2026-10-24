@@ -86,7 +86,7 @@ func test_styles_follow_skill_kind_target_and_item() -> void:
 	assert_eq(choreo.plan_for(_result(&"mend", [_hit(&"asha", -12)]))["style"], "support", "heal")
 	assert_eq(choreo.plan_for(_result(&"brace", [_hit(&"rhen", 0)]))["style"], "guard", "self target")
 	assert_eq(choreo.plan_for(_result(&"read", [_hit(foe, 0)]))["style"], "read", "by skill")
-	assert_eq(choreo.plan_for(_result(&"lamp_dive", [_hit(foe, 30)]))["style"], "finisher", "a Swell finisher")
+	assert_eq(choreo.plan_for(_result(&"lamp_dive", [_hit(foe, 30)]))["style"], "dive", "a Swell finisher (M2-BPR-04)")
 	var item := _result(&"", [_hit(&"asha", -20)])
 	item.item_id = &"tonic"
 	assert_eq(choreo.plan_for(item)["style"], "item", "an item")
@@ -441,7 +441,7 @@ func test_a_creature_actor_strikes_with_its_own_clip_on_its_own_contact_frame() 
 	var plan := choreo.plan_for(_result(&"attack", [_hit(_foe(), 10)]))
 	var strike_end := float(plan["strike_end"])
 	var late := float(plan["approach_end"]) + 1.2
-	choreo._retime(plan, late)
+	choreo._move_contact(plan, late)
 	assert_eq(float(plan["contact"]), late, "the blow lands on the clip's frame")
 	assert_between(float(plan["strike_end"]), late - EPS, late + EPS, "later beats move with it")
 	assert_true(float(plan["total"]) > float(plan["return_end"]) - EPS and float(plan["strike_end"]) > strike_end)

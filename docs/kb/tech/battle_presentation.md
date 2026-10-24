@@ -73,7 +73,7 @@ hero actor scene, M2-UI-07, or a creature actor, M2-CRE-03). A creature actor pl
 | `item` | no | `item` strike | a short lunge |
 | `read` | no | `read` strike | a slight lean |
 | `defend` | no | `guard` strike (self-targeted skills) | crouch and lean |
-| `finisher` | no | `finisher`, `chant` strike (Swell techniques, Vowbound finishers) | a big lunge and rise |
+| `finisher` | no | `finisher`, `chant`, `dive`, `verse`, `brace`, `glyph` strike (Swell techniques, Vowbound finishers; M2-BPR-04) | each style's own shape (see Specials) |
 | `hit` | no | a damaging hit's target, on contact | recoil and tip back |
 | `dodge` | no | a missed target, on contact | sidestep |
 | `ko` | no (holds the last frame) | a felled target, `ko.delay_sec` after contact | drop and tip over, then the stand-in's sink and fade |
@@ -285,3 +285,100 @@ An encounter with a row in `battle_transition.json` `barks.rows` shows one line 
 and announces it on `EventBus.dialogue_event("battle_bark", [encounter, line_key, speaker_key])` for audio (a voice
 line or a stinger cue from claude/audio). `BattleRequest.submit` passes the encounter to `BattleStinger.play`.
 The table ships empty: the tideline's line is Narrative's (request M2-NAR-01).
+
+## Specials (M2-BPR-04)
+
+The Swell finishers, the Drownbell's set piece and the Vowbound. Everything stays a listen-only view of the
+engine, moves fighters' **roots only** (a hero actor's clip or a creature actor's phase pose composes under it),
+and lands at once at pacing 0 or with "skip animations".
+
+### Generic shape fields (choreo.json styles, all optional)
+
+| Field | What it does | Used by |
+|---|---|---|
+| `arc_m` | The approach rises in an arc to `arc_m` at its end (a leap; needs `approach_sec` > 0); the strike falls from that height onto the contact, faster and faster (the plunge). Root travel, so it plays under a clip too. Reduced motion scales it by `travel_scale`. | `dive` |
+| `windup_m`, `windup_at` | Before the contact the actor is pushed back `windup_m` (and crouched by `crouch_m`), deepest at `windup_at` of the way to the contact, and leans back; the lunge starts only once the windup has held. | `brace`, `toll` |
+| `trace_m`, `trace_strokes` | The actor sways `trace_m` side to side, `trace_strokes` strokes (a whole number), ending on the contact. | `glyph` |
+| `stagger_sec` | Reactions start in hit order, `stagger_sec` apart, from the contact (their clips too). A felled target collapses after its own reaction starts. | `verse`, `glyph` |
+| `wave_m_s` | Each target reacts when a wave from the actor's mark reaches it (flat distance / `wave_m_s`). | `toll` |
+| `react_scale` | Multiplies the damage recoil and tilt. | `toll` |
+| `shot` | A camera framing name for BattleCameraDirector (`"finisher"`, `"toll"`). The plan carries it as `plan.shot`; the sequencer itself never moves the camera. | every special |
+
+The damage numbers and float words still land on the contact for every target (pillar 4: the result is known at
+once; the motion is the read).
+
+### Swell finishers
+
+| Technique | Hero | Style | The read |
+|---|---|---|---|
+| Lamp Dive | Rhen | `dive` | A leap toward the target, rising 1.5 m, then a plunge; contact on the landing, a deep crouch and lean. |
+| Shallows Verse | Asha | `verse` | A long held chant (rise and lean back); each healed ally lifts in turn, 0.2 s apart. |
+| Return Tide | Toma | `brace` | Planted: he gives ground to the tide (back and down), then one counter thrust on the contact. |
+| Written Light | Ysolde | `glyph` | A glyph written in the air, five strokes side to side, finished on the contact; the light reaches each foe in turn. |
+
+All four play the contract's `finisher` clip on a model (no hero-specific clip is needed: the shapes above are
+the stand-in fallback). Their rows say `"shot": "finisher"`.
+
+### The Drownbell
+
+- **The toll** is an ordinary action with the `toll` style: the bell rears back (`windup_m`) and lurches down on
+  the toll; every party member recoils hard (`react_scale` 1.9) as the shockwave reaches it. `wave_m_s` (7.7) is
+  BattleBossVfx's ring speed, boss_vfx.json `toll` (`ring_radius_m` − 0.2) / `ring_s`; a Python test fails if the
+  two drift apart.
+- **BattleBossVfx hook (PC GPU's file, a minimal change):** `BattleBossVfx.attach` connects its action handler
+  to `BattleChoreo.contact` when the stage has a sequencer, else to `engine.action_resolved`, the same `if` as
+  `BattleVfx.attach`. So the toll's ring and flash, the rim-hit cracks and the polyp mend start on the contact
+  beat, and the ring passes the party as they recoil. At pacing 0 the contact is emitted with the action, as
+  before.
+- **BattleBossChoreo** (`game/battle/scene/battle_boss_choreo.gd`), built by `BattleChoreo.attached` when an
+  enemy has a row in choreo.json `bosses` (the controller is untouched). It listens to the engine's boss signals
+  and only lays **accents** (below):
+  - the gather (`charge_started` for `charge_skill`): the bell sways on the gathering action's contact, then
+    again at the start of each turn of the charge (not on the turn the toll fires);
+  - the rim break (`charge_broken`): the bell staggers back on the breaking blow's contact;
+  - the flood (`phase_changed` to `flood.phase`): once the action playing has finished, the party braces in slot
+    order (`stagger_sec` apart), a short crouch leaning into the water.
+  - `moments` records them (tests). A creature actor plays the bell's own phase clips; the accents only move its
+    root.
+- **Accents** (`BattleChoreo.accent(cid, spec, delay)`): a short overlay on a fighter's root, out and back over
+  `sec`: `lift_m`/`crouch_m`, `recoil_m` and `tilt_deg` back (away from the other side; negative leans in),
+  `sway_deg` side to side `sways` times, an optional contract `clip`. It composes with the fighter's own action,
+  reaction or entrance. A fallen fighter takes none.
+
+### The Vowbound (Ilun; ADR 0026/0027)
+
+The engine's call and departure have already happened when BattleVowboundHud re-seats the stage. BattleStage
+`sync_party` now hands each stand-in it takes off to `BattleChoreo.leave(cid, node)` (instead of freeing it) and
+each one it places to `BattleChoreo.enter(cid)`. **BattleVowboundChoreo** (`battle_vowbound_choreo.gd`, built by
+`BattleChoreo.attached`) answers what each plays, from choreo.json `vowbound`:
+
+| Moment | What plays |
+|---|---|
+| The call | The caller (the row's `caller`) makes its call: an accent with the `cast` clip, a rise and lean back. Then the party walks back off the field in slot order (`step_off`: from 0.5 s, 0.12 s apart, 2.8 m back) and is freed. A fallen member goes at once. |
+| Ilun's entry | After the party (`entry.delay_sec` 0.95, unseen until then), he rises 2.6 m out of the water at the Vowbound slot over 1.3 s, tipped forward and straightening. A swap's walk-in is 0.34 s. |
+| The dismissal | He sinks back over 0.9 s (a battle won while he is out too), after the action playing is done with him. The party walks back in (choreo `enter`) once half of his exit has played, 0.12 s apart. |
+| The fall | Struck down, he takes the blow (the reaction plays on his node), and at the blow's KO beat he tips back 38° and is drawn under over 1.5 s: not the collapse. The party returns as above. |
+
+A swap's leaver still goes at once. `hold_after` now also waits for any entrance, exit or accent in progress
+(`busy_sec`), so the turn after a call starts once Ilun is up.
+
+### Freeze-frame captures
+
+| Shot | Capture state | Frame |
+|---|---|---|
+| `battle_choreo_lamp_dive` | `choreo_lamp_dive` (CHOREO_FREEZES; a Swell technique is unleashed with a fixed perfect/good/perfect result) | Lamp Dive mid-plunge, 0.085 s before the contact. |
+| `battle_choreo_toll` | `choreo_toll` | The toll 0.75 s after its contact, the age of BattleBossVfx's ring when the shot is taken (settle 45 frames at 60 fps), so the recoils and the ring agree. Party Toma, Asha, Ysolde (nobody quick enough to break the rim). |
+| `battle_choreo_vowbound_rise` | `choreo_vowbound_rise` | Ilun half way up out of the water after Asha's call; the party has stepped off. |
+
+Fixtures in `battle_fixtures.json`; the tables now carry a frozen Drownbell (its Toll phase only) and its three
+skills, with encounter `fixture_drownbell`. Baselines are approved by the track lead after the camera merge.
+
+### Tests
+
+`tests/unit/test_battle_specials_choreo.gd`: each technique's own row and shape (the leap's top and the plunge,
+the Verse's staggered lifts, the glyph's strokes and staggered foes, the brace then the counter), the toll on its
+contact with the wave reaching each member in turn and BattleBossVfx's ring on the contact, BattleBossChoreo's
+moments with no combat state changed, the call (step-off, the caller's beat, Ilun's rise, the hand-off), the
+dismissal (the sink, the party walking back in slot order), the fall (the blow, then drawn under), instant at
+pacing 0, and the three capture states. `tools/tests/test_choreo_validate.py` covers the new fields and blocks
+(`tools/validate_choreo.py`).

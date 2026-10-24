@@ -26,10 +26,25 @@ const CHOREO_FREEZES := {
 	&"choreo_support": [&"asha", &"mend", &"rhen", &"contact", -0.05],
 	&"choreo_read": [&"ysolde", &"read", &"lantern_eel", &"contact", -0.05],
 	&"choreo_ko": [&"rhen", &"attack", &"gull_harrier", &"ko_at", 0.3],
+	# M2-BPR-04: Lamp Dive mid-plunge (half way from the leap's top to the contact); a Swell technique unleashes.
+	&"choreo_lamp_dive": [&"rhen", &"lamp_dive", &"gull_harrier", &"contact", -0.085],
 }
 const CHOREO_SWAP := &"choreo_swap"
 ## The walk-in is frozen at this share of its time.
 const SWAP_FREEZE_SHARE := 0.5
+## M2-BPR-04: the Drownbell's Toll, frozen this long after its contact: the age BattleBossVfx's shockwave ring
+## (started on the contact, in real time) has when the shot is taken (shots.json settle_frames 45 at 60 fps), so
+## the party's recoil and the ring agree.
+const CHOREO_TOLL := &"choreo_toll"
+const TOLL_BELL := &"drownbell"
+const TOLL_FREEZE_AFTER_CONTACT_SEC := 0.75
+## M2-BPR-04: Ilun rising at his slot after Asha's call, frozen at this share of the rise.
+const CHOREO_VOWBOUND_RISE := &"choreo_vowbound_rise"
+const RISE_FREEZE_SHARE := 0.5
+## A Swell technique in a freeze-frame skips its input with this result (Rhen's three-flare ring).
+const SWELL_FREEZE_GRADES: Array[StringName] = [
+	SwellInput.GRADE_PERFECT, SwellInput.GRADE_GOOD, SwellInput.GRADE_PERFECT
+]
 
 
 ## Plays `ctl`'s already-started fixture `sid` (a BattleController.SCRIPT_* id) to its state.
@@ -107,6 +122,18 @@ static func play(ctl: BattleController, sid: StringName) -> void:
 			ctl.swap_members(CALLER_ID, &"toma")
 			var sec := float((choreo.data.get("enter", {}) as Dictionary).get("sec", 0.0))
 			choreo.advance(sec * SWAP_FREEZE_SHARE / choreo.speed)
+		CHOREO_TOLL:
+			_freeze_toll(ctl)
+		CHOREO_VOWBOUND_RISE:
+			# Asha calls Ilun: the party has stepped off and Ilun is half way up out of the water at his slot.
+			_to_turn_of(ctl, CALLER_ID)
+			var choreo := _force_choreo(ctl)
+			ctl.vow.call_vowbound(VOWBOUND_ID)
+			var rise := choreo.entering(VOWBOUND_ID)
+			var spec := rise.get("spec", {}) as Dictionary
+			choreo.advance(
+				(-float(rise.get("t", 0.0)) + float(spec.get("sec", 0.0)) * RISE_FREEZE_SHARE) / choreo.speed
+			)
 		_:
 			if CHOREO_FREEZES.has(sid):
 				_freeze_action(ctl, CHOREO_FREEZES[sid] as Array)
@@ -133,8 +160,30 @@ static func _freeze_action(ctl: BattleController, spec: Array) -> void:
 	for c in ctl.engine.party_active + ctl.engine.enemies:
 		if String(c.id).get_slice("#", 0) == String(spec[2]) and c.is_alive():
 			target = c.id
-	ctl.act(skill, [target])
+	if ctl.swell.is_technique(ctl.engine.current, skill):
+		ctl.unleash(skill, [target], {BattleSwell.RESULT_GRADES: SWELL_FREEZE_GRADES})  # its input skipped
+	else:
+		ctl.act(skill, [target])
 	choreo.seek(float(choreo.current().get(String(spec[3]), 0.0)) + float(spec[4]))
+
+
+## The party (none of them quick enough to strike the rim) attacks until the Drownbell's Toll fires; the
+## choreography is forced on for that one action, frozen just after its contact.
+static func _freeze_toll(ctl: BattleController) -> void:
+	var engine := ctl.engine
+	var choreo := ctl.stage.choreo
+	var arm := func(actor: BattleCombatant) -> void:
+		if String(actor.id).get_slice("#", 0) == String(TOLL_BELL) and actor.is_charging() and actor.charge_left <= 1:
+			_force_choreo(ctl).frozen = true
+	engine.turn_started.connect(arm)
+	var guard := 0
+	while engine.outcome == &"" and not choreo.frozen and guard < CtbTimeline.PREVIEW_LENGTH:
+		guard += 1
+		if engine.is_party_turn():
+			ctl.act(BattleMenus.ATTACK_SKILL, [ctl.default_targets(BattleMenus.ATTACK_SKILL)[0].id])
+	engine.turn_started.disconnect(arm)
+	if choreo.playing():
+		choreo.seek(float(choreo.current()["contact"]) + TOLL_FREEZE_AFTER_CONTACT_SEC)
 
 
 ## Plays (party: Attack the first living foe) until it is `cid`'s turn.

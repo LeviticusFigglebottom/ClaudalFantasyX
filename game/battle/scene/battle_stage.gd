@@ -110,8 +110,12 @@ func sync_party(engine: BattleEngine) -> void:
 	var on_field := BattleIds.of(engine.party_active)
 	for cid: StringName in _fighters.keys():
 		if not _enemy_slot_of.has(cid) and not on_field.has(cid):
-			(_fighters[cid] as FighterStandIn).queue_free()
+			var f := _fighters[cid] as FighterStandIn
 			_fighters.erase(cid)
+			if choreo != null:
+				choreo.leave(cid, f)  # M2-BPR-04: a call's step-off or a Vowbound's exit plays out
+			else:
+				f.queue_free()
 	var out := engine.vowbound.is_out()
 	for i in engine.party_active.size():
 		var cid := engine.party_active[i].id
