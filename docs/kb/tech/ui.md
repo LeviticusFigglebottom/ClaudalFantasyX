@@ -432,6 +432,11 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
   - `press(action)` uses the KEYS or PAD binding;
   - for the mouse: `hover`, `click`, `right_click`, `wheel`, `drag`.
 - **Parity tests** (`tests/unit/test_input_parity_*.gd`) walk each screen with `InputDriver.KINDS`.
+- **Parity findings (title, Settings):**
+  - **Pad Confirm and Cancel existed only after boot.** UiInput now adds them.
+  - **The cursor snapped back after a wheel notch.** A page that rebuilds its rows under a still pointer got a fresh `mouse_entered`. MenuPage now takes a hover only when the pointer has moved (`_hover_at`).
+  - **A right click could not stop the Controls page listening.** The mouse Cancel carries `cancel_device` (`UiInput.is_mouse_cancel`), so listening stops on it while a plain `ui_cancel` action is still swallowed.
+  - **InputDriver uses viewport-local coordinates.** The headless window's stretch moved clicks onto the next row.
 
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 

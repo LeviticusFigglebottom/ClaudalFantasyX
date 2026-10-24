@@ -19,7 +19,7 @@ The human's ask: every screen fully usable with the keyboard, the mouse and a co
 - [x] `tests/input_driver.gd` (`InputDriver`): real key, pad and mouse events through the root viewport.
 - [ ] A parity test per screen, walked with all three devices, with what fails fixed:
   - [x] title and Settings hub;
-  - [ ] Settings pages (Graphics, Accessibility, Controls);
+  - [x] Settings pages (Accessibility, Controls; Graphics is the same SettingsPage);
   - [ ] field menu and its pages (Swell modes, Quit, Map, Bestiary; the Menus track's Items, Equip, Lattice, Status);
   - [ ] shop and inn;
   - [ ] save and load;

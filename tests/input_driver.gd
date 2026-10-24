@@ -68,7 +68,8 @@ static func has_binding(action: StringName, k: Kind) -> bool:
 	return event_for(action, k) != null
 
 
-## Pushes `ev` (as a press or a release) through the root viewport.
+## Pushes `ev` (as a press or a release) through the root viewport. Mouse events carry viewport
+## coordinates (point_of), so they go in as local.
 static func send(ev: InputEvent, down: bool) -> void:
 	var e := ev.duplicate() as InputEvent
 	if e is InputEventKey:
@@ -80,16 +81,16 @@ static func send(ev: InputEvent, down: bool) -> void:
 			(e as InputEventJoypadMotion).axis_value = 0.0
 	elif e is InputEventMouseButton:
 		(e as InputEventMouseButton).pressed = down
-	root().push_input(e)
+	root().push_input(e, e is InputEventMouse)
 
 
 # --- Mouse --------------------------------------------------------------------------------------
 
 
-## The centre of `c` in the root window's coordinates (what a real pointer would report).
+## The centre of `c` in its viewport's coordinates (mouse events are pushed in those, local to the
+## viewport, so the headless window's size and stretch never shift a click onto the next row).
 static func point_of(c: Control) -> Vector2:
-	var local := c.get_global_rect().get_center()
-	return c.get_viewport().get_final_transform() * c.get_canvas_transform() * local
+	return c.get_global_transform_with_canvas() * (c.size * 0.5)
 
 
 ## Moves the pointer onto `c` (hover).
@@ -97,7 +98,7 @@ static func hover(c: Control) -> void:
 	var m := InputEventMouseMotion.new()
 	m.position = point_of(c)
 	m.global_position = m.position
-	root().push_input(m)
+	root().push_input(m, true)
 
 
 ## Hovers then clicks `c` with `button` (left by default).
@@ -144,7 +145,7 @@ static func drag(c: Control, delta: Vector2) -> void:
 	m.global_position = m.position
 	m.relative = delta
 	m.button_mask = MOUSE_BUTTON_MASK_LEFT
-	root().push_input(m)
+	root().push_input(m, true)
 	var up := down.duplicate() as InputEventMouseButton
 	up.position = at + delta
 	up.global_position = up.position

@@ -51,10 +51,22 @@ func is_cancel_click(event: InputEvent) -> bool:
 	return mb != null and _cancel_buttons.has(int(mb.button_index)) and mb.pressed
 
 
-## Delivers a ui_cancel press and release to `vp` (the press first, so is_action_pressed sees it).
+## Delivers a ui_cancel press and release to `vp` (the press first, so is_action_pressed sees it),
+## marked with the data's `cancel_device`, so a screen can tell a mouse Cancel from a plain one.
 static func send_cancel(vp: Viewport) -> void:
 	for down in [true, false]:
 		var a := InputEventAction.new()
 		a.action = &"ui_cancel"
 		a.pressed = down
+		a.device = mouse_cancel_device()
 		vp.push_input(a)
+
+
+## The device id a mouse Cancel carries (ui_input.json cancel_device).
+static func mouse_cancel_device() -> int:
+	return int(load_data().get("cancel_device", 0))
+
+
+## True when `event` is the ui_cancel a right click or the mouse's back button made.
+static func is_mouse_cancel(event: InputEvent) -> bool:
+	return event is InputEventAction and event.device == mouse_cancel_device() and event.is_action(&"ui_cancel")

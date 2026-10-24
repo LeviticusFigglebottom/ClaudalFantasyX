@@ -27,6 +27,8 @@ var _cursor_tween: Tween
 var _header_h := 0.0
 var _rule: OrnamentRule
 var _nudge_tweens: Dictionary = {}
+## Where the pointer was at the last hover the page took (INF: none yet).
+var _hover_at := Vector2.INF
 
 
 ## Height a page needs for `row_count` rows (header, rows, and a half-row of breathing room).
@@ -275,6 +277,12 @@ func _c(role: StringName) -> Color:
 
 
 func _on_row_mouse(index: int) -> void:
+	# Only a pointer that moved takes the cursor: a page that rebuilds its rows under a still
+	# pointer (a wheel notch, a key press) would otherwise snap the cursor back to it (M2-UI-26).
+	var at := get_viewport().get_mouse_position()
+	if at.is_equal_approx(_hover_at):
+		return
+	_hover_at = at
 	if index != cursor and bool(rows[index].get("enabled", true)):
 		set_cursor(index)
 		row_hovered.emit(index)
@@ -288,10 +296,10 @@ func _on_row_input(event: InputEvent, index: int) -> void:
 		row_clicked.emit(index)
 	elif mb.button_index == MOUSE_BUTTON_WHEEL_UP or mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 		# The wheel steps the cursor (M2-UI-26) and reports it like a hover, so every screen that
-		# follows hover follows the wheel too.
+		# follows hover follows the wheel too. Accepted first: the screen may rebuild the rows.
+		accept_event()
 		if move(-1 if mb.button_index == MOUSE_BUTTON_WHEEL_UP else 1):
 			row_hovered.emit(cursor)
-		accept_event()
 
 
 ## The row under the cursor shifts its text right by cursor_nudge_px; the others sit at rest. It
