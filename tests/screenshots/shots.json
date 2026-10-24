@@ -1162,6 +1162,54 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "pemakar_p01_waterfall_of_fires",
+      "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+      "camera": "Cameras/P01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "night"
+          }
+        }
+      }
+    },
+    {
+      "id": "pemakar_p03_among_the_graves",
+      "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+      "camera": "Cameras/P03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "dusk"
+          }
+        }
+      }
     }
   ]
 }

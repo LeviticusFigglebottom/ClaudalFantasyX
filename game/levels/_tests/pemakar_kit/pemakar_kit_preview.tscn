@@ -11,9 +11,9 @@
 [sub_resource type="Resource" id="ShotP01"]
 script = ExtResource("7_shot")
 id = &"PEMAKAR_P01"
-position = Vector3(4, 62, -110)
-look_at = Vector3(-15, 21.3, -20.6)
-fov_deg = 46.4
+position = Vector3(-20, 4, 130)
+look_at = Vector3(0, 68.6, -150)
+fov_deg = 37.8
 
 [sub_resource type="Resource" id="ShotP02"]
 script = ExtResource("7_shot")
@@ -53,8 +53,8 @@ fov_deg = 46.4
 [sub_resource type="Resource" id="ShotP08"]
 script = ExtResource("7_shot")
 id = &"PEMAKAR_P08"
-position = Vector3(14.39, 11.6, -9.52)
-look_at = Vector3(16.17, 11.3, -14.86)
+position = Vector3(10.0, 11.8, -8.85)
+look_at = Vector3(14.5, 11.6, -14.7)
 fov_deg = 27.0
 
 [node name="PemakarKitPreview" type="Node3D" node_paths=PackedStringArray("world_environment", "water", "lights_root")]

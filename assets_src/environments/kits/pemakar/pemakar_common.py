@@ -139,6 +139,15 @@ def remap_slots(mb: kc.MeshBuilder, mapping: dict[str, str] | None = None) -> kc
     return mb
 
 
+def prune_slots(mb: kc.MeshBuilder) -> kc.MeshBuilder:
+    """Drops material slots no triangle uses (a merged Haluna builder can bring one along), in place."""
+    used = sorted(set(mb.tri_mat))
+    remap = {old: new for new, old in enumerate(used)}
+    mb.materials = [mb.materials[i] for i in used]
+    mb.tri_mat = [remap[m] for m in mb.tri_mat]
+    return mb
+
+
 def batter_z(y: float) -> float:
     """Front face of a retaining wall at height y (0 at the coping top, -WALL_H_M at the foot)."""
     return -y * np.tan(np.radians(BATTER_DEG))

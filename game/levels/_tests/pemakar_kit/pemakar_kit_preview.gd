@@ -41,6 +41,7 @@ var placed: Dictionary = {}  ## piece name -> count
 var lamps: Array[OmniLight3D] = []
 var boats: MultiMeshInstance3D
 var far_lights: MultiMeshInstance3D
+var sea_lights: MultiMeshInstance3D
 
 var _scene_cache: Dictionary = {}
 var _material_cache: Dictionary = {}
@@ -81,9 +82,12 @@ func dress() -> void:
 		var lamp := make_lamp(spec)
 		lamp_root.add_child(lamp)
 		lamps.append(lamp)
-	far_lights = make_far_lights(layout.get("far_lights", {}))
+	far_lights = make_far_lights(layout.get("far_lights", {}), "FarLights")
 	if far_lights != null:
 		add_child(far_lights)
+	sea_lights = make_far_lights(layout.get("sea_lights", {}), "SeaLights")
+	if sea_lights != null:
+		add_child(sea_lights)
 	for spec: Dictionary in layout.get("plants", []):
 		_place_plant(spec)
 	dressed.emit()
@@ -162,8 +166,9 @@ func make_lamp(spec: Dictionary) -> OmniLight3D:
 	return lamp
 
 
-## The distant festival lights: one MultiMesh of camera-facing quads, larger with distance.
-func make_far_lights(spec: Dictionary) -> MultiMeshInstance3D:
+## Lights too small to model at their range (the distant festival lights on the massif, the boats that
+## reached the sea): one MultiMesh of camera-facing quads, larger with distance from the town's foot.
+func make_far_lights(spec: Dictionary, node_name: String = "FarLights") -> MultiMeshInstance3D:
 	var points: Array = spec.get("points", [])
 	if points.is_empty():
 		return null
@@ -186,7 +191,7 @@ func make_far_lights(spec: Dictionary) -> MultiMeshInstance3D:
 		var s := lerpf(float(sizes[0]), float(sizes[1]), k)
 		mm.set_instance_transform(i, Transform3D(Basis().scaled(Vector3.ONE * s), pos))
 	var mmi := MultiMeshInstance3D.new()
-	mmi.name = "FarLights"
+	mmi.name = node_name
 	mmi.multimesh = mm
 	mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mmi
@@ -220,6 +225,9 @@ func apply_mood() -> void:
 	if far_lights != null:
 		var mat := (far_lights.multimesh.mesh as QuadMesh).material as ShaderMaterial
 		mat.set_shader_parameter(&"energy", float(m.get("far_lights_energy", 1.0)))
+	if sea_lights != null:
+		var sea_mat := (sea_lights.multimesh.mesh as QuadMesh).material as ShaderMaterial
+		sea_mat.set_shader_parameter(&"energy", float(m.get("sea_lights_energy", 1.0)))
 	var sun: Dictionary = m.get("sun", {})
 	ShaderGlobals.set_value(
 		GLOBAL_SUN, direction_from_angles(float(sun.get("elevation_deg", 45.0)), float(sun.get("azimuth_deg", 180.0)))

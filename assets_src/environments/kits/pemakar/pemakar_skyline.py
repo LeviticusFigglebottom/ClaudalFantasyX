@@ -57,7 +57,10 @@ def massif_height(x: np.ndarray, z: np.ndarray, noise: kc.Noise3) -> np.ndarray:
     # Only the town's south arc: the tier rings are circles about TOWN_CENTRE, and without the z test
     # their far (north) side cut a trench across the face behind the town.
     inside = (np.abs(x) < 62.0) & (t >= 0.0) & (t < pc.TOWN_TIERS) & (z > pc.TOWN_CENTRE[1])
-    h_town = h_town - 0.7 * inside
+    # Under the kit's own treads (|x| <= 44 m plus a module) the massif drops a full tier: its mesh is
+    # far coarser than a tier, and 0.7 m down it still bulged through the treads in front of each wall.
+    under_kit = inside & (np.abs(x) < 47.0)
+    h_town = h_town - 0.7 * inside - 2.6 * under_kit
     w = (1.0 - kc.smoothstep(55.0, 150.0, np.abs(x))) * kc.smoothstep(-135.0, -95.0, z) * (t < 13.0)
     w = np.where(inside, 1.0, w)
     h = h + (h_town - h) * w
@@ -144,7 +147,7 @@ def ashcrown(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
         yy += min(w, d) * 0.5 * math.tan(math.radians(32.0)) * 0.6
     spire = np.array([[0.0, yy - 1.0, -tiers * 1.2], [0.0, yy + 6.0, -tiers * 1.2], [0.0, yy + 14.0, -tiers * 1.2]])
     kc.tube(mb, spire, np.array([0.6, 0.25, 0.04]), 6 if lod else 10, mb.material(pc.M_COPPER), cap_end=True)
-    return mb
+    return pc.prune_slots(mb)  # the hip roof's timber slot is unused at silhouette detail
 
 
 # ---------------------------------------------------------------------------------------------

@@ -9,8 +9,8 @@ shader_parameter/col_horizon = Color(0.2275, 0.1647, 0.2275, 1)
 shader_parameter/sky_energy = 0.55
 shader_parameter/glow_energy = 0.0
 shader_parameter/haze_energy = 0.35
-shader_parameter/star_density = 0.08
-shader_parameter/star_energy = 1.4
+shader_parameter/star_density = 0.045
+shader_parameter/star_energy = 1.0
 
 [sub_resource type="Sky" id="Sky"]
 sky_material = SubResource("SkyMat")

@@ -38,6 +38,7 @@ X_HALF_M = 44.0  # each tier spans x in [-X_HALF_M, X_HALF_M]
 CHANNEL_END_MARGIN_M = 3.0  # channels stop this far inside a tier's end
 STAIR_CLEAR_M = 3.4  # nothing but the stair, gate and lamps within this of x = 0
 COPPER_X_M = 14.0  # the Lit Age vein runs down the tiers here
+OUTCROP_X_M = 18.0  # the copper outcrop on tier 1, east of the vein's wall
 GAP_X_M = 1.70  # inlet gap centre from the inlet module's centre (pemakar_terraces.channel)
 SPILL_X_M = pc.CHANNEL_IN_M * 0.5  # cross channel centre in the spill's frame
 LAMP = "#FFA757"  # ch05 lamp key (color script)
@@ -46,8 +47,23 @@ CHANNEL_LIGHT_STEP_M = 4.5
 GRAVE_ROWS_Z = (-3.3, -5.1)
 GRAVE_STEP_M = (1.5, 2.6)
 GRAVE_LIGHT_EVERY = 3
+GRAVE_YAW_SD = 0.35  # radians of yaw scatter about facing downhill
 TREE_STEP_M = 11.0
-FAR_LIGHT_LEVELS = (40.0, 262.0, 9.6)  # massif band contours that carry far lights: from, to, step (m)
+FAR_LIGHT_LEVELS = (22.0, 250.0, 8.4)  # massif band contours that carry far lights: from, to, step (m)
+FAR_THIN_TOP = 0.8  # fraction of far lights dropped on the highest band (fewer toward the crest)
+FAR_SIZE_M = [0.8, 1.8]  # far-light radius near the town and at the crown's distance
+PILGRIM_STEP_M = 7.0  # lamp spacing (along z) of the pilgrims' stair up the face
+PILGRIM_WANDER_M = 9.0  # how far the stair wanders east and west of the town's axis
+PILGRIM_LIFT_M = 2.2  # above massif_height: the massif mesh is coarser than its height function
+FAR_CENTRE_BIAS = 0.1  # the band gate opens this much more on the face above the town
+SEA_ROAD_Z_M = 18.0  # the sea road along the shore below the town (massif_height about 3 m)
+SEA_ROAD_HALF_M = 150.0
+SEA_ROAD_STEP_M = 5.0
+SEA_LIGHT_COUNT = 200
+SEA_SHORE_Z_M = 29.0  # where the sea meets the massif's foot below the town (massif_height = 0)
+SEA_DRIFT_M = 120.0  # how far out the drift reaches
+SEA_LIGHT_Y_M = 0.35  # just above the swell crests (lagoon_waves, about 0.3 m)
+SEA_LIGHT_SIZE_M = [0.35, 0.35]
 
 
 def anchor(t: int, theta: float, local=(0.0, 0.0, 0.0)) -> np.ndarray:
@@ -175,7 +191,9 @@ def build(seed: int = SEED) -> dict:
             q = basin + np.array([rng.uniform(-0.25, 0.25), 0.0, 0.0]) + np.array([0.0, 0.0, rng.uniform(-0.1, 0.1)])
             boats.append([round(float(q[0]), 3), round(float(q[1]), 3), round(float(q[2]), 3),
                           round(float(rng.uniform(0, math.pi)), 3)])
-        lights.append(light(basin + [0, 0.35, 0], 0.7, 3.2))
+        lights.append(light(basin + [0, 0.35, 0], 1.3, 4.5))
+        # The boats tipping over the spout light the lip and the top of the falling sheet.
+        lights.append(light(spill_frame(sx, 0.35, 0.25), 0.8, 3.0))
         lip = spill_frame(sx, pc.CHANNEL_WATER_M + 0.004, 0.3)
         boats.append([round(float(lip[0]), 3), round(float(lip[1]), 3), round(float(lip[2]), 3), round(-end, 3)])
         z0, z1 = pc.SPILL_BASIN_Z_M + 0.6, pc.TREAD_D_M - pc.CHANNEL_Z_M - 0.4
@@ -212,7 +230,8 @@ def build(seed: int = SEED) -> dict:
                         jitter = (float(rng.uniform(-0.15, 0.15)), 0.0, z + float(rng.uniform(-0.25, 0.25)))
                         pos = anchor(t, a, jitter)
                         pos[1] += tread_rise(jitter[2])
-                        yaw = a + float(rng.normal(0.0, 0.08))
+                        # Old plots, set by many hands: most face the sea, some turn toward the path.
+                        yaw = a + float(rng.normal(0.0, GRAVE_YAW_SD))
                         pieces.append(piece(name, pos, yaw))
                         if name != "grave_curb" and n % GRAVE_LIGHT_EVERY == row % GRAVE_LIGHT_EVERY:
                             lights.append(light(anchor(t, a, (jitter[0], 1.05 + pos[1] - pc.tier_tread_y(t), z + 0.45)),
@@ -243,6 +262,8 @@ def build(seed: int = SEED) -> dict:
                     smithy_done = True
                     pieces.append(piece(name, anchor(t, a, (0.0, tread_rise(z + 2.5), z)), a))
                     lights.append(light(anchor(t, a, (-1.4, 1.2, z - 0.8)), 2.2, 6.0, color="#E0702E", shadow=True))
+                    # The forge's spill on the anvil and the ingots (the side scene's pool of light).
+                    lights.append(light(anchor(t, a, (0.3, 1.6, z + 0.4)), 0.9, 3.5, color="#E0702E"))
                 else:
                     name = "house_pemakar_a" if k % 2 == 0 else "house_pemakar_b"
                     z, half_w = (-4.3, 2.6) if name == "house_pemakar_a" else (-4.55, 2.1)
@@ -255,8 +276,14 @@ def build(seed: int = SEED) -> dict:
                     k += 1
                 a += (2.0 * half_w + float(rng.uniform(2.5, 5.0))) / r
         if t == 1:
-            a = math.asin((COPPER_X_M + 1.5) / r)
+            # The outcrop beside the vein's wall (not in front of it), and one lamp pillar lighting the vein.
+            a = math.asin(OUTCROP_X_M / r)
             pieces.append(piece("copper_outcrop", anchor(t, a, (0.0, 0.05, -5.6)), a + 0.2))
+            a = math.asin((COPPER_X_M - 2.3) / r)
+            lamp = anchor(t, a, (0.0, 0.0, -5.4))
+            lamp[1] += tread_rise(-5.4)
+            pieces.append(piece("lamp_pillar", lamp, a))
+            lights.append(light(lamp + [0, 1.35, 0], 1.6, 6.5))
 
     # --- skyline and far lights -------------------------------------------------------------------
     pieces.append(piece("mountain_massif", np.zeros(3), 0.0))
@@ -266,6 +293,8 @@ def build(seed: int = SEED) -> dict:
     vent_y = float(sky.massif_height(np.array([pc.CROWN[0]]), np.array([pc.CROWN[1]]), vent_noise)[0])
     pieces.append(piece("ash_plume", np.array([pc.CROWN[0], vent_y - 10.0, pc.CROWN[1]]), 0.0))
     far = far_lights(rng)
+    bottom = next(c for c in channels if c["tier"] == 0)
+    sea = sea_lights(rng, radius(0) * math.sin(math.radians(bottom["to_deg"])) + pc.TOWN_CENTRE[0])
     return {
         "schema": "hymn-zone-layout/1",
         "zone": "ch05/pemakar kit preview (M3-ENV-03)",
@@ -283,6 +312,7 @@ def build(seed: int = SEED) -> dict:
         "boats": {"piece": "leaf_boat_lit", "transforms": boats},
         "lights": lights,
         "far_lights": far,
+        "sea_lights": sea,
         "plants": plants,
         "plant_kinds": {
             name: {"glb": f"res://assets/environments/vegetation/{name}.glb",
@@ -303,7 +333,8 @@ def far_lights(rng: np.random.Generator) -> dict:
     for level in np.arange(lo, hi, stepm):
         gate = noise.fbm(np.stack([np.cos(angles) * 9.0, np.full(angles.shape, level / 20.0), np.sin(angles) * 9.0],
                                   axis=-1), 2)
-        a = angles[gate >= 0.5]
+        # Busier on the face above the town (the boats are launched from there), sparse round the flanks.
+        a = angles[gate >= 0.5 - FAR_CENTRE_BIAS * np.exp(-((angles / 0.3) ** 2))]
         # Bisect along each radial line from the crown for where the massif reaches this band.
         r0 = np.full(a.shape, pc.CALDERA_R_M + 30.0)
         r1 = np.full(a.shape, pc.CROWN_FOOT_R_M)
@@ -316,10 +347,43 @@ def far_lights(rng: np.random.Generator) -> dict:
         x = pc.CROWN[0] + r1 * np.sin(a)
         z = pc.CROWN[1] + r1 * np.cos(a)
         h = sky.massif_height(x, z, noise)
-        keep = ~((np.abs(x) < 70.0) & (z > -110.0))  # not in the town itself
+        # Not in the town itself; and thinner toward the crest (fewer households climb that high, and the
+        # top bands otherwise read as one bright rim along the skyline).
+        frac = (level - lo) / (hi - lo)
+        keep = ~((np.abs(x) < 70.0) & (z > -110.0)) & (rng.random(a.shape) < 1.0 - FAR_THIN_TOP * frac ** 1.3)
         for xi, hi_, zi in zip(x[keep], h[keep], z[keep]):
             pts.append([round(float(xi), 2), round(float(hi_) + 0.4, 2), round(float(zi), 2)])
-    return {"color": LAMP, "energy": 3.0, "size_m": [0.9, 2.6], "points": pts}
+    # The pilgrims' stair: one thread of lamps straight up the face from the town to Ashcrown on the rim
+    # (the main stair continued), the line that ties the town to the temple in the wide shots.
+    rim = np.array(sky.massif_rim_point())
+    zs = np.arange(-112.0, rim[2] + 6.0, -PILGRIM_STEP_M)
+    xs = PILGRIM_WANDER_M * np.sin(zs / 47.0) * np.clip((-zs - 112.0) / 60.0, 0.0, 1.0)
+    hs = sky.massif_height(xs, zs, noise)
+    for xi, hi_, zi in zip(xs, hs, zs):
+        if rng.random() < 0.85:  # a few lamps out
+            pts.append([round(float(xi), 2), round(float(hi_) + PILGRIM_LIFT_M, 2), round(float(zi), 2)])
+    # The sea road's lamps: a line along the shore below the town, where the boats come down to the sea.
+    for x0 in np.arange(-SEA_ROAD_HALF_M, SEA_ROAD_HALF_M, SEA_ROAD_STEP_M):
+        if rng.random() < 0.7:
+            x = x0 + float(rng.uniform(-0.4, 0.4)) * SEA_ROAD_STEP_M  # house lamps, not a row of posts
+            z = SEA_ROAD_Z_M + float(rng.normal(0.0, 1.2))
+            y = float(sky.massif_height(np.array([x]), np.array([z]), noise)[0])
+            pts.append([round(float(x), 2), round(y + 1.6, 2), round(z, 2)])
+    return {"color": LAMP, "energy": 3.0, "size_m": FAR_SIZE_M, "points": pts}
+
+
+def sea_lights(rng: np.random.Generator, outflow_x: float) -> dict:
+    """The boats that reached the sea: a widening drift of small flames on the water, out from the shore
+    below the bottom tier's spill and turning east on the current (color script ch05: the sea-glow at
+    the bottom receives them). Billboard lights like the far lights, just above the swell."""
+    pts: list[list[float]] = []
+    d = rng.uniform(0.0, 1.0, SEA_LIGHT_COUNT) ** 1.6 * SEA_DRIFT_M  # thick near the shore, thinning out
+    lateral = rng.normal(0.0, 1.0, SEA_LIGHT_COUNT) * (1.5 + 0.17 * d)
+    for di, li in zip(d, lateral):
+        x = outflow_x + 0.3 * di + 0.003 * di * di + li
+        z = SEA_SHORE_Z_M + di
+        pts.append([round(float(x), 2), SEA_LIGHT_Y_M, round(float(z), 2)])
+    return {"color": LAMP, "energy": 2.2, "size_m": SEA_LIGHT_SIZE_M, "points": pts}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -331,7 +395,8 @@ def main(argv: list[str] | None = None) -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, indent=1, sort_keys=False) + "\n", encoding="utf-8")
     print(f"PEMAKAR_LAYOUT {len(data['pieces'])} pieces, {len(data['boats']['transforms'])} boats, "
-          f"{len(data['lights'])} lights, {len(data['far_lights']['points'])} far lights, {len(data['plants'])} plants")
+          f"{len(data['lights'])} lights, {len(data['far_lights']['points'])} far lights, "
+          f"{len(data['sea_lights']['points'])} sea lights, {len(data['plants'])} plants")
     return 0
 
 
