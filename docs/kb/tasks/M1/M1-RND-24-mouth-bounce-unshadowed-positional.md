@@ -2,8 +2,8 @@
 id: M1-RND-24
 title: Mouth cavity bounce is shadowed by positional lights (unshadow it; enforce the family for every hero)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a7c54615acb434f4e"
 reviewer: character
 depends_on: [M1-RND-21]
 milestone: M1
