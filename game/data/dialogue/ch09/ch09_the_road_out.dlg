@@ -1,0 +1,93 @@
+// Ch9 B09-B11: the road out, the act break at the Iskarra vigil and the act card (docs/kb/story/beats/
+// act1_ch09.md §2 B09-B11). ONE scene with a node per beat, because the cut from D03's walking line to
+// P02 is HARD, with no fade (§7): a separate scene would hand the camera back to the field between.
+// B09 "The road out" (E, 2.5 min, ~70 words). D01 (35 mm, `ch09_dawn` grade, the last warm light of
+// Act I): 05:50, the coast road out of Corrow's landward gate, the broken wall behind. Kerrid is
+// waiting at the milestone, standing (he never sits), his straw cape still dark with seawater.
+// D02 (85 mm): Kerrid single, looking SOUTH, OUT TO SEA, past the broken wall to the water. Asha is
+// behind the camera, OFF FRAME, and never in his eyeline in this beat (rule 3; sweep-G S3). "Below" is
+// the sea: Imra under the storm and the held dead. It NEVER means Asha. Rhen doesn't understand it, and
+// for once doesn't joke. D02B: Pell has stopped beside them; his crest lifts a little; Kerrid meets his
+// eye; neither says anything. One held two-shot, no music change (the only frame in Act I that holds the
+// party's two outsiders together; not a reveal). Then Pell answers last night's question, unprompted
+// (his tell), and Rhen sees the name-shell at his throat is scraped blank (no answer: Ch10).
+// D03 (50 mm, a high wide from a rise): the line forms. Toma first, Pell behind him as he was told,
+// then Asha, Ysolde, Liss and Rhen, and KERRID LAST, as on a stair, without anyone telling him to. He
+// walks behind the whole line, never at Asha's side.
+title: ch09_the_road_out
+location: ch09/corrow_night
+---
+@letterbox on
+@camera D01
+@music dawn_road fade=2.0
+@mark rhen road_rhen walk
+@wait 2.5
+Rhen [neutral]: Thought Corrow was where you were going. #line:ch09_road_001
+Kerrid [neutral]: It was. #line:ch09_road_002
+Rhen [neutral]: So? #line:ch09_road_003
+@wait 1.5
+@camera D02
+@anim kerrid look_at sea_south
+@wait 2.0
+Kerrid [neutral]: Somebody's still below. #line:ch09_road_004 #tn:"'Below' is the sea and those still under it. It never refers to Asha, who is not in his eyeline."
+@wait 3.0
+@mark pell road_pell_stop walk
+@wait 2.0
+@camera D02B
+@anim pell look_at kerrid
+@anim kerrid look_at pell
+@wait 4.0
+@camera D01
+@anim pell look_at rhen
+Pell [neutral]: Pell. #line:ch09_road_005
+Rhen [surprised]: ...Rhen. #line:ch09_road_006
+Pell [neutral]: I know. You-people say names very often. #line:ch09_road_007
+@wait 1.0
+@anim rhen look_at pell
+Rhen [neutral]: Your shell's blank. #line:ch09_road_008
+@wait 2.5
+<<set $ch09_pell_named = true>>
+@camera D03
+@mark toma line_1 walk
+@mark pell line_2 walk
+@mark asha line_3 walk
+@mark ysolde line_4 walk
+@mark liss line_5 walk
+@mark rhen line_6 walk
+@mark kerrid line_7 walk
+@wait 6.0
+<<set $ch09_kerrid_on_road = true>>
+<<jump ch09_the_vigil>>
+===
+// B10 "Act break: the Iskarra vigil" (C, 1 min). The Prologue frame recurs. A hard cut from D03 to
+// P02: the Prologue's broken plaza at Iskarra at dusk, the same seven keeping their separate vigils
+// apart (Kerrid standing, Pell with his back to the sea, Ysolde with her book shut, Asha on the steps),
+// and Rhen sitting beside Asha. The dusk is a little deeper than P01's, and his lantern's flame is a
+// little lower on its BURNER (never "wick": that word is Mother Kell's alone). NO FIRE, NO CIRCLE
+// (rule 4; ADR 0017 (e)): the lantern is the only flame. P03: a slow push toward Pell, whose back is to
+// the sea; nobody explains it. Rhen's VO, older, plain fact, not foreboding (ADR 0022 (k)): the sheet's
+// recommended line (Narrative's first choice). Fade on the burner's flame.
+title: ch09_the_vigil
+---
+@camera P02
+@music hush_first_verse fade=1.0
+@wait 3.0
+@camera P03 blend=8.0 ease=in_out_sine
+Narrator(rhen) [tender]: Seven of us walked out of Corrow that morning. I didn't count us then. I count us every night now. #line:ch09_vigil_001 #vo
+@wait 3.0
+@camera P04
+@wait 1.5
+@fade out 3.0
+@music silence fade=2.0
+<<set $ch09_act_one_complete = true>>
+<<jump ch09_act_card>>
+===
+// B11 "Act card" (C, 0.2 min). Black, "Act II: The Truth". A caption on black stands in for UI's act
+// card widget (act1_ch09.md §9 UI 2; M3-C09-05). Then Ch10 opens; Ch10 isn't in M3, so the chapter
+// flow hands off to the end card.
+title: ch09_act_card
+---
+@wait 1.5
+Act II\: The Truth #line:ch09_act_card_001 #tn:"The act card between Act I and Act II. Title case, as a chapter heading."
+@wait 2.0
+===

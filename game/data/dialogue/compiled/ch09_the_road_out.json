@@ -1,0 +1,79 @@
+{
+ "format": 1,
+ "scene": "ch09_the_road_out",
+ "source": "game/data/dialogue/ch09/ch09_the_road_out.dlg",
+ "start": "ch09_the_road_out",
+ "nodes": {
+  "ch09_the_road_out": {
+   "headers": {"location": "ch09/corrow_night"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "camera", "args": ["D01"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "music", "args": ["dawn_road"], "kwargs": {"fade": 2.0}, "src": 22},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "road_rhen", "walk"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 24},
+    {"op": "line", "id": "ch09_road_001", "key": "DLG_CH09_ROAD_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 25},
+    {"op": "line", "id": "ch09_road_002", "key": "DLG_CH09_ROAD_002", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 26},
+    {"op": "line", "id": "ch09_road_003", "key": "DLG_CH09_ROAD_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 27},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "camera", "args": ["D02"], "kwargs": {}, "src": 29},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "look_at", "sea_south"], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 31},
+    {"op": "line", "id": "ch09_road_004", "key": "DLG_CH09_ROAD_004", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 32},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 33},
+    {"op": "cue", "cue": "mark", "args": ["pell", "road_pell_stop", "walk"], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "camera", "args": ["D02B"], "kwargs": {}, "src": 36},
+    {"op": "cue", "cue": "anim", "args": ["pell", "look_at", "kerrid"], "kwargs": {}, "src": 37},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "look_at", "pell"], "kwargs": {}, "src": 38},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "camera", "args": ["D01"], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "anim", "args": ["pell", "look_at", "rhen"], "kwargs": {}, "src": 41},
+    {"op": "line", "id": "ch09_road_005", "key": "DLG_CH09_ROAD_005", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 42},
+    {"op": "line", "id": "ch09_road_006", "key": "DLG_CH09_ROAD_006", "speaker": "rhen", "emotion": "surprised", "voice": "", "src": 43},
+    {"op": "line", "id": "ch09_road_007", "key": "DLG_CH09_ROAD_007", "speaker": "pell", "emotion": "neutral", "voice": "", "src": 44},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 45},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "pell"], "kwargs": {}, "src": 46},
+    {"op": "line", "id": "ch09_road_008", "key": "DLG_CH09_ROAD_008", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 47},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 48},
+    {"op": "set", "flag": "ch09_pell_named", "value": ["lit", true], "src": 49},
+    {"op": "cue", "cue": "camera", "args": ["D03"], "kwargs": {}, "src": 50},
+    {"op": "cue", "cue": "mark", "args": ["toma", "line_1", "walk"], "kwargs": {}, "src": 51},
+    {"op": "cue", "cue": "mark", "args": ["pell", "line_2", "walk"], "kwargs": {}, "src": 52},
+    {"op": "cue", "cue": "mark", "args": ["asha", "line_3", "walk"], "kwargs": {}, "src": 53},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "line_4", "walk"], "kwargs": {}, "src": 54},
+    {"op": "cue", "cue": "mark", "args": ["liss", "line_5", "walk"], "kwargs": {}, "src": 55},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "line_6", "walk"], "kwargs": {}, "src": 56},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "line_7", "walk"], "kwargs": {}, "src": 57},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 58},
+    {"op": "set", "flag": "ch09_kerrid_on_road", "value": ["lit", true], "src": 59},
+    {"op": "jump", "node": "ch09_the_vigil", "src": 60}
+   ]
+  },
+  "ch09_the_vigil": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["P02"], "kwargs": {}, "src": 72},
+    {"op": "cue", "cue": "music", "args": ["hush_first_verse"], "kwargs": {"fade": 1.0}, "src": 73},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 74},
+    {"op": "cue", "cue": "camera", "args": ["P03"], "kwargs": {"blend": 8.0, "ease": "in_out_sine"}, "src": 75},
+    {"op": "line", "id": "ch09_vigil_001", "key": "DLG_CH09_VIGIL_001", "speaker": "", "emotion": "tender", "voice": "", "src": 76, "narrator": "rhen", "tags": ["vo"]},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 77},
+    {"op": "cue", "cue": "camera", "args": ["P04"], "kwargs": {}, "src": 78},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 79},
+    {"op": "cue", "cue": "fade", "args": ["out", 3.0], "kwargs": {}, "src": 80},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 2.0}, "src": 81},
+    {"op": "set", "flag": "ch09_act_one_complete", "value": ["lit", true], "src": 82},
+    {"op": "jump", "node": "ch09_act_card", "src": 83}
+   ]
+  },
+  "ch09_act_card": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 90},
+    {"op": "line", "id": "ch09_act_card_001", "key": "DLG_CH09_ACT_CARD_001", "speaker": "", "emotion": "", "voice": "", "src": 91},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 92}
+   ]
+  }
+ }
+}

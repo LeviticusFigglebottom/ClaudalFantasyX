@@ -1,0 +1,68 @@
+// Ch9 B01/B02: talking to Toma on the strand (docs/kb/story/beats/act1_ch09.md B01 "Kerrid is nowhere",
+// §4 the side scene). One talk prompt on Toma, who has gone to kneel at one shroud in the Stillguard row:
+// while the side scene is open (ch08_met_ivo, Ch8 B02, always set on the critical path; not yet played)
+// it plays "Shield-Mate"; otherwise Rhen asks after Kerrid, and nobody looks for him. The chapter flow
+// offers the prompt only before the Ebbing (B03), as the sheet asks.
+title: ch09_toma
+location: ch09/corrow_night
+---
+<<if $ch08_met_ivo and not $ch09_toma_knelt_with_ivo>>
+    <<jump ch09_shield_mate>>
+<<endif>>
+Rhen [neutral]: Seen Kerrid? #line:ch09_toma_001
+Toma [neutral]: Not since the stair. #line:ch09_toma_002
+===
+// B02, the optional side scene "Shield-Mate" (§4; E, ~4 min, ~170 words). N05: the row where the Corrow
+// garrison has laid out its own dead with their round shields at their feet, one locked 50 mm shot plus
+// two inserts (N05A, the end of Toma's indigo sash wiping the salt; N05B, Ivo's face, peaceful, washed by
+// the sea, the broken tooth showing a little: the ONLY uncovered dead face in Ch9, never wounded).
+// Toma is kneeling at Ivo Brannick's shroud with the cloth folded back. Rhen comes and stands near;
+// Toma doesn't look up; Rhen doesn't joke. Nothing about the 1003 burning is said beyond "the same line,
+// at the shoals" (do not surface). Toma keeps "Be level" (his faith is intact in Act I). No more than four
+// Toma lines in a row. Asha passes on her way to the raft at the end (staging note: the sheet has the
+// gilt line fresh on her face here, but B03 is its first appearance; flagged for Narrative's review).
+// Toma is asking for his friend to be led into the sea: love, wrong in hindsight, played with no wink.
+title: ch09_shield_mate
+---
+@letterbox on
+@camera N05
+@music silence fade=1.5
+@sfx harbour_lap
+@wait 2.0
+@mark rhen ivo_stand walk
+@wait 2.0
+@camera N05A
+@anim toma wipe_face
+@wait 1.5
+Toma [grief]: He could not tie a hook knot. Seven years on this wall. I tied all of his. #line:ch09_shield_001
+@camera N05
+Rhen [sad]: You served with him long? #line:ch09_shield_002
+Toma [sad]: Seven years. We stood on the same line once. At the shoals. #line:ch09_shield_003
+Rhen [neutral]: Where we found Liss? #line:ch09_shield_004
+@wait 2.5
+Toma [neutral]: Another camp. Another year. #line:ch09_shield_005
+@wait 2.0
+@camera N05B
+@wait 1.5
+@anim toma fold_cloth
+@camera N05
+@wait 1.0
+Toma [tender]: Be level. #line:ch09_shield_006 #tn:"The Stillguard's greeting. A living comrade answers 'And still.' The dead man can't."
+@wait 3.0
+-> And still. #line:ch09_shield_007
+    <<set $ch09_rhen_answered_toma = true>>
+    @face toma grief 1.0
+    Toma [grief]: Thank you. #line:ch09_shield_008
+-> (Say nothing.) #line:ch09_shield_009
+    @wait 2.0
+    Toma [grief]: And still. #line:ch09_shield_010 #tn:"Said very quietly, answering for the dead man himself."
+<<set $ch09_toma_knelt_with_ivo = true>>
+@mark asha asha_passing walk
+@wait 2.5
+@anim toma look_at asha
+Toma [tender]: Asha. Take him gently. #line:ch09_shield_011
+Asha [tender]: I'll take him first. #line:ch09_shield_012
+@wait 1.5
+@letterbox off
+@camera release
+===
