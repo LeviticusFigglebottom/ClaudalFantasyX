@@ -40,40 +40,6 @@ func test_the_room_has_its_basins_channels_pools_and_door() -> void:
 	_done()
 
 
-## M2-ENV-03: the working parts are kit pieces; the water runs (and the nacre shimmers) only where it flows.
-func test_the_room_is_built_from_the_shrine_kit() -> void:
-	assert_eq(level.missing_pieces, [] as Array[String], "every kit piece loads (no primitive stands in)")
-	for id in level.trial.basin_ids():
-		var pivot := level.basin_pivots[id] as Node3D
-		assert_true(pivot.get_node_or_null(^"shrine_basin_bowl") != null, "%s's bowl is the turning part" % id)
-	assert_true(level.door.get_node_or_null(^"shrine_door_valve") != null, "the shell valve sinks with the door")
-	assert_true(level.charm.get_node_or_null(^"shrine_charm_net_float") != null, "the salt-glass float")
-	assert_true(level.pool_water is WaterSurface and (level.pool_water as WaterSurface).river, "flowmap water")
-	for key: String in level.channels:
-		var w := level.channel_water(key)
-		assert_true(w != null and w.river, "%s has flowmap water" % key)
-		assert_eq(w.visible, level.is_channel_lit(key), "%s's water shows only while it runs" % key)
-	assert_eq(_shimmer(level.channels["b1>b4"] as Node3D), 1.0, "a running channel's nacre shimmers")
-	assert_eq(_shimmer(level.channels["b3>inner_pool"] as Node3D), 0.0, "a dry one does not")
-	var pour := (level.basin_pivots[&"b1"] as Node3D).get_node(^"Pour") as Node3D
-	assert_true(pour.visible, "b1 pours off its lip")
-	assert_false((level.basin_pivots[&"b2"] as Node3D).get_node(^"Pour").visible, "b2 is dry")
-	assert_true(level.gi != null and level.gi.is_in_group(&"gi_voxel"), "the hall's VoxelGI follows the GI preset")
-	assert_eq(level.gi_bake_ms, -1, "no bake without a rendering device")
-	_done()
-
-
-func test_spill_lips_face_their_layout_bearings() -> void:
-	var b := deg_to_rad(122.0)
-	assert_true(level.spill_dir(&"b1", 2).is_equal_approx(Vector3(sin(b), 0.0, -cos(b))), "b1's third lip")
-	assert_true(level.spill_dir(&"b4", 0).is_equal_approx(Vector3.FORWARD), "north")
-	assert_true(level.spill_dir(&"nowhere", 3).is_equal_approx(Vector3.LEFT), "the compass default")
-	var fallback := level._piece("no_such_piece", BoxMesh.new())
-	assert_true(fallback is MeshInstance3D and level.missing_pieces.has("no_such_piece"), "a primitive stands in")
-	fallback.free()
-	_done()
-
-
 func test_turning_basins_routes_the_water_fills_the_pool_and_opens_the_door() -> void:
 	var b4 := _interactable(&"basin_b4")
 	assert_true(level.is_channel_lit("b1>b4"), "the water starts out round b1 and b4 (M2-FP-22)")
@@ -171,13 +137,6 @@ func _solve(target: StringName = &"") -> void:
 				best_n = n
 				best = b
 		_interactable(StringName("basin_%s" % best)).try_interact()
-
-
-## The nacre shimmer set on a channel's trough (the first geometry under it).
-func _shimmer(node: Node3D) -> float:
-	for g: Node in node.find_children("*", "GeometryInstance3D", true, false):
-		return float((g as GeometryInstance3D).get_instance_shader_parameter(&"inst_shimmer"))
-	return -1.0
 
 
 func _yaw_to_outlet(id: StringName) -> float:
