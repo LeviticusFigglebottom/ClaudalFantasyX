@@ -41,6 +41,134 @@ class Walker:
 		return on_ground
 
 
+# M3-AUD-15: stand-ins for claude/ui's menus (not on this branch). They carry only the names ui_sfx.json's hooks
+# read, and name their hook with the `audio_class` meta (no class_name stubs: they would collide on merge).
+class TravelerStandIn:
+	extends RefCounted
+	var activated: Dictionary = {}
+	var position: StringName = &"start"
+
+
+class ProgressStandIn:
+	extends RefCounted
+	var travelers: Dictionary = {}
+	var opened_gates: Dictionary = {}
+
+
+class LatticeModelStandIn:
+	extends RefCounted
+	var hero_index := 0
+	var prog := ProgressStandIn.new()
+
+	func progress() -> ProgressStandIn:
+		return prog
+
+
+class LatticeStandIn:
+	extends Control
+	signal closed
+	var cursor: StringName = &"start"
+	var model := LatticeModelStandIn.new()
+	var confirming := false
+	var status := ""
+	var plan := ""
+
+	func is_confirming() -> bool:
+		return confirming
+
+	func status_text() -> String:
+		return status
+
+	func plan_text() -> String:
+		return plan
+
+
+class PageStandIn:
+	extends RefCounted
+	var cursor := 0
+
+
+class BagStandIn:
+	extends RefCounted
+	var wearers: Dictionary = {1: &"rhen", 2: &"", 3: &""}
+	var abilities: Dictionary = {1: [], 2: [], 3: []}
+
+	func uids() -> Array[int]:
+		var out: Array[int] = []
+		out.assign(wearers.keys())
+		return out
+
+	func wearer_of(uid: int) -> StringName:
+		return wearers.get(uid, &"")
+
+	func abilities_of(uid: int) -> Array:
+		return abilities.get(uid, [])
+
+
+class EquipModelStandIn:
+	extends RefCounted
+	var bag := BagStandIn.new()
+
+
+class EquipStandIn:
+	extends Control
+	signal closed
+	var level := 0
+	var model := EquipModelStandIn.new()
+	var refused := false
+	var heroes := PageStandIn.new()
+	var gear := PageStandIn.new()
+	var choice := PageStandIn.new()
+
+	func hero_page() -> PageStandIn:
+		return heroes
+
+	func gear_page() -> PageStandIn:
+		return gear
+
+	func choice_page() -> PageStandIn:
+		return choice
+
+	func status_is_refusal() -> bool:
+		return refused
+
+
+class MapStandIn:
+	extends Control
+	signal closed
+	var poi: StringName = &"dock"
+
+	func current_poi() -> StringName:
+		return poi
+
+
+class MapViewStandIn:
+	extends Control
+	signal poi_clicked(poi_id: StringName)
+
+
+class TipStandIn:
+	extends Control
+	var phase := 0
+
+
+class TitleModelStandIn:
+	extends RefCounted
+	var cursor := 0
+	var confirm_cursor := 0
+	var confirming := false
+
+
+class TitleStandIn:
+	extends Control
+	signal chosen(choice: StringName, error: int)
+	var model := TitleModelStandIn.new()
+	var launched := false
+
+	func is_launched() -> bool:
+		return launched
+
+
 var played: Array = []
 
 
@@ -269,6 +397,167 @@ func test_change_rows_and_pending_hooks() -> void:
 		assert_true(rows.has(String(id)), "priority row %s exists" % id)
 	hooks.free()
 	_done()
+
+
+func test_ui_hooks_play_the_lattice_page() -> void:
+	var ui := _ui()
+	var menu := LatticeStandIn.new()
+	var rhen := TravelerStandIn.new()
+	var asha := TravelerStandIn.new()
+	menu.model.prog.travelers = {&"rhen": rhen, &"asha": asha}
+	_watch(ui, menu, "LatticeMenu")
+	assert_eq(played, [&"ui_menu_open"], "opening")
+	for step: Array in [
+		[func() -> void: menu.cursor = &"n1", &"ui_cursor", "the cursor moves"],
+		[func() -> void: menu.confirming = true, &"ui_confirm", "Confirm opens the question"],
+		[func() -> void: menu.confirming = false, &"ui_cancel", "Not now"],
+		[func() -> void: _refuse(menu), &"ui_error", "a refused plan"],
+		[func() -> void: menu.status = "", &"", "the cursor's move clears the status line quietly"],
+		[func() -> void: menu.confirming = true, &"ui_confirm", "Confirm on a reachable node"],
+		[func() -> void: _walk_board(menu, rhen, &"n1"), &"ui_lattice_step", "a walk, not the question closing"],
+		[func() -> void: _wake(menu, rhen, &"n1"), &"ui_lattice_node", "a node woken: the bell"],
+		[func() -> void: _open_gate(menu, &"g1"), &"ui_lattice_unlock", "a gate opened"],
+		[func() -> void: _show_hero(menu, 1, &"start"), &"ui_page", "another hero: a page, no wake or walk"],
+		[func() -> void: menu.closed.emit(), &"ui_menu_close", "closing"],
+	]:
+		played.clear()
+		(step[0] as Callable).call()
+		ui.step()
+		assert_eq(played.back() if not played.is_empty() else &"", step[1], step[2])
+	assert_eq(ui.lattice_woken(null), -1, "an unreadable board reads -1")
+	menu.free()
+	ui.free()
+	_done()
+
+
+func test_ui_hooks_play_equip_map_tip_and_title() -> void:
+	var ui := _ui()
+	var eq := EquipStandIn.new()
+	_watch(ui, eq, "EquipMenu")
+	assert_eq(played, [&"ui_menu_open"], "Equip opens")
+	for step: Array in [
+		[func() -> void: eq.heroes.cursor = 1, &"ui_cursor", "a hero"],
+		[func() -> void: eq.level = 1, &"ui_confirm", "into the gear"],
+		[func() -> void: eq.level = 2, &"ui_confirm", "into the pieces"],
+		[func() -> void: _wear(eq, 2, &"rhen", 1), &"ui_equip", "a piece worn: the clasp, not the level's cancel"],
+		[func() -> void: _wear(eq, 2, &"", 2), &"ui_unequip", "taken off"],
+		[func() -> void: _wear(eq, 1, &"asha", 1), &"ui_equip", "a swap between heroes"],
+		[func() -> void: eq.model.bag.abilities[1] = [&"undertow"], &"ui_equip", "a craft"],
+		[func() -> void: eq.refused = true, &"ui_error", "a refusal"],
+		[func() -> void: eq.closed.emit(), &"ui_menu_close", "Equip closes"],
+	]:
+		played.clear()
+		(step[0] as Callable).call()
+		ui.step()
+		assert_eq(played.back() if not played.is_empty() else &"", step[1], step[2])
+	played.clear()
+	var map := MapStandIn.new()
+	var view := MapViewStandIn.new()
+	map.add_child(view)
+	_watch(ui, map, "ZoneMapMenu")
+	_watch(ui, view, "ZoneMapView")
+	assert_eq(played, [&"ui_map_open"], "the map unrolls")
+	played.clear()
+	map.poi = &"shrine"
+	ui.step()
+	assert_eq(played, [&"ui_map_tick"], "a place in the legend ticks")
+	played.clear()
+	map.poi = &"inn"
+	view.poi_clicked.emit(&"inn")
+	ui.step()
+	assert_eq(played, [&"ui_map_marker"], "a place clicked on the map: the pin, not the tick as well")
+	played.clear()
+	map.closed.emit()
+	ui.step()
+	assert_eq(played, [&"ui_map_close"], "the map rolls up")
+	played.clear()
+	var tip := TipStandIn.new()
+	_watch(ui, tip, "TipCard")
+	for phase: int in [1, 2, 3, 0, 1]:
+		tip.phase = phase
+		ui.step()
+	assert_eq(played, [&"ui_tip", &"ui_tip"], "a tip pops in each time one fades in, and only then")
+	played.clear()
+	var title := TitleStandIn.new()
+	_watch(ui, title, "TitleMenu")
+	assert_eq(played, [&"ui_title_swell"], "the title's first swell")
+	played.clear()
+	title.model.cursor = 1
+	ui.step()
+	title.launched = true
+	title.chosen.emit(&"new_game", OK)
+	ui.step()
+	assert_eq(played, [&"ui_cursor", &"ui_title_confirm"], "Begin: the title's own confirm over chosen's")
+	for n: Node in [eq, map, tip, title]:
+		n.free()
+	ui.free()
+	_done()
+
+
+func test_new_menu_rows_exist_and_hooks_wait_for_their_classes() -> void:
+	var ui := _ui()
+	var rows := AudioData.sfx_rows()
+	for cls: String in ["FieldSubmenu", "LatticeMenu", "EquipMenu", "ZoneMapMenu", "ZoneMapView", "TipCard"]:
+		assert_true(ui.hooks.has(cls), "%s has a hook" % cls)
+		assert_true(bool((ui.hooks[cls] as Dictionary).get("pending", false)), "%s waits for claude/ui" % cls)
+	for id: String in [
+		"ui_lattice_node",
+		"ui_lattice_unlock",
+		"ui_lattice_step",
+		"ui_equip",
+		"ui_unequip",
+		"ui_map_open",
+		"ui_map_close",
+		"ui_map_tick",
+		"ui_map_marker",
+		"ui_tip",
+		"ui_title_confirm",
+		"ui_title_swell"
+	]:
+		assert_true(rows.has(id), "row %s" % id)
+		assert_true(ResourceLoader.exists(str((rows[id]["files"] as Array)[0])), "%s's file imports" % id)
+		assert_eq(str(rows[id]["bus"]), "UI", "%s on UI" % id)
+		assert_true(ui.priority.has(StringName(id)), "%s is ranked" % id)
+	ui.free()
+	_done()
+
+
+func _watch(ui: UiAudio, node: Node, cls: String) -> void:
+	node.set_meta(UiAudio.META_CLASS, cls)
+	if node.get_parent() == null:
+		_host().add_child(node)
+	ui.watch(node)
+	ui.step()
+
+
+func _refuse(menu: LatticeStandIn) -> void:
+	menu.plan = "Not enough movement."
+	menu.status = menu.plan
+
+
+func _walk_board(menu: LatticeStandIn, t: TravelerStandIn, to: StringName) -> void:
+	t.position = to
+	menu.confirming = false
+
+
+func _wake(menu: LatticeStandIn, t: TravelerStandIn, nid: StringName) -> void:
+	t.activated[nid] = true
+	menu.status = "Rhen wakes the node."
+	menu.plan = "Already woken."
+
+
+func _open_gate(menu: LatticeStandIn, gid: StringName) -> void:
+	menu.model.prog.opened_gates[gid] = true
+
+
+func _show_hero(menu: LatticeStandIn, index: int, at: StringName) -> void:
+	menu.model.hero_index = index
+	menu.cursor = at
+
+
+func _wear(eq: EquipStandIn, uid: int, who: StringName, level: int) -> void:
+	eq.model.bag.wearers[uid] = who
+	eq.level = level
 
 
 # --------------------------------------------------------------------------- helpers

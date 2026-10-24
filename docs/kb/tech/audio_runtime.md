@@ -222,3 +222,218 @@ SPEC §16 Q4: no voice acting yet, but the architecture is ready for it. Every s
   (−23): crossfade the two crowd beds with play via `Audio.set_ambience`. Stop the crowd beds while
   `reefball_naming_rite` plays (it carries its own crowd going quiet), and stop the lantern hum's player when Rhen
   surfaces.
+
+## M3 menus (M3-AUD-15)
+
+`assets_src/sfx/menu_sfx.py` renders twelve UI sounds to `assets/audio/sfx/ui_*.ogg` (rows in `sfx_ui_menus.json`,
+UI bus, −20 LUFS momentary max, the `sfx/ui_*.ogg` rule in `tools/audio/targets.py`). `ui_sfx.json` plays them by
+listening. The menus are on claude/ui and claude/menus, not on claude/audio, so their hooks are `pending`:
+
+| Class (claude/ui) | What plays |
+|---|---|
+| `TitleMenu` (live) | `on_enter` `ui_title_swell`; `is_launched()` turning true plays `ui_title_confirm` (Begin or Continue), which outranks `chosen`'s `ui_confirm` |
+| `FieldSubmenu` | open / `closed`, for the Items and Status pages (Lattice and Equip have their own rows; `hook_for` takes the most derived class) |
+| `LatticeMenu` | open / `closed`; `cursor` ticks; `model.hero_index` is a page; `is_confirming()` true/false is confirm/cancel; `lattice_woken(progress)` rising is `ui_lattice_node`; `progress.opened_gates.size()` rising is `ui_lattice_unlock`; `lattice_places(progress)` changing is `ui_lattice_step`; a status line equal to the plan line (a refused Confirm) is `ui_error` |
+| `EquipMenu` | open / `closed`; `level` up/down is confirm/cancel; the three pages' cursors tick; `worn_count(bag)` up/down is `ui_equip` / `ui_unequip`; `gear_signature(bag)` changing (a swap or a craft) is `ui_equip`; `status_is_refusal()` is `ui_error` |
+| `ZoneMapMenu` | `on_enter` `ui_map_open`, `closed` `ui_map_close`, `current_poi()` changing `ui_map_tick` |
+| `ZoneMapView` | `poi_clicked` `ui_map_marker` (outranks the tick it causes) |
+| `TipCard` | `phase` becoming 1 (`Phase.IN`) is `ui_tip` |
+
+- **Helpers** (UiAudio, in scope in `watch`): `lattice_woken` and `lattice_places` read every traveler of a
+  LatticeProgress, so showing another hero plays a page and not a wake or a walk. `worn_count` and `gear_signature`
+  read an EquipmentBag through `uids()`, `wearer_of()` and `abilities_of()`.
+- **Priority** (one row a frame): the new rows sit above `ui_cancel` where an action also closes a level or the
+  Lattice question (wake, unlock, step, equip, unequip, marker), and `ui_title_confirm` sits above `ui_confirm`.
+- **Stand-ins:** a node's `audio_class` meta names its hook in place of its script class (UiAudio and
+  ReefballAudio). `tests/unit/test_field_audio.gd` drives runtime-built stand-ins carrying only the names the
+  hooks read; no `class_name` stubs, which would collide with the real classes on merge.
+- **The checker** now gives a class the signals of the script classes it extends (LatticeMenu's `closed` is
+  FieldSubmenu's), so a hook can name an inherited signal once its pending flag comes off.
+- **Once claude/ui merges:** remove `pending` from the six hooks; validate_data then checks the class and signal
+  names. Run `tests/unit/test_field_audio.gd` against the real LatticeMenu and EquipMenu (a follow-up test like
+  the FieldMenu one). The M2 `ShopMenu` / `InnMenu` guesses are wrong on claude/ui: both extend `TownMenu`, which
+  declares only `closed`, and they have no `bought` / `sold` / `rested` signals. A follow-up should rewrite those
+  hooks against the real models.
+
+**Listening notes (rendered and measured, not auditioned on speakers).** All decoded at −20.0 ± 0.6 LUFS
+momentary max, true peak −3.0 to −13.1 dBTP, byte-identical across two renders.
+- `ui_lattice_node` (1.7 s): a small bell, padded, a minor-third tierce over a warm hum, with a bar an octave up as
+  its glint. It sounds like the one earned sound in the menus and blooms for about a second in a small room.
+- `ui_lattice_unlock` (1.5 s): a soft low gong, a dry latch and three bars rising D-A-D over a breath that climbs:
+  a door, not a fanfare.
+- `ui_lattice_step` (0.36 s): two quiet taps a third apart, lighter than the cursor's confirm.
+- `ui_equip` / `ui_unequip` (0.5 / 0.45 s): a clasp's click and a low bar landing, then the lighter click and a bar
+  falling a fourth. They read as a pair.
+- `ui_map_open` / `ui_map_close` (0.85 / 0.57 s): dry paper crackle that rises in band, then bars a fifth apart;
+  the close is shorter and falls. `ui_map_tick` (0.15 s) is a small wooden tick, softer than `ui_cursor`, so
+  scrolling a long legend doesn't nag. `ui_map_marker` (0.65 s): a pin's muted tap and a small bell.
+- `ui_tip` (0.8 s): a glass ping with a slow beat on a breath, the quietest peak of the set (−13 dBTP), so it
+  doesn't startle during play.
+- `ui_title_confirm` (2.0 s): a low gong under a rolled D-A-D-A chord of bars, with the longest room in the set.
+- `ui_title_swell` (3.2 s): a pad swell on D-A-E (an open sonority, not a tune) with a rubbed-glass tone fading in
+  above it. It sits under the title cue at the same momentary target as every UI sound. If it masks the title
+  music's first bar, lower its row's `volume_db` rather than re-rendering it.
+
+## Reefball (M3-AUD-17)
+
+`ReefballAudio` (`game/audio/reefball_audio.gd`) listens to the arena with `game/data/audio/reefball_hooks.json`.
+The director builds it in `setup`, configures it in `_ready`, steps it in `advance`, and hands it nodes from
+`_on_node_added` (two lines, before the UI branch). The play, place and bed callables come from
+`bind_director`.
+- **Matching:** by the script's global class name (or a base class's, or the `audio_class` meta). Signals are
+  connected by name only when the node has them (`has_signal`), with 0 to 3+ arguments, so the listener loads and
+  runs whether or not the classes exist.
+- **Actions:** `sfx_at` plays at the signal's first Vector3 or Node3D argument (else the hooked node), and `sfx`
+  plays flat. `crowd` moves the stands (`murmur`, `excited`, `silence`) and keeps the zone's other beds. `restore`
+  with `restore_after_sec` brings a state back later.
+- **The sphere:** `WaterSphereRig` (gpu/m3-rnd-01-reefball) is a render rig with no signals, so entry, exit and
+  strokes come from positions. Once a frame, each Node3D in `swim.groups` (`reefball_swimmer`, `player`) is
+  measured against the rig's centre and `radius_m()`:
+  - crossing inward plays `reefball_sphere_enter`, outward `reefball_sphere_exit`, with ±0.3 m of hysteresis;
+  - every 1.6 m swum inside plays `reefball_swim`;
+  - a jump over 4 m is not swum;
+  - the first read is a baseline.
+  The sphere's arrival brings the murmur, and its leaving silences the stands.
+- **The match** (`ReefballMatch`, `ReefballBall`, `ReefballGoal`) is a guess at the minigame's names, because no
+  ball, goals or match flow exist on any branch yet. Kickoff whistles and excites the crowd; contacts and shots
+  play at the ball; a goal plays the score at the ball with a cheer (or a groan); the end whistle brings the murmur
+  back. `naming_rite_started` plays the rite, cuts the beds in 0.8 s and restores the murmur after the rite's 12 s
+  (or on `naming_rite_ended`).
+- `tools/audio/data_check.py` checks the rows, the crowd beds, the crowd states, the swim numbers, and the class
+  and signal names (except a pending hook's). `tests/unit/test_reefball_audio.gd` drives stand-ins.
+- **Once gpu/m3-rnd-01-reefball merges:** drop `pending` from `WaterSphereRig`. The arena's swimmers must be in
+  the `reefball_swimmer` group (the test scene's players are bare MeshInstance3Ds today). When the minigame lands,
+  rename the match, ball and goal hooks' classes and signals to the real ones. Use either the match's contact
+  signals or the ball's, not both.
+
+## Choreography layers (M3-AUD-13)
+
+The battle-presentation track (`claude/battle-presentation`, docs/kb/tech/battle_presentation.md there) plays each
+action as beats through **BattleChoreo**. BattleVfx plays on its `contact`, so M2-AUD-04's element hits (BattleAudio)
+already land with the blow. **ChoreoAudio** (`game/audio/choreo_audio.gd`) adds the layers that have no particle,
+from `game/data/audio/choreo_sfx.json` (rows in `sfx_choreo.json`, Combat bus, files from
+`assets_src/sfx/choreo_sfx.py`).
+
+- **The hook, by name only.** `choreo_sfx.json` `hooks` names the class (`BattleChoreo`) and, per role, its signal:
+  `beat(kind, actor_id)` and `contact(result)`. The director's `_on_node_added` asks `ChoreoAudio.wants(node)` (the
+  node's script's global class name, walking base scripts, like UiAudio) and builds the listener deferred
+  (`ChoreoAudio.attach_to`), under the director, keyed in `listeners` so it is freed when the choreography leaves (a
+  retry builds a new one). Signals are connected by name (`has_signal`; extra arguments dropped with `unbind`); the
+  methods it reads are guarded too (`current`, `style_id_for`, `entering`, `leaving`, `animating`, `after_sequence`,
+  and `speed`). So this branch compiles and runs without the classes; the hook row says `pending` until they merge
+  (validate_data then checks the class's signals for real).
+- **BattleBossChoreo and BattleVowboundChoreo are RefCounted helpers, not nodes**, and emit no signals of their own,
+  so no node-added hook can see them. Their moments are heard from the engine (found as the `engine` of the
+  choreography's nearest ancestor that has one, the BattleController) and from BattleChoreo's own state:
+  - the Vowbound's **call**: `engine.vowbound.called` (when animating) plays `vowbound_beckon` under BattleAudio's
+    `vowbound_call`;
+  - its **rise**, **sink** and **fall**, and the party's **step-off and walk-in**: polled once a frame from
+    `entering(cid)` / `leaving(cid)`, as each move's clock reaches 0 (after its delay). A rise lasting `long_sec`
+    or more (the C10 summon entry, 2.6 s) plays `vowbound_rise_long`. Fall or sink comes from
+    `engine.vowbound.departed(v, fell)`;
+  - the **Flood brace**: `engine.phase_changed` to `flood.phase`, then `after_sequence`, then `flood_brace` for each
+    active member `stagger_sec` apart (BattleBossChoreo's brace; 0.12 s in both tables).
+- **Beats.** `approach` and `return` spread `*_steps` footfalls (`choreo_step`) over the beat's length (plan times
+  ÷ the battle speed); fighters in `no_steps` (fliers, the bell, Ilun) make none. `strike` starts the style's whoosh
+  (or `strike_by_weapon`: the anchor-cleaver and the bell's hood swing heavy) `peaks[whoosh]` seconds before the
+  contact, so its crest lands on the blow. `ko` plays `ko_collapse` for any felled fighter but a Vowbound.
+- **Contact.** `skills[skill]` first (the surges; `""` silences one), else the style's `contact_by_weapon` or
+  `contact`, where `@weapon` is the actor's weapon accent (`weapons` by base id → `accents`). `needs_hit` (default
+  for `@weapon`, and set on `cast`) plays it only when a blow landed for damage on someone else: a miss has the
+  whoosh and the dodge, no touch. The Swell styles play their hero's `swell_*` accent; `toll` plays `toll_wave` on
+  the toll's contact (the ring is still BattleBossVfx's, and the toll itself BattleAudio's). Contact uses
+  `style_id_for(result)`, so it also plays when actions land instantly (pacing 0, "skip animations"); the beats,
+  steps, call and brace need the choreography to be animating.
+- **No doubled hit.** Nothing here plays a BattleAudio row: the accents are a separate, softer layer (−21 LUFS
+  momentary against the hits' −18), and the whoosh ends on the contact. **Reduced audio** (`reduced_skip`) drops the
+  accents and the footfalls, so BattleAudio's one layer per action stays the only one; the whoosh, KO and set-piece
+  sounds stay.
+- **Checks:** `tools/audio/data_check.py` `choreo_errors` (hooks and roles, Combat-bus rows, weapons with accents,
+  whooshes with a crest time, style ids known to `game/data/battle/choreo.json` once present);
+  `tools/tests/test_audio_data.py` `ChoreoSfxTest`; `tests/unit/test_choreo_audio.gd` with a stand-in built at
+  runtime (a GDScript compiled in the test, no class_name, named BattleChoreo through `ChoreoAudio.matcher`).
+- **After the merge, verify:** the real BattleChoreo's `beat`/`contact` signatures match (validate_data does it once
+  the class exists; drop `pending`), the whoosh crest against a live melee at 1x and 2x, and that a retry leaves one
+  ChoreoAudio. Kerrid has no row in characters.json yet; his `anchor_cleaver` accent waits for him.
+
+## Battle stings (M3-AUD-18)
+
+battle-presentation announces three moments on `EventBus.dialogue_event(event, args)` (docs/kb/tech/battle_presentation.md
+on claude/battle-presentation). The director connects that signal to a `StingAudio` (`game/audio/sting_audio.gd`) in
+`_ready` and disconnects on exit; `game/data/audio/battle_stings.json` names what each plays:
+
+| Event | Args | Sting |
+|---|---|---|
+| `battle_stinger` | `[encounter]` | `sting_tideline`: surf climbing, bubbles thickening, a crest that spills (2.4 s, −18) |
+| `battle_bark` | `[encounter, line_key, speaker_key]` | `sting_bark`: a low breath of water under the line (1.8 s, −22) |
+| `boss_intro` | `[encounter_id, title_key]` | `sting_boss`: low gong and drum, a struck open fifth, a darkening wash (4 s, −16); the Drownbell's `by_arg` row `sting_boss_bell` draws the water in, then a near, dry toll (5.3 s). The `boss_intro` duck (mix.json, Music −5 dB) holds 3.5 s under the card. |
+
+Reduced audio swaps the boss stings for `_soft` versions without sub-bass. The rows are on the Combat bus
+(`sfx_battle.json`); the generator is `assets_src/sfx/battle_stings.py` (it reuses battle_sfx.py's helpers). Tests:
+`tests/unit/test_battle_stings.gd`, `tools/tests/test_audio_data.py` `BattleStingsTest`.
+
+## Creature voices and movement (M3-AUD-14)
+
+- **Sounds:** `assets_src/sfx/creature_sfx.py` renders `assets/audio/sfx/creatures/<creature>_<event>_<n>.ogg`
+  (194 files: 23 creatures with their own set, rows `cre_<creature>_<event>` in `sfx_creatures.json`, Combat bus).
+  Voices (attack, hurt, death) are at −18 LUFS momentary max, idles −20, movement (skitter, slither, wingbeat,
+  flutter, squelch, flap, shift, creak, surge, grind, plod, scurry, shimmer, hop, pad) −21. Rules are in
+  `tools/audio/targets.py`, and `render_all.py --only creature_sfx` lists the files from the source's own `FILES`.
+- **The table** (`creature_voices.json` `creatures`): an enemy's base id maps to `events`
+  {idle, attack, hurt, death, move} → sfx row, an optional `pitch` (the four palette variants, `wreck_crab`,
+  `wallcrab`, `wall_polyp` and `stormgull`, play their parent's set at another pitch), or `"silent"`.
+  `validate_data` fails an `enemies.json` enemy without a row or `"silent"`, an unknown event, and a row that
+  isn't an sfx row. All 27 `creatures.json` ids on the creatures track have a row.
+- **The listener** is `CreatureAudio` (`game/audio/creature_audio.gd`), a child of BattleAudio (`creatures`). It
+  only listens:
+  - **attack:** the creature's own `action_resolved` (the actor's base id).
+  - **hurt:** a landed damaging hit that leaves it standing, once per creature kind per action.
+  - **death:** a hit, or its own `turn_ended` (poison), that takes it to 0 HP. It plays once until the creature
+    stands again.
+  - Hurt and death play `under_db` (−3 dB) softer and `delays_ms` (70 / 110 ms) late. They layer under
+    battle_sfx.json's `hit_*` and `ko_release` and never replace them.
+  - **idle:** when the battle opens (the first voiced enemy, 700 ms in) and when creatures join. One kind's idles
+    are at least `idle_cooldown_ms` apart.
+  - Plays wait in a queue on the SFX bank's clock, so tests flush them with their own clock.
+  - Reduced audio (BattleAudio's `reduced`) leaves out `reduced_skip` (idle, move).
+- **Movement from the models, by name** (ADR 0031): any node entering the tree under the battle's controller
+  whose script's global class is a `model_classes` key is a model. That is `CreatureActor`, which is on
+  claude/creatures and not on this branch yet; the key's value names the property holding its creature id,
+  `creature_id`. The listener connects deferred to its first AnimationPlayer's `animation_started` (`has_signal`
+  guard), and `clips` maps a clip to an event: `attack` and `cast` play the creature's move. CreatureActor emits no
+  signal of its own, so its AnimationPlayer's is the hook. While no model is heard for a kind, its move plays with
+  its attack (`move_on_action`), as on this branch today. Nothing touches the model.
+- **Once claude/creatures merges, check that:**
+  - BattleStage's actors enter under the BattleController, so `scope` finds them. A model found outside it is
+    ignored.
+  - `models` counts each creature.
+  - The move then plays once per action, from the clip, not twice.
+  - If the battle-presentation track times hits to `CreatureActor.contact_time`, the attack voice may want the
+    same delay (`delays_ms.attack`).
+- `tests/unit/test_creature_audio.gd` covers the table against enemies.json and the rows' imports, the opening idle
+  and its cooldown, attack and the move fallback, one hurt per kind, one death (a hit or poison), silence for a
+  hero's action and a miss, a model's clip playing the move by name (a plain Node3D with an AnimationPlayer, no
+  stub class), reduced audio, and BattleAudio bringing the listener.
+
+## Blip pace (M3-AUD-21)
+
+`voices.json` `pace` is `syllable` by default: VoiceAudio blips on the DialogueBox's `mouth_flap` opening edge, once per
+vowel group (`text_box.json` `flap_vowels`), the same edge the M2-CHR-10 lip sync follows. The UI track's reveal times
+(`time_of_char`, with the comma and full-stop rests, M2-UI-27) pace those edges, so the blips rest where the text
+rests and keep time with the mouth. A skipped reveal and sung lines emit no flaps, and narration stays silent unless
+`narration_blip` is set. Each voice's `rate_ms` still applies. `pace: letter` keeps the old behaviour: one blip per blip
+the box counts (`blip_every_n_chars`). Tests: `tests/unit/test_voice_audio.gd` (syllable tests), `VoicePaceTest`.
+
+## Underwater muffle (M3-AUD-22)
+
+`BusMuffle` (`game/audio/bus_muffle.gd`, built by the director from mix.json `muffle`) puts a switched-off
+`AudioEffectLowPassFilter` on World, Ambience, Combat and SFX. While any reason is on, the cutoff glides in log
+frequency to `cutoff_hz` (700 Hz) over `ramp_sec` (0.35 s), and back to `open_hz` after, when the effects are switched
+off again. Music is left out: the score is not in the water. ReefballAudio turns the `underwater` reason on while the
+ear is inside a water sphere. The ear is the viewport's Camera3D (`use_camera`), else the first node in `ear_groups`.
+It uses the same `edge_m` band as the swimmers, and the reason lifts when the ear leaves or the sphere goes.
+data_check `muffle_errors` checks both blocks.
+
+Test note: the reefball tests name their stand-ins (the `audio_class` meta) after `add_child`, so the game's own
+Audio autoload, which tests never advance, does not hook them. The director test records its beds instead of playing
+them. A real playback started in a headless test is still held when the run quits ("resources still in use").

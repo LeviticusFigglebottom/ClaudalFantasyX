@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "doc": "The M3 menus' UI sounds (M3-AUD-15; assets_src/sfx/menu_sfx.py; docs/kb/tech/audio_runtime.md \"Menus\"). Same row format as sfx.json; AudioData.sfx_rows merges this file in. All on the UI bus at -20 LUFS momentary max. ui_sfx.json's hooks play them by listening: the Lattice page (LatticeMenu: a node woken, a gate opened, a walk), Equip (EquipMenu: a piece worn or taken off, a craft), the zone map (ZoneMapMenu / ZoneMapView: open, close, the legend's tick, a place clicked), the tip card (TipCard: fade-in) and the title (TitleMenu: the first swell, Begin / Continue). Those menus are on claude/ui and claude/menus, not here yet, so their hooks are pending; the title's are live.",
+  "sfx": {
+    "ui_lattice_node": {"files": ["res://assets/audio/sfx/ui_lattice_node.ogg"], "bus": "UI", "voices": 1, "cooldown_ms": 200},
+    "ui_lattice_unlock": {"files": ["res://assets/audio/sfx/ui_lattice_unlock.ogg"], "bus": "UI", "voices": 1, "cooldown_ms": 200},
+    "ui_lattice_step": {"files": ["res://assets/audio/sfx/ui_lattice_step.ogg"], "bus": "UI", "voices": 2, "cooldown_ms": 80},
+    "ui_equip": {"files": ["res://assets/audio/sfx/ui_equip.ogg"], "bus": "UI", "voices": 2, "cooldown_ms": 80},
+    "ui_unequip": {"files": ["res://assets/audio/sfx/ui_unequip.ogg"], "bus": "UI", "voices": 2, "cooldown_ms": 80},
+    "ui_map_open": {"files": ["res://assets/audio/sfx/ui_map_open.ogg"], "bus": "UI", "voices": 1},
+    "ui_map_close": {"files": ["res://assets/audio/sfx/ui_map_close.ogg"], "bus": "UI", "voices": 1},
+    "ui_map_tick": {"files": ["res://assets/audio/sfx/ui_map_tick.ogg"], "bus": "UI", "voices": 3, "cooldown_ms": 30},
+    "ui_map_marker": {"files": ["res://assets/audio/sfx/ui_map_marker.ogg"], "bus": "UI", "voices": 2, "cooldown_ms": 80},
+    "ui_tip": {"files": ["res://assets/audio/sfx/ui_tip.ogg"], "bus": "UI", "voices": 1, "cooldown_ms": 500},
+    "ui_title_confirm": {"files": ["res://assets/audio/sfx/ui_title_confirm.ogg"], "bus": "UI", "voices": 1, "cooldown_ms": 500},
+    "ui_title_swell": {"files": ["res://assets/audio/sfx/ui_title_swell.ogg"], "bus": "UI", "voices": 1, "cooldown_ms": 2000}
+  }
+}

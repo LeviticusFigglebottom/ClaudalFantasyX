@@ -286,6 +286,60 @@
       "cooldown_ms": 1000,
       "voices": 1,
       "volume_db": 0.0
+    },
+    "sting_tideline": {
+      "files": [
+        "res://assets/audio/sfx/battle/sting_tideline.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_bark": {
+      "files": [
+        "res://assets/audio/sfx/battle/sting_bark.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss": {
+      "files": [
+        "res://assets/audio/sfx/battle/sting_boss.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_soft": {
+      "files": [
+        "res://assets/audio/sfx/battle/sting_boss_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_bell": {
+      "files": [
+        "res://assets/audio/sfx/battle/sting_boss_bell.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_bell_soft": {
+      "files": [
+        "res://assets/audio/sfx/battle/sting_boss_bell_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
     }
   }
 }

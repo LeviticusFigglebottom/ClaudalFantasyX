@@ -43,7 +43,18 @@ GOOD = {
          "watch": [{"expr": "node.level", "rise": "tick", "values": {"2": "tick"}}]},
         {"class": "ShopMenu", "pending": True, "signals": {"bought": "tick"}},
     ]},
-    dc.CLASSES: {"Menu": ["closed"]},
+    dc.CLASSES: {"Menu": ["closed"], "Sphere": []},
+    dc.REEFBALL_HOOKS: {
+        "crowd": {"murmur": "gulls", "excited": "surf", "fade_sec": 2.0, "rite_fade_sec": 0.5},
+        "swim": {"groups": ["swimmer"], "edge_m": 0.3, "stroke_m": 1.5, "teleport_m": 4.0, "enter": "tick",
+                 "exit": "tick", "stroke": "tick"},
+        "hooks": [
+            {"class": "Sphere", "sphere": {"radius_method": "radius_m"}, "on_enter": {"crowd": "murmur"}},
+            {"class": "Match", "pending": True, "signals": {
+                "kickoff": {"sfx": "tick", "crowd": "excited"}, "goal": {"sfx_at": "tick", "sfx": ["tick"]},
+                "rite": {"sfx": "tick", "crowd": "silence", "restore": "murmur", "restore_after_sec": 12.0}}},
+        ],
+    },
 }
 
 
@@ -176,6 +187,37 @@ class AudioDataTest(unittest.TestCase):
         self.assertEqual(classes["Menu"], ["picked", "closed"])
         self.assertEqual(classes["LoopA"], ["b"], "a cycle stops")
 
+    def test_reefball_hooks_check_rows_beds_crowd_and_classes(self) -> None:
+        def edit(r: dict) -> None:
+            r["crowd"]["excited"] = "roar"
+            r["swim"]["stroke_m"] = 0
+            r["swim"]["exit"] = "splash"
+            r["hooks"][0]["signals"] = {"popped": {"sfx": "tick"}}
+            r["hooks"][0]["sphere"] = {}
+            r["hooks"][1]["signals"]["kickoff"]["crowd"] = "loud"
+            r["hooks"][1]["signals"]["foul"] = {"note": "nothing"}
+            r["hooks"][1]["signals"]["rite"]["restore_after_sec"] = 0
+            r["hooks"].append({"class": "Ghost", "on_exit": {"sfx_at": "boom"}})
+        errs = self._broken(dc.REEFBALL_HOOKS, edit)
+        for want in ("crowd.excited: roar is not an ambience bed", "swim.stroke_m", "swim.exit: splash",
+                     "Sphere declares no such signal", "needs radius_method or radius_m", "loud is not murmur",
+                     "foul: does nothing", "restore needs a time", "no script declares class_name Ghost",
+                     "boom is not an sfx.json row"):
+            self.assertTrue(any(want in e for e in errs), (want, errs))
+        self.assertFalse(any("Match" in e and "class_name" in e for e in errs), "a pending hook's class waits")
+
+    def test_script_classes_inherit_their_base_classes_signals(self) -> None:
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as d:
+            game = Path(d) / "game"
+            game.mkdir()
+            (game / "base.gd").write_text("class_name BasePage\nextends Control\nsignal closed\n", encoding="utf-8")
+            (game / "page.gd").write_text("class_name LeafPage\nextends BasePage\nsignal moved\n", encoding="utf-8")
+            got = dc.script_classes(Path(d))
+        self.assertEqual(got["BasePage"], ["closed"])
+        self.assertEqual(sorted(got["LeafPage"]), ["closed", "moved"])
+
     def test_sfx_rows_play_on_real_buses(self) -> None:
         errs = self._broken(dc.SFX, lambda s: s["sfx"]["tick"].update({"bus": "Nowhere", "pitch_jitter": 0.9}))
         self.assertTrue(any("unknown bus Nowhere" in e for e in errs), errs)
@@ -236,6 +278,60 @@ class ReverbAndVoiceDataTest(unittest.TestCase):
         self.assertTrue(any("default.rate_ms: missing" in e for e in errs), errs)
 
 
+def _with_creatures() -> dict:
+    files = copy.deepcopy(GOOD)
+    files[dc.ENEMIES] = {"enemies": [{"id": "crab"}, {"id": "ghost"}]}
+    files[dc.CREATURE_VOICES] = {
+        "model_classes": {"CreatureActor": "creature_id"},
+        "clips": {"attack": "move"},
+        "delays_ms": {"hurt": 70},
+        "under_db": -3.0,
+        "reduced_skip": ["move"],
+        "creatures": {"crab": {"events": {"attack": "tick", "move": "tick"}, "pitch": 0.9}, "ghost": "silent"},
+    }
+    return files
+
+
+class CreatureVoiceDataTest(unittest.TestCase):
+    """M3-AUD-14: creature_voices.json against enemies.json and the sfx rows."""
+
+    def test_good_creature_voices_pass(self) -> None:
+        self.assertEqual(_errs(_with_creatures()), [])
+
+    def test_every_enemy_needs_a_voice_or_silent(self) -> None:
+        files = _with_creatures()
+        del files[dc.CREATURE_VOICES]["creatures"]["ghost"]
+        self.assertTrue(any("enemy ghost" in e and "silent" in e for e in _errs(files)), _errs(files))
+
+    def test_events_rows_pitch_and_clips_are_checked(self) -> None:
+        files = _with_creatures()
+        doc = files[dc.CREATURE_VOICES]
+        doc["creatures"]["crab"]["events"]["roar"] = "nope"
+        doc["creatures"]["crab"]["pitch"] = 5.0
+        doc["creatures"]["eel"] = "quiet"
+        doc["clips"]["cast"] = "sing"
+        doc["under_db"] = 3.0
+        errs = _errs(files)
+        for want in ("events.roar: not an event", "nope is not an sfx.json row", "crab.pitch", "creatures.eel",
+                     "clips.cast", "under_db"):
+            self.assertTrue(any(want in e for e in errs), (want, errs))
+
+    def test_the_repo_voices_every_enemy_and_creature_model(self) -> None:
+        import json
+
+        doc = json.loads((ROOT / dc.CREATURE_VOICES).read_text(encoding="utf-8"))
+        enemies = json.loads((ROOT / dc.ENEMIES).read_text(encoding="utf-8"))["enemies"]
+        for e in enemies:
+            self.assertIn(e["id"], doc["creatures"])
+        # the creatures track's creatures.json (claude/creatures) models these; each has a voice ready for it
+        for cid in ("reef_crab", "lantern_eel", "gull_harrier", "spawn_polyp", "drownbell", "hullgnaw", "glassfry",
+                    "tower_limpet", "oil_slug", "bottle_hermit", "sail_leech", "spar_wraith", "ashwing",
+                    "slag_tortoise", "cinder_matron", "vein_sparker", "shoal_skipper", "wreck_crab", "raid_hound",
+                    "tide_crawler", "squall_wing", "wall_polyp", "undertows_reach", "flue_moth", "stormgull",
+                    "wallcrab", "scuttler"):
+            self.assertIsInstance(doc["creatures"].get(cid), dict, cid)
+
+
 class LoopImportTest(unittest.TestCase):
     """M3-AUD-06: every shipped loop (an .ogg with a .loop.json sidecar, music or not) imports with loop on at the
     sidecar's offset, so a bed, a crowd or the lantern hum played through Godot keeps going (render_all.py syncs
@@ -261,6 +357,64 @@ class LoopImportTest(unittest.TestCase):
         self.assertEqual(bad, [])
 
 
+class ChoreoSfxTest(unittest.TestCase):
+    """M3-AUD-13: choreo_sfx.json (data_check.choreo_errors). The shipped table passes; a hook names its class and
+    signals (checked once the class exists, pending until then), sounds are Combat-bus rows, weapons have accents,
+    whooshes have a crest time, and styles are choreo.json's once that table is present."""
+
+    ROWS = {"whoosh": {"files": [OGG], "bus": "Combat"}, "hit": {"files": [OGG], "bus": "Combat"},
+            "ui": {"files": [OGG], "bus": "UI"}}
+    DOC = {
+        "hooks": [{"class": "BattleChoreo", "pending": True, "signals": {"beat": "beat", "contact": "contact"}}],
+        "styles": {"melee": {"approach": "hit", "approach_steps": 3, "strike": "whoosh", "contact": "@weapon",
+                             "contact_by_weapon": {"hooks": "hit"}, "needs_hit": True}},
+        "peaks": {"whoosh": 0.1}, "skills": {"toll": "hit", "spit": ""},
+        "weapons": {"rhen": "hooks"}, "weapon_default": "claw", "accents": {"hooks": "hit", "claw": "hit"},
+        "ko": "hit", "enter": {"sfx": "hit", "steps": 2}, "step_off": {"sfx": "hit", "steps": 2},
+        "vowbound": {"call": "hit", "rise": "hit", "rise_long": "hit", "long_sec": 2.0, "sink": "hit", "fall": "hit"},
+        "flood": {"phase": "flood", "sfx": "hit", "stagger_sec": 0.12}, "reduced_skip": ["contact", "steps"],
+    }
+
+    def _errs(self, doc, classes=None, choreo=None):
+        return dc.choreo_errors(doc, self.ROWS, classes if classes is not None else {}, choreo)
+
+    def test_good_and_shipped(self) -> None:
+        self.assertEqual(self._errs(self.DOC), [])
+        files = dc.load_files(ROOT)
+        rows = dc.merged_sfx(files)["sfx"]
+        self.assertIn(dc.CHOREO_SFX, files)
+        self.assertEqual(dc.choreo_errors(files[dc.CHOREO_SFX], rows, files[dc.CLASSES], files.get(dc.CHOREO)), [])
+
+    def test_hooks_are_checked_once_the_class_exists(self) -> None:
+        bad = copy.deepcopy(self.DOC)
+        bad["hooks"][0].pop("pending")
+        self.assertTrue(any("class_name BattleChoreo" in e for e in self._errs(bad)))
+        known = {"BattleChoreo": ["beat", "sequence_finished"]}
+        errs = self._errs(self.DOC, known)
+        self.assertTrue(any("declares no signal contact" in e for e in errs), errs)
+        self.assertEqual(self._errs(self.DOC, {"BattleChoreo": ["beat", "contact"]}), [])
+        bad["hooks"][0]["signals"]["swing"] = "beat"
+        self.assertTrue(any("not a role" in e for e in self._errs(bad, {"BattleChoreo": ["beat", "contact"]})))
+
+    def test_sounds_weapons_and_peaks(self) -> None:
+        bad = copy.deepcopy(self.DOC)
+        bad["styles"]["melee"]["strike"] = "hit"  # a whoosh with no crest time
+        bad["styles"]["melee"]["return"] = "ui"  # not on the Combat bus
+        bad["styles"]["melee"]["strike_by_weapon"] = {"spoon": ""}
+        bad["weapons"]["asha"] = "staff"
+        bad["vowbound"]["fall"] = "nope"
+        bad["reduced_skip"] = ["music"]
+        errs = " | ".join(self._errs(bad))
+        for want in ("whoosh hit has no crest time", "row ui must play on the Combat bus", "spoon is not a weapon",
+                     "staff has no accent", "nope is not an sfx.json row", "music is not one of"):
+            self.assertIn(want, errs)
+
+    def test_styles_follow_choreo_json_when_present(self) -> None:
+        choreo = {"choreo": {"styles": {"cast": {}}}}
+        self.assertTrue(any("not a style in" in e for e in self._errs(self.DOC, choreo=choreo)))
+        self.assertEqual(self._errs(self.DOC, choreo={"choreo": {"styles": {"melee": {}}}}), [])
+
+
 def load_tests(loader: unittest.TestLoader, tests: unittest.TestSuite, pattern: str) -> unittest.TestSuite:
     """Also runs tools/audio/tests (the synth regression tests), which the discovery root does not reach."""
     import importlib.util
@@ -275,3 +429,58 @@ def load_tests(loader: unittest.TestLoader, tests: unittest.TestSuite, pattern: 
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BattleStingsTest(unittest.TestCase):
+    """M3-AUD-18: battle_stings.json (data_check.sting_errors). The shipped table passes; rows are sfx rows, a duck is
+    a mix.json duck held for a time."""
+
+    DOC = {"events": {"boss_intro": {"sfx": "a", "by_arg": {"drownbell": "b"}, "duck": "boss_intro", "duck_sec": 3.0}},
+           "reduced": {"a": "b"}}
+
+    def test_good_and_shipped(self) -> None:
+        self.assertEqual(dc.sting_errors(self.DOC, {"a", "b"}, {"boss_intro"}), [])
+        files = dc.load_files(ROOT)
+        self.assertIn(dc.BATTLE_STINGS, files)
+        rows = set(dc.merged_sfx(files)["sfx"])
+        ducks = set(files[dc.MIX]["ducks"])
+        self.assertEqual(dc.sting_errors(files[dc.BATTLE_STINGS], rows, ducks), [])
+
+    def test_bad_rows_and_ducks(self) -> None:
+        bad = copy.deepcopy(self.DOC)
+        bad["events"]["boss_intro"]["by_arg"]["drownbell"] = "zz"
+        bad["events"]["boss_intro"]["duck_sec"] = 0
+        bad["reduced"]["a"] = "yy"
+        errs = dc.sting_errors(bad, {"a", "b"}, set())
+        for frag in ("zz is not an sfx row", "not a mix.json duck", "duck_sec", "yy is not an sfx row"):
+            self.assertTrue(any(frag in e for e in errs), (frag, errs))
+
+
+class VoicePaceTest(unittest.TestCase):
+    """M3-AUD-21: voices.json pace is syllable or letter."""
+
+    def test_pace(self) -> None:
+        files = dc.load_files(ROOT)
+        rows = dc.merged_sfx(files)["sfx"]
+        doc = copy.deepcopy(files[dc.VOICES])
+        self.assertEqual(doc.get("pace"), "syllable")
+        self.assertFalse([e for e in dc.voice_errors(doc, files.get(dc.SPEAKERS), rows) if "pace" in e])
+        doc["pace"] = "word"
+        self.assertTrue(any("pace" in e for e in dc.voice_errors(doc, files.get(dc.SPEAKERS), rows)))
+
+
+class MuffleTest(unittest.TestCase):
+    """M3-AUD-22: mix.json muffle and reefball_hooks.json muffle (data_check.muffle_errors)."""
+
+    def test_shipped_and_bad(self) -> None:
+        files = dc.load_files(ROOT)
+        _, buses = dc.mix_errors(files[dc.MIX])
+        self.assertEqual(dc.muffle_errors(files[dc.MIX], files[dc.REEFBALL_HOOKS], buses), [])
+        mix = copy.deepcopy(files[dc.MIX])
+        mix["muffle"]["buses"].append("Music")
+        mix["muffle"]["cutoff_hz"] = 30000.0
+        rb = copy.deepcopy(files[dc.REEFBALL_HOOKS])
+        rb["muffle"] = {"reason": ""}
+        errs = dc.muffle_errors(mix, rb, buses)
+        for frag in ("leave Music out", "cutoff_hz < open_hz", "muffle.reason", "names the ear"):
+            self.assertTrue(any(frag in e for e in errs), (frag, errs))

@@ -48,11 +48,21 @@ M1_AUD_02 = ("hush_theme_v2", "battle_standard.", "temple_trial")
 M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_verse", "hush_coda", "haluna_dawn",
            "shell_shrine_interior", "ilun_summon", "saltgrass_causeway", "lamp_diver", "sefir_theme", "the_ebbing",
            "tidecup_match", "terraces_of_ash", "corrow_seawall", "hullgnaw", "spar_wraith", "oruvel", "pilgrims_wake",
-           "tamsule", "iskarra_vigil")
+           "tamsule", "iskarra_vigil", "brightwater_ferry", "brine_shoals")
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
-AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024)}  # M2-AUD-13: two q1 beds
+AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
+                        "assets_src/sfx/act1_ambience.py": int(3.0 * 1024 * 1024)}  # M2-AUD-13: two q1 beds; M3-AUD-16: six
 AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
+
+
+def _source_files(path: str) -> list[str]:
+    """A source's own FILES list (M3-AUD-14: 194 creature files named from its table, not copied here)."""
+    spec = importlib.util.spec_from_file_location("files_of_" + os.path.basename(path)[:-3], os.path.join(ROOT, path))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return list(mod.FILES)
+
 
 # (module source, output dir, output file names, kind)
 JOBS = [
@@ -101,6 +111,9 @@ JOBS = [
     ("assets_src/music/lamp_diver.py", "assets/audio/music", ["lamp_diver.ogg", "lamp_diver.loop.json"], "music_loop"),
     ("assets_src/music/sefir_theme.py", "assets/audio/music", ["sefir_theme.ogg", "sefir_theme.loop.json"], "music_loop"),
     ("assets_src/music/the_ebbing.py", "assets/audio/music", ["the_ebbing.ogg"], "music"),
+    ("assets_src/sfx/act1_ambience.py", "assets/audio/ambience",
+     [f"{b}{ext}" for b in ("tamsule_port", "tamsule_bell", "brine_shoals", "pemakar_terraces", "ashcrown",
+                           "corrow_seawall") for ext in (".ogg", ".loop.json")], "ambience_loop"),
     ("assets_src/sfx/field_ambience.py", "assets/audio/ambience",
      [f"{b}{ext}" for b in ("haluna_day", "haluna_night", "surf", "dock", "shrine_interior", "wind")
       for ext in (".ogg", ".loop.json")], "ambience_loop"),
@@ -144,6 +157,36 @@ JOBS = [
      ["pilgrims_wake.ogg", "pilgrims_wake.loop.json"], "music_loop"),
     ("assets_src/music/tamsule.py", "assets/audio/music", ["tamsule.ogg", "tamsule.loop.json"], "music_loop"),
     ("assets_src/music/iskarra_vigil.py", "assets/audio/music", ["iskarra_vigil.ogg"], "music"),
+    ("assets_src/music/brightwater_ferry.py", "assets/audio/music",
+     ["brightwater_ferry.ogg", "brightwater_ferry.loop.json"], "music_loop"),
+    ("assets_src/music/brine_shoals.py", "assets/audio/music",
+     ["brine_shoals.ogg", "brine_shoals.loop.json"], "music_loop"),
+    # M3-AUD-15: the M3 menus' UI sounds (Lattice, Equip, map, tips, title)
+    ("assets_src/sfx/menu_sfx.py", "assets/audio/sfx",
+     [f"{u}.ogg" for u in ("ui_lattice_node", "ui_lattice_unlock", "ui_lattice_step", "ui_equip", "ui_unequip",
+                           "ui_map_open", "ui_map_close", "ui_map_tick", "ui_map_marker", "ui_tip",
+                           "ui_title_confirm", "ui_title_swell")], "sfx"),
+    # M3-AUD-13: the battle choreography's whooshes, weapon accents, footfalls, KO, Swell, toll, flood, Vowbound
+    ("assets_src/sfx/choreo_sfx.py", "assets/audio/sfx",
+     [f"choreo/{k}_{v}.ogg" for k, c in (("whoosh_melee", 3), ("whoosh_heavy", 2), ("whoosh_cast", 2),
+                                          ("whoosh_throw", 2), ("whoosh_guard", 2), ("accent_hooks", 3),
+                                          ("accent_staff", 2), ("accent_spear", 3), ("accent_shield", 2),
+                                          ("accent_book", 2), ("accent_focus", 2), ("accent_cleaver", 2),
+                                          ("accent_claw", 3), ("accent_teeth", 2), ("accent_bell_hood", 2),
+                                          ("accent_guard", 2), ("step_sand", 4), ("ko_collapse", 2))
+      for v in range(1, c + 1)]
+     + [f"choreo/{s}.ogg" for s in ("swell_rhen", "swell_asha", "swell_toma", "swell_ysolde", "toll_wave",
+                                    "flood_surge")]
+     + ["choreo/flood_brace_1.ogg", "choreo/flood_brace_2.ogg"]
+     + [f"choreo/{s}.ogg" for s in ("vowbound_beckon", "vowbound_rise", "vowbound_rise_long", "vowbound_sink",
+                                    "vowbound_fall")], "sfx"),
+    # M3-AUD-18: stings on the battle presentation's announcements (the tide line, the bark, boss intros)
+    ("assets_src/sfx/battle_stings.py", "assets/audio/sfx",
+     [f"battle/sting_{s}.ogg" for s in ("tideline", "bark", "boss", "boss_soft", "boss_bell", "boss_bell_soft")],
+     "sfx"),
+    # M3-AUD-14: creature voices and movement (the file list is the source's own, like battle_sfx's)
+    ("assets_src/sfx/creature_sfx.py", "assets/audio/sfx/creatures", _source_files("assets_src/sfx/creature_sfx.py"),
+     "sfx"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
@@ -281,7 +324,8 @@ def main() -> int:
             continue
         ils = f"{il:7.2f}" if il is not None else "      -"
         print(f"{path:48} {size:8d} {sec:6.2f} {ils} {mm:7.2f} {tp:6.2f}  {sha[:12]}")
-        held = os.path.basename(path).startswith(M1_AUD_02 + M2_CUES)
+        held = (path.startswith("assets/audio/music") or path.endswith("ilun_summon.ogg")) and os.path.basename(
+            path).startswith(M1_AUD_02 + M2_CUES)
         if il is not None and held and (abs(il + 16.0) > 0.5 or tp > -1.0):
             print(f"FAIL {path}: outside -16 +- 0.5 LUFS, or true peak above -1 dBTP")
             ok = False

@@ -20,7 +20,13 @@ UI_SFX = "game/data/audio/ui_sfx.json"
 AMBIENCE = "game/data/audio/ambience.json"
 FOOTSTEPS = "game/data/audio/footsteps.json"
 VOICES = "game/data/audio/voices.json"  # M3-AUD-07
+REEFBALL_HOOKS = "game/data/audio/reefball_hooks.json"  # M3-AUD-17
+CHOREO_SFX = "game/data/audio/choreo_sfx.json"  # M3-AUD-13
+BATTLE_STINGS = "game/data/audio/battle_stings.json"  # M3-AUD-18
+CHOREO = "game/data/battle/choreo.json"  # the battle-presentation track's styles (once merged)
 SPEAKERS = "game/data/dialogue/speakers.json"
+CREATURE_VOICES = "game/data/audio/creature_voices.json"  # M3-AUD-14
+ENEMIES = "game/data/battle/enemies.json"
 CLASSES = "@classes"  # load_files: {global class name: [its declared signals]} from game/**/*.gd
 NODE_SIGNALS = {"ready", "tree_entered", "tree_exiting", "tree_exited", "visibility_changed", "hidden",
                 "draw", "resized", "focus_entered", "focus_exited"}
@@ -244,7 +250,9 @@ def ambience_errors(doc: object, exists, flags: set[str], buses: set[str], music
         w = f"{AMBIENCE} zones.{scene}"
         if not scene.startswith("res://") or not scene.endswith(".tscn"):
             errs.append(f"{w}: the key must be a res://...tscn path")
-        elif not exists(scene):
+        elif not exists(scene) and not (isinstance(row, dict) and row.get("pending")):
+            # "pending": true marks a zone whose scene is on another track's branch (M3-AUD-16): its beds go live
+            # when the scene merges; everything else in the row is still checked.
             errs.append(f"{w}: {scene} does not exist")
         if not isinstance(row, dict):
             errs.append(f"{w}: must be an object")
@@ -358,6 +366,144 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
     if VOICES in files:
         rows = merged_sfx(files).get("sfx") or {}
         errs += voice_errors(files[VOICES], files.get(SPEAKERS), rows)
+    if CHOREO_SFX in files:
+        errs += choreo_errors(files[CHOREO_SFX], merged_sfx(files).get("sfx") or {}, files.get(CLASSES),
+                              files.get(CHOREO))
+    if REEFBALL_HOOKS in files:
+        all_beds = set(amb_beds) | set(((files.get(MUSIC) or {}).get("ambience") or {}).keys())
+        errs += reefball_hook_errors(files[REEFBALL_HOOKS], ids, all_beds, files.get(CLASSES))
+    errs += muffle_errors(files.get(MIX), files.get(REEFBALL_HOOKS), buses)
+    if BATTLE_STINGS in files:
+        errs += sting_errors(files[BATTLE_STINGS], ids, set(((files.get(MIX) or {}).get("ducks") or {}).keys()))
+    if CREATURE_VOICES in files:
+        errs += creature_voice_errors(files[CREATURE_VOICES], files.get(ENEMIES), merged_sfx(files).get("sfx") or {})
+    return errs
+
+
+def muffle_errors(mix: object, reefball: object, buses: set[str]) -> list[str]:
+    """mix.json muffle (M3-AUD-22): real buses (never Music), cutoff below open, a ramp >= 0; reefball_hooks.json
+    muffle names a reason and where the ear is."""
+    errs: list[str] = []
+    cfg = (mix or {}).get("muffle") if isinstance(mix, dict) else None
+    if cfg is not None:
+        for b in cfg.get("buses", []):
+            if b not in buses:
+                errs.append(f"{MIX} muffle.buses: {b} is not a bus")
+            if b == "Music":
+                errs.append(f"{MIX} muffle.buses: the score is not in the water (leave Music out)")
+        if not (_num(cfg.get("cutoff_hz")) and _num(cfg.get("open_hz")) and 20 <= cfg["cutoff_hz"] < cfg["open_hz"]):
+            errs.append(f"{MIX} muffle: 20 <= cutoff_hz < open_hz")
+        if not _num(cfg.get("ramp_sec", 0)) or cfg.get("ramp_sec", 0) < 0:
+            errs.append(f"{MIX} muffle.ramp_sec: seconds >= 0")
+    m = (reefball or {}).get("muffle") if isinstance(reefball, dict) else None
+    if m is not None:
+        if not isinstance(m.get("reason"), str) or not m["reason"]:
+            errs.append(f"{REEFBALL_HOOKS} muffle.reason: a reason name")
+        if not m.get("use_camera") and not m.get("ear_groups"):
+            errs.append(f"{REEFBALL_HOOKS} muffle: use_camera or ear_groups names the ear")
+        if cfg is None:
+            errs.append(f"{REEFBALL_HOOKS} muffle: needs mix.json muffle")
+    return errs
+
+
+def sting_errors(doc: object, ids: set[str], ducks: set[str]) -> list[str]:
+    """battle_stings.json (M3-AUD-18): every row an sfx row, every duck a mix.json duck held for a time > 0."""
+    w0 = BATTLE_STINGS
+    if not isinstance(doc, dict):
+        return [f"{w0}: must be an object"]
+    errs: list[str] = []
+    for ev, row in (doc.get("events") or {}).items():
+        w = f"{w0} events.{ev}"
+        if not isinstance(row, dict):
+            errs.append(f"{w}: must be an object")
+            continue
+        for sid in [row.get("sfx")] + list((row.get("by_arg") or {}).values()):
+            if sid not in ids:
+                errs.append(f"{w}: {sid} is not an sfx row")
+        if "duck" in row:
+            if row["duck"] not in ducks:
+                errs.append(f"{w}.duck: {row['duck']} is not a mix.json duck")
+            if not _num(row.get("duck_sec")) or row["duck_sec"] <= 0:
+                errs.append(f"{w}.duck_sec: a duck needs a time > 0")
+    for k, v in (doc.get("reduced") or {}).items():
+        for sid in (k, v):
+            if sid not in ids:
+                errs.append(f"{w0} reduced: {sid} is not an sfx row")
+    return errs
+
+
+CROWD_STATES = {"murmur", "excited", "silence"}
+
+
+def reefball_hook_errors(doc: object, ids: set[str], beds: set[str], classes: dict[str, list[str]] | None) -> list[str]:
+    """reefball_hooks.json (M3-AUD-17): every sound an sfx row, the crowd's beds ambience beds, each action's crowd
+    state known, the swim numbers positive, and class and signal names real unless the hook is `pending`."""
+    w0 = REEFBALL_HOOKS
+    if not isinstance(doc, dict):
+        return [f"{w0}: must be an object"]
+    errs: list[str] = []
+
+    def row(v: object, w: str) -> None:
+        if v not in ids:
+            errs.append(f"{w}: {v} is not an sfx.json row")
+
+    def action(a: object, w: str) -> None:
+        if not isinstance(a, dict):
+            errs.append(f"{w}: an action is an object")
+            return
+        for k in ("sfx", "sfx_at"):
+            v = a.get(k)
+            for sid in (v if isinstance(v, list) else [v] if v is not None else []):
+                row(sid, f"{w}.{k}")
+        for k in ("crowd", "restore"):
+            if k in a and a[k] not in CROWD_STATES:
+                errs.append(f"{w}.{k}: {a[k]} is not murmur, excited or silence")
+        if "restore" in a and (not _num(a.get("restore_after_sec")) or a["restore_after_sec"] <= 0):
+            errs.append(f"{w}.restore_after_sec: a restore needs a time > 0")
+        if not any(k in a for k in ("sfx", "sfx_at", "crowd")):
+            errs.append(f"{w}: does nothing (needs sfx, sfx_at or crowd)")
+
+    crowd = doc.get("crowd") or {}
+    for k in ("murmur", "excited"):
+        if crowd.get(k) not in beds:
+            errs.append(f"{w0} crowd.{k}: {crowd.get(k)} is not an ambience bed")
+    for k in ("fade_sec", "rite_fade_sec"):
+        if k in crowd and (not _num(crowd[k]) or crowd[k] < 0):
+            errs.append(f"{w0} crowd.{k}: a fade is a number >= 0")
+    swim = doc.get("swim") or {}
+    for k in ("enter", "exit", "stroke"):
+        row(swim.get(k), f"{w0} swim.{k}")
+    for k in ("stroke_m", "teleport_m"):
+        if not _num(swim.get(k)) or swim[k] <= 0:
+            errs.append(f"{w0} swim.{k}: a distance > 0")
+    if not _num(swim.get("edge_m")) or swim["edge_m"] < 0:
+        errs.append(f"{w0} swim.edge_m: a distance >= 0")
+    if not isinstance(swim.get("groups"), list) or not swim["groups"]:
+        errs.append(f"{w0} swim.groups: needs at least one group")
+    seen: set[str] = set()
+    for i, h in enumerate(doc.get("hooks", [])):
+        w = f"{w0} hooks[{i}]"
+        if not isinstance(h, dict) or not isinstance(h.get("class"), str) or not h["class"]:
+            errs.append(f"{w}.class: needs a class name")
+            continue
+        cls = h["class"]
+        if cls in seen:
+            errs.append(f"{w}.class: {cls} has two hooks")
+        seen.add(cls)
+        known = classes is not None and not h.get("pending", False)
+        if known and cls not in classes:
+            errs.append(f"{w}.class: no script declares class_name {cls} (mark the hook pending until it lands)")
+            known = False
+        for sig, a in (h.get("signals") or {}).items():
+            action(a, f"{w}.signals.{sig}")
+            if known and sig not in classes[cls] and sig not in NODE_SIGNALS:
+                errs.append(f"{w}.signals.{sig}: {cls} declares no such signal")
+        for k in ("on_enter", "on_exit"):
+            if k in h:
+                action(h[k], f"{w}.{k}")
+        sp = h.get("sphere")
+        if sp is not None and (not isinstance(sp, dict) or not (sp.get("radius_method") or _num(sp.get("radius_m")))):
+            errs.append(f"{w}.sphere: needs radius_method or radius_m")
     return errs
 
 
@@ -380,7 +526,7 @@ def load_files(root: Path) -> dict[str, object]:
     out = {}
     extra = [str(p.relative_to(root)) for p in sorted((root / SFX_DIR).glob("sfx_*.json"))]
     for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, AMBIENCE, FOOTSTEPS, ENCOUNTERS, VFX_EFFECTS,
-                ACCESSIBILITY, VOICES, SPEAKERS] + extra:
+                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS, CREATURE_VOICES, ENEMIES] + extra:
         p = root / rel
         if p.is_file():
             out[rel] = json.loads(p.read_text(encoding="utf-8"))
@@ -468,6 +614,10 @@ def voice_errors(doc: object, speakers: object, rows: dict) -> list[str]:
     errs: list[str] = []
     if not isinstance(doc, dict):
         return [f"{VOICES}: must be an object"]
+    if doc.get("pace", "syllable") not in ("syllable", "letter"):
+        errs.append(f"{VOICES} pace: syllable or letter (M3-AUD-21)")
+    if not _num(doc.get("mix_db", 0.0)) or not -12.0 <= doc.get("mix_db", 0.0) <= 12.0:
+        errs.append(f"{VOICES} mix_db: a number in -12..12 dB (M3-AUD-23)")
 
     def voice(row: object, w: str, full: bool) -> None:
         if not isinstance(row, dict):
@@ -509,4 +659,159 @@ def voice_errors(doc: object, speakers: object, rows: dict) -> list[str]:
         errs.append(f"{VOICES} vo.pattern: a res:// path with {{line_id}} (and usually {{speaker}})")
     if "bus" in vo and vo["bus"] != "Voice":
         errs.append(f"{VOICES} vo.bus: recorded lines play on the Voice bus")
+    return errs
+
+
+CHOREO_ROLES = {"beat": 2, "contact": 1}  # choreo_audio.gd's roles and the arguments each needs
+CHOREO_SKIPS = {"contact", "steps"}
+
+
+def choreo_errors(doc: object, rows: dict, classes: dict[str, list[str]] | None, choreo: object) -> list[str]:
+    """choreo_sfx.json (M3-AUD-13): hooks by class and signal name (checked once the class exists; until then the
+    hook must say pending), every sound a Combat-bus sfx row, weapons with accents, whooshes with a crest time, and
+    style ids that choreo.json knows (when the battle-presentation track's table is present)."""
+    if not isinstance(doc, dict):
+        return [f"{CHOREO_SFX}: must be an object"]
+    errs: list[str] = []
+    w0 = CHOREO_SFX
+
+    def row(v: object, w: str, blank: bool = True) -> None:
+        if blank and v == "":
+            return
+        if v not in rows:
+            errs.append(f"{w}: {v} is not an sfx.json row")
+        elif (rows[v] or {}).get("bus") != "Combat":
+            errs.append(f"{w}: row {v} must play on the Combat bus")
+
+    def count(v: object, w: str) -> None:
+        if not isinstance(v, int) or isinstance(v, bool) or v < 0:
+            errs.append(f"{w}: a whole number >= 0")
+
+    hooks = doc.get("hooks") or []
+    if not hooks:
+        errs.append(f"{w0} hooks: at least one hook")
+    for i, h in enumerate(hooks):
+        w = f"{w0} hooks[{i}]"
+        if not isinstance(h, dict) or not isinstance(h.get("class"), str) or not h["class"]:
+            errs.append(f"{w}.class: needs a class name")
+            continue
+        known = classes is not None and h["class"] in classes
+        if classes is not None and not known and not h.get("pending", False):
+            errs.append(f"{w}.class: no script declares class_name {h['class']} (mark the hook pending)")
+        for role, sig in (h.get("signals") or {}).items():
+            if role not in CHOREO_ROLES:
+                errs.append(f"{w}.signals.{role}: not a role ({', '.join(sorted(CHOREO_ROLES))})")
+            if known and sig not in classes[h["class"]]:
+                errs.append(f"{w}.signals.{role}: {h['class']} declares no signal {sig}")
+    accents = doc.get("accents") or {}
+    for kind, sid in accents.items():
+        row(sid, f"{w0} accents.{kind}")
+    for who, kind in (doc.get("weapons") or {}).items():
+        if kind not in accents:
+            errs.append(f"{w0} weapons.{who}: {kind} has no accent")
+    if doc.get("weapon_default") not in accents:
+        errs.append(f"{w0} weapon_default: {doc.get('weapon_default')} has no accent")
+    peaks = doc.get("peaks") or {}
+    for sid, sec in peaks.items():
+        row(sid, f"{w0} peaks.{sid}", blank=False)
+        if not _num(sec) or sec < 0:
+            errs.append(f"{w0} peaks.{sid}: seconds >= 0")
+    known_styles = None
+    if isinstance(choreo, dict):
+        known_styles = set(((choreo.get("choreo") or {}).get("styles") or {}).keys())
+    for sid, st in (doc.get("styles") or {}).items():
+        w = f"{w0} styles.{sid}"
+        if known_styles is not None and sid not in known_styles:
+            errs.append(f"{w}: not a style in {CHOREO}")
+        if not isinstance(st, dict):
+            errs.append(f"{w}: must be an object")
+            continue
+        for k in ("approach", "return"):
+            row(st.get(k, ""), f"{w}.{k}")
+            count(st.get(f"{k}_steps", 0), f"{w}.{k}_steps")
+        strikes = [st.get("strike", "")] + list((st.get("strike_by_weapon") or {}).values())
+        for j, v in enumerate(strikes):
+            row(v, f"{w}.strike" if j == 0 else f"{w}.strike_by_weapon")
+            if v and v not in peaks:
+                errs.append(f"{w}: whoosh {v} has no crest time in peaks")
+        if st.get("contact", "") != "@weapon":
+            row(st.get("contact", ""), f"{w}.contact")
+        for v in (st.get("contact_by_weapon") or {}).values():
+            row(v, f"{w}.contact_by_weapon")
+        for k in ("strike_by_weapon", "contact_by_weapon"):
+            for kind in (st.get(k) or {}):
+                if kind not in accents:
+                    errs.append(f"{w}.{k}: {kind} is not a weapon kind (accents)")
+        if "needs_hit" in st and not isinstance(st["needs_hit"], bool):
+            errs.append(f"{w}.needs_hit: true or false")
+    for skill, sid in (doc.get("skills") or {}).items():
+        row(sid, f"{w0} skills.{skill}")
+    row(doc.get("ko"), f"{w0} ko", blank=False)
+    for k in ("enter", "step_off"):
+        r = doc.get(k) or {}
+        row(r.get("sfx"), f"{w0} {k}.sfx", blank=False)
+        count(r.get("steps", 0), f"{w0} {k}.steps")
+    vb = doc.get("vowbound") or {}
+    for k in ("call", "rise", "rise_long", "sink", "fall"):
+        row(vb.get(k), f"{w0} vowbound.{k}", blank=False)
+    if not _num(vb.get("long_sec")) or vb["long_sec"] <= 0:
+        errs.append(f"{w0} vowbound.long_sec: seconds > 0")
+    flood = doc.get("flood") or {}
+    row(flood.get("sfx"), f"{w0} flood.sfx", blank=False)
+    if not isinstance(flood.get("phase"), str) or not _num(flood.get("stagger_sec")) or flood["stagger_sec"] < 0:
+        errs.append(f"{w0} flood: a phase id and stagger_sec >= 0")
+    for k in doc.get("reduced_skip", []):
+        if k not in CHOREO_SKIPS:
+            errs.append(f"{w0} reduced_skip: {k} is not one of {sorted(CHOREO_SKIPS)}")
+    return errs
+
+
+CREATURE_EVENTS = ("idle", "attack", "hurt", "death", "move")
+SILENT_CREATURE = "silent"
+
+
+def creature_voice_errors(doc: object, enemies: object, rows: dict) -> list[str]:
+    """creature_voices.json (M3-AUD-14): every enemies.json enemy has a voice row or "silent"; each event is a known
+    event naming a real sfx row; pitch, delays and levels are sane; clips map to known events."""
+    errs: list[str] = []
+    if not isinstance(doc, dict):
+        return [f"{CREATURE_VOICES}: must be an object"]
+    table = doc.get("creatures")
+    if not isinstance(table, dict):
+        return [f"{CREATURE_VOICES} creatures: must be an object"]
+    for cid, row in table.items():
+        w = f"{CREATURE_VOICES} creatures.{cid}"
+        if row == SILENT_CREATURE:
+            continue
+        if not isinstance(row, dict) or not isinstance(row.get("events"), dict) or not row["events"]:
+            errs.append(f"{w}: an object with events, or \"{SILENT_CREATURE}\"")
+            continue
+        for ev, sid in row["events"].items():
+            if ev not in CREATURE_EVENTS:
+                errs.append(f"{w}.events.{ev}: not an event ({', '.join(CREATURE_EVENTS)})")
+            if sid not in rows:
+                errs.append(f"{w}.events.{ev}: {sid} is not an sfx.json row")
+        if "pitch" in row and (not _num(row["pitch"]) or not 0.5 <= row["pitch"] <= 2.0):
+            errs.append(f"{w}.pitch: a number in 0.5..2.0")
+    for ev, ms in (doc.get("delays_ms") or {}).items():
+        if ev not in CREATURE_EVENTS or not _num(ms) or not 0 <= ms <= 2000:
+            errs.append(f"{CREATURE_VOICES} delays_ms.{ev}: an event and 0..2000 ms")
+    for clip, ev in (doc.get("clips") or {}).items():
+        if ev not in CREATURE_EVENTS:
+            errs.append(f"{CREATURE_VOICES} clips.{clip}: {ev} is not an event")
+    for ev in doc.get("reduced_skip", []):
+        if ev not in CREATURE_EVENTS:
+            errs.append(f"{CREATURE_VOICES} reduced_skip: {ev} is not an event")
+    for k in ("under_db", "idle_cooldown_ms"):
+        if k in doc and not _num(doc[k]):
+            errs.append(f"{CREATURE_VOICES} {k}: must be a number")
+    if _num(doc.get("under_db", 0)) and doc.get("under_db", 0) > 0:
+        errs.append(f"{CREATURE_VOICES} under_db: voices sit under the hit sounds (<= 0 dB)")
+    for cls, prop in (doc.get("model_classes") or {}).items():
+        if not isinstance(prop, str) or not prop:
+            errs.append(f"{CREATURE_VOICES} model_classes.{cls}: the property naming the model's creature id")
+    for e in ((enemies or {}).get("enemies") or []):
+        eid = e.get("id") if isinstance(e, dict) else None
+        if isinstance(eid, str) and eid not in table:
+            errs.append(f"{CREATURE_VOICES} creatures: enemy {eid} ({ENEMIES}) has no voice row and is not \"silent\"")
     return errs
