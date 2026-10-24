@@ -11,7 +11,7 @@
 
 **Puzzle.** The spring pours into `b1`. Each basin pours out of one lip, toward `outlets[rotation]`: another basin, the inner pool, the side sluice, or a spill grate. Using a basin turns it 90° clockwise. While the water reaches the inner pool, the pool fills over `fill_sec`; when it's full the door sinks and stays open (`ch03_shrine_door_open`). The first time the water reaches the sluice, the side pool empties for good (`ch03_side_pool_drained`), and the net-float charm can be taken: the `net_float_charm` key item and `ch03_found_net_float`, which Cutscene B reads. Toma's one hint (`ch03_trial_hint`) comes after `hint_idle_sec` with no turn. Water that loops is lost.
 
-The shortest solution is 3 turns and the side pool takes 3; `tools/tests/test_shell_shrine_trial.py` holds the band. Change the data, not the code.
+**M2-FP-22 (review-sweep-Q):** there are four basins. The water starts out going round (b1 → b4 → b1), so b4 has to be turned *away* from b1, through two spill grates, before it feeds b3. The shortest solution is 6 turns (b1 → b4 → b3 → the pool), and the side pool takes 4 (b1 → b2 → the sluice). Draining it never breaks the main route, because rotations cycle. A random turner needs a median of about 75 turns, so Toma's 90 s hint can play. `tools/tests/test_shell_shrine_trial.py` holds the band (5–10) and the random-turner floor (a median of 20 or more, seeded). Change the data, not the code.
 
 **Greybox.** It stands in until M2-ENV-03, and Audio is M2-AUD-01. Asha and Toma aren't in the room yet (there are no followers), and the hint is Toma's voice only.
 

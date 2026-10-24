@@ -41,11 +41,12 @@ func test_the_room_has_its_basins_channels_pools_and_door() -> void:
 
 
 func test_turning_basins_routes_the_water_fills_the_pool_and_opens_the_door() -> void:
-	var b1 := _interactable(&"basin_b1")
-	assert_true(b1.try_interact(), "Rhen turns the first basin")
-	assert_eq(int(level.trial.rotations[&"b1"]), 1)
-	assert_between(angle_difference(level.basin_yaw(&"b1"), _yaw_to_outlet(&"b1")), -0.01, 0.01, "the lip turned")
-	assert_true(level.is_channel_lit("b1>b2"), "the water now runs to the second basin")
+	var b4 := _interactable(&"basin_b4")
+	assert_true(level.is_channel_lit("b1>b4"), "the water starts out round b1 and b4 (M2-FP-22)")
+	assert_true(b4.try_interact(), "Rhen turns b4 away from b1")
+	assert_eq(int(level.trial.rotations[&"b4"]), 0)
+	assert_between(angle_difference(level.basin_yaw(&"b4"), _yaw_to_outlet(&"b4")), -0.01, 0.01, "the lip turned")
+	assert_false(level.is_channel_lit("b4>b1"), "no longer back to b1")
 	_solve()
 	assert_true(level.trial.reaches(level.trial.goal()))
 	assert_true(level.is_channel_lit("b3>inner_pool"), "and on into the inner pool")
@@ -70,9 +71,7 @@ func test_turning_basins_routes_the_water_fills_the_pool_and_opens_the_door() ->
 func test_the_side_pool_drains_and_gives_the_charm() -> void:
 	var take := _interactable(&"net_float_charm")
 	assert_false(take.is_available(), "nothing to take while the pool is full")
-	_interactable(&"basin_b1").try_interact()
-	_interactable(&"basin_b2").try_interact()
-	_interactable(&"basin_b2").try_interact()
+	_solve(level.trial.drain())
 	assert_true(level.trial.reaches(level.trial.drain()))
 	level.advance(0.1)
 	assert_true(level.trial.side_drained)
@@ -121,9 +120,11 @@ func before_each_keep_state() -> void:
 	level.player.set_physics_process(false)
 
 
-func _solve() -> void:
+func _solve(target: StringName = &"") -> void:
+	if target == &"":
+		target = level.trial.goal()
 	var guard := 0
-	while not level.trial.reaches(level.trial.goal()) and guard < 16:
+	while not level.trial.reaches(target) and guard < 16:
 		guard += 1
 		var best := &""
 		var best_n := 1 << 20
@@ -131,7 +132,7 @@ func _solve() -> void:
 			var probe := ShellShrineTrial.new(level.trial.data)
 			probe.rotations = level.trial.rotations.duplicate()
 			probe.rotate(b)
-			var n := probe.min_turns_to(probe.goal())
+			var n := probe.min_turns_to(target)
 			if n >= 0 and n < best_n:
 				best_n = n
 				best = b
