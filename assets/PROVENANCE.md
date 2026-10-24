@@ -461,3 +461,7 @@ Rules:
 | assets/audio/music/terraces_of_ash.loop.json | assets_src/music/terraces_of_ash.py + tools/audio/synth/looping.py | python3 assets_src/music/terraces_of_ash.py | Audio (claude/audio, M3-AUD-04) | 2026-10-24 | original |
 | assets/audio/music/corrow_seawall.ogg | assets_src/music/corrow_seawall.py + tools/audio/synth/ | python3 assets_src/music/corrow_seawall.py | Audio (claude/audio, M3-AUD-04) | 2026-10-24 | original |
 | assets/audio/music/corrow_seawall.loop.json | assets_src/music/corrow_seawall.py + tools/audio/synth/looping.py | python3 assets_src/music/corrow_seawall.py | Audio (claude/audio, M3-AUD-04) | 2026-10-24 | original |
+| assets/audio/ambience/causeway_wind.ogg | assets_src/sfx/causeway_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only causeway_ambience | Audio (claude/audio, M2-AUD-13) | 2026-10-24 | original |
+| assets/audio/ambience/causeway_wind.loop.json | assets_src/sfx/causeway_ambience.py + tools/audio/synth/looping.py | python3 tools/audio/render_all.py --only causeway_ambience | Audio (claude/audio, M2-AUD-13) | 2026-10-24 | original |
+| assets/audio/ambience/tidepools.ogg | assets_src/sfx/causeway_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only causeway_ambience | Audio (claude/audio, M2-AUD-13) | 2026-10-24 | original |
+| assets/audio/ambience/tidepools.loop.json | assets_src/sfx/causeway_ambience.py + tools/audio/synth/looping.py | python3 tools/audio/render_all.py --only causeway_ambience | Audio (claude/audio, M2-AUD-13) | 2026-10-24 | original |
