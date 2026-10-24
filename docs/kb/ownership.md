@@ -17,9 +17,9 @@ Claim a path glob before editing `.tscn` or `.tres` files or assets (SPEC §5.3)
 | Art direction (stream) | `docs/kb/art/**` | 2026-10-22 | art-stream-1 |
 | UI + Combat (stream) | `game/ui/**`, `game/battle/scene/**`, `game/data/ui/**`, `assets/fonts/**` | 2026-10-22 | ui-combat-stream-1 |
 | Rendering (glimmer) | `game/vfx/glimmer/**`, `game/shaders/glimmer/**`, `game/data/vfx/**`, `game/levels/_tests/glimmer/**` | 2026-10-22 | rendering-stream-3 |
-| Rendering (water) | `game/shaders/water/**`, `game/world/water/**`, `game/levels/_tests/water/**` | 2026-10-22 | rendering-stream-2 |
-| Character | `assets_src/characters/**`, `assets/characters/**`, `game/levels/_tests/characters/**` | 2026-10-22 | character-stream-1 |
-| Environment | `assets_src/environments/**`, `assets/environments/**`, `game/shaders/vegetation/**`, `game/levels/_tests/vegetation/**` | 2026-10-22 | environment-stream-1 |
+| Rendering (water) | `game/shaders/water/**`, `game/world/water/**` (including `lagoon_waves.tres`, moved from `_tests/water` by M2-ARC-04), `game/levels/_tests/water/**` | 2026-10-22 | rendering-stream-2 |
+| Character | `assets_src/characters/**`, `assets/characters/**`, `game/levels/_tests/characters/**`, `game/data/cutscene/asha_face_poses.json` (moved from `_tests/characters/asha` by M2-ARC-04) | 2026-10-22 | character-stream-1 |
+| Environment | `assets_src/environments/**`, `assets/environments/**`, `game/shaders/vegetation/**`, `game/world/vegetation/**` (`VegetationPlant`, `VegetationScatter`, moved from `_tests/vegetation` by M2-ARC-04), `game/levels/_tests/vegetation/**` | 2026-10-22 | environment-stream-1 |
 | Progression (economy) | `game/data/items/**`, `game/progression/{item_db,inventory,equipment_bag,customize,wallet,shop,flag_reader,party_goods,equipment_effects,item_battle_action}.gd` | 2026-10-23 | progression-stream-2 |
 | Systems (field/debug/saves) | `game/world/**`, `game/core/debug/**`, `game/data/world/**`, `game/data/debug/**` | 2026-10-23 | architect-stream-2/4 |
 | Rendering (storm) | `game/shaders/undertow/**`, `game/vfx/undertow/**`, `game/levels/_tests/undertow/**` | 2026-10-23 | rendering-stream-5 |
