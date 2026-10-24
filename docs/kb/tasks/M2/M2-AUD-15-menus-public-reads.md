@@ -22,5 +22,17 @@ state is private on claude/menus:
   Audio then adds a watch row in game/data/audio/ui_sfx.json.
 
 ## Notes
+- 2026-10-24 audio (M2-AUD-17, hooks live against the merged pages): more refused Confirms that can't be heard. In
+  each case the status line already shows the same refusal before Confirm (a hover), and the attempt itself changes
+  nothing public, so a watch on the line would sound an error on a hover and stay silent on the press:
+  - ShopMenu: a refused buy or sell (`_notice`; `buy_line` / `sell_line` give the same text as `buy` / `sell`).
+  - InnMenu: a refused rest (`_notice`; `rest_line` is the same text as `rest`).
+  - EquipMenu PIECES: a refused wear or take-off (`choose_piece` repeats `piece_line`). EquipMenu RECIPES: a short
+    recipe (`recipe_line`). The GEAR-level refusal (Confirm on a filled ability slot) *is* heard: GEAR's own lines
+    never refuse.
+  - ItemsMenu LIST: Confirm on an item that can't be used here returns before anything changes.
+  - LatticeMenu: a second Confirm on the same refused node (the status line is already the plan's refusal).
+  One read covers them all: a counter of refused Confirms per page (`refusals: int`) or a `refused` signal on
+  FieldSubmenu and TownMenu.
 
 ## Review log

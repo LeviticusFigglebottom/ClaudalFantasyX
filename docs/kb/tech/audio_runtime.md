@@ -318,6 +318,33 @@ max, true peak −2.96 to −10.7 dBTP, byte-identical across two renders.
 - `ui_craft` (1.15 s): two padded hammer taps, then an E6 bell glint and a B6 bar. Smaller than `ui_lattice_node`.
 - `ui_map_pan` (0.18 s): a soft paper slide with no pitch, 6 dB under the other UI rows in game.
 
+### The pages live (M2-AUD-17)
+
+claude/menus is merged here, so every hook above whose class exists is live (no `pending`), and validate_data checks
+its class and signal names. Only `FormationMenu` is still `pending`: no script declares it yet.
+`test_change_rows_and_live_hooks` fails if a hook is pending while its class exists, or live while it is absent.
+No new sound: the new and rewritten hooks reuse existing rows.
+
+| Class | What changed |
+|---|---|
+| `ShopMenu` | Rewritten. The guessed `bought` / `sold` / `refused` / `tab_changed` signals don't exist (it is a `TownMenu`, which declares only `closed`). Now: open / `closed`; `level` (ROOT 0, BUY 1, SELL 2) up/down is confirm/cancel; `root_page().cursor`, `detail_page().cursor` and `count` tick; `[wallet.amount(), item_total(inventory), equipment.uids().size()]` of `model.party` changing is `ui_buy` (a deal, so a sale into a full purse is still heard) |
+| `InnMenu` | Rewritten. No `rested` / `refused` signals. Now: open / `closed`; `root_page().cursor` ticks; `model.rests` rising is `ui_inn_rest`, which outranks the cursor's jump to Leave |
+| `LatticeMenu` | Adds `confirm_page().cursor` (the question's two rows) |
+| `EquipMenu` | `ui_error` is now `status_is_refusal() and level == 1`. GEAR's own lines never refuse, so a refusal there is a Confirm on a filled ability slot. On PIECES and RECIPES the line refuses as soon as the cursor lands, and the old watch played an error on a hover |
+| `StatusMenu` (new) | open / `closed`; `hero` changing is `ui_page` (another hero's sheet), which outranks `list_page().cursor`'s tick. Accept does nothing, so nothing plays |
+| `BattlePauseMenu` (new) | open (`on_enter`, the pause itself) / `closed` (Resume or Quit); `rows_page().cursor` ticks; `level` (ROOT 0, QUIT 1) up/down is confirm/cancel; `settings_menu != null` true/false is confirm/cancel (the Settings hub over the pause, then back) |
+| `FieldSubmenu`, `ZoneMapMenu`, `ZoneMapView`, `TipCard`, `ItemsMenu` | Checked against the real classes and unchanged, apart from dropping `pending` |
+
+- **Not heard:** a refused Confirm wherever the status line already showed that refusal before Confirm. That covers
+  the shop, the inn, Equip's PIECES and RECIPES, a key item on Items, and a second Confirm on the same refused
+  Lattice node. Customize's arming Confirm isn't heard either. The fix is listed in M2-AUD-15: a public refusal
+  counter or a signal.
+- **Tests** (`tests/unit/test_field_audio.gd`): the real LatticeMenu, EquipMenu, ItemsMenu, StatusMenu,
+  BattlePauseMenu, ShopMenu, InnMenu, ZoneMapMenu (with its view) and TipCard, built the way their own tests build
+  them and driven through `handle_input`. Each step hears exactly one row, or nothing. The rows go through
+  `UiAudio.player`, so nothing real plays. Stand-ins remain only for FormationMenu (absent), a ZoneMapView pan (the
+  real view can't pan) and the title (a real launch changes the scene).
+
 ## Reefball (M3-AUD-17)
 
 `ReefballAudio` (`game/audio/reefball_audio.gd`) listens to the arena with `game/data/audio/reefball_hooks.json`.
