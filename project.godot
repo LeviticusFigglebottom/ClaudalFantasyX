@@ -1,5 +1,10 @@
 ; Engine configuration file.
-; Pinned engine: Godot 4.6.3-stable (see docs/kb/decisions/0001-engine-version.md).
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
 
 config_version=5
 
@@ -9,6 +14,7 @@ config/name="Hymn of the Undertow"
 config/description="An original, cinematic, turn-based RPG."
 run/main_scene="res://game/core/boot.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
+run/main_scene.perf_build="res://tools/gpu_bench/slice_sweep.tscn"
 
 [autoload]
 
@@ -31,11 +37,15 @@ import/blender/enabled=false
 [gui]
 
 theme/custom="res://game/ui/theme/hymn_theme.tres"
-theme/default_font_multichannel_signed_distance_field=false
 
 [internationalization]
 
 locale/translations=PackedStringArray("res://game/data/loc/strings.en.translation", "res://game/data/loc/dialogue.en.translation")
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0.02, 0.05, 0.09, 1)
+anti_aliasing/quality/use_taa=true
 
 [shader_globals]
 
@@ -71,10 +81,3 @@ hymn_water_level={
 "type": "vec2",
 "value": Vector2(0, 0)
 }
-
-[rendering]
-
-renderer/rendering_method="forward_plus"
-anti_aliasing/quality/msaa_3d=0
-anti_aliasing/quality/use_taa=true
-environment/defaults/default_clear_color=Color(0.02, 0.05, 0.09, 1)

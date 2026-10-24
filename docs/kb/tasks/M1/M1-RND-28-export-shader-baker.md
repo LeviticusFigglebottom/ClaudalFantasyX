@@ -2,7 +2,7 @@
 id: M1-RND-28
 title: Export shader baker on a Windows release build; measure boot and zone entries against ADR 0029
 role: rendering
-status: doing
+status: review
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M1-RND-27, M1-ARC-16]
@@ -20,10 +20,27 @@ RND-27 left the boot's plain first frame (0.86 s cold) to Godot's own first-use 
 export.
 
 ## Acceptance criteria
-- [ ] The templates are installed as above, with the SHA-512 recorded in the task notes.
-- [ ] `export_presets.cfg` enables the shader baker for the Windows preset, and a release build exports.
-- [ ] The release build's boot worst frame, and its zone entries' worst hidden and visible frames, are measured
+- [x] The templates are installed as above, with the SHA-512 recorded in the task notes.
+- [x] `export_presets.cfg` enables the shader baker for the Windows preset, and a release build exports.
+- [x] The release build's boot worst frame, and its zone entries' worst hidden and visible frames, are measured
       against ADR 0029 / SPEC v1.3 §4.2: visible ≤ 50 ms, hidden ≤ 1 s, entry ≤ 3 s. Visible frames come from
       `SceneRouter.last_swap_stats["max_visible_frame_ms"]` (M1-ARC-16).
+
+## Notes (PC GPU, session_01UFcBRsk9M9EKtxJKdBU2mB, 2026-10-24)
+Report: `docs/kb/qa/gpu/2026-10-24-rnd-28-shader-baker.md`.
+- **Templates.** The official `Godot_v4.6.3-stable_export_templates.tpz` from the GitHub release, SHA-512
+  `da606b61c10157844f8300172df374472665f95015495cb1a7cd132c40ede404faa96cc1016a4b9662db9909ddea69632c4948b2cd11163438dad4808881fb68`
+  (matches SHA512-SUMS.txt). Installed in `%APPDATA%/Godot/export_templates/4.6.3.stable/`, not committed.
+- **Baker.** `shader_baker/enabled=true` on `Windows Desktop`, plus a `Windows Perf` preset whose main scene is the
+  slice sweep (`run/main_scene.perf_build`).
+- **Measured (High 1440p).**
+  - **Fresh install (cold):** the baker cuts Haluna's entry from 11.4 to 8.0 s, and the Flood's first frame from
+    1024 to 79 ms. It's still over ADR 0029: hidden frames to 2.0 s, Haluna 8 s, the title visible at 1.2 s.
+    Filed **M1-RND-29** (first-launch pipelines).
+  - **Second launch:** Haluna 2.55 s (within 3 s); visible frames ≤ 8 ms except the title (160, M2-ARC-03) and the
+    Flood (42, M2-RND-07).
+- **Blocker found.** `Windows Desktop` excludes `game/levels/_tests/*`, but shipped code depends on it, so a release
+  build's SceneRouter fails to compile and Haluna can't load. Filed **M2-ARC-04**.
+- `max_visible_frame_ms` (M1-ARC-16) isn't merged; the sweep measured visible frames itself.
 
 ## Review log
