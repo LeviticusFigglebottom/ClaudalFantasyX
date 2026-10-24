@@ -3,6 +3,20 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
+- **MERGE-READY @ d9001836: the Lead's new queue (M3-CRE-610..612), all in review.**
+  - **611 ambient wildlife (merged):** gull (flying and perched), shore crab and shoal fish, built from the kit in a
+    new `wildlife` import category. WildlifeLayer is MultiMesh, 4 draw calls a zone, 0.27 ms average and 0.56 ms worst
+    in Haluna (budget 1 ms); off-screen groups pause and anything past 120 m hides. Data for ch02/haluna and
+    ch03/saltgrass_causeway. **Zone owners add one WildlifeLayer node** (docs/kb/art/wildlife.md); m2-slice has been
+    asked.
+  - **612 battle polish:** hit_b and idle_b for every creature, hit rotation, the idle fidget, and flier `hover` so
+    KOs land on the floor (KO audit viewed).
+  - **610 villagers:** parked as patches until hero-integration merges (see the 22:10 entry).
+  - **Checks run:** validate_data, taskboard, lint, format, tools unittest (creatures, wildlife, post_import; the
+    agent ran the full tools suite: 706 OK), Godot wildlife 10/0, creature 16/0, post_import 19/0, battle 527/0, the
+    Blender verify of all 27 creature jobs and 3 wildlife jobs (identical), 60 creature and battle shots unchanged,
+    wildlife_stage and npc_stage_field approved after viewing. **Skipped:** the full manifest and coverage (no change
+    in game/battle or game/progression).
 - **21:30, the Lead's new queue (M3-CRE-610..612, id block 600–699; ownership row added for game/world/npc,
   game/world/wildlife and their data, tests and assets paths):**
   - **610 villagers alive** (worktree agent): FieldNpc, which gives villager actors idle loops, a talk gesture, an eased
