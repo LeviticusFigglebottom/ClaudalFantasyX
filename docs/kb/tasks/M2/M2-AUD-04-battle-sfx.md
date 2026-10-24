@@ -2,8 +2,8 @@
 id: M2-AUD-04
 title: Battle SFX for the M2-RND-03/04 VFX library
 role: audio
-status: todo
-owner_session: ""
+status: doing
+owner_session: agent-ae73db10c741bdad2
 depends_on: [M2-AUD-02]
 milestone: M2
 request-from: lead
