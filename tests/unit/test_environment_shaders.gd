@@ -22,6 +22,8 @@ const EXPECTED: Dictionary = {
 	"env_wake_shell.gdshader": ["tex_glyph", "glyph_depth"],
 	"env_sky_cumulus.gdshader": ["cloud_coverage", "cloud_steps", "col_cloud_shadow"],
 	"env_sky_night.gdshader": ["star_density", "col_moon", "moon_disc_deg"],
+	"env_nacre_inlay.gdshader": ["col_base", "iridescence", "hue_shift_deg", "shimmer_energy"],
+	"env_water_spill.gdshader": ["col_water", "opacity", "fall_speed_m_s"],
 }
 
 
