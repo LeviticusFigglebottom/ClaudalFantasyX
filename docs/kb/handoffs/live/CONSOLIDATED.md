@@ -36,7 +36,7 @@
 | `claude/m2-slice` | The M2 vertical-slice track (from `claude/first-playable` 67984ce). |
 | `claude/characters` | The Characters track (from the integration branch). |
 | `claude/first-playable` | The old First Playable branch, stopped at 67984ce. Being merged in (see §5). |
-| `gpu/*` | The PC GPU session's branches, one per item. Merged: rnd-21-mouth-fill, qa-07, qa-08-asha-recheck. **Don't merge:** qa-05d-asha-recheck (superseded by qa-08), chr-04-materials and qa-05b-asha-recheck (overtaken by later rounds). **WIP:** m2-rnd-01-undertow (54b5f33 is a mergeable checkpoint; the 5 undertow shots get re-approved when the task reaches review), m2-rnd-01b-undertow-compute. |
+| `gpu/*` | The PC GPU session's branches, one per item. Merged: rnd-21-mouth-fill, qa-07, qa-08-asha-recheck. **Don't merge:** qa-05d-asha-recheck (superseded by qa-08), chr-04-materials and qa-05b-asha-recheck (overtaken by later rounds). Merged on 2026-10-24: rnd-01(b), rnd-22, rnd-02, rnd-03 and fp-10-keylight-check. **Pending:** m2-rnd-04-drownbell-vfx. |
 | `lead/test`, `lead/fp`, `worktree-agent-*` | Local to the Lead's container. Lost on a restart; anything unmerged is redone from its task file. |
 
 ## 3. Environments (live)
@@ -61,19 +61,12 @@
 - **Coverage baseline:** ratchet it up after test-adding merges with `python3 tools/coverage/run_coverage.py --update-baseline`. Currently battle 99.93% and progression 96.52%.
 
 ## 5. Exact next steps for the Lead
-1. **Merge `claude/first-playable`.** The trial merge is in `lead/fp` (`../wt-fp`):
-   - The .uid conflict took ours.
-   - The Drownbell ADR was **renumbered 0024 → 0026**, because 0024 is the Asha hair ADR.
-   - `sim.py --check` passes every suite (Drownbell role_answer 77.6%, smart 85.2%).
-   - The scoped gate (battle and title shots, Blender skipped) is re-running. The first run stopped on the Rhen build.sh test failure, since fixed by parking build.sh.wip.
-   - When it's green, merge it and tell m2-slice to merge the integration branch.
-2. **Merge the local subagents as they report:** Combat (the battle_engine.gd split, then one slice combat item) and UI (M2-UI-04). Merge each cloud track's review-ready work after a scoped gate on a test merge.
-3. **Re-approve** the undertow shots when M2-RND-01 reaches review (GPU drift: eye 0.072, night 0.043, dusk 0.029, day_ch08 0.023, low 0.020). **View each one on lavapipe first.**
-4. **Full gate** (`tools/ci_local.sh`, every shot, Blender required) in a `lead/integration` worktree after this merge batch.
-5. **The next review sweep (P)** over the review column: M1-CHR-08, M1-QA-08, and whatever the tracks hand in.
-6. **When CHR-12 lands:** a PC GPU re-check of grief and smile (as QA-08 did), then M1-LEAD-01 once the human has listened to the music.
-7. **Also open:** a jagged stair-step dark shape on Asha's vest shoulder (QA-08 item F) needs Rendering triage. Fold it into M1-RND-23.
-
+**The live list is in [`lead-cloud.md`](lead-cloud.md) § "Exact next step"**, updated after every merge batch. As of 3e59f8d:
+1. Merge `gpu/m2-rnd-04-drownbell-vfx` (built on RND-03, which is merged). Add the pending shots (drownbell_flood, underwater_below/window/waterline) to shots.json, approve them on lavapipe after viewing, and merge.
+2. m2-slice does M2-FP-17 (the real Ilun call) now that CMB-05 is in. The steps are in handoff combat-13.
+3. Review sweep Q over the review column.
+4. Keep ~3 local agents busy on M2 work (M2-UI-05 Vowbound HUD, M1-ENV-10, ...). The PC queue was topped up 2026-10-24; message it when it reports two items left.
+5. When the characters track lands M1-CHR-12, the PC does M1-QA-09, and then M1-LEAD-01 waits only on the human's music listen.
 ## 6. Open questions for the human (also in STATUS.md)
 - **Playtest** the first minutes (docs/PLAYTEST.md; a ready copy may be at `C:\Users\Aaron\Hymn_Playtest\PLAY.bat`). Is Asha's close-up face acceptable as a direction, or should we take ADR 0019's stronger stylisation?
 - **Music:** listen to the three cues (docs/kb/audio/listening_notes.md, §16 Q3). This blocks AUD-02 and M1-LEAD-01.
