@@ -73,7 +73,7 @@ not a hermit crab in a shell (the body is not a crab). The bell's decoration is 
 | `ko` | 2 | It tips seaward, slowly, and lies on its side, rim toward the sea, the bell half under. Its motes slide seaward (`bell_release`). It holds | 2.6 s |
 
 **The broken rim.** The rim is a separate piece of the bell mesh with its own bone, `rim`. The model ships a
-`rim_broken` node (a section of the lip missing, the crack gone dark) beside the whole `rim`; the actor swaps them on
+`RimBroken` node (about 105° of the lip missing on the camera side, the crack gone dark, the legs and the black mass showing through) beside the whole `Rim`; the actor swaps them on
 `charge_broken` and swaps them back when a new toll gathers (the toll charges again, the rim mends: the bell is the
 Undertow's, and the Undertow mends). Hooks for that are in [`pipeline.md`](pipeline.md) "Boss hooks".
 
@@ -82,6 +82,6 @@ Undertow's, and the Undertow mends). Hooks for that are in [`pipeline.md`](pipel
 - The bell is a lathe profile (a polyline of about 30 points from crown to lip) swept around 48 segments, with the
   fan-shell band, the cracks and the barnacles added on top; the inside of the bell is modelled (it shows when it
   rears and tips).
-- Bones: `root`, `bell` (the hood), `rim`, six legs × 2, `rope` × 3.
-- Budget: ≤ 16k triangles.
+- Bones: `root`, `bell` (the hood), `rim`, `mass`, six legs × 2, `rope` × 3 (19).
+- Budget: ≤ 20k triangles in the file (the boss's allowance; the hero battle models are 27–30k). As built: 19.4k, of which the two rim variants are about 3.4k each and only one draws, so about 16k on screen.
 - Battle VFX anchors (fractions of 2.4 m): feet 0.12 m, **rim 0.29 m**, chest 1.44 m, **hood 2.04 m**, head 2.4 m.
