@@ -255,7 +255,7 @@ Measured (RX 9070 XT, High 1440p, GPU including the SubViewport):
 **Superseded as the default by the compute body (next section).** The SubViewport path remains the fallback
 (Compatibility, headless) and the A/B control (`UndertowStorm.half_res_compute = false`).
 
-### Compute body (M2-RND-01, ADR 0027)
+### Compute body (M2-RND-01, ADR 0028)
 Where a RenderingDevice exists, the half-res body is `UndertowBodyEffect`, a CompositorEffect on the current
 game camera's Compositor; the SubViewport isn't built.
 - **Where it runs:** at PRE_TRANSPARENT, after the opaque pass, at `body_scale` of the *internal* resolution (so

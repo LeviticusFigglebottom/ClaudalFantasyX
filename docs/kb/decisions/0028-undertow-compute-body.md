@@ -1,4 +1,4 @@
-# 0027 — The Undertow's half-resolution body is a compute pass on the game camera's Compositor
+# 0028 — The Undertow's half-resolution body is a compute pass on the game camera's Compositor
 
 - **Status:** proposed (Rendering; the Lead to accept on merge)
 - **Date:** 2026-10-24

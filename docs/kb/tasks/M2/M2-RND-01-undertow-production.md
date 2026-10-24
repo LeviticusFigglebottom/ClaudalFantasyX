@@ -12,7 +12,7 @@ request-from: ""
 The M1 prototype reads (horizon and eye shots) but its raymarched tiers are an estimated 5-15× over a storm shot's 2-3 ms GPU budget, and the agent self-assesses it at about a third of the bar for "the most important visual" (SPEC §8.2.9). See docs/kb/tech/undertow.md.
 
 ## Acceptance criteria
-- [~] Body at half/quarter resolution with temporal reprojection; baked 3D noise textures instead of hash noise; <= 2-3 ms estimated on the recommended tier. Half-res done (High 4.94 → 2.27 ms), baked noise done (M1-RND-10), compute-pass occlusion inside the volume done (ADR 0027; High Day 2.45 ms). **Open:** the compute body's own reprojected history, and a quarter-res tier for min-spec (RTX 3060 projection ~7.4 ms).
+- [~] Body at half/quarter resolution with temporal reprojection; baked 3D noise textures instead of hash noise; <= 2-3 ms estimated on the recommended tier. Half-res done (High 4.94 → 2.27 ms), baked noise done (M1-RND-10), compute-pass occlusion inside the volume done (ADR 0028; High Day 2.45 ms). **Open:** the compute body's own reprojected history, and a quarter-res tier for min-spec (RTX 3060 projection ~7.4 ms).
 - [x] Billow surface detail and multiple scattering (no uniform khaki lit tone, less regular striations). Multiple scattering: 3 octaves, free. Billows: fringe billows with sun-ward shading. Striations: noise-warped helix. See undertow.md, "Striations, billows and the wound skin".
 - [ ] Wounds as real torn rents; storm-scale mote streamers
 - [ ] Storm in sky and reflections, shadowing the zone, rain
@@ -58,7 +58,7 @@ The `undertow` tests pass (35/0).
 - **Cost, High 1440p:** Day 2.56 ms, Eye 3.11 ms. Within the 6 ms cap here, but about 7.7 and 9.3 ms projected on an
   RTX 3060. **AT RISK** for min-spec High.
 - **Drift:** all five Undertow shots (table in the report). The Lead re-approves them on lavapipe.
-- **Compute body done** on `gpu/m2-rnd-01b-undertow-compute`, cut from this branch: ADR 0027 (proposed);
+- **Compute body done** on `gpu/m2-rnd-01b-undertow-compute`, cut from this branch: ADR 0028 (proposed);
   report section "Compute body". The pillar test passes. Cost: Day 2.45 ms, Eye 2.84 ms. Merge
   `gpu/m2-rnd-01-undertow` first, then this branch (it contains it).
 - **Exact next step (was: compute-pass occlusion, now done):** min-spec cost on the compute body.
