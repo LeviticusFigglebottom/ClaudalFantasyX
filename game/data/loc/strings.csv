@@ -827,3 +827,7 @@ CREDITS_FONTS,EB Garamond and Source Sans 3 (SIL Open Font License)
 CREDITS_THANKS,Thank you for playing.
 FIELD_PROMPT_DEFAULT,Examine
 CTRL_ACT_BATTLE_PAUSE,Pause a battle
+TITLE_LOGO_HYMN,Hymn
+TITLE_LOGO_JOIN,of the
+TITLE_LOGO_UNDERTOW,Undertow
+TITLE_BUILD_LABEL,Development build (%s)

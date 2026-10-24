@@ -384,6 +384,13 @@ The human's top priority for the slice: the player always knows the next step. A
 - **Gating:** it waits while the field refuses input (an opening cutscene), and a menu or a scene that takes over ends it for good. Reduced motion drops the rise. Layout and timing: `game/data/ui/area_title.json`.
 - **Shot:** `field_area_title`. **Tests:** `test_area_title_card.gd`. Field shot drivers live in `game/levels/_tests/ui_shots/` because they load `_tests` scenes, which release exports leave out.
 
+## Title screen (M2-UI-22)
+
+- **Logotype (`TitleLogo`, `game/ui/title/`):** "Hymn" and "Undertow" in TitleLabel's serif at `word_scale_pct` of its size, a small-caps "of the" (BannerLabel's font) between them flanked by gold rules that fade outward from a lamp-node diamond, and a tide flourish under the name: a gold wave and a fainter teal echo that swell from nothing at their ends, with a diamond over the crest. All `draw_string` / `draw_*` from theme fonts and colours, no images. Sizes follow the theme, so the Accessibility text size scales it. Words: `TITLE_LOGO_HYMN`, `TITLE_LOGO_JOIN`, `TITLE_LOGO_UNDERTOW` (a language that orders the name differently translates the three parts).
+- **Backdrop (`TitleBackdrop`):** the menus' `CausticBackdrop` (drawn behind its parent), a few faint light shafts slanting down from the surface and swaying, and seeded motes (teal, some gold) that rise, sway and twinkle. Motion comes from the node's own elapsed time and a seeded `RandomNumberGenerator`, so `--fixed-fps` captures are identical run to run (checked: two captures match pixel for pixel); under reduced motion nothing moves. The logo's waves drift the same way.
+- **Build label:** "Development build (…)" bottom right, only when `OS.is_debug_build()` (`TitleMenu.shows_version`; data `version.debug_only` false would show it in a release too). It names project.godot's `application/config/version`, or `version.fallback` when that is unset. Boot's old placeholder Label (name + "bootstrap build") is gone.
+- **Data:** `game/ui/title/title_menu.json` (`logo`, `backdrop`, `version`). **Shot:** `boot_title`. **Tests:** `test_title_screen.gd` (and `test_title_menu.gd` for the menu's behaviour).
+
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 
 - **The field menu's root has ten rows** (`FieldMenuModel.ROOT_IDS`): Items, Equip, Lattice, Status, Swell, Map (M2-UI-18), Bestiary, Settings, Quit to Title, Close. Equip, Lattice and Status (`PARTY_ROWS`) are off, saying why, when nobody has joined. `field_menu.json` grew the panel to 639 px and the root page to nine rows; every rect is still a multiple of 3.
