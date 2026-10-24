@@ -47,15 +47,19 @@ extends Node
 ##     (visible_complete false).
 ## M2-ARC-03 (ADR 0029: the boot warm-up runs under a boot screen, before the title shows):
 ##   - hold_reveal(holder) / release_reveal(holder) / reveal_holders(): while anything holds the reveal, a
-##     change keeps its fade opaque after the swap (the boot title holds it while its warm-up runs), at most
-##     REVEAL_WAIT_MAX_MS; the visible window starts when the fade starts to lift, after the hold. The wait is
-##     hidden loading time, recorded apart from entry_ms (reveal_wait_ms, reveal_wait_frames,
-##     reveal_wait_max_frame_ms), each frame against HIDDEN_FRAME_BUDGET_MS.
+##     change keeps its fade opaque after the swap (the boot title holds it while its warm-up runs) until a
+##     stall or the safety cap (M2-ARC-08, below); the visible window starts when the fade starts to lift,
+##     after the hold. The wait is hidden loading time, recorded apart from entry_ms (reveal_wait_ms,
+##     reveal_wait_frames, reveal_wait_max_frame_ms), each frame against HIDDEN_FRAME_BUDGET_MS.
 ##   - measure_reveal(scene_path, lifted): the same visible window for a reveal the router does not own (the
 ##     BootCard lifting off the title at launch, when no change ran). It becomes last_swap_stats and ends with
 ##     visible_measured.
 ##   - warm_fonts_now() / fonts_ready(): the theme font warm-up outside a change (boot runs it under its card).
 ##   - cancel_visible_window(): ends the window being measured (change_scene() and measure_reveal() call it).
+## M2-ARC-08: the reveal hold waits while its holders make progress, not for a fixed 10 s. A ProgressWait
+##   (game/data/settings/boot_card.json) is fed each frame and holders_progress() (the holders' wait_progress(),
+##   a BootCard's sums its work); the fade lifts on a stall (stall_timeout_ms with no progress) or the absolute
+##   cap (max_wait_ms), recorded as reveal_wait_end. font_warm_progress() reports the font warm-up's progress.
 ## M2-ARC-05: every window's frames are wall time, timed by a FrameClock (Time.get_ticks_usec between
 ## frames), never the process `delta`, which Godot caps at about 150 ms.
 
@@ -84,8 +88,6 @@ const VISIBLE_MEASURE_FRAMES := 60
 ## Upper bound on frames a swap waits for its holders (hold_swap), e.g. a time-sliced ShaderPrewarm
 ## stage (M1-RND-15).
 const PREWARM_WAIT_MAX_FRAMES := 120
-## Upper bound on the time a change keeps its fade opaque for its reveal holders (M2-ARC-03).
-const REVEAL_WAIT_MAX_MS := 10000.0
 const USEC_PER_MSEC := 1000.0
 const LOG_PREFIX := "SceneRouter"
 
@@ -120,6 +122,8 @@ var _measuring_visible := false
 ## check ("1 resources still in use at exit", boot smoke; M2-ARC-05 fix).
 var _reveal_clock := FrameClock.new()
 var _swap_clock := FrameClock.new()
+## The reveal hold's stall and cap (M2-ARC-08); a member for the same reason as the clocks.
+var _reveal_wait: ProgressWait
 
 
 func _ready() -> void:
@@ -166,7 +170,8 @@ func swap_holders() -> Array[Object]:
 
 
 ## M2-ARC-03: keeps the running (or next) change's fade opaque after its swap until release_reveal(holder),
-## until `holder` is freed, or for at most REVEAL_WAIT_MAX_MS. Holding twice with the same object is one hold.
+## until `holder` is freed, or until the hold stalls or hits its cap (M2-ARC-08). Holding twice with the same
+## object is one hold.
 func hold_reveal(holder: Object) -> void:
 	if holder != null:
 		_reveal_holds[holder.get_instance_id()] = weakref(holder)
@@ -224,16 +229,35 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 func _wait_for_reveal(stats: Dictionary) -> void:
 	var start := Time.get_ticks_usec()
 	_reveal_clock.reset_at(start)
+	_reveal_wait = ProgressWait.from_settings()
 	var frames := 0
 	var worst := 0.0
-	while not reveal_holders().is_empty() and _ms_since(start) < REVEAL_WAIT_MAX_MS:
+	var end := ProgressWait.Verdict.WAITING
+	while not reveal_holders().is_empty() and end == ProgressWait.Verdict.WAITING:
 		await get_tree().process_frame
-		worst = maxf(worst, _reveal_clock.lap())
+		var frame_ms := _reveal_clock.lap()
+		worst = maxf(worst, frame_ms)
 		frames += 1
+		end = _reveal_wait.step(frame_ms, holders_progress(reveal_holders()))
+	stats["reveal_wait_end"] = "done" if reveal_holders().is_empty() else ProgressWait.verdict_name(end)
 	if not reveal_holders().is_empty():
-		push_warning("%s: lifting after %.0f ms with the reveal still held" % [LOG_PREFIX, _ms_since(start)])
+		push_warning(
+			(
+				"%s: lifting after %.0f ms with the reveal still held (%s)"
+				% [LOG_PREFIX, _ms_since(start), stats["reveal_wait_end"]]
+			)
+		)
 	for w in judge_reveal_wait(stats, frames, _ms_since(start), worst):
 		push_warning("%s: %s: %s" % [LOG_PREFIX, w, stats.get("scene_path", "")])
+
+
+## M2-ARC-08: the summed wait_progress() of `holders` that report one (a BootCard; others count 0).
+static func holders_progress(holders: Array[Object]) -> int:
+	var total := 0
+	for h in holders:
+		if h != null and h.has_method(&"wait_progress"):
+			total += int(h.call(&"wait_progress"))
+	return total
 
 
 ## The reveal wait's stats (hidden frames, ADR 0029): writes reveal_wait_frames, reveal_wait_ms and
@@ -457,6 +481,11 @@ func fonts_ready() -> bool:
 	return _fonts_warm or not warm_fonts
 
 
+## M2-ARC-08: the font warm-up's units drawn so far (it moves while the warm-up runs), for BootCard.wait_until.
+func font_warm_progress() -> int:
+	return _font_warmer.progress() if _font_warmer != null else 0
+
+
 ## Starts rasterizing the project theme's fonts under the fade (once per run; spread over frames).
 func _start_font_warm(stats: Dictionary) -> void:
 	if not warm_fonts or _fonts_warm or _font_warmer != null:
@@ -551,6 +580,10 @@ class FontWarmer:
 	func _process(_delta: float) -> void:
 		if not done:
 			queue_redraw()
+
+	## Units drawn so far (M2-ARC-08: the boot card's progress count).
+	func progress() -> int:
+		return _next
 
 	func _draw() -> void:
 		var start := Time.get_ticks_usec()
