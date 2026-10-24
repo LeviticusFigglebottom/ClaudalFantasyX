@@ -76,6 +76,7 @@ The gap (the human's playtest note): battles had no action animation. This track
 - At the creatures merge: delete the action/hit calls in BattleActorMotion._on_action_resolved (agreed; whoever merges second).
 
 ## Exact next step
+**KO fix: done and MERGE-READY @ 329ce604 (see MERGE-READY above).** Id rule (Lead, 21:00, CONSOLIDATED §4): this track's new task ids are 400–499 (e.g. M3-BPR-410), ADRs 0130–0139, handoffs `<date>-<role>-bpr-<n>.md`; M2-BPR-11 and M3-CHR-01 predate the rule and keep their ids.
 MERGE-READY for big8 (above). After big8: take env-art's arenas.json repoint (74c6dc0e on claude/env-art) if the Lead hasn't, re-view arena shots. Then: review fixes; M3-CHR-01 clips when characters land them.
 
 Older: Next: review fixes as they come, the creatures/env-art follow-ups after the Lead merges, then M3 battle presentation (hero clips as the characters track lands them; per-encounter arenas for Act I fights).
