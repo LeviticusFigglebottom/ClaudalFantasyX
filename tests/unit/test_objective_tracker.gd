@@ -44,7 +44,7 @@ func test_zone_rows_stay_in_their_zone_and_side_rows_list_apart() -> void:
 	var side := t.side(HALUNA)
 	assert_eq(side.size(), 1)
 	assert_eq(StringName(str(side[0]["id"])), &"side_market_fragments")
-	assert_eq(t.current(&"").get("id"), "save_at_shrine", "no zone asked: the first row that applies anywhere")
+	assert_eq(t.current(&""), {}, "a scene with no map gets no zoned objective (test zones, shot scenes)")
 
 
 func test_every_target_resolves_to_a_map_point_in_bounds() -> void:

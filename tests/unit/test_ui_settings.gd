@@ -18,7 +18,15 @@ func test_defaults_come_from_the_data_file() -> void:
 	assert_eq(
 		s.settings(),
 		(
-			[&"reduced_motion", &"text_scale", &"palette", &"timing_assist", &"text_speed", &"dialogue_backing"]
+			[
+				&"reduced_motion",
+				&"text_scale",
+				&"palette",
+				&"timing_assist",
+				&"text_speed",
+				&"dialogue_backing",
+				&"objective_cue"
+			]
 			as Array[StringName]
 		)
 	)

@@ -318,3 +318,27 @@ SPEC §6.11 input remapping. The Settings hub's third row, **Controls**, comes a
 - **Text scale does not reflow rects.** At 130% long names and help text ellipsize earlier; a settings preview should show that.
 - The help line generates its text from data (kind, reach, statuses, delay, and next-turn distance). Skills have no authored description keys yet.
 - `tools/ci_local.sh` and `capture.sh` write fixed `/tmp/hymn_*.log` paths, so parallel worktrees running at the same time clobber each other's logs.
+
+## Objectives, the objective line and the destination cue (M2-UI-16, M2-UI-17, M2-UI-19)
+
+The human's top priority for the slice: the player always knows the next step. All of it is data.
+- **Rows.** `game/data/flow/objectives.json` lists the rows in story order: `{id, line_key, requires: [flags], until: flag, zone?, target?: {zone, poi}, side?}`.
+  - A row applies when every `requires` flag is set and its `until` flag is not. A row with a `zone` applies only in that zone, and never in a scene with no map, so test zones and shot scenes show nothing.
+  - The main objective is the first main row that applies; `side` rows are optional errands.
+  - First pass by UI for B01–B11. m2-slice keeps the rows current (M2-FP-25).
+  - `validate_data.py` (`check_objectives`) checks that flags are declared, loc keys exist, and zones and targets resolve.
+- **Places.** `game/data/ui/zone_maps.json` (`ZoneMaps`) lists the zones (scene, name, map bounds, shape source) and the pilgrimage route. Each point of interest has a world `at` and a `source` (a node in the zone scene, or a point in the trial layout). `tools/tests/test_zone_map_pois.py` fails when a point drifts from its source.
+- **`ObjectiveTracker`** (game/ui/objectives/) is node-free. `current(zone)`, `side(zone)`, `line(zone)` and `target(zone)` read flags through a callable: `Game.get_flag` in play, a scratch set in tests.
+- **`ObjectiveHud`** (the line) attaches with one line in `FieldController._ready`, like TownServices. It is a small tide-notch panel at the top left: a gold diamond, "Objective", and the line.
+  - **When it shows:** when the objective changes, once when the field first takes input after a scene loads (only if something calls), and on demand.
+  - **The on-demand action** is `field_objective` (Tab, or the pad's Back button). It is added through `FieldInput.add_actions` and remappable on the Controls page.
+  - **Timing:** it slides in (or only fades, under reduced motion), holds, then fades (`game/data/ui/objective_hud.json`).
+  - **When it hides:** while the field refuses input (cutscenes, conversations) and while a menu pauses the tree. A change made meanwhile waits and shows when the field is back.
+  - It follows UiSettings.
+- **`ObjectiveCue`** (the destination cue) draws over the HUD.
+  - When the target is on screen: a gold diamond ring over it (the objective shape), with "Near", "A short walk" or "Far".
+  - When it is off screen or behind the camera: an arrow clamped `edge_px` inside the screen edge.
+  - Hidden within `hide_within_m` of the target, whenever the line is gated, and when the Accessibility setting **Destination cue** (`objective_cue`) is off.
+  - `place()` is pure and tested.
+- **Shot:** `field_objective_line` shows Haluna (H02, down Tidewall lane) with the line held in ("Find the save shrine…") and the cue.
+- **Tests:** `test_objective_tracker.gd`, `test_objective_hud.gd`; tools: `test_zone_map_pois.py`.

@@ -787,3 +787,10 @@ MAP_POI_SHRINE_ENTRANCE,The entrance
 MAP_POI_SIDE_POOL,The side pool
 MAP_POI_INNER_POOL,The inner pool
 MAP_POI_CHAMBER_DOOR,The chamber door
+OBJ_LABEL,Objective
+OBJ_CUE_NEAR,Near
+OBJ_CUE_WALK,A short walk
+OBJ_CUE_FAR,Far
+SET_OBJECTIVE_CUE,Destination cue
+SET_OBJECTIVE_CUE_HELP,"A marker over where the objective points, or an arrow at the screen's edge when it is out of view."
+CTRL_ACT_FIELD_OBJECTIVE,Show the objective

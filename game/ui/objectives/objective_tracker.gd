@@ -2,7 +2,8 @@ class_name ObjectiveTracker
 extends RefCounted
 ## The current objective (M2-UI-16), node-free: the rows of game/data/flow/objectives.json read
 ## against story flags. A row applies when every flag in `requires` is set and its `until` flag is
-## not, and its `zone` (if any) is the zone asked about. The main objective is the first main row
+## not, and its `zone` (if any) is the zone asked about (a zoned row never applies in a scene with
+## no map, so test zones and shot scenes show nothing). The main objective is the first main row
 ## that applies, in story order; side rows are optional errands. Flags come through `is_set`
 ## (Game.get_flag in play; tests pass their own), never by touching Game directly.
 ## The zones and their points of interest are game/data/ui/zone_maps.json (ZoneMaps).
@@ -28,11 +29,11 @@ static func load_rows(path: String = DATA_PATH) -> Array:
 	return ((parsed as Dictionary)["objectives"] as Dictionary).get("rows", []) as Array
 
 
-## True when row `row` applies in zone `zone` (&"" = any zone).
+## True when row `row` applies in zone `zone` (&"": a scene with no map; only unzoned rows).
 func applies(row: Dictionary, zone: StringName) -> bool:
 	var row_zone := StringName(str(row.get("zone", "")))
-	if row_zone != &"" and zone != &"" and row_zone != zone:
-		return false
+	if row_zone != &"" and row_zone != zone:
+		return false  # a zoned row never applies elsewhere, nor in a scene with no map (&"")
 	for f: Variant in row.get("requires", []):
 		if not bool(is_set.call(StringName(str(f)))):
 			return false

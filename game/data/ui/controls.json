@@ -17,7 +17,8 @@
       {"id": "field_move_right", "label_key": "CTRL_ACT_FIELD_MOVE_RIGHT", "contexts": ["field"]},
       {"id": "field_walk", "label_key": "CTRL_ACT_FIELD_WALK", "contexts": ["field"]},
       {"id": "field_camera_left", "label_key": "CTRL_ACT_FIELD_CAMERA_LEFT", "contexts": ["field"]},
-      {"id": "field_camera_right", "label_key": "CTRL_ACT_FIELD_CAMERA_RIGHT", "contexts": ["field"]}
+      {"id": "field_camera_right", "label_key": "CTRL_ACT_FIELD_CAMERA_RIGHT", "contexts": ["field"]},
+      {"id": "field_objective", "label_key": "CTRL_ACT_FIELD_OBJECTIVE", "contexts": ["field"]}
     ],
     "fixed_actions": {"menu": ["ui_page_up", "ui_page_down"]},
     "pad_defaults": {"ui_accept": [0], "ui_cancel": [1]},

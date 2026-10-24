@@ -1076,6 +1076,25 @@
     {
       "id": "battle_statuses_colorblind",
       "scene": "res://game/battle/scene/shots/battle_statuses_colorblind.tscn"
+    },
+    {
+      "id": "field_objective_line",
+      "scene": "res://game/ui/objectives/shots/field_objective_line.tscn",
+      "camera": "Haluna/Cameras/H02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
