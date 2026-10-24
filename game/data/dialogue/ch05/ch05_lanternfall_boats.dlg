@@ -1,0 +1,62 @@
+// Ch5 B04 "Lanternfall, part 1: the boats" (act1_ch05.md). Letterboxed. 20:00: the crown bell rings
+// once and every household sets its boats on the water at its own grave's channel; the light runs
+// down the terraces top to bottom in about four seconds (P08, the chapter's gorgeous-and-doomed frame).
+// Watch (ADR 0017, the Ch5 row): Asha leads no rite. A Pemakar elder puts a folded boat into her hands
+// like any guest's; she floats it at the strangers' channel for her mother, holds it a moment, lets go.
+// No speech, no dance, no platform, no staff raised over the water.
+// Rhen's boat (ADR 0022 sweep-H): a boat-seller gives him one with its own wick. Camera insert inside
+// P09: his hand goes to the tin at his belt where Kell's wick is, stays a moment, and comes away; he
+// uses the seller's wick. Kell's wick stays unburned until E7. Nothing names it. The choice sets
+// exactly one of three flags (Ch7 reads them; "Not yet" keeps the boat, folded and unlit: the chapter
+// flow gives the key item pemakar_leaf_boat).
+// P09: the town walks down beside its boats, the party with it. P10, the cold edge: the held motes
+// come off the graves and drift sideways and down after the boats, toward the sea. Do not surface it:
+// beautiful on a first play, quietly wrong on a replay. Nobody comments.
+// If ch05_told_the_smith: an insert of Garo's boat, too big and badly folded, guttering but afloat.
+title: ch05_lanternfall_boats
+location: ch05/pemakar
+---
+@letterbox on
+@music lanternfall fade=1.0
+@camera P08
+@sfx crown_bell
+@wait 4.0
+@anim elder give_boat asha
+@wait 0.8
+@mark asha strangers_channel walk
+@anim asha float_boat
+@wait 1.5
+@anim boat_seller give_boat rhen
+@camera P09
+@anim rhen hand_to_tin
+@wait 1.2
+@anim rhen hand_away
+@anim rhen light_seller_wick
+@wait 0.8
+-> For Mother Kell. #line:ch05_boats_001
+    <<set $ch05_boat_for_kell = true>>
+    @anim rhen float_boat
+-> For Oruvel. #line:ch05_boats_002
+    <<set $ch05_boat_for_oruvel = true>>
+    @anim rhen float_boat
+-> Not yet. #line:ch05_boats_003
+    <<set $ch05_kept_leaf_boat = true>>
+    @anim rhen fold_boat_away
+    Asha [tender]: Then carry it till it's time. #line:ch05_boats_004
+@anim rhen procession_walk
+@wait 2.0
+<<if $ch05_told_the_smith>>
+    @camera P09_garo
+    @wait 1.5
+    @camera P09
+<<endif>>
+@camera P10
+@vfx glimmer_held at=grave_terrace drift=down_seaward rate=slow
+@wait 2.0
+Rhen [worried]: They're coming with us. #line:ch05_boats_005
+Asha [neutral]: They follow the boats down. They always do. #line:ch05_boats_006
+Rhen [neutral]: Is that good? #line:ch05_boats_007
+@wait 1.0
+Asha [soft_smile]: It's what they do. #line:ch05_boats_008
+Toma [neutral]: Level preserve them. #line:ch05_boats_009
+===

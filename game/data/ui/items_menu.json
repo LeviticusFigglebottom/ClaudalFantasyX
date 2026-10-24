@@ -1,6 +1,6 @@
 {
   "items_menu": {
-    "doc": "The items page (M2-MNU-03; docs/kb/tech/ui.md section Items and Status pages). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'list' (the bag) and 'picker' (the heroes a restorative can go to) are MenuPage metrics blocks; in 'list' the cost column holds the category and the rank column the count, in 'picker' they hold HP and MP. 'sort' is the clickable sort line in the title row. 'detail' is the right column while browsing: the item's name, its category and count, its description (up to desc_height, wrapping) and the use line (why it can't be used, in the danger color). 'gauge' is the thin HP and MP bar under each picker row's numbers (inset from the row's foot). 'preview' (what the use would do, or why not) sits 'gap' under the picker.",
+    "doc": "The items page (M2-MNU-03; docs/kb/tech/ui.md section Items and Status pages). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'list' (the bag) and 'picker' (the heroes a restorative can go to) are MenuPage metrics blocks; in 'list' the cost column holds the category and the rank column the count, in 'picker' they hold HP and MP. 'sort' is the clickable sort line in the title row. 'tabs' (M3-MNU-03) are the view tabs (ItemsMenuModel.VIEWS: Bag, Key Items) in the title row, each as wide as its word, 'gap' apart from the rect's left edge; the shown one is in focus gold. 'detail' is the right column while browsing: the item's name, its category and count, its description (up to desc_height, wrapping) and the use line (why it can't be used, in the danger color). 'gauge' is the thin HP and MP bar under each picker row's numbers (inset from the row's foot). 'preview' (what the use would do, or why not) sits 'gap' under the picker.",
     "canvas_layer": 64,
     "panel": {
       "rect": [219, 111, 1482, 858],
@@ -9,6 +9,7 @@
       "help_height": 40
     },
     "sort": {"rect": [1059, 138, 615, 56]},
+    "tabs": {"rect": [471, 138, 549, 56], "gap": 36},
     "list": {
       "rect": [246, 219, 789, 0],
       "header_height": 0,

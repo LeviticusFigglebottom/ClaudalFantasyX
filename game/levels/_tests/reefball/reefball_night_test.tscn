@@ -1,0 +1,110 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/reefball/reefball_test.tscn" id="base"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyNightMat"]
+sky_top_color = Color(0.0431373, 0.0862745, 0.188235, 1)
+sky_horizon_color = Color(0.117647, 0.180392, 0.305882, 1)
+sky_curve = 0.2
+ground_bottom_color = Color(0.117647, 0.180392, 0.305882, 1)
+ground_horizon_color = Color(0.117647, 0.180392, 0.305882, 1)
+sun_angle_max = 4.0
+
+[sub_resource type="Sky" id="SkyNight"]
+sky_material = SubResource("SkyNightMat")
+
+[sub_resource type="Environment" id="EnvNight"]
+background_mode = 2
+sky = SubResource("SkyNight")
+ambient_light_source = 3
+ambient_light_energy = 0.08
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.1
+tonemap_agx_white = 12.0
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.08
+glow_hdr_threshold = 0.9
+
+[sub_resource type="StandardMaterial3D" id="FlameMat"]
+shading_mode = 0
+albedo_color = Color(1, 0.694118, 0.431373, 1)
+emission_enabled = true
+emission = Color(1, 0.694118, 0.431373, 1)
+emission_energy_multiplier = 6.0
+
+[sub_resource type="SphereMesh" id="FlameMesh"]
+material = SubResource("FlameMat")
+radius = 0.5
+height = 1.0
+
+[node name="ReefballTest" instance=ExtResource("base")]
+
+[node name="WorldEnvironment" parent="." index="0"]
+environment = SubResource("EnvNight")
+
+[node name="Sun" parent="." index="1"]
+light_color = Color(0.615686, 0.705882, 0.85098, 1)
+light_energy = 0.25
+
+[node name="Sphere" parent="." index="4"]
+sea_glow_energy = 0.12
+
+[node name="Lamps" type="Node3D" parent="."]
+
+[node name="LampNE" type="SpotLight3D" parent="Lamps"]
+transform = Transform3D(-0.707107, 0.157457, 0.689353, 0.000000, 0.974892, -0.222678, -0.707107, -0.157457, -0.689353, 29.1, 12.6, -29.1)
+light_color = Color(1, 0.694118, 0.431373, 1)
+light_energy = 20.0
+shadow_enabled = true
+spot_range = 80.0
+spot_attenuation = 0.6
+spot_angle = 24.0
+light_volumetric_fog_energy = 0.0
+
+[node name="FlameNE" type="MeshInstance3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 12.4, -30)
+mesh = SubResource("FlameMesh")
+
+[node name="LampNW" type="SpotLight3D" parent="Lamps"]
+transform = Transform3D(-0.707107, -0.157457, -0.689353, 0.000000, 0.974892, -0.222678, 0.707107, -0.157457, -0.689353, -29.1, 12.6, -29.1)
+light_color = Color(1, 0.694118, 0.431373, 1)
+light_energy = 20.0
+shadow_enabled = true
+spot_range = 80.0
+spot_attenuation = 0.6
+spot_angle = 24.0
+light_volumetric_fog_energy = 0.0
+
+[node name="FlameNW" type="MeshInstance3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 12.4, -30)
+mesh = SubResource("FlameMesh")
+
+[node name="LampSE" type="SpotLight3D" parent="Lamps"]
+transform = Transform3D(0.707107, 0.157457, 0.689353, 0.000000, 0.974892, -0.222678, -0.707107, 0.157457, 0.689353, 29.1, 12.6, 29.1)
+light_color = Color(1, 0.694118, 0.431373, 1)
+light_energy = 20.0
+shadow_enabled = true
+spot_range = 80.0
+spot_attenuation = 0.6
+spot_angle = 24.0
+light_volumetric_fog_energy = 0.0
+
+[node name="FlameSE" type="MeshInstance3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 12.4, 30)
+mesh = SubResource("FlameMesh")
+
+[node name="LampSW" type="SpotLight3D" parent="Lamps"]
+transform = Transform3D(0.707107, -0.157457, -0.689353, -0.000000, 0.974892, -0.222678, 0.707107, 0.157457, 0.689353, -29.1, 12.6, 29.1)
+light_color = Color(1, 0.694118, 0.431373, 1)
+light_energy = 20.0
+shadow_enabled = true
+spot_range = 80.0
+spot_attenuation = 0.6
+spot_angle = 24.0
+light_volumetric_fog_energy = 0.0
+
+[node name="FlameSW" type="MeshInstance3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 12.4, 30)
+mesh = SubResource("FlameMesh")

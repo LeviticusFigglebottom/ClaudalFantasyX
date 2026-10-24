@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch04/ch04_zone.gd" id="1_zone"]
+
+[node name="BrightwaterFerry" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch04/brightwater_ferry"
+layout_path = "res://game/levels/ch04/brightwater_ferry/brightwater_ferry_layout.json"

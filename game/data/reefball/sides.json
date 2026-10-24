@@ -1,0 +1,69 @@
+{
+  "_comment": "Reefball sides (M3-RBL-01). Four divers each; stats are breath, stroke, reach, grip, strip, loft and ward (rules.json stat_min..stat_max). Oruvel is ADR 0017's side: Tavi Orse captains and Rhen fills the place of the youngest, who went home to look. The Pemakar side and the two other Oruvel divers are provisional names for Narrative to confirm.",
+  "sides": [
+    {
+      "id": "oruvel",
+      "name_key": "RBL_SIDE_ORUVEL",
+      "captain": "tavi",
+      "kickoff": "rhen",
+      "divers": [
+        {
+          "id": "tavi",
+          "name_key": "RBL_DIVER_TAVI",
+          "role": "lifter",
+          "stats": {"breath": 13, "stroke": 13, "reach": 14, "grip": 12, "strip": 11, "loft": 14, "ward": 10}
+        },
+        {
+          "id": "rhen",
+          "name_key": "CHAR_RHEN",
+          "role": "anchor",
+          "stats": {"breath": 16, "stroke": 15, "reach": 10, "grip": 13, "strip": 12, "loft": 11, "ward": 8}
+        },
+        {
+          "id": "noa",
+          "name_key": "RBL_DIVER_NOA",
+          "role": "presser",
+          "stats": {"breath": 12, "stroke": 12, "reach": 11, "grip": 11, "strip": 13, "loft": 10, "ward": 9}
+        },
+        {
+          "id": "ama",
+          "name_key": "RBL_DIVER_AMA",
+          "role": "ringward",
+          "stats": {"breath": 11, "stroke": 9, "reach": 12, "grip": 11, "strip": 10, "loft": 9, "ward": 14}
+        }
+      ]
+    },
+    {
+      "id": "pemakar",
+      "name_key": "RBL_SIDE_PEMAKAR",
+      "captain": "pem_lifter",
+      "kickoff": "pem_anchor",
+      "divers": [
+        {
+          "id": "pem_lifter",
+          "name_key": "RBL_DIVER_PEM_LIFTER",
+          "role": "lifter",
+          "stats": {"breath": 12, "stroke": 12, "reach": 12, "grip": 11, "strip": 11, "loft": 13, "ward": 9}
+        },
+        {
+          "id": "pem_anchor",
+          "name_key": "RBL_DIVER_PEM_ANCHOR",
+          "role": "anchor",
+          "stats": {"breath": 13, "stroke": 12, "reach": 10, "grip": 12, "strip": 12, "loft": 10, "ward": 8}
+        },
+        {
+          "id": "pem_presser",
+          "name_key": "RBL_DIVER_PEM_PRESSER",
+          "role": "presser",
+          "stats": {"breath": 12, "stroke": 11, "reach": 10, "grip": 11, "strip": 13, "loft": 9, "ward": 9}
+        },
+        {
+          "id": "pem_ringward",
+          "name_key": "RBL_DIVER_PEM_RINGWARD",
+          "role": "ringward",
+          "stats": {"breath": 12, "stroke": 9, "reach": 11, "grip": 11, "strip": 10, "loft": 8, "ward": 14}
+        }
+      ]
+    }
+  ]
+}

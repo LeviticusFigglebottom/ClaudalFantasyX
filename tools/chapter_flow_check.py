@@ -8,6 +8,7 @@ import json
 import re
 from pathlib import Path
 
+STARTS_FILE = "game/data/debug/chapter_select.json"
 CHAPTERS_FILE = "game/data/flow/chapters.json"
 GREYBOX_SCRIPT = "res://game/world/zone/greybox_zone.gd"
 LAYOUT_PATH_RE = re.compile(r'^layout_path = "(res://[^"]+)"', re.M)
@@ -20,7 +21,7 @@ TRIGGER_KEYS = {"id", "at", "size", "yaw", "activation", "prompt_key", "payload"
                 "blocked_by_flag", "sets_flag", "once"}
 ACTIVATIONS = {"touch", "interact"}
 SHOT_MODES = {"fixed", "pan_follow", "dolly"}
-ENCOUNTER_KEYS = {"table", "min_m", "max_m", "when", "seed"}
+ENCOUNTER_KEYS = {"table", "min_m", "max_m", "when", "seed", "grace_m", "max_step_m"}
 
 
 class Context:
@@ -324,6 +325,37 @@ def _load(path: Path) -> object:
         return None
 
 
+def starts_errors(doc: object, where: str, ctx: Context) -> list[str]:
+    """The debug chapter select (M3-ARC-02): every start names a known location and its spawn, a
+    chapter number, known heroes and declared flags, under a unique id."""
+    rows = doc.get("starts") if isinstance(doc, dict) else None
+    if not isinstance(rows, list):
+        return [f"{where}: needs starts, a list"]
+    errs: list[str] = []
+    seen: set[str] = set()
+    for i, row in enumerate(rows):
+        w = f"{where}: starts[{i}]"
+        if not isinstance(row, dict):
+            errs.append(f"{w}: must be an object")
+            continue
+        sid = row.get("id")
+        if not isinstance(sid, str) or not sid or sid in seen:
+            errs.append(f"{w}: needs a unique non-empty id")
+        seen.add(str(sid))
+        loc = row.get("location")
+        if loc not in ctx.locations:
+            errs.append(f"{w}: unknown location '{loc}'")
+        else:
+            errs += _spawn_errors(row.get("spawn"), loc, w, ctx)
+        if not isinstance(row.get("chapter"), int) or row["chapter"] < 1:
+            errs.append(f"{w}: chapter must be a positive integer")
+        errs += _party_errors({"party": row.get("party", [])}, w, ctx)
+        for f in row.get("flags", []):
+            if f not in ctx.flags:
+                errs.append(f"{w}: undeclared flag '{f}' (declare it in game/data/flags.tres)")
+    return errs
+
+
 def check(root: Path, files: dict[str, object], flags: set[str]) -> list[str]:
     """Every chapter file listed in chapters.json, and the layout of every zone they name."""
     reg = files.get(CHAPTERS_FILE)
@@ -368,4 +400,7 @@ def check(root: Path, files: dict[str, object], flags: set[str]) -> list[str]:
     for lid in sorted(named):
         if ctx.layouts.get(lid) is not None:
             errs += layout_errors(ctx.layouts[lid], f"layout of {lid}", ctx)
+    starts = files.get(STARTS_FILE)
+    if starts is not None:
+        errs += starts_errors(starts, STARTS_FILE, ctx)
     return errs

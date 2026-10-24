@@ -7,6 +7,8 @@ extends Control
 ## voice_fade_sec), then the title and line fade in (fade_in_sec) and the short credits roll in one
 ## row at a time (credits: loc keys, credit_line_sec apart). The piano coda (hush_coda) is the end
 ## card's zone music (game/data/audio/music.json zones). Every alpha is a function of `elapsed`.
+## M3-C04-04: when end_card.next_location is set (a locations.json id, with next_spawn), accept goes
+## there instead (the full game's slice → Ch4); empty, it returns to the title (the M2 review build).
 ## Show it with EndCard.open() (or FlowRouting.change_scene(EndCard.SCENE)).
 
 ## Emitted once, when accept starts the return to the title.
@@ -20,6 +22,9 @@ const DEFAULT_RETURN_SCENE := "res://game/core/boot.tscn"
 var change_scene: Callable = Callable()
 ## Seconds the card has been up (advance() adds to it; _process drives it in the game).
 var elapsed := 0.0
+## Where accept leads when set (end_card.next_location / next_spawn; M3-C04-04): &"" = the title.
+var next_location: StringName = &""
+var next_spawn: StringName = &""
 ## True once accept has started the return (a second press does nothing).
 var done := false
 
@@ -48,6 +53,8 @@ func _ready() -> void:
 	var cfg := FirstPlayableConfig.section(FirstPlayableConfig.SECTION_END_CARD)
 	_min_hold = float(cfg.get("min_hold_sec", 0.0))
 	_return_scene = str(cfg.get("return_scene", DEFAULT_RETURN_SCENE))
+	next_location = StringName(str(cfg.get("next_location", "")))
+	next_spawn = StringName(str(cfg.get("next_spawn", "")))
 	_title.text = tr("FLOW_END_CARD_TITLE")
 	_line.text = tr("FLOW_END_CARD_LINE")
 	_prompt.text = tr("FLOW_END_CARD_PROMPT")
@@ -128,11 +135,15 @@ func handle_input(event: InputEvent) -> bool:
 	return true
 
 
-## Returns to the title (ignores the hold; handle_input enforces it). Returns false once done.
+## Returns to the title, or goes on to next_location when set (ignores the hold; handle_input enforces
+## it). Returns false once done.
 func accept() -> bool:
 	if done:
 		return false
 	done = true
+	if next_location != &"":
+		FlowRouting.go_to(next_location, next_spawn)  # FlowRouting.record captures it in tests
+		return true
 	returning.emit(_return_scene)
 	if change_scene.is_valid():
 		change_scene.call(_return_scene)

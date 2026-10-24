@@ -6,9 +6,14 @@ extends Node
 ##   blip it plays the speaker's own blip set from game/data/audio/voices.json (a row per timbre, pitch, jitter, a
 ##   minimum gap `rate_ms`) on the Voice bus, and it keeps the box's shared Blip player silent. The box already
 ##   leaves out sung lines, skipped reveals and (unless text_box.json says otherwise) narration, so this does too.
+## - **Pace (M3-AUD-21).** voices.json `pace`: `syllable` (the default) blips once per syllable, on the box's
+##   mouth_flap opening (each vowel group, the same edge the lip sync follows), so the blips rest through the reveal's
+##   comma and full-stop pauses and keep time with the mouth; `letter` keeps one blip per blip the box counts.
+## - **Level.** Each blip plays at the voice's volume_db + voices.json `mix_db` (M3-AUD-23's mix pass) + the box's
+##   blip_volume_db.
 ## - **The speaker.** A CutsceneSequencer's line_shown step gives it exactly (the speaker, else the narrator
 ##   identity). A box shown without a sequencer reports only mouth_flap(speaker), at its first vowel, so until then
-##   the previous voice stands; a request task asks the box for a public voice signal (M3-ARC-02).
+##   the previous voice stands; a request task asks the box for a public voice signal (M3-ARC-03).
 ## - **Recorded lines (VO).** A line with a line id looks for its file (the step's `voice`, else voices.json
 ##   vo.pattern). When it exists it plays on the Voice bus and the line's blips stay silent; a missing file falls
 ##   back to the blips. The next line, or the box closing, stops it.
@@ -20,6 +25,8 @@ const BLIP_NODE := ^"Blip"
 const SEED := 20261107
 const MS_PER_SEC := 1000.0
 const NARRATOR := "narrator"
+const PACE_SYLLABLE := &"syllable"
+const PACE_LETTER := &"letter"
 
 ## voices.json.
 var data: Dictionary = {}
@@ -43,6 +50,8 @@ var _clock := 0.0
 var _last_blip := -INF
 var _cycle := 0
 var _rng := RandomNumberGenerator.new()
+## The mouth as the box last reported it (a syllable is its opening edge).
+var _open := false
 
 
 func _init(table: Dictionary = {}) -> void:
@@ -107,6 +116,16 @@ func advance(delta: float) -> void:
 		_seen = count
 		return
 	_seen = count
+	if pace() == PACE_LETTER:
+		_blip()
+
+
+## How the blips are paced: voices.json `pace` (syllable unless it says letter).
+func pace() -> StringName:
+	return PACE_LETTER if str(data.get("pace", PACE_SYLLABLE)) == String(PACE_LETTER) else PACE_SYLLABLE
+
+
+func _blip() -> void:
 	if has_vo() and bool(vo_cfg().get("suppress_blips", true)):
 		dropped += 1
 		return
@@ -125,7 +144,7 @@ func _play_blip(row: Dictionary) -> void:
 	_cycle += 1
 	var jitter := float(row.get("jitter", 0.0))
 	var pitch := float(row.get("pitch", 1.0)) * (1.0 + (_rng.randf_range(-jitter, jitter) if jitter > 0.0 else 0.0))
-	var level := float(row.get("volume_db", 0.0))
+	var level := float(row.get("volume_db", 0.0)) + float(data.get("mix_db", 0.0))
 	if is_instance_valid(box) and box.settings != null:
 		level += box.settings.blip_volume_db
 	_last_blip = _clock
@@ -168,9 +187,16 @@ func _load_vo(path: String) -> AudioStream:
 	return load(path) as AudioStream
 
 
-func _on_mouth_flap(speaker: StringName, _open: bool) -> void:
+func _on_mouth_flap(speaker: StringName, open: bool) -> void:
 	if speaker != &"":
 		voice = speaker
+	var opening := open and not _open
+	_open = open
+	if not opening or pace() != PACE_SYLLABLE:
+		return
+	if speaker == &"" and is_instance_valid(box) and box.settings != null and not box.settings.narration_blip:
+		return
+	_blip()
 
 
 func _mute_box() -> void:

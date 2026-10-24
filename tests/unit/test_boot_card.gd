@@ -23,6 +23,9 @@ const TEST_CAP_MS := 20000.0
 ## M1-RND-29: the measured first launch (Low, RX 9070 XT); the cap must leave this much headroom over it.
 const FIRST_RUN_MEASURED_MS := 9500.0
 const CAP_HEADROOM := 10.0
+## M2-ARC-12: Godot's ticks (CLOCK_MONOTONIC_RAW) run about 1% slow against the sleep clock under WSL2, so a
+## real stall may read a little under its length. The test still tells a real stall from the ~150 ms capped delta.
+const CLOCK_SKEW_TOLERANCE := 0.95
 
 var _nodes: Array[Node] = []
 
@@ -194,7 +197,10 @@ func test_a_real_stall_under_the_card_reads_at_least_its_length() -> void:
 	card._process(FRAME_MS / BootCard.MSEC_PER_SEC)
 	OS.delay_msec(int(REAL_STALL_MS))
 	card._process(CAPPED_DELTA_MS / BootCard.MSEC_PER_SEC)
-	assert_true(float(card.wait_stats()["reveal_wait_max_frame_ms"]) >= REAL_STALL_MS, "%s" % card.wait_stats())
+	assert_true(
+		float(card.wait_stats()["reveal_wait_max_frame_ms"]) >= REAL_STALL_MS * CLOCK_SKEW_TOLERANCE,
+		"%s" % card.wait_stats()
+	)
 	_done()
 
 

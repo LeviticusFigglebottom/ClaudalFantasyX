@@ -1,0 +1,21 @@
+// Ch4 C4-13 "Boss: the Spar-Wraith", the way in (docs/kb/story/beats/act1_ch04.md §5). The derelict's
+// main deck under the mainmast, about 08:10, a low sun through the set sails. D05: the wraith in the
+// rigging, tilted up through the sails against the sun, wrapped in its own sail-membrane like a shroud,
+// its wounds bleeding held cyan. The lines move with no hand on them. The battle barks (§5, <= 35
+// words) are spoken here, before the fight: the engine has no in-battle barks yet. Asha says nothing
+// aloud to the wraith. Its motes are held; nothing lifts.
+// The fight is on the derelict's deck, never the ferry's (ADR 0017 (d)). Four in the party: three
+// active, one in reserve. Music: spar_wraith (stem 1). The chapter flow opens ch04_spar_wraith next.
+title: ch04_spar_wraith
+location: ch04/brightwater_ferry
+---
+@letterbox on
+@camera D05
+@sfx sails_luff_and_fall vol=0.4
+@vfx glimmer_held at=derelict_rigging count=8 drift=down_seaward rate=slow
+@music spar_wraith fade=1.0
+@wait 2.0
+Ysolde [neutral]: Stand back from the rigging, please. #line:ch04_wraith_001
+Toma [determined]: On my shield. #line:ch04_wraith_002
+@letterbox off
+===

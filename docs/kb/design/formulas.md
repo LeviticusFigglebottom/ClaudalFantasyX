@@ -71,6 +71,8 @@ Examples: agi 10 (base 100), 2 ranks: 200, then 100, then 50 before it acts; 1 r
 
 **Timeline preview** assumes every future action uses `DEFAULT_RANK`. Timed statuses (Haste, Slow, Stop, Sleep, Doom) count down per simulated own turn exactly as in play, so a 16-turn preview matches actual play whenever every action is rank 3 and nothing new is inflicted. The candidate action's rank, delay push, and any time statuses it inflicts (assumed to land) are applied exactly. A Doomed unit's entries carry its countdown (`TurnEntry.doom`), and no entry follows the one showing 1. A candidate that inflicts Petrify removes its target from the preview. A candidate that would deal HP damage to a **sleeping** target (a physical or magical hit through a non-immune, non-absorbing affinity, a heal on a Zombie, or a damage item) wakes it in the preview, before any status the action adds, exactly as in play (assuming the hit lands). A candidate aimed at a Reflect unit is previewed on the unit it will really bounce to.
 
+**Foe tempo** (M3-CMB-02, ADR 0038; this refines the paragraph above for foes): a foe's predicted turn, or a Berserk/Confused one, uses the rank of the skill its AI will pick (`EnemyAI.predicted_skill`: the first rule that holds, with `turn_mod` counted ahead; of its options, the lowest rank). Party turns stay at `DEFAULT_RANK`. That skill's delay push is applied to every foe of the actor for an all-foes skill, or to the only one left for a single-foe one (assumed to land). No battle RNG is drawn.
+
 ## Damage
 
 **Damage**: shared by physical and magical, exact in integers.

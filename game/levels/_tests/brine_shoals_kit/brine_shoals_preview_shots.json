@@ -1,0 +1,162 @@
+{
+ "doc": "M3-ENV-02 Brine Shoals preview views (docs/kb/art/environments/brine_shoals.md section 4). Only the two named in tests/screenshots/shots.json are registered baselines; capture the rest with --manifest.",
+ "shots": [
+  {
+   "id": "brine_b01_arrival",
+   "scene": "res://game/levels/_tests/brine_shoals_kit/brine_shoals_preview.tscn",
+   "camera": "Cameras/B01",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "brine_b02_route_of_wrecks",
+   "scene": "res://game/levels/_tests/brine_shoals_kit/brine_shoals_preview.tscn",
+   "camera": "Cameras/B02",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "brine_b03_camp",
+   "scene": "res://game/levels/_tests/brine_shoals_kit/brine_shoals_preview.tscn",
+   "camera": "Cameras/B03",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "brine_b05_barge_channel",
+   "scene": "res://game/levels/_tests/brine_shoals_kit/brine_shoals_preview.tscn",
+   "camera": "Cameras/B05",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "brine_b07_liss_crate",
+   "scene": "res://game/levels/_tests/brine_shoals_kit/brine_shoals_preview.tscn",
+   "camera": "Cameras/B07",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "brine_b08_tideline",
+   "scene": "res://game/levels/_tests/brine_shoals_kit/brine_shoals_preview.tscn",
+   "camera": "Cameras/B08",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    },
+    "nodes": {
+     ".": {
+      "phase": "after"
+     }
+    }
+   }
+  },
+  {
+   "id": "brine_b10_overview",
+   "scene": "res://game/levels/_tests/brine_shoals_kit/brine_shoals_preview.tscn",
+   "camera": "Cameras/B10",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "brine_b11_kit_pairs",
+   "scene": "res://game/levels/_tests/brine_shoals_kit/brine_shoals_preview.tscn",
+   "camera": "Cameras/B11",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,24 @@
+{
+ "format": 1,
+ "scene": "ch06_smoke",
+ "source": "game/data/dialogue/ch06/ch06_smoke.dlg",
+ "start": "ch06_smoke",
+ "nodes": {
+  "ch06_smoke": {
+   "headers": {"location": "ch06/brine_shoals"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["W04"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "mark", "args": ["toma", "ridge_stop", "walk"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "anim", "args": ["toma", "stop"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [1.2], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "camera", "args": ["W04_smoke"], "kwargs": {"blend": 2.0}, "src": 11},
+    {"op": "cue", "cue": "sfx", "args": ["camp_burn"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 13},
+    {"op": "line", "id": "ch06_smoke_001", "key": "DLG_CH06_SMOKE_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "line", "id": "ch06_smoke_002", "key": "DLG_CH06_SMOKE_002", "speaker": "toma", "emotion": "afraid", "voice": "", "src": 15},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 1.5}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 17}
+   ]
+  }
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch04_wake_fisher",
+ "source": "game/data/dialogue/ch04/ch04_wake_fisher.dlg",
+ "start": "ch04_wake_fisher",
+ "nodes": {
+  "ch04_wake_fisher": {
+   "headers": {"location": "ch04/haluna_wake"},
+   "ops": [
+    {"op": "line", "id": "ch04_wake_fisher_001", "key": "DLG_CH04_WAKE_FISHER_001", "speaker": "fisher", "emotion": "determined", "voice": "", "src": 7},
+    {"op": "line", "id": "ch04_wake_fisher_002", "key": "DLG_CH04_WAKE_FISHER_002", "speaker": "asha", "emotion": "laugh", "voice": "", "src": 8},
+    {"op": "line", "id": "ch04_wake_fisher_003", "key": "DLG_CH04_WAKE_FISHER_003", "speaker": "fisher", "emotion": "laugh", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

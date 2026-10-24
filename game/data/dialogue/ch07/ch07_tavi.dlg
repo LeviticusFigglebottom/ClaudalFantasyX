@@ -1,0 +1,62 @@
+// Ch7 B03 "Tavi" (docs/kb/story/beats/act1_ch07.md §2 B03). Played when Rhen walks on to the market
+// boats by the Bell's gantry. Tavi Orse, Mother Kell's grandson and Oruvel's Reefball captain, comes
+// over three moored boats at a run (T06). Rhen's nervous burst is the last joke he makes in this
+// beat. T07 is the line: a two-shot, Rhen frame-left in three-quarter back, Tavi frame-right facing
+// camera, so his face carries the news; held through the wait, no music, the market noise going on
+// around them. Asha takes one step back to give them room (she leaves the frame's middle, not the
+// frame). Then "I was there." / "I'm sorry." (both set ch07_told_tavi), the Pemakar boat if Rhen sent
+// one for Kell, and the empty place: Rhen asks for Pio's band before he is asked (ADR 0020 (h): he is
+// filling a boy's place, not starring). The chapter flow gives the key item pio_side_band.
+// Pio is the side's youngest, sixteen; he took the Gull home to look and hasn't come back. His fate
+// stays unknown in-game. Kell's wicks: her trade's habit, Ch1 C1-10 ("for luck").
+title: ch07_tavi
+location: ch07/tamsule
+---
+@letterbox on
+@camera T06
+Tavi [laugh]: Rhen! Salt and stone. Rhen! #line:ch07_tavi_001
+@mark tavi tavi_face run
+@wait 0.8
+@anim tavi grab_shoulders rhen
+Rhen [laugh]: Tavi. You've grown a beard, or something died on your face, either way I'm not kissing it, get off— #line:ch07_tavi_002
+@anim tavi laugh
+@wait 0.6
+Tavi [worried]: Nobody's come. A week. No boats, no word, nothing. #line:ch07_tavi_003
+Tavi [worried]: Pio took the Gull back to look and he hasn't— #line:ch07_tavi_004
+@wait 1.0
+Tavi [afraid]: Gran? #line:ch07_tavi_005
+@camera T07
+@music silence fade=0.4
+Rhen [grief]: She couldn't swim, Tavi. #line:ch07_tavi_006
+@face tavi grief 2.0
+@wait 2.0
+@mark asha asha_step_back walk
+@music tavi_kell fade=2.0
+-> I was there. #line:ch07_tavi_007
+    Tavi [grief]: ...Did she know? That it was coming? #line:ch07_tavi_008
+    Rhen [sad]: She was handing out wicks. #line:ch07_tavi_009
+-> I'm sorry. #line:ch07_tavi_010
+    Tavi [grief]: Don't. Not you. She'd clout you for it. #line:ch07_tavi_011
+<<set $ch07_told_tavi = true>>
+<<if $ch05_boat_for_kell>>
+    Rhen [sad]: I sent her a boat at Pemakar. Too much wick. She'd have said so. #line:ch07_tavi_012
+    @anim tavi half_laugh
+    Tavi [sad]: She would. #line:ch07_tavi_013
+<<endif>>
+@wait 1.2
+Tavi [determined]: We're a player short. Pio's place. The naming's at noon. #line:ch07_tavi_014
+Rhen [determined]: Give me his band. #line:ch07_tavi_015
+@camera T06
+@anim tavi untie_band
+@anim tavi tie_band rhen
+@wait 1.5
+@anim tavi look_at asha
+Asha [sad]: Asha. I'm so sorry about your grandmother. #line:ch07_tavi_016
+Toma [neutral]: Rhen is the Lady Cantor's sworn guardian. #line:ch07_tavi_017
+@anim tavi look_at rhen
+@wait 1.5
+Tavi [tender]: ...Gran would've liked that. #line:ch07_tavi_018
+<<set $ch07_met_tavi = true>>
+@letterbox off
+@camera release
+===

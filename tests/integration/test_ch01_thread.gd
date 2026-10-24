@@ -58,6 +58,9 @@ func test_ch1_plays_from_the_prologue_to_haluna() -> void:
 	prologue.travel = func(loc: StringName, spawn: StringName) -> bool:
 		travels.append([loc, spawn])
 		return true
+	# Act I's route (the M2 review build still goes to Haluna until the Lead flips the switch).
+	prologue.next_location = &"ch01/oruvel_underway"
+	prologue.next_spawn = &"Drop"
 	prologue.play()
 	_host().remove_child(prologue)
 	prologue.free()

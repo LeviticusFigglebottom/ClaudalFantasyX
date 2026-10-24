@@ -1,0 +1,40 @@
+{
+ "doc": "M3-ENV-03 Pemakar kit preview: the composed views of pemakar.md §5 built in the preview (P01-P03, P05-P08). Not all registered in tests/screenshots/shots.json; capture with --manifest=res://game/levels/_tests/pemakar_kit/pemakar_kit_shots.json. The mood (ch05_dusk or the ch05 festival night) is set per shot.",
+ "defaults": {
+  "camera": "default",
+  "resolution": [960, 540],
+  "settle_frames": 24,
+  "seed": 1,
+  "threshold_rmse": 0.008
+ },
+ "shots": [
+  {"id": "pemakar_p01_waterfall_of_fires", "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+   "camera": "Cameras/P01", "resolution": [960, 540], "settle_frames": 24,
+   "setup": {"globals": {"hymn_wind_time": 40.0}, "viewport": {"use_taa": false, "screen_space_aa": 1},
+             "nodes": {".": {"mood": "night"}}}},
+  {"id": "pemakar_p02_arrival_dusk", "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+   "camera": "Cameras/P02", "resolution": [960, 540], "settle_frames": 24,
+   "setup": {"globals": {"hymn_wind_time": 40.0}, "viewport": {"use_taa": false, "screen_space_aa": 1},
+             "nodes": {".": {"mood": "dusk"}}}},
+  {"id": "pemakar_p03_among_the_graves", "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+   "camera": "Cameras/P03", "resolution": [960, 540], "settle_frames": 24,
+   "setup": {"globals": {"hymn_wind_time": 40.0}, "viewport": {"use_taa": false, "screen_space_aa": 1},
+             "nodes": {".": {"mood": "dusk"}}}},
+  {"id": "pemakar_p05_one_light", "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+   "camera": "Cameras/P05", "resolution": [960, 540], "settle_frames": 24,
+   "setup": {"globals": {"hymn_wind_time": 40.0}, "viewport": {"use_taa": false, "screen_space_aa": 1},
+             "nodes": {".": {"mood": "dusk"}}}},
+  {"id": "pemakar_p06_spill", "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+   "camera": "Cameras/P06", "resolution": [960, 540], "settle_frames": 24,
+   "setup": {"globals": {"hymn_wind_time": 40.0}, "viewport": {"use_taa": false, "screen_space_aa": 1},
+             "nodes": {".": {"mood": "night"}}}},
+  {"id": "pemakar_p07_smithy", "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+   "camera": "Cameras/P07", "resolution": [960, 540], "settle_frames": 24,
+   "setup": {"globals": {"hymn_wind_time": 40.0}, "viewport": {"use_taa": false, "screen_space_aa": 1},
+             "nodes": {".": {"mood": "night"}}}},
+  {"id": "pemakar_p08_copper_veins", "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+   "camera": "Cameras/P08", "resolution": [960, 540], "settle_frames": 24,
+   "setup": {"globals": {"hymn_wind_time": 40.0}, "viewport": {"use_taa": false, "screen_space_aa": 1},
+             "nodes": {".": {"mood": "dusk"}}}}
+ ]
+}

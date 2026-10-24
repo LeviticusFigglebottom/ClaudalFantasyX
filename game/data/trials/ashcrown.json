@@ -1,0 +1,54 @@
+{
+  "ashcrown": {
+    "doc": "The Ashcrown trial (M3-C05-02; act1_ch05.md B08, SPEC 6.6 'lighting channels'; logic in AshcrownTrial). A strike caught at a tier's catch-rod charges that tier's copper bowl and lights its ring of `studs` studs. One stud goes dark for every `metres_per_stud` metres the party walks (the clock is counted in steps, never seconds: pillar 4); when the last goes dark the charge fades and is re-caught at the same tier's rod, never back at the crown. Each tier's bowl pours into `bowl_into`. A vein-gate is a bronze disc that faces outlets[rotation] (rotation 0..steps-1, one 90-degree step a turn): another gate, `spout` (the tier's downspout: the strike pours to the next tier's bowl, or on the last tier into the anvil court), `ground` (an ash drift: the charge is lost), `seal` (the sealed side vein: it opens the quench-trough alcove, sets alcove_flag, and costs the charge) or `none` (a vein to nowhere: the circuit is open and nothing runs). A gate with `linked` turns its twin with it. A `plate` gate has one fixed outlet and passes only while a party member stands on its plate (the view shows Toma there; `plate_start` is where he begins). Pulling a tier's release sends the charge along the traced path. solution_turns is the band each tier's fewest gate turns from its start must sit in (tests/unit/test_ashcrown_trial.gd). hint_scene plays once after hint_idle_sec on one tier with no turn. landed_flag is set when the last run strikes the anvil-stone.",
+    "steps": 4,
+    "studs": 8,
+    "metres_per_stud": 8.0,
+    "hint_idle_sec": 90.0,
+    "hint_scene": "ch05_trial_hint",
+    "landed_flag": "ch05_strike_landed",
+    "alcove_flag": "ch05_quench_alcove_open",
+    "tiers": [
+      {
+        "id": "t1",
+        "bowl_into": "g1",
+        "solution_turns": [1, 1],
+        "gates": {
+          "g1": {"rotation": 0, "outlets": ["none", "spout", "none", "none"]}
+        }
+      },
+      {
+        "id": "t2",
+        "bowl_into": "g2a",
+        "solution_turns": [3, 6],
+        "gates": {
+          "g2a": {"rotation": 0, "outlets": ["none", "g2b", "ground", "none"]},
+          "g2b": {"rotation": 0, "outlets": ["ground", "none", "none", "spout"]}
+        }
+      },
+      {
+        "id": "t3",
+        "bowl_into": "g3a",
+        "solution_turns": [3, 8],
+        "seal_note": "g3a facing 0 runs into the sealed side vein (the optional quench charm)",
+        "gates": {
+          "g3a": {"rotation": 3, "outlets": ["seal", "g3c", "ground", "none"], "linked": "g3b"},
+          "g3b": {"rotation": 0, "outlets": ["none", "none", "spout", "ground"], "linked": "g3a"},
+          "g3c": {"rotation": 1, "outlets": ["g3b", "none", "none", "ground"]}
+        }
+      },
+      {
+        "id": "t4",
+        "bowl_into": "g4a",
+        "solution_turns": [2, 6],
+        "plate_start": "p4b",
+        "gates": {
+          "g4a": {"rotation": 2, "outlets": ["p4a", "p4b", "ground", "none"]},
+          "p4a": {"plate": true, "outlets": ["g4b"]},
+          "p4b": {"plate": true, "outlets": ["ground"]},
+          "g4b": {"rotation": 0, "outlets": ["none", "spout", "none", "ground"]}
+        }
+      }
+    ]
+  }
+}

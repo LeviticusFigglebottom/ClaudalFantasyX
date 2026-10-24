@@ -267,6 +267,82 @@ def choreo_errors(doc: object, skills: object) -> list[str]:
     if not isinstance(sp, dict) or not _num(sp.get("min")) or not _num(sp.get("max")) or not 0 < sp["min"] <= sp["max"]:
         errs.append(f"{CHOREO_FILE}: speeds needs 0 < min <= max")
     errs += camera_errors(c.get("camera"), styles)
+    if "placeholder_clips" in c:
+        errs += placeholder_errors(c["placeholder_clips"])
+    return errs
+
+
+# --- M2-BPR-10: placeholder hero clips (choreo.json placeholder_clips; BattlePlaceholderClips) -------------
+
+
+def _euler(v: object) -> bool:
+    return isinstance(v, list) and len(v) == 3 and all(_num(x) for x in v)
+
+
+def _pose_errors(w: str, pose: object, roles: set[str]) -> list[str]:
+    if not isinstance(pose, dict):
+        return [f"{w}: must be an object of role -> [x, y, z] degrees"]
+    errs: list[str] = []
+    for role, v in pose.items():
+        if role not in roles:
+            errs.append(f"{w}.{role}: not a role in placeholder_clips.bones")
+        elif not _euler(v):
+            errs.append(f"{w}.{role}: must be [x, y, z] degrees")
+    return errs
+
+
+def placeholder_errors(pc: object) -> list[str]:
+    """Problems in placeholder_clips: every contract clip has a row, roles have bone names, lengths are positive,
+    key times lie within the clip, poses name known roles as [x, y, z]."""
+    w = f"{CHOREO_FILE}: placeholder_clips"
+    if not isinstance(pc, dict):
+        return [f"{w}: must be an object"]
+    errs: list[str] = []
+    bones = pc.get("bones")
+    if not isinstance(bones, dict) or not bones:
+        return [f"{w}.bones: needs role -> [bone names]"]
+    for role, names in bones.items():
+        if not isinstance(names, list) or not names or not all(isinstance(n, str) and n for n in names):
+            errs.append(f"{w}.bones.{role}: needs a non-empty list of bone names")
+    roles = set(bones)
+    mr = pc.get("min_roles")
+    if not isinstance(mr, int) or isinstance(mr, bool) or not 1 <= mr <= len(roles):
+        errs.append(f"{w}.min_roles: must be an integer in [1, {len(roles)}]")
+    errs += _pose_errors(f"{w}.base", pc.get("base", {}), roles)
+    clips = pc.get("clips")
+    if not isinstance(clips, dict):
+        return errs + [f"{w}.clips: must be an object"]
+    for name in sorted(CLIPS - set(clips)):
+        errs.append(f"{w}.clips: no placeholder for contract clip '{name}'")
+    for name, clip in clips.items():
+        cw = f"{w}.clips.{name}"
+        if name not in CLIPS:
+            errs.append(f"{cw}: not a contract clip")
+        if not isinstance(clip, dict):
+            errs.append(f"{cw}: must be an object")
+            continue
+        length = clip.get("length_sec")
+        if not _num(length) or length <= 0:
+            errs.append(f"{cw}.length_sec: must be a number > 0")
+            length = None
+        if not isinstance(clip.get("loop"), bool):
+            errs.append(f"{cw}.loop: must be true or false")
+        keys = clip.get("keys")
+        if not isinstance(keys, list) or not keys:
+            errs.append(f"{cw}.keys: needs at least one key")
+            continue
+        for i, key in enumerate(keys):
+            kw = f"{cw}.keys[{i}]"
+            if not isinstance(key, dict):
+                errs.append(f"{kw}: must be an object")
+                continue
+            t = key.get("t")
+            if not _num(t) or t < 0 or (length is not None and t > length):
+                errs.append(f"{kw}.t: must be a time within [0, length_sec]")
+            if "pose" in key:
+                errs += _pose_errors(f"{kw}.pose", key["pose"], roles)
+            if "hips_m" in key and not _euler(key["hips_m"]):
+                errs.append(f"{kw}.hips_m: must be [x, y, z] metres")
     return errs
 
 
@@ -287,6 +363,14 @@ def arena_errors(doc: object, encounters: object, scene_exists) -> list[str]:
     for sid, path in scenes.items():
         if not isinstance(path, str) or not path.endswith(".tscn") or not scene_exists(path):
             errs.append(f"{ARENAS_FILE}: scenes.{sid} names a missing scene '{path}'")
+    staging = doc["arenas"].get("staging", {})
+    for aid, st in (staging.items() if isinstance(staging, dict) else []):
+        if aid == "doc":
+            continue
+        if aid not in scenes:
+            errs.append(f"{ARENAS_FILE}: staging names an unknown arena '{aid}'")
+        elif not isinstance(st, dict) or any(not _num(st.get(k, 1.0)) or st.get(k, 1.0) <= 0 for k in ("travel_scale", "tempo")):
+            errs.append(f"{ARENAS_FILE}: staging.{aid} needs travel_scale and tempo > 0")
     rows = encounters.get("encounters", []) if isinstance(encounters, dict) else []
     for r in rows:
         if isinstance(r, dict) and "arena" in r and r["arena"] not in scenes:
@@ -323,9 +407,77 @@ def summon_errors(doc: object, flags: set[str]) -> list[str]:
               "camera_in_sec", "camera_out_sec"):
         if not _num(s.get(k)) or s[k] < 0:
             errs.append(f"{w}.{k}: must be a number >= 0")
-    e = s.get("entry")
-    if not isinstance(e, dict) or any(not _num(e.get(k)) or e[k] < 0 for k in ENTRY_NUMS) or e.get("clip") not in CLIPS:
-        errs.append(f"{w}.entry: needs numbers >= 0 for {', '.join(ENTRY_NUMS)} and a contract clip")
+    for key in ("entry", "off_entry"):
+        e = s.get(key)
+        if not isinstance(e, dict) or any(not _num(e.get(k)) or e[k] < 0 for k in ENTRY_NUMS) or e.get("clip") not in CLIPS:
+            errs.append(f"{w}.{key}: needs numbers >= 0 for {', '.join(ENTRY_NUMS)} and a contract clip")
     if "summon" not in (c.get("camera", {}).get("shots", {}) if isinstance(c.get("camera"), dict) else {}):
         errs.append(f"{CHOREO_FILE}: camera.shots needs the 'summon' shot")
+    return errs
+
+
+# --- M3-BPR-02: boss intros (choreo.json boss_intro) ------------------------------------------------
+
+BOSS_INTRO_TIMES = ("camera_in_sec", "camera_out_sec", "card_at_sec", "card_in_sec", "card_out_sec", "rise_px",
+                    "reveal_wait_max_sec")
+BOSS_INTRO_CARD_NUMS = ("title_height", "rule_y", "rule_length", "rule_px", "band_alpha", "band_fade")
+BOSS_INTRO_ROW_KEYS = ("title_key", "epithet_key")
+
+
+def boss_intro_errors(doc: object, encounters: object, loc_keys: set[str]) -> list[str]:
+    """Problems in choreo.json boss_intro: its times, the card, and per encounter a real encounter listing the row's
+    enemy, a camera shot that exists, hold_sec > 0 (the card fits in it), loc keys that exist, a boolean on_retry."""
+    c = doc.get("choreo", {}) if isinstance(doc, dict) else {}
+    b = c.get("boss_intro")
+    w = f"{CHOREO_FILE}: boss_intro"
+    if b is None:
+        return []
+    if not isinstance(b, dict):
+        return [f"{w}: must be an object"]
+    errs = [f"{w}.{k}: must be a number >= 0" for k in BOSS_INTRO_TIMES if not _num(b.get(k)) or b[k] < 0]
+    card = b.get("card")
+    if not isinstance(card, dict):
+        errs.append(f"{w}.card: must be an object")
+    else:
+        rect = card.get("rect")
+        if not isinstance(rect, list) or len(rect) != 4 or not all(_num(v) and v >= 0 for v in rect):
+            errs.append(f"{w}.card.rect: needs [x, y, w, h], numbers >= 0")
+        if not isinstance(card.get("layer"), int) or isinstance(card.get("layer"), bool):
+            errs.append(f"{w}.card.layer: must be a whole number")
+        for k in ("title_variation", "epithet_variation"):
+            if not isinstance(card.get(k), str) or not card[k]:
+                errs.append(f"{w}.card.{k}: must name a theme label variation")
+        errs += [f"{w}.card.{k}: must be a number >= 0" for k in BOSS_INTRO_CARD_NUMS
+                 if not _num(card.get(k)) or card[k] < 0]
+        if _num(card.get("band_alpha")) and card["band_alpha"] > 1:
+            errs.append(f"{w}.card.band_alpha: must be in [0, 1]")
+    rows = b.get("rows")
+    if not isinstance(rows, dict) or not rows:
+        return errs + [f"{w}.rows: needs at least one encounter"]
+    cam = c.get("camera") if isinstance(c.get("camera"), dict) else {}
+    shots = cam.get("shots") if isinstance(cam.get("shots"), dict) else {}
+    enc_rows = encounters.get("encounters", []) if isinstance(encounters, dict) else []
+    enc = {str(r.get("id")): r for r in enc_rows if isinstance(r, dict)}
+    card_sec = sum(b[k] for k in ("card_at_sec", "card_in_sec", "card_out_sec") if _num(b.get(k)))
+    for eid, row in rows.items():
+        where = f"{w}.rows.{eid}"
+        if not isinstance(row, dict):
+            errs.append(f"{where}: must be an object")
+            continue
+        if eid not in enc:
+            errs.append(f"{where}: '{eid}' is not an encounter")
+        elif row.get("enemy") not in enc[eid].get("enemies", []):
+            errs.append(f"{where}.enemy: '{row.get('enemy')}' is not in the encounter")
+        if row.get("shot") not in shots:
+            errs.append(f"{where}.shot: '{row.get('shot')}' is not a camera shot")
+        hold = row.get("hold_sec")
+        if not _num(hold) or hold <= 0:
+            errs.append(f"{where}.hold_sec: must be a number > 0")
+        elif _num(b.get("camera_in_sec")) and b["camera_in_sec"] + hold < card_sec:
+            errs.append(f"{where}.hold_sec: the card's fade in and out must fit before the camera turns home")
+        for k in BOSS_INTRO_ROW_KEYS:
+            if not isinstance(row.get(k), str) or row[k] not in loc_keys:
+                errs.append(f"{where}.{k}: '{row.get(k)}' has no localization entry")
+        if "on_retry" in row and not isinstance(row["on_retry"], bool):
+            errs.append(f"{where}.on_retry: must be true or false")
     return errs

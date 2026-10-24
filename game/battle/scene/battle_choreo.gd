@@ -55,6 +55,9 @@ var skip := false
 var force_play := false
 ## False holds a sequence where it stands (captures); advance() still moves it.
 var live := true
+## The arena's staging (arenas.json staging): runs and walks scale by arena_travel; arena_tempo scales the speed.
+var arena_travel := 1.0
+var arena_tempo := 1.0
 ## A freeze-frame capture: the sequence never ends, so the controller's hand-off holds forever.
 var frozen := false
 ## Every plan started, in order (tests and tools).
@@ -109,8 +112,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	if old != null:
 		controller.stage.remove_child(old)
 		old.queue_free()
-	# M2-BPR-07: the encounter's arena, before the VFX attach (the flood rig finds its Sun and Sea).
-	BattleArena.apply(controller, engine.db, engine.encounter_id)
+	BattleArena.apply(controller, engine.db, engine.encounter_id)  # M2-BPR-07: before the VFX (the flood rig)
 	var c := BattleChoreo.new()
 	c.name = NODE_NAME
 	controller.stage.add_child(c)
@@ -121,6 +123,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	c.vow = BattleVowboundChoreo.new(c, engine)  # M2-BPR-04: listen-only, like the sequencer
 	c.boss = BattleBossChoreo.attached_if_boss(c, engine)
 	c.summon = BattleSummonCinematic.attached(c, controller, engine)  # M2-BPR-08: C10
+	BattleBossIntro.attached(c, controller, engine)  # M3-BPR-02: a boss's intro at the first turn
 	return c
 
 
@@ -131,6 +134,10 @@ func _init() -> void:
 func attach(controller: BattleController, engine: BattleEngine) -> void:
 	_ctl = controller
 	_engine = engine
+	var staging := BattleArena.staging_for(engine.db, engine.encounter_id)  # M3-BPR-01: per-arena choreography
+	arena_travel = float(staging.get("travel_scale", 1.0))
+	arena_tempo = float(staging.get("tempo", 1.0))
+	set_speed(1.0)
 	engine.action_resolved.connect(_on_action_resolved)
 	var settings := UiSettings.shared()
 	if settings != null:
@@ -149,7 +156,7 @@ func _read_settings(settings: UiSettings) -> void:
 
 func set_speed(v: float) -> void:
 	var s := data.get("speeds", {}) as Dictionary
-	speed = clampf(v, float(s.get("min", 1.0)), float(s.get("max", 1.0)))
+	speed = clampf(v, float(s.get("min", 1.0)), float(s.get("max", 1.0))) * arena_tempo
 
 
 func _process(delta: float) -> void:
@@ -222,10 +229,9 @@ func holds_ko(cid: StringName) -> bool:
 	return _held_ko.has(cid)
 
 
-## Pillar 4 while an action plays: the controller has already moved the order on, so the timeline head is who
-## acts next ("Next", not "Acting now"), and the help line names the action being played (the enemy and
-## automatic turns, and a Swell's input grade, already say it). hold_after calls it, right after the hand-off
-## has redrawn the order.
+## Pillar 4 while an action plays: the controller has already moved the order on, so the timeline head is who acts
+## next ("Next", not "Acting now"), and the help line names the action being played (the enemy and automatic turns,
+## and a Swell's input grade, already say it). hold_after calls it, right after the hand-off has redrawn the order.
 func _announce() -> void:
 	if _announced or _result == null:
 		return
@@ -247,92 +253,22 @@ func _announce() -> void:
 # --- the plan (pure data) -----------------------------------------------------------------
 
 
-## The style an action plays: item_style for an item, else style_by_skill, style_by_target, style_by_kind.
+## The style an action plays (BattleChoreoPlan.style_id_for: item, skill, target, kind).
 func style_id_for(result: ActionResult) -> String:
-	if result.item_id != &"":
-		return str(data.get("item_style", FALLBACK_STYLE))
-	var sid := String(result.skill_id)
-	var by_skill := data.get("style_by_skill", {}) as Dictionary
-	if by_skill.has(sid):
-		return str(by_skill[sid])
-	var row: Dictionary = _engine.db.skill(result.skill_id) if _engine != null else {}
-	var by_target := data.get("style_by_target", {}) as Dictionary
-	if by_target.has(str(row.get("target", ""))):
-		return str(by_target[str(row["target"])])
-	return str((data.get("style_by_kind", {}) as Dictionary).get(str(row.get("kind", "")), FALLBACK_STYLE))
+	return BattleChoreoPlan.style_id_for(data, _engine, result)
 
 
 func style(id: String) -> Dictionary:
-	var styles := data.get("styles", {}) as Dictionary
-	return styles.get(id, styles.get(FALLBACK_STYLE, {})) as Dictionary
+	return BattleChoreoPlan.style(data, id)
 
 
-## What an action plays, with no nodes: {style, actor, targets, reactions [{target, kind}], kos, and the beat
-## times approach_end, contact, strike_end, recover_end, return_end, ko_at, total}. {} for a failed action.
+## What an action plays, with no nodes (BattleChoreoPlan.plan_for). {} for a failed action.
 func plan_for(result: ActionResult) -> Dictionary:
-	if result == null or not result.ok:
-		return {}
-	var sid := style_id_for(result)
-	var st := style(sid)
-	var a := float(st.get("approach_sec", 0.0))
-	var s := float(st.get("strike_sec", 0.0))
-	var c := a + s * float(st.get("contact_at", 1.0))
-	var rec := a + s + float(st.get("recover_sec", 0.0))
-	var ret := rec + float(st.get("return_sec", 0.0))
-	var targets: Array[StringName] = []
-	var reactions: Array[Dictionary] = []
-	var kos: Array[StringName] = []
-	var stagger := float(st.get("stagger_sec", 0.0))
-	for hit: Dictionary in result.hits:
-		var tid := StringName(str(hit.get("target_id", "")))
-		if not targets.has(tid):
-			targets.append(tid)
-		if tid == result.actor_id:
-			continue
-		var amount := int(hit.get("amount", 0))
-		var kind := REACT_MISS if not bool(hit.get("hit", true)) else (REACT_DAMAGE if amount > 0 else "")
-		if kind == "" and amount < 0:
-			kind = REACT_HEAL
-		if kind != "":
-			reactions.append({"target": tid, "kind": kind, "at": c + stagger * reactions.size()})
-		var t := _engine.find(tid) if _engine != null else null
-		if amount > 0 and t != null and t.hp <= 0 and not kos.has(tid):
-			kos.append(tid)
-	var plan := {
-		"style": sid,
-		"shot": str(st.get("shot", "")),
-		"actor": result.actor_id,
-		"targets": targets,
-		"reactions": reactions,
-		"kos": kos,
-		"approach_end": a,
-		"contact": c,
-		"strike_end": a + s,
-		"recover_end": rec,
-		"return_end": ret,
-	}
-	_retime(plan)
-	return plan
+	return BattleChoreoPlan.plan_for(data, _engine, result)
 
 
-## Sets a plan's ko_at (a felled target collapses after its own reaction starts) and total from its reactions'
-## start times (`at`: the contact, staggered by stagger_sec, or delayed by a wave's travel).
 func _retime(plan: Dictionary) -> void:
-	var reaction := data.get("reaction", {}) as Dictionary
-	var kos: Array = plan["kos"]
-	var react_end := float(plan["contact"])
-	var ko_from := react_end
-	for r: Dictionary in plan["reactions"]:
-		var at := float(r["at"])
-		react_end = maxf(react_end, at + float((reaction.get(r["kind"], {}) as Dictionary).get("sec", 0.0)))
-		if kos.has(r["target"]):
-			ko_from = maxf(ko_from, at)
-	var ko := data.get("ko", {}) as Dictionary
-	plan["ko_at"] = ko_from + float(ko.get("delay_sec", 0.0))
-	var total := maxf(float(plan["return_end"]), react_end)
-	if not kos.is_empty():
-		total = maxf(total, float(plan["ko_at"]) + float(ko.get("collapse_sec", 0.0)))
-	plan["total"] = total
+	BattleChoreoPlan.retime(data, plan)
 
 
 # --- playback -----------------------------------------------------------------------------
@@ -371,8 +307,7 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 			to = from + dir * gap
 		TRAVEL_STEP:
 			to = from + dir * float(st.get("step_m", 0.0))
-	if reduced_motion:
-		to = from + (to - from) * _rm("travel_scale")
+	to = from + (to - from) * (_rm("travel_scale") if reduced_motion else 1.0) * arena_travel
 	plan["from"] = from
 	plan["to"] = to
 	plan["dir"] = dir
@@ -380,8 +315,9 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 	var actor_f := _ctl.stage.stand_in(actor_id)
 	var cr_clip := BattleClips.action_clip(actor_f, _result.skill_id, _kind())
 	plan["actor_clip"] = cr_clip != &"" or BattleClips.has_clip(actor_f, StringName(str(st.get("clip", ""))))
-	if cr_clip != &"" and BattleClips.contact_sec(actor_f, cr_clip) >= 0.0:
-		_move_contact(plan, float(plan["approach_end"]) + BattleClips.contact_sec(actor_f, cr_clip))
+	var strike_clip := cr_clip if cr_clip != &"" else StringName(str(st.get("clip", "")))
+	if bool(plan["actor_clip"]) and BattleClips.contact_sec(actor_f, strike_clip) >= 0.0:  # the clip's own blow
+		_move_contact(plan, float(plan["approach_end"]) + BattleClips.contact_sec(actor_f, strike_clip))
 	for r: Dictionary in plan["reactions"]:
 		var tid := StringName(str(r["target"]))
 		var away := _flat(_home_of(tid).origin - from)
@@ -525,11 +461,11 @@ func _react(r: Dictionary) -> void:
 		BattleClips.play(_ctl.stage.stand_in(StringName(str(r["target"]))), StringName(str(def["clip"])), speed)
 
 
-## A KO with a clip on the model just lets the stage apply it (the model plays its own KO); a stand-in
+## A KO with a clip on the model plays it (BattleClips.play_ko) and lets the stage apply it; a stand-in
 ## collapses procedurally in _apply until ko_end.
 func _beat_ko() -> void:
 	for k: StringName in _plan["kos"]:
-		if BattleClips.has_clip(_ctl.stage.stand_in(k), BattleClips.KO):
+		if BattleClips.play_ko(_ctl.stage.stand_in(k), speed):
 			_held_ko.erase(k)
 	_ctl.stage.refresh_ko(_engine)
 
@@ -547,6 +483,7 @@ func _release_kos() -> void:
 
 ## A revive: a fighter left collapsed by a procedural KO stands up on its mark again.
 func on_ko_state(cid: StringName, ko: bool) -> void:
+	BattleClips.ko_changed(_ctl.stage.stand_in(cid), ko)
 	if not ko and _ko_pose.has(cid) and not _held_ko.has(cid):
 		_ko_pose.erase(cid)
 		_rest(cid)
@@ -768,15 +705,15 @@ func entering(cid: StringName) -> Dictionary:
 func _advance_entering(delta: float) -> void:
 	if _entering.is_empty():
 		return
-	var travel := _rm("travel_scale") if reduced_motion else 1.0
+	var travel := (_rm("travel_scale") if reduced_motion else 1.0) * arena_travel
 	var lean_k := _rm("lean_scale") if reduced_motion else 1.0
 	for cid: StringName in _entering.keys():
 		var e: Dictionary = _entering[cid]
 		var spec: Dictionary = e["spec"]
-		var sec := maxf(float(spec.get("sec", 0.0)), 0.0001)
+		var sec := float(spec.get("sec", 0.0))
 		var t := float(e["t"]) + delta * speed
 		var f := _ctl.stage.stand_in(cid)
-		if f == null or t >= sec:
+		if f == null or t >= sec:  # a zero-length entrance (summon_cinematic "off") is there at once
 			_entering.erase(cid)
 			if f != null:
 				f.visible = true
@@ -787,7 +724,7 @@ func _advance_entering(delta: float) -> void:
 		if t >= 0.0 and not bool(e["clip"]):
 			e["clip"] = true
 			BattleClips.play(f, StringName(str(spec.get("clip", ""))), speed)
-		var k := 1.0 - _ease(maxf(t, 0.0) / sec)
+		var k := 1.0 - _ease(maxf(t, 0.0) / maxf(sec, 0.0001))
 		var fwd: Vector3 = e["fwd"]
 		var off := -fwd * float(spec.get("back_m", 0.0)) * travel + Vector3.DOWN * float(spec.get("depth_m", 0.0))
 		_pose_node(f, off * k, fwd, float(spec.get("lean_deg", 0.0)) * lean_k * k)
@@ -819,7 +756,7 @@ func leaving(cid: StringName) -> Dictionary:
 
 ## Holds on the mark through delay_sec, then back_m back and depth_m down, tipped tilt_deg back, over sec.
 func _advance_leaving(delta: float) -> void:
-	var travel := _rm("travel_scale") if reduced_motion else 1.0
+	var travel := (_rm("travel_scale") if reduced_motion else 1.0) * arena_travel
 	var lean_k := _rm("lean_scale") if reduced_motion else 1.0
 	for e: Dictionary in _leaving.duplicate():
 		var spec: Dictionary = e["spec"]
@@ -919,7 +856,7 @@ func _accent_now(cid: StringName) -> Array:
 	var env := sin(PI * u)
 	var back: Vector3 = e["back"]
 	var side := Vector3.UP.cross(back)
-	var travel := _rm("travel_scale") if reduced_motion else 1.0
+	var travel := (_rm("travel_scale") if reduced_motion else 1.0) * arena_travel
 	var lean_k := _rm("lean_scale") if reduced_motion else 1.0
 	var off := Vector3.UP * (float(spec.get("lift_m", 0.0)) - float(spec.get("crouch_m", 0.0))) * env
 	off += back * float(spec.get("recoil_m", 0.0)) * travel * env

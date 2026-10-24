@@ -131,7 +131,9 @@ func test_waking_a_node_spends_its_facet_and_saves() -> void:
 
 func test_a_gate_opens_from_beside_it_with_its_key() -> void:
 	var m := _model()
-	assert_eq(m.plan(&"rh_07")["error"], LatticeProgress.ERR_NOT_ADJACENT)
+	assert_eq(
+		m.plan(&"rh_07")["error"], LatticeProgress.ERR_NO_MOVEMENT, "M2-MNU-10: far away it offers the walk, unpaid"
+	)
 	assert_eq(m.plan(&"rh_08")["error"], LatticeProgress.ERR_GATE_CLOSED, "no way past a sealed gate")
 	m.traveler().movement_points = 6
 	assert_true(m.act(&"rh_06")["ok"])
@@ -146,6 +148,88 @@ func test_a_gate_opens_from_beside_it_with_its_key() -> void:
 	assert_true((m.sheet.state.lattice["opened_gates"] as Array).has("rh_07"), "saved")
 	assert_eq(m.woken_line(&"rh_07"), tr("LATTICE_MENU_GATE_OPEN"))
 	assert_eq(m.plan(&"rh_07")["cost"], 0, "an open gate is free to enter")
+
+
+## M2-MNU-10: a sealed gate away from the hero offers the walk beside it first (its cost shown), and
+## opens on the next Confirm; no new rules (cheapest_path, entry_cost, open_gate_error).
+func test_a_far_sealed_gate_offers_the_walk_beside_it_then_opens() -> void:
+	var m := _model({"facet_key_1": 1})
+	var far := m.plan(&"rh_07")
+	assert_false(far["ok"], "no movement points yet")
+	assert_eq(far["error"], LatticeProgress.ERR_NO_MOVEMENT)
+	assert_eq(far["beside"], &"rh_06", "the only neighbour Rhen can reach")
+	assert_eq(far["cost"], 6)
+	assert_eq(
+		far["text"],
+		tr("LATTICE_MENU_GATE_TOO_FAR_FMT").format({"cost": 6, "name": tr("CHAR_RHEN"), "have": 0}),
+		"refused in words"
+	)
+	m.traveler().movement_points = 8
+	var p := m.plan(&"rh_07")
+	assert_true(p["ok"])
+	assert_eq(p["action"], LatticeMenuModel.ACT_WALK, "first the walk")
+	var expect: Array[StringName] = []
+	var expect_cost := -1
+	for nb in m.board().neighbors(&"rh_07"):
+		var path := m.progress().cheapest_path(&"rhen", nb)
+		if not path.is_empty() and (expect_cost < 0 or m.path_cost(path) < expect_cost):
+			expect = path
+			expect_cost = m.path_cost(path)
+	assert_eq(p["path"], expect, "the cheapest reachable neighbour's cheapest path")
+	assert_eq(p["cost"], expect_cost)
+	assert_eq(p["left"], 8 - expect_cost)
+	var ctx := {"cost": 6, "left": 2, "need": 1, "facet": tr("FACET_KEY_1"), "held": 1}
+	assert_eq(
+		p["text"],
+		tr("LATTICE_MENU_PLAN_GATE_WALK_FMT").format(ctx) + " " + tr("LATTICE_MENU_PLAN_GATE_KEY_FMT").format(ctx)
+	)
+	assert_eq(p["confirm"], tr("LATTICE_MENU_CONFIRM_GATE_WALK_FMT").format(ctx))
+	assert_true(m.act(&"rh_07")["ok"])
+	assert_eq(m.position(), &"rh_06", "walked beside the gate")
+	assert_eq(m.movement_points(), 2, "spent exactly the walk")
+	assert_false(m.progress().is_gate_open(&"rh_07"), "not opened yet")
+	assert_eq(m.facets().count(&"facet_key_1"), 1, "the Key is still held")
+	assert_eq(m.plan(&"rh_07")["action"], LatticeMenuModel.ACT_OPEN, "then the opening")
+	assert_true(m.act(&"rh_07")["ok"])
+	assert_true(m.progress().is_gate_open(&"rh_07"))
+
+
+func test_a_far_gate_says_when_no_key_is_held_or_no_way_reaches_it() -> void:
+	var m := _model()
+	m.traveler().movement_points = 8
+	var p := m.plan(&"rh_07")
+	assert_true(p["ok"], "the walk is still offered")
+	var ctx := {"need": 1, "facet": tr("FACET_KEY_1"), "held": 0}
+	assert_true(
+		str(p["text"]).ends_with(tr("LATTICE_MENU_PLAN_GATE_NO_KEY_FMT").format(ctx)), "but says the Key is missing"
+	)
+	var none := m.plan(&"as_06")
+	assert_false(none["ok"], "Asha's gate lies beyond Rhen's sealed gates")
+	assert_eq(none["error"], LatticeProgress.ERR_GATE_CLOSED)
+	assert_eq(none["text"], tr("LATTICE_MENU_GATE_NO_WAY"))
+
+
+func test_confirm_on_a_far_gate_walks_then_opens_it() -> void:
+	_open({"facet_key_1": 1})
+	menu.model.traveler().movement_points = 8
+	menu.set_cursor(&"rh_07", false)
+	assert_eq(menu.board_view().path, menu.model.progress().cheapest_path(&"rhen", &"rh_06"), "the walk is drawn")
+	assert_eq(menu.board_view().tag_text, tr("LATTICE_MENU_TAG_COST_FMT").format({"n": 6}))
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_true(menu.is_confirming())
+	assert_eq(menu.confirm_page().current_row()["label"], tr("LATTICE_MENU_CONFIRM_GATE_WALK_FMT").format({"cost": 6}))
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_eq(menu.model.position(), &"rh_06")
+	assert_eq(menu.cursor, &"rh_07", "the cursor stays on the gate")
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_eq(
+		menu.confirm_page().current_row()["label"],
+		tr("LATTICE_MENU_CONFIRM_OPEN_FMT").format({"need": 1, "facet": tr("FACET_KEY_1")}),
+		"the second step opens it"
+	)
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_true(menu.model.progress().is_gate_open(&"rh_07"))
+	_teardown()
 
 
 func test_broken_tables_refuse_and_keep_the_save() -> void:
@@ -249,14 +333,14 @@ func test_a_click_puts_the_cursor_on_a_node_and_a_second_click_acts() -> void:
 	var at := view.screen_point(&"rh_01")
 	assert_eq(view.node_at(at), &"rh_01")
 	assert_eq(view.node_at(at + Vector2(1000.0, 1000.0)), &"", "nothing far from a node")
-	view._gui_input(_click(at))
+	_tap(view, at)
 	assert_eq(menu.cursor, &"rh_01")
 	assert_false(menu.is_confirming())
-	view._gui_input(_click(at))
+	_tap(view, at)
 	assert_true(menu.is_confirming(), "the second click on it asks to walk there")
 	menu.choose(0)
 	assert_eq(menu.model.position(), &"rh_01")
-	view._gui_input(_click(view.screen_point(&"rh_01")))
+	_tap(view, view.screen_point(&"rh_01"))
 	assert_true(menu.is_confirming(), "standing on it, a click asks to wake it")
 	assert_eq(
 		menu.confirm_page().current_row()["label"],
@@ -270,6 +354,26 @@ func test_a_click_puts_the_cursor_on_a_node_and_a_second_click_acts() -> void:
 
 ## M2-MNU-05: at every text size the side panel's lines, key, status line and confirm never overlap
 ## and stay inside the panel (they flow by measured height; the key shrinks or hides first).
+func test_a_drag_is_readable_while_it_pans_and_ends_on_release() -> void:
+	_open({})
+	var view := menu.board_view()
+	var at := view.screen_point(&"rh_01")
+	assert_false(view.is_dragging())
+	view._gui_input(_click(at))
+	assert_false(view.is_dragging(), "a press alone is not a drag yet")
+	var mm := InputEventMouseMotion.new()
+	mm.button_mask = MOUSE_BUTTON_MASK_LEFT
+	mm.position = at + Vector2(view._num("drag_px") * 4.0, 0.0)
+	mm.relative = mm.position - at
+	view._gui_input(mm)
+	assert_true(view.is_dragging(), "M2-AUD-15: audio can hear a pan by hand")
+	var up := _click(mm.position)
+	up.pressed = false
+	view._gui_input(up)
+	assert_false(view.is_dragging(), "the release ends it")
+	_teardown()
+
+
 func test_the_side_panel_never_overlaps_at_any_text_size() -> void:
 	var settings := UiSettings.shared()
 	var was: Variant = settings.get_value(UiSettings.TEXT_SCALE)
@@ -309,6 +413,96 @@ func _assert_no_overlap(what: String) -> void:
 			assert_false(rects[i].intersects(rects[j]), "%s: %s overlaps %s" % [what, rects[i], rects[j]])
 
 
+## M3-MNU-04: the overview fits every node in the board view, keeps the cursor, the side panel and
+## the actions, and toggling back returns to the cursor view on the same node.
+func test_the_overview_fits_the_whole_board_and_returns_to_the_cursor() -> void:
+	_open({})
+	menu.model.traveler().movement_points = 3
+	menu.set_cursor(&"rh_02", false)
+	var view := menu.board_view()
+	var texts := menu.side_texts()
+	assert_eq(view.zoom, 1.0)
+	assert_eq(menu.overview_button().text, tr("LATTICE_MENU_OVERVIEW_FMT").format({"key": "M"}))
+	menu.toggle_overview(false)
+	assert_true(menu.is_overview())
+	assert_eq(view.zoom, view.fit_zoom(), "the fit zoom")
+	assert_true(view.zoom < 1.0 and view.zoom >= view.zoom_min(), "held inside the wheel's range")
+	var inside := Rect2(Vector2.ZERO, view.size)
+	for nid: StringName in menu.model.board().nodes:
+		assert_true(inside.has_point(view.screen_point(nid)), "%s is in view" % nid)
+	assert_eq(menu.cursor, &"rh_02", "the cursor stays")
+	assert_eq(menu.side_texts(), texts, "and so does its panel")
+	assert_eq(menu.overview_button().text, tr("LATTICE_MENU_OVERVIEW_BACK_FMT").format({"key": "M"}))
+	var framed := view.pan
+	menu.handle_input(_ev(&"ui_right"))
+	assert_eq(menu.cursor, &"rh_03")
+	assert_eq(view.pan, framed, "the board stays framed as the cursor moves")
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_true(menu.is_confirming(), "actions work in the overview")
+	menu.handle_input(_ev(&"ui_cancel"))
+	menu.handle_input(_ev(LatticeMenu.OVERVIEW_ACTION))
+	assert_eq(menu.is_overview(), false, "the action toggles it back")
+	_teardown()
+
+
+func test_back_from_the_overview_is_the_cursor_view_on_the_same_node() -> void:
+	_open({})
+	var view := menu.board_view()
+	menu.set_cursor(&"rh_05", false)
+	var near_pan := view.pan
+	menu.toggle_overview(false)
+	menu.toggle_overview(false)
+	assert_eq(view.zoom, 1.0)
+	assert_eq(view.pan, near_pan, "the same framing as before")
+	menu.toggle_overview(false)
+	menu.set_cursor(&"rh_01", false)
+	menu.toggle_overview(false)
+	var fresh := LatticeMenu.create(PartySheet.new(GameStateData.new(), HEROES))
+	fresh.pause_tree = false
+	_root().add_child(fresh)
+	fresh.set_cursor(&"rh_01", false)
+	assert_eq(view.pan, fresh.board_view().pan, "back on the node the cursor moved to")
+	fresh.close()
+	fresh.get_parent().remove_child(fresh)
+	fresh.free()
+	_teardown()
+
+
+func test_a_wheel_turn_leaves_the_overview_and_reduced_motion_snaps() -> void:
+	var settings := UiSettings.shared()
+	var was: Variant = settings.get_value(UiSettings.REDUCED_MOTION)
+	settings.set_value(UiSettings.REDUCED_MOTION, true)
+	_open({})
+	var view := menu.board_view()
+	menu.toggle_overview()  # animated if it could be: reduced motion snaps
+	assert_eq(view.zoom, view.fit_zoom(), "no tween: already there")
+	var wheel := InputEventMouseButton.new()
+	wheel.button_index = MOUSE_BUTTON_WHEEL_UP
+	wheel.pressed = true
+	wheel.position = view.size * 0.5
+	view._gui_input(wheel)
+	assert_false(menu.is_overview(), "the player took the camera")
+	assert_eq(menu.overview_button().text, tr("LATTICE_MENU_OVERVIEW_FMT").format({"key": "M"}))
+	_teardown()
+	settings.set_value(UiSettings.REDUCED_MOTION, was)
+
+
+func test_the_overview_names_who_woke_each_node() -> void:
+	var m := _model({"facet_speed": 1})
+	m.traveler().movement_points = 1
+	m.act(&"rh_01")
+	m.act(&"rh_01")
+	assert_eq(m.woken_initials(&"rh_01"), tr("CHAR_RHEN").left(1))
+	assert_eq(m.woken_initials(&"rh_02"), "", "nobody woke it")
+	assert_eq(m.woken_initials(&"asha_start"), tr("CHAR_ASHA").left(1), "a start is its owner's")
+	assert_true(InputMap.has_action(LatticeMenu.OVERVIEW_ACTION) or _ensured(), "the action exists")
+
+
+func _ensured() -> bool:
+	LatticeMenu.ensure_action()
+	return InputMap.has_action(LatticeMenu.OVERVIEW_ACTION)
+
+
 func _model(facets: Dictionary = {}) -> LatticeMenuModel:
 	var state := GameStateData.new()
 	state.inventory = facets.duplicate()
@@ -341,6 +535,15 @@ func _ev(action: StringName) -> InputEventAction:
 	ev.action = action
 	ev.pressed = true
 	return ev
+
+
+## A click on the board: press and release (a click acts on release, so a press can become a drag).
+func _tap(view: LatticeBoardView, at: Vector2) -> void:
+	var ev := _click(at)
+	view._gui_input(ev)
+	ev = ev.duplicate() as InputEventMouseButton
+	ev.pressed = false
+	view._gui_input(ev)
 
 
 func _click(at: Vector2) -> InputEventMouseButton:

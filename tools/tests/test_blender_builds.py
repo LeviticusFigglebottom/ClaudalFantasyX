@@ -144,7 +144,10 @@ class ManifestTest(unittest.TestCase):
 
     def test_python_runs_use_this_interpreter(self) -> None:
         run = ["{python}", "assets_src/x/t.py", "--bake-dir", "{scratch}/b"]
-        self.assertEqual(vbb.expand(run, "/bin/blender", Path("/s")), [sys.executable, "assets_src/x/t.py", "--bake-dir", "/s/b"])
+        # {scratch} is the scratch Path as the OS spells it ("\s" on Windows; mixed separators work there).
+        scratch = Path("/s")
+        self.assertEqual(vbb.expand(run, "/bin/blender", scratch),
+                         [sys.executable, "assets_src/x/t.py", "--bake-dir", f"{scratch}/b"])
         self.assertEqual(vbb.run_script(run), "assets_src/x/t.py")
         self.assertEqual(vbb.expand(["{blender}", "--python", "a.py"], "/bin/blender", Path("/s"))[:2],
                          ["/bin/blender", "--background"])

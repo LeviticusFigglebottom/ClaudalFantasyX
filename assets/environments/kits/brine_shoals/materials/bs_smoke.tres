@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_smoke_plume.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "bs_smoke"
+shader = ExtResource("1_shader")
+shader_parameter/base_fade_m = 0.08
+shader_parameter/col_core = Color(0.2353, 0.2353, 0.2275, 1)
+shader_parameter/col_fire = Color(0.8784, 0.4392, 0.1804, 1)
+shader_parameter/col_lit = Color(0.7686, 0.7373, 0.6824, 1)
+shader_parameter/density = 0.72
+shader_parameter/edge_softness = 2
+shader_parameter/fire_glow = 0.3
+shader_parameter/forward_scatter = 0.6
+shader_parameter/light_energy = 1.6
+shader_parameter/near_fade_m = 6
+shader_parameter/noise_scale = 3.2
+shader_parameter/rise_speed = 0.06
+shader_parameter/top_fade = 0.45

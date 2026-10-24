@@ -426,6 +426,8 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
             "DEF-spine.002": (0.0, 8.0 * e, 0.0), "DEF-spine.003": (0.0, 8.0 * e, 0.0),
             "DEF-spine.005": (0.0, 10.0 * head, 0.0), "DEF-spine.006": (-3.0 * head, 18.0 * head, 0.0),
             "DEF-upper_arm.R": (-6.0 * e, 0.0, 0.0)})
+    if clip in BATTLE_FRAMES:  # M2-CHR-07: the battle clip contract (the block below LENGTHS)
+        return battle_pose_at(clip, u, sk, persona)
     raise KeyError(clip)
 
 
@@ -433,6 +435,457 @@ LENGTHS = {"idle": 6.0, "walk": 1.1, "run": 0.7, "talk": 3.2, "kneel_over_rhen":
            "rise_to_stand": 2.0, "offer_hand": 1.4, "take_hand": 1.2, "walk_to_chamber": 1.4, "emerge_doorway": 2.4,
            "face_west": 1.6, "spear_level": 1.6, "lower_spear": 1.6, "palms_level": 2.0, "catch_rhen": 1.4,
            "sit_steps": 2.0, "turn_seaward": 1.6}
+
+
+# ---------------------------------------------------------------------------------------------
+# M2-CHR-07: battle clips (the battle-presentation clip contract, docs/kb/tech/battle_presentation.md § Clip
+# contract on claude/battle-presentation; BattleClips plays them by name, BattleChoreo times them)
+# ---------------------------------------------------------------------------------------------
+# Every clip is in place: only the hips move, and only a few centimetres (the sequencer moves the root). The one-shots
+# start and end on the idle's first frame, so the idle the hero actor queues after them picks up where they stop; `ko`
+# holds its last frame; `victory` loops. Lengths are whole keys at FPS.
+BATTLE_HEROES = ("asha", "rhen", "toma")
+BATTLE_CLIPS = ["ready", "attack", "cast", "item", "read", "defend", "finisher", "hit", "dodge", "ko", "victory"]
+BATTLE_FRAMES = {"ready": 9, "attack": 9, "cast": 15, "item": 10, "read": 15, "defend": 10, "finisher": 21,
+                 "hit": 9, "dodge": 9, "ko": 18, "victory": 36}
+BATTLE_LOOPS = {"victory"}
+# The contact: where the blow lands, as a fraction of the clip (choreo.json styles: melee -> attack 0.55, cast ->
+# cast 0.8, finisher -> finisher 0.62, item 0.7, read 0.6, guard -> defend 0.6). Each clip's strike pose is keyed at
+# exactly this fraction, and the library carries it as an Animation marker named `contact`.
+BATTLE_CONTACT = {"attack": 0.55, "cast": 0.8, "finisher": 0.62, "item": 0.7, "read": 0.6, "defend": 0.6}
+CONTACT_MARKER = "contact"
+# What strikes, per hero and clip: (bone, world direction). Its position along the direction peaks on the contact
+# (tools/tests/test_hero_battle_clips.py checks that the key nearest the marker is the peak).
+BATTLE_STRIKER = {
+    "asha": {"attack": ("DEF-hand.R", (0.0, 0.0, 1.0)), "cast": ("DEF-hand.R", (0.0, 1.0, 0.0)),
+             "finisher": ("DEF-hand.R", (0.0, 1.0, 0.0)), "item": ("DEF-hand.L", (0.0, 0.0, 1.0)),
+             "read": ("DEF-spine.006", (0.0, 0.0, 1.0)), "defend": ("DEF-spine", (0.0, -1.0, 0.0))},
+    "rhen": {"attack": ("DEF-hand.L", (0.0, 0.0, 1.0)), "cast": ("DEF-hand.L", (0.0, 1.0, 0.0)),
+             "finisher": ("DEF-hand.L", (0.0, -0.6, 0.8)), "item": ("DEF-hand.R", (0.0, 0.5, 0.866)),
+             "read": ("DEF-spine.006", (0.0, 0.0, 1.0)), "defend": ("DEF-spine", (0.0, -1.0, 0.0))},
+    "toma": {"attack": ("DEF-hand.R", (0.0, 0.0, 1.0)), "cast": ("DEF-hand.L", (0.0, 0.0, 1.0)),
+             "finisher": ("DEF-hand.R", (0.0, 0.0, 1.0)), "item": ("DEF-hand.L", (0.0, 0.0, 1.0)),
+             "read": ("DEF-spine.006", (0.0, 0.0, 1.0)), "defend": ("DEF-spine", (0.0, -1.0, 0.0))},
+}
+FOOT_FLAT = {"asha": 1.0, "rhen": 0.25, "toma": 0.5}
+for _h in BATTLE_HEROES:
+    CLIPS[_h] = CLIPS[_h] + [c for c in BATTLE_CLIPS if c not in CLIPS[_h]]
+LOOPS |= BATTLE_LOOPS
+LENGTHS.update({c: n / FPS for c, n in BATTLE_FRAMES.items()})
+
+
+def battle_markers(clip: str, length: float) -> list:
+    """The `contact` marker line of a strike clip's Animation sub-resource (none for any other clip)."""
+    if clip not in BATTLE_CONTACT:
+        return []
+    t = fmt(BATTLE_CONTACT[clip] * length)
+    return [f'markers = [{{"color": Color(1, 1, 1, 1), "name": &"{CONTACT_MARKER}", "time": {t}}}]']
+
+
+def _battle_hero(persona: dict) -> str:
+    for hero in BATTLE_HEROES:
+        if PERSONA[hero] is persona:
+            return hero
+    raise KeyError("battle clips are authored for " + ", ".join(BATTLE_HEROES))
+
+
+def _seq(u: float, keys: list) -> dict:
+    """Keyed deltas [(u, pose), ...] (u ascending), eased between neighbours: each key is a held extreme."""
+    if u <= keys[0][0]:
+        return dict(keys[0][1])
+    for (ua, pa), (ub, pb) in zip(keys, keys[1:]):
+        if u <= ub:
+            return blend(pa, pb, smooth((u - ua) / (ub - ua)))
+    return dict(keys[-1][1])
+
+
+def _minus(a: dict, b: dict) -> dict:
+    return add(a, {k: tuple(-np.asarray(v, dtype=float)) for k, v in b.items()})
+
+
+def _scale(p: dict, s: float) -> dict:
+    return {k: tuple(np.asarray(v, dtype=float) * s) for k, v in p.items()}
+
+
+def _legs(sk: Skeleton, persona: dict, drop: float, dz_l: float = 0.0, dz_r: float = 0.0) -> dict:
+    """A delta on the idle's stance: the hips `drop` metres lower and each foot `dz` forward of its hip joint (two-bone
+    IK in the leg's own plane, on top of the persona's stance and soft knees). The ankle takes back FOOT_FLAT of the
+    leg's turn: 1 keeps the foot flat; less lifts the heel a little, which keeps the instep out of the trouser hem
+    (the hem rides the shin, so a flexed ankle pushes the foot's skin through it)."""
+    leg = sk.leg_thigh + sk.leg_shin
+    k = persona.get("stance")
+    w = k * sk.shoulder_w if k else sk.ankle_w
+    c = math.cos(math.asin(min(0.5 * (w - sk.hip_w) / leg, 0.9)))
+    th, sh = sk.leg_thigh * c, sk.leg_shin * c
+    h0 = (th + sh) * math.cos(math.radians(persona.get("knee", 0.0)))
+
+    def ik(h: float, dz: float) -> tuple:
+        d = min(math.hypot(h, dz), th + sh - 1e-4)
+        at = math.acos(max(-1.0, min(1.0, (th * th + d * d - sh * sh) / (2.0 * th * d))))
+        ak = math.acos(max(-1.0, min(1.0, (sh * sh + d * d - th * th) / (2.0 * sh * d))))
+        return -math.degrees(math.atan2(dz, h) + at), math.degrees(at + ak)
+
+    rest = ik(h0, 0.0)  # the stance itself: the deltas are taken from it, so (0, 0, 0) changes nothing
+    flat = FOOT_FLAT[_battle_hero(persona)]
+    out = {"hips": (0.0, -drop, 0.0)}
+    for side, dz in (("L", dz_l), ("R", dz_r)):
+        thigh, shin = ik(h0 - drop, dz)
+        dt, ds = thigh - rest[0], shin - rest[1]
+        out[f"DEF-thigh.{side}"] = (dt, 0.0, 0.0)
+        out[f"DEF-shin.{side}"] = (ds, 0.0, 0.0)
+        out[f"DEF-foot.{side}"] = (-(dt + ds) * flat, 0.0, 0.0)
+    return out
+
+
+def _sway(sk: Skeleton, persona: dict, dx: float, drop: float) -> dict:
+    """A delta: the hips slide dx to the hero's left (feet planted), tilting both legs."""
+    leg = (sk.leg_thigh + sk.leg_shin) - drop
+    a = math.degrees(math.atan2(dx, leg))
+    return add(_legs(sk, persona, drop), {"hips": (dx, 0.0, 0.0), "DEF-thigh.L": (0.0, 0.0, a),
+                                           "DEF-thigh.R": (0.0, 0.0, a), "DEF-foot.L": (0.0, 0.0, -a),
+                                           "DEF-foot.R": (0.0, 0.0, -a)})
+
+
+def _ko_kneel(sk: Skeleton, persona: dict, base: dict, held: dict) -> dict:
+    """The felled pose as a delta on `base`: down on the right knee (kneel), slumped, plus the hero's own `held`."""
+    return _minus(add(kneel(sk, persona), held), base)
+
+
+def _asha_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
+    """Asha (asha.md §1: stillness; the staff in her right hand, the verse sleeve on that arm): small, low motions,
+    the staff kept upright by staff_hold except where her hand turns it (DEF-hand.R is then the staff's own tilt)."""
+    a = persona["arms_down"]
+    if clip == "ready":
+        k = add(_legs(sk, persona, 0.025), {
+            "DEF-spine.001": (4.0, 0.0, 0.0), "DEF-spine.006": (-3.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-12.0, 0.0, -8.0), "DEF-forearm.R": (-10.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-18.0, 0.0, 16.0), "DEF-forearm.L": (-48.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.45, k), (1.0, {})]
+    if clip == "attack":
+        # the lantern end swung down at the foe: the staff drawn up and back, then the arm thrown forward
+        wind = add(_legs(sk, persona, 0.02), {
+            "DEF-spine.001": (-3.0, -6.0, 0.0), "DEF-spine.002": (0.0, -4.0, 0.0),
+            "DEF-upper_arm.R": (-40.0, 0.0, -22.0), "DEF-forearm.R": (-46.0, 0.0, 0.0), "DEF-hand.R": (-18.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-10.0, 0.0, 14.0), "DEF-forearm.L": (-20.0, 0.0, 0.0)})
+        hit = add(_legs(sk, persona, 0.045, 0.10, -0.05), {
+            "DEF-spine.001": (7.0, 10.0, 0.0), "DEF-spine.002": (5.0, 6.0, 0.0), "DEF-spine.006": (-4.0, -8.0, 0.0),
+            "DEF-upper_arm.R": (-62.0, 0.0, -16.0), "DEF-forearm.R": (-4.0, 0.0, 0.0), "DEF-hand.R": (66.0, 24.0, 0.0),
+            "DEF-upper_arm.L": (16.0, 0.0, 18.0), "DEF-forearm.L": (-22.0, 0.0, 0.0)})
+        follow = _scale(hit, 0.8)
+        follow["DEF-hand.R"] = (0.0, 0.0, 0.0)  # the staff upright again before the arm comes down
+        return [(0.0, {}), (0.3, wind), (0.55, hit), (0.75, follow), (1.0, {})]
+    if clip == "cast":
+        # the light-staff: gathered low, then the lantern lifted high in front, the free palm rising, the chin up
+        gather = add(_legs(sk, persona, 0.02), {
+            "DEF-spine.001": (4.0, 0.0, 0.0), "DEF-spine.006": (6.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-14.0, 0.0, -2.0), "DEF-forearm.R": (0.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-24.0, 0.0, 14.0), "DEF-forearm.L": (-70.0, 0.0, 0.0)})
+        lift = add(_legs(sk, persona, -0.01), {
+            "DEF-spine.006": (-5.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-52.0, 0.0, -20.0), "DEF-forearm.R": (-64.0, 0.0, 0.0), "DEF-hand.R": (4.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-58.0, 0.0, 28.0), "DEF-forearm.L": (-22.0, 0.0, 0.0), "DEF-hand.L": (0.0, 0.0, -50.0)})
+        down = _scale(lift, 0.5)
+        down["DEF-hand.R"] = (0.0, 0.0, 0.0)  # the staff upright as the arm comes down, clear of the wrist
+        return [(0.0, {}), (0.35, gather), (0.8, lift), (0.9, down), (1.0, {})]
+    if clip == "item":
+        reach = {"DEF-spine.001": (4.0, 0.0, 0.0), "DEF-upper_arm.L": (-8.0, 0.0, 8.0),
+                 "DEF-forearm.L": (-70.0, 0.0, 0.0)}
+        offer = add(_legs(sk, persona, 0.02), {
+            "DEF-spine.001": (6.0, 6.0, 0.0), "DEF-upper_arm.L": (-66.0, 0.0, 18.0), "DEF-forearm.L": (-10.0, 0.0, 0.0),
+            "DEF-hand.L": (0.0, -50.0, 0.0)})
+        return [(0.0, {}), (0.35, reach), (0.7, offer), (1.0, {})]
+    if clip == "read":
+        # she reads what she faces: a lean in, the head forward and tilted, the free hand at the breastbone
+        look = {"DEF-spine.001": (5.0, 0.0, 0.0), "DEF-spine.002": (4.0, 0.0, 0.0),
+                "DEF-spine.006": (9.0, 6.0, -5.0),
+                "DEF-upper_arm.L": (-18.0, -10.0, 16.0), "DEF-forearm.L": (-78.0, -72.0, 0.0),
+                "DEF-hand.L": (0.0, -20.0, -10.0)}
+        return [(0.0, {}), (0.6, look), (0.78, look), (1.0, {})]
+    if clip == "defend":
+        # the staff planted before her, the right shoulder behind it, the free forearm across the chest
+        guard = add(_legs(sk, persona, 0.07), {
+            "DEF-spine.001": (9.0, -6.0, 0.0), "DEF-spine.006": (-4.0, 6.0, 0.0),
+            "DEF-upper_arm.R": (-34.0, 0.0, -16.0), "DEF-forearm.R": (-8.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-34.0, -10.0, 18.0), "DEF-forearm.L": (-84.0, -70.0, 0.0)})
+        return [(0.0, {}), (0.6, guard), (0.8, _scale(guard, 0.85)), (1.0, {})]
+    if clip == "finisher":
+        # the verse: gathered in, the head bowed, then the lantern lifted high on the song, the free arm wide
+        gather = add(_legs(sk, persona, 0.06), {
+            "DEF-spine.001": (8.0, 0.0, 0.0), "DEF-spine.006": (10.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-10.0, 0.0, -2.0), "DEF-forearm.R": (0.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-18.0, -10.0, 16.0), "DEF-forearm.L": (-78.0, -72.0, 0.0)})
+        sing = add(_legs(sk, persona, -0.015), {
+            "DEF-spine.003": (-2.0, 0.0, 0.0), "DEF-spine.006": (-6.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-54.0, 0.0, -20.0), "DEF-forearm.R": (-66.0, 0.0, 0.0), "DEF-hand.R": (6.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-24.0, 0.0, 34.0), "DEF-forearm.L": (-14.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.3, gather), (0.62, sing), (0.82, _scale(sing, 0.9)), (1.0, {})]
+    if clip == "hit":
+        jolt = add(_legs(sk, persona, 0.02), {
+            "hips": (0.0, 0.0, -0.03), "DEF-spine.001": (-2.0, 0.0, 0.0), "DEF-spine.002": (-4.0, 0.0, 0.0),
+            "DEF-spine.006": (-6.0, 0.0, 0.0), "DEF-upper_arm.L": (-10.0, 0.0, 14.0)})
+        return [(0.0, {}), (0.2, jolt), (1.0, {})]
+    if clip == "dodge":
+        lean = add(_sway(sk, persona, 0.06, 0.02), {"DEF-spine.001": (0.0, 8.0, -6.0), "DEF-spine.006": (0.0, 0.0, 4.0),
+                                                    "DEF-upper_arm.L": (0.0, 0.0, 10.0)})
+        return [(0.0, {}), (0.35, lean), (1.0, {})]
+    if clip == "ko":
+        # down on the right knee, leaning on the staff: its foot set in front, the head bowed
+        felled = _ko_kneel(sk, persona, base, {
+            "DEF-spine.002": (6.0, 0.0, 0.0), "DEF-spine.006": (12.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-62.0, 0.0, -20.0), "DEF-forearm.R": (-16.0, 0.0, 0.0), "DEF-hand.R": (-34.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (30.0, 0.0, 6.0)})
+        buckle = add(_legs(sk, persona, 0.12), {"DEF-spine.001": (10.0, 0.0, 0.0), "DEF-spine.006": (8.0, 0.0, 0.0),
+                                                "DEF-upper_arm.R": (-40.0, 0.0, -20.0), "DEF-forearm.R": (-10.0, 0.0, 0.0),
+                                                "DEF-hand.R": (-16.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.35, buckle), (0.85, felled), (1.0, felled)]
+    raise KeyError(clip)
+
+
+def _rhen_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
+    """Rhen (rhen.md: lean and quick, the diving gauntlet on his left forearm, the reef-hooks crossed at the small of
+    his back): a low crouch, fists up; his strikes are the gauntlet's, the right hand going to the hooks."""
+    if clip == "ready":
+        k = add(_legs(sk, persona, 0.05, 0.06, -0.04), {
+            "DEF-spine.001": (8.0, 0.0, 0.0), "DEF-spine.006": (-6.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-40.0, 0.0, 8.0), "DEF-forearm.L": (-100.0, 10.0, -40.0),
+            "DEF-upper_arm.R": (-34.0, 0.0, -8.0), "DEF-forearm.R": (-100.0, 20.0, 20.0)})
+        return [(0.0, {}), (0.45, k), (1.0, {})]
+    if clip == "attack":
+        # the right hand drops to a hook's grip, then the gauntlet drives straight at the foe
+        wind = add(_legs(sk, persona, 0.06, 0.05, -0.05), {
+            "DEF-spine.001": (6.0, 10.0, 0.0), "DEF-spine.006": (-4.0, -8.0, 0.0),
+            "DEF-upper_arm.L": (-20.0, 0.0, 10.0), "DEF-forearm.L": (-108.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (28.0, 0.0, -8.0), "DEF-forearm.R": (-30.0, 0.0, 0.0)})
+        hit = add(_legs(sk, persona, 0.08, 0.18, -0.12), {
+            "DEF-spine.001": (8.0, -14.0, 0.0), "DEF-spine.002": (4.0, -6.0, 0.0), "DEF-spine.006": (-6.0, 16.0, 0.0),
+            "DEF-upper_arm.L": (-72.0, 0.0, 22.0), "DEF-forearm.L": (-8.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (34.0, 0.0, -10.0), "DEF-forearm.R": (-40.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.25, wind), (0.55, hit), (0.75, _scale(hit, 0.7)), (1.0, {})]
+    if clip == "cast":
+        # the lamp called up: the right hand to the lantern's strap, the gauntlet raised high, the head lifted
+        call = add(_legs(sk, persona, 0.04), {
+            "DEF-spine.001": (6.0, 0.0, 0.0), "DEF-upper_arm.R": (-30.0, 0.0, -8.0), "DEF-forearm.R": (-112.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-20.0, 0.0, 6.0), "DEF-forearm.L": (-40.0, 0.0, 0.0)})
+        lift = add(_legs(sk, persona, -0.01), {
+            "DEF-spine.003": (-4.0, 0.0, 0.0), "DEF-spine.006": (-12.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-30.0, 0.0, -8.0), "DEF-forearm.R": (-112.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-120.0, 0.0, 18.0), "DEF-forearm.L": (-10.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.4, call), (0.8, lift), (1.0, {})]
+    if clip == "item":
+        reach = add(_legs(sk, persona, 0.03), {"DEF-spine.001": (4.0, 6.0, 0.0), "DEF-upper_arm.R": (20.0, 0.0, -16.0),
+                                               "DEF-forearm.R": (-58.0, 0.0, 0.0)})
+        toss = add(_legs(sk, persona, 0.04, 0.08, -0.04), {
+            "DEF-spine.001": (6.0, 6.0, 0.0), "DEF-upper_arm.R": (-92.0, 0.0, -20.0), "DEF-forearm.R": (-14.0, 0.0, 0.0),
+            "DEF-hand.R": (-20.0, 0.0, 0.0)})
+        settle = add(_scale(toss, 0.45), {"DEF-upper_arm.R": (0.0, 0.0, -18.0)})  # down out to the side, clear of the shirt
+        return [(0.0, {}), (0.35, reach), (0.7, toss), (0.85, settle), (1.0, {})]
+    if clip == "read":
+        # sizing the foe up: low, the hands on the thighs, the head up
+        look = add(_legs(sk, persona, 0.08), {
+            "DEF-spine.001": (14.0, 0.0, 0.0), "DEF-spine.002": (6.0, 0.0, 0.0), "DEF-spine.006": (-6.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-24.0, 0.0, 4.0), "DEF-forearm.L": (-30.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-24.0, 0.0, -4.0), "DEF-forearm.R": (-30.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.6, look), (0.78, look), (1.0, {})]
+    if clip == "defend":
+        guard = add(_legs(sk, persona, 0.09, 0.06, -0.06), {
+            "DEF-spine.001": (12.0, -10.0, 0.0), "DEF-spine.006": (-8.0, 8.0, 0.0),
+            "DEF-upper_arm.L": (-80.0, 0.0, 10.0), "DEF-forearm.L": (-10.0, -90.0, -60.0),
+            "DEF-upper_arm.R": (-34.0, 0.0, -8.0), "DEF-forearm.R": (-100.0, 20.0, 20.0)})
+        return [(0.0, {}), (0.6, guard), (0.8, _scale(guard, 0.85)), (1.0, {})]
+    if clip == "finisher":
+        # the lamp dive: a deep crouch, a spring with both arms high, both fists hammered down onto the foe
+        coil = add(_legs(sk, persona, 0.11), {
+            "DEF-spine.001": (20.0, 0.0, 0.0), "DEF-spine.006": (-10.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (20.0, 0.0, 14.0), "DEF-forearm.L": (-20.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (20.0, 0.0, -14.0), "DEF-forearm.R": (-20.0, 0.0, 0.0)})
+        spring = add(_legs(sk, persona, -0.03), {
+            "DEF-spine.003": (-4.0, 0.0, 0.0), "DEF-spine.006": (-10.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-130.0, 0.0, 20.0), "DEF-forearm.L": (-24.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-130.0, 0.0, -20.0), "DEF-forearm.R": (-24.0, 0.0, 0.0)})
+        plunge = add(_legs(sk, persona, 0.12, 0.16, -0.14), {
+            "DEF-spine.001": (22.0, 0.0, 0.0), "DEF-spine.002": (10.0, 0.0, 0.0), "DEF-spine.006": (-14.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-60.0, 0.0, 30.0), "DEF-forearm.L": (-20.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-60.0, 0.0, -30.0), "DEF-forearm.R": (-20.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.25, coil), (0.45, spring), (0.62, plunge), (0.8, _scale(plunge, 0.55)), (1.0, {})]
+    if clip == "hit":
+        jolt = add(_legs(sk, persona, 0.03), {
+            "hips": (0.0, 0.0, -0.03), "DEF-spine.001": (-10.0, 0.0, -4.0), "DEF-spine.006": (-14.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-16.0, 0.0, 12.0), "DEF-upper_arm.R": (-16.0, 0.0, -12.0)})
+        return [(0.0, {}), (0.18, jolt), (1.0, {})]
+    if clip == "dodge":
+        lean = add(_sway(sk, persona, -0.08, 0.05), {"DEF-spine.001": (6.0, -10.0, 8.0),
+                                                      "DEF-upper_arm.L": (-30.0, 0.0, 6.0),
+                                                      "DEF-forearm.L": (-60.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.3, lean), (1.0, {})]
+    if clip == "ko":
+        felled = _ko_kneel(sk, persona, base, {
+            "DEF-spine.001": (4.0, 0.0, 0.0), "DEF-spine.002": (6.0, 0.0, 0.0), "DEF-spine.006": (14.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (4.0, 0.0, 14.0), "DEF-forearm.L": (30.0, 0.0, 0.0),
+            "DEF-foot.R": (30.0, 0.0, 0.0), "DEF-toe.R": (40.0, 0.0, 0.0)})  # the instep down, as Toma
+        buckle = add(_legs(sk, persona, 0.14), {"DEF-spine.001": (12.0, 0.0, 0.0), "DEF-spine.006": (10.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.3, buckle), (0.8, felled), (1.0, felled)]
+    raise KeyError(clip)
+
+
+def _toma_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
+    """Toma (toma.md §1: planted, broad, the weight low; the hooked spear in his right hand, the shield on his back,
+    the shell pauldron on his left shoulder): heavy, settled motions; the spear upright (staff_hold) unless his hand
+    turns it level (DEF-hand.R is then the spear's own tilt, as in spear_level)."""
+    if clip == "ready":
+        k = add(_legs(sk, persona, 0.04), {
+            "DEF-spine.001": (6.0, 0.0, 0.0), "DEF-upper_arm.R": (-14.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-40.0, 0.0, 14.0), "DEF-forearm.L": (-70.0, -10.0, -40.0)})
+        return [(0.0, {}), (0.45, k), (1.0, {})]
+    if clip == "attack":
+        # the spear levelled and drawn back, then thrust: the arm drives forward, the left foot steps in
+        wind = add(_legs(sk, persona, 0.04), {
+            "DEF-spine.001": (0.0, -14.0, 0.0), "DEF-spine.002": (0.0, -8.0, 0.0), "DEF-spine.006": (0.0, 14.0, 0.0),
+            "DEF-upper_arm.R": (-30.0, 0.0, -28.0), "DEF-forearm.R": (-60.0, 0.0, 0.0), "DEF-hand.R": (92.0, 20.0, 0.0),
+            "DEF-upper_arm.L": (-50.0, 0.0, 24.0), "DEF-forearm.L": (-40.0, 0.0, 0.0)})
+        hit = add(_legs(sk, persona, 0.08, 0.16, -0.08), {
+            "DEF-spine.001": (8.0, 12.0, 0.0), "DEF-spine.002": (4.0, 6.0, 0.0), "DEF-spine.006": (-4.0, -12.0, 0.0),
+            "DEF-upper_arm.R": (-54.0, 0.0, -28.0), "DEF-forearm.R": (-2.0, 0.0, 0.0), "DEF-hand.R": (90.0, 20.0, 0.0),
+            "DEF-upper_arm.L": (12.0, 0.0, 12.0), "DEF-forearm.L": (-50.0, 0.0, 0.0)})
+        # the arm lifts before the hand turns the spear level, and the spear stands again before the arm comes down
+        # (spear_level's order: turned low, its foot would sweep through his right foot)
+        lift = {"DEF-upper_arm.R": (-24.0, 0.0, -24.0), "DEF-forearm.R": (-40.0, 0.0, 0.0)}
+        follow = _scale(hit, 0.55)
+        follow["DEF-hand.R"] = (0.0, 0.0, 0.0)
+        return [(0.0, {}), (0.12, lift), (0.3, wind), (0.55, hit), (0.78, follow), (1.0, {})]
+    if clip == "cast":
+        # the spear grounded, the left fist to the chest, then the open palm put out level at the foe
+        brace = add(_legs(sk, persona, 0.03), {
+            "DEF-upper_arm.R": (-8.0, 0.0, 0.0), "DEF-upper_arm.L": (-40.0, 0.0, 14.0),
+            "DEF-forearm.L": (-50.0, -80.0, -40.0)})
+        palm = add(_legs(sk, persona, 0.05), {
+            "DEF-spine.001": (4.0, 6.0, 0.0), "DEF-spine.003": (-3.0, 0.0, 0.0), "DEF-spine.006": (-6.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-8.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-68.0, 0.0, 16.0), "DEF-forearm.L": (0.0, 0.0, 0.0), "DEF-hand.L": (-60.0, 0.0, 0.0)})
+        draw = add(palm, {"DEF-upper_arm.L": (22.0, 0.0, 0.0), "DEF-forearm.L": (-60.0, 0.0, 0.0)})  # drawn in, then put out
+        return [(0.0, {}), (0.35, brace), (0.6, draw), (0.8, palm), (1.0, {})]
+    if clip == "item":
+        reach = {"DEF-spine.001": (4.0, 0.0, 0.0), "DEF-upper_arm.L": (-6.0, 0.0, 6.0),
+                 "DEF-forearm.L": (-74.0, 0.0, 0.0)}
+        offer = add(_legs(sk, persona, 0.03), {
+            "DEF-spine.001": (6.0, 6.0, 0.0), "DEF-upper_arm.L": (-64.0, 0.0, 18.0), "DEF-forearm.L": (-12.0, 0.0, 0.0),
+            "DEF-hand.L": (0.0, -50.0, 0.0)})
+        return [(0.0, {}), (0.35, reach), (0.7, offer), (1.0, {})]
+    if clip == "read":
+        look = add(_legs(sk, persona, 0.03), {
+            "DEF-spine.001": (6.0, 0.0, 0.0), "DEF-spine.002": (4.0, 0.0, 0.0), "DEF-spine.006": (8.0, -6.0, 0.0),
+            "DEF-upper_arm.L": (-10.0, 0.0, 6.0), "DEF-forearm.L": (-30.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.6, look), (0.78, look), (1.0, {})]
+    if clip == "defend":
+        # the pauldron turned to the blow: the left shoulder forward, the forearm across, the spear grounded
+        guard = add(_legs(sk, persona, 0.08), {
+            "DEF-spine.001": (8.0, -18.0, 0.0), "DEF-spine.002": (4.0, -8.0, 0.0), "DEF-spine.006": (-4.0, 18.0, 0.0),
+            "DEF-upper_arm.R": (-12.0, 0.0, -12.0),
+            "DEF-upper_arm.L": (-75.0, 0.0, 20.0), "DEF-forearm.L": (-30.0, -90.0, -60.0)})
+        return [(0.0, {}), (0.6, guard), (0.8, _scale(guard, 0.85)), (1.0, {})]
+    if clip == "finisher":
+        # breakwater: the spear raised overhead, point forward, then driven down and forward with a long step
+        lift = add(_legs(sk, persona, 0.0), {
+            "DEF-spine.001": (-6.0, -6.0, 0.0), "DEF-spine.006": (-6.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-140.0, 0.0, -16.0), "DEF-forearm.R": (-24.0, 0.0, 0.0), "DEF-hand.R": (96.0, 14.0, 0.0),
+            "DEF-upper_arm.L": (-90.0, 0.0, 26.0), "DEF-forearm.L": (-40.0, 0.0, 0.0)})
+        drive = add(_legs(sk, persona, 0.11, 0.22, -0.10), {
+            "DEF-spine.001": (16.0, 8.0, 0.0), "DEF-spine.002": (6.0, 4.0, 0.0), "DEF-spine.006": (-10.0, -8.0, 0.0),
+            "DEF-upper_arm.R": (-58.0, 0.0, -28.0), "DEF-forearm.R": (-10.0, 0.0, 0.0), "DEF-hand.R": (110.0, 16.0, 0.0),
+            "DEF-upper_arm.L": (14.0, 0.0, 14.0), "DEF-forearm.L": (-50.0, 0.0, 0.0)})
+        early = {"DEF-upper_arm.R": (-50.0, 0.0, -24.0), "DEF-forearm.R": (-40.0, 0.0, 0.0)}  # the arm first, as attack
+        follow = _scale(drive, 0.5)
+        follow["DEF-hand.R"] = (0.0, 0.0, 0.0)
+        return [(0.0, {}), (0.16, early), (0.42, lift), (0.62, drive), (0.84, follow), (1.0, {})]
+    if clip == "hit":
+        jolt = add(_legs(sk, persona, 0.03), {
+            "hips": (0.0, 0.0, -0.02), "DEF-spine.001": (-5.0, 0.0, 0.0), "DEF-spine.006": (-8.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-8.0, 0.0, 8.0)})
+        return [(0.0, {}), (0.2, jolt), (1.0, {})]
+    if clip == "dodge":
+        lean = add(_sway(sk, persona, 0.05, 0.03), {"DEF-spine.001": (0.0, 6.0, -5.0),
+                                                     "DEF-upper_arm.L": (0.0, 0.0, 6.0)})
+        return [(0.0, {}), (0.35, lean), (1.0, {})]
+    if clip == "ko":
+        # down on the right knee, leaning on the spear set before him, the head bowed
+        felled = _ko_kneel(sk, persona, base, {
+            "DEF-spine.002": (4.0, 0.0, 0.0), "DEF-spine.006": (12.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-40.0, 0.0, -10.0), "DEF-forearm.R": (-30.0, 0.0, 0.0), "DEF-hand.R": (-38.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (20.0, 0.0, 6.0), "DEF-forearm.L": (-30.0, 0.0, 0.0),
+            "DEF-foot.R": (30.0, 0.0, 0.0), "DEF-toe.R": (40.0, 0.0, 0.0)})  # the instep down: no toe through the hem
+        buckle = add(_legs(sk, persona, 0.1), {"DEF-spine.001": (8.0, 0.0, 0.0), "DEF-spine.006": (8.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.35, buckle), (0.85, felled), (1.0, felled)]
+    raise KeyError(clip)
+
+
+def _victory(hero: str, u: float, sk: Skeleton, persona: dict) -> dict:
+    """The loop the standing party holds at the battle's end: a settled pose and a slow breath, periodic in u."""
+    ph = 2 * math.pi * u
+    sway = persona["sway"]
+    breath = {"hips": (0.006 * sway * math.sin(ph), -0.004 * (1.0 - math.cos(ph)), 0.0),
+              "DEF-spine.003": (-1.2 * math.sin(ph), 0.0, 0.0), "DEF-spine.001": (0.0, 0.0, -1.0 * sway * math.sin(ph))}
+    if hero == "asha":  # the staff upright, the free hand at the breastbone, the chin lifted (face_west's settle)
+        held = {"DEF-spine.003": (-2.0, 0.0, 0.0), "DEF-spine.006": (-5.0, 0.0, 0.0),
+                "DEF-upper_arm.L": (-18.0, -10.0, 16.0), "DEF-forearm.L": (-78.0, -72.0, 0.0),
+                "DEF-hand.L": (0.0, -20.0, -10.0), "DEF-upper_arm.R": (-8.0, 0.0, -8.0)}
+    elif hero == "rhen":  # loose: the gauntlet pressed to his chest, the head up and turned off toward the sea
+        held = {"DEF-spine.006": (-6.0, 8.0 + 4.0 * math.sin(ph), 0.0),
+                "DEF-upper_arm.L": (-36.0, 0.0, 10.0), "DEF-forearm.L": (-50.0, -50.0, -60.0),
+                "DEF-upper_arm.R": (0.0, 0.0, -4.0 * math.sin(ph))}
+    else:  # Toma: the spear grounded, the left palm flat on his chest, the chin up
+        held = {"DEF-spine.006": (-5.0, 0.0, 0.0), "DEF-upper_arm.R": (-6.0, 0.0, 0.0),
+                "DEF-upper_arm.L": (-40.0, 0.0, 14.0), "DEF-forearm.L": (-50.0, -80.0, -40.0),
+                "DEF-hand.L": (0.0, 0.0, -20.0)}
+    return add(held, breath)
+
+
+_BATTLE_KEYS = {"asha": _asha_keys, "rhen": _rhen_keys, "toma": _toma_keys}
+
+
+def _euler_yxz(q: np.ndarray) -> tuple:
+    """Degrees (x, y, z) with qeuler(_euler_yxz(q)) == q (Godot's YXZ order)."""
+    x, y, z, w = q / np.linalg.norm(q)
+    m12 = 2.0 * (y * z - w * x)
+    m02 = 2.0 * (x * z + w * y)
+    m22 = 1.0 - 2.0 * (x * x + y * y)
+    m10 = 2.0 * (x * y + w * z)
+    m11 = 1.0 - 2.0 * (x * x + z * z)
+    return (math.degrees(math.asin(max(-1.0, min(1.0, -m12)))), math.degrees(math.atan2(m02, m22)),
+            math.degrees(math.atan2(m10, m11)))
+
+
+_HAND_CHAIN = ("DEF-forearm.R", "DEF-upper_arm.R", "DEF-shoulder.R", "DEF-spine.003", "DEF-spine.002", "DEF-spine.001",
+               "DEF-spine")
+_STAFF_SUM = ("DEF-spine.001", "DEF-spine.002", "DEF-spine.003", "DEF-shoulder.R", "DEF-upper_arm.R", "DEF-forearm.R")
+
+
+def _exact_hold(pose: dict, persona: dict, w: float) -> dict:
+    """staff_hold undoes the arm's turns by subtracting their angles, which drifts once the arm is far from rest (a
+    raised arm tipped the staff 40 degrees). In a battle pose DEF-hand.R is the prop's own world tilt; this sets the
+    hand so that, after staff_hold, the prop is turned by exactly that tilt. `w` (keyed: 0 on the clip's first and
+    last frames, so they stay the idle's) fades it in."""
+    if not persona["staff"] or w <= 0.0:
+        return pose
+    chain = np.array([0.0, 0.0, 0.0, 1.0])
+    for b in _HAND_CHAIN:  # the forearm's accumulated world turn: child turns on the left
+        chain = qmul(chain, qeuler(pose.get(b, (0.0, 0.0, 0.0))))
+    tilt = np.asarray(pose.get("DEF-hand.R", (0.0, 0.0, 0.0)), dtype=float)
+    exact = np.asarray(_euler_yxz(qmul(qeuler(tilt), qinv(chain))))
+    need = exact + sum(np.asarray(pose.get(b, (0.0, 0.0, 0.0)), dtype=float) for b in _STAFF_SUM)
+    out = dict(pose)
+    out["DEF-hand.R"] = tuple(tilt + (need - tilt) * w)
+    return out
+
+
+def battle_pose_at(clip: str, u: float, sk: Skeleton, persona: dict) -> dict:
+    """A battle clip's pose at u in [0, 1]: the idle's first frame plus the clip's keyed deltas."""
+    hero = _battle_hero(persona)
+    base = pose_at("idle", 0.0, LENGTHS["idle"], sk, persona)
+    if clip == "victory":
+        return _exact_hold(add(base, _victory(hero, u, sk, persona)), persona, 1.0)
+    keys = [(k, dict(p, _exact=(1.0, 0.0, 0.0)) if p else p) for k, p in _BATTLE_KEYS[hero](clip, sk, persona, base)]
+    delta = _seq(u, keys)
+    w = delta.pop("_exact", (0.0, 0.0, 0.0))[0]
+    return _exact_hold(add(base, delta), persona, w)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -466,6 +919,7 @@ def build(hero: str) -> str:
             keys_p.append((t, sk.rest_t[HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)))
         lines = [f'[sub_resource type="Animation" id="clip_{ci}"]', f'resource_name = &"{clip}"',
                  f"length = {fmt(length)}", f"loop_mode = {1 if loop else 0}", f"step = {fmt(1.0 / FPS)}"]
+        lines += battle_markers(clip, length)  # M2-CHR-07: the strike clips' `contact` marker
         tracks = [("position_3d", HIPS, [(t, list(p)) for t, p in keys_p])]
         tracks += [("rotation_3d", b, [(t, list(q)) for t, q in keys_q[b]]) for b in BONES]
         for ti, (kind, bone, keys) in enumerate(tracks):

@@ -1,0 +1,41 @@
+keys,en
+CODEX_TITLE,Codex
+CODEX_HELP,Up and Down: choose or scroll · Confirm or Right: open or read on · Left or Cancel: back · Page Up and Down: scroll text
+CODEX_TOTAL_FMT,{found} of {total} entries found
+CODEX_FOUND_FMT,{found} of {total} found
+CODEX_ROW_COUNT_FMT,{found} of {total}
+CODEX_ENTRIES_HEAD_FMT,{category} · {found} of {total} found
+CODEX_NEW_TAG,New
+CODEX_RECORD_TAG,Record
+CODEX_EMPTY_CATEGORY,Nothing found here yet.
+CODEX_NOTICE_TITLE,Record added to the Codex
+FIELD_MENU_CODEX,Codex
+FIELD_MENU_CODEX_DESC,"What you have learned of Maresh, and the records you have found on the way."
+CODEX_CAT_WORLD,World
+CODEX_CAT_WORLD_DESC,"What the islands believe, and what they have lived through."
+CODEX_CAT_PLACES,Places
+CODEX_CAT_PLACES_DESC,"The shores, roads and temples walked so far."
+CODEX_CAT_PEOPLE,People
+CODEX_CAT_PEOPLE_DESC,Those met along the road.
+CODEX_CAT_RECORDS,Records
+CODEX_CAT_RECORDS_DESC,"Words left in the world by other hands: notices, notes and inscriptions."
+CODEX_GLIMMER_TITLE,Glimmer
+CODEX_GLIMMER_BODY,"When a lamp goes out, it breaks into motes of light. Most of them lift toward the stars within a night and are gone. Some sink instead and drift seaward, cool and blue, and divers who meet that light underwater leave it be. The Order forbids binding glimmer into anything."
+CODEX_UNDERTOW_TITLE,The Undertow
+CODEX_UNDERTOW_BODY,"Once a generation a storm rises that does not move like weather. It wanders the sea as if it were looking for something, and it drowns whole coasts. For days afterward the water glows with the dead it leaves behind. The Order of the Still Water teaches that it is the price of the old binding, and that one day the price will be paid."
+CODEX_VOWBOUND_TITLE,The Vowbound
+CODEX_VOWBOUND_BODY,"Each temple of the Order keeps a Saint: a Cantor of an earlier generation whose light stayed, the Order says, to teach the ones who come after. A Cantor who passes a temple's trial learns a verse of the Hush there and may call on its Saint from then on. The Shell Shrine's is Ilun, a great ray of netted light. When Asha calls him, the others step back and he stands in their place."
+CODEX_HALUNA_TITLE,Haluna
+CODEX_HALUNA_BODY,"A fishing village in the Low Reaches, built of coral stone, with walls of set shells and roofs like opened fans. Carved gulls on the roof ridges watch the sea for weather. When the dead come in on the tide, its people go down to the beach to meet them, so that no one comes ashore alone."
+CODEX_CAUSEWAY_TITLE,The Saltgrass Causeway
+CODEX_CAUSEWAY_BODY,"A tidal road of saltgrass and coral boulders between Haluna and the Shell Shrine's islet. It opens this far only at the lowest tides, twice a month, on days the Order's tide-readers set. Reef crabs and lantern-lure eels keep to its pools, and old timber posts mark the line for anyone the turning tide catches."
+CODEX_SHELL_SHRINE_TITLE,The Shell Shrine
+CODEX_SHELL_SHRINE_BODY,"Haluna's small temple of Water, on a tidal islet at the causeway's end. Its halls hold great shell-basins that turn to send the water where it is asked to go, until the inner pool fills and the chamber door floods open. It is tended and swept and loved, and it is the first temple on the road from Haluna."
+CODEX_ASHA_TITLE,Asha Velamir
+CODEX_ASHA_BODY,"A girl of Haluna who found Rhen in the shallows at dawn and smiled before she said a word. She woke her house before light that morning so the drowned would not come ashore alone, though no one had told her they were coming. The whole village treats her with a care that seems too gentle for an ordinary day."
+CODEX_TOMA_TITLE,Toma Okeru
+CODEX_TOMA_BODY,"Asha's guardian, who carries a long spear and the manners of a temple. He answers greetings with the Order's words before he has thought about them, and he weighs everything else he says as if it costs him. He watches Asha the way a man watches a lamp in the wind."
+CODEX_CAUSEWAY_NOTICE_TITLE,The Tide-Readers' Notice
+CODEX_CAUSEWAY_NOTICE_BODY,"Nailed to a causeway post, the ink run by salt: ""The road to the Shell Shrine stands open from the second hour after the low until the turn. Walk in company. Do not linger at the pools when the water begins to talk. If the tide takes the path, climb the nearest post and wait; the sea has always given this road back."""
+CODEX_BASIN_STEPS_TITLE,Words at the Basin Steps
+CODEX_BASIN_STEPS_BODY,"Cut into the first step of the shrine, worn smooth by knees: ""Water does not hurry, and it is never late. Turn the shells gently and it will go where you ask. Leave the basins as you found them, for whoever comes after you."""

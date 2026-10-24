@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch05_bark_grave_child",
+ "source": "game/data/dialogue/ch05/ch05_bark_grave_child.dlg",
+ "start": "ch05_bark_grave_child",
+ "nodes": {
+  "ch05_bark_grave_child": {
+   "headers": {"location": "ch05/pemakar"},
+   "ops": [
+    {"op": "line", "id": "ch05_bark_gchild_001", "key": "DLG_CH05_BARK_GCHILD_001", "speaker": "child", "emotion": "laugh", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

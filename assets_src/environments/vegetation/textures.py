@@ -688,11 +688,347 @@ def build_beach_vine(out: Path) -> list[Path]:
     return at.save(out, "beach_vine")
 
 
+# ---------------------------------------------------------------------------------------------
+# Broadleaf trees (M2-ENV-07): hero banyan + windbreak tree leaf atlas, banyan bark
+# ---------------------------------------------------------------------------------------------
+LATERITE = hex_lin("#A8573A")  # laterite: ripe banyan figs (small notes, rarely seen)
+BANYAN_BARK = hex_lin("#8E8578")  # timber_weathered desaturated towards coral_stone_weathered: old pale bark
+BANYAN_CREVICE = hex_lin("#5A4B3E")  # timber_weathered at ~70 % value, warmer: between fused strands
+TWIG = hex_lin("#6E5F50")  # timber_weathered, a little darker: green-brown young twigs
+WINDBREAK_FACE = hex_lin("#22503C")  # foliage_shadow lifted ~8 % towards palm_green: thick dark leaf face
+LEAF_UNDER = hex_lin("#52704F")  # palm_green desaturated and lifted: paler leaf undersides
+
+
+def banyan_leaf_hw(u: np.ndarray) -> np.ndarray:
+    """Elliptic leaf, broadest a little below the middle, a short blunt drip tip; half-width / length."""
+    uc = np.clip(u, 0.0, 1.0)
+    f = (uc ** 0.55) * ((1.0 - uc) ** 0.7) / 0.465
+    return 0.27 * f * (1.0 - 0.3 * vc.smoothstep(0.86, 1.0, uc))
+
+
+def windbreak_leaf_hw(u: np.ndarray) -> np.ndarray:
+    """Obovate, leathery: narrow wedge base, broadest at ~70 %, a rounded (faintly notched) tip."""
+    uc = np.clip(u, 0.0, 1.0)
+    f = (uc ** 1.05) * ((1.0 - uc) ** 0.42) / 0.444
+    return 0.3 * f * (1.0 - 0.12 * np.exp(-((1.0 - uc) / 0.03) ** 2))
+
+
+class LeafCanvas:
+    """Paints twigs and leaves (in metres) into one atlas cell, back to front."""
+
+    def __init__(self, shape, cell_m_h: float, rng, *, wrap: bool = False):
+        self.h, self.w = shape
+        self.ppm = self.h / cell_m_h
+        self.wrap = wrap
+        self.rng = rng
+        yy, xx = np.mgrid[0:self.h, 0:self.w]
+        self.X = (xx + 0.5) / self.ppm - self.w / self.ppm * 0.5  # metres, 0 at the cell's centre column
+        self.Y = (self.h - yy - 0.5) / self.ppm  # metres up from the bottom row
+        self.rgb = np.zeros(shape + (3,))
+        self.a = np.zeros(shape)
+        self.hgt = np.zeros(shape)
+        self.tr = np.zeros(shape)
+        self.tilt = np.zeros(shape + (2,))
+        self.mott = fbm(shape, (6, 6), rng, octaves=4)
+        self.fine = value_noise(shape, (48, 48), rng)
+
+    def _delta(self, b: np.ndarray):
+        dx = self.X - b[0]
+        dy = self.Y - b[1]
+        if self.wrap:
+            wm, hm = self.w / self.ppm, self.h / self.ppm
+            dx = (dx + wm * 0.5) % wm - wm * 0.5
+            dy = (dy + hm * 0.5) % hm - hm * 0.5
+        return dx, dy
+
+    def fits(self, pts: np.ndarray, margin_m: float = 0.01) -> bool:
+        if self.wrap:
+            return True
+        wm, hm = self.w / self.ppm, self.h / self.ppm
+        return bool((np.abs(pts[:, 0]) < wm * 0.5 - margin_m).all() and (pts[:, 1] > margin_m).all()
+                    and (pts[:, 1] < hm - margin_m).all())
+
+    def _shadow(self, mask: np.ndarray, strength: float) -> None:
+        """Contact shadow of a new element on what is already painted (offset down-right)."""
+        sh = np.roll(np.roll(mask, 3, axis=0), 2, axis=1)
+        if not self.wrap:
+            sh[:3, :] = False
+            sh[:, :2] = False
+        under = sh & ~mask & (self.a > 0.5)
+        self.rgb[under] *= strength
+
+    def twig(self, pts: np.ndarray, r0: float, r1: float, col: np.ndarray) -> None:
+        n = len(pts)
+        for i in range(n - 1):
+            a, b = pts[i], pts[i + 1]
+            r = (r0 + (r1 - r0) * i / max(n - 2, 1)) * 1.0
+            ab = b - a
+            ax, ay = self._delta(a)
+            t = np.clip((ax * ab[0] + ay * ab[1]) / float(np.dot(ab, ab)), 0.0, 1.0)
+            dx = ax - ab[0] * t
+            dy = ay - ab[1] * t
+            d = np.hypot(dx, dy)
+            m = d < r
+            if not m.any():
+                continue
+            across = np.clip(d / r, 0, 1)
+            self._shadow(m, 0.8)
+            shade = (0.75 + 0.35 * np.sqrt(1 - across ** 2))[..., None]
+            self.rgb = np.where(m[..., None], col * shade * (0.9 + 0.2 * self.fine[..., None]), self.rgb)
+            self.a = np.where(m, 1.0, self.a)
+            self.hgt = np.where(m, 0.6 * np.sqrt(1 - across ** 2), self.hgt)
+            self.tr = np.where(m, 0.0, self.tr)
+            self.tilt = np.where(m[..., None], 0.0, self.tilt)
+
+    def leaf(self, base: np.ndarray, direction: np.ndarray, length: float, hw_fn, *, face: np.ndarray,
+             under: bool, bend: float, lateral_n: int, trans: float, value: float, tilt=(0.0, 0.0),
+             vein_contrast: float = 1.0) -> None:
+        d = direction / max(float(np.linalg.norm(direction)), 1e-9)
+        p = np.array([-d[1], d[0]])
+        ax, ay = self._delta(base)
+        u = (ax * d[0] + ay * d[1]) / length
+        v = (ax * p[0] + ay * p[1]) / length
+        v = v - bend * u ** 2  # the blade curves a little sideways
+        hw = hw_fn(u)
+        m = (u > 0.0) & (u < 1.0) & (np.abs(v) < hw)
+        if not m.any():
+            return
+        rel = np.abs(v) / np.maximum(hw, 1e-6)
+        midrib = np.exp(-(v / 0.011) ** 2) * (u < 0.97)
+        lat = (u - 0.55 * np.abs(v) / 0.27) * lateral_n
+        lateral = np.exp(-((lat - np.round(lat)) / 0.07) ** 2) * vc.smoothstep(0.05, 0.2, rel) * (1 - rel ** 4)
+        col = face * (0.86 + 0.28 * self.mott)[..., None] * value
+        if under:
+            col = LEAF_UNDER * (0.9 + 0.15 * self.mott)[..., None] * value
+        rib = LEAF_YELLOW_GREEN * (0.85 if not under else 1.0)
+        col = col * (1 - 0.55 * midrib * vein_contrast)[..., None] + rib * (0.55 * midrib * vein_contrast)[..., None]
+        col = col * (1 - 0.25 * lateral * vein_contrast)[..., None] + rib * (0.25 * lateral * vein_contrast)[..., None]
+        col = col * (1 - 0.18 * rel ** 6)[..., None]  # a darker, thicker rim
+        self._shadow(m, 0.62)
+        self.rgb = np.where(m[..., None], col, self.rgb)
+        self.a = np.where(m, 1.0, self.a)
+        hgt = 0.55 * (1 - rel ** 2) - 0.18 * midrib - 0.06 * lateral
+        self.hgt = np.where(m, hgt, self.hgt)
+        self.tr = np.where(m, trans * (1 - 0.5 * midrib), self.tr)
+        self.tilt = np.where(m[..., None], np.array(tilt), self.tilt)
+
+    def dot(self, c: np.ndarray, r: float, col: np.ndarray) -> None:
+        ax, ay = self._delta(c)
+        d = np.hypot(ax, ay)
+        m = d < r
+        if m.any():
+            self._shadow(m, 0.75)
+            sh = (0.7 + 0.45 * np.sqrt(np.clip(1 - (d / r) ** 2, 0, 1)))[..., None]
+            self.rgb = np.where(m[..., None], col * sh, self.rgb)
+            self.a = np.where(m, 1.0, self.a)
+            self.hgt = np.where(m, 0.8 * np.sqrt(np.clip(1 - (d / r) ** 2, 0, 1)), self.hgt)
+            self.tr = np.where(m, 0.1, self.tr)
+
+    def result(self, normal_strength: float):
+        nx, ny = height_to_normal(self.hgt, normal_strength, wrap=self.wrap)
+        return self.rgb, self.a, nx + self.tilt[..., 0], ny + self.tilt[..., 1], self.tr
+
+
+def _polyline(start: np.ndarray, angle: float, length: float, curve: float, n: int) -> np.ndarray:
+    pts = [start]
+    a = angle
+    for _ in range(n - 1):
+        a += curve / (n - 1)
+        pts.append(pts[-1] + np.array([math.sin(a), math.cos(a)]) * length / (n - 1))
+    return np.array(pts)
+
+
+def paint_banyan_spray(shape, rng, cell_m: float):
+    cv = LeafCanvas(shape, cell_m, rng)
+    hm = cell_m
+    main = _polyline(np.array([rng.normal(0, 0.01), 0.0]), rng.normal(0, 0.15), hm * 0.7, rng.normal(0, 0.4), 7)
+    twigs = [(main, 0.0065, 0.0035)]
+    for k in range(int(rng.integers(3, 5))):
+        t = rng.uniform(0.2, 0.62)
+        i = int(t * (len(main) - 1))
+        side = 1.0 if k % 2 == 0 else -1.0
+        ang = float(math.atan2(*(main[i + 1] - main[i]))) + side * rng.uniform(0.5, 0.9)
+        twigs.append((_polyline(main[i], ang, hm * rng.uniform(0.28, 0.44), -side * rng.uniform(0.2, 0.5), 5),
+                      0.0045, 0.0025))
+    for pts, r0, r1 in twigs:
+        cv.twig(pts, r0, r1, TWIG)
+    leaves = []
+    for pts, _r0, _r1 in twigs:
+        arc = np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(pts, axis=0), axis=1))])
+        s = arc[-1] * rng.uniform(0.18, 0.3)
+        side = 1.0 if rng.random() < 0.5 else -1.0
+        while s < arc[-1]:
+            b = np.array([np.interp(s, arc, pts[:, 0]), np.interp(s, arc, pts[:, 1])])
+            i = min(int(np.searchsorted(arc, s)), len(pts) - 1)
+            tdir = pts[i] - pts[max(i - 1, 0)] if i > 0 else pts[1] - pts[0]
+            ta = math.atan2(tdir[0], tdir[1])
+            leaves.append((b, ta + side * rng.uniform(0.55, 1.1), rng.uniform(0.1, 0.15)))
+            if rng.random() < 0.12:
+                leaves.append(("fig", b, side))
+            side = -side
+            s += rng.uniform(0.03, 0.045)
+        tip_a = math.atan2(*(pts[-1] - pts[-2]))
+        leaves.append((pts[-1], tip_a + rng.normal(0, 0.15), rng.uniform(0.11, 0.14)))
+    order = rng.permutation(len(leaves))
+    for j in order:
+        lf = leaves[j]
+        if isinstance(lf[0], str):
+            _tag, b, side = lf
+            for k in range(2):
+                c = b + np.array([side * (0.012 + 0.016 * k), 0.006 * k])
+                cv.dot(c, 0.0075, LATERITE * rng.uniform(0.8, 1.05))
+            continue
+        b, ang, length = lf
+        d = np.array([math.sin(ang), math.cos(ang)])
+        petiole = rng.uniform(0.015, 0.025)
+        start = b + d * petiole
+        tip = start + d * length
+        if not cv.fits(np.array([start, tip, start + d * length * 0.5 + np.array([-d[1], d[0]]) * length * 0.28,
+                                 start + d * length * 0.5 - np.array([-d[1], d[0]]) * length * 0.28])):
+            continue
+        cv.twig(np.array([b, start]), 0.0018, 0.0014, LEAF_YELLOW_GREEN * 0.7)
+        under = rng.random() < 0.1
+        cv.leaf(start, d, length, banyan_leaf_hw, face=LEAF_DEEP * 0.5 + PALM_GREEN * 0.5, under=under,
+                bend=rng.normal(0, 0.05), lateral_n=9, trans=0.55, value=rng.uniform(0.82, 1.12))
+    return cv.result(3.0)
+
+
+def paint_windbreak_spray(shape, rng, cell_m: float):
+    cv = LeafCanvas(shape, cell_m, rng)
+    hm = cell_m
+    wm = shape[1] / shape[0] * hm
+    n_shoots = 3 if wm < hm * 0.75 else 5
+    stem = _polyline(np.array([0.0, 0.0]), rng.normal(0, 0.1), hm * 0.12, 0.0, 3)
+    cv.twig(stem, 0.007, 0.006, TWIG)
+    rosettes = []
+    for k in range(n_shoots):
+        frac = (k + 0.5) / n_shoots - 0.5
+        ang = frac * (1.5 if n_shoots == 5 else 0.9) + rng.normal(0, 0.08)
+        shoot = _polyline(stem[-1], ang, hm * rng.uniform(0.3, 0.6), -ang * 0.4, 5)
+        cv.twig(shoot, 0.0055, 0.004, TWIG)
+        rosettes.append(shoot)
+        if rng.random() < 0.6:  # a side shoot with its own rosette
+            i = int(rng.integers(1, 3))
+            turn = rng.choice([-1.0, 1.0]) * rng.uniform(0.5, 0.9)
+            side = _polyline(shoot[i], ang + turn, hm * rng.uniform(0.16, 0.26), 0.0, 3)
+            cv.twig(side, 0.004, 0.003, TWIG)
+            rosettes.append(side)
+    items = []
+    for shoot in rosettes:
+        tip = shoot[-1]
+        n = int(rng.integers(10, 14))
+        a0 = rng.uniform(0, 2 * math.pi)
+        for j in range(n):
+            # A spiral rosette seen a little from above: leaves pointing at the viewer foreshorten.
+            az = a0 + j * GOLDEN_ANGLE_TEX
+            spread = math.cos(az)
+            ang = math.atan2(*(shoot[-1] - shoot[-2])) + spread * rng.uniform(0.9, 1.5)
+            fore = 0.55 + 0.45 * abs(math.sin(az))
+            items.append((j, tip, ang, rng.uniform(0.09, 0.13) * fore, rng.random() < 0.02))
+        for s in (0.25, 0.4, 0.55, 0.7):
+            i = int(s * (len(shoot) - 1))
+            side = 1.0 if rng.random() < 0.5 else -1.0
+            items.append((-1, shoot[i], math.atan2(*(shoot[i + 1] - shoot[i])) + side * 1.0,
+                          rng.uniform(0.08, 0.11), False))
+    items.sort(key=lambda it: it[0])  # lower leaves first, the rosette's inner (young) leaves on top
+    for _j, b, ang, length, old in items:
+        d = np.array([math.sin(ang), math.cos(ang)])
+        start = b + d * 0.008
+        pr = np.array([-d[1], d[0]])
+        if not cv.fits(np.array([start, start + d * length, start + d * length * 0.7 + pr * length * 0.3,
+                                 start + d * length * 0.7 - pr * length * 0.3])):
+            continue
+        face = WINDBREAK_FACE if not old else THATCH * 0.55 + SUN_GOLD * 0.15
+        cv.leaf(start, d, length, windbreak_leaf_hw, face=face, under=rng.random() < 0.12, bend=rng.normal(0, 0.03),
+                lateral_n=6, trans=0.32, value=rng.uniform(0.85, 1.15), vein_contrast=0.6)
+    return cv.result(3.5)
+
+
+GOLDEN_ANGLE_TEX = math.pi * (3.0 - math.sqrt(5.0))
+
+
+def paint_leaf_mass(shape, rng, cell_m: float, *, kind: str):
+    """An opaque, tiling mosaic of overlapping leaves for the crown cores (gaps read as deep shade)."""
+    cv = LeafCanvas(shape, cell_m, rng, wrap=True)
+    deep = FOLIAGE_SHADOW * 0.7
+    cv.rgb[:] = deep * (0.8 + 0.4 * cv.mott[..., None])
+    cv.a[:] = 1.0
+    cv.tr[:] = 0.15
+    n = 150 if kind == "banyan" else 170
+    for _ in range(n):
+        b = np.array([rng.uniform(-0.5, 0.5) * cell_m, rng.uniform(0.0, 1.0) * cell_m])
+        ang = rng.uniform(0, 2 * math.pi)
+        d = np.array([math.sin(ang), math.cos(ang)])
+        tilt = tuple(rng.normal(0.0, 0.35, 2))
+        if kind == "banyan":
+            cv.leaf(b, d, rng.uniform(0.09, 0.14), banyan_leaf_hw, face=LEAF_DEEP * 0.6 + PALM_GREEN * 0.4,
+                    under=rng.random() < 0.15, bend=rng.normal(0, 0.05), lateral_n=9, trans=0.4,
+                    value=rng.uniform(0.55, 1.05), tilt=tilt)
+        else:
+            cv.leaf(b, d, rng.uniform(0.08, 0.12), windbreak_leaf_hw, face=WINDBREAK_FACE, under=rng.random() < 0.1,
+                    bend=rng.normal(0, 0.03), lateral_n=6, trans=0.25, value=rng.uniform(0.7, 1.25), tilt=tilt,
+                    vein_contrast=0.6)
+    return cv.result(3.0)
+
+
+def build_coastal_leaf(out: Path) -> list[Path]:
+    rng = vc.rng_for("coastal_leaf_tex", SEED)
+    at = Atlas(vc.COASTAL_LEAF_SIZE)
+    for key in ("banyan_spray_a", "banyan_spray_b"):
+        rect = vc.COASTAL_ATLAS[key]
+        at.put(rect, *paint_banyan_spray(at.rect_shape(rect), rng, vc.COASTAL_SPRAY_M["banyan"]))
+    for key in ("windbreak_spray_a", "windbreak_spray_b"):
+        rect = vc.COASTAL_ATLAS[key]
+        at.put(rect, *paint_windbreak_spray(at.rect_shape(rect), rng, vc.COASTAL_SPRAY_M["windbreak"]))
+    for key, kind in (("banyan_mass", "banyan"), ("windbreak_mass", "windbreak")):
+        rect = vc.COASTAL_ATLAS[key]
+        at.put(rect, *paint_leaf_mass(at.rect_shape(rect), rng, 0.6, kind=kind))
+    return at.save(out, "coastal_tree_leaf")
+
+
+def build_banyan_bark(out: Path) -> list[Path]:
+    """Old banyan bark: fused root strands (vertical ridges that merge and part), horizontal lenticel
+    dashes, pale lichen; tiles in U and V. 512 x 1024 covers 0.7 m round by 1.4 m along."""
+    rng = vc.rng_for("banyan_bark_tex", SEED)
+    w, h = vc.BANYAN_BARK_SIZE
+    shape = (h, w)
+    yy, xx = np.mgrid[0:h, 0:w]
+    warp = (fbm(shape, (6, 3), rng, octaves=3) - 0.5) * 1.6
+    fine = fbm(shape, (24, 12), rng, octaves=3)
+    s1 = xx / w * 7.0 + warp + (fine - 0.5) * 0.25
+    s2 = xx / w * 13.0 + warp * 1.4 + (fbm(shape, (10, 5), rng, octaves=3) - 0.5) * 0.8
+    r1 = np.sin(math.pi * (s1 - np.floor(s1))) ** 0.55
+    r2 = np.sin(math.pi * (s2 - np.floor(s2))) ** 0.8
+    ridge = 0.72 * r1 + 0.28 * r2
+    crevice = 1.0 - vc.smoothstep(0.1, 0.5, ridge)
+    strand_tone = rng.uniform(0.82, 1.14, 8)[np.floor(s1).astype(int) % 8]  # each fused root its own tone
+    lent = value_noise(shape, (220, 36), rng)
+    lenticel = np.clip((lent - 0.83) * 9.0, 0, 1) * vc.smoothstep(0.3, 0.6, ridge)
+    wrinkle = 0.5 + 0.5 * np.sin(yy / h * 2 * math.pi * 23.0 + warp * 6.0)
+    base = fbm(shape, (4, 2), rng, octaves=5)
+    col = BANYAN_BARK * (0.82 + 0.32 * base)[..., None] * (0.86 + 0.18 * ridge)[..., None] * strand_tone[..., None]
+    col = col * (1 - crevice)[..., None] + BANYAN_CREVICE * (0.75 + 0.3 * base)[..., None] * crevice[..., None]
+    col = col * (1 - 0.35 * lenticel)[..., None]
+    lichen = np.clip((fbm(shape, (5, 3), rng, octaves=4) - 0.56) * 5.0, 0, 1) * vc.smoothstep(0.25, 0.6, ridge)
+    lich_col = CORAL_WEATHERED * 0.75 + BRONZE_PATINA * 0.25
+    col = col * (1 - 0.55 * lichen)[..., None] + lich_col * (0.55 * lichen)[..., None]
+    crust = np.clip((value_noise(shape, (80, 40), rng) - 0.9) * 10.0, 0, 1) * vc.smoothstep(0.4, 0.8, ridge)
+    col = col * (1 - 0.4 * crust)[..., None] + CORAL_WEATHERED * (0.4 * crust)[..., None]
+    hgt = ridge * 0.9 + 0.12 * wrinkle * ridge + 0.2 * lenticel + 0.25 * fine + 0.1 * lichen
+    nx, ny = height_to_normal(hgt, 3.0)
+    pa = out / "banyan_bark_albedo.png"
+    pn = out / "banyan_bark_normal.png"
+    write_png(pa, encode_albedo(col, None))
+    write_png(pn, encode_normal(nx, ny, np.zeros(shape)))
+    return [pa, pn]
+
+
 BUILDERS = {
     "palm": [build_palm_frond, build_palm_bark],
     "frangipani": [build_frangipani],
     "saltgrass": [build_saltgrass],
     "beach_vine": [build_beach_vine],
+    "trees": [build_coastal_leaf, build_banyan_bark],
 }
 
 

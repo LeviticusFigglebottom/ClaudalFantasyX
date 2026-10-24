@@ -1,0 +1,7 @@
+// Ch5 B08: the one Tender hint bark, after 90 s idle on any tier (game/data/trials/ashcrown.json
+// hint_idle_sec). Plays on the zone's hint sequencer and never holds the player.
+title: ch05_trial_hint
+location: ch05/ashcrown
+---
+Tender as "Tender Ruwen" [neutral]: Follow the copper, not the stair. #line:ch05_hint_001
+===

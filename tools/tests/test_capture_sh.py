@@ -17,6 +17,23 @@ ROOT = Path(__file__).resolve().parents[2]
 CAPTURE = ROOT / "tools" / "screenshots" / "capture.sh"
 ABORT_RC = 134  # SIGABRT, what the lavapipe pipeline abort at exit returns (M1-QA-10)
 
+
+
+def bash() -> str:
+    """The bash to run capture.sh with. On Windows `bash` is often WSL's (System32), which wants /mnt/c paths and
+    doesn't see this process's environment (the stub, its exit code), so use Git for Windows' bash there."""
+    if os.name == "nt":
+        try:
+            exec_path = subprocess.run(["git", "--exec-path"], capture_output=True, text=True, timeout=30).stdout.strip()
+        except OSError:
+            exec_path = ""
+        for up in Path(exec_path).parents if exec_path else []:
+            candidate = up / "bin" / "bash.exe"
+            if candidate.exists():
+                return str(candidate)
+    return "bash"
+
+
 STUB = """#!/usr/bin/env bash
 # Stub renderer: prints a capture line for its shots, exits STUB_RC when one of them is in STUB_FAIL.
 shots=""
@@ -46,15 +63,17 @@ class CaptureExitLineTest(unittest.TestCase):
         env = dict(os.environ)
         env.update(
             {
-                "HYMN_GODOT_RENDER": str(self.stub),
-                "TMPDIR": str(self.dir),
+                "HYMN_GODOT_RENDER": self.stub.as_posix(),
+                "TMPDIR": self.dir.as_posix(),
                 "STUB_FAIL": fail,
                 "STUB_RC": str(ABORT_RC),
                 "HYMN_CAPTURE_SHARED": "1" if shared else "0",
             }
         )
         return subprocess.run(
-            ["bash", str(CAPTURE), "--shots", shots], env=env, capture_output=True, text=True, timeout=60
+            # POSIX paths: on Windows, Git Bash reads a native path's backslashes as escapes (C:Users...); C:/... works
+            # there, and a Linux path is unchanged.
+            [bash(), CAPTURE.as_posix(), "--shots", shots], env=env, capture_output=True, text=True, timeout=60
         )
 
     def test_per_shot_mode_names_the_failing_shot(self) -> None:

@@ -1,0 +1,28 @@
+// Ch6 B07 "Liss and the lantern" (act1_ch06.md; W14). In-engine. Rhen and Liss alone by the burning
+// tide-wheel while Toma writes her into his papers. Asha is off-frame, with Toma (ADR 0022 sweep-G/I:
+// no Act I line, bark or reaction has Asha connect the lantern to anyone), so she has no line here
+// and stands at the papers table, out of W14. Liss reads Dace's work in a glance (the pair seat is
+// sweep-H's: he built his lanterns as a pair); Rhen deflects. Do not surface: Rhen never says "my
+// father was a wright" in Act I (admitted at Lowlight, Ch11).
+title: ch06_liss_lantern
+location: ch06/brine_shoals
+---
+@mark asha papers_table walk
+@camera W14
+@music liss_theme
+@anim liss look_at rhen
+Liss [neutral]: Hold still. That's a wright's housing. Pair-built: see the second seat, for the hook? #line:ch06_lantern_001
+Liss [neutral]: And an oil burner in salt-glass. Who fits an oil burner in salt-glass? #line:ch06_lantern_002
+<<if $ch02_rhen_named_lantern>>
+    Rhen [neutral]: It was my father's. #line:ch06_lantern_003
+    Liss [neutral]: Then your father bought from a wright. Or knew one. #line:ch06_lantern_004
+    Rhen [neutral]: He knew a lot of people. #line:ch06_lantern_005
+<<else>>
+    Rhen [smile]: Somebody who liked oil. Good trade. #line:ch06_lantern_006
+    Liss [neutral]: Nobody trades wright work that good. Somebody gave it up. #line:ch06_lantern_007
+<<endif>>
+@anim rhen look_at liss
+@wait 0.8
+Liss [cold]: You sell the dead by the pound, diver. At least I put them back to work. #line:ch06_lantern_008
+<<set $ch06_liss_read_lantern = true>>
+===

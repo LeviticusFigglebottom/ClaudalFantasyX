@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch07_bark_lane",
+ "source": "game/data/dialogue/ch07/ch07_bark_lane.dlg",
+ "start": "ch07_bark_lane",
+ "nodes": {
+  "ch07_bark_lane": {
+   "headers": {"location": "ch07/tamsule"},
+   "ops": [
+    {"op": "line", "id": "ch07_bark_lane_001", "key": "DLG_CH07_BARK_LANE_001", "speaker": "fisher", "emotion": "neutral", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

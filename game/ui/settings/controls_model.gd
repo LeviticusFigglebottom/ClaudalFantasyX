@@ -211,6 +211,7 @@ static func _capture_defaults(d: Dictionary) -> void:
 	FieldInput.ensure_actions()
 	ObjectiveHud.ensure_action()  # M2-UI-17: show the objective
 	DialogueAssist.ensure_action()  # M2-UI-25: the dialogue backlog
+	LatticeMenu.ensure_action()  # M3-MNU-04: the Lattice overview
 	# M2-MNU-04: the battle pause (BattlePause adds it in battle; it must exist to be remapped)
 	var pause := FieldInput.load_json(BattlePauseMenu.DATA_PATH).get("battle_pause", {}) as Dictionary
 	FieldInput.add_actions(pause.get("action", {}) as Dictionary, 0.0)
@@ -220,16 +221,26 @@ static func _capture_defaults(d: Dictionary) -> void:
 		if not InputMap.has_action(action):
 			push_warning("ControlsModel: '%s' is not an InputMap action" % action)
 			continue
-		var has_button := false
-		for ev in InputMap.action_get_events(action):
-			has_button = has_button or ev is InputEventJoypadButton
-		if not has_button:
-			for button: Variant in pad_defaults.get(String(action), []):
-				InputMap.action_add_event(action, _button_event(int(button), [], all_devices))
+		_give_pad_defaults(action, pad_defaults, all_devices)
 		var events: Array[InputEvent] = []
 		for ev in InputMap.action_get_events(action):
 			events.append(ev.duplicate() as InputEvent)
 		_defaults[action] = events
+	# The fixed actions (Page Up / Down) take theirs too, so a pad reaches every page jump (M2-UI-26).
+	var fixed := d.get("fixed_actions", {}) as Dictionary
+	for context: String in fixed:
+		for name: Variant in fixed[context]:
+			if InputMap.has_action(StringName(str(name))):
+				_give_pad_defaults(StringName(str(name)), pad_defaults, all_devices)
+
+
+## Adds `action`'s pad_defaults buttons when it has no pad button yet.
+static func _give_pad_defaults(action: StringName, pad_defaults: Dictionary, device: int) -> void:
+	for ev in InputMap.action_get_events(action):
+		if ev is InputEventJoypadButton:
+			return
+	for button: Variant in pad_defaults.get(String(action), []):
+		InputMap.action_add_event(action, _button_event(int(button), [], device))
 
 
 static func _key_event(code: int, defs: Array) -> InputEventKey:

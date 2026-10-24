@@ -5,6 +5,9 @@ extends TestCase
 
 const SCENE := "res://game/levels/ch03/shell_shrine/shell_shrine.tscn"
 const FIRST_VERSE := "res://game/levels/ch03/first_verse/first_verse.tscn"
+## ADR 0029: a hidden frame may take at most 1 s. The GI load gets a small share of it.
+const ENTRY_FRAME_BUDGET_MS := 1000.0
+const GI_LOAD_BUDGET_MS := 250.0
 
 var level: ShellShrineLevel
 var saved_state: GameStateData
@@ -60,6 +63,46 @@ func test_the_room_is_built_from_the_shrine_kit() -> void:
 	assert_false((level.basin_pivots[&"b2"] as Node3D).get_node(^"Pour").visible, "b2 is dry")
 	assert_true(level.gi != null and level.gi.is_in_group(&"gi_voxel"), "the hall's VoxelGI follows the GI preset")
 	assert_eq(level.gi_bake_ms, -1, "no bake without a rendering device")
+	_done()
+
+
+func test_the_lighting_ships_baked_and_entry_never_bakes() -> void:
+	# M2-ENV-13 (ADR 0029: no hidden frame over 1 s): both GI states load from the shipped data at
+	# entry, nothing is baked, and the load stays well inside one frame's budget.
+	assert_eq(level.gi_bake_ms, -1, "no bake at entry")
+	assert_true(level.gi_states.get("closed") is VoxelGIData, "the door-up state is loaded")
+	assert_true(level.gi_states.get("open") is VoxelGIData, "the door-down state is loaded")
+	assert_true(level.gi.data == level.gi_states["closed"], "the hall starts in the door-up light")
+	assert_between(float(level.gi_load_ms), 0.0, GI_LOAD_BUDGET_MS, "loading both states is cheap")
+	var t0 := Time.get_ticks_msec()
+	var again := (load(SCENE) as PackedScene).instantiate() as ShellShrineLevel
+	again.autostart = false
+	_host().add_child(again)
+	var entry_ms := Time.get_ticks_msec() - t0
+	_host().remove_child(again)
+	again.free()
+	assert_between(float(entry_ms), 0.0, ENTRY_FRAME_BUDGET_MS, "the whole entry frame (headless) stays under 1 s")
+	_done()
+
+
+func test_prebuild_builds_the_hall_off_the_tree() -> void:
+	# M2-ENV-12: on the router's (or the warm-up's) worker-thread instantiate, prebuild() builds the
+	# hall off the tree and _ready skips it. Driven here on an off-tree instance (a worker thread would
+	# need the main thread running frames, which a test can't give it).
+	var off := (load(SCENE) as PackedScene).instantiate() as ShellShrineLevel
+	assert_false(off.prebuilt, "a main-thread instance waits for _ready")
+	off.prebuild()
+	assert_true(off.prebuilt, "built off the tree")
+	assert_true(off.room != null and off.door != null and off.pool_water != null, "the hall exists off the tree")
+	assert_eq(off.basin_pivots.size(), off.trial.basin_ids().size(), "every basin")
+	assert_false(off.is_inside_tree())
+	off.autostart = false
+	_host().add_child(off)
+	assert_eq(off.find_children("Room", "Node3D", false, false).size(), 1, "_ready did not build a second hall")
+	assert_true(off.gi_states.get("closed") is VoxelGIData, "and the rest of _ready ran")
+	_host().remove_child(off)
+	off.free()
+	assert_false(level.prebuilt, "a main-thread instance still builds in _ready")
 	_done()
 
 

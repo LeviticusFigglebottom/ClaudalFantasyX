@@ -270,3 +270,11 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 - **Verse Chant**: Asha's Swell input, a short phrase of direction buttons that follows a verse of the Hush. **Shallows Verse**: her first Swell technique (heals every ally).
 - **Tide Brace**: Toma's Swell input: hold through the blows, let go on the counter. **Return Tide**: his first Swell technique.
 - **Glyph Trace**: Ysolde's Swell input: trace a Lamptongue glyph's strokes before the window closes (*swift* for a clean, quick trace). **Written Light**: her first Swell technique (strikes every foe).
+
+### Added 2026-10-24 (M3-RBL-01, Combat)
+- **float** (Reefball): the woven ball. A score is **bringing it up** through the single **ring** at the top of the drop (N-12). *design/reefball.md*
+- **fetch** (Reefball): a side may only score a float it has taken down to low water or deeper this possession, from the rescue drill. A float won high up must be fetched first.
+- **the weep** (Reefball): the lowest band of the drop, where it weeps its column into the catch-pool; kickoffs start there. The bands from the top: the ring, high water, mid water, low water, the weep.
+- **rise, dive, pass, loft** (Reefball actions): swim up with the float, swim down with it, hand it on, throw it up through the ring.
+- **lifter, anchor, presser, ringward** (Reefball roles). A **ringward** waits at the ring to ward off lofts; there is no keeper.
+- **breath** (Reefball): the divers' resource; it comes back only at the ring, so a winded diver leaves play to breathe.

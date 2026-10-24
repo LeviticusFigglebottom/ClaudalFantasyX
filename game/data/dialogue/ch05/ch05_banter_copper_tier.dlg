@@ -1,0 +1,12 @@
+// Ch5 B07, walking banter 3: the copper tier (A03), old Lit Age copper showing green through the
+// stone. Rhen turns to Kerrid, last in line. Kerrid looks at him and says nothing (ADR 0020 (d): no
+// line to Rhen in Ch5). The clue: he doesn't breathe hard because he doesn't breathe. Overheard.
+title: ch05_banter_copper_tier
+location: ch05/ashcrown
+---
+@anim rhen look_at kerrid
+Rhen [smile]: You're not even breathing hard. #line:ch05_banter_copper_001
+@anim kerrid look_at rhen
+@wait 1.0
+Ysolde [neutral]: Some people are simply fit, Master Sallow. #line:ch05_banter_copper_002
+===

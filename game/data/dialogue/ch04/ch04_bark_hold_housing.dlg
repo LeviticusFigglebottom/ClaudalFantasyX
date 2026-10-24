@@ -1,0 +1,10 @@
+// Ch4 C4-12, bark 3 of 3: the hold. Pemakar copper ingots, and a lamp-housing Rhen recognises: the
+// salvage he sold her skipper. He finds it and puts it back where it was. Field bark.
+title: ch04_bark_hold_housing
+location: ch04/brightwater_ferry
+---
+@anim rhen lift_housing
+Rhen [neutral]: That's the housing I sold Sadi. She paid me for half of it. #line:ch04_bark_housing_001
+@anim rhen set_down_housing
+Rhen [sad]: ...It goes where she stowed it. #line:ch04_bark_housing_002
+===

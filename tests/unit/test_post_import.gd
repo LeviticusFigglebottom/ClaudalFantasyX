@@ -5,6 +5,7 @@ extends TestCase
 ## proxy as a body, materials, LOD ranges and PLACEHOLDER metadata. The rest drive AssetImportRules
 ## on in-memory trees, check the committed assets' imports, and check the .import wiring.
 
+const LodRangeModel := preload("res://tests/unit/lod_range_model.gd")
 const PROBE := "res://tests/fixtures/import/import_probe.glb"
 const PROBE_NOTE := "PLACEHOLDER: M1-ART-02 import test fixture, never placed in a level"
 const KIT_DIR := "res://assets/environments/kits/haluna/"
@@ -13,7 +14,18 @@ const BASE_BODY := "res://assets/characters/base_body/base_body_slender.glb"
 const BUST := "res://assets/characters/shader_test/shader_test_bust.glb"
 const ASHA_DIR := "res://assets/characters/asha/"
 const KINDS: Array[String] = [
-	"base_body", "characters", "creatures", "haluna_kit", "shader_test", "vegetation", "wildlife"
+	"base_body",
+	"brine_shoals_kit",
+	"characters",
+	"corrow_kit",
+	"creatures",
+	"haluna_kit",
+	"oruvel_underway_kit",
+	"pemakar_kit",
+	"shader_test",
+	"tamsule_bell_kit",
+	"vegetation",
+	"wildlife",
 ]
 ## M2-FP-07: the clip names the first-playable scripts call (`@anim asha <clip>`).
 const HERO_CLIPS: Array[String] = [
@@ -67,6 +79,15 @@ func _assert_range(mi: MeshInstance3D, begin: float, end: float, begin_margin: f
 	assert_between(mi.visibility_range_end_margin, end_margin - EPS, end_margin + EPS, "%s end margin" % mi.name)
 
 
+## LOD `lod` of a chain switching at `ends` has LodChain's range (no fade: the rules have none) and,
+## below the last LOD, LOD lod+1 (`next`) as its visibility parent (M1-ENV-10).
+func _assert_chain(mi: MeshInstance3D, lod: int, ends: Array, margin: float, next: MeshInstance3D) -> void:
+	var r := LodChain.range_for(lod, PackedFloat32Array(ends), margin, 0.0, next != null)
+	_assert_range(mi, r["begin"], r["end"], r["begin_margin"], r["end_margin"])
+	assert_eq(mi.visibility_range_fade_mode, GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED, "%s hard" % mi.name)
+	assert_true(mi.get_node_or_null(mi.visibility_parent) == next, "%s visibility parent" % mi.name)
+
+
 # ---- the imported fixture ----------------------------------------------------------------------
 
 
@@ -108,8 +129,11 @@ func test_fixture_lod_ranges_follow_the_rules() -> void:
 	var lods := _rules("haluna_kit")["lods"] as Dictionary
 	var ends: Array = lods["end_m"]
 	var m := float(lods["margin_m"])
-	_assert_range(root.get_node("probe_post") as MeshInstance3D, 0.0, float(ends[0]), 0.0, m)
-	_assert_range(root.get_node("probe_post-lod1") as MeshInstance3D, float(ends[0]), float(ends[1]), m, m)
+	var lod0 := root.get_node("probe_post") as MeshInstance3D
+	var lod1 := root.get_node("probe_post-lod1") as MeshInstance3D
+	_assert_chain(lod0, 0, ends, m, lod1)
+	_assert_chain(lod1, 1, ends, m, null)
+	_assert_range(lod1, float(ends[0]), float(ends[1]), m, m)
 	_done()
 
 
@@ -141,13 +165,15 @@ func test_base_body_is_placeholder_and_keeps_its_gltf_materials() -> void:
 
 
 func test_kit_placeholder_pieces_are_tagged_and_finished_pieces_are_not() -> void:
-	for piece: String in ["banyan_placeholder", "shell_shrine_massing", "windbreak_placeholder"]:
+	for piece: String in ["shell_shrine_massing"]:
 		var root := _scene(KIT_DIR + piece + ".glb")
 		assert_eq(root.get_meta(AssetImportRules.TAG_META, &""), AssetImportRules.PLACEHOLDER, piece)
 		var notes: PackedStringArray = root.get_meta(AssetImportRules.NOTES_META, PackedStringArray())
 		assert_true(notes.size() == 1 and notes[0].begins_with("PLACEHOLDER: "), "%s note %s" % [piece, notes])
-	var dock := _scene(KIT_DIR + "dock_haluna.glb")
-	assert_false(dock.has_meta(AssetImportRules.TAG_META), "the dock is not placeholder")
+	# M2-ENV-07: the two trees are real now (they keep their old piece names, untagged).
+	for piece: String in ["dock_haluna", "banyan_placeholder", "windbreak_placeholder"]:
+		var finished := _scene(KIT_DIR + piece + ".glb")
+		assert_false(finished.has_meta(AssetImportRules.TAG_META), "%s is not placeholder" % piece)
 	_done()
 
 
@@ -161,8 +187,8 @@ func test_vegetation_import_matches_vegetation_plant_defaults() -> void:
 	for lod in ends.size():
 		var node_name := "palm_coconut_a" if lod == 0 else "palm_coconut_a-lod%d" % lod
 		var mi := root.get_node(node_name) as MeshInstance3D
-		var begin := 0.0 if lod == 0 else ends[lod - 1]
-		_assert_range(mi, begin, ends[lod], plant.lod_margin_m if lod > 0 else 0.0, plant.lod_margin_m)
+		var next := root.get_node_or_null("palm_coconut_a-lod%d" % (lod + 1)) as MeshInstance3D
+		_assert_chain(mi, lod, Array(ends), plant.lod_margin_m, next if lod + 1 < ends.size() else null)
 		for i in mi.mesh.get_surface_count():
 			var slot := mi.mesh.surface_get_material(i).resource_name
 			assert_eq(mi.get_surface_override_material(i), load(VEG_DIR + "materials/%s.tres" % slot), slot)
@@ -306,8 +332,10 @@ func test_a_mesh_without_a_lod_chain_gets_no_visibility_range() -> void:
 	var loose := root.get_node("loose") as MeshInstance3D
 	assert_eq(loose.visibility_range_end, 0.0, "no range on an unchained mesh")
 	assert_true(loose.visible)
-	_assert_range(root.get_node("tree") as MeshInstance3D, 0.0, 10.0, 0.0, 1.0)
-	_assert_range(root.get_node("tree-lod1") as MeshInstance3D, 10.0, 20.0, 1.0, 1.0)
+	var tree := root.get_node("tree") as MeshInstance3D
+	var tree_lod1 := root.get_node("tree-lod1") as MeshInstance3D
+	_assert_chain(tree, 0, [10.0, 20.0], 1.0, tree_lod1)
+	_assert_range(tree_lod1, 10.0, 20.0, 1.0, 1.0)
 	assert_eq(int(report["lods"]), 2, "only the chain is counted")
 	assert_eq(AssetImportRules.lod_base("tree-lod1", "-lod"), "tree")
 	assert_eq(AssetImportRules.lod_base("dock-lodx", "-lod"), "dock-lodx", "not a LOD suffix")
@@ -320,6 +348,56 @@ func test_lod_index_reads_the_suffix() -> void:
 	assert_eq(AssetImportRules.lod_index("palm_coconut_a-lod2", "-lod"), 2)
 	assert_eq(AssetImportRules.lod_index("dock-lodx", "-lod"), 0)
 	assert_eq(AssetImportRules.lod_index("dock-lod1", ""), 0)
+
+
+# ---- LOD chains (M1-ENV-10) ---------------------------------------------------------------------
+
+
+## An in-memory `tree`, `tree-lod1`... chain of `count` LODs under a fresh root.
+func _chain_root(count: int) -> Array[MeshInstance3D]:
+	var root := Node3D.new()
+	_nodes.append(root)
+	var chain: Array[MeshInstance3D] = []
+	for lod in count:
+		var mi := MeshInstance3D.new()
+		mi.name = "tree" if lod == 0 else "tree-lod%d" % lod
+		mi.mesh = BoxMesh.new()
+		root.add_child(mi)
+		chain.append(mi)
+	return chain
+
+
+## Each category's rules (and the imported fixture and a real kit piece) draw exactly one LOD at every
+## distance up to the last switch-out, from a still camera, sweeping in and sweeping out: no hole within
+## a switch margin, no double draw.
+func test_a_distance_sweep_draws_exactly_one_lod() -> void:
+	for kind: String in ["haluna_kit", "vegetation"]:
+		var lods := _rules(kind)["lods"] as Dictionary
+		var ends: Array = lods["end_m"]
+		var chain := _chain_root(ends.size())
+		AssetImportRules.apply(chain[0].get_parent(), {"lods": lods})
+		var far := float(ends[ends.size() - 1]) - float(lods["margin_m"])
+		var bad := LodRangeModel.hard_sweep_failures(chain, LodRangeModel.distances(far))
+		assert_eq(bad.size(), 0, "%s: %s" % [kind, ", ".join(bad.slice(0, 6))])
+	var kit_ends: Array = _rules("haluna_kit")["lods"]["end_m"]
+	for pair: Array in [[PROBE, "probe_post"], [KIT_DIR + "dock_haluna.glb", "dock_haluna"]]:
+		var root := _scene(str(pair[0]))
+		var chain: Array[MeshInstance3D] = [
+			root.get_node(str(pair[1])) as MeshInstance3D, root.get_node(str(pair[1]) + "-lod1") as MeshInstance3D
+		]
+		var bad := LodRangeModel.hard_sweep_failures(chain, LodRangeModel.distances(float(kit_ends[0]) * 2.0))
+		assert_eq(bad.size(), 0, "%s: %s" % [pair[0], ", ".join(bad.slice(0, 6))])
+	_done()
+
+
+## A lone mesh (no chain) still gets no range and no visibility parent, so it draws at any distance.
+func test_a_single_lod_mesh_gets_no_visibility_parent() -> void:
+	var chain := _chain_root(1)
+	AssetImportRules.apply(chain[0].get_parent(), {"lods": _rules("haluna_kit")["lods"]})
+	assert_eq(chain[0].visibility_parent, NodePath(), "no parent")
+	assert_eq(chain[0].visibility_range_end, 0.0, "no range")
+	assert_eq(LodRangeModel.draws(chain, 5000.0, {}), [1] as Array[int], "draws at any distance")
+	_done()
 
 
 # ---- wiring ------------------------------------------------------------------------------------

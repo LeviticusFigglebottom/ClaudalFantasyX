@@ -110,6 +110,18 @@ var record_trace := false
 var trace: Array = []
 
 var _running := false
+# M2-RND-15: the first run's live scenes (first_run_live_scenes), instanced on worker threads: [task id, [instance]].
+var _live_tasks: Array = []
+# Their threaded loads in flight (M2-RND-910).
+var _live_loading: PackedStringArray = PackedStringArray()
+var _live_seen := {}
+# A first run's live scenes start once the regular staging has drained: started with it, their worker-thread
+# instancing (loads, dressing) piled onto the boot's heaviest frames (2.9 s against 1.05 on a cold driver).
+var _live_pending := false
+# A first run's first_run_scenes, harvested one at a time before the stage's batches (M2-RND-18), each through
+# ResourceLoader's threaded request (M2-RND-910); _harvest_requested while the queue's head is loading.
+var _harvest_queue: PackedStringArray = PackedStringArray()
+var _harvest_requested := false
 var _last_frame_usec := 0
 var _stage_alive := false
 var _frames_to_render := 0
@@ -226,12 +238,20 @@ func start(for_scene: String = "") -> int:
 			push_warning("%s: registered material not found: %s" % [LOG_PREFIX, e.get("path", "")])
 			_skipped += 1
 	if first_run:
+		# M2-RND-18: harvested one scene per frame (_harvest_next_first_run_scene), not here: loading all five
+		# scenes' meshes and materials in start() compiled their pipelines in one frame (2.65 s on a cold High).
 		for path: Variant in config.get("first_run_scenes", []):
 			if ResourceLoader.exists(str(path)):
-				_instanced += _instance_scene_materials(str(path), int(config.get("max_scene_materials", 0)))
+				_harvest_queue.append(str(path))
+		_live_pending = true
 	if bool(config.get("scene_materials", false)) and for_scene != "" and ResourceLoader.exists(for_scene):
 		_instanced += _instance_scene_materials(for_scene, int(config.get("max_scene_materials", 0)))
+	# M2-RND-18: a first run on an empty driver cache compiles every pass of a material at once (up to ~1.3 s for
+	# one), so its batches start at first_run_materials_per_frame: two to a batch made the boot's worst hidden
+	# frame 1.7 s on Low and 3.0 s on High, which froze the boot card.
 	var per_frame := int(config.get("materials_per_frame", 0))
+	if first_run and config.has("first_run_materials_per_frame"):
+		per_frame = int(config["first_run_materials_per_frame"])
 	_batch = per_frame if per_frame > 0 else maxi(_pending.size(), 1)
 	_min_batch_seen = _batch
 	_draws_total = _pending.size()
@@ -492,8 +512,12 @@ func tick(frame_ms: float) -> void:
 	if _stage_alive and not _bring_up.is_empty():
 		var step: Array = _bring_up.pop_front()
 		_viewport.set(step[0], step[1])
-		if _bring_up.is_empty():
+		# M2-RND-18: a first run keeps one frame empty after the bring-up, so the renderer's own first use (its
+		# passes with every feature on) doesn't share a frame with the first material's pipelines.
+		if _bring_up.is_empty() and not first_run:
 			_stage_next_batch()
+	elif _stage_alive and not _harvest_queue.is_empty():
+		_harvest_next_scene()
 	elif _stage_alive:
 		if not _pending.is_empty():
 			# The first frame also carries start() and the stage's set-up, so it says nothing about how
@@ -502,12 +526,115 @@ func tick(frame_ms: float) -> void:
 				_batch = maxi(floori(_batch / 2.0), 1)
 				_min_batch_seen = mini(_min_batch_seen, _batch)
 			_stage_next_batch()
-		else:
+		elif not _poll_live_scenes():
 			_frames_since_batch += 1
 			if _frames_since_batch >= _frames_to_render:
 				_clear_stage()
 	if not _stage_alive and _frames_measured >= _measure_frames:
 		_finish()
+
+
+## M2-RND-15: a zone that builds geometry at runtime (Haluna's dresser, ocean grid, cast materials) has surfaces no
+## SceneState lists; cold, its first frame compiled 92 surface pipelines (1.6-1.7 s). A first run instances each
+## "first_run_live_scenes" entry off the tree (as SceneRouter does), stages every draw it holds, and frees it.
+## M2-RND-910: each loads by ResourceLoader's threaded request (polled), then instances on a worker. A raw load()
+## on a worker task could sit in the loader while the main thread waited on it: a quit mid-warm-up never exited.
+func _start_live_scenes() -> void:
+	for path: Variant in config.get("first_run_live_scenes", []):
+		if ResourceLoader.exists(str(path)) and ResourceLoader.load_threaded_request(str(path)) == OK:
+			_live_loading.append(str(path))
+
+
+## Hands every live scene whose threaded load is in to a worker that instances it.
+func _poll_live_loads() -> void:
+	for i in range(_live_loading.size() - 1, -1, -1):
+		var path := _live_loading[i]
+		var status := ResourceLoader.load_threaded_get_status(path)
+		if status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			continue
+		_live_loading.remove_at(i)
+		var packed := (
+			ResourceLoader.load_threaded_get(path) as PackedScene
+			if status == ResourceLoader.THREAD_LOAD_LOADED
+			else null
+		)
+		if packed == null:
+			continue
+		var box := [null]
+		_live_tasks.append([WorkerThreadPool.add_task(PrewarmHarvest.instance_live.bind(packed, box)), box])
+
+
+## Harvests every finished live scene into the pending draws. True while any is still instancing (the stage stays).
+func _poll_live_scenes() -> bool:
+	if _live_pending:
+		_live_pending = false
+		_start_live_scenes()
+		return not _live_loading.is_empty()
+	_poll_live_loads()
+	var cap := int(config.get("max_live_materials", 0))
+	for i in range(_live_tasks.size() - 1, -1, -1):
+		var task: Array = _live_tasks[i]
+		if not WorkerThreadPool.is_task_completed(int(task[0])):
+			continue
+		WorkerThreadPool.wait_for_task_completion(int(task[0]))
+		_live_tasks.remove_at(i)
+		var inst := (task[1] as Array)[0] as Node
+		if inst == null:
+			continue
+		var added := 0
+		var geoms := inst.find_children("*", "GeometryInstance3D", true, false)
+		if inst is GeometryInstance3D:
+			geoms.append(inst)
+		for g in geoms:
+			for pair in PrewarmHarvest.live_draws(g as GeometryInstance3D):
+				var key := [pair[0], pair[1]]
+				if _live_seen.has(key) or added >= cap:
+					continue
+				_live_seen[key] = true
+				_pending.append(pair)
+				added += 1
+		_draws_total += added
+		_instanced += added
+		inst.free()
+		if added > 0:
+			_stage_next_batch()
+	return not (_live_tasks.is_empty() and _live_loading.is_empty())
+
+
+## At quit: a load in flight stays with ResourceLoader; an instancing worker (it only instantiates) is waited for.
+func _drop_live_scenes() -> void:
+	_live_loading.clear()
+	for task: Array in _live_tasks:
+		WorkerThreadPool.wait_for_task_completion(int(task[0]))
+		var inst := (task[1] as Array)[0] as Node
+		if inst != null:
+			inst.free()
+	_live_tasks.clear()
+
+
+## M2-RND-18: loading a first_run_scenes entry compiled its mesh pipelines in that frame (1.96 s, cold High). Each
+## loads off the main thread, one at a time, and its SceneState is read here once it's in.
+func _harvest_next_scene() -> void:
+	var path := _harvest_queue[0]
+	if not _harvest_requested:
+		_harvest_requested = ResourceLoader.load_threaded_request(path) == OK
+		if not _harvest_requested:
+			_harvest_queue.remove_at(0)
+		return
+	var status := ResourceLoader.load_threaded_get_status(path)
+	if status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+		return
+	var packed := (
+		ResourceLoader.load_threaded_get(path) as PackedScene if status == ResourceLoader.THREAD_LOAD_LOADED else null
+	)
+	_harvest_requested = false
+	_harvest_queue.remove_at(0)
+	if packed == null:
+		return
+	var counter := [0]
+	_harvest_state(packed.get_state(), {}, {}, int(config.get("max_scene_materials", 0)), counter, 0)
+	_instanced += int(counter[0])
+	_draws_total += int(counter[0])
 
 
 ## Moves up to one batch of pending draws into the stage; they compile on the frame that draws them.
@@ -549,6 +676,7 @@ func _process(_delta: float) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
+		_drop_live_scenes()  # M2-RND-910: never waits on a load
 		for n: Variant in _pending:
 			if is_instance_valid(n) and n is Node:
 				n.free()
@@ -660,46 +788,28 @@ static func _shader_mode(mat: Material) -> int:
 	return MODE_UNSUPPORTED
 
 
-## The mesh an entry draws: its "mesh" key (a Mesh, or the first/named MeshInstance3D of a scene),
-## else the stage quad.
+## The mesh an entry draws (PrewarmEntryMesh.of): its "mesh" key, else `fallback` (the stage quad).
 static func entry_mesh(entry: Dictionary, fallback: Mesh) -> Mesh:
-	var path := str(entry.get("mesh", ""))
-	if path.is_empty() or not ResourceLoader.exists(path):
-		if not path.is_empty():
-			push_warning("%s: prewarm mesh not found: %s" % [LOG_PREFIX, path])
-		return fallback
-	var res := load(path)
-	if res is Mesh:
-		return res as Mesh
-	if res is PackedScene:
-		var inst := (res as PackedScene).instantiate()
-		var want := str(entry.get("mesh_node", ""))
-		var mi: MeshInstance3D = null
-		if want != "":
-			mi = inst.find_child(want, true, false) as MeshInstance3D
-		else:
-			var found := inst.find_children("*", "MeshInstance3D", true, false)
-			mi = (
-				(inst as MeshInstance3D)
-				if inst is MeshInstance3D
-				else (found[0] as MeshInstance3D if found.size() > 0 else null)
-			)
-		var mesh := mi.mesh if mi != null else null
-		inst.free()
-		if mesh != null:
-			return mesh
-	push_warning("%s: %s has no mesh to prewarm with" % [LOG_PREFIX, path])
-	return fallback
+	return PrewarmEntryMesh.of(entry, fallback)
 
 
 ## Draws the stage plain first and queues the game viewport's features to come on one a frame
 ## (M1-RND-27); a feature the game viewport does not use is not a step.
 func _begin_bring_up() -> void:
+	var taa_wanted := bool(_viewport.get(&"use_taa"))
+	var fsr2 := int(_viewport.get(&"scaling_3d_mode")) == Viewport.SCALING_3D_MODE_FSR2
 	for prop in BRING_UP_PROPS:
 		var want: Variant = _viewport.get(prop)
 		if want != BRING_UP_PLAIN[prop]:
 			_bring_up.append([prop, want])
 			_viewport.set(prop, BRING_UP_PLAIN[prop])
+	# M2-RND-14: Forward+ turns its advanced shader group on lazily, and in 4.6.3 that can deadlock (version_get_shader
+	# holds the version mutex while compiles of the same shader fill every worker). With TAA off it hit the Shell
+	# Shrine's first post-bake frame. So a boot turns it on here, under the card, with one frame of TAA on the stage
+	# right after the plain first frame (with TAA or FSR2 the game already has it).
+	if not taa_wanted and not fsr2:
+		_bring_up.push_front([&"use_taa", false])
+		_bring_up.push_front([&"use_taa", true])
 	_bring_up_total = _bring_up.size()
 	if _bring_up.is_empty():
 		_stage_next_batch()
@@ -833,7 +943,7 @@ func _harvest_state(
 				_ensure_stage_env().background_mode = Environment.BG_SKY
 				_stage_env.sky = sky
 			continue
-		for pair in _state_draws(props):
+		for pair in PrewarmHarvest.state_draws(props):
 			var key := [pair[0], pair[1]]
 			if seen.has(key) or int(counter[0]) >= cap:
 				continue
@@ -842,33 +952,6 @@ func _harvest_state(
 			# (about 75 ms each), which belongs in a batch frame, not in start().
 			_pending.append(pair)
 			counter[0] = int(counter[0]) + 1
-
-
-## [material, mesh, source multimesh or null] pairs of one node's stored properties: a MeshInstance3D's
-## or MultiMeshInstance3D's override, per-surface overrides, else the mesh's own surface materials.
-static func _state_draws(props: Dictionary) -> Array:
-	var mm := props.get(&"multimesh") as MultiMesh
-	var mesh := props.get(&"mesh") as Mesh
-	if mm != null:
-		mesh = mm.mesh
-	if mesh == null:
-		return []
-	var out := []
-	var override := props.get(&"material_override") as Material
-	if override != null:
-		out.append([override, mesh, mm])
-		return out
-	# A PrimitiveMesh builds its arrays on the first surface query, and that builds its StandardMaterial3D's
-	# shader: about 75 ms each, synchronously in start() (Haluna's save shrine, M1-RND-27). It has one
-	# surface, whose material is its `material`: read that, and the compile happens in the draw's batch.
-	var primitive := mesh as PrimitiveMesh
-	for i in 1 if primitive != null else mesh.get_surface_count():
-		var m := props.get(StringName("surface_material_override/%d" % i)) as Material
-		if m == null:
-			m = primitive.material if primitive != null else mesh.surface_get_material(i)
-		if m != null:
-			out.append([m, mesh, mm])
-	return out
 
 
 ## The stage draw of one harvested pair: a MeshInstance3D, or a MultiMeshInstance3D with the source's

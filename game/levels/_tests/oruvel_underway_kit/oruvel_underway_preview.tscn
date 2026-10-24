@@ -1,0 +1,176 @@
+[gd_scene load_steps=24 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_preview.gd" id="1_rig"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="2_tide"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_dresser.gd" id="3_dresser"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_waves"]
+[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="6_water_mat"]
+[ext_resource type="Environment" path="res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_ch01_environment.tres" id="7_env"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="8_cam"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="9_shot"]
+[ext_resource type="Script" path="res://game/world/water/underwater/underwater_rig.gd" id="10_uw"]
+[ext_resource type="Script" path="res://game/vfx/glimmer/glimmer_field.gd" id="11_glimmer"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/oruvel_underway/diver_lantern.glb" id="12_lantern"]
+
+[sub_resource type="Resource" id="ShotU01"]
+script = ExtResource("9_shot")
+id = &"U01"
+position = Vector3(-9.0, -6.0, 3.6)
+look_at = Vector3(-9.3, -1.5, 6.8)
+fov_deg = 53.1
+
+[sub_resource type="Resource" id="ShotU04"]
+script = ExtResource("9_shot")
+id = &"U04"
+position = Vector3(14.6, -20.75, 0.4)
+look_at = Vector3(-12.0, -20.5, -0.2)
+fov_deg = 67.4
+
+[sub_resource type="Resource" id="ShotU06"]
+script = ExtResource("9_shot")
+id = &"U06"
+position = Vector3(-9.6, -20.6, 3.0)
+look_at = Vector3(-14.5, -22.9, 3.1)
+fov_deg = 27.0
+
+[sub_resource type="Resource" id="ShotU07"]
+script = ExtResource("9_shot")
+id = &"U07"
+position = Vector3(-12.5, -20.9, -0.5)
+look_at = Vector3(-15.5, -20.7, -4.0)
+fov_deg = 46.4
+
+[sub_resource type="Resource" id="ShotU12"]
+script = ExtResource("9_shot")
+id = &"U12"
+position = Vector3(40.0, -21.0, 12.0)
+look_at = Vector3(16.0, -17.0, 2.0)
+fov_deg = 53.1
+
+[sub_resource type="Resource" id="ShotU13"]
+script = ExtResource("9_shot")
+id = &"U13"
+position = Vector3(37.5, -21.0, 24.5)
+look_at = Vector3(24.0, -20.6, 15.0)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotU14"]
+script = ExtResource("9_shot")
+id = &"U14"
+position = Vector3(0.0, -17.5, -14.0)
+look_at = Vector3(0.0, -22.0, -44.0)
+fov_deg = 37.8
+
+[node name="OruvelUnderwayPreview" type="Node3D" node_paths=PackedStringArray("rig", "lantern", "sun", "tide", "water", "world_environment", "dresser")]
+script = ExtResource("1_rig")
+rig = NodePath("Underwater")
+lantern = NodePath("Lantern")
+sun = NodePath("Sun")
+tide = NodePath("Tide")
+water = NodePath("Water")
+world_environment = NodePath("WorldEnvironment")
+dresser = NodePath("Dresser")
+sun_elevation_deg = 42.0
+sun_azimuth_deg = 105.0
+time_of_day_h = 8.75
+wind_azimuth_deg = 250.0
+wind_speed_m_s = 6.0
+wind_gust = 0.35
+water_height_m = 0.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("7_env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+light_color = Color(1, 0.937255, 0.882353, 1)
+light_energy = 3.0
+shadow_enabled = true
+shadow_bias = 0.04
+shadow_normal_bias = 1.2
+shadow_blur = 1.2
+sky_mode = 1
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.06
+directional_shadow_split_2 = 0.18
+directional_shadow_split_3 = 0.45
+directional_shadow_max_distance = 120.0
+
+[node name="Water" type="Node3D" parent="."]
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_water_mat")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("2_tide")
+water = NodePath("../Water")
+
+[node name="Dresser" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("3_dresser")
+layout_path = "res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_layout.json"
+tide = NodePath("../Tide")
+
+[node name="Lantern" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, -21.05, 1.55)
+
+[node name="Mesh" parent="Lantern" instance=ExtResource("12_lantern")]
+
+[node name="Underwater" type="Node3D" parent="." node_paths=PackedStringArray("water", "lantern_target")]
+script = ExtResource("10_uw")
+water = NodePath("../Water")
+lantern_target = NodePath("../Lantern")
+
+[node name="LowLights" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.3, -24.8, 3)
+script = ExtResource("11_glimmer")
+mode = 0
+emission_extents_m = Vector3(2.2, 2.0, 2.2)
+amount_multiplier = 0.45
+water_height_m = 0.0
+use_fixed_seed = true
+fixed_seed = 105
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="U01" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 600.0
+script = ExtResource("8_cam")
+shot = SubResource("ShotU01")
+
+[node name="U04" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 600.0
+script = ExtResource("8_cam")
+shot = SubResource("ShotU04")
+
+[node name="U06" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 600.0
+script = ExtResource("8_cam")
+shot = SubResource("ShotU06")
+
+[node name="U07" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 600.0
+script = ExtResource("8_cam")
+shot = SubResource("ShotU07")
+
+[node name="U12" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 600.0
+script = ExtResource("8_cam")
+shot = SubResource("ShotU12")
+
+[node name="U13" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 600.0
+script = ExtResource("8_cam")
+shot = SubResource("ShotU13")
+
+[node name="U14" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 600.0
+script = ExtResource("8_cam")
+shot = SubResource("ShotU14")

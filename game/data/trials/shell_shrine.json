@@ -180,6 +180,7 @@
       "reach_m": 0.9,
       "exit_depth_m": 1.8,
       "spill_width_m": 0.18,
+      "gi_data": {"closed": "res://assets/levels/ch03/shell_shrine/shrine_gi_closed.res", "open": "res://assets/levels/ch03/shell_shrine/shrine_gi_open.res"},
       "gi_energy": 0.3,
       "gi_propagation": 0.6,
       "pool_bounce": {

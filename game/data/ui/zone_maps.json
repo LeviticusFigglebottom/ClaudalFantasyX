@@ -1,10 +1,19 @@
 {
   "zone_maps": {
-    "doc": "M2-UI-16/18: the zones the objective system and the field menu's map know. Each zone: its scene (the field's current scene is matched against it), its name_key, its route_index on the pilgrimage strip (Haluna -> the Saltgrass Causeway -> the Shell Shrine), the world rectangle the map shows ([x, z, width, depth] in metres), its shape source (Haluna: its layout JSON; the Shell Shrine: its trial JSON), and its points of interest. A POI is {id, name_key, kind, at: [x, z], source}: `at` is a world position (x east, z south), `source` names where it comes from ('node:<path in the zone scene>' or 'layout:<key in the shape source>'), and tools/tests/test_zone_map_pois.py checks the two agree. Kinds draw as glyphs: shrine, shop, inn, talk, path, door, pool, dock, home. route lists the pilgrimage strip in order; a route stop with no zone is a place the party passes through without a map of its own yet.",
+    "doc": "M2-UI-16/18: the zones the objective system and the field menu's map know. Each zone: its scene (the field's current scene is matched against it), its name_key, its route_index on the pilgrimage strip (Haluna -> the Saltgrass Causeway -> the Shell Shrine), the world rectangle the map shows ([x, z, width, depth] in metres), its shape source (Haluna: its layout JSON; the Shell Shrine: its trial JSON), and its points of interest. A POI is {id, name_key, kind, at: [x, z], source}: `at` is a world position (x east, z south), `source` names where it comes from ('node:<path in the zone scene>' or 'layout:<key in the shape source>'), and tools/tests/test_zone_map_pois.py checks the two agree. Kinds draw as glyphs: shrine, shop, inn, talk, path, door, pool, dock, home. route lists the pilgrimage strip in order; a route stop with no zone is a place the party passes through without a map of its own yet. M3-UI-04: the Act I greybox zones (Ch1, Ch4, Ch5, Ch7, Ch9) are shape_kind greybox_layout: their shapes are the layout's blocks (ZoneMapShapes.greybox_layer), with shape_hints naming blocks by layer where height alone reads them wrong (sea: open water under everything; water, floors, pads, buildings, structures, skip). A greybox zone's scene is only its root, so its POI sources name layout points instead of nodes: 'spawn:<id>', 'trigger:<id>' (the trigger's at), 'actor:<id>' (the actor's at) and 'mark:<id>'. The route runs the whole of Act I; the strip shows only the stops near the current one (zone_map_menu.json route before/after).",
     "route": [
+      {"id": "ch01/oruvel_underway", "name_key": "MAP_ROUTE_UNDERWAY"},
+      {"id": "ch01/oruvel", "name_key": "MAP_ROUTE_ORUVEL"},
       {"id": "ch02/haluna", "name_key": "MAP_ROUTE_HALUNA"},
       {"id": "causeway", "name_key": "MAP_ROUTE_CAUSEWAY"},
-      {"id": "ch03/shell_shrine", "name_key": "MAP_ROUTE_SHELL_SHRINE"}
+      {"id": "ch03/shell_shrine", "name_key": "MAP_ROUTE_SHELL_SHRINE"},
+      {"id": "ch04/haluna_wake", "name_key": "MAP_ROUTE_HALUNA_WAKE"},
+      {"id": "ch04/brightwater_ferry", "name_key": "MAP_ROUTE_BRIGHTWATER"},
+      {"id": "ch05/pemakar", "name_key": "MAP_ROUTE_PEMAKAR"},
+      {"id": "ch05/ashcrown", "name_key": "MAP_ROUTE_ASHCROWN"},
+      {"id": "ch07/tamsule", "name_key": "MAP_ROUTE_TAMSULE"},
+      {"id": "ch07/tamsule_bell_galleries", "name_key": "MAP_ROUTE_BELL_GALLERIES"},
+      {"id": "ch09/corrow_night", "name_key": "MAP_ROUTE_CORROW"}
     ],
     "zones": [
       {
@@ -40,6 +49,176 @@
           {"id": "side_pool", "name_key": "MAP_POI_SIDE_POOL", "kind": "pool", "at": [-1.5, 6.5], "source": "layout:side_pool"},
           {"id": "inner_pool", "name_key": "MAP_POI_INNER_POOL", "kind": "pool", "at": [7.5, 0.0], "source": "layout:inner_pool"},
           {"id": "chamber_door", "name_key": "MAP_POI_CHAMBER_DOOR", "kind": "door", "at": [14.3, 0.0], "source": "layout:door"}
+        ]
+      },
+      {
+        "id": "ch01/oruvel_underway",
+        "scene": "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
+        "name_key": "LOCATION_CH01_ORUVEL_UNDERWAY",
+        "shapes": "res://game/levels/ch01/oruvel_underway/oruvel_underway_layout.json",
+        "shape_kind": "greybox_layout",
+        "bounds": [-14.0, -46.0, 120.0, 70.0],
+        "pois": [
+          {"id": "drop", "name_key": "MAP_POI_U_DROP", "kind": "path", "at": [0.0, 15.0], "source": "spawn:Drop"},
+          {"id": "crown_tether", "name_key": "MAP_POI_U_CROWN_TETHER", "kind": "path", "at": [0.0, 0.6], "source": "trigger:tether_crown"},
+          {"id": "bell_room", "name_key": "MAP_POI_U_BELL_ROOM", "kind": "inn", "at": [40.0, 11.0], "source": "trigger:bell_room_1"},
+          {"id": "hinge", "name_key": "MAP_POI_U_HINGE", "kind": "door", "at": [44.0, 3.0], "source": "trigger:hinge"},
+          {"id": "bell_tether", "name_key": "MAP_POI_U_BELL_TETHER", "kind": "path", "at": [36.0, 3.6], "source": "trigger:tether_bell"},
+          {"id": "galleries", "name_key": "MAP_POI_U_GALLERIES", "kind": "path", "at": [80.0, 18.0], "source": "spawn:Gallery"},
+          {"id": "bell_room_2", "name_key": "MAP_POI_U_BELL_ROOM_2", "kind": "inn", "at": [80.0, -20.0], "source": "trigger:bell_rest_2"},
+          {"id": "stair_lip", "name_key": "MAP_POI_U_STAIR_LIP", "kind": "path", "at": [80.0, -33.0], "source": "trigger:low_lights"},
+          {"id": "gauge_room", "name_key": "MAP_POI_U_GAUGE_ROOM", "kind": "door", "at": [93.0, -26.0], "source": "spawn:GaugeRoom"},
+          {"id": "gauge_wheel", "name_key": "MAP_POI_U_GAUGE_WHEEL", "kind": "talk", "at": [96.0, -31.0], "source": "trigger:gauge_wheel"},
+          {"id": "current_shaft", "name_key": "MAP_POI_U_CURRENT_SHAFT", "kind": "path", "at": [97.0, -38.0], "source": "trigger:current_shaft"}
+        ]
+      },
+      {
+        "id": "ch01/oruvel",
+        "scene": "res://game/levels/ch01/oruvel/oruvel.tscn",
+        "name_key": "LOCATION_CH01_ORUVEL",
+        "shapes": "res://game/levels/ch01/oruvel/oruvel_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["Sea"]},
+        "bounds": [-40.0, -44.0, 92.0, 62.0],
+        "pois": [
+          {"id": "scale_hull", "name_key": "MAP_POI_O_SCALE_HULL", "kind": "shop", "at": [0.0, 8.0], "source": "spawn:ScaleHull"},
+          {"id": "cookboats", "name_key": "MAP_POI_O_COOKBOATS", "kind": "talk", "at": [-12.0, -6.0], "source": "actor:cook"},
+          {"id": "net_lanes", "name_key": "MAP_POI_O_NET_LANES", "kind": "talk", "at": [12.0, -6.0], "source": "actor:netmender"},
+          {"id": "outer_mooring", "name_key": "MAP_POI_O_OUTER_MOORING", "kind": "dock", "at": [-28.0, -12.0], "source": "actor:skipper_sadi"},
+          {"id": "keel_hull", "name_key": "MAP_POI_O_KEEL_HULL", "kind": "home", "at": [0.0, -37.0], "source": "actor:sabe"},
+          {"id": "kell", "name_key": "MAP_POI_O_KELL", "kind": "shop", "at": [31.0, -7.5], "source": "actor:kell"},
+          {"id": "dive_mooring", "name_key": "MAP_POI_O_DIVE_MOORING", "kind": "dock", "at": [45.0, -5.0], "source": "trigger:dive_mooring"},
+          {"id": "low_run", "name_key": "MAP_POI_O_LOW_RUN", "kind": "path", "at": [45.0, -11.5], "source": "trigger:scuttlers"},
+          {"id": "lashing_west", "name_key": "MAP_POI_O_LASHING_WEST", "kind": "door", "at": [41.5, -17.0], "source": "trigger:lashing_a"},
+          {"id": "lashing_east", "name_key": "MAP_POI_O_LASHING_EAST", "kind": "door", "at": [45.0, -15.5], "source": "trigger:lashing_b"},
+          {"id": "net_pen", "name_key": "MAP_POI_O_NET_PEN", "kind": "talk", "at": [30.0, -22.0], "source": "mark:net_pen"}
+        ]
+      },
+      {
+        "id": "ch04/haluna_wake",
+        "scene": "res://game/levels/ch04/haluna_wake/haluna_wake.tscn",
+        "name_key": "LOCATION_CH04_HALUNA_WAKE",
+        "shapes": "res://game/levels/ch04/haluna_wake/haluna_wake_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["Sea", "SeaNorth"], "skip": ["GrassLamps"]},
+        "bounds": [-34.0, -46.0, 82.0, 63.0],
+        "pois": [
+          {"id": "neme_house", "name_key": "MAP_POI_NEMES_HOUSE", "kind": "home", "at": [0.0, 7.0], "source": "spawn:NemeDoor"},
+          {"id": "lane", "name_key": "MAP_POI_W_LANE", "kind": "talk", "at": [-3.0, -3.0], "source": "trigger:npc_child"},
+          {"id": "inn", "name_key": "MAP_POI_W_INN", "kind": "inn", "at": [-15.5, -20.0], "source": "trigger:inn_door"},
+          {"id": "chapel", "name_key": "MAP_POI_CHAPEL_COURT", "kind": "talk", "at": [16.0, -6.0], "source": "actor:reed"},
+          {"id": "dock", "name_key": "MAP_POI_DOCK", "kind": "dock", "at": [32.0, -20.0], "source": "spawn:DockShore"},
+          {"id": "feast", "name_key": "MAP_POI_W_FEAST", "kind": "talk", "at": [0.0, -27.5], "source": "trigger:feast"},
+          {"id": "neme_table", "name_key": "MAP_POI_W_NEME_TABLE", "kind": "talk", "at": [6.0, -30.0], "source": "trigger:table_neme"},
+          {"id": "wall", "name_key": "MAP_POI_W_WALL", "kind": "path", "at": [0.0, -35.5], "source": "trigger:wall"}
+        ]
+      },
+      {
+        "id": "ch04/brightwater_ferry",
+        "scene": "res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn",
+        "name_key": "LOCATION_CH04_BRIGHTWATER_FERRY",
+        "shapes": "res://game/levels/ch04/brightwater_ferry/brightwater_ferry_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["Sea"], "skip": ["Sheathing", "NameBoardWrapped", "Fenders"]},
+        "bounds": [-21.0, -11.0, 34.0, 51.0],
+        "pois": [
+          {"id": "landing", "name_key": "MAP_POI_F_LANDING", "kind": "path", "at": [0.0, 30.0], "source": "spawn:Landing"},
+          {"id": "ferrymaster", "name_key": "MAP_POI_F_FERRYMASTER", "kind": "talk", "at": [0.9, 20.5], "source": "actor:ferrymaster"},
+          {"id": "shrine", "name_key": "MAP_POI_F_SHRINE", "kind": "shrine", "at": [0.0, 11.4], "source": "trigger:shrine"},
+          {"id": "purser", "name_key": "MAP_POI_F_PURSER", "kind": "shop", "at": [2.6, 11.0], "source": "actor:purser"},
+          {"id": "bow", "name_key": "MAP_POI_F_BOW", "kind": "path", "at": [0.0, -4.6], "source": "trigger:bow"},
+          {"id": "derelict_stern", "name_key": "MAP_POI_F_DERELICT_STERN", "kind": "dock", "at": [-11.2, 13.0], "source": "spawn:DerelictDeck"},
+          {"id": "galley", "name_key": "MAP_POI_F_GALLEY", "kind": "talk", "at": [-11.6, 9.0], "source": "trigger:galley_bowls"},
+          {"id": "hold", "name_key": "MAP_POI_F_HOLD", "kind": "door", "at": [-13.0, 0.8], "source": "trigger:hold_housing"},
+          {"id": "mainmast", "name_key": "MAP_POI_F_MAINMAST", "kind": "path", "at": [-13.0, -5.6], "source": "trigger:wraith"}
+        ]
+      },
+      {
+        "id": "ch05/pemakar",
+        "scene": "res://game/levels/ch05/pemakar/pemakar.tscn",
+        "name_key": "LOCATION_CH05_PEMAKAR",
+        "shapes": "res://game/levels/ch05/pemakar/pemakar_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["Sea"], "water": ["WeirChannel", "CrownChannel"], "pads": ["GraveSteps"], "skip": ["Lamps"]},
+        "bounds": [-31.0, -67.0, 62.0, 88.0],
+        "pois": [
+          {"id": "harbour", "name_key": "MAP_POI_P_HARBOUR", "kind": "dock", "at": [0.0, 12.0], "source": "trigger:harbour_road"},
+          {"id": "weir", "name_key": "MAP_POI_P_WEIR", "kind": "path", "at": [9.0, 7.0], "source": "spawn:Weir"},
+          {"id": "market", "name_key": "MAP_POI_P_MARKET", "kind": "talk", "at": [-4.0, -14.0], "source": "trigger:bark_boat_folders"},
+          {"id": "forge", "name_key": "MAP_POI_P_FORGE", "kind": "shop", "at": [-13.0, -24.0], "source": "actor:garo"},
+          {"id": "inn", "name_key": "MAP_POI_P_INN", "kind": "inn", "at": [-13.0, -32.0], "source": "spawn:InnGate"},
+          {"id": "graves", "name_key": "MAP_POI_P_GRAVES", "kind": "talk", "at": [12.0, -30.0], "source": "mark:grave_terrace"},
+          {"id": "crown_bell", "name_key": "MAP_POI_P_CROWN_BELL", "kind": "path", "at": [0.0, -46.0], "source": "trigger:crown_bell"}
+        ]
+      },
+      {
+        "id": "ch05/ashcrown",
+        "scene": "res://game/levels/ch05/ashcrown/ashcrown.tscn",
+        "name_key": "LOCATION_CH05_ASHCROWN",
+        "shapes": "res://game/levels/ch05/ashcrown/ashcrown_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"structures": ["g1", "g2a", "g2b", "g3a", "g3b", "g3c", "g4a", "g4b"], "pads": ["TenderGraves"]},
+        "bounds": [-9.0, -103.0, 70.0, 122.0],
+        "pois": [
+          {"id": "stair_foot", "name_key": "MAP_POI_A_STAIR_FOOT", "kind": "path", "at": [0.0, 2.0], "source": "spawn:StairFoot"},
+          {"id": "grave_tier", "name_key": "MAP_POI_A_GRAVE_TIER", "kind": "talk", "at": [0.0, -35.0], "source": "trigger:banter_grave_tier"},
+          {"id": "copper_tier", "name_key": "MAP_POI_A_COPPER_TIER", "kind": "talk", "at": [0.0, -60.0], "source": "trigger:banter_copper_tier"},
+          {"id": "crown", "name_key": "MAP_POI_A_CROWN", "kind": "path", "at": [18.0, -94.0], "source": "trigger:crown"},
+          {"id": "tier_1", "name_key": "MAP_POI_A_TIER_1", "kind": "path", "at": [34.0, -88.0], "source": "trigger:rod_t1"},
+          {"id": "tier_2", "name_key": "MAP_POI_A_TIER_2", "kind": "path", "at": [34.0, -68.0], "source": "trigger:rod_t2"},
+          {"id": "tier_3", "name_key": "MAP_POI_A_TIER_3", "kind": "path", "at": [34.0, -48.0], "source": "trigger:rod_t3"},
+          {"id": "tier_4", "name_key": "MAP_POI_A_TIER_4", "kind": "path", "at": [34.0, -28.0], "source": "trigger:rod_t4"},
+          {"id": "quench", "name_key": "MAP_POI_A_QUENCH", "kind": "pool", "at": [54.0, -46.0], "source": "trigger:quench_charm"},
+          {"id": "anvil_court", "name_key": "MAP_POI_A_ANVIL_COURT", "kind": "door", "at": [41.0, -12.0], "source": "trigger:anvil_court"}
+        ]
+      },
+      {
+        "id": "ch07/tamsule",
+        "scene": "res://game/levels/ch07/tamsule/tamsule.tscn",
+        "name_key": "LOCATION_CH07_TAMSULE",
+        "shapes": "res://game/levels/ch07/tamsule/tamsule_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["River"], "buildings": ["Trader"]},
+        "bounds": [-30.0, -25.0, 70.0, 51.0],
+        "pois": [
+          {"id": "river_mouth", "name_key": "MAP_POI_T_RIVER_MOUTH", "kind": "dock", "at": [0.0, 21.0], "source": "spawn:RiverMouth"},
+          {"id": "market", "name_key": "MAP_POI_T_MARKET", "kind": "talk", "at": [-6.0, 3.5], "source": "trigger:npc_market"},
+          {"id": "stilt_lane", "name_key": "MAP_POI_T_STILT_LANE", "kind": "talk", "at": [-17.0, 3.0], "source": "trigger:npc_lane"},
+          {"id": "gantry_foot", "name_key": "MAP_POI_T_GANTRY_FOOT", "kind": "path", "at": [0.0, -19.2], "source": "trigger:to_bell"},
+          {"id": "market_boats", "name_key": "MAP_POI_T_MARKET_BOATS", "kind": "talk", "at": [10.5, -12.0], "source": "trigger:tavi"},
+          {"id": "harbour", "name_key": "MAP_POI_T_HARBOUR", "kind": "dock", "at": [27.0, 10.0], "source": "trigger:harbour"}
+        ]
+      },
+      {
+        "id": "ch07/tamsule_bell_galleries",
+        "scene": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn",
+        "name_key": "LOCATION_CH07_TAMSULE_BELL_GALLERIES",
+        "shapes": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["River"], "water": ["CatchPool"], "buildings": ["GalleryThird", "GalleryTierW", "GalleryTierE", "GalleryTierS"]},
+        "bounds": [-18.0, -18.0, 46.0, 36.0],
+        "pois": [
+          {"id": "gallery", "name_key": "MAP_POI_G_GALLERY", "kind": "path", "at": [0.0, 10.0], "source": "spawn:Gallery"},
+          {"id": "rim", "name_key": "MAP_POI_G_RIM", "kind": "pool", "at": [0.0, 5.6], "source": "trigger:rim"},
+          {"id": "moorings", "name_key": "MAP_POI_G_MOORINGS", "kind": "dock", "at": [21.5, 3.5], "source": "trigger:moorings"},
+          {"id": "to_port", "name_key": "MAP_POI_G_TO_PORT", "kind": "door", "at": [-6.0, 14.4], "source": "trigger:to_port"}
+        ]
+      },
+      {
+        "id": "ch09/corrow_night",
+        "scene": "res://game/levels/ch09/corrow_night/corrow_night.tscn",
+        "name_key": "LOCATION_CH09_CORROW_NIGHT",
+        "shapes": "res://game/levels/ch09/corrow_night/corrow_night_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"sea": ["Harbour", "LowTownLake"], "structures": ["SeaWallW", "SeaWallE", "BreachRubble"], "buildings": ["RoofA", "RoofB", "RoofC", "RoofD"]},
+        "bounds": [-52.0, -34.0, 140.0, 58.0],
+        "pois": [
+          {"id": "strand", "name_key": "MAP_POI_C_STRAND", "kind": "path", "at": [-28.0, -5.0], "source": "spawn:Strand"},
+          {"id": "wall_head", "name_key": "MAP_POI_C_WALL_HEAD", "kind": "talk", "at": [-41.0, -4.0], "source": "trigger:npc_liss"},
+          {"id": "stillguard_row", "name_key": "MAP_POI_C_STILLGUARD_ROW", "kind": "talk", "at": [21.5, 1.5], "source": "trigger:toma"},
+          {"id": "landing", "name_key": "MAP_POI_C_LANDING", "kind": "dock", "at": [0.0, 9.5], "source": "trigger:landing"},
+          {"id": "gate", "name_key": "MAP_POI_C_GATE", "kind": "door", "at": [52.0, -14.0], "source": "spawn:RoadGate"},
+          {"id": "milestone", "name_key": "MAP_POI_C_MILESTONE", "kind": "path", "at": [76.0, -14.0], "source": "trigger:milestone"}
         ]
       }
     ]

@@ -1,0 +1,89 @@
+// Ch4 C4-04 "Cutscene: the shell is set" and C4-05 "Leaving the feast" (docs/kb/story/beats/act1_ch04.md).
+// The chapter's longest scene; words are spent here on purpose. Letterboxed.
+// H08 (night): the wall, the clean gap at shoulder height that Ch2 showed (the Pila scene, N-03), and
+// beside it, washed tonight, Imra's shell. Osu holds Asha's shell, new-cut, the whitest on the wall.
+// The setting: Osu sets it with her thumbs, the way you'd close someone's eyes. The Reed recites one
+// line of the Canticle (recited, never sung: bible §4). Osu says the four Velamir names on the wall,
+// the oldest first, then Asha's, in the same voice.
+// The speaking: each household says one thing it will keep of her. Neme can't; Asha says it for her,
+// smiling (she finishes other people's comfort for them). Neme laughs, and it breaks.
+// The song: "The Long Way Round", the Low Reaches farewell for a voyage, the one you sing so a sailor
+// comes back the long way, safe. Unaccompanied, a hundred voices (diegetic; Audio writes an original
+// tune, the_long_way_round). They sing it for her, and everyone singing knows she isn't coming back.
+// The lyric is Narrative's, written here; the #sung lines are the village's, as captions.
+// Rhen understands (H16, 85 mm, held): the voice guide's line, low, to Toma. The B08 payoff when
+// ch03_rhen_asked_after. H14: Asha has heard him. She keeps singing. Her face doesn't change.
+// C4-05 (H12, one take): Rhen puts down his plate and walks out of the lamplight, not storming, fast,
+// the way he does everything when he's scared. Asha, still in the last verse, touches Toma's arm.
+// The chapter flow sets ch04_shell_set (the wall shows Asha's shell from here on: Ch18, the Ending).
+// Watch (ADR 0022): nothing here links the lullaby, the lantern or the comb to Dace.
+title: ch04_shell_is_set
+location: ch04/haluna_wake
+---
+@letterbox on
+@camera H08
+@music haluna_wake fade=2.0
+@mark osu wall_gap walk
+@wait 1.0
+Osu [neutral]: Bring your lights close. It's time. #line:ch04_shell_001
+@anim osu set_shell
+@sfx shell_set at=wall_gap
+@wait 2.0
+Reed [neutral]: The water keeps what it is given, and gives back what it keeps. #line:ch04_shell_002 #tn:"One line of the Canticle of Level Water, recited, never sung."
+@wait 1.0
+Osu [neutral]: Mara Velamir. Ilse Velamir. Teodra Velamir. Imra Velamir. #line:ch04_shell_003
+@wait 0.8
+Osu [neutral]: Asha Velamir. #line:ch04_shell_004
+@wait 1.5
+@camera H12
+Osu [neutral]: Now. Each house, the one thing it keeps. #line:ch04_shell_005
+Vendor [soft_smile]: Her knots. #line:ch04_shell_006
+Fisher [neutral]: The way she laughs at the wrong part of a story. #line:ch04_shell_007
+Netmender [tender]: She sang my mother out. I keep that. #line:ch04_shell_008
+Child [neutral]: She let me hold the shrine bell once. #line:ch04_shell_009
+@wait 1.0
+@camera H08
+@face neme grief 0.5
+@wait 1.5
+@wait 1.5
+Asha [smile]: She's going to keep my bad stool. The one that bites. Aren't you. #line:ch04_shell_010
+@anim neme laugh_breaks
+Neme [laugh]: That stool. That terrible stool. #line:ch04_shell_011
+@face neme grief 0.8
+@wait 1.5
+@music the_long_way_round fade=2.0
+@camera H12 blend=3.0
+Bring her round by the long way, by the reef and the weed and the light. #line:ch04_shell_012 #sung #tn:"'The Long Way Round': a Low Reaches farewell song for a voyage, sung by the whole village. Plain words; keep it singable."
+Bring her round by the long way, and the tide will bring her home by night. #line:ch04_shell_013 #sung
+Don't go the short way over, where the deep is cold and wide. #line:ch04_shell_014 #sung
+Come round the long way, love, come round the long way, on the tide. #line:ch04_shell_015 #sung
+@camera H16
+@wait 2.0
+Rhen [neutral]: Everyone keeps saying she's going on a pilgrimage. #line:ch04_shell_016
+Rhen [angry]: Nobody says she's coming back from one. #line:ch04_shell_017
+<<if $ch03_rhen_asked_after>>
+Toma [sad]: You asked me. On the steps. #line:ch04_shell_018
+Rhen [angry]: And you said ask her. I'm asking the whole village. #line:ch04_shell_019
+<<else>>
+@wait 1.5
+Toma [sad]: No. They do not. #line:ch04_shell_020
+<<endif>>
+@camera H14
+@face asha soft_smile 0.0
+@wait 2.5
+Come round the long way, love, come round the long way, on the tide. #line:ch04_shell_021 #sung
+@camera H12
+@anim rhen put_down_plate
+@mark rhen feast_edge walk
+@wait 1.0
+@anim toma follow
+@anim asha touch_arm toma
+Asha [tender]: Let me. #line:ch04_shell_022
+Toma [worried]: It is your wake. #line:ch04_shell_023
+Asha [soft_smile]: Then I can leave it if I like. #line:ch04_shell_024
+@mark asha feast_edge walk
+@wait 1.5
+@mark toma feast_edge walk
+@fade out 1.0
+@letterbox off
+===

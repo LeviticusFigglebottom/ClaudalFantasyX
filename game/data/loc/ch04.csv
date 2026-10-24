@@ -1,0 +1,32 @@
+keys,en
+ENEMY_SAIL_LEECH,Sail Leech
+LORE_SAIL_LEECH,"A flat, dark thing that hangs from wet yards like a strip of canvas until it drops. You seldom see the first one before it lands."
+ENEMY_BOTTLE_HERMIT,Bottle Hermit
+LORE_BOTTLE_HERMIT,"A hermit crab living in a ship's lamp glass. The thick glass turns fire and blows aside, and it cracks in the cold."
+ENEMY_SPAR_WRAITH,Spar-Wraith
+LORE_SPAR_WRAITH,"Undertow-spawn tangled in a drowned ship's rigging. It grew its own sails along her shrouds and has hauled her lines ever since."
+PHASE_SPAR_WRAITH_SHROUDED,Shrouded
+PHASE_SPAR_WRAITH_HAULED,Hauled Down
+SKILL_SAIL_DROP,Sail Drop
+SKILL_GLASS_JAB,Glass Jab
+SKILL_GLASS_FLARE,Glass Flare
+SKILL_SPAR_STAB,Spar Stab
+SKILL_SHROUD_SWEEP,Shroud Sweep
+SKILL_HAUL,Haul
+SKILL_SEA_LASH,Sea Lash
+ENC_CH04_SAIL_LEECHES,The Yards
+ENC_CH04_BOTTLE_HERMIT,The Lamp Glass
+ENC_CH04_SPAR_WRAITH,The Spar-Wraith
+TUT_CH04_SWAP,Ysolde is in reserve. Swap her in on anyone's turn. It costs no time.
+TUT_CH04_READ,Read it to learn what the glass turns aside.
+TUT_SPAR_WRAITH_SHROUD,"Blows slide off the shroud. Read it, and answer with the right element."
+TUT_SPAR_WRAITH_HAULED,Its weakness has changed. Read it again.
+SKILL_LINES_TAUT,Lines Taut
+CHAR_FERRYMASTER,Imbe
+LOCATION_CH04_HALUNA_WAKE,"Haluna, the Wake"
+LOCATION_CH04_BRIGHTWATER_FERRY,Brightwater Crossing
+FIELD_PROMPT_SLEEP,Sleep
+FIELD_PROMPT_REST,Rest
+SHOP_BRIGHTWATER_PURSER,The Purser's Chest
+ITEM_NAME_BOARD_SEVENTH_TERRACE,Name-Board of the Seventh Terrace
+ITEM_NAME_BOARD_SEVENTH_TERRACE_DESC,"Carved and lacquered, the ship's name in Pemakar terrace script. Taken off a drowned hull to go home. Nobody paid for it."
