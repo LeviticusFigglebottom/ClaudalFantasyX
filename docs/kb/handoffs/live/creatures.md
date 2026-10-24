@@ -3,8 +3,12 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
+- **19:50, m2-slice: the `model` lines are in** on claude/m2-slice (544958b1, after big7). 15 Act I enemies point at
+  their creature scenes; the internal id `wickfry` is kept and points at glassfry's scene (flags and saves use it).
+  stillguard_inquisitor is the character track's. spar_wraith's `hauled_down` row comes with big8. This unblocks the
+  last blocked creatures item; only the Matron's re-crust hook (battle-presentation) is left outside this track.
 - **19:45: big7 merged into claude/creatures** (integration 8f808cc6). Conflicts were three battle baselines, taken from
-  the integration branch, then re-captured on the merged tree; the 60 creature and battle shots are being compared.
+  the integration branch, then re-captured on the merged tree: all 60 creature and battle shots pass against them.
   BattleActorMotion's action/hit handoff to BattleChoreo arrived as agreed. Checks after the merge: validate_data,
   taskboard, lint, format, tools tests, Godot creature 14/0 and battle 527/0. m2-slice has been told the `model`
   lines can land now (the scenes are on the integration branch). The polish batch rides big8.
