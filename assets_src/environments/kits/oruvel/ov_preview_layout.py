@@ -13,6 +13,12 @@ Writes three files, all generated (edit this script, not them):
 * `oruvel_seventh_terrace_layout.json` (M3-ENV-08B): the *Seventh Terrace* (the Brightwater ferry kit's pieces,
   read-only from bf_terrace.py) moored and crewed at the outer mooring, its stage raft (this kit's) on her starboard
   side; a third dresser places it.
+* M3-ENV-07B: the storm. `oruvel_layout.json` gains "states" {"storm": {"hide", "pieces"}} (the broken pieces that
+  replace intact ones one for one, the debris, the reef drawn bare, a review row of the storm pieces), "rigs"
+  {"net_pen_split"} (the pen's three sections: hinge, open pose, swell; ov_storm.SPLIT_SECTIONS) and "storm_lights"
+  (Kell's beacon, lit in the drill). The scene's root is OruvelPreview (oruvel_preview.gd): `phase` &"ch01_storm"
+  shows the state, the stand-in storm frame (oruvel.md §0: lut_ch01_storm, the swell) and the Undertow on the
+  southern horizon; &"day" is HalunaMood's `ch01` untouched.
 
 The frame is the Underway's (oruvel_underway.md §0): x east, z south (north = -Z), the sea surface at y 0; the
 Underway's tether drops into the tower's crown at (-9.9, 5.2), and its `hull_keels` (the neighbour raft seen from
@@ -33,6 +39,7 @@ import ov_cabins as ocab  # noqa: E402
 import ov_heroes as oh  # noqa: E402
 import ov_hulls as ohl  # noqa: E402
 import ov_common as oc  # noqa: E402
+import ov_storm as ost  # noqa: E402
 from ov_common import kc  # noqa: E402
 
 sys.path.insert(0, str(HERE.parent / "brightwater_ferry"))
@@ -54,6 +61,17 @@ KIT_ROW_X0 = 70.0
 TERRACE = (-58.0, -bt.WATERLINE_Y, 8.0)
 TERRACE_PIECES = ("terrace_hull", "terrace_galley", "terrace_hold", "terrace_rig", "terrace_sails_furled",
                   "terrace_moored")
+
+# M3-ENV-07B, the storm state. The raft that breaks (row A's east raft, rc: its west strip tears away toward the bridge
+# from rb, which goes too), the second mooring's bridge (C1-13: "the bridge goes"), the cabin hull that capsizes, the
+# pen, and where the reef bares (the open sea south, O11; the Undertow stands up beyond it, approach azimuth 180).
+STORM_RAFT = (11.0, -13.0, -3.0)  # rc, as town() places it
+STORM_ROW_Z = 60.0  # the storm pieces' review row (O22), on the open water south of the kit row
+NET_PEN = (27.5, -11.5)
+REEFS = ((-40.0, 300.0, 6.0), (190.0, 330.0, -14.0), (-250.0, 320.0, 18.0))
+BEACON = (-38.5, -14.0 - 1.8)  # the chandlery's beacon lamp: its local z -1.8 on the roof (ov_heroes.build_chandlery)
+STORM_PHASE = "ch01_storm"
+STORM_FAR_M = 40000.0
 
 _rng = kc.rng_for("oruvel_preview_layout", 7)
 
@@ -242,9 +260,107 @@ def drowned() -> list[dict]:
     return out
 
 
+def spec_key(p: dict) -> dict:
+    """A "hide" entry: the piece and where it stands (CorrowPreview.find_pieces' match)."""
+    return {"piece": p["piece"], "at": p["at"], "y": p["y"]}
+
+
+def split_sections(amount: float = 1.0, t: float = 0.0) -> list[dict]:
+    """The net-pen's three sections posed by the rig (ov_storm.section_pose) at the pen (yaw 0)."""
+    out = []
+    for name in sorted(ost.SPLIT_SECTIONS):
+        o, sw = ost.SPLIT_SECTIONS[name]["open"], ost.SPLIT_SECTIONS[name]["swell"]
+        _basis, origin = ost.section_pose(name, amount, t)
+        swell = sw["pitch_deg"] * math.sin(2.0 * math.pi * t / sw["period_s"] + sw["phase"])
+        d = put(name, NET_PEN[0] + float(origin[0]), float(origin[1]), NET_PEN[1] + float(origin[2]),
+                amount * o["yaw_deg"])
+        d["tilt_deg"] = [round(amount * (o["tilt_deg"][0] + swell), 3), round(amount * o["tilt_deg"][1], 3)]
+        out.append(d)
+    return out
+
+
+def storm(day: list[dict]) -> dict:
+    """The storm state (C1-12 to C1-15): what it hides of the day's town and what it adds."""
+    def find(piece: str, x: float, z: float) -> dict:
+        return next(p for p in day if p["piece"] == piece and abs(p["at"][0] - x) < 0.05 and abs(p["at"][1] - z) < 0.05)
+
+    hide, pieces = [], []
+    # The pen splits three ways (Hullgnaw's phase 2), its sections at the rig's open pose.
+    hide.append(spec_key(find("net_pen", *NET_PEN)))
+    pieces += split_sections(1.0, 0.0)
+    # rc tears: the broken deck turned end for end, so its torn strip is the west one, toward rb; the patched cabin
+    # and its gull that stood there are gone, the bridge from rb with them.
+    rc = find("raft_deck", STORM_RAFT[0], STORM_RAFT[1])
+    hide.append(spec_key(rc))
+    pieces.append(put("raft_deck_broken", rc["at"][0], 0.0, rc["at"][1], rc["yaw_deg"] + 180.0))
+    cab = find("cabin_patched", *local(rc["at"][0], rc["at"][1], rc["yaw_deg"], -2.3, 0.6))
+    hide.append(spec_key(cab))
+    gx, gz = local(cab["at"][0], cab["at"][1], cab["yaw_deg"], -1.85, 0.0)
+    hide.append(spec_key(find("lintel_gull_open", gx, gz)))
+    for a, b, y in (((1.5, -12.6), (6.5, -12.8), ohl.RAFT_DECK_Y), ((-26.5, -13.6), (-21.0, -13.0), ohl.RAFT_DECK_Y)):
+        br = bridge(a, b, y)
+        hide.append(spec_key(find("plank_bridge", br["at"][0], br["at"][1])))
+        pieces.append(dict(br, piece="plank_bridge_broken"))
+    # The ochre cabin hull south-east of the landing is keel-up and awash.
+    hc = find("hull_cabin", 15.5, 6.5)
+    hide.append(spec_key(hc))
+    pieces.append(put("hull_capsized", 16.5, 0.0, 7.4, hc["yaw_deg"] + 22.0,
+                      materials={"ov_hull_paint": "ov_paint_ochre"}))
+    # The town coming apart on the water: off rc's torn side, between the pen and the landing, by the second mooring.
+    pieces += [put("storm_debris", 5.0, 0.0, -6.0, 35.0), put("storm_debris", 19.5, 0.0, -1.5, -70.0),
+               put("storm_debris", -24.0, 0.0, -7.0, 150.0)]
+    # The sea drawn back off the outer reef, the drowned towers' crowns standing clear (O11).
+    pieces += [put("reef_edge_far", x, 0.0, z, yaw, lod1_from_m=600.0) for x, z, yaw in REEFS]
+    # The review row (O22): every storm piece once, the pen's sections at rest (composing the pen) and open.
+    x0 = KIT_ROW_X0
+    pieces += [put("raft_deck_broken", x0, 0.0, STORM_ROW_Z, 0.0),
+               put("plank_bridge_broken", x0 + 9.0, ohl.RAFT_DECK_Y, STORM_ROW_Z - 3.0, 0.0),
+               put("hull_capsized", x0 + 15.0, 0.0, STORM_ROW_Z, 0.0),
+               put("storm_debris", x0 + 26.0, 0.0, STORM_ROW_Z, 0.0)]
+    for amount, dx in ((0.0, 42.0), (1.0, 60.0)):
+        for d in split_sections(amount):
+            pieces.append(dict(d, at=[round(d["at"][0] - NET_PEN[0] + x0 + dx, 3),
+                                      round(d["at"][1] - NET_PEN[1] + STORM_ROW_Z, 3)]))
+    return {"_about": "M3-ENV-07B: the storm variant (C1-12 to C1-15). `hide` names the day's placements the storm "
+                      "replaces; `pieces` are placed in their stead (HalunaDresser format). Shown by OruvelPreview's "
+                      "phase ch01_storm.",
+            "hide": hide, "pieces": pieces}
+
+
+def rigs() -> dict:
+    """The pen's split rig for Combat and m2-slice (ov_storm.SPLIT_SECTIONS, in world terms for this layout)."""
+    sections = []
+    for name in sorted(ost.SPLIT_SECTIONS):
+        s = ost.SPLIT_SECTIONS[name]
+        h = s["hinge"]
+        sections.append({"piece": name,
+                         "hinge": [round(NET_PEN[0] + h[0], 3), round(h[1], 3), round(NET_PEN[1] + h[2], 3)],
+                         "open": {"drift": list(s["open"]["drift"]), "yaw_deg": s["open"]["yaw_deg"],
+                                  "tilt_deg": list(s["open"]["tilt_deg"])},
+                         "swell": dict(s["swell"])})
+    return {"net_pen_split": {
+        "_about": "Hullgnaw's phase 2 (act1_ch01 section 5): amount a 0..1 (0 = the intact pen; the net_pen piece is "
+                  "hidden from a > 0), swell time t s. Each section: origin = hinge + a * drift; basis = "
+                  "Basis(UP, a * yaw_deg) * Basis.from_euler(a * (tilt_deg.x + swell), 0, a * tilt_deg.y), swell = "
+                  "pitch_deg * sin(TAU * t / period_s + phase). The state's pieces are the pose at a 1, t 0.",
+        "pen": {"piece": "net_pen", "at": list(NET_PEN), "y": 0.0}, "sections": sections}}
+
+
+def storm_lights() -> list[dict]:
+    """Kell's beacon (C1-12, still lit in O18): the oil flame in the chandlery's roof lantern. A zone light, never the
+    kit's (oruvel.md §3); light_volumetric_fog_energy 0 by the fog-lamp rule."""
+    L, B, D, sheer = oh.CHANDLERY_ROOF
+    eave = oh.CHANDLERY_DECK_Y + 2.22
+    ridge = oc.keel_roof_underside(0.0, BEACON[1] + 14.0, L, B, D, eave, sheer) + 0.12
+    return [{"id": "kell_beacon", "at": [BEACON[0], round(ridge + 1.2 + 0.27, 3), BEACON[1]], "color": "#FFB466",
+             "energy": 3.0, "range_m": 9.0, "flame_r_m": 0.07}]
+
+
 SHOT_NAMES = {"O01": "surfacing", "O02": "scale_hull", "O03": "town_loop", "O08": "keel_hull", "O09": "kell_stall",
               "O10": "lintel_gull", "O19": "dive_mooring", "O20": "kit_row", "O07": "name_board",
-              "O21": "seventh_terrace"}
+              "O21": "seventh_terrace", "O17": "pen_split", "O22": "storm_row"}
+# The views captured in the storm phase (M3-ENV-07B): O17 the composed one, O22 the review row.
+STORM_SHOTS = ("O17", "O22")
 SHOTS = {
     # id: eye, target, vFOV (deg), notes; dof (far distance, transition, blur) where the design wants it.
     "O01": {"eye": (-4.5, 0.45, 23.5), "look": (-3.0, 2.2, -20.0), "fov": 37.8},
@@ -261,6 +377,11 @@ SHOTS = {
     "O07": {"eye": tuple(terrace_world(bt.INSERT_EYE)), "look": tuple(terrace_world(bt.INSERT_TARGET)), "fov": bt.INSERT_FOV},
     "O21": {"eye": (TERRACE[0] + 17.0, 1.4, TERRACE[2] + 20.0), "look": (TERRACE[0] + 1.0, 3.6, TERRACE[2] - 1.0),
             "fov": 37.8},
+    # M3-ENV-07B, the storm: O17 the pen split three ways (Hullgnaw's phase 2) from its north-east corner, the broken
+    # raft and the drill's town beyond, the sea drawn bare off the reef and the wall standing up into a blue sky.
+    "O17": {"eye": (40.0, 5.0, -23.0), "look": (25.0, 1.4, -3.0), "fov": 46.4},
+    "O22": {"eye": (KIT_ROW_X0 + 38.0, 14.0, STORM_ROW_Z + 36.0), "look": (KIT_ROW_X0 + 38.0, 0.0, STORM_ROW_Z),
+            "fov": 53.1},
 }
 
 
@@ -280,9 +401,13 @@ def anchors() -> dict:
     }
 
 
+STORM_WAVES = (("Swell0", 0.0, 34.0, 0.16, 0.45, 0.0), ("Swell1", 22.0, 17.0, 0.08, 0.55, 1.7),
+               ("Swell2", 340.0, 7.5, 0.035, 0.6, 3.9), ("Chop0", 60.0, 2.6, 0.012, 0.5, 0.8))
+
+
 def tscn(shots: dict) -> str:
     lines = ['[gd_scene load_steps={steps} format=3]', '',
-             '[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_mood.gd" id="1_rig"]',
+             f'[ext_resource type="Script" path="{RES_DIR}oruvel_preview.gd" id="1_rig"]',
              '[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="2_tide"]',
              '[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_dresser.gd" id="3_dresser"]',
              '[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]',
@@ -291,7 +416,8 @@ def tscn(shots: dict) -> str:
              f'[ext_resource type="Material" path="{RES_DIR}oruvel_water_material.tres" id="7_water_mat"]',
              f'[ext_resource type="Environment" path="{RES_DIR}oruvel_ch01_environment.tres" id="8_env"]',
              '[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="9_cam"]',
-             '[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="10_shot"]', '']
+             '[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="10_shot"]',
+             f'[ext_resource type="Environment" path="{RES_DIR}oruvel_storm_environment.tres" id="11_storm_env"]', '']
     waves = [("Calm0", 210.0, 9.0, 0.012, 0.3, 0.0), ("Calm1", 250.0, 4.1, 0.006, 0.4, 2.1),
              ("Calm2", 180.0, 2.2, 0.003, 0.4, 4.0)]
     for wid, d, wl, amp, st, ph in waves:
@@ -299,6 +425,13 @@ def tscn(shots: dict) -> str:
                   f'wavelength_m = {wl}', f'amplitude_m = {amp}', f'steepness = {st}', f'phase_rad = {ph}', '']
     comps = ", ".join(f'SubResource("{w[0]}")' for w in waves)
     lines += ['[sub_resource type="Resource" id="CalmWaves"]', 'script = ExtResource("5_set")',
+              f'components = Array[ExtResource("6_comp")]([{comps}])', 'amplitude_scale = 1.0', '']
+    # M3-ENV-07B: the storm's first swell coming in from the sea (south), lifting the rafts (C1-13).
+    for wid, d, wl, amp, st, ph in STORM_WAVES:
+        lines += [f'[sub_resource type="Resource" id="{wid}"]', 'script = ExtResource("6_comp")', f'direction_deg = {d}',
+                  f'wavelength_m = {wl}', f'amplitude_m = {amp}', f'steepness = {st}', f'phase_rad = {ph}', '']
+    comps = ", ".join(f'SubResource("{w[0]}")' for w in STORM_WAVES)
+    lines += ['[sub_resource type="Resource" id="StormWaves"]', 'script = ExtResource("5_set")',
               f'components = Array[ExtResource("6_comp")]([{comps}])', 'amplitude_scale = 1.0', '']
     for sid, s in shots.items():
         e, t = s["eye"], s["look"]
@@ -311,9 +444,11 @@ def tscn(shots: dict) -> str:
                       f'dof_blur_amount = {fb:g}']
         lines.append('')
     lines += ['[node name="OruvelPreview" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water", '
-              '"world_environment", "dresser")]',
+              '"world_environment", "dresser", "seventh_terrace")]',
               'script = ExtResource("1_rig")', 'sun = NodePath("Sun")', 'tide = NodePath("Tide")', 'water = NodePath("Water")',
               'world_environment = NodePath("WorldEnvironment")', 'dresser = NodePath("Dresser")',
+              'storm_environment = ExtResource("11_storm_env")', 'storm_waves = SubResource("StormWaves")',
+              'seventh_terrace = NodePath("SeventhTerrace")',
               'sun_elevation_deg = 58.0', 'sun_azimuth_deg = 120.0', 'time_of_day_h = 10.5', 'wind_azimuth_deg = 225.0',
               'wind_speed_m_s = 5.0', 'wind_gust = 0.3', 'water_height_m = 0.0', '',
               '[node name="WorldEnvironment" type="WorldEnvironment" parent="."]', 'environment = ExtResource("8_env")', '',
@@ -338,9 +473,10 @@ def tscn(shots: dict) -> str:
               'tide = NodePath("../Tide")', '',
               '[node name="Cameras" type="Node3D" parent="."]', '']
     for sid in shots:
-        lines += [f'[node name="{sid}" type="Camera3D" parent="Cameras"]', 'near = 0.05', 'far = 6000.0',
+        far = STORM_FAR_M if sid in STORM_SHOTS else 6000.0  # the storm views reach the Undertow, 18 km out
+        lines += [f'[node name="{sid}" type="Camera3D" parent="Cameras"]', 'near = 0.05', f'far = {far:.1f}',
                   'script = ExtResource("9_cam")', f'shot = SubResource("Shot{sid}")', '']
-    steps = 1 + 10 + len(waves) + 1 + len(shots)
+    steps = 1 + 11 + len(waves) + 1 + len(STORM_WAVES) + 1 + len(shots)
     return "\n".join(lines).rstrip("\n").replace("{steps}", str(steps)) + "\n"
 
 
@@ -348,10 +484,11 @@ def manifest() -> dict:
     """The capture manifest for every preview view (only the ones in tests/screenshots/shots.json are baselines)."""
     shots = []
     for sid, name in SHOT_NAMES.items():
+        setup = {"globals": {"hymn_wind_time": 40.0}, "viewport": {"use_taa": False, "screen_space_aa": 1}}
+        if sid in STORM_SHOTS:
+            setup["nodes"] = {".": {"phase": STORM_PHASE}}
         shots.append({"id": f"oruvel_{sid.lower()}_{name}", "scene": RES_DIR + "oruvel_preview.tscn",
-                      "camera": f"Cameras/{sid}", "resolution": [960, 540], "settle_frames": 24,
-                      "setup": {"globals": {"hymn_wind_time": 40.0},
-                                "viewport": {"use_taa": False, "screen_space_aa": 1}}})
+                      "camera": f"Cameras/{sid}", "resolution": [960, 540], "settle_frames": 24, "setup": setup})
     return {"doc": "M3-ENV-07 Oruvel raft-town preview views (docs/kb/art/environments/oruvel.md section 4). Generated "
                    "by assets_src/environments/kits/oruvel/ov_preview_layout.py. Only the views named in "
                    "tests/screenshots/shots.json are registered baselines; capture the rest with --manifest.",
@@ -385,7 +522,7 @@ def main() -> int:
         "Oruvel Underway's frame (x east, z south, north = -Z, the sea surface at y 0); every piece carries its own y "
         "(no terrain). The dive raft's well is over the Underway's tether at (-9.9, 5.2); the neighbour raft at "
         "(-3, 11) is the Underway's hull_keels. The kit row (O20) is on the open water east of the town (x 70+).",
-        shots=shots, anchors=anchors())
+        shots=shots, anchors=anchors(), states={"storm": storm(pieces)}, rigs=rigs(), storm_lights=storm_lights())
     (OUT_DIR / "oruvel_layout.json").write_text(json.dumps(main_layout, indent=1) + "\n", encoding="utf-8")
     crown = drowned()
     drowned_layout = layout(
