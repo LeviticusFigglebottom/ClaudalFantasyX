@@ -118,6 +118,15 @@
       "file": "res://assets/audio/music/pilgrims_wake.ogg",
       "resume": true,
       "_note": "Ch4, Asha's living funeral at Haluna by night (M3-AUD-10); for the feast scene, no zone row until it exists"
+    },
+    "tamsule": {
+      "file": "res://assets/audio/music/tamsule.ogg",
+      "resume": true,
+      "_note": "Ch7, Tamsule port, the town of the Tamsule Bell (M3-AUD-12); no zone row until ch07/tamsule exists"
+    },
+    "iskarra_vigil": {
+      "file": "res://assets/audio/music/iskarra_vigil.ogg",
+      "_note": "the Act I break at the end of Ch9 (M3-AUD-12): a through-composed bed under Rhen's voice-over at the Iskarra vigil; the 300 Hz-3 kHz band is left clear for the voice"
     }
   },
   "zones": [
