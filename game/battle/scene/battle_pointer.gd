@@ -26,6 +26,16 @@ static func candidate_at(ctl: BattleController, event: InputEvent) -> int:
 	return best
 
 
+## Aims the pick at the candidate under the pointer (candidate_at): when it is not `current`, calls
+## `cycle` with the step from `current` to it. Returns the candidate's index, or -1. Kept here so
+## BattleController stays under gdlint's line cap.
+static func aim(ctl: BattleController, event: InputEvent, current: int, cycle: Callable) -> int:
+	var hit := candidate_at(ctl, event)
+	if hit >= 0 and hit != current:
+		cycle.call(hit - current)
+	return hit
+
+
 ## True for a left mouse button press.
 static func is_click(event: InputEvent) -> bool:
 	var mb := event as InputEventMouseButton

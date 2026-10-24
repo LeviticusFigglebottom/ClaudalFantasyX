@@ -680,9 +680,7 @@ func _begin_swap_out() -> void:
 
 
 func _handle_pick_input(event: InputEvent) -> bool:
-	var hit := BattlePointer.candidate_at(self, event)  # M2-UI-26: hovering a fighter or its row aims at it
-	if hit >= 0 and hit != _target_index:
-		_cycle_target(hit - _target_index)
+	var hit := BattlePointer.aim(self, event, _target_index, _cycle_target)  # M2-UI-26: hover aims
 	if event.is_action_pressed(&"ui_left", true) or event.is_action_pressed(&"ui_up", true):
 		_cycle_target(-1)
 	elif event.is_action_pressed(&"ui_right", true) or event.is_action_pressed(&"ui_down", true):
@@ -983,8 +981,7 @@ func _live_items() -> BattleItemSource:
 # --- capture scripts (deterministic; see tests/screenshots/shots.json) ---------------------
 
 
-## Plays the `scripted_state` fixture to its capture state (BattleCaptureScript). Public so tests
-## can drive it.
+## Plays the `scripted_state` fixture to its capture state (BattleCaptureScript). Public so tests can drive it.
 func run_script(state_id: StringName = &"") -> void:
 	var sid := state_id if state_id != &"" else scripted_state
 	var fx := BattleFixture.load_fixture(sid)
