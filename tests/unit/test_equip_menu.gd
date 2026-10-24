@@ -75,11 +75,12 @@ func test_gear_rows_show_each_slot_and_its_ability_slots() -> void:
 func test_piece_rows_mark_the_worn_one_and_end_with_take_it_off() -> void:
 	var spare := sheet.goods.equipment.add_piece(&"rhen_coral_hooks")
 	var rows := model.piece_rows(&"rhen", ItemDB.SLOT_WEAPON)
-	assert_eq(rows.size(), 3, "salvage hooks, coral hooks, take it off")
+	assert_eq(rows.size(), 4, "salvage hooks, coral hooks, its Customize, take it off")
 	assert_eq(rows[0]["right"], tr("EQUIP_MENU_WORN"))
 	assert_eq(rows[1]["uid"], spare)
 	assert_eq(rows[1]["right"], "")
-	assert_eq(rows[2]["kind"], EquipMenuModel.KIND_REMOVE)
+	assert_eq(rows[2]["kind"], EquipMenuModel.KIND_CUSTOMIZE, "a spare with an empty slot offers Customize")
+	assert_eq(rows[3]["kind"], EquipMenuModel.KIND_REMOVE)
 	_done()
 
 
@@ -361,6 +362,92 @@ func test_a_short_recipe_is_refused_in_red() -> void:
 	assert_eq(bag.slots_of(hooks)[1], &"")
 	assert_eq(menu.changes_lines()[0], model.recipe_parts(&"tide_edge")[0]["text"])
 	_done()
+
+
+func test_customize_rows_are_offered_under_spares_with_an_empty_slot_only() -> void:
+	var bag := sheet.goods.equipment
+	var spare := bag.add_piece(&"rhen_coral_hooks")
+	var full := bag.add_piece(&"rhen_coral_hooks")
+	bag.set_slot(full, 1, &"tide_edge")
+	var rows := model.piece_rows(&"rhen", ItemDB.SLOT_WEAPON)
+	var custom: Array[int] = []
+	for r in rows:
+		if r["kind"] == EquipMenuModel.KIND_CUSTOMIZE:
+			custom.append(int(r["uid"]))
+	assert_eq(custom, [spare] as Array[int], "not the worn hooks (GEAR has them), not a full spare")
+	var row := model.customize_row(spare)
+	assert_eq(row["index"], 1, "its first empty slot")
+	assert_eq(row["label"], tr("EQUIP_MENU_CUSTOMIZE_ROW"))
+	assert_eq(row["right"], tr("EQUIP_MENU_EMPTY_COUNT_FMT").format({"n": 1}))
+	assert_eq(
+		model.customize_desc(spare),
+		tr("EQUIP_MENU_CUSTOMIZE_ROW_DESC_FMT").format({"piece": tr("EQUIP_RHEN_CORAL_HOOKS")})
+	)
+	assert_eq(model.recipe_rows(spare, 1)[0]["ability"], &"tide_edge", "the same candidates as a worn piece")
+	var preview := model.preview_craft(&"rhen", spare, 1, &"tide_edge")
+	assert_eq(preview["gained"], [&"tide_edge"] as Array[StringName], "the spare gains it")
+	assert_eq(_delta(preview, &"strength"), 0, "unworn: the hero's stats do not move")
+	assert_false(model.recipe_line(spare, 1, &"tide_edge")["ok"], "short: refused in words")
+	_done()
+
+
+func test_keys_customize_a_spare_from_the_pieces_and_come_back_there() -> void:
+	var bag := sheet.goods.equipment
+	var spare := bag.add_piece(&"rhen_coral_hooks")
+	sheet.goods.inventory.add(&"tide_pearl", 4)
+	_open()
+	menu.accept()  # Rhen's gear
+	menu.accept()  # the weapons
+	menu.handle_input(_ev(&"ui_down"))  # the spare hooks
+	menu.handle_input(_ev(&"ui_down"))  # its Customize
+	assert_eq(menu.choice_page().current_row()["kind"], EquipMenuModel.KIND_CUSTOMIZE)
+	assert_eq(menu.desc_text(), model.customize_desc(spare))
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_eq(menu.level, EquipMenu.Level.RECIPES)
+	assert_eq(menu.recipes_from, EquipMenu.Level.PIECES)
+	assert_eq(menu.piece_uid, spare)
+	menu.handle_input(_ev(&"ui_cancel"))
+	assert_eq(menu.level, EquipMenu.Level.PIECES, "Cancel goes back to the pieces")
+	assert_eq(menu.choice_page().current_row()["uid"], spare, "on the spare")
+	menu.handle_input(_ev(&"ui_down"))
+	menu.handle_input(_ev(&"ui_accept"))
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_eq(menu.status_text(), model.craft_confirm_text(spare, &"tide_edge"), "asks first, as for worn gear")
+	assert_eq(bag.slots_of(spare)[1], &"")
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_eq(bag.slots_of(spare)[1], &"tide_edge", "crafted into the spare")
+	assert_eq(bag.wearer_of(spare), &"", "still a spare")
+	assert_eq(menu.level, EquipMenu.Level.PIECES, "back to the pieces")
+	assert_eq(menu.choice_page().current_row()["uid"], spare)
+	var crafted := tr("EQUIP_MENU_CRAFTED_FMT").format(
+		{"ability": tr("ABILITY_TIDE_EDGE"), "piece": tr("EQUIP_RHEN_CORAL_HOOKS")}
+	)
+	assert_eq(menu.status_text(), crafted, "the receipt")
+	for r in menu.choice_page().rows:
+		assert_ne(r["kind"], EquipMenuModel.KIND_CUSTOMIZE, "no empty slot left: no Customize row")
+	_done()
+
+
+func test_a_click_on_a_spares_customize_row_opens_its_recipes() -> void:
+	var spare := sheet.goods.equipment.add_piece(&"rhen_coral_hooks")
+	_open()
+	menu.accept()
+	menu.accept()
+	var at := _row_of(menu.choice_page(), StringName("customize:%d" % spare))
+	assert_true(at >= 0)
+	menu.choice_page()._on_row_input(_click(), at)
+	assert_eq(menu.level, EquipMenu.Level.RECIPES)
+	assert_eq(menu.piece_uid, spare)
+	assert_true(menu.status_is_refusal() or menu.status_text() == "", "nothing crafted on one click")
+	assert_eq(sheet.goods.equipment.slots_of(spare)[1], &"")
+	_done()
+
+
+func _row_of(page: MenuPage, id: StringName) -> int:
+	for i in page.row_count():
+		if page.rows[i]["id"] == id:
+			return i
+	return -1
 
 
 func test_mouse_clicks_choose_a_hero_a_slot_and_a_piece() -> void:
