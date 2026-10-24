@@ -2,8 +2,8 @@
 id: M1-CHR-14
 title: "TOP PRIORITY: Asha's braid is detached from her head; clothing and staff clip through her; limbs look detached in some frames"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
 depends_on: []
 milestone: M1
 request-from: "lead"

@@ -4,15 +4,26 @@
 `claude/characters` (cut from `claude/undertow-lead-handoff-423ixt` at 952ef7c). The Lead reads it hourly.
 
 ## Now
-- **The queue is dry except two follow-ups:** Toma's clips (a `toma` persona in hero_clips.py) and M1-CHR-12 fault A
-  (once M1-RND-24 merges). **Send more work.**
-- **M1-CHR-12 is ready for the PC's GPU re-check (M1-QA-09).**
+- **Blocker cleared (d523d43):** Toma's mouth/teeth/tongue are on `character_mouth`; the integration branch is merged;
+  `--filter=character_shading` 17/17, hero_stage 6/6, post_import 19/19; `verify --job toma` 38 identical. Ready to merge.
+  (send_message to the Lead was refused: "needs a trusted device", so this log is the channel.)
+- **M1-CHR-14 (top priority) is in progress:** braid attachment, clothing and staff clipping, limb seams, and automated guards.
 
 ## Queue
 1. ~~M2-CHR-01 Rhen~~ (review) → 2. ~~M2-CHR-02 Toma~~ (review) → 3. ~~M2-FP-07 clips~~ (review) → 4. ~~M1-CHR-12~~ (review;
    fault A after RND-24) → 5. ~~M1-ART-06~~ (review).
 
 ## Done
+- **M1-CHR-13 → review:** the costume normals and winding fix (`asha_costume._outward` / `_panel`), all three heroes rebuilt
+  (asha 44 / rhen 31 / toma 38 identical); drift viewed and re-approved, RMSE listed in the task file.
+- **M1-RND-25 → review:** the lips' inner roll is on the mouth family (by facing), for every hero; the grief rim is softened.
+- **M2-CHR-04 Toma follow-ups → review** (worktree subagent, merged and rebuilt): hair and beard, sash tails, reinforced
+  sandals, 11 rig-extra bones, 10 clips. Re-approved toma_* after viewing.
+- **M2-CHR-05 smile variant → review:** `variants.duchenne_open` in asha_face_poses.json, plus the `asha_smile_variant_compare`
+  shot, for the human with ADR 0019.
+- **M2-CHR-06 battle-scale heroes → review:** `game/characters/heroes/{asha,rhen,toma}_battle.tscn` (LOD1 + clips via the
+  import rule). **Hook: M2-UI-07** (UI+Combat: FighterStandIn instances a `"scene"` spec).
+- M2-CHR-03 Haluna villagers: a worktree subagent is still building them.
 - **M2-CHR-02 Toma → review** (reviewer: rendering). Built by a worktree subagent, merged at this branch's Toma merge
   commit, then rebuilt for CHR-12's shared modules. 58,168 LOD0 tris (budget 66,000), `toma.glb` 4.86 MB (near the cap:
   each beard vertex carries all 40 morph targets), 16 textures; costume atlas 2K, not toma.md's 4K (5 MB cap).
