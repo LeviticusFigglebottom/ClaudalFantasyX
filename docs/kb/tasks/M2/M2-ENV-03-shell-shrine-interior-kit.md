@@ -5,7 +5,7 @@ role: environment
 status: review
 owner_session: "m2-slice subagent (M2-ENV-03)"
 depends_on: [M2-FP-16]
-reviewer: rendering
+reviewer: art (env-art compares kits), rendering
 milestone: M2
 request-from: cinematics
 ---
@@ -26,5 +26,11 @@ Request from the m2-slice track. The Shell Shrine trial (M2-FP-16) plays in a gr
 - **Gates**: gdlint and gdformat clean; validate_data 0/0; taskboard --check OK; tools unittest 503 OK; `verify_blender_builds --job haluna_kit` 50 identical; Godot `--filter=shell_shrine` 13/13, `--filter=fp_` 22/22, `--filter=environment_shaders` 11/11; the full Godot suite 1448/1448; the five new shots approved, and a second capture matches them at RMSE 0.00000.
 - **Costs**: about 8.5 MB of new `.glb` (the floor 2.4 MB, roof 1.4 MB, vault 1.2 MB; each under 5 MB) and about 2.9 MB of new baselines.
 - **Not met / gaps (honest)**: no bend or T-junction channel modules (the runs are straight and meet at the basins). No reflection probes at the basins. Ilun's chamber isn't built (the door leads to a dark passage stub). Channels have no collision (no step-up in the controller, as in the greybox). The S02 shaft is faint on lavapipe at density 0.02. The leaf-boats don't read at S01's distance. VoxelGI shows some blotching on the vault, so its energy is low (0.3).
+
+- **2026-10-24 m2-slice, the Lead's decision:**
+  - **Merged here:** the kit pieces, shaders, materials and PROVENANCE rows, as commit f38edea, "M2-ENV-03 (m2-slice kit, for env-art review)". Every file is under 5 MB and every asset has a PROVENANCE row; `verify_blender_builds.py --job haluna_kit` checks the rebuild.
+  - **Reverted on purpose: the level side** (the 98e65e4 dressing and the 3313bac S01–S05 shots and baselines). The shrine level stays on its greybox until env-art has compared this kit with its own and the Lead names which to swap in.
+  - **To swap this kit in:** `git revert` the revert commit (the one after f38edea). That brings back `ShellShrineLevel`'s room build, `shell_shrine_dressing.tscn`, the `room` JSON block and the five shots.
+  - The notes above describe the full branch, including the level side.
 
 ## Review log

@@ -3,15 +3,10 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
-- **M2-ENV-03 (the Shell Shrine kit), finished by a subagent and NOT pushed.** It is 4 commits on top of e7e9081 (4ce6658, 98e65e4, 3313bac, d3ecbef), in the local worktree branch `worktree-agent-a6f17b31f493a3911`. That's 78 files, including about 8.5 MB of new `.glb` files and 5 shot baselines.
-  - **What it is:** 19 kit pieces and the nacre/spill shaders; the trial dressed with the kit; flowmap water; VoxelGI baked per door state; shots S01–S05.
-  - **Gates:** all green (full suite 1448/0; the haluna_kit Blender job rebuilds byte-identically).
-  - **Gaps:**
-    - no bend or T-junction channel pieces, and no reflection probes at the basins;
-    - Ilun's chamber is a stub;
-    - channels have no collision;
-    - the new materials aren't on the prewarm list.
-  - **Why it's held:** it isn't on `claude/m2-slice` because the kit belongs to env-art, and this session may push only `claude/m2-slice` unless the human allows another branch. **Lead/human:** say where it should go, a `m2-slice/env03-wip` branch or straight to env-art, before this container is reclaimed. Until then it exists only in this container.
+- **M2-ENV-03 kit merged as the Lead decided (11:00):**
+  - **What landed:** f38edea, "M2-ENV-03 (m2-slice kit, for env-art review)": 19 pieces, the nacre and spill shaders, and PROVENANCE rows. Every file is under 5 MB.
+  - **Held back:** the next commit reverts the level side (the dressing and shots S01–S05), so the shrine stays on its greybox.
+  - **For env-art:** compare it with your kit. To swap this one in, revert that revert commit. Details are in the task file.
 - **Done, in review (architect): M2-ARC-04, the release blocker routed by the Lead at 09:27.**
   - Moved out of `game/levels/_tests/`: `lagoon_waves.tres` → `game/world/water/`, VegetationPlant and VegetationScatter → `game/world/vegetation/`, and `asha_face_poses.json` → `game/data/cutscene/`. Every res:// user is updated; the `_tests` scenes stay as wrappers; owners are recorded in ownership.md.
   - New guard: `tools/tests/test_release_excludes_tests.py` fails if a shipped file names a `_tests` path or uses a `_tests` class_name. The allowlist has two entries, each with its reason.
