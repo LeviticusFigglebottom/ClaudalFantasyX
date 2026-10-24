@@ -10,6 +10,8 @@ const ARENAS: Array[StringName] = [
 	&"causeway_route_afternoon",
 	&"derelict_deck_night",
 	&"ash_terrace_lanternfall",
+	&"underway_tower",
+	&"oruvel_raft_morning",
 ]
 ## The clear floor (arenas.py FLOOR_Y / FLOOR_TOLERANCE_M / FLOOR_CLEAR_M): within this radius of a slot,
 ## nothing rises above the floor by more than the tolerance, and most of the ground is the floor itself
@@ -19,7 +21,9 @@ const FLOOR_TOLERANCE_M := 0.05
 const FLOOR_CLEAR_M := 1.0
 const FLOOR_RING_RAYS := 8
 const FLOOR_MIN_SHARE := 0.7
-const RAY_FROM_M := 30.0
+## The floor rays start at the fighters' head-room: a ceiling above it (the drowned tower's gallery, M3-ENV-06
+## `underway_tower`, 6 m clear) is not on the floor. Open-air arenas have nothing between this and the floor anyway.
+const RAY_FROM_M := 5.5
 ## A fighter's chest, for the camera's line of sight (the stand-ins are 0.6-2.4 m tall).
 const CHEST_M := 0.9
 
@@ -166,6 +170,52 @@ func test_a_grounded_scatter_sits_on_its_ground() -> void:
 	scatter.rebuild()
 	assert_eq(scatter.placed.size(), 0, "out of the height range: skipped")
 	root.free()
+
+
+## M3-ENV-06 `underway_tower`: the arena carries its own underwater look on its Sea, Rhen's lantern target, and held
+## motes at their own energy (a day battle keeps the hymn_glimmer gate shut).
+func test_the_underwater_arena_carries_its_rig_lantern_and_held_motes() -> void:
+	var arena := _instance(&"underway_tower") as BattleArenaRoot
+	var rig := arena.get_node_or_null(^"Underwater") as ArenaUnderwater
+	assert_true(rig != null, "an ArenaUnderwater")
+	if rig != null:
+		assert_eq(rig.water, arena.sea(), "the rig's water is the arena's Sea")
+		assert_eq(rig.lantern_target, arena.get_node_or_null(^"Lantern"), "Rhen's lantern target")
+		assert_between(rig.light_scale, 0.05, 0.99, "the gallery scales the in-scatter down")
+		assert_true(arena.sea().position.y > 20.0, "the surface is 22 m over the gallery's floor")
+	var motes := arena.get_node_or_null(^"HeldMotes") as GlimmerField
+	assert_true(motes != null, "held motes")
+	if motes != null:
+		assert_eq(motes.mode, GlimmerState.Mode.HELD)
+		assert_false(motes.follow_scene_intensity, "their own energy, not the day's shut gate")
+	arena.free()
+
+
+## ArenaUnderwater scales the rig's in-scatter light level (the stand-in for M3-RND-24's per-area scale) without
+## touching the rig's shared data cache.
+func test_arena_underwater_scales_the_light_level() -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var host := Node3D.new()
+	var env := WorldEnvironment.new()
+	env.environment = Environment.new()
+	host.add_child(env)
+	var sun := DirectionalLight3D.new()
+	sun.light_energy = 3.0
+	host.add_child(sun)
+	var water := WaterSurface.new()
+	host.add_child(water)
+	var plain := UnderwaterRig.new()
+	plain.water = water
+	host.add_child(plain)
+	var scaled := ArenaUnderwater.new()
+	scaled.water = water
+	scaled.light_scale = 0.33
+	host.add_child(scaled)
+	tree.current_scene.add_child(host)
+	var reference := float((UnderwaterRig.load_data()["optics"] as Dictionary)["light_reference"])
+	assert_between(scaled.light_level(), plain.light_level() * 0.33 - 1e-4, plain.light_level() * 0.33 + 1e-4)
+	assert_eq(float((UnderwaterRig.load_data()["optics"] as Dictionary)["light_reference"]), reference, "cache intact")
+	host.free()
 
 
 func _instance(id: StringName) -> Node:

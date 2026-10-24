@@ -8,11 +8,15 @@
 * M3-ENV-06: the three Act I arena grounds (the route's flats in the Haluna kit, the derelict's deck in the
   Brine Shoals kit, the Lanternfall tread in the Pemakar kit) are flat under every slot; the night grades lift
   the black point to night_sky and keep the lamp oranges; the night arenas keep colour script rule 3.
+* M3-ENV-06 (the Ch1 pair): the raft deck (Haluna kit) and the Underway gallery's F9 slabs (the Oruvel Underway
+  kit's floor_slab where the arena places them) are flat under every slot; structure (walls, piers) keeps 2 m off
+  the slots, props 4 m; the downwelling tint takes red first; lut_ch01_raft lifts the cyans and oranges only.
 """
 
 from __future__ import annotations
 
 import colorsys
+import json
 import importlib.util
 import sys
 import tempfile
@@ -81,9 +85,10 @@ class ArenaFloorTests(unittest.TestCase):
                 share = np.mean(np.abs(ys - ARENAS.FLOOR_Y) <= ARENAS.FLOOR_TOLERANCE_M)
                 self.assertGreaterEqual(share, 0.6)
 
-    def _assert_floor_by_rays(self, builder) -> None:
+    def _assert_floor_by_rays(self, builder, *, open_seams: bool = False) -> None:
         """As the Godot test does it: the highest surface straight down at the slot and on two rings round it
-        (a mesh of long planks has no vertices near most slots)."""
+        (a mesh of long planks has no vertices near most slots). `open_seams`: a ray may fall through a plank seam
+        into the sea (a raft has no hold under its deck), as the Godot test allows; most rays still hit."""
         pos = np.asarray(builder.pos, float)
         tri = pos[np.asarray(builder.tris, dtype=np.int64)]
         for x, z in ARENAS.SLOTS_XZ:
@@ -91,7 +96,10 @@ class ArenaFloorTests(unittest.TestCase):
                               for a in np.linspace(0.0, 2.0 * np.pi, 8, endpoint=False)]
             tops = [t for t in (_top_at(tri, px, pz) for px, pz in pts) if t is not None]
             with self.subTest(slot=(x, z)):
-                self.assertEqual(len(tops), len(pts), "ground everywhere round the slot")
+                if open_seams:
+                    self.assertGreaterEqual(len(tops), 0.7 * len(pts), "deck round the slot")
+                else:
+                    self.assertEqual(len(tops), len(pts), "ground everywhere round the slot")
                 self.assertLessEqual(max(tops), ARENAS.FLOOR_Y + ARENAS.FLOOR_TOLERANCE_M, "nothing pokes up")
                 share = np.mean(np.abs(np.asarray(tops) - ARENAS.FLOOR_Y) <= ARENAS.FLOOR_TOLERANCE_M)
                 self.assertGreaterEqual(share, 0.7)
@@ -124,6 +132,32 @@ class ArenaFloorTests(unittest.TestCase):
         for x, z in ARENAS.SLOTS_XZ:
             self.assertLess(float(tread.back_z(x)), z - ARENAS.FLOOR_CLEAR_M - 0.5)
 
+    def test_raft_deck_is_flat_under_every_slot(self) -> None:
+        self._assert_floor_by_rays(ARENAS.build_raft_deck()[0], open_seams=True)
+
+    def test_underway_gallery_floor_is_flat_under_every_slot(self) -> None:
+        # The gallery's floor is the kit's own F9 slabs where the arena places them (rows tagged "floor").
+        scenes = _load("arena_scenes")
+        tower = _load_kit("oruvel_underway", "ou_tower")
+        slab = tower.build_slab()[0]
+        pos = np.asarray(slab.pos, float)
+        tris = np.asarray(slab.tris, dtype=np.int64)
+        floors = [r for r in scenes.UNDERWAY_TOWER["pieces"] if isinstance(r, dict) and r.get("floor")]
+        self.assertGreaterEqual(len(floors), 6)
+        parts = []
+        for r in floors:
+            a = np.radians(r["yaw"])
+            rot = np.array([[np.cos(a), 0.0, np.sin(a)], [0.0, 1.0, 0.0], [-np.sin(a), 0.0, np.cos(a)]])
+            parts.append((pos @ rot.T + np.asarray(r["at"], float))[tris])
+        tri = np.concatenate(parts)
+
+        class _Tris:  # the shape _assert_floor_by_rays reads
+            def __init__(self, t):
+                self.pos = t.reshape(-1, 3)
+                self.tris = np.arange(len(self.pos)).reshape(-1, 3)
+
+        self._assert_floor_by_rays(_Tris(tri))
+
     def test_route_slabs_keep_off_the_floor(self) -> None:
         # The causeway's line passes the fight beyond the floor's clear radius (pieces test below checks each slab).
         pts = np.asarray(ARENAS.ROUTE_PATH, float)
@@ -132,7 +166,7 @@ class ArenaFloorTests(unittest.TestCase):
             self.assertGreater(d, 4.5)
 
     def test_generators_are_deterministic(self) -> None:
-        for name in ("arena_causeway_arms", "causeway_disc", "arena_causeway_route_ground"):
+        for name in ("arena_causeway_arms", "causeway_disc", "arena_causeway_route_ground", "arena_raft_deck"):
             with self.subTest(target=name):
                 a, b = ARENAS.TARGETS[name](), ARENAS.TARGETS[name]()
                 for x, y in zip(a, b):
@@ -154,15 +188,18 @@ class ArenaSceneTests(unittest.TestCase):
         scenes = _load("arena_scenes")
         for aid, arena in scenes.ARENAS.items():
             for row in arena["pieces"]:
+                clear = 4.0
                 if isinstance(row, dict):  # an explicit placement: only those standing on the floor count
                     glb, (x, y, z) = row["glb"], row["at"]
-                    if abs(y - ARENAS.FLOOR_Y) > 0.5:
-                        continue
+                    if abs(y - ARENAS.FLOOR_Y) > 0.5 or row.get("floor", False):
+                        continue  # (the floor's own tiles: the Underway's F9 slabs, checked above)
+                    if row.get("structure", False):
+                        clear = ARENAS.FLOOR_CLEAR_M + 1.0  # a building's wall or pier round the floor
                 else:
                     glb, x, z = row[:3]
                 for sx, sz in ARENAS.SLOTS_XZ:
                     with self.subTest(arena=aid, piece=Path(glb).stem, at=(x, z)):
-                        self.assertGreater(np.hypot(x - sx, z - sz), 4.0)
+                        self.assertGreater(np.hypot(x - sx, z - sz), clear)
 
 
     def test_night_arenas_keep_rule_three(self) -> None:
@@ -178,6 +215,17 @@ class ArenaSceneTests(unittest.TestCase):
                 self.assertTrue(arena["lamps"], "practical-keyed: the lamps are the key")
         self.assertTrue(scenes.ARENAS["derelict_deck_night"]["sun"]["moon"])
 
+    def test_ch1_arena_lights_keep_out_of_the_volumetric_fog(self) -> None:
+        # The Lead's rule (dense FogVolumes: the rig's god rays): every OmniLight3D/SpotLight3D in the two Ch1 arenas
+        # sets light_volumetric_fog_energy = 0 (the rig's own lantern takes 0 from underwater.json).
+        for aid in ("oruvel_raft_morning", "underway_tower"):
+            text = (ROOT / "assets" / "environments" / "arenas" / aid / f"{aid}.tscn").read_text(encoding="utf-8")
+            for block in text.split("\n\n"):
+                if 'type="OmniLight3D"' in block or 'type="SpotLight3D"' in block:
+                    with self.subTest(arena=aid, light=block.splitlines()[0]):
+                        self.assertIn("light_volumetric_fog_energy = 0", block)
+        self.assertEqual(json.loads((ROOT / "game/data/vfx/underwater.json").read_text())["lantern"]["fog_energy"], 0.0)
+
     def test_lamps_and_flames_keep_off_the_floor_and_the_view(self) -> None:
         # A lamp's flame is a mesh: none within the clear floor, none low between the camera and the fighters.
         scenes = _load("arena_scenes")
@@ -187,6 +235,27 @@ class ArenaSceneTests(unittest.TestCase):
                 for sx, sz in ARENAS.SLOTS_XZ:
                     with self.subTest(arena=aid, lamp=(x, y, z)):
                         self.assertGreater(np.hypot(x - sx, z - sz), ARENAS.FLOOR_CLEAR_M + 1.0)
+
+
+class UnderwayTests(unittest.TestCase):
+    def test_downwelling_takes_red_first(self) -> None:
+        scenes = _load("arena_scenes")
+        key = scenes.water_tinted(scenes.CH01_KEY, scenes.UW_DEPTH_M)
+        r, g, b = (int(key[i:i + 2], 16) for i in (1, 3, 5))
+        self.assertLess(r, g)
+        self.assertLess(r, b)
+        self.assertEqual(scenes.water_tinted(scenes.CH01_KEY, 0.0), scenes.CH01_KEY)
+        self.assertEqual(scenes.UNDERWAY_TOWER["sun"]["color"], key)
+
+    def test_the_rig_sits_on_the_arena_sea_and_the_gallery_keeps_its_far_columns(self) -> None:
+        scenes = _load("arena_scenes")
+        uw = scenes.UNDERWAY_TOWER
+        self.assertGreater(uw["sea"]["y"], 20.0, "the gallery is 22 m down")
+        self.assertLess(uw["underwater"]["light_scale"], 1.0, "the in-scatter is scaled down indoors")
+        columns = [r for r in uw["pieces"] if Path(r["glb"]).stem == "lamp_column" and abs(r["at"][1]) < 0.01]
+        self.assertGreaterEqual(len(columns), 4)
+        dropped = {Path(r["glb"]).stem for r in scenes.UW_DROPPED}
+        self.assertIn("lamp_column", dropped, "the fight's bay has lost its columns")
 
 
 class ZoneLutTests(unittest.TestCase):
@@ -211,6 +280,22 @@ class ZoneLutTests(unittest.TestCase):
                 g_sat = colorsys.rgb_to_hsv(*lut.grade(grey, g)[0])[1]
                 self.assertGreater(f_sat, colorsys.rgb_to_hsv(*flame[0])[1] * 0.95, "the lamp pools stay saturated")
                 self.assertLess(g_sat, 0.2, "stone stays near neutral")
+
+    def test_ch01_raft_lifts_the_cyans_and_oranges_only(self) -> None:
+        lut = _load("zone_lut")
+        g = lut.GRADES["ch01_raft"]
+        plain = dict(g)
+        del plain["band_sat"]
+        cols = np.array([colorsys.hsv_to_rgb(h / 360.0, 0.5, 0.7) for h in (30.0, 188.0, 110.0, 270.0)])
+        cols = np.vstack([cols, [[0.5, 0.5, 0.5]]])
+        a, b = lut.grade(cols, g), lut.grade(cols, plain)
+        sat = [colorsys.rgb_to_hsv(*c)[1] for c in a]
+        sat0 = [colorsys.rgb_to_hsv(*c)[1] for c in b]
+        self.assertGreater(sat[0], sat0[0] * 1.03, "orange")
+        self.assertGreater(sat[1], sat0[1] * 1.03, "cyan")
+        for k in (2, 3):
+            self.assertAlmostEqual(sat[k], sat0[k], places=3)
+        np.testing.assert_allclose(a[4], b[4], atol=1e-6)
 
     def test_sunset_grade_is_magenta_free(self) -> None:
         lut = _load("zone_lut")

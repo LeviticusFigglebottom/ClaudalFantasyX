@@ -149,7 +149,19 @@
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
   },
+  "battle_arena_oruvel_raft_morning": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
   "battle_arena_tideline_dawn": {
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_driver": "vulkan",
+    "rendering_method": "forward_plus"
+  },
+  "battle_arena_underway_tower": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_driver": "vulkan",
