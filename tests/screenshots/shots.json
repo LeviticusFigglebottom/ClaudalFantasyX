@@ -2049,6 +2049,36 @@
     {
       "id": "battle_boss_intro_hullgnaw",
       "scene": "res://game/battle/scene/shots/battle_boss_intro_hullgnaw.tscn"
+    },
+    {
+      "id": "asha_battle_attack",
+      "scene": "res://game/levels/_tests/characters/asha/asha_battle_attack.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_battle_attack",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_attack.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_battle_attack",
+      "scene": "res://game/levels/_tests/characters/toma/toma_battle_attack.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }
