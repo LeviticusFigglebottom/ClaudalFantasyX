@@ -837,3 +837,7 @@ TIP_SHOP_TITLE,Trade
 TIP_SHOP_BODY,"Keepers buy as well as sell. In a deal, Left and Right change how many."
 SET_TUTORIAL_TIPS,Tips
 SET_TUTORIAL_TIPS_HELP,"Short first-time tips in the field. Each shows once per journey."
+TITLE_LOGO_HYMN,Hymn
+TITLE_LOGO_JOIN,of the
+TITLE_LOGO_UNDERTOW,Undertow
+TITLE_BUILD_LABEL,Development build (%s)
