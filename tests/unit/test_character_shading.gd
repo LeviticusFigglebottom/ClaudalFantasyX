@@ -12,6 +12,9 @@ const PREWARM_JSON := "res://game/data/settings/prewarm_materials.json"
 const STAGE_SCENE := "res://game/levels/_tests/character_shading/shading_test.tscn"
 const ASHA_STAGE := "res://game/levels/_tests/characters/asha/asha_stage.tscn"
 const ASHA_CLOTH := "res://assets/characters/asha/materials/cloth.tres"
+## M1-RND-24: every hero's mouth-interior materials (assets/characters/<hero>/materials/<stem>.tres).
+const CHARACTERS_DIR := "res://assets/characters"
+const MOUTH_MATERIAL_STEMS: Array[String] = ["mouth", "teeth", "tongue"]
 ## The sleeve band-id maps (M1-CHR-08): label textures, imported without mipmaps.
 const BAND_ID_MAPS: Array[String] = [
 	"res://assets/characters/shader_test/sleeve_bandid.png",
@@ -419,18 +422,72 @@ func _host() -> Node:
 
 func test_hero_mouth_interiors_use_the_mouth_family_with_a_cavity_bounce() -> void:
 	# M1-RND-21: the lips shadow an open mouth from every light, so the interior needs the bounce term
-	# (on every tier, not gated by quality) or grief goes near-black.
+	# (on every tier, not gated by quality) or grief goes near-black. M1-RND-24: every hero, not just
+	# Asha by name: walk assets/characters/*/materials/ for mouth, teeth and tongue materials.
 	var family: Array[String] = []
 	for tier: String in CharacterShaderTiers.tiers():
 		family.append(CharacterShaderTiers.shader_path("mouth", tier))
-	for mat_name: String in ["mouth", "teeth", "tongue"]:
-		var mat := load("res://assets/characters/asha/materials/%s.tres" % mat_name) as ShaderMaterial
-		assert_true(mat != null and family.has(mat.shader.resource_path), "Asha's %s uses the mouth family" % mat_name)
+	var found := 0
+	for hero: String in DirAccess.get_directories_at(CHARACTERS_DIR):
+		var dir := CHARACTERS_DIR.path_join(hero).path_join("materials")
+		if not DirAccess.dir_exists_absolute(dir):
+			continue
+		for file: String in DirAccess.get_files_at(dir):
+			var stem := file.get_basename()
+			if file.get_extension() != "tres" or not MOUTH_MATERIAL_STEMS.has(stem):
+				continue
+			var mat := load(dir.path_join(file)) as ShaderMaterial
+			assert_true(
+				mat != null and mat.shader != null and family.has(mat.shader.resource_path),
+				"%s's %s uses the mouth family" % [hero, stem]
+			)
+			found += 1
+	assert_true(found >= MOUTH_MATERIAL_STEMS.size(), "the walk found Asha's three (found %d)" % found)
 	var body := FileAccess.get_file_as_string("res://game/shaders/character/character_mouth_body.gdshaderinc")
-	var light := body.substr(body.find("void light()"))
-	var bounce := light.find("cavity_bounce")
-	assert_true(bounce > 0, "light() adds the cavity bounce")
+	var light := body.substr(body.find("#else\nvoid light()"))
+	var bounce := light.find("hymn_cavity_bounce(")
+	assert_true(bounce > 0, "the base light() adds the cavity bounce")
 	assert_false(light.substr(0, bounce).contains("#if"), "the bounce is on every tier")
 	var decl := body.substr(body.find("uniform float cavity_bounce"))
 	var default := float(decl.substr(decl.find("=") + 1, decl.find(";") - decl.find("=") - 1).strip_edges())
 	assert_true(default > 0.0, "the bounce is on by default")
+
+
+## M1-RND-24: a positional light's ATTENUATION includes its shadow, so its bounce is drawn by an
+## additive pass with shadows_disabled; directional lights' bounce (ATTENUATION = shadow only) stays in
+## the base pass at reach 1. apply_to_tree attaches the pass to owned copies, never to the .tres.
+func test_mouth_bounce_is_unshadowed_for_positional_lights() -> void:
+	var pass_src := FileAccess.get_file_as_string(CharacterShaderTiers.MOUTH_BOUNCE_SHADER)
+	for mode: String in ["blend_add", "shadows_disabled", "ambient_light_disabled", "depth_draw_never"]:
+		assert_true(pass_src.contains(mode), "the bounce pass is %s" % mode)
+	assert_true(pass_src.contains("#define HYMN_MOUTH_BOUNCE_PASS"), "it draws the pass branch")
+	var body := FileAccess.get_file_as_string("res://game/shaders/character/character_mouth_body.gdshaderinc")
+	var pass_light := body.substr(body.find("#ifdef HYMN_MOUTH_BOUNCE_PASS"))
+	pass_light = pass_light.substr(0, pass_light.find("#else"))
+	assert_true(pass_light.contains("if (!LIGHT_IS_DIRECTIONAL)"), "the pass adds positional lights only")
+	assert_true(pass_light.contains("* ATTENUATION"), "with their unshadowed falloff")
+	assert_true(
+		body.contains("float reach = LIGHT_IS_DIRECTIONAL ? 1.0 : (cavity_bounce_pass ? 0.0 : ATTENUATION);"),
+		"the base pass keeps the directional bounce and hands positional lights to the pass"
+	)
+	var src := load("res://assets/characters/asha/materials/mouth.tres") as ShaderMaterial
+	assert_true(src.next_pass == null, "the authored material has no pass")
+	var root := Node3D.new()
+	var mi := MeshInstance3D.new()
+	mi.mesh = BoxMesh.new()
+	mi.material_override = src
+	root.add_child(mi)
+	_host().add_child(root)
+	assert_eq(CharacterShaderTiers.apply_to_tree(root, "high"), 1, "the mouth changes at its own tier")
+	var copy := mi.material_override as ShaderMaterial
+	assert_true(copy != src, "on a copy")
+	assert_true(src.next_pass == null and src.get_shader_parameter(CharacterShaderTiers.PARAM_BOUNCE_PASS) != true)
+	assert_true(CharacterShaderTiers.is_bounce_pass(copy.next_pass), "the copy has the bounce pass")
+	assert_eq(copy.get_shader_parameter(CharacterShaderTiers.PARAM_BOUNCE_PASS), true)
+	var bounce := copy.next_pass as ShaderMaterial
+	for p: StringName in [&"cavity_bounce", &"cavity_occlusion", &"col_cavity_bounce", &"tex_orm", &"col_albedo"]:
+		assert_eq(bounce.get_shader_parameter(p), copy.get_shader_parameter(p), "the pass copies %s" % p)
+	assert_eq(CharacterShaderTiers.apply_to_tree(root, "high"), 0, "a second walk attaches nothing")
+	assert_eq(CharacterShaderTiers.apply_to_tree(root, "low"), 1, "a tier swap keeps the pass")
+	assert_true(CharacterShaderTiers.is_bounce_pass((mi.material_override as ShaderMaterial).next_pass))
+	root.free()

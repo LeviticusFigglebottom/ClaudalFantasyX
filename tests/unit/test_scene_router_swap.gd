@@ -123,6 +123,45 @@ func test_router_public_api_is_stable() -> void:
 	assert_true(SceneRouter.has_method(&"is_busy"))
 	assert_false(SceneRouter.is_busy())
 	assert_true(SceneRouter.instantiate_on_thread and SceneRouter.warm_fonts and SceneRouter.split_swap)
+	assert_true(SceneRouter.has_signal(&"scene_swapping"), "M1-RND-23")
+	for m: StringName in [&"hold_swap", &"release_swap", &"swap_holders"]:
+		assert_true(SceneRouter.has_method(m), "M1-RND-23 hold API: %s" % m)
+
+
+## M1-RND-23 (review-sweep-J S2): a generic hold, like SaveSystem.hold_autosave. Holding twice is one
+## hold, a release drops it, and a freed holder drops out on its own.
+func test_swap_hold_is_generic_and_drops_freed_holders() -> void:
+	assert_true(SceneRouter.swap_holders().is_empty(), "nothing holds the swap at rest")
+	var a := Node.new()
+	var b := RefCounted.new()
+	SceneRouter.hold_swap(a)
+	SceneRouter.hold_swap(a)
+	SceneRouter.hold_swap(b)
+	assert_eq(SceneRouter.swap_holders().size(), 2, "holding twice is one hold")
+	SceneRouter.release_swap(b)
+	assert_eq(SceneRouter.swap_holders(), [a] as Array[Object])
+	a.free()
+	assert_true(SceneRouter.swap_holders().is_empty(), "a freed holder drops out")
+	SceneRouter.hold_swap(null)
+	assert_true(SceneRouter.swap_holders().is_empty())
+
+
+## M1-RND-23 (review-sweep-J S2): the zone render globals reset on scene_swapping through
+## ShaderGlobals, and the router names neither the systems that own them nor the prewarm type scan.
+func test_scene_swapping_resets_the_zone_globals() -> void:
+	for name in ShaderGlobals.ZONE_GLOBALS:
+		assert_true(ProjectSettings.has_setting("shader_globals/" + name), "%s is registered" % name)
+	GlimmerField.set_scene_sea_glow(0.0)
+	ShaderGlobals.set_value(WaterSurface.GLOBAL_WATER_LEVEL, Vector2(0.6, 0.4))
+	SceneRouter.scene_swapping.emit("res://nowhere.tscn")
+	assert_eq(ShaderGlobals.get_value(GlimmerField.GLOBAL_SEA_GLOW), GlimmerField.SEA_GLOW_ZONE_UNSET, "sea-glow unset")
+	assert_eq(ShaderGlobals.get_value(WaterSurface.GLOBAL_WATER_LEVEL), Vector2.ZERO, "water level back to 0, 0")
+	assert_true(ShaderGlobals.install(SceneRouter), "install is idempotent")
+	assert_eq(SceneRouter.scene_swapping.get_connections().size(), 1, "and connects once")
+	var src := FileAccess.get_file_as_string("res://game/core/scene_router.gd")
+	for banned: String in ["GlimmerField", "WaterSurface", "is_staging_under"]:
+		assert_false(src.contains(banned), "the router does not name %s" % banned)
+	assert_true(src.contains("scene_swapping.emit(scene_path)"), "it emits the signal in the swap")
 
 
 ## The fixed router: instanced off the main thread, fonts warm, and the old scene unloaded and the

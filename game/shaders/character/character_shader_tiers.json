@@ -43,6 +43,7 @@
   "single_tier": [
     "res://game/shaders/character/character_cornea.gdshader",
     "res://game/shaders/character/character_eye_occlusion.gdshader",
-    "res://game/shaders/character/character_tear_line.gdshader"
+    "res://game/shaders/character/character_tear_line.gdshader",
+    "res://game/shaders/character/character_mouth_bounce.gdshader"
   ]
 }

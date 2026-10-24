@@ -294,6 +294,14 @@
       "note": "M1-RND-21 character mouth interior (high tier): every hero's mouth bag, teeth and tongue."
     },
     {
+      "path": "res://game/shaders/character/character_mouth_bounce.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/characters/asha/asha_stage.tscn"
+      ],
+      "tier": "all",
+      "note": "M1-RND-24 unshadowed cavity-bounce pass (additive next_pass on every hero's mouth materials, every tier)."
+    },
+    {
       "path": "res://game/shaders/character/character_cornea.gdshader",
       "scenes": [
         "res://game/levels/_tests/character_shading/shading_test.tscn"

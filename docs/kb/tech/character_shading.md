@@ -201,7 +201,7 @@ Measured on a GPU (docs/kb/qa/gpu/2026-10-23-qa-05-asha.md): the diagonal bandin
     and cheek shadows away. Close-ups that need them need a dialogue key light with a short shadow range (a few
     metres, as the stage does) and bias 4.5 (M2 dialogue rig).
 
-## Mouth interior (M1-RND-21)
+## Mouth interior (M1-RND-21, M1-RND-24)
 
 The lips shadow an open mouth from every light, so with direct light alone the interior gets only ambient light and
 goes near-black (M1-QA-05c fault 2, grief). Every hero's **mouth bag, teeth and tongue use the `mouth` family**
@@ -216,8 +216,31 @@ character_shader_tiers.json and the prewarm registry.
 - **Cavity bounce:** per light, the shader adds `col_cavity_bounce × cavity_bounce × LIGHT_COLOR / π`.
   - It's unshadowed, because the lips that bounce the light are lit even where the interior isn't.
   - It's faded by the baked occlusion (`mix(1, ao, cavity_occlusion)`), by how far the light is behind the face
-    (`0.5 + 0.5 · L·V`, so a rim light from behind adds almost nothing), and, for positional lights, by
-    `ATTENUATION`.
+    (`0.5 + 0.5 · L·V`, so a rim light from behind adds almost nothing), and, for positional lights, by the
+    light's distance and cone falloff.
+- **Unshadowed for every light type (M1-RND-24).** In Godot 4 a positional light's `ATTENUATION` is its distance and
+  cone falloff *times its shadow*, and `light()` gets neither the light's position nor its range, so the shader
+  can't rebuild the falloff alone. RND-21 used `ATTENUATION`, so a shadowed spot or omni key added no bounce.
+  - **Directional lights:** their `ATTENUATION` is the shadow alone, so the base pass adds the bounce at reach 1
+    (unchanged).
+  - **Positional lights:** an additive second pass, `character_mouth_bounce.gdshader` (`blend_add`,
+    `depth_draw_never`, `shadows_disabled`, `ambient_light_disabled`, `fog_disabled`), draws only their bounce.
+    With shadows disabled, its `ATTENUATION` is exactly Godot's distance and cone falloff. Chosen over `reach =
+    1.0` because the cone and range reach `light()` only through `ATTENUATION` (clustering culls by bounding
+    volume, not per pixel), and because a distant key's energy is scaled for its falloff: dropping the falloff would over-light the mouth.
+  - **Who attaches it:** `CharacterShaderTiers.apply_to_tree` gives every mouth-family material it reaches (an
+    owned copy, never the `.tres`) the pass as its `next_pass`, copies the pass's parameters from it, and sets
+    `cavity_bounce_pass` so the base pass leaves positional lights to the pass. The stages and
+    `GraphicsRuntime.on_scene_entered` both call it, so every hero gets it. A material no tree walk reached keeps
+    the old fallback (`ATTENUATION`, shadow included). Parameters are copied when the pass is attached: if you
+    change a mouth parameter at runtime, change it on `next_pass` too.
+  - **Cost:** one extra additive draw of the three small mouth meshes per frame. It runs only for positional lights
+    and does no texture work beyond the base pass's albedo and ORM fetches.
+  - **No current shot changes.** Every Asha shot is lit by directional lights (asha_stage.tscn), and no other hero
+    uses the family yet. The face stage with spot lights (`base_body_stage.tscn`) has no mouth materials. The pass
+    matters for cutscene keys (M2-FP-10) and any spot- or omni-lit dialogue.
+- **Every hero:** test_character_shading walks `assets/characters/*/materials/` and fails on any `mouth`, `teeth`
+  or `tongue` material outside the family (Rhen and Toma, M2-CHR-01, inherit the rule).
   - Defaults: #C79A8C, 0.4, 0.5. A saturated lip red turned the teeth orange.
 - **Tiers:** the bounce is on every tier. Low drops only the GGX lobe from lights.
 - **Measured** on the GPU (`docs/kb/qa/gpu/2026-10-23-rnd-21-mouth-fill.md`), over the grief interior pixels:

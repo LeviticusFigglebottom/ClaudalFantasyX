@@ -28,7 +28,9 @@ extends Node
 ## once), because a pipeline compiles on the first frame that draws it and staging everything in one
 ## frame cost 121-150 ms on an RX 9070 XT. When a frame comes in over "slice_budget_ms" the batch is
 ## halved (never below 1), so slower cards self-tune. The stage is cleared "frames_to_render" frames
-## after the last batch went in. SceneRouter waits while is_staging() before showing the new scene.
+## after the last batch went in. While staging, the stage holds its parent's swap (hold_swap /
+## release_swap, M1-RND-23), so a SceneRouter parent waits before showing the new scene; any other
+## parent (a cutscene's spawn_with_state) is not held.
 ##
 ## Hook-up (autoload-free): `ShaderPrewarm.install(SceneRouter)` connects to
 ## SceneRouter.prewarm_requested and spawns this scene as a child of the router (which survives the
@@ -40,6 +42,8 @@ const SCENE_PATH := "res://game/core/shader_prewarm.tscn"
 const REGISTRY_PATH := "res://game/data/settings/prewarm_materials.json"
 const ROUTER_SIGNAL := &"prewarm_requested"
 const HOOK_META := &"shader_prewarm_hook"
+const HOLD_METHOD := &"hold_swap"
+const RELEASE_METHOD := &"release_swap"
 const MSEC_PER_SEC := 1000.0
 const LOG_PREFIX := "ShaderPrewarm"
 const MODE_UNSUPPORTED := -1
@@ -69,6 +73,8 @@ var _min_batch_seen := 0
 var _batches := 0
 var _frames_since_batch := 0
 var _stage_env: Environment
+## The parent whose swap this stage holds while staging (null when the parent has no hold_swap).
+var _held: Node
 
 @onready var _viewport: SubViewport = $Viewport
 @onready var _stage_3d: Node3D = $Viewport/Stage3D
@@ -149,6 +155,7 @@ func start(for_scene: String = "") -> int:
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_running = true
 	_stage_alive = true
+	_hold_parent_swap()
 	_stage_next_batch()
 	return _instanced
 
@@ -174,14 +181,6 @@ func is_running() -> bool:
 ## True while draws are still entering or rendering in the stage: the incoming scene should wait.
 func is_staging() -> bool:
 	return _running and _stage_alive
-
-
-## True when a ShaderPrewarm child of `router` is still staging (SceneRouter waits on it).
-static func is_staging_under(router: Node) -> bool:
-	for child in router.get_children():
-		if child is ShaderPrewarm and (child as ShaderPrewarm).is_staging():
-			return true
-	return false
 
 
 ## Number of warmup draw nodes currently in the stage (pending batches excluded).
@@ -249,6 +248,7 @@ func _notification(what: int) -> void:
 			if is_instance_valid(n) and n is Node:
 				n.free()
 		_pending.clear()
+		_release_parent_swap()
 
 
 func _finish() -> void:
@@ -287,6 +287,21 @@ func _clear_stage() -> void:
 	_stage_env = null
 	_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	_stage_alive = false
+	_release_parent_swap()
+
+
+## Holds the parent's next swap while the stage is alive (duck-typed: the SceneRouter autoload).
+func _hold_parent_swap() -> void:
+	var parent := get_parent()
+	if parent != null and parent.has_method(HOLD_METHOD):
+		parent.call(HOLD_METHOD, self)
+		_held = parent
+
+
+func _release_parent_swap() -> void:
+	if is_instance_valid(_held) and _held.has_method(RELEASE_METHOD):
+		_held.call(RELEASE_METHOD, self)
+	_held = null
 
 
 static func _load_registry(path: String) -> Dictionary:

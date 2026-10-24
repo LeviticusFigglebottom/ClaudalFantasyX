@@ -44,3 +44,32 @@ in RND-16).
 
 - **Run:** gdlint and gdformat on `tools/gpu_bench/capture_preset.gd`; validate_data; taskboard.
 - **Skipped:** the Godot suite and the shots (only the bench tool changed).
+
+## Control: jitter frozen at the same scaling (M1-RND-23, review-sweep-N S1), 2026-10-24
+
+The "22 % under native" row compares a 0.77 bilinear upscale with a native frame. The upscale has no sharpening, so
+it low-passes the image, and a high-frequency metric falls for that reason alone. The control freezes the jitter
+(`--freeze-jitter`, a static dither pattern) at each scaling, so each TAA value can be read against its own static
+pattern.
+
+**Run.** Lavapipe (Mesa software Vulkan, Forward+), Godot 4.6.3, worktree `worktree-agent-a7c54615acb434f4e`.
+`capture_preset --manifest=res://docs/kb/qa/gpu/2026-10-23-rnd-09-pending-shots.json --shots=undertow_day_ch08
+--preset=high --hold-storm --settle=120 --push-override=...` with the jitter running and frozen, at 960×540. The metric
+is RND-11's (above), with the mask taken from the native-TAA frame. The two rows shared with the GPU table agree with
+it (mask 3.70 % against 3.7 %; bilinear + TAA 0.0062 against 0.0062; native TAA 0.0081 against 0.0079; native frozen
+0.0509 against Ultra frozen 0.0517), so the ratios carry over.
+
+| Scaling (`aa=taa`) | Jitter running (TAA) | Jitter frozen (control) | TAA / frozen |
+|---|---:|---:|---:|
+| bilinear, 0.77 | 0.0062 | **0.0255** | **0.24** |
+| bilinear, `render_scale=1.0` (native) | 0.0081 | 0.0509 | 0.16 |
+
+**Reading.**
+- The upscale alone halves the static dither (0.0255 against 0.0509). So the 22 % gap to native comes entirely from
+  that blur, not from better integration.
+- Measured against its own static pattern, TAA integrates the dither *less* well at 0.77 bilinear (it removes 76 %)
+  than at native (84 %). That's expected: fewer pixels sample each jitter position.
+- **What still holds:** the residual on screen is what the player sees, and at 0.0062 it is the lowest of the
+  options, at the lowest cost. The recommendation (`{"aa": "taa", "scaling_mode": "bilinear"}` for storm close-ups
+  on High) stands. Report it as "no more visible dither than native TAA, partly because the upscale is softer", not
+  as "integrates 22 % better". The softness shows on a sharp foreground, which is why `fsr` remains the choice there.
