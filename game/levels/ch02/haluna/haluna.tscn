@@ -254,7 +254,7 @@ fov_deg = 30.0
 script = ExtResource("7_shot")
 id = &"H08_hand"
 position = Vector3(-15.98, 2.78, -121.08)
-look_at = Vector3(-15.48, 2.63, -122.49)
+look_at = Vector3(-15.41, 2.63, -122.55)
 fov_deg = 32.0
 hard_cut = true
 
@@ -308,30 +308,6 @@ roughness = 0.9
 [sub_resource type="BoxMesh" id="Mesh_bag"]
 material = SubResource("Mat_bag")
 size = Vector3(0.45, 0.4, 0.28)
-
-[sub_resource type="StandardMaterial3D" id="Mat_shellwall"]
-albedo_color = Color(0.784314, 0.756863, 0.701961, 1)
-roughness = 0.95
-
-[sub_resource type="BoxMesh" id="Mesh_shellwall"]
-material = SubResource("Mat_shellwall")
-size = Vector3(3.2, 1.9, 0.5)
-
-[sub_resource type="SphereMesh" id="Mesh_wallshell"]
-material = SubResource("Mat_shell")
-radius = 0.075
-height = 0.15
-
-[sub_resource type="StandardMaterial3D" id="Mat_gap"]
-albedo_color = Color(0.333333, 0.309804, 0.282353, 1)
-roughness = 1.0
-
-[sub_resource type="BoxMesh" id="Mesh_gap"]
-material = SubResource("Mat_gap")
-size = Vector3(0.2, 0.18, 0.08)
-
-[sub_resource type="BoxShape3D" id="Shape_shellwall"]
-size = Vector3(3.2, 1.9, 0.5)
 
 [sub_resource type="BoxShape3D" id="Box_BeachShallows"]
 size = Vector3(20.5, 8, 46)
@@ -430,6 +406,7 @@ piece_rules = {
 "lintel_gull_a": {"shape": "none"},
 "lintel_gull_b": {"shape": "none"},
 "lintel_gull_c": {"shape": "none"},
+"wakeshell_wall": {"shape": "trimesh"},
 "night_lamp_flame": {"shape": "none"},
 "palm_coconut_a": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
 "palm_coconut_b": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
@@ -758,221 +735,6 @@ mesh = SubResource("Mesh_bowl")
 [node name="Shell" type="MeshInstance3D" parent="NPCs/Osu/Osu/Bowl"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.07, 0.02)
 mesh = SubResource("Mesh_shell")
-
-[node name="ShellWall" type="StaticBody3D" parent="NPCs/Osu"]
-transform = Transform3D(0.856, 0, -0.517, 0, 1, 0, 0.517, 0, 0.856, -14.55, 1.53, -122.23)
-
-[node name="Shape" type="CollisionShape3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
-shape = SubResource("Shape_shellwall")
-
-[node name="StandIn" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
-mesh = SubResource("Mesh_shellwall")
-
-[node name="Gap" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.35, 0.23)
-mesh = SubResource("Mesh_gap")
-
-[node name="Shell0" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.447, 0.366, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell1" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.032, 0.385, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell2" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.727, 0.33, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell3" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.322, 0.363, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell4" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.024, 0.365, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell5" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.338, 0.372, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell6" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.654, 0.328, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell7" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.098, 0.339, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell8" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.371, 0.374, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell9" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.214, 0.572, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell10" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.874, 0.613, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell11" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.57, 0.612, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell12" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.225, 0.587, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell13" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12, 0.576, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell14" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.577, 0.592, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell15" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.929, 0.595, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell16" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.233, 0.63, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell17" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.447, 0.857, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell18" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.034, 0.824, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell19" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.749, 0.88, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell20" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.348, 0.826, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell21" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.006, 0.827, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell22" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.386, 0.85, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell23" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.652, 0.875, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell24" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.001, 0.832, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell25" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.343, 0.869, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell26" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.276, 1.102, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Teyo" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.929, 1.098, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell28" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.508, 1.103, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell29" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.185, 1.099, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell30" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.162, 1.108, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell31" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.471, 1.098, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell32" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.838, 1.129, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell33" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.273, 1.065, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell34" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.376, 1.356, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell35" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.108, 1.366, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell36" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.647, 1.344, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell37" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.368, 1.356, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell38" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.053, 1.331, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell39" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.715, 1.348, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell40" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.021, 1.341, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell41" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.344, 1.335, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell42" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.172, 1.607, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell43" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.906, 1.635, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell44" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.547, 1.58, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell45" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.236, 1.572, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell46" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.134, 1.578, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell47" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.565, 1.581, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell48" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.84, 1.608, 0.26)
-mesh = SubResource("Mesh_wallshell")
-
-[node name="Shell49" type="MeshInstance3D" parent="NPCs/Osu/ShellWall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.27, 1.583, 0.26)
-mesh = SubResource("Mesh_wallshell")
 
 [node name="Talk" type="Area3D" parent="NPCs/Osu"]
 script = ExtResource("8_int")

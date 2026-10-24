@@ -1578,6 +1578,15 @@
    ],
    "yaw_deg": 199,
    "scale": 1.06
+  },
+  {
+   "piece": "wakeshell_wall",
+   "at": [
+    -14.61,
+    -122.14
+   ],
+   "yaw_deg": -31.1,
+   "_note": "M2-ENV-04 (m2-slice): the Pilgrim's Wake wall at the causeway head, in reach (B04, H08), its shell face to the village; Grandmother Osu stands at its gap. The far piece out on the sand (30, -196) stays as the vista."
   }
  ],
  "plants": [

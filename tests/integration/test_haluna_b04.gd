@@ -1,7 +1,8 @@
 extends TestCase
 ## M2-FP-14 on the real Haluna zone: B04 "Pila's Granddaughter" (Grandmother Osu at the causeway
-## head, framed on H08 with an insert on her hand; it sets ch02_heard_pila, which B09's Teyo line
-## reads), the B02 insert on Asha's packed bag, and H03, the lintel-gull look-at in the lane.
+## head, at the real wake-shell wall since M2-ENV-04, framed on H08 with an insert on the wall; it sets
+## ch02_heard_pila, which B09's Teyo line reads), the B02 insert on Asha's packed bag, and H03, the
+## lintel-gull look-at in the lane.
 
 const ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
 const PILA := &"ch02_pila_granddaughter"
@@ -84,15 +85,21 @@ func test_osu_stands_on_dry_ground_clear_of_the_causeway_trigger() -> void:
 	var talk := _interactable(&"npc_osu")
 	assert_false(head.contains_point(p), "Osu is outside the B05 trigger")
 	assert_false(head.contains_point(talk.global_position), "and so is her prompt")
-	# H08 holds her against the stand-in wake-shell wall; the insert finds Teyo's shell.
+	# M2-ENV-04: the real wake-shell wall at the causeway head; Osu stands at its gap, H08 holds her
+	# against it and the insert finds a shell on its face.
+	var wall := _wake_wall_near(p)
+	assert_true(wall != null, "a wake-shell wall at the causeway head")
+	var face := wall.global_basis.z.normalized()  # the shell face looks along the piece's +Z
+	var gap := wall.global_position + Vector3.UP * 1.45
+	assert_between(Vector2(p.x, p.z).distance_to(Vector2(gap.x, gap.z)), 0.5, 1.0, "Osu stands at the gap")
+	assert_true(face.dot((p - wall.global_position).normalized()) > 0.9, "in front of the shell face")
 	var h08 := (zone.stage.get_node("Shots/H08") as CutsceneShotNode).shot
-	var wall := zone.get_node("NPCs/Osu/ShellWall") as Node3D
 	var view := (h08.look_at - h08.position).normalized()
-	var to_wall := (wall.global_position + Vector3(0, 0.95, 0) - h08.position).normalized()
-	assert_true(rad_to_deg(view.angle_to(to_wall)) < h08.fov_deg * 0.5, "the wall is in H08's frame")
+	assert_true(rad_to_deg(view.angle_to((gap - h08.position).normalized())) < h08.fov_deg * 0.5, "the wall in H08")
 	var hand := (zone.stage.get_node("Shots/H08_hand") as CutsceneShotNode).shot
-	var teyo := zone.get_node("NPCs/Osu/ShellWall/Teyo") as Node3D
-	assert_true(hand.look_at.distance_to(teyo.global_position) < 0.1, "the insert is on Teyo's shell")
+	var on_face := wall.global_transform.affine_inverse() * hand.look_at
+	assert_between(on_face.y, 0.8, 1.6, "the insert at hand height on the wall")
+	assert_between(Vector2(on_face.x, on_face.z).length(), 0.5, 1.5, "beside the gap, on the arc")
 	_done()
 
 
@@ -173,6 +180,18 @@ func _nearest_gull(at: Vector3) -> Node3D:
 		if g != null and String(g.name).begins_with("lintel_gull"):
 			if best == null or g.global_position.distance_to(at) < best.global_position.distance_to(at):
 				best = g
+	return best
+
+
+## The dressed wake-shell wall nearest `p`, by its kind (its first mesh's name, as the collision builder
+## reads it: Godot renames a duplicate sibling node, so the node name is no guide).
+func _wake_wall_near(p: Vector3) -> Node3D:
+	var best: Node3D = null
+	for c in zone.get_node("HalunaMood/Dresser").get_children():
+		var n := c as Node3D
+		if n != null and HalunaCollision.piece_kind(n) == "wakeshell_wall":
+			if best == null or n.global_position.distance_to(p) < best.global_position.distance_to(p):
+				best = n
 	return best
 
 

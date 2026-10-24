@@ -161,3 +161,6 @@ to the end, and the registry entering the zone.
 - No camera collision: the hub orbit can clip a roof in tight lanes (Q/R steer it). Composed volumes
   cover the lanes the slice uses.
 - Asha's kneel is a still bone pose, not an animation.
+
+**The wake-shell wall at the causeway head (M2-ENV-04).** A second kit `wakeshell_wall` is in the layout at the causeway head, in reach. Grandmother Osu (B04) stands at its gap, and H08 and H08_hand frame it. Its collision is a trimesh (`piece_rules`). The far piece out on the sand stays as the vista.
+
