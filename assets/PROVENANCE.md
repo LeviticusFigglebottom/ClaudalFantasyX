@@ -393,3 +393,9 @@ Rules:
 | assets/audio/music/hush_coda.ogg | assets_src/music/hush_first_verse.py (render_coda) + assets_src/music/hush_coda.py + tools/audio/synth/ | python3 assets_src/music/hush_coda.py | Audio (claude/audio, M2-AUD-03) | 2026-10-24 | original |
 | assets/audio/music/haluna_dawn.ogg | assets_src/music/haluna_dawn.py + tools/audio/synth/ | python3 assets_src/music/haluna_dawn.py | Audio (claude/audio, M2-AUD-03) | 2026-10-24 | original |
 | assets/audio/sfx/ilun_summon.ogg | assets_src/music/ilun_summon.py + tools/audio/synth/ | python3 assets_src/music/ilun_summon.py | Audio (claude/audio, M2-AUD-03) | 2026-10-24 | original |
+| assets/audio/music/tidecup_match.ogg | assets_src/music/tidecup_match.py + tools/audio/synth/ | python3 assets_src/music/tidecup_match.py | Audio (claude/audio, M3-AUD-02) | 2026-10-24 | original |
+| assets/audio/music/tidecup_match.loop.json | assets_src/music/tidecup_match.py + tools/audio/synth/looping.py | python3 assets_src/music/tidecup_match.py | Audio (claude/audio, M3-AUD-02) | 2026-10-24 | original |
+| assets/audio/music/terraces_of_ash.ogg | assets_src/music/terraces_of_ash.py + tools/audio/synth/ | python3 assets_src/music/terraces_of_ash.py | Audio (claude/audio, M3-AUD-04) | 2026-10-24 | original |
+| assets/audio/music/terraces_of_ash.loop.json | assets_src/music/terraces_of_ash.py + tools/audio/synth/looping.py | python3 assets_src/music/terraces_of_ash.py | Audio (claude/audio, M3-AUD-04) | 2026-10-24 | original |
+| assets/audio/music/corrow_seawall.ogg | assets_src/music/corrow_seawall.py + tools/audio/synth/ | python3 assets_src/music/corrow_seawall.py | Audio (claude/audio, M3-AUD-04) | 2026-10-24 | original |
+| assets/audio/music/corrow_seawall.loop.json | assets_src/music/corrow_seawall.py + tools/audio/synth/looping.py | python3 assets_src/music/corrow_seawall.py | Audio (claude/audio, M3-AUD-04) | 2026-10-24 | original |
