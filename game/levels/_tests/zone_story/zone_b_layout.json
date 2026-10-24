@@ -1,0 +1,5 @@
+{
+  "doc": "M3-ARC-01 test fixture: zone B of the ZoneStory test chapter.",
+  "blocks": [{"id": "Ground", "pos": [0, -0.5, 0], "size": [20, 1, 20]}],
+  "spawns": {"In": [0, 0, 5, 180]}
+}

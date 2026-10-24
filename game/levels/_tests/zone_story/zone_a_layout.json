@@ -1,0 +1,17 @@
+{
+  "doc": "M3-ARC-01 test fixture: zone A of the ZoneStory test chapter (tests/integration/test_zone_story.gd).",
+  "blocks": [
+    {"id": "Ground", "pos": [0, -0.5, 0], "size": [30, 1, 30]},
+    {"id": "Wall", "pos": [0, 1, -10], "size": [10, 2, 1], "color": "#7d786f"}
+  ],
+  "spawns": {"Start": [0, 0, 8, 180], "AfterFight": [4, 0, 2, 90]},
+  "marks": {"spot": [2, 0, 0, 0]},
+  "actors": {"asha": {"at": [-2, 0, 0, 90]}},
+  "shots": {"wide": {"pos": [0, 6, 14], "look_at": [0, 1, 0]}, "close": {"pos": [-1, 1.6, 2], "look_at": [-2, 1.5, 0], "fov": 30}},
+  "triggers": [
+    {"id": "gate", "at": [0, 0, -4], "size": [8, 0, 1], "payload": {"beat": "gate"}},
+    {"id": "leave", "at": [10, 0, 0], "size": [1, 0, 6], "payload": {"beat": "leave"}},
+    {"id": "npc_asha", "activation": "interact", "at": [-2, 0, 0], "size": [1.5, 0, 1.5], "payload": {"dialogue": "test_dialogue_fixture"}},
+    {"id": "overhear", "at": [0, 0, 4], "size": [4, 0, 1], "once": true, "payload": {"dialogue": "test_dialogue_fixture", "overheard": true}}
+  ]
+}
