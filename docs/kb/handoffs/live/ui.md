@@ -29,6 +29,10 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 - **Cross-track gap, for the Lead and Audio:** after big7, `validate_data` has 14 errors and `test_voice_audio` fails. voices.json has no rows for m2-slice's new speakers (boatman, crowd, fenn, ferryman, ferrymaster, garo, hobb, ione, marra, poolkeeper, stillguard, tavi, tender, townsfolk). claude/audio already has them; the gap closes when audio reaches integration. The Menus track has told Audio as well.
 - **Merge note:** after merging claude/ui, run `godot --import`; there are new class_names (UiFrame, TextFitProbe, PseudoLoc).
 - **MERGE-READY:** pending the full suite on the final head.
+- **Id blocks (Lead, 21:00):** this track's new task ids are 200–299 (any prefix, e.g. M2-UI-210), new ADRs 0110–0119, and handoffs are named `<date>-<role>-ui-<n>.md`.
+- **Since 20:45:**
+  - **M2-AUD-08: review.** It is M3-UI-02's Audio page plus a `SettingsPage` sound hook in ui_sfx.json, so each value step ticks.
+  - **Claimed (fe4f2bd0):** M2-UI-26 (the bestiary creature portrait; not the input parity task, which shares the id), M3-C05-07 (the Matron's Crust hook) and M3-C09-05 (Ch9 UI). Two worktree agents are on them.
 - **17:20:** claude/ui fast-forwarded to claude/menus @ 6f192c17. That includes everything above, the Menus track's Memories gallery, m2-slice d034c31d and the integration branch. The Menus track's full suite there: 1913 run, 0 failed.
   - **Queue:** all UI items are done or in review.
   - **Blocked:** M2-UI-07 (M2-CHR-06 is not on integration yet) and M3-UI-01 (no Reefball engine). **Lead: please queue more.**
