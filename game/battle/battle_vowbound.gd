@@ -165,6 +165,7 @@ func preview_call(
 		s = build(rows[vowbound_id], vowbound_id, engine.current)
 	var roster: Array[BattleCombatant] = [s]
 	roster.append_array(engine.enemies)
+	roster.append_array(engine.entries)  # the Climb keeps climbing (M3-CMB-01)
 	var tl := CtbTimeline.new()
 	tl.set_roster(roster)
 	return tl.predict(count, null, Formulas.DEFAULT_RANK, null, 0, {}, {s: engine.now})
@@ -178,6 +179,7 @@ func preview_dismiss(engine: BattleEngine, count: int = CtbTimeline.PREVIEW_LENG
 		return []
 	var roster: Array[BattleCombatant] = stood_down.duplicate()
 	roster.append_array(engine.enemies)
+	roster.append_array(engine.entries)  # the Climb keeps climbing (M3-CMB-01)
 	var times: Dictionary = {}
 	for i in stood_down.size():
 		times[stood_down[i]] = engine.now + _offsets[i]
@@ -277,6 +279,12 @@ func _on_action_resolved(result: ActionResult) -> void:
 			continue
 		var amount := maxi(int(hit.get("amount", 0)), int(hit.get("absorbed", 0)))
 		summon.swell = Formulas.swell_fill(summon.swell, Formulas.swell_gain(amount, summon.max_hp, rate))
+
+
+## The finisher skill id of the row `vowbound_id` (called or not), or &"".
+func finisher_of(vowbound_id: StringName) -> StringName:
+	var swell: Dictionary = (rows.get(vowbound_id, {}) as Dictionary).get("swell", {})
+	return StringName(str(swell.get("technique", "")))
 
 
 func _row_of(c: BattleCombatant) -> Dictionary:

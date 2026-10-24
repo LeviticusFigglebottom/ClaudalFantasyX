@@ -519,8 +519,9 @@ func _show_result() -> void:
 	var rows: Array[Dictionary] = []
 	var title_key := BattleMenus.victory_title_key(engine)
 	var sub_key := "HUD_VICTORY_SUB"
-	if engine.outcome == BattleEngine.OUTCOME_VICTORY:
+	if engine.outcome in BattleSpoils.SPOILS_OUTCOMES:
 		rows = BattleRewards.new().award_victory(self)
+		sub_key = "HUD_SCRIPTED_ESCAPE_SUB" if engine.outcome == BattleEngine.OUTCOME_SCRIPTED_ESCAPE else sub_key
 	elif engine.outcome == BattleEngine.OUTCOME_DEFEAT:
 		title_key = "HUD_DEFEAT"
 		sub_key = "HUD_DEFEAT_SUB"
@@ -585,7 +586,7 @@ func _on_menu_chosen(_page: StringName, row: Dictionary) -> void:
 		STATE_COMMAND:
 			match rid:
 				BattleMenus.ROW_ATTACK:
-					_begin_target(BattleMenus.ATTACK_SKILL)
+					_begin_target(menus.root_skill(engine, rid))  # Attack, or its override (M3-CMB-01)
 				BattleMenus.ROW_SKILLS:
 					_set_state(STATE_SKILLS)
 					hud.commands.push(BattleMenus.PAGE_SKILLS, tr("HUD_CMD_SKILLS"), menus.skill_rows(engine))
@@ -980,8 +981,7 @@ func _live_items() -> BattleItemSource:
 # --- capture scripts (deterministic; see tests/screenshots/shots.json) ---------------------
 
 
-## Plays the `scripted_state` fixture to its capture state (BattleCaptureScript). Public so tests
-## can drive it.
+## Plays the `scripted_state` fixture to its capture state (BattleCaptureScript); public for tests.
 func run_script(state_id: StringName = &"") -> void:
 	var sid := state_id if state_id != &"" else scripted_state
 	var fx := BattleFixture.load_fixture(sid)

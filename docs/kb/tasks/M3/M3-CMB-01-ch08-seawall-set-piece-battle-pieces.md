@@ -2,9 +2,10 @@
 id: M3-CMB-01
 title: Ch8 Fisher Stair set-piece battle pieces (scripted timeline entries, objective victory, scripted escape, party locks)
 role: combat
-status: doing
+status: review
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: []
+reviewer: lead
 milestone: M3
 request-from: cinematics
 ---
@@ -25,10 +26,16 @@ Lead 2026-10-24 12:00 (the human authorised M3 in parallel; m2-slice owns Act I 
 The engine stays headless and deterministic (CLAUDE.md §3). Formulas change only together with their docs and tests.
 
 ## Acceptance criteria
-- [ ] Each piece lands with unit tests in `tests/unit`, the battle coverage doesn't drop, and `sim.py --check` passes with the new bands.
-- [ ] The data schema is documented in `docs/kb/design` so M3-C08-02 can write the waves as data.
+- [x] Each piece lands with unit tests in `tests/unit`, the battle coverage doesn't drop, and `sim.py --check` passes with the new bands.
+- [x] The data schema is documented in `docs/kb/design` so M3-C08-02 can write the waves as data.
 
 ## Notes
 - Requested by m2-slice (cinematics), the Act I owner. M3-C08-02 depends on this.
+- 2026-10-24 combat (worktree agent, handoff 2026-10-24-combat-14): built, status review, reviewer lead.
+  - Schema: `docs/kb/design/set_piece_battles.md`. Decision: ADR 0100. Code: `game/battle/battle_set_piece.gd` (+ hooks in the engine, BossMechanics, EnemyAI, the combatant), `game/battle/sim/sim_ward_guard.gd`, `sim_policy_ward_guard.gd`.
+  - Ch8 data (provisional, for M3-C08-02 to keep or reshape): `ch08_stair_hold_1..3` and `undertows_reach` in encounters.json; `tide_crawler`, `squall_wing`, `wall_polyp`, `undertows_reach` in enemies.json; Virel in vowbound.json; strings in `game/data/loc/ch08.csv`; flags `ch08_hoist_rigged`, `ch08_virel_bound`.
+  - Bands at 1000 seeds: see balance_targets.md § Ch8 and the handoff.
+  - Departures from the sheet: the Tide Crawler is not fire-weak; its grip is telegraphed one turn ahead; Storm-Call picks its mover when it fires; storm_dark's Darkness lasts to the hero's next turn. Waves' `naive` band is 10–60 (the sheet proposed 40–60; Wave 1 measures ~15).
+  - Not built (UI requests): entries drawn on the timeline, swap/formation greying with locked_key/unavailable_key, intercept/counter/withdraw floats, the stair meter HUD. The carried meter `ch08_stair_groups_up` is the flow's (reads `engine.objective_count`).
 
 ## Review log
