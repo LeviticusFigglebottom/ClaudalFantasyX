@@ -97,6 +97,12 @@ class AudioDataTest(unittest.TestCase):
                      "grind is not an sfx.json row"):
             self.assertTrue(any(want in e for e in errs), (want, errs))
 
+    def test_reduced_audio_swaps_name_real_sounds_both_ways(self) -> None:
+        errs = self._broken(dc.BATTLE_SFX, lambda b: b.update({"reduced": {"tick": "tick", "boom": "soft"}}))
+        self.assertTrue(any("reduced.boom: boom is not an sfx.json row" in e for e in errs), errs)
+        self.assertTrue(any("soft is not an sfx.json row" in e for e in errs), errs)
+        self.assertFalse(any("reduced.tick" in e for e in errs), errs)
+
     def test_sfx_rows_play_on_real_buses(self) -> None:
         errs = self._broken(dc.SFX, lambda s: s["sfx"]["tick"].update({"bus": "Nowhere", "pitch_jitter": 0.9}))
         self.assertTrue(any("unknown bus Nowhere" in e for e in errs), errs)

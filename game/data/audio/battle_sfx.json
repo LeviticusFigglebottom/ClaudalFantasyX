@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "doc": "What a battle sounds like (M2-AUD-04; game/audio/battle_audio.gd, docs/kb/tech/audio_runtime.md). Every value is an sfx row (sfx_battle.json). vfx: each BattleVfx effect id (effects.json), played when the view plays it (effect_played), so a sound follows its particle; every effect has one (validate_data). skills: an engine skill_id on action_resolved. events: rim_break (charge_broken), vowbound_call, vowbound_dismiss, vowbound_fell. fields_cleared and phases: by field or phase id. openings: the battle's opening. outcomes: battle_finished. Sections other than vfx are fallbacks for moments the view may also play: a fallback is dropped when the same sound played within dedupe_ms. Repeats of one vfx sound within repeat_ms (an action's other targets) layer at layer_db. Reduced audio (accessibility.json reduced_audio): those repeats are skipped (one layer per action), `reduced` swaps a sound for its version without sub-bass, and the SFX bank plays at reduced_level during the battle.",
+  "vfx": {
+    "hit_none": "hit_none",
+    "hit_fire": "hit_fire",
+    "hit_ice": "hit_ice",
+    "hit_lightning": "hit_lightning",
+    "hit_water": "hit_water",
+    "hit_holy": "hit_holy",
+    "lamp_dive": "lamp_dive",
+    "shallows_verse": "shallows_verse",
+    "read": "read",
+    "heal": "heal",
+    "status_apply": "status_apply",
+    "ko_release": "ko_release",
+    "flash_preemptive": "stinger_preemptive",
+    "flash_ambush": "stinger_ambush",
+    "toll_gather": "toll_gather",
+    "rim_crack": "rim_crack",
+    "rim_break": "rim_break",
+    "polyp_rise": "polyp_rise",
+    "polyp_mend": "polyp_mend",
+    "bell_release": "bell_release",
+    "flash_toll": "drownbell_toll"
+  },
+  "skills": {
+    "toll": "drownbell_toll"
+  },
+  "events": {
+    "rim_break": "rim_break",
+    "vowbound_call": "vowbound_call",
+    "vowbound_dismiss": "vowbound_dismiss",
+    "vowbound_fell": "ko_release"
+  },
+  "fields_cleared": {
+    "flood": "floodnet"
+  },
+  "phases": {
+    "flood": "flood"
+  },
+  "openings": {
+    "ambush": "stinger_ambush",
+    "preemptive": "stinger_preemptive"
+  },
+  "outcomes": {
+    "victory": "victory",
+    "defeat": "defeat",
+    "escaped": "escape"
+  },
+  "reduced": {
+    "flood": "flood_soft",
+    "stinger_ambush": "stinger_ambush_soft",
+    "drownbell_toll": "drownbell_toll_soft"
+  },
+  "repeat_ms": 60,
+  "dedupe_ms": 250,
+  "layer_db": -6.0,
+  "reduced_level": 0.7
+}
