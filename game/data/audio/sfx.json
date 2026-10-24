@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "doc": "Sound effects (M2-AUD-02; docs/kb/tech/audio_runtime.md). Audio.play_sfx(id) plays a row: files (one is picked per play, never the same twice running when there are several), bus (mix.json), volume_db (assets ship at their mix.md targets, so 0 unless a context needs it quieter), pitch_jitter (a fraction: each play is pitched within +- this), cooldown_ms (a play sooner than this after the last is dropped), voices (the most that sound at once; the oldest is cut). Rows named in other tables (battle_sfx.json, shrine_sfx.json, ui_sfx.json) must exist here; tools/validate_data.py checks every file.",
+  "sfx": {
+    "ui_cursor": {"files": ["res://assets/audio/sfx/ui_cursor.ogg"], "bus": "UI", "cooldown_ms": 40, "voices": 2},
+    "ui_confirm": {"files": ["res://assets/audio/sfx/ui_confirm.ogg"], "bus": "UI", "voices": 2},
+    "ui_cancel": {"files": ["res://assets/audio/sfx/ui_cancel.ogg"], "bus": "UI", "voices": 2}
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "doc": "Music cues and where they play (M2-AUD-02; docs/kb/tech/audio_runtime.md). cues: id -> file (one stream) or stems (synchronized layers of equal length; start_stems are audible at the start, the rest start silent), volume_db (0: assets ship at -16 LUFS), resume (a cue that comes back, after a battle say, carries on from where it stopped). Looping comes from each file's import settings (render_all.py writes them from the .loop.json sidecars). zones: scene -> the zone's music and ambience beds, switched under the router's fade (SceneRouter.scene_swapping). A missing `music` key leaves the music as it is; \"silence\" fades it out. variants: the first whose `flag` is set replaces the row's keys. battle: the cue per encounter (else default), and phases: an engine phase_changed id -> the stems to bring in or take out over sec. Cue ids are the .dlg @music ids (vertical_slice.md §6). tools/validate_data.py checks every file, scene and flag.",
+  "cues": {
+    "battle_standard": {
+      "file": "res://assets/audio/music/battle_standard.ogg"
+    },
+    "shell_shrine_interior": {
+      "file": "res://assets/audio/music/temple_trial.ogg",
+      "_note": "stand-in: the M1-AUD-02 temple ambience until M2-AUD-01's own cue"
+    },
+    "hush_theme": {
+      "file": "res://assets/audio/music/hush_theme_v2.ogg"
+    }
+  },
+  "zones": [
+    {
+      "scene": "res://game/core/boot.tscn",
+      "music": "hush_theme",
+      "ambience": [],
+      "_note": "the title"
+    },
+    {
+      "scene": "res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
+      "music": "shell_shrine_interior",
+      "ambience": []
+    },
+    {
+      "scene": "res://game/flow/field_battle.tscn",
+      "ambience": [],
+      "_note": "the battle's cue comes from `battle` when the battle starts"
+    }
+  ],
+  "battle": {
+    "default": "battle_standard",
+    "encounters": {},
+    "phases": {}
+  }
+}
