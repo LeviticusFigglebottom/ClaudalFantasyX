@@ -82,6 +82,7 @@ These were created in default permission mode; the human sets Auto in each one's
 - **Wake-ups:** the hourly routine `trig_01LJyLo42xCq3WVmAza3BMhe` FAILS with ACCESS_DENIED (as in the old account). The Lead keeps a background `sleep 2700` heartbeat in its own session instead, and re-arms it on each wake.
 
 ## 4. Process that works (keep it)
+- **Pre-merge gates run on the tracks (2026-10-24).** Each cloud track merges the latest integration branch, runs the FULL `tools/ci_local.sh` in its own container, and writes "MERGE-READY @ <sha>: ..." in its live log. The Lead merges with a scoped re-check (conflicts, plus the areas its merge resolution touched). Every Blender job pins `threads` so outputs reproduce on any CPU count. In shell waiters, never `pgrep -f <pattern>` for a pattern your own command line contains: it matches itself.
 - **Standing queues:** never one task at a time; ask each environment to message when it's two items from the end.
 - **Review sweeps:** after each merge batch, a fresh reviewer agent covers every `status: review` task. On approve or approve-with-fixes, close the task and file the fixes as new tasks. On request-changes, reopen it.
 - **Gate scope** (CLAUDE.md): agents run only checks their change can break. The Lead runs the full `tools/ci_local.sh` (about 60–90 min on 4 CPUs) after a batch of code or render merges, in a separate `lead/integration` worktree.
