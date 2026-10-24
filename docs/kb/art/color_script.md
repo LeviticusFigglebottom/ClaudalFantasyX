@@ -647,6 +647,18 @@ When the bell dies, its motes do **not** rise. They slide seaward (held), which 
 ## Review log
 - 2026-10-22 (art-stream-2, M1-ART-03): synced with the final vertical-slice script ([beat sheet](../story/beats/vertical_slice.md), [decisions_log](../story/decisions_log.md)). `ch02`: glimmer changed from none to 9 held motes at 0.6 (H06 only); sea-glow 0.03 → 0.04. `ch03`: sea-glow 0.03 → 0.04; added the per-shot glimmer table (bound in S08, lift in S09, held at the bell). Rule 2: the Vowbound are bound light (N-05); Rhen's lantern is oil (N-02). Baselines affected: `ch02` and `ch03` mood frames (none are captured yet), and the M1-ENV-01 noon shots are unchanged.
 - 2026-10-23 (art-stream-3, M1-ART-04, answering Rendering's M1-ART-01 review): (1) every hex here is now stated as an **input**; on-screen targets are palette.json 0.2.0 `onscreen_hex`, measured on the new swatch card (shot `swatch_card`). (2) Water: the v0 physical absorption triples are replaced by validated **water looks** (new section) on the shared base σ (2.0, 0.5, 0.42) × `absorption_scale`. Act I clear water is ×1.5. Deep colors that were shallow tints (ch02/ch03/ch11 `#1FA3A6`, ch07 `#3FD0C9`, ch16 `#BFE6E0`) are now true > 15 m colors. (3) Exposure: EV100 → `tonemap_exposure` per ADR 0014, with EV kept as intent. (4) Rule 3: the night value order and three ratio checks replace "the glow is the brightest value"; Ch9's moon key 0.6 → 0.35. (5) Added the `ch03_steps` sub-frame. Baselines affected: new `swatch_card`. No existing baseline changes: the water test scene keeps Rendering's values, and the looks are applied only by the probe.
+- 2026-10-24 (Art Director, env-art; M2-ART-02 and M2-ART-03). **Underwater (the RND-02 look):**
+  - The in-water colours follow the zone's water look: scatter and transmit `lagoon_teal`, deep `deep_teal_shadow` for Act I lagoons, and `abyss_navy` for `night_sea` zones.
+  - `sea_glow` is emission only. It is not a day TIR colour, and at night it is in the water column (rule 3).
+  - Rhen's lantern halo must read in the `oil_lamp` family (rule 4) underwater too.
+  - Glimmer seen from an underwater camera is compensated for the path: released motes in full, held motes at 0.6.
+
+  **Undertow (RND-05):**
+  - The Ch8 lightning frames (2.0× for 2 frames) stand for Ch8 only. Ch1's distant arrival has no exposure flash, Ch20 and the Ch21 heart flash at 1.5×, and the Letting has no lightning at all.
+  - In the Letting, the rents stay `glimmer_lift` gold (not clipped white) and rise about 2× faster than they sank (rule 1).
+  - palette.json 0.2.1 extends `spawn_wound`, `glimmer_held` and `glimmer_lift` to the storm's rents, held light and Letting.
+
+  The changes are filed as M2-RND-09 and M2-RND-10. No baseline changes from this edit.
 
 ## Art sign-off 2026-10-23
 M1-ART-05, the Art Director, closing RND-08 S5. I opened all 13 `water_*`, `glimmer_*` and `haluna_h0*` baselines in tests/screenshots/baselines, and compared them with the baselines from before RND-08 (`146375d^` before the SSS fix, `cb318dc^` before the caustics and glimmer change).
