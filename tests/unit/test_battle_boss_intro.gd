@@ -106,6 +106,19 @@ func test_the_first_turn_waits_for_it() -> void:
 	_free()
 
 
+func test_it_tells_audio_when_it_starts() -> void:
+	var heard: Array = []
+	var on_event := func(ev: StringName, args: Array) -> void: heard.append([ev, args])
+	EventBus.dialogue_event.connect(on_event)
+	var intro := _start(&"ch01_hullgnaw", 1.0)
+	EventBus.dialogue_event.disconnect(on_event)
+	assert_true(intro.playing())
+	var mine := heard.filter(func(h: Array) -> bool: return h[0] == BattleBossIntro.AUDIO_EVENT)
+	assert_eq(mine.size(), 1, "announced once")
+	assert_eq(StringName(str(mine[0][1][0])), &"ch01_hullgnaw")
+	_free()
+
+
 func test_it_waits_for_the_fade_and_the_banner() -> void:
 	var intro := _start(&"ch01_hullgnaw", 0.0)
 	ctl.pacing_scale = 1.0

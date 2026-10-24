@@ -24,6 +24,8 @@ const ROUTER_PATH := ^"SceneRouter"
 const BANNER_NAME := ^"OpeningBanner"
 const HELP_LINE := ^"%HelpLine"
 const THEME_PATH := "res://game/ui/theme/hymn_theme.tres"
+## Announced on EventBus.dialogue_event as the intro starts ([encounter id, title_key]) so audio can play a sting.
+const AUDIO_EVENT := &"boss_intro"
 const IDLE := 0
 const WAITING := 1
 const PLAYING := 2
@@ -178,6 +180,9 @@ func _begin() -> void:
 	_hold_menu()
 	_frame_boss()
 	_build_card()
+	var bus := get_node_or_null(^"/root/EventBus")
+	if bus != null:
+		bus.emit_signal(&"dialogue_event", AUDIO_EVENT, [_engine.encounter_id, str(row.get("title_key", ""))])
 	advance(0.0)
 
 

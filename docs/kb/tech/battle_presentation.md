@@ -513,3 +513,6 @@ shots: Rhen alone against Hullgnaw, the intro forced and frozen half way through
 
 **Open.** No sound cue yet (Audio may hang a sting on the intro's start); the stand-ins stand still under it, and a
 creature actor could play a `ready` or roar clip at the hold when the creatures track has one.
+
+- **Audio hook (boss intros):** as an intro starts it announces `EventBus.dialogue_event("boss_intro",
+  [encounter_id, title_key])`, the same channel as the stinger's `battle_bark`, so audio can play a sting.
