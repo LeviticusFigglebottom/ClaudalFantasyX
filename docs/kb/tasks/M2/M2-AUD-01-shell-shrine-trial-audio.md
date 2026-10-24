@@ -2,8 +2,8 @@
 id: M2-AUD-01
 title: Shell Shrine trial audio: the interior cue and the puzzle's sounds
 role: audio
-status: todo
-owner_session: ""
+status: doing
+owner_session: "audio (claude/audio)"
 depends_on: [M2-FP-16]
 milestone: M2
 request-from: cinematics
