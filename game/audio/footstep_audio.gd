@@ -7,7 +7,8 @@ extends Node
 ##
 ## When a step plays (game/data/audio/footsteps.json):
 ## - Foot contacts, when the hero body has them. The body is the walker's `contacts.body` child (HeroFieldActor's
-##   "HeroBody"), else the walker. In order: its `contacts.signal` signal (foot_contact(foot)); else the clips'
+##   "HeroBody"), else the walker. In order: its `contacts.signal` signal (hero-integration's foot_contact(foot, run);
+##   its `contacts.run_arg` argument, when present, says walk or run); else the clips'
 ##   contact markers (`contacts.markers`, M2-CHR-12's foot_l_down / foot_r_down) crossed by the playback position of
 ##   the body's AnimationTree (each clip node's parameters/<path>/current_position; inside a 1D blend space only the
 ##   dominant clip counts) or of its playing AnimationPlayer. A clip in `contacts.run_clips` is a run.
@@ -253,12 +254,12 @@ func _find_contacts(delta: float) -> void:
 	for c in candidates:
 		if sig != &"" and c.has_signal(sig):
 			body = c
-			var argc := 0
+			var names: Array[String] = []
 			for s: Dictionary in c.get_signal_list():
 				if StringName(str(s["name"])) == sig:
-					argc = (s["args"] as Array).size()
-			var cb := _on_foot_contact if argc == 0 else _on_foot_contact.unbind(argc)
-			c.connect(sig, cb)
+					for arg: Dictionary in s["args"]:
+						names.append(str(arg["name"]))
+			c.connect(sig, _contact_callable(names))
 			contact_source = &"signal"
 			return
 	for c in candidates:
@@ -288,10 +289,31 @@ func _drop_contacts() -> void:
 	_resolve_wait = 0.0
 
 
+## The handler for a contact signal with arguments `names`: when one is contacts.run_arg (hero-integration's
+## foot_contact(foot, run)), its value says walk or run (the live clip's gait); otherwise the pace does.
+func _contact_callable(names: Array[String]) -> Callable:
+	var at := names.find(str(_cfg().get("run_arg", "")))
+	if at < 0:
+		return _on_foot_contact if names.is_empty() else _on_foot_contact.unbind(names.size())
+	match names.size():
+		1:
+			return func(a: Variant) -> void: _on_foot_contact_gait([a], at)
+		2:
+			return func(a: Variant, b: Variant) -> void: _on_foot_contact_gait([a, b], at)
+		_:
+			return func(a: Variant, b: Variant, c: Variant) -> void: _on_foot_contact_gait([a, b, c], at)
+
+
 func _on_foot_contact() -> void:
 	if not is_instance_valid(walker) or not walker.is_inside_tree() or not _on_ground():
 		return
 	_contact(is_run(data, speed))
+
+
+func _on_foot_contact_gait(args: Array, at: int) -> void:
+	if not is_instance_valid(walker) or not walker.is_inside_tree() or not _on_ground():
+		return
+	_contact(bool(args[at]) if at < args.size() else is_run(data, speed))
 
 
 func _contact(run: bool) -> void:

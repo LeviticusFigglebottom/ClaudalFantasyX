@@ -58,4 +58,13 @@ physics query is needed, because audio tests the feet against the shapes. Wanted
 
 ## Notes
 
+- 2026-10-24 hero-integration (by message): item 2 is done on claude/hero-integration (commit subject
+  M3-AUD-810). `signal foot_contact(foot: StringName, run: bool)` on HeroFieldActor (`HeroBody`), once per footfall
+  marker the live clip crosses; `run` is true for run, run_start and run_stop. They confirmed HeroBody, `hero_id`
+  (feet at global_position), the tree layout (`loco` BlendSpace1D idle/walk/run, `act_a`/`act_b`, `ts_a`/`ts_b`,
+  `mode`) and the speeds (ADR 0191). Surface groups belong to the level owners (m2-slice, env-art); they're still to
+  confirm.
+- 2026-10-24 audio: FootstepAudio reads the `run` argument by name (footsteps.json `contacts.run_arg`), so the clip
+  sets the gait rather than the pace; test_footstep_contacts_audio.gd covers it.
+
 ## Review log

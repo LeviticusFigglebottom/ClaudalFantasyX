@@ -32,6 +32,13 @@ class SignalBody:
 	var hero_id := &"asha"
 
 
+## hero-integration's HeroFieldActor signature (M3-AUD-810): foot_contact(foot, run), the run flag from the live clip.
+class GaitSignalBody:
+	extends Node3D
+	signal foot_contact(foot: StringName, run: bool)
+	var hero_id := &"rhen"
+
+
 class TreeBody:
 	extends Node3D
 	var hero_id := &"rhen"
@@ -171,6 +178,30 @@ func test_a_contact_signal_fired_by_a_method_track_is_one_step_each() -> void:
 	_frames(f, w, RUN_MPS, 1.0, func(dt: float) -> void: ap.advance(dt))
 	assert_true(_rows("hero_step_").size() > 0, "running still steps on contacts")
 	assert_true(_rows("hero_step_").all(func(p: Array) -> bool: return p[0] == &"hero_step_sand_run"), "run rows")
+	f.free()
+	w.free()
+
+
+func test_the_contact_signals_run_flag_sets_the_gait() -> void:
+	var w := Walker.new()
+	var body := GaitSignalBody.new()
+	body.name = "HeroBody"
+	w.add_child(body)
+	_host().add_child(w)
+	var f := _listener(w)
+	f.advance(DT)
+	assert_eq(f.contact_source, &"signal", "foot_contact(foot, run) is the contact source")
+	_frames(f, w, WALK_MPS, 0.5)
+	played.clear()
+	body.foot_contact.emit(&"l", true)  # a run_start clip while the pace is still a walk's
+	_frames(f, w, WALK_MPS, 0.3)
+	body.foot_contact.emit(&"r", false)
+	assert_eq(
+		_rows("hero_step_").map(func(p: Array) -> StringName: return p[0]),
+		[&"hero_step_sand_run", &"hero_step_sand_walk"],
+		"the clip's gait, not the pace"
+	)
+	assert_eq(_rows("hero_gear_lantern").size() + _rows("hero_cloth_").size() > 0, true, "Rhen's foley follows")
 	f.free()
 	w.free()
 
