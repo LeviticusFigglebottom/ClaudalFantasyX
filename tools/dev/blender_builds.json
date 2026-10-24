@@ -276,6 +276,26 @@
         ["{blender}", "--python", "assets_src/creatures/flue_moth/build_flue_moth.py", "--", "--out", "assets/creatures/flue_moth/flue_moth.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "flue_moth"]
       ]
+    },
+    {
+      "id": "creature_wallcrab",
+      "owner": "character",
+      "sources": ["assets_src/creatures/wallcrab/**", "assets_src/creatures/reef_crab/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/wallcrab/*.glb", "assets/creatures/wallcrab/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/wallcrab/build_wallcrab.py", "--", "--out", "assets/creatures/wallcrab/wallcrab.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wallcrab"]
+      ]
+    },
+    {
+      "id": "creature_stormgull",
+      "owner": "character",
+      "sources": ["assets_src/creatures/stormgull/**", "assets_src/creatures/gull_harrier/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/stormgull/*.glb", "assets/creatures/stormgull/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/stormgull/build_stormgull.py", "--", "--out", "assets/creatures/stormgull/stormgull.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "stormgull"]
+      ]
     }
   ]
 }

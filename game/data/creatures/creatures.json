@@ -16,6 +16,8 @@
     "portrait": {"clip": "idle", "clip_time": 0.0, "yaw_deg": 30.0, "pitch_deg": 14.0, "fov_deg": 28.0, "margin": 0.85}
   },
   "creatures": {
+    "stormgull": {"scene": "res://game/creatures/stormgull/stormgull_battle.tscn", "contact": {"attack": 0.75}, "stand_in": {"yaw_deg": 60.0}},
+    "wallcrab": {"scene": "res://game/creatures/wallcrab/wallcrab_battle.tscn", "contact": {"attack": 0.5, "cast": 0.7}},
     "flue_moth": {"scene": "res://game/creatures/flue_moth/flue_moth_battle.tscn", "contact": {"attack": 0.5, "cast": 0.6}},
     "undertows_reach": {
       "scene": "res://game/creatures/undertows_reach/undertows_reach_battle.tscn", "contact": {"attack": 1.2, "cast": 1.3},

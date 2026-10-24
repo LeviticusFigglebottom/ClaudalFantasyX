@@ -918,6 +918,8 @@
     {"id": "creature_tide_crawler", "scene": "res://game/levels/_tests/creatures/shots/creature_tide_crawler.tscn", "resolution": [960, 720]},
     {"id": "creature_vein_sparker", "scene": "res://game/levels/_tests/creatures/shots/creature_vein_sparker.tscn", "resolution": [960, 720]},
     {"id": "creature_undertows_reach", "scene": "res://game/levels/_tests/creatures/shots/creature_undertows_reach.tscn", "resolution": [960, 720]},
-    {"id": "creature_flue_moth", "scene": "res://game/levels/_tests/creatures/shots/creature_flue_moth.tscn", "resolution": [960, 720]}
+    {"id": "creature_flue_moth", "scene": "res://game/levels/_tests/creatures/shots/creature_flue_moth.tscn", "resolution": [960, 720]},
+    {"id": "creature_wallcrab", "scene": "res://game/levels/_tests/creatures/shots/creature_wallcrab.tscn", "resolution": [960, 720]},
+    {"id": "creature_stormgull", "scene": "res://game/levels/_tests/creatures/shots/creature_stormgull.tscn", "resolution": [960, 720]}
   ]
 }
