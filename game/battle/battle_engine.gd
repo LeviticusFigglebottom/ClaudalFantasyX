@@ -91,6 +91,7 @@ func setup(
 	assert(party_active.size() <= MAX_ACTIVE, "BattleEngine: too many active party members")
 	var enc: Dictionary = db.encounters.get(encounter, {})
 	scripted = bool(enc.get("scripted", false))
+	BossMechanics.lend_skills(self, enc)
 	var n := 0
 	for eid: Variant in enc.get("enemies", []):
 		n += 1
