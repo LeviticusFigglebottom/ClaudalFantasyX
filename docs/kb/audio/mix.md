@@ -104,3 +104,32 @@ integrated loudness, so the sparse hits need no limiting: 0 % of samples were to
 and its true peak is −3.2 dBTP. Pure environmental beds (surf, rain, temple wind)
 remain at −26 LUFS on the Ambience bus. If the temple cue feels too present under
 dialogue in play, the dialogue duck (−4 dB) applies as for any music.
+
+## 7. The mix as built (M2-AUD-06)
+
+The plan in §4 is now the game's mix: the `Audio` autoload (ADR 0031; docs/kb/tech/audio_runtime.md) builds it from
+`game/data/audio/mix.json`.
+
+- **Buses:** Master (a hard limiter, ceiling −1 dB, safety only) ← Music, Ambience, SFX (← UI, World, Combat),
+  Voice. Every bus sits at 0 dB plus the player's setting plus any duck. `MusicStems` became unnecessary: a boss
+  cue's stems are one `AudioStreamSynchronized` on the Music bus whose per-stem volumes fade (music.json `stems`).
+  `WorldVerb` is not built yet: world SFX carry their own room (the shrine's sounds are rendered in its room).
+- **Ducks** (by reason, ramped, additive): `dialogue` (any DialogueBox visible) Music −4 dB, Ambience −2 dB over
+  0.25 s; `battle` (a BattleController in the tree) Ambience −3 dB over 0.5 s.
+- **Cutscenes:** while a cutscene's music plays (and to the end of a scene that started music), the zone bed holds
+  silent; it comes back over 2 s.
+- **Player volume:** `master_volume`, `music_volume`, `sfx_volume` (SFX and Ambience) and `voice_volume`, 0–100 % in
+  tenths, in the accessibility settings (`game/data/ui/accessibility.json`); applied live as a gain on their buses
+  (100 % is the asset's own level, 0 % silence). The menu rows are M2-AUD-08 (UI). `reduced_audio` (M2-AUD-04)
+  thins battle SFX.
+- **The loudness gate:** `tools/audio/targets.py` lists every file's target (the table in §2, made exact per
+  family), and `tools/tests/test_audio_loudness.py` decodes every shipped `.ogg` and checks its integrated or
+  momentary loudness and its true peak, that each file is at most 5 MB, and that all audio stays inside the slice
+  budget (24 MiB). The boss stems are checked as a stack (−16 together; stem 1 alone quieter).
+- **Encoding exceptions:** the ambience beds are Vorbis q1 (noise-like beds lose nothing audible there; at q3 the six
+  came to 3.1 MiB against their 2.5 MiB budget). Battle v2 and the Drownbell are q3.5 like v1; the piano cues q4.
+
+**Measured relative levels inside the M2 cues** (each cue's bus gains were set from measured bus loudness; see
+each source's comment above `render()`): the lead instrument at 0 LU; accompaniment metallophones −7 to −8;
+plucked or struck accompaniment −9 to −11; bass −6 to −10; drums −4 (battle) to −8 (town); gongs −12 to −14;
+drones −9. In the Drownbell the bell sits −2 under the lead, and stem 2 lifts the full stack about +2 LU.

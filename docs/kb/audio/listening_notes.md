@@ -90,3 +90,96 @@ guitar and go metallophone-and-drums only."
 
 If you answer nothing, the SPEC default applies: **keep iterating and show samples
 again at the end of M2.**
+
+---
+
+# M2 listening notes (SPEC §16 Q3; the slice's cues and sounds)
+
+Same rules as above: everything is synthesized from code in this repo, nobody has heard it, and your ears decide
+what is "final". Each entry says what to play, what it should feel like, and the questions I most need answered.
+In the game they play by themselves (the `Audio` autoload, docs/kb/tech/audio_runtime.md); the files are in
+`assets/audio/`.
+
+## M2: Shell Shrine (B07, the temple trial)
+
+| File | Length | What it is |
+|---|---|---|
+| `music/shell_shrine_interior.ogg` | 72 s loop | The trial's interior cue |
+| `sfx/shrine/shrine_stone_turn_1.ogg` (and _2, _3) | ~1.7 s | A basin turning on its stone seat |
+| `sfx/shrine/shrine_pour.ogg`, `shrine_drain.ogg`, `shrine_spill.ogg` | ~1.8 s | The water reaching the pool, the sluice, a grate |
+| `sfx/shrine/shrine_side_drain.ogg`, `shrine_door.ogg`, `shrine_charm.ogg`, `shrine_pool_fill.ogg` | 1–4 s | The side pool emptying, the door's valve, the charm, the pool filling (a loop) |
+
+**Listen for (the cue):**
+- The brief is "a tended, loved place": warm, still, a little sacred. Does it feel *kinder* than the M1 temple cue
+  (`temple_trial.ogg`, which is meant to be ominous)? It should.
+- The drips are tuned to the drone's scale and each one rings its shell basin at the same pitch. Do the drips sound
+  like water, or like a glockenspiel? If the "ring" is too musical, I can drop it 6 dB in one number.
+- The far congregation hum (the Order hums): people, or an organ?
+- Can you hear the loop wrap (every 72 s)?
+
+**Listen for (the puzzle):** does the stone grind sound like heavy stone turning (not a creaking door)? Do the
+pour, the drain and the spill sound *different* enough that you'd know where the water went with your eyes shut?
+That is the point of them (pillar 4).
+
+## M2: the slice's three final cues (M2-AUD-03; SPEC §10 M2, §16 Q3)
+
+The slice needs three *final* cues. I built three families, so you can judge each by the scene it scores. Please
+listen in this order (about 15 minutes). **Your verdict on each decides "final"**; one sentence per cue is enough
+("flute too breathy", "bell too loud", "the night one is lovely").
+
+### (a) Haluna by day and by night
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/haluna_village.ogg` | 75 s loop | B02, B03, B05: Haluna by day |
+| 2 | `music/haluna_night.ogg` | 83 s loop | B11: the dock at night (after the Drownbell) |
+
+- The brief: *a festival for a departure.* Warm, gamelan-like percussion, a flute tune that never quite resolves.
+  The tune never lands on the home note D: it hangs on E, then on B (a deceptive close), and only the harmony
+  comes home at the loop's wrap. **Does it feel bittersweet, or just unfinished?**
+- The plucked "lute" under the tune is a modelled string through a small wooden body. Lute, harp, or toy?
+- The two metallophones interlock (each plays every other note). Do you hear one figure, or a clatter?
+- The night version is the same tune, slower, flute and drone only, the second half an octave lower. Is it
+  intimate, or empty?
+- Loop seams: 75 s and 83.5 s. Any bump?
+
+### (b) Battle v2 and the Drownbell
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 3 | `music/battle_standard.ogg` | 75 s | **The M1 version, for comparison** (30 s is enough) |
+| 4 | `music/battle_standard_v2.ogg` | 3 s intro + 72 s loop | Every ordinary battle |
+| 5 | `music/drownbell_p1.ogg` | 72.7 s loop | The Drownbell, phase 1 |
+| 6 | `music/drownbell_p1.ogg` **and** `music/drownbell_p2.ogg` **together** | 72.7 s loop | Phase 2, the Flood: the game fades stem 2 in over 4 s on top of stem 1 |
+
+- **v2 is the same composition as v1 with a different band.** The listening notes for M1 named the modelled
+  guitar and the synth lead as the weakest parts, and offered "metallophone and drums only" as a direction. v2 takes
+  it: no guitar (its chords became struck metallophone stabs and muted plucks), no synth lead (the theme is a
+  hard-blown flute, doubled by a metallophone). **Which do you prefer, v1 or v2, and why?** If v2's flute sounds
+  too gentle for a battle, say so: that tells me whether to bring a (better) lead synth back.
+- The Drownbell: a tower bell tolls on every downbeat (a minor-third "tierce", the partial that makes bells sound
+  sad). Under it the interlocking metallophones, a 3+3+2 bass and drums, and a breath-flute theme. Phase 2 adds
+  low strings, rising water (a band of noise that climbs over 8 bars, with bubbles) and a sub-bass surge into each
+  section. To hear phase 2, play both stem files at once (in Audacity: import both, play). **Does phase 2 feel like
+  the water rising, a real escalation?** Is the bell too loud, or not menacing enough?
+- The low strings are the old saw-ensemble pad, kept low. If they sound like a 90s keyboard, tell me.
+
+### (c) The Hush family (the cutscenes and the end)
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 7 | `music/haluna_dawn.ogg` | ~2.6 min | Cutscene A (B01): the girl on the beach |
+| 8 | `music/hush_first_verse.ogg` | 80 s | Cutscene B (B09): Asha sings the first verse |
+| 9 | `music/hush_coda.ogg` | 39 s | The slice end card (B12) |
+| 10 | `sfx/ilun_summon.ogg` | 6 s | The sting when Asha calls Ilun (B10) |
+
+- **haluna_dawn:** solo piano and a low metallophone. The brief: *it doesn't know yet whether it's sad.* It moves
+  between D major and B minor under the same melody, and it previews Haluna's tune before the village plays it.
+  Does the ambiguity come across?
+- **hush_first_verse:** the Hush theme's first phrase as Asha's song. Until a voice is settled (Q4/Q5), a
+  "vocalise-like instrument" carries it: the breath flute shaped by an open "ah" vowel's resonances. The piano
+  enters on the last word, *mir* (at about 0:28). **Does the line read as singing, or as a flute with a cold?**
+  This is the single most important judgement for the slice. If you'd rather hear the synthetic singing voice
+  (the temple cue's Cantor, the same voice model), say so and I'll render that version for comparison.
+- **hush_coda:** the same phrase on the piano alone, slower. Too sentimental, or right for the end card?
+- **ilun_summon:** the Hush's first six notes, two octaves up on glass, over gathering water. Beautiful, or shrill?
