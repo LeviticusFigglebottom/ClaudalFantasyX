@@ -121,9 +121,19 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
       - For Rendering: the `ch04_derelict` sub-frame. The derelict preview uses a stand-in day sun until it exists.
       - Filed **M3-ENV-700**: the ferry's transom is wound inward, and `bf_import_settings.py` overwrites the ch04
         LUT import.
-    - **Running (worktree agents):** M3-ENV-10 Coilspire, M3-ENV-09B Pemakar's far Ashcrown from the kit,
-      M3-ENV-07B the Oruvel storm and Hullgnaw's split.
-    - **Next:** M3-ENV-11 (close-range plume; after 09B, same files) and M3-ENV-700.
+    - **M3-ENV-09B: in review, merged here.**
+      - Pemakar's preview and the Lanternfall arena now place the Ashcrown kit's five exterior pieces at the rim
+        (LOD1 from 600 m). The silhouette is retired from the layouts but kept as an asset.
+      - `pemakar_p01` re-approved after viewing (rmse 0.0016); p03 doesn't change.
+    - **Baselines must come from `tools/screenshots/capture.sh` (one process per shot), not one shared
+      `capture.tscn` run (08c48cc3).**
+      - With creature models in frame, shared-mode captures depend on capture order: the route arena moved by rmse
+        0.03 from its position in the run alone. Isolated captures are byte-identical run to run.
+      - The ten arena and flood baselines I had approved from shared runs are re-approved from isolated captures,
+        each viewed.
+    - **Running (worktree agents):** M3-ENV-10 Coilspire, M3-ENV-07B the Oruvel storm and Hullgnaw's split,
+      M3-ENV-11 the close-range plume.
+    - **Next:** M3-ENV-700 (the ferry's transom).
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**

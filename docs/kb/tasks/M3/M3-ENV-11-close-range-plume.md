@@ -2,8 +2,8 @@
 id: M3-ENV-11
 title: "A close-range Pemakar plume (it was built for 900 m; inside 300 m its billows facet and go black)"
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M3-ENV-09]
 milestone: M3
 request-from: environment
