@@ -796,28 +796,50 @@ def check_provenance(root: Path, rep: Report) -> None:
             rep.warn(f"PROVENANCE.md lists '{rel}' but the file does not exist")
 
 
-def load_banned(root: Path) -> list[re.Pattern[str]]:
-    pats: list[re.Pattern[str]] = []
+BANNED_BEFORE = r"(?<![A-Za-z0-9_])"
+BANNED_AFTER = r"(?![A-Za-z0-9_])"
+
+
+def load_banned_terms(root: Path) -> list[tuple[str, bool]]:
+    """(term, case_insensitive) per line of tools/banned_terms.txt."""
+    out: list[tuple[str, bool]] = []
     for line in (root / "tools" / "banned_terms.txt").read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line or line.startswith("#"):
             continue
-        flags = 0
-        if line.startswith("i:"):
-            flags, line = re.I, line[2:]
-        pats.append(re.compile(r"(?<![A-Za-z0-9_])" + re.escape(line) + r"(?![A-Za-z0-9_])", flags))
-    return pats
+        out.append((line[2:], True) if line.startswith("i:") else (line, False))
+    return out
+
+
+def load_banned(root: Path) -> list[re.Pattern[str]]:
+    return [re.compile(BANNED_BEFORE + re.escape(t) + BANNED_AFTER, re.I if ci else 0)
+            for t, ci in load_banned_terms(root)]
+
+
+def banned_any(root: Path) -> re.Pattern[str]:
+    """One regex that matches wherever any load_banned() pattern matches (M2-NIT-06).
+    The shared word-boundary guards are hoisted out of the alternation and each term keeps its own case flag, so
+    a search position matches exactly when one of the per-term patterns matches there. Run per term and per line,
+    the 70 patterns cost about ten seconds per validate_data run; this one costs well under one."""
+    alts = "|".join(f"(?i:{re.escape(t)})" if ci else f"(?:{re.escape(t)})" for t, ci in load_banned_terms(root))
+    return re.compile(f"{BANNED_BEFORE}(?:{alts}){BANNED_AFTER}" if alts else r"(?!)")
 
 
 def check_banned(root: Path, rep: Report) -> None:
     pats = load_banned(root)
+    any_pat = banned_any(root)
     for entry in BANNED_SCAN:
         base = root / entry
         files = [base] if base.is_file() else (sorted(base.rglob("*")) if base.exists() else [])
         for p in files:
             if not p.is_file() or p.suffix not in BANNED_SCAN_EXT:
                 continue
-            for n, line in enumerate(p.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+            text = p.read_text(encoding="utf-8", errors="replace")
+            # Line breaks are not word characters, so a term matches somewhere in the file exactly when it
+            # matches in one of its lines: a file with no hit anywhere needs no line-by-line pass.
+            if not any_pat.search(text):
+                continue
+            for n, line in enumerate(text.splitlines(), 1):
                 for pat in pats:
                     m = pat.search(line)
                     if m:
