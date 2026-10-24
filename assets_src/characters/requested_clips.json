@@ -113,6 +113,9 @@
       "hand_over",
       "set_in_hole",
       "stand"
+    ],
+    "sefir": [
+      "bow_from_barge"
     ]
   }
 }

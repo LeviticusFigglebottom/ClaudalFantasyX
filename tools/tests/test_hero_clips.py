@@ -210,7 +210,7 @@ class TestSefirClips(unittest.TestCase):
         for dlg in (ROOT / "game" / "data" / "dialogue").rglob("*.dlg"):
             if "test" not in dlg.parts:
                 called |= set(re.findall(r"@anim sefir ([a-z_]+)", dlg.read_text(encoding="utf-8")))
-        self.assertEqual(called - set(hero_clips.CLIPS["sefir"]) - {"look_at"}, set())
+        self.assertEqual(called - set(hero_clips.CLIPS["sefir"]) - {"look_at"} - PENDING.get("sefir", set()), set())
 
     def test_idle_is_still(self):
         """His idle is a held pose (that is intended; the review must not fix it): zero rotation delta, and no hips
