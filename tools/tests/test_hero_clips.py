@@ -29,10 +29,11 @@ class TestHeroClips(unittest.TestCase):
             self.assertLess(path.stat().st_size, MAX_BYTES, hero)
 
     def test_asha_has_every_requested_clip(self):
-        self.assertEqual(set(hero_clips.CLIPS["asha"]), REQUESTED)
+        expected = REQUESTED | set(hero_clips.BATTLE_CLIPS)  # M2-CHR-07: plus the battle clip contract
+        self.assertEqual(set(hero_clips.CLIPS["asha"]), expected)
         text = hero_clips.out_path("asha").read_text(encoding="utf-8")
         names = set(re.findall(r'resource_name = &"([a-z_]+)"', text))
-        self.assertEqual(names, REQUESTED)
+        self.assertEqual(names, expected)
         self.assertIn("take_hand", hero_clips.CLIPS["rhen"])  # the request lists Rhen's clip for the shared rig
 
     def test_scripts_call_only_existing_clips(self):
