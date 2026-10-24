@@ -3,14 +3,16 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
-- **Review:** M2-CRE-01, the design sheets (`docs/kb/art/creatures/`).
-- **Pushed, in progress:** M2-CRE-02 (pipeline), M2-CRE-03 (battle hook), M2-CRE-04 (the reef crab), M2-CRE-08 (the Drownbell, with a breakable rim and the flood phase), M2-CRE-09 (the creature shots; baselines pending), M2-CRE-10 (`CreaturePortrait`, a live 3D portrait; request **M2-UI-16** filed for the bestiary page).
-  - The hook rides on the UI track's M2-UI-07: I cherry-picked its three commits (ef3937c, bf37755, 08c872c from `claude/ui`), so the two branches carry identical `fighter_stand_in.gd` hook content. My additions on top are small delegations (`play_action`, `play_hit`, `enter_phase`, `set_part_broken`, KO and Petrify hand-off) and `BattleStage.settle_actors()`.
-  - `enemies.json` gains `model` on reef_crab and drownbell so far. battle_controller.gd is untouched: `BattleStage.spawn` attaches `BattleActorMotion`.
-  - **For the PC GPU session:** `game/levels/_tests/drownbell/drownbell_flood_shot.gd` (your file) gained one line after `boss.settle()`: `ctl.stage.settle_actors()`, which jumps the bell model's 2.4 s flood sink to its end, as your settle does for the water. The `drownbell_flood` baseline will change (a bronze bell instead of the cylinder); I re-approve it with the other battle shots after viewing.
-  - **Do not merge yet:** the battle baselines that show the reef crab and the Drownbell are not re-approved, and the new creature shots have no baselines (M2-CRE-09). The screenshot step fails on them until then.
-- **In progress (worktree agents):** M2-CRE-05 lantern eel, M2-CRE-06 gull harrier, M2-CRE-07 spawn-polyp.
-- **Two queue items remain** after the agents land: the shots and re-approvals (M2-CRE-09), and the crab and bell polish passes.
+- **Review:** M2-CRE-01 (design sheets); M2-CRE-05 lantern eel and M2-CRE-07 spawn-polyp (worktree agents, merged); M3-CRE-02 (the Ch1 models: Hullgnaw, wickfry, tower limpet, oil slug; first passes, waiting on m2-slice's enemy rows for the `model` line).
+- **Pushed, in progress:** M2-CRE-02 pipeline, M2-CRE-03 battle hook, M2-CRE-04 reef crab, M2-CRE-08 Drownbell, M2-CRE-09 shots (baselines pending), M2-CRE-10 `CreaturePortrait` (request **M2-UI-16** filed).
+  - The hook rides on the UI track's M2-UI-07: I cherry-picked its three commits (ef3937c, bf37755, 08c872c from `claude/ui`), so the two branches carry identical `fighter_stand_in.gd` hook content. My additions on top are small delegations and `BattleStage.settle_actors()`.
+  - `enemies.json` now has `model` on reef_crab, lantern_eel, drownbell and spawn_polyp. battle_controller.gd is untouched.
+  - **For the PC GPU session:** `game/levels/_tests/drownbell/drownbell_flood_shot.gd` (your file) gained one line after `boss.settle()`: `ctl.stage.settle_actors()`. It jumps the bell model's 2.4 s flood sink to its end, as your settle does for the water.
+  - **Do not merge yet:** the 11 battle baselines that show the creatures (battle_* fixtures and drownbell_flood) are not re-approved, and the creature shots have no baselines. That waits on the gull harrier (the last worktree agent) so every battle shot is re-approved once.
+- **In progress:** M2-CRE-06 gull harrier (worktree agent).
+- **Coverage** (full suite under instrumentation, 1467 tests): battle 99.95%, progression 96.52%, within the baseline.
+- **Act I (M3, the Lead's queue tail):** M3-CRE-01 roster proposal and 15 design sheets (`docs/kb/art/creatures/act1_roster.md`, `act1/`), sent to m2-slice for their encounters (send_message 12:20). M3-CRE-02 Ch1 models pushed.
+- **Two queue items remain** for the slice: the shots and re-approvals (M2-CRE-09), and the polish passes. Then Act I continues with Ch4 (Spar-Wraith, bottle hermit, sail leech).
 - **Un-pushed state:** none.
 - **Integration merge:** merged `origin/claude/undertow-lead-handoff-423ixt` at d62f524 (clean).
 
