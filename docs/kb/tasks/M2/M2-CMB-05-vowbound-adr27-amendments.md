@@ -2,8 +2,8 @@
 id: M2-CMB-05
 title: Vowbound fixes from ADR 0027's acceptance (absorb fills the gauge, Floodnet clears the flood, the call's turn end, sim call rule)
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a7aa8de557501f0a5"
 reviewer: lead
 depends_on: [M2-CMB-04]
 milestone: M2
