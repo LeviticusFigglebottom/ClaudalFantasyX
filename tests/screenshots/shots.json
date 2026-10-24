@@ -1988,6 +1988,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "wildlife_stage",
+      "scene": "res://game/levels/_tests/wildlife/wildlife_stage.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

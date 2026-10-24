@@ -12,7 +12,9 @@ const VEG_DIR := "res://assets/environments/vegetation/"
 const BASE_BODY := "res://assets/characters/base_body/base_body_slender.glb"
 const BUST := "res://assets/characters/shader_test/shader_test_bust.glb"
 const ASHA_DIR := "res://assets/characters/asha/"
-const KINDS: Array[String] = ["base_body", "characters", "creatures", "haluna_kit", "shader_test", "vegetation"]
+const KINDS: Array[String] = [
+	"base_body", "characters", "creatures", "haluna_kit", "shader_test", "vegetation", "wildlife"
+]
 ## M2-FP-07: the clip names the first-playable scripts call (`@anim asha <clip>`).
 const HERO_CLIPS: Array[String] = [
 	"idle",

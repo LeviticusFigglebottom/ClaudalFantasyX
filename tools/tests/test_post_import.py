@@ -18,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE_DIR = ROOT / "tests" / "fixtures" / "import"
 RULES_DIR = ROOT / "game" / "data" / "import"
-KINDS = {"base_body", "characters", "creatures", "haluna_kit", "shader_test", "vegetation"}
+KINDS = {"base_body", "characters", "creatures", "haluna_kit", "shader_test", "vegetation", "wildlife"}
 
 
 def res(path: str) -> Path:
