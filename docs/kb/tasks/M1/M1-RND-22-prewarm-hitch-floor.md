@@ -2,8 +2,8 @@
 id: M1-RND-22
 title: Prewarm worst frame is 230-620 ms against SPEC §4.2's 50 ms
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU, branch gpu/m1-rnd-22-prewarm)"
 depends_on: [M1-RND-15]
 milestone: M1
 request-from: "qa"
