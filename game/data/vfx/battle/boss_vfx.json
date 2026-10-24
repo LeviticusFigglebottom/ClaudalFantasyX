@@ -1,0 +1,165 @@
+{
+  "version": 1,
+  "doc": "M2-RND-04 boss set pieces: BattleBossVfx (game/vfx/battle/battle_boss_vfx.gd) listens to the engine's boss signals (battle_ctb.md 'VFX hook points') and plays them; it never writes combat state. Particle effects are effects.json ids (BattleVfx plays them). Colours are palette.json swatches (named in `swatches`, tested). docs/kb/tech/battle_vfx.md 'The Drownbell'.",
+  "bosses": {
+    "drownbell": {
+      "telegraph": {
+        "_note": "toll_gather starts a 2-turn charge: a cyan glow builds at the rim, a step per turn of the charge, with a slow pulse, and held motes gather on the hood each turn.",
+        "charge_skill": "toll",
+        "gather": "toll_gather",
+        "glow_at": "rim",
+        "glow_color": "#3FE0C8",
+        "glow_energy_max": 3.0,
+        "glow_range_m": 3.5,
+        "pulse_hz": 0.6,
+        "pulse_depth": 0.25,
+        "glow_in_s": 0.8,
+        "glow_out_s": 0.35,
+        "swatches": {
+          "glow_color": "spawn_wound"
+        }
+      },
+      "toll": {
+        "_note": "The toll fires: a shockwave ring over the water from the bell's foot to the party and past it, and a pale pulse (a capped flash).",
+        "skill": "toll",
+        "flash": "flash_toll",
+        "ring_color": "#EEF6F4",
+        "ring_alpha": 0.9,
+        "ring_radius_m": 11.0,
+        "ring_s": 1.4,
+        "ring_width_m": 0.35,
+        "ring_wash_m": 1.6,
+        "ring_lift_m": 0.03,
+        "swatches": {
+          "ring_color": "foam_white"
+        }
+      },
+      "weak_point": {
+        "_note": "Each landed rim hit sprays sparks; the third breaks the charge with a cyan burst and the glow drops.",
+        "hit": "rim_crack",
+        "break": "rim_break"
+      },
+      "flood": {
+        "_note": "haluna.md section 2.2 and the color script's ch03_boss phase 2: at the Flood phase the water rises from from_m to to_m over rise_s (eased), publishing hymn_water_level (this rig is the battle scene's one publisher), while the sun's key falls to light_energy_scale of its energy and sea-glow rises. When Ilun clears the field the water falls back over fall_s; the light stays (the sun has set). The battle arena's flat sea (hide_nodes) gives way to the rig's water at the start.",
+        "phase": "flood",
+        "field": "flood",
+        "from_m": -0.7,
+        "to_m": 0.6,
+        "rise_s": 8.0,
+        "fall_s": 6.0,
+        "datum_m": -0.7,
+        "sun_node": "Sun",
+        "light_energy_scale": 0.6,
+        "sea_glow_from": 0.04,
+        "sea_glow_to": 0.06,
+        "hide_nodes": [
+          "Arena/Sea"
+        ],
+        "water_core_half_extent_m": 16.0,
+        "water_core_cell_m": 0.25,
+        "water_outer_half_extent_m": 600.0,
+        "weather": {
+          "_note": "No shipped scene drives the weather clock (hymn_wind_time) or hymn_wind outside test rigs, so a battle's water would stand still. While no other node does, the flood rig runs the clock on from its last value and sets a breeze when the wind is calm; leaving, it puts the wind back.",
+          "drive_clock": true,
+          "wind_m_s": 4.0,
+          "wind_azimuth_deg": 250.0,
+          "gust": 0.3
+        },
+        "look": {
+          "_note": "The color script's lagoon_low_sun look (ch03_boss: 'the flood plane is the same material'), as the haluna water material sets it.",
+          "col_scatter_shallow": "#1FA3A6",
+          "col_deep": "#0E4A55",
+          "col_sss": "#3FD0C9",
+          "col_foam": "#EEF6F4",
+          "absorption_per_m": [
+            2.0,
+            0.5,
+            0.42
+          ],
+          "absorption_scale": 1.5,
+          "scatter_energy": 0.25,
+          "caustic_strength": 1.6,
+          "swatches": {
+            "col_scatter_shallow": "lagoon_teal",
+            "col_deep": "deep_teal_shadow",
+            "col_sss": "turquoise_shallow",
+            "col_foam": "foam_white"
+          }
+        },
+        "waves": {
+          "_note": "The lagoon's four longest components (Haluna's water test set), scaled for a sheltered flooded causeway: [direction_deg, wavelength_m, amplitude_m, steepness, phase_rad].",
+          "amplitude_scale": 0.6,
+          "components": [
+            [
+              300.0,
+              62.0,
+              0.11,
+              0.3,
+              0.0
+            ],
+            [
+              250.0,
+              37.0,
+              0.13,
+              0.55,
+              1.7
+            ],
+            [
+              232.0,
+              21.0,
+              0.075,
+              0.6,
+              4.1
+            ],
+            [
+              268.0,
+              13.5,
+              0.05,
+              0.62,
+              2.6
+            ]
+          ]
+        }
+      },
+      "polyps": {
+        "_note": "Spawn-polyps glow spawn_wound cyan under the flood (a small light each, until they fall); a mend sends held motes from the polyp to the bell.",
+        "enemy": "spawn_polyp",
+        "rise": "polyp_rise",
+        "light_color": "#3FE0C8",
+        "light_energy": 2.6,
+        "light_range_m": 2.2,
+        "light_at": "chest",
+        "light_fade_s": 0.6,
+        "mend_skill": "polyp_mend",
+        "mend": "polyp_mend",
+        "swatches": {
+          "light_color": "spawn_wound"
+        }
+      },
+      "floodnet": {
+        "_note": "Call Ilun clears the flood (the Floodnet stand-in, ADR 0026): bound light, a steady teal net over the water and a teal fill. It never drifts or trails (color script rule 1, bound).",
+        "skill": "call_ilun",
+        "color": "#4FB3B0",
+        "energy": 0.7,
+        "half_m": 10.0,
+        "cell_m": 1.1,
+        "in_s": 0.6,
+        "hold_s": 2.4,
+        "out_s": 1.6,
+        "light_energy": 2.0,
+        "light_range_m": 9.0,
+        "light_height_m": 2.5,
+        "swatches": {
+          "color": "glimmer_bound"
+        }
+      }
+    }
+  },
+  "reduced_motion": {
+    "_note": "UiSettings.reduced_motion(): the shockwave is slower and fainter, the glow does not pulse, and the floodnet fades in and out gently. The flood still rises (it is the phase's information), over the same 8 s.",
+    "ring_s_scale": 1.8,
+    "ring_alpha_scale": 0.5,
+    "pulse_depth": 0.0,
+    "fade_min_s": 1.0
+  }
+}

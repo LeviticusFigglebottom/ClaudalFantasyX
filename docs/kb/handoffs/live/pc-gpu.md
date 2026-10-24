@@ -6,7 +6,7 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 > **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
 > session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
-> **This copy, on `gpu/m2-rnd-02-underwater`, is the newest.**
+> **This copy, on `gpu/m2-rnd-04-drownbell-vfx`, is the newest.**
 
 ## PC setup for a new session
 
@@ -115,6 +115,7 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/m2-rnd-04-drownbell-vfx | **M2-RND-04 in review** (reviewer Environment; contains gpu/m2-rnd-03-battle-vfx, so merge that first) | The Drownbell's set piece: `BattleBossVfx`, attached through BattleVfx (no controller edit), playing every battle_ctb.md hook point. That's the toll telegraph and shockwave, rim sparks and the break, polyp lights and mend streams, Ilun's Floodnet, and the bell's seaward release. **The flood rig** is a WaterSurface (the lagoon_low_sun look) that rises −0.7 → +0.6 m over 8 s; it's the battle's one `hymn_water_level` publisher, and the key light and sea-glow follow it. **High 1440p, worst frame 2.0 ms** (Ultra 3.4). Reduced motion is covered. Also fixes RND-03's retry leaving the old view. **Finding:** nothing shipped drives the weather clock `hymn_wind_time` (only test rigs do); the rig runs it in the boss battle. One pending shot: `docs/kb/qa/gpu/2026-10-24-rnd-04-pending-shots.json`. Docs: battle_vfx.md "The Drownbell" |
 | gpu/m2-rnd-02-underwater | **M2-RND-02 in review** (reviewer Environment) | Underwater look: `UnderwaterRig` (`game/world/water/underwater/`) gives a per-pixel absorption and scatter post with a wave-following waterline (a meniscus, no pop at the crossing); the underside (the Snell window with the refracted sun, and TIR); volumetric god rays on High and Ultra; marine snow; Rhen's oil-lamp lantern. The light level follows the scene's sun, so night dives are dark. Tiers: `tiers.underwater` in graphics_presets.json. **The rig costs +0.32 ms at High 1440p; the whole frame is 1.1–1.5 ms.** On Low: +0.14 ms. gpu_bench and capture_preset now apply every system tier (`GraphicsRuntime.apply_system_tiers`), so their Low, Medium and Ultra captures of water scenes can change. Three new pending shots: `docs/kb/qa/gpu/2026-10-24-rnd-02-pending-shots.json`. Art sign-off is **M2-ART-02**. Docs: `docs/kb/tech/underwater.md` |
 | gpu/fp-10-keylight-check | pushed (from origin/claude/m2-slice 0408806; Lead request) | M2-FP-10 GPU check. No artefacts; cost ≤ 0.03 ms; Haluna sun at bias 1.0, no face regression. H05's 74° sun leaves the face in brow and nose shadow, so set `key_pitch_deg` 30 on H05 and H06. **Layer 20 conflict** between the key light and the Undertow half-res body. New tool `tools/gpu_bench/keylight_probe.tscn`. Report: `docs/kb/qa/gpu/2026-10-24-fp-10-keylight.md` |
 | gpu/m2-rnd-03-battle-vfx | **M2-RND-03 in review** (reviewer Environment) | Battle VFX library: `BattleVfx`, listen-only (one controller line). The data (`effects.json`) holds 14 effects: element hits, Lamp Dive, Shallows Verse, Read, heal, status, KO into released glimmer, and the opening flashes. Flashes are photosensitivity-capped and below the HUD; reduced motion is supported. The worst 3v3 burst costs +0.04 ms at High 1440p. Battle shots move ≤ 0.0022 on the GPU (under the gate). Docs: `docs/kb/tech/battle_vfx.md` |
@@ -133,6 +134,12 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 ## Unfinished queue, in order (exact next step first)
 
+**The queue is empty** (2026-10-24): every item is in review. Waiting for the Lead to top it up. Merge notes:
+- RND-03 goes before RND-04.
+- The RND-02 and RND-04 branches each add an ownership.md row after the same line (a trivial conflict).
+- RND-22 and RND-04 both touch prewarm_materials.json.
+
+
 1. **M2-RND-01: in review** (reviewer Environment), on `gpu/m2-rnd-01b-undertow-compute`; merge
    `gpu/m2-rnd-01-undertow` first.
    - High `body_scale` is 0.35 (motion-checked); Medium stays at 0.5.
@@ -147,7 +154,7 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
    - the glimmer-motes boost underwater (Art's call, in M2-ART-02);
    - caustics on characters;
    - a splash at the crossing.
-5. **M2-RND-04 (next, the last queue item):** Drownbell boss VFX and flood rig. Read the First Playable boss data first (session
+5. **M2-RND-04: in review** (`gpu/m2-rnd-04-drownbell-vfx`). Next passes are in battle_vfx.md: the arena's sunset grade, sinking the bell, rim crack decals, and re-measuring battle transitions once M1-RND-22 merges. Originally: Drownbell boss VFX and flood rig. Read the First Playable boss data first (session
    session_01ELR13ohWMPrprcpcgLa7UR, branch `claude/first-playable`).
 - **Standing:** GPU checks of shots before the Lead re-approves lavapipe baselines.
 - **Open findings to route** (filed or noted, not this queue):
