@@ -15,6 +15,7 @@
     "portrait": {"clip": "idle", "clip_time": 0.0, "yaw_deg": 30.0, "pitch_deg": 14.0, "fov_deg": 28.0, "margin": 0.85}
   },
   "creatures": {
+    "spar_wraith": {"scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn"},
     "sail_leech": {"scene": "res://game/creatures/sail_leech/sail_leech_battle.tscn"},
     "bottle_hermit": {"scene": "res://game/creatures/bottle_hermit/bottle_hermit_battle.tscn"},
     "wickfry": {"scene": "res://game/creatures/wickfry/wickfry_battle.tscn"},
