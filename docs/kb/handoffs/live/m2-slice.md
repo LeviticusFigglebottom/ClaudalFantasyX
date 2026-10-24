@@ -3,6 +3,24 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **big7 is merged into claude/m2-slice** (00bf4b01, pushed): characters, creatures, battle presentation, menus, combat, audio and lip sync. The branch the human plays now has animated heroes, enemy models and battle transitions.
+  - **Playtest fixes kept on top:** the encounter meter with its grace, prologue → Haluna, and the prologue's rim light.
+  - **Merge decisions** (also in the commit message):
+    - **Loc keys:** keyed union, taking big7's rewordings; no duplicates.
+    - **Voices:** rows for the 17 Act I speakers.
+    - **Party joins:** big7's single PartyJoins path, taken as is.
+    - **Haluna's 17 resident prewarm entries are back,** from big7's registry.
+    - **The Drownbell p90 ceiling of 66:** big7's targets, taken as is.
+  - **Scoped Godot checks are green:**
+    - zone_story: 15
+    - fp_: 26
+    - prologue: 5
+    - voice: 9
+    - debug_overlay: 14
+    - scene_router_swap: 15
+    - ch0*: 45
+  - **Plus:** validate_data, taskboard, dlgc, lint and format.
+  - **The full suite, tools and sim are running** in the background. A MERGE-READY line follows.
 - **Resumed after the usage stop (Lead, ~17:30).** All three playtest fixes were already pushed before the stop: a9b8033b encounters, 399651ca prologue → Haluna, 9036c019 greyscale (see below). Nothing was left unpushed.
 - **Trial merge of lead/gate-big7 @ ab048d51** in a scratch worktree, so the real merge is quick when big7 reaches the integration branch.
   - **Conflicts:**
