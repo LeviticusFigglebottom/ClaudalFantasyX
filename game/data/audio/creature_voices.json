@@ -1,0 +1,305 @@
+{
+  "version": 1,
+  "doc": "Which creature sounds like what (M3-AUD-14; game/audio/creature_audio.gd, docs/kb/tech/audio_runtime.md). creatures: an enemy's base id (enemies.json id, creatures.json key) -> events {idle, attack, hurt, death, move}, each an sfx row (sfx_creatures.json), plus pitch (a palette variant plays its parent's set at another pitch), family and variant_of (documentation). The string \"silent\" in place of an object means the enemy makes no creature sound; validate_data needs every enemies.json enemy to have one or the other. When: attack on the creature's own action (engine action_resolved); hurt on a landed damaging hit that leaves it standing (once per creature kind per action); death when a hit or its own turn's poison takes it to 0 HP (once, until it stands again); idle when the battle opens (the first voiced enemy) and when creatures join; move from its model's clips (clips: clip -> event, heard on the AnimationPlayer's animation_started under a node whose script class is a model_classes key, the value naming the property that holds its base id), or with its attack while no model is heard for it (move_on_action). delays_ms: after the moment (hurt and death sit just behind the hit and KO sounds); under_db: added to hurt and death so they layer under battle_sfx.json's hit and KO; idle_cooldown_ms: the shortest gap between one kind's idles; reduced_skip: events reduced audio leaves out. Listens only.",
+  "model_classes": {
+    "CreatureActor": "creature_id"
+  },
+  "clips": {
+    "attack": "move",
+    "cast": "move"
+  },
+  "move_on_action": true,
+  "delays_ms": {
+    "attack": 0,
+    "move": 0,
+    "hurt": 70,
+    "death": 110,
+    "idle": 700
+  },
+  "under_db": -3.0,
+  "idle_cooldown_ms": 8000,
+  "reduced_skip": [
+    "idle",
+    "move"
+  ],
+  "creatures": {
+    "reef_crab": {
+      "family": "crab",
+      "events": {
+        "idle": "cre_reef_crab_idle",
+        "attack": "cre_reef_crab_attack",
+        "hurt": "cre_reef_crab_hurt",
+        "death": "cre_reef_crab_death",
+        "move": "cre_reef_crab_skitter"
+      }
+    },
+    "scuttler": {
+      "family": "crab",
+      "events": {
+        "idle": "cre_scuttler_idle",
+        "attack": "cre_scuttler_attack",
+        "hurt": "cre_scuttler_hurt",
+        "death": "cre_scuttler_death",
+        "move": "cre_scuttler_skitter"
+      }
+    },
+    "tide_crawler": {
+      "family": "crab",
+      "events": {
+        "idle": "cre_tide_crawler_idle",
+        "attack": "cre_tide_crawler_attack",
+        "hurt": "cre_tide_crawler_hurt",
+        "death": "cre_tide_crawler_death",
+        "move": "cre_tide_crawler_skitter"
+      }
+    },
+    "bottle_hermit": {
+      "family": "crab",
+      "events": {
+        "idle": "cre_bottle_hermit_idle",
+        "attack": "cre_bottle_hermit_attack",
+        "hurt": "cre_bottle_hermit_hurt",
+        "death": "cre_bottle_hermit_death",
+        "move": "cre_bottle_hermit_skitter"
+      }
+    },
+    "lantern_eel": {
+      "family": "eel",
+      "events": {
+        "idle": "cre_lantern_eel_idle",
+        "attack": "cre_lantern_eel_attack",
+        "hurt": "cre_lantern_eel_hurt",
+        "death": "cre_lantern_eel_death",
+        "move": "cre_lantern_eel_slither"
+      }
+    },
+    "hullgnaw": {
+      "family": "eel",
+      "events": {
+        "idle": "cre_hullgnaw_idle",
+        "attack": "cre_hullgnaw_attack",
+        "hurt": "cre_hullgnaw_hurt",
+        "death": "cre_hullgnaw_death",
+        "move": "cre_hullgnaw_slither"
+      }
+    },
+    "gull_harrier": {
+      "family": "bird",
+      "events": {
+        "idle": "cre_gull_harrier_idle",
+        "attack": "cre_gull_harrier_attack",
+        "hurt": "cre_gull_harrier_hurt",
+        "death": "cre_gull_harrier_death",
+        "move": "cre_gull_harrier_wingbeat"
+      }
+    },
+    "squall_wing": {
+      "family": "bird",
+      "events": {
+        "idle": "cre_squall_wing_idle",
+        "attack": "cre_squall_wing_attack",
+        "hurt": "cre_squall_wing_hurt",
+        "death": "cre_squall_wing_death",
+        "move": "cre_squall_wing_wingbeat"
+      }
+    },
+    "ashwing": {
+      "family": "moth",
+      "events": {
+        "idle": "cre_ashwing_idle",
+        "attack": "cre_ashwing_attack",
+        "hurt": "cre_ashwing_hurt",
+        "death": "cre_ashwing_death",
+        "move": "cre_ashwing_flutter"
+      }
+    },
+    "flue_moth": {
+      "family": "moth",
+      "events": {
+        "idle": "cre_flue_moth_idle",
+        "attack": "cre_flue_moth_attack",
+        "hurt": "cre_flue_moth_hurt",
+        "death": "cre_flue_moth_death",
+        "move": "cre_flue_moth_flutter"
+      }
+    },
+    "spawn_polyp": {
+      "family": "polyp",
+      "events": {
+        "idle": "cre_spawn_polyp_idle",
+        "attack": "cre_spawn_polyp_attack",
+        "hurt": "cre_spawn_polyp_hurt",
+        "death": "cre_spawn_polyp_death",
+        "move": "cre_spawn_polyp_squelch"
+      }
+    },
+    "oil_slug": {
+      "family": "polyp",
+      "events": {
+        "idle": "cre_oil_slug_idle",
+        "attack": "cre_oil_slug_attack",
+        "hurt": "cre_oil_slug_hurt",
+        "death": "cre_oil_slug_death",
+        "move": "cre_oil_slug_squelch"
+      }
+    },
+    "tower_limpet": {
+      "family": "polyp",
+      "events": {
+        "idle": "cre_tower_limpet_idle",
+        "attack": "cre_tower_limpet_attack",
+        "hurt": "cre_tower_limpet_hurt",
+        "death": "cre_tower_limpet_death",
+        "move": "cre_tower_limpet_squelch"
+      }
+    },
+    "sail_leech": {
+      "family": "leech",
+      "events": {
+        "idle": "cre_sail_leech_idle",
+        "attack": "cre_sail_leech_attack",
+        "hurt": "cre_sail_leech_hurt",
+        "death": "cre_sail_leech_death",
+        "move": "cre_sail_leech_flap"
+      }
+    },
+    "drownbell": {
+      "family": "bell",
+      "events": {
+        "idle": "cre_drownbell_idle",
+        "attack": "cre_drownbell_attack",
+        "hurt": "cre_drownbell_hurt",
+        "death": "cre_drownbell_death",
+        "move": "cre_drownbell_shift"
+      }
+    },
+    "spar_wraith": {
+      "family": "wraith",
+      "events": {
+        "idle": "cre_spar_wraith_idle",
+        "attack": "cre_spar_wraith_attack",
+        "hurt": "cre_spar_wraith_hurt",
+        "death": "cre_spar_wraith_death",
+        "move": "cre_spar_wraith_creak"
+      }
+    },
+    "undertows_reach": {
+      "family": "reach",
+      "events": {
+        "idle": "cre_undertows_reach_idle",
+        "attack": "cre_undertows_reach_attack",
+        "hurt": "cre_undertows_reach_hurt",
+        "death": "cre_undertows_reach_death",
+        "move": "cre_undertows_reach_surge"
+      }
+    },
+    "cinder_matron": {
+      "family": "matron",
+      "events": {
+        "idle": "cre_cinder_matron_idle",
+        "attack": "cre_cinder_matron_attack",
+        "hurt": "cre_cinder_matron_hurt",
+        "death": "cre_cinder_matron_death",
+        "move": "cre_cinder_matron_grind"
+      }
+    },
+    "slag_tortoise": {
+      "family": "tortoise",
+      "events": {
+        "idle": "cre_slag_tortoise_idle",
+        "attack": "cre_slag_tortoise_attack",
+        "hurt": "cre_slag_tortoise_hurt",
+        "death": "cre_slag_tortoise_death",
+        "move": "cre_slag_tortoise_plod"
+      }
+    },
+    "vein_sparker": {
+      "family": "sparker",
+      "events": {
+        "idle": "cre_vein_sparker_idle",
+        "attack": "cre_vein_sparker_attack",
+        "hurt": "cre_vein_sparker_hurt",
+        "death": "cre_vein_sparker_death",
+        "move": "cre_vein_sparker_scurry"
+      }
+    },
+    "glassfry": {
+      "family": "swarm",
+      "events": {
+        "idle": "cre_glassfry_idle",
+        "attack": "cre_glassfry_attack",
+        "hurt": "cre_glassfry_hurt",
+        "death": "cre_glassfry_death",
+        "move": "cre_glassfry_shimmer"
+      }
+    },
+    "shoal_skipper": {
+      "family": "skipper",
+      "events": {
+        "idle": "cre_shoal_skipper_idle",
+        "attack": "cre_shoal_skipper_attack",
+        "hurt": "cre_shoal_skipper_hurt",
+        "death": "cre_shoal_skipper_death",
+        "move": "cre_shoal_skipper_hop"
+      }
+    },
+    "raid_hound": {
+      "family": "hound",
+      "events": {
+        "idle": "cre_raid_hound_idle",
+        "attack": "cre_raid_hound_attack",
+        "hurt": "cre_raid_hound_hurt",
+        "death": "cre_raid_hound_death",
+        "move": "cre_raid_hound_pad"
+      }
+    },
+    "wreck_crab": {
+      "family": "crab",
+      "variant_of": "reef_crab",
+      "pitch": 0.9,
+      "events": {
+        "idle": "cre_reef_crab_idle",
+        "attack": "cre_reef_crab_attack",
+        "hurt": "cre_reef_crab_hurt",
+        "death": "cre_reef_crab_death",
+        "move": "cre_reef_crab_skitter"
+      }
+    },
+    "wallcrab": {
+      "family": "crab",
+      "variant_of": "reef_crab",
+      "pitch": 1.07,
+      "events": {
+        "idle": "cre_reef_crab_idle",
+        "attack": "cre_reef_crab_attack",
+        "hurt": "cre_reef_crab_hurt",
+        "death": "cre_reef_crab_death",
+        "move": "cre_reef_crab_skitter"
+      }
+    },
+    "wall_polyp": {
+      "family": "polyp",
+      "variant_of": "spawn_polyp",
+      "pitch": 0.88,
+      "events": {
+        "idle": "cre_spawn_polyp_idle",
+        "attack": "cre_spawn_polyp_attack",
+        "hurt": "cre_spawn_polyp_hurt",
+        "death": "cre_spawn_polyp_death",
+        "move": "cre_spawn_polyp_squelch"
+      }
+    },
+    "stormgull": {
+      "family": "bird",
+      "variant_of": "gull_harrier",
+      "pitch": 1.06,
+      "events": {
+        "idle": "cre_gull_harrier_idle",
+        "attack": "cre_gull_harrier_attack",
+        "hurt": "cre_gull_harrier_hurt",
+        "death": "cre_gull_harrier_death",
+        "move": "cre_gull_harrier_wingbeat"
+      }
+    }
+  }
+}

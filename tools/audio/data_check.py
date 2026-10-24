@@ -21,6 +21,8 @@ AMBIENCE = "game/data/audio/ambience.json"
 FOOTSTEPS = "game/data/audio/footsteps.json"
 VOICES = "game/data/audio/voices.json"  # M3-AUD-07
 SPEAKERS = "game/data/dialogue/speakers.json"
+CREATURE_VOICES = "game/data/audio/creature_voices.json"  # M3-AUD-14
+ENEMIES = "game/data/battle/enemies.json"
 CLASSES = "@classes"  # load_files: {global class name: [its declared signals]} from game/**/*.gd
 NODE_SIGNALS = {"ready", "tree_entered", "tree_exiting", "tree_exited", "visibility_changed", "hidden",
                 "draw", "resized", "focus_entered", "focus_exited"}
@@ -358,6 +360,8 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
     if VOICES in files:
         rows = merged_sfx(files).get("sfx") or {}
         errs += voice_errors(files[VOICES], files.get(SPEAKERS), rows)
+    if CREATURE_VOICES in files:
+        errs += creature_voice_errors(files[CREATURE_VOICES], files.get(ENEMIES), merged_sfx(files).get("sfx") or {})
     return errs
 
 
@@ -380,7 +384,7 @@ def load_files(root: Path) -> dict[str, object]:
     out = {}
     extra = [str(p.relative_to(root)) for p in sorted((root / SFX_DIR).glob("sfx_*.json"))]
     for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, AMBIENCE, FOOTSTEPS, ENCOUNTERS, VFX_EFFECTS,
-                ACCESSIBILITY, VOICES, SPEAKERS] + extra:
+                ACCESSIBILITY, VOICES, SPEAKERS, CREATURE_VOICES, ENEMIES] + extra:
         p = root / rel
         if p.is_file():
             out[rel] = json.loads(p.read_text(encoding="utf-8"))
@@ -493,4 +497,55 @@ def voice_errors(doc: object, speakers: object, rows: dict) -> list[str]:
         errs.append(f"{VOICES} vo.pattern: a res:// path with {{line_id}} (and usually {{speaker}})")
     if "bus" in vo and vo["bus"] != "Voice":
         errs.append(f"{VOICES} vo.bus: recorded lines play on the Voice bus")
+    return errs
+
+
+CREATURE_EVENTS = ("idle", "attack", "hurt", "death", "move")
+SILENT_CREATURE = "silent"
+
+
+def creature_voice_errors(doc: object, enemies: object, rows: dict) -> list[str]:
+    """creature_voices.json (M3-AUD-14): every enemies.json enemy has a voice row or "silent"; each event is a known
+    event naming a real sfx row; pitch, delays and levels are sane; clips map to known events."""
+    errs: list[str] = []
+    if not isinstance(doc, dict):
+        return [f"{CREATURE_VOICES}: must be an object"]
+    table = doc.get("creatures")
+    if not isinstance(table, dict):
+        return [f"{CREATURE_VOICES} creatures: must be an object"]
+    for cid, row in table.items():
+        w = f"{CREATURE_VOICES} creatures.{cid}"
+        if row == SILENT_CREATURE:
+            continue
+        if not isinstance(row, dict) or not isinstance(row.get("events"), dict) or not row["events"]:
+            errs.append(f"{w}: an object with events, or \"{SILENT_CREATURE}\"")
+            continue
+        for ev, sid in row["events"].items():
+            if ev not in CREATURE_EVENTS:
+                errs.append(f"{w}.events.{ev}: not an event ({', '.join(CREATURE_EVENTS)})")
+            if sid not in rows:
+                errs.append(f"{w}.events.{ev}: {sid} is not an sfx.json row")
+        if "pitch" in row and (not _num(row["pitch"]) or not 0.5 <= row["pitch"] <= 2.0):
+            errs.append(f"{w}.pitch: a number in 0.5..2.0")
+    for ev, ms in (doc.get("delays_ms") or {}).items():
+        if ev not in CREATURE_EVENTS or not _num(ms) or not 0 <= ms <= 2000:
+            errs.append(f"{CREATURE_VOICES} delays_ms.{ev}: an event and 0..2000 ms")
+    for clip, ev in (doc.get("clips") or {}).items():
+        if ev not in CREATURE_EVENTS:
+            errs.append(f"{CREATURE_VOICES} clips.{clip}: {ev} is not an event")
+    for ev in doc.get("reduced_skip", []):
+        if ev not in CREATURE_EVENTS:
+            errs.append(f"{CREATURE_VOICES} reduced_skip: {ev} is not an event")
+    for k in ("under_db", "idle_cooldown_ms"):
+        if k in doc and not _num(doc[k]):
+            errs.append(f"{CREATURE_VOICES} {k}: must be a number")
+    if _num(doc.get("under_db", 0)) and doc.get("under_db", 0) > 0:
+        errs.append(f"{CREATURE_VOICES} under_db: voices sit under the hit sounds (<= 0 dB)")
+    for cls, prop in (doc.get("model_classes") or {}).items():
+        if not isinstance(prop, str) or not prop:
+            errs.append(f"{CREATURE_VOICES} model_classes.{cls}: the property naming the model's creature id")
+    for e in ((enemies or {}).get("enemies") or []):
+        eid = e.get("id") if isinstance(e, dict) else None
+        if isinstance(eid, str) and eid not in table:
+            errs.append(f"{CREATURE_VOICES} creatures: enemy {eid} ({ENEMIES}) has no voice row and is not \"silent\"")
     return errs

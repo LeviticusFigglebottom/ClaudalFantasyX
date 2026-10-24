@@ -222,3 +222,46 @@ SPEC §16 Q4: no voice acting yet, but the architecture is ready for it. Every s
   (−23): crossfade the two crowd beds with play via `Audio.set_ambience`. Stop the crowd beds while
   `reefball_naming_rite` plays (it carries its own crowd going quiet), and stop the lantern hum's player when Rhen
   surfaces.
+
+## Creature voices and movement (M3-AUD-14)
+
+- **Sounds:** `assets_src/sfx/creature_sfx.py` renders `assets/audio/sfx/creatures/<creature>_<event>_<n>.ogg`
+  (194 files: 23 creatures with their own set, rows `cre_<creature>_<event>` in `sfx_creatures.json`, Combat bus).
+  Voices (attack, hurt, death) are at −18 LUFS momentary max, idles −20, movement (skitter, slither, wingbeat,
+  flutter, squelch, flap, shift, creak, surge, grind, plod, scurry, shimmer, hop, pad) −21. Rules are in
+  `tools/audio/targets.py`, and `render_all.py --only creature_sfx` lists the files from the source's own `FILES`.
+- **The table** (`creature_voices.json` `creatures`): an enemy's base id maps to `events`
+  {idle, attack, hurt, death, move} → sfx row, an optional `pitch` (the four palette variants, `wreck_crab`,
+  `wallcrab`, `wall_polyp` and `stormgull`, play their parent's set at another pitch), or `"silent"`.
+  `validate_data` fails an `enemies.json` enemy without a row or `"silent"`, an unknown event, and a row that
+  isn't an sfx row. All 27 `creatures.json` ids on the creatures track have a row.
+- **The listener** is `CreatureAudio` (`game/audio/creature_audio.gd`), a child of BattleAudio (`creatures`). It
+  only listens:
+  - **attack:** the creature's own `action_resolved` (the actor's base id).
+  - **hurt:** a landed damaging hit that leaves it standing, once per creature kind per action.
+  - **death:** a hit, or its own `turn_ended` (poison), that takes it to 0 HP. It plays once until the creature
+    stands again.
+  - Hurt and death play `under_db` (−3 dB) softer and `delays_ms` (70 / 110 ms) late. They layer under
+    battle_sfx.json's `hit_*` and `ko_release` and never replace them.
+  - **idle:** when the battle opens (the first voiced enemy, 700 ms in) and when creatures join. One kind's idles
+    are at least `idle_cooldown_ms` apart.
+  - Plays wait in a queue on the SFX bank's clock, so tests flush them with their own clock.
+  - Reduced audio (BattleAudio's `reduced`) leaves out `reduced_skip` (idle, move).
+- **Movement from the models, by name** (ADR 0031): any node entering the tree under the battle's controller
+  whose script's global class is a `model_classes` key is a model. That is `CreatureActor`, which is on
+  claude/creatures and not on this branch yet; the key's value names the property holding its creature id,
+  `creature_id`. The listener connects deferred to its first AnimationPlayer's `animation_started` (`has_signal`
+  guard), and `clips` maps a clip to an event: `attack` and `cast` play the creature's move. CreatureActor emits no
+  signal of its own, so its AnimationPlayer's is the hook. While no model is heard for a kind, its move plays with
+  its attack (`move_on_action`), as on this branch today. Nothing touches the model.
+- **Once claude/creatures merges, check that:**
+  - BattleStage's actors enter under the BattleController, so `scope` finds them. A model found outside it is
+    ignored.
+  - `models` counts each creature.
+  - The move then plays once per action, from the clip, not twice.
+  - If the battle-presentation track times hits to `CreatureActor.contact_time`, the attack voice may want the
+    same delay (`delays_ms.attack`).
+- `tests/unit/test_creature_audio.gd` covers the table against enemies.json and the rows' imports, the opening idle
+  and its cooldown, attack and the move fallback, one hurt per kind, one death (a hit or poison), silence for a
+  hero's action and a miss, a model's clip playing the move by name (a plain Node3D with an AnimationPlayer, no
+  stub class), reduced audio, and BattleAudio bringing the listener.
