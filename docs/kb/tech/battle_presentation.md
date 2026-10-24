@@ -27,6 +27,12 @@ every action at once, exactly as the battle did before it existed.
   look (`holds_ko`) until then. A model with a `ko` clip plays it through the stand-in's own KO path; a stand-in
   drops `drop_m` and tips `tilt_deg` away from the actor over `collapse_sec`, then sinks and fades as before. It
   lies tipped until a revive (`on_ko_state`) stands it back on its mark.
+- **A KO plays once (M2-BPR-11, the human's playtest).** Only the action that fells a target lists it in `kos`;
+  refresh_ko re-applies every fighter's stone and KO state after every action, so both must be idempotent:
+  `CreatureActor.set_ko` and `set_frozen` ignore a repeat (a repeated `set_frozen(false)` used to call `play()`
+  and restart the finished KO clip on every later move). A fallen **foe** fades to `foe_ko_alpha` (0) and is
+  hidden (no shadow); a fallen **party member** keeps `ko_alpha` (0.35) so it can be revived. A revive shows it
+  again. Tests: `tests/unit/test_battle_ko_once.gd` (creature model and primitive stand-in, three later actions).
 - **Reactions** (`reaction`): damage recoils `recoil_m` away from the actor and tips `tilt_deg` back, out and back
   over `sec`; a heal lifts `lift_m`; a miss sidesteps `dodge_m`. The actor never reacts to its own action.
 - **Styles.** An item plays `item_style`; a skill plays `style_by_skill`, else `style_by_target` (self-targeted
