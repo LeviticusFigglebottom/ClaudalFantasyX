@@ -402,3 +402,19 @@ when `BattleVowboundChoreo.enter_spec` asks:
 - **Shot:** `battle_choreo_summon` (the capture forces the full version). Checked by `validate_choreo.summon_errors`
   (the flag declared, the numbers, the `summon` shot).
 - **Not here:** a line for Ilun or Asha (Narrative has none for C10 yet) and his face (save it for the model).
+
+## Mouse targeting (M2-BPR-09)
+
+For the input-parity audit (ADR 0036). The command menus already take hover and click (MenuPage's row signals);
+**`BattleMousePick`** (`game/battle/scene/battle_mouse_pick.gd`, built by `BattleStage._ready`, no controller line)
+adds the pick:
+- In `STATE_TARGET` and `STATE_SWAP_OUT` only. Hovering a candidate's fighter (its projected body: feet to head,
+  its stand-in radius wide, plus a margin; the nearest when two overlap) moves the cursor onto it; a left click aims
+  and confirms. Group targets: hovering any one of them keeps the whole group; a click confirms it.
+- It sends the keyboard's own actions through `BattleController.handle_input` (`ui_right` steps the cursor,
+  `ui_accept` confirms), so the mouse can't pick anything the keyboard couldn't.
+- Right click is Cancel: `UiInput` turns it into `ui_cancel` for every screen once it is in the tree; until then this
+  helper does it.
+- Non-candidates, empty space and every other state: the mouse does nothing here.
+- Tests: `tests/unit/test_battle_mouse_pick.gd`. When UiInput merges, the UI track's `InputDriver` parity walk can
+  drive the battle with real mouse events through the viewport.
