@@ -21,6 +21,7 @@ var _player: AnimationPlayer
 var _idle: StringName = &""
 var _ko := false
 var _frozen := false
+var _resume_after_freeze := false
 var _phase: StringName = &""
 var _surfaces: Array[GeometryInstance3D] = []
 var _fade: Tween
@@ -132,22 +133,29 @@ func set_ko(on: bool, alpha: float) -> void:
 			_fade = create_tween()
 			_fade.tween_interval(wait)
 			_fade.tween_method(_set_transparency, 0.0, 1.0 - alpha, float(_row.get("ko_fade_sec", 0.0)))
+			if alpha <= 0.0:
+				_fade.tween_callback(hide)  # faded right out (a fallen foe): hidden, no shadow
 		else:
 			_set_transparency(1.0 - alpha)
+			visible = alpha > 0.0
 		return
+	visible = true
 	_set_transparency(0.0)
 	_play(_idle)
 
 
 ## Petrify: the clip stops where it is (FighterStandIn swaps the surfaces to stone).
 func set_frozen(on: bool) -> void:
+	if on == _frozen:
+		return  # the stage sets this on every fighter after every action: a repeat must not restart a held KO clip
 	_frozen = on
 	if _player == null:
 		return
 	if on:
+		_resume_after_freeze = _player.is_playing()
 		_player.pause()
-	elif not _player.is_playing():
-		_player.play()
+	elif _resume_after_freeze:
+		_player.play()  # resumes the clip Petrify paused (a finished one, such as the KO, stays on its last frame)
 
 
 ## A boss's phase change (creatures.json `phases`): plays its clip, hides and shows its listed nodes (the Cinder
