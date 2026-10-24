@@ -1,4 +1,4 @@
-# 0039 — Set-piece battles in the CTB: scripted entries, objectives, party locks
+# 0100 — Set-piece battles in the CTB: scripted entries, objectives, party locks
 
 - **Status:** accepted (Combat; the Lead reviews it with M3-CMB-01)
 - **Date:** 2026-10-24

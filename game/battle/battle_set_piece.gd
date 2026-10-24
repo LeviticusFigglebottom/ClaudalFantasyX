@@ -1,7 +1,7 @@
 class_name BattleSetPiece
 extends RefCounted
 ## Set-piece battle rules (M3-CMB-01: Ch8's Fisher Stair, act1_ch08.md §5a; the schema is
-## docs/kb/design/set_piece_battles.md, the decision ADR 0039). Static helpers the engine and
+## docs/kb/design/set_piece_battles.md, the decision ADR 0100). Static helpers the engine and
 ## BossMechanics call at fixed points. Headless and Node-free; the only randomness is the engine's
 ## seeded rng (initial ticks and AI draws, as for any combatant).
 ##

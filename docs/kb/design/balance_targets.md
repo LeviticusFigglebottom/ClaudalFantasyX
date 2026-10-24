@@ -221,7 +221,7 @@ Numbers are in the 2026-10-24 tuning-log entry in balance_report.md.
 
 ### Ch8: the Fisher Stair set piece and the Undertow's Reach (M3-CMB-01)
 
-The set piece (act1_ch08.md §5a; schema in [set_piece_battles.md](set_piece_battles.md), ADR 0039) is won on its **objective**: a quota of the Climb's turns, or `scripted_escape` for the Reach, which the simulator counts as a win. `kind: set_piece`. Every suite uses the loadout `ch08_seawall`: Ch6's gear without Kerrid's, 4 Salt Tonic, 2 Brine Eyewash and 1 Relighting Wick, the flags `ch03_ilun_bound`, `ch05_kahre_bound`, `ch08_virel_bound` and `ch08_hoist_rigged`, and Ilun, Kahre and Virel bound. Swell is `good`. Toma is locked active in every fight and Kerrid is in none.
+The set piece (act1_ch08.md §5a; schema in [set_piece_battles.md](set_piece_battles.md), ADR 0100) is won on its **objective**: a quota of the Climb's turns, or `scripted_escape` for the Reach, which the simulator counts as a win. `kind: set_piece`. Every suite uses the loadout `ch08_seawall`: Ch6's gear without Kerrid's, 4 Salt Tonic, 2 Brine Eyewash and 1 Relighting Wick, the flags `ch03_ilun_bound`, `ch05_kahre_bound`, `ch08_virel_bound` and `ch08_hoist_rigged`, and Ilun, Kahre and Virel bound. Swell is `good`. Toma is locked active in every fight and Kerrid is in none.
 
 **The guard.** `role_answer` and `smart` play `sim_policies.json` `guard_ward` (SimWardGuard): Toma holds the stair when a grip comes before his next turn, Provokes a second one, and Liss hauls a bare Climb. This is the set piece's role answer; the crawlers' `role_answer` is Toma. `ward_guard` (`naive` plus the guard) is report only. It shows that guarding alone doesn't carry a wave. The killing still matters.
 
