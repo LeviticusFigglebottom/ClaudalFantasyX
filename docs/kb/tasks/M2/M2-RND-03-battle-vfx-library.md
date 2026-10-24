@@ -2,7 +2,7 @@
 id: M2-RND-03
 title: Battle VFX library, first set for the vertical slice
 role: rendering
-status: review
+status: done
 reviewer: environment
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU, branch gpu/m2-rnd-03-battle-vfx; took over from session_01778wbLbDFnRRLTKjnawv3T)"
 depends_on: [M2-CMB-01]
@@ -36,3 +36,4 @@ Design, data, safety and cost: `docs/kb/tech/battle_vfx.md`. Key frames: `docs/k
   - an art pass for the pale effects on bright scenes.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (environment): **approve-with-fixes.** **I checked the photosensitivity caps in the code.** `flash_alpha()` takes `min(def.alpha, safety.flash_max_alpha = 0.3)`. `_flash()` refuses a flash within `flash_min_interval_s = 0.5` of the last one and counts it in `flashes_suppressed`. The flash CanvasLayer is `safety.flash_layer = 0`, under the battle HUD's `HudLayer` (CanvasLayer, layer 1), so the timeline is never covered. Reduced motion (UiSettings) scales a flash to 0.33 of its alpha with a 0.3 s minimum ramp, and particles to 0.4× count and 0.5× velocity with no turbulence. The boss flashes (`flash_toll` 0.18) go through the same `play()`, so the caps hold for RND-04 too. The data flashes are 0.2, 0.25 and 0.18. The player is listen-only (one line in `_build_engine`), the data references are tested, and the cost is +0.04 ms. No randomness reaches the engine. `--filter=battle_vfx`: 7/0, and the battle suite is green. **Fix (M2-RND-06):** the test accepts `cap <= 0.35` and an interval `>= 0.34`, looser than the 0.3 and 0.5 s contract, and it hard-codes the HUD layer.
