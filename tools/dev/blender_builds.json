@@ -151,6 +151,45 @@
       ]
     },
     {
+      "id": "villager_tavi",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-03: Tavi Orse (Ch7) on the villager build, with the params opt-ins host_snaps (M1-CHR-14's MIDLINE_SNAP, quantize_uvs, snap_shape_noise and PRE_ROUND) and garment_fit (torso-only top, leg-following skirts, feet on the sandals). His clip library adds hand_on_shoulder, hear_news and name_rite (villager_clips.EXTRA_CLIPS).",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/villagers/tavi/*.glb", "assets/characters/villagers/tavi/textures/*.png", "assets/characters/villagers/tavi/materials/*.tres", "assets/characters/villagers/tavi/*.tscn", "assets/characters/villagers/tavi/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "tavi", "--bake-dir", "{scratch}/tavi_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "tavi", "--bake-dir", "{scratch}/tavi_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "tavi"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "tavi"]
+      ]
+    },
+    {
+      "id": "villager_kell",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-03: Mother Kell (Ch1) on the villager build, with host_snaps and garment_fit as Tavi; her clips add press_wick, trim_wick and haggle_laugh. Her wick, wick bundle and shears are the props_wick job's.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/villagers/kell/*.glb", "assets/characters/villagers/kell/textures/*.png", "assets/characters/villagers/kell/materials/*.tres", "assets/characters/villagers/kell/*.tscn", "assets/characters/villagers/kell/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "kell", "--bake-dir", "{scratch}/kell_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "kell", "--bake-dir", "{scratch}/kell_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "kell"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "kell"]
+      ]
+    },
+    {
+      "id": "props_wick",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-03: the one wick source (act1_npcs.md 4.4): the wick, the wick bundle and the trimming shears, with their StandardMaterial3D slots. The same wick serves Kell's hand, her apron bundle, Rhen's tin and the E7 post-credits lamp.",
+      "sources": ["assets_src/characters/props/wick.py"],
+      "outputs": ["assets/characters/props/wick/*.glb", "assets/characters/props/wick/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/props/wick.py"]
+      ]
+    },
+    {
       "id": "shader_test",
       "owner": "rendering",
       "sources": ["assets_src/characters/shader_test/build_shader_test_meshes.py", "assets_src/characters/shader_test/layout.py"],
@@ -250,6 +289,32 @@
         ["{blender}", "--python", "assets_src/environments/kits/oruvel_underway/build.py", "--", "--all", "--out-dir", "assets/environments/kits/oruvel_underway", "--manifest", "assets/environments/kits/oruvel_underway/kit_manifest.json"],
         ["{python}", "assets_src/environments/kits/oruvel_underway/ou_textures.py"],
         ["{python}", "assets_src/environments/kits/oruvel_underway/ou_materials.py"]
+      ]
+    },
+    {
+      "id": "sefir",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-02: Sefir reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs) and Rhen's and Toma's costume helpers (rhen_costume, toma_costume), so their sources are his too. The texture run sets asha_textures.PRE_ROUND (host-independent PNGs, M1-CHR-14).",
+      "sources": ["assets_src/characters/sefir/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/sefir/*.glb", "assets/characters/sefir/textures/*.png", "assets/characters/sefir/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/sefir/build_sefir.py", "--", "--out", "assets/characters/sefir/sefir.glb", "--bake-dir", "{scratch}/sefir_bake"],
+        ["{python}", "assets_src/characters/sefir/sefir_textures.py", "--bake-dir", "{scratch}/sefir_bake"],
+        ["{python}", "assets_src/characters/sefir/write_materials.py"]
+      ]
+    },
+    {
+      "id": "ysolde",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-01: Ysolde reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs, PRE_ROUND set), Rhen's and Toma's costume helpers (rhen_costume, toma_costume, build_toma's rig-extra helpers) and the villagers' bun hair and age layer (villager_hair, villager_textures), so all their sources are hers too.",
+      "sources": ["assets_src/characters/ysolde/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/ysolde/*.glb", "assets/characters/ysolde/textures/*.png", "assets/characters/ysolde/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/ysolde/build_ysolde.py", "--", "--out", "assets/characters/ysolde/ysolde.glb", "--bake-dir", "{scratch}/ysolde_bake"],
+        ["{python}", "assets_src/characters/ysolde/ysolde_textures.py", "--bake-dir", "{scratch}/ysolde_bake"],
+        ["{python}", "assets_src/characters/ysolde/write_materials.py"]
       ]
     },
     {

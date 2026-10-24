@@ -28,6 +28,18 @@ weight low; he settles, he does not fidget): the shared `idle`, `walk`, `run`, `
 `catch_rhen` (steadying Rhen as he stands), `sit_steps` (Ch3) and `turn_seaward` (the upper body and head turn to his
 left; the facing itself comes from the `@mark`). His spear is held like Asha's staff (the hand keeps it upright) except
 where a clip levels it; it rides the `DEF-spear` prop bone under the hand, which the clips leave at rest.
+
+Ysolde (M3-CHR-01, ysolde.md §1, §10: plumb, idle sway 30% of the party default, the lowest of the living cast; a
+hair of backward lean from the lifted chest): two persona keys, both off by default so the other libraries do not
+change. `book`: the right forearm flexes 65 degrees so the shut book rests against the right hip, and the walk's
+right-arm swing drops to 0.2. `breath` (default 1.0) scales the idle's breath terms (Sefir will take 0.0). Her clips:
+the shared `idle`, `walk`, `run`, `talk` (only the left hand lifts), and `board_step` (Ch4: one step up 18 cm onto the
+ferry, no hand on the rail), `vigil_book_shut` (both hands on the shut book at the waist, the head bowed),
+`reink_shell` (Ch4: at the shrine wall, the left index guard writing small strokes at chest height), `stand_apart` (arms
+folded at the waist, the head turned 15 degrees, the eyes down), `book_fan` (the right hand fans the book open, the
+left rises to it) and `cast_glyph` (the left hand traces the five strokes of the Glyph Trace, down, right, up, right,
+down, about 12 cm each, in front of the open book, then the book folds). The book opens on its `book_fan` blend shape:
+those two clips also key it (a blend-shape track on the `Book` mesh, BLEND_SHAPES).
 """
 from __future__ import annotations
 
@@ -61,6 +73,8 @@ PERSONA = {
     # toma.md §1: "stance" = ankle spacing / shoulder-joint spacing in the standing clips; "knee" = the soft knees
     # (degrees) that carry his weight low. The spear is held like the staff.
     "toma": {"sway": 0.7, "lean": 0.0, "staff": True, "arms_down": 38.0, "stance": 1.4, "knee": 7.0},
+    # ysolde.md §10: the book at the right hip ("book"), the idle's breath at full ("breath")
+    "ysolde": {"sway": 0.3, "lean": -1.0, "staff": False, "arms_down": 34.0, "book": True, "breath": 1.0},
 }
 CLIPS = {
     "asha": ["idle", "walk", "run", "talk", "kneel_over_rhen", "laugh", "rise_to_stand", "offer_hand",
@@ -68,8 +82,10 @@ CLIPS = {
     "rhen": ["idle", "walk", "run", "talk", "kneel_over_rhen", "rise_to_stand", "take_hand"],
     "toma": ["idle", "walk", "run", "talk", "spear_level", "lower_spear", "palms_level", "catch_rhen", "sit_steps",
              "turn_seaward"],
+    "ysolde": ["idle", "walk", "run", "talk", "board_step", "vigil_book_shut", "reink_shell", "stand_apart",
+               "book_fan", "cast_glyph"],
 }
-LOOPS = {"idle", "walk", "run", "talk", "walk_to_chamber"}
+LOOPS = {"idle", "walk", "run", "talk", "walk_to_chamber", "vigil_book_shut", "stand_apart"}
 
 
 # ---------------------------------------------------------------------------------------------
@@ -210,6 +226,11 @@ def stand(persona: dict) -> dict:
     if persona["staff"]:
         p["DEF-upper_arm.R"] = (-6.0, 0.0, a - 8.0)  # the staff a little forward of the body (asha.md §2.3)
         p["DEF-forearm.R"] = (-28.0, 0.0, 0.0)
+    if persona.get("book"):
+        p["DEF-forearm.R"] = (-BOOK_FOREARM, 0.0, 0.0)  # ysolde.md §10: the shut book rests against the right hip
+        p["DEF-hand.R"] = (BOOK_HAND, 0.0, 0.0)  # the wrist drops, so the book hangs along the hip, not out like a tray
+        p["DEF-hand.L"] = (0.0, 0.0, -GUARD_HAND)  # the guarded hand turns a little out: the points clear the thigh
+        p["DEF-upper_arm.L"] = (4.0, 0.0, -a + GUARD_ARM)
     return p
 
 
@@ -296,12 +317,15 @@ def walk_pose(t: float, persona: dict, stride: float, knee: float, arm: float, b
         "DEF-foot.L": (-6.0 * swing_l + 6.0 * math.cos(ph), 0.0, 0.0),
         "DEF-foot.R": (-6.0 * swing_r - 6.0 * math.cos(ph), 0.0, 0.0),
         "DEF-upper_arm.L": (arm * math.cos(ph), 0.0, 0.0),
-        "DEF-upper_arm.R": (-(arm * (0.35 if persona["staff"] else 1.0)) * math.cos(ph), 0.0, 0.0),
+        "DEF-upper_arm.R": (-(arm * (0.35 if persona["staff"] else (BOOK_SWING if persona.get("book") else 1.0)))
+                            * math.cos(ph), 0.0, 0.0),
     })
     return p
 
 
 def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    if persona.get("hands_joined"):  # M3-CHR-02: Sefir's own clips (sefir_pose_at, below)
+        return sefir_pose_at(clip, t, length, sk, persona)
     sway = persona["sway"]
     u = t / length
     if clip == "idle":
@@ -309,10 +333,10 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
         return add(planted(sk, persona), {
             "hips": (0.010 * sway * math.sin(ph), -0.002 * sway * (1 - math.cos(2 * ph)), 0.0),
             "DEF-spine.001": (0.0, 0.0, -1.6 * sway * math.sin(ph)),
-            "DEF-spine.003": (0.7 * math.sin(2 * ph), 0.0, 0.0),  # breath
+            "DEF-spine.003": (0.7 * math.sin(2 * ph) * persona.get("breath", 1.0), 0.0, 0.0),  # breath
             "DEF-spine.006": (0.0, 1.5 * sway * math.sin(ph + 0.6), 0.6 * sway * math.sin(ph)),
             "DEF-thigh.L": (0.0, 0.0, 1.2 * sway * math.sin(ph)), "DEF-thigh.R": (0.0, 0.0, 1.2 * sway * math.sin(ph)),
-            "DEF-upper_arm.L": (1.5 * math.sin(2 * ph + 0.4), 0.0, 0.0),
+            "DEF-upper_arm.L": (1.5 * math.sin(2 * ph + 0.4) * persona.get("breath", 1.0), 0.0, 0.0),
         })
     if clip == "walk":
         return walk_pose(u, persona, 22.0, 38.0, 16.0, 0.018, 2.0)
@@ -320,7 +344,9 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
         return add(walk_pose(u, persona, 15.0, 28.0, 7.0, 0.010, 4.0), {"DEF-spine.006": (6.0, 0.0, 0.0)})
     if clip == "run":
         p = walk_pose(u, persona, 38.0, 85.0, 34.0, 0.035, 10.0)
-        return add(p, {"DEF-forearm.L": (-60.0, 0.0, 0.0), "DEF-forearm.R": (-35.0 if persona["staff"] else -60.0, 0.0, 0.0),
+        return add(p, {"DEF-forearm.L": (-60.0, 0.0, 0.0),
+                       "DEF-forearm.R": (-35.0 if persona["staff"] else (0.0 if persona.get("book") else -60.0), 0.0,
+                                         0.0),
                        "DEF-upper_arm.L": (0.0, 0.0, 12.0), "DEF-upper_arm.R": (0.0, 0.0, -12.0)})
     if clip == "talk":
         ph = 2 * math.pi * u
@@ -428,13 +454,151 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
             "DEF-upper_arm.R": (-6.0 * e, 0.0, 0.0)})
     if clip in BATTLE_FRAMES:  # M2-CHR-07: the battle clip contract (the block below LENGTHS)
         return battle_pose_at(clip, u, sk, persona)
+    if clip == "board_step":
+        return board_step(u, sk, persona)
+    if clip == "vigil_book_shut":
+        ph = 2 * math.pi * u
+        return add(vigil(persona), {
+            "hips": (0.010 * 0.5 * sway * math.sin(ph), 0.0, 0.0),
+            "DEF-spine.001": (0.0, 0.0, -1.6 * 0.5 * sway * math.sin(ph)),
+            "DEF-spine.003": (0.7 * math.sin(2 * ph) * persona.get("breath", 1.0), 0.0, 0.0)})
+    if clip == "reink_shell":
+        e = smooth(u / 0.35)
+        w = smooth((u - 0.3) / 0.15) * (1.0 - smooth((u - 0.92) / 0.08))
+        ph = 2 * math.pi * 2.5 * max(u - 0.3, 0.0) / 0.62  # small strokes: two and a half
+        p = blend(stand(persona), reink(persona), e)
+        return add(p, {"DEF-upper_arm.L": (1.6 * w * math.sin(ph), 1.2 * w * math.sin(2 * ph), 0.0),
+                       "DEF-hand.L": (3.0 * w * math.sin(ph + 0.6), 0.0, 0.0)})
+    if clip == "stand_apart":
+        ph = 2 * math.pi * u
+        return add(fold_arms(persona), {
+            "hips": (0.010 * sway * math.sin(ph), 0.0, 0.0),
+            "DEF-spine.001": (0.0, 0.0, -1.6 * sway * math.sin(ph)),
+            "DEF-spine.003": (0.7 * math.sin(2 * ph) * persona.get("breath", 1.0), 0.0, 0.0)})
+    if clip == "book_fan":
+        return blend(stand(persona), fan_pose(persona), smooth(u / 0.45))
+    if clip == "cast_glyph":
+        return add(fan_pose(persona), trace_offset(t))
     raise KeyError(clip)
+
+
+# ---------------------------------------------------------------------------------------------
+# Ysolde (M3-CHR-01, ysolde.md §10)
+# ---------------------------------------------------------------------------------------------
+BOOK_FOREARM = 65.0  # degrees the right forearm flexes to rest the shut book against the right hip
+BOOK_SWING = 0.2  # the walk's right-arm swing with the book (the staff's is 0.35)
+BOOK_HAND = 50.0  # degrees the right wrist drops in the book hold
+GUARD_HAND = 14.0  # degrees the left hand (the ink-guards) turns out from the thigh
+GUARD_ARM = 5.0  # degrees the left arm hangs further out than the right (the guards' points clear the thigh)
+STEP_RISE = 0.18  # m: board_step's deck height
+STEP_THIGH = 52.0  # degrees: the leading thigh lifts this much to set the foot on the deck
+TRACE_STEP_DEG = 12.5  # degrees of the left arm per stroke of the glyph: about 12 cm at her hand
+TRACE_START = 0.2  # s into cast_glyph (the fan is already open) ...
+TRACE_STROKE = 0.24  # s per stroke: five strokes in 1.2 s
+TRACE_HOLD = 0.2  # s, then the book folds over FOLD_S
+FOLD_S = 0.4
+FAN_OPEN = (0.2, 0.7)  # s: book_fan opens the book over this window (0.5 s)
+# the Glyph Trace (formulas.md § Swell; motifs/glyphs.json): her right is -h, down is +v, 1 = one stroke
+TRACE_PATH = [(0.0, 0.0), (0.0, 1.0), (1.0, 1.0), (1.0, 0.0), (2.0, 0.0), (2.0, 1.0)]
+
+
+def board_step(u: float, sk: Skeleton, persona: dict) -> dict:
+    """One step up onto a deck: the left foot is set on it, the weight rises over it (no hand on the rail), the right
+    foot comes up beside, and she settles plumb (Ch4, the dawn ferry)."""
+    s0 = stand(persona)
+    e1 = smooth(u / 0.35)
+    e2 = smooth((u - 0.35) / 0.40)
+    e3 = smooth((u - 0.72) / 0.25)
+    lift = STEP_THIGH * e1 * (1.0 - e2)
+    trail = 18.0 * e2 * (1.0 - e3)
+    swing = math.sin(math.pi * e3)
+    return add(s0, {"hips": (0.0, STEP_RISE * e2, 0.22 * e2),
+                    "DEF-spine.001": (5.0 * math.sin(math.pi * e2), 0.0, 0.0),
+                    # the free arm comes out and a little forward as the thigh lifts past the guarded hand
+                    "DEF-upper_arm.L": (-10.0 * lift / STEP_THIGH, 0.0, 16.0 * lift / STEP_THIGH),
+                    "DEF-thigh.L": (-lift, 0.0, 0.0), "DEF-shin.L": (lift, 0.0, 0.0),
+                    "DEF-thigh.R": (trail - 30.0 * swing, 0.0, 0.0),
+                    "DEF-shin.R": (20.0 * e2 * (1.0 - e3) + 40.0 * swing, 0.0, 0.0),
+                    "DEF-foot.R": (-10.0 * swing, 0.0, 0.0)})
+
+
+def vigil(persona: dict) -> dict:
+    """Both hands on the shut book in front, at the waist; the head bowed 6 degrees (the Prologue)."""
+    return add(stand(persona), {"DEF-spine.006": (6.0, 0.0, 0.0),
+                                "DEF-upper_arm.L": (-16.0, 6.0, -10.0), "DEF-forearm.L": (-64.0, -48.0, 0.0),
+                                "DEF-hand.L": (0.0, -10.0, GUARD_HAND),
+                                "DEF-upper_arm.R": (-10.0, -4.0, 6.0), "DEF-forearm.R": (-20.0, 40.0, 0.0)})
+
+
+def reink(persona: dict) -> dict:
+    """At the shrine wall: the left hand up at chest height, the index guard to the shell (a small turn of the
+    head and chest toward it); the right keeps the book at the waist. ysolde.md §10 asks for the right palm on the
+    wall and the book on the belt: the belt loop is a second book attachment, not built yet (ysolde_review.md)."""
+    return add(vigil(persona), {"DEF-spine.006": (2.0, 6.0, 0.0), "DEF-spine.003": (0.0, 4.0, 0.0),
+                                "DEF-upper_arm.L": (-44.0, -8.0, 26.0), "DEF-forearm.L": (-28.0, 40.0, 0.0),
+                                "DEF-hand.L": (0.0, 0.0, -10.0)})
+
+
+def fold_arms(persona: dict) -> dict:
+    """The idle with the arms folded at the waist, left over right (the right still holding the book), the head
+    turned 15 degrees toward the feast and the eyes down (Ch4, Pilgrim's Wake)."""
+    return add(vigil(persona), {"DEF-spine.006": (2.0, 15.0, 0.0), "DEF-forearm.L": (-8.0, -10.0, 0.0),
+                                "DEF-forearm.R": (-6.0, 8.0, 0.0)})
+
+
+def fan_pose(persona: dict) -> dict:
+    """The book fanned open in front at chest height, its gold toward the foe; the left hand up before it."""
+    a = persona["arms_down"]
+    return add(stand(persona), {"DEF-spine.003": (-2.0, 0.0, 0.0),
+                                "DEF-upper_arm.R": (-30.0, 30.0, -a * 0.25), "DEF-forearm.R": (-14.0, 30.0, 0.0),
+                                "DEF-hand.R": (-BOOK_HAND, -70.0, 0.0),
+                                "DEF-upper_arm.L": (-66.0, -30.0, a * 0.55), "DEF-forearm.L": (-20.0, -30.0, 0.0),
+                                "DEF-hand.L": (0.0, 0.0, -20.0)})
+
+
+def trace_point(t: float) -> tuple[float, float]:
+    """The left hand's place on the glyph (h, v) at t seconds into cast_glyph: the five strokes in order, each
+    eased in and out (a brush stroke starts and stops)."""
+    k = (t - TRACE_START) / TRACE_STROKE
+    if k <= 0.0:
+        return TRACE_PATH[0]
+    if k >= len(TRACE_PATH) - 1:
+        return TRACE_PATH[-1]
+    i = int(k)
+    f = smooth(k - i)
+    (h0, v0), (h1, v1) = TRACE_PATH[i], TRACE_PATH[i + 1]
+    return h0 + (h1 - h0) * f, v0 + (v1 - v0) * f
+
+
+def trace_offset(t: float) -> dict:
+    """cast_glyph's left-arm turns: the glyph traced about its middle (down = the arm pitches down, her right = the
+    arm turns to her right), then held, then the arm settles as the book folds."""
+    h, v = trace_point(t)
+    end = TRACE_START + TRACE_STROKE * (len(TRACE_PATH) - 1) + TRACE_HOLD
+    settle = smooth((t - end) / FOLD_S)
+    h, v = (h - 1.0) * (1.0 - settle), (v - 0.5) * (1.0 - settle)
+    return {"DEF-upper_arm.L": (TRACE_STEP_DEG * v, -TRACE_STEP_DEG * h, 0.0)}
+
+
+def book_fan_weight(clip: str, t: float) -> float | None:
+    """The `book_fan` shape (0 shut .. 1 the 160 degree arc) at t seconds, for the clips that key it."""
+    if clip == "book_fan":
+        return smooth((t - FAN_OPEN[0]) / (FAN_OPEN[1] - FAN_OPEN[0]))
+    if clip == "cast_glyph":
+        end = TRACE_START + TRACE_STROKE * (len(TRACE_PATH) - 1) + TRACE_HOLD
+        return 1.0 - smooth((t - end) / FOLD_S)
+    return None
+
+
+# blend-shape tracks: clip -> (mesh node under the Skeleton3D, shape), keyed by book_fan_weight
+BLEND_SHAPES = {"book_fan": ("Book", "book_fan"), "cast_glyph": ("Book", "book_fan")}
 
 
 LENGTHS = {"idle": 6.0, "walk": 1.1, "run": 0.7, "talk": 3.2, "kneel_over_rhen": 1.8, "laugh": 2.2,
            "rise_to_stand": 2.0, "offer_hand": 1.4, "take_hand": 1.2, "walk_to_chamber": 1.4, "emerge_doorway": 2.4,
            "face_west": 1.6, "spear_level": 1.6, "lower_spear": 1.6, "palms_level": 2.0, "catch_rhen": 1.4,
-           "sit_steps": 2.0, "turn_seaward": 1.6}
+           "sit_steps": 2.0, "turn_seaward": 1.6, "board_step": 2.0, "vigil_book_shut": 6.0, "reink_shell": 2.4,
+           "stand_apart": 6.0, "book_fan": 1.2, "cast_glyph": 2.2}
 
 
 # ---------------------------------------------------------------------------------------------
@@ -889,6 +1053,101 @@ def battle_pose_at(clip: str, u: float, sk: Skeleton, persona: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------------------------
+# Sefir (M3-CHR-02, act1_npcs.md §1.8): plumb and still, no breath, the hands joined loosely before the navel, right
+# over left. A persona with `hands_joined` takes these clips in place of the shared ones (pose_at dispatches), so the
+# other heroes' libraries do not change. `breath` scales the breath term of his idle (0: absent, as the story asks).
+# ---------------------------------------------------------------------------------------------
+PERSONA["sefir"] = {"sway": 0.0, "lean": 0.0, "staff": False, "arms_down": 30.0, "breath": 0.0, "hands_joined": True}
+CLIPS["sefir"] = ["idle", "talk", "raise_palm", "incline_head", "glance", "pivot", "walk_glide"]
+LOOPS.add("walk_glide")
+LENGTHS.update({"raise_palm": 4.5, "incline_head": 2.4, "glance": 2.0, "pivot": 1.4, "walk_glide": 1.4})
+# the joined hands (world-axis turns on his skeleton, solved for the wrists 6-7 cm in front of the robe at the navel,
+# 14 cm apart; the right forearm a little higher and 2.5 cm further forward, so the right hand lies over the left)
+SEFIR_JOINED = {"DEF-upper_arm.L": (0.0, -1.5, -29.5), "DEF-forearm.L": (-60.0, -61.5, 0.0),
+                "DEF-upper_arm.R": (-0.5, 4.5, 34.0), "DEF-forearm.R": (-59.0, 48.5, 0.0)}
+# raise_palm: the Order's gesture with the left palm only, flat and face down at chest height
+SEFIR_PALM = {"DEF-upper_arm.L": (-46.0, -8.0, -14.0), "DEF-forearm.L": (-48.0, -12.0, 0.0),
+              "DEF-hand.L": (0.0, 0.0, -70.0)}
+
+
+def sefir_still(sk: Skeleton, persona: dict) -> dict:
+    p = stand(persona)
+    p.update(SEFIR_JOINED)
+    return p
+
+
+def euler_yxz(q: np.ndarray) -> tuple:
+    """Degrees (x, y, z) of a quaternion, the inverse of qeuler (Y * X * Z)."""
+    x, y, z, w = q
+    r02 = 2 * (x * z + w * y)
+    r12 = 2 * (y * z - w * x)
+    r22 = 1 - 2 * (x * x + y * y)
+    r10 = 2 * (x * y + w * z)
+    r11 = 1 - 2 * (x * x + z * z)
+    return (math.degrees(math.asin(max(-1.0, min(1.0, -r12)))), math.degrees(math.atan2(r02, r22)),
+            math.degrees(math.atan2(r10, r11)))
+
+
+def sefir_turned(pose: dict, yaw: float) -> dict:
+    """The pose with his whole body turned `yaw` degrees about the vertical at the hips: the root takes the turn,
+    and every other bone's world-axis turn is carried round with it (conjugated), so the joined hands stay joined."""
+    r = qaxis((0, 1, 0), yaw)
+    out = {}
+    for b, v in pose.items():
+        if b == "hips":
+            out[b] = v
+        elif b == HIPS:
+            out[b] = euler_yxz(qmul(r, qeuler(v)))
+        else:
+            out[b] = euler_yxz(qmul(r, qmul(qeuler(v), qinv(r))))
+    if HIPS not in out:
+        out[HIPS] = (0.0, yaw, 0.0)
+    return out
+
+
+def sefir_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    u = t / length
+    base = sefir_still(sk, persona)
+    if clip == "idle":
+        # no motion: the loop exists so the AnimationPlayer has something to hold (the breath term is 0 for him)
+        return add(base, {"DEF-spine.003": (0.7 * persona.get("breath", 1.0) * math.sin(4 * math.pi * u), 0.0, 0.0)})
+    if clip == "talk":
+        # the least gesture in the cast: the left hand parts from the right and opens 10 degrees once per loop; the
+        # head moves under a degree
+        g = 0.5 - 0.5 * math.cos(2 * math.pi * u)
+        return add(base, {"DEF-forearm.L": (-6.0 * g, 10.0 * g, 0.0), "DEF-hand.L": (0.0, 0.0, -10.0 * g),
+                          "DEF-spine.006": (0.6 * math.sin(4 * math.pi * u), 0.8 * math.sin(2 * math.pi * u), 0.0)})
+    if clip == "raise_palm":
+        # up flat to chest height in 0.6 s, held through the sentence, lowered over 2.4 s ("settling the water")
+        w = smooth(t / 0.6) * (1.0 - smooth((t - 2.1) / 2.4))
+        palm = dict(base)
+        palm.update(SEFIR_PALM)
+        return add(blend(base, palm, w), {"DEF-spine.006": (3.0 * w, 0.0, 0.0)})
+    if clip == "incline_head":
+        # a 10 degree bow and a 3 degree tilt, held 1 s, rising over 0.8 s
+        w = smooth(t / 0.6) * (1.0 - smooth((t - 1.6) / 0.8))
+        return add(base, {"DEF-spine.005": (3.0 * w, 0.0, 0.0), "DEF-spine.006": (7.0 * w, 0.0, 3.0 * w)})
+    if clip == "glance":
+        # head (and eyes) 22 degrees to his left and back; the body does not follow (the @mark picks the side)
+        w = smooth(t / 0.45) * (1.0 - smooth((t - 1.25) / 0.75))
+        return add(base, {"DEF-spine.005": (0.0, 6.0 * w, 0.0), "DEF-spine.006": (0.0, 16.0 * w, 0.0)})
+    if clip == "pivot":
+        # a 30 degree turn in place on the heels, no step, no bob (the barge does the travelling)
+        return sefir_turned(base, 30.0 * smooth(u / 0.9))
+    if clip == "walk_glide":
+        # Act II (Ch13): a 14 degree stride, no vertical bob, hips level, no arm swing (the hands stay joined)
+        ph = 2 * math.pi * u
+        swing_l = max(0.0, math.sin(ph + math.pi * 0.5))
+        swing_r = max(0.0, math.sin(ph - math.pi * 0.5))
+        return add(base, {"DEF-spine": (0.0, 1.5 * math.sin(ph), 0.0), "DEF-spine.002": (0.0, -1.5 * math.sin(ph), 0.0),
+                          "DEF-thigh.L": (-7.0 * math.cos(ph), 0.0, 0.0), "DEF-thigh.R": (7.0 * math.cos(ph), 0.0, 0.0),
+                          "DEF-shin.L": (3.0 + 10.0 * swing_l, 0.0, 0.0), "DEF-shin.R": (3.0 + 10.0 * swing_r, 0.0, 0.0),
+                          "DEF-foot.L": (-3.0 * swing_l + 3.0 * math.cos(ph), 0.0, 0.0),
+                          "DEF-foot.R": (-3.0 * swing_r - 3.0 * math.cos(ph), 0.0, 0.0)})
+    raise KeyError(clip)
+
+
+# ---------------------------------------------------------------------------------------------
 # AnimationLibrary text resource
 # ---------------------------------------------------------------------------------------------
 def fmt(x: float) -> str:
@@ -922,12 +1181,16 @@ def build(hero: str) -> str:
         lines += battle_markers(clip, length)  # M2-CHR-07: the strike clips' `contact` marker
         tracks = [("position_3d", HIPS, [(t, list(p)) for t, p in keys_p])]
         tracks += [("rotation_3d", b, [(t, list(q)) for t, q in keys_q[b]]) for b in BONES]
+        if persona.get("book") and clip in BLEND_SHAPES:  # ysolde: the book opens on its shape
+            node, shape = BLEND_SHAPES[clip]
+            tracks.append(("blend_shape", f"/{node}:{shape}", [(t, [book_fan_weight(clip, t)]) for t in times]))
         for ti, (kind, bone, keys) in enumerate(tracks):
             vals = []
             for t, v in keys:
                 vals += [fmt(t), "1"] + [fmt(x) for x in v]
             lines += [f'tracks/{ti}/type = "{kind}"', f"tracks/{ti}/imported = false", f"tracks/{ti}/enabled = true",
-                      f'tracks/{ti}/path = NodePath("{base}{bone}")', f"tracks/{ti}/interp = 1",
+                      f'tracks/{ti}/path = NodePath("{base[:-1] + bone if kind == "blend_shape" else base + bone}")',
+                      f"tracks/{ti}/interp = 1",
                       f"tracks/{ti}/loop_wrap = true", f"tracks/{ti}/keys = PackedFloat32Array({', '.join(vals)})"]
         subs.append("\n".join(lines))
     data = ",\n".join(f'&"{c}": SubResource("clip_{i}")' for i, c in enumerate(names))

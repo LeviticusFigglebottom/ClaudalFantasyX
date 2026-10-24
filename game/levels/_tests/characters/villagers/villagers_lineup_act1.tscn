@@ -1,0 +1,48 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/villagers/villager_stage.tscn" id="stage"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/tavi/tavi.glb" id="tavi"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/osu/osu.glb" id="osu"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/vendor/vendor.glb" id="vendor"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/child/child.glb" id="child"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/kell/kell.glb" id="kell"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/neme/neme.glb" id="neme"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/reed/reed.glb" id="reed"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/netmender/netmender.glb" id="netmender"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/fisher/fisher.glb" id="fisher"]
+
+[node name="VillagersLineupAct1" instance=ExtResource("stage")]
+character_scene = ExtResource("tavi")
+character_name = &"Tavi"
+face_poses_path = "res://game/levels/_tests/characters/villagers/tavi_face_poses.json"
+
+[node name="Others" type="Node3D" parent="."]
+
+[node name="Osu" parent="Others" instance=ExtResource("osu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 0, 0.0)
+
+[node name="Vendor" parent="Others" instance=ExtResource("vendor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.55, 0, 0.0)
+
+[node name="Child" parent="Others" instance=ExtResource("child")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7, 0, 0.1)
+
+[node name="Kell" parent="Others" instance=ExtResource("kell")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.85, 0, 0.0)
+
+[node name="Neme" parent="Others" instance=ExtResource("neme")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.85, 0, 0.0)
+
+[node name="Reed" parent="Others" instance=ExtResource("reed")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 0, 0.0)
+
+[node name="Netmender" parent="Others" instance=ExtResource("netmender")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.55, 0, 0.0)
+
+[node name="Fisher" parent="Others" instance=ExtResource("fisher")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 0, 0.0)
+
+[node name="Lineup" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0, 1.12, 8.4)
+fov = 34.0
+near = 0.05
