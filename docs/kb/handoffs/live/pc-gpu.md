@@ -6,7 +6,7 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 > **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
 > session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
-> **This copy, on `gpu/m2-gate-runner`, is the newest.**
+> **This copy, on `gpu/m2-nit-902-gate-runner-fresh-import`, is the newest.**
 
 ## PC setup for a new session
 
@@ -115,6 +115,10 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/m2-nit-902-gate-runner-fresh-import | **M2-NIT-902** (runner fix) | sync.sh never keeps .godot (a stale import failed test_post_import); runbook: 10 GB WSL cap, 2 shards, the shots-branch practice. |
+| gpu/gate-big8-shots | big8's 29 failing shots (out + diff PNGs, clean cache) | for the Lead to view; README groups them. |
+| gpu/m2-nit-901-audio-check-windows | **M2-NIT-901** (accepted, in big8) | data_check keys sfx_*.json by POSIX path (399 false errors on Windows). |
+| gpu/m2-rnd-910-quit-mid-warmup | **M2-RND-910** (accepted, in big8) | Quit during a first-run warm-up hung (predelete waited on RND-18's worker-thread load()). Loads now via ResourceLoader threaded requests; predelete never waits on a load. boot_title first-run capture exits in 5 s (was killed); new test. |
 | gpu/m2-gate-runner | **Gate runner** (for the Lead) | WSL2 `hymn` + tools/dev/pc_gate/ + tools/dev/gate_runner.md. Parity proved (196/196 on d6a0886d). Filed M2-CHR-11 (Blender AVX2 DIFFs) and M2-ARC-12 (stall tests' clock margin). |
 | gpu/m2-rnd-16-release-exit-leak | **M2-RND-16 in review** (reviewer Architect) | The exit leak (130 in use): a Godot 4.6.3 GDScript compiler bug: a function naming HalunaDresser then HalunaZoneDresser (its subclass) pins the class graph. Not release-only. Fix: haluna_zone.gd names the subclass first; 0 in use (editor and release). New tool: slice_sweep --leak-probe. |
 | gpu/m3-rnd-05-reefball-night | **M3-RND-05 in review** (reviewer Art) | The night match: the ball's water column carries the rule-3 sea-glow (on/off 1.56-5.0x, stone <= 2.36x the sea), lamp-keyed players; arena lamps need light_volumetric_fog_energy 0 (they lit the god-ray fog green). +0.01-0.08 ms. Stacked on RND-04. Two new pending shots. |
@@ -249,3 +253,19 @@ None of it is needed: everything quoted in the reports can be reproduced from th
   the Lead re-approved after viewing in d0e0c5a3 and a7350535. So the container and the runner agree.
 - Parity proof on 81651b7e: 75/75 shots; llvmpipe "LLVM 22.1.8, 256 bits"; drifts identical to the container's
   (water_horizon 0.00507, water_night 0.00306, haluna_h01 0.00189); output independent of LP_NUM_THREADS.
+- **GATE lead/gate-cmb02@7c424c3b: FAIL (shots only), wall 15.8 min.** Lane A green: Godot 1948/0 (M2-ARC-12's margin
+  holds under WSL load), coverage OK, smoke OK, Blender 0 changed jobs. Shots: 196 compared, 24 failed, all the
+  timeline order. In 22 of them 100% of the changed pixels lie in the timeline column. battle_hud_preview also has the
+  "acts again in 4 -> 5 turns" hint; battle_swell_ring also has the Lamp Dive ring state ("Perfect"), which the Lead
+  is viewing. The 061b0361 run was stopped at the Lead's request.
+- **GATE lead/gate-big8@aa55b77e: FAIL (expected-kind drifts plus the known Blender set), wall 27.4 min.** Lane A
+  (fresh import): Godot **2324 run, 0 failed**; coverage OK; smoke OK; data, lint and tools tests OK. Blender, 44
+  changed jobs: 35 identical, **9 DIFF** (exactly the M2-CHR-11 set: rhen, toma and seven villagers). Lane B: **238
+  compared, 29 failed**: 16 battle_arena_*, 6 battle_boss_intro_*, drownbell_flood, creature_portraits, and 5 not on
+  the Lead's list (field_area_title, field_interact_prompt, field_objective_line, field_tip_card, dialogue_continue:
+  UI unchanged, the Haluna stone and sand behind it differ). settings_hub, settings_accessibility and
+  shrine_s01–s05 pass. PNGs: gpu/gate-big8-shots (docs/kb/qa/gate-runs/big8/).
+- **Runner bug, fixed (M2-NIT-902):** the first big8 attempt kept a stale .godot. It failed 3 test_post_import tests
+  (stale LOD ranges; 21/21 fresh) and moved two tideline arena shots; the rerun's PNGs are the clean ones. Claude Code
+  also reaped one attempt for low system memory; with the owner's OK WSL now caps at 10 GB with 2 shards.
+

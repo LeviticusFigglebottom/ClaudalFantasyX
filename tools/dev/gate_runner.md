@@ -11,9 +11,12 @@ gates as `tools/ci_local.sh` in the Lead's container, on the same pinned Linux b
   `python3 tools/dev/fetch_godot.py`, `fetch_render_deps.py`, `fetch_blender.py`.
 - **No venv.** Blender honours `VIRTUAL_ENV` and then can't import its own numpy, so install into the distro's Python:
   `pip3 install --break-system-packages -r tools/requirements.txt pillow`.
-- `C:\Users\Aaron\.wslconfig` caps WSL at 18 of 24 threads and 14 GB, with `autoMemoryReclaim=dropCache`, so a gate
-  stays under the 75% cap by construction.
+- `C:\Users\Aaron\.wslconfig` caps WSL at 18 of 24 threads and **10 GB**, with `autoMemoryReclaim=dropCache`. At 14 GB
+  plus the desktop, Claude Code reaped a gate for low system memory (2026-10-24). Use **2 screenshot shards**.
 - WSL's `/tmp` is wiped when the distro idles: results go under `/root`.
+- **Never keep `.godot/` between gates.** Godot doesn't reimport a model when only its post-import script changed,
+  and a kept cache failed 3 `test_post_import` tests with stale LOD ranges and moved two arena shots. `sync.sh`
+  cleans it; a fresh import costs about 30 s.
 - **The clone has no GitHub credentials.** `tools/dev/pc_gate/sync.sh` copies the Windows checkout's `origin/*`
   refs (`C:\Users\Aaron\hymn_gpu`), so run `git fetch origin` on Windows first.
 
@@ -32,6 +35,7 @@ gates as `tools/ci_local.sh` in the Lead's container, on the same pinned Linux b
 ## Measured (2026-10-24)
 | Run | Wall | Result |
 |---|---|---|
+| Full gate, lead/gate-big8 @ aa55b77e (238 shots, 44 Blender jobs), 2 shards, 10 GB | 27.4 min (A 18.5 with Blender 16.7; B 27.3) | Godot 2324/0; 29 expected-kind shot drifts; 9 Blender DIFF (M2-CHR-11) |
 | Full gate, d6a0886d (Blender skipped), lanes A and B at once | 16.3 min (A 10.5, B 16.2) | Godot 1940 run, 2 failed (the WSL clock flake, below); 196/196 shots |
 | Full gate, lead/gate-big7 @ ab048d51 (Blender for 39 changed jobs) | 18.2 min (Blender 11.9) | 9 jobs DIFF (M2-CHR-11); 2 shots changed, which the Lead re-approved after viewing |
 | `verify_blender_builds.py --all`, d6a0886d | 12.4 min | 41 jobs: 31 identical, 10 DIFF (M2-CHR-11) |
@@ -70,7 +74,7 @@ For the Blender reproducibility check across every job, run `HYMN_BLENDER=... py
 in the clone. Every job must be "identical".
 
 ## Load rules
-- Keep the whole machine at or under 75% CPU and memory. Lanes A and B together with 3 shards come to about 60% CPU.
+- Keep the whole machine at or under 75% CPU and memory. Lanes A and B together with 2 shards stay under the cap (about 50% CPU).
   WSL's VM shares memory with the desktop, so check memory before adding shards.
 - **Never during a GPU benchmark.** Gates and benchmarks alternate, so a benchmark always has a quiet machine.
 - Kill only processes you started.
@@ -80,6 +84,9 @@ Add a line to `docs/kb/handoffs/live/pc-gpu.md` on the PC's newest branch, and m
 
     GATE <branch>@<sha>: PASS|FAIL, wall <min> min. Lane A: Godot <run>/<failed>, coverage ok, Blender <n>/<n> identical
     (changed since <base>), lint/data/unittests ok. Lane B: <n> shots compared, <failed> failed (worst: <id> <rmse>).
+
+For a gate with expected drifts, push every failing shot's out and diff PNGs to a `gpu/gate-<name>-shots` branch
+under `docs/kb/qa/gate-runs/<name>/`, with a README that groups them (see big8's).
 
 On a FAIL, name the step and the first failing test or shot, and attach `compare.txt` or the failing log lines.
 
