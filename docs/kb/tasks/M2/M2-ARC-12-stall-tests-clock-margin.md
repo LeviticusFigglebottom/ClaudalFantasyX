@@ -2,8 +2,8 @@
 id: M2-ARC-12
 title: "Two real-stall tests need a clock margin (they flake on WSL2 under load: the sleep and tick clocks differ)"
 role: architect
-status: todo
-owner_session: ""
+status: review
+owner_session: "lead"
 reviewer: qa
 depends_on: []
 milestone: M2
