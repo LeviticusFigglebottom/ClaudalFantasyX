@@ -1,6 +1,6 @@
 {
  "battle_fixtures": {
-  "doc": "Frozen battle data for the HUD capture states (tests/screenshots/shots.json) and their tests (docs/kb/tech/ui.md § Capture fixtures). A copy of the sandbox rows as of 2026-10-23: rebalancing game/data/battle/*.json never moves a screenshot baseline. Each fixture may override rows (deep merge by id) and set opening state (hp, statuses, provoked_by) before the first turn. Edit only to change what a shot shows, then re-approve its baseline. M2-UI-05: tables.vowbound is a frozen copy of vowbound.json (Ilun's three skills are appended to tables.skills); a fixture's \"vowbound\" lists the Vowbound the party has bound, and only such a fixture gets the call (the others keep their root menus).",
+  "doc": "Frozen battle data for the HUD capture states (tests/screenshots/shots.json) and their tests (docs/kb/tech/ui.md § Capture fixtures). A copy of the sandbox rows as of 2026-10-23: rebalancing game/data/battle/*.json never moves a screenshot baseline. Each fixture may override rows (deep merge by id) and set opening state (hp, statuses, provoked_by) before the first turn. Edit only to change what a shot shows, then re-approve its baseline. M2-UI-05: tables.vowbound is a frozen copy of vowbound.json (Ilun's three skills are appended to tables.skills); a fixture's \"vowbound\" lists the Vowbound the party has bound, and only such a fixture gets the call (the others keep their root menus). M2-CMB-07: the victory fixture's foes carry lume and certain drops, so its shot shows the spoils rows.",
   "tables": {
    "characters": [
     {
@@ -788,19 +788,29 @@
        "stats": {
         "hp": 1,
         "evasion": 0
-       }
+       },
+       "currency": 24,
+       "drops": [
+        {"item": "crab_carapace", "chance": 100},
+        {"item": "salt_tonic", "chance": 100}
+       ]
       },
       "lantern_eel": {
        "stats": {
         "hp": 1,
         "evasion": 0
-       }
+       },
+       "currency": 20,
+       "drops": [
+        {"item": "eel_lantern", "chance": 100}
+       ]
       },
       "gull_harrier": {
        "stats": {
         "hp": 1,
         "evasion": 0
-       }
+       },
+       "currency": 18
       }
      }
     }

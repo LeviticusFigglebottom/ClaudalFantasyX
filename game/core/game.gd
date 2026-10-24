@@ -57,6 +57,8 @@ func set_flag(flag: StringName, value: Variant = true) -> void:
 
 func new_game() -> void:
 	state = GameStateData.new()
+	# M2-CMB-07: the purse opens at the economy's starting lume (items.json rules), so B03's shop works.
+	state.currency = ItemDB.load_default().starting_currency
 	start_play_clock()
 	EventBus.new_game_started.emit()
 

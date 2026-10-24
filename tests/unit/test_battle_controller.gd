@@ -224,7 +224,10 @@ func test_victory_feeds_xp_into_the_lattice() -> void:
 	var participants := (ctl.engine.party_active + ctl.engine.party_reserve).filter(
 		func(c: BattleCombatant) -> bool: return c.participated
 	)
-	assert_eq(ctl.hud.result.result_rows.size(), participants.size(), "fallen fighters are listed too")
+	var fighters := ctl.hud.result.result_rows.filter(
+		func(r: Dictionary) -> bool: return not r.has(BattleRewards.ROW_SPOILS)  # M2-CMB-07: lume, drops
+	)
+	assert_eq(fighters.size(), participants.size(), "fallen fighters are listed too")
 	_free()
 
 
@@ -604,9 +607,14 @@ func test_capture_states_run_on_fixture_data_not_live_balance() -> void:
 				assert_eq(ctl.state, BattleController.STATE_SWAP_IN)
 			BattleController.SCRIPT_VICTORY:
 				assert_eq(ctl.engine.outcome, BattleEngine.OUTCOME_VICTORY)
-				assert_eq(ctl.hud.result.result_rows.size(), 3, "Rhen, Toma and Asha all stood")
-				for row in ctl.hud.result.result_rows:
+				# M2-CMB-07: the fixture's foes carry lume and certain drops: Lume, Crab Carapace,
+				# Salt Tonic and Eel Lantern rows follow the fighters, listed but never paid.
+				assert_eq(ctl.hud.result.result_rows.size(), 7, "Rhen, Toma and Asha all stood; four spoils")
+				for row in ctl.hud.result.result_rows.slice(0, 3):
 					assert_false(bool(row.get("fell", false)))
+					assert_false(row.has(BattleRewards.ROW_SPOILS))
+				assert_eq(int(ctl.last_spoils[BattleRewards.KEY_LUME]), 62)
+				assert_false(bool(ctl.last_spoils[BattleRewards.KEY_PAID]), "a capture never pays")
 			BattleController.SCRIPT_DEFEAT:
 				assert_eq(ctl.engine.outcome, BattleEngine.OUTCOME_DEFEAT)
 				assert_eq(ctl.state, BattleController.STATE_RESULT)

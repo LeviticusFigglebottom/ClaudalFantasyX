@@ -1,5 +1,5 @@
 {
-  "rules": {"stack_cap": 99, "key_item_cap": 1, "currency_cap": 9999999, "category_order": ["consumable", "material", "facet", "key"]},
+  "rules": {"stack_cap": 99, "key_item_cap": 1, "currency_cap": 9999999, "starting_currency": 100, "category_order": ["consumable", "material", "facet", "key"]},
   "items": [
     {"id": "salt_tonic", "category": "consumable", "name_key": "ITEM_SALT_TONIC", "desc_key": "ITEM_SALT_TONIC_DESC", "price": 40, "battle": {"target": "single_ally", "rank": 2, "effects": [{"type": "heal_hp", "amount": 200}]}, "field": true},
     {"id": "reef_draught", "category": "consumable", "name_key": "ITEM_REEF_DRAUGHT", "desc_key": "ITEM_REEF_DRAUGHT_DESC", "price": 150, "battle": {"target": "single_ally", "rank": 2, "effects": [{"type": "heal_hp", "amount": 600}]}, "field": true},
