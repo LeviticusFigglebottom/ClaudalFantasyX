@@ -55,6 +55,24 @@ Your queue of five is taken:
 - **(4) M3-AUD-22:** done (muffle inside the sphere). The goal swells were already in M3-AUD-17.
 - **(5) M3-AUD-23:** the mix pass, done apart from a re-run once the new cues land.
 
+## MERGE-READY @ 662f9d7d
+- **Integration branch:** big7 (8f808cc6) merged.
+- **Fixes after the merge:**
+  - The new enemy `wickfry` is voiced as a pitched glassfry.
+  - The shrine test's `flush_pending` is restored (the merge had dropped it).
+  - The integration branch's own base-class signal code is kept, and both tests are kept.
+- **Items:**
+  - M3-AUD-24 (the Lead's second "M3-AUD-13", renumbered): voices for the six new speakers.
+  - Pending voices for m2-slice's 17 Ch4–Ch9 speakers (the menus track flagged them).
+- **Requests filed:** M2-AUD-16 (menus: `BattlePause._ready` leaks a `BattlePauseMenu`; tests report "resources still
+  in use").
+- **Checks run:**
+  - The full Godot suite: 1981 run, 0 failed.
+  - All tool tests: 711 OK, 7 skipped.
+  - The loudness test passed, validate_data showed 0 errors, and gdlint and gdformat were clean.
+- **Skipped (the Lead runs these at merge):** screenshots and Blender. Coverage was skipped because game/battle/ and
+  game/progression/ weren't touched.
+
 ## MERGE-READY @ 4dbcfc1f
 - **Items:** M2-AUD-14 menu-page SFX, M3-AUD-19 Act I temple loops, M3-AUD-20 the Stillguard Inquisitor boss theme,
   M3-AUD-21 syllable blips, M3-AUD-22 the Reefball sphere muffle, M3-AUD-23 the mix pass (mix_report.md, mix.md §8;
