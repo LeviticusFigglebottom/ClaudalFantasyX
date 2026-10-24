@@ -66,6 +66,16 @@
         ["{blender}", "--python", "assets_src/creatures/reef_crab/build_reef_crab.py", "--", "--out", "assets/creatures/reef_crab/reef_crab.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "reef_crab"]
       ]
+    },
+    {
+      "id": "creature_spawn_polyp",
+      "owner": "character",
+      "sources": ["assets_src/creatures/spawn_polyp/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/spawn_polyp/*.glb", "assets/creatures/spawn_polyp/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/spawn_polyp/build_spawn_polyp.py", "--", "--out", "assets/creatures/spawn_polyp/spawn_polyp.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "spawn_polyp"]
+      ]
     }
   ]
 }

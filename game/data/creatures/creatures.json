@@ -17,6 +17,9 @@
     "reef_crab": {
       "scene": "res://game/creatures/reef_crab/reef_crab_battle.tscn",
       "clip_by_skill": {"brine_spit": "cast"}
+    },
+    "spawn_polyp": {
+      "scene": "res://game/creatures/spawn_polyp/spawn_polyp_battle.tscn"
     }
   }
 }
