@@ -2,9 +2,9 @@
 id: M1-ARC-16
 title: SceneRouter measures ADR 0029's two budgets (hidden frames under the fade, the first 60 visible frames)
 role: architect
-status: todo
-owner_session: ""
-reviewer: rendering
+status: review
+owner_session: "worktree-agent-a30d6e9e3e395d6ec"
+reviewer: lead
 depends_on: [M1-RND-22]
 milestone: M1
 request-from: "lead"
@@ -15,12 +15,28 @@ Review-sweep-Q accepted ADR 0029, which makes the 50 ms limit apply to visible f
 - nothing measures the visible frames the ADR budgets.
 
 ## Acceptance criteria
-- [ ] Keep the hidden-frame measurement, but judge it against a hidden-frame budget (1 s, as a named constant). Its warning text names that budget.
-- [ ] Measure the first `VISIBLE_MEASURE_FRAMES` (60) frames after the fade starts to lift and the first after it ends, against `SWAP_BUDGET_MS` (50). Record them in the stats (for example `visible_frame_ms`, `max_visible_frame_ms`, `visible_over_budget`) and warn over budget.
-- [ ] Tests in test_scene_router_swap.gd for both windows, using an injected clock or frame times, the way `frame0_start` is tested.
-- [ ] graphics_settings.md or architecture.md documents the two stats. The tools that read `max_frame_ms` (prewarm_bench, gpu_bench) say which window they report.
+- [x] Keep the hidden-frame measurement, but judge it against a hidden-frame budget (1 s, as a named constant). Its warning text names that budget.
+- [x] Measure the first `VISIBLE_MEASURE_FRAMES` (60) frames after the fade starts to lift and the first after it ends, against `SWAP_BUDGET_MS` (50). Record them in the stats (for example `visible_frame_ms`, `max_visible_frame_ms`, `visible_over_budget`) and warn over budget.
+- [x] Tests in test_scene_router_swap.gd for both windows, using an injected clock or frame times, the way `frame0_start` is tested.
+- [x] graphics_settings.md or architecture.md documents the two stats. The tools that read `max_frame_ms` (prewarm_bench, gpu_bench) say which window they report.
 
 ## Notes
 - The SPEC §4.2 wording itself is the Lead's edit (ADR 0029, accepted by sweep-Q), with a SPEC version note.
+
+## Notes (2026-10-24, worktree-agent-a30d6e9e3e395d6ec)
+- `game/core/scene_router.gd`, additive: `HIDDEN_FRAME_BUDGET_MS` 1000, `ENTRY_BUDGET_MS` 3000,
+  `VISIBLE_MEASURE_FRAMES` 60; `is_measuring()`, `visible_measured(stats)`; static `judge_hidden`, `judge_entry`,
+  `judge_visible`; `SceneRouter.VisibleWindow` (timestamps in, so tests inject a clock).
+- **Hidden** `frame_ms` / `max_frame_ms` / `over_budget` keep their names; `budget_ms` is now 1000 and the
+  warning names "the 1000 ms hidden-frame budget". **Entry** `entry_ms` is `change_scene()` until the fade starts
+  to lift, against 3 s. **Visible** is every frame while the fade lifts (`lift_frames`) plus the 60 after it has
+  lifted, against 50 ms (`visible_frame_ms`, `max_visible_frame_ms`, `visible_over_budget`, `visible_complete`).
+  It finishes after `change_scene()` returns; `is_busy()` is unchanged, and a new change cuts it short.
+- Headless probe, boot → battle sandbox: hidden max 9.3 ms, entry 475 ms, 53 lift frames + 60, visible max 11.5 ms.
+- Tests: five new in `test_scene_router_swap.gd` (budgets, hidden, entry, visible window by injected clock, a 70 ms
+  visible hitch); the probe-driven test also asserts both windows were recorded. `scene_swap_probe.gd` waits for
+  `is_measuring()`. Docs: architecture.md "The two measured windows"; prewarm_bench and gpu_bench headers.
+- Left alone: `game/levels/ch02/haluna/README.md` quotes a hidden `frame_ms[0]` of 33 ms as "(budget 50)"; under
+  ADR 0029 that is a hidden frame (1 s budget). Environment's file; worth a one-line fix by its owner.
 
 ## Review log

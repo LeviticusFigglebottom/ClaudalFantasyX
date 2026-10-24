@@ -9,6 +9,9 @@ extends Node
 ## for the scene and the bench waits for it. Then the scene is added, the --preset (default high) is
 ## applied, and the wall time of each of --frames frames is recorded: max, count over the SPEC 4.2
 ## 50 ms budget, and the first frames.
+## Which ADR 0029 window (M1-ARC-16): the bench has no fade, so max_ms / over_50ms are visible frames (the
+## 50 ms budget). prewarm_max_ms / prewarm_wall_max_ms are the prewarm stage's frames, which the game runs
+## under the opaque fade: hidden frames (1 s budget). SceneRouter's last_swap_stats has both for a real change.
 
 const DEFAULT_FRAMES := 180
 const HITCH_MS := 50.0

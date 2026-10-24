@@ -4,6 +4,12 @@ extends TestCase
 ## failure); flashes respect the photosensitivity caps; and reduced motion thins and slows the particles.
 
 const PALETTE := "res://docs/kb/art/palette.json"
+## The photosensitivity contract (effects.json safety.doc, docs/kb/tech/battle_vfx.md): the data may be stricter,
+## never looser (M2-RND-06).
+const CONTRACT_FLASH_MAX_ALPHA := 0.3
+const CONTRACT_FLASH_MIN_INTERVAL_S := 0.5
+const BATTLE_SCENE := "res://game/battle/scene/battle_sandbox.tscn"
+const HUD_LAYER_NODE := &"HudLayer"
 const ENCOUNTER := &"sandbox_reef"
 
 var engine: BattleEngine
@@ -93,8 +99,17 @@ func test_flashes_are_capped_and_spaced() -> void:
 	var data := BattleVfx.load_data()
 	var safety := data["safety"] as Dictionary
 	var cap := float(safety["flash_max_alpha"])
-	assert_true(cap <= 0.35, "a flash never washes the frame out")
-	assert_true(float(safety["flash_min_interval_s"]) >= 0.34, "at most 3 flashes a second (WCAG 2.3.1)")
+	assert_true(cap <= CONTRACT_FLASH_MAX_ALPHA, "a flash never washes the frame out (cap %.2f)" % cap)
+	var interval := float(safety["flash_min_interval_s"])
+	assert_true(interval >= CONTRACT_FLASH_MIN_INTERVAL_S, "at most 2 flashes a second (%.2f s apart)" % interval)
+	var effects := data["effects"] as Dictionary
+	var flashes := 0
+	for id: String in effects:
+		var def := effects[id] as Dictionary
+		if def["kind"] == BattleVfx.KIND_FLASH:
+			flashes += 1
+			assert_true(float(def.get("alpha", INF)) <= cap, "%s's own alpha is within the cap" % id)
+	assert_true(flashes > 0, "the library has flashes to check")
 	var bright := {"kind": "flash", "alpha": 0.9}
 	assert_eq(vfx.flash_alpha(bright), cap, "capped")
 	vfx.reduced_motion = true
@@ -103,7 +118,10 @@ func test_flashes_are_capped_and_spaced() -> void:
 	var host := Node.new()
 	_host().add_child(host)
 	vfx._build_flash_layer(host)
-	assert_true(vfx._flash_layer.layer < 1, "below the HUD's CanvasLayer (layer 1): the timeline stays readable")
+	var hud_layer := _hud_layer()
+	assert_true(
+		vfx._flash_layer.layer < hud_layer, "below the HUD's CanvasLayer (%d): the timeline stays readable" % hud_layer
+	)
 	vfx.play(&"flash_ambush", &"")
 	vfx.play(&"flash_preemptive", &"")
 	assert_eq(vfx.played.count(&"flash_ambush") + vfx.played.count(&"flash_preemptive"), 1, "the second is too soon")
@@ -139,6 +157,23 @@ func _result(skill: StringName, hits: Array) -> ActionResult:
 	for h: Dictionary in hits:
 		r.hits.append(h)
 	return r
+
+
+## The HudLayer's `layer` as battle_sandbox.tscn sets it (CanvasLayer's default when the scene doesn't).
+func _hud_layer() -> int:
+	var state := (load(BATTLE_SCENE) as PackedScene).get_state()
+	for i in state.get_node_count():
+		if state.get_node_name(i) != HUD_LAYER_NODE:
+			continue
+		for p in state.get_node_property_count(i):
+			if state.get_node_property_name(i, p) == &"layer":
+				return int(state.get_node_property_value(i, p))
+		var probe := CanvasLayer.new()
+		var layer := probe.layer
+		probe.free()
+		return layer
+	fail("%s has no %s" % [BATTLE_SCENE, HUD_LAYER_NODE])
+	return 0
 
 
 func _foe() -> StringName:

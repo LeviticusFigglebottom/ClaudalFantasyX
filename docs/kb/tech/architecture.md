@@ -80,7 +80,7 @@ Boot → boot is cheap (7–9 ms), because the boot title's glyphs are already c
 2. **Prewarm frame.** `prewarm_requested` now fires a frame before the swap, so the stage build has its own frame.
 3. **Threaded instance.** `instantiate()` runs on `WorkerThreadPool`. The node isn't in the tree yet, which Godot 4 allows.
 4. **Split swap.** `unload_current_scene()` runs a frame before `change_scene_to_node()`, so freeing the old scene and entering the new one never share a frame.
-5. **Built-in measurement.** Every swap records `last_swap_stats` (per-phase ms, the four frame times, `max_frame_ms`, and `over_budget`), emits `swap_measured(stats)`, and warns when it's over 50 ms. Setting `instantiate_on_thread`, `warm_fonts` and `split_swap` to `false` reproduces the M0 behaviour. The probe's `--legacy` flag does exactly that.
+5. **Built-in measurement.** Every swap records `last_swap_stats` (per-phase ms, the four hidden frame times, `max_frame_ms`, and `over_budget`), emits `swap_measured(stats)`, and warns when a frame is over its budget. Since M1-ARC-16 there are two windows with their own budgets (next subsection). Setting `instantiate_on_thread`, `warm_fonts` and `split_swap` to `false` reproduces the M0 behaviour. The probe's `--legacy` flag does exactly that.
 6. **Time-sliced prewarm and zone-global reset (M1-RND-15).** `ShaderPrewarm` builds every draw at start but feeds them to its stage `materials_per_frame` at a time (`prewarm_materials.json`; 12), halving the batch after any frame over `slice_budget_ms` (33). While staging, the stage holds its parent's swap through the router's generic `hold_swap(holder)` / `release_swap(holder)` (M1-RND-23; like `SaveSystem.hold_autosave`), and the router waits while `swap_holders()` is non-empty, at most `PREWARM_WAIT_MAX_FRAMES` (120), after the threaded instance and before the unload, and records `prewarm_wait_frames`. On the RX 9070 XT the all-at-once stage cost 121–150 ms in one frame (docs/kb/qa/gpu/2026-10-23-rnd-07.md); the sliced worst frame against SPEC §4.2's 50 ms still needs measuring on the PC GPU (`tools/gpu_bench/run_prewarm.sh`). Just before `change_scene_to_node()` the router emits `scene_swapping(scene_path)`. `ShaderGlobals.install(router)` (in the router's `_ready`) resets `ShaderGlobals.ZONE_GLOBALS` (`hymn_zone_sea_glow`, `hymn_water_level`) to their project.godot defaults on it, so a zone that never writes those globals starts from the defaults, and the router names no system that owns one (M1-RND-23, review-sweep-J S2).
 
 **Before and after** (`game/core/debug/scene_swap_probe.tscn`, 8 fresh processes each, swap-window max in ms):
@@ -97,6 +97,21 @@ The maxima are contention outliers. What's left of the battle swap frame (about 
 - *Project settings:* `gui/theme/default_font_multichannel_signed_distance_field=true` makes the engine fallback font MSDF. Either set it to `false`, or make sure no shipped text reaches the fallback. Label3D, debug text and untranslated `RichTextLabel` BBCode fonts are the usual leaks.
 - *UI and Combat:* `BattleController.start_sandbox` does about 25–30 ms of cold work in the first frame. Building the HUD rows over two or three frames behind the intro fade would leave a large margin.
 - *QA:* measure on a real GPU. Pipeline compiles add to these CPU numbers, and `ShaderPrewarm` exists for exactly that.
+
+### The two measured windows (M1-ARC-16, ADR 0029)
+SPEC §4.2 (v1.3) budgets what the player sees, not what the fade hides. The router measures both, each against its own budget, and warns (`push_warning`, naming the budget) when one is over:
+
+| Window | Frames | Stats in `last_swap_stats` | Budget |
+|---|---|---|---|
+| **Hidden** | the `MEASURE_FRAMES` (4) frames after `change_scene_to_node()`, under the opaque fade: the new scene's `_ready` and first draw | `frame_ms`, `max_frame_ms`, `budget_ms`, `over_budget` | `HIDDEN_FRAME_BUDGET_MS` 1 s a frame |
+| **Entry** | `change_scene()` until the fade starts to lift (the fade-out, the load, the prewarm wait, the swap) | `entry_ms`, `entry_budget_ms`, `entry_over_budget` | `ENTRY_BUDGET_MS` 3 s |
+| **Visible** | every frame while the fade lifts (`lift_frames` of them), then the first `VISIBLE_MEASURE_FRAMES` (60) after it has lifted | `visible_frame_ms`, `lift_frames`, `max_visible_frame_ms`, `visible_budget_ms`, `visible_over_budget`, `visible_complete` | `SWAP_BUDGET_MS` 50 ms |
+
+- The visible window ends after `change_scene()` returns (about a second at 60 fps). `is_measuring()` is true until then, and `visible_measured(stats)` fires with the same dictionary, now complete. `is_busy()` is unchanged, so nothing waits on the window. A new `change_scene()` cuts it short (`visible_complete` false); a cut window is still judged on the frames it has.
+- A frame counts as lifted when the fade rect's alpha is 0 at the frame's end. `SceneRouter.VisibleWindow` takes the timestamps, so tests drive it with an injected clock (`test_scene_router_swap.gd`), the way `frame0_start` is tested.
+- `max_frame_ms` and `over_budget` keep their names but are now the **hidden** window, against 1 s: a 60 ms frame under the opaque fade is loading time, not a hitch. `budget_ms` in the stats is 1000.
+- The regression test still holds the hidden frames to `perf_budgets.json`'s `test_threshold_ms` (40 ms). That is a tighter guard than ADR 0029 asks for, kept because a regression there shows up first; it also asserts that the probe recorded a complete visible window and an entry time. The probe (`scene_swap_probe.gd`) waits for `is_measuring()` before printing.
+- **Which window the benches report.** `tools/gpu_bench/prewarm_bench.gd` has no fade: its `max_ms` is every frame after the scene is added (all visible, judged against 50 ms like the visible window), and its `prewarm_max_ms` and `prewarm_wall_max_ms` are the prewarm stage's frames, which the game runs under the fade (the hidden window, 1 s). `tools/gpu_bench/gpu_bench.gd` reports steady-state frames after its warm-up, neither window. Only the router's own stats measure the game's real transition.
 
 ## Saves (M1-ARC-03, architect-stream-4)
 

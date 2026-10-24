@@ -294,8 +294,21 @@ Measured (RX 9070 XT, High 1440p, GPU median, the whole frame):
 | Day, Medium | – | 1.96 ms |
 
 The look matches the SubViewport path (RMSE 0.003–0.009 on the five Undertow shots at High), with a slightly
-smoother wound glow. **Still open:** its own reprojected history, and a quarter-resolution tier for min-spec
-(RTX 3060 projection ~7.4 ms on Day High).
+smoother wound glow.
+
+**Current cost (M2-RND-01 sign-off, High `body_scale` 0.35):** the storm's own cost at High 1440p is Day 0.68,
+Eye 0.80, Night 0.70 and Horizon 0.58 ms on the RX 9070 XT (the frame minus the same frame with
+`gpu_bench --hide-storms`), **about 2.0–2.4 ms projected on an RTX 3060** (×3), within the 2–3 ms target
+(`docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md`). The table above is the whole frame at the earlier `body_scale`
+0.5. The "~7.4 ms on Day High" projection quoted here before is that table's Day 2.45 ms × 3: it predates 0.35 and
+counts the frame without the storm, so it is superseded (M2-RND-06).
+
+### Open items (compute body; recorded by M2-RND-06, not yet scheduled)
+1. **Its own reprojected history.** The compute body is jittered per frame and relies on the game camera's
+   TAA/FSR2 to integrate it; it has no history buffer of its own. That would let High drop below 0.35 without the
+   crawl that keeps Medium at 0.5.
+2. **A quarter-resolution tier for min-spec** (GTX 1060 / RX 580, SPEC §4.2). Not measured: High at 0.35 is
+   already within the recommended tier's budget, and no min-spec card has been benched.
 
 ### Striations, billows and the wound skin (M2-RND-01, criterion 2)
 Aimed at review-sweep-G's "uniform khaki lit tone" and "regular striations". Report:
