@@ -59,13 +59,32 @@ Your queue of five is taken:
 New audio task ids are 800–899 (M3-AUD-800…), new ADRs 0170–0179, and handoffs are named
 `<date>-audio-audio-<n>.md`. Existing ids stay as they are. The Lead's menu-pages task is M2-AUD-17.
 
-## State (2026-10-24, after big8's id rule)
-- **Integration branch merged again.** big7 brought claude/menus, claude/battle-presentation, claude/creatures and the
-  Reefball rig, so the pending hooks are being switched live:
-  - **M3-AUD-801 (done, review):** the WaterSphereRig hook is live; `ch01_hullgnaw` plays the Hullgnaw theme.
-  - **M2-AUD-17 (worktree agent):** the menu hooks against the real classes; StatusMenu and BattlePauseMenu.
-  - **M3-AUD-800 (worktree agent):** ChoreoAudio, CreatureAudio and the stings against the real battle code.
-- **Two items remain:** the two agents' merges, then MERGE-READY.
+## MERGE-READY @ 2a699ddb
+- **Items (all `review`):**
+  - M2-AUD-17, the menu pages live: every existing class is hooked against its real code. ShopMenu and InnMenu are
+    rewritten, and StatusMenu and BattlePauseMenu are new.
+  - M3-AUD-800, the battle hooks live on the real BattleChoreo and CreatureActor. Two fixes: creature hurt and death
+    now play on the contact beat, and a retry leaves one listener. The Flood stagger is read from choreo.json.
+  - M3-AUD-801: the Reefball sphere is live, and `ch01_hullgnaw` plays the Hullgnaw theme.
+- **Integration branch:** merged at its current head.
+- **Checks run:**
+  - The full Godot suite: 2006 run, 0 failed.
+  - The loudness test passed, validate_data showed 0 errors, and taskboard, gdlint and gdformat were clean.
+- **Skipped (the Lead runs these at merge):** screenshots and Blender. Coverage was skipped because game/battle/ and
+  game/progression/ weren't touched.
+- **Still pending (their targets are not on this branch):**
+  - FormationMenu.
+  - The Reefball match, ball and goal (no minigame yet).
+  - The m2-slice zone beds and voices.
+  - `battle_stinger` and `boss_intro` are emitted only on claude/battle-presentation (big7 did not carry them). Their
+    shapes match battle_stings.json, so no change is needed when they land.
+- **For other roles:**
+  - The menus' own tests leak about 250 GDScript resources at exit, and the battle scene keeps
+    `field_submenu.gd` and `battle_pause_menu.gd` (M2-AUD-16).
+  - Refused Confirms are unheard until M2-AUD-15 lands.
+
+## Exact next step
+Queue empty. Waiting on: those merges, after which their pending flags come off; and the human's listening verdict.
 
 ## MERGE-READY @ 662f9d7d
 - **Integration branch:** big7 (8f808cc6) merged.
