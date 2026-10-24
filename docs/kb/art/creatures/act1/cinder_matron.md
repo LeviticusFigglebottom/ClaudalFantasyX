@@ -40,7 +40,7 @@ she is a Lit Age machine): steady, no pulse, no motes, moving only with her body
 **Phases.** Phase 1, *crust*: the `Crust` mesh (its own node) covers the belly, the yoke, the pauldrons and the upper
 arms in pillowed slag cells whose edges sink into a glowing molten underlayer, so the cracks are crisp ember lines at
 any distance; a slag collar sits on her belt and ropes of slag run down the skirt's sides and back. It leaves the
-firebox clear and a slit over the heart. Phase 2, *pour* (creatures.json phase `crust_breaks` hides `Crust`): the
+firebox clear and a slit over the heart. Phase 2, *pour* (creatures.json phase `pour` hides `Crust`): the
 plates the slag lay on run red-hot, with molten seams glowing in the joints, and the whole heart port shows. The
 re-crust telegraph and the quench reaction are VFX and battle-presentation work (not in the model): the re-crust can
 show `Crust` again through a phase `show` list.
@@ -57,3 +57,8 @@ low, the tools sagging. The rig keeps the first pass's bone names (root, torso, 
 **Build.** `assets_src/creatures/cinder_matron/build_cinder_matron.py` (surfaces of revolution with dense front
 columns for the firebox, port and mask, shingled plate courses, pillowed crust cells), `materials.json` (`metal`,
 `crust`, `heart`).
+
+**Re-crust (m2-slice act1_ch05: a water or ice hit during the Pour re-crusts her).** The `Crust` mesh can come back at
+any time with a phase `show: ["Crust"]`. If the encounter models the re-crust as a phase (for example `pour` →
+`recrust` → `pour`), the creatures.json row only needs a `recrust` phase with `show: ["Crust"]` and `pour` keeps
+`hide: ["Crust"]`. The phase id has to come from the enemy row.

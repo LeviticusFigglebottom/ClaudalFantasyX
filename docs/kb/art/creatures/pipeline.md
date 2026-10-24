@@ -92,7 +92,8 @@ creature folder to the rule's `assets` list (the folders are not searched recurs
 - **`CreatureActor`** (`game/creatures/creature_actor.gd`) plays what creatures.json says: an action's clip
   (`clip_by_skill`, else `clip_by_kind` by the skill's kind), `hit`, the `ko` clip held and faded to
   battle_sandbox.json's `ko_alpha` (no sink), a freeze under Petrify (FighterStandIn swaps the surfaces to stone),
-  a boss's phase (`phases.<id>`: a clip, an idle afterwards, and an offset and tilt of the model over `sec`), and
+  a boss's phase (`phases.<id>`: a clip, an idle afterwards, an offset and tilt of the model over `sec`, node names
+  to `hide` or `show` at once, and `hide_after` nodes hidden once the clip has played), and
   breakable parts (`break_parts.<charge skill>`: node names shown `whole` or `broken`).
 - **`BattleActorMotion`** (`game/creatures/battle_actor_motion.gd`) is attached by `BattleStage.spawn` and listens
   to the engine: `action_resolved` (the actor's clip, `hit` on each foe a landed damaging hit reaches),

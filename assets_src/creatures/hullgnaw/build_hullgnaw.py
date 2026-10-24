@@ -186,7 +186,16 @@ def build_clips() -> list[ck.Clip]:
         ko.key(b, 0.0)
         ko.key(b, 1.2, (4.0 * (i + 1) / N_SPINE, 0, 0))
         ko.key(b, 2.4, (6.0 * (i + 1) / N_SPINE, 0, 0))
-    return [idle, attack, cast, hit, ko]
+    # `breaking` (m2-slice act1_ch01, 50% HP): it thrashes and the ship's frames burst off and fall into the water
+    brk = ck.Clip("phase_break", 1.8)
+    for t, s, fall in ((0.0, 0.0, 0.0), (0.35, 1.0, 0.0), (0.6, 0.6, 0.25), (1.2, 0.2, 0.8), (1.8, 0.0, 1.0)):
+        for i, b in enumerate(sp):
+            brk.key(b, t, (-4.0 * s * (i + 1) / N_SPINE, 0, (3.0 if i % 2 else -3.0) * s))
+        for k in range(len(RIBS)):
+            side = 1.0 if k % 2 else -1.0
+            brk.key(f"rib{k}", t, (25.0 * fall, 0.0, side * 70.0 * fall),
+                    (side * 0.9 * fall, 0.35 * s - 3.0 * fall * fall, 0.2 * fall))
+    return [idle, attack, cast, hit, ko, brk]
 
 
 def main() -> None:
@@ -197,8 +206,10 @@ def main() -> None:
     rig, joints = build_rig()
     mesh = ck.Mesh("hullgnaw")
     body(mesh, rig, joints)
-    ribs(mesh, rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "hullgnaw"})
+    frames = ck.Mesh("Ribs")  # its own node: the `breaking` phase lets the frames fall, then hides them
+    ribs(frames, rig)
+    info = ck.export_creature(mesh, rig, build_clips(), args.out, extra_meshes=[frames],
+                              extras={"hymn_creature": "hullgnaw"})
     print(f"hullgnaw: {info}")
 
 

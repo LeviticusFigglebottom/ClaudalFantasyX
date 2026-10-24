@@ -35,7 +35,7 @@
     "tide_crawler": {"scene": "res://game/creatures/tide_crawler/tide_crawler_battle.tscn", "contact": {"attack": 0.55}},
     "raid_hound": {"scene": "res://game/creatures/raid_hound/raid_hound_battle.tscn", "contact": {"attack": 0.5}},
     "shoal_skipper": {"scene": "res://game/creatures/shoal_skipper/shoal_skipper_battle.tscn", "contact": {"attack": 0.5}},
-    "cinder_matron": {"scene": "res://game/creatures/cinder_matron/cinder_matron_battle.tscn", "contact": {"attack": 0.85}, "phases": {"crust_breaks": {"clip": "phase_change", "idle": "idle", "hide": ["Crust"], "sec": 0.0}}},
+    "cinder_matron": {"scene": "res://game/creatures/cinder_matron/cinder_matron_battle.tscn", "contact": {"attack": 0.85}, "phases": {"pour": {"clip": "phase_change", "idle": "idle", "hide": ["Crust"], "sec": 0.0}}},
     "slag_tortoise": {"scene": "res://game/creatures/slag_tortoise/slag_tortoise_battle.tscn", "contact": {"attack": 0.55}},
     "ashwing": {"scene": "res://game/creatures/ashwing/ashwing_battle.tscn", "contact": {"attack": 0.6}},
     "scuttler": {"scene": "res://game/creatures/scuttler/scuttler_battle.tscn", "contact": {"attack": 0.45}},
@@ -57,7 +57,8 @@
     },
     "hullgnaw": {
       "scene": "res://game/creatures/hullgnaw/hullgnaw_battle.tscn", "contact": {"attack": 0.8},
-      "ko_fade_sec": 0.8
+      "ko_fade_sec": 0.8,
+      "phases": {"breaking": {"clip": "phase_break", "hide_after": ["Ribs"], "sec": 0}}
     },
     "reef_crab": {
       "scene": "res://game/creatures/reef_crab/reef_crab_battle.tscn", "contact": {"attack": 0.5, "cast": 0.7},

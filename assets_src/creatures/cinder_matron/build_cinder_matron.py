@@ -6,7 +6,7 @@ blender --background --factory-startup --python assets_src/creatures/cinder_matr
 A Lit Age forge-construct (m2-slice act1_ch05 §9): a standing bottle-kiln of riveted brass and copper plates, broad
 in the hip like a matron, with a firebox in her belly, iron-hooped courses, shoulders, a chimney-hood head with a
 calm mask (closed eyes, an open mouth grille), a ladle in her right hand and tongs in her left. Slag has cooled over
-her in a pillowed, cracked crust (`Crust`, its own mesh: phase `crust_breaks` hides it and the molten seams under it
+her in a pillowed, cracked crust (`Crust`, its own mesh: phase `pour` hides it and the molten seams under it
 show). Behind a grated port in her chest her bound heart glows `glimmer_bound` (its own `heart` slot): a slit of it
 shows through the slag, the whole port once the crust is gone. Every part is rigid on one bone.
 """

@@ -35,3 +35,7 @@ wet, with `bone`-pale salt at the broken ends; wounds between the ribs `spawn_wo
 - `ko`: it slides back down between the planks; the last thing seen is a rib going under.
 
 Budget ≤ 14k triangles. Rig: a spine chain of 10, jaw, five rib bones (each riding one spine bone).
+
+**Phase `breaking`** (m2-slice act1_ch01, 50% HP): the ship's frames are their own mesh, `Ribs`. `phase_break` (1.8 s)
+thrashes the body while the frames burst off and fall into the water, and `hide_after: ["Ribs"]` removes them once
+the clip has played. From then on it fights bare, with the wounds the frames held shut in plain view.

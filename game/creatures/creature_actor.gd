@@ -26,6 +26,7 @@ var _surfaces: Array[GeometryInstance3D] = []
 var _fade: Tween
 var _phase_tween: Tween
 var _phase_pose: Array = []  # [position, rotation] the phase moves the model to
+var _hide_after: Array = []  # nodes a phase hides once its clip has played (hullgnaw's falling frames)
 ## Charge skill -> broken (the boss's breakable parts).
 var _broken: Dictionary = {}
 
@@ -150,7 +151,8 @@ func set_frozen(on: bool) -> void:
 
 
 ## A boss's phase change (creatures.json `phases`): plays its clip, hides and shows its listed nodes (the Cinder
-## Matron's crust bursting off), moves the model by its offset and tilt over
+## Matron's crust bursting off), hides its `hide_after` nodes once the clip has played (the hullgnaw's frames fall
+## first), moves the model by its offset and tilt over
 ## its time (at once when `instant`, for captures), and idles on the phase's idle clip afterwards. An unknown phase
 ## does nothing.
 func enter_phase(phase_id: StringName, instant := false) -> bool:
@@ -190,7 +192,21 @@ func enter_phase(phase_id: StringName, instant := false) -> bool:
 	var clip := StringName(str(p.get("clip", "")))
 	if not _ko and not _frozen:
 		_play(clip if has_clip(clip) else _idle)
+	_hide_after = p.get("hide_after", [])
+	if is_inside_tree() and not instant and has_clip(clip):
+		get_tree().create_timer(clip_length(clip)).timeout.connect(_apply_hide_after.bind(phase_id))
+	else:
+		_apply_hide_after(phase_id)
 	return true
+
+
+func _apply_hide_after(phase_id: StringName) -> void:
+	if phase_id != _phase:
+		return
+	for n: Variant in _hide_after:
+		var node := find_child(str(n), true, false) as Node3D
+		if node != null:
+			node.visible = false
 
 
 func phase() -> StringName:
@@ -208,6 +224,7 @@ func settle() -> void:
 		model.rotation = _phase_pose[1]
 	if not _ko and not _frozen and _phase != &"":
 		_play(_idle)
+	_apply_hide_after(_phase)
 
 
 ## A breakable part (creatures.json `break_parts`, keyed by the charge skill it silences): broken shows the

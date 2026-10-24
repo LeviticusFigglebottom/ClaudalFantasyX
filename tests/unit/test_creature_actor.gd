@@ -6,6 +6,8 @@ extends TestCase
 
 const CRAB := "res://game/creatures/reef_crab/reef_crab_battle.tscn"
 const BELL := "res://game/creatures/drownbell/drownbell_battle.tscn"
+const GNAW := "res://game/creatures/hullgnaw/hullgnaw_battle.tscn"
+const MATRON := "res://game/creatures/cinder_matron/cinder_matron_battle.tscn"
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -207,6 +209,25 @@ func test_the_flood_phase_sinks_the_bell_and_idles_on_its_flood_clip() -> void:
 	b.settle()
 	assert_true(is_equal_approx((b.get_child(0) as Node3D).position.y, -0.35), "settle() ends the sink at once")
 	assert_eq(b.current_clip, &"idle_flood")
+
+
+func test_phase_nodes_hide_at_once_or_after_the_clip() -> void:
+	var m := _actor(MATRON)
+	var crust := m.find_child("Crust", true, false) as Node3D
+	assert_true(crust != null and crust.visible, "the Matron starts crusted")
+	assert_true(m.enter_phase(&"pour"))
+	assert_false(crust.visible, "the pour hides the crust at once")
+	var g := _actor(GNAW)
+	var ribs := g.find_child("Ribs", true, false) as Node3D
+	assert_true(ribs != null and ribs.visible, "the hullgnaw starts in its frames")
+	assert_true(g.enter_phase(&"breaking"))
+	assert_eq(g.current_clip, &"phase_break")
+	assert_true(ribs.visible, "the frames are seen falling first")
+	g.settle()
+	assert_false(ribs.visible, "hide_after: gone once the clip has played (settle() jumps there)")
+	var h := _actor(GNAW)
+	h.enter_phase(&"breaking", true)
+	assert_false((h.find_child("Ribs", true, false) as Node3D).visible, "an instant phase change hides them at once")
 
 
 func test_a_drownbell_fight_breaks_the_rim_and_floods_the_bell() -> void:

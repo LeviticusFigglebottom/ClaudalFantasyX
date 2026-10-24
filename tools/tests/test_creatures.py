@@ -71,9 +71,9 @@ class ValidatorTest(unittest.TestCase):
 
     def test_a_creature_no_enemy_uses_yet_may_name_its_own_phases(self) -> None:
         cr = copy.deepcopy(self.creatures)
-        cr["creatures"]["cinder_matron"]["phases"] = {"crust_breaks": {"clip": "phase_change", "hide": ["Crust"]}}
+        cr["creatures"]["cinder_matron"]["phases"] = {"pour": {"clip": "phase_change", "hide": ["Crust"]}}
         self.assertFalse(any("no enemy has a phase" in x for x in self.errs(creatures=cr)))
-        cr["creatures"]["cinder_matron"]["phases"]["crust_breaks"]["hide"] = "Crust"
+        cr["creatures"]["cinder_matron"]["phases"]["pour"]["hide"] = "Crust"
         self.assertTrue(any("hide: must be a list" in x for x in self.errs(creatures=cr)))
 
     def test_defaults_must_be_complete(self) -> None:

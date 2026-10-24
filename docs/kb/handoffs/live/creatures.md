@@ -57,6 +57,12 @@ Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD),
 - **Import:** a new `creatures` category. Clip loop modes are set at runtime from `game/data/creatures/creatures.json`, so the shared `AssetImportRules` (which the characters track is also changing) is not touched.
 - **Task ids:** M2-CRE-* (free on every branch at the claim).
 
+- **15:15: m2-slice's phase ids applied.** The Matron's `crust_breaks` is renamed `pour`. The hullgnaw gains `breaking`:
+  its frames are now their own `Ribs` mesh, a `phase_break` clip has them burst off and fall, and a new phase key
+  `hide_after` (CreatureActor, validator, test) hides them once the clip has played. Its shot is unchanged (RMSE 0)
+  and its job is identical. The Matron's re-crust can be a phase with `show: ["Crust"]` once m2-slice names it.
+  Checks: creature 13/0, battle 412/0, validate_data, tools creature tests, lint, format.
+
 ## Exact next step
 Two items remain in this queue: (1) when m2-slice's Ch4/Ch5 rows land, check their phase ids against creatures.json
 (rename the Matron's `crust_breaks` if needed); (2) polish passes from the review notes (the Matron's crack lines and

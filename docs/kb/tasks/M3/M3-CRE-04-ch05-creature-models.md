@@ -15,7 +15,7 @@ The Ch5 creatures from docs/kb/art/creatures/act1/ through the pipeline; `model`
 ## Acceptance criteria
 - [x] ashwing (first pass: 4.2k triangles; origin is its hover point; ember eye-spots per act1_ch05 §9)
 - [x] slag_tortoise (first pass: 4.6k triangles)
-- [x] cinder_matron (first pass: 21k triangles, phase `crust_breaks` hides the `Crust` mesh; CreatureActor phases gained `show`/`hide`)
+- [x] cinder_matron (first pass: 21k triangles, phase `pour` (was `crust_breaks`) hides the `Crust` mesh; CreatureActor phases gained `show`/`hide`)
 - [x] vein_sparker (optional, m2-slice act1_ch05 §9: copper-green, the coiled charged tail, starlight charge; 3.9k triangles)
 - [x] A dedicated art pass on the Cinder Matron (see Notes): rebuilt as m2-slice act1_ch05 §9's forge-construct, 23.9k triangles
 
