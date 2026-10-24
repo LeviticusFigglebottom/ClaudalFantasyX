@@ -1,0 +1,808 @@
+{
+  "version": 1,
+  "doc": "M2-RND-03 battle VFX library: effect definitions and what triggers them. BattleVfx (game/vfx/battle/battle_vfx.gd) listens to the engine and plays them; it never writes combat state. docs/kb/tech/battle_vfx.md. Colours are palette.json swatches (named in `swatches`, tested).",
+  "anchor_heights": {
+    "feet": 0.05,
+    "chest": 0.6,
+    "head": 1.0
+  },
+  "safety": {
+    "doc": "Photosensitivity: every flash is capped at flash_max_alpha, and two flashes are at least flash_min_interval_s apart (at most 2 a second, under WCAG 2.3.1's 3). Flashes draw on a CanvasLayer below the HUD, so the timeline is never covered (pillar 4).",
+    "flash_max_alpha": 0.3,
+    "flash_min_interval_s": 0.5,
+    "flash_layer": 0
+  },
+  "reduced_motion": {
+    "doc": "UiSettings.reduced_motion(): fewer, slower particles, no turbulence, and a flash at a third of its alpha with a gentle ramp.",
+    "particle_scale": 0.4,
+    "velocity_scale": 0.5,
+    "flash_alpha_scale": 0.33,
+    "flash_min_ramp_s": 0.3
+  },
+  "effects": {
+    "hit_none": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#EEF6F4",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "foam_white",
+            "bone"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.16,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            1.1,
+            1.5
+          ],
+          "energy": 1.2,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0
+        },
+        {
+          "color": "#EEF6F4",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "foam_white",
+            "bone"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.5,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            0.96,
+            1.7999999999999998
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -3.0,
+            0
+          ],
+          "size_m": [
+            0.128,
+            0.288
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ]
+    },
+    "hit_fire": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "ember_orange",
+            "dusk_gold"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.2,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            1.1,
+            1.5
+          ],
+          "energy": 1.2,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0
+        },
+        {
+          "color": "#E0702E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "ember_orange",
+            "dusk_gold"
+          ],
+          "amount": 63,
+          "lifetime_s": 0.65,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            0.84,
+            1.7999999999999998
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            1.4,
+            0
+          ],
+          "size_m": [
+            0.128,
+            0.288
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ]
+    },
+    "hit_ice": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#BFE6E0",
+          "color_end": "#DCE6FF",
+          "swatches": [
+            "salt_glass",
+            "starlight"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.16,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            1.1,
+            1.5
+          ],
+          "energy": 1.2,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0
+        },
+        {
+          "color": "#BFE6E0",
+          "color_end": "#DCE6FF",
+          "swatches": [
+            "salt_glass",
+            "starlight"
+          ],
+          "amount": 51,
+          "lifetime_s": 0.5,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.44,
+            2.4
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.096,
+            0.22400000000000003
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ]
+    },
+    "hit_lightning": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#DCE6FF",
+          "color_end": "#9DB4D9",
+          "swatches": [
+            "starlight",
+            "moon_blue"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.1,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            1.4,
+            1.8
+          ],
+          "energy": 1.2,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0
+        },
+        {
+          "color": "#DCE6FF",
+          "color_end": "#9DB4D9",
+          "swatches": [
+            "starlight",
+            "moon_blue"
+          ],
+          "amount": 42,
+          "lifetime_s": 0.28,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            2.4,
+            4.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            0.08000000000000002,
+            0.17600000000000002
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ]
+    },
+    "hit_water": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FD0C9",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "turquoise_shallow",
+            "foam_white"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.16,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            1.1,
+            1.5
+          ],
+          "energy": 1.2,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0
+        },
+        {
+          "color": "#3FD0C9",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "turquoise_shallow",
+            "foam_white"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.08,
+            2.04
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.128,
+            0.288
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ]
+    },
+    "hit_holy": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#FFD27A",
+          "color_end": "#F1D27A",
+          "swatches": [
+            "sun_gold",
+            "gold_leaf_hi"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.24,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            1.1,
+            1.5
+          ],
+          "energy": 1.2,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0
+        },
+        {
+          "color": "#FFD27A",
+          "color_end": "#F1D27A",
+          "swatches": [
+            "sun_gold",
+            "gold_leaf_hi"
+          ],
+          "amount": 51,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            0.48,
+            1.08
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            1.8,
+            0
+          ],
+          "size_m": [
+            0.128,
+            0.288
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ]
+    },
+    "lamp_dive": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#FFB16E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "oil_lamp",
+            "dusk_gold"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.25,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            2.0,
+            2.6
+          ],
+          "energy": 1.2,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0
+        },
+        {
+          "color": "#FFB16E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "oil_lamp",
+            "dusk_gold"
+          ],
+          "amount": 90,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.44,
+            3.0
+          ],
+          "spread_deg": 55,
+          "gravity": [
+            0,
+            -8.0,
+            0
+          ],
+          "size_m": [
+            0.16000000000000003,
+            0.35200000000000004
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.4,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Rhen's Swell (Lamp Dive): the lamp's oil light splashing up from the dive point. It burns oil, never glimmer (decisions_log N-02)."
+    },
+    "shallows_verse": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#3FD0C9",
+          "color_end": "#1FA3A6",
+          "swatches": [
+            "turquoise_shallow",
+            "lagoon_teal"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.9,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            2.2,
+            2.6
+          ],
+          "energy": 0.9,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0
+        },
+        {
+          "color": "#3FD0C9",
+          "color_end": "#1FA3A6",
+          "swatches": [
+            "turquoise_shallow",
+            "lagoon_teal"
+          ],
+          "amount": 45,
+          "lifetime_s": 1.2,
+          "explosiveness": 0.2,
+          "velocity_m_s": [
+            0.09,
+            0.27
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            0.15,
+            0
+          ],
+          "size_m": [
+            0.16000000000000003,
+            0.32000000000000006
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.5,
+          "turbulence": 0.6,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Asha's Swell heal: shallow-water light lapping up around each ally (water, not glimmer)."
+    },
+    "read": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#D9B45A",
+          "color_end": "#D4A437",
+          "swatches": [
+            "ui_line_gold",
+            "gold_leaf"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.6,
+          "velocity_m_s": [
+            0.03,
+            0.09
+          ],
+          "spread_deg": 10,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            0.096,
+            0.16000000000000003
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.7,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Read: a still ring of gold points around the read foe."
+    },
+    "heal": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#9FF0B8",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "ui_heal",
+            "foam_white"
+          ],
+          "amount": 36,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.3,
+            0.66
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.128,
+            0.24
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "HP restored (amount < 0)."
+    },
+    "status_apply": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#2B3A6B",
+          "color_end": "#061A2B",
+          "swatches": [
+            "indigo_dye",
+            "abyss_navy"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.5,
+          "velocity_m_s": [
+            0.18,
+            0.42
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.16000000000000003,
+            0.288
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A status added to the target."
+    },
+    "ko_release": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#FFE9B8",
+          "color_end": "#F4F8FF",
+          "swatches": [
+            "glimmer_lift",
+            "glimmer_lift_hi"
+          ],
+          "amount": 2,
+          "lifetime_s": 0.8,
+          "explosiveness": 1.0,
+          "velocity_m_s": [
+            0.0,
+            0.05
+          ],
+          "spread_deg": 0,
+          "gravity": [
+            0,
+            0,
+            0
+          ],
+          "size_m": [
+            1.8,
+            2.2
+          ],
+          "energy": 0.9,
+          "emission_radius_m": 0.02,
+          "turbulence": 0.0
+        },
+        {
+          "color": "#FFE9B8",
+          "color_end": "#F4F8FF",
+          "swatches": [
+            "glimmer_lift",
+            "glimmer_lift_hi"
+          ],
+          "amount": 66,
+          "lifetime_s": 2.6,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.09,
+            0.24
+          ],
+          "spread_deg": 15,
+          "gravity": [
+            0,
+            0.05,
+            0
+          ],
+          "size_m": [
+            0.11200000000000002,
+            0.20800000000000002
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.4,
+          "turbulence": 0.5,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "KO: the fighter dissolves into released glimmer rising in slow spirals, 0.15-0.4 m/s (color_script.md rule 1)."
+    },
+    "flash_preemptive": {
+      "kind": "flash",
+      "color": "#FFD27A",
+      "alpha": 0.2,
+      "in_s": 0.08,
+      "out_s": 0.5,
+      "swatches": [
+        "sun_gold"
+      ],
+      "note": "Preemptive opening (the party moves first)."
+    },
+    "flash_ambush": {
+      "kind": "flash",
+      "color": "#7A1712",
+      "alpha": 0.25,
+      "in_s": 0.08,
+      "out_s": 0.6,
+      "swatches": [
+        "lacquer_red_deep"
+      ],
+      "note": "Ambush opening (the foes move first)."
+    }
+  },
+  "map": {
+    "doc": "Lookup order for each hit of an action: skills[skill_id] or items[item_id] (played once per target), then by what the hit did: damage plays elements[the skill's element], an HP restore plays events.heal, added statuses play events.status, and a KO plays events.ko. The opening plays events.ambush / events.preemptive when the battle starts.",
+    "elements": {
+      "none": "hit_none",
+      "fire": "hit_fire",
+      "ice": "hit_ice",
+      "lightning": "hit_lightning",
+      "water": "hit_water",
+      "holy": "hit_holy"
+    },
+    "skills": {
+      "lamp_dive": "lamp_dive",
+      "shallows_verse": "shallows_verse",
+      "read": "read"
+    },
+    "items": {},
+    "events": {
+      "heal": "heal",
+      "status": "status_apply",
+      "ko": "ko_release",
+      "ambush": "flash_ambush",
+      "preemptive": "flash_preemptive"
+    }
+  }
+}

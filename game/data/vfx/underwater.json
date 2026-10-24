@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "doc": "M2-RND-02 underwater look: UnderwaterRig (game/world/water/underwater/underwater_rig.gd). docs/kb/tech/underwater.md. Colours are palette.json swatches (named in `swatches`, tested).",
+  "colors": {
+    "transmit": "#3FD0C9",
+    "scatter": "#3FD0C9",
+    "deep": "#061A2B",
+    "window": "#2E7FD6",
+    "tir": "#1C6B78",
+    "lantern": "#FFB16E",
+    "snow": "#EEF6F4"
+  },
+  "swatches": {
+    "transmit": "turquoise_shallow",
+    "scatter": "turquoise_shallow",
+    "deep": "abyss_navy",
+    "window": "sky_zenith_noon",
+    "tir": "sea_glow",
+    "lantern": "oil_lamp",
+    "snow": "foam_white"
+  },
+  "optics": {
+    "_note": "transmit is the colour white light keeps after transmit_distance_m of water (sigma = -ln(transmit) / distance, per channel: red goes first). scatter is the in-scatter colour near the surface, fading toward deep with depth below the surface over depth_falloff_m and when looking down. ior gives the Snell window (asin(1/ior) = 48.6 deg). The in-scatter's light level weights the camera's own depth by camera_light_weight (the rest: the path's middle). sun_disc and sun_halo brighten the refracted sun inside the Snell window. The light level is the scene's visible directional lights (energy x colour luminance) over light_reference (a noon sun), at least light_floor: it scales the in-scatter and the underside, so a night dive is dark and the lantern carries it.",
+    "transmit_distance_m": 20.0,
+    "scatter_strength": 0.45,
+    "depth_falloff_m": 30.0,
+    "down_darkening": 0.5,
+    "ior": 1.333,
+    "window_soft_deg": 5.0,
+    "window_alpha": 0.35,
+    "tir_alpha": 0.9,
+    "meniscus_m": 0.03,
+    "lens_m": 0.25,
+    "max_distance_m": 400.0,
+    "camera_light_weight": 0.7,
+    "sun_disc": 6.0,
+    "sun_halo": 0.8,
+    "light_reference": 3.0,
+    "light_floor": 0.02
+  },
+  "god_rays": {
+    "_note": "A FogVolume under the surface whose density is constant along the sun's direction, so the volumetric fog draws shafts. Only on tiers with god_rays and volumetric fog on. The fog's albedo is the scatter colour mixed toward white by albedo_white_mix, so Rhen's oil lamp keeps a warm halo instead of turning green.",
+    "density": 0.3,
+    "shaft_scale_m": 4.0,
+    "shaft_contrast": 4.0,
+    "drift_m_s": 0.25,
+    "depth_falloff_m": 14.0,
+    "volume_half_extent_m": 40.0,
+    "volume_depth_m": 30.0,
+    "albedo_white_mix": 0.5
+  },
+  "particulate": {
+    "_note": "Marine snow in a box around the camera.",
+    "box_half_m": 7.0,
+    "size_m": [
+      0.012,
+      0.03
+    ],
+    "drift_m_s": 0.06,
+    "lifetime_s": 9.0,
+    "alpha": 0.55
+  },
+  "lantern": {
+    "_note": "Rhen's oil lamp (decisions_log N-02): the hero light underwater.",
+    "energy": 9.0,
+    "range_m": 9.0,
+    "attenuation": 1.4,
+    "fog_energy": 3.0,
+    "specular": 0.4
+  },
+  "quality": {
+    "low": {
+      "post": "simple",
+      "god_rays": false,
+      "particles": 0,
+      "lantern_shadows": false
+    },
+    "medium": {
+      "post": "full",
+      "god_rays": false,
+      "particles": 120,
+      "lantern_shadows": false
+    },
+    "high": {
+      "post": "full",
+      "god_rays": true,
+      "particles": 300,
+      "lantern_shadows": true
+    },
+    "ultra": {
+      "post": "full",
+      "god_rays": true,
+      "particles": 500,
+      "lantern_shadows": true
+    }
+  }
+}

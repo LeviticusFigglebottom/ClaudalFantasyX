@@ -1,0 +1,36 @@
+{
+  "_note": "M2-RND-02: underwater shots awaiting a lavapipe baseline. Lead: move each entry into tests/screenshots/shots.json when approving its baseline. On a GPU: tools/gpu_bench/capture_preset.tscn -- --manifest=res://docs/kb/qa/gpu/2026-10-24-rnd-02-pending-shots.json --preset=high",
+  "defaults": {
+    "camera": "default",
+    "resolution": [
+      1280,
+      720
+    ],
+    "settle_frames": 30,
+    "seed": 1,
+    "threshold_rmse": 0.008
+  },
+  "shots": [
+    {
+      "id": "underwater_below",
+      "scene": "res://game/levels/_tests/underwater/underwater_test.tscn",
+      "camera": "UnderwaterCameras/Below",
+      "resolution": [960, 540],
+      "setup": {"globals": {"hymn_wind_time": 12.0}}
+    },
+    {
+      "id": "underwater_window",
+      "scene": "res://game/levels/_tests/underwater/underwater_test.tscn",
+      "camera": "UnderwaterCameras/UpWindow",
+      "resolution": [960, 540],
+      "setup": {"globals": {"hymn_wind_time": 12.0}}
+    },
+    {
+      "id": "underwater_waterline",
+      "scene": "res://game/levels/_tests/underwater/underwater_test.tscn",
+      "camera": "UnderwaterCameras/Waterline",
+      "resolution": [960, 540],
+      "setup": {"globals": {"hymn_wind_time": 12.0}}
+    }
+  ]
+}

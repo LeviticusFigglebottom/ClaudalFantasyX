@@ -167,6 +167,8 @@ func _swap(packed: PackedScene, scene_path: String, stats: Dictionary, spawn: St
 			stats["unload_ms"] = _ms_since(t)
 		await get_tree().process_frame
 		swap_frame_start = Time.get_ticks_usec()
+	else:
+		swap_frame_start = frame0_start(swap_frame_start, waited, Time.get_ticks_usec())
 	var frames: Array[float] = []
 	t = swap_frame_start
 	# Zone render globals (M1-RND-15) reset on this signal: the new zone starts from the project
@@ -184,6 +186,13 @@ func _swap(packed: PackedScene, scene_path: String, stats: Dictionary, spawn: St
 				WorldReturn.place_player(node, spawn)
 			EventBus.scene_changed.emit(scene_path)
 	_record(stats, frames)
+
+
+## Without split_swap, where the first measured frame starts: at the swap's start, unless frames were
+## waited for the prewarm. Those were rendered (and are counted in prewarm_wait_frames), so frame 0
+## starts after them, not before (review-sweep-J S1, M1-RND-22).
+static func frame0_start(swap_start_usec: int, waited_frames: int, now_usec: int) -> int:
+	return now_usec if waited_frames > 0 else swap_start_usec
 
 
 ## M1-ARC-15: applies the graphics settings' per-scene part to `node` when its root is ready, i.e. in

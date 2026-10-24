@@ -69,6 +69,12 @@ static func _load_per_cpu() -> float:
 	return fields[0].to_float() / float(maxi(OS.get_processor_count(), 1))
 
 
+## review-sweep-J S1 (M1-RND-22): without split_swap, a prewarm wait doesn't land inside frame 0.
+func test_frame0_starts_after_a_prewarm_wait() -> void:
+	assert_eq(SceneRouter.frame0_start(1000, 0, 5000), 1000, "no wait: the swap's own start")
+	assert_eq(SceneRouter.frame0_start(1000, 3, 5000), 5000, "waited frames: after them")
+
+
 func test_load_guard_reads_a_number() -> void:
 	assert_true(_load_per_cpu() >= 0.0)
 
