@@ -1,5 +1,5 @@
 extends TestCase
-## M2-HRO-01: HeroLocomotion, the pure maths behind the real heroes' motion: the turn-rate cap (no
+## M2-HER-1101: HeroLocomotion, the pure maths behind the real heroes' motion: the turn-rate cap (no
 ## snapping, frame to frame), the eased turn and the gait blend weights by ground speed.
 
 const DT := 1.0 / 60.0

@@ -1,11 +1,11 @@
 ---
-id: M2-HRO-02
+id: M2-HER-1102
 title: "Field party followers: Asha and Toma follow Rhen in a trail with the same locomotion"
 role: architect
 status: doing
 owner_session: "hero-integration (claude/hero-integration)"
 reviewer: character
-depends_on: [M2-HRO-01]
+depends_on: [M2-HER-1101]
 milestone: M2
 request-from: lead
 ---

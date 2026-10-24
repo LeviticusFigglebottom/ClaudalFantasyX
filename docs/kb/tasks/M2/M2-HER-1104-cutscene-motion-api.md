@@ -1,11 +1,11 @@
 ---
-id: M2-HRO-04
+id: M2-HER-1104
 title: "Cutscene motion quality: eased turns, walk start/stop blending and idle micro-motion for the sequencer"
 role: cinematics
 status: doing
 owner_session: "hero-integration (claude/hero-integration)"
 reviewer: cinematics
-depends_on: [M2-HRO-01]
+depends_on: [M2-HER-1101]
 milestone: M2
 request-from: lead
 ---

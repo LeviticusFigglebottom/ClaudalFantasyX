@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Hero motion tuning (M2-HRO-01..04, ADR 0038): how the real hero models turn, blend their gait and idle in the field, in battle and in cutscenes. Metres, seconds, degrees. Read by HeroLocomotion (game/hero_motion/hero_locomotion.gd).",
+  "doc": "Hero motion tuning (M2-HER-1101..1104, ADR 0190): how the real hero models turn, blend their gait and idle in the field, in battle and in cutscenes. Metres, seconds, degrees. Read by HeroLocomotion (game/hero_motion/hero_locomotion.gd).",
   "turn": {
     "doc": "The visible body turns toward its travel (or its node's facing when still) at most max_rate_deg_per_sec, never snapping. The turn speed eases in (max_accel) and out (settle_gain: degrees per second per degree of error left).",
     "max_rate_deg_per_sec": 400.0,

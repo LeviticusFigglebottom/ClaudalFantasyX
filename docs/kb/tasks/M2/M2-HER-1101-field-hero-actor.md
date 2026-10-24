@@ -1,5 +1,5 @@
 ---
-id: M2-HRO-01
+id: M2-HER-1101
 title: "Field hero actor: the player's capsule becomes Rhen, with a locomotion blend, eased turning and ground alignment"
 role: architect
 status: doing
@@ -29,7 +29,7 @@ naturally: no snapping turns, no instant start or stop.
       clips exist on the model. Shots: field_hero_rhen_* (viewed).
 
 ## Notes
-- ADR 0038. Core maths: game/hero_motion/hero_locomotion.gd (tests/unit/test_hero_locomotion.gd).
+- ADR 0190. Core maths: game/hero_motion/hero_locomotion.gd (tests/unit/test_hero_locomotion.gd).
 - m2-slice owns the zone flow and scenes; this adds no zone edits. Its live log is told.
 
 ## Review log

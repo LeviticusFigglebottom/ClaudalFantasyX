@@ -1,4 +1,4 @@
-# 0038 — A hero motion layer over the field, battle and cutscene bodies
+# 0190 — A hero motion layer over the field, battle and cutscene bodies
 
 - **Status:** proposed
 - **Date:** 2026-10-24
@@ -29,5 +29,5 @@ and clip cues through `HeroMotion`). Only spawns, teleports and cuts may snap a 
 ## Consequences
 - Every place a hero is seen moves the same way, and one data file tunes it.
 - The visible yaw lags the gameplay facing by up to a few frames; interaction reach uses the controller, not the body.
-- Clips the layer fakes (turn-in-place, run stops) are requested from the characters track (M2-HRO-05).
+- Clips the layer fakes (turn-in-place, run stops) are requested from the characters track (M2-HER-1105).
 - Battle choreography stays battle-presentation's; the layer only gives hero actors crossfades and micro-motion.

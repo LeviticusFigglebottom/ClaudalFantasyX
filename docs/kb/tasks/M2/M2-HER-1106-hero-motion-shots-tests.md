@@ -1,11 +1,11 @@
 ---
-id: M2-HRO-06
+id: M2-HER-1106
 title: "Hero motion shots and tests: field heroes, battle heroes, a cutscene turn strip"
 role: qa
 status: doing
 owner_session: "hero-integration (claude/hero-integration)"
 reviewer: lead
-depends_on: [M2-HRO-01, M2-HRO-02, M2-HRO-03, M2-HRO-04]
+depends_on: [M2-HER-1101, M2-HER-1102, M2-HER-1103, M2-HER-1104]
 milestone: M2
 request-from: lead
 ---

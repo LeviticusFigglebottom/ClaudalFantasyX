@@ -1,5 +1,5 @@
 ---
-id: M2-HRO-03
+id: M2-HER-1103
 title: "Battle hero actors: the real heroes play the clip contract in battle (integration of UI-07, CHR-07, BPR-10)"
 role: combat
 status: doing

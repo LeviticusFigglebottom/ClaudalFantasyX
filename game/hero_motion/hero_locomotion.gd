@@ -1,6 +1,6 @@
 class_name HeroLocomotion
 extends RefCounted
-## Pure hero motion maths (M2-HRO-01, ADR 0038): an eased, rate-capped yaw and the gait blend a hero's
+## Pure hero motion maths (M2-HER-1101, ADR 0190): an eased, rate-capped yaw and the gait blend a hero's
 ## AnimationTree reads from ground speed. No Nodes and no randomness, so tests drive it frame by frame.
 ## HeroFieldActor (the field), the cutscene turn helper and the battle actors share one of these per body.
 ##
