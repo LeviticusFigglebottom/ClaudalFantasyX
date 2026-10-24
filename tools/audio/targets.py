@@ -40,7 +40,10 @@ RULES = [
     ("sfx/dive/*.ogg", "momentary", -18.0, 1.0, -1.0, "diving SFX"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
-TOTAL_BUDGET = 24 * 1024 * 1024     # every shipped audio file (mix.md §5: the slice; about 1 MB per minute of music)
+# Every shipped audio file (mix.md §5: about 1 MB per minute of music). 24 MiB was the slice's; M3-AUD-10 (Oruvel,
+# the wake, the causeway beds) took the total to about 24.7 MiB, so it grows with the game to 32 MiB for M3 (the full
+# game is 60-80 cues).
+TOTAL_BUDGET = 32 * 1024 * 1024
 
 
 def rule_for(rel: str):
