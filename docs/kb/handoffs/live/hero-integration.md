@@ -155,6 +155,12 @@ and ADR 0190 "hero motion layer", proposed).
 - **m2-slice's sequencer patch** uses `HeroMotion.play` and `set_locomotion_speed`, and HeroFieldActor's `play_clip`.
 
 ## In progress
+- **M2-HER-1107 (worktree agent): the field gait on characters' M2-CHR-12 clips.** They're on claude/characters
+  eee3099a+ (MERGE-READY): walk_start, walk_stop, run_start, run_stop, turn_in_place_l90/r90/180, idle_breathe,
+  idle_shift, a rebuilt walk and run, and `locomotion.json` speeds. The code is duck-typed, so it lands here without
+  the clips and is verified on a local trial merge with claude/characters.
+  - Field speeds get re-tuned to the new clip speeds (Rhen walk 0.98, run 3.00 m/s).
+  - **Lead:** the field_hero_* baselines get re-approved after characters merges.
 - Battle: waiting on the three tracks (see M2-HER-1103) to merge; then the battle_heroes_* shots get approved.
 - Characters' M2-CHR-12 clips: when they land, feed `locomotion.json`'s speeds to the gait, and slot start, stop and
   turn clips into `play_clip`.
