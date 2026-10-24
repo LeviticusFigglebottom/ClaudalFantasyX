@@ -58,6 +58,15 @@
       "runs": [
         ["{blender}", "--python", "assets_src/environments/kits/haluna/build.py", "--", "--all", "--out-dir", "assets/environments/kits/haluna", "--manifest", "assets/environments/kits/haluna/kit_manifest.json"]
       ]
+    },
+    {
+      "id": "tamsule_bell_kit",
+      "owner": "environment",
+      "sources": ["assets_src/environments/kits/tamsule_bell/*.py", "assets_src/environments/kits/haluna/kit_common.py", "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/causeway.py"],
+      "outputs": ["assets/environments/kits/tamsule_bell/*.glb", "assets/environments/kits/tamsule_bell/kit_manifest.json"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/tamsule_bell/build.py", "--", "--all", "--out-dir", "assets/environments/kits/tamsule_bell", "--manifest", "assets/environments/kits/tamsule_bell/kit_manifest.json"]
+      ]
     }
   ]
 }
