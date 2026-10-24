@@ -31,6 +31,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import chapter_flow_check  # noqa: E402
 import dlgc  # noqa: E402
+from validate_creatures import check_creatures  # noqa: E402
 
 ELEMENTS = {"none", "fire", "water", "lightning", "ice", "holy", "glimmer"}
 AFFINITIES = {"normal", "weak", "resist", "immune", "absorb"}
@@ -1281,6 +1282,7 @@ def run(root: Path) -> Report:
     check_provenance(root, rep)
     check_banned(root, rep)
     check_binary_sizes(root, rep)
+    check_creatures(root, files, rep)
     return rep
 
 

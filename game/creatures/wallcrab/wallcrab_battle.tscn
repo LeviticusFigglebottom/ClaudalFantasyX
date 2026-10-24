@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_actor.gd" id="1_actor"]
+[ext_resource type="PackedScene" uid="uid://d25114cqklxek" path="res://assets/creatures/wallcrab/wallcrab.glb" id="2_model"]
+
+[node name="Wallcrab" type="Node3D"]
+script = ExtResource("1_actor")
+creature_id = &"wallcrab"
+metadata/hymn_battle_actor = true
+
+[node name="Model" parent="." instance=ExtResource("2_model")]

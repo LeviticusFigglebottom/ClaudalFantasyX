@@ -1,0 +1,58 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/creatures/creature_stage.gd" id="1_stage"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
+sky_top_color = Color(0.18, 0.498, 0.839, 1)
+sky_horizon_color = Color(0.663, 0.863, 0.949, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.055, 0.29, 0.333, 1)
+ground_horizon_color = Color(0.663, 0.863, 0.949, 1)
+sun_angle_max = 20.0
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("Sky_mat")
+
+[sub_resource type="Environment" id="Env_main"]
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+ambient_light_color = Color(0.055, 0.29, 0.333, 1)
+ambient_light_sky_contribution = 0.7
+tonemap_mode = 4
+tonemap_exposure = 1.0
+glow_enabled = true
+glow_intensity = 0.4
+glow_bloom = 0.05
+
+[sub_resource type="StandardMaterial3D" id="Mat_stone"]
+albedo_color = Color(0.725, 0.682, 0.596, 1)
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="Mesh_ground"]
+material = SubResource("Mat_stone")
+top_radius = 8.0
+bottom_radius = 8.0
+height = 0.1
+radial_segments = 64
+
+[node name="CreatureStage" type="Node3D"]
+script = ExtResource("1_stage")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_main")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.5547002, -0.6493313, 0.520266, 0, 0.62528193, 0.780399, -0.8320503, -0.4328875, 0.346844, 6, 9, 4)
+light_color = Color(1, 0.957, 0.878, 1)
+light_energy = 1.25
+shadow_enabled = true
+directional_shadow_max_distance = 30.0
+
+[node name="GroundDisc" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+mesh = SubResource("Mesh_ground")
+
+[node name="Camera" type="Camera3D" parent="."]
+current = true
+fov = 30.0

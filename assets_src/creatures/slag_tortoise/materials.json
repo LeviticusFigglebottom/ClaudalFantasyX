@@ -1,0 +1,34 @@
+{
+  "_doc": "Slag tortoise (act1/slag_tortoise.md): crust (glassy volcanic slag, copper seams, the spawn_wound neck crack), skin, eye. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "crust": {
+      "roughness_dry": 0.25,
+      "roughness_wet": 0.15,
+      "specular": 0.65,
+      "detail_scale": 20.0,
+      "detail_albedo": 0.12,
+      "detail_bump": 0.5,
+      "cavity_albedo": 0.4,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 1.8,
+      "emission_pulse_hz": 0.3,
+      "emission_pulse_depth": 0.4
+    },
+    "skin": {
+      "roughness_dry": 0.9,
+      "roughness_wet": 0.5,
+      "detail_scale": 50.0,
+      "detail_albedo": 0.2,
+      "detail_bump": 0.7,
+      "cavity_albedo": 0.5
+    },
+    "eye": {
+      "roughness_dry": 0.12,
+      "roughness_wet": 0.06,
+      "specular": 0.7,
+      "clearcoat_wet": 1.0,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0
+    }
+  }
+}

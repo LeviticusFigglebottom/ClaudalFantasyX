@@ -1,0 +1,39 @@
+{
+  "_doc": "Flue moth (act1/flue_moth.md): fur (soot-black, embers smouldering in it), wing (soot forewings, ember hindwings), eye. Ember glow is fire, not glimmer. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "fur": {
+      "roughness_dry": 0.95,
+      "roughness_wet": 0.7,
+      "specular": 0.2,
+      "detail_scale": 120.0,
+      "detail_albedo": 0.25,
+      "detail_bump": 0.6,
+      "cavity_albedo": 0.5,
+      "cavity_ao": 0.5,
+      "rim_sheen": 0.4,
+      "emission_color": "#E0702E",
+      "emission_energy": 2.2,
+      "emission_pulse_hz": 0.7,
+      "emission_pulse_depth": 0.5
+    },
+    "wing": {
+      "roughness_dry": 0.95,
+      "roughness_wet": 0.8,
+      "specular": 0.1,
+      "detail_scale": 90.0,
+      "detail_albedo": 0.2,
+      "detail_bump": 0.2,
+      "rim_sheen": 0.5,
+      "emission_color": "#E0702E",
+      "emission_energy": 1.2
+    },
+    "eye": {
+      "roughness_dry": 0.1,
+      "roughness_wet": 0.06,
+      "specular": 0.7,
+      "clearcoat_wet": 1.0,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0
+    }
+  }
+}

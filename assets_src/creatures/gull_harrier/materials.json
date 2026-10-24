@@ -1,0 +1,50 @@
+{
+  "_doc": "Gull harrier surfaces (docs/kb/art/creatures/gull_harrier.md). Slots are the glTF material names; write_materials.py writes assets/creatures/gull_harrier/materials/<slot>.tres on game/shaders/creature/creature.gdshader. Colours are palette.json swatches (spawn_wound for the weak point, the bone hook's wound in the throat).",
+  "slots": {
+    "plumage": {
+      "roughness_dry": 0.8,
+      "roughness_wet": 0.4,
+      "wet_darken": 0.75,
+      "clearcoat_wet": 0.2,
+      "detail_scale": 30.0,
+      "detail_albedo": 0.1,
+      "detail_bump": 0.12,
+      "cavity_albedo": 0.4,
+      "cavity_ao": 0.6,
+      "rim_sheen": 0.1,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 1.6,
+      "emission_pulse_hz": 0.4,
+      "emission_pulse_depth": 0.4
+    },
+    "beak": {
+      "roughness_dry": 0.42,
+      "roughness_wet": 0.2,
+      "specular": 0.5,
+      "wet_darken": 0.75,
+      "clearcoat_wet": 0.5,
+      "detail_scale": 60.0,
+      "detail_albedo": 0.06,
+      "detail_bump": 0.08,
+      "cavity_albedo": 0.5
+    },
+    "eye": {
+      "roughness_dry": 0.3,
+      "roughness_wet": 0.22,
+      "specular": 0.3,
+      "clearcoat_wet": 0.25,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0
+    },
+    "wrack": {
+      "roughness_dry": 0.85,
+      "roughness_wet": 0.3,
+      "wet_darken": 0.7,
+      "clearcoat_wet": 0.5,
+      "detail_scale": 45.0,
+      "detail_albedo": 0.16,
+      "detail_bump": 0.2,
+      "cavity_albedo": 0.45
+    }
+  }
+}

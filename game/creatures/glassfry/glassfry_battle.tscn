@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_actor.gd" id="1_actor"]
+[ext_resource type="PackedScene" uid="uid://cahav5j3d52g" path="res://assets/creatures/glassfry/glassfry.glb" id="2_model"]
+
+[node name="Glassfry" type="Node3D"]
+script = ExtResource("1_actor")
+creature_id = &"glassfry"
+metadata/hymn_battle_actor = true
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
