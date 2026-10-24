@@ -25,6 +25,9 @@ func before_each() -> void:
 	emitted.clear()
 	at_first_line = {}
 	FlowRouting.record = func(args: Array) -> void: changes.append(args)
+	# An earlier test in the suite may leave its own autosave request waiting (the runner ends no
+	# frame between tests). Each test here starts with none, so it measures the replay alone.
+	SaveSystem.cancel_pending_autosave()
 
 
 func _done() -> void:
@@ -67,6 +70,7 @@ func _on_line(step: DialogueStep) -> void:
 	lines.append(step.speaker)
 	if at_first_line.is_empty() and replay.zone != null:
 		at_first_line = {"zone": replay.zone, "flags": Game.state.flags.duplicate(), "state": Game.state}
+		at_first_line["save_asked"] = SaveSystem.has_pending_autosave()
 		if replay.zone is HalunaZone:
 			var z := replay.zone as HalunaZone
 			at_first_line["night"] = z.is_night
@@ -93,6 +97,7 @@ func _hud_shown() -> Array[String]:
 func test_the_first_verse_replays_without_its_battle_and_returns_to_the_title() -> void:
 	var live := _live([&"ch03_first_verse_sung", &"ch02_rhen_stayed_with_dead"])
 	var before := live.to_dict()
+	assert_false(SaveSystem.has_pending_autosave(), "no save is waiting before the replay")
 	_replay(&"ch03_the_first_verse")
 	replay.run()
 	assert_true(replay.played, "it played to its end")
@@ -109,6 +114,7 @@ func test_the_first_verse_replays_without_its_battle_and_returns_to_the_title() 
 	assert_eq(changes, [[MemoryReplay.TITLE_SCENE]] as Array[Array], "back to the title")
 	assert_true(replay.is_ended())
 	assert_eq(SaveSystem.autosave_holders().has(replay), false, "the autosave is let go")
+	assert_false(bool(at_first_line.get("save_asked", true)), "the stage and the replay asked for no save")
 	assert_false(SaveSystem.has_pending_autosave(), "and nothing is waiting to be written")
 	assert_eq(MemoryReplay.last_memory, &"ch03_the_first_verse")
 	assert_true(MemoryReplay.take_gallery_request(), "the title opens the gallery")
