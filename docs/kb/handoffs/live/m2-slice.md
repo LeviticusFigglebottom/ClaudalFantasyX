@@ -3,6 +3,18 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **M3 Act I is under way** (the Lead's 12:00 message). The tasks are filed in `docs/kb/tasks/M3/`:
+  - M3-C01..C09-01, the beat sheets;
+  - M3-C0x-02, the playable chapters;
+  - M3-C07-01, Ch7's story;
+  - M3-ARC-01, the chapter flow.
+  - **Ownership:** recorded in ownership.md (`game/levels/ch01`, `ch04`–`ch09`, the dialogue, `act1_*` beats, `game/data/flow/chapters/**`).
+  - **M3-ARC-01 is done, for review by lead (ADR 0033, `docs/kb/tech/chapter_flow.md`).**
+    - Chapters are data: `ZoneStory` plays each zone's arrive/beats/barks steps from `game/data/flow/chapters/chNN.json`, and `GreyboxZone` builds a playable zone from a layout JSON.
+    - `validate_data` checks both. The tests are `test_zone_story` (7) and `test_chapter_flow` (8). The slice is untouched.
+  - **The beat sheets are with three subagents:** Ch1 and Ch4; Ch5, Ch6 and Ch7 (story); Ch8 and Ch9.
+  - **Creatures** (claude/creatures, act1_roster.md 9243daa): their roster is adopted as the working ids and passed to the beat-sheet writers. Their open questions are answered in the sheets' request lists, summarised here when they land.
+  - **Next:** review the sheets, then build the chapters on ARC-01, Ch1 first.
 - **Item 7 is done:** the playthrough pass (handoff cinematics-11). PLAYTEST.md is current (shops and inn, the real shrine room, four basins, ENV-04 and ENV-05), and filed **M2-FP-24**, the shrine's channel curbs have no collision. **Two items remain from the 07:56 queue:** item 6, which waits on characters, and nothing else. **Next: M3 Act I** (the Lead's 12:00 message, human-authorised).
   - Act I is Ch1 Lamp-Diver, Ch4, Ch5, Ch6 up to the Brine Shoals and Sefir, Ch8 and Ch9.
   - **Story only:** Ch7 Tidecup's story beats and cutscenes are mine; its gameplay is another Lead agent's.
