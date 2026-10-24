@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_cornea.gdshader" id="sh"]
+
+[resource]
+resource_name = "cornea_still"
+render_priority = 1
+shader = ExtResource("sh")
+shader_parameter/highlight_max = 32.0
+shader_parameter/roughness = 0.008
+shader_parameter/wet_strength = 1.8

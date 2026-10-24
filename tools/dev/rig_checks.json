@@ -155,6 +155,32 @@
       "seams": {
         "max_exposed": 2
       }
+    },
+    "sefir": {
+      "_garments": "act1_npcs.md §1.10: the long hair is a garment (HairBack), so hair passing through the mantle or the shoulders in a head turn shows up in garment_in_body and is fixed by weights, not hidden",
+      "garments": [
+        "Costume",
+        "Mantle",
+        "HairBack"
+      ],
+      "props": [
+        "Crown"
+      ],
+      "braid": null,
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Mantle"
+          ]
+        ]
+      }
     }
   }
 }

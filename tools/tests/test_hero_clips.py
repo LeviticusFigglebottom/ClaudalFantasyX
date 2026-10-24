@@ -153,5 +153,81 @@ class TestTomaClips(unittest.TestCase):
         self.assertAlmostEqual(seat, self.sk.leg_shin + self.sk.ankle_h, delta=0.06)
 
 
+class TestSefirClips(unittest.TestCase):
+    """M3-CHR-02: Sefir's persona (act1_npcs.md §1.8: no sway, no breath, hands joined) and his Act I clips."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.sk = hero_clips.Skeleton(ROOT / "assets" / "characters" / "sefir" / "sefir.glb")
+        cls.persona = hero_clips.PERSONA["sefir"]
+
+    def test_persona_and_clip_list(self):
+        self.assertEqual(self.persona, {"sway": 0.0, "lean": 0.0, "staff": False, "arms_down": 30.0, "breath": 0.0,
+                                        "hands_joined": True})
+        self.assertEqual(hero_clips.CLIPS["sefir"], ["idle", "talk", "raise_palm", "incline_head", "glance", "pivot",
+                                                     "walk_glide"])
+        names = set(re.findall(r'resource_name = &"([a-z_]+)"', hero_clips.out_path("sefir").read_text(encoding="utf-8")))
+        self.assertEqual(names, set(hero_clips.CLIPS["sefir"]))
+        called = set()
+        for dlg in (ROOT / "game" / "data" / "dialogue").rglob("*.dlg"):
+            if "test" not in dlg.parts:
+                called |= set(re.findall(r"@anim sefir ([a-z_]+)", dlg.read_text(encoding="utf-8")))
+        self.assertEqual(called - set(hero_clips.CLIPS["sefir"]) - {"look_at"}, set())
+
+    def test_idle_is_still(self):
+        """His idle is a held pose (that is intended; the review must not fix it): zero rotation delta, and no hips
+        motion, across every key of the loop."""
+        import numpy as np
+
+        length = hero_clips.LENGTHS["idle"]
+        n = int(round(length * hero_clips.FPS))
+        first = None
+        for i in range(n + 1):
+            pose = hero_clips.staff_hold(hero_clips.pose_at("idle", i / hero_clips.FPS, length, self.sk, self.persona),
+                                         self.persona)
+            local = self.sk.local_pose({b: hero_clips.qeuler(v) for b, v in pose.items() if b != "hips"})
+            q = np.array([local[b] * np.sign(local[b][3] or 1.0) for b in hero_clips.BONES])
+            hips = np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)
+            if first is None:
+                first = (q, hips)
+            self.assertLess(float(np.abs(q - first[0]).max()), 1e-12, f"key {i}")
+            self.assertLess(float(np.abs(hips - first[1]).max()), 1e-12, f"key {i}")
+
+    def test_hands_joined_before_the_navel_right_over_left(self):
+        _g, t = _fk(self.sk, hero_clips.pose_at("idle", 0.0, 6.0, self.sk, self.persona), self.persona)
+        left, right = t["DEF-hand.L"], t["DEF-hand.R"]
+        self.assertLess(abs(float(left[0] + right[0])), 0.02)  # either side of the midline
+        self.assertLess(abs(float(left[0] - right[0])), 0.18)  # wrists 14 cm apart: the hands overlap
+        navel = self.sk.g_t["DEF-spine"][1] + 0.12  # a hand's breadth above the hips joint
+        self.assertAlmostEqual(float(left[1]), navel, delta=0.06)
+        self.assertGreater(float(left[2]), 0.12)  # in front of the robe
+        self.assertGreater(float(right[2]), float(left[2]))  # the right hand lies over (in front of) the left
+
+    def test_clips_keep_the_body_still_but_for_their_gesture(self):
+        """raise_palm moves only the left arm and the head; glance and incline_head only the neck and head; the
+        pivot turns the whole body 30 degrees and keeps the hands joined."""
+        import numpy as np
+
+        base = hero_clips.sefir_still(self.sk, self.persona)
+        for clip, allowed in (("raise_palm", {"DEF-upper_arm.L", "DEF-forearm.L", "DEF-hand.L", "DEF-spine.006"}),
+                              ("glance", {"DEF-spine.005", "DEF-spine.006"}),
+                              ("incline_head", {"DEF-spine.005", "DEF-spine.006"}),
+                              ("talk", {"DEF-forearm.L", "DEF-hand.L", "DEF-spine.006"})):
+            length = hero_clips.LENGTHS[clip]
+            pose = hero_clips.pose_at(clip, 0.5 * length, length, self.sk, self.persona)
+            moved = {b for b in pose if b != "hips" and not np.allclose(pose[b], base.get(b, (0.0, 0.0, 0.0)))}
+            self.assertTrue(moved, clip)
+            self.assertLessEqual(moved, allowed, clip)
+        length = hero_clips.LENGTHS["pivot"]
+        _g, t0 = _fk(self.sk, hero_clips.pose_at("pivot", 0.0, length, self.sk, self.persona), self.persona)
+        _g, t1 = _fk(self.sk, hero_clips.pose_at("pivot", length, length, self.sk, self.persona), self.persona)
+        gap0 = np.linalg.norm(t0["DEF-hand.L"] - t0["DEF-hand.R"])
+        gap1 = np.linalg.norm(t1["DEF-hand.L"] - t1["DEF-hand.R"])
+        self.assertAlmostEqual(float(gap0), float(gap1), delta=1e-6)
+        a0 = np.arctan2(*(t0["DEF-upper_arm.L"] - t0["DEF-upper_arm.R"])[[2, 0]])
+        a1 = np.arctan2(*(t1["DEF-upper_arm.L"] - t1["DEF-upper_arm.R"])[[2, 0]])
+        self.assertAlmostEqual(abs(float(np.degrees(a1 - a0))), 30.0, delta=0.5)
+
+
 if __name__ == "__main__":
     unittest.main()
