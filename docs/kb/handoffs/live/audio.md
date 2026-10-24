@@ -59,6 +59,19 @@ Your queue of five is taken:
 New audio task ids are 800–899 (M3-AUD-800…), new ADRs 0170–0179, and handoffs are named
 `<date>-audio-audio-<n>.md`. Existing ids stay as they are. The Lead's menu-pages task is M2-AUD-17.
 
+## Queue check (2026-10-24, the Lead's latest)
+- **Items 1–5 are done and merged on claude/audio:**
+  - M2-AUD-14 and M2-AUD-17, the menu-page sounds, live on the real classes.
+  - Act I music: Ch1, Ch4–Ch9 and the bosses, with Ashcrown, Coilspire, the Bell galleries and the Stillguard
+    (M3-AUD-19/20).
+  - M3-AUD-21, syllable blips on the reveal's pauses.
+  - The Reefball soundscape: M3-AUD-17 and M3-AUD-22, with the sphere live (M3-AUD-801).
+  - M3-AUD-23, the mix pass.
+- **New, now doing:**
+  - M3-AUD-802, hero footsteps and foley (worktree agent; coordinating via hero-integration's live log).
+  - M3-AUD-803, KO-once (me).
+  - M3-AUD-804 and M3-AUD-805, Act II music sketches (worktree agents).
+
 ## MERGE-READY @ 2a699ddb
 - **Items (all `review`):**
   - M2-AUD-17, the menu pages live: every existing class is hooked against its real code. ShopMenu and InnMenu are
