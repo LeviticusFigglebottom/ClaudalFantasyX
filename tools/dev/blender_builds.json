@@ -55,6 +55,92 @@
       ]
     },
     {
+      "id": "villager_neme",
+      "owner": "character",
+      "_note": "M2-CHR-03: one parametric villager build (build_villager.py --npc, params/<npc>.json) on Asha's modules (build_asha as a helper library, asha_textures with per-villager knobs), Rhen's and Toma's costume and hair helpers, so all their sources are this job's too. The first job also writes the cloth atlas every villager shares (villager_textures.cloth_atlas, tinted per villager in its materials).",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/villagers/neme/*.glb", "assets/characters/villagers/neme/textures/*.png", "assets/characters/villagers/neme/materials/*.tres", "assets/characters/villagers/neme/*.tscn", "assets/characters/villagers/neme/anim/*.tres", "assets/characters/villagers/textures/*.png"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "neme", "--bake-dir", "{scratch}/neme_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--cloth"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "neme", "--bake-dir", "{scratch}/neme_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "neme"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "neme"]
+      ]
+    },
+    {
+      "id": "villager_osu",
+      "owner": "character",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/villagers/osu/*.glb", "assets/characters/villagers/osu/textures/*.png", "assets/characters/villagers/osu/materials/*.tres", "assets/characters/villagers/osu/*.tscn", "assets/characters/villagers/osu/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "osu", "--bake-dir", "{scratch}/osu_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "osu", "--bake-dir", "{scratch}/osu_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "osu"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "osu"]
+      ]
+    },
+    {
+      "id": "villager_child",
+      "owner": "character",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/villagers/child/*.glb", "assets/characters/villagers/child/textures/*.png", "assets/characters/villagers/child/materials/*.tres", "assets/characters/villagers/child/*.tscn", "assets/characters/villagers/child/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "child", "--bake-dir", "{scratch}/child_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "child", "--bake-dir", "{scratch}/child_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "child"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "child"]
+      ]
+    },
+    {
+      "id": "villager_vendor",
+      "owner": "character",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/villagers/vendor/*.glb", "assets/characters/villagers/vendor/textures/*.png", "assets/characters/villagers/vendor/materials/*.tres", "assets/characters/villagers/vendor/*.tscn", "assets/characters/villagers/vendor/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "vendor", "--bake-dir", "{scratch}/vendor_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "vendor", "--bake-dir", "{scratch}/vendor_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "vendor"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "vendor"]
+      ]
+    },
+    {
+      "id": "villager_reed",
+      "owner": "character",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/villagers/reed/*.glb", "assets/characters/villagers/reed/textures/*.png", "assets/characters/villagers/reed/materials/*.tres", "assets/characters/villagers/reed/*.tscn", "assets/characters/villagers/reed/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "reed", "--bake-dir", "{scratch}/reed_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "reed", "--bake-dir", "{scratch}/reed_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "reed"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "reed"]
+      ]
+    },
+    {
+      "id": "villager_netmender",
+      "owner": "character",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/villagers/netmender/*.glb", "assets/characters/villagers/netmender/textures/*.png", "assets/characters/villagers/netmender/materials/*.tres", "assets/characters/villagers/netmender/*.tscn", "assets/characters/villagers/netmender/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "netmender", "--bake-dir", "{scratch}/netmender_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "netmender", "--bake-dir", "{scratch}/netmender_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "netmender"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "netmender"]
+      ]
+    },
+    {
+      "id": "villager_fisher",
+      "owner": "character",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/villagers/fisher/*.glb", "assets/characters/villagers/fisher/textures/*.png", "assets/characters/villagers/fisher/materials/*.tres", "assets/characters/villagers/fisher/*.tscn", "assets/characters/villagers/fisher/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "fisher", "--bake-dir", "{scratch}/fisher_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "fisher", "--bake-dir", "{scratch}/fisher_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "fisher"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "fisher"]
+      ]
+    },
+    {
       "id": "shader_test",
       "owner": "rendering",
       "sources": ["assets_src/characters/shader_test/build_shader_test_meshes.py", "assets_src/characters/shader_test/layout.py"],
