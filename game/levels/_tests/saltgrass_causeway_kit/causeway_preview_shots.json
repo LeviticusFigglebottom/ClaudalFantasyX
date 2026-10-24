@@ -1,5 +1,5 @@
 {
- "doc": "M2-ENV-10 Saltgrass Causeway preview views C01-C07 (haluna.md \u00a75.2). Capture with --manifest.",
+ "doc": "M2-ENV-10 Saltgrass Causeway preview views C01-C07 (haluna.md \u00a75.2), written by assets_src/environments/kits/haluna/causeway_preview.py. Capture with --manifest.",
  "shots": [
   {
    "id": "causeway_c01",
