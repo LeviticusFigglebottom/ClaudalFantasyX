@@ -14,6 +14,11 @@ const GODOT_ON_PATH := "godot"
 const GODOT_ENV := "GODOT"
 ## Set by tools/coverage/run_coverage.py for the instrumented run.
 const COVERAGE_ENV := "HYMN_COV_OUT"
+## M1-ARC-16: an injected 60 fps clock, and how many frames the fade takes to lift on it.
+const FRAME_USEC := 16667
+const LIFT_FRAMES := 21
+const HITCH_FRAME_MS := 70.0
+const HIDDEN_STALL_MS := 1200.0
 
 
 func test_budget_data_has_headroom_below_the_spec_budget() -> void:
@@ -75,6 +80,79 @@ func test_frame0_starts_after_a_prewarm_wait() -> void:
 	assert_eq(SceneRouter.frame0_start(1000, 3, 5000), 5000, "waited frames: after them")
 
 
+## M1-ARC-16 (ADR 0029): the budgets are SPEC §4.2 v1.3's numbers.
+func test_budgets_match_adr_0029() -> void:
+	assert_eq(SceneRouter.SWAP_BUDGET_MS, 50.0, "visible frames")
+	assert_eq(SceneRouter.HIDDEN_FRAME_BUDGET_MS, 1000.0, "a hidden frame")
+	assert_eq(SceneRouter.ENTRY_BUDGET_MS, 3000.0, "a zone entry")
+	assert_eq(SceneRouter.VISIBLE_MEASURE_FRAMES, 60, "the first 60 frames after a fade lifts")
+
+
+## M1-ARC-16: the hidden frames under the fade are loading time, judged against 1 s, not 50 ms.
+func test_hidden_frames_are_judged_against_the_hidden_budget() -> void:
+	var stats := {}
+	var frames: Array[float] = [12.0, HITCH_FRAME_MS, 900.0, 8.0]
+	assert_true(SceneRouter.judge_hidden(stats, frames).is_empty(), "70 and 900 ms hidden frames are no hitch")
+	assert_eq(stats["max_frame_ms"], 900.0)
+	assert_eq(stats["budget_ms"], SceneRouter.HIDDEN_FRAME_BUDGET_MS)
+	assert_false(bool(stats["over_budget"]))
+	frames = [12.0, HIDDEN_STALL_MS]
+	var warnings := SceneRouter.judge_hidden(stats, frames)
+	assert_true(bool(stats["over_budget"]), "a 1.2 s hidden frame is over")
+	assert_eq(warnings.size(), 1)
+	assert_true(warnings[0].contains("1000 ms hidden-frame budget"), "the warning names its budget: %s" % warnings)
+
+
+func test_zone_entry_is_judged_against_three_seconds() -> void:
+	var stats := {}
+	SceneRouter.judge_entry(stats, SceneRouter.ENTRY_BUDGET_MS - 1.0)
+	assert_false(bool(stats["entry_over_budget"]))
+	assert_eq(stats["entry_budget_ms"], SceneRouter.ENTRY_BUDGET_MS)
+	SceneRouter.judge_entry(stats, SceneRouter.ENTRY_BUDGET_MS + 1.0)
+	assert_true(bool(stats["entry_over_budget"]))
+
+
+## M1-ARC-16: the visible window covers the fade lifting, then the first 60 frames after it has lifted,
+## driven here by an injected clock.
+func test_visible_window_spans_the_lift_and_the_next_60_frames() -> void:
+	var t := 1000
+	var w := SceneRouter.VisibleWindow.new(t)
+	var ticks := 0
+	var done := false
+	while not done and ticks < LIFT_FRAMES + SceneRouter.VISIBLE_MEASURE_FRAMES * 2:
+		t += FRAME_USEC
+		done = w.tick(t, ticks >= LIFT_FRAMES)
+		ticks += 1
+	assert_true(done and w.is_complete())
+	assert_eq(ticks, LIFT_FRAMES + SceneRouter.VISIBLE_MEASURE_FRAMES, "stops 60 frames after the lift")
+	assert_eq(w.lift_frames, LIFT_FRAMES)
+	assert_eq(w.frame_ms.size(), ticks)
+	assert_between(w.frame_ms[0], 16.6, 16.7, "frame times come from the injected clock")
+	var stats := {}
+	assert_true(SceneRouter.judge_visible(stats, w).is_empty(), "a steady 60 fps is in budget")
+	assert_false(bool(stats["visible_over_budget"]))
+	assert_true(bool(stats["visible_complete"]))
+	assert_eq(stats["lift_frames"], LIFT_FRAMES)
+	assert_eq(stats["visible_budget_ms"], SceneRouter.SWAP_BUDGET_MS)
+	assert_between(float(stats["max_visible_frame_ms"]), 16.6, 16.7)
+
+
+func test_a_visible_hitch_warns_against_50_ms() -> void:
+	var t := 0
+	var w := SceneRouter.VisibleWindow.new(t)
+	for i in LIFT_FRAMES + 5:
+		t += FRAME_USEC if i != LIFT_FRAMES + 2 else int(HITCH_FRAME_MS * SceneRouter.USEC_PER_MSEC)
+		w.tick(t, i >= LIFT_FRAMES)
+	var stats := {}
+	var warnings := SceneRouter.judge_visible(stats, w)
+	assert_true(bool(stats["visible_over_budget"]), "a 70 ms frame after the lift is a hitch")
+	assert_eq(stats["max_visible_frame_ms"], HITCH_FRAME_MS)
+	assert_false(bool(stats["visible_complete"]), "cut short (another change started)")
+	assert_eq(warnings.size(), 1)
+	assert_true(warnings[0].contains("50 ms budget"), "%s" % warnings)
+	assert_true(warnings[0].contains("frame %d " % (LIFT_FRAMES + 2)), "names the frame: %s" % warnings)
+
+
 func test_load_guard_reads_a_number() -> void:
 	assert_true(_load_per_cpu() >= 0.0)
 
@@ -130,6 +208,8 @@ func test_router_public_api_is_stable() -> void:
 	assert_false(SceneRouter.is_busy())
 	assert_true(SceneRouter.instantiate_on_thread and SceneRouter.warm_fonts and SceneRouter.split_swap)
 	assert_true(SceneRouter.has_signal(&"scene_swapping"), "M1-RND-23")
+	assert_true(SceneRouter.has_signal(&"visible_measured"), "M1-ARC-16")
+	assert_false(SceneRouter.is_measuring(), "M1-ARC-16: no visible window at rest")
 	for m: StringName in [&"hold_swap", &"release_swap", &"swap_holders"]:
 		assert_true(SceneRouter.has_method(m), "M1-RND-23 hold API: %s" % m)
 
@@ -160,10 +240,17 @@ func test_scene_swapping_resets_the_zone_globals() -> void:
 	GlimmerField.set_scene_sea_glow(0.0)
 	ShaderGlobals.set_value(WaterSurface.GLOBAL_WATER_LEVEL, Vector2(0.6, 0.4))
 	SceneRouter.scene_swapping.emit("res://nowhere.tscn")
+	# The swap also wrote the default zone wind (M2-ARC-02, WeatherClock); later tests get the project default.
+	ShaderGlobals.reset(WeatherClock.GLOBAL_WIND)
 	assert_eq(ShaderGlobals.get_value(GlimmerField.GLOBAL_SEA_GLOW), GlimmerField.SEA_GLOW_ZONE_UNSET, "sea-glow unset")
 	assert_eq(ShaderGlobals.get_value(WaterSurface.GLOBAL_WATER_LEVEL), Vector2.ZERO, "water level back to 0, 0")
 	assert_true(ShaderGlobals.install(SceneRouter), "install is idempotent")
-	assert_eq(SceneRouter.scene_swapping.get_connections().size(), 1, "and connects once")
+	var hook := Callable(ShaderGlobals, &"_on_scene_swapping")
+	var hooks := 0
+	for c: Dictionary in SceneRouter.scene_swapping.get_connections():
+		if c["callable"] == hook:
+			hooks += 1
+	assert_eq(hooks, 1, "and connects once")
 	var src := FileAccess.get_file_as_string("res://game/core/scene_router.gd")
 	for banned: String in ["GlimmerField", "WaterSurface", "is_staging_under"]:
 		assert_false(src.contains(banned), "the router does not name %s" % banned)
@@ -177,6 +264,14 @@ func _assert_fix_shape(stats: Dictionary, target: String) -> void:
 	assert_true(bool(stats.get("fonts_warmed", false)), "%s fonts warmed before the swap" % target)
 	assert_true(stats.has("unload_ms"), "%s old scene unloaded in its own frame" % target)
 	assert_eq((stats.get("frame_ms", []) as Array).size(), SceneRouter.MEASURE_FRAMES)
+	# M1-ARC-16: both ADR 0029 windows are recorded, the visible one in full.
+	assert_eq(stats.get("budget_ms"), SceneRouter.HIDDEN_FRAME_BUDGET_MS, "%s hidden budget" % target)
+	assert_true(float(stats.get("entry_ms", -1.0)) > 0.0, "%s entry measured" % target)
+	assert_true(bool(stats.get("visible_complete", false)), "%s visible window complete" % target)
+	var visible := (stats.get("visible_frame_ms", []) as Array).size()
+	var lift := int(stats.get("lift_frames", -1))
+	assert_true(lift > 0, "%s frames while the fade lifts: %d" % [target, lift])
+	assert_eq(visible, lift + SceneRouter.VISIBLE_MEASURE_FRAMES, "%s the lift plus 60 frames" % target)
 
 
 func _probe(probe_scene: String, target: String) -> Dictionary:

@@ -18,6 +18,9 @@ var reduced_motion := false
 var auto_reason: StringName = &""
 var is_targeted := false
 var tint := Color.WHITE
+## Draws the Swell gauge whatever the fighter's mode: a called Vowbound has its own gauge and no
+## fill mode (M2-UI-05). Set before setup().
+var show_swell := false
 
 var _m: Dictionary = {}
 var _name: Label
@@ -79,7 +82,7 @@ func setup(metrics: Dictionary, c: BattleCombatant, label: String, portrait_tint
 	_mp.position = Vector2(mp_x, bar_y + HudLayout.num(_m, "hp_bar_px") - HudLayout.num(_m, "mp_bar_px"))
 	_mp.size = Vector2(mp_w, HudLayout.num(_m, "mp_bar_px"))
 	add_child(_mp)
-	if c.swell_mode != &"" and SwellRingView.draws_hero(c.id):
+	if show_swell or (c.swell_mode != &"" and SwellRingView.draws_hero(c.id)):
 		var swell_px := HudLayout.num(_m, "swell_bar_px")
 		_swell = HudGauge.new(&"swell")
 		_swell.position = Vector2(name_x, bar_y + HudLayout.num(_m, "hp_bar_px") - swell_px)

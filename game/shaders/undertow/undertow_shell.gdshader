@@ -84,11 +84,15 @@ void fragment() {
 	float env = max(undertow_envelope(p), shell_kind == 1 ? 0.6 : 0.0);
 	float d = clamp((n + env - 1.0 - coverage_bias) * 2.0 * (1.0 + env), 0.0, 1.0);
 	float pocket;
+	float lip;
+	float halo;
 	float H = undertow_height();
 	float h = p.y / H;
 	float on_wall = (shell_kind == 0 ? 1.0 : 0.0) * undertow_wound_band(h);
-	float seam = undertow_wound(p, pocket) * on_wall;
+	float seam = undertow_wound(p, pocket, lip, halo) * on_wall;
 	pocket *= on_wall;
+	lip *= on_wall;
+	halo *= on_wall;
 	vec3 L = normalize(hymn_sun_direction + vec3(0.0, HYMN_EPSILON, 0.0));
 	float wrap = clamp(dot(normalize(v_normal), L) * 0.5 + 0.5, 0.0, 1.0);
 	// Same direct-light reach as the raymarch (a low sun only lights the upper storm), and a cheap
@@ -97,8 +101,10 @@ void fragment() {
 	vec3 amb = mix(col_ambient_bottom, col_ambient_top, smoothstep(0.0, 1.0, h)) * ambient_energy;
 	float base = mix(1.0 - base_darkening, 1.0, smoothstep(0.0, 0.45, h));
 	vec3 lit = col_albedo * albedo_gain * (col_sun * sun_energy * wrap * self_shadow + amb * (1.0 - 0.5 * d)) * base;
+	lit *= 1.0 - rent_lip_dark * lip;
 	vec3 inner = undertow_lightning(p) * 0.6 + col_held * pocket * pocket_energy * wound_intensity * 0.5;
-	vec3 glow = col_wound * seam * wound_energy * UNDERTOW_SHELL_WOUND_GAIN;
+	inner *= 1.0 - rent_lip_dark * lip;
+	vec3 glow = col_wound * (seam + halo * rent_halo_energy * d) * wound_energy * UNDERTOW_SHELL_WOUND_GAIN;
 	vec3 col = lit + inner + glow;
 	float dist = length(p + storm_center - CAMERA_POSITION_WORLD);
 	float haze = 1.0 - exp(-dist / haze_visibility_m);

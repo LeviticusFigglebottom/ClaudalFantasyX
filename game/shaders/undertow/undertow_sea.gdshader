@@ -53,7 +53,9 @@ uniform float foam_ring_spacing_m : hint_range(10.0, 5000.0) = 380.0;
 uniform float foam_ring_radius_m : hint_range(10.0, 40000.0) = 5200.0;
 uniform float inflow_m_s : hint_range(0.0, 60.0) = 6.0;
 uniform float throat_glow_energy : hint_range(0.0, 32.0) = 2.2;
-uniform float glow_sink_m_s : hint_range(0.0, 100.0) = 6.0;
+// How far the throat streaks have sunk (m): UndertowState integrates sea.glow_sink_m_s over the storm
+// clock, piecewise, so the Letting (unbinding, M2-RND-05) can reverse it. Negative = risen.
+uniform float glow_drift_m = 0.0;
 // Night sea-glow (colour script rule 3), copied from the zone's WaterSurface.sea_glow_energy.
 uniform float sea_glow_energy : hint_range(0.0, 0.15) = 0.0;
 group_uniforms;
@@ -135,10 +137,12 @@ void fragment() {
 	// Held light sinking into the throat: cyan streaks spiralling down (never rising).
 	float throat = 1.0 - smoothstep(throat_radius_m * 0.3, funnel_radius_m * 0.75, r);
 	float c = atan(p.z, p.x) + foam_pitch * log(max(r, 1.0) / eye_radius_m);
-	float sink = (r + glow_sink_m_s * storm_time_s) / (throat_radius_m * 0.5);
+	float sink = (r + glow_drift_m) / (throat_radius_m * 0.5);
 	float streak = hymn_value_noise3(vec3(cos(c) * 6.0, sink, sin(c) * 6.0));
 	float pocket;
-	float seam = undertow_wound(vec3(p.x, max(p.y, 0.0), p.z), pocket);
+	float lip;
+	float halo;
+	float seam = undertow_wound(vec3(p.x, max(p.y, 0.0), p.z), pocket, lip, halo);
 	vec3 glow = col_held * throat_glow_energy * wound_intensity * throat * smoothstep(0.45, 0.9, streak);
 	glow += col_wound * seam * throat;
 	// The storm's lightning lights the sea under it; foam catches it most.

@@ -48,6 +48,28 @@
 4. **characters:** cloud `session_01JqzzxgJU9Dmu7fRhmCG9aQ`, branch `claude/characters`, Auto mode, 2–3 subagents allowed. Queue: **M1-CHR-12 Asha round 7 first** (grief lip-edge rim and peg teeth, lid band, smile eyes, crown; from QA-08), with M2-CHR-01 Rhen and Toma in parallel (parked WIP in assets_src/characters/rhen/, see WIP.md) → Asha's clips (M2-FP-07) → M1-ART-06. Log: `characters.md` on its branch.
 - **Permissions:** `.claude/settings.json` allow-lists the read-only checks and cross-session messaging (the human's directive). Sessions pick it up after merging the integration branch.
 
+### 3a. Standing queues (2026-10-24, also sent by message; messages can arrive hours late, so this section is authoritative)
+- **m2-slice:**
+  0. CMB-05 reconciliation: take the integration branch's mechanics (rolled absorb, HP 100%, rate 150), keep the FP-17 wiring, remove `call_ilun` (UI-05's Call row is merged), do M2-CMB-06.
+  1. M2-FP-22, M1-UI-11, M1-ENV-11.
+  2. M2-FP-20, M2-FP-21.
+  3. M2-ENV-04 (wake-shell wall), M2-ENV-03 (shrine interior kit).
+  4. M2-UI-06 (shop and inn).
+  5. zone_weather.json rows for first_verse, shell_shrine and Haluna-night.
+  6. Swap the capsules for Rhen, Toma and the villagers when the characters branch merges.
+  7. Another playthrough pass.
+  8. M2-ENV-05: Haluna's zone entry is 3.1–3.5 s against the 3 s limit (PC slice perf sweep).
+- **characters:**
+  0. **TOP PRIORITY (the human, 2026-10-24): M1-CHR-14.** Asha's braid is detached from her head; clothing and staff clip; some limbs look detached. Fix it properly and add automated guards; same checks for Rhen and Toma.
+  1. M1-CHR-13 (vest normals, plus the shared `_panel` winding fix; rebuild Asha, Rhen and Toma).
+  2. M1-RND-25 (the inner lip onto the mouth material).
+  3. Toma follow-ups, plus Toma's clips.
+  4. M2-CHR-03 (the Haluna villagers: Neme, Osu, Pila, the lane child, plus 3 generic).
+  5. The CHR-12 smile §12.4 as a switchable variant, for the human.
+  6. Battle-scale hero LODs.
+- **pc-gpu:** (ADR 0029 follow-ups and the slice perf sweep DONE) M1-RND-28 export shader baker → M2-RND-07 (the Drownbell Flood hitch) → M1-QA-09 (Asha re-check, after CHR-12 merges) → the night GPU cost at Haluna H10 (M2-ENV-02) → the Low-preset storm cost (Low's full-res shells cost 1.36 ms against High's 0.66 ms compute; file it).
+- **Wake-ups:** the hourly routine `trig_01LJyLo42xCq3WVmAza3BMhe` FAILS with ACCESS_DENIED (as in the old account). The Lead keeps a background `sleep 2700` heartbeat in its own session instead, and re-arms it on each wake.
+
 ## 4. Process that works (keep it)
 - **Standing queues:** never one task at a time; ask each environment to message when it's two items from the end.
 - **Review sweeps:** after each merge batch, a fresh reviewer agent covers every `status: review` task. On approve or approve-with-fixes, close the task and file the fixes as new tasks. On request-changes, reopen it.

@@ -120,10 +120,11 @@ the engine's boss signals (battle_ctb.md "VFX hook points") and never writes com
   tide with real water around the dais.
 - **Retry.** A retry replaces the whole VFX view, so the old water stops publishing.
 
-**The weather clock (finding).** No shipped scene drives `hymn_wind_time` or `hymn_wind`; only test rigs do. In a
-battle the water would stand still. While no other node does, the rig runs the clock on from its last value and
-sets a breeze when the wind is calm. It puts the wind back when it leaves (`flood.weather` in the data). The
-zones have the same gap; that's for the Lead to route.
+**The weather clock.** Since M2-ARC-02 the rig never writes `hymn_wind_time`: `WeatherClock`, SceneRouter's
+child, is its one writer in play and runs it through every battle (architecture.md, "The weather clock"), and
+the flood water reads it from the global. The battle scene gets the zone_weather.json default wind on its swap.
+When the wind is still calm (a scene with no zone wind, like the drownbell_flood test rig), the rig sets the
+breeze in `flood.weather` and puts the wind back when it leaves.
 
 **Reduced motion** (UiSettings):
 - The shockwave runs 1.8x slower at half its alpha.

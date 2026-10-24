@@ -18,6 +18,8 @@ extends Node
 ##     new scene waits under the opaque fade, at most PREWARM_WAIT_MAX_FRAMES frames (the time-sliced
 ##     ShaderPrewarm stage holds it while staging). Callers can see a change take up to that many
 ##     frames (2 s at 60 fps) longer; the wait is recorded in last_swap_stats["prewarm_wait_frames"].
+## M2-ARC-02: WeatherClock.install(self) adds the weather clock's owner as a child (it advances
+##   hymn_wind_time every frame and writes the zone's hymn_wind on scene_swapping), the same way.
 ##
 ## SPEC §4.2 allows no frame over 50 ms in a transition, so the expensive steps are kept out of the
 ## frame that shows the new scene (docs/kb/tech/architecture.md, "Scene-swap hitch"):
@@ -33,20 +35,39 @@ extends Node
 ##   4. The old scene is unloaded one frame before the new one is added, so freeing it and
 ##      entering the new scene's _ready never share a frame.
 ## Each swap records its phase costs and frame times in last_swap_stats, emits swap_measured, and
-## warns when the swap frame exceeds SWAP_BUDGET_MS.
+## warns when a frame is over its budget.
+## M1-ARC-16 (ADR 0029, SPEC §4.2 v1.3): two windows, each against its own budget.
+##   - Hidden: the MEASURE_FRAMES frames after the new scene is handed to the tree, still under the opaque
+##     fade (frame_ms, max_frame_ms), against HIDDEN_FRAME_BUDGET_MS (1 s). The whole change, from
+##     change_scene() to the fade starting to lift (entry_ms), is against ENTRY_BUDGET_MS (3 s).
+##   - Visible: every frame while the fade lifts, then the first VISIBLE_MEASURE_FRAMES after it has lifted
+##     (visible_frame_ms, max_visible_frame_ms), against SWAP_BUDGET_MS (50 ms). These finish after
+##     change_scene() returns: is_measuring() is true until then, and visible_measured(stats) fires
+##     with the same dictionary, completed. A new change_scene() cuts the window short
+##     (visible_complete false).
 
 signal prewarm_requested(scene_path: String)
 ## Emitted under the opaque fade, just before the new scene enters the tree (zone globals reset here).
 signal scene_swapping(scene_path: String)
 ## Emitted after each successful swap with the same dictionary stored in last_swap_stats.
 signal swap_measured(stats: Dictionary)
+## M1-ARC-16: emitted when the visible window ends (same dictionary, now with the visible_* keys).
+signal visible_measured(stats: Dictionary)
 
 const FADE_SEC := 0.35
 const FADE_LAYER := 128
-## SPEC §4.2: no hitch over 50 ms during transitions.
+## SPEC §4.2: no visible hitch over 50 ms (the visible window, ADR 0029).
 const SWAP_BUDGET_MS := 50.0
 ## Frames measured after the new scene is handed to the tree (its _ready and first draw land here).
+## They are under the opaque fade: loading time (ADR 0029).
 const MEASURE_FRAMES := 4
+## SPEC §4.2 / ADR 0029: no single frame hidden behind the fade over 1 s.
+const HIDDEN_FRAME_BUDGET_MS := 1000.0
+## SPEC §4.2 / ADR 0029: a zone entry (change_scene() until the fade starts to lift) under 3 s.
+const ENTRY_BUDGET_MS := 3000.0
+## ADR 0029: "the first 60 frames after any fade lifts" are visible frames (the frames while it lifts
+## are measured too).
+const VISIBLE_MEASURE_FRAMES := 60
 ## Upper bound on frames a swap waits for its holders (hold_swap), e.g. a time-sliced ShaderPrewarm
 ## stage (M1-RND-15).
 const PREWARM_WAIT_MAX_FRAMES := 120
@@ -58,8 +79,11 @@ var instantiate_on_thread := true
 var warm_fonts := true
 var split_swap := true
 ## Last swap: {scene_path, instantiate_ms, instantiated_on_thread, unload_ms, prewarm_ms, fonts_warmed,
-## font_warm_ms, frame_ms: Array[float] (MEASURE_FRAMES frames from the swap), max_frame_ms,
-## budget_ms, over_budget}.
+## font_warm_ms, frame_ms: Array[float] (MEASURE_FRAMES hidden frames from the swap), max_frame_ms,
+## budget_ms (HIDDEN_FRAME_BUDGET_MS), over_budget (a hidden frame over it), entry_ms, entry_budget_ms,
+## entry_over_budget}, then, once the visible window ends (M1-ARC-16): {visible_frame_ms: Array[float],
+## lift_frames (how many of them were while the fade lifted), max_visible_frame_ms, visible_budget_ms,
+## visible_over_budget, visible_complete}.
 var last_swap_stats: Dictionary = {}
 ## Return-to-world on load (M1-ARC-06). Disabled until boot.gd sets world_return.enabled.
 var world_return: WorldReturn
@@ -71,6 +95,9 @@ var _font_warmer: FontWarmer
 var _fonts_warm := false
 ## instance id -> WeakRef of each object holding the swap (hold_swap).
 var _swap_holds: Dictionary = {}
+## Bumped by every change_scene(): a visible window from an older change stops at its next frame.
+var _visible_generation := 0
+var _measuring_visible := false
 
 
 func _ready() -> void:
@@ -84,6 +111,7 @@ func _ready() -> void:
 	_fade_layer.add_child(_fade_rect)
 	ShaderPrewarm.install(self)
 	ShaderGlobals.install(self)
+	WeatherClock.install(self)
 	world_return = WorldReturn.new()
 	world_return.name = "WorldReturn"
 	add_child(world_return)
@@ -91,6 +119,11 @@ func _ready() -> void:
 
 func is_busy() -> bool:
 	return _busy
+
+
+## True while the last change's visible window (M1-ARC-16) is still being measured.
+func is_measuring() -> bool:
+	return _measuring_visible
 
 
 ## Holds the next swap under the opaque fade until release_swap(holder), until `holder` is freed, or
@@ -124,7 +157,10 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 		push_warning("SceneRouter: change already in progress, ignoring %s" % scene_path)
 		return
 	_busy = true
-	var stats := {"scene_path": scene_path, "budget_ms": SWAP_BUDGET_MS}
+	_visible_generation += 1
+	_measuring_visible = false
+	var entry_start := Time.get_ticks_usec()
+	var stats := {"scene_path": scene_path, "budget_ms": HIDDEN_FRAME_BUDGET_MS}
 	ResourceLoader.load_threaded_request(scene_path)
 	_start_font_warm(stats)
 	await _fade_to(1.0)
@@ -134,14 +170,18 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 	if packed == null:
 		push_error("SceneRouter: failed to load %s" % scene_path)
 	else:
-		await _swap(packed, scene_path, stats, spawn)
+		await _swap(packed, scene_path, stats, spawn, entry_start)
+	if stats.has("frame_ms"):
+		_measure_visible(stats)
 	await _fade_to(0.0)
 	_busy = false
 
 
 ## With split_swap off this reproduces the M0 router (prewarm, instantiate, free and add in one
 ## frame), which the profiler uses as the "before" case.
-func _swap(packed: PackedScene, scene_path: String, stats: Dictionary, spawn: StringName = &"") -> void:
+func _swap(
+	packed: PackedScene, scene_path: String, stats: Dictionary, spawn: StringName = &"", entry_start_usec: int = -1
+) -> void:
 	while _font_warmer != null and not _font_warmer.done:
 		await get_tree().process_frame
 	var t := Time.get_ticks_usec()
@@ -185,6 +225,8 @@ func _swap(packed: PackedScene, scene_path: String, stats: Dictionary, spawn: St
 			if spawn != &"" and node.is_inside_tree():
 				WorldReturn.place_player(node, spawn)
 			EventBus.scene_changed.emit(scene_path)
+	if entry_start_usec >= 0:
+		judge_entry(stats, _ms_since(entry_start_usec))
 	_record(stats, frames)
 
 
@@ -220,17 +262,87 @@ func _instantiate(packed: PackedScene, stats: Dictionary) -> Node:
 
 
 func _record(stats: Dictionary, frames: Array[float]) -> void:
+	stats["fonts_warmed"] = _fonts_warm
+	last_swap_stats = stats
+	for w in judge_hidden(stats, frames):
+		push_warning("%s: %s: %s" % [LOG_PREFIX, w, stats])
+	if bool(stats.get("entry_over_budget", false)):
+		push_warning(
+			(
+				"%s: zone entry %.0f ms over the %.0f ms entry budget (ADR 0029): %s"
+				% [LOG_PREFIX, float(stats["entry_ms"]), ENTRY_BUDGET_MS, stats]
+			)
+		)
+	swap_measured.emit(stats)
+
+
+## ADR 0029's hidden window: writes frame_ms, max_frame_ms, budget_ms and over_budget (against
+## HIDDEN_FRAME_BUDGET_MS) into `stats` and returns the warnings to raise (empty when in budget).
+static func judge_hidden(stats: Dictionary, frames: Array[float]) -> Array[String]:
+	var worst := _max_of(frames)
+	stats["frame_ms"] = frames
+	stats["max_frame_ms"] = worst
+	stats["budget_ms"] = HIDDEN_FRAME_BUDGET_MS
+	stats["over_budget"] = worst > HIDDEN_FRAME_BUDGET_MS
+	var out: Array[String] = []
+	if worst > HIDDEN_FRAME_BUDGET_MS:
+		out.append(
+			(
+				"hidden swap frame %.1f ms over the %.0f ms hidden-frame budget (ADR 0029)"
+				% [worst, HIDDEN_FRAME_BUDGET_MS]
+			)
+		)
+	return out
+
+
+## ADR 0029's entry limit: writes entry_ms, entry_budget_ms and entry_over_budget into `stats`.
+static func judge_entry(stats: Dictionary, entry_ms: float) -> void:
+	stats["entry_ms"] = entry_ms
+	stats["entry_budget_ms"] = ENTRY_BUDGET_MS
+	stats["entry_over_budget"] = entry_ms > ENTRY_BUDGET_MS
+
+
+## ADR 0029's visible window: writes the visible_* keys from `window` into `stats` and returns the warnings
+## to raise (empty when in budget).
+static func judge_visible(stats: Dictionary, window: VisibleWindow) -> Array[String]:
+	var worst := _max_of(window.frame_ms)
+	stats["visible_frame_ms"] = window.frame_ms
+	stats["lift_frames"] = window.lift_frames
+	stats["max_visible_frame_ms"] = worst
+	stats["visible_budget_ms"] = SWAP_BUDGET_MS
+	stats["visible_over_budget"] = worst > SWAP_BUDGET_MS
+	stats["visible_complete"] = window.is_complete()
+	var out: Array[String] = []
+	if worst > SWAP_BUDGET_MS:
+		var at := window.frame_ms.find(worst)
+		out.append("visible frame %d of the lift: %.1f ms over the %.0f ms budget" % [at, worst, SWAP_BUDGET_MS])
+	return out
+
+
+## Samples one frame time per process frame from the moment the fade starts to lift until
+## VISIBLE_MEASURE_FRAMES frames after it has lifted, or until another change_scene() starts.
+func _measure_visible(stats: Dictionary) -> void:
+	var generation := _visible_generation
+	_measuring_visible = true
+	var window := VisibleWindow.new(Time.get_ticks_usec())
+	while generation == _visible_generation:
+		await get_tree().process_frame
+		if generation != _visible_generation:
+			break
+		if window.tick(Time.get_ticks_usec(), _fade_rect.color.a <= 0.0):
+			break
+	for w in judge_visible(stats, window):
+		push_warning("%s: %s: %s" % [LOG_PREFIX, w, stats.get("scene_path", "")])
+	if generation == _visible_generation:
+		_measuring_visible = false
+	visible_measured.emit(stats)
+
+
+static func _max_of(frames: Array[float]) -> float:
 	var worst := 0.0
 	for f in frames:
 		worst = maxf(worst, f)
-	stats["frame_ms"] = frames
-	stats["max_frame_ms"] = worst
-	stats["over_budget"] = worst > SWAP_BUDGET_MS
-	stats["fonts_warmed"] = _fonts_warm
-	last_swap_stats = stats
-	if worst > SWAP_BUDGET_MS:
-		push_warning("%s: swap frame %.1f ms over the %.0f ms budget: %s" % [LOG_PREFIX, worst, SWAP_BUDGET_MS, stats])
-	swap_measured.emit(stats)
+	return worst
 
 
 ## Starts rasterizing the project theme's fonts under the fade (once per run; spread over frames).
@@ -259,6 +371,35 @@ func _fade_to(alpha: float) -> void:
 
 static func _ms_since(t_usec: int) -> float:
 	return (Time.get_ticks_usec() - t_usec) / USEC_PER_MSEC
+
+
+## M1-ARC-16: ADR 0029's visible window, fed one timestamp per frame (an injected clock, so tests can drive
+## it). Frames that end before the fade has fully lifted count as lift_frames; the window is complete after
+## VISIBLE_MEASURE_FRAMES frames that end with the fade lifted.
+class VisibleWindow:
+	extends RefCounted
+
+	var frame_ms: Array[float] = []
+	var lift_frames := 0
+	var lifted_frames := 0
+	var _last_usec := 0
+
+	func _init(start_usec: int) -> void:
+		_last_usec = start_usec
+
+	## Records the frame that ended at `now_usec`; `lifted`: the fade was fully lifted when it ended.
+	## Returns true once the window is complete.
+	func tick(now_usec: int, lifted: bool) -> bool:
+		frame_ms.append((now_usec - _last_usec) / USEC_PER_MSEC)
+		_last_usec = now_usec
+		if lifted:
+			lifted_frames += 1
+		else:
+			lift_frames += 1
+		return is_complete()
+
+	func is_complete() -> bool:
+		return lifted_frames >= VISIBLE_MEASURE_FRAMES
 
 
 ## Draws every (font, size, outline) the project theme uses with a fixed character set, in small

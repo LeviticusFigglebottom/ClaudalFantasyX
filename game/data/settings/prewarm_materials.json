@@ -14,6 +14,7 @@
   "scene_materials": true,
   "max_scene_materials": 256,
   "particle_amount": 1,
+  "_note_compute_twin": "M1-RND-27: an entry with \"compute_twin\" true (the Undertow body shaders) is not drawn when the preset's storm tier marches the body in compute (ShaderPrewarm.undertow_uses_compute: a RenderingDevice and a body_scale under 1); its compute twin's pipeline is created instead (UndertowBodyEffect.warm_pipeline). Ultra (full-resolution body) still draws it.",
   "_note_preset_tier": "M1-RND-22: an entry with \"preset_tier\" {system, tier} is staged only when the active preset selects that tier (system character: CharacterShaderTiers.tier_for_preset; undertow: the preset id; else the preset's \"tiers\" in graphics_presets.json). Untagged entries are staged on every preset. A preset change runs its own prewarm for the new tier.",
   "materials": [
     {
@@ -104,6 +105,7 @@
     },
     {
       "path": "res://game/shaders/undertow/undertow_body.gdshader",
+      "compute_twin": true,
       "scenes": [
         "res://game/levels/_tests/undertow/undertow_test.tscn"
       ],
@@ -116,6 +118,7 @@
     },
     {
       "path": "res://game/shaders/undertow/undertow_body_medium.gdshader",
+      "compute_twin": true,
       "scenes": [
         "res://game/levels/_tests/undertow/undertow_test.tscn"
       ],
@@ -128,6 +131,7 @@
     },
     {
       "path": "res://game/shaders/undertow/undertow_body_ultra.gdshader",
+      "compute_twin": true,
       "scenes": [
         "res://game/levels/_tests/undertow/undertow_test.tscn"
       ],
@@ -156,6 +160,30 @@
         "res://game/levels/_tests/undertow/undertow_test.tscn"
       ],
       "note": "M1-RND-03 Undertow spray curtains (every tier).",
+      "resident": true
+    },
+    {
+      "path": "res://game/shaders/undertow/undertow_streamer.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
+      "note": "M2-RND-05 Undertow streamers of held light off the wounds (every tier).",
+      "resident": true
+    },
+    {
+      "path": "res://game/shaders/undertow/undertow_bolt.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
+      "note": "M2-RND-05 Undertow lightning bolts (every tier).",
+      "resident": true
+    },
+    {
+      "path": "res://game/shaders/undertow/undertow_rain.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
+      "note": "M2-RND-05 Undertow near-field rain on the camera (every tier).",
       "resident": true
     },
     {

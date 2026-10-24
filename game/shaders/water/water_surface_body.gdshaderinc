@@ -227,6 +227,29 @@ uniform float storm_streak_length_m : hint_range(1.0, 5000.0) = 240.0;
 uniform float storm_streak_width_m : hint_range(0.1, 500.0) = 9.0;
 uniform float storm_streak_fade_m : hint_range(10.0, 50000.0) = 2500.0;
 uniform float storm_streak_drift : hint_range(0.0, 4.0) = 0.05;
+// The storm in the reflection (M2-RND-05; UndertowEvents pushes these). The engine's sky reflection
+// never sees the storm, so the sea reflects it here:
+// - storm_body_tex (the half-res body's premultiplied frame, ready before the water draws): the
+//   reflected ray's point at the storm's distance is projected to the screen and the storm's own
+//   pixel there is the reflection (its wounds and lightning included).
+// - Off screen, or without that texture (Low's shells, Ultra's full-resolution body), an impostor: a
+//   vertical cylinder from the sea to storm_reflect_height_m whose radius widens from
+//   storm_reflect_wall_m.x to .y (the wall), and the canopy's ring (radius, height above the sea,
+//   thickness), coloured low at the sea to high at the top, plus glow, hazed by distance.
+// Where the storm is reflected, the engine's sky reflection gives way to it. storm_reflect 0 = off.
+uniform float storm_reflect : hint_range(0.0, 1.0) = 0.0;
+uniform sampler2D storm_body_tex : filter_linear, repeat_disable;
+uniform bool storm_body_ready = false;
+uniform vec3 storm_reflect_center = vec3(0.0);
+uniform vec2 storm_reflect_wall_m = vec2(4000.0, 4000.0);
+uniform float storm_reflect_height_m = 11500.0;
+uniform vec3 storm_reflect_canopy = vec3(0.0);
+uniform float storm_reflect_soft_m = 600.0;
+uniform vec3 storm_reflect_low : source_color = vec3(0.0);
+uniform vec3 storm_reflect_high : source_color = vec3(0.0);
+uniform vec3 storm_reflect_glow : source_color = vec3(0.0);
+uniform vec3 storm_reflect_haze : source_color = vec3(0.35, 0.3, 0.32);
+uniform float storm_reflect_visibility_m = 26000.0;
 
 group_uniforms caustics;
 uniform float caustic_strength : hint_range(0.0, 8.0) = 1.6;
@@ -301,6 +324,45 @@ varying float v_foam;
 
 float water_time() {
 	return hymn_wind_time * time_scale;
+}
+
+// Coverage of the storm impostor along the world ray o + t d (M2-RND-05): how much of the storm the
+// reflected ray meets (0..1, soft at the silhouette), the hit's height fraction and distance.
+float water_storm_hit(vec3 o, vec3 d, out float h, out float dist) {
+	vec3 q = o - storm_reflect_center;
+	vec2 dxz = d.xz;
+	float dd = max(dot(dxz, dxz), 1e-6);
+	float tc = -dot(q.xz, dxz) / dd;
+	h = 0.0;
+	dist = 0.0;
+	if (tc <= 0.0) {
+		return 0.0;
+	}
+	float miss = length(q.xz + dxz * tc);
+	float cover = 0.0;
+	// The wall: the ray's height where it passes closest (rays rise from the sea, so this is low).
+	float y = q.y + d.y * tc;
+	float hw = clamp(y / storm_reflect_height_m, 0.0, 1.0);
+	float r = mix(storm_reflect_wall_m.x, storm_reflect_wall_m.y, hw);
+	float in_wall = 1.0 - smoothstep(r - storm_reflect_soft_m, r + storm_reflect_soft_m, miss);
+	float tall = 1.0 - smoothstep(storm_reflect_height_m * 0.9, storm_reflect_height_m, y);
+	cover = in_wall * tall * step(0.0, y);
+	h = hw;
+	dist = tc * sqrt(dd);
+	// The canopy ring: where the ray crosses the canopy's height, inside its radius.
+	if (storm_reflect_canopy.x > 0.0 && d.y > 1e-4) {
+		float tk = (storm_reflect_canopy.y - q.y) / d.y;
+		if (tk > 0.0) {
+			float rk = length(q.xz + dxz * tk);
+			float ck = (1.0 - smoothstep(storm_reflect_canopy.x - storm_reflect_soft_m * 4.0, storm_reflect_canopy.x, rk));
+			if (ck > cover) {
+				cover = ck;
+				h = 1.0;
+				dist = tk * length(d);
+			}
+		}
+	}
+	return cover;
 }
 
 void vertex() {
@@ -629,11 +691,37 @@ void fragment() {
 	ALBEDO = col_foam * foam + col_scatter * inscatter * scatter_energy * water * (1.0 - fresnel);
 	ROUGHNESS = mix(rough, foam_roughness, foam);
 	METALLIC = 0.0;
+	// The storm in the reflection (M2-RND-05): where the reflected ray meets the storm impostor, the
+	// sky it would reflect is the storm.
+	float storm_cover = 0.0;
+	vec3 storm_ref = vec3(0.0);
+	if (storm_reflect > 0.0) {
+		vec3 rw = normalize((INV_VIEW_MATRIX * vec4(reflect(-VIEW, n_view), 0.0)).xyz);
+		rw.y = max(rw.y, 1e-3);
+		float sh;
+		float sd;
+		float cover = water_storm_hit(world, rw, sh, sd);
+		vec3 sc = mix(storm_reflect_low, storm_reflect_high, smoothstep(0.0, 1.0, sh)) + storm_reflect_glow;
+		storm_ref = mix(sc, storm_reflect_haze, 1.0 - exp(-sd / storm_reflect_visibility_m));
+		if (storm_body_ready) {
+			// The storm's own pixel where the reflected ray reaches the storm's distance.
+			float s_far = sd > 0.0 ? sd : length(storm_reflect_center.xz - world.xz);
+			vec4 qc = PROJECTION_MATRIX * (VIEW_MATRIX * vec4(world + rw * s_far, 1.0));
+			vec2 quv = qc.xy / max(qc.w, HYMN_EPSILON) * 0.5 + 0.5;
+			if (qc.w > 0.0 && quv.x >= 0.0 && quv.x <= 1.0 && quv.y >= 0.0 && quv.y <= 1.0) {
+				vec4 b = textureLod(storm_body_tex, quv, 0.0);
+				cover = b.a;
+				storm_ref = b.rgb / max(b.a, 1e-3);
+			}
+		}
+		storm_cover = cover * storm_reflect * (1.0 - ssr_hit);
+	}
 	// Engine reflection (sky, probes) only where SSR found nothing.
-	SPECULAR = WATER_SPECULAR * water * (1.0 - ssr_hit) * storm_dim * (1.0 - storm_reflection_dim * storm_k);
+	SPECULAR = WATER_SPECULAR * water * (1.0 - ssr_hit) * storm_dim * (1.0 - storm_reflection_dim * storm_k)
+			* (1.0 - storm_cover);
 	NORMAL = n_view;
 	EMISSION = body * water * (1.0 - fresnel * ssr_hit)
-			+ ssr_col * fresnel * ssr_hit * water + glow * water;
+			+ ssr_col * fresnel * ssr_hit * water + glow * water + storm_ref * fresnel * storm_cover * water;
 }
 
 void light() {

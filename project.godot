@@ -9,6 +9,7 @@ config/name="Hymn of the Undertow"
 config/description="An original, cinematic, turn-based RPG."
 run/main_scene="res://game/core/boot.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
+run/main_scene.perf_build="res://tools/gpu_bench/slice_sweep.tscn"
 
 [autoload]
 

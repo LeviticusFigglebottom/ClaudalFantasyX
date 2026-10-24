@@ -57,7 +57,8 @@ func _run() -> void:
 	SceneRouter.last_swap_stats = {}
 	SceneRouter.change_scene(to)
 	var frames_left := int(cfg.get("timeout_frames", 0))
-	while SceneRouter.is_busy() and frames_left > 0:
+	# M1-ARC-16: the visible window (the fade lifting plus VISIBLE_MEASURE_FRAMES) ends after is_busy() does.
+	while (SceneRouter.is_busy() or SceneRouter.is_measuring()) and frames_left > 0:
 		frames_left -= 1
 		await get_tree().process_frame
 	var stats := SceneRouter.last_swap_stats

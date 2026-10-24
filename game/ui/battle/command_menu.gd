@@ -33,7 +33,9 @@ func open_root(page_id: StringName, title: String, rows: Array[Dictionary]) -> v
 	for p in _pages:
 		p.queue_free()
 	_pages.clear()
-	_add_page(page_id, title, rows, _root_rect, false)
+	# The rect holds five rows; a longer root grows upward from the same foot (M2-UI-05).
+	var h := maxf(_root_rect.size.y, MenuPage.height_for(_m, rows.size()))
+	_add_page(page_id, title, rows, Rect2(_root_rect.position.x, _root_rect.end.y - h, _root_rect.size.x, h), false)
 
 
 ## Pushes a sub-menu to the right of the current page; the page below dims.

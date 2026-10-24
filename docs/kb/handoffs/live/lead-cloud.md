@@ -2,36 +2,31 @@
 
 **Session:** `session_019iimsngAgPLEram1wcbLpE` (new account) · **Branch:** `claude/undertow-lead-handoff-423ixt` (the integration branch) · **Container:** 4 CPUs, Ubuntu, lavapipe. The container has restarted twice; the disk and the worktrees survived both times.
 
-## Current state (2026-10-24, after merge batch 2)
-- **HEAD:** `3e59f8d` (see `git log -1 origin/claude/undertow-lead-handoff-423ixt`).
-- **Last gates:**
-  - Full ci36 green at b533db0.
-  - Batch-2 gate at lead/batch2: 1375 tests, coverage within baseline, 66 shots (2 re-approved after viewing: veg_beach_wide, battle_opening_banner), sim --check passing, including `sandbox_reef_vowbound` at 38.9% against the 40% line.
-- **Merged today, in order:**
-  - qa-07, rnd-21 (grief re-approved), CHR-08, sweep O, qa-08, first-playable (Drownbell; ADR 0024 → 0026).
-  - Combat: CMB-03 engine split and CMB-04 Vowbound (ADR 0027).
-  - UI-04 field menu, sweep P, RND-01 Undertow (4 undertow baselines re-approved; compute ADR 0028).
-  - m2-slice through 9c1485a (FP-10..13, 16, 18, UI-10), fp-10-keylight-check, and RND-23/24 (router `scene_swapping`, mouth bounce pass).
-  - **Batch 2:** CMB-05 (Vowbound A1–A3, handoff renumbered to combat-13), ENV-09+08 (vegetation LOD chain; shader_globals.gd conflict hand-merged: both APIs kept, with `project_default` = `default_value`), PC RND-22 prewarm (ADR 0029 proposed), PC RND-03 battle VFX, and PC RND-02 underwater.
-- **Not merged yet:**
-  - `gpu/m2-rnd-04-drownbell-vfx` (d6c6056, built on RND-03): needs a test merge plus its pending shot `drownbell_flood`.
-  - The pending shots `underwater_below`, `underwater_window` and `underwater_waterline` (docs/kb/qa/gpu/2026-10-24-rnd-02-pending-shots.json) still need adding to tests/screenshots/shots.json and approving on lavapipe.
-  - Newer m2-slice and characters work.
-- **Don't merge:** gpu/qa-05d, gpu/chr-04-materials, gpu/qa-05b.
-- **Environments:**
-  - **pc-gpu:** `session_01UFcBRsk9M9EKtxJKdBU2mB`. Queue topped up: RND-24 GPU check → ENV-09 GPU LOD check → M2-RND-05 → ADR 0029 follow-ups (no threaded loads) → slice perf sweep → M1-QA-09 (after CHR-12).
-  - **m2-slice:** `session_01DQ9tdk8Uatb8Jr6raAkXiC` (Auto). Next: FP-17 (the Drownbell with the real Ilun call; CMB-05 is now merged).
-  - **characters:** `session_01JqzzxgJU9Dmu7fRhmCG9aQ` (Auto). On M1-CHR-12 and Rhen. New for it: M1-CHR-13 (vest normal flip), and M1-RND-25 (the grief lip rim is the inner-lip shadow, not the mouth shader).
-  - **Local agents:** none running.
-- **Routing via files:** the human denied one cross-session message, so routing goes into task files (Lead notes) where possible.
+## Current state (2026-10-24, after the RND-05 and fix6 merges)
+- **HEAD:** a58fcbd+ (see `git log -1 origin/claude/undertow-lead-handoff-423ixt`).
+- **Merged since batch 2:**
+  - RND-04 Drownbell VFX, the RND-24 GPU check and the ENV-09 LOD check (both PC docs).
+  - Sweep Q (22 tasks; ADR 0028 accepted, ADR 0029 accepted with an amendment) and SPEC v1.3 (§4.2).
+  - Batch 3: UI-05 Vowbound HUD, ARC-02 weather clock. The full gate was green: 1413 tests, 72 shots. One capture process aborted at exit, intermittently; filed as M1-QA-10.
+  - RND-05 storm events (7 undertow shots approved after viewing).
+  - fix6 (M2-RND-06 test and doc fixes, M1-ARC-16 router visible-window measurement).
+  - Six new lavapipe baselines approved after viewing: the underwater ×3, drownbell_flood and the battle_vowbound ×2.
+- **In flight:**
+  - `lead/rnd27` (`../wt-rnd27`): the PC's ADR 0029 follow-ups (boot warm-up under 1 s, SceneState harvest). Gate running.
+  - `lead/chars` (`../wt-chars`): claude/characters at bcdfe00 (Rhen, Toma, Asha clips, CHR-12, ART-06, CHR-04 start). The gate FAILED one test: Toma's mouth materials aren't on the `character_mouth` family (the RND-24 test). The characters track was asked to port them as Rhen did and push. Then re-run character_shading, the 32 character shots (not yet run) and merge. Blender asha 44, rhen 31 and toma 37 were identical.
+- **The human's top priority:** **M1-CHR-14**, Asha's braid detached from her head, clothing and staff clipping, and detached limbs, with automated guards. It's on the characters track, queued right after the Toma mouth port.
+- **Approved:** the PC may install the official Godot 4.6.3 export templates (checksum-verified, not committed) for the shader baker. The human confirmed.
+- **Environments:** all three were working at the last heartbeat. Wake-ups come from a local background `sleep 2700` heartbeat (the routine fails with ACCESS_DENIED).
 
 ## Exact next step
-1. Test-merge gpu/m2-rnd-04-drownbell-vfx. Add drownbell_flood and the 3 underwater shots to shots.json, capture them on lavapipe, view and approve them, and merge.
-2. Tell m2-slice that CMB-05 is in, for FP-17 (see the CMB-05 handoff combat-13 "What m2-slice needs").
-3. Review sweep Q over the review column: CMB-05, ENV-09, RND-22/23/24, RND-01, RND-02/03/04, UI-04, and the m2-slice tasks.
-4. Launch local agents on open M2 work: M2-UI-05 (Vowbound HUD), M1-ENV-10, and M2-ART-02 prep.
+1. When the rnd27 gate is green, merge it.
+2. When the characters track pushes the Toma mouth port, merge claude/characters into lead/chars and run character_shading plus the 32 character shots. View any drift, then merge.
+3. Merge CHR-14's braid fix as soon as it's pushed (it's the human's priority), and ask the PC for M1-QA-09 on hardware.
+4. When m2-slice pushes its CMB-05 reconciliation, test-merge it with the battle filters, sim --check and its shots.
+5. Review sweep R over the review column, and keep ~3 local agents busy (candidates: M1-QA-10, M2-CMB-06 if m2-slice doesn't take it).
 
 ## Log
+- 2026-10-24: merged rnd-04, sweep Q, SPEC v1.3, batch 3, rnd-05 and fix6. Filed M2-ARC-02, M1-QA-10 and M1-CHR-14 (top priority). Characters and m2-slice re-queued; the PC was approved to install export templates.
 - 2026-10-24: merge batch 2 (3e59f8d). PC queue topped up.
 - 2026-10-24: merged rnd-21, CHR-08, sweep O, qa-08, first-playable, cmb, ui-04, sweep P, rnd-01, m2-slice, rnd-23. Spawned the characters track. Hourly check-in trig_01LJyLo42xCq3WVmAza3BMhe.
 - 2026-10-24: new Lead took over. Toolchain up. PC and m2-slice briefed.
