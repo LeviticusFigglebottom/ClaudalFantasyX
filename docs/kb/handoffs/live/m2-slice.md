@@ -3,6 +3,7 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **Done, in review:** M2-FP-22, the Shell Shrine puzzle (sweep Q). Four basins, a loop to undo first, shortest 6 turns, and a random turner's median 75 (was 3 turns, solved by mashing). Data only, plus tests. Next: M1-ENV-11, then M2-CMB-06 if there's time.
 - **2026-10-24 ~08:30, the Lead's URGENT note (CMB-05 implemented twice) is done:** merged the integration branch at 4314dde and **took the canonical M2-CMB-05 everywhere** (engine, vowbound, boss mechanics, sim, data, docs, tests). This branch's own CMB-05 was dropped: HP-restored gauge, Ilun 60%, rate 220, `requires_field`, `bound_flag`, Floodtide 13.
   - M2-FP-17 was rebased onto it. It keeps only the loadout's `vowbound` and `retire_skills: call_ilun`, the `flood_call` policy (`call_vowbound: field_up`), its [0, 95] band and the tests.
   - Measured at 1000 seeds: role_answer 71.0%, smart 85.3% (p90 60), flood_call 38.8%, `sandbox_reef_vowbound` 38.9%. `sim --check` rc 0.
