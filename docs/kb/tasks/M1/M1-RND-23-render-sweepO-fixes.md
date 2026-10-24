@@ -2,7 +2,7 @@
 id: M1-RND-23
 title: Rendering should-fixes left open on RND-15, RND-16, RND-18 and RND-20 (review-sweep-O)
 role: rendering
-status: review
+status: done
 owner_session: "worktree-agent-a7c54615acb434f4e"
 depends_on: [M1-RND-15, M1-RND-16, M1-RND-18, M1-RND-20]
 milestone: M1
@@ -34,3 +34,4 @@ Review-sweep-O closed RND-15, 16, 18 and 20. This task carries the should-fixes 
 - **Item F verdict: an asset (normals) problem, not rendering.** On lavapipe (the frame matches the GPU crop to 0.15 grey levels), the shape is unchanged with both lights' shadows off, a 4× tighter shadow range, normal bias 1.0, the normal map off, the lacquer coat off, the Low and Medium presets (no SSR or SSIL), and the environment reflection off. No other layer shows through it. The `Costume` mesh's vertex normals have a hard crease along exactly that staircase (`qa08/crop_shoulder_triage.png`). Likely cause: `_outward()`'s per-vertex `sign(N·q)` flip in asha_costume.py, where `N·q` ≈ 0 on top of the shoulder. Filed **M1-CHR-13** (character, request-from rendering). No asset edited.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (lead): **approve.** Every item checks out in the code. `publishes_water_level` is a setter on the publisher group, and the last publisher clears the global (with a test). SceneRouter names neither GlimmerField nor WaterSurface any more. It emits `scene_swapping`, `ShaderGlobals.install` resets `ZONE_GLOBALS`, and the generic `hold_swap`/`swap_holders` uses weakrefs, as SaveSystem does. I sign that off for Systems: it is a clean decoupling, and the header lists the wait and the resets. The RND-16 control row and the water.md crane note are in, `water_look_probe --sss` exists, and the RND-20 cross-role edit is recorded. Item F, triaged to Asha's vertex normals, is properly evidenced (each layer toggled off) and handed over as M1-CHR-13 with no asset edited. `--filter=water_` 26/0 and `scene_router` 10/0. The sweep-N S1/S2 box is checked as 'moved'. It is still unmeasured; it now lives in M1-RND-27. **Nit:** the `.gdignore` is right, but bde9795 (m2-slice) re-committed the fixture's `.import`, so it is now an orphan. That's in M2-RND-06.
