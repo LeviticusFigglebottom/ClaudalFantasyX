@@ -10,7 +10,26 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 5. Gaps the m2-slice playthrough files under role ui. **None filed yet:** m2-slice's playthrough (handoff cinematics-7) filed only M2-FP-20 and M2-FP-21, both its own. Its ui review request (M2-FP-12) is already approved and done.
 6. (Found on claude/characters) **M2-UI-07**, the hero actor hook: **hook done and pushed (08c872c)**. It is **blocked** on M2-CHR-06's scenes reaching the integration branch; after that it needs three `"scene"` lines in battle_sandbox.json and shot re-approval.
 
-## Now
+## Now (Lead queue of 15:13: input parity first, then M2-UI-07, the Reefball HUD and M3 UI)
+- **M2-UI-26, the input parity audit (doing):**
+  - **Shared fixes, ADR 0036:**
+    - A `UiInput` autoload: right click and the mouse's back button mean Cancel everywhere; pad A and B exist in every scene, not only after boot; it tracks the last device.
+    - MenuPage: the wheel works on every list, and a hover counts only when the pointer moved.
+    - The `InputDriver` test helper.
+  - **Done with tests for all three devices:**
+    - title and Settings hub;
+    - Settings pages (the Controls page now stops listening on a right click);
+    - shop and inn (new ‹ ×N › mouse steppers for the count);
+    - save and load (hover, wheel and the dialog-choice hover, in Systems' `game/ui/save/`; **Systems: please accept**; this also fixes M2-ARC-06's hover bug).
+  - **In progress (worktree agents):**
+    - the field menu family: the map, the bestiary, and the Menus track's Items, Equip, Lattice and Status;
+    - battle (commands, targeting, Swell inputs, pause), dialogue, choices, backlog and glyph switching.
+- **M3-UI-02, the Audio settings page (review):** the Audio track's volume rows (`master_volume` etc., on claude/audio) get their own page. The hub shows it only when the rows exist. **After claude/audio merges, re-approve `settings_hub`.**
+- **M3-UI-03, the lore codex:** in progress in a worktree agent.
+- **M3-UI-01, the Reefball HUD:** filed, blocked on M3-RBL-01.
+- **Suggestion for the Lead:** SPEC §6.11's party formation menu is a field-menu party page, so it fits the Menus track (its queue is empty).
+
+### Earlier this session
 - **Lead gate rules from 14:14 apply** (scoped checks per item; one full Godot suite per batch in the background; the Lead runs the full manifest and Blender at merge).
 - **MERGE-READY @ 4d8798c7:**
   - **Items:** M2-UI-16..24 and the battle_pause Controls row.
@@ -55,9 +74,8 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
   - **M3-UI-01 (Reefball HUD):** no Reefball engine on any branch yet.
 
 ## Exact next step
-- **The queue is empty apart from blocked items. Lead: please queue more.**
-- **M2-UI-07:** when claude/characters (M2-CHR-06) reaches the integration branch, add the three `"scene"` lines and re-approve the battle shots.
-- **M3-UI-01, the Reefball HUD:** file and build it once the Reefball engine lands.
+- Merge the three agent branches as they report (field-menu parity, battle/dialogue parity, codex). Run the full Godot suite in the background, then write the MERGE-READY line.
+- M2-UI-07 when claude/characters is on integration (Lead batch big7).
 
 ## Un-pushed state
 - None.
