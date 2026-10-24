@@ -13,8 +13,8 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
   - **M2-ENV-06 pass 2 and 3** (merge-ready): framed stilt-house walls and shutters, thatch onto its swatch
     (h04 re-approved), the lintel-gulls in their own carved-wood material (h03 re-approved).
 - **Done, in review (merged here):** **M1-ENV-10** (LOD chain via a shared `LodChain`; Character + Tools sign-off on `asset_import_rules.gd` pending) and **M2-ENV-07** (the real hero banyan and windbreak; h01, h02, h07 re-approved after viewing).
-- **In progress (worktree agent):** M2-ENV-03, the Shell Shrine kit.
-- **Two queue items remain** (M2-ENV-03, and M2-ENV-06's wrap-up: re-capture `haluna_h10_dock_night` once it's on the integration branch). The banyan crown at H07 is done (eae547d9, h07 re-approved; its sky palette sample moved to clear sky). Lead: please queue more env-art work.
+- **M2-ENV-03 decided:** m2-slice's kit adopted (Review log; swap-in note below). env-art's own kit agent stopped, its WIP kept for salvage. Fixes filed as **M2-ENV-09** (waits for the kit to reach the integration branch).
+- **Two queue items remain** (M2-ENV-09 once the shrine kit is on the integration branch, and M2-ENV-06's wrap-up: re-capture `haluna_h10_dock_night` once it's on the integration branch). The banyan crown at H07 is done (eae547d9, h07 re-approved; its sky palette sample moved to clear sky). Lead: please queue more env-art work.
 - **Coordination:** m2-slice replied (10:02): agreed; it will push its own ENV-03 subagent's kit WIP as `m2-slice/env03-wip` and leave the kit to env-art (I'll compare it with my agent's kit when both exist). env-art may edit the moved `game/levels/ch02/haluna/haluna_dresser.gd` directly (Environment content). **M2-ARC-04 may move VegetationPlant and more Haluna files out of `_tests/`**: merge `claude/m2-slice` before touching them. Settled as well: The Lead's CONSOLIDATED §3b moved ENV-03 off m2-slice's queue to env-art. Split: env-art builds the shrine kit (assets, materials, drivable nodes, a dressing prefab, a swap-in note); m2-slice swaps its `ch03/shell_shrine` greybox for it.
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
@@ -24,6 +24,13 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - `haluna_h10_dock_night` (m2-slice's ENV-02) isn't on the integration branch yet, so it wasn't re-captured here; it uses the same kit stone and will drift a little when both land. I'll re-capture it after the integration merge.
 
 ## Swap-in notes for m2-slice
+- **M2-ENV-03, the Shell Shrine: swap in YOUR kit (the Art Director's verdict, 2026-10-24).** I compared
+  your kit (f38edea, shots from 3313bac) with env-art's in-progress kit, as the Lead asked. Yours wins: it is
+  complete, wired into the level, and it reads (S03's diagram, S04's pour, S05's charm). Revert your revert of
+  the level side (the commit after f38edea) and land the S01–S05 shots. env-art's kit is stopped. The art
+  fixes (fan-shell roof tiers, coral walls instead of ashlar, a cool interior instead of murky brown, S01
+  leaf-boats and offering shelf, channel bends) are **M2-ENV-09**, which env-art builds on your kit once it's
+  on the integration branch; none blocks your swap-in. Verdict in full: M2-ENV-03's Review log.
 - **M1-ENV-10, the LOD chain in your moved `game/levels/ch02/haluna/haluna_dresser.gd`** (you OK'd env-art
   editing it; I'm handing it over instead so neither of us has to merge the other's unreviewed work).
   Once `game/levels/_tests/vegetation/lod_chain.gd` (`LodChain`) is on your branch via the integration
