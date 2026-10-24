@@ -1,5 +1,5 @@
 ---
-id: M3-NAR-01
+id: M3-NAR-1000
 title: "Check Pell's arc for a story-level echo; answer the Kerrid and Pell sheet questions"
 role: narrative
 status: todo
@@ -44,5 +44,7 @@ That is close to a well-known beast-folk guardian in the inspiring series. The a
 - [ ] Stale ADR and glossary text is corrected or superseded, append-only per CLAUDE.md §5.
 
 ## Notes
+
+- **Renumbered (Lead merge, big9, 2026-10-24):** filed as M3-NAR-01. M3-NAR-01 is the codex entries request (claude/ui, named in M3-UI-03 and test_codex); the characters track filed this one under the same id. Now M3-NAR-1000, from the Lead's id block (CONSOLIDATED §4).
 
 ## Review log

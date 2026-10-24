@@ -1,5 +1,5 @@
 ---
-id: M2-UI-28
+id: M2-UI-1000
 title: "Bestiary page and Read panel: show the creature's live portrait (CreaturePortrait)"
 role: ui
 status: review
@@ -55,5 +55,7 @@ page (`game/ui/bestiary/`) and, if it fits, the Read panel (`game/ui/battle/read
   shows nothing, close clears and stops the viewport, empty book, square corner fit between min_px and max_px).
   `test_pseudo_loc_screens` (M2-UI-28) and `test_aspect_layouts` (M2-UI-29) stay green.
 - Docs: `docs/kb/tech/ui.md` (module table and the Bestiary menu bullets).
+
+- **Renumbered (Lead merge, big9, 2026-10-24):** filed as M2-UI-28. M2-UI-28 is claude/ui's pseudo-localisation (named in code); claude/ui still files this one as M2-UI-26, which is its input parity audit. Now M2-UI-1000, from the Lead's id block (CONSOLIDATED §4).
 
 ## Review log

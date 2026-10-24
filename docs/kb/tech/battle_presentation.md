@@ -449,7 +449,7 @@ when `BattleVowboundChoreo.enter_spec` asks:
   (`summon_cinematic`, the UI track's row, M2-UI-23) on Short, the default. Full plays it on every call; Off skips
   the rise (`off_entry`: the Vowbound is simply there). A capture fixture, instant pacing and "skip animations" play
   the short entry (`vowbound.entry`). The decision reads
-  `UiSettings.summon_cinematic_cut` (accessibility.json `summon_cinematics`, M2-BPR-11).
+  `UiSettings.summon_cinematic_cut` (accessibility.json `summon_cinematics`, M2-BPR-1000).
 - **What:** the water stills (`entry.delay_sec` 1.4 s after the party steps off), Ilun rises slowly (2.6 s), and a
   steady bound light (`glimmer_bound`, color script C10: no flicker, no drift, no trails) fades in at his slot and
   stays while he is out. The camera eases to the low `summon` frame (camera.shots), holds, and is back on the

@@ -59,7 +59,7 @@ Each entry gives the result at 100% and 130%, then what was done about it. Warni
 - **Save and load** (Systems) fit. They do not follow the text size; M2-ARC-06 already asks for that.
 - **Dialogue box** fits all 600+ compiled lines with their speakers. It does not follow the text size; M2-ARC-07 already asks for that.
   - **Backlog** fits.
-  - **Cutscene choices** fit every compiled choice set. They do not follow the text size. Request **M2-FP-29**.
+  - **Cutscene choices** fit every compiled choice set. They do not follow the text size. Request **M2-FP-1001** (filed as M2-FP-29).
 - **Field HUD:** the objective line (every objective), tip card (every tip), interaction prompt (every verb) and area title (every location) fit.
 - **Battle:** every capture state (command menu and pages, target, Read panel, result panel, Swell panels, Vowbound) and the pause.
   - **Failed:** the Swell input panels' hint ran past the 480 px panel even at 100%. The English "Confirm: strike as the ring meets the lamp · Cancel: back" did too, before the first beat. **Fixed:** the hint wraps upward.
@@ -68,7 +68,7 @@ Each entry gives the result at 100% and 130%, then what was done about it. Warni
 
 ## Requests filed
 - **M2-MNU-11** (Menus track): the Status ability line and the Customize change list at 130%, plus the ellipsis list for review.
-- **M2-FP-29** (m2-slice, cinematics): CutsceneChoices should follow `UiSettings` text size.
+- **M2-FP-1001** (m2-slice, cinematics; filed as M2-FP-29): CutsceneChoices should follow `UiSettings` text size.
 - Already open, unchanged: **M2-ARC-06** (save menu) and **M2-ARC-07** (dialogue box) follow the text size.
 
 ## Files outside UI ownership

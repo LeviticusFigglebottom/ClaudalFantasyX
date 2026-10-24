@@ -1,5 +1,5 @@
 ---
-id: M2-FP-29
+id: M2-FP-1000
 title: Keep the slice's objective lines and map points current as beats change
 role: cinematics
 status: todo
@@ -21,5 +21,7 @@ The UI track built the objective system (M2-UI-16) and the zone map (M2-UI-18) w
 - Validation runs in `tools/validate_data.py`: flags declared, loc keys present, targets resolving to POIs.
 
 - **Renumbered again (Lead merge, big8, 2026-10-24):** big7's M2-FP-28 collided with claude/ui's M2-FP-28 (Ch1 tutorial lines name bindings by action). Now M2-FP-29, the next id free across all branches.
+
+- **Renumbered (Lead merge, big9, 2026-10-24):** filed as M2-FP-29. M2-FP-29 is m2-slice's cutscene motion eases (CutsceneMotion, 716c2db4, named in code and in hero-integration's docs), and claude/ui filed a second M2-FP-29 (cutscene choices follow the text size). Now M2-FP-1000, from the Lead's id block (CONSOLIDATED §4).
 
 ## Review log

@@ -21,7 +21,7 @@ import hero_clips  # noqa: E402
 REQUESTED = {"idle", "walk", "run", "talk", "kneel_over_rhen", "laugh", "rise_to_stand", "offer_hand",
              "walk_to_chamber", "emerge_doorway", "face_west"}  # docs/kb/tasks/M2/M2-FP-07-asha-clips-request.md
 MAX_BYTES = 2 * 1024 * 1024
-# Act I clips requested but not built yet (M3-CHR-01): the dialogue may call them, nothing else.
+# Act I clips requested but not built yet (M3-CHR-1000): the dialogue may call them, nothing else.
 PENDING = {
     hero: set(clips)
     for hero, clips in json.loads(
@@ -64,7 +64,7 @@ class TestHeroClips(unittest.TestCase):
         """Every `@anim asha <clip>` in the dialogue has a clip (look_at is the sequencer's own turn).
 
         The slice's dialogue (the prologue and Ch1-Ch3) must be fully built; past the slice a clip may still be on
-        the requested list (PENDING, M3-CHR-01)."""
+        the requested list (PENDING, M3-CHR-1000)."""
         called = slice_calls("asha")
         self.assertEqual(called - set(hero_clips.CLIPS["asha"]) - {"look_at"}, set())
         called = set()
@@ -123,7 +123,7 @@ def _fk(sk, pose: dict, persona: dict):
 
 
 class TestRequestedClips(unittest.TestCase):
-    """M3-CHR-01: the requested-clip list names only clips the dialogue calls and nobody built yet."""
+    """M3-CHR-1000: the requested-clip list names only clips the dialogue calls and nobody built yet."""
 
     def test_every_pending_clip_is_called_and_not_built(self):
         for hero, clips in PENDING.items():

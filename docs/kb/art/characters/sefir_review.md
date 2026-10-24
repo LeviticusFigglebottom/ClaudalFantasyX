@@ -158,7 +158,7 @@ What still looks wrong:
 - Hair: scalp break-up (more clumps, a soft-root hairline row as Asha's), fuller front locks.
 - The spring simulation for the robe panels and the hair chains (the parameters are in the params, unused).
 - Cinematics M3-CIN-01 (his slow blink, face poses, blend); Rendering M3-RND-03 (the still reflection and the too-sharp
-  shadow); Environment M3-ENV-01 (the barge without a wake).
+  shadow); Environment M3-ENV-1000 (the barge without a wake).
 - Add Ysolde to `sefir_lineup.tscn` once M3-CHR-01 merges (the white figure and the black one), and re-approve the
   `sefir_silhouette_lineup` baseline.
 - The battle actor (Act III final boss) on `sefir_lod1.glb`.

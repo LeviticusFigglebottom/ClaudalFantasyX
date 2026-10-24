@@ -1,5 +1,5 @@
 ---
-id: M3-CHR-01
+id: M3-CHR-1000
 title: Act I body clips the chapter dialogue stages (Rhen, Asha, Toma, Ysolde, Kerrid, Liss)
 role: character
 status: todo
@@ -29,5 +29,7 @@ Until a clip exists, its call is skipped at runtime (`CutsceneSequencer` checks 
 
 ## Notes
 - Filed by m2-slice on 2026-10-24, when merging big7 brought in the clip-call tests.
+
+- **Renumbered (Lead merge, big9, 2026-10-24):** filed as M3-CHR-01. M3-CHR-01 is the characters track's Ysolde build (named in code and docs); m2-slice filed this request under the same id. Now M3-CHR-1000, from the Lead's id block (CONSOLIDATED §4).
 
 ## Review log

@@ -1,5 +1,5 @@
 ---
-id: M2-BPR-11
+id: M2-BPR-1000
 title: The Vowbound call cinematic reads the summon cinematic setting
 role: combat
 status: review
@@ -35,5 +35,7 @@ SPEC §6.3: each Vowbound's call cinematic plays in full on first use, then shor
   is the existing short entry. Reviewer: ui.
 
 - **Renumbered again (Lead merge, big8, 2026-10-24):** big7's M2-BPR-09 collided with claude/battle-presentation's M2-BPR-09 (battle mouse targeting). Now M2-BPR-11, the next id free across all branches.
+
+- **Renumbered (Lead merge, big9, 2026-10-24):** filed as M2-BPR-11. M2-BPR-11 is also the KO-plays-once fix the integration branch fast-tracked under that id (the human's playtest bug), which the Lead and the code name. Now M2-BPR-1000, from the Lead's id block (CONSOLIDATED §4).
 
 ## Review log

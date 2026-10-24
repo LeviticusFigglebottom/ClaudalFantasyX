@@ -1,5 +1,5 @@
 ---
-id: M3-CHR-01
+id: M3-CHR-1001
 title: "Hero clips the Act I dialogue calls (Ch4–Ch9 `@anim asha|toma`) that hero_clips.py lacks"
 role: character
 status: todo
@@ -32,5 +32,7 @@ The Ch9 ones overlap M3-C09-08 (that task's art pass may replace them).
   `kneel_palms_flat` (ch06_barge), `laugh` (ch05_kahre), `shield_up` (ch06_barge, ch06_raid), `sit` (ch06_midday),
   `sit_post` (ch04_dock_in_the_dark), `stack_bowls` (ch04_bark_galley_bowls), `stop` (ch06_smoke),
   `unroll_ink_kit` (ch04_under_way).
+
+- **Renumbered (Lead merge, big9, 2026-10-24):** filed as M3-CHR-01. M3-CHR-01 is the characters track's Ysolde build; battle-presentation filed this request under the same id. Now M3-CHR-1001, from the Lead's id block (CONSOLIDATED §4).
 
 ## Review log

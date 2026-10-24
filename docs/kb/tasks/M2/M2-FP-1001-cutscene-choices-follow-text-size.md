@@ -1,5 +1,5 @@
 ---
-id: M2-FP-29
+id: M2-FP-1001
 title: Cutscene choices follow the player's text size (from M2-UI-28)
 role: cinematics
 status: todo
@@ -18,5 +18,7 @@ The pseudo-locale screen walk (M2-UI-28) found that `CutsceneChoices` (`game/cut
 
 ## Notes
 - The dialogue box (M2-ARC-07) and the save menu (M2-ARC-06) have the same gap. Those requests are already open for their owners.
+
+- **Renumbered (Lead merge, big9, 2026-10-24):** filed as M2-FP-29. M2-FP-29 is m2-slice's cutscene motion eases (CutsceneMotion, 716c2db4), and the big8 renumber of keep-objectives-current took it too. Now M2-FP-1001, from the Lead's id block (CONSOLIDATED §4).
 
 ## Review log

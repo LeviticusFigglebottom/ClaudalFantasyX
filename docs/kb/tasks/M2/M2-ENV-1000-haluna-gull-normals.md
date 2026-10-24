@@ -1,5 +1,5 @@
 ---
-id: M2-ENV-12
+id: M2-ENV-1000
 title: "Haluna lintel-gulls render dark: village.lintel_gull builds its body inside-out"
 role: environment
 status: review
@@ -43,5 +43,7 @@ generator.
   `field_tip_card` (0.068) and `dialogue_continue` (0.057) (the Haluna tidewalls render wetter and darker). A
   control capture with the old gull glbs drifts the same (raft 0.05177, area_title 0.06861), so these baselines
   were already stale on main. Their owners need to re-approve them. The gull change in them is a few pixels.
+
+- **Renumbered (Lead merge, big9, 2026-10-24):** filed as M2-ENV-12. M2-ENV-12 was already the shell shrine's off-tree prebuild on big9 (code and tests name it). The comments in assets_src/environments/kits/haluna/village.py and oruvel/ov_cabins.py still say M2-ENV-12; they are left alone so the haluna and oruvel Blender jobs need no rebuild, and env-art updates them when it next touches those files. Now M2-ENV-1000, from the Lead's id block (CONSOLIDATED §4).
 
 ## Review log

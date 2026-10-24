@@ -63,7 +63,7 @@ final boss fight. Build him on the pipeline.md §12 hero layout from
     or the Art Director rules on the crown.
   - Clips: a `sefir` persona and clip list in hero_clips.py (breath 0, hands_joined); the other heroes' libraries are
     byte-identical. `walk_glide` is built as well as specified.
-  - Requests filed: M3-CIN-01 (slow blink, face poses, blend), M3-RND-03 (still reflection, sharp shadow), M3-ENV-01
+  - Requests filed: M3-CIN-01 (slow blink, face poses, blend), M3-RND-03 (still reflection, sharp shadow), M3-ENV-1000
     (no wake). `sefir_silhouette_lineup` is with Toma, Asha and Rhen: Ysolde is not on this branch yet.
 - Echo watch (act1_npcs.md §1.2): plain loose hair, a clean face, and no markings. Keep it that way in every revision.
 - The barge belongs to Environment. The final boss's battle actor is Act III work; it will use the LOD1 built here.
