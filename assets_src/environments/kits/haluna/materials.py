@@ -169,6 +169,26 @@ STANDARD: dict[str, dict] = {
                        "metallic_specular": 0.7},
 }
 
+# Route and village props (M2-ENV-08).
+MATERIALS["kit_earthenware"] = stone("coral_concrete_albedo.png", "coral_concrete_normal.png", (0.6, 0.6),
+                                     base_triplanar=True, col_paint=hexc("#A8573A"), paint_cover=0.86,  # laterite
+                                     normal_strength=0.6, roughness_base=0.82, cavity_darken=0.3, variation_value=0.14,
+                                     use_algae=False, use_barnacles=False, use_moss=False)
+# Ancient causeway stone (haluna.md §2.2): the village coral greyed and darkened by a thousand tides,
+# heavy algae and barnacle bands, little salt crust (it is awash at every high water).
+MATERIALS["kit_causeway_stone"] = stone("coral_stone_albedo.png", "coral_stone_normal.png", (1.2, 1.2),
+                                        base_triplanar=True, col_tint=hexc("#C4C1B8"), normal_strength=1.8,
+                                        roughness_base=0.88, cavity_darken=0.45, ao_strength=0.8, variation_value=0.18,
+                                        salt_coverage="Vector2(0.1, 0.3)", algae_coverage="Vector2(0.55, 0.9)",
+                                        barnacle_coverage=0.7)
+STANDARD["kit_brass"] = {"albedo_color": hexc("#B08D57"), "metallic": 0.9, "roughness": 0.45}
+STANDARD["kit_dried_fish"] = {"albedo_color": hexc("#7A6550"), "roughness": 0.55, "metallic_specular": 0.6}  # sun-dried, tannin-dark
+STANDARD["kit_lamp_flame"] = {"albedo_color": hexc("#FFB16E"), "emission_enabled": "true",  # oil_lamp
+                              "emission": hexc("#FFB16E"), "emission_energy_multiplier": 0.6, "roughness": 1.0}
+# haluna.md §2.2: the Lit Age ring's crack glints glimmer_bound at emission 0.6, steady (bound light).
+STANDARD["kit_glimmer_glint"] = {"albedo_color": hexc("#4FB3B0"), "emission_enabled": "true",
+                                 "emission": hexc("#4FB3B0"), "emission_energy_multiplier": 0.6, "roughness": 0.3}
+
 
 def _value(v) -> str:
     if isinstance(v, bool):

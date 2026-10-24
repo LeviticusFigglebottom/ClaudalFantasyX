@@ -28,6 +28,83 @@
         "PLACEHOLDER"
       ]
     },
+    "basket_set": {
+      "budget": [
+        3600,
+        300
+      ],
+      "bytes": 35184,
+      "lods": {
+        "basket_set": 564,
+        "basket_set-lod1": 153
+      }
+    },
+    "causeway_slab_broken": {
+      "budget": [
+        3000,
+        300
+      ],
+      "bytes": 83052,
+      "lods": {
+        "causeway_slab_broken": 2088,
+        "causeway_slab_broken-lod1": 24
+      }
+    },
+    "causeway_slab_flat": {
+      "budget": [
+        1800,
+        200
+      ],
+      "bytes": 38536,
+      "lods": {
+        "causeway_slab_flat": 972,
+        "causeway_slab_flat-lod1": 12
+      }
+    },
+    "causeway_slab_steps": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 110272,
+      "lods": {
+        "causeway_slab_steps": 2916,
+        "causeway_slab_steps-lod1": 36
+      }
+    },
+    "coral_boulder_a": {
+      "budget": [
+        3600,
+        450
+      ],
+      "bytes": 136484,
+      "lods": {
+        "coral_boulder_a": 3264,
+        "coral_boulder_a-lod1": 408
+      }
+    },
+    "coral_boulder_b": {
+      "budget": [
+        3600,
+        450
+      ],
+      "bytes": 103276,
+      "lods": {
+        "coral_boulder_b": 2496,
+        "coral_boulder_b-lod1": 300
+      }
+    },
+    "coral_boulder_c": {
+      "budget": [
+        3600,
+        450
+      ],
+      "bytes": 136480,
+      "lods": {
+        "coral_boulder_c": 3264,
+        "coral_boulder_c-lod1": 408
+      }
+    },
     "dock_haluna": {
       "budget": [
         26000,
@@ -37,6 +114,17 @@
       "lods": {
         "dock_haluna": 12630,
         "dock_haluna-lod1": 152
+      }
+    },
+    "fish_drying_rack": {
+      "budget": [
+        5000,
+        400
+      ],
+      "bytes": 65852,
+      "lods": {
+        "fish_drying_rack": 1122,
+        "fish_drying_rack-lod1": 76
       }
     },
     "garland_string": {
@@ -116,6 +204,39 @@
         "lintel_gull_c-lod1": 290
       }
     },
+    "lit_age_ring": {
+      "budget": [
+        5000,
+        500
+      ],
+      "bytes": 58140,
+      "lods": {
+        "lit_age_ring": 1348,
+        "lit_age_ring-lod1": 144
+      }
+    },
+    "market_stall": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 101340,
+      "lods": {
+        "market_stall": 1884,
+        "market_stall-lod1": 192
+      }
+    },
+    "net_float_cluster": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 99012,
+      "lods": {
+        "net_float_cluster": 2166,
+        "net_float_cluster-lod1": 114
+      }
+    },
     "net_rack": {
       "budget": [
         5000,
@@ -125,6 +246,17 @@
       "lods": {
         "net_rack": 1673,
         "net_rack-lod1": 112
+      }
+    },
+    "oil_lamp_post": {
+      "budget": [
+        2600,
+        300
+      ],
+      "bytes": 27824,
+      "lods": {
+        "oil_lamp_post": 353,
+        "oil_lamp_post-lod1": 27
       }
     },
     "order_chapel": {
@@ -147,6 +279,39 @@
       "lods": {
         "outrigger_7m": 1940,
         "outrigger_7m-lod1": 300
+      }
+    },
+    "pilgrim_marker_post": {
+      "budget": [
+        2600,
+        300
+      ],
+      "bytes": 43684,
+      "lods": {
+        "pilgrim_marker_post": 685,
+        "pilgrim_marker_post-lod1": 15
+      }
+    },
+    "pilgrim_marker_post_broken": {
+      "budget": [
+        2600,
+        300
+      ],
+      "bytes": 21224,
+      "lods": {
+        "pilgrim_marker_post_broken": 314,
+        "pilgrim_marker_post_broken-lod1": 15
+      }
+    },
+    "pilgrim_marker_post_leaning": {
+      "budget": [
+        2600,
+        300
+      ],
+      "bytes": 43708,
+      "lods": {
+        "pilgrim_marker_post_leaning": 685,
+        "pilgrim_marker_post_leaning-lod1": 15
       }
     },
     "roof_fan_shell": {
@@ -213,6 +378,17 @@
       "lods": {
         "ruin_wall_sunk": 2235,
         "ruin_wall_sunk-lod1": 12
+      }
+    },
+    "sandals": {
+      "budget": [
+        400,
+        60
+      ],
+      "bytes": 12732,
+      "lods": {
+        "sandals": 108,
+        "sandals-lod1": 20
       }
     },
     "shell_shrine_massing": {
@@ -329,6 +505,17 @@
         "wakeshell_wall-lod1": 96
       }
     },
+    "water_jar": {
+      "budget": [
+        2400,
+        300
+      ],
+      "bytes": 28632,
+      "lods": {
+        "water_jar": 524,
+        "water_jar-lod1": 72
+      }
+    },
     "windbreak_placeholder": {
       "budget": [
         2600,
@@ -343,6 +530,17 @@
       "tags": [
         "PLACEHOLDER"
       ]
+    },
+    "wreck_rib": {
+      "budget": [
+        4000,
+        400
+      ],
+      "bytes": 45336,
+      "lods": {
+        "wreck_rib": 754,
+        "wreck_rib-lod1": 168
+      }
     }
   },
   "schema": "hymn-kit/1"

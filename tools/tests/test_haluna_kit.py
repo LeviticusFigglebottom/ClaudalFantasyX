@@ -169,3 +169,52 @@ class KitCommittedAssetTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RouteKitTests(unittest.TestCase):
+    """M2-ENV-08: the causeway-head pieces and village props keep the brief's dimensions and slots."""
+
+    def _builders(self, target: str) -> list:
+        return BUILD.targets()[target][2]()
+
+    def test_marker_posts_stand_2_4_m_and_the_broken_one_is_short(self) -> None:
+        tall = self._builders("pilgrim_marker_post")[0]
+        broken = self._builders("pilgrim_marker_post_broken")[0]
+        self.assertAlmostEqual(float(tall.bounds()[1][1]), 2.4, delta=0.12)
+        self.assertLess(float(broken.bounds()[1][1]), 1.4)
+
+    def test_lit_age_ring_carries_a_bound_light_glint(self) -> None:
+        ring, lod = self._builders("lit_age_ring")
+        self.assertIn("kit_glimmer_glint", ring.materials)
+        self.assertNotIn("kit_glimmer_glint", lod.materials)  # no emissive sliver at range
+        span = ring.bounds()[1] - ring.bounds()[0]
+        self.assertAlmostEqual(float(max(span[0], span[2])), 3.0 + 0.64, delta=0.4)  # 3 m across, plus the wall
+
+    def test_causeway_pieces_use_the_ancient_stone(self) -> None:
+        for target in ("causeway_slab_flat", "causeway_slab_broken", "causeway_slab_steps", "coral_boulder_b"):
+            for mb in self._builders(target):
+                self.assertEqual(mb.materials, ["kit_causeway_stone"], target)
+
+    def test_slab_is_1_2_by_2_4_m(self) -> None:
+        lo, hi = self._builders("causeway_slab_flat")[0].bounds()
+        self.assertAlmostEqual(float(hi[0] - lo[0]), 1.2, delta=0.15)
+        self.assertAlmostEqual(float(hi[2] - lo[2]), 2.4, delta=0.15)
+
+    def test_lamp_post_is_2_2_m_with_brass_and_glass(self) -> None:
+        mb = self._builders("oil_lamp_post")[0]
+        self.assertAlmostEqual(float(mb.bounds()[1][1]), 2.2, delta=0.12)
+        for slot in ("kit_brass", "kit_salt_glass", "kit_lamp_flame"):
+            self.assertIn(slot, mb.materials)
+
+    def test_every_new_material_slot_has_a_material(self) -> None:
+        for target in ("water_jar", "basket_set", "oil_lamp_post", "fish_drying_rack", "net_float_cluster",
+                       "market_stall", "sandals", "lit_age_ring", "wreck_rib", "pilgrim_marker_post"):
+            for mb in self._builders(target):
+                for slot in mb.materials:
+                    self.assertTrue((ASSETS / "materials" / f"{slot}.tres").is_file(), f"{target}: {slot}")
+
+    def test_route_layout_names_only_kit_pieces(self) -> None:
+        layout = json.loads((ROOT / "game/levels/_tests/haluna_mood/route_layout.json").read_text())
+        manifest = json.loads((ASSETS / "kit_manifest.json").read_text())
+        for spec in layout["pieces"]:
+            self.assertIn(spec["piece"], manifest["pieces"], spec)

@@ -1,0 +1,62 @@
+{
+ "doc": "M2-ENV-08 route preview views (not registered in tests/screenshots/shots.json; capture with --manifest).",
+ "shots": [
+  {
+   "id": "route_wide",
+   "scene": "res://game/levels/_tests/haluna_mood/route_preview.tscn",
+   "camera": "Cameras/RouteWide",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "route_causeway",
+   "scene": "res://game/levels/_tests/haluna_mood/route_preview.tscn",
+   "camera": "Cameras/RouteCauseway",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "route_props",
+   "scene": "res://game/levels/_tests/haluna_mood/route_preview.tscn",
+   "camera": "Cameras/RouteProps",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  }
+ ]
+}

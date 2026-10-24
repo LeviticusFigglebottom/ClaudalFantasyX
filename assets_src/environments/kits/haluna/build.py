@@ -22,9 +22,11 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+import causeway  # noqa: E402
 import festival  # noqa: E402
 import kit_common as kc  # noqa: E402
 import placeholders  # noqa: E402
+import props  # noqa: E402
 import ruins  # noqa: E402
 import shrine  # noqa: E402
 import village  # noqa: E402
@@ -62,6 +64,10 @@ def targets() -> dict:
         out[name] = (name, shrine, fn)
     for name, fn in sorted(placeholders.TARGETS.items()):
         out[name] = (name, placeholders, fn)
+    for name, fn in sorted(props.TARGETS.items()):
+        out[name] = (name, props, fn)
+    for name, fn in sorted(causeway.TARGETS.items()):
+        out[name] = (causeway.BUDGET_KEY.get(name, name), causeway, fn)
     return out
 
 

@@ -1,0 +1,327 @@
+{
+ "schema": "hymn-zone-layout/1",
+ "zone": "haluna route: north lane to the causeway head (M2-ENV-08 preview and swap-in)",
+ "_about": "The pieces m2-slice copies into game/levels/ch02/haluna/haluna_layout.json `pieces` to dress the route from the north lane end to the causeway head (trigger at 7, -125) and the first 40 m of the causeway out over the flats towards the shrine islet (250, -270). Coordinates are the Haluna zone's (x east, z south). Previewed by route_preview.tscn, which places them on the real terrain.",
+ "seed": 11,
+ "kit_dir": "res://assets/environments/kits/haluna/",
+ "materials_dir": "res://assets/environments/kits/haluna/materials/",
+ "lod1_from_m": 70.0,
+ "lod_end_m": 2000.0,
+ "lod_margin_m": 2.0,
+ "pieces": [
+  {
+   "piece": "causeway_slab_steps",
+   "at": [
+    7.0,
+    -126.0
+   ],
+   "yaw_deg": -59.3,
+   "dy": -0.05
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    10.42,
+    -128.47
+   ],
+   "yaw_deg": -63.9,
+   "dy": 0.23
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    12.55,
+    -129.98
+   ],
+   "yaw_deg": -59.2,
+   "dy": 0.28
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    14.82,
+    -131.24
+   ],
+   "yaw_deg": -64.1,
+   "dy": 0.18
+  },
+  {
+   "piece": "causeway_slab_broken",
+   "at": [
+    17.22,
+    -132.29
+   ],
+   "yaw_deg": -58.1,
+   "dy": 0.23
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    19.67,
+    -133.26
+   ],
+   "yaw_deg": -55.9,
+   "dy": 0.23
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    22.06,
+    -134.32
+   ],
+   "yaw_deg": -56.6,
+   "dy": 0.27
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    24.33,
+    -135.59
+   ],
+   "yaw_deg": -56.3,
+   "dy": 0.24
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    26.46,
+    -137.09
+   ],
+   "yaw_deg": -62.5,
+   "dy": 0.24
+  },
+  {
+   "piece": "causeway_slab_broken",
+   "at": [
+    28.5,
+    -138.75
+   ],
+   "yaw_deg": -64.0,
+   "dy": 0.27
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    30.54,
+    -140.41
+   ],
+   "yaw_deg": -60.0,
+   "dy": 0.27
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    32.68,
+    -141.91
+   ],
+   "yaw_deg": -57.1,
+   "dy": 0.25
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    34.96,
+    -143.16
+   ],
+   "yaw_deg": -62.8,
+   "dy": 0.19
+  },
+  {
+   "piece": "causeway_slab_broken",
+   "at": [
+    37.36,
+    -144.21
+   ],
+   "yaw_deg": -53.6,
+   "dy": 0.29
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    39.8,
+    -145.18
+   ],
+   "yaw_deg": -55.7,
+   "dy": 0.3
+  },
+  {
+   "piece": "coral_boulder_b",
+   "at": [
+    10.34,
+    -132.14
+   ],
+   "yaw_deg": 27.5,
+   "dy": -0.1
+  },
+  {
+   "piece": "coral_boulder_a",
+   "at": [
+    16.4,
+    -127.8
+   ],
+   "yaw_deg": 200.7,
+   "dy": -0.1
+  },
+  {
+   "piece": "coral_boulder_c",
+   "at": [
+    20.02,
+    -137.38
+   ],
+   "yaw_deg": 164.7,
+   "dy": -0.1
+  },
+  {
+   "piece": "coral_boulder_a",
+   "at": [
+    22.89,
+    -140.38
+   ],
+   "yaw_deg": 253.4,
+   "dy": -0.1
+  },
+  {
+   "piece": "coral_boulder_b",
+   "at": [
+    32.11,
+    -136.58
+   ],
+   "yaw_deg": 8.9,
+   "dy": -0.1
+  },
+  {
+   "piece": "coral_boulder_a",
+   "at": [
+    35.68,
+    -138.41
+   ],
+   "yaw_deg": 130.9,
+   "dy": -0.1
+  },
+  {
+   "piece": "coral_boulder_c",
+   "at": [
+    41.43,
+    -142.45
+   ],
+   "yaw_deg": 143.6,
+   "dy": -0.1
+  },
+  {
+   "piece": "coral_boulder_b",
+   "at": [
+    34.36,
+    -146.53
+   ],
+   "yaw_deg": 179.4,
+   "dy": -0.1
+  },
+  {
+   "piece": "pilgrim_marker_post_broken",
+   "at": [
+    10.29,
+    -126.32
+   ],
+   "yaw_deg": 24.5
+  },
+  {
+   "piece": "pilgrim_marker_post",
+   "at": [
+    27.5,
+    -136.52
+   ],
+   "yaw_deg": 30.8
+  },
+  {
+   "piece": "pilgrim_marker_post_leaning",
+   "at": [
+    44.71,
+    -146.72
+   ],
+   "yaw_deg": 34.7
+  },
+  {
+   "piece": "lit_age_ring",
+   "at": [
+    28.99,
+    -147.75
+   ],
+   "yaw_deg": 10.7,
+   "dy": -0.15
+  },
+  {
+   "piece": "wreck_rib",
+   "at": [
+    15.0,
+    -108.0
+   ],
+   "yaw_deg": 160.0,
+   "dy": -0.05
+  },
+  {
+   "piece": "oil_lamp_post",
+   "at": [
+    -5.5,
+    -95.5
+   ],
+   "yaw_deg": 120.0
+  },
+  {
+   "piece": "oil_lamp_post",
+   "at": [
+    3.5,
+    -121.0
+   ],
+   "yaw_deg": 200.0
+  },
+  {
+   "piece": "net_float_cluster",
+   "at": [
+    3.9,
+    -121.0
+   ],
+   "yaw_deg": 200.0,
+   "dy": 0.9
+  },
+  {
+   "piece": "water_jar",
+   "at": [
+    -11.8,
+    -118.6
+   ],
+   "yaw_deg": 15.0
+  },
+  {
+   "piece": "basket_set",
+   "at": [
+    -10.6,
+    -117.4
+   ],
+   "yaw_deg": -40.0
+  },
+  {
+   "piece": "market_stall",
+   "at": [
+    -13.0,
+    -98.0
+   ],
+   "yaw_deg": 75.0
+  },
+  {
+   "piece": "fish_drying_rack",
+   "at": [
+    -2.0,
+    -104.0
+   ],
+   "yaw_deg": 30.0
+  },
+  {
+   "piece": "sandals",
+   "at": [
+    -12.2,
+    -119.6
+   ],
+   "yaw_deg": 10.0
+  }
+ ]
+}
