@@ -3,6 +3,7 @@ lists) and the greybox zone layouts they play in (docs/kb/tech/chapter_flow.md).
 tools/validate_data.py; `chapter_errors` and `layout_errors` are pure, so tests feed them fixtures."""
 from __future__ import annotations
 
+import functools
 import json
 import re
 from pathlib import Path
@@ -72,6 +73,8 @@ def _step_errors(step: object, w: str, loc: str, zone: dict, ctx: Context) -> li
     if not isinstance(step, dict):
         return [f"{w}: a step must be an object"]
     kinds = [k for k in step if k in STEP_KEYS]
+    if "battle" in kinds and "party" in kinds:
+        kinds.remove("party")  # a battle step's own party (STEP_EXTRA), not a party step
     if len(kinds) != 1:
         return [f"{w}: a step needs exactly one of {sorted(STEP_KEYS)}"]
     kind = kinds[0]
@@ -203,12 +206,63 @@ def layout_errors(layout: object, where: str, ctx: Context) -> list[str]:
     return errs
 
 
-def greybox_layout_path(scene_text: str) -> str | None:
-    """The layout_path of a greybox zone scene (its root uses greybox_zone.gd), else None."""
-    if GREYBOX_SCRIPT not in scene_text:
-        return None
+def greybox_layout_path(scene_text: str, root: Path | None = None) -> str | None:
+    """The layout_path of a greybox zone scene (its root uses greybox_zone.gd, or a script that extends
+    it: a chapter's zone root such as Ch01Zone, M3-C01-02), else None. `root` is the repo root the
+    scene's scripts are read from (default: this checkout)."""
     m = LAYOUT_PATH_RE.search(scene_text)
-    return m.group(1) if m else None
+    if m is None:
+        return None
+    if GREYBOX_SCRIPT in scene_text:
+        return m.group(1)
+    base = root or Path(__file__).resolve().parents[1]
+    for script in SCRIPT_EXT_RE.findall(scene_text):
+        if _extends_greybox(base, script):
+            return m.group(1)
+    return None
+
+
+SCRIPT_EXT_RE = re.compile(r'^\[ext_resource type="Script" path="(res://[^"]+\.gd)"', re.M)
+EXTENDS_RE = re.compile(r'^extends\s+"?([\w./:]+)"?', re.M)
+CLASS_NAME_RE = re.compile(r'^class_name\s+(\w+)', re.M)
+GREYBOX_CLASS = "GreyboxZone"
+EXTENDS_MAX_DEPTH = 8
+
+
+@functools.lru_cache(maxsize=4)
+def _class_index(root: Path) -> dict[str, str]:
+    """class_name -> res:// path for every script under game/ (cached per root for one run)."""
+    out: dict[str, str] = {}
+    for p in (root / "game").rglob("*.gd"):
+        m = CLASS_NAME_RE.search(p.read_text(encoding="utf-8"))
+        if m:
+            out[m.group(1)] = "res://" + p.relative_to(root).as_posix()
+    return out
+
+
+def _extends_greybox(root: Path, script: str) -> bool:
+    """True when the script at res:// path `script` extends GreyboxZone, directly or through classes."""
+    index: dict[str, str] | None = None
+    for _ in range(EXTENDS_MAX_DEPTH):
+        if script == GREYBOX_SCRIPT:
+            return True
+        p = _res(root, script)
+        if not p.is_file():
+            return False
+        m = EXTENDS_RE.search(p.read_text(encoding="utf-8"))
+        if m is None:
+            return False
+        parent = m.group(1)
+        if parent == GREYBOX_CLASS:
+            return True
+        if parent.startswith("res://"):
+            script = parent
+            continue
+        index = index if index is not None else _class_index(root)
+        if parent not in index:
+            return False
+        script = index[parent]
+    return False
 
 
 def _res(root: Path, res: str) -> Path:
@@ -239,7 +293,7 @@ def check(root: Path, files: dict[str, object], flags: set[str]) -> list[str]:
     errs: list[str] = []
     for lid, scene in locations.items():
         p = _res(root, scene)
-        lp = greybox_layout_path(p.read_text(encoding="utf-8")) if p.is_file() else None
+        lp = greybox_layout_path(p.read_text(encoding="utf-8"), root) if p.is_file() else None
         layouts[lid] = None
         if lp is not None:
             layouts[lid] = _load(_res(root, lp)) if _res(root, lp).is_file() else {}

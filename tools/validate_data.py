@@ -1360,7 +1360,7 @@ def scene_has_player(text: str, scenes: dict[str, str] | None = None, scripts: d
         # Godot writes a node's script as a property line under the header (`script = ExtResource(..)`),
         # not in the header itself; both forms count (M2-FP-03).
         script_id = a.get("script", "") or _node_script_id(text, m.end())
-        if is_root and scripts and PLACE_AT_RE.search(scripts.get(ext.get(script_id, ""), "")):
+        if is_root and scripts and _script_places(ext.get(script_id, ""), scripts):
             return True
         sub = (scenes or {}).get(ext.get(a.get("instance", ""), ""))
         if sub is None:
@@ -1373,6 +1373,23 @@ def scene_has_player(text: str, scenes: dict[str, str] | None = None, scripts: d
 
 
 TSCN_SCRIPT_PROP_RE = re.compile(r'^script = ExtResource\("([^"]+)"\)', re.M)
+SCRIPT_EXTENDS_RE = re.compile(r'^extends\s+"?([\w./:]+)"?', re.M)
+SCRIPT_CLASS_RE = re.compile(r'^class_name\s+(\w+)', re.M)
+
+
+def _script_places(path: str, scripts: dict[str, str], depth: int = 0) -> bool:
+    """True when the script at res:// `path`, or one it extends (by path or class_name), defines
+    place_at: a chapter's zone root inherits GreyboxZone's (M3-C01-02)."""
+    text = scripts.get(path, "")
+    if PLACE_AT_RE.search(text):
+        return True
+    m = SCRIPT_EXTENDS_RE.search(text)
+    if m is None or depth >= PLAYER_SCENE_MAX_DEPTH:
+        return False
+    parent = m.group(1)
+    if not parent.startswith("res://"):
+        parent = next((p for p, s in scripts.items() if (c := SCRIPT_CLASS_RE.search(s)) and c.group(1) == parent), "")
+    return parent != "" and _script_places(parent, scripts, depth + 1)
 
 
 def _node_script_id(text: str, header_end: int) -> str:
