@@ -1,0 +1,186 @@
+{
+ "doc": "M3-ENV-09 Ashcrown temple preview views (docs/kb/art/environments/ashcrown.md section 5). Only those named in tests/screenshots/shots.json are registered baselines; capture the rest with --manifest.",
+ "shots": [
+  {
+   "id": "ashcrown_a01_approach",
+   "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+   "camera": "Cameras/A01",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "ashcrown_a02_forecourt",
+   "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+   "camera": "Cameras/A02",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "ashcrown_a03_under_the_stair",
+   "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+   "camera": "Cameras/A03",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "ashcrown_a04_anvil_hall",
+   "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+   "camera": "Cameras/A04",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    },
+    "nodes": {
+     ".": {
+      "interior": true
+     }
+    }
+   }
+  },
+  {
+   "id": "ashcrown_a05_anvil",
+   "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+   "camera": "Cameras/A05",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    },
+    "nodes": {
+     ".": {
+      "interior": true
+     }
+    }
+   }
+  },
+  {
+   "id": "ashcrown_a06_ambulatory",
+   "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+   "camera": "Cameras/A06",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "ashcrown_a07_stair_head",
+   "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+   "camera": "Cameras/A07",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "ashcrown_o1_overview",
+   "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+   "camera": "Cameras/O1",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "ashcrown_o2_from_pemakar",
+   "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+   "camera": "Cameras/O2",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  }
+ ]
+}
