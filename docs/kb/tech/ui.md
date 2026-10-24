@@ -434,7 +434,7 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
 - **Parity tests** (`tests/unit/test_input_parity_*.gd`) walk each screen with `InputDriver.KINDS`.
 - **Parity findings (title, Settings):**
   - **Pad Confirm and Cancel existed only after boot.** UiInput now adds them.
-  - **The cursor snapped back after a wheel notch.** A page that rebuilds its rows under a still pointer got a fresh `mouse_entered`. MenuPage now takes a hover only when the pointer has moved (`_hover_at`).
+  - **The cursor snapped back after a wheel notch.** A page that rebuilds its rows under a still pointer got a fresh `mouse_entered`. MenuPage now takes a hover only from pointer motion over a row (superseded `_hover_at`: see the field menu findings below).
   - **A right click could not stop the Controls page listening.** The mouse Cancel carries `cancel_device` (`UiInput.is_mouse_cancel`), so listening stops on it while a plain `ui_cancel` action is still swallowed.
   - **InputDriver uses viewport-local coordinates.** The headless window's stretch moved clicks onto the next row.
 - **Parity findings (shop, inn):** the mouse could not set how many to buy or sell; only Left and Right could. Buy and Sell now show ‹ ×N › keycap steppers at the right end of the status line (`shop_menu.json` `steppers`), and the wheel over the status line changes the count too.
@@ -443,6 +443,12 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
   - The wheel did nothing.
   - Hovering the overwrite question's choices left Confirm on the old one (M2-ARC-06's bug).
   - **Fix:** `SaveSlotRow` now emits `hovered` and `wheeled`, `SaveMenu` follows them while browsing, and the choices' `row_hovered` sets `dialog_cursor`. These are Systems' files: small hooks for them to accept.
+- **Parity findings (field menu family: root, Swell, Quit, Map, Bestiary; Items, Equip, Lattice, Status):** `tests/parity_host.gd` (`ParityHost`) opens the field menu on a scratch state and walks any MenuPage with each device.
+  - **A hover was taken only once per page.** `_hover_at` compared `get_viewport().get_mouse_position()`, which a pushed event never changes (headless, and in any test), so after one hover a page ignored the mouse. MenuPage now takes a hover from a mouse *motion* over a row (`gui_input`), not from `mouse_entered`: a still pointer under rebuilt rows still takes nothing, and every real move does.
+  - **A dimmed page followed hover and the wheel.** The root under Swell, the bag under the hero picker, the heroes under the gear: hovering them moved a cursor that is meant to show the path taken. A dimmed MenuPage now ignores hover and the wheel; a click still reaches it (the screens use it to go back to that level).
+  - **The Lattice board had no mouse camera.** `LatticeBoardView` now pans by a left drag (a press that moves `drag_px` or more; a click acts on release, so a drag never clicks) and zooms by the wheel about the pointer between `zoom_min` and `zoom_max` (`lattice_menu.json` board), the drawing scaled by one transform, node picking and the pan bounds following the zoom.
+  - **The pad could not switch the Lattice's hero, nor jump a page.** `ui_page_up` / `ui_page_down` had keys only. `controls.json` `pad_defaults` gives them the shoulders (LB, RB), and ControlsModel now applies pad defaults to the fixed actions too.
+  - **Checked and fine:** the wheel over each page's backdrop (bestiary page, map, Items detail, Status detail) reaches its screen; right click backs out of every level; each parent takes the input again after a child page closes, its cursor where it was.
 
 ## Audio settings page (M3-UI-02)
 

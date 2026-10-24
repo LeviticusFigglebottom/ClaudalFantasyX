@@ -27,8 +27,7 @@ var _cursor_tween: Tween
 var _header_h := 0.0
 var _rule: OrnamentRule
 var _nudge_tweens: Dictionary = {}
-## Where the pointer was at the last hover the page took (INF: none yet).
-var _hover_at := Vector2.INF
+var _dimmed := false
 
 
 ## Height a page needs for `row_count` rows (header, rows, and a half-row of breathing room).
@@ -152,7 +151,9 @@ func first_enabled(from: int, step: int) -> int:
 
 ## A page under a pushed sub-menu: its text dims, its frame stays, and the cursor stays put so
 ## the path you took is still readable.
+## Hover and the wheel leave a dimmed page's cursor alone (M2-UI-26); a click still reaches it.
 func set_dimmed(dim: bool) -> void:
+	_dimmed = dim
 	_content.modulate.a = HudLayout.num(_m, "submenu_dim") if dim else 1.0
 	_mote.visible = not dim
 
@@ -177,7 +178,6 @@ func _build_rows() -> void:
 	for i in rows.size():
 		var node := _build_row(rows[i], row_rect(i))
 		node.visible = i < visible_rows
-		node.mouse_entered.connect(_on_row_mouse.bind(i))
 		node.gui_input.connect(_on_row_input.bind(i))
 		_content.add_child(node)
 		_row_nodes.append(node)
@@ -276,19 +276,19 @@ func _c(role: StringName) -> Color:
 	return get_theme_color(role, HymnThemeBuilder.PALETTE_TYPE)
 
 
+## A pointer moving over row `index` takes the cursor. Only a pointer that moved does (a motion
+## event, not mouse_entered): a page that rebuilds its rows under a still pointer (a wheel notch, a
+## key press) would otherwise snap the cursor back to it (M2-UI-26).
 func _on_row_mouse(index: int) -> void:
-	# Only a pointer that moved takes the cursor: a page that rebuilds its rows under a still
-	# pointer (a wheel notch, a key press) would otherwise snap the cursor back to it (M2-UI-26).
-	var at := get_viewport().get_mouse_position()
-	if at.is_equal_approx(_hover_at):
-		return
-	_hover_at = at
-	if index != cursor and bool(rows[index].get("enabled", true)):
+	if not _dimmed and index != cursor and bool(rows[index].get("enabled", true)):
 		set_cursor(index)
 		row_hovered.emit(index)
 
 
 func _on_row_input(event: InputEvent, index: int) -> void:
+	if event is InputEventMouseMotion:
+		_on_row_mouse(index)
+		return
 	var mb := event as InputEventMouseButton
 	if mb == null or not mb.pressed:
 		return
@@ -296,9 +296,10 @@ func _on_row_input(event: InputEvent, index: int) -> void:
 		row_clicked.emit(index)
 	elif mb.button_index == MOUSE_BUTTON_WHEEL_UP or mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 		# The wheel steps the cursor (M2-UI-26) and reports it like a hover, so every screen that
-		# follows hover follows the wheel too. Accepted first: the screen may rebuild the rows.
+		# follows hover follows the wheel too. Accepted first: the screen may rebuild the rows. A
+		# dimmed page holds still (the path taken stays readable).
 		accept_event()
-		if move(-1 if mb.button_index == MOUSE_BUTTON_WHEEL_UP else 1):
+		if not _dimmed and move(-1 if mb.button_index == MOUSE_BUTTON_WHEEL_UP else 1):
 			row_hovered.emit(cursor)
 
 
