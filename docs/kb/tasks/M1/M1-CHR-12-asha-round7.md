@@ -2,8 +2,8 @@
 id: M1-CHR-12
 title: "Asha round 7: crown and hairline geometry, lid band residue, lip bow, smile eyes, ADR 0024/0025 checks"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
 depends_on: [M1-CHR-11]
 milestone: M1
 request-from: "lead"
