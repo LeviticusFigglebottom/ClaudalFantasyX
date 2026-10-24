@@ -552,8 +552,6 @@
       ]
     },
     {
-        },
-    {
       "id": "ashcrown_kit", "threads": 4,
       "owner": "environment",
       "_doc": "M3-ENV-09: the Ashcrown temple kit (Ch5, the Lightning temple at the plume's foot). Geometry reuses the Haluna kit's core (kit_common, village's hip roof) and the Pemakar kit's common and skyline modules (the ash pass, massif_height, the far Ashcrown's numbers) read-only; the two {python} steps rebuild its maps and materials (with the Haluna texture helpers and material writers and the Pemakar material defaults), so they are verified too. Threads pinned at 4, as haluna_kit.",
