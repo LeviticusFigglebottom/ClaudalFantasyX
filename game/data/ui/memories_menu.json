@@ -1,0 +1,41 @@
+{
+  "memories_menu": {
+    "doc": "The Memories gallery page (M3-MNU-02; docs/kb/tech/ui.md section Memories gallery). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'chapters' (left: each chapter something is remembered from, with '2 of 3' in its right column) and 'memories' (right: the chosen chapter's remembered memories under a header '2 of 3 remembered') are MenuPage metrics blocks, as tall as their rows. The page with the input is bright; the other is dimmed (the chapters, while you choose a memory) or shows its rows without a cursor (the memories, while you choose a chapter). canvas_layer: over the title (and the field menu's 60), under the Settings hub (66).",
+    "canvas_layer": 64,
+    "panel": {"rect": [219, 111, 1482, 858], "pad": 27, "title_height": 56, "help_height": 40},
+    "chapters": {
+      "rect": [246, 219, 621, 0],
+      "header_height": 0,
+      "row_pitch": 57,
+      "max_rows": 10,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 132,
+      "rank_width": 132,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "memories": {
+      "rect": [891, 219, 783, 0],
+      "header_height": 45,
+      "row_pitch": 57,
+      "max_rows": 11,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 0,
+      "rank_width": 0,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    }
+  }
+}

@@ -9,11 +9,12 @@ the shoals' ecology before the crate, and it echoes the scorched lamp housing Li
 
 **Silhouette and palette.** The reef crab's body, legs and claws (0.62 m body, 1.4 m across), with a low crust in
 place of the coral dome and the lamp on top, so it stands about 0.85 m: at battle distance, a crab carrying a lantern.
-The crust is salt-white (`mortar_white` held under the ceiling, over `coral_stone_weathered`) with `salt_glass`
-crystals, and three planks of wreck timber (`timber_weathered`) are lodged in it instead of house coral. The legs and
-claws are the reef crab's chitin, bleached toward `timber_weathered`; the crusher's fixed finger is a salt slab. The
-housing is `brass` with `bronze_patina` and `lacquer_black` scorch; its panes are `salt_glass` dulled with
-`storm_slate`. The weak point is the crab's own: a `spawn_wound` crack in the crust on the crusher's side.
+The crust is salt-white (`mortar_white` held under the ceiling, over `coral_stone_weathered`), grown in buckled plates
+split by grimy cracks and knobbed with salt nodules, with `salt_glass` crystals, and three planks of wreck timber
+(`timber_weathered`) are lodged in it instead of house coral. The legs and claws are the reef crab's chitin, bleached
+to grey wreck tones (`coral_stone_weathered` into `timber_weathered`, salt-crusted); the crusher's fixed finger is a
+salt slab. The housing is `brass` with `bronze_patina` and `lacquer_black` scorch; its panes are `salt_glass` dulled
+with `storm_slate`. The weak point is the crab's own: a `spawn_wound` crack in the crust on the crusher's side.
 
 **The lamp's light (art sign-off, M3-CRE-05).** Inside the housing a little light is still bound: `glimmer_bound`
 (`#4FB3B0`), faint, seen through the crazed panes and strongest through the two broken ones on top. This is the
@@ -25,7 +26,7 @@ crust vs the lamp on the back) and much dimmer, so the two never read as one lig
 
 **Clips.** The reef crab's (imported from its build module, which is not edited): `idle` (eye-stalks and a one-leg
 shuffle), `attack` (a crusher strike, contact 0.5 s), `cast` (rear and spit, release 0.7 s), `hit`, `ko`. The housing
-rides on the body bone. Budget ≤ 8k (as the reef crab); built at 7.8k.
+rides on the body bone. Budget ≤ 8k (as the reef crab); built at 7.9k.
 
 **Build.** `assets_src/creatures/wreck_crab/build_wreck_crab.py` imports `build_reef_crab` for the rig, eyes, legs,
 claws and clips, and adds the crust, the timbers and the lamp. Its Blender job lists the reef crab's folder in its

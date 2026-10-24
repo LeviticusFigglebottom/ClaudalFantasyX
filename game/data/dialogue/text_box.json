@@ -6,6 +6,9 @@
   "blip_every_n_chars": 2,
   "blip_volume_db": -8.0,
   "narration_blip": false,
-  "flap_vowels": "aeiouyAEIOUY"
+  "flap_vowels": "aeiouyAEIOUY",
+  "pause_reference_cps": 40.0,
+  "pauses": {",": 0.12, ";": 0.12, ":": 0.12, ".": 0.3, "?": 0.3, "!": 0.3, "\u2014": 0.25, "\u2026": 0.25},
+  "pause_closers": "\"'\u201d\u2019)"
  }
 }

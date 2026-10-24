@@ -17,8 +17,14 @@ func _init(with_settings: UiSettings = null, save_path: String = UiSettings.CONF
 	config_path = save_path
 
 
+## Every UiSettings row but the Audio page's (audio_menu.json, M3-UI-02).
 func row_ids() -> Array[StringName]:
-	return settings.settings()
+	var audio := AudioMenuModel.audio_ids()
+	var out: Array[StringName] = []
+	for id in settings.settings():
+		if not audio.has(id):
+			out.append(id)
+	return out
 
 
 func title_key() -> String:

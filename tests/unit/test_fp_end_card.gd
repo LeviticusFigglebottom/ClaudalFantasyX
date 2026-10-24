@@ -52,6 +52,25 @@ func test_accept_waits_for_the_hold_then_returns_to_the_title() -> void:
 	_done()
 
 
+func test_the_m2_build_ends_at_the_title_until_next_location_is_set() -> void:
+	assert_eq(card.next_location, &"", "first_playable.json end_card.next_location stays empty for the M2 review")
+	_done()
+
+
+func test_with_next_location_set_accept_goes_on_into_the_story() -> void:
+	var went: Array = []
+	FlowRouting.record = func(args: Array) -> void: went.append(args)
+	card.next_location = &"ch04/haluna_wake"
+	card.next_spawn = &"NemeDoor"
+	card.advance(PAST_HOLD_SEC)
+	assert_true(card.handle_input(_accept_event()))
+	FlowRouting.record = Callable()
+	assert_eq(went, [[&"ch04/haluna_wake", &"NemeDoor"]], "on to Ch4's wake night")
+	assert_eq(swaps, [] as Array[String], "not back to the title")
+	assert_false(card.handle_input(_accept_event()), "only once")
+	_done()
+
+
 func test_it_opens_on_rhens_voice_over_then_rolls_the_credits() -> void:
 	var voice := card.get_node(^"%Voice") as Label
 	assert_eq(voice.text, tr("FLOW_END_CARD_VOICE"), "B12's voice-over line (M2-FP-26)")

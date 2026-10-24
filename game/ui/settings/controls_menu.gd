@@ -30,7 +30,11 @@ func handle_input(event: InputEvent) -> bool:
 	if not is_open():
 		return false
 	if model.is_listening():
-		model.feed(event)
+		if UiInput.is_mouse_cancel(event):
+			if event.is_pressed():
+				model.cancel_listen()  # a right click or the mouse's back button (UiInput, ADR 0036)
+		else:
+			model.feed(event)
 		return true
 	if event.is_action_pressed(&"ui_accept"):
 		model.activate()

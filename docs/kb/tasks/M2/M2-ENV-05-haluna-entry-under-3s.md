@@ -43,12 +43,6 @@ from the change request to the scene being in, under the opaque fade:
   - **Expected cost:** the report's estimate with both changes is 1.6 s on High and 1.9 s on Low, for about 1.5 s more boot behind the card.
   - **PC: please re-measure** with slice_sweep `--segments=haluna_beach`, second launch, High and Low, once both this and gpu/hero-materials-resident are on the integration branch.
 
-- 2026-10-24 m2-slice: **the 17 resident flags are reverted.** They break `test_scene_router_swap` once this branch is merged with the integration branch (29b1dbfa, with M2-ARC-05/08's boot card and reveal hold). battle-presentation found it, and I reproduced it in a worktree:
-  - **With the flags** (64 resident entries after the merge), the test failed in 4 of 4 warm runs. boot.tscn's hidden swap frames ran 156–171 ms and battle_sandbox's 162–196 ms, against the 40 ms limit.
-  - **Without them** (47 entries), it passed in 5 of 5 warm runs. The integration branch alone passed in 4 of 4.
-  - **The cause:** `ShaderPrewarm.spawn_resident` warms the extra materials during the boot swap's hidden frames, and each 100 ms+ frame trips the limit.
-  - **What's needed (Rendering/PC):** a resident warm-up that is spread over frames, with a per-frame budget, or that finishes under the boot card before the router measures. Once that lands, the same 17 entries can go back in (`git show 1b405ad2 -- game/data/settings/prewarm_materials.json`).
-  - **Until then,** Haluna's second-launch entry stays at the PC's 3.1/3.5 s.
 ## Notes (PC GPU, M2-RND-11 item 5, 2026-10-24): why the second launch is slow
 Numbers are in `docs/kb/qa/gpu/2026-10-24-rnd-11-sweep-r.md` §5.
 - A first run holds every registry entry it stages, so Haluna's set and the cast's character materials stay
@@ -60,6 +54,13 @@ Numbers are in `docs/kb/qa/gpu/2026-10-24-rnd-11-sweep-r.md` §5.
 - **Measured fix:** make Haluna's 17 registry entries resident, plus the character materials, which
   `gpu/hero-materials-resident` does for Asha's 11. The second launch's entry is then 1.6 s (High) and 1.9 s (Low).
   The cost is 1.3–1.7 s more boot behind the card, with its worst hidden frame at 0.38–0.53 s.
+
+- 2026-10-24 m2-slice: **the 17 resident flags are reverted.** They break `test_scene_router_swap` once this branch is merged with the integration branch (29b1dbfa, with M2-ARC-05/08's boot card and reveal hold). battle-presentation found it, and I reproduced it in a worktree:
+  - **With the flags** (64 resident entries after the merge), the test failed in 4 of 4 warm runs. boot.tscn's hidden swap frames ran 156–171 ms and battle_sandbox's 162–196 ms, against the 40 ms limit.
+  - **Without them** (47 entries), it passed in 5 of 5 warm runs. The integration branch alone passed in 4 of 4.
+  - **The cause:** `ShaderPrewarm.spawn_resident` warms the extra materials during the boot swap's hidden frames, and each 100 ms+ frame trips the limit.
+  - **What's needed (Rendering/PC):** a resident warm-up that is spread over frames, with a per-frame budget, or that finishes under the boot card before the router measures. Once that lands, the same 17 entries can go back in (`git show 1b405ad2 -- game/data/settings/prewarm_materials.json`).
+  - **Until then,** Haluna's second-launch entry stays at the PC's 3.1/3.5 s.
 
 ## Review log
 

@@ -1,0 +1,33 @@
+{
+ "_about": "M3-ENV-03: the two lighting sub-frames of the Pemakar kit preview (pemakar.md §0; color script ch05). `dusk` is ch05_dusk (19:05, the first boats; the afterglow WNW behind the plume), `night` is the color script's ch05 festival frame (20:00). Lights name nodes under the preview's Lights; a sun or fill is given by the elevation and compass azimuth (0 north, 90 east) of its source. lamp_scale multiplies every placed lamp's energy; far_lights_energy and sea_lights_energy are the energies of the distant festival lights and of the boats drifting on the sea; glimmer is hymn_glimmer (glimmer_held, linear; its alpha opens the sea-glow gate).",
+ "moods": {
+  "dusk": {
+   "environment": "res://game/levels/_tests/pemakar_kit/pemakar_dusk_environment.tres",
+   "time_of_day_h": 19.08,
+   "sun": {"elevation_deg": -4.0, "azimuth_deg": 285.0},
+   "glimmer": [0.2122, 0.5647, 0.6939, 0.8],
+   "sea_glow": 0.04,
+   "lamp_scale": 1.0,
+   "far_lights_energy": 1.8,
+   "sea_lights_energy": 1.4,
+   "lights": {
+    "Afterglow": {"visible": true, "color": "#C9784A", "energy": 0.3, "elevation_deg": 4.0, "azimuth_deg": 285.0},
+    "SkyFill": {"visible": true, "color": "#3A4A6A", "energy": 0.4, "elevation_deg": 55.0, "azimuth_deg": 200.0}
+   }
+  },
+  "night": {
+   "environment": "res://game/levels/_tests/pemakar_kit/pemakar_night_environment.tres",
+   "time_of_day_h": 20.0,
+   "sun": {"elevation_deg": -18.0, "azimuth_deg": 0.0},
+   "glimmer": [0.2122, 0.5647, 0.6939, 0.8],
+   "sea_glow": 0.08,
+   "lamp_scale": 1.0,
+   "far_lights_energy": 3.0,
+   "sea_lights_energy": 2.2,
+   "lights": {
+    "Afterglow": {"visible": false, "color": "#C9784A", "energy": 0.0, "elevation_deg": 4.0, "azimuth_deg": 285.0},
+    "SkyFill": {"visible": true, "color": "#3A4A6A", "energy": 0.25, "elevation_deg": 55.0, "azimuth_deg": 200.0}
+   }
+  }
+ }
+}

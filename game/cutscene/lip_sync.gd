@@ -4,8 +4,10 @@ extends RefCounted
 ## Headless and deterministic: no nodes, no global randomness. Tables and every curve constant:
 ## game/data/cutscene/lipsync.json (its "doc" explains each key).
 ##
-##   start(text, cps, emotion, seed)  FaceVisemes turns the text into viseme segments, timed to the
-##       DialogueBox reveal (character i spans i / cps .. (i + 1) / cps s). The segments are blended
+##   start(text, cps, emotion, seed, reveal_times)  FaceVisemes turns the text into viseme segments,
+##       timed to the DialogueBox reveal: character i spans i / cps .. (i + 1) / cps s, or, given
+##       the box's reveal_times() (M2-UI-27), the span ending when the box shows it, so the mouth
+##       rests while the reveal lingers at punctuation (starts_for). The segments are blended
 ##       by dominance (co-articulation: neighbours shape each other; bilabials and pauses dominate;
 ##       rounding is anticipated), sampled at sample_hz, scaled by the emotion's intensity and
 ##       slew-limited per shape, so no weight ever moves faster than max_rate_per_s and every
@@ -19,6 +21,8 @@ const DEFAULT_KEY := "default"
 var cfg: Dictionary = {}
 
 var _segments: Array[Dictionary] = []
+## When each character position starts speaking (s, before lead_s); see starts_for.
+var _starts := PackedFloat64Array()
 ## blend shape -> PackedFloat32Array of the slew-limited curve, one sample per 1 / sample_hz s.
 var _curves: Dictionary = {}
 var _dt := 0.0
@@ -61,7 +65,32 @@ static func intensity_for(emotion: StringName, config: Dictionary) -> float:
 	return float(table.get(String(emotion), table.get(DEFAULT_KEY, 1.0)))
 
 
-func start(text: String, cps: float, emotion: StringName, rng_seed: int) -> void:
+## The time (s, before lead_s) each character position x in 0..n starts speaking, for a text of
+## `n` characters revealed at `cps`. Without `reveal_times` that is x / cps. With the box's
+## reveal_times (DialogueBox.reveal_times(): when each character shows, punctuation pauses included,
+## M2-UI-27) character x spans the 1 / cps before it shows, and position n is the last reveal.
+static func starts_for(
+	n: int, cps: float, reveal_times: PackedFloat64Array = PackedFloat64Array()
+) -> PackedFloat64Array:
+	var out := PackedFloat64Array()
+	var timed := reveal_times.size() >= n and n > 0
+	for x in n + 1:
+		if not timed:
+			out.append(float(x) / cps)
+		elif x < n:
+			out.append(reveal_times[x] - 1.0 / cps)
+		else:
+			out.append(reveal_times[n - 1])
+	return out
+
+
+func start(
+	text: String,
+	cps: float,
+	emotion: StringName,
+	rng_seed: int,
+	reveal_times: PackedFloat64Array = PackedFloat64Array()
+) -> void:
 	_segments = FaceVisemes.segments(text, cfg)
 	_curves = {}
 	_t = 0.0
@@ -73,13 +102,14 @@ func start(text: String, cps: float, emotion: StringName, rng_seed: int) -> void
 		return
 	var hz := float(cfg.get("sample_hz", 0.0))
 	_dt = 1.0 / maxf(hz, 1.0)
-	_speech_end = text.length() / cps + float(cfg.get("lead_s", 0.0))
+	_starts = starts_for(text.length(), cps, reveal_times)
+	_speech_end = _starts[_starts.size() - 1] + float(cfg.get("lead_s", 0.0))
 	_end = _speech_end + float(cfg.get("tail_s", 0.0))
 	var count := ceili(_end / _dt) + 1
 	var intensity := intensity_for(emotion, cfg)
 	var samples: Array[Dictionary] = []
 	for k in count:
-		samples.append(blend_at(_segments, k * _dt, cps, cfg))
+		samples.append(blend_at(_segments, k * _dt, cps, cfg, _starts))
 	var rates: Dictionary = cfg.get("max_rate_per_s", {})
 	var peaks: Array = cfg.get("peak_shapes", [])
 	for shape in viseme_shapes():
@@ -103,7 +133,9 @@ func start(text: String, cps: float, emotion: StringName, rng_seed: int) -> void
 ## The co-articulated shapes at time `t` (s) for `segs` revealed at `cps`, before intensity and
 ## the slew limit: a dominance-weighted average of the segments' viseme rows, with base_rest as a
 ## constant pull to rest.
-static func blend_at(segs: Array[Dictionary], t: float, cps: float, config: Dictionary) -> Dictionary:
+static func blend_at(
+	segs: Array[Dictionary], t: float, cps: float, config: Dictionary, starts: PackedFloat64Array = PackedFloat64Array()
+) -> Dictionary:
 	var lead := float(config.get("lead_s", 0.0))
 	var cutoff := float(config.get("cutoff_tau", 0.0))
 	var dominance: Dictionary = config.get("dominance", {})
@@ -113,8 +145,8 @@ static func blend_at(segs: Array[Dictionary], t: float, cps: float, config: Dict
 	for s in segs:
 		var v := String(s["v"])
 		var dom: Dictionary = dominance.get(v, {})
-		var start := float(s["at"]) / cps + lead
-		var end := (float(s["at"]) + float(s["len"])) / cps + lead
+		var start := _at(float(s["at"]), cps, starts) + lead
+		var end := _at(float(s["at"]) + float(s["len"]), cps, starts) + lead
 		var d := 0.0
 		var tau := 1.0
 		if t < start:
@@ -136,14 +168,16 @@ static func blend_at(segs: Array[Dictionary], t: float, cps: float, config: Dict
 		return out
 	for key: StringName in num.keys():
 		out[key] = float(num[key]) / den
-	return _close(out, segs, t, cps, config)
+	return _close(out, segs, t, cps, config, starts)
 
 
 ## Lip closures (bilabials, labiodentals) must land, whatever their neighbours ask: near the
 ## strongest closure segment the blend is pulled onto that viseme's row by
 ## closures[v] * exp(-d / closure_tau) (1 at full strength inside the segment), so the jaw and every
 ## other shape go to 0 there.
-static func _close(w: Dictionary, segs: Array[Dictionary], t: float, cps: float, config: Dictionary) -> Dictionary:
+static func _close(
+	w: Dictionary, segs: Array[Dictionary], t: float, cps: float, config: Dictionary, starts: PackedFloat64Array
+) -> Dictionary:
 	var closures: Dictionary = config.get("closures", {})
 	var tau := float(config.get("closure_tau", 0.0))
 	var lead := float(config.get("lead_s", 0.0))
@@ -153,8 +187,8 @@ static func _close(w: Dictionary, segs: Array[Dictionary], t: float, cps: float,
 		var v := String(s["v"])
 		if not closures.has(v):
 			continue
-		var start := float(s["at"]) / cps + lead
-		var end := (float(s["at"]) + float(s["len"])) / cps + lead
+		var start := _at(float(s["at"]), cps, starts) + lead
+		var end := _at(float(s["at"]) + float(s["len"]), cps, starts) + lead
 		var d := maxf(0.0, maxf(start - t, t - end))
 		if d > 0.0 and tau <= 0.0:
 			continue
@@ -172,6 +206,18 @@ static func _close(w: Dictionary, segs: Array[Dictionary], t: float, cps: float,
 		var key := StringName(str(shape))
 		out[key] = lerpf(float(w.get(key, 0.0)), float(row[shape]), best)
 	return out
+
+
+## The time of character position `x` (a segment edge; fractional inside a character): x / cps,
+## or with `starts` (starts_for) the start of character floor(x) plus the fraction at 1 / cps, so
+## the pause the reveal holds after a character stays outside every segment that ends there.
+static func _at(x: float, cps: float, starts: PackedFloat64Array) -> float:
+	if starts.is_empty():
+		return x / cps
+	var i := clampi(floori(x), 0, starts.size() - 1)
+	if i >= starts.size() - 1:
+		return starts[starts.size() - 1]
+	return starts[i] + minf((x - float(i)) / cps, starts[i + 1] - starts[i])
 
 
 ## `x` limited to `step` per sample in both directions, never above `x`: a backward pass lets

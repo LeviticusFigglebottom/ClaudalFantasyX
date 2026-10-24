@@ -97,6 +97,7 @@
     {
       "id": "wickfry", "name_key": "ENEMY_WICKFRY", "role_answer": "rhen",
       "lore_key": "LORE_WICKFRY",
+      "model": "res://game/creatures/glassfry/glassfry_battle.tscn",
       "stats": {"level": 2, "hp": 300, "mp": 0, "strength": 6, "magic": 2, "defense": 4,
                 "magic_defense": 4, "agility": 26, "accuracy": 8, "evasion": 12, "luck": 4},
       "affinities": {},
@@ -109,6 +110,7 @@
     {
       "id": "tower_limpet", "name_key": "ENEMY_TOWER_LIMPET", "role_answer": "rhen",
       "lore_key": "LORE_TOWER_LIMPET",
+      "model": "res://game/creatures/tower_limpet/tower_limpet_battle.tscn",
       "stats": {"level": 3, "hp": 1000, "mp": 0, "strength": 8, "magic": 2, "defense": 30,
                 "magic_defense": 10, "agility": 4, "accuracy": 6, "evasion": 0, "luck": 2},
       "affinities": {},
@@ -121,6 +123,7 @@
     {
       "id": "oil_slug", "name_key": "ENEMY_OIL_SLUG", "role_answer": "rhen",
       "lore_key": "LORE_OIL_SLUG",
+      "model": "res://game/creatures/oil_slug/oil_slug_battle.tscn",
       "stats": {"level": 3, "hp": 300, "mp": 0, "strength": 8, "magic": 6, "defense": 10,
                 "magic_defense": 10, "agility": 10, "accuracy": 8, "evasion": 2, "luck": 4},
       "affinities": {"fire": "weak"},
@@ -136,6 +139,7 @@
     {
       "id": "scuttler", "name_key": "ENEMY_SCUTTLER", "role_answer": "rhen",
       "lore_key": "LORE_SCUTTLER",
+      "model": "res://game/creatures/scuttler/scuttler_battle.tscn",
       "stats": {"level": 4, "hp": 310, "mp": 0, "strength": 15, "magic": 2, "defense": 12,
                 "magic_defense": 6, "agility": 16, "accuracy": 8, "evasion": 6, "luck": 4},
       "affinities": {},
@@ -147,6 +151,7 @@
     {
       "id": "hullgnaw", "name_key": "ENEMY_HULLGNAW", "role_answer": "rhen",
       "lore_key": "LORE_HULLGNAW",
+      "model": "res://game/creatures/hullgnaw/hullgnaw_battle.tscn",
       "phase_name_key": "PHASE_HULLGNAW_RIBS",
       "stats": {"level": 6, "hp": 2000, "mp": 0, "strength": 3, "magic": 6, "defense": 40,
                 "magic_defense": 10, "agility": 12, "accuracy": 10, "evasion": 4, "luck": 6},
@@ -173,6 +178,7 @@
     },
     {
       "id": "ashwing", "name_key": "ENEMY_ASHWING", "role_answer": "ysolde", "lore_key": "LORE_ASHWING",
+      "model": "res://game/creatures/ashwing/ashwing_battle.tscn",
       "stats": {"level": 5, "hp": 340, "mp": 0, "strength": 20, "magic": 8, "defense": 8, "magic_defense": 10,
                 "agility": 22, "accuracy": 10, "evasion": 70, "luck": 8},
       "affinities": {"fire": "weak"},
@@ -185,6 +191,7 @@
     },
     {
       "id": "slag_tortoise", "name_key": "ENEMY_SLAG_TORTOISE", "role_answer": "kerrid", "lore_key": "LORE_SLAG_TORTOISE",
+      "model": "res://game/creatures/slag_tortoise/slag_tortoise_battle.tscn",
       "stats": {"level": 5, "hp": 520, "mp": 0, "strength": 24, "magic": 2, "defense": 200, "magic_defense": 12,
                 "agility": 9, "accuracy": 8, "evasion": 2, "luck": 4},
       "affinities": {"fire": "absorb", "water": "weak"},
@@ -197,6 +204,7 @@
     },
     {
       "id": "vein_sparker", "name_key": "ENEMY_VEIN_SPARKER", "role_answer": "ysolde", "lore_key": "LORE_VEIN_SPARKER",
+      "model": "res://game/creatures/vein_sparker/vein_sparker_battle.tscn",
       "stats": {"level": 5, "hp": 260, "mp": 20, "strength": 6, "magic": 16, "defense": 120, "magic_defense": 6,
                 "agility": 16, "accuracy": 8, "evasion": 10, "luck": 6},
       "affinities": {"lightning": "absorb", "water": "weak"},
@@ -206,6 +214,7 @@
     },
     {
       "id": "cinder_matron", "name_key": "ENEMY_CINDER_MATRON", "role_answer": "kerrid", "lore_key": "LORE_CINDER_MATRON",
+      "model": "res://game/creatures/cinder_matron/cinder_matron_battle.tscn",
       "phase_name_key": "PHASE_CINDER_MATRON_CRUST",
       "stats": {"level": 6, "hp": 4000, "mp": 0, "strength": 16, "magic": 12, "defense": 120, "magic_defense": 30,
                 "agility": 13, "accuracy": 10, "evasion": 2, "luck": 6},
@@ -237,6 +246,7 @@
     },
     {
       "id": "sail_leech",
+      "model": "res://game/creatures/sail_leech/sail_leech_battle.tscn",
       "name_key": "ENEMY_SAIL_LEECH",
       "role_answer": "rhen",
       "lore_key": "LORE_SAIL_LEECH",
@@ -250,6 +260,7 @@
     },
     {
       "id": "bottle_hermit",
+      "model": "res://game/creatures/bottle_hermit/bottle_hermit_battle.tscn",
       "name_key": "ENEMY_BOTTLE_HERMIT",
       "role_answer": "ysolde",
       "lore_key": "LORE_BOTTLE_HERMIT",
@@ -266,6 +277,7 @@
     },
     {
       "id": "spar_wraith",
+      "model": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn",
       "name_key": "ENEMY_SPAR_WRAITH",
       "role_answer": "ysolde",
       "lore_key": "LORE_SPAR_WRAITH",
@@ -297,9 +309,9 @@
       "xp": 500,
       "currency": 320
     },
-    {"id": "shoal_skipper", "name_key": "ENEMY_SHOAL_SKIPPER", "role_answer": "rhen", "lore_key": "LORE_SHOAL_SKIPPER", "stats": {"level": 6, "hp": 240, "mp": 0, "strength": 23, "magic": 2, "defense": 8, "magic_defense": 6, "agility": 22, "accuracy": 10, "evasion": 60, "luck": 8}, "affinities": {"lightning": "weak", "water": "resist"}, "skills": ["skim_bite"], "ai": [{"pick": [{"skill": "skim_bite", "target": "random_foe"}]}], "xp": 40, "currency": 22, "drops": [{"item": "salt_tonic", "chance": 10}], "_note": "M3-C06-02 (act1_ch06.md §9 item 14): a dog-sized mudskipper that skims the flats in bursts. Quick, evasive, low HP: Rhen's. Bands: tools/balance/targets.json ch06_*."},
-    {"id": "wreck_crab", "name_key": "ENEMY_WRECK_CRAB", "role_answer": "kerrid", "lore_key": "LORE_WRECK_CRAB", "stats": {"level": 6, "hp": 380, "mp": 0, "strength": 28, "magic": 4, "defense": 120, "magic_defense": 8, "agility": 9, "accuracy": 8, "evasion": 2, "luck": 4}, "affinities": {"lightning": "weak", "water": "absorb"}, "skills": ["pinch", "housing_glare"], "ai": [{"if": {"turn_mod": [3, 1]}, "pick": [{"skill": "housing_glare", "target": "random_foe"}]}, {"pick": [{"skill": "pinch", "target": "lowest_hp_foe", "weight": 2}, {"skill": "pinch", "target": "random_foe", "weight": 1}]}], "xp": 50, "currency": 28, "drops": [{"item": "crab_carapace", "chance": 50}, {"item": "salt_glass_shard", "chance": 15}], "_note": "M3-C06-02 (act1_ch06.md §9 item 15): a reef-crab variant that lives in a broken Lit Age lamp housing, its back glowing faint glimmer_bound teal. A defender: Kerrid's Fluke Cleave (or Toma's Shell Breaker) cracks it; its new skill flashes the housing (Darkness)."},
+    {"id": "shoal_skipper", "name_key": "ENEMY_SHOAL_SKIPPER", "role_answer": "rhen", "lore_key": "LORE_SHOAL_SKIPPER", "model": "res://game/creatures/shoal_skipper/shoal_skipper_battle.tscn", "stats": {"level": 6, "hp": 240, "mp": 0, "strength": 23, "magic": 2, "defense": 8, "magic_defense": 6, "agility": 22, "accuracy": 10, "evasion": 60, "luck": 8}, "affinities": {"lightning": "weak", "water": "resist"}, "skills": ["skim_bite"], "ai": [{"pick": [{"skill": "skim_bite", "target": "random_foe"}]}], "xp": 40, "currency": 22, "drops": [{"item": "salt_tonic", "chance": 10}], "_note": "M3-C06-02 (act1_ch06.md §9 item 14): a dog-sized mudskipper that skims the flats in bursts. Quick, evasive, low HP: Rhen's. Bands: tools/balance/targets.json ch06_*."},
+    {"id": "wreck_crab", "name_key": "ENEMY_WRECK_CRAB", "role_answer": "kerrid", "lore_key": "LORE_WRECK_CRAB", "model": "res://game/creatures/wreck_crab/wreck_crab_battle.tscn", "stats": {"level": 6, "hp": 380, "mp": 0, "strength": 28, "magic": 4, "defense": 120, "magic_defense": 8, "agility": 9, "accuracy": 8, "evasion": 2, "luck": 4}, "affinities": {"lightning": "weak", "water": "absorb"}, "skills": ["pinch", "housing_glare"], "ai": [{"if": {"turn_mod": [3, 1]}, "pick": [{"skill": "housing_glare", "target": "random_foe"}]}, {"pick": [{"skill": "pinch", "target": "lowest_hp_foe", "weight": 2}, {"skill": "pinch", "target": "random_foe", "weight": 1}]}], "xp": 50, "currency": 28, "drops": [{"item": "crab_carapace", "chance": 50}, {"item": "salt_glass_shard", "chance": 15}], "_note": "M3-C06-02 (act1_ch06.md §9 item 15): a reef-crab variant that lives in a broken Lit Age lamp housing, its back glowing faint glimmer_bound teal. A defender: Kerrid's Fluke Cleave (or Toma's Shell Breaker) cracks it; its new skill flashes the housing (Darkness)."},
     {"id": "stillguard_inquisitor", "name_key": "ENEMY_STILLGUARD_INQUISITOR", "role_answer": "ysolde", "lore_key": "LORE_STILLGUARD_INQUISITOR", "phase_name_key": "PHASE_INQUISITOR_HOUNDS_WATCH", "tags": ["stillguard"], "yield_at_hp_pct": 0, "stats": {"level": 6, "hp": 1300, "mp": 0, "strength": 9, "magic": 6, "defense": 60, "magic_defense": 12, "agility": 12, "accuracy": 10, "evasion": 4, "luck": 8}, "affinities": {"fire": "resist"}, "skills": ["haft_strike", "brine_iron", "shell_wall"], "ai": [{"if": {"turn_mod": [4, 0]}, "pick": [{"skill": "shell_wall", "target": "self"}]}, {"if": {"turn_mod": [4, 2]}, "pick": [{"skill": "brine_iron", "target": "highest_hp_foe"}]}, {"pick": [{"skill": "haft_strike", "target": "random_foe"}]}], "phases": [{"id": "torch_the_hulk", "at_hp_pct": 50, "name_key": "PHASE_INQUISITOR_TORCH_THE_HULK", "prompt_key": "TUT_CH06_SMOKE", "skills": ["haft_strike", "brine_iron", "torch_hulk"], "ai": [{"if": {"turn_mod": [3, 0]}, "pick": [{"skill": "torch_hulk", "target": "all_foes"}]}, {"if": {"turn_mod": [3, 2]}, "pick": [{"skill": "brine_iron", "target": "highest_hp_foe"}]}, {"pick": [{"skill": "haft_strike", "target": "random_foe"}]}]}], "xp": 520, "currency": 0, "_note": "M3-C06-02 PROVISIONAL (act1_ch06.md §5): Inquisitor Hadric Moll, a person (the character track builds him), never killed. tags stillguard: Toma's offensive skills are forbidden on him (encounters.json ch06_inquisitor forbidden_skills). yield_at_hp_pct 0: at 0 HP he goes to one knee and yields. Phase 1 the Hound's Watch (Brine Iron: fire and Power Break; Shell Wall: Protect on himself); phase 2 at 50% Torch the Hulk (the Smoke, played as Darkness on the whole party every third turn). Not yet: the hound's intercept and pounce, a true Smoke field, Toma's shove counter (combat request M3-C06-05). No lume: nothing is looted from a man."},
-    {"id": "raid_hound", "name_key": "ENEMY_RAID_HOUND", "role_answer": "kerrid", "lore_key": "LORE_RAID_HOUND", "tags": ["stillguard"], "yield_at_hp_pct": 0, "stats": {"level": 5, "hp": 620, "mp": 0, "strength": 5, "magic": 2, "defense": 14, "magic_defense": 8, "agility": 15, "accuracy": 12, "evasion": 20, "luck": 6}, "affinities": {}, "skills": ["hound_bite", "pounce"], "ai": [{"if": {"turn_mod": [3, 2]}, "pick": [{"skill": "pounce", "target": "lowest_hp_foe"}]}, {"pick": [{"skill": "hound_bite", "target": "random_foe"}]}], "xp": 120, "currency": 0, "_note": "M3-C06-02 PROVISIONAL (act1_ch06.md §5, §9 item 17): the Order's shoal-hound, driven off and never killed (yield_at_hp_pct 0: at 0 HP it breaks off and runs). tags stillguard: Toma will not strike it either; his Challenge (Provoke) draws its bites onto his shield. Its intercept and pounce-on-the-striker are the combat request M3-C06-05."}
+    {"id": "raid_hound", "name_key": "ENEMY_RAID_HOUND", "role_answer": "kerrid", "lore_key": "LORE_RAID_HOUND", "model": "res://game/creatures/raid_hound/raid_hound_battle.tscn", "tags": ["stillguard"], "yield_at_hp_pct": 0, "stats": {"level": 5, "hp": 620, "mp": 0, "strength": 5, "magic": 2, "defense": 14, "magic_defense": 8, "agility": 15, "accuracy": 12, "evasion": 20, "luck": 6}, "affinities": {}, "skills": ["hound_bite", "pounce"], "ai": [{"if": {"turn_mod": [3, 2]}, "pick": [{"skill": "pounce", "target": "lowest_hp_foe"}]}, {"pick": [{"skill": "hound_bite", "target": "random_foe"}]}], "xp": 120, "currency": 0, "_note": "M3-C06-02 PROVISIONAL (act1_ch06.md §5, §9 item 17): the Order's shoal-hound, driven off and never killed (yield_at_hp_pct 0: at 0 HP it breaks off and runs). tags stillguard: Toma will not strike it either; his Challenge (Provoke) draws its bites onto his shield. Its intercept and pounce-on-the-striker are the combat request M3-C06-05."}
   ]
 }

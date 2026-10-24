@@ -25,6 +25,13 @@ const SORT_KEYS := {
 	SORT_NAME: "ITEMS_MENU_SORT_NAME",
 	SORT_COUNT: "ITEMS_MENU_SORT_COUNT",
 }
+## The page's views (M3-MNU-03): the bag (everything but key items, sortable) and the key items
+## (kept, never used: each with its description; items.json says nothing more about where one came
+## from or what it opens, so the page invents nothing).
+const VIEW_BAG := &"bag"
+const VIEW_KEY := &"key"
+const VIEWS: Array[StringName] = [VIEW_BAG, VIEW_KEY]
+const VIEW_KEYS := {VIEW_BAG: "ITEMS_MENU_VIEW_BAG", VIEW_KEY: "ITEMS_MENU_VIEW_KEY"}
 const CATEGORY_KEYS := {
 	ItemDB.CATEGORY_CONSUMABLE: "ITEM_CATEGORY_CONSUMABLE",
 	ItemDB.CATEGORY_MATERIAL: "ITEM_CATEGORY_MATERIAL",
@@ -83,11 +90,14 @@ const PREVIEW_JOIN_KEY := "ITEMS_MENU_PREVIEW_JOIN"
 const LIST_JOIN_KEY := "ITEMS_MENU_LIST_JOIN"
 const USED_KEY := "ITEMS_MENU_USED_FMT"
 const FALLEN_TAG_KEY := "ITEMS_MENU_FALLEN_TAG"
+const KEY_NOTE_KEY := "ITEMS_MENU_KEY_NOTE"
+const KEY_EMPTY_KEY := "ITEMS_MENU_KEY_EMPTY"
 
 var sheet: PartySheet
 ## Statuses that outlast a battle (Game.carried_statuses()): the only ones a field use may save.
 var carried: Array[StringName] = []
 var sort: StringName = SORT_KIND
+var view: StringName = VIEW_BAG
 
 
 func _init(with_sheet: PartySheet, carried_statuses: Array[StringName] = []) -> void:
@@ -111,9 +121,15 @@ func inventory() -> Inventory:
 # --- the bag --------------------------------------------------------------------------------------
 
 
-## Held item ids in the current sort. Ties keep the listing order (ItemDB.sort_rank).
+## Held item ids in the current view and sort. The key view lists key items in data order; the bag
+## lists the rest in `sort`. Ties keep the listing order (ItemDB.sort_rank).
 func item_ids() -> Array[StringName]:
-	var ids := inventory().ids()  # already by kind
+	if view == VIEW_KEY:
+		return inventory().ids_in(ItemDB.CATEGORY_KEY)
+	var ids: Array[StringName] = []
+	for iid in inventory().ids():  # already by kind
+		if db().category_of(iid) != ItemDB.CATEGORY_KEY:
+			ids.append(iid)
 	match sort:
 		SORT_NAME:
 			ids.sort_custom(_by_name)
@@ -128,12 +144,26 @@ func next_sort(step: int = 1) -> StringName:
 	return sort
 
 
+## Steps the view through VIEWS (wrapping). Returns the new view.
+func next_view(step: int = 1) -> StringName:
+	view = VIEWS[posmod(VIEWS.find(view) + step, VIEWS.size())]
+	return view
+
+
+func view_label(of_view: StringName) -> String:
+	return _tr(str(VIEW_KEYS.get(of_view, "")))
+
+
 func sort_text() -> String:
 	return _tr(SORT_LINE_KEY).format({"sort": _tr(str(SORT_KEYS.get(sort, "")))})
 
 
 func rows() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
+	if view == VIEW_KEY:
+		for iid in item_ids():
+			out.append({"id": iid, "label": item_name(iid), "right": "", "enabled": true})
+		return out
 	for iid in item_ids():
 		(
 			out
@@ -174,7 +204,7 @@ func desc(iid: StringName) -> String:
 
 
 func empty_text() -> String:
-	return _tr(EMPTY_KEY)
+	return _tr(KEY_EMPTY_KEY if view == VIEW_KEY else EMPTY_KEY)
 
 
 # --- field use ------------------------------------------------------------------------------------
@@ -203,7 +233,10 @@ func item_error(iid: StringName) -> StringName:
 
 
 ## {text, ok}: how to use the highlighted item, or why it can't be used here.
+## In the key view a key item is not refused but kept: its line says so, in the plain color.
 func item_line(iid: StringName) -> Dictionary:
+	if view == VIEW_KEY and db().category_of(iid) == ItemDB.CATEGORY_KEY:
+		return {"text": _tr(KEY_NOTE_KEY), "ok": true}
 	var err := item_error(iid)
 	if err != RESULT_OK:
 		return {"text": refusal_text(err, iid), "ok": false}

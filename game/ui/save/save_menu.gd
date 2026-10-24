@@ -219,6 +219,8 @@ func _build() -> void:
 		_list.add_child(row)
 		row.setup(rm, Vector2(inner_w, row_h))
 		row.clicked.connect(_on_row_clicked.bind(i))
+		row.hovered.connect(_on_row_hovered.bind(i))  # M2-UI-26: hover and wheel (input parity)
+		row.wheeled.connect(_on_row_wheeled)
 		_rows.append(row)
 	var list_h := (model.slot_ids.size() - 1) * pitch + row_h
 	_list.size = Vector2(inner_w, list_h)
@@ -314,6 +316,7 @@ func _render_dialog(in_dialog: bool) -> void:
 			choice_rows.append({"id": id, "label": _choice_label(id), "enabled": true})
 		_choices.setup(cm, &"save_dialog", "", choice_rows)
 		_choices.row_clicked.connect(_on_choice_clicked)
+		_choices.row_hovered.connect(func(i: int) -> void: model.dialog_cursor = i)  # M2-UI-26 (M2-ARC-06's bug)
 		_choices_phase = model.phase
 	_choices.set_cursor(model.dialog_cursor, is_inside_tree())
 
@@ -379,6 +382,19 @@ func _on_row_clicked(index: int) -> void:
 		model.set_cursor(index)
 		return
 	_after(model.accept())
+
+
+## M2-UI-26: the pointer on a slot moves the cursor there (browsing only; a dialog holds it).
+func _on_row_hovered(index: int) -> void:
+	if is_open() and model.phase == SaveMenuModel.Phase.BROWSE and index != model.cursor:
+		model.set_cursor(index)
+		_render()
+
+
+## M2-UI-26: the wheel steps the cursor while browsing.
+func _on_row_wheeled(step: int) -> void:
+	if is_open() and model.phase == SaveMenuModel.Phase.BROWSE and model.move(step):
+		_render()
 
 
 func _on_choice_clicked(index: int) -> void:

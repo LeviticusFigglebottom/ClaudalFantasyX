@@ -1,14 +1,31 @@
 extends TestCase
 ## M3-RND-01: the Reefball water sphere. Its shaders declare what the rig sets, its data names palette swatches
 ## and a row for every preset, and the rig builds the surface, both full-screen passes and the god rays, and
-## follows its tier (Low: no refraction, no god rays).
+## follows its tier (Low: no refraction, no god rays; caustics on every tier, M3-RND-04).
 
 const PALETTE := "res://docs/kb/art/palette.json"
 const SHADERS := {
 	"res://game/shaders/water/sphere/water_sphere_surface.gdshader":
 	["sphere_center", "sphere_radius_m", "ior", "refraction_strength", "use_refraction", "col_tir", "swell_m"],
-	"res://game/shaders/water/sphere/water_sphere_post_mul.gdshader": ["sigma", "lens_m", "meniscus_px"],
-	"res://game/shaders/water/sphere/water_sphere_post_add.gdshader": ["col_scatter", "col_deep", "light_level"],
+	"res://game/shaders/water/sphere/water_sphere_post_mul.gdshader":
+	[
+		"sigma",
+		"lens_m",
+		"meniscus_px",
+		"use_caustics",
+		"sun_dir",
+		"caustic_strength",
+		"caustic_scale_per_m",
+		"caustic_speed",
+		"caustic_width",
+		"caustic_blur_per_m",
+		"caustic_fade_in_m",
+		"caustic_falloff_m",
+		"caustic_view_fade_m",
+		"caustic_wall_soft_m",
+	],
+	"res://game/shaders/water/sphere/water_sphere_post_add.gdshader":
+	["col_scatter", "col_deep", "light_level", "sea_glow_energy", "sea_glow_strength"],
 }
 
 
@@ -52,13 +69,43 @@ func test_rig_builds_every_part_and_follows_the_tier() -> void:
 	assert_true(rig.set_quality("high"))
 	assert_true(rig.fog.visible, "High: god rays")
 	assert_true(bool(rig.surface_material.get_shader_parameter(&"use_refraction")))
+	assert_true(bool(rig.post_mul_material.get_shader_parameter(&"use_caustics")), "High: caustics")
+	for key in WaterSphereRig.CAUSTIC_KEYS:
+		assert_eq(
+			float(rig.post_mul_material.get_shader_parameter(StringName("caustic_" + key))),
+			float((WaterSphereRig.load_data()["caustics"] as Dictionary)[key]),
+			"caustic_%s from the data" % key
+		)
 	assert_true(env.environment.volumetric_fog_enabled, "the rig authors fog for its shafts")
 	assert_true(rig.set_quality("low"))
 	assert_false(rig.fog.visible, "Low: no god rays")
 	assert_false(bool(rig.surface_material.get_shader_parameter(&"use_refraction")), "Low: no refraction")
+	assert_true(bool(rig.post_mul_material.get_shader_parameter(&"use_caustics")), "Low keeps the caustics (no cost)")
 	assert_false(rig.set_quality("nonsense"))
 	rig._process(0.0)
 	assert_true(
 		(rig.post_add_material.get_shader_parameter(&"sphere_center") as Vector3).is_equal_approx(rig.global_position)
 	)
 	host.free()
+
+
+## M3-RND-05: the night match. The ball's water column carries the sea-glow (colour script rule 3: >= 0.08 at
+## night), the rig passes its own energy on, and the arena's lamps don't light the fog: a lamp's volumetric fog
+## energy lit the god-ray FogVolume into bright green bands (as Rhen's lantern, tech/underwater.md).
+func test_the_night_match_glows_and_its_lamps_leave_the_fog_alone() -> void:
+	var scene := (load("res://game/levels/_tests/reefball/reefball_night_test.tscn") as PackedScene).instantiate()
+	(Engine.get_main_loop() as SceneTree).current_scene.add_child(scene)
+	var rig := scene.get_node("Sphere") as WaterSphereRig
+	assert_between(rig.sea_glow_energy, 0.08, 0.15, "rule 3: a night frame's sea-glow")
+	assert_eq(float(rig.post_add_material.get_shader_parameter(&"sea_glow_energy")), rig.sea_glow_energy)
+	assert_eq(
+		float(rig.post_add_material.get_shader_parameter(&"sea_glow_strength")),
+		float((WaterSphereRig.load_data()["optics"] as Dictionary)["sea_glow_strength"])
+	)
+	rig.sea_glow_energy = 0.1
+	assert_eq(float(rig.post_add_material.get_shader_parameter(&"sea_glow_energy")), 0.1, "set at runtime too")
+	var lamps := scene.get_node("Lamps").find_children("*", "Light3D", true, false)
+	assert_true(lamps.size() > 0, "the arena is lamp-keyed")
+	for l: Light3D in lamps:
+		assert_eq(l.light_volumetric_fog_energy, 0.0, "%s leaves the ball's fog alone" % l.name)
+	scene.free()

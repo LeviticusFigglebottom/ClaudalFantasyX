@@ -26,7 +26,10 @@
       "fade_in_sec": 1.2,
       "credits": ["CREDITS_GAME", "CREDITS_SLICE", "CREDITS_MUSIC", "CREDITS_ENGINE", "CREDITS_FONTS", "CREDITS_THANKS"],
       "credit_line_sec": 1.1,
-      "min_hold_sec": 16.0
+      "min_hold_sec": 16.0,
+      "_next_note": "M3-C04-04: next_location / next_spawn (a locations.json id and spawn) send accept on into the story instead of back to the title. Empty for the M2 review build; the Lead sets ch04/haluna_wake / NemeDoor once the human signs off the M2 review.",
+      "next_location": "",
+      "next_spawn": ""
     },
     "haluna": {
       "location_id": "ch02/haluna",

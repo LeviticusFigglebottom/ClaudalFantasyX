@@ -7,8 +7,6 @@ extends TestCase
 
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const PARTY: Array[StringName] = [&"rhen", &"asha"]
-## Arenas with no open water in view, so no Sea.
-const DRY_ARENAS: Array[String] = ["underway_tower", "ash_terrace_lanternfall"]
 ## Spot checks of the Act I mapping (M3-BPR-01's table); every row with one of ACT_ONE_PREFIXES is checked too.
 const ACT_ONE := {
 	&"ch01_wickfry": &"underway_tower",
@@ -50,8 +48,9 @@ func test_data_names_real_encounters_and_scenes() -> void:
 	_free()
 
 
-## M3-BPR-01: every arena scene loads and keeps the contract (a WorldEnvironment, a DirectionalLight3D Sun, and a
-## Sea where the place has open water).
+## M3-BPR-01: every arena scene loads and keeps the contract (a WorldEnvironment, a DirectionalLight3D Sun, and its
+## sea an ArenaSea named Sea: env-art's battle_arenas.md rule 6; the Underway's is the surface overhead, the terrace's
+## the sea far below). arenas.json points at env-art's kit scenes since the big8 merge.
 func test_every_arena_scene_keeps_the_contract() -> void:
 	var scenes := BattleArena.data().get("scenes", {}) as Dictionary
 	assert_true(scenes.size() >= 9, "the two slice arenas, the five Act I ones and the two Ch6 ones")
@@ -61,8 +60,11 @@ func test_every_arena_scene_keeps_the_contract() -> void:
 		var arena := (load(path) as PackedScene).instantiate()
 		assert_true(arena.get_node_or_null(^"WorldEnvironment") is WorldEnvironment, "%s has a WorldEnvironment" % id)
 		assert_true(arena.get_node_or_null(^"Sun") is DirectionalLight3D, "%s has a Sun" % id)
-		var has_sea := arena.get_node_or_null(^"Sea") != null
-		assert_eq(has_sea, not DRY_ARENAS.has(id), "%s: a Sea only over open water" % id)
+		var sea := arena.get_node_or_null(^"Sea")
+		if path.begins_with("res://assets/environments/arenas/"):  # env-art's kit arenas; the Ch6 ones are greybox yet
+			assert_true(sea == null or sea is ArenaSea, "%s: its Sea is an ArenaSea" % id)
+		else:
+			assert_true(sea != null, "%s: a greybox arena keeps a Sea for the flood rig" % id)
 		arena.free()
 	_free()
 
@@ -98,12 +100,12 @@ func test_ch06_encounters_have_arenas() -> void:
 	_free()
 
 
-func test_an_arena_without_a_sea_applies() -> void:
+func test_the_underwater_arena_applies() -> void:
 	var empty: Array[StringName] = []
 	ctl.start_battle(PARTY, empty, &"ch01_wickfry", 7)
 	assert_eq(str(ctl.get_meta(BattleArena.META_ARENA, "")), BattleArena.scene_of("underway_tower"))
-	assert_true(ctl.get_node_or_null(^"Arena/OilLamp") is OmniLight3D, "the lamp came with the arena")
-	assert_true(ctl.get_node_or_null(^"Arena/Sea") == null, "no sea in the drowned tower")
+	assert_true(ctl.get_node_or_null(^"Arena/Lantern") != null, "the lantern came with the arena")
+	assert_true(ctl.get_node_or_null(^"Arena/Underwater") is ArenaUnderwater, "and its underwater look")
 	assert_eq(ctl.get_children().filter(func(n: Node) -> bool: return n.name == &"Sun").size(), 1, "one sun")
 	_free()
 
@@ -116,7 +118,7 @@ func test_a_story_encounter_fights_in_its_arena() -> void:
 	var env := ctl.get_node(^"WorldEnvironment") as WorldEnvironment
 	assert_ne(env, sandbox_env, "the arena's environment replaced the sandbox's")
 	assert_true(ctl.get_node_or_null(^"Arena/Sea") != null, "the flood rig's sea is there")
-	assert_true(ctl.get_node_or_null(^"Arena/Fill") != null, "the arena's other children are under Arena")
+	assert_true(ctl.get_node_or_null(^"Arena/CameraHints") != null, "the arena's other children are under Arena")
 	assert_eq(ctl.get_node(^"Arena").get_children().filter(func(n: Node) -> bool: return n.name == &"Dais").size(), 0)
 	assert_eq(ctl.get_children().filter(func(n: Node) -> bool: return n.name == &"Sun").size(), 1, "one sun")
 	ctl.start_battle(PARTY, empty, &"drownbell", 7)

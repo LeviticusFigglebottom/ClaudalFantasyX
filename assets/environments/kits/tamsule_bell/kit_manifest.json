@@ -1,0 +1,221 @@
+{
+  "drop_contract": {
+    "anchor": [
+      0.0,
+      31.5,
+      0.0
+    ],
+    "min_clearance_m": 2.0,
+    "radius_h_m": 14.0,
+    "radius_v_m": 11.5,
+    "surface_y": 43.0,
+    "weep_point_y": 20.0
+  },
+  "generator": "assets_src/environments/kits/tamsule_bell/build.py",
+  "kit": "tamsule_bell",
+  "pieces": {
+    "boardwalk_8m": {
+      "budget": [
+        3000,
+        300
+      ],
+      "bytes": 131740,
+      "lods": {
+        "boardwalk_8m": 2400,
+        "boardwalk_8m-lod1": 96
+      }
+    },
+    "captain_platform": {
+      "budget": [
+        9000,
+        900
+      ],
+      "bytes": 242072,
+      "lods": {
+        "captain_platform": 4422,
+        "captain_platform-lod1": 98
+      }
+    },
+    "catch_pool": {
+      "budget": [
+        16000,
+        1600
+      ],
+      "bytes": 420208,
+      "lods": {
+        "catch_pool": 9384,
+        "catch_pool-lod1": 624
+      }
+    },
+    "gallery_segment_a": {
+      "budget": [
+        36000,
+        3600
+      ],
+      "bytes": 625132,
+      "lods": {
+        "gallery_segment_a": 10997,
+        "gallery_segment_a-lod1": 1329
+      }
+    },
+    "gallery_segment_b": {
+      "budget": [
+        36000,
+        3600
+      ],
+      "bytes": 625132,
+      "lods": {
+        "gallery_segment_b": 10997,
+        "gallery_segment_b-lod1": 1329
+      }
+    },
+    "gallery_segment_c": {
+      "budget": [
+        36000,
+        3600
+      ],
+      "bytes": 625124,
+      "lods": {
+        "gallery_segment_c": 10997,
+        "gallery_segment_c-lod1": 1329
+      }
+    },
+    "gantry_head": {
+      "budget": [
+        18000,
+        1800
+      ],
+      "bytes": 346932,
+      "lods": {
+        "gantry_head": 6484,
+        "gantry_head-lod1": 612
+      }
+    },
+    "gantry_leg": {
+      "budget": [
+        14000,
+        1400
+      ],
+      "bytes": 228988,
+      "lods": {
+        "gantry_leg": 4098,
+        "gantry_leg-lod1": 726
+      }
+    },
+    "goal_ring": {
+      "budget": [
+        2400,
+        300
+      ],
+      "bytes": 53988,
+      "lods": {
+        "goal_ring": 1180,
+        "goal_ring-lod1": 224
+      }
+    },
+    "mooring_post": {
+      "budget": [
+        1200,
+        150
+      ],
+      "bytes": 22500,
+      "lods": {
+        "mooring_post": 408,
+        "mooring_post-lod1": 63
+      }
+    },
+    "oruvel_moorings": {
+      "budget": [
+        7000,
+        700
+      ],
+      "bytes": 173920,
+      "lods": {
+        "oruvel_moorings": 3440,
+        "oruvel_moorings-lod1": 270
+      }
+    },
+    "pennant_line": {
+      "budget": [
+        1200,
+        200
+      ],
+      "bytes": 35768,
+      "lods": {
+        "pennant_line": 252,
+        "pennant_line-lod1": 164
+      }
+    },
+    "reefball_drop_proxy": {
+      "budget": [
+        8000,
+        800
+      ],
+      "bytes": 151236,
+      "lods": {
+        "reefball_drop_proxy": 4384,
+        "reefball_drop_proxy-lod1": 304
+      },
+      "placeholder": "the Reefball water drop's look is PC GPU R&D (pc-gpu.md); this is the agreed volume (tamsule_bell.md \u00a71) so compositions can be judged",
+      "tags": [
+        "PLACEHOLDER"
+      ]
+    },
+    "shophouse_a": {
+      "budget": [
+        20000,
+        2000
+      ],
+      "bytes": 662324,
+      "lods": {
+        "shophouse_a": 14626,
+        "shophouse_a-lod1": 1084
+      }
+    },
+    "shophouse_b": {
+      "budget": [
+        20000,
+        2000
+      ],
+      "bytes": 695548,
+      "lods": {
+        "shophouse_b": 14806,
+        "shophouse_b-lod1": 1060
+      }
+    },
+    "signboard_gilded": {
+      "budget": [
+        1600,
+        200
+      ],
+      "bytes": 32992,
+      "lods": {
+        "signboard_gilded": 228,
+        "signboard_gilded-lod1": 48
+      }
+    },
+    "tamsule_bell": {
+      "budget": [
+        60000,
+        6000
+      ],
+      "bytes": 2104936,
+      "lods": {
+        "tamsule_bell": 51328,
+        "tamsule_bell-lod1": 5360
+      }
+    },
+    "watch_boat": {
+      "budget": [
+        8000,
+        800
+      ],
+      "bytes": 145844,
+      "lods": {
+        "watch_boat": 2924,
+        "watch_boat-lod1": 160
+      }
+    }
+  },
+  "schema": "hymn-kit/1"
+}

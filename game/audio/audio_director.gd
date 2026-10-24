@@ -12,7 +12,8 @@ extends Node
 ##   while the sequencer's music plays; a DialogueBox's blip goes to Voice and an open box ducks the music; a
 ##   battle (BattleVfx under a BattleController) gets a BattleAudio listener (battle_audio.gd) and ducks the
 ##   ambience; the Shell Shrine level gets a ShrineAudio listener (shrine_audio.gd); a FieldController gets a
-##   FootstepAudio (footstep_audio.gd); the menus in ui_sfx.json are watched by a UiAudio (ui_audio.gd). Listeners
+##   FootstepAudio (footstep_audio.gd); the menus in ui_sfx.json are watched by a UiAudio (ui_audio.gd), and
+##   Reefball's sphere and match in reefball_hooks.json by a ReefballAudio (reefball_audio.gd). Listeners
 ##   live under this node, not in the other scene's tree, and never write game state.
 ## - **Ambience (M2-AUD-05):** ambience.json's beds join music.json's, and its zone beds apply where music.json's
 ##   row names none; the wind bed's level follows the zone's wind speed (WeatherClock.zone_wind).
@@ -20,6 +21,8 @@ extends Node
 ##   `reverb` key picks a mix.json preset, ramped.
 ## - **Voices (M3-AUD-07):** each DialogueBox gets a VoiceAudio (voice_audio.gd): the speaker's own blips from
 ##   voices.json, and a recorded line when its file exists. A CutsceneSequencer's line_shown tells it each line.
+## - **Battle stings (M3-AUD-18):** EventBus.dialogue_event's battle announcements (the tide-line stinger, the bark,
+##   a boss intro) play battle_stings.json's rows through a StingAudio (sting_audio.gd).
 ## It runs while the tree is paused (PROCESS_MODE_ALWAYS), so a menu that pauses the field keeps its music and
 ## sounds; nothing it drives moves the game.
 ## Time passes only through advance(delta), which _process calls; tests call it directly.
@@ -46,7 +49,11 @@ var footstep_data: Dictionary = {}
 var voice_data: Dictionary = {}
 ## The World and Combat reverb (M2-AUD-10).
 var verb := WorldVerb.new()
+var muffle := BusMuffle.new()
 var ui: UiAudio
+## Reefball's sphere and match, by listening (M3-AUD-17; reefball_audio.gd).
+var reefball: ReefballAudio
+var stings := StingAudio.new()
 var music: MusicDeck
 var sfx: SfxBank
 ## Ambience bed id -> FadeVoice.
@@ -82,6 +89,11 @@ func _ready() -> void:
 		AudioData.table(AudioData.AMBIENCE)
 	)
 	ui.configure(AudioData.table(AudioData.UI_SFX))
+	reefball.configure(AudioData.table(AudioData.REEFBALL_HOOKS))
+	stings.data = AudioData.table(AudioData.BATTLE_STINGS)
+	var bus := get_node_or_null(^"/root/EventBus")
+	if bus != null and bus.has_signal(&"dialogue_event"):
+		bus.connect(&"dialogue_event", stings.on_event)
 	footstep_data = AudioData.table(AudioData.FOOTSTEPS)
 	voice_data = AudioData.table(AudioData.VOICES)
 	get_tree().node_added.connect(_on_node_added)
@@ -103,8 +115,17 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 		ui.name = "UiAudio"
 		ui.player = func(id: StringName) -> void: play_sfx(id)
 		add_child(ui)
+	stings.player = func(id: StringName) -> void: play_sfx(id)
+	stings.ducker = set_duck
+	stings.reduced = func() -> bool: return _reduced_audio()
+	if reefball == null:
+		reefball = ReefballAudio.new()
+		reefball.name = "ReefballAudio"
+		reefball.bind_director(self)
+		add_child(reefball)
 	build_buses(mix)
 	verb.configure(mix)
+	muffle.configure(mix)
 	if music == null:
 		music = MusicDeck.new()
 		music.name = "Music"
@@ -121,6 +142,9 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 ## outlives it in the AudioServer and is reported as a leak at exit (the boot smoke test's "resources still in use").
 func _exit_tree() -> void:
 	stop_all_players()
+	var bus := get_node_or_null(^"/root/EventBus")
+	if bus != null and bus.has_signal(&"dialogue_event") and bus.is_connected(&"dialogue_event", stings.on_event):
+		bus.disconnect(&"dialogue_event", stings.on_event)
 
 
 func stop_all_players() -> void:
@@ -141,8 +165,11 @@ func advance(delta: float) -> void:
 		bed.step(delta, music.floor_db)
 	_step_ducks(delta)
 	verb.advance(delta)
+	muffle.advance(delta)
 	_poll_pending()
 	ui.step()
+	reefball.advance(delta)
+	stings.advance(delta)
 	for l: Variant in listeners.values():
 		if not is_instance_valid(l):
 			continue
@@ -406,6 +433,10 @@ func _on_node_added(node: Node) -> void:
 		_later(attach_shrine, node)
 	elif node is FieldController:
 		_later(attach_footsteps, node)
+	elif reefball != null and reefball.wants(node):
+		_later(reefball.watch, node)
+	elif ChoreoAudio.wants(node):  # M3-AUD-13: the battle choreography's layers (choreo_sfx.json hooks)
+		_later(ChoreoAudio.attach_to.bind(self), node)
 	elif ui != null and ui.wants(node):
 		_later(ui.watch, node)
 
@@ -556,6 +587,11 @@ func _apply_first_scene() -> void:
 	var scene := get_tree().current_scene
 	if scene != null and zone_path == "" and scene.scene_file_path != "":
 		apply_zone(scene.scene_file_path)
+
+
+func _reduced_audio() -> bool:
+	var settings := UiSettings.shared()
+	return settings != null and bool(settings.get_value(&"reduced_audio"))
 
 
 func _flag_reader() -> Callable:

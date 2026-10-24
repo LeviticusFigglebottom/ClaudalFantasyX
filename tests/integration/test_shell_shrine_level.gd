@@ -67,7 +67,7 @@ func test_the_room_is_built_from_the_shrine_kit() -> void:
 
 
 func test_the_lighting_ships_baked_and_entry_never_bakes() -> void:
-	# M2-ENV-10 (ADR 0029: no hidden frame over 1 s): both GI states load from the shipped data at
+	# M2-ENV-13 (ADR 0029: no hidden frame over 1 s): both GI states load from the shipped data at
 	# entry, nothing is baked, and the load stays well inside one frame's budget.
 	assert_eq(level.gi_bake_ms, -1, "no bake at entry")
 	assert_true(level.gi_states.get("closed") is VoxelGIData, "the door-up state is loaded")

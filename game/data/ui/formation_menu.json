@@ -1,0 +1,50 @@
+{
+  "formation_menu": {
+    "doc": "The party formation page (M2-MNU-07; docs/kb/tech/ui.md section Party formation). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'active' (left, the active line: one row per place, BattleEngine.MAX_ACTIVE) and 'reserve' (right: each reserve hero and one open place) are MenuPage metrics blocks, as tall as their rows; the cost column holds HP and the rank column MP, with a thin HP and MP 'gauge' under each row's numbers (inset from the row's foot). Only the list with the input shows its cursor. 'chosen' frames the picked hero's row (a gold border of border_px, inset by inset_px) while you choose where they go. 'detail' sits 'gap' under the active line: the highlighted hero's name (name_height), their place (line_height), what was picked, then the plan line (what Confirm does, or why not, in danger) and the warning (the fallen who would stand in the active line); each wraps and stacks by its measured height. 'rules': min_active is the least the active line may hold (a battle needs one).",
+    "canvas_layer": 64,
+    "rules": {"min_active": 1},
+    "panel": {
+      "rect": [219, 111, 1482, 858],
+      "pad": 27,
+      "title_height": 56,
+      "help_height": 40
+    },
+    "active": {
+      "rect": [246, 219, 696, 0],
+      "header_height": 45,
+      "row_pitch": 63,
+      "max_rows": 3,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 342,
+      "rank_width": 144,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "reserve": {
+      "rect": [978, 219, 696, 0],
+      "header_height": 45,
+      "row_pitch": 63,
+      "max_rows": 9,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 342,
+      "rank_width": 144,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "gauge": {"height": 6, "inset_bottom": 9, "gap": 12},
+    "chosen": {"border_px": 3, "inset_px": 3},
+    "detail": {"rect": [258, 0, 672, 384], "gap": 36, "name_height": 48, "line_height": 36, "line_gap": 12}
+  }
+}

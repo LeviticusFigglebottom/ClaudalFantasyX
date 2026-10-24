@@ -75,6 +75,9 @@ class ValidatorTest(unittest.TestCase):
         self.assertFalse(any("no enemy has a phase" in x for x in self.errs(creatures=cr)))
         cr["creatures"]["cinder_matron"]["phases"]["pour"]["hide"] = "Crust"
         self.assertTrue(any("hide: must be a list" in x for x in self.errs(creatures=cr)))
+        cr["creatures"]["cinder_matron"]["phases"]["pour"]["hide"] = ["Crust"]
+        cr["creatures"]["cinder_matron"]["phases"]["pour"]["clips"] = {"attack": ""}
+        self.assertTrue(any("clips: must map clip names" in x for x in self.errs(creatures=cr)))
 
     def test_defaults_must_be_complete(self) -> None:
         cr = copy.deepcopy(self.creatures)

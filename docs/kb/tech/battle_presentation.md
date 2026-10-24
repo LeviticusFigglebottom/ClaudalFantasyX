@@ -440,11 +440,11 @@ The slice's one Vowbound and its first call must be unmissable (vertical_slice.m
 (`game/battle/scene/battle_summon_cinematic.gd`), attached by `BattleChoreo.attached`, gives the Vowbound's entrance
 when `BattleVowboundChoreo.enter_spec` asks:
 - **When:** the first call of each Vowbound in a live story battle (its `first_call_flags` seen-flag,
-  `ch03_ilun_first_call_seen`, is unset; the cinematic sets it), with the accessibility setting **Vowbound
-  calls** (`summon_cinematic`, M2-UI-23) on Short (the default) or Full; Full also plays it on every later call
-  (`UiSettings.summon_cinematic_cut`, M2-BPR-09). Off's `none` cut skips the rise (`off_entry`: the Vowbound is
-  simply there). A capture fixture, instant pacing and "skip animations" play the short entry (`vowbound.entry`),
-  and so does every later call under Short.
+  `ch03_ilun_first_call_seen`, is unset; the cinematic sets it) under the accessibility setting **Vowbound calls**
+  (`summon_cinematic`, the UI track's row, M2-UI-23) on Short, the default. Full plays it on every call; Off skips
+  the rise (`off_entry`: the Vowbound is simply there). A capture fixture, instant pacing and "skip animations" play
+  the short entry (`vowbound.entry`). The decision reads
+  `UiSettings.summon_cinematic_cut` (accessibility.json `summon_cinematics`, M2-BPR-11).
 - **What:** the water stills (`entry.delay_sec` 1.4 s after the party steps off), Ilun rises slowly (2.6 s), and a
   steady bound light (`glimmer_bound`, color script C10: no flicker, no drift, no trails) fades in at his slot and
   stays while he is out. The camera eases to the low `summon` frame (camera.shots), holds, and is back on the

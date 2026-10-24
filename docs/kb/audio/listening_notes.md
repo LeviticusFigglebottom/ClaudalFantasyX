@@ -478,3 +478,217 @@ scenes are in act_outline.md (Ch7, and the end of Ch9).
 - **On its own:** is the hollow in the middle strange to listen to? It is meant to be filled. Is the deep Hush
   phrase recognisable that low? Does the last rising figure, left open on B, feel like an act ending, or an
   interruption?
+
+## M3: Act I routes (M3-AUD-11)
+
+Two field loops for the routes between Act I's towns. Neither scene exists yet, so for now you can only hear them
+on their own. Both are at the music level (−16 LUFS). The scenes are in act_outline.md (Ch4, Ch6). Play
+`saltgrass_causeway.ogg` before them: all three are walking music, and each should sound like a different journey.
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/brightwater_ferry.ogg` | 76.2 s loop | Ch4: the dawn ferry across Brightwater strait, with the drifting trader |
+| 2 | `music/brine_shoals.ogg` | 72.7 s loop | Ch6: the Brine Shoals, wrecks and mud-flats, smoke from the raid ahead |
+
+### (1) The Brightwater ferry: open water at dawn, and a drowned hull in the middle of it
+
+- **The idea:** the first time the pilgrimage leaves the coast. It's in E-flat with a raised fourth (A natural),
+  which is the dawn colour: bright and a little unearthly. It's in a slow 9/8, one bar to each roll of the hull. A
+  high flute carries the tune over a low string pad and a plucked rigging figure that rolls in threes. The sea is a
+  band of noise that swells once a bar.
+- **Ysolde:** in the middle section a hand-damped metallophone plays two even notes a bar against the 9/8's three.
+  It's the only part with no human timing: it sits exactly on the grid. **Does it read as someone cold and correct
+  stepping on board, or just as a rhythm mistake?** If it sounds wrong rather than cold, it can fall in line with
+  the threes.
+- **The derelict (about 48–62 s):** the harmony darkens to C-flat and A-flat minor (the minor key's chords), the
+  flute stops, the rigging thins to one pluck per beat, and a ship's bell heard over water rings twice off the beat,
+  as if the roll were ringing it. Then one long flute note. **Does the passage make you think of a ship with nobody
+  at the helm?** It shouldn't sound like danger yet: the boss cue (`spar_wraith`) is the danger.
+- It should be distinct from the causeway (A minor, bare fifths, a 4/4 walk). Is it? Can you hear the wrap at
+  76.2 s?
+
+### (2) The Brine Shoals: walking toward a fire
+
+- **The idea:** low tide over a graveyard of hulls. It's in C-sharp minor, in 5/4 grouped 3+2: a long step and then
+  the pull of the foot out of the mud. A big frame drum makes the steps, with softer strokes after each for the mud
+  letting go, over a muted bass and a low, groaning string pad. A salvage lute carries the tune and picks its long
+  notes in tremolo, like a Saltwright playing on a cold beach.
+- **The smoke (about 45–64 s):** a D major chord over a C-sharp bass (one sour, borrowed colour), a large gong, the
+  lute at its highest, and sparse crackle like embers. **Does the crackle read as fire, or as clicks in the file?**
+  If it's clicks, it either goes or gets darker.
+- **Is it heavy without being a battle?** This is the route before the raid and the Inquisitor fight, so it should
+  feel wary. The fight has its own cue.
+- Does the 5/4 feel like trudging, or does it limp? Can you hear the wrap at 72.7 s?
+
+## M3: Act I zone beds (M3-AUD-16)
+
+`ambience/tamsule_port.ogg`, `tamsule_bell.ogg`, `brine_shoals.ogg`, `pemakar_terraces.ogg`, `ashcrown.ogg`,
+`corrow_seawall.ogg`: 40–46 s loops at −26 LUFS, meant to sit under the area music. Listen at a low volume, the way
+they play. Does each read as its place (a harbour; the inside of a great bell's arena; mud and smoke; running
+terrace water at a festival; a mountain under falling ash; a hard sea wall)? **Please check the wrap of
+`tamsule_bell.ogg`** (every 40 s): the Vorbis encoder leaves a tiny step at the file's ends that this quiet, humming
+bed shows more than the others; if you hear a tick, I'll mask it.
+
+## M3: the battle's motion (M3-AUD-13)
+
+Files in `assets/audio/sfx/choreo/` (from `assets_src/sfx/choreo_sfx.py`). In the game they sit **under** the hits
+you already know (`assets/audio/sfx/battle/hit_*`): play a hit right after its accent to hear the pair.
+
+- **Whooshes** (`whoosh_melee_*`, `heavy_*`, `cast_*`, `throw_*`, `guard_*`): each crests about 0.1–0.3 s in, on the
+  blow. Do they read as air moving, or as hiss? Is the heavy one heavy without being a roar?
+- **Weapons** (`accent_*`): Rhen's twin hooks with the lantern's glass ticking (`hooks`), Asha's wooden staff with the
+  shell-bell (`staff`), Toma's spear and his old turtle-shell shield (`spear`, `shield`), Ysolde's book struck flat and
+  her focus releasing a cast (`book`, `focus`), Kerrid's anchor-cleaver breaking armour (`cleaver`), claws, teeth,
+  and the Drownbell's hood. **Can you tell the four heroes apart with your eyes closed?** Are any of them too quiet
+  or too clicky to matter under a hit?
+- **Footfalls** (`step_sand_1..4`): damp battle sand. Do four in a row sound like one person, not a machine gun?
+- **The KO** (`ko_collapse_*`): the knees, then the body into shallow water. Too much splash for a sad moment?
+- **Swell accents** (`swell_rhen`, `asha`, `toma`, `ysolde`): short and bright, over each finisher's own sound. Do
+  they feel earned, or like a slot machine?
+- **The Drownbell:** `toll_wave` is the ring passing the party (play it right after `battle/drownbell_toll.ogg`);
+  `flood_surge` the surge attacks; `flood_brace_*` the water at the party's legs as they brace.
+- **Ilun:** `vowbound_beckon` (Asha's call: a breath rising a fifth), `vowbound_rise` and `vowbound_rise_long` (the
+  first call's slow rise), `vowbound_sink` (dismissed), `vowbound_fall` (struck down, drawn under). Does the fall
+  sound sadder than the sink?
+
+## M3: battle stings (M3-AUD-18)
+
+`sfx/battle/sting_tideline.ogg` (the tide line rising before a battle), `sting_bark.ogg` (a breath under the lead-in
+line), `sting_boss.ogg` (a boss's title card) and `sting_boss_bell.ogg` (the Drownbell's). Does the boss sting read as
+"this one matters" without crowding the battle music's first bar (the music dips 5 dB under it for 3.5 s)? Is the
+Drownbell's drawn-in swell too long before the toll (1.1 s)?
+
+## M3: creature voices and movement (M3-AUD-14)
+
+194 short sounds in `assets/audio/sfx/creatures/`, from `assets_src/sfx/creature_sfx.py`: each creature's idle, attack,
+hurt and death, and how it moves. Nothing here is a recording or an imitation of one. Each creature is a small
+physical model: shell modes for carapace taps and claw snaps, stick-slip for creaks and scrapes, Minnaert bubbles for
+froth and gurgles, a formant voice (an additive throat under vowel-like resonances, with roughness and a growl's
+subharmonic) for anything that calls, and filtered noise bursts for wings. Voices are at −18 LUFS momentary, idles
+−20 and movement −21. In battle the hurt and death play 3 dB under the hit and KO sounds, just behind them. Listen
+in this order, a creature at a time (`ffplay -autoexit <file>`):
+
+| # | Files | What it should be |
+|---|---|---|
+| 1 | `reef_crab_*` | A 1.4 m crab in a coral shell: mandible chatter and froth, a scrape then a hard claw snap, a shell knock and a panicked chatter when hurt, legs rattling to a stop when it dies, and a stony skitter |
+| 2 | `lantern_eel_*` | A low throat purr with bubbles from the gills, and a pure, slowly beating glass hum for its lure. A water rush and a jaw snap. Its death is a long moan sinking under a bubble trail, the lure bending down as it goes out |
+| 3 | `gull_harrier_*` | A storm-fattened sea-bird: a rasping two-note call, a dive (the wings folding) into a screech and the talons raking, heavy wingbeats |
+| 4 | `spawn_polyp_*` | Soft wet mouths: suction pops opening, gurgles, a low wet moan under it, a squelching lunge |
+| 5 | `drownbell_*` | The bell's body, not its toll: the six legs ticking wet under the rim, the rotten rope creaking, a faint dark hum of the bronze. Rearing for `hood_slam`, the bronze grinds on its lip. Hurt is a damped bronze clank. In its death the bell's ring bends down as it drowns |
+| 6 | the Act I foes | `hullgnaw` (the eel through ship's ribs: timber creaks and crunches), `glassfry` (a cloud of tiny glass ticks that tightens to strike), `tower_limpet`, `oil_slug` (slower, viscous), `bottle_hermit` (taps ring on its lamp glass), `sail_leech` (wet flaps), `spar_wraith` (wind through the shrouds as its moan, rope whips, timber collapse), `ashwing` and `flue_moth` (papery flutter, dust), `slag_tortoise` (a hiss and a horny beak), `cinder_matron` (stone grinding, magma bubbling, the crust coming down), `vein_sparker` (arcs and a hiss), `shoal_skipper` (mud slaps and a wet gulp), `raid_hound` (a growl, a bark, a yelp, a whine, paws on deck boards and the harness), `tide_crawler` and `scuttler` (wet spawn crawlers), `squall_wing` (a gull heard through rain), `undertows_reach` (a mass of water and a groan below hearing's floor) |
+
+**What to listen for:**
+- **Does anything sound like a recording of a real animal?** It shouldn't, but the hound's bark and the harrier's
+  call are closest. If one sounds like an actual dog or gull, say so and it gets pushed further from the animal.
+- **The voices are the part most likely to sound synthetic:** a buzzy or "talking robot" throat means fewer
+  harmonics and more breath. The eel's purr and the polyp's moan are meant to be felt more than heard.
+- **Movement repeats on every action.** Do the skitters, wingbeats and squelches get tiring after ten turns? If one
+  does, it gets quieter, or a third variant.
+- **Bright clicks:** the crab, scuttler and bottle hermit skitters and the glassfry are click-heavy by design. Do
+  they read as legs and glass, or as digital clicks?
+- **Variants:** the wreck crab, wallcrab, wall polyp and stormgull play their parent's set at another pitch. Is
+  that distinct enough, or does each want its own?
+
+## M2: the menus' pages (M2-AUD-14)
+
+Seven UI sounds in `assets/audio/sfx/`, from `assets_src/sfx/menu_page_sfx.py`, in the palette of the M3 menu set
+(bars on D-A-E, dry paper, soft air, a small room): `ui_item_use`, `ui_item_sort`, `ui_formation_pick`,
+`ui_formation_swap`, `ui_customize_open`, `ui_craft` and `ui_map_pan`. All at −20 LUFS momentary; the pan plays 6 dB
+under that in game. Listen with `ffplay -autoexit <file>`, then next to `ui_cursor`, `ui_confirm` and `ui_equip`.
+
+**What to listen for:**
+- **Do they belong with the menu set?** `ui_craft` should read as a smaller cousin of `ui_lattice_node`, and
+  `ui_formation_swap` as a relative of `ui_equip`, not as a new instrument.
+- **Repetition:** a player uses five tonics in a row and re-sorts the bag twice. Do `ui_item_use`'s bubbles or
+  `ui_item_sort`'s flicks get tiring? If so, they get quieter, or a second variant.
+- **`ui_map_pan`** plays at most every 110 ms while the map moves. Does it read as paper sliding, or as noise
+  hiss? Does the train sound like a slide or like a ticking clock?
+- **`ui_customize_open`'s low hum:** is it too heavy for opening a list?
+
+## M3: Act I temples (M3-AUD-19)
+
+Three loops for the temples and the Bell's galleries. None of their scenes is built on this branch yet, so for now
+you can only hear them on their own. The scenes are in act_outline.md (Ch5, Ch7 and Ch8). About 4 minutes in all.
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/ashcrown.ogg` | 80.0 s loop | Ch5: the Ashcrown temple, the Cinder Matron's home, under the falling ash |
+| 2 | `music/coilspire.ogg` | 73.0 s loop | Ch8: the Coilspire temple at Corrow, the beacon's trial, before the storm |
+| 3 | `music/tamsule_bell_galleries.ogg` | 80.0 s loop | Ch7: the galleries inside the Tamsule Bell, around the arena (not the match) |
+
+### (1) Ashcrown: the heat under the stone
+
+- **The band:** a breathy flute in its warm middle plays a call (Bb, C, Db, held) and its falling answer. Under it
+  is a dark, low string pad that swells and sinks with each chord: the embers. Soft copper bowls, long and slowly
+  beating, fall in short figures where the flute rests: the copper veins carrying the strike down. Kettle gongs sound
+  on 1 and 3, a large gong every four bars, and a big drum's slow heartbeat. In the second half the men hum Bb under
+  it, and in bars 13-16 a low rumble of the plume swells twice.
+- **The key:** B-flat minor, 4/4 at 60 BPM, the slowest metred loop in Act I. Every note of the Terraces' five-note
+  scale is in this key, so the temple should sound like the same mountain, higher up and closer to the fire. **Does
+  it feel warm-dark and ritual, or only slow?** If it drags, I'd add bowls before I'd raise the tempo.
+- **The plume rumble** is meant to be felt more than heard. On speakers without bass you may not hear it at all.
+  If it does come through, does it read as the mountain, or as wind noise?
+- Is the drum heartbeat too regular? It should be a procession, not a clock.
+
+### (2) Coilspire: everything climbs, nothing arrives
+
+- **The idea:** one two-bar flute cell (up a fourth, then back down by step) comes back a step higher each time,
+  the way the beacon's fire climbs the spire. Under it, damped copper bars run eighths in a 3+3+2 pattern, each group
+  starting a step higher (the flues opening and shutting). A bass and drums keep the same 3+3+2. In the middle
+  section men and women hum the rising bass in long notes, and the music brightens for one bar into B major. In bars
+  21-24 the flute climbs to its top note (the fire at the top). Then it falls away, and C-sharp major leads back to
+  the start.
+- **The key:** F-sharp minor, 4/4 at 92 BPM. That is the dominant of the seawall's B minor, so it should sound like
+  Corrow's question left open. **Is it tense without being a battle?** If it sounds like a fight, the drums are too
+  forward. If it sounds calm, the flues are too soft.
+- **The surf** washes against the spire's foot every two bars, low and wide, left then right. Is it salt and stone,
+  or a hiss?
+- The flute is high and hard-blown here (up to E6). Is it a wind in the flues (good), or shrill (bad)?
+- Mastering: the big drum's hits take up to about 2 dB of fast limiting on 0.3 % of samples. Do the downbeats sound
+  flattened?
+
+### (3) The Bell's galleries: inside an instrument
+
+- **The idea:** the drone is the Tamsule Bell's own partials, held: its hum, prime, minor-third tierce, fifth and
+  octave. A struck bell also has a major third an octave higher up (the deciem). In the middle eight bars the minor
+  third sinks and the major third rises, so the music turns from A minor to A major and back. The Bell itself, the
+  same padded bell as in the Tidecup and the town, strikes at bars 1, 13 and 21.
+- **The band:** a slow flute song in 3/4 at 54 BPM, with no drums at all. Each long note comes back a beat later
+  from the other side, darker and quieter: the sound running round the gallery's curved wall. Soft glass bars double
+  the song's long notes an octave up in the second half, and a low plucked string marks each root.
+- **The key question:** does it feel resonant and hollow, like being inside a bell, or just empty? Does the echo
+  read as the room, or as a mistake?
+- **Tuning:** the drone's thirds are a bell's (a just minor third, about 15 cents sharp of the piano's C), so the
+  flute's C and C# rub very slightly against it. This is deliberate. If it sounds out of tune rather than like
+  bronze, I'll tune the drone to the flute.
+- Does the major middle section sound like a memory (Toma played here as a boy) or like a different piece?
+
+**For all three:** can you hear the loop wrap? The seams are at 80.0 s, 73.0 s and 80.0 s. Each file starts a
+sixteenth before its first downbeat, so the wrap falls between notes.
+
+## M3: the Ch6 boss, the Stillguard Inquisitor and the raid-hound (M3-AUD-20)
+
+`music/stillguard_inquisitor.ogg`: a 4.6 s intro and a 73.8 s loop (78.5 s in all), from
+`assets_src/music/stillguard_inquisitor.py`. The fight isn't built yet, so for now it can only be heard on its own.
+The scene is act_outline.md Ch6: an Order raid burning a Saltwright salvage camp in the Brine Shoals. It is the
+first fight against the Order's own people, and Toma refuses to strike to kill. So it must not sound like a monster
+fight. It should sound lawful and cold, with sorrow under it.
+
+- **The brief in sound:** a march in A minor, 4/4 at 104 BPM. It keeps to the white notes (the Order's C major seen
+  from below) except for the G# of the cadences. The drill drums are barely humanized (1 ms), unlike every other
+  battle cue: the Order keeps exact time.
+- **The band:** frame drums in a strict march pattern, with the big drum on 1 and 3. Shields (a hand-damped kettle
+  gong under a hard slap) strike on beat 4, and three times ("Hold. On my shield.") at each cadence. A low piano
+  marches in octaves on eighths. The edict theme is on piano in octaves, marcato. A men's hum holds the chord roots
+  under the whole loop, because the Order hums and only Cantors sing.
+- **The people (bars 13-20):** the drums thin to the dum. A breath flute plays the lament in C major over
+  F C G Am, and women hum above the men. In A'' (bars 25-32) the edict drops an octave and the flute's counterline
+  sits over it: law and sorrow at once.
+- **The hound (bars 21-24):** the drill breaks into running sixteenths, the bass snaps through the flattened second
+  (Bb) in eighths, and the shields strike on 2 and 4.
+- **The key questions:** does it read as **people** (the Order's discipline) and not a beast? Does the sorrow
+  come through, or is it only stern? **Does the strict drill sound disciplined, or mechanical?** If it's
+  mechanical, I'd add a little timing spread before changing the pattern. **Is the piano edict cold, or thin
+  against the drums?** If it's thin, I'd double it on the flute an octave up in A rather than raise the piano.
+- **Do the shields sound like a struck shield,** or like a pot or a gong? If they're a gong, the plate gets shorter.
+- **Can you hear the loop wrap?** The seam is 73.8 s after the intro, a sixteenth before bar 1's downbeat.
