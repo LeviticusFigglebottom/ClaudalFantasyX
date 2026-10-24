@@ -16,7 +16,7 @@ The Ch8 seawall creatures. `model` on m2-slice's rows (M3-C08-02). Waves of 3 / 
 - [x] tide_crawler (first pass: 2.7k triangles)
 - [ ] squall_wing (gull harrier's rig, a spawn body)
 - [ ] wall_polyp (variant of spawn_polyp)
-- [ ] undertows_reach (with the PC GPU session)
+- [x] undertows_reach (first pass: 10.9k triangles, six-fingered grip, the three states as phases `dark` and `breach`; the water look is the PC GPU session's)
 - [ ] Low priority (m2-slice, unconfirmed): stormgull, wallcrab, flue_moth
 
 ## Notes

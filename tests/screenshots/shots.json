@@ -916,6 +916,7 @@
     {"id": "creature_shoal_skipper", "scene": "res://game/levels/_tests/creatures/shots/creature_shoal_skipper.tscn", "resolution": [960, 720]},
     {"id": "creature_raid_hound", "scene": "res://game/levels/_tests/creatures/shots/creature_raid_hound.tscn", "resolution": [960, 720]},
     {"id": "creature_tide_crawler", "scene": "res://game/levels/_tests/creatures/shots/creature_tide_crawler.tscn", "resolution": [960, 720]},
-    {"id": "creature_vein_sparker", "scene": "res://game/levels/_tests/creatures/shots/creature_vein_sparker.tscn", "resolution": [960, 720]}
+    {"id": "creature_vein_sparker", "scene": "res://game/levels/_tests/creatures/shots/creature_vein_sparker.tscn", "resolution": [960, 720]},
+    {"id": "creature_undertows_reach", "scene": "res://game/levels/_tests/creatures/shots/creature_undertows_reach.tscn", "resolution": [960, 720]}
   ]
 }

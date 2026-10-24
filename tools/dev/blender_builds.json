@@ -256,6 +256,16 @@
         ["{blender}", "--python", "assets_src/creatures/vein_sparker/build_vein_sparker.py", "--", "--out", "assets/creatures/vein_sparker/vein_sparker.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "vein_sparker"]
       ]
+    },
+    {
+      "id": "creature_undertows_reach",
+      "owner": "character",
+      "sources": ["assets_src/creatures/undertows_reach/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/undertows_reach/*.glb", "assets/creatures/undertows_reach/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/undertows_reach/build_undertows_reach.py", "--", "--out", "assets/creatures/undertows_reach/undertows_reach.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "undertows_reach"]
+      ]
     }
   ]
 }
