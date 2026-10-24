@@ -701,3 +701,61 @@ SET_BACKING_HELP,A dark band behind dialogue and cutscene lines so they stay rea
 SET_BACKING_OFF,Off
 SET_BACKING_SOFT,Soft
 SET_BACKING_SOLID,Solid
+SET_MENU_CONTROLS,Controls
+SET_MENU_HELP_CONTROLS,"Rebind every action, on the keyboard and on a gamepad."
+CTRL_ROW_DEVICE,Rebinding
+CTRL_ROW_RESET,Reset to defaults
+CTRL_DEVICE_KEYBOARD,Keyboard
+CTRL_DEVICE_PAD,Gamepad
+CTRL_VALUE_FMT,{key}  ·  {pad}
+CTRL_CELL_ACTIVE_FMT,[ {v} ]
+CTRL_CELL_WAITING,…
+CTRL_PAD_BUTTON_FMT,Button {n}
+CTRL_ACT_UI_UP,Menu up
+CTRL_ACT_UI_DOWN,Menu down
+CTRL_ACT_UI_LEFT,Menu left
+CTRL_ACT_UI_RIGHT,Menu right
+CTRL_ACT_UI_ACCEPT,Confirm
+CTRL_ACT_UI_CANCEL,Cancel and field menu
+CTRL_ACT_FIELD_INTERACT,Interact
+CTRL_ACT_FIELD_MOVE_FORWARD,Move forward
+CTRL_ACT_FIELD_MOVE_BACK,Move back
+CTRL_ACT_FIELD_MOVE_LEFT,Move left
+CTRL_ACT_FIELD_MOVE_RIGHT,Move right
+CTRL_ACT_FIELD_WALK,Walk
+CTRL_ACT_FIELD_CAMERA_LEFT,Turn the camera left
+CTRL_ACT_FIELD_CAMERA_RIGHT,Turn the camera right
+CTRL_HELP_DEVICE,Left and Right: choose which column Confirm rebinds · Cancel: back
+CTRL_HELP_ACTION_KEYS,Confirm: press a new key for this action · Left and Right: the gamepad column
+CTRL_HELP_ACTION_PAD,Confirm: press a new gamepad button for this action · Left and Right: the keyboard column
+CTRL_HELP_RESET,"Confirm: put every key and button back as it was, on both columns."
+CTRL_HELP_LISTEN_KEYS,Press a key… (Escape: cancel)
+CTRL_HELP_LISTEN_PAD,Press a gamepad button… (B or Escape: cancel)
+CTRL_HELP_REJECTED,"That one cannot go here: it is reserved, or another action would be left without it. Press another… (Escape: cancel)"
+CTRL_HELP_SWAPPED_FMT,Swapped: {action} now uses the old one.
+CTRL_HELP_WAS_RESET,Every key and button is back as it was.
+CTRL_PAD_A,A
+CTRL_PAD_B,B
+CTRL_PAD_X,X
+CTRL_PAD_Y,Y
+CTRL_PAD_BACK,Back
+CTRL_PAD_GUIDE,Guide
+CTRL_PAD_START,Start
+CTRL_PAD_LEFT_STICK_PRESS,Left stick press
+CTRL_PAD_RIGHT_STICK_PRESS,Right stick press
+CTRL_PAD_LEFT_SHOULDER,Left shoulder
+CTRL_PAD_RIGHT_SHOULDER,Right shoulder
+CTRL_PAD_DPAD_UP,D-pad Up
+CTRL_PAD_DPAD_DOWN,D-pad Down
+CTRL_PAD_DPAD_LEFT,D-pad Left
+CTRL_PAD_DPAD_RIGHT,D-pad Right
+CTRL_PAD_LSTICK_LEFT,Left stick left
+CTRL_PAD_LSTICK_RIGHT,Left stick right
+CTRL_PAD_LSTICK_UP,Left stick up
+CTRL_PAD_LSTICK_DOWN,Left stick down
+CTRL_PAD_RSTICK_LEFT,Right stick left
+CTRL_PAD_RSTICK_RIGHT,Right stick right
+CTRL_PAD_RSTICK_UP,Right stick up
+CTRL_PAD_RSTICK_DOWN,Right stick down
+CTRL_PAD_LEFT_TRIGGER,Left trigger
+CTRL_PAD_RIGHT_TRIGGER,Right trigger

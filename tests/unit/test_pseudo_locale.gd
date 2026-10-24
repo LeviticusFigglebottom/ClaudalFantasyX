@@ -33,6 +33,7 @@ const DRIVERS := {
 	"res://game/ui/bestiary/shots/bestiary_menu.tscn": "bestiary",
 	"res://game/ui/settings/shots/settings_hub.tscn": "settings hub",
 	"res://game/ui/settings/shots/settings_accessibility.tscn": "accessibility page",
+	"res://game/ui/settings/shots/settings_controls.tscn": "controls page",
 	"res://game/ui/shop/shots/shop_buy.tscn": "shop, buy",
 	"res://game/ui/shop/shots/shop_sell.tscn": "shop, sell",
 	"res://game/ui/shop/shots/inn.tscn": "inn",

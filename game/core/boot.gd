@@ -30,6 +30,7 @@ var _card: BootCard
 
 
 func _ready() -> void:
+	ControlsModel.apply_saved(UiSettings.CONFIG_PATH)  # M2-UI-13: saved key and pad bindings
 	GraphicsRuntime.boot(get_viewport())
 	if is_game_scene():
 		_cover_until_warm()

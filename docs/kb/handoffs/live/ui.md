@@ -11,28 +11,24 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 6. (Found on claude/characters) **M2-UI-07**, the hero actor hook: **hook done and pushed (08c872c)**. It is **blocked** on M2-CHR-06's scenes reaching the integration branch; after that it needs three `"scene"` lines in battle_sandbox.json and shot re-approval.
 
 ## Now
-- **Merged `origin/claude/m2-slice` (bf18e854, which contains 24894292) into claude/ui at the Lead's request.**
-  - **Graphics page:** kept both sides. It is a `SettingsPage` (M2-UI-09), and m2-slice's M1-UI-11 "Applying" veil now runs through two new SettingsPage hooks: `is_busy()` swallows input and blocks close while the veil is up, and `_change(delta)` lets a preset change go behind the veil. The model keeps m2-slice's warm-up tracking on top of `SettingsPageModel`. The json keeps both `hub` and `apply`.
-  - **strings.csv:** `merge_union.py`, then I dropped the two old texts it appended again (BESTIARY_HELP and TITLE_HELP_SETTINGS keep this branch's rewording). shots.json and baselines.json were merged by union.
-  - **Gates:** validate_data 0/0; gdlint and gdformat clean; filtered runs (graphics 54, settings 46, title 16, menu 125, ui_ 46) all 0 failed; full suite **1552 run, 0 failed**, log check clean. Coverage was not re-run: my side of the merge touched no battle or progression code.
-  - **Shots:** `boot_title`, `settings_hub`, `settings_accessibility`, `field_menu` and `bestiary_menu` are unchanged by the merge (rmse 0). m2-slice's `shop_menu_buy`, `shop_menu_sell` and `inn_menu` moved only because they now draw in the ADR 0033 theme; I viewed and re-approved them.
-- **The human asked directly for more flair in the menus and theme.** Done as **M2-UI-10** (ADR 0033), in review with reviewer character (Art):
-  - Panel glint, corner ticks and tide lines.
-  - A lamplit cursor whose row nudges right.
-  - Gold header rules.
-  - Caustic backdrops behind the full-screen menus.
-  - All of it is theme data. 21 baselines were re-approved after viewing them (every battle shot, menus, title, save dialog, Drownbell). The Settings hub and pages also had a zero-size anchoring bug, now fixed.
-- **Lead queue top-up (2026-10-24 11:00):**
-  1. M2-UI-08: **already done**, in review (reviewer character).
-  2. Accessibility audit and fixes: **next**. One task per item: colour-blind timeline and status chips, dialogue text size and speed, a subtitle background, full control remapping, and hold-to-confirm for timing inputs.
-  3. Localization-readiness pass: a pseudo-locale render test, and a tools test for strings without a loc key.
-  4. M2-UI-07 after the claude/characters merge.
-- **Review-ready:** M2-UI-03, M2-UI-08, M2-UI-09, M2-UI-10, and ADR 0030's amendment.
-- **Gates at the last push:** full suite 1483/0, godot_log_check clean.
+- **The Lead's queue top-up (11:00) is done apart from M2-UI-07,** which waits on claude/characters. All in review:
+  - **Item 1, M2-UI-08:** Art's two colour fixes (done earlier).
+  - **Item 2, the accessibility audit, one task per item:**
+    - **M2-UI-11:** the colour-blind palette. The old orange `#F08A24` was *less* distinct than red under deuteranopia: 0.085 Oklab from the Swell amber. The new `#D15E1F` reaches 0.177 at 4.6:1 contrast. Regression test with CVD matrices; new shot `battle_statuses_colorblind`. Reviewer character; **art/ui.md §9 needs updating by Art.**
+    - **M2-UI-12:** text speed and subtitle backing on the Accessibility page, with query methods for the box. **M2-ARC-07 filed** for Architect's dialogue box to read them; text size there is M2-ARC-06.
+    - **M2-UI-13:** a Controls page (a worktree agent's work, merged), for keyboard and pad remapping with swap-on-conflict. Escape or B always backs out, and Cancel can never be unbound. It saves to `[controls]`, and **one line in `game/core/boot.gd`** applies the saved bindings (Architect's file: please accept). **Behaviour change:** pad A and B now confirm and cancel in menus; Godot ships those actions with no pad buttons.
+    - **M2-UI-14:** hold to confirm (`timing_assist` "hold"). Reviewer combat, because `swell_input.gd` changed.
+  - **Item 3, M2-UI-15:** a pseudo-locale render test and a no-hard-coded-string check (the codebase was clean). Fixes: the hub help line now wraps, and the shop and inn lines size to their text. **The shop's sell description and refusal line were already cut off in English.**
+- **The human asked directly for UI flair:** M2-UI-10 / ADR 0033, in review with Art. The m2-slice merge (c2d03e29) is pushed.
+- **Gates at the last push:**
+  - Full suite **1578 run, 0 failed**, log check clean.
+  - Coverage battle 99.95% / progression 96.69% (within baseline); tools unittest 519 OK.
+  - validate_data 0/0, lint and format clean, manifest 91 shots.
+  - Shots viewed and approved this round: `battle_statuses_colorblind`, `settings_accessibility` (six rows), `settings_controls`, `settings_hub` (three rows), and `shop_menu_buy`, `shop_menu_sell`, `inn_menu`.
+- **Only M2-UI-07 remains in the queue. Lead: please queue more.**
 
 ## Exact next step
-- Wait for a new queue from the Lead.
-- When M2-CHR-06 merges, finish M2-UI-07: add the three `"scene"` lines and re-approve the battle shots after viewing them, checking that the idle animation gives stable captures.
+- When claude/characters is on the integration branch, merge it here and finish M2-UI-07: add the three `"scene"` lines to battle_sandbox.json `stand_ins`, capture the battle shots twice to check the idle animation keeps them stable, then view and re-approve them.
 
 ## Un-pushed state
 - None.

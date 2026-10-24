@@ -914,6 +914,10 @@
       "scene": "res://game/ui/settings/shots/settings_accessibility.tscn"
     },
     {
+      "id": "settings_controls",
+      "scene": "res://game/ui/settings/shots/settings_controls.tscn"
+    },
+    {
       "id": "haluna_h10_dock_night",
       "scene": "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
       "camera": "Cameras/H10",
