@@ -483,3 +483,6 @@ Rules:
 | assets/audio/music/oruvel.loop.json | assets_src/music/oruvel.py + tools/audio/synth/looping.py | python3 assets_src/music/oruvel.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
 | assets/audio/music/pilgrims_wake.ogg | assets_src/music/pilgrims_wake.py + tools/audio/synth/ | python3 assets_src/music/pilgrims_wake.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
 | assets/audio/music/pilgrims_wake.loop.json | assets_src/music/pilgrims_wake.py + tools/audio/synth/looping.py | python3 assets_src/music/pilgrims_wake.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
+| assets/audio/music/tamsule.ogg | assets_src/music/tamsule.py + assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 assets_src/music/tamsule.py | Audio (claude/audio, M3-AUD-12) | 2026-10-24 | original |
+| assets/audio/music/tamsule.loop.json | assets_src/music/tamsule.py + tools/audio/synth/looping.py | python3 assets_src/music/tamsule.py | Audio (claude/audio, M3-AUD-12) | 2026-10-24 | original |
+| assets/audio/music/iskarra_vigil.ogg | assets_src/music/iskarra_vigil.py + assets_src/music/hush_theme_v2.py + assets_src/music/hush_first_verse.py + tools/audio/synth/ | python3 assets_src/music/iskarra_vigil.py | Audio (claude/audio, M3-AUD-12) | 2026-10-24 | original |
