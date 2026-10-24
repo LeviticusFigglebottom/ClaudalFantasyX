@@ -3,7 +3,7 @@ id: M2-RND-04
 title: Drownbell boss: the flood rig and phase-change VFX
 role: rendering
 status: doing
-owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU)"
+owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 depends_on: [M2-RND-03]
 milestone: M2
 request-from: "lead"
