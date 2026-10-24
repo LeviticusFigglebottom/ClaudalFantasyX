@@ -20,6 +20,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+import pemakar_arena  # noqa: E402
 import pemakar_common as pc  # noqa: E402
 import pemakar_graves  # noqa: E402
 import pemakar_skyline  # noqa: E402
@@ -28,7 +29,7 @@ import pemakar_town  # noqa: E402
 
 kc = pc.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
-MODULES = (pemakar_terraces, pemakar_graves, pemakar_town, pemakar_skyline)
+MODULES = (pemakar_terraces, pemakar_graves, pemakar_town, pemakar_skyline, pemakar_arena)  # arena: M3-ENV-06
 
 
 def targets() -> dict:

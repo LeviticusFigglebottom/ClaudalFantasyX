@@ -2,6 +2,17 @@
   "generator": "assets_src/environments/kits/brine_shoals/build.py",
   "kit": "brine_shoals",
   "pieces": {
+    "arena_derelict_deck": {
+      "budget": [
+        60000,
+        8000
+      ],
+      "bytes": 1943120,
+      "lods": {
+        "arena_derelict_deck": 29264,
+        "arena_derelict_deck-lod1": 3262
+      }
+    },
     "branding_brazier": {
       "budget": [
         3500,

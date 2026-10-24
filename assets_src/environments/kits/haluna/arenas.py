@@ -24,6 +24,13 @@ script's sun azimuths); the BattleCamera looks north.
                           on the north-east horizon (env_ground masks as above).
   arena_causeway_arms     the causeway's slab path leaving the disc: north-north-east towards the shrine
                           (frame right, receding) and south-west towards Haluna (behind the camera).
+  arena_causeway_route_ground  causeway_route_afternoon (M3-ENV-06): the Saltgrass Causeway's flats at
+                          14:30, low water. A firm shell-and-sand bar under the fight (the floor, y = 0),
+                          the flats falling away round it to tidepools and channels just under low water,
+                          saltgrass hummocks, the causeway's low bed running past the enemy line from the
+                          south-west (frame left) and away north-east to the Shell Shrine's islet on the
+                          horizon, the open lagoon east (frame right). The slabs on the bed are the kit's
+                          own causeway_slab_* pieces, placed by arena_scenes.py on ROUTE_PATH.
 
 The flood rig (battle_vfx.md "The Drownbell") raises its water from -0.7 to +0.6 m around the origin;
 the disc's top is y = 0 and its pool floor -0.95, so at low water the pool holds water and the flats
@@ -46,6 +53,7 @@ TRI_BUDGET = {
     "causeway_disc": (60000, 24000),
     "arena_causeway_flats": (60000, 12000),
     "arena_causeway_arms": (30000, 6000),
+    "arena_causeway_route_ground": (60000, 12000),
 }
 
 # battle_sandbox.tscn slot markers (x, z): party 0..2, then enemies 0..2.
@@ -492,6 +500,95 @@ def build_causeway_arms(seed: int = 241) -> list[kc.MeshBuilder]:
     return out
 
 
+# ---------------------------------------------------------------------------------------------
+# causeway_route_afternoon: the route's flats (M3-ENV-06)
+# ---------------------------------------------------------------------------------------------
+# The arena's datum is the bar's top: low water lies ROUTE_WATER_Y under it (the zone's flats sit just above
+# low water; the bar is a firm shell bank the slabs have half sunk into).
+ROUTE_FLOOR_CENTER = (-0.2, 0.3)
+ROUTE_FLOOR_RADII = (5.4, 4.0)
+ROUTE_WATER_Y = -0.45  # low water under the bar's top
+ROUTE_FLATS_Y = -0.34  # the flats' mean: a hand above low water, so the pools and channels hold it
+ROUTE_BED_Y = -0.26  # the causeway bed's crown: under the saltgrass line (-0.2), so the slabs stand clear of the grass
+ROUTE_LAGOON_Y = -2.6
+# The causeway's line (x, z): in from the south-west behind the camera's left, past the enemy line (frame
+# left), then away north-east to the shrine's islet (the same islet and bearing as causeway_disc_sunset).
+ROUTE_PATH = ((-14.0, 26.0), (-10.5, 9.0), (-9.4, 0.0), (-6.8, -6.8), (0.0, -10.6), (9.0, -15.5), (22.0, -25.0),
+              (38.0, -42.0), (55.0, -70.0), (70.0, -112.0), (82.0, -160.0), (91.0, -205.0), (95.0, -226.0))
+ROUTE_ISLET = (97.0, -241.0, 26.0, 2.4)  # x, z, radius, height: as ISLET
+ROUTE_HUMMOCKS = ((-14.5, -9.0, 4.2, 0.28), (13.0, -6.5, 3.6, 0.22), (-19.0, -24.0, 5.5, 0.32),
+                  (17.0, -30.0, 4.6, 0.25), (-4.0, -26.0, 3.2, 0.18), (31.0, -12.0, 3.0, 0.2))
+ROUTE_POOLS = ((8.5, -7.0, 2.6, 1.6), (-12.0, 4.5, 2.2, 1.4), (5.0, -21.0, 3.4, 1.8), (-9.0, -17.0, 2.0, 1.2),
+               (24.0, -18.0, 3.0, 2.0))  # x, z, radius x, radius z: tidepools under low water
+
+
+def route_height(noise: kc.Noise3):
+    def h(X, Z):
+        n_big = noise2(noise, X, Z, 9.0, 3, 2.7) - 0.5
+        n_small = noise2(noise, X, Z, 2.2, 2, 6.3) - 0.5
+        s = (X - Z) / math.sqrt(2.0)  # the bars run north-east, like the disc's flats
+        t = (X + Z) / math.sqrt(2.0)
+        bars = noise2(noise, s * 0.25, t, 10.0, 3, 1.9)
+        out = ROUTE_FLATS_Y + 0.16 * kc.smoothstep(0.55, 0.8, bars) - 0.2 * kc.smoothstep(0.42, 0.22, bars)
+        out = out + n_big * 0.08 + n_small * 0.025
+        # The causeway's bed: a low embankment under the path, as in the zone.
+        d_path = seg_distance(X, Z, ROUTE_PATH)
+        out = np.maximum(out, ROUTE_BED_Y - 0.03 * d_path ** 2 + n_small * 0.04)
+        for hx, hz, hr, hh in ROUTE_HUMMOCKS:
+            q = np.hypot(X - hx, Z - hz) / hr
+            out = np.maximum(out, ROUTE_FLATS_Y + (hh - ROUTE_FLATS_Y) * (1.0 - kc.smoothstep(0.3, 1.0, q))
+                             + n_small * 0.12 * (q < 1.0))
+        for px, pz, rx, rz in ROUTE_POOLS:
+            q = np.hypot((X - px) / rx, (Z - pz) / rz)
+            out = out - (0.32 + n_big * 0.1) * (1.0 - kc.smoothstep(0.55, 1.0, q))
+        # Away from the causeway the flats fall to the open lagoon (east and far north).
+        r = np.hypot(X, Z)
+        far = kc.smoothstep(45.0, 120.0, np.minimum(r, d_path + 30.0)) * kc.smoothstep(-30.0, 10.0, X - 0.2 * Z)
+        out = out * (1.0 - far) + ROUTE_LAGOON_Y * far
+        ix, iz, ir, ih = ROUTE_ISLET
+        q = np.hypot(X - ix, Z - iz) / ir
+        islet = ROUTE_LAGOON_Y + (ih - ROUTE_LAGOON_Y) * (1.0 - kc.smoothstep(0.45, 1.0, q)) + n_big * 1.4 * (q < 1.2)
+        out = np.maximum(out, islet)
+        # The bar: the fighting floor, easing out to the flats.
+        w = floor_weight(X, Z, ROUTE_FLOOR_CENTER, ROUTE_FLOOR_RADII, 0.38)
+        return out * (1.0 - w) + FLOOR_Y * w
+
+    return h
+
+
+def route_masks(noise: kc.Noise3):
+    def m(X, Z, H):
+        n1 = noise2(noise, X, Z, 5.0, 2, 3.7)
+        n2 = noise2(noise, X, Z, 1.8, 2, 8.1)
+        d_path = seg_distance(X, Z, ROUTE_PATH)
+        w = floor_weight(X, Z, ROUTE_FLOOR_CENTER, ROUTE_FLOOR_RADII, 0.3)
+        clear = 1.0 - w  # the fighting floor is one clean sand tone (tactical clarity)
+        turf = kc.smoothstep(-0.2, 0.05, H) * kc.smoothstep(0.32, 0.5, n1) * clear
+        seagrass = kc.smoothstep(ROUTE_WATER_Y + 0.02, ROUTE_WATER_Y - 0.3, H) * kc.smoothstep(0.4, 0.58, n1)
+        rubble = (1.0 - kc.smoothstep(1.0, 2.4, d_path)) * kc.smoothstep(0.3, 0.5, n2 + 0.15) * 0.8
+        shell = (1.0 - kc.smoothstep(0.6, 1.0, w + 0.4)) * kc.smoothstep(0.6, 0.8, n2) * 0.5  # the bar's shell rim
+        lane = (1.0 - kc.smoothstep(0.6, 1.5, d_path)) * 0.45
+        return np.stack([lane * clear, turf, seagrass, np.maximum(rubble, shell) * clear], axis=-1)
+
+    return m
+
+
+def build_route_ground(seed: int = 251) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("arena_causeway_route_ground", seed)
+        noise = kc.Noise3(rng)
+        if lod:
+            xs = axis(-160.0, 200.0, -16.0, 16.0, 2.0, 1.25, 30.0)
+            zs = axis(-300.0, 40.0, -24.0, 10.0, 2.0, 1.25, 30.0)
+        else:
+            xs = axis(-160.0, 200.0, -16.0, 16.0, 0.5, 1.07, 10.0)
+            zs = axis(-300.0, 40.0, -24.0, 10.0, 0.5, 1.07, 10.0)
+        out.append(ground_grid("arena_causeway_route_ground" + ("-lod1" if lod else ""), xs, zs, route_height(noise),
+                               route_masks(noise)))
+    return out
+
+
 def floor_height_at(builder: kc.MeshBuilder, x: float, z: float, radius: float = FLOOR_CLEAR_M) -> tuple[float, float]:
     """(min, max) top height of the builder's upward-facing vertices within `radius` of (x, z) (tests)."""
     pos = np.asarray(builder.pos)
@@ -506,4 +603,5 @@ TARGETS = {
     "causeway_disc": build_causeway_disc,
     "arena_causeway_flats": build_causeway_flats,
     "arena_causeway_arms": build_causeway_arms,
+    "arena_causeway_route_ground": build_route_ground,
 }

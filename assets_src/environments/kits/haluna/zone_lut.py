@@ -27,6 +27,18 @@ M2-ENV-11 adds the battle arenas' grades (`--grade`; the default stays `ch02_noo
                 saturation x1.08.
       python3 assets_src/environments/kits/haluna/zone_lut.py --grade ch03_sunset \
           --out assets/environments/arenas/causeway_disc_sunset/lut_ch03_sunset.png
+
+M3-ENV-06 adds the two night grades of the Act I arenas (practical-keyed night frames, colour script rule 3):
+  ch04_wake         lut_ch04_wake (colour script Ch4): the oil-lamp pools kept saturated, everything outside
+                    them (cool, grey or dark) cooled and desaturated 15%; S-curve 0.6, saturation x0.95;
+                    the black point lifted to night_sky, never 0.
+      python3 assets_src/environments/kits/haluna/zone_lut.py --grade ch04_wake \
+          --out assets/environments/arenas/derelict_deck_night/lut_ch04_wake.png
+  ch05_lanternfall  lut_ch05_lanternfall (colour script Ch5): oranges and reds boosted 12%, greens pulled
+                    towards teal, the neutral volcanic stone kept neutral-cool so the flames read; S-curve
+                    0.55, saturation x1.15, the black point at night_sky.
+      python3 assets_src/environments/kits/haluna/zone_lut.py --grade ch05_lanternfall \
+          --out assets/environments/arenas/ash_terrace_lanternfall/lut_ch05_lanternfall.png
 """
 
 from __future__ import annotations
@@ -52,6 +64,7 @@ TOE_HEX = "#0E4A55"  # deep_teal_shadow
 TOE_STRENGTH = 0.35  # how far the darkest tones move to the teal (luminance-preserving)
 TOE_END = 0.38  # sRGB luminance where the toe tint has faded out
 BLACK_FLOOR = 0.12  # the darkest output is the teal at this fraction of its own value
+NIGHT_SKY_HEX = "#050A14"  # night_sky: the night frames' toe and black point (colour script rule 5)
 HIGHLIGHT_HEX = "#FFF8EE"  # cumulus_lit / highlight roll-off target
 HIGHLIGHT_START = 0.72
 HIGHLIGHT_STRENGTH = 0.55
@@ -81,6 +94,17 @@ GRADES = {
                     "black_floor": 0.12, "highlight_hex": "#FFE0B0", "highlight_start": 0.6,
                     "highlight_strength": 0.45, "magenta_clip": 0.85, "magenta_hue_deg": (285.0, 350.0),
                     "magenta_target_deg": 12.0},
+    # M3-ENV-06. Lamp pools saturated, the rest cooled and 15% greyer; the toe and black point at night_sky.
+    "ch04_wake": {"saturation": 0.95, "s_curve": 0.6, "toe_hex": NIGHT_SKY_HEX, "toe_strength": 0.5, "toe_end": 0.3,
+                  "black_floor": 1.0, "highlight_hex": "#FFE6C8", "highlight_start": 0.7, "highlight_strength": 0.4,
+                  "warm_deg": (8.0, 58.0), "warm_sat": 1.0 / 0.95, "cool_sat": 0.85, "cool_hex": "#C8D6EE",
+                  "cool_strength": 0.35},
+    # Oranges and reds +12%, greens towards teal, neutral stone a touch cool; the toe at night_sky.
+    "ch05_lanternfall": {"saturation": 1.15, "s_curve": 0.55, "toe_hex": NIGHT_SKY_HEX, "toe_strength": 0.45,
+                         "toe_end": 0.3, "black_floor": 1.0, "highlight_hex": "#FFE2BC", "highlight_start": 0.7,
+                         "highlight_strength": 0.4, "warm_deg": (-25.0, 50.0), "warm_sat": 1.12, "cool_sat": 1.0,
+                         "cool_hex": "#D2DAE8", "cool_strength": 0.25, "green_deg": (70.0, 165.0),
+                         "green_target_deg": 178.0, "green_shift": 0.45},
 }
 
 
@@ -125,6 +149,36 @@ def clip_magenta(srgb: np.ndarray, g: dict) -> np.ndarray:
     return hsv_to_rgb(hsv)
 
 
+def _hue_band(h: np.ndarray, band: tuple[float, float], soft: float = 12.0) -> np.ndarray:
+    """1 inside the hue band (degrees, may wrap through 0), easing to 0 over `soft` degrees outside it."""
+    h0, h1 = band
+    d = (h - h0) % 360.0  # 0 .. 360 from the band's start
+    width = (h1 - h0) % 360.0
+    inside = np.where(d <= width, 1.0, 0.0)
+    before = 1.0 - smoothstep(0.0, soft, 360.0 - d)
+    after = 1.0 - smoothstep(0.0, soft, d - width)
+    return np.maximum(inside, np.where(d > width, np.maximum(before, after), 0.0))
+
+
+def hue_pass(srgb: np.ndarray, g: dict) -> np.ndarray:
+    """The night grades' selective colour (M3-ENV-06): saturated warm hues (the flames and what they light) take
+    `warm_sat`, everything else `cool_sat` and a luminance-preserving cool tint (`cool_hex` x `cool_strength`);
+    with `green_deg`, greens turn towards `green_target_deg` by `green_shift`."""
+    hsv = rgb_to_hsv(srgb)
+    warm = _hue_band(hsv[..., 0], g["warm_deg"]) * smoothstep(0.08, 0.3, hsv[..., 1])
+    hsv[..., 1] = np.clip(hsv[..., 1] * (g["cool_sat"] + (g["warm_sat"] - g["cool_sat"]) * warm), 0.0, 1.0)
+    if "green_deg" in g:
+        wg = _hue_band(hsv[..., 0], g["green_deg"]) * (1.0 - warm)
+        hsv[..., 0] = hsv[..., 0] + (g["green_target_deg"] - hsv[..., 0]) * g["green_shift"] * wg
+    out = hsv_to_rgb(hsv)
+    lin = srgb_to_lin(np.clip(out, 0.0, 1.0))
+    tint = hex_lin(g["cool_hex"])
+    tint = tint / float(tint @ LUMA)
+    w = (g["cool_strength"] * (1.0 - warm))[..., None]
+    lin = lin * (1.0 - w) + lin * tint * w
+    return np.clip(lin_to_srgb(lin), 0.0, 1.0)
+
+
 def grade_params(name: str) -> dict:
     """The named grade. ch02_noon is read from the module constants at call time, so a kit that loads this module
     and overrides SATURATION / S_CURVE (tamsule_bell/zone_lut.py) still gets its own grade."""
@@ -161,6 +215,10 @@ def grade(srgb: np.ndarray, g: dict | None = None) -> np.ndarray:
     out = np.clip(lin_to_srgb(lin), 0.0, 1.0)
     if g.get("magenta_clip", 0.0) > 0.0:
         out = np.clip(clip_magenta(out, g), 0.0, 1.0)
+    if "warm_deg" in g:
+        out = hue_pass(out, g)
+        # The pass may not lower the black point below the grade's floor.
+        out = np.maximum(out, lin_to_srgb(hex_lin(g["toe_hex"]) * g["black_floor"]))
     return out
 
 

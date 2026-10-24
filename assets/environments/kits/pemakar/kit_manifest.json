@@ -2,6 +2,17 @@
   "generator": "assets_src/environments/kits/pemakar/build.py",
   "kit": "pemakar",
   "pieces": {
+    "arena_ash_tread": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 95376,
+      "lods": {
+        "arena_ash_tread": 2636,
+        "arena_ash_tread-lod1": 92
+      }
+    },
     "ash_plume": {
       "budget": [
         7000,
