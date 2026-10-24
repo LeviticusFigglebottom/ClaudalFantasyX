@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch06/ch06_zone.gd" id="1_zone"]
+
+[node name="BrineShoals" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch06/brine_shoals"
+layout_path = "res://game/levels/ch06/brine_shoals/brine_shoals_layout.json"
