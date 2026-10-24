@@ -106,6 +106,16 @@
         ["{blender}", "--python", "assets_src/creatures/lantern_eel/build_lantern_eel.py", "--", "--out", "assets/creatures/lantern_eel/lantern_eel.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "lantern_eel"]
       ]
+    },
+    {
+      "id": "creature_oil_slug",
+      "owner": "character",
+      "sources": ["assets_src/creatures/oil_slug/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/oil_slug/*.glb", "assets/creatures/oil_slug/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/oil_slug/build_oil_slug.py", "--", "--out", "assets/creatures/oil_slug/oil_slug.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "oil_slug"]
+      ]
     }
   ]
 }

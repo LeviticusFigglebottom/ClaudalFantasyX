@@ -901,6 +901,7 @@
     {"id": "creature_portraits", "scene": "res://game/levels/_tests/creatures/creature_portraits_shot.tscn", "resolution": [1280, 720]},
     {"id": "creature_hullgnaw", "scene": "res://game/levels/_tests/creatures/shots/creature_hullgnaw.tscn", "resolution": [960, 720]},
     {"id": "creature_tower_limpet", "scene": "res://game/levels/_tests/creatures/shots/creature_tower_limpet.tscn", "resolution": [960, 720]},
-    {"id": "creature_lantern_eel", "scene": "res://game/levels/_tests/creatures/shots/creature_lantern_eel.tscn", "resolution": [960, 720]}
+    {"id": "creature_lantern_eel", "scene": "res://game/levels/_tests/creatures/shots/creature_lantern_eel.tscn", "resolution": [960, 720]},
+    {"id": "creature_oil_slug", "scene": "res://game/levels/_tests/creatures/shots/creature_oil_slug.tscn", "resolution": [960, 720]}
   ]
 }

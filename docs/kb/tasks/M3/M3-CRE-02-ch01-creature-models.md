@@ -18,7 +18,7 @@ rows once m2-slice adds them (M3-C01-02).
 - [x] hullgnaw (first pass: 5.4k triangles, 17 bones, the five clips; review shot creature_hullgnaw)
 - [ ] wickfry
 - [x] tower_limpet (first pass: 8.5k triangles, 3 bones, the five clips; review shot creature_tower_limpet)
-- [ ] oil_slug
+- [x] oil_slug (first pass: 4.2k triangles, 9 bones, the five clips; review shot creature_oil_slug)
 
 ## Notes
 
