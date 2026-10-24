@@ -36,6 +36,7 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 - 2026-10-24: Lattice and Equip 130% fixes merged and viewed; M2-MNU-05 to review. Merged the integration branch and claude/ui (M2-UI-17/18: objective line and a Map row, ten root rows; field_menu shots still rmse 0). Full ci_local started.
 
 ## Follow-ups (not in this queue)
+- Party formation menu (SPEC §6.11), suggested for this track by the UI track: waiting on the Lead's yes.
 - ~~`battle_pause` into controls.json~~ done by claude/ui (dce9ab43).
 - Light Step (`encounter_rate_pct`) is not read by the field encounter meter yet.
 - Lattice page: ~~no zoom or drag-pan~~ (done by claude/ui M2-UI-26); a sealed gate not next to the hero doesn't offer to walk there.
