@@ -408,3 +408,10 @@ Rules:
 | assets/audio/sfx/voice/blip_child_1.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
 | assets/audio/sfx/voice/blip_child_2.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
 | assets/audio/sfx/voice/blip_child_3.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/music/saltgrass_causeway.ogg | assets_src/music/saltgrass_causeway.py + assets_src/music/haluna_village.py + tools/audio/synth/ | python3 assets_src/music/saltgrass_causeway.py | Audio (claude/audio) | 2026-10-24 | original |
+| assets/audio/music/saltgrass_causeway.loop.json | assets_src/music/saltgrass_causeway.py + assets_src/music/haluna_village.py + tools/audio/synth/ | python3 assets_src/music/saltgrass_causeway.py | Audio (claude/audio) | 2026-10-24 | original |
+| assets/audio/music/lamp_diver.ogg | assets_src/music/lamp_diver.py + tools/audio/synth/ | python3 assets_src/music/lamp_diver.py | Audio (claude/audio) | 2026-10-24 | original |
+| assets/audio/music/lamp_diver.loop.json | assets_src/music/lamp_diver.py + tools/audio/synth/ | python3 assets_src/music/lamp_diver.py | Audio (claude/audio) | 2026-10-24 | original |
+| assets/audio/music/sefir_theme.ogg | assets_src/music/sefir_theme.py + tools/audio/synth/ | python3 assets_src/music/sefir_theme.py | Audio (claude/audio) | 2026-10-24 | original |
+| assets/audio/music/sefir_theme.loop.json | assets_src/music/sefir_theme.py + tools/audio/synth/ | python3 assets_src/music/sefir_theme.py | Audio (claude/audio) | 2026-10-24 | original |
+| assets/audio/music/the_ebbing.ogg | assets_src/music/the_ebbing.py + assets_src/music/hush_theme_v2.py + assets_src/music/hush_first_verse.py + tools/audio/synth/ | python3 assets_src/music/the_ebbing.py | Audio (claude/audio) | 2026-10-24 | original |
