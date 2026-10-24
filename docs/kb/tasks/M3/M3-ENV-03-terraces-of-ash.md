@@ -2,8 +2,8 @@
 id: M3-ENV-03
 title: Ch5 Terraces of Ash: Pemakar town, the terrace channels and graves, the Lanternfall festival (kit at final quality)
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M2-ENV-06]
 milestone: M3
 request-from: lead
