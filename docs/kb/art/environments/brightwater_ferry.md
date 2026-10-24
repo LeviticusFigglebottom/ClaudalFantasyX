@@ -54,7 +54,9 @@ preview she floats with the main deck at **world y +1.6** over the sea at the da
 up the strait with the trade wind on her **starboard beam** (from the east-north-east, 70°), so her sails
 belly to port (−X). Pemakar is ahead, Haluna astern. The strait's **reef edge** runs along the east
 (starboard) side 120–600 m off, and on it lie the **drowned hulls** of the last Rising (the same Rising that
-took Oruvel): dark silhouettes, dismasted and awash, standing out against the glowing water.
+took Oruvel): dark silhouettes, dismasted and awash, standing black on the moon's glade. The moon is a waning
+crescent low in the **east** (88°, 16°), up before the sun as a waning moon is at 05:50, so its glade lies across
+the reef and behind the drowned.
 
 ```
                        N (−Z)  Pemakar, a day's sail
@@ -64,9 +66,9 @@ took Oruvel): dark silhouettes, dismasted and awash, standing out against the gl
                   FOREMAST (z −8.0)                         ·
          ┌─ passengers' awning (z −7.2 … −3.2) ─┐       reef_awash
    port  │  mats, bundles, lanterns              │ starboard   ← trade wind from the ENE (70°)
-  (−X)   gangway ═══ (z −2.6 … −1.6) ═══ gangway         · the moon sets in the WSW (250°)
+  (−X)   gangway ═══ (z −2.6 … −1.6) ═══ gangway         · the crescent low in the east (88°), its glade on the reef
          │  cargo lashed  [ main hatch ]  cargo  │
-                  MAINMAST (z +2.4), lookout's perch at +10 m
+                  MAINMAST (z +2.4), lookout's perch at +11.6 m
               [ DECKHOUSE z +3.4 … +7.4: door forward, the Order niche inside ]
                ladders ╱ POOP DECK (+0.9 m) ╲ ladders, tiller, stern lantern
                        skiff on its davits over the stern (z +12.6 …)
@@ -76,34 +78,41 @@ took Oruvel): dark silhouettes, dismasted and awash, standing out against the gl
 **The ship (main deck at y 0 in the kit frame; dimensions in metres).**
 - **Hull:** 26.6 m from stem (z −14.0) to transom (z +12.6), beam 6.8 m at the deck (the bulwark's inner
   face at x ±3.4 from z −5 to +7), easing to the stem forward and to 2.7 m half-beam at the transom;
-  draught 1.6 m (the hull sides run down to y −2.2 so the swell never shows under them).
+  draught 1.6 m (the hull sides run down to y −2.4 so the swell never shows under them). The sheer is lowest
+  amidships and sweeps up 1.05 m to the stem and over the last 2.4 m before the poop; the forefoot is cut away
+  (the stem rakes 2.2 m from the sheer to the keel).
 - **Main deck (walkable, flat):** y 0 from the bow to z +7.6; planks 0.2 m fore and aft, pitch-dark seams.
   **Rail height 0.95 m** (cap rail top). **Gangways** (bulwark gaps for the gangplank and for lying alongside
   in C4-11) at z −2.6 … −1.6, port and starboard.
-- **Poop deck:** y +0.9 from z +7.6 to the transom, reached by two ladders at its fore edge (x ±2.5), with
-  the **tiller** (3.2 m) on the rudder head at the stern and the **stern lantern** on its post.
+- **Poop deck:** y +0.9 from z +7.6 to the transom, reached by two ladders at its fore edge (x ±2.6), with
+  the **tiller** (3.2 m) on the rudder head at the stern and the **stern lantern** on its crook. On the poop the
+  planking stops 0.35 m above the deck and an **open quarter rail** (stanchions, a mid rail, the cap rail) stands
+  above it, so the stern's silhouette is a rail against the sky, not a box.
 - **Hatches:** the **main hatch** (2.2 × 1.8 m coaming, 0.45 m tall, at z +0.2) closed with hatch boards under
   a lashed tarpaulin; the **fore hatch** (1.2 × 1.2 m, z −10.2) with an open grating over the dark hold; a
   small **scuttle** on the poop.
 - **Masts:** **foremast** at z −8.0 (11.5 m above deck), **mainmast** at z +2.4 (14.5 m), each with a lug
   sail on a slung yard and a foot boom; **three shrouds a side** to chain-plates outside the bulwark, ratlines
   on the mainmast's; a forestay to the bowsprit and a spring stay between the mastheads; the **lookout's
-  perch** (a 1.0 m round top with a hoop rail) on the mainmast at +10.0 m.
+  perch** (a 1.24 m round top with a hoop rail) on the mainmast at +11.6 m. The main's fife rail stands forward
+  of the mast, so nothing blocks the deckhouse door; the fore's stands aft of its mast.
 - **Deckhouse:** 3.8 × 4.0 m (x ±1.9, z +3.4 … +7.4), walls 2.1 m with a cambered roof and a low rail, a door
   in the fore face (toward the mainmast), two windows a side lamp-lit from inside; inside the door, the
   **Order niche** (the save point): a marble basin on a plinth in an arched recess on the after wall.
   Walkways 1.3 m wide pass it on both sides to the poop ladders.
-- **Passengers' awning:** a ridge spar on four posts over the deck between the foremast and the gangways
+- **Passengers' awning:** a ridge spar and two side spars on six posts over the deck between the foremast and the gangways
   (z −7.2 … −3.2, 4.4 m wide, ridge at 2.4 m), faded teal cloth, lanterns from the ridge; beneath it rolled
   mats, bundles, baskets and a bedroll (the passengers' places: the family, the traders, the Reed).
 - **Cargo:** lashed down both sides of the main hatch (crates, bales in sacking, water jars in a rack) under
   a net, with lashing to ring-bolts.
 - **The skiff** on two iron davits over the transom, 4.2 m, its painter and falls to cleats.
-- **Bow:** the bowsprit (4 m), the stem-gull at the stem head, a windlass and two bitts.
+- **Bow:** the bowsprit (5.2 m, lying beside the stem head to starboard, clear of the gull), the stem-gull at
+  the stem head, a windlass and two bitts, and the **bow lantern** on a crook from the starboard cap rail, which
+  lights the gull from behind.
 
 **The sea around her.** Open water to every horizon: the preview's `WaterSurface` (the `night_sea` look). On the
-starboard side the reef edge: `reef_awash` coral heads breaking the surface at intervals, and the two drowned
-hulls on it. Nothing to port but the sea and the setting moon.
+starboard side the reef edge: `reef_awash` coral heads breaking the surface at intervals, and the drowned
+hulls on it. Nothing to port but the dark sea.
 
 **Tide datum:** `tide_line_y = 0.0` (Haluna). No tide plays here; the waterline is the sea's mean level.
 
@@ -113,7 +122,7 @@ hulls on it. Nothing to port but the sea and the setting moon.
 
 | Sub-frame | Use | Time | Moon elev / az | Key | Fill | Rim | Fog | Sea-glow | LUT |
 |---|---|---|---|---|---|---|---|---|---|
-| `ch04` (color script; the crossing's first quarter-hour, before first light) | C4-10 Brightwater Crossing, C4-15 coda | 05:50 | 18° / 250° (setting, astern-to-port) | **lamp `#FFB16E`** (~2,900 K), the lanterns at **1.2** each (pools ~7 m) | `#2A4A6E` at 0.2 (sky ambient tinted to it) | the moon `#9DB4D9` at **0.28** (outside the pools; rule 3: 0.28 ≤ 2.5 × 0.12) | albedo `#22354F`, volumetric density 0.008 (GPU tiers; off on lavapipe) | **0.12** (`night_sea`) | `lut_ch04_wake` (M3-ENV-06's, read-only): warm pools kept saturated, outside cooled and desaturated 15%, the black point lifted to `night_sky` |
+| `ch04` (color script; the crossing's first quarter-hour, before first light) | C4-10 Brightwater Crossing, C4-15 coda | 05:50 | 16° / 88° (a waning crescent, low in the east) | **lamp `#FFB16E`** (~2,900 K), the lanterns at **1.2** each (pools ~7 m) | `#2A4A6E` at 0.2 (sky ambient tinted to it) | the moon `#9DB4D9` at **0.28** (outside the pools; rule 3: 0.28 ≤ 2.5 × 0.12) | albedo `#22354F`, volumetric density 0.008 (GPU tiers; off on lavapipe) | **0.12** (`night_sea`) | **`lut_ch04_crossing`** (this kit's `bf_zone_lut.py`): M3-ENV-06's `ch04_wake` (warm pools kept saturated, outside cooled and desaturated 15%, the black point lifted to `night_sky`) with the sea's teal (165–215°) spared the cool cut, so the sea stays the frame's one teal field (rule 3 (c)); `ch04_wake` alone turns a whole-frame sea navy-grey |
 | `ch04_derelict` (requested of Rendering, beat sheet §9) | C4-11 to C4-14 | 07:30–08:40 | sun ~15° | — | — | — | — | — | not this kit's preview |
 
 **Exposure, key product and water** (ADR 0014): exposure 1.10, the lantern key 1.2 inside its pool, the moon
@@ -125,8 +134,10 @@ from the east-north-east (wavelengths 64 / 33 / 17 / 8 m, amplitudes to 0.32 m),
 deckhouse windows; (2) what they light, inside their pools: the scrubbed deck, the awning's underside, the
 sails' lower thirds, the bundles; (3) moonlit cloth and rails outside the pools; (4) **the glowing sea**,
 the frame's one teal field and its brightest water; (5) the navy sky, then shadow. The drowned hulls are
-the darkest large shapes in the frame, read as silhouettes **against the glowing sea**, never against the
-sky alone. Nothing whiter than the foam; the sails stay below the lit deck's value.
+the darkest large shapes in the frame, read as silhouettes on the moon's glade and the paler sky over it. At a deck's
+eye height the far sea mostly mirrors the sky (the sea-glow is strongest looking down), so the glade, not the
+sea-glow, is what lights the horizon behind them. Nothing whiter than the foam; the sails stay below the lit
+deck's value.
 
 ---
 
@@ -149,10 +160,10 @@ sky alone. Nothing whiter than the foam; the sails stay below the lit deck's val
 
 | Kit | Pieces | Key dimensions and parameters |
 |---|---|---|
-| **The ship** | `ferry_hull` | Hull, main deck, poop deck and ladders, covering boards, bulwarks (stanchions every 1.2 m, three inner strakes, cap rail at +0.95 m) with the two gangways, the main hatch (closed, tarpaulin lashed), the fore hatch (grating) and the poop scuttle, the rudder head and tiller, the bowsprit, the stem-gull, windlass and bitts, chain-plates. Hull sides: tarred below the wale, the sheer strake painted sea-blue with a red line, a little tumblehome. Same plank, seam and bulwark proportions as `arena_derelict_deck`. |
+| **The ship** | `ferry_hull` | Hull, main deck, poop deck and ladders, covering boards, bulwarks (stanchions every 1.2 m, three inner strakes, cap rail at +0.95 m) with the two gangways, the main hatch (closed, tarpaulin lashed), the fore hatch (grating) and the poop scuttle, the rudder head and tiller, the bowsprit, the stem-gull, windlass and bitts, chain-plates, the fife rails, the open quarter rail on the poop, and the crooks the stern and bow lanterns hang from. Hull sides: tarred below the wale, the sheer strake painted sea-blue with a red line, a little tumblehome. Same plank, seam and bulwark proportions as `arena_derelict_deck`. |
 | | `ferry_rig` | Both masts (0.26 / 0.30 m at the partners, tapering), the slung yards and foot booms, the two lug sails (wind-filled to port, sand cloth with a sea-blue reef band and a few patches), shrouds to the chain-plates (ratlines on the main), forestay, spring stay, halyards and sheets to the rail, the lookout's perch. In the hull's frame. |
 | | `ferry_deckhouse` | 3.8 × 4.0 m, 2.1 m walls of lime-washed boards over a sea-blue dado, corner posts, a cambered roof with a low rail, the door (open) and four lamp-lit windows, the Order niche on the after wall inside (marble basin on a plinth, arched recess). In the hull's frame. |
-| | `ferry_awning` | Four posts, ridge spar, the cloth in a shallow catenary between ridge and side lines, its edges scalloped where it is lashed. In the hull's frame. |
+| | `ferry_awning` | Six posts, the ridge spar and two side spars, the cloth sagging between them, a scalloped valance along each side, lashings to the cap rail. In the hull's frame. |
 | | `ferry_cargo` | Lashed down both sides of the main hatch: crates (0.6–0.9 m), bales in sacking, a rack of six water jars, a cargo net over each stack, lashings to ring-bolts. In the hull's frame. |
 | | `ferry_skiff` | The skiff (4.2 m, clinker strakes, thwarts, oars) on two iron davits over the transom with its falls. In the hull's frame. |
 | **Passengers** | `passenger_bundles` | One cluster (origin on the deck at its centre, about 2 × 1.5 m): two cloth bundles tied at the neck (indigo and sand), a basket with a lid, a rolled sleeping mat, a bedroll, a water gourd. Placed several times under the awning and by the rails, turned. |
@@ -208,18 +219,18 @@ derelict (§6).
 |---|---|---|---|---|
 | B01 ◆ (F02) | 24 mm (53.1°) | 1.6 m above the poop deck by the stern lantern, looking forward along the centre line | The deckhouse roof in the foreground, the lamp-lit main deck beyond it, the awning glowing under its lanterns, both sails pale against the navy sky, the bowsprit pointing at the dark; the sea-glow at the rails on both sides. Sky ≈ 40%. | The crossing: a warm small world going forward into the dark. |
 | B02 ◆ (F03) | 35 mm (37.8°) | 1.4 m on deck at the port rail by the foremast, looking aft and to starboard | Under the awning: bundles, mats and a basket in a lantern's pool, the posts and ridge framing the cargo and the mainmast beyond. | The passengers' places: people carrying their lives in cloth. |
-| B03 ◆ (F04) | 50 mm (27.0°) | 1.5 m at the starboard gangway, looking out over the rail east-north-east | The cap rail and a lantern on the left third, the glowing sea, and on the reef edge the two drowned hulls black against the glow, the coral heads breaking white. | Ysolde and Asha at the rail; the dead the sea has already taken. |
+| B03 ◆ (F04) | 50 mm (27.0°) | 1.2 m at the starboard rail just aft of the gangway, looking east toward the crescent | The open gangway and the warm cap rail across the foreground, the moon's glade on the sea, and on the reef edge three drowned hulls black on it, the reef heads glittering. | Ysolde and Asha at the rail; the dead the sea has already taken. |
 | B04 ◆ | 35 mm (37.8°) | 1.2 m above the sea, 42 m off the port quarter | The whole ferry on the night sea, lanterns along her, the deckhouse windows lit, the sails catching the moon, a lamp's reflection broken on the swell, the glowing water round her. | Beauty in decline: the ship carrying the Cantor. |
-| B05 ◆ | 35 mm (37.8°) | 1.5 m on deck before the deckhouse door | The open door, the Order niche inside with its marble basin in the window light, the mainmast's foot and a lantern framing it. | The save point: the Order's small white place aboard. |
+| B05 ◆ | 50 mm (27.0°) | 1.5 m on deck before the deckhouse door | The open door, the Order niche inside with its marble basin in the window light, the mainmast's foot and a lantern framing it. | The save point: the Order's small white place aboard. |
 | B06 ◆ | 18 mm (67.4°) | 30 m above the sea, off the starboard bow, looking down and aft | The layout as a diagram: deck, hatches, awning, cargo, deckhouse, poop, rig, and the reef with its hulls. | The player sees the space (pillar 4). |
-| B07 ◆ | 85 mm (16.1°) | 1.6 m at the bow by the stem-gull, looking out to starboard-ahead | The stem-gull's carved head in the foreground's edge, the dismasted hulk on the reef in the glowing sea beyond. | The warning-bird facing the drowned. |
+| B07 ◆ | 50 mm (27.0°) | 2.7 m on the forecastle, port of the foremast, looking ahead | The port bow rail in the foreground, the stem head with the stem-gull and the bowsprit on the right, the bow-up hulk on the reef ahead. | The warning-bird facing the drowned. |
 
-**Registered baselines (the repo's binary budget: at most two):** chosen after viewing (§6).
+**Registered baselines (the repo's binary budget: at most two):** B02 and B03 (§6).
 
 ## 5. Review Checklist
 
 - [ ] Rule 3 order: flames > the lit pools > moonlit cloth > the glowing sea > the sky; the sea is the
-      brightest water and the frame's one teal field; the drowned read against the glow.
+      brightest water and the frame's one teal field; the drowned read on the moon's glade.
 - [ ] The lamp pools read as pools with a falloff, not a frame-wide key; outside them the deck is moonlit blue.
 - [ ] Shadows teal-navy, never neutral black (rule 5); the black point is `night_sky`.
 - [ ] The ferry and the derelicts read as kin (planks, seams, bulwark, covering board, tarred sides).
@@ -229,7 +240,27 @@ derelict (§6).
 
 ## 6. The Preview (M3-ENV-08)
 
-To be written after the captures are viewed.
+`game/levels/_tests/brightwater_ferry_kit/brightwater_ferry_preview.tscn` composes the kit for the ◆ shots (its README
+lists the files): the ferry at her origin (hull, rig, deckhouse, awning, cargo, skiff), seven passengers' places, nine
+lanterns, and on the reef edge to the east four drowned hulls on twelve reef patches. Read of the final captures
+(lavapipe, 960 × 540):
+- **B02** (baseline): the frame that carries the chapter: under the awning, the families' bundles, mats, a basket
+  and a bedroll in the lanterns' pools, the jar rack and the main hatch's tarpaulin, the deckhouse's door and its
+  lantern beyond, the dark sea past the rail. Warm, small and safe; the only blue is the sea and the sky.
+- **B03** (baseline): the strongest open-sea frame: through the open gangway, the crescent's glade across the
+  sea, and on it the drowned black and still, the reef heads glittering cyan where the glade meets them. Pillar 2
+  on its own.
+- **B01** forward along the starboard walkway from the poop (the lit deckhouse windows, the lanterns down the
+  walkway, the mainsail lit warm from below, the glowing sea to starboard); **B04** the ferry from the sea,
+  backlit by the crescent: a silhouette of rig and sails with the lanterns and windows the only warmth (it reads as
+  night, not as detail); **B05** the Order niche through the door (the marble basin and arch in the cabin
+  lantern's light); **B06** the overview (the deck plan, hatches, awning, cargo, deckhouse, poop and rig on the
+  glowing sea); **B07** the bow: the stem-gull and bowsprit against the dark, the bow-up hulk ahead.
+- Known limits: the ship is still (no roll or pitch; the zone may add one), and the swell passes through the hull
+  below the deck, where nothing shows; the rig's lines are tubes (no blocks at every lead); the fore wall's
+  lime-wash reads as dark boards where the door lantern cannot reach it (B05); the far sea at deck height is the
+  sky's mirror more than glow, which is why the moon is in the east (§0); the drowned are generic traders, not the
+  *Seventh Terrace* (M3-ENV-08B); the volumetric fog (0.008) is off on lavapipe.
 
 **Not in this kit:** the ***Seventh Terrace*** (the boardable derelict of C4-11–C4-14, with its galley, hold,
 name-board and its sails' set and lowered states) is one hero ship across Ch1 (moored at Oruvel, O07/O13) and
@@ -238,3 +269,11 @@ Oruvel kit settles the mooring. Its hull should come from this kit's hull genera
 Pemakar lacquer and copper sheathing). The islet's seaward landing (F01) is a Haluna kit addition.
 
 ## Revisions
+
+- **After the preview (M3-ENV-08):** the moon moved from setting in the WSW to a waning crescent low in the east
+  (a waning moon is up before the sun at 05:50), because at a deck's eye height the far sea mirrors the sky and the
+  drowned, set against "the glowing sea", vanished; on the crescent's glade they read. A kit LUT
+  `lut_ch04_crossing` replaces `lut_ch04_wake` in this zone (that grade greys a whole-frame sea). The hull gained a
+  sheer sweep, a raked forefoot and an open quarter rail on the poop (the side view read as a box); the bowsprit
+  moved beside the stem head (it ran through the stem-gull); the main's fife rail moved forward of the mast (it
+  stood in front of the deckhouse door); a bow lantern was added on a crook. B03, B05 and B07 were reframed.
