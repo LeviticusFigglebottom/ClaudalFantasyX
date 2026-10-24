@@ -1,6 +1,6 @@
 # 0029 — What SPEC §4.2's 50 ms hitch limit covers, and how loading-screen frames are budgeted
 
-- **Status:** proposed (Rendering, M1-RND-22; for the Lead, who edits SPEC)
+- **Status:** accepted with an amendment (review-sweep-Q, Environment, 2026-10-24; see "Acceptance" below). The Lead edits SPEC §4.2.
 - **Date:** 2026-10-24
 - **Roles affected:** Rendering, Tech (SceneRouter, boot), Environment (zones), Cinematics
 - **Author role:** Rendering (PC GPU session)
@@ -24,7 +24,7 @@ it's an unbounded promise for zone loads.
    lifts), and give the hidden frames a loading budget. *(Proposed.)*
 3. Leave SPEC as it is. Each reviewer then reads it differently, as review-sweeps J, N and O did.
 
-## Decision (proposed)
+## Decision
 Option 2. Proposed SPEC §4.2 wording for the Lead:
 
 > No visible hitch over 50 ms: battle transitions, dialogue and cutscene cuts, and the first 60 frames after any
@@ -48,3 +48,16 @@ How the build meets it today:
   2. Harvest a zone's materials from its `SceneState`, without instancing it: Haluna's 0.3 s.
   3. Slice the boot warm-up under 1 s a frame.
 - If the Lead prefers Option 1, the follow-ups become blockers instead.
+
+## Acceptance (review-sweep-Q, Environment, 2026-10-24)
+**Accepted as Option 2, with one amendment.** Reasons:
+- SPEC §4.2 names "battle transitions or dialogue", the moments a player watches. A frame behind an opaque full-screen fade is loading time, and Option 1 would make every zone load a blocker on work that crashes Godot today (threaded loads crashed Haluna in 3 of 6 runs).
+- The case the SPEC names is met, and the evidence is good: 34–46 ms on every preset, cold and warm.
+- Option 3 has already cost three sweeps (J, N, O) reading it three ways.
+- "The first 60 frames after any fade lifts" closes the obvious loophole of a fade that hides nothing.
+
+**Amendment: the measurement must match the definition.** The Consequences say "the router can measure it (its frame_ms after the fade)". It doesn't yet. `SceneRouter._swap` measures 4 frames right after `change_scene_to_node`, while the screen is still opaque, and warns about them against the 50 ms budget. The visible window this ADR budgets isn't measured at all. M1-ARC-16 adds both windows, each against its own budget.
+
+**Known non-compliance, accepted for now:** the boot warm-up's worst hidden frame is 0.53–1.66 s, over the new 1 s limit in 9 of 18 runs. Follow-ups 1–3 are filed as M1-RND-27. The same warm-up also runs, visible, when the player changes preset on the title (M1-UI-11).
+
+**For the Lead:** edit SPEC §4.2 with the proposed wording and add a version note, as CLAUDE.md requires for a SPEC change.
