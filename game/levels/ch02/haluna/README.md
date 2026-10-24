@@ -29,6 +29,15 @@ Promoted from the mood test (M2-ENV-01; Environment and Rendering edit these in 
 | `haluna_noon_environment.tres`, `lut_ch02_noon.png` | The `ch02_noon` mood frame and its 32³ grade LUT (`assets_src/environments/kits/haluna/zone_lut.py`) |
 | `haluna_water_material.tres` | The `lagoon_clear` sea look |
 
+**Night (M2-ENV-02).** `HalunaMood.mood = &"night"` switches the world to the colour script's
+`ch02_night` (haluna.md H10):
+- **Light:** the sun is hidden and the `Moon` is shown (`#9DB4D9`, 0.25, 38° at azimuth 200; the `hymn_sun_direction` global follows it).
+- **Sky:** `haluna_night_environment.tres`, the `env_sky_night` star sky at exposure 1.1 (ambient 0.08, as the validated `water_night`).
+- **Sea:** sea-glow 0.12 with the `night_sea` look on a copy of the material, and the glimmer gate open.
+- **Lamps:** the dresser's `NightLamps` are shown, one oil lantern under each house's front eave (`haluna_layout.json` `night_lamps`).
+- **Zone:** `HalunaZone.set_night` (B11) asks for it and adds the dock lanterns from first_playable.json.
+- **Shot:** `haluna_h10_dock_night` is H10 from the dock end. On lavapipe it costs about the same as the noon shots (27 s for 24 frames, against 21–36 s); GPU numbers are still to come.
+
 The mood test's notes (GI choice, tonemap and LUT, tide, vegetation groups, sky and palette checks)
 stay in `game/levels/_tests/haluna_mood/README.md`.
 

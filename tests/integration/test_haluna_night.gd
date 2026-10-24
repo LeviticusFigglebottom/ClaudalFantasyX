@@ -1,5 +1,5 @@
 extends TestCase
-## M2-FP-15: B11, Haluna's dock at night. After the Drownbell an arrival lights the night stand-in,
+## M2-FP-15: B11, Haluna's dock at night. After the Drownbell an arrival puts the world in its night mood,
 ## puts Rhen and the cast on the dock, plays the scene (Toma walks up mid-scene), swears Rhen in and
 ## hands off to the end card. Once sworn, the villagers' barks are their night blessings.
 
@@ -41,13 +41,19 @@ func test_no_night_before_the_drownbell() -> void:
 func test_the_dock_at_night_swears_rhen_in_then_the_end_card() -> void:
 	Game.set_flag(&"ch03_drownbell_defeated", true)
 	var sun := zone.mood.get(&"sun") as DirectionalLight3D
-	var noon := sun.light_energy
-	var shared_env := (zone.mood.find_children("*", "WorldEnvironment", true, false)[0] as WorldEnvironment).environment
-	var shared_ambient := shared_env.ambient_light_energy
+	var moon := zone.mood.get(&"moon") as DirectionalLight3D
+	var water := zone.mood.get(&"water") as WaterSurface
+	var day_water := water.material
+	var day_deep: Variant = day_water.get_shader_parameter(&"col_deep")
 	story.begin()
 	assert_true(zone.is_night)
-	assert_true(sun.light_energy < noon, "the sun is dimmed")
-	assert_eq(shared_env.ambient_light_energy, shared_ambient, "the shared Environment resource is untouched")
+	assert_eq(zone.mood.get(&"mood"), &"night", "the world's own night mood (M2-ENV-02)")
+	assert_false(sun.visible, "no sun")
+	assert_true(moon.visible, "the moon")
+	assert_between(water.sea_glow_energy, 0.12 - 0.001, 0.12 + 0.001, "sea-glow 0.12")
+	assert_eq(day_water.get_shader_parameter(&"col_deep"), day_deep, "the shared sea material is untouched")
+	var houses := (zone.mood.get(&"dresser") as HalunaDresser).night_lamps()
+	assert_true(houses != null and houses.visible and houses.get_child_count() > 0, "the oil lamps are lit")
 	assert_true(zone.get_node_or_null("NightLamps") != null and zone.get_node("NightLamps").get_child_count() > 0)
 	assert_true(zone.get_node_or_null("NPCs/Dock") == null, "the dock villagers have gone home")
 	var dock := zone.spawn_marker(&"DockNight")

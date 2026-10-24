@@ -430,6 +430,7 @@ piece_rules = {
 "lintel_gull_a": {"shape": "none"},
 "lintel_gull_b": {"shape": "none"},
 "lintel_gull_c": {"shape": "none"},
+"night_lamp_flame": {"shape": "none"},
 "palm_coconut_a": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
 "palm_coconut_b": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
 "palm_coconut_c": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},

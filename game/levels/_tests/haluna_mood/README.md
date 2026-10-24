@@ -24,7 +24,8 @@ marked → below moved; edit them at their new paths.
 | `haluna_kit_sheet.tscn` / `.gd` / `.json` | Every kit piece in rows, for review (not a registered shot) |
 
 Shots (`tests/screenshots/shots.json`): `haluna_h01_village_from_sea`, `haluna_h02_tidewall_lane`,
-`haluna_h03_lintel_gull`, `haluna_h04_dock`, `haluna_h07_chapel_court` (960×540).
+`haluna_h03_lintel_gull`, `haluna_h04_dock`, `haluna_h07_chapel_court` (960×540), and
+`haluna_h10_dock_night` (M2-ENV-02: the same world with `mood` night, set through the shot's `setup`).
 
 ## GI choice (SPEC §8.1)
 

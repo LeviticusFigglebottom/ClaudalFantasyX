@@ -68,12 +68,9 @@
         "NPCs/Neme/Bag"
       ],
       "night": {
-        "sun_energy_scale": 0.12,
-        "sun_color": "#9DB2E0",
-        "sky_energy_scale": 0.12,
-        "ambient_energy_scale": 0.3,
-        "lamp_color": "#FFB46B",
-        "lamp_energy": 1.6,
+        "mood": "night",
+        "lamp_color": "#FFB16E",
+        "lamp_energy": 1.3,
         "lamp_range_m": 7.0,
         "lamps": [
           [
@@ -85,16 +82,6 @@
             -2.0,
             2.8,
             56.0
-          ],
-          [
-            -40.0,
-            3.6,
-            2.0
-          ],
-          [
-            -52.0,
-            3.0,
-            -4.0
           ]
         ]
       },

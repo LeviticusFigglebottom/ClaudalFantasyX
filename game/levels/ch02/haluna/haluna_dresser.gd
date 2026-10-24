@@ -12,6 +12,10 @@ signal dressed
 
 const LOD_SUFFIX := "-lod1"
 const GROUND_KEY := "ground"
+## M2-ENV-02: the night lamps' container (hidden by day) and their flame mesh's name. HalunaCollision
+## keys pieces by their first mesh name, and the zone's piece_rules give this one no shape.
+const NIGHT_LAMPS := &"NightLamps"
+const LAMP_FLAME := &"night_lamp_flame"
 const SEA_NORMAL := Vector2(1.0, 0.0)
 
 @export_file("*.json") var layout_path: String = "res://game/levels/ch02/haluna/haluna_layout.json"
@@ -40,13 +44,66 @@ func dress() -> void:
 	_build_terrain()
 	for spec: Dictionary in layout.get("runs", []):
 		_place_run(spec)
+	var pieces: Array[Node3D] = []
+	var kinds: Array[String] = []
 	for spec: Dictionary in layout.get("pieces", []):
-		_place_piece(spec)
+		var piece := _place_piece(spec)
+		if piece != null:
+			pieces.append(piece)
+			kinds.append(String(spec["piece"]))
 	for spec: Dictionary in layout.get("plants", []):
 		_place_plant(spec)
 	for spec: Dictionary in layout.get("scatter", []):
 		_scatter(spec)
+	_place_night_lamps(pieces, kinds, layout.get("night_lamps", {}))
 	dressed.emit()
+
+
+## The night lamps (`NightLamps`, hidden): an oil lamp, an OmniLight3D and a small emissive flame, at
+## each local offset that the layout's "night_lamps" "per_piece" lists for a placed piece's kind.
+## HalunaMood shows them in the night mood. Deterministic and draws nothing from the scatter rng, so
+## the day dressing is unchanged.
+func _place_night_lamps(pieces: Array[Node3D], kinds: Array[String], cfg: Dictionary) -> void:
+	var per_piece: Dictionary = cfg.get("per_piece", {})
+	if per_piece.is_empty():
+		return
+	var lamps := Node3D.new()
+	lamps.name = NIGHT_LAMPS
+	lamps.visible = false
+	add_child(lamps)
+	var color := Color.html(str(cfg.get("color", "#FFFFFF")))
+	var flame_mat := StandardMaterial3D.new()
+	flame_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	flame_mat.albedo_color = color
+	flame_mat.emission_enabled = true
+	flame_mat.emission = color
+	flame_mat.emission_energy_multiplier = float(cfg.get("flame_energy", 1.0))
+	var flame_mesh := SphereMesh.new()
+	flame_mesh.material = flame_mat
+	flame_mesh.radius = float(cfg.get("flame_radius_m", 0.05))
+	flame_mesh.height = flame_mesh.radius * 2.0
+	for i in pieces.size():
+		for at: Array in per_piece.get(kinds[i], []):
+			var p := pieces[i].transform * Vector3(float(at[0]), float(at[1]), float(at[2]))
+			var flame := MeshInstance3D.new()
+			flame.name = LAMP_FLAME
+			flame.mesh = flame_mesh
+			flame.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			flame.position = p
+			lamps.add_child(flame)
+			var light := OmniLight3D.new()
+			light.light_color = color
+			light.light_energy = float(cfg.get("energy", 1.0))
+			light.omni_range = float(cfg.get("range_m", 5.0))
+			light.omni_attenuation = float(cfg.get("attenuation", 1.0))
+			light.shadow_enabled = false
+			light.position = p
+			lamps.add_child(light)
+
+
+## The night lamps' container, or null when the layout has none.
+func night_lamps() -> Node3D:
+	return get_node_or_null(NodePath(String(NIGHT_LAMPS))) as Node3D
 
 
 static func _load_json(path: String) -> Dictionary:

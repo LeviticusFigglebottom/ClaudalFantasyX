@@ -43,6 +43,13 @@ position = Vector3(-105, 4.3, 42.5)
 look_at = Vector3(-118, 5.4, 31.5)
 fov_deg = 53.1
 
+[sub_resource type="Resource" id="ShotH10"]
+script = ExtResource("6_shot")
+id = &"H10"
+position = Vector3(23.0, 2.9, 38.4)
+look_at = Vector3(-30, 6.5, 12)
+fov_deg = 37.8
+
 [node name="HalunaMood" instance=ExtResource("1_dressing")]
 
 [node name="Cameras" type="Node3D" parent="."]
@@ -77,3 +84,9 @@ near = 0.1
 far = 6000.0
 script = ExtResource("5_cam")
 shot = SubResource("ShotH07")
+
+[node name="H10" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("5_cam")
+shot = SubResource("ShotH10")

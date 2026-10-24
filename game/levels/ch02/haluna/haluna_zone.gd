@@ -132,22 +132,12 @@ func _apply_face_key_bias() -> void:
 		(sun as DirectionalLight3D).shadow_normal_bias = face_key_shadow_normal_bias
 
 
-## M2-FP-15: Haluna at night for B11, a stand-in until Environment's night light (M2-ENV-02).
-## `night` is first_playable.json haluna.night: the sun dimmed and recoloured, the sky and the
-## ambient light scaled down (on a copy of the mood's Environment, never the shared resource), and
-## warm lamps. `hide` lists node paths (the dock villagers) that are gone home at night.
+## M2-FP-15: Haluna at night for B11. `night` is first_playable.json haluna.night: the world's own
+## night mood (HalunaMood `mood`, M2-ENV-02: moon, star sky, sea-glow, the houses' oil lamps), plus
+## the zone's practicals, warm lanterns at the given points (the dock). `hide` lists node paths (the
+## dock villagers) that are gone home at night.
 func set_night(night: Dictionary, hide: Array = []) -> void:
-	var sun: Variant = mood.get(&"sun")
-	if sun is DirectionalLight3D:
-		var l := sun as DirectionalLight3D
-		l.light_energy *= float(night.get("sun_energy_scale", 1.0))
-		l.light_color = Color.html(str(night.get("sun_color", "#FFFFFF")))
-	var we := mood.find_children("*", "WorldEnvironment", true, false)
-	if not we.is_empty() and (we[0] as WorldEnvironment).environment != null:
-		var env := (we[0] as WorldEnvironment).environment.duplicate() as Environment
-		env.background_energy_multiplier *= float(night.get("sky_energy_scale", 1.0))
-		env.ambient_light_energy *= float(night.get("ambient_energy_scale", 1.0))
-		(we[0] as WorldEnvironment).environment = env
+	mood.set(&"mood", StringName(str(night.get("mood", "night"))))
 	var lamps := Node3D.new()
 	lamps.name = "NightLamps"
 	add_child(lamps)

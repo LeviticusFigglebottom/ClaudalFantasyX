@@ -7,12 +7,25 @@ extends Node3D
 ## - advances the weather clock by frame_step_s per rendered frame. The haluna_* shots hold it and
 ##   swap TAA for FXAA through their shots.json `setup` (M1-RND-13: `hymn_wind_time` = start_time_s,
 ##   viewport use_taa off, FXAA), so a shot is identical wherever it sits in shots.json.
+## - M2-ENV-02: `mood` &"night" switches to the `ch02_night` sub-frame (color script; haluna.md H10):
+##   the sun off and the Moon on (#9DB4D9 at 0.25, 38 deg, the hymn_sun_direction global follows it),
+##   the night Environment (star sky, exposure 1.1), sea-glow 0.12 with the `night_sea` look (deep
+##   colour, absorption x1.0, caustics 0.25; on a copy of the sea's material), the glimmer gate open
+##   (it gates sea-glow), and the dresser's oil lamps shown. Day is the scene as authored; switching
+##   back restores it.
 
 const GLOBAL_WIND := &"hymn_wind"
 const GLOBAL_WIND_TIME := &"hymn_wind_time"
 const GLOBAL_SUN := &"hymn_sun_direction"
 const GLOBAL_TIME_OF_DAY := &"hymn_time_of_day"
 const GLOBAL_GLIMMER := &"hymn_glimmer"
+const MOOD_DAY := &"day"
+const MOOD_NIGHT := &"night"
+const PARAM_DEEP := &"col_deep"
+const PARAM_CAUSTICS := &"caustic_strength"
+const PARAM_ABSORPTION_SCALE := &"absorption_scale"
+## hymn_glimmer by day: the alpha 0 keeps the glimmer and the sea-glow gate shut.
+const DAY_GLIMMER := Vector4(1.0, 0.91, 0.72, 0.0)
 const PINNED_GLOBALS: Array[StringName] = [
 	GLOBAL_WIND, GLOBAL_WIND_TIME, GLOBAL_SUN, GLOBAL_TIME_OF_DAY, GLOBAL_GLIMMER
 ]
@@ -21,10 +34,32 @@ const PINNED_GLOBALS: Array[StringName] = [
 @export var tide: WeatheringTide
 ## The sea; its fine grid follows whichever shot camera is current.
 @export var water: WaterSurface
+@export var moon: DirectionalLight3D
+@export var world_environment: WorldEnvironment
+@export var dresser: HalunaDresser
+## &"day" (ch02_noon, as authored) or &"night" (ch02_night). Takes effect at once when set in the tree.
+@export var mood: StringName = MOOD_DAY:
+	set(value):
+		mood = value
+		if is_node_ready():
+			_apply_mood()
 @export_group("Sub-frame ch02_noon (haluna.md §0)")
 @export var sun_elevation_deg: float = 74.0
 @export var sun_azimuth_deg: float = 165.0
 @export var time_of_day_h: float = 12.5
+@export_group("Sub-frame ch02_night (M2-ENV-02)")
+@export var night_environment: Environment
+@export var moon_elevation_deg: float = 38.0
+@export var moon_azimuth_deg: float = 200.0
+@export var night_time_of_day_h: float = 21.5
+@export_range(0.0, 0.15, 0.001) var night_sea_glow: float = 0.12
+@export var night_deep_color := Color("#061A2B")
+@export var night_caustic_strength: float = 0.25
+## The `night_sea` water look's absorption scale (color script: x1.0; noon's lagoon_clear is x1.5).
+@export var night_absorption_scale: float = 1.0
+## hymn_glimmer at night: held cyan (glimmer_held #7FC6D9, linear) at 0.6; its alpha opens the
+## sea-glow gate (glimmer.gdshaderinc), as in the water test's validated `water_night`.
+@export var night_glimmer := Vector4(0.2122, 0.5647, 0.6939, 0.6)
 @export_group("Weather")
 ## Weather clock at frame 0 (s); the screenshot shots pin hymn_wind_time to it.
 @export var start_time_s: float = 40.0
@@ -39,6 +74,8 @@ const PINNED_GLOBALS: Array[StringName] = [
 
 var _clock: float = 0.0
 var _frames: int = 0
+var _day_environment: Environment
+var _day_water_material: ShaderMaterial
 
 
 func _enter_tree() -> void:
@@ -52,6 +89,44 @@ func _ready() -> void:
 		sun.global_basis = Basis.looking_at(-toward, Vector3.UP)
 	if tide != null:
 		tide.water_height_y = water_height_m
+	if moon != null:
+		var toward_moon := direction_from_angles(moon_elevation_deg, moon_azimuth_deg)
+		moon.global_basis = Basis.looking_at(-toward_moon, Vector3.UP)
+	if world_environment != null:
+		_day_environment = world_environment.environment
+	if water != null:
+		_day_water_material = water.material
+	if is_night():
+		_apply_mood()
+	_write_globals()
+
+
+func is_night() -> bool:
+	return mood == MOOD_NIGHT
+
+
+## Puts the scene in `mood`. Day restores everything the night changed.
+func _apply_mood() -> void:
+	var night := is_night()
+	if sun != null:
+		sun.visible = not night
+	if moon != null:
+		moon.visible = night
+	if world_environment != null and night_environment != null:
+		world_environment.environment = night_environment if night else _day_environment
+	if water != null and _day_water_material != null:
+		if night:
+			var mat := _day_water_material.duplicate() as ShaderMaterial
+			mat.set_shader_parameter(PARAM_DEEP, night_deep_color)
+			mat.set_shader_parameter(PARAM_CAUSTICS, night_caustic_strength)
+			mat.set_shader_parameter(PARAM_ABSORPTION_SCALE, night_absorption_scale)
+			water.material = mat
+		else:
+			water.material = _day_water_material
+		water.sea_glow_energy = night_sea_glow if night else 0.0
+	var lamps := dresser.night_lamps() if dresser != null else null
+	if lamps != null:
+		lamps.visible = night
 	_write_globals()
 
 
@@ -85,6 +160,15 @@ func _write_globals() -> void:
 	var wind := direction_from_angles(0.0, wind_azimuth_deg) * wind_speed_m_s
 	RenderingServer.global_shader_parameter_set(GLOBAL_WIND, Vector4(wind.x, 0.0, wind.z, wind_gust))
 	RenderingServer.global_shader_parameter_set(GLOBAL_WIND_TIME, _clock)
-	ShaderGlobals.set_value(GLOBAL_SUN, direction_from_angles(sun_elevation_deg, sun_azimuth_deg))
-	RenderingServer.global_shader_parameter_set(GLOBAL_TIME_OF_DAY, time_of_day_h)
-	RenderingServer.global_shader_parameter_set(GLOBAL_GLIMMER, Vector4(1.0, 0.91, 0.72, 0.0))
+	if is_night():
+		ShaderGlobals.set_value(GLOBAL_SUN, direction_from_angles(moon_elevation_deg, moon_azimuth_deg))
+		RenderingServer.global_shader_parameter_set(GLOBAL_TIME_OF_DAY, night_time_of_day_h)
+	else:
+		ShaderGlobals.set_value(GLOBAL_SUN, direction_from_angles(sun_elevation_deg, sun_azimuth_deg))
+		RenderingServer.global_shader_parameter_set(GLOBAL_TIME_OF_DAY, time_of_day_h)
+	RenderingServer.global_shader_parameter_set(GLOBAL_GLIMMER, glimmer())
+
+
+## The hymn_glimmer value this mood writes (its alpha gates the sea-glow).
+func glimmer() -> Vector4:
+	return night_glimmer if is_night() else DAY_GLIMMER

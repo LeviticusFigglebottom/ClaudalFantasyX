@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/coral_stone_normal.png" id="15_stone_n"]
 [ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/weathering_detail.png" id="16_detail"]
 [ext_resource type="PackedScene" path="res://game/world/save_shrine/save_shrine.tscn" id="17_shrine"]
+[ext_resource type="Environment" path="res://game/levels/ch02/haluna/haluna_night_environment.tres" id="18_night_env"]
 
 [sub_resource type="ShaderMaterial" id="GroundMat"]
 resource_name = "haluna_ground"
@@ -25,11 +26,15 @@ shader_parameter/tex_stone = ExtResource("14_stone")
 shader_parameter/tex_stone_normal = ExtResource("15_stone_n")
 shader_parameter/tex_detail = ExtResource("16_detail")
 
-[node name="HalunaMood" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water")]
+[node name="HalunaMood" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water", "moon", "world_environment", "dresser")]
 script = ExtResource("1_rig")
 sun = NodePath("Sun")
 tide = NodePath("Tide")
 water = NodePath("Water")
+moon = NodePath("Moon")
+world_environment = NodePath("WorldEnvironment")
+dresser = NodePath("Dresser")
+night_environment = ExtResource("18_night_env")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("10_env")
@@ -47,6 +52,16 @@ directional_shadow_split_1 = 0.04
 directional_shadow_split_2 = 0.12
 directional_shadow_split_3 = 0.35
 directional_shadow_max_distance = 400.0
+
+[node name="Moon" type="DirectionalLight3D" parent="."]
+visible = false
+light_color = Color(0.615686, 0.705882, 0.85098, 1)
+light_energy = 0.25
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+directional_shadow_mode = 2
+directional_shadow_max_distance = 120.0
 
 [node name="Water" type="Node3D" parent="."]
 script = ExtResource("7_water")

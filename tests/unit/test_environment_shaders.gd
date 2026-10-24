@@ -21,6 +21,7 @@ const EXPECTED: Dictionary = {
 	"env_ground.gdshader": ["tex_sand", "wet_band_m"],
 	"env_wake_shell.gdshader": ["tex_glyph", "glyph_depth"],
 	"env_sky_cumulus.gdshader": ["cloud_coverage", "cloud_steps", "col_cloud_shadow"],
+	"env_sky_night.gdshader": ["star_density", "col_moon", "moon_disc_deg"],
 }
 
 
@@ -172,7 +173,7 @@ func test_layout_is_valid_and_shots_use_camera_shots() -> void:
 		assert_true(ResourceLoader.exists(String(kind["glb"])), "plant %s exists" % kind["glb"])
 	var scene := (load("res://game/levels/_tests/haluna_mood/haluna_mood.tscn") as PackedScene).instantiate()
 	var cams := scene.get_node("Cameras").get_children()
-	assert_eq(cams.size(), 5, "five composed shots (haluna.md §5.1 ◆)")
+	assert_eq(cams.size(), 6, "five composed noon shots (haluna.md §5.1 ◆) and H10 at night (M2-ENV-02)")
 	for c: Node in cams:
 		var sc := c as HalunaShotCamera
 		assert_true(sc != null and sc.shot != null, "%s is driven by a CameraShot" % c.name)
