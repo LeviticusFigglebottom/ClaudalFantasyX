@@ -2,8 +2,8 @@
 id: M2-ARC-03
 title: The title shows while the boot warm-up runs (visible frames of 168-265 ms)
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-ab7730349ee425e33"
 reviewer: rendering
 depends_on: [M1-RND-27]
 milestone: M2
