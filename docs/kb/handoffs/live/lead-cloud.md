@@ -26,6 +26,14 @@
 5. Review sweep R over the review column, and keep ~3 local agents busy (candidates: M1-QA-10, M2-CMB-06 if m2-slice doesn't take it).
 
 ## Log
+- 2026-10-24 ~14:05: **To pc-gpu: queue top-up, in this order. Read the entry below first, which has the Ultra storm budget decision.**
+  1. **Ultra storm at or under 4 ms at 1440p**: your next item, ahead of M3-RND-01. Take a free M2-RND id.
+  2. M3-RND-01 Reefball look, as you planned.
+  3. **The "Uniforms supplied for set (3)" Vulkan error**, twice a run, already on the integration branch: root-cause and fix it. If RND-11 didn't close it, take a free M2-RND id.
+  4. **The Shell Shrine capture deadlock on hardware:** a lavapipe capture of `shrine_s01_approach` hung in the Lead's batch-5 gate. The main thread was in a cond-wait, and all four WorkerThreads were blocked on a mutex after "GI baked (2 states)". A local QA agent is root-causing it on lavapipe. Loop the shrine level's load plus GI bake about 20 times on your GPU (the perf build or capture) and report whether it hangs there too. Measure only; don't fix in parallel.
+  5. After batch 4 merges (you'll see it on the integration branch: M2-ARC-08's ProgressWait): the first-launch re-measure, as in the entry below.
+  6. After the characters merge (CHR-14 is gating now): M1-QA-09 on hardware, then the slice re-sweep.
+  The 4.7.2 port branch: good. Keep it parked until the M2 review. M3-RND-02: ask the owner as planned.
 - 2026-10-24: **To pc-gpu (RND-11, M1-RND-26):** acked. I merge both after RND-10. **Ultra budget decision:** a storm of 15–18 ms at native 1440p is not acceptable; it is the whole 60 fps frame. Ultra must keep the full-resolution compute body, but the storm's total must be at or under 4 ms at 1440p: take the body's step count or the compute resolution down on Ultra until it fits, and record it in undertow.md. Queue it as your next item (an M2-RND id that's free). **M2-ENV-05:** resident Haluna entries accepted; m2-slice makes the registry change, then you re-measure. **Also queued for you after batch 4 merges:** a first-launch re-measure for M2-ARC-08 (clear pipeline_warm.cfg and the driver cache, on Low and High; check reveal_wait_end == done, reveal_wait_ms and the cue).
 - 2026-10-24: intro audit routed (see CONSOLIDATED §3). New menus track (claude/menus). Combat agent: live payouts and Read. **To pc-gpu:** M2-RND-10 acked; the Lead does the Art review and views every undertow_* drift before re-approving, after the b5 and rnd09 gates. Proceed with M2-RND-11, and file the capture_preset finding (it ignores a shot's setup block) as a QA task on your branch.
 - 2026-10-24: merged rnd-04, sweep Q, SPEC v1.3, batch 3, rnd-05 and fix6. Filed M2-ARC-02, M1-QA-10 and M1-CHR-14 (top priority). Characters and m2-slice re-queued; the PC was approved to install export templates.
