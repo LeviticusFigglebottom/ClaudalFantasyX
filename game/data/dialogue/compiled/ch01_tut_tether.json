@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch01_tut_tether",
+ "source": "game/data/dialogue/ch01/ch01_tut_tether.dlg",
+ "start": "ch01_tut_tether",
+ "nodes": {
+  "ch01_tut_tether": {
+   "headers": {"location": "ch01/oruvel_underway"},
+   "ops": [
+    {"op": "line", "id": "ch01_tut_002", "key": "DLG_CH01_TUT_002", "speaker": "", "emotion": "", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

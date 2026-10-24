@@ -7,7 +7,7 @@ extends TestCase
 
 const SKY_SHADER := "res://game/shaders/environment/env_sky_cumulus.gdshader"
 const WATER_MATERIAL := "res://game/levels/_tests/water/water_lagoon_material.tres"
-const LAGOON_WAVES := "res://game/levels/_tests/water/lagoon_waves.tres"
+const LAGOON_WAVES := "res://game/world/water/lagoon_waves.tres"
 const WEATHERING_SHADER := "res://game/shaders/environment/env_weathering.gdshader"
 const HALUNA := "res://game/levels/ch02/haluna/haluna.tscn"
 const CONFIG := "user://test_m1_arc_15_settings.cfg"

@@ -1,4 +1,99 @@
 keys,en
+DLG_CH01_BARK_COOK_001,"That's nine knots, diver. I'm running out of rope."
+DLG_CH01_BARK_COOK_002,Tie a tenth. I'm good for it.
+DLG_CH01_BARK_COOK_003,Then you can untie three. Sit. Eat.
+DLG_CH01_BARK_SABE_001,Gulls have been quiet all morning.
+DLG_CH01_BARK_SABE_002,"Sabe, they're carved. They're always quiet."
+DLG_CH01_BARK_SABE_003,"Wind's at our backs, that's why. Wood only talks when the sea does."
+DLG_CH01_BARK_NETS_001,Not a cloud since dawn. I don't like it.
+DLG_CH01_BARK_NETS_002,You don't like rain either. You don't like anything.
+DLG_NAME_NETMENDER_THE_OTHER_MENDER,The Other Mender
+DLG_CH01_BARK_NETS_003,I like a sky that's honest about what it wants.
+DLG_CH01_BARK_SADI_001,Sallow! Come to complain about my arithmetic again?
+DLG_CH01_BARK_SADI_002,You paid me for half a lamp-housing. I sold you a whole one.
+DLG_CH01_BARK_SADI_003,The other half was my company. We sail at the turn.
+DLG_CH01_BARK_PEN_001,The side went to Tamsule without me. Next year they'll have to take me.
+DLG_CH01_BARK_PEN_002,We're winning the Tidecup this year. Tavi says.
+DLG_CH01_BARK_PEN_003,Tavi says that every year. Keep your elbows in.
+DLG_CH01_BARK_ROOF_001,Rhen! Off the cabin roof! Ma says you used to.
+DLG_CH01_BARK_ROOF_002,I was young and foolish then. Now I'm just foolish.
+DLG_CH01_BARK_ROOF_003,Scared!
+DLG_CH01_BARK_ROOF_004,Fine. Fine. Watch how it's done.
+DLG_CH01_BARK_ROOF_005,He did it!
+DLG_CH01_BELL_001,Morning. Don't get up.
+DLG_CH01_BELL_002,Air's stale. Air's always stale. Four hundred years and nobody thought to open a window.
+DLG_CH01_BELL_003,Brass in the door hinges. Somebody in the Lit Age loved a hinge.
+DLG_CH01_BELL_004,I'll take that off your hands. You won't miss it.
+DLG_CH01_BRIDGE_001,"Kell! Kell, the bridge!"
+DLG_CH01_BRIDGE_002,"The net-pen, Rhen! I said the net-pen! Go!"
+DLG_CH01_BRIDGE_003,Going. I'm going.
+DLG_CH01_SHAFT_001,Tide's breathing out. Right on time.
+DLG_CH01_GAUGE_001,"Two metres of Lit Age brass. A month of oil, if the scale-man's sober."
+DLG_CH01_GAUGE_002,Come on. Come on. There.
+DLG_CH01_UNDER_001,"Go! Don't look back, go!"
+DLG_CH01_UNDER_002,My father used to sing the currents. I hadn't heard it in eleven years. Then nothing.
+DLG_CH01_GULLS_001,...That's the gulls.
+DLG_CH01_GULLS_002,Lines in! Everybody off the low hulls!
+DLG_CH01_HULLGNAW_001,"That's a ship. That's a whole ship, and it's wearing it."
+DLG_CH01_HULLGNAW_002,I'm not scared. I'm busy.
+DLG_CH01_KELL_001,Sallow. Over here. Second dive?
+DLG_CH01_KELL_002,"Tide's good, and the scale-man's in a robbing mood. I need more brass."
+DLG_CH01_KELL_003,Hand. For luck.
+DLG_CH01_KELL_004,For luck.
+DLG_CH01_KELL_005,Stay a minute.
+DLG_CH01_KELL_006,"Tide's turning, Kell."
+DLG_CH01_KELL_007,Then go and catch it.
+DLG_CH01_KELL_008,Then make yourself useful. Wicks for the afternoon divers. Even lengths.
+DLG_CH01_KELL_009,Even lengths. I've been doing this since I was eight.
+DLG_CH01_KELL_010,"Badly. Since you were eight, badly. Give those here."
+DLG_CH01_KELL_011,Kell. Why did you never learn to swim?
+DLG_CH01_KELL_012,"Never needed to. The sea owes me a favour, and I've never once collected."
+DLG_CH01_KELL_013,"It can't take me while it's in debt. Salt and stone, that's plain trade."
+DLG_CH01_KELL_014,That isn't how debt works.
+DLG_CH01_KELL_015,It's how mine works.
+DLG_CH01_KELL_016,Tavi asked you twice to go to Tamsule with the side. Why didn't you?
+DLG_CH01_KELL_017,Somebody has to keep you in brass.
+DLG_CH01_KELL_018,Hm.
+DLG_CH01_KELL_019,"Go on. The tide won't wait for a pretty face, and it won't wait for yours either."
+DLG_CH01_KELL_020,That's the nicest thing you've said all week.
+DLG_CH01_LOW_001,Nobody goes below the ninth floor.
+DLG_CH01_LOW_002,You don't follow the low lights.
+DLG_CH01_LOW_003,Every diver in Oruvel was taught that. Nobody ever told us why.
+DLG_CH01_NET_PEN_001,Rhen! The net's going!
+DLG_CH01_NET_PEN_002,"I know. Hands on the plank. Don't look at the water, look at me."
+DLG_CH01_NET_PEN_003,"Keel-hull. Go, and don't stop for anything. I'm right behind you."
+DLG_CH01_SCALE_001,Sallow. What's the sea coughed up today?
+DLG_CH01_SCALE_002,"Lit Age tide-gauge. Solid brass, four hundred years old, and not one tooth missing."
+DLG_CH01_SCALE_003,"Plain brass, by the pound. Forty lume."
+DLG_CH01_SCALE_004,"Forty? It's not scrap, it's history. History's heavier. Check your scale."
+DLG_CH01_SCALE_005,Haggle him up.
+DLG_CH01_SCALE_006,Look at those teeth. Somebody cut every one by hand. That's sixty lume of somebody.
+DLG_CH01_SCALE_007,"Fifty. Your father would've taken the first price, you know."
+DLG_CH01_SCALE_008,He never was much for arguing.
+DLG_CH01_SCALE_009,"No. Quiet man. Fifty, and I'm robbing myself."
+DLG_CH01_SCALE_010,Take his price.
+DLG_CH01_SCALE_011,Forty. Fine. You'll sell it upcoast for four hundred.
+DLG_CH01_SCALE_012,Six hundred. I've a family to feed.
+DLG_CH01_SCALE_013,"Unbound, by the Level. There's your chit."
+DLG_CH01_SCALE_014,"Unbound, by the Level. You'd stamp the sea if it held still long enough."
+DLG_CH01_SCALE_015,"I would. Off you go, diver."
+DLG_CH01_SCUTTLERS_001,What are you? No. Don't answer that.
+DLG_CH01_DROP_001,One month earlier.
+DLG_CH01_DROP_002,Oruvel sat on top of a drowned city. Most mornings I went down to take some of it home.
+DLG_CH01_RISING_001,The reef's showing.
+DLG_CH01_RISING_002,Cut the low hulls loose! Everyone to the keel-hull! Children first!
+DLG_CH01_RISING_003,Lines in! Lines in!
+DLG_CH01_RISING_004,"Divers in the water, watch my lamp! Swim for the light!"
+DLG_CH01_RISING_005,"Cast off! Sea room, all of you, find sea room!"
+DLG_CH01_RISING_006,Kell!
+DLG_CH01_RISING_007,"Not me, you fool! The net-pen! The little ones!"
+DLG_CH01_RISING_008,Go to the net-pen.
+DLG_CH01_RISING_009,Kell first.
+DLG_CH01_TUT_001,"Walk with the left stick, or W, A, S and D. Turn the camera with the right stick, or Q and R."
+DLG_CH01_TUT_003,"Hold F, or the left face button, to open the shutter. The more you light, the more you see, and the more that sees you."
+DLG_CH01_TUT_002,"A tether point. Press interact beside it to drop to the floor below, or to climb back up."
+DLG_CH02_BARK_CAUSEWAY_UNSAVED_001,"Hold, Rhen. No one walks the causeway without resting at the town shrine first."
+DLG_CH02_BARK_CAUSEWAY_UNSAVED_002,"It only takes a moment. Sit at the little shrine in town, then we'll go."
 DLG_CH02_BARK_CHAPEL_001,The Lady Cantor's shell is cut. They'll set it at the wake.
 DLG_CH02_BARK_CHAPEL_002,I'm sorry. Was she very old?
 DLG_CH02_BARK_CHAPEL_003,"Mind the steps, please. I've only just swept them."
@@ -49,6 +144,11 @@ DLG_CH02_BEACH_034,Later. You're shaking.
 DLG_CH02_BEACH_014,"Come up to the village. Bring your father's light. You'll eat first, and then we'll tell you what we know."
 DLG_CH02_BEACH_015,"Come up to the village. You'll eat first, and then we'll tell you what we know."
 DLG_CH02_BEACH_035,She smiled first. Every time. It took me a long while to understand why.
+DLG_CH02_LOOK_LINTEL_GULL_001,"Every roof's got one, and every one faces the sea. Nobody carves a gull to watch the land."
+DLG_CH02_LOW_TIDE_005,"Once we cross, we won't be back before dark. Is there anyone you want to see first?"
+DLG_CH02_LOW_TIDE_006,Go now.
+DLG_CH02_LOW_TIDE_007,Not yet.
+DLG_CH02_LOW_TIDE_008,Then go and see them. The tide will hold a while yet.
 DLG_CH02_LOW_TIDE_001,The tide-readers set the day. The causeway opens this far twice a month.
 DLG_CH02_LOW_TIDE_002,"Come and see it, Rhen. It's the most beautiful thing we have."
 DLG_CH02_LOW_TIDE_003,"He is not sworn to anything, Asha."
@@ -57,6 +157,50 @@ DLG_CH02_NEMES_TABLE_001,"Up, then. Sit. Not that stool, it bites."
 DLG_CH02_NEMES_TABLE_002,"Fish, then bread, then more fish. The sea gave you back thin."
 DLG_CH02_NEMES_TABLE_003,That's a lot of food for one stranger.
 DLG_CH02_NEMES_TABLE_004,It's the right amount. Eat. Asha's at the market. She'll want to show you everything today.
+DLG_CH02_PILA_GRANDDAUGHTER_015,"They don't need two washings, diver. Go on. She'll be waiting at the causeway."
+DLG_CH02_PILA_GRANDDAUGHTER_001,"Mind the bowl. That's fresh water, and it came a long way."
+DLG_CH02_PILA_GRANDDAUGHTER_002,"Here, let me. I've scrubbed worse off a hull. ...That one was already clean, wasn't it?"
+DLG_CH02_PILA_GRANDDAUGHTER_003,"With the ridges, not against them. Gently. You'd wash a face that way."
+DLG_CH02_PILA_GRANDDAUGHTER_004,"There. Shoulder height, clean-edged. Nobody is in that one yet."
+DLG_CH02_PILA_GRANDDAUGHTER_005,And this one I can find with my eyes shut. Teyo Marrin.
+DLG_CH02_PILA_GRANDDAUGHTER_006,Family?
+DLG_CH02_PILA_GRANDDAUGHTER_007,"My grandmother Pila's big brother. He went as Cantor at sixteen, so the Order would take him and not her. She was the stronger hearer."
+DLG_CH02_PILA_GRANDDAUGHTER_008,He was frightened the whole way. Grandmother said he went anyway.
+DLG_CH02_PILA_GRANDDAUGHTER_009,And Pila?
+DLG_CH02_PILA_GRANDDAUGHTER_010,"Lived to ninety-one. Mended nets to the end, and never once sang. Not even to children, in case anyone was listening."
+DLG_CH02_PILA_GRANDDAUGHTER_011,Salt and stone. Ninety-one years of not singing.
+DLG_CH02_PILA_GRANDDAUGHTER_012,You'll go up to the shrine with her? Say hello to him for us.
+DLG_CH02_PILA_GRANDDAUGHTER_013,To who?
+DLG_CH03_BARK_CAUSEWAY_POSTS_001,That one's snapped clean through. Nobody's put up a new one?
+DLG_CH03_BARK_CAUSEWAY_POSTS_002,Nobody mends the posts.
+DLG_CH03_BARK_CAUSEWAY_POSTS_003,Why not?
+DLG_CH03_BARK_CAUSEWAY_POSTS_004,"Mind the shells, Rhen. They cut."
+DLG_CH03_BARK_CAUSEWAY_RING_001,"There's light in that crack. Lit Age ceramic, still lit. That's a month of food, sitting in the sand."
+DLG_CH03_BARK_CAUSEWAY_RING_002,Leave it.
+DLG_CH03_BARK_CAUSEWAY_RING_003,...Leaving it.
+DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_001,"Look. Star-snail, comb-anemone, and a little lamp-crab under the ledge."
+DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_002,"Two copper, nothing, and four if you catch him before he sheds."
+DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_003,Is that all a pool is to a diver? A price on every shell?
+DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_004,The anemone was free. I'm not a monster.
+DLG_CH03_BARK_CHAPEL_NIGHT_001,Guardian. Keep her feet dry and her lamp lit. That's the whole of the rite.
+DLG_CH03_BARK_CHAPEL_NIGHT_002,I can do that.
+DLG_CH03_BARK_DOCK_NIGHT_001,"Fair weather to you, diver. Bring her back the long way round."
+DLG_CH03_BARK_DOCK_NIGHT_002,The long way. I'll remember.
+DLG_CH03_BARK_LANE_NIGHT_001,Are you going with the Lady? Then you have to learn the rhyme.
+DLG_CH03_BARK_LANE_NIGHT_002,Teach me tomorrow.
+DLG_CH03_BARK_MARKET_NIGHT_001,So you're the one walking with her. Take the dried fish. All of it.
+DLG_CH03_BARK_MARKET_NIGHT_002,I'll carry it for both of us.
+DLG_CH03_DOCK_001,"Asha. On the shrine steps, Toma said..."
+DLG_CH03_DOCK_002,"How was your day, Rhen? Truly."
+DLG_CH03_DOCK_003,"...Long. Good, mostly."
+DLG_CH03_DOCK_004,You leave the day after tomorrow.
+DLG_CH03_DOCK_005,At first tide. The causeway won't wait for me.
+DLG_CH03_DOCK_006,"Then let me come. As your guardian. I can dive, and I can carry, and I don't scare."
+DLG_CH03_DOCK_007,Yes.
+DLG_CH03_DOCK_008,"Asha. A guardian is not chosen on a dock, at night—"
+DLG_CH03_DOCK_009,"This one was, Toma."
+DLG_CH03_DOCK_010,...
+DLG_CH03_DOCK_011,Then you walk behind me.
 DLG_CH03_VERSE_001,"Don't look so worried, both of you. It's only my first one."
 DLG_CH03_VERSE_002,Shout if it bites.
 DLG_CH03_VERSE_003,He's been in there a hundred and forty years. I think he'll be polite.
@@ -116,6 +260,316 @@ DLG_CH03_VERSE_058,The tide has turned.
 DLG_CH03_VERSE_059,Something heard that.
 DLG_CH03_VERSE_060,"On my shield. Everyone, on my shield, now."
 DLG_CH03_TRIAL_HINT_001,"Start at the spring. Follow the water, not the stone."
+DLG_CH04_BANTER_ENNU_001,"Vey enu, vey enu..."
+DLG_CH04_BANTER_ENNU_002,It is pronounced ennu. Two syllables. You will want to sing it correctly when it matters.
+DLG_CH04_BANTER_ENNU_003,"Thank you. Vey ennu, vey ennu."
+DLG_CH04_BANTER_ENNU_004,Yes.
+DLG_CH04_BANTER_ONCE_001,Tutor. Forgive me. Have you walked a pilgrimage before?
+DLG_CH04_BANTER_ONCE_002,Once.
+DLG_CH04_BANTER_ONCE_003,Then the road is level under you.
+DLG_CH04_BANTER_ONCE_004,"And still, Guardian. Thank you."
+DLG_CH04_BANTER_SALT_001,"You're no Haluna boy, with that tether-scar. Where are you out of?"
+DLG_CH04_BANTER_SALT_002,The raft-town. Oruvel.
+DLG_CH04_BANTER_SALT_003,"Salt and stone. I'm sorry, lad."
+DLG_CH04_BARK_REED_001,"Swept them twice. The steps. A Cantor's wake, and my chapel's steps."
+DLG_CH04_BARK_REED_002,The Order's tutor came over on the evening ebb. She's at the wall already.
+DLG_CH04_BARK_REED_003,Won't take a stool. Won't take a cup. Stands at the back like a heron.
+DLG_CH04_BARK_NET_001,"Last line, then I'm going up. Somebody has to sing the low part."
+DLG_CH04_BARK_NET_002,The low part of what?
+DLG_CH04_BARK_NET_003,The long way round. You'll know it when you hear it. Everyone does.
+DLG_CH04_BARK_BOWLS_001,Four bowls. They were at their food.
+DLG_CH04_BARK_BOWLS_002,"In a house where someone has died, you clear the table. That is all."
+DLG_CH04_BARK_HOUSING_001,That's the housing I sold Sadi. She paid me for half of it.
+DLG_CH04_BARK_HOUSING_002,...It goes where she stowed it.
+DLG_CH04_BARK_GLASS_001,"The glass was turned at the morning watch and never again. Three days ago, a little after eight."
+DLG_CH04_BARK_INN_001,"A slate hangs on the inn door: ""Closed. We are all at the wall."""
+DLG_CH04_BARK_RHYME_001,"You said teach you. So listen. ...three for the bell and four for the hush, and then you start again."
+DLG_CH04_BARK_RHYME_002,Start what again?
+DLG_CH04_BARK_RHYME_003,The rhyme. Everybody knows that.
+DLG_CH04_DOCK_001,Don't. Don't be kind about it. Just let me be angry for a minute.
+DLG_CH04_DOCK_002,Why did nobody tell me?
+DLG_CH04_DOCK_003,Everyone did. In pieces. And I let them.
+DLG_CH04_DOCK_004,You looked at me on the beach like I was a person. I wanted two days of that.
+DLG_CH04_DOCK_005,Tell me about Oruvel. What did it sound like in the morning?
+DLG_CH04_DOCK_006,Tell her about Oruvel.
+DLG_CH04_DOCK_007,Gulls. Rope on wood. Forty cookboats all burning breakfast at once.
+DLG_CH04_DOCK_008,"And Mother Kell, shouting at divers. She sold wicks. She sold everything."
+DLG_CH04_DOCK_009,She said the sea owed her a favour.
+DLG_CH04_DOCK_010,Mother Kell. You said it on the beach.
+DLG_CH04_DOCK_011,Not tonight.
+DLG_CH04_DOCK_012,Then another night. I'll still want to know.
+DLG_CH04_DOCK_013,I'm still coming.
+DLG_CH04_DOCK_014,I know. I said yes before Toma could stop me.
+DLG_CH04_DOCK_015,I can hear them. It's like someone humming in the next room. All the time.
+DLG_CH04_DOCK_016,Is Oruvel in there?
+DLG_CH04_DOCK_017,"Eat your cake, Rhen."
+DLG_CH04_DOCK_018,He'll sit there all night. He did it the night I was named.
+DLG_CH04_PLANK_001,Lady Cantor. Ysolde Ysel. The Conclave has appointed me to teach you Lamptongue on the road.
+DLG_CH04_PLANK_002,Be level.
+DLG_CH04_PLANK_003,And still.
+DLG_CH04_PLANK_004,I did not present myself at your wake. A wake belongs to the village.
+DLG_CH04_PLANK_005,Thank you. This is Rhen Sallow. My guardian.
+DLG_CH04_PLANK_006,"Guardian, porter, cake-carrier. I also do knots, badly."
+DLG_CH04_PLANK_007,"You are very funny, Master Sallow. I have decided not to notice."
+DLG_CH04_PLANK_008,You did the shells.
+DLG_CH04_PLANK_009,I am the Lady Cantor's tutor in Lamptongue.
+DLG_CH04_LAMPS_001,Where's everyone taking the lamps?
+DLG_CH04_LAMPS_002,To her.
+DLG_CH04_DAWN_001,Eat when they feed you.
+DLG_CH04_DAWN_002,I will.
+DLG_CH04_BOARD_001,The water keeps what it is given.
+DLG_CH04_BOARD_002,"Go down to the level, and be still."
+DLG_CH04_BOARD_003,The harbour at Pemakar pays a boarder for bringing a board home. That's custom.
+DLG_CH04_BOARD_004,Tell them it's paid.
+DLG_CH04_BOARD_005,Never heard a diver say that.
+DLG_CH04_BOARD_006,I'd sold drowned brass my whole life. That was the first thing I ever brought up for nothing.
+DLG_CH04_TERRACE_001,"Sail! Sail off the bow, and she's not answering!"
+DLG_CH04_TERRACE_002,That's the Seventh Terrace.
+DLG_CH04_TERRACE_003,She was tied up at Oruvel three days ago. Her skipper paid me short.
+DLG_CH04_TERRACE_004,"Then she drowned in the Rising, and she's still sailing."
+DLG_CH04_TERRACE_005,Sea-law. You don't pass a drowned hull without bringing her name-board home.
+DLG_CH04_TERRACE_006,"I'll lie alongside her, an oar's length off. Fenders and boathooks."
+DLG_CH04_TERRACE_007,You never lash a living hull to a drowned one. And my crew stays aboard.
+DLG_CH04_TERRACE_008,Look at her rigging. It's moving wrong.
+DLG_CH04_TERRACE_009,I'm a diver. I've been on more drowned hulls than anyone on this deck. I'll go.
+DLG_CH04_TERRACE_010,You're my guardian. Guardians walk behind. So I'll go first.
+DLG_CH04_TERRACE_011,Then I am going.
+DLG_CH04_TERRACE_012,Someone should say the Canticle over her correctly. I am the only one aboard who may.
+DLG_CH04_SHELL_001,Bring your lights close. It's time.
+DLG_CH04_SHELL_002,"The water keeps what it is given, and gives back what it keeps."
+DLG_CH04_SHELL_003,Mara Velamir. Ilse Velamir. Teodra Velamir. Imra Velamir.
+DLG_CH04_SHELL_004,Asha Velamir.
+DLG_CH04_SHELL_005,"Now. Each house, the one thing it keeps."
+DLG_CH04_SHELL_006,Her knots.
+DLG_CH04_SHELL_007,The way she laughs at the wrong part of a story.
+DLG_CH04_SHELL_008,She sang my mother out. I keep that.
+DLG_CH04_SHELL_009,She let me hold the shrine bell once.
+DLG_CH04_SHELL_010,She's going to keep my bad stool. The one that bites. Aren't you.
+DLG_CH04_SHELL_011,That stool. That terrible stool.
+DLG_CH04_SHELL_012,"Bring her round by the long way, by the reef and the weed and the light."
+DLG_CH04_SHELL_013,"Bring her round by the long way, and the tide will bring her home by night."
+DLG_CH04_SHELL_014,"Don't go the short way over, where the deep is cold and wide."
+DLG_CH04_SHELL_015,"Come round the long way, love, come round the long way, on the tide."
+DLG_CH04_SHELL_016,Everyone keeps saying she's going on a pilgrimage.
+DLG_CH04_SHELL_017,Nobody says she's coming back from one.
+DLG_CH04_SHELL_018,You asked me. On the steps.
+DLG_CH04_SHELL_019,And you said ask her. I'm asking the whole village.
+DLG_CH04_SHELL_020,No. They do not.
+DLG_CH04_SHELL_021,"Come round the long way, love, come round the long way, on the tide."
+DLG_CH04_SHELL_022,Let me.
+DLG_CH04_SHELL_023,It is your wake.
+DLG_CH04_SHELL_024,Then I can leave it if I like.
+DLG_CH04_WRAITH_001,"Stand back from the rigging, please."
+DLG_CH04_WRAITH_002,On my shield.
+DLG_CH04_INK_001,"Hold the lamp, if you are going to stand there."
+DLG_CH04_INK_002,What's wrong with the ink?
+DLG_CH04_INK_003,"They cut the name well. They inked it with fishing-ink, soot and oil. Salt lifts that in a season."
+DLG_CH04_INK_004,Ansedran lacquer outlasts the stone it is in.
+DLG_CH04_INK_005,So you go round villages fixing other people's spelling.
+DLG_CH04_INK_006,...Sorry.
+DLG_CH04_INK_007,That's her mother's.
+DLG_CH04_INK_008,Yes.
+DLG_CH04_INK_009,Have you done this before?
+DLG_CH04_INK_010,Once.
+DLG_CH04_INK_011,Go to sleep. The tide will not wait for anyone tomorrow.
+DLG_CH04_WAKE_001,"Come and eat, Rhen. Neme cooked for a village, and the village cooked for three."
+DLG_CH04_UNDER_WAY_001,Pemakar. Dusk.
+DLG_CH04_WAKE_FISHER_001,"Next boat I build, she's the Asha. Bow to stern, in paint."
+DLG_CH04_WAKE_FISHER_002,Nalu says you said that about the last three.
+DLG_CH04_WAKE_FISHER_003,Nalu's never built a boat.
+DLG_CH04_WAKE_NEME_001,"Nobody's eating. Eat, the pair of you. There's yam enough for the islet."
+DLG_CH04_WAKE_NEME_002,"We'll take some to the wall, Neme."
+DLG_CH04_WAKE_OSU_001,"Every shell on the wall, washed. Your mother's twice. She'd have wanted it done properly."
+DLG_CH04_WAKE_OSU_002,"She would. Thank you, Osu."
+DLG_CH04_WAKE_OSU_003,You said hello to him. Teyo. She told me.
+DLG_CH04_WAKE_OSU_004,It seemed rude not to.
+DLG_CH04_WAKE_VENDOR_001,"Here. The bowline you taught me, the year the nets came in torn. Tied it myself."
+DLG_CH04_WAKE_VENDOR_002,Your knots were always neater.
+DLG_CH04_WAKE_VENDOR_003,They still are. Thank you. I'll keep it.
+DLG_CH05_BANTER_COPPER_001,You're not even breathing hard.
+DLG_CH05_BANTER_COPPER_002,"Some people are simply fit, Master Sallow."
+DLG_CH05_BANTER_GRAVES_001,Why put the graves on the road up?
+DLG_CH05_BANTER_GRAVES_002,Pemakar buries its dead where the water passes. The channels visit them every day.
+DLG_CH05_BANTER_GATE_001,Daro Pemakan. The thirty-sixth. Seventy-one years old.
+DLG_CH05_BANTER_GATE_002,The roll records that he complained the whole way.
+DLG_CH05_BANTER_GATE_003,Good.
+DLG_CH05_BANTER_GATE_004,Good?
+DLG_CH05_BANTER_GATE_005,Somebody should.
+DLG_CH05_BARK_AFTER_BAND_001,"Did you see the Cantor's sleeve? Two, already!"
+DLG_NAME_TOWNSFOLK_LACQUERER,Lacquerer
+DLG_CH05_BARK_AFTER_BOATS_001,"Thirty out of the sea-cut since noon, and every wick out."
+DLG_NAME_TOWNSFOLK_BOAT_FISHER,Boat-Fisher
+DLG_CH05_BARK_AFTER_BOATS_002,The rest went all the way down.
+DLG_CH05_BARK_AFTER_GRAVE_001,Swept clean. She'd still say I missed a corner.
+DLG_NAME_TOWNSFOLK_SWEEPER,Sweeper
+DLG_CH05_BARK_FOLD_001,Fold toward you. Always toward you.
+DLG_NAME_TOWNSFOLK_BOAT_FOLDER,Boat-Folder
+DLG_CH05_BARK_FOLD_002,And for strangers?
+DLG_NAME_TOWNSFOLK_HER_DAUGHTER,Her Daughter
+DLG_CH05_BARK_FOLD_003,Away.
+DLG_CH05_BARK_FERRY_001,Big man in a straw cape. Pulled my nephew off the reef at Sennet.
+DLG_CH05_BARK_FERRY_002,Walked off before anyone could thank him. My sister swears to it.
+DLG_CH05_BARK_FORGE_001,One... two... three.
+DLG_CH05_BARK_FORGE_002,Daro's at his anvil.
+DLG_CH05_BARK_GCHILD_001,Last year mine went all the way down to the sea. All the way!
+DLG_CH05_BARK_GRAVE_001,"Mind the rice, love. That's my mother's."
+DLG_CH05_BARK_LACQUER_001,The Cantor's in town. Gold leaf's doubled.
+DLG_CH05_CROWN_001,"The strike comes down the mountain the way the water does, tier by tier."
+DLG_NAME_TENDER_TENDER_RUWEN,Tender Ruwen
+DLG_CH05_CROWN_002,Bring it to the anvil before it forgets where it was going.
+DLG_CH05_FERRY_001,That's new.
+DLG_CH05_FERRY_002,My first. Toma's hand shook.
+DLG_CH05_FERRY_003,It did not.
+DLG_CH05_FERRY_004,"The Tenders write that the trial is at noon tomorrow, ""when the plume is awake."""
+DLG_CH05_FERRY_005,Tonight is Lanternfall.
+DLG_CH05_INN_001,...Suit yourself.
+DLG_CH05_KAHRE_001,She'll sleep now. She always does.
+DLG_CH05_KAHRE_002,"We will be here, Lady Cantor."
+DLG_CH05_KAHRE_003,Toma.
+DLG_CH05_KAHRE_004,...Asha.
+DLG_CH05_KAHRE_005,Three hundred years in there with a hammer. You'd think he'd run out of things to hit.
+DLG_CH05_KAHRE_006,You've got a look like you're pricing it.
+DLG_CH05_KAHRE_007,The roll says he repaired the hinges of every temple door he passed through. Unasked.
+DLG_CH05_KAHRE_008,That sounds like a smith.
+DLG_CH05_KAHRE_009,Well?
+DLG_CH05_KAHRE_010,He was impatient with me.
+DLG_CH05_KAHRE_011,I liked him very much.
+DLG_CH05_KAHRE_012,"He'd have wanted that back, I think. He said nothing about it. Keep it."
+DLG_CH05_KAHRE_013,The first verse is sung toward home. The second is sung to the mountain that taught it.
+DLG_CH05_KAHRE_014,"Ish karra, ish karra,"
+DLG_CH05_KAHRE_015,"vey hal ennu,"
+DLG_CH05_KAHRE_016,"re ish, re ish..."
+DLG_CH05_KAHRE_017,...mir.
+DLG_CH05_KAHRE_018,Is something going to come up out of the ground again?
+DLG_CH05_KAHRE_019,"Not this time, I think."
+DLG_CH05_KAHRE_020,Lift your chin when you sing. It is better for the breath.
+DLG_CH05_KAHRE_021,"Yes, Scholar."
+DLG_CH05_BOATS_001,For Mother Kell.
+DLG_CH05_BOATS_002,For Oruvel.
+DLG_CH05_BOATS_003,Not yet.
+DLG_CH05_BOATS_004,Then carry it till it's time.
+DLG_CH05_BOATS_005,They're coming with us.
+DLG_CH05_BOATS_006,They follow the boats down. They always do.
+DLG_CH05_BOATS_007,Is that good?
+DLG_CH05_BOATS_008,It's what they do.
+DLG_CH05_BOATS_009,Level preserve them.
+DLG_CH05_WEIR_001,"Rhen Sallow, if you fall in that channel I am not coming in after you."
+DLG_CH05_WEIR_002,I held a stair for your mother once.
+DLG_CH05_WEIR_003,Where?
+DLG_CH05_WEIR_004,...Then another time.
+DLG_CH05_WEIR_005,"Your name, sir?"
+DLG_CH05_WEIR_006,Kerrid.
+DLG_CH05_WEIR_007,And where are you bound?
+DLG_CH05_WEIR_008,Corrow.
+DLG_CH05_WEIR_009,The Lady Cantor's road goes by Corrow.
+DLG_CH05_WEIR_010,Then he will be walking our way whether we like it or not.
+DLG_CH05_WEIR_011,"He's going where we're going, Toma."
+DLG_CH05_WEIR_012,"Does the old man come with the town, or did we just collect him?"
+DLG_CH05_WEIR_013,Rhen.
+DLG_CH05_MATRON_001,"When the anvil rings, the Matron wakes. Be gentle with her if you can."
+DLG_CH05_SMITH_001,"Mine went down last night. Folded it wrong. You're the diver. Oruvel make, that lantern."
+DLG_CH05_SMITH_002,"Oruvel make, that. You're a diver."
+DLG_CH05_SMITH_003,I am. Here. Let me.
+DLG_CH05_SMITH_004,Hands made for tongs. You fold like a man who ties knots.
+DLG_CH05_SMITH_005,Tether-knots are folds. Divers learn them before they learn to swim.
+DLG_CH05_SMITH_006,My boy Benet went to Oruvel at sixteen. To dive.
+DLG_CH05_SMITH_007,Said copper's cheaper if you cut it yourself. He stayed five years.
+DLG_CH05_SMITH_008,A trader brought the news.
+DLG_CH05_SMITH_009,He wrote that it was the most beautiful place on the sea. He was a terrible liar. What did it look like?
+DLG_CH05_SMITH_010,"Hulls lashed together, rotting from underneath. Oil smoke. Everyone owing everyone."
+DLG_CH05_SMITH_011,Not a yard of ground anywhere to stand on.
+DLG_CH05_SMITH_012,I'd guessed.
+DLG_CH05_SMITH_013,When the divers come up at dusk...
+DLG_CH05_SMITH_014,You see their lamps coming up through the water before you see their heads. Like the sea handing them back one at a time.
+DLG_CH05_SMITH_015,"On race days, at the second mooring..."
+DLG_CH05_SMITH_016,Everyone yelling. Your boy yelled loudest. He always lost.
+DLG_CH05_SMITH_017,Did you know him?
+DLG_CH05_SMITH_018,Tall. Burned his thumb on every lamp I ever saw him light.
+DLG_CH05_SMITH_019,That's him.
+DLG_CH05_SMITH_020,"Fold toward you, they say. For your own."
+DLG_CH05_SMITH_021,He'd have folded it away. Never could keep the rule straight.
+DLG_CH05_HINT_001,"Follow the copper, not the stair."
+DLG_CH07_AFTER_001,Oruvel withdraws. We've somewhere to be.
+DLG_CH07_AFTER_002,Oruvel's name stays on the roll.
+DLG_CH07_AFTER_003,"Win or lose, she'd have yelled at us the same."
+DLG_CH07_AFTER_004,Keep it till he wants it back.
+DLG_CH07_AFTER_005,If you find anyone—
+DLG_CH07_AFTER_006,I'll hang a lamp.
+DLG_CH07_BARK_BOARD_001,"Tidecup draw! First round at noon: Oruvel against Sorrin, at the Bell."
+DLG_NAME_VENDOR_BOARD_CALLER,Board-caller
+DLG_CH07_BARK_BOARD_002,The captains name their dead at the rim first. Be quiet for it.
+DLG_CH07_BARK_CHILD_001,If you bring the float up you get to ring the little bell! The little one!
+DLG_CH07_BARK_ELDER_001,"Reefball's a rescue drill, that's all it ever was."
+DLG_NAME_NETMENDER_OLD_WOMAN,Old woman
+DLG_CH07_BARK_ELDER_002,You bring the float up like you'd bring up a body. People forget.
+DLG_CH07_BARK_GANTRY_001,Oruvel's side is still here. A week now. Nobody's had the heart to ask them.
+DLG_CH07_BARK_GANTRY_AFTER_001,Next round's in. Listen to them up there.
+DLG_CH07_BARK_GANTRY_AFTER_002,Oruvel's boat went out the river mouth an hour ago. Nobody cheered. They just moved aside.
+DLG_CH07_BARK_LANE_001,Hot year. Fast water. Good for the atoll sides.
+DLG_CH07_BARK_LANE_AFTER_001,Where'd they go?
+DLG_CH07_BARK_LANE_AFTER_002,Home.
+DLG_CH07_BARK_MARKET_001,Sorrin's side swims like eels. You watch them.
+DLG_CH07_BARK_MARKET_AFTER_001,Oruvel's side played for their town. Whole gallery stood up.
+DLG_CH07_BARK_YSOLDE_001,The Order sanctified the Bell in the third century. I have read the decree.
+DLG_CH07_BARK_YSOLDE_002,It is very short.
+DLG_CH07_MOOR_001,Would you bless them? The moorings. Gran would want it done by somebody proper.
+DLG_CH07_MOOR_002,"I'm not a priest, Tavi."
+DLG_CH07_MOOR_003,You're the Cantor.
+DLG_CH07_MOOR_004,Then I'll do it the way we do it at home. Tell me what tied up here.
+DLG_CH07_MOOR_005,The Tallow Hen.
+DLG_CH07_MOOR_006,"Ollo's. Brann's uncle, and his wife."
+DLG_CH07_MOOR_007,"Brann's uncle, and his wife."
+DLG_CH07_MOOR_008,The Second Mooring.
+DLG_CH07_MOOR_009,The Ketters. All of them but Mae.
+DLG_CH07_MOOR_010,The Ketters.
+DLG_CH07_MOOR_011,The Wicklight.
+DLG_CH07_MOOR_012,Kell.
+DLG_CH07_MOOR_013,Kell.
+DLG_CH07_MOOR_014,The Brass Thrush. The Low Lantern.
+DLG_CH07_MOOR_015,Dovic's brothers. Old Arro and his daughter.
+DLG_CH07_MOOR_016,"Dovic's brothers. Old Arro, and his daughter."
+DLG_CH07_MOOR_017,Pio.
+DLG_CH07_MOOR_018,...Yes. Pio.
+DLG_CH07_MOOR_019,Pio.
+DLG_CH07_MOOR_020,Salt and stone keep you. Come up when you can.
+DLG_CH07_MOOR_021,Thank you.
+DLG_CH07_GALL_001,Haluna sat there. That gallery. We lost every match for six years.
+DLG_CH07_GALL_002,You never told me you played.
+DLG_CH07_GALL_003,I was large. They put me in the ring and asked me not to move.
+DLG_CH07_GALL_004,"Rust it, the Bell's glimmer-made. You're all just not looking at it."
+DLG_CH07_INTO_001,Tidecup week. Every purse-cutter on the coast is here.
+DLG_CH07_INTO_002,"Then hold on to yours, Mistress Varrow."
+DLG_CH07_INTO_003,...Oruvel always came up for this.
+DLG_CH07_LEAVE_001,"That'll be Tamsule's cup, then."
+DLG_CH07_NAMING_001,Aldo Sabe. My brother.
+DLG_CH07_NAMING_002,Up.
+DLG_CH07_NAMING_003,Oruvel.
+DLG_CH07_NAMING_004,Up.
+DLG_CH07_RBL_001,For her. Go.
+DLG_CH07_RBL_002,Oruvel! Oruvel!
+DLG_NAME_CROWD_GALLERY,Gallery
+DLG_CH07_RBL_003,Up!
+DLG_CH07_RBL_004,Again. Again.
+DLG_CH07_RBL_005,Kell's boy!
+DLG_CH07_RBL_006,That's it. That's us.
+DLG_CH07_TAVI_001,Rhen! Salt and stone. Rhen!
+DLG_CH07_TAVI_002,"Tavi. You've grown a beard, or something died on your face, either way I'm not kissing it, get off—"
+DLG_CH07_TAVI_003,"Nobody's come. A week. No boats, no word, nothing."
+DLG_CH07_TAVI_004,Pio took the Gull back to look and he hasn't—
+DLG_CH07_TAVI_005,Gran?
+DLG_CH07_TAVI_006,"She couldn't swim, Tavi."
+DLG_CH07_TAVI_007,I was there.
+DLG_CH07_TAVI_008,...Did she know? That it was coming?
+DLG_CH07_TAVI_009,She was handing out wicks.
+DLG_CH07_TAVI_010,I'm sorry.
+DLG_CH07_TAVI_011,Don't. Not you. She'd clout you for it.
+DLG_CH07_TAVI_012,I sent her a boat at Pemakar. Too much wick. She'd have said so.
+DLG_CH07_TAVI_013,She would.
+DLG_CH07_TAVI_014,We're a player short. Pio's place. The naming's at noon.
+DLG_CH07_TAVI_015,Give me his band.
+DLG_CH07_TAVI_016,Asha. I'm so sorry about your grandmother.
+DLG_CH07_TAVI_017,Rhen is the Lady Cantor's sworn guardian.
+DLG_CH07_TAVI_018,...Gran would've liked that.
 DLG_PROLOGUE_DEAD_CITY_001,"Everyone I'm going to tell you about is still here tonight. Remember that, later."
 DLG_TEST_CUTSCENE_001,First fixture line.
 DLG_TEST_CUTSCENE_002,Fixture option A.

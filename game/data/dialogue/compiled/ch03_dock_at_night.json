@@ -1,0 +1,28 @@
+{
+ "format": 1,
+ "scene": "ch03_dock_at_night",
+ "source": "game/data/dialogue/ch03/ch03_dock_at_night.dlg",
+ "start": "ch03_dock_at_night",
+ "nodes": {
+  "ch03_dock_at_night": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch03_rhen_asked_after"], "to": 5, "src": 10},
+    {"op": "line", "id": "ch03_dock_001", "key": "DLG_CH03_DOCK_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "line", "id": "ch03_dock_002", "key": "DLG_CH03_DOCK_002", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 12},
+    {"op": "line", "id": "ch03_dock_003", "key": "DLG_CH03_DOCK_003", "speaker": "rhen", "emotion": "tender", "voice": "", "src": 13},
+    {"op": "goto", "to": 5, "src": 10},
+    {"op": "line", "id": "ch03_dock_004", "key": "DLG_CH03_DOCK_004", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 15},
+    {"op": "line", "id": "ch03_dock_005", "key": "DLG_CH03_DOCK_005", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 16},
+    {"op": "cue", "cue": "mark", "args": ["toma", "dock_toma", "walk"], "kwargs": {}, "src": 17},
+    {"op": "line", "id": "ch03_dock_006", "key": "DLG_CH03_DOCK_006", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 18},
+    {"op": "line", "id": "ch03_dock_007", "key": "DLG_CH03_DOCK_007", "speaker": "asha", "emotion": "smile", "voice": "", "src": 19},
+    {"op": "line", "id": "ch03_dock_008", "key": "DLG_CH03_DOCK_008", "speaker": "toma", "emotion": "worried", "voice": "", "src": 20},
+    {"op": "line", "id": "ch03_dock_009", "key": "DLG_CH03_DOCK_009", "speaker": "asha", "emotion": "tender", "voice": "", "src": 21},
+    {"op": "line", "id": "ch03_dock_010", "key": "DLG_CH03_DOCK_010", "speaker": "toma", "emotion": "exhausted", "voice": "", "src": 22},
+    {"op": "line", "id": "ch03_dock_011", "key": "DLG_CH03_DOCK_011", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 23},
+    {"op": "set", "flag": "ch03_rhen_sworn_guardian", "value": ["lit", true], "src": 24}
+   ]
+  }
+ }
+}

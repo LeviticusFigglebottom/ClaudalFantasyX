@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch05_banter_copper_tier",
+ "source": "game/data/dialogue/ch05/ch05_banter_copper_tier.dlg",
+ "start": "ch05_banter_copper_tier",
+ "nodes": {
+  "ch05_banter_copper_tier": {
+   "headers": {"location": "ch05/ashcrown"},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "kerrid"], "kwargs": {}, "src": 7},
+    {"op": "line", "id": "ch05_banter_copper_001", "key": "DLG_CH05_BANTER_COPPER_001", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 8},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "look_at", "rhen"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 10},
+    {"op": "line", "id": "ch05_banter_copper_002", "key": "DLG_CH05_BANTER_COPPER_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 11}
+   ]
+  }
+ }
+}

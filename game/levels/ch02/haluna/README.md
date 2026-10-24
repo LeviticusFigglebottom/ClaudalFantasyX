@@ -1,17 +1,45 @@
 # Haluna, playable zone (M2-FP-02)
 
 `haluna.tscn` is the `ch02/haluna` location (`game/data/world/locations.json`). It instances
-Environment's mood scene `game/levels/_tests/haluna_mood/haluna_mood.tscn` (terrain, kit dressing, sea,
-sun, the `haluna_shrine` SaveShrine) **without editing it** and adds what play needs. Placeholder
+`haluna_dressing.tscn` (terrain, kit dressing, sea, sun, the `haluna_shrine` SaveShrine), and adds what
+play needs. M2-ENV-01 promoted the dressing and its scripts and data out of Environment's mood test
+(`game/levels/_tests/haluna_mood/`), which is now a thin wrapper: it inherits `haluna_dressing.tscn`
+and adds only the five shot cameras. A change made for a mood shot therefore lands here, in the
+shipped zone's files. Placeholder
 quality: capsules for people, invisible collision, composed-but-rough camera volumes.
 
 | File | Role |
 |---|---|
-| `haluna.tscn` | The zone: mood instance, `Collision`, `Player`, `FieldCamera` + `CameraDirector`, `CameraVolumes`, `Spawns`, `NPCs`, `Triggers`, `CutsceneStage` |
-| `haluna_zone.gd` (`HalunaZone`) | Root. Releases the mood scene's five shot cameras, builds collision, `place_at(spawn, yaw_deg)` (moves Rhen, snaps the director), `player` / `director` / `stage` accessors, `set_beach_cast_visible()` |
+| `haluna.tscn` | The zone: the dressing instance (node `HalunaMood`), `Collision`, `Player`, `FieldCamera` + `CameraDirector`, `CameraVolumes`, `Spawns`, `NPCs`, `Triggers`, `CutsceneStage` |
+| `haluna_zone.gd` (`HalunaZone`) | Root. Builds collision, `place_at(spawn, yaw_deg)` (moves Rhen, snaps the director), `player` / `director` / `stage` accessors, `set_beach_cast_visible()` |
 | `haluna_collision.gd` (`HalunaCollision`) | Runtime walk collision from the mood scene (all tuning is its exports in the scene) |
 | `haluna_actor_pose.gd` (`HalunaActorPose`) | Holds a still bone pose on an imported character (Asha kneeling on the beach) |
 | `haluna_zone_dresser.gd` (`HalunaZoneDresser`) | The mood scene's `HalunaDresser` with `_ready` emptied: the zone dresses it before it enters the tree (see "Entry hitch") |
+
+Promoted from the mood test (M2-ENV-01; Environment and Rendering edit these in place):
+
+| File | Role |
+|---|---|
+| `haluna_dressing.tscn` | The world: environment, sun, sea, tide, terrain, dresser, spawns, the `haluna_shrine` SaveShrine |
+| `haluna_mood.gd` (`HalunaMood`) | Sun from elevation/azimuth, `hymn_*` globals, capture determinism (held clock, FXAA) |
+| `haluna_layout.json` | **All placement data**: terrain shape, lanes, wall runs, pieces, plants, scatter |
+| `haluna_dresser.gd` (`HalunaDresser`) | Builds the zone from the layout: kit .glb, materials, LOD ranges, wall runs, gulls facing the sea |
+| `haluna_terrain.gd` (`HalunaTerrain`) | The generated crescent beach, terrace, lagoon, reef and islands; lane/turf/seagrass masks |
+| `weathering_tide.gd` (`WeatheringTide`) | Moves the sea to the tide height; the weathering tier |
+| `haluna_noon_environment.tres`, `lut_ch02_noon.png` | The `ch02_noon` mood frame and its 32³ grade LUT (`assets_src/environments/kits/haluna/zone_lut.py`) |
+| `haluna_water_material.tres` | The `lagoon_clear` sea look |
+
+**Night (M2-ENV-02).** `HalunaMood.mood = &"night"` switches the world to the colour script's
+`ch02_night` (haluna.md H10):
+- **Light:** the sun is hidden and the `Moon` is shown (`#9DB4D9`, 0.25, 38° at azimuth 200; the `hymn_sun_direction` global follows it).
+- **Sky:** `haluna_night_environment.tres`, the `env_sky_night` star sky at exposure 1.1 (ambient 0.08, as the validated `water_night`).
+- **Sea:** sea-glow 0.12 with the `night_sea` look on a copy of the material, and the glimmer gate open.
+- **Lamps:** the dresser's `NightLamps` are shown, one oil lantern under each house's front eave (`haluna_layout.json` `night_lamps`).
+- **Zone:** `HalunaZone.set_night` (B11) asks for it and adds the dock lanterns from first_playable.json.
+- **Shot:** `haluna_h10_dock_night` is H10 from the dock end. On lavapipe it costs about the same as the noon shots (27 s for 24 frames, against 21–36 s); GPU numbers are still to come.
+
+The mood test's notes (GI choice, tonemap and LUT, tide, vegetation groups, sky and palette checks)
+stay in `game/levels/_tests/haluna_mood/README.md`.
 
 ## Collision (~100 ms, ~550 shapes, deterministic; built off the tree, see "Entry hitch")
 
@@ -102,7 +130,8 @@ Q/R steer) at priority 0 frames Rhen everywhere else.
 | `NPCs/Chapel/Talk` (a Reed sweeping at (−116.3, 2.7, 33.6)) | `npc_chapel` | interact | `{"dialogue": "ch02_bark_chapel"}` |
 | `NPCs/Dock/Talk` (two fishers on the dock's end platform) | `npc_dock` | interact | `{"dialogue": "ch02_bark_dock"}` |
 | `Triggers/TidelineBattle` (six boxes, a strip 6 m seaward of the beach-head tide wall, z −110…110) | `tideline_battle` | touch | `{"battle": "ch02_tideline"}`, requires `ch02_met_asha`, blocked by `ch02_tideline_won` |
-| `Triggers/CausewayHead` ((7, 1.5, −125), 32 × 6 m) | `causeway_head` | touch | `{"cutscene": "ch03_the_first_verse"}`, requires `ch02_saved_once` |
+| `Triggers/CausewayHead` ((7, 1.5, −125), 32 × 6 m) | `causeway_head` | touch | `{"cutscene": "ch03_the_first_verse"}`, requires `ch02_saved_once`. B05 (`ch02_low_tide`) opens on a "Go now" / "Not yet" choice; "Not yet" (`<<event departure_declined>>`) returns Rhen to `Spawns/CausewayHead` with nothing handed off, and the trigger stays armed (M2-FP-21) |
+| `Triggers/CausewayHeadUnsaved` (same box) | `causeway_head_unsaved` | touch | `{"dialogue": "ch02_bark_causeway_unsaved", "overheard": true}`, requires `ch02_met_asha`, blocked by `ch02_saved_once`; not `once`: it plays on every walk-in before the first save, never over itself (M2-FP-20) |
 
 The strip spans every lane gate, so any way up from the beach to the village crosses it once Asha has
 been met. The barks are `game/data/dialogue/ch02/ch02_bark_{market,chapel,dock}.dlg`.
@@ -132,3 +161,6 @@ to the end, and the registry entering the zone.
 - No camera collision: the hub orbit can clip a roof in tight lanes (Q/R steer it). Composed volumes
   cover the lanes the slice uses.
 - Asha's kneel is a still bone pose, not an animation.
+
+**The wake-shell wall at the causeway head (M2-ENV-04).** A second kit `wakeshell_wall` is in the layout at the causeway head, in reach. Grandmother Osu (B04) stands at its gap, and H08 and H08_hand frame it. Its collision is a trimesh (`piece_rules`). The far piece out on the sand stays as the vista.
+

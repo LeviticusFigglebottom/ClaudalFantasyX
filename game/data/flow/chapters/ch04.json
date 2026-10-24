@@ -1,0 +1,127 @@
+{
+ "doc": "Ch4 'The Pilgrim's Wake' (M3-C04-02; docs/kb/story/beats/act1_ch04.md C4-01 to C4-15; docs/kb/tech/chapter_flow.md 'Ch4'). Two greybox zones, played by ZoneStory. ch04/haluna_wake is a stand-in for ch02/haluna's night variant (HalunaStory is not data-driven, ADR 0035): it opens once B11 has sworn Rhen in (ch03_rhen_sworn_guardian; the slice's end card stays the M2 build's ending, and the full game's hand-off is the end card's next_location, M3-C04-04). C4-01 moves the story to chapter 4 (the chapter autosave), seats Rhen, Asha and Toma, and plays the lamps going to the wall; the windows go dark after it. C4-02 is the dark town loop and its barks; C4-03 the walkable feast (Ysolde's hold on the way in, four tables, Neme's the one the wall waits for); C4-04 and C4-05 the shell set and Rhen walking out; C4-06 the dark dock (the Kell choice); C4-07 'The Ink' at the wall, optional; Neme's door ends the night: C4-08 the dawn causeway, then ch04/brightwater_ferry at Landing. The ferry: C4-09 the gangplank (Ysolde joins, in reserve: the field party is Rhen, Asha and Toma with Ysolde in reserve), C4-10 the crossing (three overheard banters, the purser's shop, the deckhouse shrine as a rest: GreyboxZone has no SaveShrine yet), no battles on the ferry, ever (ADR 0017 (d)); C4-11 at the bow, the Seventh Terrace and the crossing to her; C4-12 the derelict (the leech ambush, the barks, the bottle-hermit lesson with Ysolde in reserve whatever the formation, random fights only aboard her); C4-13 the Spar-Wraith after a breath (a full heal, as Ch1 before Hullgnaw: its band assumes a full party); C4-14 the name-board (key item name_board_seventh_terrace) and C4-15 under way. Ch5's ch05/pemakar is not on this branch yet, so the chapter hands on to the end card as a stand-in; repoint the last step to {\"go\": {\"location\": \"ch05/pemakar\", \"spawn\": <its harbour spawn>}} when Ch5 merges (M3-C04-04).",
+ "chapter": "ch04",
+ "zones": {
+  "ch04/haluna_wake": {
+   "party": {"party": ["rhen", "asha", "toma"], "reserve": []},
+   "arrive": [
+    {
+     "when": {"set": ["ch03_rhen_sworn_guardian"], "unset": ["ch04_started"]},
+     "steps": [
+      {"place": "NemeDoor"},
+      {"chapter": 4},
+      {"set": "ch04_started"},
+      {"party": {"party": ["rhen", "asha", "toma"], "reserve": []}},
+      {"play": "ch04_lamps_to_the_wall"},
+      {"zone": "refresh_states"}
+     ]
+    }
+   ],
+   "beats": {
+    "the_wake": {
+     "when": {"unset": ["ch04_shell_set"]},
+     "steps": [{"play": "ch04_the_wake"}]
+    },
+    "neme_table": {
+     "when": {"unset": ["ch04_shell_set"]},
+     "steps": [{"play": "ch04_wake_neme"}, {"set": "ch04_feast_neme"}]
+    },
+    "shell_set": {
+     "when": {"set": ["ch04_feast_neme"], "unset": ["ch04_shell_set"]},
+     "steps": [
+      {"play": "ch04_shell_is_set"},
+      {"set": "ch04_shell_set"},
+      {"zone": "refresh_states"},
+      {"place": "DockEnd"},
+      {"play": "ch04_dock_in_the_dark"},
+      {"set": "ch04_dock_comforted"},
+      {"zone": "refresh_states"},
+      {"place": "DockShore"}
+     ]
+    },
+    "the_ink": {
+     "when": {"set": ["ch04_dock_comforted"], "unset": ["ch04_saw_ysolde_ink"]},
+     "steps": [{"play": "ch04_the_ink"}, {"set": "ch04_saw_ysolde_ink"}, {"zone": "refresh_states"}]
+    },
+    "dawn": {
+     "when": {"set": ["ch04_dock_comforted"], "unset": ["ch04_left_haluna"]},
+     "steps": [
+      {"place": "WallDawn"},
+      {"play": "ch04_long_way_round"},
+      {"set": "ch04_left_haluna"},
+      {"go": {"location": "ch04/brightwater_ferry", "spawn": "Landing"}}
+     ]
+    }
+   }
+  },
+  "ch04/brightwater_ferry": {
+   "party": {"party": ["rhen", "asha", "toma"], "reserve": []},
+   "arrive": [
+    {
+     "when": {"set": ["ch04_spar_wraith_defeated"], "unset": ["ch04_name_board_carried"]},
+     "steps": [
+      {"place": "Stern"},
+      {"play": "ch04_name_board"},
+      {"set": "ch04_name_board_carried"},
+      {"zone": "give", "args": [{"name_board_seventh_terrace": 1}, 0]},
+      {"zone": "refresh_states"},
+      {"place": "FerryAft"},
+      {"play": "ch04_under_way"},
+      {"go": {"location": "ch05/pemakar", "spawn": "Harbour"}}
+     ]
+    },
+    {
+     "when": {"set": ["ch04_left_haluna"], "unset": ["ch04_ysolde_joined"]},
+     "steps": [
+      {"place": "Landing"},
+      {"play": "ch04_gangplank"},
+      {"set": "ch04_ysolde_joined"},
+      {"party": {"party": ["rhen", "asha", "toma"], "reserve": ["ysolde"]}},
+      {"zone": "refresh_states"},
+      {"place": "Deck"}
+     ]
+    }
+   ],
+   "beats": {
+    "ferry_shrine": {
+     "steps": [{"zone": "rest", "args": ["ch04_ferry_shrine"]}]
+    },
+    "seventh_terrace": {
+     "when": {"set": ["ch04_ysolde_joined"], "unset": ["ch04_boarded_derelict"]},
+     "steps": [
+      {"play": "ch04_seventh_terrace"},
+      {"set": "ch04_boarded_derelict"},
+      {"zone": "refresh_states"},
+      {"place": "DerelictDeck"}
+     ]
+    },
+    "leeches": {
+     "when": {"set": ["ch04_boarded_derelict"], "unset": ["ch04_leeches_won"]},
+     "steps": [
+      {"battle": "ch04_sail_leeches", "return_spawn": "AfterLeeches", "victory_flag": "ch04_leeches_won"}
+     ]
+    },
+    "hermit": {
+     "when": {"set": ["ch04_leeches_won"], "unset": ["ch04_hermit_won"]},
+     "steps": [
+      {
+       "battle": "ch04_bottle_hermit",
+       "party": ["rhen", "asha", "toma"],
+       "reserve": ["ysolde"],
+       "return_spawn": "AfterHermit",
+       "victory_flag": "ch04_hermit_won"
+      }
+     ]
+    },
+    "spar_wraith": {
+     "when": {"set": ["ch04_hermit_won"], "unset": ["ch04_spar_wraith_defeated"]},
+     "steps": [
+      {"zone": "rest", "args": ["ch04_before_spar_wraith"]},
+      {"play": "ch04_spar_wraith"},
+      {"battle": "ch04_spar_wraith", "return_spawn": "Stern", "victory_flag": "ch04_spar_wraith_defeated"}
+     ]
+    }
+   }
+  }
+ }
+}

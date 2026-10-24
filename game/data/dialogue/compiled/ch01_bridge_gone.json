@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch01_bridge_gone",
+ "source": "game/data/dialogue/ch01/ch01_bridge_gone.dlg",
+ "start": "ch01_bridge_gone",
+ "nodes": {
+  "ch01_bridge_gone": {
+   "headers": {"location": "ch01/oruvel"},
+   "ops": [
+    {"op": "cue", "cue": "sfx", "args": ["raft_lashing_snap"], "kwargs": {}, "src": 7},
+    {"op": "line", "id": "ch01_bridge_001", "key": "DLG_CH01_BRIDGE_001", "speaker": "rhen", "emotion": "afraid", "voice": "", "src": 8},
+    {"op": "line", "id": "ch01_bridge_002", "key": "DLG_CH01_BRIDGE_002", "speaker": "kell", "emotion": "angry", "voice": "", "src": 9},
+    {"op": "line", "id": "ch01_bridge_003", "key": "DLG_CH01_BRIDGE_003", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 10}
+   ]
+  }
+ }
+}

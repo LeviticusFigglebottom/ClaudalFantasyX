@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch05_bark_ferryman",
+ "source": "game/data/dialogue/ch05/ch05_bark_ferryman.dlg",
+ "start": "ch05_bark_ferryman",
+ "nodes": {
+  "ch05_bark_ferryman": {
+   "headers": {"location": "ch05/pemakar"},
+   "ops": [
+    {"op": "line", "id": "ch05_bark_ferry_001", "key": "DLG_CH05_BARK_FERRY_001", "speaker": "ferryman", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "line", "id": "ch05_bark_ferry_002", "key": "DLG_CH05_BARK_FERRY_002", "speaker": "ferryman", "emotion": "neutral", "voice": "", "src": 10}
+   ]
+  }
+ }
+}

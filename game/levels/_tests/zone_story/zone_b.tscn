@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/world/zone/greybox_zone.gd" id="1_zone"]
+
+[node name="ZoneStoryB" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"zone_story_b"
+layout_path = "res://game/levels/_tests/zone_story/zone_b_layout.json"
+chapter_path = "res://game/levels/_tests/zone_story/test_chapter.json"

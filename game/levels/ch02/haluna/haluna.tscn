@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_zone.gd" id="1_zone"]
-[ext_resource type="PackedScene" path="res://game/levels/_tests/haluna_mood/haluna_mood.tscn" id="2_mood"]
+[ext_resource type="PackedScene" path="res://game/levels/ch02/haluna/haluna_dressing.tscn" id="2_mood"]
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_collision.gd" id="3_col"]
 [ext_resource type="Script" path="res://game/world/field_controller.gd" id="4_fc"]
 [ext_resource type="Script" path="res://game/world/field_camera_director.gd" id="5_dir"]
@@ -243,6 +243,99 @@ look_at = Vector3(0, 23.4, -8)
 fov_deg = 53.1
 hard_cut = true
 
+[sub_resource type="Resource" id="Shot_cut_H08"]
+script = ExtResource("7_shot")
+id = &"H08"
+position = Vector3(-15.97, 3.08, -118.35)
+look_at = Vector3(-15, 2.8, -121.5)
+fov_deg = 30.0
+
+[sub_resource type="Resource" id="Shot_cut_H08_hand"]
+script = ExtResource("7_shot")
+id = &"H08_hand"
+position = Vector3(-15.98, 2.78, -121.08)
+look_at = Vector3(-15.41, 2.63, -122.55)
+fov_deg = 32.0
+hard_cut = true
+
+[sub_resource type="Resource" id="Shot_cut_H03"]
+script = ExtResource("7_shot")
+id = &"H03"
+position = Vector3(-69, 5.4, -10.5)
+look_at = Vector3(-72.96, 6.25, -18.6)
+fov_deg = 26.0
+
+[sub_resource type="Resource" id="Shot_cut_B02_bag"]
+script = ExtResource("7_shot")
+id = &"B02_bag"
+position = Vector3(-53.35, 2.65, -2.62)
+look_at = Vector3(-54.74, 2.0, -2.49)
+fov_deg = 32.0
+hard_cut = true
+
+[sub_resource type="StandardMaterial3D" id="Mat_osu"]
+albedo_color = Color(0.415686, 0.45098, 0.509804, 1)
+roughness = 0.8
+
+[sub_resource type="CapsuleMesh" id="Mesh_osu"]
+material = SubResource("Mat_osu")
+radius = 0.3
+height = 1.5
+
+[sub_resource type="StandardMaterial3D" id="Mat_bowl"]
+albedo_color = Color(0.666667, 0.427451, 0.290196, 1)
+roughness = 0.7
+
+[sub_resource type="CylinderMesh" id="Mesh_bowl"]
+material = SubResource("Mat_bowl")
+top_radius = 0.22
+bottom_radius = 0.15
+height = 0.12
+
+[sub_resource type="StandardMaterial3D" id="Mat_shell"]
+albedo_color = Color(0.92549, 0.890196, 0.823529, 1)
+roughness = 0.5
+
+[sub_resource type="SphereMesh" id="Mesh_shell"]
+material = SubResource("Mat_shell")
+radius = 0.07
+height = 0.06
+
+[sub_resource type="StandardMaterial3D" id="Mat_bag"]
+albedo_color = Color(0.619608, 0.552941, 0.423529, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="Mesh_bag"]
+material = SubResource("Mat_bag")
+size = Vector3(0.45, 0.4, 0.28)
+
+[sub_resource type="StandardMaterial3D" id="Mat_shopkeep"]
+albedo_color = Color(0.25098, 0.462745, 0.556863, 1)
+roughness = 0.8
+
+[sub_resource type="CapsuleMesh" id="Mesh_shopkeep"]
+material = SubResource("Mat_shopkeep")
+radius = 0.32
+height = 1.65
+
+[sub_resource type="StandardMaterial3D" id="Mat_smith"]
+albedo_color = Color(0.415686, 0.301961, 0.231373, 1)
+roughness = 0.85
+
+[sub_resource type="CapsuleMesh" id="Mesh_smith"]
+material = SubResource("Mat_smith")
+radius = 0.36
+height = 1.75
+
+[sub_resource type="StandardMaterial3D" id="Mat_innkeep"]
+albedo_color = Color(0.701961, 0.517647, 0.313726, 1)
+roughness = 0.8
+
+[sub_resource type="CapsuleMesh" id="Mesh_innkeep"]
+material = SubResource("Mat_innkeep")
+radius = 0.33
+height = 1.6
+
 [sub_resource type="BoxShape3D" id="Box_BeachShallows"]
 size = Vector3(20.5, 8, 46)
 
@@ -340,6 +433,8 @@ piece_rules = {
 "lintel_gull_a": {"shape": "none"},
 "lintel_gull_b": {"shape": "none"},
 "lintel_gull_c": {"shape": "none"},
+"wakeshell_wall": {"shape": "trimesh"},
+"night_lamp_flame": {"shape": "none"},
 "palm_coconut_a": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
 "palm_coconut_b": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
 "palm_coconut_c": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
@@ -481,6 +576,9 @@ transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -13, 0.71, 6.5)
 
 [node name="CausewayHead" type="Marker3D" parent="Spawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.73, -118)
+
+[node name="DockNight" type="Marker3D" parent="Spawns"]
+transform = Transform3D(0.573576, 0, -0.819152, 0, 1, 0, 0.819152, 0, 0.573576, 13.7, 1.42, 46.2)
 
 [node name="NPCs" type="Node3D" parent="."]
 
@@ -636,6 +734,147 @@ mesh = SubResource("Mesh_neme")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36, -0.26)
 mesh = SubResource("Mesh_npc_facing")
 
+[node name="Bag" type="MeshInstance3D" parent="NPCs/Neme"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -54.74, 2.05, -2.49)
+mesh = SubResource("Mesh_bag")
+
+[node name="Osu" type="Node3D" parent="NPCs"]
+
+[node name="Osu" type="StaticBody3D" parent="NPCs/Osu"]
+transform = Transform3D(-0.856, 0, 0.517, 0, 1, 0, -0.517, 0, -0.856, -15, 1.53, -121.5)
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Osu/Osu"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("Shape_npc")
+
+[node name="StandIn" type="MeshInstance3D" parent="NPCs/Osu/Osu"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+mesh = SubResource("Mesh_osu")
+
+[node name="Facing" type="MeshInstance3D" parent="NPCs/Osu/Osu"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28, -0.24)
+mesh = SubResource("Mesh_npc_facing")
+
+[node name="Bowl" type="MeshInstance3D" parent="NPCs/Osu/Osu"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, -0.5)
+mesh = SubResource("Mesh_bowl")
+
+[node name="Shell" type="MeshInstance3D" parent="NPCs/Osu/Osu/Bowl"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.07, 0.02)
+mesh = SubResource("Mesh_shell")
+
+[node name="Talk" type="Area3D" parent="NPCs/Osu"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.4, 2.3, -120.8)
+id = &"npc_osu"
+prompt_key = "FIELD_PROMPT_LISTEN"
+requires_flag = &"ch02_met_asha"
+payload = {
+"dialogue": "ch02_pila_granddaughter"
+}
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Osu/Talk"]
+shape = SubResource("Shape_talk")
+
+[node name="LaneGull" type="Area3D" parent="NPCs/Lane"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -74, 3.05, -10.6)
+id = &"look_lintel_gull"
+prompt_key = "FIELD_PROMPT_LOOK"
+requires_flag = &"ch02_met_asha"
+payload = {
+"dialogue": "ch02_look_lintel_gull"
+}
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Lane/LaneGull"]
+shape = SubResource("Shape_talk")
+
+[node name="Town" type="Node3D" parent="NPCs"]
+
+[node name="Shopkeeper" type="StaticBody3D" parent="NPCs/Town"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -35.5, 1.75, -0.6)
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Town/Shopkeeper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("Shape_npc")
+
+[node name="StandIn" type="MeshInstance3D" parent="NPCs/Town/Shopkeeper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83, 0)
+mesh = SubResource("Mesh_shopkeep")
+
+[node name="Facing" type="MeshInstance3D" parent="NPCs/Town/Shopkeeper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, -0.27)
+mesh = SubResource("Mesh_npc_facing")
+
+[node name="ShopkeeperTalk" type="Area3D" parent="NPCs/Town"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36.1, 2.6, -0.6)
+id = &"npc_shop_market"
+prompt_key = "SHOP_PROMPT"
+requires_flag = &"ch02_met_asha"
+payload = {
+"shop": "haluna_market"
+}
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Town/ShopkeeperTalk"]
+shape = SubResource("Shape_talk")
+
+[node name="Smith" type="StaticBody3D" parent="NPCs/Town"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -12.0, 0.86, 50.0)
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Town/Smith"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("Shape_npc")
+
+[node name="StandIn" type="MeshInstance3D" parent="NPCs/Town/Smith"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83, 0)
+mesh = SubResource("Mesh_smith")
+
+[node name="Facing" type="MeshInstance3D" parent="NPCs/Town/Smith"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, -0.27)
+mesh = SubResource("Mesh_npc_facing")
+
+[node name="SmithTalk" type="Area3D" parent="NPCs/Town"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.4, 1.71, 50.0)
+id = &"npc_shop_forge"
+prompt_key = "SHOP_PROMPT"
+requires_flag = &"ch02_met_asha"
+payload = {
+"shop": "haluna_forge"
+}
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Town/SmithTalk"]
+shape = SubResource("Shape_talk")
+
+[node name="Innkeeper" type="StaticBody3D" parent="NPCs/Town"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -30.0, 1.8, 58.5)
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Town/Innkeeper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("Shape_npc")
+
+[node name="StandIn" type="MeshInstance3D" parent="NPCs/Town/Innkeeper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83, 0)
+mesh = SubResource("Mesh_innkeep")
+
+[node name="Facing" type="MeshInstance3D" parent="NPCs/Town/Innkeeper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, -0.27)
+mesh = SubResource("Mesh_npc_facing")
+
+[node name="InnkeeperTalk" type="Area3D" parent="NPCs/Town"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.4, 2.65, 58.5)
+id = &"npc_inn"
+prompt_key = "INN_PROMPT"
+requires_flag = &"ch02_met_asha"
+payload = {
+"inn": "haluna_inn"
+}
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Town/InnkeeperTalk"]
+shape = SubResource("Shape_talk")
+
 [node name="Triggers" type="Node3D" parent="."]
 
 [node name="TidelineBattle" type="Area3D" parent="Triggers"]
@@ -683,6 +922,21 @@ payload = {
 }
 
 [node name="Shape" type="CollisionShape3D" parent="Triggers/CausewayHead"]
+shape = SubResource("Box_causeway")
+
+[node name="CausewayHeadUnsaved" type="Area3D" parent="Triggers"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1.5, -125)
+id = &"causeway_head_unsaved"
+activation = 1
+requires_flag = &"ch02_met_asha"
+blocked_by_flag = &"ch02_saved_once"
+payload = {
+"dialogue": "ch02_bark_causeway_unsaved",
+"overheard": true
+}
+
+[node name="Shape" type="CollisionShape3D" parent="Triggers/CausewayHeadUnsaved"]
 shape = SubResource("Box_causeway")
 
 [node name="OverhearMarket" type="Area3D" parent="Triggers"]
@@ -765,6 +1019,22 @@ key_pitch_deg = 30.0
 [node name="H01" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("10_shotnode")
 shot = SubResource("Shot_cut_H01")
+
+[node name="H08" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("10_shotnode")
+shot = SubResource("Shot_cut_H08")
+
+[node name="H08_hand" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("10_shotnode")
+shot = SubResource("Shot_cut_H08_hand")
+
+[node name="H03" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("10_shotnode")
+shot = SubResource("Shot_cut_H03")
+
+[node name="B02_bag" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("10_shotnode")
+shot = SubResource("Shot_cut_B02_bag")
 
 [node name="Actors" type="Node3D" parent="CutsceneStage"]
 

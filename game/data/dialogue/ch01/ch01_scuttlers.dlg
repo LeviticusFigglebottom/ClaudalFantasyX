@@ -1,0 +1,10 @@
+// Ch1 C1-13: the first Undertow-spawn the player sees, scuttlers coming up over the hull edges ahead
+// of the storm, their wounds bleeding held cyan as every spawn's do. A short line before the fight
+// (he jokes harder the more scared he is). In-engine; the chapter flow opens the battle after it.
+title: ch01_scuttlers
+location: ch01/oruvel
+---
+@vfx glimmer_held at=scuttlers count=6 drift=down_seaward
+@wait 1.0
+Rhen [afraid]: What are you? No. Don't answer that. #line:ch01_scuttlers_001
+===

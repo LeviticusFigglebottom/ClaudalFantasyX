@@ -1,0 +1,11 @@
+// Ch4 C4-02, bark 3 of 3: the chapel court, the Reed's door open and the chapel lamp gone with her.
+// She has swept the steps for the wake and says so, proudly. If the player stops to talk (this is an
+// interact bark): the Order's tutor came over at the evening ebb and won't take a stool. That's
+// Ysolde, unnamed: nothing here says who she is (C4-09 does). Field bark.
+title: ch04_bark_chapel_reed
+location: ch04/haluna_wake
+---
+Reed [smile]: Swept them twice. The steps. A Cantor's wake, and my chapel's steps. #line:ch04_bark_reed_001
+Reed [neutral]: The Order's tutor came over on the evening ebb. She's at the wall already. #line:ch04_bark_reed_002
+Reed [worried]: Won't take a stool. Won't take a cup. Stands at the back like a heron. #line:ch04_bark_reed_003
+===

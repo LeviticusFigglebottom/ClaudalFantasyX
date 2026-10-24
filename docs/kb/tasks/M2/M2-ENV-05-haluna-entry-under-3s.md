@@ -2,8 +2,8 @@
 id: M2-ENV-05
 title: Haluna's zone entry takes 3.1-3.5 s, over ADR 0029's 3 s (instance and prebuild 1.6-2.1 s)
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 reviewer: rendering
 depends_on: []
 milestone: M2
@@ -23,6 +23,25 @@ from the change request to the scene being in, under the opaque fade:
       Candidates: cache or bake what the prebuild computes at runtime, or split it so part runs after the fade lifts
       without visible frames over 50 ms.
 - [ ] No visible frame over 50 ms afterwards (the same tool's `visible_max_ms`).
+
+## Notes
+- 2026-10-24 m2-slice, **for review by rendering. The 3 s criterion needs the PC to re-measure** (`tools/gpu_bench/slice_sweep.tscn -- --segments=haluna_beach`).
+- **Profiled the prebuild** (headless, this 4-CPU cloud box, shared with another agent's Blender job) at about 1.65–1.8 s. The biggest part was not the dressing:
+  - `HalunaActorPose.assign_materials`: about 920 ms per entry. Asha's ~25 material textures (about 18 MB) decode on every entry, because they leave the cache when the zone frees.
+  - Terrain: 330–430 ms. Collision: 130–250 ms. Pieces, plants and scatter: about 150 ms. Water: about 35 ms.
+- **Three changes, none of which changes a value:**
+  - The cast's materials load on the loader's threads (`request_materials`, `load_threaded_request`) while prebuild dresses and builds collision; `assign_materials` collects them.
+  - The terrain fills mesh rows in parallel (WorkerThreadPool group task, one holder object per row; identical values and order).
+  - The walk collision reads the terrain's cached core heights (`grid_height`: exactly `height_at` at those grid points, at the heightmap's 32-bit precision) instead of recomputing about 52,000 samples.
+- **Measured locally:** prebuild **1.65 s → 0.94 s** (−43%, three runs each). On the PC that should bring the 1.6–2.1 s `instantiate_ms` to about 0.9–1.2 s, so the 3.1–3.5 s entry lands under 3 s. To be confirmed there.
+- **Tests:** `tests/integration/test_haluna_entry_cost.gd` checks the heights' exactness and that the threaded material assignment still lands on every surface. The haluna and fp_ suites are green.
+
+- 2026-10-24 m2-slice, the **Lead's registry decision, applied.**
+  - **What the PC measured** (gpu/m2-rnd-11-sweep-r, `docs/kb/qa/gpu/2026-10-24-rnd-11-sweep-r.md`): a second launch's Haluna entry took 3.1 s on High and 3.5 s on Low, over ADR 0029's 3 s.
+  - **The fix:** Haluna's 17 prewarm registry entries are now `"resident": true` in `game/data/settings/prewarm_materials.json`: the six vegetation materials, the seven kit materials and the four ocean water tiers.
+  - **The cast's character materials** (Asha's 11) become resident through `gpu/hero-materials-resident` (its `resident_presets` code and data). That isn't on this branch or the integration branch yet, and I didn't duplicate it.
+  - **Expected cost:** the report's estimate with both changes is 1.6 s on High and 1.9 s on Low, for about 1.5 s more boot behind the card.
+  - **PC: please re-measure** with slice_sweep `--segments=haluna_beach`, second launch, High and Low, once both this and gpu/hero-materials-resident are on the integration branch.
 
 ## Review log
 

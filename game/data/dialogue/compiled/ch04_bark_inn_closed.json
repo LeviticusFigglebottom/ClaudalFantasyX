@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch04_bark_inn_closed",
+ "source": "game/data/dialogue/ch04/ch04_bark_inn_closed.dlg",
+ "start": "ch04_bark_inn_closed",
+ "nodes": {
+  "ch04_bark_inn_closed": {
+   "headers": {"location": "ch04/haluna_wake"},
+   "ops": [
+    {"op": "line", "id": "ch04_bark_inn_001", "key": "DLG_CH04_BARK_INN_001", "speaker": "", "emotion": "", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

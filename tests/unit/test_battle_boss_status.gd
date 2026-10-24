@@ -99,7 +99,7 @@ func test_fight_again_starts_the_bell_over_with_ilun_still_known() -> void:
 	Game.set_flag(FLAG, true)
 	ctl.persist_progress = true
 	_start()
-	assert_true(ctl.engine.find(&"asha").skills.has(&"call_ilun"), "the live flag gives Asha Call Ilun")
+	assert_true(ctl.engine.vowbound.known.has(&"ilun"), "the live flag binds Ilun (M2-UI-05)")
 	var bell := ctl.engine.enemies[0]
 	bell.hp = bell.max_hp * 40 / 100
 	BossMechanics.check_phases(ctl.engine)
@@ -116,7 +116,7 @@ func test_fight_again_starts_the_bell_over_with_ilun_still_known() -> void:
 	assert_eq(again.hp, again.max_hp)
 	assert_eq(ctl.engine.enemies.size(), 1, "no polyps carried over")
 	assert_true(ctl.engine.fields.is_empty())
-	assert_true(ctl.engine.find(&"asha").skills.has(&"call_ilun"), "Call Ilun is still known")
+	assert_true(ctl.engine.vowbound.known.has(&"ilun"), "Ilun is still bound")
 	assert_true(ctl.boss.status == first_status, "the read-out is reused, not stacked")
 	assert_true(ctl.boss.status.visible)
 	assert_eq(ctl.boss.status.title.text, "%s · %s" % [tr("ENEMY_DROWNBELL"), tr("PHASE_DROWNBELL_TOLL")])

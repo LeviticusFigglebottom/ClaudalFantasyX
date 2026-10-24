@@ -1,0 +1,10 @@
+// Ch4 C4-02, bark 2 of 3: the dock, no lamps, the sea-glow on the water. The netmender who told Rhen
+// "Bring her back the long way round" (Ch3's night bark) is coiling a line in the dark before she
+// goes up to the wall. She'll sing it with the rest: that's the song C4-04 ends on. Field bark.
+title: ch04_bark_dock_netmender
+location: ch04/haluna_wake
+---
+Netmender [neutral]: Last line, then I'm going up. Somebody has to sing the low part. #line:ch04_bark_net_001
+Rhen [neutral]: The low part of what? #line:ch04_bark_net_002
+Netmender [soft_smile]: The long way round. You'll know it when you hear it. Everyone does. #line:ch04_bark_net_003
+===

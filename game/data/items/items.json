@@ -32,6 +32,12 @@
     {"id": "facet_key_3", "category": "facet", "facet": "facet_key_3", "name_key": "FACET_KEY_3", "desc_key": "ITEM_FACET_KEY_3_DESC", "price": 1600},
     {"id": "facet_key_4", "category": "facet", "facet": "facet_key_4", "name_key": "FACET_KEY_4", "desc_key": "ITEM_FACET_KEY_4_DESC", "price": 3200},
     {"id": "brass_lantern", "category": "key", "name_key": "ITEM_BRASS_LANTERN", "desc_key": "ITEM_BRASS_LANTERN_DESC"},
-    {"id": "net_float_charm", "category": "key", "name_key": "ITEM_NET_FLOAT_CHARM", "desc_key": "ITEM_NET_FLOAT_CHARM_DESC"}
+    {"id": "net_float_charm", "category": "key", "name_key": "ITEM_NET_FLOAT_CHARM", "desc_key": "ITEM_NET_FLOAT_CHARM_DESC"},
+    {"id": "gauge_wheel_brass", "category": "key", "name_key": "ITEM_GAUGE_WHEEL_BRASS", "desc_key": "ITEM_GAUGE_WHEEL_BRASS_DESC"},
+    {"id": "kell_wick", "category": "key", "name_key": "ITEM_KELL_WICK", "desc_key": "ITEM_KELL_WICK_DESC"},
+    {"id": "pio_side_band", "category": "key", "name_key": "ITEM_PIO_SIDE_BAND", "desc_key": "ITEM_PIO_SIDE_BAND_DESC"},
+    {"id": "quench_charm", "category": "key", "name_key": "ITEM_QUENCH_CHARM", "desc_key": "ITEM_QUENCH_CHARM_DESC"},
+    {"id": "pemakar_leaf_boat", "category": "key", "name_key": "ITEM_PEMAKAR_LEAF_BOAT", "desc_key": "ITEM_PEMAKAR_LEAF_BOAT_DESC"},
+    {"id": "name_board_seventh_terrace", "category": "key", "name_key": "ITEM_NAME_BOARD_SEVENTH_TERRACE", "desc_key": "ITEM_NAME_BOARD_SEVENTH_TERRACE_DESC"}
   ]
 }

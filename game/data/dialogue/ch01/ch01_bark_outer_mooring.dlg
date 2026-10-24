@@ -1,0 +1,14 @@
+// Ch1 C1-09, bark 5 of 6: the outer mooring. The Seventh Terrace, a red-lacquered Pemakar copper
+// coaster, loading salvage. Her skipper, Sadi Moru, bought a lamp-housing off Rhen and paid short;
+// they argue amiably. The camera holds once on the carved name-board on her stern (the O07 insert,
+// 1.5 s; Seeds Ch4: this is the derelict, act1_ch04.md C4-11). In-engine, with the one insert.
+title: ch01_bark_outer_mooring
+location: ch01/oruvel
+---
+Skipper_Sadi [smile]: Sallow! Come to complain about my arithmetic again? #line:ch01_bark_sadi_001
+Rhen [smile]: You paid me for half a lamp-housing. I sold you a whole one. #line:ch01_bark_sadi_002
+@camera O07
+@wait 1.5
+Skipper_Sadi [laugh]: The other half was my company. We sail at the turn. #line:ch01_bark_sadi_003
+@camera release
+===

@@ -1,0 +1,36 @@
+// Ch4 C4-09 "The gangplank" (docs/kb/story/beats/act1_ch04.md). The islet's seaward landing, the far
+// side from the shrine door: stone steps down to deep water where the reef drops off. The ferry can't
+// cross Haluna's flats, so it calls here. The Brightwater ferry, the Kind Weather, has lain here
+// overnight, hired by the Order for the Cantor's crossing (F01).
+// Ysolde is already at the foot of the gangplank, alone, a folded appointment under her hand: she
+// walked the causeway ahead of them in the dark so as not to walk in the Cantor's procession uninvited.
+// She presents herself formally; Toma gives the greeting ("Be level." / "And still."); she says,
+// briefly and without warmth, why she kept away from the wake. Rhen jokes (harder when he's
+// unsettled); her line is the voice guide's. If ch04_saw_ysolde_ink, his quiet line as she turns, and
+// her answer is all the scene gives it. No contractions from Ysolde; no more than four lines in a row.
+// Music: ysolde_theme. The chapter flow sets ch04_ysolde_joined and seats her in the party.
+title: ch04_gangplank
+location: ch04/brightwater_ferry
+---
+@fade in 1.5
+@music ysolde_theme fade=2.0
+@camera F01
+@sfx gangplank
+Ysolde [neutral]: Lady Cantor. Ysolde Ysel. The Conclave has appointed me to teach you Lamptongue on the road. #line:ch04_plank_001
+@anim ysolde present_appointment asha
+Toma [neutral]: Be level. #line:ch04_plank_002
+Ysolde [neutral]: And still. #line:ch04_plank_003
+Ysolde [neutral]: I did not present myself at your wake. A wake belongs to the village. #line:ch04_plank_004
+Asha [soft_smile]: Thank you. This is Rhen Sallow. My guardian. #line:ch04_plank_005
+Rhen [smile]: Guardian, porter, cake-carrier. I also do knots, badly. #line:ch04_plank_006
+@wait 1.0
+Ysolde [cold]: You are very funny, Master Sallow. I have decided not to notice. #line:ch04_plank_007
+@anim ysolde turn_to_gangplank
+<<if $ch04_saw_ysolde_ink>>
+Rhen [neutral]: You did the shells. #line:ch04_plank_008
+Ysolde [neutral]: I am the Lady Cantor's tutor in Lamptongue. #line:ch04_plank_009
+<<endif>>
+@mark ysolde gangplank_top walk
+@wait 1.0
+@camera release
+===

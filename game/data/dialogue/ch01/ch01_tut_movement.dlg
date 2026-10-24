@@ -1,0 +1,8 @@
+// Tutorial prompt: field movement (Ch1 C1-02; act1_ch01.md §9 Design 3). Shown once, by the seen-flag
+// tut_movement_seen, whichever comes first: Ch1 here, or the Prologue's walk once it has a player.
+// A plain text line on the hint sequencer (it advances by itself and never holds the player).
+title: ch01_tut_movement
+location: ch01/oruvel_underway
+---
+Walk with the left stick, or W, A, S and D. Turn the camera with the right stick, or Q and R. #line:ch01_tut_001
+===

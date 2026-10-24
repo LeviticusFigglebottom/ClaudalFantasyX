@@ -35,6 +35,7 @@ class GraphicsMenuDataTest(unittest.TestCase):
         keys += [row["label_key"] for row in self.presets["settings"].values()]
         keys += [p["name_key"] for p in self.presets["presets"]]
         keys += ["GFX_MENU_TITLE", "GFX_MENU_PRESET", "GFX_MENU_HELP_PRESET", "GFX_MENU_HELP_SETTING"]
+        keys += [self.menu["apply"]["card_key"]]
         self.assertEqual([k for k in keys if k not in self.loc], [])
 
     def test_formatted_settings_exist(self) -> None:

@@ -92,6 +92,23 @@ Loadout `m1_starting`. Rhen and Asha active, Toma and Ysolde in reserve, against
 
 **Ease ceiling (M1-CMB-07).** `smart` wins every seed (100.0%), so a win band can't see a regression that makes the sandbox *easier*. A win ceiling below 100% would fail today's numbers. The suite sets `mean_turns_min` in targets.json instead: `smart` must still average at least 16 actions per fight (measured 17.9 at 1000 seeds and 18.1 at the 200 seeds CI uses, so the floor allows about a 10% shorter fight). The geared suite `sandbox_reef_tier1` floors `smart` at 14.5 (measured 16.1 and 16.3). `sim.py` marks a row out of band when it misses the floor, and `test_sandbox_battle.gd` asserts the starting-gear floor at 200 seeds. Mean turns is used rather than party KOs because KOs are rare for `smart` (0.07 to 0.12 per fight) and too noisy at 200 seeds. If a deliberate change makes the fight shorter, re-measure and move the floor with a tuning-log note.
 
+### Ch3 route: `ch03_causeway_harrier` and `ch03_causeway_shore` (regular, M2-FP-25)
+
+These are the Saltgrass Causeway's two fights (B06): the scripted flier lesson at C07, and the random shallows fight after it. Both put a Gull Harrier, a Reef Crab and a Lantern Eel against Rhen and Asha, with Toma in reserve, on loadout `m1_starting`. They take the Ch1–Ch3 **regular** band from the curve above.
+
+| Policy | Band | Measured (1000 seeds), harrier / shore |
+|---|---|---|
+| `naive` | 40–80% | 65.8% / 71.3% |
+| `role_answer` | ≥ 95% | 95.3% / 95.3% |
+| `smart` | ≥ 98% | 100% / 99.9% |
+| p90 turns | ≤ 30 | 18 / 19 |
+
+**Notes:**
+- **Foe order matters.** The naive policy strikes the first foe, so the harrier-first lesson and the eel-first shallows land in band. The same three foes with the crab first fall to 10.9% for naive, and that's out of band.
+- **Two foes are too easy.** Every pair tried gave naive 96–100%.
+- **The other three-foe mixes miss.** With two crabs, or two harriers, the role answer falls short, because the crab's answer (Toma) starts in reserve and the eel's (Ysolde) hasn't joined yet.
+- Leave the order as authored, and re-measure if a foe moves.
+
 ### Vowbound masher line: `sandbox_reef_vowbound` (stress test, M2-CMB-05)
 
 ADR 0027 accepted a **provisional ceiling of 40%** for a masher who calls the Vowbound at once, on the sandbox with no gear. It is a ceiling, not a band to aim at, and the sandbox is pre-Ilun content. Suite: `sandbox_reef`, Rhen and Asha active and Toma in reserve (the probe's lineup), loadout `sandbox_vowbound` (no gear, no items, Ilun bound), `kind: vowbound`.
@@ -104,7 +121,11 @@ ADR 0027 accepted a **provisional ceiling of 40%** for a masher who calls the Vo
 
 **The suite plays the heroes' Swell `off`**, unlike every other suite (`good`). The 40% line was accepted on the probe, which had no hero Swell, so the suite measures what was accepted. **With the heroes' Swell at `good`, the same masher wins 46.2%**: above the line. That number needs a decision from Design or the Lead (the levers are Ilun's HP scale and `call_rank`, battle_ctb.md § Vowbound). The binding per-encounter line is set on the Drownbell (M2-FP-17).
 
+**The Swell-on line: `sandbox_reef_vowbound_good` (M2-CMB-06, review-sweep-Q design verdict).** It's the same suite with the heroes' Swell at `good`, as play has it: a player can't turn hero Swell off, and the masher who finds the Vowbound row unleashes the heroes' gauges too. The ceiling for `naive_swell` is **50%**, set just above the measured **46.2%** (1000 seeds), and is accepted as is. Both suites are engine regression ceilings on pre-Ilun content, not player experiences. The Swell-off line isolates the Vowbound's own lift; the Swell-on line would catch a change in how hero Swell and the Vowbound interact (a technique that feeds Ilun's gauge, say). The binding per-encounter check stays on the Drownbell, with the heroes' Swell at `good`.
+
 **The Drownbell with the real call (scratch probe, M2-CMB-05; not a suite yet).** The `drownbell` suite with Asha's `call_ilun` stand-in removed (no `ch03_ilun_bound` flag) and `"vowbound": ["ilun"]` in the loadout, 300 seeds: naive 0.0%, naive_swell 1.0%, **role_answer 72.0%** (p90 46 actions), **smart 87.0%** (p90 60), and no timeouts. Both sit in the boss bands, but smart's p90 is at the 60 ceiling. Two engine and policy choices got it there. The first is A1 counting the rolled absorb: with only the HP actually restored, a called Ilun at full HP filled nothing in the flood, so Floodnet never came and the flood never cleared (role_answer 0.0% and smart 0.0%, about 80% of fights timed out). The second is the `on_field` dismissal. M2-FP-17 owns the suite and its bands.
+
+**The Drownbell suite plays the real call (M2-FP-17, m2-slice).** `ch03_drownbell` binds Ilun (`"vowbound": ["ilun"]`). The `call_ilun` stand-in is gone from the game, and so are the policies' `clear_field_skill` rule and the loadout's story flag: M2-UI-05's Call row is the only way. The bands are unchanged. Measured at 1000 seeds on the canonical CMB-05 mechanics: naive 0.0%, naive_swell 0.7%, **role_answer 71.0%** (p90 47), **smart 85.3%** (p90 60, at the ceiling), and no timeouts. A new policy, **`flood_call`**, is the masher who calls Ilun the moment the flood rises and leaves him out until he falls or the bell dies (`call_vowbound: field_up`). It wins **38.8%** (p90 38). Its band is [0, 95], the suite's `smart` ceiling: calling into the flood must never beat the careful player, and the fight must never stall.
 
 ### Ch3 boss: Drownbell (vertical slice), `drownbell`
 
@@ -118,3 +139,61 @@ From [act_outline.md](../story/beats/act_outline.md): two phases on the causeway
 | p90 turns | ≤ 60 | Two phases, still a slice-length fight. |
 
 The encounter landed in M2-FP-06 with a first-playable stand-in for the Vowbound summon (ADR 0026). Both `role_answer` and `smart` carry the "clear the field" rule: `sim_policies.json` `clear_field_skill: call_ilun`, so whoever can use it does so as soon as a field is up (`smart` heals first if someone is below 45%). Measured at 1000 seeds: naive 0.0%, role answer 79.7%, smart 89.6%, p90 51 actions (balance_report.md). `tests/integration/test_drownbell_battle.gd` asserts loose bands at 200 seeds on every run.
+
+### Ch1: solo Rhen (M3-C01-02, ADR 0034)
+
+Rhen fights alone all chapter (act1_ch01.md §9 Combat), with `active: [rhen]` and no reserve. The loadouts are `ch01_underway` (starting gear, 2 Salt Tonic, 1 Brine Eyewash) and `ch01_hullgnaw` (the same). Swell is `good`.
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch01_wickfry`, `ch01_oil_slug`, `ch01_shaft_limpet`, and the random `ch01_underway_shoals` and `ch01_underway_limpet` | tutorial (logged exception) | 80–100% | ≥ 95% | ≥ 98% | ≤ 30 |
+| `ch01_scuttlers` | Ch1–Ch3 regular | 40–80% | ≥ 95% | ≥ 98% | ≤ 30 |
+| `ch01_hullgnaw` | Ch1–Ch3 boss | 0–10% | report only | 80–95% | ≤ 60 |
+
+- **Tutorial fights:** each teaches one thing (the command menu, items, escape), and a first-time masher shouldn't lose one.
+- **Hullgnaw's `role_answer`:** the policy never uses items, and in a one-hero fight nobody can swap in, so it measures only the masher plus MP skills and the Swell. Rhen's answer is tempo plus a Salt Tonic when the Coil telegraphs the Gnaw, and only `smart` plays that.
+- **Kick Off:** the encounter lends it (`party_skills`), because the second phase teaches it.
+
+Numbers are in the 2026-10-24 tuning log entry in balance_report.md.
+
+### Ch5: the pilgrim stair and the Cinder Matron (M3-C05-02)
+
+The story party from the end of B05: active Rhen, Asha and Kerrid, with Toma and Ysolde in reserve. The Matron fight starts Kerrid, Rhen and Asha. Swell is `good`.
+
+Loadouts are `ch05_ashcrown` (2 Salt Tonic) and `ch05_matron` (4 Salt Tonic, 1 Relighting Wick, Ilun bound). Both carry the best gear a Ch5 player can own. Pemakar's shop tier doesn't exist yet, so that's Haluna's post-Drownbell weapons (Tidewalker Hooks, Dawnwick Staff, Saltgrass Pike), the tier-1 armour, Ysolde's tier-1 pieces and Kerrid's starting pieces.
+- **The Coral Hooks are left out on purpose.** Their Ember Edge makes Rhen's attacks fire, which the Matron absorbs. The policies can't change gear, and with them equipped every policy loses.
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch05_stair_tortoises` (scripted: two slag tortoises, Kerrid's lesson) | Ch4–Ch9 regular | 20–60% | ≥ 92% | ≥ 97% | ≤ 35 |
+| `ch05_stair_ashwings`, `ch05_stair_tortoise_sparker`, `ch05_stair_tortoise_ashwing` (the random stair table) | Ch4–Ch9 regular | 20–60% | ≥ 92% | ≥ 97% | ≤ 35 |
+| `ch05_cinder_matron` | Ch4–Ch9 boss | ≤ 5% | 65–85% | **report only**, ≥ 40 mean turns | ≤ 70 |
+| `ch05_cinder_matron_ilun` (`naive_swell`: Ilun called at once, the water mistake) | report only | | | | ≤ 70 |
+
+- **The Matron's `smart` band is report only.** With two reserves, Asha's Mend and the items, `smart` won every seed of every tuning tried: 100% even where `role_answer` won 0%. A boss with no time pressure can't push a healing five-hero party below 92%.
+  - The table's 75–92% needs a mechanic that punishes a long fight, such as an escalation by turn count. That's the combat request M3-C05-06.
+  - Until then, `mean_turns_min` (`smart` ≥ 40 actions) is the ease ceiling, as in the M1 sandbox.
+- **Foe order matters.** `naive` hits the first foe:
+  - both mixed groups put the slag tortoise first;
+  - `[vein_sparker, slag_tortoise]` gave a masher 78%, and `[ashwing, slag_tortoise]` 64%.
+- **The cut 3-foe group.** The sheet's "2 ashwings + 1 vein sparker" was cut from the table. All three foes are answered by Ysolde, who starts in reserve, so `role_answer` won only 48%. The stair stays at two foes for now (sheet §9 Creatures 15; M3-C05-05).
+- **Ashwings name Ysolde as their answer** (fire weak), not Rhen. The sheet allows either, and only Ysolde gives `role_answer` a swap to make.
+
+Numbers are in the 2026-10-24 tuning-log entry in balance_report.md.
+
+### Ch4: the first four-member party (M3-C04-02)
+
+The derelict's fights (act1_ch04.md C4-12, C4-13, §5, §9 Combat). Rhen, Asha and Toma are active and Ysolde is in reserve (she joins at the gangplank), at Swell `good`. Loadouts: `ch04_derelict` (every Haluna tier-1 piece for Rhen, Asha and Toma, Ysolde's starting gear, 4 Salt Tonic, 1 Brine Eyewash, 1 Relighting Wick) and `ch04_spar_wraith` (the same, plus Ilun bound). The Spar-Wraith suite seats Ysolde active and Toma in reserve: the formation a player brings once the bottle-hermit has taught the swap (with Ysolde in reserve, `role_answer` swaps out whoever acts first, usually Rhen and his ember-edged hooks, and measures that rather than the answer).
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch04_bottle_hermit`, and the random `ch04_derelict_glass` | Ch4–Ch9 regular | 20–60% | ≥ 92% | ≥ 97% | ≤ 35 |
+| `ch04_sail_leeches`, and the random `ch04_derelict_leeches` | Ch4–Ch9 regular, `role_answer` report only (logged exception) | 20–60% | report only | ≥ 97% | ≤ 35 |
+| `ch04_spar_wraith` | Ch4–Ch9 boss, `smart` ceiling lifted (logged exception) | 0–5% | 65–85% | 75–100%, ≥ 30 mean turns | ≤ 70 |
+
+- **The leeches' `role_answer`.** The leech's answer is Rhen, and he is already on the field with nothing a masher lacks but Quick Hit, so the policy plays almost exactly like `naive` (62.9% against 48.2%). Asking it for 92% would need a leech the masher also beats. Report only, as Ch1's Hullgnaw, until Combat rules (M3-C04-06).
+- **The Spar-Wraith's `smart` ceiling.** With four heroes and Asha's Mend, `smart` out-heals any damage that `role_answer` (which never heals) survives: every tuning that put `role_answer` in 65–85% left `smart` at 99–100%. No field mechanic like the Drownbell's flood is in the sheet. The ceiling is lifted to 100% and the ease ceiling is `smart` ≥ 30 mean turns (measured 33.3) until Combat rules (M3-C04-06).
+- **The sim plays every opening as normal.** BattleSim never sets `engine.opening`, so the scripted leech ambush and its random twin measure the same. The ambush makes the live fight a little harder than measured.
+- **Ysolde's lesson.** The hermit's glass resists blows and is immune to fire (the sheet's "reflects fire": the engine has no reflect), and ice cracks it. Rhen's ember-edged Coral Hooks turn his Attack to fire, so a masher's Rhen does nothing to it. The masher wins about half the time on Toma and Asha alone; Ysolde's Frost ends it in about eight actions.
+
+Numbers are in the 2026-10-24 tuning log entry in balance_report.md.

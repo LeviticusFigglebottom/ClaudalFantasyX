@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch04_bark_dock_netmender",
+ "source": "game/data/dialogue/ch04/ch04_bark_dock_netmender.dlg",
+ "start": "ch04_bark_dock_netmender",
+ "nodes": {
+  "ch04_bark_dock_netmender": {
+   "headers": {"location": "ch04/haluna_wake"},
+   "ops": [
+    {"op": "line", "id": "ch04_bark_net_001", "key": "DLG_CH04_BARK_NET_001", "speaker": "netmender", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch04_bark_net_002", "key": "DLG_CH04_BARK_NET_002", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch04_bark_net_003", "key": "DLG_CH04_BARK_NET_003", "speaker": "netmender", "emotion": "soft_smile", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

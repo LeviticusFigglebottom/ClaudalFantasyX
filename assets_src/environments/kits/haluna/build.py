@@ -27,6 +27,7 @@ import kit_common as kc  # noqa: E402
 import placeholders  # noqa: E402
 import ruins  # noqa: E402
 import shrine  # noqa: E402
+import shrine_interior  # noqa: E402
 import village  # noqa: E402
 import walls  # noqa: E402
 import waterfront  # noqa: E402
@@ -60,6 +61,8 @@ def targets() -> dict:
         out[name] = (name, waterfront, fn)
     for name, fn in sorted(shrine.TARGETS.items()):
         out[name] = (name, shrine, fn)
+    for name, fn in sorted(shrine_interior.TARGETS.items()):
+        out[name] = (name, shrine_interior, fn)
     for name, fn in sorted(placeholders.TARGETS.items()):
         out[name] = (name, placeholders, fn)
     return out
