@@ -29,6 +29,15 @@ for Rhen, Asha and Toma, with each persona's sway and stance. The motion layer b
 | `turn_in_place_180` | no, ~0.9 s | a stepped about-face (today: a rate-capped spin) |
 | `idle_shift` | no, ~2.5 s | a weight change onto the other leg, for long idles (today: procedural micro-motion only) |
 
+Battle (from M2-HER-1103's trial merge of M2-UI-07, M2-CHR-07 and M2-BPR-10, viewed in freeze-frames):
+
+| Clip | Ask |
+|---|---|
+| `victory` | it barely moves (the head moves under 1 mm per frame); it needs a readable pose and loop |
+| `ko` | today a kneel/slump (the head at 1.15 m); the contract says a fall that lies down. Either a falling KO or the contract is reworded to a kneel (battle-presentation decides) |
+| `attack`, `finisher` (Rhen) | he strikes empty-handed while his hooks stay on his belt; the weapon belongs in his hand for strikes |
+| `revive` | optional, ~0.8 s from the KO pose to idle (`rise_to_stand` is 2 s) |
+
 Story clips for the M2 beach scene that are still missing are in M3-CHR-01's `requested_clips.json` (Rhen
 `sit_up`, `sit_in_shallows`, `turn_from_sea`, `stand_unsteady`); not repeated here.
 
