@@ -148,7 +148,8 @@ def _walk_cols(x0: float, x1: float, slab: float = cw.BLOCK_M, bevel: float = 0.
     return np.unique(np.round(np.clip(xs, x0, x1), 5))
 
 
-def seawall(name: str, seed: int, *, lod: bool) -> kc.MeshBuilder:
+def seawall(name: str, seed: int, *, lod: bool, bent: bool = True) -> kc.MeshBuilder:
+    """One seawall_curve. M3-ENV-04B: with bent=False it stays straight (the breach ends tear it first)."""
     rng = kc.rng_for(name, seed)
     noise = kc.Noise3(rng)
     mb = kc.MeshBuilder(name + (cw.LOD if lod else ""))
@@ -213,7 +214,8 @@ def seawall(name: str, seed: int, *, lod: bool) -> kc.MeshBuilder:
           ys=np.array([cw.WALK_Y - 0.02, cw.WALK_Y + ph * 0.5, PARAPET_TOP]), ao=0.75)
     _flat(mb, xs, np.array([pz0, (pz0 + pz1) * 0.5, pz1]), PARAPET_TOP, i_lat, outward=kc.UP,
           col=np.array([0.0, 0.45, 0.25, 0.75]))
-    cw.bend(mb)
+    if bent:
+        cw.bend(mb)
     return mb
 
 

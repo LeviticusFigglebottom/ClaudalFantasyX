@@ -87,6 +87,14 @@ MATERIALS: dict[str, dict] = {
                                   salt_coverage="Vector2(0.1, 0.35)", algae_band_m="Vector2(-0.6, 0.5)",
                                   algae_coverage="Vector2(0.45, 0.85)", barnacle_coverage=0.4, wet_darken=0.5,
                                   wet_roughness=0.12),
+    # M3-ENV-04B: fresh breaks, where the wall tore and the heads sheared: the raw stone inside the
+    # 900-year skin, a stronger rust-ochre (laterite toward ochre_earth) with no salt, weed or barnacles yet,
+    # darkened where the sea still soaks it (VC.B).
+    "cw_laterite_broken": weather(*STONE, (0.9, 0.9), base_triplanar=True, col_tint=hexc("#FFE6D2"),
+                                  normal_strength=1.5, roughness_base=0.9, specular_base=0.3, cavity_darken=0.55,
+                                  ao_strength=0.9, variation_value=0.14, variation_warmth=0.06,
+                                  erosion_lighten=0.0, use_algae=False, use_barnacles=False, use_salt=False,
+                                  wet_darken=0.55, wet_roughness=0.14, capillary_band_m=0.5),
     # The walk's slabs (1.2 x 1.0 m; their joints are the geometry's grooves, so the stone is the jointless
     # map): worn darker and smoother by feet; wet in the dishes (VC.B), near-mirror there so the walk
     # carries the storm sky.

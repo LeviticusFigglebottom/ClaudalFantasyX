@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3]
+[gd_scene load_steps=30 format=3]
 
 [ext_resource type="Script" path="res://game/levels/_tests/corrow_kit/corrow_preview.gd" id="1_rig"]
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="2_tide"]
@@ -10,6 +10,8 @@
 [ext_resource type="Environment" path="res://game/levels/_tests/corrow_kit/corrow_ch08_environment.tres" id="8_env"]
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="9_cam"]
 [ext_resource type="Script" path="res://game/world/camera_shot.gd" id="10_shot"]
+[ext_resource type="Environment" path="res://game/levels/_tests/corrow_kit/corrow_fallen_environment.tres" id="11_fallen_env"]
+[ext_resource type="Environment" path="res://game/levels/_tests/corrow_kit/corrow_ch09_environment.tres" id="12_night_env"]
 
 [sub_resource type="Resource" id="Swell0"]
 script = ExtResource("6_comp")
@@ -97,9 +99,25 @@ position = Vector3(-3.93, 14.30, 5.43)
 look_at = Vector3(1.48, 14.10, 4.40)
 fov_deg = 16.1
 
-[node name="CorrowPreview" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water", "world_environment", "dresser")]
+[sub_resource type="Resource" id="ShotC10"]
+script = ExtResource("10_shot")
+id = &"C10"
+position = Vector3(-10.64, 7.50, 34.21)
+look_at = Vector3(-30.15, 4.80, -0.49)
+fov_deg = 46.4
+
+[sub_resource type="Resource" id="ShotC11"]
+script = ExtResource("10_shot")
+id = &"C11"
+position = Vector3(-40.30, 2.50, -16.44)
+look_at = Vector3(-25.17, 5.50, 21.13)
+fov_deg = 53.1
+
+[node name="CorrowPreview" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water", "moon", "world_environment", "dresser")]
 script = ExtResource("1_rig")
+fallen_environment = ExtResource("11_fallen_env")
 sun = NodePath("Sun")
+moon = NodePath("Moon")
 tide = NodePath("Tide")
 water = NodePath("Water")
 world_environment = NodePath("WorldEnvironment")
@@ -111,6 +129,11 @@ wind_azimuth_deg = 315.0
 wind_speed_m_s = 14.0
 wind_gust = 0.6
 water_height_m = 0.5
+night_environment = ExtResource("12_night_env")
+moon_elevation_deg = 14.0
+moon_azimuth_deg = 140.0
+night_time_of_day_h = 22.0
+night_sea_glow = 0.15
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("8_env")
@@ -128,6 +151,16 @@ directional_shadow_split_1 = 0.04
 directional_shadow_split_2 = 0.12
 directional_shadow_split_3 = 0.35
 directional_shadow_max_distance = 400.0
+
+[node name="Moon" type="DirectionalLight3D" parent="."]
+visible = false
+light_color = Color(0.8235, 0.8745, 1, 1)
+light_energy = 0.35
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+directional_shadow_mode = 2
+directional_shadow_max_distance = 200.0
 
 [node name="Water" type="Node3D" parent="."]
 script = ExtResource("4_water")
@@ -187,3 +220,16 @@ near = 0.1
 far = 6000.0
 script = ExtResource("9_cam")
 shot = SubResource("ShotC08")
+
+[node name="C10" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotC10")
+
+[node name="C11" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotC11")
+

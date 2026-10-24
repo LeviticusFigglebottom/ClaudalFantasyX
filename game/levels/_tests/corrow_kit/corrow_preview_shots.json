@@ -1,5 +1,5 @@
 {
- "doc": "M3-ENV-04 Corrow seawall preview views (docs/kb/art/environments/corrow.md section 4). Only the two named in tests/screenshots/shots.json are registered baselines; capture the rest with --manifest.",
+ "doc": "M3-ENV-04 Corrow seawall preview views (docs/kb/art/environments/corrow.md section 4), plus M3-ENV-04B's fallen and ch09 views (section 7). Only those named in tests/screenshots/shots.json are registered baselines; capture the rest with --manifest.",
  "shots": [
   {
    "id": "corrow_c01_wall_head",
@@ -136,6 +136,54 @@
     "viewport": {
      "use_taa": false,
      "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "corrow_c10_breach_fallen",
+   "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+   "camera": "Cameras/C10",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    },
+    "nodes": {
+     ".": {
+      "phase": "fallen"
+     }
+    }
+   }
+  },
+  {
+   "id": "corrow_c11_stair_foot_ch09",
+   "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+   "camera": "Cameras/C11",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    },
+    "nodes": {
+     ".": {
+      "phase": "ch09"
+     }
     }
    }
   }

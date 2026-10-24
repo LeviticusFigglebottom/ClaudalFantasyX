@@ -59,7 +59,13 @@ def _joint(v, course: float, depth: float, width: float):
     return -depth * (1.0 - kc.smoothstep(0.0, width, d))
 
 
-def head(name: str, seed: int, *, lod: bool) -> kc.MeshBuilder:
+def head(name: str, seed: int, *, lod: bool, carving: cw.FaceCarving = cw.CARVING_A, base=None,
+         back_sweep: float = 2.0 * np.pi - 0.52) -> kc.MeshBuilder:
+    """One Watcher's head. M3-ENV-04B: `carving` picks the face (cw_common.CARVING_A is the parapet row's);
+    `base(angle) -> height` lifts the bottom ring onto a broken line (the fallen and cracked heads, whose
+    necks sheared; angle as the squircle's, radians), the rows spread between it and the crown; and
+    `back_sweep` is the back's arc (the default is M3-ENV-04's, which laps over the face's hidden inside; the
+    broken heads pass pi + 0.52, the exact remainder of the front's arc, so the base ring closes once)."""
     rng = kc.rng_for(name, seed)
     noise = kc.Noise3(rng)
     mb = kc.MeshBuilder(name + (cw.LOD if lod else ""))
@@ -72,15 +78,18 @@ def head(name: str, seed: int, *, lod: bool) -> kc.MeshBuilder:
     tb = np.linspace(0.0, 1.0, nb)
     start_v, start_t = mb.vertex_count, mb.triangle_count
     V, TF = np.meshgrid(vs, tf, indexing="ij")
-    w = _head_width(V)
     # Front points: x across the squircle's front arc (angle 15..165 deg), z its depth.
     a = np.pi * 0.5 - TF * (np.pi * 0.5 - 0.26)
+    if base is not None:
+        b = base(a)
+        V = b + (HEAD_H - b) * V / HEAD_H
+    w = _head_width(V)
     x = w * _sq(np.cos(a))
     z = _head_depth(V, True) * _sq(np.sin(a))
     if lod:
-        d = cw.watcher_face(x, V - FACE_BASE, FACE_H, fade=False) * 0.6
+        d = cw.watcher_face(x, V - FACE_BASE, FACE_H, fade=False, carving=carving) * 0.6
     else:
-        d = cw.watcher_face(x, V - FACE_BASE, FACE_H, fade=False)
+        d = cw.watcher_face(x, V - FACE_BASE, FACE_H, fade=False, carving=carving)
     edge = 1.0 - kc.smoothstep(0.78, 0.97, np.abs(x) / w)
     d = d * edge
     if not lod:
@@ -95,7 +104,10 @@ def head(name: str, seed: int, *, lod: bool) -> kc.MeshBuilder:
     cw.grid_surface(mb, front, mat, outward=np.array([0.0, 0.0, 1.0]), uv=uv, col=col, uv2=uv2, smooth=False)
     # Sides and back: from the front's right edge (angle 15 deg) round the back to its left edge (165 deg).
     V2, TB = np.meshgrid(vs, tb, indexing="ij")
-    a2 = 0.26 - TB * (2.0 * np.pi - 0.52)
+    a2 = 0.26 - TB * back_sweep
+    if base is not None:
+        b2 = base(a2)
+        V2 = b2 + (HEAD_H - b2) * V2 / HEAD_H
     w2 = _head_width(V2)
     sn = np.sin(a2)
     z2 = np.where(sn >= 0, _head_depth(V2, True), _head_depth(V2, False)) * _sq(sn)
