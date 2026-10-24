@@ -98,9 +98,22 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
         plume, because the 900 m plume facets inside 300 m).
       - Fixed on the way: a merge left an empty job in `blender_builds.json` (e78e9196). Coverage now reports 0
         uncovered.
-    - **Running (worktree agents):** M3-ENV-10 Coilspire, M3-ENV-08B the Seventh Terrace, M2-ENV-12 the Haluna gull
-      normals.
-    - **Next:** M3-ENV-07B, M3-ENV-09B, M3-ENV-11.
+    - **M2-ENV-12 Haluna gull normals: in review, merged here.**
+      - `village._loft` took its outward reference from the wrong column, so every gull loft was inside-out. It is
+        fixed at the source.
+      - Outputs changed: `lintel_gull_a/b/c`, Brightwater's `ferry_hull` (its stem-gull) and Oruvel's
+        `lintel_gull_open`. All six jobs that use `village.py` are byte-identical after the rebuild.
+      - Re-approved after viewing: `haluna_h03_lintel_gull` (rmse 0.047, the gull alone).
+    - **Arena baselines after big7 (59ce74a5):** big7's creature models replace the enemy stand-ins, so the seven
+      env-art arena preview shots moved. Each was viewed beside its baseline: only the enemies changed, plus the
+      Drownbell's long sunset shadow. All seven are re-approved.
+    - **For the Lead (not env-art's baselines, not re-approved):** `field_objective_line`, `field_interact_prompt`,
+      `field_area_title`, `field_tip_card` (0.068) and `dialogue_continue` (0.057) drift because the Haluna
+      tidewalls render wetter and darker. They drift the same with the old gulls, so the cause is not M2-ENV-12.
+      It is most likely M2-ENV-06's tidewall pass reaching UI baselines captured before it. They need their owners'
+      re-approval after viewing.
+    - **Running (worktree agents):** M3-ENV-10 Coilspire, M3-ENV-08B the Seventh Terrace.
+    - **Next:** M3-ENV-07B, M3-ENV-09B, M3-ENV-11 (one starts now in the free slot).
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
