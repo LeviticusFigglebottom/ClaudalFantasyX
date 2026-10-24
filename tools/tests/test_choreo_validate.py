@@ -86,10 +86,10 @@ class ArenaValidateTest(unittest.TestCase):
 
     def test_bad_rows(self) -> None:
         doc = copy.deepcopy(self.DOC)
-        doc["arenas"]["by_encounter"]["no_such_fight"] = "causeway_dusk"
-        doc["arenas"]["by_encounter"]["drownbell"] = "nowhere"
+        enc = copy.deepcopy(self.ENC)
+        enc["encounters"][0]["arena"] = "nowhere"
         doc["arenas"]["scenes"]["ghost"] = "res://game/battle/arenas/ghost.tscn"
-        self.assertEqual(len(vc.arena_errors(doc, self.ENC, self._exists)), 3)
+        self.assertEqual(len(vc.arena_errors(doc, enc, self._exists)), 2)
         self.assertTrue(vc.arena_errors({}, self.ENC, self._exists))
 
 

@@ -1,13 +1,9 @@
 {
   "arenas": {
-    "doc": "M2-BPR-07: per-encounter battle arenas (docs/kb/tech/battle_presentation.md, Arenas). BattleArena moves the children of an arena's scene into the battle scene, each replacing the node of the same name (WorldEnvironment, Sun, Arena; extra lights are added). An encounter with no row fights on the sandbox's own arena (the sandbox and every capture fixture). Greybox scenes; env-art owns the final kits.",
+    "doc": "M2-BPR-07: battle arena scenes by id; an encounter names its arena in encounters.json `arena` (docs/kb/tech/battle_presentation.md, Arenas; env-art's docs/kb/tech/battle_arenas.md). The scene's WorldEnvironment and Sun replace the battle scene's; every other child goes under a new Arena node (a child named Sea is the flat sea the Drownbell's flood rig hides). An encounter with no arena fights on the sandbox's own (the sandbox and every capture fixture). These paths are the greybox; env-art repoints them to assets/environments/arenas/<id>/<id>.tscn as its kits land.",
     "scenes": {
-      "tideline_noon": "res://game/battle/arenas/tideline_noon.tscn",
-      "causeway_dusk": "res://game/battle/arenas/causeway_dusk.tscn"
-    },
-    "by_encounter": {
-      "ch02_tideline": "tideline_noon",
-      "drownbell": "causeway_dusk"
+      "tideline_dawn": "res://game/battle/arenas/tideline_dawn.tscn",
+      "causeway_disc_sunset": "res://game/battle/arenas/causeway_disc_sunset.tscn"
     }
   }
 }

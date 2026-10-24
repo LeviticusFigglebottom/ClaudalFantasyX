@@ -249,22 +249,31 @@ Tests: `tests/unit/test_battle_camera_director.gd`.
 
 ## Arenas (M2-BPR-07)
 
-Each story encounter fights in its own place. **`BattleArena`** (`game/battle/scene/battle_arena.gd`) reads
-`game/data/battle/arenas.json` (`by_encounter` → `scenes`) and moves the children of the arena's scene into the
-battle scene, each replacing the node of the same name (`WorldEnvironment`, `Sun`, `Arena`) or added beside them
-(the causeway's cool `Fill`). `BattleChoreo.attached` applies it before BattleVfx attaches, so the Drownbell's
-flood rig finds the arena's `Sun` (scaled to 0.6x in the Flood) and `Arena/Sea` (the flat sea it replaces). A
-retry of the same encounter keeps the arena (the `hymn_arena` meta on the battle scene).
+Each story encounter fights in its own place. Its `encounters.json` row names an **`arena`**
+(`tideline_dawn`, `causeway_disc_sunset`), and `game/data/battle/arenas.json` maps the id to a scene.
+**`BattleArena`** (`game/battle/scene/battle_arena.gd`) applies it from `BattleChoreo.attached`, before BattleVfx
+attaches, so the Drownbell's flood rig finds the arena's `Sun` (scaled to 0.6x in the Flood) and `Arena/Sea`.
 
-| Arena | Encounter | Grade (color_script.md) | Greybox |
+**The scene contract** (agreed with env-art, whose `docs/kb/tech/battle_arenas.md` on `claude/env-art` is the
+full version): a root Node3D whose children are
+- `WorldEnvironment` and `Sun` (a DirectionalLight3D): they replace the battle scene's;
+- everything else (dressing, extra lights, `Sea`, an optional `CameraHints` of Marker3Ds): moved under a new
+  `Arena` node in place of the sandbox's. A child named `Sea` is the flat sea the flood rig hides.
+
+The fighters keep standing on the battle scene's slot markers (party at +x, foes at -x around the origin; the
+camera looks from +z). The floor under every slot is flat and clear at y = 0, nothing stands between the camera and
+the fighters. A retry of the same encounter keeps the arena (the `hymn_arena` meta on the battle scene).
+
+| Arena | Encounter | Grade (color_script.md) | Greybox (`game/battle/arenas/`) |
 |---|---|---|---|
-| `tideline_noon` | `ch02_tideline` | ch02_noon: sun 74°, 3.2, exposure 0.65, saturation 1.12; the lagoon sky | dry sand behind the party, a wet band and rocks before the lagoon |
-| `causeway_dusk` | `drownbell` | Ch3: sun 6° over the western sea, key `#FFAE67` 2.6, fill `#6E8FC0` 0.4, sky `#46609A` / `#F0A35C`, fog `#D9A27A`, exposure 0.80 | a stone road along the battle axis, water both sides, leaning posts and salt-grass tufts; the flood takes the road |
+| `tideline_dawn` | `ch02_tideline` | Ch2 dawn: 06:20, sun 6° over the eastern sea, key `#FFB87B` 2.4, fill `#7FA6CC` 0.5, sky `#4E7FB8` / `#F6C9A0`, fog `#E9C9A8`, exposure 0.75 | dry sand behind the party, a wet band and rocks before the lagoon |
+| `causeway_disc_sunset` | `drownbell` | Ch3: sun 6° over the western sea, key `#FFAE67` 2.6, fill `#6E8FC0` 0.4, sky `#46609A` / `#F0A35C`, fog `#D9A27A`, exposure 0.80 | a stone road along the battle axis, water both sides, leaning posts and salt-grass tufts; the flood takes the road |
 
-- **Unchanged:** the sandbox's own encounters and every capture fixture (`fixture_reef`) have no row, so no
+- **Env-art's kits** land at `assets/environments/arenas/<id>/<id>.tscn`; they repoint `arenas.json` then (M2-ENV-11
+  / their own task). The greybox stays as the fallback until they do.
+- **Unchanged:** the sandbox's own encounters and every capture fixture (`fixture_reef`) have no arena, so no
   battle baseline moved except `drownbell_flood` (now on the causeway at sunset, as battle_vfx.md's "the arena is
   the noon sandbox" asked).
 - **Shots:** `battle_arena_tideline`, `battle_arena_causeway` (`game/battle/arenas/shots/`).
-- **Final kits:** env-art, M2-ENV-11 (the contract is in that task). The tideline's sand albedo is darker than the
-  sandbox's: under the ch02_noon key (k 2.1) the sandbox's pale sand blew out.
-- **Checked by** `tools/validate_choreo.py` `arena_errors` (from validate_data).
+- **Checked by** `tools/validate_choreo.py` `arena_errors` (from validate_data): every scene exists, every
+  encounter's `arena` is a known id.

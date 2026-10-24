@@ -185,22 +185,18 @@ ENCOUNTERS_FILE = "game/data/battle/encounters.json"
 
 
 def arena_errors(doc: object, encounters: object, scene_exists) -> list[str]:
-    """Problems in arenas.json; `scene_exists(res_path)` says whether a scene file is there."""
+    """Problems in arenas.json and the encounters' `arena` fields; `scene_exists(res_path)` says whether a scene is there."""
     if not isinstance(doc, dict) or not isinstance(doc.get("arenas"), dict):
         return [f"{ARENAS_FILE}: needs an 'arenas' object"]
-    a = doc["arenas"]
-    scenes, by_enc = a.get("scenes"), a.get("by_encounter")
-    if not isinstance(scenes, dict) or not isinstance(by_enc, dict):
-        return [f"{ARENAS_FILE}: needs 'scenes' and 'by_encounter' objects"]
+    scenes = doc["arenas"].get("scenes")
+    if not isinstance(scenes, dict):
+        return [f"{ARENAS_FILE}: needs a 'scenes' object"]
     errs: list[str] = []
     for sid, path in scenes.items():
         if not isinstance(path, str) or not path.endswith(".tscn") or not scene_exists(path):
             errs.append(f"{ARENAS_FILE}: scenes.{sid} names a missing scene '{path}'")
     rows = encounters.get("encounters", []) if isinstance(encounters, dict) else []
-    enc_ids = {str(r.get("id")) for r in rows if isinstance(r, dict)}
-    for enc, sid in by_enc.items():
-        if enc not in enc_ids:
-            errs.append(f"{ARENAS_FILE}: by_encounter names an unknown encounter '{enc}'")
-        if sid not in scenes:
-            errs.append(f"{ARENAS_FILE}: by_encounter.{enc} names an unknown arena '{sid}'")
+    for r in rows:
+        if isinstance(r, dict) and "arena" in r and r["arena"] not in scenes:
+            errs.append(f"{ENCOUNTERS_FILE}: {r.get('id')}.arena names an unknown arena '{r['arena']}'")
     return errs

@@ -10,7 +10,7 @@ milestone: M2
 request-from: lead
 ---
 ## Goal
-Battles all fight on the noon sandbox dais. Each story encounter gets its own arena: the Ch2 tideline at noon and the Drownbell on the Saltgrass Causeway at the ch03_boss sunset (color script), chosen by encounter in data, swapping the sandbox's WorldEnvironment, Sun and Arena. Greybox geometry here; a request to env-art for the final kits (intro audit 2026-10-24).
+Battles all fight on the noon sandbox dais. Each story encounter gets its own arena: the Ch2 tideline at dawn and the Drownbell on the Saltgrass Causeway at the ch03_boss sunset (color script), chosen by encounter in data, swapping the sandbox's WorldEnvironment, Sun and Arena. Greybox geometry here; a request to env-art for the final kits (intro audit 2026-10-24).
 
 ## Acceptance criteria
 - [x] game/data/battle/arenas.json maps encounters to arena scenes; fixtures and the sandbox keep the sandbox arena (no baseline moves)

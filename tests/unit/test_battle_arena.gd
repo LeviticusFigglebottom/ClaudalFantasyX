@@ -19,17 +19,15 @@ func before_each() -> void:
 
 
 func test_data_names_real_encounters_and_scenes() -> void:
-	var data := BattleArena.data()
 	var db := BattleDB.load_default()
-	for enc: String in data["by_encounter"]:
-		assert_true(db.encounters.has(StringName(enc)) or db.encounters.has(enc), "a real encounter: %s" % enc)
-		var path := BattleArena.scene_for(StringName(enc))
-		assert_true(ResourceLoader.exists(path), "%s has a scene" % enc)
+	for enc: StringName in [&"ch02_tideline", &"drownbell"]:
+		var path := BattleArena.scene_for(db, enc)
+		assert_true(ResourceLoader.exists(path), "%s has an arena scene" % enc)
 		var arena := (load(path) as PackedScene).instantiate()
-		for n in ["WorldEnvironment", "Sun", "Arena", "Arena/Sea"]:
+		for n in ["WorldEnvironment", "Sun", "Sea"]:
 			assert_true(arena.get_node_or_null(NodePath(n)) != null, "%s has %s" % [path, n])
 		arena.free()
-	assert_eq(BattleArena.scene_for(&"sandbox_reef"), "", "the sandbox keeps its own arena")
+	assert_eq(BattleArena.scene_for(db, &"sandbox_reef"), "", "the sandbox keeps its own arena")
 	_free()
 
 
@@ -37,11 +35,12 @@ func test_a_story_encounter_fights_in_its_arena() -> void:
 	var sandbox_env := ctl.get_node(^"WorldEnvironment")
 	var empty: Array[StringName] = []
 	ctl.start_battle(PARTY, empty, &"drownbell", 7)
-	assert_eq(str(ctl.get_meta(BattleArena.META_ARENA, "")), BattleArena.scene_for(&"drownbell"))
+	assert_eq(str(ctl.get_meta(BattleArena.META_ARENA, "")), BattleArena.scene_for(ctl.engine.db, &"drownbell"))
 	var env := ctl.get_node(^"WorldEnvironment") as WorldEnvironment
 	assert_ne(env, sandbox_env, "the arena's environment replaced the sandbox's")
 	assert_true(ctl.get_node_or_null(^"Arena/Sea") != null, "the flood rig's sea is there")
-	assert_true(ctl.get_node_or_null(^"Fill") != null, "the arena's extra light was added")
+	assert_true(ctl.get_node_or_null(^"Arena/Fill") != null, "the arena's other children are under Arena")
+	assert_eq(ctl.get_node(^"Arena").get_children().filter(func(n: Node) -> bool: return n.name == &"Dais").size(), 0)
 	assert_eq(ctl.get_children().filter(func(n: Node) -> bool: return n.name == &"Sun").size(), 1, "one sun")
 	ctl.start_battle(PARTY, empty, &"drownbell", 7)
 	assert_eq(ctl.get_node(^"WorldEnvironment"), env, "a retry keeps the arena")
