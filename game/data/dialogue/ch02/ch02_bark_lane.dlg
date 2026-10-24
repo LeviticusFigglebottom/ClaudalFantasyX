@@ -1,0 +1,11 @@
+// Ch2 B03 "Haluna by day", fragment 4 of "Cantor" (docs/kb/story/beats/vertical_slice.md): the lane.
+// A child skipping in the lane sings a counting rhyme, unaccompanied (Audio: diegetic, no score
+// under it). The rhyme counts verses; nobody explains it. Field bark, played on the field camera.
+title: ch02_bark_lane
+location: ch02/haluna
+---
+Child [smile]: One for the shell and two for the ash, #line:ch02_bark_lane_001 #sung
+Child [smile]: three for the bell and four for the hush... #line:ch02_bark_lane_002 #sung
+Rhen [neutral]: What comes after four? #line:ch02_bark_lane_003
+Child [neutral]: You start again. Everybody knows that. #line:ch02_bark_lane_004
+===

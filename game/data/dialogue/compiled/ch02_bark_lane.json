@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch02_bark_lane",
+ "source": "game/data/dialogue/ch02/ch02_bark_lane.dlg",
+ "start": "ch02_bark_lane",
+ "nodes": {
+  "ch02_bark_lane": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "line", "id": "ch02_bark_lane_001", "key": "DLG_CH02_BARK_LANE_001", "speaker": "child", "emotion": "smile", "voice": "", "src": 7, "tags": ["sung"]},
+    {"op": "line", "id": "ch02_bark_lane_002", "key": "DLG_CH02_BARK_LANE_002", "speaker": "child", "emotion": "smile", "voice": "", "src": 8, "tags": ["sung"]},
+    {"op": "line", "id": "ch02_bark_lane_003", "key": "DLG_CH02_BARK_LANE_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "line", "id": "ch02_bark_lane_004", "key": "DLG_CH02_BARK_LANE_004", "speaker": "child", "emotion": "neutral", "voice": "", "src": 10}
+   ]
+  }
+ }
+}

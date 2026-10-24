@@ -1,0 +1,112 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch03/shell_shrine/shell_shrine_level.gd" id="1_level"]
+[ext_resource type="Script" path="res://game/world/field_controller.gd" id="2_fc"]
+[ext_resource type="Script" path="res://game/world/field_camera_director.gd" id="3_dir"]
+[ext_resource type="Script" path="res://game/world/camera_volume.gd" id="4_vol"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="5_shot"]
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 1
+background_color = Color(0.5, 0.66, 0.78, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.54, 0.64, 0.63, 1)
+ambient_light_energy = 0.7
+tonemap_mode = 4
+
+[sub_resource type="StandardMaterial3D" id="Mat_rhen"]
+albedo_color = Color(0.368627, 0.603922, 0.588235, 1)
+roughness = 0.7
+
+[sub_resource type="CapsuleMesh" id="Mesh_rhen"]
+material = SubResource("Mat_rhen")
+radius = 0.32
+height = 1.72
+
+[sub_resource type="CapsuleShape3D" id="Shape_rhen"]
+radius = 0.32
+height = 1.72
+
+[sub_resource type="BoxMesh" id="Mesh_facing"]
+size = Vector3(0.14, 0.08, 0.2)
+
+[sub_resource type="Resource" id="Shot_S03"]
+script = ExtResource("5_shot")
+id = &"S03"
+position = Vector3(0, 15.5, 10.5)
+look_at = Vector3(0.5, 0, 0.5)
+fov_deg = 67.4
+
+[sub_resource type="Resource" id="Shot_S04"]
+script = ExtResource("5_shot")
+id = &"S04"
+position = Vector3(4.5, 1.2, 2.6)
+look_at = Vector3(7.5, 0.3, 0)
+fov_deg = 27.0
+hard_cut = true
+
+[sub_resource type="Resource" id="Shot_S05"]
+script = ExtResource("5_shot")
+id = &"S05"
+position = Vector3(-3.6, 1.3, 5.4)
+look_at = Vector3(-1.5, 0.1, 8)
+fov_deg = 33.4
+hard_cut = true
+
+[sub_resource type="BoxShape3D" id="Box_hall"]
+size = Vector3(28, 4, 20)
+
+[node name="ShellShrine" type="Node3D"]
+script = ExtResource("1_level")
+insert_pool = SubResource("Shot_S04")
+insert_side = SubResource("Shot_S05")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Oculus" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.34, 0.94, 0, -0.94, 0.34, 0, 10, 0)
+light_color = Color(1, 0.945098, 0.894118, 1)
+light_energy = 1.4
+shadow_enabled = true
+directional_shadow_max_distance = 60.0
+
+[node name="Player" type="CharacterBody3D" parent="." groups=["player"]]
+script = ExtResource("2_fc")
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -12.5, 0.05, 0)
+director_path = NodePath("../CameraDirector")
+
+[node name="Shape" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.86, 0)
+shape = SubResource("Shape_rhen")
+
+[node name="StandIn" type="MeshInstance3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.86, 0)
+mesh = SubResource("Mesh_rhen")
+
+[node name="Facing" type="MeshInstance3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -0.3)
+mesh = SubResource("Mesh_facing")
+
+[node name="FieldCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.5, 10.5)
+current = true
+near = 0.1
+far = 400.0
+
+[node name="CameraDirector" type="Node3D" parent="."]
+script = ExtResource("3_dir")
+camera_path = NodePath("../FieldCamera")
+target_path = NodePath("../Player")
+initial_shot = SubResource("Shot_S03")
+
+[node name="CameraVolumes" type="Node3D" parent="."]
+
+[node name="Hall" type="Area3D" parent="CameraVolumes"]
+script = ExtResource("4_vol")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+shot = SubResource("Shot_S03")
+shot_priority = 1
+
+[node name="Shape" type="CollisionShape3D" parent="CameraVolumes/Hall"]
+shape = SubResource("Box_hall")

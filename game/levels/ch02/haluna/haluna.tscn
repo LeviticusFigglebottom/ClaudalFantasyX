@@ -288,9 +288,33 @@ size = Vector3(22.508818, 5, 3.5)
 [sub_resource type="BoxShape3D" id="Box_causeway"]
 size = Vector3(32, 5, 6)
 
+[sub_resource type="StandardMaterial3D" id="Mat_neme"]
+albedo_color = Color(0.513725, 0.388235, 0.32549, 1)
+roughness = 0.8
+
+[sub_resource type="CapsuleMesh" id="Mesh_neme"]
+material = SubResource("Mat_neme")
+radius = 0.32
+height = 1.6
+
+[sub_resource type="StandardMaterial3D" id="Mat_child"]
+albedo_color = Color(0.72549, 0.611765, 0.403922, 1)
+roughness = 0.8
+
+[sub_resource type="CapsuleMesh" id="Mesh_child"]
+material = SubResource("Mat_child")
+radius = 0.2
+height = 1.1
+
+[sub_resource type="CapsuleShape3D" id="Shape_child"]
+radius = 0.22
+height = 1.1
+
+[sub_resource type="SphereShape3D" id="Shape_overhear"]
+radius = 6.0
+
 [node name="Haluna" type="Node3D"]
 script = ExtResource("1_zone")
-face_key_shadow_normal_bias = 3.0
 
 [node name="HalunaMood" parent="." instance=ExtResource("2_mood")]
 
@@ -566,6 +590,52 @@ payload = {
 [node name="Shape" type="CollisionShape3D" parent="NPCs/Dock/Talk"]
 shape = SubResource("Shape_talk")
 
+[node name="Lane" type="Node3D" parent="NPCs"]
+
+[node name="Child" type="StaticBody3D" parent="NPCs/Lane"]
+transform = Transform3D(0.971961, 0, -0.235142, 0, 1, 0, 0.235142, 0, 0.971961, -70, 2.19, -9.5)
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Lane/Child"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("Shape_child")
+
+[node name="StandIn" type="MeshInstance3D" parent="NPCs/Lane/Child"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+mesh = SubResource("Mesh_child")
+
+[node name="Facing" type="MeshInstance3D" parent="NPCs/Lane/Child"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -0.17)
+mesh = SubResource("Mesh_npc_facing")
+
+[node name="Talk" type="Area3D" parent="NPCs/Lane"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -70, 3, -9.3)
+id = &"npc_lane"
+prompt_key = "FIELD_PROMPT_LISTEN"
+payload = {
+"dialogue": "ch02_bark_lane"
+}
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Lane/Talk"]
+shape = SubResource("Shape_talk")
+
+[node name="Neme" type="Node3D" parent="NPCs"]
+
+[node name="Neme" type="StaticBody3D" parent="NPCs/Neme"]
+transform = Transform3D(0.3355, 0, -0.942, 0, 1, 0, 0.942, 0, 0.3355, -54.1, 1.86, -1.85)
+
+[node name="Shape" type="CollisionShape3D" parent="NPCs/Neme/Neme"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("Shape_npc")
+
+[node name="StandIn" type="MeshInstance3D" parent="NPCs/Neme/Neme"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+mesh = SubResource("Mesh_neme")
+
+[node name="Facing" type="MeshInstance3D" parent="NPCs/Neme/Neme"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.36, -0.26)
+mesh = SubResource("Mesh_npc_facing")
+
 [node name="Triggers" type="Node3D" parent="."]
 
 [node name="TidelineBattle" type="Area3D" parent="Triggers"]
@@ -615,6 +685,66 @@ payload = {
 [node name="Shape" type="CollisionShape3D" parent="Triggers/CausewayHead"]
 shape = SubResource("Box_causeway")
 
+[node name="OverhearMarket" type="Area3D" parent="Triggers"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42, 2.7, 0)
+id = &"overhear_market"
+activation = 1
+requires_flag = &"ch02_met_asha"
+once = true
+payload = {
+"dialogue": "ch02_bark_market",
+"overheard": true
+}
+
+[node name="Shape" type="CollisionShape3D" parent="Triggers/OverhearMarket"]
+shape = SubResource("Shape_overhear")
+
+[node name="OverhearChapel" type="Area3D" parent="Triggers"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -114, 3.5, 35)
+id = &"overhear_chapel"
+activation = 1
+requires_flag = &"ch02_met_asha"
+once = true
+payload = {
+"dialogue": "ch02_bark_chapel",
+"overheard": true
+}
+
+[node name="Shape" type="CollisionShape3D" parent="Triggers/OverhearChapel"]
+shape = SubResource("Shape_overhear")
+
+[node name="OverhearDock" type="Area3D" parent="Triggers"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.5, 38.5)
+id = &"overhear_dock"
+activation = 1
+requires_flag = &"ch02_met_asha"
+once = true
+payload = {
+"dialogue": "ch02_bark_dock",
+"overheard": true
+}
+
+[node name="Shape" type="CollisionShape3D" parent="Triggers/OverhearDock"]
+shape = SubResource("Shape_overhear")
+
+[node name="OverhearLane" type="Area3D" parent="Triggers"]
+script = ExtResource("8_int")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -70, 3, -9.5)
+id = &"overhear_lane"
+activation = 1
+requires_flag = &"ch02_met_asha"
+once = true
+payload = {
+"dialogue": "ch02_bark_lane",
+"overheard": true
+}
+
+[node name="Shape" type="CollisionShape3D" parent="Triggers/OverhearLane"]
+shape = SubResource("Shape_overhear")
+
 [node name="CutsceneStage" type="Node3D" parent="."]
 script = ExtResource("9_stage")
 director_path = NodePath("../CameraDirector")
@@ -625,10 +755,12 @@ player_path = NodePath("../Player")
 [node name="H05" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("10_shotnode")
 shot = SubResource("Shot_cut_H05")
+key_pitch_deg = 30.0
 
 [node name="H06" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("10_shotnode")
 shot = SubResource("Shot_cut_H06")
+key_pitch_deg = 30.0
 
 [node name="H01" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("10_shotnode")

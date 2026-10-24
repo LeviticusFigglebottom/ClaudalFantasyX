@@ -58,12 +58,16 @@ var auto_advance_hold_sec := 1.5
 var auto_choice := 0
 ## When a scene ends faded out, fade back in. A host that changes scene right after sets false.
 var restore_fade := true
+## Freeze the stage's player for the scene. Overheard barks (M2-FP-13) set false: Rhen walks on
+## while the lines advance by themselves (auto_advance).
+var hold_player := true
 ## Every <<event>> of the last play(), in order: [{"name": StringName, "args": Array}].
 var events: Array[Dictionary] = []
 ## Soft failures (a missing shot, actor, mark or track), each reported once.
 var warnings: Array[String] = []
 ## Every @face cue of the last play(), [actor, expression, sec]. Actors whose meshes have blend
-## shapes and a sequencer.json "face_poses" row also show it (CutsceneFace).
+## shapes and a sequencer.json "face_poses" row also show it (CutsceneFace), and blink and shape
+## their mouths to each line's text (M2-FP-18: sequencer.json "blink" and "visemes").
 var faces: Array = []
 var config: Dictionary = {}
 var overlay: CutsceneOverlay
@@ -95,6 +99,8 @@ var _await_cb: Callable = Callable()
 var _face_rigs: Dictionary = {}
 ## actor id -> face-poses JSON "emotions" + "blend_in_s", per play().
 var _pose_tables: Dictionary = {}
+## The close-shot key light (M2-FP-10), made on the first close shot, freed when the scene ends.
+var _key: CutsceneKeyLight
 
 
 static func load_config() -> Dictionary:
@@ -140,6 +146,7 @@ func _exit_tree() -> void:
 	if _playing:
 		_aborted = true
 		_restore_player()
+		_key_drop()
 		SaveSystem.release_autosave(self)
 		if _awaiting != &"":
 			_release_await(null)
@@ -153,6 +160,11 @@ func is_playing() -> bool:
 
 func is_skipping() -> bool:
 	return _skipping
+
+
+## The key light while a close shot keys the cast (M2-FP-10), else null.
+func key_light() -> CutsceneKeyLight:
+	return _key if _key != null and is_instance_valid(_key) and _key.is_engaged() else null
 
 
 ## Holding ui_cancel for `skip_hold_sec` (sequencer.json) skips; advance() counts the hold.
@@ -258,7 +270,12 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 	events.clear()
 	faces.clear()
 	_face_rigs.clear()
+	# Every actor with a face table gets its rig now, so it blinks before its first line (M2-FP-18).
+	for actor_id: String in (config.get("face_poses", {}) as Dictionary).keys():
+		_face_of(StringName(actor_id))
 	SaveSystem.hold_autosave(self)
+	if not hold_player:
+		_player = null
 	if _player != null:
 		_player_input_was = _player.accepts_input
 		_player.accepts_input = false
@@ -273,6 +290,7 @@ func _finish() -> void:
 	_awaiting = &""
 	set_skip_held(false)
 	_complete_motions()
+	_key_off()
 	if overlay != null:
 		overlay.box.visible = false
 		overlay.choices.clear()
@@ -289,6 +307,7 @@ func _finish() -> void:
 			await _wait_for(float(config.get("fade_back_sec", 0.0)))
 		_complete_motions()
 	_restore_player()
+	_key_drop()
 	SaveSystem.release_autosave(self)
 	_playing = false
 	finished.emit(_scene_id)
@@ -309,6 +328,9 @@ func _line(step: DialogueStep) -> void:
 		if step.emotion != &"":
 			_set_face(step.speaker, step.emotion, -1.0)
 		_play_clip(speaker, &"talk")
+		var rig := _face_of(step.speaker) if not step.is_sung() else null
+		if rig != null:
+			rig.say(tr(String(step.text_key)))
 	if _fast():
 		overlay.box.skip_reveal()
 		return
@@ -381,6 +403,7 @@ func _cue_camera(step: DialogueStep) -> void:
 	var ease := StringName(str(step.kwargs.get("ease", "")))
 	if step.is_camera_release():
 		var back := float(step.kwargs.get("blend", CameraShot.USE_DEFAULT))
+		_key_off()
 		if not _director.release(back, ease):
 			return
 	else:
@@ -392,6 +415,7 @@ func _cue_camera(step: DialogueStep) -> void:
 		var blend := float(step.kwargs.get("blend", 0.0))
 		if blend > 0.0:
 			overlay.box.visible = false
+		_key_for(_stage.shot_node(id))
 		_director.play_shot(shot, blend, ease)
 	await _land()
 
@@ -538,6 +562,50 @@ func _cue_vfx(step: DialogueStep) -> void:
 	)
 
 
+# --- key light (M2-FP-10) --------------------------------------------------------------------
+
+
+## Keys the cast for a close shot (or a shot forced ON), and lets the sun back for any other.
+func _key_for(sn: CutsceneShotNode) -> void:
+	if sn == null or not _wants_key(sn):
+		_key_off()
+		return
+	var sun := _stage.sun()
+	if sun == null:
+		_warn("a close shot with no sun on the stage to key the cast from")
+		_key_off()
+		return
+	if _key == null or not is_instance_valid(_key):
+		_key = CutsceneKeyLight.new(config.get("key_light", {}))
+		_stage.add_child(_key)
+	_key.engage(sun, _stage.cast(), sn.key_yaw_deg, sn.key_pitch_deg, sn.key_energy_scale)
+
+
+func _wants_key(sn: CutsceneShotNode) -> bool:
+	if sn.key_light != CutsceneShotNode.KeyLight.AUTO:
+		return sn.key_light == CutsceneShotNode.KeyLight.ON
+	var shot := sn.shot
+	if shot.mode == CameraShot.Mode.DOLLY or shot.mode == CameraShot.Mode.ORBIT or _director.rail_root == null:
+		return false  # the camera moves with the player: no fixed framing to judge
+	var root := _director.rail_root.global_transform
+	var aim := _director.aim_point(shot) if not shot.aim_node.is_empty() else root * shot.look_at
+	var fov := shot.fov_deg if shot.fov_deg > 0.0 else float(_director.data.get("default_fov_deg", 0.0))
+	return CutsceneKeyLight.is_close(root * shot.position, aim, fov, config.get("key_light", {}))
+
+
+func _key_off() -> void:
+	if _key != null and is_instance_valid(_key):
+		_key.disengage()
+
+
+## The scene is over: the sun keys everyone again and the light leaves the stage.
+func _key_drop() -> void:
+	_key_off()
+	if _key != null and is_instance_valid(_key):
+		_key.queue_free()
+	_key = null
+
+
 # --- helpers ---------------------------------------------------------------------------------
 
 
@@ -576,7 +644,8 @@ func _face_of(actor_id: StringName) -> CutsceneFace:
 		if not _pose_tables.has(actor_id):
 			var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 			_pose_tables[actor_id] = parsed if parsed is Dictionary else {}
-		rig = CutsceneFace.new(actor, config.get("lip_flap", {}))
+		rig = CutsceneFace.new(actor, config.get("lip_flap", {}), config.get("visemes", {}))
+		rig.configure_blink(config.get("blink", {}), DEFAULT_SEED + hash(actor_id))
 		if not rig.has_shapes():
 			rig = null
 	_face_rigs[actor_id] = rig

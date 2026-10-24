@@ -14,9 +14,10 @@ extends Node3D
 @export var start_spawn: StringName = &"Shrine"
 ## Raised above the marker on placement so the capsule settles onto the ground.
 @export var spawn_lift_m: float = 0.02
-## The close-up lighting rule (character_shading.md "Shadows on characters", QA-05/CHR-04): the
-## sun keys Asha's face in Cutscene A, so it takes this shadow_normal_bias instead of the mood
-## scene's 1.0. 0 leaves the mood scene's value (the mood test's own baselines are unaffected).
+## A shadow_normal_bias for the zone sun in place of the mood scene's 1.0; 0 (the default, and
+## haluna.tscn since M2-FP-11) leaves it. Close-ups no longer use the sun on faces: CutsceneKeyLight
+## (M2-FP-10) keys the cast with bias 4.5 on a short-range light, and at the zone's 400 m cascade a
+## higher sun bias only erased the nose shadow (docs/kb/qa/gpu/2026-10-23-rnd-18-20-followups.md).
 @export var face_key_shadow_normal_bias: float = 0.0
 
 ## True once prebuild() has dressed the mood scene and built the collision (M2-FP-05).

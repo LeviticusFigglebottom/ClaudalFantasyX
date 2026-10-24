@@ -104,6 +104,19 @@ title) once.
 - Show it: `EndCard.open()` or `SceneRouter.change_scene(EndCard.SCENE)`.
 - Test hooks: `change_scene: Callable(path)`, `advance(delta)`, `handle_input(event)`, `prompt_shown()`.
 
+## Haluna's slice beats (M2-FP-13)
+
+`HalunaStory` plays three more beats from the vertical-slice beat sheet, all in-engine (no letterbox, no camera cues), with their data in `first_playable.json` `haluna`:
+- **B02, Neme's table** (`after_battle_scene_id` `ch02_nemes_table`). It plays from `begin()` on the first arrival after the tideline victory (`battle_victory_flag`), while `after_battle_flag` (`ch02_ate_at_nemes`, which the scene sets) is still unset. Rhen is placed at `after_battle_spawn` (Village, by Neme's stand-in). The scene opens black (`@fade in`), so the move is never seen.
+  - The beach path is closed until the fight is won, so this keeps the order dawn → walk up → fight → noon at Neme's.
+- **B03, the four "Cantor" fragments.** Each is a one-shot TOUCH trigger (`Triggers/Overhear*`, payload `{"dialogue": ..., "overheard": true}`, after `ch02_met_asha`) around the market, chapel, dock and lane villagers.
+  - They play on a second sequencer, `HalunaStory.overhear`, with `hold_player = false` and `auto_advance` (lines hold `overheard_hold_sec`). Rhen walks on, `busy` stays false, and nothing is blocked.
+  - Anything else that starts (a villager bark, the battle, the causeway) cuts it off with `_hush()`.
+  - Talking to the villager still plays the bark. The lane child (`ch02_bark_lane`) is new.
+- **B05, Low tide** (`before_ending_scene_id` `ch02_low_tide`). The causeway-head trigger plays it, then hands off to Cutscene B.
+
+New speakers: `neme`, `child`. Tests: `tests/integration/test_haluna_slice_beats.gd`.
+
 ## Tests
 
 `tests/integration/test_fp_field_battle.gd`, `tests/integration/test_fp_prologue.gd`,

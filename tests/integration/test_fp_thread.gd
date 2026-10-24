@@ -4,11 +4,12 @@ extends TestCase
 ## the battle's travel hooks): New Game → prologue → Haluna (Cutscene A) → three villagers → walk up
 ## the beach into the story's real tideline trigger → lose, Fight again, lose, Return to last save
 ## (none yet: the title) → walk in again and win → back at BattleReturn (not re-triggered) → save at
-## the shrine, load it back → the causeway head → Cutscene B → the Drownbell → end card.
+## the shrine, load it back → the causeway head → the Shell Shrine trial → Cutscene B → the Drownbell → end card.
 
 const ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
 const PROLOGUE := "res://game/levels/prologue/prologue.tscn"
 const FIRST_VERSE := "res://game/levels/ch03/first_verse/first_verse.tscn"
+const SHRINE := "res://game/levels/ch03/shell_shrine/shell_shrine.tscn"
 const BATTLE := "res://game/flow/field_battle.tscn"
 const DT := 1.0 / 60.0
 const WALK_SEC := 30.0
@@ -121,8 +122,27 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	assert_eq(wr.resolve(Game.state).get("spawn"), &"Shrine", "and continues at the shrine")
 	wr.free()
 	assert_true(causeway.on_touched(), "after a save the causeway head opens")
-	assert_eq(routed.back(), [FIRST_VERSE], "the causeway head opens Cutscene B")
+	assert_eq(routed.back(), [SHRINE], "the causeway head opens the Shell Shrine trial (M2-FP-16)")
 	_free(zone)
+
+	# The trial: turn basins until the water reaches the inner pool, let it fill, go through the door.
+	var trial_level := (load(SHRINE) as PackedScene).instantiate() as ShellShrineLevel
+	trial_level.autostart = false
+	trial_level.hand_off = func(target: String) -> void: routed.append([target])
+	_host().add_child(trial_level)
+	trial_level.set_process(false)
+	trial_level.director.auto_update = false
+	trial_level.player.set_physics_process(false)
+	var guard := 0
+	while not trial_level.trial.reaches(trial_level.trial.goal()) and guard < 16:
+		guard += 1
+		trial_level.trial.rotate(_next_turn(trial_level.trial))
+	trial_level.advance(float(trial_level.trial.data["insert_sec"]) + float(trial_level.trial.data["fill_sec"]) + 0.1)
+	assert_true(trial_level.trial.door_open, "the trial is solved")
+	assert_true(_interactable(trial_level, &"shrine_exit").on_touched())
+	assert_eq(routed.back(), [FIRST_VERSE], "through the door, Cutscene B")
+	_host().remove_child(trial_level)
+	trial_level.free()
 
 	# Cutscene B on its set, then the Drownbell, then the end card.
 	var verse := (load(FIRST_VERSE) as PackedScene).instantiate() as FirstVerseScene
@@ -220,6 +240,21 @@ func _load_zone() -> HalunaZone:
 	story.sequencer.instant = true
 	story.sequencer.line_shown.connect(func(_s: DialogueStep) -> void: lines += 1)
 	return zone
+
+
+## The basin whose turn brings the water closest to the inner pool (the trial's own search).
+func _next_turn(trial: ShellShrineTrial) -> StringName:
+	var best := &""
+	var best_n := 1 << 20
+	for b in trial.basin_ids():
+		var probe := ShellShrineTrial.new(trial.data)
+		probe.rotations = trial.rotations.duplicate()
+		probe.rotate(b)
+		var n := probe.min_turns_to(probe.goal())
+		if n >= 0 and n < best_n:
+			best_n = n
+			best = b
+	return best
 
 
 func _instant_sequencer(host: Node) -> CutsceneSequencer:

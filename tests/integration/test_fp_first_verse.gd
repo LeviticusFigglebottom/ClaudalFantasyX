@@ -52,6 +52,8 @@ func test_every_branch_plays_on_a_complete_stage_then_calls_the_drownbell() -> v
 
 func test_the_stage_resolves_the_script_ids() -> void:
 	var stage := scene.stage
+	# M2-FP-11: the sun stays at bias 1.0; close shots key faces with CutsceneKeyLight (M2-FP-10).
+	assert_true(stage.sun() != null and stage.sun().shadow_normal_bias == 1.0, "the zone sun keeps bias 1.0")
 	for id: StringName in [&"S06", &"S07", &"S08", &"S09", &"S10", &"C08"]:
 		assert_true(stage.shot(id) != null, "shot %s" % id)
 	for id: StringName in [&"asha", &"toma", &"rhen"]:

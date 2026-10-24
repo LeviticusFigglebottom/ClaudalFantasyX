@@ -1,9 +1,9 @@
 {
   "title_menu": {
-    "doc": "Minimal title menu (M1-ARC-06; docs/kb/tech/architecture.md, Saves). Rects are top-left x, y, w, h at the 1920 x 1080 reference. 'choices' are MenuPage metrics (the save menu's dialog choices, with three rows). Lives beside the scene until UI owns a title screen under game/data/ui/.",
+    "doc": "Minimal title menu (M1-ARC-06; docs/kb/tech/architecture.md, Saves). Rects are top-left x, y, w, h at the 1920 x 1080 reference. 'choices' are MenuPage metrics (the save menu's dialog choices, with four rows). Lives beside the scene until UI owns a title screen under game/data/ui/.",
     "choices": {
       "rect": [810, 620, 300, 0],
-      "max_rows": 3,
+      "max_rows": 4,
       "header_height": 0,
       "row_inset": 8,
       "row_pitch": 44,
@@ -19,7 +19,7 @@
       "submenu_dim": 0.5
     },
     "help": {
-      "rect": [460, 790, 1000, 40]
+      "rect": [460, 846, 1000, 40]
     }
   }
 }

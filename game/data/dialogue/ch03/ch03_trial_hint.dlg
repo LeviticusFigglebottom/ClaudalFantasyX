@@ -1,0 +1,8 @@
+// Ch3 B07, the Shell Shrine trial's one hint (docs/kb/story/beats/vertical_slice.md): Toma, after 90 s
+// with no basin turned (shell_shrine.json hint_idle_sec). There's no other dialogue during the puzzle.
+// Played in-engine on the field camera; it doesn't stop Rhen.
+title: ch03_trial_hint
+location: ch03/shell_shrine
+---
+Toma [neutral]: Start at the spring. Follow the water, not the stone. #line:ch03_trial_hint_001
+===
