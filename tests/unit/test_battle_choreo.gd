@@ -386,14 +386,18 @@ func test_the_party_holds_a_victory_pose_before_the_result() -> void:
 func test_victory_clips_start_one_after_another() -> void:
 	var players: Array[AnimationPlayer] = []
 	for cid: StringName in [&"rhen", &"asha"]:
-		var player := AnimationPlayer.new()
-		var lib := AnimationLibrary.new()
-		for clip in [BattleClips.IDLE, BattleClips.VICTORY]:
-			var a := Animation.new()
-			a.length = 2.0
-			lib.add_animation(clip, a)
-		player.add_animation_library(&"", lib)
-		ctl.stage.stand_in(cid).add_child(player)
+		# A real hero model (hero-integration) brings its own player, which the outro drives; a stand-in gets one.
+		var player := BattleClips.player_of(ctl.stage.stand_in(cid))
+		if player == null:
+			player = AnimationPlayer.new()
+			var lib := AnimationLibrary.new()
+			for clip in [BattleClips.IDLE, BattleClips.VICTORY]:
+				var a := Animation.new()
+				a.length = 2.0
+				lib.add_animation(clip, a)
+			player.add_animation_library(&"", lib)
+			ctl.stage.stand_in(cid).add_child(player)
+		assert_true(player.has_animation(BattleClips.VICTORY), "%s has a victory clip" % cid)
 		players.append(player)
 	_to_turn_of(&"rhen")
 	for e in ctl.engine.enemies:
