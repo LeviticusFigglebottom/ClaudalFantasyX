@@ -230,6 +230,215 @@
         "PLACEHOLDER"
       ]
     },
+    "shrine_basin_bowl": {
+      "budget": [
+        8000,
+        800
+      ],
+      "bytes": 140016,
+      "lods": {
+        "shrine_basin_bowl": 2868,
+        "shrine_basin_bowl-lod1": 360
+      }
+    },
+    "shrine_basin_pedestal": {
+      "budget": [
+        4000,
+        400
+      ],
+      "bytes": 124196,
+      "lods": {
+        "shrine_basin_pedestal": 3072,
+        "shrine_basin_pedestal-lod1": 210
+      }
+    },
+    "shrine_channel_sluice": {
+      "budget": [
+        3600,
+        700
+      ],
+      "bytes": 163616,
+      "lods": {
+        "shrine_channel_sluice": 2588,
+        "shrine_channel_sluice-lod1": 616
+      }
+    },
+    "shrine_channel_spillway": {
+      "budget": [
+        1600,
+        300
+      ],
+      "bytes": 81300,
+      "lods": {
+        "shrine_channel_spillway": 624,
+        "shrine_channel_spillway-lod1": 264
+      }
+    },
+    "shrine_channel_straight": {
+      "budget": [
+        800,
+        200
+      ],
+      "bytes": 40176,
+      "lods": {
+        "shrine_channel_straight": 168,
+        "shrine_channel_straight-lod1": 168
+      }
+    },
+    "shrine_charm_net_float": {
+      "budget": [
+        3600,
+        200
+      ],
+      "bytes": 118456,
+      "lods": {
+        "shrine_charm_net_float": 3104,
+        "shrine_charm_net_float-lod1": 120
+      }
+    },
+    "shrine_column_whorl": {
+      "budget": [
+        4000,
+        400
+      ],
+      "bytes": 114684,
+      "lods": {
+        "shrine_column_whorl": 3192,
+        "shrine_column_whorl-lod1": 180
+      }
+    },
+    "shrine_door_valve": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 93028,
+      "lods": {
+        "shrine_door_valve": 1820,
+        "shrine_door_valve-lod1": 212
+      }
+    },
+    "shrine_floor": {
+      "budget": [
+        60000,
+        12000
+      ],
+      "bytes": 2354980,
+      "lods": {
+        "shrine_floor": 21592,
+        "shrine_floor-lod1": 7180
+      }
+    },
+    "shrine_inner_pool": {
+      "budget": [
+        9000,
+        1200
+      ],
+      "bytes": 254156,
+      "lods": {
+        "shrine_inner_pool": 2964,
+        "shrine_inner_pool-lod1": 916
+      }
+    },
+    "shrine_islet": {
+      "budget": [
+        24000,
+        4000
+      ],
+      "bytes": 591848,
+      "lods": {
+        "shrine_islet": 15708,
+        "shrine_islet-lod1": 1710
+      }
+    },
+    "shrine_roof_fan": {
+      "budget": [
+        60000,
+        8000
+      ],
+      "bytes": 1363088,
+      "lods": {
+        "shrine_roof_fan": 36144,
+        "shrine_roof_fan-lod1": 1752
+      }
+    },
+    "shrine_side_pool": {
+      "budget": [
+        6000,
+        900
+      ],
+      "bytes": 111504,
+      "lods": {
+        "shrine_side_pool": 2432,
+        "shrine_side_pool-lod1": 288
+      }
+    },
+    "shrine_spring": {
+      "budget": [
+        5000,
+        600
+      ],
+      "bytes": 65872,
+      "lods": {
+        "shrine_spring": 1020,
+        "shrine_spring-lod1": 264
+      }
+    },
+    "shrine_steps": {
+      "budget": [
+        16000,
+        2000
+      ],
+      "bytes": 217744,
+      "lods": {
+        "shrine_steps": 2519,
+        "shrine_steps-lod1": 484
+      }
+    },
+    "shrine_vault": {
+      "budget": [
+        50000,
+        6000
+      ],
+      "bytes": 1175876,
+      "lods": {
+        "shrine_vault": 30986,
+        "shrine_vault-lod1": 4256
+      }
+    },
+    "shrine_wall_curved": {
+      "budget": [
+        9000,
+        600
+      ],
+      "bytes": 388564,
+      "lods": {
+        "shrine_wall_curved": 3768,
+        "shrine_wall_curved-lod1": 48
+      }
+    },
+    "shrine_wall_portal": {
+      "budget": [
+        20000,
+        1200
+      ],
+      "bytes": 753672,
+      "lods": {
+        "shrine_wall_portal": 16152,
+        "shrine_wall_portal-lod1": 904
+      }
+    },
+    "shrine_wall_straight": {
+      "budget": [
+        8000,
+        400
+      ],
+      "bytes": 316268,
+      "lods": {
+        "shrine_wall_straight": 2772,
+        "shrine_wall_straight-lod1": 56
+      }
+    },
     "stilt_house": {
       "budget": [
         14000,

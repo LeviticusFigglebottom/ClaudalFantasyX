@@ -9,7 +9,7 @@ extends Node
 ## and quits with exit code 0 (ok) or 1.
 
 const PROBE_SHADER := "res://game/shaders/water/test/water_wave_probe.gdshader"
-const WAVES := "res://game/levels/_tests/water/lagoon_waves.tres"
+const WAVES := "res://game/world/water/lagoon_waves.tres"
 const GRID := Vector2i(64, 16)
 const ORIGIN_M := Vector2(-37.25, 12.5)
 const SPACING_M := 1.37

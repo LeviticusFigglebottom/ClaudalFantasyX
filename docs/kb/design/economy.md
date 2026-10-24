@@ -157,7 +157,7 @@ Customize costs follow the same idea: an element edge costs 4 of its element mat
 
 **Key items**: the **Brass Lantern** (Rhen's father's; Rhen has it from B01) and the **Glass Net-Float** (the optional B07 pickup that sets `ch03_found_net_float`; World/Narrative should grant the item in the same pickup). **Starting gear**: every hero's 1-slot starter weapon and armor. **Drops** on the causeway (Combat to add): crab carapace, eel lantern, and harrier quill, plus the occasional Salt Tonic. No new story flags were needed.
 
-Haluna's **inn** is not modelled yet (a price and a full heal). It is a one-field shop kind to add when World builds the inn (see UI/World below).
+**The Mooring Lamp** (`haluna_inn`, opens on `ch02_met_asha`, 30 lume, half an early fight): Haluna's inn (M2-UI-06). Inns are rows in `shops.json` `"inns"` (`id`, `name_key`, optional `desc_key` and `location`, `requires_flag`, `price` in lume, a non-negative int; `validate_data.py` `inns_errors`). `Inn` (`game/progression/inn.gd`) has `rest_error` / `rest`: a rest pays the price and heals exactly like a save shrine (`EventBus.party_full_heal_requested`), but never saves. The UI is `InnMenu` (docs/kb/tech/ui.md § Shops and inns). The price is a placeholder for Combat to check against the balance targets: a free shrine sits in the same town, so the inn is mostly a convenience.
 
 ## How to add things
 

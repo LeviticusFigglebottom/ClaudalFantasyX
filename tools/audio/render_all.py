@@ -38,9 +38,15 @@ from synth.analysis import loop_seam_report  # noqa: E402
 from synth.loudness import integrated_lufs, momentary_max_lufs, self_test, true_peak_dbtp  # noqa: E402
 from synth.mixer import read_audio  # noqa: E402
 
-SIZE_BUDGET = 5 * 1024 * 1024        # all M1 audio (mix.md §5)
+SIZE_BUDGET = 16 * 1024 * 1024       # all shipped audio for the M2 slice (mix.md §5)
 NEW_AUDIO_BUDGET = 4 * 1024 * 1024   # the three M1-AUD-02 cues together
-M1_AUD_02 = ("hush_theme_v2", "battle_standard", "temple_trial")
+M1_AUD_02 = ("hush_theme_v2", "battle_standard.", "temple_trial")
+# M2-AUD-03's cues, held to the music targets (-16 +- 0.5 LUFS, true peak <= -1 dBTP). drownbell_p1 is one stem of a
+# stack measured whole by its source (the full stack is -16; stem 1 alone is quieter by design, mix.md §2).
+M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_verse", "hush_coda", "haluna_dawn",
+           "shell_shrine_interior", "ilun_summon")
+AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
+AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
 # (module source, output dir, output file names, kind)
 JOBS = [
@@ -52,7 +58,47 @@ JOBS = [
      ["battle_standard.ogg", "battle_standard.loop.json"], "music_loop"),
     ("assets_src/music/temple_trial.py", "assets/audio/music",
      ["temple_trial.ogg", "temple_trial.loop.json"], "music_loop"),
+    ("assets_src/music/shell_shrine_interior.py", "assets/audio/music",
+     ["shell_shrine_interior.ogg", "shell_shrine_interior.loop.json"], "music_loop"),
+    ("assets_src/sfx/shrine_sfx.py", "assets/audio/sfx/shrine",
+     ["shrine_stone_turn_1.ogg", "shrine_stone_turn_2.ogg", "shrine_stone_turn_3.ogg", "shrine_pour.ogg",
+      "shrine_spill.ogg", "shrine_drain.ogg", "shrine_side_drain.ogg", "shrine_door.ogg", "shrine_charm.ogg"], "sfx"),
+    ("assets_src/sfx/shrine_pool_fill.py", "assets/audio/sfx/shrine",
+     ["shrine_pool_fill.ogg", "shrine_pool_fill.loop.json"], "music_loop"),
+    ("assets_src/sfx/battle_sfx.py", "assets/audio/sfx",
+     ["battle/hit_none_1.ogg", "battle/hit_none_2.ogg", "battle/hit_none_3.ogg", "battle/hit_fire_1.ogg",
+      "battle/hit_fire_2.ogg", "battle/hit_fire_3.ogg", "battle/hit_ice_1.ogg", "battle/hit_ice_2.ogg",
+      "battle/hit_ice_3.ogg", "battle/hit_lightning_1.ogg", "battle/hit_lightning_2.ogg",
+      "battle/hit_lightning_3.ogg", "battle/hit_water_1.ogg", "battle/hit_water_2.ogg", "battle/hit_water_3.ogg",
+      "battle/hit_holy_1.ogg", "battle/hit_holy_2.ogg", "battle/lamp_dive.ogg", "battle/shallows_verse.ogg",
+      "battle/read.ogg", "battle/heal.ogg", "battle/status_apply.ogg", "battle/ko_release.ogg",
+      "battle/bell_release.ogg", "battle/stinger_ambush.ogg", "battle/stinger_ambush_soft.ogg",
+      "battle/stinger_preemptive.ogg", "battle/drownbell_toll.ogg", "battle/drownbell_toll_soft.ogg",
+      "battle/toll_gather.ogg", "battle/rim_crack_1.ogg", "battle/rim_crack_2.ogg", "battle/rim_crack_3.ogg",
+      "battle/rim_break.ogg", "battle/polyp_rise.ogg", "battle/polyp_mend.ogg", "battle/floodnet.ogg",
+      "battle/flood.ogg", "battle/flood_soft.ogg", "battle/vowbound_call.ogg", "battle/vowbound_dismiss.ogg",
+      "battle/victory.ogg", "battle/defeat.ogg", "battle/escape.ogg", "drownbell_toll.ogg"], "sfx"),
+    ("assets_src/music/haluna_village.py", "assets/audio/music",
+     ["haluna_village.ogg", "haluna_village.loop.json"], "music_loop"),
+    ("assets_src/music/haluna_night.py", "assets/audio/music",
+     ["haluna_night.ogg", "haluna_night.loop.json"], "music_loop"),
+    ("assets_src/music/battle_standard_v2.py", "assets/audio/music",
+     ["battle_standard_v2.ogg", "battle_standard_v2.loop.json"], "music_loop"),
+    ("assets_src/music/drownbell.py", "assets/audio/music",
+     ["drownbell_p1.ogg", "drownbell_p1.loop.json", "drownbell_p2.ogg", "drownbell_p2.loop.json"], "music_loop"),
+    ("assets_src/music/hush_first_verse.py", "assets/audio/music", ["hush_first_verse.ogg"], "music"),
+    ("assets_src/music/hush_coda.py", "assets/audio/music", ["hush_coda.ogg"], "music"),
+    ("assets_src/music/haluna_dawn.py", "assets/audio/music", ["haluna_dawn.ogg"], "music"),
+    ("assets_src/music/ilun_summon.py", "assets/audio/sfx", ["ilun_summon.ogg"], "music"),
+    ("assets_src/sfx/field_ambience.py", "assets/audio/ambience",
+     [f"{b}{ext}" for b in ("haluna_day", "haluna_night", "surf", "dock", "shrine_interior", "wind")
+      for ext in (".ogg", ".loop.json")], "ambience_loop"),
+    ("assets_src/sfx/field_sfx.py", "assets/audio/sfx",
+     [f"step_{s}_{v:02d}.ogg" for s in ("sand", "stone", "wood") for v in range(1, 6)]
+     + [f"{u}.ogg" for u in ("ui_menu_open", "ui_menu_close", "ui_page", "ui_buy", "ui_inn_rest", "ui_error",
+                             "ui_vowbound_open")], "sfx"),
 ]
+M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
 
 def _load(path):
@@ -136,8 +182,9 @@ def main() -> int:
     self_test()  # BS.1770 meter sanity (48 kHz coefficients, 997 Hz reference)
 
     jobs = [j for j in JOBS if not args.only or args.only in j[0]]
-    rows, total, new_total, ok = [], 0, 0, True
+    rows, total, new_total, amb_total, ok = [], 0, 0, 0, True
     for src, rel_dir, files, kind in jobs:
+        m1 = JOBS.index((src, rel_dir, files, kind)) < M1_JOBS
         out_dir = os.path.join(ROOT, rel_dir)
         print(f"rendering {src} ...", flush=True)
         _render_job(src, out_dir, files, kind)
@@ -148,14 +195,15 @@ def main() -> int:
                 ok = False
                 continue
             size = os.path.getsize(p)
-            total += size
+            total += size if m1 else 0
+            amb_total += size if kind == "ambience_loop" else 0
             if f.startswith(M1_AUD_02):
                 new_total += size
             if f.endswith(".json"):
                 rows.append((os.path.join(rel_dir, f), size, None, None, None, None, _sha(p)))
                 continue
             y = read_audio(p, channels=1 if kind == "sfx" else 2)
-            if kind == "music_loop":
+            if kind in ("music_loop", "ambience_loop"):
                 for prob in _check_loop(p, y):
                     print(f"FAIL {f}: {prob}")
                     ok = False
@@ -171,8 +219,17 @@ def main() -> int:
             continue
         ils = f"{il:7.2f}" if il is not None else "      -"
         print(f"{path:48} {size:8d} {sec:6.2f} {ils} {mm:7.2f} {tp:6.2f}  {sha[:12]}")
-        if il is not None and os.path.basename(path).startswith(M1_AUD_02) and (abs(il + 16.0) > 0.5 or tp > -1.0):
+        held = os.path.basename(path).startswith(M1_AUD_02 + M2_CUES)
+        if il is not None and held and (abs(il + 16.0) > 0.5 or tp > -1.0):
             print(f"FAIL {path}: outside -16 +- 0.5 LUFS, or true peak above -1 dBTP")
+            ok = False
+        if path.startswith("assets/audio/ambience") and (abs(il - AMBIENCE_LUFS) > 0.5 or tp > AMBIENCE_MAX_TP):
+            print(f"FAIL {path}: outside {AMBIENCE_LUFS} +- 0.5 LUFS, or true peak above {AMBIENCE_MAX_TP} dBTP")
+            ok = False
+    if amb_total:
+        print(f"ambience beds {amb_total / 1048576:.2f} MiB, budget {AMBIENCE_BUDGET / 1048576:.1f} MiB")
+        if amb_total > AMBIENCE_BUDGET:
+            print("FAIL: ambience beds over their size budget")
             ok = False
     if not args.only:
         print(f"total {total} bytes ({total / 1048576:.2f} MiB), budget {SIZE_BUDGET / 1048576:.0f} MiB; "

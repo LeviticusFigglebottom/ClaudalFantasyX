@@ -110,7 +110,8 @@ func test_instant_play_runs_every_cue_and_ends_clean() -> void:
 	assert_between(angle_difference(asha.rotation.y, atan2(-to_rhen.x, -to_rhen.z)), -0.01, 0.01, "look_at rhen")
 	assert_eq(stage.get_node("Marks/spot").get_child_count(), 1, "@vfx left motes at the mark")
 	assert_eq(seq.music_track, &"hush_first_verse")
-	assert_eq(seq.music.stream.resource_path, "res://assets/audio/music/hush_theme_v2.ogg", "stand-in track")
+	# M2-AUD-03 shipped the real cue, so the file named after the track wins over music_stand_ins.
+	assert_eq(seq.music.stream.resource_path, "res://assets/audio/music/hush_first_verse.ogg", "the cue's own file")
 	_assert_clean()
 	_free()
 

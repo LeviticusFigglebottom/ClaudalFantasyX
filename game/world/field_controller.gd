@@ -47,6 +47,9 @@ func _ready() -> void:
 	if director != null:
 		director.shot_changed.connect(_on_shot_changed)
 		director.snapped.connect(_on_snapped)
+	var services := TownServices.new()  # M2-UI-06: {"shop": id} / {"inn": id} payloads open a town menu
+	services.name = &"TownServices"
+	add_child(services)
 
 
 func _physics_process(delta: float) -> void:

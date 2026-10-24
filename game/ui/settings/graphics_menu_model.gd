@@ -7,6 +7,9 @@ extends RefCounted
 ##   the preset row  GraphicsRuntime.select_preset(id, viewport) (clears every override)
 ##   a setting row   GraphicsRuntime.set_override(key, value, viewport)
 ## Display text comes from game/data/ui/graphics_menu.json (value_keys, on/off, percentages).
+## A preset change may spawn the resident shader warm-up (GraphicsRuntime armed, M1-RND-22): cycle()
+## keeps it in `warmup`, and the view holds its fade until warmup_done() (M1-UI-11). A setting row
+## never spawns one (graphics_settings.md, "The Graphics menu").
 
 signal changed
 
@@ -17,6 +20,10 @@ var data: Dictionary = {}
 var cursor := 0
 ## Where cycle() applies (the game's root viewport; tests pass their own or null).
 var viewport: Viewport
+## The warm-up the last preset change spawned (null when none, or when GraphicsRuntime is disarmed).
+var warmup: ShaderPrewarm
+
+var _warmup_finished := false
 
 
 static func load_data() -> Dictionary:
@@ -99,7 +106,12 @@ func cycle(delta: int) -> bool:
 	if row == ROW_PRESET:
 		var ids := gs.preset_ids()
 		var at := ids.find(gs.preset_id)
+		var before := GraphicsRuntime.last_warmup
+		var before_id := before.get_instance_id() if is_instance_valid(before) else 0
 		ok = GraphicsRuntime.select_preset(ids[posmod(at + delta, ids.size())], viewport)
+		var spawned := GraphicsRuntime.last_warmup
+		if ok and is_instance_valid(spawned) and spawned.get_instance_id() != before_id:
+			_track_warmup(spawned)
 	else:
 		var options := gs.setting_options(String(row))
 		if options.is_empty():
@@ -110,6 +122,27 @@ func cycle(delta: int) -> bool:
 	if ok:
 		changed.emit()
 	return ok
+
+
+## True once the tracked warm-up finished, freed or stopped running (and when there is none). A
+## warm-up whose start() failed never runs, so it counts as done rather than holding the veil.
+func warmup_done() -> bool:
+	if warmup == null:
+		return true
+	if _warmup_finished or not is_instance_valid(warmup) or warmup.is_queued_for_deletion() or not warmup.is_running():
+		warmup = null
+		return true
+	return false
+
+
+func _track_warmup(node: ShaderPrewarm) -> void:
+	warmup = node
+	_warmup_finished = false
+	node.finished.connect(_on_warmup_finished, CONNECT_ONE_SHOT)
+
+
+func _on_warmup_finished(_stats: Dictionary) -> void:
+	_warmup_finished = true
 
 
 ## The help line for the current row.

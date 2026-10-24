@@ -120,7 +120,13 @@ void light() {
 #if HYMN_QUALITY > HYMN_QUALITY_LOW
 	float back = max(0.0, -ndl);
 	float fwd = pow(clamp(dot(-VIEW, LIGHT), 0.0, 1.0), translucency_focus);
-	float through = mix(translucency_shadow_floor * (1.0 - inst_translucency_shelter), 1.0, ATTENUATION);
+	// The floor is for canopy shadow from directional lights. For omni and spot lights ATTENUATION also
+	// carries the distance falloff, so a floor there lit every leaf from every lamp in the scene, in or
+	// out of range (M2-ENV-02, Haluna's night lamps).
+	float through = ATTENUATION;
+	if (LIGHT_IS_DIRECTIONAL) {
+		through = mix(translucency_shadow_floor * (1.0 - inst_translucency_shelter), 1.0, ATTENUATION);
+	}
 	DIFFUSE_LIGHT += LIGHT_COLOR * BACKLIGHT * ((back + fwd * translucency_forward) / HYMN_PI) * through;
 #endif
 }

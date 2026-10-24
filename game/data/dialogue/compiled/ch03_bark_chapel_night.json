@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch03_bark_chapel_night",
+ "source": "game/data/dialogue/ch03/ch03_bark_chapel_night.dlg",
+ "start": "ch03_bark_chapel_night",
+ "nodes": {
+  "ch03_bark_chapel_night": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "line", "id": "ch03_bark_chapel_night_001", "key": "DLG_CH03_BARK_CHAPEL_NIGHT_001", "speaker": "reed", "emotion": "neutral", "voice": "", "src": 5},
+    {"op": "line", "id": "ch03_bark_chapel_night_002", "key": "DLG_CH03_BARK_CHAPEL_NIGHT_002", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 6}
+   ]
+  }
+ }
+}
