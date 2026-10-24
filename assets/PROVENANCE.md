@@ -461,3 +461,7 @@ Rules:
 | assets/audio/music/terraces_of_ash.loop.json | assets_src/music/terraces_of_ash.py + tools/audio/synth/looping.py | python3 assets_src/music/terraces_of_ash.py | Audio (claude/audio, M3-AUD-04) | 2026-10-24 | original |
 | assets/audio/music/corrow_seawall.ogg | assets_src/music/corrow_seawall.py + tools/audio/synth/ | python3 assets_src/music/corrow_seawall.py | Audio (claude/audio, M3-AUD-04) | 2026-10-24 | original |
 | assets/audio/music/corrow_seawall.loop.json | assets_src/music/corrow_seawall.py + tools/audio/synth/looping.py | python3 assets_src/music/corrow_seawall.py | Audio (claude/audio, M3-AUD-04) | 2026-10-24 | original |
+| assets/audio/music/hullgnaw.ogg | assets_src/music/hullgnaw.py + tools/audio/synth/ | python3 assets_src/music/hullgnaw.py | Audio (claude/audio, M3-AUD-08) | 2026-10-24 | original |
+| assets/audio/music/hullgnaw.loop.json | assets_src/music/hullgnaw.py + tools/audio/synth/looping.py | python3 assets_src/music/hullgnaw.py | Audio (claude/audio, M3-AUD-08) | 2026-10-24 | original |
+| assets/audio/music/spar_wraith.ogg | assets_src/music/spar_wraith.py + tools/audio/synth/ | python3 assets_src/music/spar_wraith.py | Audio (claude/audio, M3-AUD-08) | 2026-10-24 | original |
+| assets/audio/music/spar_wraith.loop.json | assets_src/music/spar_wraith.py + tools/audio/synth/looping.py | python3 assets_src/music/spar_wraith.py | Audio (claude/audio, M3-AUD-08) | 2026-10-24 | original |
