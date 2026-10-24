@@ -190,12 +190,28 @@ func figure_center() -> Vector2:
 func brightness() -> float:
 	if ring == null:
 		return 0.0
-	var flare := clampf(1.0 - absf(ring.time_to_peak()) / metric("flare_sec"), 0.0, 1.0)
-	var b := metric("lamp_rest") + (1.0 - metric("lamp_rest")) * flare * flare
+	var f := flare()
+	var b := metric("lamp_rest") + (1.0 - metric("lamp_rest")) * f * f
 	if not reduced_motion:
 		var phase := ring.elapsed * metric("flicker_hz") * TAU
 		b *= 1.0 - metric("flicker_amp") * 0.5 * (1.0 + sin(phase))
 	return clampf(b, 0.0, 1.0)
+
+
+## The beat's flare alone, 0..1: 1 at the peak, 0 from flare_sec either side (no rest, no flicker).
+func flare() -> float:
+	if ring == null:
+		return 0.0
+	return clampf(1.0 - absf(ring.time_to_peak()) / metric("flare_sec"), 0.0, 1.0)
+
+
+## The lamp core's color at brightness `b`: from a dark ember (swell darkened, opaque) to swell,
+## so at rest it reads warm rather than the panel's grey (M2-UI-08, art/ui.md §10.2).
+func lamp_core(b: float) -> Color:
+	var swell := color(&"swell")
+	var ember := swell.darkened(1.0 - metric("lamp_core_value"))
+	ember.a = 1.0
+	return ember.lerp(swell, b)
 
 
 ## Radius of the closing ring: the outer edge when the beat opens, the lamp's rim at the peak.
@@ -307,11 +323,11 @@ func _draw_ring() -> void:
 	var lamp := metric("lamp_radius")
 	var b := brightness()
 	var swell := color(&"swell")
+	# The halo follows the flare only, so no grey ring shows between beats (M2-UI-08).
 	var glow := swell
-	glow.a = b * metric("glow_alpha")
+	glow.a = flare() * metric("glow_alpha")
 	_canvas.draw_circle(c, lamp + metric("glow_radius") * b, glow)
-	var core := color(&"gauge_back").lerp(swell, b)
-	_canvas.draw_circle(c, lamp, core)
+	_canvas.draw_circle(c, lamp, lamp_core(b))
 	_canvas.draw_arc(c, lamp, 0.0, TAU, 48, color(&"focus_gold"), metric("target_px"), true)
 	if not ring.is_done():
 		var col := color(&"focus")

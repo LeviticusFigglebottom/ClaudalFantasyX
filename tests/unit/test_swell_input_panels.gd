@@ -194,7 +194,43 @@ func test_a_seven_row_root_stands_whole_above_the_foot() -> void:
 	_free()
 
 
+func test_the_lamp_at_rest_is_an_ember_and_has_no_halo() -> void:
+	# M2-UI-08 (art/ui.md §10.2): the core at rest measures a warm hue (Oklab 60-90°, C >= 0.05),
+	# not the panel's grey, and the halo follows the flare only.
+	var view := ctl.hud.swell_ring
+	var ring := SwellTimingRing.new(BattleSwell.load_config()["inputs"][0])
+	view.reduced_motion = true
+	view.open(ring, "Lamp Dive", "hint")
+	assert_eq(view.flare(), 0.0, "the lead-in is at rest")
+	var lab := _oklab(view.lamp_core(view.brightness()))
+	var hue := rad_to_deg(atan2(lab.z, lab.y))
+	var chroma := Vector2(lab.y, lab.z).length()
+	assert_true(hue >= 60.0 and hue <= 90.0, "warm hue at rest: %.1f°" % hue)
+	assert_true(chroma >= 0.05, "not grey at rest: C %.3f" % chroma)
+	assert_true(view.lamp_core(1.0).is_equal_approx(view.color(&"swell")), "at the peak the core is the swell color")
+	ring.advance(ring.time_to_peak())
+	assert_eq(view.flare(), 1.0, "the halo is full at the peak")
+	view.close()
+	_free()
+
+
 # --- helpers ------------------------------------------------------------------------------
+
+
+## sRGB color -> Oklab (L, a, b) (Björn Ottosson's matrices).
+static func _oklab(c: Color) -> Vector3:
+	var lin := c.srgb_to_linear()
+	var l := 0.4122214708 * lin.r + 0.5363325363 * lin.g + 0.0514459929 * lin.b
+	var m := 0.2119034982 * lin.r + 0.6806995451 * lin.g + 0.1073969566 * lin.b
+	var s := 0.0883024619 * lin.r + 0.2817188376 * lin.g + 0.6299787005 * lin.b
+	l = pow(l, 1.0 / 3.0)
+	m = pow(m, 1.0 / 3.0)
+	s = pow(s, 1.0 / 3.0)
+	return Vector3(
+		0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+		1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+		0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+	)
 
 
 ## Opens `cid`'s Swell technique on `target` (&"": its default targets); returns the input.

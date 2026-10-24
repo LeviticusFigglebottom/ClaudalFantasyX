@@ -88,7 +88,7 @@ func refresh() -> void:
 	var rows: Array[Dictionary] = []
 	for e in _entries:
 		var row := {"id": e["id"], "label": e["name"], "right": model.count_text(e), "enabled": true}
-		row["right_role"] = &"focus" if bool(e["read"]) else &"text_dim"
+		row["right_role"] = &"text" if bool(e["read"]) else &"text_dim"  # focus means the cursor (M2-UI-08)
 		row["mp"] = "" if bool(e["read"]) else tr("BESTIARY_UNREAD_TAG")  # words, not hue alone
 		rows.append(row)
 	_list.replace_rows(rows)
