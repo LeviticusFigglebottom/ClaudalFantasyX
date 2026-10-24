@@ -1,6 +1,6 @@
 # Set-Piece Battles (scripted entries, objectives, party locks)
 
-Owner: Combat (M3-CMB-01). Decision: [ADR 0038](../decisions/0038-set-piece-battles-in-the-ctb.md). Design brief: [act1_ch08.md](../story/beats/act1_ch08.md) §5, §5a and §9 Combat. Code: `game/battle/battle_set_piece.gd` (`BattleSetPiece`), with hooks in `battle_engine.gd`, `boss_mechanics.gd`, `enemy_ai.gd` and `combatant.gd`. Simulator: `game/battle/sim/sim_ward_guard.gd`. Validator: `tools/validate_data.py` § Set-piece battles. Tests: `tests/unit/test_battle_set_piece.gd`, `test_battle_sim_ward_guard.gd`, `test_ch08_battles.gd`, `tools/tests/test_set_piece_validate.py`.
+Owner: Combat (M3-CMB-01). Decision: [ADR 0039](../decisions/0039-set-piece-battles-in-the-ctb.md). Design brief: [act1_ch08.md](../story/beats/act1_ch08.md) §5, §5a and §9 Combat. Code: `game/battle/battle_set_piece.gd` (`BattleSetPiece`), with hooks in `battle_engine.gd`, `boss_mechanics.gd`, `enemy_ai.gd` and `combatant.gd`. Simulator: `game/battle/sim/sim_ward_guard.gd`. Validator: `tools/validate_data.py` § Set-piece battles. Tests: `tests/unit/test_battle_set_piece.gd`, `test_battle_sim_ward_guard.gd`, `test_ch08_battles.gd`, `tools/tests/test_set_piece_validate.py`.
 
 A set piece is an ordinary CTB battle (SPEC §6.1: time stops while the player chooses) with a few extra rows of data. There's no real-time system and no per-fight code. This page is the schema for writing one, such as Ch8's waves in M3-C08-02.
 
