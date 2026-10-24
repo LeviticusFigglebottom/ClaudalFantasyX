@@ -7,18 +7,38 @@
 - **Blocker cleared (d523d43):** Toma's mouth/teeth/tongue are on `character_mouth`; the integration branch is merged;
   `--filter=character_shading` 17/17, hero_stage 6/6, post_import 19/19; `verify --job toma` 38 identical. Ready to merge.
   (send_message to the Lead was refused: "needs a trusted device", so this log is the channel.)
-- **M1-CHR-14 (top priority) is in progress:** braid attachment, clothing and staff clipping, limb seams, and automated guards.
-  - **Braid fixed and pushed:** the root is seated 4 mm off the scalp and ramps out to the full 24 mm clearance over the first
-    7 cm; scalp cards run to 12 mm from the root (they used to stop 3 cm short); scalp cards cut 138 → 122 so LOD0 stays at
-    63,440 tris. `verify --job asha` 44 identical. Rhen and Toma are not affected (own `_trace`, no `braid_spine`).
-  - **18 asha_* baselines re-approved after viewing.** RMSE: face_neutral .0311, face_smile .0316, face_grief .0314,
-    stylized_compare .0269, smile_variant .0270, sleeve_s0/s4 .0138, profile .0110, q34 .0108, clip_run .0107,
-    clip_face_west .0104, clip_walk .0103, front .0100, extreme_pose .0092, battle_idle .0078, clip_laugh .0077,
-    kneel .0075, offer_hand .0065. Includes CHR-10..13 drift (baselines last approved for RND-20), e.g. the wrist wrap
-    now shows after CHR-13's normal fix.
-  - **Next:** clothing and staff penetration across clip frames (under-trouser and foot poking through in walk and kneel),
-    limb seams, guards (subagent building `tools/dev/rig_probe.py`).
-- **M2-CHR-03 villagers:** the subagent finished (7 NPCs, 19 baselines); merging next, then a rebuild against CHR-13.
+- **M1-CHR-14 → review (reviewer: rendering). Ready to merge.** Handoff: 2026-10-24-character-8.md.
+  - **Braid (ddc5eb2):** seated on the scalp; scalp cards run to within 12 mm of the root; scalp_cards 122. Probe gap 1.9 mm, drift 0.
+  - **Guards:** `tools/dev/rig_probe.py`, `rig_checks.json`, `tools/tests/test_rig_integrity.py` (34 tests, passing). Docs: pipeline.md §16.
+  - **Asha (47b36c5):**
+    - Skirts follow the legs; the shins stay under the skirts, so there is no floating foot.
+    - Sandals ride the feet; the vest, bodice and collar ride the torso, with deeper armholes; the staff sits 1 cm out.
+    - LOD0 64,624 (target now 65k).
+  - **Toma (0e2f769):** the tunic armhole drops; the shield clears his head; the spear's offset, splay and binding are fixed; the spear clips are staggered.
+  - **Rhen:** clean in two new clip shots.
+  - **Probe, worst mm before → after:**
+    - Asha skin through cloth: 264 → 47 (armpit only).
+    - Asha exposed boundary: 51 vertices → 2.
+    - Asha staff: 6.7 → 0.
+    - Toma shield: 26 → 0.
+    - Toma spear: 27 → 15.
+    - What remains is linear-skinning limits, pinned per hero as ratchets in rig_checks.json.
+  - **Follow-up M1-CHR-15 (todo):** skirt and corrective bones. The deepest lunge still stretches Asha's tube skirts (asha_clip_offer_hand).
+  - **RMSE of the re-approved shots (all viewed side by side):**
+    - Braid round, 18 shots: face_neutral .0311, face_smile .0316, face_grief .0314, stylized_compare .0269, smile_variant .0270, sleeve_s0 .0138, sleeve_s4 .0138, profile .0110, q34 .0108, clip_run .0107, clip_face_west .0104, clip_walk .0103, front .0100, extreme_pose .0092, battle_idle .0078, clip_laugh .0077, kneel .0075, offer_hand .0065. This round includes the CHR-10 to 13 drift.
+    - Clipping round, 13 shots: offer_hand .0558, kneel .0453, laugh .0448, run .0309, extreme_pose .0221, walk .0188, stylized .0158, smile_variant .0158, battle_idle .0141, face_west .0120, sleeve_s0 .0100, sleeve_s4 .0100, q34 .0098.
+    - Toma: face_neutral .0212, face_smile .0212, back .0181, profile .0179, battle_idle .0132, front .0122, q34 .0098.
+    - New baselines: rhen_clip_take_hand, rhen_clip_kneel, toma_clip_walk, toma_clip_talk.
+- **M2-CHR-03 villagers → review:**
+  - Merged (6b39760) and rebuilt on the shared costume and mouth changes (8e57be6).
+  - 9 villager shots re-approved after viewing: osu_face .0222, child_face .0215, reed_face .0191, fisher_face .0145, neme_face .0134, reed_front .0120, vendor_face .0112, netmender_front .0103, lineup .0088.
+  - The capsule → actor scene table for m2-slice is in 2026-10-24-character-7.md.
+- **Gates run:**
+  - `verify --job asha`: 44 identical.
+  - Godot `hero_stage` 6/6, `post_import` 19/19.
+  - validate_data and taskboard: OK.
+  - `test_rig_integrity` 34 OK; `test_asha` OK.
+  - Still running: verify for rhen, toma and the villager jobs, and the full tools/tests run. The next entry records the result.
 
 ## Queue
 1. ~~M2-CHR-01 Rhen~~ (review) → 2. ~~M2-CHR-02 Toma~~ (review) → 3. ~~M2-FP-07 clips~~ (review) → 4. ~~M1-CHR-12~~ (review;
@@ -34,7 +54,6 @@
   shot, for the human with ADR 0019.
 - **M2-CHR-06 battle-scale heroes → review:** `game/characters/heroes/{asha,rhen,toma}_battle.tscn` (LOD1 + clips via the
   import rule). **Hook: M2-UI-07** (UI+Combat: FighterStandIn instances a `"scene"` spec).
-- M2-CHR-03 Haluna villagers: a worktree subagent is still building them.
 - **M2-CHR-02 Toma → review** (reviewer: rendering). Built by a worktree subagent, merged at this branch's Toma merge
   commit, then rebuilt for CHR-12's shared modules. 58,168 LOD0 tris (budget 66,000), `toma.glb` 4.86 MB (near the cap:
   each beard vertex carries all 40 morph targets), 16 textures; costume atlas 2K, not toma.md's 4K (5 MB cap).
