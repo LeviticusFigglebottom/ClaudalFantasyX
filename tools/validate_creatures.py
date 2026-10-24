@@ -20,7 +20,7 @@ SCENE_PREFIX = "res://game/creatures/"
 DEFAULT_KEYS = {"idle", "hit", "ko", "loop", "blend_sec", "clip_by_kind", "clip_by_skill", "ko_fade_sec",
                 "stand_in", "phases", "break_parts", "portrait", "contact", "hit_variants", "idle_variety"}
 ROW_KEYS = DEFAULT_KEYS | {"scene"}
-STAND_IN_KEYS = {"yaw_deg"}
+STAND_IN_KEYS = {"yaw_deg", "hover"}
 PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "show_after", "clips"}
 PART_KEYS = {"whole", "broken"}
 PORTRAIT_KEYS = {"clip", "clip_time", "yaw_deg", "pitch_deg", "fov_deg", "margin"}

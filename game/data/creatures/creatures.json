@@ -18,7 +18,7 @@
     "portrait": {"clip": "idle", "clip_time": 0.0, "yaw_deg": 30.0, "pitch_deg": 14.0, "fov_deg": 28.0, "margin": 0.85}
   },
   "creatures": {
-    "stormgull": {"scene": "res://game/creatures/stormgull/stormgull_battle.tscn", "contact": {"attack": 0.75}, "stand_in": {"yaw_deg": 60.0}, "portrait": {"yaw_deg": 60.0, "pitch_deg": 20.0}},
+    "stormgull": {"scene": "res://game/creatures/stormgull/stormgull_battle.tscn", "contact": {"attack": 0.75}, "stand_in": {"yaw_deg": 60.0, "hover": 1.05}, "portrait": {"yaw_deg": 60.0, "pitch_deg": 20.0}},
     "wallcrab": {"scene": "res://game/creatures/wallcrab/wallcrab_battle.tscn", "contact": {"attack": 0.5, "cast": 0.7}},
     "flue_moth": {"scene": "res://game/creatures/flue_moth/flue_moth_battle.tscn", "contact": {"attack": 0.5, "cast": 0.6}},
     "undertows_reach": {
@@ -36,13 +36,13 @@
     "vein_sparker": {"scene": "res://game/creatures/vein_sparker/vein_sparker_battle.tscn", "contact": {"attack": 0.42, "cast": 0.7}},
     "wall_polyp": {"scene": "res://game/creatures/wall_polyp/wall_polyp_battle.tscn", "contact": {"attack": 0.46, "cast": 0.6}},
     "wreck_crab": {"scene": "res://game/creatures/wreck_crab/wreck_crab_battle.tscn", "contact": {"attack": 0.5, "cast": 0.7}},
-    "squall_wing": {"scene": "res://game/creatures/squall_wing/squall_wing_battle.tscn", "contact": {"attack": 0.62}, "stand_in": {"yaw_deg": 60.0}},
+    "squall_wing": {"scene": "res://game/creatures/squall_wing/squall_wing_battle.tscn", "contact": {"attack": 0.62}, "stand_in": {"yaw_deg": 60.0, "hover": 1.2}},
     "tide_crawler": {"scene": "res://game/creatures/tide_crawler/tide_crawler_battle.tscn", "contact": {"attack": 0.55}},
     "raid_hound": {"scene": "res://game/creatures/raid_hound/raid_hound_battle.tscn", "contact": {"attack": 0.5}},
     "shoal_skipper": {"scene": "res://game/creatures/shoal_skipper/shoal_skipper_battle.tscn", "contact": {"attack": 0.5}},
     "cinder_matron": {"scene": "res://game/creatures/cinder_matron/cinder_matron_battle.tscn", "contact": {"attack": 0.85}, "phases": {"pour": {"clip": "phase_change", "idle": "idle", "hide": ["Crust"], "sec": 0.0}}},
     "slag_tortoise": {"scene": "res://game/creatures/slag_tortoise/slag_tortoise_battle.tscn", "contact": {"attack": 0.55}},
-    "ashwing": {"scene": "res://game/creatures/ashwing/ashwing_battle.tscn", "contact": {"attack": 0.6}},
+    "ashwing": {"scene": "res://game/creatures/ashwing/ashwing_battle.tscn", "stand_in": {"hover": 1.38}, "contact": {"attack": 0.6}},
     "scuttler": {"scene": "res://game/creatures/scuttler/scuttler_battle.tscn", "contact": {"attack": 0.45}},
     "spar_wraith": {
       "scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn", "contact": {"attack": 0.8, "attack_deck": 0.8},
@@ -52,7 +52,7 @@
                         "clips": {"attack": "attack_deck", "cast": "cast_deck", "hit": "hit_deck"}}
       }
     },
-    "sail_leech": {"scene": "res://game/creatures/sail_leech/sail_leech_battle.tscn", "contact": {"attack": 0.7}},
+    "sail_leech": {"scene": "res://game/creatures/sail_leech/sail_leech_battle.tscn", "stand_in": {"hover": 1.38}, "contact": {"attack": 0.7}},
     "bottle_hermit": {"scene": "res://game/creatures/bottle_hermit/bottle_hermit_battle.tscn", "contact": {"attack": 0.45}},
     "glassfry": {"scene": "res://game/creatures/glassfry/glassfry_battle.tscn", "contact": {"attack": 0.55}},
     "oil_slug": {"scene": "res://game/creatures/oil_slug/oil_slug_battle.tscn", "contact": {"attack": 0.55, "cast": 0.6}},
@@ -86,7 +86,7 @@
     },
     "gull_harrier": {
       "scene": "res://game/creatures/gull_harrier/gull_harrier_battle.tscn", "contact": {"attack": 0.75},
-      "stand_in": {"yaw_deg": 60.0},
+      "stand_in": {"yaw_deg": 60.0, "hover": 1.05},
       "portrait": {"yaw_deg": 60.0, "pitch_deg": 20.0}
     }
   }

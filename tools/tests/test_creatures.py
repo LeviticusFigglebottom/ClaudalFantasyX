@@ -140,6 +140,38 @@ class PipelineTest(unittest.TestCase):
             for m in mats:
                 self.assertTrue((ROOT / "assets/creatures" / cid / "materials" / f"{m}.tres").is_file(), (cid, m))
 
+    def test_a_ko_ends_on_the_ground(self) -> None:
+        """BPR-11 plays a foe's KO once and fades it where it lies, so the KO must end on the floor: a flier's KO drops
+        its root by its stand-in `hover` (and only a flier's drops far)."""
+        import struct  # noqa: PLC0415
+
+        import numpy as np  # noqa: PLC0415
+
+        sinks_by_design = {"hullgnaw": "it slides back down between the planks (hullgnaw.md)"}
+        defaults = _load(vc.CREATURES_FILE)["defaults"]
+        for cid, row in self.rows.items():
+            raw = (ROOT / "assets/creatures" / cid / f"{cid}.glb").read_bytes()
+            jl = struct.unpack_from("<I", raw, 12)[0]
+            js, bin_ = json.loads(raw[20:20 + jl]), raw[20 + jl + 8:]
+            root = next(i for i, n in enumerate(js["nodes"]) if n.get("name") == "root")
+            rest_y = js["nodes"][root].get("translation", [0.0, 0.0, 0.0])[1]
+            ko = next(a for a in js["animations"] if a["name"] == "ko")
+            dy = 0.0
+            for ch in ko["channels"]:
+                if ch["target"].get("node") == root and ch["target"]["path"] == "translation":
+                    acc = js["accessors"][ko["samplers"][ch["sampler"]]["output"]]
+                    bv = js["bufferViews"][acc["bufferView"]]
+                    off = bv.get("byteOffset", 0) + acc.get("byteOffset", 0)
+                    v = np.frombuffer(bin_, dtype=np.float32, count=acc["count"] * 3, offset=off).reshape(-1, 3)
+                    dy = float(v[-1, 1]) - rest_y
+            hover = float({**defaults["stand_in"], **row.get("stand_in", {})}.get("hover", 0.0))
+            if cid in sinks_by_design:
+                continue
+            if hover > 0.0:
+                self.assertAlmostEqual(-dy, hover, delta=0.05, msg=f"{cid}: a flier's KO lands on the floor")
+            else:
+                self.assertGreater(dy, -0.5, f"{cid}: a grounded creature's KO doesn't sink through the floor")
+
 
 if __name__ == "__main__":
     unittest.main()
