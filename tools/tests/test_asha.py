@@ -145,7 +145,9 @@ class TestCommittedAssets(unittest.TestCase):
             self.assertLessEqual(max(w, h), 2048, p.name)  # 2K face textures (ADR 0005, no LFS)
             imp = p.with_name(p.name + ".import")
             self.assertTrue(imp.exists(), imp.name)
-            self.assertIn("mipmaps/generate=true", imp.read_text(), imp.name)
+            # id maps are the exception: nearest-sampled, imported without mips (M1-CHR-08)
+            mips = "false" if p.name.endswith("_bandid.png") else "true"
+            self.assertIn(f"mipmaps/generate={mips}", imp.read_text(), imp.name)
         with Image.open(OUT / "textures" / "asha_head_albedo.png") as im:
             head = im.size
         self.assertEqual(head, (2048, 2048))
