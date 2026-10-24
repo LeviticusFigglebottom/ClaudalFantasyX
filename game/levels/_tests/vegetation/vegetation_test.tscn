@@ -75,7 +75,7 @@ shader = ExtResource("5_r")
 material = SubResource("sea_mat")
 size = Vector2(1200, 1200)
 
-[node name="VegetationTest" type="Node3D"]
+[node name="VegetationTest" type="Node3D" node_paths=PackedStringArray("sun_node")]
 script = ExtResource("1_r")
 sun_node = NodePath("Sun")
 
