@@ -3,6 +3,24 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **M3-C06-02 is merged** (Ch6 "Salt Edict"; in review: narrative for staging, combat for the bands). Handoff cinematics-17.
+  - **Act I now plays through as greybox:** prologue → Ch1 → the Haluna slice (Ch2–Ch3, with the causeway) → Ch4 → Ch5 → Ch6 → Ch7 (a stand-in match) → the end card.
+  - **Gaps in the line:**
+    - The slice's end card doesn't hand on to Ch4 yet (M3-C04-04). Ch4 is reached from its own location or F5.
+    - Ch7 → Ch8 → Ch9: Ch8 waits on combat's M3-CMB-01. Ch9 plays from its own zone.
+  - **Engine rules added** (game/battle, tested; coverage 99.96%):
+    - encounter `forbidden_skills` (per hero, against a foe tag): Toma won't strike the Stillguard;
+    - enemy `yield_at_hp_pct`: the Inquisitor yields, so nobody dies;
+    - encounter `victory_key`;
+    - the sim's lawful-skill fallback.
+    - Combat should review these (M3-C06-05).
+  - **Provisional rows:** Liss's characters.json row (placeholder gear), plus the Inquisitor and raid hound.
+- **Remaining M3 work for m2-slice:**
+  1. **Ch8**, once M3-CMB-01 lands.
+  2. **Ch7's real match** (the Reefball agent's seam).
+  3. **The slice end card → Ch4 hand-off** (M3-C04-04).
+  4. **The Lead's earlier item 6:** swapping the capsules for real characters, which waits on the characters track.
+  - **Playtest:** none of Act I has been played on a real GPU yet. A PC playthrough of the greybox chapters would catch flow and feel issues that headless tests can't.
 - **MERGE-READY @ the replay-uid commit after d034c31d.**
   - **Items:**
     - M3-C09-02 (Ch9, the end of Act I);
