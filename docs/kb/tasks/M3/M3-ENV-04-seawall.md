@@ -2,8 +2,8 @@
 id: M3-ENV-04
 title: Ch8 the Seawall: Corrow Bastion, the Fisher Stair and the Watchers (kit at final quality)
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: env-art worktree (agent-a37e7e1f20c6506a9)
 depends_on: [M2-ENV-06]
 milestone: M3
 request-from: lead
