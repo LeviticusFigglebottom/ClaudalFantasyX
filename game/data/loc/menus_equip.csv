@@ -22,9 +22,8 @@ EQUIP_MENU_TOOK_OFF_FMT,{hero} took off {name}. It stays in the pack.
 EQUIP_MENU_READY,Ready
 EQUIP_MENU_SHORT_FMT,{n} short
 EQUIP_MENU_NO_RECIPES,Nothing can be crafted into this piece yet.
-EQUIP_MENU_RECIPE_TITLE,The recipe
 EQUIP_MENU_RECIPE_PART_FMT,"{name}: {held} of {count} held"
-EQUIP_MENU_RECIPE_PART_SHORT_FMT,"{name}: {held} of {count} held, {short} short"
+EQUIP_MENU_RECIPE_PART_SHORT_FMT,"{name}: {held} of {count}, {short} short"
 EQUIP_MENU_CRAFT_LINE_FMT,Craft {ability} into {piece}. The items are spent and the ability stays for good.
 EQUIP_MENU_CRAFT_CONFIRM_FMT,Confirm again to craft {ability} into {piece}. It cannot be undone.
 EQUIP_MENU_CRAFTED_FMT,{ability} is now part of {piece}.
