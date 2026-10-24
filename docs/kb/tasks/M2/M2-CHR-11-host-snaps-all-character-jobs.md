@@ -20,7 +20,7 @@ The PC's Blender gate showed 10 diffs on its AVX2 host for base_body, rhen, toma
 ## Acceptance criteria
 - [ ] rhen and toma opted in (carried by M1-CHR-15, which rebuilds them anyway).
 - [ ] base_body and the seven M2 villagers opted in. Tavi and Kell already are, through their params.
-- [ ]  identical for every character job, both natively and with NPY_DISABLE_CPU_FEATURES="X86_V3 X86_V4" (the AVX2-only numpy paths).
+- [ ] `verify_blender_builds.py` identical for every character job, both natively and with NPY_DISABLE_CPU_FEATURES="X86_V3 X86_V4" (the AVX2-only numpy paths).
 - [ ] Changed shots viewed. The changes should be invisible, at RMSE ~1e-4.
 
 ## Notes
