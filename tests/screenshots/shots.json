@@ -1079,7 +1079,7 @@
     },
     {
       "id": "field_objective_line",
-      "scene": "res://game/ui/objectives/shots/field_objective_line.tscn",
+      "scene": "res://game/levels/_tests/ui_shots/field_objective_line.tscn",
       "camera": "Haluna/Cameras/H02",
       "resolution": [
         960,
@@ -1138,7 +1138,7 @@
     },
     {
       "id": "field_interact_prompt",
-      "scene": "res://game/ui/field/shots/field_interact_prompt.tscn",
+      "scene": "res://game/levels/_tests/ui_shots/field_interact_prompt.tscn",
       "camera": "Haluna/Cameras/H02",
       "resolution": [
         960,
