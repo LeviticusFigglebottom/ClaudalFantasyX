@@ -1200,6 +1200,44 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "ou_u04_lamp_gallery",
+      "scene": "res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_preview.tscn",
+      "camera": "Cameras/U04",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ou_u12_terrace",
+      "scene": "res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_preview.tscn",
+      "camera": "Cameras/U12",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
