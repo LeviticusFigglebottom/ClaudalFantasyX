@@ -229,3 +229,60 @@ func _peak_aa(emotion: StringName) -> float:
 		lip.advance(DT)
 		peak = maxf(peak, float(lip.weights().get(&"vis_aa", 0.0)))
 	return peak
+
+
+# --- the reveal's punctuation pauses (M2-UI-27) -----------------------------------------------
+
+
+func test_the_mouth_rests_while_the_reveal_lingers_at_a_comma() -> void:
+	var box := (load(BOX_SCENE) as PackedScene).instantiate() as DialogueBox
+	box.settings = DialogueTextSettings.load_default()
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(box)
+	box.set_process(false)
+	var text := "Mama, wait."
+	box.show_text(&"", StringName(text))
+	var cps := box.settings.chars_per_sec
+	var times := box.reveal_times()
+	var comma := text.find(",")
+	var pause := box.settings.pause_after(text, comma)
+	assert_true(pause > 0.1, "the box lingers at the comma")
+	var lip := LipSync.new(cfg)
+	lip.start(text, cps, &"", 1, times)
+	var lead := float(cfg.get("lead_s", 0.0))
+	assert_between(
+		lip.speech_end_s(),
+		times[times.size() - 1] + lead - EPS,
+		times[times.size() - 1] + lead + EPS,
+		"ends with the box"
+	)
+	var mid := times[comma] + pause * 0.5 + lead
+	var speaking := _peak(_said(text, cps, times), lead + 0.5 / cps, times[comma - 1] + lead)
+	var resting := _peak(_said(text, cps, times), mid - pause * 0.15, mid + pause * 0.15)
+	assert_true(speaking > 0.3, "the mouth opens on Mama (%.2f)" % speaking)
+	assert_true(resting < speaking * 0.35, "and is near rest mid-pause (%.2f vs %.2f)" % [resting, speaking])
+	var even := LipSync.new(cfg)
+	even.start(text, cps, &"", 1)
+	assert_true(even.speech_end_s() < lip.speech_end_s(), "without the times it would finish early, out of step")
+	box.free()
+
+
+func _said(text: String, cps: float, times: PackedFloat64Array) -> LipSync:
+	var l := LipSync.new(cfg)
+	l.start(text, cps, &"", 1, times)
+	return l
+
+
+## The largest weight of any shape between `from` and `to` (s), stepping the lip sync at DT.
+func _peak(lip: LipSync, from: float, to: float) -> float:
+	var best := 0.0
+	var t := lip.time_s()
+	while t < from:
+		lip.advance(DT)
+		t = lip.time_s()
+	while t <= to:
+		for v: Variant in lip.weights().values():
+			best = maxf(best, float(v))
+		lip.advance(DT)
+		t = lip.time_s()
+	return best

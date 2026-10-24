@@ -11,6 +11,27 @@ extends RefCounted
 
 ## The index in ctl.candidate_ids() of the candidate under a mouse motion or a left press, or -1
 ## (no candidate there, or not such an event). Overlapping boxes go to the one centred nearest.
+## The target pick's input (moved here from BattleController, which is at its line cap): hovering a
+## fighter or its party row aims at it, Left / Up and Right / Down step the aim, Confirm (or a click
+## on a candidate) chooses, Cancel backs out. `aim` is the controller's current target index.
+## Returns true when the event was used.
+static func handle_pick(ctl: BattleController, event: InputEvent, aim: int) -> bool:
+	var hit := candidate_at(ctl, event)
+	if hit >= 0 and hit != aim:
+		ctl._cycle_target(hit - aim)
+	if event.is_action_pressed(&"ui_left", true) or event.is_action_pressed(&"ui_up", true):
+		ctl._cycle_target(-1)
+	elif event.is_action_pressed(&"ui_right", true) or event.is_action_pressed(&"ui_down", true):
+		ctl._cycle_target(1)
+	elif event.is_action_pressed(&"ui_accept") or (hit >= 0 and is_click(event)):
+		ctl._confirm_pick()
+	elif event.is_action_pressed(&"ui_cancel"):
+		ctl._cancel_pick()
+	else:
+		return hit >= 0
+	return true
+
+
 static func candidate_at(ctl: BattleController, event: InputEvent) -> int:
 	if not (event is InputEventMouseMotion or is_click(event)):
 		return -1
@@ -24,16 +45,6 @@ static func candidate_at(ctl: BattleController, event: InputEvent) -> int:
 				best = i
 				best_d = r.get_center().distance_squared_to(at)
 	return best
-
-
-## Aims the pick at the candidate under the pointer (candidate_at): when it is not `current`, calls
-## `cycle` with the step from `current` to it. Returns the candidate's index, or -1. Kept here so
-## BattleController stays under gdlint's line cap.
-static func aim(ctl: BattleController, event: InputEvent, current: int, cycle: Callable) -> int:
-	var hit := candidate_at(ctl, event)
-	if hit >= 0 and hit != current:
-		cycle.call(hit - current)
-	return hit
 
 
 ## True for a left mouse button press.

@@ -24,7 +24,7 @@ Owner: UI/UX + Combat (M1-UI-01, M1-CMB-01, M1-UI-02). Art rules: [`docs/kb/art/
 | `game/ui/bestiary/` | `BestiaryMenu` (+ `bestiary_menu.tscn`), `BestiaryMenuModel`, and the `bestiary_menu` capture driver (`BestiaryShot`, `shots/`). Layout: `game/data/ui/bestiary_menu.json` (M2-UI-02). |
 | `game/ui/field_menu/` | `FieldMenu` (+ `field_menu.tscn`), `FieldMenuModel`, and the `field_menu` / `field_menu_swell_modes` capture driver (`FieldMenuShot`, `shots/`). Layout: `game/data/ui/field_menu.json` (M2-UI-04). |
 | `game/ui/shop/` | `ShopMenu` / `ShopMenuModel`, `InnMenu` / `InnMenuModel`, their shared base `TownMenu`, the zone-agnostic `TownServices` hook, and the `shop_menu_buy` / `shop_menu_sell` / `inn_menu` capture driver (`TownMenuShot`, `shots/`). Layout: `game/data/ui/shop_menu.json` (M2-UI-06). |
-| `game/ui/map/` | `ZoneMapMenu` (+ `zone_map_menu.tscn`), `ZoneMapView`, `RouteStrip`, `MapGlyphs`, the node-free `MapModel` and `ZoneMapShapes`, and the `field_menu_map_haluna` / `field_menu_map_shrine` capture driver (`ZoneMapShot`, `shots/`). Layout: `game/data/ui/zone_map_menu.json`; zones and places: `game/data/ui/zone_maps.json` (M2-UI-18). |
+| `game/ui/map/` | `ZoneMapMenu` (+ `zone_map_menu.tscn`), `ZoneMapView`, `RouteStrip`, `MapGlyphs`, the node-free `MapModel` and `ZoneMapShapes`, and the `field_menu_map_haluna` / `field_menu_map_shrine` / `field_menu_map_underway` capture driver (`ZoneMapShot`, `shots/`). Layout: `game/data/ui/zone_map_menu.json`; zones and places: `game/data/ui/zone_maps.json` (M2-UI-18). |
 
 ## Theme
 
@@ -334,6 +334,24 @@ The human's top priority for the playable intro: a map, so the player knows wher
 - **Input.** Up and Down move through the places; the map rings the chosen one and the line under it follows. Confirm does nothing, and Cancel goes back to the field menu. Mouse: hovering a legend row or a glyph on the map chooses it, a click chooses it, and the wheel steps.
 - **Captures:** `field_menu_map_haluna` is Haluna after supper at Neme's: the objective is the save shrine, the player stands just up from the beach facing inland, and the cursor is on the shrine. `field_menu_map_shrine` is the trial: the objective is the inner pool, the player is by the entrance facing in, and the side pool is drained, so its errand is listed. Both come from `ZoneMapShot`, which goes through the field menu's Map row with fixed flags. `field_menu` and `field_menu_swell_modes` were re-approved for the fifth root row. `FieldMenuShot` gives its model a Haluna map, so the row shows on as it does there in play.
 - **Tests:** `tests/unit/test_zone_map.gd` covers the transform, compass words and facing, place order and names, the objective and errands, the line under the map, the route, the Haluna and shrine shapes (including a footprint against `Basis(UP, yaw)`), the markers in the view, the Map row (open, move, cancel, mouse, off with its tag) and the live model. `tools/tests/test_zone_map_pois.py` (M2-UI-16) keeps each place's `at` on its node or layout point. `test_field_menu.gd` counts five root rows, and `test_settings_menu.gd` walks down to Settings past a row that is off.
+- **Act I greybox zones (M3-UI-04).** These are mapped:
+  - Ch1's Underway and Oruvel;
+  - Ch4's Haluna wake and Brightwater ferry;
+  - Ch5's Pemakar and Ashcrown;
+  - Ch7's Tamsule and Bell galleries;
+  - Ch9's Corrow night.
+
+  How it works:
+  - **Shapes.** Their `shape_kind` is `greybox_layout`: `ZoneMapShapes.greybox_layer` reads each block of the zone's layout, turned by its yaw as GreyboxZone builds it.
+    - A block whose top is at most `floor_top_m` is a floor, or a pad when not solid.
+    - A solid block is left off when it starts at `overhead_m` or higher, or is no wider than `post_max_m`.
+    - Any other solid block is a structure when it is at most `wall_thick_m` across, and a building otherwise.
+    - Other non-solid blocks (lamps, sails, glows) are left off.
+
+    The thresholds are in `zone_map_menu.json` `greybox`. The zone's `shape_hints` name blocks by layer where height alone reads them wrong: `sea` (the new `seas` layer, open water drawn under everything), `water`, `floors`, `pads`, `buildings`, `structures` and `skip`.
+  - **POI sources.** A greybox scene is only its root, so POI sources name layout points: `spawn:`, `trigger:`, `actor:` or `mark:`. `test_zone_map_pois.py` checks them, and that every hint names a block that still exists.
+  - **The route.** It runs the whole act (12 stops). `RouteStrip` shows two stops either side of the current one (route `before` / `after`), in a rect widened to fit five names.
+  - **Shot:** `field_menu_map_underway` shows the Underway after the glassfry shoal: the objective is the stairwell lip, and the hinge is listed as an errand.
 - **Left as they are:** the causeway has no map of its own yet (a route stop only). The map does not zoom or pan: Haluna's bounds fit at about 2.8 px/m at 1080p, and its houses read as blocks. The glyph shapes' proportions live in `MapGlyphs` (they are the drawing), while their sizes are data.
 
 ## Known gaps
@@ -351,6 +369,7 @@ The human's top priority for the slice: the player always knows the next step. A
   - A row applies when every `requires` flag is set and its `until` flag is not. A row with a `zone` applies only in that zone, and never in a scene with no map, so test zones and shot scenes show nothing.
   - The main objective is the first main row that applies; `side` rows are optional errands.
   - First pass by UI for B01–B11. m2-slice keeps the rows current (M2-FP-28).
+  - **Act I (M3-UI-04):** 39 rows walk the main beats of Ch1, Ch4, Ch5, Ch7 and Ch9 on each chapter's own flags. Each row is zoned to its greybox zone and targets a POI there. Gaps (no flag between some beats, per-tier trial flags, Ch6 and Ch8) are listed in `docs/kb/tasks/M3/M3-UI-04-act1-area-maps.md`.
   - `validate_data.py` (`check_objectives`) checks that flags are declared, loc keys exist, and zones and targets resolve.
 - **Places.** `game/data/ui/zone_maps.json` (`ZoneMaps`) lists the zones (scene, name, map bounds, shape source) and the pilgrimage route. Each point of interest has a world `at` and a `source` (a node in the zone scene, or a point in the trial layout). `tools/tests/test_zone_map_pois.py` fails when a point drifts from its source.
 - **`ObjectiveTracker`** (game/ui/objectives/) is node-free. `current(zone)`, `side(zone)`, `line(zone)` and `target(zone)` read flags through a callable: `Game.get_flag` in play, a scratch set in tests.
@@ -409,6 +428,7 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
 - **`summon_cinematic`** (Full, Short, Off; default Short) sets the cut of a Vowbound's call cinematic (SPEC §6.3: full on first use, then shortened, with a skip toggle). `UiSettings.summon_cinematic_cut(first_call)` returns `CUT_FULL`, `CUT_SHORT` (skip the middle beats) or `CUT_NONE` (straight to the effect), from `accessibility.json` `summon_cinematics`. Short plays the first call of each Vowbound in full and later calls short. Full is always full, and Off always skips.
   - **The call cinematic is M2-BPR-08 (C10, on claude/battle-presentation),** which reads `summon_cinematic` with the same row and loc text: Short plays it in full on the first call (per-save flag `ch03_ilun_first_call_seen`) and shortened after, Full plays it every time, and Off goes straight to the arrival. **At merge,** keep one copy of the `summon_cinematic` row and keys and of the six `SET_BATTLE_SPEED*` rows, and keep their `battle_animations` row.
   - **No call cinematic exists yet.** Today a call re-seats the stage at once (`BattleVowboundHud._reseat`). The cinematic belongs to battle presentation (M2-BPR-04's "Vowbound call", then C10 for Ilun). It must ask `summon_cinematic_cut()` with whether this is that Vowbound's first call, and the first-call record is its own. Request task: **M2-BPR-09** (filed as M2-BPR-07, renumbered at the big7 merge; wired there: `BattleSummonCinematic.wants_full` asks `summon_cinematic_cut`).
+
 - **Tests:** `test_accessibility_battle_speed.gd`. **Shot:** `settings_accessibility` (the page grows by two rows).
 
 ## Dialogue assist: continue glyph, backlog, auto-advance (M2-UI-25)
@@ -470,6 +490,15 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
 - **Lip sync and anything else that follows the reveal** reads `DialogueBox.time_of_char(i)` and `reveal_duration()`.
 - **Text speed:** `DialogueAssist` applies the player's text speed to the box (instant sets `chars_per_sec` to 0; it follows changes). Instant and fast-forward skip every pause.
 - **Tests:** `test_dialogue_reveal_pauses.gd`.
+
+## Subtitles and speaker names (M2-UI-30)
+
+- **`SubtitleStyle`** (game/ui/dialogue_assist/, applied by DialogueAssist) makes every DialogueBox follow UiSettings:
+  - the speaker's name takes HeaderLabel and the line BodyLabel (or the sung variation) at the scaled size;
+  - the name takes `name_role` (gold) and the line `body_role` (text);
+  - a `panel_low` backing at the "Subtitle backing" alpha sits inside the panel, behind the text.
+- **No per-hero name colours:** the palette has no four that stay apart for every colour vision (see M2-UI-30). `speaker_roles` can add some once Art adds swatches.
+- **Tests:** `test_subtitles.gd`: theme sizes at 100/115/130%, nothing cut, the backing alpha, and the CVD distance and contrast of the roles in use. The colour maths is in `tests/color_vision.gd`.
 
 ## Audio settings page (M3-UI-02)
 

@@ -20,6 +20,8 @@ const ACTION := &"dialogue_backlog"
 ## The box's panel, whose bottom-right corner the glyph sits in (the whole box when missing).
 const PANEL_PATH := ^"Panel"
 
+## The box's subtitle look: text size, name and line colours, backing (M2-UI-30).
+var subtitles: SubtitleStyle
 var box: DialogueBox
 var backlog: DialogueBacklog
 ## The open backlog page (null when closed).
@@ -80,6 +82,8 @@ func _ready() -> void:
 	if box != null:
 		_base_cps = box.settings.chars_per_sec
 		apply_text_speed()
+		subtitles = SubtitleStyle.new(box, _d.get("subtitles", {}) as Dictionary)
+		subtitles.attach()  # first: its follow() re-themes the box before _on_setting_changed restyles it
 		UiSettings.shared().changed.connect(_on_setting_changed)
 		box.reveal_finished.connect(_on_reveal_finished)
 		box.advance_requested.connect(_on_advance_requested)
@@ -100,8 +104,11 @@ func apply_text_speed() -> void:
 
 
 func _on_setting_changed(key: StringName, _value: Variant = null) -> void:
-	if key == UiSettings.TEXT_SPEED and box != null:
+	if box == null:
+		return
+	if key == UiSettings.TEXT_SPEED:
 		apply_text_speed()
+	subtitles.apply()
 
 
 func _exit_tree() -> void:
@@ -123,6 +130,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func step(delta: float) -> void:
 	if box == null:
 		return
+	subtitles.poll()
 	if _waiting and box.is_revealing():
 		_waiting = false  # a new line started
 	var shown := glyph_shown()

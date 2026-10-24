@@ -147,11 +147,6 @@ HUD_RESULT_RETRY,Fight again
 HUD_RESULT_RETURN,Return
 HUD_TARGET_UNREAD,HP unknown until Read
 HUD_RESULT_FELL,Fell before the end: no XP
-HUD_RESULT_LUME,Lume
-HUD_RESULT_LUME_FMT,+{n} lume
-HUD_RESULT_PURSE_FMT,purse {n} lume
-HUD_RESULT_DROP_FMT,×{n}
-HUD_RESULT_BAG_FULL,"bag full, left behind"
 SAVE_MENU_TITLE_SAVE,Record the Journey
 SAVE_MENU_TITLE_LOAD,Continue a Journey
 SAVE_SHRINE_PROMPT,Rest at the shrine
@@ -623,6 +618,7 @@ HUD_FAIL_VOWBOUND_FALLEN,That Vowbound has fallen and cannot answer again this b
 HUD_FAIL_NO_VOWBOUND,No Vowbound is on the field.
 
 BOOT_FIRST_RUN_NOTE,Preparing the graphics for first use. This happens only once.
+
 HUD_SWELL_CHANT_HINT,Directions: each note on the line · Cancel: back
 HUD_SWELL_CHANT_HINT_LOCKED,Directions: each note on the line
 HUD_SWELL_BRACE_HINT,Hold Confirm · let go on the counter · Cancel: back
@@ -868,6 +864,11 @@ BACKLOG_EMPTY,Nothing has been said yet.
 SHOP_MENU_COUNT_FMT,×{n}
 SET_MENU_AUDIO,Audio
 SET_MENU_HELP_AUDIO,"Music, effects and voice volume."
+HUD_RESULT_LUME,Lume
+HUD_RESULT_LUME_FMT,+{n} lume
+HUD_RESULT_PURSE_FMT,purse {n} lume
+HUD_RESULT_DROP_FMT,×{n}
+HUD_RESULT_BAG_FULL,"bag full, left behind"
 HUD_TL_NEXT,Next
 SET_BATTLE_ANIMATIONS,Battle animations
 SET_BATTLE_ANIMATIONS_HELP,"Full plays each action with movement and camera framing; Skip lands every action at once on a still camera."
@@ -896,3 +897,120 @@ SET_VOLUME_70,70%
 SET_VOLUME_80,80%
 SET_VOLUME_90,90%
 SET_VOLUME_100,100%
+
+OBJ_U_CROWN_TETHER,Take the crown's tether down to the first bell-room.
+OBJ_U_BELL_TETHER,Follow the bell-room's tether down into the lamp galleries.
+OBJ_U_GALLERIES,"Work down the galleries to the stairwell, shutter open."
+OBJ_U_GAUGE_ROOM,Find the gauge room past the stairwell.
+OBJ_U_GAUGE_WHEEL,Cut the brass gauge wheel loose. It is the job you came down for.
+OBJ_U_CURRENT_SHAFT,Ride the current shaft up to the light.
+OBJ_U_SIDE_HINGE,The brass hinge by the bell-room door is worth cutting.
+OBJ_O_KELL,Call in at Mother Kell's chandlery on the second mooring.
+OBJ_O_DIVE_MOORING,Go out to the dive mooring for the next dive.
+OBJ_O_LOW_RUN,Run for the net-pen. The little ones are there.
+OBJ_O_LASHINGS,Cut the lashings that pin the low hull across the run.
+OBJ_O_NET_PEN,Reach the children at the net-pen.
+OBJ_O_HOLD_NET_PEN,Hold the net-pen until the children are across.
+OBJ_W_NEME_TABLE,Go up the lane to the wake. Neme has kept you a place at her table.
+OBJ_W_WALL,Go up to the wake-shell wall with Asha.
+OBJ_W_SLEEP,Go home to Neme's and sleep. The ferry leaves at first light.
+OBJ_W_SIDE_INK,A lamp still burns at the wake-shell wall.
+OBJ_F_BOW,Go forward to the bow.
+OBJ_F_GALLEY,"Search the Seventh Terrace, stern to bow."
+OBJ_F_HOLD,Go on forward past the hold hatch.
+OBJ_F_MAINMAST,"Go forward to the mainmast, under her set sails."
+OBJ_P_CROWN_BELL,Climb up through the town to the crown bell. Tonight is Lanternfall.
+OBJ_P_HARBOUR_ROAD,Walk down to the harbour road in the first light.
+OBJ_P_SIDE_SMITH,The smith in the forge lane has a question for someone.
+OBJ_A_CROWN,Climb the pilgrim stair to the crown.
+OBJ_A_TRIAL,"Catch the strike at a tier's rod and lead it down, tier by tier, to the anvil-stone."
+OBJ_A_ANVIL_COURT,Go down to the anvil court at the mountain's foot.
+OBJ_A_SIDE_QUENCH,The sealed vein has opened an alcove off the third tier.
+OBJ_T_MARKET_BOATS,Cross the floating market to the boats by the gantry.
+OBJ_T_GANTRY,Go up the gantry to the Bell's galleries.
+OBJ_T_HARBOUR,The coastal trader waits at the harbour.
+OBJ_G_RIM,Take your place on the catch-pool's rim.
+OBJ_G_TO_PORT,Go back down to the port.
+OBJ_G_SIDE_MOORINGS,Oruvel's moorings stand empty under the Bell's skirt.
+OBJ_C_LANDING,Walk the strand among the drowned. Go down to the landing when you are ready.
+OBJ_C_ROAD,Take the coast road out from the landward gate.
+OBJ_C_SIDE_TOMA,Toma keeps a vigil at the end of the Stillguard row.
+OBJ_C_SIDE_LISS,"Liss keeps apart, up on the wall-head walk."
+MAP_ROUTE_UNDERWAY,The Underway
+MAP_ROUTE_ORUVEL,Oruvel
+MAP_ROUTE_HALUNA_WAKE,The Wake
+MAP_ROUTE_BRIGHTWATER,Brightwater
+MAP_ROUTE_PEMAKAR,Pemakar
+MAP_ROUTE_ASHCROWN,Ashcrown
+MAP_ROUTE_TAMSULE,Tamsule
+MAP_ROUTE_BELL_GALLERIES,The Bell
+MAP_ROUTE_CORROW,Corrow
+MAP_POI_U_DROP,The drop
+MAP_POI_U_CROWN_TETHER,The crown's tether
+MAP_POI_U_BELL_ROOM,The first bell-room
+MAP_POI_U_HINGE,The bell-room door
+MAP_POI_U_BELL_TETHER,The bell-room's tether
+MAP_POI_U_GALLERIES,The lamp galleries
+MAP_POI_U_BELL_ROOM_2,The second bell-room
+MAP_POI_U_STAIR_LIP,The stairwell lip
+MAP_POI_U_GAUGE_ROOM,The gauge room
+MAP_POI_U_GAUGE_WHEEL,The gauge wheel
+MAP_POI_U_CURRENT_SHAFT,The current shaft
+MAP_POI_O_SCALE_HULL,The scale-hull
+MAP_POI_O_COOKBOATS,The cookboats
+MAP_POI_O_NET_LANES,The net lanes
+MAP_POI_O_OUTER_MOORING,The outer mooring
+MAP_POI_O_KEEL_HULL,The keel-hull
+MAP_POI_O_KELL,Kell's chandlery
+MAP_POI_O_DIVE_MOORING,The dive mooring
+MAP_POI_O_LOW_RUN,The low run
+MAP_POI_O_LASHING_WEST,The west lashing
+MAP_POI_O_LASHING_EAST,The east lashing
+MAP_POI_O_NET_PEN,The net-pen
+MAP_POI_W_LANE,The lane
+MAP_POI_W_INN,The Mooring Lamp (closed)
+MAP_POI_W_FEAST,The feast tables
+MAP_POI_W_NEME_TABLE,Neme's table
+MAP_POI_W_WALL,The wake-shell wall
+MAP_POI_F_LANDING,The seaward landing
+MAP_POI_F_FERRYMASTER,The wheel
+MAP_POI_F_SHRINE,The deckhouse shrine
+MAP_POI_F_PURSER,The purser
+MAP_POI_F_BOW,The bow
+MAP_POI_F_DERELICT_STERN,The derelict's stern
+MAP_POI_F_GALLEY,The galley
+MAP_POI_F_HOLD,The hold hatch
+MAP_POI_F_MAINMAST,The mainmast
+MAP_POI_P_HARBOUR,The harbour
+MAP_POI_P_WEIR,The sea-cut weir
+MAP_POI_P_MARKET,The market terraces
+MAP_POI_P_FORGE,The forge lane
+MAP_POI_P_INN,The inn
+MAP_POI_P_GRAVES,The grave terraces
+MAP_POI_P_CROWN_BELL,The crown bell
+MAP_POI_A_STAIR_FOOT,The stair's foot
+MAP_POI_A_GRAVE_TIER,The grave tier
+MAP_POI_A_COPPER_TIER,The copper tier
+MAP_POI_A_CROWN,The crown pavilion
+MAP_POI_A_TIER_1,First tier: the crown
+MAP_POI_A_TIER_2,Second tier
+MAP_POI_A_TIER_3,Third tier
+MAP_POI_A_TIER_4,Fourth tier
+MAP_POI_A_QUENCH,The quench-trough alcove
+MAP_POI_A_ANVIL_COURT,The anvil court
+MAP_POI_T_RIVER_MOUTH,The river-mouth quay
+MAP_POI_T_MARKET,The floating market
+MAP_POI_T_STILT_LANE,The stilt lane
+MAP_POI_T_GANTRY_FOOT,The gantry foot
+MAP_POI_T_MARKET_BOATS,The market boats
+MAP_POI_T_HARBOUR,The harbour
+MAP_POI_G_GALLERY,The third gallery
+MAP_POI_G_RIM,The catch-pool rim
+MAP_POI_G_MOORINGS,The river moorings
+MAP_POI_G_TO_PORT,The way down to the port
+MAP_POI_C_STRAND,The strand
+MAP_POI_C_WALL_HEAD,The wall-head walk
+MAP_POI_C_STILLGUARD_ROW,The Stillguard row
+MAP_POI_C_LANDING,The raft's landing
+MAP_POI_C_GATE,The landward gate
+MAP_POI_C_MILESTONE,The milestone

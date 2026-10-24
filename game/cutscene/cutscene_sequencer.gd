@@ -347,7 +347,8 @@ func _line(step: DialogueStep) -> void:
 		_speaking = rig
 		if rig != null:
 			var cps := overlay.box.settings.chars_per_sec if overlay.box.settings != null else 0.0
-			rig.say(tr(String(step.text_key)), 0.0 if _fast() else cps, hash(step.text_key))
+			# The box's reveal times (M2-UI-27): the mouth rests while the reveal lingers at punctuation.
+			rig.say(tr(String(step.text_key)), 0.0 if _fast() else cps, hash(step.text_key), overlay.box.reveal_times())
 	if _fast():
 		overlay.box.skip_reveal()
 		return
