@@ -200,6 +200,9 @@ def hook_errors(name: str, doc: object, ids: set[str], vfx_effects: set[str]) ->
         for eid in vfx_effects:
             if eid not in (doc.get("vfx") or {}):
                 errs.append(f"{name} vfx: effect {eid} has no sound")
+        for sid in (doc.get("reduced") or {}):
+            if sid not in ids:
+                errs.append(f"{name} reduced.{sid}: {sid} is not an sfx.json row")
     return errs
 
 
