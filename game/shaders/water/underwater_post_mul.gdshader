@@ -16,9 +16,10 @@ void fragment() {
 	vec3 rd;
 	float depth_m;
 	float meniscus;
+	float cover;
 	bool under = underwater_ray(
-			SCREEN_UV, INV_PROJECTION_MATRIX, INV_VIEW_MATRIX, CAMERA_POSITION_WORLD, path_m, rd, depth_m, meniscus);
-	vec3 tr = under ? underwater_transmittance(path_m) : vec3(1.0);
-	// The meniscus: a thin dark band where the lens crosses the surface.
+			SCREEN_UV, INV_PROJECTION_MATRIX, INV_VIEW_MATRIX, CAMERA_POSITION_WORLD, path_m, rd, depth_m, meniscus, cover);
+	vec3 tr = under ? mix(vec3(1.0), underwater_transmittance(path_m), cover) : vec3(1.0);
+	// The meniscus: a thin dark line where the lens crosses the surface.
 	ALBEDO = tr * (1.0 - 0.45 * meniscus);
 }

@@ -16,8 +16,10 @@ void fragment() {
 	vec3 rd;
 	float depth_m;
 	float meniscus;
+	float cover;
 	bool under = underwater_ray(
-			SCREEN_UV, INV_PROJECTION_MATRIX, INV_VIEW_MATRIX, CAMERA_POSITION_WORLD, path_m, rd, depth_m, meniscus);
+			SCREEN_UV, INV_PROJECTION_MATRIX, INV_VIEW_MATRIX, CAMERA_POSITION_WORLD, path_m, rd, depth_m, meniscus, cover);
 	vec3 tr = under ? underwater_transmittance(path_m) : vec3(1.0);
-	ALBEDO = under ? underwater_inscatter(tr, rd, depth_m) : vec3(0.0);
+	vec3 lens = CAMERA_POSITION_WORLD + rd * lens_m;
+	ALBEDO = under ? (underwater_inscatter(tr, rd, depth_m) + underwater_lamp_halo(lens, rd, path_m)) * cover : vec3(0.0);
 }

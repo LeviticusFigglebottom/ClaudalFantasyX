@@ -6,7 +6,7 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 > **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
 > session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
-> **This copy, on `gpu/hero-materials-resident`, is the newest.**
+> **This copy, on `gpu/m2-rnd-09-underwater-art`, is the newest.**
 
 ## PC setup for a new session
 
@@ -115,6 +115,7 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/m2-rnd-09-underwater-art | **M2-RND-09 in review** (reviewer Art/character) | Underwater Art fixes: lagoon swatches + night_sea look, TIR off sea_glow, night sea-glow in the column (on/off 2.2×), the lantern halo moved into the post (warm: h 72-75°, 0 green px), glimmer compensation (and the field's own absorption off underwater), the waterline camera and an antialiased meniscus. Lavapipe drift: underwater_below/window/waterline. |
 | gpu/rnd-29-headless-fix | **gate fix, ready** (Lead-urgent) | CI boot smoke (headless, fresh user://, --quit-after 60) was 225 resources still in use: headless ran the first-launch warm-up every boot, and residents sat in a static. Now headless skips it and residents live on a ShaderPrewarmResident root node. Smoke: 0 ERROR lines × 5, also merged into gpu/hero-materials-resident (conflicts resolved there, 1452/0). |
 | gpu/hero-materials-resident | **ready to merge after RND-29** (Lead-approved) | Asha's 11 materials resident from boot, per preset via `resident_presets` (ShaderPrewarm.entry_resident). Haluna's entry High 2.9-3.0 → 2.1-2.3 s; Low 3.5-3.6 → 2.3-2.8 s (so resident on Low too); ~245 MB texture memory (Low 285 vs 39). Now merged with the gate fix (conflicts resolved). |
 | gpu/godot-472-port-check | **done** (owner's direction: ship on the latest Godot) | 4.7.2 port check in a throwaway worktree (`C:/Users/Aaron/hymn_472`, not committed): imports, 1449/0 tests, GPU costs within 2 %. Haluna root-caused: no 4.7 regression (cache states differed); holding Asha's materials resident (`gpu/hero-materials-resident`) cuts Haluna's entry to 2.1-2.3 s on both engines. First run on a new engine is fully cold; re-measure with 4.7.2 templates + baker. Report: `docs/kb/qa/gpu/2026-10-24-godot-472-port-check.md` |
@@ -202,3 +203,12 @@ None of it is needed: everything quoted in the reports can be reproduced from th
   2× capture that shows the two defects above), `rnd15`, `rnd17`, `rnd18`, `qa05b` and `env03`, plus the old
   session's scratchpad (temporary).
 - **`stash@{0}`** and the local branch `gpu/grief-mouth-fill` in `C:\Users\Aaron\hymn_gpu`: abandoned (see above).
+
+## Queue (Lead, 2026-10-24 deep queue)
+1. M2-RND-09 underwater Art fixes: **review** (`gpu/m2-rnd-09-underwater-art`).
+2. M2-RND-10 storm Art fixes: next.
+3. M1-RND-26 the mouth-bounce pass's FSR2 softening at High.
+4. M1-QA-09 Asha on hardware: starts on the Lead's "characters merged".
+5. The 4.7.2 port prep on the long-lived `gpu/godot-472-port` (not merged until the Lead calls it).
+6. The slice perf re-sweep, once the characters and creatures land.
+7. M3 R&D: the Reefball arena look, a minimum-spec proxy, and Act I look-dev support.

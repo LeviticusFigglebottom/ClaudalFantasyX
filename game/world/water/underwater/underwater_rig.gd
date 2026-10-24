@@ -34,12 +34,14 @@ const OPTICS_POST: Array[String] = [
 	"scatter_strength",
 	"depth_falloff_m",
 	"down_darkening",
-	"meniscus_m",
+	"meniscus_px",
 	"lens_m",
 	"max_distance_m",
 	"camera_light_weight"
 ]
-const OPTICS_UNDERSIDE: Array[String] = ["ior", "window_soft_deg", "window_alpha", "tir_alpha", "sun_disc", "sun_halo"]
+const OPTICS_UNDERSIDE: Array[String] = [
+	"ior", "window_soft_deg", "window_alpha", "tir_alpha", "sun_disc", "sun_halo", "tir_gain", "lens_m"
+]
 
 static var _data_cache: Dictionary = {}
 
@@ -53,6 +55,14 @@ static var _data_cache: Dictionary = {}
 		quality = value
 		if is_inside_tree():
 			_apply_quality()
+
+## The zone's water look (underwater.json "looks"): its colours override the defaults (M2-RND-09:
+## "night_sea" keeps the abyss_navy deep for ch20, ch21 and night dives). "" = the defaults (Act I).
+@export var look: String = "":
+	set(value):
+		look = value
+		if is_inside_tree():
+			_build_colors()
 
 ## false switches every part off (the post, the underside, god rays, snow, the lantern): the A/B for
 ## cost, and a zone's way to drop the look without removing the node.
@@ -77,6 +87,9 @@ var lantern: OmniLight3D
 var _fog_env: Environment
 # The scene's directional lights (the daylight that reaches the water).
 var _lights: Array[DirectionalLight3D] = []
+# The zone's glimmer fields, whose motes get their underwater path back (M2-RND-09 item 5).
+var _fields: Array[GlimmerField] = []
+var _sigma := Vector3.ZERO
 
 
 static func load_data() -> Dictionary:
@@ -122,6 +135,16 @@ func _ready() -> void:
 	if root != null:
 		for l in root.find_children("*", "DirectionalLight3D", true, false):
 			_lights.append(l as DirectionalLight3D)
+		# find_children's type matches engine classes only, not a script's class_name.
+		for f in root.find_children("*", "Node3D", true, false):
+			if f is GlimmerField:
+				_fields.append(f as GlimmerField)
+	get_tree().node_added.connect(_on_node_added)
+
+
+func _on_node_added(node: Node) -> void:
+	if node is GlimmerField and not _fields.has(node):
+		_fields.append(node as GlimmerField)
 
 
 ## God rays draw in Godot's volumetric fog, which the presets only gate (they turn it off where a scene
@@ -186,7 +209,12 @@ func _process(_delta: float) -> void:
 		m.set_shader_parameter(&"water_rest_y", rest_y)
 	post_add_material.set_shader_parameter(&"light_level", level)
 	underside_material.set_shader_parameter(&"light_level", level)
+	var glow := water.sea_glow_energy * float((data.get("optics", {}) as Dictionary).get("sea_glow_strength", 1.0))
+	post_add_material.set_shader_parameter(&"sea_glow_energy", glow)
+	underside_material.set_shader_parameter(&"sea_glow_energy", glow)
 	shafts_material.set_shader_parameter(&"water_rest_y", rest_y)
+	_compensate_glimmer(rest_y)
+	_update_lamp_halo()
 	if underside != null:
 		_follow_surface()
 	if cam == null:
@@ -199,36 +227,68 @@ func _process(_delta: float) -> void:
 	snow.visible = active and int(plan().get("particles", 0)) > 0 and c.y < rest_y - SNOW_SHOW_DEPTH_M
 
 
+## The colours in use: the data's, with the zone look's on top (M2-RND-09).
+func colors() -> Dictionary:
+	var out := (data.get("colors", {}) as Dictionary).duplicate()
+	var over := (data.get("looks", {}) as Dictionary).get(look, {}) as Dictionary
+	for key: String in over:
+		if not key.begins_with("_") and over[key] is String:
+			out[key] = over[key]
+	return out
+
+
+## Re-applies the colour uniforms (a look change at runtime).
+func _build_colors() -> void:
+	if post_mul_material == null:
+		return
+	var c := colors()
+	for m: ShaderMaterial in [post_mul_material, post_add_material]:
+		m.set_shader_parameter(&"col_scatter", Color(str(c.get("scatter", "#1FA3A6"))))
+		m.set_shader_parameter(&"col_deep", Color(str(c.get("deep", "#0E4A55"))))
+		m.set_shader_parameter(&"col_sea_glow", Color(str(c.get("sea_glow", "#1C6B78"))))
+	underside_material.set_shader_parameter(&"col_tir", Color(str(c.get("tir", "#0E4A55"))))
+	underside_material.set_shader_parameter(&"col_sea_glow", Color(str(c.get("sea_glow", "#1C6B78"))))
+
+
 func _build() -> void:
-	var colors := data.get("colors", {}) as Dictionary
+	var palette := colors()
 	var optics := data.get("optics", {}) as Dictionary
-	var transmit := Color(str(colors.get("transmit", "#1FA3A6"))).srgb_to_linear()
+	var transmit := Color(str(palette.get("transmit", "#1FA3A6"))).srgb_to_linear()
 	var dist := float(optics.get("transmit_distance_m", 9.0))
 	var sigma := Vector3(
 		-log(maxf(transmit.r, 1e-3)) / dist, -log(maxf(transmit.g, 1e-3)) / dist, -log(maxf(transmit.b, 1e-3)) / dist
 	)
+	_sigma = sigma
 	post_mul_material = _post_material(POST_MUL_SHADER, PRIORITY_MUL)
 	post_add_material = _post_material(POST_ADD_SHADER, PRIORITY_ADD)
 	for m: ShaderMaterial in [post_mul_material, post_add_material]:
 		m.set_shader_parameter(&"sigma", sigma)
-		m.set_shader_parameter(&"col_scatter", Color(str(colors.get("scatter", "#3FD0C9"))))
-		m.set_shader_parameter(&"col_deep", Color(str(colors.get("deep", "#061A2B"))))
+		m.set_shader_parameter(&"col_scatter", Color(str(palette.get("scatter", "#3FD0C9"))))
+		m.set_shader_parameter(&"col_deep", Color(str(palette.get("deep", "#061A2B"))))
 		for key in OPTICS_POST:
 			m.set_shader_parameter(StringName(key), float(optics.get(key, 0.0)))
 	post_mul = _post_quad("UnderwaterPostMul", post_mul_material)
 	post_add = _post_quad("UnderwaterPostAdd", post_add_material)
 	underside_material = ShaderMaterial.new()
 	underside_material.shader = load(UNDERSIDE_SHADER) as Shader
-	underside_material.set_shader_parameter(&"col_window", Color(str(colors.get("window", "#2E7FD6"))))
-	underside_material.set_shader_parameter(&"col_tir", Color(str(colors.get("tir", "#0E4A55"))))
+	underside_material.set_shader_parameter(&"col_window", Color(str(palette.get("window", "#2E7FD6"))))
+	underside_material.set_shader_parameter(&"col_tir", Color(str(palette.get("tir", "#0E4A55"))))
+	var ln := data.get("lantern", {}) as Dictionary
+	post_add_material.set_shader_parameter(&"lamp_range_m", float(ln.get("halo_range_m", ln.get("range_m", 9.0))))
+	post_add_material.set_shader_parameter(&"lamp_attenuation", float(ln.get("attenuation", 1.4)))
+	post_add_material.set_shader_parameter(&"lamp_core_m", float(ln.get("halo_core_m", 0.6)))
+	post_add_material.set_shader_parameter(&"lamp_scatter", float(ln.get("halo_strength", 0.0)))
+	post_add_material.set_shader_parameter(&"lamp_steps", int(ln.get("halo_steps", 16)))
+	post_add_material.set_shader_parameter(&"lamp_absorption", float(ln.get("halo_absorption", 1.0)))
 	for key in OPTICS_UNDERSIDE:
 		underside_material.set_shader_parameter(StringName(key), float(optics.get(key, 0.0)))
 	underside = MeshInstance3D.new()
 	underside.name = "WaterUnderside"
 	underside.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	underside.material_override = underside_material
-	_build_fog(colors)
-	_build_snow(colors)
+	_build_fog(palette)
+	_build_snow(palette)
+	_build_colors()
 	_sync_water_uniforms()
 
 
@@ -336,13 +396,47 @@ func _build_lantern(shadows: bool) -> void:
 		lantern.name = "RhenLantern"
 		lantern_target.add_child(lantern)
 	var ln := data.get("lantern", {}) as Dictionary
-	lantern.light_color = Color(str((data.get("colors", {}) as Dictionary).get("lantern", "#FFB16E")))
+	lantern.light_color = Color(str(colors().get("lantern", "#FFB16E")))
 	lantern.light_energy = float(ln.get("energy", 5.0))
 	lantern.omni_range = float(ln.get("range_m", 9.0))
 	lantern.omni_attenuation = float(ln.get("attenuation", 1.4))
 	lantern.light_volumetric_fog_energy = float(ln.get("fog_energy", 3.0))
 	lantern.light_specular = float(ln.get("specular", 0.4))
 	lantern.shadow_enabled = shadows
+
+
+## The post's lantern halo follows the lamp; dark when there is no lantern or the rig is off.
+func _update_lamp_halo() -> void:
+	var on := active and lantern != null and is_instance_valid(lantern) and lantern.is_visible_in_tree()
+	var ln := data.get("lantern", {}) as Dictionary
+	var col := Color(str(colors().get("lantern", "#FFB16E"))).srgb_to_linear()
+	var e := float(ln.get("energy", 0.0)) if on else 0.0
+	post_add_material.set_shader_parameter(&"lamp_color", Vector3(col.r, col.g, col.b) * e)
+	if on:
+		post_add_material.set_shader_parameter(&"lamp_pos", lantern.global_position)
+
+
+## Glimmer motes seen from underwater get their path's absorption back (underwater.json glimmer): released
+## fully, held partly, times each field's underwater_compensation. Off when the rig is inactive.
+func _compensate_glimmer(rest_y: float) -> void:
+	var g := data.get("glimmer", {}) as Dictionary
+	var cam := get_viewport().get_camera_3d()
+	var cam_under := cam != null and cam.global_position.y < rest_y
+	for i in range(_fields.size() - 1, -1, -1):
+		var f := _fields[i]
+		if not is_instance_valid(f):
+			_fields.remove_at(i)
+			continue
+		if f.draw_material == null:
+			continue
+		var k := f.underwater_compensation if active else 0.0
+		# While the camera is underwater the post absorbs these motes: the field's own model would twice.
+		f.set_underwater_absorb_scale(0.0 if k > 0.0 and cam_under else 1.0)
+		f.draw_material.set_shader_parameter(&"uw_comp_lift", float(g.get("lift", 0.0)) * k)
+		f.draw_material.set_shader_parameter(&"uw_comp_held", float(g.get("held", 0.0)) * k)
+		f.draw_material.set_shader_parameter(&"uw_sigma", _sigma)
+		f.draw_material.set_shader_parameter(&"uw_rest_y", rest_y)
+		f.draw_material.set_shader_parameter(&"uw_max_gain", float(g.get("max_gain", 1.0)))
 
 
 ## The water's wave field and time base onto the post and underside (the same surface in all three).
