@@ -29,9 +29,17 @@ at f95b27cb. Items: M2-AUD-01..06 and M2-AUD-10/11, M3-AUD-01..07 (all `status: 
   Done and merged; queue empty.
 - **Filed for m2-slice:** M2-AUD-12 (causeway zone rows, the B05 crossfade, the B12 coda).
 
+## State (2026-10-24, newest queue)
+- **Done:** M3-AUD-16 Act I zone beds (Tamsule port and Bell galleries, Brine Shoals, Pemakar terraces, Ashcrown,
+  Corrow seawall) at fedff803, `review`. Zone entries for the four m2-slice scenes are `"pending": true` and go live
+  when those scenes merge. Scoped checks: validate_data, test_audio_data, Godot `--filter=audio` (52/0).
+- **In progress (worktree agents):** M3-AUD-13 battle choreography SFX, M3-AUD-14 creature voices, M3-AUD-15 menu UI SFX
+  and M3-AUD-17 Reefball crowd and sphere. **Two items remain after these three agents report** (the batch merge, then
+  MERGE-READY).
+
 ## Exact next step
-Queue empty. Waiting on: the human's listening verdict (listening_notes.md, M2 and M3 sections); scenes for the M3 cues
-(zone/encounter rows are documented in each cue row's `_note`); M2-AUD-07/08/09/12 and M3-ARC-01 (requests to other roles).
+Merge the three agent branches as they report, merge the integration branch, run the full Godot suite and the loudness
+test in the background, then write a batch MERGE-READY line.
 
 ## Un-pushed state
 None.
