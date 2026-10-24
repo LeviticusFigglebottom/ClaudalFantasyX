@@ -246,92 +246,22 @@ func _announce() -> void:
 # --- the plan (pure data) -----------------------------------------------------------------
 
 
-## The style an action plays: item_style for an item, else style_by_skill, style_by_target, style_by_kind.
+## The style an action plays (BattleChoreoPlan.style_id_for: item, skill, target, kind).
 func style_id_for(result: ActionResult) -> String:
-	if result.item_id != &"":
-		return str(data.get("item_style", FALLBACK_STYLE))
-	var sid := String(result.skill_id)
-	var by_skill := data.get("style_by_skill", {}) as Dictionary
-	if by_skill.has(sid):
-		return str(by_skill[sid])
-	var row: Dictionary = _engine.db.skill(result.skill_id) if _engine != null else {}
-	var by_target := data.get("style_by_target", {}) as Dictionary
-	if by_target.has(str(row.get("target", ""))):
-		return str(by_target[str(row["target"])])
-	return str((data.get("style_by_kind", {}) as Dictionary).get(str(row.get("kind", "")), FALLBACK_STYLE))
+	return BattleChoreoPlan.style_id_for(data, _engine, result)
 
 
 func style(id: String) -> Dictionary:
-	var styles := data.get("styles", {}) as Dictionary
-	return styles.get(id, styles.get(FALLBACK_STYLE, {})) as Dictionary
+	return BattleChoreoPlan.style(data, id)
 
 
-## What an action plays, with no nodes: {style, actor, targets, reactions [{target, kind}], kos, and the beat
-## times approach_end, contact, strike_end, recover_end, return_end, ko_at, total}. {} for a failed action.
+## What an action plays, with no nodes (BattleChoreoPlan.plan_for). {} for a failed action.
 func plan_for(result: ActionResult) -> Dictionary:
-	if result == null or not result.ok:
-		return {}
-	var sid := style_id_for(result)
-	var st := style(sid)
-	var a := float(st.get("approach_sec", 0.0))
-	var s := float(st.get("strike_sec", 0.0))
-	var c := a + s * float(st.get("contact_at", 1.0))
-	var rec := a + s + float(st.get("recover_sec", 0.0))
-	var ret := rec + float(st.get("return_sec", 0.0))
-	var targets: Array[StringName] = []
-	var reactions: Array[Dictionary] = []
-	var kos: Array[StringName] = []
-	var stagger := float(st.get("stagger_sec", 0.0))
-	for hit: Dictionary in result.hits:
-		var tid := StringName(str(hit.get("target_id", "")))
-		if not targets.has(tid):
-			targets.append(tid)
-		if tid == result.actor_id:
-			continue
-		var amount := int(hit.get("amount", 0))
-		var kind := REACT_MISS if not bool(hit.get("hit", true)) else (REACT_DAMAGE if amount > 0 else "")
-		if kind == "" and amount < 0:
-			kind = REACT_HEAL
-		if kind != "":
-			reactions.append({"target": tid, "kind": kind, "at": c + stagger * reactions.size()})
-		var t := _engine.find(tid) if _engine != null else null
-		if amount > 0 and t != null and t.hp <= 0 and not kos.has(tid):
-			kos.append(tid)
-	var plan := {
-		"style": sid,
-		"shot": str(st.get("shot", "")),
-		"actor": result.actor_id,
-		"targets": targets,
-		"reactions": reactions,
-		"kos": kos,
-		"approach_end": a,
-		"contact": c,
-		"strike_end": a + s,
-		"recover_end": rec,
-		"return_end": ret,
-	}
-	_retime(plan)
-	return plan
+	return BattleChoreoPlan.plan_for(data, _engine, result)
 
 
-## Sets a plan's ko_at (a felled target collapses after its own reaction starts) and total from its reactions'
-## start times (`at`: the contact, staggered by stagger_sec, or delayed by a wave's travel).
 func _retime(plan: Dictionary) -> void:
-	var reaction := data.get("reaction", {}) as Dictionary
-	var kos: Array = plan["kos"]
-	var react_end := float(plan["contact"])
-	var ko_from := react_end
-	for r: Dictionary in plan["reactions"]:
-		var at := float(r["at"])
-		react_end = maxf(react_end, at + float((reaction.get(r["kind"], {}) as Dictionary).get("sec", 0.0)))
-		if kos.has(r["target"]):
-			ko_from = maxf(ko_from, at)
-	var ko := data.get("ko", {}) as Dictionary
-	plan["ko_at"] = ko_from + float(ko.get("delay_sec", 0.0))
-	var total := maxf(float(plan["return_end"]), react_end)
-	if not kos.is_empty():
-		total = maxf(total, float(plan["ko_at"]) + float(ko.get("collapse_sec", 0.0)))
-	plan["total"] = total
+	BattleChoreoPlan.retime(data, plan)
 
 
 # --- playback -----------------------------------------------------------------------------
