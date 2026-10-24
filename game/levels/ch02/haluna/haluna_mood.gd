@@ -7,6 +7,8 @@ extends Node3D
 ## - advances the weather clock by frame_step_s per rendered frame. The haluna_* shots hold it and
 ##   swap TAA for FXAA through their shots.json `setup` (M1-RND-13: `hymn_wind_time` = start_time_s,
 ##   viewport use_taa off, FXAA), so a shot is identical wherever it sits in shots.json.
+## - M2-ARC-02 (m2-slice): the wind and the weather clock are WeatherClock's in play; the rig writes them
+##   only when it owns the weather (no WeatherClock, or one held by the capture). See owns_weather().
 ## - M2-ENV-02: `mood` &"night" switches to the `ch02_night` sub-frame (color script; haluna.md H10):
 ##   the sun off and the Moon on (#9DB4D9 at 0.25, 38 deg, the hymn_sun_direction global follows it),
 ##   the night Environment (star sky, exposure 1.1), sea-glow 0.12 with the `night_sea` look (deep
@@ -26,6 +28,8 @@ const PARAM_CAUSTICS := &"caustic_strength"
 const PARAM_ABSORPTION_SCALE := &"absorption_scale"
 ## hymn_glimmer by day: the alpha 0 keeps the glimmer and the sea-glow gate shut.
 const DAY_GLIMMER := Vector4(1.0, 0.91, 0.72, 0.0)
+## Written only while the rig owns the weather (owns_weather).
+const WEATHER_GLOBALS: Array[StringName] = [GLOBAL_WIND, GLOBAL_WIND_TIME]
 const PINNED_GLOBALS: Array[StringName] = [
 	GLOBAL_WIND, GLOBAL_WIND_TIME, GLOBAL_SUN, GLOBAL_TIME_OF_DAY, GLOBAL_GLIMMER
 ]
@@ -75,6 +79,8 @@ const PINNED_GLOBALS: Array[StringName] = [
 var _clock: float = 0.0
 var _frames: int = 0
 var _day_environment: Environment
+## The rig wrote hymn_wind / hymn_wind_time (owns_weather), so _exit_tree restores them.
+var _wrote_weather := false
 var _day_water_material: ShaderMaterial
 
 
@@ -141,6 +147,8 @@ func _process(_delta: float) -> void:
 func _exit_tree() -> void:
 	# Through ShaderGlobals, so its copy of the sun does not outlive the scene (M1-ENV-09).
 	for g: StringName in PINNED_GLOBALS:
+		if g in WEATHER_GLOBALS and not _wrote_weather:
+			continue  # the WeatherClock owner's: the clock is never reset (M2-ARC-02)
 		ShaderGlobals.reset(g)
 
 
@@ -155,10 +163,21 @@ func weather_time() -> float:
 	return _clock
 
 
+## True when this rig drives the weather clock and wind itself: when no WeatherClock runs (a scene
+## run on its own) or something holds it (the screenshot capture, so the mood shots stay pinned). In
+## play the WeatherClock owner (M2-ARC-02) writes both, with zone_weather.json's Haluna row (the same
+## trade wind as this rig's), and this rig must not be a second writer.
+static func owns_weather() -> bool:
+	var wc := WeatherClock.current()
+	return wc == null or wc.is_held()
+
+
 func _write_globals() -> void:
-	var wind := direction_from_angles(0.0, wind_azimuth_deg) * wind_speed_m_s
-	RenderingServer.global_shader_parameter_set(GLOBAL_WIND, Vector4(wind.x, 0.0, wind.z, wind_gust))
-	RenderingServer.global_shader_parameter_set(GLOBAL_WIND_TIME, _clock)
+	if owns_weather():
+		var wind := direction_from_angles(0.0, wind_azimuth_deg) * wind_speed_m_s
+		RenderingServer.global_shader_parameter_set(GLOBAL_WIND, Vector4(wind.x, 0.0, wind.z, wind_gust))
+		RenderingServer.global_shader_parameter_set(GLOBAL_WIND_TIME, _clock)
+		_wrote_weather = true
 	if is_night():
 		ShaderGlobals.set_value(GLOBAL_SUN, direction_from_angles(moon_elevation_deg, moon_azimuth_deg))
 		RenderingServer.global_shader_parameter_set(GLOBAL_TIME_OF_DAY, night_time_of_day_h)

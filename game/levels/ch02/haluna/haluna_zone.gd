@@ -85,6 +85,18 @@ func _ready() -> void:
 	place_at(start_spawn, spawn_yaw_deg(start_spawn))
 
 
+## The zone's own wind variant (zone_weather.json, this scene's row "variants"), e.g. the night land
+## breeze. The WeatherClock owner wrote the row's wind on the swap; a variant replaces it in place until
+## the next swap. False when the data has no such variant.
+func apply_wind_variant(variant: StringName) -> bool:
+	var row: Dictionary = WeatherClock.zone_row(scene_file_path)
+	var v: Variant = (row.get("variants", {}) as Dictionary).get(String(variant))
+	if not v is Dictionary:
+		return false
+	ShaderGlobals.set_value(&"hymn_wind", WeatherClock.wind_vector(v as Dictionary))
+	return true
+
+
 ## Moves the player to Spawns/<spawn>, facing `yaw_deg`, and snaps the camera (teleport-style).
 func place_at(spawn: StringName, yaw_deg: float = 0.0) -> bool:
 	var marker := spawn_marker(spawn)
@@ -138,6 +150,7 @@ func _apply_face_key_bias() -> void:
 ## dock villagers) that are gone home at night.
 func set_night(night: Dictionary, hide: Array = []) -> void:
 	mood.set(&"mood", StringName(str(night.get("mood", "night"))))
+	apply_wind_variant(&"night")
 	var lamps := Node3D.new()
 	lamps.name = "NightLamps"
 	add_child(lamps)
