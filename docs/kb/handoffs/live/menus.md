@@ -8,7 +8,7 @@ Why this track exists: the progression and equipment systems (Lattice, equipment
 | Task | State |
 |---|---|
 | Foundation (no task of its own) | **pushed**: field menu root grows to 9 rows (Items, Equip, Lattice, Status, Swell, Bestiary, Settings, Quit to Title, Close) through FieldMenuModel; `FieldSubmenu` page base and `PartySheet` (a hero built exactly like a live battle builds them) in `game/ui/menus/`; loc files `menus*.csv`. |
-| M2-MNU-01 Lattice board page | worktree agent running |
+| M2-MNU-01 Lattice board page | **merged on the branch, review** (3f2446c): original lozenge/rigging look, cheapest-path walking with cost shown first, wake and gate confirms; shots lattice_menu, lattice_menu_activate viewed and approved |
 | M2-MNU-02 Equip + Customize, gear applied in live battles | worktree agent running |
 | M2-MNU-03 Items + Status pages | **merged on the branch, review** (bcf4780): field use through ItemBattleAction.resolve_on, sort by kind/name/count, status split base + Lattice + gear; shots items_menu, items_menu_use, status_menu viewed and approved |
 | M2-MNU-04 Quit to Title + battle pause | **done on the branch** (cdbb916): Quit behind a Stay-first confirm; battle pause on P / Pause / pad Start; shot `battle_pause` |
@@ -25,3 +25,4 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 ## Log
 - 2026-10-24: branch created from the integration branch, merged `claude/ui`, pushed. Tasks M2-MNU-01..05 claimed. Foundation pushed (456c9a4, 42124b4, fa109a4). Battle pause and Quit to Title pushed (cdbb916): tests 6 + 4 new, field_menu 19/19, battle 418/418.
 - 2026-10-24: M2-MNU-03 merged (Items 11/11, Status 5/5, field_menu 19/19, battle_pause 6/6). Field menu root widened for 130% text (ce979d0). Two worktree agents still running (Lattice, Equip).
+- 2026-10-24: M2-MNU-01 merged (lattice 49/49, field_menu 19/19). Equip agent still running.
