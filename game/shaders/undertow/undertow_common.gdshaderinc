@@ -179,12 +179,14 @@ vec3 undertow_flow_point(vec3 p, float t) {
 // Glimmer wounds: thin seams (rents) on the wall where held light bleeds out, in regions picked by a
 // low-frequency presence field. They ride the eyewall rotation and slide DOWN (held light sinks).
 // Returns the seam strength in [0, 1]; `pocket` gets the presence (held light pooled behind it).
-float undertow_wound(vec3 p, out float pocket) {
+// M2-RND-05, torn rents: `lip` is the dark torn edge around the open core and `halo` the wider band
+// where the light pouring out scatters in the cloud beside it (both 0 on the core itself).
+float undertow_wound(vec3 p, out float pocket, out float lip, out float halo) {
 	float t = storm_time_s;
 	// Sampled on a fixed-radius cylinder (angle around the storm, height), so a seam is constant
 	// through the wall's depth: a slit through the wall, not a 3D sparkle a raymarch would alias.
 	float a = atan(p.z, p.x) - rotation_rad_s * t;
-	float y = p.y + wound_sink_m_s * t;
+	float y = p.y + wound_drift_m;
 	// Mapped at mid-wall so seams keep their proportions on both faces.
 	float map_r = eye_radius_m + 0.5 * wall_thickness_m;
 	vec3 q = vec3(cos(a) * map_r, y, sin(a) * map_r) / wound_scale_m;
@@ -192,9 +194,14 @@ float undertow_wound(vec3 p, out float pocket) {
 			+ hymn_value_noise3(q * UNDERTOW_WOUND_LACUNARITY) * UNDERTOW_WOUND_DETAIL;
 	float ridge = 1.0 - abs(2.0 * n - 1.0);
 	float seam = smoothstep(1.0 - wound_width, 1.0, ridge);
+	float edge = 1.0 - seam;
+	lip = smoothstep(1.0 - wound_width * rent_lip_width, 1.0 - wound_width, ridge) * edge;
+	halo = smoothstep(1.0 - wound_width * rent_halo_width, 1.0 - wound_width, ridge) * edge;
 	vec3 qp = vec3(cos(a) * map_r, y, sin(a) * map_r) / wound_presence_scale_m;
 	float pres = hymn_value_noise3(qp + UNDERTOW_PRESENCE_OFFSET);
 	pocket = smoothstep(1.0 - wound_coverage, 1.0 - wound_coverage + UNDERTOW_PRESENCE_SOFT, pres);
+	lip *= pocket * min(wound_intensity, 1.0);
+	halo *= pocket * wound_intensity;
 	return seam * pocket * wound_intensity;
 }
 

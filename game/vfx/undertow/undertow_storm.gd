@@ -21,8 +21,14 @@ extends Node3D
 ##   get_time() / set_time(t) / playing / time_scale the storm clock (never TIME)
 ##   set_quality(id) / get_quality() / apply_graphics_settings(gs)
 ##   force_flash(site, start_s)                     time a lightning stroke in a cutscene
+##   site_facing(point)                             the site to strike so its bolt lands in view
 ##   storm_center() / sea_level() / sea_height_at(world_xz)   placement and the funnel for floaters
 ##   look                                           named look from undertow.json ("day_storm")
+##   preset / apply_preset(id)                      chapter preset from undertow.json "presets" (M2-RND-05)
+##   unbinding                                      the Letting, 0 held .. 1 released (Ch21; M2-RND-05)
+##   rain_amount, zone_shadow, exposure_flash, world_environment   storm events on the zone (M2-RND-05,
+##                                                  UndertowEvents: streamers, bolts, rain, shadow, reflection)
+##   lightning_struck(site, bolt)                   a strike began (bolt: a stroke is drawn)
 ##   refresh()                                      re-apply after changing tunables at runtime
 ##   on_viewport_state_changed()                    re-reads the viewport's AA now (M1-RND-16: a
 ##                                                  GraphicsSettings.push_override at a cut calls it
@@ -30,6 +36,8 @@ extends Node3D
 ##                                                  jitter gate follows the override frame-exactly)
 
 signal quality_changed(tier: String)
+## A lightning strike began at `site` (M2-RND-05); `bolt` is whether it draws a stroke (else in-cloud).
+signal lightning_struck(site: int, bolt: bool)
 
 const VISUALS_NODE := "UndertowVisuals"
 const SEA_NODE := "Sea"
@@ -37,6 +45,7 @@ const LID_NODE := "SeaLid"
 const BODY_NODE := "Body"
 const SHELL_NODE := "Shell"
 const SPRAY_NODE := "Spray"
+const EVENTS_NODE := "Events"
 const PARAM_DEEP := &"col_deep"
 const PARAM_STORM_CENTER_XZ := &"storm_center_xz"
 const PARAM_STORM_REACH := &"storm_reach_m"
@@ -94,6 +103,31 @@ const GIZMO_COLOR := Color(0.25, 0.88, 0.78)
 		_push_static()
 ## Tier the editor previews (the raymarched tiers are heavy for a viewport that redraws constantly).
 @export var editor_preview_quality: String = "low"
+## Chapter preset from undertow.json "presets" (M2-RND-05): storm property -> value, applied when set
+## ("" = none). A cutscene tweens from one preset's values to the next.
+@export var preset: String = "":
+	set(value):
+		preset = value
+		if value != "":
+			apply_preset(value)
+## The Letting (Ch21, colour script rule 1; M2-RND-05): 0 = held (the wounds and their light sink),
+## 1 = released (they rise in glimmer_lift). Tween it; see UndertowState.unbinding.
+@export_range(0.0, 1.0, 0.01) var unbinding: float = 0.0:
+	set(value):
+		state.unbinding = value
+		unbinding = state.unbinding
+
+@export_group("Events")
+## Near-field rain at the camera (M2-RND-05): -1 = from the camera's distance to the eye (undertow.json
+## "rain"), else this amount (0..1).
+@export_range(-1.0, 1.0, 0.01) var rain_amount: float = -1.0
+## Dim the zone's key light and ambient when the storm shades the zone marker (this node).
+@export var zone_shadow: bool = true
+## The colour script's lightning frames: the zone Environment's exposure jumps at a strike
+## (undertow.json "exposure_flash"; capped like battle flashes, gentler under reduced motion).
+@export var exposure_flash: bool = true
+## The zone's environment: its ambient for the zone shadow, its exposure for the lightning frames.
+@export var world_environment: WorldEnvironment
 
 @export_group("Sea level")
 ## World Y of the storm's sea surface when it is not taken from `water` (see sea_level()).
@@ -162,6 +196,8 @@ var shell_materials: Array[ShaderMaterial] = []
 var spray_materials: Array[ShaderMaterial] = []
 var lid: MeshInstance3D
 var lid_material: ShaderMaterial
+## Streamers, bolts, rain and the storm's hold on the zone (M2-RND-05; null in the editor).
+var events: UndertowEvents
 
 var _shells: Array[MeshInstance3D] = []
 var _sprays: Array[MeshInstance3D] = []
@@ -240,6 +276,8 @@ func _process(delta: float) -> void:
 		state.advance(delta)
 	_place()
 	_push_dynamic()
+	if events != null:
+		events.update()
 
 
 # --- Clock -------------------------------------------------------------------------------------
@@ -321,16 +359,46 @@ func materials() -> Array[ShaderMaterial]:
 		out.append(body_material)
 	out.append_array(shell_materials)
 	out.append_array(spray_materials)
+	if events != null:
+		out.append_array(events.all_materials())
 	return out
 
 
 # --- Cutscene helpers --------------------------------------------------------------------------
 
 
+## The lightning site that faces `point` now (the smallest angle between the site and the direction
+## from the eye toward point): a cutscene strikes it so its bolt lands in view (M2-RND-05; a bolt only
+## draws on the camera's half of the storm).
+func site_facing(point: Vector3) -> int:
+	var c := storm_center()
+	var to := Vector2(point.x - c.x, point.z - c.z).normalized()
+	var sites := state.flash_sites(state.time_s)
+	var best := 0
+	var best_dot := -INF
+	for i in state.flash_site_count():
+		var d := Vector2(sites[i].x, sites[i].z).normalized().dot(to)
+		if d > best_dot:
+			best_dot = d
+			best = i
+	return best
+
+
 func force_flash(site: int, start_s: float = -1.0) -> bool:
 	var ok := state.force_flash(site, start_s)
 	_push_dynamic()
 	return ok
+
+
+## Applies a chapter preset (undertow.json "presets"): each key is a storm property. False if unknown.
+func apply_preset(id: String) -> bool:
+	var values := state.preset(id)
+	if values.is_empty():
+		push_warning("UndertowStorm: unknown preset '%s'" % id)
+		return false
+	for key: String in values:
+		set(key, values[key])
+	return true
 
 
 func refresh() -> void:
@@ -346,7 +414,8 @@ func mood_parameters() -> Dictionary:
 	var sun_e := 0.0
 	if sun != null and sun.visible:
 		sun_col = sun.light_color
-		sun_e = sun.light_energy
+		# The storm is lit by the zone's undimmed key: the zone shadow is the storm's own (M2-RND-05).
+		sun_e = events.sun_energy() if events != null else sun.light_energy
 	return {
 		"col_sun": sun_col,
 		"sun_energy": sun_e * float(cloud.get("sun_energy", 1.0)),
@@ -464,6 +533,12 @@ func _build() -> void:
 	# In the editor `motes` is a placeholder (GlimmerField is not @tool).
 	if motes != null and not Engine.is_editor_hint() and motes.draw_material != null:
 		motes.draw_material.render_priority = int(prio.get("motes", 0))
+	if not Engine.is_editor_hint():
+		if events == null:
+			events = UndertowEvents.new()
+			events.name = EVENTS_NODE
+			add_child(events, false, Node.INTERNAL_MODE_FRONT)
+		events.build(self)
 	_built = true
 
 
@@ -627,6 +702,8 @@ func _active_materials() -> Array[ShaderMaterial]:
 	for i in _sprays.size():
 		if _sprays[i].visible:
 			out.append(spray_materials[i])
+	if events != null:
+		out.append_array(events.materials())
 	return out
 
 

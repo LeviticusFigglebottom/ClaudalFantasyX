@@ -159,6 +159,30 @@
       "resident": true
     },
     {
+      "path": "res://game/shaders/undertow/undertow_streamer.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
+      "note": "M2-RND-05 Undertow streamers of held light off the wounds (every tier).",
+      "resident": true
+    },
+    {
+      "path": "res://game/shaders/undertow/undertow_bolt.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
+      "note": "M2-RND-05 Undertow lightning bolts (every tier).",
+      "resident": true
+    },
+    {
+      "path": "res://game/shaders/undertow/undertow_rain.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/undertow/undertow_test.tscn"
+      ],
+      "note": "M2-RND-05 Undertow near-field rain on the camera (every tier).",
+      "resident": true
+    },
+    {
       "path": "res://game/shaders/undertow/undertow_sea.gdshader",
       "scenes": [
         "res://game/levels/_tests/undertow/undertow_test.tscn"

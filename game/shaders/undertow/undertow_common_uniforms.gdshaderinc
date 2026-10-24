@@ -75,8 +75,17 @@ uniform float wound_skin_m : hint_range(10.0, 10000.0) = 900.0;
 uniform float wound_height_min : hint_range(0.0, 1.0) = 0.15;
 uniform float wound_height_max : hint_range(0.0, 1.0) = 0.85;
 uniform float wound_presence_scale_m : hint_range(10.0, 40000.0) = 4200.0;
-// Held light sinks: the seam pattern slides DOWN the wall at this speed.
-uniform float wound_sink_m_s : hint_range(0.0, 100.0) = 5.0;
+// Held light sinks: how far the seam pattern has slid DOWN the wall (m). UndertowState integrates
+// wounds.sink_m_s over the storm clock, piecewise, so the Letting (unbinding, M2-RND-05) can reverse it
+// without the pattern jumping. Negative = risen.
+uniform float wound_drift_m = 0.0;
+// Torn rents (M2-RND-05): around each seam's open core, a dark lip of torn cloud rent_lip_width seam
+// widths wide (its lit colour darkened by rent_lip_dark), and a wider halo (rent_halo_width) where the
+// light pouring out of the rent scatters in the cloud beside it (rent_halo_energy x the seam glow).
+uniform float rent_lip_width : hint_range(1.0, 8.0) = 2.5;
+uniform float rent_lip_dark : hint_range(0.0, 1.0) = 0.6;
+uniform float rent_halo_width : hint_range(1.0, 16.0) = 6.0;
+uniform float rent_halo_energy : hint_range(0.0, 4.0) = 0.35;
 uniform vec3 col_wound : source_color = vec3(0.0497, 0.7454, 0.5776);
 uniform vec3 col_held : source_color = vec3(0.2122, 0.5647, 0.6939);
 
