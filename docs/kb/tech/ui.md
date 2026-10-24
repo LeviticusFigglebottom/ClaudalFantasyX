@@ -470,6 +470,15 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
 - **Text speed:** `DialogueAssist` applies the player's text speed to the box (instant sets `chars_per_sec` to 0; it follows changes). Instant and fast-forward skip every pause.
 - **Tests:** `test_dialogue_reveal_pauses.gd`.
 
+## Subtitles and speaker names (M2-UI-30)
+
+- **`SubtitleStyle`** (game/ui/dialogue_assist/, applied by DialogueAssist) makes every DialogueBox follow UiSettings:
+  - the speaker's name takes HeaderLabel and the line BodyLabel (or the sung variation) at the scaled size;
+  - the name takes `name_role` (gold) and the line `body_role` (text);
+  - a `panel_low` backing at the "Subtitle backing" alpha sits inside the panel, behind the text.
+- **No per-hero name colours:** the palette has no four that stay apart for every colour vision (see M2-UI-30). `speaker_roles` can add some once Art adds swatches.
+- **Tests:** `test_subtitles.gd`: theme sizes at 100/115/130%, nothing cut, the backing alpha, and the CVD distance and contrast of the roles in use. The colour maths is in `tests/color_vision.gd`.
+
 ## Audio settings page (M3-UI-02)
 
 - **`AudioMenu`** (a SettingsPage over `AudioMenuModel`) lists the UiSettings rows named in `game/data/ui/audio_menu.json`: the Audio track's volumes (`master_volume`, `music_volume`, `sfx_volume`, `voice_volume`, `reduced_audio`), which AudioDirector applies through mix.json `volume_settings`.
