@@ -180,6 +180,7 @@ func _setup(m: Node3D) -> void:
 		anim.stop()
 		anim.active = false  # the tree animates; plays started on it are routed through play_clip
 		_build_tree()
+	HeroMotion.add_micro_motion(model, hero_id)  # M2-HER-1104: breathing, weight shift, the head leads turns
 
 
 func _build_tree() -> void:
@@ -285,6 +286,7 @@ func advance(delta: float) -> void:
 		var moving := _has_travel and loco.is_moving(loco.speed)
 		loco.step_yaw(_travel_yaw if moving else source_facing(), delta)
 		_last_pos = p
+	HeroMotion.set_locomotion_speed(model, loco.speed)  # the micro-motion fades out while walking
 	_place(p)
 	_route_player_clip()
 	if tree != null:

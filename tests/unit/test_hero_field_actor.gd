@@ -44,6 +44,21 @@ func test_the_hook_hides_the_capsule_and_shows_rhen() -> void:
 	_done()
 
 
+func test_the_body_breathes_standing_and_not_walking() -> void:
+	var body := _body()
+	var micro := HeroMotion.micro_of(body.model)
+	assert_true(micro != null, "the field body carries the idle micro-motion (M2-HER-1104)")
+	if micro == null:
+		_done()
+		return
+	body.snap()
+	body.advance(DT)
+	assert_eq(micro.amount, 1.0, "full micro-motion while standing")
+	_drive(body, body.loco.walk_clip_mps)
+	assert_eq(micro.amount, 0.0, "faded out while walking")
+	_done()
+
+
 func test_the_model_has_the_locomotion_clips() -> void:
 	var body := _body()
 	for clip: String in (HeroFieldActor.field_data()["locomotion_clips"] as Dictionary).values():
