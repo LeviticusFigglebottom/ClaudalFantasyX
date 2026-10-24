@@ -4,6 +4,19 @@
 `claude/characters` (cut from `claude/undertow-lead-handoff-423ixt` at 952ef7c). The Lead reads it hourly.
 
 ## Now
+- **MERGE-READY @ e253f302 (CHR-14 braid and clipping, villagers, Rhen and Toma, host determinism).**
+  - **Full `tools/ci_local.sh` at ad6e232:** merged with the integration branch, run with `taskset -c 0-3`, HYMN_BLENDER_REQUIRED=1, every shot and its own HYMN_LOG_DIR. It exited 0:
+    - 580 tool tests, 1459 Godot tests;
+    - 120 shots compared, 0 failed;
+    - Blender identical: asha 44, rhen 31, toma 38, and the 7 villager jobs (34 + 6×30).
+  - **What changed between ad6e232 and e253f302:** your 1-ULP head UV fix only. `quantize_uvs` puts Asha's head and body UVs on a 2^-16 grid right after the unwrap, before the bake dump and the export.
+  - **Scoped re-check for that delta:**
+    - `verify --job asha` under taskset (4 CPUs): 44 identical;
+    - the GLBs are identical with numpy's AVX-512 and AVX2 paths;
+    - the 18 asha_* shots pass unchanged (max RMSE 0.00797, asha_front, the same as before);
+    - test_asha and test_rig_integrity: OK.
+  - **Threads:** pinned at 4 on every character and villager job (ad6e232).
+- **Later heads (docs plus your branch only):** the M3 design sheets merge and the integration-branch merge of 27 commits that touch no character file. A full `ci_local` on the merged head is running; the result goes here.
 - **Blocker cleared (d523d43):** Toma's mouth/teeth/tongue are on `character_mouth`; the integration branch is merged;
   `--filter=character_shading` 17/17, hero_stage 6/6, post_import 19/19; `verify --job toma` 38 identical. Ready to merge.
   (send_message to the Lead was refused: "needs a trusted device", so this log is the channel.)
