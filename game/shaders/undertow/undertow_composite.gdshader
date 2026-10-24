@@ -6,6 +6,10 @@
 // SubViewport sees no opaque geometry, so a pixel whose opaque depth is nearer than where the view
 // ray enters the storm's wall cylinder (radius occluder_radius_m, slab [0, top_m], storm-local) drops
 // the storm. Geometry inside that cylinder (rare) is not occluded.
+// Compute mode (use_front, M2-RND-01): body_tex comes from UndertowBodyEffect, which marched against
+// this frame's opaque depth, and front_tex holds the mean distance of what each ray saw. A pixel whose
+// own opaque surface is nearer than that drops the storm: exact occlusion, inside the volume too, and
+// sharp at the full resolution (the march clipped at the farthest surface of the pixel's footprint).
 shader_type spatial;
 render_mode blend_premul_alpha, unshaded, cull_front, depth_draw_never, depth_test_disabled, fog_disabled,
 		shadows_disabled;
@@ -15,8 +19,9 @@ uniform sampler2D depth_tex : hint_depth_texture, filter_nearest, repeat_disable
 uniform vec3 storm_center = vec3(0.0);
 uniform float occluder_radius_m = 10000.0;
 uniform float top_m = 12000.0;
-// Size of the half-res texture, for the tent filter.
-uniform vec2 body_texel = vec2(0.00078125, 0.00138889);
+// Compute mode: the effect's front-distance texture (r = metres from the camera), and the switch.
+uniform sampler2D front_tex : filter_nearest, repeat_disable;
+uniform bool use_front = false;
 
 #define COMPOSITE_FAR_M 1e9
 // Reverse-Z: a depth of 0 is the sky (no opaque surface).
@@ -59,18 +64,24 @@ void fragment() {
 	// Four bilinear taps half a texel apart (a 3 x 3 tent over the half-res frame). At half resolution
 	// each march-jitter sample covers a 2 x 2 block, which narrows the TAA neighbourhood clamp so the
 	// history cannot average the jitter out; the tent removes the stipple first.
-	vec2 o = 0.5 * body_texel;
+	vec2 o = 0.5 / vec2(textureSize(body_tex, 0));
 	vec4 body = 0.25 * (texture(body_tex, SCREEN_UV + vec2(-o.x, -o.y)) + texture(body_tex, SCREEN_UV + vec2(o.x, -o.y))
 			+ texture(body_tex, SCREEN_UV + vec2(-o.x, o.y)) + texture(body_tex, SCREEN_UV + vec2(o.x, o.y)));
 	float depth = texture(depth_tex, SCREEN_UV).r;
 	if (depth > COMPOSITE_SKY_DEPTH && body.a > 0.0) {
 		vec4 v = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, depth, 1.0);
 		float t_opaque = length(v.xyz / v.w);
-		vec3 ro = CAMERA_POSITION_WORLD - storm_center;
-		vec3 world = (INV_VIEW_MATRIX * vec4(v.xyz / v.w, 1.0)).xyz;
-		vec3 rd = normalize(world - CAMERA_POSITION_WORLD);
-		if (t_opaque < entry_t(ro, rd)) {
-			discard;
+		if (use_front) {
+			if (t_opaque < texture(front_tex, SCREEN_UV).r) {
+				discard;
+			}
+		} else {
+			vec3 ro = CAMERA_POSITION_WORLD - storm_center;
+			vec3 world = (INV_VIEW_MATRIX * vec4(v.xyz / v.w, 1.0)).xyz;
+			vec3 rd = normalize(world - CAMERA_POSITION_WORLD);
+			if (t_opaque < entry_t(ro, rd)) {
+				discard;
+			}
 		}
 	}
 	ALBEDO = body.rgb;

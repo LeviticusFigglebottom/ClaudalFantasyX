@@ -560,6 +560,26 @@ func test_half_res_body_follows_the_tier() -> void:
 	storm.quality = "ultra"
 	storm.refresh()
 	assert_true(storm.half_res == null, "Ultra renders at full resolution")
+	# M2-RND-01: High then Low (shells) must drop the half-res body, or its compute pass keeps marching
+	# the hidden body (seen on undertow_horizon_low).
+	storm.quality = "high"
+	storm.refresh()
+	assert_true(storm.half_res != null)
+	storm.quality = "low"
+	storm.refresh()
+	assert_true(storm.half_res == null, "Low (shells) has no half-res body")
+	# A swapped-out renderer tears down again in its _exit_tree (end of frame): that second teardown must
+	# not pull the body back onto the game camera's layers under its replacement.
+	storm.quality = "high"
+	storm.refresh()
+	var old := storm.half_res
+	storm.half_res_compute = false
+	assert_true(storm.half_res != null and storm.half_res != old, "a new renderer")
+	old.teardown()
+	assert_eq(storm.body.layers, UndertowHalfRes.BODY_LAYER, "the late teardown leaves the body alone")
+	storm.half_res_compute = true
+	storm.quality = "ultra"
+	storm.refresh()
 	storm.half_res_body_scale = 0.6
 	assert_true(storm.half_res != null, "the export overrides the tier")
 	assert_between(storm.body_scale(), 0.6 - 1e-6, 0.6 + 1e-6)
@@ -569,5 +589,5 @@ func test_half_res_body_follows_the_tier() -> void:
 func test_half_res_composite_compiles() -> void:
 	var sh := load("res://game/shaders/undertow/undertow_composite.gdshader") as Shader
 	var names: Array = sh.get_shader_uniform_list().map(func(u: Dictionary) -> String: return str(u["name"]))
-	for u in ["body_tex", "storm_center", "occluder_radius_m", "top_m", "body_texel"]:
+	for u in ["body_tex", "storm_center", "occluder_radius_m", "top_m", "front_tex", "use_front"]:
 		assert_true(names.has(u), "composite lacks %s" % u)

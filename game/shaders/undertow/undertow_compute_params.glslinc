@@ -110,4 +110,8 @@ layout(set = 0, binding = 0, std140) uniform UndertowParams {
 	float wound_energy; // offset 596
 	float pocket_energy; // offset 600
 	vec3 hymn_sun_direction; // offset 608
+	mat4 view_inv_projection; // offset 624
+	mat4 view_camera; // offset 688
+	vec2 view_out_size; // offset 752
+	vec2 view_depth_size; // offset 760
 };

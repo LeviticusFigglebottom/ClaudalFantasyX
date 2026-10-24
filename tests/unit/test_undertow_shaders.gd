@@ -30,7 +30,7 @@ const SHADER_UNIFORMS := {
 	"undertow_spray.gdshader": ["spray_radius_m", "spray_height_m"],
 	"undertow_sea.gdshader": ["funnel_depth_m", "foam_octaves", "sea_glow_energy", "col_sea_deep"],
 	"undertow_sea_lid.gdshader": ["lid_height_m"],
-	"undertow_composite.gdshader": ["body_tex", "occluder_radius_m", "body_texel"],
+	"undertow_composite.gdshader": ["body_tex", "occluder_radius_m", "front_tex", "use_front"],
 }
 const LINEAR_TOL := 0.002
 

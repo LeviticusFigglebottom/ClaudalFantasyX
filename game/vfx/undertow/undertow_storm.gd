@@ -126,6 +126,18 @@ const GIZMO_COLOR := Color(0.25, 0.88, 0.78)
 		half_res_body_scale = value
 		if _built:
 			_build()
+## Whether the half-res body marches as a compute pass on the game view (M2-RND-01, UndertowBodyEffect:
+## exact occlusion) where a RenderingDevice allows it. false = the SubViewport path (diagnosis and the
+## A/B control; its occlusion is analytic and misses geometry inside the wall's foot).
+@export var half_res_compute: bool = true:
+	set(value):
+		half_res_compute = value
+		if half_res != null:
+			half_res.teardown()
+			half_res.queue_free()
+			half_res = null
+		if _built:
+			_build()
 ## The zone's key light (sun or moon): its colour and energy light the storm.
 @export var sun: DirectionalLight3D
 @export var ambient_top: Color = Color("#6F7E8E")
@@ -174,7 +186,7 @@ func _ready() -> void:
 
 func _update_half_res(body_priority: int) -> void:
 	var scale := body_scale()
-	var want := scale < 1.0 and body != null and not Engine.is_editor_hint()
+	var want := scale < 1.0 and body != null and body.visible and not Engine.is_editor_hint()
 	if not want:
 		if half_res != null:
 			half_res.teardown()
@@ -186,6 +198,7 @@ func _update_half_res(body_priority: int) -> void:
 		half_res.name = "HalfRes"
 		add_child(half_res, false, Node.INTERNAL_MODE_FRONT)
 		half_res.scale = scale
+		half_res.allow_compute = half_res_compute
 		half_res.setup(visuals, body, body_priority)
 	half_res.scale = scale
 
@@ -439,6 +452,8 @@ func _build() -> void:
 		_update_half_res(int(prio.get("body", 0)))
 	elif body != null:
 		body.visible = false
+		# Shells: no half-res body (the compute effect would otherwise keep marching the hidden body).
+		_update_half_res(int(prio.get("body", 0)))
 	_build_shells(plan, bound, full_height, str(shaders.get("shell", "")), int(prio.get("shells", 0)))
 	_build_sprays(
 		int(plan["spray_layers"]),
