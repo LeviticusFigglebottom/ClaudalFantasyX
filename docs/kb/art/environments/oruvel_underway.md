@@ -44,14 +44,15 @@ streets round the podium are **−48 m** down: a dark canyon that the divers nev
 ```
                        N (-Z)            hull keels at -1 m (the raft-town above)
                          |
-     apron ........ terrace (sea floor, -22.6) ...........
-     .        +-----------------------------+   seagrass, coral heads, Lit Age fragments
-     .        |  TOWER  30 x 18 m (5 x 3 bays)  |      the dead ship's ribs (the landmark)
-     .  gauge | stair    lamp gallery  ->  BREACH ===> sand tongue spills onto the terrace
-     .  room  | lip        (F9, 6.4 m tall)  |  (east wall fallen outward at F9-F10)
-     .  shaft +-----------------------------+
-     .                         |
-     ~~~~~~~ terrace edge: the broken roof lip, then the canyon (-48 m, dark) ~~~~~~~
+     apron ...... terrace (sea floor, silt datum -22.6; 12 m cells to ±66 m) ......
+     .    +--------------+---------------------------------+  seagrass meadow, coral heads,
+     .    | gauge room   |=| lamp gallery (F9, 6.4 m tall)  |  Lit Age fragments, the dead
+     .    | (wheel,shaft)|  two rows of dead lamp-columns   BREACH ==> ship's ribs (the landmark)
+     .    |--------------|                                  |  (the east wall's south bay fell
+     .    | stair lip  <== cord                             |   outward; sand spills in)
+     .    +--------------+---------------------------------+
+     .      TOWER 36 x 12 m (6 x 2 bays), x -18..18, z -6..6
+     ~~~~~~~ terrace edge (z ~62): the broken roof lip, then the canyon (-48 m, dark) ~~~~~~~
                          S (+Z)
 ```
 
@@ -65,12 +66,13 @@ streets round the podium are **−48 m** down: a dark canyon that the divers nev
   the **lamp gallery** on F9, running 30 m east-west (U04, U05) → the **stair lip** at the gallery's west end
   (U06) → the **gauge room** off the stair landing, in the tower's north-west corner (U07) → up the **current
   shaft** in the west core to the crown (U08) → surfacing (U09).
-- **The breach.** The tower's east wall at F9–F10 has fallen outward onto the terrace, so the gallery opens to the
-  sea floor and the morning light comes in from the east, behind the player: the gallery reads from bright
+- **The breach.** The south bay of the tower's east wall at F9–F10 has fallen outward onto the terrace (a 6 × 6.4 m
+  hole, the slab of F11 its lintel), so the gallery opens to the sea floor and the morning light comes in from the
+  east, behind the player: the gallery reads from bright
   (east, the breach) to dark (west, the stair). Sand has spilled in through it as a tongue across the gallery
   floor.
-- **The terrace** (the sea floor of the dive): silt and shell sand over the podium roof, 120 × 120 m round the
-  tower, with a seagrass meadow on its open east side, coral heads grown on rubble and on the fallen wall, Lit
+- **The terrace** (the sea floor of the dive): silt and shell sand over the podium roof, 132 × 132 m round the
+  tower (12 m cells, none under the tower, so the ground stops at its walls), with a seagrass meadow on its open east side, coral heads grown on rubble and on the fallen wall, Lit
   Age fragments, divers' leavings, and **the dead ship**: a coastal trader that sank onto the roof generations
   ago, now a keel and two rows of black ribs arching out of the sand, crusted and grown over. **Its rib-timbers are
   the kind Hullgnaw wears** (act1_ch01 §9 Creatures: "a dead ship's black rib-timbers like a corset"), so the
@@ -90,12 +92,20 @@ the fill, the Haluna README's finding). Sky ambient + SSAO, scaled down inside t
 |---|---|---|---|---|---|---|---|
 | `ch01_underway` (open) | The crown (U01), the terrace (U12, U13), the breach | 08:45 | 42° / 105° | `#FFEFE1` (the `ch01` key), energy 3.0 | sky, 0.65 | the Act I look (scatter and transmit `lagoon_teal`, deep `deep_teal_shadow`), light level ≈ 1.0 | exposure 0.65, saturation ×1.12 (the `ch01` frame); `lut_ch01_raft`'s intent (+8% in cyans and oranges) |
 | `ch01_underway_int` | The gallery (U04, U05), bell-room (U03), the collapsed floors | — | (same sun; the walls shadow it) | — | sky, 0.22 | in-scatter light level × 0.33 | as open |
-| `ch01_underway_deep` | The stair lip (U06), the gauge room (U07), the foot of the shaft | — | — | — | sky, 0.08 | in-scatter light level × 0.12 | as open |
+| `ch01_underway_deep` | The stair lip (U06), the gauge room (U07), the foot of the shaft | — | — | — | sky, 0.14 | in-scatter light level × 0.2 | as open |
+
+**Downwelling.** The rig absorbs light along the camera's ray only, not on the light's way down, so a floor at 22 m
+was lit by the full sun (the first preview captures read as a sunlit beach). The sub-frames therefore tint the key
+and the ambient (the `ch01` fill `#8FC3E0`) by the rig's own transmittance over the subject's depth, exp(−σ·d) with
+σ from `lagoon_teal` over 40 m: at the terrace (21 m) the key is teal and about half as bright, red nearly gone, so the
+lantern's pool is the only place the reef's warm colours come back. **Request to Rendering (M3-RND-24): a downwelling
+term on the rig** (the directional light attenuated by the water above each shaded point), which would also brighten the tower's
+upper floors against its foot; the preview's per-shot tint is a stand-in.
 
 **Why the interior sub-frames.** The rig's in-scatter is lit by the scene's sun with no occlusion, so inside the
 tower the water would glow as brightly as the open sea and drown the lantern pool. The interior and deep frames
 scale the in-scatter to the light that reaches the room. The preview does it by area (one value per shot);
-**the zone needs a per-area override on the rig (request to Rendering: an `UnderwaterRig` light-level scale that a
+**the zone needs a per-area override on the rig (request to Rendering, M3-RND-24: an `UnderwaterRig` light-level scale that a
 trigger volume or the zone script can set and blend over ~1 s)**.
 
 **Rhen's lantern** is the rig's (`oil_lamp` `#FFB16E`, energy 9, range 9 m, the post's warm halo, M2-RND-09). It
@@ -139,19 +149,19 @@ warm pool is always the focal value inside the tower; outside, the tower's sunli
 
 | Kit | Pieces | Key dimensions and parameters |
 |---|---|---|
-| **Sea floor** | `seafloor_patch_a`, `seafloor_patch_b` (24 × 24 m cells), `seafloor_edge` (24 m cell with the podium's broken lip), `seafloor_far` (apron 480 m with a 120 m hole, open to the south) | Silt and shell sand over the roof: current ripples (texture), low relief ±0.35 m, a few half-buried slab ends; cell edges at y 0 so a and b tile in any yaw. Edge cell: the lip wanders along local z ≈ +4 m (periodic, so edge cells join), then a broken face of two slab layers and rebar falling 14 m. |
+| **Sea floor** | `seafloor_patch_a`, `seafloor_patch_b` (12 × 12 m cells, two bays, so they stop at the tower's walls), `seafloor_edge` (12 m cell with the podium's broken lip), `seafloor_far` (apron 492 m with a 132 m hole; the canyon floor south of the terrace) | Silt and shell sand over the roof: current ripples (texture), low relief ±0.3 m, a half-buried slab end; cell edges at y 0 so a and b tile in any yaw. Edge cell: the lip wanders along local z ≈ +2 m (periodic, so edge cells join), then a broken face of two slab layers and rebar falling 14 m. |
 | **Sand tongue** | `sand_drift` | A 9 × 6 m tongue of sand spilling through a breach: 0.9 m deep at its root, feathering to 0 along a lobed edge. |
-| **Tower shell** | `tower_bay`, `tower_bay_broken`, `tower_pier` | Bay: 6.0 m × 3.2 m × 0.35 m cast wall with a 2.4 × 1.7 m window (sill 0.8 m), a spandrel band, white ceramic cladding panels on the outer face with a third missing. Broken: the window blown out to a ragged hole and the top broken away along a falling line, rebar stubs. Pier: a 0.7 m square corner column, 3.2 m, chamfered. |
+| **Tower shell** | `tower_bay`, `tower_bay_solid`, `tower_bay_broken`, `tower_pier` | Bay: 6.0 m × 3.2 m × 0.35 m cast wall with a 2.4 × 1.7 m window (sill 0.8 m); white ceramic cladding in two bands across the outer face (the sill band and the spandrel band, 0.6 m panels, about half fallen in runs), so each storey reads as a pale ribbon over bare cast piers. Solid: a blind bay (recessed panel). Broken: the window's head and the top broken away along a falling line, rebar stubs. Pier: a 0.7 m square corner column, 3.2 m. |
 | **Floors** | `floor_slab`, `floor_slab_broken` | Slab: 6 × 6 × 0.3 m with a coffered underside (two ribs each way). Broken: the same slab cracked through and hanging on its rebar at 24°, a 2.5 m hole (a tether drop point), coral on the high edge. |
-| **Rooms** | `bell_room`, `current_shaft`, `stair_flight` | Bell-room: a 6 × 6 × 3.2 m sealed room with a 1.0 m door, walls above the air line (0.7 m under the ceiling) dry and pale, a calcite tide-ring at the line. Shaft: one storey (3.2 m) of a 2.6 m round cast duct with brass ring bands, slotted vents and a floor grating; stacks. Stair: one straight flight 3.2 m down over 5.2 m with a half landing, a broken balustrade. |
+| **Rooms** | `bell_room`, `current_shaft`, `stair_flight` | Bell-room: a 6 × 6 × 3.2 m sealed room with a 1.0 m door, walls above the air line (0.7 m under the ceiling) dry and pale, a calcite tide-ring at the line, calcite drips. Shaft: one storey (3.2 m) of a 2.6 m cast duct (14 staves, two slotted vents) with brass ring bands, a grating and weed streaming upward; stacks. Stair: one straight flight 3.2 m down over 6.0 m with a half landing, side walls, a broken ceramic balustrade with one length of brass rail. |
 | **Lit Age** | `lamp_column`, `lamp_column_fallen`, `lit_fragments` | Column: 5.4 m, a fluted ceramic shaft (0.32 m) on a stepped base, a ring capital and an open lamp housing (brass cage, two glass shards, the core dark); encrusted low, algae film high. Fallen: the same broken in two on the sand. Fragments: a cluster of cladding panels, a conduit length, a cracked housing and ceramic shards, 4 × 3 m. |
-| **Salvage** | `gauge_wheel`, `gauge_wheel_cut`, `hinge_door`, `pipe_run` | Gauge wheel: a 2.0 m brass tide-gauge wheel (96 teeth, six spokes) on a ceramic housing with a dial; the cut state loses its rim (spoke stubs, cut faces bright). Door: a ceramic door hanging open on three brass hinges in a cast frame. Pipe run: 6 m of twin brass pipes on brackets with two valves and one cut gap. |
-| **Growth** | `coral_head_a`, `coral_head_b`, `seagrass_patch`, `coral_curtain` | Coral head: a 1.6–2.4 m bommie on rubble: a brain-coral boulder, branching coral (a third bleached bone-white), plate coral, sea fans and tube sponges. Seagrass: a 3 × 3 m patch of ~130 strap blades 0.3–0.9 m, leaning with the current, tips browned. Curtain: a 3.0 × 2.8 m hanging mass of soft coral, fans and weed across an opening (the shutter reveal). |
+| **Salvage** | `gauge_wheel`, `gauge_wheel_cut`, `hinge_door`, `pipe_run` | Gauge wheel: a 2.0 m brass tide-gauge wheel (96 teeth, six spokes) between ceramic cheeks on a plinth with a dial; the cut state loses its rim (spoke stubs, cut faces bright). Door: a 6 m wall bay with a 1.0 m door, the ceramic door hanging open on three brass hinges (the top one already cut). Pipe run: 6 m of twin brass pipes on brackets with two valves and one cut gap. |
+| **Growth** | `coral_head_a`, `coral_head_b`, `seagrass_patch`, `coral_curtain` | Coral head: a 1.6–2.4 m bommie on rubble: a lobed brain-coral boulder, a dozen branching thickets (a third to a half bleached bone-white), plate coral, four sea fans and tube sponges. Seagrass: a 3 × 3 m patch of ~240 strap blades 0.4–1.1 m, leaning with the current, tips browned. Curtain: a 3.0 × 2.8 m hanging mass of soft coral, fans and weed across an opening (the shutter reveal). |
 | **Story props** | `divers_cord`, `tether_line`, `wreck_ribs` | Cord: 2.4 m of hemp across a stair, ~100 knots, a quarter of them new and pale, frayed tails. Tether: 6 m of line from the surface with a lead weight and a brass clip. Ribs: the dead ship, 15 m: a keel, 13 pairs of black frames arching 2.6 m out of the sand, a few planks, the stem post, coral grown on the frames. |
 | **Above** | `hull_keels` | Oruvel from below: three lashed hulls' bottoms (11 m, 8 m, 7 m) with weed beards, crossbeams and a dive mooring line: the dark lattice in U01. A stand-in until the raft-town kit (act1_ch01 §9 item 1) ships its own. |
 | **Preview only** | `diver_lantern` | A 0.3 m brass oil lantern with a lit flame, for the preview frames. Rhen's lantern is Character Art's; this is a stand-in. |
 
-**Budgets (triangles, LOD0 / LOD1):** ground cells 6,000 / 400, apron 3,000 / 800, tower bays and slabs 3,500 /
+**Budgets (triangles, LOD0 / LOD1):** ground cells 2,000 / 100, edge cell 4,000 / 300, apron 3,500 / 800, tower bays and slabs 3,500 /
 200, rooms 8,000 / 600, lamp columns 4,000 / 300, gauge wheel 9,000 / 600, coral heads 9,000 / 700, seagrass
 5,000 / 400, wreck ribs 12,000 / 900, small props ≤ 3,000 / 250. LOD1 begins at 70 m (the Haluna table); every
 piece is a chain (`<piece>`, `<piece>-lod1`), so one LOD draws at every distance (vegetation.md "One LOD at
@@ -206,7 +216,7 @@ shots built in `oruvel_underway_kit/`.
 | U13 ◆ | 35 mm (37.8°) | 0.9 m, low among the ribs | The dead ship's ribs arching against the bright water, crusted, a coral head grown in the hold, the tower faint behind. | Plants Hullgnaw's corset without a word. |
 | U14 ◆ | 35 mm (37.8°) | 2.5 m, kit row | Review only: the props and growth pieces in a row on the sand, open light. | The kit, side by side. |
 
-**Registered baselines (the repo's binary budget: at most two):** chosen after the lavapipe iteration (§6).
+**Registered baselines (the repo's binary budget: at most two):** U04 (`ou_u04_lamp_gallery`) and U12 (`ou_u12_terrace`): the inside and the outside of the kit, the lantern's warm pool against the teal in both.
 
 ## 5. Review Checklist
 
@@ -220,7 +230,21 @@ shots built in `oruvel_underway_kit/`.
 ## 6. The Preview (M3-ENV-05)
 
 `game/levels/_tests/oruvel_underway_kit/oruvel_underway_preview.tscn` composes the kit for the ◆ shots (its README
-lists the files). The read of the final captures is in the task file's notes.
+lists the files), on the existing `UnderwaterRig`. Read of the final captures (lavapipe, 960 × 540):
+- **U04** (baseline): two rows of dead lamp-columns receding into the dark, the lantern's warm pool on the nearest
+  column and the floor, the windows and the breach's morning light cool teal on the right and across the near floor,
+  coral curtains in the left bays, the far end falling to dark. The strongest interior frame.
+- **U12** (baseline): the tower rising pale out of the meadow with its storeys banded in surviving ceramic, the
+  breach a dark mouth with columns inside, the dead ship's ribs at the left, seagrass in the near ground, a half
+  bleached coral head and the lantern's warm pool on the sand at the lower right.
+- **U06**: the knotted cord across the frame, the stair going down, held motes (about 2–3% of the frame) sinking
+  into the dark below it. **U07**: the wheel, a ring of brass and verdigris in the lantern's light, the shaft beside
+  it. **U01**: broken crown walls at the frame's foot, a hull's dark keel across the Snell window, the tether rising.
+  **U13**: the ribs in a row against the tower. **U14**: the kit row.
+- Known limits: inside the tower the lantern's halo is a warm haze over much of the frame whenever the lamp is within
+  ~2.5 m of the lens (the rig's single-scatter halo, as designed); the coral boulders read as lumpy masses more than
+  as brain coral at game distance; the hulls seen from the terrace are dark ellipses against the dark total
+  internal reflection; the coral curtain reads as hanging rags at a distance. No figure: Rhen is Character Art's.
 
 ## Revisions
 - 2026-10-24 (env-art, M3-ENV-05): first version, written against the act outline Ch1, the Ch1 beat sheet (C1-02 to
@@ -228,3 +252,9 @@ lists the files). The read of the final captures is in the task file's notes.
   its underwater notes, tech/underwater.md and M2-RND-09, before any geometry. The floor count (F9 = the gallery at the
   terrace, "nobody goes below the ninth floor") and the dive's earlier sun (08:45, 42° / 105°) are this sheet's calls;
   the colour script's `ch01` row still describes the 10:30 raft-town.
+- 2026-10-24 (env-art, M3-ENV-05, after the preview): the tower is **36 × 12 m** (6 × 2 bays) and the ground cells
+  **12 m**, so the cells stop at the tower's walls and the stairwell stays clear of silt; the breach is one bay (the
+  east wall's south bay), not the whole wall (the first captures read as a building on stilts); the cladding runs in
+  **two bands per storey** (the panels scattered over the piers read as a checkerboard); the sub-frames add the
+  **downwelling** tint (the first captures were lit like a sunlit beach) and the deep area keeps a little teal
+  (ambient 0.14, in-scatter × 0.2); the dive opens the glimmer gate at the colour script's 1.5 for the held motes.
