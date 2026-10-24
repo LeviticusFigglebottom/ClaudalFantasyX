@@ -44,6 +44,7 @@ func _ready() -> void:
 	margin.add_child(v)
 	_view = EnemyPageView.new()
 	_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_view.max_width = HudLayout.rect_of(_m).size.x - HudLayout.num(_m, "pad") * 2.0
 	v.add_child(_view)
 	_hint = Label.new()
 	_hint.theme_type_variation = &"DimLabel"

@@ -102,3 +102,26 @@ static func _grow(fraction: float) -> Control.GrowDirection:
 	if is_equal_approx(fraction, 1.0):
 		return Control.GROW_DIRECTION_BEGIN
 	return Control.GROW_DIRECTION_BOTH
+
+
+## M2-UI-28 (localisation readiness): makes `l`, a help or hint line sitting at the foot of its
+## panel, wrap onto as many lines as its text needs and grow upward from that foot, so a longer
+## language or a larger text size never runs it past the panel's side. A line that fits looks as
+## it did (same rect, same alignment); only a longer one takes more lines, above, and a shorter
+## text after it gives them back (a grown Control never shrinks on its own). Call it after
+## placing `l`; returns `l`.
+static func wrap_upward(l: Label) -> Label:
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	var h := l.size.y
+	var foot := l.position.y + h
+	var refit := func() -> void:
+		var want := maxf(h, l.get_combined_minimum_size().y)
+		if l.size.y != want:
+			l.size = Vector2(l.size.x, want)
+		if l.position.y != foot - l.size.y:
+			l.position.y = foot - l.size.y
+	l.minimum_size_changed.connect(refit)
+	# A hidden label skips its minimum-size update, so a text set while hidden refits on its draw.
+	l.draw.connect(refit, CONNECT_DEFERRED)
+	return l

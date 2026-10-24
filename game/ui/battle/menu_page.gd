@@ -60,6 +60,7 @@ func setup(metrics: Dictionary, pid: StringName, title: String, page_rows: Array
 	_header.position = Vector2(HudLayout.num(_m, "text_indent"), 0.0)
 	_header.size = Vector2(size.x - HudLayout.num(_m, "text_indent") * 2.0, HudLayout.num(_m, "header_height"))
 	_header.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	_header.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS  # never past the page (M2-UI-28)
 	_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_header)
 	if title != "":

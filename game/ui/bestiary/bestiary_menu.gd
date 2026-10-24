@@ -247,6 +247,7 @@ func _build() -> void:
 		margin.add_theme_constant_override(side, int(HudLayout.num(gm, "pad")))
 	page_panel.add_child(margin)
 	_view = EnemyPageView.new()
+	_view.max_width = HudLayout.rect_of(gm).size.x - HudLayout.num(gm, "pad") * 2.0
 	margin.add_child(_view)
 
 
