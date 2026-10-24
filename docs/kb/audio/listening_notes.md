@@ -432,3 +432,44 @@ own. The beds play at the ambience level (−26 LUFS), so turn up to hear them, 
   creatures in the rock, or like clicks in the file?
 - **For both:** can you hear them wrap (52 s and 46 s)? Is anything distracting enough to notice on its tenth time
   round?
+
+## M3: Act I routes (M3-AUD-11)
+
+Two field loops for the routes between Act I's towns. Neither scene exists yet, so for now you can only hear them
+on their own. Both are at the music level (−16 LUFS). The scenes are in act_outline.md (Ch4, Ch6). Play
+`saltgrass_causeway.ogg` before them: all three are walking music, and each should sound like a different journey.
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/brightwater_ferry.ogg` | 76.2 s loop | Ch4: the dawn ferry across Brightwater strait, with the drifting trader |
+| 2 | `music/brine_shoals.ogg` | 72.7 s loop | Ch6: the Brine Shoals, wrecks and mud-flats, smoke from the raid ahead |
+
+### (1) The Brightwater ferry: open water at dawn, and a drowned hull in the middle of it
+
+- **The idea:** the first time the pilgrimage leaves the coast. It's in E-flat with a raised fourth (A natural),
+  which is the dawn colour: bright and a little unearthly. It's in a slow 9/8, one bar to each roll of the hull. A
+  high flute carries the tune over a low string pad and a plucked rigging figure that rolls in threes. The sea is a
+  band of noise that swells once a bar.
+- **Ysolde:** in the middle section a hand-damped metallophone plays two even notes a bar against the 9/8's three.
+  It's the only part with no human timing: it sits exactly on the grid. **Does it read as someone cold and correct
+  stepping on board, or just as a rhythm mistake?** If it sounds wrong rather than cold, it can fall in line with
+  the threes.
+- **The derelict (about 48–62 s):** the harmony darkens to C-flat and A-flat minor (the minor key's chords), the
+  flute stops, the rigging thins to one pluck per beat, and a ship's bell heard over water rings twice off the beat,
+  as if the roll were ringing it. Then one long flute note. **Does the passage make you think of a ship with nobody
+  at the helm?** It shouldn't sound like danger yet: the boss cue (`spar_wraith`) is the danger.
+- It should be distinct from the causeway (A minor, bare fifths, a 4/4 walk). Is it? Can you hear the wrap at
+  76.2 s?
+
+### (2) The Brine Shoals: walking toward a fire
+
+- **The idea:** low tide over a graveyard of hulls. It's in C-sharp minor, in 5/4 grouped 3+2: a long step and then
+  the pull of the foot out of the mud. A big frame drum makes the steps, with softer strokes after each for the mud
+  letting go, over a muted bass and a low, groaning string pad. A salvage lute carries the tune and picks its long
+  notes in tremolo, like a Saltwright playing on a cold beach.
+- **The smoke (about 45–64 s):** a D major chord over a C-sharp bass (one sour, borrowed colour), a large gong, the
+  lute at its highest, and sparse crackle like embers. **Does the crackle read as fire, or as clicks in the file?**
+  If it's clicks, it either goes or gets darker.
+- **Is it heavy without being a battle?** This is the route before the raid and the Inquisitor fight, so it should
+  feel wary. The fight has its own cue.
+- Does the 5/4 feel like trudging, or does it limp? Can you hear the wrap at 72.7 s?
