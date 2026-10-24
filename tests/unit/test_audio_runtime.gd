@@ -114,6 +114,7 @@ func test_buses_are_built_once_with_their_sends() -> void:
 func test_music_crossfades_and_stops_the_old_cue() -> void:
 	dir.flag_reader = func(_f: StringName) -> bool: return false
 	dir.apply_zone("res://x.tscn")
+	dir.flush_pending()  # zone music loads on a worker thread
 	assert_eq(dir.music.current, &"a", "the zone's cue")
 	assert_between(dir.music.gain(), 0.0, 0.01, "it fades in")
 	var first := dir.music.player()
@@ -132,6 +133,19 @@ func test_music_crossfades_and_stops_the_old_cue() -> void:
 	_run(0.3)
 	assert_eq(dir.music.current, &"")
 	assert_false(dir.music.player() != null, "nothing plays after silence")
+	_done()
+
+
+func test_zone_music_loads_off_the_main_thread_then_plays() -> void:
+	dir.play_music_async(&"b", 0.0)
+	if dir.pending_cue() != &"":
+		assert_eq(dir.music.current, &"", "nothing plays until the file has loaded")
+		dir.flush_pending()
+	assert_eq(dir.pending_cue(), &"", "nothing left waiting")
+	assert_eq(dir.music.current, &"b", "then the cue plays")
+	dir.play_music_async(&"a", 0.0)
+	dir.stop_music(0.0)
+	assert_eq(dir.pending_cue(), &"", "a stop drops a pending cue")
 	_done()
 
 

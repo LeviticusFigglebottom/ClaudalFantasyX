@@ -105,6 +105,7 @@ func test_the_director_plays_haluna_beds_with_the_wind_scaled() -> void:
 	assert_eq((dir.beds[&"haluna_day"] as FadeVoice).target, 0.0, "night: the day bed fades out")
 	assert_true(dir.beds.has(&"dock") and (dir.beds[&"dock"] as FadeVoice).target == 1.0, "and the dock comes in")
 	dir.apply_zone(SHRINE)
+	dir.flush_pending()  # zone music loads on a worker thread
 	assert_eq(dir.music.current, &"a", "the shrine's music.json row still plays its cue")
 	assert_eq((dir.beds[&"shrine_interior"] as FadeVoice).target, 1.0, "under its interior bed")
 	assert_eq((dir.beds[&"wind"] as FadeVoice).target, 0.0, "and no wind indoors")

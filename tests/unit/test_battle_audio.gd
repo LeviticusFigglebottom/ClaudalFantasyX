@@ -41,6 +41,7 @@ func _attach() -> void:
 	audio.name = "BattleAudio"
 	dir.add_child(audio)
 	audio.attach(dir, null, engine, vfx)
+	dir.flush_pending()  # the battle cue loads on a worker thread
 
 
 func _teardown() -> void:

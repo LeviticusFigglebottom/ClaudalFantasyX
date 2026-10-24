@@ -32,6 +32,7 @@ func before_each() -> void:
 
 func test_the_zone_plays_the_shrine_cue() -> void:
 	dir.apply_zone(SCENE)
+	dir.flush_pending()  # zone music loads on a worker thread
 	assert_eq(dir.music.current, &"shell_shrine_interior")
 	var stream := dir.music.player().stream as AudioStreamOggVorbis
 	assert_true(stream != null and stream.loop, "the cue loops")

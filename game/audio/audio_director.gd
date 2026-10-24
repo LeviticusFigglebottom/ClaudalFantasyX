@@ -69,6 +69,8 @@ var _battles: Array[Node] = []
 var _seen_seq_music := false
 var _seen_box_open := false
 var _seen_battle := false
+## A cue waiting for its files to load on a worker thread: {cue, sec, files} ({} when none).
+var _pending: Dictionary = {}
 
 
 func _ready() -> void:
@@ -139,6 +141,7 @@ func advance(delta: float) -> void:
 		bed.step(delta, music.floor_db)
 	_step_ducks(delta)
 	verb.advance(delta)
+	_poll_pending()
 	ui.step()
 	for l: Variant in listeners.values():
 		if not is_instance_valid(l):
@@ -166,7 +169,52 @@ func play_music(cue_id: StringName, sec: float = -1.0) -> bool:
 
 
 func stop_music(sec: float = -1.0) -> void:
+	_pending = {}
 	play_music(AudioData.SILENCE, sec)
+
+
+## play_music without loading on the main thread: a cue whose files aren't cached yet loads on a worker thread
+## (ResourceLoader.load_threaded_request) and starts once loaded, so a zone swap or a battle's first frames never
+## carry the decode-and-load of a music file (the router's swap-frame budget). A later request replaces a pending one.
+func play_music_async(cue_id: StringName, sec: float = -1.0) -> void:
+	_pending = {}
+	var row := AudioData.cue(music_data, cue_id)
+	var files := AudioData.cue_files(row)
+	var waiting: Array[String] = []
+	for f in files:
+		if ResourceLoader.exists(f) and not ResourceLoader.has_cached(f):
+			if ResourceLoader.load_threaded_request(f, "AudioStream") == OK:
+				waiting.append(f)
+	if waiting.is_empty() or cue_id == AudioData.SILENCE:
+		play_music(cue_id, sec)
+		return
+	_pending = {"cue": cue_id, "sec": sec, "files": waiting}
+
+
+## The cue a threaded load is still waiting on (&"" for none).
+func pending_cue() -> StringName:
+	return StringName(_pending.get("cue", &""))
+
+
+## Blocks until a pending cue has loaded and starts it (tests).
+func flush_pending() -> void:
+	if _pending.is_empty():
+		return
+	for f: String in _pending["files"]:
+		ResourceLoader.load_threaded_get(f)
+	var p := _pending
+	_pending = {}
+	play_music(p["cue"], float(p["sec"]))
+
+
+func _poll_pending() -> void:
+	if _pending.is_empty():
+		return
+	for f: String in _pending["files"]:
+		var st := ResourceLoader.load_threaded_get_status(f)
+		if st == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			return
+	flush_pending()
 
 
 ## Applies the zone row for `scene_path` (SceneRouter.scene_swapping calls this under the fade).
@@ -184,7 +232,7 @@ func apply_zone(scene_path: String) -> void:
 		zone_applied.emit(scene_path, zone)
 		return
 	if zone.has("music"):
-		play_music(StringName(str(zone["music"])))
+		play_music_async(StringName(str(zone["music"])))
 	if zone.has("ambience"):
 		var ids: Array[StringName] = []
 		for a: Variant in zone["ambience"]:
