@@ -484,3 +484,16 @@ class MuffleTest(unittest.TestCase):
         errs = dc.muffle_errors(mix, rb, buses)
         for frag in ("leave Music out", "cutoff_hz < open_hz", "muffle.reason", "names the ear"):
             self.assertTrue(any(frag in e for e in errs), (frag, errs))
+
+
+class VoicePendingTest(unittest.TestCase):
+    """M3-AUD-24: a voices.json row marked pending may name a speaker this branch's speakers.json lacks."""
+
+    def test_pending_rows(self) -> None:
+        files = dc.load_files(ROOT)
+        rows = dc.merged_sfx(files)["sfx"]
+        doc = copy.deepcopy(files[dc.VOICES])
+        doc["speakers"]["nobody_yet"] = {"blips": ["voice_soft"], "pending": True}
+        self.assertFalse([e for e in dc.voice_errors(doc, files.get(dc.SPEAKERS), rows) if "nobody_yet" in e])
+        doc["speakers"]["nobody_yet"].pop("pending")
+        self.assertTrue(any("nobody_yet" in e for e in dc.voice_errors(doc, files.get(dc.SPEAKERS), rows)))

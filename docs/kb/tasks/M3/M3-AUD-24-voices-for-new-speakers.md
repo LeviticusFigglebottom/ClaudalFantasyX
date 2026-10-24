@@ -29,6 +29,12 @@ failed that check. The Lead's merge added placeholder rows so the gate passes: `
   - sabe, Ione Sabe, a terse grieving captain: voice_low 1.05, 80 ms, jitter 0.03;
   - skipper_sadi, Sadi Moru, an amiable haggler: voice_bright 1.00, 55 ms.
   validate_data 0/0; test_voice_audio covers every speaker.
+- 2026-10-24: the menus track flagged claude/m2-slice's Ch4–Ch9 cast (17 speakers with no voice). They are added as
+  `"pending": true` rows: tavi (child), ione (= sabe), poolkeeper, boatman, crowd, garo (the Pemakar smith), tender,
+  ferryman, townsfolk, ferrymaster, marra, hobb (the watch captain), fenn (old beacon keeper), stillguard and
+  inquisitor (the Order: low, slow, almost no jitter), clerk and wright. data_check skips the speaker-exists check for
+  a pending row (VoicePendingTest). With m2-slice's speakers.json swapped in, validate_data reports no voice errors.
+  Drop the flags when m2-slice merges.
 - Speakers: `game/data/dialogue/speakers.json`; voices: `docs/kb/tech/audio_runtime.md` "Voices".
 
 ## Review log
