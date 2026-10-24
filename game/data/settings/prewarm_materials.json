@@ -591,7 +591,8 @@
         "res://game/levels/_tests/characters/asha/asha_stage.tscn"
       ],
       "tier": "high",
-      "note": "M1-CHR-02 Asha hero material (skin_head). Add her battle and dialogue scene paths when they exist."
+      "note": "M1-CHR-02 Asha hero material (skin_head). Add her battle and dialogue scene paths when they exist.",
+      "resident": true
     },
     {
       "path": "res://assets/characters/asha/materials/skin_body.tres",
@@ -599,7 +600,8 @@
         "res://game/levels/_tests/characters/asha/asha_stage.tscn"
       ],
       "tier": "high",
-      "note": "M1-CHR-02 Asha hero material (skin_body). Add her battle and dialogue scene paths when they exist."
+      "note": "M1-CHR-02 Asha hero material (skin_body). Add her battle and dialogue scene paths when they exist.",
+      "resident": true
     },
     {
       "path": "res://assets/characters/asha/materials/eye.tres",
@@ -607,7 +609,8 @@
         "res://game/levels/_tests/characters/asha/asha_stage.tscn"
       ],
       "tier": "high",
-      "note": "M1-CHR-02 Asha hero material (eye). Add her battle and dialogue scene paths when they exist."
+      "note": "M1-CHR-02 Asha hero material (eye). Add her battle and dialogue scene paths when they exist.",
+      "resident": true
     },
     {
       "path": "res://assets/characters/asha/materials/cornea.tres",
@@ -615,7 +618,8 @@
         "res://game/levels/_tests/characters/asha/asha_stage.tscn"
       ],
       "tier": "high",
-      "note": "M1-CHR-02 Asha hero material (cornea). Add her battle and dialogue scene paths when they exist."
+      "note": "M1-CHR-02 Asha hero material (cornea). Add her battle and dialogue scene paths when they exist.",
+      "resident": true
     },
     {
       "path": "res://assets/characters/asha/materials/eye_occlusion.tres",
@@ -623,7 +627,8 @@
         "res://game/levels/_tests/characters/asha/asha_stage.tscn"
       ],
       "tier": "high",
-      "note": "M1-CHR-02 Asha hero material (eye_occlusion). Add her battle and dialogue scene paths when they exist."
+      "note": "M1-CHR-02 Asha hero material (eye_occlusion). Add her battle and dialogue scene paths when they exist.",
+      "resident": true
     },
     {
       "path": "res://assets/characters/asha/materials/tear_line.tres",
@@ -631,7 +636,8 @@
         "res://game/levels/_tests/characters/asha/asha_stage.tscn"
       ],
       "tier": "high",
-      "note": "M1-CHR-02 Asha hero material (tear_line). Add her battle and dialogue scene paths when they exist."
+      "note": "M1-CHR-02 Asha hero material (tear_line). Add her battle and dialogue scene paths when they exist.",
+      "resident": true
     },
     {
       "path": "res://assets/characters/asha/materials/lash.tres",
@@ -639,7 +645,8 @@
         "res://game/levels/_tests/characters/asha/asha_stage.tscn"
       ],
       "tier": "high",
-      "note": "M1-CHR-02 Asha hero material (lash). Add her battle and dialogue scene paths when they exist."
+      "note": "M1-CHR-02 Asha hero material (lash). Add her battle and dialogue scene paths when they exist.",
+      "resident": true
     },
     {
       "path": "res://assets/characters/asha/materials/brow.tres",
@@ -647,7 +654,8 @@
         "res://game/levels/_tests/characters/asha/asha_stage.tscn"
       ],
       "tier": "high",
-      "note": "M1-CHR-02 Asha hero material (brow). Add her battle and dialogue scene paths when they exist."
+      "note": "M1-CHR-02 Asha hero material (brow). Add her battle and dialogue scene paths when they exist.",
+      "resident": true
     },
     {
       "path": "res://assets/characters/asha/materials/hair.tres",
@@ -655,7 +663,8 @@
         "res://game/levels/_tests/characters/asha/asha_stage.tscn"
       ],
       "tier": "high",
-      "note": "M1-CHR-02 Asha hero material (hair). Add her battle and dialogue scene paths when they exist."
+      "note": "M1-CHR-02 Asha hero material (hair). Add her battle and dialogue scene paths when they exist.",
+      "resident": true
     },
     {
       "path": "res://assets/characters/asha/materials/cloth.tres",
@@ -663,7 +672,8 @@
         "res://game/levels/_tests/characters/asha/asha_stage.tscn"
       ],
       "tier": "high",
-      "note": "M1-CHR-02 Asha hero material (cloth). Add her battle and dialogue scene paths when they exist."
+      "note": "M1-CHR-02 Asha hero material (cloth). Add her battle and dialogue scene paths when they exist.",
+      "resident": true
     },
     {
       "path": "res://assets/characters/asha/materials/cloth_sleeve.tres",
@@ -671,7 +681,8 @@
         "res://game/levels/_tests/characters/asha/asha_stage.tscn"
       ],
       "tier": "high",
-      "note": "M1-CHR-02 Asha hero material (cloth_sleeve). Add her battle and dialogue scene paths when they exist."
+      "note": "M1-CHR-02 Asha hero material (cloth_sleeve). Add her battle and dialogue scene paths when they exist.",
+      "resident": true
     },
     {
       "path": "res://game/world/water/prewarm/water_ocean_low.tres",
