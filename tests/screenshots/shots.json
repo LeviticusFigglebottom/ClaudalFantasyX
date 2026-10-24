@@ -1100,6 +1100,14 @@
     {
       "id": "lattice_menu_activate",
       "scene": "res://game/ui/menus/lattice/shots/lattice_menu_activate.tscn"
+    },
+    {
+      "id": "equip_menu",
+      "scene": "res://game/ui/menus/equip/shots/equip_menu.tscn"
+    },
+    {
+      "id": "equip_customize",
+      "scene": "res://game/ui/menus/equip/shots/equip_customize.tscn"
     }
   ]
 }
