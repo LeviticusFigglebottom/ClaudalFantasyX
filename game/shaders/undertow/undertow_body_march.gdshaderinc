@@ -8,19 +8,7 @@
 #ifndef HYMN_UNDERTOW_BODY_MARCH_GDSHADERINC
 #define HYMN_UNDERTOW_BODY_MARCH_GDSHADERINC
 
-vec4 undertow_lattice(vec3 p) {
-	vec3 i = floor(p);
-	vec3 f = p - i;
-	vec3 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
-	return texture(noise_tex, (i + u + 0.5) / noise_texels);
-}
-
-float undertow_noise(vec3 p) {
-	return undertow_lattice(p).r;
-}
-
-// The common include's striation warp fetches this lattice instead of hashing.
-#define UNDERTOW_BAKED_NOISE
+#include "res://game/shaders/undertow/undertow_lattice.gdshaderinc"
 
 #include "res://game/shaders/undertow/undertow_common.gdshaderinc"
 
@@ -65,23 +53,6 @@ float undertow_noise(vec3 p) {
 #define UNDERTOW_BILLOW_OFFSET vec3(-31.7, 8.9, 14.3)
 // Mean of |2n - 1| over the quintic value-noise lattice (measured: 0.330 over 4e5 samples).
 #define UNDERTOW_BILLOW_MEAN 0.33
-
-// hymn_fbm3 (lacunarity 2, gain 0.5) on the baked lattice.
-float undertow_fbm(vec3 p, int octaves) {
-	float sum = 0.0;
-	float amp = 1.0;
-	float norm = 0.0;
-	for (int o = 0; o < HYMN_FBM_MAX_OCTAVES; o++) {
-		if (o >= octaves) {
-			break;
-		}
-		sum += amp * undertow_noise(p);
-		norm += amp;
-		p = p * 2.0 + HYMN_FBM_SHIFT3;
-		amp *= 0.5;
-	}
-	return sum / max(norm, HYMN_EPSILON);
-}
 
 // hymn_curl_noise3 on the baked lattice: the vector potential is the lattice's RGB (three decorrelated
 // fields), its gradients forward differences (four fetches instead of three analytic-gradient lookups).
