@@ -19,14 +19,16 @@ var _now: Callable
 var _mark_usec := UNSET
 
 
-## `now_usec`: a Callable returning the current time in microseconds (default: Time.get_ticks_usec).
+## `now_usec`: a Callable returning the current time in microseconds. Left invalid (the default), the clock
+## calls Time.get_ticks_usec() directly: it stores no Callable to the Time singleton, which a FrameClock kept
+## alive by a coroutine suspended at quit would otherwise pin past Godot's exit check (boot smoke, M2-ARC-05 fix).
 func _init(now_usec: Callable = Callable()) -> void:
-	_now = now_usec if now_usec.is_valid() else Callable(Time, &"get_ticks_usec")
+	_now = now_usec
 
 
 ## The clock's current time in microseconds.
 func now_usec() -> int:
-	return int(_now.call())
+	return int(_now.call()) if _now.is_valid() else Time.get_ticks_usec()
 
 
 ## Starts (or restarts) the window now.

@@ -2,7 +2,7 @@
 id: M1-RND-28
 title: Export shader baker on a Windows release build; measure boot and zone entries against ADR 0029
 role: rendering
-status: review
+status: done
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M1-RND-27, M1-ARC-16]
@@ -44,3 +44,4 @@ Report: `docs/kb/qa/gpu/2026-10-24-rnd-28-shader-baker.md`.
 - `max_visible_frame_ms` (M1-ARC-16) isn't merged; the sweep measured visible frames itself.
 
 ## Review log
+- 2026-10-24 review-sweep-R (environment): **approve.** The templates came from the official release, and the SHA-512 is recorded and was checked with `sha512sum -c`. Nothing is committed. `export_presets.cfg`: `shader_baker/enabled=true` on Windows Desktop, and the new `Windows Perf` preset (feature `perf_build`, `run/main_scene.perf_build`) that shipped builds never see. The measurement is a careful baked/unbaked/editor comparison, cold and warm. It found that editor-binary cold numbers understate a player's first launch, and the M2-ARC-04 blocker (a release build can't compile SceneRouter without `_tests`), so M2-ARC-04 is now the first thing to fix before any shippable build. Criterion 3's "visible frames come from `max_visible_frame_ms`" couldn't be met, because M1-ARC-16 wasn't merged yet. M2-ARC-03's PC review re-measured with the router's own stat, which covers it. One run per cell; the RND-29 re-measure covers three presets. No game code changed, so no Godot run is needed.

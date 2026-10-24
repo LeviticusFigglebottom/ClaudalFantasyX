@@ -35,6 +35,9 @@ We're building *Hymn of the Undertow*: an original, cinematic, turn-based JRPG i
 4. **Repo binaries:** the screenshot baselines are about 9 MB and every re-approval adds history. Git LFS (human decision) is increasingly needed.
 5. **The shared machine is oversubscribed** with parallel agents (load 10-20 on 4 CPUs). Mitigated with `HYMN_SHOTS`, per-run `user://`, and a load-aware perf test.
 
+## The human's standing direction (2026-10-24)
+- **Work never waits on the human's reviews.** M3+ work (Act I: Prologue to Ch9, including the Tidecup Reefball match) runs in parallel with the pending M2 slice review (SPEC §16 Q7). Items that need the human (the M2 review, the music listen, Asha's face direction, LFS) are collected for them, but they block no environment. Godot 4.7.2: port once the slice content is final (ADR 0032).
+
 ## Blockers / questions for the human
 - **Playtest the first minutes** (docs/PLAYTEST.md; the PC session prepares C:\Users\Aaron\Hymn_Playtest\PLAY.bat). Report what confuses, drags or feels wrong, and say whether Asha's close-up face is acceptable as a direction (SPEC §14 risk; ADR 0019 stylisation is the fallback).
 - **Listen to the music** (docs/kb/audio/listening_notes.md, §16 Q3).

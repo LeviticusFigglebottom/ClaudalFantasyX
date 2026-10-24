@@ -2,7 +2,7 @@
 id: M2-RND-06
 title: Rendering nits from review-sweep-Q (battle VFX safety test bounds, Undertow open items, orphan fixture import)
 role: rendering
-status: review
+status: done
 owner_session: "worktree-agent-a30d6e9e3e395d6ec"
 reviewer: lead
 depends_on: [M2-RND-01, M2-RND-03]
@@ -31,3 +31,4 @@ Small findings from review-sweep-Q on M2-RND-01, M2-RND-03 and M1-RND-23. None o
   `.gdignore` folder (checked against the old tree: it flags this file).
 
 ## Review log
+- 2026-10-24 review-sweep-R (lead): **approve.** `test_battle_vfx.gd` asserts the contract (`CONTRACT_FLASH_MAX_ALPHA` 0.3, `CONTRACT_FLASH_MIN_INTERVAL_S` 0.5), each `kind: flash` alpha within the cap, and the HUD layer read from `battle_sandbox.tscn`'s `HudLayer` SceneState. A negative check is recorded. undertow.md § Compute body gives the current 2.0–2.4 ms projection and an "Open items" list. `tests/fixtures/mote_metrics/` now holds only `.gdignore` and the PNG, and `tools/tests/test_gdignore_imports.py` guards against the orphan coming back. `--filter=battle_vfx`: 8/0.

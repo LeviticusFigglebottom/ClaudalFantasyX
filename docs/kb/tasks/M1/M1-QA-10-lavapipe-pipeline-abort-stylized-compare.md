@@ -2,7 +2,7 @@
 id: M1-QA-10
 title: Intermittent lavapipe pipeline-creation error and abort at exit in the asha_face_stylized_compare capture
 role: qa
-status: review
+status: done
 owner_session: "agent-a2c65f9a3e5a1acdb"
 depends_on: []
 milestone: M1
@@ -33,3 +33,4 @@ That made `capture.sh` exit non-zero, so `ci_local.sh` stopped before the compar
 - **Gate:** `HYMN_SKIP_BLENDER=1 HYMN_SHOTS=<the 10 asha_* shots> tools/ci_local.sh` exit 0. validate_data 0/0, tools unittests 495 OK, taskboard OK, gdlint and gdformat clean, Godot tests 1432/0 failed (this covers character_shading and shader_prewarm), coverage OK. The asha RMSEs vs baselines match the Lead's batch-3 gate value for value: front 0.00052, q34 0.00033, profile 0.00057, face_neutral 0.00001, face_smile 0.00001, face_grief 0.00000, sleeve_s0 0.00010, sleeve_s4 0.00010, extreme_pose 0.00029, stylized_compare 0.00003. No shader, scene or asset changed, so no rhen_* shot can move, and none was run.
 
 ## Review log
+- 2026-10-24 review-sweep-R (lead): **approve-with-fixes.** A rigorous root cause. 90 processes under load gave no hit, and the report doesn't call it a flake. The race is traced to `render_pipeline_create()` reading `vertex_formats` unlocked (`has()` then the non-const `operator[]` default-inserts an empty layout), which accounts for each line of the signature: location 0, `free invalid ID: 0` from the RID() pipeline, and the SIGSEGV in `vertex_format_free` at shutdown. The gdb repro (`tools/dev/rd_vertex_format_race/run.sh forced`, with `.gdignore`'d project, pinned build-id symbols, and scheduler-locked interleaving) reproduces the exact message; `plain` is clean. It shows the race is real and matches; it can't prove the batch-3 hit was this race, but no other cause fits, and the docs say "any other error is not this race". `capture.sh` names the shot and keeps its exit codes. screenshots.md "Engine race" gives a re-run-once rule and says never to re-approve. No baselines changed. **M1-ARC-17:** the Lead's choice (c) in the ADR 0032 update is one of the task's options, and its second criterion applies only to (a)/(b), so ARC-17 is closed with this sweep. **Fix (M2-NIT-04):** in `HYMN_CAPTURE_SHARED=1` mode, capture.sh adds to the closing list but writes no `CAPTURE PROCESS EXIT` log line, so the documented signature is missing from the log in that mode.
