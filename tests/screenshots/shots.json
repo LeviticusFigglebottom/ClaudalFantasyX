@@ -1771,6 +1771,26 @@
     {
       "id": "field_menu_map_underway",
       "scene": "res://game/ui/map/shots/field_menu_map_underway.tscn"
+    },
+    {
+      "id": "field_menu_21x9",
+      "scene": "res://game/ui/field_menu/shots/field_menu.tscn",
+      "resolution": [1280, 540]
+    },
+    {
+      "id": "field_menu_16x10",
+      "scene": "res://game/ui/field_menu/shots/field_menu.tscn",
+      "resolution": [1280, 800]
+    },
+    {
+      "id": "battle_hud_21x9",
+      "scene": "res://game/battle/scene/shots/battle_player_preview.tscn",
+      "resolution": [1280, 540]
+    },
+    {
+      "id": "battle_hud_16x10",
+      "scene": "res://game/battle/scene/shots/battle_player_preview.tscn",
+      "resolution": [1280, 800]
     }
   ]
 }

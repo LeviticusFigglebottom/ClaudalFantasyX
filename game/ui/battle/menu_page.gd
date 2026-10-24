@@ -241,6 +241,7 @@ func _cell(text: String, variation: StringName, r: Rect2) -> Label:
 	l.size = r.size
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.grow_vertical = Control.GROW_DIRECTION_BOTH  # a line taller than the row (130 % text) stays centred on it
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return l
 

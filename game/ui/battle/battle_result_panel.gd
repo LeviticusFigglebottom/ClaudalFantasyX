@@ -59,6 +59,7 @@ func _ready() -> void:
 	v.add_child(sep)
 	_list = VBoxContainer.new()
 	v.add_child(_list)
+	UiFrame.centre(self)  # the panel and its choices centred at any aspect, the scrim full screen
 	visible = false
 
 

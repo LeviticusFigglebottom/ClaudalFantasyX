@@ -67,6 +67,7 @@ func _ready() -> void:
 	UiSettings.shared().follow(self)
 	_build_backdrop()
 	_build_page()
+	UiFrame.centre(self)  # the page centred at 16:10 and 21:9, its scrims full screen (M2-UI-29)
 	if pause_tree and not get_tree().paused:
 		get_tree().paused = true
 		_owns_pause = true

@@ -43,7 +43,7 @@
   "codex_notice": {
     "doc": "M3-UI-03: the notice in the field when a record is found (an Interactable whose payload is {\"record\": \"<codex id>\"}). The TipCard look, at the lower right: a gold page glyph, 'Record added to the Codex', and the record's title. It fades in over fade_sec, holds hold_sec, and fades out; a second record waits its turn. Like the tip card it hides, with its clock stopped, while the field refuses input or a menu pauses the tree. Rect x, y, w, h at the 1920 x 1080 reference (multiples of 3).",
     "canvas_layer": 44,
-    "panel": {"rect": [1347, 846, 525, 108], "pad": 18, "title_height": 33, "glyph_px": 9},
+    "panel": {"rect": [1347, 846, 525, 108], "pin": "bottom_right", "pad": 18, "title_height": 33, "glyph_px": 9},
     "fade_sec": 0.3,
     "hold_sec": 3.6
   }
