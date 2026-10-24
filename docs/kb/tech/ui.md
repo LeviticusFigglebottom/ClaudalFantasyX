@@ -15,7 +15,8 @@ Owner: UI/UX + Combat (M1-UI-01, M1-CMB-01, M1-UI-02). Art rules: [`docs/kb/art/
 | `game/ui/battle/` | HUD components (below) and `battle_hud.tscn`. |
 | `game/data/ui/battle_sandbox.json` | Sandbox roster, encounter, seed, greybox stand-in shapes and colors, ring metrics, the stone look and the camera shake. |
 | `game/data/ui/accessibility.json` | The accessibility settings (ids, types, options, loc keys), the colorblind palette overrides and the reduced-motion numbers. |
-| `game/ui/settings/ui_settings.gd` | `UiSettings`: the settings layer the future settings menu calls (§ Accessibility below). |
+| `game/ui/settings/ui_settings.gd` | `UiSettings`: the accessibility settings layer (§ Accessibility below); `follow(root)` themes any menu (M2-UI-09). |
+| `game/ui/settings/` | `SettingsMenu` (the hub), `SettingsPage` + `SettingsPageModel`, `GraphicsMenu`/`GraphicsMenuModel`, `AccessibilityMenu`/`AccessibilityMenuModel`, `SettingsShot` (M2-UI-09, § Settings below). |
 | `game/data/ui/battle_fixtures.json` | Frozen battle tables and per-state setups for the HUD captures (§ Capture fixtures below). |
 | `game/battle/scene/` | `battle_sandbox.tscn`, `BattleController`, `BattleStage`, `BattleMenus`, `BattleFixture`, `FighterStandIn`, `ground_ring.gdshader`, and `shots/` (capture entry scenes). |
 | `assets/fonts/` | Source Sans 3 and EB Garamond, each with its `OFL.txt`. |
@@ -164,7 +165,7 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
 
 - **Opening it.** In the field, `ui_cancel` (Escape, B / Circle) opens `FieldMenu.open_in(player)`. That's a three-line `elif` in `FieldController._unhandled_input`, under the same `accepts_input` guard as interact, so a cutscene or a conversation (the sequencer turns `accepts_input` off) never opens it. Like `SaveMenu`, it brings its own CanvasLayer (layer 60, under the bestiary's 64) and pauses the tree while open, so the player can't get a second Escape.
 - **Three levels.** All three are `MenuPage`s, with words from `FieldMenuModel` and loc keys `FIELD_MENU_*`:
-  - **Root** (left): Bestiary, Swell, Return to the path.
+  - **Root** (left): Bestiary, Swell, Settings (M2-UI-09: the Settings hub), Return to the path.
   - **Heroes** (right): each Swell hero, with the mode in use on the right.
   - **Modes** (right, headed "Rhen's fill mode"): `BattleSwellCarry.mode_rows(cid)`. Each row shows its `name_key`, and the current one also says "In use" (`HUD_SWELL_MODE_IN_USE`, the battle page's word).
 
@@ -206,6 +207,31 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
   - `battle_vowbound_call` (fixture `vowbound_call`): Asha's turn, the Call row highlighted.
   - `battle_vowbound_out` (fixture `vowbound_out`): Ilun out after one exchange, Dismiss highlighted. The fixture makes Ilun quicker, so he lives to a second turn with some gauge.
 - **Tests:** `tests/unit/test_battle_vowbound_hud.gd` (scene) and `test_battle_vowbound_preview.gd` (each preview against the engine's real order after the action); `tools/tests/test_vowbound_flag_validate.py`.
+
+## Settings, accessibility and the polish pass (M2-UI-09)
+
+- **The Settings hub** (`SettingsMenu`, game/ui/settings/) has two rows, Graphics and Accessibility. Each opens its page over the hub, and closing a page returns to the hub with the cursor where it was. The hub opens from the title's Settings row (`TitleMenu.open_settings`) and from the field menu's new Settings row (`SettingsMenu.open_in`, on CanvasLayer `hub.canvas_layer` 66, over the field menu's 60 and the bestiary's 64, processing while the tree is paused).
+- **Settings pages share one view.** `SettingsPage` is the old Graphics page's view, generalised: a MenuPage with each value in the right column (in `focus_gold`), a help line that wraps to two lines, and a backdrop. Its logic is a `SettingsPageModel`:
+  - `GraphicsMenuModel` (M1-UI-10) for the Graphics page. Its percent and times formats are now loc keys.
+  - `AccessibilityMenuModel` for the Accessibility page. Its rows are UiSettings' settings in accessibility.json order: reduced motion, text size, color palette, timing assist. A bool shows On or Off; an enum shows its `option_keys`. Left and Right step a value (Confirm steps forward), and every change saves user://settings.cfg at once.
+  - All three use graphics_menu.json's `page`, `help` and `backdrop_alpha`, so they read as one family.
+- **Text size, palette and reduced motion outside battle.** `UiSettings.follow(root)` sets `root.theme` to `theme_for(base)` now and on every change, until the root leaves the tree. The base is the root's own theme, or hymn_theme.tres when it sets none. The field menu, the bestiary, the title, the hub and both settings pages call it in `_ready` and give their MenuPages `reduced_motion` before `setup()`. The Accessibility page follows its own settings, so a new text size or palette shows on the page the moment it is chosen (`settings_accessibility` shows 130%). Rects still do not reflow (§ Known gaps).
+- **Consistency fixes from the audit:**
+  - One help-line style: the new `HelpDimLabel` variation (HelpLabel in `text_dim`) replaces the per-menu `text_dim` overrides, which went stale on a palette switch. It is used in the field menu, the title and the settings pages, and the bestiary's white help line now matches.
+  - The field menu's "In use" is in `swell`, as on the battle Swell page.
+  - The bestiary's defeat counts use `text` (M2-UI-08).
+- **Navigation fixes:**
+  - The bestiary jumps a page with `ui_page_up` / `ui_page_down` (or Left / Right on a pad), stopping at the ends, and the mouse wheel steps it.
+  - **Bug fixed:** hovering a title row now moves the title model's cursor, so the help line and the next key press agree. Before, hover moved only the MenuPage.
+  - Settings pages now follow hover the same way.
+- **Left as they are (with reasons):**
+  - MenuPage metrics differ between the command family (pitch 40) and the list family (pitch 44–48). Unifying them would move every menu's baseline for a 4–8 px rhythm change; record it for the art review.
+  - The bestiary and save panels are not multiples of 3 (field_menu.json's rule). Their baselines pass, and changing that is an art-review call.
+  - The field menu's description stays `BodyLabel`: it is the panel's main text, not a help line.
+  - `BattleVowboundHud.DEFAULT_TINT` is a data fallback for a stand-in spec with no `tint`; every spec sets one.
+  - The save menu and the dialogue box are Systems' and Architect's (ownership.md). Request: M2-ARC-06.
+- **Captures:** `settings_hub` (cursor on Accessibility) and `settings_accessibility` (text size at 130%, cursor on Text size), from `SettingsShot` on its own UiSettings. `field_menu`, `field_menu_swell_modes` and `bestiary_menu` were re-approved for the Settings row, the swell "In use" and the help line.
+- **Tests:** `tests/unit/test_settings_menu.gd`.
 
 ## Swell input panels for the chant, brace and glyph (M2-UI-03)
 

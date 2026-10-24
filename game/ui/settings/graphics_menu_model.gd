@@ -1,5 +1,5 @@
 class_name GraphicsMenuModel
-extends RefCounted
+extends SettingsPageModel
 ## Logic of the Graphics settings page (M1-UI-10; graphics_settings.md, "The Graphics menu"), no
 ## nodes. Row 0 is the preset ("Custom" once a setting differs from it); then one row per setting
 ## of graphics_presets.json, in its order. cycle() steps the row's value and goes through
@@ -7,14 +7,12 @@ extends RefCounted
 ##   the preset row  GraphicsRuntime.select_preset(id, viewport) (clears every override)
 ##   a setting row   GraphicsRuntime.set_override(key, value, viewport)
 ## Display text comes from game/data/ui/graphics_menu.json (value_keys, on/off, percentages).
-
-signal changed
+## The cursor, move() and set_cursor() are SettingsPageModel's (M2-UI-09).
 
 const DATA_PATH := "res://game/data/ui/graphics_menu.json"
 const ROW_PRESET := &"preset"
 
 var data: Dictionary = {}
-var cursor := 0
 ## Where cycle() applies (the game's root viewport; tests pass their own or null).
 var viewport: Viewport
 
@@ -44,9 +42,12 @@ func row_ids() -> Array[StringName]:
 	return out
 
 
-func current() -> StringName:
-	var ids := row_ids()
-	return ids[clampi(cursor, 0, ids.size() - 1)]
+func title_key() -> String:
+	return "GFX_MENU_TITLE"
+
+
+func layout() -> Dictionary:
+	return data
 
 
 func label(row: StringName) -> String:
@@ -69,25 +70,10 @@ func format_value(key: String, value: Variant) -> String:
 	if value is String:
 		return tr(str((data.get("value_keys", {}) as Dictionary).get(value, value)))
 	if key in (data.get("percent_settings", []) as Array):
-		return "%d%%" % roundi(float(value) * 100.0)
+		return tr("GFX_VALUE_PERCENT_FMT").format({"n": roundi(float(value) * 100.0)})
 	if key in (data.get("multiplier_settings", []) as Array):
-		return "×%s" % str(value)
+		return tr("GFX_VALUE_TIMES_FMT").format({"n": str(value)})
 	return str(value)
-
-
-## Moves the cursor (wrapping). Returns true.
-func move(delta: int) -> bool:
-	cursor = posmod(cursor + delta, row_ids().size())
-	changed.emit()
-	return true
-
-
-func set_cursor(index: int) -> bool:
-	if index < 0 or index >= row_ids().size():
-		return false
-	cursor = index
-	changed.emit()
-	return true
 
 
 ## Steps the current row's value by `delta` (wrapping through its options), saves and applies it.

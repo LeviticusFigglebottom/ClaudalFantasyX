@@ -9,9 +9,10 @@ extends Control
 ##             an autosave the new run would write over, it asks first (M1-ARC-08): the rows
 ##             become Go back / Begin anew, "Go back" is the default, ui_cancel also goes back.
 ##   Load      the load list (SaveMenu, LOAD mode); a load routes the same way as Continue.
-##   Settings  the Graphics page (GraphicsMenu, M1-UI-10); it saves and applies as you change it.
-## Input: ui_up / ui_down move, ui_accept chooses (keyboard and controller); a click chooses;
-## ui_cancel closes the New Game question.
+##   Settings  the Settings hub (SettingsMenu, M2-UI-09): the Graphics page (M1-UI-10) and the
+##             Accessibility page; each saves and applies as you change it.
+## Input: ui_up / ui_down move, ui_accept chooses (keyboard and controller); hover moves, a click
+## chooses; ui_cancel closes the New Game question. It follows UiSettings (text size, palette).
 ## Layout: game/ui/title/title_menu.json.
 
 signal chosen(choice: StringName, error: int)
@@ -23,7 +24,7 @@ var save_system: Node
 var world_return: WorldReturn
 var model: TitleMenuModel
 var load_menu: SaveMenu
-var graphics_menu: GraphicsMenu
+var settings_menu: SettingsMenu
 
 var _d: Dictionary = {}
 var _page: MenuPage
@@ -51,6 +52,7 @@ func _ready() -> void:
 		var router := _autoload(&"SceneRouter")
 		world_return = router.get(&"world_return") as WorldReturn if router != null else null
 	model = TitleMenuModel.new(save_system)
+	UiSettings.shared().follow(self)
 	_build()
 	model.changed.connect(_render)
 	_render()
@@ -63,7 +65,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Applies one input event. Returns true when the menu used it. Tests call this directly.
 func handle_input(event: InputEvent) -> bool:
-	if _launched or is_load_menu_open() or is_graphics_menu_open():
+	if _launched or is_load_menu_open() or is_settings_open():
 		return false
 	if event.is_action_pressed(&"ui_up", true):
 		model.move(-1)
@@ -106,7 +108,7 @@ func choose(choice: StringName) -> Error:
 				open_load()
 				err = OK
 			TitleMenuModel.CHOICE_SETTINGS:
-				open_graphics()
+				open_settings()
 				err = OK
 	if err != OK:
 		model.refresh()
@@ -135,16 +137,17 @@ func open_load() -> SaveMenu:
 	return load_menu
 
 
-func open_graphics() -> GraphicsMenu:
-	if is_graphics_menu_open():
-		return graphics_menu
-	graphics_menu = GraphicsMenu.new()
-	add_child(graphics_menu)
-	return graphics_menu
+func open_settings() -> SettingsMenu:
+	if is_settings_open():
+		return settings_menu
+	settings_menu = SettingsMenu.new()
+	add_child(settings_menu)
+	settings_menu.closed.connect(_on_settings_closed)
+	return settings_menu
 
 
-func is_graphics_menu_open() -> bool:
-	return graphics_menu != null and is_instance_valid(graphics_menu) and graphics_menu.is_open()
+func is_settings_open() -> bool:
+	return settings_menu != null and is_instance_valid(settings_menu) and settings_menu.is_open()
 
 
 func is_load_menu_open() -> bool:
@@ -171,12 +174,11 @@ func _on_load_closed(outcome: SaveMenuModel.Outcome) -> void:
 func _build() -> void:
 	_build_page()
 	_help = Label.new()
-	_help.theme_type_variation = &"HelpLabel"
+	_help.theme_type_variation = &"HelpDimLabel"
 	HudLayout.place(_help, _d.get("help", {}) as Dictionary)
 	_help.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_help.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_help.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_help.add_theme_color_override(&"font_color", get_theme_color(&"text_dim", HymnThemeBuilder.PALETTE_TYPE))
 	add_child(_help)
 
 
@@ -194,8 +196,11 @@ func _build_page() -> void:
 	var rows: Array[Dictionary] = []
 	for id in ids:
 		rows.append({"id": id, "label": tr(model.label_key(id)), "enabled": model.is_enabled(id)})
+	_page.reduced_motion = UiSettings.shared().reduced_motion()
 	_page.setup(cm, &"title", "", rows)
 	_page.row_clicked.connect(_on_row_clicked)
+	# Hover moves the model's cursor too, so the help line and the next key press agree (M2-UI-09).
+	_page.row_hovered.connect(func(index: int) -> void: model.set_cursor(index))
 
 
 func _render() -> void:
@@ -223,6 +228,13 @@ func row_labels() -> Array[String]:
 	for row in _page.rows:
 		out.append(str(row["label"]))
 	return out
+
+
+## Back from Settings: the rows are rebuilt in the text size or palette just chosen.
+func _on_settings_closed() -> void:
+	settings_menu = null
+	_build_page()
+	_render()
 
 
 func _on_row_clicked(index: int) -> void:

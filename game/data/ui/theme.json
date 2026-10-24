@@ -75,6 +75,7 @@
       "SmallLabel": {"base": "Label", "font": "sans_medium", "size": 22},
       "RankLabel": {"base": "Label", "font": "sans_bold", "size": 22, "tabular": true, "spacing_glyph": 1},
       "HelpLabel": {"base": "Label", "font": "sans", "size": 24},
+      "HelpDimLabel": {"base": "Label", "font": "sans", "size": 24, "color": "text_dim"},
       "FlavorLabel": {"base": "Label", "font": "sans_italic", "size": 24},
       "DimLabel": {"base": "Label", "font": "sans_medium", "size": 22, "color": "text_dim"},
       "DamageNumber": {"base": "Label", "font": "sans_bold", "size": 44, "tabular": true, "outline": true},

@@ -511,7 +511,7 @@ BESTIARY_DEFEATED_FMT,Defeated: {n}
 BESTIARY_ROW_COUNT_FMT,×{n}
 BESTIARY_UNREAD,"Not yet Read. Use Read on it in battle to learn its strengths, weaknesses and story."
 BESTIARY_EMPTY,No foes recorded yet. Foes you Read or defeat are written here.
-BESTIARY_HELP,Up and Down: choose · Cancel: close
+BESTIARY_HELP,Up and Down: choose · Left and Right: a page · Cancel: close
 HUD_SWELL_MODE_IN_USE,In use
 HUD_HELP_SWELL_GAUGE_FMT,{name}'s Swell is at {pct}% and fills by {mode}. Choose a fill mode here at no time cost
 HUD_HELP_SWELL_MODE_FMT,{mode}: {desc} Choosing it costs no time
@@ -542,7 +542,7 @@ HUD_BOSS_FIELD_FMT,{field}: {count} bound to it
 PHASE_DROWNBELL_TOLL,The Toll
 FIELD_DROWNBELL_FLOOD,The flood
 TITLE_SETTINGS,Settings
-TITLE_HELP_SETTINGS,"Graphics quality, from a whole preset down to each setting."
+TITLE_HELP_SETTINGS,"Graphics, and accessibility: text size, motion, colors and timing."
 GFX_MENU_TITLE,Graphics
 GFX_MENU_PRESET,Preset
 GFX_MENU_HELP_PRESET,Left and right choose a preset. It sets every row below.
@@ -628,3 +628,12 @@ HUD_SWELL_GRADE_SWIFT,Swift
 HUD_SWELL_BRACE_HOLDING,Holding
 HUD_SWELL_BRACE_NOT_HOLDING,Not holding
 HUD_SWELL_MODE_UNLOCKED_FMT,{mode} unlocked
+FIELD_MENU_SETTINGS,Settings
+FIELD_MENU_SETTINGS_DESC,"Graphics, and accessibility: text size, motion, colors and timing."
+SET_MENU_TITLE,Settings
+SET_MENU_GRAPHICS,Graphics
+SET_MENU_ACCESSIBILITY,Accessibility
+SET_MENU_HELP_GRAPHICS,"Graphics quality, from a whole preset down to each setting."
+SET_MENU_HELP_ACCESSIBILITY,"Text size, reduced motion, a colorblind-friendly palette and timing assist. Changes show at once."
+GFX_VALUE_PERCENT_FMT,{n}%
+GFX_VALUE_TIMES_FMT,×{n}

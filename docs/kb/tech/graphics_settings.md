@@ -224,7 +224,7 @@ GraphicsSettings.pop_override(h)   # at the cut out; also automatic when `self` 
 
 ## The Graphics menu (M1-UI-10)
 
-The title's **Settings** row opens the Graphics page (`game/ui/settings/graphics_menu.gd`, `GraphicsMenu`; logic in `graphics_menu_model.gd`, `GraphicsMenuModel`; layout and value labels in `game/data/ui/graphics_menu.json`). It's a modal page over a dark backdrop, built on `MenuPage`, with the value of each row in the right column. The page shows 14 rows at a time and scrolls with the cursor.
+(M2-UI-09: the title's Settings row and the field menu's Settings row now open a Settings hub, Graphics and Accessibility, whose Graphics row is this page; the page is reachable in the field, so the in-game fade below matters: M1-UI-11 on claude/m2-slice.) The title's **Settings** row opens the Graphics page (`game/ui/settings/graphics_menu.gd`, `GraphicsMenu`; logic in `graphics_menu_model.gd`, `GraphicsMenuModel`; layout and value labels in `game/data/ui/graphics_menu.json`). It's a modal page over a dark backdrop, built on `MenuPage`, with the value of each row in the right column. The page shows 14 rows at a time and scrolls with the cursor.
 
 - **Rows.** The preset comes first. It shows the preset's `name_key`, or **Custom** while `is_custom()`. Then comes every setting of this file's `settings`, in order, labelled by its `label_key`.
 - **Input.** `ui_left` / `ui_right` step a value through its `options`, wrapping; `ui_accept` and a click on the current row step forward. `ui_up` / `ui_down` move, and `ui_cancel` closes the page.

@@ -904,6 +904,14 @@
     {
       "id": "battle_swell_glyph",
       "scene": "res://game/battle/scene/shots/battle_swell_glyph.tscn"
+    },
+    {
+      "id": "settings_hub",
+      "scene": "res://game/ui/settings/shots/settings_hub.tscn"
+    },
+    {
+      "id": "settings_accessibility",
+      "scene": "res://game/ui/settings/shots/settings_accessibility.tscn"
     }
   ]
 }

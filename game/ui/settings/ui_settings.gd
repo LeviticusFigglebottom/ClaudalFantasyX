@@ -21,6 +21,9 @@ const TIMING_ASSIST := &"timing_assist"
 const KIND_BOOL := "bool"
 const KIND_ENUM := "enum"
 const PALETTE_STANDARD := &"standard"
+## The theme a followed root starts from when it sets none of its own (follow()).
+const BASE_THEME_PATH := "res://game/ui/theme/hymn_theme.tres"
+const META_BASE_THEME := &"hymn_base_theme"
 
 static var _shared: UiSettings
 
@@ -222,6 +225,29 @@ func theme_for(base: Theme) -> Theme:
 	if not _theme_cache.has(key):
 		_theme_cache[key] = HymnThemeBuilder.build(theme_config())
 	return _theme_cache[key] as Theme
+
+
+## Gives `root` this palette and text size now (theme_for over its own theme, or the Hymn theme
+## when it sets none) and again on every later change, until it leaves the tree. Every menu
+## outside battle calls it in _ready (M2-UI-09); BattleHud has its own apply_settings().
+func follow(root: Control) -> void:
+	apply_to(root)
+	var on_change := func(_key: StringName) -> void:
+		if is_instance_valid(root):
+			apply_to(root)
+	changed.connect(on_change)
+	var stop := func() -> void:
+		if changed.is_connected(on_change):
+			changed.disconnect(on_change)
+	root.tree_exited.connect(stop, CONNECT_ONE_SHOT)
+
+
+## Sets `root`'s theme for the current palette and text size once.
+func apply_to(root: Control) -> void:
+	if not root.has_meta(META_BASE_THEME):
+		var base := root.theme if root.theme != null else load(BASE_THEME_PATH) as Theme
+		root.set_meta(META_BASE_THEME, base)
+	root.theme = theme_for(root.get_meta(META_BASE_THEME) as Theme)
 
 
 # --- persistence (the same user://settings.cfg as GraphicsSettings, its own section) -------

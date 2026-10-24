@@ -5,9 +5,11 @@ extends Control
 ## page as the battle Read panel, built from enemies.json by BestiaryMenuModel). Out of battle.
 ## Layout: game/data/ui/bestiary_menu.json (1920x1080 reference).
 ##
-## Input (keyboard and controller through ui_*): ui_up / ui_down choose, ui_cancel closes. Mouse:
-## hover a row to show it. Open it with BestiaryMenu.open_in(host) (its own CanvasLayer; it pauses
-## the tree while open, like SaveMenu) or instance bestiary_menu.tscn after configure(model).
+## Input (keyboard and controller through ui_*): ui_up / ui_down choose, ui_page_up / ui_page_down
+## (or ui_left / ui_right) jump a page, ui_cancel closes. Mouse: hover a row to show it, the wheel
+## steps. It follows UiSettings (text size, palette, reduced motion; M2-UI-09). Open it with
+## BestiaryMenu.open_in(host) (its own CanvasLayer; it pauses the tree while open, like SaveMenu)
+## or instance bestiary_menu.tscn after configure(model).
 
 signal closed
 
@@ -67,6 +69,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	UiSettings.shared().follow(self)
 	_build()
 	refresh()
 	if pause_tree and not get_tree().paused:
@@ -121,6 +124,12 @@ func handle_input(event: InputEvent) -> bool:
 		_move(-1)
 	elif event.is_action_pressed(&"ui_down", true):
 		_move(1)
+	elif event.is_action_pressed(&"ui_page_up", true) or event.is_action_pressed(&"ui_left", true):
+		_page_step(-1)
+	elif event.is_action_pressed(&"ui_page_down", true) or event.is_action_pressed(&"ui_right", true):
+		_page_step(1)
+	elif _wheel(event) != 0:
+		_move(_wheel(event))
 	elif event.is_action_pressed(&"ui_cancel"):
 		close()
 	elif event.is_action_pressed(&"ui_accept"):
@@ -147,6 +156,25 @@ func close() -> void:
 func _move(delta: int) -> void:
 	if _list.move(delta):
 		_show(_list.cursor)
+
+
+## A page of the list at a time (page up / down, or left / right on a pad), stopping at either end
+## rather than wrapping, so a long book is quick to cross (M2-UI-09).
+func _page_step(direction: int) -> void:
+	if _entries.is_empty():
+		return
+	var rows := int(HudLayout.num(_d.get("list", {}), "max_rows"))
+	select(clampi(_list.cursor + direction * rows, 0, _entries.size() - 1))
+
+
+## -1 / 1 for a mouse wheel turn up / down, else 0.
+static func _wheel(event: InputEvent) -> int:
+	var mb := event as InputEventMouseButton
+	if mb == null or not mb.pressed:
+		return 0
+	if mb.button_index == MOUSE_BUTTON_WHEEL_UP:
+		return -1
+	return 1 if mb.button_index == MOUSE_BUTTON_WHEEL_DOWN else 0
 
 
 func _show(index: int) -> void:
@@ -190,12 +218,13 @@ func _build() -> void:
 	_summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	var help_h := HudLayout.num(pm, "help_height")
 	var help_at := Vector2(pr.position.x + pad, pr.end.y - pad - help_h)
-	_help = _label(&"HelpLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
+	_help = _label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
 	_help.text = tr("BESTIARY_HELP")
 	var lm: Dictionary = _d.get("list", {})
 	_list = MenuPage.new()
 	HudLayout.place(_list, lm)
 	add_child(_list)
+	_list.reduced_motion = UiSettings.shared().reduced_motion()
 	_list.setup(lm, PAGE_ID, "", [])
 	_list.row_hovered.connect(func(i: int) -> void: _show(i))
 	_list.row_clicked.connect(select)
