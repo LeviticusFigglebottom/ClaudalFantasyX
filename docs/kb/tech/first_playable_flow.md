@@ -114,8 +114,20 @@ title) once.
   - Anything else that starts (a villager bark, the battle, the causeway) cuts it off with `_hush()`.
   - Talking to the villager still plays the bark. The lane child (`ch02_bark_lane`) is new.
 - **B05, Low tide** (`before_ending_scene_id` `ch02_low_tide`). The causeway-head trigger plays it, then hands off to Cutscene B.
+  - **M2-FP-21:** B05 opens on Asha's question and a "Go now" / "Not yet" choice. "Not yet" plays her reply and `<<event departure_declined>>` (`haluna.ending_decline_event`); `HalunaStory._end()` then puts Rhen at `ending_decline_spawn` (`CausewayHead`, short of the box), clears `busy` and hands nothing off. The trigger is not `once`, so the next walk-in asks again. "Go now" runs B05 to its end and hands off as before (tests take it by default: `auto_choice = 0`).
+  - **M2-FP-20:** before the first save, `Triggers/CausewayHeadUnsaved` (the same box, blocked by `ch02_saved_once`) plays the overheard `ch02_bark_causeway_unsaved` (Toma and Asha point Rhen to the town shrine). It is not `once`: it plays on every walk-in until the save, but never over itself (the overhear sequencer must be idle).
 
 New speakers: `neme`, `child`. Tests: `tests/integration/test_haluna_slice_beats.gd`.
+
+## The Shell Shrine trial and the dock at night (M2-FP-16, M2-FP-15)
+
+The thread's end now runs: the causeway head → B05 → **the Shell Shrine trial** (`haluna.ending_scene`; game/levels/ch03/shell_shrine/README.md) → through its door, Cutscene B (`shell_shrine.next_scene`) → the Drownbell → **Haluna's dock at night** → the end card.
+- After the Drownbell, `first_verse.after_location` / `after_spawn` send the party back to `ch02/haluna` at `DockNight` instead of opening the end card. (`after_scene` is now used only on the no-battle path.)
+- On that arrival, `HalunaStory.begin()` plays B11, because `night_flag` (`ch03_drownbell_defeated`) is set and `sworn_flag` (`ch03_rhen_sworn_guardian`) isn't:
+  - `HalunaZone.set_night(haluna.night, haluna.night_hide)` puts up the **stand-in night** until M2-ENV-02. The mood sun is dimmed and turned moonlight blue. A *copy* of the mood's Environment gets a darker sky and less ambient light, so the shared `.tres` is never touched. Warm lamps go up, and the dock villagers are gone home.
+  - `place_cast(night_cast, night_marks)` sits Asha at the end of the dock and puts Toma at the landward end, with the mark he walks to.
+  - `ch03_dock_at_night` plays in-engine; Toma's `@mark` walk is his arrival. The scene sets the sworn flag, and the story hands off to `night_end_scene` (the end card).
+- Once sworn, the villagers' barks (and the overheard fragments) play their `night_barks` blessings.
 
 ## Tests
 

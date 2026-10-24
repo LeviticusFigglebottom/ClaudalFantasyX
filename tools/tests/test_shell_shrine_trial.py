@@ -2,6 +2,8 @@
 the start, not in fewer turns than the band allows, and the side pool can be drained. This mirrors
 ShellShrineTrial's rules (game/levels/ch03/shell_shrine/shell_shrine_trial.gd) in Python."""
 import json
+import random
+import statistics
 import unittest
 from collections import deque
 from pathlib import Path
@@ -62,6 +64,21 @@ class ShellShrineTrialDataTest(unittest.TestCase):
         n = _min_turns(self.d, self.d["goal"])
         self.assertGreaterEqual(n, lo, f"solvable in {n} turns: too easy")
         self.assertLessEqual(n, hi, f"needs {n} turns: too long for B07's five minutes")
+
+    def test_a_random_turner_takes_a_while(self) -> None:
+        """M2-FP-22: turning basins at random must not solve B07 before Toma's 90 s hint could play."""
+        ids = list(self.d["basins"])
+        rng = random.Random(22)
+        runs = []
+        for _ in range(400):
+            rot = {i: self.d["basins"][i]["rotation"] for i in ids}
+            n = 0
+            while _trace(self.d, rot)[-1] != self.d["goal"] and n < 1000:
+                b = rng.choice(ids)
+                rot[b] = (rot[b] + 1) % self.d["steps"]
+                n += 1
+            runs.append(n)
+        self.assertGreaterEqual(statistics.median(runs), 20, "a random turner solves it too fast")
 
     def test_the_side_pool_can_be_drained(self) -> None:
         self.assertGreater(_min_turns(self.d, self.d["drain"]), 0)

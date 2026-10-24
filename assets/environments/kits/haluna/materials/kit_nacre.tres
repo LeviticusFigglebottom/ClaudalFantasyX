@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_nacre_inlay.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "kit_nacre"
+shader = ExtResource("1_shader")
+shader_parameter/col_base = Color(0.902, 0.8549, 0.7529, 1)
+shader_parameter/hue_shift_deg = 40
+shader_parameter/iridescence = 0.3
+shader_parameter/roughness_dry = 0.3

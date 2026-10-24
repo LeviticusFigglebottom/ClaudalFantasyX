@@ -892,6 +892,162 @@
           }
         }
       }
+    },
+    {
+      "id": "haluna_h10_dock_night",
+      "scene": "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+      "camera": "Cameras/H10",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "night"
+          }
+        }
+      }
+    },
+    {
+      "id": "shop_menu_buy",
+      "scene": "res://game/ui/shop/shots/shop_buy.tscn"
+    },
+    {
+      "id": "shop_menu_sell",
+      "scene": "res://game/ui/shop/shots/shop_sell.tscn"
+    },
+    {
+      "id": "inn_menu",
+      "scene": "res://game/ui/shop/shots/inn.tscn"
+    },
+    {
+      "id": "shrine_s01_approach",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "camera": "Cameras/S01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "start"
+          }
+        }
+      }
+    },
+    {
+      "id": "shrine_s02_threshold",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "camera": "Cameras/S02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "start"
+          }
+        }
+      }
+    },
+    {
+      "id": "shrine_s03_overview",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "camera": "Cameras/S03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "start"
+          }
+        }
+      }
+    },
+    {
+      "id": "shrine_s04_lip",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "camera": "Cameras/S04",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "flow"
+          }
+        }
+      }
+    },
+    {
+      "id": "shrine_s05_side_pool",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "camera": "Cameras/S05",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "drained"
+          }
+        }
+      }
     }
   ]
 }

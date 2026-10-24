@@ -22,6 +22,17 @@
     "help": {
       "rect": [460, 860, 1000, 40]
     },
+    "apply": {
+      "doc": "M1-UI-11: a preset change with GraphicsRuntime armed spawns the resident shader warm-up (a frame can freeze 0.5-1.7 s), so the page fades to an opaque veil over fade_out_sec, lets settle_frames opaque frames draw, selects the preset, holds card_key until the warm-up is done (max_hold_sec is a safety net), then fades back over fade_in_sec. Input is blocked throughout. card.rect is x, y, w, h at 1920 x 1080.",
+      "fade_out_sec": 0.18,
+      "fade_in_sec": 0.3,
+      "settle_frames": 1,
+      "max_hold_sec": 8.0,
+      "card_key": "GFX_MENU_APPLYING",
+      "card": {
+        "rect": [460, 520, 1000, 40]
+      }
+    },
     "on_key": "GFX_VALUE_ON",
     "off_key": "GFX_VALUE_OFF",
     "custom_key": "GFX_PRESET_CUSTOM",

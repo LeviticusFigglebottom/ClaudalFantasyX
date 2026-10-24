@@ -137,8 +137,8 @@
         }
       },
       "floodnet": {
-        "_note": "Call Ilun clears the flood (the Floodnet stand-in, ADR 0026): bound light, a steady teal net over the water and a teal fill. It never drifts or trails (color script rule 1, bound).",
-        "skill": "call_ilun",
+        "_note": "Ilun's Floodnet clears the flood (M2-FP-17: the real finisher; the call_ilun stand-in of ADR 0026 is gone): bound light, a steady teal net over the water and a teal fill. It never drifts or trails (color script rule 1, bound).",
+        "skill": "floodnet",
         "color": "#4FB3B0",
         "energy": 0.7,
         "half_m": 10.0,
