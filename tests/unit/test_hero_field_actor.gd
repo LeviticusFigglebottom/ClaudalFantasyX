@@ -59,6 +59,24 @@ func test_the_body_breathes_standing_and_not_walking() -> void:
 	_done()
 
 
+func test_rhen_carries_the_zone_lantern_light_on_his_lantern() -> void:
+	var body := _body()
+	var light := OmniLight3D.new()
+	light.name = "LanternLight"
+	player.add_child(light)
+	body._carry()
+	assert_true(light in body.carried, "the LanternLight is carried")
+	assert_true(light.get_parent() is BoneAttachment3D, "it hangs from a bone of the model")
+	body.snap()
+	for i in 3:
+		body.advance(DT)
+	var spec := ((HeroFieldActor.field_data()["heroes"] as Dictionary)["rhen"]["carry"] as Array)[0] as Dictionary
+	var at: Array = spec["at_model"]
+	var want := body.model.global_transform * Vector3(float(at[0]), float(at[1]), float(at[2]))
+	assert_true(light.global_position.distance_to(want) < 0.15, "it sits in the lantern glass (idle sways it a little)")
+	_done()
+
+
 func test_the_model_has_the_locomotion_clips() -> void:
 	var body := _body()
 	for clip: String in (HeroFieldActor.field_data()["locomotion_clips"] as Dictionary).values():

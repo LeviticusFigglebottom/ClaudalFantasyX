@@ -44,6 +44,8 @@ var anim: AnimationPlayer
 var tree: AnimationTree
 ## The capsule visuals this body hid on its source.
 var hidden_stand_ins: Array[Node3D] = []
+## The source's props this body carries on a bone (field.heroes.<id>.carry), e.g. Haluna's LanternLight.
+var carried: Array[Node3D] = []
 ## The clip play_clip() is showing (&"" while on locomotion).
 var action: StringName = &""
 
@@ -234,7 +236,32 @@ func bind(node: Node3D) -> void:
 		if vis != null and vis.visible and String(vis.name) in names:
 			vis.visible = false
 			hidden_stand_ins.append(vis)
+	_carry.call_deferred()
 	snap()
+
+
+## Moves the source's props named in field.heroes.<id>.carry onto the model: each hangs from `bone` at
+## the model-space point `at_model` (where the prop sits on the hero, e.g. Rhen's lantern glass), so it
+## turns with the eased body instead of the node's instant yaw. Missing props or bones are skipped.
+func _carry() -> void:
+	if source == null or not is_instance_valid(source) or model == null:
+		return
+	var skel := HeroMotion.skeleton_of(model)
+	var row := (_field.get("heroes", {}) as Dictionary).get(String(hero_id), {}) as Dictionary
+	for spec: Dictionary in row.get("carry", []):
+		var prop := source.get_node_or_null(NodePath(str(spec.get("name", "")))) as Node3D
+		var bone := skel.find_bone(str(spec.get("bone", ""))) if skel != null else -1
+		if prop == null or bone < 0:
+			continue
+		var at: Array = spec.get("at_model", [0.0, 0.0, 0.0])
+		var hook := BoneAttachment3D.new()
+		hook.name = "Carry_%s" % prop.name
+		hook.bone_name = skel.get_bone_name(bone)
+		skel.add_child(hook)
+		prop.reparent(hook, false)
+		var point := Vector3(float(at[0]), float(at[1]), float(at[2]))
+		prop.transform = Transform3D(Basis.IDENTITY, skel.get_bone_global_rest(bone).affine_inverse() * point)
+		carried.append(prop)
 
 
 ## Puts the body on its source's position and facing with no turn or gait left (spawns, teleports).
