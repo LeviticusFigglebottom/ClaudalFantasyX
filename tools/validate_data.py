@@ -1252,6 +1252,7 @@ def run(root: Path) -> Report:
     data_keys += check_progression(files, rep)
     data_keys += check_items(files, declared_flags_quiet(root), rep)
     data_keys += check_vowbound(files, rep)
+    check_vowbound_flags(files, declared_flags_quiet(root), rep)
     data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
     data_keys += check_locations(root, files, rep)
     data_keys += check_swell(files, rep)
@@ -2168,6 +2169,28 @@ def check_vowbound(files: dict[str, object], rep: Report) -> list[str]:
     for e in vowbound_errors(doc, skills, chars, _learned_skills(files)):
         rep.err(e)
     return collect_keys(doc)
+
+
+def vowbound_flag_errors(doc: object, declared: set[str]) -> list[str]:
+    """M2-UI-05: a vowbound row's optional bound_flag (the story flag that binds it; the battle
+    scene reads it with Game.get_flag) must be a declared flag."""
+    rows = doc.get("vowbound", []) if isinstance(doc, dict) else []
+    errs: list[str] = []
+    for r in rows:
+        if not isinstance(r, dict) or "bound_flag" not in r:
+            continue
+        f = r["bound_flag"]
+        if not isinstance(f, str) or f not in declared:
+            errs.append(
+                f"{VOWBOUND_FILE}: {r.get('id')}: bound_flag '{f}' is not a declared flag (game/data/flags.tres)"
+            )
+    return errs
+
+
+def check_vowbound_flags(files: dict[str, object], declared: set[str], rep: Report) -> None:
+    for e in vowbound_flag_errors(files.get(VOWBOUND_FILE), declared):
+        rep.err(e)
+
 
 if __name__ == "__main__":
     sys.exit(main())

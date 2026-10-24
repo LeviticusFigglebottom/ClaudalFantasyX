@@ -1,6 +1,6 @@
 {
  "battle_fixtures": {
-  "doc": "Frozen battle data for the HUD capture states (tests/screenshots/shots.json) and their tests (docs/kb/tech/ui.md § Capture fixtures). A copy of the sandbox rows as of 2026-10-23: rebalancing game/data/battle/*.json never moves a screenshot baseline. Each fixture may override rows (deep merge by id) and set opening state (hp, statuses, provoked_by) before the first turn. Edit only to change what a shot shows, then re-approve its baseline.",
+  "doc": "Frozen battle data for the HUD capture states (tests/screenshots/shots.json) and their tests (docs/kb/tech/ui.md § Capture fixtures). A copy of the sandbox rows as of 2026-10-23: rebalancing game/data/battle/*.json never moves a screenshot baseline. Each fixture may override rows (deep merge by id) and set opening state (hp, statuses, provoked_by) before the first turn. Edit only to change what a shot shows, then re-approve its baseline. M2-UI-05: tables.vowbound is a frozen copy of vowbound.json (Ilun's three skills are appended to tables.skills); a fixture's \"vowbound\" lists the Vowbound the party has bound, and only such a fixture gets the call (the others keep their root menus).",
   "tables": {
    "characters": [
     {
@@ -453,6 +453,52 @@
      "mp_cost": 0,
      "magic": false,
      "read": true
+    },
+    {
+     "id": "brine_lash",
+     "name_key": "SKILL_BRINE_LASH",
+     "kind": "magical",
+     "power": 10,
+     "rank": 3,
+     "element": "water",
+     "target": "single_foe",
+     "mp_cost": 4,
+     "magic": true
+    },
+    {
+     "id": "tidal_ward",
+     "name_key": "SKILL_TIDAL_WARD",
+     "kind": "support",
+     "power": 0,
+     "rank": 2,
+     "element": "none",
+     "target": "self",
+     "mp_cost": 6,
+     "magic": true,
+     "statuses": [
+      {
+       "id": "protect",
+       "chance": 100
+      },
+      {
+       "id": "shell",
+       "chance": 100
+      }
+     ]
+    },
+    {
+     "id": "floodnet",
+     "name_key": "SKILL_FLOODNET",
+     "kind": "magical",
+     "power": 16,
+     "rank": 3,
+     "element": "none",
+     "target": "all_foes",
+     "mp_cost": 0,
+     "magic": true,
+     "swell": true,
+     "vowbound": true,
+     "clears_field": "flood"
     }
    ],
    "statuses": [
@@ -635,6 +681,51 @@
       "lantern_eel",
       "gull_harrier"
      ]
+    }
+   ],
+   "vowbound": [
+    {
+     "id": "ilun",
+     "name_key": "VOWBOUND_ILUN",
+     "caller": "asha",
+     "call_rank": 3,
+     "base": {
+      "hp": 60,
+      "mp": 10,
+      "strength": 4,
+      "magic": 4,
+      "defense": 14,
+      "magic_defense": 14,
+      "agility": 4,
+      "accuracy": 4,
+      "evasion": 2,
+      "luck": 4
+     },
+     "scale_pct": {
+      "hp": 100,
+      "mp": 50,
+      "strength": 50,
+      "magic": 100,
+      "defense": 100,
+      "magic_defense": 100,
+      "agility": 50,
+      "accuracy": 100,
+      "evasion": 50,
+      "luck": 100
+     },
+     "skills": [
+      "attack",
+      "brine_lash",
+      "tidal_ward"
+     ],
+     "affinities": {
+      "water": "absorb",
+      "lightning": "weak"
+     },
+     "swell": {
+      "rate": 150,
+      "technique": "floodnet"
+     }
     }
    ]
   },
@@ -900,6 +991,45 @@
     "opening": {
      "rhen": {
       "swell": 40
+     }
+    }
+   },
+   "vowbound_call": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "vowbound": [
+     "ilun"
+    ]
+   },
+   "vowbound_out": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "vowbound": [
+     "ilun"
+    ],
+    "overrides": {
+     "vowbound": {
+      "ilun": {
+       "base": {
+        "agility": 30
+       }
+      }
      }
     }
    }

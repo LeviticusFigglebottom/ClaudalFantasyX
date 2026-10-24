@@ -596,3 +596,23 @@ FIELD_MENU_SWELL_SET_FMT,{name}'s gauge now fills by {mode}. It keeps what it ho
 FIELD_MENU_HELP_ROOT,Up and Down: choose · Confirm: open · Cancel: close
 FIELD_MENU_HELP_HEROES,Up and Down: choose a hero · Confirm: their fill modes · Cancel: back
 FIELD_MENU_HELP_MODES,Up and Down: choose · Confirm: use this mode · Cancel: back
+HUD_CMD_CALL,Call
+HUD_CMD_CALL_FMT,Call {name}
+HUD_CMD_DISMISS,Dismiss
+HUD_DISMISS_COST,Ends turn
+HUD_CALL_SILENCED,Silenced
+HUD_CALL_FALLEN,Fallen
+HUD_CALL_NOT_BOUND,None bound
+HUD_CALL_REFUSED,Not now
+HUD_VOWBOUND_GAUGE_FMT,{pct}%
+HUD_HELP_CALL_FMT,"{vowbound} answers and takes this turn, and the party stands down. When it returns, {caller} waits a rank {rank} delay; the others keep their place."
+HUD_HELP_DISMISS_FMT,{vowbound} leaves and spends this turn; the party returns
+HUD_VOWBOUND_FELL_FMT,{vowbound} has fallen and cannot answer again this battle. The party returns.
+HUD_VOWBOUND_LEFT_FMT,{vowbound} has left the field. The party returns.
+HUD_VOWBOUND_STOOD_DOWN_FMT,Standing down: {names}
+HUD_FAIL_VOWBOUND_OUT,Not while a Vowbound holds the field.
+HUD_FAIL_UNKNOWN_VOWBOUND,No such Vowbound answers.
+HUD_FAIL_NOT_BOUND_FMT,{name} has bound no Vowbound yet.
+HUD_FAIL_NOT_CALLER_FMT,{name} cannot call that Vowbound.
+HUD_FAIL_VOWBOUND_FALLEN,That Vowbound has fallen and cannot answer again this battle.
+HUD_FAIL_NO_VOWBOUND,No Vowbound is on the field.
