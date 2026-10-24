@@ -40,7 +40,7 @@
       ]
     },
     {
-      "id": "vegetation",
+      "id": "vegetation", "threads": 4,
       "owner": "environment",
       "sources": ["assets_src/environments/vegetation/*.py"],
       "outputs": ["assets/environments/vegetation/*.glb"],
@@ -49,7 +49,7 @@
       ]
     },
     {
-      "id": "haluna_kit",
+      "id": "haluna_kit", "threads": 4,
       "owner": "environment",
       "sources": ["assets_src/environments/kits/haluna/*.py", "assets_src/environments/vegetation/banyan.py",
                   "assets_src/environments/vegetation/windbreak.py", "assets_src/environments/vegetation/canopy.py",
