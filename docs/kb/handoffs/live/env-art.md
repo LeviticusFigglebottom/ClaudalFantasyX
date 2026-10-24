@@ -13,7 +13,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
   - **M2-ENV-06 pass 2 and 3** (merge-ready): framed stilt-house walls and shutters, thatch onto its swatch
     (h04 re-approved), the lintel-gulls in their own carved-wood material (h03 re-approved).
 - **In progress (worktree agents):** M2-ENV-03 (Shell Shrine kit), M1-ENV-10 (LOD chain; running its shot gate), M2-ENV-07 (real banyan and windbreak trees, replacing the two PLACEHOLDER trees).
-- **Coordination:** settled. The Lead's CONSOLIDATED §3b moved ENV-03 off m2-slice's queue to env-art. Split: env-art builds the shrine kit (assets, materials, drivable nodes, a dressing prefab, a swap-in note); m2-slice swaps its `ch03/shell_shrine` greybox for it.
+- **Coordination:** m2-slice replied (10:02): agreed; it will push its own ENV-03 subagent's kit WIP as `m2-slice/env03-wip` and leave the kit to env-art (I'll compare it with my agent's kit when both exist). env-art may edit the moved `game/levels/ch02/haluna/haluna_dresser.gd` directly (Environment content). **M2-ARC-04 may move VegetationPlant and more Haluna files out of `_tests/`**: merge `claude/m2-slice` before touching them. Settled as well: The Lead's CONSOLIDATED §3b moved ENV-03 off m2-slice's queue to env-art. Split: env-art builds the shrine kit (assets, materials, drivable nodes, a dressing prefab, a swap-in note); m2-slice swaps its `ch03/shell_shrine` greybox for it.
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
 ## For the Lead
