@@ -1,0 +1,51 @@
+keys,en
+CHAR_GARO,Garo
+CHAR_TENDER,Tender
+CHAR_FERRYMAN,Old Ferryman
+CHAR_TOWNSFOLK,Townsfolk
+LOCATION_CH05_PEMAKAR,Pemakar
+LOCATION_CH05_ASHCROWN,Ashcrown
+FIELD_PROMPT_CATCH,Catch the strike
+FIELD_PROMPT_RELEASE,Release
+FIELD_PROMPT_STAND,Send Toma here
+ENEMY_ASHWING,Ashwing
+LORE_ASHWING,"A moth the size of a gull, drawn to Lanternfall's lights. The ember eyespots on its soot-grey wings read like a leaf-boat's flame in the dark, and the dust off them brings sleep."
+ENEMY_SLAG_TORTOISE,Slag Tortoise
+LORE_SLAG_TORTOISE,"A low tortoise under a shell of cooled lava flecked with copper. It pulls in when struck, and ordinary blows glance off. Something heavy has to crack it first."
+ENEMY_VEIN_SPARKER,Vein Sparker
+LORE_VEIN_SPARKER,"A lean copper-green lizard that sleeps on the Lit Age veins and stores their charge. It carries its tail curled up like a coil, and it spits lightning."
+ENEMY_CINDER_MATRON,The Cinder Matron
+LORE_CINDER_MATRON,"A forge-keeper from when Ashcrown's copper was a working line, crusted in centuries of slag. The Tenders tend her like an old relative. She wakes when the anvil rings, and she tests the Cantor's guardians, never the Cantor."
+PHASE_CINDER_MATRON_CRUST,The Crust
+PHASE_CINDER_MATRON_POUR,The Pour
+SKILL_FLUKE_CLEAVE,Fluke Cleave
+SKILL_SNUB_LINE,Snub the Line
+SKILL_ANCHOR_FALL,Anchor Fall
+SKILL_ASH_RAKE,Ash Rake
+SKILL_WING_DUST,Wing Dust
+SKILL_SHELL_RAM,Shell Ram
+SKILL_PULL_IN,Pull In
+SKILL_SPARK_SPIT,Spark Spit
+SKILL_LADLE_SWING,Ladle Swing
+SKILL_BANK_THE_FIRE,Bank the Fire
+SKILL_SLAG_POUR,Slag Pour
+SKILL_RECRUST_GATHER,Gathering Crust
+SKILL_RECRUST,Re-crust
+SKILL_FORGE_BOLT,Forge Bolt
+SKILL_LAST_STRIKE,Last Strike
+ENC_CH05_PILGRIM_STAIR,The Pilgrim Stair
+ENC_CH05_CINDER_MATRON,The Cinder Matron
+TUT_CH05_ARMOR_BREAK,"Armored foes turn ordinary blows aside. Kerrid's Fluke Cleave breaks their armor for a while: watch the timeline for how long."
+TUT_CINDER_MATRON_CRUST,The Matron's crust turns blows aside. Kerrid can break it.
+TUT_CINDER_MATRON_POUR,Water and cold will harden her again.
+VOWBOUND_KAHRE,Kahre
+GEAR_TYPE_ANCHOR_CLEAVER,Anchor-Cleaver
+GEAR_TYPE_WATCH_WRAPS,Arm Wraps
+EQUIP_KERRID_ANCHOR_CLEAVER,Anchor-Cleaver
+EQUIP_KERRID_ANCHOR_CLEAVER_DESC,"A massive hooked blade forged from a ship's anchor fluke, carried bare across the back."
+EQUIP_KERRID_WATCH_WRAPS,Plain Wraps
+EQUIP_KERRID_WATCH_WRAPS_DESC,"Cloth wound tight from wrist to elbow, old and many times retied."
+ITEM_QUENCH_CHARM,Quench Charm
+ITEM_QUENCH_CHARM_DESC,"An iron charm from Ashcrown's quench-trough. A smith dips it in the trough before a big piece of work, for luck against the fire."
+ITEM_PEMAKAR_LEAF_BOAT,Pemakar Leaf-Boat
+ITEM_PEMAKAR_LEAF_BOAT_DESC,"A Pemakar leaf-boat, folded and unlit, with a pinch of rice in it. Carried until it is time."

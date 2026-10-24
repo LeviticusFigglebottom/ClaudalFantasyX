@@ -25,16 +25,16 @@ func before_each() -> void:
 func test_rows_are_the_bag_with_names_categories_and_counts() -> void:
 	var m := _model()
 	var rows := m.rows()
-	assert_eq(rows.size(), 5)
+	assert_eq(rows.size(), 4, "the bag leaves the key item to the Key Items view")
 	assert_eq(rows[0]["id"], &"salt_tonic", "kind order: consumables first")
 	assert_eq(rows[0]["label"], tr("ITEM_SALT_TONIC"))
 	assert_eq(rows[0]["mp"], tr("ITEM_CATEGORY_CONSUMABLE"))
 	assert_eq(rows[0]["right"], tr("ITEMS_MENU_COUNT_FMT").format({"count": 3}))
 	assert_eq(rows[0]["right_role"], &"text", "usable here")
-	var lantern := _row(rows, &"brass_lantern")
-	assert_eq(lantern["mp"], tr("ITEM_CATEGORY_KEY"), "key items are listed")
-	assert_true(lantern["enabled"], "and choosable, so the line can say why")
-	assert_eq(lantern["right_role"], &"text_dim")
+	assert_true(_row(rows, &"brass_lantern").is_empty())
+	var pot := _row(rows, &"ember_pot")
+	assert_true(pot["enabled"], "a battle-only item is choosable, so the line can say why")
+	assert_eq(pot["right_role"], &"text_dim")
 	assert_eq(m.desc(&"salt_tonic"), tr("ITEM_SALT_TONIC_DESC"))
 	assert_eq(
 		m.held_text(&"crab_carapace"),
@@ -46,7 +46,9 @@ func test_rows_are_the_bag_with_names_categories_and_counts() -> void:
 
 func test_the_three_sorts_and_their_words() -> void:
 	var m := _model()
-	assert_eq(m.item_ids(), m.inventory().ids(), "by kind is the listing order (ItemDB.sort_rank)")
+	var listing := m.inventory().ids()
+	listing.erase(&"brass_lantern")
+	assert_eq(m.item_ids(), listing, "by kind is the listing order (ItemDB.sort_rank), key items left out")
 	assert_eq(m.sort_text(), tr("ITEMS_MENU_SORT_FMT").format({"sort": tr("ITEMS_MENU_SORT_KIND")}))
 	assert_eq(m.next_sort(), ItemsMenuModel.SORT_NAME)
 	var names: Array[String] = []
@@ -60,7 +62,8 @@ func test_the_three_sorts_and_their_words() -> void:
 	assert_eq(ids[0], &"crab_carapace", "7 first")
 	assert_eq(ids[1], &"salt_tonic", "then 3")
 	assert_eq(ids[2], &"quiet_tea", "then 2")
-	assert_eq(ids[3], &"ember_pot", "ties keep the kind order: Ember Pot before the Brass Lantern")
+	assert_eq(ids[3], &"ember_pot", "then 1")
+	assert_eq(ids.size(), 4, "no key item in any sort")
 	assert_eq(m.next_sort(), ItemsMenuModel.SORT_KIND, "wraps")
 	assert_eq(m.next_sort(-1), ItemsMenuModel.SORT_COUNT, "and back")
 
@@ -217,11 +220,13 @@ func test_keys_move_sort_use_and_go_back() -> void:
 	assert_eq(state.swell_of(&"rhen"), 20)
 	assert_eq(state.vitals_of(&"rhen")["hp"], 300)
 	assert_true(menu.preview_text().begins_with(tr("ITEMS_MENU_USED_FMT").get_slice("{", 0)), "the receipt")
+	assert_false(menu.is_refused(), "M2-AUD-15: a use that worked is no refusal")
 	assert_eq(menu.level, ItemsMenu.Level.PICK, "stays for a second one")
 	menu.handle_input(_ev(&"ui_down"))
 	assert_eq(menu.preview_text(), menu.model.preview(&"salt_tonic", &"asha")["text"], "the cursor clears it")
 	menu.handle_input(_ev(&"ui_accept"))
 	assert_eq(menu.model.inventory().count(&"salt_tonic"), 2, "a refused use spends nothing")
+	assert_true(menu.is_refused(), "M2-AUD-15: audio can hear the refusal")
 	menu.handle_input(_ev(&"ui_cancel"))
 	assert_eq(menu.level, ItemsMenu.Level.LIST)
 	assert_true(menu.handle_input(_ev(&"ui_cancel")))
@@ -231,14 +236,14 @@ func test_keys_move_sort_use_and_go_back() -> void:
 
 
 func test_a_refused_item_does_not_open_the_picker_and_the_last_one_closes_it() -> void:
-	state.inventory = {"salt_tonic": 1, "brass_lantern": 1}
+	state.inventory = {"salt_tonic": 1, "crab_carapace": 1}
 	state.party_vitals = {"toma": {"hp": 10}}
 	_open()
 	menu.handle_input(_ev(&"ui_down"))
-	assert_eq(menu.current_item(), &"brass_lantern")
+	assert_eq(menu.current_item(), &"crab_carapace")
 	menu.handle_input(_ev(&"ui_accept"))
-	assert_eq(menu.level, ItemsMenu.Level.LIST, "a key item opens nothing")
-	assert_eq(menu.use_text(), menu.model.item_line(&"brass_lantern")["text"])
+	assert_eq(menu.level, ItemsMenu.Level.LIST, "a material opens nothing")
+	assert_eq(menu.use_text(), menu.model.item_line(&"crab_carapace")["text"])
 	menu.handle_input(_ev(&"ui_up"))
 	menu.handle_input(_ev(&"ui_accept"))
 	menu.handle_input(_ev(&"ui_down"))
@@ -247,6 +252,7 @@ func test_a_refused_item_does_not_open_the_picker_and_the_last_one_closes_it() -
 	assert_eq(state.vitals_of(&"toma")["hp"], 210)
 	assert_eq(menu.level, ItemsMenu.Level.LIST, "the last tonic is gone: back to the bag")
 	assert_eq(menu.list_page().row_count(), 1)
+	assert_eq(menu.current_item(), &"crab_carapace")
 	assert_true(menu.use_text().contains(tr("ITEM_SALT_TONIC")), "the receipt stays on the line")
 	_teardown()
 
@@ -273,6 +279,66 @@ func test_the_mouse_hovers_clicks_scrolls_and_sorts() -> void:
 	menu._on_clicked(_index_of(&"quiet_tea"), ItemsMenu.Level.LIST)
 	assert_eq(menu.current_item(), &"quiet_tea", "a click on the bag goes back to it")
 	assert_eq(menu.level, ItemsMenu.Level.PICK, "and chooses: Quiet Tea's picker")
+	_teardown()
+
+
+# --- the Key Items view (M3-MNU-03) ---------------------------------------------------------------
+
+
+func test_the_key_view_lists_key_items_with_their_words_and_no_use() -> void:
+	state.inventory["kell_wick"] = 1
+	var m := _model()
+	assert_eq(m.view, ItemsMenuModel.VIEW_BAG)
+	assert_eq(m.view_label(ItemsMenuModel.VIEW_KEY), tr("ITEMS_MENU_VIEW_KEY"))
+	assert_eq(m.next_view(), ItemsMenuModel.VIEW_KEY)
+	assert_eq(m.item_ids(), m.inventory().ids_in(ItemDB.CATEGORY_KEY), "key items in data order")
+	assert_eq(m.item_ids(), [&"brass_lantern", &"kell_wick"] as Array[StringName])
+	m.next_sort()
+	assert_eq(m.item_ids(), [&"brass_lantern", &"kell_wick"] as Array[StringName], "the sort is the bag's")
+	var rows := m.rows()
+	assert_eq(rows[0]["label"], tr("ITEM_BRASS_LANTERN"))
+	assert_eq(rows[0]["right"], "")
+	assert_eq(m.desc(&"kell_wick"), tr("ITEM_KELL_WICK_DESC"))
+	var line := m.item_line(&"kell_wick")
+	assert_eq(line["text"], tr("ITEMS_MENU_KEY_NOTE"), "kept, not refused")
+	assert_true(line["ok"])
+	assert_eq(m.item_error(&"kell_wick"), ItemsMenuModel.ERR_KEY, "and never used")
+	assert_eq(m.next_view(), ItemsMenuModel.VIEW_BAG, "wraps")
+	m.inventory().remove(&"brass_lantern", 1)
+	m.inventory().remove(&"kell_wick", 1)
+	m.view = ItemsMenuModel.VIEW_KEY
+	assert_eq(m.rows().size(), 0)
+	assert_eq(m.empty_text(), tr("ITEMS_MENU_KEY_EMPTY"))
+
+
+func test_page_keys_and_tabs_switch_the_view_and_confirm_uses_nothing() -> void:
+	state.inventory["kell_wick"] = 1
+	_open()
+	assert_eq(menu.tab_label(ItemsMenuModel.VIEW_BAG).text, tr("ITEMS_MENU_VIEW_BAG"))
+	assert_true(menu.handle_input(_ev(&"ui_page_down")))
+	assert_eq(menu.model.view, ItemsMenuModel.VIEW_KEY)
+	assert_eq(menu.current_item(), &"brass_lantern", "the cursor starts at the top")
+	assert_eq(menu.help_text(), tr("ITEMS_MENU_HELP_KEY"))
+	assert_eq(menu.desc_text(), tr("ITEM_BRASS_LANTERN_DESC"))
+	assert_eq(menu.use_text(), tr("ITEMS_MENU_KEY_NOTE"))
+	assert_false(menu.sort_text() != "" and menu._sort.visible, "no sort line on the key view")
+	menu.handle_input(_ev(&"ui_down"))
+	assert_eq(menu.current_item(), &"kell_wick")
+	menu.handle_input(_ev(&"ui_right"))
+	assert_eq(menu.model.sort, ItemsMenuModel.SORT_KIND, "Left and Right sort only the bag")
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_eq(menu.level, ItemsMenu.Level.LIST, "Confirm on a key item opens nothing")
+	assert_eq(menu.model.inventory().count(&"kell_wick"), 1)
+	menu.handle_input(_ev(&"ui_page_up"))
+	assert_eq(menu.model.view, ItemsMenuModel.VIEW_BAG)
+	assert_eq(menu.help_text(), tr("ITEMS_MENU_HELP"))
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	menu._on_tab_input(click, ItemsMenuModel.VIEW_KEY)
+	assert_eq(menu.model.view, ItemsMenuModel.VIEW_KEY, "a click on a tab shows it")
+	menu.handle_input(_ev(&"ui_cancel"))
+	assert_false(menu.is_open(), "Cancel closes from either view")
 	_teardown()
 
 

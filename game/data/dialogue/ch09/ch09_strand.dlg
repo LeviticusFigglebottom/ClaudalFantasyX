@@ -1,0 +1,28 @@
+// Ch9 B01 "The strand of the drowned" (docs/kb/story/beats/act1_ch09.md §2 B01), played on arrival.
+// 21:00, clear sky after the storm, a half moon low, sea-glow 0.15 (color script `ch09`). Corrow has laid
+// its drowned out along the harbour strand under sailcloth, FACES COVERED, oil lamps at intervals. Above,
+// the motes of the drowned HANG over the flooded low town behind the broken wall and over the strand:
+// held, cyan, drifting very slowly sideways and down (rule 1: nothing in Ch9 rises or turns gold). They
+// are waiting for the Ebbing. N01 the strand; N02 the broken wall-head and the low town, a lake to the
+// eaves; N04 Toma and Marra at the end of the Stillguard row, framed small and SILENT: she is holding
+// his hands and telling him she saw her old captain on the stair, and he listens the way you listen to
+// the grieving (do not surface: the fishwife's word reaching Toma, paid off in Ch12). No audio from the
+// pair. Kerrid is nowhere. No spawn, no battle (rule 5). Then the player walks among the dead.
+title: ch09_strand
+location: ch09/corrow_night
+---
+@letterbox on
+@camera N01
+@fade in 2.5
+@music corrow_night fade=2.0
+@vfx glimmer_held at=lowtown_motes count=24 drift=down_seaward rate=slow
+@vfx glimmer_held at=strand_motes count=18 drift=down_seaward rate=slow
+@wait 4.0
+@camera N02
+@wait 3.5
+@camera N04
+@anim marra hold_hands toma
+@wait 3.5
+@letterbox off
+@camera release
+===

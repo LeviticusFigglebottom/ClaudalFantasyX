@@ -1,0 +1,190 @@
+// Ch9 B03-B08: the gilt line, the Ebbing in three movements and the cutaway, then "Pointing the wrong
+// way" (docs/kb/story/beats/act1_ch09.md §2 B03-B08, §7 shots). ONE scene with a node per beat, so every
+// cut between beats is a cut (separate scenes would hand the camera back to the field between them).
+// THE RULES (§0): every mote is HELD (glimmer_held, cyan) and drifts DOWN and SEAWARD; nothing rises or
+// turns gold; no release anywhere. Nothing interrupts the Ebbing: no spawn, no battle, no alarm.
+// THE HELD INPUT (§2 B04-B07; §9 UI 1): each movement runs between <<event hold_input raise_staff>> and
+// <<event hold_input_end>>. In between, the scene's time runs only while the player holds the field's
+// interact action ("Hold to raise the staff": CutsceneHoldGate, game/data/flow/ch09_field.json). No
+// timing, no score, no fail: let go and the dance waits, breathing. The player is not performing the
+// dance; they are letting it go on. The full Ebbing render (staff and mourner attractors, thousands of
+// motes, the reflection, the absorption bloom) is Rendering's (M3-C09-03); the @vfx here are the
+// placeholder held motes.
+title: ch09_the_ebbing
+location: ch09/corrow_night
+---
+// B03 "The gilt line" (E, 1.5 min). N06: CU, the Tender's brush painting the gilt line on Asha's face
+// (N-04: "so the dead can find her"), its first appearance in the game. Asha holds still, eyes shut.
+// Ysolde's warmth comes out as an instruction, played sincerely (in hindsight it is the instruction for
+// leading the dead the wrong way). N07: Asha steps onto the raft alone; the strand kneels facing the
+// water. Rhen kneels at the waterline if he sat with his own dead at Haluna, else at the back of the
+// strand. Pell is not in the frame.
+@letterbox on
+@anim asha stand_gilt
+@camera N06
+@music corrow_night fade=1.0
+@anim tender paint_gilt asha
+@wait 2.5
+@mark ysolde ysolde_landing walk
+@wait 1.0
+Ysolde [tender]: Keep the lamp above your shoulder, not your head. They follow the light, not you. Let them. #line:ch09_gilt_001
+@wait 1.0
+@camera N07
+@mark asha raft_step walk
+@mark toma strand_toma walk
+<<if $ch02_rhen_stayed_with_dead>>
+    @mark rhen kneel_waterline walk
+<<else>>
+    @mark rhen kneel_back walk
+<<endif>>
+@sfx shingle_kneel
+@music silence fade=2.0
+@wait 3.0
+<<jump ch09_ebb_gathering>>
+===
+// B04, first movement, "the gathering" (C -> E, 2 min). N08 (24 mm, high, from the strand): the raft
+// small on the black harbour, the broken wall behind, the motes hanging over the low town. Asha raises
+// the staff (input 1). The motes come up off the low town's still water, over the broken wall, and OFF
+// THE MOURNERS, leaving them reluctantly. N09: a mourner's open hand on the shingle, the motes lifting
+// off her fingers (lifting off, not rising up: they stay low). N10: Asha's face, the gilt line catching
+// the lantern, eyes on the light.
+title: ch09_ebb_gathering
+---
+@camera N08
+@anim asha pole_out
+@sfx raft_pole
+@vfx glimmer_held at=lowtown_motes count=24 drift=down_seaward rate=slow
+@wait 2.0
+<<event hold_input raise_staff>>
+@music the_ebbing fade=3.0
+@anim asha raise_staff
+@sfx staff_bell_shells
+@vfx glimmer_held at=mourners_motes count=18 drift=down_seaward rate=slow
+@wait 6.0
+@camera N09
+@vfx glimmer_held at=mourner_hand count=8 drift=down_seaward rate=slow
+@wait 3.0
+@camera N10
+@wait 3.0
+<<event hold_input_end>>
+<<jump ch09_ebb_long_line>>
+===
+// B05, second movement, "the long line" (E, 1.5 min). Input 2. N11, the hero frame (18 mm, low over
+// the water; motes may bloom to 35% of the frame, and this is that frame): thousands of motes stream
+// after the staff in a long curving river of cyan across the harbour, reflected in the still water.
+// Asha turns on the raft, and the river turns with her. N11 holds at least 6 s with the input. N12
+// (24 mm, from the water's surface looking up): the stream passing overhead and SINKING as it goes.
+title: ch09_ebb_long_line
+---
+<<event hold_input raise_staff>>
+@camera N11
+@anim asha turn_on_raft
+@sfx staff_bell_shells
+@vfx glimmer_held at=harbour_stream count=36 drift=down_seaward rate=normal
+@wait 7.0
+@camera N12
+@vfx glimmer_held at=stream_overhead count=24 drift=down_seaward rate=normal
+@wait 4.0
+<<event hold_input_end>>
+<<jump ch09_the_stair>>
+===
+// B06, cutaway: the stair (C, 15 s). N13, ONE SHOT, cut in and cut out (ADR 0022 (f) and its sweep-G
+// S4 note; rule 2): the landward side of the wall, the Fisher Stair rising out of the drowned low town
+// at slack water. A big man in a straw cape, ALONE, carrying a child's body up the stair (wrapped in
+// sailcloth, face covered), climbing slowly; low wide, his back three-quarters to us, a silhouette,
+// never a face close-up. Over the wall-head behind and above him the river of motes passes seaward and
+// down, AWAY from him. No other figure on the stair. NO MOTE TURNS TOWARD HIM (that is Ch15's). NO
+// ROPE-BURN GLOW (it starts in Ch10). The music is the Ebbing's, muffled by the wall (Audio's mix).
+// Not a held input: the dance is elsewhere. Nobody in the party ever mentions it.
+title: ch09_the_stair
+---
+@camera N13
+@vfx glimmer_held at=wallhead_motes count=24 drift=down_seaward rate=normal
+@mark kerrid_stair stair_climb walk
+@wait 15.0
+<<jump ch09_ebb_letting_down>>
+===
+// B07, third movement, "letting down" (E -> C, 1.5 min). Input 3. N14 (50 mm, from the raft's side):
+// Asha lowers the staff toward the harbour mouth, and the river of light goes out between the moles
+// toward open sea and SINKS, absorbed into the sea's own faint glow. N15 (35 mm, wide): the harbour dark
+// again, the sea-glow a little brighter than before, Asha alone on the raft with the lantern. It is
+// done, and it is lovely, and it is wrong.
+title: ch09_ebb_letting_down
+---
+<<event hold_input raise_staff>>
+@camera N14
+@anim asha lower_staff
+@sfx staff_bell_shells
+@vfx glimmer_held at=harbour_mouth count=36 drift=down_seaward rate=slow
+@wait 6.0
+<<event hold_input_end>>
+@camera N15
+@music silence fade=3.0
+@sfx harbour_lap
+@wait 4.0
+<<set $ch09_ebbing_danced = true>>
+<<jump ch09_wrong_way>>
+===
+// B08 "Pointing the wrong way" (C, 3 min, ~110 words). N16: the raft comes in; Asha steps off radiant
+// and spent, the gilt line streaked with spray; Rhen is first to her. Her quiet line is for him alone
+// (asha_velamir.md's private notice; paid off in Ch10). N17: a very tall shape has come down the rocks
+// at the strand's end, the Kirru from the wall (2.3 m: shoot low on him). Toma's hand goes to his spear
+// and stays there. Pell stands still for a long time, the way the Kirru do, then speaks HIS FIRST WORDS
+// IN THE GAME (rule 6; mandated text, one line: the long gap after "Beautiful." is VO timing, see the
+// line's note). He doesn't explain, and he doesn't answer Asha's question (Ch10's farewell-tide does).
+// N18: Toma, who has spent the night among his own dead, gives Pell the words he gave Rhen on Haluna's
+// dock in Ch3: a man too tired to refuse, and kinder than his creed. N19: if the party fed the beacon in
+// Ch8, Fenn tells Asha her mother danced for Corrow's drowned (ADR 0022 (a)); otherwise Hobb, unprompted.
+// Kerrid is absent: he has no line here.
+title: ch09_wrong_way
+---
+@fade out 1.0
+@anim asha pole_in
+@camera N16
+@music corrow_night fade=4.0
+@fade in 1.0
+@mark rhen landing_rhen walk
+@wait 1.5
+Asha [exhausted]: Was it all right? From the shore? #line:ch09_wrong_way_001
+Rhen [tender]: It was the most— Yeah. It was. #line:ch09_wrong_way_002
+@wait 1.0
+Asha [worried]: They didn't want to go, Rhen. I had to keep asking them. #line:ch09_wrong_way_003 #whisper
+<<set $ch09_asha_said_they_hung_back = true>>
+@wait 1.5
+@camera N17
+@mark pell rocks_foot walk
+@wait 3.0
+@anim toma hand_on_spear
+@wait 2.5
+Pell [neutral]: Beautiful. And pointing the wrong way. #line:ch09_wrong_way_004 #tn:"Pell's first words in the game. A long silence after 'Beautiful.' (at least 1.5 s), then the rest. He is not sneering."
+@wait 1.5
+Ysolde [cold]: The rite has been danced the same way for nine hundred years. #line:ch09_wrong_way_005
+Pell [neutral]: Yes. #line:ch09_wrong_way_006
+@wait 1.5
+Asha [worried]: Which way should they point? #line:ch09_wrong_way_007
+@wait 2.5
+Pell [neutral]: You go where it sleeps. #line:ch09_wrong_way_008
+Asha [neutral]: The Choir. Yes. #line:ch09_wrong_way_009
+Pell [neutral]: I will walk there too. #line:ch09_wrong_way_010
+Rhen [worried]: Who are you? #line:ch09_wrong_way_011
+@wait 2.0
+@camera N18
+@anim toma look_at pell
+@wait 2.5
+Toma [exhausted]: ...Walk behind me, then. #line:ch09_wrong_way_012
+Asha [tender]: Thank you, Toma. #line:ch09_wrong_way_013
+<<set $ch09_pell_joined = true>>
+@camera N19
+<<if $ch08_fed_the_beacon>>
+    @mark fenn fenn_up walk
+    @wait 1.5
+    Fenn [tender]: Your mother danced for our drowned too. Same harbour. #line:ch09_wrong_way_014
+<<else>>
+    @mark hobb hobb_up walk
+    @wait 1.5
+    Hobb [neutral]: The last Cantor danced it for us, the year of the last Rising. You did it well. #line:ch09_wrong_way_015
+<<endif>>
+@anim asha look_at harbour_mouth
+@wait 2.5
+@fade out 2.5
+===

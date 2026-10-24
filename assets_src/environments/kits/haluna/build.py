@@ -22,12 +22,16 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+import arenas  # noqa: E402
+import causeway  # noqa: E402
+import causeway_zone  # noqa: E402
 import festival  # noqa: E402
 import kit_common as kc  # noqa: E402
-import placeholders  # noqa: E402
+import props  # noqa: E402
 import ruins  # noqa: E402
 import shrine  # noqa: E402
 import shrine_interior  # noqa: E402
+import trees  # noqa: E402
 import village  # noqa: E402
 import walls  # noqa: E402
 import waterfront  # noqa: E402
@@ -63,12 +67,20 @@ def targets() -> dict:
         out[name] = (name, shrine, fn)
     for name, fn in sorted(shrine_interior.TARGETS.items()):
         out[name] = (name, shrine_interior, fn)
-    for name, fn in sorted(placeholders.TARGETS.items()):
-        out[name] = (name, placeholders, fn)
+    for name, fn in sorted(trees.TARGETS.items()):
+        out[name] = (name, trees, fn)
+    for name, fn in sorted(props.TARGETS.items()):
+        out[name] = (name, props, fn)
+    for name, fn in sorted(causeway.TARGETS.items()):
+        out[name] = (causeway.BUDGET_KEY.get(name, name), causeway, fn)
+    for name, fn in sorted(causeway_zone.TARGETS.items()):
+        out[name] = (name, causeway_zone, fn)
+    for name, fn in sorted(arenas.TARGETS.items()):  # M2-ENV-11 battle arenas
+        out[name] = (name, arenas, fn)
     return out
 
 
-PLACEHOLDERS = placeholders.REASONS | shrine.PLACEHOLDER_REASONS
+PLACEHOLDERS = dict(shrine.PLACEHOLDER_REASONS)  # M2-ENV-07: the two trees are real now (trees.py)
 
 
 def check_budget(module, key: str, builders) -> list[str]:

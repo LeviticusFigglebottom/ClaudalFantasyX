@@ -1,0 +1,9 @@
+// Ch5 B02, bark 2: the market terraces (P03). Two boat-folders. This is the rule B04's choice uses:
+// a boat for your own is folded toward you; Rhen launches at the strangers' channel. Overheard.
+title: ch05_bark_boat_folders
+location: ch05/pemakar
+---
+Townsfolk as "Boat-Folder" [neutral]: Fold toward you. Always toward you. #line:ch05_bark_fold_001
+Townsfolk as "Her Daughter" [neutral]: And for strangers? #line:ch05_bark_fold_002
+Townsfolk as "Boat-Folder" [neutral]: Away. #line:ch05_bark_fold_003
+===

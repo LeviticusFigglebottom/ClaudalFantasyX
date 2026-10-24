@@ -84,6 +84,7 @@ func close() -> void:
 	if _is_closed:
 		return
 	_is_closed = true
+	visible = false  # freed at the frame's end: until then it must not take the pointer (M2-UI-26)
 	_restore_pause()
 	closed.emit()
 

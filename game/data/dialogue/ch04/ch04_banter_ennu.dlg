@@ -1,0 +1,12 @@
+// Ch4 C4-10 "Brightwater Crossing", banter 1 of 3 (field bark, overheard while walking past the rail).
+// Asha practises the first verse's opening under her breath; Ysolde corrects her (the voice guide's
+// line). Asha thanks her and does it again, correctly; Ysolde doesn't look surprised. Asha's arc with
+// Ysolde starts here: she refuses to be afraid of her.
+title: ch04_banter_ennu
+location: ch04/brightwater_ferry
+---
+Asha [neutral]: Vey enu, vey enu... #line:ch04_banter_ennu_001 #sung #lamptongue #notr #tn:"Lamptongue, sung under her breath and slightly wrong (one syllable). Keep exactly as written."
+Ysolde [neutral]: It is pronounced ennu. Two syllables. You will want to sing it correctly when it matters. #line:ch04_banter_ennu_002
+Asha [smile]: Thank you. Vey ennu, vey ennu. #line:ch04_banter_ennu_003 #tn:"'Vey ennu' is Lamptongue: keep as written."
+Ysolde [neutral]: Yes. #line:ch04_banter_ennu_004
+===

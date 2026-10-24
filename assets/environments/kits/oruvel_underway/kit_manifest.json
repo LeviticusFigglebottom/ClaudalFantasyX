@@ -1,0 +1,337 @@
+{
+  "generator": "assets_src/environments/kits/oruvel_underway/build.py",
+  "kit": "oruvel_underway",
+  "pieces": {
+    "bell_room": {
+      "budget": [
+        8000,
+        600
+      ],
+      "bytes": 104604,
+      "lods": {
+        "bell_room": 1956,
+        "bell_room-lod1": 60
+      }
+    },
+    "coral_curtain": {
+      "budget": [
+        6000,
+        400
+      ],
+      "bytes": 202496,
+      "lods": {
+        "coral_curtain": 4462,
+        "coral_curtain-lod1": 4
+      }
+    },
+    "coral_head_a": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 401564,
+      "lods": {
+        "coral_head_a": 8302,
+        "coral_head_a-lod1": 60
+      }
+    },
+    "coral_head_b": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 402884,
+      "lods": {
+        "coral_head_b": 8327,
+        "coral_head_b-lod1": 60
+      }
+    },
+    "current_shaft": {
+      "budget": [
+        8000,
+        600
+      ],
+      "bytes": 199432,
+      "lods": {
+        "current_shaft": 3404,
+        "current_shaft-lod1": 96
+      }
+    },
+    "diver_lantern": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 31188,
+      "lods": {
+        "diver_lantern": 612,
+        "diver_lantern-lod1": 36
+      }
+    },
+    "divers_cord": {
+      "budget": [
+        4500,
+        100
+      ],
+      "bytes": 203756,
+      "lods": {
+        "divers_cord": 4464,
+        "divers_cord-lod1": 30
+      }
+    },
+    "floor_slab": {
+      "budget": [
+        3500,
+        200
+      ],
+      "bytes": 79736,
+      "lods": {
+        "floor_slab": 2016,
+        "floor_slab-lod1": 12
+      }
+    },
+    "floor_slab_broken": {
+      "budget": [
+        5000,
+        200
+      ],
+      "bytes": 131160,
+      "lods": {
+        "floor_slab_broken": 2756,
+        "floor_slab_broken-lod1": 12
+      }
+    },
+    "gauge_wheel": {
+      "budget": [
+        9000,
+        600
+      ],
+      "bytes": 303484,
+      "lods": {
+        "gauge_wheel": 4608,
+        "gauge_wheel-lod1": 132
+      }
+    },
+    "gauge_wheel_cut": {
+      "budget": [
+        9000,
+        600
+      ],
+      "bytes": 112728,
+      "lods": {
+        "gauge_wheel_cut": 1994,
+        "gauge_wheel_cut-lod1": 36
+      }
+    },
+    "hinge_door": {
+      "budget": [
+        3000,
+        250
+      ],
+      "bytes": 84376,
+      "lods": {
+        "hinge_door": 1488,
+        "hinge_door-lod1": 36
+      }
+    },
+    "hull_keels": {
+      "budget": [
+        6000,
+        400
+      ],
+      "bytes": 83936,
+      "lods": {
+        "hull_keels": 1778,
+        "hull_keels-lod1": 90
+      }
+    },
+    "lamp_column": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 180292,
+      "lods": {
+        "lamp_column": 3727,
+        "lamp_column-lod1": 54
+      }
+    },
+    "lamp_column_fallen": {
+      "budget": [
+        4500,
+        300
+      ],
+      "bytes": 195248,
+      "lods": {
+        "lamp_column_fallen": 4147,
+        "lamp_column_fallen-lod1": 54
+      }
+    },
+    "lit_fragments": {
+      "budget": [
+        3000,
+        250
+      ],
+      "bytes": 75660,
+      "lods": {
+        "lit_fragments": 1212,
+        "lit_fragments-lod1": 32
+      }
+    },
+    "pipe_run": {
+      "budget": [
+        3000,
+        250
+      ],
+      "bytes": 86696,
+      "lods": {
+        "pipe_run": 1592,
+        "pipe_run-lod1": 16
+      }
+    },
+    "sand_drift": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 60136,
+      "lods": {
+        "sand_drift": 1728,
+        "sand_drift-lod1": 70
+      }
+    },
+    "seafloor_edge": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 82580,
+      "lods": {
+        "seafloor_edge": 2046,
+        "seafloor_edge-lod1": 48
+      }
+    },
+    "seafloor_far": {
+      "budget": [
+        3500,
+        800
+      ],
+      "bytes": 76660,
+      "lods": {
+        "seafloor_far": 1892,
+        "seafloor_far-lod1": 380
+      }
+    },
+    "seafloor_patch_a": {
+      "budget": [
+        2000,
+        100
+      ],
+      "bytes": 44932,
+      "lods": {
+        "seafloor_patch_a": 1200,
+        "seafloor_patch_a-lod1": 32
+      }
+    },
+    "seafloor_patch_b": {
+      "budget": [
+        2000,
+        100
+      ],
+      "bytes": 44936,
+      "lods": {
+        "seafloor_patch_b": 1200,
+        "seafloor_patch_b-lod1": 32
+      }
+    },
+    "seagrass_patch": {
+      "budget": [
+        5000,
+        400
+      ],
+      "bytes": 189980,
+      "lods": {
+        "seagrass_patch": 2400,
+        "seagrass_patch-lod1": 96
+      }
+    },
+    "stair_flight": {
+      "budget": [
+        8000,
+        600
+      ],
+      "bytes": 138952,
+      "lods": {
+        "stair_flight": 2560,
+        "stair_flight-lod1": 36
+      }
+    },
+    "tether_line": {
+      "budget": [
+        1500,
+        60
+      ],
+      "bytes": 22484,
+      "lods": {
+        "tether_line": 444,
+        "tether_line-lod1": 18
+      }
+    },
+    "tower_bay": {
+      "budget": [
+        3500,
+        200
+      ],
+      "bytes": 76856,
+      "lods": {
+        "tower_bay": 1279,
+        "tower_bay-lod1": 48
+      }
+    },
+    "tower_bay_broken": {
+      "budget": [
+        4500,
+        200
+      ],
+      "bytes": 88352,
+      "lods": {
+        "tower_bay_broken": 1594,
+        "tower_bay_broken-lod1": 36
+      }
+    },
+    "tower_bay_solid": {
+      "budget": [
+        3500,
+        200
+      ],
+      "bytes": 47592,
+      "lods": {
+        "tower_bay_solid": 888,
+        "tower_bay_solid-lod1": 12
+      }
+    },
+    "tower_pier": {
+      "budget": [
+        900,
+        60
+      ],
+      "bytes": 12212,
+      "lods": {
+        "tower_pier": 192,
+        "tower_pier-lod1": 12
+      }
+    },
+    "wreck_ribs": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 248724,
+      "lods": {
+        "wreck_ribs": 5236,
+        "wreck_ribs-lod1": 286
+      }
+    }
+  },
+  "schema": "hymn-kit/1"
+}

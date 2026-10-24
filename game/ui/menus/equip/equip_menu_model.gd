@@ -25,6 +25,8 @@ const KIND_ABILITY := &"ability"
 const KIND_PIECE := &"piece"
 const KIND_REMOVE := &"remove"
 const KIND_RECIPE := &"recipe"
+## "· Customize" under a spare piece with an empty slot (M2-MNU-09): opens RECIPES for it.
+const KIND_CUSTOMIZE := &"customize"
 const NO_PIECE := EquipmentBag.NO_PIECE
 const RESULT_OK := EquipmentBag.RESULT_OK
 ## Preview rows, in this order: the two maxima, then the eight battle stats.
@@ -151,7 +153,9 @@ func pieces_title(cid: StringName, slot: StringName) -> String:
 
 
 ## The pieces `cid` can wear in `slot` (ascending uid), each marked when worn, then "Take it off"
-## when something is worn there (refused, in words, for a required slot).
+## when something is worn there (refused, in words, for a required slot). Under each spare piece
+## with an empty slot, a "· Customize" row (KIND_CUSTOMIZE, uid, index = its first empty slot):
+## worn pieces are customized from their ability rows on GEAR (M2-MNU-09).
 func piece_rows(cid: StringName, slot: StringName) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for uid in bag.pieces_for(cid, slot):
@@ -175,6 +179,8 @@ func piece_rows(cid: StringName, slot: StringName) -> Array[Dictionary]:
 				}
 			)
 		)
+		if wearer == &"" and bag.first_empty_slot(uid) >= 0:
+			out.append(customize_row(uid))
 	if worn(cid, slot) != NO_PIECE:
 		var ok := bag.unequip_error(cid, slot) == RESULT_OK
 		(
@@ -192,6 +198,25 @@ func piece_rows(cid: StringName, slot: StringName) -> Array[Dictionary]:
 			)
 		)
 	return out
+
+
+## The "· Customize" row for piece `uid` (its first empty slot), with how many slots are empty.
+func customize_row(uid: int) -> Dictionary:
+	return {
+		"id": StringName("customize:%d" % uid),
+		"kind": KIND_CUSTOMIZE,
+		"uid": uid,
+		"index": bag.first_empty_slot(uid),
+		"label": _tr("EQUIP_MENU_CUSTOMIZE_ROW"),
+		"right": _tr("EQUIP_MENU_EMPTY_COUNT_FMT").format({"n": bag.empty_slot_count(uid)}),
+		"right_role": &"text_dim",
+		"enabled": true,
+	}
+
+
+## What the "· Customize" row does, for the line under the pages.
+func customize_desc(uid: int) -> String:
+	return _tr("EQUIP_MENU_CUSTOMIZE_ROW_DESC_FMT").format({"piece": piece_name(uid)})
 
 
 func recipes_title(uid: int) -> String:

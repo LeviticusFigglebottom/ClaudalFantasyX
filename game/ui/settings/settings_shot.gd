@@ -27,7 +27,7 @@ func _ready() -> void:
 	hub.ui_settings = settings
 	hub.save_path = ""
 	add_child(hub)
-	hub.handle_input(_ev(&"ui_down"))  # Graphics -> Accessibility
+	_go_to(SettingsMenu.ROW_ACCESSIBILITY)  # by id: the hub's rows depend on the data (Audio, M3-UI-02)
 	if view == &"controls":
 		_stage_controls()
 	if view != &"accessibility":
@@ -39,11 +39,19 @@ func _ready() -> void:
 
 
 func _stage_controls() -> void:
-	hub.handle_input(_ev(&"ui_down"))  # Accessibility -> Controls
+	_go_to(SettingsMenu.ROW_CONTROLS)
 	hub.handle_input(_ev(&"ui_accept"))
 	var page := hub.page as ControlsMenu
 	page.model.set_cursor(page.model.row_ids().find(&"ui_accept"))
 	hub.handle_input(_ev(&"ui_accept"))  # listen for a new Confirm key
+
+
+## Steps the hub's cursor down to `row`.
+func _go_to(row: StringName) -> void:
+	for i in hub.row_ids().size():
+		if hub.current() == row:
+			return
+		hub.handle_input(_ev(&"ui_down"))
 
 
 func _ev(action: StringName) -> InputEventAction:

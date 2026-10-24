@@ -8,7 +8,11 @@
     {"id": "boarding_spear", "slot": "weapon", "character": "toma", "name_key": "GEAR_TYPE_BOARDING_SPEAR"},
     {"id": "tide_shield", "slot": "armor", "character": "toma", "name_key": "GEAR_TYPE_TIDE_SHIELD"},
     {"id": "lacquer_book", "slot": "weapon", "character": "ysolde", "name_key": "GEAR_TYPE_LACQUER_BOOK"},
-    {"id": "ink_guards", "slot": "armor", "character": "ysolde", "name_key": "GEAR_TYPE_INK_GUARDS"}
+    {"id": "ink_guards", "slot": "armor", "character": "ysolde", "name_key": "GEAR_TYPE_INK_GUARDS"},
+    {"id": "anchor_cleaver", "slot": "weapon", "character": "kerrid", "name_key": "GEAR_TYPE_ANCHOR_CLEAVER"},
+    {"id": "watch_wraps", "slot": "armor", "character": "kerrid", "name_key": "GEAR_TYPE_WATCH_WRAPS"},
+    {"id": "wright_launcher", "slot": "weapon", "character": "liss", "name_key": "GEAR_TYPE_WRIGHT_LAUNCHER"},
+    {"id": "mesh_sleeve", "slot": "armor", "character": "liss", "name_key": "GEAR_TYPE_MESH_SLEEVE"}
   ],
   "equipment": [
     {"id": "rhen_salvage_hooks", "type": "reef_hooks", "name_key": "EQUIP_RHEN_SALVAGE_HOOKS", "desc_key": "EQUIP_RHEN_SALVAGE_HOOKS_DESC", "price": 100, "slots": 1, "abilities": []},
@@ -30,7 +34,11 @@
     {"id": "ysolde_pleated_primer", "type": "lacquer_book", "name_key": "EQUIP_YSOLDE_PLEATED_PRIMER", "desc_key": "EQUIP_YSOLDE_PLEATED_PRIMER_DESC", "price": 100, "slots": 1, "abilities": []},
     {"id": "ysolde_gold_script_book", "type": "lacquer_book", "name_key": "EQUIP_YSOLDE_GOLD_SCRIPT_BOOK", "desc_key": "EQUIP_YSOLDE_GOLD_SCRIPT_BOOK_DESC", "price": 380, "slots": 2, "abilities": ["clear_mind"], "stats": {"magic": 1}},
     {"id": "ysolde_plain_guards", "type": "ink_guards", "name_key": "EQUIP_YSOLDE_PLAIN_GUARDS", "desc_key": "EQUIP_YSOLDE_PLAIN_GUARDS_DESC", "price": 90, "slots": 1, "abilities": [], "stats": {"magic_defense": 1}},
-    {"id": "ysolde_lacquered_guards", "type": "ink_guards", "name_key": "EQUIP_YSOLDE_LACQUERED_GUARDS", "desc_key": "EQUIP_YSOLDE_LACQUERED_GUARDS_DESC", "price": 340, "slots": 2, "abilities": ["rime_guard"], "stats": {"magic_defense": 2}}
+    {"id": "ysolde_lacquered_guards", "type": "ink_guards", "name_key": "EQUIP_YSOLDE_LACQUERED_GUARDS", "desc_key": "EQUIP_YSOLDE_LACQUERED_GUARDS_DESC", "price": 340, "slots": 2, "abilities": ["rime_guard"], "stats": {"magic_defense": 2}},
+    {"id": "kerrid_anchor_cleaver", "type": "anchor_cleaver", "name_key": "EQUIP_KERRID_ANCHOR_CLEAVER", "desc_key": "EQUIP_KERRID_ANCHOR_CLEAVER_DESC", "price": 100, "slots": 1, "abilities": []},
+    {"id": "kerrid_watch_wraps", "type": "watch_wraps", "name_key": "EQUIP_KERRID_WATCH_WRAPS", "desc_key": "EQUIP_KERRID_WATCH_WRAPS_DESC", "price": 90, "slots": 1, "abilities": [], "stats": {"defense": 1}},
+    {"id": "liss_crank_launcher", "type": "wright_launcher", "name_key": "EQUIP_LISS_CRANK_LAUNCHER", "desc_key": "EQUIP_LISS_CRANK_LAUNCHER_DESC", "price": 100, "slots": 1, "abilities": []},
+    {"id": "liss_copper_sleeve", "type": "mesh_sleeve", "name_key": "EQUIP_LISS_COPPER_SLEEVE", "desc_key": "EQUIP_LISS_COPPER_SLEEVE_DESC", "price": 90, "slots": 1, "abilities": [], "stats": {"magic_defense": 1}}
   ],
-  "starting": {"rhen": {"weapon": "rhen_salvage_hooks", "armor": "rhen_patched_tether"}, "asha": {"weapon": "asha_vigil_staff", "armor": "asha_cord_bangle"}, "toma": {"weapon": "toma_boarding_spear", "armor": "toma_old_turtle_shield"}, "ysolde": {"weapon": "ysolde_pleated_primer", "armor": "ysolde_plain_guards"}}
+  "starting": {"rhen": {"weapon": "rhen_salvage_hooks", "armor": "rhen_patched_tether"}, "asha": {"weapon": "asha_vigil_staff", "armor": "asha_cord_bangle"}, "toma": {"weapon": "toma_boarding_spear", "armor": "toma_old_turtle_shield"}, "ysolde": {"weapon": "ysolde_pleated_primer", "armor": "ysolde_plain_guards"}, "kerrid": {"weapon": "kerrid_anchor_cleaver", "armor": "kerrid_watch_wraps"}, "liss": {"weapon": "liss_crank_launcher", "armor": "liss_copper_sleeve"}}
 }

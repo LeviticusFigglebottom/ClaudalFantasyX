@@ -1,0 +1,49 @@
+// Ch7 B07 "After the Bell" (docs/kb/story/beats/act1_ch07.md §2 B07). Played on the match's return,
+// IDENTICAL WHATEVER THE RESULT: this script contains no read of the match's win flag and no line
+// that names a score (tests/integration/test_ch07_thread.gd enforces it; "Win or lose" works both
+// ways, which is the point). R06 at water level: the players surface in the catch-pool; Rhen and Tavi
+// hang on the rim stones, breathing hard, and the crowd noise is warm either way. The pool-keeper (an
+// old Tamsule woman who keeps the cup roll and the rim stones; not Order, no robe of office) chalks
+// the withdrawal on her draw-slate. Rhen starts to untie the band; Tavi stops his hand. The lamp is
+// the Low Reaches custom of a lamp on a mooring line for the ones who didn't come up (Ch6 B09). R07
+// follows Oruvel's side out, wet, carrying their floats, through a crowd that parts for them, to
+// their boat at the moorings; then holds on Rhen in the water. He doesn't go with them: he gets out
+// on the other side, where Asha and Toma have come down, and Asha hands him his jacket. No line says
+// he chose the pilgrimage. The chapter flow sets ch07_tavi_withdrew after it.
+title: ch07_after_the_bell
+location: ch07/tamsule_bell_galleries
+---
+@letterbox on
+@camera R06
+@music tidecup_after fade=1.5
+@sfx crowd_warm
+@wait 2.0
+@anim rhen catch_breath
+@anim tavi catch_breath
+@mark poolkeeper poolkeeper_rim walk
+@wait 1.0
+Tavi [exhausted]: Oruvel withdraws. We've somewhere to be. #line:ch07_after_001
+@anim poolkeeper chalk_slate
+Poolkeeper [neutral]: Oruvel's name stays on the roll. #line:ch07_after_002
+@anim tavi look_at rhen
+Tavi [soft_smile]: Win or lose, she'd have yelled at us the same. #line:ch07_after_003
+@anim rhen untie_band
+@anim tavi stop_hand rhen
+Tavi [tender]: Keep it till he wants it back. #line:ch07_after_004
+Rhen [sad]: If you find anyone— #line:ch07_after_005
+Tavi [neutral]: I'll hang a lamp. #line:ch07_after_006
+@camera R07
+@mark tavi tavi_boat walk
+@mark oruvel_diver_1 divers_boat walk
+@mark oruvel_diver_2 divers_boat walk
+@wait 3.0
+@mark asha asha_rim walk
+@mark toma toma_rim walk
+@mark liss liss_rim walk
+@mark ysolde ysolde_rim walk
+@wait 1.5
+@anim asha hand_jacket rhen
+@wait 1.5
+@letterbox off
+@camera release
+===

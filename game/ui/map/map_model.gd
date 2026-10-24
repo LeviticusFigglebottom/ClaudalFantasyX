@@ -111,9 +111,15 @@ func bounds() -> Rect2:
 	return Rect2(float(b[0]), float(b[1]), float(b[2]), float(b[3]))
 
 
-## How the zone's shapes are read (zone_maps.json shape_kind): &"haluna_layout" or &"shell_shrine_trial".
+## How the zone's shapes are read (zone_maps.json shape_kind): &"haluna_layout",
+## &"shell_shrine_trial" or &"greybox_layout".
 func shape_kind() -> StringName:
 	return StringName(str(zone().get("shape_kind", "")))
+
+
+## The zone's shape_hints (a greybox layout's blocks named by layer; ZoneMapShapes.greybox_layer).
+func shape_hints() -> Dictionary:
+	return zone().get("shape_hints", {}) as Dictionary
 
 
 ## The zone's shape source, parsed (a trial file's single top-level object is unwrapped).
@@ -179,11 +185,23 @@ func errands_text() -> String:
 	return "\n".join(lines) if not lines.is_empty() else _tr(NO_ERRANDS_KEY)
 
 
-## The pilgrimage strip: {id, name, current} per stop, in route order.
+## The pilgrimage strip: {id, name, current} per stop, in route order. Only the stops near this
+## one show (zone_map_menu.json route "before" and "after"), so the strip stays readable and the
+## road far ahead stays unnamed; a zone not on the route shows the route's first stops.
 func route_stops() -> Array[Dictionary]:
+	var route := maps.route()
+	var here := -1
+	for i in route.size():
+		if StringName(str((route[i] as Dictionary).get("id", ""))) == zone_id:
+			here = i
+	var r: Dictionary = load_data().get("route", {})
+	var before := int(r.get("before", route.size()))
+	var after := int(r.get("after", route.size()))
+	var first := maxi(here - before, 0) if here >= 0 else 0
+	var last := mini(here + after if here >= 0 else before + after, route.size() - 1)
 	var out: Array[Dictionary] = []
-	for r: Variant in maps.route():
-		var row := r as Dictionary
+	for i in range(first, last + 1):
+		var row := route[i] as Dictionary
 		var rid := StringName(str(row.get("id", "")))
 		out.append({"id": rid, "name": _tr(str(row.get("name_key", ""))), "current": rid == zone_id})
 	return out

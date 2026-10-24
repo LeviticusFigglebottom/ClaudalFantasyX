@@ -39,6 +39,13 @@ static func scene_for(db: BattleDB, encounter: StringName) -> String:
 	return scene_of(str(row.get("arena", "")))
 
 
+## How encounter `encounter`'s arena stages the choreography (arenas.json `staging`: travel_scale, tempo; {} for
+## none): underwater, runs are shorter and everything moves slower; on a deck, nobody runs past its rail.
+static func staging_for(db: BattleDB, encounter: StringName) -> Dictionary:
+	var row: Dictionary = db.encounters.get(encounter, db.encounters.get(String(encounter), {}))
+	return (data().get("staging", {}) as Dictionary).get(str(row.get("arena", "")), {}) as Dictionary
+
+
 ## Puts encounter `encounter`'s arena into `battle` (the battle scene's root). A retry of the same encounter keeps
 ## it; returns the arena scene shown ("" for the sandbox's own).
 static func apply(battle: Node, db: BattleDB, encounter: StringName) -> String:
@@ -53,6 +60,8 @@ static func apply(battle: Node, db: BattleDB, encounter: StringName) -> String:
 	holder.name = String(ARENA_NODE)
 	_replace(battle, holder)
 	for child in arena.get_children():
+		for n: Node in [child] + child.find_children("*", "", true, false):
+			n.owner = null  # moved out of the arena scene: no stale owner
 		arena.remove_child(child)
 		if ROOT_NODES.has(child.name):
 			_replace(battle, child)

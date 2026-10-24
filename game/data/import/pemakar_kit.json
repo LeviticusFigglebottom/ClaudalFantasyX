@@ -1,0 +1,24 @@
+{
+  "_about": "M3-ENV-03 post-import rules for the Pemakar kit (game/core/import/pemakar_kit_post_import.gd, AssetImportRules). A copy of the Brine Shoals kind: every glTF slot maps to the kit's own materials folder, and the LOD chain ends at 4,000 m because the skyline pieces (massif, Ashcrown, plume) are seen from the whole town. The kit exports no -col proxies; walk collision is m2-slice's (swap-in note in the M3-ENV-03 task file).",
+  "kind": "pemakar_kit",
+  "script": "res://game/core/import/pemakar_kit_post_import.gd",
+  "assets": ["res://assets/environments/kits/pemakar/"],
+  "adoption_pending": {},
+  "generate_lods": false,
+  "materials": {
+    "slot_dir": "res://assets/environments/kits/pemakar/materials/",
+    "by_node": {},
+    "warn_unmapped": true
+  },
+  "lods": {
+    "suffix": "-lod",
+    "end_m": [70.0, 4000.0],
+    "margin_m": 2.0
+  },
+  "collision": {
+    "proxy_suffix": "-col",
+    "shape": "trimesh",
+    "layer": 1,
+    "mask": 1
+  }
+}

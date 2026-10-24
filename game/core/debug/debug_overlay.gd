@@ -7,9 +7,10 @@ extends CanvasLayer
 ## Pages (bindings in game/data/debug/debug_overlay.json, added to the InputMap at runtime):
 ##   F1 help · F2 turn-order internals · F3 encounter rate · F4 flag inspector (Enter toggles a
 ##   bool) · F5 teleport (Enter goes) · F6 Lattice cheat (Enter grants) · F7 field camera ·
-##   F9 battle sandbox · F12 hide. Pressing a page's key again hides the overlay.
+##   F8 chapter select (Enter starts a fresh game there; M3-ARC-02) · F9 battle sandbox ·
+##   F12 hide. Pressing a page's key again hides the overlay.
 ## Lists move with ui_up / ui_down and act with ui_accept, only on list pages ("list": true in the
-## data: flags, teleport, Lattice). Every other page lets those keys through to the game, so F2 and
+## data: flags, teleport, Lattice, chapters). Every other page lets those keys through to the game, so F2 and
 ## F7 can stay open while playing (M1-ARC-05).
 ## All logic lives in DebugReadouts / DebugHooks; this node only routes input and draws text.
 
@@ -25,6 +26,7 @@ const PAGE_FLAGS := &"flags"
 const PAGE_TELEPORT := &"teleport"
 const PAGE_LATTICE := &"lattice"
 const PAGE_CAMERA := &"camera"
+const PAGE_CHAPTERS := &"chapters"
 const ACTION_SANDBOX := &"debug_battle_sandbox"
 const ACTION_HIDE := &"debug_overlay_hide"
 const MONO_FONTS: PackedStringArray = ["monospace", "DejaVu Sans Mono", "Consolas", "Menlo"]
@@ -38,6 +40,7 @@ var last_message := ""
 
 var _pages: Array[Dictionary] = []
 var _teleports: Array[Dictionary] = []
+var _starts: Array[Dictionary] = []
 var _refresh_left := 0.0
 var _pending_spawn: StringName = &""
 var _global_actions: Dictionary = {}
@@ -68,6 +71,7 @@ func _ready() -> void:
 	for p: Variant in cfg.get("pages", []):
 		_pages.append(p as Dictionary)
 	_teleports = DebugReadouts.teleports(str(cfg.get("teleports_path", "")))
+	_starts = DebugReadouts.chapter_starts(str(cfg.get("chapter_select_path", "")))
 	_build_action_tables()
 	layer = int(cfg.get("layer", layer))
 	_style()
@@ -158,7 +162,7 @@ func move_selection(step: int) -> void:
 	refresh()
 
 
-## Enter on the current page: toggle a flag, teleport, or apply the Lattice cheat.
+## Enter on the current page: toggle a flag, teleport, apply the Lattice cheat, or start a chapter.
 func activate() -> void:
 	match page:
 		PAGE_FLAGS:
@@ -170,6 +174,9 @@ func activate() -> void:
 		PAGE_TELEPORT:
 			if selection < _teleports.size():
 				teleport(_teleports[selection])
+		PAGE_CHAPTERS:
+			if selection < _starts.size():
+				start_chapter(_starts[selection])
 		PAGE_LATTICE:
 			var r := DebugReadouts.apply_lattice_cheat(DebugHooks.lattice_source(get_tree()), _lattice_cfg())
 			last_message = "granted: %s; facets %s" % [r["characters"], r["facets"]]
@@ -187,6 +194,18 @@ func teleport(entry: Dictionary) -> bool:
 	last_message = "teleport -> %s" % entry["label"]
 	close()
 	SceneRouter.change_scene(str(entry["scene"]))
+	return true
+
+
+## Starts a fresh game at a chapter (DebugReadouts.apply_chapter_start) and goes to its location.
+func start_chapter(start: Dictionary) -> bool:
+	if SceneRouter.is_busy():
+		last_message = "SceneRouter busy"
+		return false
+	DebugReadouts.apply_chapter_start(start)
+	last_message = "chapter -> %s" % start["label"]
+	close()
+	FlowRouting.go_to(start["location"], start["spawn"])
 	return true
 
 
@@ -229,6 +248,11 @@ func render_page(id: StringName) -> PackedStringArray:
 			for t in _teleports:
 				labels.append("%-16s %s" % [t["id"], t["label"]])
 			lines = _list_lines(labels)
+		PAGE_CHAPTERS:
+			var rows := PackedStringArray()
+			for c in _starts:
+				rows.append("%-6s %s" % [c["id"], c["label"]])
+			lines = _list_lines(rows)
 		PAGE_LATTICE:
 			lines = DebugReadouts.lattice_lines(DebugHooks.lattice_source(tree), _lattice_cfg())
 		PAGE_CAMERA:
@@ -240,6 +264,10 @@ func render_page(id: StringName) -> PackedStringArray:
 
 func teleport_entries() -> Array[Dictionary]:
 	return _teleports
+
+
+func chapter_starts() -> Array[Dictionary]:
+	return _starts
 
 
 func _flag_lines() -> PackedStringArray:
@@ -279,6 +307,8 @@ func _row_count() -> int:
 			return DebugReadouts.flag_rows().size()
 		PAGE_TELEPORT:
 			return _teleports.size()
+		PAGE_CHAPTERS:
+			return _starts.size()
 	return 0
 
 

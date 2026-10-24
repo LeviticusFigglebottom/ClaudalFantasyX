@@ -35,7 +35,7 @@
      "rect": [300, 420, 660, 520], "swatch": "timber_weathered", "level": "+1", "max_de": 0.05},
 
     {"shot": "haluna_h07_chapel_court", "name": "zenith on sky_zenith_noon +1", "kind": "near_swatch",
-     "rect": [0, 0, 250, 120], "select": {"C_min": 0.03}, "min_fraction": 0.9, "swatch": "sky_zenith_noon", "level": "+1", "max_de": 0.045},
+     "rect": [0, 40, 150, 110], "select": {"C_min": 0.03}, "min_fraction": 0.9, "swatch": "sky_zenith_noon", "level": "+1", "max_de": 0.045},
     {"shot": "haluna_h07_chapel_court", "name": "chapel sun face on order_marble 0", "kind": "near_swatch",
      "rect": [425, 235, 445, 330], "swatch": "order_marble", "level": "0", "max_de": 0.03},
     {"shot": "haluna_h07_chapel_court", "name": "chapel wall grain", "kind": "grain",

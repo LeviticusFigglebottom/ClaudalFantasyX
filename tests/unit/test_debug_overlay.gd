@@ -356,3 +356,51 @@ func _scripts(dir_path: String) -> PackedStringArray:
 
 func _host() -> Node:
 	return (Engine.get_main_loop() as SceneTree).current_scene
+
+
+# --- F8 chapter select (M3-ARC-02) ---------------------------------------------------------------
+
+
+func test_chapter_starts_cover_act_one_in_story_order() -> void:
+	var starts := DebugReadouts.chapter_starts(str(DebugReadouts.config()["chapter_select_path"]))
+	assert_true(starts.size() >= 7, "Ch1 and each built chapter")
+	assert_eq(starts[0]["location"], &"ch01/oruvel_underway", "Ch1 first")
+	var last := 0
+	for s in starts:
+		assert_true(int(s["chapter"]) > last, "%s after the chapter before it" % s["id"])
+		last = int(s["chapter"])
+		assert_false((s["party"] as Array[StringName]).is_empty(), "%s has a party" % s["id"])
+
+
+func test_f8_starts_a_fresh_game_at_the_chosen_chapter() -> void:
+	var saved_state := Game.state
+	var saved_clock := Game.play_clock_running
+	var went: Array = []
+	FlowRouting.record = func(args: Array) -> void: went.append(args)
+	var overlay := (load(DebugOverlay.SCENE_PATH) as PackedScene).instantiate() as DebugOverlay
+	_host().add_child(overlay)
+	assert_true(overlay.handle_input(_key(KEY_F8)))
+	assert_eq(overlay.page, DebugOverlay.PAGE_CHAPTERS)
+	assert_true(overlay.is_list_page(overlay.page))
+	var starts := overlay.chapter_starts()
+	var target := -1
+	for i in starts.size():
+		if starts[i]["id"] == &"ch04":
+			target = i
+	assert_true(target >= 0, "a Ch4 start")
+	assert_true("\n".join(overlay.render_page(DebugOverlay.PAGE_CHAPTERS)).contains("Ch4"))
+	for i in target:
+		overlay.move_selection(1)
+	Game.set_flag(&"test_flag", true)
+	overlay.activate()
+	FlowRouting.record = Callable()
+	assert_false(overlay.is_open(), "the overlay closes")
+	assert_eq(went, [[&"ch04/haluna_wake", &"NemeDoor"]], "goes to the start's location and spawn")
+	assert_eq(Game.state.chapter, 4)
+	assert_eq(Game.state.party_ids, [&"rhen", &"asha", &"toma"] as Array[StringName])
+	assert_true(Game.get_flag(&"ch03_rhen_sworn_guardian"), "the story so far is set")
+	assert_eq(Game.get_flag(&"test_flag"), false, "a fresh game: earlier state is gone")
+	overlay.free()
+	Game.state = saved_state
+	Game.play_clock_running = saved_clock
+	_restore()

@@ -1,0 +1,22 @@
+// Ch4 C4-15 "Under way again" (docs/kb/story/beats/act1_ch04.md). F06: the board lies on the ferry's
+// deck, wrapped in sailcloth, and the passengers' child, too shy to speak to the Cantor, puts her
+// leaf-boat on top of it. Toma unrolls Haluna's ink kit and sits beside Asha; she holds out her left
+// forearm. Fade before the needle (N-01: her first reach-band is earned on the crossing and inked by
+// Toma offscreen; Ch5 shows it). Dusk title: Pemakar's terraces, a thousand small fires on the
+// mountain. No lines. Music: brightwater_crossing (coda). The chapter flow hands on to Ch5 after it.
+title: ch04_under_way
+location: ch04/brightwater_ferry
+---
+@letterbox on
+@music brightwater_crossing fade=3.0
+@camera F06
+@anim passenger_child place_leaf_boat
+@wait 2.5
+@anim toma unroll_ink_kit
+@anim asha hold_out_forearm toma
+@wait 2.0
+@fade out 2.0
+Pemakar. Dusk. #line:ch04_under_way_001 #tn:"Title card over the terraces at dusk: a place and a time, no chapter name."
+@wait 2.0
+@letterbox off
+===

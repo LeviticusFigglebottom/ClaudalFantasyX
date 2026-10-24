@@ -4,6 +4,8 @@ validator catches bad rows.
 Each POI in game/data/ui/zone_maps.json has `at` (world x, z) and a `source`:
   node:<path>    a node in the zone's .tscn: `at` must match its transform origin (x, z)
   layout:<key>   a point in the zone's shape source's "layout": `at` must match it
+  spawn:<id>, trigger:<id>, actor:<id>, mark:<id>
+                 a GreyboxZone layout's spawn, trigger, stage actor or mark (M3-UI-04)
 so when Environment or the slice moves a spawn, an NPC or a trigger, this fails until the map
 follows (M2-FP-25).
 """
@@ -51,6 +53,23 @@ def node_origins(tscn: Path) -> dict[str, tuple[float, float]]:
     return world
 
 
+GREYBOX_SOURCES = ("spawn", "trigger", "actor", "mark")
+
+
+def greybox_point(layout: dict, kind: str, ref: str) -> tuple[float, float] | None:
+    """(x, z) of a GreyboxZone layout point (M3-UI-04): a greybox scene is only its root, and
+    GreyboxZone builds Spawns/, Triggers/, the stage's Actors and Marks from these rows."""
+    if kind == "spawn":
+        p = layout.get("spawns", {}).get(ref)
+    elif kind == "mark":
+        p = layout.get("marks", {}).get(ref)
+    elif kind == "actor":
+        p = layout.get("actors", {}).get(ref, {}).get("at")
+    else:
+        p = next((t.get("at") for t in layout.get("triggers", []) if t.get("id") == ref), None)
+    return (float(p[0]), float(p[2])) if p else None
+
+
 class ZoneMapPoiTest(unittest.TestCase):
     def setUp(self) -> None:
         self.maps = json.loads((ROOT / "game/data/ui/zone_maps.json").read_text(encoding="utf-8"))["zone_maps"]
@@ -67,6 +86,8 @@ class ZoneMapPoiTest(unittest.TestCase):
                     got = nodes.get(ref)
                 elif kind == "layout":
                     got = tuple(layout[ref]) if ref in layout else None
+                elif kind in GREYBOX_SOURCES:
+                    got = greybox_point(shapes, kind, ref)
                 else:
                     got = None
                 where = f"{z['id']}/{p['id']} ({p['source']})"
@@ -74,6 +95,18 @@ class ZoneMapPoiTest(unittest.TestCase):
                     bad.append(f"{where}: source not found")
                 elif abs(got[0] - p["at"][0]) > TOLERANCE_M or abs(got[1] - p["at"][1]) > TOLERANCE_M:
                     bad.append(f"{where}: at {p['at']} but the source is at [{got[0]:.1f}, {got[1]:.1f}]")
+        self.assertEqual(bad, [], "\n".join(bad))
+
+    def test_greybox_shape_hints_name_blocks_in_the_layout(self) -> None:
+        """M3-UI-04: a hint that names a block the layout no longer has means the map reads that
+        block by height alone again; fail so the hint follows the layout."""
+        bad = []
+        for z in self.maps["zones"]:
+            if z.get("shape_kind") != "greybox_layout":
+                continue
+            blocks = {b.get("id") for b in json.loads(res(z["shapes"]).read_text(encoding="utf-8")).get("blocks", [])}
+            for layer, ids in z.get("shape_hints", {}).items():
+                bad += [f"{z['id']}: {layer} hint '{i}' is not a block" for i in ids if i not in blocks]
         self.assertEqual(bad, [], "\n".join(bad))
 
     def test_every_poi_is_inside_its_map(self) -> None:

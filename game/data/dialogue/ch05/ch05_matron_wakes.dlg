@@ -1,0 +1,17 @@
+// Ch5 B08 → B09 (act1_ch05.md §5). The last run pours into the anvil court and strikes the anvil-stone:
+// a white flash, and a beat later the crack of a hammer on an anvil (anvil_crack, the Kahre motif).
+// The crack wakes the Matron, who unfolds from her alcove in the court wall (A08). The Tender's line is
+// the only setup. Then the fight (ch05_cinder_matron).
+title: ch05_matron_wakes
+location: ch05/ashcrown
+---
+@camera A07
+@sfx anvil_crack
+@wait 1.2
+@camera A08
+@anim matron unfold
+Tender as "Tender Ruwen" [worried]: When the anvil rings, the Matron wakes. Be gentle with her if you can. #line:ch05_matron_001
+@anim kerrid unsling_cleaver
+@mark kerrid court_front walk
+@wait 0.8
+===
