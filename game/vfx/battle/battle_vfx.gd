@@ -89,9 +89,28 @@ func attach(controller: BattleController, engine: BattleEngine) -> void:
 		settings.changed.connect(func(_key: StringName) -> void: reduced_motion = settings.reduced_motion())
 	_build_flash_layer(controller)
 	boss = BattleBossVfx.attached_if_boss(self, controller, engine)
+	prebuild()
 	var opening_event := _opening_event(engine.opening)
 	if opening_event != &"":
 		play_event.call_deferred(opening_event, &"")
+
+
+## Builds one pooled emitter per layer of every particle effect, without emitting (M2-RND-07). The first
+## emitter of a feature set (turbulence on) costs ~32 ms of main-thread work in the battle's tree; mid-fight,
+## the Drownbell's polyp_rise put a 35-44 ms frame into the Flood (79 ms on a fresh install). attach() calls
+## it in the frame the battle scene enters, under the router's opaque fade (about 45 ms in all on the RX
+## 9070 XT). A staged prewarm didn't help: the cost is the emitter's, in this tree. Returns the emitters built.
+func prebuild() -> int:
+	var count := 0
+	for effect_id: String in data.get("effects", {}):
+		var def := (data["effects"] as Dictionary)[effect_id] as Dictionary
+		if str(def.get("kind", "")) != KIND_PARTICLES:
+			continue
+		var layers: Array = def.get("layers", [{}])
+		for i in layers.size():
+			_emitter(StringName("%s#%d" % [effect_id, i]), def.merged(layers[i] as Dictionary, true))
+			count += 1
+	return count
 
 
 ## What an action plays: [{"effect": id, "target": combatant id}], in order. No nodes: tests call it.

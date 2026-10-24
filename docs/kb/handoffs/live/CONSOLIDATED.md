@@ -2,6 +2,8 @@
 
 **Rewritten:** 2026-10-24 by the Lead, cloud session `session_019iimsngAgPLEram1wcbLpE` (new account). It replaces the old account's handoff; that version is in git history at a504072. Each environment's detail is in this folder (`lead-cloud.md`, `pc-gpu.md`, and `m2-slice.md` / `characters.md` on those tracks' branches). **Fetch every branch first: the newest per-environment log is on that environment's own branch.**
 
+> **The human's direction (2026-10-24, ~11:30):** no environment idles waiting on another or on the human. Reviews the human must give are collected and never block work, and M3+ (Act I) runs in parallel with the M2 review. The Lead must stay active: it monitors every session, routes work, merges in batches, and lets tracks merge each other's branches directly when that unblocks them (e.g. env-art and ui merge claude/m2-slice).
+
 ## 0. Read these, in this order
 1. [`CLAUDE.md`](../../../CLAUDE.md): the operating rules for every agent. They include "Gate scope", §7a live logs, and §8a shared-machine and scratch rules.
 2. [`SPEC.md`](../../../SPEC.md) v1.3: the brief. Only the Lead edits it, and every change needs an ADR plus a version note.
@@ -32,6 +34,7 @@
 | Branch | Status |
 |---|---|
 | `claude/undertow-lead-handoff-423ixt` | **The integration branch, standing in for `main`** (CLAUDE.md §4: the Lead's session branch). Every merge lands here. |
+| `main` | **Stale**: not updated since the old account. The integration branch below is the real main; the Lead may fast-forward `main` only with the human's permission. |
 | `claude/new-session-mj8c3c` | The old integration branch. **Frozen at a504072**; don't merge into it. |
 | `claude/m2-slice` | The M2 vertical-slice track (from `claude/first-playable` 67984ce). |
 | `claude/characters` | The Characters track (from the integration branch). |
@@ -47,6 +50,16 @@
 3. **m2-slice:** cloud `session_01DQ9tdk8Uatb8Jr6raAkXiC`, branch `claude/m2-slice`, Auto mode, 2–3 subagents allowed. Queue: M2-FP-10 dialogue key light → M2-FP-11 (undo FP-09's zone-sun bias 3.0; two waiting router callers) → Drownbell follow-ups (its boss status strip is being renumbered from a colliding FP-11 to FP-12) → FP-05/ARC-15 follow-ups → Haluna at slice quality → Shell Shrine trial → first Vowbound, Cutscene A/B faces. Log: `m2-slice.md` on its branch.
 4. **characters:** cloud `session_01JqzzxgJU9Dmu7fRhmCG9aQ`, branch `claude/characters`, Auto mode, 2–3 subagents allowed. Queue: **M1-CHR-12 Asha round 7 first** (grief lip-edge rim and peg teeth, lid band, smile eyes, crown; from QA-08), with M2-CHR-01 Rhen and Toma in parallel (parked WIP in assets_src/characters/rhen/, see WIP.md) → Asha's clips (M2-FP-07) → M1-ART-06. Log: `characters.md` on its branch.
 - **Permissions:** `.claude/settings.json` allow-lists the read-only checks and cross-session messaging (the human's directive). Sessions pick it up after merging the integration branch.
+
+### 3b. Added 2026-10-24 ~09:50 (the human asked to supplement bottlenecks)
+| Track | Session | Branch | Queue |
+|---|---|---|---|
+| audio | `session_01FtDSYm5dJHkdC3RqXsDjif` | `claude/audio` | M2-AUD-01 → the slice's 3 final music cues (the human judges, §16 Q3) → battle SFX for the VFX library → field ambience → the mixing pass |
+| env-art | `session_01QmWUfYxd8DMg7XM3MyR6ps` | `claude/env-art` | M2-ENV-03 shrine kit → M1-ENV-10 → Haluna final-quality kit → Art sign-offs M2-ART-01/02/03 → the route |
+| ui | `session_01NyuYPSZn7o7gYirTvz4zjs` | `claude/ui` | M2-UI-03 → hide the Call row until bound → M2-UI-06 shop and inn → UI polish pass |
+| creatures | `session_01CYks9e592YBEfygyTawcJD` | `claude/creatures` | Enemy and boss models (all 5 enemies were primitive stand-ins): design sheets → creature pipeline → the `model` field in enemies.json → reef_crab, lantern_eel, gull_harrier, spawn_polyp, then the Drownbell → shots → bestiary art |
+| battle-presentation | `session_014EcW9e5tEmjDi5S2HmCECd` | `claude/battle-presentation` | Battle choreography (none existed: static fighters): a listen-only BattleChoreo sequencer, the clip contract with characters and creatures, a battle camera director, specials (Swell, Drownbell, Vowbound), battle intro and outro |
+These were created in default permission mode; the human sets Auto in each one's mode dropdown. m2-slice was told that ENV-03, UI-06 and UI-03 moved off its queue.
 
 ### 3a. Standing queues (2026-10-24, also sent by message; messages can arrive hours late, so this section is authoritative)
 - **m2-slice:**
@@ -71,6 +84,7 @@
 - **Wake-ups:** the hourly routine `trig_01LJyLo42xCq3WVmAza3BMhe` FAILS with ACCESS_DENIED (as in the old account). The Lead keeps a background `sleep 2700` heartbeat in its own session instead, and re-arms it on each wake.
 
 ## 4. Process that works (keep it)
+- **Pre-merge gates run on the tracks (2026-10-24).** Each cloud track merges the latest integration branch, runs the FULL `tools/ci_local.sh` in its own container, and writes "MERGE-READY @ <sha>: ..." in its live log. The Lead merges with a scoped re-check (conflicts, plus the areas its merge resolution touched). Every Blender job pins `threads` so outputs reproduce on any CPU count. In shell waiters, never `pgrep -f <pattern>` for a pattern your own command line contains: it matches itself.
 - **Standing queues:** never one task at a time; ask each environment to message when it's two items from the end.
 - **Review sweeps:** after each merge batch, a fresh reviewer agent covers every `status: review` task. On approve or approve-with-fixes, close the task and file the fixes as new tasks. On request-changes, reopen it.
 - **Gate scope** (CLAUDE.md): agents run only checks their change can break. The Lead runs the full `tools/ci_local.sh` (about 60–90 min on 4 CPUs) after a batch of code or render merges, in a separate `lead/integration` worktree.

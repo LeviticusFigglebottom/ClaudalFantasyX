@@ -113,3 +113,11 @@ A shot can pin state in the manifest, so a scene doesn't have to detect the capt
 - Baselines are tied to the stack named in `baselines/baselines.json` (Godot distro build, Mesa 26.2.4, LLVM 22). A different Mesa or the official Godot build may shift pixels slightly, so the CI `screenshots` job is `continue-on-error` until baselines approved on that runner exist.
 - `LP_NATIVE_VECTOR_WIDTH=256` pins llvmpipe's SIMD width so AVX-512 hosts rasterise like AVX2 hosts.
 - `--headless` still draws nothing. `capture.tscn` refuses to run under it (exit 2).
+
+## Engine race: pipeline error and abort at exit (M1-QA-10)
+
+Signature, in one shot's process: `Shader vertex input location (0) not provided in vertex input description for pipeline creation` and `Condition "pipeline.is_null()" is true` (scene_shader_forward_clustered.cpp:502) **before** `CAPTURE ok`, then `Attempted to free invalid ID: 0` and `Aborted` at exit. The PNG is correct, but the process exits non-zero, so `capture.sh` fails. It now names the shot (`CAPTURE PROCESS EXIT <rc>: <id>`, plus a closing list).
+
+- **Cause:** a data race in Godot 4.6.3's `RenderingDevice::render_pipeline_create()`. Background pipeline compiles read the `vertex_formats` table outside the RD lock while the render thread inserts a new vertex layout. A miss during the insert default-inserts an empty layout, so validation reports location 0. The upstream fix (4.7, master) does a locked `getptr()`. It is not in our materials, meshes or the mouth-bounce pass. The full analysis and the forced gdb repro are in the QA-10 handoff (`docs/kb/handoffs/2026-10-24-qa-1.md`), and the engine fix is M1-ARC-17.
+- **Rate:** rare. It hit once in the Lead's batch-3 full gate and never in 90 QA-10 asha processes (45 of them stylized_compare, warm and cold caches, under load). The shot most exposed to it is `asha_face_stylized_compare`, because it has the most new layouts and pipelines in its first frames.
+- **When it hits a gate:** re-run the named shot alone (`HYMN_SHOTS=<id>`), compare it, and note the re-run in the merge report. Do **not** re-approve its baseline: the PNG was never wrong. If any *other* error appears, it is not this race.

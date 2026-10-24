@@ -19,6 +19,7 @@ const FRAME_USEC := 16667
 const LIFT_FRAMES := 21
 const HITCH_FRAME_MS := 70.0
 const HIDDEN_STALL_MS := 1200.0
+const BOOT_SCENE := "res://game/core/boot.tscn"
 
 
 func test_budget_data_has_headroom_below_the_spec_budget() -> void:
@@ -257,6 +258,26 @@ func test_scene_swapping_resets_the_zone_globals() -> void:
 	assert_true(src.contains("scene_swapping.emit(scene_path)"), "it emits the signal in the swap")
 
 
+## M2-ARC-03, in a real process: at launch the boot card covers the title while the warm-ups run (hidden
+## frames), then the router measures the visible window from the card's lift. The window must be complete,
+## start with the lift, and the card must have waited for finished work. The frame budget itself is the
+## GPU sweep's (tools/gpu_bench/slice_sweep.tscn -- --segments=title): the dummy renderer compiles nothing.
+func test_launch_reveals_the_title_only_after_the_warm_up() -> void:
+	if OS.has_environment(COVERAGE_ENV):
+		return
+	var cfg := SceneSwapProbe.budgets()
+	var stats := _run_probe(str(cfg.get("probe_scene", "")), ["--launch"], "launch")
+	assert_true(bool(stats.get("reveal", false)), "the launch records a reveal: %s" % stats)
+	assert_eq(stats.get("scene_path"), BOOT_SCENE)
+	assert_true(bool(stats.get("reveal_work_done", false)), "the card opened on finished work, not its time-out")
+	assert_true(int(stats.get("reveal_wait_frames", 0)) > 0, "the warm-up ran under the card")
+	assert_true(bool(stats.get("visible_complete", false)), "the visible window ran to its end")
+	var lift := int(stats.get("lift_frames", -1))
+	assert_true(lift > 0, "frames while the card lifts: %d" % lift)
+	var visible := (stats.get("visible_frame_ms", []) as Array).size()
+	assert_eq(visible, lift + SceneRouter.VISIBLE_MEASURE_FRAMES, "the lift plus 60 frames")
+
+
 ## The fixed router: instanced off the main thread, fonts warm, and the old scene unloaded and the
 ## prewarm stage built in frames before the measured swap window.
 func _assert_fix_shape(stats: Dictionary, target: String) -> void:
@@ -272,13 +293,22 @@ func _assert_fix_shape(stats: Dictionary, target: String) -> void:
 	var lift := int(stats.get("lift_frames", -1))
 	assert_true(lift > 0, "%s frames while the fade lifts: %d" % [target, lift])
 	assert_eq(visible, lift + SceneRouter.VISIBLE_MEASURE_FRAMES, "%s the lift plus 60 frames" % target)
+	# M2-ARC-03: the title holds the router's reveal while its boot warm-up runs; nothing else holds it.
+	var held := int(stats.get("reveal_wait_frames", -1))
+	if target == BOOT_SCENE:
+		assert_true(held > 0, "%s: the fade stays opaque while the title warms up (%d frames)" % [target, held])
+	else:
+		assert_eq(held, 0, "%s: nothing holds the reveal" % target)
 
 
 func _probe(probe_scene: String, target: String) -> Dictionary:
+	return _run_probe(probe_scene, ["--to=" + target], target)
+
+
+func _run_probe(probe_scene: String, user_args: Array[String], target: String) -> Dictionary:
 	var output: Array = []
-	var args := PackedStringArray(
-		["--headless", "--path", ProjectSettings.globalize_path("res://"), probe_scene, "--", "--to=" + target]
-	)
+	var args := PackedStringArray(["--headless", "--path", ProjectSettings.globalize_path("res://"), probe_scene, "--"])
+	args.append_array(PackedStringArray(user_args))
 	var code := OS.execute(_godot(), args, output, true)
 	for chunk: Variant in output:
 		for line in str(chunk).split("\n"):

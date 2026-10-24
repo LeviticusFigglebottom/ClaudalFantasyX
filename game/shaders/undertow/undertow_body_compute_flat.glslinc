@@ -160,44 +160,16 @@ layout(set = 0, binding = 4, r32f) uniform restrict writeonly image2D out_front;
 #ifndef HYMN_UNDERTOW_BODY_MARCH_GDSHADERINC
 #define HYMN_UNDERTOW_BODY_MARCH_GDSHADERINC
 
-vec4 undertow_lattice(vec3 p) {
-	vec3 i = floor(p);
-	vec3 f = p - i;
-	vec3 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
-	return texture(noise_tex, (i + u + 0.5) / noise_texels);
-}
+// ---- game/shaders/undertow/undertow_lattice.gdshaderinc ----
+// Hymn of the Undertow: the baked noise lattice (M1-RND-10), shared by the raymarched body
+// (undertow_body_march.gdshaderinc, spatial and compute) and, since M2-RND-08, the Low-tier shells. One
+// trilinear fetch of assets/vfx/undertow/undertow_noise3d.png at a quintic-remapped coordinate replaces the
+// eight PCG3D hashes of a hymn_value_noise3. The includer declares `noise_tex` (3D, linear, repeat) and
+// `noise_texels` first, and includes this before undertow_common.gdshaderinc, so the striation warp fetches
+// the lattice too (UNDERTOW_BAKED_NOISE).
 
-float undertow_noise(vec3 p) {
-	return undertow_lattice(p).r;
-}
-
-// The common include's striation warp fetches this lattice instead of hashing.
-#define UNDERTOW_BAKED_NOISE
-
-// ---- game/shaders/undertow/undertow_common.gdshaderinc ----
-// Hymn of the Undertow: the Undertow storm, shared storm-space maths (M1-RND-03, SPEC §8.2 item 9).
-// Docs: docs/kb/tech/undertow.md. Tunables: game/data/vfx/undertow.json (UndertowStorm pushes them).
-// Every storm shader (raymarched body, Low-tier shells, spray, sea funnel) includes this file, so the
-// body, its shells and the sea agree on the shape, the rotation, the wounds and the lightning.
-//
-// Storm-local space: origin = the eye at sea level (storm_center), +Y up, metres. Nothing reads TIME:
-// storm_time_s is the storm's own clock (UndertowStorm.time_s), so cutscenes can pause and scrub it.
-// Light meaning (docs/kb/art/color_script.md rule 1): the wounds are spawn_wound rents; the light
-// pooled inside them and the motes they shed are glimmer_held, and both sink (drift DOWN the wall).
-
-#ifndef HYMN_UNDERTOW_COMMON_GDSHADERINC
-#define HYMN_UNDERTOW_COMMON_GDSHADERINC
-
-// ---- game/shaders/include/glimmer.gdshaderinc ----
-// Hymn of the Undertow: glimmer helpers shared with other shader domains (M1-RND-02).
-// Docs: docs/kb/tech/glimmer.md. Meaning rules: docs/kb/art/color_script.md, narrative light rule 3.
-// Includes common.gdshaderinc itself. For hymn_sea_glow_global(), include globals.gdshaderinc FIRST:
-//   #include "res://game/shaders/include/globals.gdshaderinc"   // optional, enables *_global helpers
-//   #include "res://game/shaders/include/glimmer.gdshaderinc"
-// Stage-agnostic except where noted: no built-ins are used.
-
-#ifndef HYMN_GLIMMER_GDSHADERINC
-#define HYMN_GLIMMER_GDSHADERINC
+#ifndef HYMN_UNDERTOW_LATTICE_GDSHADERINC
+#define HYMN_UNDERTOW_LATTICE_GDSHADERINC
 
 // ---- game/shaders/include/common.gdshaderinc ----
 // Hymn of the Undertow: shared shader helpers (colour space, hashing, noise, curl noise).
@@ -498,6 +470,66 @@ vec3 hymn_curl_fbm3(vec3 p, int octaves, float lacunarity, float gain) {
 
 #endif
 // ---- end game/shaders/include/common.gdshaderinc ----
+
+vec4 undertow_lattice(vec3 p) {
+	vec3 i = floor(p);
+	vec3 f = p - i;
+	vec3 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+	return texture(noise_tex, (i + u + 0.5) / noise_texels);
+}
+
+float undertow_noise(vec3 p) {
+	return undertow_lattice(p).r;
+}
+
+// The common include's striation warp fetches this lattice instead of hashing.
+#define UNDERTOW_BAKED_NOISE
+
+// hymn_fbm3 (lacunarity 2, gain 0.5) on the baked lattice.
+float undertow_fbm(vec3 p, int octaves) {
+	float sum = 0.0;
+	float amp = 1.0;
+	float norm = 0.0;
+	for (int o = 0; o < HYMN_FBM_MAX_OCTAVES; o++) {
+		if (o >= octaves) {
+			break;
+		}
+		sum += amp * undertow_noise(p);
+		norm += amp;
+		p = p * 2.0 + HYMN_FBM_SHIFT3;
+		amp *= 0.5;
+	}
+	return sum / max(norm, HYMN_EPSILON);
+}
+
+#endif
+// ---- end game/shaders/undertow/undertow_lattice.gdshaderinc ----
+
+// ---- game/shaders/undertow/undertow_common.gdshaderinc ----
+// Hymn of the Undertow: the Undertow storm, shared storm-space maths (M1-RND-03, SPEC §8.2 item 9).
+// Docs: docs/kb/tech/undertow.md. Tunables: game/data/vfx/undertow.json (UndertowStorm pushes them).
+// Every storm shader (raymarched body, Low-tier shells, spray, sea funnel) includes this file, so the
+// body, its shells and the sea agree on the shape, the rotation, the wounds and the lightning.
+//
+// Storm-local space: origin = the eye at sea level (storm_center), +Y up, metres. Nothing reads TIME:
+// storm_time_s is the storm's own clock (UndertowStorm.time_s), so cutscenes can pause and scrub it.
+// Light meaning (docs/kb/art/color_script.md rule 1): the wounds are spawn_wound rents; the light
+// pooled inside them and the motes they shed are glimmer_held, and both sink (drift DOWN the wall).
+
+#ifndef HYMN_UNDERTOW_COMMON_GDSHADERINC
+#define HYMN_UNDERTOW_COMMON_GDSHADERINC
+
+// ---- game/shaders/include/glimmer.gdshaderinc ----
+// Hymn of the Undertow: glimmer helpers shared with other shader domains (M1-RND-02).
+// Docs: docs/kb/tech/glimmer.md. Meaning rules: docs/kb/art/color_script.md, narrative light rule 3.
+// Includes common.gdshaderinc itself. For hymn_sea_glow_global(), include globals.gdshaderinc FIRST:
+//   #include "res://game/shaders/include/globals.gdshaderinc"   // optional, enables *_global helpers
+//   #include "res://game/shaders/include/glimmer.gdshaderinc"
+// Stage-agnostic except where noted: no built-ins are used.
+
+#ifndef HYMN_GLIMMER_GDSHADERINC
+#define HYMN_GLIMMER_GDSHADERINC
+
 
 // ---------------------------------------------------------------------------------------------
 // Palette (docs/kb/art/palette.json), linear sRGB. Motes take their colours from
@@ -935,23 +967,6 @@ vec3 undertow_lightning(vec3 p) {
 #define UNDERTOW_BILLOW_OFFSET vec3(-31.7, 8.9, 14.3)
 // Mean of |2n - 1| over the quintic value-noise lattice (measured: 0.330 over 4e5 samples).
 #define UNDERTOW_BILLOW_MEAN 0.33
-
-// hymn_fbm3 (lacunarity 2, gain 0.5) on the baked lattice.
-float undertow_fbm(vec3 p, int octaves) {
-	float sum = 0.0;
-	float amp = 1.0;
-	float norm = 0.0;
-	for (int o = 0; o < HYMN_FBM_MAX_OCTAVES; o++) {
-		if (o >= octaves) {
-			break;
-		}
-		sum += amp * undertow_noise(p);
-		norm += amp;
-		p = p * 2.0 + HYMN_FBM_SHIFT3;
-		amp *= 0.5;
-	}
-	return sum / max(norm, HYMN_EPSILON);
-}
 
 // hymn_curl_noise3 on the baked lattice: the vector potential is the lattice's RGB (three decorrelated
 // fields), its gradients forward differences (four fetches instead of three analytic-gradient lookups).

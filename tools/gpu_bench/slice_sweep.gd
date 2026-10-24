@@ -9,12 +9,15 @@ extends Node
 ## scene. The story flags that would start a cutscene are set first, so every view is the playable one,
 ## and autosaves are held (nothing is written to the saves).
 ## Per segment it records:
-## - hidden: the frames from the request until the new scene is in (under the opaque fade);
+## - hidden: the frames from the request until the new scene is in (under the opaque fade), and while it
+##   holds the fade (the title's boot warm-up, SceneRouter.hold_reveal, M2-ARC-03);
 ## - visible: the frames from then until 60 frames after the fade has lifted (ADR 0029's window);
 ## - dwell: --dwell seconds at the view, the wall and GPU time of every frame.
 ## It prints "SLICE_SWEEP <segment> ..." and appends one row per segment to --csv: perf_baseline.csv's
 ## columns (scene = "slice:<segment>", camera = the spawn) plus gpu_mean_ms, frame_max_ms,
 ## hidden_max_ms, hidden_total_ms (the whole load under the fade) and visible_max_ms.
+## Diagnosis (M2-RND-07): --flood-trace prints the Flood's first 12 frames; --flood-variant=no_boss_vfx forces
+## the phase without the set piece (BattleBossVfx freed first).
 
 const BOOT_SCENE := "res://game/core/boot.tscn"
 const HALUNA := "res://game/levels/ch02/haluna/haluna.tscn"
@@ -22,10 +25,13 @@ const SHELL_SHRINE := "res://game/levels/ch03/shell_shrine/shell_shrine.tscn"
 const HALUNA_ID := &"ch02/haluna"
 ## Flags whose cutscenes would otherwise play on arrival (first_playable.json; flags.tres).
 const SEEN_FLAGS: Array[StringName] = [&"prologue_seen", &"ch02_met_asha", &"ch02_tideline_won", &"ch02_ate_at_nemes"]
-## [segment id, kind, argument, spawn]. Kinds: scene (change to a scene path), place (move the player to
+## [segment id, kind, argument, spawn]. Kinds: launch (boot.tscn as the main scene, no router change: the
+## boot card and the router's reveal window, M2-ARC-03; only as the first segment), scene (change to a scene
+## path), place (move the player to
 ## a spawn of the current scene), battle (a field battle on an encounter), flood (the Drownbell's Flood
 ## phase, forced in the current battle).
 const SEGMENTS := [
+	["launch", "launch", BOOT_SCENE, ""],
 	["title", "scene", BOOT_SCENE, ""],
 	["haluna_beach", "scene", HALUNA, "Beach"],
 	["haluna_village", "place", "", "Village"],
@@ -116,20 +122,55 @@ func _segment(seg: Array, preset: String) -> void:
 				router.call(&"change_scene", str(seg[2]), spawn)
 			else:
 				BattleRequest.start(StringName(str(seg[2])), HALUNA_ID, spawn if spawn != &"" else &"BattleReturn")
-			hidden = await _frames_until(func() -> bool: return bool(swapped[0]))
+			# M2-ARC-03: the title's warm-up holds the router's reveal; its frames are under the fade too.
+			hidden = await _frames_until(func() -> bool: return bool(swapped[0]) and not _reveal_held(router))
 			EventBus.scene_changed.disconnect(on_swap)
 			visible = await _frames_until(func() -> bool: return not bool(router.call(&"is_busy")))
 			visible.append_array(await _frames(VISIBLE_FRAMES))
+			# The router's own record of the change (M1-ARC-16 visible window, M2-ARC-03 reveal fields).
+			print("SLICE_SWAP_STATS %s %s" % [id, JSON.stringify(router.get(&"last_swap_stats"))])
+		"launch":
+			# As the game launches (boot.tscn is the main scene; no router change): the boot card holds the
+			# title until the warm-ups end, then SceneRouter.measure_reveal records the window (M2-ARC-03).
+			var router := get_tree().root.get_node(^"SceneRouter")
+			get_tree().change_scene_to_file(str(seg[2]))
+			hidden = await _frames_until(
+				func() -> bool: return bool((router.get(&"last_swap_stats") as Dictionary).get("reveal", false))
+			)
+			visible = await _frames(VISIBLE_FRAMES)
+			# The router closes its visible window a little after the card lifts; wait for its record.
+			await _frames_until(
+				func() -> bool: return (router.get(&"last_swap_stats") as Dictionary).has("max_visible_frame_ms")
+			)
+			print("SLICE_SWAP_STATS %s %s" % [id, JSON.stringify(router.get(&"last_swap_stats"))])
 		"place":
 			WorldReturn.place_player(get_tree().current_scene, spawn)
 			visible = await _frames(VISIBLE_FRAMES)
 		"flood":
 			var ctl := get_tree().current_scene as BattleController
 			if ctl != null and ctl.engine != null and not ctl.engine.enemies.is_empty():
+				# --flood-variant=no_boss_vfx (diagnosis, M2-RND-07): without the set piece, what the polyps cost.
+				if str(_opts.get("flood-variant", "")) == "no_boss_vfx":
+					var bv := ctl.stage.find_child("BossVfx", true, false)
+					if bv != null:
+						bv.queue_free()
+						await get_tree().process_frame
 				var bell := ctl.engine.enemies[0]
+				var vfx_node := ctl.stage.get_node_or_null(^"BattleVfx") as BattleVfx
+				var variant := str(_opts.get("flood-variant", ""))
+				if vfx_node != null and variant.begins_with("warm_"):  # play one effect first, then let it finish
+					vfx_node.play(StringName(variant.trim_prefix("warm_")), bell.id)
+					await _frames(180)
 				bell.hp = int(bell.max_hp * FLOOD_HP_SHARE)
 				BossMechanics.check_phases(ctl.engine)
 			visible = await _frames(VISIBLE_FRAMES)
+			if _opts.has("flood-trace"):
+				print(
+					(
+						"SLICE_FLOOD_TRACE %s"
+						% " ".join(Array(visible.slice(0, 12)).map(func(v: float) -> String: return "%.1f" % v))
+					)
+				)
 	var dwell_us := float(_opts.get("dwell", 8.0)) * 1e6
 	var walls := PackedFloat64Array()
 	var gpus := PackedFloat64Array()
@@ -191,6 +232,11 @@ func _segment(seg: Array, preset: String) -> void:
 		)
 	)
 	_write_csv(row)
+
+
+## True while something holds the router's fade opaque after its swap (SceneRouter.hold_reveal, M2-ARC-03).
+static func _reveal_held(router: Node) -> bool:
+	return router.has_method(&"reveal_holders") and not (router.call(&"reveal_holders") as Array).is_empty()
 
 
 ## Wall time of every frame until `done` is true (or TRANSITION_TIMEOUT_S passes).
