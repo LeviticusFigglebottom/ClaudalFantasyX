@@ -109,26 +109,16 @@ func _attack_row(engine: BattleEngine) -> Dictionary:
 
 ## The acting caller's Call rows (M2-UI-05, ADR 0027): one per Vowbound it has bound, in data
 ## order. Open, a row shows the call's rank (the caller pays it once the party is back); greyed,
-## it names the refusal on the right ("Silenced", "Fallen"). A caller with none bound yet gets one
-## greyed "Call · None bound". A fighter who calls no Vowbound gets no row.
+## it names the refusal on the right ("Silenced", "Fallen"). A caller with none bound yet gets no
+## row (Lead decision on M2-UI-05: no dead row hinting at Chapter 3), nor does a non-caller.
 func call_rows(engine: BattleEngine) -> Array[Dictionary]:
 	var vb := engine.vowbound
-	var mine: Array[StringName] = []
 	var bound: Array[StringName] = []
 	for vid: StringName in vb.rows:
-		if StringName(str((vb.rows[vid] as Dictionary).get("caller", ""))) == engine.current.id:
-			mine.append(vid)
-			if vb.known.has(vid):
-				bound.append(vid)
+		var caller := StringName(str((vb.rows[vid] as Dictionary).get("caller", "")))
+		if caller == engine.current.id and vb.known.has(vid):
+			bound.append(vid)
 	var rows: Array[Dictionary] = []
-	if mine.is_empty():
-		return rows
-	if bound.is_empty():
-		var none := _row(StringName(ROW_CALL_PREFIX + String(mine[0])), tr("HUD_CMD_CALL"), "", &"text_dim", false)
-		none["right"] = call_refusal_word(BattleVowbound.FAIL_NOT_BOUND)
-		none[KEY_VOWBOUND] = mine[0]
-		rows.append(none)
-		return rows
 	for vid in bound:
 		var fail := vb.refusal(engine, vid)
 		var rank := int((vb.rows[vid] as Dictionary).get("call_rank", Formulas.DEFAULT_RANK))

@@ -183,7 +183,8 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
   - A fixture binds its `vowbound` list from the frozen `tables.vowbound`. Fixture `overrides` merge into those rows too.
   - Any other battle loads the rows with nothing bound.
 - **The caller's Call row** (`BattleMenus.call_rows`) comes after Skills: "Call Ilun", with the call's rank (`R3`) on the right.
-  - Refused, it is greyed and the reason replaces the rank: "Silenced", "Fallen", or, with nothing bound yet, a nameless "Call · None bound". Disabled rows cannot be highlighted, so the reason has to sit on the row.
+  - Refused, it is greyed and the reason replaces the rank: "Silenced" or "Fallen". Disabled rows cannot be highlighted, so the reason has to sit on the row.
+  - **With nothing bound yet there is no row** (Lead decision on M2-UI-05, ADR 0030 amendment): a greyed "Call · None bound" before Chapter 3 would be a dead row hinting at a beat to come. The `not_bound` refusal keeps its words for the engine's reason only.
   - Highlighting it shows the whole order after the call (`BattleVowbound.preview_call`, a full preview as for Swap): Ilun takes slot 0 and the party is gone.
   - The help line says what the call costs: "Ilun answers and takes this turn, and the party stands down. When it returns, Asha waits a rank 3 delay; the others keep their place." The return cannot be drawn before the call, because it depends on when Ilun leaves.
 - **The Vowbound's own page** (`vowbound_root_rows`, titled with its name) has these rows:

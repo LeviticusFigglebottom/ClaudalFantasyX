@@ -221,15 +221,15 @@ func test_a_fallen_vowbound_is_greyed_as_fallen_and_the_party_returns() -> void:
 	_free()
 
 
-func test_a_battle_with_nothing_bound_greys_the_call_as_none_bound() -> void:
+func test_a_battle_with_nothing_bound_has_no_call_row() -> void:
+	# Lead decision on M2-UI-05: no greyed "Call · None bound" before Chapter 3.
 	var active: Array[StringName] = [&"rhen", &"asha"]
 	var reserve: Array[StringName] = [&"toma"]
 	ctl.start_battle(active, reserve, &"sandbox_reef", SEED)
 	_to_turn_of(&"asha")
-	var row := _row(CALL_ROW)
-	assert_false(bool(row["enabled"]))
-	assert_eq(row["label"], tr("HUD_CMD_CALL"), "no Vowbound's name before it is bound")
-	assert_eq(row["right"], tr("HUD_CALL_NOT_BOUND"))
+	for rid in _root_ids():
+		assert_false(String(rid).begins_with(BattleMenus.ROW_CALL_PREFIX), "no Call row until bound: %s" % rid)
+	assert_true(ctl.engine.vowbound.callable_ids(ctl.engine).is_empty(), "nothing to call")
 	_free()
 
 

@@ -26,3 +26,6 @@ Option 2, and the Call row is shown for every fighter who is the `caller` of a v
 - A future Vowbound needs only its row and its flag.
 - Asha now shows a greyed "Call · None bound" row in live battles before Chapter 3. Narrative may prefer the row hidden until the Shell Shrine. If so, it is one condition in `BattleMenus.call_rows`, and the `not_bound` reason then stays for tests only.
 - The return of the party cannot be shown before the call, because it depends on when the Vowbound leaves. The call preview shows the order with the Vowbound in it, and its help line states the caller's delay. The Dismiss preview shows the real return, with the caller after that delay.
+
+## Amendment (Lead decision, 2026-10-24, recorded by UI)
+The "None bound yet" bullet above is replaced: **a caller with nothing bound gets no Call row** (option 3's rule for that case only). Before Chapter 3 a greyed row would be a dead command hinting at a beat to come. "Silenced" and "Fallen" stay as greyed reasons, because they are tactical information. `BattleMenus.call_rows` returns no rows until a Vowbound is bound; the `not_bound` refusal keeps its `HUD_FAIL_*` and `HUD_CALL_NOT_BOUND` words for the engine reason. No baseline moves (fixtures without `vowbound` never had the row).
