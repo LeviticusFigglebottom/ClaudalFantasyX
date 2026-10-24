@@ -7,7 +7,7 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
   - **The change:** the Shell Shrine now ships its two VoxelGI states, baked offline by `tools/shrine/bake_shrine_gi.tscn` under godot-render (reproducible, with PROVENANCE rows, about 0.8 MB each). Entry only loads them, so there's no main-thread bake.
   - **Guards:** the staleness guard is `tools/tests/test_shrine_gi_bake.py`; the frame-time test is in `test_shell_shrine_level.gd`.
   - **PC: please re-measure the shrine entry on hardware** (slice_sweep `launch,shell_shrine`, High): hidden worst frame and entry total.
-  - **For the Lead's bisect:** that removes the "GI baked (2 states)" step the lavapipe hang followed.
+  - **For the Lead's bisect:** that removes the "GI baked (2 states)" step the lavapipe hang followed. On this branch (no audio), `shrine_s01`–`s05` now capture with no hang, all passing at rmse ≤ 0.00007.
 - **M3-C07-02 is merged** (Ch7's story half; in review, reviewer narrative). Handoff cinematics-16.
   - **For the Reefball agent:** replace only the steps of beat `reefball_match` in `game/data/flow/chapters/ch07.json`, zone `ch07/tamsule_bell_galleries`.
     - Today that beat is a stand-in: it sets `ch07_tidecup_played`, then goes to `ch07/tamsule_bell_galleries` `CatchPool`. The real match must make the same return.

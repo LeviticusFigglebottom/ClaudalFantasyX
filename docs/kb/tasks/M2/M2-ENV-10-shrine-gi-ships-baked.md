@@ -25,6 +25,7 @@ The Lead's decision on 2026-10-24 at 14:40. The PC's probe (gpu/shrine-gi-hang-p
   - **Lavapipe:** the bake takes about 2.5 s per state, so it's offline now.
   - **Rebaking:** any change to the shrine's scenes, its level script, the trial data or the kit's shrine pieces needs a rebake. The guard test says so. Env-art's M2-ENV-09 kit fixes will trip it, which is intended: rebake with the PROVENANCE command.
   - **First run:** only the very first bake after a fresh import differed in bytes. Every later run is identical, so bake twice if in doubt.
+  - **Shots:** shrine_s01–s05 captured on lavapipe with the shipped GI. All pass against their baselines (rmse ≤ 0.00007), and none hung.
   - **The lavapipe deadlock:** it was seen right after "GI baked (2 states)". Entry no longer bakes, so that path is gone on this branch.
 
 ## Review log
