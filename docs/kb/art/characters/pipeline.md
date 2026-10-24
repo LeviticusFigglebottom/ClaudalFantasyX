@@ -227,3 +227,43 @@ Review shots: `asha_clip_kneel_over_rhen`, `asha_clip_walk`, `asha_clip_offer_ha
 rule's `animations.strip_suffixes` lets the LOD file share its hero's clip library, so the battle actor has the same
 `AnimationPlayer` clips as the dialogue model. The battle's capsules are swapped by UI+Combat (task M2-UI-07: a `"scene"`
 key in the stand-in spec of `game/data/ui/battle_sandbox.json`).
+
+## 15. Rig integrity guards (M1-CHR-14)
+
+A headless probe skins each hero's committed GLB in numpy for the poses the game plays, then measures three faults:
+a braid that floats off the head, clothing or props passing through the body, and seams or hidden-face holes that open
+in a pose. It needs no Blender and no Godot.
+
+```bash
+python3 tools/dev/rig_probe.py --hero asha --report            # verdicts, then per-pose tables (about 45 s)
+python3 tools/dev/rig_probe.py --report --json /tmp/rig.json   # every hero, with the full rows as JSON
+python3 tools/dev/rig_probe.py --hero toma --report --every 1  # every clip key (slow)
+HYMN_RIG_ROOT=/path/to/checkout python3 tools/dev/rig_probe.py --hero asha  # GLBs from another checkout (or --root, --glb)
+python3 -m unittest tools.tests.test_rig_integrity             # the CI guard (about 2 min for all three heroes)
+```
+
+**Poses.** The rest pose, any stage test pose listed under `stage_poses` (Asha's `asha_extreme_pose.tscn`, composed the
+way `AshaStage._apply_world_pose` does it), and every third key of every clip in `hero_clips.py`. Long clips widen the
+stride to about 10 samples each. The clip poses come from the same functions that write the AnimationLibrary, so a
+pose here is the frame the game shows. Bones the clips don't key (fingers, eyes, props, sash tails) stay at rest
+relative to their parents. The skinning is plain linear blend (`sum w * G_joint * IBM`), the same as Godot's. At rest
+it reproduces the stored mesh to within 1e-5 m, which `TestProbeMath` checks along with a synthetic single-bone turn.
+
+**Checks** (thresholds are in `tools/dev/rig_checks.json`; per-hero overrides go under `heroes`):
+
+| Check | What it measures | Limit |
+|---|---|---|
+| `braid gap` | Each woven strand of the braid (a connected piece of `HairBraid:hair` with at least 300 vertices) has a root ring: its open end nearer the scalp at rest. The gap is the ring's closest signed distance to the hair cap plus the head skin, with inside counted as 0. | 2 mm |
+| `braid drift` | How far a root-ring vertex moves in the head bone's frame (`DEF-spine.006`) compared with rest. It is 0 when the root is skinned to the head. | 2 mm |
+| `penetration garment_in_body` | A garment vertex inside the skin (Body plus the head skin): its signed distance to the posed skin surface, with each of the deepest candidates confirmed by the skin's winding number. That way a point beside a limb, or over a hole where hidden faces were deleted, doesn't count. | 3 mm |
+| `penetration prop_in_body` | The same for props (staff, spear, shield, Rhen's kit), except where the skin belongs to the holding hand (`grip_bones`). | 3 mm |
+| `penetration skin_through_garment` | Skin poking out through cloth, measured relative to rest. At rest, a ray along each Body vertex's normal finds the garment point over it, within 20 mm. In each pose, the check measures how far the skin has passed that same cloth point (same triangle and barycentrics) along the posed skin normal. At rest this is 0 by construction, so a garment edge beside the skin can't trigger it. A layer that already passes inside the body at rest is the job of `garment_in_body`. | 3 mm |
+| `seam coincident <group>` | Positions welded at rest (the Head/Body neck seam, UV-seam and panel duplicates) that separate in a pose. | 0.5 mm |
+| `seam boundary_exposed` | The Body's open boundary, where faces hidden under clothing were deleted. Each boundary vertex casts a ray along its normal and must meet a garment within 300 mm. Rays pass through skin, so the inner leg under a skirt still counts as covered. The count is of uncovered vertices. | 0 |
+| `skin weights` | Weights sum to 1 (±0.001), no negative weights, every joint index exists. | — |
+
+Each failure names the pose (`clip@key`), the mesh and material, the dominant bone on both sides, and the vertex's rest
+position, so the fix can be found in the source. The garment-in-skin count only covers confirmed vertices among the
+deepest 24 per group and pose, so treat it as a lower bound; the worst depth is exact. Add a new hero by adding a
+`heroes` entry (its props, garments and seam groups). Meshes named in the config but missing from a GLB are skipped,
+and a hero with no braid skips the braid checks.
