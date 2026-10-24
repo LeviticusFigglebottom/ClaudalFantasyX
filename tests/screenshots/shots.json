@@ -1988,6 +1988,26 @@
         960,
         720
       ]
+    },
+    {
+      "id": "field_hero_rhen_walk",
+      "scene": "res://game/levels/_tests/hero_motion/field_hero_rhen_walk.tscn",
+      "camera": "ShotCamera",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
+    },
+    {
+      "id": "field_hero_party",
+      "scene": "res://game/levels/_tests/hero_motion/field_hero_party.tscn",
+      "camera": "ShotCamera",
+      "settle_frames": 30,
+      "resolution": [
+        960,
+        540
+      ]
     }
   ]
 }
