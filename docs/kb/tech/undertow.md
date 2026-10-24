@@ -252,8 +252,49 @@ Measured (RX 9070 XT, High 1440p, GPU including the SubViewport):
   without the M1-RND-16 cutscene override.
 - **Panning** at 0.15° a frame on Ultra reads like the full-res body.
 
-**Next step (M2):** move the half-res march to a `CompositorEffect` compute pass. It would read the game view's depth
-for exact occlusion inside the volume, with its own reprojected history.
+**Superseded as the default by the compute body (next section).** The SubViewport path remains the fallback
+(Compatibility, headless) and the A/B control (`UndertowStorm.half_res_compute = false`).
+
+### Compute body (M2-RND-01, ADR 0027)
+Where a RenderingDevice exists, the half-res body is `UndertowBodyEffect`, a CompositorEffect on the current
+game camera's Compositor; the SubViewport isn't built.
+- **Where it runs:** at PRE_TRANSPARENT, after the opaque pass, at `body_scale` of the *internal* resolution (so
+  under FSR2's render scale too).
+- **Occlusion:** it marches the same `undertow_march()` as the spatial body, clipped at the **farthest** opaque
+  surface in each low-res pixel's footprint, from this frame's depth. It writes `body_texture` (premultiplied,
+  RGBA16F) and `front_texture` (R32F, the opacity-weighted mean distance of what each ray saw).
+- **Composite:** `undertow_composite.gdshader` (`use_front`) samples both in the transparent pass, after the
+  water as before, and drops each full-resolution pixel whose own opaque surface is nearer than the front
+  distance.
+- **Result:** exact occlusion inside the volume, with sharp edges. A test pillar inside the wall (x 7600 m, Day
+  camera, `capture_preset --add-box`) is painted over completely by the SubViewport path and occludes the storm
+  correctly in the compute path.
+- **Source of truth:**
+  - The spatial uniforms (`undertow_common_uniforms.gdshaderinc`, `undertow_body_uniforms.gdshaderinc`).
+  - `tools/rendering/gen_undertow_compute.py` writes the std140 block (`undertow_compute_params.glslinc`),
+    `UndertowComputeLayout` (offsets, defaults, source_color flags), the flattened compute body and the three
+    tier twins (`undertow_body*_compute.glsl`, with the spatial variants' macros).
+  - Run it after editing a uniform; `tools/tests/test_gen_undertow_compute.py` fails on stale outputs.
+- **Packing:** each frame on the main thread (`frame_pre_draw`), from the body material's own parameters (an
+  unset one takes its declaration's default; source_color colours are converted to linear, as Godot does), plus
+  `hymn_sun_direction` from ShaderGlobals. The render thread adds the view: the camera projection and transform
+  and the sizes.
+- **Shells:** a hidden body (Low) has no half-res renderer, and the effect skips any frame where the body is
+  hidden.
+
+Measured (RX 9070 XT, High 1440p, GPU median, the whole frame):
+
+| Camera | SubViewport | Compute |
+|---|---:|---:|
+| Day | 2.56 ms | 2.45 ms |
+| Eye | 3.11 ms | 2.84 ms |
+| Night | – | 2.43 ms |
+| Horizon | – | 2.08 ms |
+| Day, Medium | – | 1.96 ms |
+
+The look matches the SubViewport path (RMSE 0.003–0.009 on the five Undertow shots at High), with a slightly
+smoother wound glow. **Still open:** its own reprojected history, and a quarter-resolution tier for min-spec
+(RTX 3060 projection ~7.4 ms on Day High).
 
 ### Striations, billows and the wound skin (M2-RND-01, criterion 2)
 Aimed at review-sweep-G's "uniform khaki lit tone" and "regular striations". Report:
@@ -284,6 +325,15 @@ Aimed at review-sweep-G's "uniform khaki lit tone" and "regular striations". Rep
   straight, parallel rails.
 
 ## Gotchas
+- **Compute body: four Godot 4.6 traps (M2-RND-01).**
+  - A `.glsl` RDShaderFile expands one level of `#include` only, and is re-imported only when the `.glsl` itself
+    changes. Hence the generated flat body, and the hash in each twin.
+  - `RenderSceneData.get_cam_projection()` already carries the depth correction (reverse-Z, flipped Y). Applying
+    `Projection.create_depth_correction()` again turns every ray around.
+  - Set `Texture2DRD.texture_rd_rid` on the main thread (`set_deferred` from the render thread). Assigned on the
+    render thread, the material kept sampling the placeholder.
+  - Before freeing an RD texture, detach every Texture2DRD and material that uses it, or the material's uniform
+    set fails ("Texture (binding: 1, index 0) is not a valid texture").
 - **`capture_preset --mat-set` does not reach the half-res body (M2-RND-01).** The body renders in UndertowHalfRes's
   SubViewport, so a `--mat-set` uniform shows no change (albedo_gain=0.1 left the frame as it was). To try a body
   tunable, edit undertow.json for the run and restore it afterwards.
