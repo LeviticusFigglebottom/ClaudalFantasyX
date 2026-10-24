@@ -315,8 +315,9 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 	var actor_f := _ctl.stage.stand_in(actor_id)
 	var cr_clip := BattleClips.action_clip(actor_f, _result.skill_id, _kind())
 	plan["actor_clip"] = cr_clip != &"" or BattleClips.has_clip(actor_f, StringName(str(st.get("clip", ""))))
-	if cr_clip != &"" and BattleClips.contact_sec(actor_f, cr_clip) >= 0.0:
-		_move_contact(plan, float(plan["approach_end"]) + BattleClips.contact_sec(actor_f, cr_clip))
+	var strike_clip := cr_clip if cr_clip != &"" else StringName(str(st.get("clip", "")))
+	if bool(plan["actor_clip"]) and BattleClips.contact_sec(actor_f, strike_clip) >= 0.0:  # the clip's own blow
+		_move_contact(plan, float(plan["approach_end"]) + BattleClips.contact_sec(actor_f, strike_clip))
 	for r: Dictionary in plan["reactions"]:
 		var tid := StringName(str(r["target"]))
 		var away := _flat(_home_of(tid).origin - from)
