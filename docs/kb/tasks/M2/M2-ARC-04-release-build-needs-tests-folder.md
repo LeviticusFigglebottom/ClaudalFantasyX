@@ -47,6 +47,8 @@ load.
 - **Release check:** there are no export templates in this container, so `--export-release` can't run here. Instead I copied exactly the "Windows Desktop" preset's file set (1102 files, no `_tests/`, `tests/`, `tools/`, debug) into a scratch project, imported it, and ran boot and the Haluna, Shell Shrine, first_verse and prologue scenes headless. There were **0 script, compile or load errors**.
   - The prologue run logs a `haluna.tscn` parse error only at shutdown: it waits for dialogue input headless, and `--quit-after` cancels the router's in-flight Haluna load. The integration branch does the same, and Haluna loads cleanly on its own.
   - **PC: please confirm with a real `godot --export-release "Windows Desktop"`.**
-- **Shots:** the vegetation, water and haluna shots should not move (only paths changed); see the gate run in the commit.
+- **Shots: unchanged.**
+  - 26 shots (veg, water, haluna, asha, underwater) all pass against the baselines.
+  - The 13 with a nonzero rmse (≤0.005, which predates this task) are **byte-identical** to a capture of the pre-move commit 1bea1da (`cmp`).
 
 ## Review log
