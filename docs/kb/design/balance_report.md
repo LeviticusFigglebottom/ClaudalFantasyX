@@ -331,3 +331,34 @@ Five new suites at Swell `good` (balance_targets.md "Ch4"). 1000 seeds:
 - **Lineups tried and dropped.** Three leeches (naive 1.0%), a leech with the hermit (naive 4.5%: the hermit's lesson plus a leech is too much for a masher), and the boss with Ysolde in reserve (`role_answer` 4.5 to 14%: the policy swaps out the first actor, Rhen).
 - `naive_swell` (report only) is 14.6% on the boss, 56.5% on the leeches and 75.9% on the hermit: Ilun called at once is strong against foes that don't punish water.
 - `sim.py --check` over every suite at 1000 seeds: 75 rows, all in band. The existing suites are unchanged (sandbox_reef 10.9 / 97.1 / 100.0, with its foe order untouched; Drownbell 0.0 / 71.0 / 85.3).
+
+### 2026-10-24: the Drownbell on an affordable party (M2-CMB-07 follow-up, combat)
+
+The Lead's decision: the `ch03_drownbell` loadout assumed every hero's tier-1 piece (about 2,160 lume of gear), but the slice pays about 800–900 lume in all. The loadout is now **starting gear plus two tier-1 pieces**, the most likely buys at the Net-Rack Forge: Rhen's **Coral-Bitten Hooks** (380, the protagonist's weapon, Ember Edge) and Toma's **Chiselled Shield** (340, DEF +3, Ember Guard), 720 lume. Asha keeps her starter staff and bangle, Rhen his Patched Tether, Toma his Boarding Spear. Consumables are unchanged (4 Salt Tonic, 1 Relighting Wick). Slice income is unchanged.
+
+On that party, with the bell unchanged, the bell won the Flood: role_answer 66.5% and smart 67.4% (1000 seeds), both under their bands, with no timeouts. The losses were wipes, not stalls. The party had lost the Reefline Harness (+40 HP), the Pearl Bangle (MDEF +2) and Asha's staff, so phase 2's water hits (Floodtide every turn, the Undertow Surge) fell on thinner defences. Strength 18 → 16 barely moved it (68.7 / 69.3 at 300 seeds). **The bell's magic goes from 14 to 11** (enemies.json), which softens Floodtide and the Undertow Surge only; Hood Slam, the toll, the rim, the HP and the phase threshold are unchanged. At 1000 seeds `--check` passes for every suite: naive 0.0%, naive_swell 1.8% (report only), role_answer 80.7%, smart 83.7% (p90 56 actions, under the 60 ceiling). The other suites are byte-identical. No formula changed.
+
+**Still generous:** before the bell a slice player has the 100-lume purse plus the field fights (today one `ch02_tideline` fight, 44 lume), so two tier-1 pieces before the boss assume random encounters on the causeway that the first playable does not have yet, and the four tonics and the wick (460 lume) are not budgeted either. If the slice keeps one field fight, the next lever is one tier-1 piece.
+
+### 2026-10-24: the Drownbell after the big7 merge (Lead merge; open)
+
+The combat retune above (the affordable party, magic 11) was measured on a base without m2-slice's real Ilun
+call (M2-FP-17), and m2-slice's numbers were measured on the old tier-1 party. With both, at 1000 seeds: naive
+0.0%, naive_swell 0.6%, role_answer 75.6%, smart 83.8%, flood_call 44.4%, all in band, but smart's p90 is **65**
+actions, over the suite's 60 ceiling, so `--check` fails (and `test_drownbell_battle` at 200 seeds, p90 66). The
+bell's knobs barely move it at 500 seeds (smart p90): HP 2500-3000 gave 61-65, magic 10-13 gave 62-70, strength 16
+or 20 gave 61-64, defense 26 gave 62, polyp HP 120 gave 66. Only the party's damage (the loadout) or the ceiling
+moves it: a Lead decision.
+
+### 2026-10-24: the Wickfry's tempo, and an honest timeline (M3-CMB-02, combat)
+
+From the human's Ch1 playtest: the enemies acted far more often than they should, more often than the reel showed, and twice on some turns. The engine, the choreography and battle_speed were all clean: one action per turn, one playback per action, the same ticks at every speed (`test_battle_timeline_honesty.gd`). Two things were wrong:
+- **The reel:** it predicted every foe at rank 3, so the rank-2 Shoal Nip turned up early. ADR 0038 now predicts a foe at its AI's rank.
+- **The tuning:** at agility 30 with a rank-2 nip, a shoal came back every 90 ticks against Rhen's Attack every 174 (agility 22, rank 3). That's 1.9 turns per Rhen action, and about 3.9 foe actions per Rhen action against two shoals. act1_ch01.md asks for "fast and frail, acts often", not a double turn every time.
+
+| Enemy / skill | Stat | Before | After |
+|---|---|---|---|
+| Wickfry | AGI | 30 | 26 (base delay 45 → 50) |
+| Shoal Nip | rank | 2 | 3 |
+
+A shoal now acts every 150 ticks, about 1.16 times per Rhen Attack, so it gets an extra turn roughly once in six. Quick Hit (rank 2, 116 ticks) outpaces it, which is how "Rhen answers the shoal by speed" (§9). Hullgnaw's second phase still out-tempos Rhen (Thrash, rank 2 at agility 20: 124 ticks), but that's the boss's lesson, answered by Kick Off (ADR 0034). The other Ch1 regulars are already slower than Rhen. Measured at the default seeds, with every band met and `--check` passing (naive mean actions): `ch01_wickfry` 4.8 → 3.9, `ch01_underway_shoals` 13.3 → 9.8, `ch01_underway_limpet` 14.6 → 13.7. Win rates didn't change (100%).
