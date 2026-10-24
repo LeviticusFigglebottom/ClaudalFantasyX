@@ -15,7 +15,7 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
      - **Fix:** the Rim (#F2A64A, 1.4) and a teal ambient. Tower saturation goes 0.13 → 0.28.
      - **Ruled out:** desaturation, missing imports and branch drift.
      - **Still Rendering's:** the real grade or LUT.
-  - **MERGE-READY @ <head>:**
+  - **MERGE-READY @ dfecc7fd (+ this log commit):**
     - **Items:**
       - the playtest fixes 1–3 (M2-FP-28);
       - the end card switch (M3-C04-04);
