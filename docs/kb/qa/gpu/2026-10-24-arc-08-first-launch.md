@@ -54,3 +54,10 @@ Every run of the release build logs, at exit:
 - A cold driver cache is a much harder first launch than RND-29 measured. To get Low's 825 ms post-reveal frame and
   Haluna's first-entry frames under ADR 0029, the first-run warm-up needs to cover the driver pipelines Haluna and
   the title draw. That's for rendering (me) or ARC, whoever you route it to.
+
+## Correction (M2-RND-15, 2026-10-24)
+The "825 ms visible frame just after the lift" on cold Low was **not visible**. The sweep's launch wait timed out at
+its 30 s transition timeout while the cold card held for 30–36 s, so its "visible" 60 frames were still under the
+card (the first-run stage was drawing in them). The router's own window, which starts at the card's open, measured
+the real visible worst: 17.6 ms. The sweep now waits up to 300 s and warns `SLICE_TIMEOUT` (M2-RND-15). With that,
+the cold launch's visible worst is 1.5 ms. Haluna's cold first entry is fixed in M2-RND-15 (637 ms / 2.3 s on Low).
