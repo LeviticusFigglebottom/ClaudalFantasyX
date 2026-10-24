@@ -2,8 +2,8 @@
 id: M1-ENV-11
 title: Haluna's AUTO shelter after its collision build; capture_setup restores shader globals through ShaderGlobals
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 reviewer: environment
 depends_on: [M1-ENV-09, M2-FP-05]
 milestone: M1
