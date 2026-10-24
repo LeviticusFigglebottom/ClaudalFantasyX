@@ -2,7 +2,7 @@
 id: M2-ARC-03
 title: The title shows while the boot warm-up runs (visible frames of 168-265 ms)
 role: architect
-status: review
+status: done
 owner_session: "worktree-agent-ab7730349ee425e33"
 reviewer: lead
 depends_on: [M1-RND-27]
@@ -55,3 +55,4 @@ docs/kb/qa/gpu/2026-10-24-slice-perf-sweep.md).
 
     Every visible frame is far under 50 ms, and every hidden frame under ADR 0029's 1 s. The sweep's own worst
     hidden frame for the launch, 470 ms cold, includes the process's first frames before the card.
+- 2026-10-24 review-sweep-R (lead): **approve-with-fixes.** `BootCard`: an opaque card in the clear colour, `LAYER` 127 under the router fade, with mouse stop and the owner blocking keys. `arm()` comes before polling, so deferred work can't be missed, and `hold_reveal_of` makes a router change wait. Its wait stats are hidden-frame stats outside `entry_ms`. `measure_reveal` starts the visible window when the card lifts. `test_boot_card.gd` is thorough, and boot_title is unchanged because the capture doesn't run boot as its scene. Criterion 2 is measured on the PC with both the sweep and `max_visible_frame_ms` (0.6–0.8 ms; perf build 7.95 ms cold), so it is met although the box is unticked. The `reveal_wait_max_frame_ms` of 148–150 is the capped `delta` that M2-ARC-05 fixes (on `lead/batch4`). **Fix (M2-ARC-08):** `MAX_WAIT_MS` and `REVEAL_WAIT_MAX_MS` (10 s) sit just above M1-RND-29's 9.5 s first-run warm-up on Low on a high-end card. A slower first launch would open the card with the warm-up still staging, which shows the hitches the card exists to hide.

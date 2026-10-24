@@ -2,7 +2,7 @@
 id: M1-ARC-17
 title: Engine fix for the Godot 4.6.3 RenderingDevice vertex-format race (gate abort, M1-QA-10)
 role: architect
-status: todo
+status: done
 owner_session: ""
 depends_on: [M1-QA-10]
 milestone: M1
@@ -37,3 +37,4 @@ M1-QA-10 traced the intermittent `asha_face_stylized_compare` gate failure to a 
 - It isn't specific to lavapipe or to capture. Any 4.6.3 build can hit it on real GPUs at the first sight of a material/mesh pairing, so the game can also hit it.
 
 ## Review log
+- 2026-10-24 review-sweep-R (lead): **done (decision recorded).** Criterion 1: the ADR 0032 update (aeb0875) chooses option (c): accept the rare risk until the 4.7 port, re-run a named `CAPTURE PROCESS EXIT` shot once, and never re-approve its baseline. That matches screenshots.md "Engine race". Criterion 2 applies only to (a) or (b), so it doesn't apply here. The port task should re-run `tools/dev/rd_vertex_format_race/run.sh forced` on 4.7.x (with its line numbers updated) as proof that the fix landed.

@@ -34,6 +34,7 @@
 | Branch | Status |
 |---|---|
 | `claude/undertow-lead-handoff-423ixt` | **The integration branch, standing in for `main`** (CLAUDE.md §4: the Lead's session branch). Every merge lands here. |
+| `main` | **Stale**: not updated since the old account. The integration branch below is the real main; the Lead may fast-forward `main` only with the human's permission. |
 | `claude/new-session-mj8c3c` | The old integration branch. **Frozen at a504072**; don't merge into it. |
 | `claude/m2-slice` | The M2 vertical-slice track (from `claude/first-playable` 67984ce). |
 | `claude/characters` | The Characters track (from the integration branch). |
@@ -57,6 +58,7 @@
 | env-art | `session_01QmWUfYxd8DMg7XM3MyR6ps` | `claude/env-art` | M2-ENV-03 shrine kit → M1-ENV-10 → Haluna final-quality kit → Art sign-offs M2-ART-01/02/03 → the route |
 | ui | `session_01NyuYPSZn7o7gYirTvz4zjs` | `claude/ui` | M2-UI-03 → hide the Call row until bound → M2-UI-06 shop and inn → UI polish pass |
 | creatures | `session_01CYks9e592YBEfygyTawcJD` | `claude/creatures` | Enemy and boss models (all 5 enemies were primitive stand-ins): design sheets → creature pipeline → the `model` field in enemies.json → reef_crab, lantern_eel, gull_harrier, spawn_polyp, then the Drownbell → shots → bestiary art |
+| battle-presentation | `session_014EcW9e5tEmjDi5S2HmCECd` | `claude/battle-presentation` | Battle choreography (none existed: static fighters): a listen-only BattleChoreo sequencer, the clip contract with characters and creatures, a battle camera director, specials (Swell, Drownbell, Vowbound), battle intro and outro |
 These were created in default permission mode; the human sets Auto in each one's mode dropdown. m2-slice was told that ENV-03, UI-06 and UI-03 moved off its queue.
 
 ### 3a. Standing queues (2026-10-24, also sent by message; messages can arrive hours late, so this section is authoritative)
@@ -82,6 +84,7 @@ These were created in default permission mode; the human sets Auto in each one's
 - **Wake-ups:** the hourly routine `trig_01LJyLo42xCq3WVmAza3BMhe` FAILS with ACCESS_DENIED (as in the old account). The Lead keeps a background `sleep 2700` heartbeat in its own session instead, and re-arms it on each wake.
 
 ## 4. Process that works (keep it)
+- **Pre-merge gates run on the tracks (2026-10-24).** Each cloud track merges the latest integration branch, runs the FULL `tools/ci_local.sh` in its own container, and writes "MERGE-READY @ <sha>: ..." in its live log. The Lead merges with a scoped re-check (conflicts, plus the areas its merge resolution touched). Every Blender job pins `threads` so outputs reproduce on any CPU count. In shell waiters, never `pgrep -f <pattern>` for a pattern your own command line contains: it matches itself.
 - **Standing queues:** never one task at a time; ask each environment to message when it's two items from the end.
 - **Review sweeps:** after each merge batch, a fresh reviewer agent covers every `status: review` task. On approve or approve-with-fixes, close the task and file the fixes as new tasks. On request-changes, reopen it.
 - **Gate scope** (CLAUDE.md): agents run only checks their change can break. The Lead runs the full `tools/ci_local.sh` (about 60–90 min on 4 CPUs) after a batch of code or render merges, in a separate `lead/integration` worktree.
