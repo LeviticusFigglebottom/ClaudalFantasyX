@@ -52,6 +52,27 @@ static func load_fixture(fixture_id: StringName, path: String = DATA_PATH) -> Ba
 	return fx
 
 
+## The accessibility settings a capture of fixture `fixture_id` renders at: the defaults, with the
+## fixture row's "ui_settings" ({setting: value}) applied (M2-UI-11: the colour-blind shot).
+static func capture_settings(fixture_id: StringName, path: String = DATA_PATH) -> UiSettings:
+	var s := UiSettings.new()
+	var row: Variant = (_root(path).get("fixtures", {}) as Dictionary).get(String(fixture_id))
+	if typeof(row) == TYPE_DICTIONARY:
+		var wanted: Dictionary = (row as Dictionary).get("ui_settings", {})
+		for key: Variant in wanted:
+			s.set_value(StringName(str(key)), wanted[key])
+	return s
+
+
+## The capture script fixture `fixture_id` plays: its row's "script", else its own id (a fixture
+## that only changes settings replays another's script).
+static func script_of(fixture_id: StringName, path: String = DATA_PATH) -> StringName:
+	var row: Variant = (_root(path).get("fixtures", {}) as Dictionary).get(String(fixture_id))
+	if typeof(row) == TYPE_DICTIONARY:
+		return StringName(str((row as Dictionary).get("script", fixture_id)))
+	return fixture_id
+
+
 static func fixture_ids(path: String = DATA_PATH) -> Array[StringName]:
 	return _names((_root(path).get("fixtures", {}) as Dictionary).keys())
 

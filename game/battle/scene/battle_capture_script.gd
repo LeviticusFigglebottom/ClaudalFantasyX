@@ -26,7 +26,7 @@ const GLYPH_SHOT_AFTER_SEC := 0.3
 
 ## Plays `ctl`'s already-started fixture `sid` (a BattleController.SCRIPT_* id) to its state.
 static func play(ctl: BattleController, sid: StringName) -> void:
-	match sid:
+	match BattleFixture.script_of(sid):
 		BattleController.SCRIPT_PLAYER_PREVIEW:
 			_to_turn_of(ctl, &"rhen")
 			ctl.hud.commands.select(BattleMenus.ROW_SKILLS)  # past the Swell row (M2-UI-01)

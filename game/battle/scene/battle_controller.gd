@@ -114,8 +114,8 @@ func _ready() -> void:
 		pacing_scale = 0.0
 		show_damage_numbers = false
 		persist_progress = false
-		# Captures always render at the default accessibility settings, whatever the host saved.
-		hud.apply_settings(UiSettings.new())
+		# Captures render at the default accessibility settings (or their fixture's), never the host's.
+		hud.apply_settings(BattleFixture.capture_settings(scripted_state))
 		run_script.call_deferred()
 	elif auto_start:
 		# Entered through SceneRouter: build over several frames behind its fade (M1-UI-03).
