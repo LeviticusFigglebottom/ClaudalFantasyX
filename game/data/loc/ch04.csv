@@ -22,3 +22,11 @@ TUT_CH04_READ,Read it to learn what the glass turns aside.
 TUT_SPAR_WRAITH_SHROUD,"Blows slide off the shroud. Read it, and answer with the right element."
 TUT_SPAR_WRAITH_HAULED,Its weakness has changed. Read it again.
 SKILL_LINES_TAUT,Lines Taut
+CHAR_FERRYMASTER,Imbe
+LOCATION_CH04_HALUNA_WAKE,"Haluna, the Wake"
+LOCATION_CH04_BRIGHTWATER_FERRY,Brightwater Crossing
+FIELD_PROMPT_SLEEP,Sleep
+FIELD_PROMPT_REST,Rest
+SHOP_BRIGHTWATER_PURSER,The Purser's Chest
+ITEM_NAME_BOARD_SEVENTH_TERRACE,Name-Board of the Seventh Terrace
+ITEM_NAME_BOARD_SEVENTH_TERRACE_DESC,"Carved and lacquered, the ship's name in Pemakar terrace script. Taken off a drowned hull to go home. Nobody paid for it."
