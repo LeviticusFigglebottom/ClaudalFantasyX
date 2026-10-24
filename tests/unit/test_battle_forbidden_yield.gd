@@ -136,6 +136,41 @@ func test_the_sim_guard_takes_a_lawful_action_instead_of_stalling() -> void:
 	assert_false(SimPolicy.usable_skills(engine, guard).has(&"attack"))
 
 
+func test_with_no_lawful_skill_the_sim_guard_has_nothing_to_fall_back_on() -> void:
+	_beast().apply_damage(_beast().max_hp)
+	_to_turn_of(&"guard")
+	engine.current.skills.erase(&"taunt")
+	assert_false(SimPolicy._unforbidden(engine, engine.current), "every skill he has is a blow")
+	assert_false(SimPolicy._unforbidden(engine, _c(&"hero")), "no rule, no fallback")
+
+
+func test_role_answer_steps_the_guard_back_for_the_reserve_who_answers() -> void:
+	engine = BattleEngine.new()
+	engine.setup(_db(), [&"guard"] as Array[StringName], [&"scout", &"hero"] as Array[StringName], &"raid", SEED)
+	engine.begin()
+	var guard := _c(&"guard")
+	assert_false(SimPolicyRoleAnswer.step_back(engine, guard), "the beast is still a fair target")
+	_beast().apply_damage(_beast().max_hp)
+	_to_turn_of(&"guard")
+	assert_false(SimPolicyRoleAnswer.step_back(engine, _c(&"scout")), "no rule on the scout")
+	var p := SimPolicyRoleAnswer.new()
+	p.take_turn(engine)
+	assert_true(engine.party_reserve.has(guard), "the guard stepped back")
+	assert_true(engine.party_active.has(_c(&"hero")), "for the officer's answer, not the first in reserve")
+	assert_true(_officer().hp < _officer().max_hp or _officer().yielded, "and the answer struck")
+
+
+func test_step_back_skips_a_fallen_reserve_and_takes_the_first_living_one() -> void:
+	engine = BattleEngine.new()
+	engine.setup(_db(), [&"guard"] as Array[StringName], [&"hero", &"scout"] as Array[StringName], &"raid", SEED)
+	engine.begin()
+	_beast().apply_damage(_beast().max_hp)
+	_to_turn_of(&"guard")
+	_c(&"hero").hp = 0  # the officer's answer is down in reserve
+	assert_true(SimPolicyRoleAnswer.step_back(engine, engine.current))
+	assert_eq(engine.current.id, &"scout", "the first living reserve, though it answers nobody")
+
+
 func test_victory_title_follows_the_encounter() -> void:
 	assert_eq(BattleMenus.victory_title_key(engine), "TEST_YIELDS")
 	var other := BattleEngine.new()
@@ -195,6 +230,7 @@ static func _db() -> BattleDB:
 	officer["id"] = "officer"
 	officer["tags"] = ["order"]
 	officer["yield_at_hp_pct"] = 25
+	officer["role_answer"] = "hero"
 	var beast := foe.duplicate(true)
 	beast["id"] = "beast"
 	return (
@@ -207,6 +243,7 @@ static func _db() -> BattleDB:
 				[
 					{"id": "guard", "stats": stats, "skills": ["attack", "bolt", "sweep", "taunt"]},
 					{"id": "hero", "stats": stats, "skills": ["attack", "taunt"]},
+					{"id": "scout", "stats": stats, "skills": ["attack", "taunt"]},
 				],
 				"enemies": [officer, beast],
 				"encounters":
