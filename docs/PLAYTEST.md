@@ -1,6 +1,6 @@
 # Playtest: the First Playable (Windows)
 
-This is a rough but complete thread through the first minutes of *Hymn of the Undertow*. Most of what you see is placeholder: capsules stand in for people (Asha is the only real model, and she has no animations yet), the Shell Shrine is grey stone primitives, and the music uses the three prototype cues in place of the scenes' own. **The point is to feel the flow.** Please note anything that confuses you, drags, or feels wrong.
+This is a rough but complete thread through the first minutes of *Hymn of the Undertow*. Most of what you see is placeholder: capsules stand in for people (Asha is the only real model, and she has no animations yet), the Shell Shrine's art is a first pass (its fixes are still to come), and the music uses the three prototype cues in place of the scenes' own. **The point is to feel the flow.** Please note anything that confuses you, drags, or feels wrong.
 
 ## What you play (about 15–20 minutes)
 
@@ -11,11 +11,17 @@ This is a rough but complete thread through the first minutes of *Hymn of the Un
 5. **Haluna, free to walk.** Four people, at the market, the chapel court, the dock and in the lane (a child skipping), each say something that hints at what a "Cantor" is. You overhear each one as you walk past, without stopping, and you can also talk to them.
    - In the lane, **Look** at the carved gull on a roof ridge.
    - **Optional, "Pila's Granddaughter":** Grandmother Osu washes the wake-shells at a wall at the causeway head (on the village side, left of where the causeway starts). Talk to her before you go on: it is the only time she's there, and a later scene remembers it.
+   - **Shops and the inn**, open once you've met Asha:
+     - the market stall sells tonics and the like;
+     - the Net-Rack Forge sells weapons and gear;
+     - the Mooring Lamp's keeper rents a bed for 30, which heals the party.
+
+     Both shops add new stock after the Drownbell.
    - **Escape** opens the field menu (bestiary, Swell fill modes) for Rhen, Asha and Toma.
 6. **Save** at the shrine: the glowing teal stone with a shell canopy, on the third lane into the village (past the tide-wall lanes). Resting there heals the party and opens the save menu.
 7. **The causeway head.** Once you have saved, walk north along the beach, away from the dock, to the causeway head at the beach's far end. (Before you've saved, Toma and Asha send you back to the shrine in town as you walk in; you keep walking.) **This leaves Haluna's day behind:** you come back only at night. Asha asks first: choose **Go now** to set off, or **Not yet** to step back with nothing lost (Osu, the barks and the lintel-gull are still there, and walking in again asks again). After Go now, Toma and Asha talk about the low tide, and you're inside the **Shell Shrine** for its trial.
-   - **The trial:** three stone basins, seen from above. Water runs from the spring through whichever channel each basin's lip faces, and the channels carrying water light up. Use a basin (**E**) to turn it a quarter turn. Send the water into the big pool on the far side; when the pool fills, the door at the end sinks, and walking through it plays **Cutscene B, "The First Verse"**, at sunset. Stuck for a minute and a half? Toma gives one hint. **Optional:** route the water into the small sluice near the second basin to drain the side pool, and pick up what's in it. Cutscene B notices.
-   - The room is grey placeholder blocks for now.
+   - **The trial:** four stone basins, seen from above. Water runs from the spring through whichever channel each basin's lip faces, and the channels carrying water light up. Use a basin (**E**) to turn it a quarter turn. Send the water into the big pool on the far side; when the pool fills, the door at the end sinks, and walking through it plays **Cutscene B, "The First Verse"**, at sunset. Stuck for a minute and a half? Toma gives one hint. **Optional:** route the water into the small sluice near the second basin to drain the side pool, and pick up what's in it. Cutscene B notices.
+   - The room is a first art pass: a fan-shell hall with channels inlaid with mother-of-pearl, shafts of light from three openings, and water you can see running. Beyond the sunken door is only a dark passage for now.
 8. **The Drownbell.** The bell answers the verse. It's a two-phase boss, with Rhen, Asha and Toma and no reserve.
    - **Phase 1, the Toll:** watch the timeline. The bell gathers a toll that shoves everyone back, and the timeline shows it two turns out. Three fast strikes (Rhen's Attack or Quick Hit) break its rim and silence it.
    - **Phase 2, the Flood:** at about 40% health the water rises, and polyps heal the bell faster than you can cut them down. Asha's **Call** row brings in **Ilun**, the first Vowbound. The party steps back and he fights alone, his gauge filling as he drinks the flood. When it's full, his **Floodnet** clears the water. Dismiss him from his own menu, or he stays until he falls.
@@ -67,9 +73,9 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - The music is a prototype stand-in: the hush theme sketch plays on the beach and in Haluna, the temple cue plays at the shrine, and the hush theme v2 plays for the verse. Nobody has signed off on any of them.
 - The glimmer motes in the cutscenes are simple glowing dots, not the real particle effect.
 - Haluna's world is the art team's scene, now shipped with the zone, with simple collision added. The camera mostly follows Rhen from behind; only a few spots use composed shots.
-- Osu's wall at the causeway head is a grey stand-in with shells (the real wake-shell wall piece is still to be placed), and the night has no colour grade of its own yet.
+- The night has no colour grade of its own yet.
 - Ilun is a placeholder shape, and his call has no cinematic yet. The bell and polyps are placeholder shapes too.
-- Entering Haluna holds the black fade for about a second and a half while the village builds itself; the picture no longer freezes when it appears.
+- Entering Haluna holds the black fade for about a second while the village builds itself; the picture no longer freezes when it appears.
 - In the field, Escape opens the field menu, which pauses the game. From it you can open the bestiary or choose each hero's Swell fill mode. Escape backs out a step at a time and then closes it. It doesn't open during a cutscene or a conversation. **E** also advances dialogue.
 
 ## Reporting

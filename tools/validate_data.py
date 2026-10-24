@@ -29,6 +29,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import chapter_flow_check  # noqa: E402
 import dlgc  # noqa: E402
 
 ELEMENTS = {"none", "fire", "water", "lightning", "ice", "holy", "glimmer"}
@@ -1263,6 +1264,7 @@ def run(root: Path) -> Report:
     check_flags(root, load_flags(root, rep), rep)
     check_undertow(root, files, rep)
     check_zone_weather(root, files, rep)
+    check_chapter_flow(root, files, declared_flags_quiet(root), rep)
     check_provenance(root, rep)
     check_banned(root, rep)
     check_binary_sizes(root, rep)
@@ -1298,12 +1300,20 @@ def _tscn_attrs(header: str) -> dict[str, str]:
 
 
 def scene_spawns(text: str) -> set[str]:
-    """Names of the nodes directly under the root's Spawns node in a .tscn's text."""
+    """Names of the nodes directly under the root's Spawns node in a .tscn's text. A greybox zone
+    (M3-ARC-01) builds its Spawns from its layout file, so those are read from the layout."""
     out: set[str] = set()
     for m in TSCN_HEADER_RE.finditer(text):
         a = _tscn_attrs(m.group(0))
         if a.get("parent") == "Spawns" and a.get("name"):
             out.add(a["name"])
+    layout = chapter_flow_check.greybox_layout_path(text)
+    if layout is not None:
+        p = Path(__file__).resolve().parents[1] / layout.removeprefix("res://")
+        try:
+            out |= set(json.loads(p.read_text(encoding="utf-8")).get("spawns", {}))
+        except (OSError, json.JSONDecodeError, AttributeError):
+            pass
     return out
 
 
@@ -2301,6 +2311,15 @@ def inns_errors(doc: object, flags: set[str], where: str = "game/data/items/shop
 def check_inns(files: dict[str, object], flags: set[str], rep: Report) -> None:
     """Inn rows in shops.json. Their loc keys are checked with the rest of the shops file."""
     for e in inns_errors(files.get(f"{ITEMS_DIR}/shops.json"), flags):
+        rep.err(e)
+
+
+
+# --- M3-ARC-01: Act I chapter flow (game/data/flow/chapters.json) and greybox zone layouts ---------
+
+def check_chapter_flow(root: Path, files: dict[str, object], flags: set[str], rep: Report) -> None:
+    """The chapter files chapters.json lists, and their zones' layouts (tools/chapter_flow_check.py)."""
+    for e in chapter_flow_check.check(root, files, flags):
         rep.err(e)
 
 

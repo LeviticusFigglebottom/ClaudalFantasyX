@@ -1,0 +1,11 @@
+{
+  "doc": "Defaults for GreyboxZone (M3-ARC-01; docs/kb/tech/chapter_flow.md): a zone layout file may override any of these per zone. Sizes in metres, angles in degrees, colours as #rrggbb.",
+  "player": {"radius": 0.3, "height": 1.72, "color": "#c9b38a"},
+  "actor": {"radius": 0.28, "height": 1.65, "color": "#8aa6b8"},
+  "block_color": "#9a958c",
+  "camera": {"orbit_distance": 7.5, "orbit_height": 6.0, "fov_deg": 46.4, "target_height": 1.2},
+  "shot_fov_deg": 40.0,
+  "sun": {"pitch_deg": -50.0, "yaw_deg": 30.0, "energy": 1.2, "color": "#fff4e0"},
+  "environment": {"background": "#a9c4d6", "ambient_color": "#c8d4dc", "ambient_energy": 0.6},
+  "trigger_height": 3.0
+}

@@ -3,6 +3,29 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **M3 Act I is under way** (the Lead's 12:00 message). The tasks are filed in `docs/kb/tasks/M3/`:
+  - M3-C01..C09-01, the beat sheets;
+  - M3-C0x-02, the playable chapters;
+  - M3-C07-01, Ch7's story;
+  - M3-ARC-01, the chapter flow.
+  - **Ownership:** recorded in ownership.md (`game/levels/ch01`, `ch04`–`ch09`, the dialogue, `act1_*` beats, `game/data/flow/chapters/**`).
+  - **M3-ARC-01 is done, for review by lead (ADR 0033, `docs/kb/tech/chapter_flow.md`).**
+    - Chapters are data: `ZoneStory` plays each zone's arrive/beats/barks steps from `game/data/flow/chapters/chNN.json`, and `GreyboxZone` builds a playable zone from a layout JSON.
+    - `validate_data` checks both. The tests are `test_zone_story` (7) and `test_chapter_flow` (8). The slice is untouched.
+  - **Ch1 and Ch4 beat sheets are done:** `act1_ch01.md` and `act1_ch04.md`, reviewed and approved by cinematics. **For the Lead and narrative, two calls the sheets made:**
+    - Kell's wick is given on every path, so act3_ending E7 always has it; the optional side scene is staying to talk at her stall.
+    - The outline's "One month earlier" card may not fit the travel calendar, since Ch1–Ch4 take four days. The sheet keeps the card and flags it.
+  - **Creature answers from Ch1 and Ch4:**
+    - Ch1 adds `scuttler`, an Undertow-spawn before the boss, and proposes renaming `wickfry` so "wick" stays Kell's.
+    - At most 2 foes on screen in Ch1 and 3 on the derelict.
+    - Hullgnaw's raft is the arena, and its rib-timbers are the boss.
+  - **The beat sheets are with three subagents:** Ch1 and Ch4; Ch5, Ch6 and Ch7 (story); Ch8 and Ch9.
+  - **Creatures** (claude/creatures, act1_roster.md 9243daa): their roster is adopted as the working ids and passed to the beat-sheet writers. Their open questions are answered in the sheets' request lists, summarised here when they land.
+  - **Next:** review the sheets, then build the chapters on ARC-01, Ch1 first.
+- **Item 7 is done:** the playthrough pass (handoff cinematics-11). PLAYTEST.md is current (shops and inn, the real shrine room, four basins, ENV-04 and ENV-05), and filed **M2-FP-24**, the shrine's channel curbs have no collision. **Two items remain from the 07:56 queue:** item 6, which waits on characters, and nothing else. **Next: M3 Act I** (the Lead's 12:00 message, human-authorised).
+  - Act I is Ch1 Lamp-Diver, Ch4, Ch5, Ch6 up to the Brine Shoals and Sefir, Ch8 and Ch9.
+  - **Story only:** Ch7 Tidecup's story beats and cutscenes are mine; its gameplay is another Lead agent's.
+  - **Order for each chapter:** a beat sheet, then .dlg, flow, a greybox level, encounters, then cutscenes.
 - **M2-ENV-03, the Shell Shrine kit, is swapped in** (770090f), after env-art's verdict at 11:28 (Art Director, the kit comparison you asked for): adopt the m2-slice kit.
   - The level is dressed with it, and shots S01–S05 and their baselines are back. env-art's Review log entry is in the task file.
   - Art fixes are M2-ENV-09 (env-art, on this kit): the fan-shell roof tiers, coral walls, a cooler S02 interior, the S01 leaf-boats and shelf, channel bends.
