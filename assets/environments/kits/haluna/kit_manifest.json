@@ -2,6 +2,39 @@
   "generator": "assets_src/environments/kits/haluna/build.py",
   "kit": "haluna",
   "pieces": {
+    "arena_causeway_arms": {
+      "budget": [
+        30000,
+        6000
+      ],
+      "bytes": 1389468,
+      "lods": {
+        "arena_causeway_arms": 23112,
+        "arena_causeway_arms-lod1": 2568
+      }
+    },
+    "arena_causeway_flats": {
+      "budget": [
+        60000,
+        12000
+      ],
+      "bytes": 1269228,
+      "lods": {
+        "arena_causeway_flats": 38364,
+        "arena_causeway_flats-lod1": 3280
+      }
+    },
+    "arena_tideline_ground": {
+      "budget": [
+        60000,
+        12000
+      ],
+      "bytes": 897284,
+      "lods": {
+        "arena_tideline_ground": 27360,
+        "arena_tideline_ground-lod1": 1984
+      }
+    },
     "awning_cloth": {
       "budget": [
         1800,
@@ -33,6 +66,17 @@
       "lods": {
         "basket_set": 564,
         "basket_set-lod1": 153
+      }
+    },
+    "causeway_disc": {
+      "budget": [
+        60000,
+        24000
+      ],
+      "bytes": 3154540,
+      "lods": {
+        "causeway_disc": 57892,
+        "causeway_disc-lod1": 21320
       }
     },
     "causeway_flats": {

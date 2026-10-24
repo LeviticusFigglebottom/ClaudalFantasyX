@@ -27,6 +27,19 @@ extends MultiMeshInstance3D
 @export var keep_clear: Array[Vector3] = []
 ## Attempts per requested instance before giving up (rejection sampling).
 @export var max_attempts_factor: int = 6
+## M2-ENV-11 (battle arenas): drop every instance onto this node's meshes (the first MeshInstance3D under
+## it whose name has no "-lod" suffix: a kit ground .glb's LOD0), by a ray straight down in this scatter's
+## frame. Instances that miss it, or land outside [height_min_m, height_max_m] in world Y, are skipped.
+## Unset (the default), instances stay on this node's local plane, as before.
+@export var ground: Node3D
+@export var height_min_m: float = -1000.0
+@export var height_max_m: float = 1000.0
+## How far above the local plane the drop ray starts (m).
+@export var ground_ray_from_m: float = 100.0
+
+## The instance transforms of the last rebuild (the MultiMesh holds them too, but a headless renderer does not
+## keep them, so tests read these).
+var placed: Array[Transform3D] = []
 
 
 func _ready() -> void:
@@ -45,6 +58,7 @@ func rebuild() -> void:
 	noise.frequency = patch_frequency
 	var xforms: Array[Transform3D] = []
 	var attempts := 0
+	var drop := _ground_dropper()
 	while xforms.size() < count and attempts < count * max_attempts_factor:
 		attempts += 1
 		var p := Vector3(
@@ -60,6 +74,11 @@ func rebuild() -> void:
 		var s := rng.randf_range(scale_min, scale_max)
 		if roll > keep or _blocked(p):
 			continue
+		if not drop.is_empty():
+			var hit: Variant = _drop(drop, p)
+			if hit == null:
+				continue
+			p = hit
 		var basis := Basis(Vector3.UP, yaw).scaled(Vector3(s, s * rng.randf_range(0.85, 1.15), s))
 		xforms.append(Transform3D(basis, p))
 	var mm := MultiMesh.new()
@@ -69,6 +88,7 @@ func rebuild() -> void:
 	for i in xforms.size():
 		mm.set_instance_transform(i, xforms[i])
 	multimesh = mm
+	placed = xforms
 	material_override = material
 	tag(self)
 
@@ -80,6 +100,43 @@ static func tag(mmi: MultiMeshInstance3D) -> void:
 	mmi.add_to_group(GraphicsSettings.vegetation_group(GraphicsSettings.VEG_GROUP_SMALL_SHADOWS))
 	if mmi.visibility_range_end > 0.0:
 		mmi.add_to_group(GraphicsSettings.vegetation_group(GraphicsSettings.VEG_GROUP_LOD))
+
+
+## The ground's triangle mesh and the transforms between this node and it ({} without a ground).
+func _ground_dropper() -> Dictionary:
+	if ground == null or not ground.is_inside_tree() or not is_inside_tree():
+		return {}
+	var mi := _ground_mesh(ground)
+	if mi == null or mi.mesh == null:
+		push_warning("VegetationScatter %s: ground %s has no mesh" % [name, ground.name])
+		return {}
+	var to_mesh := mi.global_transform.affine_inverse() * global_transform
+	return {"tm": mi.mesh.generate_triangle_mesh(), "to_mesh": to_mesh, "from_mesh": to_mesh.affine_inverse()}
+
+
+## p (local, on the plane) dropped onto the ground, or null when the ray misses or the height is out of range.
+func _drop(drop: Dictionary, p: Vector3) -> Variant:
+	var to_mesh: Transform3D = drop["to_mesh"]
+	var from := to_mesh * (p + Vector3.UP * ground_ray_from_m)
+	var dir := (to_mesh.basis * Vector3.DOWN).normalized()
+	var hit: Dictionary = (drop["tm"] as TriangleMesh).intersect_ray(from, dir)
+	if hit.is_empty():
+		return null
+	var local: Vector3 = (drop["from_mesh"] as Transform3D) * (hit["position"] as Vector3)
+	var world_y := (global_transform * local).y
+	if world_y < height_min_m or world_y > height_max_m:
+		return null
+	return local
+
+
+static func _ground_mesh(node: Node) -> MeshInstance3D:
+	if node is MeshInstance3D and not String(node.name).contains("-lod"):
+		return node as MeshInstance3D
+	for c in node.get_children():
+		var found := _ground_mesh(c)
+		if found != null:
+			return found
+	return null
 
 
 func _blocked(p: Vector3) -> bool:

@@ -22,6 +22,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+import arenas  # noqa: E402
 import causeway  # noqa: E402
 import causeway_zone  # noqa: E402
 import festival  # noqa: E402
@@ -74,6 +75,8 @@ def targets() -> dict:
         out[name] = (causeway.BUDGET_KEY.get(name, name), causeway, fn)
     for name, fn in sorted(causeway_zone.TARGETS.items()):
         out[name] = (name, causeway_zone, fn)
+    for name, fn in sorted(arenas.TARGETS.items()):  # M2-ENV-11 battle arenas
+        out[name] = (name, arenas, fn)
     return out
 
 
