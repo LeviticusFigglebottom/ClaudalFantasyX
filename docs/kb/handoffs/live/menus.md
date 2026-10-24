@@ -14,6 +14,9 @@ Why this track exists: the progression and equipment systems (Lattice, equipment
 | M2-MNU-04 Quit to Title + battle pause | **done on the branch** (cdbb916): Quit behind a Stay-first confirm; battle pause on P / Pause / pad Start; shot `battle_pause` |
 | M2-MNU-05 screenshots, navigation, accessibility sweep | **review**: every new screen viewed at 130% text and in the colorblind palette; the Lattice side panel and the Equip table now flow at any text size (tests at 1.0/1.15/1.3) |
 
+## Id block (Lead rule, 2026-10-24, CONSOLIDATED §4 "id blocks")
+New task ids from this track are numbered 300-399 (e.g. M2-MNU-310, M3-MNU-301), new ADRs 0120-0129, and per-session handoffs are named `<date>-<role>-menus-<n>.md`. Existing ids stay as they are.
+
 ## For other tracks
 - **ui (claude/ui):** I changed your field-menu shell, minimally: `FieldMenuModel` gained the rows (ROOT_IDS, PARTY_ROWS, root_enabled, quit_rows, `field_heroes()` extracted from from_game), `FieldMenu` gained `Level.QUIT`, `child` (a FieldSubmenu opened from `CHILD_PAGES`) and `quit_to_title()`; `field_menu.json` panel and root rects grew for nine rows; `FieldMenuShot` now walks down to Swell by id. Baselines `field_menu` and `field_menu_swell_modes` re-approved after viewing. Please merge `claude/menus` before your next field-menu change.
 - **battle-presentation (claude/battle-presentation):** `battle_sandbox.tscn` has a new last child `BattlePause` (a plain Node; script `game/ui/menus/battle_pause/battle_pause.gd`). The pause is a tree pause, so anything that must hold still has to run in the default process mode: no `PROCESS_MODE_ALWAYS`, no `get_tree().create_timer(..., true)` (SceneTreeTimers ignore pause by default; pass `process_always = false`), tweens bound to nodes. Today nothing in game/battle or game/ui/battle breaks that rule. Pause is refused in the states listed in `game/data/ui/battle_pause.json` `blocked_states` (idle, result); if BattleChoreo's intro or outro should not be pausable, tell me and I'll add a hook rather than a state.
@@ -86,3 +89,4 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 - 2026-10-24: merged claude/audio (voice rows) and claude/ui (settings tests after big7, handle_pick); did M2-AUD-15 and M2-AUD-16 (audio's requests). Full suite 2162/1 (UI's controls test, reported). MERGE-READY @ fa8a6c7e with that caveat.
 - 2026-10-24: merged claude/ui (M2-UI-29 aspect audit touched field_submenu/battle_pause/formation by a line each; M2-UI-07; controls test fixed). Full suite 2173/1 (UI-07 vs creatures, reported). MERGE-READY @ 140a8b88.
 - 2026-10-24: merged claude/ui (creatures assertion fixed; M2-UI-28 pseudo-locale walk). Did M2-MNU-11 (the walk's findings in Status, Customize and the Lattice title). Full suite 2189/0. MERGE-READY @ f49f2869. Queue empty.
+- 2026-10-24: the Lead's id-block rule recorded above (tasks 300-399, ADRs 0120-0129, handoffs <date>-<role>-menus-<n>).
