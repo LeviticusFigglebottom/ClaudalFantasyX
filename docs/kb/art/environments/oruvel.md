@@ -86,7 +86,8 @@ tether drops into the crown at **(−9.9, 5.2)**. Oruvel is moored over that blo
 - **The second mooring** (Kell's chandlery, C1-10) is a short plank bridge west of the town rafts at (−38, −14): on
   every diver's way from the town to the dive moorings, as the beat sheet needs.
 - **The outer mooring** (the *Seventh Terrace*, C1-09 bark 5, O07, O13) is open water west at (−58, 8). The coaster is
-  not in this kit (act1_ch01 §9 request 4: one hero prop shared with Ch4; a follow-up task).
+  the Brightwater ferry kit's (M3-ENV-08B, brightwater_ferry.md §7: one hero ship shared with Ch4), bow north, moored
+  and crewed against this kit's stage raft (`raft_deck_small`) on her starboard side.
 - **The drowned city shows through the water** (`lagoon_clear` ×2.0, act1_ch01 §9): the tower's crown at −6.4 m is a
   pale shape under the dive raft from a high camera. The preview places the Underway kit's crown pieces read-only
   under the dive raft to check the read.
@@ -198,16 +199,18 @@ Cinematics owns them. **◆** marks the preview shots built in `oruvel_kit/`.
 | O02 ◆ | 50 mm (27.0°) | 1.5 m on the dive raft's bridge, across the counter | The scale-hull's booth: the brass scale centred, the stamp and chits on the counter, the Level plaque small on the post at the right; the town soft behind. | A stamp and a scale are enough to show the Order's reach. |
 | O03 ◆ | 24 mm (53.1°) | 1.6 m on a plank bridge | A plank bridge leading in from the lower left to a raft of cabins, outriggers tied up in the water lane, the keel-hull's decks rising beyond, nets on the rails. | The town loop: planks over water, everyone's front door a boat. |
 | O04–O06 | rail | — | The cookboat lane, the net lanes, the empty practice pen. (Cinematics; the rail cameras of C1-09.) | |
-| O07 | 85 mm | — | The *Seventh Terrace*'s name-board (an insert; the coaster is a follow-up, §7). | |
+| O07 ◆ | 85 mm (16.1°) | 9 m astern of her transom (brightwater_ferry.md §7.4) | The *Seventh Terrace*'s name-board: the terrace-script name on the deep-red counter (the same point in her frame as Ch4's D06). | The plant for Ch4. |
 | O08 ◆ | 35 mm (37.8°) | 1.5 m on the deck of the raft south of the keel-hull | The keel-hull broadside: its three decks stepping up to the aft house, the meeting awning, the big carved gull on the stern ridge against the sky. | Where the town meets, and where the drill runs to. |
 | O09 ◆ | 65 mm (20.9°) | 1.4 m at the chandlery's counter, shallow depth of field | Kell's counter in focus (the wick board, a spool, the counter's worn edge), the lamp racks and oil jars soft above and behind, the awning's stripe across the top. | Her trade: the light every diver goes down with. |
 | O10 ◆ | 85 mm (16.1°) | 1.2 m on the dive raft, low, looking up north-west | The nearest lintel-gull on a keel-roof ridge, 35% of frame height, facing the lens and the sea, its open throat a dark bore; a cloudless blue behind it; the winch's drum soft in the lower left. | Every carved gull faces the sea, and the sky is clear. |
 | O11–O18 | — | — | The Rising, the drill, the run, Hullgnaw and going under: the storm variant (§7) and Cinematics. | |
 | O19 ◆ | 28 mm (46.4°) | 4.5 m above the water, south-east of the dive raft, looking down 30° | The dive raft from above: the winch, the A-frame and its block over the dark dive well, the ladder going down into turquoise, the tether running down to the tower's pale crown 6 m below; the neighbour raft and the town behind. | The dive mooring over the drowned city: the job, and what it stands on. |
+| O21 ◆ | 35 mm (37.8°) | 1.4 m above the water, off her starboard quarter | The *Seventh Terrace* moored and crewed (M3-ENV-08B, review). | |
 | O20 ◆ | 24 mm (53.1°) | 7.5 m, kit row | Review only: the small pieces each on a raft deck in front (one long deck), the hulls and rafts behind, the keel-hull and the net-pen at the back; open light. | The kit, side by side. |
 
 **Registered baselines (the repo's binary budget: at most two):** O01 (`oruvel_o01_surfacing`) and O19
-(`oruvel_o19_dive_mooring`): the town at Rhen's eye from the water, and the dive raft over the drowned city.
+(`oruvel_o19_dive_mooring`): the town at Rhen's eye from the water, and the dive raft over the drowned city. M3-ENV-08B
+adds O07 (`oruvel_o07_name_board`), the Seventh Terrace's one baseline (the Brightwater kit's hero board).
 
 ## 5. Review Checklist
 
@@ -260,8 +263,8 @@ read-only). Read of the final captures (lavapipe, 960 × 540):
 - **The storm variant** (C1-12 to C1-15; act1_ch01 §9 item 1): snapped lashings, separating raft sections, capsized
   hull pieces, the net-pen hull's three-way split (the boss rig), the sea drawn back off the reef. A task of its own,
   as Corrow's fallen state was (M3-ENV-04B).
-- **The *Seventh Terrace*** (act1_ch01 §9 item 4): one hero prop for Ch1 (moored, O07, O13) and Ch4 (the derelict),
-  the name-board identical in both. A task of its own.
+- **The *Seventh Terrace*** (act1_ch01 §9 item 4): built in M3-ENV-08B (brightwater_ferry.md §7); O13 (under sail,
+  running) is the storm variant's frame (`terrace_sails_set` in place of the furled sails and `terrace_moored`).
 - **The rebuilt variant** (act3_ending E7, `post_credits`): the same moorings rebuilt, not the same hulls.
 
 ## Revisions
