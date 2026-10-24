@@ -58,14 +58,16 @@
   5. zone_weather.json rows for first_verse, shell_shrine and Haluna-night.
   6. Swap the capsules for Rhen, Toma and the villagers when the characters branch merges.
   7. Another playthrough pass.
+  8. M2-ENV-05: Haluna's zone entry is 3.1–3.5 s against the 3 s limit (PC slice perf sweep).
 - **characters:**
+  0. **TOP PRIORITY (the human, 2026-10-24): M1-CHR-14.** Asha's braid is detached from her head; clothing and staff clip; some limbs look detached. Fix it properly and add automated guards; same checks for Rhen and Toma.
   1. M1-CHR-13 (vest normals, plus the shared `_panel` winding fix; rebuild Asha, Rhen and Toma).
   2. M1-RND-25 (the inner lip onto the mouth material).
   3. Toma follow-ups, plus Toma's clips.
   4. M2-CHR-03 (the Haluna villagers: Neme, Osu, Pila, the lane child, plus 3 generic).
   5. The CHR-12 smile §12.4 as a switchable variant, for the human.
   6. Battle-scale hero LODs.
-- **pc-gpu:** the ADR 0029 follow-ups (no threaded loads) → the slice perf sweep → M1-QA-09 (Asha re-check, after CHR-12 merges) → the night GPU cost at Haluna H10 (M2-ENV-02) → the Low-preset storm cost (Low's full-res shells cost 1.36 ms against High's 0.66 ms compute; file it).
+- **pc-gpu:** (ADR 0029 follow-ups and the slice perf sweep DONE) M1-RND-28 export shader baker → M2-RND-07 (the Drownbell Flood hitch) → M1-QA-09 (Asha re-check, after CHR-12 merges) → the night GPU cost at Haluna H10 (M2-ENV-02) → the Low-preset storm cost (Low's full-res shells cost 1.36 ms against High's 0.66 ms compute; file it).
 - **Wake-ups:** the hourly routine `trig_01LJyLo42xCq3WVmAza3BMhe` FAILS with ACCESS_DENIED (as in the old account). The Lead keeps a background `sleep 2700` heartbeat in its own session instead, and re-arms it on each wake.
 
 ## 4. Process that works (keep it)

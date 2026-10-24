@@ -34,6 +34,8 @@ extends Node
 ## then the matching tier of every WaterSurface, UndertowStorm, GlimmerField and character material,
 ## skip `warmup` frames, then read RenderingServer.viewport_get_measured_render_time_gpu/_cpu after
 ## each of `frames` frames. Reports median, p99 and mean. Frame wall time is reported too.
+## These are steady-state frames after the warm-up, neither of ADR 0029's transition windows (the hidden frames
+## under a fade, the first 60 after it lifts): SceneRouter's last_swap_stats measures those (M1-ARC-16).
 
 const DEFAULT_PRESETS := "low,medium,high,ultra"
 const DEFAULT_RES := "1920x1080"

@@ -23,6 +23,8 @@ TIERS = [
 ]
 FIELDS = ["scene", "camera", "preset", "res_w", "res_h", "internal_w", "internal_h", "gpu_median_ms", "gpu_p99_ms",
           "cpu_median_ms", "frame_median_ms", "frame_p99_ms", "adapter", "driver"]
+# Optional columns of the slice sweep (tools/gpu_bench/slice_sweep.tscn): empty on gpu_bench rows.
+FIELDS += ["gpu_mean_ms", "frame_max_ms", "hidden_max_ms", "hidden_total_ms", "visible_max_ms"]
 
 
 def load(paths: list[str]) -> list[dict]:

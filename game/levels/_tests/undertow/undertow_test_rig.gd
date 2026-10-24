@@ -22,6 +22,10 @@ const MOOD_DAY := &"day"
 const MOOD_NIGHT := &"night"
 ## The dusk mood with the storm forced to the Low tier (shells), to show Low still reads.
 const MOOD_DUSK_LOW := &"dusk_low"
+## The day mood with a lightning bolt in view (M2-RND-05): its flash strikes the site facing the camera.
+const MOOD_STRIKE := &"strike"
+## A mood's "flash" site that means: the site facing the current camera (UndertowStorm.site_facing).
+const FLASH_FACING := -2
 const LOW_TIER := "low"
 
 @export var storm: UndertowStorm
@@ -39,7 +43,8 @@ const LOW_TIER := "low"
 @export var night_camera: Camera3D
 @export var low_camera: Camera3D
 @export var day_camera: Camera3D
-## Mood to hold (&"dusk", &"eye", &"night", &"day" or &"dusk_low"). Empty: chosen by the current camera.
+## Mood to hold (&"dusk", &"eye", &"night", &"day", &"dusk_low" or &"strike"). Empty: chosen by the current
+## camera.
 @export var mood: StringName = &""
 ## Shown only at night (the lighthouse's oil lamp).
 @export var night_nodes: Array[Node3D] = []
@@ -148,6 +153,9 @@ var _authored_fog: Dictionary = {}
 func _ready() -> void:
 	if storm != null:
 		_base_quality = storm.get_quality()
+		# The zone's environment for the storm's events (M2-RND-05: zone shadow, lightning exposure).
+		if storm.world_environment == null:
+			storm.world_environment = world_environment
 	_weather_s = weather_start_s
 	_aim_camera(horizon_camera, MOOD_DUSK)
 	_aim_camera(eye_camera, MOOD_EYE)
@@ -186,7 +194,7 @@ func _mood_for(cam: Camera3D) -> StringName:
 
 func _apply_mood(mood: StringName) -> void:
 	_mood = mood
-	var m := moods.get(MOOD_DUSK if mood == MOOD_DUSK_LOW else mood, {}) as Dictionary
+	var m := mood_data(mood)
 	var night := mood == MOOD_NIGHT
 	if sun != null:
 		sun.visible = not night
@@ -200,7 +208,8 @@ func _apply_mood(mood: StringName) -> void:
 		if n != null:
 			n.visible = night
 	if world_environment != null:
-		world_environment.environment = env_night if night else (env_day if mood == MOOD_DAY else env_dusk)
+		var day := mood == MOOD_DAY or mood == MOOD_STRIKE
+		world_environment.environment = env_night if night else (env_day if day else env_dusk)
 		var env := world_environment.environment
 		if env != null:
 			if not _authored_fog.has(env):
@@ -224,10 +233,23 @@ func _apply_mood(mood: StringName) -> void:
 		var t := float(m.get("time", 0.0))
 		storm.state.clear_forced_flashes()
 		var site := int(m.get("flash", -1))
+		storm.set_time(t)
+		if site == FLASH_FACING:
+			var cam := get_viewport().get_camera_3d()
+			site = storm.site_facing(cam.global_position if cam != null else Vector3.ZERO)
 		if site >= 0:
 			storm.force_flash(site, t - float(m.get("flash_age", 0.0)))
 		storm.set_time(t)
 	_write_globals()
+
+
+## A mood's table entry; dusk_low is the dusk mood (on Low), strike the day mood with a facing bolt.
+func mood_data(mood: StringName) -> Dictionary:
+	if mood == MOOD_DUSK_LOW:
+		return moods.get(MOOD_DUSK, {}) as Dictionary
+	if mood == MOOD_STRIKE:
+		return (moods.get(MOOD_DAY, {}) as Dictionary).merged({"flash": FLASH_FACING, "flash_age": 0.04}, true)
+	return moods.get(mood, {}) as Dictionary
 
 
 func _aim_camera(cam: Camera3D, mood: StringName) -> void:
@@ -242,7 +264,7 @@ func _aim(light: DirectionalLight3D, toward: Vector3) -> void:
 
 
 func _write_globals() -> void:
-	var m := moods.get(MOOD_DUSK if _mood == MOOD_DUSK_LOW else _mood, {}) as Dictionary
+	var m := mood_data(_mood)
 	var wind := WaterTestRig.direction_from_angles(0.0, wind_azimuth_deg) * wind_speed_m_s
 	RenderingServer.global_shader_parameter_set(GLOBAL_WIND, Vector4(wind.x, 0.0, wind.z, wind_gust))
 	RenderingServer.global_shader_parameter_set(GLOBAL_WIND_TIME, _weather_s)
