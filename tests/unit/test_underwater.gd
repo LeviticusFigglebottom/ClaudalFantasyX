@@ -2,13 +2,27 @@ extends TestCase
 ## M2-RND-02: the underwater look. Its shaders compile, its data names palette swatches and a quality row
 ## for every preset's tier, the rig builds every part and follows the tier (the Low fallback drops the
 ## waves, the god rays and the snow), switches off whole, and authors volumetric fog only where it is
-## wanted.
+## wanted. M2-RND-09 (Art's fixes): the lagoon swatches and a per-look deep, night sea-glow in the column,
+## the lantern's own warm halo, glimmer path compensation for a camera underwater, and a waterline camera.
 
 const PALETTE := "res://docs/kb/art/palette.json"
 const SHADERS := {
-	"res://game/shaders/water/underwater_post_mul.gdshader": ["sigma", "water_rest_y", "use_waves", "lens_m"],
-	"res://game/shaders/water/underwater_post_add.gdshader": ["col_scatter", "col_deep", "camera_light_weight"],
-	"res://game/shaders/water/water_underside.gdshader": ["col_window", "col_tir", "ior", "sun_disc"],
+	"res://game/shaders/water/underwater_post_mul.gdshader":
+	["sigma", "water_rest_y", "use_waves", "lens_m", "meniscus_px"],
+	"res://game/shaders/water/underwater_post_add.gdshader":
+	[
+		"col_scatter",
+		"col_deep",
+		"camera_light_weight",
+		"col_sea_glow",
+		"sea_glow_energy",
+		"lamp_color",
+		"lamp_absorption"
+	],
+	"res://game/shaders/water/water_underside.gdshader":
+	["col_window", "col_tir", "ior", "sun_disc", "tir_gain", "lens_m", "sea_glow_energy"],
+	"res://game/shaders/glimmer/glimmer_motes_draw.gdshader":
+	["uw_comp_lift", "uw_comp_held", "uw_sigma", "uw_max_gain"],
 	"res://game/shaders/water/underwater_shafts.gdshader": ["density", "shaft_scale_m", "water_rest_y"],
 }
 
@@ -112,6 +126,108 @@ func test_graphics_runtime_sets_the_rig_tier() -> void:
 	rig.set_quality("high")
 	assert_true(GraphicsRuntime.apply_system_tiers(host, "low") >= 1)
 	assert_eq(rig.get_quality(), "low")
+	host.free()
+
+
+func test_art_swatches_and_the_night_sea_look() -> void:
+	var data := UnderwaterRig.load_data()
+	var swatches := (JSON.parse_string(FileAccess.get_file_as_string(PALETTE)) as Dictionary)["swatches"] as Dictionary
+	var names := data["swatches"] as Dictionary
+	for key: String in ["scatter", "transmit"]:
+		assert_eq(str(names[key]), "lagoon_teal", "%s is the lagoon's water (M2-ART-02)" % key)
+	for key: String in ["deep", "tir"]:
+		assert_eq(str(names[key]), "deep_teal_shadow", "%s: deep_teal_shadow, not sea_glow by day" % key)
+	var night := (data["looks"] as Dictionary)["night_sea"] as Dictionary
+	assert_eq(str((night["swatches"] as Dictionary)["deep"]), "abyss_navy")
+	assert_eq(str(night["deep"]).to_upper(), str((swatches["abyss_navy"] as Dictionary)["hex"]).to_upper())
+	var host := _scene()
+	var rig := host.get_node("Rig") as UnderwaterRig
+	var teal := Color(str((swatches["deep_teal_shadow"] as Dictionary)["hex"]))
+	var navy := Color(str((swatches["abyss_navy"] as Dictionary)["hex"]))
+	assert_true(
+		(rig.post_add_material.get_shader_parameter(&"col_deep") as Color).is_equal_approx(teal), "Act I default"
+	)
+	rig.look = "night_sea"
+	assert_true((rig.post_add_material.get_shader_parameter(&"col_deep") as Color).is_equal_approx(navy), "night_sea")
+	rig.look = ""
+	assert_true((rig.post_mul_material.get_shader_parameter(&"col_deep") as Color).is_equal_approx(teal))
+	host.free()
+
+
+func test_night_sea_glow_and_the_lamp_halo_follow_the_scene() -> void:
+	var host := _scene()
+	var rig := host.get_node("Rig") as UnderwaterRig
+	var water := host.get_node("Water") as WaterSurface
+	water.sea_glow_energy = 0.1
+	rig._process(0.0)
+	var strength := float((UnderwaterRig.load_data()["optics"] as Dictionary)["sea_glow_strength"])
+	assert_between(
+		float(rig.post_add_material.get_shader_parameter(&"sea_glow_energy")),
+		0.1 * strength - 1e-5,
+		0.1 * strength + 1e-5
+	)
+	assert_between(
+		float(rig.underside_material.get_shader_parameter(&"sea_glow_energy")),
+		0.1 * strength - 1e-5,
+		0.1 * strength + 1e-5
+	)
+	var lamp := rig.post_add_material.get_shader_parameter(&"lamp_color") as Vector3
+	assert_true(lamp.x > lamp.y and lamp.y > lamp.z, "the halo is the oil lamp's warm light")
+	assert_true(
+		(rig.post_add_material.get_shader_parameter(&"lamp_pos") as Vector3).is_equal_approx(
+			rig.lantern.global_position
+		)
+	)
+	assert_eq(rig.lantern.light_volumetric_fog_energy, 0.0, "no second, fog-absorbed halo")
+	rig.active = false
+	rig._process(0.0)
+	assert_eq(rig.post_add_material.get_shader_parameter(&"lamp_color") as Vector3, Vector3.ZERO, "off with the rig")
+	host.free()
+
+
+func test_glimmer_seen_from_underwater_gets_its_path_back() -> void:
+	var host := _scene()
+	var rig := host.get_node("Rig") as UnderwaterRig
+	var field := GlimmerField.new()
+	field.name = "Motes"
+	field.position = Vector3(0.0, -4.0, -6.0)
+	host.add_child(field)
+	var cam := Camera3D.new()
+	host.add_child(cam)
+	cam.global_position = Vector3(0.0, -3.0, 0.0)
+	cam.make_current()
+	rig._process(0.0)
+	var g := UnderwaterRig.load_data()["glimmer"] as Dictionary
+	var dm := field.draw_material
+	assert_between(
+		float(dm.get_shader_parameter(&"uw_comp_lift")),
+		float(g["lift"]) - 1e-5,
+		float(g["lift"]) + 1e-5,
+		"released: full"
+	)
+	assert_between(
+		float(dm.get_shader_parameter(&"uw_comp_held")),
+		float(g["held"]) - 1e-5,
+		float(g["held"]) + 1e-5,
+		"held: partial"
+	)
+	assert_eq(
+		float(field.process_material.get_shader_parameter(&"underwater_absorb_per_m")), 0.0, "the post absorbs, once"
+	)
+	field.underwater_compensation = 0.0
+	rig._process(0.0)
+	assert_eq(float(dm.get_shader_parameter(&"uw_comp_lift")), 0.0, "a field opts out")
+	assert_true(
+		float(field.process_material.get_shader_parameter(&"underwater_absorb_per_m")) > 0.0,
+		"an opted-out field fades by its own absorption again"
+	)
+	field.underwater_compensation = 1.0
+	cam.global_position = Vector3(0.0, 3.0, 0.0)
+	rig._process(0.0)
+	assert_true(
+		float(field.process_material.get_shader_parameter(&"underwater_absorb_per_m")) > 0.0,
+		"camera above water: the field's own sinking model (Ch2)"
+	)
 	host.free()
 
 
