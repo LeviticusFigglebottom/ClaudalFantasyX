@@ -30,6 +30,7 @@ The scene-swap regression test now measures the real swap on an injected per-fra
 | M2-MNU-07 party formation menu | **review** (merged b25ac94): active line / reserve swaps saved to party_ids and reserve_ids; BattleRequest.make now starts live fights from the saved line once the party has gathered (Haluna's tideline fight included; scripted party overrides still win); formation_menu and the 11-row field_menu shots viewed and approved |
 | M2-MNU-08 Light Step into the field encounter meter | **review** (41ec8dc): m2-slice's meter already applied it at zone setup; now the Equip page refreshes the gap in progress and the stand-in party's gear counts; m2-slice told |
 | M2-MNU-09 Customize on spare pieces | **review** (merged 131c507): a '· Customize' row under each spare with an empty slot; equip_menu re-approved after viewing |
+| M3-MNU-02 Memories gallery (SPEC §6.11, handed over by the UI track) | claimed; replay design sent to m2-slice (owner of game/cutscene and game/flow), waiting on their answer before building |
 | ~~M3-MNU-01 Lore codex~~ | **withdrawn**: the UI track built it as M3-UI-03 at the same time (no task claimed when I checked); my agent was stopped before any commit landed here, and the task file is removed |
 | M2-MNU-10 Lattice: walk to a sealed gate | **review** (merged bbd45c8): the cheapest neighbour, cost shown, then the open confirm |
 
