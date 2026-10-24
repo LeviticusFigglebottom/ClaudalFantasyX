@@ -263,6 +263,16 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
         for eid in lineup:
             if eid not in enemy_ids:
                 rep.err(f"encounters.{enc['id']}: unknown enemy '{eid}'")
+        lent = enc.get("party_skills", {})  # M3-C01-02, ADR 0034: skills a tutorial fight lends
+        if not isinstance(lent, dict):
+            rep.err(f"encounters.{enc['id']}: party_skills must be {{hero id: [skill ids]}}")
+            lent = {}
+        for cid, sks in lent.items():
+            if cid not in char_ids:
+                rep.err(f"encounters.{enc['id']}: party_skills names unknown hero '{cid}'")
+            for sk in sks if isinstance(sks, list) else [sks]:
+                if sk not in skill_ids:
+                    rep.err(f"encounters.{enc['id']}: party_skills lends unknown skill '{sk}'")
     return keys
 
 
