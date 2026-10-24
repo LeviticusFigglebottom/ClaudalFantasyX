@@ -2,8 +2,8 @@
 id: M3-ENV-09B
 title: "Pemakar's far Ashcrown from the Ashcrown kit's LOD1 (one building at every distance)"
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M3-ENV-09]
 milestone: M3
 request-from: environment
