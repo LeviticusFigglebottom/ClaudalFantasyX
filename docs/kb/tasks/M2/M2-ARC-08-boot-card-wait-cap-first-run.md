@@ -2,8 +2,8 @@
 id: M2-ARC-08
 title: The boot card's 10 s wait cap is within 0.5 s of a fresh install's first-run warm-up (title can reveal mid-warm-up)
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a23fdd18373ec5031"
 reviewer: rendering
 depends_on: [M2-ARC-03, M1-RND-29]
 milestone: M2

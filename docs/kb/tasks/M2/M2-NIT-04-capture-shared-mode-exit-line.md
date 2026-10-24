@@ -2,8 +2,8 @@
 id: M2-NIT-04
 title: capture.sh logs the non-zero exit line in shared mode too (review-sweep-R on M1-QA-10)
 role: qa
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a23fdd18373ec5031"
 reviewer: lead
 depends_on: [M1-QA-10]
 milestone: M2
