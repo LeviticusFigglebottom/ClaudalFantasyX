@@ -142,6 +142,8 @@ func _set_key(scene: Node, key: String, shadow: bool, at: Vector3) -> void:
 	# A light shines down its -Z: put it KEY_DISTANCE back along the sun's direction from the mouth.
 	light.global_transform = Transform3D(sun.global_basis, at + sun.global_basis.z * KEY_DISTANCE)
 	sun.visible = false
+	# M1-RND-26: the bounce pass draws only while a positional light reaches the mouth.
+	CharacterShaderTiers.refresh_bounce_passes(scene)
 
 
 func _set_variant(mouth: Array, variant: String) -> void:

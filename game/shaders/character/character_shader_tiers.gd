@@ -22,6 +22,10 @@ const OWNER_META := &"hymn_tier_owner"
 const MOUTH_FAMILY := "mouth"
 const MOUTH_BOUNCE_SHADER := "res://game/shaders/character/character_mouth_bounce.gdshader"
 const PARAM_BOUNCE_PASS := &"cavity_bounce_pass"
+## M1-RND-26: a mouth material keeps its bounce pass here and draws it (next_pass) only while a positional
+## light can reach it. A transparent draw, even one adding nothing, changes how FSR2 resolves the pixels under
+## it (the teeth edges went softer at High under directional light alone).
+const BOUNCE_META := &"hymn_mouth_bounce"
 
 static var _data: Dictionary = {}
 
@@ -141,7 +145,66 @@ static func apply_to_tree(root: Node, tier: String) -> int:
 			changed += _visit(src, tier, root_id, done)
 			if done[src] != src:
 				mi.set_surface_override_material(i, done[src] as Material)
+	refresh_bounce_passes(root)
 	return changed
+
+
+## Draws each mouth bounce pass under `root` only while a visible omni or spot light has the mouth within its
+## range (M1-RND-26), else hands the bounce back to the base pass (cavity_bounce_pass off): with directional
+## light alone the pass adds nothing but still changed FSR2's resolve. apply_to_tree calls it; call it again
+## when a positional light near the cast appears, moves or goes (a stage, the cutscene key, a carried lamp).
+## Returns how many passes it left drawing.
+static func refresh_bounce_passes(root: Node) -> int:
+	var scope: Node = root.get_tree().root if root.is_inside_tree() else root
+	var lights: Array[Light3D] = []
+	for n in scope.find_children("*", "Light3D", true, false):
+		if (n is OmniLight3D or n is SpotLight3D) and (n as Light3D).is_visible_in_tree():
+			lights.append(n as Light3D)
+	var on_count := 0
+	var stack: Array[Node] = [root]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		stack.append_array(node.get_children())
+		var mi := node as MeshInstance3D
+		if mi == null or mi.mesh == null:
+			continue
+		var mats: Array[Material] = [mi.material_override]
+		for i in mi.mesh.get_surface_count():
+			mats.append(mi.get_surface_override_material(i))
+		var reached := _positional_reaches(lights, mi)
+		for m in mats:
+			if m != null and m.has_meta(BOUNCE_META):
+				set_bounce_enabled(m, reached)
+				on_count += 1 if reached else 0
+	return on_count
+
+
+## Whether any of `lights` has the mesh's bounds within its range.
+static func _positional_reaches(lights: Array[Light3D], mesh: MeshInstance3D) -> bool:
+	if lights.is_empty():
+		return false
+	var box := mesh.global_transform * mesh.get_aabb()
+	for l in lights:
+		var r := (l as OmniLight3D).omni_range if l is OmniLight3D else (l as SpotLight3D).spot_range
+		var p := l.global_position
+		var nearest := p.clamp(box.position, box.end)
+		if p.distance_to(nearest) <= r:
+			return true
+	return false
+
+
+## Draws (next_pass) or hides `material`'s stored bounce pass; hidden, the base pass keeps the positional
+## bounce itself (cavity_bounce_pass false). No-op for a material without one.
+static func set_bounce_enabled(material: Material, on: bool) -> void:
+	var base := material as ShaderMaterial
+	if base == null or not base.has_meta(BOUNCE_META):
+		return
+	var bounce := base.get_meta(BOUNCE_META) as Material
+	var want: Material = bounce if on else null
+	if base.next_pass != want:
+		base.next_pass = want
+	if base.get_shader_parameter(PARAM_BOUNCE_PASS) != on:
+		base.set_shader_parameter(PARAM_BOUNCE_PASS, on)
 
 
 ## True when `material` is a copy apply_to_tree made for the tree rooted at `root_id`. The meta
@@ -173,7 +236,7 @@ static func needs_bounce_pass(material: Material) -> bool:
 	var sm := material as ShaderMaterial
 	if sm == null or family_of(sm.shader) != MOUTH_FAMILY:
 		return false
-	return not is_bounce_pass(sm.next_pass) or sm.get_shader_parameter(PARAM_BOUNCE_PASS) != true
+	return not (sm.has_meta(BOUNCE_META) and is_bounce_pass(sm.get_meta(BOUNCE_META) as Material))
 
 
 static func is_bounce_pass(material: Material) -> bool:
@@ -198,6 +261,6 @@ static func attach_bounce_pass(material: Material) -> bool:
 		var value: Variant = base.get_shader_parameter(name)
 		if value != null:
 			bounce.set_shader_parameter(name, value)
-	base.next_pass = bounce
-	base.set_shader_parameter(PARAM_BOUNCE_PASS, true)
+	base.set_meta(BOUNCE_META, bounce)
+	set_bounce_enabled(base, true)
 	return true

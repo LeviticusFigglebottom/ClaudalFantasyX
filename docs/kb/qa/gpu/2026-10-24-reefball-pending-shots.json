@@ -1,0 +1,7 @@
+{"defaults": {"camera": "default", "resolution": [960, 540], "settle_frames": 30, "seed": 1, "threshold_rmse": 0.008},
+ "shots": [
+  {"id": "reefball_outside", "scene": "res://game/levels/_tests/reefball/reefball_test.tscn", "camera": "Cameras/Outside"},
+  {"id": "reefball_inside", "scene": "res://game/levels/_tests/reefball/reefball_test.tscn", "camera": "Cameras/Inside"},
+  {"id": "reefball_lookup", "scene": "res://game/levels/_tests/reefball/reefball_test.tscn", "camera": "Cameras/LookUp"},
+  {"id": "reefball_crossing", "scene": "res://game/levels/_tests/reefball/reefball_test.tscn", "camera": "Cameras/Crossing"}
+ ]}
