@@ -5,21 +5,31 @@ Environment-art track, cloud session `session_01QmWUfYxd8DMg7XM3MyR6ps`, branch 
 Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to `claude/m2-slice` with a swap-in note here. Art Director sign-offs. I don't edit m2-slice's scenes (`game/levels/ch02/**`, `ch03/**`) except through a request task.
 
 ## Now
-- **Claimed (on this branch):** M2-ENV-03 (Shell Shrine interior kit), M1-ENV-10 (kit and import LOD chain), M2-ART-01, M2-ART-02, M2-ART-03 (Art sign-offs).
-- **Coordination:** m2-slice's log said an m2-slice subagent had ENV-03. I messaged m2-slice (2026-10-24) proposing the split: env-art builds the kit (assets, materials, drivable nodes, swap-in note); m2-slice keeps the `ch03/shell_shrine` level swap, bakes and level shots. If m2-slice already committed kit work I build on it.
+- **Done (merge-ready):**
+  - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
+  - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
+- **In progress (worktree agents):** M2-ENV-03 (Shell Shrine kit), M1-ENV-10 (LOD chain; running its shot gate), M2-ENV-07 (real banyan and windbreak trees, replacing the two PLACEHOLDER trees).
+- **Coordination:** m2-slice's log said an m2-slice subagent had ENV-03. I messaged m2-slice (2026-10-24) proposing the split: env-art builds the kit (assets, materials, drivable nodes, swap-in note); m2-slice keeps the `ch03/shell_shrine` level swap, bakes and level shots. No reply yet. If m2-slice already committed kit work I build on it.
+- **Un-pushed state:** none (worktree agents' branches are local until merged here).
+
+## For the Lead
+- **Merging this branch changes the five haluna baselines** (intended, viewed). m2-slice's moved Haluna scenes use the same kit, so their haluna shots will match these baselines once both land.
+- `haluna_h10_dock_night` (m2-slice's ENV-02) isn't on the integration branch yet, so it wasn't re-captured here; it uses the same kit stone and will drift a little when both land. I'll re-capture it after the integration merge.
 
 ## Swap-in notes for m2-slice
-(none yet)
+- **Haluna kit pass 1 (M2-ENV-06):** nothing to do. Same piece names, same materials and slots; `env_ground.gdshader` gained a `breakup` uniform group with defaults (no scene edit needed).
 
 ## Exact next step
-Build the shrine kit, the LOD chain fix and the three sign-offs in parallel worktrees; then the Haluna final-quality pass (queue item 3).
+Merge each worktree agent's branch as it reports (ENV-10, ENV-03, ENV-07), gate it, push. Meanwhile: ENV-06 pass 2 (stilt-house wall frame in village.py, a look at the dock and props), then queue item 5.
 
 ## Queue
-1. M2-ENV-03: Shell Shrine interior kit (doing)
-2. M1-ENV-10: LOD chain in the kit dresser and import rules (doing)
-3. Haluna to final quality (textures, materials, dressing, props, the causeway route)
-4. Art sign-offs: M2-ART-01, M2-ART-02, M2-ART-03 (doing)
+1. M2-ENV-03: Shell Shrine interior kit (agent)
+2. M1-ENV-10: LOD chain in the kit dresser and import rules (agent)
+3. M2-ENV-06: Haluna kit to final quality (pass 1 done; pass 2 next) + M2-ENV-07 trees (agent)
+4. ~~Art sign-offs M2-ART-01/02/03~~ (done)
 5. The slice's one route (village → causeway head) at final quality; greybox flagged by the m2-slice playthrough
 
 ## History
+- 2026-10-24: M2-ENV-06 pass 1 (6436775). Gates: verify_blender_builds haluna_kit 31 identical; Godot environment 11, haluna 13, post_import 17; validate_data; taskboard --check; the five haluna shots captured, viewed and re-approved.
+- 2026-10-24: merged the Art sign-offs (3c3fa19, aa3b4ca, f067ba4). Gates: validate_data, taskboard --check, palette.json parses (docs only, no Godot run).
 - 2026-10-24: set up the branch and toolchain; claimed the queue's tasks.
