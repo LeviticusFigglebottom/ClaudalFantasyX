@@ -6,12 +6,15 @@ extends Node
 ## `--to` through SceneRouter, then prints one line "SCENE_SWAP_PROBE <json of last_swap_stats>"
 ## and quits (0 = measured, 1 = no measurement). --legacy turns the router's hitch fixes off, so
 ## the M0 behaviour can be measured on the same build. tests/unit/test_scene_router_swap.gd runs it.
+## --launch (M2-ARC-03) measures the launch instead: it enters `from` as the game boots and prints the
+## stats of the boot card's reveal (SceneRouter.measure_reveal) once its visible window ends; no change.
 
 const BUDGETS_PATH := "res://game/data/debug/perf_budgets.json"
 const SECTION := "scene_swap"
 const OUTPUT_TAG := "SCENE_SWAP_PROBE"
 const ARG_TO := "--to="
 const ARG_LEGACY := "--legacy"
+const ARG_LAUNCH := "--launch"
 const EXIT_OK := 0
 const EXIT_FAILED := 1
 
@@ -38,11 +41,17 @@ func _run() -> void:
 	var cfg := budgets()
 	var to := ""
 	var legacy := false
+	var launch := false
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with(ARG_TO):
 			to = arg.trim_prefix(ARG_TO)
 		elif arg == ARG_LEGACY:
 			legacy = true
+		elif arg == ARG_LAUNCH:
+			launch = true
+	if launch and not cfg.is_empty():
+		_run_launch(cfg)
+		return
 	if to == "" or cfg.is_empty():
 		push_error("SceneSwapProbe: needs %s<scene> and a readable %s" % [ARG_TO, BUDGETS_PATH])
 		get_tree().quit(EXIT_FAILED)
@@ -65,3 +74,16 @@ func _run() -> void:
 	stats["legacy"] = legacy
 	print("%s %s" % [OUTPUT_TAG, JSON.stringify(stats)])
 	get_tree().quit(EXIT_OK if stats.has("max_frame_ms") else EXIT_FAILED)
+
+
+## --launch: the reveal of `from` entered as the main scene (no SceneRouter change runs).
+func _run_launch(cfg: Dictionary) -> void:
+	SceneRouter.last_swap_stats = {}
+	get_tree().change_scene_to_file(str(cfg.get("from", "")))
+	var frames_left := int(cfg.get("timeout_frames", 0))
+	while frames_left > 0 and not SceneRouter.last_swap_stats.has("visible_complete"):
+		frames_left -= 1
+		await get_tree().process_frame
+	var stats := SceneRouter.last_swap_stats
+	print("%s %s" % [OUTPUT_TAG, JSON.stringify(stats)])
+	get_tree().quit(EXIT_OK if stats.has("visible_complete") else EXIT_FAILED)
