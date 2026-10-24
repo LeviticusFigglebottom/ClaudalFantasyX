@@ -33,6 +33,11 @@
       "low": "res://game/shaders/character/character_cloth_sheer_low.gdshader",
       "medium": "res://game/shaders/character/character_cloth_sheer_medium.gdshader",
       "high": "res://game/shaders/character/character_cloth_sheer.gdshader"
+    },
+    "mouth": {
+      "low": "res://game/shaders/character/character_mouth_low.gdshader",
+      "medium": "res://game/shaders/character/character_mouth_medium.gdshader",
+      "high": "res://game/shaders/character/character_mouth.gdshader"
     }
   },
   "single_tier": [

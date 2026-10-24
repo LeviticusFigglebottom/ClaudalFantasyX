@@ -201,6 +201,32 @@ Measured on a GPU (docs/kb/qa/gpu/2026-10-23-qa-05-asha.md): the diagonal bandin
     and cheek shadows away. Close-ups that need them need a dialogue key light with a short shadow range (a few
     metres, as the stage does) and bias 4.5 (M2 dialogue rig).
 
+## Mouth interior (M1-RND-21)
+
+The lips shadow an open mouth from every light, so with direct light alone the interior gets only ambient light and
+goes near-black (M1-QA-05c fault 2, grief). Every hero's **mouth bag, teeth and tongue use the `mouth` family**
+(`character_mouth{,_medium,_low}.gdshader`, body `character_mouth_body.gdshaderinc`). It's registered in
+character_shader_tiers.json and the prewarm registry.
+
+- **Material contract:** the values of the StandardMaterial3D it replaced.
+  - `col_albedo` and `tex_albedo`.
+  - `tex_orm`: R = occlusion, G = roughness.
+  - `roughness`, with `roughness_from_orm` (0 = the uniform alone).
+  - `specular` (F0 = 0.08 ×) and `ao_light_affect`.
+- **Cavity bounce:** per light, the shader adds `col_cavity_bounce × cavity_bounce × LIGHT_COLOR / π`.
+  - It's unshadowed, because the lips that bounce the light are lit even where the interior isn't.
+  - It's faded by the baked occlusion (`mix(1, ao, cavity_occlusion)`), by how far the light is behind the face
+    (`0.5 + 0.5 · L·V`, so a rim light from behind adds almost nothing), and, for positional lights, by
+    `ATTENUATION`.
+  - Defaults: #C79A8C, 0.4, 0.5. A saturated lip red turned the teeth orange.
+- **Tiers:** the bounce is on every tier. Low drops only the GGX lobe from lights.
+- **Measured** on the GPU (`docs/kb/qa/gpu/2026-10-23-rnd-21-mouth-fill.md`), over the grief interior pixels:
+  - The median luminance rises 0.0121 → 0.0174 (High) and 0.0121 → 0.0180 (Low).
+  - The share below 0.01 halves: 0.30 → 0.16 (High) and 0.29 → 0.14 (Low).
+  - Closed-mouth shots don't change.
+- **The teeth still read khaki-brown,** even under a neutral bounce. That's the atlas teeth patch's albedo (QA-05c
+  fault 3, M1-CHR-11), not this term.
+
 ## Cost estimates
 
 **GPU (estimates from operation counts, not measured).** Per lit pixel, per light, compared with a StandardMaterial3D:

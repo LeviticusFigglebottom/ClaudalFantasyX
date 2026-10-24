@@ -33,6 +33,8 @@ const REQUIRED := {
 	"eye": ["tex_iris", "ior", "anterior_depth_m", "iris_radius_m", "pupil_dilation"],
 	"cloth": ["tex_cloth_mask", "sheen_roughness", "gold_anisotropy", "lacquer_coat_roughness", "verse_count"],
 	"cloth_sheer": ["tex_band_id", "verse_count", "sleeve_dissolve", "transmission", "wind_response"],
+	"mouth":
+	["col_albedo", "tex_orm", "roughness", "specular", "ao_light_affect", "cavity_bounce", "col_cavity_bounce"],
 }
 
 
@@ -413,3 +415,22 @@ func _preint(e: Dictionary, x: float, u: float) -> Vector3:
 
 func _host() -> Node:
 	return (Engine.get_main_loop() as SceneTree).current_scene
+
+
+func test_hero_mouth_interiors_use_the_mouth_family_with_a_cavity_bounce() -> void:
+	# M1-RND-21: the lips shadow an open mouth from every light, so the interior needs the bounce term
+	# (on every tier, not gated by quality) or grief goes near-black.
+	var family: Array[String] = []
+	for tier: String in CharacterShaderTiers.tiers():
+		family.append(CharacterShaderTiers.shader_path("mouth", tier))
+	for mat_name: String in ["mouth", "teeth", "tongue"]:
+		var mat := load("res://assets/characters/asha/materials/%s.tres" % mat_name) as ShaderMaterial
+		assert_true(mat != null and family.has(mat.shader.resource_path), "Asha's %s uses the mouth family" % mat_name)
+	var body := FileAccess.get_file_as_string("res://game/shaders/character/character_mouth_body.gdshaderinc")
+	var light := body.substr(body.find("void light()"))
+	var bounce := light.find("cavity_bounce")
+	assert_true(bounce > 0, "light() adds the cavity bounce")
+	assert_false(light.substr(0, bounce).contains("#if"), "the bounce is on every tier")
+	var decl := body.substr(body.find("uniform float cavity_bounce"))
+	var default := float(decl.substr(decl.find("=") + 1, decl.find(";") - decl.find("=") - 1).strip_edges())
+	assert_true(default > 0.0, "the bounce is on by default")
