@@ -2,7 +2,7 @@
 id: M1-RND-20
 title: Diagonal striations at Asha's smiling mouth corner (key-light shadow terminator)
 role: rendering
-status: review
+status: done
 reviewer: character
 owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-20-smile-terminator)"
 depends_on: [M1-CHR-10]
@@ -68,3 +68,9 @@ Report: `docs/kb/qa/gpu/2026-10-23-rnd-20-smile-terminator.md`.
     - **S2: re-approve all ten asha_* baselines in one commit.** Seven pass only because the drift is under 0.008: `sleeve_s4` is at 0.00798, and the next unrelated change will tip it.
     - **S3:** asha_stage.tscn is Character-owned (ownership.md:21). The task text gave the shadow settings to the PC session, so this is fine, but record the cross-role edit in the ownership notes or the handoff.
   - **Baseline:** **approve re-approving `asha_face_stylized_compare`** (0.01124) and the other nine asha_* shots. I looked at each one, and the only change is the shadow edge at the corner, the nose and the chin.
+- 2026-10-24 review-sweep-O (character): **approve.** Sweep-N's should-fixes are done:
+  - **S1:** character_shading.md:191-198 "Shadows on characters" carries the 4.5 stage value, the texel-size rule and the Haluna measurement (the zone sun stays at 1.0). M2-FP-10 (the dialogue key light, bias 4.5) carries it into the game.
+  - **S2:** the Lead re-approved all ten asha_* baselines in one commit (2ce7045).
+  - **S3** (recording the cross-role edit to Character-owned asha_stage.tscn) isn't done. It's one line, filed in M1-RND-23.
+  - **What I viewed:** `asha_face_smile` at full size. There are no diagonal striations at the corner.
+  - **Cross-check:** M2-FP-09 on claude/first-playable set the Haluna and first_verse suns to bias 3.0. This task's follow-up measured that this only erases the nose shadow at Haluna's cascade. M2-FP-11 undoes it at merge.
