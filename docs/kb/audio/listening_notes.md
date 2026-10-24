@@ -550,3 +550,10 @@ you already know (`assets/audio/sfx/battle/hit_*`): play a hit right after its a
 - **Ilun:** `vowbound_beckon` (Asha's call: a breath rising a fifth), `vowbound_rise` and `vowbound_rise_long` (the
   first call's slow rise), `vowbound_sink` (dismissed), `vowbound_fall` (struck down, drawn under). Does the fall
   sound sadder than the sink?
+
+## M3: battle stings (M3-AUD-18)
+
+`sfx/battle/sting_tideline.ogg` (the tide line rising before a battle), `sting_bark.ogg` (a breath under the lead-in
+line), `sting_boss.ogg` (a boss's title card) and `sting_boss_bell.ogg` (the Drownbell's). Does the boss sting read as
+"this one matters" without crowding the battle music's first bar (the music dips 5 dB under it for 3.5 s)? Is the
+Drownbell's drawn-in swell too long before the toll (1.1 s)?

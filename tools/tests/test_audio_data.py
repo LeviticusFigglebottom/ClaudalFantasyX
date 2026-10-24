@@ -359,3 +359,28 @@ def load_tests(loader: unittest.TestLoader, tests: unittest.TestSuite, pattern: 
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BattleStingsTest(unittest.TestCase):
+    """M3-AUD-18: battle_stings.json (data_check.sting_errors). The shipped table passes; rows are sfx rows, a duck is
+    a mix.json duck held for a time."""
+
+    DOC = {"events": {"boss_intro": {"sfx": "a", "by_arg": {"drownbell": "b"}, "duck": "boss_intro", "duck_sec": 3.0}},
+           "reduced": {"a": "b"}}
+
+    def test_good_and_shipped(self) -> None:
+        self.assertEqual(dc.sting_errors(self.DOC, {"a", "b"}, {"boss_intro"}), [])
+        files = dc.load_files(ROOT)
+        self.assertIn(dc.BATTLE_STINGS, files)
+        rows = set(dc.merged_sfx(files)["sfx"])
+        ducks = set(files[dc.MIX]["ducks"])
+        self.assertEqual(dc.sting_errors(files[dc.BATTLE_STINGS], rows, ducks), [])
+
+    def test_bad_rows_and_ducks(self) -> None:
+        bad = copy.deepcopy(self.DOC)
+        bad["events"]["boss_intro"]["by_arg"]["drownbell"] = "zz"
+        bad["events"]["boss_intro"]["duck_sec"] = 0
+        bad["reduced"]["a"] = "yy"
+        errs = dc.sting_errors(bad, {"a", "b"}, set())
+        for frag in ("zz is not an sfx row", "not a mix.json duck", "duck_sec", "yy is not an sfx row"):
+            self.assertTrue(any(frag in e for e in errs), (frag, errs))

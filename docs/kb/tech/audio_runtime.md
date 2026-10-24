@@ -355,3 +355,19 @@ from `game/data/audio/choreo_sfx.json` (rows in `sfx_choreo.json`, Combat bus, f
 - **After the merge, verify:** the real BattleChoreo's `beat`/`contact` signatures match (validate_data does it once
   the class exists; drop `pending`), the whoosh crest against a live melee at 1x and 2x, and that a retry leaves one
   ChoreoAudio. Kerrid has no row in characters.json yet; his `anchor_cleaver` accent waits for him.
+
+## Battle stings (M3-AUD-18)
+
+battle-presentation announces three moments on `EventBus.dialogue_event(event, args)` (docs/kb/tech/battle_presentation.md
+on claude/battle-presentation). The director connects that signal to a `StingAudio` (`game/audio/sting_audio.gd`) in
+`_ready` and disconnects on exit; `game/data/audio/battle_stings.json` names what each plays:
+
+| Event | Args | Sting |
+|---|---|---|
+| `battle_stinger` | `[encounter]` | `sting_tideline`: surf climbing, bubbles thickening, a crest that spills (2.4 s, −18) |
+| `battle_bark` | `[encounter, line_key, speaker_key]` | `sting_bark`: a low breath of water under the line (1.8 s, −22) |
+| `boss_intro` | `[encounter_id, title_key]` | `sting_boss`: low gong and drum, a struck open fifth, a darkening wash (4 s, −16); the Drownbell's `by_arg` row `sting_boss_bell` draws the water in, then a near, dry toll (5.3 s). The `boss_intro` duck (mix.json, Music −5 dB) holds 3.5 s under the card. |
+
+Reduced audio swaps the boss stings for `_soft` versions without sub-bass. The rows are on the Combat bus
+(`sfx_battle.json`); the generator is `assets_src/sfx/battle_stings.py` (it reuses battle_sfx.py's helpers). Tests:
+`tests/unit/test_battle_stings.gd`, `tools/tests/test_audio_data.py` `BattleStingsTest`.

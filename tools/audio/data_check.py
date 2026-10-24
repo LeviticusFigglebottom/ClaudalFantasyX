@@ -22,6 +22,7 @@ FOOTSTEPS = "game/data/audio/footsteps.json"
 VOICES = "game/data/audio/voices.json"  # M3-AUD-07
 REEFBALL_HOOKS = "game/data/audio/reefball_hooks.json"  # M3-AUD-17
 CHOREO_SFX = "game/data/audio/choreo_sfx.json"  # M3-AUD-13
+BATTLE_STINGS = "game/data/audio/battle_stings.json"  # M3-AUD-18
 CHOREO = "game/data/battle/choreo.json"  # the battle-presentation track's styles (once merged)
 SPEAKERS = "game/data/dialogue/speakers.json"
 CLASSES = "@classes"  # load_files: {global class name: [its declared signals]} from game/**/*.gd
@@ -369,6 +370,34 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
     if REEFBALL_HOOKS in files:
         all_beds = set(amb_beds) | set(((files.get(MUSIC) or {}).get("ambience") or {}).keys())
         errs += reefball_hook_errors(files[REEFBALL_HOOKS], ids, all_beds, files.get(CLASSES))
+    if BATTLE_STINGS in files:
+        errs += sting_errors(files[BATTLE_STINGS], ids, set(((files.get(MIX) or {}).get("ducks") or {}).keys()))
+    return errs
+
+
+def sting_errors(doc: object, ids: set[str], ducks: set[str]) -> list[str]:
+    """battle_stings.json (M3-AUD-18): every row an sfx row, every duck a mix.json duck held for a time > 0."""
+    w0 = BATTLE_STINGS
+    if not isinstance(doc, dict):
+        return [f"{w0}: must be an object"]
+    errs: list[str] = []
+    for ev, row in (doc.get("events") or {}).items():
+        w = f"{w0} events.{ev}"
+        if not isinstance(row, dict):
+            errs.append(f"{w}: must be an object")
+            continue
+        for sid in [row.get("sfx")] + list((row.get("by_arg") or {}).values()):
+            if sid not in ids:
+                errs.append(f"{w}: {sid} is not an sfx row")
+        if "duck" in row:
+            if row["duck"] not in ducks:
+                errs.append(f"{w}.duck: {row['duck']} is not a mix.json duck")
+            if not _num(row.get("duck_sec")) or row["duck_sec"] <= 0:
+                errs.append(f"{w}.duck_sec: a duck needs a time > 0")
+    for k, v in (doc.get("reduced") or {}).items():
+        for sid in (k, v):
+            if sid not in ids:
+                errs.append(f"{w0} reduced: {sid} is not an sfx row")
     return errs
 
 
@@ -466,7 +495,7 @@ def load_files(root: Path) -> dict[str, object]:
     out = {}
     extra = [str(p.relative_to(root)) for p in sorted((root / SFX_DIR).glob("sfx_*.json"))]
     for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, AMBIENCE, FOOTSTEPS, ENCOUNTERS, VFX_EFFECTS,
-                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO] + extra:
+                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS] + extra:
         p = root / rel
         if p.is_file():
             out[rel] = json.loads(p.read_text(encoding="utf-8"))

@@ -48,6 +48,12 @@
       "buses": {
         "Ambience": -3.0
       }
+    },
+    "boss_intro": {
+      "sec": 0.3,
+      "buses": {
+        "Music": -5.0
+      }
     }
   },
   "music": {

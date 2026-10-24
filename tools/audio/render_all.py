@@ -171,6 +171,10 @@ JOBS = [
      + ["choreo/flood_brace_1.ogg", "choreo/flood_brace_2.ogg"]
      + [f"choreo/{s}.ogg" for s in ("vowbound_beckon", "vowbound_rise", "vowbound_rise_long", "vowbound_sink",
                                     "vowbound_fall")], "sfx"),
+    # M3-AUD-18: stings on the battle presentation's announcements (the tide line, the bark, boss intros)
+    ("assets_src/sfx/battle_stings.py", "assets/audio/sfx",
+     [f"battle/sting_{s}.ogg" for s in ("tideline", "bark", "boss", "boss_soft", "boss_bell", "boss_bell_soft")],
+     "sfx"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
