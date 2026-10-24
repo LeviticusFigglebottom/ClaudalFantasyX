@@ -57,11 +57,24 @@
     "item_style": "item",
     "reaction": {
       "doc": "The target's reaction on the contact beat. damage: recoil_m away from the actor and tilt_deg back, out and back over sec; heal: a lift_m rise; miss: a sidestep of dodge_m. clip names the model clip tried first (the clip contract).",
-      "damage": {"sec": 0.32, "recoil_m": 0.28, "tilt_deg": 9.0, "clip": "hit"},
+      "damage": {"sec": 0.32, "recoil_m": 0.28, "tilt_deg": 9.0, "clip": "hit", "clip_recoil_k": 0.5},
       "heal": {"sec": 0.4, "lift_m": 0.08, "clip": "ready"},
       "miss": {"sec": 0.3, "dodge_m": 0.32, "clip": "dodge"}
     },
     "ko": {"delay_sec": 0.12, "collapse_sec": 0.5, "tilt_deg": 62.0, "drop_m": 0.18, "clip": "ko"},
+    "spacing": {
+      "doc": "M3-BPR-402: a melee run stops so the actor, at the end of its lunge, keeps its radius + each body's radius (battle_sandbox.json stand_ins radius) + clearance_m from everyone in its path: heroes and creatures never interpenetrate.",
+      "clearance_m": 0.12
+    },
+    "impact": {
+      "doc": "M3-BPR-401 BattleImpact, the battle feel on the contact beat. A hit's strength (0..1) is its damage over the target's max HP, 1 at full_frac; a crit adds crit_bonus. Hit-stop: from heavy_strength, the choreography clock and the actor's and targets' clips hold for hit_stop_frames [lo, hi] (lerped by strength) at stop_fps. Shake: from shake_min_strength, BattleStage.shake at shake_scale [lo, hi]. Flash: a warm light pulse at the hardest-hit target, energy [lo, hi] capped at energy_cap, range_m, at height_frac of its height, back to dark over sec. recoil_scale [lo, hi] scales each damage reaction (and reaction.damage.clip_recoil_k a model with its own hit clip). ko_slowmo: the blow that fells the last foe slows the clock to factor for sec from lead_sec before the collapse. reduced_motion: shake_scale (0 = none), flash_scale, slowmo_factor.",
+      "full_frac": 0.35, "crit_bonus": 0.3, "heavy_strength": 0.45, "hit_stop_frames": [2, 4], "stop_fps": 60.0,
+      "shake_min_strength": 0.3, "shake_scale": [0.6, 1.6], "recoil_scale": [0.75, 1.45],
+      "flash": {"color": "#FFE4BE", "energy": [0.8, 2.4], "energy_cap": 2.4, "range_m": 3.2, "height_frac": 0.55,
+                "sec": 0.18},
+      "ko_slowmo": {"factor": 0.35, "lead_sec": 0.08, "sec": 0.5},
+      "reduced_motion": {"shake_scale": 0.0, "flash_scale": 0.5, "slowmo_factor": 0.6}
+    },
     "enter": {"doc": "A fighter swapped or called in walks onto its mark from back_m behind it.", "back_m": 1.4,
               "sec": 0.34, "clip": "ready"},
     "accent_doc": "M2-BPR-04 accents (BattleChoreo.accent): a short overlay on a fighter's root, out and back over sec. lift_m/crouch_m up/down; recoil_m and tilt_deg back, away from the other side (negative leans in); sway_deg side to side, sways times; clip (optional) a contract clip.",

@@ -543,3 +543,37 @@ creature actor could play a `ready` or roar clip at the hold when the creatures 
 
 - **Audio hook (boss intros):** as an intro starts it announces `EventBus.dialogue_event("boss_intro",
   [encounter_id, title_key])`, the same channel as the stinger's `battle_bark`, so audio can play a sting.
+
+## Impact: battle feel (M3-BPR-401)
+The human's note: battles looked primitive. `BattleImpact` (`game/battle/scene/battle_impact.gd`, a child of
+BattleChoreo, listen-only) adds weight on the contact beat. Every number is in `choreo.json` `impact`.
+- **Strength.** A hit's weight, 0..1: its damage over the target's max HP, 1 at `full_frac` (0.35); a crit adds
+  `crit_bonus`. A miss or a heal is 0. BattleChoreoPlan stores each damage reaction's `weight` and the plan's peak
+  `impact`.
+- **Hit-stop.** From `heavy_strength`, the contact holds the choreography clock and the actor's and targets' clips
+  for `hit_stop_frames` [2, 4] (lerped by strength) at `stop_fps` 60, divided by the battle speed. A seek (a
+  freeze-frame) carries none.
+- **Shake.** From `shake_min_strength`, `BattleStage.shake(speed, scale)` at `shake_scale` [0.6, 1.6] of its base
+  amplitude. The old crit-only shake now runs only for instant pacing (BattleFloats with no sequence).
+- **Flash.** A warm OmniLight3D pulse at the hardest-hit target (`flash`: colour, energy [lo, hi] capped at
+  `energy_cap`, range, height, `sec` back to dark, eased out). Never a screen flash; fog energy 0 (the fog rule). On
+  a held clock it follows the choreography time, so freeze-frames are deterministic.
+- **Recoil.** Each damage reaction's recoil and tilt scale by `recoil_scale` [0.75, 1.45]; a model that plays its own
+  hit clip still gets `reaction.damage.clip_recoil_k` (0.5) of the root push under it.
+- **KO slow-mo.** The blow that fells the last foe slows the clock to `ko_slowmo.factor` (0.35) for `sec` from
+  `lead_sec` before the collapse.
+- **Hand-off.** `BattleChoreo.remaining_sec` adds `BattleImpact.extra_sec` (the coming hit-stop and the rest of the
+  slow-mo), so the controller waits for the stretched sequence.
+- **Reduced motion.** No shake (`reduced_motion.shake_scale` 0), the flash at `flash_scale` 0.5, a gentler slow-mo
+  (`slowmo_factor` 0.6). Hit-stop stays: it is a pause, not motion.
+- **Damage numbers** already pop (6% in 80 ms) and ease out on the rise (DamageNumber, the UI track's, to
+  docs/kb/art/ui.md §5); they land on the contact beat. Element particles on contact are the PC track's BattleVfx.
+- **Tests:** `tests/unit/test_battle_impact.gd`; data checks `tools/validate_choreo.py` `impact_errors`.
+
+## Spacing: no overlaps (M3-BPR-402)
+A melee run used to stop a fixed `stop_short_m` short of the target's centre, so a big creature (the Drownbell,
+radius 0.85) or the lunge put the actor inside it. `BattleChoreoPlan.melee_gap` now also stops it so that, at the end
+of its lunge, the actor keeps its radius + each body's radius (`battle_sandbox.json` `stand_ins` radius) +
+`spacing.clearance_m` from every living fighter in its path (a body off the path changes nothing). The test samples a
+hero on a creature and a creature on a hero across the whole sequence and asserts no two footprints overlap. With
+the real hero rigs (claude/hero-integration), set each hero's `radius` to its footprint; the rule follows.

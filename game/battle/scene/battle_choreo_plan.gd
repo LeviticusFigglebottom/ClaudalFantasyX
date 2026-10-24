@@ -40,6 +40,7 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 	var targets: Array[StringName] = []
 	var reactions: Array[Dictionary] = []
 	var kos: Array[StringName] = []
+	var peak := 0.0
 	var stagger := float(st.get("stagger_sec", 0.0))
 	for hit: Dictionary in result.hits:
 		var tid := StringName(str(hit.get("target_id", "")))
@@ -55,8 +56,11 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 		)
 		if kind == "" and amount < 0:
 			kind = BattleChoreo.REACT_HEAL
+		var blow := BattleImpact.strength(data, engine, hit)  # M3-BPR-401: the blow's weight
+		peak = maxf(peak, blow)
 		if kind != "":
-			reactions.append({"target": tid, "kind": kind, "at": c + stagger * reactions.size()})
+			var w := BattleImpact.recoil_weight(data, blow) if kind == BattleChoreo.REACT_DAMAGE else 1.0
+			reactions.append({"target": tid, "kind": kind, "at": c + stagger * reactions.size(), "weight": w})
 		var t := engine.find(tid) if engine != null else null
 		if amount > 0 and t != null and t.hp <= 0 and not kos.has(tid):
 			kos.append(tid)
@@ -67,6 +71,7 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 		"targets": targets,
 		"reactions": reactions,
 		"kos": kos,
+		"impact": peak,
 		"approach_end": a,
 		"contact": c,
 		"strike_end": a + s,
@@ -95,3 +100,24 @@ static func retime(data: Dictionary, plan: Dictionary) -> void:
 	if not kos.is_empty():
 		total = maxf(total, float(plan["ko_at"]) + float(ko.get("collapse_sec", 0.0)))
 	plan["total"] = total
+
+
+## How far a melee run goes along `dir` from `from` (M3-BPR-402): stop_short_m short of the aim, and never so far
+## that the actor (radius `ra`), at the end of its lunge, comes within its radius + a body's radius + clearance_m
+## (choreo.json spacing) of any body in its path. `bodies`: [[position, radius], ...] of everyone else on the field.
+static func melee_gap(
+	data: Dictionary, st: Dictionary, from: Vector3, dir: Vector3, aim: Vector3, bodies: Array, ra: float
+) -> float:
+	var gap := BattleChoreo._flat_len(aim - from) - float(st.get("stop_short_m", 0.0))
+	var clear := float((data.get("spacing", {}) as Dictionary).get("clearance_m", 0.0)) + float(st.get("lunge_m", 0.0))
+	for b: Array in bodies:
+		var rel := (b[0] as Vector3) - from
+		rel.y = 0.0
+		var along := rel.dot(dir)
+		if along <= 0.0:
+			continue  # behind the actor
+		var side := (rel - dir * along).length()
+		var need := ra + float(b[1]) + clear
+		if side < need:
+			gap = minf(gap, along - sqrt(need * need - side * side))
+	return maxf(gap, 0.0)

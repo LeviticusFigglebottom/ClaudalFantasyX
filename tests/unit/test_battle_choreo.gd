@@ -306,7 +306,15 @@ func test_reduced_motion_shortens_the_run() -> void:
 	choreo.reduced_motion = true
 	ctl.act(&"attack", [foe])
 	var plan := choreo.current()
-	var full := (plan["from"] as Vector3).distance_to(_home_pos(foe)) - float(choreo.style("melee")["stop_short_m"])
+	var full := BattleChoreoPlan.melee_gap(
+		choreo.data,
+		choreo.style("melee"),
+		plan["from"],
+		plan["dir"],
+		plan["aim"],
+		choreo._bodies(&"rhen"),
+		choreo._radius(&"rhen")
+	)
 	var ran := (plan["from"] as Vector3).distance_to(plan["to"] as Vector3)
 	var k := float((BattleChoreo.load_data()["reduced_motion"] as Dictionary)["travel_scale"])
 	assert_between(ran, full * k - 0.01, full * k + 0.01)
