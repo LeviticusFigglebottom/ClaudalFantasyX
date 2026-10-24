@@ -115,6 +115,57 @@ class TestCommitted(unittest.TestCase):
         head_mats = {js["materials"][p["material"]]["name"] for p in head["primitives"]}
         self.assertTrue({"beard", "beard_grey"} <= head_mats, "the beard rides the Head's shapes")
 
+    def test_rig_extras(self):
+        """toma.md §9 (M2-CHR-04): the sash-tail chains (2 x 4), the pauldron hinge, the shield and the spear
+        prop bone are extra DEF-* joints with the right parents, after the 75 standard bones in their own order,
+        and vertices are weighted to each of them."""
+        js = glb_json(OUT / "toma.glb")
+        nodes = js["nodes"]
+        joints = [nodes[i]["name"] for i in js["skins"][0]["joints"]]
+        parent = {c: i for i, n in enumerate(nodes) for c in n.get("children", [])}
+        idx = {n.get("name"): i for i, n in enumerate(nodes)}
+        want = {"DEF-pauldron": "DEF-shoulder.L", "DEF-shield": "DEF-spine.003", "DEF-spear": "DEF-hand.R"}
+        for root in ("DEF-sash_tail_a", "DEF-sash_tail_b"):
+            chain = [root] + [f"{root}.{i:03d}" for i in range(1, 4)]
+            want[chain[0]] = "DEF-spine"
+            for a, b in zip(chain, chain[1:]):
+                want[b] = a
+        for name, par in want.items():
+            self.assertIn(name, joints)
+            self.assertEqual(nodes[parent[idx[name]]]["name"], par, name)
+        standard = [j for j in joints if j not in want]
+        self.assertEqual(len(standard), 75)
+        old = glb_json(OUT / "toma_lod1.glb")
+        lod_std = [old["nodes"][i]["name"] for i in old["skins"][0]["joints"] if old["nodes"][i]["name"] not in want]
+        self.assertEqual(standard, lod_std, "the LOD1 skeleton matches")
+        # every extra bone carries weights in the LOD0 file
+        import numpy as np
+
+        data = (OUT / "toma.glb").read_bytes()
+        jlen = struct.unpack("<I", data[12:16])[0]
+        blob = data[20 + jlen + 8:]
+
+        def read(acc_i: int) -> np.ndarray:
+            acc = js["accessors"][acc_i]
+            view = js["bufferViews"][acc["bufferView"]]
+            dt = {5121: np.uint8, 5123: np.uint16, 5126: np.float32}[acc["componentType"]]
+            off = view.get("byteOffset", 0) + acc.get("byteOffset", 0)
+            arr = np.frombuffer(blob, dtype=dt, count=acc["count"] * 4, offset=off).reshape(-1, 4)
+            return arr.astype(float) / (255.0 if dt == np.uint8 else 65535.0) if dt != np.float32 and \
+                acc.get("normalized") else arr
+
+        weighted = set()
+        for n in nodes:
+            if "mesh" not in n or "skin" not in n:
+                continue
+            for prim in js["meshes"][n["mesh"]]["primitives"]:
+                a = prim["attributes"]
+                if "JOINTS_0" not in a:
+                    continue
+                J, W = read(a["JOINTS_0"]), read(a["WEIGHTS_0"])
+                weighted |= {joints[int(j)] for j in np.unique(J[W > 1e-3])}
+        self.assertEqual(set(want) - weighted, set(), "every extra bone has vertices on it")
+
     def test_every_gltf_material_has_a_hero_material(self):
         mats = {m["name"] for m in glb_json(OUT / "toma.glb")["materials"]}
         have = {p.stem for p in (OUT / "materials").glob("*.tres")}
@@ -132,7 +183,7 @@ class TestCommitted(unittest.TestCase):
         from PIL import Image
 
         files = sorted((OUT / "textures").glob("*.png"))
-        self.assertEqual(len(files), 16)
+        self.assertEqual(len(files), 17)  # M2-CHR-04: + toma_shorthair.png
         for f in files:
             self.assertLess(f.stat().st_size, MAX_BYTES, f.name)
             with Image.open(f) as im:

@@ -174,11 +174,16 @@ def _blade_section(c: np.ndarray, side: np.ndarray, nrm: np.ndarray, w: float, t
     return np.array([c + side * w, c + nrm * th, c - side * w, c - nrm * th])
 
 
+def spear_grip(lm) -> np.ndarray:
+    """Where the right hand closes on the shaft (the spear's prop bone sits here, build_toma)."""
+    hand = lm.hands["R"]
+    return hand.wrist + hand.axis * hand.length * 0.32 - hand.dorsal * hand.thickness * 0.55
+
+
 def spear(lm, params: dict, cord_rect) -> Part:
     """Grounded at the right hand's grip, vertical; the hook faces away from his body (-X)."""
     part = Part("Spear")
-    hand = lm.hands["R"]
-    grip = hand.wrist + hand.axis * hand.length * 0.32 - hand.dorsal * hand.thickness * 0.55
+    grip = spear_grip(lm)
     L = float(params["spear_length_m"])
     base = np.array([grip[0], grip[1], 0.006])
     upv = np.array([0.0, 0.0, 1.0])

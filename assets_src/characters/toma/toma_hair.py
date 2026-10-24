@@ -2,20 +2,24 @@
 character_shading.md.
 
 * **Hair**: cropped close (8-12 mm) all over, a slightly receding temple line. Long strand cards do
-  not suit this length, so it is a dense layer of tiny cards (6-12 mm, two segments each) lying
-  almost flat on the scalp along a flow that leaves a crown whorl, plus a hairline row on the
-  soft-root atlas columns. The scalp shadow (hair density painted into the skin albedo at 60%) is
-  drawn by toma_textures through the interface asha_textures reads here: `hairline_v`, `in_hair`,
+  not suit this length, so it is three lifted layers of overlapping single-segment tufts (9-13 mm
+  long, 6-9 mm wide) lying almost flat on the scalp along a flow that leaves a crown whorl. The
+  cards sample Toma's own short-hair atlas (M2-CHR-04, toma_textures.short_hair_atlas: dense tufts
+  of tapered strands with a ragged tip edge; short "edge" tufts at the hairline). The scalp shadow
+  (hair density painted into the skin albedo at 60%, the skin between the hairs shaded and cooled)
+  is drawn by toma_textures through the interface asha_textures reads here: `hairline_v`, `in_hair`,
   `_gather`, `_flow_dir`.
 * **Beard**: short (10-15 mm) and full along the jaw, chin and upper lip, with the cheeks clean above
-  a line from the sideburn to the mouth corner. Three lifted layers of short cards that grow down
-  the jaw and outward over the lip; about 6% of the cards (most of them at the chin) use the
+  a line from the sideburn to the mouth corner. Three layers of tufts hugging the skin (lifts of
+  0.8-3.2 mm, so the jaw silhouette is a soft edge) that grow down the jaw and outward over the lip;
+  the border cards use the short tufts; about 3% of the cards (most of them at the chin) use the
   `beard_grey` material (#8A8478). The cards go into the Head object before the face shapes are
   built, and build_toma gives every beard vertex the shape deltas of the skin under it, so
-  `jaw_open`, the smile and the cheek raise carry the beard. `beard_v` / `in_beard` describe the
+  `jaw_open`, the smile and the cheek raise carry the beard (every Head vertex carries 40 morph
+  targets: the card count is bounded by the 5 MB GLB cap). `beard_v` / `in_beard` describe the
   region for the beard shadow in the skin albedo (toma_textures).
 
-It reuses Asha's card machinery (asha_hair: Scalp, MeshScalp, _ribbon and the atlas column layout).
+It reuses Asha's scalp machinery (asha_hair: Scalp, MeshScalp, ROOT_CAST_H) with its own cards.
 Vertex colour = wind: cropped hair and a beard do not move in the wind, so every card is pinned.
 Seeded, deterministic.
 """
@@ -26,17 +30,25 @@ import math
 import numpy as np
 
 import asha_hair
-from asha_hair import ROOT_CAST_H, SLOTS_FULL, SLOTS_HAIRLINE, SLOTS_SPARSE, Scalp, _ribbon  # noqa: F401
-from asha_mesh import Part
+from asha_hair import ROOT_CAST_H, Scalp  # noqa: F401
+from asha_mesh import Part, grid
 
 TAG_HAIR = asha_hair.TAG_HAIR
 TAG_BEARD = 42  # beard cards in the Head object (build_toma gives them the skin's shape deltas)
 STILL = (0.0, 0.0, 0.0, 0.0)  # no wind on cropped hair or the beard
-# The cards sample the tip zone of the atlas columns (staggered, thinning strand ends) and their dense
-# middle: a short card over a whole column read as a square chip at the close-up
-CARD_V = (0.62, 0.96)
-CARD_U = (0.22, 0.78)
-CARD_W = (0.0035, 0.006)
+# M2-CHR-04: the cards sample Toma's own short-hair atlas (toma_textures.short_hair_atlas,
+# toma_shorthair.png): SH_COLS columns, each a tuft of tapered strands, V root (0) -> tip (1).
+# "full": dense tufts; "edge": short strands (the hairline and the beard's border); "sparse": a few
+# loose strands (the outer layer's breakup). M2-CHR-02 sampled the thinning tip zone of Asha's long
+# strand columns, and each tiny card read as a flake.
+SH_COLS = 8
+SH_KIND = ("full", "full", "full", "full", "full", "edge", "sparse", "sparse")
+SH_FULL = (0, 1, 2, 3, 4)
+SH_EDGE = (5,)
+SH_SPARSE = (6, 7)
+SH_INSET = 0.03  # of a column: keep the card's UVs off its neighbours (mip bleed)
+EDGE_BAND = 0.010  # head heights inside the beard / hair edge where the cards use the short column
+TWIST = 0.15  # rad, the most a card rolls about its length (rolled cards show edge-on, as slivers)
 
 
 def _still(t: float) -> tuple:
@@ -162,8 +174,28 @@ def _trace(surface, step_dir, roots: np.ndarray, length: np.ndarray, lift: float
     return out + N * (rise[:, None] * t[None, :])[..., None]
 
 
-def _emit(part: Part, surface, paths: np.ndarray, widths, slots, rng, taper: float, v_range, mats=None,
-          twist: float = 0.3, u_range=(0.0, 1.0)) -> None:
+def _tuft(part: Part, pts: np.ndarray, nrm: np.ndarray, width: float, col: int, taper: float, mat: str) -> None:
+    """A card along `pts` on column `col` of the short-hair atlas (root at pts[0], V by arc length)."""
+    n = len(pts)
+    T = np.gradient(pts, axis=0)
+    T /= np.maximum(np.linalg.norm(T, axis=1, keepdims=True), 1e-12)
+    side = np.cross(T, nrm)
+    side /= np.maximum(np.linalg.norm(side, axis=1, keepdims=True), 1e-12)
+    s = np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(pts, axis=0), axis=1))])
+    s /= max(float(s[-1]), 1e-12)
+    P = np.zeros((n, 2, 3))
+    for k in range(n):
+        w = width * (1.0 - taper * s[k]) * 0.5
+        P[k, 0] = pts[k] - side[k] * w
+        P[k, 1] = pts[k] + side[k] * w
+    u0 = (col + SH_INSET) / SH_COLS
+    u1 = (col + 1 - SH_INSET) / SH_COLS
+    cols = [[STILL, STILL] for _ in range(n)]
+    grid(part, P, mat, colors=cols, tags=TAG_HAIR, uv_fn=lambda j, i: (u0 + (u1 - u0) * i, float(s[j])))
+
+
+def _emit(part: Part, surface, paths: np.ndarray, widths, cols, rng, taper: float, mats=None,
+          twist: float = TWIST) -> None:
     for c in range(len(paths)):
         pts = paths[c]
         nrm = surface.normal(pts)
@@ -172,8 +204,7 @@ def _emit(part: Part, surface, paths: np.ndarray, widths, slots, rng, taper: flo
         side = np.cross(T, nrm)
         a = rng.uniform(-twist, twist)
         nrm = nrm * math.cos(a) - side * math.sin(a)
-        _ribbon(part, pts, nrm, float(widths[c]), int(slots[c]), _still, taper=taper, v_range=v_range,
-                mat="hair" if mats is None else mats[c], u_range=u_range)
+        _tuft(part, pts, nrm, float(widths[c]), int(cols[c]), taper, "hair" if mats is None else mats[c])
 
 
 def _roots_inside(scalp, lm, rng, n: int, margin: float) -> np.ndarray:
@@ -199,36 +230,38 @@ def _hairline_roots(scalp, lm, phi: np.ndarray, inside_h: np.ndarray) -> np.ndar
     return p
 
 
+def _columns(rng, n: int, edge: np.ndarray, outer: bool) -> np.ndarray:
+    """Atlas columns: the short "edge" tuft near the hair or beard border, else full tufts (the outer
+    layer mixes in the sparse ones, so the surface breaks into strands instead of a sheet)."""
+    cols = rng.choice(SH_FULL, n)
+    if outer:
+        cols = np.where(rng.random(n) < 0.45, rng.choice(SH_SPARSE, n), cols)
+    return np.where(edge, rng.choice(SH_EDGE, n), cols)
+
+
 def scalp_cards(lm, params: dict, rng: np.random.Generator, scalp) -> Part:
     part = Part("HairScalp")
     G = _gather(lm)
     lo, hi = params["length_m"]
+    wlo, whi = params["card_width_m"]
 
     def flow(P, N):
         return _flow_dir(lm, P, N, G)
 
-    n_hl = int(params.get("hairline_cards", 0))
-    if n_hl:
-        lim = math.pi * 0.97
-        phi = np.sort(np.linspace(-lim, lim, n_hl) + rng.uniform(-0.4, 0.4, n_hl) * (2 * lim / n_hl))
-        roots = _hairline_roots(scalp, lm, phi, rng.uniform(0.002, 0.008, n_hl))
-        # the hairline row lies back into the hair (root at the edge, tip inside), so no card runs
-        # out over the bare forehead or temple
-        paths = _trace(scalp, lambda P, N: -flow(P, N), roots, rng.uniform(lo, hi, n_hl), 0.0007, 1,
-                       rng.uniform(0.0, 0.0008, n_hl))
-        _emit(part, scalp, paths, rng.uniform(0.004, 0.006, n_hl), rng.choice(SLOTS_HAIRLINE, n_hl), rng, 0.3,
-              (0.0, 0.5), u_range=CARD_U)
-    # three lifted layers; the cards stand off the scalp a little at the tip (cropped hair is springy)
-    layers = [(0.0010, params["scalp_cards"][0], CARD_W, 0.0010),
-              (0.0026, params["scalp_cards"][1], CARD_W, 0.0016),
-              (0.0042, params["scalp_cards"][2], (0.003, 0.005), 0.0022)]
-    for li, (lift, count, wr, rise) in enumerate(layers):
-        roots = _roots_inside(scalp, lm, rng, int(count), 0.008 + 0.006 * li)
+    # three lifted layers of overlapping tufts; the tips stand off the scalp a little (cropped hair is
+    # springy). The inner layer reaches the hairline (its border cards use the short tuft); the outer
+    # layers stay further inside, so the edge is one thin layer over the scalp paint.
+    layers = [(0.0008, params["scalp_cards"][0], 0.0008, 0.002),
+              (0.0022, params["scalp_cards"][1], 0.0013, 0.008),
+              (0.0036, params["scalp_cards"][2], 0.0018, 0.014)]
+    for li, (lift, count, rise, margin) in enumerate(layers):
+        roots = _roots_inside(scalp, lm, rng, int(count), margin)
         n = len(roots)
-        paths = _trace(scalp, flow, roots, rng.uniform(lo, hi, n) * (1.0 + 0.15 * li), lift, 1,
-                       rng.uniform(0.4, 1.0, n) * rise)
-        slots = rng.integers(SLOTS_FULL, size=n) if li < 2 else rng.choice(SLOTS_SPARSE, n)
-        _emit(part, scalp, paths, rng.uniform(*wr, n), slots, rng, 0.5, CARD_V, u_range=CARD_U)
+        zc = lm.P("chin")[2]
+        edge = (roots[:, 2] - zc) / lm.h < hairline_v(lm, roots) + EDGE_BAND
+        paths = _trace(scalp, flow, roots, rng.uniform(lo, hi, n), lift, 1, rng.uniform(0.4, 1.0, n) * rise)
+        _emit(part, scalp, paths, rng.uniform(wlo, whi, n) * (1.0 - 0.1 * li), _columns(rng, n, edge, li == 2), rng,
+              0.25)
     return part
 
 
@@ -261,13 +294,17 @@ def beard_cards(lm, face, params: dict, surface, V: np.ndarray, T: np.ndarray) -
     def flow(P, N):
         return beard_flow(lm, face, P, N)
 
-    layers = [(0.0012, params["cards"][0], (0.004, 0.006), 0.0015, 0.75),
-              (0.0032, params["cards"][1], (0.0035, 0.0055), 0.0025, 0.9),
-              (0.0055, params["cards"][2], (0.003, 0.0045), 0.0035, 1.0)]
-    for li, (lift, count, wr, rise, lscale) in enumerate(layers):
+    wlo, whi = params["card_width_m"]
+    # flatter than M2-CHR-02 (lifts 1.2 / 3.2 / 5.5 mm, tips up to 3.5 mm): the cards hug the jaw, so
+    # the silhouette under it is a soft edge rather than a fringe of standing chips
+    layers = [(0.0008, params["cards"][0], 0.0010, 0.80),
+              (0.0020, params["cards"][1], 0.0015, 0.92),
+              (0.0032, params["cards"][2], 0.0020, 1.00)]
+    for li, (lift, count, rise, lscale) in enumerate(layers):
         roots = _sample_surface(rng, V, Tb, int(count) * 2)
         depth = beard_v(lm, face, roots)
-        roots = roots[depth > 0.006 + 0.004 * li][:int(count)]  # the outer layers stay off the edge
+        roots = roots[depth > 0.004 + 0.005 * li][:int(count)]  # the outer layers stay off the edge
+        depth = beard_v(lm, face, roots)
         n = len(roots)
         length = rng.uniform(lo, hi, n) * lscale
         paths = _trace(surface, flow, roots, length, lift, 1, rng.uniform(0.4, 1.0, n) * rise)  # one segment: GLB cap
@@ -275,8 +312,12 @@ def beard_cards(lm, face, params: dict, surface, V: np.ndarray, T: np.ndarray) -
         dchin = np.linalg.norm(roots - np.array([0.0, lm.P("chin")[1], zc]), axis=1)
         p_grey = grey_share * (0.15 + 2.0 * np.exp(-(dchin / 0.025) ** 2))
         mats = np.where(rng.random(n) < p_grey, "beard_grey", "beard")
-        slots = rng.integers(SLOTS_FULL, size=n) if li < 2 else rng.choice(SLOTS_SPARSE, n)
-        _emit(part, surface, paths, rng.uniform(*wr, n), slots, rng, 0.5, CARD_V, list(mats), 0.4, CARD_U)
+        cols = _columns(rng, n, depth < 0.004 + 0.005 * li + EDGE_BAND, li == 2)
+        # a grey card is a few loose grey hairs (the sparse tuft, narrower), not a pale chip
+        grey = mats == "beard_grey"
+        cols = np.where(grey, rng.choice(SH_SPARSE, n), cols)
+        widths = rng.uniform(wlo, whi, n) * np.where(grey, 0.6, 1.0)
+        _emit(part, surface, paths, widths, cols, rng, 0.25, list(mats))
     part.T = [TAG_BEARD] * len(part.V)
     part.C = [STILL] * len(part.V)
     return part

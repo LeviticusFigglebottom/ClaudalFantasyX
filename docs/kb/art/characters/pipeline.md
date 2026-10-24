@@ -170,7 +170,14 @@ Toma (M2-CHR-02, [`toma_review.md`](toma_review.md)) is the second hero on this 
   of its nearest skin vertex, with deltas under 0.15 mm zeroed so the sparse morph accessors stay small (`build_toma.py`).
   Every Head vertex carries 40 morph targets, so the card count there is bounded by the 5 MB GLB cap, not the triangles.
 - **Hero costume helpers are importable too:** `toma_costume` imports `rhen_costume` (`torso_sheet`, `limb_tube`,
-  `bandolier`, `wrapped_sandal`), so the `toma` job lists `assets_src/characters/rhen/**` among its sources.
+  `bandolier`), so the `toma` job lists `assets_src/characters/rhen/**` among its sources.
+- **Hero-specific bones (M2-CHR-04):** extra `DEF-*` bones go on after `bb_rig.build_game_skeleton` in the hero's own
+  build (`build_toma.add_bones`: sash-tail chains, the pauldron hinge, shield and spear prop bones), with the costume or
+  prop vertices re-weighted to them; bb_rig stays the same for every hero. The standard 75 keep their names and
+  relative order; their absolute joint indices move (the exporter walks the hierarchy), so find bones by name.
+- **Card hair for short lengths (M2-CHR-04):** a hero-owned strand atlas (`toma_shorthair.png`, tufts of tapered
+  strands with soft sides) and mostly-Lambert hair shading (`kajiya_diffuse_mix` 0.15) for cropped hair and a short
+  beard; paint the skin between the painted hairs as shaded scalp, not lit skin.
 
 ## 13. Body clips (M2-FP-07)
 
@@ -194,6 +201,22 @@ twist segments), so a clip change never leaves a limb in the previous clip's pos
 | `emerge_doorway` | no | A tired settle, one step, the head lifts (ADR 0017: on her own feet) |
 | `face_west` | no | A settle into the singing stance, the free hand to the breastbone; the facing comes from the `@mark` |
 | `take_hand` (Rhen) | no | From the kneel, the right hand reaches forward and up |
+| `spear_level` (Toma) | no | Both hands on the shaft, the spear levelled forward and a little down, knees bent, leaning in; holds |
+| `lower_spear` (Toma) | no | From `spear_level` back to his planted stance |
+| `palms_level` (Toma) | no | "Be level": the left palm comes up flat at chest height and sweeps slowly out; the head bows |
+| `catch_rhen` (Toma) | no | The left arm reaches forward and takes Rhen's weight, a small turn toward him, the knees brace; holds |
+| `sit_steps` (Toma) | no | Down onto a step at knee height, knees apart, the left forearm on the thigh, the spear upright; holds |
+| `turn_seaward` (Toma) | no | Head first, then chest and hips turn about 50° to his left; the facing itself comes from the `@mark` |
+
+**Toma (M2-CHR-04):** persona sway 0.7 (toma.md §1: 70% of the party default) and a **planted** base pose for his
+standing clips (`idle`, `talk` and his own): each leg swings out so the ankles sit 1.4× the shoulder-joint spacing apart
+(about 10° per leg on his skeleton), the knees soften 7° and the hips drop by what the two take (2.7 cm), feet flat. His
+spear is held like Asha's staff (the hand counter-rotates so it stays upright) except where `spear_level` turns it;
+the spear rides the `DEF-spear` prop bone, which the clips leave at rest (only the 31 body bones are keyed). Asha's and
+Rhen's libraries are byte-identical (`planted` is `stand` for a persona without a `stance`).
+`tools/tests/test_hero_clips.py` checks that every `@anim toma <clip>` has a clip, the stance ratio and feet on the
+floor, the spear upright in the standing clips and levelled in `spear_level`, and the seat height of `sit_steps`.
+Rerun `python3 assets_src/characters/asha/hero_clips.py --hero toma` after any Toma rebuild.
 
 Review shots: `asha_clip_kneel_over_rhen`, `asha_clip_walk`, `asha_clip_offer_hand`, `asha_clip_face_west`,
 `asha_clip_laugh`, `asha_clip_run` (AshaStage `clip` and `clip_time`).

@@ -86,3 +86,62 @@ shield is the whole back: a red rim, mottled scutes and the boss.
    that convention render their inner side. Toma's own pauldron plates use the opposite (correct) test. Not changed
    here (it would change Asha's and Rhen's bytes).
 6. A GPU capture from the PC session for the face, hair and lacquer verdict.
+
+## 5. Follow-ups built (M2-CHR-04)
+
+Task: [`M2-CHR-04`](../../tasks/M2/M2-CHR-04-toma-followups.md). Items 1 and 4 of §4 are done, item 3 is done for Toma
+(his own short-hair atlas; Asha's and Rhen's atlases are untouched); 2, 5 and 6 stay open.
+
+**Hair and beard.**
+- `toma_textures.short_hair_atlas` writes `toma_shorthair.png` (1024 × 512, 8 columns): five dense tufts, one of short
+  strands for the borders, two sparse ones for the outer layer's breakup. Each column is 160-200 tapered strands
+  (1-2 px at the root, true-angle lean and bend), rooted in the first tenth, of very different lengths, so a card is
+  dense at the root and thins to a ragged tip edge; density and opacity fall off over a third of the width on each
+  side (a soft lens, not a rectangle, at the mips the close-up actually samples).
+- The cards (`toma_hair`) are fewer, wider and overlapping: hair 1,280 single-segment tufts (9-13 mm × 6-9 mm) in three
+  layers, beard 540 (11-16 mm × 5.5-8 mm) in three layers hugging the skin (lifts 0.8 / 2.0 / 3.2 mm, tips up 1-2 mm;
+  M2-CHR-02 stood the outer layer 5.5 mm off with tips up to 3.5 mm, which made the ragged jaw silhouette). Border
+  cards use the short tuft; grey cards use the sparse tuft at 60% width (a few grey hairs, not a pale chip). The beard
+  went from 920 to 540 cards: the GLB dropped from 4.86 to about 4.67 MB (every Head vertex carries the 40 morphs).
+- Black, not brown: the scalp paint keeps the sheet's 60% hair density, but the skin between the painted hairs is now
+  the scalp in the hair's shadow (×0.25 value, cooled) instead of lit skin, and the painted hair is a cooler
+  `#161517`; the beard paint went from 72% to 90% density. On the cards: cooler, deeper roots and tips
+  (`#151417` / `#1C1A1C`), Asha's auburn secondary lobe and transmission tint replaced by neutral low ones, the
+  primary highlight lower and broader, and mostly wrapped Lambert (`kajiya_diffuse_mix` 0.15): each card's own
+  tangent had lit it differently from its neighbours, which was most of the "flake" look. Occlusion on the cards is
+  lifted (0.8 / 0.85) so cards and paint merge into one mass.
+- Lavapipe verdict: the cap reads as a dark, cropped mass with a soft hairline and a fuzzy silhouette; the crown
+  still takes an olive-brown sheen under the orange key (Asha's black hair does the same on this stage). Up close a
+  few darker tufts still show as soft patches, not flakes. A GPU capture (TAA resolving the dither) is still the
+  real test.
+
+**Sash tails** (`toma_costume.sash_tail`): 18 × 11 grids instead of 14 × 3. Gathered to 42% width under the knot and
+open within a fifth of their length, they fall plumb once past the widest point under them (never pulled back in by
+more than 4 mm a row), with 1.6 fold periods across whose depth grows toward the hem (1.2 cm gathered, 1.0 cm at the
+hem), a slow S-sway, a little twist and a slanted cut hem. Both layers have their own winding test (`_shell`), so the
+result does not depend on the `asha_costume._panel` fix in flight. The resist stencil is now three motif rows of
+falling size near the hem (one rolling wave line with two crests, alternating long and short ticks, a hem line),
+bleeding unevenly, instead of a wave row and a tick row repeated five times at an equal pitch (the ladder).
+
+**Sandals** (`toma_costume.reinforced_sandal`, toma.md §4 #6): a two-tier sole (the outsole 11 mm past the foot, a
+stitched welt stepped in on it, 18 mm high at the heel and 13 mm at the toe), a heel counter, two broad instep straps
+and an ankle strap under the shin wraps; the atlas paints stacked leather layers on the sole edge and a stitch row on
+the welt and the counter. Rhen's `wrapped_sandal` took its outline from one slice of the foot at the floor, where the
+donor's rounded sole is narrower than the foot's silhouette, so his sole sat inside the foot; Toma's outline is the
+widest of four slices up the foot. (Rhen's sandal is unchanged; the same fix would help him.)
+
+**Rig extras** (toma.md §9), appended by `build_toma.add_bones` after `bb_rig.build_game_skeleton` (bb_rig unchanged):
+
+| Bone | Parent | Weights |
+|---|---|---|
+| `DEF-sash_tail_a`, `.001`-`.003`; `DEF-sash_tail_b`, `.001`-`.003` | `DEF-spine` (hips), then the chain | chain weights along each tail (hat functions at the bone middles); the hem half also takes up to 50% `DEF-thigh.L` (they hang over it) |
+| `DEF-pauldron` | `DEF-shoulder.L` | all five lames, the lower edge sharing up to 60% with `DEF-upper_arm.L` smoothly by height (overlapping lames move together); head on the strap at the top lame's medial edge, tail across the lame (the 6° hinge is an animation limit) |
+| `DEF-shield` | `DEF-spine.003` | the shield, rigid (fixed on the back; the battle unsling animates it) |
+| `DEF-spear` | `DEF-hand.R` | the spear, rigid (the prop bone: head at the grip, up the shaft) |
+
+86 joints in all. The 75 standard bones keep their names and their relative order, but not their absolute joint
+indices: the glTF exporter (and Godot's importer) order joints by walking the hierarchy, so a child added under
+`DEF-shoulder.L` lands among them. Everything in the project finds bones by name. `tools/tests/test_toma.py` checks
+the parents, the 75-bone order against the LOD1 file and that every extra bone carries weights.
+
+**Clips**: the `toma` persona and ten clips in `hero_clips.py` (see pipeline.md §13).

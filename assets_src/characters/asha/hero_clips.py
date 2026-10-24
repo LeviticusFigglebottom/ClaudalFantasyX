@@ -21,6 +21,13 @@ Clips (asha.md §1 posture: stillness, idle sway 40% of the party default; rhen.
 the beach scene plays them), `rise_to_stand` (from the kneel); Cutscene B: `walk_to_chamber` (loop), `emerge_doorway`,
 `face_west` (a settle into the singing stance; the facing itself comes from the `@mark`). Rhen gets the shared clips plus
 `take_hand`. Asha's staff hand counter-rotates so the staff stays upright as her arm moves.
+
+Toma (M2-CHR-04, toma.md §1: idle sway 70% of the party default, a planted stance 1.4x his shoulder width with the
+weight low; he settles, he does not fidget): the shared `idle`, `walk`, `run`, `talk`, and the dialogue's clips:
+`spear_level` and `lower_spear` (Ch2, the beach), `palms_level` (the Order's blessing, the left palm held level),
+`catch_rhen` (steadying Rhen as he stands), `sit_steps` (Ch3) and `turn_seaward` (the upper body and head turn to his
+left; the facing itself comes from the `@mark`). His spear is held like Asha's staff (the hand keeps it upright) except
+where a clip levels it; it rides the `DEF-spear` prop bone under the hand, which the clips leave at rest.
 """
 from __future__ import annotations
 
@@ -51,11 +58,16 @@ HIPS = "DEF-spine"
 PERSONA = {
     "asha": {"sway": 0.4, "lean": 0.0, "staff": True, "arms_down": 40.0},
     "rhen": {"sway": 1.3, "lean": 4.0, "staff": False, "arms_down": 42.0},
+    # toma.md §1: "stance" = ankle spacing / shoulder-joint spacing in the standing clips; "knee" = the soft knees
+    # (degrees) that carry his weight low. The spear is held like the staff.
+    "toma": {"sway": 0.7, "lean": 0.0, "staff": True, "arms_down": 38.0, "stance": 1.4, "knee": 7.0},
 }
 CLIPS = {
     "asha": ["idle", "walk", "run", "talk", "kneel_over_rhen", "laugh", "rise_to_stand", "offer_hand",
              "walk_to_chamber", "emerge_doorway", "face_west"],
     "rhen": ["idle", "walk", "run", "talk", "kneel_over_rhen", "rise_to_stand", "take_hand"],
+    "toma": ["idle", "walk", "run", "talk", "spear_level", "lower_spear", "palms_level", "catch_rhen", "sit_steps",
+             "turn_seaward"],
 }
 LOOPS = {"idle", "walk", "run", "talk", "walk_to_chamber"}
 
@@ -131,6 +143,9 @@ class Skeleton:
         self.leg_shin = float(np.linalg.norm(self.g_t["DEF-foot.L"] - self.g_t["DEF-shin.L"]))
         self.ankle_h = float(self.g_t["DEF-foot.L"][1])
         self.hip_h = float(self.g_t["DEF-thigh.L"][1])
+        self.hip_w = float(abs(self.g_t["DEF-thigh.L"][0] - self.g_t["DEF-thigh.R"][0]))
+        self.shoulder_w = float(abs(self.g_t["DEF-upper_arm.L"][0] - self.g_t["DEF-upper_arm.R"][0]))
+        self.ankle_w = float(abs(self.g_t["DEF-foot.L"][0] - self.g_t["DEF-foot.R"][0]))
 
     def local_pose(self, turns: dict) -> dict:
         """World-axis turns (bone -> quaternion) -> local rotations, parents first."""
@@ -198,6 +213,57 @@ def stand(persona: dict) -> dict:
     return p
 
 
+def planted(sk: Skeleton, persona: dict) -> dict:
+    """The standing clips' base pose: `stand`, plus Toma's wide stance (toma.md §1) when the persona has one: each
+    leg swings out so the ankles sit `stance` x the shoulder-joint spacing apart, the knees soften by `knee`, and the
+    hips drop by what the two take off the leg's height (the feet stay flat on the floor)."""
+    p = stand(persona)
+    k = persona.get("stance")
+    if not k:
+        return p
+    leg = sk.leg_thigh + sk.leg_shin
+    a_out = math.asin(min(0.5 * (k * sk.shoulder_w - sk.hip_w) / leg, 0.9))
+    a_rest = math.asin(min(0.5 * (sk.ankle_w - sk.hip_w) / leg, 0.9))
+    ab = math.degrees(a_out - a_rest)
+    kn = persona.get("knee", 0.0)
+    drop = leg * math.cos(a_rest) - leg * math.cos(a_out) * math.cos(math.radians(kn))
+    return add(p, {"hips": (0.0, -drop, 0.0),
+                   "DEF-thigh.L": (-kn, 0.0, ab), "DEF-thigh.R": (-kn, 0.0, -ab),
+                   "DEF-shin.L": (2.0 * kn, 0.0, 0.0), "DEF-shin.R": (2.0 * kn, 0.0, 0.0),
+                   "DEF-foot.L": (-kn, 0.0, -ab), "DEF-foot.R": (-kn, 0.0, ab)})
+
+
+def spear_level(sk: Skeleton, persona: dict) -> dict:
+    """Toma's spear levelled at someone lying in front of him (Ch2): both hands on the shaft, the point forward and
+    a little down, knees bent, leaning in. The hand's turn is the spear's own (staff_hold takes out the arm's)."""
+    a = persona["arms_down"]
+    return add(planted(sk, persona), {
+        "hips": (0.0, -0.03, 0.0),
+        "DEF-thigh.L": (-10.0, 0.0, 0.0), "DEF-thigh.R": (-10.0, 0.0, 0.0),
+        "DEF-shin.L": (20.0, 0.0, 0.0), "DEF-shin.R": (20.0, 0.0, 0.0),
+        "DEF-foot.L": (-10.0, 0.0, 0.0), "DEF-foot.R": (-10.0, 0.0, 0.0),
+        "DEF-spine.001": (8.0, 0.0, 0.0), "DEF-spine.002": (4.0, 0.0, 0.0), "DEF-spine.006": (-6.0, 0.0, 0.0),
+        "DEF-upper_arm.R": (-38.0, 0.0, -a * 0.35), "DEF-forearm.R": (-30.0, 0.0, 0.0),
+        "DEF-hand.R": (98.0, 0.0, 0.0),
+        "DEF-upper_arm.L": (-48.0, 0.0, a * 0.6), "DEF-forearm.L": (-48.0, 0.0, 0.0),
+        "DEF-hand.L": (0.0, 40.0, 0.0),
+    })
+
+
+def sit(sk: Skeleton, persona: dict) -> dict:
+    """Seated on a step at knee height, the knees apart, leaning a little forward with the left forearm on the
+    thigh; the spear stays upright in the right hand (Ch3)."""
+    drop = sk.hip_h - (sk.leg_shin + sk.ankle_h) - 0.01
+    a = persona["arms_down"]
+    return {"hips": (0.0, -drop, -0.05),
+            "DEF-thigh.L": (-86.0, 0.0, 10.0), "DEF-thigh.R": (-86.0, 0.0, -10.0),
+            "DEF-shin.L": (86.0, 0.0, 0.0), "DEF-shin.R": (86.0, 0.0, 0.0),
+            "DEF-foot.L": (0.0, 0.0, -10.0), "DEF-foot.R": (0.0, 0.0, 10.0),
+            "DEF-spine.001": (12.0, 0.0, 0.0), "DEF-spine.002": (6.0, 0.0, 0.0), "DEF-spine.006": (-12.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-30.0, 0.0, -a + 18.0), "DEF-forearm.L": (-55.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-22.0, 0.0, a - 16.0), "DEF-forearm.R": (-48.0, 0.0, 0.0)}
+
+
 def kneel(sk: Skeleton, persona: dict) -> dict:
     """On the right knee, the left foot planted, leaning over someone lying in front (Cutscene A)."""
     drop = sk.hip_h - (sk.leg_shin + sk.ankle_h) - 0.01
@@ -240,7 +306,7 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
     u = t / length
     if clip == "idle":
         ph = 2 * math.pi * u
-        return add(stand(persona), {
+        return add(planted(sk, persona), {
             "hips": (0.010 * sway * math.sin(ph), -0.002 * sway * (1 - math.cos(2 * ph)), 0.0),
             "DEF-spine.001": (0.0, 0.0, -1.6 * sway * math.sin(ph)),
             "DEF-spine.003": (0.7 * math.sin(2 * ph), 0.0, 0.0),  # breath
@@ -259,7 +325,7 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
     if clip == "talk":
         ph = 2 * math.pi * u
         g = 0.5 - 0.5 * math.cos(ph)  # the free hand rises and falls once per loop
-        return add(stand(persona), {
+        return add(planted(sk, persona), {
             "hips": (0.006 * sway * math.sin(ph), 0.0, 0.0),
             "DEF-spine.002": (0.0, 3.0 * math.sin(ph), 0.0),
             "DEF-spine.006": (2.0 * math.sin(2 * ph), -2.5 * math.sin(ph), 1.5 * math.sin(ph + 1.0)),
@@ -309,12 +375,55 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
         return add(s0, {"DEF-spine.003": (-2.0 * e, 0.0, 0.0), "DEF-spine.006": (-4.0 * e, 0.0, 0.0),
                         "DEF-upper_arm.L": (-18.0 * e, -10.0 * e, 16.0 * e),
                         "DEF-forearm.L": (-78.0 * e, -72.0 * e, 0.0), "DEF-hand.L": (0.0, -20.0 * e, -10.0 * e)})
+    if clip == "spear_level":
+        return blend(planted(sk, persona), spear_level(sk, persona), smooth(u / 0.75))
+    if clip == "lower_spear":
+        return blend(spear_level(sk, persona), planted(sk, persona), smooth(u / 0.8))
+    if clip == "palms_level":
+        # "Be level": the left palm comes up flat at chest height, then sweeps slowly out, level; the head bows
+        e = smooth(u / 0.45)
+        sweep = smooth((u - 0.4) / 0.5)
+        a = persona["arms_down"]
+        return add(planted(sk, persona), {
+            "DEF-spine.006": (8.0 * e, 0.0, 0.0), "DEF-spine.003": (2.0 * e, 0.0, 0.0),
+            "DEF-upper_arm.L": (-58.0 * e, -18.0 * sweep, a * 0.55 * e - 14.0 * sweep),
+            "DEF-forearm.L": (-50.0 * e + 22.0 * sweep, 0.0, 0.0), "DEF-hand.L": (0.0, 0.0, -70.0 * e)})
+    if clip == "catch_rhen":
+        # Rhen stands unsteadily and leans on him: the left arm reaches forward and takes his weight, the body
+        # turns a little toward him, the knees brace
+        e = smooth(u / 0.6)
+        brace = smooth((u - 0.45) / 0.4)
+        a = persona["arms_down"]
+        return add(planted(sk, persona), {
+            "hips": (0.0, -0.015 * brace, 0.0),
+            "DEF-thigh.L": (-6.0 * brace, 0.0, 0.0), "DEF-thigh.R": (-6.0 * brace, 0.0, 0.0),
+            "DEF-shin.L": (12.0 * brace, 0.0, 0.0), "DEF-shin.R": (12.0 * brace, 0.0, 0.0),
+            "DEF-foot.L": (-6.0 * brace, 0.0, 0.0), "DEF-foot.R": (-6.0 * brace, 0.0, 0.0),
+            "DEF-spine.002": (5.0 * e, 10.0 * e, 0.0), "DEF-spine.006": (6.0 * e, 6.0 * e, 0.0),
+            "DEF-upper_arm.L": (-52.0 * e, 0.0, a * 0.45 * e), "DEF-forearm.L": (-34.0 * e, 0.0, 0.0),
+            "DEF-hand.L": (0.0, -30.0 * e, 0.0)})
+    if clip == "sit_steps":
+        s0 = planted(sk, persona)
+        down = sit(sk, persona)
+        e = smooth(u / 0.85)
+        mid = add(blend(s0, down, 0.5), {"DEF-spine.001": (18.0, 0.0, 0.0)})
+        return blend(s0, mid, e / 0.5) if e < 0.5 else blend(mid, down, (e - 0.5) / 0.5)
+    if clip == "turn_seaward":
+        # the head leads, the chest and the hips follow (to his left); the spear hand firms
+        e = smooth(u / 0.8)
+        head = smooth(u / 0.5)
+        return add(planted(sk, persona), {
+            "hips": (0.02 * e, 0.0, 0.0), "DEF-spine": (0.0, 6.0 * e, 0.0),
+            "DEF-spine.002": (0.0, 8.0 * e, 0.0), "DEF-spine.003": (0.0, 8.0 * e, 0.0),
+            "DEF-spine.005": (0.0, 10.0 * head, 0.0), "DEF-spine.006": (-3.0 * head, 18.0 * head, 0.0),
+            "DEF-upper_arm.R": (-6.0 * e, 0.0, 0.0)})
     raise KeyError(clip)
 
 
 LENGTHS = {"idle": 6.0, "walk": 1.1, "run": 0.7, "talk": 3.2, "kneel_over_rhen": 1.8, "laugh": 2.2,
            "rise_to_stand": 2.0, "offer_hand": 1.4, "take_hand": 1.2, "walk_to_chamber": 1.4, "emerge_doorway": 2.4,
-           "face_west": 1.6}
+           "face_west": 1.6, "spear_level": 1.6, "lower_spear": 1.6, "palms_level": 2.0, "catch_rhen": 1.4,
+           "sit_steps": 2.0, "turn_seaward": 1.6}
 
 
 # ---------------------------------------------------------------------------------------------

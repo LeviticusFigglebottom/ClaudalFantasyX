@@ -12,6 +12,15 @@ cropped hair cards (toma_hair) -> the under-tunic, trousers, sash, harness and t
 (toma_costume) -> the tide-shield and the hooked spear (toma_props) -> LOD1 -> glTF. build_asha is
 imported as a library, so a fix there reaches every hero.
 
+Rig extras (toma.md §9, M2-CHR-04): after the 75 standard DEF bones of bb_rig.build_game_skeleton,
+the build appends DEF-sash_tail_a / _b (two chains of 4, knot -> hem, parented to the hips; the
+tails take chain weights, the hems also part of the left thigh's), DEF-pauldron (the strap hinge on
+DEF-shoulder.L; the lames on it, the lower ones following the upper arm smoothly by height),
+DEF-shield (fixed on the back, under DEF-spine.003; rigid, for the battle unsling) and DEF-spear
+(the prop bone under DEF-hand.R; rigid). bb_rig is unchanged for the other heroes. The glTF
+exporter writes joints depth-first, so the extras sit among the standard bones in the joint list;
+the standard bones keep their names and their relative order.
+
 Everything is generated from code in this folder, assets_src/characters/{asha,rhen,base_body}/ and
 the vendored MPFB2 data; nothing is downloaded. Deterministic.
 """
@@ -54,6 +63,68 @@ HEAD_BONE = hb.HEAD_BONE
 CHEST_BONE = "DEF-spine.003"
 HAND_BONE = "DEF-hand.R"
 BEARD_MIN_DELTA = 1.5e-4  # m
+# ---- rig extras (toma.md §9, M2-CHR-04): extra DEF-* bones appended after the 75 standard ones -------
+HIPS_BONE = "DEF-spine"
+SHOULDER_BONE = "DEF-shoulder.L"
+UPPER_ARM_BONE = "DEF-upper_arm.L"
+THIGH_BONE = "DEF-thigh.L"
+SASH_TAILS = ("DEF-sash_tail_a", "DEF-sash_tail_b")  # two chains of SASH_CHAIN bones each, knot -> hem
+SASH_CHAIN = 4
+PAULDRON_BONE = "DEF-pauldron"  # the strap hinge (a 6 degree hinge: an animation limit, not data)
+SHIELD_BONE = "DEF-shield"  # fixed on the back; the battle unsling animates it
+SPEAR_BONE = "DEF-spear"  # the prop bone, in the right hand
+SHIELD_BONE_LEN = 0.20  # m, along the shield's up
+SPEAR_BONE_LEN = 0.30  # m, up the shaft from the grip
+PAULDRON_ARM_SHARE = 0.6  # the lowest lame edge follows the upper arm this much (smooth by height)
+SASH_THIGH_SHARE = 0.5  # the tails' hems follow the left thigh this much (they hang over it)
+
+
+def chain_names(root: str) -> list[str]:
+    return [root] + [f"{root}.{i:03d}" for i in range(1, SASH_CHAIN)]
+
+
+def extra_bone_names() -> list[str]:
+    out = []
+    for root in SASH_TAILS:
+        out += chain_names(root)
+    return out + [PAULDRON_BONE, SHIELD_BONE, SPEAR_BONE]
+
+
+def add_bones(skel: bpy.types.Object, specs: list) -> None:
+    """Append deform bones (name, head, tail, parent) to the game skeleton, after its standard ones."""
+    bpy.ops.object.select_all(action="DESELECT")
+    bpy.context.view_layer.objects.active = skel
+    skel.select_set(True)
+    bpy.ops.object.mode_set(mode="EDIT")
+    eb = skel.data.edit_bones
+    for name, head, tail, parent in specs:
+        e = eb.new(name)
+        e.head = tuple(map(float, head))
+        e.tail = tuple(map(float, tail))
+        e.roll = 0.0
+        e.use_deform = True
+        e.parent = eb[parent]
+    bpy.ops.object.mode_set(mode="OBJECT")
+
+
+def polyline_points(C: np.ndarray, n: int) -> np.ndarray:
+    """n + 1 points spaced evenly by arc length along the polyline C."""
+    s = np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(C, axis=0), axis=1))])
+    t = np.linspace(0.0, s[-1], n + 1)
+    return np.stack([np.interp(t, s, C[:, k]) for k in range(3)], axis=1)
+
+
+def chain_weights(t: np.ndarray, n: int) -> np.ndarray:
+    """(len(t), n) weights along a chain of n bones for t in [0, 1] (knot -> hem): hat functions at
+    the bone middles, so neighbouring bones blend and the ends are rigid on the end bones."""
+    x = np.clip(t, 0.0, 1.0)[:, None] * n
+    w = np.clip(1.0 - np.abs(x - (np.arange(n)[None, :] + 0.5)), 0.0, 1.0)
+    return w / np.maximum(w.sum(axis=1, keepdims=True), 1e-12)
+
+
+def smooth01(x: np.ndarray) -> np.ndarray:
+    x = np.clip(x, 0.0, 1.0)
+    return x * x * (3.0 - 2.0 * x)
 
 # preview colours of the materials the shared table lacks (Godot replaces them by name)
 hb.MATERIALS.update({
@@ -99,6 +170,43 @@ def nearest_index(Q: np.ndarray, P: np.ndarray) -> np.ndarray:
         q = Q[a:a + 256]
         out[a:a + 256] = np.argmin(((q[:, None, :] - P[None, :, :]) ** 2).sum(axis=2), axis=1)
     return out
+
+
+def rig_extras(costume: dict, offs: dict, anchors: dict, Pc: np.ndarray, Wc: np.ndarray, names: list,
+               lm) -> list:
+    """The sash-tail chains and the pauldron hinge (toma.md §9): their bone specs, and the costume
+    weights (Wc, columns `names`) of the tails and the lames re-made on them in place."""
+    specs = []
+    sash = costume["Sash"]
+    base = offs["Sash"] + sash.tail_first
+    thigh = names.index(THIGH_BONE)
+    for root, (first, rows, cols, layers) in zip(SASH_TAILS, sash.tail_rows):
+        grid = Pc[base + first:base + first + rows * cols].reshape(rows, cols, 3)
+        pts = polyline_points(grid[:, cols // 2], SASH_CHAIN)
+        chain = chain_names(root)
+        for i, name in enumerate(chain):
+            specs.append((name, pts[i], pts[i + 1], HIPS_BONE if i == 0 else chain[i - 1]))
+        t = np.repeat(np.linspace(0.0, 1.0, rows), cols)
+        cw = chain_weights(t, SASH_CHAIN)
+        ws = SASH_THIGH_SHARE * smooth01((t - 0.3) / 0.7)
+        rows_w = np.zeros((rows * cols, len(names)), dtype=np.float32)
+        for i, name in enumerate(chain):
+            rows_w[:, names.index(name)] = cw[:, i] * (1.0 - ws)
+        rows_w[:, thigh] = ws
+        for layer in range(layers):  # the front and back layers share the weights
+            a = base + first + layer * rows * cols
+            Wc[a:a + rows * cols] = rows_w
+    # the pauldron: on the hinge bone, the lower lames following the upper arm smoothly by height
+    a = offs["Pauldron"]
+    b = a + len(costume["Pauldron"].V)
+    z = Pc[a:b, 2]
+    share = PAULDRON_ARM_SHARE * smooth01((z.max() - z) / max(float(z.max() - z.min()), 1e-6))
+    Wc[a:b] = 0.0
+    Wc[a:b, names.index(PAULDRON_BONE)] = 1.0 - share
+    Wc[a:b, names.index(UPPER_ARM_BONE)] = share
+    head, tail = anchors["pauldron_hinge"]
+    specs.append((PAULDRON_BONE, head, tail, SHOULDER_BONE))
+    return specs
 
 
 def main() -> int:
@@ -226,17 +334,31 @@ def main() -> int:
             opaque.extend(p)
         Pc = opaque.varr()
         Wc = hb.transfer_weights(Pc, V[src_mask], W[src_mask])
+        wnames_x = wnames + extra_bone_names()
+        Wc = np.concatenate([Wc, np.zeros((len(Pc), len(wnames_x) - len(wnames)), dtype=np.float32)], axis=1)
+        offs = {}
+        o = 0
+        for name, p in costume.items():
+            offs[name] = o
+            o += len(p.V)
+        bone_specs = rig_extras(costume, offs, anchors, Pc, Wc, wnames_x, lm)
         ob = hb.part_object(opaque)
-        hb.apply_weights(ob, Wc, wnames, skel)
+        hb.apply_weights(ob, Wc, wnames_x, skel)
         garment_objs.append(ob)
         outer = np.concatenate([p.varr() for p in costume.values()] + [V[reg == "torso"]])
         centre, out_d, up_d = toma_props.place_shield(cparams, outer, anchors["chest_z"])
         shield = toma_props.shield(centre, out_d, up_d, cparams)
         spear = toma_props.spear(lm, cparams, toma_costume.ATLAS["grip"])
-        ob_s = rigid_part(shield, CHEST_BONE, wnames, skel)
+        ob_s = rigid_part(shield, SHIELD_BONE, wnames_x, skel)
         ob_s.name = "Shield"
-        ob_p = rigid_part(spear, HAND_BONE, wnames, skel)
+        ob_p = rigid_part(spear, SPEAR_BONE, wnames_x, skel)
         ob_p.name = "Spear"
+        grip = toma_props.spear_grip(lm)
+        bone_specs += [(SHIELD_BONE, centre, centre + up_d * SHIELD_BONE_LEN, CHEST_BONE),
+                       (SPEAR_BONE, grip, grip + np.array([0.0, 0.0, SPEAR_BONE_LEN]), HAND_BONE)]
+        add_bones(skel, bone_specs)
+        log(f"rig extras: {len(bone_specs)} bones ({', '.join(b[0] for b in bone_specs)}), "
+            f"{len(skel.data.bones)} in all")
         props_tris = shield.tris() + spear.tris()
         # one LOD-able object: join the two rigid props
         bpy.ops.object.select_all(action="DESELECT")
