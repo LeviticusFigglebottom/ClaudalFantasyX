@@ -9,7 +9,8 @@ extends Node
 ## scene. The story flags that would start a cutscene are set first, so every view is the playable one,
 ## and autosaves are held (nothing is written to the saves).
 ## Per segment it records:
-## - hidden: the frames from the request until the new scene is in (under the opaque fade);
+## - hidden: the frames from the request until the new scene is in (under the opaque fade), and while it
+##   holds the fade (the title's boot warm-up, SceneRouter.hold_reveal, M2-ARC-03);
 ## - visible: the frames from then until 60 frames after the fade has lifted (ADR 0029's window);
 ## - dwell: --dwell seconds at the view, the wall and GPU time of every frame.
 ## It prints "SLICE_SWEEP <segment> ..." and appends one row per segment to --csv: perf_baseline.csv's
@@ -116,7 +117,8 @@ func _segment(seg: Array, preset: String) -> void:
 				router.call(&"change_scene", str(seg[2]), spawn)
 			else:
 				BattleRequest.start(StringName(str(seg[2])), HALUNA_ID, spawn if spawn != &"" else &"BattleReturn")
-			hidden = await _frames_until(func() -> bool: return bool(swapped[0]))
+			# M2-ARC-03: the title's warm-up holds the router's reveal; its frames are under the fade too.
+			hidden = await _frames_until(func() -> bool: return bool(swapped[0]) and not _reveal_held(router))
 			EventBus.scene_changed.disconnect(on_swap)
 			visible = await _frames_until(func() -> bool: return not bool(router.call(&"is_busy")))
 			visible.append_array(await _frames(VISIBLE_FRAMES))
@@ -191,6 +193,11 @@ func _segment(seg: Array, preset: String) -> void:
 		)
 	)
 	_write_csv(row)
+
+
+## True while something holds the router's fade opaque after its swap (SceneRouter.hold_reveal, M2-ARC-03).
+static func _reveal_held(router: Node) -> bool:
+	return router.has_method(&"reveal_holders") and not (router.call(&"reveal_holders") as Array).is_empty()
 
 
 ## Wall time of every frame until `done` is true (or TRANSITION_TIMEOUT_S passes).

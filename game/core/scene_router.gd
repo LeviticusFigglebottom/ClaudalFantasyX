@@ -45,6 +45,17 @@ extends Node
 ##     change_scene() returns: is_measuring() is true until then, and visible_measured(stats) fires
 ##     with the same dictionary, completed. A new change_scene() cuts the window short
 ##     (visible_complete false).
+## M2-ARC-03 (ADR 0029: the boot warm-up runs under a boot screen, before the title shows):
+##   - hold_reveal(holder) / release_reveal(holder) / reveal_holders(): while anything holds the reveal, a
+##     change keeps its fade opaque after the swap (the boot title holds it while its warm-up runs), at most
+##     REVEAL_WAIT_MAX_MS; the visible window starts when the fade starts to lift, after the hold. The wait is
+##     hidden loading time, recorded apart from entry_ms (reveal_wait_ms, reveal_wait_frames,
+##     reveal_wait_max_frame_ms), each frame against HIDDEN_FRAME_BUDGET_MS.
+##   - measure_reveal(scene_path, lifted): the same visible window for a reveal the router does not own (the
+##     BootCard lifting off the title at launch, when no change ran). It becomes last_swap_stats and ends with
+##     visible_measured.
+##   - warm_fonts_now() / fonts_ready(): the theme font warm-up outside a change (boot runs it under its card).
+##   - cancel_visible_window(): ends the window being measured (change_scene() and measure_reveal() call it).
 
 signal prewarm_requested(scene_path: String)
 ## Emitted under the opaque fade, just before the new scene enters the tree (zone globals reset here).
@@ -71,6 +82,8 @@ const VISIBLE_MEASURE_FRAMES := 60
 ## Upper bound on frames a swap waits for its holders (hold_swap), e.g. a time-sliced ShaderPrewarm
 ## stage (M1-RND-15).
 const PREWARM_WAIT_MAX_FRAMES := 120
+## Upper bound on the time a change keeps its fade opaque for its reveal holders (M2-ARC-03).
+const REVEAL_WAIT_MAX_MS := 10000.0
 const USEC_PER_MSEC := 1000.0
 const LOG_PREFIX := "SceneRouter"
 
@@ -95,6 +108,8 @@ var _font_warmer: FontWarmer
 var _fonts_warm := false
 ## instance id -> WeakRef of each object holding the swap (hold_swap).
 var _swap_holds: Dictionary = {}
+## instance id -> WeakRef of each object holding the reveal (hold_reveal, M2-ARC-03).
+var _reveal_holds: Dictionary = {}
 ## Bumped by every change_scene(): a visible window from an older change stops at its next frame.
 var _visible_generation := 0
 var _measuring_visible := false
@@ -140,11 +155,32 @@ func release_swap(holder: Object) -> void:
 
 ## The live objects holding the swap (freed holders are dropped here).
 func swap_holders() -> Array[Object]:
+	return _live_holders(_swap_holds)
+
+
+## M2-ARC-03: keeps the running (or next) change's fade opaque after its swap until release_reveal(holder),
+## until `holder` is freed, or for at most REVEAL_WAIT_MAX_MS. Holding twice with the same object is one hold.
+func hold_reveal(holder: Object) -> void:
+	if holder != null:
+		_reveal_holds[holder.get_instance_id()] = weakref(holder)
+
+
+func release_reveal(holder: Object) -> void:
+	if holder != null:
+		_reveal_holds.erase(holder.get_instance_id())
+
+
+## The live objects holding the reveal (freed holders are dropped here).
+func reveal_holders() -> Array[Object]:
+	return _live_holders(_reveal_holds)
+
+
+static func _live_holders(holds: Dictionary) -> Array[Object]:
 	var out: Array[Object] = []
-	for id: Variant in _swap_holds.keys():
-		var o: Variant = (_swap_holds[id] as WeakRef).get_ref()
+	for id: Variant in holds.keys():
+		var o: Variant = (holds[id] as WeakRef).get_ref()
 		if o == null:
-			_swap_holds.erase(id)
+			holds.erase(id)
 		else:
 			out.append(o as Object)
 	return out
@@ -157,8 +193,7 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 		push_warning("SceneRouter: change already in progress, ignoring %s" % scene_path)
 		return
 	_busy = true
-	_visible_generation += 1
-	_measuring_visible = false
+	cancel_visible_window()
 	var entry_start := Time.get_ticks_usec()
 	var stats := {"scene_path": scene_path, "budget_ms": HIDDEN_FRAME_BUDGET_MS}
 	ResourceLoader.load_threaded_request(scene_path)
@@ -171,10 +206,60 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 		push_error("SceneRouter: failed to load %s" % scene_path)
 	else:
 		await _swap(packed, scene_path, stats, spawn, entry_start)
+		await _wait_for_reveal(stats)
 	if stats.has("frame_ms"):
-		_measure_visible(stats)
+		_measure_visible(stats, _fade_lifted)
 	await _fade_to(0.0)
 	_busy = false
+
+
+## M2-ARC-03: keeps the fade opaque while anything holds the reveal (boot's warm-up), recording the wait.
+func _wait_for_reveal(stats: Dictionary) -> void:
+	var start := Time.get_ticks_usec()
+	var t := start
+	var frames := 0
+	var worst := 0.0
+	while not reveal_holders().is_empty() and _ms_since(start) < REVEAL_WAIT_MAX_MS:
+		await get_tree().process_frame
+		worst = maxf(worst, _ms_since(t))
+		t = Time.get_ticks_usec()
+		frames += 1
+	if not reveal_holders().is_empty():
+		push_warning("%s: lifting after %.0f ms with the reveal still held" % [LOG_PREFIX, _ms_since(start)])
+	for w in judge_reveal_wait(stats, frames, _ms_since(start), worst):
+		push_warning("%s: %s: %s" % [LOG_PREFIX, w, stats.get("scene_path", "")])
+
+
+## The reveal wait's stats (hidden frames, ADR 0029): writes reveal_wait_frames, reveal_wait_ms and
+## reveal_wait_max_frame_ms into `stats` and returns the warnings to raise (a frame over 1 s).
+static func judge_reveal_wait(stats: Dictionary, frames: int, wait_ms: float, worst_ms: float) -> Array[String]:
+	stats["reveal_wait_frames"] = frames
+	stats["reveal_wait_ms"] = wait_ms
+	stats["reveal_wait_max_frame_ms"] = worst_ms
+	var out: Array[String] = []
+	if worst_ms > HIDDEN_FRAME_BUDGET_MS:
+		out.append(
+			(
+				"hidden reveal-wait frame %.1f ms over the %.0f ms hidden-frame budget (ADR 0029)"
+				% [worst_ms, HIDDEN_FRAME_BUDGET_MS]
+			)
+		)
+	return out
+
+
+## M2-ARC-03: ADR 0029's visible window for a reveal the router does not run (the BootCard lifting off the
+## title at launch). Call it on the frame the reveal starts; `lifted` returns true once nothing covers the
+## screen (a freed object's Callable counts as lifted). `extra` (e.g. the card's wait stats) is copied into
+## the stats. A change_scene() cuts it short, as it does a change's window. Returns the stats dictionary,
+## which is also last_swap_stats, completed when visible_measured fires.
+func measure_reveal(scene_path: String, lifted: Callable, extra: Dictionary = {}) -> Dictionary:
+	cancel_visible_window()
+	var stats := extra.duplicate()
+	stats["scene_path"] = scene_path
+	stats["reveal"] = true
+	last_swap_stats = stats
+	_measure_visible(stats, lifted)
+	return stats
 
 
 ## With split_swap off this reproduces the M0 router (prewarm, instantiate, free and add in one
@@ -319,9 +404,17 @@ static func judge_visible(stats: Dictionary, window: VisibleWindow) -> Array[Str
 	return out
 
 
+## Ends the visible window being measured, if any (it is judged on its frames at its next frame, and
+## visible_measured fires with visible_complete false). change_scene() and measure_reveal() call it.
+func cancel_visible_window() -> void:
+	_visible_generation += 1
+	_measuring_visible = false
+
+
 ## Samples one frame time per process frame from the moment the fade starts to lift until
-## VISIBLE_MEASURE_FRAMES frames after it has lifted, or until another change_scene() starts.
-func _measure_visible(stats: Dictionary) -> void:
+## VISIBLE_MEASURE_FRAMES frames after it has lifted (`lifted` true at the frame's end), or until another
+## change_scene() (or measure_reveal()) starts.
+func _measure_visible(stats: Dictionary, lifted: Callable) -> void:
 	var generation := _visible_generation
 	_measuring_visible = true
 	var window := VisibleWindow.new(Time.get_ticks_usec())
@@ -329,7 +422,7 @@ func _measure_visible(stats: Dictionary) -> void:
 		await get_tree().process_frame
 		if generation != _visible_generation:
 			break
-		if window.tick(Time.get_ticks_usec(), _fade_rect.color.a <= 0.0):
+		if window.tick(Time.get_ticks_usec(), not lifted.is_valid() or bool(lifted.call())):
 			break
 	for w in judge_visible(stats, window):
 		push_warning("%s: %s: %s" % [LOG_PREFIX, w, stats.get("scene_path", "")])
@@ -338,11 +431,26 @@ func _measure_visible(stats: Dictionary) -> void:
 	visible_measured.emit(stats)
 
 
+func _fade_lifted() -> bool:
+	return _fade_rect.color.a <= 0.0
+
+
 static func _max_of(frames: Array[float]) -> float:
 	var worst := 0.0
 	for f in frames:
 		worst = maxf(worst, f)
 	return worst
+
+
+## M2-ARC-03: starts the theme font warm-up now, outside a change (boot runs it under its card). Once per
+## run, like a change's; a no-op when it already ran or is running, or warm_fonts is off.
+func warm_fonts_now() -> void:
+	_start_font_warm({})
+
+
+## True once the theme fonts are warm, or when warm_fonts is off (nothing will warm them).
+func fonts_ready() -> bool:
+	return _fonts_warm or not warm_fonts
 
 
 ## Starts rasterizing the project theme's fonts under the fade (once per run; spread over frames).
