@@ -2,7 +2,7 @@
 id: M2-MNU-302
 title: Bestiary creature portraits rendered from the creatures track's models
 role: ui
-status: todo
+status: doing
 owner_session: "menus (claude/menus)"
 depends_on: [M2-MNU-301]
 milestone: M2
