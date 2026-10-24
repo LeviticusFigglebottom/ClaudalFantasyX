@@ -1,13 +1,13 @@
 {
   "field_menu": {
-    "doc": "The field menu (M2-UI-04; docs/kb/tech/ui.md section Field menu). Rects are top-left x, y, w, h at the 1920 x 1080 reference, multiples of 3 so every edge lands on a whole pixel at 1280 x 720. 'root' and 'detail' are MenuPage metrics blocks (the same keys as battle_hud.json commands); a page is as tall as its rows need (MenuPage.height_for), 'detail' up to max_rows. 'desc' holds the line about the highlighted row: at the top of the right column on the root, else 'gap' under the right page, which is as tall as its rows. canvas_layer sits under the bestiary's (64), which opens over it. M2-MNU-01..04 grew the root to nine rows (Items, Equip, Lattice, Status, Swell, Bestiary, Settings, Quit, Close) and the panel with it, and widened the root (no right column there: cost_width 0) so 'Return to the path' fits at 130% text. M2-UI-18 added Map after Swell (ten rows; the panel grew to 687 and moved up so it stays centred). 'objective' (M2-UI-17): the current objective at the foot of the right column on the root, a dim 'Objective' head of label_height over the line; hidden where the zone has no map.",
+    "doc": "The field menu (M2-UI-04; docs/kb/tech/ui.md section Field menu). Rects are top-left x, y, w, h at the 1920 x 1080 reference, multiples of 3 so every edge lands on a whole pixel at 1280 x 720. 'root' and 'detail' are MenuPage metrics blocks (the same keys as battle_hud.json commands); a page is as tall as its rows need (MenuPage.height_for), 'detail' up to max_rows. 'desc' holds the line about the highlighted row: at the top of the right column on the root, else 'gap' under the right page, which is as tall as its rows. canvas_layer sits under the bestiary's (64), which opens over it. M2-MNU-01..04 grew the root to nine rows (Items, Equip, Lattice, Status, Swell, Bestiary, Settings, Quit, Close) and the panel with it, and widened the root (no right column there: cost_width 0) so 'Return to the path' fits at 130% text. M2-UI-18 added Map after Swell (ten rows; the panel grew to 687 and moved up so it stays centred). M3-UI-03 added Codex after Bestiary (eleven rows): the panel and root grew by one row pitch (48) and moved up by half of it, and the objective block moved down by half, so it stays at the foot of the right column. 'objective' (M2-UI-17): the current objective at the foot of the right column on the root, a dim 'Objective' head of label_height over the line; hidden where the zone has no map.",
     "canvas_layer": 60,
-    "panel": {"rect": [399, 189, 1122, 687], "pad": 27, "title_height": 56, "help_height": 40},
+    "panel": {"rect": [399, 165, 1122, 735], "pad": 27, "title_height": 56, "help_height": 40},
     "root": {
-      "rect": [426, 288, 372, 480],
+      "rect": [426, 264, 372, 528],
       "header_height": 0,
       "row_pitch": 48,
-      "max_rows": 10,
+      "max_rows": 11,
       "row_inset": 12,
       "text_indent": 40,
       "cost_width": 0,
@@ -21,7 +21,7 @@
       "breath_min": 0.75
     },
     "detail": {
-      "rect": [816, 288, 678, 0],
+      "rect": [816, 264, 678, 0],
       "header_height": 45,
       "row_pitch": 48,
       "max_rows": 4,
@@ -38,6 +38,6 @@
       "breath_min": 0.75
     },
     "desc": {"height": 120, "gap": 16},
-    "objective": {"rect": [816, 678, 678, 120], "label_height": 33}
+    "objective": {"rect": [816, 702, 678, 120], "label_height": 33}
   }
 }

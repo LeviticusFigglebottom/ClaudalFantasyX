@@ -23,7 +23,10 @@ func before_each() -> void:
 func test_the_root_names_its_rows_and_swell_is_off_without_a_swell_hero() -> void:
 	var m := _model([&"rhen"])
 	var rows := m.root_rows()
-	assert_eq(rows.size(), 10, "M2-MNU-01..04 added Items, Equip, Lattice, Status and Quit; M2-UI-18 Map")
+	assert_eq(
+		rows.size(), 11, "M2-MNU-01..04 added Items, Equip, Lattice, Status and Quit; M2-UI-18 Map; M3-UI-03 Codex"
+	)
+	assert_eq(rows[_at(FieldMenuModel.ROW_CODEX)]["label"], tr("FIELD_MENU_CODEX"), "M3-UI-03")
 	assert_eq(rows[_at(FieldMenuModel.ROW_MAP)]["label"], tr("FIELD_MENU_MAP"), "M2-UI-18")
 	assert_eq(rows[_at(FieldMenuModel.ROW_BESTIARY)]["label"], tr("FIELD_MENU_BESTIARY"))
 	assert_eq(rows[_at(FieldMenuModel.ROW_SWELL)]["label"], tr("FIELD_MENU_SWELL"))

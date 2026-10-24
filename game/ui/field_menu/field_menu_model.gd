@@ -11,6 +11,9 @@ extends RefCounted
 ##
 ## Map (M2-UI-18): `map` is the zone map's MapModel. The live menu builds it from the field when it
 ## opens (`live_map`); a zone with no map, or no model, turns the row off and says why on it.
+##
+## Codex (M3-UI-03): after Bestiary, it opens the lore codex (CodexMenu) over `codex`, or the
+## game's codex (CodexModel.from_game) when that is null. Shots and tests set a scratch one.
 
 ## M2-MNU-01..04 (the Menus track) added the party's pages: Items, Equip, Lattice, Status (each a
 ## FieldSubmenu in game/ui/menus/), and Quit to the title behind a confirm.
@@ -19,13 +22,24 @@ const ROW_EQUIP := &"equip"
 const ROW_LATTICE := &"lattice"
 const ROW_STATUS := &"status"
 const ROW_BESTIARY := &"bestiary"
+const ROW_CODEX := &"codex"
 const ROW_SWELL := &"swell"
 const ROW_MAP := &"map"
 const ROW_SETTINGS := &"settings"
 const ROW_QUIT := &"quit"
 const ROW_CLOSE := &"close"
 const ROOT_IDS: Array[StringName] = [
-	ROW_ITEMS, ROW_EQUIP, ROW_LATTICE, ROW_STATUS, ROW_SWELL, ROW_MAP, ROW_BESTIARY, ROW_SETTINGS, ROW_QUIT, ROW_CLOSE
+	ROW_ITEMS,
+	ROW_EQUIP,
+	ROW_LATTICE,
+	ROW_STATUS,
+	ROW_SWELL,
+	ROW_MAP,
+	ROW_BESTIARY,
+	ROW_CODEX,
+	ROW_SETTINGS,
+	ROW_QUIT,
+	ROW_CLOSE,
 ]
 ## Rows that need a hero in the party (off, with NO_HEROES_KEY, when there is none).
 const PARTY_ROWS: Array[StringName] = [ROW_EQUIP, ROW_LATTICE, ROW_STATUS]
@@ -35,6 +49,7 @@ const ROOT_LABEL_KEYS := {
 	ROW_LATTICE: "FIELD_MENU_LATTICE",
 	ROW_STATUS: "FIELD_MENU_STATUS",
 	ROW_BESTIARY: "FIELD_MENU_BESTIARY",
+	ROW_CODEX: "FIELD_MENU_CODEX",
 	ROW_SWELL: "FIELD_MENU_SWELL",
 	ROW_MAP: "FIELD_MENU_MAP",
 	ROW_SETTINGS: "FIELD_MENU_SETTINGS",
@@ -47,6 +62,7 @@ const ROOT_DESC_KEYS := {
 	ROW_LATTICE: "FIELD_MENU_LATTICE_DESC",
 	ROW_STATUS: "FIELD_MENU_STATUS_DESC",
 	ROW_BESTIARY: "FIELD_MENU_BESTIARY_DESC",
+	ROW_CODEX: "FIELD_MENU_CODEX_DESC",
 	ROW_SWELL: "FIELD_MENU_SWELL_DESC",
 	ROW_MAP: "FIELD_MENU_MAP_DESC",
 	ROW_SETTINGS: "FIELD_MENU_SETTINGS_DESC",
@@ -82,6 +98,8 @@ var name_keys: Dictionary = {}
 ## The zone map (null = none yet). FieldMenu fills it from the field when `live_map` is set.
 var map: MapModel
 var live_map := false
+## The lore codex the Codex row opens (null = the game's).
+var codex: CodexModel
 
 
 func _init(with_state: GameStateData = null, hero_ids: Array[StringName] = [], hero_name_keys: Dictionary = {}) -> void:
