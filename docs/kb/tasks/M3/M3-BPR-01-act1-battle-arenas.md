@@ -31,4 +31,6 @@ kit for that place:
 ## Notes
 - Lead queue 2026-10-24 item 4. Starts when big7 (with m2-slice's Act I encounters) lands on the integration branch.
 
+- 2026-10-24 15:28: env-art took M3-ENV-06 (claude/env-art 78916415), keeping the five ids. Building causeway_route_afternoon, derelict_deck_night and ash_terrace_lanternfall now; underway_tower after the M3-ENV-05 sea-floor kit (look agreed with Rendering); oruvel_raft_morning from the Haluna waterfront pieces unless a raft-town zone comes first.
+
 ## Review log

@@ -23,7 +23,7 @@ The gap (the human's playtest note): battles had no action animation. This track
 ## After MERGE-READY (Lead's queue, 15:22)
 - The Lead took d717cb3 into batch big7 (with ui, menus, characters, creatures, combat and the PC's rendering).
 - **M2-BPR-09 mouse targeting: review** (6481ac3). Hover a fighter to aim, click to confirm, right click cancels until UiInput merges. Done through the controller's public handle_input; controller unchanged; battle filter 491/0. The command menus already took the mouse (UI track).
-- **M3-BPR-01 Act I battle arenas: proposed** (env-art request M3-ENV-06). Starts when big7 brings m2-slice's Act I encounters.
+- **M3-BPR-01 Act I battle arenas: proposed; env-art took M3-ENV-06** (78916415 on claude/env-art) with the same five ids; three are being built now. Starts when big7 brings m2-slice's Act I encounters.
 - Hero battle clips: characters' M2-CHR-07 is in progress (reviewer: combat). I'll review and wire it when it lands.
 - Review fixes from the big7 gate: none yet.
 
