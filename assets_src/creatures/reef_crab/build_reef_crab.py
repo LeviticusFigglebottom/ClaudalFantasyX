@@ -120,8 +120,15 @@ def shell(mesh: ck.Mesh, rig: ck.Rig, rng: np.random.Generator) -> None:
     back = np.exp(-((unit[:, 0] / 0.22) ** 2) - ((unit[:, 2] + 0.85) / 0.12) ** 2)
     crack = ck.smoothstep(0.35, 0.8, back) * ck.smoothstep(0.6, 0.95, polar) * (0.5 + 0.5 * np.abs(np.sin(unit[:, 0] * 40.0)))
     col = ck.mix(col, PAL["spawn_wound"] * 0.5, (crack * 0.8)[:, None])
+    # each plate shades as a flat slab (its own normal); only the bevels into the seams stay smooth
+    smooth = ck.weld_normals(P, ck.vertex_normals(P, T))
+    plate_n = cells[first] / np.asarray(SHELL_R)
+    plate_n /= np.linalg.norm(plate_n, axis=1, keepdims=True)
+    k = ck.smoothstep(0.02, 0.08, gap)[:, None]
+    N = plate_n * k + smooth * (1.0 - k)
+    N /= np.linalg.norm(N, axis=1, keepdims=True)
     ck.finish(mesh, P, T, "shell", col, rig.rigid("body"), wet=wet * 0.6, cavity=groove * 0.9 + crack * 0.3,
-              emission=crack)
+              emission=crack, N=N)
 
     # underside: a shallow wet plastron
     prof = [(0.0, -1.0)]
