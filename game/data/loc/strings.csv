@@ -666,3 +666,7 @@ INN_MENU_HELP,Up and Down: choose · Confirm: choose · Cancel: leave
 INN_ERR_UNKNOWN,No one keeps this house.
 INN_ERR_CLOSED,The door is barred. No rooms for now.
 INN_ERR_NO_FUNDS_FMT,"Not enough lume: a rest costs {price}, and the purse holds {purse}."
+ENC_CH03_CAUSEWAY_SHORE,The Causeway Shallows
+ENC_CH03_CAUSEWAY_HARRIER,A Harrier over the Saltgrass
+TUT_FLIER_RHEN,"Fliers dodge most blows. Rhen's quick, precise strikes find them."
+SAVE_SLOT_PROLOGUE,Prologue
