@@ -30,6 +30,7 @@ const LOOPING_CUES: Array[String] = [
 	"res://assets/audio/music/tamsule.ogg",
 	"res://assets/audio/music/brightwater_ferry.ogg",
 	"res://assets/audio/music/brine_shoals.ogg",
+	"res://assets/audio/music/stillguard_inquisitor.ogg",
 ]
 const SAMPLE_RATE := 44100
 const MIN_LENGTH_S := 60.0

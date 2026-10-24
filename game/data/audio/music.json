@@ -138,6 +138,11 @@
       "resume": true,
       "_note": "Ch6, the Brine Shoals route of wrecks and mud-flats (M3-AUD-11); no zone row until ch06/brine_shoals exists"
     }
+,
+    "stillguard_inquisitor": {
+      "file": "res://assets/audio/music/stillguard_inquisitor.ogg",
+      "_note": "Ch6 boss, the Stillguard Inquisitor and a raid-hound in the Brine Shoals (M3-AUD-20); no battle.encounters row until the encounter exists; intended: battle.encounters stillguard_inquisitor -> stillguard_inquisitor"
+    }
   },
   "zones": [
     {
