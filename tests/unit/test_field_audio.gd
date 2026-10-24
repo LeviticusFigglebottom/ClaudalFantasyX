@@ -355,7 +355,9 @@ func test_new_menu_rows_exist_and_the_pages_are_live() -> void:
 		"MemoriesMenu"
 	]:
 		assert_true(ui.hooks.has(cls), "%s has a hook" % cls)
-		assert_false(bool((ui.hooks[cls] as Dictionary).get("pending", false)), "%s is live (M2-AUD-17, M2-MNU-303)" % cls)
+		assert_false(
+			bool((ui.hooks[cls] as Dictionary).get("pending", false)), "%s is live (M2-AUD-17, M2-MNU-303)" % cls
+		)
 	for id: String in [
 		"ui_lattice_node",
 		"ui_lattice_unlock",
