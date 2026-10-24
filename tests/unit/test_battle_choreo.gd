@@ -368,7 +368,11 @@ func test_the_party_holds_a_victory_pose_before_the_result() -> void:
 	assert_eq(outro.playing, BattleOutro.VICTORY)
 	var cfg := outro.cfg(BattleOutro.VICTORY)
 	outro.advance(float(cfg["delay_sec"]) + float(cfg["sec"]) * 0.25)
-	assert_true(_pos(&"rhen").y > _home_pos(&"rhen").y + EPS, "Rhen hops")
+	var rhen := ctl.stage.stand_in(&"rhen")
+	if BattleClips.has_clip(rhen, BattleClips.VICTORY):  # a hero model plays its victory clip in place of the hop
+		assert_eq(StringName(BattleClips.player_of(rhen).current_animation), BattleClips.VICTORY, "Rhen's victory")
+	else:
+		assert_true(_pos(&"rhen").y > _home_pos(&"rhen").y + EPS, "Rhen hops")
 	var hold := ctl.stage.outro_hold(0.0)
 	assert_between(hold, outro.remaining_sec(), outro.remaining_sec() + 1.0)
 	outro.advance(outro.duration(BattleOutro.VICTORY))
@@ -454,7 +458,9 @@ func test_a_creature_actor_strikes_with_its_own_clip_on_its_own_contact_frame() 
 	assert_eq(BattleClips.contact_sec(f, BattleClips.ATTACK), _FakeCreature.CONTACT)
 	assert_true(BattleClips.play_action(f, &"pinch", &"physical", BattleClips.ATTACK))
 	assert_eq(cr.actions, [&"pinch"] as Array[StringName], "the creature plays its own action clip")
-	assert_eq(BattleClips.contact_sec(ctl.stage.stand_in(&"rhen"), BattleClips.ATTACK), -1.0, "a primitive can't say")
+	var bare := Node3D.new()
+	assert_eq(BattleClips.contact_sec(bare, BattleClips.ATTACK), -1.0, "a primitive can't say")
+	bare.free()
 	var plan := choreo.plan_for(_result(&"attack", [_hit(_foe(), 10)]))
 	var strike_end := float(plan["strike_end"])
 	var late := float(plan["approach_end"]) + 1.2
