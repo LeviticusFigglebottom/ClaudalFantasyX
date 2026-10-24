@@ -30,6 +30,8 @@ This is a rough but complete thread through the first minutes of *Hymn of the Un
 
 To close the game, press **Alt+F4**, or click ■ Stop in the editor. **F8** also stops it from the editor.
 
+**If it runs slowly:** on the title, choose **Settings**. Left and Right change the preset (try **Low**) or any single setting; each change is applied and kept at once. Escape goes back.
+
 ### Option B: an exported .exe
 
 This needs the Godot 4.6.3 **export templates**: in the editor, open **Editor → Manage Export Templates → Download and Install**. Then open **Project → Export…**, select the **Windows Desktop** preset (already in the project), and click **Export Project**. The default output is `build/windows/hymn_of_the_undertow.exe`. Run the `.exe` next to its `.pck`.
@@ -48,7 +50,7 @@ This needs the Godot 4.6.3 **export templates**: in the editor, open **Editor �
 | Skip a cutscene (it stops at each choice, so you still choose) | hold Escape for 1 s | hold B / Circle |
 | Battle menus | Up / Down / Left / Right, Enter, Escape | D-pad, A, B |
 
-In battle, the timeline on the right shows who acts next. Highlighting a command previews how it changes the order. Swap brings Toma in from the reserve.
+In battle, the timeline on the right shows who acts next. Highlighting a command previews how it changes the order. Swap brings Toma in from the reserve. In the Drownbell fight, the panel at the top left says what the bell is building toward (the Toll and how many of its turns away it is), how many rim hits you've landed, and later how many polyps feed it.
 
 Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the story flags and **F5** teleports. They're useful if you get stuck.
 

@@ -36,7 +36,7 @@ Before M1-ARC-15 nothing in the game called `apply`, so every preset ran the aut
 |---|---|---|
 | Boot, before the title draws | `boot.gd` `_ready`: `GraphicsRuntime.boot(get_viewport())` | Loads `user://settings.cfg` [graphics] (no file: `default_preset`). Applies the **global part**: the Viewport and RenderingServer operations. Arms the per-scene hook. |
 | Every zone load | `SceneRouter._swap` → `attach_graphics_hook(node, stats)`, which connects the new scene root's `ready` signal (one-shot) | `GraphicsRuntime.on_scene_entered(root)` → `apply_scene(root)`: the **per-scene part**. `stats["graphics_ops"]` records the count. |
-| A settings change | The settings menu (not built yet: M1-UI-10): `select_preset(id, viewport)` / `set_override(key, value, viewport)` | Saves `settings.cfg`, then `apply_now(viewport)`: the global part plus the per-scene part on `current_scene`. |
+| A settings change | The Graphics page (`GraphicsMenu`, M1-UI-10; see "The Graphics menu" below): `select_preset(id, viewport)` / `set_override(key, value, viewport)` | Saves `settings.cfg`, then `apply_now(viewport)`: the global part plus the per-scene part on `current_scene`. |
 
 The per-scene part, `apply_scene(root)`, does the following:
 - **Operations.** It runs the Environment, sky and group operations of `plan()` against the first `WorldEnvironment` under the root. Those are the gates, `sky_detail` uniforms, `gi_voxel` and the `vegetation_*` groups.
@@ -222,8 +222,21 @@ GraphicsSettings.pop_override(h)   # at the cut out; also automatic when `self` 
   player's AA over it; the cutscene's pop then restores the pre-override snapshot, which is the old setting.
   Menus are not reachable during cutscenes today.
 
+## The Graphics menu (M1-UI-10)
+
+The title's **Settings** row opens the Graphics page (`game/ui/settings/graphics_menu.gd`, `GraphicsMenu`; logic in `graphics_menu_model.gd`, `GraphicsMenuModel`; layout and value labels in `game/data/ui/graphics_menu.json`). It's a modal page over a dark backdrop, built on `MenuPage`, with the value of each row in the right column. The page shows 14 rows at a time and scrolls with the cursor.
+
+- **Rows.** The preset comes first. It shows the preset's `name_key`, or **Custom** while `is_custom()`. Then comes every setting of this file's `settings`, in order, labelled by its `label_key`.
+- **Input.** `ui_left` / `ui_right` step a value through its `options`, wrapping; `ui_accept` and a click on the current row step forward. `ui_up` / `ui_down` move, and `ui_cancel` closes the page.
+  - The preset row calls `GraphicsRuntime.select_preset`, which clears every override.
+  - A setting row calls `GraphicsRuntime.set_override`.
+  - Both save `user://settings.cfg` and apply at once.
+- **Values.** Booleans read On or Off. String options read through `value_keys`, so `msaa_2x` shows as "MSAA 2×". `render_scale` reads as a percentage and `lod_threshold` as a multiplier; other numbers print as they are. `tools/tests/test_graphics_menu_data.py` fails if an option has no label or a key has no loc row.
+- **No fade.** The page lives on the title, a 2D screen, so nothing visible hitches when a change applies. An in-game pause menu would need the short fade the task describes (a shadow-atlas resize, SDFGI re-converging, glimmer emitters restarting); there's no pause menu yet.
+- **Tests:** `tests/unit/test_graphics_menu.gd`, including the title row. The `boot_title` baseline was re-approved for the fourth row.
+
 ## Open items
 - **Measure** every row above on a GPU runner (M1-QA-01) and replace the estimates. Add a per-preset benchmark camera path to the vertical-slice zone when one exists.
-- Localization rows for the `*_key` fields in `graphics_presets.json` (`GFX_PRESET_LOW`, `GFX_GI_MODE`, …) still need adding to `game/data/loc/strings.csv` (owner: Systems/UI). `tools/validate_data.py` doesn't scan `game/data/settings/` yet.
+- ~~Localization rows for the `*_key` fields in `graphics_presets.json`~~: all present. The Graphics page's value labels are checked by `tools/tests/test_graphics_menu_data.py` (M1-UI-10). `tools/validate_data.py` still doesn't scan `game/data/settings/`.
 - Zones must tag VoxelGI nodes with group `gi_voxel` (Environment), and vegetation with the `vegetation_groups` (M1-ENV-05).
 - The mapping from preset to shader quality variant (`HYMN_QUALITY`, see `game/shaders/README.md`) gets added when the first variant shader lands.

@@ -1,0 +1,56 @@
+{
+  "graphics_menu": {
+    "doc": "The Graphics settings page (M1-UI-10; docs/kb/tech/graphics_settings.md, 'The Graphics menu'). Rects are top-left x, y, w, h at the 1920 x 1080 reference. 'page' are MenuPage metrics. value_keys: loc key per string option of graphics_presets.json 'settings' (booleans use on_key / off_key; numbers print as they are, except percent_settings, shown as a percentage, and multiplier_settings, shown with a times sign). The rows are the preset, then every setting in graphics_presets.json order.",
+    "backdrop_alpha": 0.82,
+    "page": {
+      "rect": [560, 150, 800, 0],
+      "max_rows": 14,
+      "header_height": 48,
+      "row_inset": 8,
+      "row_pitch": 44,
+      "text_indent": 44,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75,
+      "cost_width": 0,
+      "rank_width": 0,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "submenu_dim": 0.5
+    },
+    "help": {
+      "rect": [460, 860, 1000, 40]
+    },
+    "on_key": "GFX_VALUE_ON",
+    "off_key": "GFX_VALUE_OFF",
+    "custom_key": "GFX_PRESET_CUSTOM",
+    "percent_settings": ["render_scale"],
+    "multiplier_settings": ["lod_threshold"],
+    "value_keys": {
+      "off": "GFX_VALUE_OFF",
+      "none": "GFX_VALUE_NONE",
+      "disabled": "GFX_VALUE_OFF",
+      "hard": "GFX_VALUE_HARD",
+      "very_low": "GFX_VALUE_VERY_LOW",
+      "low": "GFX_VALUE_LOW",
+      "medium": "GFX_VALUE_MEDIUM",
+      "high": "GFX_VALUE_HIGH",
+      "ultra": "GFX_VALUE_ULTRA",
+      "voxel_gi": "GFX_VALUE_VOXEL_GI",
+      "sdfgi": "GFX_VALUE_SDFGI",
+      "bilinear": "GFX_VALUE_BILINEAR",
+      "fsr": "GFX_VALUE_FSR",
+      "fsr2": "GFX_VALUE_FSR2",
+      "fxaa": "GFX_VALUE_FXAA",
+      "smaa": "GFX_VALUE_SMAA",
+      "taa": "GFX_VALUE_TAA",
+      "msaa_2x": "GFX_VALUE_MSAA_2X",
+      "msaa_4x": "GFX_VALUE_MSAA_4X",
+      "2x": "GFX_VALUE_2X",
+      "4x": "GFX_VALUE_4X",
+      "8x": "GFX_VALUE_8X",
+      "16x": "GFX_VALUE_16X"
+    }
+  }
+}
