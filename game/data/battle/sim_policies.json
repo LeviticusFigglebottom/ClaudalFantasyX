@@ -179,6 +179,59 @@
       "vowbound": [
         "ilun"
       ]
+    },
+    "ch04_derelict": {
+      "gear": {
+        "rhen": [
+          "rhen_coral_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_bellshell_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_net_rack_spear",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_pleated_primer",
+          "ysolde_plain_guards"
+        ]
+      },
+      "items": {
+        "salt_tonic": 4,
+        "brine_eyewash": 1,
+        "relighting_wick": 1
+      }
+    },
+    "ch04_spar_wraith": {
+      "gear": {
+        "rhen": [
+          "rhen_coral_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_bellshell_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_net_rack_spear",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_pleated_primer",
+          "ysolde_plain_guards"
+        ]
+      },
+      "items": {
+        "salt_tonic": 4,
+        "brine_eyewash": 1,
+        "relighting_wick": 1
+      },
+      "vowbound": [
+        "ilun"
+      ]
     }
   }
 }

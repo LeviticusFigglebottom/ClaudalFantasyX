@@ -1,0 +1,10 @@
+// Ch4 C4-03, the feast tables (optional): a fisher says he'll name his next boat for her, and his wife
+// (through Asha, who knows her) says he says that about everyone. It's the one laugh at the feast, and
+// it's a true one (pillar 1: warmth between people, never against the sorrow).
+title: ch04_wake_fisher
+location: ch04/haluna_wake
+---
+Fisher [determined]: Next boat I build, she's the Asha. Bow to stern, in paint. #line:ch04_wake_fisher_001
+Asha [laugh]: Nalu says you said that about the last three. #line:ch04_wake_fisher_002
+Fisher [laugh]: Nalu's never built a boat. #line:ch04_wake_fisher_003
+===

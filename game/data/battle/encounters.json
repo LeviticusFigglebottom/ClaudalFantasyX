@@ -33,6 +33,17 @@
     {"id": "ch05_stair_tortoise_ashwing", "name_key": "ENC_CH05_PILGRIM_STAIR", "scripted": false, "opening": "roll",
      "enemies": ["slag_tortoise", "ashwing"]},
     {"id": "ch05_cinder_matron", "name_key": "ENC_CH05_CINDER_MATRON", "scripted": true, "opening": "normal",
-     "prompt_key": "TUT_CINDER_MATRON_CRUST", "enemies": ["cinder_matron"]}
+     "prompt_key": "TUT_CINDER_MATRON_CRUST", "enemies": ["cinder_matron"]},
+    {"id": "ch04_sail_leeches", "name_key": "ENC_CH04_SAIL_LEECHES", "scripted": true, "opening": "ambush",
+     "enemies": ["sail_leech", "sail_leech"]},
+    {"id": "ch04_bottle_hermit", "name_key": "ENC_CH04_BOTTLE_HERMIT", "scripted": true, "opening": "normal",
+     "prompt_key": "TUT_CH04_SWAP", "turn_prompt_hero": "ysolde", "turn_prompt_key": "TUT_CH04_READ",
+     "enemies": ["bottle_hermit"]},
+    {"id": "ch04_spar_wraith", "name_key": "ENC_CH04_SPAR_WRAITH", "scripted": true, "opening": "normal",
+     "prompt_key": "TUT_SPAR_WRAITH_SHROUD", "enemies": ["spar_wraith"]},
+    {"id": "ch04_derelict_leeches", "name_key": "ENC_CH04_SAIL_LEECHES", "scripted": false, "opening": "roll",
+     "enemies": ["sail_leech", "sail_leech"]},
+    {"id": "ch04_derelict_glass", "name_key": "ENC_CH04_BOTTLE_HERMIT", "scripted": false, "opening": "roll",
+     "enemies": ["bottle_hermit"]}
   ]
 }

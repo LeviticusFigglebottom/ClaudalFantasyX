@@ -131,3 +131,18 @@ The zone's first arrival row then plays B07 the same either way. No story `.dlg`
 **Seams to other chapters.**
 - **Entry:** Ch6 isn't built, so `ch07/tamsule` is reached from its own `locations.json` row (spawn `RiverMouth`) or the F5 teleport.
 - **Exit:** `ch08/corrow` isn't built, so B10 hands off to the end card. Ch8 swaps the `leave` beat's last step for a `go`.
+
+## Ch4 (M3-C04-02)
+Ch4 "The Pilgrim's Wake" is built the same way: `game/data/flow/chapters/ch04.json`, two zones under `game/levels/ch04/`, scripts in `game/data/dialogue/ch04/`, loc rows in `game/data/loc/ch04.csv`, and the test `tests/integration/test_ch04_thread.gd`.
+
+**Haluna's wake night is a stand-in zone, `ch04/haluna_wake`.** HalunaStory owns `ch02/haluna` and isn't data-driven, and ADR 0035 says new chapters use ZoneStory and must not copy HalunaStory. Giving HalunaStory a data hook would put Ch4's night on the slice's code path (test_fp_thread, test_haluna_*). So the night is its own greybox location: Neme's door, the lane, the market and the closed inn, the chapel court, the dock, and the causeway head with the wake-shell wall. When Haluna moves to ZoneStory, the zone block moves to `ch02/haluna` unchanged, and env-art's wake-night dressing (M3-C04-03) lands on the real Haluna.
+
+**The entry.** The wake opens once B11 has sworn Rhen in (`ch03_rhen_sworn_guardian`). In the M2 build the slice's end card still returns to the title; the full game's hand-off from the end card is M3-C04-04. Until then Ch4 is reached at its own location (locations.json, and the F5 debug teleports).
+
+**The exit.** `ch05/pemakar` isn't on this branch, so the ferry's last step is `{"scene": "res://game/flow/end_card.tscn"}` as a stand-in. Repoint it to `{"go": {"location": "ch05/pemakar", "spawn": ...}}` when Ch5 merges (M3-C04-04).
+
+**The zone root.** `Ch04Zone` extends Ch01Zone (rest, give, hide_block / show_block) and adds the layout's `states`: `[{flag, hide, show, place: {actor: mark}}]`, applied in order when the zone is ready and again by a `{"zone": "refresh_states"}` step. A battle reloads the zone, so the dressing and the party's stand-ins (on the ferry, across on the derelict, back aboard) follow the flags. `tools/tests/test_ch04_validate.py` checks the rows' flags, ids and marks, because the shared validator doesn't read `states` yet.
+
+**The ferry is never attacked (ADR 0017 (d)).** There is no walkway between the ferry and the derelict, and the layout's random fights run only while `ch04_boarded_derelict` is set and `ch04_spar_wraith_defeated` isn't. The test walks 500 m on the ferry and asserts that nothing fires.
+
+**Battle prompts in sequence.** An encounter may name a second prompt for one hero's first turn (`turn_prompt_hero`, `turn_prompt_key`; BattleBossHud). The bottle-hermit opens on the swap prompt and shows Read on Ysolde's first turn.

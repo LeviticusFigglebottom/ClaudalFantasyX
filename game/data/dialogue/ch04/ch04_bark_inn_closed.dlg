@@ -1,0 +1,7 @@
+// Ch4 C4-02: the inn is closed tonight (systems on show). A slate on the door, read as a caption.
+// No shop either: the market is shut, its awnings rolled.
+title: ch04_bark_inn_closed
+location: ch04/haluna_wake
+---
+A slate hangs on the inn door: "Closed. We are all at the wall." #line:ch04_bark_inn_001
+===

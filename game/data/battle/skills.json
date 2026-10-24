@@ -169,6 +169,22 @@
      "_note": "M3-C05-02 PROVISIONAL (Kahre; combat request M3-C05-06: 'raw lightning that ignores defence' has no engine rule yet)."},
     {"id": "last_strike", "name_key": "SKILL_LAST_STRIKE", "kind": "magical", "power": 30, "rank": 3,
      "element": "lightning", "target": "single_foe", "mp_cost": 0, "magic": true, "swell": true, "vowbound": true,
-     "_note": "M3-C05-02 PROVISIONAL (Kahre's Swell technique; M3-C05-06)."}
+     "_note": "M3-C05-02 PROVISIONAL (Kahre's Swell technique; M3-C05-06)."},
+    {"id": "sail_drop", "name_key": "SKILL_SAIL_DROP", "kind": "physical", "power": 7, "rank": 3,
+     "accuracy": 95, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false},
+    {"id": "glass_jab", "name_key": "SKILL_GLASS_JAB", "kind": "physical", "power": 9, "rank": 3,
+     "accuracy": 90, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false},
+    {"id": "glass_flare", "name_key": "SKILL_GLASS_FLARE", "kind": "magical", "power": 8, "rank": 3,
+     "element": "fire", "target": "single_foe", "mp_cost": 0, "magic": true},
+    {"id": "spar_stab", "name_key": "SKILL_SPAR_STAB", "kind": "physical", "power": 7, "rank": 3,
+     "accuracy": 95, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false},
+    {"id": "shroud_sweep", "name_key": "SKILL_SHROUD_SWEEP", "kind": "physical", "power": 4, "rank": 3,
+     "accuracy": 90, "element": "none", "target": "all_foes", "mp_cost": 0, "magic": false},
+    {"id": "lines_taut", "name_key": "SKILL_LINES_TAUT", "kind": "support", "power": 0, "rank": 2,
+     "element": "none", "target": "self", "mp_cost": 0, "magic": false, "charge": {"skill": "haul", "turns": 2}},
+    {"id": "haul", "name_key": "SKILL_HAUL", "kind": "physical", "power": 20, "rank": 3,
+     "accuracy": 95, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false, "delay_ranks": 2},
+    {"id": "sea_lash", "name_key": "SKILL_SEA_LASH", "kind": "magical", "power": 5, "rank": 3,
+     "element": "water", "target": "all_foes", "mp_cost": 0, "magic": true}
   ]
 }

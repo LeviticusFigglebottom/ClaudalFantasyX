@@ -180,3 +180,20 @@ Loadouts are `ch05_ashcrown` (2 Salt Tonic) and `ch05_matron` (4 Salt Tonic, 1 R
 - **Ashwings name Ysolde as their answer** (fire weak), not Rhen. The sheet allows either, and only Ysolde gives `role_answer` a swap to make.
 
 Numbers are in the 2026-10-24 tuning-log entry in balance_report.md.
+
+### Ch4: the first four-member party (M3-C04-02)
+
+The derelict's fights (act1_ch04.md C4-12, C4-13, §5, §9 Combat). Rhen, Asha and Toma are active and Ysolde is in reserve (she joins at the gangplank), at Swell `good`. Loadouts: `ch04_derelict` (every Haluna tier-1 piece for Rhen, Asha and Toma, Ysolde's starting gear, 4 Salt Tonic, 1 Brine Eyewash, 1 Relighting Wick) and `ch04_spar_wraith` (the same, plus Ilun bound). The Spar-Wraith suite seats Ysolde active and Toma in reserve: the formation a player brings once the bottle-hermit has taught the swap (with Ysolde in reserve, `role_answer` swaps out whoever acts first, usually Rhen and his ember-edged hooks, and measures that rather than the answer).
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch04_bottle_hermit`, and the random `ch04_derelict_glass` | Ch4–Ch9 regular | 20–60% | ≥ 92% | ≥ 97% | ≤ 35 |
+| `ch04_sail_leeches`, and the random `ch04_derelict_leeches` | Ch4–Ch9 regular, `role_answer` report only (logged exception) | 20–60% | report only | ≥ 97% | ≤ 35 |
+| `ch04_spar_wraith` | Ch4–Ch9 boss, `smart` ceiling lifted (logged exception) | 0–5% | 65–85% | 75–100%, ≥ 30 mean turns | ≤ 70 |
+
+- **The leeches' `role_answer`.** The leech's answer is Rhen, and he is already on the field with nothing a masher lacks but Quick Hit, so the policy plays almost exactly like `naive` (62.9% against 48.2%). Asking it for 92% would need a leech the masher also beats. Report only, as Ch1's Hullgnaw, until Combat rules (M3-C04-06).
+- **The Spar-Wraith's `smart` ceiling.** With four heroes and Asha's Mend, `smart` out-heals any damage that `role_answer` (which never heals) survives: every tuning that put `role_answer` in 65–85% left `smart` at 99–100%. No field mechanic like the Drownbell's flood is in the sheet. The ceiling is lifted to 100% and the ease ceiling is `smart` ≥ 30 mean turns (measured 33.3) until Combat rules (M3-C04-06).
+- **The sim plays every opening as normal.** BattleSim never sets `engine.opening`, so the scripted leech ambush and its random twin measure the same. The ambush makes the live fight a little harder than measured.
+- **Ysolde's lesson.** The hermit's glass resists blows and is immune to fire (the sheet's "reflects fire": the engine has no reflect), and ice cracks it. Rhen's ember-edged Coral Hooks turn his Attack to fire, so a masher's Rhen does nothing to it. The masher wins about half the time on Toma and Asha alone; Ysolde's Frost ends it in about eight actions.
+
+Numbers are in the 2026-10-24 tuning log entry in balance_report.md.

@@ -593,6 +593,163 @@
       "p90_turns_max": 70,
       "loadout": "ch05_matron",
       "swell": "good"
+    },
+    {
+      "id": "ch04_sail_leeches",
+      "chapter": "Ch4 derelict: the sail-leech ambush (Rhen answers)",
+      "kind": "regular",
+      "encounter": "ch04_sail_leeches",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ]
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch04_derelict",
+      "swell": "good"
+    },
+    {
+      "id": "ch04_bottle_hermit",
+      "chapter": "Ch4 derelict: the bottle-hermit lesson (swap, Read, elements; Ysolde answers)",
+      "kind": "regular",
+      "encounter": "ch04_bottle_hermit",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ]
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch04_derelict",
+      "swell": "good"
+    },
+    {
+      "id": "ch04_derelict_leeches",
+      "chapter": "Ch4 derelict random: three sail-leeches",
+      "kind": "regular",
+      "encounter": "ch04_derelict_leeches",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ]
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch04_derelict",
+      "swell": "good"
+    },
+    {
+      "id": "ch04_derelict_glass",
+      "chapter": "Ch4 derelict random: a bottle-hermit and a sail-leech",
+      "kind": "regular",
+      "encounter": "ch04_derelict_glass",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ]
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch04_derelict",
+      "swell": "good"
+    },
+    {
+      "id": "ch04_spar_wraith",
+      "chapter": "Ch4 boss: the Spar-Wraith (Ysolde answers; Fire, then Ice)",
+      "kind": "boss",
+      "encounter": "ch04_spar_wraith",
+      "active": [
+        "rhen",
+        "asha",
+        "ysolde"
+      ],
+      "reserve": [
+        "toma"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          5
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          65,
+          85
+        ],
+        "smart": [
+          75,
+          100
+        ]
+      },
+      "mean_turns_min": {
+        "smart": 30
+      },
+      "p90_turns_max": 70,
+      "loadout": "ch04_spar_wraith",
+      "swell": "good"
     }
   ]
 }

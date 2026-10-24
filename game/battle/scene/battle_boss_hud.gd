@@ -12,12 +12,18 @@ extends RefCounted
 ## (M2-FP-12): floats are transient and off with damage numbers; the read-out is neither.
 ## The encounter's own prompt_key is the opening prompt. show_prompt() puts a queued prompt on the
 ## help line once, when the next command menu opens.
+## M3-C04-02: an encounter may also name a second prompt for one hero's first turn on the field
+## (encounters.json "turn_prompt_hero" and "turn_prompt_key"): Ch4's bottle-hermit teaches the swap
+## first, then Read on the turn of the hero swapped in.
 
 var ctl: BattleController
 ## The tutorial line waiting for the next command menu ("" when none).
 var pending_prompt := ""
 ## The standing read-out under the target info (one per HUD, reused by a retry).
 var status: BattleBossStatus
+## The hero whose first turn queues turn_prompt ("" when the encounter names none, or once shown).
+var turn_prompt_hero: StringName = &""
+var turn_prompt := ""
 var _engine: BattleEngine
 
 
@@ -50,7 +56,11 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 
 ## Connects to `engine` (after setup) and queues the encounter's opening prompt.
 func attach(engine: BattleEngine) -> void:
-	pending_prompt = _text(str(engine.db.encounters.get(engine.encounter_id, {}).get("prompt_key", "")))
+	var enc: Dictionary = engine.db.encounters.get(engine.encounter_id, {})
+	pending_prompt = _text(str(enc.get("prompt_key", "")))
+	turn_prompt = _text(str(enc.get("turn_prompt_key", "")))
+	turn_prompt_hero = StringName(str(enc.get("turn_prompt_hero", ""))) if turn_prompt != "" else &""
+	engine.turn_started.connect(_on_turn_started)
 	engine.phase_changed.connect(_on_phase_changed)
 	engine.combatants_joined.connect(_on_joined)
 	engine.charge_started.connect(_on_charge_started)
@@ -86,6 +96,14 @@ func show_prompt() -> bool:
 	ctl.hud.set_help(pending_prompt, &"focus_gold")
 	pending_prompt = ""
 	return true
+
+
+## The named hero's first turn queues the encounter's turn prompt (once a fight).
+func _on_turn_started(actor: BattleCombatant) -> void:
+	if turn_prompt_hero == &"" or actor.id != turn_prompt_hero:
+		return
+	pending_prompt = turn_prompt
+	turn_prompt_hero = &""
 
 
 func _on_phase_changed(enemy: BattleCombatant, phase_id: StringName) -> void:

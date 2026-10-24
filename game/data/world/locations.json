@@ -78,6 +78,20 @@
       "spawn": "StairFoot",
       "name_key": "LOCATION_CH05_ASHCROWN",
       "_note": "M3-C05-02: Ashcrown, the stair-mountain temple (Ch5 B07-B10): the pilgrim stair, the strike trial, the anvil court; a greybox zone (Ch05AshcrownZone)."
+    },
+    {
+      "id": "ch04/haluna_wake",
+      "scene": "res://game/levels/ch04/haluna_wake/haluna_wake.tscn",
+      "spawn": "NemeDoor",
+      "name_key": "LOCATION_CH04_HALUNA_WAKE",
+      "_note": "M3-C04-02: Haluna on the Pilgrim's Wake night (C4-01 to C4-08), a greybox stand-in for ch02/haluna's night variant (HalunaStory is not data-driven; ADR 0035). Ch4 ends the night by sending the party to ch04/brightwater_ferry at Landing."
+    },
+    {
+      "id": "ch04/brightwater_ferry",
+      "scene": "res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn",
+      "spawn": "Landing",
+      "name_key": "LOCATION_CH04_BRIGHTWATER_FERRY",
+      "_note": "M3-C04-02: the islet's seaward landing, the ferry Kind Weather and the drifting Seventh Terrace (C4-09 to C4-15), a greybox zone (Ch04Zone)."
     }
   ],
   "shrines": [

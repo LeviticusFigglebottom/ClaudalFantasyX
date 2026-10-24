@@ -37,6 +37,7 @@
     {"id": "kell_wick", "category": "key", "name_key": "ITEM_KELL_WICK", "desc_key": "ITEM_KELL_WICK_DESC"},
     {"id": "pio_side_band", "category": "key", "name_key": "ITEM_PIO_SIDE_BAND", "desc_key": "ITEM_PIO_SIDE_BAND_DESC"},
     {"id": "quench_charm", "category": "key", "name_key": "ITEM_QUENCH_CHARM", "desc_key": "ITEM_QUENCH_CHARM_DESC"},
-    {"id": "pemakar_leaf_boat", "category": "key", "name_key": "ITEM_PEMAKAR_LEAF_BOAT", "desc_key": "ITEM_PEMAKAR_LEAF_BOAT_DESC"}
+    {"id": "pemakar_leaf_boat", "category": "key", "name_key": "ITEM_PEMAKAR_LEAF_BOAT", "desc_key": "ITEM_PEMAKAR_LEAF_BOAT_DESC"},
+    {"id": "name_board_seventh_terrace", "category": "key", "name_key": "ITEM_NAME_BOARD_SEVENTH_TERRACE", "desc_key": "ITEM_NAME_BOARD_SEVENTH_TERRACE_DESC"}
   ]
 }

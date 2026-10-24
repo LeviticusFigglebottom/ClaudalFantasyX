@@ -83,5 +83,18 @@ flags = {
 "ch05_kahre_bound": "Ch5 B10: Asha has bound Kahre at Ashcrown; the Lightning Vowbound may be called from here (vowbound.json bound_flag).",
 "ch05_second_verse_sung": "Ch5 B10: Asha sang the second verse to the mountain (verse-sleeve band 2; Ch6 B01).",
 "ch05_after_seen": "Ch5 B11: the party has come back down to Pemakar in the afternoon after the binding.",
-"ch05_done": "Ch5 B11: the dawn at the harbour road has played; the chapter hands off toward Ch6's Brine Shoals."
+"ch05_done": "Ch5 B11: the dawn at the harbour road has played; the chapter hands off toward Ch6's Brine Shoals.",
+"ch04_started": "Ch4 C4-01: the lamps have gone to the wall; Haluna is in its wake-night state (the chapter is 4).",
+"ch04_feast_neme": "Ch4 C4-03: Rhen has been to Neme's table at the wake feast (the one table the wall's call waits for).",
+"ch04_shell_set": "Ch4 C4-04: Osu has set Asha's name-shell in the wake-shell wall; it shows on every later Haluna visit (Ch18, the Ending).",
+"ch04_rhen_named_kell": "Ch4 C4-06 choice: on the dark dock Rhen told Asha about Oruvel and Mother Kell (Ch7 payoff: Asha already knows Kell's name).",
+"ch04_dock_comforted": "Ch4 C4-06: Asha has sat with Rhen on the dark dock; gates the night's side scene and the dawn.",
+"ch04_saw_ysolde_ink": "Ch4 C4-07 side scene 'The Ink': Rhen held the lamp while the stranger re-inked the shells (C4-08 look, C4-09 line, Ch13 payoff).",
+"ch04_left_haluna": "Ch4 C4-08: the Cantor has walked the causeway at the dawn low water; the wake-night is over.",
+"ch04_ysolde_joined": "Ch4 C4-09: Ysolde presented herself at the gangplank and joined the party (Rhen, Asha, Toma; Ysolde).",
+"ch04_boarded_derelict": "Ch4 C4-11: the party has crossed to the drifting Seventh Terrace from the ferry (never lashed to it).",
+"ch04_leeches_won": "Ch4 C4-12: the scripted sail-leech ambush on the derelict's deck was won.",
+"ch04_hermit_won": "Ch4 C4-12: the scripted bottle-hermit fight (the swap, Read and element lesson) was won.",
+"ch04_spar_wraith_defeated": "Ch4 C4-13: the Spar-Wraith boss is beaten on the derelict's main deck (set by the battle result).",
+"ch04_name_board_carried": "Ch4 C4-14: Rhen carried the Seventh Terrace's name-board home for nothing (key item name_board_seventh_terrace; Ch5 payoff)."
 }
