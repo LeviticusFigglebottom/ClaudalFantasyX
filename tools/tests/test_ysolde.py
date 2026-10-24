@@ -205,7 +205,8 @@ class TestCommitted(unittest.TestCase):
             self.assertIn(want, mats)
         for png in (OUT / "textures").glob("*.png"):
             self.assertLess(png.stat().st_size, MAX_BYTES, png.name)
-            w, h = Image.open(png).size
+            with Image.open(png) as im:
+                w, h = im.size
             self.assertEqual(w & (w - 1), 0, png.name)
             self.assertEqual(h & (h - 1), 0, png.name)
         import re

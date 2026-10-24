@@ -70,6 +70,7 @@ from asha_mesh import Part  # noqa: E402
 
 PARAMS = HERE / "ysolde_params.json"
 HEAD_BONE = hb.HEAD_BONE
+MIDLINE_SNAP = 1e-6  # m: head and hair coordinates nearer zero than this are midline float noise
 HIPS_BONE = "DEF-spine"
 CHEST_BONE = "DEF-spine.003"
 UPPER_CHEST_BONE = "DEF-spine.004"
@@ -349,6 +350,9 @@ def main() -> int:
     used_h, Fh, remap_h, Sh = hb.submesh(V, F, is_head, res["seams"])
     Vh = V[used_h]
     Vh[np.abs(Vh) < hb.MIDLINE_SNAP] = 0.0  # M1-CHR-14: host-independent midline (build_asha)
+    # her face solve leaves a few midline coordinates at 1e-9 .. 1e-8 that still flip their last bits between numpy's
+    # AVX-512 and AVX2 paths (verified with NPY_DISABLE_CPU_FEATURES="X86_V3 X86_V4"): a wider snap, hers only
+    Vh[np.abs(Vh) < MIDLINE_SNAP] = 0.0
     fh_reg = freg[is_head]
     inner_v = hb.inner_lip_vertices(Vh, Nw[used_h], res["lip_dz"][used_h], face.mouth_half, lm.h / 0.222)
     mats_h = hb.head_materials(Fh, fh_reg, inner_v)
@@ -420,6 +424,9 @@ def main() -> int:
     hair = Part("HairHead")
     if not args.no_hair:
         hair = hstyle.build(lm, surf)
+        Vr = hair.varr()
+        Vr[np.abs(Vr) < MIDLINE_SNAP] = 0.0  # cards rooted on the midline: the same host noise
+        hair.V = list(Vr)
         ob = hb.part_object(hair)
         Wr = np.zeros((len(hair.V), len(wnames)), dtype=np.float32)
         Wr[:, head_i] = 1.0
