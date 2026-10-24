@@ -22,8 +22,11 @@ The gap (the human's playtest note): battles had no action animation. This track
 
 ## After MERGE-READY (Lead's queue, 15:22)
 - The Lead took d717cb3 into batch big7 (with ui, menus, characters, creatures, combat and the PC's rendering).
-- **M2-BPR-09 mouse targeting: review** (6481ac3). Hover a fighter to aim, click to confirm, right click cancels until UiInput merges. Done through the controller's public handle_input; controller unchanged; battle filter 491/0. The command menus already took the mouse (UI track).
-- **M3-BPR-01 Act I battle arenas: proposed; env-art took M3-ENV-06** (78916415 on claude/env-art) with the same five ids; three are being built now. Starts when big7 brings m2-slice's Act I encounters.
+- **Mouse parity (Lead item 1): covered by the UI track.** Their M2-UI-26 `BattlePointer` gives battle mouse targeting and Swell play; the command menus took the mouse already. I removed my duplicate picker (M2-BPR-09 closed as superseded, 64a293c) so there's one mouse path.
+- **summon_cinematic aligned with UI's M2-UI-23 row** (same id, options, default and text): Short (default) = full the first time, Full = always, Off = no rise. Keep one copy of that row and of the SET_BATTLE_SPEED* rows at merge.
+- **Merged claude/m2-slice (MERGE-READY a30b664) into this branch** (66011333) to unblock the Act I arenas and boss intros (append-only conflicts only). Full Godot suite after the merge: **1664 run, 0 failed**.
+- **Worktree agents running:** M3-BPR-01 Act I greybox arenas (5), M3-BPR-02 Act I boss intros, M2-BPR-10 placeholder hero clip poses (Lead items 2 and 3).
+- **M3-BPR-01 Act I battle arenas: greybox in progress (agent); env-art took M3-ENV-06** (78916415 on claude/env-art) with the same five ids; three are being built now. Starts when big7 brings m2-slice's Act I encounters.
 - Hero battle clips: characters' M2-CHR-07 is in progress (reviewer: combat). I'll review and wire it when it lands.
 - Review fixes from the big7 gate: none yet.
 
