@@ -2,8 +2,8 @@
 id: M1-RND-28
 title: Export shader baker on a Windows release build; measure boot and zone entries against ADR 0029
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M1-RND-27, M1-ARC-16]
 milestone: M1
