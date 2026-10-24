@@ -277,3 +277,51 @@ minutes in all. The scenes are in act_outline.md (Ch5, Ch7, Ch8).
   samples). Do the footsteps sound natural, or clipped?
 
 **For all three:** can you hear the loop wrap? The seams are at 80 s, 68.6 s and 75.8 s.
+
+## M3: Act I bosses (sea) (M3-AUD-08)
+
+Two boss loops for fights that aren't built yet, so for now you can only hear them on their own. Neither uses the
+Drownbell's tower bell or the gamelan bars of the ordinary battle theme, and each has its own key and meter. That
+way a boss should sound like a different kind of trouble, not the battle theme played louder. It takes about
+2.5 minutes in all. The scenes are in act_outline.md (Ch1, Ch4).
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/hullgnaw.ogg` | 2.7 s intro + 64.0 s loop | Ch1: Hullgnaw, on a breaking raft while Oruvel is torn apart |
+| 2 | `music/spar_wraith.ogg` | 2.8 s intro + 72.8 s loop | Ch4: the Spar-Wraith, on the deck of the drowned trader |
+
+### (1) Hullgnaw: the turn-order tutorial
+
+- **The brief:** an eel grown through a sunken ship's ribs. It's the first boss and teaches the timeline, so it
+  has to be easy to follow before it's heavy. It is in G minor and 6/8: two big beats a bar, like a raft heaving on
+  a swell. Only one tune plays at a time.
+- **The band:** a fingered bass is the eel. It sits on each chord root and then crawls chromatically into the next
+  one, so the low line is always coiling. Muted plucks through a small wooden body run in eighths (Oruvel is a town
+  of rope). Frame drums and a big drum keep the beat. A low gong groans at each section: the hull. The tune is a
+  hard-blown flute, and an open plucked counterline joins it when the tune comes back.
+- **The break (bars 33-40):** the drums drop out to the big drum and hard slaps (timbers cracking) over the eel,
+  then build back.
+- **The key question:** is it easy to follow while you learn the timeline, or busy? If it's busy, the plucks
+  should come down first. **Is it menacing enough for a first boss,** or does it sound like a jig? If it's a jig,
+  I'd make the eel's crawl slower and lower before touching the meter.
+- Mastering: one stack of drum, bass and flute in bar 27 takes about 4.6 dB of fast limiting, and other hits take
+  2-3 dB, on under 1 % of samples. If the downbeats sound flattened, tell me and I'll lower the drums.
+
+### (2) The Spar-Wraith: rope, wind and dead wood
+
+- **The brief:** a trader lost in the same storm as Oruvel, drifting with its sails set and nobody at the helm. A
+  spawn is tangled in its rigging. It should be eerie before it's loud. It is in F# Locrian, where the home chord
+  has a flat fifth, so it never settles. The meter is 7/8 counted 2+2+3: the ship's roll with nobody steering
+  always comes round a beat short.
+- **The rigging:** wind in the shrouds (a drifting noise band with a thin whistle on top) never stops. Rope creaks
+  under load on the long beat of the bar: a modelled stick-slip, a rapid run of tiny catches whose rate rises or
+  falls. A larger, slack drum is the hull knocking.
+- **The band:** a low, breathy flute (a whistle in the rigging) carries the tune. High open plucks (the shrouds)
+  answer it when it returns. The bass falls to the tritone C on the home chord. In the becalmed section (bars
+  33-44) the drums stop, and a low string chord (the dead sails) holds under the wind and the knocking.
+- **The key question:** is it eerie and still a fight, or just strange? **Do the rope creaks sound like rope and
+  wood,** or like a door hinge or a frog? If they're the hinge, I'd lower their rate. Is the wind too steady (a hiss)
+  or about right?
+- The dead sails are the old saw-ensemble pad, kept low. If they sound like a keyboard, tell me.
+
+**For both:** can you hear the loop wrap? The seams are at 64 s and 72.8 s after each intro.
