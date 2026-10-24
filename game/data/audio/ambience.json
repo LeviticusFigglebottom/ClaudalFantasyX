@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "doc": "Field ambience beds (M2-AUD-05; docs/kb/tech/audio_runtime.md). ambience: bed id -> file, volume_db (0: the beds ship at -26 LUFS), bus. The director merges these beds into music.json's ambience table (music.json's rows win on a clash). zones: scene -> the beds that play there by day; once night_flag is set, the night list instead; wind: true adds the wind bed. A zone's beds here apply when music.json's row for the scene names none (no ambience key, or an empty list), so music.json can still override a scene. wind: the wind bed's level follows the zone's wind speed (WeatherClock.zone_wind, game/data/world/zone_weather.json): min_db at or below min_m_s, max_db at or above max_m_s, linear in between. tools/validate_data.py checks every file, bed, scene and flag.",
+  "ambience": {
+    "haluna_day": {"file": "res://assets/audio/ambience/haluna_day.ogg", "volume_db": 0.0, "bus": "Ambience"},
+    "haluna_night": {"file": "res://assets/audio/ambience/haluna_night.ogg", "volume_db": 0.0, "bus": "Ambience"},
+    "surf": {"file": "res://assets/audio/ambience/surf.ogg", "volume_db": 0.0, "bus": "Ambience"},
+    "dock": {"file": "res://assets/audio/ambience/dock.ogg", "volume_db": 0.0, "bus": "Ambience"},
+    "shrine_interior": {"file": "res://assets/audio/ambience/shrine_interior.ogg", "volume_db": 0.0, "bus": "Ambience"},
+    "wind": {"file": "res://assets/audio/ambience/wind.ogg", "volume_db": 0.0, "bus": "Ambience"}
+  },
+  "zones": {
+    "res://game/levels/ch02/haluna/haluna.tscn": {
+      "day": ["haluna_day", "surf"],
+      "night_flag": "ch03_drownbell_defeated",
+      "night": ["haluna_night", "surf", "dock"],
+      "wind": true
+    },
+    "res://game/levels/ch03/shell_shrine/shell_shrine.tscn": {
+      "day": ["shrine_interior"],
+      "_note": "under the temple cue (music.json shell_shrine_interior): sparse on purpose"
+    }
+  },
+  "wind": {"bed": "wind", "min_m_s": 2.0, "max_m_s": 10.0, "min_db": -18.0, "max_db": 0.0}
+}

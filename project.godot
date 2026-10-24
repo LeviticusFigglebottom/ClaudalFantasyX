@@ -17,6 +17,7 @@ EventBus="*res://game/core/event_bus.gd"
 Game="*res://game/core/game.gd"
 SaveSystem="*res://game/core/save_system.gd"
 SceneRouter="*res://game/core/scene_router.gd"
+Audio="*res://game/audio/audio_director.gd"
 
 [display]
 

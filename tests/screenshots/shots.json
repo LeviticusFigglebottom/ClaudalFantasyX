@@ -1469,6 +1469,7 @@
     {
       "id": "shrine_s01_approach",
       "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "warm_shader_groups": true,
       "camera": "Cameras/S01",
       "resolution": [
         960,
@@ -1493,6 +1494,7 @@
     {
       "id": "shrine_s02_threshold",
       "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "warm_shader_groups": true,
       "camera": "Cameras/S02",
       "resolution": [
         960,
@@ -1517,6 +1519,7 @@
     {
       "id": "shrine_s03_overview",
       "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "warm_shader_groups": true,
       "camera": "Cameras/S03",
       "resolution": [
         960,
@@ -1541,6 +1544,7 @@
     {
       "id": "shrine_s04_lip",
       "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "warm_shader_groups": true,
       "camera": "Cameras/S04",
       "resolution": [
         960,
@@ -1565,6 +1569,7 @@
     {
       "id": "shrine_s05_side_pool",
       "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "warm_shader_groups": true,
       "camera": "Cameras/S05",
       "resolution": [
         960,

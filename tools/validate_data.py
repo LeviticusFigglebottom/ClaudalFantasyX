@@ -1284,6 +1284,7 @@ def run(root: Path) -> Report:
     check_zone_weather(root, files, rep)
     check_chapter_flow(root, files, declared_flags_quiet(root), rep)
     check_choreo(files, rep)
+    check_audio(root, rep)
     check_provenance(root, rep)
     check_banned(root, rep)
     check_binary_sizes(root, rep)
@@ -2322,6 +2323,16 @@ def check_choreo(files: dict[str, object], rep: Report) -> None:
         root = Path(__file__).resolve().parent.parent
         for e in vc.arena_errors(arenas, files.get(vc.ENCOUNTERS_FILE), lambda r: _res_path(root, r).is_file()):
             rep.err(e)
+
+
+def check_audio(root: Path, rep: Report) -> None:
+    """M2-AUD-02: the audio tables (tools/audio/data_check.py)."""
+    sys.path.insert(0, str(root / "tools" / "audio"))
+    import data_check  # noqa: E402
+
+    for e in data_check.audio_errors(data_check.load_files(root), lambda res: _res_path(root, res).is_file(),
+                                     declared_flags_quiet(root)):
+        rep.err(e)
 
 
 # --- M2-UI-06: inns (shops.json "inns": a price for a full rest, game/progression/inn.gd) ---------
