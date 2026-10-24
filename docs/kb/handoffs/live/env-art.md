@@ -84,8 +84,19 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
       - Follow-up **M3-ENV-07B**: the storm state and Hullgnaw's deck split.
       - Found **M2-ENV-12**: Haluna's lintel-gulls are built inside-out and shade dark. Filed; fixing it moves
         the Haluna gull shots.
-    - **Running (worktree agents):** M3-ENV-09 Ashcrown, M3-ENV-10 Coilspire, M3-ENV-08B the Seventh Terrace.
-      **Next:** M2-ENV-12 and M3-ENV-07B.
+    - **M3-ENV-09 Ashcrown temple: in review, merged here** (e70d898e).
+      - Kit: 9 pieces, 26 materials, Blender job `ashcrown_kit` (40 identical). Its import kind `ashcrown_kit` needs
+        Character + Tools sign-off.
+      - It is the same building as Pemakar's far Ashcrown: same origin and tier numbers, checked by a test.
+      - Baselines: `ashcrown_a01_approach` and `ashcrown_a04_anvil_hall`.
+      - Checks: ashcrown 5/5, post_import 21/21, unittests OK.
+      - Follow-ups filed: **M3-ENV-09B** (Pemakar's far temple from this kit) and **M3-ENV-11** (a close-range
+        plume, because the 900 m plume facets inside 300 m).
+      - Fixed on the way: a merge left an empty job in `blender_builds.json` (e78e9196). Coverage now reports 0
+        uncovered.
+    - **Running (worktree agents):** M3-ENV-10 Coilspire, M3-ENV-08B the Seventh Terrace, M2-ENV-12 the Haluna gull
+      normals.
+    - **Next:** M3-ENV-07B, M3-ENV-09B, M3-ENV-11.
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
