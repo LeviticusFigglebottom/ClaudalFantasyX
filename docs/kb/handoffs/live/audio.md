@@ -55,6 +55,18 @@ Your queue of five is taken:
 - **(4) M3-AUD-22:** done (muffle inside the sphere). The goal swells were already in M3-AUD-17.
 - **(5) M3-AUD-23:** the mix pass, done apart from a re-run once the new cues land.
 
+## Id rule (the Lead's CONSOLIDATED §4, "id blocks")
+New audio task ids are 800–899 (M3-AUD-800…), new ADRs 0170–0179, and handoffs are named
+`<date>-audio-audio-<n>.md`. Existing ids stay as they are. The Lead's menu-pages task is M2-AUD-17.
+
+## State (2026-10-24, after big8's id rule)
+- **Integration branch merged again.** big7 brought claude/menus, claude/battle-presentation, claude/creatures and the
+  Reefball rig, so the pending hooks are being switched live:
+  - **M3-AUD-801 (done, review):** the WaterSphereRig hook is live; `ch01_hullgnaw` plays the Hullgnaw theme.
+  - **M2-AUD-17 (worktree agent):** the menu hooks against the real classes; StatusMenu and BattlePauseMenu.
+  - **M3-AUD-800 (worktree agent):** ChoreoAudio, CreatureAudio and the stings against the real battle code.
+- **Two items remain:** the two agents' merges, then MERGE-READY.
+
 ## MERGE-READY @ 662f9d7d
 - **Integration branch:** big7 (8f808cc6) merged.
 - **Fixes after the merge:**
