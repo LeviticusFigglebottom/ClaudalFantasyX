@@ -6,7 +6,7 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 > **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
 > session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
-> **This copy, on `gpu/m3-rnd-01-reefball`, is the newest.**
+> **This copy, on `gpu/m3-rnd-04-reefball-caustics`, is the newest.**
 
 ## PC setup for a new session
 
@@ -115,6 +115,14 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/m3-rnd-04-reefball-caustics | **M3-RND-04 in review** (reviewer Character) | Caustics on the Reefball players: the ocean's caustic web in the sphere's multiply pass, projected along the sun, sun-facing faces only; every tier (<= 0.013 ms at 1440p). Stacked on M3-RND-01. The four reefball shots change: re-approve on lavapipe with RND-01's. |
+| gpu/m2-rnd-19-cold-sweep-budget | **M2-RND-19** (accepted) | ADR 0037's gate: `slice_sweep --budget` (1.7 s behind the first-run cue, 1 s other hidden, 50 ms visible; exit 1 if over) + `tools/gpu_bench/run_cold_launch.sh`. Cold High 1379 ms / Low 1405 ms, all ok. Stacked on RND-18, with the integration branch and NIT-04 merged. |
+| gpu/m2-rnd-18-cold-boot-frame | **M2-RND-18** (accepted; ADR 0037) | Cold boot's worst hidden frame: High 2970 -> 1395-1434 ms, Low 1580 -> 1412-1678 (harvest spread on a worker thread, an empty frame after bring-up, 1 material per first-run batch). Irreducible: one material's synchronous pipeline set (palm frond, 1.36-1.68 s) -> ADR amendment ~1.7 s. Stacked on RND-17 (with RND-14 merged). |
+| gpu/m2-rnd-17-zone-stage-gi | **M2-RND-17 in review** | The shrine's cold first frame is its runtime-built hall: first_run_live_scenes + M2-ENV-12 (m2-slice builds it off the tree): 1918 -> 188 ms. |
+| gpu/m2-rnd-14-advanced-group | **M2-RND-14** (accepted) | Boot turns Forward+'s advanced shader group on (a frame of TAA) for TAA-off players: the 4.6.3 deadlock's trigger off the shrine. |
+| gpu/m2-nit-04-capture-test-windows | fix (accepted) | test_capture_sh on Windows: Git Bash + POSIX paths. |
+| gpu/m2-rnd-16-release-exit-leak | **M2-RND-16 doing** (last in the queue) | Release-only exit leak after Haluna, narrowed (not statics, not threading). |
+| gpu/m2-rnd-15-cold-first-entry | **M2-RND-15 in review** (reviewer Environment) | Cold first launch: the first run also instances Haluna live (worker thread) and stages its runtime-built surfaces; Haluna's cold first entry 637/2312 ms Low, 407/2045 High (was 1771/4426, 1607/3767). The '825 ms visible' frame was the sweep timing out under the card (fixed: LAUNCH_TIMEOUT_S, SLICE_TIMEOUT); new --pipeline-trace. |
 | gpu/m3-rnd-01-reefball | **M3-RND-01 in review** (reviewer Art/character) | Reefball water sphere prototype (WaterSphereRig): refraction + Fresnel outside, Snell window/TIR inside, god rays, a clean crossing; +0.1-0.5 ms. Key frames docs/kb/qa/gpu/reefball/. |
 | gpu/arc-08-first-launch | report (Lead request) | ARC-08 re-measure, every cache cleared (the driver's too): the wait ends done in all runs, the cue shows; cold-driver frames still over ADR 0029 (Low 825 ms visible just after the lift, Haluna 1.6-1.7 s first entry). |
 | gpu/shrine-gi-hang-probe | report (Lead request) | Shrine load + GI bake: no hang in 25 GPU loads; the bake's 4.2-5.6 s hidden frame breaks ADR 0029 (routed to m2-slice). |

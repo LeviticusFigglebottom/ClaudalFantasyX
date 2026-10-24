@@ -1,13 +1,29 @@
 extends TestCase
 ## M3-RND-01: the Reefball water sphere. Its shaders declare what the rig sets, its data names palette swatches
 ## and a row for every preset, and the rig builds the surface, both full-screen passes and the god rays, and
-## follows its tier (Low: no refraction, no god rays).
+## follows its tier (Low: no refraction, no god rays; caustics on every tier, M3-RND-04).
 
 const PALETTE := "res://docs/kb/art/palette.json"
 const SHADERS := {
 	"res://game/shaders/water/sphere/water_sphere_surface.gdshader":
 	["sphere_center", "sphere_radius_m", "ior", "refraction_strength", "use_refraction", "col_tir", "swell_m"],
-	"res://game/shaders/water/sphere/water_sphere_post_mul.gdshader": ["sigma", "lens_m", "meniscus_px"],
+	"res://game/shaders/water/sphere/water_sphere_post_mul.gdshader":
+	[
+		"sigma",
+		"lens_m",
+		"meniscus_px",
+		"use_caustics",
+		"sun_dir",
+		"caustic_strength",
+		"caustic_scale_per_m",
+		"caustic_speed",
+		"caustic_width",
+		"caustic_blur_per_m",
+		"caustic_fade_in_m",
+		"caustic_falloff_m",
+		"caustic_view_fade_m",
+		"caustic_wall_soft_m",
+	],
 	"res://game/shaders/water/sphere/water_sphere_post_add.gdshader": ["col_scatter", "col_deep", "light_level"],
 }
 
@@ -52,10 +68,18 @@ func test_rig_builds_every_part_and_follows_the_tier() -> void:
 	assert_true(rig.set_quality("high"))
 	assert_true(rig.fog.visible, "High: god rays")
 	assert_true(bool(rig.surface_material.get_shader_parameter(&"use_refraction")))
+	assert_true(bool(rig.post_mul_material.get_shader_parameter(&"use_caustics")), "High: caustics")
+	for key in WaterSphereRig.CAUSTIC_KEYS:
+		assert_eq(
+			float(rig.post_mul_material.get_shader_parameter(StringName("caustic_" + key))),
+			float((WaterSphereRig.load_data()["caustics"] as Dictionary)[key]),
+			"caustic_%s from the data" % key
+		)
 	assert_true(env.environment.volumetric_fog_enabled, "the rig authors fog for its shafts")
 	assert_true(rig.set_quality("low"))
 	assert_false(rig.fog.visible, "Low: no god rays")
 	assert_false(bool(rig.surface_material.get_shader_parameter(&"use_refraction")), "Low: no refraction")
+	assert_true(bool(rig.post_mul_material.get_shader_parameter(&"use_caustics")), "Low keeps the caustics (no cost)")
 	assert_false(rig.set_quality("nonsense"))
 	rig._process(0.0)
 	assert_true(

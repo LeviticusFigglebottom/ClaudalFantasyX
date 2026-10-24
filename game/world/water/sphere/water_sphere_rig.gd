@@ -6,7 +6,9 @@ extends Node3D
 ##   from outside, the Snell window and total internal reflection from inside;
 ## - two full-screen passes drawn after everything (water_sphere_post_mul / _add): absorption and in-scatter along
 ##   each view ray's water, from outside, inside or across the wall (a meniscus line where the lens meets it);
-## - god rays inside the ball: an ellipsoid FogVolume with the underwater shafts (tiers with "god_rays").
+## - god rays inside the ball: an ellipsoid FogVolume with the underwater shafts (tiers with "god_rays");
+## - caustic light on what's inside the ball, in the multiply pass, projected along the sun (tiers with "caustics",
+##   M3-RND-04).
 ## Tiers: set_quality(preset id) picks a row of the data's "quality" (Low: no refraction, a tinted Fresnel shell).
 
 const DATA_PATH := "res://game/data/vfx/water_sphere.json"
@@ -20,6 +22,10 @@ const PRIORITY_ADD := 127
 const POST_CULL_MARGIN := 16384.0
 ## The data's optics keys each material takes as float uniforms of the same name.
 const OPTICS_POST: Array[String] = ["scatter_strength", "depth_falloff_m", "down_darkening", "lens_m", "meniscus_px"]
+## The data's caustics keys, the multiply pass's "caustic_<key>" uniforms (M3-RND-04).
+const CAUSTIC_KEYS: Array[String] = [
+	"strength", "scale_per_m", "speed", "width", "blur_per_m", "fade_in_m", "falloff_m", "view_fade_m", "wall_soft_m"
+]
 const OPTICS_SURFACE: Array[String] = [
 	"ior",
 	"refraction_strength",
@@ -127,6 +133,17 @@ func _process(_delta: float) -> void:
 		m.set_shader_parameter(&"sphere_center", c)
 		m.set_shader_parameter(&"light_level", level)
 	shafts_material.set_shader_parameter(&"water_rest_y", c.y + radius_m())
+	var sun := _sun()
+	if sun != null:
+		post_mul_material.set_shader_parameter(&"sun_dir", sun.global_basis.z.normalized())
+
+
+## The scene's first visible DirectionalLight3D, the sun the caustics fall along (null when there's none).
+func _sun() -> DirectionalLight3D:
+	for l: DirectionalLight3D in _lights:
+		if is_instance_valid(l) and l.is_visible_in_tree():
+			return l
+	return null
 
 
 func _build() -> void:
@@ -151,6 +168,9 @@ func _build() -> void:
 	for key in OPTICS_SURFACE:
 		surface_material.set_shader_parameter(StringName(key), float(optics.get(key, 0.0)))
 	surface_material.set_shader_parameter(&"col_tir", Color(str(colors.get("tir", "#0E4A55"))))
+	var caustics := data.get("caustics", {}) as Dictionary
+	for key in CAUSTIC_KEYS:
+		post_mul_material.set_shader_parameter(StringName("caustic_" + key), float(caustics.get(key, 0.0)))
 	var mesh := SphereMesh.new()
 	mesh.radial_segments = int(sp.get("radial_segments", 64))
 	mesh.rings = int(sp.get("rings", 32))
@@ -215,6 +235,7 @@ func _apply_quality() -> void:
 		return
 	var p := plan()
 	surface_material.set_shader_parameter(&"use_refraction", bool(p.get("refraction", true)))
+	post_mul_material.set_shader_parameter(&"use_caustics", bool(p.get("caustics", false)))
 	fog.visible = bool(p.get("god_rays", false))
 	if _fog_env != null:
 		GraphicsSettings.set_authored(_fog_env, "volumetric_fog_enabled", bool(p.get("god_rays", false)))
