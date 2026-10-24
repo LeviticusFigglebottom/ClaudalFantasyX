@@ -639,6 +639,21 @@ func _clean_tmp() -> void:
 	DirAccess.remove_absolute(TMP_DIR)
 
 
+## A resident entry can be limited to some presets (resident_presets, data); Asha's materials are resident
+## on every preset (Low measured over ADR 0029's 3 s Haluna entry without them).
+func test_residency_can_be_limited_per_preset() -> void:
+	var e := {"path": TEST_MATERIAL, "resident": true, "resident_presets": ["high", "ultra"]}
+	assert_true(ShaderPrewarm.entry_resident(e, "high"))
+	assert_false(ShaderPrewarm.entry_resident(e, "low"), "streamed on a preset the list leaves out")
+	assert_true(ShaderPrewarm.entry_resident({"resident": true}, "low"), "no list: every preset")
+	assert_false(ShaderPrewarm.entry_resident({"resident_presets": ["low"]}, "low"), "not resident at all")
+	var reg := JSON.parse_string(FileAccess.get_file_as_string(ShaderPrewarm.REGISTRY_PATH)) as Dictionary
+	for entry: Dictionary in reg["materials"]:
+		if str(entry.get("path", "")).begins_with("res://assets/characters/asha/materials/"):
+			for preset in ["low", "medium", "high", "ultra"]:
+				assert_true(ShaderPrewarm.entry_resident(entry, preset), "%s held on %s" % [entry["path"], preset])
+
+
 ## M1-RND-29 gate fix: a headless boot (CI's smoke test) never runs the first-launch warm-up, and a warm-up
 ## freed mid-run leaves no stage nodes behind and holds its resources on a node the tree frees, not in a
 ## static that outlives Godot's exit check (225 resources were still in use at exit).
@@ -696,3 +711,42 @@ class SwapHoldStub:
 
 	func release_swap(holder: Object) -> void:
 		holders.erase(holder)
+
+
+## M2-ARC-08: the warm-up reports its progress to the boot card (a count that moves every tick, and a 0..1
+## fraction of its staging), and cancel() stops it when the card gives up: the stage clears, the swap hold is
+## released, no `finished`, and a first run writes no marker, so the next launch runs it again.
+func test_progress_is_reported_and_a_cancelled_warm_up_leaves_nothing_staged() -> void:
+	var marker := TMP_DIR + "/first_run_marker.cfg"
+	var mats := []
+	for i in 4:
+		mats.append({"path": TEST_MATERIAL, "scenes": []})
+	var reg_path := _write_registry(
+		"registry_cancel.json", {"materials": mats, "materials_per_frame": 1, "first_run_marker": marker}
+	)
+	var router := SwapHoldStub.new()
+	_host().add_child(router)
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	node.first_run = true
+	router.add_child(node)
+	node.start("")
+	var got: Array[Dictionary] = []
+	node.finished.connect(func(s: Dictionary) -> void: got.append(s))
+	assert_eq(node.progress_fraction(), 0.25, "one of four draws staged at start")
+	var p0 := node.wait_progress()
+	node.tick(16.0)
+	assert_eq(node.wait_progress(), p0 + 1, "every tick is a step of a finite run")
+	assert_eq(node.progress_fraction(), 0.5)
+	node.cancel()
+	assert_false(node.is_running(), "stopped")
+	assert_eq(node.stage_node_count(), 0, "nothing left staging under the title")
+	assert_eq(node.pending_count(), 0)
+	assert_false(router.holders.has(node), "the swap hold is released")
+	assert_true(node.is_queued_for_deletion(), "it frees itself")
+	assert_eq(got.size(), 0, "no finished stats for a cut run")
+	assert_false(FileAccess.file_exists(marker), "no first-run marker: the next launch warms up again")
+	assert_eq(node.progress_fraction(), 1.0)
+	node.cancel()
+	router.free()
+	_clean_tmp()
