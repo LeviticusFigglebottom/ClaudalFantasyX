@@ -142,3 +142,7 @@ Also in M2-FP-09:
   - it wins, then saves at the shrine and loads the record back;
   - it calls the Drownbell and reaches the end card.
 - `test_the_battle_strip_cannot_be_walked_around` checks that every line from the beach to the shrine crosses the strip, and that walking inland from the causeway head is stopped.
+
+## Party joins (M2-CMB-07 follow-up)
+
+`first_playable.json` "party" says who joins `Game.state.party_ids`: `new_game` (Rhen) on `Game.new_game()`, and `joins[flag]` (Asha and Toma on `ch02_met_asha`, which Cutscene A sets) the first time the flag is set truthy, through `EventBus.flag_changed`. `PartyJoins` (`game/flow/party_joins.gd`) calls `PartyGoods.join`, which adds the hero once and grants their starting gear without replacing worn pieces. Field battles still take their party from "field_battle" and "first_verse"; live battles now wear the joined heroes' gear (`BattleVitals.live_gear`). A save made before this change has no joined heroes and stays that way (nothing back-fills `party_ids` on load). Tests: `tests/unit/test_party_joins.gd`.

@@ -25,6 +25,7 @@ M2 blocker. `BattleEngine.currency_award()` and `drop_awards()` are computed at 
 - **Starting purse 100 lume** (`items.json` `rules.starting_currency`, read by `Game.new_game()`, validated 0..cap): B03 shows the shop before the first fight (B06). Rationale in economy.md § Starting purse.
 - The `victory` capture fixture's foes carry lume and certain drops, so `battle_victory` shows the rows (baseline re-approved).
 - Saves need no change: `currency` and `inventory` were already in the save (v6). A load keeps inventory counts as JSON floats (pre-existing; `Inventory.count` reads them as ints).
+- **Follow-up (Lead decisions after review):** (2) heroes join with their starting gear on the join path: `PartyGoods.join` and `PartyJoins` (first_playable.json "party": Rhen at New Game, Asha and Toma on `ch02_met_asha`), wired in `Game.new_game()` and `EventBus.flag_changed`; idempotent with loads (`tests/unit/test_party_joins.gd`). (1) The Drownbell is balanced for an affordable party: `ch03_drownbell` = starting gear + Rhen's Coral-Bitten Hooks + Toma's Chiselled Shield (720 lume); the bell's magic 14 → 11 brought role_answer and smart back into band (balance_report.md 2026-10-24). (minor) `GameStateData.from_dict` makes inventory counts ints.
 - Tests: `tests/unit/test_battle_rewards_payout.gd` (10), `tools/tests/test_starting_purse_validate.py` (4); `test_battle_controller.gd` counts fighter rows apart from spoils rows.
 
 ## Review log

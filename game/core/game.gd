@@ -38,6 +38,10 @@ func _ready() -> void:
 	EventBus.party_full_heal_requested.connect(heal_party)
 	EventBus.battle_party_returned.connect(record_party)
 	EventBus.battle_swell_returned.connect(record_swell)
+	# M2-CMB-07 follow-up: heroes join (party_ids and starting gear) when their story flag is set.
+	EventBus.flag_changed.connect(
+		func(flag: StringName, value: Variant) -> void: PartyJoins.on_flag(state, flag, value)
+	)
 
 
 func _process(delta: float) -> void:
@@ -59,6 +63,7 @@ func new_game() -> void:
 	state = GameStateData.new()
 	# M2-CMB-07: the purse opens at the economy's starting lume (items.json rules), so B03's shop works.
 	state.currency = ItemDB.load_default().starting_currency
+	PartyJoins.on_new_game(state)  # the opening party joins with its starting gear
 	start_play_clock()
 	EventBus.new_game_started.emit()
 

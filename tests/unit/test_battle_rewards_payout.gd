@@ -86,11 +86,9 @@ func test_a_save_and_load_keep_the_paid_lume_and_drops() -> void:
 	assert_true(back != null)
 	if back != null:
 		assert_eq(back.currency, purse)
-		var item_db := ItemDB.load_default()
-		var loaded := Inventory.new(item_db, back.inventory)
-		assert_eq(back.inventory.keys(), bag.keys())
-		for iid: String in bag:
-			assert_eq(loaded.count(StringName(iid)), int(bag[iid]), "%s kept" % iid)  # JSON counts load as floats
+		assert_eq(back.inventory, bag, "the same bag")
+		for iid: Variant in back.inventory:
+			assert_eq(typeof(back.inventory[iid]), TYPE_INT, "%s loads as a whole number, not a JSON float" % iid)
 	_done()
 
 
