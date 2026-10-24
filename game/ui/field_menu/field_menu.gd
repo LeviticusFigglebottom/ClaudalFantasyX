@@ -7,14 +7,17 @@ extends Control
 ## palette, reduced motion).
 ## Layout: game/data/ui/field_menu.json (1920x1080 reference). Words: FieldMenuModel.
 ##
-## Three levels: ROOT (Bestiary / Swell / Settings / Close) on the left; HEROES (each Swell hero and the mode
+## Map (M2-UI-18) opens the zone map page (ZoneMapMenu) over it, like the bestiary; the zone and
+## the player come from the field when the menu opens (ZoneMapMenu.live_model).
+##
+## Three levels: ROOT (Bestiary / Swell / Map / Settings / Close) on the left; HEROES (each Swell hero and the mode
 ## in use) and MODES (one hero's unlocked modes, "In use" on the current one) on the right. The
 ## line under the right page says what the highlighted row means (pillar 4).
 ##
 ## Input (keyboard and controller through ui_*): ui_up / ui_down move, ui_accept chooses,
 ## ui_cancel goes back a level and closes from the root. Mouse: hover to move, click to choose.
-## While the bestiary or the Settings hub is open it takes the input, and this menu hides until
-## it closes.
+## While the bestiary, the map or the Settings hub is open it takes the input, and this menu hides
+## until it closes.
 
 signal closed
 
@@ -37,6 +40,8 @@ var hero: StringName = &""
 var bestiary: BestiaryMenu
 ## The Settings hub opened from here (null when closed).
 var settings_menu: SettingsMenu
+## The zone map opened from here (null when closed).
+var map_menu: ZoneMapMenu
 
 var _d: Dictionary = {}
 var _root: MenuPage
@@ -79,6 +84,8 @@ func configure(with_model: FieldMenuModel = null) -> void:
 func _ready() -> void:
 	if model == null:
 		model = FieldMenuModel.from_game()
+	if model.map == null and model.live_map:
+		model.map = ZoneMapMenu.live_model(self)
 	_d = load_data()
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -158,6 +165,8 @@ func close() -> void:
 		bestiary.close()
 	if settings_menu != null and settings_menu.is_open():
 		settings_menu.close()
+	if map_menu != null and map_menu.is_open():
+		map_menu.close()
 	_restore_pause()
 	closed.emit()
 
@@ -186,15 +195,33 @@ func _accept_root(id: StringName) -> void:
 		FieldMenuModel.ROW_SWELL:
 			if not model.swell_heroes().is_empty():
 				_open_heroes(&"")
+		FieldMenuModel.ROW_MAP:
+			if model.has_map():
+				_open_map()
 		FieldMenuModel.ROW_SETTINGS:
 			_open_settings()
 		FieldMenuModel.ROW_CLOSE:
 			close()
 
 
-## True while the bestiary or the Settings hub is open over this menu (it has the input).
+## True while the bestiary, the map or the Settings hub is open over this menu (it has the input).
 func _child_open() -> bool:
-	return (bestiary != null and bestiary.is_open()) or (settings_menu != null and settings_menu.is_open())
+	return (
+		(bestiary != null and bestiary.is_open())
+		or (settings_menu != null and settings_menu.is_open())
+		or (map_menu != null and map_menu.is_open())
+	)
+
+
+func _open_map() -> void:
+	map_menu = ZoneMapMenu.open_in(self, model.map)
+	visible = false
+	map_menu.closed.connect(_on_map_closed)
+
+
+func _on_map_closed() -> void:
+	map_menu = null
+	visible = true
 
 
 func _open_settings() -> void:

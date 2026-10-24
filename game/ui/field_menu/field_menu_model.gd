@@ -8,25 +8,33 @@ extends RefCounted
 ## party from first_playable.json "field_battle" and never writes Game.state.party_ids, so when no
 ## one has joined, that party stands in (FirstPlayableConfig; remove the fallback once the flow
 ## fills party_ids).
+##
+## Map (M2-UI-18): `map` is the zone map's MapModel. The live menu builds it from the field when it
+## opens (`live_map`); a zone with no map, or no model, turns the row off and says why on it.
 
 const ROW_BESTIARY := &"bestiary"
 const ROW_SWELL := &"swell"
+const ROW_MAP := &"map"
 const ROW_SETTINGS := &"settings"
 const ROW_CLOSE := &"close"
-const ROOT_IDS: Array[StringName] = [ROW_BESTIARY, ROW_SWELL, ROW_SETTINGS, ROW_CLOSE]
+const ROOT_IDS: Array[StringName] = [ROW_BESTIARY, ROW_SWELL, ROW_MAP, ROW_SETTINGS, ROW_CLOSE]
 const ROOT_LABEL_KEYS := {
 	ROW_BESTIARY: "FIELD_MENU_BESTIARY",
 	ROW_SWELL: "FIELD_MENU_SWELL",
+	ROW_MAP: "FIELD_MENU_MAP",
 	ROW_SETTINGS: "FIELD_MENU_SETTINGS",
 	ROW_CLOSE: "FIELD_MENU_CLOSE",
 }
 const ROOT_DESC_KEYS := {
 	ROW_BESTIARY: "FIELD_MENU_BESTIARY_DESC",
 	ROW_SWELL: "FIELD_MENU_SWELL_DESC",
+	ROW_MAP: "FIELD_MENU_MAP_DESC",
 	ROW_SETTINGS: "FIELD_MENU_SETTINGS_DESC",
 	ROW_CLOSE: "FIELD_MENU_CLOSE_DESC",
 }
 const NO_SWELL_KEY := "FIELD_MENU_SWELL_NONE"
+const NO_MAP_KEY := "FIELD_MENU_MAP_NONE"
+const NO_MAP_TAG_KEY := "FIELD_MENU_MAP_NONE_TAG"
 const HERO_DESC_KEY := "FIELD_MENU_SWELL_HERO_FMT"
 const MODE_DESC_KEY := "FIELD_MENU_SWELL_MODE_FMT"
 const MODE_CURRENT_DESC_KEY := "FIELD_MENU_SWELL_MODE_CURRENT_FMT"
@@ -41,6 +49,9 @@ var state: GameStateData
 var heroes: Array[StringName] = []
 ## Hero id -> name loc key (characters.json).
 var name_keys: Dictionary = {}
+## The zone map (null = none yet). FieldMenu fills it from the field when `live_map` is set.
+var map: MapModel
+var live_map := false
 
 
 func _init(with_state: GameStateData = null, hero_ids: Array[StringName] = [], hero_name_keys: Dictionary = {}) -> void:
@@ -55,7 +66,9 @@ static func from_game() -> FieldMenuModel:
 	if ids.is_empty():
 		var cfg := FirstPlayableConfig.section(FirstPlayableConfig.SECTION_FIELD_BATTLE)
 		ids = FirstPlayableConfig.ids(cfg.get("active", [])) + FirstPlayableConfig.ids(cfg.get("reserve", []))
-	return FieldMenuModel.new(Game.state, ids, name_keys_from(BattleDB.load_default().characters))
+	var m := FieldMenuModel.new(Game.state, ids, name_keys_from(BattleDB.load_default().characters))
+	m.live_map = true
+	return m
 
 
 ## {hero id: name_key} from a characters table (BattleDB.characters).
@@ -66,19 +79,31 @@ static func name_keys_from(characters: Dictionary) -> Dictionary:
 	return out
 
 
-## MenuPage rows for the root: Bestiary, Swell (off when no hero has a gauge), Settings, Close.
+## MenuPage rows for the root: Bestiary, Swell (off when no hero has a gauge), Map (off where the
+## zone has no map, "No map" on the row: a row that is off can't be highlighted to read why),
+## Settings, Close.
 func root_rows() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for id in ROOT_IDS:
-		var on := id != ROW_SWELL or not swell_heroes().is_empty()
-		out.append({"id": id, "label": _tr(ROOT_LABEL_KEYS[id]), "enabled": on})
+		var on := (id != ROW_SWELL or not swell_heroes().is_empty()) and (id != ROW_MAP or has_map())
+		var row := {"id": id, "label": _tr(ROOT_LABEL_KEYS[id]), "enabled": on}
+		if id == ROW_MAP and not on:
+			row["right"] = _tr(NO_MAP_TAG_KEY)
+		out.append(row)
 	return out
+
+
+## True when the zone the party is in has a map.
+func has_map() -> bool:
+	return map != null and map.has_map()
 
 
 ## What the highlighted root row opens, in words.
 func root_desc(id: StringName) -> String:
 	if id == ROW_SWELL and swell_heroes().is_empty():
 		return _tr(NO_SWELL_KEY)
+	if id == ROW_MAP and not has_map():
+		return _tr(NO_MAP_KEY)
 	return _tr(str(ROOT_DESC_KEYS.get(id, "")))
 
 

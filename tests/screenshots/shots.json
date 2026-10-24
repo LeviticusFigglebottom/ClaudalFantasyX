@@ -1076,6 +1076,14 @@
     {
       "id": "battle_statuses_colorblind",
       "scene": "res://game/battle/scene/shots/battle_statuses_colorblind.tscn"
+    },
+    {
+      "id": "field_menu_map_haluna",
+      "scene": "res://game/ui/map/shots/field_menu_map_haluna.tscn"
+    },
+    {
+      "id": "field_menu_map_shrine",
+      "scene": "res://game/ui/map/shots/field_menu_map_shrine.tscn"
     }
   ]
 }

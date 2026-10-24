@@ -128,8 +128,9 @@ func test_the_field_menu_settings_row_opens_the_hub_over_it() -> void:
 	menu.pause_tree = false
 	menu.configure(FieldMenuModel.new(GameStateData.new(), [&"rhen"] as Array[StringName], NAMES))
 	_add(menu)
-	for i in FieldMenuModel.ROOT_IDS.find(FieldMenuModel.ROW_SETTINGS):
-		menu.handle_input(_ev(&"ui_down"))
+	for i in FieldMenuModel.ROOT_IDS.size():  # down to Settings, past any row that is off (Map, M2-UI-18)
+		if menu.root_page().current_row()["id"] != FieldMenuModel.ROW_SETTINGS:
+			menu.handle_input(_ev(&"ui_down"))
 	assert_eq(menu.desc_text(), tr("FIELD_MENU_SETTINGS_DESC"))
 	menu.accept()
 	var hub := menu.settings_menu
