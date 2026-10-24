@@ -11,21 +11,79 @@ extends Node
 ## SceneRouter's per-scene graphics hook (GraphicsRuntime).
 ## M1-RND-22: starts the shader warm-up of the preset's resident shaders (ShaderPrewarm.spawn_resident)
 ## under the tree root, so their compile happens here, under the boot screen, not in a transition.
+## M2-ARC-03: the boot screen is a BootCard over the title. When boot runs as the game's scene (launch, or a
+## SceneRouter change back to the title), the card covers the title, which takes no keys, while the resident
+## warm-up and the theme font warm-up (SceneRouter.warm_fonts_now) run; the title fades in once both are
+## done, and the router measures the visible window from that fade (SceneRouter.measure_reveal). Reached
+## through a change, the card also holds the router's reveal (hold_reveal), so the router's opaque fade is
+## the cover and lifts instead. Elsewhere (the boot_title capture, tests) boot is not the current scene:
+## no card, and the warm-up starts as before.
 
 const DEBUG_OVERLAY_SCENE := "res://game/core/debug/debug_overlay.tscn"
 const DEBUG_OVERLAY_NAME := "DebugOverlay"
 
+## The boot screen while the warm-up runs (null when boot is not the game's scene, and after it lifts).
+var _card: BootCard
+
 @onready var _label: Label = $Label
+@onready var _title: Control = $TitleMenu
 
 
 func _ready() -> void:
 	GraphicsRuntime.boot(get_viewport())
-	GraphicsRuntime.warm_resident_shaders.call_deferred(get_tree().root)
+	if is_game_scene():
+		_cover_until_warm()
+	else:
+		GraphicsRuntime.warm_resident_shaders.call_deferred(get_tree().root)
 	_label.text = "%s\n%s" % [ProjectSettings.get_setting("application/config/name"), "bootstrap build"]
 	Game.stop_play_clock()
 	arm_world_return()
 	_install_debug_overlay()
 	_install_autosave_toast.call_deferred()
+
+
+## True when boot is the game's running scene (launch or a SceneRouter change), not a capture's or test's child.
+func is_game_scene() -> bool:
+	return is_inside_tree() and get_tree().current_scene == self
+
+
+## The boot card while it covers the title (null once lifted, or when there is none).
+func boot_card() -> BootCard:
+	return _card if _card != null and not _card.is_lifted() else null
+
+
+## M2-ARC-03: covers the title with an opaque BootCard and blocks its keys until the warm-ups finish.
+func _cover_until_warm() -> void:
+	var router := get_tree().root.get_node_or_null(^"SceneRouter")
+	var via_change := router != null and bool(router.call(&"is_busy"))
+	# Under a change the router's opaque fade is the cover: the card is cut, and the router lifts its fade.
+	_card = BootCard.cover(self, 0.0, 0.0 if via_change or router == null else SceneRouter.FADE_SEC)
+	if via_change:
+		_card.hold_reveal_of(router)
+	_title.set_process_unhandled_input(false)
+	_card.opened.connect(_on_card_opened.bind(router, via_change), CONNECT_ONE_SHOT)
+	_card.revealed.connect(_on_card_revealed, CONNECT_ONE_SHOT)
+	_start_warm.call_deferred(router)
+
+
+## Deferred: at launch the root is still adding its children.
+func _start_warm(router: Node) -> void:
+	_card.wait_for_node(GraphicsRuntime.warm_resident_shaders(get_tree().root))
+	if router != null:
+		router.call(&"warm_fonts_now")
+		_card.wait_until(Callable(router, &"fonts_ready"))
+	_card.arm()
+
+
+func _on_card_opened(stats: Dictionary, router: Node, via_change: bool) -> void:
+	_title.set_process_unhandled_input(true)
+	if router != null and not via_change and not bool(router.call(&"is_busy")):
+		router.call(&"measure_reveal", scene_file_path, Callable(_card, &"is_lifted"), stats)
+
+
+func _on_card_revealed() -> void:
+	_card.queue_free()
+	_card = null
 
 
 ## M1-UI-09: the notice for a skipped chapter autosave lives under the tree root, so it outlives the

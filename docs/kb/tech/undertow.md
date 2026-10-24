@@ -121,7 +121,7 @@ A cutscene animates it by tweening these properties (`create_tween().tween_prope
 | | Low | Medium | High (default) | Ultra |
 |---|---|---|---|---|
 | Body | **3 lathe shells + canopy shell** (alpha-hash) | raymarch, 28 steps | raymarch, 32 steps | raymarch, 72 steps |
-| Cloud noise (M1-RND-10) | hashed | baked lattice | baked lattice | baked lattice |
+| Cloud noise (M1-RND-10; Low since M2-RND-08) | baked lattice | baked lattice | baked lattice | baked lattice |
 | Curl warp shared by N dense steps (`curl_reuse`) | – | – (no curl) | 2 | 2 |
 | Per-frame step jitter (`temporal_jitter`, TAA/FSR2 resolves it) | no (Low is TAA since M1-RND-07, but its tier sets `temporal_jitter: false` and its shell body has no march to jitter) | yes | yes | yes |
 | Light samples | wrap-lit with a noise self-shadow | 1, envelope only | 2, coarse noise | 3, coarse noise |
@@ -470,6 +470,24 @@ The zone still owns its light: key, fog and exposure, per color_script.md.
 - **Ultra and Low** reflect the impostor, not the body.
 - **Thunder:** `lightning_struck` is the hook, for Audio.
 - **Per-chapter exposure flashes:** the gain is one value for now.
+
+### Low tier cost (M2-RND-08)
+
+The Low shells now read the baked lattice too: `undertow_lattice.gdshaderinc`, shared with the body. They evaluate
+the wounds only on the wall shells' band. Before, two hashed 3-octave fBms (48 PCG3D hashes a fragment) on four
+full-resolution, alpha-hashed shells cost more than High's compute body.
+
+Measured: RX 9070 XT, 2560×1440, GPU median, the storm's own cost by `gpu_bench --hide-storms`.
+
+| Camera | Low before | Low after | High (compute body) |
+|---|---:|---:|---:|
+| Day | 1.41 ms | **0.60 ms** | 0.83 ms |
+| Eye | 1.64 ms | **0.31 ms** | 0.80 ms |
+| Night | 1.65 ms | **0.66 ms** | 0.79 ms |
+| Horizon | 1.32 ms | **0.48 ms** | 0.59 ms |
+
+The shells' billow layout changes, because the lattice repeats outside its cells; the read doesn't.
+`undertow_horizon_low` drifts 0.025 on the GPU, and the Low night view 0.028.
 
 ## Gotchas
 - **Unshaded additive shaders write ALBEDO, not EMISSION (M2-RND-05).** With `unshaded` Godot outputs ALBEDO
