@@ -54,7 +54,12 @@ set +e
 if [ "${HYMN_CAPTURE_SHARED:-0}" = "1" ]; then
   run_one "$shot_list"
   rc=$?
-  if [ $rc -ne 0 ]; then status=$rc; failed_runs+=("$shot_list (exit $rc)"); fi
+  if [ $rc -ne 0 ]; then
+    status=$rc
+    failed_runs+=("$shot_list (exit $rc)")
+    # M2-NIT-04: the same signature as per-shot mode, naming the shared run's whole shot list.
+    echo "CAPTURE PROCESS EXIT $rc: $shot_list" >> "$log"
+  fi
 else
   IFS=',' read -ra ids <<< "$shot_list"
   for id in "${ids[@]}"; do

@@ -136,6 +136,9 @@ var _last_batch_paths := PackedStringArray()
 var _bring_up: Array = []
 ## Compute pipelines warmed instead of a spatial draw (registry "compute_twin").
 var _computes := 0
+## M2-ARC-08: the draws and bring-up steps start() queued, for progress_fraction().
+var _draws_total := 0
+var _bring_up_total := 0
 
 @onready var _viewport: SubViewport = $Viewport
 @onready var _stage_3d: Node3D = $Viewport/Stage3D
@@ -207,7 +210,7 @@ func start(for_scene: String = "") -> int:
 		var e := entry as Dictionary
 		var scenes := e.get("scenes", []) as Array
 		if resident_only:
-			if not first_run and not bool(e.get("resident", false)):
+			if not first_run and not entry_resident(e, preset):
 				continue
 		elif not (scenes.is_empty() or scenes.has(for_scene)):
 			continue
@@ -231,6 +234,7 @@ func start(for_scene: String = "") -> int:
 	var per_frame := int(config.get("materials_per_frame", 0))
 	_batch = per_frame if per_frame > 0 else maxi(_pending.size(), 1)
 	_min_batch_seen = _batch
+	_draws_total = _pending.size()
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_running = true
 	_stage_alive = true
@@ -256,7 +260,7 @@ static func load_resident(preset: String, path: String = REGISTRY_PATH) -> int:
 	var count := 0
 	for entry: Variant in _load_registry(path).get("materials", []):
 		var e := entry as Dictionary
-		if not bool(e.get("resident", false)) or not entry_wanted(e, preset):
+		if not entry_resident(e, preset) or not entry_wanted(e, preset):
 			continue
 		var res_path := str(e.get("path", ""))
 		if not ResourceLoader.exists(res_path):
@@ -354,6 +358,16 @@ static func resident_count() -> int:
 	return h.held.size() if h != null else 0
 
 
+## Whether a registry entry is held from boot on `preset`: "resident" true, and `preset` in its optional
+## "resident_presets" (absent = every preset). Data, so a tier's VRAM can opt out without code (the heroes'
+## materials, gpu/hero-materials-resident).
+static func entry_resident(entry: Dictionary, preset: String) -> bool:
+	if not bool(entry.get("resident", false)):
+		return false
+	var only: Variant = entry.get("resident_presets")
+	return typeof(only) != TYPE_ARRAY or preset == "" or (only as Array).has(preset)
+
+
 ## Whether a registry entry is staged for `preset`: an entry with "preset_tier" {system, tier} only when
 ## that preset selects that tier; every other entry (and every entry when `preset` is "") always.
 static func entry_wanted(entry: Dictionary, preset: String) -> bool:
@@ -422,6 +436,41 @@ func pending_count() -> int:
 ## Draws that enter the stage on the next frame (halved after an over-budget frame).
 func batch_size() -> int:
 	return _batch
+
+
+## M2-ARC-08 (BootCard, SceneRouter's reveal hold): a count that moves while the warm-up moves. Every tick
+## advances it by one step of a finite run (a bring-up feature, a batch, a render or measure frame), so a
+## warm-up that still ticks is progressing however slow its frames; it stalls only if its ticks stop.
+func wait_progress() -> int:
+	return _frames_measured
+
+
+## How far the staging is, 0..1: bring-up steps and draws staged over those queued (1 once the stage is cleared).
+func progress_fraction() -> float:
+	if not _running or not _stage_alive:
+		return 1.0
+	var total := _bring_up_total + _draws_total
+	if total <= 0:
+		return 1.0
+	var done := (_bring_up_total - _bring_up.size()) + (_draws_total - _pending.size())
+	return clampf(float(done) / total, 0.0, 1.0)
+
+
+## M2-ARC-08: stops a warm-up a waiter gave up on (BootCard's stall or safety cap), so nothing stages under the
+## title once it shows. The stage is cleared and the swap hold released; no `finished`, and a first run writes
+## no marker, so the next launch runs it again. It frees itself.
+func cancel() -> void:
+	if not _running:
+		return
+	push_warning(
+		(
+			"%s: warm-up cancelled after %d frame(s), %d draw(s) still pending (first run: %s)"
+			% [LOG_PREFIX, _frames_measured, _pending.size(), first_run]
+		)
+	)
+	_clear_stage()
+	_running = false
+	queue_free()
 
 
 ## Records one frame of the transition. Called from _process; tests call it directly.
@@ -645,6 +694,7 @@ func _begin_bring_up() -> void:
 		if want != BRING_UP_PLAIN[prop]:
 			_bring_up.append([prop, want])
 			_viewport.set(prop, BRING_UP_PLAIN[prop])
+	_bring_up_total = _bring_up.size()
 	if _bring_up.is_empty():
 		_stage_next_batch()
 

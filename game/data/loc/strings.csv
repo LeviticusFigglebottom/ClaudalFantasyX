@@ -666,3 +666,4 @@ INN_MENU_HELP,Up and Down: choose · Confirm: choose · Cancel: leave
 INN_ERR_UNKNOWN,No one keeps this house.
 INN_ERR_CLOSED,The door is barred. No rooms for now.
 INN_ERR_NO_FUNDS_FMT,"Not enough lume: a rest costs {price}, and the purse holds {purse}."
+BOOT_FIRST_RUN_NOTE,Preparing the graphics for first use. This happens only once.

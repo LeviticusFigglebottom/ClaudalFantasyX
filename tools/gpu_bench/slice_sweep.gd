@@ -129,6 +129,16 @@ func _segment(seg: Array, preset: String) -> void:
 			visible.append_array(await _frames(VISIBLE_FRAMES))
 			# The router's own record of the change (M1-ARC-16 visible window, M2-ARC-03 reveal fields).
 			print("SLICE_SWAP_STATS %s %s" % [id, JSON.stringify(router.get(&"last_swap_stats"))])
+			print(
+				(
+					"SLICE_MEM %s video %.0f MB texture %.0f MB"
+					% [
+						id,
+						RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_VIDEO_MEM_USED) / 1048576.0,
+						RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TEXTURE_MEM_USED) / 1048576.0
+					]
+				)
+			)
 		"launch":
 			# As the game launches (boot.tscn is the main scene; no router change): the boot card holds the
 			# title until the warm-ups end, then SceneRouter.measure_reveal records the window (M2-ARC-03).
