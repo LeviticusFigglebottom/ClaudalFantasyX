@@ -115,6 +115,11 @@ var _reveal_holds: Dictionary = {}
 ## Bumped by every change_scene(): a visible window from an older change stops at its next frame.
 var _visible_generation := 0
 var _measuring_visible := false
+## Frame clocks of the reveal wait and the hidden swap frames. Owned by the router, not coroutine locals: a quit
+## that lands mid-await leaves the coroutine suspended, and a FrameClock it held stayed in use past Godot's exit
+## check ("1 resources still in use at exit", boot smoke; M2-ARC-05 fix).
+var _reveal_clock := FrameClock.new()
+var _swap_clock := FrameClock.new()
 
 
 func _ready() -> void:
@@ -218,13 +223,12 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 ## M2-ARC-03: keeps the fade opaque while anything holds the reveal (boot's warm-up), recording the wait.
 func _wait_for_reveal(stats: Dictionary) -> void:
 	var start := Time.get_ticks_usec()
-	var clock := FrameClock.new()
-	clock.reset_at(start)
+	_reveal_clock.reset_at(start)
 	var frames := 0
 	var worst := 0.0
 	while not reveal_holders().is_empty() and _ms_since(start) < REVEAL_WAIT_MAX_MS:
 		await get_tree().process_frame
-		worst = maxf(worst, clock.lap())
+		worst = maxf(worst, _reveal_clock.lap())
 		frames += 1
 	if not reveal_holders().is_empty():
 		push_warning("%s: lifting after %.0f ms with the reveal still held" % [LOG_PREFIX, _ms_since(start)])
@@ -297,8 +301,7 @@ func _swap(
 	else:
 		swap_frame_start = frame0_start(swap_frame_start, waited, Time.get_ticks_usec())
 	var frames: Array[float] = []
-	var clock := FrameClock.new()
-	clock.reset_at(swap_frame_start)
+	_swap_clock.reset_at(swap_frame_start)
 	# Zone render globals (M1-RND-15) reset on this signal: the new zone starts from the project
 	# defaults, so one that never writes them does not inherit the last zone's sea-glow or tide line.
 	scene_swapping.emit(scene_path)
@@ -306,7 +309,7 @@ func _swap(
 	get_tree().change_scene_to_node(node)
 	for i in MEASURE_FRAMES:
 		await get_tree().process_frame
-		frames.append(clock.lap())
+		frames.append(_swap_clock.lap())
 		if i == 0:
 			if spawn != &"" and node.is_inside_tree():
 				WorldReturn.place_player(node, spawn)
@@ -491,15 +494,18 @@ class VisibleWindow:
 	var frame_ms: Array[float] = []
 	var lift_frames := 0
 	var lifted_frames := 0
-	var _clock := FrameClock.new()
+	## A plain usec mark, not a FrameClock: a window lives in a coroutine that a quit can leave suspended,
+	## and a script object it holds would outlive Godot's exit check (boot smoke, M2-ARC-05 fix).
+	var _last_usec := 0
 
 	func _init(start_usec: int) -> void:
-		_clock.reset_at(start_usec)
+		_last_usec = start_usec
 
 	## Records the frame that ended at `now_usec`; `lifted`: the fade was fully lifted when it ended.
 	## Returns true once the window is complete.
 	func tick(now_usec: int, lifted: bool) -> bool:
-		frame_ms.append(_clock.lap_at(now_usec))
+		frame_ms.append(FrameClock.ms_between(_last_usec, now_usec))
+		_last_usec = now_usec
 		if lifted:
 			lifted_frames += 1
 		else:

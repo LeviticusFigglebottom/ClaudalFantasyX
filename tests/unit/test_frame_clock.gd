@@ -73,6 +73,16 @@ func test_the_default_clock_is_ticks_usec() -> void:
 	assert_true(now >= before and now <= Time.get_ticks_usec(), "reads Time.get_ticks_usec")
 
 
+## Boot-smoke fix: the default clock keeps no Callable to the Time singleton (a FrameClock left in a coroutine
+## suspended at quit pinned it past Godot's exit check), and the router keeps its clocks as members.
+func test_the_default_clock_holds_no_callable_and_the_router_no_clock_locals() -> void:
+	assert_false(FrameClock.new()._now.is_valid(), "the default calls Time.get_ticks_usec() directly")
+	var src := (load("res://game/core/scene_router.gd") as GDScript).source_code
+	assert_false(src.contains("var clock := FrameClock.new()"), "no FrameClock local in the router's coroutines")
+	assert_true(src.contains("var _reveal_clock := FrameClock.new()"), "the reveal wait's clock is the router's")
+	assert_true(src.contains("var _swap_clock := FrameClock.new()"), "the swap's clock is the router's")
+
+
 func test_a_real_stall_reads_past_the_cap() -> void:
 	var clock := FrameClock.new()
 	clock.reset()
