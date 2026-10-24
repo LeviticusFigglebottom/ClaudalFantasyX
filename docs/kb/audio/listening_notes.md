@@ -277,3 +277,54 @@ minutes in all. The scenes are in act_outline.md (Ch5, Ch7, Ch8).
   samples). Do the footsteps sound natural, or clipped?
 
 **For all three:** can you hear the loop wrap? The seams are at 80 s, 68.6 s and 75.8 s.
+
+## M3: Act I bosses (land) (M3-AUD-09)
+
+Two boss cues for fights that aren't built yet, so the stems can only be heard on their own for now. Each is a set
+of synchronized stems like the Drownbell's: the game starts stem 1 and fades the others in at the fight's phase
+changes. To hear a phase, play its stems together (in Audacity: import them all, play). The scenes are in
+act_outline.md (Ch5 and Ch8). About 5 minutes in all, if you play each stack once.
+
+| # | Files | Length | Plays |
+|---|---|---|---|
+| 1 | `music/cinder_matron_p1.ogg` | 67.2 s loop | Ch5, the Cinder Matron, phase 1: the crust |
+| 2 | `cinder_matron_p1` **and** `_p2` together | 67.2 s loop | Phase 2: Kerrid breaks its armour and the fire shows |
+| 3 | `music/undertows_reach_p1.ogg` | 70 s loop | Ch8, the Undertow's Reach, phase 1: the limb rises |
+| 4 | `undertows_reach_p1` **and** `_p2` together | 70 s loop | Phase 2: the Reach strikes the wall |
+| 5 | all three `undertows_reach_p*` together | 70 s loop | The scripted escape: the wall falls anyway |
+
+### (1) The Cinder Matron: a temple guardian with fire under its crust
+
+- **The idea:** a magma-crusted construct on a stair-mountain with copper veins. It moves in an uneven 7/8 (two
+  short steps and a long one, 2+2+3): a limping, mechanical gait. The key is D with a flat second and a major third,
+  which reads as heat, not water. The theme is on a **copper chime**: tuned kettle gongs struck as a melody,
+  doubled an octave up by a hard bar. A hard, hand-damped high bar hits each step like an anvil. A low men's hum
+  (the temple) holds D and A in the intro and the breakdown.
+- **Phase 2 (the Fire):** when the crust breaks, a hard-blown flute enters high with a long counter-line over the
+  chime. Underneath, a low rumbling noise swells in each bar (the core), with magma crackle, jingles on every
+  eighth, and more drums on the long step. The stack is about 2 LU louder than phase 1.
+- **The key question:** does phase 1 sound like stone and copper, and phase 2 like the same thing on fire? If phase 2
+  just sounds "busier", the flute line is what to change.
+- Does the 7/8 feel heavy and purposeful, or does it trip? Is the chime clear as a tune, or does it read as
+  percussion? The crackle: fire, or vinyl noise?
+
+### (2) The Undertow's Reach: the sea's size against a stair that was not wide enough
+
+- **The idea:** Corrow has no weapon against the storm, so this is not a hero's fight. A new mode belongs to the
+  storm alone (G octatonic: it repeats at every minor third, so none of its chords is home). It is in a surging
+  12/8, grouped as two long swells and three short breakers. **Phase 1:** the drowned in the wave, a low men's
+  chorale (hummed) carrying the theme in long notes, each note struck on a low bar; the storm as a noise band that
+  swells through each bar; the bass and drums on the swell. Corrow's beacon gong from the seawall cue sounds every
+  four bars, on its own F#, the one note outside the storm's mode.
+- **Phase 2 (the Reach strikes):** two hard flutes play the theme a minor third apart, with muted plucks running in
+  eighths (the seawall cue's rope and block, now at speed).
+- **The escape (stem 3):** the drive. A big drum on every dotted quarter, the bass doubled in running eighths, a
+  slap roll and a riser into every four bars. Above it, high women's voices hum a slow line that never resolves:
+  the current-song Rhen hears inside the storm's wall. Each stem adds about 1.5–2 LU.
+- **The key question:** does it feel enormous and hopeless rather than heroic? Does the escape feel like running,
+  not like winning? If the escape sounds triumphant, the riser is the first thing to cut.
+- Is the beacon's F# a stubborn note against the storm (good), or just out of tune (bad)? Does the current-song
+  read as voices inside the storm, or as a synth pad?
+
+**For both:** can you hear the loop wrap? Both start a sixteenth before the downbeat, so the seam falls in a quiet
+spot. The seams are at 67.2 s and 70 s.

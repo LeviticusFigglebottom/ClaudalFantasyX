@@ -11,6 +11,9 @@ import fnmatch
 # (glob, metric, target LUFS, tolerance LU, true-peak ceiling dBTP, why)
 RULES = [
     ("music/drownbell_p*.ogg", "stem", -16.0, 0.5, -1.0, "boss stems: the full stack at -16, each alone quieter"),
+    # M3-AUD-09: each "stem" rule is one cue's stack (test_audio_loudness groups the files by rule)
+    ("music/cinder_matron_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Cinder Matron's two stems, stacked at -16"),
+    ("music/undertows_reach_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Undertow's Reach's three stems, stacked at -16"),
     ("music/*.ogg", "integrated", -16.0, 0.5, -1.0, "music beds, themes and cutscene cues"),
     ("ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "ambience beds (mix.md: -26, peaks well down)"),
     ("sfx/ilun_summon.ogg", "integrated", -16.0, 0.5, -1.0, "a music sting (Music bus)"),

@@ -125,6 +125,12 @@ JOBS = [
      ["terraces_of_ash.ogg", "terraces_of_ash.loop.json"], "music_loop"),
     ("assets_src/music/corrow_seawall.py", "assets/audio/music",
      ["corrow_seawall.ogg", "corrow_seawall.loop.json"], "music_loop"),
+    # M3-AUD-09: boss stems (like the Drownbell's, each stem alone is quieter; the stack is checked by
+    # tools/tests/test_audio_loudness.py)
+    ("assets_src/music/cinder_matron.py", "assets/audio/music",
+     [f"cinder_matron_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/undertows_reach.py", "assets/audio/music",
+     [f"undertows_reach_p{i}{ext}" for i in (1, 2, 3) for ext in (".ogg", ".loop.json")], "music_loop"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
