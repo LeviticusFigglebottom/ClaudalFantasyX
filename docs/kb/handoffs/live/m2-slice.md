@@ -10,7 +10,27 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
      - **Post-battle grace:** 12 m of `grace_m` (data: greybox_defaults.json `encounters`).
      - **Test:** battle → return → walk in test_zone_story.
   2. **New Game route: fixed** (399651ca). The prologue goes to ch02/haluna at Beach again. Act I's Ch1 is the `prologue.next_location` switch; the Lead flips it with `end_card.next_location` (22d62298, empty) once the human signs off M2. F8 chapter select (M3-ARC-02, 9368791b) reaches every built chapter meanwhile.
-  3. **Greyscale opening: under investigation** (a subagent).
+  3. **Greyscale opening: fixed** (9036c019).
+     - **Cause:** the lighting, not a fault. The key Sun is behind the towers, the towers are near-white, only a blue-grey fill and ambient reach the faces the camera sees, and the colour script's warm Rim was never built.
+     - **Fix:** the Rim (#F2A64A, 1.4) and a teal ambient. Tower saturation goes 0.13 → 0.28.
+     - **Ruled out:** desaturation, missing imports and branch drift.
+     - **Still Rendering's:** the real grade or LUT.
+  - **MERGE-READY @ <head>:**
+    - **Items:**
+      - the playtest fixes 1–3 (M2-FP-28);
+      - the end card switch (M3-C04-04);
+      - the F8 chapter select (M3-ARC-02);
+      - the ENV-05 resident flags reverted;
+      - the integration branch (29b1dbfa) merged;
+      - and the earlier Ch6, Ch9, M2-ENV-12 and replay hooks.
+    - **Checks run:**
+      - the full Godot suite on 1cc9fc66, the integration merge: 1642 run, 0 failed;
+      - the tools unittest: OK;
+      - per item since then: lint, format, validate_data, taskboard, the tools unittest, and Godot filtered to zone_story, ch04_thread, fp_thread, fp_prologue, ch01_thread, ch0*, cutscene_replay, debug_overlay, fp_end_card, prologue and prewarm. All green.
+    - **Checks skipped:**
+      - coverage: no game/battle or game/progression change since the last run;
+      - Blender: no source touched;
+      - the full shot manifest: no shot covers the prologue or the touched zones' encounters.
   4. **big7** (characters, creatures, battle presentation): I'll merge it as soon as it reaches the integration branch.
 - **The test_scene_router_swap regression is fixed on this branch** (reported by battle-presentation).
   - **The cause:** my M2-ENV-05 resident flags on top of M2-ARC-05/08.
