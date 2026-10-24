@@ -7,7 +7,7 @@
 
 Each target is one .glb holding its LOD chain as separate objects (`<name>`, `<name>-lod1`). Geometry is
 built with the Haluna kit's core (kit_common.py, imported read-only through bf_common; the stem-gull is the
-Haluna village.lintel_gull, read-only); every material slot is this kit's own (`bf_*`, written by bf_materials.py). Textures are not embedded.
+Haluna village.lintel_gull, read-only; the Seventh Terrace (M3-ENV-08B) is bf_terrace and bf_terrace_rig); every material slot is this kit's own (`bf_*`, written by bf_materials.py). Textures are not embedded.
 """
 
 from __future__ import annotations
@@ -26,10 +26,12 @@ import bf_drowned  # noqa: E402
 import bf_hull  # noqa: E402
 import bf_props  # noqa: E402
 import bf_rig  # noqa: E402
+import bf_terrace  # noqa: E402
+import bf_terrace_rig  # noqa: E402
 
 kc = bf.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
-MODULES = (bf_hull, bf_rig, bf_deckhouse, bf_props, bf_drowned)
+MODULES = (bf_hull, bf_rig, bf_deckhouse, bf_props, bf_drowned, bf_terrace, bf_terrace_rig)
 
 
 def targets() -> dict:

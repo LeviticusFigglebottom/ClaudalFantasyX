@@ -9,7 +9,10 @@ Writes three files, all generated (edit this script, not them):
 * `oruvel_drowned_layout.json`: the Oruvel Underway kit's crown pieces (its preview layout's tower rows above F12,
   read-only from ou_preview_layout.py) in the same frame, so the drowned city shows under the dive raft.
 * `oruvel_preview.tscn`: the HalunaMood rig at the colour script's `ch01` (10:30, sun 58 deg / 120 deg), the sea,
-  the tide, both dressers and one HalunaShotCamera per shot.
+  the tide, the dressers and one HalunaShotCamera per shot.
+* `oruvel_seventh_terrace_layout.json` (M3-ENV-08B): the *Seventh Terrace* (the Brightwater ferry kit's pieces,
+  read-only from bf_terrace.py) moored and crewed at the outer mooring, its stage raft (this kit's) on her starboard
+  side; a third dresser places it.
 
 The frame is the Underway's (oruvel_underway.md §0): x east, z south (north = -Z), the sea surface at y 0; the
 Underway's tether drops into the tower's crown at (-9.9, 5.2), and its `hull_keels` (the neighbour raft seen from
@@ -32,6 +35,9 @@ import ov_hulls as ohl  # noqa: E402
 import ov_common as oc  # noqa: E402
 from ov_common import kc  # noqa: E402
 
+sys.path.insert(0, str(HERE.parent / "brightwater_ferry"))
+import bf_terrace as bt  # noqa: E402  (the Seventh Terrace, M3-ENV-08B: read-only)
+
 OUT_DIR = ROOT / "game" / "levels" / "_tests" / "oruvel_kit"
 RES_DIR = "res://game/levels/_tests/oruvel_kit/"
 TETHER = (-9.9, 5.2)  # the Underway's tether into the crown (ou_preview_layout.dressing)
@@ -43,6 +49,11 @@ DECK_Y = {"raft_deck": ohl.RAFT_DECK_Y, "raft_deck_small": ohl.RAFT_SMALL_Y, "di
 DECK_HALF = {"raft_deck": (4.5, 3.5), "raft_deck_small": (3.0, 2.5), "dive_raft": (3.5, 3.0), "net_pen": (6.0, 6.0)}
 KIT_ROW_Z = (10.0, -6.0, -24.0)  # front (small pieces), back (hulls and rafts), heroes
 KIT_ROW_X0 = 70.0
+# The outer mooring (oruvel.md §0; brightwater_ferry.md §7): the Seventh Terrace's origin (her main deck amidships on
+# the centre line), bow north, her waterline on the sea.
+TERRACE = (-58.0, -bt.WATERLINE_Y, 8.0)
+TERRACE_PIECES = ("terrace_hull", "terrace_galley", "terrace_hold", "terrace_rig", "terrace_sails_furled",
+                  "terrace_moored")
 
 _rng = kc.rng_for("oruvel_preview_layout", 7)
 
@@ -196,6 +207,28 @@ def kit_row() -> list[dict]:
     return out
 
 
+def terrace_world(p) -> list[float]:
+    """World point of a point in the Seventh Terrace's frame (she lies bow north: no turn)."""
+    return [round(TERRACE[0] + p[0], 3), round(TERRACE[1] + p[1], 3), round(TERRACE[2] + p[2], 3)]
+
+
+def mooring() -> list[dict]:
+    """This kit's side of the outer mooring: the stage raft she lies against and the salvage on it."""
+    sx, sz = TERRACE[0] + bt.STAGE_AT[0], TERRACE[2] + bt.STAGE_AT[1]
+    stage = put("raft_deck_small", sx, 0.0, sz, bt.STAGE_YAW)
+    return [stage, on_deck(stage, "salvage_heap", 1.2, -0.6, 90.0)]
+
+
+def seventh_terrace() -> list[dict]:
+    """The Brightwater kit's Seventh Terrace, moored and crewed (Ch1): every piece at her origin; the wheel and the
+    name-board at their own origins."""
+    out = [put(p, TERRACE[0], TERRACE[1], TERRACE[2]) for p in TERRACE_PIECES]
+    w = terrace_world(bt.WHEEL_AT)
+    b = terrace_world(bt.NAME_BOARD_AT)
+    out += [put("terrace_wheel", w[0], w[1], w[2]), put("terrace_name_board", b[0], b[1], b[2])]
+    return out
+
+
 def drowned() -> list[dict]:
     """The Underway kit's crown (F13 and F14 rows of its preview layout), read-only, in the same frame."""
     sys.path.insert(0, str(HERE.parent / "oruvel_underway"))
@@ -210,7 +243,8 @@ def drowned() -> list[dict]:
 
 
 SHOT_NAMES = {"O01": "surfacing", "O02": "scale_hull", "O03": "town_loop", "O08": "keel_hull", "O09": "kell_stall",
-              "O10": "lintel_gull", "O19": "dive_mooring", "O20": "kit_row"}
+              "O10": "lintel_gull", "O19": "dive_mooring", "O20": "kit_row", "O07": "name_board",
+              "O21": "seventh_terrace"}
 SHOTS = {
     # id: eye, target, vFOV (deg), notes; dof (far distance, transition, blur) where the design wants it.
     "O01": {"eye": (-4.5, 0.45, 23.5), "look": (-3.0, 2.2, -20.0), "fov": 37.8},
@@ -222,6 +256,11 @@ SHOTS = {
     "O19": {"eye": (-15.5, 5.2, 14.5), "look": (-9.9, 0.0, 4.4), "fov": 46.4},
     "O20": {"eye": (KIT_ROW_X0 + 28.0, 7.5, KIT_ROW_Z[0] + 30.0), "look": (KIT_ROW_X0 + 28.0, 0.0, KIT_ROW_Z[1] + 2.0),
             "fov": 53.1},
+    # M3-ENV-08B: the name-board insert (the same point in her frame as Ch4's D06), and her at the outer mooring from
+    # her starboard quarter (the stage raft, the gangplank, the fenders and the salvage: moored and crewed).
+    "O07": {"eye": tuple(terrace_world(bt.INSERT_EYE)), "look": tuple(terrace_world(bt.INSERT_TARGET)), "fov": bt.INSERT_FOV},
+    "O21": {"eye": (TERRACE[0] + 17.0, 1.4, TERRACE[2] + 20.0), "look": (TERRACE[0] + 1.0, 3.6, TERRACE[2] - 1.0),
+            "fov": 37.8},
 }
 
 
@@ -235,6 +274,9 @@ def anchors() -> dict:
         "chandlery_beacon": [-38.5, 4.9, -15.8],
         "keel_hull_meeting_deck": [round(-16.0 + 4.5, 3), oh.KEEL_DECK_Y, -36.0],
         "net_pen_centre": [27.5, ohl.NET_PEN_Y, -11.5],
+        "seventh_terrace_origin": list(TERRACE),
+        "seventh_terrace_name_board": terrace_world(bt.NAME_BOARD_AT),
+        "seventh_terrace_gangway": terrace_world((bt.STAGE_SIDE * 3.2, 0.0, 0.5 * sum(bt.GANGWAY_Z))),
     }
 
 
@@ -291,6 +333,9 @@ def tscn(shots: dict) -> str:
               '[node name="Drowned" type="Node3D" parent="." node_paths=PackedStringArray("tide")]',
               'script = ExtResource("3_dresser")', f'layout_path = "{RES_DIR}oruvel_drowned_layout.json"',
               'tide = NodePath("../Tide")', '',
+              '[node name="SeventhTerrace" type="Node3D" parent="." node_paths=PackedStringArray("tide")]',
+              'script = ExtResource("3_dresser")', f'layout_path = "{RES_DIR}oruvel_seventh_terrace_layout.json"',
+              'tide = NodePath("../Tide")', '',
               '[node name="Cameras" type="Node3D" parent="."]', '']
     for sid in shots:
         lines += [f'[node name="{sid}" type="Camera3D" parent="Cameras"]', 'near = 0.05', 'far = 6000.0',
@@ -332,7 +377,7 @@ def layout(pieces: list[dict], kit: str, zone: str, about: str, **extra) -> dict
 
 def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    pieces = town() + kit_row()
+    pieces = town() + kit_row() + mooring()
     shots = {k: {"eye": list(v["eye"]), "look": list(v["look"]), "fov": v["fov"]} for k, v in SHOTS.items()}
     main_layout = layout(
         pieces, "oruvel", "ch01/oruvel preview (M3-ENV-07): the raft-town kit composed for the design notes' key shots",
@@ -348,6 +393,13 @@ def main() -> int:
         "Generated by assets_src/environments/kits/oruvel/ov_preview_layout.py from the Oruvel Underway kit's preview "
         "layout (ou_preview_layout.tower(), the rows at and above F13), read-only; same frame as oruvel_layout.json.")
     (OUT_DIR / "oruvel_drowned_layout.json").write_text(json.dumps(drowned_layout, indent=1) + "\n", encoding="utf-8")
+    terrace = layout(
+        seventh_terrace(), "brightwater_ferry",
+        "ch01/oruvel preview (M3-ENV-08B): the Seventh Terrace moored and crewed at the outer mooring",
+        "Generated by assets_src/environments/kits/oruvel/ov_preview_layout.py from the Brightwater ferry kit's "
+        "bf_terrace.py (read-only); same frame as oruvel_layout.json. Her origin (main deck amidships, centre line) is "
+        f"{list(TERRACE)}, bow north; the stage raft she lies against is this kit's (oruvel_layout.json).")
+    (OUT_DIR / "oruvel_seventh_terrace_layout.json").write_text(json.dumps(terrace, indent=1) + "\n", encoding="utf-8")
     (OUT_DIR / "oruvel_preview.tscn").write_text(tscn(SHOTS), encoding="utf-8")
     (OUT_DIR / "oruvel_preview_shots.json").write_text(json.dumps(manifest(), indent=1) + "\n", encoding="utf-8")
     print(f"LAYOUT {len(pieces)} pieces, {len(crown)} crown pieces, {len(SHOTS)} shots -> {OUT_DIR.relative_to(ROOT)}")

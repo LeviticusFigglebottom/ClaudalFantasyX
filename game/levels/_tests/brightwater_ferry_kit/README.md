@@ -14,9 +14,13 @@ Nothing shipped may reference this folder.
 | `brightwater_ferry_layout.json` | Every placement (HalunaDresser format, explicit heights, no terrain) plus `lamps`. **Generated** by `bf_preview_layout.py`: edit the generator, not the JSON |
 | `brightwater_ferry_ch04_environment.tres` | The `ch04` frame: the navy night sky (`env_sky_night`, `#0B1630` / `#1E2E4E`, stars, the crescent), the `#2A4A6E` fill at 0.2, AgX at exposure 1.10, the kit's `lut_ch04_crossing` |
 | `brightwater_ferry_water_material.tres` | The colour script's validated `night_sea` look (σ 2 / 0.5 / 0.42 × 1.0, scatter `#1FA3A6`, deep `#061A2B`) |
-| `brightwater_ferry_preview_shots.json` | Capture manifest for all seven views (`--manifest=res://game/levels/_tests/brightwater_ferry_kit/brightwater_ferry_preview_shots.json`) |
+| `brightwater_ferry_preview_shots.json` | Capture manifest for all seven views and the six derelict views (`--manifest=res://game/levels/_tests/brightwater_ferry_kit/brightwater_ferry_preview_shots.json`) |
+| `brightwater_derelict_preview.tscn` | M3-ENV-08B: the *Seventh Terrace* alongside the ferry by day (HalunaMood's day mood at the **provisional** `ch04_derelict` frame: sun 15° / 100°, `#FFD9B0` at 2.6), four dressers (`Dresser`: both ships and the alongside gear; `SailsSet`: the set sails and the spawn membrane; `SailsLowered`: hidden; `NameBoard`) and six cameras (`D01` … `D04`, `D06`, `D09`; D09's setup shows the lowered state). **Generated** by `bf_preview_layout.py` |
+| `brightwater_derelict_*_layout.json` | The four dressers' layouts (generated); the main one carries `anchors` (her origin, the board, the wheel's axle, the walkable boxes) |
+| `brightwater_derelict_environment.tres`, `brightwater_derelict_water_material.tres` | The provisional `ch04_derelict` sky (`env_sky_low_sun`, exposure 0.75, no grade) and the open-sea day water, until Rendering adds the sub-frame |
 
-Registered baselines (tests/screenshots/shots.json): `brightwater_b02_awning`, `brightwater_b03_rail_drowned`.
+Registered baselines (tests/screenshots/shots.json): `brightwater_b02_awning`, `brightwater_b03_rail_drowned`. The derelict
+views are review views (the Seventh Terrace's one baseline is Oruvel's `oruvel_o07_name_board`, the same board).
 
 Rebuild after a generator change:
 

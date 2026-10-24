@@ -6,6 +6,8 @@ extends TestCase
 
 const LAYOUT := "res://game/levels/_tests/oruvel_kit/oruvel_layout.json"
 const DROWNED := "res://game/levels/_tests/oruvel_kit/oruvel_drowned_layout.json"
+## M3-ENV-08B: the Seventh Terrace (the Brightwater ferry kit's pieces) moored and crewed at the outer mooring.
+const TERRACE := "res://game/levels/_tests/oruvel_kit/oruvel_seventh_terrace_layout.json"
 const SCENE := "res://game/levels/_tests/oruvel_kit/oruvel_preview.tscn"
 const WATER := "res://game/levels/_tests/oruvel_kit/oruvel_water_material.tres"
 const ENVIRONMENT := "res://game/levels/_tests/oruvel_kit/oruvel_ch01_environment.tres"
@@ -30,6 +32,7 @@ func _pieces_exist(path: String) -> int:
 func test_layouts_name_only_existing_pieces() -> void:
 	assert_true(_pieces_exist(LAYOUT) >= 18, "every kit piece is in the preview")
 	assert_true(_pieces_exist(DROWNED) >= 3, "the Underway's crown under the dive raft")
+	assert_true(_pieces_exist(TERRACE) >= 8, "the Seventh Terrace at the outer mooring")
 
 
 func test_kit_materials_load_and_none_emits() -> void:

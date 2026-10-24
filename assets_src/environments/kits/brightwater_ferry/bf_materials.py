@@ -127,6 +127,26 @@ for _name, _hex, _cover in (("bf_canvas", "#C9B48E", 0.78), ("bf_canvas_blue", "
                                roughness_base=0.92, specular_base=0.25, variation_value=0.12, variation_warmth=0.04,
                                **DRY, salt_coverage="Vector2(0.0, 0.15)")
 
+# The Seventh Terrace (M3-ENV-08B; brightwater_ferry.md §7.3): copper sheathing on the bronze stack (the Tamsule
+# bell's shader with copper colours: verdigris gathered low and in streaks, worn bright on edges) and the terrace
+# sails' tanned cloth. Her lacquer is the Pemakar kit's (standard, clearcoated: below), as bf_lacquer_red is.
+BRONZE = "res://game/shaders/environment/env_bronze.gdshader"
+
+
+MATERIALS["bf_canvas_tan"] = weather(*WOVEN[:2], (0.07, 0.07), base_triplanar=False, col_paint=hexc("#A8865E"),
+                                     paint_cover=0.8, normal_strength=0.45, roughness_base=0.92, specular_base=0.25,
+                                     variation_value=0.12, variation_warmth=0.04, **DRY,
+                                     salt_coverage="Vector2(0.0, 0.18)")  # sand_cloth toward sand_wet
+MATERIALS["bf_copper_sheathing"] = {"shader": BRONZE, "params": {
+    "tex_detail": ("tex", HTEX + "weathering_detail.png"),
+    "tex_normal": ("tex", HTEX + "coral_concrete_normal.png"),
+    "col_bronze": hexc("#8A4A26"), "col_worn": hexc("#A65A2A"),  # hair_copper darkened / hair_copper
+    "col_patina": hexc("#5F8A78"), "col_patina_pale": hexc("#8DB3A2"),  # bronze_patina / its bloom
+    "col_grime": hexc("#272822"), "metallic_bronze": 0.6, "roughness_bronze": 0.5, "roughness_worn": 0.32,
+    "patina_coverage": "Vector2(0.1, 0.6)", "patina_roughness": 0.85, "patina_shade_bias": 0.3,
+    "streak_period_m": "Vector2(0.4, 3)", "streak_strength": 0.5, "detail_scale_m": 1.2, "normal_tile_m": 1.6,
+    "normal_strength": 0.4, "wear_strength": 0.8, "ao_strength": 0.75}}
+
 STANDARD: dict[str, dict] = {
     # The wale's line and the stem-gull's beak: lacquer_red.
     "bf_lacquer_red": {"albedo_color": hexc("#B3261E"), "roughness": 0.3, "clearcoat_enabled": "true", "clearcoat": 0.5},
@@ -143,6 +163,20 @@ STANDARD: dict[str, dict] = {
     "bf_interior_dark": {"albedo_color": hexc("#2A2622"), "roughness": 0.95},
     # The Order niche's basin and plinth: order_marble, the only white stone aboard.
     "bf_marble": {"albedo_color": hexc("#E4DED3"), "roughness": 0.35, "metallic_specular": 0.6},
+    # The Seventh Terrace: raw copper (the ingots, the pot, the name-board's band and brackets), the dead Lit Age
+    # lamp-housing's ceramic, the crew's rice, and the Spar-Wraith's membrane (wet black, a hard sheen) with its seams
+    # in spawn_wound (faint: the motes are VFX's).
+    "bf_copper_bright": {"albedo_color": hexc("#A65A2A"), "metallic": 0.95, "roughness": 0.38},
+    # Pemakar lacquer (pemakar_materials.py kit_lacquer_black, and lacquer_red_deep for the galley's dado).
+    "bf_lacquer_black": {"albedo_color": hexc("#1D1916"), "roughness": 0.24, "clearcoat_enabled": "true",
+                         "clearcoat": 0.6},
+    "bf_lacquer_red_deep": {"albedo_color": hexc("#7A1712"), "roughness": 0.26, "clearcoat_enabled": "true",
+                            "clearcoat": 0.5},
+    "bf_ceramic": {"albedo_color": hexc("#DCE3E0"), "roughness": 0.5, "metallic_specular": 0.5},
+    "bf_rice": {"albedo_color": hexc("#E6DAC0"), "roughness": 0.8},
+    "bf_membrane": {"albedo_color": hexc("#1D1916"), "roughness": 0.12, "metallic_specular": 0.7},
+    "bf_spawn_wound": {"albedo_color": hexc("#3FE0C8"), "emission_enabled": "true", "emission": hexc("#3FE0C8"),
+                       "emission_energy_multiplier": 1.2, "roughness": 0.3},
 }
 
 

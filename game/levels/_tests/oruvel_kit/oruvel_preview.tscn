@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_mood.gd" id="1_rig"]
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="2_tide"]
@@ -100,6 +100,20 @@ position = Vector3(98, 7.5, 40)
 look_at = Vector3(98, 0, -4)
 fov_deg = 53.1
 
+[sub_resource type="Resource" id="ShotO07"]
+script = ExtResource("10_shot")
+id = &"O07"
+position = Vector3(-57.4, 2.2, 27.035)
+look_at = Vector3(-58, 2.45, 18.035)
+fov_deg = 16.1
+
+[sub_resource type="Resource" id="ShotO21"]
+script = ExtResource("10_shot")
+id = &"O21"
+position = Vector3(-41, 1.4, 28)
+look_at = Vector3(-57, 3.6, 7)
+fov_deg = 37.8
+
 [node name="OruvelPreview" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water", "world_environment", "dresser")]
 script = ExtResource("1_rig")
 sun = NodePath("Sun")
@@ -152,6 +166,11 @@ script = ExtResource("3_dresser")
 layout_path = "res://game/levels/_tests/oruvel_kit/oruvel_drowned_layout.json"
 tide = NodePath("../Tide")
 
+[node name="SeventhTerrace" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("3_dresser")
+layout_path = "res://game/levels/_tests/oruvel_kit/oruvel_seventh_terrace_layout.json"
+tide = NodePath("../Tide")
+
 [node name="Cameras" type="Node3D" parent="."]
 
 [node name="O01" type="Camera3D" parent="Cameras"]
@@ -201,3 +220,15 @@ near = 0.05
 far = 6000.0
 script = ExtResource("9_cam")
 shot = SubResource("ShotO20")
+
+[node name="O07" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotO07")
+
+[node name="O21" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotO21")

@@ -179,14 +179,39 @@ class PreviewTests(unittest.TestCase):
 
     def test_generated_files_are_current(self) -> None:
         LAYOUT_GEN._rng = oc.kc.rng_for("oruvel_preview_layout", 7)  # the generator's own seed, from the start
-        pieces = json.loads(json.dumps(LAYOUT_GEN.town() + LAYOUT_GEN.kit_row()))
+        pieces = json.loads(json.dumps(LAYOUT_GEN.town() + LAYOUT_GEN.kit_row() + LAYOUT_GEN.mooring()))
         self.assertEqual(pieces, self.LAYOUT["pieces"], "run ov_preview_layout.py")
+        terrace = json.loads((PREVIEW / "oruvel_seventh_terrace_layout.json").read_text())
+        self.assertEqual(terrace["pieces"], json.loads(json.dumps(LAYOUT_GEN.seventh_terrace())), "run ov_preview_layout.py")
         self.assertEqual((PREVIEW / "oruvel_preview.tscn").read_text(), LAYOUT_GEN.tscn(LAYOUT_GEN.SHOTS))
         manifest = json.loads((PREVIEW / "oruvel_preview_shots.json").read_text())
         self.assertEqual(manifest, LAYOUT_GEN.manifest())
         scene = (PREVIEW / "oruvel_preview.tscn").read_text()
         cams = re.findall(r'\[node name="(O\d\d)" type="Camera3D"', scene)
         self.assertEqual(sorted(cams), sorted(self.LAYOUT["shots"]))
+
+    def test_the_seventh_terrace_is_moored_at_the_outer_mooring(self) -> None:
+        """M3-ENV-08B: the Brightwater kit's Seventh Terrace (moored and crewed) at oruvel.md's outer mooring, against
+        this kit's stage raft, and O07 frames her name-board from the point Ch4's D06 uses (in her frame)."""
+        bt = LAYOUT_GEN.bt
+        terrace = json.loads((PREVIEW / "oruvel_seventh_terrace_layout.json").read_text())
+        self.assertEqual(terrace["kit_dir"], "res://assets/environments/kits/brightwater_ferry/")
+        names = {p["piece"] for p in terrace["pieces"]}
+        self.assertTrue({"terrace_hull", "terrace_name_board", "terrace_sails_furled", "terrace_moored"} <= names, names)
+        self.assertFalse(names & {"terrace_sails_set", "terrace_sails_lowered", "terrace_membrane", "terrace_derelict"},
+                         "Ch1: moored and crewed, no Ch4 state")
+        hull = next(p for p in terrace["pieces"] if p["piece"] == "terrace_hull")
+        self.assertEqual(hull["at"], [-58.0, 8.0], "oruvel.md: the outer mooring at (-58, 8)")
+        self.assertAlmostEqual(hull["y"], -bt.WATERLINE_Y, places=3, msg="her waterline on the sea")
+        stage = next(p for p in self.LAYOUT["pieces"] if p["piece"] == "raft_deck_small"
+                     and p["at"] == [round(-58.0 + bt.STAGE_AT[0], 3), round(8.0 + bt.STAGE_AT[1], 3)])
+        self.assertEqual(stage["yaw_deg"], bt.STAGE_YAW)
+        self.assertAlmostEqual(bt.STAGE_DECK_ABOVE_SEA, ohl.RAFT_SMALL_Y, places=3, msg="the gangplank lands on its deck")
+        board = next(p for p in terrace["pieces"] if p["piece"] == "terrace_name_board")
+        o07 = self.LAYOUT["shots"]["O07"]
+        rel = np.array(o07["eye"]) - np.array([board["at"][0], board["y"], board["at"][1]])
+        np.testing.assert_allclose(rel, np.array(bt.INSERT_EYE) - np.array(bt.NAME_BOARD_AT), atol=1e-3)
+        self.assertAlmostEqual(o07["fov"], bt.INSERT_FOV, places=3)
 
     def test_nothing_shipped_names_the_preview(self) -> None:
         for p in list(SRC.glob("*.py")) + [ROOT / "game" / "data" / "import" / "oruvel_kit.json"]:
