@@ -444,6 +444,12 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
   - Hovering the overwrite question's choices left Confirm on the old one (M2-ARC-06's bug).
   - **Fix:** `SaveSlotRow` now emits `hovered` and `wheeled`, `SaveMenu` follows them while browsing, and the choices' `row_hovered` sets `dialog_cursor`. These are Systems' files: small hooks for them to accept.
 
+## Audio settings page (M3-UI-02)
+
+- **`AudioMenu`** (a SettingsPage over `AudioMenuModel`) lists the UiSettings rows named in `game/data/ui/audio_menu.json`: the Audio track's volumes (`master_volume`, `music_volume`, `sfx_volume`, `voice_volume`, `reduced_audio`), which AudioDirector applies through mix.json `volume_settings`.
+- **`AccessibilityMenuModel.row_ids()`** leaves those ids out.
+- **The hub's Audio row** shows only when UiSettings has one of them (`SettingsMenu.row_ids()`), so before claude/audio merges the hub keeps its three rows. **Tests:** `test_audio_menu.gd`.
+
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 
 - **The field menu's root has ten rows** (`FieldMenuModel.ROOT_IDS`): Items, Equip, Lattice, Status, Swell, Map (M2-UI-18), Bestiary, Settings, Quit to Title, Close. Equip, Lattice and Status (`PARTY_ROWS`) are off, saying why, when nobody has joined. `field_menu.json` grew the panel to 639 px and the root page to nine rows; every rect is still a multiple of 3.
