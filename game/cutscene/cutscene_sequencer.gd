@@ -58,6 +58,9 @@ var auto_advance_hold_sec := 1.5
 var auto_choice := 0
 ## When a scene ends faded out, fade back in. A host that changes scene right after sets false.
 var restore_fade := true
+## Freeze the stage's player for the scene. Overheard barks (M2-FP-13) set false: Rhen walks on
+## while the lines advance by themselves (auto_advance).
+var hold_player := true
 ## Every <<event>> of the last play(), in order: [{"name": StringName, "args": Array}].
 var events: Array[Dictionary] = []
 ## Soft failures (a missing shot, actor, mark or track), each reported once.
@@ -267,6 +270,8 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 	faces.clear()
 	_face_rigs.clear()
 	SaveSystem.hold_autosave(self)
+	if not hold_player:
+		_player = null
 	if _player != null:
 		_player_input_was = _player.accepts_input
 		_player.accepts_input = false

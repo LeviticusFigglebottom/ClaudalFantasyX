@@ -4,6 +4,7 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 
 ## Now
 - **Done, in review:** M2-FP-10 dialogue key light (`CutsceneKeyLight`; docs/kb/tech/cutscenes.md "Key light"). Needs the PC GPU check of Cutscene A.
+- **Done, in review:** M2-FP-13, Haluna by day (B02 Neme's table after the tideline win, B03's four fragments overheard on walk-past, B05 Low tide). Filed M2-FP-14, M2-FP-15, M2-ENV-02 and M2-UI-05.
 - **Done, in review:** M2-FP-11 (the integration branch's task: zone suns back to bias 1.0, FlowRouting serving waiters in turn). I took it because it lives in my scenes and pairs with FP-10. The file is taken verbatim from the integration branch, so it should merge clean, apart from my status and notes.
 - **Done, in review:** M1-UI-10, the Graphics settings page (title → Settings). **`boot_title` baseline re-approved** for the new row; no other shot drifts.
 - **Done, in review:** M2-FP-12, the Drownbell at slice quality (`BattleBossStatus` read-out, toll chip text, retry test). Reviewer ui, because of the one-line `timeline_chip.gd` change.
@@ -13,18 +14,19 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 
 ## For the Lead (send_message to the Lead is refused: elevated_session_untrusted_device, so this file is the report)
 - **Trial merge of the integration branch (9a133ee) into this branch:** three add/add conflicts, all trivial. `M2-FP-09-thread-hardening.md`: take first-playable's. `M2-FP-10-dialogue-key-light.md`: take this branch's. `tests/unit/test_vegetation_plant.gd.uid`: take the integration branch's. I'm not merging until you say the first-playable merge is in.
+- **Two queue items remain after Haluna** (5, the Shell Shrine trial; 6, the first Vowbound and Cutscene A/B facial animation). Please queue more when you can. New requests for other roles: M2-ENV-02 (Haluna night light, which blocks B11) and M2-UI-05 (shop and inn).
 - **Task-id note:** my Drownbell task was renumbered FP-11 → **FP-12**, because the integration branch's FP-11 came first.
 - **M2-FP-12 is review-ready** (see its task file). Also: **c818bc8 and ef563ee carry a test leak** (a key-light test didn't free its zone, failing 7 field/Haluna/save tests in a full run). The FP-12 push (09db8b2) fixes it, so merge the branch head, never c818bc8 alone.
 - **M2-FP-10 is review-ready at c818bc8.** Please ask the PC GPU session to check Cutscene A (H05/H06): nose and mouth-corner shadows with the key on, the key's cost (a second shadowed directional light shares the directional atlas), and whether Haluna's `face_key_shadow_normal_bias` 3.0 on the zone sun can return to 1.0 (RND-20 S1).
 
 ## Exact next step
-Queue item 4: Haluna at vertical-slice quality (beats B02–B07 and B11 in docs/kb/story/beats/vertical_slice.md: zone dressing, encounters, NPC beats, camera rails, the save-shrine flow). File task files first; check the integration branch for id collisions.
+M2-FP-14 (B04, Pila's granddaughter, plus the two small Haluna inserts), then queue item 5: the Shell Shrine temple trial (beat B07; file a task with puzzle data in JSON, the level, cutscene hooks and the reward).
 
 ## Queue
 1. ~~M2-FP-10 dialogue key light~~ (review)
 2. ~~Drownbell follow-ups (M2-FP-06)~~ → M2-FP-12 (review)
 3. ~~M2-FP-05 and M1-ARC-15 follow-ups; M1-UI-10~~: FP-05 and ARC-15 had no open review items (their known gaps are documented). M1-UI-10 is done (review).
-4. Haluna at vertical-slice quality
+4. Haluna at vertical-slice quality: M2-FP-13 in review; M2-FP-14 (B04) next, M2-FP-15 (B11) once M2-ENV-02 lands
 5. Shell Shrine temple trial
 6. First Vowbound; Cutscene A/B facial animation
 
@@ -33,6 +35,7 @@ Queue item 4: Haluna at vertical-slice quality (beats B02–B07 and B11 in docs/
 - `pip install -r tools/requirements.txt` for gdlint/gdformat.
 
 ## History
+- 2026-10-24: M2-FP-13 done. Gates: dlgc and `--check`; validate_data; lint and format; the full Godot suite, 1269 green. Filed FP-14, FP-15, ENV-02 and UI-05.
 - 2026-10-24: M2-FP-11 done (bias and FlowRouting). Gates: lint and format; Godot flow_routing 4, fp_ 22, haluna 8. Renumbered the Drownbell task to FP-12.
 - 2026-10-24: M1-UI-10 done. Gates: gdlint and gdformat; the full Godot suite, 1263 green; tools unittest 448 OK; validate_data and taskboard --check clean; `HYMN_SHOTS=boot_title` captured and re-approved after a side-by-side view. No coverage step (no battle or progression code since the last run).
 - 2026-10-24: M2-FP-12 done. Gates: gdlint and gdformat over game and tests; the full Godot suite under coverage (1257 tests; battle 99.95%, progression 96.52%, within baseline); `sim.py --check` passes every band; validate_data and taskboard --check are clean. I checked two lavapipe renders by eye; no manifest shot covers a boss fight.

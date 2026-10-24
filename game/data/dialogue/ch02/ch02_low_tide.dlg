@@ -1,0 +1,11 @@
+// Ch2 B05 "Low tide" (docs/kb/story/beats/vertical_slice.md): at the causeway head (C01) the tide is
+// out. The pilgrimage begins and nobody calls it that. In-engine (no letterbox, no camera cues),
+// played by the causeway-head trigger before the hand-off to Cutscene B.
+title: ch02_low_tide
+location: ch02/haluna
+---
+Toma [neutral]: The tide-readers set the day. The causeway opens this far twice a month. #line:ch02_low_tide_001
+Asha [smile]: Come and see it, Rhen. It's the most beautiful thing we have. #line:ch02_low_tide_002
+Toma [worried]: He is not sworn to anything, Asha. #line:ch02_low_tide_003
+Asha [soft_smile]: I know. I'm already walking, Toma. #line:ch02_low_tide_004
+===

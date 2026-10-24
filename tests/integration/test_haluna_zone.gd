@@ -16,8 +16,9 @@ const NPCS := {
 	&"npc_market": "ch02_bark_market",
 	&"npc_chapel": "ch02_bark_chapel",
 	&"npc_dock": "ch02_bark_dock",
+	&"npc_lane": "ch02_bark_lane",
 }
-const BARKS: Array[StringName] = [&"ch02_bark_market", &"ch02_bark_chapel", &"ch02_bark_dock"]
+const BARKS: Array[StringName] = [&"ch02_bark_market", &"ch02_bark_chapel", &"ch02_bark_dock", &"ch02_bark_lane"]
 const STAGE_SHOTS: Array[StringName] = [&"H05", &"H06", &"H01"]
 ## In front of the chapel door (order_chapel at (-118, 27.5), 9.25 m deep: its south face is z 32.1).
 const CHAPEL_FRONT := Vector3(-119.5, 0.0, 35.0)
@@ -108,7 +109,9 @@ func test_villagers_and_triggers_fire_their_payloads() -> void:
 		var it := n as Interactable
 		if it != null and zone.is_ancestor_of(it):
 			found[it.id] = it
-			it.used.connect(func(i: Interactable) -> void: fired.append(i.id))
+			# M2-FP-13's overheard fragments sit along these walks; they block nothing, so not counted.
+			if not bool(it.payload.get("overheard", false)):
+				it.used.connect(func(i: Interactable) -> void: fired.append(i.id))
 	for id: StringName in NPCS:
 		var it := found.get(id) as Interactable
 		assert_true(it != null, "villager %s" % id)
