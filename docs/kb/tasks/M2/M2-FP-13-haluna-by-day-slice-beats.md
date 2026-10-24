@@ -2,7 +2,7 @@
 id: M2-FP-13
 title: Haluna by day at slice quality (B02 Neme's table, B03's four overheard fragments, B05 Low tide)
 role: cinematics
-status: review
+status: done
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M2-FP-04, M2-FP-09]
 milestone: M2
@@ -34,3 +34,4 @@ Queue item 4 of the m2-slice track. The playable Haluna has Cutscene A, three of
 B04, Pila's granddaughter, is M2-FP-14. B11, the dock at night, is M2-FP-15, with M2-ENV-02 for Haluna's night light. The inn and the equipment shop are M2-UI-06. The lintel-gull look-at (H03) and the camera insert of Asha's packed bag in B02 are part of M2-FP-14.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (narrative): **approve.** I read the four texts. `ch02_bark_lane`'s counting rhyme ('One for the shell and two for the ash...', with 'You start again. Everybody knows that.') carries the cycle without a word of explanation. Neme's table has her fear only in the amount of food, which is sincere and warm, and 'that stool, it bites' is gentle without undercutting anything. In `ch02_low_tide`, 'I'm already walking, Toma' avoids B11's echo. 'He is not sworn to anything' uses this project's own guardian canon (ADR 0017/0020), not the inspiring game's wording. No banned or near-miss terms; validate_data, which greps the banned list, is clean. The B02-after-the-win reorder is the right call: the strip mustn't be skippable. Overheard fragments don't freeze the player (`hold_player = false`, auto-advance). `test_haluna_slice_beats.gd` passes, along with the whole-thread test.
