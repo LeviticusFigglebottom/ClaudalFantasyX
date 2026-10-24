@@ -2,8 +2,8 @@
 id: M3-CMB-01
 title: Ch8 Fisher Stair set-piece battle pieces (scripted timeline entries, objective victory, scripted escape, party locks)
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: []
 milestone: M3
 request-from: cinematics
