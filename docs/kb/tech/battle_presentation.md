@@ -277,3 +277,11 @@ the fighters. A retry of the same encounter keeps the arena (the `hymn_arena` me
 - **Shots:** `battle_arena_tideline`, `battle_arena_causeway` (`game/battle/arenas/shots/`).
 - **Checked by** `tools/validate_choreo.py` `arena_errors` (from validate_data): every scene exists, every
   encounter's `arena` is a known id.
+
+### Lead-in bark
+
+An encounter with a row in `battle_transition.json` `barks.rows` shows one line ("Speaker: line",
+`BARK_LINE_FMT`, the UI theme) over the rising water, holds the stinger `hold_extra_sec` longer so it can be read,
+and announces it on `EventBus.dialogue_event("battle_bark", [encounter, line_key, speaker_key])` for audio (a voice
+line or a stinger cue from claude/audio). `BattleRequest.submit` passes the encounter to `BattleStinger.play`.
+The table ships empty: the tideline's line is Narrative's (request M2-NAR-01).

@@ -97,6 +97,32 @@ func test_reduced_motion_is_a_plain_crossfade() -> void:
 	s.free()
 
 
+func test_an_encounter_bark_shows_its_line_holds_longer_and_tells_audio() -> void:
+	var c := BattleStinger.load_config().duplicate(true)
+	var row := {"line_key": "HUD_TL_NEXT", "speaker_key": "HUD_TL_NOW", "hold_extra_sec": 0.8}
+	(c[BattleStinger.KEY_BARKS] as Dictionary)["rows"] = {"ch02_tideline": row}
+	var heard: Array = []
+	var on_event := func(ev: StringName, args: Array) -> void: heard.append([ev, args])
+	EventBus.dialogue_event.connect(on_event)
+	var s := BattleStinger.make(false, c, &"ch02_tideline")
+	_root().add_child(s)
+	s.set_process(false)
+	assert_true(s.bark_label() != null, "the line shows over the water")
+	assert_true(s.bark_label().text.contains(tr("HUD_TL_NEXT")), "the bark's line")
+	assert_eq(heard.size(), 1, "audio hears it once")
+	assert_eq(heard[0][0], BattleStinger.BARK_EVENT)
+	assert_eq(heard[0][1][1], "HUD_TL_NEXT")
+	var plain := BattleStinger.duration(c, false)
+	assert_between(BattleStinger.duration(c, false, row), plain + 0.8 - EPS, plain + 0.8 + EPS, "held longer to read")
+	s.advance(plain + EPS)
+	assert_false(s.done, "still holding for the bark")
+	EventBus.dialogue_event.disconnect(on_event)
+	s.free()
+	var none := BattleStinger.make(false, c, &"drownbell")
+	assert_eq(none.bark, {}, "no row, no bark")
+	none.free()
+
+
 func test_the_request_plays_the_stinger_before_the_router_change() -> void:
 	var calls: Array[String] = []
 	BattleRequest.change_scene = Callable()

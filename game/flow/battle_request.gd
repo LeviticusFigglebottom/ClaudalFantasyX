@@ -92,16 +92,16 @@ static func submit(r: BattleRequest) -> void:
 	if tree == null or tree.root.get_node_or_null(^"SceneRouter") == null:
 		push_error("BattleRequest: no SceneRouter to open %s" % path)
 		return
-	await _stinger()
+	await _stinger(r.encounter)
 	FlowRouting.change_scene(path)  # waits for an idle router, so the request is always opened
 
 
 ## The encounter stinger before the change (play_stinger, else BattleStinger.play).
-static func _stinger() -> void:
+static func _stinger(encounter: StringName = &"") -> void:
 	if play_stinger.is_valid():
 		await play_stinger.call()
 		return
-	await BattleStinger.play()
+	await BattleStinger.play(null, encounter)
 
 
 ## The field battle scene (first_playable.json field_battle.scene).

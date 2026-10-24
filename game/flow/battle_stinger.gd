@@ -12,6 +12,10 @@ extends CanvasLayer
 ## foam crest stays under battle_vfx's flash cap (tested).
 ##
 ## BattleRequest.submit awaits play() (the one hook); tests drive make() + advance() by hand.
+##
+## A lead-in bark (Lead's intro audit): an encounter with a `barks.rows` entry shows its line over the water while
+## the tide rises, holds hold_extra_sec longer so it can be read, and announces it on
+## EventBus.dialogue_event(BARK_EVENT, [encounter, line_key, speaker_key]) for audio (a voice line or a stinger).
 
 signal finished
 
@@ -40,6 +44,8 @@ const FLOAT_UNIFORMS: Array[String] = [
 ## Data keys passed to the shader as colour uniforms of the same name (palette swatches).
 const COLOR_UNIFORMS: Array[String] = ["water_deep", "water_edge", "foam"]
 const U_PROGRESS := &"progress"
+const KEY_BARKS := "barks"
+const BARK_EVENT := &"battle_bark"
 const U_PHASE := &"phase"
 
 ## The battle_transition block (load_config()).
@@ -49,6 +55,8 @@ var reduced_motion := false
 var elapsed := 0.0
 ## True once the rise and the hold are over (finished has fired).
 var done := false
+## The encounter's lead-in bark row ({} when it has none).
+var bark: Dictionary = {}
 
 var _rect: ColorRect
 var _mat: ShaderMaterial
@@ -68,11 +76,18 @@ static func load_config(path: String = DATA_PATH) -> Dictionary:
 
 
 ## How long the stinger plays before the router's change starts: rise + hold, or cross-fade + hold.
-static func duration(c: Dictionary, reduced: bool) -> float:
+static func duration(c: Dictionary, reduced: bool, with_bark: Dictionary = {}) -> float:
+	var extra := float(with_bark.get("hold_extra_sec", 0.0))
 	if reduced:
 		var rm := c.get(KEY_REDUCED, {}) as Dictionary
-		return float(rm.get("crossfade_sec", 0.0)) + float(rm.get("hold_sec", 0.0))
-	return float(c.get("rise_sec", 0.0)) + float(c.get("hold_sec", 0.0))
+		return float(rm.get("crossfade_sec", 0.0)) + float(rm.get("hold_sec", 0.0)) + extra
+	return float(c.get("rise_sec", 0.0)) + float(c.get("hold_sec", 0.0)) + extra
+
+
+## Encounter `encounter`'s lead-in bark ({line_key, speaker_key, hold_extra_sec}; {} for none).
+static func bark_for(c: Dictionary, encounter: StringName) -> Dictionary:
+	var rows := (c.get(KEY_BARKS, {}) as Dictionary).get("rows", {}) as Dictionary
+	return rows.get(String(encounter), {}) as Dictionary
 
 
 ## The tide line's eased rise at `t` seconds, 0..1 (1 through the hold).
@@ -91,11 +106,13 @@ static func crossfade_alpha_at(c: Dictionary, t: float) -> float:
 
 
 ## A stinger ready to add to the tree (`c` empty = the data file).
-static func make(reduced: bool, c: Dictionary = {}) -> BattleStinger:
+static func make(reduced: bool, c: Dictionary = {}, encounter: StringName = &"") -> BattleStinger:
 	var s := BattleStinger.new()
 	s.name = "BattleStinger"
 	s.cfg = c if not c.is_empty() else load_config()
 	s.reduced_motion = reduced
+	s.bark = bark_for(s.cfg, encounter)
+	s.set_meta(&"encounter", encounter)
 	return s
 
 
@@ -104,7 +121,7 @@ static func make(reduced: bool, c: Dictionary = {}) -> BattleStinger:
 ## fade is up or coming), or the data turned off. The stinger stays on screen until the router
 ## unloads the field under its opaque fade (it is a child of the current scene, and goes on the
 ## router's scene_swapping when it had to sit on the root).
-static func play(tree: SceneTree = null) -> void:
+static func play(tree: SceneTree = null, encounter: StringName = &"") -> void:
 	var t := tree if tree != null else Engine.get_main_loop() as SceneTree
 	if t == null or t.root == null:
 		return
@@ -114,7 +131,7 @@ static func play(tree: SceneTree = null) -> void:
 	var c := load_config()
 	if c.is_empty() or not bool(c.get("enabled", false)):
 		return
-	var s := make(UiSettings.shared().reduced_motion(), c)
+	var s := make(UiSettings.shared().reduced_motion(), c, encounter)
 	var host: Node = t.current_scene if t.current_scene != null else t.root
 	s.freeze_player(t)
 	if router != null:
@@ -142,6 +159,8 @@ func _ready() -> void:
 			_mat.set_shader_parameter(StringName(key), Color(str(cfg.get(key, ""))))
 		_rect.material = _mat
 	add_child(_rect)
+	if not bark.is_empty():
+		_show_bark()
 	advance(0.0)
 
 
@@ -157,9 +176,36 @@ func advance(delta: float) -> void:
 		_mat.set_shader_parameter(U_PHASE, elapsed)
 	elif _rect != null:
 		_rect.color.a = crossfade_alpha_at(cfg, elapsed)
-	if not done and elapsed >= duration(cfg, reduced_motion):
+	if not done and elapsed >= duration(cfg, reduced_motion, bark):
 		done = true
 		finished.emit()
+
+
+## The bark's line over the water (the UI theme's dialogue look), announced for audio.
+func _show_bark() -> void:
+	var b := cfg.get(KEY_BARKS, {}) as Dictionary
+	var label := Label.new()
+	label.name = "Bark"
+	label.theme = load(str(b.get("theme", ""))) as Theme
+	label.text = tr("BARK_LINE_FMT").format(
+		{"name": tr(str(bark.get("speaker_key", ""))), "line": tr(str(bark.get("line_key", "")))}
+	)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	label.offset_top = -float(b.get("bottom_px", 0.0))
+	label.offset_bottom = -float(b.get("bottom_px", 0.0)) + float(b.get("height_px", 0.0))
+	add_child(label)
+	var bus := get_node_or_null(^"/root/EventBus")
+	if bus != null:
+		bus.emit_signal(
+			&"dialogue_event", BARK_EVENT, [get_meta(&"encounter", &""), bark["line_key"], bark.get("speaker_key", "")]
+		)
+
+
+## The bark's label (null when the encounter has none, or before _ready).
+func bark_label() -> Label:
+	return get_node_or_null(^"Bark") as Label
 
 
 ## How far it has covered the field: the rise (0..1), or under reduced motion the overlay alpha.

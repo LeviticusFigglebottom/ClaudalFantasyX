@@ -627,3 +627,4 @@ SET_BATTLE_ANIMATIONS,Battle animations
 SET_BATTLE_ANIMATIONS_HELP,"Full plays each action with movement and camera framing; Skip lands every action at once on a still camera."
 SET_BATTLE_ANIMATIONS_FULL,Full
 SET_BATTLE_ANIMATIONS_SKIP,Skip
+BARK_LINE_FMT,{name}: {line}
