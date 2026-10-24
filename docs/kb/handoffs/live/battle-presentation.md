@@ -20,6 +20,13 @@ The gap (the human's playtest note): battles had no action animation. This track
 - While an action plays the order has already moved on: the timeline head now reads **"Next"** (not "Acting now") and the help line names the action ("Rhen: Attack") until the sequence ends.
 - The Read panel opens on the Read's contact beat, not before the reader moves.
 
+## After MERGE-READY (Lead's queue, 15:22)
+- The Lead took d717cb3 into batch big7 (with ui, menus, characters, creatures, combat and the PC's rendering).
+- **M2-BPR-09 mouse targeting: review** (6481ac3). Hover a fighter to aim, click to confirm, right click cancels until UiInput merges. Done through the controller's public handle_input; controller unchanged; battle filter 491/0. The command menus already took the mouse (UI track).
+- **M3-BPR-01 Act I battle arenas: proposed** (env-art request M3-ENV-06). Starts when big7 brings m2-slice's Act I encounters.
+- Hero battle clips: characters' M2-CHR-07 is in progress (reviewer: combat). I'll review and wire it when it lands.
+- Review fixes from the big7 gate: none yet.
+
 ## MERGE-READY
 
 **MERGE-READY @ d717cb3** (`claude/battle-presentation`; the integration branch at its 14:3x head merged in at 9fee881, docs-only commits after it): M2-BPR-01 choreography, -02 clip contract (with creature actors), -03 camera director + battle speed / battle animations settings, -04 specials (Swell finishers, Drownbell toll/rim/flood, Vowbound call/rise/dismiss/fall), -05 tide-line stinger + banner timing + victory/escape + lead-in bark hook, -06 freeze-frame shots, -07 per-encounter arenas, -08 C10 first-call cinematic.
