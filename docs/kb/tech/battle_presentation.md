@@ -91,7 +91,8 @@ hero actor scene, M2-UI-07, or a creature actor, M2-CRE-03). A creature actor pl
 - **Root motion.** Clips are **in place** (no root translation). Travel belongs to the sequencer.
 - **KO pose.** Any pose that reads as down: a fall, or a kneel or slump (the heroes' M2-CHR-07 clips kneel). A
   model with a `ko` clip is not sunk by the stand-in (its clip puts it on the ground; M2-HER-1103). A fallen party
-  member holds that last frame, faint, until a revive; a fallen foe fades out.
+  member holds that last frame, faint, until a revive (its optional `revive` clip, then idle; else idle); a fallen
+  foe fades out.
 - **Blends.** BattleClips plays by name and leaves the blend to the model's AnimationPlayer: a hero scene sets short
   per-pair blend times into its strikes (0.12–0.2 s, hero-integration M2-HER-1103) so the wind-up before an early
   contact frame isn't swallowed by the 0.3 s default.

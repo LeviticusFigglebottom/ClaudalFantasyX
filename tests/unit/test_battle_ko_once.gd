@@ -83,6 +83,33 @@ func test_petrify_still_pauses_and_resumes_a_clip() -> void:
 	_free()
 
 
+## A revived hero stands up through its `revive` clip when it has one (characters' review), else straight to idle.
+func test_a_revived_hero_stands_up_through_its_revive_clip() -> void:
+	_start(&"sandbox_reef")
+	for with_revive: bool in [true, false]:
+		var f := Node3D.new()
+		var player := AnimationPlayer.new()
+		var lib := AnimationLibrary.new()
+		var clips: Array[StringName] = [BattleClips.IDLE, BattleClips.KO]
+		if with_revive:
+			clips.append(BattleClips.REVIVE)
+		for clip in clips:
+			var a := Animation.new()
+			a.length = 0.8
+			lib.add_animation(clip, a)
+		player.add_animation_library(&"", lib)
+		f.add_child(player)
+		ctl.add_child(f)
+		assert_true(BattleClips.play_ko(f))
+		BattleClips.ko_changed(f, false)
+		var want := BattleClips.REVIVE if with_revive else BattleClips.IDLE
+		assert_eq(str(player.current_animation), str(want), "stands up (revive clip: %s)" % with_revive)
+		if with_revive:
+			assert_eq(str(player.get_queue()), str([BattleClips.IDLE]), "then idles")
+		f.free()
+	_free()
+
+
 func _on_started(clip: StringName) -> void:
 	if clip == BattleClips.KO:
 		ko_starts += 1

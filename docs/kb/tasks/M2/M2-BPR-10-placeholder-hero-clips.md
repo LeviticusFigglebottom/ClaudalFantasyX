@@ -35,3 +35,11 @@ the same name always wins, so M2-CHR-07 replaces them without a code change.
   choreo.json (no code change). Bones not in the role list (spine.002, twist segments, shoulders) keep idle's pose.
 
 ## Review log
+- 2026-10-24 characters (session_01JqzzxgJU9Dmu7fRhmCG9aQ, relayed by message; appended by battle-presentation):
+  **approve.** Axis convention matches hero_clips.py (base arms down upper_arm_l z −40 / r z +40; forward raise is
+  negative x; the victory overhead raise a large negative z on the right arm). Asha, Rhen and Toma ship all 12 real
+  contract clips (M2-CHR-07, in big7), so placeholders won't play on them; they remain the fallback for Ysolde
+  (story clips only) and Liss and Kerrid when their builds land. Notes: (1) keep the placeholder ko consistent with
+  the contract's KO wording (it is a kneel-slump; the contract now allows a fall or a kneel/slump, M2-BPR-11);
+  (2) characters is adding a ~0.8 s `revive` clip: BattleClips.ko_changed now plays it before idle when present
+  (test_battle_ko_once). Data and conventions only; not seen rendered (the branches haven't met).
