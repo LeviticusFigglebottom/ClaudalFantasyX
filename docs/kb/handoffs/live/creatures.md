@@ -3,19 +3,23 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
-- **M3 Act I batch in progress (2026-10-24 ~14:30 UTC), after MERGE-READY @ 2f36b275.** Pushed on `claude/creatures`:
-  - Ch1 glassfry (renamed from wickfry) and scuttler; Ch5 ashwing (ember eye-spots), slag_tortoise, cinder_matron (first
-    pass; a dedicated redesign is in a worktree agent), vein_sparker (optional caster lizard, starlight charge);
-    Ch6 shoal_skipper, raid_hound (mud coat, red-lacquered muzzle cage); Ch8 tide_crawler.
+- **M3 Act I batch in progress (2026-10-24 ~14:50 UTC), after MERGE-READY @ 2f36b275.** Pushed on `claude/creatures`
+  (integration branch 1a6f7645 merged in at 1ed50955, docs only):
+  - Ch1 glassfry (renamed from wickfry), scuttler; Ch5 ashwing (ember eye-spots), slag_tortoise, cinder_matron (first
+    pass), vein_sparker (optional caster lizard); Ch6 shoal_skipper, raid_hound (mud coat, red muzzle cage); Ch8
+    tide_crawler, **undertows_reach** (the boss's near part, 10.9k triangles, phases `dark`/`breach`), flue_moth,
+    and the palette variants stormgull and wallcrab (imports of the base builds).
   - CreatureActor phases gained `show`/`hide` node lists (the Matron's `crust_breaks` hides `Crust`).
-  - Scoped checks per item: validate_data, taskboard, gdlint/gdformat, tools creature tests, Godot `--filter=creature`
-    (12/0), Blender verify for every creature job (24 identical before vein_sparker). Shots approved after viewing:
-    glassfry, scuttler, slag_tortoise, shoal_skipper, tide_crawler. Pending view: raid_hound, ashwing (recapturing after
-    the restyle), vein_sparker, cinder_matron (after the redesign).
+  - Checks run per item: validate_data, taskboard, gdlint/gdformat, tools creature tests, Godot `--filter=creature`
+    (12/0), Blender verify of every changed job (all identical). Every new creature shot was approved after viewing.
+    Skipped: the full manifest and the full Godot suite (no shared code touched since 2f36b275 beyond the creature
+    test fix).
   - In worktree agents: the Matron redesign (kiln forge-construct, ladle and tongs, glimmer_bound heart) and three
     variants (squall_wing, wall_polyp on Watcher stones, wreck_crab in a lamp housing).
-  - No enemy row uses these models yet; `model` lands on m2-slice's rows as they arrive (Ch1 first).
-  - A batch MERGE-READY line follows once the agents' work is merged and every new shot is approved.
+  - **To m2-slice (sent by message):** the `model` lines for their Act I rows, plus the placeholder phase ids
+    (cinder_matron `crust_breaks`; undertows_reach `dark`, `breach`) to rename to theirs.
+  - **To PC GPU (undertows_reach):** the `water` slot is a creature-shader stand-in; swap in the Undertow look. Notes
+    are in act1/undertows_reach.md.
 - **MERGE-READY @ 2f36b275: ci_local exit 0, 1467 tests, 91 shots, Blender identical.** Branch `claude/creatures`, with `origin/claude/undertow-lead-handoff-423ixt` e9938ed merged in at 4cfc523.
   - Full `tools/ci_local.sh` in this container (2026-10-24, about 13:00–13:50 UTC), every shot, Blender required.
   - Blender: 17 jobs, 0 failed, 0 uncovered, all identical. The change base was `main`, which ran every job, a superset of the integration base. Every creature job is pinned at `default_threads` 4.
