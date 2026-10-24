@@ -6,7 +6,7 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 > **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
 > session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
-> **This copy, on `gpu/m1-rnd-29-first-launch`, is the newest.**
+> **This copy, on `gpu/godot-472-port`, is the newest.**
 
 ## PC setup for a new session
 
@@ -115,6 +115,14 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/godot-472-port | **long-lived, not to merge until the Lead calls it** | 4.7.2 port prep: fetch_godot.py --official (SHA-512), the import churn (45 .import), templates installed and verified, suite 1451/0 on 4.7.2, baked 4.7.2 level with 4.6.3; workaround re-checks in docs/kb/qa/gpu/2026-10-24-godot-472-port-prep.md. Worktree C:/Users/Aaron/hymn_472port. |
+| gpu/m1-rnd-26-bounce-gate | **M1-RND-26 in review** (reviewer Character) | Option (a): the mouth bounce pass draws only while an omni/spot light reaches the mouth (CharacterShaderTiers.refresh_bounce_passes). High, directional: the mouth matches no-pass within capture noise (was up to 74/255); a shadowed spot keeps the bounce. |
+| gpu/m2-rnd-11-sweep-r | **M2-RND-11 in review** (reviewer Environment) | First-run tests; warm compute pipelines freed at exit (0 leaks); named literals; Ultra reflects the real body via a full-res compute body (also ~1 ms faster; Ultra's storm is 15-18 ms at 1440p: budget call); M2-ENV-05 lead: Haluna + character entries resident -> second-launch entry 1.6/1.9 s. |
+| gpu/m2-rnd-10-storm-art | **M2-RND-10 in review** (reviewer Art/character) | Storm Art fixes: full-res rent cores and lips in the composite (12-23:1 slits on High), sheet curtains, softer rain (landfall 11.6%), landfall near-night slate-teal (OkL 0.211; sea C 0.018 just short), Letting gold at wound 0.9, rise_ratio 2.0, per-chapter flash/bolts, no rain underwater. +0.07-0.12 ms High. Lavapipe drift: all undertow_* shots. |
+| gpu/m2-rnd-09-underwater-art | **M2-RND-09 in review** (reviewer Art/character) | Underwater Art fixes: lagoon swatches + night_sea look, TIR off sea_glow, night sea-glow in the column (on/off 2.2×), the lantern halo moved into the post (warm: h 72-75°, 0 green px), glimmer compensation (and the field's own absorption off underwater), the waterline camera and an antialiased meniscus. Lavapipe drift: underwater_below/window/waterline. |
+| gpu/rnd-29-headless-fix | **gate fix, ready** (Lead-urgent) | CI boot smoke (headless, fresh user://, --quit-after 60) was 225 resources still in use: headless ran the first-launch warm-up every boot, and residents sat in a static. Now headless skips it and residents live on a ShaderPrewarmResident root node. Smoke: 0 ERROR lines × 5, also merged into gpu/hero-materials-resident (conflicts resolved there, 1452/0). |
+| gpu/hero-materials-resident | **ready to merge after RND-29** (Lead-approved) | Asha's 11 materials resident from boot, per preset via `resident_presets` (ShaderPrewarm.entry_resident). Haluna's entry High 2.9-3.0 → 2.1-2.3 s; Low 3.5-3.6 → 2.3-2.8 s (so resident on Low too); ~245 MB texture memory (Low 285 vs 39). Now merged with the gate fix (conflicts resolved). |
+| gpu/godot-472-port-check | **done** (owner's direction: ship on the latest Godot) | 4.7.2 port check in a throwaway worktree (`C:/Users/Aaron/hymn_472`, not committed): imports, 1449/0 tests, GPU costs within 2 %. Haluna root-caused: no 4.7 regression (cache states differed); holding Asha's materials resident (`gpu/hero-materials-resident`) cuts Haluna's entry to 2.1-2.3 s on both engines. First run on a new engine is fully cold; re-measure with 4.7.2 templates + baker. Report: `docs/kb/qa/gpu/2026-10-24-godot-472-port-check.md` |
 | gpu/m1-rnd-29-first-launch | **M1-RND-29 in review** (reviewer Environment) | First-run pipeline warm-up behind the boot card (marker `user://pipeline_warm.cfg`); fresh-install zone entries 0.46-1.33 s (Haluna was 2.5-4.3 s), hidden ≤ 221 ms, visible ≤ 23 ms. One frame left: Low's first 3D frame 1.35 s on the first launch only. ShaderPrewarm measures wall time (Godot caps delta at ~150 ms; BootCard filed M2-ARC-05). |
 | gpu/arc-03-remeasure | **done** (Lead request) | M2-ARC-03 re-measured on hardware, recorded in its Review log: title visible worst 0.6-0.8 ms on Low/High/Ultra (was 168-265); a real perf-build launch reports reveal true, max_visible_frame_ms 7.95 cold / 2.11 warm, reveal wait 1.7-1.9 s (worst frame 148-150 ms). The slice sweep gains a `launch` segment and prints the router's last_swap_stats. |
 | gpu/m2-rnd-08-low-storm-cost | **M2-RND-08 in review** (reviewer Environment) | Low's storm shells read the baked lattice (shared `undertow_lattice.gdshaderinc`) and skip wounds off the wall band: Low storm cost 1.32-1.65 → 0.31-0.66 ms at 1440p, under High's. `undertow_horizon_low` drifts 0.025 (re-approve). |
@@ -199,3 +207,15 @@ None of it is needed: everything quoted in the reports can be reproduced from th
   2× capture that shows the two defects above), `rnd15`, `rnd17`, `rnd18`, `qa05b` and `env03`, plus the old
   session's scratchpad (temporary).
 - **`stash@{0}`** and the local branch `gpu/grief-mouth-fill` in `C:\Users\Aaron\hymn_gpu`: abandoned (see above).
+
+## Queue (Lead, 2026-10-24 deep queue)
+1. M2-RND-09 underwater Art fixes: **review** (`gpu/m2-rnd-09-underwater-art`).
+2. M2-RND-10 storm Art fixes: **review** (`gpu/m2-rnd-10-storm-art`).
+2a. M2-RND-11 (review sweep R follow-ups): **review** (`gpu/m2-rnd-11-sweep-r`).
+3. M1-RND-26: **review** (`gpu/m1-rnd-26-bounce-gate`).
+4. Next: M1-QA-09 when the Lead says "characters merged"; meanwhile the 4.7.2 port prep (`gpu/godot-472-port`).
+3. M1-RND-26 the mouth-bounce pass's FSR2 softening at High.
+4. M1-QA-09 Asha on hardware: starts on the Lead's "characters merged".
+5. The 4.7.2 port prep on the long-lived `gpu/godot-472-port` (not merged until the Lead calls it).
+6. The slice perf re-sweep, once the characters and creatures land.
+7. M3 R&D: the Reefball arena look, a minimum-spec proxy, and Act I look-dev support.
