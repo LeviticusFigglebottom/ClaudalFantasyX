@@ -818,6 +818,16 @@
       "setup": {"globals": {"hymn_wind_time": 12.0}}
     },
     {
+      "id": "battle_arena_shoals",
+      "scene": "res://game/battle/arenas/shots/arena_shoals.tscn",
+      "setup": {"globals": {"hymn_wind_time": 12.0}}
+    },
+    {
+      "id": "battle_arena_camp",
+      "scene": "res://game/battle/arenas/shots/arena_camp.tscn",
+      "setup": {"globals": {"hymn_wind_time": 12.0}}
+    },
+    {
       "id": "battle_choreo_lamp_dive",
       "scene": "res://game/battle/scene/shots/battle_choreo_lamp_dive.tscn"
     },
@@ -1132,6 +1142,10 @@
     {
       "id": "battle_boss_intro_hullgnaw",
       "scene": "res://game/battle/scene/shots/battle_boss_intro_hullgnaw.tscn"
+    },
+    {
+      "id": "battle_boss_intro_inquisitor",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_inquisitor.tscn"
     }
   ]
 }
