@@ -2,8 +2,8 @@
 id: M1-RND-27
 title: Prewarm follow-ups (RND-22 criterion 4, the Undertow compute pipeline, ADR 0029's three follow-ups)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M1-RND-22, M2-RND-01]
 milestone: M1
