@@ -19,4 +19,7 @@ The vertical-slice beat sheet's optional side scene, B04 (docs/kb/story/beats/ve
 - [ ] H03: the lintel-gulls look-at prompt in the lane.
 - [ ] Tests (the scene plays and sets the flag; B09's Teyo branch reads it).
 
+## Notes
+- 2026-10-24 m2-slice: **the wake-shell wall is out of reach.** `haluna_layout.json` puts `wakeshell_wall` at (30, −196), but the playable zone's walk rect stops at z −130 (`HalunaCollision.walk_rect`), so Rhen can't get to it. Either Environment moves the wall nearer the causeway head (around the trigger at (7, −125)) or the zone opens a walkable strip out to it. Decide before staging the scene. Deferred behind the Shell Shrine trial, which the slice can't ship without; B04 is optional.
+
 ## Review log
