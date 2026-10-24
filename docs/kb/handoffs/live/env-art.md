@@ -13,7 +13,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
   - **M2-ENV-06 pass 2 and 3** (merge-ready): framed stilt-house walls and shutters, thatch onto its swatch
     (h04 re-approved), the lintel-gulls in their own carved-wood material (h03 re-approved).
 - **In progress (worktree agents):** M2-ENV-03 (Shell Shrine kit), M1-ENV-10 (LOD chain; running its shot gate), M2-ENV-07 (real banyan and windbreak trees, replacing the two PLACEHOLDER trees).
-- **Coordination:** m2-slice's log said an m2-slice subagent had ENV-03. I messaged m2-slice (2026-10-24) proposing the split: env-art builds the kit (assets, materials, drivable nodes, swap-in note); m2-slice keeps the `ch03/shell_shrine` level swap, bakes and level shots. No reply yet. If m2-slice already committed kit work I build on it.
+- **Coordination:** settled. The Lead's CONSOLIDATED §3b moved ENV-03 off m2-slice's queue to env-art. Split: env-art builds the shrine kit (assets, materials, drivable nodes, a dressing prefab, a swap-in note); m2-slice swaps its `ch03/shell_shrine` greybox for it.
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
 ## For the Lead
@@ -36,16 +36,17 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Haluna kit pass 1 (M2-ENV-06):** nothing to do. Same piece names, same materials and slots; `env_ground.gdshader` gained a `breakup` uniform group with defaults (no scene edit needed).
 
 ## Exact next step
-Merge each worktree agent's branch as it reports (ENV-10, ENV-03, ENV-07), gate it, push. Meanwhile: ENV-06 pass 2 (stilt-house wall frame in village.py, a look at the dock and props), then queue item 5.
+Merge each worktree agent's branch as it reports (M1-ENV-10, M2-ENV-03, M2-ENV-07), gate it, push. Then M2-ENV-06's last items (house infill framing at H02, a look at the dock for `ending_dock`) and `haluna_h10_dock_night` once it reaches the integration branch.
 
 ## Queue
 1. M2-ENV-03: Shell Shrine interior kit (agent)
 2. M1-ENV-10: LOD chain in the kit dresser and import rules (agent)
-3. M2-ENV-06: Haluna kit to final quality (pass 1 done; pass 2 next) + M2-ENV-07 trees (agent)
+3. M2-ENV-06: Haluna kit to final quality (passes 1–3 done) + M2-ENV-07 trees (agent)
 4. ~~Art sign-offs M2-ART-01/02/03~~ (done)
-5. The slice's one route (village → causeway head) at final quality; greybox flagged by the m2-slice playthrough
+5. ~~M2-ENV-08: the route and village props~~ (review); greybox flagged by the m2-slice playthrough (none reported to env-art yet)
 
 ## History
+- 2026-10-24: M2-ENV-08 (fa4c666) and M2-ENV-06 passes 2–3 (15ce492, a6d3974). Merged the integration branch (856c43f).
 - 2026-10-24: M2-ENV-06 pass 1 (6436775). Gates: verify_blender_builds haluna_kit 31 identical; Godot environment 11, haluna 13, post_import 17; validate_data; taskboard --check; the five haluna shots captured, viewed and re-approved.
 - 2026-10-24: merged the Art sign-offs (3c3fa19, aa3b4ca, f067ba4). Gates: validate_data, taskboard --check, palette.json parses (docs only, no Godot run).
 - 2026-10-24: set up the branch and toolchain; claimed the queue's tasks.
