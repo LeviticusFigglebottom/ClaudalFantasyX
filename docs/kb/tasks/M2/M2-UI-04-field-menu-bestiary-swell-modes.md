@@ -2,7 +2,7 @@
 id: M2-UI-04
 title: A field menu that opens the bestiary and the out-of-battle Swell mode chooser; the target panel knows a Read foe
 role: ui
-status: review
+status: done
 owner_session: "worktree-agent-a218779a0dea1229a"
 depends_on: [M2-UI-01, M2-UI-02]
 milestone: M2
@@ -38,3 +38,4 @@ M2-UI-01 and M2-UI-02 built the views, but nothing in play reaches them. `Bestia
 - **Gate:** `HYMN_SKIP_BLENDER=1 HYMN_SHOTS=field_menu,field_menu_swell_modes,bestiary_menu,battle_hud_preview,battle_statuses,battle_read_panel tools/ci_local.sh` gave rc 0 at 461f2ec. validate_data 0/0, tool tests 451 OK, audio 9 OK, taskboard, gdlint and gdformat clean, **1212 Godot tests, 0 failed**. Coverage: battle 99.94% (1795/1796), progression 96.52%, within baseline. Boot smoke OK. 6 shots at rmse 0, and the 4 existing shots show no drift.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (design): **approve.** The menu pauses like SaveMenu and opens from `ui_cancel` under FieldController's `accepts_input` guard, so a cutscene or conversation never opens it. It reaches the bestiary (and hands the pause over) and every hero's fill modes through `BattleSwellCarry.mode_rows`/`set_mode`, refusing locked modes. Every key it uses exists in strings.csv, with no duplicate keys. `_show_pick` now passes `bestiary.knows(c)`, with tests for a known kind, an unread kind and a Read this battle. `--filter=field_menu`: 12/0. Design is fine with the three-level flow and with Cancel stepping back one level. The `first_playable.json` stand-in party is a temporary fallback: m2-slice's M2-FP-19 now writes the real party, so the fallback can go on that merge.
