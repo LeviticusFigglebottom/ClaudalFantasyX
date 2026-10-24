@@ -58,6 +58,15 @@ UPPER_LID_AO = 0.18  # ambient occlusion on the upper lid (the lashes and the br
 LASH_LINE_RR = 1.05  # lid-field radius of the lash line (1 = the margin)
 LASH_LINE_W = 0.04
 LASH_LINE_DARKEN = 0.30
+# M1-CHR-12: the band between the lash tips and the brow (QA-08: lid R:B 3.7 against the cheek's 2.2
+# on the GPU, 3.5 against 2.0-2.3 on lavapipe). Unshaded, its albedo already matches the cheek (R:B
+# 1.64 against 1.63; diagnostic renders turning off scatter, transmission and the occlusion shell moved
+# nothing): it reads warm because the brow shades it, and this stage's warm key and tonemapper push
+# dark skin toward orange. The socket under the brow is painted a little lighter and cooler (thin
+# skin over the orbit shows the blue of the veins under it), so it lands near the cheek's hue when lit.
+SOCKET_LIFT = 0.2  # value lift at the band's centre
+SOCKET_TINT = (0.3, 0.85, 1.8)  # per-channel share of the lift (R, G, B): mostly blue
+SOCKET_RR = (1.35, 1.7, 2.1, 2.7)  # lid-field radius: fade in, full, full, fade out (1 = the lid margin)
 # M1-CHR-10: the scalp underpaint matches the hair's new neutral near-black (write_materials.py
 # HAIR_BLACK); #201A16 read auburn between the cards under the warm key, as the cards did
 HAIR_UNDERPAINT = "#16161A"
@@ -660,9 +669,10 @@ TEETH_AO_BACK = 0.4  # the last teeth get this fraction of the front teeth's amb
 TEETH_ROUGH = 0.55  # ORM G (the teeth material's roughness texture): satin; 0.45 read glossy and metallic
 # M1-CHR-11: each tooth spans its own fifth of the patch in U (asha_mouth.TOOTH_U_SPAN); its sides
 # (toward the neighbours) are darker and more occluded, so the row reads as separate teeth
-TEETH_GAP_W = 0.16  # of a tooth's U cell, at each side
-TEETH_GAP_DARKEN = 0.45
-TEETH_GAP_AO = 0.5
+# M1-CHR-12: softer, narrower gaps (CHR-11: 0.16 / 0.45 / 0.5 drew dark lines between pegs, QA-08 fault B)
+TEETH_GAP_W = 0.10  # of a tooth's U cell, at each side
+TEETH_GAP_DARKEN = 0.22
+TEETH_GAP_AO = 0.75
 TEETH_GAP_ROUGH = 0.75
 
 
@@ -820,6 +830,10 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
             # roots sit (it frames the eye; without it the lid read as one pale strip down to the iris)
             line = np.exp(-((rr - LASH_LINE_RR) / LASH_LINE_W) ** 2) * smoothstep(0.0, 0.35, np.sin(tt)) * front
             col = col * (1 - LASH_LINE_DARKEN * line[:, None] * np.array([1.0, 1.0, 0.9]))  # M1-CHR-11: not orange
+            sock = (smoothstep(SOCKET_RR[0], SOCKET_RR[1], rr) * smoothstep(SOCKET_RR[3], SOCKET_RR[2], rr)
+                    * smoothstep(0.05, 0.45, np.sin(tt)) * smoothstep(-0.55, -0.1, np.cos(tt))
+                    * smoothstep(0.9, 0.5, np.cos(tt)) * front)
+            col = col * (1 + SOCKET_LIFT * sock[:, None] * np.array(SOCKET_TINT))
             wall = (np.linalg.norm(Ph - e.E, axis=1) < e.R + 0.0016 * s) & (rr < 1.15)
             col[wall] = col[wall] * 0.7 + hexc("#B87268") * 0.3
             car = np.exp(-((rr - 1.0) / 0.12) ** 2) * smoothstep(-0.7, -0.98, np.cos(tt)) * front
