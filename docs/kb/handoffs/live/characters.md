@@ -9,6 +9,12 @@
   numpy path). Mantle gold lowered to 14% so a waist-up frame is <= 5% (front 4.96%); chest-up close-ups are 8-9%
   (the crown). 7 sefir_* baselines. Requests M3-CIN-01, M3-RND-03, M3-ENV-01. Handoff 2026-10-24-character-11.md,
   review `docs/kb/art/characters/sefir_review.md`.
+- **M3-CHR-01 Ysolde → review (reviewer: rendering).** Worktree subagent off cd01d151, commits aa4cc74b, cb9c3ade +
+  docs; not pushed. Handoff 2026-10-24-character-10.md, review ysolde_review.md.
+  - LOD0 58,918 / LOD1 27,894; 4.31 / 1.27 MB. `verify --job ysolde` 37 identical, also under the AVX2-only numpy path.
+  - Probe: props and collar 0 mm, seams 0; ratchets costume 31/6 (run knee fold), body 45/70 (armpit), 4 exposed.
+  - hero_clips.py edits are self-contained (persona, clips, a Ysolde block after `pose_at`; `.get()` branches);
+    Asha's, Rhen's and Toma's libraries byte-identical. Merging with e32848cc touches only the append-only lists.
 - **MERGE-READY @ e253f302 (CHR-14 braid and clipping, villagers, Rhen and Toma, host determinism).**
   - **Full `tools/ci_local.sh` at ad6e232:** merged with the integration branch, run with `taskset -c 0-3`, HYMN_BLENDER_REQUIRED=1, every shot and its own HYMN_LOG_DIR. It exited 0:
     - 580 tool tests, 1459 Godot tests;

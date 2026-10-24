@@ -181,6 +181,44 @@
           ]
         ]
       }
+    },
+    "ysolde": {
+      "garments": [
+        "Costume",
+        "Collar"
+      ],
+      "props": [
+        "Book",
+        "InkGuards",
+        "Pin"
+      ],
+      "braid": null,
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Collar"
+          ]
+        ],
+        "max_exposed": 4
+      },
+      "_allowances": "Costume 31/6: the trousers and the back robe panel fold into the calf behind the bent knee in the run (85 degrees; under the robe, unseen), and the sleeve's underarm enters the side of the chest by up to 22 mm as the arm hangs (ysolde_clip_reink_shell, ysolde_clip_cast_glyph: covered by the sleeve itself). Body 45/70: with the arm raised forward (book_fan, cast_glyph) the top of the upper arm passes the dropped shoulder's gusset (the sleeve's top, blended to the torso) by up to 45 mm, and elsewhere the side of the chest passes it by up to 33 mm as the arm comes down or across (vigil_book_shut, stand_apart): linear skinning, covered by the sleeve and the arm (ysolde_clip_cast_glyph); the gusset already blends to the torso's weights, and the sleeve reaches in over the shoulder top and the bodice holds the strap's height over the front and back of the shoulder cap with its own gusset toward the arm (no skin shows between the bodice and the sleeve). max_exposed 4: four upper-arm boundary vertices at the armpit, inside the sleeve's mouth, open by up to 15 mm in talk and cast_glyph. Everything else is at the defaults: no limb, foot or prop penetration (the book, the guards and the pin at 0), welded seams 0.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 31.0,
+          "Body": 45.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Body": 70
+        }
+      }
     }
   }
 }

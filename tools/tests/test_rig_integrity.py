@@ -218,5 +218,9 @@ class TestRigIntegritySefir(_HeroGuards, unittest.TestCase):
     hero = "sefir"
 
 
+class TestRigIntegrityYsolde(_HeroGuards, unittest.TestCase):
+    hero = "ysolde"
+
+
 if __name__ == "__main__":
     unittest.main()

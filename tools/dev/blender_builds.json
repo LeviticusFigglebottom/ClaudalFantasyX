@@ -189,6 +189,19 @@
         ["{python}", "assets_src/characters/sefir/sefir_textures.py", "--bake-dir", "{scratch}/sefir_bake"],
         ["{python}", "assets_src/characters/sefir/write_materials.py"]
       ]
+    },
+    {
+      "id": "ysolde",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-01: Ysolde reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs, PRE_ROUND set), Rhen's and Toma's costume helpers (rhen_costume, toma_costume, build_toma's rig-extra helpers) and the villagers' bun hair and age layer (villager_hair, villager_textures), so all their sources are hers too.",
+      "sources": ["assets_src/characters/ysolde/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/ysolde/*.glb", "assets/characters/ysolde/textures/*.png", "assets/characters/ysolde/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/ysolde/build_ysolde.py", "--", "--out", "assets/characters/ysolde/ysolde.glb", "--bake-dir", "{scratch}/ysolde_bake"],
+        ["{python}", "assets_src/characters/ysolde/ysolde_textures.py", "--bake-dir", "{scratch}/ysolde_bake"],
+        ["{python}", "assets_src/characters/ysolde/write_materials.py"]
+      ]
     }
   ]
 }
