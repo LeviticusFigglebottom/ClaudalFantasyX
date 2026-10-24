@@ -126,6 +126,16 @@
         ["{blender}", "--python", "assets_src/creatures/spawn_polyp/build_spawn_polyp.py", "--", "--out", "assets/creatures/spawn_polyp/spawn_polyp.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "spawn_polyp"]
       ]
+    },
+    {
+      "id": "creature_wickfry",
+      "owner": "character",
+      "sources": ["assets_src/creatures/wickfry/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/wickfry/*.glb", "assets/creatures/wickfry/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/wickfry/build_wickfry.py", "--", "--out", "assets/creatures/wickfry/wickfry.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wickfry"]
+      ]
     }
   ]
 }
