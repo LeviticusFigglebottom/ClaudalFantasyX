@@ -36,12 +36,15 @@ static func setup(
 	state: GameStateData = null
 ) -> void:
 	# Order matters: Lattice, then equipment, then the carried vitals LAST, because the vitals clamp HP
-	# and MP to the final maxima. When live battles build EquipmentEffects, put fx.modifier() here,
-	# between the Lattice and the vitals (review-sweep-G S3 on M1-CMB-08), never after them.
+	# and MP to the final maxima (review-sweep-G S3 on M1-CMB-08). M2-MNU-02: a live battle wears
+	# the save's gear (EquipmentEffects, owning hooks) and its lume multiplier (Full Net).
 	var hooks: Array[Callable] = []
 	if progress != null:
 		hooks.append(progress.apply_to)
 	if carry:
+		var fx := gear_of(state if state != null else Game.state)
+		hooks.append(fx.modifier())
+		engine.currency_multiplier = func(ids: Array[StringName]) -> int: return fx.currency_multiplier(ids)
 		hooks.append(Game.vitals_modifier(state))
 	var active: Array[StringName] = plan.get(KEY_ACTIVE, [])
 	var reserve: Array[StringName] = plan.get(KEY_RESERVE, [])
@@ -60,6 +63,13 @@ static func setup(
 		engine.party_modifier = EquipmentEffects.compose(hooks)
 	# setup() is deterministic and rolls nothing, so building again only moves the members.
 	engine.setup(db, order[KEY_ACTIVE], order[KEY_RESERVE], encounter, rng_seed)
+
+
+## What `state`'s worn gear does in battle (the item tables over its equipment, in place), the same
+## EquipmentEffects PartySheet uses for the field menus.
+static func gear_of(state: GameStateData) -> EquipmentEffects:
+	var item_db := ItemDB.load_default()
+	return EquipmentEffects.new(item_db, PartyGoods.from_state(item_db, state).equipment)
 
 
 ## The battle-start lineup rule for carried KO and stone (battle_ctb.md "Carried vitals"):

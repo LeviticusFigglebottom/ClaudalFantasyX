@@ -2,8 +2,8 @@
 id: M2-MNU-05
 title: Screenshots, navigation and accessibility sweep over the new menus
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "menus (claude/menus)"
 depends_on: [M2-MNU-01, M2-MNU-02, M2-MNU-03, M2-MNU-04]
 milestone: M2
 request-from: lead

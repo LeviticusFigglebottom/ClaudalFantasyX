@@ -1,1 +1,58 @@
 keys,en
+LATTICE_MENU_HELP,"Arrows: choose a node · Confirm: walk, wake or open · Page Up / Page Down: hero · Cancel: back"
+LATTICE_MENU_HERO_FMT,‹ {name} ›   {i} of {n}
+LATTICE_MENU_POINTS_FMT,Movement: {n}
+LATTICE_MENU_FACETS_FMT,Facets held: {list}
+LATTICE_MENU_FACETS_NONE,Facets held: none
+LATTICE_MENU_FACET_HELD_FMT,{facet} ×{n}
+LATTICE_MENU_STAT_HP,Max HP
+LATTICE_MENU_STAT_MP,Max MP
+LATTICE_MENU_STAT_FMT,{stat} +{n}
+LATTICE_MENU_GATE_FMT,Level {level} gate
+LATTICE_MENU_START_FMT,{name}'s first node
+LATTICE_MENU_EMPTY,An empty node
+LATTICE_MENU_GIVES_STAT_FMT,Waking it raises {stat} by {n} for the hero who wakes it.
+LATTICE_MENU_GIVES_SKILL_FMT,Waking it teaches this skill: {help}.
+LATTICE_MENU_GIVES_GATE,Bars the way until a Key Facet of its level opens it.
+LATTICE_MENU_GIVES_START_FMT,Where {name} first stood on the Lattice.
+LATTICE_MENU_GIVES_EMPTY,Nothing to wake here yet.
+LATTICE_MENU_SKILL_MP_FMT,{n} MP
+LATTICE_MENU_FACET_LINE_FMT,Needs {need} {facet} · {held} held
+LATTICE_MENU_GATE_OPEN,Open for everyone
+LATTICE_MENU_GATE_SEALED,Sealed
+LATTICE_MENU_WOKEN_NOBODY,No one has woken it yet
+LATTICE_MENU_WOKEN_BY_FMT,"Woken by {names}"
+LATTICE_MENU_NO_HEROES,No one in the party walks the Lattice yet.
+LATTICE_MENU_BROKEN,"The Lattice tables could not be read, so nothing here can change. Saved progress is kept as it was."
+LATTICE_MENU_SAVE_REFUSED,"The Lattice tables are broken, so this was not saved."
+LATTICE_MENU_PLAN_WAKE_FMT,{name} stands here. Wake it with {need} {facet}.
+LATTICE_MENU_PLAN_OPEN_FMT,Open it with {need} {facet}; it stays open for everyone.
+LATTICE_MENU_PLAN_WALK_FMT,Walk there for {cost} movement; {left} left after.
+LATTICE_MENU_PLAN_WALK_FREE_FMT,"Walk there free: the way is already woken."
+LATTICE_MENU_CONFIRM_WAKE_FMT,Wake it ({need} {facet})
+LATTICE_MENU_CONFIRM_OPEN_FMT,Open the gate ({need} {facet})
+LATTICE_MENU_CONFIRM_WALK_FMT,Walk there ({cost} movement)
+LATTICE_MENU_CONFIRM_WALK_FREE,Walk there (free)
+LATTICE_MENU_CONFIRM_CANCEL,Not now
+LATTICE_MENU_DONE_WALK_FMT,{name} walked there for {cost} movement; {left} left.
+LATTICE_MENU_DONE_WAKE_FMT,{name} woke {node}. {facet}: {held} left.
+LATTICE_MENU_DONE_OPEN_FMT,The gate stands open for everyone. {facet}: {held} left.
+LATTICE_MENU_TAG_COST_FMT,Cost {n}
+LATTICE_MENU_TAG_FREE,Free
+LATTICE_MENU_ERR_UNKNOWN_CHARACTER,{name} has no path on the Lattice yet.
+LATTICE_MENU_ERR_UNKNOWN_NODE,There is no such node on this board.
+LATTICE_MENU_ERR_NOT_ADJACENT,{name} must stand next to this gate to open it.
+LATTICE_MENU_ERR_GATE_CLOSED,A sealed gate bars every way there. Open it first.
+LATTICE_MENU_ERR_NO_MOVEMENT,"Not enough movement: walking there costs {cost}, and {name} has {have}."
+LATTICE_MENU_ERR_NOT_ACTIVATABLE,{name} stands here. There is nothing here to wake.
+LATTICE_MENU_ERR_ALREADY_ACTIVATED,{name} has already woken this node.
+LATTICE_MENU_ERR_NO_FACET,"Not enough Facets: it needs {need} {facet}, and the party holds {held}."
+LATTICE_MENU_ERR_NOT_A_GATE,That node is not a gate.
+LATTICE_MENU_ERR_GATE_OPEN,This gate already stands open.
+LATTICE_MENU_ERR_GENERIC,That cannot be done here.
+LATTICE_MENU_LEGEND_MINE_FMT,Woken by {name}
+LATTICE_MENU_LEGEND_TRODDEN,"Woken by another hero: free to cross"
+LATTICE_MENU_LEGEND_NEW_FMT,Not yet woken: {n} movement to enter
+LATTICE_MENU_LEGEND_ABILITY,Inner frame: teaches a skill
+LATTICE_MENU_LEGEND_GATE,Sealed gate: opens with a Key Facet
+LATTICE_MENU_LEGEND_HERE_FMT,Where {name} stands
