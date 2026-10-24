@@ -109,12 +109,16 @@ static func raise_modifier(ids: Array[StringName]) -> Callable:
 			c.hp = maxi(c.hp, 1)
 
 
-## After a victory or an escape: hands every party combatant (active, then reserve) to
-## EventBus.battle_party_returned, which Game.record_party turns into saved vitals (Swell gauges
-## and modes included), then `swell`'s record to EventBus.battle_swell_returned. Returns whether
-## it sent them (false for a defeat or an unfinished battle).
+## After a victory, an escape or a set piece's scripted escape (M3-CMB-01): hands every party
+## combatant (active, then reserve) to EventBus.battle_party_returned, which Game.record_party
+## turns into saved vitals (Swell gauges and modes included), then `swell`'s record to
+## EventBus.battle_swell_returned. Returns whether it sent them (false for a defeat or an
+## unfinished battle).
 static func send_back(engine: BattleEngine, swell: BattleSwell = null) -> bool:
-	if engine.outcome != BattleEngine.OUTCOME_VICTORY and engine.outcome != BattleEngine.OUTCOME_ESCAPED:
+	var kept: Array[StringName] = [
+		BattleEngine.OUTCOME_VICTORY, BattleEngine.OUTCOME_ESCAPED, BattleEngine.OUTCOME_SCRIPTED_ESCAPE
+	]
+	if not engine.outcome in kept:
 		return false
 	var party: Array = []
 	for c in engine.party_active + engine.party_reserve:

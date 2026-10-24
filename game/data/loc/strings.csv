@@ -679,3 +679,5 @@ CREDITS_FONTS,EB Garamond and Source Sans 3 (SIL Open Font License)
 CREDITS_THANKS,Thank you for playing.
 SKILL_CALL_ILUN,Call Ilun
 BOOT_FIRST_RUN_NOTE,Preparing the graphics for first use. This happens only once.
+HUD_SCRIPTED_ESCAPE,You held.
+HUD_SCRIPTED_ESCAPE_SUB,There was no winning it. Only getting them out.
