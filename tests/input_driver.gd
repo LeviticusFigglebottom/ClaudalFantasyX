@@ -44,6 +44,25 @@ static func clear_screen() -> void:
 			host.remove_child(c)
 			c.free()
 	tree.paused = false
+	park_pointer()
+
+
+## Lets go of every mouse button and moves the pointer to a corner, so the viewport's pointer state
+## (the last position, a button an earlier test left held, the control that had mouse focus) never
+## carries into the next test: the full suite showed mouse steps failing only after other tests.
+static func park_pointer() -> void:
+	var at := Vector2(1.0, 1.0)
+	for b in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT]:
+		var up := InputEventMouseButton.new()
+		up.button_index = b
+		up.pressed = false
+		up.position = at
+		up.global_position = at
+		root().push_input(up, true)
+	var m := InputEventMouseMotion.new()
+	m.position = at
+	m.global_position = at
+	root().push_input(m, true)
 
 
 ## Presses and releases `action` with this driver's device. MOUSE has no action bindings: it
