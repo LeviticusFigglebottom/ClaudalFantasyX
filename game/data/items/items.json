@@ -34,6 +34,7 @@
     {"id": "brass_lantern", "category": "key", "name_key": "ITEM_BRASS_LANTERN", "desc_key": "ITEM_BRASS_LANTERN_DESC"},
     {"id": "net_float_charm", "category": "key", "name_key": "ITEM_NET_FLOAT_CHARM", "desc_key": "ITEM_NET_FLOAT_CHARM_DESC"},
     {"id": "gauge_wheel_brass", "category": "key", "name_key": "ITEM_GAUGE_WHEEL_BRASS", "desc_key": "ITEM_GAUGE_WHEEL_BRASS_DESC"},
-    {"id": "kell_wick", "category": "key", "name_key": "ITEM_KELL_WICK", "desc_key": "ITEM_KELL_WICK_DESC"}
+    {"id": "kell_wick", "category": "key", "name_key": "ITEM_KELL_WICK", "desc_key": "ITEM_KELL_WICK_DESC"},
+    {"id": "name_board_seventh_terrace", "category": "key", "name_key": "ITEM_NAME_BOARD_SEVENTH_TERRACE", "desc_key": "ITEM_NAME_BOARD_SEVENTH_TERRACE_DESC"}
   ]
 }
