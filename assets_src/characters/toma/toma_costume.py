@@ -322,12 +322,15 @@ def pauldron(fields: Fields, params: dict) -> tuple[Part, dict]:
 # ---------------------------------------------------------------------------------------------
 # Tunic, skirt, sash
 # ---------------------------------------------------------------------------------------------
+TUNIC_ARMHOLE_DROP = 0.115  # m below the shoulder joint (M1-CHR-14: 0.085 sat at the armpit; a lowered arm cut it)
+
+
 def tunic_top(lm, chart: TorsoChart, th_deg: np.ndarray) -> np.ndarray:
     """A shallow wrap V at the front, armholes under both shoulders (sleeveless), a plain neck behind."""
     S = lm.S
     neck = chart.z_sh + math.radians(55) * chart.k
     v = float(lm.P("notch")[2] - 0.06 * S)
-    arm = float(lm.P("shoulder")[2] - 0.085 * S)
+    arm = float(lm.P("shoulder")[2] - TUNIC_ARMHOLE_DROP * S)
     strap = chart.z_sh + math.radians(24) * chart.k
     return RC._sym_interp(th_deg, [0, 12, 28, 50, 74, 92, 112, 132, 150, 180],
                           [v, v + 0.025 * S, neck - 0.015 * S, strap, arm, arm, strap, neck, neck, neck])

@@ -925,8 +925,12 @@ def verdicts(result: dict, cfg: dict) -> list[dict]:
         w = max((r for r in result["penetration"] if r["kind"] == kind and r["group"] == group),
                 key=lambda r: r["depth_mm"])
         lim = float(pen.get("limits_mm", {}).get(group, pen["max_mm"]))
+        # a group with a documented allowance (limits_mm) may also cap how many vertices pass max_mm in any pose
+        n_lim = pen.get("limits_count", {}).get(group)
+        n_worst = max(r["count"] for r in result["penetration"] if r["kind"] == kind and r["group"] == group)
+        ok = w["depth_mm"] <= lim and (n_lim is None or n_worst <= int(n_lim))
         out.append({"check": f"penetration {kind} {group}", "value_mm": w["depth_mm"], "limit_mm": lim,
-                    "ok": w["depth_mm"] <= lim, "pose": w["pose"],
+                    "count": n_worst, "count_limit": n_lim, "ok": ok, "pose": w["pose"],
                     "where": f"{w['where']} on {w['bone']} vs {w['skin_bone']}, rest {w['rest']} "
                     f"({w['count']} verts past {pen['max_mm']} mm)"})
     for kind, group in sorted({(r["kind"], r["group"]) for r in result["seams"]}):
@@ -967,6 +971,8 @@ def format_report(result: dict, verdict: list[dict], per_pose: bool = True) -> s
         val = v.get("value_mm", v.get("value"))
         lim = v.get("limit_mm", v.get("limit", "-"))
         cnt = f" count={v['count']}" if "count" in v else ""
+        if v.get("count_limit") is not None:
+            cnt += f" (limit {v['count_limit']})"
         lines.append(f"{'ok  ' if v['ok'] else 'FAIL'} {v['check']:<48} {val!s:>8} (limit {lim}){cnt} @ {v['pose']}"
                      f"  -- {v['where']}")
     if per_pose:

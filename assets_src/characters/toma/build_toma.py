@@ -60,6 +60,7 @@ from asha_mesh import Part  # noqa: E402
 
 PARAMS = HERE / "toma_params.json"
 HEAD_BONE = hb.HEAD_BONE
+TORSO_PARTS = ("Tunic",)
 CHEST_BONE = "DEF-spine.003"
 HAND_BONE = "DEF-hand.R"
 BEARD_MIN_DELTA = 1.5e-4  # m
@@ -334,6 +335,14 @@ def main() -> int:
             opaque.extend(p)
         Pc = opaque.varr()
         Wc = hb.transfer_weights(Pc, V[src_mask], W[src_mask])
+        # M1-CHR-14: the tunic rides the torso only (arm weights at the armholes dragged its sides out past a
+        # lowered arm)
+        o = 0
+        for name, p in costume.items():
+            if name in TORSO_PARTS:
+                sl = slice(o, o + len(p.V))
+                Wc[sl] = hb.transfer_weights(Pc[sl], V[reg == "torso"], W[reg == "torso"])
+            o += len(p.V)
         wnames_x = wnames + extra_bone_names()
         Wc = np.concatenate([Wc, np.zeros((len(Pc), len(wnames_x) - len(wnames)), dtype=np.float32)], axis=1)
         offs = {}
@@ -346,7 +355,8 @@ def main() -> int:
         hb.apply_weights(ob, Wc, wnames_x, skel)
         garment_objs.append(ob)
         outer = np.concatenate([p.varr() for p in costume.values()] + [V[reg == "torso"]])
-        centre, out_d, up_d = toma_props.place_shield(cparams, outer, anchors["chest_z"])
+        centre, out_d, up_d = toma_props.place_shield(cparams, outer, anchors["chest_z"],
+                                                      head=V[W[:, wnames.index(HEAD_BONE)] > 0.5])
         shield = toma_props.shield(centre, out_d, up_d, cparams)
         spear = toma_props.spear(lm, cparams, toma_costume.ATLAS["grip"])
         ob_s = rigid_part(shield, SHIELD_BONE, wnames_x, skel)

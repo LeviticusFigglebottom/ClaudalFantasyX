@@ -951,6 +951,46 @@
       "settle_frames": 30
     },
     {
+      "id": "rhen_clip_take_hand",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_take_hand.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_kneel",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_kneel.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_walk",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_walk.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_talk",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_talk.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "villager_neme_front",
       "scene": "res://game/levels/_tests/characters/villagers/neme_stage.tscn",
       "camera": "Cameras/Front",

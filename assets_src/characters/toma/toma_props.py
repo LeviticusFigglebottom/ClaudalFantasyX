@@ -29,6 +29,8 @@ SCUTE_GROOVE = 0.0025  # m
 SCUTE_GROOVE_W = 0.012  # m, half-width of the groove along a scute border
 BOSS_RINGS = 7
 SPEAR_SHAFT_R = 0.016
+SPEAR_SPLAY_DEG = 1.5  # the shaft's foot out from his side, its head in (M1-CHR-14)
+SPEAR_OUT = 0.012  # m: the shaft's offset out from his right side of the grip point (M1-CHR-14)
 SPEAR_HEAD_L = 0.26  # blade, socket included
 SHIELD_ATLAS_DISC = (0.0, 0.0, 1.0, 1.0)  # the disc fills the square; the back uses the free corner
 SHIELD_ATLAS_BACK = (0.0, 0.0, 0.12, 0.12)
@@ -147,11 +149,13 @@ def shield(centre: np.ndarray, out: np.ndarray, up: np.ndarray, params: dict) ->
 
 
 SHIELD_CLEAR = 0.012  # m between the shield's back and the costume under it
+SHIELD_HEAD_CLEAR = 0.035  # m between the shield's back and the head skin (hair cards, a nod back)
 SHIELD_TILT = -0.08  # the shield's up axis leans this much toward his front at the top (it rests on the shoulders)
 SHIELD_DROP = 0.05  # m: the shield's centre sits this far below nipple height
 
 
-def place_shield(params: dict, outer: np.ndarray, chest_z: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def place_shield(params: dict, outer: np.ndarray, chest_z: float,
+                 head: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """(centre, out, up) of the shield on his back: tilted by SHIELD_TILT, its centre SHIELD_DROP
     below the chest line, and pushed back until its wooden back clears every costume vertex
     (`outer`: the pauldron, harness, tunic, sash ...) inside its footprint by SHIELD_CLEAR."""
@@ -166,6 +170,12 @@ def place_shield(params: dict, outer: np.ndarray, chest_z: float) -> tuple[np.nd
     inplane = q - np.outer(q @ out, out)
     near = np.linalg.norm(inplane, axis=1) < R + 0.01
     need = float((q[near] @ out).max()) + SHIELD_BACK_DEPTH + SHIELD_CLEAR
+    if head is not None:
+        # M1-CHR-14: the top of the rim also clears the back of the head (and his cropped hair) by SHIELD_HEAD_CLEAR
+        qh = head - c0
+        near_h = np.linalg.norm(qh - np.outer(qh @ out, out), axis=1) < R + 0.01
+        if near_h.any():
+            need = max(need, float((qh[near_h] @ out).max()) + SHIELD_BACK_DEPTH + SHIELD_HEAD_CLEAR)
     return c0 + out * need, out, up
 
 
@@ -183,10 +193,13 @@ def spear_grip(lm) -> np.ndarray:
 def spear(lm, params: dict, cord_rect) -> Part:
     """Grounded at the right hand's grip, vertical; the hook faces away from his body (-X)."""
     part = Part("Spear")
-    grip = spear_grip(lm)
+    # M1-CHR-14: the shaft sits out from his side of the fist's centre line (centred, it ran into the forearm)
+    grip = spear_grip(lm) + np.array([-SPEAR_OUT, 0.0, 0.0])
     L = float(params["spear_length_m"])
-    base = np.array([grip[0], grip[1], 0.006])
-    upv = np.array([0.0, 0.0, 1.0])
+    # the foot of the shaft splays out from his right foot (wide stance: upright, it stood in his toes)
+    lean = math.radians(SPEAR_SPLAY_DEG)
+    upv = np.array([math.sin(lean), 0.0, math.cos(lean)])
+    base = grip - upv * ((grip[2] - 0.006) / upv[2])
     fwd = np.array([0.0, -1.0, 0.0])
     side = np.array([-1.0, 0.0, 0.0])  # the hook and the blade's flats face out from his right side
     shaft_top = L - SPEAR_HEAD_L + 0.06
@@ -197,8 +210,8 @@ def spear(lm, params: dict, cord_rect) -> Part:
 
     tube(part, shaft, rad, 12, "cloth", fwd, ATLAS["spear_shaft"], tags=TAG_PROP)
     # grip binding: indigo cord round the shaft at the hand
-    g0, g1 = grip[2] - 0.13, grip[2] + 0.11
-    cord = np.array([np.array([base[0], base[1], z]) for z in np.linspace(g0, g1, 10)])
+    g0, g1 = grip[2] - 0.20, grip[2] + 0.04  # ends just above the fist (it ran 11 cm up into the wrist)
+    cord = np.array([base + upv * ((z - base[2]) / upv[2]) for z in np.linspace(g0, g1, 10)])
     tube(part, cord, SPEAR_SHAFT_R * 1.14, 12, "cloth", fwd, cord_rect, tags=TAG_PROP)
     # bronze ferrule at the foot and collar under the head
     tube(part, np.array([base, base + upv * 0.06]), SPEAR_SHAFT_R * 1.12, 12, "bronze", fwd, tags=TAG_PROP)

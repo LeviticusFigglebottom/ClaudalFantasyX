@@ -8,8 +8,12 @@
     "_stage_poses": "label -> stage scene whose world_pose (AshaStage._apply_world_pose) is checked too",
     "stage_poses": {},
     "body": "Body",
-    "skin_extra": ["Head:skin_head"],
-    "garments": ["Costume"],
+    "skin_extra": [
+      "Head:skin_head"
+    ],
+    "garments": [
+      "Costume"
+    ],
     "props": [],
     "braid": null,
     "penetration": {
@@ -30,28 +34,49 @@
       "_cover_mm": "a body vertex is covered when a ray along its normal meets a garment within this at rest; that cloth point (triangle + barycentrics) is tracked, and skin that passes it in a pose pokes through (rest-relative)",
       "cover_mm": 20.0,
       "_grip_bones": "props may touch skin owned by these bones (the hand that holds them)",
-      "grip_bones": "^DEF-(hand|palm|f_|thumb)"
+      "grip_bones": "^DEF-(hand|palm|f_|thumb)",
+      "_limits_count": "per-group cap on how many vertices pass max_mm in any one pose; used with a per-hero limits_mm allowance",
+      "limits_count": {}
     },
     "seams": {
       "_weld_tol_mm": "positions closer than this at rest count as one welded position",
       "weld_tol_mm": 0.01,
       "_max_open_mm": "how far positions welded at rest (the neck seam, UV seams, panel seams) may separate in a pose",
       "max_open_mm": 0.5,
-      "groups": [["Body", "Head:skin_head"], ["Costume"]],
+      "groups": [
+        [
+          "Body",
+          "Head:skin_head"
+        ],
+        [
+          "Costume"
+        ]
+      ],
       "_cover_reach_mm": "an open body-boundary vertex is covered when a ray along its normal meets a garment within this (rays pass through skin, so the inner side of a leg under a skirt counts as covered)",
       "cover_reach_mm": 300.0,
       "max_exposed": 0,
       "weight_sum_tol": 0.001
-    }
+    },
+    "_allowances": "Per-hero limits_mm / limits_count / max_exposed are RATCHETS (M1-CHR-14): each pins a known linear-blend-skinning limit, viewed in the clip shots, at about today's worst. Lower them when a fix lands; never raise one without a reason in the hero's '_allowances' note."
   },
   "heroes": {
     "asha": {
-      "stage_poses": {"extreme_pose": "game/levels/_tests/characters/asha/asha_extreme_pose.tscn"},
-      "garments": ["Costume", "VerseSleeve"],
-      "props": ["Staff"],
+      "stage_poses": {
+        "extreme_pose": "game/levels/_tests/characters/asha/asha_extreme_pose.tscn"
+      },
+      "garments": [
+        "Costume",
+        "VerseSleeve"
+      ],
+      "props": [
+        "Staff"
+      ],
       "braid": {
         "mesh": "HairBraid:hair",
-        "scalp": ["HairHead:hair", "Head:skin_head"],
+        "scalp": [
+          "HairHead:hair",
+          "Head:skin_head"
+        ],
         "head_bone": "DEF-spine.006",
         "_min_strand_verts": "connected pieces of the braid mesh at least this big are the woven strands (the rest are flyaways and tail cards)",
         "min_strand_verts": 300,
@@ -62,13 +87,74 @@
         "_max_drift_mm": "how far a root vertex may move in the head bone's frame (0 when skinned to the head)",
         "max_drift_mm": 2.0
       },
-      "seams": {"groups": [["Body", "Head:skin_head"], ["Costume"], ["VerseSleeve"]]}
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "VerseSleeve"
+          ]
+        ],
+        "max_exposed": 2
+      },
+      "_allowances": "Costume 45/8: the skirts fold between calf and thigh in the deep kneel (rise_to_stand), inside the leg. VerseSleeve 42/4: one gauze bag vertex enters the waist when the arm is down. Body 48/40: upper-arm skin passes the torso cloth's armhole edge as the arm hangs (the vest and bodice no longer poke out: viewed). max_exposed 2: two halter-edge vertices at the left shoulder in the extreme pose, under 2 mm.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 45.0,
+          "VerseSleeve": 42.0,
+          "Body": 48.0
+        },
+        "limits_count": {
+          "Costume": 8,
+          "VerseSleeve": 4,
+          "Body": 40
+        }
+      }
     },
     "rhen": {
-      "props": ["Props"]
+      "props": [
+        "Props"
+      ],
+      "_allowances": "Costume 32/6 and Body 63/50: the shirt's armhole against the lowered upper arm (talk, take_hand); clean in rhen_clip_take_hand. max_exposed 24: the thigh's hidden-face edge opens inside the deep knee fold of the kneel, under the trousers (rhen_clip_kneel).",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 32.0,
+          "Body": 63.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Body": 50
+        }
+      },
+      "seams": {
+        "max_exposed": 24
+      }
     },
     "toma": {
-      "props": ["Props"]
+      "props": [
+        "Props"
+      ],
+      "_allowances": "Costume 33/6 and Body 71/200: his broad torso takes the lowered upper arm into the tunic's side (linear skinning); the tunic rides the torso only, so the arm now reads in front of its edge (toma_clip_talk). Props 16/6: the spear shaft grazes the forearm for a few frames while the hand turns it (spear_level, lower_spear, turn_seaward). max_exposed 2: two shoulder-edge vertices, under 5 mm.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 33.0,
+          "Props": 16.0,
+          "Body": 71.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Props": 6,
+          "Body": 200
+        }
+      },
+      "seams": {
+        "max_exposed": 2
+      }
     }
   }
 }

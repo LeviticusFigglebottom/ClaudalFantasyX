@@ -376,9 +376,18 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
                         "DEF-upper_arm.L": (-18.0 * e, -10.0 * e, 16.0 * e),
                         "DEF-forearm.L": (-78.0 * e, -72.0 * e, 0.0), "DEF-hand.L": (0.0, -20.0 * e, -10.0 * e)})
     if clip == "spear_level":
-        return blend(planted(sk, persona), spear_level(sk, persona), smooth(u / 0.75))
+        # M1-CHR-14: the arms lift before the hand turns the spear level (turned together, its foot swept through
+        # his right foot)
+        out = blend(planted(sk, persona), spear_level(sk, persona), smooth(u / 0.75))
+        turn = blend(planted(sk, persona), spear_level(sk, persona), smooth((u - 0.2) / 0.55))
+        out["DEF-hand.R"] = turn["DEF-hand.R"]
+        return out
     if clip == "lower_spear":
-        return blend(spear_level(sk, persona), planted(sk, persona), smooth(u / 0.8))
+        # and back: the spear turns upright before the arms come down
+        out = blend(spear_level(sk, persona), planted(sk, persona), smooth(u / 0.8))
+        turn = blend(spear_level(sk, persona), planted(sk, persona), smooth(u / 0.55))
+        out["DEF-hand.R"] = turn["DEF-hand.R"]
+        return out
     if clip == "palms_level":
         # "Be level": the left palm comes up flat at chest height, then sweeps slowly out, level; the head bows
         e = smooth(u / 0.45)
