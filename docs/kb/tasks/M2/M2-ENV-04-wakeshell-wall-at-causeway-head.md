@@ -2,8 +2,8 @@
 id: M2-ENV-04
 title: Place the wake-shell wall at the causeway head (B04 stages Osu there on a greybox stand-in)
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M2-FP-14]
 milestone: M2
 request-from: cinematics
