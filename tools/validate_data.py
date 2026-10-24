@@ -37,7 +37,8 @@ SKILL_KINDS = {"physical", "magical", "heal", "support"}
 SKILL_TARGETS = {"single_foe", "all_foes", "single_ally", "all_allies", "self"}
 AI_TARGETS = {"random_foe", "lowest_hp_foe", "highest_hp_foe", "self", "random_ally", "all_foes", "all_allies",
               "largest_ally"}
-AI_CONDITIONS = {"self_hp_below_pct", "turn_mod", "foe_has_status", "allies_alive_below", "field_active"}
+AI_CONDITIONS = {"self_hp_below_pct", "turn_mod", "foe_has_status", "allies_alive_below", "field_active",
+                 "foes_all_absorb"}  # M2-FP-17
 # M2-CMB-02 (combat): target kinds only skills take (items keep SKILL_TARGETS). all_other_allies is
 # every living active ally but the user (Shallows Verse: a song for the others, never the singer).
 SKILL_ONLY_TARGETS = {"all_other_allies"}
@@ -277,6 +278,8 @@ def _ai_arg_ok(cond: str, arg: object, status_ids: set[str]) -> bool:
         return arg in status_ids
     if cond == "field_active":
         return isinstance(arg, str) and bool(arg)
+    if cond == "foes_all_absorb":  # M2-FP-17
+        return arg in ELEMENTS - {"none"}
     return False
 
 
@@ -1252,6 +1255,7 @@ def run(root: Path) -> Report:
     data_keys += check_progression(files, rep)
     data_keys += check_items(files, declared_flags_quiet(root), rep)
     data_keys += check_vowbound(files, rep)
+    check_vowbound_flags(files, declared_flags_quiet(root), rep)
     data_keys += collect_keys({k: v for k, v in files.items() if k.startswith("game/data/settings/")})
     data_keys += check_locations(root, files, rep)
     data_keys += check_swell(files, rep)
@@ -1953,6 +1957,8 @@ def _boss_skill_errors(s: dict, refs: dict[str, set[str]]) -> list[str]:
         errs.append(f"{w}: summons unknown enemy '{s['summon']}'")
     if "clears_field" in s and (not isinstance(s["clears_field"], str) or not s["clears_field"]):
         errs.append(f"{w}: clears_field must name a field")
+    if "requires_field" in s and (not isinstance(s["requires_field"], str) or not s["requires_field"]):
+        errs.append(f"{w}: requires_field must name a field")  # M2-CMB-05
     if "requires_flag" in s and s["requires_flag"] not in refs["flags"]:
         errs.append(f"{w}: undeclared story flag '{s['requires_flag']}' (declare it in game/data/flags.tres)")
     return errs
@@ -2098,6 +2104,8 @@ def _vowbound_row_errors(r: dict, skills: dict[str, dict], char_ids: set[str], l
         errs.append(f"{w}: needs a name_key")
     if r.get("caller") not in char_ids:
         errs.append(f"{w}: caller must be a character id")
+    if "bound_flag" in r and not isinstance(r["bound_flag"], str):  # M2-CMB-05; declared: check_vowbound
+        errs.append(f"{w}: bound_flag must name a story flag")
     rank = r.get("call_rank")
     if not _is_int(rank) or not 1 <= rank <= 8:
         errs.append(f"{w}: call_rank must be an int in 1..8 (the caller's action)")
@@ -2164,6 +2172,16 @@ def check_vowbound(files: dict[str, object], rep: Report) -> list[str]:
     for e in vowbound_errors(doc, skills, chars, _learned_skills(files)):
         rep.err(e)
     return collect_keys(doc)
+
+
+def check_vowbound_flags(files: dict[str, object], declared: set[str], rep: Report) -> None:
+    """M2-CMB-05: each vowbound.json bound_flag is a declared story flag."""
+    doc = files.get(VOWBOUND_FILE)
+    rows = doc.get("vowbound", []) if isinstance(doc, dict) else []
+    for r in rows:
+        flag = r.get("bound_flag") if isinstance(r, dict) else None
+        if isinstance(flag, str) and flag not in declared:
+            rep.err(f"{VOWBOUND_FILE}: {r.get('id')}: undeclared bound_flag '{flag}' (declare it in game/data/flags.tres)")
 
 if __name__ == "__main__":
     sys.exit(main())
