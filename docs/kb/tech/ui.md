@@ -368,6 +368,15 @@ The human's top priority for the slice: the player always knows the next step. A
 - **Shot:** `field_objective_line` shows Haluna (H02, down Tidewall lane) with the line held in ("Find the save shrine…") and the cue.
 - **Tests:** `test_objective_tracker.gd`, `test_objective_hud.gd`; tools: `test_zone_map_pois.py`.
 
+## The interaction prompt (M2-UI-20)
+
+- **`InteractPrompt`** (`game/ui/field/`) shows what the player can use and with which button: a plate over `FieldController.nearest_interactable()` with a keycap and the interactable's `prompt_key` verb (`FIELD_PROMPT_DEFAULT`, "Examine", when it has none).
+- **The keycap** names the first `field_interact` key, or its first pad button once the pad was the last device used (generic names from `controls.json` `pad_button_keys`). It follows remapping because it reads the InputMap each frame.
+- **Placement:** `lift_m` above the interactable, docked at the bottom centre when that point is behind the camera or within `edge_px` of the edge. `place()` is pure and tested.
+- **Gating:** the same as the objective line (field input on, tree not paused). It fades over `fade_sec`. Layout: `game/data/ui/interact_prompt.json`.
+- **`FieldHud.attach(self)`** is the one line in `FieldController._ready`; it attaches the objective line, the cue and the prompt, each on its own CanvasLayer.
+- **Shot:** `field_interact_prompt`. **Tests:** `test_interact_prompt.gd`.
+
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 
 - **The field menu's root has ten rows** (`FieldMenuModel.ROOT_IDS`): Items, Equip, Lattice, Status, Swell, Map (M2-UI-18), Bestiary, Settings, Quit to Title, Close. Equip, Lattice and Status (`PARTY_ROWS`) are off, saying why, when nobody has joined. `field_menu.json` grew the panel to 639 px and the root page to nine rows; every rect is still a multiple of 3.

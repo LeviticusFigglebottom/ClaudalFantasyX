@@ -1135,6 +1135,25 @@
     {
       "id": "equip_customize",
       "scene": "res://game/ui/menus/equip/shots/equip_customize.tscn"
+    },
+    {
+      "id": "field_interact_prompt",
+      "scene": "res://game/ui/field/shots/field_interact_prompt.tscn",
+      "camera": "Haluna/Cameras/H02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
