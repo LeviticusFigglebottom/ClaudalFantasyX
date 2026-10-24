@@ -55,6 +55,15 @@ AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 
                         "assets_src/sfx/act1_ambience.py": int(3.0 * 1024 * 1024)}  # M2-AUD-13: two q1 beds; M3-AUD-16: six
 AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
+
+def _source_files(path: str) -> list[str]:
+    """A source's own FILES list (M3-AUD-14: 194 creature files named from its table, not copied here)."""
+    spec = importlib.util.spec_from_file_location("files_of_" + os.path.basename(path)[:-3], os.path.join(ROOT, path))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return list(mod.FILES)
+
+
 # (module source, output dir, output file names, kind)
 JOBS = [
     ("assets_src/music/hush_theme_sketch.py", "assets/audio/music", ["hush_theme_sketch.ogg"], "music"),
@@ -174,6 +183,9 @@ JOBS = [
     # M3-AUD-18: stings on the battle presentation's announcements (the tide line, the bark, boss intros)
     ("assets_src/sfx/battle_stings.py", "assets/audio/sfx",
      [f"battle/sting_{s}.ogg" for s in ("tideline", "bark", "boss", "boss_soft", "boss_bell", "boss_bell_soft")],
+     "sfx"),
+    # M3-AUD-14: creature voices and movement (the file list is the source's own, like battle_sfx's)
+    ("assets_src/sfx/creature_sfx.py", "assets/audio/sfx/creatures", _source_files("assets_src/sfx/creature_sfx.py"),
      "sfx"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)

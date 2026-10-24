@@ -557,3 +557,34 @@ you already know (`assets/audio/sfx/battle/hit_*`): play a hit right after its a
 line), `sting_boss.ogg` (a boss's title card) and `sting_boss_bell.ogg` (the Drownbell's). Does the boss sting read as
 "this one matters" without crowding the battle music's first bar (the music dips 5 dB under it for 3.5 s)? Is the
 Drownbell's drawn-in swell too long before the toll (1.1 s)?
+
+## M3: creature voices and movement (M3-AUD-14)
+
+194 short sounds in `assets/audio/sfx/creatures/`, from `assets_src/sfx/creature_sfx.py`: each creature's idle, attack,
+hurt and death, and how it moves. Nothing here is a recording or an imitation of one. Each creature is a small
+physical model: shell modes for carapace taps and claw snaps, stick-slip for creaks and scrapes, Minnaert bubbles for
+froth and gurgles, a formant voice (an additive throat under vowel-like resonances, with roughness and a growl's
+subharmonic) for anything that calls, and filtered noise bursts for wings. Voices are at −18 LUFS momentary, idles
+−20 and movement −21. In battle the hurt and death play 3 dB under the hit and KO sounds, just behind them. Listen
+in this order, a creature at a time (`ffplay -autoexit <file>`):
+
+| # | Files | What it should be |
+|---|---|---|
+| 1 | `reef_crab_*` | A 1.4 m crab in a coral shell: mandible chatter and froth, a scrape then a hard claw snap, a shell knock and a panicked chatter when hurt, legs rattling to a stop when it dies, and a stony skitter |
+| 2 | `lantern_eel_*` | A low throat purr with bubbles from the gills, and a pure, slowly beating glass hum for its lure. A water rush and a jaw snap. Its death is a long moan sinking under a bubble trail, the lure bending down as it goes out |
+| 3 | `gull_harrier_*` | A storm-fattened sea-bird: a rasping two-note call, a dive (the wings folding) into a screech and the talons raking, heavy wingbeats |
+| 4 | `spawn_polyp_*` | Soft wet mouths: suction pops opening, gurgles, a low wet moan under it, a squelching lunge |
+| 5 | `drownbell_*` | The bell's body, not its toll: the six legs ticking wet under the rim, the rotten rope creaking, a faint dark hum of the bronze. Rearing for `hood_slam`, the bronze grinds on its lip. Hurt is a damped bronze clank. In its death the bell's ring bends down as it drowns |
+| 6 | the Act I foes | `hullgnaw` (the eel through ship's ribs: timber creaks and crunches), `glassfry` (a cloud of tiny glass ticks that tightens to strike), `tower_limpet`, `oil_slug` (slower, viscous), `bottle_hermit` (taps ring on its lamp glass), `sail_leech` (wet flaps), `spar_wraith` (wind through the shrouds as its moan, rope whips, timber collapse), `ashwing` and `flue_moth` (papery flutter, dust), `slag_tortoise` (a hiss and a horny beak), `cinder_matron` (stone grinding, magma bubbling, the crust coming down), `vein_sparker` (arcs and a hiss), `shoal_skipper` (mud slaps and a wet gulp), `raid_hound` (a growl, a bark, a yelp, a whine, paws on deck boards and the harness), `tide_crawler` and `scuttler` (wet spawn crawlers), `squall_wing` (a gull heard through rain), `undertows_reach` (a mass of water and a groan below hearing's floor) |
+
+**What to listen for:**
+- **Does anything sound like a recording of a real animal?** It shouldn't, but the hound's bark and the harrier's
+  call are closest. If one sounds like an actual dog or gull, say so and it gets pushed further from the animal.
+- **The voices are the part most likely to sound synthetic:** a buzzy or "talking robot" throat means fewer
+  harmonics and more breath. The eel's purr and the polyp's moan are meant to be felt more than heard.
+- **Movement repeats on every action.** Do the skitters, wingbeats and squelches get tiring after ten turns? If one
+  does, it gets quieter, or a third variant.
+- **Bright clicks:** the crab, scuttler and bottle hermit skitters and the glassfry are click-heavy by design. Do
+  they read as legs and glass, or as digital clicks?
+- **Variants:** the wreck crab, wallcrab, wall polyp and stormgull play their parent's set at another pitch. Is
+  that distinct enough, or does each want its own?

@@ -262,6 +262,60 @@ class ReverbAndVoiceDataTest(unittest.TestCase):
         self.assertTrue(any("default.rate_ms: missing" in e for e in errs), errs)
 
 
+def _with_creatures() -> dict:
+    files = copy.deepcopy(GOOD)
+    files[dc.ENEMIES] = {"enemies": [{"id": "crab"}, {"id": "ghost"}]}
+    files[dc.CREATURE_VOICES] = {
+        "model_classes": {"CreatureActor": "creature_id"},
+        "clips": {"attack": "move"},
+        "delays_ms": {"hurt": 70},
+        "under_db": -3.0,
+        "reduced_skip": ["move"],
+        "creatures": {"crab": {"events": {"attack": "tick", "move": "tick"}, "pitch": 0.9}, "ghost": "silent"},
+    }
+    return files
+
+
+class CreatureVoiceDataTest(unittest.TestCase):
+    """M3-AUD-14: creature_voices.json against enemies.json and the sfx rows."""
+
+    def test_good_creature_voices_pass(self) -> None:
+        self.assertEqual(_errs(_with_creatures()), [])
+
+    def test_every_enemy_needs_a_voice_or_silent(self) -> None:
+        files = _with_creatures()
+        del files[dc.CREATURE_VOICES]["creatures"]["ghost"]
+        self.assertTrue(any("enemy ghost" in e and "silent" in e for e in _errs(files)), _errs(files))
+
+    def test_events_rows_pitch_and_clips_are_checked(self) -> None:
+        files = _with_creatures()
+        doc = files[dc.CREATURE_VOICES]
+        doc["creatures"]["crab"]["events"]["roar"] = "nope"
+        doc["creatures"]["crab"]["pitch"] = 5.0
+        doc["creatures"]["eel"] = "quiet"
+        doc["clips"]["cast"] = "sing"
+        doc["under_db"] = 3.0
+        errs = _errs(files)
+        for want in ("events.roar: not an event", "nope is not an sfx.json row", "crab.pitch", "creatures.eel",
+                     "clips.cast", "under_db"):
+            self.assertTrue(any(want in e for e in errs), (want, errs))
+
+    def test_the_repo_voices_every_enemy_and_creature_model(self) -> None:
+        import json
+
+        doc = json.loads((ROOT / dc.CREATURE_VOICES).read_text(encoding="utf-8"))
+        enemies = json.loads((ROOT / dc.ENEMIES).read_text(encoding="utf-8"))["enemies"]
+        for e in enemies:
+            self.assertIn(e["id"], doc["creatures"])
+        # the creatures track's creatures.json (claude/creatures) models these; each has a voice ready for it
+        for cid in ("reef_crab", "lantern_eel", "gull_harrier", "spawn_polyp", "drownbell", "hullgnaw", "glassfry",
+                    "tower_limpet", "oil_slug", "bottle_hermit", "sail_leech", "spar_wraith", "ashwing",
+                    "slag_tortoise", "cinder_matron", "vein_sparker", "shoal_skipper", "wreck_crab", "raid_hound",
+                    "tide_crawler", "squall_wing", "wall_polyp", "undertows_reach", "flue_moth", "stormgull",
+                    "wallcrab", "scuttler"):
+            self.assertIsInstance(doc["creatures"].get(cid), dict, cid)
+
+
 class LoopImportTest(unittest.TestCase):
     """M3-AUD-06: every shipped loop (an .ogg with a .loop.json sidecar, music or not) imports with loop on at the
     sidecar's offset, so a bed, a crowd or the lantern hum played through Godot keeps going (render_all.py syncs
