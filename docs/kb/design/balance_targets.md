@@ -136,7 +136,7 @@ From [act_outline.md](../story/beats/act_outline.md): two phases on the causeway
 | `naive` | 0–10% | A boss is never beaten by mashing. |
 | `role_answer` | 70–90% | Rhen on the rim is enough to win most of the time, but not without risk. |
 | `smart` | 80–95% | Healing and replacement close most of the gap; a 5% or greater loss rate keeps it a boss. |
-| p90 turns | ≤ 60 | Two phases, still a slice-length fight. |
+| p90 turns | ≤ 66 | Two phases, still a slice-length fight. Raised from 60 (Lead, 2026-10-24, big7): Ilun's real call adds his own actions to the count, and the affordable party (M2-CMB-07) fights longer. Smart's p90 is 65 at 1000 seeds, and no stat change got it below 61. |
 
 The encounter landed in M2-FP-06 with a first-playable stand-in for the Vowbound summon (ADR 0026). Both `role_answer` and `smart` carry the "clear the field" rule: `sim_policies.json` `clear_field_skill: call_ilun`, so whoever can use it does so as soon as a field is up (`smart` heals first if someone is below 45%). Measured at 1000 seeds: naive 0.0%, role answer 79.7%, smart 89.6%, p90 51 actions (balance_report.md). `tests/integration/test_drownbell_battle.gd` asserts loose bands at 200 seeds on every run.
 
