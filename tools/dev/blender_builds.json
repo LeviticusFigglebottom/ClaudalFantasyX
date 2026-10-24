@@ -136,6 +136,16 @@
         ["{blender}", "--python", "assets_src/creatures/wickfry/build_wickfry.py", "--", "--out", "assets/creatures/wickfry/wickfry.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wickfry"]
       ]
+    },
+    {
+      "id": "creature_bottle_hermit",
+      "owner": "character",
+      "sources": ["assets_src/creatures/bottle_hermit/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/bottle_hermit/*.glb", "assets/creatures/bottle_hermit/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/bottle_hermit/build_bottle_hermit.py", "--", "--out", "assets/creatures/bottle_hermit/bottle_hermit.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "bottle_hermit"]
+      ]
     }
   ]
 }
