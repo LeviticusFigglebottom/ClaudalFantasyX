@@ -616,3 +616,26 @@ HUD_FAIL_NOT_BOUND_FMT,{name} has bound no Vowbound yet.
 HUD_FAIL_NOT_CALLER_FMT,{name} cannot call that Vowbound.
 HUD_FAIL_VOWBOUND_FALLEN,That Vowbound has fallen and cannot answer again this battle.
 HUD_FAIL_NO_VOWBOUND,No Vowbound is on the field.
+RBL_BAND_RING,The ring
+RBL_BAND_HIGH,High water
+RBL_BAND_MID,Mid water
+RBL_BAND_LOW,Low water
+RBL_BAND_WEEP,The weep
+RBL_ACTION_RISE,Rise
+RBL_ACTION_DIVE,Dive
+RBL_ACTION_PASS,Pass
+RBL_ACTION_LOFT,Loft
+RBL_ROLE_LIFTER,Lifter
+RBL_ROLE_ANCHOR,Anchor
+RBL_ROLE_PRESSER,Presser
+RBL_ROLE_RINGWARD,Ringward
+RBL_SIDE_ORUVEL,Oruvel
+RBL_SIDE_PEMAKAR,Pemakar Terraces
+RBL_DIVER_TAVI,Tavi Orse
+RBL_DIVER_NOA,Noa
+RBL_DIVER_AMA,Old Ama
+RBL_DIVER_PEM_LIFTER,Pemakar lifter
+RBL_DIVER_PEM_ANCHOR,Pemakar anchor
+RBL_DIVER_PEM_PRESSER,Pemakar presser
+RBL_DIVER_PEM_RINGWARD,Pemakar ringward
+RBL_MATCH_TIDECUP_OPENING,"The Tidecup, opening round"
