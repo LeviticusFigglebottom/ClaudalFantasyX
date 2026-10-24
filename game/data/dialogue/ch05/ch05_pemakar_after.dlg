@@ -1,0 +1,12 @@
+// Ch5 B11 "Pemakar after", 16:30 (act1_ch05.md). The party comes back down to the town in afternoon
+// light, wrung out after the festival (P04). No lines: the after-festival barks carry it, and the
+// smith's side scene is open again as a fallback. The harbour road at dawn ends the chapter.
+title: ch05_pemakar_after
+location: ch05/pemakar
+---
+@music pemakar_terraces fade=2.0
+@camera P04
+@fade in 1.5
+@wait 2.0
+@camera release
+===

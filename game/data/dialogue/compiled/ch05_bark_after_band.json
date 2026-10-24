@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch05_bark_after_band",
+ "source": "game/data/dialogue/ch05/ch05_bark_after_band.dlg",
+ "start": "ch05_bark_after_band",
+ "nodes": {
+  "ch05_bark_after_band": {
+   "headers": {"location": "ch05/pemakar"},
+   "ops": [
+    {"op": "line", "id": "ch05_bark_after_band_001", "key": "DLG_CH05_BARK_AFTER_BAND_001", "speaker": "townsfolk", "emotion": "surprised", "voice": "", "src": 5, "name_key": "DLG_NAME_TOWNSFOLK_LACQUERER"}
+   ]
+  }
+ }
+}

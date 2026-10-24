@@ -1,0 +1,11 @@
+// Ch5 B02, bark 4: the forge lane (P04). A child looks up at the crown as dry lightning flickers in
+// the plume and counts to the crack. Pemakar has called the plume's thunder "Daro's hammer" for three
+// hundred years; nobody here knows it is literally true. It plants Kahre before the binding.
+title: ch05_bark_forge_child
+location: ch05/pemakar
+---
+@sfx plume_crackle
+Child [neutral]: One... two... three. #line:ch05_bark_forge_001
+@sfx plume_thunder
+Child [smile]: Daro's at his anvil. #line:ch05_bark_forge_002
+===

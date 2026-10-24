@@ -4,4 +4,8 @@ DLG_CH03_VERSE_042	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgi
 DLG_CH03_VERSE_043	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown.	hal oan, ish karra.
 DLG_CH03_VERSE_044	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown.	Ennu re, ennu re...
 DLG_CH03_VERSE_045	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown.	...mir.
+DLG_CH05_KAHRE_014	ch05_kahre	yes	Lamptongue (the Hush's second verse): keep as written. Audio sets the final text.	Ish karra, ish karra,
+DLG_CH05_KAHRE_015	ch05_kahre	yes	Lamptongue: keep as written.	vey hal ennu,
+DLG_CH05_KAHRE_016	ch05_kahre	yes	Lamptongue: keep as written.	re ish, re ish...
+DLG_CH05_KAHRE_017	ch05_kahre	yes	Lamptongue: keep as written. Every verse ends on mir.	...mir.
 DLG_TEST_DLG_020	test_dialogue_fixture	yes	Invented language: keep as written.	Ennu re.

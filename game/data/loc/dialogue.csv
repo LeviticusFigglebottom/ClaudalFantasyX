@@ -260,6 +260,109 @@ DLG_CH03_VERSE_058,The tide has turned.
 DLG_CH03_VERSE_059,Something heard that.
 DLG_CH03_VERSE_060,"On my shield. Everyone, on my shield, now."
 DLG_CH03_TRIAL_HINT_001,"Start at the spring. Follow the water, not the stone."
+DLG_CH05_BANTER_COPPER_001,You're not even breathing hard.
+DLG_CH05_BANTER_COPPER_002,"Some people are simply fit, Master Sallow."
+DLG_CH05_BANTER_GRAVES_001,Why put the graves on the road up?
+DLG_CH05_BANTER_GRAVES_002,Pemakar buries its dead where the water passes. The channels visit them every day.
+DLG_CH05_BANTER_GATE_001,Daro Pemakan. The thirty-sixth. Seventy-one years old.
+DLG_CH05_BANTER_GATE_002,The roll records that he complained the whole way.
+DLG_CH05_BANTER_GATE_003,Good.
+DLG_CH05_BANTER_GATE_004,Good?
+DLG_CH05_BANTER_GATE_005,Somebody should.
+DLG_CH05_BARK_AFTER_BAND_001,"Did you see the Cantor's sleeve? Two, already!"
+DLG_NAME_TOWNSFOLK_LACQUERER,Lacquerer
+DLG_CH05_BARK_AFTER_BOATS_001,"Thirty out of the sea-cut since noon, and every wick out."
+DLG_NAME_TOWNSFOLK_BOAT_FISHER,Boat-Fisher
+DLG_CH05_BARK_AFTER_BOATS_002,The rest went all the way down.
+DLG_CH05_BARK_AFTER_GRAVE_001,Swept clean. She'd still say I missed a corner.
+DLG_NAME_TOWNSFOLK_SWEEPER,Sweeper
+DLG_CH05_BARK_FOLD_001,Fold toward you. Always toward you.
+DLG_NAME_TOWNSFOLK_BOAT_FOLDER,Boat-Folder
+DLG_CH05_BARK_FOLD_002,And for strangers?
+DLG_NAME_TOWNSFOLK_HER_DAUGHTER,Her Daughter
+DLG_CH05_BARK_FOLD_003,Away.
+DLG_CH05_BARK_FERRY_001,Big man in a straw cape. Pulled my nephew off the reef at Sennet.
+DLG_CH05_BARK_FERRY_002,Walked off before anyone could thank him. My sister swears to it.
+DLG_CH05_BARK_FORGE_001,One... two... three.
+DLG_CH05_BARK_FORGE_002,Daro's at his anvil.
+DLG_CH05_BARK_GCHILD_001,Last year mine went all the way down to the sea. All the way!
+DLG_CH05_BARK_GRAVE_001,"Mind the rice, love. That's my mother's."
+DLG_CH05_BARK_LACQUER_001,The Cantor's in town. Gold leaf's doubled.
+DLG_CH05_CROWN_001,"The strike comes down the mountain the way the water does, tier by tier."
+DLG_NAME_TENDER_TENDER_RUWEN,Tender Ruwen
+DLG_CH05_CROWN_002,Bring it to the anvil before it forgets where it was going.
+DLG_CH05_FERRY_001,That's new.
+DLG_CH05_FERRY_002,My first. Toma's hand shook.
+DLG_CH05_FERRY_003,It did not.
+DLG_CH05_FERRY_004,"The Tenders write that the trial is at noon tomorrow, ""when the plume is awake."""
+DLG_CH05_FERRY_005,Tonight is Lanternfall.
+DLG_CH05_INN_001,...Suit yourself.
+DLG_CH05_KAHRE_001,She'll sleep now. She always does.
+DLG_CH05_KAHRE_002,"We will be here, Lady Cantor."
+DLG_CH05_KAHRE_003,Toma.
+DLG_CH05_KAHRE_004,...Asha.
+DLG_CH05_KAHRE_005,Three hundred years in there with a hammer. You'd think he'd run out of things to hit.
+DLG_CH05_KAHRE_006,You've got a look like you're pricing it.
+DLG_CH05_KAHRE_007,The roll says he repaired the hinges of every temple door he passed through. Unasked.
+DLG_CH05_KAHRE_008,That sounds like a smith.
+DLG_CH05_KAHRE_009,Well?
+DLG_CH05_KAHRE_010,He was impatient with me.
+DLG_CH05_KAHRE_011,I liked him very much.
+DLG_CH05_KAHRE_012,"He'd have wanted that back, I think. He said nothing about it. Keep it."
+DLG_CH05_KAHRE_013,The first verse is sung toward home. The second is sung to the mountain that taught it.
+DLG_CH05_KAHRE_014,"Ish karra, ish karra,"
+DLG_CH05_KAHRE_015,"vey hal ennu,"
+DLG_CH05_KAHRE_016,"re ish, re ish..."
+DLG_CH05_KAHRE_017,...mir.
+DLG_CH05_KAHRE_018,Is something going to come up out of the ground again?
+DLG_CH05_KAHRE_019,"Not this time, I think."
+DLG_CH05_KAHRE_020,Lift your chin when you sing. It is better for the breath.
+DLG_CH05_KAHRE_021,"Yes, Scholar."
+DLG_CH05_BOATS_001,For Mother Kell.
+DLG_CH05_BOATS_002,For Oruvel.
+DLG_CH05_BOATS_003,Not yet.
+DLG_CH05_BOATS_004,Then carry it till it's time.
+DLG_CH05_BOATS_005,They're coming with us.
+DLG_CH05_BOATS_006,They follow the boats down. They always do.
+DLG_CH05_BOATS_007,Is that good?
+DLG_CH05_BOATS_008,It's what they do.
+DLG_CH05_BOATS_009,Level preserve them.
+DLG_CH05_WEIR_001,"Rhen Sallow, if you fall in that channel I am not coming in after you."
+DLG_CH05_WEIR_002,I held a stair for your mother once.
+DLG_CH05_WEIR_003,Where?
+DLG_CH05_WEIR_004,...Then another time.
+DLG_CH05_WEIR_005,"Your name, sir?"
+DLG_CH05_WEIR_006,Kerrid.
+DLG_CH05_WEIR_007,And where are you bound?
+DLG_CH05_WEIR_008,Corrow.
+DLG_CH05_WEIR_009,The Lady Cantor's road goes by Corrow.
+DLG_CH05_WEIR_010,Then he will be walking our way whether we like it or not.
+DLG_CH05_WEIR_011,"He's going where we're going, Toma."
+DLG_CH05_WEIR_012,"Does the old man come with the town, or did we just collect him?"
+DLG_CH05_WEIR_013,Rhen.
+DLG_CH05_MATRON_001,"When the anvil rings, the Matron wakes. Be gentle with her if you can."
+DLG_CH05_SMITH_001,"Mine went down last night. Folded it wrong. You're the diver. Oruvel make, that lantern."
+DLG_CH05_SMITH_002,"Oruvel make, that. You're a diver."
+DLG_CH05_SMITH_003,I am. Here. Let me.
+DLG_CH05_SMITH_004,Hands made for tongs. You fold like a man who ties knots.
+DLG_CH05_SMITH_005,Tether-knots are folds. Divers learn them before they learn to swim.
+DLG_CH05_SMITH_006,My boy Benet went to Oruvel at sixteen. To dive.
+DLG_CH05_SMITH_007,Said copper's cheaper if you cut it yourself. He stayed five years.
+DLG_CH05_SMITH_008,A trader brought the news.
+DLG_CH05_SMITH_009,He wrote that it was the most beautiful place on the sea. He was a terrible liar. What did it look like?
+DLG_CH05_SMITH_010,"Hulls lashed together, rotting from underneath. Oil smoke. Everyone owing everyone."
+DLG_CH05_SMITH_011,Not a yard of ground anywhere to stand on.
+DLG_CH05_SMITH_012,I'd guessed.
+DLG_CH05_SMITH_013,When the divers come up at dusk...
+DLG_CH05_SMITH_014,You see their lamps coming up through the water before you see their heads. Like the sea handing them back one at a time.
+DLG_CH05_SMITH_015,"On race days, at the second mooring..."
+DLG_CH05_SMITH_016,Everyone yelling. Your boy yelled loudest. He always lost.
+DLG_CH05_SMITH_017,Did you know him?
+DLG_CH05_SMITH_018,Tall. Burned his thumb on every lamp I ever saw him light.
+DLG_CH05_SMITH_019,That's him.
+DLG_CH05_SMITH_020,"Fold toward you, they say. For your own."
+DLG_CH05_SMITH_021,He'd have folded it away. Never could keep the rule straight.
+DLG_CH05_HINT_001,"Follow the copper, not the stair."
 DLG_PROLOGUE_DEAD_CITY_001,"Everyone I'm going to tell you about is still here tonight. Remember that, later."
 DLG_TEST_CUTSCENE_001,First fixture line.
 DLG_TEST_CUTSCENE_002,Fixture option A.
