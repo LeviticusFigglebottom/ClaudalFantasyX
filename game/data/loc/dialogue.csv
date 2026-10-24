@@ -489,6 +489,87 @@ DLG_CH05_SMITH_019,That's him.
 DLG_CH05_SMITH_020,"Fold toward you, they say. For your own."
 DLG_CH05_SMITH_021,He'd have folded it away. Never could keep the rule straight.
 DLG_CH05_HINT_001,"Follow the copper, not the stair."
+DLG_CH06_AFTER_001,You saw him. That is the Order. That is what it is for.
+DLG_CH06_AFTER_002,He put the fire out once it had finished.
+DLG_CH06_AFTER_003,"Your papers get me past the Corrow checkpoints. I'll pull my weight, and I'll stop when we're square."
+DLG_CH06_AFTER_004,"You are written in, Mistress Varrow. You are under my papers now."
+DLG_CH06_AFTER_005,Lucky me.
+DLG_CH06_AFTER_006,Welcome to the Lady Cantor's party.
+DLG_CH06_AFTER_007,Are you all right?
+DLG_CH06_AFTER_008,I am better than all right.
+DLG_CH06_BRASS_001,"Lit Age brass, the whole keel. Forty lume a plate, if you could get it off."
+DLG_CH06_BRASS_002,"Everything on these shoals is under the Edict, Master Sallow."
+DLG_CH06_BRASS_003,Everything everywhere's under something.
+DLG_CH06_MARKS_001,Toma?
+DLG_CH06_MARKS_002,It is nothing. Old marks.
+DLG_CH06_BARGE_001,...Enough. Enough.
+DLG_CH06_BARGE_002,"Put the iron in the water, please."
+DLG_CH06_BARGE_003,High Warden. They struck the Stillguard. The Cantor's own—
+DLG_CH06_BARGE_004,"Be level, Inquisitor. The Edict burns things. It has never needed to burn people."
+DLG_CH06_BARGE_005,The Edict was written by frightened people. We need not be frightened today.
+DLG_CH06_BARGE_006,Take them up to Corrow. See that they are fed.
+DLG_CH06_BARGE_007,"Lady Cantor. I knelt beside your mother once, on a day very like this one."
+DLG_CH06_BARGE_008,"It would honour me to hear of her, High Warden."
+DLG_CH06_BARGE_009,"And you shall. Come to Ansedra, and we will sit, and I will tell you everything I can."
+DLG_CH06_BARGE_010,And the wright with the crate.
+DLG_CH06_BARGE_011,Is she one of yours?
+DLG_CH06_BARGE_012,She's my guardian.
+DLG_CH06_BARGE_013,"Then she is. A Cantor may take any guardian she chooses. It is the oldest custom we keep. Toma Okeru, your papers will carry her?"
+DLG_CH06_BARGE_014,"...They will, High Warden."
+DLG_CH06_BARGE_015,Scholar Ysel. You will come to the Sanctum this year?
+DLG_CH06_BARGE_016,"As every year, High Warden."
+DLG_CH06_BARGE_017,He will be glad of you.
+DLG_CH06_BARGE_018,Be... still?
+DLG_CH06_BARGE_019,"That is the answer, young man, not the greeting. But I will take it gladly."
+DLG_CH06_BARGE_020,Does that barge ever make a wake?
+DLG_CH06_BARGE_021,Not if it is poled well. There is very little in the world that needs to hurry.
+DLG_CH06_BARGE_022,"Be level, High Warden."
+DLG_CH06_BARGE_023,"And still, Toma Okeru."
+DLG_CH06_BARGE_024,"Go gently, Lady Cantor."
+DLG_CH06_BARK_ASHA_001,"How was your day, Rhen?"
+DLG_CH06_BARK_ASHA_002,...You always ask me that.
+DLG_CH06_BARK_ASHA_003,Then answer it one day.
+DLG_CH06_BARK_TOMA_001,"""Liss Varrow, wright, in the service of the Lady Cantor's party."" It reads well, I think."
+DLG_CH06_BARK_YSOLDE_001,The light goes early on the shoals. I will read until it does.
+DLG_CH06_LAMP_001,Don't touch that.
+DLG_CH06_LAMP_002,Whose was it?
+DLG_CH06_LAMP_003,Don't.
+DLG_CH06_LAMP_004,(Kneel and dig beside her.)
+DLG_CH06_LAMP_005,Housing's cracked at the seam. Burner side's fused. Seals gone. She'd not hold.
+DLG_CH06_LAMP_006,She'd never hold again.
+DLG_CH06_LAMP_007,In Oruvel we'd hang a lamp on a mooring line. For the ones who didn't come up.
+DLG_CH06_LAMP_008,We put them to work. That's how we keep them.
+DLG_CH06_LAMP_009,And when they break?
+DLG_CH06_LAMP_010,Then you dig.
+DLG_CH06_LAMP_011,"You didn't see this, diver."
+DLG_CH06_LAMP_012,See what.
+DLG_CH06_DAWN_001,Tamsule. The Tidecup's on.
+DLG_CH06_DAWN_002,You play?
+DLG_CH06_DAWN_003,Everyone from the Reaches plays.
+DLG_CH06_LANTERN_001,"Hold still. That's a wright's housing. Pair-built: see the second seat, for the hook?"
+DLG_CH06_LANTERN_002,And an oil burner in salt-glass. Who fits an oil burner in salt-glass?
+DLG_CH06_LANTERN_003,It was my father's.
+DLG_CH06_LANTERN_004,Then your father bought from a wright. Or knew one.
+DLG_CH06_LANTERN_005,He knew a lot of people.
+DLG_CH06_LANTERN_006,Somebody who liked oil. Good trade.
+DLG_CH06_LANTERN_007,Nobody trades wright work that good. Somebody gave it up.
+DLG_CH06_LANTERN_008,"You sell the dead by the pound, diver. At least I put them back to work."
+DLG_CH06_MIDDAY_001,...Seems a shame.
+DLG_CH06_RAID_001,Toma.
+DLG_CH06_RAID_002,Toma.
+DLG_CH06_RAID_003,"Move or hide me, pick one."
+DLG_CH06_RAID_004,Here.
+DLG_CH06_RAID_005,That's wright work.
+DLG_CH06_RAID_006,Not now.
+DLG_CH06_RAID_007,Lady Cantor. Step away from the hold.
+DLG_CH06_RAID_008,No.
+DLG_CH06_RAID_009,The Edict—
+DLG_CH06_RAID_010,"—does not give you a Cantor's party, Inquisitor."
+DLG_CH06_RAID_011,Loose.
+DLG_CH06_RAID_012,On my shield.
+DLG_CH06_RAID_013,They have raised a hand to a Cantor. The Edict does not cover that.
+DLG_CH06_SMOKE_001,Somebody's cookfire.
+DLG_CH06_SMOKE_002,No.
 DLG_CH07_AFTER_001,Oruvel withdraws. We've somewhere to be.
 DLG_CH07_AFTER_002,Oruvel's name stays on the roll.
 DLG_CH07_AFTER_003,"Win or lose, she'd have yelled at us the same."
@@ -570,6 +651,53 @@ DLG_CH07_TAVI_015,Give me his band.
 DLG_CH07_TAVI_016,Asha. I'm so sorry about your grandmother.
 DLG_CH07_TAVI_017,Rhen is the Lady Cantor's sworn guardian.
 DLG_CH07_TAVI_018,...Gran would've liked that.
+DLG_CH09_BARK_HOBB_001,"Jory Sallow. Mag Sallow. Anni Tesk, nine years."
+DLG_CH09_BARK_HOBB_002,"Bren Coyle. The Coyle boys, both of them. Next row."
+DLG_CH09_BARK_LISS_001,Thirty-one baskets. I counted. Don't ask me to count anything else.
+DLG_CH09_BARK_MARRA_001,"When the last one's up, the captain calls it. ""Stair's clear."" That's how you know you can come off the wall."
+DLG_CH09_BARK_MARRA_002,Did he call it?
+DLG_CH09_BARK_MARRA_003,Hobb? No. You don't. Not while there's anyone below.
+DLG_CH09_BARK_STILLGUARD_001,Nine hundred years of this wall. You'd think we'd have learned to build a wider stair.
+DLG_CH09_GILT_001,"Keep the lamp above your shoulder, not your head. They follow the light, not you. Let them."
+DLG_CH09_WRONG_WAY_001,Was it all right? From the shore?
+DLG_CH09_WRONG_WAY_002,It was the most— Yeah. It was.
+DLG_CH09_WRONG_WAY_003,"They didn't want to go, Rhen. I had to keep asking them."
+DLG_CH09_WRONG_WAY_004,Beautiful. And pointing the wrong way.
+DLG_CH09_WRONG_WAY_005,The rite has been danced the same way for nine hundred years.
+DLG_CH09_WRONG_WAY_006,Yes.
+DLG_CH09_WRONG_WAY_007,Which way should they point?
+DLG_CH09_WRONG_WAY_008,You go where it sleeps.
+DLG_CH09_WRONG_WAY_009,The Choir. Yes.
+DLG_CH09_WRONG_WAY_010,I will walk there too.
+DLG_CH09_WRONG_WAY_011,Who are you?
+DLG_CH09_WRONG_WAY_012,"...Walk behind me, then."
+DLG_CH09_WRONG_WAY_013,"Thank you, Toma."
+DLG_CH09_WRONG_WAY_014,Your mother danced for our drowned too. Same harbour.
+DLG_CH09_WRONG_WAY_015,"The last Cantor danced it for us, the year of the last Rising. You did it well."
+DLG_CH09_ROAD_001,Thought Corrow was where you were going.
+DLG_CH09_ROAD_002,It was.
+DLG_CH09_ROAD_003,So?
+DLG_CH09_ROAD_004,Somebody's still below.
+DLG_CH09_ROAD_005,Pell.
+DLG_CH09_ROAD_006,...Rhen.
+DLG_CH09_ROAD_007,I know. You-people say names very often.
+DLG_CH09_ROAD_008,Your shell's blank.
+DLG_CH09_VIGIL_001,Seven of us walked out of Corrow that morning. I didn't count us then. I count us every night now.
+DLG_CH09_ACT_CARD_001,Act II: The Truth
+DLG_CH09_TOMA_001,Seen Kerrid?
+DLG_CH09_TOMA_002,Not since the stair.
+DLG_CH09_SHIELD_001,He could not tie a hook knot. Seven years on this wall. I tied all of his.
+DLG_CH09_SHIELD_002,You served with him long?
+DLG_CH09_SHIELD_003,Seven years. We stood on the same line once. At the shoals.
+DLG_CH09_SHIELD_004,Where we found Liss?
+DLG_CH09_SHIELD_005,Another camp. Another year.
+DLG_CH09_SHIELD_006,Be level.
+DLG_CH09_SHIELD_007,And still.
+DLG_CH09_SHIELD_008,Thank you.
+DLG_CH09_SHIELD_009,(Say nothing.)
+DLG_CH09_SHIELD_010,And still.
+DLG_CH09_SHIELD_011,Asha. Take him gently.
+DLG_CH09_SHIELD_012,I'll take him first.
 DLG_PROLOGUE_DEAD_CITY_001,"Everyone I'm going to tell you about is still here tonight. Remember that, later."
 DLG_TEST_CUTSCENE_001,First fixture line.
 DLG_TEST_CUTSCENE_002,Fixture option A.

@@ -144,13 +144,53 @@ Ch5 isn't on the New Game thread yet: Ch4, which brings the ferry in, is being b
    - Stuck on a tier for a minute and a half? The Tender gives one hint.
 6. **The Cinder Matron.** Walk on south into the anvil court when the strike lands. She's a two-phase boss: break her crust with Kerrid, then hit hard while it's broken. At half health she pours slag on everyone. In this phase, water and cold (Ysolde's Frost, or calling Ilun) harden her again.
 7. **Kahre.** Asha goes into the chamber alone, and the party waits. Then she sings the second verse.
-8. **Pemakar, after.** You're back in town in the afternoon. A few things have changed, and Garo is there if you didn't meet him. Walk down to the harbour road for the dawn. The chapter ends on the **end card** for now; Ch6 isn't built yet.
+8. **Pemakar, after.** You're back in town in the afternoon. A few things have changed, and Garo is there if you didn't meet him. Walk down to the harbour road for the dawn, and the road goes on to the Brine Shoals (Ch6, below).
 
 **Ch5 placeholders:**
 - **Kerrid's battle kit and Kahre's are provisional**, so expect odd numbers. Kahre can't be called yet in practice: no battle after the binding uses him.
 - **The Quench Charm is a key item** for now, not the Fire ward it will become.
 - **The trial has no lightning yet:** a charged bowl just glows pale violet.
 - **The Matron's two phases:** there's no slag on the floor, and her timeline telegraph for the re-crust uses the standard charge marker.
+
+## Ch9, "The Ebbing" (greybox; the end of Act I; about 20–25 minutes)
+
+Ch8 isn't built yet, so Ch9 isn't on the New Game thread. From an editor run, press **F5** (teleport) and pick **Ch9: Corrow, the night of the Ebbing**. Everything is grey blocks and capsules, and the chapter is nearly silent (its music and sounds don't exist yet). **Ch9 has no fights.**
+
+1. **The strand of the drowned,** at night after the storm. The dead lie in rows under sailcloth. Pale cyan lights hang over the flooded town behind the broken wall.
+2. **Walk among them.** Talk to Marra at the east end of the soldiers' row (the one with the shields). You overhear Hobb reading names and a guard by the rows. Liss is on the wall-head at the west end, but she only speaks if Ch8 has played.
+3. **Toma** is kneeling in the soldiers' row. Talk to him (**Go to Toma**).
+   - **Optional, "Shield-Mate":** this side scene needs the Ch8 flag `ch08_met_ivo`. In a direct start, set it with **F4** (the flag inspector) first. There's one choice; both are fine.
+4. **The Ebbing.** Walk onto the raft's landing in the middle of the strand. The gilt line is painted, Asha goes out on the raft, and the dance has three parts.
+   - In each part, **hold E** (or Enter, Space, or A on a controller) to raise the staff. Let go and the dance waits. You can't fail, and nothing is timed.
+   - Between the second and third parts there's a short cut to somewhere else.
+5. **After.** Asha comes ashore, and a stranger comes down the rocks. Then the screen goes dark.
+6. **Dawn.** You're on the road outside the town gate. Walk east up the road to the milestone, where someone is waiting.
+7. **The act break.** The road scene cuts to the plaza from the very start of the game, a voice-over plays, then "Act II: The Truth". The **end card** stands in for Act II.
+
+**Ch9 placeholders:**
+- **The lights are placeholders.** The Ebbing will be thousands of lights streaming after the staff; for now a few small spheres drift down and out to sea. The "Hold to raise the staff" prompt is plain text.
+- **The raft cuts** between the landing and the middle of the harbour. The harbour is a floor you can walk on.
+- **No save shrine and no shop yet.** The chapter start autosaves, so quitting at dawn replays the night.
+- **The plaza at the act break** is grey blocks, lit by the dawn instead of dusk.
+
+## Ch6, "Salt Edict" (greybox; about 25–30 minutes)
+
+Ch6 follows Ch5's dawn. To start it on its own from an editor run, press **F5** (teleport) and pick **Ch6: The Brine Shoals**: the party starts as Rhen, Asha and Kerrid, with Toma and Ysolde in reserve. Everything is grey blocks and capsules, and the chapter has no music or sounds yet.
+
+1. **The Brine Shoals.** Walk north along the dark wreck-ridges. You overhear the party at a brass wreck and at a chalk-marked hull, and there's a midday stop on a hull. The road throws a fight at you every so often: shoal skippers (quick, hard to hit; Rhen's), wreck crabs (shells; Kerrid's Fluke Cleave cracks them) and gull harriers. The paler mud-flats to the west are the same road for now.
+2. **The smoke and the raid.** At the last ridge, Toma stops first. Then the camp burning, the brine-irons, a girl running into Rhen, and the hold.
+3. **The Stillguard Inquisitor and his hound.** Toma, Rhen and Asha are on the field, Kerrid and Ysolde in reserve. **Toma will not strike the Stillguard:** his Attack and Shell Breaker are greyed out, and the help says why. He still has his guard (Stand Fast, Brace, Challenge, Shield Wall), or you can swap him for a striker. At half health the Inquisitor fires the hulk, and the smoke blinds the party now and then (Ysolde's magic still lands). Nobody dies: both of them give up at the end, and the banner says so.
+4. **The barge.** A white barge comes up the channel. Watch it all the way through; there's one choice for Rhen, and both are fine.
+5. **After the barge.** The wrights are led away, and Liss joins on Toma's papers (in reserve; she has no fights until Ch8). Then she looks at Rhen's lantern.
+6. **Camp at dusk.** On the high hull east of the camp: the shrine in the wreck's bow (it rests the party and saves), the vendor's boat, and three people to talk to by the fire. Kerrid keeps watch at the seaward end.
+   - **Optional, "The Burned Lamp":** walk down to the tideline below the camp. There's one choice; both are fine.
+7. **The channel at dawn.** Walk to the north end of the channel (west of the camp) to wade out toward Tamsule. Ch7 starts at its river mouth.
+
+**Ch6 placeholders:**
+- **Liss's battle kit is provisional** (two stand-in gadgets), and so are the Inquisitor's and the hound's. The hound doesn't guard the Inquisitor or pounce on whoever strikes him yet, and the smoke is a status every third turn, not a field.
+- **Toma's "No. Not them."** shows as his first-turn prompt in the fight, not as a bark when you pick a greyed command.
+- **The barge's look** (no wake, no water sound, Sefir's stillness) needs the water shader and the character art. In the greybox it's a white block with capsules on it.
+- **The flats** have the same random fights as the ridges.
 
 ## Reporting
 

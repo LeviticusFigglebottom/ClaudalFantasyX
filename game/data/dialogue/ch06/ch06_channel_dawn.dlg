@@ -1,0 +1,16 @@
+// Ch6 B10 "The channel at dawn" (act1_ch06.md; W10 at dawn). In-engine. The party wades the shoal
+// channel the barge came up. Yesterday's ash lies on the water in a flat grey skin, unbroken: nothing
+// has stirred it. Tamsule's gilded signboards catch the sun on the horizon. ~30 words; it sets up Ch7
+// without promising anything. The chapter flow hands off to ch07/tamsule at RiverMouth on black.
+title: ch06_channel_dawn
+location: ch06/brine_shoals
+---
+@camera W10_dawn
+@music brine_shoals fade=2.0
+@wait 2.5
+Rhen [smile]: Tamsule. The Tidecup's on. #line:ch06_dawn_001
+Liss [neutral]: You play? #line:ch06_dawn_002
+Rhen [smile]: Everyone from the Reaches plays. #line:ch06_dawn_003
+@wait 1.0
+@fade out 1.5
+===

@@ -3,6 +3,76 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **The test_scene_router_swap regression is fixed on this branch** (reported by battle-presentation).
+  - **The cause:** my M2-ENV-05 resident flags on top of M2-ARC-05/08.
+    - **With the 17 Haluna `"resident": true` flags** merged onto 29b1dbfa, boot.tscn and battle_sandbox ran hidden swap frames of 156–196 ms against the 40 ms limit, failing 4 of 4 warm runs.
+    - **Without the flags,** the test passed 5 of 5 warm runs. The integration branch alone passed 4 of 4.
+  - **Reverted** in dc044b48. prewarm_materials.json now matches the integration branch exactly.
+  - **Cold-cache flake:** the first run after a fresh `--import` can fail this test once even without the flags. Trust warm runs.
+  - **To bring the flags back:** Rendering/PC needs to spread `ShaderPrewarm.spawn_resident` over frames with a per-frame budget. Until then, Haluna's second-launch entry stays at 3.1/3.5 s (ADR 0029's limit is 3 s). Noted in M2-ENV-05.
+- **The integration branch is merged** (1cc9fc66). My M2-ARC-04 handoff was renumbered **architect-23**, because the Lead's architect-21 took that number.
+- **M3-C06-02 is merged** (Ch6 "Salt Edict"; in review: narrative for staging, combat for the bands). Handoff cinematics-17.
+  - **Act I now plays through as greybox:** prologue → Ch1 → the Haluna slice (Ch2–Ch3, with the causeway) → Ch4 → Ch5 → Ch6 → Ch7 (a stand-in match) → the end card.
+  - **Gaps in the line:**
+    - The slice's end card doesn't hand on to Ch4 yet (M3-C04-04). Ch4 is reached from its own location or F5.
+    - Ch7 → Ch8 → Ch9: Ch8 waits on combat's M3-CMB-01. Ch9 plays from its own zone.
+  - **Engine rules added** (game/battle, tested; coverage 99.96%):
+    - encounter `forbidden_skills` (per hero, against a foe tag): Toma won't strike the Stillguard;
+    - enemy `yield_at_hp_pct`: the Inquisitor yields, so nobody dies;
+    - encounter `victory_key`;
+    - the sim's lawful-skill fallback.
+    - Combat should review these (M3-C06-05).
+  - **Provisional rows:** Liss's characters.json row (placeholder gear), plus the Inquisitor and raid hound.
+- **Remaining M3 work for m2-slice:**
+  1. **Ch8**, once M3-CMB-01 lands.
+  2. **Ch7's real match** (the Reefball agent's seam).
+  3. **The slice end card → Ch4 hand-off** (M3-C04-04). **Lead's call:** wiring it means the M2 review build no longer ends at the title after B11.
+     - My proposal: a data switch, `end_card.next_location` in first_playable.json, left empty (back to the title) until you say M3 should follow the slice.
+     - Say the word and I'll add it.
+  4. **The Lead's earlier item 6:** swapping the capsules for real characters, which waits on the characters track.
+  - **Playtest:** none of Act I has been played on a real GPU yet. A PC playthrough of the greybox chapters would catch flow and feel issues that headless tests can't.
+- **MERGE-READY @ the replay-uid commit after d034c31d.**
+  - **Items:**
+    - M3-C09-02 (Ch9, the end of Act I);
+    - M2-ENV-12 (the shrine's hall built off the tree);
+    - the Memories replay hooks for the Menus track (`CutsceneSequencer.replay`, `ReplayStage.prepare`).
+  - **Checks run:**
+    - full Godot suite 1590/0, tools unittest OK and `sim.py --check` exit 0, all on 4ec9bd77 (Ch9 and ENV-12);
+    - the replay commit's own tests: cutscene_replay 3/0, cutscene_sequencer 15/0, zone_story 13/0;
+    - shrine tests 15/0;
+    - gdlint, gdformat, validate_data, taskboard and dlgc --check all clean.
+  - **Checks skipped:** the screenshot manifest and Blender. The shrine shots last passed after M2-ENV-10, and M2-ENV-12 doesn't change pixels (the GI rebake is byte-identical).
+- **The shrine test hang (16:00): stack taken from a scratch repro.** The original run was already killed. **It's not the M2-QA-02 ShaderRD deadlock.**
+  - **Repro:** headless, with the main thread in `Thread.wait_to_finish()` on a GDScript Thread that instantiates `shell_shrine.tscn`. `gdb thread apply all bt` (the binary is stripped):
+    - main thread: `std::thread::join` (`wait_to_finish`);
+    - the four `WorkerThread`s: idle in `pthread_cond_wait`;
+    - the GDScript Thread, plus one more: in `pthread_cond_wait`, waiting on work that only the blocked main thread services.
+  - **Why it isn't the engine bug:** headless has no RenderingDevice, so `ShaderRD` never compiles. It's the test's own pattern: a TestCase can't let the main thread run frames while it waits.
+  - **The fix:** that test was replaced by one that drives `prebuild()` off-tree. No timeout was loosened.
+  - **The game path is safe:** it's SceneRouter's worker-thread instantiate with the main thread still running frames, which the PC's throwaway M2-ENV-12 measure exercised on hardware: first frame 1918 → 188 ms, no hang.
+  - **Menus' test_scene_router_swap flake:** I haven't seen it here. It arrives with claude/menus via the integration branch.
+- **M3-C09-02 is merged** (Ch9 "The Ebbing", the end of Act I; in review, reviewer narrative). Handoff cinematics-18.
+  - **Where it plays:** its own zone, `ch09/corrow_night`, reachable on its own until Ch8 lands. It exits through the act-break VO at a stand-in Iskarra plaza, then the act card (a caption until UI's widget, M3-C09-05), then the end card.
+  - **New:** `CutsceneHoldGate`, held input with no fail. Scene time runs only while `field_interact` is held, between `<<event hold_input …>>` and `<<event hold_input_end>>`. The architect is asked to rule on the event names (M3-C09-09).
+  - **Pell** joins by flag only; his battle kit is M3-C09-07.
+  - **For Ch8** (after M3-CMB-01): reuse the speakers `marra`, `hobb`, `fenn` and `stillguard`, and set `ch08_met_ivo`, `ch08_fed_the_beacon` and `ch08_hoist_cut_down`, which Ch9 reads. Ch9 also declares those three flags.
+  - **For narrative:** the sheet says the gilt line is fresh on Asha's face in the side scene, but B03 is its first appearance. It's staged without the line for now.
+- **M2-ENV-12 is done**: the Lead routed it at 15:55, and its task file is on gpu/m2-rnd-17-zone-stage-gi. Lead, please set it to review (reviewer rendering) when you merge that branch.
+  - **The change:** `ShellShrineLevel` builds the hall off the tree in `prebuild()` on `NOTIFICATION_SCENE_INSTANTIATED` (worker thread only, as HalunaZone does). `_ready` skips the build; the camera, signals, `_restore`, `_relight` and the GI load stay in `_ready`. The GI code moved to `ShrineLighting`.
+  - **Test:** `test_prebuild_builds_the_hall_off_the_tree`. A true worker-thread instantiate deadlocks a TestCase, because the main thread is blocked in `wait_to_finish` while the load needs it, so the test drives `prebuild()` off-tree on the main thread.
+  - **GI unchanged:** the rebake is byte-identical, and the inputs sidecar is updated.
+  - **PC: ONE re-measure of the shrine entry covers both M2-ENV-10 (GI shipped) and M2-ENV-12 (off-tree build).** On a cold first launch with `first_run_live_scenes` including the shrine: first frame, hidden worst frame, and entry total.
+- **MERGE-READY @ 651cdb93** (on top of MERGE-READY f2c5fc1b; no new integration merge since 14:15).
+  - **Items:**
+    - M3-C07-02 (Ch7's story), M3-C05-02 (Ch5) and M3-C04-02 (Ch4, with Ch4 → Ch5 wired);
+    - M2-ENV-10 (the shrine's shipped GI, the ADR 0029 fix);
+    - M3-C05-07 (request), and the Ch5 suite-kind fix.
+  - **Checks run:**
+    - full Godot suite 1582/0 (on ae3f5933; the only later code change is targets.json);
+    - tools unittest OK; `sim.py --check` exit 0;
+    - shrine_s01–s05 captured and passing (M2-ENV-10);
+    - gdlint, gdformat, validate_data, taskboard and dlgc --check all clean.
+  - **Checks skipped:** the full screenshot manifest and Blender. No other shots are affected; no Blender source was touched.
 - **Merged: M3-C04-02 (Ch4) and M3-C05-02 (Ch5).** Both are in review (narrative; combat for the bands); handoffs cinematics-14 and cinematics-15.
   - **The thread:** prologue → Ch1 → Haluna slice … Ch4 → Ch5 now play through (Ch4 exits to `ch05/pemakar` Harbour). Ch5 → the end card until Ch6 lands. Ch7 is reachable on its own.
   - **For combat's ruling** (M3-C04-06, M3-C05-06):

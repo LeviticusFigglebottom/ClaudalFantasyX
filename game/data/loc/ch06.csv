@@ -1,0 +1,41 @@
+keys,en
+ENEMY_SHOAL_SKIPPER,Shoal Skipper
+LORE_SHOAL_SKIPPER,"A dog-sized mudskipper with goggle eyes on top of a blunt head. It props its long body on its fins and skims the flats in bursts, faster than anything that size should be."
+ENEMY_WRECK_CRAB,Wreck Crab
+LORE_WRECK_CRAB,"A reef crab that has moved into a broken Lit Age lamp housing, the way a hermit wears a shell. Its back glows a faint, still teal. The housing turns blows aside, and it can flash the old salt-glass in your eyes."
+ENEMY_STILLGUARD_INQUISITOR,Inquisitor Moll
+LORE_STILLGUARD_INQUISITOR,"Hadric Moll, an Inquisitor of the Stillguard: an officer who enforces the Edicts. Red-lacquered shell armour, a white sash, a brine-iron on a long haft. Sincere, and tired."
+ENEMY_RAID_HOUND,Raid-Hound
+LORE_RAID_HOUND,"An Order shoal-hound, mud-coloured, with a greyhound's legs under a mastiff's chest and a red-lacquered cage over its muzzle. It is trained to guard its handler."
+PHASE_INQUISITOR_HOUNDS_WATCH,The Hound's Watch
+PHASE_INQUISITOR_TORCH_THE_HULK,Torch the Hulk
+SKILL_SKIM_BITE,Skim Bite
+SKILL_HOUSING_GLARE,Housing Glare
+SKILL_HAFT_STRIKE,Haft Strike
+SKILL_BRINE_IRON,Brine Iron
+SKILL_SHELL_WALL,Shell Wall
+SKILL_TORCH_HULK,Torch the Hulk
+SKILL_HOUND_BITE,Bite
+SKILL_POUNCE,Pounce
+SKILL_REEL_SHOT,Reel Shot
+SKILL_FLASH_HOUSING,Flash Housing
+ENC_CH06_WRECK_RIDGES,The Wreck-Ridges
+ENC_CH06_MUD_FLATS,The Mud-Flats
+ENC_CH06_INQUISITOR,The Stillguard Inquisitor
+TUT_CH06_HOUND,The hound guards the Inquisitor. Draw it off.
+TUT_CH06_SMOKE,Smoke blinds blades. Magic still finds its mark.
+BARK_CH06_TOMA_NOT_THEM,Toma: No. Not them.
+HUD_FAIL_CH06_TOMA_WILL_NOT_STRIKE,Toma will not strike the Stillguard.
+HUD_CH06_INQUISITOR_YIELDS,The Inquisitor yields.
+GEAR_TYPE_WRIGHT_LAUNCHER,Launcher
+GEAR_TYPE_MESH_SLEEVE,Work-Sleeve
+EQUIP_LISS_CRANK_LAUNCHER,Crank Launcher
+EQUIP_LISS_CRANK_LAUNCHER_DESC,"A boxy hand-cranked launcher, wright-built from salvage. It throws bolts, hooks and anything else that fits."
+EQUIP_LISS_COPPER_SLEEVE,Copper Work-Sleeve
+EQUIP_LISS_COPPER_SLEEVE_DESC,A copper-mesh sleeve on the left arm that takes the sparks off a bad seal.
+SKILL_STAND_FAST,Stand Fast
+CHAR_INQUISITOR,Inquisitor Moll
+CHAR_CLERK,Order Clerk
+CHAR_WRIGHT,Wright
+LOCATION_CH06_BRINE_SHOALS,The Brine Shoals
+SKILL_MUD_FLICK,Mud Flick
