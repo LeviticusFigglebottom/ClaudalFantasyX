@@ -33,6 +33,14 @@ flash. They're data-driven, listen-only, and safe for photosensitive players.
     soft dot, sRGB vertex colour).
   - A `ParticleProcessMaterial` per effect layer, copied from `battle_spark_process.tres`.
   - Emitters are pooled per effect layer (six each).
+  - **Prebuilt at attach (M2-RND-07).** `prebuild()` builds one emitter per layer of every particle effect,
+    without emitting, in the frame the battle scene enters (under the router's opaque fade). The first emitter of a
+    ParticleProcessMaterial feature set (turbulence on) costs about 32 ms of main-thread work in the battle's tree.
+    Built mid-fight, the Drownbell's `polyp_rise` made the Flood a 35–44 ms frame (79 ms on a fresh install).
+    - A staged prewarm didn't help: holding its materials didn't carry the cost over, so it's the emitter's, in
+      this tree.
+    - The prebuild adds about 0.3 s to the battle's hidden entry: worst frame 0.35–0.6 s, entry 0.9–1.4 s, inside
+      ADR 0029.
   - The pair is registered for prewarm on `battle_sandbox.tscn` and `field_battle.tscn`.
 
 ## The first set

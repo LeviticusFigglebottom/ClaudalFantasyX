@@ -113,6 +113,45 @@ SPEC §4.2 (v1.3) budgets what the player sees, not what the fade hides. The rou
 - The regression test still holds the hidden frames to `perf_budgets.json`'s `test_threshold_ms` (40 ms). That is a tighter guard than ADR 0029 asks for, kept because a regression there shows up first; it also asserts that the probe recorded a complete visible window and an entry time. The probe (`scene_swap_probe.gd`) waits for `is_measuring()` before printing.
 - **Which window the benches report.** `tools/gpu_bench/prewarm_bench.gd` has no fade: its `max_ms` is every frame after the scene is added (all visible, judged against 50 ms like the visible window), and its `prewarm_max_ms` and `prewarm_wall_max_ms` are the prewarm stage's frames, which the game runs under the fade (the hidden window, 1 s). `tools/gpu_bench/gpu_bench.gd` reports steady-state frames after its warm-up, neither window. Only the router's own stats measure the game's real transition.
 
+### The boot card: the title shows only once it is warm (M2-ARC-03, ADR 0029)
+ADR 0029 counts the boot warm-up as hidden time "under the boot screen before the title". Until M2-ARC-03 the boot
+screen *was* the title, so the PC measured 168–265 ms frames on the visible menu
+(docs/kb/qa/gpu/2026-10-24-slice-perf-sweep.md). Now:
+
+- **The card.** `BootCard` (`game/core/boot_card.gd`) is a CanvasLayer at layer 127, just under the router's fade
+  (128) and over every game and debug layer. It is one opaque ColorRect in the renderer's clear colour (the empty
+  title's own background) with nothing drawn on it, so its lift reads as the title fading in. It stops the mouse.
+- **What boot does** (`boot.gd`, only when boot is the game's scene, `get_tree().current_scene == self`):
+  covers the title with a card, turns off the title's `_unhandled_input`, then (deferred) starts the resident
+  warm-up (`GraphicsRuntime.warm_resident_shaders`) and the theme font warm-up (`SceneRouter.warm_fonts_now()`,
+  the router's `FontWarmer`, once per run) and has the card wait for both (`wait_for_node`, `wait_until(fonts_ready)`).
+  When they are done (or after `BootCard.MAX_WAIT_MS`, 10 s, with a warning) the card opens, the title gets its
+  keys back, and:
+  - **At launch** (no change running) the card lifts over `SceneRouter.FADE_SEC`, and boot calls
+    `SceneRouter.measure_reveal(path, card.is_lifted, card_stats)`: ADR 0029's visible window (the lift, then 60
+    frames) starts on the lift's first frame. It becomes `last_swap_stats` (`reveal: true`, plus the card's
+    `reveal_wait_frames`, `reveal_wait_ms`, `reveal_wait_max_frame_ms`, `reveal_work_done`) and ends with
+    `visible_measured`.
+  - **Through a change** (the end card, a game over, the slice sweep) the router's opaque fade is already the cover.
+    The card holds the router's reveal (`SceneRouter.hold_reveal`) and is cut when it opens; the router keeps its fade
+    opaque after the swap while anything holds the reveal (at most `REVEAL_WAIT_MAX_MS`, 10 s), then lifts it and
+    starts its own visible window. The wait is recorded as `reveal_wait_frames`, `reveal_wait_ms` and
+    `reveal_wait_max_frame_ms`, each frame against the 1 s hidden budget, and is **not** in `entry_ms` (the title is
+    not a zone entry; the boot warm-up's 1.3–3.1 s would otherwise read as an entry over 3 s).
+- **Not in captures or tests.** Under `tests/screenshots/capture.gd` and the test runner boot is a child, not the
+  current scene: no card, and the warm-up starts as before, so `boot_title` is unchanged.
+- **The sweep.** `tools/gpu_bench/slice_sweep.gd` counts the frames while the reveal is held as hidden (it
+  ended its hidden window at `EventBus.scene_changed`, so the title's warm-up frames used to read as visible).
+  Other segments are unchanged: nothing else holds the reveal.
+- **Tests.** `tests/unit/test_boot_card.gd` (the card frame by frame through `step(ms)`, the hold, `measure_reveal`,
+  `judge_reveal_wait`). `test_scene_router_swap.gd` runs the probe's new `--launch` mode in a child process (the
+  launch reveal is complete, starts with the lift, and opened on finished work) and checks that a change to the
+  title holds its reveal while no other target does.
+- **Reuse (M1-UI-11).** A preset change on the title can use the same card:
+  `BootCard.cover(root, SceneRouter.FADE_SEC, SceneRouter.FADE_SEC)`; on `covered`, select the preset and
+  `wait_for_node(GraphicsRuntime.current_warm_up())`; `arm()`; on `opened`, give the menu its input back and call
+  `SceneRouter.measure_reveal(...)` with `card.is_lifted`. `cancel_visible_window()` ends a window early.
+
 ## Saves (M1-ARC-03, architect-stream-4)
 
 SPEC §5.2 (versioned saves, save-point-only, chapter autosave) and §6.6 (shrines: full heal, a save menu, a teleport network later).

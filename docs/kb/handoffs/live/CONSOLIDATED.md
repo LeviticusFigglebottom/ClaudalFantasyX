@@ -48,6 +48,14 @@
 4. **characters:** cloud `session_01JqzzxgJU9Dmu7fRhmCG9aQ`, branch `claude/characters`, Auto mode, 2–3 subagents allowed. Queue: **M1-CHR-12 Asha round 7 first** (grief lip-edge rim and peg teeth, lid band, smile eyes, crown; from QA-08), with M2-CHR-01 Rhen and Toma in parallel (parked WIP in assets_src/characters/rhen/, see WIP.md) → Asha's clips (M2-FP-07) → M1-ART-06. Log: `characters.md` on its branch.
 - **Permissions:** `.claude/settings.json` allow-lists the read-only checks and cross-session messaging (the human's directive). Sessions pick it up after merging the integration branch.
 
+### 3b. Added 2026-10-24 ~09:50 (the human asked to supplement bottlenecks)
+| Track | Session | Branch | Queue |
+|---|---|---|---|
+| audio | `session_01FtDSYm5dJHkdC3RqXsDjif` | `claude/audio` | M2-AUD-01 → the slice's 3 final music cues (the human judges, §16 Q3) → battle SFX for the VFX library → field ambience → the mixing pass |
+| env-art | `session_01QmWUfYxd8DMg7XM3MyR6ps` | `claude/env-art` | M2-ENV-03 shrine kit → M1-ENV-10 → Haluna final-quality kit → Art sign-offs M2-ART-01/02/03 → the route |
+| ui | `session_01NyuYPSZn7o7gYirTvz4zjs` | `claude/ui` | M2-UI-03 → hide the Call row until bound → M2-UI-06 shop and inn → UI polish pass |
+These were created in default permission mode; the human sets Auto in each one's mode dropdown. m2-slice was told that ENV-03, UI-06 and UI-03 moved off its queue.
+
 ### 3a. Standing queues (2026-10-24, also sent by message; messages can arrive hours late, so this section is authoritative)
 - **m2-slice:**
   0. CMB-05 reconciliation: take the integration branch's mechanics (rolled absorb, HP 100%, rate 150), keep the FP-17 wiring, remove `call_ilun` (UI-05's Call row is merged), do M2-CMB-06.
