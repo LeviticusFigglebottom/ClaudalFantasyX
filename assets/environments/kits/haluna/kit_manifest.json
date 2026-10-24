@@ -35,6 +35,17 @@
         "basket_set-lod1": 153
       }
     },
+    "causeway_flats": {
+      "budget": [
+        90000,
+        12000
+      ],
+      "bytes": 2223836,
+      "lods": {
+        "causeway_flats": 66000,
+        "causeway_flats-lod1": 7260
+      }
+    },
     "causeway_slab_broken": {
       "budget": [
         3000,

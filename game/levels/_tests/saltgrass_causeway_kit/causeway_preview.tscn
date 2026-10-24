@@ -1,0 +1,100 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/environments/zones/saltgrass_causeway/saltgrass_causeway_dressing.tscn" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="2_cam"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="3_shot"]
+
+[sub_resource type="Resource" id="ShotC01"]
+script = ExtResource("3_shot")
+id = &"C01"
+position = Vector3(-3.62, 1.85, 1.70)
+look_at = Vector3(129.76, 1.08, -98.68)
+fov_deg = 67.4
+
+[sub_resource type="Resource" id="ShotC02"]
+script = ExtResource("3_shot")
+id = &"C02"
+position = Vector3(32.56, 1.60, -28.54)
+look_at = Vector3(38.19, 1.47, -21.51)
+fov_deg = 27.0
+
+[sub_resource type="Resource" id="ShotC03"]
+script = ExtResource("3_shot")
+id = &"C03"
+position = Vector3(63.31, -0.12, -24.77)
+look_at = Vector3(60.59, -0.12, -28.36)
+fov_deg = 13.7
+
+[sub_resource type="Resource" id="ShotC04"]
+script = ExtResource("3_shot")
+id = &"C04"
+position = Vector3(39.72, 1.31, -27.52)
+look_at = Vector3(95.44, 1.17, -57.62)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotC05"]
+script = ExtResource("3_shot")
+id = &"C05"
+position = Vector3(101.44, 0.88, -80.91)
+look_at = Vector3(106.42, 0.69, -75.31)
+fov_deg = 46.4
+
+[sub_resource type="Resource" id="ShotC06"]
+script = ExtResource("3_shot")
+id = &"C06"
+position = Vector3(104.87, 0.56, -44.99)
+look_at = Vector3(193.11, 1.33, -147.18)
+fov_deg = 20.9
+
+[sub_resource type="Resource" id="ShotC07"]
+script = ExtResource("3_shot")
+id = &"C07"
+position = Vector3(75.97, 0.55, -47.42)
+look_at = Vector3(85.05, 4.43, -51.63)
+fov_deg = 53.1
+
+[node name="SaltgrassCauseway" instance=ExtResource("1_zone")]
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="C01" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotC01")
+
+[node name="C02" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotC02")
+
+[node name="C03" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotC03")
+
+[node name="C04" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotC04")
+
+[node name="C05" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotC05")
+
+[node name="C06" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotC06")
+
+[node name="C07" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotC07")

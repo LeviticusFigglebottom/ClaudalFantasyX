@@ -47,6 +47,7 @@ BUDGET_KEY = {"coral_boulder_a": "coral_boulder", "coral_boulder_b": "coral_boul
 
 # Ancient causeway stone: heavily eroded, salted, little moss (it is awash at every high tide).
 ANCIENT = kc.Weathering(moss=0.08, salt=0.35, wet=0.25, erosion=0.95)
+RING_WEATHER = kc.Weathering(moss=0.2, salt=0.3, wet=0.3, erosion=0.95)  # half buried in wet sand: little crust
 BOULDER = kc.Weathering(moss=0.1, salt=0.3, wet=0.3, erosion=0.9)
 SLAB_HALF_M = (0.6, 0.15, 1.2)  # 1.2 x 0.3 x 2.4 m
 POST_H_M = 2.4
@@ -241,7 +242,7 @@ def build_lit_age_ring(seed: int = 121, *, radius: float = 1.5, thick: float = 0
         ang = np.linspace(math.radians(-38.0), math.radians(218.0), n)
         centers = np.stack([np.cos(ang) * radius, np.sin(ang) * radius - radius * 0.42, np.zeros(n)], axis=-1) @ tip.T
         kc.tube(mb, centers, thick * (1.0 + 0.04 * np.sin(ang * 7)), 14 if not lod else 6, mb.material(M_CONCRETE),
-                weather=kc.DROWNED, noise=None if lod else noise, disp_m=0.03, disp_period_m=0.3, variation=0.4,
+                weather=RING_WEATHER, noise=None if lod else noise, disp_m=0.03, disp_period_m=0.3, variation=0.4,
                 cap_start=True, cap_end=True, u_repeat=2.0)
         if not lod:
             # The crack with the bound-light glint: a thin emissive sliver in a notch near the crown.

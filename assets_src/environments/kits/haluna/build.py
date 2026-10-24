@@ -23,6 +23,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 import causeway  # noqa: E402
+import causeway_zone  # noqa: E402
 import festival  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
@@ -71,6 +72,8 @@ def targets() -> dict:
         out[name] = (name, props, fn)
     for name, fn in sorted(causeway.TARGETS.items()):
         out[name] = (causeway.BUDGET_KEY.get(name, name), causeway, fn)
+    for name, fn in sorted(causeway_zone.TARGETS.items()):
+        out[name] = (name, causeway_zone, fn)
     return out
 
 

@@ -24,6 +24,7 @@ BARK = "res://game/shaders/vegetation/vegetation_bark.gdshader"
 NACRE = "res://game/shaders/environment/env_nacre_inlay.gdshader"
 SPILL = "res://game/shaders/environment/env_water_spill.gdshader"
 FOLIAGE = "res://game/shaders/vegetation/vegetation_foliage.gdshader"
+GROUND = "res://game/shaders/environment/env_ground.gdshader"
 
 
 def hexc(h: str, a: float = 1.0) -> str:
@@ -201,6 +202,19 @@ MATERIALS["kit_causeway_stone"] = stone("coral_stone_albedo.png", "coral_stone_n
                                         roughness_base=0.88, cavity_darken=0.45, ao_strength=0.8, variation_value=0.18,
                                         salt_coverage="Vector2(0.1, 0.3)", algae_coverage="Vector2(0.55, 0.9)",
                                         barnacle_coverage=0.7)
+# The Saltgrass Causeway's flats (M2-ENV-10): env_ground over the zone mesh's masks (R lane, G turf,
+# B seagrass, A rubble). The lane is the causeway's packed bed; the stone shows through as old paving.
+MATERIALS["kit_causeway_ground"] = {"shader": GROUND, "params": {
+    "tex_sand": ("tex", TEX + "sand_albedo.png"), "tex_sand_normal": ("tex", TEX + "sand_normal.png"),
+    "tex_stone": ("tex", TEX + "coral_stone_albedo.png"), "tex_stone_normal": ("tex", TEX + "coral_stone_normal.png"),
+    "tex_detail": ("tex", TEX + "weathering_detail.png"),
+    "col_lane": "Color(0.7, 0.66, 0.58, 1)", "col_turf": "Color(0.6, 0.57, 0.4, 1)",
+    # The tide left an hour ago: the flats stay wet-dark with a sheen up to ~0.6 m above the water and damp
+    # well beyond, so they read as tidal flats, not a dry beach.
+    "wet_band_m": 0.6, "damp_band_m": 1.3, "wet_roughness": 0.18,
+    # Tidal mud, not beach sand: sand_wet #B59D74 darkened and greyed, so the flats read dark and wet
+    # against the pale dry banks and the slab path (in full sun sand_wet alone renders as pale as a beach).
+    "col_sand_wet": hexc("#8A7D68"), "sand_macro_variation": 0.18}}
 STANDARD["kit_brass"] = {"albedo_color": hexc("#B08D57"), "metallic": 0.9, "roughness": 0.45}
 STANDARD["kit_dried_fish"] = {"albedo_color": hexc("#7A6550"), "roughness": 0.55, "metallic_specular": 0.6}  # sun-dried, tannin-dark
 STANDARD["kit_lamp_flame"] = {"albedo_color": hexc("#FFB16E"), "emission_enabled": "true",  # oil_lamp

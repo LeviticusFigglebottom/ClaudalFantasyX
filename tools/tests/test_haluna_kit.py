@@ -221,3 +221,42 @@ class RouteKitTests(unittest.TestCase):
         manifest = json.loads((ASSETS / "kit_manifest.json").read_text())
         for spec in layout["pieces"]:
             self.assertIn(spec["piece"], manifest["pieces"], spec)
+
+
+class CausewayZoneTests(unittest.TestCase):
+    """M2-ENV-10: the B06 zone's layout is generated, so the committed copy must regenerate byte for byte, and
+    its placements must respect the brief (low water, saltgrass above -0.2 m, the path head to islet)."""
+
+    LAYOUT = ROOT / "assets/environments/zones/saltgrass_causeway/causeway_layout.json"
+
+    def setUp(self) -> None:
+        self.cz = _load("causeway_zone")
+
+    def test_committed_layout_regenerates_identically(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "layout.json"
+            self.cz.main(["--layout", str(out)])
+            self.assertEqual(out.read_bytes(), self.LAYOUT.read_bytes())
+
+    def test_saltgrass_stands_above_the_grass_line_and_off_the_bed(self) -> None:
+        lay = json.loads(self.LAYOUT.read_text())
+        rows = [r for inst in lay["instances"] for r in inst["xforms"]]
+        self.assertGreater(len(rows), 1000)
+        xs = np.array([r[0] for r in rows])
+        zs = np.array([r[2] for r in rows])
+        self.assertTrue((np.array([r[1] for r in rows]) >= self.cz.SALTGRASS_ABOVE_M - 0.001).all())  # 3-decimal rounding
+        self.assertGreater(float(self.cz.path_distance(xs, zs).min()), self.cz.BED_HALF_W_M - 0.6)
+
+    def test_pieces_sit_on_the_shared_height_field(self) -> None:
+        lay = json.loads(self.LAYOUT.read_text())
+        field = self.cz.Field()
+        for spec in lay["pieces"][1:]:
+            x, z = spec["at"]
+            ground = float(field.height(np.array(x), np.array(z)))
+            self.assertLess(abs(spec["y"] - ground), 0.31, spec["piece"])
+
+    def test_path_runs_head_to_islet_and_pools_hold_water(self) -> None:
+        self.assertGreater(float(self.cz.PATH_S[-1]), 250.0)
+        field = self.cz.Field()
+        for (c, _r) in field.pool_xy:
+            self.assertLess(float(field.height(np.array(c[0]), np.array(c[1]))), self.cz.LOW_WATER_M)
