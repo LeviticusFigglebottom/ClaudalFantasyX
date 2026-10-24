@@ -78,6 +78,8 @@ func _ready() -> void:
 	_help.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_help.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_help.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_help.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	add_child(_help)
 	_open = true
 	_render()

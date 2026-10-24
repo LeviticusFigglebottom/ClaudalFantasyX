@@ -131,6 +131,20 @@ func _set_status(line: Dictionary) -> void:
 	_refused = not bool(line.get("ok", true))
 	var role := &"danger" if _refused else &"text_dim"
 	_status.add_theme_color_override(&"font_color", _c(role))
+	_fit_desc()
+
+
+## The line about the row is as tall as its text needs, up to the data "desc" height, and the
+## status sits "status" "gap" under it (M2-UI-15: a fixed height cut long lines short or left a
+## hole). Every page renders through _set_status, so this runs after each redraw.
+func _fit_desc() -> void:
+	var cap := HudLayout.num(_d.get("desc", {}), "height")
+	_desc.size.y = cap  # measure the wrap at full height: the label's own line metrics
+	var lines := _desc.get_line_count()
+	var spacing := float(_desc.get_theme_constant(&"line_spacing"))
+	var need := lines * _desc.get_line_height() + maxi(lines - 1, 0) * spacing
+	_desc.size.y = minf(ceilf(need), cap) if _desc.text != "" else 0.0
+	_status.position.y = _desc.position.y + _desc.size.y + HudLayout.num(_d.get("status", {}), "gap")
 
 
 ## Puts the line and the status under `top` (a y in reference pixels).
@@ -181,16 +195,17 @@ func _build_frame() -> void:
 	_purse.add_theme_color_override(&"font_color", _c(&"text_dim"))
 	var help_h := HudLayout.num(pm, "help_height")
 	var help_at := Vector2(pr.position.x + pad, pr.end.y - pad - help_h)
-	_help = _label(&"HelpLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
-	_help.add_theme_color_override(&"font_color", _c(&"text_dim"))
+	_help = _label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
 	var dr := HudLayout.rect_of(_d.get("detail", {}))
 	_desc = _label(&"BodyLabel", Rect2(dr.position, Vector2(dr.size.x, HudLayout.num(_d.get("desc", {}), "height"))))
 	_desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_desc.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS  # long translations (M2-UI-15)
 	var sh := HudLayout.num(_d.get("status", {}), "height")
 	_status = _label(&"BodyLabel", Rect2(dr.position + Vector2(0.0, _desc.size.y), Vector2(dr.size.x, sh)))
 	_status.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_status.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 
 
 func _label(variation: StringName, r: Rect2) -> Label:

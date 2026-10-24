@@ -116,8 +116,12 @@ func test_colorblind_palette_swaps_danger_and_enemy_fill() -> void:
 	s.set_value(UiSettings.PALETTE, &"colorblind")
 	var t := s.theme_for(base)
 	assert_ne(t, base)
-	assert_eq(t.get_color(&"danger", &"Hymn").to_html(false).to_upper(), "D15E1F", "art/ui.md §9 as amended by M2-UI-11")
-	assert_eq(t.get_color(&"enemy_chip", &"Hymn").to_html(false).to_upper(), "2A2414", "art/ui.md §9 as amended by M2-UI-11")
+	assert_eq(
+		t.get_color(&"danger", &"Hymn").to_html(false).to_upper(), "D15E1F", "art/ui.md §9 as amended by M2-UI-11"
+	)
+	assert_eq(
+		t.get_color(&"enemy_chip", &"Hymn").to_html(false).to_upper(), "2A2414", "art/ui.md §9 as amended by M2-UI-11"
+	)
 	assert_eq(t.get_color(&"focus", &"Hymn"), base.get_color(&"focus", &"Hymn"), "buffs and allies keep ui_focus")
 	assert_eq(s.theme_for(base), t, "built once per palette and scale")
 

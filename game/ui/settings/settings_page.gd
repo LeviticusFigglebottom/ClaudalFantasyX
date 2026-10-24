@@ -53,6 +53,7 @@ func _ready() -> void:
 	_help.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_help.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_help.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_help.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_help)
 	page_model.changed.connect(_render)
