@@ -13,4 +13,6 @@ func unleashes_swell() -> bool:
 
 
 func decide(engine: BattleEngine) -> void:
-	use(engine, &"attack", engine.living_foes_of(engine.current)[0])
+	var foes := engine.living_foes_of(engine.current)
+	if not foes.is_empty():
+		use(engine, &"attack", foes[0])

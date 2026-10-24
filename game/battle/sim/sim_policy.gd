@@ -104,7 +104,17 @@ func call_vowbound(engine: BattleEngine) -> bool:
 	if rule == &"" or (rule == &"field_up" and engine.fields.is_empty()):
 		return false
 	var ids := engine.vowbound.callable_ids(engine)
-	return not ids.is_empty() and engine.summon(ids[0])
+	return not ids.is_empty() and engine.summon(field_answer(engine, ids))
+
+
+## M3-CMB-01: of the Vowbound `ids` the actor may call, the first whose finisher clears a field that
+## is up (Virel's Flare Line for storm_dark, Ilun's Floodnet for the flood), else the first.
+static func field_answer(engine: BattleEngine, ids: Array[StringName]) -> StringName:
+	for vid in ids:
+		var sk := engine.db.skill(engine.vowbound.finisher_of(vid))
+		if engine.fields.has(StringName(str(sk.get("clears_field", "")))):
+			return vid
+	return ids[0]
 
 
 func _swell_targets(engine: BattleEngine, actor: BattleCombatant, tid: StringName) -> Array[BattleCombatant]:
@@ -166,7 +176,7 @@ func _basic(engine: BattleEngine) -> void:
 		var forced := engine.forced_target(actor, sid)
 		if engine.perform(sid, _one(forced if forced != null else foes[0])).ok:
 			return
-	if _unforbidden(engine, actor):
+	if _unforbidden(engine, actor) or _lawful_fallback(engine, actor):
 		return
 	if not engine.escape() and engine.current == actor and engine.outcome == &"":
 		push_error("SimPolicy: %s could not act" % actor.id)
@@ -189,6 +199,31 @@ static func _unforbidden(engine: BattleEngine, actor: BattleCombatant) -> bool:
 		if target != null and use(engine, sid, target):
 			return true
 	return false
+
+
+## M3-CMB-01: with no foe it may strike (the Reach drawn back over the sea, or no spawn up yet in an
+## objective fight that felling foes can't end), the first usable skill on itself, an ally or the
+## ward: a guard or Stand Fast, never a stall. A called Vowbound with nothing to strike is sent back.
+## True when it acted.
+static func _lawful_fallback(engine: BattleEngine, actor: BattleCombatant) -> bool:
+	if not engine.living_foes_of(actor).is_empty():
+		return false
+	if engine.vowbound.dismiss_refusal(engine) == &"":
+		return engine.dismiss()
+	for sid in usable_skills(engine, actor):
+		var kind := str(engine.db.skill(sid).get("target", "single_foe"))
+		if kind.ends_with("foe") or kind == "all_foes":
+			continue
+		var target := engine.ward() if kind == BattleSetPiece.TARGET_WARD else actor
+		if target != null and use(engine, sid, target):
+			return true
+	return false
+
+
+## M3-CMB-01, sim_policies.json "guard_ward": the policy guards a set piece's ward first
+## (SimWardGuard). True when it acted.
+func guard_ward(engine: BattleEngine) -> bool:
+	return bool(config.get("guard_ward", false)) and SimWardGuard.act(engine)
 
 
 ## Uses `skill_id` on `target`, honouring Provoke for single-foe skills. True on success.
