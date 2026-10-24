@@ -1,6 +1,6 @@
 {
   "title_menu": {
-    "doc": "Minimal title menu (M1-ARC-06; docs/kb/tech/architecture.md, Saves). Rects are top-left x, y, w, h at the 1920 x 1080 reference. 'choices' are MenuPage metrics (the save menu's dialog choices, with four rows). Lives beside the scene until UI owns a title screen under game/data/ui/.",
+    "doc": "Minimal title menu (M1-ARC-06; docs/kb/tech/architecture.md, Saves). Rects are top-left x, y, w, h at the 1920 x 1080 reference. 'choices' are MenuPage metrics (the save menu's dialog choices, with four rows). Lives beside the scene until UI owns a title screen under game/data/ui/. M2-UI-22 (docs/kb/tech/ui.md, Title screen): 'logo' is the drawn logotype (TitleLogo): word sizes are percentages of the theme's TitleLabel and BannerLabel sizes, baselines and the flourish's y are inside its rect; the join rules flank the small-caps 'of the'; the tide flourish is two fading waves under the name. 'backdrop' is the animated backdrop (TitleBackdrop): the caustic layer, light shafts as [top x, top width, bottom width, slant, alpha] at the 1920 x 1080 reference, and seeded drifting motes (pairs are [min, max] ranges). 'version' is the build label, shown only in debug builds while 'debug_only' is true; 'fallback' names the build when project.godot sets no version.",
     "choices": {
       "rect": [810, 620, 300, 0],
       "max_rows": 4,
@@ -20,6 +20,57 @@
     },
     "help": {
       "rect": [460, 846, 1000, 40]
+    },
+    "logo": {
+      "rect": [360, 130, 1200, 440],
+      "word_scale_pct": 170,
+      "join_scale_pct": 75,
+      "hymn_baseline": 150,
+      "join_baseline": 218,
+      "undertow_baseline": 324,
+      "shadow_px": 3,
+      "join_gap_px": 22,
+      "join_rule_px": 170,
+      "join_node_px": 5,
+      "join_rule_rise": 0.35,
+      "rule_px": 1.5,
+      "wave_y": 372,
+      "wave_span_px": 560,
+      "wave_amp_px": 7,
+      "wave_length_px": 112,
+      "wave_px": 2,
+      "wave_steps": 120,
+      "wave_echo_dy_px": 11,
+      "wave_echo_alpha": 0.5,
+      "wave_drift_per_sec": 0.08,
+      "crest_node_px": 4,
+      "crest_gap_px": 8
+    },
+    "backdrop": {
+      "caustics": true,
+      "seed": 1033,
+      "motes": 44,
+      "mote_px": [1.4, 3.2],
+      "mote_rise_px_per_sec": [6, 18],
+      "mote_sway_px": [6, 22],
+      "mote_sway_sec": [6, 13],
+      "mote_alpha": [0.18, 0.6],
+      "mote_twinkle_sec": [3, 8],
+      "mote_twinkle_depth": 0.4,
+      "mote_glow_scale": 3.2,
+      "mote_glow_alpha": 0.16,
+      "mote_gold_pct": 35,
+      "mote_margin_px": 40,
+      "shafts": [[620, 46, 190, -220, 0.05], [900, 30, 150, -160, 0.04], [1180, 54, 230, -260, 0.05], [1430, 26, 120, -120, 0.03]],
+      "shaft_length_pct": 80,
+      "shaft_sway_px": 26,
+      "shaft_sway_sec": 19,
+      "shaft_pulse": 0.35
+    },
+    "version": {
+      "rect": [1420, 1030, 476, 34],
+      "debug_only": true,
+      "fallback": "bootstrap"
     }
   }
 }

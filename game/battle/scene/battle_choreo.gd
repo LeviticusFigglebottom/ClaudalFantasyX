@@ -149,7 +149,7 @@ func _read_settings(settings: UiSettings) -> void:
 	reduced_motion = settings.reduced_motion()
 	var keys := settings.settings()
 	if keys.has(SETTING_SPEED):
-		set_speed(float(settings.get_value(SETTING_SPEED)))
+		set_speed(settings.battle_speed())  # one reader: UiSettings.battle_speed (M2-UI-23)
 	if keys.has(SETTING_ANIMATIONS):
 		skip = str(settings.get_value(SETTING_ANIMATIONS)) == ANIMATIONS_SKIP
 

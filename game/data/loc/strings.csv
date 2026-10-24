@@ -147,6 +147,11 @@ HUD_RESULT_RETRY,Fight again
 HUD_RESULT_RETURN,Return
 HUD_TARGET_UNREAD,HP unknown until Read
 HUD_RESULT_FELL,Fell before the end: no XP
+HUD_RESULT_LUME,Lume
+HUD_RESULT_LUME_FMT,+{n} lume
+HUD_RESULT_PURSE_FMT,purse {n} lume
+HUD_RESULT_DROP_FMT,×{n}
+HUD_RESULT_BAG_FULL,"bag full, left behind"
 SAVE_MENU_TITLE_SAVE,Record the Journey
 SAVE_MENU_TITLE_LOAD,Continue a Journey
 SAVE_SHRINE_PROMPT,Rest at the shrine
@@ -511,14 +516,14 @@ BESTIARY_DEFEATED_FMT,Defeated: {n}
 BESTIARY_ROW_COUNT_FMT,×{n}
 BESTIARY_UNREAD,"Not yet Read. Use Read on it in battle to learn its strengths, weaknesses and story."
 BESTIARY_EMPTY,No foes recorded yet. Foes you Read or defeat are written here.
-BESTIARY_HELP,Up and Down: choose · Cancel: close
+BESTIARY_HELP,Up and Down: choose · Left and Right: a page · Cancel: close
 HUD_SWELL_MODE_IN_USE,In use
 HUD_HELP_SWELL_GAUGE_FMT,{name}'s Swell is at {pct}% and fills by {mode}. Choose a fill mode here at no time cost
 HUD_HELP_SWELL_MODE_FMT,{mode}: {desc} Choosing it costs no time
 HUD_HELP_SWELL_MODE_CURRENT_FMT,{mode} is in use: {desc}
 HUD_SWELL_MODE_SET_FMT,{name}'s gauge now fills by {mode}. No time passed
 SET_TIMING_ASSIST,Timing assist
-SET_TIMING_ASSIST_HELP,"Makes timed Swell inputs easier: a wider window, or a miss counts as Good."
+SET_TIMING_ASSIST_HELP,"Makes timed Swell inputs easier: a wider window, a miss counts as Good, or hold Confirm to play them."
 SET_TIMING_ASSIST_OFF,Off
 SET_TIMING_ASSIST_WIDE,Wider window
 SET_TIMING_ASSIST_AUTO,Misses count as Good
@@ -542,7 +547,7 @@ HUD_BOSS_FIELD_FMT,{field}: {count} bound to it
 PHASE_DROWNBELL_TOLL,The Toll
 FIELD_DROWNBELL_FLOOD,The flood
 TITLE_SETTINGS,Settings
-TITLE_HELP_SETTINGS,"Graphics quality, from a whole preset down to each setting."
+TITLE_HELP_SETTINGS,"Graphics, and accessibility: text size, motion, colors and timing."
 GFX_MENU_TITLE,Graphics
 GFX_MENU_PRESET,Preset
 GFX_MENU_HELP_PRESET,Left and right choose a preset. It sets every row below.
@@ -616,24 +621,27 @@ HUD_FAIL_NOT_BOUND_FMT,{name} has bound no Vowbound yet.
 HUD_FAIL_NOT_CALLER_FMT,{name} cannot call that Vowbound.
 HUD_FAIL_VOWBOUND_FALLEN,That Vowbound has fallen and cannot answer again this battle.
 HUD_FAIL_NO_VOWBOUND,No Vowbound is on the field.
-HUD_TL_NEXT,Next
-SET_BATTLE_SPEED,Battle speed
-SET_BATTLE_SPEED_HELP,How fast each action plays out in battle. The turn order and every choice stay the same.
-SET_BATTLE_SPEED_075,Slower
-SET_BATTLE_SPEED_100,Normal
-SET_BATTLE_SPEED_150,Faster
-SET_BATTLE_SPEED_200,Fastest
-SET_BATTLE_ANIMATIONS,Battle animations
-SET_BATTLE_ANIMATIONS_HELP,"Full plays each action with movement and camera framing; Skip lands every action at once on a still camera."
-SET_BATTLE_ANIMATIONS_FULL,Full
-SET_BATTLE_ANIMATIONS_SKIP,Skip
-BARK_LINE_FMT,{name}: {line}
-SET_SUMMON_CINEMATIC,Vowbound calls
-SET_SUMMON_CINEMATIC_HELP,"How a Vowbound's call plays. Short plays it in full the first time, then shortened. Off goes straight to the Vowbound's arrival."
-SET_SUMMON_CINEMATIC_FULL,Full
-SET_SUMMON_CINEMATIC_SHORT,Short
-SET_SUMMON_CINEMATIC_OFF,Off
-HUD_CALLS_FMT,{name} calls {vowbound}.
+HUD_SWELL_CHANT_HINT,Directions: each note on the line · Cancel: back
+HUD_SWELL_CHANT_HINT_LOCKED,Directions: each note on the line
+HUD_SWELL_BRACE_HINT,Hold Confirm · let go on the counter · Cancel: back
+HUD_SWELL_BRACE_HINT_LOCKED,Hold Confirm · let go on the counter
+HUD_SWELL_GLYPH_HINT,Directions: trace each stroke · Cancel: back
+HUD_SWELL_GLYPH_HINT_LOCKED,Directions: trace each stroke
+HUD_SWELL_GRADE_BRACED,Braced
+HUD_SWELL_GRADE_TRACED,Traced
+HUD_SWELL_GRADE_SWIFT,Swift
+HUD_SWELL_BRACE_HOLDING,Holding
+HUD_SWELL_BRACE_NOT_HOLDING,Not holding
+HUD_SWELL_MODE_UNLOCKED_FMT,{mode} unlocked
+FIELD_MENU_SETTINGS,Settings
+FIELD_MENU_SETTINGS_DESC,"Graphics, and accessibility: text size, motion, colors and timing."
+SET_MENU_TITLE,Settings
+SET_MENU_GRAPHICS,Graphics
+SET_MENU_ACCESSIBILITY,Accessibility
+SET_MENU_HELP_GRAPHICS,"Graphics quality, from a whole preset down to each setting."
+SET_MENU_HELP_ACCESSIBILITY,"Text size, reduced motion, a colorblind-friendly palette and timing assist. Changes show at once."
+GFX_VALUE_PERCENT_FMT,{n}%
+GFX_VALUE_TIMES_FMT,×{n}
 CHAR_OSU,Grandmother Osu
 FIELD_PROMPT_LOOK,Look
 GFX_MENU_APPLYING,Applying the preset…
@@ -685,6 +693,132 @@ INN_MENU_HELP,Up and Down: choose · Confirm: choose · Cancel: leave
 INN_ERR_UNKNOWN,No one keeps this house.
 INN_ERR_CLOSED,The door is barred. No rooms for now.
 INN_ERR_NO_FUNDS_FMT,"Not enough lume: a rest costs {price}, and the purse holds {purse}."
+SET_TIMING_ASSIST_HOLD,Hold Confirm to play
+HUD_SWELL_ASSIST_HOLD,Assist: hold Confirm to play
+SET_TEXT_SPEED,Text speed
+SET_TEXT_SPEED_HELP,How fast dialogue and cutscene lines appear. Instant shows each line whole.
+SET_TEXT_SPEED_SLOW,Slow
+SET_TEXT_SPEED_NORMAL,Normal
+SET_TEXT_SPEED_FAST,Fast
+SET_TEXT_SPEED_INSTANT,Instant
+SET_BACKING,Subtitle backing
+SET_BACKING_HELP,A dark band behind dialogue and cutscene lines so they stay readable over bright scenes.
+SET_BACKING_OFF,Off
+SET_BACKING_SOFT,Soft
+SET_BACKING_SOLID,Solid
+SET_MENU_CONTROLS,Controls
+SET_MENU_HELP_CONTROLS,"Rebind every action, on the keyboard and on a gamepad."
+CTRL_ROW_DEVICE,Rebinding
+CTRL_ROW_RESET,Reset to defaults
+CTRL_DEVICE_KEYBOARD,Keyboard
+CTRL_DEVICE_PAD,Gamepad
+CTRL_VALUE_FMT,{key}  ·  {pad}
+CTRL_CELL_ACTIVE_FMT,[ {v} ]
+CTRL_CELL_WAITING,…
+CTRL_PAD_BUTTON_FMT,Button {n}
+CTRL_ACT_UI_UP,Menu up
+CTRL_ACT_UI_DOWN,Menu down
+CTRL_ACT_UI_LEFT,Menu left
+CTRL_ACT_UI_RIGHT,Menu right
+CTRL_ACT_UI_ACCEPT,Confirm
+CTRL_ACT_UI_CANCEL,Cancel and field menu
+CTRL_ACT_FIELD_INTERACT,Interact
+CTRL_ACT_FIELD_MOVE_FORWARD,Move forward
+CTRL_ACT_FIELD_MOVE_BACK,Move back
+CTRL_ACT_FIELD_MOVE_LEFT,Move left
+CTRL_ACT_FIELD_MOVE_RIGHT,Move right
+CTRL_ACT_FIELD_WALK,Walk
+CTRL_ACT_FIELD_CAMERA_LEFT,Turn the camera left
+CTRL_ACT_FIELD_CAMERA_RIGHT,Turn the camera right
+CTRL_HELP_DEVICE,Left and Right: choose which column Confirm rebinds · Cancel: back
+CTRL_HELP_ACTION_KEYS,Confirm: press a new key for this action · Left and Right: the gamepad column
+CTRL_HELP_ACTION_PAD,Confirm: press a new gamepad button for this action · Left and Right: the keyboard column
+CTRL_HELP_RESET,"Confirm: put every key and button back as it was, on both columns."
+CTRL_HELP_LISTEN_KEYS,Press a key… (Escape: cancel)
+CTRL_HELP_LISTEN_PAD,Press a gamepad button… (B or Escape: cancel)
+CTRL_HELP_REJECTED,"That one cannot go here: it is reserved, or another action would be left without it. Press another… (Escape: cancel)"
+CTRL_HELP_SWAPPED_FMT,Swapped: {action} now uses the old one.
+CTRL_HELP_WAS_RESET,Every key and button is back as it was.
+CTRL_PAD_A,A
+CTRL_PAD_B,B
+CTRL_PAD_X,X
+CTRL_PAD_Y,Y
+CTRL_PAD_BACK,Back
+CTRL_PAD_GUIDE,Guide
+CTRL_PAD_START,Start
+CTRL_PAD_LEFT_STICK_PRESS,Left stick press
+CTRL_PAD_RIGHT_STICK_PRESS,Right stick press
+CTRL_PAD_LEFT_SHOULDER,Left shoulder
+CTRL_PAD_RIGHT_SHOULDER,Right shoulder
+CTRL_PAD_DPAD_UP,D-pad Up
+CTRL_PAD_DPAD_DOWN,D-pad Down
+CTRL_PAD_DPAD_LEFT,D-pad Left
+CTRL_PAD_DPAD_RIGHT,D-pad Right
+CTRL_PAD_LSTICK_LEFT,Left stick left
+CTRL_PAD_LSTICK_RIGHT,Left stick right
+CTRL_PAD_LSTICK_UP,Left stick up
+CTRL_PAD_LSTICK_DOWN,Left stick down
+CTRL_PAD_RSTICK_LEFT,Right stick left
+CTRL_PAD_RSTICK_RIGHT,Right stick right
+CTRL_PAD_RSTICK_UP,Right stick up
+CTRL_PAD_RSTICK_DOWN,Right stick down
+CTRL_PAD_LEFT_TRIGGER,Left trigger
+CTRL_PAD_RIGHT_TRIGGER,Right trigger
+OBJ_UP_THE_BEACH,Follow Asha and Toma up the beach toward the village.
+OBJ_TO_NEMES,Go up into Haluna. Asha's aunt Neme has a table waiting.
+OBJ_SAVE_AT_SHRINE,Find the save shrine by the chapel court and record the journey.
+OBJ_TO_CAUSEWAY_HEAD,"Meet Asha and Toma at the causeway head, north of the beach, while the tide is low."
+OBJ_SHRINE_TRIAL,Turn the shell-basins until the water fills the inner pool.
+OBJ_SHRINE_DOOR,The chamber door stands open. Go through to Asha.
+OBJ_FIND_ASHA_ON_DOCK,Find Asha on the dock.
+OBJ_SIDE_TOWN,"Walk Haluna and listen. The market, the forge and the inn are open."
+OBJ_SIDE_NET_FLOAT,Something glints in the drained side pool.
+OBJ_NONE,No errand calls just now. Haluna's lanes are yours to walk.
+MAP_ROUTE_HALUNA,Haluna
+MAP_ROUTE_CAUSEWAY,Saltgrass Causeway
+MAP_ROUTE_SHELL_SHRINE,The Shell Shrine
+MAP_POI_BEACH,The beach
+MAP_POI_NEMES_HOUSE,Neme's house
+MAP_POI_MARKET,The market
+MAP_POI_SHOP,Haluna Market stall
+MAP_POI_FORGE,The forge
+MAP_POI_INN,The Mooring Lamp (inn)
+MAP_POI_SAVE_SHRINE,Save shrine
+MAP_POI_CHAPEL_COURT,The chapel court
+MAP_POI_TIDEWALL_LANE,Tidewall lane
+MAP_POI_DOCK,The dock
+MAP_POI_CAUSEWAY_HEAD,The causeway head
+MAP_POI_SHRINE_ENTRANCE,The entrance
+MAP_POI_SIDE_POOL,The side pool
+MAP_POI_INNER_POOL,The inner pool
+MAP_POI_CHAMBER_DOOR,The chamber door
+OBJ_LABEL,Objective
+OBJ_CUE_NEAR,Near
+OBJ_CUE_WALK,A short walk
+OBJ_CUE_FAR,Far
+SET_OBJECTIVE_CUE,Destination cue
+SET_OBJECTIVE_CUE_HELP,"A marker over where the objective points, or an arrow at the screen's edge when it is out of view."
+CTRL_ACT_FIELD_OBJECTIVE,Show the objective
+FIELD_MENU_MAP,Map
+FIELD_MENU_MAP_DESC,"Where you stand, where your errand leads, and the road ahead."
+FIELD_MENU_MAP_NONE,There is no map of this place.
+FIELD_MENU_MAP_NONE_TAG,No map
+MAP_PLACES,Places
+MAP_ERRANDS,Errands
+MAP_ERRANDS_NONE,No errands here.
+MAP_HELP,Up and Down: choose a place · Cancel: back
+MAP_NORTH,N
+MAP_POI_LINE_FMT,{name}: {m} m to the {dir}.
+MAP_POI_HERE_FMT,{name}: you are here.
+MAP_POI_GOAL,Your errand leads here.
+MAP_DIR_N,north
+MAP_DIR_NE,north-east
+MAP_DIR_E,east
+MAP_DIR_SE,south-east
+MAP_DIR_S,south
+MAP_DIR_SW,south-west
+MAP_DIR_W,west
+MAP_DIR_NW,north-west
 ENC_CH03_CAUSEWAY_SHORE,The Causeway Shallows
 ENC_CH03_CAUSEWAY_HARRIER,A Harrier over the Saltgrass
 TUT_FLIER_RHEN,"Fliers dodge most blows. Rhen's quick, precise strikes find them."
@@ -709,3 +843,64 @@ BOSS_EPITHET_DROWNBELL,It still rings for the drowned
 BOSS_TITLE_INQUISITOR,Inquisitor Hadric Moll
 BOSS_EPITHET_INQUISITOR,A tired officer who still believes the Edict
 BOOT_FIRST_RUN_NOTE,Preparing the graphics for first use. This happens only once.
+FIELD_PROMPT_DEFAULT,Examine
+CTRL_ACT_BATTLE_PAUSE,Pause a battle
+TIP_OBJECTIVE_TITLE,Where to next
+TIP_OBJECTIVE_BODY,"Press {field_objective} to see your errand again. The Map, in the menu ({ui_cancel}), shows the way."
+TIP_FIELD_MENU_TITLE,The menu
+TIP_FIELD_MENU_BODY,"Press {ui_cancel} to open the menu: items, gear, the Lattice, each hero's Swell, and the map."
+TIP_SAVE_SHRINE_TITLE,Save shrines
+TIP_SAVE_SHRINE_BODY,"A shrine keeps your journey. Press {field_interact} at one to record it and rest."
+TIP_SHOP_TITLE,Trade
+TIP_SHOP_BODY,"Keepers buy as well as sell. In a deal, Left and Right change how many."
+SET_TUTORIAL_TIPS,Tips
+SET_TUTORIAL_TIPS_HELP,"Short first-time tips in the field. Each shows once per journey."
+TITLE_LOGO_HYMN,Hymn
+TITLE_LOGO_JOIN,of the
+TITLE_LOGO_UNDERTOW,Undertow
+TITLE_BUILD_LABEL,Development build (%s)
+SET_BATTLE_SPEED,Battle speed
+SET_BATTLE_SPEED_HELP,How fast each action plays out in battle. The turn order and every choice stay the same.
+SET_BATTLE_SPEED_075,Slower
+SET_BATTLE_SPEED_100,Normal
+SET_BATTLE_SPEED_150,Faster
+SET_BATTLE_SPEED_200,Fastest
+SET_SUMMON_CINEMATIC,Vowbound calls
+SET_SUMMON_CINEMATIC_HELP,"How a Vowbound's call plays. Short plays it in full the first time, then shortened. Off goes straight to the Vowbound's arrival."
+SET_SUMMON_CINEMATIC_FULL,Full
+SET_SUMMON_CINEMATIC_SHORT,Short
+SET_SUMMON_CINEMATIC_OFF,Off
+SET_DIALOGUE_AUTO,Auto-advance dialogue
+SET_DIALOGUE_AUTO_HELP,"A line moves on by itself after a pause long enough to read it. Choices still wait for you."
+CTRL_ACT_DIALOGUE_BACKLOG,Dialogue backlog
+BACKLOG_TITLE,Backlog
+BACKLOG_HELP,Up and Down: scroll · Page keys: a page · Cancel: close
+BACKLOG_EMPTY,Nothing has been said yet.
+HUD_TL_NEXT,Next
+SET_BATTLE_ANIMATIONS,Battle animations
+SET_BATTLE_ANIMATIONS_HELP,"Full plays each action with movement and camera framing; Skip lands every action at once on a still camera."
+SET_BATTLE_ANIMATIONS_FULL,Full
+SET_BATTLE_ANIMATIONS_SKIP,Skip
+BARK_LINE_FMT,{name}: {line}
+HUD_CALLS_FMT,{name} calls {vowbound}.
+SET_REDUCED_AUDIO,Reduced audio
+SET_REDUCED_AUDIO_HELP,"Battles sound gentler: one sound per action, no deep rumble, and effects a little quieter."
+SET_VOLUME_MASTER,Master volume
+SET_VOLUME_MASTER_HELP,Everything the game plays.
+SET_VOLUME_MUSIC,Music volume
+SET_VOLUME_MUSIC_HELP,The score and the cutscenes' music.
+SET_VOLUME_SFX,Effects volume
+SET_VOLUME_SFX_HELP,"Battle and world sounds, menus, and the sea and wind around you."
+SET_VOLUME_VOICE,Voice volume
+SET_VOLUME_VOICE_HELP,The voice sounds under each line of dialogue.
+SET_VOLUME_0,0%
+SET_VOLUME_10,10%
+SET_VOLUME_20,20%
+SET_VOLUME_30,30%
+SET_VOLUME_40,40%
+SET_VOLUME_50,50%
+SET_VOLUME_60,60%
+SET_VOLUME_70,70%
+SET_VOLUME_80,80%
+SET_VOLUME_90,90%
+SET_VOLUME_100,100%

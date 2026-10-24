@@ -7,7 +7,8 @@ extends Node
 ##   godot-render --path . --audio-driver Dummy --fixed-fps 60 res://tests/screenshots/capture.tscn
 ## User args (after `--`): --shots=id1,id2   --out=<absolute dir>   --manifest=<res:// path>
 ## Shot keys: id, scene, camera ("default" or a Camera3D/Camera2D path relative to the scene root),
-## resolution [w, h], settle_frames, seed, threshold_rmse, and an optional setup block (globals, node
+## resolution [w, h], settle_frames, seed, threshold_rmse, warm_shader_groups (M2-QA-01: non-TAA shots with
+## VoxelGI, SSS or a lightmap; see _warm_shader_groups), and an optional setup block (globals, node
 ## properties, viewport properties, time_scale: see CaptureSetup). Missing keys come from "defaults".
 
 const MANIFEST_PATH := "res://tests/screenshots/shots.json"
@@ -16,6 +17,8 @@ const REPORT_NAME := "capture_report.json"
 ## Process after every node of the shot's scene (lower priorities run first), so the setup's held
 ## values are the last write before each frame is drawn.
 const HOLD_PRIORITY := 1 << 20
+## The warm-up viewport's side (px) for "warm_shader_groups" (M2-QA-01): it only has to render once.
+const WARM_VIEWPORT_SIZE := 8
 
 ## The running shot's setup (null between shots and for shots without one).
 var _setup: CaptureSetup = null
@@ -82,6 +85,8 @@ func _capture(shot: Dictionary, out_dir: String) -> Dictionary:
 	var started := Time.get_ticks_msec()
 	seed(int(shot.get("seed", 0)))
 	get_window().size = size
+	if bool(shot.get("warm_shader_groups", false)):
+		_warm_shader_groups()
 	var packed := load(String(shot["scene"])) as PackedScene
 	if packed == null:
 		result["error"] = "cannot load scene %s" % shot["scene"]
@@ -123,6 +128,30 @@ func _capture(shot: Dictionary, out_dir: String) -> Dictionary:
 	result["frames"] = frames
 	result["ms"] = Time.get_ticks_msec() - started
 	return result
+
+
+## M2-QA-01: turns on Forward+'s "advanced" scene-shader group (motion vectors, VoxelGI, SSS, lightmap
+## variants) before the shot's scene loads a single shader. Godot 4.6.3 enables that group lazily, on
+## the first frame that needs it, and then queues its compile for every shader already loaded behind the
+## pipeline compiles already queued. The render thread waits for it holding the shader's version mutex
+## while those pipeline compiles (on every pool worker) block on the same mutex: a deadlock
+## (docs/kb/qa/screenshots.md, "Engine deadlock"). With the group on first, each shader's groups are
+## queued when it is created, ahead of any of its pipelines. One TAA (motion-vector) render of an
+## empty 8 px world through force_draw with frame_step 0, so TIME does not advance. It does add one to
+## the frame count, so only non-TAA shots may set the key (TAA jitter follows the frame count).
+func _warm_shader_groups() -> void:
+	var vp := SubViewport.new()
+	vp.size = Vector2i(WARM_VIEWPORT_SIZE, WARM_VIEWPORT_SIZE)
+	vp.own_world_3d = true
+	vp.use_taa = true
+	vp.render_target_update_mode = SubViewport.UPDATE_ONCE
+	var cam := Camera3D.new()
+	vp.add_child(cam)
+	add_child(vp)
+	cam.make_current()
+	RenderingServer.force_draw(false, 0.0)
+	remove_child(vp)
+	vp.free()
 
 
 func _end_setup() -> void:

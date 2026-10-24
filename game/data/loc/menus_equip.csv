@@ -1,0 +1,52 @@
+keys,en
+EQUIP_MENU_HEROES_TITLE,Party
+EQUIP_MENU_GEAR_TITLE_FMT,{hero}'s gear
+EQUIP_MENU_PIECES_TITLE_FMT,{slot} for {hero}
+EQUIP_MENU_CUSTOMIZE_TITLE_FMT,Customize {piece}
+EQUIP_MENU_SLOT_WEAPON,Weapon
+EQUIP_MENU_SLOT_ARMOR,Armor
+EQUIP_MENU_STAT_HP,Max HP
+EQUIP_MENU_STAT_MP,Max MP
+EQUIP_MENU_NOTHING_WORN,Nothing
+EQUIP_MENU_NOTHING_WORN_DESC_FMT,Nothing is worn as {slot}. Confirm to choose a piece.
+EQUIP_MENU_ABILITY_SLOT_FMT,· Slot {n}
+EQUIP_MENU_EMPTY_SLOT,Empty
+EQUIP_MENU_EMPTY_SLOT_DESC,An empty ability slot. Confirm to Customize: craft an ability into it with items.
+EQUIP_MENU_WORN,Worn
+EQUIP_MENU_WORN_BY_FMT,Worn by {hero}
+EQUIP_MENU_TAKE_OFF,Take it off
+EQUIP_MENU_TAKE_OFF_LINE_FMT,{hero} goes without {slot}.
+EQUIP_MENU_ALREADY_WORN_FMT,{hero} is wearing it.
+EQUIP_MENU_EQUIPPED_FMT,{hero} now wears {name}.
+EQUIP_MENU_TOOK_OFF_FMT,{hero} took off {name}. It stays in the pack.
+EQUIP_MENU_READY,Ready
+EQUIP_MENU_SHORT_FMT,{n} short
+EQUIP_MENU_NO_RECIPES,Nothing can be crafted into this piece yet.
+EQUIP_MENU_RECIPE_PART_FMT,"{name}: {held} of {count} held"
+EQUIP_MENU_RECIPE_PART_SHORT_FMT,"{name}: {held} of {count}, {short} short"
+EQUIP_MENU_CRAFT_LINE_FMT,Craft {ability} into {piece}. The items are spent and the ability stays for good.
+EQUIP_MENU_CRAFT_CONFIRM_FMT,Confirm again to craft {ability} into {piece}. It cannot be undone.
+EQUIP_MENU_CRAFTED_FMT,{ability} is now part of {piece}.
+EQUIP_MENU_MISSING_PART_FMT,{n} more {name}
+EQUIP_MENU_GAINS_FMT,Gains {list}
+EQUIP_MENU_LOSES_FMT,Loses {list}
+EQUIP_MENU_DELTA_UP_FMT,+{n}
+EQUIP_MENU_DELTA_DOWN_FMT,−{n}
+EQUIP_MENU_ERR_UNKNOWN_PIECE,That piece is no longer in the pack.
+EQUIP_MENU_ERR_UNKNOWN_EQUIPMENT,No one knows how to wear this piece any more.
+EQUIP_MENU_ERR_WRONG_CHARACTER_FMT,{name} was not made for {hero}.
+EQUIP_MENU_ERR_UNKNOWN_SLOT,That piece has no place to be worn.
+EQUIP_MENU_ERR_SLOT_REQUIRED_FMT,{hero} cannot go without a {slot}. Choose another to swap it.
+EQUIP_MENU_ERR_EQUIPPED_FMT,{wearer} is wearing it.
+EQUIP_MENU_CRAFT_ERR_UNKNOWN_ABILITY,No one knows that ability.
+EQUIP_MENU_CRAFT_ERR_NO_RECIPE_FMT,{ability} cannot be crafted.
+EQUIP_MENU_CRAFT_ERR_WRONG_SLOT_FMT,{ability} does not fit {piece}.
+EQUIP_MENU_CRAFT_ERR_ALREADY_HAS_FMT,{piece} already holds {ability}.
+EQUIP_MENU_CRAFT_ERR_NO_EMPTY_SLOT_FMT,{piece} has no empty slot left.
+EQUIP_MENU_CRAFT_ERR_SLOT_FILLED_FMT,This slot holds {ability}. Crafted abilities are permanent.
+EQUIP_MENU_CRAFT_ERR_MISSING_FMT,Not enough to craft {ability}: {items}.
+EQUIP_MENU_HELP_HEROES,Up and Down: choose a hero · Confirm: their gear · Cancel: close
+EQUIP_MENU_HELP_GEAR,Up and Down: choose · Left and Right: another hero · Confirm: change or Customize · Cancel: back
+EQUIP_MENU_HELP_PIECES,Up and Down: compare · Confirm: wear it · Cancel: back
+EQUIP_MENU_HELP_RECIPES,Up and Down: choose an ability · Confirm: craft · Cancel: back
+EQUIP_MENU_ARROW,→

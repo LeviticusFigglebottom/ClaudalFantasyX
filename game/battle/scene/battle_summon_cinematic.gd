@@ -2,10 +2,10 @@ class_name BattleSummonCinematic
 extends Node
 ## C10: a Vowbound's first call as an in-battle cinematic (M2-BPR-08; docs/kb/tech/battle_presentation.md
 ## "Ilun's first call"). The slice's one Vowbound and its first call must be unmissable (vertical_slice.md B10).
-## - **When** (UiSettings summon_cinematic, the UI track's row, M2-UI-23): "short" (the default) plays it on the
-##   first call of each Vowbound in a live story battle (its first_call_flags flag unset) and the short entry
-##   (choreo.json vowbound.entry) after; "full" plays it on every call; "off" skips the rise (the Vowbound is
-##   simply there). A capture fixture, instant pacing and "skip animations" play the short entry.
+## - **When.** The first call of each Vowbound in a live story battle (its first_call_flags flag is unset), with
+##   UiSettings summon_cinematic "short" (the default) or "full". "full" plays it on every call too; "off" never
+##   plays it (UiSettings.summon_cinematic_cut, M2-UI-23). Every other call, a capture fixture, instant pacing and
+##   "skip animations" play the short entry (choreo.json vowbound.entry).
 ## - **What.** The water stills (a longer delay after the party steps off), the Vowbound rises slowly at its slot
 ##   in bound light (an OmniLight3D in glimmer_bound, fading in and holding steady: no flicker, no drift, no
 ##   trails; color script C10), the camera eases to a low frame on the slot and back to the default by the end.
@@ -50,21 +50,21 @@ static func attached(choreo: BattleChoreo, controller: BattleController, engine:
 
 ## True when `cid`'s call should play the full cinematic now.
 func wants_full(cid: StringName) -> bool:
-	var setting := str(_setting())
-	if not _choreo.animating() or setting == SETTING_OFF:
+	if not _choreo.animating():
 		return false
 	var flag := first_call_flag(cid)
 	if flag == &"":
 		return false
-	if force_full or (setting == SETTING_FULL and _live()):
+	if force_full:
 		return true
-	return _live() and not bool(Game.get_flag(flag))
+	return _live() and _cut(not bool(Game.get_flag(flag))) == UiSettings.CUT_FULL
 
 
-## The entrance for `cid`'s call when this cinematic decides it ({} = the short entry): the full cinematic, or under
-## "off" no rise at all.
+## The entrance for `cid`'s call when this cinematic decides it ({} = the short entry): the full cinematic, or for a
+## "none" cut (the "off" setting) no rise at all.
 func entry_for(cid: StringName) -> Dictionary:
-	if first_call_flag(cid) != &"" and str(_setting()) == SETTING_OFF:
+	var flag := first_call_flag(cid)
+	if flag != &"" and _cut(not bool(Game.get_flag(flag))) == UiSettings.CUT_NONE:
 		return cfg.get("off_entry", {}) as Dictionary
 	return begin(cid) if wants_full(cid) else {}
 
@@ -194,11 +194,13 @@ func _camera_at(t: float) -> void:
 	director.camera.fov = float(pose["fov"])
 
 
-func _setting() -> Variant:
+## The call-length setting's cut for a first call or a later one (UiSettings.summon_cinematic_cut: "short", the
+## default, plays the first call in full; "full" every call; "off" none). Without settings: the first call only.
+func _cut(first_call: bool) -> StringName:
 	var s := UiSettings.shared()
 	if s == null or not s.settings().has(SETTING):
-		return ""
-	return s.get_value(SETTING)
+		return UiSettings.CUT_FULL if first_call else UiSettings.CUT_SHORT
+	return s.summon_cinematic_cut(first_call)
 
 
 func _live() -> bool:

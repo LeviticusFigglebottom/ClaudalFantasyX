@@ -9,9 +9,12 @@ extends Control
 ##             an autosave the new run would write over, it asks first (M1-ARC-08): the rows
 ##             become Go back / Begin anew, "Go back" is the default, ui_cancel also goes back.
 ##   Load      the load list (SaveMenu, LOAD mode); a load routes the same way as Continue.
-##   Settings  the Graphics page (GraphicsMenu, M1-UI-10); it saves and applies as you change it.
-## Input: ui_up / ui_down move, ui_accept chooses (keyboard and controller); a click chooses;
-## ui_cancel closes the New Game question.
+##   Settings  the Settings hub (SettingsMenu, M2-UI-09): the Graphics page (M1-UI-10) and the
+##             Accessibility page; each saves and applies as you change it.
+## Input: ui_up / ui_down move, ui_accept chooses (keyboard and controller); hover moves, a click
+## chooses; ui_cancel closes the New Game question. It follows UiSettings (text size, palette).
+## M2-UI-22: behind the menu, a TitleBackdrop (caustics, light shafts, drifting motes) and the drawn
+## TitleLogo; the build label in the corner shows only in debug builds (`shows_version`).
 ## Layout: game/ui/title/title_menu.json.
 
 signal chosen(choice: StringName, error: int)
@@ -23,11 +26,16 @@ var save_system: Node
 var world_return: WorldReturn
 var model: TitleMenuModel
 var load_menu: SaveMenu
-var graphics_menu: GraphicsMenu
+var settings_menu: SettingsMenu
+## True in debug builds; tests set it before the menu enters the tree to stand in for a release.
+var debug_build := OS.is_debug_build()
+var backdrop: TitleBackdrop
+var logo: TitleLogo
 
 var _d: Dictionary = {}
 var _page: MenuPage
 var _help: Label
+var _version: Label
 ## Set once a choice has started a scene change, so a second press does nothing.
 var _launched := false
 
@@ -40,8 +48,24 @@ static func load_data() -> Dictionary:
 	return (parsed as Dictionary)["title_menu"] as Dictionary
 
 
+## True when the build label shows: always in a debug build, and in a release only if the data's
+## `debug_only` is false.
+static func shows_version(version_data: Dictionary, debug: bool) -> bool:
+	return debug or not bool(version_data.get("debug_only", true))
+
+
+## The build label's words: project.godot's version, or the data's fallback name when it has none.
+static func version_text(version_data: Dictionary) -> String:
+	var v := str(ProjectSettings.get_setting("application/config/version", ""))
+	if v == "":
+		v = str(version_data.get("fallback", ""))
+	return TranslationServer.translate("TITLE_BUILD_LABEL") % v
+
+
 func _ready() -> void:
 	Game.stop_play_clock()
+	AreaTitleCard.forget()  # M2-UI-21: the next start shows its area title card
+	DialogueBacklog.forget()  # M2-UI-25: a new start keeps no earlier run's lines
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_d = load_data()
@@ -51,6 +75,7 @@ func _ready() -> void:
 		var router := _autoload(&"SceneRouter")
 		world_return = router.get(&"world_return") as WorldReturn if router != null else null
 	model = TitleMenuModel.new(save_system)
+	UiSettings.shared().follow(self)
 	_build()
 	model.changed.connect(_render)
 	_render()
@@ -63,7 +88,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Applies one input event. Returns true when the menu used it. Tests call this directly.
 func handle_input(event: InputEvent) -> bool:
-	if _launched or is_load_menu_open() or is_graphics_menu_open():
+	if _launched or is_load_menu_open() or is_settings_open():
 		return false
 	if event.is_action_pressed(&"ui_up", true):
 		model.move(-1)
@@ -106,7 +131,7 @@ func choose(choice: StringName) -> Error:
 				open_load()
 				err = OK
 			TitleMenuModel.CHOICE_SETTINGS:
-				open_graphics()
+				open_settings()
 				err = OK
 	if err != OK:
 		model.refresh()
@@ -135,16 +160,17 @@ func open_load() -> SaveMenu:
 	return load_menu
 
 
-func open_graphics() -> GraphicsMenu:
-	if is_graphics_menu_open():
-		return graphics_menu
-	graphics_menu = GraphicsMenu.new()
-	add_child(graphics_menu)
-	return graphics_menu
+func open_settings() -> SettingsMenu:
+	if is_settings_open():
+		return settings_menu
+	settings_menu = SettingsMenu.new()
+	add_child(settings_menu)
+	settings_menu.closed.connect(_on_settings_closed)
+	return settings_menu
 
 
-func is_graphics_menu_open() -> bool:
-	return graphics_menu != null and is_instance_valid(graphics_menu) and graphics_menu.is_open()
+func is_settings_open() -> bool:
+	return settings_menu != null and is_instance_valid(settings_menu) and settings_menu.is_open()
 
 
 func is_load_menu_open() -> bool:
@@ -168,16 +194,37 @@ func _on_load_closed(outcome: SaveMenuModel.Outcome) -> void:
 		model.refresh()
 
 
+## The build label (null in a release build unless the data shows it).
+func version_label() -> Label:
+	return _version
+
+
 func _build() -> void:
+	backdrop = TitleBackdrop.new()
+	add_child(backdrop)
+	backdrop.setup(_d.get("backdrop", {}) as Dictionary)
+	logo = TitleLogo.new()
+	add_child(logo)
+	logo.setup(_d.get("logo", {}) as Dictionary)
 	_build_page()
 	_help = Label.new()
-	_help.theme_type_variation = &"HelpLabel"
+	_help.theme_type_variation = &"HelpDimLabel"
 	HudLayout.place(_help, _d.get("help", {}) as Dictionary)
 	_help.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_help.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_help.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_help.add_theme_color_override(&"font_color", get_theme_color(&"text_dim", HymnThemeBuilder.PALETTE_TYPE))
 	add_child(_help)
+	var vd := _d.get("version", {}) as Dictionary
+	if shows_version(vd, debug_build):
+		_version = Label.new()
+		_version.name = &"VersionLabel"
+		_version.theme_type_variation = &"DimLabel"
+		HudLayout.place(_version, vd)
+		_version.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		_version.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		_version.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_version.text = version_text(vd)
+		add_child(_version)
 
 
 ## (Re)builds the choice rows; a row's greyed look is fixed when it is built.
@@ -194,8 +241,11 @@ func _build_page() -> void:
 	var rows: Array[Dictionary] = []
 	for id in ids:
 		rows.append({"id": id, "label": tr(model.label_key(id)), "enabled": model.is_enabled(id)})
+	_page.reduced_motion = UiSettings.shared().reduced_motion()
 	_page.setup(cm, &"title", "", rows)
 	_page.row_clicked.connect(_on_row_clicked)
+	# Hover moves the model's cursor too, so the help line and the next key press agree (M2-UI-09).
+	_page.row_hovered.connect(func(index: int) -> void: model.set_cursor(index))
 
 
 func _render() -> void:
@@ -223,6 +273,13 @@ func row_labels() -> Array[String]:
 	for row in _page.rows:
 		out.append(str(row["label"]))
 	return out
+
+
+## Back from Settings: the rows are rebuilt in the text size or palette just chosen.
+func _on_settings_closed() -> void:
+	settings_menu = null
+	_build_page()
+	_render()
 
 
 func _on_row_clicked(index: int) -> void:

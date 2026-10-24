@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/ui_shots/dialogue_assist_shot.gd" id="1_drv"]
+
+[node name="DialogueAssistShot" type="Node3D"]
+script = ExtResource("1_drv")
+view = &"continue"

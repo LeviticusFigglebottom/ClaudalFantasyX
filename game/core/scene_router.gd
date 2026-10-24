@@ -122,6 +122,11 @@ var _measuring_visible := false
 ## check ("1 resources still in use at exit", boot smoke; M2-ARC-05 fix).
 var _reveal_clock := FrameClock.new()
 var _swap_clock := FrameClock.new()
+## M2-MNU-06: the time source every window measures with (entry, prewarm, unload, instantiate, the swap frames,
+## the reveal wait and the visible window); invalid (the default) reads Time.get_ticks_usec(). The scene-swap
+## probe sets a fake per-frame clock (set_measure_clock) so its test judges the real swap deterministically.
+## The font warmer's per-frame work slice is not a measurement and stays on the real clock.
+var _measure_now := Callable()
 ## The reveal hold's stall and cap (M2-ARC-08); a member for the same reason as the clocks.
 var _reveal_wait: ProgressWait
 
@@ -206,7 +211,7 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 		return
 	_busy = true
 	cancel_visible_window()
-	var entry_start := Time.get_ticks_usec()
+	var entry_start := _now_usec()
 	var stats := {"scene_path": scene_path, "budget_ms": HIDDEN_FRAME_BUDGET_MS}
 	ResourceLoader.load_threaded_request(scene_path)
 	_start_font_warm(stats)
@@ -227,7 +232,7 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 
 ## M2-ARC-03: keeps the fade opaque while anything holds the reveal (boot's warm-up), recording the wait.
 func _wait_for_reveal(stats: Dictionary) -> void:
-	var start := Time.get_ticks_usec()
+	var start := _now_usec()
 	_reveal_clock.reset_at(start)
 	_reveal_wait = ProgressWait.from_settings()
 	var frames := 0
@@ -299,7 +304,7 @@ func _swap(
 ) -> void:
 	while _font_warmer != null and not _font_warmer.done:
 		await get_tree().process_frame
-	var t := Time.get_ticks_usec()
+	var t := _now_usec()
 	var swap_frame_start := t
 	prewarm_requested.emit(scene_path)
 	stats["prewarm_ms"] = _ms_since(t)
@@ -316,14 +321,14 @@ func _swap(
 	stats["prewarm_wait_frames"] = waited
 	if split_swap:
 		if get_tree().current_scene != null:
-			t = Time.get_ticks_usec()
+			t = _now_usec()
 			get_tree().unload_current_scene()
 			await get_tree().process_frame
 			stats["unload_ms"] = _ms_since(t)
 		await get_tree().process_frame
-		swap_frame_start = Time.get_ticks_usec()
+		swap_frame_start = _now_usec()
 	else:
-		swap_frame_start = frame0_start(swap_frame_start, waited, Time.get_ticks_usec())
+		swap_frame_start = frame0_start(swap_frame_start, waited, _now_usec())
 	var frames: Array[float] = []
 	_swap_clock.reset_at(swap_frame_start)
 	# Zone render globals (M1-RND-15) reset on this signal: the new zone starts from the project
@@ -360,7 +365,7 @@ func attach_graphics_hook(node: Node, stats: Dictionary) -> void:
 
 ## Instantiates off the main thread when allowed; falls back to the main thread otherwise.
 func _instantiate(packed: PackedScene, stats: Dictionary) -> Node:
-	var t := Time.get_ticks_usec()
+	var t := _now_usec()
 	var holder: Array[Node] = []
 	stats["instantiated_on_thread"] = instantiate_on_thread
 	if instantiate_on_thread:
@@ -445,12 +450,12 @@ func cancel_visible_window() -> void:
 func _measure_visible(stats: Dictionary, lifted: Callable) -> void:
 	var generation := _visible_generation
 	_measuring_visible = true
-	var window := VisibleWindow.new(Time.get_ticks_usec())
+	var window := VisibleWindow.new(_now_usec())
 	while generation == _visible_generation:
 		await get_tree().process_frame
 		if generation != _visible_generation:
 			break
-		if window.tick(Time.get_ticks_usec(), not lifted.is_valid() or bool(lifted.call())):
+		if window.tick(_now_usec(), not lifted.is_valid() or bool(lifted.call())):
 			break
 	for w in judge_visible(stats, window):
 		push_warning("%s: %s: %s" % [LOG_PREFIX, w, stats.get("scene_path", "")])
@@ -510,8 +515,20 @@ func _fade_to(alpha: float) -> void:
 	await tween.finished
 
 
-static func _ms_since(t_usec: int) -> float:
-	return FrameClock.ms_between(t_usec, Time.get_ticks_usec())
+func _ms_since(t_usec: int) -> float:
+	return FrameClock.ms_between(t_usec, _now_usec())
+
+
+## M2-MNU-06: measures every window with `now_usec` (a Callable returning microseconds) from the next change on;
+## an invalid Callable goes back to the wall clock. Tests and the scene-swap probe only.
+func set_measure_clock(now_usec: Callable) -> void:
+	_measure_now = now_usec
+	_reveal_clock = FrameClock.new(now_usec)
+	_swap_clock = FrameClock.new(now_usec)
+
+
+func _now_usec() -> int:
+	return int(_measure_now.call()) if _measure_now.is_valid() else Time.get_ticks_usec()
 
 
 ## M1-ARC-16: ADR 0029's visible window, fed one timestamp per frame (an injected clock, so tests can drive

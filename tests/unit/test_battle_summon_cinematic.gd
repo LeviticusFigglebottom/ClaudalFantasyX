@@ -1,8 +1,9 @@
 extends TestCase
 ## M2-BPR-08: C10, a Vowbound's first call as an in-battle cinematic. Only the first call of a live story battle
-## (the seen-flag unset) plays it, and it sets the flag; the "short" setting, a capture fixture, instant pacing and
-## later calls play the short entry. It rises slower in steady bound light, the camera eases to the summon frame and
-## home again, reduced motion keeps the camera still, the hand-off waits for it, and confirm skips it.
+## (the seen-flag unset) plays it, and it sets the flag; the "off" setting, a capture fixture, instant pacing and
+## later calls play the short entry ("full" plays every call). It rises slower in steady bound light, the camera
+## eases to the summon frame and home again, reduced motion keeps the camera still, the hand-off waits for it, and
+## confirm skips it.
 
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const EPS := 0.001
@@ -68,18 +69,22 @@ func test_the_first_live_call_plays_in_full_once_and_sets_the_flag() -> void:
 	_free()
 
 
-func test_the_three_settings() -> void:
+## M2-UI-23's call length (Full / Short / Off) drives it: Short (the default) plays only the first call in full,
+## Full plays every call in full, Off never plays it.
+func test_call_length_setting_full_short_off() -> void:
 	_to_turn_of(&"asha")
 	ctl.pacing_scale = 1.0
 	_go_live()
 	var s := UiSettings.shared()
 	var was: Variant = s.get_value(BattleSummonCinematic.SETTING)
+	s.set_value(BattleSummonCinematic.SETTING, BattleSummonCinematic.SETTING_OFF)
+	assert_false(choreo.summon.wants_full(ILUN), "off skips it, even the first call")
 	s.set_value(BattleSummonCinematic.SETTING, BattleSummonCinematic.SETTING_SHORT)
-	assert_true(choreo.summon.wants_full(ILUN), "short: the first call in full")
+	assert_true(choreo.summon.wants_full(ILUN), "short: the first call plays in full")
 	Game.set_flag(FLAG, true)
-	assert_false(choreo.summon.wants_full(ILUN), "short: shortened after")
+	assert_false(choreo.summon.wants_full(ILUN), "short: a later call plays the short entry")
 	s.set_value(BattleSummonCinematic.SETTING, BattleSummonCinematic.SETTING_FULL)
-	assert_true(choreo.summon.wants_full(ILUN), "full: every call")
+	assert_true(choreo.summon.wants_full(ILUN), "full: every call plays in full")
 	s.set_value(BattleSummonCinematic.SETTING, BattleSummonCinematic.SETTING_OFF)
 	assert_false(choreo.summon.wants_full(ILUN), "off: never")
 	assert_eq(choreo.summon.entry_for(ILUN), cfg["off_entry"], "off: no rise")

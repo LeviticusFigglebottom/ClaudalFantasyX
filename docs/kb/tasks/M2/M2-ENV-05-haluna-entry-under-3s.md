@@ -49,6 +49,17 @@ from the change request to the scene being in, under the opaque fade:
   - **The cause:** `ShaderPrewarm.spawn_resident` warms the extra materials during the boot swap's hidden frames, and each 100 ms+ frame trips the limit.
   - **What's needed (Rendering/PC):** a resident warm-up that is spread over frames, with a per-frame budget, or that finishes under the boot card before the router measures. Once that lands, the same 17 entries can go back in (`git show 1b405ad2 -- game/data/settings/prewarm_materials.json`).
   - **Until then,** Haluna's second-launch entry stays at the PC's 3.1/3.5 s.
+## Notes (PC GPU, M2-RND-11 item 5, 2026-10-24): why the second launch is slow
+Numbers are in `docs/kb/qa/gpu/2026-10-24-rnd-11-sweep-r.md` §5.
+- A first run holds every registry entry it stages, so Haluna's set and the cast's character materials stay
+  loaded and compiled. After it, Haluna's entry takes 1.5 s. A second launch holds only the resident entries,
+  so the worker-thread instantiate loads and compiles them again (1.9–2.2 s against 1.1 s), and the entry's
+  harvest reloads them (260 ms against 6 ms): 3.1 s on High and 3.5 s on Low.
+- It isn't the scene's other resources: holding or harvesting Haluna's PackedScene at boot barely helps
+  (2.7–3.3 s).
+- **Measured fix:** make Haluna's 17 registry entries resident, plus the character materials, which
+  `gpu/hero-materials-resident` does for Asha's 11. The second launch's entry is then 1.6 s (High) and 1.9 s (Low).
+  The cost is 1.3–1.7 s more boot behind the card, with its worst hidden frame at 0.38–0.53 s.
 
 ## Review log
 

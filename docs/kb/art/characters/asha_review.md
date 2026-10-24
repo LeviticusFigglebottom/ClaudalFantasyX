@@ -722,3 +722,73 @@ The four face shots were re-approved after viewing each at full size and in 3–
 - Lashes are slightly sparse at the outer ends; the red crease line; the bow peaks are slightly lumpy.
 - Crow's feet are subtle on lavapipe. Judge them on the GPU at 2×.
 - asha.md §6.3 needs Art to adopt the new smile weights (ADR 0025).
+
+## 12. M1-CHR-12: round 7 (crown and hairline, the lid band, grief teeth, the smile's eyes, ADR 0024 check 1)
+
+Built on the characters track (branch `claude/characters`), from the QA-08 GPU verdict (docs/kb/qa/gpu/2026-10-24-qa-08-asha.md).
+
+### 12.1 Root causes, by diagnostic renders (lavapipe, `asha_face_neutral`)
+- **The lid band is not in the albedo.** Rendered unshaded, the skin between the lash tips and the brow has the cheek's
+  hue (R:B 1.61–1.67 against 1.63). Turning off `shadow_scatter`, transmission, SSS or the eye-occlusion shell moved the
+  band by ≤ 0.03. Only `painterly` 0 moved it (3.61 → 3.22, by darkening it). The band reads orange because the brow
+  shades it: under this stage's warm key and the tonemapper, dark skin goes orange (the cheek's own shadow side is
+  warmer than its lit side: 2.32 against 2.00).
+- **The forehead was tall because the flow ran down it.** The hairline had been kept high since CHR-07 because a lowered
+  hairline's cards ran down across the brow: `_flow_dir` pulls toward the braid gather behind the left ear, which from
+  the forehead points down once the "back" component is projected out.
+
+### 12.2 What changed
+| Fault | Change | Where |
+|---|---|---|
+| Crown and hairline | Front hairline 6 mm lower and a slow asymmetric swing (±1.3 mm); an up-and-back pull at the front hairline (`FRONT_LIFT`); 56 fine wisps that cross the hairline onto the forehead; crown clumps stand further off (rise 1.2–5 mm, 30% loose by 9 mm) and 80 clumps (was 62); crown flyaways 6–16 mm off the hair (was 4–11), 60 flyaways (was 48). The hidden base scalp layer pays for it (138 cards, was 230) | asha_hair.py, asha_params.json |
+| Lid band | The socket under the brow is painted a little lighter and cooler (`SOCKET_LIFT` 0.2, mostly blue), faded off at the nose bridge and the temple | asha_textures.py |
+| Grief teeth (fault B) | The crowns meet (`TOOTH_WIDTH` 0.93, was 0.86) and are a touch squarer (0.56, was 0.62); the gaps in the teeth patch are narrower and lighter (0.10 / 0.22 / AO 0.75, was 0.16 / 0.45 / 0.5) | asha_mouth.py, asha_textures.py |
+| Smile's eyes | Stronger AU6: crow's feet 1.0 mm deep (was 0.65), the lower lid pushed further (-0.35 rad, was -0.30), a fuller roll under it (2.4 mm, was 1.9). The ADR 0025 weights are unchanged | asha_face_shapes.py |
+
+The shape, teeth and socket changes are in shared modules, so Rhen gets them too (rebuilt; his shots re-approved).
+
+### 12.3 Numbers
+| | Before (CHR-11) | Now |
+|---|---|---|
+| LOD0 triangles | 63,352 (hair 15,604) | **63,368** (hair 15,602); target 63,500 |
+| LOD1 triangles | 29,461 | 29,463 |
+| `asha.glb` | 4.60 MB | **4.61 MB: 0.39 MB of headroom** to 5 MB (0.63 MB to the 5 MiB the tests use). Over 0.2 MB, so no cut is proposed |
+| Lid R:B, lit eye (her left) / cheek | 3.61 / 2.32 | **2.61 / 2.32: within 0.3** |
+| Lid R:B, far eye (her right) / cheek | 3.50 / 2.00 | **3.23 / 2.00: still 1.2 over** |
+
+Measured on lavapipe, mean sRGB per box (`asha_face_neutral`, 960×540: lids 518–560 × 174–181 and 400–432 × 175–181,
+cheeks 547–573 × 240–253 and 395–420 × 240–253). QA-08 measured the GPU's lid at 3.7–3.8 against 2.0–2.5, close to
+lavapipe's old numbers, so lavapipe is a fair proxy, but the GPU re-check is the judge.
+
+### 12.4 The SPEC §14 dialogue-range review, strict (lavapipe, 1×)
+- **Crown and hairline: improved, not solved.** The forehead is visibly lower and the hairline is no longer one even arc:
+  it wanders, and fine hairs cross it. At 1× the crown still reads smooth and glossy; the looser clumps and flyaways
+  break the silhouette only at the crop. The GPU capture should judge it; the next lever is the shading (fewer, broader
+  highlight bands on the crown), not more cards.
+- **Lid band: passes on the lit eye, fails on the far eye.** The far eye's band sits in the brow's cast shadow, and it
+  hardly responds to the albedo (0.27 of R:B for a lift that already shows as a pale band at 0.25 on the lit side).
+  Lifting it further would paint make-up. This is the stage's warm key on a shadowed socket; Rendering may want to
+  check it with a cool fill.
+- **Grief teeth (fault B): fixed on lavapipe.** The upper row reads as one row with notches, not pegs. **Fault A (the
+  black lip-edge rim) is not touched**, per the Lead's note: it waits on M1-RND-24 (the shadowed cavity bounce).
+- **The smile's eyes at 1×: better, still the open call.** The lower lids rise and the eyes narrow visibly at 1×; the
+  crow's feet read only in a crop. The smile still reads lopsided, closer to a closed-lip smirk than a Duchenne smile.
+  That is the expression, not the shapes: asha.md §6.3 puts her left corner 10% higher, and the three-quarter Face camera
+  shows her left side. **The call, recorded for Art (ADR 0025 is theirs to adopt or overturn):** the shapes now carry
+  the eyes; to read as a Duchenne smile at 1× the mouth needs either a smaller L/R difference in the `smile` tag or a
+  slight parting with the upper teeth showing (`lip_upper_up` about 0.2, `jaw_open` about 0.04). Neither is applied
+  here, because both change asha.md §6.3 weights.
+- **ADR 0024 check 1:** done; the numbers are appended to ADR 0024. Keep the built cool tint for warm keys; the first
+  cool-key scene needs a per-lighting value.
+- **ADR 0025:** still waiting on Art (no change in this round).
+- **Skin evenness:** judged on the QA-08 GPU capture: it passes (QA-08). No skin change here beyond the socket.
+
+### 12.5 Re-approved baselines
+After viewing each one side by side with the old: `asha_face_neutral`, `asha_face_smile`, `asha_face_grief`,
+`asha_face_stylized_compare` (rmse 0.020–0.023: the hairline, the eyes and the teeth). Within the limit and **not**
+re-approved (drift listed): `asha_front` 0.0025, `asha_q34` 0.0029, `asha_profile` 0.0018, `asha_extreme_pose` 0.0025,
+`asha_sleeve_s0`/`s4` 0.0007. This branch's own unmerged baselines (`asha_clip_*`, `rhen_*`) were refreshed too.
+
+### 12.6 Known issues and next step
+- Fault A (grief lip-edge rim) after M1-RND-24; then the PC's GPU re-check (M1-QA-09) of neutral, smile and grief.
+- Lashes still heavy and spiky (QA-08 fault 4/C), the braid blocky (D), the neck line (E): not in this round's list.

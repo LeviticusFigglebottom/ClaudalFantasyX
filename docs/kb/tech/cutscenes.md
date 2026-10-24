@@ -13,7 +13,7 @@ Plays a compiled `.dlg` scene ([dialogue_format.md](dialogue_format.md)) in the 
 | `CutsceneChoices` | `cutscene_choices.gd` | Option buttons: focus with `ui_up`/`ui_down`, pick with `ui_accept` or a click. |
 | `CutsceneMotes` | `cutscene_motes.gd` | Placeholder `@vfx` motes (held sinks seaward, released spirals up, bound holds still). |
 | `CutsceneKeyLight` | `cutscene_key_light.gd` | The close-shot character key light (M2-FP-10; "Key light" below). |
-| `CutsceneFace`, `FaceVisemes` | `cutscene_face.gd`, `face_visemes.gd` | Emotion poses, blinks and text-driven visemes on an actor's blend shapes ("Faces" below). |
+| `CutsceneFace`, `FaceVisemes`, `LipSync` | `cutscene_face.gd`, `face_visemes.gd`, `lip_sync.gd` | Emotion poses, blinks and text-driven lip sync on an actor's blend shapes ("Faces" below). |
 
 ## Using it
 
@@ -85,14 +85,21 @@ Every await inside `play()` goes through one internal `resumed` signal: a line a
 
 Cue keys the placeholder presentation doesn't perform warn once per scene (`UNSUPPORTED_KWARGS`): `@camera grade=`, `@anim loop=`, `@sfx at=`, and `@vfx drift=`/`motion=`/`rate=`/`form=`.
 
-## Faces (M2-FP-08, M2-FP-18)
+## Faces (M2-FP-08, M2-FP-18, M2-CHR-10)
 
 Every actor with a `face_poses` row in sequencer.json gets a `CutsceneFace` when the scene starts. It drives the actor's blend shapes in three layers. Each shape takes the highest of the three, so a blink or a viseme never fights the expression.
 - **Expression.** `@face` and each line's `[emotion]` blend to that emotion's pose (Character's face-poses JSON).
 - **Blinks.** These come from sequencer.json `blink`. A seeded timer per actor (`DEFAULT_SEED + hash(actor id)`) closes `lid_close` every 2.2–5 s, over 0.06 s, holds 0.03 s and opens over 0.11 s. Every change of expression adds a blink (`on_emotion_change`), which reads as a thought landing.
-- **Visemes.** These come from sequencer.json `visemes`. On each line the rig loads `FaceVisemes.track(text)`: one row per vowel run. Each `mouth_flap` opening shows that syllable's vowel shape (a → `vis_aa`, e → `vis_e`, i/y → `vis_i`, o → `vis_o`, u → `vis_u`, each with a little `jaw_open`). Each closing shows the lips' shape before the next vowel: m/b/p → `vis_mbp`, f/v → `vis_fv`, else rest. Sung lines have no flap.
-  - A rig that lacks any viseme shape keeps the old one-shape lip-flap (`lip_flap`).
-  - The weights are first values, checked on lavapipe on Asha's stage (`aa` and `o` were narrowed from the first try so the tongue doesn't show). Character owns their final tuning.
+- **Lip sync** (M2-CHR-10, replacing M2-FP-18's vowel flap). There is no voice, so the line's text is the speech; every constant is in `game/data/cutscene/lipsync.json`. The human's note on the old flap was that it looked unnatural: it snapped one fixed shape open on every vowel and shut after it, 40 times a second.
+  - **Graphemes to visemes** (`FaceVisemes.segments`). Each word is split into grapheme groups, longest first: digraphs and trigraphs (`th` → `l`, `sh`/`ch`/`tch` → `st`, `ph` → `fv`, `ee`/`ea` → `i`, `oo` → `u`, `ou` → `aa`+`u`, `igh` → `aa`+`i`...), word-start and word-end rules (`^kn`, `^wr`, `mb$`, `gh$`), a silent final e ("love", not "the"), soft c/g, and doubled letters merged. h, k, hard g, q and r are transparent: they take time but no shape. Punctuation (`, ; : . ! ? … — –`) becomes a rest that also covers the spaces after it.
+  - **Timing.** Character i of the line spans i / cps to (i + 1) / cps seconds, where cps is the DialogueBox's own `chars_per_sec` (40 by default; the player's setting), so the mouth follows the reveal at any speed. The face keeps its own clock from the frame the line is shown (box and sequencer step with the same delta). The curve reaches rest `tail_s` (0.3 s) after the last character. A skipped reveal releases from where the mouth is at `release_per_s` (2/s), never a snap. `instant` and fast-forward say nothing.
+  - **Co-articulation** (`LipSync.blend_at`, after Cohen and Massaro's dominance model). Each segment pulls toward its viseme's row with dominance `a`, falling off as exp(−d / tau) outside the segment, with a separate tau before (`ahead`, anticipation) and after (`behind`). Vowels hold 0.03 s either side. o and u reach further ahead (0.08–0.09 s), so the lips round before the vowel. Tongue/teeth consonants (`l`, `st`) are weaker than vowels, and `base_rest` (0.15) pulls toward rest throughout.
+  - **Closures.** Near a `closures` segment (`mbp` 1.0, `fv` 0.7) the blend is pulled onto that viseme by closures × exp(−d / `closure_tau` 0.012 s), so the jaw and every other shape go to 0 and the lips meet on p/b/m.
+  - **Speed cap.** The blend is sampled at 120 Hz and slew-limited per shape (`max_rate_per_s`: 6/s, `vis_mbp` 9/s, `vis_fv` 7/s; `vis_aa` carries half a full jaw, so that's about 3 jaw ranges a second, a human's peak). The limiter looks ahead: every low point (a closure, a pause, the end) is reached on time because the descent starts early, and an opening too short to reach full height opens less. `peak_shapes` (`vis_mbp`, `vis_fv`) are limited the other way round, so a closure rises early and is never cut short.
+  - **Intensity.** The line's `[emotion]` (or the face's current one, for an untagged line) scales the rows: `default` 0.85, from `exhausted` 0.6 and `sad` 0.7 up to `laugh` and `surprised` 1.0. Rows at intensity 1 stay at most 0.6, which is asha.md §6.2's cap. Natural speech peaks at about half that: `vis_aa` peaks at about 0.25 on an untagged line at 40 cps, so the jaw opens about an eighth of its range.
+  - **Idle.** While a line plays, four small drifts (`mouth_dimple_L`, `mouth_stretch_R`, `lip_lower_down`, `mouth_press`; amplitude 0.03–0.05 at 0.23–0.53 Hz, phase seeded per line) fade in and out over 0.25 s, so the mouth is never dead still between words and its two sides never move as one.
+  - The layers still combine by max, so lip sync never fights the expression. While lip sync runs, the box's `mouth_flap` is ignored. A rig that lacks any viseme shape keeps the old one-shape lip-flap (`lip_flap` in sequencer.json). Sung lines have no lip sync.
+  - Checked on lavapipe against Asha's stage (`Cameras/Face`): frame strips of ch02_beach_002 (soft_smile) and ch02_beach_020 (sad) at 40 cps (M2-CHR-10's notes).
 
 Not yet: gaze (eye targets), and faces for Rhen and Toma, which are capsules until M2-CHR-01. B09's layered S10 beat (surprise at 0.3 s, then grief at 0.6 s) is Rhen's face, so it waits for his rig.
 

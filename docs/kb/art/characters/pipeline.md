@@ -146,3 +146,142 @@ Since M1-CHR-03 the mesh is no longer the procedural cage. `bb_donor.generate(pa
 Base bodies: 13,380 vertices, 13,378 quads (26,756 triangles) for every variant, closed and manifold. The hero adds one Catmull-Clark level (`bb_donor.subdivide`, a linear stencil that also carries weights, masks and shape deltas) on the face mask and lips; the neighbouring quads are fan-triangulated through the edge points, so the mesh stays watertight. `python3 assets_src/characters/base_body/preview.py ... --zoom face` is the quick clay view.
 
 Known weaknesses: the base bodies' breasts are flattened by the girth fit (the field's breast volume, not the donor's). The heavy variant's depth comes only from the field's torso and is still shallow. The donor's ears and hands keep the native density.
+
+## 12. Adding a hero (M2-CHR-01, Rhen)
+
+A new hero is a folder `assets_src/characters/<hero>/` that **imports** Asha's modules instead of copying them:
+- `build_<hero>.py` imports `build_asha` as a helper library (`make_object`, `unwrap_faces`, `submesh`, weights, `dump_bake`,
+  `make_lod1`, …). It adds preview colours for new material names to `build_asha.MATERIALS` and replaces `build_asha.LOD1_RATIO`
+  with its own object names. Head, face shapes, eyes and teeth are built exactly as Asha's.
+- Hair, costume and props are the hero's own modules, written on the shared helpers (`asha_hair` cards and atlas columns;
+  `asha_costume` charts; `asha_mesh`). A hair module must also provide `hairline_v`, `in_hair`, `_gather` and `_flow_dir`, which
+  the skin maps read to paint the scalp.
+- `<hero>_textures.py` sets `asha_textures.OUT`, `PREFIX`, `SKIN_HEX`, `FRECKLES` and `HAIR_UNDERPAINT`, may wrap
+  `asha_textures.albedo` for its own skin terms, then calls `skin_maps`; it writes its own cloth atlas.
+- `write_materials.py` loads Asha's writer by path and points it at the hero's folder; generic atlases (eyes, hair, lashes,
+  brows, detail normals) are referenced from `assets/characters/asha/textures/`.
+- A job in `tools/dev/blender_builds.json` whose sources include `assets_src/characters/asha/**` (so a shared change
+  re-verifies every hero), PROVENANCE rows, a stage `game/levels/_tests/characters/<hero>/` on `asha_stage.gd`
+  (`character_name`), and shots. Rhen's review: [`rhen_review.md`](rhen_review.md).
+
+Toma (M2-CHR-02, [`toma_review.md`](toma_review.md)) is the second hero on this layout. Two additions worth reusing:
+- **Face hair in the Head object.** A beard (or any card layer that must follow the face shapes) goes into the Head's
+  extras before the shapes are built; after `build_shapes`, each of its vertices takes the delta (and the skin weights)
+  of its nearest skin vertex, with deltas under 0.15 mm zeroed so the sparse morph accessors stay small (`build_toma.py`).
+  Every Head vertex carries 40 morph targets, so the card count there is bounded by the 5 MB GLB cap, not the triangles.
+- **Hero costume helpers are importable too:** `toma_costume` imports `rhen_costume` (`torso_sheet`, `limb_tube`,
+  `bandolier`), so the `toma` job lists `assets_src/characters/rhen/**` among its sources.
+- **Hero-specific bones (M2-CHR-04):** extra `DEF-*` bones go on after `bb_rig.build_game_skeleton` in the hero's own
+  build (`build_toma.add_bones`: sash-tail chains, the pauldron hinge, shield and spear prop bones), with the costume or
+  prop vertices re-weighted to them; bb_rig stays the same for every hero. The standard 75 keep their names and
+  relative order; their absolute joint indices move (the exporter walks the hierarchy), so find bones by name.
+- **Card hair for short lengths (M2-CHR-04):** a hero-owned strand atlas (`toma_shorthair.png`, tufts of tapered
+  strands with soft sides) and mostly-Lambert hair shading (`kajiya_diffuse_mix` 0.15) for cropped hair and a short
+  beard; paint the skin between the painted hairs as shaded scalp, not lit skin.
+
+## 13. Body clips (M2-FP-07)
+
+`assets_src/characters/asha/hero_clips.py` (pure Python, no Blender) writes each hero's body clips as a Godot
+AnimationLibrary text resource, `assets/characters/<hero>/anim/<hero>_clips.tres`, from the skeleton rest read out of
+the hero's committed GLB. Poses are rotations in world axes on top of what each bone inherits (as `AshaStage.world_pose`),
+plus a hips offset, sampled at 15 fps; every clip keys the same 31 body bones (spine, neck, head, arms, legs and their
+twist segments), so a clip change never leaves a limb in the previous clip's pose. The `characters` import rule
+(`animations` in `game/data/import/characters.json`) puts the library on an `AnimationPlayer` at the asset root with a
+0.3 s default blend. `tools/tests/test_hero_clips.py` rebuilds the libraries and compares them byte for byte, so rerun
+`python3 assets_src/characters/asha/hero_clips.py` after any rebuild that moves a skeleton.
+
+| Clip | Loop | Notes |
+|---|---|---|
+| `idle` | yes | Stillness with breath and a slow weight shift (sway 40% for Asha, 130% for Rhen, his 4° lean) |
+| `walk`, `run`, `walk_to_chamber` | yes | In place (the sequencer moves the actor); Asha's staff arm swings less and its hand keeps the staff upright |
+| `talk` | yes | The free hand lifts and falls once per loop; head and shoulders move a little |
+| `kneel_over_rhen` | no | Onto the right knee, the left foot planted, leaning over someone lying in front; holds |
+| `laugh`, `offer_hand` | no | **Kneeling** (the beach scene plays them while she kneels); the head tilts back in the laugh |
+| `rise_to_stand` | no | From the kneel to standing |
+| `emerge_doorway` | no | A tired settle, one step, the head lifts (ADR 0017: on her own feet) |
+| `face_west` | no | A settle into the singing stance, the free hand to the breastbone; the facing comes from the `@mark` |
+| `take_hand` (Rhen) | no | From the kneel, the right hand reaches forward and up |
+| `spear_level` (Toma) | no | Both hands on the shaft, the spear levelled forward and a little down, knees bent, leaning in; holds |
+| `lower_spear` (Toma) | no | From `spear_level` back to his planted stance |
+| `palms_level` (Toma) | no | "Be level": the left palm comes up flat at chest height and sweeps slowly out; the head bows |
+| `catch_rhen` (Toma) | no | The left arm reaches forward and takes Rhen's weight, a small turn toward him, the knees brace; holds |
+| `sit_steps` (Toma) | no | Down onto a step at knee height, knees apart, the left forearm on the thigh, the spear upright; holds |
+| `turn_seaward` (Toma) | no | Head first, then chest and hips turn about 50° to his left; the facing itself comes from the `@mark` |
+
+**Toma (M2-CHR-04):** persona sway 0.7 (toma.md §1: 70% of the party default) and a **planted** base pose for his
+standing clips (`idle`, `talk` and his own): each leg swings out so the ankles sit 1.4× the shoulder-joint spacing apart
+(about 10° per leg on his skeleton), the knees soften 7° and the hips drop by what the two take (2.7 cm), feet flat. His
+spear is held like Asha's staff (the hand counter-rotates so it stays upright) except where `spear_level` turns it;
+the spear rides the `DEF-spear` prop bone, which the clips leave at rest (only the 31 body bones are keyed). Asha's and
+Rhen's libraries are byte-identical (`planted` is `stand` for a persona without a `stance`).
+`tools/tests/test_hero_clips.py` checks that every `@anim toma <clip>` has a clip, the stance ratio and feet on the
+floor, the spear upright in the standing clips and levelled in `spear_level`, and the seat height of `sit_steps`.
+Rerun `python3 assets_src/characters/asha/hero_clips.py --hero toma` after any Toma rebuild.
+
+Review shots: `asha_clip_kneel_over_rhen`, `asha_clip_walk`, `asha_clip_offer_hand`, `asha_clip_face_west`,
+`asha_clip_laugh`, `asha_clip_run` (AshaStage `clip` and `clip_time`).
+
+## 14. Battle-scale heroes (M2-CHR-06)
+
+`game/characters/heroes/<hero>_battle.tscn` instances `<hero>_lod1.glb` (about 27–29k triangles, under 1.5 MB). The import
+rule's `animations.strip_suffixes` lets the LOD file share its hero's clip library, so the battle actor has the same
+`AnimationPlayer` clips as the dialogue model. The battle's capsules are swapped by UI+Combat (task M2-UI-07: a `"scene"`
+key in the stand-in spec of `game/data/ui/battle_sandbox.json`).
+
+## 15. Villagers at an NPC budget (M2-CHR-03)
+
+`assets_src/characters/villagers/` is the §12 layout made parametric: **one** build (`build_villager.py --npc <id>`) and
+one `params/<npc>.json` per villager (the bb_params block plus `_skin`, `_hair`, `_costume`, `_tints`, `_persona`,
+`_build`), seven Blender jobs (`villager_<npc>`) and `build.sh [npc ...]`. Review: [`villagers_review.md`](villagers_review.md).
+- **Budget levers:** no face subdivision (head about 9.9k triangles instead of 20k), the head maps at 1K/512 and the
+  body at 512, morph normals only on the 12 expression shapes the pose tables lean on; all 40 shapes still fit (about
+  25-35k LOD0 triangles, 1.7-2.2 MB per GLB).
+- Without the subdivision the face is 1.9 mm facets that cross the smooth anatomy field: anything laid on the field at
+  the face (the brow cards) must be re-seated on the shipped skin (`head_surface(...).project`).
+- **One cloth atlas for every villager** (`villager_textures.py --cloth`), painted near-neutral; the colour variants are
+  `col_albedo` tints on each villager's `cloth_a/b/c` materials. A new villager is a params file, not a texture set.
+- Hair styles (`villager_hair.HairStyle`: short, cropped, bun, wrap) carry their own hairline and flow, which the skin
+  maps read through the same interface as the hero hair modules.
+- Every villager folder is in the `characters` import rule, so an instanced GLB comes dressed and with an
+  `AnimationPlayer` (`idle`, `talk`, `walk` from `villager_clips.py`); `<npc>_actor.tscn` turns it to face -Z for the
+  level's NPC nodes.
+
+## 16. Rig integrity guards (M1-CHR-14)
+
+A headless probe skins each hero's committed GLB in numpy for the poses the game plays, then measures three faults:
+a braid that floats off the head, clothing or props passing through the body, and seams or hidden-face holes that open
+in a pose. It needs no Blender and no Godot.
+
+```bash
+python3 tools/dev/rig_probe.py --hero asha --report            # verdicts, then per-pose tables (about 45 s)
+python3 tools/dev/rig_probe.py --report --json /tmp/rig.json   # every hero, with the full rows as JSON
+python3 tools/dev/rig_probe.py --hero toma --report --every 1  # every clip key (slow)
+HYMN_RIG_ROOT=/path/to/checkout python3 tools/dev/rig_probe.py --hero asha  # GLBs from another checkout (or --root, --glb)
+python3 -m unittest tools.tests.test_rig_integrity             # the CI guard (about 2 min for all three heroes)
+```
+
+**Poses.** The rest pose, any stage test pose listed under `stage_poses` (Asha's `asha_extreme_pose.tscn`, composed the
+way `AshaStage._apply_world_pose` does it), and every third key of every clip in `hero_clips.py`. Long clips widen the
+stride to about 10 samples each. The clip poses come from the same functions that write the AnimationLibrary, so a
+pose here is the frame the game shows. Bones the clips don't key (fingers, eyes, props, sash tails) stay at rest
+relative to their parents. The skinning is plain linear blend (`sum w * G_joint * IBM`), the same as Godot's. At rest
+it reproduces the stored mesh to within 1e-5 m, which `TestProbeMath` checks along with a synthetic single-bone turn.
+
+**Checks** (thresholds are in `tools/dev/rig_checks.json`; per-hero overrides go under `heroes`):
+
+| Check | What it measures | Limit |
+|---|---|---|
+| `braid gap` | Each woven strand of the braid (a connected piece of `HairBraid:hair` with at least 300 vertices) has a root ring: its open end nearer the scalp at rest. The gap is the ring's closest signed distance to the hair cap plus the head skin, with inside counted as 0. | 2 mm |
+| `braid drift` | How far a root-ring vertex moves in the head bone's frame (`DEF-spine.006`) compared with rest. It is 0 when the root is skinned to the head. | 2 mm |
+| `penetration garment_in_body` | A garment vertex inside the skin (Body plus the head skin): its signed distance to the posed skin surface, with each of the deepest candidates confirmed by the skin's winding number. That way a point beside a limb, or over a hole where hidden faces were deleted, doesn't count. | 3 mm |
+| `penetration prop_in_body` | The same for props (staff, spear, shield, Rhen's kit), except where the skin belongs to the holding hand (`grip_bones`). | 3 mm |
+| `penetration skin_through_garment` | Skin poking out through cloth, measured relative to rest. At rest, a ray along each Body vertex's normal finds the garment point over it, within 20 mm. In each pose, the check measures how far the skin has passed that same cloth point (same triangle and barycentrics) along the posed skin normal. At rest this is 0 by construction, so a garment edge beside the skin can't trigger it. A layer that already passes inside the body at rest is the job of `garment_in_body`. | 3 mm |
+| `seam coincident <group>` | Positions welded at rest (the Head/Body neck seam, UV-seam and panel duplicates) that separate in a pose. | 0.5 mm |
+| `seam boundary_exposed` | The Body's open boundary, where faces hidden under clothing were deleted. Each boundary vertex casts a ray along its normal and must meet a garment within 300 mm. Rays pass through skin, so the inner leg under a skirt still counts as covered. The count is of uncovered vertices. | 0 |
+| `skin weights` | Weights sum to 1 (±0.001), no negative weights, every joint index exists. | — |
+
+Each failure names the pose (`clip@key`), the mesh and material, the dominant bone on both sides, and the vertex's rest
+position, so the fix can be found in the source. The garment-in-skin count only covers confirmed vertices among the
+deepest 24 per group and pose, so treat it as a lower bound; the worst depth is exact. Add a new hero by adding a
+`heroes` entry (its props, garments and seam groups). Meshes named in the config but missing from a GLB are skipped,
+and a hero with no braid skips the braid checks.

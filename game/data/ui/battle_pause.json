@@ -1,0 +1,28 @@
+{
+  "battle_pause": {
+    "doc": "The battle pause (M2-MNU-04; docs/kb/tech/ui.md section Battle pause). 'action' is added to the InputMap at runtime when missing (FieldInput.add_actions: keys by OS.find_keycode_from_string name, joy_buttons by JoyButton value, 6 = Start). Pressing it on a player's or an enemy's turn pauses the whole tree (the engine, BattleChoreo, the camera, tweens) under the pause page; pressing it again or Resume lifts it. 'blocked_states' are BattleController states where it does nothing (no fight on, or the result panel is up). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3; the panel sits over the battle HUD (canvas layer 1) and under the Settings hub (66). 'dim_alpha' darkens the battle under the page (the theme's panel_low swatch at that alpha), so a paused fight reads as paused.",
+    "canvas_layer": 64,
+    "action": {"battle_pause": {"keys": ["P", "Pause"], "joy_buttons": [6]}},
+    "blocked_states": ["idle", "result"],
+    "dim_alpha": 0.45,
+    "panel": {"rect": [555, 309, 810, 432], "pad": 27, "title_height": 56, "help_height": 40},
+    "rows": {
+      "rect": [594, 408, 732, 0],
+      "header_height": 0,
+      "row_pitch": 48,
+      "max_rows": 4,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 60,
+      "rank_width": 60,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "desc": {"gap": 12, "height": 72}
+  }
+}

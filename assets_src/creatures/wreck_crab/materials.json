@@ -1,0 +1,86 @@
+{
+  "_doc": "Wreck crab surfaces (docs/kb/art/creatures/act1/wreck_crab.md). Slots are the glTF material names; write_materials.py writes assets/creatures/wreck_crab/materials/<slot>.tres on game/shaders/creature/creature.gdshader. The salt crust (shell, which also holds the crusher's salt slab from the reef crab's claws) carries the spawn_wound weak point; the lamp housing's panes and the light inside it glow glimmer_bound, the world's bound lamp light (the one sanctioned use on a creature, signed off in the sheet), never the crab's own. Bound light is steady (color_script rule 2): those two slots never pulse.",
+  "slots": {
+    "shell": {
+      "roughness_dry": 0.92,
+      "roughness_wet": 0.4,
+      "wet_darken": 0.75,
+      "clearcoat_wet": 0.25,
+      "detail_scale": 40.0,
+      "detail_albedo": 0.2,
+      "detail_bump": 0.35,
+      "cavity_albedo": 0.4,
+      "specular": 0.3,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 1.6,
+      "emission_pulse_hz": 0.35,
+      "emission_pulse_depth": 0.35
+    },
+    "chitin": {
+      "roughness_dry": 0.5,
+      "roughness_wet": 0.22,
+      "wet_darken": 0.7,
+      "clearcoat_wet": 0.55,
+      "detail_scale": 30.0,
+      "detail_albedo": 0.08,
+      "detail_bump": 0.2,
+      "cavity_albedo": 0.5
+    },
+    "eye": {
+      "roughness_dry": 0.12,
+      "roughness_wet": 0.06,
+      "specular": 0.7,
+      "clearcoat_wet": 1.0,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0
+    },
+    "timber": {
+      "roughness_dry": 0.9,
+      "roughness_wet": 0.5,
+      "wet_darken": 0.7,
+      "clearcoat_wet": 0.2,
+      "detail_scale": 50.0,
+      "detail_albedo": 0.2,
+      "detail_bump": 0.4,
+      "cavity_albedo": 0.5
+    },
+    "brass": {
+      "roughness_dry": 0.45,
+      "roughness_wet": 0.3,
+      "metallic": 0.75,
+      "specular": 0.5,
+      "wet_darken": 0.8,
+      "clearcoat_wet": 0.2,
+      "detail_scale": 36.0,
+      "detail_albedo": 0.18,
+      "detail_bump": 0.25,
+      "cavity_albedo": 0.5
+    },
+    "glass": {
+      "roughness_dry": 0.25,
+      "roughness_wet": 0.12,
+      "specular": 0.6,
+      "wet_darken": 0.9,
+      "clearcoat_wet": 0.6,
+      "detail_scale": 60.0,
+      "detail_albedo": 0.15,
+      "detail_bump": 0.3,
+      "cavity_albedo": 0.4,
+      "emission_color": "#4FB3B0",
+      "emission_energy": 0.8
+    },
+    "lamp_light": {
+      "roughness_dry": 0.6,
+      "roughness_wet": 0.4,
+      "wet_darken": 1.0,
+      "clearcoat_wet": 0.0,
+      "detail_scale": 20.0,
+      "detail_albedo": 0.2,
+      "detail_bump": 0.0,
+      "cavity_albedo": 0.0,
+      "cavity_ao": 0.0,
+      "emission_color": "#4FB3B0",
+      "emission_energy": 4.0
+    }
+  }
+}

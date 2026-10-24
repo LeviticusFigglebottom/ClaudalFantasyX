@@ -21,6 +21,8 @@ var _fighters: Dictionary = {}
 ## Enemy combatant id -> the enemy slot index it stands on.
 var _enemy_slot_of: Dictionary = {}
 var _shake_tween: Tween
+## Plays the actors' body clips from the engine's signals (M2-CRE-03).
+var _motion: BattleActorMotion
 
 @onready var camera: Camera3D = %BattleCamera
 @onready var _fighter_root: Node3D = %Fighters
@@ -51,12 +53,14 @@ static func lattice_for(ids: Array[StringName], saved: Dictionary = {}) -> Latti
 	return p
 
 
-## Stand-in spec for a combatant id ("reef_crab#1" uses the "reef_crab" row), defaults merged.
+## Stand-in spec for a combatant id ("reef_crab#1" uses the "reef_crab" row), defaults merged. An enemy with
+## an enemies.json `model` also gets its creature actor `scene` and creatures.json overrides (M2-CRE-03).
 static func stand_in_spec(cid: StringName) -> Dictionary:
 	var cfg := config()
 	var base := String(cid).get_slice("#", 0)
 	var row: Dictionary = (cfg.get("stand_ins", {}) as Dictionary).get(base, {})
-	return (cfg.get("stand_in_defaults", {}) as Dictionary).merged(row, true)
+	var spec := (cfg.get("stand_in_defaults", {}) as Dictionary).merged(row, true)
+	return spec.merged(CreatureModels.stand_in_overrides(base), true)
 
 
 func _ready() -> void:
@@ -67,6 +71,7 @@ func _ready() -> void:
 
 
 func spawn(engine: BattleEngine) -> void:
+	_motion = BattleActorMotion.attach(self, engine, _motion)
 	for f: FighterStandIn in _fighters.values():
 		f.queue_free()
 	_fighters.clear()
@@ -152,8 +157,15 @@ func hold_after(base: float) -> float:
 	return choreo.hold_after(base) if choreo != null else base
 
 
-## A short, decaying side-to-side camera nudge (deterministic: no randomness).
-func shake() -> void:
+## The battle presentation speed every battle view plays at: the choreography's (BattleChoreo.speed, M2-BPR-03,
+## read from UiSettings.battle_speed), or `fallback` before the sequencer is attached.
+func battle_speed(fallback: float = 1.0) -> float:
+	return choreo.speed if choreo != null else fallback
+
+
+## A short, decaying side-to-side camera nudge (deterministic: no randomness). `speed` is the
+## battle presentation speed (UiSettings.battle_speed, M2-UI-23).
+func shake(speed: float = 1.0) -> void:
 	if camera == null or not is_inside_tree():
 		return
 	var cfg: Dictionary = config().get("shake", {})
@@ -165,12 +177,19 @@ func shake() -> void:
 	shakes_started += 1
 	if _shake_tween != null and _shake_tween.is_valid():
 		_shake_tween.kill()
-	_shake_tween = create_tween()
+	_shake_tween = create_tween().set_speed_scale(speed)
 	for i in steps:
 		var side := 1.0 if i % 2 == 0 else -1.0
 		var fade := 1.0 - float(i) / steps
 		_shake_tween.tween_property(camera, "h_offset", amp * side * fade, step_sec)
 	_shake_tween.tween_property(camera, "h_offset", 0.0, step_sec)
+
+
+## Jumps every creature's phase change to its end (CreatureActor.settle; M2-CRE-08), for captures.
+func settle_actors() -> void:
+	for f: FighterStandIn in _fighters.values():
+		if f.creature() != null:
+			f.creature().settle()
 
 
 func stand_in(cid: StringName) -> FighterStandIn:

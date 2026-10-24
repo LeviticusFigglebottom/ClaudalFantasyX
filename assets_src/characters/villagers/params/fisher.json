@@ -1,0 +1,115 @@
+{
+  "_about": "The younger fisher at the dock net (ch02_bark_dock.dlg), about 26; he answers with the weather. A generic villager: tall and lean-muscled, short black hair under a madder-red headband (one small saturated note, haluna.md \u00a71), an open undyed sleeveless vest over a bare chest, loose indigo knee trousers, a red sash, barefoot on the dock. Reach-bands left 3, right 2. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials), not by bb_params.",
+  "name": "fisher",
+  "height_m": 1.74,
+  "heads_tall": 7.45,
+  "shoulder_width_heads": 1.8,
+  "chest_width_heads": 1.32,
+  "chest_depth_heads": 0.96,
+  "waist_width_heads": 1.12,
+  "hip_width_heads": 1.38,
+  "crotch_height_heads": 3.6,
+  "arm_span_ratio": 1.02,
+  "hand_length_heads": 0.8,
+  "foot_length_ratio": 0.152,
+  "neck_length_heads": 0.4,
+  "neck_width_ratio": 0.58,
+  "head_width_ratio": 0.66,
+  "femininity": 0.0,
+  "muscle": 0.75,
+  "mass": 0.2,
+  "breast": 0.0,
+  "eye_scale": 1.08,
+  "ipd_m": 0.064,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#8F5C3D",
+  "eye_tilt_deg": 1.0,
+  "jaw_width": 1.04,
+  "cheekbone_height": 0.002,
+  "cheekbone_width": 1.03,
+  "chin_size": 1.02,
+  "nose_bridge_width": 1.04,
+  "nose_tip_projection": 1.0,
+  "lip_fullness": 0.78,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.74,
+  "mouth_corner_lift": 0.0,
+  "brow_ridge": 1.1,
+  "donor_mix_african": 0.5,
+  "donor_mix_asian": 0.35,
+  "donor_mix_caucasian": 0.15,
+  "_skin": {
+    "hex": "#8F5C3D",
+    "age": 0.1,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 3,
+      "R": 2
+    },
+    "ink_opacity": 0.72,
+    "seed": 107,
+    "lip": "#74443A"
+  },
+  "_hair": {
+    "kind": "short",
+    "hairline": "male",
+    "seed": 28,
+    "length_m": [
+      0.025,
+      0.045
+    ],
+    "scalp_cards": [
+      190,
+      150,
+      100
+    ],
+    "hairline_cards": 40,
+    "rise": 1.2,
+    "colour": "#141417",
+    "underpaint": "#16161A"
+  },
+  "_eyes": {
+    "iris": "#24170E"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_a",
+      "hem": "hip",
+      "sleeve": 0.0,
+      "neck_v_m": 0.06,
+      "open_deg": 26.0
+    },
+    "trousers": {
+      "mat": "cloth_b",
+      "hem": "knee",
+      "loose_m": 0.018
+    },
+    "sash": {
+      "mat": "cloth_c",
+      "width_m": 0.06,
+      "turns": 1
+    },
+    "headwrap": {
+      "mat": "cloth_c",
+      "band_only": true,
+      "edge_lift": 0.012,
+      "band_m": 0.03,
+      "seed": 73
+    }
+  },
+  "_tints": {
+    "cloth_a": "#CDB993",
+    "cloth_b": "#33427A",
+    "cloth_c": "#9C3A2C",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all"
+  },
+  "_persona": {
+    "sway": 1.3,
+    "lean": 1.0,
+    "arms_down": 42.0
+  }
+}
