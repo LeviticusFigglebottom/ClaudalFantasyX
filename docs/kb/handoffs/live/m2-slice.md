@@ -3,6 +3,28 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **Playtest round 2 (Lead, ~20:00)**
+  1. **The prologue's "everyone is still here" segment is still grey.** It's the same single shot, P01, while the line is up. The subagent is back on it; leads are the near-black vigil capsules (the line's subject), saturation per the colour script, and every preset. **In progress.**
+  2. **Cutscene motion eases: done** (716c2db4, M2-FP-29). New `CutsceneMotion`:
+     - Turns ease in and out, over a time scaled by the angle.
+     - Walks have a beat of anticipation, then accelerate, cruise and decelerate, and turn into their heading instead of snapping.
+     - Every clip change cross-fades (0.25 s).
+     - Stand-in marks glide instead of jumping.
+     - The tunings are in sequencer.json and documented in cutscenes.md "Motion".
+     - **Tests:** test_cutscene_motion (5) and two real-time sequencer tests. Scoped runs, all 0 failed: cutscene 44, haluna 46, ch0* 45, fp_ 26, zone_story 15, face 25, lip 14.
+  3. **Hero swap: hooks handed over** (d06ba098). `docs/kb/tech/field_hero_hooks.md` names every place a hero capsule is built or driven: GreyboxZone `_build_player` / `_build_stage`, the Haluna, shrine and first-verse scenes, and the sequencer's clip and motion contract. The hero integration track has my OK to edit those hook points, or to name an API for me to wire. I'm not duplicating its work.
+- **Pre-existing, not m2-slice's: `test_shrine_audio::test_the_zone_plays_the_shrine_cue` fails when run alone** (`--filter=shrine`).
+  - It fails the same way on HEAD without my changes.
+  - **The cause:** `AudioDirector.apply_zone` → `play_music_async` is a threaded load the test doesn't wait for, so `music.player().stream` is null. In the full suite the stream is already cached, so it passes.
+  - **Audio's test, from big7.** It needs to await the load, or use a sync path in tests.
+- **M3-CMB-01 (Ch8 set-piece pieces) is built** (subagent; ADR 0038; docs/kb/design/set_piece_battles.md).
+  - **Merged over big7** in a scratch worktree (f3ef6f8c, not on the branch yet). The full gate, with suite, tools, sim and coverage, is running there.
+  - **Bands at 1000 seeds (role_answer / naive):**
+    - Waves 1–3: 89.8 / 15.4%, 87.8 / 53.2% and 93.0 / 33.2%;
+    - the Reach: 80.7% / 0.3%.
+  - **Battle coverage:** 99.96%, against a 99.93% baseline.
+  - **Lead to confirm:** the waves' naive band is 10–60%, not the beat sheet's 40–60%. Wave 1's masher sits at 15%, and raising it pushed role_answer past 95%.
+  - **UI still to do** (needs a UI task): entries on the timeline, Swap and formation greyed for locked or unavailable heroes, floats for intercepts and withdrawals, and the stair-meter HUD.
 - **MERGE-READY @ a851364c** (plus this log commit)
   - **Items:**
     - big7 merged (00bf4b01);
