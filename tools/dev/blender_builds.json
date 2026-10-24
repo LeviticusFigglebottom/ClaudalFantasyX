@@ -66,6 +66,16 @@
         ["{blender}", "--python", "assets_src/creatures/reef_crab/build_reef_crab.py", "--", "--out", "assets/creatures/reef_crab/reef_crab.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "reef_crab"]
       ]
+    },
+    {
+      "id": "creature_gull_harrier",
+      "owner": "character",
+      "sources": ["assets_src/creatures/gull_harrier/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/gull_harrier/*.glb", "assets/creatures/gull_harrier/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/gull_harrier/build_gull_harrier.py", "--", "--out", "assets/creatures/gull_harrier/gull_harrier.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "gull_harrier"]
+      ]
     }
   ]
 }

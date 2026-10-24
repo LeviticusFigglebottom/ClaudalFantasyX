@@ -32,6 +32,7 @@
     {
       "id": "gull_harrier", "name_key": "ENEMY_GULL_HARRIER", "role_answer": "rhen",
       "lore_key": "LORE_GULL_HARRIER",
+      "model": "res://game/creatures/gull_harrier/gull_harrier_battle.tscn",
       "stats": {"level": 4, "hp": 220, "mp": 0, "strength": 8, "magic": 2, "defense": 6,
                 "magic_defense": 6, "agility": 24, "accuracy": 10, "evasion": 30, "luck": 8},
       "affinities": {"ice": "weak"},
