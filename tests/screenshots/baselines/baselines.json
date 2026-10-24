@@ -245,6 +245,12 @@
     "rendering_driver": "vulkan",
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
+  "creature_glassfry": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
   "creature_gull_harrier": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_method": "forward_plus",
@@ -293,6 +299,24 @@
     "rendering_driver": "vulkan",
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
+  "creature_scuttler": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
+  "creature_shoal_skipper": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
+  "creature_slag_tortoise": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
   "creature_spar_wraith": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_method": "forward_plus",
@@ -300,6 +324,12 @@
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "creature_spawn_polyp": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
+  "creature_tide_crawler": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
