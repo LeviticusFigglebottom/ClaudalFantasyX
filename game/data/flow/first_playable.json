@@ -68,7 +68,8 @@
       "night_hide": [
         "NPCs/Dock",
         "NPCs/Osu",
-        "NPCs/Neme/Bag"
+        "NPCs/Neme/Bag",
+        "NPCs/Town"
       ],
       "night": {
         "mood": "night",
