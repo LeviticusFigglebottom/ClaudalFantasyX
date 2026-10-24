@@ -22,7 +22,9 @@ var _sub_rect := Rect2()
 
 func _ready() -> void:
 	_m = HudLayout.section(&"commands")
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	# A reference-sized frame on the commands' corner: the root and sub-menu rects (reference
+	# coordinates) keep their margins to it at any aspect (M2-UI-29).
+	HudLayout.place_frame(self, str(_m.get("pin", HudLayout.DEFAULT_PIN)))
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root_rect = HudLayout.rect_of(_m)
 	_sub_rect = HudLayout.rect_of(HudLayout.section(&"reserve"))

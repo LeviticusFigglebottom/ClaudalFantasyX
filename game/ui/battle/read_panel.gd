@@ -51,6 +51,7 @@ func _ready() -> void:
 	_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hint.text = tr("HUD_READ_CLOSE_HINT")
 	v.add_child(_hint)
+	UiFrame.centre(self)  # centred at any aspect; a click beside the frame still closes it
 	visible = false
 
 

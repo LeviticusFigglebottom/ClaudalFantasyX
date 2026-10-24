@@ -117,6 +117,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	UiSettings.shared().follow(self)
 	_build()
+	UiFrame.centre(self)  # the panel centred at 16:10 and 21:9, the scrim full screen (M2-UI-29)
 	_root.replace_rows(model.root_rows())
 	_render()
 	if pause_tree and not get_tree().paused:
