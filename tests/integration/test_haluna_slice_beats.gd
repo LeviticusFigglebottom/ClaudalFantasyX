@@ -104,10 +104,8 @@ func test_low_tide_plays_before_cutscene_b() -> void:
 	assert_true(_interactable(&"causeway_head").on_touched())
 	assert_true(&"toma" in speakers and &"asha" in speakers, "Toma and Asha at low tide")
 	assert_eq(hand_offs.size(), 1, "then the hand-off")
-	assert_eq(hand_offs[0][0], StringName(HalunaStory.KEY_CUTSCENE))
-	assert_eq(
-		hand_offs[0][1], "res://game/levels/ch03/shell_shrine/shell_shrine.tscn", "the Shell Shrine trial (M2-FP-16)"
-	)
+	assert_eq(hand_offs[0][0], StringName(HalunaStory.KEY_GO))
+	assert_eq(hand_offs[0][1], "ch03/saltgrass_causeway", "the Saltgrass Causeway, then the trial (M2-FP-25)")
 	_done()
 
 

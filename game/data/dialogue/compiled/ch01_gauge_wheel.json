@@ -1,0 +1,20 @@
+{
+ "format": 1,
+ "scene": "ch01_gauge_wheel",
+ "source": "game/data/dialogue/ch01/ch01_gauge_wheel.dlg",
+ "start": "ch01_gauge_wheel",
+ "nodes": {
+  "ch01_gauge_wheel": {
+   "headers": {"location": "ch01/oruvel_underway"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["U07"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "sfx", "args": ["salvage_cut"], "kwargs": {}, "src": 8},
+    {"op": "line", "id": "ch01_gauge_001", "key": "DLG_CH01_GAUGE_001", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 9},
+    {"op": "cue", "cue": "sfx", "args": ["salvage_cut"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 11},
+    {"op": "line", "id": "ch01_gauge_002", "key": "DLG_CH01_GAUGE_002", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 13}
+   ]
+  }
+ }
+}

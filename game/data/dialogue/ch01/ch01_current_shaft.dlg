@@ -1,0 +1,18 @@
+// Ch1 C1-06 to C1-07: the way up is a current, a vertical shaft where the tower breathes with the
+// tide (U08). Rhen clips on and lets it take him, and hums under his breath, once through, the
+// current-song his father taught him for reading water (rhen_current_hum: a working tune, a chart,
+// NOT the Hush lullaby). The hum has no words. Then U09: up through the Snell window toward noon, and
+// the music comes up from under the water into oruvel_raft. The chapter flow goes on to ch01/oruvel,
+// whose arrival fades in on O01 (one continuous rise, U09 -> O01). Ends faded out (the hand-off).
+title: ch01_current_shaft
+location: ch01/oruvel_underway
+---
+@camera U08
+@anim rhen clip_on
+Rhen [neutral]: Tide's breathing out. Right on time. #line:ch01_shaft_001
+@music rhen_current_hum
+@wait 6.0
+@camera U09 blend=2.0
+@music oruvel_raft fade=3.0
+@fade out 1.5
+===

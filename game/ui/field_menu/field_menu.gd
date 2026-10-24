@@ -7,14 +7,17 @@ extends Control
 ## palette, reduced motion).
 ## Layout: game/data/ui/field_menu.json (1920x1080 reference). Words: FieldMenuModel.
 ##
-## Three levels: ROOT (Bestiary / Swell / Settings / Close) on the left; HEROES (each Swell hero and the mode
+## Map (M2-UI-18) opens the zone map page (ZoneMapMenu) over it, like the bestiary; the zone and
+## the player come from the field when the menu opens (ZoneMapMenu.live_model).
+##
+## Three levels: ROOT (Bestiary / Swell / Map / Settings / Close) on the left; HEROES (each Swell hero and the mode
 ## in use) and MODES (one hero's unlocked modes, "In use" on the current one) on the right. The
 ## line under the right page says what the highlighted row means (pillar 4).
 ##
 ## Input (keyboard and controller through ui_*): ui_up / ui_down move, ui_accept chooses,
 ## ui_cancel goes back a level and closes from the root. Mouse: hover to move, click to choose.
-## While the bestiary or the Settings hub is open it takes the input, and this menu hides until
-## it closes.
+## While the bestiary, the map or the Settings hub is open it takes the input, and this menu hides
+## until it closes.
 ##
 ## M2-MNU-01..04 (the Menus track): Items, Equip, Lattice and Status open the party's pages
 ## (FieldSubmenu children in game/ui/menus/, each over a PartySheet of this model's state and
@@ -53,6 +56,8 @@ var hero: StringName = &""
 var bestiary: BestiaryMenu
 ## The Settings hub opened from here (null when closed).
 var settings_menu: SettingsMenu
+## The zone map opened from here (null when closed).
+var map_menu: ZoneMapMenu
 ## The party page opened from here (Items, Equip, Lattice, Status; null when closed).
 var child: FieldSubmenu
 
@@ -61,6 +66,8 @@ var _root: MenuPage
 var _detail: MenuPage
 var _desc: Label
 var _help: Label
+var _objective_head: Label
+var _objective: Label
 var _owns_pause := false
 var _is_closed := false
 ## A line that stays on the description until the cursor moves ("Rhen's gauge now fills by ...").
@@ -97,6 +104,8 @@ func configure(with_model: FieldMenuModel = null) -> void:
 func _ready() -> void:
 	if model == null:
 		model = FieldMenuModel.from_game()
+	if model.map == null and model.live_map:
+		model.map = ZoneMapMenu.live_model(self)
 	_d = load_data()
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -181,6 +190,8 @@ func close() -> void:
 		bestiary.close()
 	if settings_menu != null and settings_menu.is_open():
 		settings_menu.close()
+	if map_menu != null and map_menu.is_open():
+		map_menu.close()
 	if child != null and child.is_open():
 		child.close()
 	_restore_pause()
@@ -207,6 +218,11 @@ func desc_text() -> String:
 	return _desc.text
 
 
+## The root's Objective block ("" when hidden).
+func objective_text() -> String:
+	return _objective.text if _objective.visible else ""
+
+
 func help_text() -> String:
 	return _help.text
 
@@ -218,6 +234,9 @@ func _accept_root(id: StringName) -> void:
 		FieldMenuModel.ROW_SWELL:
 			if not model.swell_heroes().is_empty():
 				_open_heroes(&"")
+		FieldMenuModel.ROW_MAP:
+			if model.has_map():
+				_open_map()
 		FieldMenuModel.ROW_SETTINGS:
 			_open_settings()
 		FieldMenuModel.ROW_QUIT:
@@ -229,14 +248,26 @@ func _accept_root(id: StringName) -> void:
 				_open_child(id)
 
 
-## True while the bestiary, the Settings hub or a party page is open over this menu (it has the
-## input).
+## True while the bestiary, the map, the Settings hub or a party page is open over this menu (it
+## has the input).
 func _child_open() -> bool:
 	return (
 		(bestiary != null and bestiary.is_open())
 		or (settings_menu != null and settings_menu.is_open())
+		or (map_menu != null and map_menu.is_open())
 		or (child != null and child.is_open())
 	)
+
+
+func _open_map() -> void:
+	map_menu = ZoneMapMenu.open_in(self, model.map)
+	visible = false
+	map_menu.closed.connect(_on_map_closed)
+
+
+func _on_map_closed() -> void:
+	map_menu = null
+	visible = true
 
 
 ## Opens the party page for root row `id` (CHILD_PAGES) over a PartySheet of this menu's state.
@@ -333,6 +364,9 @@ func _render() -> void:
 		_:
 			_detail.set_header(model.heroes_title())
 	_place_detail(at_root)
+	_objective.text = model.objective_line()
+	_objective.visible = at_root and _objective.text != ""
+	_objective_head.visible = _objective.visible
 	var id := StringName(str((_root if at_root else _detail).current_row().get("id", "")))
 	match level:
 		Level.ROOT:
@@ -403,6 +437,14 @@ func _build() -> void:
 	_desc = _label(&"BodyLabel", Rect2(dr.position, Vector2(dr.size.x, HudLayout.num(_d.get("desc", {}), "height"))))
 	_desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var om: Dictionary = _d.get("objective", {})
+	var orr := HudLayout.rect_of(om)
+	var head_h := HudLayout.num(om, "label_height")
+	_objective_head = _label(&"DimLabel", Rect2(orr.position, Vector2(orr.size.x, head_h)))
+	_objective_head.text = tr("OBJ_LABEL")
+	_objective = _label(&"BodyLabel", Rect2(orr.position + Vector2(0.0, head_h), orr.size - Vector2(0.0, head_h)))
+	_objective.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 
 ## A MenuPage at its block's rect, as tall as `rows` rows need (0 = the root's three).

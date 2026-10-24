@@ -23,7 +23,8 @@ func before_each() -> void:
 func test_the_root_names_its_rows_and_swell_is_off_without_a_swell_hero() -> void:
 	var m := _model([&"rhen"])
 	var rows := m.root_rows()
-	assert_eq(rows.size(), 9, "M2-MNU-01..04 added Items, Equip, Lattice, Status and Quit")
+	assert_eq(rows.size(), 10, "M2-MNU-01..04 added Items, Equip, Lattice, Status and Quit; M2-UI-18 Map")
+	assert_eq(rows[_at(FieldMenuModel.ROW_MAP)]["label"], tr("FIELD_MENU_MAP"), "M2-UI-18")
 	assert_eq(rows[_at(FieldMenuModel.ROW_BESTIARY)]["label"], tr("FIELD_MENU_BESTIARY"))
 	assert_eq(rows[_at(FieldMenuModel.ROW_SWELL)]["label"], tr("FIELD_MENU_SWELL"))
 	assert_eq(rows[_at(FieldMenuModel.ROW_SETTINGS)]["label"], tr("FIELD_MENU_SETTINGS"), "M2-UI-09")
@@ -141,8 +142,7 @@ func test_the_swell_path_sets_a_mode_and_cancel_walks_back() -> void:
 func test_the_bestiary_opens_over_it_and_hands_back_on_cancel() -> void:
 	_open(true)
 	var tree := menu.get_tree()
-	for i in _at(FieldMenuModel.ROW_BESTIARY):
-		menu.handle_input(_ev(&"ui_down"))
+	menu.root_page().set_cursor(_at(FieldMenuModel.ROW_BESTIARY), false)  # Down skips the Map row (off here)
 	menu.handle_input(_ev(&"ui_accept"))
 	var b := menu.bestiary
 	assert_true(b != null and b.is_open(), "Bestiary opens BestiaryMenu")

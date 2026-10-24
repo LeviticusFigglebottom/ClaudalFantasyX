@@ -20,6 +20,7 @@ const PALETTE := &"palette"
 const TIMING_ASSIST := &"timing_assist"
 const TEXT_SPEED := &"text_speed"
 const DIALOGUE_BACKING := &"dialogue_backing"
+const OBJECTIVE_CUE := &"objective_cue"
 const KIND_BOOL := "bool"
 const KIND_ENUM := "enum"
 const PALETTE_STANDARD := &"standard"
@@ -155,6 +156,11 @@ func dialogue_chars_per_sec(default_cps: float, min_cps: float, max_cps: float) 
 ## The alpha of the band behind dialogue and cutscene lines (M2-UI-12; 0 = no band).
 func dialogue_backing_alpha() -> float:
 	return float((data.get("dialogue_backings", {}) as Dictionary).get(str(get_value(DIALOGUE_BACKING)), 0.0))
+
+
+## True when the field shows the destination cue toward the objective (M2-UI-19).
+func objective_cue_enabled() -> bool:
+	return bool(get_value(OBJECTIVE_CUE))
 
 
 ## The short on-screen tag of the timing assist in force (its "tag_key"; "" when it is off).

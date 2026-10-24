@@ -10,9 +10,13 @@ extends Node
 ##   overheard_hold_sec  how long an overheard bark's line stays up (optional).
 ## `when` is {"set": [flags], "unset": [flags]}, all of which must hold (missing = holds).
 ## Steps run in order, one key each:
-##   {"play": id}       plays a compiled .dlg scene on the stage and waits for it.
+##   {"play": id}       plays a compiled .dlg scene on the stage and waits for it. When the run hands
+##                      off after it with no other scene between (only set, place, party or zone steps),
+##                      it doesn't fade back in at its end (restore_fade): a scene that ends on black
+##                      hands off on black (M3-C01-02: Ch1's rise to the surface and going under).
 ##   {"place": spawn}   puts Rhen on a spawn, facing its marker.
 ##   {"set": flag}      sets a declared flag through Game.set_flag.
+##   {"chapter": n}     moves the story to chapter n (Game.set_chapter; the chapter autosave follows).
 ##   {"party": {"party": [...], "reserve": [...]}} replaces the party.
 ##   {"zone": method, "args": [...]} calls a method on the zone root, when it has it.
 ##   {"beat": id}       runs another beat's steps here (its `when` is not checked).
@@ -101,6 +105,19 @@ func run(steps: Array) -> void:
 	busy = handed_off
 
 
+## True when nothing is playing and nothing has handed off: a field encounter may start.
+func is_free() -> bool:
+	return _free()
+
+
+## Opens a random field battle (FieldEncounters): it returns to `spawn` here, win or escape.
+func random_battle(encounter: StringName, spawn: StringName) -> void:
+	_hand_off(
+		KIND_BATTLE,
+		_battle_request({"battle": String(encounter), "return_spawn": String(spawn), "escape_spawn": String(spawn)})
+	)
+
+
 ## True when every flag in when.set is set and every flag in when.unset is not.
 static func holds(when: Dictionary) -> bool:
 	for f: Variant in when.get("set", []):
@@ -123,13 +140,16 @@ func variant(scene_id: StringName) -> StringName:
 ## Returns true when the run should stop (a hand-off, or an if_event that fired).
 func _steps(steps: Array) -> bool:
 	var stop := false
-	for step: Dictionary in steps:
+	for i in steps.size():
+		var step: Dictionary = steps[i]
 		if handed_off or stop:
 			return true
 		if _hands_off(step):
 			return true
 		if step.has("play"):
+			sequencer.restore_fade = not _hands_off_after(steps, i)
 			await sequencer.play(StringName(str(step["play"])), _stage())
+			sequencer.restore_fade = true
 		elif step.has("beat"):
 			var beat: Dictionary = (cfg.get("beats", {}) as Dictionary).get(str(step["beat"]), {})
 			stop = await _steps(beat.get("steps", []))
@@ -142,13 +162,15 @@ func _steps(steps: Array) -> bool:
 	return stop or handed_off
 
 
-## The steps that change state and return at once: place, set, party, zone.
+## The steps that change state and return at once: place, set, chapter, party, zone.
 func _apply(step: Dictionary) -> void:
 	if step.has("place"):
 		var spawn := StringName(str(step["place"]))
 		_zone.call(&"place_at", spawn, _zone.call(&"spawn_yaw_deg", spawn))
 	elif step.has("set"):
 		Game.set_flag(StringName(str(step["set"])))
+	elif step.has("chapter"):
+		Game.set_chapter(int(step["chapter"]))
 	elif step.has("party"):
 		_set_party(step["party"])
 	elif step.has("zone"):
@@ -157,6 +179,18 @@ func _apply(step: Dictionary) -> void:
 			_zone.callv(method, step.get("args", []))
 	else:
 		push_warning("ZoneStory: unknown step %s" % step)
+
+
+## True when the steps after steps[i] reach a battle, go or scene step before any other scene could
+## play (a play, beat or if_event step).
+static func _hands_off_after(steps: Array, i: int) -> bool:
+	for j in range(i + 1, steps.size()):
+		var s: Dictionary = steps[j]
+		if s.has("battle") or s.has("go") or s.has("scene"):
+			return true
+		if s.has("play") or s.has("beat") or s.has("if_event"):
+			return false
+	return false
 
 
 ## Hands off for a battle, go or scene step (true); false for any other step.

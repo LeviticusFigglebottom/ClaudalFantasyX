@@ -24,6 +24,7 @@ Owner: UI/UX + Combat (M1-UI-01, M1-CMB-01, M1-UI-02). Art rules: [`docs/kb/art/
 | `game/ui/bestiary/` | `BestiaryMenu` (+ `bestiary_menu.tscn`), `BestiaryMenuModel`, and the `bestiary_menu` capture driver (`BestiaryShot`, `shots/`). Layout: `game/data/ui/bestiary_menu.json` (M2-UI-02). |
 | `game/ui/field_menu/` | `FieldMenu` (+ `field_menu.tscn`), `FieldMenuModel`, and the `field_menu` / `field_menu_swell_modes` capture driver (`FieldMenuShot`, `shots/`). Layout: `game/data/ui/field_menu.json` (M2-UI-04). |
 | `game/ui/shop/` | `ShopMenu` / `ShopMenuModel`, `InnMenu` / `InnMenuModel`, their shared base `TownMenu`, the zone-agnostic `TownServices` hook, and the `shop_menu_buy` / `shop_menu_sell` / `inn_menu` capture driver (`TownMenuShot`, `shots/`). Layout: `game/data/ui/shop_menu.json` (M2-UI-06). |
+| `game/ui/map/` | `ZoneMapMenu` (+ `zone_map_menu.tscn`), `ZoneMapView`, `RouteStrip`, `MapGlyphs`, the node-free `MapModel` and `ZoneMapShapes`, and the `field_menu_map_haluna` / `field_menu_map_shrine` capture driver (`ZoneMapShot`, `shots/`). Layout: `game/data/ui/zone_map_menu.json`; zones and places: `game/data/ui/zone_maps.json` (M2-UI-18). |
 
 ## Theme
 
@@ -168,7 +169,7 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
 
 - **Opening it.** In the field, `ui_cancel` (Escape, B / Circle) opens `FieldMenu.open_in(player)`. That's a three-line `elif` in `FieldController._unhandled_input`, under the same `accepts_input` guard as interact, so a cutscene or a conversation (the sequencer turns `accepts_input` off) never opens it. Like `SaveMenu`, it brings its own CanvasLayer (layer 60, under the bestiary's 64) and pauses the tree while open, so the player can't get a second Escape.
 - **Three levels.** All three are `MenuPage`s, with words from `FieldMenuModel` and loc keys `FIELD_MENU_*`:
-  - **Root** (left): Bestiary, Swell, Settings (M2-UI-09: the Settings hub), Return to the path.
+  - **Root** (left): Bestiary, Swell, Map (M2-UI-18: § Zone map), Settings (M2-UI-09: the Settings hub), Return to the path.
   - **Heroes** (right): each Swell hero, with the mode in use on the right.
   - **Modes** (right, headed "Rhen's fill mode"): `BattleSwellCarry.mode_rows(cid)`. Each row shows its `name_key`, and the current one also says "In use" (`HUD_SWELL_MODE_IN_USE`, the battle page's word).
 
@@ -311,6 +312,30 @@ SPEC §6.11 input remapping. The Settings hub's third row, **Controls**, comes a
 - **Tests:** `tests/unit/test_controls_menu.gd` covers the rows, binding, key and pad swaps, the hard-wired escape after Cancel is rebound, rejection, reset, the save/load round trip and the broken file, the view swallowing input while it listens, and the hub row. Each test restores InputMap and writes only to a test cfg.
 - **Left as they are:** the keyboard column names keys by their US-layout keycode string. `ui_select`, the text-editing `ui_*` actions and the debug keys are not remappable. Battle commands use `ui_*` only, so they follow these bindings.
 
+## Zone map (M2-UI-18)
+
+The human's top priority for the playable intro: a map, so the player knows where to go.
+- **Opening it.** The field menu's root gains **Map** after Swell (`FIELD_MENU_MAP`, `FIELD_MENU_MAP_DESC`; `field_menu.json` root rect 264 tall, `max_rows` 5). It opens `ZoneMapMenu` like the bestiary: on its own CanvasLayer (62, between the field menu's 60 and the bestiary's 64), the field menu hidden and still holding the pause, and Cancel hands back to the root. Where the zone has no map the row is off, and since a row that is off cannot be highlighted, the reason sits on the row ("No map", `FIELD_MENU_MAP_NONE_TAG`; `root_desc` has the full line). This is the Vowbound Call row's rule.
+- **Which zone, where the player is.** `FieldMenuModel.from_game()` sets `live_map`. When the live menu opens, `FieldMenu._ready` fills `model.map` with `ZoneMapMenu.live_model(self)`: `ZoneMaps.zone_for_scene(current_scene.scene_file_path)`, and the `FieldController` in group `player` (else the menu's FieldController ancestor) for `global_position` and `global_rotation.y`. Nothing in `game/world/**` changed. Tests and shots pass their own `MapModel`.
+- **`MapModel`** (node-free) takes a zone id, the player's position and yaw (`Vector3.INF` means unknown), a flag check and optionally a `ZoneMaps`. It gives the places in `zone_maps.json` order, the legend rows, `objective_line` / `objective_poi` / `objective_at` (from `ObjectiveTracker`; the marker shows only when the target is in this zone), the errands, the route stops, and the line under the map: "Save shrine: 70 m to the south-west. Your errand leads here." (`MAP_POI_LINE_FMT`, eight compass words `MAP_DIR_*`, "you are here" inside `near_m`). `MapModel.fit(bounds, view)` is the world-to-map transform: one scale (the smaller fit), centred, letterboxed. World x is east and z is south, so north is up.
+- **Shapes from the zone's own data** (`ZoneMapShapes`, node-free, so the map follows the zone as Environment changes it):
+  - **Haluna** (`haluna_layout.json`). The waterline is `HalunaTerrain.inland_m`'s shore curve, from `terrain.shore_tip_x_m`, `shore_half_len_m` and `tip_recede`, sampled every `shore_step_m` and closed inland past the visible edge; the land inside it is drawn over the sea. The sand runs from that curve back to the `beach_head` wall run. Every wall run is a line, and the lanes are `terrain.lane_width_m` wide. The pads are discs and the islets are land. Each placed piece listed in `zone_map_menu.json` `pieces` is drawn as its footprint, turned by `yaw_deg` exactly as `HalunaDresser` turns it (`Basis(UP, yaw)`) and scaled. The footprints were measured once from the kit meshes' AABBs. Houses, the chapel and the stilt houses are roofs; the dock, outriggers and wakeshell walls are structures. Plants, windbreaks, garlands and the sunken lagoon ruins are left off.
+  - **The Shell Shrine** (`shell_shrine.json` `room` and `layout`). The hall is the stadium `ShellShrineLevel` builds its collision from: straight walls `hall_half_m` long and half circles of `hall_r_m`, open at the door (`door_w`), with the passage behind it (`exit_depth_m`). The spring, the four basins (`basin_r`), the octagonal inner pool (`pool`, with its `rim_t` kerb) and the side pool are water. The troughs (`channel_w`) run from the spring into `source_into` and from each basin to every basin, pool or sluice among its outlets; spill grates are left off. The door is a structure.
+- **Marks** (`MapGlyphs`, original vector shapes on a dark backing disc, told apart by silhouette): shrine is a lamp flame, shop a strapped crate, inn a crescent moon, talk three dots, path a chevron over a step, door a door with its ring, pool two ripples, dock a jetty on posts, and home a gabled house. The **objective** is a gold diamond ring framing its place's glyph, with a second ring that swells outward and fades over `pulse_sec`; it holds still under reduced motion (`UiSettings.reduced_motion()`). The legend and the objective line use a small solid version as a badge. The **player** is a teal arrow with a dark outline, pointing the way they face (`MapModel.facing`, FieldMotor's convention). The highlighted place gets a teal ring, and north is a ring with a tick and an "N" (not an arrow, so it is never taken for the player). Colours are theme roles only: the new `map_sea`, `map_land`, `map_floor`, `map_sand`, `map_pad`, `map_lane`, `map_water`, `map_roof`, `map_wall`, `map_foam` and `map_glyph_back` in `theme.json` (regenerated `hymn_theme.tres`), plus `focus`, `focus_gold`, `text`, `text_dim`, `outline` and `gauge_border`.
+- **The page** (`zone_map_menu.json`, rects in multiples of 3) has these parts:
+  - The zone's name as a banner with its OrnamentRule.
+  - The route strip (`RouteStrip`): Haluna, the Saltgrass Causeway and the Shell Shrine on one line. The current stop is a larger filled gold diamond with its name in full text; the others are small hollow diamonds with dim names.
+  - The objective line, led by the objective badge.
+  - The map in a `PanelSmall` frame.
+  - The line under the map.
+  - The legend: a titled MenuPage ("Places"), as tall as its places (up to `max_rows` 11), with each row's glyph at its right end and the objective badge beside its place. The cursor starts on the objective's place.
+  - The errands (side rows' lines, or "No errands here.").
+  - The help line.
+- **Input.** Up and Down move through the places; the map rings the chosen one and the line under it follows. Confirm does nothing, and Cancel goes back to the field menu. Mouse: hovering a legend row or a glyph on the map chooses it, a click chooses it, and the wheel steps.
+- **Captures:** `field_menu_map_haluna` is Haluna after supper at Neme's: the objective is the save shrine, the player stands just up from the beach facing inland, and the cursor is on the shrine. `field_menu_map_shrine` is the trial: the objective is the inner pool, the player is by the entrance facing in, and the side pool is drained, so its errand is listed. Both come from `ZoneMapShot`, which goes through the field menu's Map row with fixed flags. `field_menu` and `field_menu_swell_modes` were re-approved for the fifth root row. `FieldMenuShot` gives its model a Haluna map, so the row shows on as it does there in play.
+- **Tests:** `tests/unit/test_zone_map.gd` covers the transform, compass words and facing, place order and names, the objective and errands, the line under the map, the route, the Haluna and shrine shapes (including a footprint against `Basis(UP, yaw)`), the markers in the view, the Map row (open, move, cancel, mouse, off with its tag) and the live model. `tools/tests/test_zone_map_pois.py` (M2-UI-16) keeps each place's `at` on its node or layout point. `test_field_menu.gd` counts five root rows, and `test_settings_menu.gd` walks down to Settings past a row that is off.
+- **Left as they are:** the causeway has no map of its own yet (a route stop only). The map does not zoom or pan: Haluna's bounds fit at about 2.8 px/m at 1080p, and its houses read as blocks. The glyph shapes' proportions live in `MapGlyphs` (they are the drawing), while their sizes are data.
+
 ## Known gaps
 
 - **Enemy statuses show only in the target info panel** (and as the Provoke hook and the Reflect arc when they matter). There is no status strip over enemies on the stage yet.
@@ -319,9 +344,33 @@ SPEC §6.11 input remapping. The Settings hub's third row, **Controls**, comes a
 - The help line generates its text from data (kind, reach, statuses, delay, and next-turn distance). Skills have no authored description keys yet.
 - `tools/ci_local.sh` and `capture.sh` write fixed `/tmp/hymn_*.log` paths, so parallel worktrees running at the same time clobber each other's logs.
 
+## Objectives, the objective line and the destination cue (M2-UI-16, M2-UI-17, M2-UI-19)
+
+The human's top priority for the slice: the player always knows the next step. All of it is data.
+- **Rows.** `game/data/flow/objectives.json` lists the rows in story order: `{id, line_key, requires: [flags], until: flag, zone?, target?: {zone, poi}, side?}`.
+  - A row applies when every `requires` flag is set and its `until` flag is not. A row with a `zone` applies only in that zone, and never in a scene with no map, so test zones and shot scenes show nothing.
+  - The main objective is the first main row that applies; `side` rows are optional errands.
+  - First pass by UI for B01–B11. m2-slice keeps the rows current (M2-FP-25).
+  - `validate_data.py` (`check_objectives`) checks that flags are declared, loc keys exist, and zones and targets resolve.
+- **Places.** `game/data/ui/zone_maps.json` (`ZoneMaps`) lists the zones (scene, name, map bounds, shape source) and the pilgrimage route. Each point of interest has a world `at` and a `source` (a node in the zone scene, or a point in the trial layout). `tools/tests/test_zone_map_pois.py` fails when a point drifts from its source.
+- **`ObjectiveTracker`** (game/ui/objectives/) is node-free. `current(zone)`, `side(zone)`, `line(zone)` and `target(zone)` read flags through a callable: `Game.get_flag` in play, a scratch set in tests.
+- **`ObjectiveHud`** (the line) attaches with one line in `FieldController._ready`, like TownServices. It is a small tide-notch panel at the top left: a gold diamond, "Objective", and the line.
+  - **When it shows:** when the objective changes, once when the field first takes input after a scene loads (only if something calls), and on demand.
+  - **The on-demand action** is `field_objective` (Tab, or the pad's Back button). It is added through `FieldInput.add_actions` and remappable on the Controls page.
+  - **Timing:** it slides in (or only fades, under reduced motion), holds, then fades (`game/data/ui/objective_hud.json`).
+  - **When it hides:** while the field refuses input (cutscenes, conversations) and while a menu pauses the tree. A change made meanwhile waits and shows when the field is back.
+  - It follows UiSettings.
+- **`ObjectiveCue`** (the destination cue) draws over the HUD.
+  - When the target is on screen: a gold diamond ring over it (the objective shape), with "Near", "A short walk" or "Far".
+  - When it is off screen or behind the camera: an arrow clamped `edge_px` inside the screen edge.
+  - Hidden within `hide_within_m` of the target, whenever the line is gated, and when the Accessibility setting **Destination cue** (`objective_cue`) is off.
+  - `place()` is pure and tested.
+- **Shot:** `field_objective_line` shows Haluna (H02, down Tidewall lane) with the line held in ("Find the save shrine…") and the cue.
+- **Tests:** `test_objective_tracker.gd`, `test_objective_hud.gd`; tools: `test_zone_map_pois.py`.
+
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 
-- **The field menu's root has nine rows** (`FieldMenuModel.ROOT_IDS`): Items, Equip, Lattice, Status, Swell, Bestiary, Settings, Quit to Title, Close. Equip, Lattice and Status (`PARTY_ROWS`) are off, saying why, when nobody has joined. `field_menu.json` grew the panel to 639 px and the root page to nine rows; every rect is still a multiple of 3.
+- **The field menu's root has ten rows** (`FieldMenuModel.ROOT_IDS`): Items, Equip, Lattice, Status, Swell, Map (M2-UI-18), Bestiary, Settings, Quit to Title, Close. Equip, Lattice and Status (`PARTY_ROWS`) are off, saying why, when nobody has joined. `field_menu.json` grew the panel to 639 px and the root page to nine rows; every rect is still a multiple of 3.
 - **Party pages** (`game/ui/menus/`): each is a `FieldSubmenu` (the shared frame: own CanvasLayer 64 over the field menu's 60, scrim, caustic backdrop, gold-ruled banner title, dim help line, tree paused, UiSettings followed, Cancel closes). `FieldMenu.CHILD_PAGES` maps a row to its script, whose static `create(PartySheet)` builds the page; the field menu hides until it closes, then refreshes its rows. Gotcha: a script-built full-screen Control needs `set_anchors_and_offsets_preset`, not `set_anchors_preset`, or it stays 0 x 0 and its full-rect children never draw.
 - **`PartySheet`** builds each hero exactly as a live battle does (characters.json, then the Lattice, then worn gear, then the saved vitals last), minus gear's whole-battle statuses. Status, the Equip preview and field item use all read it, so the menus and the next fight agree.
 - **Loc files:** `game/data/loc/menus.csv` (shared rows, the pause), and one per page stream (`menus_lattice.csv`, `menus_equip.csv`, `menus_items.csv`) so parallel work never collides.

@@ -1,6 +1,6 @@
 {
   "theme": {
-    "doc": "docs/kb/art/ui.md (art rules) and docs/kb/tech/ui.md (how this file becomes hymn_theme.tres). ADR 0033 (flair): surface_glint, tide_line, cursor_wash, caustic and ornament_gold, and the glint, corner-tick, tide, cursor and ornament constants; *_pct constants are percentages (constants are ints).",
+    "doc": "docs/kb/art/ui.md (art rules) and docs/kb/tech/ui.md (how this file becomes hymn_theme.tres). ADR 0033 (flair): surface_glint, tide_line, cursor_wash, caustic and ornament_gold, and the glint, corner-tick, tide, cursor and ornament constants; *_pct constants are percentages (constants are ints). M2-UI-18: the map_* colours are the zone map's (sea, land, a room's floor, sand, yards, lanes, water, roofs, walls, foam, and the dark disc behind a place's glyph).",
     "palette_path": "res://docs/kb/art/palette.json",
     "output_path": "res://game/ui/theme/hymn_theme.tres",
     "palette_type": "Hymn",
@@ -37,7 +37,18 @@
       "tide_line": ["ui_line_white", 0.1],
       "cursor_wash": ["ui_focus", 0.22],
       "caustic": ["ui_focus", 0.24],
-      "ornament_gold": ["ui_line_gold", 0.9]
+      "ornament_gold": ["ui_line_gold", 0.9],
+      "map_sea": ["reef_blue", 0.4],
+      "map_land": ["foliage_shadow", 0.8],
+      "map_floor": ["coral_stone_weathered", 0.3],
+      "map_sand": ["sand_cloth", 0.5],
+      "map_pad": ["sand_cloth", 0.3],
+      "map_lane": ["coral_stone", 0.5],
+      "map_water": ["turquoise_shallow", 0.5],
+      "map_roof": ["roof_clay", 0.85],
+      "map_wall": ["mortar_white", 0.6],
+      "map_foam": ["foam_white", 0.45],
+      "map_glyph_back": ["night_sky", 0.8]
     },
     "constants": {
       "line_px": 1,

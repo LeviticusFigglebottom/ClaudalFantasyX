@@ -4,8 +4,10 @@ extends Node3D
 ## scene is only this root with `location_id` and `layout_path`; everything else is built from data:
 ##   the player (a FieldController stand-in), the field camera and its director (a hub orbit), a
 ##   CutsceneStage (Shots, Actors, Marks), the ZoneStory that plays the chapter data, a sun and an
-##   environment, the greybox blocks (solid ones collide), Spawns/ markers and the triggers and
-##   interactables (Interactable areas that carry the story payloads).
+##   environment, the greybox blocks (solid ones collide; "emission" makes one glow), Spawns/
+##   markers, the triggers and interactables (Interactable areas that carry the story payloads),
+##   camera volumes with their rails (fixed, pan_follow or dolly shots; M2-FP-25) and the field
+##   encounters (FieldEncounters, with its "Encounter" return spawn).
 ## Defaults (sizes, colours, the camera) come from game/data/world/greybox_defaults.json; the layout
 ## overrides any of them. Env-art's kit swaps in later by replacing the blocks, not the story.
 ##
@@ -17,6 +19,11 @@ const SPAWNS := &"Spawns"
 const GREYBOX := &"Greybox"
 const TRIGGERS := &"Triggers"
 const ACTIVATION_TOUCH := "touch"
+const RAILS := &"Rails"
+const VOLUMES := &"CameraVolumes"
+const SHOT_MODES := {
+	"fixed": CameraShot.Mode.FIXED, "pan_follow": CameraShot.Mode.PAN_FOLLOW, "dolly": CameraShot.Mode.DOLLY
+}
 
 ## The location this zone is in locations.json; ZoneStory reads its block of the chapter data by it.
 @export var location_id: StringName = &""
@@ -31,6 +38,7 @@ var field_camera: Camera3D
 var stage: CutsceneStage
 var story: ZoneStory
 var sun: DirectionalLight3D
+var encounters: FieldEncounters
 var layout: Dictionary = {}
 var defaults: Dictionary = {}
 
@@ -55,22 +63,38 @@ func build() -> void:
 	layout = read_json(layout_path) if layout_path != "" else {}
 	_build_lighting()
 	_build_blocks()
-	_build_markers(SPAWNS, layout.get("spawns", {}))
+	var spawns: Dictionary = (layout.get("spawns", {}) as Dictionary).duplicate()
+	if layout.has("encounters"):
+		spawns[String(FieldEncounters.RETURN_SPAWN)] = [0, 0, 0, 0]
+	_build_markers(SPAWNS, spawns)
 	_build_player()
 	_build_stage()
 	_build_triggers()
+	_build_camera_volumes()
 	story = ZoneStory.new()
 	story.name = "ZoneStory"
 	add_child(story)
+	if layout.has("encounters"):
+		encounters = FieldEncounters.new()
+		encounters.name = "Encounters"
+		add_child(encounters)
 
 
-## Moves the player to Spawns/<spawn> facing `yaw_deg` and snaps the camera.
+func _ready() -> void:
+	if encounters != null:
+		encounters.setup(self, layout.get("encounters", {}))
+
+
+## Moves the player to Spawns/<spawn> facing `yaw_deg` and snaps the camera. The "Encounter" spawn
+## is where the last field encounter here left Rhen (FieldEncounters.return_points).
 func place_at(spawn: StringName, yaw_deg: float = 0.0) -> bool:
 	var marker := spawn_marker(spawn)
 	if marker == null:
 		push_warning("GreyboxZone %s: no spawn '%s'" % [location_id, spawn])
 		return false
 	player.position = marker.position
+	if spawn == FieldEncounters.RETURN_SPAWN and FieldEncounters.return_points.has(String(location_id)):
+		player.position = FieldEncounters.return_points[String(location_id)]
 	player.rotation.y = deg_to_rad(yaw_deg)
 	player.velocity = Vector3.ZERO
 	if player.motor != null:
@@ -149,13 +173,19 @@ func _build_blocks() -> void:
 	for b: Dictionary in layout.get("blocks", []):
 		var size := _vec3(b.get("size", [1, 1, 1]))
 		var color := str(b.get("color", setting("block_color")))
-		if not mats.has(color):
+		var glow := str(b.get("emission", ""))
+		var mat_key := color + glow + str(b.get("emission_energy", ""))
+		if not mats.has(mat_key):
 			var m := StandardMaterial3D.new()
 			m.albedo_color = Color.html(color)
-			mats[color] = m
+			if glow != "":
+				m.emission_enabled = true
+				m.emission = Color.html(glow)
+				m.emission_energy_multiplier = float(b.get("emission_energy", 1.0))
+			mats[mat_key] = m
 		var mesh := BoxMesh.new()
 		mesh.size = size
-		mesh.material = mats[color]
+		mesh.material = mats[mat_key]
 		var body: Node3D = StaticBody3D.new() if bool(b.get("solid", true)) else Node3D.new()
 		body.name = str(b.get("id", "Block"))
 		body.position = _vec3(b.get("pos", [0, 0, 0]))
@@ -291,6 +321,52 @@ func _build_triggers() -> void:
 		cs.position.y = size.y * 0.5
 		area.add_child(cs)
 		root.add_child(area)
+
+
+func _build_camera_volumes() -> void:
+	var rails := Node3D.new()
+	rails.name = String(RAILS)
+	add_child(rails)
+	var root := Node3D.new()
+	root.name = String(VOLUMES)
+	add_child(root)
+	for v: Dictionary in layout.get("camera_volumes", []):
+		var id := str(v.get("id", "Volume"))
+		var shot := CameraShot.new()
+		shot.id = StringName(id)
+		shot.mode = SHOT_MODES.get(str(v.get("mode", "fixed")), CameraShot.Mode.FIXED)
+		shot.position = _vec3(v.get("pos", [0, 0, 0]))
+		shot.look_at = _vec3(v.get("look_at", [0, 0, -1]))
+		shot.fov_deg = float(v.get("fov", setting("shot_fov_deg")))
+		shot.target_offset = Vector3(0.0, float(_merged("camera").get("target_height", 0.0)), 0.0)
+		if v.has("dolly"):
+			shot.dolly_path = NodePath("%s/%s_dolly" % [RAILS, id])
+			rails.add_child(_path(id + "_dolly", v["dolly"]))
+		if v.has("track"):
+			shot.track_path = NodePath("%s/%s_track" % [RAILS, id])
+			rails.add_child(_path(id + "_track", v["track"]))
+		var vol := CameraVolume.new()
+		vol.name = id
+		vol.shot = shot
+		vol.shot_priority = int(v.get("priority", 0))
+		vol.position = _vec3(v.get("at", [0, 0, 0]))
+		var shape := BoxShape3D.new()
+		shape.size = _vec3(v.get("size", [1, 1, 1]))
+		var cs := CollisionShape3D.new()
+		cs.name = "Shape"
+		cs.shape = shape
+		vol.add_child(cs)
+		root.add_child(vol)
+
+
+func _path(id: String, points: Array) -> Path3D:
+	var curve := Curve3D.new()
+	for p: Variant in points:
+		curve.add_point(_vec3(p))
+	var path := Path3D.new()
+	path.name = id
+	path.curve = curve
+	return path
 
 
 func _capsule_shape(d: Dictionary) -> CollisionShape3D:

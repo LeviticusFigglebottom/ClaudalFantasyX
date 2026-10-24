@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch03_bark_causeway_posts",
+ "source": "game/data/dialogue/ch03/ch03_bark_causeway_posts.dlg",
+ "start": "ch03_bark_causeway_posts",
+ "nodes": {
+  "ch03_bark_causeway_posts": {
+   "headers": {"location": "ch03/saltgrass_causeway"},
+   "ops": [
+    {"op": "line", "id": "ch03_bark_causeway_posts_001", "key": "DLG_CH03_BARK_CAUSEWAY_POSTS_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch03_bark_causeway_posts_002", "key": "DLG_CH03_BARK_CAUSEWAY_POSTS_002", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch03_bark_causeway_posts_003", "key": "DLG_CH03_BARK_CAUSEWAY_POSTS_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "line", "id": "ch03_bark_causeway_posts_004", "key": "DLG_CH03_BARK_CAUSEWAY_POSTS_004", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 10}
+   ]
+  }
+ }
+}

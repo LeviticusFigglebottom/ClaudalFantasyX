@@ -13,6 +13,10 @@ extends Node3D
 ## shows, the nacre shimmers, the lips pour), raises the inner pool, sinks the door, empties the side
 ## pool and offers the charm. Through the open door, the exit trigger hands off to Cutscene B
 ## (first_playable.json "shell_shrine" next_scene).
+## M2-FP-27: the shrine is a location (ch03/shell_shrine; Spawns/Entry, Spawns/Exit, place_at). When the
+## pool fills, the respawn point moves to the open door (checkpoint_location / checkpoint_spawn) and a
+## checkpoint autosave is requested, so a Drownbell loss and "Return to last save" resume past the
+## trial (the door and side pool restore from their flags).
 ##
 ## Hooks (VFX, audio, HUD): the trial's own signals (`trial.rotated`, `flow_changed`, `pool_filled`,
 ## `side_pool_drained`, `hint_due`) plus `charm_taken` here. Time passes only through advance(delta),
@@ -241,6 +245,27 @@ func _on_flow_changed(path: Array[StringName]) -> void:
 func _on_pool_filled() -> void:
 	Game.set_flag(StringName(str(trial.data.get("door_flag", ""))), true)
 	_open_door(false)
+	var loc := StringName(str(cfg.get("checkpoint_location", "")))
+	if loc != &"":
+		Game.state.respawn_location_id = loc
+		Game.state.respawn_spawn = StringName(str(cfg.get("checkpoint_spawn", "")))
+		SaveSystem.request_autosave(StringName(str(cfg.get("checkpoint_reason", SaveSystem.REASON_CHAPTER))))
+
+
+## Moves Rhen to Spawns/<spawn> facing `yaw_deg` and snaps the camera (WorldReturn, Continue).
+func place_at(spawn: StringName, yaw_deg: float = 0.0) -> bool:
+	var marker := get_node_or_null(NodePath("Spawns/%s" % spawn)) as Marker3D
+	if marker == null:
+		push_warning("ShellShrineLevel: no spawn '%s'" % spawn)
+		return false
+	player.position = marker.position
+	player.rotation.y = deg_to_rad(yaw_deg)
+	player.velocity = Vector3.ZERO
+	if player.motor != null:
+		player.motor.facing_yaw = player.rotation.y
+	if director.is_inside_tree():
+		director.snap()
+	return true
 
 
 func _on_side_drained() -> void:
