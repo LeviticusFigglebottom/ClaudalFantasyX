@@ -2,7 +2,7 @@
 id: M3-BPR-01
 title: Act I battle arenas and their presentation (encounter arena ids, greybox fallbacks, per-arena staging)
 role: combat
-status: todo
+status: doing
 owner_session: battle-presentation (claude/battle-presentation)
 depends_on: [M2-BPR-07]
 milestone: M3
