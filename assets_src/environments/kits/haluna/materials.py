@@ -307,6 +307,14 @@ MATERIALS["kit_windbreak_bark"] = _tree_bark(8, 0.2, "Color(0.5, 0.47, 0.44, 1)"
 MATERIALS["kit_windbreak_leaf"] = _tree_leaf(8, 0.2, col_tint=hexc("#D6DED8"), translucency=0.45,
                                              roughness_value=0.38)
 
+# ---- M2-ENV-11 (appended by env-art): the battle arenas' ground (arenas.py) -----------------------
+# The zone ground shader (the Haluna terrain's GroundMat) on the kit's ground meshes: masks in the vertex
+# colours (R lane, G turf, B seagrass, A reef rubble), the wet band from the live water height.
+MATERIALS["kit_ground"] = {"shader": "res://game/shaders/environment/env_ground.gdshader", "params": {
+    "tex_sand": ("tex", TEX + "sand_albedo.png"), "tex_sand_normal": ("tex", TEX + "sand_normal.png"),
+    "tex_stone": ("tex", TEX + "coral_stone_albedo.png"), "tex_stone_normal": ("tex", TEX + "coral_stone_normal.png"),
+    "tex_detail": ("tex", TEX + "weathering_detail.png")}}
+
 
 if __name__ == "__main__":
     sys.exit(main())
