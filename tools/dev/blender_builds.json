@@ -83,6 +83,21 @@
         ["{python}", "assets_src/environments/kits/brine_shoals/bs_textures.py"],
         ["{python}", "assets_src/environments/kits/brine_shoals/bs_materials.py"]
       ]
+    },
+    {
+      "id": "oruvel_underway_kit", "threads": 4,
+      "owner": "environment",
+      "_doc": "M3-ENV-05: the Oruvel Underway kit (the Ch1 drowned tower and its sea floor). Geometry reuses the Haluna kit's core (kit_common) read-only; the two {python} steps rebuild its maps and materials (with the Haluna texture helpers and material writers), so they are verified too. Threads pinned at 4, as haluna_kit.",
+      "sources": ["assets_src/environments/kits/oruvel_underway/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/kit_textures.py", "assets_src/environments/kits/haluna/materials.py",
+                  "assets_src/environments/vegetation/textures.py"],
+      "outputs": ["assets/environments/kits/oruvel_underway/*.glb", "assets/environments/kits/oruvel_underway/kit_manifest.json",
+                  "assets/environments/kits/oruvel_underway/textures/*.png", "assets/environments/kits/oruvel_underway/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/oruvel_underway/build.py", "--", "--all", "--out-dir", "assets/environments/kits/oruvel_underway", "--manifest", "assets/environments/kits/oruvel_underway/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/oruvel_underway/ou_textures.py"],
+        ["{python}", "assets_src/environments/kits/oruvel_underway/ou_materials.py"]
+      ]
     }
   ]
 }
