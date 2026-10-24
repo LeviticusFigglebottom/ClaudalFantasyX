@@ -12,7 +12,8 @@ extends Node
 ##   while the sequencer's music plays; a DialogueBox's blip goes to Voice and an open box ducks the music; a
 ##   battle (BattleVfx under a BattleController) gets a BattleAudio listener (battle_audio.gd) and ducks the
 ##   ambience; the Shell Shrine level gets a ShrineAudio listener (shrine_audio.gd); a FieldController gets a
-##   FootstepAudio (footstep_audio.gd); the menus in ui_sfx.json are watched by a UiAudio (ui_audio.gd). Listeners
+##   FootstepAudio (footstep_audio.gd); the menus in ui_sfx.json are watched by a UiAudio (ui_audio.gd), and
+##   Reefball's sphere and match in reefball_hooks.json by a ReefballAudio (reefball_audio.gd). Listeners
 ##   live under this node, not in the other scene's tree, and never write game state.
 ## - **Ambience (M2-AUD-05):** ambience.json's beds join music.json's, and its zone beds apply where music.json's
 ##   row names none; the wind bed's level follows the zone's wind speed (WeatherClock.zone_wind).
@@ -47,6 +48,8 @@ var voice_data: Dictionary = {}
 ## The World and Combat reverb (M2-AUD-10).
 var verb := WorldVerb.new()
 var ui: UiAudio
+## Reefball's sphere and match, by listening (M3-AUD-17; reefball_audio.gd).
+var reefball: ReefballAudio
 var music: MusicDeck
 var sfx: SfxBank
 ## Ambience bed id -> FadeVoice.
@@ -82,6 +85,7 @@ func _ready() -> void:
 		AudioData.table(AudioData.AMBIENCE)
 	)
 	ui.configure(AudioData.table(AudioData.UI_SFX))
+	reefball.configure(AudioData.table(AudioData.REEFBALL_HOOKS))
 	footstep_data = AudioData.table(AudioData.FOOTSTEPS)
 	voice_data = AudioData.table(AudioData.VOICES)
 	get_tree().node_added.connect(_on_node_added)
@@ -103,6 +107,11 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 		ui.name = "UiAudio"
 		ui.player = func(id: StringName) -> void: play_sfx(id)
 		add_child(ui)
+	if reefball == null:
+		reefball = ReefballAudio.new()
+		reefball.name = "ReefballAudio"
+		reefball.bind_director(self)
+		add_child(reefball)
 	build_buses(mix)
 	verb.configure(mix)
 	if music == null:
@@ -143,6 +152,7 @@ func advance(delta: float) -> void:
 	verb.advance(delta)
 	_poll_pending()
 	ui.step()
+	reefball.advance(delta)
 	for l: Variant in listeners.values():
 		if not is_instance_valid(l):
 			continue
@@ -406,6 +416,8 @@ func _on_node_added(node: Node) -> void:
 		_later(attach_shrine, node)
 	elif node is FieldController:
 		_later(attach_footsteps, node)
+	elif reefball != null and reefball.wants(node):
+		_later(reefball.watch, node)
 	elif ui != null and ui.wants(node):
 		_later(ui.watch, node)
 

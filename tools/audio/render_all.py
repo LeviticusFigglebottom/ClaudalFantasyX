@@ -152,6 +152,11 @@ JOBS = [
      ["brightwater_ferry.ogg", "brightwater_ferry.loop.json"], "music_loop"),
     ("assets_src/music/brine_shoals.py", "assets/audio/music",
      ["brine_shoals.ogg", "brine_shoals.loop.json"], "music_loop"),
+    # M3-AUD-15: the M3 menus' UI sounds (Lattice, Equip, map, tips, title)
+    ("assets_src/sfx/menu_sfx.py", "assets/audio/sfx",
+     [f"{u}.ogg" for u in ("ui_lattice_node", "ui_lattice_unlock", "ui_lattice_step", "ui_equip", "ui_unequip",
+                           "ui_map_open", "ui_map_close", "ui_map_tick", "ui_map_marker", "ui_tip",
+                           "ui_title_confirm", "ui_title_swell")], "sfx"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 

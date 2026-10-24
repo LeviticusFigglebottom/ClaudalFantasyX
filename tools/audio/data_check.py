@@ -20,6 +20,7 @@ UI_SFX = "game/data/audio/ui_sfx.json"
 AMBIENCE = "game/data/audio/ambience.json"
 FOOTSTEPS = "game/data/audio/footsteps.json"
 VOICES = "game/data/audio/voices.json"  # M3-AUD-07
+REEFBALL_HOOKS = "game/data/audio/reefball_hooks.json"  # M3-AUD-17
 SPEAKERS = "game/data/dialogue/speakers.json"
 CLASSES = "@classes"  # load_files: {global class name: [its declared signals]} from game/**/*.gd
 NODE_SIGNALS = {"ready", "tree_entered", "tree_exiting", "tree_exited", "visibility_changed", "hidden",
@@ -360,6 +361,84 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
     if VOICES in files:
         rows = merged_sfx(files).get("sfx") or {}
         errs += voice_errors(files[VOICES], files.get(SPEAKERS), rows)
+    if REEFBALL_HOOKS in files:
+        all_beds = set(amb_beds) | set(((files.get(MUSIC) or {}).get("ambience") or {}).keys())
+        errs += reefball_hook_errors(files[REEFBALL_HOOKS], ids, all_beds, files.get(CLASSES))
+    return errs
+
+
+CROWD_STATES = {"murmur", "excited", "silence"}
+
+
+def reefball_hook_errors(doc: object, ids: set[str], beds: set[str], classes: dict[str, list[str]] | None) -> list[str]:
+    """reefball_hooks.json (M3-AUD-17): every sound an sfx row, the crowd's beds ambience beds, each action's crowd
+    state known, the swim numbers positive, and class and signal names real unless the hook is `pending`."""
+    w0 = REEFBALL_HOOKS
+    if not isinstance(doc, dict):
+        return [f"{w0}: must be an object"]
+    errs: list[str] = []
+
+    def row(v: object, w: str) -> None:
+        if v not in ids:
+            errs.append(f"{w}: {v} is not an sfx.json row")
+
+    def action(a: object, w: str) -> None:
+        if not isinstance(a, dict):
+            errs.append(f"{w}: an action is an object")
+            return
+        for k in ("sfx", "sfx_at"):
+            v = a.get(k)
+            for sid in (v if isinstance(v, list) else [v] if v is not None else []):
+                row(sid, f"{w}.{k}")
+        for k in ("crowd", "restore"):
+            if k in a and a[k] not in CROWD_STATES:
+                errs.append(f"{w}.{k}: {a[k]} is not murmur, excited or silence")
+        if "restore" in a and (not _num(a.get("restore_after_sec")) or a["restore_after_sec"] <= 0):
+            errs.append(f"{w}.restore_after_sec: a restore needs a time > 0")
+        if not any(k in a for k in ("sfx", "sfx_at", "crowd")):
+            errs.append(f"{w}: does nothing (needs sfx, sfx_at or crowd)")
+
+    crowd = doc.get("crowd") or {}
+    for k in ("murmur", "excited"):
+        if crowd.get(k) not in beds:
+            errs.append(f"{w0} crowd.{k}: {crowd.get(k)} is not an ambience bed")
+    for k in ("fade_sec", "rite_fade_sec"):
+        if k in crowd and (not _num(crowd[k]) or crowd[k] < 0):
+            errs.append(f"{w0} crowd.{k}: a fade is a number >= 0")
+    swim = doc.get("swim") or {}
+    for k in ("enter", "exit", "stroke"):
+        row(swim.get(k), f"{w0} swim.{k}")
+    for k in ("stroke_m", "teleport_m"):
+        if not _num(swim.get(k)) or swim[k] <= 0:
+            errs.append(f"{w0} swim.{k}: a distance > 0")
+    if not _num(swim.get("edge_m")) or swim["edge_m"] < 0:
+        errs.append(f"{w0} swim.edge_m: a distance >= 0")
+    if not isinstance(swim.get("groups"), list) or not swim["groups"]:
+        errs.append(f"{w0} swim.groups: needs at least one group")
+    seen: set[str] = set()
+    for i, h in enumerate(doc.get("hooks", [])):
+        w = f"{w0} hooks[{i}]"
+        if not isinstance(h, dict) or not isinstance(h.get("class"), str) or not h["class"]:
+            errs.append(f"{w}.class: needs a class name")
+            continue
+        cls = h["class"]
+        if cls in seen:
+            errs.append(f"{w}.class: {cls} has two hooks")
+        seen.add(cls)
+        known = classes is not None and not h.get("pending", False)
+        if known and cls not in classes:
+            errs.append(f"{w}.class: no script declares class_name {cls} (mark the hook pending until it lands)")
+            known = False
+        for sig, a in (h.get("signals") or {}).items():
+            action(a, f"{w}.signals.{sig}")
+            if known and sig not in classes[cls] and sig not in NODE_SIGNALS:
+                errs.append(f"{w}.signals.{sig}: {cls} declares no such signal")
+        for k in ("on_enter", "on_exit"):
+            if k in h:
+                action(h[k], f"{w}.{k}")
+        sp = h.get("sphere")
+        if sp is not None and (not isinstance(sp, dict) or not (sp.get("radius_method") or _num(sp.get("radius_m")))):
+            errs.append(f"{w}.sphere: needs radius_method or radius_m")
     return errs
 
 
@@ -382,7 +461,7 @@ def load_files(root: Path) -> dict[str, object]:
     out = {}
     extra = [str(p.relative_to(root)) for p in sorted((root / SFX_DIR).glob("sfx_*.json"))]
     for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, AMBIENCE, FOOTSTEPS, ENCOUNTERS, VFX_EFFECTS,
-                ACCESSIBILITY, VOICES, SPEAKERS] + extra:
+                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS] + extra:
         p = root / rel
         if p.is_file():
             out[rel] = json.loads(p.read_text(encoding="utf-8"))
@@ -391,15 +470,29 @@ def load_files(root: Path) -> dict[str, object]:
 
 
 def script_classes(root: Path) -> dict[str, list[str]]:
-    """{class_name: [declared signals]} for every script under game/ (ui_sfx.json hooks name classes and signals)."""
+    """{class_name: [declared signals]} for every script under game/ (ui_sfx.json hooks name classes and signals).
+    A class's list includes the signals of the script classes it extends (M3-AUD-15: LatticeMenu's `closed` is
+    FieldSubmenu's)."""
     import re
 
-    out: dict[str, list[str]] = {}
+    own: dict[str, list[str]] = {}
+    base: dict[str, str] = {}
     for p in sorted((root / "game").rglob("*.gd")):
         text = p.read_text(encoding="utf-8")
         m = re.search(r"(?m)^class_name\s+(\w+)", text)
         if m:
-            out[m.group(1)] = re.findall(r"(?m)^signal\s+(\w+)", text)
+            own[m.group(1)] = re.findall(r"(?m)^signal\s+(\w+)", text)
+            e = re.search(r"(?m)^extends\s+(\w+)", text)
+            if e:
+                base[m.group(1)] = e.group(1)
+    out: dict[str, list[str]] = {}
+    for cls, sigs in own.items():
+        all_sigs = list(sigs)
+        up, hops = base.get(cls), 0
+        while up in own and hops < 32:
+            all_sigs += [s for s in own[up] if s not in all_sigs]
+            up, hops = base.get(up), hops + 1
+        out[cls] = all_sigs
     return out
 
 
