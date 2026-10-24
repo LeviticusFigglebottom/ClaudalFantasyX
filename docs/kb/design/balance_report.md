@@ -255,3 +255,21 @@ Five new suites, all with Rhen alone (`active: [rhen]`, no reserve) at Swell `go
 - **The Underway's random lineups** (the layout's `encounters` table, played once the shared field encounters land: M2-FP-25) take the tutorial band too: the first dive of the game. In the limpet lineup the shoal stands in front (`[wickfry, tower_limpet]`). With the limpet first, a masher spent 30 actions on its shell (p90 31, naive 84.1%), and that's the lesson the limpet's flee prompt already teaches.
 - **The scuttlers** sit near the top of the regular band (naive 75.4%): the first Undertow-spawn fight before the boss.
 - Every existing suite reran unchanged (sandbox 10.9 / 97.1 / 100.0, Drownbell 0.0 / 71.0 / 85.3).
+
+### 2026-10-24: Ch4, the derelict (M3-C04-02, m2-slice)
+
+Five new suites at Swell `good` (balance_targets.md "Ch4"). 1000 seeds:
+
+| Suite | Band | naive | role_answer | smart | worst p90 |
+|---|---|---|---|---|---|
+| `ch04_sail_leeches` (scripted, ambush) | Ch4–Ch9 regular, role_answer report only | 48.2 | 62.9 | 99.7 | 29 |
+| `ch04_derelict_leeches` (random) | the same | 48.2 | 62.9 | 99.7 | 29 |
+| `ch04_bottle_hermit` (scripted lesson) | Ch4–Ch9 regular | 48.0 | 100.0 | 100.0 | 32 |
+| `ch04_derelict_glass` (random) | Ch4–Ch9 regular | 48.0 | 100.0 | 100.0 | 32 |
+| `ch04_spar_wraith` | Ch4–Ch9 boss, smart 75–100 and ≥ 30 mean turns | 3.7 | 72.8 | 100.0 (33.3 mean turns) | 49 |
+
+- **Knobs.** Sail leech: HP 600, strength 22, evasion 30, agility 22, Sail Drop power 7. Bottle hermit: HP 760, strength 24, defense 30, glass resists blows (none: resist), fire immune, ice weak; Glass Jab 6, Glass Flare 6 (fire, every third turn). Spar-Wraith: HP 2700, strength 10, magic 12; phase 1 (Shrouded) resists blows, water and ice and is weak to fire; at 60% it is Hauled Down: blows and fire resisted, ice weak, water absorbed, defense 20, and a two-turn Lines Taut telegraph fires Haul (power 20, delay 2 ranks) every fourth turn, with Sea Lash (water, all) between.
+- **The phase at 60%, not 50%.** Rhen's ember-edged Attack is weak-fire in phase 1, so a masher burns the shroud well; phase 2 is where only Frost answers. Moving the phase to 60% and resisting blows in phase 2 took `naive` from 17.5% to 3.7%.
+- **Lineups tried and dropped.** Three leeches (naive 1.0%), a leech with the hermit (naive 4.5%: the hermit's lesson plus a leech is too much for a masher), and the boss with Ysolde in reserve (`role_answer` 4.5 to 14%: the policy swaps out the first actor, Rhen).
+- `naive_swell` (report only) is 14.6% on the boss, 56.5% on the leeches and 75.9% on the hermit: Ilun called at once is strong against foes that don't punish water.
+- `sim.py --check` over every suite at 1000 seeds: 75 rows, all in band. The existing suites are unchanged (sandbox_reef 10.9 / 97.1 / 100.0, with its foe order untouched; Drownbell 0.0 / 71.0 / 85.3).
