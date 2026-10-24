@@ -72,7 +72,6 @@ func prebuild() -> void:
 
 
 func _ready() -> void:
-	_release_mood_cameras()
 	if not prebuilt:
 		# Not prebuilt (instanced on the main thread): the mood dressed itself in its own _ready.
 		collision.build()
@@ -187,9 +186,3 @@ func place_cast(cast: Dictionary, marks: Dictionary) -> void:
 		var q: Array = marks[id]
 		folder.add_child(m)
 		m.global_position = Vector3(float(q[0]), float(q[1]), float(q[2]))
-
-
-## The mood scene's five composed HalunaShotCameras (H01 is current there) must not take the view.
-func _release_mood_cameras() -> void:
-	for n in mood.find_children("*", "Camera3D", true, false):
-		(n as Camera3D).current = false

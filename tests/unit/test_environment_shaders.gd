@@ -162,7 +162,7 @@ func test_the_haluna_sea_is_the_one_publisher() -> void:
 
 
 func test_layout_is_valid_and_shots_use_camera_shots() -> void:
-	var layout := HalunaDresser._load_json("res://game/levels/_tests/haluna_mood/haluna_layout.json")
+	var layout := HalunaDresser._load_json("res://game/levels/ch02/haluna/haluna_layout.json")
 	assert_false(layout.is_empty(), "layout parses")
 	var kit_dir := String(layout.get("kit_dir", ""))
 	for spec: Dictionary in layout.get("pieces", []):
@@ -190,7 +190,7 @@ func test_run_along_polyline() -> void:
 ## M1-RND-12: the Haluna sky binds both baked lattices (unbound, the noise reads 0) and re-renders its
 ## radiance cubemap time-sliced, so a moving sun or drifting offset never re-renders it in one frame.
 func test_haluna_sky_binds_its_lattices_and_slices_the_cubemap() -> void:
-	var env := load("res://game/levels/_tests/haluna_mood/haluna_noon_environment.tres") as Environment
+	var env := load("res://game/levels/ch02/haluna/haluna_noon_environment.tres") as Environment
 	var mat := env.sky.sky_material as ShaderMaterial
 	assert_true(mat.get_shader_parameter("cloud_lattice") is Texture3D, "3D erosion lattice")
 	assert_true(mat.get_shader_parameter("cloud_lattice2") is Texture2D, "2D height-field lattice")

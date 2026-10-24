@@ -1,7 +1,7 @@
 class_name HalunaCollision
 extends Node3D
-## Walk collision for the playable Haluna zone (M2-FP-02), built at runtime from the instanced mood
-## scene, which has none (game/levels/_tests/haluna_mood is Environment's and is never edited):
+## Walk collision for the playable Haluna zone (M2-FP-02), built at runtime from the instanced
+## dressing (haluna_dressing.tscn, promoted from the mood test by M2-ENV-01), which has none:
 ##   Ground  one HeightMapShape3D sampled from HalunaTerrain.height_at over `walk_rect`, on the
 ##           terrain mesh's own 1 m grid, so the feet meet the drawn sand and turf.
 ##   Props   a shape per placed kit piece and plant, chosen by `piece_rules` (keyed by the piece's

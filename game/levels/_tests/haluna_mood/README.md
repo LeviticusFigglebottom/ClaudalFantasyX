@@ -4,18 +4,23 @@ The five ◆ shots of [haluna.md §5.1](../../../../docs/kb/art/environments/hal
 sub-frame, composed from the procedural Haluna kit. The art review is in
 [haluna_mood_review.md](../../../../docs/kb/art/environments/haluna_mood_review.md).
 
+**M2-ENV-01:** the world itself now lives with the shipped zone, in `game/levels/ch02/haluna/`.
+`haluna_mood.tscn` here inherits `haluna_dressing.tscn` from there and adds only the five shot cameras.
+The node paths are unchanged, so `shots.json` still addresses `Cameras/H01` and the rest. The files
+marked → below moved; edit them at their new paths.
+
 | File | Role |
 |---|---|
-| `haluna_mood.tscn` | The zone: environment, sun, sea, terrain, dresser, the five shot cameras |
-| `haluna_mood.gd` (`HalunaMood`) | Sun from elevation/azimuth, `hymn_*` globals, capture determinism (held clock, FXAA) |
-| `haluna_layout.json` | **All placement data**: terrain shape, lanes, wall runs, pieces, plants, scatter |
-| `haluna_dresser.gd` (`HalunaDresser`) | Builds the zone from the layout: kit .glb + materials + LOD ranges, wall runs, gulls facing the sea |
-| `haluna_terrain.gd` (`HalunaTerrain`) | Generated crescent beach, terrace, lagoon, reef, islet, far islands; lane/turf/seagrass masks |
-| `weathering_tide.gd` (`WeatheringTide`) | Moves the sea to the tide height and gives it the datum (the sea publishes `hymn_water_level`, which the weathering and ground shaders read); swaps the weathering tier |
+| `haluna_mood.tscn` | The test wrapper: inherits `ch02/haluna/haluna_dressing.tscn`, adds the five shot cameras |
+| → `ch02/haluna/haluna_mood.gd` (`HalunaMood`) | Sun from elevation/azimuth, `hymn_*` globals, capture determinism (held clock, FXAA) |
+| → `ch02/haluna/haluna_layout.json` | **All placement data**: terrain shape, lanes, wall runs, pieces, plants, scatter |
+| → `ch02/haluna/haluna_dresser.gd` (`HalunaDresser`) | Builds the zone from the layout: kit .glb + materials + LOD ranges, wall runs, gulls facing the sea |
+| → `ch02/haluna/haluna_terrain.gd` (`HalunaTerrain`) | Generated crescent beach, terrace, lagoon, reef, islet, far islands; lane/turf/seagrass masks |
+| → `ch02/haluna/weathering_tide.gd` (`WeatheringTide`) | Moves the sea to the tide height and gives it the datum (the sea publishes `hymn_water_level`, which the weathering and ground shaders read); swaps the weathering tier |
 | `haluna_shot_camera.gd` (`HalunaShotCamera`) | A Camera3D driven by a `CameraShot` resource (FIXED framing, vFOV, DOF) |
-| `haluna_noon_environment.tres` | The `ch02_noon` mood frame: sky, AgX, exposure, LUT (no fog: the frame row has none) |
-| `lut_ch02_noon.png` | 32³ grade LUT (Texture3D), from `assets_src/environments/kits/haluna/zone_lut.py` |
-| `haluna_water_material.tres` | The colour script's validated `lagoon_clear` look (absorption ×1.5, deep `#0E4A55`), crest foam reduced |
+| → `ch02/haluna/haluna_noon_environment.tres` | The `ch02_noon` mood frame: sky, AgX, exposure, LUT (no fog: the frame row has none) |
+| → `ch02/haluna/lut_ch02_noon.png` | 32³ grade LUT (Texture3D), from `assets_src/environments/kits/haluna/zone_lut.py` |
+| → `ch02/haluna/haluna_water_material.tres` | The colour script's validated `lagoon_clear` look (absorption ×1.5, deep `#0E4A55`), crest foam reduced |
 | `haluna_kit_sheet.tscn` / `.gd` / `.json` | Every kit piece in rows, for review (not a registered shot) |
 
 Shots (`tests/screenshots/shots.json`): `haluna_h01_village_from_sea`, `haluna_h02_tidewall_lane`,

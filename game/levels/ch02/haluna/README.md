@@ -1,17 +1,36 @@
 # Haluna, playable zone (M2-FP-02)
 
 `haluna.tscn` is the `ch02/haluna` location (`game/data/world/locations.json`). It instances
-Environment's mood scene `game/levels/_tests/haluna_mood/haluna_mood.tscn` (terrain, kit dressing, sea,
-sun, the `haluna_shrine` SaveShrine) **without editing it** and adds what play needs. Placeholder
+`haluna_dressing.tscn` (terrain, kit dressing, sea, sun, the `haluna_shrine` SaveShrine), and adds what
+play needs. M2-ENV-01 promoted the dressing and its scripts and data out of Environment's mood test
+(`game/levels/_tests/haluna_mood/`), which is now a thin wrapper: it inherits `haluna_dressing.tscn`
+and adds only the five shot cameras. A change made for a mood shot therefore lands here, in the
+shipped zone's files. Placeholder
 quality: capsules for people, invisible collision, composed-but-rough camera volumes.
 
 | File | Role |
 |---|---|
-| `haluna.tscn` | The zone: mood instance, `Collision`, `Player`, `FieldCamera` + `CameraDirector`, `CameraVolumes`, `Spawns`, `NPCs`, `Triggers`, `CutsceneStage` |
-| `haluna_zone.gd` (`HalunaZone`) | Root. Releases the mood scene's five shot cameras, builds collision, `place_at(spawn, yaw_deg)` (moves Rhen, snaps the director), `player` / `director` / `stage` accessors, `set_beach_cast_visible()` |
+| `haluna.tscn` | The zone: the dressing instance (node `HalunaMood`), `Collision`, `Player`, `FieldCamera` + `CameraDirector`, `CameraVolumes`, `Spawns`, `NPCs`, `Triggers`, `CutsceneStage` |
+| `haluna_zone.gd` (`HalunaZone`) | Root. Builds collision, `place_at(spawn, yaw_deg)` (moves Rhen, snaps the director), `player` / `director` / `stage` accessors, `set_beach_cast_visible()` |
 | `haluna_collision.gd` (`HalunaCollision`) | Runtime walk collision from the mood scene (all tuning is its exports in the scene) |
 | `haluna_actor_pose.gd` (`HalunaActorPose`) | Holds a still bone pose on an imported character (Asha kneeling on the beach) |
 | `haluna_zone_dresser.gd` (`HalunaZoneDresser`) | The mood scene's `HalunaDresser` with `_ready` emptied: the zone dresses it before it enters the tree (see "Entry hitch") |
+
+Promoted from the mood test (M2-ENV-01; Environment and Rendering edit these in place):
+
+| File | Role |
+|---|---|
+| `haluna_dressing.tscn` | The world: environment, sun, sea, tide, terrain, dresser, spawns, the `haluna_shrine` SaveShrine |
+| `haluna_mood.gd` (`HalunaMood`) | Sun from elevation/azimuth, `hymn_*` globals, capture determinism (held clock, FXAA) |
+| `haluna_layout.json` | **All placement data**: terrain shape, lanes, wall runs, pieces, plants, scatter |
+| `haluna_dresser.gd` (`HalunaDresser`) | Builds the zone from the layout: kit .glb, materials, LOD ranges, wall runs, gulls facing the sea |
+| `haluna_terrain.gd` (`HalunaTerrain`) | The generated crescent beach, terrace, lagoon, reef and islands; lane/turf/seagrass masks |
+| `weathering_tide.gd` (`WeatheringTide`) | Moves the sea to the tide height; the weathering tier |
+| `haluna_noon_environment.tres`, `lut_ch02_noon.png` | The `ch02_noon` mood frame and its 32³ grade LUT (`assets_src/environments/kits/haluna/zone_lut.py`) |
+| `haluna_water_material.tres` | The `lagoon_clear` sea look |
+
+The mood test's notes (GI choice, tonemap and LUT, tide, vegetation groups, sky and palette checks)
+stay in `game/levels/_tests/haluna_mood/README.md`.
 
 ## Collision (~100 ms, ~550 shapes, deterministic; built off the tree, see "Entry hitch")
 

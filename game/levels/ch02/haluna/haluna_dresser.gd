@@ -14,7 +14,7 @@ const LOD_SUFFIX := "-lod1"
 const GROUND_KEY := "ground"
 const SEA_NORMAL := Vector2(1.0, 0.0)
 
-@export_file("*.json") var layout_path: String = "res://game/levels/_tests/haluna_mood/haluna_layout.json"
+@export_file("*.json") var layout_path: String = "res://game/levels/ch02/haluna/haluna_layout.json"
 @export var terrain: HalunaTerrain
 @export var tide: WeatheringTide
 @export var ground_material: ShaderMaterial

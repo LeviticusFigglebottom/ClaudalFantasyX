@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_zone.gd" id="1_zone"]
-[ext_resource type="PackedScene" path="res://game/levels/_tests/haluna_mood/haluna_mood.tscn" id="2_mood"]
+[ext_resource type="PackedScene" path="res://game/levels/ch02/haluna/haluna_dressing.tscn" id="2_mood"]
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_collision.gd" id="3_col"]
 [ext_resource type="Script" path="res://game/world/field_controller.gd" id="4_fc"]
 [ext_resource type="Script" path="res://game/world/field_camera_director.gd" id="5_dir"]
