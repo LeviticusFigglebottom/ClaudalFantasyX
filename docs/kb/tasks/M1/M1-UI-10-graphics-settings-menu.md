@@ -2,8 +2,8 @@
 id: M1-UI-10
 title: Graphics section of the settings menu (calls GraphicsRuntime)
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M1-ARC-15]
 milestone: M1
 request-from: "architect"
