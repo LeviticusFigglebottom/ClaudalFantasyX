@@ -2,8 +2,8 @@
 id: M2-ENV-08
 title: The village-to-causeway-head route and the village props at final quality (kit pieces + swap-in layout)
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M2-ENV-06]
 milestone: M2
 request-from: lead
