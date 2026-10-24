@@ -90,3 +90,25 @@ A battle step's own `party` is not a `party` step.
 **ZoneStory and fades.** A `play` step followed by a hand-off, with only set, place, party or zone steps between them, doesn't fade back in. A scene that ends on black (the shaft's rise, going under) hands off on black.
 
 **The exit to Haluna.** Ch1 leaves an empty party, so Haluna seats Rhen, Asha and Toma after Cutscene A exactly as it did from a prologue start. Nothing in Ch2 changes.
+
+## Ch7 (M3-C07-02)
+Ch7 "The Tidecup" is built the same way: `game/data/flow/chapters/ch07.json`, two zones under `game/levels/ch07/`, scripts in `game/data/dialogue/ch07/`, the loc table `game/data/loc/ch07.csv`, and the test `tests/integration/test_ch07_thread.gd`.
+
+**The zones.** `ch07/tamsule` is the port. `ch07/tamsule_bell_galleries` is the story's greybox **stand-in** for the Bell's galleries, catch-pool and moorings. The arena, `ch07/tamsule_bell`, is env-art's and the Reefball agent's. Both zones use `Ch07Zone`, which is `Ch01Zone` (give, rest, hide_block and show_block) plus two calls:
+- `checkpoint(spawn)`: B04's autosave before the naming. It moves the respawn point and calls `SaveSystem.request_autosave`.
+- `stand(actor, mark)`: puts an actor on a mark with no walk, so Tavi is at his boat when the Bell is entered after B07.
+
+**The Reefball seam.** B05 (`ch07_naming.dlg`) ends on `<<event start_reefball tidecup_opening>>`, declared in `events.json`. The zone's `naming` beat reads it with `{"if_event": "start_reefball", "steps": [{"beat": "reefball_match"}]}`. **`reefball_match` is the only beat the Reefball agent replaces.** Today its steps are a stand-in:
+- set `ch07_tidecup_played` (never `ch07_tidecup_won`);
+- `go` back to `ch07/tamsule_bell_galleries` at `CatchPool`.
+
+The real steps hand off to the match scene. The match must:
+- set `ch07_tidecup_played` always, and `ch07_tidecup_won` on a win only (a reward);
+- give its own rewards;
+- return to `ch07/tamsule_bell_galleries` at `CatchPool`.
+
+The zone's first arrival row then plays B07 the same either way. No story `.dlg` and no chapter flow may read `ch07_tidecup_won`. The test enforces it, and its `REWARD_SCRIPTS` lists any script that gives the reward.
+
+**Seams to other chapters.**
+- **Entry:** Ch6 isn't built, so `ch07/tamsule` is reached from its own `locations.json` row (spawn `RiverMouth`) or the F5 teleport.
+- **Exit:** `ch08/corrow` isn't built, so B10 hands off to the end card. Ch8 swaps the `leave` beat's last step for a `go`.
