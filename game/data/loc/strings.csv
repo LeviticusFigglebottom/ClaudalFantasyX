@@ -541,3 +541,33 @@ HUD_BOSS_CHARGE_IN_FMT,{skill} comes in {turns} of its turns.
 HUD_BOSS_FIELD_FMT,{field}: {count} bound to it
 PHASE_DROWNBELL_TOLL,The Toll
 FIELD_DROWNBELL_FLOOD,The flood
+TITLE_SETTINGS,Settings
+TITLE_HELP_SETTINGS,"Graphics quality, from a whole preset down to each setting."
+GFX_MENU_TITLE,Graphics
+GFX_MENU_PRESET,Preset
+GFX_MENU_HELP_PRESET,Left and right choose a preset. It sets every row below.
+GFX_MENU_HELP_SETTING,Left and right change this setting. Each change is applied and kept at once.
+GFX_PRESET_CUSTOM,Custom
+GFX_VALUE_ON,On
+GFX_VALUE_OFF,Off
+GFX_VALUE_NONE,None
+GFX_VALUE_HARD,Hard
+GFX_VALUE_VERY_LOW,Very low
+GFX_VALUE_LOW,Low
+GFX_VALUE_MEDIUM,Medium
+GFX_VALUE_HIGH,High
+GFX_VALUE_ULTRA,Ultra
+GFX_VALUE_VOXEL_GI,Voxel GI
+GFX_VALUE_SDFGI,SDFGI
+GFX_VALUE_BILINEAR,Bilinear
+GFX_VALUE_FSR,FSR 1
+GFX_VALUE_FSR2,FSR 2
+GFX_VALUE_FXAA,FXAA
+GFX_VALUE_SMAA,SMAA
+GFX_VALUE_TAA,TAA
+GFX_VALUE_MSAA_2X,MSAA 2×
+GFX_VALUE_MSAA_4X,MSAA 4×
+GFX_VALUE_2X,2×
+GFX_VALUE_4X,4×
+GFX_VALUE_8X,8×
+GFX_VALUE_16X,16×
