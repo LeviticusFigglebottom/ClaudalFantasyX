@@ -377,6 +377,13 @@ The human's top priority for the slice: the player always knows the next step. A
 - **`FieldHud.attach(self)`** is the one line in `FieldController._ready`; it attaches the objective line, the cue and the prompt, each on its own CanvasLayer.
 - **Shot:** `field_interact_prompt`. **Tests:** `test_interact_prompt.gd`.
 
+## The area title card (M2-UI-21)
+
+- **`AreaTitleCard`** (`game/ui/field/`) names the location when the field first takes input there: the `name_key` of the locations.json row whose scene is the current scene, in TitleLabel over a feathered dark band, with a heavier centred gold rule drawn by the card (a 1 px OrnamentRule disappears over the field).
+- **Once per change of place:** `AreaTitleCard.last_shown` (a static) skips a reload or a door back into the same location; `TitleMenu._ready` calls `forget()`, so every start shows it. `skip_locations` (the test court) never shows one.
+- **Gating:** it waits while the field refuses input (an opening cutscene), and a menu or a scene that takes over ends it for good. Reduced motion drops the rise. Layout and timing: `game/data/ui/area_title.json`.
+- **Shot:** `field_area_title`. **Tests:** `test_area_title_card.gd`. Field shot drivers live in `game/levels/_tests/ui_shots/` because they load `_tests` scenes, which release exports leave out.
+
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 
 - **The field menu's root has ten rows** (`FieldMenuModel.ROOT_IDS`): Items, Equip, Lattice, Status, Swell, Map (M2-UI-18), Bestiary, Settings, Quit to Title, Close. Equip, Lattice and Status (`PARTY_ROWS`) are off, saying why, when nobody has joined. `field_menu.json` grew the panel to 639 px and the root page to nine rows; every rect is still a multiple of 3.

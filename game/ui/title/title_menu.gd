@@ -43,6 +43,7 @@ static func load_data() -> Dictionary:
 
 func _ready() -> void:
 	Game.stop_play_clock()
+	AreaTitleCard.forget()  # M2-UI-21: the next start shows its area title card
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_d = load_data()
