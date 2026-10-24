@@ -45,6 +45,26 @@ and ADR 0190 "hero motion layer", proposed).
   - **m2-slice applies the patch after the Lead gates claude/hero-integration onto the integration branch.** The human
     plays claude/m2-slice. **Lead: the patch waits on this branch's merge.**
 
+- **M2-HER-1103 battle hero actors** (6d5fcf4a, 95081441; still doing, waiting on other tracks):
+  - **Trial merge** of ui 427c65fc, characters 34cea6d6 and battle-presentation 329ce604 (local, not pushed).
+    Conflicts: field_encounters.gd (additive), shots and flags (merge_union), project.godot translations (union),
+    and a duplicate BOOT_FIRST_RUN_NOTE dropped. **Lead:** `rate_pct` isn't in FieldEncounters `meters`.
+  - **On the real models** (freeze-frames viewed): idle, attack at contact and cast read well. Every clip change
+    crossfades with no pop.
+  - **Gaps:**
+    - The KO sinks 0.25 m through the floor (UI fix).
+    - Victory is near idle (characters).
+    - The KO is a kneel, not a fall (contract or clip).
+    - Rhen strikes empty-handed (characters).
+    - 4 battle-presentation tests assume capsule heroes and fail once UI-07's data lands (test-only diffs given).
+  - **Built:** HeroBattleActor wrapper scenes (`game/hero_motion/battle/<hero>_battle_actor.tscn`). They give
+    per-pair crossfades (so a revive takes 0.9 s instead of springing up), an offset idle phase per hero, and
+    micro-motion. They take effect when UI points `battle_sandbox.json` at them.
+  - **Proposed patches** for UI and battle-presentation: `docs/kb/tech/hero_battle_proposed.patch`. Requests were
+    sent to ui, battle-presentation and characters (M2-HER-1105 lists the clip asks).
+  - **Tests:** hero 35/0 on this branch. On the trial with the patches: choreo 40/0, fighter 4/0, clips 7/0.
+  - **Shots** `battle_heroes_*` wait until the three branches are merged.
+
 ## In progress
 - Field: HeroFieldActor via one hook line in FieldController._ready (no zone scene edits), AnimationTree BlendSpace1D,
   measured clip speeds, followers; tuning the field acceleration and deceleration (field_movement.json) with m2-slice.
