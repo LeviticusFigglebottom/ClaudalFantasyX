@@ -148,6 +148,20 @@ JOBS = [
      ["brightwater_ferry.ogg", "brightwater_ferry.loop.json"], "music_loop"),
     ("assets_src/music/brine_shoals.py", "assets/audio/music",
      ["brine_shoals.ogg", "brine_shoals.loop.json"], "music_loop"),
+    # M3-AUD-13: the battle choreography's whooshes, weapon accents, footfalls, KO, Swell, toll, flood, Vowbound
+    ("assets_src/sfx/choreo_sfx.py", "assets/audio/sfx",
+     [f"choreo/{k}_{v}.ogg" for k, c in (("whoosh_melee", 3), ("whoosh_heavy", 2), ("whoosh_cast", 2),
+                                          ("whoosh_throw", 2), ("whoosh_guard", 2), ("accent_hooks", 3),
+                                          ("accent_staff", 2), ("accent_spear", 3), ("accent_shield", 2),
+                                          ("accent_book", 2), ("accent_focus", 2), ("accent_cleaver", 2),
+                                          ("accent_claw", 3), ("accent_teeth", 2), ("accent_bell_hood", 2),
+                                          ("accent_guard", 2), ("step_sand", 4), ("ko_collapse", 2))
+      for v in range(1, c + 1)]
+     + [f"choreo/{s}.ogg" for s in ("swell_rhen", "swell_asha", "swell_toma", "swell_ysolde", "toll_wave",
+                                    "flood_surge")]
+     + ["choreo/flood_brace_1.ogg", "choreo/flood_brace_2.ogg"]
+     + [f"choreo/{s}.ogg" for s in ("vowbound_beckon", "vowbound_rise", "vowbound_rise_long", "vowbound_sink",
+                                    "vowbound_fall")], "sfx"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
