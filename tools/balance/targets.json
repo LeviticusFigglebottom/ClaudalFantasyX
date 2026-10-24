@@ -576,7 +576,7 @@
     {
       "id": "ch05_cinder_matron_ilun",
       "chapter": "Ch5 boss, Ilun called at once (the water mistake; report only)",
-      "kind": "vowbound",
+      "kind": "boss",
       "encounter": "ch05_cinder_matron",
       "active": [
         "kerrid",
@@ -588,6 +588,7 @@
         "ysolde"
       ],
       "bands": {
+        "naive": null,
         "naive_swell": null
       },
       "p90_turns_max": 70,
