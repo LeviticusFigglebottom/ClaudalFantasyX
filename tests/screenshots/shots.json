@@ -1342,6 +1342,76 @@
           }
         }
       }
+    },
+    {
+      "id": "sefir_front",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_three_quarter",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_three_quarter.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_back",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_stage.tscn",
+      "camera": "Cameras/Back",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_face",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_face_stylized",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_face_stylized.tscn",
+      "camera": "Cameras/Compare",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_silhouette_lineup",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_lineup.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_clip_raise_palm",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_clip_raise_palm.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }

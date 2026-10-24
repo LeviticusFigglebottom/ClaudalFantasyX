@@ -4,6 +4,11 @@
 `claude/characters` (cut from `claude/undertow-lead-handoff-423ixt` at 952ef7c). The Lead reads it hourly.
 
 ## Now
+- **M3-CHR-02 Sefir → review (rendering), worktree subagent, not pushed.** Hero build on the shared modules: LOD0 58,426,
+  LOD1 27,118, sefir.glb 4.42 MB; rig probe all ok with no ratchet; `verify --job sefir` 32 identical (also on the AVX2
+  numpy path). Mantle gold lowered to 14% so a waist-up frame is <= 5% (front 4.96%); chest-up close-ups are 8-9%
+  (the crown). 7 sefir_* baselines. Requests M3-CIN-01, M3-RND-03, M3-ENV-01. Handoff 2026-10-24-character-11.md,
+  review `docs/kb/art/characters/sefir_review.md`.
 - **MERGE-READY @ e253f302 (CHR-14 braid and clipping, villagers, Rhen and Toma, host determinism).**
   - **Full `tools/ci_local.sh` at ad6e232:** merged with the integration branch, run with `taskset -c 0-3`, HYMN_BLENDER_REQUIRED=1, every shot and its own HYMN_LOG_DIR. It exited 0:
     - 580 tool tests, 1459 Godot tests;
