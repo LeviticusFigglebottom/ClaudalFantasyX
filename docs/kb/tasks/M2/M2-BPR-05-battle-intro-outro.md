@@ -2,6 +2,7 @@
 id: M2-BPR-05
 title: Battle intro and outro: encounter stinger, opening banner, victory pose and return
 role: combat
+reviewer: lead
 status: review
 owner_session: battle-presentation (claude/battle-presentation)
 depends_on: [M2-BPR-01]
