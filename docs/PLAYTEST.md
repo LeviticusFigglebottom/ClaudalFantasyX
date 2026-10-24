@@ -152,6 +152,27 @@ Ch5 isn't on the New Game thread yet: Ch4, which brings the ferry in, is being b
 - **The trial has no lightning yet:** a charged bowl just glows pale violet.
 - **The Matron's two phases:** there's no slag on the floor, and her timeline telegraph for the re-crust uses the standard charge marker.
 
+## Ch9, "The Ebbing" (greybox; the end of Act I; about 20–25 minutes)
+
+Ch8 isn't built yet, so Ch9 isn't on the New Game thread. From an editor run, press **F5** (teleport) and pick **Ch9: Corrow, the night of the Ebbing**. Everything is grey blocks and capsules, and the chapter is nearly silent (its music and sounds don't exist yet). **Ch9 has no fights.**
+
+1. **The strand of the drowned,** at night after the storm. The dead lie in rows under sailcloth. Pale cyan lights hang over the flooded town behind the broken wall.
+2. **Walk among them.** Talk to Marra at the east end of the soldiers' row (the one with the shields). You overhear Hobb reading names and a guard by the rows. Liss is on the wall-head at the west end, but she only speaks if Ch8 has played.
+3. **Toma** is kneeling in the soldiers' row. Talk to him (**Go to Toma**).
+   - **Optional, "Shield-Mate":** this side scene needs the Ch8 flag `ch08_met_ivo`. In a direct start, set it with **F4** (the flag inspector) first. There's one choice; both are fine.
+4. **The Ebbing.** Walk onto the raft's landing in the middle of the strand. The gilt line is painted, Asha goes out on the raft, and the dance has three parts.
+   - In each part, **hold E** (or Enter, Space, or A on a controller) to raise the staff. Let go and the dance waits. You can't fail, and nothing is timed.
+   - Between the second and third parts there's a short cut to somewhere else.
+5. **After.** Asha comes ashore, and a stranger comes down the rocks. Then the screen goes dark.
+6. **Dawn.** You're on the road outside the town gate. Walk east up the road to the milestone, where someone is waiting.
+7. **The act break.** The road scene cuts to the plaza from the very start of the game, a voice-over plays, then "Act II: The Truth". The **end card** stands in for Act II.
+
+**Ch9 placeholders:**
+- **The lights are placeholders.** The Ebbing will be thousands of lights streaming after the staff; for now a few small spheres drift down and out to sea. The "Hold to raise the staff" prompt is plain text.
+- **The raft cuts** between the landing and the middle of the harbour. The harbour is a floor you can walk on.
+- **No save shrine and no shop yet.** The chapter start autosaves, so quitting at dawn replays the night.
+- **The plaza at the act break** is grey blocks, lit by the dawn instead of dusk.
+
 ## Reporting
 
 Write a line per issue: what you did, what you saw, and what you expected. Screenshots help (Windows + Shift + S). Small impressions count too: "this part felt long" is useful.
