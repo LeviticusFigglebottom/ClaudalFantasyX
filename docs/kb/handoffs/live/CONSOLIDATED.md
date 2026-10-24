@@ -34,6 +34,7 @@
 | Branch | Status |
 |---|---|
 | `claude/undertow-lead-handoff-423ixt` | **The integration branch, standing in for `main`** (CLAUDE.md §4: the Lead's session branch). Every merge lands here. |
+| `main` | **Stale**: not updated since the old account. The integration branch below is the real main; the Lead may fast-forward `main` only with the human's permission. |
 | `claude/new-session-mj8c3c` | The old integration branch. **Frozen at a504072**; don't merge into it. |
 | `claude/m2-slice` | The M2 vertical-slice track (from `claude/first-playable` 67984ce). |
 | `claude/characters` | The Characters track (from the integration branch). |
@@ -57,6 +58,7 @@
 | env-art | `session_01QmWUfYxd8DMg7XM3MyR6ps` | `claude/env-art` | M2-ENV-03 shrine kit → M1-ENV-10 → Haluna final-quality kit → Art sign-offs M2-ART-01/02/03 → the route |
 | ui | `session_01NyuYPSZn7o7gYirTvz4zjs` | `claude/ui` | M2-UI-03 → hide the Call row until bound → M2-UI-06 shop and inn → UI polish pass |
 | creatures | `session_01CYks9e592YBEfygyTawcJD` | `claude/creatures` | Enemy and boss models (all 5 enemies were primitive stand-ins): design sheets → creature pipeline → the `model` field in enemies.json → reef_crab, lantern_eel, gull_harrier, spawn_polyp, then the Drownbell → shots → bestiary art |
+| battle-presentation | `session_014EcW9e5tEmjDi5S2HmCECd` | `claude/battle-presentation` | Battle choreography (none existed: static fighters): a listen-only BattleChoreo sequencer, the clip contract with characters and creatures, a battle camera director, specials (Swell, Drownbell, Vowbound), battle intro and outro |
 These were created in default permission mode; the human sets Auto in each one's mode dropdown. m2-slice was told that ENV-03, UI-06 and UI-03 moved off its queue.
 
 ### 3a. Standing queues (2026-10-24, also sent by message; messages can arrive hours late, so this section is authoritative)
