@@ -2,8 +2,8 @@
 id: M3-C07-02
 title: Ch7 "The Tidecup" story dialogue, cutscenes and flow around the Reefball match
 role: cinematics
-status: todo
-owner_session: ""
+status: doing
+owner_session: "m2-slice subagent (C07 story build)"
 depends_on: [M3-C07-01, M3-ARC-01]
 reviewer: narrative
 milestone: M3
