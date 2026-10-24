@@ -73,6 +73,21 @@ func _on_line(step: DialogueStep) -> void:
 			at_first_line["asha"] = z.stage.actor(&"asha").global_position
 			at_first_line["rhen"] = z.player.global_position.distance_to(z.spawn_marker(&"DockNight").global_position)
 		at_first_line["stories"] = replay.zone.find_children("*", "FieldEncounters", true, false).size()
+		at_first_line["hud"] = _hud_shown()
+
+
+## Field HUD pieces (FieldHud.attach) anywhere under the replay host, and visible Controls on any
+## CanvasLayer under the stage (the cutscene's own overlay lives under the sequencer, not the stage).
+func _hud_shown() -> Array[String]:
+	var out: Array[String] = []
+	for n in replay.find_children("*", "", true, false):
+		if n is ObjectiveHud or n is InteractPrompt or n is AreaTitleCard or n is TipCard or n is CodexNotice:
+			out.append(str(n.name))
+	for layer in replay.zone.find_children("*", "CanvasLayer", true, false):
+		for c in layer.find_children("*", "Control", true, false):
+			if (c as Control).is_visible_in_tree():
+				out.append(str(c.get_path()))
+	return out
 
 
 func test_the_first_verse_replays_without_its_battle_and_returns_to_the_title() -> void:
@@ -111,6 +126,8 @@ func test_the_dock_at_night_replays_at_night_on_the_dock() -> void:
 	assert_true((at_first_line.get("asha", Vector3.ZERO) as Vector3).distance_to(Vector3(20.6, 1.4, 41.3)) < 0.1)
 	assert_true(float(at_first_line.get("rhen", 99.0)) < 0.5, "Rhen on the dock (spawn)")
 	assert_eq(at_first_line.get("stories"), 0, "no field encounters on the stage")
+	assert_true(replay.hud_freed >= 5, "Rhen's field HUD was there (%d pieces) and is gone" % replay.hud_freed)
+	assert_eq(at_first_line.get("hud"), [] as Array[String], "no HUD element over the memory")
 	assert_true(&"asha" in lines and &"toma" in lines)
 	assert_eq(Game.state.to_dict(), before)
 	assert_eq(changes, [[MemoryReplay.TITLE_SCENE]] as Array[Array])
@@ -123,6 +140,7 @@ func test_replay_flags_play_a_scene_as_first_seen() -> void:
 	replay.run()
 	assert_true(replay.played)
 	assert_true(lines.size() > 3, "the whole scene, not the second visit's one line")
+	assert_eq(at_first_line.get("hud"), [] as Array[String], "no HUD element over the memory")
 	assert_false(bool((at_first_line.get("flags", {}) as Dictionary).get("ch02_heard_pila", true)))
 	assert_true(bool(Game.get_flag(&"ch02_heard_pila")), "the real record still remembers it")
 	assert_true(Game.state == live)

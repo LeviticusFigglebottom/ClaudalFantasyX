@@ -581,7 +581,7 @@ SPEC §6.11: a "Memories" scene-replay gallery, reached from the title. It repla
   1. Holds the router's reveal and the autosave.
   2. Swaps `Game.state` for a copy of the remembering record with `replay_flags` applied.
   3. Loads the stage and instances it on a WorkerThreadPool thread, as the router does, so Haluna dresses off the main thread.
-  4. Calls `ReplayStage.prepare(zone)`, adds the stage, then applies `spawn` and `night`.
+  4. Calls `ReplayStage.prepare(zone)` and adds the stage. It then frees the field HUD that FieldController attached in its `_ready` (`MemoryReplay.strip_field_hud`: ObjectiveHud, InteractPrompt, AreaTitleCard, TipCard and CodexNotice, each with its CanvasLayer), in that same frame, so nothing is drawn over the memory and no tip can fire. Then it applies `spawn` and `night`. This needs no change to the UI track's files: the pieces are found by class.
   5. Plays the scene on its own sequencer with `replay = true`.
   6. Ends: the screen goes black (`restore_fade` off), the stage is freed, the real `Game.state` comes back, an autosave the stage requested is dropped, and the title is opened again. On `_ready` the title takes `MemoryReplay.take_gallery_request()` and opens the gallery on `last_memory`.
   To skip, hold Cancel. That is the sequencer's own skip: it runs the scene to its end and still stops for a choice, which the player makes again. `end()` cuts a replay short; the sequencer leaves the tree and its `play()` returns false.

@@ -12,7 +12,9 @@ extends Node
 ##      the end, untouched.
 ##   2. The stage. Its scene is loaded and instanced off the main thread (as SceneRouter does) while
 ##      the router's fade stays opaque (SceneRouter.hold_reveal), then ReplayStage.prepare() turns
-##      its story autostarts off and removes its field encounters, before it enters the tree.
+##      its story autostarts off and removes its field encounters, before it enters the tree. Once
+##      in, its field HUD (objective line, prompt, area card, tips, record notice) is freed
+##      (strip_field_hud): a memory plays with no HUD over it, and no tip fires.
 ##   3. The staging: `spawn` places the player, `night` gives the zone first_playable.json haluna's
 ##      night (set_night and place_cast, as HalunaStory._night).
 ##   4. The scene: this node's own CutsceneSequencer with `replay` on (flags read live, <<set>>s
@@ -50,6 +52,8 @@ var zone: Node
 var return_scene := TITLE_SCENE
 ## True once the scene has played to its end (false when it was cut short or could not start).
 var played := false
+## How many field HUD pieces the stage came with (freed: strip_field_hud).
+var hud_freed := 0
 
 var _saved_state: GameStateData
 var _swapped := false
@@ -122,6 +126,7 @@ func run() -> bool:
 		return false
 	ReplayStage.prepare(zone)
 	add_child(zone)
+	hud_freed = strip_field_hud(zone)
 	var stage := stage_of(zone, mem)
 	_stage_memory(mem)
 	if stage != null and stage.player() != null:
@@ -130,6 +135,25 @@ func run() -> bool:
 	var through: bool = await sequencer.play(StringName(str(mem.get("scene", ""))), stage)
 	_end(through)
 	return through
+
+
+## Frees the field HUD under `root`: every piece FieldHud.attach gave the stage's FieldController
+## in its _ready (ObjectiveHud, InteractPrompt, AreaTitleCard, TipCard, CodexNotice), each with the
+## CanvasLayer it brought. A memory is a cutscene: no objective line, prompt, area card, record
+## notice or tip over it, and no tip can fire (its flag listener goes with it). Called right after
+## the stage enters the tree, in the frame FieldHud attaches, so none of them is ever drawn or
+## processed. Returns how many pieces it freed.
+static func strip_field_hud(root: Node) -> int:
+	var pieces: Array[Node] = []
+	for n in root.find_children("*", "", true, false):
+		if n is ObjectiveHud or n is InteractPrompt or n is AreaTitleCard or n is TipCard or n is CodexNotice:
+			pieces.append(n)
+	for piece in pieces:
+		var layer := piece.get_parent()
+		var gone: Node = layer if layer is CanvasLayer and layer.get_child_count() == 1 else piece
+		gone.get_parent().remove_child(gone)
+		gone.free()
+	return pieces.size()
 
 
 ## The memory's CutsceneStage: its `stage_node` path, else the root's `stage` property.
