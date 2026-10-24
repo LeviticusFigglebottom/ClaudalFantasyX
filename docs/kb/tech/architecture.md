@@ -6,7 +6,7 @@
 | `EventBus` | `game/core/event_bus.gd` | Decoupled signals: battle start/end, flag changes, dialogue events, scene change, save/load. |
 | `Game` | `game/core/game.gd` | Owns the live `GameStateData` and the `FlagRegistry`. `get_flag` / `set_flag` reject undeclared flags at runtime, and the validator rejects them in CI. |
 | `SaveSystem` | `game/core/save_system.gd` | Versioned JSON saves (`user://saves/slot_NN.json`) with chained migrations; slot 0 = chapter autosave. |
-| `SceneRouter` | `game/core/scene_router.gd` | Threaded scene loads behind a fade; `prewarm_requested` hook for the shader-cache warmup (M1-RND-06). |
+| `SceneRouter` | `game/core/scene_router.gd` | Threaded scene loads behind a fade; `prewarm_requested` hook for the shader-cache warmup (M1-RND-06). Installs `ShaderGlobals` (zone-global reset) and `WeatherClock` (the weather clock, M2-ARC-02) as it starts. |
 
 ## State
 - `GameStateData` (Resource): flags, party and reserve ids, inventory, currency, play time, location, chapter. `to_dict()` / `from_dict()` are the only serialization path.
@@ -323,3 +323,43 @@ ADR [0018](../decisions/0018-new-game-autosave-policy.md) Amendment 5 records th
 - The data-tables gate gained an eighth check, `swell` (`DataHealth.swell_problem`; tests set `swell_config` and `swell_loaded`). While swell.json is missing, torn, hollow or names a default mode it does not list, a load changes nothing and saving is refused.
 - Writers, live battles only (`persist_progress`, no fixture): `Game.record_party` (gauge and mode, from `EventBus.battle_party_returned`), `Game.record_swell` (the record, from the new `EventBus.battle_swell_returned`), both after a victory or an escape. Out of battle, `BattleSwellCarry.set_mode` (a field mode menu) writes `swell_mode`. `GameStateData.full_heal` (a shrine) keeps both keys.
 - Readers: `Game.vitals_modifier()` (gauge, mode) and `BattleSwellCarry.attach` (the record). Rules and glue: docs/kb/design/battle_ctb.md "Carried Swell". Tests: `tests/unit/test_swell_save.gd`.
+
+## The weather clock (M2-ARC-02, Architect)
+
+`WeatherClock` (`game/core/weather_clock.gd`) is the one runtime writer of `hymn_wind_time` (the clock every water,
+vegetation and weathering shader runs on) and, in play, of `hymn_wind`.
+- **Where it lives.** `SceneRouter._ready` calls `WeatherClock.install(self)`, as it does `ShaderGlobals.install`: the
+  owner is the router's `WeatherClock` child, so it survives every swap. `WeatherClock.current()` returns it (the
+  first one installed; a second install, such as a test's stand-in router, never replaces it).
+- **The clock.** Each frame `_process` → `advance(delta)` adds the frame's delta to `time_s` and writes it through
+  `ShaderGlobals.set_value`, so `ShaderGlobals.get_value(&"hymn_wind_time")` is always the live value. It is
+  `PROCESS_MODE_PAUSABLE` (explicitly, whatever the router's mode), so it stops while the tree is paused. It is never
+  reset: `hymn_wind_time` is not in `ShaderGlobals.ZONE_GLOBALS`. `set_time(s)` scrubs it. It is in
+  `ShaderGlobals.FRAME_GLOBALS`, so the per-frame write never calls the ShaderGlobals listeners (one group call over
+  every VegetationPlant per frame for nothing); the wind still notifies.
+- **Zone wind.** On `SceneRouter.scene_swapping(scene_path)` it writes `hymn_wind` from
+  `game/data/world/zone_weather.json`: the `zones` row whose `scene` is the new scene, else `default` (a moderate
+  breeze, so a battle or a zone without a row never has a frozen sea). A row is `toward_azimuth_deg` (the downwind
+  heading, clockwise from north = -Z, as the water and Haluna rigs use), `wind_m_s` and `gust`.
+  `hymn_wind` = (sin(az)·speed, 0, -cos(az)·speed, gust). `hymn_wind` is deliberately **not** a zone global: the owner
+  writes it on every swap, so no zone inherits the previous zone's wind, and the two `scene_swapping` handlers never
+  depend on their connection order. A scene run on its own (F6, no swap) gets its row on the first running frame, and
+  nothing if it has none. `tools/validate_data.py` (`check_zone_weather`) checks every row and that each scene exists.
+- **Holds.** `hold(holder)` / `release(holder)` (a freed holder drops out, like `SceneRouter.hold_swap`): while
+  anything holds the clock it neither advances nor writes either global. A zone wind that arrives meanwhile is written
+  on release, with the clock. A cutscene that scrubs the sea holds it and calls `set_time`.
+- **Screenshots stay deterministic.** `tests/screenshots/capture.gd` holds the owner in `_ready` (before any frame)
+  for its whole run, so no shot sees the clock or a zone wind, a shot's `setup.globals` and a rig's own writes are the
+  only writers, and no baseline moves. The capture setup also re-applies pinned globals after every `_process` and on
+  `frame_pre_draw`, so even an unheld owner could not beat a pinned global. The test runner calls every test
+  synchronously from its `_ready`, so the owner never ticks during tests; tests call `advance()` directly.
+- **One writer.** The Drownbell flood rig (`BattleBossVfx`) no longer runs a clock of its own: it reads the shared
+  clock through the global like any `WaterSurface`. Its `flood.weather` breeze still applies only when the wind is
+  calm, which in play (the default zone wind) never happens; it remains for the drownbell_flood test rig.
+- **Test rigs** (water, haluna_mood, undertow, vegetation, character stages) still write the globals themselves with
+  `RenderingServer` for their shots. The rigs that write every frame run after the owner (autoloads process first),
+  so they win in the editor too; the vegetation and character stages write once, so the clock moves them in F6 play,
+  never under the capture.
+- **Precision.** The clock is a float32 in shaders: after 10 h of play its step is about 4 ms, still smooth. A wrap
+  would need every periodic term to share a period; revisit only if long sessions show stepping.
+- Tests: `tests/unit/test_weather_clock.gd`, `tools/tests/test_zone_weather_validate.py`.
