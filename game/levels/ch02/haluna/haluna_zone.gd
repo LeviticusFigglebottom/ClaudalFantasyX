@@ -53,8 +53,9 @@ func prebuild() -> void:
 	if prebuilt or is_inside_tree():
 		return
 	var t0 := Time.get_ticks_msec()
-	var dresser := get_node(^"HalunaMood/Dresser") as HalunaDresser
-	HalunaZoneDresser.adopt(dresser).dress()
+	# M2-RND-16: name the subclass before its base. In Godot 4.6.3 a function that names HalunaDresser and then
+	# HalunaZoneDresser (its subclass) leaves ~130 scripts and shaders in use at exit (the whole class graph).
+	HalunaZoneDresser.adopt(get_node(^"HalunaMood/Dresser") as HalunaDresser).dress()
 	(get_node(^"Collision") as HalunaCollision).build()
 	for actor in get_node(^"CutsceneStage").find_children("*", "", true, false):
 		if actor is HalunaActorPose:

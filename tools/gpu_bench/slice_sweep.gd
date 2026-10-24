@@ -95,6 +95,9 @@ func _run() -> void:
 	var saves := get_tree().root.get_node_or_null(^"SaveSystem")
 	if saves != null and saves.has_method(&"hold_autosave"):
 		saves.call(&"hold_autosave", self)
+	if _opts.has("leak-probe"):
+		await LeakProbe.run(get_tree(), _opts)
+		return
 	var wanted := str(_opts.get("segments", "")).split(",", false)
 	for seg: Array in SEGMENTS:
 		if not wanted.is_empty() and not wanted.has(str(seg[0])):
