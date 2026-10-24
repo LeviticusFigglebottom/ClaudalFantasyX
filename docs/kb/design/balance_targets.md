@@ -197,3 +197,24 @@ The derelict's fights (act1_ch04.md C4-12, C4-13, §5, §9 Combat). Rhen, Asha a
 - **Ysolde's lesson.** The hermit's glass resists blows and is immune to fire (the sheet's "reflects fire": the engine has no reflect), and ice cracks it. Rhen's ember-edged Coral Hooks turn his Attack to fire, so a masher's Rhen does nothing to it. The masher wins about half the time on Toma and Asha alone; Ysolde's Frost ends it in about eight actions.
 
 Numbers are in the 2026-10-24 tuning log entry in balance_report.md.
+
+### Ch6: the Brine Shoals and the Stillguard Inquisitor (M3-C06-02)
+
+The road's fights use Ch5's party: active Rhen, Asha and Kerrid, with Toma and Ysolde in reserve. The Inquisitor starts Toma, Rhen and Asha (Toma steps in front of Asha), with Kerrid and Ysolde in reserve. Liss joins after the fight and is in no suite. Swell is `good`.
+
+Loadouts are `ch06_shoals` (3 Salt Tonic, 1 Brine Eyewash) and `ch06_inquisitor` (4 Salt Tonic, 2 Brine Eyewash, 1 Relighting Wick, Ilun bound, flags `ch03_ilun_bound` and `ch05_kahre_bound`). Both carry Ch5's gear (`ch05_ashcrown`'s pieces), since Pemakar's shop tier doesn't exist yet.
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch06_ridge_skippers` (two shoal skippers) | Ch4–Ch9 regular, `role_answer` report only (logged exception) | 20–60% | report only | ≥ 97% | ≤ 35 |
+| `ch06_ridge_crab` (a wreck crab and a shoal skipper) | the same | 20–60% | report only | ≥ 97% | ≤ 35 |
+| `ch06_ridge_gulls` (two gull harriers and a shoal skipper) | the same | 20–60% | report only | ≥ 97% | ≤ 35 |
+| `ch06_flats_crabs` (the mud-flats: two wreck crabs and a gull harrier) | Ch4–Ch9 regular | 20–60% | ≥ 92% | ≥ 97% | ≤ 35 |
+| `ch06_inquisitor` | Ch4–Ch9 boss, `smart` ceiling lifted (logged exception) | ≤ 5% | 65–85% | 75–100%, ≥ 25 mean turns | ≤ 70 |
+
+- **The skipper suites' `role_answer`** is the Ch4 leech exception again. The skipper's answer is Rhen, who is already on the field, so the policy plays like the masher. Report only until Combat rules (M3-C06-05).
+- **The Inquisitor's `smart` ceiling** is the Ch4 Spar-Wraith exception again. With Asha's Mend, `smart` out-heals anything `role_answer` survives (100% wherever `role_answer` was in 65–85%). The ease ceiling is `smart` ≥ 25 mean turns (measured 29.0).
+- **Toma will not strike the Stillguard** (`forbidden_skills`), so `naive` fights with two blades and a guard, and loses. `role_answer` swaps Toma for a reserve striker (battle_ctb.md "Encounter rules"); that is how it reaches 65–85%.
+- **The flats are cut to three foes.** The sheet's 3–4 foe groups are too much for this party: three skippers gave `smart` 53–85%, and four foes pushed `smart`'s p90 to 43–51. The flats keep one 3-foe group (two crabs, whom Kerrid answers, and a gull), and `ch06_ridge_gulls` (three foes) is in their table too. The cut groups are `ch06_flats_skippers` and `ch06_flats_mixed` (M3-C06-05).
+
+Numbers are in the 2026-10-24 tuning-log entry in balance_report.md.
