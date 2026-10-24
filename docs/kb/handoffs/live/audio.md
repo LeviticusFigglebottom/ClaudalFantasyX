@@ -29,6 +29,20 @@ at f95b27cb. Items: M2-AUD-01..06 and M2-AUD-10/11, M3-AUD-01..07 (all `status: 
   Done and merged; queue empty.
 - **Filed for m2-slice:** M2-AUD-12 (causeway zone rows, the B05 crossfade, the B12 coda).
 
+## MERGE-READY @ e24a98cd
+- **Items:** M3-AUD-13 choreography SFX, M3-AUD-14 creature voices, M3-AUD-15 menu UI SFX, M3-AUD-16 Act I zone beds,
+  M3-AUD-17 Reefball hooks, M3-AUD-18 battle stings. All are `review`.
+- **Integration branch:** merged at 37fd9571.
+- **Checks run:**
+  - The full Godot suite gave 1564 run, 0 failed on a quiet machine.
+  - Earlier niced full runs, made while renders were running, failed only `test_scene_router_swap` on the boot frame.
+    That test passes on its own, passes when run with every test that precedes it, and depends on load. The
+    integration branch itself gave 1480/0.
+  - validate_data showed 0 errors; taskboard --check, gdlint and gdformat were clean; test_audio_data passed (39 OK);
+    the loudness test passed; and every new set re-rendered byte-identical with `--determinism`.
+- **Skipped (the Lead runs these at merge):** screenshots and Blender. Coverage was skipped too, because game/battle/
+  and game/progression/ weren't touched.
+
 ## State (2026-10-24, newest queue)
 - **Done and merged into claude/audio (all `review`, reviewer qa):**
   - M3-AUD-13 battle choreography SFX (55 files). `ChoreoAudio` hooks BattleChoreo by name and is `pending` until
