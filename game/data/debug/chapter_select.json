@@ -66,13 +66,22 @@
       "flags": ["ch01_started", "ch01_underway_done", "ch01_went_under", "ch01_hullgnaw_defeated", "ch01_children_safe", "ch02_met_asha", "ch02_tideline_won", "ch03_causeway_arrived", "ch03_shrine_door_open", "ch03_drownbell_defeated", "ch03_ilun_bound", "ch03_first_verse_sung", "ch03_rhen_sworn_guardian", "ch04_started", "ch04_left_haluna", "ch04_ysolde_joined", "ch04_boarded_derelict", "ch04_spar_wraith_defeated", "ch05_arrived", "ch05_met_kerrid", "ch05_trial_begun", "ch05_matron_quieted", "ch05_kahre_bound", "ch05_second_verse_sung", "ch05_done", "ch06_arrived", "ch06_inquisitor_yielded", "ch06_liss_joined", "ch06_done"]
     },
     {
+      "id": "ch08",
+      "label": "Ch8: Corrow, the harbour mole under the kites",
+      "location": "ch08/corrow",
+      "spawn": "Mole",
+      "chapter": 8,
+      "party": ["rhen", "asha", "toma"],
+      "flags": ["ch01_started", "ch01_underway_done", "ch01_went_under", "ch01_hullgnaw_defeated", "ch01_children_safe", "ch02_met_asha", "ch02_tideline_won", "ch03_causeway_arrived", "ch03_shrine_door_open", "ch03_drownbell_defeated", "ch03_ilun_bound", "ch03_first_verse_sung", "ch03_rhen_sworn_guardian", "ch04_started", "ch04_left_haluna", "ch04_ysolde_joined", "ch04_boarded_derelict", "ch04_spar_wraith_defeated", "ch05_arrived", "ch05_met_kerrid", "ch05_trial_begun", "ch05_matron_quieted", "ch05_kahre_bound", "ch05_second_verse_sung", "ch05_done", "ch06_arrived", "ch06_inquisitor_yielded", "ch06_liss_joined", "ch06_done", "ch07_arrived", "ch07_met_tavi", "ch07_saw_galleries", "ch07_tidecup_played", "ch07_tavi_withdrew"]
+    },
+    {
       "id": "ch09",
-      "label": "Ch9: Corrow by night (Ch8 is not built yet)",
+      "label": "Ch9: Corrow by night",
       "location": "ch09/corrow_night",
       "spawn": "Strand",
       "chapter": 9,
       "party": ["rhen", "asha", "toma"],
-      "flags": ["ch01_started", "ch01_underway_done", "ch01_went_under", "ch01_hullgnaw_defeated", "ch01_children_safe", "ch02_met_asha", "ch02_tideline_won", "ch03_causeway_arrived", "ch03_shrine_door_open", "ch03_drownbell_defeated", "ch03_ilun_bound", "ch03_first_verse_sung", "ch03_rhen_sworn_guardian", "ch04_started", "ch04_left_haluna", "ch04_ysolde_joined", "ch04_boarded_derelict", "ch04_spar_wraith_defeated", "ch05_arrived", "ch05_met_kerrid", "ch05_trial_begun", "ch05_matron_quieted", "ch05_kahre_bound", "ch05_second_verse_sung", "ch05_done", "ch06_arrived", "ch06_inquisitor_yielded", "ch06_liss_joined", "ch06_done", "ch07_arrived", "ch07_met_tavi", "ch07_saw_galleries", "ch07_tidecup_played"]
+      "flags": ["ch01_started", "ch01_underway_done", "ch01_went_under", "ch01_hullgnaw_defeated", "ch01_children_safe", "ch02_met_asha", "ch02_tideline_won", "ch03_causeway_arrived", "ch03_shrine_door_open", "ch03_drownbell_defeated", "ch03_ilun_bound", "ch03_first_verse_sung", "ch03_rhen_sworn_guardian", "ch04_started", "ch04_left_haluna", "ch04_ysolde_joined", "ch04_boarded_derelict", "ch04_spar_wraith_defeated", "ch05_arrived", "ch05_met_kerrid", "ch05_trial_begun", "ch05_matron_quieted", "ch05_kahre_bound", "ch05_second_verse_sung", "ch05_done", "ch06_arrived", "ch06_inquisitor_yielded", "ch06_liss_joined", "ch06_done", "ch07_arrived", "ch07_met_tavi", "ch07_saw_galleries", "ch07_tidecup_played", "ch07_tavi_withdrew", "ch08_arrived_corrow", "ch08_met_ivo", "ch08_entered_coilspire", "ch08_flame_at_crown", "ch08_liss_found_marks", "ch08_virel_bound", "ch08_beacon_opened", "ch08_wave1_held", "ch08_hoist_rigged", "ch08_wave2_held", "ch08_pell_seen", "ch08_wave3_held", "ch08_fishwife_called", "ch08_reach_survived", "ch08_wall_fell", "ch08_rhen_froze", "ch08_hoist_cut_down", "ch08_done"]
     }
   ]
 }
