@@ -23,6 +23,13 @@
       "stats": {"level": 5, "hp": 280, "mp": 70, "strength": 5, "magic": 20, "defense": 5,
                 "magic_defense": 16, "agility": 13, "accuracy": 8, "evasion": 9, "luck": 10},
       "skills": ["attack", "ember", "frost", "slow_hex", "read"]
+    },
+    {
+      "id": "kerrid", "name_key": "CHAR_KERRID",
+      "stats": {"level": 5, "hp": 640, "mp": 24, "strength": 22, "magic": 4, "defense": 16,
+                "magic_defense": 8, "agility": 9, "accuracy": 10, "evasion": 4, "luck": 8},
+      "skills": ["attack", "fluke_cleave", "snub_line", "anchor_fall"],
+      "_note": "M3-C05-02 PROVISIONAL: joins at the end of Ch5 B05 (act1_ch05.md; kerrid.md: a heavy hitter who breaks armour). No Swell row or Lattice start yet; his real kit is the combat request M3-C05-06. In no pre-Ch5 sim suite."
     }
   ]
 }
