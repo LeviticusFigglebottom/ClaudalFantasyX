@@ -11,6 +11,10 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 6. (Found on claude/characters) **M2-UI-07**, the hero actor hook: **hook done and pushed (08c872c)**. It is **blocked** on M2-CHR-06's scenes reaching the integration branch; after that it needs three `"scene"` lines in battle_sandbox.json and shot re-approval.
 
 ## Now (Lead queue of 15:13 and 15:46)
+- **17:20:** claude/ui fast-forwarded to claude/menus @ 6f192c17. That includes everything above, the Menus track's Memories gallery, m2-slice d034c31d and the integration branch. The Menus track's full suite there: 1913 run, 0 failed.
+  - **Queue:** all UI items are done or in review.
+  - **Blocked:** M2-UI-07 (M2-CHR-06 is not on integration yet) and M3-UI-01 (no Reefball engine). **Lead: please queue more.**
+  - **Agreed with the Menus track:** they take a key-items view in Items and a Lattice overview. A field-menu save row is a design change for the Lead (saving is shrine-only today).
 - **MERGE-READY @ d741a39a:**
   - **Items:**
     - M2-UI-26, input parity (all screens);
