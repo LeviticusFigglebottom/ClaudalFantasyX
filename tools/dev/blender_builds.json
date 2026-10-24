@@ -83,6 +83,23 @@
         ["{python}", "assets_src/environments/kits/brine_shoals/bs_textures.py"],
         ["{python}", "assets_src/environments/kits/brine_shoals/bs_materials.py"]
       ]
+    },
+    {
+      "id": "pemakar_kit",
+      "threads": 4,
+      "owner": "environment",
+      "_doc": "M3-ENV-03: the Pemakar kit (Terraces of Ash). Geometry reuses the Haluna kit's core (kit_common, village, shrine_interior) read-only; the two {python} steps rebuild its maps and materials, so they are verified too. Pinned at 4 threads like haluna_kit.",
+      "sources": ["assets_src/environments/kits/pemakar/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/shrine_interior.py",
+                  "assets_src/environments/kits/haluna/kit_textures.py", "assets_src/environments/kits/haluna/materials.py",
+                  "assets_src/environments/vegetation/textures.py"],
+      "outputs": ["assets/environments/kits/pemakar/*.glb", "assets/environments/kits/pemakar/kit_manifest.json",
+                  "assets/environments/kits/pemakar/textures/*.png", "assets/environments/kits/pemakar/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/pemakar/build.py", "--", "--all", "--out-dir", "assets/environments/kits/pemakar", "--manifest", "assets/environments/kits/pemakar/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/pemakar/pemakar_textures.py"],
+        ["{python}", "assets_src/environments/kits/pemakar/pemakar_materials.py"]
+      ]
     }
   ]
 }

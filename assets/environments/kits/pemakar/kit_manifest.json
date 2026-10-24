@@ -1,0 +1,282 @@
+{
+  "generator": "assets_src/environments/kits/pemakar/build.py",
+  "kit": "pemakar",
+  "pieces": {
+    "ash_plume": {
+      "budget": [
+        7000,
+        1800
+      ],
+      "bytes": 222488,
+      "lods": {
+        "ash_plume": 6604,
+        "ash_plume-lod1": 434
+      }
+    },
+    "ashcrown_silhouette": {
+      "budget": [
+        6000,
+        900
+      ],
+      "bytes": 165052,
+      "lods": {
+        "ashcrown_silhouette": 2190,
+        "ashcrown_silhouette-lod1": 566
+      }
+    },
+    "copper_outcrop": {
+      "budget": [
+        3500,
+        500
+      ],
+      "bytes": 127780,
+      "lods": {
+        "copper_outcrop": 2772,
+        "copper_outcrop-lod1": 288
+      }
+    },
+    "grave_cairn": {
+      "budget": [
+        1400,
+        200
+      ],
+      "bytes": 85956,
+      "lods": {
+        "grave_cairn": 1332,
+        "grave_cairn-lod1": 156
+      }
+    },
+    "grave_curb": {
+      "budget": [
+        900,
+        140
+      ],
+      "bytes": 34100,
+      "lods": {
+        "grave_curb": 512,
+        "grave_curb-lod1": 50
+      }
+    },
+    "grave_stele_a": {
+      "budget": [
+        1600,
+        220
+      ],
+      "bytes": 45852,
+      "lods": {
+        "grave_stele_a": 648,
+        "grave_stele_a-lod1": 64
+      }
+    },
+    "grave_stele_b": {
+      "budget": [
+        2000,
+        260
+      ],
+      "bytes": 54980,
+      "lods": {
+        "grave_stele_b": 696,
+        "grave_stele_b-lod1": 144
+      }
+    },
+    "house_pemakar_a": {
+      "budget": [
+        14000,
+        2000
+      ],
+      "bytes": 632512,
+      "lods": {
+        "house_pemakar_a": 11106,
+        "house_pemakar_a-lod1": 1066
+      }
+    },
+    "house_pemakar_b": {
+      "budget": [
+        13000,
+        1800
+      ],
+      "bytes": 476960,
+      "lods": {
+        "house_pemakar_b": 7612,
+        "house_pemakar_b-lod1": 740
+      }
+    },
+    "lamp_pillar": {
+      "budget": [
+        900,
+        140
+      ],
+      "bytes": 26788,
+      "lods": {
+        "lamp_pillar": 300,
+        "lamp_pillar-lod1": 76
+      }
+    },
+    "leaf_boat_lit": {
+      "budget": [
+        260,
+        40
+      ],
+      "bytes": 20556,
+      "lods": {
+        "leaf_boat_lit": 248,
+        "leaf_boat_lit-lod1": 32
+      }
+    },
+    "mountain_massif": {
+      "budget": [
+        30000,
+        5200
+      ],
+      "bytes": 1010840,
+      "lods": {
+        "mountain_massif": 28012,
+        "mountain_massif-lod1": 5040
+      }
+    },
+    "open_hand_gate": {
+      "budget": [
+        9000,
+        1300
+      ],
+      "bytes": 151828,
+      "lods": {
+        "open_hand_gate": 3164,
+        "open_hand_gate-lod1": 336
+      }
+    },
+    "paddy_tread_4m": {
+      "budget": [
+        1600,
+        200
+      ],
+      "bytes": 48132,
+      "lods": {
+        "paddy_tread_4m": 646,
+        "paddy_tread_4m-lod1": 10
+      }
+    },
+    "shrine_box": {
+      "budget": [
+        900,
+        140
+      ],
+      "bytes": 33664,
+      "lods": {
+        "shrine_box": 276,
+        "shrine_box-lod1": 60
+      }
+    },
+    "smithy": {
+      "budget": [
+        14000,
+        2000
+      ],
+      "bytes": 344716,
+      "lods": {
+        "smithy": 5782,
+        "smithy-lod1": 716
+      }
+    },
+    "stair_flight": {
+      "budget": [
+        7500,
+        1100
+      ],
+      "bytes": 228632,
+      "lods": {
+        "stair_flight": 3804,
+        "stair_flight-lod1": 396
+      }
+    },
+    "terrace_channel_4m": {
+      "budget": [
+        1800,
+        260
+      ],
+      "bytes": 61836,
+      "lods": {
+        "terrace_channel_4m": 1100,
+        "terrace_channel_4m-lod1": 26
+      }
+    },
+    "terrace_channel_inlet_l": {
+      "budget": [
+        1800,
+        260
+      ],
+      "bytes": 70440,
+      "lods": {
+        "terrace_channel_inlet_l": 1258,
+        "terrace_channel_inlet_l-lod1": 28
+      }
+    },
+    "terrace_channel_inlet_r": {
+      "budget": [
+        1800,
+        260
+      ],
+      "bytes": 70440,
+      "lods": {
+        "terrace_channel_inlet_r": 1258,
+        "terrace_channel_inlet_r-lod1": 28
+      }
+    },
+    "terrace_spill_l": {
+      "budget": [
+        4600,
+        700
+      ],
+      "bytes": 120628,
+      "lods": {
+        "terrace_spill_l": 1882,
+        "terrace_spill_l-lod1": 156
+      }
+    },
+    "terrace_spill_r": {
+      "budget": [
+        4600,
+        700
+      ],
+      "bytes": 120624,
+      "lods": {
+        "terrace_spill_r": 1882,
+        "terrace_spill_r-lod1": 156
+      }
+    },
+    "terrace_tread_4m": {
+      "budget": [
+        900,
+        120
+      ],
+      "bytes": 14096,
+      "lods": {
+        "terrace_tread_4m": 280,
+        "terrace_tread_4m-lod1": 8
+      }
+    },
+    "terrace_wall_4m": {
+      "budget": [
+        9000,
+        1400
+      ],
+      "bytes": 229876,
+      "lods": {
+        "terrace_wall_4m": 4536,
+        "terrace_wall_4m-lod1": 156
+      }
+    },
+    "terrace_wall_copper": {
+      "budget": [
+        9500,
+        1500
+      ],
+      "bytes": 195976,
+      "lods": {
+        "terrace_wall_copper": 3750,
+        "terrace_wall_copper-lod1": 206
+      }
+    }
+  },
+  "schema": "hymn-kit/1"
+}
