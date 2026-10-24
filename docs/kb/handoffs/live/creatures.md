@@ -3,6 +3,16 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
+- **MERGE-READY @ 539d145a: the Lead's queue items 1–4 (15:30).** Ch6–Ch9 had nothing left to build (Ch7 has no
+  foes, Ch9 no fight). M3-CRE-07 (review): clip-contract audit, strike clips in place (17 GLBs rebuilt, 10
+  byte-identical), LOD1 verified as Godot's import LODs (`tools/dev/creature_lods.gd`), portrait framing for the gull
+  and eel. Phase ids reconciled: `pour`, `breaking` (with the new `hide_after`).
+  - **Checks run:** validate_data, taskboard, lint and format, tools creature tests, Godot `--filter=creature` 13/0 and
+    `--filter=battle` 412/0, all 27 creature jobs rebuilt and audited. 42 creature and battle shots compared: 37
+    unchanged, 5 re-approved after viewing (RMSE in M3-CRE-07).
+  - **Checks skipped:** the shots outside the creature and battle sets (no change reaches them), coverage (no
+    `game/battle/` change).
+  - (My send_message to the Lead is refused with elevated_session_untrusted_device, so this log is the channel.)
 - **MERGE-READY @ 0ce0bee6 (batch): the Act I bestiary, M3-CRE-02..06 in review.** Branch `claude/creatures`
   (integration 1a6f7645 merged at 1ed50955, docs only).
   - **Items:**
