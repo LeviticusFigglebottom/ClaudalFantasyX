@@ -43,6 +43,10 @@
     },
     "spawn_polyp": {
       "scene": "res://game/creatures/spawn_polyp/spawn_polyp_battle.tscn"
+    },
+    "gull_harrier": {
+      "scene": "res://game/creatures/gull_harrier/gull_harrier_battle.tscn",
+      "stand_in": {"yaw_deg": 60.0}
     }
   }
 }

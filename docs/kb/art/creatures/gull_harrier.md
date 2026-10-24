@@ -27,7 +27,7 @@ scavenger that size would need.
 
 | Part | Swatch | Notes |
 |---|---|---|
-| Back, upper wings | `cumulus_shadow` `#8FA7C4` | A grey-blue gull mantle |
+| Back, upper wings | `cumulus_shadow` `#8FA7C4`, deepened 45% toward `overcast_slate` `#6F7E8E` | A grey-blue gull mantle. *Correction (M2-CRE-06):* pure `cumulus_shadow` washes out to near-white under the noon key and loses the white-body / grey-wing read |
 | Head, underparts, under-wing | `foam_white` `#EEF6F4`, kept under the albedo ceiling | |
 | Wing-tips (primaries) | `storm_slate` `#3E4A57`, ragged | The ragged dark tips are the read in flight |
 | Beak, legs | `dusk_gold` `#F2A64A` muted toward `sand_cloth` `#C9B48E`; the beak's hook `tortoiseshell` `#6B3A1E` | |
@@ -41,7 +41,10 @@ scavenger that size would need.
   the hover height separates it from the ground creatures.
 - **Idle:** hovering: a slow, deep wingbeat (one beat a loop, with a glide between), the body rising 6 cm on the
   downstroke and settling, the head steady (birds stabilise the head), the twine swinging.
-- **Facing:** side-on to the camera, head toward the party, so the wings are seen full.
+- **Facing:** head toward the party, turned 30° toward the camera (creatures.json `stand_in.yaw_deg` 60, not the
+  default 90), so the wings are seen full. *Correction (M2-CRE-06):* at a pure side-on yaw of 90 the battle camera
+  looks almost along the wingspan, and through the glide the near wing shrinks to a sliver; at 60 the glide shows the
+  whole crooked "M" and the bird still plainly faces and dives at the party.
 
 ## Clips
 

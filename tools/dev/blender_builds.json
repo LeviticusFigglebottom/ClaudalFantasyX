@@ -146,6 +146,16 @@
         ["{blender}", "--python", "assets_src/creatures/bottle_hermit/build_bottle_hermit.py", "--", "--out", "assets/creatures/bottle_hermit/bottle_hermit.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "bottle_hermit"]
       ]
+    },
+    {
+      "id": "creature_gull_harrier",
+      "owner": "character",
+      "sources": ["assets_src/creatures/gull_harrier/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/gull_harrier/*.glb", "assets/creatures/gull_harrier/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/gull_harrier/build_gull_harrier.py", "--", "--out", "assets/creatures/gull_harrier/gull_harrier.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "gull_harrier"]
+      ]
     }
   ]
 }
