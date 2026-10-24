@@ -2,8 +2,8 @@
 id: M3-CHR-03
 title: "Act I named characters: Liss Varrow (hero path), Tavi Orse and Mother Kell (villager path)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
 depends_on: [M2-CHR-03, M1-CHR-14]
 milestone: M3
 request-from: lead
