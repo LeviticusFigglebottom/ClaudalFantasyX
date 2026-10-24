@@ -24,6 +24,17 @@
         "arena_causeway_flats-lod1": 3280
       }
     },
+    "arena_causeway_route_ground": {
+      "budget": [
+        60000,
+        12000
+      ],
+      "bytes": 1549348,
+      "lods": {
+        "arena_causeway_route_ground": 47400,
+        "arena_causeway_route_ground-lod1": 3526
+      }
+    },
     "arena_tideline_ground": {
       "budget": [
         60000,

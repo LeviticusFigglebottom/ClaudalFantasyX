@@ -23,12 +23,13 @@ sys.path.insert(0, str(HERE))
 import bs_barge  # noqa: E402
 import bs_camp  # noqa: E402
 import bs_common as bc  # noqa: E402
+import bs_derelict  # noqa: E402
 import bs_ground  # noqa: E402
 import bs_wrecks  # noqa: E402
 
 kc = bc.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
-MODULES = (bs_ground, bs_wrecks, bs_camp, bs_barge)
+MODULES = (bs_ground, bs_wrecks, bs_camp, bs_barge, bs_derelict)  # bs_derelict: M3-ENV-06's arena deck
 
 
 def targets() -> dict:

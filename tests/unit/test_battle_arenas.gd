@@ -4,7 +4,13 @@ extends TestCase
 ## battle_sandbox.tscn, so a moved slot is checked where it now is) is flat and clear; nothing stands between
 ## the BattleCamera and a fighter; and the arena sea stops publishing the water level while hidden.
 
-const ARENAS: Array[StringName] = [&"tideline_dawn", &"causeway_disc_sunset"]
+const ARENAS: Array[StringName] = [
+	&"tideline_dawn",
+	&"causeway_disc_sunset",
+	&"causeway_route_afternoon",
+	&"derelict_deck_night",
+	&"ash_terrace_lanternfall",
+]
 ## The clear floor (arenas.py FLOOR_Y / FLOOR_TOLERANCE_M / FLOOR_CLEAR_M): within this radius of a slot,
 ## nothing rises above the floor by more than the tolerance, and most of the ground is the floor itself
 ## (a paving joint may drop a ray into the bed below).
@@ -100,6 +106,31 @@ func test_the_arena_sea_publishes_only_while_visible() -> void:
 	holder.visible = true
 	assert_true(sea.is_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP), "shown again: publishes again")
 	holder.free()
+
+
+## Every arena's own Sea (its night look and sea-glow included) publishes only while visible: taken out of its
+## arena into a holder in the tree, hiding the holder stops it and showing it again restarts it.
+func test_every_arena_sea_publishes_only_while_visible() -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	for id in ARENAS:
+		var arena := _instance(id)
+		var sea := arena.get_node_or_null(NodePath(BattleArenaRoot.SEA)) as ArenaSea
+		assert_true(sea != null, "%s: a Sea" % id)
+		if sea == null:
+			arena.free()
+			continue
+		sea.owner = null
+		arena.remove_child(sea)
+		var holder := Node3D.new()
+		holder.add_child(sea)
+		tree.current_scene.add_child(holder)
+		assert_true(sea.is_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP), "%s: visible, publishes" % id)
+		holder.visible = false
+		assert_false(sea.is_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP), "%s: hidden, stops" % id)
+		holder.visible = true
+		assert_true(sea.is_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP), "%s: shown again, publishes" % id)
+		holder.free()
+		arena.free()
 
 
 func test_the_layout_follows_the_sandbox_scene() -> void:
