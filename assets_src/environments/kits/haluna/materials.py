@@ -50,11 +50,18 @@ def stone(albedo: str, normal: str, tile: tuple[float, float], **kw) -> dict:
 
 
 MATERIALS: dict[str, dict] = {
+    # M2 final pass (env-art): per-block value spread 0.2 and a deeper cavity, so dry-stacked blocks
+    # read one by one; the spray-zone salt is thinner on village walls (it whitened them to plaster).
     "kit_coral_stone": stone("coral_stone_albedo.png", "coral_stone_normal.png", (1.2, 1.2), base_triplanar=True,
-                             normal_strength=1.3, roughness_base=0.86, cavity_darken=0.2, ao_strength=0.5),
+                             normal_strength=1.5, roughness_base=0.86, cavity_darken=0.38, ao_strength=0.75,
+                             variation_value=0.2, salt_coverage="Vector2(0.15, 0.4)"),
     "kit_coral_concrete": stone("coral_concrete_albedo.png", "coral_concrete_normal.png", (2.0, 2.0),
-                                base_triplanar=True, normal_strength=1.1, roughness_base=0.8, cavity_darken=0.4,
-                                barnacle_coverage=0.65, salt_coverage="Vector2(0.4, 0.7)"),
+                                base_triplanar=True, normal_strength=1.1, roughness_base=0.8, cavity_darken=0.5,
+                                barnacle_coverage=0.65, salt_coverage="Vector2(0.15, 0.35)",
+                                algae_coverage="Vector2(0.6, 0.95)", variation_value=0.16,
+                                # Drowned a thousand years (M2 final pass): greyed below lit_ceramic, so
+                                # the ruins read as old stone in the sea, not as glowing white posts.
+                                col_tint=hexc("#D2D4CB")),
     "kit_mortar_white": stone("coral_stone_albedo.png", "coral_stone_normal.png", (0.9, 0.9), base_triplanar=True,
                               normal_strength=0.35, roughness_base=0.9, col_paint=hexc("#E6E1D6"), paint_cover=0.97,
                               cavity_darken=0.04, erosion_pit_darken=0.05, ao_strength=0.4),
@@ -74,14 +81,18 @@ MATERIALS: dict[str, dict] = {
                         col_tint=hexc("#CFCDC8"), normal_strength=1.2, roughness_base=0.8, specular_base=0.3,
                         cavity_darken=0.45, variation_value=0.24, variation_warmth=0.03, moss_min_height_m=1.0),
     "kit_thatch": stone("thatch_albedo.png", "thatch_normal.png", (1.6, 1.6), base_triplanar=False,
-                        normal_strength=1.4, roughness_base=0.95, specular_base=0.2, use_algae=False,
+                        normal_strength=1.8, roughness_base=0.95, specular_base=0.2, cavity_darken=0.5,
+                        variation_value=0.18, use_algae=False,
                         use_barnacles=False, use_salt=False, moss_normal_y=0.5),
     "kit_roof_tile": stone("roof_tile_albedo.png", "roof_tile_normal.png", (2.0, 2.4), base_triplanar=False,
                            normal_strength=1.0, roughness_base=0.62, specular_base=0.45, cavity_darken=0.2,
                            use_algae=False, use_barnacles=False, moss_normal_y=0.75),
+    # Pandanus infill weathers grey-brown and unevenly (M2 final pass): a sun-greyed tint, per-panel
+    # value spread and a deeper weave cavity, so a house wall is not one flat ochre card at H02 range.
     "kit_woven_panel": stone("woven_panel_albedo.png", "woven_panel_normal.png", (0.8, 0.8), base_triplanar=False,
-                             normal_strength=1.0, roughness_base=0.9, specular_base=0.25, use_algae=False,
-                             use_barnacles=False, use_moss=False),
+                             col_tint=hexc("#DCD3C6"), normal_strength=1.4, roughness_base=0.9, specular_base=0.25,
+                             cavity_darken=0.5, variation_value=0.22, use_algae=False, use_barnacles=False,
+                             use_moss=False),
     "kit_lashing": stone("woven_panel_albedo.png", "woven_panel_normal.png", (0.12, 0.12), base_triplanar=False,
                          col_tint=hexc("#9C7E5A"), normal_strength=1.0, roughness_base=0.95, use_algae=False,
                          use_barnacles=False, use_moss=False),

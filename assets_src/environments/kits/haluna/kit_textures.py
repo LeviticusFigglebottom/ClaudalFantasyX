@@ -159,16 +159,34 @@ def build_coral_stone(out: Path, n: int) -> list[Path]:
     pores = np.clip((0.22 - pore_f1) * 7.0, 0, 1) * (fbm(shape, (6, 6), rng, 3) > 0.42)
     cracks = np.clip(1.0 - (f2 - f1) * 14.0, 0, 1) ** 3 * smoothstep_np(0.5, 0.65, big)
     fine = fbm(shape, (64, 64), rng, octaves=3)
-    hgt = 0.55 * big + 0.18 * fine + 0.12 * polyp - 0.35 * pores - 0.25 * cracks
+    cracks = cracks * smoothstep_np(0.55, 0.7, fbm(shape, (6, 6), rng, 3))  # a few fissures, not a net
+    # M2 final pass (env-art): raised-reef limestone is vuggy. Solution holes at two scales (2-6 cm
+    # vugs, gathered in patches) read dark at gameplay distance, and fossil branch-coral casts (warped
+    # worm-like ridges) give the faces a grain, so a wall reads as stone, not plaster.
+    holes = fbm(shape, (30, 30), rng, octaves=3) * 0.7 + fbm(shape, (72, 72), rng, octaves=2) * 0.3
+    vug_patch = smoothstep_np(0.4, 0.62, fbm(shape, (4, 4), rng, 4))
+    vugs = smoothstep_np(0.6 - 0.06 * vug_patch, 0.68 - 0.06 * vug_patch, holes) * (0.35 + 0.65 * vug_patch)
+    warp = fbm(shape, (5, 5), rng, 3)
+    u = (np.arange(n) + 0.5) / n
+    U, V = np.meshgrid(u, u)
+    branch = np.abs(np.sin((U * 9.0 + V * 4.0 + warp * 3.0) * 2.0 * np.pi))
+    branch = (1.0 - smoothstep_np(0.0, 0.22, branch)) * smoothstep_np(0.5, 0.7, fbm(shape, (3, 3), rng, 3))
+    hgt = (0.5 * big + 0.16 * fine + 0.12 * polyp + 0.08 * branch - 0.35 * pores - 0.25 * cracks
+           - 0.45 * vugs)
     hgt = _norm01(hgt)
-    nx, ny = height_to_normal(hgt, n / 256.0 * 3.0)
-    cav = np.clip(cavity_from_height(hgt, 5) + pores * 0.6 + cracks * 0.5, 0, 1)
+    nx, ny = height_to_normal(hgt, n / 256.0 * 3.4)
+    cav = np.clip(cavity_from_height(hgt, 5) + pores * 0.6 + cracks * 0.5 + vugs * 0.8, 0, 1)
     tone = fbm(shape, (4, 4), rng, octaves=4)
-    col = CORAL * (0.86 + 0.18 * tone)[..., None]
-    col = col * (1.0 - 0.35 * np.clip(cav, 0, 1))[..., None] + CORAL_W * (0.35 * cav)[..., None] * 0.6
+    # Two stones in one tile: fresh-broken coral_stone and the sun-greyed coral_stone_weathered, in
+    # broad patches, so value varies across a face as well as between blocks (UV2.y variation).
+    grey = smoothstep_np(0.38, 0.66, fbm(shape, (2, 2), rng, 4))[..., None]
+    col = (CORAL * (1 - grey) + CORAL_W * grey) * (0.84 + 0.2 * tone)[..., None]
+    col = col * (1.0 - 0.5 * np.clip(cav, 0, 1))[..., None] + CORAL_W * (0.2 * cav)[..., None]
+    # The holes are shadowed inside: darker and warmer (a brown-grey), never a cold grey blot.
+    col = col * (1.0 - 0.38 * vugs)[..., None] * (1.0 + np.array([0.06, 0.0, -0.08]) * vugs[..., None])
     warm = np.clip((fbm(shape, (8, 8), rng, 3) - 0.55) * 3.0, 0, 1)[..., None]
-    col = col * (1 - 0.12 * warm) + hex_lin("#D9C29A") * 0.12 * warm
-    col = col * (0.92 + 0.1 * fine)[..., None]
+    col = col * (1 - 0.14 * warm) + hex_lin("#D9C29A") * 0.14 * warm
+    col = col * (0.9 + 0.12 * fine)[..., None]
     return save_pair(out, "coral_stone", col, hgt, nx, ny, cav)
 
 
@@ -204,6 +222,14 @@ def build_coral_concrete(out: Path, n: int) -> list[Path]:
     streak = value_noise(shape, (1, 18), rng) * fbm(shape, (6, 18), rng, 3)
     rust = np.clip((streak - 0.42) * 2.5, 0, 1)[..., None] * 0.22
     col = col * (1 - rust) + hex_lin("#8A5A3E") * rust
+    # M2 final pass (env-art): a thousand years of spray. Dark biofilm runs down from every lip and
+    # pit (vertical drip stains, broken by the formwork lifts), so the ruins sit in the sea as old
+    # grey-green stone, not as fresh white posts.
+    drip = value_noise(shape, (1, 40), rng) * fbm(shape, (3, 40), rng, 3)
+    drip = np.clip((drip - 0.3) * 2.6, 0, 1) * (0.55 + 0.45 * (1.0 - lift))
+    film = (drip * 0.55 + cav * 0.2)[..., None]
+    col = col * (1 - film) + hex_lin("#5E6650") * film
+    col = col * (0.88 + 0.12 * big)[..., None]
     return save_pair(out, "coral_concrete", col, hgt, nx, ny, cav)
 
 
