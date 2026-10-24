@@ -14,8 +14,13 @@ the loudness standard is [`../audio/mix.md`](../audio/mix.md).
 | `audio_data.gd` (`AudioData`) | Loads and caches the tables; pure lookups (`zone_for`, `battle_cue`, `cue_files`) |
 | `battle_audio.gd` (`BattleAudio`) | One per battle: the encounter's cue, phase stems, battle SFX |
 | `shrine_audio.gd` (`ShrineAudio`) | The Shell Shrine trial's sounds (M2-AUD-01) |
+| `footstep_audio.gd` (`FootstepAudio`) | One per field walker: footsteps by stride and surface (M2-AUD-05) |
+| `ui_audio.gd` (`UiAudio`) | The menus' sounds from ui_sfx.json's hooks (M2-AUD-05) |
 
-**Time** passes only through `advance(delta)`, which `_process` calls; tests call it directly.
+**Time** passes only through `advance(delta)`, which `_process` calls; tests call it directly. `advance` also steps
+the UiAudio and every FootstepAudio. The autoload is `PROCESS_MODE_ALWAYS` (M2-AUD-05): the field menu pauses the
+tree, and a pausable Audio would have paused the music and swallowed the menu's own sounds. Nothing it drives moves
+the game, and a paused walker covers no distance, so it takes no steps.
 
 API for other roles (all optional; nothing needs to call it):
 - `Audio.play_music(&"cue", fade_sec := -1.0) -> bool` (`&"silence"` fades out), `Audio.stop_music(fade)`.
@@ -29,6 +34,10 @@ API for other roles (all optional; nothing needs to call it):
 - `music.json`: `cues` (one `file`, or `stems` with `start_stems`; `resume`), `ambience` beds, `zones` (scene ->
   `music`, `ambience`, flag `variants`), `battle` (cue per encounter, `phases` -> stems in or out).
 - `sfx.json`: the sound rows. `battle_sfx.json`, `shrine_sfx.json` and `ui_sfx.json` map hooks to these rows.
+- `ambience.json` (M2-AUD-05): field beds, zone beds and the wind mapping. See "Ambience" below.
+- `sfx_field.json`: the footstep rows (World) and the new menus' rows (UI). `footsteps.json`: strides, surfaces and
+  the surface per scene.
+- `ui_sfx.json`: menu hooks by class name (see "Menus" below).
 - `tools/audio/data_check.py` (called by `tools/validate_data.py`) checks every file, bus, cue, bed, scene, flag,
   encounter and VFX effect; `tools/tests/test_audio_data.py` tests it.
 
@@ -86,7 +95,63 @@ it over `battle_out_sec`, and the return to the field brings the zone's cue back
   - the SFX bank plays at `reduced_level` while the battle lasts. The listener multiplies its factor in and
     divides it out on exit, so a retry's overlapping listeners compose.
 
+**Ambience (M2-AUD-05).** music.json stays the lead's table. `ambience.json` adds:
+- `ambience`: more bed rows. `AudioData.bed_rows` merges them with music.json's, and music.json's rows win a clash.
+- `zones`: scene -> `day` beds, `night` beds once `night_flag` is set, and `wind: true` to add the wind bed.
+  `AudioData.merge_zone_beds` applies them when music.json's row for the scene names no beds (no `ambience` key, or
+  an empty list). A scene with no music.json row gets a row with beds only, so its music is left as it is.
+- `wind`: the wind bed's level offset is `AudioData.wind_db` of the zone's wind speed, which is the length of
+  `WeatherClock.zone_wind(scene)`'s xyz. It is linear from `min_db` at `min_m_s` to `max_db` at `max_m_s`, and
+  clamped. It is set when the zone is applied (the zone wind changes only on a swap).
+
+Today Haluna plays `haluna_day` + `surf` + `wind` by day, and `haluna_night` + `surf` + `dock` + `wind` after
+`ch03_drownbell_defeated` (B11's night dock). Its 6 m/s trade wind puts the wind bed at −9 dB. The Shell Shrine
+plays `shrine_interior` under its temple cue. The beds (`assets_src/sfx/field_ambience.py`) are seamless 40–48 s loops
+at −26 LUFS. They are encoded at Vorbis q1, not mix.md's q3: the six noise-dominated beds came to 3.1 MiB at q3,
+against a 2.5 MiB budget, and they come to 2.36 MiB at q1. `render_all.py` checks the loudness, the seams and the
+budget.
+
+**Footsteps (M2-AUD-05).** When a `FieldController` enters the tree, the director attaches a `FootstepAudio` to it
+(deferred). Once a frame it reads only the walker's `global_position` and `grounded()`:
+- The horizontal distance fills a stride. Each `walk_step_m` (below `run_above_m_s`) or `run_step_m` plays the
+  surface's row at the walker's feet (`play_sfx_at`, World bus). A walk is quieter by `walk_db`.
+- The first step lands `first_step` of a stride in. A walk ends after `stop_sec` without movement, because render
+  frames between physics ticks read none.
+- Moves under `still_m` per frame are jitter. A jump over `teleport_m` is a warp, and no steps play in the air.
+- The surface is `footsteps.json` `scenes[zone]`, else `default`: Haluna is sand and the shrine is stone. Wood is
+  rendered and has a row, but a dock region inside Haluna needs a per-area surface, a later step.
+
+**Menus (M2-AUD-05).** `UiAudio` watches each node whose script's global class (or a base class) has a hook in
+`ui_sfx.json`, deferred so that the menu's `_ready` has built it:
+- `signals`: signal -> row. The arguments are dropped with `Callable.unbind`.
+- `on_enter` / `on_exit`: a row when the menu is attached or leaves the tree.
+- `watch`: Expressions over `node`, read once a frame. A change plays `sfx`; `rise` / `fall` fire when a number
+  goes up or down; `values` maps the new value to a row; `on_true` fires only on a truthy value. The helper
+  `page_with_row(page, row_id)` is in scope.
+- At most one UI row plays per frame: the first in `priority`. A sub-menu pop that also moves the cursor plays the
+  cancel, and the Vowbound's page plays its glass tone without the cursor tick.
+
+Wired today:
+- The battle `CommandMenu`: cursor, confirm and cancel, and `ui_vowbound_open` when a page with the Dismiss row
+  opens.
+- `FieldMenu`: open and close, the cursor on both pages, deeper levels confirm and shallower ones cancel, and a
+  Swell mode chosen confirms.
+- `BestiaryMenu`: a page turn in and out, and the cursor.
+- `SaveMenu`: open and close, the cursor, saved and loaded, dialogs, and the error outcomes.
+- `TitleMenu`: the cursor, chosen, and the New Game question.
+- `GraphicsMenu`: open, close and the cursor.
+
+`ShopMenu` and `InnMenu` are `pending`, because M2-UI-06 hasn't landed. Their class and signal names are guesses,
+to correct when it does. Their rows (`ui_buy`, `ui_inn_rest`, `ui_error`) are ready. `data_check.py` checks every
+row, and every class and signal name against the scripts under `game/`, except a pending hook's. Strings that name
+classes, signals or expressions are never read as sfx ids.
+
 ## Known limits
 - The cutscene sequencer keeps its own music player and plays it at `music_volume_db` −8 dB (its stand-in
   setting). A request task asks m2-slice to call `Audio.play_music` instead (M2-AUD-07).
 - No positional reverb per area yet (mix.md's WorldVerb); M2-AUD-06.
+- Footstep surfaces are per scene. Haluna's dock planks (wood) need an area lookup, such as a group on the dock's
+  collision or a surface map, from whoever owns Haluna.
+- UI hooks that read a menu's state through `watch` depend on public names (`level`, `root_page()`,
+  `model.cursor`). Renaming one silences that sound, which is why `tests/unit/test_field_audio.gd` drives the real
+  CommandMenu and FieldMenu.

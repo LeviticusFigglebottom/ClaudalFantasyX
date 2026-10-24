@@ -41,6 +41,8 @@ from synth.mixer import read_audio  # noqa: E402
 SIZE_BUDGET = 16 * 1024 * 1024       # all shipped audio for the M2 slice (mix.md §5)
 NEW_AUDIO_BUDGET = 4 * 1024 * 1024   # the three M1-AUD-02 cues together
 M1_AUD_02 = ("hush_theme_v2", "battle_standard", "temple_trial")
+AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
+AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
 # (module source, output dir, output file names, kind)
 JOBS = [
@@ -72,7 +74,15 @@ JOBS = [
       "battle/rim_break.ogg", "battle/polyp_rise.ogg", "battle/polyp_mend.ogg", "battle/floodnet.ogg",
       "battle/flood.ogg", "battle/flood_soft.ogg", "battle/vowbound_call.ogg", "battle/vowbound_dismiss.ogg",
       "battle/victory.ogg", "battle/defeat.ogg", "battle/escape.ogg", "drownbell_toll.ogg"], "sfx"),
+    ("assets_src/sfx/field_ambience.py", "assets/audio/ambience",
+     [f"{b}{ext}" for b in ("haluna_day", "haluna_night", "surf", "dock", "shrine_interior", "wind")
+      for ext in (".ogg", ".loop.json")], "ambience_loop"),
+    ("assets_src/sfx/field_sfx.py", "assets/audio/sfx",
+     [f"step_{s}_{v:02d}.ogg" for s in ("sand", "stone", "wood") for v in range(1, 6)]
+     + [f"{u}.ogg" for u in ("ui_menu_open", "ui_menu_close", "ui_page", "ui_buy", "ui_inn_rest", "ui_error",
+                             "ui_vowbound_open")], "sfx"),
 ]
+M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
 
 def _load(path):
@@ -156,8 +166,9 @@ def main() -> int:
     self_test()  # BS.1770 meter sanity (48 kHz coefficients, 997 Hz reference)
 
     jobs = [j for j in JOBS if not args.only or args.only in j[0]]
-    rows, total, new_total, ok = [], 0, 0, True
+    rows, total, new_total, amb_total, ok = [], 0, 0, 0, True
     for src, rel_dir, files, kind in jobs:
+        m1 = JOBS.index((src, rel_dir, files, kind)) < M1_JOBS
         out_dir = os.path.join(ROOT, rel_dir)
         print(f"rendering {src} ...", flush=True)
         _render_job(src, out_dir, files, kind)
@@ -168,14 +179,15 @@ def main() -> int:
                 ok = False
                 continue
             size = os.path.getsize(p)
-            total += size
+            total += size if m1 else 0
+            amb_total += size if kind == "ambience_loop" else 0
             if f.startswith(M1_AUD_02):
                 new_total += size
             if f.endswith(".json"):
                 rows.append((os.path.join(rel_dir, f), size, None, None, None, None, _sha(p)))
                 continue
             y = read_audio(p, channels=1 if kind == "sfx" else 2)
-            if kind == "music_loop":
+            if kind in ("music_loop", "ambience_loop"):
                 for prob in _check_loop(p, y):
                     print(f"FAIL {f}: {prob}")
                     ok = False
@@ -193,6 +205,14 @@ def main() -> int:
         print(f"{path:48} {size:8d} {sec:6.2f} {ils} {mm:7.2f} {tp:6.2f}  {sha[:12]}")
         if il is not None and os.path.basename(path).startswith(M1_AUD_02) and (abs(il + 16.0) > 0.5 or tp > -1.0):
             print(f"FAIL {path}: outside -16 +- 0.5 LUFS, or true peak above -1 dBTP")
+            ok = False
+        if path.startswith("assets/audio/ambience") and (abs(il - AMBIENCE_LUFS) > 0.5 or tp > AMBIENCE_MAX_TP):
+            print(f"FAIL {path}: outside {AMBIENCE_LUFS} +- 0.5 LUFS, or true peak above {AMBIENCE_MAX_TP} dBTP")
+            ok = False
+    if amb_total:
+        print(f"ambience beds {amb_total / 1048576:.2f} MiB, budget {AMBIENCE_BUDGET / 1048576:.1f} MiB")
+        if amb_total > AMBIENCE_BUDGET:
+            print("FAIL: ambience beds over their size budget")
             ok = False
     if not args.only:
         print(f"total {total} bytes ({total / 1048576:.2f} MiB), budget {SIZE_BUDGET / 1048576:.0f} MiB; "

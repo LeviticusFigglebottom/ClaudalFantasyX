@@ -345,3 +345,37 @@ Rules:
 | assets/audio/sfx/battle/defeat.ogg | assets_src/sfx/battle_sfx.py + tools/audio/synth/ | python3 assets_src/sfx/battle_sfx.py | Audio (M2-AUD-04) | 2026-10-24 | original |
 | assets/audio/sfx/battle/escape.ogg | assets_src/sfx/battle_sfx.py + tools/audio/synth/ | python3 assets_src/sfx/battle_sfx.py | Audio (M2-AUD-04) | 2026-10-24 | original |
 | assets/audio/sfx/drownbell_toll.ogg | assets_src/sfx/battle_sfx.py + tools/audio/synth/ | python3 assets_src/sfx/battle_sfx.py | Audio (M2-AUD-04) | 2026-10-24 | original |
+| assets/audio/ambience/haluna_day.ogg | assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_ambience | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/ambience/haluna_day.loop.json | assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_ambience | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/ambience/haluna_night.ogg | assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_ambience | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/ambience/haluna_night.loop.json | assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_ambience | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/ambience/surf.ogg | assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_ambience | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/ambience/surf.loop.json | assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_ambience | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/ambience/dock.ogg | assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_ambience | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/ambience/dock.loop.json | assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_ambience | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/ambience/shrine_interior.ogg | assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_ambience | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/ambience/shrine_interior.loop.json | assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_ambience | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/ambience/wind.ogg | assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_ambience | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/ambience/wind.loop.json | assets_src/sfx/field_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_ambience | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_sand_01.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_sand_02.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_sand_03.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_sand_04.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_sand_05.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_stone_01.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_stone_02.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_stone_03.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_stone_04.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_stone_05.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_wood_01.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_wood_02.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_wood_03.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_wood_04.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/step_wood_05.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/ui_menu_open.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/ui_menu_close.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/ui_page.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/ui_buy.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/ui_inn_rest.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/ui_error.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
+| assets/audio/sfx/ui_vowbound_open.ogg | assets_src/sfx/field_sfx.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only field_sfx | Audio Director (M2-AUD-05) | 2026-10-24 | original |
