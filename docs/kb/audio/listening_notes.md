@@ -214,3 +214,66 @@ measured bus levels. If you listened to the earlier files, please listen to thes
   piano, a slow 3/4 dance of interlocking metallophones and a soft drum, and glass "motes" whose every figure falls,
   because the motes go *down and seaward* (Pell: "Beautiful. And pointing the wrong way."). Is it the most beautiful
   thing in Act I? If not, what is missing?
+
+## M3: Act I area and match themes (M3-AUD-02, M3-AUD-04)
+
+Three new loops for chapters that aren't built yet, so you can only hear them on their own for now. Each one has
+a different key and band from the slice cues, so a chapter change should sound like a change of place. About 4
+minutes in all. The scenes are in act_outline.md (Ch5, Ch7, Ch8).
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/terraces_of_ash.ogg` | 80 s loop | Ch5: Pemakar and the Lanternfall festival among the graves |
+| 2 | `music/tidecup_match.ogg` | 68.6 s loop | Ch7: the story Reefball match inside the Tamsule Bell |
+| 3 | `music/corrow_seawall.ogg` | 75.8 s loop | Ch8: walking Corrow Bastion and the seawall before the storm |
+
+### (1) Terraces of Ash: a festival held in a cemetery
+
+- **The band:** a plucked zither carries the tune, with low zither strings under it. High, soft bars fall in short
+  runs: the leaf-boat lanterns tipping over the terrace lips. Quiet tuned bubbles stand for the channels, and
+  copper gongs keep a slow eight-bar cycle (the stair-mountain). Through the second half, women hum the tune an
+  octave down: the mourners. There is no flute and there are no interlocking bars, so it shouldn't sound like
+  Haluna.
+- **The key:** F, on a five-note scale with a flat second and a flat sixth (F Gb Bb C Db), in a slow 3/4. **Is it
+  lovely and grave at the same time, or only gloomy?** If it's gloomy, the fix is to make the lanterns brighter
+  and more frequent, not to change the key.
+- **The zither** is a modelled string in a modelled box. Zither, harp, or "a guitar in a cave"? If it's the cave,
+  the box resonances are what to change.
+- **The lanterns:** small fires on water, or wind chimes? Too many, or too few?
+- **The hum:** does it make the second half feel like mourners joining in, or does it muddy the zither?
+
+### (2) The Tidecup: a sports theme that is also a lament
+
+- **The brief:** each captain names one person the sea has taken, and Oruvel's side plays "for the ones who didn't
+  come up". It should never sound triumphant. The piece sets two things against each other. Underneath is the
+  game's drive: 112 BPM, frame drums and a big drum, a running plucked ostinato and a walking bass. Over it is a
+  slow A-minor song on the flute, in long notes. While the drums are going, the song never lands on its home note.
+- **The Bell:** the arena is the Tamsule Bell, so a low padded bronze bell sounds at each section, and a soft
+  "salt-glass" bar doubles the song's long notes in the third section. In the second section the crowd **hums**
+  the song's outline under the drums. Nobody in the crowd sings, because only Cantors sing.
+- **The ending:** the last four bars drop to the big drum's heartbeat, the Bell, the glass and the flute's last
+  falling notes. That is "the naming". Then the loop picks the game back up.
+- **The key question:** does it make you want to watch a match **and** feel sad, or does one side win? If it
+  sounds like a battle theme, the drums are too forward. If it sounds like a funeral, the song is.
+- The crowd hum: a crowd in an arena, or a church choir? Is the bell too loud?
+- Mastering: the big drum's hits take up to about 3 dB of fast limiting on under 1 % of samples. If the downbeats
+  sound flattened, tell me and I'll lower the drums instead.
+
+### (3) The Seawall: nine hundred years of the same defence
+
+- **The idea:** a ground bass. One four-bar bass line (B D | A F# | G E G | F#) comes round six times without
+  changing, while everything above it varies. Each time round it ends on the dominant and climbs back to B, so
+  the loop has no last bar, only "the next time round". That is the image of the same defence kept for nine
+  hundred years. Above the bass, a low, dark flute (a fisher's whistle, not a festival flute) plays four phrases.
+  Muted plucks in eighths are the rope and block. The frame drum keeps a footstep on every beat (the stair). A
+  kettle gong (the beacon) marks each round.
+- **The Watchers:** the wall's carved faces hum, so in the fourth round the men hum a slow descending chorale over
+  the ground alone, and the women join a third above in the fifth.
+- **The key question:** does it feel steady and dutiful, not afraid yet and not hopeful either? Or does the
+  repetition get dull by the third time round? If it's dull, I'd vary the plucks before touching the bass, because
+  the unchanging bass is the point.
+- Does the flute's low register sound like a breathy whistle (good), or a flute played badly (bad)?
+- The step drum has the same fast limiting on its hits as the Tidecup's drums (up to about 4 dB on 0.5 % of
+  samples). Do the footsteps sound natural, or clipped?
+
+**For all three:** can you hear the loop wrap? The seams are at 80 s, 68.6 s and 75.8 s.

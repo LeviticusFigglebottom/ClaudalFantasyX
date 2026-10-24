@@ -46,7 +46,8 @@ M1_AUD_02 = ("hush_theme_v2", "battle_standard.", "temple_trial")
 # M2-AUD-03's cues, held to the music targets (-16 +- 0.5 LUFS, true peak <= -1 dBTP). drownbell_p1 is one stem of a
 # stack measured whole by its source (the full stack is -16; stem 1 alone is quieter by design, mix.md §2).
 M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_verse", "hush_coda", "haluna_dawn",
-           "shell_shrine_interior", "ilun_summon", "saltgrass_causeway", "lamp_diver", "sefir_theme", "the_ebbing")
+           "shell_shrine_interior", "ilun_summon", "saltgrass_causeway", "lamp_diver", "sefir_theme", "the_ebbing",
+           "tidecup_match", "terraces_of_ash", "corrow_seawall")
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
@@ -118,6 +119,12 @@ JOBS = [
         "sphere_swim_3.ogg", "crowd_cheer_1.ogg", "crowd_cheer_2.ogg", "crowd_groan.ogg", "crowd_gasp.ogg",
         "whistle_start.ogg", "whistle_short.ogg", "whistle_end.ogg", "naming_rite.ogg"]
      + [f"crowd_{b}{ext}" for b in ("murmur", "excited") for ext in (".ogg", ".loop.json")], "sfx_set"),
+    ("assets_src/music/tidecup_match.py", "assets/audio/music",
+     ["tidecup_match.ogg", "tidecup_match.loop.json"], "music_loop"),
+    ("assets_src/music/terraces_of_ash.py", "assets/audio/music",
+     ["terraces_of_ash.ogg", "terraces_of_ash.loop.json"], "music_loop"),
+    ("assets_src/music/corrow_seawall.py", "assets/audio/music",
+     ["corrow_seawall.ogg", "corrow_seawall.loop.json"], "music_loop"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
