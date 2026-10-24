@@ -137,7 +137,10 @@ const UNIFORM_MAP := {
 		"height_min": "wound_height_min",
 		"height_max": "wound_height_max",
 		"presence_scale_m": "wound_presence_scale_m",
-		"sink_m_s": "wound_sink_m_s",
+		"lip_width": "rent_lip_width",
+		"lip_dark": "rent_lip_dark",
+		"halo_width": "rent_halo_width",
+		"halo_energy": "rent_halo_energy",
 		"energy": "wound_energy",
 		"pocket_energy": "pocket_energy",
 		"rent_depth": "rent_depth",
@@ -170,7 +173,6 @@ const UNIFORM_MAP := {
 		"reflection_dim": "sea_reflection_dim",
 		"roughness": "sea_roughness",
 		"throat_glow_energy": "throat_glow_energy",
-		"glow_sink_m_s": "glow_sink_m_s",
 	},
 	"spray":
 	{
@@ -212,6 +214,18 @@ var approach_distance_m: float = 0.0:
 var time_scale: float = 1.0:
 	set(value):
 		time_scale = clamp_value("time_scale", value)
+## The Letting (M2-RND-05, colour script rule 1 and Ch21): 0 = held, 1 = released. Over its first half
+## the wounds' and throat streaks' drift slows and reverses (sinking -> rising); over its second half
+## their colours lerp from spawn_wound / glimmer_held to glimmer_lift. The drift is integrated
+## piecewise from the moment it changes, so tweening it never makes the pattern jump.
+var unbinding: float = 0.0:
+	set(value):
+		var u := clampf(value, 0.0, 1.0)
+		if u != unbinding:
+			_wound_drift0 = wound_drift_m()
+			_glow_drift0 = glow_drift_m()
+			_drift_t0 = time_s
+		unbinding = u
 
 ## Frames the clock has advanced (drives the temporal march jitter; frozen while the storm is held).
 var frame: int = 0
@@ -222,6 +236,9 @@ var temporal_aa: bool = true
 var look: String = ""
 var _quality: String = ""
 var _forced_start: Array[float] = []
+var _drift_t0: float = 0.0
+var _wound_drift0: float = 0.0
+var _glow_drift0: float = 0.0
 
 
 func _init(cfg: Dictionary = {}) -> void:
@@ -302,6 +319,9 @@ func quality_plan(id: String = "") -> Dictionary:
 		"sea_foam_octaves": int(tier.get("sea_foam_octaves", 1)),
 		"shell_fractions": (shells.get("fractions", []) as Array) if body == BODY_SHELLS else [],
 		"shell_canopy": bool(shells.get("canopy", false)) and body == BODY_SHELLS,
+		"streamers": maxi(int(tier.get("streamers", 0)), 0),
+		"rain_layers": maxi(int(tier.get("rain_layers", 0)), 0),
+		"bolt_branches": maxi(int(tier.get("bolt_branches", 0)), 0),
 	}
 
 
@@ -441,6 +461,27 @@ func clear_forced_flashes() -> void:
 	_forced_start.fill(-INF)
 
 
+## Whether a site's flash at time t comes from force_flash (a cutscene's stroke always shows a bolt).
+func flash_is_forced(site: int, t: float) -> bool:
+	if site < 0 or site >= flash_site_count():
+		return false
+	var age := t - _forced_start[site]
+	return age >= 0.0 and age <= float(_section("lightning").get("duration_s", 0.0))
+
+
+## Index of the scheduled flash period a site is in at time t (stable per strike; seeds its bolt).
+func flash_period(site: int, t: float) -> int:
+	return floori(t / _site_period(site)) if site >= 0 and site < flash_site_count() else 0
+
+
+## A stable id of the strike a site is in at time t: its forced stroke (by start time, ms) while one
+## is lit, else its scheduled period. A new id = a new stroke.
+func flash_strike_id(site: int, t: float) -> int:
+	if flash_is_forced(site, t):
+		return -1 - roundi(_forced_start[site] * 1000.0)
+	return flash_period(site, t)
+
+
 ## Stable hash of (a, b, salt) in [0, 1).
 static func hash01(a: int, b: int, salt: int) -> float:
 	var v := _pcg((a * SALT_SITE + salt) & U32_MASK)
@@ -485,8 +526,12 @@ func sea_response_parameters() -> Dictionary:
 	return out
 
 
-## Uniforms that change every frame: the clock, the API values and the lightning sites.
+## Uniforms that change every frame: the clock, the API values, the lightning sites, and the
+## unbinding's drift and colours (M2-RND-05).
 func dynamic_parameters() -> Dictionary:
+	var colors := _section("colors")
+	var lift := Color.from_string(str(colors.get("lift", "")), Color.MAGENTA)
+	var hue := unbinding_hue()
 	return {
 		"storm_time_s": time_s,
 		"storm_intensity": intensity,
@@ -494,7 +539,55 @@ func dynamic_parameters() -> Dictionary:
 		"wound_intensity": wound_intensity,
 		"lightning_sites": flash_sites(time_s),
 		"jitter_phase": jitter_phase(),
+		"wound_drift_m": wound_drift_m(),
+		"glow_drift_m": glow_drift_m(),
+		"col_wound": Color.from_string(str(colors.get("wound", "")), Color.MAGENTA).lerp(lift, hue),
+		"col_held": Color.from_string(str(colors.get("held", "")), Color.MAGENTA).lerp(lift, hue),
 	}
+
+
+# --- The Letting (M2-RND-05) -------------------------------------------------------------------
+
+
+## Drift speed multiplier at the current unbinding: 1 (sinking) -> -rise_ratio (rising) over its
+## first half (undertow.json "unbinding").
+func drift_sign() -> float:
+	var rise := float(_section("unbinding").get("rise_ratio", 1.0))
+	return lerpf(1.0, -rise, smoothstep(0.0, 0.5, unbinding))
+
+
+## Colour lerp toward glimmer_lift at the current unbinding (its second half).
+func unbinding_hue() -> float:
+	return smoothstep(0.5, 1.0, unbinding)
+
+
+## How far the wound seams have slid down the wall (m) at the storm time (negative = risen).
+func wound_drift_m() -> float:
+	return _wound_drift0 + float(_section("wounds").get("sink_m_s", 0.0)) * drift_sign() * (time_s - _drift_t0)
+
+
+## How far the throat streaks have sunk into the funnel (m) at the storm time (negative = risen).
+func glow_drift_m() -> float:
+	return _glow_drift0 + float(_section("sea").get("glow_sink_m_s", 0.0)) * drift_sign() * (time_s - _drift_t0)
+
+
+## Names of the chapter presets in undertow.json "presets".
+func preset_ids() -> PackedStringArray:
+	var out := PackedStringArray()
+	for key: String in _section("presets"):
+		if not key.begins_with("_"):
+			out.append(key)
+	return out
+
+
+## A chapter preset: UndertowStorm property -> value (undertow.json "presets"; "_note" dropped).
+func preset(id: String) -> Dictionary:
+	var src := _section("presets").get(id, {}) as Dictionary
+	var out := {}
+	for key: String in src:
+		if not key.begins_with("_"):
+			out[key] = src[key]
+	return out
 
 
 ## Per-frame rotation of the raymarch's start offset: an R1 sequence over frames, so TAA averages

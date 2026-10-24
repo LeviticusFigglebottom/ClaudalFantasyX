@@ -15,6 +15,7 @@ SPEC §8.2 item 9: "a colossal volumetric storm with animated vortex shading, ra
 | Maelstrom sea | `undertow_sea.gdshader` (funnel disc) and `undertow_sea_lid.gdshader` (depth-only lid) |
 | Test scene and shots | `game/levels/_tests/undertow/undertow_test.tscn` (driver `undertow_test_rig.gd`); shots `undertow_horizon_dusk`, `undertow_eye`, `undertow_night`, `undertow_horizon_low` |
 | Cost bench | `game/levels/_tests/undertow/undertow_bench.tscn` |
+| Storm events (M2-RND-05) | `game/vfx/undertow/undertow_events.gd` (`UndertowEvents`); `undertow_streamer`, `undertow_bolt`, `undertow_rain` shaders; the water shader's storm group (reflection); tests `tests/unit/test_undertow_events.gd` |
 | Tests | `tests/unit/test_undertow_shaders.gd` (compile, uniforms, no `TIME`, palette, prewarm), `tests/unit/test_undertow_storm.gd` (state, meshes, node) |
 
 ## Approach: a hybrid, and why
@@ -203,11 +204,11 @@ Calibrated against the water bench, the only ratio we have. Water High costs abo
 **Where it falls short of "the most important visual in the game"** (my estimate: about a third of the way there):
 1. **Cost** (above): the raymarched tiers are 5–15× over budget. Nothing else matters until this is fixed.
 2. **Cloud surface quality:** the billows are soft and "smoky" at 960×540, with no crisp cauliflower edges, no wispy fractal fringe, and a fairly uniform khaki-gold where lit. The IGN dither shows as grain without TAA (the captures use FXAA for determinism). The striations are too regular: they read as stacked plates at a glance.
-3. **Wounds:** at dusk they read as glowing smears and blobs more often than as torn seams. They are not yet clearly *rents* (dark edges, light pouring out, motes peeling off visibly at the near ones). The held motes (`GlimmerField`) are human-scale and so sub-pixel at storm distance. The storm has no km-scale "mote streamers" coming off its wounds yet.
-4. **Integration:** the storm does not appear in reflections (the sea reflects the sky only), does not shadow or darken the zone's light, and adds no rain or near-field weather. The horizon sea in front of it is therefore too calm and too unaffected.
+3. **Wounds** (M2-RND-05 adds dark torn lips, a halo and curtains of held light: "Storm events")**:** at dusk they read as glowing smears and blobs more often than as torn seams. They are not yet clearly *rents* (dark edges, light pouring out, motes peeling off visibly at the near ones). The held motes (`GlimmerField`) are human-scale and so sub-pixel at storm distance. The storm has no km-scale "mote streamers" coming off its wounds yet.
+4. **Integration** (M2-RND-05: reflection, zone shadow and rain, "Storm events")**:** the storm does not appear in reflections (the sea reflects the sky only), does not shadow or darken the zone's light, and adds no rain or near-field weather. The horizon sea in front of it is therefore too calm and too unaffected.
 5. **Motion is unproven:** differential rotation, two-phase advection, sinking wounds and flashes all run on the storm clock and are deterministic, but nobody has watched them at frame rate on a GPU. The two-phase cross-fade may "breathe" visibly over `flow_cycle_s`.
 6. **Inside the storm** (Ch20) and very close approaches are untested: the proxy works with the camera inside, but there is no near-field detail.
-7. The lightning is glow only: no bolt geometry, no exposure flash (the colour script wants 2.0× exposure for 2 frames in Ch8).
+7. (M2-RND-05 adds bolts and the exposure flash: "Storm events".) The lightning is glow only: no bolt geometry, no exposure flash (the colour script wants 2.0× exposure for 2 frames in Ch8).
 
 **What M2 must add** (in priority order):
 1. **Make the body affordable.** *Largely done in M1-RND-10 (baked noise, step jitter, curl reuse: High 1440p 25.8–35.7 → 4.0–5.4 ms on an RX 9070 XT). What remains here is headroom:* render it at half or quarter resolution into its own buffer (a compositor effect or SubViewport) with temporal reprojection and a depth-aware upsample. Replace the hash noise with **baked tileable 3D noise textures** generated in-repo (`tools/` script → `.exr`/`.res`, with PROVENANCE rows): one fetch replaces about 150 ALU ops a sample. Use blue-noise jitter plus TAA, and early-out on opacity. Target ≤ 2–3 ms on High. Measure on the GPU runner (M1-QA-01).
@@ -324,7 +325,148 @@ Aimed at review-sweep-G's "uniform khaki lit tone" and "regular striations". Rep
   3 streak widths and break into foam flecks along their length, with a softer profile. Before, they were hard,
   straight, parallel rails.
 
+## Storm events (M2-RND-05)
+
+The storm as an event, on top of the body. `UndertowEvents` (`game/vfx/undertow/undertow_events.gd`) is an internal
+child of `UndertowStorm`; the storm calls `build()` on every rebuild and `update()` every frame. Tunables are in
+undertow.json: `streamers`, `bolts`, `exposure_flash`, `rain`, `zone_shadow`, `reflection`, `unbinding` and `presets`,
+with the per-tier counts in `quality`. Key frames: `docs/kb/qa/gpu/rnd05/`. Report and cost:
+`docs/kb/qa/gpu/2026-10-24-rnd-05-undertow-events.md`. Art's sign-off: M2-ART-03.
+
+### Torn rents
+`undertow_wound()` (common include) now returns two more bands around each seam's open core:
+- a **lip**, `wounds.lip_width` seam widths wide, where the cloud is torn. Its lit colour and the pooled held
+  light are darkened by `lip_dark`, and it's a little denser;
+- a wider **halo** (`halo_width`), where the light pouring out scatters in the cloud beside the rent
+  (`halo_energy` × the seam glow, weighted by density).
+
+The body, the Low shells and the sea use the same function, so every tier gets dark-edged rents.
+
+**The drift is integrated.** The seams' drift down the wall, and the throat streaks' drift into the funnel, are
+now `wound_drift_m` and `glow_drift_m`, integrated by `UndertowState` (not `speed × time` in the shader), so the
+Letting can reverse them without the pattern jumping. Held, they equal the old `sink_m_s × t` exactly.
+
+### Curtains of held light (streamers)
+`UndertowMeshBuilder.streamers()` builds curtains anchored on the wall's outer face inside the wounds' height
+window, spread by a golden-angle sequence. Each one:
+- falls to the sea and bulges out from the face toward the foot (`reach_m`), like the spray;
+- trails `twist_rad` sideways and widens toward the sea;
+- faces outward.
+
+`undertow_streamer.gdshader` turns them with the wall and slides a pattern of motes down them with the wounds'
+drift (arc length in UV2). It's additive, near half only (as the outer spray), and fades a curtain seen edge-on.
+Counts: Low 8, Medium 12, High 16, Ultra 24.
+
+### Lightning bolts and the exposure flash
+**Bolts.**
+- At a strike (a site's flash crossing `bolts.threshold`), a scheduled flash shows a cloud-to-sea bolt with
+  `bolts.chance`; `force_flash` always shows one.
+- The stroke runs from the cloud base (`top_m`) over the site's wall angle down to the sea just beyond the wall.
+  It's deterministic in (site, strike), with `quality.bolt_branches` forks.
+- `undertow_bolt.gdshader` draws it as view-facing quads, never thinner than `min_px` pixels, at the site's
+  flash level.
+- **A bolt draws only on the camera's half of the storm.** The body can't occlude a transparent stroke, and one
+  behind the wall would show through. For a strike in view, a cutscene calls
+  `storm.force_flash(storm.site_facing(camera.global_position))`.
+
+**The exposure flash.** At each strike, `UndertowStorm.world_environment`'s `tonemap_exposure` is multiplied by
+`exposure_flash.gain` (2.0) for `frames` (2): the colour script's Ch8 lightning frames.
+- Photosensitivity follows the battle flashes (battle_vfx.md): at least `min_interval_s` (0.5 s) apart, so at
+  most two a second, under WCAG 2.3.1's three. A refused flash counts in `UndertowEvents.flashes_suppressed`.
+- Under reduced motion the gain is `reduced_motion_gain` (1.33).
+- `storm.exposure_flash = false` turns it off. Captures do that.
+
+**The signal.** `lightning_struck(site, bolt)` fires at each strike, for audio (thunder) and cutscenes.
+
+### Rain
+`UndertowRain` is a set of curtains on the camera (`undertow_rain.gdshader`). The streaks:
+- fall on the storm clock (never `TIME`), slanted by `slant`;
+- are lit by the storm's ambient (dimmed by the zone shadow);
+- flash with the lightning.
+
+**How hard it rains.** Full within `rain.full_m` of the eye, nothing beyond `reach_m` (the outer bands), none
+above `ceiling_m` over the sea (a camera above the storm stays dry), all times `intensity`.
+`storm.rain_amount` overrides it (−1 = automatic).
+
+**Cost.** Every layer is a full-screen blend (about 0.06 ms at 1440p), so light rain draws only the inner
+layers. Layers per tier: 1, 2, 3, 3.
+
+### The zone shadow
+`zone_shadow_at()` gives how deep the zone marker (the storm node) is in the storm's shadow: the canopy
+overhead, or the canopy or wall on the line to the sun, times intensity.
+- The zone's key light and its Environment ambient are dimmed by `sun_dim` (0.75) and `ambient_dim` (0.45) at
+  full shadow.
+- The storm itself stays lit by the undimmed key (`UndertowEvents.sun_energy()`).
+- A zone script that changes the key or the ambient is re-read the next frame, so the shadow never compounds.
+- Both come back when the storm leaves the tree or is hidden. `storm.zone_shadow = false` turns it off.
+
+### The storm in the reflection
+The engine's sky reflection never sees the storm, so the water shader's storm group reflects it:
+- **Medium and High:** the reflected ray's point at the storm's distance is projected to the screen, and the
+  half-res body's own pixel there (compute or SubViewport `body_tex`, ready before the water draws) is the
+  reflection. That includes the wounds and the lightning, which reflect as glints in the chop.
+- **Off screen, on Low (shells) and on Ultra (full-res body, no texture):** an analytic impostor of the wall
+  and the canopy ring, coloured from the storm's lighting. Its gains are matched to the body's measured
+  on-screen colour; a naive albedo × key was several times too bright (a white band, found on the GPU).
+- Where the storm is reflected, the sky reflection gives way to it. `reflection.strength` × intensity; it's
+  cleared when the storm leaves.
+
+### Chapter presets and the Letting
+`storm.preset = "ch08_landfall"` (or `apply_preset(id)`) sets storm properties from undertow.json `presets`. Each
+preset is a starting point from the colour script, awaiting Art (M2-ART-03):
+
+| Preset | Chapter |
+|---|---|
+| `ch01_arrival` | Ch1, the storm out of a clear sky, far off |
+| `ch08_seawall` | Ch8 16:00, the storm wall (the `undertow_day_ch08` reference) |
+| `ch08_landfall` | Ch8 16:40, under the canopy's edge, near-night, heavy rain |
+| `ch20_interior` | Ch20, inside the storm |
+| `ch21_heart` | Ch21, phases 1–2, every wound open |
+| `ch21_letting` | Ch21, phase 3 |
+
+The zone still owns its light: key, fog and exposure, per color_script.md.
+
+**`unbinding` (0..1) is the Letting.**
+- Over its first half, the wounds' and the throat streaks' drift slows and reverses (sinking → rising, at
+  `unbinding.rise_ratio`).
+- Over its second half, `col_wound` and `col_held` lerp to `glimmer_lift` (colours `lift`), per colour script
+  rule 1: the direction reverses, then the hue turns.
+- The curtains follow (they share `col_held` and the drift).
+- A cutscene tweens it over the countdown.
+
+### Cost (RX 9070 XT, 2560×1440, GPU median over 300 frames, the storm's own by `gpu_bench --hide-storms`)
+
+| Camera, High | Before | After | Of which rain |
+|---|---:|---:|---:|
+| Day (Ch8, 14 km, light rain) | 0.66 ms | **0.83 ms** | ≈ 0.10 ms (2 layers) |
+| Eye (high angle, dry) | 0.76 ms | 0.80 ms | 0 |
+| Night (light rain) | 0.68 ms | 0.79 ms | ≈ 0.06 ms (1 layer) |
+| Horizon (dusk, dry) | 0.55 ms | 0.59 ms | 0 |
+| Landfall (preset, full rain, under the canopy) | – | 0.84 ms | ≈ 0.17 ms (3 layers) |
+
+- **Within the ~1 ms target at High** on every camera; about 2.5 ms projected on an RTX 3060.
+- **Where the rest goes:** the curtains, bolts and reflection together add 0.03–0.06 ms.
+- **Medium:** the Day frame rises 1.96 → 2.14 ms. **Ultra** (full-res body): 17.2 → 17.4 ms.
+- **Low** (shells, 1 rain layer): Day 2.16 → 2.23 ms. See the finding in the report: Low's full-resolution
+  shells cost more than High's 0.35-scale compute body.
+
+### Still open
+- **Rain on the sea:** no ripple rings.
+- **No sky overcast:** the anvil darkening a zone's sky dome toward the storm isn't there. The storm itself is in
+  the sky and in the reflection; the sky shader doesn't know it.
+- **Ultra and Low** reflect the impostor, not the body.
+- **Thunder:** `lightning_struck` is the hook, for Audio.
+- **Per-chapter exposure flashes:** the gain is one value for now.
+
 ## Gotchas
+- **Unshaded additive shaders write ALBEDO, not EMISSION (M2-RND-05).** With `unshaded` Godot outputs ALBEDO
+  alone; EMISSION is dropped, so `blend_add` of EMISSION over a black ALBEDO drew nothing (the streamers and
+  bolts were invisible until this was found).
+- **UndertowEvents is a plain Node (M2-RND-05),** so it breaks the visibility chain: hiding the storm would leave
+  the camera's rain drawing. `update()` gates on `storm.is_visible_in_tree()` and gives the zone its light back.
+  `gpu_bench --hide-storms` measured 0.2 ms of "storm-free" frame until it did.
+- **Rotate NORMAL with VERTEX** in a storm part that turns with the wall (the curtains): a stale normal made the
+  edge-on fade hide the curtains facing the camera.
 - **Compute body: four Godot 4.6 traps (M2-RND-01).**
   - A `.glsl` RDShaderFile expands one level of `#include` only, and is re-imported only when the `.glsl` itself
     changes. Hence the generated flat body, and the hash in each twin.
