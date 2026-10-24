@@ -11,6 +11,9 @@ extends RefCounted
 ##
 ## Map (M2-UI-18): `map` is the zone map's MapModel. The live menu builds it from the field when it
 ## opens (`live_map`); a zone with no map, or no model, turns the row off and says why on it.
+##
+## Codex (M3-UI-03): after Bestiary, it opens the lore codex (CodexMenu) over `codex`, or the
+## game's codex (CodexModel.from_game) when that is null. Shots and tests set a scratch one.
 
 ## M2-MNU-01..04 (the Menus track) added the party's pages: Items, Equip, Lattice, Status (each a
 ## FieldSubmenu in game/ui/menus/), and Quit to the title behind a confirm.
@@ -21,6 +24,7 @@ const ROW_STATUS := &"status"
 ## M2-MNU-07: the party formation page (FormationMenu).
 const ROW_FORMATION := &"formation"
 const ROW_BESTIARY := &"bestiary"
+const ROW_CODEX := &"codex"
 const ROW_SWELL := &"swell"
 const ROW_MAP := &"map"
 const ROW_SETTINGS := &"settings"
@@ -35,6 +39,7 @@ const ROOT_IDS: Array[StringName] = [
 	ROW_SWELL,
 	ROW_MAP,
 	ROW_BESTIARY,
+	ROW_CODEX,
 	ROW_SETTINGS,
 	ROW_QUIT,
 	ROW_CLOSE,
@@ -48,6 +53,7 @@ const ROOT_LABEL_KEYS := {
 	ROW_STATUS: "FIELD_MENU_STATUS",
 	ROW_FORMATION: "FIELD_MENU_FORMATION",
 	ROW_BESTIARY: "FIELD_MENU_BESTIARY",
+	ROW_CODEX: "FIELD_MENU_CODEX",
 	ROW_SWELL: "FIELD_MENU_SWELL",
 	ROW_MAP: "FIELD_MENU_MAP",
 	ROW_SETTINGS: "FIELD_MENU_SETTINGS",
@@ -61,6 +67,7 @@ const ROOT_DESC_KEYS := {
 	ROW_STATUS: "FIELD_MENU_STATUS_DESC",
 	ROW_FORMATION: "FIELD_MENU_FORMATION_DESC",
 	ROW_BESTIARY: "FIELD_MENU_BESTIARY_DESC",
+	ROW_CODEX: "FIELD_MENU_CODEX_DESC",
 	ROW_SWELL: "FIELD_MENU_SWELL_DESC",
 	ROW_MAP: "FIELD_MENU_MAP_DESC",
 	ROW_SETTINGS: "FIELD_MENU_SETTINGS_DESC",
@@ -96,6 +103,8 @@ var name_keys: Dictionary = {}
 ## The zone map (null = none yet). FieldMenu fills it from the field when `live_map` is set.
 var map: MapModel
 var live_map := false
+## The lore codex the Codex row opens (null = the game's).
+var codex: CodexModel
 
 
 func _init(with_state: GameStateData = null, hero_ids: Array[StringName] = [], hero_name_keys: Dictionary = {}) -> void:

@@ -8,7 +8,8 @@ extends Control
 ## Layout: game/data/ui/field_menu.json (1920x1080 reference). Words: FieldMenuModel.
 ##
 ## Map (M2-UI-18) opens the zone map page (ZoneMapMenu) over it, like the bestiary; the zone and
-## the player come from the field when the menu opens (ZoneMapMenu.live_model).
+## the player come from the field when the menu opens (ZoneMapMenu.live_model). Codex (M3-UI-03)
+## opens the lore codex (CodexMenu) the same way, over the model's `codex` (null: the game's).
 ##
 ## Three levels: ROOT (Bestiary / Swell / Map / Settings / Close) on the left; HEROES (each Swell hero and the mode
 ## in use) and MODES (one hero's unlocked modes, "In use" on the current one) on the right. The
@@ -16,7 +17,7 @@ extends Control
 ##
 ## Input (keyboard and controller through ui_*): ui_up / ui_down move, ui_accept chooses,
 ## ui_cancel goes back a level and closes from the root. Mouse: hover to move, click to choose.
-## While the bestiary, the map or the Settings hub is open it takes the input, and this menu hides
+## While the bestiary, the codex, the map or the Settings hub is open it takes the input, and this menu hides
 ## until it closes.
 ##
 ## M2-MNU-01..04 (the Menus track): Items, Equip, Lattice and Status open the party's pages
@@ -56,6 +57,8 @@ var level := Level.ROOT
 var hero: StringName = &""
 ## The bestiary opened from here (null when closed).
 var bestiary: BestiaryMenu
+## The lore codex opened from here (null when closed).
+var codex_menu: CodexMenu
 ## The Settings hub opened from here (null when closed).
 var settings_menu: SettingsMenu
 ## The zone map opened from here (null when closed).
@@ -190,6 +193,8 @@ func close() -> void:
 	_is_closed = true
 	if bestiary != null and bestiary.is_open():
 		bestiary.close()
+	if codex_menu != null and codex_menu.is_open():
+		codex_menu.close()
 	if settings_menu != null and settings_menu.is_open():
 		settings_menu.close()
 	if map_menu != null and map_menu.is_open():
@@ -233,6 +238,8 @@ func _accept_root(id: StringName) -> void:
 	match id:
 		FieldMenuModel.ROW_BESTIARY:
 			_open_bestiary()
+		FieldMenuModel.ROW_CODEX:
+			_open_codex()
 		FieldMenuModel.ROW_SWELL:
 			if not model.swell_heroes().is_empty():
 				_open_heroes(&"")
@@ -250,11 +257,12 @@ func _accept_root(id: StringName) -> void:
 				_open_child(id)
 
 
-## True while the bestiary, the map, the Settings hub or a party page is open over this menu (it
-## has the input).
+## True while the bestiary, the codex, the map, the Settings hub or a party page is open over this
+## menu (it has the input).
 func _child_open() -> bool:
 	return (
 		(bestiary != null and bestiary.is_open())
+		or (codex_menu != null and codex_menu.is_open())
 		or (settings_menu != null and settings_menu.is_open())
 		or (map_menu != null and map_menu.is_open())
 		or (child != null and child.is_open())
@@ -328,6 +336,17 @@ func _open_bestiary() -> void:
 
 func _on_bestiary_closed() -> void:
 	bestiary = null
+	visible = true
+
+
+func _open_codex() -> void:
+	codex_menu = CodexMenu.open_in(self, model.codex)
+	visible = false
+	codex_menu.closed.connect(_on_codex_closed)
+
+
+func _on_codex_closed() -> void:
+	codex_menu = null
 	visible = true
 
 

@@ -170,6 +170,7 @@ func close() -> void:
 	if is_page_open():
 		page.close()
 	_open = false
+	visible = false  # freed at the frame's end: until then it must not take the pointer (M2-UI-26)
 	closed.emit()
 	queue_free()
 

@@ -30,7 +30,7 @@ The scene-swap regression test now measures the real swap on an injected per-fra
 | M2-MNU-07 party formation menu | **review** (merged b25ac94): active line / reserve swaps saved to party_ids and reserve_ids; BattleRequest.make now starts live fights from the saved line once the party has gathered (Haluna's tideline fight included; scripted party overrides still win); formation_menu and the 11-row field_menu shots viewed and approved |
 | M2-MNU-08 Light Step into the field encounter meter | **review** (41ec8dc): m2-slice's meter already applied it at zone setup; now the Equip page refreshes the gap in progress and the stand-in party's gear counts; m2-slice told |
 | M2-MNU-09 Customize on spare pieces | **review** (merged 131c507): a '· Customize' row under each spare with an empty slot; equip_menu re-approved after viewing |
-| M3-MNU-01 Lore codex (SPEC §6.11; unclaimed elsewhere) | worktree agent running; Act I entries from canon only, Narrative review requested |
+| ~~M3-MNU-01 Lore codex~~ | **withdrawn**: the UI track built it as M3-UI-03 at the same time (no task claimed when I checked); my agent was stopped before any commit landed here, and the task file is removed |
 | M2-MNU-10 Lattice: walk to a sealed gate | **review** (merged bbd45c8): the cheapest neighbour, cost shown, then the open confirm |
 
 ## Exact next step
@@ -62,3 +62,4 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 - 2026-10-24: M2-MNU-08, 09, 10 to review. Party formation (M2-MNU-07) agent still running. **Two items remain:** formation, then the batch MERGE-READY. After that: M3 SPEC §8 menu work.
 - 2026-10-24: queue nearly empty, so per the Lead's rule took M3 menu work: M3-MNU-01 lore codex (the Memories gallery is post-game; battle speed and summon length are already M2-UI-23 / M2-BPR-07).
 - 2026-10-24: M2-MNU-07 merged (formation 17/17, field_menu 24/24, parity 27/27; the agent ran battle 431/431, haluna 46/46, menu 208/208). Codex agent told to merge it. **Two items remain:** the codex (M3-MNU-01), then the batch MERGE-READY.
+- 2026-10-24: merged the integration branch and claude/ui (M2-UI-26/27, M3-UI-03 codex): the field menu root is now 12 rows (Formation after Status, Codex after Bestiary); field_menu.json panel y 141 h 783, root 576 tall, objective y 726; field_menu and field_menu_swell_modes re-approved after viewing; the map and codex shots unchanged. My codex (M3-MNU-01) withdrawn as a duplicate.

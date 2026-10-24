@@ -1105,6 +1105,10 @@
       "scene": "res://game/ui/map/shots/field_menu_map_shrine.tscn"
     },
     {
+      "id": "field_menu_codex",
+      "scene": "res://game/ui/codex/shots/field_menu_codex.tscn"
+    },
+    {
       "id": "battle_pause",
       "scene": "res://game/ui/menus/battle_pause/shots/battle_pause.tscn"
     },

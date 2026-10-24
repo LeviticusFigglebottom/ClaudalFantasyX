@@ -1272,6 +1272,7 @@ def run(root: Path) -> Report:
     check_read_openings(files, rep)
     data_keys += check_objectives(files, declared_flags_quiet(root), rep)  # M2-UI-16/18
     data_keys += check_tutorial_tips(files, declared_flags_quiet(root), rep)  # M2-UI-24
+    data_keys += check_codex(files, declared_flags_quiet(root), rep)  # M3-UI-03
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_undertow(root, files, rep)
@@ -2457,6 +2458,79 @@ def tutorial_tip_errors(doc: object, declared: set[str]) -> tuple[list[str], lis
 
 def check_tutorial_tips(files: dict[str, object], declared: set[str], rep: Report) -> list[str]:
     errs, keys = tutorial_tip_errors(files.get(TUTORIAL_TIPS_FILE), declared)
+    for e in errs:
+        rep.err(e)
+    return [k for k in keys if k]
+
+
+CODEX_FILE = "game/data/lore/codex.json"
+CODEX_UNLOCKS = {"flag", "record", "always"}
+
+
+def codex_errors(doc: object, declared: set[str]) -> tuple[list[str], list[str]]:
+    """M3-UI-03: the lore codex. Categories have unique ids and their keys; every entry has a unique
+    snake_case id, a known category, its loc keys, exactly one known unlock (a 'flag' unlock names a
+    declared flag; 'record' and 'always' take true), and its declared read flag codex_<id>_read
+    (plus codex_<id>_found for a record). Returns (errors, loc keys)."""
+    errs: list[str] = []
+    keys: list[str] = []
+    if doc is None:
+        return errs, keys
+    body = doc.get("codex") if isinstance(doc, dict) else None
+    if not isinstance(body, dict):
+        return [f"{CODEX_FILE}: no 'codex' object"], keys
+    cats: set[str] = set()
+    for i, c in enumerate(body.get("categories", [])):
+        cid = str(c.get("id", "")) if isinstance(c, dict) else ""
+        w = f"{CODEX_FILE} categories[{i}] ({cid or '?'})"
+        if not cid:
+            errs.append(f"{w}: no id")
+        elif cid in cats:
+            errs.append(f"{w}: duplicate category id")
+        cats.add(cid)
+        for k in ("name_key", "desc_key"):
+            if not isinstance(c, dict) or not c.get(k):
+                errs.append(f"{w}: no {k}")
+            else:
+                keys.append(str(c[k]))
+    ids: set[str] = set()
+    for i, e in enumerate(body.get("entries", [])):
+        if not isinstance(e, dict):
+            errs.append(f"{CODEX_FILE} entries[{i}]: not an object")
+            continue
+        eid = str(e.get("id", ""))
+        w = f"{CODEX_FILE} entries[{i}] ({eid or '?'})"
+        if not re.fullmatch(r"[a-z][a-z0-9_]*", eid):
+            errs.append(f"{w}: id must be snake_case")
+        elif eid in ids:
+            errs.append(f"{w}: duplicate entry id")
+        ids.add(eid)
+        if e.get("category") not in cats:
+            errs.append(f"{w}: category '{e.get('category')}' is not one of {sorted(cats)}")
+        for k in ("title_key", "body_key"):
+            if not e.get(k):
+                errs.append(f"{w}: no {k}")
+            else:
+                keys.append(str(e[k]))
+        unlock = e.get("unlock")
+        if not isinstance(unlock, dict) or len(unlock) != 1 or next(iter(unlock)) not in CODEX_UNLOCKS:
+            errs.append(f"{w}: 'unlock' must be one of {{'flag': <flag>}}, {{'record': true}}, {{'always': true}}")
+            unlock = {}
+        need = [f"codex_{eid}_read"]
+        if "flag" in unlock:
+            need.append(str(unlock["flag"]))
+        if "record" in unlock:
+            need.append(f"codex_{eid}_found")
+        if any(k in unlock and unlock[k] is not True for k in ("record", "always")):
+            errs.append(f"{w}: 'record' and 'always' unlocks take true")
+        for f in need:
+            if f and f not in declared:
+                errs.append(f"{w}: flag '{f}' is not declared in game/data/flags.tres")
+    return errs, keys
+
+
+def check_codex(files: dict[str, object], declared: set[str], rep: Report) -> list[str]:
+    errs, keys = codex_errors(files.get(CODEX_FILE), declared)
     for e in errs:
         rep.err(e)
     return [k for k in keys if k]
