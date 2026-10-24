@@ -8,6 +8,7 @@ const CRAB := "res://game/creatures/reef_crab/reef_crab_battle.tscn"
 const BELL := "res://game/creatures/drownbell/drownbell_battle.tscn"
 const GNAW := "res://game/creatures/hullgnaw/hullgnaw_battle.tscn"
 const MATRON := "res://game/creatures/cinder_matron/cinder_matron_battle.tscn"
+const REACH := "res://game/creatures/undertows_reach/undertows_reach_battle.tscn"
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -40,6 +41,8 @@ func test_every_creature_row_names_a_scene_with_its_clips() -> void:
 		for phase: Variant in (row["phases"] as Dictionary).values():
 			needed.append(str((phase as Dictionary).get("clip", "")))
 			needed.append(str((phase as Dictionary).get("idle", "")))
+			for clip: Variant in ((phase as Dictionary).get("clips", {}) as Dictionary).values():
+				needed.append(str(clip))
 		for clip in needed:
 			if clip == "":
 				continue  # a phase may keep the creature's idle (no `idle` of its own)
@@ -228,6 +231,22 @@ func test_phase_nodes_hide_at_once_or_after_the_clip() -> void:
 	var h := _actor(GNAW)
 	h.enter_phase(&"breaking", true)
 	assert_false((h.find_child("Ribs", true, false) as Node3D).visible, "an instant phase change hides them at once")
+
+
+func test_a_phase_plays_its_own_strikes() -> void:
+	var a := _actor(REACH)
+	assert_true(a.play_clip(&"attack"))
+	assert_eq(a.current_clip, &"attack", "the Grip strikes with the base clip")
+	a.enter_phase(&"dark", true)
+	assert_true(a.play_clip(&"attack"))
+	assert_eq(a.current_clip, &"attack_dark", "the Dark strikes from the lifted hand")
+	assert_eq(a.phase_clip(&"hit"), &"hit_dark")
+	assert_eq(a.phase_clip(&"ko"), &"ko", "a clip the phase doesn't map plays as itself")
+	assert_true(is_equal_approx(a.contact_time(&"attack"), 1.2), "contact follows the phase's clip")
+	a.enter_phase(&"breach", true)
+	assert_true(a.play_action(&"", &"magical"))
+	assert_eq(a.current_clip, &"cast_breach")
+	assert_eq(a.phase_clip(&"hit"), &"hit", "the Breach has no hit of its own")
 
 
 func test_a_drownbell_fight_breaks_the_rim_and_floods_the_bell() -> void:

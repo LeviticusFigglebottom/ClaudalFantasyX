@@ -23,6 +23,7 @@ and the bestiary portrait renders.
 - [x] Shots: 42 creature and battle shots re-compared; 37 unchanged. 5 re-approved after side-by-side viewing: battle_opening_banner 0.02548, battle_vowbound_call 0.01484 and battle_vowbound_out 0.01482 (the crab and gull mid-strike, now in place), creature_reef_crab_attack 0.07724 (the same strike pose without the lunge), creature_portraits 0.01443 (the gull and eel framing)
 
 ## Notes
+- 2026-10-24: phase strikes. A phase's `clips` map plays stand-in clips (CreatureActor.phase_clip, followed by play_clip and contact_time, so BattleClips' contract calls get them too). The Undertow's Reach strikes from its Dark and Breach poses (5 new clips). Validator and tests updated, the job verified, the Reach shot unchanged.
 - Optional contract clips (`dodge`, `defend`, `ready`, `victory`) are left to the sequencer's procedural fallback.
 - Until battle-presentation's sequencer merges, BattleActorMotion plays the strike in place with no travel.
 

@@ -109,7 +109,8 @@ table, asset_import.md §3) would add a distance cutoff, which battles, held at 
   (`clip_by_skill`, else `clip_by_kind` by the skill's kind), `hit`, the `ko` clip held and faded to
   battle_sandbox.json's `ko_alpha` (no sink), a freeze under Petrify (FighterStandIn swaps the surfaces to stone),
   a boss's phase (`phases.<id>`: a clip, an idle afterwards, an offset and tilt of the model over `sec`, node names
-  to `hide` or `show` at once, and `hide_after` nodes hidden once the clip has played), and
+  to `hide` or `show` at once, `hide_after` nodes hidden once the clip has played, and a `clips` map of stand-in
+  clips the phase plays instead, e.g. `attack` → `attack_dark`, which `play_clip` and `contact_time` follow), and
   breakable parts (`break_parts.<charge skill>`: node names shown `whole` or `broken`).
 - **`BattleActorMotion`** (`game/creatures/battle_actor_motion.gd`) is attached by `BattleStage.spawn` and listens
   to the engine: `action_resolved` (the actor's clip, `hit` on each foe a landed damaging hit reaches),
