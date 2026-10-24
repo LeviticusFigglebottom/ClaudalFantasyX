@@ -150,10 +150,14 @@ crossing); floats are bound log pairs and lashed barrels.
 | **Heroes** | `keel_hull`, `chandlery`, `scale_hull`, `cookboat`, `dive_raft`, `net_pen` | **Keel-hull:** a 22 m × 6.4 m old trading hull, 2.2 m deep, gunwale +1.1, deck +1.0; three decks: the main deck (the meeting deck, a canvas awning on spars), a deckhouse (8 × 4.6 m, deck on its roof at +3.6 with a rail) and an aft house on that (4 × 3.6 m, a keel-roof, ridge +6.6, the town's biggest gull at the stern ridge), a carved stern post, ladders between decks, lamp rails. **Chandlery:** an 8 m cabin hull with a keel-roof cabin (5 × 3.6 m) on it, the street side open as a counter under a striped awning, **lamp racks** (two rails of 8 unlit oil lanterns), four tall clay oil jars, a **wick board** of 12 spools on pegs, the **post shelf** (a 4 × 3 pigeonhole box), a stool, and the **beacon lamp** on a post on the roof (a 0.6 m brass lantern with a cowl). **Scale-hull:** a 7 m hull with a booth (2.4 × 2 m, a plank roof), the counter, a **brass beam scale** (a 1.2 m beam on a post, two pans on chains, a pointer), the chit stamp and ink tin, a stack of chits, a small **Level plaque** (0.25 m brass, a horizontal bar over a plumb drop: an original mark) on the booth post. **Cookboat:** a 7.5 m hull with a clay stove amidships (a firebox and a pot), a smoke hood of tin on four posts, two cookpots, a rack of bowls, the **knot tally** (a cord hanging from the hood with nine knots), stools on the gunwale plank. **Dive raft:** 7 × 6 m deck on two 9 m hulls, deck top +0.75, a **1.6 × 1.6 m dive well** in the middle, an **A-frame** (3.2 m) over the well with a block, the **tether winch** at the well's side (a 0.5 m drum wound with tether, two cheeks, a crank and a brass pawl), a **ladder** from the well's edge down to −2.4 m, a rack of four diver lanterns (unlit), a basket of lead weights, two coiled tethers, a lamp hook by the well. **Net-pen hull:** a 12 × 12 m square of lashed walkways (1.4 m wide) round a 9.2 m pool, four corner posts (2.4 m) with the practice net hung between them and down into the water, float logs under the walkways, a short ladder. |
 | **Props** | `net_frame`, `salvage_heap`, `town_far` | Net frame: four 3.2 m poles in a row (6 m) with two nets draped between them, floats along the head-rope, a basket. Salvage heap: 3 × 2 m of Lit Age ceramic panels, brass pipe lengths, an empty lamp housing, two crates, a basket, a coil of rope. Far town: a 64 × 30 m strip of low hull, cabin and keel-roof silhouettes and masts for 80 m and beyond. |
 
-**Budgets (triangles, LOD0 / LOD1):** outrigger 3,500 / 250; cabin hull 5,000 / 300; raft deck 18,000 / 900;
-small raft 12,000 / 600; bridge 5,000 / 200; cabins 10,000 / 500; stall 5,000 / 300; gull 2,800 / 420; keel-hull
-28,000 / 1,500; chandlery 24,000 / 1,200; scale-hull 14,000 / 700; cookboat 11,000 / 600; dive raft 18,000 / 900;
-net-pen 16,000 / 800; net frame 5,000 / 300; salvage heap 8,000 / 400; far town 5,000 / 1,500. LOD1 begins at 70 m
+**Budgets (triangles, LOD0 / LOD1; as built in brackets):** outrigger 4,500 / 300 (3,998 / 232); cabin hull
+5,500 / 300 (5,188 / 144); raft deck 18,000 / 900 (17,376 / 604); small raft 12,000 / 600 (11,384 / 524); bridge
+5,000 / 200 (4,182 / 128); keel-roof cabin 10,000 / 600 (6,886 / 174); patched cabin 10,000 / 500 (4,331 / 62); stall
+5,000 / 300 (1,368 / 96); gull 2,800 / 420 (772 / 338); keel-hull 28,000 / 1,500 (25,347 / 443); chandlery
+24,000 / 1,200 (14,897 / 430); scale-hull 14,000 / 700 (6,014 / 304); cookboat 11,000 / 600 (4,979 / 248); dive
+raft 18,000 / 900 (14,404 / 364); net-pen 16,000 / 800 (12,698 / 544); net frame 5,000 / 300 (2,734 / 40); salvage
+heap 8,000 / 400 (2,060 / 72); far town 4,000 / 1,500 (1,874 / 566: its LOD0 is already coarse, for 80 m and
+beyond). The kit is 6.7 MB in 42 files, the largest (the keel-hull) 1.2 MB. LOD1 begins at 70 m
 (the Haluna table); every piece is a chain (`<piece>`, `<piece>-lod1`), so one LOD draws at every distance
 (vegetation.md "One LOD at every distance").
 
@@ -200,9 +204,10 @@ Cinematics owns them. **◆** marks the preview shots built in `oruvel_kit/`.
 | O10 ◆ | 85 mm (16.1°) | 1.2 m on the dive raft, low, looking up north-west | The nearest lintel-gull on a keel-roof ridge, 35% of frame height, facing the lens and the sea, its open throat a dark bore; a cloudless blue behind it; the winch's drum soft in the lower left. | Every carved gull faces the sea, and the sky is clear. |
 | O11–O18 | — | — | The Rising, the drill, the run, Hullgnaw and going under: the storm variant (§7) and Cinematics. | |
 | O19 ◆ | 28 mm (46.4°) | 4.5 m above the water, south-east of the dive raft, looking down 30° | The dive raft from above: the winch, the A-frame and its block over the dark dive well, the ladder going down into turquoise, the tether running down to the tower's pale crown 6 m below; the neighbour raft and the town behind. | The dive mooring over the drowned city: the job, and what it stands on. |
-| O20 ◆ | 35 mm (37.8°) | 2.0 m, kit row | Review only: the kit's pieces in two rows on the water, open light. | The kit, side by side. |
+| O20 ◆ | 24 mm (53.1°) | 7.5 m, kit row | Review only: the small pieces each on a raft deck in front (one long deck), the hulls and rafts behind, the keel-hull and the net-pen at the back; open light. | The kit, side by side. |
 
-**Registered baselines (the repo's binary budget: at most two):** chosen after the preview (§6).
+**Registered baselines (the repo's binary budget: at most two):** O01 (`oruvel_o01_surfacing`) and O19
+(`oruvel_o19_dive_mooring`): the town at Rhen's eye from the water, and the dive raft over the drowned city.
 
 ## 5. Review Checklist
 
@@ -217,7 +222,38 @@ Cinematics owns them. **◆** marks the preview shots built in `oruvel_kit/`.
 
 ## 6. The Preview (M3-ENV-07)
 
-Filled in after the captures.
+`game/levels/_tests/oruvel_kit/oruvel_preview.tscn` composes the kit for the ◆ shots on the HalunaMood rig at `ch01`
+(its README lists the files; the scene, both layouts and the capture manifest are generated by
+`ov_preview_layout.py`). The Underway kit's crown pieces sit under the dive raft in the same frame (a second dresser,
+read-only). Read of the final captures (lavapipe, 960 × 540):
+- **O01** (baseline): the town across the water at Rhen's eye: keel-roof cabins (a red and an ochre roof, an old hull
+  turned over each), the dive raft's A-frame at the left, faded blue, ochre, teal and white hulls in a band across
+  the middle, the keel-hull's mast and a net frame at the right, cumulus over the top 45%, the lagoon glassy and
+  turquoise in the lower third. The strongest frame; it reads as a raft culture at a glance.
+- **O19** (baseline): the dive raft from above: the A-frame and its block over the dark dive well, the winch on its
+  cheeks with the tether wound on the drum, the lantern rack, coils and the lead basket, the two hulls under the deck,
+  the bridge to the gull raft, keel-roof cabins and the town behind on turquoise water.
+- **O02**: the scale-hull's booth: the brass beam scale on the counter, the stamp and chits, the small Level plaque on
+  the booth post; a plank lean-to roof with one old red board. **O08**: the keel-hull broadside: the deckhouse, the
+  aft house under its keel-roof with the big gull on the ridge, the mast, its stays and the meeting awning's spars;
+  the awning's canvas reads thin from this low angle. **O03**: the town loop from a plank bridge: a red keel-roof cabin
+  at the left, a stall, rafts and moored hulls receding.
+- **O09**: Kell's counter in sun under a short striped awning (the awning was cut back to 0.5 m so the 58° sun reaches
+  the counter): spools and a tray of wicks in focus, the lamp rack's unlit lanterns soft above, the wick board in the
+  shade behind. The interior behind the counter is dark on lavapipe.
+- **O10**: the open-throat gull on the keel's south end against a clear sky: it reads as a carved seabird crying, but
+  at this distance it is a dark silhouette and the bored throat does not read; Cinematics' lens (85 mm) from the dive
+  raft cannot get closer without the roof's eave crossing the line. A closer insert (or a gull on a lower ridge near
+  the mooring) is the zone's call.
+- **O20**: the kit row (review only).
+- Known limits: the drowned crown at −6.4 m does not read through the water at O19's angle (the `lagoon_clear` ×2.0
+  look takes it to deep teal; a near-vertical view or a shallower crown would show it); no figures (characters are
+  Character Art's); the town is emptier than C1-09's barks want (no laundry on most cabins, no people); the far town
+  reads as blocks at 80 m; the colour script's volumetric haze is off on lavapipe.
+- Found while building: the Haluna kit's `village.lintel_gull` lofts are wound inside-out (their signed volume is
+  negative, its perch block's positive), so with a back-face-culled material they show their inner faces and render
+  dark. `lintel_gull_open` turns its lofts outward; the Haluna gulls themselves are unchanged (a follow-up for the
+  Haluna kit's owner, noted in the M3-ENV-07 task).
 
 ## 7. Follow-ups
 
@@ -229,6 +265,10 @@ Filled in after the captures.
 - **The rebuilt variant** (act3_ending E7, `post_credits`): the same moorings rebuilt, not the same hulls.
 
 ## Revisions
+- 2026-10-24 (env-art, M3-ENV-07, after the preview): the gull perches at the keel's south end (over the gable,
+  facing the sea), not amidships, so it silhouettes from the moorings; the chandlery's awning is 0.5 m deep (a deeper
+  one shaded the counter at 58°); the kit row (O20) is at 24 mm on one long deck; budgets as built (§2);
+  oruvel_raft_morning's town is now this kit's (M3-ENV-06's arena, re-approved).
 - 2026-10-24 (env-art, M3-ENV-07): first version, written against the act outline Ch1, the Ch1 beat sheet (C1-07 to
   C1-15, §4, §5, §7, §9 Environment request 1), bible §3 Oruvel, ADR 0017's and ADR 0022's Ch1 watches, the colour
   script's `ch01` row and the sibling oruvel_underway.md (the shared frame, the tether at (−9.9, 5.2), the
