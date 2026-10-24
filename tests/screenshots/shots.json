@@ -1146,6 +1146,10 @@
     {
       "id": "battle_boss_intro_inquisitor",
       "scene": "res://game/battle/scene/shots/battle_boss_intro_inquisitor.tscn"
+    },
+    {
+      "id": "battle_boss_intro_matron",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_matron.tscn"
     }
   ]
 }
