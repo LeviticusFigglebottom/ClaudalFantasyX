@@ -343,6 +343,20 @@ func _nudge_rows(animate: bool) -> void:
 			label.position.x = x
 
 
+## The cursor frame's rect now (mid-slide while it eases; M2-MNU-303 tests read its target after settle()).
+func cursor_rect() -> Rect2:
+	return Rect2(_cursor_box.position, _cursor_box.size) if _cursor_box != null else Rect2()
+
+
+## Ends the cursor's slide and the rows' nudges now, at their targets (tests run no frames; M2-MNU-303).
+func settle() -> void:
+	var tweens: Array = _nudge_tweens.values()
+	tweens.append(_cursor_tween)
+	for tw: Variant in tweens:
+		if tw is Tween and (tw as Tween).is_valid() and (tw as Tween).is_running():
+			(tw as Tween).custom_step(HudLayout.num(_m, "cursor_sec") + HudLayout.num(_m, "mote_lag_sec"))
+
+
 ## The x of row `index`'s label (tests: the cursor row is nudged).
 func label_x(index: int) -> float:
 	var node := _row_nodes[index] if index >= 0 and index < _row_nodes.size() else null

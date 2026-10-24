@@ -26,8 +26,12 @@ extends Control
 ## Stay under the cursor, the line saying what is lost) and then returns to the title (boot.tscn)
 ## through FlowRouting. M2-MNU-07 added Formation (FormationMenu, the same way); when it closes the
 ## heroes follow the saved line's order.
+## M2-MNU-303: the menu fades and rises in from the field and fades out when it closes (MenuMotion);
+## a page over it keeps the backdrop still, and the menu's own content fades back in when it closes.
 
 signal closed
+## The close transition has finished (at once under Reduced motion): open_in's layer frees itself.
+signal gone
 
 enum Level { ROOT, HEROES, MODES, QUIT }
 
@@ -75,6 +79,7 @@ var _objective_head: Label
 var _objective: Label
 var _owns_pause := false
 var _is_closed := false
+var _motion: MenuMotion
 ## A line that stays on the description until the cursor moves ("Rhen's gauge now fills by ...").
 var _notice := ""
 
@@ -88,7 +93,7 @@ static func open_in(host: Node, with_model: FieldMenuModel = null) -> FieldMenu:
 	layer.layer = int(load_data().get("canvas_layer", 1))
 	layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	layer.add_child(menu)
-	menu.closed.connect(layer.queue_free)
+	menu.gone.connect(layer.queue_free)
 	host.add_child(layer)
 	return menu
 
@@ -123,6 +128,10 @@ func _ready() -> void:
 	if pause_tree and not get_tree().paused:
 		get_tree().paused = true
 		_owns_pause = true
+	MenuMotion.follow_reduced_motion(self)
+	_motion = MenuMotion.new(self)
+	_motion.gone.connect(_on_motion_gone)
+	_motion.play_in()
 
 
 func _exit_tree() -> void:
@@ -203,7 +212,16 @@ func close() -> void:
 	if child != null and child.is_open():
 		child.close()
 	_restore_pause()
+	if _motion != null:
+		_motion.play_out()
+	else:
+		gone.emit()
 	closed.emit()
+
+
+## The open, close and return transitions (null before _ready). Tests drive them with motion().finish().
+func motion() -> MenuMotion:
+	return _motion
 
 
 ## Closes the menu and returns to the title (FlowRouting waits for an idle router). Unsaved
@@ -278,13 +296,14 @@ func _open_map() -> void:
 
 func _on_map_closed() -> void:
 	map_menu = null
-	visible = true
+	_come_back()
 
 
 ## Opens the party page for root row `id` (CHILD_PAGES) over a PartySheet of this menu's state.
 func _open_child(id: StringName) -> void:
 	var sheet := PartySheet.new(model.state, model.heroes)
 	var page := (CHILD_PAGES[id] as Script).call(&"create", sheet) as FieldSubmenu
+	page.over_menu = true  # the same scrim and caustics: only the page's content moves
 	child = FieldSubmenu.mount(page, self)
 	visible = false
 	child.closed.connect(_on_child_closed)
@@ -294,7 +313,7 @@ func _on_child_closed() -> void:
 	if child is FormationMenu:
 		_follow_formation()
 	child = null
-	visible = true
+	_come_back()
 	_root.replace_rows(model.root_rows())
 	_render()
 
@@ -324,7 +343,7 @@ func _open_settings() -> void:
 
 func _on_settings_closed() -> void:
 	settings_menu = null
-	visible = true
+	_come_back()
 	_root.replace_rows(model.root_rows())  # in the text size or palette just chosen
 	_render()
 
@@ -337,7 +356,7 @@ func _open_bestiary() -> void:
 
 func _on_bestiary_closed() -> void:
 	bestiary = null
-	visible = true
+	_come_back()
 
 
 func _open_codex() -> void:
@@ -348,7 +367,7 @@ func _open_codex() -> void:
 
 func _on_codex_closed() -> void:
 	codex_menu = null
-	visible = true
+	_come_back()
 
 
 ## The hero list, with the cursor on `on_hero` when given (coming back from its modes).
@@ -423,6 +442,17 @@ func _place_detail(at_root: bool) -> void:
 	var top := HudLayout.rect_of(dm).position.y
 	_detail.size.y = MenuPage.height_for(dm, maxi(_detail.row_count(), 1), true)
 	_desc.position.y = top if at_root else top + _detail.size.y + HudLayout.num(em, "gap")
+
+
+## Shows the menu again when a page over it closes; its content fades back in over the still backdrop.
+func _come_back() -> void:
+	visible = true
+	if is_open() and _motion != null:
+		_motion.play_in(true, "return_sec")
+
+
+func _on_motion_gone() -> void:
+	gone.emit()
 
 
 func _restore_pause() -> void:
