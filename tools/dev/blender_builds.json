@@ -555,14 +555,17 @@
     {
       "id": "oruvel_kit", "threads": 4,
       "owner": "environment",
-      "_doc": "M3-ENV-07: the Oruvel raft-town kit (Ch1). Geometry reuses the Haluna kit's core (kit_common) and village.py (posts, the lintel-gull) read-only; no maps of its own (the Haluna maps, read-only). The {python} step rebuilds its materials (with the Haluna material writers), so it is verified too. Threads pinned at 4, as haluna_kit.",
+      "_doc": "M3-ENV-07: the Oruvel raft-town kit (Ch1). Geometry reuses the Haluna kit's core (kit_common) and village.py (posts, the lintel-gull) read-only; no maps of its own (the Haluna maps, read-only). The {python} steps rebuild its materials (with the Haluna material writers) and, M3-ENV-07B, the storm grade LUT lut_ch01_storm (the Haluna zone_lut and Brine Shoals hue helpers), so they are verified too. Threads pinned at 4, as haluna_kit.",
       "sources": ["assets_src/environments/kits/oruvel/*.py", "assets_src/environments/kits/haluna/kit_common.py",
-                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/materials.py"],
+                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/materials.py",
+                  "assets_src/environments/kits/haluna/zone_lut.py", "assets_src/environments/kits/brine_shoals/bs_zone_lut.py",
+                  "assets_src/environments/vegetation/textures.py"],
       "outputs": ["assets/environments/kits/oruvel/*.glb", "assets/environments/kits/oruvel/kit_manifest.json",
-                  "assets/environments/kits/oruvel/materials/*.tres"],
+                  "assets/environments/kits/oruvel/materials/*.tres", "assets/environments/kits/oruvel/lut_ch01_storm.png"],
       "runs": [
         ["{blender}", "--python", "assets_src/environments/kits/oruvel/build.py", "--", "--all", "--out-dir", "assets/environments/kits/oruvel", "--manifest", "assets/environments/kits/oruvel/kit_manifest.json"],
-        ["{python}", "assets_src/environments/kits/oruvel/ov_materials.py"]
+        ["{python}", "assets_src/environments/kits/oruvel/ov_materials.py"],
+        ["{python}", "assets_src/environments/kits/oruvel/ov_zone_lut.py"]
       ]
     },
     {

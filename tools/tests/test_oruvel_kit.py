@@ -49,6 +49,7 @@ import ov_cabins as ocab  # noqa: E402
 import ov_common as oc  # noqa: E402
 import ov_heroes as oh  # noqa: E402
 import ov_hulls as ohl  # noqa: E402
+import ov_storm as STORM  # noqa: E402
 
 TARGETS = BUILD.targets()
 SLOTS = set(MATS.MATERIALS) | set(MATS.STANDARD)
@@ -158,8 +159,10 @@ class PreviewTests(unittest.TestCase):
     def test_layout_names_only_kit_pieces(self) -> None:
         self.assertEqual(self.LAYOUT["kit_dir"], "res://assets/environments/kits/oruvel/")
         names = {p["piece"] for p in self.LAYOUT["pieces"]}
-        self.assertTrue(names <= set(TARGETS), names - set(TARGETS))
-        self.assertEqual(names, set(TARGETS), "every piece is in the preview (the kit row at least)")
+        storm = {p["piece"] for p in self.LAYOUT["states"]["storm"]["pieces"]}
+        self.assertTrue(names | storm <= set(TARGETS), (names | storm) - set(TARGETS))
+        self.assertEqual(names | storm, set(TARGETS), "every piece is in the preview (the kit rows at least)")
+        self.assertFalse(names & set(STORM.TARGETS), "the storm pieces show only in the storm state")
 
     def test_dive_raft_over_the_underways_tether_and_neighbour(self) -> None:
         under = json.loads(UNDERWAY_LAYOUT.read_text())
@@ -181,6 +184,8 @@ class PreviewTests(unittest.TestCase):
         LAYOUT_GEN._rng = oc.kc.rng_for("oruvel_preview_layout", 7)  # the generator's own seed, from the start
         pieces = json.loads(json.dumps(LAYOUT_GEN.town() + LAYOUT_GEN.kit_row() + LAYOUT_GEN.mooring()))
         self.assertEqual(pieces, self.LAYOUT["pieces"], "run ov_preview_layout.py")
+        self.assertEqual(json.loads(json.dumps(LAYOUT_GEN.storm(pieces))), self.LAYOUT["states"]["storm"])
+        self.assertEqual(json.loads(json.dumps(LAYOUT_GEN.rigs())), self.LAYOUT["rigs"])
         terrace = json.loads((PREVIEW / "oruvel_seventh_terrace_layout.json").read_text())
         self.assertEqual(terrace["pieces"], json.loads(json.dumps(LAYOUT_GEN.seventh_terrace())), "run ov_preview_layout.py")
         self.assertEqual((PREVIEW / "oruvel_preview.tscn").read_text(), LAYOUT_GEN.tscn(LAYOUT_GEN.SHOTS))
@@ -218,6 +223,113 @@ class PreviewTests(unittest.TestCase):
             if p.name == "ov_preview_layout.py":
                 continue
             self.assertNotIn("_tests/", p.read_text(encoding="utf-8"), p.name)
+
+
+class StormTests(unittest.TestCase):
+    """M3-ENV-07B: the storm state. Broken pieces in the intact pieces' frames, soaked, the pen's split a rig that
+    composes the pen at rest, the state replacing pieces one for one, Kell's beacon, the storm grade."""
+
+    LAYOUT = json.loads((PREVIEW / "oruvel_layout.json").read_text())
+
+    def test_everything_in_the_storm_is_soaked(self) -> None:
+        for name in STORM.TARGETS:
+            mb = built(name)[0]
+            with self.subTest(target=name):
+                wet = np.asarray(mb.col)[:, 2]
+                self.assertGreater(float(np.median(wet)), 0.5, "VC.B: the spray and rain are over all of it")
+
+    def test_broken_pieces_keep_their_intact_frames(self) -> None:
+        for broken, intact in (("raft_deck_broken", "raft_deck"), ("plank_bridge_broken", "plank_bridge")):
+            a, b = built(broken)[0].bounds(), built(intact)[0].bounds()
+            with self.subTest(piece=broken):
+                np.testing.assert_allclose(a[0][[0, 2]], b[0][[0, 2]], atol=1.6)
+                np.testing.assert_allclose(a[1][[0, 2]], b[1][[0, 2]], atol=1.8)
+        deck = built("raft_deck_broken")[0]
+        top = np.asarray(deck.pos)
+        held = top[(top[:, 0] < 0.0) & (top[:, 1] > 0.7) & (top[:, 1] < 1.0)]
+        self.assertAlmostEqual(float(np.median(held[:, 1])), ohl.RAFT_DECK_Y, delta=0.06,
+                               msg="the part that holds is at the intact deck height")
+        p = np.asarray(built("plank_bridge_broken")[0].pos)
+        mid = p[np.abs(p[:, 2] - ohl.BRIDGE_SPAN * 0.6) < 0.25]
+        self.assertTrue(len(mid) == 0 or float(mid[:, 1].max()) < -0.5, "the bridge is gone at mid-span")
+        self.assertLess(float(p[:, 1].min()), STORM.BRIDGE_WATER_Y, "its halves hang into the water")
+
+    def test_the_capsized_hull_is_keel_up_and_awash(self) -> None:
+        mb = built("hull_capsized")[0]
+        c = centroids(mb)
+        mats = np.array([mb.materials[m] for m in mb.tri_mat])
+        tar = c[mats == oc.M_TAR]
+        self.assertGreater(float(tar[:, 1].max()), 0.15, "its tarred bottom shows above the water")
+        self.assertLess(float(tar[:, 1].max()), 0.6, "only just: it is awash")
+        self.assertLess(float(c[mats == oc.M_PAINT][:, 1].mean()), 0.0, "its paint is under")
+
+    def test_the_split_sections_compose_the_pen_at_rest(self) -> None:
+        pen_lo, pen_hi = built("net_pen")[0].bounds()
+        lo, hi = np.full(3, 1e9), np.full(3, -1e9)
+        for name, sec in STORM.SPLIT_SECTIONS.items():
+            mb = built(name)[0]
+            basis, origin = STORM.section_pose(name, 0.0)
+            np.testing.assert_allclose(basis, np.eye(3), atol=1e-9)
+            np.testing.assert_allclose(origin, sec["hinge"])
+            p = np.asarray(mb.pos) + origin
+            lo, hi = np.minimum(lo, p.min(axis=0)), np.maximum(hi, p.max(axis=0))
+            with self.subTest(section=name):
+                self.assertIn(oc.M_NET, mb.materials, "each carries its torn share of the pen net")
+        np.testing.assert_allclose(lo[[0, 2]], pen_lo[[0, 2]], atol=0.6)
+        np.testing.assert_allclose(hi[[0, 2]], pen_hi[[0, 2]], atol=0.6)
+
+    def test_the_rig_opens_the_sections_apart(self) -> None:
+        cen = []
+        for name in sorted(STORM.SPLIT_SECTIONS):
+            _b, o0 = STORM.section_pose(name, 0.0)
+            _b, o1 = STORM.section_pose(name, 1.0)
+            self.assertGreater(float(np.dot((o1 - o0)[[0, 2]], o0[[0, 2]])), 0.0, f"{name} drifts outward")
+            cen.append(o1)
+        rig = self.LAYOUT["rigs"]["net_pen_split"]
+        self.assertEqual([s["piece"] for s in rig["sections"]], sorted(STORM.SPLIT_SECTIONS))
+        state = {p["piece"]: p for p in self.LAYOUT["states"]["storm"]["pieces"]
+                 if p["piece"] in STORM.SPLIT_SECTIONS and abs(p["at"][0] - LAYOUT_GEN.NET_PEN[0]) < 10.0}
+        for s in rig["sections"]:
+            p = state[s["piece"]]
+            want = np.array(s["hinge"]) + np.array(s["open"]["drift"])
+            np.testing.assert_allclose([p["at"][0], p["y"], p["at"][1]], want, atol=1e-3)
+
+    def test_the_state_replaces_day_pieces_that_exist(self) -> None:
+        day = self.LAYOUT["pieces"]
+        for h in self.LAYOUT["states"]["storm"]["hide"]:
+            with self.subTest(hide=h):
+                self.assertTrue(any(p["piece"] == h["piece"] and p["at"] == h["at"] and p["y"] == h["y"]
+                                    for p in day))
+        hidden = {h["piece"] for h in self.LAYOUT["states"]["storm"]["hide"]}
+        self.assertTrue({"net_pen", "raft_deck", "plank_bridge", "hull_cabin"} <= hidden, hidden)
+
+    def test_kells_beacon_is_on_the_chandlery_roof(self) -> None:
+        (lamp,) = self.LAYOUT["storm_lights"]
+        anchor = self.LAYOUT["anchors"]["chandlery_beacon"]
+        self.assertLess(float(np.linalg.norm(np.array(lamp["at"]) - np.array(anchor))), 1.0)
+
+    def test_the_storm_grade_desaturates_and_slates_the_water(self) -> None:
+        lut = _load("ov_zone_lut")
+        import colorsys
+        for hexc, cut in (("#1FA3A6", 0.5), ("#4A5A2E", 0.5), ("#A9DCF2", 0.75)):
+            c = np.array([int(hexc[i:i + 2], 16) / 255 for i in (1, 3, 5)])
+            o = lut.grade(c[None, :])[0]
+            self.assertLess(colorsys.rgb_to_hsv(*o)[1], colorsys.rgb_to_hsv(*c)[1] * cut, hexc)
+        red = np.array([0xA8, 0x5F, 0x4C]) / 255
+        self.assertGreater(colorsys.rgb_to_hsv(*lut.grade(red[None, :])[0])[1], 0.4, "the paint keeps its colour")
+        self.assertGreater(float(lut.grade(np.zeros((1, 3))).min()), 0.0, "no black point at zero")
+
+    def test_the_lut_imports_as_a_3d_texture(self) -> None:
+        imp = (ASSETS / "lut_ch01_storm.png.import").read_text()
+        self.assertIn('importer="3d_texture"', imp)
+        self.assertIn("slices/horizontal=32", imp)
+        on_disk = (ASSETS / "lut_ch01_storm.png").read_bytes()
+        lut = _load("ov_zone_lut")
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            out = Path(d) / "lut.png"
+            lut.main(["--out", str(out)])
+            self.assertEqual(out.read_bytes(), on_disk, "run ov_zone_lut.py")
 
 
 class CommittedAssetTests(unittest.TestCase):
