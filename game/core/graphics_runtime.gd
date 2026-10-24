@@ -12,6 +12,7 @@ extends RefCounted
 ##                         glimmer, characters).
 ##   select_preset() / set_override() / apply_now()
 ##                         the graphics settings menu: change, save, then apply everything at once.
+##   current_warm_up()     the resident warm-up while it runs (M2-ARC-03: a BootCard waits for it).
 ## Tests and screenshot captures never call boot(), so nothing is applied there unless they do it
 ## themselves, and the hook stays disarmed (`armed`).
 
@@ -24,6 +25,7 @@ static var config_path := GraphicsSettings.CONFIG_PATH
 static var last_warmup: ShaderPrewarm
 
 static var _settings: GraphicsSettings
+static var _warm_up: WeakRef
 
 
 ## The game's settings (loaded from config_path on first use; the default preset when absent).
@@ -92,8 +94,17 @@ static func select_preset(id: String, viewport: Viewport) -> bool:
 static func warm_resident_shaders(parent: Node) -> ShaderPrewarm:
 	if parent == null or not parent.is_inside_tree():
 		return null
-	last_warmup = ShaderPrewarm.spawn_resident(parent, settings().preset_id)
-	return last_warmup
+	var node := ShaderPrewarm.spawn_resident(parent, settings().preset_id)
+	_warm_up = weakref(node)
+	last_warmup = node
+	return node
+
+
+## M2-ARC-03: the last resident warm-up while it runs (null once it has finished or been freed), so a
+## caller that did not spawn it (select_preset's) can wait for it, e.g. BootCard.wait_for_node().
+static func current_warm_up() -> ShaderPrewarm:
+	var node := _warm_up.get_ref() as ShaderPrewarm if _warm_up != null else null
+	return node if node != null and node.is_running() else null
 
 
 ## Settings menu: one custom value on top of the preset; saved and applied.
