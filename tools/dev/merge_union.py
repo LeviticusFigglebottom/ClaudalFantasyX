@@ -7,8 +7,11 @@ It resolves, if conflicted:
   tests/screenshots/baselines/baselines.json  dict union (ours wins on equal keys)
   game/data/flags.tres                    union of the flags dictionary
   game/data/settings/prewarm_materials.json  materials list union by path
-  assets/PROVENANCE.md, game/data/loc/*.csv, tools/banned_terms.txt
+  assets/PROVENANCE.md, tools/banned_terms.txt
                                           line union: ours' lines, then theirs' new lines
+  game/data/loc/*.csv                     keyed union: a key one side changed (against the merge
+                                          base) takes that side's line in place; new keys append;
+                                          a key both sides changed keeps ours and is reported
 and `git add`s each. Anything else stays conflicted for a human/agent to resolve.
 Order matters for screenshots: earlier shots are not shifted by later ones (ADR 0009).
 """
@@ -44,6 +47,30 @@ def union_lines(ours: str, theirs: str) -> str:
     extra = [l for l in theirs.splitlines() if l not in seen and l.strip()]
     out = ours.rstrip("\n").splitlines() + extra
     return "\n".join(out) + "\n"
+
+
+def _csv_key(line: str) -> str:
+    return line.split(",", 1)[0]
+
+
+def union_loc(base: str, ours: str, theirs: str) -> tuple[str, list[str]]:
+    """Loc CSVs (one `KEY,text...` row per line): a plain line union keeps both versions of a key
+    that one side edited, so validate_data then fails on a duplicate key. Returns (text, keys both
+    sides changed differently, which keep ours)."""
+    b = {_csv_key(l): l for l in base.splitlines() if l.strip()}
+    t = {_csv_key(l): l for l in theirs.splitlines() if l.strip()}
+    out, clashes, have = [], [], set()
+    for line in ours.rstrip("\n").splitlines():
+        k = _csv_key(line)
+        have.add(k)
+        if line.strip() and k in t and t[k] != line and k in b:
+            if line == b[k]:
+                line = t[k]  # only theirs changed it
+            elif t[k] != b[k]:
+                clashes.append(k)  # both changed it: keep ours
+        out.append(line)
+    out += [l for l in theirs.splitlines() if l.strip() and _csv_key(l) not in have]
+    return "\n".join(out) + "\n", clashes
 
 
 def union_flags(ours: str, theirs: str) -> str:
@@ -85,7 +112,11 @@ def main() -> int:
             text = json.dumps(o, indent=2, ensure_ascii=False) + "\n"
         elif path == FLAGS_TRES:
             text = union_flags(ours, theirs)
-        elif path in LINE_UNION or any(Path(path).match(g) for g in LINE_UNION_GLOBS):
+        elif any(Path(path).match(g) for g in LINE_UNION_GLOBS):
+            text, clashes = union_loc(stage(path, 1), ours, theirs)
+            for k in clashes:
+                print(f"BOTH CHANGED {path} {k}: kept ours; check theirs")
+        elif path in LINE_UNION:
             text = union_lines(ours, theirs)
         else:
             left.append(path)

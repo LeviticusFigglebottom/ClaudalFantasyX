@@ -7,5 +7,10 @@
   "shot_fov_deg": 40.0,
   "sun": {"pitch_deg": -50.0, "yaw_deg": 30.0, "energy": 1.2, "color": "#fff4e0"},
   "environment": {"background": "#a9c4d6", "ambient_color": "#c8d4dc", "ambient_energy": 0.6},
-  "trigger_height": 3.0
+  "trigger_height": 3.0,
+  "encounters": {
+    "_note": "M2-FP-28: FieldEncounters defaults a layout's encounters block may override. grace_m: metres walked after a random battle before the meter runs again. max_step_m: a frame's move longer than this is a placement, never walking.",
+    "grace_m": 12.0,
+    "max_step_m": 1.5
+  }
 }

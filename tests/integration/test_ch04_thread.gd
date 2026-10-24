@@ -45,6 +45,7 @@ var warnings: Array[String] = []
 
 
 func before_each() -> void:
+	FieldEncounters.reset()
 	saved_state = Game.state
 	Game.state = GameStateData.new()
 	BattleRequest.clear()

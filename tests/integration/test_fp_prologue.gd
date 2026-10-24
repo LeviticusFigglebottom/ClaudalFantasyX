@@ -12,6 +12,15 @@ const NEXT_LOCATION := &"ch02/haluna"
 const NEXT_SPAWN := &"Beach"
 ## Far more steps than the script has; a run that needs more is looping.
 const MAX_STEPS := 100
+## M2-FP-28: the colour the dusk frame must carry (colour script prologue_iskarra_dusk).
+const RIM_ENERGY := 1.4
+const ENERGY_TOLERANCE := 0.001
+const MIN_LIGHT_SAT := 0.5
+## Hues as Color.h (0..1): gold-orange is under 0.15, teal 0.45-0.55.
+const WARM_HUE_MAX := 0.15
+const TEAL_HUE_MIN := 0.45
+const TEAL_HUE_MAX := 0.55
+const MAX_SKY_CONTRIBUTION := 0.4
 
 var travels: Array[Array] = []
 var scene: PrologueScene
@@ -114,4 +123,29 @@ func test_the_prologue_script_runs_to_the_end() -> void:
 		assert_ne(tr(LINE_KEY), String(LINE_KEY), "the line is translated")
 	assert_eq(cameras, ["P01"], "framed on P01")
 	assert_true(cues.has(&"letterbox") and cues.has(&"fade") and cues.has(&"wait"))
+	_done()
+
+
+## M2-FP-28 (playtest: the prologue read greyscale). The towers are near-white greybox and the key is
+## behind them, so without a warm rim and a teal shadow tint every face the camera sees is lit only by
+## blue-grey fill and ambient. Colour script prologue_iskarra_dusk: rim #F2A64A at 1.4, shadows toward
+## deep_teal_shadow, saturation x1.05.
+func test_the_dusk_frame_carries_colour() -> void:
+	_make_scene()
+	var rim := scene.get_node_or_null(^"Rim") as DirectionalLight3D
+	assert_true(rim != null, "the colour script's rim light is in the scene")
+	if rim != null:
+		assert_true(rim.visible)
+		assert_between(rim.light_energy, RIM_ENERGY - ENERGY_TOLERANCE, RIM_ENERGY + ENERGY_TOLERANCE, "rim energy")
+		assert_true(rim.light_color.s >= MIN_LIGHT_SAT, "the rim is a warm colour, not white")
+		assert_true(rim.light_color.h <= WARM_HUE_MAX, "the rim is gold-orange")
+		var to_light := rim.global_transform.basis.z.normalized()
+		var to_camera := (scene.get_node(^"Camera") as Camera3D).global_transform.basis.z.normalized()
+		assert_true(to_light.dot(to_camera) > 0.0, "the rim lights the faces the camera sees (the key is behind)")
+	var env := (scene.get_node(^"WorldEnvironment") as WorldEnvironment).environment
+	var amb := env.ambient_light_color
+	assert_true(amb.s >= MIN_LIGHT_SAT, "the shadow fill is tinted, not grey")
+	assert_true(amb.h >= TEAL_HUE_MIN and amb.h <= TEAL_HUE_MAX, "the shadows lean teal (deep_teal_shadow)")
+	assert_true(env.ambient_light_sky_contribution <= MAX_SKY_CONTRIBUTION, "the sky does not average the tint away")
+	assert_true(env.adjustment_enabled and env.adjustment_saturation >= 1.0, "no desaturating grade")
 	_done()

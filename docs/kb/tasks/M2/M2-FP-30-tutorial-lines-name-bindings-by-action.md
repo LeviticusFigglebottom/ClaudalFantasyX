@@ -1,5 +1,5 @@
 ---
-id: M2-FP-28
+id: M2-FP-30
 title: Ch1 tutorial lines name their bindings by action, so they follow rebinding and the last device
 role: cinematics
 status: todo
@@ -25,5 +25,7 @@ action's first key, or its first pad button once the pad was the last device use
 ## Notes
 - m2-slice owns `game/data/dialogue/ch01/**` (ownership.md), so this is a request rather than a UI edit.
 - Unknown `{names}` stay as written, so the hook changes no current line.
+
+- **Renumbered (Lead merge, big8, 2026-10-24):** filed by claude/ui as M2-FP-28, which collided with claude/m2-slice's M2-FP-28 (the human's playtest fixes, referenced in code). Now M2-FP-30, the next id free across all branches.
 
 ## Review log

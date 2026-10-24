@@ -20,7 +20,7 @@ func before_each() -> void:
 	Game.state = GameStateData.new()
 	speakers.clear()
 	hand_offs.clear()
-	FieldEncounters.return_points.clear()
+	FieldEncounters.reset()
 	_open(ZONE_A)
 
 
@@ -179,6 +179,50 @@ func test_an_encounter_returns_to_where_rhen_stood() -> void:
 	_open(ZONE_A)
 	assert_true(zone.place_at(FieldEncounters.RETURN_SPAWN))
 	assert_true(zone.player.position.distance_to(Vector3(4, 0, 2)) < 0.01, "back where the fight started")
+	_done()
+
+
+func test_after_a_battle_the_walk_back_is_safe_and_the_meter_carries_on() -> void:
+	# M2-FP-28, from the human's playtest: random battles came back to back with no walk between.
+	Game.set_flag(&"test_flag", true)
+	var fired: Array[StringName] = []
+	zone.encounters.on_encounter = func(id: StringName) -> void: fired.append(id)
+	var first_gap := zone.encounters.next_m
+	zone.place_at(&"AfterFight")
+	zone.encounters.walked(first_gap + 0.1)
+	assert_eq(fired.size(), 1, "the battle")
+	var grace := zone.encounters.grace_after_m
+	assert_true(grace > 0.0, "a post-battle grace (greybox_defaults.json encounters.grace_m)")
+	var next_gap := zone.encounters.next_m
+	_done()  # the battle scene replaces the zone ...
+	_open(ZONE_A)  # ... and the zone is instanced again on the way back
+	Game.set_flag(&"test_flag", true)
+	var enc := zone.encounters
+	enc.on_encounter = func(id: StringName) -> void: fired.append(id)
+	assert_eq(enc.next_m, next_gap, "the meter carries on: not the same first gap again")
+	assert_eq(enc.grace_m, grace, "and the grace is still owed")
+	enc._physics_process(0.0)  # the first frame anchors at the location's default spawn
+	assert_true(zone.place_at(FieldEncounters.RETURN_SPAWN))
+	enc._physics_process(0.0)
+	assert_eq(enc.grace_m, grace, "the jump to the return spot is not walking")
+	zone.player.position += Vector3(enc.max_step_m * 10.0, 0, 0)
+	enc._physics_process(0.0)
+	assert_eq(enc.grace_m, grace, "nor is any jump past max_step_m in one frame")
+	assert_eq(enc.walked(grace - 0.1), &"", "nothing inside the grace")
+	assert_eq(enc.walked_m, 0.0, "the grace is walked before the meter runs")
+	assert_true(is_equal_approx(enc.grace_m, 0.1), "with 0.1 m of it left")
+	assert_eq(enc.walked(next_gap), &"", "then the full gap")
+	assert_ne(enc.walked(0.2), &"", "and only then the next battle")
+	assert_eq(fired.size(), 2)
+	_done()
+
+
+func test_a_new_game_forgets_the_meters() -> void:
+	Game.set_flag(&"test_flag", true)
+	zone.encounters.remember()
+	assert_true(FieldEncounters.meters.has("zone_story_a"))
+	EventBus.new_game_started.emit()
+	assert_false(FieldEncounters.meters.has("zone_story_a"))
 	_done()
 
 

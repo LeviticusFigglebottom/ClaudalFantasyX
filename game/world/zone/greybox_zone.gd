@@ -82,7 +82,7 @@ func build() -> void:
 
 func _ready() -> void:
 	if encounters != null:
-		encounters.setup(self, layout.get("encounters", {}))
+		encounters.setup(self, layout.get("encounters", {}), defaults.get("encounters", {}))
 
 
 ## Moves the player to Spawns/<spawn> facing `yaw_deg` and snaps the camera. The "Encounter" spawn
@@ -97,6 +97,8 @@ func place_at(spawn: StringName, yaw_deg: float = 0.0) -> bool:
 		player.position = FieldEncounters.return_points[String(location_id)]
 	player.rotation.y = deg_to_rad(yaw_deg)
 	player.velocity = Vector3.ZERO
+	if encounters != null:
+		encounters.reanchor()  # the jump to a spawn is never walking (M2-FP-28)
 	if player.motor != null:
 		player.motor.facing_yaw = player.rotation.y
 	if director.is_inside_tree():
