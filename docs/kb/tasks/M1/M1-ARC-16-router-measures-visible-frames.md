@@ -2,7 +2,7 @@
 id: M1-ARC-16
 title: SceneRouter measures ADR 0029's two budgets (hidden frames under the fade, the first 60 visible frames)
 role: architect
-status: review
+status: done
 owner_session: "worktree-agent-a30d6e9e3e395d6ec"
 reviewer: lead
 depends_on: [M1-RND-22]
@@ -40,3 +40,4 @@ Review-sweep-Q accepted ADR 0029, which makes the 50 ms limit apply to visible f
   ADR 0029 that is a hidden frame (1 s budget). Environment's file; worth a one-line fix by its owner.
 
 ## Review log
+- 2026-10-24 review-sweep-R (lead): **approve.** Every criterion is in `scene_router.gd`. `HIDDEN_FRAME_BUDGET_MS` (1000), `ENTRY_BUDGET_MS` (3000) and `VISIBLE_MEASURE_FRAMES` (60) are named constants. `judge_hidden` writes `budget_ms` 1000 and its warning names the hidden-frame budget. The visible window (`_measure_visible` with `VisibleWindow`) samples wall-clock frames from the start of the lift through 60 fully-lifted frames and is judged against `SWAP_BUDGET_MS`. A new change cancels it through a generation counter, and `visible_measured` still fires with `visible_complete` false. `VisibleWindow.tick` takes timestamps, so the tests inject the clock. architecture.md has "The two measured windows", and the prewarm_bench and gpu_bench headers say which window they report. `--filter=scene_router`: 16/0. Nit, not filed: the Haluna README's "(budget 50)" for a hidden frame (noted by the task, environment's file).

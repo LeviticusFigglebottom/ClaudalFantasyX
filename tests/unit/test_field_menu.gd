@@ -23,16 +23,16 @@ func before_each() -> void:
 func test_the_root_names_its_rows_and_swell_is_off_without_a_swell_hero() -> void:
 	var m := _model([&"rhen"])
 	var rows := m.root_rows()
-	assert_eq(rows.size(), 5)
-	assert_eq(rows[0]["label"], tr("FIELD_MENU_BESTIARY"))
-	assert_eq(rows[1]["label"], tr("FIELD_MENU_SWELL"))
-	assert_eq(rows[2]["label"], tr("FIELD_MENU_MAP"), "M2-UI-18")
-	assert_eq(rows[3]["label"], tr("FIELD_MENU_SETTINGS"), "M2-UI-09")
-	assert_eq(rows[4]["label"], tr("FIELD_MENU_CLOSE"))
-	assert_true(rows[1]["enabled"])
+	assert_eq(rows.size(), 10, "M2-MNU-01..04 added Items, Equip, Lattice, Status and Quit; M2-UI-18 Map")
+	assert_eq(rows[_at(FieldMenuModel.ROW_MAP)]["label"], tr("FIELD_MENU_MAP"), "M2-UI-18")
+	assert_eq(rows[_at(FieldMenuModel.ROW_BESTIARY)]["label"], tr("FIELD_MENU_BESTIARY"))
+	assert_eq(rows[_at(FieldMenuModel.ROW_SWELL)]["label"], tr("FIELD_MENU_SWELL"))
+	assert_eq(rows[_at(FieldMenuModel.ROW_SETTINGS)]["label"], tr("FIELD_MENU_SETTINGS"), "M2-UI-09")
+	assert_eq(rows[rows.size() - 1]["label"], tr("FIELD_MENU_CLOSE"), "Close stays last")
+	assert_true(rows[_at(FieldMenuModel.ROW_SWELL)]["enabled"])
 	assert_eq(m.root_desc(FieldMenuModel.ROW_BESTIARY), tr("FIELD_MENU_BESTIARY_DESC"))
 	var nobody := _model([&"no_such_hero"])
-	assert_false(nobody.root_rows()[1]["enabled"], "no Swell hero: the row is off")
+	assert_false(nobody.root_rows()[_at(FieldMenuModel.ROW_SWELL)]["enabled"], "no Swell hero: the row is off")
 	assert_eq(nobody.root_desc(FieldMenuModel.ROW_SWELL), tr("FIELD_MENU_SWELL_NONE"), "and says why")
 
 
@@ -95,7 +95,7 @@ func test_it_pauses_the_tree_and_cancel_closes_and_unpauses() -> void:
 	var tree := menu.get_tree()
 	assert_true(tree.paused, "the field stops under the menu")
 	assert_eq(menu.help_text(), tr("FIELD_MENU_HELP_ROOT"))
-	assert_eq(menu.desc_text(), tr("FIELD_MENU_BESTIARY_DESC"))
+	assert_eq(menu.desc_text(), tr("FIELD_MENU_ITEMS_DESC"))
 	var closed := [false]
 	menu.closed.connect(func() -> void: closed[0] = true)
 	assert_true(menu.handle_input(_ev(&"ui_cancel")))
@@ -108,7 +108,8 @@ func test_it_pauses_the_tree_and_cancel_closes_and_unpauses() -> void:
 
 func test_the_swell_path_sets_a_mode_and_cancel_walks_back() -> void:
 	_open()
-	assert_true(menu.handle_input(_ev(&"ui_down")))
+	for i in _at(FieldMenuModel.ROW_SWELL):
+		assert_true(menu.handle_input(_ev(&"ui_down")))
 	assert_eq(menu.desc_text(), tr("FIELD_MENU_SWELL_DESC"))
 	menu.handle_input(_ev(&"ui_accept"))
 	assert_eq(menu.level, FieldMenu.Level.HEROES)
@@ -141,6 +142,7 @@ func test_the_swell_path_sets_a_mode_and_cancel_walks_back() -> void:
 func test_the_bestiary_opens_over_it_and_hands_back_on_cancel() -> void:
 	_open(true)
 	var tree := menu.get_tree()
+	menu.root_page().set_cursor(_at(FieldMenuModel.ROW_BESTIARY), false)  # Down skips the Map row (off here)
 	menu.handle_input(_ev(&"ui_accept"))
 	var b := menu.bestiary
 	assert_true(b != null and b.is_open(), "Bestiary opens BestiaryMenu")
@@ -158,15 +160,15 @@ func test_the_bestiary_opens_over_it_and_hands_back_on_cancel() -> void:
 
 func test_close_row_and_clicks_choose() -> void:
 	_open()
-	menu._on_clicked(FieldMenuModel.ROOT_IDS.find(FieldMenuModel.ROW_CLOSE), FieldMenu.Level.ROOT)
+	menu._on_clicked(_at(FieldMenuModel.ROW_CLOSE), FieldMenu.Level.ROOT)
 	assert_false(menu.is_open(), "Return to the path closes it")
 	_free()
 	_open()
-	menu._on_clicked(1, FieldMenu.Level.ROOT)
+	menu._on_clicked(_at(FieldMenuModel.ROW_SWELL), FieldMenu.Level.ROOT)
 	assert_eq(menu.level, FieldMenu.Level.HEROES, "a click on Swell opens the heroes")
 	menu._on_clicked(0, FieldMenu.Level.HEROES)
 	assert_eq(menu.level, FieldMenu.Level.MODES)
-	menu._on_clicked(0, FieldMenu.Level.ROOT)
+	menu._on_clicked(_at(FieldMenuModel.ROW_BESTIARY), FieldMenu.Level.ROOT)
 	assert_true(menu.bestiary != null, "a click on the root goes back to it and chooses")
 	menu.close()
 	assert_true(menu.bestiary == null or not menu.bestiary.is_open(), "closing closes the bestiary too")
@@ -250,6 +252,10 @@ func test_a_read_this_battle_reveals_the_foe_in_the_target_panel() -> void:
 
 
 # --- helpers -------------------------------------------------------------------------------------
+
+
+func _at(row: StringName) -> int:
+	return FieldMenuModel.ROOT_IDS.find(row)
 
 
 func _model(heroes: Array[StringName]) -> FieldMenuModel:

@@ -18,16 +18,32 @@ extends Control
 ## ui_cancel goes back a level and closes from the root. Mouse: hover to move, click to choose.
 ## While the bestiary, the map or the Settings hub is open it takes the input, and this menu hides
 ## until it closes.
+##
+## M2-MNU-01..04 (the Menus track): Items, Equip, Lattice and Status open the party's pages
+## (FieldSubmenu children in game/ui/menus/, each over a PartySheet of this model's state and
+## heroes) the same way. Quit asks first on the right page (Level.QUIT: Stay / Quit to the title,
+## Stay under the cursor, the line saying what is lost) and then returns to the title (boot.tscn)
+## through FlowRouting.
 
 signal closed
 
-enum Level { ROOT, HEROES, MODES }
+enum Level { ROOT, HEROES, MODES, QUIT }
 
 const SCENE_PATH := "res://game/ui/field_menu/field_menu.tscn"
 const DATA_PATH := "res://game/data/ui/field_menu.json"
 const SCRIM_SHADER := preload("res://game/ui/shaders/scrim.gdshader")
 ## The field action that opens the menu (FieldController).
 const OPEN_ACTION := &"ui_cancel"
+## Where Quit goes (EndCard's return scene: the title).
+const TITLE_SCENE := "res://game/core/boot.tscn"
+
+## Root row -> the party page it opens (a FieldSubmenu script with static create(PartySheet)).
+const CHILD_PAGES := {
+	FieldMenuModel.ROW_ITEMS: preload("res://game/ui/menus/items/items_menu.gd"),
+	FieldMenuModel.ROW_EQUIP: preload("res://game/ui/menus/equip/equip_menu.gd"),
+	FieldMenuModel.ROW_LATTICE: preload("res://game/ui/menus/lattice/lattice_menu.gd"),
+	FieldMenuModel.ROW_STATUS: preload("res://game/ui/menus/status/status_menu.gd"),
+}
 
 ## Pause the tree while open (the field must not move under a menu).
 @export var pause_tree := true
@@ -42,6 +58,8 @@ var bestiary: BestiaryMenu
 var settings_menu: SettingsMenu
 ## The zone map opened from here (null when closed).
 var map_menu: ZoneMapMenu
+## The party page opened from here (Items, Equip, Lattice, Status; null when closed).
+var child: FieldSubmenu
 
 var _d: Dictionary = {}
 var _root: MenuPage
@@ -143,6 +161,11 @@ func accept() -> void:
 			_notice = model.choose_mode(hero, mode)
 			_detail.replace_rows(model.mode_page_rows(hero))
 			_render()
+		Level.QUIT:
+			if StringName(str(_detail.current_row().get("id", ""))) == FieldMenuModel.QUIT_GO:
+				quit_to_title()
+			else:
+				back()
 
 
 ## Goes back one level; closes from the root.
@@ -150,7 +173,7 @@ func back() -> void:
 	match level:
 		Level.ROOT:
 			close()
-		Level.HEROES:
+		Level.HEROES, Level.QUIT:
 			level = Level.ROOT
 			_render()
 		Level.MODES:
@@ -167,8 +190,17 @@ func close() -> void:
 		settings_menu.close()
 	if map_menu != null and map_menu.is_open():
 		map_menu.close()
+	if child != null and child.is_open():
+		child.close()
 	_restore_pause()
 	closed.emit()
+
+
+## Closes the menu and returns to the title (FlowRouting waits for an idle router). Unsaved
+## progress is lost, as the confirm said.
+func quit_to_title() -> void:
+	close()
+	FlowRouting.change_scene(TITLE_SCENE)
 
 
 ## The root row under the cursor, the right page's rows and the lines on show (tests read these).
@@ -200,16 +232,23 @@ func _accept_root(id: StringName) -> void:
 				_open_map()
 		FieldMenuModel.ROW_SETTINGS:
 			_open_settings()
+		FieldMenuModel.ROW_QUIT:
+			_open_quit()
 		FieldMenuModel.ROW_CLOSE:
 			close()
+		_:
+			if model.root_enabled(id) and CHILD_PAGES.has(id):
+				_open_child(id)
 
 
-## True while the bestiary, the map or the Settings hub is open over this menu (it has the input).
+## True while the bestiary, the map, the Settings hub or a party page is open over this menu (it
+## has the input).
 func _child_open() -> bool:
 	return (
 		(bestiary != null and bestiary.is_open())
 		or (settings_menu != null and settings_menu.is_open())
 		or (map_menu != null and map_menu.is_open())
+		or (child != null and child.is_open())
 	)
 
 
@@ -222,6 +261,30 @@ func _open_map() -> void:
 func _on_map_closed() -> void:
 	map_menu = null
 	visible = true
+
+
+## Opens the party page for root row `id` (CHILD_PAGES) over a PartySheet of this menu's state.
+func _open_child(id: StringName) -> void:
+	var sheet := PartySheet.new(model.state, model.heroes)
+	var page := (CHILD_PAGES[id] as Script).call(&"create", sheet) as FieldSubmenu
+	child = FieldSubmenu.mount(page, self)
+	visible = false
+	child.closed.connect(_on_child_closed)
+
+
+func _on_child_closed() -> void:
+	child = null
+	visible = true
+	_root.replace_rows(model.root_rows())
+	_render()
+
+
+func _open_quit() -> void:
+	level = Level.QUIT
+	_detail.replace_rows(model.quit_rows())
+	_detail.set_cursor(0, false)  # Stay
+	_notice = ""
+	_render()
 
 
 func _open_settings() -> void:
@@ -286,7 +349,13 @@ func _render() -> void:
 	var at_root := level == Level.ROOT
 	_root.set_dimmed(not at_root)
 	_detail.visible = not at_root
-	_detail.set_header(model.modes_title(hero) if level == Level.MODES else model.heroes_title())
+	match level:
+		Level.MODES:
+			_detail.set_header(model.modes_title(hero))
+		Level.QUIT:
+			_detail.set_header(model.quit_title())
+		_:
+			_detail.set_header(model.heroes_title())
 	_place_detail(at_root)
 	var id := StringName(str((_root if at_root else _detail).current_row().get("id", "")))
 	match level:
@@ -299,6 +368,9 @@ func _render() -> void:
 		Level.MODES:
 			_desc.text = _notice if _notice != "" else model.mode_desc(hero, id)
 			_help.text = tr("FIELD_MENU_HELP_MODES")
+		Level.QUIT:
+			_desc.text = model.quit_desc(id)
+			_help.text = tr("FIELD_MENU_HELP_QUIT")
 
 
 ## The right page is as tall as its rows; the line sits under it (at its top on the root).

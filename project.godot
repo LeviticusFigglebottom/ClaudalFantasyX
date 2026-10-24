@@ -36,7 +36,7 @@ theme/default_font_multichannel_signed_distance_field=false
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://game/data/loc/strings.en.translation", "res://game/data/loc/dialogue.en.translation")
+locale/translations=PackedStringArray("res://game/data/loc/strings.en.translation", "res://game/data/loc/dialogue.en.translation", "res://game/data/loc/menus.en.translation", "res://game/data/loc/menus_lattice.en.translation", "res://game/data/loc/menus_equip.en.translation", "res://game/data/loc/menus_items.en.translation")
 
 [shader_globals]
 

@@ -34,7 +34,8 @@ func _ready() -> void:
 	menu.pause_tree = false
 	menu.configure(model)
 	add_child(menu)
-	menu.handle_input(_ev(&"ui_down"))  # Bestiary -> Swell
+	for i in FieldMenuModel.ROOT_IDS.find(FieldMenuModel.ROW_SWELL):
+		menu.handle_input(_ev(&"ui_down"))  # down to Swell
 	if view != &"swell_modes":
 		return
 	menu.accept()  # the heroes, Rhen first
