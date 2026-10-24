@@ -637,3 +637,4 @@ SET_VOLUME_70,70%
 SET_VOLUME_80,80%
 SET_VOLUME_90,90%
 SET_VOLUME_100,100%
+BOOT_FIRST_RUN_NOTE,Preparing the graphics for first use. This happens only once.
