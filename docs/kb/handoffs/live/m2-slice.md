@@ -3,6 +3,29 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **MERGE-READY @ a851364c** (plus this log commit)
+  - **Items:**
+    - big7 merged (00bf4b01);
+    - the playtest fixes: the encounter meter and grace (a9b8033b), prologue → Haluna (399651ca), the rim light (9036c019);
+    - the end card switch (M3-C04-04);
+    - the F8 chapter select (M3-ARC-02);
+    - merge_union's keyed loc union;
+    - voices for the Act I speakers;
+    - creature models for 15 Act I enemies (544958b1);
+    - M3-CHR-01, the clip request (ba066d6f, a851364c);
+    - and everything earlier.
+  - **Checks run:**
+    - the full Godot suite on 00bf4b01: 2011 run, 0 failed;
+    - the sim on 00bf4b01: exit 0, nothing out of band;
+    - the tools unittest on 00bf4b01: 709 run, 2 failures, both test_hero_clips (big7's clip-call tests against the Act I dialogue). Fixed by M3-CHR-01; test_hero_clips is now 9 run, OK;
+    - for the model lines: creature 13, choreo 39, field_battle 12 and ch0* 45, all 0 failed;
+    - validate_data, taskboard, dlgc, lint and format: clean.
+  - **Checks skipped:**
+    - a second full Godot run after 00bf4b01: since then only enemies.json model lines, tests and docs changed, all covered above;
+    - coverage: no game/battle or game/progression code change;
+    - Blender: no source touched;
+    - the full shot manifest: no shot covers the changed areas.
+  - **M3-CHR-01:** Act I's staging calls about 100 body clips nobody has built (Rhen 46, Asha 20, Toma 12, Ysolde 9, Kerrid 7, Liss 6). They're skipped at runtime until built. The list is `assets_src/characters/requested_clips.json`; test_hero_clips allows exactly those and still catches typos. **Lead: please route it to the character track.**
 - **big7 is merged into claude/m2-slice** (00bf4b01, pushed): characters, creatures, battle presentation, menus, combat, audio and lip sync. The branch the human plays now has animated heroes, enemy models and battle transitions.
   - **Playtest fixes kept on top:** the encounter meter with its grace, prologue → Haluna, and the prologue's rim light.
   - **Merge decisions** (also in the commit message):
