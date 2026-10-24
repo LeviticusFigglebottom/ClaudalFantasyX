@@ -432,3 +432,49 @@ own. The beds play at the ambience level (−26 LUFS), so turn up to hear them, 
   creatures in the rock, or like clicks in the file?
 - **For both:** can you hear them wrap (52 s and 46 s)? Is anything distracting enough to notice on its tenth time
   round?
+
+## M3: Tamsule and the Iskarra vigil (M3-AUD-12)
+
+A town loop and the Act I break. Neither scene exists yet, so for now you can only hear them on their own. The
+scenes are in act_outline.md (Ch7, and the end of Ch9).
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/tamsule.ogg` | 70.0 s loop | Ch7: Tamsule port, the Reefball town of the Tamsule Bell |
+| 2 | `music/iskarra_vigil.ogg` | 93 s, plays once | The end of Ch9: Rhen's voice-over at the Iskarra vigil (the act break) |
+
+### (1) Tamsule: a busy port lit by machines nobody questions
+
+- **The band:** a hammered dulcimer carries the tune. It is new for this cue: three wire strings per note struck
+  together by a light hammer, ringing through a broad, thin soundboard, with long notes rolled (struck again every
+  quaver, softer). Under it a low lute runs every quaver, a bass plays each beat group, and frame drums play the
+  groups, with jingles in the second verse. The glimmer-tech lamps hum: a soft pair of high tones that pulse
+  slowly and never quite settle. Glass bars double the tune's long notes in the second verse. Rigging tinks against
+  a mast now and then. The **Tamsule Bell**, the same bell as in the Tidecup match, rings where the loop starts and
+  softly at the middle section.
+- **The metre:** 7/8 (2+2+3), A dorian, a quaver every quarter second. That makes it a hurrying market step, not
+  Haluna's 6/8 roll or Oruvel's swung 4/4. **Is it busy and bright enough for a port? Does the 7/8 feel natural,
+  or like a stumble?**
+- **The middle eight bars** are Oruvel's side waiting a week for news: the Tidecup's song, re-barred into 7/8 and
+  played slowly on rolled notes, with the drums down to a heartbeat. **Does it sound like waiting? Does it give
+  away the Tidecup's tune too early, or does it tie the town to the arena?**
+- **The dulcimer** is the part most likely to sound synthetic. Does it sound like a hammered string, a harpsichord, or
+  a plucked guitar? If it sounds plucked, the hammer should be softer and the board's ring longer. Is the lamps' hum
+  audible? It should be felt more than heard. Can you hear the loop wrap at 70 s?
+
+### (2) The Iskarra vigil: a bed for a voice
+
+- **The idea:** this cue plays under Rhen's voice-over, so it leaves the voice's range (about 300 Hz to 3 kHz) empty.
+  Everything sits below or above it. Below is the sea: a breathing drone on A, a slow swell of deep water, and the
+  Hush theme's first phrase played two octaves down on dark low strings, the theme heard from under the water
+  ("Somebody's still below"). Three deep piano octaves, muffled as if through the sea, mark the start, the end of the
+  phrase, and the close. Above are glass motes that **rise** (at the Ebbing they only fell), a faint high halo, and
+  once the Hush's first notes in the glass, the theme above answering the theme below. The voice's band measures
+  about 24 LU under the whole cue.
+- **With a voice:** read any line over it (the prologue's "Everyone I'm going to tell you about is still here
+  tonight" will do). **Does every word come through without the bed ducking? Does the bed still sound like music,
+  or only like rumble and tinkle?** If it's only rumble, the low strings go up. If the voice is crowded, the motes
+  go down.
+- **On its own:** is the hollow in the middle strange to listen to? It is meant to be filled. Is the deep Hush
+  phrase recognisable that low? Does the last rising figure, left open on B, feel like an act ending, or an
+  interruption?

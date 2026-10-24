@@ -27,6 +27,7 @@ const LOOPING_CUES: Array[String] = [
 	"res://assets/audio/music/undertows_reach_p3.ogg",
 	"res://assets/audio/music/oruvel.ogg",
 	"res://assets/audio/music/pilgrims_wake.ogg",
+	"res://assets/audio/music/tamsule.ogg",
 ]
 const SAMPLE_RATE := 44100
 const MIN_LENGTH_S := 60.0
