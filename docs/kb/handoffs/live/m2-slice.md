@@ -3,6 +3,15 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **The shrine test hang (16:00): stack taken from a scratch repro.** The original run was already killed. **It's not the M2-QA-02 ShaderRD deadlock.**
+  - **Repro:** headless, with the main thread in `Thread.wait_to_finish()` on a GDScript Thread that instantiates `shell_shrine.tscn`. `gdb thread apply all bt` (the binary is stripped):
+    - main thread: `std::thread::join` (`wait_to_finish`);
+    - the four `WorkerThread`s: idle in `pthread_cond_wait`;
+    - the GDScript Thread, plus one more: in `pthread_cond_wait`, waiting on work that only the blocked main thread services.
+  - **Why it isn't the engine bug:** headless has no RenderingDevice, so `ShaderRD` never compiles. It's the test's own pattern: a TestCase can't let the main thread run frames while it waits.
+  - **The fix:** that test was replaced by one that drives `prebuild()` off-tree. No timeout was loosened.
+  - **The game path is safe:** it's SceneRouter's worker-thread instantiate with the main thread still running frames, which the PC's throwaway M2-ENV-12 measure exercised on hardware: first frame 1918 → 188 ms, no hang.
+  - **Menus' test_scene_router_swap flake:** I haven't seen it here. It arrives with claude/menus via the integration branch.
 - **M3-C09-02 is merged** (Ch9 "The Ebbing", the end of Act I; in review, reviewer narrative). Handoff cinematics-18.
   - **Where it plays:** its own zone, `ch09/corrow_night`, reachable on its own until Ch8 lands. It exits through the act-break VO at a stand-in Iskarra plaza, then the act card (a caption until UI's widget, M3-C09-05), then the end card.
   - **New:** `CutsceneHoldGate`, held input with no fail. Scene time runs only while `field_interact` is held, between `<<event hold_input …>>` and `<<event hold_input_end>>`. The architect is asked to rule on the event names (M3-C09-09).
