@@ -465,3 +465,7 @@ Rules:
 | assets/audio/ambience/causeway_wind.loop.json | assets_src/sfx/causeway_ambience.py + tools/audio/synth/looping.py | python3 tools/audio/render_all.py --only causeway_ambience | Audio (claude/audio, M2-AUD-13) | 2026-10-24 | original |
 | assets/audio/ambience/tidepools.ogg | assets_src/sfx/causeway_ambience.py + tools/audio/synth/ | python3 tools/audio/render_all.py --only causeway_ambience | Audio (claude/audio, M2-AUD-13) | 2026-10-24 | original |
 | assets/audio/ambience/tidepools.loop.json | assets_src/sfx/causeway_ambience.py + tools/audio/synth/looping.py | python3 tools/audio/render_all.py --only causeway_ambience | Audio (claude/audio, M2-AUD-13) | 2026-10-24 | original |
+| assets/audio/music/oruvel.ogg | assets_src/music/oruvel.py + tools/audio/synth/ | python3 assets_src/music/oruvel.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
+| assets/audio/music/oruvel.loop.json | assets_src/music/oruvel.py + tools/audio/synth/looping.py | python3 assets_src/music/oruvel.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
+| assets/audio/music/pilgrims_wake.ogg | assets_src/music/pilgrims_wake.py + tools/audio/synth/ | python3 assets_src/music/pilgrims_wake.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
+| assets/audio/music/pilgrims_wake.loop.json | assets_src/music/pilgrims_wake.py + tools/audio/synth/looping.py | python3 assets_src/music/pilgrims_wake.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
