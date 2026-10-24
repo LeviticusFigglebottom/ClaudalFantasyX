@@ -319,7 +319,6 @@ SPEC §6.11 input remapping. The Settings hub's third row, **Controls**, comes a
 - The help line generates its text from data (kind, reach, statuses, delay, and next-turn distance). Skills have no authored description keys yet.
 - `tools/ci_local.sh` and `capture.sh` write fixed `/tmp/hymn_*.log` paths, so parallel worktrees running at the same time clobber each other's logs.
 
-<<<<<<< HEAD
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 
 - **The field menu's root has nine rows** (`FieldMenuModel.ROOT_IDS`): Items, Equip, Lattice, Status, Swell, Bestiary, Settings, Quit to Title, Close. Equip, Lattice and Status (`PARTY_ROWS`) are off, saying why, when nobody has joined. `field_menu.json` grew the panel to 639 px and the root page to nine rows; every rect is still a multiple of 3.
@@ -328,7 +327,7 @@ SPEC §6.11 input remapping. The Settings hub's third row, **Controls**, comes a
 - **Loc files:** `game/data/loc/menus.csv` (shared rows, the pause), and one per page stream (`menus_lattice.csv`, `menus_equip.csv`, `menus_items.csv`) so parallel work never collides.
 - **Quit to Title** asks first on the right page (`Level.QUIT`): Stay is under the cursor, so a stray Confirm never quits, and the line under "Quit to the title" says what is lost (anything since the last shrine save). Then `FlowRouting.change_scene(boot.tscn)`; tests set `FlowRouting.record`.
 - **Battle pause** (`BattlePause`, a node in `battle_sandbox.tscn`, so `FieldBattle` too): the `battle_pause` action (P, Pause, pad Start; `battle_pause.json`, added to the InputMap at runtime) opens `BattlePauseMenu`: Resume, Settings (the hub over it), Quit to Title (the same Stay-first confirm). It is a tree pause, so the engine, BattleChoreo, the camera and tweens freeze mid-beat and resume where they were; a 45% panel_low dim makes the fight read as paused. Refused with no fight on, on the result panel (`blocked_states`), while a battle builds, or when another menu already holds the pause. Pressing the action again, or Cancel, resumes. Shot: `battle_pause` (over the `player_preview` capture state).
-=======
+
 ## Items and Status pages (M2-MNU-03)
 
 Both are `FieldSubmenu` pages over a `PartySheet` (the field menu opens them with `ItemsMenu.open_in(host)` / `StatusMenu.open_in(host)`; a null sheet means the live party). Words and rules live in Node-free models, `ItemsMenuModel` and `StatusMenuModel`; loc keys in `game/data/loc/menus_items.csv` (`ITEMS_MENU_*`, `STATUS_MENU_*`, `MENUS_MP_FMT`), reusing item, category, stat, status, gear, ability, skill, hero and Swell mode names and `HUD_HP_FMT`. Layouts: `items_menu.json`, `status_menu.json`.
@@ -341,4 +340,3 @@ Both are `FieldSubmenu` pages over a `PartySheet` (the field menu opens them wit
 - **Input.** Items: Up/Down move, Left/Right sort (bag), Page Up/Down jump a page, Confirm opens the picker or uses, Cancel goes back and closes from the bag; mouse hover moves, click chooses (a click on the bag from the picker goes back to it), the wheel steps. Status: Up/Down, Left/Right and Page Up/Down change the hero (wrapping), Confirm does nothing, Cancel closes; hover or click a hero, the wheel steps.
 - **Captures** (`PartyPagesShot`, `game/ui/menus/party_pages_shot.gd`, on a scratch save): `items_menu` (a mixed bag sorted by kind, cursor on Reef Draught), `items_menu_use` (Salt Tonic's picker: Rhen wounded, Asha fallen, Toma low on MP, "Rhen: HP 151 → 351"), `status_menu` (Rhen in Customized gear with five Lattice nodes woken, Swell on Wake at 46, a carried Poison).
 - **Tests:** `tests/unit/test_items_menu.gd`, `tests/unit/test_status_menu.gd`.
->>>>>>> worktree-agent-afe6183bb97bfabbd
