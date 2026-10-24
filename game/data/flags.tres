@@ -57,5 +57,17 @@ flags = {
 "ch01_children_safe": "Ch1 C1-13: Rhen got the Reefball pen's children onto the plank bridge toward the keel-hull; Hullgnaw rises next.",
 "tut_movement_seen": "Tutorial seen-flag (Design: gate by seen-flags, not by chapter): the field movement prompt has been shown.",
 "tut_tether_seen": "Tutorial seen-flag: the tether point prompt has been shown (Ch1 Underway).",
-"tut_shutter_seen": "Tutorial seen-flag: the lantern shutter prompt has been shown (Ch1 Underway galleries)."
+"tut_shutter_seen": "Tutorial seen-flag: the lantern shutter prompt has been shown (Ch1 Underway galleries).",
+"ch07_arrived": "Ch7 B01: the party has come in to Tamsule at the river mouth (the chapter becomes 7).",
+"ch07_met_tavi": "Ch7 B03 (end): Tavi Orse found Rhen at the market boats and gave him Pio's side-band; opens the walk to the Bell.",
+"ch07_told_tavi": "Ch7 B03 choice point: Rhen told Tavi that Mother Kell couldn't swim (Ch18 offered: Tavi at rebuilt Oruvel).",
+"ch07_saw_galleries": "Ch7 B04: the galleries scene has played (Liss's line, Kerrid outside); the checkpoint autosave before the naming follows it.",
+"ch07_tidecup_played": "Ch7 B06: set by the Reefball match's return (tidecup_opening), win or lose, or by the chapter flow's stand-in; B07 plays next.",
+"ch07_tidecup_won": "Ch7 B06: set by the Reefball match's return on a win only. A reward and record flag: no story script may read it (tests/integration/test_ch07_thread.gd).",
+"ch07_tavi_withdrew": "Ch7 B07 (end): Tavi withdrew Oruvel from the Tidecup; the afternoon barks, the moorings scene and the harbour open.",
+"ch07_blessed_moorings": "Ch7 B09 (optional side scene 'The Empty Moorings'): Asha blessed Oruvel's six rings and Pio's band is tied to the last (B10 shot; Ch18, Ch20 offered).",
+"ch07_set_leaf_boat": "Ch7 B09: Rhen lit the kept Pemakar leaf-boat and set it on the water at the Wicklight's ring (needs ch05_kept_leaf_boat).",
+"ch05_boat_for_kell": "Ch5 B04 choice: Rhen lit his Lanternfall boat 'For Mother Kell.' Read by Ch7 B03 (declared here by M3-C07-02; one declaration survives the Ch5 merge).",
+"ch05_boat_for_oruvel": "Ch5 B04 choice: Rhen lit his Lanternfall boat 'For Oruvel.' Read by Ch7 B05 and the match barks (declared here by M3-C07-02; one declaration survives the Ch5 merge).",
+"ch05_kept_leaf_boat": "Ch5 B04 choice: 'Not yet.' Rhen kept the leaf-boat folded and unlit. Read by Ch7 B09 (declared here by M3-C07-02; one declaration survives the Ch5 merge)."
 }
