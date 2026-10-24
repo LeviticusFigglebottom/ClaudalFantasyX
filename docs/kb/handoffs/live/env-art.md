@@ -52,7 +52,16 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
     - **For Narrative:** the dead ship's ribs echo Hullgnaw's rib-timbers. Also to confirm: floors are counted
       from the street (F9 is the gallery), and the dive's sun is at 08:45.
     - Handoff: `2026-10-24-environment-seafloor.md`.
-  - **Running:** M3-ENV-06's last two arenas and M3-ENV-04B (the Seawall breach). Nothing is queued after them.
+  - **M3-ENV-04B the Seawall breach and Ch9 night: in review, merged here** (d5e21d46).
+    - Pieces: breach segments a/b, west and east ends, cracked and fallen heads, broken stair, cut hoist,
+      low-town rubble and a second Watcher carving. Preview phases `fallen` and `ch09`.
+    - Baseline `corrow_c10_breach_fallen`; the C01 and C08 baselines are unchanged.
+    - Checks: corrow_kit 44 identical, corrow 8/8, post_import 19/19.
+    - **For Narrative:** in Ch9 the breach cuts the Fisher Stair after 12 steps. The swap-in note says how to move
+      the breach if the zone needs the full climb.
+    - **For Rendering:** the Ch9 ambient is 0.7, not the colour script's 0.3, because the stair foot rendered black.
+    - **For Art:** a `ch08_after` colour-script row is proposed in corrow.md §7.
+  - **Running:** M3-ENV-06's last two arenas. Nothing is queued after them.
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
