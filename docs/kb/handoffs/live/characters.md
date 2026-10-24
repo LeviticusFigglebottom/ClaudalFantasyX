@@ -70,6 +70,14 @@
   2. **M2-CHR-12, field locomotion** (new): idle variants, walk and run with starts and stops, turns in place. Worktree sub-agent.
   3. **M2-CHR-11, host snaps** (new): rhen and toma are folded into M1-CHR-15, which is rebuilding them anyway; base_body and the seven villagers go to a worktree sub-agent.
   - The hero-integration track's live log is read each cycle. The branch didn't exist at 2026-10-24 ~20:00.
+- **MERGE-READY @ (this commit): M2-CHR-11, base_body and villager half.** Handoff: 2026-10-24-character-18.md.
+  - **Fix:** a 1 µm position grid on the donor skin right after the fit, so the head, body, scalp and normals follow, plus the hair cards before HairHead and LOD1 decimation, and UVs on 2^-16. All nine villagers now have `host_snaps: true`.
+  - **Verified:** base_body plus the nine villager jobs are identical on THREE numpy paths: native AVX-512, `X86_V4` off (the i9-12900K's AVX2 path) and `X86_V3 X86_V4` off.
+  - **Before the fix:** reproduced here. All 8 in-scope jobs differed under the AVX2 paths, in exactly the PC gate's accessors. Tavi and Kell also failed: a midline coordinate above 1e-9, and up to 80 µm of hair-card drift.
+  - **Shots:** 39 base_body and villager shots pass (max 6.3e-3, mostly drift that predates this; the change alone is ~4e-4).
+  - **Gates:** test_villagers, test_base_body and test_blender_builds OK; test_rig_integrity 71 OK; post_import 19/19.
+  - **For the Lead:** please re-run the PC gate for base_body and `villager_*`. Consider re-approving the M2 villager baselines in a render batch (about 6e-3 of the 8e-3 headroom is already used).
+  - **Still pending:** rhen and toma, in M1-CHR-15.
 - **MERGE-READY @ (this commit): M2-CHR-12, field locomotion for Asha, Rhen and Toma** (review: lead). Handoff: 2026-10-24-character-17.md.
   - **New clips, in place:** walk_start, walk_stop, run_start, run_stop, turn_in_place_l90/_r90/_180, idle_breathe and idle_shift. walk and run are rebuilt: footprint IK with heel, flat and ball contacts, and per-hero lengths, so the loops close on 15 fps keys.
   - **Controller data:** `game/data/characters/locomotion.json` holds stride_m and speed_mps (Asha walk 1.00 m, 0.88 m/s; Rhen 1.05 m, 0.98; Toma 1.25 m, 1.04), plus root_travel and yaw for the starts, stops and turns. `foot_l_down`/`foot_r_down` markers.
