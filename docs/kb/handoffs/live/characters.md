@@ -65,7 +65,11 @@
     - test_villagers, test_rig_integrity (7 characters), test_blender_builds, test_hero_clips, test_hero_battle_clips: OK;
     - post_import 19/19, hero_stage 9/9;
     - all five hero clip libraries regenerate byte-identical.
-- **In flight, three worktree sub-agents:** M3-CHR-03 hero half (Liss), M1-CHR-15 skirt and corrective bones, and M3-CHR-05 Kerrid (hero build).
+- **RE-PRIORITISED (the Lead, after the human's playtest): the M3 heroes are PAUSED** (Liss and Kerrid stop after their current commit; Ysolde and Sefir are already merged). Top of the queue:
+  1. **M2-CHR-07, the battle clip set:** DONE and merge-ready (see its line above). Its clips are idle, ready, attack, cast, item, read, defend, finisher (= "special"), hit, dodge, ko and victory, for Asha, Rhen and Toma.
+  2. **M2-CHR-12, field locomotion** (new): idle variants, walk and run with starts and stops, turns in place. Worktree sub-agent.
+  3. **M2-CHR-11, host snaps** (new): rhen and toma are folded into M1-CHR-15, which is rebuilding them anyway; base_body and the seven villagers go to a worktree sub-agent.
+  - The hero-integration track's live log is read each cycle. The branch didn't exist at 2026-10-24 ~20:00.
 - **Kerrid and Pell design sheets merged** (kerrid.md, pell.md; M3-CHR-05 and 06).
   - Pell (M3-CHR-06) waits on **M3-NAR-01**: in outline, Pell's arc is close to the inspiring series' beast-folk guardian; the costume avoids every visual cue, but Narrative must rule on the arc. That task also carries the sheets' story questions and the stale ADR 0020 and glossary rows.
 - **From the M3 sheets:**
