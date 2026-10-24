@@ -1,8 +1,6 @@
-# CONSOLIDATED HANDOFF: start here (new account)
+# CONSOLIDATED HANDOFF: start here
 
-**Written:** 2026-10-24 by the outgoing Lead (cloud session `session_01Bg3iP7cPGyjbX4CyniBahc`), at the account handoff. Every session of the old account was told to stop, push and update its live log. Each environment's own detail is in this folder: [`lead-cloud.md`](lead-cloud.md), [`pc-gpu.md`](pc-gpu.md) and [`first-playable.md`](first-playable.md). **Fetch every branch first; the newest copy of each per-environment log may be on that environment's own branch** (see §2). The old running log is [`CONSOLIDATED-history-2026-10-23.md`](CONSOLIDATED-history-2026-10-23.md).
-
-> **UPDATE 2026-10-24 (new Lead, `session_019iimsngAgPLEram1wcbLpE`):** the integration branch is now **`claude/undertow-lead-handoff-423ixt`**. `claude/new-session-mj8c3c` is frozen at a504072. Live environments: pc-gpu = Remote Control `session_01UFcBRsk9M9EKtxJKdBU2mB`; m2-slice = cloud `session_01DQ9tdk8Uatb8Jr6raAkXiC` on `claude/m2-slice`. Progress on §5 is tracked in [`lead-cloud.md`](lead-cloud.md) until this file is rewritten after the merge batch.
+**Rewritten:** 2026-10-24 by the Lead, cloud session `session_019iimsngAgPLEram1wcbLpE` (new account). It replaces the old account's handoff; that version is in git history at a504072. Each environment's detail is in this folder (`lead-cloud.md`, `pc-gpu.md`, and `m2-slice.md` / `characters.md` on those tracks' branches). **Fetch every branch first: the newest per-environment log is on that environment's own branch.**
 
 ## 0. Read these, in this order
 1. [`CLAUDE.md`](../../../CLAUDE.md): the operating rules for every agent. They include "Gate scope", §7a live logs, and §8a shared-machine and scratch rules.
@@ -16,9 +14,9 @@
 - **IP guardrail:** it is inspired in tone only by a classic 2001 JRPG. Many story re-stagings removed echoes of it: ADRs 0015, 0016, 0017, 0020 and 0022, plus SPEC v1.1 and v1.2. Keep that strictness. For example, never use the inspiring game's -ra/-ga spell-tier suffixes.
 - **Milestone M1 (tech and look prototypes):** nearly done.
   - **Exit criteria met:** CTB battle, water, glimmer, the Undertow prototype (perf solved), and the five-shot mood test.
-  - **Remaining exit criterion:** "one hero at final fidelity". Asha has been through six rounds (CHR-02, 03, 04, 07, 09, 10, with 11 in flight).
-    - Latest GPU verdict (docs/kb/qa/gpu/*qa-05c*): neutral and smile pass; grief fails because of the teeth and mouth interior.
-    - Still open: the lash comb, the lid band and the brow notch.
+  - **Remaining exit criterion:** "one hero at final fidelity". Asha has been through rounds CHR-02 to CHR-11, plus RND-20 and RND-21 (all merged). Round 7 is M1-CHR-12, on the characters track.
+    - Latest GPU verdict (docs/kb/qa/gpu/2026-10-24-qa-08-asha.md): neutral passes; smile passes on shading but reads as a smirk at 1x; grief fails, closely, on a lip-edge black rim and peg teeth.
+    - Still open: the lid band (R:B 3.7 against 2.0–2.5), the crown and hairline, the smile's eyes, and lashes that read spiky.
     - The fallback is ADR 0019, stronger stylisation, which needs the human's call.
   - **Then:** M1-LEAD-01, the M1 review. It also waits on the human listening to the music (AUD-02).
 - **Already into M2 (vertical slice):**
@@ -33,20 +31,22 @@
 ## 2. Branches (all on `LeviticusFigglebottom/ClaudalFantasyX`)
 | Branch | Status |
 |---|---|
-| `claude/new-session-mj8c3c` | **The integration branch, standing in for `main`.** Every merge lands here. Last full gate green at fc3940c (ci30). Scoped gates were green afterwards: ci32 at 2ce7045, ci33 lavapipe-approved merges at c940d77. See §5 for what is pending. |
-| `claude/first-playable` | The First Playable session's branch. **It stopped at 67984ce, gate green (1,244 tests).** Its final log is copied onto the integration branch. It's ahead of the integration branch with unmerged work (the Drownbell boss and the M2-FP queue). Its newest log is `docs/kb/handoffs/live/first-playable.md` on that branch. **Merge it after a scoped gate.** |
-| `gpu/*` | The PC GPU session's branches, one per item. **Unmerged:** `gpu/rnd-21-mouth-fill` (needs the asha_* shots, the Blender asha job, and re-approval of asha_face_grief), `gpu/m2-rnd-01-undertow` (WIP, compiling, the integration branch merged in; its task file has a 'WIP handoff' section with the exact next step), plus any newer branch. Everything else is merged. The PC's final log, `pc-gpu.md` (from `gpu/m2-rnd-01-undertow` 8831615, its final push), is copied onto the integration branch. **Also unmerged:** `gpu/qa-07-windows-interpreter-test` (files M1-QA-07). |
-| `worktree-agent-*` | Local to the old Lead's container. **Gone after the handoff**; anything not merged is lost, so the tasks say what to redo. |
+| `claude/undertow-lead-handoff-423ixt` | **The integration branch, standing in for `main`** (CLAUDE.md §4: the Lead's session branch). Every merge lands here. |
+| `claude/new-session-mj8c3c` | The old integration branch. **Frozen at a504072**; don't merge into it. |
+| `claude/m2-slice` | The M2 vertical-slice track (from `claude/first-playable` 67984ce). |
+| `claude/characters` | The Characters track (from the integration branch). |
+| `claude/first-playable` | The old First Playable branch, stopped at 67984ce. Being merged in (see §5). |
+| `gpu/*` | The PC GPU session's branches, one per item. Merged: rnd-21-mouth-fill, qa-07, qa-08-asha-recheck. **Don't merge:** qa-05d-asha-recheck (superseded by qa-08), chr-04-materials and qa-05b-asha-recheck (overtaken by later rounds). **WIP:** m2-rnd-01-undertow (54b5f33 is a mergeable checkpoint; the 5 undertow shots get re-approved when the task reaches review), m2-rnd-01b-undertow-compute. |
+| `lead/test`, `lead/fp`, `worktree-agent-*` | Local to the Lead's container. Lost on a restart; anything unmerged is redone from its task file. |
 
-## 3. Environments for the NEW account (recommended)
-1. **The new Lead, a cloud session** that orchestrates, merges, reviews and runs the gates. It may use subagents in worktrees. 4 CPUs are enough with scoped gates.
-2. **Optionally, a second cloud session as a dedicated feature track.** The old account's "First Playable" session worked well in its own container: spawn it with `create_session`, give it `outcome_branch` set to a `claude/<track>` branch, and give it a standing queue. Good next tracks:
-   - **(a) the M2 vertical slice content:** the Drownbell boss, Haluna to slice quality, the Shell Shrine temple trial, the first Vowbound, Cutscene A and B facial animation, M2-FP-10 (dialogue key light), M1-ARC-15 (if not already done on claude/first-playable);
-   - **(b) Characters:** Rhen and Toma on the MPFB2 pipeline; Asha's animation clips.
-3. **The PC GPU worker:** a Remote Control session on the human's Windows PC (RX 9070 XT, official Godot 4.6.3 and Vulkan). It **can message the Lead back** via `send_message`. It has been the most productive worker. Give it a standing queue of GPU-heavy items: captures and look judgements, perf, raymarching, shaders, GPU checks before lavapipe re-approvals.
-   - **The human's rules for it:** cumulative CPU, memory and GPU load at or under **75%**; GPU timing benchmarks run one at a time; keep the PC awake with the monitor on (a switched-off monitor broke the swapchain once).
-   - **Branch rules:** new `gpu/*` branches only; never overwrite lavapipe baselines; list the drifting shots; Asha's materials change only via `assets_src/characters/asha/write_materials.py`; run validate_data and the tools tests before pushing.
-   - **The PC's unfinished queue** (also in pc-gpu.md): M2-RND-01 Undertow production (WIP) → M1-RND-22 prewarm hitch floor → M2-RND-03 battle VFX library → M2-RND-02 underwater → M2-RND-04 Drownbell VFX and flood rig.
+## 3. Environments (live)
+1. **Lead:** cloud `session_019iimsngAgPLEram1wcbLpE`, 4 CPUs. It orchestrates, merges, reviews and runs the gates, with up to ~3 local subagents in worktrees (Character, Combat, UI, Reviewer). An **hourly check-in routine** (`trig_01LJyLo42xCq3WVmAza3BMhe`, :54 each hour) checks every environment, merges what's ready and refreshes these logs.
+2. **pc-gpu:** Remote Control `session_01UFcBRsk9M9EKtxJKdBU2mB` (desktop-jj0o43o) on the human's PC (RX 9070 XT, Windows, official Godot 4.6.3). It **can message the Lead**.
+   - **Queue:** M2-RND-01 Undertow production (with the compute-pass occlusion) → M1-RND-22 prewarm floor → M2-RND-03 battle VFX → M2-RND-02 underwater → M2-RND-04 Drownbell VFX and flood rig. GPU checks before any lavapipe re-approval jump the queue.
+   - **The human's rules:** total CPU, memory and GPU load ≤ 75%; one GPU benchmark at a time (a CPU-light subagent alongside is fine); new `gpu/*` branches only; never overwrite baselines; Asha's materials change only via write_materials.py; keep pc-gpu.md current; message the Lead when two items remain.
+3. **m2-slice:** cloud `session_01DQ9tdk8Uatb8Jr6raAkXiC`, branch `claude/m2-slice`, Auto mode, 2–3 subagents allowed. Queue: M2-FP-10 dialogue key light → M2-FP-11 (undo FP-09's zone-sun bias 3.0; two waiting router callers) → Drownbell follow-ups (its boss status strip is being renumbered from a colliding FP-11 to FP-12) → FP-05/ARC-15 follow-ups → Haluna at slice quality → Shell Shrine trial → first Vowbound, Cutscene A/B faces. Log: `m2-slice.md` on its branch.
+4. **characters:** cloud `session_01JqzzxgJU9Dmu7fRhmCG9aQ`, branch `claude/characters`, Auto mode, 2–3 subagents allowed. Queue: **M1-CHR-12 Asha round 7 first** (grief lip-edge rim and peg teeth, lid band, smile eyes, crown; from QA-08), with M2-CHR-01 Rhen and Toma in parallel (parked WIP in assets_src/characters/rhen/, see WIP.md) → Asha's clips (M2-FP-07) → M1-ART-06. Log: `characters.md` on its branch.
+- **Permissions:** `.claude/settings.json` allow-lists the read-only checks and cross-session messaging (the human's directive). Sessions pick it up after merging the integration branch.
 
 ## 4. Process that works (keep it)
 - **Standing queues:** never one task at a time; ask each environment to message when it's two items from the end.
@@ -60,21 +60,19 @@
 - **Number collisions:** at handoff, the integration branch's task files were renumbered to match `claude/first-playable`: FP-05 is polish and FP-06 the Drownbell boss on that branch; thread hardening is FP-09 and the dialogue key light FP-10. Parallel agents collide on task ids, ADR numbers and handoff numbers, so check every merge. Valid task roles are listed by `taskboard.py --check`; use `character` for art.
 - **Coverage baseline:** ratchet it up after test-adding merges with `python3 tools/coverage/run_coverage.py --update-baseline`. Currently battle 99.93% and progression 96.52%.
 
-## 5. Exact next steps for the new Lead
-1. `git fetch origin` and check out `claude/new-session-mj8c3c`. Set up the tools: `python3 tools/dev/fetch_godot.py`, `fetch_render_deps.py` and `fetch_blender.py`.
-2. Merge, with lavapipe checks:
-   - (`gpu/rnd-18-20-followups` is DONE: merged after ci35 found 0 drift.)
-   - `gpu/rnd-21-mouth-fill`: the asha_* shots, plus `python3 tools/dev/verify_blender_builds.py --job asha`; re-approve asha_face_grief after viewing it.
-   - Then `claude/first-playable` (a trial merge at handoff showed ONE conflict: add/add on `tests/unit/test_vegetation_plant.gd.uid`; take the integration branch's copy with `git checkout --ours`). Run its scoped battle, field and FP shots, plus `python3 tools/balance/sim.py --check` for the Drownbell suite).
-   - Then any newer `gpu/*` branch, such as `gpu/m2-rnd-01-undertow` once it's in review.
-3. Run the full gate. Then a review sweep over the review column: M1-ENV-03, RND-15, RND-16, RND-17, RND-18, RND-20, RND-21, CHR-03, CHR-10, M2-CMB-02, M2-NIT-03, M2-UI-01 and M2-UI-02.
-4. **M1-CHR-11 (Asha round 6) is MERGED** (ADR 0025 proposed: the smile weights depart from asha.md §6.3, and Art must amend that row).
-   - Neutral passes; smile is borderline-pass; grief waits on RND-21.
-   - After merging `gpu/rnd-21-mouth-fill`: rebuild Asha (`assets_src/characters/asha/build.sh`) and check `verify_blender_builds.py --job asha` shows 44 identical, since write_materials.py changes.
-   - Re-approve asha_face_grief after viewing it. Optionally set the teeth `ao_light_affect` to about 0.2 in the mouth-family entry.
-   - Then ask the PC for a GPU re-capture of grief and smile.
-5. Message the new PC GPU session with its queue (§3) and the rules. Spawn the second cloud track if wanted.
-6. Keep this file and `lead-cloud.md` current after every merge batch.
+## 5. Exact next steps for the Lead
+1. **Merge `claude/first-playable`.** The trial merge is in `lead/fp` (`../wt-fp`):
+   - The .uid conflict took ours.
+   - The Drownbell ADR was **renumbered 0024 → 0026**, because 0024 is the Asha hair ADR.
+   - `sim.py --check` passes every suite (Drownbell role_answer 77.6%, smart 85.2%).
+   - The scoped gate (battle and title shots, Blender skipped) is re-running. The first run stopped on the Rhen build.sh test failure, since fixed by parking build.sh.wip.
+   - When it's green, merge it and tell m2-slice to merge the integration branch.
+2. **Merge the local subagents as they report:** Combat (the battle_engine.gd split, then one slice combat item) and UI (M2-UI-04). Merge each cloud track's review-ready work after a scoped gate on a test merge.
+3. **Re-approve** the undertow shots when M2-RND-01 reaches review (GPU drift: eye 0.072, night 0.043, dusk 0.029, day_ch08 0.023, low 0.020). **View each one on lavapipe first.**
+4. **Full gate** (`tools/ci_local.sh`, every shot, Blender required) in a `lead/integration` worktree after this merge batch.
+5. **The next review sweep (P)** over the review column: M1-CHR-08, M1-QA-08, and whatever the tracks hand in.
+6. **When CHR-12 lands:** a PC GPU re-check of grief and smile (as QA-08 did), then M1-LEAD-01 once the human has listened to the music.
+7. **Also open:** a jagged stair-step dark shape on Asha's vest shoulder (QA-08 item F) needs Rendering triage. Fold it into M1-RND-23.
 
 ## 6. Open questions for the human (also in STATUS.md)
 - **Playtest** the first minutes (docs/PLAYTEST.md; a ready copy may be at `C:\Users\Aaron\Hymn_Playtest\PLAY.bat`). Is Asha's close-up face acceptable as a direction, or should we take ADR 0019's stronger stylisation?

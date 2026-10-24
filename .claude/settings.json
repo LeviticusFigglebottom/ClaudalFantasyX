@@ -7,7 +7,9 @@
       "Bash(python3 tools/validate_data.py)",
       "mcp__claude-code-remote__get_session",
       "mcp__claude-code-remote__list_sessions",
-      "mcp__claude-code-remote__list_events"
+      "mcp__claude-code-remote__list_events",
+      "mcp__claude-code-remote__send_message",
+      "SendMessage"
     ]
   }
 }
