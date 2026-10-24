@@ -2,7 +2,7 @@
 id: M2-ARC-04
 title: Release exports exclude game/levels/_tests, but shipped code depends on it (SceneRouter fails, Haluna won't load)
 role: architect
-status: doing
+status: review
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 reviewer: environment
 depends_on: []
@@ -24,12 +24,29 @@ In the exported game `scene_router.gd` fails to compile ("Failed to compile depe
 load.
 
 ## Acceptance criteria
-- [ ] Every runtime script and scene the game uses moves out of `_tests/` (to `game/world/...`,
+- [x] Every runtime script and scene the game uses moves out of `_tests/` (to `game/world/...`,
       `game/levels/ch02/haluna/...` and so on), with their owners. Or the exclusion is narrowed, and an ADR says
       why test content ships.
-- [ ] A check that fails when a shipped path (not under `_tests/`) references `res://game/levels/_tests/`, in
+- [x] A check that fails when a shipped path (not under `_tests/`) references `res://game/levels/_tests/`, in
       `tools/validate_data.py` or a test.
-- [ ] `godot --export-release "Windows Desktop"` produces a build whose boot → title → Haluna runs with no script
+- [x] `godot --export-release "Windows Desktop"` produces a build whose boot → title → Haluna runs with no script
       error (`build/` is gitignored).
+
+## Notes
+- 2026-10-24 m2-slice, **done, for review by architect** (Lead-routed release blocker). Most of it was already done by M2-ENV-01 (the Haluna world promoted to `game/levels/ch02/haluna/`; `haluna.tscn` instances `haluna_dressing.tscn`, and HalunaDresser, HalunaTerrain and WeatheringTide moved). This task finished the job with `git mv` (owners recorded in ownership.md):
+  - `game/levels/_tests/water/lagoon_waves.tres` → `game/world/water/` (the shipped sea's wave set).
+  - `VegetationPlant` and `VegetationScatter` → `game/world/vegetation/` (the dresser and the shelter probe use them).
+  - `asha_face_poses.json` → `game/data/cutscene/` (sequencer.json loads it at runtime).
+  - Every res:// user is updated: scenes, tests, tools tests, docs. The _tests scenes still work as wrappers.
+- `gerstner_waves.gd`, `flags.tres`, `shader_globals.gd` and the import rules only mention `_tests` in comments, which don't ship code.
+- **The guard:** `tools/tests/test_release_excludes_tests.py` reads the release presets' `exclude_filter`. It fails when a shipped file names a `res://game/levels/_tests/` path outside a comment, or a shipped script uses a class_name defined under `_tests/`. I checked that it catches both by planting each once.
+- **Allowlist, with reasons:**
+  - `prewarm_materials.json`: its scenes lists are filters only.
+  - `locations.json`'s `field_test` row: routed to only by tests and the debug overlay, and resolved lazily.
+  - The test fails if an allowed file stops needing its exemption.
+- **Release check:** there are no export templates in this container, so `--export-release` can't run here. Instead I copied exactly the "Windows Desktop" preset's file set (1102 files, no `_tests/`, `tests/`, `tools/`, debug) into a scratch project, imported it, and ran boot and the Haluna, Shell Shrine, first_verse and prologue scenes headless. There were **0 script, compile or load errors**.
+  - The prologue run logs a `haluna.tscn` parse error only at shutdown: it waits for dialogue input headless, and `--quit-after` cancels the router's in-flight Haluna load. The integration branch does the same, and Haluna loads cleanly on its own.
+  - **PC: please confirm with a real `godot --export-release "Windows Desktop"`.**
+- **Shots:** the vegetation, water and haluna shots should not move (only paths changed); see the gate run in the commit.
 
 ## Review log

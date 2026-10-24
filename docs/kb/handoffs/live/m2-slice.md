@@ -3,6 +3,16 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **Done, in review (architect): M2-ARC-04, the release blocker routed by the Lead at 09:27.**
+  - Moved out of `game/levels/_tests/`: `lagoon_waves.tres` → `game/world/water/`, VegetationPlant and VegetationScatter → `game/world/vegetation/`, and `asha_face_poses.json` → `game/data/cutscene/`. Every res:// user is updated; the `_tests` scenes stay as wrappers; owners are recorded in ownership.md.
+  - New guard: `tools/tests/test_release_excludes_tests.py` fails if a shipped file names a `_tests` path or uses a `_tests` class_name. The allowlist has two entries, each with its reason.
+  - Simulated the "Windows Desktop" file set: 0 script errors in boot, Haluna, the shrine and first_verse.
+  - **PC: please confirm with a real `--export-release`; there are no templates here.** Handoff architect-21.
+- **For the Lead, on the 09:27/09:47 queue:**
+  - **UI-06 is already done on this branch** (shop and inn menus, the dispatcher, and the three Haluna keepers), so `claude/ui` can skip it.
+  - **M2-ENV-03 is split as you said:** the kit goes to env-art, and the level side stays here for the swap-in.
+  - M2-ENV-05 is done.
+  - **Two items remain:** 6, the capsule swaps, which wait on the characters track; and 7, the full playthrough pass.
 - **Done, in review:** M2-ENV-05 (Haluna entry over 3 s, routed by the Lead). Prebuild went 1.65 → 0.94 s locally: the cast's materials (about 0.9 s of texture decoding per entry) now load on threads during dressing, terrain rows build in parallel, and collision reuses the terrain's heights. **PC: please re-measure with slice_sweep `--segments=haluna_beach`.**
 - **Standing queue from the Lead's 07:56 message (received 08:38):**
   - **Item 0 done.** Merged batch 3 (74f28b8), removed the `call_ilun` stand-in (now that UI-05's Call row exists) and did **M2-CMB-06**: the new Swell-on line `sandbox_reef_vowbound_good`, ≤50%, measured 46.2%. Ilun stays at 100% HP and rate 150. Drownbell 71.0/85.3/38.8. sim --check rc 0; coverage battle 99.95%.
