@@ -517,8 +517,11 @@ func test_ui_hooks_play_the_real_items_page() -> void:
 			[&"ui_left", &"ui_item_sort", "and back"],
 		]
 	)
+	# M3-MNU-03: key items have their own tab.
+	_keys(ui, menu, [[&"ui_page_down", &"ui_page", "the Key Items tab"]])
 	_seek(ui, menu, func(r: Dictionary) -> bool: return r.get("id", &"") == &"brass_lantern", menu.list_page())
 	_keys(ui, menu, [[&"ui_accept", &"", "a key item opens nothing (a refusal its line already said)"]])
+	_keys(ui, menu, [[&"ui_page_up", &"ui_page", "back to the Bag tab"]])
 	_seek(ui, menu, func(r: Dictionary) -> bool: return r.get("id", &"") == &"salt_tonic", menu.list_page())
 	_keys(
 		ui,

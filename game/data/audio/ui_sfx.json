@@ -226,6 +226,7 @@
         {"expr": "node.list_page().cursor", "sfx": "ui_cursor"},
         {"expr": "node.picker_page().cursor", "sfx": "ui_cursor"},
         {"expr": "node.model.sort", "sfx": "ui_item_sort", "_note": "kind, name or count (outranks the cursor it keeps)"},
+        {"expr": "node.model.view", "sfx": "ui_page", "_note": "the Bag / Key Items tabs (M3-MNU-03; outranks the cursor the switch resets)"},
         {"expr": "item_total(node.model.inventory())", "fall": "ui_item_use",
          "_note": "an item spent on a hero (outranks the picker closing after the last one)"}
       ],
