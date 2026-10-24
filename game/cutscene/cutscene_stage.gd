@@ -8,6 +8,7 @@ extends Node3D
 ##                 player stands in for `rhen` when there is no Actors/rhen.
 ##   Marks/<id>    Marker3D per scene mark: `@mark` targets, `@vfx at=` and `@sfx at=` places, and
 ##                 `@anim <actor> look_at <target>` targets (a mark or an actor).
+## The zone sun (`sun_path`) is what CutsceneKeyLight copies on close shots (M2-FP-10).
 ## A missing id is a soft failure (the sequencer warns once and carries on), so a rough stage can
 ## play a finished script.
 
@@ -20,6 +21,8 @@ const PLAYER_ACTOR := &"rhen"
 @export var director_path: NodePath
 ## The zone's FieldController. Empty = the first node in group "player", or a sibling named Player.
 @export var player_path: NodePath
+## The zone's sun. Empty = the first shadow-casting DirectionalLight3D under the stage's parent.
+@export var sun_path: NodePath
 ## Placeholder staging until the rigs have clips: "<actor>/<clip>" -> mark id. When `@anim <actor>
 ## <clip>` plays a listed clip, the actor is placed on that mark and turned to its facing (-Z), so
 ## `@anim asha emerge_doorway` can put her in the doorway before there is an animation to walk her.
@@ -42,15 +45,47 @@ func player() -> FieldController:
 	return p
 
 
+func sun() -> DirectionalLight3D:
+	if sun_path != NodePath():
+		return get_node_or_null(sun_path) as DirectionalLight3D
+	if get_parent() == null:
+		return null
+	for n in get_parent().find_children("*", "DirectionalLight3D", true, false):
+		var l := n as DirectionalLight3D
+		if l.shadow_enabled and not l is CutsceneKeyLight:
+			return l
+	return null
+
+
+## Everyone a close shot can frame: every actor under Actors, and the player.
+func cast() -> Array[Node3D]:
+	var out: Array[Node3D] = []
+	var folder := get_node_or_null(ACTORS)
+	if folder != null:
+		for child in folder.get_children():
+			if child is Node3D:
+				out.append(child as Node3D)
+	var p := player()
+	if p != null and not p in out:
+		out.append(p)
+	return out
+
+
 ## The authored CameraShot for `id`, or null.
 func shot(id: StringName) -> CameraShot:
+	var sn := shot_node(id)
+	return sn.shot if sn != null else null
+
+
+## The CutsceneShotNode holding shot `id` (its key-light settings ride on it), or null.
+func shot_node(id: StringName) -> CutsceneShotNode:
 	var folder := get_node_or_null(SHOTS)
 	if folder == null:
 		return null
 	for child in folder.get_children():
 		var sn := child as CutsceneShotNode
 		if sn != null and sn.shot != null and sn.shot_id() == id:
-			return sn.shot
+			return sn
 	return null
 
 

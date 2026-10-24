@@ -5,6 +5,9 @@ extends RefCounted
 ## flow step that latched "done" before such a call could leave the player stuck. Every first-
 ## playable hand-off goes through `when_free`, which waits until the router is idle, then makes
 ## the change, so the change is always taken.
+## Waiters take turns (M2-FP-11): the first to call goes first, and each later one waits for the
+## router to go idle again after the one before it, so two hand-offs waiting on the same busy router
+## never both fire on one idle frame (the router would drop the second).
 ##
 ## Tests swap `busy` (a Callable() -> bool) and `next_frame` (a Callable() -> Signal) to drive the
 ## wait by hand, and `record` to capture the changes.
@@ -15,17 +18,33 @@ static var next_frame: Callable = Callable()
 ## [location, spawn] instead of changing scene.
 static var record: Callable = Callable()
 
+## Waiters in call order; only the front one may change scene, once the router is idle.
+static var _queue: Array[RefCounted] = []
+
 
 ## Makes `change` (a Callable that starts a scene change) as soon as the router is idle. Await it
 ## or call it as a statement; either way the change happens exactly once.
 static func when_free(change: Callable) -> void:
-	while _is_busy():
+	var ticket := RefCounted.new()
+	_queue.append(ticket)
+	while _queue.front() != ticket or _is_busy():
 		var frame: Variant = _frame()
 		if frame == null:
 			push_warning("FlowRouting: no scene tree to wait on; changing now")
 			break
 		await (frame as Signal)
+	_queue.erase(ticket)
 	change.call()
+
+
+## Waiters not yet served (tests).
+static func waiting() -> int:
+	return _queue.size()
+
+
+## Forgets every waiter (tests whose mocked frame signal will never fire again).
+static func reset() -> void:
+	_queue.clear()
 
 
 ## A SceneRouter.change_scene to `path`, made once the router is idle.

@@ -16,8 +16,9 @@ const NPCS := {
 	&"npc_market": "ch02_bark_market",
 	&"npc_chapel": "ch02_bark_chapel",
 	&"npc_dock": "ch02_bark_dock",
+	&"npc_lane": "ch02_bark_lane",
 }
-const BARKS: Array[StringName] = [&"ch02_bark_market", &"ch02_bark_chapel", &"ch02_bark_dock"]
+const BARKS: Array[StringName] = [&"ch02_bark_market", &"ch02_bark_chapel", &"ch02_bark_dock", &"ch02_bark_lane"]
 const STAGE_SHOTS: Array[StringName] = [&"H05", &"H06", &"H01"]
 ## In front of the chapel door (order_chapel at (-118, 27.5), 9.25 m deep: its south face is z 32.1).
 const CHAPEL_FRONT := Vector3(-119.5, 0.0, 35.0)
@@ -108,7 +109,9 @@ func test_villagers_and_triggers_fire_their_payloads() -> void:
 		var it := n as Interactable
 		if it != null and zone.is_ancestor_of(it):
 			found[it.id] = it
-			it.used.connect(func(i: Interactable) -> void: fired.append(i.id))
+			# M2-FP-13's overheard fragments sit along these walks; they block nothing, so not counted.
+			if not bool(it.payload.get("overheard", false)):
+				it.used.connect(func(i: Interactable) -> void: fired.append(i.id))
 	for id: StringName in NPCS:
 		var it := found.get(id) as Interactable
 		assert_true(it != null, "villager %s" % id)
@@ -204,6 +207,19 @@ func test_the_cutscene_stage_resolves_cutscene_a() -> void:
 		elif step.is_cue():
 			_check_cue(stage, step, missing)
 	assert_eq(missing, [] as Array[String], "every @camera/@anim/@mark/@vfx target is on the stage")
+	# M2-FP-11: the zone leaves the mood sun's bias (1.0) alone; close shots use the key light instead.
+	assert_eq(zone.face_key_shadow_normal_bias, 0.0)
+	# M2-FP-10: the close shots of Asha key her with the mood sun's short-range copy; H01 does not.
+	assert_true(stage.sun() == zone.get_node("HalunaMood").get(&"sun"), "the stage keys from the mood scene's sun")
+	var key_cfg: Dictionary = CutsceneSequencer.load_config().get("key_light", {})
+	for id: StringName in STAGE_SHOTS:
+		# The rail root is the zone root, at the origin.
+		var shot := stage.shot(id)
+		var close := CutsceneKeyLight.is_close(shot.position, shot.look_at, shot.fov_deg, key_cfg)
+		assert_eq(close, id != &"H01", "%s keyed: %s" % [id, close])
+	# The PC's FP-10 check: under the 74° noon sun the close shots lower the key 30°.
+	for id: StringName in [&"H05", &"H06"]:
+		assert_eq(stage.shot_node(id).key_pitch_deg, 30.0, "%s key pitch" % id)
 	zone.free()
 	zone = null
 

@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch03_trial_hint",
+ "source": "game/data/dialogue/ch03/ch03_trial_hint.dlg",
+ "start": "ch03_trial_hint",
+ "nodes": {
+  "ch03_trial_hint": {
+   "headers": {"location": "ch03/shell_shrine"},
+   "ops": [
+    {"op": "line", "id": "ch03_trial_hint_001", "key": "DLG_CH03_TRIAL_HINT_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

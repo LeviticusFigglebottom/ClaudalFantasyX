@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch02_low_tide",
+ "source": "game/data/dialogue/ch02/ch02_low_tide.dlg",
+ "start": "ch02_low_tide",
+ "nodes": {
+  "ch02_low_tide": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "line", "id": "ch02_low_tide_001", "key": "DLG_CH02_LOW_TIDE_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch02_low_tide_002", "key": "DLG_CH02_LOW_TIDE_002", "speaker": "asha", "emotion": "smile", "voice": "", "src": 8},
+    {"op": "line", "id": "ch02_low_tide_003", "key": "DLG_CH02_LOW_TIDE_003", "speaker": "toma", "emotion": "worried", "voice": "", "src": 9},
+    {"op": "line", "id": "ch02_low_tide_004", "key": "DLG_CH02_LOW_TIDE_004", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 10}
+   ]
+  }
+ }
+}

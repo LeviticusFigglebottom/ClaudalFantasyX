@@ -1,0 +1,16 @@
+// Ch2 B02 "Neme's table" (docs/kb/story/beats/vertical_slice.md): Rhen wakes at noon in Asha's aunt
+// Neme's house, to far too much food. Neme talks to him the way she'd talk to a stray she has decided
+// to keep. Her fear shows only in how much food there is, and she never mentions Asha's packed bag
+// (the camera insert is a follow-up). In-engine (no letterbox, no camera cues), staged at her door
+// by the Village spawn, on the first arrival after the tideline battle is won (dawn on the walk up,
+// then noon at Neme's); the scene opens black for the time jump.
+title: ch02_nemes_table
+location: ch02/haluna
+---
+@fade in 1.0
+Neme [neutral]: Up, then. Sit. Not that stool, it bites. #line:ch02_nemes_table_001
+Neme [soft_smile]: Fish, then bread, then more fish. The sea gave you back thin. #line:ch02_nemes_table_002
+Rhen [neutral]: That's a lot of food for one stranger. #line:ch02_nemes_table_003
+Neme [neutral]: It's the right amount. Eat. Asha's at the market. She'll want to show you everything today. #line:ch02_nemes_table_004
+<<set $ch02_ate_at_nemes = true>>
+===

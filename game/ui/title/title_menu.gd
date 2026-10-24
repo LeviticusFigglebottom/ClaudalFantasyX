@@ -9,6 +9,7 @@ extends Control
 ##             an autosave the new run would write over, it asks first (M1-ARC-08): the rows
 ##             become Go back / Begin anew, "Go back" is the default, ui_cancel also goes back.
 ##   Load      the load list (SaveMenu, LOAD mode); a load routes the same way as Continue.
+##   Settings  the Graphics page (GraphicsMenu, M1-UI-10); it saves and applies as you change it.
 ## Input: ui_up / ui_down move, ui_accept chooses (keyboard and controller); a click chooses;
 ## ui_cancel closes the New Game question.
 ## Layout: game/ui/title/title_menu.json.
@@ -22,6 +23,7 @@ var save_system: Node
 var world_return: WorldReturn
 var model: TitleMenuModel
 var load_menu: SaveMenu
+var graphics_menu: GraphicsMenu
 
 var _d: Dictionary = {}
 var _page: MenuPage
@@ -61,7 +63,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Applies one input event. Returns true when the menu used it. Tests call this directly.
 func handle_input(event: InputEvent) -> bool:
-	if _launched or is_load_menu_open():
+	if _launched or is_load_menu_open() or is_graphics_menu_open():
 		return false
 	if event.is_action_pressed(&"ui_up", true):
 		model.move(-1)
@@ -103,6 +105,9 @@ func choose(choice: StringName) -> Error:
 			TitleMenuModel.CHOICE_LOAD:
 				open_load()
 				err = OK
+			TitleMenuModel.CHOICE_SETTINGS:
+				open_graphics()
+				err = OK
 	if err != OK:
 		model.refresh()
 	chosen.emit(reported, err)
@@ -128,6 +133,18 @@ func open_load() -> SaveMenu:
 	load_menu = TitleSaveEntry.open_load_menu(self, save_system)
 	load_menu.closed.connect(_on_load_closed)
 	return load_menu
+
+
+func open_graphics() -> GraphicsMenu:
+	if is_graphics_menu_open():
+		return graphics_menu
+	graphics_menu = GraphicsMenu.new()
+	add_child(graphics_menu)
+	return graphics_menu
+
+
+func is_graphics_menu_open() -> bool:
+	return graphics_menu != null and is_instance_valid(graphics_menu) and graphics_menu.is_open()
 
 
 func is_load_menu_open() -> bool:

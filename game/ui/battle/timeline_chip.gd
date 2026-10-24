@@ -86,7 +86,9 @@ func apply(slot: Dictionary, identity: Dictionary, current: bool) -> void:
 	label_text = str(identity.get("label", String(combatant_id)))
 	tint = identity.get("tint", Color.WHITE)
 	intent_label = str(slot.get("intent_label", ""))
-	_name.text = label_text if intent_label == "" else " · ".join([label_text, intent_label])
+	# A committed turn names its skill alone ("The Toll"): the glyph and the side colour already say
+	# whose turn it is, and "<name> · <skill>" ran past the chip's width (M2-FP-12).
+	_name.text = label_text if intent_label == "" else intent_label
 	_initial.text = label_text.left(1)
 	_caption.text = caption
 	_doom_label.text = str(doom) if doom > 0 else ""

@@ -12,6 +12,8 @@ Plays a compiled `.dlg` scene ([dialogue_format.md](dialogue_format.md)) in the 
 | `CutsceneOverlay` | `cutscene_overlay.gd` | CanvasLayer (layer 32, under the save menu and the router fade): letterbox bars, fade, `DialogueBox`, option menu. |
 | `CutsceneChoices` | `cutscene_choices.gd` | Option buttons: focus with `ui_up`/`ui_down`, pick with `ui_accept` or a click. |
 | `CutsceneMotes` | `cutscene_motes.gd` | Placeholder `@vfx` motes (held sinks seaward, released spirals up, bound holds still). |
+| `CutsceneKeyLight` | `cutscene_key_light.gd` | The close-shot character key light (M2-FP-10; "Key light" below). |
+| `CutsceneFace`, `FaceVisemes` | `cutscene_face.gd`, `face_visemes.gd` | Emotion poses, blinks and text-driven visemes on an actor's blend shapes ("Faces" below). |
 
 ## Using it
 
@@ -82,6 +84,28 @@ Every await inside `play()` goes through one internal `resumed` signal: a line a
 `play()` then returns `false` to its host instead of hanging, and `finished` still fires once.
 
 Cue keys the placeholder presentation doesn't perform warn once per scene (`UNSUPPORTED_KWARGS`): `@camera grade=`, `@anim loop=`, `@sfx at=`, and `@vfx drift=`/`motion=`/`rate=`/`form=`.
+
+## Faces (M2-FP-08, M2-FP-18)
+
+Every actor with a `face_poses` row in sequencer.json gets a `CutsceneFace` when the scene starts. It drives the actor's blend shapes in three layers. Each shape takes the highest of the three, so a blink or a viseme never fights the expression.
+- **Expression.** `@face` and each line's `[emotion]` blend to that emotion's pose (Character's face-poses JSON).
+- **Blinks.** These come from sequencer.json `blink`. A seeded timer per actor (`DEFAULT_SEED + hash(actor id)`) closes `lid_close` every 2.2–5 s, over 0.06 s, holds 0.03 s and opens over 0.11 s. Every change of expression adds a blink (`on_emotion_change`), which reads as a thought landing.
+- **Visemes.** These come from sequencer.json `visemes`. On each line the rig loads `FaceVisemes.track(text)`: one row per vowel run. Each `mouth_flap` opening shows that syllable's vowel shape (a → `vis_aa`, e → `vis_e`, i/y → `vis_i`, o → `vis_o`, u → `vis_u`, each with a little `jaw_open`). Each closing shows the lips' shape before the next vowel: m/b/p → `vis_mbp`, f/v → `vis_fv`, else rest. Sung lines have no flap.
+  - A rig that lacks any viseme shape keeps the old one-shape lip-flap (`lip_flap`).
+  - The weights are first values, checked on lavapipe on Asha's stage (`aa` and `o` were narrowed from the first try so the tongue doesn't show). Character owns their final tuning.
+
+Not yet: gaze (eye targets), and faces for Rhen and Toma, which are capsules until M2-CHR-01. B09's layered S10 beat (surprise at 0.3 s, then grief at 0.6 s) is Rhen's face, so it waits for his rig.
+
+## Key light (M2-FP-10)
+
+A zone sun's shadow cascades span hundreds of metres (Haluna: 400 m, first cascade 16 m), so at dialogue range their texels are 10–20× too coarse to shadow a face's own nose and mouth corners ([GPU report](../qa/gpu/2026-10-23-rnd-18-20-followups.md), RND-20 S1). Raising the sun's bias doesn't help: it only erases what self-shadow is left. On close shots the sequencer therefore swaps the sun for a short-range copy of it, **on the cast only**:
+
+- **When.** On every `@camera <id>`. A shot is close when its frame is at most `close_half_frame_m` (1.0 m) above and below its aim at the aim's distance: `distance × tan(fov / 2)`. Haluna's H05 (Asha's face, about 0.4 m) and H06 (over Rhen, about 0.85 m) qualify; H01 (the wide) doesn't. DOLLY and ORBIT shots move with the player, so AUTO never keys them. Any other shot (and `@camera release`, the end of the scene, an abort) gives the cast back to the sun.
+- **What.** `CutsceneKeyLight`, a `DirectionalLight3D` added under the stage, copies the sun's direction, colour, energy (or lux), temperature, specular and angular size. Its shadow is orthogonal (one split) with `shadow_max_distance_m` 6 m, `shadow_normal_bias` 4.5, `shadow_bias` 0.02 and `shadow_blur` 0.6, the character-shading stage's values ([character_shading.md](character_shading.md), "Shadows on characters").
+- **How only the cast.** Every `GeometryInstance3D` under `Actors/*` and the player moves to render layer `layer` (19) for the shot. It must not be 20: that's `UndertowHalfRes.BODY_LAYER`, which the main camera culls, so a storm-zone close shot would hide the cast (the PC's FP-10 check; `test_cutscene_key_light` guards it). The sun's `light_cull_mask` drops that layer and the key's is that layer alone, so scenery is never lit twice and the cast is never lit by both. The sun's `shadow_caster_mask` is untouched, so the cast still throws its shadow on the ground, and scenery within the key's 6 m still shadows the cast. The key has `sky_mode` light-only, no volumetric fog and no indirect energy, so there's no second sun disc, fog shaft or GI bounce. `disengage()` restores every layer and the sun's mask exactly.
+- **The sun.** `CutsceneStage.sun_path`, else the first shadow-casting `DirectionalLight3D` under the stage's parent (Haluna: `HalunaMood/Sun`; prologue: `Sun`, before `Fill`; Chapter 3: `Sun`). A close shot with no sun warns once and leaves the cast alone.
+- **Overrides (shot data).** On each `CutsceneShotNode`: `key_light` AUTO / ON / OFF, `key_yaw_deg` (about world up), `key_pitch_deg` (about the light's own X; positive lowers it toward the horizon) and `key_energy_scale` (× the sun's intensity). The defaults (AUTO, 0, 0, 1) keep the sun's exact direction and intensity, so lighting continuity holds across a cut.
+- **Limits.** Casters further than 6 m from the camera (a cliff, a far roof) stop shadowing the cast during a close shot. A second shadowed directional light shares Godot's directional shadow atlas with the sun, so the sun's cascades get a smaller share during close shots; that only touches scenery, which is mostly out of focus there. Measured by the PC session on Cutscene A (gpu/fp-10-keylight-check, c1b54ad): no nose or mouth-corner artefacts at High or Ultra, and the key costs ≤ 0.03 ms. Under Haluna's 74° noon sun a faithful key leaves the face in its own brow and nose shadow, so H05 and H06 set `key_pitch_deg` 30. Tests: `tests/unit/test_cutscene_key_light.gd`, plus Haluna's shot classification in `tests/integration/test_haluna_zone.gd`.
 
 ## Not yet
 
