@@ -18,6 +18,9 @@ var settings: UiSettings
 var help_role: StringName = &""
 ## A hero's Swell input (Rhen's lantern ring, M1-CMB-04), hidden until a technique opens it.
 var swell_ring: SwellRingView
+## Presentation that holds the battle while it plays (M3-BPR-02: a boss intro): name -> () -> bool. A freed
+## owner's Callable is no longer valid and holds nothing.
+var holds: Dictionary = {}
 
 var _damage_m: Dictionary = {}
 var _float_m: Dictionary = {}
@@ -155,8 +158,12 @@ func opening_banner() -> OpeningBanner:
 
 ## True while a modal HUD panel (the Read panel) is open: BattleController.tick() then holds every
 ## wait, so the battle does not move on under it and the panel costs no battle time. M2-BPR-05: also
-## while the opening banner waits for the router's fade to lift (OpeningBanner.is_pending).
+## while the opening banner waits for the router's fade to lift (OpeningBanner.is_pending). M3-BPR-02: also while
+## any of `holds` says so (a boss intro).
 func holds_battle() -> bool:
+	for hold: Callable in holds.values():
+		if hold.is_valid() and bool(hold.call()):
+			return true
 	return (_read_panel != null and _read_panel.is_open()) or (_banner != null and _banner.is_pending())
 
 

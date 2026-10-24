@@ -414,3 +414,70 @@ def summon_errors(doc: object, flags: set[str]) -> list[str]:
     if "summon" not in (c.get("camera", {}).get("shots", {}) if isinstance(c.get("camera"), dict) else {}):
         errs.append(f"{CHOREO_FILE}: camera.shots needs the 'summon' shot")
     return errs
+
+
+# --- M3-BPR-02: boss intros (choreo.json boss_intro) ------------------------------------------------
+
+BOSS_INTRO_TIMES = ("camera_in_sec", "camera_out_sec", "card_at_sec", "card_in_sec", "card_out_sec", "rise_px",
+                    "reveal_wait_max_sec")
+BOSS_INTRO_CARD_NUMS = ("title_height", "rule_y", "rule_length", "rule_px", "band_alpha", "band_fade")
+BOSS_INTRO_ROW_KEYS = ("title_key", "epithet_key")
+
+
+def boss_intro_errors(doc: object, encounters: object, loc_keys: set[str]) -> list[str]:
+    """Problems in choreo.json boss_intro: its times, the card, and per encounter a real encounter listing the row's
+    enemy, a camera shot that exists, hold_sec > 0 (the card fits in it), loc keys that exist, a boolean on_retry."""
+    c = doc.get("choreo", {}) if isinstance(doc, dict) else {}
+    b = c.get("boss_intro")
+    w = f"{CHOREO_FILE}: boss_intro"
+    if b is None:
+        return []
+    if not isinstance(b, dict):
+        return [f"{w}: must be an object"]
+    errs = [f"{w}.{k}: must be a number >= 0" for k in BOSS_INTRO_TIMES if not _num(b.get(k)) or b[k] < 0]
+    card = b.get("card")
+    if not isinstance(card, dict):
+        errs.append(f"{w}.card: must be an object")
+    else:
+        rect = card.get("rect")
+        if not isinstance(rect, list) or len(rect) != 4 or not all(_num(v) and v >= 0 for v in rect):
+            errs.append(f"{w}.card.rect: needs [x, y, w, h], numbers >= 0")
+        if not isinstance(card.get("layer"), int) or isinstance(card.get("layer"), bool):
+            errs.append(f"{w}.card.layer: must be a whole number")
+        for k in ("title_variation", "epithet_variation"):
+            if not isinstance(card.get(k), str) or not card[k]:
+                errs.append(f"{w}.card.{k}: must name a theme label variation")
+        errs += [f"{w}.card.{k}: must be a number >= 0" for k in BOSS_INTRO_CARD_NUMS
+                 if not _num(card.get(k)) or card[k] < 0]
+        if _num(card.get("band_alpha")) and card["band_alpha"] > 1:
+            errs.append(f"{w}.card.band_alpha: must be in [0, 1]")
+    rows = b.get("rows")
+    if not isinstance(rows, dict) or not rows:
+        return errs + [f"{w}.rows: needs at least one encounter"]
+    cam = c.get("camera") if isinstance(c.get("camera"), dict) else {}
+    shots = cam.get("shots") if isinstance(cam.get("shots"), dict) else {}
+    enc_rows = encounters.get("encounters", []) if isinstance(encounters, dict) else []
+    enc = {str(r.get("id")): r for r in enc_rows if isinstance(r, dict)}
+    card_sec = sum(b[k] for k in ("card_at_sec", "card_in_sec", "card_out_sec") if _num(b.get(k)))
+    for eid, row in rows.items():
+        where = f"{w}.rows.{eid}"
+        if not isinstance(row, dict):
+            errs.append(f"{where}: must be an object")
+            continue
+        if eid not in enc:
+            errs.append(f"{where}: '{eid}' is not an encounter")
+        elif row.get("enemy") not in enc[eid].get("enemies", []):
+            errs.append(f"{where}.enemy: '{row.get('enemy')}' is not in the encounter")
+        if row.get("shot") not in shots:
+            errs.append(f"{where}.shot: '{row.get('shot')}' is not a camera shot")
+        hold = row.get("hold_sec")
+        if not _num(hold) or hold <= 0:
+            errs.append(f"{where}.hold_sec: must be a number > 0")
+        elif _num(b.get("camera_in_sec")) and b["camera_in_sec"] + hold < card_sec:
+            errs.append(f"{where}.hold_sec: the card's fade in and out must fit before the camera turns home")
+        for k in BOSS_INTRO_ROW_KEYS:
+            if not isinstance(row.get(k), str) or row[k] not in loc_keys:
+                errs.append(f"{where}.{k}: '{row.get(k)}' has no localization entry")
+        if "on_retry" in row and not isinstance(row["on_retry"], bool):
+            errs.append(f"{where}.on_retry: must be true or false")
+    return errs

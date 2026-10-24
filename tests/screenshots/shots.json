@@ -1128,6 +1128,10 @@
           }
         }
       }
+    },
+    {
+      "id": "battle_boss_intro_hullgnaw",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_hullgnaw.tscn"
     }
   ]
 }

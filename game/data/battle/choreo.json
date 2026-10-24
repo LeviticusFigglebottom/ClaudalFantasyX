@@ -121,7 +121,11 @@
                      "look_up_m": 0.9, "fov": 50.0},
         "push": {"anchor": "default", "push": 0.14, "look_at": 0.3, "look_up_m": 0.8},
         "summon": {"anchor": "target", "back_m": 4.2, "side_m": 2.6, "up_m": 0.35, "look_at": 1.0, "look_up_m": 1.6,
-                   "fov": 46.0}
+                   "fov": 46.0},
+        "boss": {"anchor": "target", "back_m": 3.3, "side_m": 3.1, "up_m": 0.45, "look_at": 1.0, "look_up_m": 0.15,
+                 "fov": 44.0},
+        "boss_tall": {"anchor": "target", "back_m": 5.6, "side_m": 5.4, "up_m": 0.5, "look_at": 1.0, "look_up_m": 0.2,
+                      "fov": 46.0}
       },
       "by_style": {
         "melee": {"lead": "actor", "contact": "target"},
@@ -294,6 +298,32 @@
             "upper_arm_r": [-10.0, 0.0, -140.0], "forearm_r": [-5.0, 0.0, 0.0]}},
           {"t": 1.6, "pose": {"head": [-8.0, 0.0, 0.0], "upper_arm_r": [-10.0, 0.0, -130.0], "forearm_r": [-10.0, 0.0, 0.0]}}
         ]}
+      }
+    },
+    "boss_intro": {
+      "doc": "M3-BPR-02 BattleBossIntro (docs/kb/tech/battle_presentation.md, Boss intros): at a boss encounter's first turn, once the screen is uncovered and any opening banner is done (at most reveal_wait_max_sec), the camera eases from the default to the row's shot (camera.shots, framed on the row's enemy; a shot that fails the safe frame keeps the default) over camera_in_sec, holds hold_sec, and eases home over camera_out_sec. The title card (title_key over epithet_key, the UI theme) fades in over card_in_sec from card_at_sec and out over card_out_sec, ending as the camera turns home; it rises rise_px as it fades in (none under reduced motion, which also keeps the camera on the default). card: its CanvasLayer layer, its rect at the 1920x1080 reference (clear of the timeline), the label variations, the title's height, the gold rule under the name (rule_y, rule_length, rule_px) and the dark band behind it (band_alpha, band_fade). The first turn waits for it (BattleHud.holds_battle). Confirm or cancel skips it. on_retry: whether Fight again plays it again (default false). Instant pacing and skip animations play none.",
+      "camera_in_sec": 1.1,
+      "camera_out_sec": 0.8,
+      "card_at_sec": 0.7,
+      "card_in_sec": 0.5,
+      "card_out_sec": 0.45,
+      "rise_px": 10.0,
+      "reveal_wait_max_sec": 3.0,
+      "card": {"layer": 2, "rect": [560, 616, 800, 140], "title_variation": "TitleLabel", "epithet_variation": "FlavorLabel",
+               "title_height": 92, "rule_y": 96, "rule_length": 260, "rule_px": 1, "band_alpha": 0.62, "band_fade": 0.24},
+      "rows": {
+        "ch01_hullgnaw": {"enemy": "hullgnaw", "shot": "boss", "hold_sec": 2.0, "title_key": "BOSS_TITLE_HULLGNAW",
+                          "epithet_key": "BOSS_EPITHET_HULLGNAW", "on_retry": false},
+        "ch04_bottle_hermit": {"enemy": "bottle_hermit", "shot": "boss", "hold_sec": 1.6,
+                               "title_key": "BOSS_TITLE_BOTTLE_HERMIT", "epithet_key": "BOSS_EPITHET_BOTTLE_HERMIT",
+                               "on_retry": false},
+        "ch04_spar_wraith": {"enemy": "spar_wraith", "shot": "boss", "hold_sec": 2.0, "title_key": "BOSS_TITLE_SPAR_WRAITH",
+                             "epithet_key": "BOSS_EPITHET_SPAR_WRAITH", "on_retry": false},
+        "ch05_cinder_matron": {"enemy": "cinder_matron", "shot": "boss_tall", "hold_sec": 2.2,
+                               "title_key": "BOSS_TITLE_CINDER_MATRON", "epithet_key": "BOSS_EPITHET_CINDER_MATRON",
+                               "on_retry": false},
+        "drownbell": {"enemy": "drownbell", "shot": "boss_tall", "hold_sec": 2.2, "title_key": "BOSS_TITLE_DROWNBELL",
+                      "epithet_key": "BOSS_EPITHET_DROWNBELL", "on_retry": false}
       }
     }
   }

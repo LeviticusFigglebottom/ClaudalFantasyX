@@ -112,8 +112,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	if old != null:
 		controller.stage.remove_child(old)
 		old.queue_free()
-	# M2-BPR-07: the encounter's arena, before the VFX attach (the flood rig finds its Sun and Sea).
-	BattleArena.apply(controller, engine.db, engine.encounter_id)
+	BattleArena.apply(controller, engine.db, engine.encounter_id)  # M2-BPR-07: before the VFX (the flood rig)
 	var c := BattleChoreo.new()
 	c.name = NODE_NAME
 	controller.stage.add_child(c)
@@ -124,6 +123,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	c.vow = BattleVowboundChoreo.new(c, engine)  # M2-BPR-04: listen-only, like the sequencer
 	c.boss = BattleBossChoreo.attached_if_boss(c, engine)
 	c.summon = BattleSummonCinematic.attached(c, controller, engine)  # M2-BPR-08: C10
+	BattleBossIntro.attached(c, controller, engine)  # M3-BPR-02: a boss's intro at the first turn
 	return c
 
 
