@@ -18,7 +18,18 @@
   - **Threads:** pinned at 4 on every character and villager job (ad6e232).
 - **Later heads (docs plus your branch only):** the M3 design sheets merge (Ysolde, Sefir, Liss, Tavi Orse, Mother Kell; M3-CHR-01 to 04) and an integration-branch merge that touches no character file.
   - Per the new gate rules I stopped the second full `ci_local`. Scoped checks: `character_shading` 17/17, validate_data and taskboard OK.
-- **In flight, three worktree sub-agents:** M3-CHR-01 Ysolde (hero), M3-CHR-02 Sefir (hero), and M2-CHR-07, the battle clip set for Asha, Rhen and Toma (the battle-presentation clip contract).
+- **MERGE-READY @ (this commit): M2-CHR-07, the hero battle clip set** (review: combat). Handoff: 2026-10-24-character-12.md.
+  - Asha, Rhen and Toma each have the battle track's 12 contract clips: in place, with a `contact` Animation marker at contact_at.
+  - **Scoped gates:**
+    - tools/tests 590 OK;
+    - test_rig_integrity 34 OK;
+    - hero_stage 6/6 and post_import 19/19;
+    - verify asha 44, rhen 31, toma 38 identical (the existing clip sub-resources are byte-identical);
+    - asha_clip_*, rhen_clip_*, toma_clip_* and the battle_idle shots pass;
+    - 3 new shots (`<hero>_battle_attack`), viewed and approved.
+  - **Ratchet:** Asha's VerseSleeve count limit rose 4 → 6 (sleeve-top vertices under the sleeve at hit and defend; viewed). The depth limit is unchanged.
+  - **Requests sent to the battle track:** read the `contact` marker (contact currently lands late), finisher and support per-style timing, and ko revive.
+- **In flight, two worktree sub-agents:** M3-CHR-01 Ysolde (hero) and M3-CHR-02 Sefir (hero).
 - **From the M3 sheets:**
   - Liss is a party member, so she is on the hero path; she stays in M3-CHR-03.
   - Mother Kell is Oruvel's chandler, not the diver. The story corrected this; glossary rows 195 and 254 are stale.
