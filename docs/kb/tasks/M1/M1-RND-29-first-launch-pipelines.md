@@ -2,7 +2,7 @@
 id: M1-RND-29
 title: A fresh install's first launch is over ADR 0029 even with the shader baker (pipelines; Haluna 8 s, hidden 2 s)
 role: rendering
-status: review
+status: done
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M1-RND-28, M2-ARC-04]
@@ -40,3 +40,4 @@ Report: `docs/kb/qa/gpu/2026-10-24-rnd-29-first-launch.md`.
   time; BootCard is filed as **M2-ARC-05**.
 
 ## Review log
+- 2026-10-24 review-sweep-R (environment): **approve-with-fixes.** Criterion 1 verified. `needs_first_run` keys a `user://pipeline_warm.cfg` marker by engine, GPU, driver API and preset, and returns false headless (the gate fix). A first run stages every wanted entry (`resident_only` and `first_run` skip the resident filter), harvests `first_run_scenes`, and writes the marker only in `_finish`, so an interrupted run re-runs. Prewarm frames are wall time. Criterion 2: every zone entry is 0.46–1.33 s and hidden frames at most 221 ms, except Low's 1.35 s first 3D frame, which ADR 0029's Lead-accepted exception covers by name. The report is honest about not clearing the AMD driver's own cache. **Fixes:** (1) **M2-ARC-08:** the boot card and router cap their wait at 10 s, and the measured first launch is 9.5 s on Low on an RX 9070 XT, so a slower card's first launch reveals the title mid-warm-up. (2) **M2-RND-11:** there are no tests of what a first run stages or of the marker key. The second launch's Haluna entry (2.4–3.25 s, Low over 3 s) is slower than the first launch's (1.3 s, after the harvest); that lead is filed there for M2-ENV-05.

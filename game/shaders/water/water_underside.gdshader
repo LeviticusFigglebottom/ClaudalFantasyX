@@ -27,6 +27,15 @@ uniform float sun_disc = 6.0;
 uniform float sun_halo = 0.8;
 // The scene's daylight over a noon sun (UnderwaterRig): the window and the reflection darken at night.
 uniform float light_level = 1.0;
+// The reflection's gain over col_tir (M2-RND-09: deep_teal_shadow, kept at about its old on-screen value),
+// and the night sea-glow it reflects (the water column's own emission, independent of the light level).
+uniform float tir_gain = 1.0;
+// The underwater post's lens distance (M2-RND-09 item 6): a ray that meets the surface nearer than its lens
+// point is one the post treats as above water, so the underside must not draw there either. Otherwise a
+// camera just under a crest saw TIR across the whole upper frame instead of the air.
+uniform float lens_m = 0.25;
+uniform vec3 col_sea_glow : source_color = vec3(0.012, 0.147, 0.184);
+uniform float sea_glow_energy = 0.0;
 
 varying vec3 v_normal_w;
 
@@ -43,6 +52,9 @@ void vertex() {
 
 void fragment() {
 	vec3 world = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	if (length(world - CAMERA_POSITION_WORLD) < lens_m) {
+		discard;
+	}
 	vec3 rd = normalize(world - CAMERA_POSITION_WORLD);
 	float cos_t = dot(rd, normalize(v_normal_w));
 	float crit = asin(1.0 / ior);
@@ -54,6 +66,6 @@ void fragment() {
 	vec3 down = refract(-normalize(hymn_sun_direction), n, 1.0 / ior);
 	float to_sun = max(dot(rd, -down), 0.0);
 	float sun = (sun_disc * pow(to_sun, 900.0) + sun_halo * pow(to_sun, 24.0)) * inside;
-	ALBEDO = (mix(col_tir, col_window, inside) + vec3(sun)) * light_level;
+	ALBEDO = (mix(col_tir * tir_gain, col_window, inside) + vec3(sun)) * light_level + col_sea_glow * sea_glow_energy * (1.0 - inside);
 	ALPHA = clamp(mix(tir_alpha, window_alpha, inside) + sun, 0.0, 1.0);
 }

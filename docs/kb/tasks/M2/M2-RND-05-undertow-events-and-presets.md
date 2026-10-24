@@ -2,7 +2,7 @@
 id: M2-RND-05
 title: "Undertow storm, part 2: torn rents, storm in sky and reflections, rain, lightning, chapter presets"
 role: rendering
-status: review
+status: done
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 depends_on: [M2-RND-01]
 milestone: M2
@@ -64,3 +64,4 @@ Report: `docs/kb/qa/gpu/2026-10-24-rnd-05-undertow-events.md`. Design: undertow.
   - Ultra reflects the impostor.
 
 ## Review log
+- 2026-10-24 review-sweep-R (environment): **approve-with-fixes.** All criteria but M2-ART-03 (Art's) are in. `UndertowEvents`: rents, streamers, bolts, rain, zone shadow, reflection and presets, with `unbinding` reversing the drift and turning to `glimmer_lift`. All the tuning is in `undertow.json`. The bolts are deterministic (`UndertowState.hash01` with salts; there is no RNG). `restore_zone` gives back the sun, ambient, a flash's exposure and the water's reflection. The exposure flash is capped at 0.5 s apart, with a reduced-motion gain, and its `min_interval_s` matches the battle contract. It measures the interval in wall time, which is the right clock for photosensitivity. The storm's cost by `--hide-storms` is 0.59–0.84 ms at High 1440p, inside ~1 ms. The four re-approved and three new undertow shots were viewed on lavapipe (2ab646c). `--filter=undertow`: 51/0. The "layer 20" note is stale: M2-FP-10 moved the key light to layer 19, with a test. **Fixes (M2-RND-11):** literals in `undertow_events.gd` (the 0.6 site-height bias, the golden angle `2.39996323`, `threshold * 0.25`, `0.5 +` reach, `2147483647.0`); and findings 2 and 3 were never filed. Ultra reflects the impostor while High reflects the body, a top-tier quality inversion; the sky dome doesn't know about the storm.
