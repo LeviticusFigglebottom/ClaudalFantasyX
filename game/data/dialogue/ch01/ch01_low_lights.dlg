@@ -1,0 +1,19 @@
+// Ch1 C1-05 "The low lights": the gallery ends at a stairwell going down into the dark, barred by a
+// diver's knotted cord, a hundred knots, some new. Held motes (glimmer_held, cyan) drift sideways and
+// DOWN the stairwell, sinking past the lantern's reach. The light grammar's first lesson, given
+// without a word about it: cyan light that sinks is wrong. U06 is locked at the lip.
+// Watches: Rhen is never drawn toward them and nothing calls him. No bound light appears in Ch1.
+title: ch01_low_lights
+location: ch01/oruvel_underway
+---
+@camera U06
+@vfx glimmer_held at=stair_down count=24 drift=down_seaward rate=slow
+@wait 2.5
+@anim rhen touch_cord
+Rhen [worried]: Nobody goes below the ninth floor. #line:ch01_low_001
+Rhen [neutral]: You don't follow the low lights. #line:ch01_low_002
+@wait 1.0
+Narrator(rhen) [neutral]: Every diver in Oruvel was taught that. Nobody ever told us why. #line:ch01_low_003 #vo
+@wait 1.5
+@camera release
+===

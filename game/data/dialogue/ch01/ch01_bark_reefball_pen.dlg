@@ -1,0 +1,10 @@
+// Ch1 C1-09, bark 4 of 6: the Reefball pen. The practice net is empty because Oruvel's side went to
+// Tamsule a week ago. A girl practises alone (Seeds Ch7: the side is waiting at Tamsule; Tavi is its
+// captain). She is one of the children Rhen gets onto the plank bridge in C1-13.
+title: ch01_bark_reefball_pen
+location: ch01/oruvel
+---
+Child [determined]: The side went to Tamsule without me. Next year they'll have to take me. #line:ch01_bark_pen_001
+Child [smile]: We're winning the Tidecup this year. Tavi says. #line:ch01_bark_pen_002
+Rhen [smile]: Tavi says that every year. Keep your elbows in. #line:ch01_bark_pen_003
+===

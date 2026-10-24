@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch01_bark_cookboat",
+ "source": "game/data/dialogue/ch01/ch01_bark_cookboat.dlg",
+ "start": "ch01_bark_cookboat",
+ "nodes": {
+  "ch01_bark_cookboat": {
+   "headers": {"location": "ch01/oruvel"},
+   "ops": [
+    {"op": "line", "id": "ch01_bark_cook_001", "key": "DLG_CH01_BARK_COOK_001", "speaker": "cook", "emotion": "smile", "voice": "", "src": 6},
+    {"op": "line", "id": "ch01_bark_cook_002", "key": "DLG_CH01_BARK_COOK_002", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 7},
+    {"op": "line", "id": "ch01_bark_cook_003", "key": "DLG_CH01_BARK_COOK_003", "speaker": "cook", "emotion": "laugh", "voice": "", "src": 8}
+   ]
+  }
+ }
+}

@@ -1,4 +1,98 @@
 keys,en
+DLG_CH01_BARK_COOK_001,"That's nine knots, diver. I'm running out of rope."
+DLG_CH01_BARK_COOK_002,Tie a tenth. I've got the Order's chit in my pocket.
+DLG_CH01_BARK_COOK_003,Then you can untie three. Sit. Eat.
+DLG_CH01_BARK_SABE_001,Gulls have been quiet all morning.
+DLG_CH01_BARK_SABE_002,"Sabe, they're carved. They're always quiet."
+DLG_CH01_BARK_SABE_003,"Wind's at our backs, that's why. Wood only talks when the sea does."
+DLG_CH01_BARK_NETS_001,Not a cloud since dawn. I don't like it.
+DLG_CH01_BARK_NETS_002,You don't like rain either. You don't like anything.
+DLG_NAME_NETMENDER_THE_OTHER_MENDER,The Other Mender
+DLG_CH01_BARK_NETS_003,I like a sky that's honest about what it wants.
+DLG_CH01_BARK_NETS_004,It wants you to mend nets. Same as always.
+DLG_CH01_BARK_SADI_001,Sallow! Come to complain about my arithmetic again?
+DLG_CH01_BARK_SADI_002,You paid me for half a lamp-housing. I sold you a whole one.
+DLG_CH01_BARK_SADI_003,The other half was the pleasure of my company. The Seventh Terrace sails at the turn.
+DLG_CH01_BARK_PEN_001,The side went to Tamsule without me. Next year they'll have to take me.
+DLG_CH01_BARK_PEN_002,We're winning the Tidecup this year. Tavi says.
+DLG_CH01_BARK_PEN_003,Tavi says that every year. Keep your elbows in.
+DLG_CH01_BARK_ROOF_001,Rhen! Off the cabin roof! Ma says you used to.
+DLG_CH01_BARK_ROOF_002,"I was young and foolish then. Now I'm old and foolish, and I've got brass to spend."
+DLG_CH01_BARK_ROOF_003,Scared!
+DLG_CH01_BARK_ROOF_004,Fine. Fine. Watch how it's done.
+DLG_CH01_BARK_ROOF_005,He did it! He did it with his boots on!
+DLG_CH01_BELL_001,Morning. Don't get up.
+DLG_CH01_BELL_002,Air's stale. Air's always stale. Four hundred years and nobody thought to open a window.
+DLG_CH01_BELL_003,Brass in the door hinges. Somebody in the Lit Age loved a hinge.
+DLG_CH01_BELL_004,I'll take that off your hands. You won't miss it.
+DLG_CH01_BRIDGE_001,"Kell! Kell, the bridge!"
+DLG_CH01_BRIDGE_002,"The net-pen, Rhen! I said the net-pen! Go!"
+DLG_CH01_BRIDGE_003,Going. I'm going.
+DLG_CH01_SHAFT_001,Tide's breathing out. Right on time.
+DLG_CH01_GAUGE_001,"Two metres of Lit Age brass. A month of oil, if the scale-man's sober."
+DLG_CH01_GAUGE_002,Come on. Come on. There.
+DLG_CH01_UNDER_001,"Go! Don't look back, go!"
+DLG_CH01_UNDER_002,My father used to sing the currents. I hadn't heard it in eleven years. Then nothing.
+DLG_CH01_GULLS_001,...That's the gulls.
+DLG_CH01_GULLS_002,Lines in! Everybody off the low hulls!
+DLG_CH01_HULLGNAW_001,"That's a ship. That's a whole ship, and it's wearing it."
+DLG_CH01_HULLGNAW_002,I'm not scared. I'm busy.
+DLG_CH01_KELL_001,Sallow. Over here. Second dive?
+DLG_CH01_KELL_002,"Tide's good, and the scale-man's in a robbing mood. I need more brass."
+DLG_CH01_KELL_003,Hand. For luck.
+DLG_CH01_KELL_004,For luck.
+DLG_CH01_KELL_005,Stay a minute.
+DLG_CH01_KELL_006,"Tide's turning, Kell."
+DLG_CH01_KELL_007,Then go and catch it.
+DLG_CH01_KELL_008,Then make yourself useful. Wicks for the afternoon divers. Even lengths.
+DLG_CH01_KELL_009,Even lengths. I've been doing this since I was eight.
+DLG_CH01_KELL_010,"Badly. Since you were eight, badly. Give those here."
+DLG_CH01_KELL_011,Kell. Why did you never learn to swim?
+DLG_CH01_KELL_012,"Never needed to. The sea owes me a favour, and I've never once collected."
+DLG_CH01_KELL_013,"It can't take me while it's in debt. Salt and stone, that's plain trade."
+DLG_CH01_KELL_014,That isn't how debt works.
+DLG_CH01_KELL_015,It's how mine works.
+DLG_CH01_KELL_016,Tavi asked you twice to go to Tamsule with the side. Why didn't you?
+DLG_CH01_KELL_017,Somebody has to keep you in brass.
+DLG_CH01_KELL_018,Hm.
+DLG_CH01_KELL_019,"Go on. The tide won't wait for a pretty face, and it won't wait for yours either."
+DLG_CH01_KELL_020,That's the nicest thing you've said all week.
+DLG_CH01_LOW_001,Nobody goes below the ninth floor.
+DLG_CH01_LOW_002,You don't follow the low lights.
+DLG_CH01_LOW_003,Every diver in Oruvel was taught that. Nobody ever told us why.
+DLG_CH01_NET_PEN_001,Rhen! The net's going!
+DLG_CH01_NET_PEN_002,"I know. Hands on the plank. Don't look at the water, look at me."
+DLG_CH01_NET_PEN_003,"Keel-hull. Go, and don't stop for anything. I'm right behind you."
+DLG_CH01_SCALE_001,Sallow. What's the sea coughed up today?
+DLG_CH01_SCALE_002,"Lit Age tide-gauge. Solid brass, four hundred years old, and not one tooth missing."
+DLG_CH01_SCALE_003,"Plain brass, by the pound. Forty lume."
+DLG_CH01_SCALE_004,"Forty? It's not scrap, it's history. History's heavier. Check your scale."
+DLG_CH01_SCALE_005,Haggle him up.
+DLG_CH01_SCALE_006,Look at those teeth. Somebody cut every one by hand. That's sixty lume of somebody.
+DLG_CH01_SCALE_007,"Fifty. Your father would've taken the first price, you know."
+DLG_CH01_SCALE_008,He never was much for arguing.
+DLG_CH01_SCALE_009,"No. Quiet man. Fifty, and I'm robbing myself."
+DLG_CH01_SCALE_010,Take his price.
+DLG_CH01_SCALE_011,Forty. Fine. You'll sell it upcoast for four hundred.
+DLG_CH01_SCALE_012,Six hundred. I've a family to feed.
+DLG_CH01_SCALE_013,"Unbound, by the Level. There's your chit."
+DLG_CH01_SCALE_014,"Unbound, by the Level. You'd stamp the sea if it held still long enough."
+DLG_CH01_SCALE_015,"I would. Off you go, diver."
+DLG_CH01_SCUTTLERS_001,What are you? No. Don't answer that.
+DLG_CH01_DROP_001,One month earlier.
+DLG_CH01_DROP_002,Oruvel sat on top of a drowned city. Most mornings I went down to take some of it home.
+DLG_CH01_RISING_001,The reef's showing.
+DLG_CH01_RISING_002,Cut the low hulls loose! Everyone to the keel-hull! Children first!
+DLG_CH01_RISING_003,Lines in! Lines in!
+DLG_CH01_RISING_004,"Divers in the water, watch my lamp! Swim for the light!"
+DLG_CH01_RISING_005,"Cast off! Sea room, all of you, find sea room!"
+DLG_CH01_RISING_006,Kell!
+DLG_CH01_RISING_007,"Not me, you fool! The net-pen! The little ones!"
+DLG_CH01_RISING_008,Go to the net-pen.
+DLG_CH01_RISING_009,Kell first.
+DLG_CH01_TUT_001,"Walk with the left stick, or W, A, S and D. Turn the camera with the right stick, or Q and R."
+DLG_CH01_TUT_003,"Hold F, or the left face button, to open the shutter. The more you light, the more you see, and the more that sees you."
+DLG_CH01_TUT_002,"A tether point. Press interact beside it to drop to the floor below, or to climb back up."
 DLG_CH02_BARK_CAUSEWAY_UNSAVED_001,"Hold, Rhen. No one walks the causeway without resting at the town shrine first."
 DLG_CH02_BARK_CAUSEWAY_UNSAVED_002,"It only takes a moment. Sit at the little shrine in town, then we'll go."
 DLG_CH02_BARK_CHAPEL_001,The Lady Cantor's shell is cut. They'll set it at the wake.

@@ -1,0 +1,9 @@
+// Ch1 C1-09 "Oruvel by day", bark 1 of 6: the cookboat. A cook who feeds Rhen on credit and keeps
+// the tally in knots. Written warm, never as foreshadowing (pillar 1). Field bark, no camera cues.
+title: ch01_bark_cookboat
+location: ch01/oruvel
+---
+Cook [smile]: That's nine knots, diver. I'm running out of rope. #line:ch01_bark_cook_001
+Rhen [smile]: Tie a tenth. I've got the Order's chit in my pocket. #line:ch01_bark_cook_002
+Cook [laugh]: Then you can untie three. Sit. Eat. #line:ch01_bark_cook_003
+===

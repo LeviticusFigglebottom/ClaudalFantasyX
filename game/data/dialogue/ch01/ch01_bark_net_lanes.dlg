@@ -1,0 +1,10 @@
+// Ch1 C1-09, bark 2 of 6: the net lanes. Two net-menders arguing about whether the weather is too
+// good. Nobody takes it seriously. Both reuse the netmender speaker; the second has an alias.
+title: ch01_bark_net_lanes
+location: ch01/oruvel
+---
+Netmender [worried]: Not a cloud since dawn. I don't like it. #line:ch01_bark_nets_001
+Netmender as "The Other Mender" [laugh]: You don't like rain either. You don't like anything. #line:ch01_bark_nets_002
+Netmender [neutral]: I like a sky that's honest about what it wants. #line:ch01_bark_nets_003
+Rhen [smile]: It wants you to mend nets. Same as always. #line:ch01_bark_nets_004
+===

@@ -1,0 +1,10 @@
+// Ch1 C1-09, bark 3 of 6: the roof. Children diving off a cabin roof dare Rhen to. The first talk:
+// he declines with dignity (and sets ch01_roof_dared). The second talk plays ch01_bark_roof_dive (the
+// chapter's barks swap), where he does it.
+title: ch01_bark_roof
+location: ch01/oruvel
+---
+Child [laugh]: Rhen! Off the cabin roof! Ma says you used to. #line:ch01_bark_roof_001
+Rhen [neutral]: I was young and foolish then. Now I'm old and foolish, and I've got brass to spend. #line:ch01_bark_roof_002
+<<set $ch01_roof_dared = true>>
+===

@@ -1,0 +1,8 @@
+// Tutorial prompt: the lantern shutter (Ch1 C1-04). Shown once, by the seen-flag tut_shutter_seen.
+// The sheet's prompt, with the binding named (F, or the controller's left face button, from
+// game/data/flow/ch01_lantern.json).
+title: ch01_tut_shutter
+location: ch01/oruvel_underway
+---
+Hold F, or the left face button, to open the shutter. The more you light, the more you see, and the more that sees you. #line:ch01_tut_003
+===
