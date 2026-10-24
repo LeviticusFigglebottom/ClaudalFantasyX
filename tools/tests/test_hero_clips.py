@@ -6,6 +6,7 @@ The committed AnimationLibrary resources are reproducible from the committed GLB
 carry the clips the first-playable scripts call, stay small, and pose the skeleton sensibly (the
 kneel drops the hips to kneeling height; Asha's staff hand keeps the staff upright).
 """
+import json
 import re
 import sys
 import unittest
@@ -19,6 +20,13 @@ import hero_clips  # noqa: E402
 REQUESTED = {"idle", "walk", "run", "talk", "kneel_over_rhen", "laugh", "rise_to_stand", "offer_hand",
              "walk_to_chamber", "emerge_doorway", "face_west"}  # docs/kb/tasks/M2/M2-FP-07-asha-clips-request.md
 MAX_BYTES = 2 * 1024 * 1024
+# Act I clips requested but not built yet (M3-CHR-01): the dialogue may call them, nothing else.
+PENDING = {
+    hero: set(clips)
+    for hero, clips in json.loads(
+        (ROOT / "assets_src" / "characters" / "requested_clips.json").read_text(encoding="utf-8")
+    )["clips"].items()
+}
 
 
 class TestHeroClips(unittest.TestCase):
@@ -42,7 +50,7 @@ class TestHeroClips(unittest.TestCase):
             if "test" in dlg.parts:
                 continue
             called |= set(re.findall(r"@anim asha ([a-z_]+)", dlg.read_text(encoding="utf-8")))
-        self.assertEqual(called - set(hero_clips.CLIPS["asha"]) - {"look_at"}, set())
+        self.assertEqual(called - set(hero_clips.CLIPS["asha"]) - {"look_at"} - PENDING.get("asha", set()), set())
 
     def test_kneel_drops_the_hips_and_the_staff_stays_upright(self):
         import numpy as np
@@ -92,6 +100,19 @@ def _fk(sk, pose: dict, persona: dict):
     return g, t
 
 
+class TestRequestedClips(unittest.TestCase):
+    """M3-CHR-01: the requested-clip list names only clips the dialogue calls and nobody built yet."""
+
+    def test_every_pending_clip_is_called_and_not_built(self):
+        for hero, clips in PENDING.items():
+            called = set()
+            for dlg in (ROOT / "game" / "data" / "dialogue").rglob("*.dlg"):
+                if "test" not in dlg.parts:
+                    called |= set(re.findall(rf"@anim {hero} ([a-z_]+)", dlg.read_text(encoding="utf-8")))
+            self.assertEqual(clips - called, set(), f"{hero}: requested but no longer called")
+            self.assertEqual(clips & set(hero_clips.CLIPS.get(hero, [])), set(), f"{hero}: built, drop it from the list")
+
+
 class TestTomaClips(unittest.TestCase):
     """M2-CHR-04: Toma's persona (toma.md §1) and the clips his dialogue calls."""
 
@@ -108,7 +129,7 @@ class TestTomaClips(unittest.TestCase):
             called |= set(re.findall(r"@anim toma ([a-z_]+)", dlg.read_text(encoding="utf-8")))
         called.discard("look_at")  # the sequencer's own turn
         self.assertTrue(called, "the dialogue calls Toma's clips")
-        self.assertEqual(called - set(hero_clips.CLIPS["toma"]), set())
+        self.assertEqual(called - set(hero_clips.CLIPS["toma"]) - PENDING.get("toma", set()), set())
         self.assertTrue({"idle", "walk", "run", "talk"} <= set(hero_clips.CLIPS["toma"]))
         names = set(re.findall(r'resource_name = &"([a-z_]+)"', hero_clips.out_path("toma").read_text(encoding="utf-8")))
         self.assertEqual(names, set(hero_clips.CLIPS["toma"]))
