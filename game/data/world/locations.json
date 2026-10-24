@@ -92,6 +92,13 @@
       "spawn": "Landing",
       "name_key": "LOCATION_CH04_BRIGHTWATER_FERRY",
       "_note": "M3-C04-02: the islet's seaward landing, the ferry Kind Weather and the drifting Seventh Terrace (C4-09 to C4-15), a greybox zone (Ch04Zone)."
+    },
+    {
+      "id": "ch06/brine_shoals",
+      "scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn",
+      "spawn": "Entry",
+      "name_key": "LOCATION_CH06_BRINE_SHOALS",
+      "_note": "M3-C06-02: the Brine Shoals (Ch6 B01-B10): the wreck-ridges and mud-flats, the burning Saltwright camp, the shoal channel and the ridge camp; a greybox zone (Ch06Zone). Ch5's dawn hands off here at Entry; B10 hands off to ch07/tamsule at RiverMouth."
     }
   ],
   "shrines": [
