@@ -4,7 +4,7 @@ title: Act I battle arenas from the zone kits (five arenas on the M2-ENV-11 cont
 role: environment
 status: todo
 owner_session: ""
-depends_on: [M2-ENV-11, M3-BPR-01]
+depends_on: [M3-BPR-01]
 milestone: M3
 request-from: combat
 ---
