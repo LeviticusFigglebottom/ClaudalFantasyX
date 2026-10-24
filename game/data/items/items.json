@@ -34,6 +34,8 @@
     {"id": "brass_lantern", "category": "key", "name_key": "ITEM_BRASS_LANTERN", "desc_key": "ITEM_BRASS_LANTERN_DESC"},
     {"id": "net_float_charm", "category": "key", "name_key": "ITEM_NET_FLOAT_CHARM", "desc_key": "ITEM_NET_FLOAT_CHARM_DESC"},
     {"id": "gauge_wheel_brass", "category": "key", "name_key": "ITEM_GAUGE_WHEEL_BRASS", "desc_key": "ITEM_GAUGE_WHEEL_BRASS_DESC"},
-    {"id": "kell_wick", "category": "key", "name_key": "ITEM_KELL_WICK", "desc_key": "ITEM_KELL_WICK_DESC"}
+    {"id": "kell_wick", "category": "key", "name_key": "ITEM_KELL_WICK", "desc_key": "ITEM_KELL_WICK_DESC"},
+    {"id": "quench_charm", "category": "key", "name_key": "ITEM_QUENCH_CHARM", "desc_key": "ITEM_QUENCH_CHARM_DESC"},
+    {"id": "pemakar_leaf_boat", "category": "key", "name_key": "ITEM_PEMAKAR_LEAF_BOAT", "desc_key": "ITEM_PEMAKAR_LEAF_BOAT_DESC"}
   ]
 }
