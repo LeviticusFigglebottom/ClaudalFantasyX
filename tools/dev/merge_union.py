@@ -88,6 +88,12 @@ def union_flags(ours: str, theirs: str) -> str:
 def main() -> int:
     left = []
     for path in conflicted():
+        known = path in (JSON_SHOTS, JSON_BASELINES, PREWARM, FLAGS_TRES) or path in LINE_UNION or any(
+            Path(path).match(g) for g in LINE_UNION_GLOBS
+        )
+        if not known:  # binary baselines and code stay for a human/agent (and may not decode as text)
+            left.append(path)
+            continue
         ours, theirs = stage(path, 2), stage(path, 3)
         if path == JSON_SHOTS:
             o, t = json.loads(ours), json.loads(theirs)

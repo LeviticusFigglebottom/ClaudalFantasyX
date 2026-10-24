@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "doc": "The per-speaker dialogue voice blips (M3-AUD-07; assets_src/sfx/voice_blips.py). One row per timbre, three vowel variants each (a play never repeats the last file). Voice bus. Pitch jitter and the rate limit come from voices.json per speaker, so the rows have neither. Row format: sfx.json's doc.",
+  "sfx": {
+    "voice_soft": {
+      "files": [
+        "res://assets/audio/sfx/voice/blip_soft_1.ogg",
+        "res://assets/audio/sfx/voice/blip_soft_2.ogg",
+        "res://assets/audio/sfx/voice/blip_soft_3.ogg"
+      ],
+      "bus": "Voice",
+      "voices": 3
+    },
+    "voice_bright": {
+      "files": [
+        "res://assets/audio/sfx/voice/blip_bright_1.ogg",
+        "res://assets/audio/sfx/voice/blip_bright_2.ogg",
+        "res://assets/audio/sfx/voice/blip_bright_3.ogg"
+      ],
+      "bus": "Voice",
+      "voices": 3
+    },
+    "voice_low": {
+      "files": [
+        "res://assets/audio/sfx/voice/blip_low_1.ogg",
+        "res://assets/audio/sfx/voice/blip_low_2.ogg",
+        "res://assets/audio/sfx/voice/blip_low_3.ogg"
+      ],
+      "bus": "Voice",
+      "voices": 3
+    },
+    "voice_breathy": {
+      "files": [
+        "res://assets/audio/sfx/voice/blip_breathy_1.ogg",
+        "res://assets/audio/sfx/voice/blip_breathy_2.ogg",
+        "res://assets/audio/sfx/voice/blip_breathy_3.ogg"
+      ],
+      "bus": "Voice",
+      "voices": 3
+    },
+    "voice_child": {
+      "files": [
+        "res://assets/audio/sfx/voice/blip_child_1.ogg",
+        "res://assets/audio/sfx/voice/blip_child_2.ogg",
+        "res://assets/audio/sfx/voice/blip_child_3.ogg"
+      ],
+      "bus": "Voice",
+      "voices": 3
+    }
+  }
+}

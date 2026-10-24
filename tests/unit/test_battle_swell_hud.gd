@@ -24,10 +24,9 @@ func test_only_heroes_with_a_swell_get_a_gauge_and_it_starts_empty() -> void:
 	assert_true(rhen.swell_gauge() != null, "Rhen has a Swell")
 	assert_eq(rhen.swell_gauge().shown, 0.0)
 	assert_eq(rhen.swell_gauge().glow, 0.0, "no glow until full")
-	assert_true(
-		ctl.hud.party.row_for(&"asha").swell_gauge() == null,
-		"Asha's chant has no HUD panel yet (M2-UI-03), so no gauge"
-	)
+	var asha := ctl.hud.party.row_for(&"asha").swell_gauge()
+	assert_true(asha != null, "Asha's chant has its panel (M2-UI-03), so she has a gauge")
+	assert_eq(asha.glow, 0.0)
 	_to_turn_of(&"rhen")
 	# M2-UI-01: the Swell row stays on the menu while the gauge fills, so the fill mode can be
 	# chosen; its right column names the mode in force instead of the input.

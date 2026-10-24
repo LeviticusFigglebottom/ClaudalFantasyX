@@ -1,0 +1,81 @@
+{
+  "_doc": "Wall-polyp surfaces (docs/kb/art/creatures/act1/wall_polyp.md). Slots are the glTF material names; write_materials.py writes assets/creatures/wall_polyp/materials/<slot>.tres on game/shaders/creature/creature.gdshader. The polyp's slots are the spawn-polyp's (wet lacquer shell and roots, a seeping core, lit tubes and mouths in spawn_wound); stone is the seawall's weathered laterite and old mortar, with the Watcher's open mouth lit spawn_wound from the polyp's roots inside it.",
+  "slots": {
+    "shell": {
+      "roughness_dry": 0.3,
+      "roughness_wet": 0.1,
+      "specular": 0.6,
+      "wet_darken": 0.85,
+      "clearcoat_wet": 1.0,
+      "detail_scale": 22.0,
+      "detail_albedo": 0.1,
+      "detail_bump": 0.25,
+      "cavity_albedo": 0.4,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 3.5,
+      "emission_pulse_hz": 0.3,
+      "emission_pulse_depth": 0.4
+    },
+    "core": {
+      "roughness_dry": 0.4,
+      "roughness_wet": 0.2,
+      "wet_darken": 0.9,
+      "clearcoat_wet": 0.6,
+      "detail_scale": 30.0,
+      "detail_albedo": 0.25,
+      "detail_bump": 0.3,
+      "cavity_albedo": 0.5,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 5.0,
+      "emission_pulse_hz": 0.3,
+      "emission_pulse_depth": 0.45
+    },
+    "tube": {
+      "roughness_dry": 0.35,
+      "roughness_wet": 0.16,
+      "specular": 0.55,
+      "wet_darken": 0.9,
+      "clearcoat_wet": 0.7,
+      "detail_scale": 34.0,
+      "detail_albedo": 0.12,
+      "detail_bump": 0.4,
+      "cavity_albedo": 0.4,
+      "rim_sheen": 0.3,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 5.0,
+      "emission_pulse_hz": 0.36,
+      "emission_pulse_depth": 0.3
+    },
+    "mouth": {
+      "roughness_dry": 0.3,
+      "roughness_wet": 0.2,
+      "wet_darken": 1.0,
+      "clearcoat_wet": 0.3,
+      "detail_scale": 40.0,
+      "detail_albedo": 0.15,
+      "detail_bump": 0.1,
+      "cavity_albedo": 0.2,
+      "cavity_ao": 0.2,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 12.0,
+      "emission_pulse_hz": 0.36,
+      "emission_pulse_depth": 0.25
+    },
+    "stone": {
+      "roughness_dry": 0.95,
+      "roughness_wet": 0.55,
+      "specular": 0.3,
+      "wet_darken": 0.75,
+      "clearcoat_wet": 0.1,
+      "detail_scale": 18.0,
+      "detail_albedo": 0.22,
+      "detail_bump": 0.6,
+      "cavity_albedo": 0.5,
+      "cavity_ao": 0.7,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 6.0,
+      "emission_pulse_hz": 0.3,
+      "emission_pulse_depth": 0.4
+    }
+  }
+}

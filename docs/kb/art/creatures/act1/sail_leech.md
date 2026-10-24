@@ -1,0 +1,13 @@
+# Sail leech (`sail_leech`), Ch4 the drifting trader
+
+**Idea.** Undertow-spawn: a flat, ray-shaped thing that clings to wet sailcloth and drops from the yards. Its back
+is the wet black carapace of the spawn, but thin and flexible as leather, edged with a frill that ripples like canvas
+in wind. One exaggeration: a ray that lives in the rigging.
+
+**Silhouette and palette.** A 1.4 m-wide diamond that hangs in the air (hover 1.4 m) and ripples; a whip tail; two
+small glowing eyes. Back `lacquer_black` to `abyss_navy` clearcoat; belly `storm_slate`; wound slits along the back
+`spawn_wound`; motes `glimmer_held`. At battle distance: a dark rippling kite.
+
+**Clips.** `idle`: the wing edges ripple in a travelling wave. `attack`: it drops and wraps (the wings fold over the
+target). `cast`: it spreads flat and shudders. `hit`: it crumples and recovers. `ko`: it falls like a wet sheet.
+Rig: a grid of wing bones (4 per side) and a tail chain. Budget ≤ 5k.

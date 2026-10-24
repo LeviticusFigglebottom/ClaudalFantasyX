@@ -1,0 +1,114 @@
+{
+  "_about": "The fish seller at the market (ch02_bark_market.dlg), about 34, wrapping farewell food under the awnings. A generic villager: an indigo head wrap, a sea-blue short-sleeved wrap top, an undyed calf-length skirt, an indigo apron and a sea-blue sash. Reach-bands left 4, right 3. Her colours are the market awnings' (haluna.md \u00a71: indigo, sea blue, sand). Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials), not by bb_params.",
+  "name": "vendor",
+  "height_m": 1.62,
+  "heads_tall": 7.2,
+  "shoulder_width_heads": 1.6,
+  "chest_width_heads": 1.2,
+  "chest_depth_heads": 0.92,
+  "waist_width_heads": 1.1,
+  "hip_width_heads": 1.48,
+  "crotch_height_heads": 3.45,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.78,
+  "foot_length_ratio": 0.148,
+  "neck_length_heads": 0.4,
+  "neck_width_ratio": 0.52,
+  "head_width_ratio": 0.67,
+  "femininity": 1.0,
+  "muscle": 0.45,
+  "mass": 0.38,
+  "breast": 0.45,
+  "eye_scale": 1.08,
+  "ipd_m": 0.062,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#9A6446",
+  "eye_tilt_deg": 2.0,
+  "jaw_width": 1.0,
+  "cheekbone_height": 0.002,
+  "cheekbone_width": 1.04,
+  "chin_size": 0.98,
+  "nose_bridge_width": 1.08,
+  "nose_tip_projection": 0.92,
+  "lip_fullness": 0.8,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.74,
+  "mouth_corner_lift": 0.0004,
+  "brow_ridge": 0.9,
+  "donor_mix_african": 0.5,
+  "donor_mix_asian": 0.4,
+  "donor_mix_caucasian": 0.1,
+  "_skin": {
+    "hex": "#9A6446",
+    "age": 0.2,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 4,
+      "R": 3
+    },
+    "ink_opacity": 0.68,
+    "seed": 104,
+    "lip": "#7E4A3E"
+  },
+  "_hair": {
+    "kind": "wrap",
+    "hairline": "female",
+    "seed": 25,
+    "hairline_cards": 60,
+    "colour": "#141417",
+    "underpaint": "#16161A"
+  },
+  "_eyes": {
+    "iris": "#2A1A10"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_c",
+      "hem": "hip",
+      "sleeve": 0.2,
+      "neck_v_m": 0.06
+    },
+    "skirt": {
+      "mat": "cloth_a",
+      "hem": "calf",
+      "folds": 9,
+      "fold_amp": 0.008,
+      "flare": 0.16,
+      "seed": 41
+    },
+    "apron": {
+      "mat": "cloth_b",
+      "hem": "knee",
+      "half_deg": 52,
+      "seed": 42
+    },
+    "sash": {
+      "mat": "cloth_c",
+      "width_m": 0.08,
+      "turns": 2
+    },
+    "headwrap": {
+      "mat": "cloth_b",
+      "edge_lift": 0.0,
+      "puff_m": 0.012,
+      "knot_m": 0.034,
+      "seed": 43
+    },
+    "sandals": "leather"
+  },
+  "_tints": {
+    "cloth_a": "#CDBB97",
+    "cloth_b": "#2E3D6E",
+    "cloth_c": "#3E78A8",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all"
+  },
+  "_persona": {
+    "sway": 1.0,
+    "lean": 0.0,
+    "arms_down": 41.0
+  }
+}

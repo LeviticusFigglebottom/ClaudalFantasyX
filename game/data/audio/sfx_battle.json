@@ -1,0 +1,291 @@
+{
+  "version": 1,
+  "doc": "Battle sound rows (M2-AUD-04; docs/kb/tech/audio_runtime.md), merged into sfx.json's by AudioData.sfx_rows(). All on the Combat bus; files from assets_src/sfx/battle_sfx.py, shipped at their mix.md targets (combat -18 LUFS momentary max, stingers and the toll -16), so volume_db is 0. Hits have 2-3 variants and a little pitch jitter against repetition; tonal sounds have none. The _soft rows are the reduced-audio versions without sub-bass (battle_sfx.json reduced).",
+  "sfx": {
+    "hit_none": {
+      "files": [
+        "res://assets/audio/sfx/battle/hit_none_1.ogg",
+        "res://assets/audio/sfx/battle/hit_none_2.ogg",
+        "res://assets/audio/sfx/battle/hit_none_3.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.05,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "hit_fire": {
+      "files": [
+        "res://assets/audio/sfx/battle/hit_fire_1.ogg",
+        "res://assets/audio/sfx/battle/hit_fire_2.ogg",
+        "res://assets/audio/sfx/battle/hit_fire_3.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.04,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "hit_ice": {
+      "files": [
+        "res://assets/audio/sfx/battle/hit_ice_1.ogg",
+        "res://assets/audio/sfx/battle/hit_ice_2.ogg",
+        "res://assets/audio/sfx/battle/hit_ice_3.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.03,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "hit_lightning": {
+      "files": [
+        "res://assets/audio/sfx/battle/hit_lightning_1.ogg",
+        "res://assets/audio/sfx/battle/hit_lightning_2.ogg",
+        "res://assets/audio/sfx/battle/hit_lightning_3.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.05,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "hit_water": {
+      "files": [
+        "res://assets/audio/sfx/battle/hit_water_1.ogg",
+        "res://assets/audio/sfx/battle/hit_water_2.ogg",
+        "res://assets/audio/sfx/battle/hit_water_3.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.05,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "hit_holy": {
+      "files": [
+        "res://assets/audio/sfx/battle/hit_holy_1.ogg",
+        "res://assets/audio/sfx/battle/hit_holy_2.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.01,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "lamp_dive": {
+      "files": [
+        "res://assets/audio/sfx/battle/lamp_dive.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 2,
+      "volume_db": 0.0
+    },
+    "shallows_verse": {
+      "files": [
+        "res://assets/audio/sfx/battle/shallows_verse.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0
+    },
+    "read": {
+      "files": [
+        "res://assets/audio/sfx/battle/read.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0
+    },
+    "heal": {
+      "files": [
+        "res://assets/audio/sfx/battle/heal.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.01,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "status_apply": {
+      "files": [
+        "res://assets/audio/sfx/battle/status_apply.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.04,
+      "voices": 4,
+      "volume_db": 0.0
+    },
+    "ko_release": {
+      "files": [
+        "res://assets/audio/sfx/battle/ko_release.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 3,
+      "volume_db": 0.0
+    },
+    "bell_release": {
+      "files": [
+        "res://assets/audio/sfx/battle/bell_release.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "stinger_ambush": {
+      "files": [
+        "res://assets/audio/sfx/battle/stinger_ambush.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 500,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "stinger_ambush_soft": {
+      "files": [
+        "res://assets/audio/sfx/battle/stinger_ambush_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 500,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "stinger_preemptive": {
+      "files": [
+        "res://assets/audio/sfx/battle/stinger_preemptive.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 500,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "drownbell_toll": {
+      "files": [
+        "res://assets/audio/sfx/battle/drownbell_toll.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 500,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "drownbell_toll_soft": {
+      "files": [
+        "res://assets/audio/sfx/battle/drownbell_toll_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 500,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "toll_gather": {
+      "files": [
+        "res://assets/audio/sfx/battle/toll_gather.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 2,
+      "volume_db": 0.0
+    },
+    "rim_crack": {
+      "files": [
+        "res://assets/audio/sfx/battle/rim_crack_1.ogg",
+        "res://assets/audio/sfx/battle/rim_crack_2.ogg",
+        "res://assets/audio/sfx/battle/rim_crack_3.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "volume_db": 0.0
+    },
+    "rim_break": {
+      "files": [
+        "res://assets/audio/sfx/battle/rim_break.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "polyp_rise": {
+      "files": [
+        "res://assets/audio/sfx/battle/polyp_rise.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "volume_db": 0.0
+    },
+    "polyp_mend": {
+      "files": [
+        "res://assets/audio/sfx/battle/polyp_mend.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "voices": 2,
+      "volume_db": 0.0
+    },
+    "floodnet": {
+      "files": [
+        "res://assets/audio/sfx/battle/floodnet.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "flood": {
+      "files": [
+        "res://assets/audio/sfx/battle/flood.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "flood_soft": {
+      "files": [
+        "res://assets/audio/sfx/battle/flood_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "vowbound_call": {
+      "files": [
+        "res://assets/audio/sfx/battle/vowbound_call.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "vowbound_dismiss": {
+      "files": [
+        "res://assets/audio/sfx/battle/vowbound_dismiss.ogg"
+      ],
+      "bus": "Combat",
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "victory": {
+      "files": [
+        "res://assets/audio/sfx/battle/victory.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "defeat": {
+      "files": [
+        "res://assets/audio/sfx/battle/defeat.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "escape": {
+      "files": [
+        "res://assets/audio/sfx/battle/escape.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    }
+  }
+}

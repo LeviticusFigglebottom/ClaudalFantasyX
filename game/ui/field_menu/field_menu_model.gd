@@ -8,22 +8,63 @@ extends RefCounted
 ## party from first_playable.json "field_battle" and never writes Game.state.party_ids, so when no
 ## one has joined, that party stands in (FirstPlayableConfig; remove the fallback once the flow
 ## fills party_ids).
+##
+## Map (M2-UI-18): `map` is the zone map's MapModel. The live menu builds it from the field when it
+## opens (`live_map`); a zone with no map, or no model, turns the row off and says why on it.
 
+## M2-MNU-01..04 (the Menus track) added the party's pages: Items, Equip, Lattice, Status (each a
+## FieldSubmenu in game/ui/menus/), and Quit to the title behind a confirm.
+const ROW_ITEMS := &"items"
+const ROW_EQUIP := &"equip"
+const ROW_LATTICE := &"lattice"
+const ROW_STATUS := &"status"
 const ROW_BESTIARY := &"bestiary"
 const ROW_SWELL := &"swell"
+const ROW_MAP := &"map"
+const ROW_SETTINGS := &"settings"
+const ROW_QUIT := &"quit"
 const ROW_CLOSE := &"close"
-const ROOT_IDS: Array[StringName] = [ROW_BESTIARY, ROW_SWELL, ROW_CLOSE]
+const ROOT_IDS: Array[StringName] = [
+	ROW_ITEMS, ROW_EQUIP, ROW_LATTICE, ROW_STATUS, ROW_SWELL, ROW_MAP, ROW_BESTIARY, ROW_SETTINGS, ROW_QUIT, ROW_CLOSE
+]
+## Rows that need a hero in the party (off, with NO_HEROES_KEY, when there is none).
+const PARTY_ROWS: Array[StringName] = [ROW_EQUIP, ROW_LATTICE, ROW_STATUS]
 const ROOT_LABEL_KEYS := {
+	ROW_ITEMS: "FIELD_MENU_ITEMS",
+	ROW_EQUIP: "FIELD_MENU_EQUIP",
+	ROW_LATTICE: "FIELD_MENU_LATTICE",
+	ROW_STATUS: "FIELD_MENU_STATUS",
 	ROW_BESTIARY: "FIELD_MENU_BESTIARY",
 	ROW_SWELL: "FIELD_MENU_SWELL",
+	ROW_MAP: "FIELD_MENU_MAP",
+	ROW_SETTINGS: "FIELD_MENU_SETTINGS",
+	ROW_QUIT: "FIELD_MENU_QUIT",
 	ROW_CLOSE: "FIELD_MENU_CLOSE",
 }
 const ROOT_DESC_KEYS := {
+	ROW_ITEMS: "FIELD_MENU_ITEMS_DESC",
+	ROW_EQUIP: "FIELD_MENU_EQUIP_DESC",
+	ROW_LATTICE: "FIELD_MENU_LATTICE_DESC",
+	ROW_STATUS: "FIELD_MENU_STATUS_DESC",
 	ROW_BESTIARY: "FIELD_MENU_BESTIARY_DESC",
 	ROW_SWELL: "FIELD_MENU_SWELL_DESC",
+	ROW_MAP: "FIELD_MENU_MAP_DESC",
+	ROW_SETTINGS: "FIELD_MENU_SETTINGS_DESC",
+	ROW_QUIT: "FIELD_MENU_QUIT_DESC",
 	ROW_CLOSE: "FIELD_MENU_CLOSE_DESC",
 }
+const NO_HEROES_KEY := "FIELD_MENU_NO_HEROES"
+## The Quit confirm (FieldMenu Level.QUIT): Stay first, so a stray Confirm never quits.
+const QUIT_STAY := &"stay"
+const QUIT_GO := &"quit_go"
+const QUIT_TITLE_KEY := "FIELD_MENU_QUIT_TITLE"
+const QUIT_STAY_KEY := "FIELD_MENU_QUIT_STAY"
+const QUIT_GO_KEY := "FIELD_MENU_QUIT_GO"
+const QUIT_WARN_KEY := "FIELD_MENU_QUIT_WARN"
+const QUIT_STAY_DESC_KEY := "FIELD_MENU_QUIT_STAY_DESC"
 const NO_SWELL_KEY := "FIELD_MENU_SWELL_NONE"
+const NO_MAP_KEY := "FIELD_MENU_MAP_NONE"
+const NO_MAP_TAG_KEY := "FIELD_MENU_MAP_NONE_TAG"
 const HERO_DESC_KEY := "FIELD_MENU_SWELL_HERO_FMT"
 const MODE_DESC_KEY := "FIELD_MENU_SWELL_MODE_FMT"
 const MODE_CURRENT_DESC_KEY := "FIELD_MENU_SWELL_MODE_CURRENT_FMT"
@@ -38,6 +79,9 @@ var state: GameStateData
 var heroes: Array[StringName] = []
 ## Hero id -> name loc key (characters.json).
 var name_keys: Dictionary = {}
+## The zone map (null = none yet). FieldMenu fills it from the field when `live_map` is set.
+var map: MapModel
+var live_map := false
 
 
 func _init(with_state: GameStateData = null, hero_ids: Array[StringName] = [], hero_name_keys: Dictionary = {}) -> void:
@@ -48,11 +92,19 @@ func _init(with_state: GameStateData = null, hero_ids: Array[StringName] = [], h
 
 ## The live menu: Game.state, the joined heroes (or the first playable's party), their names.
 static func from_game() -> FieldMenuModel:
+	var m := FieldMenuModel.new(Game.state, field_heroes(), name_keys_from(BattleDB.load_default().characters))
+	m.live_map = true
+	return m
+
+
+## The heroes the field menus show: everyone who joined Game.state, or the first playable's party
+## (see the class comment). PartySheet.from_game uses it too.
+static func field_heroes() -> Array[StringName]:
 	var ids := PartyGoods.joined_members(Game.state)
 	if ids.is_empty():
 		var cfg := FirstPlayableConfig.section(FirstPlayableConfig.SECTION_FIELD_BATTLE)
 		ids = FirstPlayableConfig.ids(cfg.get("active", [])) + FirstPlayableConfig.ids(cfg.get("reserve", []))
-	return FieldMenuModel.new(Game.state, ids, name_keys_from(BattleDB.load_default().characters))
+	return ids
 
 
 ## {hero id: name_key} from a characters table (BattleDB.characters).
@@ -63,20 +115,68 @@ static func name_keys_from(characters: Dictionary) -> Dictionary:
 	return out
 
 
-## MenuPage rows for the root: Bestiary, Swell (off when no hero has a gauge), Close.
+## MenuPage rows for the root (ROOT_IDS): Swell is off when no hero has a gauge, the party
+## pages (PARTY_ROWS) when nobody has joined, and Map where the zone has no map ("No map" on the
+## row: a row that is off can't be highlighted to read why).
 func root_rows() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for id in ROOT_IDS:
-		var on := id != ROW_SWELL or not swell_heroes().is_empty()
-		out.append({"id": id, "label": _tr(ROOT_LABEL_KEYS[id]), "enabled": on})
+		var row := {"id": id, "label": _tr(ROOT_LABEL_KEYS[id]), "enabled": root_enabled(id)}
+		if id == ROW_MAP and not has_map():
+			row["right"] = _tr(NO_MAP_TAG_KEY)
+		out.append(row)
 	return out
 
 
-## What the highlighted root row opens, in words.
+## True when the zone the party is in has a map.
+func has_map() -> bool:
+	return map != null and map.has_map()
+
+
+func root_enabled(id: StringName) -> bool:
+	if id == ROW_MAP:
+		return has_map()
+	if id == ROW_SWELL:
+		return not swell_heroes().is_empty()
+	if PARTY_ROWS.has(id):
+		return not heroes.is_empty()
+	return true
+
+
+## The current objective in words for the root's Objective block (M2-UI-17), or "" where the zone
+## has no map (test rooms, shots): the same line the field's ObjectiveHud shows.
+func objective_line() -> String:
+	if not has_map():
+		return ""
+	return map.tracker.line(map.zone_id)
+
+
+## What the highlighted root row opens, in words (or why it is off).
 func root_desc(id: StringName) -> String:
 	if id == ROW_SWELL and swell_heroes().is_empty():
 		return _tr(NO_SWELL_KEY)
+	if id == ROW_MAP and not has_map():
+		return _tr(NO_MAP_KEY)
+	if not root_enabled(id):
+		return _tr(NO_HEROES_KEY)
 	return _tr(str(ROOT_DESC_KEYS.get(id, "")))
+
+
+## MenuPage rows for the Quit confirm: Stay, then Quit to the title.
+func quit_rows() -> Array[Dictionary]:
+	return [
+		{"id": QUIT_STAY, "label": _tr(QUIT_STAY_KEY), "enabled": true},
+		{"id": QUIT_GO, "label": _tr(QUIT_GO_KEY), "enabled": true},
+	]
+
+
+func quit_title() -> String:
+	return _tr(QUIT_TITLE_KEY)
+
+
+## The line under the confirm: what quitting costs (pillar 4).
+func quit_desc(id: StringName) -> String:
+	return _tr(QUIT_WARN_KEY) if id == QUIT_GO else _tr(QUIT_STAY_DESC_KEY)
 
 
 ## The heroes that have a Swell gauge and at least one choosable mode, in party order.
@@ -127,7 +227,8 @@ func mode_rows(cid: StringName) -> Array[Dictionary]:
 	return BattleSwellCarry.mode_rows(cid, state)
 
 
-## MenuPage rows for one hero's modes: name, and "In use" on the current one.
+## MenuPage rows for one hero's modes: name, and "In use" on the current one, in the swell color
+## as on the battle Swell page (M2-UI-09).
 func mode_page_rows(cid: StringName) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for m in mode_rows(cid):
@@ -139,7 +240,7 @@ func mode_page_rows(cid: StringName) -> Array[Dictionary]:
 					"id": m["id"],
 					"label": _tr(str(m["name_key"])),
 					"right": _tr(IN_USE_KEY) if cur else "",
-					"right_role": &"focus",
+					"right_role": &"swell",
 					"enabled": true,
 				}
 			)

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "doc": "What the Shell Shrine trial sounds like (M2-AUD-01; game/audio/shrine_audio.gd). events: a moment -> the sfx row it plays (turn: a basin turns, at the basin; reach_pool / reach_drain / spill: where the water's new path ends, at the pool, the sluice or the last basin's lip; side_drain: the side pool empties; door: the inner pool is full and the shell valve sinks; charm: the net-float charm is taken). fill_sfx: the looping bed at the pool while the water reaches it, in over fill_in_sec and out over fill_out_sec.",
+  "events": {
+    "turn": {
+      "sfx": "shrine_stone_turn"
+    },
+    "reach_pool": {
+      "sfx": "shrine_pour"
+    },
+    "reach_drain": {
+      "sfx": "shrine_drain"
+    },
+    "spill": {
+      "sfx": "shrine_spill"
+    },
+    "side_drain": {
+      "sfx": "shrine_side_drain"
+    },
+    "door": {
+      "sfx": "shrine_door"
+    },
+    "charm": {
+      "sfx": "shrine_charm"
+    }
+  },
+  "fill_sfx": "shrine_pool_fill",
+  "fill_in_sec": 0.6,
+  "fill_out_sec": 1.5
+}

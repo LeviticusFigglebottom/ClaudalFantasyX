@@ -43,6 +43,18 @@ from the change request to the scene being in, under the opaque fade:
   - **Expected cost:** the report's estimate with both changes is 1.6 s on High and 1.9 s on Low, for about 1.5 s more boot behind the card.
   - **PC: please re-measure** with slice_sweep `--segments=haluna_beach`, second launch, High and Low, once both this and gpu/hero-materials-resident are on the integration branch.
 
+## Notes (PC GPU, M2-RND-11 item 5, 2026-10-24): why the second launch is slow
+Numbers are in `docs/kb/qa/gpu/2026-10-24-rnd-11-sweep-r.md` §5.
+- A first run holds every registry entry it stages, so Haluna's set and the cast's character materials stay
+  loaded and compiled. After it, Haluna's entry takes 1.5 s. A second launch holds only the resident entries,
+  so the worker-thread instantiate loads and compiles them again (1.9–2.2 s against 1.1 s), and the entry's
+  harvest reloads them (260 ms against 6 ms): 3.1 s on High and 3.5 s on Low.
+- It isn't the scene's other resources: holding or harvesting Haluna's PackedScene at boot barely helps
+  (2.7–3.3 s).
+- **Measured fix:** make Haluna's 17 registry entries resident, plus the character materials, which
+  `gpu/hero-materials-resident` does for Asha's 11. The second launch's entry is then 1.6 s (High) and 1.9 s (Low).
+  The cost is 1.3–1.7 s more boot behind the card, with its worst hidden frame at 0.38–0.53 s.
+
 - 2026-10-24 m2-slice: **the 17 resident flags are reverted.** They break `test_scene_router_swap` once this branch is merged with the integration branch (29b1dbfa, with M2-ARC-05/08's boot card and reveal hold). battle-presentation found it, and I reproduced it in a worktree:
   - **With the flags** (64 resident entries after the merge), the test failed in 4 of 4 warm runs. boot.tscn's hidden swap frames ran 156–171 ms and battle_sandbox's 162–196 ms, against the 40 ms limit.
   - **Without them** (47 entries), it passed in 5 of 5 warm runs. The integration branch alone passed in 4 of 4.

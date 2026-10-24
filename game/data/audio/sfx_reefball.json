@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "doc": "Reefball's sound rows (M3-AUD-06; assets_src/sfx/reefball_sfx.py; SPEC §6.10, story N-12). Same row format as sfx.json; AudioData.sfx_rows merges this file in. Ball and sphere-water rows are positional (World: play_sfx_at the ball or the swimmer); the crowd's reactions, the whistle and the naming rite play on SFX. The crowd's beds (reefball_crowd_murmur, reefball_crowd_excited) are ambience.json beds on the Ambience bus, so Audio.set_ambience crossfades them with play. The naming rite carries its own stands going quiet: stop the beds (Audio.set_ambience([])) as it starts and bring the murmur back after it. No Reefball scene exists yet (SPEC: minigames/reefball/), so these rows wait for it.",
+  "sfx": {
+    "reefball_kick": {
+      "files": [
+        "res://assets/audio/sfx/reefball/ball_kick_1.ogg",
+        "res://assets/audio/sfx/reefball/ball_kick_2.ogg",
+        "res://assets/audio/sfx/reefball/ball_kick_3.ogg"
+      ],
+      "bus": "World", "pitch_jitter": 0.04, "voices": 3, "unit_size_m": 8.0
+    },
+    "reefball_push": {
+      "files": [
+        "res://assets/audio/sfx/reefball/ball_push_1.ogg",
+        "res://assets/audio/sfx/reefball/ball_push_2.ogg"
+      ],
+      "bus": "World", "pitch_jitter": 0.04, "voices": 2, "unit_size_m": 8.0
+    },
+    "reefball_catch": {
+      "files": [
+        "res://assets/audio/sfx/reefball/ball_catch_1.ogg",
+        "res://assets/audio/sfx/reefball/ball_catch_2.ogg"
+      ],
+      "bus": "World", "pitch_jitter": 0.04, "voices": 2, "unit_size_m": 8.0
+    },
+    "reefball_shot": {
+      "files": [
+        "res://assets/audio/sfx/reefball/ball_shot_1.ogg",
+        "res://assets/audio/sfx/reefball/ball_shot_2.ogg"
+      ],
+      "bus": "World", "pitch_jitter": 0.03, "voices": 2, "unit_size_m": 12.0
+    },
+    "reefball_score": {
+      "files": ["res://assets/audio/sfx/reefball/ball_score.ogg"],
+      "bus": "World", "voices": 1, "cooldown_ms": 1000, "unit_size_m": 15.0
+    },
+    "reefball_sphere_enter": {
+      "files": ["res://assets/audio/sfx/reefball/sphere_enter.ogg"],
+      "bus": "World", "pitch_jitter": 0.04, "voices": 3, "unit_size_m": 10.0
+    },
+    "reefball_sphere_exit": {
+      "files": ["res://assets/audio/sfx/reefball/sphere_exit.ogg"],
+      "bus": "World", "pitch_jitter": 0.04, "voices": 3, "unit_size_m": 10.0
+    },
+    "reefball_swim": {
+      "files": [
+        "res://assets/audio/sfx/reefball/sphere_swim_1.ogg",
+        "res://assets/audio/sfx/reefball/sphere_swim_2.ogg",
+        "res://assets/audio/sfx/reefball/sphere_swim_3.ogg"
+      ],
+      "bus": "World", "pitch_jitter": 0.05, "cooldown_ms": 250, "voices": 4, "unit_size_m": 6.0
+    },
+    "reefball_cheer": {
+      "files": [
+        "res://assets/audio/sfx/reefball/crowd_cheer_1.ogg",
+        "res://assets/audio/sfx/reefball/crowd_cheer_2.ogg"
+      ],
+      "bus": "SFX", "voices": 1, "cooldown_ms": 1500
+    },
+    "reefball_groan": {
+      "files": ["res://assets/audio/sfx/reefball/crowd_groan.ogg"],
+      "bus": "SFX", "voices": 1, "cooldown_ms": 1500
+    },
+    "reefball_gasp": {
+      "files": ["res://assets/audio/sfx/reefball/crowd_gasp.ogg"],
+      "bus": "SFX", "voices": 1, "cooldown_ms": 1500
+    },
+    "reefball_whistle_start": {
+      "files": ["res://assets/audio/sfx/reefball/whistle_start.ogg"],
+      "bus": "SFX", "voices": 1
+    },
+    "reefball_whistle_short": {
+      "files": ["res://assets/audio/sfx/reefball/whistle_short.ogg"],
+      "bus": "SFX", "voices": 1, "cooldown_ms": 300
+    },
+    "reefball_whistle_end": {
+      "files": ["res://assets/audio/sfx/reefball/whistle_end.ogg"],
+      "bus": "SFX", "voices": 1
+    },
+    "reefball_naming_rite": {
+      "files": ["res://assets/audio/sfx/reefball/naming_rite.ogg"],
+      "bus": "SFX", "voices": 1, "cooldown_ms": 5000
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "doc": "The Shell Shrine trial's sound rows (M2-AUD-01; assets_src/sfx/shrine_sfx.py). Positional (World bus): ShrineAudio plays them at the trial's layout points. Row format: sfx.json's doc.",
+  "sfx": {
+    "shrine_stone_turn": {
+      "files": [
+        "res://assets/audio/sfx/shrine/shrine_stone_turn_1.ogg",
+        "res://assets/audio/sfx/shrine/shrine_stone_turn_2.ogg",
+        "res://assets/audio/sfx/shrine/shrine_stone_turn_3.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "voices": 3,
+      "unit_size_m": 5.0
+    },
+    "shrine_pour": {
+      "files": [
+        "res://assets/audio/sfx/shrine/shrine_pour.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.02,
+      "voices": 2,
+      "unit_size_m": 6.0
+    },
+    "shrine_spill": {
+      "files": [
+        "res://assets/audio/sfx/shrine/shrine_spill.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "unit_size_m": 5.0
+    },
+    "shrine_drain": {
+      "files": [
+        "res://assets/audio/sfx/shrine/shrine_drain.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.02,
+      "voices": 2,
+      "unit_size_m": 5.0
+    },
+    "shrine_side_drain": {
+      "files": [
+        "res://assets/audio/sfx/shrine/shrine_side_drain.ogg"
+      ],
+      "bus": "World",
+      "voices": 1,
+      "unit_size_m": 7.0
+    },
+    "shrine_door": {
+      "files": [
+        "res://assets/audio/sfx/shrine/shrine_door.ogg"
+      ],
+      "bus": "World",
+      "voices": 1,
+      "unit_size_m": 10.0
+    },
+    "shrine_charm": {
+      "files": [
+        "res://assets/audio/sfx/shrine/shrine_charm.ogg"
+      ],
+      "bus": "World",
+      "voices": 1,
+      "unit_size_m": 4.0
+    },
+    "shrine_pool_fill": {
+      "files": [
+        "res://assets/audio/sfx/shrine/shrine_pool_fill.ogg"
+      ],
+      "bus": "World",
+      "voices": 1,
+      "unit_size_m": 7.0,
+      "_note": "a loop (import settings from its sidecar); ShrineAudio plays it as a bed at the pool"
+    }
+  }
+}

@@ -222,7 +222,16 @@ func _ready() -> void:
 
 func _update_half_res(body_priority: int) -> void:
 	var scale := body_scale()
-	var want := scale < 1.0 and body != null and body.visible and not Engine.is_editor_hint()
+	# A tier with compute_body runs the compute body even at full resolution (Ultra, M2-RND-11): its frame is
+	# then a texture ready before the water draws, which the sea reflects as High's does. Only where compute
+	# runs: a full-resolution SubViewport would just cost a second pass.
+	var full_compute := (
+		bool(state.quality_plan().get("compute_body", false))
+		and half_res_compute
+		and body != null
+		and UndertowHalfRes.use_compute(body)
+	)
+	var want := (scale < 1.0 or full_compute) and body != null and body.visible and not Engine.is_editor_hint()
 	if not want:
 		if half_res != null:
 			half_res.teardown()

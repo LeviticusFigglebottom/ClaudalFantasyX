@@ -118,7 +118,7 @@ func test_cancel_closes_the_page() -> void:
 	_done()
 
 
-func test_the_title_settings_row_opens_the_page_and_holds_title_input() -> void:
+func test_the_title_settings_row_opens_the_hub_and_holds_title_input() -> void:
 	var title := TitleMenu.new()
 	title.save_system = SaveSystem
 	_host().add_child(title)
@@ -127,10 +127,15 @@ func test_the_title_settings_row_opens_the_page_and_holds_title_input() -> void:
 	assert_true(title.model.set_cursor(TitleMenuModel.CHOICES.find(TitleMenuModel.CHOICE_SETTINGS)))
 	assert_eq(title.help_text(), tr("TITLE_HELP_SETTINGS"), "its own help even with no record")
 	assert_eq(title.choose(TitleMenuModel.CHOICE_SETTINGS), OK)
-	assert_true(title.is_graphics_menu_open())
+	assert_true(title.is_settings_open(), "Settings opens the hub (M2-UI-09)")
+	title.settings_menu.graphics_viewport = vp
+	var page := title.settings_menu.open_page(SettingsMenu.ROW_GRAPHICS)
+	assert_true(page is GraphicsMenu, "the hub's Graphics row is this page")
 	assert_false(title.handle_input(_action(&"ui_down")), "the page has the input, not the title")
-	title.graphics_menu.close()
-	assert_false(title.is_graphics_menu_open())
+	assert_true(title.settings_menu.handle_input(_action(&"ui_cancel")), "cancel closes the page")
+	assert_true(title.is_settings_open(), "back on the hub")
+	title.settings_menu.close()
+	assert_false(title.is_settings_open())
 	assert_true(title.handle_input(_action(&"ui_down")), "back to the title")
 	title.get_parent().remove_child(title)
 	title.free()

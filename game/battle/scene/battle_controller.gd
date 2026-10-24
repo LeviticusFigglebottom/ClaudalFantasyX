@@ -52,6 +52,8 @@ var menus: BattleMenus
 var state: StringName = STATE_IDLE
 ## Last victory: id -> {xp, moves}; moves is -1 for a fighter with no Lattice start yet.
 var last_awards: Dictionary = {}
+## Last victory's lume and drops, paid into Game.state when live (BattleRewards.pay, M2-CMB-07).
+var last_spoils: Dictionary = {}
 var battles_started := 0
 ## The fixture the current battle started from (null for live data).
 var fixture: BattleFixture
@@ -114,8 +116,8 @@ func _ready() -> void:
 		pacing_scale = 0.0
 		show_damage_numbers = false
 		persist_progress = false
-		# Captures always render at the default accessibility settings, whatever the host saved.
-		hud.apply_settings(UiSettings.new())
+		# Captures render at the default accessibility settings (or their fixture's), never the host's.
+		hud.apply_settings(BattleFixture.capture_settings(scripted_state))
 		run_script.call_deferred()
 	elif auto_start:
 		# Entered through SceneRouter: build over several frames behind its fade (M1-UI-03).
@@ -217,6 +219,7 @@ func _build_engine(
 	_setup = {"active": active, "reserve": reserve, "encounter": encounter, "seed": rng_seed}
 	battles_started += 1
 	last_awards = {}
+	last_spoils = {}
 	_after_wait = Callable()
 	floats.reset()
 	progress = lattice
@@ -230,8 +233,9 @@ func _build_engine(
 	vow = BattleVowboundHud.attached(self, engine)  # engine.vowbound from the story or the fixture
 	swell = BattleSwell.new(BattleSwell.load_config())
 	BattleSwellCarry.attach(swell, engine, persist_progress and fixture == null)  # M2-ARC-01
+	swell.mode_unlocked.connect(SwellModeRows.announce.bind(self))  # "Tether unlocked" (M2-UI-03)
 	bestiary.attach(engine, persist_progress and fixture == null)
-	engine.action_resolved.connect(floats.on_action_resolved)
+	BattleChoreo.attached(self, engine)  # M2-BPR-01: listen-only choreography; it lands the floats
 	boss = BattleBossHud.attached(self, engine)
 	BattleVfx.attached(self, engine)  # M2-RND-03: listen-only battle VFX (docs/kb/tech/battle_vfx.md)
 	stage.spawn(engine)
@@ -387,7 +391,7 @@ func try_escape() -> bool:
 	if engine.escape():
 		_set_state(STATE_BUSY)
 		hud.commands.visible = false
-		_wait(_pace(&"result_delay_sec"), _show_result)
+		_wait(stage.outro_hold(_pace(&"result_delay_sec")), _show_result)  # M2-BPR-05 victory pose
 		return true
 	hud.set_help(tr("HUD_ESCAPE_FAILED"))
 	after_action(actor)
@@ -438,7 +442,7 @@ func _next_turn() -> void:
 	if engine.outcome != &"":
 		_set_state(STATE_BUSY)
 		hud.commands.visible = false
-		_wait(_pace(&"result_delay_sec"), _show_result)
+		_wait(stage.outro_hold(_pace(&"result_delay_sec")), _show_result)  # M2-BPR-05 victory pose
 		return
 	var auto := _auto_reason()
 	hud.party.set_current(current_actor_id(), auto)
@@ -488,7 +492,7 @@ func after_action(actor_id: StringName, hold: StringName = &"action_hold_sec") -
 	hud.target_cursor.show_provoker(Vector2.ZERO, false)
 	hud.party.refresh(pacing_scale > 0.0, _pace(&"action_hold_sec") * 0.5)
 	stage.refresh_ko(engine)
-	_wait(_pace(hold), _next_turn)
+	_wait(stage.hold_after(_pace(hold)), _next_turn)  # the choreography finishes first (M2-BPR-01)
 
 
 func _open_command() -> void:
@@ -715,7 +719,8 @@ func _commit_skill(skill_id: StringName, target_ids: Array[StringName]) -> void:
 	_ring_clock = SwellRingClock.new(_ring)
 	_set_state(STATE_SWELL_INPUT)
 	hud.commands.visible = false
-	hud.swell_ring.open(_ring, menus.skill_name(engine, skill_id), tr("HUD_SWELL_RING_HINT"))
+	SwellInputKeys.carry_held(_ring_clock)  # an accept still held from the menu starts Toma's brace
+	hud.swell_ring.open(_ring, menus.skill_name(engine, skill_id), tr(SwellRingView.hint_key(_ring.kind, false)))
 	hud.set_help(menus.swell_help(engine, swell, skill_id, -1))
 
 
@@ -733,7 +738,7 @@ func _handle_ring_input(event: InputEvent) -> bool:
 func _after_ring() -> void:
 	hud.swell_ring.refresh()
 	if not _ring.grades.is_empty():
-		hud.swell_ring.set_hint(tr("HUD_SWELL_RING_HINT_LOCKED"))
+		hud.swell_ring.set_hint(tr(SwellRingView.hint_key(_ring.kind, true)))
 	if not _ring.is_done():
 		return
 	hud.swell_ring.close()
@@ -950,7 +955,7 @@ func _drain() -> void:
 
 
 func _pace(key: StringName) -> float:
-	return HudLayout.num(_pacing, String(key)) * pacing_scale
+	return HudLayout.num(_pacing, String(key)) * pacing_scale / stage.battle_speed(hud.battle_speed())  # M2-UI-23/BPR-03
 
 
 func _set_state(s: StringName) -> void:
