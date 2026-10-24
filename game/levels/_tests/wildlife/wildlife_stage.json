@@ -1,0 +1,63 @@
+{
+  "_doc": "M3-CRE-611 review stage (wildlife_stage.tscn): the three kinds at close range in the creature stage's noon light. A low flock over two posts (two birds start perched), a beach of crabs beside the stand-in player (the crabs at its feet are already scuttling off in the shot), a shoal under the water plane to the right. Same keys as a zone file; not a zone (zone ids it as wildlife_stage for the seed).",
+  "zone": "_tests/wildlife_stage",
+  "flocks": [
+    {
+      "id": "stage",
+      "center": [
+        0.0,
+        -1.6
+      ],
+      "radius_m": 2.6,
+      "altitude_m": [
+        1.9,
+        2.5
+      ],
+      "count": 4,
+      "perched_at_start": 2,
+      "perches": [
+        [
+          -1.6,
+          1.2,
+          -1.2,
+          60.0
+        ],
+        [
+          -0.6,
+          1.5,
+          -2.0,
+          120.0
+        ]
+      ]
+    }
+  ],
+  "beaches": [
+    {
+      "id": "stage",
+      "center": [
+        -0.5,
+        1.0
+      ],
+      "half_extents": [
+        1.1,
+        0.8
+      ],
+      "yaw_deg": 0.0,
+      "y": 0.0,
+      "count": 6
+    }
+  ],
+  "shoals": [
+    {
+      "id": "stage",
+      "center": [
+        2.0,
+        -0.26,
+        0.4
+      ],
+      "radius_m": 1.0,
+      "count": 16,
+      "scale": 1.0
+    }
+  ]
+}
