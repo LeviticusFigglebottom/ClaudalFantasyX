@@ -18,6 +18,7 @@ const KINDS: Array[String] = [
 	"brightwater_ferry_kit",
 	"brine_shoals_kit",
 	"characters",
+	"coilspire_kit",
 	"corrow_kit",
 	"creatures",
 	"haluna_kit",
