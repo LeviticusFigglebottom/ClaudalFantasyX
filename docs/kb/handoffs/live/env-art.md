@@ -21,8 +21,17 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
     - Baselines: `pemakar_p01_waterfall_of_fires` and `pemakar_p03_among_the_graves`.
     - Checks: its unittests, `--filter=pemakar` 5/5, `--filter=post_import` 19/19, release exclusion OK.
     - Weaker views (P02, P05, P06, P08) are listed in its task file. Swap-in note there.
-  - **Running (worktree agents):** M3-ENV-04 Seawall and M3-ENV-05 the lamp-diver sea floor. **These are the last
-    two queue items.**
+  - **M3-ENV-04 the Seawall (Corrow): in review, merged here** (55e1d994).
+    - Kit: 11 pieces, 17 materials, LUT `lut_ch08_storm`. Blender job `corrow_kit` is byte-identical. Its import
+      kind `corrow_kit` needs Character + Tools sign-off.
+    - Baselines: `corrow_c01_wall_head` and `corrow_c08_watcher_profile`. Weaker views (C03 sea face, C06 town)
+      are in its task file.
+    - Follow-up **M3-ENV-04B** (destroyed wall, cut hoist, Ch9 night) is filed as todo.
+    - Checks: corrow 5/5, post_import 19/19, tools unittests (including tamsule LUT and release exclusion) OK.
+  - **M3-ENV-06 Act I battle arenas** (battle-presentation's request; the ids are kept as proposed). A worktree agent
+    is building `causeway_route_afternoon`, `derelict_deck_night` and `ash_terrace_lanternfall`. `underway_tower`
+    follows the sea-floor kit, and `oruvel_raft_morning` needs a raft-town source (Haluna waterfront pieces).
+  - **Running:** M3-ENV-05 sea floor; M3-ENV-06 (3 of 5). After them: M3-ENV-06's last two and M3-ENV-04B.
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
