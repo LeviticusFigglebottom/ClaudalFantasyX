@@ -15,7 +15,7 @@ From the PC GPU session's RND-20 follow-up (docs/kb/qa/gpu/2026-10-23-rnd-18-20-
 ## Acceptance criteria
 - [x] The cutscene sequencer, or the camera shot data, spawns or enables a per-shot character key light at dialogue and portrait framing, aligned to the zone sun's direction and colour (so lighting continuity holds), with a short shadow range and bias 4.5; it is disabled outside close shots
 - [x] Cue or shot data can override the angle and intensity
-- [x] A GPU check by the PC session of Cutscene A (Asha's close-ups) for nose and mouth-corner artefacts; the cost is measured
+- [x] A GPU check by the PC session of Cutscene A (Asha's close-ups) for nose and mouth-corner artefacts; the cost is measured (docs/kb/qa/gpu/2026-10-24-fp-10-keylight.md)
 - [x] Tests
 
 ## Notes (m2-slice, 2026-10-23)
@@ -37,3 +37,13 @@ From the PC GPU session's RND-20 follow-up (docs/kb/qa/gpu/2026-10-23-rnd-18-20-
 - **To do on m2-slice:**
   1. Set `key_pitch_deg` to 30 on H05 and H06. The sun is at 74° elevation, so a faithful key leaves her face in her own brow and nose shadow. The PC verified the fix on the GPU.
   2. **Layer conflict:** `sequencer.json` `key_light.layer = 20` is also `UndertowHalfRes.BODY_LAYER`, so a storm-zone close shot would make the cast vanish. Move the key light to a free layer, and add a test that the two don't collide.
+- 2026-10-24, Rendering (PC GPU, session_01UFcBRsk9M9EKtxJKdBU2mB, branch `gpu/fp-10-keylight-check`): GPU check
+  done at High and Ultra. Report: `docs/kb/qa/gpu/2026-10-24-fp-10-keylight.md`.
+  - **Approve the mechanism.** No nose or mouth-corner artefacts. The cost is negligible (≤ 0.03 ms at 1440p).
+    Haluna's sun is at bias 1.0 with no face regression.
+  - **Two changes requested before `done`:**
+    1. On H05 the sun is at 74° elevation, so the faithful key leaves most of the face in her own brow and nose
+       shadow. Set `key_pitch_deg` 30 on H05 and H06; it was verified on the GPU.
+    2. `key_light.layer` 20 collides with the Undertow half-res body's layer (UndertowHalfRes.BODY_LAYER). Move
+       it to a free layer before any storm zone has close shots.
+
