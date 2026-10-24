@@ -51,6 +51,7 @@ func _ready() -> void:
 	services.name = &"TownServices"
 	add_child(services)
 	FieldHud.attach(self)  # M2-UI-17/19/20: the objective line, the destination cue, the interaction prompt
+	HeroFieldActor.attach(self)  # M2-HER-1101/1102: the real hero body, the stage heroes and the followers
 
 
 func _physics_process(delta: float) -> void:
