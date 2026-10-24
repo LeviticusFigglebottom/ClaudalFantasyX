@@ -71,4 +71,12 @@ materials, kit geometry) and `game/shaders/environment/**`. Set dressing in the 
   h01 0.00147 (stilt houses far off), h02, h03, h07 0.00000. Palette checks 19/19.
   verify_blender_builds haluna_kit 31 identical.
 
+### Pass 3 (2026-10-24, env-art)
+- **Lintel-gulls** get their own material slot, `kit_carved_wood` (new; PROVENANCE row): triplanar grain at
+  carving scale, sun-silvered tint, soft cavity. The loft UVs had stretched `kit_timber`'s board grain into
+  hard stripes. H03 gull region: median `#4D453A` (L 0.395, p05–p95 0.20–0.78) → `#5B4F43` (L 0.436, hue 67°
+  on `timber_weathered`, p05 0.24). h03 rmse 0.01308, viewed and re-approved; h01 0.00150, h02 0.00042,
+  h07 0.00048, h04 0 (distant gulls; left).
+- Gates: haluna 13, post_import 17; verify haluna_kit 31 identical; tools unittest 495 OK; validate_data.
+
 ## Review log

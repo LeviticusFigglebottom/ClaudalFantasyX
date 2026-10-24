@@ -80,6 +80,13 @@ MATERIALS: dict[str, dict] = {
     "kit_timber": stone("timber_albedo.png", "timber_normal.png", (0.4, 1.6), base_triplanar=False,
                         col_tint=hexc("#CFCDC8"), normal_strength=1.2, roughness_base=0.8, specular_base=0.3,
                         cavity_darken=0.45, variation_value=0.24, variation_warmth=0.03, moss_min_height_m=1.0),
+    # The lintel-gull carvings (M2 final pass): the loft UVs stretched the board grain into hard
+    # stripes (H03 gull L p05 0.20 .. p95 0.78). Triplanar grain at carving scale, sun-silvered towards
+    # timber_weathered +1, with a soft cavity: one carved piece of grey driftwood, not striped plywood.
+    "kit_carved_wood": stone("timber_albedo.png", "timber_normal.png", (0.25, 0.5), base_triplanar=True,
+                             triplanar_sharpness=6.0, col_tint=hexc("#E4E0DA"), normal_strength=0.7,
+                             roughness_base=0.78, specular_base=0.3, cavity_darken=0.25, variation_value=0.06,
+                             variation_warmth=0.02, use_algae=False, use_barnacles=False, moss_min_height_m=3.0),
     "kit_thatch": stone("thatch_albedo.png", "thatch_normal.png", (1.6, 1.6), base_triplanar=False,
                         # A blue-weighted gain (measured, M2 final pass): the roof rendered at Oklab C 0.098
                         # against thatch's 0.070-0.079 on screen; this brings it back onto the swatch.

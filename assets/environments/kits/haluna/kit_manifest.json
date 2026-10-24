@@ -88,7 +88,7 @@
         2400,
         400
       ],
-      "bytes": 89912,
+      "bytes": 89916,
       "lods": {
         "lintel_gull_a": 502,
         "lintel_gull_a-lod1": 260
@@ -99,7 +99,7 @@
         2400,
         400
       ],
-      "bytes": 89904,
+      "bytes": 89912,
       "lods": {
         "lintel_gull_b": 502,
         "lintel_gull_b-lod1": 260
@@ -110,7 +110,7 @@
         2400,
         400
       ],
-      "bytes": 95740,
+      "bytes": 95744,
       "lods": {
         "lintel_gull_c": 532,
         "lintel_gull_c-lod1": 290

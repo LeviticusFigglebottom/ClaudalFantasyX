@@ -51,6 +51,7 @@ TRI_BUDGET = {
 
 M_STONE = "kit_coral_stone"
 M_TIMBER = "kit_timber"
+M_CARVING = "kit_carved_wood"  # the lintel-gulls: adze-carved, sun-silvered, grain not stretched
 M_THATCH = "kit_thatch"
 M_TILE = "kit_roof_tile"
 M_MORTAR = "kit_mortar_white"
@@ -657,7 +658,7 @@ def lintel_gull(name: str, pose: str, length: float, seed: int, lod: bool = Fals
     rng = kc.rng_for(name, seed)
     noise = kc.Noise3(rng)
     mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
-    mat = mb.material(M_TIMBER)
+    mat = mb.material(M_CARVING)
     s = length / 0.72
     sides = 6 if lod else 9
     n = 5 if lod else 9
