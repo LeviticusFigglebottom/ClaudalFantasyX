@@ -2,7 +2,7 @@
 id: M1-RND-27
 title: Prewarm follow-ups (RND-22 criterion 4, the Undertow compute pipeline, ADR 0029's three follow-ups)
 role: rendering
-status: review
+status: done
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M1-RND-22, M2-RND-01]
@@ -45,3 +45,4 @@ Report: `docs/kb/qa/gpu/2026-10-24-rnd-27-prewarm.md`. Branch `gpu/adr-0029-prew
 - **Tests.** 3 new in `test_shader_prewarm.gd`; the prewarm filter is 14/0, and the full suite 1384/0.
 
 ## Review log
+- 2026-10-24 review-sweep-R (environment): **approve-with-fixes.** Criteria 1–3 verified in code. The `shader_prewarm.gd` header records `materials_per_frame` 2 with the measured 79–127 against 133–142 ms, and threaded loads as rejected with the 3-of-6 crash. The boot bring-up (`BRING_UP_PROPS`/`BRING_UP_PLAIN`, one feature a frame) acts on the stage's own SubViewport, not the game's, so it can't fight GraphicsRuntime. `compute_twin` entries warm `UndertowBodyEffect.warm_pipeline` through `call_on_render_thread`, and the effect reuses the warm pair (`_owns_warm` keeps it from being freed). The harvest reads SceneState. Criterion 4 moved to M1-RND-28, which is done. The PC report is rigorous: 12 of 12 boot runs and a trace that names the costly draws, but the margin under 1 s is only 11 %, as the report itself says. `--filter=shader_prewarm`: 15/0. **Fixes (M2-RND-11):** the static `_warm` holds RD shader and pipeline RIDs that nothing frees at exit, the same kind of leftover RND-29's gate fix removed for residents.
