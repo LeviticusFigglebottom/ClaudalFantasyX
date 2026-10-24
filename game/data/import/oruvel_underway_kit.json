@@ -1,0 +1,24 @@
+{
+  "_about": "M3-ENV-05 post-import rules for the Oruvel Underway kit (game/core/import/oruvel_underway_kit_post_import.gd, AssetImportRules). The same LOD table as the Haluna kit and HalunaDresser's defaults (which still override them at runtime with the layout's values); every glTF slot maps to the kit's own materials folder. The kit exports no -col proxies yet; walk collision is m2-slice's (swap-in note in docs/kb/tasks/M3/M3-ENV-05-lamp-diver-seafloor.md).",
+  "kind": "oruvel_underway_kit",
+  "script": "res://game/core/import/oruvel_underway_kit_post_import.gd",
+  "assets": ["res://assets/environments/kits/oruvel_underway/"],
+  "adoption_pending": {},
+  "generate_lods": false,
+  "materials": {
+    "slot_dir": "res://assets/environments/kits/oruvel_underway/materials/",
+    "by_node": {},
+    "warn_unmapped": true
+  },
+  "lods": {
+    "suffix": "-lod",
+    "end_m": [70.0, 2000.0],
+    "margin_m": 2.0
+  },
+  "collision": {
+    "proxy_suffix": "-col",
+    "shape": "trimesh",
+    "layer": 1,
+    "mask": 1
+  }
+}
