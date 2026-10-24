@@ -68,7 +68,7 @@ RULES = [
     ("sfx/foley/*.ogg", "momentary", -22.0, 2.0, -1.0, "other movement foley"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
-TOTAL_BUDGET = 48 * 1024 * 1024     # every shipped audio file (mix.md §5: the slice + Act I; ~1 MB per minute of music)
+TOTAL_BUDGET = 56 * 1024 * 1024     # every shipped audio file (ADR 0170: up to the Act II sketches)
 
 
 def rule_for(rel: str):
