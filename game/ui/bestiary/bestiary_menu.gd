@@ -10,6 +10,10 @@ extends Control
 ## steps. It follows UiSettings (text size, palette, reduced motion; M2-UI-09). Open it with
 ## BestiaryMenu.open_in(host) (its own CanvasLayer; it pauses the tree while open, like SaveMenu)
 ## or instance bestiary_menu.tscn after configure(model).
+##
+## M2-MNU-302: the page shows the foe's baked portrait (CreaturePortraitFrame) at its top right, the
+## words beside it; a foe defeated but never Read shows a silhouette, a foe without a model no frame
+## (the words then take the whole width).
 
 signal closed
 
@@ -28,6 +32,8 @@ var current_id: StringName = &""
 var _d: Dictionary = {}
 var _list: MenuPage
 var _view: EnemyPageView
+var _portrait: CreaturePortraitFrame
+var _page_inner_width := 0.0
 var _summary: Label
 var _help: Label
 var _entries: Array[Dictionary] = []
@@ -108,6 +114,11 @@ func page_view() -> EnemyPageView:
 	return _view
 
 
+## The portrait frame of the page (hidden for a foe without a portrait).
+func portrait() -> CreaturePortraitFrame:
+	return _portrait
+
+
 func summary_text() -> String:
 	return _summary.text
 
@@ -182,9 +193,15 @@ func _show(index: int) -> void:
 	if _entries.is_empty():
 		current_id = &""
 		_view.visible = false
+		_portrait.show_creature(&"")
 		return
 	var at := clampi(index, 0, _entries.size() - 1)
 	current_id = StringName(str(_entries[at]["id"]))
+	var unread := not bool(_entries[at]["read"])
+	_portrait.show_creature(current_id, unread and CreaturePortraits.silhouette_unread())
+	var gm: Dictionary = _d.get("page", {})
+	var beside := HudLayout.num(gm, "portrait_size") + HudLayout.num(gm, "portrait_gap")
+	_view.max_width = _page_inner_width - (beside if _portrait.visible else 0.0)
 	_view.visible = true
 	_view.show_page(model.page(current_id))
 
@@ -246,9 +263,20 @@ func _build() -> void:
 	for side: StringName in [&"margin_left", &"margin_right", &"margin_top", &"margin_bottom"]:
 		margin.add_theme_constant_override(side, int(HudLayout.num(gm, "pad")))
 	page_panel.add_child(margin)
+	var row := HBoxContainer.new()  # M2-MNU-302: the words, then the portrait at the top right
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_theme_constant_override(&"separation", int(HudLayout.num(gm, "portrait_gap")))
+	margin.add_child(row)
+	_page_inner_width = HudLayout.rect_of(gm).size.x - HudLayout.num(gm, "pad") * 2.0
 	_view = EnemyPageView.new()
-	_view.max_width = HudLayout.rect_of(gm).size.x - HudLayout.num(gm, "pad") * 2.0
-	margin.add_child(_view)
+	_view.max_width = _page_inner_width
+	_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(_view)
+	_portrait = CreaturePortraitFrame.new()
+	var side := HudLayout.num(gm, "portrait_size")
+	_portrait.custom_minimum_size = Vector2(side, side)
+	_portrait.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	row.add_child(_portrait)
 
 
 func _label(variation: StringName, r: Rect2) -> Label:
