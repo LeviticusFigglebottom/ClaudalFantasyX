@@ -127,6 +127,18 @@
       "ray_up_m": 1.0,
       "ray_down_m": 3.0,
       "rescan_sec": 0.5
+    },
+    "foot_contacts": {
+      "doc": "HeroFieldActor.foot_contact (M3-AUD-810): a marker whose name starts with a key below is that foot's footfall (M2-CHR-12's foot_l_down / foot_r_down, _2 for a repeat); the clips in run_clips step as a run.",
+      "markers": {
+        "foot_l_down": "l",
+        "foot_r_down": "r"
+      },
+      "run_clips": [
+        "run",
+        "run_start",
+        "run_stop"
+      ]
     }
   }
 }
