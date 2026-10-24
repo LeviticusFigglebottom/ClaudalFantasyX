@@ -28,6 +28,13 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
   7. **Reefball HUD (M3-UI-01): waits for big8.**
 - **Cross-track gap, for the Lead and Audio:** after big7, `validate_data` has 14 errors and `test_voice_audio` fails. voices.json has no rows for m2-slice's new speakers (boatman, crowd, fenn, ferryman, ferrymaster, garo, hobb, ione, marra, poolkeeper, stillguard, tavi, tender, townsfolk). claude/audio already has them; the gap closes when audio reaches integration. The Menus track has told Audio as well.
 - **Merge note:** after merging claude/ui, run `godot --import`; there are new class_names (UiFrame, TextFitProbe, PseudoLoc).
+- **M3-UI-01 (Reefball HUD): review, held for big8.** It lives on local branch `ui/reefball-big8` @ fb685ac1 (= worktree-agent-a7467349dde9740ca), which is claude/ui 1b0d5eb2 plus the merge of `origin/lead/gate-big8` (6624f237) plus the HUD.
+  - **The HUD:** `game/ui/reefball/` (ReefballHud, ReefballHudController, side panel and drop view), with `reefball_hud.json` and `reefball_hud.csv`. Shots `reefball_hud_choice` and `reefball_hud_goal` were viewed and approved; reefball filter 67/0, battle 615/0, pseudo 21/0, aspect 13/0.
+  - **Also on that branch, needed for the big8 + claude/ui merge:**
+    - hero-integration's proposed choreo test hunks, ported verbatim: big8's battle-presentation tests assume capsule heroes;
+    - a TextFitProbe fix: big8's Lattice Whole board button made a false overflow on the page title.
+  - **Requests filed:** M3-RBL-201 (combat: preview() fields for the HUD).
+  - **Next step once big8 is on integration:** merge integration into claude/ui, then `git merge ui/reefball-big8`, keeping claude/ui's battle baselines and recapturing them. If this container is gone, recreate it: merge integration into claude/ui and redo M3-UI-01 from the task file's notes.
 - **MERGE-READY @ 2bd80fe5** (supersedes 62d38cad):
   - **What changed:** integration (M3-CMB-02, M2-ARC-12) is merged into claude/ui.
   - **Conflicts:**
@@ -156,4 +163,4 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 - Until then, the queue is empty apart from big8. Pick M3 UI work from `python3 tools/taskboard.py --role ui`.
 
 ## Un-pushed state
-- None.
+- Local branch `ui/reefball-big8` @ fb685ac1 (M3-UI-01 on top of the big8 gate). It cannot be pushed to claude/ui before big8 is on integration; see above.
