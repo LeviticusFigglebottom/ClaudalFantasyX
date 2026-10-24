@@ -106,7 +106,7 @@ and ADR 0190 "hero motion layer", proposed).
   - **Known limits:** after a teleport, a follower can briefly stand inside a wall until the trail fills in. The
     Haluna Lantern turns with the controller, not the eased body.
 
-## MERGE-READY @ (pending the background full suite)
+## MERGE-READY @ (this commit; code as of 555714d3, later commits are the log and a missing .uid)
 - **Items:** M2-HER-1101, 1102, 1104 (with its sequencer patch for m2-slice) and 1103's helper; claims, ADR 0190.
 - **Checks run** (on 32d59835, with the integration branch 0b1e76a4 merged in):
 
@@ -130,7 +130,8 @@ and ADR 0190 "hero motion layer", proposed).
   - tools unittest: no `tools/` change;
   - other shots: no other scene changed. Every zone shows Rhen instead of a capsule, so **zone shots will drift**;
     the Lead's full run will flag those and they need viewing.
-- **The full Godot suite is running** in the background; the result is appended here.
+- **Full Godot suite on 555714d3: 1996 run, 0 failed.** The shrine audio test passes in the full run, so it's an
+  ordering race in the filtered run, not this change.
 
 ## In progress
 - Battle: waiting on the three tracks (see M2-HER-1103) to merge; then the battle_heroes_* shots get approved.
@@ -150,7 +151,8 @@ and ADR 0190 "hero motion layer", proposed).
   log is the channel.
 
 ## Exact next step
-Read the full suite result and finalise the MERGE-READY sha above. Then take M2-CHR-12's clips into the field gait
+The Lead gates and merges this branch. Then m2-slice applies the sequencer patch, and UI repoints the battle
+stand_ins at the wrappers. Meanwhile, take M2-CHR-12's clips into the field gait
 when characters reports them.
 
 ## Un-pushed state
