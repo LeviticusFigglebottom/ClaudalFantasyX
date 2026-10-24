@@ -1,0 +1,143 @@
+{
+ "doc": "M3-ENV-04 Corrow seawall preview views (docs/kb/art/environments/corrow.md section 4). Only the two named in tests/screenshots/shots.json are registered baselines; capture the rest with --manifest.",
+ "shots": [
+  {
+   "id": "corrow_c01_wall_head",
+   "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+   "camera": "Cameras/C01",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "corrow_c02_fisher_stair",
+   "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+   "camera": "Cameras/C02",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "corrow_c03_watchers_from_sea",
+   "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+   "camera": "Cameras/C03",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "corrow_c04_liss_hoist",
+   "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+   "camera": "Cameras/C04",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "corrow_c05_stair_foot_surge",
+   "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+   "camera": "Cameras/C05",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    },
+    "nodes": {
+     ".": {
+      "phase": "surge"
+     }
+    }
+   }
+  },
+  {
+   "id": "corrow_c06_overview",
+   "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+   "camera": "Cameras/C06",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "corrow_c08_watcher_profile",
+   "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+   "camera": "Cameras/C08",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  }
+ ]
+}

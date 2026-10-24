@@ -17,6 +17,7 @@ const KINDS: Array[String] = [
 	"base_body",
 	"brine_shoals_kit",
 	"characters",
+	"corrow_kit",
 	"haluna_kit",
 	"pemakar_kit",
 	"shader_test",

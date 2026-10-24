@@ -1248,6 +1248,44 @@
           }
         }
       }
+    },
+    {
+      "id": "corrow_c01_wall_head",
+      "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+      "camera": "Cameras/C01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "corrow_c08_watcher_profile",
+      "scene": "res://game/levels/_tests/corrow_kit/corrow_preview.tscn",
+      "camera": "Cameras/C08",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
