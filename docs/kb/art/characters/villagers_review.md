@@ -113,3 +113,33 @@ Nothing reads chibi or toy-like.
    no net for the netmender, no wrapping leaf for the vendor. 3. A short-hair atlas column (shared with Toma's
    follow-up). 4. Clips are only `idle`, `talk`, `walk`; Osu's H08 scene (cleaning shells, patting one) needs its own
    (M2-FP-14). 5. A GPU capture for the skin and hair verdict.
+
+## 6. Act I additions: Tavi Orse and Mother Kell (M3-CHR-03)
+
+Design: [`act1_npcs.md`](act1_npcs.md) §3-§4. Jobs `villager_tavi`, `villager_kell`, `props_wick`. Shots
+`villager_{tavi,kell}_{front,face,idle}`, `villager_tavi_clip_name_rite`, `villager_kell_clip_press_wick`,
+`villager_lineup_act1` (the two with seven Haluna villagers).
+
+| Villager | LOD0 | head | body skin | costume | hair | band | LOD1 | GLB | LOD1 GLB |
+|---|---|---|---|---|---|---|---|---|---|
+| tavi | 30,198 | 9,856 | 7,970 | 7,036 | 2,800 | 320 | 14,258 | 1.85 MB | 0.66 MB |
+| kell | 33,596 | 9,856 | 8,056 | 9,968 | 3,500 | — | 15,958 | 2.03 MB | 0.76 MB |
+
+**New in the build (opt-in per params file; the seven above are byte-identical):** `_build.host_snaps` (M1-CHR-14's
+host-determinism snaps), `_build.garment_fit` (top on the torso only, skirt and apron follow the legs, sandals on the
+feet), top `armhole_drop_m` / `cover_margin_m`, skirt `keep_above_knee_m`, `_skin.fingertip_oil`, and per-villager
+scene clips (`villager_clips.EXTRA_CLIPS`). Tavi and Kell are in `tools/dev/rig_checks.json` as villager entries, and
+`rig_probe.py --hero tavi` probes them.
+
+**Read (lavapipe):** both read at field range in the lineup. Tavi is the tallest of the nine, with an inverted triangle,
+the teal kit, the ochre sash and the dark band. Kell is short and wide, with a big ochre apron front, a cropped grey
+head (no wrap, so she does not read as Osu) and nearly bare forearms. At the face camera, Tavi's band sits across the
+brow but reads a little like a soft visor, as the fisher's does. Kell's crop is flaky up close (§4). Her face is the
+donor's adult face, broad and a little masculine; her age is in the lines and the posture.
+
+**Scene props (one source, `assets_src/characters/props/wick.py`):** `assets/characters/props/wick/wick.glb` (origin
+at the wick's middle, length along +Y; on a `BoneAttachment3D` for `DEF-hand.R`, between the thumb and the index
+finger, offset about 1 cm from the palm). `wick_bundle.glb` and `trimming_shears.glb` have their origins at the hang
+point; hang them on a `BoneAttachment3D` for `DEF-spine` (the hips) at the apron's right, about 12 cm to her right
+and 13 cm in front of the hip joint at sash height, so they clear the apron. The wick is never fitted to Rhen's
+lantern.
