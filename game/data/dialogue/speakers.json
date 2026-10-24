@@ -19,6 +19,11 @@
   {"id": "scaleman", "name_key": "CHAR_SCALEMAN", "blip_pitch": 0.86, "portrait_id": "portrait_villager_placeholder"},
   {"id": "cook", "name_key": "CHAR_COOK", "blip_pitch": 0.94, "portrait_id": "portrait_villager_placeholder"},
   {"id": "sabe", "name_key": "CHAR_SABE", "blip_pitch": 0.8, "portrait_id": "portrait_villager_placeholder"},
-  {"id": "skipper_sadi", "name_key": "CHAR_SKIPPER_SADI", "blip_pitch": 1.02, "portrait_id": "portrait_villager_placeholder"}
+  {"id": "skipper_sadi", "name_key": "CHAR_SKIPPER_SADI", "blip_pitch": 1.02, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "tavi", "name_key": "CHAR_TAVI", "blip_pitch": 0.9, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "ione", "name_key": "CHAR_IONE", "blip_pitch": 0.94, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "poolkeeper", "name_key": "CHAR_POOLKEEPER", "blip_pitch": 0.84, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "boatman", "name_key": "CHAR_BOATMAN", "blip_pitch": 0.88, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "crowd", "name_key": "CHAR_CROWD", "blip_pitch": 0.8, "portrait_id": "portrait_villager_placeholder"}
  ]
 }
