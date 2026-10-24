@@ -1,0 +1,25 @@
+// Ch7 B01 "Into Tamsule" (docs/kb/story/beats/act1_ch07.md §2 B01). T01: the hired barge comes in
+// at the river mouth under the stilt city, gilded signboards in the lower third, the Bell on its
+// gantry filling the top half with the drop of seawater hanging still in its mouth. The camera holds
+// the Bell 3 s and nobody comments. T02: they tie up. Liss sour, Ysolde dry, and Rhen, looking up at
+// the Bell, very quietly, to himself. Then Liss and Ysolde drift off into the market (Ysolde to the
+// gantry foot, where her bark waits). The chapter flow moves the story to chapter 7 before this.
+// Watch (ADR 0017 Ch7): no Order presence on the river front; the Bell is not commented on.
+title: ch07_into_tamsule
+location: ch07/tamsule
+---
+@letterbox on
+@camera T01
+@music tamsule_port fade=1.0
+@wait 3.0
+@camera T02
+@anim rhen look_at bell_moorings
+Liss [cold]: Tidecup week. Every purse-cutter on the coast is here. #line:ch07_into_001
+Ysolde [neutral]: Then hold on to yours, Mistress Varrow. #line:ch07_into_002
+@wait 0.8
+Rhen [tender]: ...Oruvel always came up for this. #line:ch07_into_003
+@mark liss liss_stall walk
+@mark ysolde ysolde_gantry walk
+@letterbox off
+@camera release
+===

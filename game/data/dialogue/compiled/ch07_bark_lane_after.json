@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch07_bark_lane_after",
+ "source": "game/data/dialogue/ch07/ch07_bark_lane_after.dlg",
+ "start": "ch07_bark_lane_after",
+ "nodes": {
+  "ch07_bark_lane_after": {
+   "headers": {"location": "ch07/tamsule"},
+   "ops": [
+    {"op": "line", "id": "ch07_bark_lane_after_001", "key": "DLG_CH07_BARK_LANE_AFTER_001", "speaker": "fisher", "emotion": "neutral", "voice": "", "src": 5},
+    {"op": "line", "id": "ch07_bark_lane_after_002", "key": "DLG_CH07_BARK_LANE_AFTER_002", "speaker": "netmender", "emotion": "sad", "voice": "", "src": 6, "name_key": "DLG_NAME_NETMENDER_OLD_WOMAN"}
+   ]
+  }
+ }
+}

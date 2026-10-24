@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch07_bark_gantry",
+ "source": "game/data/dialogue/ch07/ch07_bark_gantry.dlg",
+ "start": "ch07_bark_gantry",
+ "nodes": {
+  "ch07_bark_gantry": {
+   "headers": {"location": "ch07/tamsule"},
+   "ops": [
+    {"op": "line", "id": "ch07_bark_gantry_001", "key": "DLG_CH07_BARK_GANTRY_001", "speaker": "boatman", "emotion": "sad", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

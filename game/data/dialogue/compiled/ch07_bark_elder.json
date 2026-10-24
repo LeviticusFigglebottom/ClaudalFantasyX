@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch07_bark_elder",
+ "source": "game/data/dialogue/ch07/ch07_bark_elder.dlg",
+ "start": "ch07_bark_elder",
+ "nodes": {
+  "ch07_bark_elder": {
+   "headers": {"location": "ch07/tamsule"},
+   "ops": [
+    {"op": "line", "id": "ch07_bark_elder_001", "key": "DLG_CH07_BARK_ELDER_001", "speaker": "netmender", "emotion": "neutral", "voice": "", "src": 6, "name_key": "DLG_NAME_NETMENDER_OLD_WOMAN"},
+    {"op": "line", "id": "ch07_bark_elder_002", "key": "DLG_CH07_BARK_ELDER_002", "speaker": "netmender", "emotion": "neutral", "voice": "", "src": 7, "name_key": "DLG_NAME_NETMENDER_OLD_WOMAN"}
+   ]
+  }
+ }
+}

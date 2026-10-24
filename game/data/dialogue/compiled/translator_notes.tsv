@@ -4,4 +4,7 @@ DLG_CH03_VERSE_042	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgi
 DLG_CH03_VERSE_043	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown.	hal oan, ish karra.
 DLG_CH03_VERSE_044	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown.	Ennu re, ennu re...
 DLG_CH03_VERSE_045	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown.	...mir.
+DLG_CH07_NAMING_002	ch07_naming		The call to a diver who should be surfacing. One word, said low and together by ten thousand people.	Up.
+DLG_CH07_NAMING_004	ch07_naming		The same answer, louder this time and ragged at the edges: some of the crowd are crying.	Up.
+DLG_CH07_RBL_003	ch07_reefball_barks		The naming's word, as a cheer: Oruvel has brought the float up.	Up!
 DLG_TEST_DLG_020	test_dialogue_fixture	yes	Invented language: keep as written.	Ennu re.
