@@ -596,3 +596,5 @@ FIELD_MENU_SWELL_SET_FMT,{name}'s gauge now fills by {mode}. It keeps what it ho
 FIELD_MENU_HELP_ROOT,Up and Down: choose · Confirm: open · Cancel: close
 FIELD_MENU_HELP_HEROES,Up and Down: choose a hero · Confirm: their fill modes · Cancel: back
 FIELD_MENU_HELP_MODES,Up and Down: choose · Confirm: use this mode · Cancel: back
+CHAR_OSU,Grandmother Osu
+FIELD_PROMPT_LOOK,Look
