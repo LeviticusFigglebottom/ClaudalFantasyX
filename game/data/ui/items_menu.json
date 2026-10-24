@@ -1,17 +1,57 @@
 {
   "items_menu": {
-    "doc": "The items page (M2-MNU-03; docs/kb/tech/ui.md section Party pages). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3.",
+    "doc": "The items page (M2-MNU-03; docs/kb/tech/ui.md section Items and Status pages). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'list' (the bag) and 'picker' (the heroes a restorative can go to) are MenuPage metrics blocks; in 'list' the cost column holds the category and the rank column the count, in 'picker' they hold HP and MP. 'sort' is the clickable sort line in the title row. 'detail' is the right column while browsing: the item's name, its category and count, its description (up to desc_height, wrapping) and the use line (why it can't be used, in the danger color). 'gauge' is the thin HP and MP bar under each picker row's numbers (inset from the row's foot). 'preview' (what the use would do, or why not) sits 'gap' under the picker.",
     "canvas_layer": 64,
     "panel": {
-      "rect": [
-        219,
-        111,
-        1482,
-        858
-      ],
+      "rect": [219, 111, 1482, 858],
       "pad": 27,
       "title_height": 56,
       "help_height": 40
-    }
+    },
+    "sort": {"rect": [1059, 138, 615, 56]},
+    "list": {
+      "rect": [246, 219, 789, 0],
+      "header_height": 0,
+      "row_pitch": 48,
+      "max_rows": 13,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 270,
+      "rank_width": 81,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "detail": {
+      "rect": [1077, 219, 597, 660],
+      "name_height": 48,
+      "line_height": 36,
+      "gap": 18,
+      "desc_height": 120,
+      "use_height": 96
+    },
+    "picker": {
+      "rect": [1077, 219, 597, 0],
+      "header_height": 45,
+      "row_pitch": 63,
+      "max_rows": 4,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 342,
+      "rank_width": 144,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "gauge": {"height": 6, "inset_bottom": 9, "gap": 12},
+    "preview": {"gap": 18, "height": 150}
   }
 }
