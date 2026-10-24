@@ -31,6 +31,11 @@
    "id": "ch01_kell_first",
    "doc": "Ch1 C1-13 (the breaking raft): Rhen chose \"Kell first\"; the chapter flow starts the run at her bridge instead of the net-pen path.",
    "args": []
+  },
+  {
+   "id": "start_reefball",
+   "doc": "Hand off to a Reefball match once the scene ends (act1_ch07.md §5; M3-C07-02, modelled on start_battle). The chapter flow reads it with an if_event step and runs the zone's match beat; the match sets ch07_tidecup_played (and ch07_tidecup_won on a win, a reward only) and returns to the zone.",
+   "args": [{"name": "match", "type": "id"}]
   }
  ]
 }
