@@ -34,6 +34,7 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
     - hero-integration's proposed choreo test hunks, ported verbatim: big8's battle-presentation tests assume capsule heroes;
     - a TextFitProbe fix: big8's Lattice Whole board button made a false overflow on the page title.
   - **Requests filed:** M3-RBL-201 (combat: preview() fields for the HUD).
+  - **Id collision, for the Lead:** big8 renumbers the bestiary-portrait task to `M2-UI-28-bestiary-creature-portrait.md`, but claude/ui's M2-UI-28 is pseudo-localisation; on claude/ui the portrait task is still `M2-UI-26-bestiary-creature-portrait.md`. Suggestion: give the portrait **M2-UI-201** at the big8 merge and drop the other two copies.
   - **Next step once big8 is on integration:** merge integration into claude/ui, then `git merge ui/reefball-big8`, keeping claude/ui's battle baselines and recapturing them. If this container is gone, recreate it: merge integration into claude/ui and redo M3-UI-01 from the task file's notes.
 - **MERGE-READY @ 2bd80fe5** (supersedes 62d38cad):
   - **What changed:** integration (M3-CMB-02, M2-ARC-12) is merged into claude/ui.
