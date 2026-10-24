@@ -536,3 +536,8 @@ SWELL_INPUT_GLYPH,Glyph Trace
 SWELL_INPUT_GLYPH_HELP,Trace the glyph's strokes in order. A clean quick trace burns brighter.
 HUD_TARGET_ALL_OTHER_ALLIES,all other allies
 HUD_GROUP_ALL_OTHER_ALLIES,All other allies
+HUD_BOSS_CHARGE_NEXT_FMT,{skill} comes on its next turn.
+HUD_BOSS_CHARGE_IN_FMT,{skill} comes in {turns} of its turns.
+HUD_BOSS_FIELD_FMT,{field}: {count} bound to it
+PHASE_DROWNBELL_TOLL,The Toll
+FIELD_DROWNBELL_FLOOD,The flood
