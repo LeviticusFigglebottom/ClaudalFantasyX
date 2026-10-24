@@ -8,9 +8,15 @@ extends Node
 ##   battle.phases brings stems in or out (the Drownbell's Flood); the battle's end fades it out.
 ## - **SFX:** game/data/audio/battle_sfx.json maps each BattleVfx effect id (as the view plays it) and each
 ##   engine moment that has no particle (the toll's ring, the Flood, Floodnet, the Vowbound's call and dismiss,
-##   the opening stingers) to an sfx.json row on the Combat bus.
+##   the opening stingers) to an sfx.json row on the Combat bus. Sections other than `vfx` are fallbacks: one is
+##   dropped when the view already played the same sound within dedupe_ms. A vfx sound repeated within repeat_ms
+##   (an action's other targets) plays as a softer layer (layer_db).
+## - **Reduced audio** (UiSettings `reduced_audio`, followed live): one layer per action (the repeats are skipped),
+##   `reduced` swaps a sound for its version without sub-bass, and the SFX bank plays at reduced_level while the
+##   battle lasts (put back when this listener leaves).
 
 const TABLE := "battle_sfx"
+const REDUCED_AUDIO := &"reduced_audio"
 
 var director: AudioDirector
 var engine: BattleEngine
@@ -19,7 +25,15 @@ var vfx: BattleVfx
 var data: Dictionary = {}
 ## Every SFX id this listener played, in order (tests).
 var played: Array[StringName] = []
+## The reduced-audio setting in force (UiSettings, followed live).
+var reduced := false
 var _ctl: BattleController
+var _settings: UiSettings
+## The factor this listener applies to the SFX bank's level (taken back off on exit, so a retry's overlapping
+## listeners compose instead of overwriting each other).
+var _applied := 1.0
+## sfx id -> [msec of its last play, whether the view's effect_played played it].
+var _last: Dictionary = {}
 
 
 func attach(dir: AudioDirector, controller: BattleController, eng: BattleEngine, view: BattleVfx) -> void:
@@ -28,6 +42,10 @@ func attach(dir: AudioDirector, controller: BattleController, eng: BattleEngine,
 	vfx = view
 	_ctl = controller
 	data = AudioData.table(TABLE)
+	_settings = UiSettings.shared()
+	if _settings != null:
+		_settings.changed.connect(_on_setting_changed)
+	_apply_reduced()
 	var cue := AudioData.battle_cue(dir.music_data, eng.encounter_id)
 	if cue != &"":
 		dir.play_music(cue, float(dir.music_cfg().get("battle_in_sec", 0.0)))
@@ -36,15 +54,54 @@ func attach(dir: AudioDirector, controller: BattleController, eng: BattleEngine,
 	_connect_sfx()
 
 
-## Plays battle_sfx.json's row for `key` (a VFX effect id or an event name) at fighter `target` ("" for none).
-func play_key(table: String, key: String) -> StringName:
+## Plays the sound battle_sfx.json's section `table` names for `key` (a VFX effect id, a skill, an event, ...).
+## `from_vfx`: the view played it (a repeat layers); otherwise it is a fallback (a repeat is dropped). Returns the
+## sfx id played, or &"" when nothing played.
+func play_key(table: String, key: String, from_vfx := false) -> StringName:
 	var id := StringName(str((data.get(table, {}) as Dictionary).get(key, "")))
 	if id == &"" or director == null or director.sfx == null:
 		return &""
-	if director.play_sfx(id) == null:
+	if reduced:
+		id = StringName(str((data.get("reduced", {}) as Dictionary).get(String(id), id)))
+	var now := int(director.sfx.clock.call())
+	var opts: Dictionary = {}
+	if _last.has(id):
+		var dt := now - int((_last[id] as Array)[0])
+		var by_vfx := bool((_last[id] as Array)[1])
+		if from_vfx and by_vfx and dt < int(data.get("repeat_ms", 0)):
+			if reduced:
+				return &""
+			opts["volume_db"] = float(data.get("layer_db", 0.0))
+		elif (not from_vfx or not by_vfx) and dt < int(data.get("dedupe_ms", 0)):
+			return &""
+	if director.play_sfx(id, opts) == null:
 		return &""
+	_last[id] = [now, from_vfx]
 	played.append(id)
 	return id
+
+
+func _on_setting_changed(key: StringName) -> void:
+	if key == REDUCED_AUDIO:
+		_apply_reduced()
+
+
+func _apply_reduced() -> void:
+	reduced = _settings != null and bool(_settings.get_value(REDUCED_AUDIO))
+	_set_factor(float(data.get("reduced_level", 1.0)) if reduced else 1.0)
+
+
+func _set_factor(factor: float) -> void:
+	if director == null or not is_instance_valid(director) or director.sfx == null or factor <= 0.0:
+		return
+	director.sfx.level = director.sfx.level / _applied * factor
+	_applied = factor
+
+
+func _exit_tree() -> void:
+	if _settings != null and _settings.changed.is_connected(_on_setting_changed):
+		_settings.changed.disconnect(_on_setting_changed)
+	_set_factor(1.0)
 
 
 func _connect_sfx() -> void:
@@ -63,7 +120,7 @@ func _connect_sfx() -> void:
 
 
 func _on_effect_played(effect_id: StringName, _at: Vector3) -> void:
-	play_key("vfx", String(effect_id))
+	play_key("vfx", String(effect_id), true)
 
 
 func _on_action_resolved(result: ActionResult) -> void:
