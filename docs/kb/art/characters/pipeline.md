@@ -227,3 +227,21 @@ Review shots: `asha_clip_kneel_over_rhen`, `asha_clip_walk`, `asha_clip_offer_ha
 rule's `animations.strip_suffixes` lets the LOD file share its hero's clip library, so the battle actor has the same
 `AnimationPlayer` clips as the dialogue model. The battle's capsules are swapped by UI+Combat (task M2-UI-07: a `"scene"`
 key in the stand-in spec of `game/data/ui/battle_sandbox.json`).
+
+## 15. Villagers at an NPC budget (M2-CHR-03)
+
+`assets_src/characters/villagers/` is the §12 layout made parametric: **one** build (`build_villager.py --npc <id>`) and
+one `params/<npc>.json` per villager (the bb_params block plus `_skin`, `_hair`, `_costume`, `_tints`, `_persona`,
+`_build`), seven Blender jobs (`villager_<npc>`) and `build.sh [npc ...]`. Review: [`villagers_review.md`](villagers_review.md).
+- **Budget levers:** no face subdivision (head about 9.9k triangles instead of 20k), the head maps at 1K/512 and the
+  body at 512, morph normals only on the 12 expression shapes the pose tables lean on; all 40 shapes still fit (about
+  25-35k LOD0 triangles, 1.7-2.2 MB per GLB).
+- Without the subdivision the face is 1.9 mm facets that cross the smooth anatomy field: anything laid on the field at
+  the face (the brow cards) must be re-seated on the shipped skin (`head_surface(...).project`).
+- **One cloth atlas for every villager** (`villager_textures.py --cloth`), painted near-neutral; the colour variants are
+  `col_albedo` tints on each villager's `cloth_a/b/c` materials. A new villager is a params file, not a texture set.
+- Hair styles (`villager_hair.HairStyle`: short, cropped, bun, wrap) carry their own hairline and flow, which the skin
+  maps read through the same interface as the hero hair modules.
+- Every villager folder is in the `characters` import rule, so an instanced GLB comes dressed and with an
+  `AnimationPlayer` (`idle`, `talk`, `walk` from `villager_clips.py`); `<npc>_actor.tscn` turns it to face -Z for the
+  level's NPC nodes.
