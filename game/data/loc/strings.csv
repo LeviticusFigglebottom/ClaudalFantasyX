@@ -511,14 +511,14 @@ BESTIARY_DEFEATED_FMT,Defeated: {n}
 BESTIARY_ROW_COUNT_FMT,×{n}
 BESTIARY_UNREAD,"Not yet Read. Use Read on it in battle to learn its strengths, weaknesses and story."
 BESTIARY_EMPTY,No foes recorded yet. Foes you Read or defeat are written here.
-BESTIARY_HELP,Up and Down: choose · Cancel: close
+BESTIARY_HELP,Up and Down: choose · Left and Right: a page · Cancel: close
 HUD_SWELL_MODE_IN_USE,In use
 HUD_HELP_SWELL_GAUGE_FMT,{name}'s Swell is at {pct}% and fills by {mode}. Choose a fill mode here at no time cost
 HUD_HELP_SWELL_MODE_FMT,{mode}: {desc} Choosing it costs no time
 HUD_HELP_SWELL_MODE_CURRENT_FMT,{mode} is in use: {desc}
 HUD_SWELL_MODE_SET_FMT,{name}'s gauge now fills by {mode}. No time passed
 SET_TIMING_ASSIST,Timing assist
-SET_TIMING_ASSIST_HELP,"Makes timed Swell inputs easier: a wider window, or a miss counts as Good."
+SET_TIMING_ASSIST_HELP,"Makes timed Swell inputs easier: a wider window, a miss counts as Good, or hold Confirm to play them."
 SET_TIMING_ASSIST_OFF,Off
 SET_TIMING_ASSIST_WIDE,Wider window
 SET_TIMING_ASSIST_AUTO,Misses count as Good
@@ -542,7 +542,7 @@ HUD_BOSS_FIELD_FMT,{field}: {count} bound to it
 PHASE_DROWNBELL_TOLL,The Toll
 FIELD_DROWNBELL_FLOOD,The flood
 TITLE_SETTINGS,Settings
-TITLE_HELP_SETTINGS,"Graphics quality, from a whole preset down to each setting."
+TITLE_HELP_SETTINGS,"Graphics, and accessibility: text size, motion, colors and timing."
 GFX_MENU_TITLE,Graphics
 GFX_MENU_PRESET,Preset
 GFX_MENU_HELP_PRESET,Left and right choose a preset. It sets every row below.
@@ -617,9 +617,6 @@ HUD_FAIL_NOT_CALLER_FMT,{name} cannot call that Vowbound.
 HUD_FAIL_VOWBOUND_FALLEN,That Vowbound has fallen and cannot answer again this battle.
 HUD_FAIL_NO_VOWBOUND,No Vowbound is on the field.
 BOOT_FIRST_RUN_NOTE,Preparing the graphics for first use. This happens only once.
-BESTIARY_HELP,Up and Down: choose · Left and Right: a page · Cancel: close
-SET_TIMING_ASSIST_HELP,"Makes timed Swell inputs easier: a wider window, a miss counts as Good, or hold Confirm to play them."
-TITLE_HELP_SETTINGS,"Graphics, and accessibility: text size, motion, colors and timing."
 HUD_SWELL_CHANT_HINT,Directions: each note on the line · Cancel: back
 HUD_SWELL_CHANT_HINT_LOCKED,Directions: each note on the line
 HUD_SWELL_BRACE_HINT,Hold Confirm · let go on the counter · Cancel: back
