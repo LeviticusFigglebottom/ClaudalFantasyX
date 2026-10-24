@@ -159,6 +159,10 @@ class ArenaValidateTest(unittest.TestCase):
         doc["arenas"]["scenes"]["ghost"] = "res://game/battle/arenas/ghost.tscn"
         self.assertEqual(len(vc.arena_errors(doc, enc, self._exists)), 2)
         self.assertTrue(vc.arena_errors({}, self.ENC, self._exists))
+        doc = copy.deepcopy(self.DOC)
+        doc["arenas"]["staging"]["nowhere"] = {"travel_scale": 1.0}
+        doc["arenas"]["staging"]["underway_tower"]["tempo"] = 0
+        self.assertEqual(len(vc.arena_errors(doc, self.ENC, self._exists)), 2)
 
 
 if __name__ == "__main__":

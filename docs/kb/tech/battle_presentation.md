@@ -302,8 +302,10 @@ the fighters. A retry of the same encounter keeps the arena (the `hymn_arena` me
   the noon sandbox" asked).
 - **Shots:** `battle_arena_tideline`, `battle_arena_causeway`, `battle_arena_raft`, `battle_arena_underway`,
   `battle_arena_route`, `battle_arena_derelict`, `battle_arena_terrace` (`game/battle/arenas/shots/`).
+- **Staging** (`arenas.json` `staging`, M3-BPR-01): `travel_scale` scales every run, step, walk-in and exit, `tempo`
+  the battle speed. The underway tower: shorter runs (0.6) and slower (0.8); the derelict deck: shorter runs (0.85).
 - **Checked by** `tools/validate_choreo.py` `arena_errors` (from validate_data): every scene exists, every
-  encounter's `arena` is a known id.
+  encounter's `arena` is a known id, staging rows name known arenas with positive scales.
 
 ### Lead-in bark
 

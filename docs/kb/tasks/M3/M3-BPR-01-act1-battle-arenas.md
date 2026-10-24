@@ -26,7 +26,7 @@ kit for that place:
 ## Acceptance criteria
 - [x] Arena ids agreed with env-art (request M3-ENV-06) and m2-slice (the encounter rows' `arena` fields)
 - [x] Greybox fallbacks graded from the color script until each kit lands; arenas.json rows; shots viewed
-- [ ] Per-arena staging where the place asks for it (underwater: shorter runs, slower falls; a deck: no run past its rail)
+- [x] Per-arena staging where the place asks for it (underwater: shorter runs, slower falls; a deck: no run past its rail)
 - [x] Tests (the arena data test covers every arena; the loader keeps capture fixtures on the sandbox)
 
 ## Notes
@@ -51,5 +51,7 @@ kit for that place:
   and an Ashcrown-day sub-frame (color script) would let env-art re-grade the kits without an id change.
 - **Not done here:** criterion 3 (per-arena staging: underwater shorter runs and slower falls, no run past a deck's
   rail) needs choreo data, not scenes; left for a follow-up (the criterion stays open).
+
+- 2026-10-24 (track lead): merged the agent's five greybox arenas; underway_tower lifted (ambient 0.6, key 0.45) so the foes read (pillar 4), re-approved after viewing. Staging: arenas.json `staging` (underway: travel 0.6, tempo 0.8; derelict deck: travel 0.85), read by BattleChoreo. BattleArena clears moved nodes' owner (no "inconsistent owner" warnings). Open: the derelict and Ashcrown fights are morning/day in the beats, graded night here as agreed with env-art; Art may add sub-frames.
 
 ## Review log

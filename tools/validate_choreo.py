@@ -363,6 +363,14 @@ def arena_errors(doc: object, encounters: object, scene_exists) -> list[str]:
     for sid, path in scenes.items():
         if not isinstance(path, str) or not path.endswith(".tscn") or not scene_exists(path):
             errs.append(f"{ARENAS_FILE}: scenes.{sid} names a missing scene '{path}'")
+    staging = doc["arenas"].get("staging", {})
+    for aid, st in (staging.items() if isinstance(staging, dict) else []):
+        if aid == "doc":
+            continue
+        if aid not in scenes:
+            errs.append(f"{ARENAS_FILE}: staging names an unknown arena '{aid}'")
+        elif not isinstance(st, dict) or any(not _num(st.get(k, 1.0)) or st.get(k, 1.0) <= 0 for k in ("travel_scale", "tempo")):
+            errs.append(f"{ARENAS_FILE}: staging.{aid} needs travel_scale and tempo > 0")
     rows = encounters.get("encounters", []) if isinstance(encounters, dict) else []
     for r in rows:
         if isinstance(r, dict) and "arena" in r and r["arena"] not in scenes:

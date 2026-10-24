@@ -55,6 +55,9 @@ var skip := false
 var force_play := false
 ## False holds a sequence where it stands (captures); advance() still moves it.
 var live := true
+## The arena's staging (arenas.json staging): runs and walks scale by arena_travel; arena_tempo scales the speed.
+var arena_travel := 1.0
+var arena_tempo := 1.0
 ## A freeze-frame capture: the sequence never ends, so the controller's hand-off holds forever.
 var frozen := false
 ## Every plan started, in order (tests and tools).
@@ -131,6 +134,10 @@ func _init() -> void:
 func attach(controller: BattleController, engine: BattleEngine) -> void:
 	_ctl = controller
 	_engine = engine
+	var staging := BattleArena.staging_for(engine.db, engine.encounter_id)  # M3-BPR-01: per-arena choreography
+	arena_travel = float(staging.get("travel_scale", 1.0))
+	arena_tempo = float(staging.get("tempo", 1.0))
+	set_speed(1.0)
 	engine.action_resolved.connect(_on_action_resolved)
 	var settings := UiSettings.shared()
 	if settings != null:
@@ -149,7 +156,7 @@ func _read_settings(settings: UiSettings) -> void:
 
 func set_speed(v: float) -> void:
 	var s := data.get("speeds", {}) as Dictionary
-	speed = clampf(v, float(s.get("min", 1.0)), float(s.get("max", 1.0)))
+	speed = clampf(v, float(s.get("min", 1.0)), float(s.get("max", 1.0))) * arena_tempo
 
 
 func _process(delta: float) -> void:
@@ -300,8 +307,7 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 			to = from + dir * gap
 		TRAVEL_STEP:
 			to = from + dir * float(st.get("step_m", 0.0))
-	if reduced_motion:
-		to = from + (to - from) * _rm("travel_scale")
+	to = from + (to - from) * (_rm("travel_scale") if reduced_motion else 1.0) * arena_travel
 	plan["from"] = from
 	plan["to"] = to
 	plan["dir"] = dir
@@ -698,7 +704,7 @@ func entering(cid: StringName) -> Dictionary:
 func _advance_entering(delta: float) -> void:
 	if _entering.is_empty():
 		return
-	var travel := _rm("travel_scale") if reduced_motion else 1.0
+	var travel := (_rm("travel_scale") if reduced_motion else 1.0) * arena_travel
 	var lean_k := _rm("lean_scale") if reduced_motion else 1.0
 	for cid: StringName in _entering.keys():
 		var e: Dictionary = _entering[cid]
@@ -749,7 +755,7 @@ func leaving(cid: StringName) -> Dictionary:
 
 ## Holds on the mark through delay_sec, then back_m back and depth_m down, tipped tilt_deg back, over sec.
 func _advance_leaving(delta: float) -> void:
-	var travel := _rm("travel_scale") if reduced_motion else 1.0
+	var travel := (_rm("travel_scale") if reduced_motion else 1.0) * arena_travel
 	var lean_k := _rm("lean_scale") if reduced_motion else 1.0
 	for e: Dictionary in _leaving.duplicate():
 		var spec: Dictionary = e["spec"]
@@ -849,7 +855,7 @@ func _accent_now(cid: StringName) -> Array:
 	var env := sin(PI * u)
 	var back: Vector3 = e["back"]
 	var side := Vector3.UP.cross(back)
-	var travel := _rm("travel_scale") if reduced_motion else 1.0
+	var travel := (_rm("travel_scale") if reduced_motion else 1.0) * arena_travel
 	var lean_k := _rm("lean_scale") if reduced_motion else 1.0
 	var off := Vector3.UP * (float(spec.get("lift_m", 0.0)) - float(spec.get("crouch_m", 0.0))) * env
 	off += back * float(spec.get("recoil_m", 0.0)) * travel * env

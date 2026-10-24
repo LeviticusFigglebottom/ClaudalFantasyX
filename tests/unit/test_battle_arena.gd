@@ -104,6 +104,21 @@ func test_capture_fixtures_keep_the_sandbox_arena() -> void:
 	_free()
 
 
+func test_an_arena_stages_the_choreography() -> void:
+	var staging := (BattleArena.data()["staging"] as Dictionary)["underway_tower"] as Dictionary
+	var empty: Array[StringName] = []
+	ctl.start_battle(PARTY, empty, &"ch01_underway_limpet", 7)
+	var choreo := ctl.stage.choreo
+	assert_eq(choreo.arena_travel, float(staging["travel_scale"]), "shorter runs underwater")
+	assert_eq(choreo.arena_tempo, float(staging["tempo"]), "slower underwater")
+	choreo.set_speed(1.0)
+	assert_between(choreo.speed, float(staging["tempo"]) - 0.001, float(staging["tempo"]) + 0.001)
+	ctl.start_battle(PARTY, empty, &"sandbox_reef", 7)
+	assert_eq(ctl.stage.choreo.arena_travel, 1.0, "the sandbox stages as before")
+	assert_eq(ctl.stage.choreo.arena_tempo, 1.0)
+	_free()
+
+
 func _free() -> void:
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
