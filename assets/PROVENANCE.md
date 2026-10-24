@@ -483,3 +483,7 @@ Rules:
 | assets/audio/music/oruvel.loop.json | assets_src/music/oruvel.py + tools/audio/synth/looping.py | python3 assets_src/music/oruvel.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
 | assets/audio/music/pilgrims_wake.ogg | assets_src/music/pilgrims_wake.py + tools/audio/synth/ | python3 assets_src/music/pilgrims_wake.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
 | assets/audio/music/pilgrims_wake.loop.json | assets_src/music/pilgrims_wake.py + tools/audio/synth/looping.py | python3 assets_src/music/pilgrims_wake.py | Audio (claude/audio, M3-AUD-10) | 2026-10-24 | original |
+| assets/audio/music/brightwater_ferry.ogg | assets_src/music/brightwater_ferry.py + tools/audio/synth/ | python3 assets_src/music/brightwater_ferry.py | Audio (claude/audio, M3-AUD-11) | 2026-10-24 | original |
+| assets/audio/music/brightwater_ferry.loop.json | assets_src/music/brightwater_ferry.py + tools/audio/synth/looping.py | python3 assets_src/music/brightwater_ferry.py | Audio (claude/audio, M3-AUD-11) | 2026-10-24 | original |
+| assets/audio/music/brine_shoals.ogg | assets_src/music/brine_shoals.py + tools/audio/synth/ | python3 assets_src/music/brine_shoals.py | Audio (claude/audio, M3-AUD-11) | 2026-10-24 | original |
+| assets/audio/music/brine_shoals.loop.json | assets_src/music/brine_shoals.py + tools/audio/synth/looping.py | python3 assets_src/music/brine_shoals.py | Audio (claude/audio, M3-AUD-11) | 2026-10-24 | original |
