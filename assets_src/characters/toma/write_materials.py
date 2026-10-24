@@ -27,16 +27,29 @@ A = "asha/textures/"
 
 # toma.md §5: hair_black, cropped and matte: the primary highlight #D8CCC0 at a low 0.25
 HAIR = "Color(0.125, 0.102, 0.086, 1)"  # #201A16
+# M2-CHR-04: hair_black under the warm stage key read brown on the cards (the warm secondary lobe and
+# the transmission tint, Asha's auburn defaults, lit every strand orange). The cards take a cooler,
+# deeper black (#111013 at the root, #18161A toward the tips) and neutral, low lobes.
+HAIR_ROOT = "Color(0.067, 0.063, 0.075, 1)"  # #111013
+HAIR_TIP = "Color(0.094, 0.086, 0.102, 1)"  # #18161A
+HAIR_SPEC2 = "Color(0.32, 0.30, 0.30, 1)"
+HAIR_TT = "Color(0.20, 0.17, 0.15, 1)"
 GREY = "Color(0.541, 0.518, 0.471, 1)"  # #8A8478, the grey at the chin
 HAIR_SPEC = "Color(0.847, 0.80, 0.753, 1)"  # #D8CCC0
 STILL = {"wind_response": "0.0"}  # cropped hair, beard, lashes and brows do not sway
+SHORT = T + "toma_shorthair.png"  # toma_textures.short_hair_atlas (strands run along +V: no flow map)
+# Cropped hair is a near-surface: each card's own tangent made its Kajiya diffuse and highlight differ from its
+# neighbours', and every card read as a separately lit flake. Mostly wrapped Lambert, a low, broad highlight
+# (toma.md §5: matte), no sparkled secondary lobe.
+FLAT = {"kajiya_diffuse_mix": "0.15", "diffuse_wrap": "0.3"}
 SKIN = {"tex_albedo": T + "toma_head_albedo.png", "tex_normal": T + "toma_head_normal.png",
         "tex_orm": T + "toma_head_orm.png", "tex_skin_mask": T + "toma_head_skinmask.png",
         "tex_detail_normal": A + "asha_skin_detail_normal.png"}
-BEARD = {"flow_strength": "0.0", "col_root": HAIR, "col_tip": HAIR, "col_spec_primary": HAIR_SPEC,
-         "spec_primary_intensity": "0.12", "spec_primary_exponent": "90.0", "spec_secondary_intensity": "0.08",
-         "transmission_strength": "0.15", "indirect_specular": "0.04", "root_occlusion": "0.55",
-         "depth_occlusion": "0.6", "alpha_boost": "1.15", **STILL}
+BEARD = {"flow_strength": "0.0", "col_root": HAIR_ROOT, "col_tip": HAIR_TIP, "col_spec_primary": HAIR_SPEC,
+         "spec_primary_intensity": "0.06", "spec_primary_exponent": "60.0", "spec_secondary_intensity": "0.0",
+         "col_spec_secondary": HAIR_SPEC2, "secondary_sparkle": "0.3", "col_transmission": HAIR_TT, **FLAT,
+         "transmission_strength": "0.1", "indirect_specular": "0.04", "root_occlusion": "0.7",
+         "depth_occlusion": "0.75", "alpha_boost": "1.1", "strand_value_jitter": "0.12", **STILL}
 
 SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
     # Asha's tuned skin response (M1-CHR-10); toma.md §6: deep bronze, weathered (a little rougher)
@@ -71,15 +84,16 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
                                    "root_occlusion": "0.2", "indirect_specular": "0.05",
                                    "col_root": HAIR, "col_tip": HAIR, **STILL},
              {"tex_hair": A + "asha_facehair.png"}),
-    "hair": ("character_hair", 0, {"col_root": HAIR, "col_tip": HAIR, "col_spec_primary": HAIR_SPEC,
-                                   "spec_primary_intensity": "0.14", "spec_primary_exponent": "90.0",
-                                   "spec_secondary_intensity": "0.05", "transmission_strength": "0.15",
-                                   "indirect_specular": "0.06", "root_occlusion": "0.6", "depth_occlusion": "0.65",
-                                   "alpha_boost": "1.6", **STILL},
-             {"tex_hair": A + "asha_hair.png", "tex_hairflow": A + "asha_hairflow.png"}),
-    "beard": ("character_hair", 0, BEARD, {"tex_hair": A + "asha_hair.png"}),
-    "beard_grey": ("character_hair", 0, {**BEARD, "col_root": GREY, "col_tip": GREY},
-                   {"tex_hair": A + "asha_hair.png"}),
+    "hair": ("character_hair", 0, {"flow_strength": "0.0", "col_root": HAIR_ROOT, "col_tip": HAIR_TIP,
+                                   "col_spec_primary": HAIR_SPEC, "spec_primary_intensity": "0.07", **FLAT,
+                                   "spec_primary_exponent": "60.0", "spec_secondary_intensity": "0.0",
+                                   "col_spec_secondary": HAIR_SPEC2, "secondary_sparkle": "0.3",
+                                   "col_transmission": HAIR_TT, "transmission_strength": "0.1",
+                                   "indirect_specular": "0.05", "root_occlusion": "0.7", "depth_occlusion": "0.75",
+                                   "alpha_boost": "1.15", "strand_value_jitter": "0.12", **STILL},
+             {"tex_hair": SHORT}),
+    "beard": ("character_hair", 0, BEARD, {"tex_hair": SHORT}),
+    "beard_grey": ("character_hair", 0, {**BEARD, "col_root": GREY, "col_tip": GREY}, {"tex_hair": SHORT}),
     "cloth": ("character_cloth", 0, {"detail_tiling": "140.0"},
               {"tex_albedo": T + "toma_cloth_albedo.png", "tex_normal": T + "toma_cloth_normal.png",
                "tex_orm": T + "toma_cloth_orm.png", "tex_cloth_mask": T + "toma_cloth_clothmask.png",

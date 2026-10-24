@@ -51,10 +51,14 @@ OUT = ROOT / "assets" / "characters" / "toma" / "textures"
 PARAMS = HERE / "toma_params.json"
 SKIN = "#8A5A3E"  # skin_toma
 HAIR_BLACK = "#201A16"  # hair_black
+HAIR_INK = "#161517"  # M2-CHR-04: the painted beard and scalp hairs, hair_black a little cooler and deeper
 BEARD_GREY = "#8A8478"
 SCALP_DENSITY = 0.60  # toma.md §5: hair density baked into the scalp's albedo at 60%
 SCALP_FULL = 0.95  # asha_textures paints the scalp up to this density
-BEARD_DENSITY = 0.72
+SCALP_REGION_DIFF = 0.25  # summed RGB difference (haired vs bare pass) that counts as fully in the hair
+SCALP_SHADE = 0.75  # the bare scalp between the hairs, darkened by the hair's shadow ...
+SCALP_COOL = np.array([0.80, 0.92, 1.12])  # ... and cooled (less of the warm key reaches it)
+BEARD_DENSITY = 0.90  # M2-CHR-04: 0.72 left the beard brown between the cards
 TATTOO_INK = "#24323A"
 INK_OPACITY = 0.72
 WRIST_LIFT = 0.12  # toma.md §3: the prayer-cord band, skin_toma lifted +12% in value
@@ -158,7 +162,12 @@ def _albedo_toma(orig, cparams: dict):
             return np.clip(col, at.FLOOR, at.CEIL)
         haired = orig(Ph, Nh, key, face, lm, hair_mod, r, npz)
         bare = orig(Ph, Nh, key, face, lm, _Bald, r, npz)
-        col = bare + (haired - bare) * (SCALP_DENSITY / SCALP_FULL)
+        # M2-CHR-04: the 40% of skin between the painted hairs is the scalp in the hair's shadow, not
+        # lit forehead skin: darker and cooler (at M2-CHR-02 the warm skin showing through read the
+        # whole cap brown under the orange key). `region` is where the haired pass differs.
+        region = np.clip(np.abs(haired - bare).sum(axis=1) / SCALP_REGION_DIFF, 0.0, 1.0)[:, None]
+        scalp_skin = bare * (1.0 - SCALP_SHADE * region) * (1.0 + (SCALP_COOL - 1.0) * region)
+        col = scalp_skin + (haired - scalp_skin) * (SCALP_DENSITY / SCALP_FULL)
         # Asha's lip colour is set for her skin; on skin_toma it read pale pink. A deeper brown-rose
         lips = at.lip_weight(Ph, face, lm, r)
         col = col * (1 - LIP_MIX * lips[:, None]) + hexc(LIP) * LIP_MIX * lips[:, None]
@@ -177,8 +186,8 @@ def _albedo_toma(orig, cparams: dict):
         cover = smoothstep(0.30, 0.62, streak + (ramp - 0.5) * 1.1) * smoothstep(-0.008, 0.004, bv)
         dens = BEARD_DENSITY * (0.55 + 0.45 * ramp) * cover
         chin = np.exp(-((u / 0.07) ** 2) - ((v - 0.03) / 0.07) ** 2)
-        grey = (at.noise3(Ph, 0.0012 * s, 84) > 0.86 - 0.12 * chin).astype(float) * (0.25 + 0.75 * chin)
-        hcol = hexc(HAIR_BLACK) * (1 - grey[:, None]) + hexc(BEARD_GREY) * grey[:, None]
+        grey = (at.noise3(Ph, 0.0012 * s, 84) > 0.88 - 0.10 * chin).astype(float) * (0.1 + 0.4 * chin)
+        hcol = hexc(HAIR_INK) * (1 - grey[:, None]) + hexc(BEARD_GREY) * grey[:, None]
         hcol = hcol * (0.8 + 0.4 * streak)[:, None]
         col = col * (1 - dens[:, None]) + hcol * dens[:, None]
         return np.clip(col, at.FLOOR, at.CEIL)
@@ -196,7 +205,7 @@ def skin(bake_dir: Path, cparams: dict) -> None:
     at.PREFIX = "toma"
     at.SKIN_HEX = SKIN
     at.FRECKLES = 0
-    at.HAIR_UNDERPAINT = "#1A1512"  # hair_black #201A16, a touch darker under the cards
+    at.HAIR_UNDERPAINT = "#151416"  # M2-CHR-04: the cards' cooler black (#1A1512 read warm brown under the key)
     at.albedo = _albedo_toma(at.albedo, cparams)
     params = bb_params.load_params(path=str(PARAMS))
     lm = bb_donor.fit(params).lm
@@ -222,6 +231,64 @@ def _scar_layers(cparams: dict, s: np.ndarray, t: np.ndarray) -> dict:
                                                                                      blk_end + 0.00005, d))
     w_bone = smoothstep(blk_end - 0.00005, blk_end + 0.00005, d)
     return {"depth": d, "black": w_black, "bone": w_bone, "Ls": Ls, "Lt": Lt}
+
+
+STENCIL_CRESTS = 2  # wave crests across one tail
+STENCIL_ROWS = (0.80, 0.885, 0.94)  # v of the wave line, the tick row and the hem line (0 knot -> 1 hem)
+STENCIL_WAVE_H = 0.035  # the wave's rise (v)
+STENCIL_LINE = 0.014  # the wave line's half-width (v)
+STENCIL_TICKS = 6  # ticks across one tail
+STENCIL_OPACITY = 0.72
+
+
+def _sandal_paint(isl, alb, mask, hgt, orm, leather, grain, mottle) -> None:
+    """toma_costume.reinforced_sandal's sub-islands (SANDAL_V): the outsole's edge in stacked leather
+    layers, the welt with its stitch row, the footbed, the heel counter and the straps."""
+    import toma_costume as C
+
+    m, iu, iv = isl
+
+    def sub(key):
+        a, b = C.SANDAL_V[key]
+        return m & (iv >= a) & (iv < b), np.clip((iv - a) / (b - a), 0.0, 1.0)
+
+    base = leather * (0.92 + 0.12 * grain[..., None])
+    alb[m] = base[m]
+    mask[m] = (0, 0, 0, 0.0)
+    hgt[m] = (grain * 0.1)[m]
+    orm[m, 1] = 0.62
+    # outsole: three stacked layers of thick leather, the seams dark, the bottom scuffed paler
+    sm, sv = sub("sole")
+    layer = np.abs(((sv * 3.0) % 1.0) - 0.5)
+    seam = smoothstep(0.42, 0.5, layer)
+    scuff = smoothstep(0.7, 1.0, sv) * (0.6 + 0.4 * mottle)
+    col = base * 0.78 * (1 - 0.35 * seam[..., None]) * (1 + 0.25 * scuff[..., None])
+    alb[sm] = col[sm]
+    hgt[sm] = (0.2 * grain - 0.5 * seam)[sm]
+    orm[sm, 1] = 0.7
+    # the welt: a paler, burnished edge with a row of stitches along its middle
+    wm, wv = sub("welt")
+    stitch = (((iu * 140.0) % 1.0) < 0.55) * (np.abs(wv - 0.5) < 0.14)
+    col = base * 1.12 * (1 - 0.15 * smoothstep(0.75, 1.0, wv)[..., None])
+    col = col * (1 - 0.5 * stitch[..., None]) + hexc("#8C7A5E") * 0.5 * stitch[..., None]
+    alb[wm] = col[wm]
+    hgt[wm] = (0.1 * grain + 0.4 * stitch)[wm]
+    orm[wm, 1] = 0.5
+    cm, _cv = sub("cap")
+    alb[cm] = (base * 0.7)[cm]
+    # heel counter: stiff leather, darker toward its rim, one stitch row under the rim
+    km, kv = sub("counter")
+    rim = smoothstep(0.25, 0.0, kv) + smoothstep(0.8, 1.0, kv)
+    stitch = (((iu * 90.0) % 1.0) < 0.55) * (np.abs(kv - 0.2) < 0.06)
+    col = base * (1 - 0.3 * rim[..., None])
+    col = col * (1 - 0.4 * stitch[..., None]) + hexc("#8C7A5E") * 0.4 * stitch[..., None]
+    alb[km] = col[km]
+    hgt[km] = (0.1 * grain + 0.3 * rim + 0.3 * stitch)[km]
+    # straps: the edges darkened and turned
+    tm, tv = sub("strap")
+    e = smoothstep(0.2, 0.05, (tv * 3.0) % 1.0) + smoothstep(0.8, 0.95, (tv * 3.0) % 1.0)
+    alb[tm] = (base * (1 - 0.25 * e[..., None]))[tm]
+    hgt[tm] = (0.1 * grain + 0.25 * e)[tm]
 
 
 def cloth_atlas(cparams: dict, size: int = 2048) -> None:
@@ -293,33 +360,43 @@ def cloth_atlas(cparams: dict, size: int = 2048) -> None:
     mask[m] = (0, 0, 0, 0.35)
     hgt[m] = (cotton * 0.3 + fold * 0.4 - edge * 0.4)[m]
     orm[m, 1] = 0.84
-    # tails: the white wave-tick resist stencil toward their ends (an original figure: a row of
-    # rising wave crests over a row of ticks, repeated)
+    # tails: the white wave-tick resist stencil near their ends, an original figure in three rows of
+    # falling size: one rolling wave line with two crests across the tail, a row of alternating long
+    # and short ticks, and a thin line above the hem. M2-CHR-04: the M2-CHR-02 stencil repeated a
+    # wave row and a tick row five times at equal pitch, which read as a ladder of bars at mid range;
+    # the resist now also bleeds unevenly and is broken where the cloth was bound for dyeing.
     m, iu, iv = island("sash_tails")
     lu = (iu * 2) % 1.0  # two tails side by side
-    crest = np.abs(((lu * 3 + 0.25 * np.sin(iv * 2 * np.pi * 9)) % 1.0) - 0.5)
-    wave = np.exp(-((iv * 18 % 1.0 - 0.35 - 0.25 * crest) / 0.05) ** 2)
-    ticks = (np.abs(((lu * 9) % 1.0) - 0.5) < 0.08) * (np.abs((iv * 18 % 1.0) - 0.78) < 0.08)
-    sten = np.clip(wave + ticks, 0, 1) * smoothstep(0.68, 0.78, iv) * (1 - smoothstep(0.96, 1.0, iv))
-    sten = sten * (0.75 + 0.25 * fine)  # resist dye bleeds
+    sw = (lu * STENCIL_CRESTS) % 1.0
+    crest = np.where(sw < 0.7, sw / 0.7, (1.0 - sw) / 0.3)  # a slow rise and a steep fall: a wave
+    y_wave = STENCIL_ROWS[0] - STENCIL_WAVE_H * crest
+    wave = smoothstep(STENCIL_LINE, 0.5 * STENCIL_LINE, np.abs(iv - y_wave))
+    k_t = np.floor(lu * STENCIL_TICKS)
+    long_t = (k_t % 2) == 0
+    t_h = np.where(long_t, 0.022, 0.013)
+    ticks = (np.abs((lu * STENCIL_TICKS) % 1.0 - 0.5) < 0.12) * (np.abs(iv - STENCIL_ROWS[1]) < t_h)
+    line = smoothstep(0.006, 0.003, np.abs(iv - STENCIL_ROWS[2]))
+    edge_fade = smoothstep(0.0, 0.06, np.minimum(lu, 1.0 - lu))
+    bleed = smoothstep(0.25, 0.65, 0.6 * fine + 0.4 * mottle)  # resist that took unevenly
+    sten = np.clip(wave + ticks + line, 0, 1) * edge_fade * (0.55 + 0.45 * bleed)
     col = indigo * (0.9 + 0.12 * mottle[..., None])
-    col = col * (1 - 0.8 * sten[..., None]) + bone * 0.8 * sten[..., None]
+    col = col * (1 - STENCIL_OPACITY * sten[..., None]) + bone * 0.85 * STENCIL_OPACITY * sten[..., None]
     alb[m] = col[m]
     mask[m] = (0, 0, 0, 0.35)
     hgt[m] = (cotton * 0.3)[m]
     orm[m, 1] = 0.84
     # 4. leather: harness and sandals; wraps (undyed linen strips)
     grain = periodic_noise(size, size, 260, 260, rng) * 0.5 + periodic_noise(size, size, 600, 600, rng) * 0.5
-    for nm, rough in (("harness", 0.6), ("sandals", 0.62)):
-        m, iu, iv = island(nm)
-        wear = smoothstep(0.55, 0.8, mottle) * 0.12
-        col = leather * (0.92 + 0.12 * grain[..., None]) * (1 + wear[..., None])
-        e = smoothstep(0.14, 0.04, iv) + smoothstep(0.86, 0.96, iv)
-        col = col * (1 - 0.25 * e[..., None])
-        alb[m] = col[m]
-        mask[m] = (0, 0, 0, 0.0)
-        hgt[m] = (grain * 0.1 + e * 0.25)[m]
-        orm[m, 1] = rough
+    m, iu, iv = island("harness")
+    wear = smoothstep(0.55, 0.8, mottle) * 0.12
+    col = leather * (0.92 + 0.12 * grain[..., None]) * (1 + wear[..., None])
+    e = smoothstep(0.14, 0.04, iv) + smoothstep(0.86, 0.96, iv)
+    col = col * (1 - 0.25 * e[..., None])
+    alb[m] = col[m]
+    mask[m] = (0, 0, 0, 0.0)
+    hgt[m] = (grain * 0.1 + e * 0.25)[m]
+    orm[m, 1] = 0.6
+    _sandal_paint(island("sandals"), alb, mask, hgt, orm, leather, grain, mottle)
     m, iu, iv = island("wraps")
     strip = np.abs(np.sin((iv * 9 + iu * 1.0) * np.pi))
     alb[m] = (bone * 0.86 * (0.88 + 0.1 * strip[..., None]) * (0.95 + 0.08 * mottle[..., None]))[m]
@@ -487,10 +564,90 @@ def shield_atlas(cparams: dict, size: int = 2048) -> None:
     at.write("toma_shield_orm.png", o / 255.0)
 
 
+# ---------------------------------------------------------------------------------------------
+# Short-hair atlas (M2-CHR-04)
+# ---------------------------------------------------------------------------------------------
+SH_SIZE = (1024, 512)  # width x height: toma_hair.SH_COLS columns, V root (row 0) -> tip
+SH_MM_PER_PX = (0.055, 0.024)  # one texel across x along, on a 7 mm x 12 mm card (strand lean in true angles)
+
+
+def _sh_column(h: int, w: int, rng, kind: str) -> np.ndarray:
+    """One column of the short-hair atlas: a tuft of tapered strands, V root (0) -> tip (1).
+
+    Cropped hair and a short beard are springy strands of very different lengths, so a column is
+    dense at the root and thins out toward a ragged tip edge: every strand starts in the first tenth,
+    runs most of the way up (`full`), or only part of it (`edge`: short, for the hairline and the
+    beard's border), or the column holds a few loose strands (`sparse`: the outer layer's breakup).
+    Strands are 1-2 px wide at the root (about 0.08 mm) and taper to a point, each with its own lean
+    (true angles, the texel is not square), bend, opacity and length; density falls off toward both
+    column edges, so a card has no hard side. Returns RGBA: R root-to-tip along the strand, G strand
+    id, B depth layer, A coverage (character_hair's tex_hair contract)."""
+    n = {"full": int(rng.integers(160, 200)), "edge": 160, "sparse": 70}[kind]
+    acc = np.zeros((h, w, 4))  # R, G, B premultiplied by alpha, then alpha (front-to-back "over")
+    vv = (np.arange(h) + 0.5) / h
+    px = np.arange(w) + 0.5
+    k_ratio = SH_MM_PER_PX[1] / SH_MM_PER_PX[0]  # x px per y px for a 45 degree lean
+    for _ in range(n):
+        xn = float(np.clip(rng.normal(0.5, 0.16), 0.03, 0.97))
+        side = smoothstep(0.0, 0.34, min(xn, 1.0 - xn))  # a soft lens across: no hard card side at the mips
+        v0 = rng.uniform(0.0, 0.10)
+        if kind == "full":
+            L = rng.uniform(0.55, 1.0) ** 0.6 * (1.0 - v0)
+        elif kind == "edge":
+            L = rng.uniform(0.30, 0.75) * (1.0 - v0)
+        else:
+            L = rng.uniform(0.40, 1.0) * (1.0 - v0)
+        lean = np.tan(np.radians(rng.normal(0.0, 9.0))) * k_ratio
+        bend = np.tan(np.radians(rng.normal(0.0, 8.0))) * k_ratio
+        wd = rng.uniform(1.0, 2.0) if kind != "sparse" else rng.uniform(0.8, 1.5)
+        op = rng.uniform(0.6, 1.0) * (0.15 + 0.85 * side)
+        dep = rng.random()
+        sid = rng.random()
+        y0, y1 = int(v0 * h), min(int((v0 + L) * h) + 1, h)
+        if y1 - y0 < 4:
+            continue
+        rows = np.arange(y0, y1)
+        t = (vv[rows] - v0) / L
+        dy = (rows - y0).astype(float)
+        cx = xn * w + lean * dy + bend * dy * t * 0.5
+        width = wd * (1.0 - 0.8 * t)
+        a_row = op * smoothstep(0.0, 0.12, t) * (1.0 - 0.8 * smoothstep(0.5, 1.0, t))
+        cov = np.clip(0.5 * width[:, None] + 0.5 - np.abs(px[None, :] - cx[:, None]), 0.0, 1.0)
+        a = cov * a_row[:, None]
+        # each new strand goes under the ones already drawn (front-to-back): weight by what is left
+        left = (1.0 - acc[rows, :, 3]) * a
+        acc[rows, :, 0] += left * t[:, None]
+        acc[rows, :, 1] += left * sid
+        acc[rows, :, 2] += left * dep
+        acc[rows, :, 3] += left
+    out = np.zeros((h, w, 4))
+    al = np.maximum(acc[..., 3], 1e-6)
+    out[..., 0] = np.where(acc[..., 3] > 1e-4, acc[..., 0] / al, vv[:, None])
+    out[..., 1] = acc[..., 1] / al
+    out[..., 2] = acc[..., 2] / al
+    out[..., 3] = acc[..., 3]
+    return out
+
+
+def short_hair_atlas() -> None:
+    """toma_shorthair.png: the cropped hair's and the beard's own strand atlas (toma.md §5: long strand
+    cards do not suit this length). The columns follow toma_hair.SH_KIND."""
+    import toma_hair
+
+    at.OUT = OUT
+    w, h = SH_SIZE
+    cw = w // toma_hair.SH_COLS
+    rng = np.random.default_rng(91)
+    img = np.zeros((h, w, 4))
+    for c, kind in enumerate(toma_hair.SH_KIND):
+        img[:, c * cw:(c + 1) * cw] = _sh_column(h, cw, rng, kind)
+    at.write("toma_shorthair.png", img)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--bake-dir")
-    ap.add_argument("--only", default="skin,cloth,shield")
+    ap.add_argument("--only", default="skin,cloth,shield,hair")
     args = ap.parse_args()
     only = set(args.only.split(","))
     extra = json.loads(PARAMS.read_text(encoding="utf-8"))
@@ -500,6 +657,8 @@ def main() -> int:
         cloth_atlas(extra["_costume"])
     if "shield" in only:
         shield_atlas(extra["_costume"])
+    if "hair" in only:
+        short_hair_atlas()
     return 0
 
 
