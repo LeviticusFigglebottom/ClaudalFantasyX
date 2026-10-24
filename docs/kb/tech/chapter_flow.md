@@ -146,3 +146,31 @@ Ch4 "The Pilgrim's Wake" is built the same way: `game/data/flow/chapters/ch04.js
 **The ferry is never attacked (ADR 0017 (d)).** There is no walkway between the ferry and the derelict, and the layout's random fights run only while `ch04_boarded_derelict` is set and `ch04_spar_wraith_defeated` isn't. The test walks 500 m on the ferry and asserts that nothing fires.
 
 **Battle prompts in sequence.** An encounter may name a second prompt for one hero's first turn (`turn_prompt_hero`, `turn_prompt_key`; BattleBossHud). The bottle-hermit opens on the swap prompt and shows Read on Ysolde's first turn.
+
+## Ch9 (M3-C09-02)
+Ch9 "The Ebbing", the end of Act I, is built the same way: `game/data/flow/chapters/ch09.json`, one zone under `game/levels/ch09/`, scripts in `game/data/dialogue/ch09/`, loc rows in `game/data/loc/ch09.csv`, tunables in `game/data/flow/ch09_field.json`, and the test `tests/integration/test_ch09_thread.gd`. Ch9 has no fight of any kind (act1_ch09.md rule 5): no encounters, no `battle` step, no `sim.py` suite.
+
+**The zone is a stand-in, `ch09/corrow_night`.** The sheet stages Ch9 on the `ch08/corrow` night variant, and Ch8 isn't built (it waits on a combat task). So Ch9 has its own greybox location: the strand of shrouds, the broken wall and the flooded low town, the raft's landing, the Fisher Stair, and the dawn road with its milestone. When Ch8 lands, it either hosts this zone block as its night variant (move the block to `ch08/corrow` and add the layout's pieces) or hands off here with `{"go": {"location": "ch09/corrow_night", "spawn": "Strand"}}`.
+
+**The zone root.** `Ch09Zone` extends `Ch05Zone`, so it keeps the light `variants`, `place_actor`, and Ch01Zone's calls. It adds three things:
+- **Variant `place`.** A `variants` row may also stand actors on marks, `{actor: mark}`. The night is the layout's own light. Dawn is a row on `ch09_pell_joined`: the party on the road, Kerrid at the milestone, the stair empty.
+- **The layout's `clip_marks`**, for `CutsceneStage.clip_marks`. `@anim asha pole_out` cuts Asha onto the raft mid-harbour until her rig has the clip.
+- **The held input**, a `CutsceneHoldGate` on the story's sequencer (see below).
+
+**Two scenes carry most of the chapter, a node per beat.** A `play` step that ends hands the camera back to the field, so beats that must cut into each other share a scene:
+- `ch09_the_ebbing`: B03 the gilt line, B04/B05/B07 the three movements, B06 the stair cutaway, and B08 Pell;
+- `ch09_the_road_out`: B09, then a **hard cut** to B10, the Iskarra vigil, then B11, the act card.
+
+Flags inside them are set by `<<set>>` at the line that earns them.
+
+**The Ebbing's held input** (act1_ch09.md B04–B07). Each movement sits between `<<event hold_input raise_staff>>` and `<<event hold_input_end>>` (events.json). Inside, `CutsceneHoldGate` runs the scene's time only while the field's interact action is held, and shows "Hold to raise the staff". There is no timing, no score and no fail: letting go pauses the dance, and nothing resets. How long each movement lasts is its own `@wait`s. `test_the_ebbing_cannot_fail` drives the whole scene in real time, waiting two minutes unheld at every gate.
+
+**The Iskarra vigil is staged in the same zone.** The prologue scene is hard-wired to its own cutscene and hand-off, and a scene change fades through the router. So the vigil is a stand-in plaza far east in the zone (x 300), with its own seven stand-ins (`vigil_*`), the burner and shots P02–P04. Env-art decides the real staging (M3-C09-04).
+
+**Seams.**
+- **Entry:** Ch8 isn't built, so `ch09/corrow_night` is reached from its own `locations.json` row (spawn `Strand`) or the F5 teleport. The first arrival sets the chapter to 9, and the chapter autosave follows.
+- **Ch8's flags.** Ch9 reads three flags that Ch8 must set: `ch08_met_ivo` (the side scene), `ch08_fed_the_beacon` (Fenn's line in B08, else Hobb's) and `ch08_hoist_cut_down` (Liss's bark). They are declared in flags.tres with that note. Ch9 doesn't read `ch08_stair_groups_up`.
+- **The night to dawn.** The Ebbing's scene ends on black, and its beat goes to the same zone at `RoadGate`, so the zone reloads in its dawn variant.
+- **Exit:** Ch10 (Act II) isn't in M3, so the act break hands off to the end card.
+
+**Pell** has no `characters.json` row, so his joining is the flag `ch09_pell_joined` (and `ch09_pell_named` at B09). He is in no party list and no sim suite; his battle kit is M3-C09-07. The Ch9 party is Rhen, Asha and Toma, with Kerrid and Ysolde in reserve.
