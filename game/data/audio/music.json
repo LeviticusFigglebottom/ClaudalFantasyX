@@ -47,6 +47,20 @@
     "haluna_dawn": {
       "file": "res://assets/audio/music/haluna_dawn.ogg",
       "_note": "Cutscene A (B01); the sequencer plays it by name"
+    },
+    "tidecup_match": {
+      "file": "res://assets/audio/music/tidecup_match.ogg",
+      "_note": "Ch7, the story Reefball match in the Tamsule Bell (M3-AUD-02); no zone row until ch07/tamsule_bell exists"
+    },
+    "terraces_of_ash": {
+      "file": "res://assets/audio/music/terraces_of_ash.ogg",
+      "resume": true,
+      "_note": "Ch5, Pemakar and Lanternfall (M3-AUD-04); no zone row until ch05/pemakar exists"
+    },
+    "corrow_seawall": {
+      "file": "res://assets/audio/music/corrow_seawall.ogg",
+      "resume": true,
+      "_note": "Ch8, Corrow Bastion before the storm (M3-AUD-04); no zone row until ch08/corrow exists"
     }
   },
   "zones": [
