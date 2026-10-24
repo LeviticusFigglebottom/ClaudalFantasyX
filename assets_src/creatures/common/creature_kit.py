@@ -21,6 +21,9 @@ from dataclasses import dataclass, field
 import numpy as np
 
 FPS = 30
+# Strike clips play in place (battle-presentation's clip contract, M2-BPR-02): the sequencer moves the fighter to its
+# target, so the root bone keeps no horizontal travel in these. Vertical travel (a dive, a hop) and body leans stay.
+IN_PLACE_CLIPS = ("attack", "cast")
 
 
 def hexrgb(h: str) -> np.ndarray:
@@ -503,6 +506,8 @@ def export_creature(mesh: Mesh, rig: Rig, clips: list[Clip], out_path: str, extr
                 pb = arm.pose.bones[b.name]
                 pb.rotation_mode = "QUATERNION"
                 rdeg, loc = clip.sample(b.name, t)
+                if b.name == "root" and clip.name in IN_PLACE_CLIPS:
+                    loc = np.array([0.0, loc[1], 0.0])
                 W = G2B @ euler(*rdeg) @ G2B.T
                 R = rest[b.name]
                 local = R.T @ W @ R

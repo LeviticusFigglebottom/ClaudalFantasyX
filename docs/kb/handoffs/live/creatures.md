@@ -3,6 +3,34 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
+- **MERGE-READY @ 63f7bed3: polish batch.** The Cinder Matron's crack lines (Voronoi slag cells with ember seams, 23.2k
+  triangles) and a cleaner mask; the squall wing's see-through rents in wings and body; the wreck crab's salt-plate
+  crust and bleached legs; phase strikes (a phase `clips` map, the Reach's Dark and Breach strikes).
+  - **Checks run:** validate_data, taskboard, lint and format, tools creature tests, Godot `--filter=creature` 14/0,
+    Blender verify of each changed job (identical). Shots creature_cinder_matron (0.03653), creature_squall_wing
+    (0.02447) and creature_wreck_crab (0.03140) were re-approved after viewing; the Reach's shot is unchanged.
+  - **Checks skipped:** other shots and coverage (no shared code beyond CreatureActor's phase-clip lookup, which
+    the creature tests cover).
+  - **Queue:** every item is done or blocked. Blocked: the enemy `model` lines (they wait for this branch to reach
+    the integration branch, then m2-slice adds them) and the Matron's re-crust hook (battle-presentation). Open
+    polish notes, low priority: the Matron's cells are a bit even in size; the wreck crab's legs are smooth up close.
+- **16:30, queue state** (answering the Lead's 16:03 note: items a–c were already done at 539d145a):
+  - Done since then: integration c1607d89 merged at 438a1445 (creature 13/0, battle 412/0 after it), and phase
+    strikes at 468fa197 (a phase `clips` map; the Reach strikes from its Dark and Breach poses).
+  - In progress in two worktree agents: the Cinder Matron's crack lines and mask edge; the squall wing's see-through
+    tears and the wreck crab's crust and bleached legs.
+  - Blocked: `model` lines on enemy rows wait for claude/creatures to reach the integration branch (m2-slice adds
+    them in their next merge after that). The Matron's re-crust hook is battle-presentation's.
+- **MERGE-READY @ 539d145a: the Lead's queue items 1–4 (15:30).** Ch6–Ch9 had nothing left to build (Ch7 has no
+  foes, Ch9 no fight). M3-CRE-07 (review): clip-contract audit, strike clips in place (17 GLBs rebuilt, 10
+  byte-identical), LOD1 verified as Godot's import LODs (`tools/dev/creature_lods.gd`), portrait framing for the gull
+  and eel. Phase ids reconciled: `pour`, `breaking` (with the new `hide_after`).
+  - **Checks run:** validate_data, taskboard, lint and format, tools creature tests, Godot `--filter=creature` 13/0 and
+    `--filter=battle` 412/0, all 27 creature jobs rebuilt and audited. 42 creature and battle shots compared: 37
+    unchanged, 5 re-approved after viewing (RMSE in M3-CRE-07).
+  - **Checks skipped:** the shots outside the creature and battle sets (no change reaches them), coverage (no
+    `game/battle/` change).
+  - (My send_message to the Lead is refused with elevated_session_untrusted_device, so this log is the channel.)
 - **MERGE-READY @ 0ce0bee6 (batch): the Act I bestiary, M3-CRE-02..06 in review.** Branch `claude/creatures`
   (integration 1a6f7645 merged at 1ed50955, docs only).
   - **Items:**
@@ -69,9 +97,16 @@ Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD),
   Checks: creature 13/0, battle 412/0, validate_data, tools creature tests, lint, format.
 
 ## Exact next step
-Two items remain in this queue: (1) when m2-slice's Ch4/Ch5 rows land, check their phase ids against creatures.json
-(rename the Matron's `crust_breaks` if needed); (2) polish passes from the review notes (the Matron's crack lines and
-the mask's size; the squall wing's see-through tears; the wreck crab's crust). Daily: merge the integration branch.
+The Lead's queue (15:30):
+1. **Ch6–Ch9 creatures:** done. Ch6 (shoal_skipper, raid_hound, wreck_crab, plus the reused gull_harrier) and Ch8
+   are built. m2-slice's sheets confirm that Ch7 has no foes and Ch9 has no fight.
+2. **Clip contract** (M3-CRE-07): audited, and strikes made in place (kit `IN_PLACE_CLIPS`, 17 GLBs rebuilt).
+   Shots re-compared: 5 re-approved after viewing (RMSE in M3-CRE-07).
+3. **Slice polish** (M3-CRE-07): LOD1 verified as Godot's import LODs; portrait framing for the gull and the eel.
+   Next: approve the changed shots, then the polish notes (the Matron's crack lines, the squall wing's tears, the
+   wreck crab's crust).
+4. **Reconcile ids** when m2-slice's rows land: done for the Ch1/Ch5 phase ids (`pour`, `breaking`); the `model`
+   lines are theirs to add after this branch reaches the integration branch.
 
 ## Previous next step (done)
 Merge the three creature worktrees as they finish (they append to creatures.json, enemies.json, the import rule, blender_builds.json and PROVENANCE.md: union the rows). Then capture every battle shot and the creature shots, view each, approve the creature baselines, and re-approve the battle shots whose change is the models (list each RMSE in M2-CRE-09).
