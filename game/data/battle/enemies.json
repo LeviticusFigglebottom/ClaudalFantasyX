@@ -20,6 +20,7 @@
     {
       "id": "lantern_eel", "name_key": "ENEMY_LANTERN_EEL", "role_answer": "ysolde",
       "lore_key": "LORE_LANTERN_EEL",
+      "model": "res://game/creatures/lantern_eel/lantern_eel_battle.tscn",
       "stats": {"level": 4, "hp": 300, "mp": 20, "strength": 6, "magic": 12, "defense": 8,
                 "magic_defense": 30, "agility": 14, "accuracy": 8, "evasion": 10, "luck": 6},
       "affinities": {"fire": "weak", "lightning": "immune"},
