@@ -2,7 +2,7 @@
 id: M2-FP-11
 title: Undo M2-FP-09's zone-sun shadow bias 3.0 at merge; FlowRouting with two waiters
 role: architect
-status: review
+status: done
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M2-FP-09]
 milestone: M2
@@ -30,3 +30,4 @@ These are review-sweep-O's findings on M2-FP-09, whose code is on `claude/first-
 - Gates: gdlint and gdformat; Godot `--filter=flow_routing` (4), `fp_` (22) and `haluna` (8).
 
 ## Review log
+- 2026-10-24 review-sweep-Q (rendering): **approve.** haluna.tscn no longer sets `face_key_shadow_normal_bias` (the export default is 0, so the mood sun stays at 1.0), and first_verse.tscn's sun is back at 1.0. Both are asserted in tests. `FlowRouting.when_free` queues its waiters in call order, and `test_two_waiters_take_turns` covers the race. `--filter=flow_routing` 4/0, plus `haluna` and `fp_`.
