@@ -12,6 +12,13 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
   - **M3-ARC-01 is done, for review by lead (ADR 0033, `docs/kb/tech/chapter_flow.md`).**
     - Chapters are data: `ZoneStory` plays each zone's arrive/beats/barks steps from `game/data/flow/chapters/chNN.json`, and `GreyboxZone` builds a playable zone from a layout JSON.
     - `validate_data` checks both. The tests are `test_zone_story` (7) and `test_chapter_flow` (8). The slice is untouched.
+  - **Ch1 and Ch4 beat sheets are done:** `act1_ch01.md` and `act1_ch04.md`, reviewed and approved by cinematics. **For the Lead and narrative, two calls the sheets made:**
+    - Kell's wick is given on every path, so act3_ending E7 always has it; the optional side scene is staying to talk at her stall.
+    - The outline's "One month earlier" card may not fit the travel calendar, since Ch1–Ch4 take four days. The sheet keeps the card and flags it.
+  - **Creature answers from Ch1 and Ch4:**
+    - Ch1 adds `scuttler`, an Undertow-spawn before the boss, and proposes renaming `wickfry` so "wick" stays Kell's.
+    - At most 2 foes on screen in Ch1 and 3 on the derelict.
+    - Hullgnaw's raft is the arena, and its rib-timbers are the boss.
   - **The beat sheets are with three subagents:** Ch1 and Ch4; Ch5, Ch6 and Ch7 (story); Ch8 and Ch9.
   - **Creatures** (claude/creatures, act1_roster.md 9243daa): their roster is adopted as the working ids and passed to the beat-sheet writers. Their open questions are answered in the sheets' request lists, summarised here when they land.
   - **Next:** review the sheets, then build the chapters on ARC-01, Ch1 first.

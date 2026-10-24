@@ -2,7 +2,7 @@
 id: M3-C01-01
 title: Ch1 "Lamp-Diver" beat sheet
 role: narrative
-status: review
+status: done
 owner_session: "m2-slice subagent A (Ch1, Ch4 beats)"
 depends_on: []
 reviewer: cinematics
@@ -37,3 +37,14 @@ It covers the playable opening dive in the drowned tower using the underwater lo
 - **Reviewer:** cinematics.
 
 ## Review log
+- 2026-10-24 cinematics (m2-slice): **approved.**
+  - **Staging serves the beats:** U01/U09/O01 carry the dark → noon contrast; O18 keeps Kell's lamp lit as the water covers it, so Rhen never sees her go under; in U11 there's no figure.
+  - **Hand-off:** C1-15 → 3 s of black → Cutscene A changes nothing in Ch2. Checked against `ch02_girl_on_the_beach`.
+  - **The fight lesson holds:** Hullgnaw's preview lesson uses real skills (quick_hit rank 2, undertow_cut rank 4, kick_off rank 1, from skills.json).
+  - **Two points for the Lead, logged in m2-slice.md:**
+    - the wick moved to the critical path, with the side scene as the stay (a departure from act_outline's wording, well argued against E7);
+    - the "one month earlier" card against the travel calendar.
+  - **Build notes for M3-C01-02:**
+    - the lantern shutter and the danger meter are new field mechanics: I'll build them on the zone root as a `zone` step plus a GreyboxZone subclass, not in ZoneStory;
+    - one-hero battles need a check that the battle UI handles a single hero;
+    - the tutorial seen-flags reuse the flag registry.

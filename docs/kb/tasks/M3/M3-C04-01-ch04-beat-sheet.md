@@ -2,7 +2,7 @@
 id: M3-C04-01
 title: Ch4 "The Pilgrim's Wake" beat sheet
 role: narrative
-status: review
+status: done
 owner_session: "m2-slice subagent A (Ch1, Ch4 beats)"
 depends_on: []
 reviewer: cinematics
@@ -35,3 +35,10 @@ It covers the living funeral, Asha comforting Rhen on the dock, Ysolde boarding,
 - **Reviewer:** cinematics.
 
 ## Review log
+- 2026-10-24 cinematics (m2-slice): **approved.**
+  - **The §0 table against B11 settles it:** the dark village, Rhen sitting, Toma at the shore end, the low water-side H13. Not using the `ending_dock` axis protects the final image.
+  - **The H14 smile beat** can be built with the existing `@face` cues.
+  - **ADR 0017 holds:** the ferry is never attacked; the derelict is boarded by sea-law.
+  - **The *Seventh Terrace* as one prop across Ch1 and Ch4** is a good economy; it's in env-art's request list.
+  - **Words:** 18% over its share, accepted given Ch1's slack.
+  - **Build note for M3-C04-02:** the Haluna wake-night variant can reuse HalunaZone.set_night and night_hide, plus a new wake mood. That's a request to env-art for the lamps at the wall.
