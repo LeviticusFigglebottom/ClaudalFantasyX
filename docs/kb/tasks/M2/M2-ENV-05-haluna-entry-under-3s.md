@@ -25,3 +25,6 @@ from the change request to the scene being in, under the opaque fade:
 - [ ] No visible frame over 50 ms afterwards (the same tool's `visible_max_ms`).
 
 ## Review log
+
+## Lead routing (2026-10-24)
+Routed to the **m2-slice** track, which owns Haluna (game/levels/ch02/haluna/**). M1-ARC-16's router now reports `max_visible_frame_ms`, the hidden frames and the entry time, in `SceneRouter.last_swap_stats`; use them to verify. Don't use threaded loads: they crashed Haluna (ADR 0029).
