@@ -15,10 +15,10 @@ as the base, with fixes (M2-ENV-03 Review log, 2026-10-24). This task is those f
 working branch (it is on `claude/m2-slice` at f38edea until the integration branch carries it).
 
 ## Acceptance criteria
-- [ ] `shrine_roof_fan` reads as tiers of overlapping ribbed stone fan-shells rising to the oculus, with white
+- [x] `shrine_roof_fan` reads as tiers of overlapping ribbed stone fan-shells rising to the oculus, with white
       mortar ribs (haluna.md §3.2), not a lumpy dome: S01 viewed.
-- [ ] The hall walls are coral-limestone courses (the Haluna pass-1 stone), fresher than the causeway.
-- [ ] The interior is cool after the glare (`ch03_shrine_int`: shafts `#FFF1E4`, `#3FD0C9`-tinted bounce at 0.4,
+- [x] The hall walls are coral-limestone courses (the Haluna pass-1 stone), fresher than the causeway.
+- [x] The interior is cool after the glare (`ch03_shrine_int`: shafts `#FFF1E4`, `#3FD0C9`-tinted bounce at 0.4,
       exposure 0.75): S02's shaft reads, the floor lifts about a stop, measured against the colour script.
 - [ ] S01 exterior: leaf-boats on the steps and an offering shelf that read at S01's distance; sea stones and a
       wet algae band at the islet's waterline. (env-art's superseded WIP kit has `leaf_boat`, `offering_shelf`
@@ -41,8 +41,13 @@ working branch (it is on `claude/m2-slice` at f38edea until the integration bran
   owner-approved edit), colour (0.6, 0.76, 0.95), energy 1.2, range 18 m. S02 measured: floor `#41372A`
   L 0.34 hue 74° → `#57544E` L 0.45; walls L 0.24 → 0.37, no longer brown. (Strengthening the pools' teal
   bounce did nothing at S02: the pools are low at the trial's start, and their bounce goes out with the water.)
-- **Remaining:** S01 leaf-boats and offering shelf, sea stones and algae at the islet's waterline; channel
-  bends and T-junctions (salvage). **S01–S05 baselines: re-approval pending** (the merged tree's capture is
-  running; they drift from ENV-06's stone and these fixes).
+- **Close-up fix:** `coral_dressed` pores ×0.3 (`pore_amount`) and the tile back to 0.6 m: at 1.2 m S04's
+  0.5 m camera showed single compressed texels as hard dots. Now tooled, worn stone.
+- **Shots re-approved after viewing** (lavapipe, against m2-slice's baselines): s01 0.08228 (roof tiers,
+  dressed walls, ENV-06 islet stone), s02 0.03511 (cool skylight fill, clean stone), s03 0.04734 (cool hall,
+  the puzzle still reads as a diagram), s04 0.05491 (tooled stone), s05 0.04072 (cleaner rim). Haluna shots
+  and `haluna_h10_dock_night` pass unchanged.
+- **Remaining (criteria 4–5):** S01 leaf-boats and offering shelf, sea stones and algae at the islet's
+  waterline; channel bends and T-junctions (salvage in `assets_src/environments/kits/shell_shrine_salvage/`).
 
 ## Review log

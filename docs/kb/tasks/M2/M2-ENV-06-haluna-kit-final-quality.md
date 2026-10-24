@@ -2,7 +2,7 @@
 id: M2-ENV-06
 title: Haluna kit to final quality (textures, materials, kit geometry, props), measured against the palette
 role: environment
-status: doing
+status: review
 owner_session: "env-art"
 depends_on: [M1-ENV-01]
 milestone: M2
@@ -23,7 +23,7 @@ materials, kit geometry) and `game/shaders/environment/**`. Set dressing in the 
 - [x] Ground: broad value drift on dry sand, a high-water wrack line, leaf litter on turf (env_ground).
 - [x] Drowned ruins: biofilm drip stains, less salt, greyed below lit_ceramic.
 - [x] House infill, timber and thatch checked at H02/H04 range; props checked for placeholders (the two trees are M2-ENV-07).
-- [ ] The five haluna shots (and `haluna_h10_dock_night` once it is on the integration branch)
+- [x] The five haluna shots (and `haluna_h10_dock_night` once it is on the integration branch)
       re-captured, viewed side by side with the old baselines, each drift listed with its RMSE and why,
       palette checks (`tests/screenshots/palette_checks.json`) still passing, then re-approved.
 - [x] `verify_blender_builds.py --job haluna_kit` byte-identical.
@@ -89,5 +89,10 @@ materials, kit geometry) and `game/shaders/environment/**`. Set dressing in the 
   planks 4 m shoreward of the end, 1.5 m, 50 mm, looking out to sea; `route_preview.tscn` camera
   `EndingDock`, shot `ending_dock_noon` in `route_preview_shots.json`). The planks, the end edge and the
   drowned columns beyond read well; no change. The night look is m2-slice's ENV-02.
+
+### Close (2026-10-24, env-art)
+- After merging claude/m2-slice, `haluna_h10_dock_night` with this branch's kit: rmse 0.00545 against
+  m2-slice's baseline, under the limit; viewed (lamp-lit houses, stars, a glowing sea, the new tide walls and
+  windbreaks dark against the sky). Left as is. All criteria met; to review.
 
 ## Review log

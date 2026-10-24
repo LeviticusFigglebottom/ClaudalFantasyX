@@ -65,10 +65,10 @@ MATERIALS: dict[str, dict] = {
                                 # the ruins read as old stone in the sea, not as glowing white posts.
                                 col_tint=hexc("#D2D4CB")),
     # M2-ENV-09 (Art Director): coral-limestone courses, not beige ashlar: the Haluna stone's holes and
-    # two tones in the dressed variant (`coral_dressed`: pores and grain, few holes, so floor and vault don't blotch), a per-block spread, a soft cavity; tinted a
+    # two tones in the dressed variant (`coral_dressed`: pores and grain, few holes, so floor and vault don't blotch; a 0.6 m tile, because at 1.2 m S04's close-up showed single texels), a per-block spread, a soft cavity; tinted a
     # touch cool, because the warm stone was bouncing the oculus sun into a brown hall (the brief: cool
     # after the glare). Still lighter and cleaner than the village (no algae, barnacles or salt indoors).
-    "kit_shrine_stone": stone("coral_dressed_albedo.png", "coral_dressed_normal.png", (1.2, 1.2),
+    "kit_shrine_stone": stone("coral_dressed_albedo.png", "coral_dressed_normal.png", (0.6, 0.6),
                               base_triplanar=True, col_tint=hexc("#F2F3F0"), normal_strength=1.0, roughness_base=0.84,
                               cavity_darken=0.22, erosion_pit_darken=0.14, ao_strength=0.65, variation_value=0.12,
                               variation_warmth=0.02, use_algae=False, use_barnacles=False, use_salt=False,

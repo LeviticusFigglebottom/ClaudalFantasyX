@@ -150,17 +150,18 @@ def save_pair(out: Path, stem: str, rgb, height, nx, ny, cavity) -> list[Path]:
 # Painters
 # ---------------------------------------------------------------------------------------------
 def build_coral_stone(out: Path, n: int, *, stem: str = "coral_stone", vug_amount: float = 1.0,
-                      grey_amount: float = 1.0) -> list[Path]:
+                      grey_amount: float = 1.0, pore_amount: float = 1.0) -> list[Path]:
     """Coral limestone: porous, with fossil polyp rings, sun-bleached; height in A, cavity in B.
-    `vug_amount` and `grey_amount` scale the solution holes and the weathered-grey patches: the
-    village walls use 1.0; the Shell Shrine's dressed stone (`coral_dressed`) far less."""
+    `vug_amount`, `grey_amount` and `pore_amount` scale the solution holes, the weathered-grey patches
+    and the fine pores: the village walls use 1.0; the Shell Shrine's dressed stone (`coral_dressed`) far
+    less (its pores read as hard dots in S04's close-up)."""
     rng = kc.rng_for("coral_stone_tex", SEED)
     shape = (n, n)
     big = fbm(shape, (3, 3), rng, octaves=5)
     f1, f2, cid = worley(shape, (14, 14), rng)
     polyp = np.exp(-((f1 - 0.28) / 0.07) ** 2) * (cid > 0.35)  # ring rims of old coral polyps
     pore_f1, _, _ = worley(shape, (56, 56), rng, jitter=1.0)
-    pores = np.clip((0.22 - pore_f1) * 7.0, 0, 1) * (fbm(shape, (6, 6), rng, 3) > 0.42)
+    pores = np.clip((0.22 - pore_f1) * 7.0, 0, 1) * (fbm(shape, (6, 6), rng, 3) > 0.42) * pore_amount
     cracks = np.clip(1.0 - (f2 - f1) * 14.0, 0, 1) ** 3 * smoothstep_np(0.5, 0.65, big)
     fine = fbm(shape, (64, 64), rng, octaves=3)
     cracks = cracks * smoothstep_np(0.55, 0.7, fbm(shape, (6, 6), rng, 3))  # a few fissures, not a net
@@ -197,7 +198,7 @@ def build_coral_stone(out: Path, n: int, *, stem: str = "coral_stone", vug_amoun
 def build_coral_dressed(out: Path, n: int) -> list[Path]:
     """The Shell Shrine's dressed coral limestone (M2-ENV-09): the same stone, tooled and tended, so its
     pores and fossil grain stay but the dark solution holes and grey weathering are mostly gone."""
-    return build_coral_stone(out, n, stem="coral_dressed", vug_amount=0.18, grey_amount=0.3)
+    return build_coral_stone(out, n, stem="coral_dressed", vug_amount=0.18, grey_amount=0.3, pore_amount=0.3)
 
 
 def build_coral_concrete(out: Path, n: int) -> list[Path]:
