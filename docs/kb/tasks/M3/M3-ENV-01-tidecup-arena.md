@@ -2,8 +2,8 @@
 id: M3-ENV-01
 title: Ch7 the Tamsule Bell: the Tidecup arena and its stands (kit at final quality)
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M2-ENV-06]
 milestone: M3
 request-from: lead
