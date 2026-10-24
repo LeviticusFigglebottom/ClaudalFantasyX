@@ -2,7 +2,8 @@ class_name BestiaryMenu
 extends Control
 ## The bestiary (M2-UI-02, SPEC §6.11): every foe the party has Read or defeated, listed on the
 ## left with its defeat count, and the chosen foe's page on the right (EnemyPageView, the same
-## page as the battle Read panel, built from enemies.json by BestiaryMenuModel). Out of battle.
+## page as the battle Read panel, built from enemies.json by BestiaryMenuModel), with the foe's
+## live portrait under it (BestiaryPortraitSlot; a silhouette until it is Read; M2-UI-26). Out of battle.
 ## Layout: game/data/ui/bestiary_menu.json (1920x1080 reference).
 ##
 ## Input (keyboard and controller through ui_*): ui_up / ui_down choose, ui_page_up / ui_page_down
@@ -28,6 +29,7 @@ var current_id: StringName = &""
 var _d: Dictionary = {}
 var _list: MenuPage
 var _view: EnemyPageView
+var _portrait: BestiaryPortraitSlot
 var _summary: Label
 var _help: Label
 var _entries: Array[Dictionary] = []
@@ -108,6 +110,10 @@ func page_view() -> EnemyPageView:
 	return _view
 
 
+func portrait_slot() -> BestiaryPortraitSlot:
+	return _portrait
+
+
 func summary_text() -> String:
 	return _summary.text
 
@@ -150,6 +156,7 @@ func close() -> void:
 	if _is_closed:
 		return
 	_is_closed = true
+	_portrait.clear()  # stop its viewport rendering behind a closed page
 	_restore_pause()
 	closed.emit()
 
@@ -182,11 +189,13 @@ func _show(index: int) -> void:
 	if _entries.is_empty():
 		current_id = &""
 		_view.visible = false
+		_portrait.clear()
 		return
 	var at := clampi(index, 0, _entries.size() - 1)
 	current_id = StringName(str(_entries[at]["id"]))
 	_view.visible = true
 	_view.show_page(model.page(current_id))
+	_portrait.show_enemy(current_id, bool(_entries[at]["read"]))
 
 
 func _restore_pause() -> void:
@@ -246,9 +255,14 @@ func _build() -> void:
 	for side: StringName in [&"margin_left", &"margin_right", &"margin_top", &"margin_bottom"]:
 		margin.add_theme_constant_override(side, int(HudLayout.num(gm, "pad")))
 	page_panel.add_child(margin)
+	var column := VBoxContainer.new()
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_child(column)
 	_view = EnemyPageView.new()
 	_view.max_width = HudLayout.rect_of(gm).size.x - HudLayout.num(gm, "pad") * 2.0
-	margin.add_child(_view)
+	column.add_child(_view)
+	_portrait = BestiaryPortraitSlot.new(_d.get("portrait", {}) as Dictionary)
+	column.add_child(_portrait)  # the height the page leaves (M2-UI-26)
 
 
 func _label(variation: StringName, r: Rect2) -> Label:

@@ -11,8 +11,14 @@ static var _config: Dictionary = {}
 
 ## Camera shakes started (tests read it).
 var shakes_started := 0
-## The choreography sequencer for the current engine (BattleChoreo.attached sets it; M2-BPR-01).
-var choreo: BattleChoreo
+## The choreography sequencer for the current engine (BattleChoreo.attached sets it; M2-BPR-01). Setting it
+## hooks the part cues to its contact beat (M3-C05-07).
+var choreo: BattleChoreo:
+	set(value):
+		choreo = value
+		part_cues = BattlePartCues.attach(self, value, part_cues)
+## Model parts shown and hidden by battle events (the Cinder Matron's Crust; M3-C05-07).
+var part_cues: BattlePartCues
 
 var _party_slots: Array[Marker3D] = []
 var _enemy_slots: Array[Marker3D] = []
