@@ -1,0 +1,17 @@
+{
+  "lattice_menu": {
+    "doc": "The lattice page (M2-MNU-01; docs/kb/tech/ui.md section Party pages). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3.",
+    "canvas_layer": 64,
+    "panel": {
+      "rect": [
+        219,
+        111,
+        1482,
+        858
+      ],
+      "pad": 27,
+      "title_height": 56,
+      "help_height": 40
+    }
+  }
+}
