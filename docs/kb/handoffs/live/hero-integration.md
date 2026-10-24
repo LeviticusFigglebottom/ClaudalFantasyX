@@ -157,8 +157,27 @@ and ADR 0190 "hero motion layer", proposed).
   `ts_a`/`ts_b`, `mode`).
 - **m2-slice's sequencer patch** uses `HeroMotion.play` and `set_locomotion_speed`, and HeroFieldActor's `play_clip`.
 
+- **M2-HER-1107: the field gait on characters' M2-CHR-12 clips → review (character).** Commits 17081887 and
+  c04639bf.
+  - **HeroGaitClips** (pure): walk/run starts and stops played by distance (feet planted at any acceleration),
+    turns in place driven by `root_yaw_deg` (still capped at 400°/s), and an idle_shift after 8 s plus a per-hero
+    share of 5 s. Gait speeds come from `game/data/characters/locomotion.json` when it exists. Everything is
+    duck-typed: without characters' clips the body behaves as before.
+  - **ADR 0191:** the field walk goes 1.5 → 1.0 m/s and the run 4.6 → 3.6 m/s, so the new cycles plant. Run foot
+    slide drops from 23–34% to under 8%. m2-slice will set the sequencer walk_mps to 1.0 with the patch.
+  - **On a trial merge with claude/characters (viewed):** a real heel-to-toe walk, clean party strides, a run start
+    that leans and pushes, a stop that decelerates to feet together, and a stepped turn. Flaw, sent to characters:
+    Rhen's forward arm reaches out at shoulder height in the run.
+  - **Tests:** hero 68/0, field 112/0, zone 42/0, fp_ 24/0, haluna 46/0, cutscene 41/0 on this branch. On the
+    trial: hero 71/0, field 112/0.
+  - **Shots field_hero_rhen_walk, field_hero_party and the new field_hero_gait_strip** are approved on this branch
+    with the OLD clips (viewed). **Lead: re-approve all three after viewing once claude/characters merges** (the new
+    clips change them).
+- **M3-AUD-810 (for audio): `HeroFieldActor.foot_contact(foot, run)`** from the clips' footfall markers (696fa2f9).
+  hero_foot 5/0.
+
 ## In progress
-- **M2-HER-1107 (worktree agent): the field gait on characters' M2-CHR-12 clips.** They're on claude/characters
+- **(done above) M2-HER-1107: the field gait on characters' M2-CHR-12 clips.** They're on claude/characters
   eee3099a+ (MERGE-READY): walk_start, walk_stop, run_start, run_stop, turn_in_place_l90/r90/180, idle_breathe,
   idle_shift, a rebuilt walk and run, and `locomotion.json` speeds. The code is duck-typed, so it lands here without
   the clips and is verified on a local trial merge with claude/characters.
