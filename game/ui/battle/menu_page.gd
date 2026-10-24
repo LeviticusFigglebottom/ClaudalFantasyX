@@ -2,7 +2,9 @@ class_name MenuPage
 extends Control
 ## One panel of the CommandMenu: a header tab, up to `max_rows` rows at a fixed pitch, a right
 ## column for costs (MP in dim text, then rank: R3 and up in the swell color), and the cursor
-## (raised fill + 2 px gold frame + lamp mote).
+## (the theme's "cursor" style: a lamplit raised fill, a 2 px gold frame and a focus wick; plus
+## the lamp mote). ADR 0033: a titled page draws an OrnamentRule under its header, and the row
+## under the cursor nudges its text right by the theme's cursor_nudge_px.
 ## Rows are Dictionaries: {id, label, right, right_role, mp, enabled, skill}.
 
 signal row_hovered(index: int)
@@ -23,6 +25,8 @@ var _mote: LampMote
 var _first := 0
 var _cursor_tween: Tween
 var _header_h := 0.0
+var _rule: OrnamentRule
+var _nudge_tweens: Dictionary = {}
 
 
 ## Height a page needs for `row_count` rows (header, rows, and a half-row of breathing room).
@@ -55,6 +59,13 @@ func setup(metrics: Dictionary, pid: StringName, title: String, page_rows: Array
 	_header.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_header)
+	if title != "":
+		_rule = OrnamentRule.new()
+		var indent := HudLayout.num(_m, "text_indent")
+		var node := float(get_theme_constant(&"ornament_node_px", HymnThemeBuilder.PALETTE_TYPE))
+		_rule.position = Vector2(indent - node, _header_h + 2.0 - node)
+		_rule.size = Vector2(size.x - indent * 2.0 + node, node * 2.0)
+		_content.add_child(_rule)
 	_cursor_box = Panel.new()
 	_cursor_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_cursor_box.add_theme_stylebox_override(&"panel", _cursor_style())
@@ -88,6 +99,11 @@ func replace_rows(page_rows: Array[Dictionary]) -> void:
 ## Changes the header text. A page set up untitled has no header row to show it in.
 func set_header(title: String) -> void:
 	_header.text = title
+
+
+## The header Label (pages that need a long title to ellipsize in its rect, M2-MNU-05).
+func header_label() -> Label:
+	return _header
 
 
 func row_count() -> int:
@@ -226,6 +242,7 @@ func _place_cursor(animate: bool) -> void:
 		return
 	if _cursor_tween != null and _cursor_tween.is_valid():
 		_cursor_tween.kill()
+	_nudge_rows(animate)
 	var r := row_rect(cursor)
 	var mp := HudLayout.num(_m, "mote_px")
 	var label_x := HudLayout.num(_m, "text_indent")
@@ -243,14 +260,9 @@ func _place_cursor(animate: bool) -> void:
 	tw.tween_property(_mote, "position", mote_pos, dur).set_delay(HudLayout.num(_m, "mote_lag_sec"))
 
 
-func _cursor_style() -> StyleBoxFlat:
-	var chamfer := get_theme_constant(&"chamfer_small_px", HymnThemeBuilder.PALETTE_TYPE)
-	var s := HymnThemeBuilder.notch_flat(_c(&"panel_raised"), chamfer)
-	s.set_border_width_all(get_theme_constant(&"focus_px", HymnThemeBuilder.PALETTE_TYPE))
-	s.border_color = _c(&"focus_gold")
-	s.shadow_color = _c(&"focus_glow")
-	s.shadow_size = get_theme_constant(&"focus_glow_px", HymnThemeBuilder.PALETTE_TYPE)
-	return s
+## The theme's cursor style (CursorStyleBox, ADR 0033).
+func _cursor_style() -> StyleBox:
+	return get_theme_stylebox(&"cursor", HymnThemeBuilder.PALETTE_TYPE)
 
 
 func _c(role: StringName) -> Color:
@@ -267,3 +279,31 @@ func _on_row_input(event: InputEvent, index: int) -> void:
 	var mb := event as InputEventMouseButton
 	if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
 		row_clicked.emit(index)
+
+
+## The row under the cursor shifts its text right by cursor_nudge_px; the others sit at rest. It
+## slides with the cursor (cursor_sec) unless motion is reduced or the page is not shown yet.
+func _nudge_rows(animate: bool) -> void:
+	var nudge := float(get_theme_constant(&"cursor_nudge_px", HymnThemeBuilder.PALETTE_TYPE))
+	var base := HudLayout.num(_m, "text_indent") - HudLayout.num(_m, "row_inset")
+	for i in _row_nodes.size():
+		var node := _row_nodes[i]
+		if node.get_child_count() == 0 or node.is_queued_for_deletion():
+			continue
+		var label := node.get_child(0) as Control
+		var x := base + (nudge if i == cursor else 0.0)
+		var old_tw: Tween = _nudge_tweens.get(i)
+		if old_tw != null and old_tw.is_valid():
+			old_tw.kill()
+		if animate and not reduced_motion and is_inside_tree() and not is_equal_approx(label.position.x, x):
+			var tw := create_tween()
+			tw.tween_property(label, "position:x", x, HudLayout.num(_m, "cursor_sec"))
+			_nudge_tweens[i] = tw
+		else:
+			label.position.x = x
+
+
+## The x of row `index`'s label (tests: the cursor row is nudged).
+func label_x(index: int) -> float:
+	var node := _row_nodes[index] if index >= 0 and index < _row_nodes.size() else null
+	return (node.get_child(0) as Control).position.x if node != null and node.get_child_count() > 0 else 0.0

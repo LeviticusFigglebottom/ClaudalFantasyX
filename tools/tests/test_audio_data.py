@@ -202,6 +202,22 @@ class AudioDataTest(unittest.TestCase):
         self.assertEqual(got["BasePage"], ["closed"])
         self.assertEqual(sorted(got["LeafPage"]), ["closed", "moved"])
 
+    def test_script_classes_inherit_their_game_base_signals(self) -> None:
+        """A hook may name a signal its class inherits (GraphicsMenu's `closed` comes from SettingsPage)."""
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            game = Path(tmp) / "game"
+            game.mkdir()
+            (game / "page.gd").write_text("class_name Page\nextends Control\nsignal closed\n", encoding="utf-8")
+            (game / "menu.gd").write_text("class_name Menu\nextends Page\nsignal picked\n", encoding="utf-8")
+            (game / "loop_a.gd").write_text("class_name LoopA\nextends LoopB\n", encoding="utf-8")
+            (game / "loop_b.gd").write_text("class_name LoopB\nextends LoopA\nsignal b\n", encoding="utf-8")
+            classes = dc.script_classes(Path(tmp))
+        self.assertEqual(classes["Page"], ["closed"])
+        self.assertEqual(classes["Menu"], ["picked", "closed"])
+        self.assertEqual(classes["LoopA"], ["b"], "a cycle stops")
+
     def test_sfx_rows_play_on_real_buses(self) -> None:
         errs = self._broken(dc.SFX, lambda s: s["sfx"]["tick"].update({"bus": "Nowhere", "pitch_jitter": 0.9}))
         self.assertTrue(any("unknown bus Nowhere" in e for e in errs), errs)

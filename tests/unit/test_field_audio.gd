@@ -395,8 +395,33 @@ func test_ui_hooks_play_the_field_menu() -> void:
 	ui.step()
 	assert_eq(played, [&"ui_menu_open"], "opening")
 	played.clear()
+	# M2-MNU-01..03: Equip (the second root row) opens a FieldSubmenu child; opening and closing it are heard.
+	menu.handle_input(_ev(&"ui_down"))
+	ui.step()
+	assert_eq(played.back() if not played.is_empty() else &"", &"ui_cursor", "ui_down plays ui_cursor")
+	played.clear()
+	menu.handle_input(_ev(&"ui_accept"))
+	ui.step()
+	assert_true(menu.child != null, "Equip opens its page")
+	assert_eq(played.back() if not played.is_empty() else &"", &"ui_confirm", "opening a page plays ui_confirm")
+	played.clear()
+	if menu.child != null:
+		menu.child.close()
+	ui.step()
+	assert_eq(played.back() if not played.is_empty() else &"", &"ui_cancel", "closing it plays ui_cancel")
+	played.clear()
+	# Then down to the Swell row, whose hero and mode pages are the menu's own levels.
+	var swell := -1
+	for i in menu.root_page().rows.size():
+		if StringName(str(menu.root_page().rows[i].get("id", ""))) == FieldMenuModel.ROW_SWELL:
+			swell = i
+	assert_true(swell > menu.root_page().cursor, "the Swell row is below Equip")
+	while menu.root_page().cursor < swell:
+		menu.handle_input(_ev(&"ui_down"))
+		ui.step()
+		assert_eq(played.back() if not played.is_empty() else &"", &"ui_cursor", "ui_down plays ui_cursor")
+		played.clear()
 	for step: Array in [
-		[&"ui_down", &"ui_cursor"],
 		[&"ui_accept", &"ui_confirm"],
 		[&"ui_down", &"ui_cursor"],
 		[&"ui_accept", &"ui_confirm"],

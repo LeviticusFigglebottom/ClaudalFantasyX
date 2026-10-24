@@ -1,0 +1,36 @@
+// Ch1 C1-07 to C1-08: the break into noon on O01 (the raft-town from the water at his eye level, the
+// brightest frame so far), then the scale-hull (O02). Rhen sells the gauge-wheel to the Order-licensed
+// scale-man, who weighs plain brass by the pound and stamps a chit for each lot. The Order's only
+// presence in Oruvel is a stamp and a scale. Rhen's haggling voice: he jokes harder when he is losing.
+// Choice: expression only, no flag. "Haggle him up" reports <<event ch01_haggled>> and the chapter
+// flow pays the few extra lume (the sums are in game/data/flow/chapters/ch01.json).
+// Watch (ADR 0022): the father line is about a quiet man who didn't argue. Nothing about where he went
+// or why, and nothing about Kell or the lantern.
+title: ch01_scale_hull
+location: ch01/oruvel
+---
+@camera O01
+@music oruvel_raft fade=3.0
+@fade in 2.0
+@wait 2.0
+@camera O02
+Scaleman [neutral]: Sallow. What's the sea coughed up today? #line:ch01_scale_001
+Rhen [smile]: Lit Age tide-gauge. Solid brass, four hundred years old, and not one tooth missing. #line:ch01_scale_002
+@sfx scale_weigh
+Scaleman [neutral]: Plain brass, by the pound. Forty lume. #line:ch01_scale_003
+Rhen [surprised]: Forty? It's not scrap, it's history. History's heavier. Check your scale. #line:ch01_scale_004
+-> Haggle him up. #line:ch01_scale_005
+    Rhen [smile]: Look at those teeth. Somebody cut every one by hand. That's sixty lume of somebody. #line:ch01_scale_006
+    Scaleman [neutral]: Fifty. Your father would've taken the first price, you know. #line:ch01_scale_007
+    Rhen [neutral]: He never was much for arguing. #line:ch01_scale_008
+    Scaleman [neutral]: No. Quiet man. Fifty, and I'm robbing myself. #line:ch01_scale_009
+    <<event ch01_haggled>>
+-> Take his price. #line:ch01_scale_010
+    Rhen [neutral]: Forty. Fine. You'll sell it upcoast for four hundred. #line:ch01_scale_011
+    Scaleman [neutral]: Six hundred. I've a family to feed. #line:ch01_scale_012
+@sfx chit_stamp
+Scaleman [neutral]: Unbound, by the Level. There's your chit. #line:ch01_scale_013
+Rhen [smile]: Unbound, by the Level. You'd stamp the sea if it held still long enough. #line:ch01_scale_014
+Scaleman [neutral]: I would. Off you go, diver. #line:ch01_scale_015
+@camera release
+===

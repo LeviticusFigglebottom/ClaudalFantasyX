@@ -90,6 +90,36 @@ static func panel_style(colors: Dictionary, k: Dictionary, chamfer: int) -> Tide
 	s.lamp_node_glow_px = float(k["lamp_node_glow_px"])
 	s.lamp_node_glow = colors[&"lamp_node_glow"]
 	s.set_content_margin_all(float(k["panel_margin_px"]))
+	# ADR 0033 flair.
+	s.glint_color = colors[&"surface_glint"]
+	s.glint_span = float(k["glint_span_pct"]) / 100.0
+	s.glint_inset_px = float(k["inner_rule_inset_px"])
+	s.corner_tick_px = float(k["corner_tick_px"])
+	s.corner_tick_inset_px = float(k["corner_tick_inset_px"])
+	s.tide_color = colors[&"tide_line"]
+	s.tide_lines = int(k["tide_lines"])
+	s.tide_band_px = float(k["tide_band_px"])
+	s.tide_amp_px = float(k["tide_amp_px"])
+	s.tide_wavelength_px = float(k["tide_wavelength_px"])
+	s.tide_min_height_px = float(k["tide_min_height_px"])
+	return s
+
+
+## The menu cursor (MenuPage reads it as stylebox "cursor" of the Hymn type; ADR 0033).
+static func cursor_style(colors: Dictionary, k: Dictionary) -> CursorStyleBox:
+	var s := CursorStyleBox.new()
+	s.fill = colors[&"panel_raised"]
+	s.fill_fade = float(k["cursor_fill_fade_pct"]) / 100.0
+	s.wash = colors[&"cursor_wash"]
+	s.wash_span = float(k["cursor_wash_span_pct"]) / 100.0
+	s.frame_color = colors[&"focus_gold"]
+	s.frame_px = float(k["focus_px"])
+	s.glow_color = colors[&"focus_glow"]
+	s.glow_px = float(k["focus_glow_px"])
+	s.chamfer_px = float(k["chamfer_small_px"])
+	s.wick_color = colors[&"focus"]
+	s.wick_px = float(k["cursor_wick_px"])
+	s.wick_inset_px = float(k["cursor_wick_inset_px"])
 	return s
 
 
@@ -119,6 +149,7 @@ static func _panels(t: Theme, colors: Dictionary, k: Dictionary) -> void:
 	t.set_stylebox(&"panel", &"Panel", big)
 	var small := panel_style(colors, k, int(k["chamfer_small_px"]))
 	t.set_stylebox(&"panel", &"TooltipPanel", small)
+	t.set_stylebox(&"cursor", PALETTE_TYPE, cursor_style(colors, k))
 	t.set_color(&"font_color", &"TooltipLabel", colors[&"text"])
 	var sep := StyleBoxLine.new()
 	sep.color = colors[&"separator_white"]

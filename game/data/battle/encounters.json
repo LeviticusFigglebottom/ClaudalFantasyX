@@ -3,8 +3,26 @@
     {"id": "sandbox_reef", "name_key": "ENC_SANDBOX_REEF", "scripted": false,
      "enemies": ["reef_crab", "lantern_eel", "gull_harrier"]},
     {"id": "ch02_tideline", "name_key": "ENC_CH02_TIDELINE", "scripted": false, "opening": "normal",
-     "enemies": ["reef_crab", "lantern_eel"]},
+     "arena": "tideline_dawn", "enemies": ["reef_crab", "lantern_eel"]},
     {"id": "drownbell", "name_key": "ENC_DROWNBELL", "scripted": true, "opening": "normal",
-     "prompt_key": "TUT_DROWNBELL_TOLL", "enemies": ["drownbell"]}
+     "prompt_key": "TUT_DROWNBELL_TOLL", "arena": "causeway_disc_sunset", "enemies": ["drownbell"]},
+    {"id": "ch03_causeway_shore", "name_key": "ENC_CH03_CAUSEWAY_SHORE", "scripted": false, "opening": "roll",
+     "enemies": ["lantern_eel", "gull_harrier", "reef_crab"]},
+    {"id": "ch03_causeway_harrier", "name_key": "ENC_CH03_CAUSEWAY_HARRIER", "scripted": false, "opening": "normal",
+     "prompt_key": "TUT_FLIER_RHEN", "enemies": ["gull_harrier", "reef_crab", "lantern_eel"]},
+    {"id": "ch01_wickfry", "name_key": "ENC_CH01_WICKFRY", "scripted": true, "opening": "normal",
+     "prompt_key": "TUT_CH01_COMMANDS", "enemies": ["wickfry"]},
+    {"id": "ch01_oil_slug", "name_key": "ENC_CH01_OIL_SLUG", "scripted": true, "opening": "normal",
+     "prompt_key": "TUT_CH01_ITEMS", "enemies": ["oil_slug"]},
+    {"id": "ch01_shaft_limpet", "name_key": "ENC_CH01_SHAFT_LIMPET", "scripted": false, "opening": "normal",
+     "prompt_key": "TUT_CH01_ESCAPE", "enemies": ["tower_limpet"]},
+    {"id": "ch01_scuttlers", "name_key": "ENC_CH01_SCUTTLERS", "scripted": true, "opening": "normal",
+     "enemies": ["scuttler", "scuttler"]},
+    {"id": "ch01_hullgnaw", "name_key": "ENC_CH01_HULLGNAW", "scripted": true, "opening": "normal",
+     "prompt_key": "TUT_HULLGNAW_TIMELINE", "party_skills": {"rhen": ["kick_off"]}, "enemies": ["hullgnaw"]},
+    {"id": "ch01_underway_shoals", "name_key": "ENC_CH01_WICKFRY", "scripted": false, "opening": "roll",
+     "enemies": ["wickfry", "wickfry"]},
+    {"id": "ch01_underway_limpet", "name_key": "ENC_CH01_SHAFT_LIMPET", "scripted": false, "opening": "roll",
+     "enemies": ["wickfry", "tower_limpet"]}
   ]
 }

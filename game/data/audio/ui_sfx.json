@@ -9,40 +9,99 @@
   "hooks": [
     {
       "class": "CommandMenu",
-      "signals": {"highlighted": "ui_cursor", "chosen": "ui_confirm", "cancelled": "ui_cancel"},
+      "signals": {
+        "highlighted": "ui_cursor",
+        "chosen": "ui_confirm",
+        "cancelled": "ui_cancel"
+      },
       "watch": [
-        {"expr": "page_with_row(node.top_page(), 'dismiss')", "sfx": "ui_vowbound_open", "on_true": true,
-         "_note": "the Vowbound's own root page (BattleMenus.vowbound_root_rows carries Dismiss)"}
+        {
+          "expr": "page_with_row(node.top_page(), 'dismiss')",
+          "sfx": "ui_vowbound_open",
+          "on_true": true,
+          "_note": "the Vowbound's own root page (BattleMenus.vowbound_root_rows carries Dismiss)"
+        }
       ]
     },
     {
       "class": "FieldMenu",
       "on_enter": "ui_menu_open",
-      "signals": {"closed": "ui_menu_close"},
+      "signals": {
+        "closed": "ui_menu_close"
+      },
       "watch": [
-        {"expr": "node.level", "rise": "ui_confirm", "fall": "ui_cancel"},
-        {"expr": "node.root_page().cursor", "sfx": "ui_cursor"},
-        {"expr": "node.detail_page().cursor", "sfx": "ui_cursor"},
-        {"expr": "node.model.current_mode_row(node.hero).get('id', '')", "sfx": "ui_confirm",
-         "_note": "a Swell fill mode chosen"}
+        {
+          "expr": "node.level",
+          "rise": "ui_confirm",
+          "fall": "ui_cancel"
+        },
+        {
+          "expr": "node.root_page().cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.detail_page().cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.model.current_mode_row(node.hero).get('id', '')",
+          "sfx": "ui_confirm",
+          "_note": "a Swell fill mode chosen"
+        },
+        {
+          "expr": "node.child != null",
+          "values": {
+            "true": "ui_confirm",
+            "false": "ui_cancel"
+          },
+          "_note": "M2-MNU-01..03: Items, Equip, Lattice and Status open a FieldSubmenu child (big7 merge); its own rows have no hooks yet (M2-AUD-14)"
+        }
       ]
     },
     {
       "class": "BestiaryMenu",
       "on_enter": "ui_page",
-      "signals": {"closed": "ui_page"},
-      "watch": [{"expr": "node.current_id", "sfx": "ui_cursor"}]
+      "signals": {
+        "closed": "ui_page"
+      },
+      "watch": [
+        {
+          "expr": "node.current_id",
+          "sfx": "ui_cursor"
+        }
+      ]
     },
     {
       "class": "SaveMenu",
       "on_enter": "ui_menu_open",
-      "signals": {"saved": "ui_confirm", "loaded": "ui_confirm", "closed": "ui_menu_close"},
+      "signals": {
+        "saved": "ui_confirm",
+        "loaded": "ui_confirm",
+        "closed": "ui_menu_close"
+      },
       "watch": [
-        {"expr": "node.model.cursor", "sfx": "ui_cursor"},
-        {"expr": "node.model.dialog_cursor", "sfx": "ui_cursor"},
-        {"expr": "node.model.phase", "rise": "ui_confirm", "fall": "ui_cancel"},
-        {"expr": "node.model.last_outcome", "values": {"2": "ui_error", "6": "ui_error", "8": "ui_error"},
-         "_note": "SaveMenuModel.Outcome REFUSED, SAVE_FAILED, LOAD_FAILED"}
+        {
+          "expr": "node.model.cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.model.dialog_cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.model.phase",
+          "rise": "ui_confirm",
+          "fall": "ui_cancel"
+        },
+        {
+          "expr": "node.model.last_outcome",
+          "values": {
+            "2": "ui_error",
+            "6": "ui_error",
+            "8": "ui_error"
+          },
+          "_note": "SaveMenuModel.Outcome REFUSED, SAVE_FAILED, LOAD_FAILED"
+        }
       ]
     },
     {
@@ -60,24 +119,50 @@
     {
       "class": "GraphicsMenu",
       "on_enter": "ui_menu_open",
-      "signals": {"closed": "ui_menu_close"},
-      "watch": [{"expr": "node.model.cursor", "sfx": "ui_cursor"}]
+      "signals": {
+        "closed": "ui_menu_close"
+      },
+      "watch": [
+        {
+          "expr": "node.model.cursor",
+          "sfx": "ui_cursor"
+        }
+      ]
     },
     {
       "class": "ShopMenu",
       "pending": true,
       "on_enter": "ui_menu_open",
-      "signals": {"bought": "ui_buy", "sold": "ui_buy", "refused": "ui_error", "tab_changed": "ui_page",
-                  "closed": "ui_menu_close"},
-      "watch": [{"expr": "node.model.cursor", "sfx": "ui_cursor"}],
+      "signals": {
+        "bought": "ui_buy",
+        "sold": "ui_buy",
+        "refused": "ui_error",
+        "tab_changed": "ui_page",
+        "closed": "ui_menu_close"
+      },
+      "watch": [
+        {
+          "expr": "node.model.cursor",
+          "sfx": "ui_cursor"
+        }
+      ],
       "_note": "M2-UI-06 has not landed: class and signal names are a guess to correct when it does"
     },
     {
       "class": "InnMenu",
       "pending": true,
       "on_enter": "ui_menu_open",
-      "signals": {"rested": "ui_inn_rest", "refused": "ui_error", "closed": "ui_menu_close"},
-      "watch": [{"expr": "node.model.cursor", "sfx": "ui_cursor"}],
+      "signals": {
+        "rested": "ui_inn_rest",
+        "refused": "ui_error",
+        "closed": "ui_menu_close"
+      },
+      "watch": [
+        {
+          "expr": "node.model.cursor",
+          "sfx": "ui_cursor"
+        }
+      ],
       "_note": "M2-UI-06 has not landed: class and signal names are a guess to correct when it does"
     },
     {

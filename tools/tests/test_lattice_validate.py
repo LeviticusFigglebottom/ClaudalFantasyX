@@ -1,5 +1,6 @@
 """Lattice and Facet checks in tools/validate_data.py. Run: python3 -m unittest discover -s tools/tests"""
 import json
+import os
 import shutil
 import sys
 import tempfile
@@ -16,12 +17,15 @@ FACETS = "game/data/progression/facets.json"
 
 class LatticeValidatorTests(unittest.TestCase):
     def setUp(self) -> None:
+        # validate_data.run reads the whole tree, but these tests only rewrite a few JSON files (save()), so the
+        # tree is mirrored as real directories holding symlinks to the repo's files. Copying game/ and assets/
+        # (about 200 MB) for every test made this suite take many minutes (M2-NIT).
         self.tmp = Path(tempfile.mkdtemp())
         for rel in ("game", "assets", "tools/banned_terms.txt", "docs/kb/glossary.md"):
             src, dst = ROOT / rel, self.tmp / rel
             dst.parent.mkdir(parents=True, exist_ok=True)
             if src.is_dir():
-                shutil.copytree(src, dst)
+                shutil.copytree(src, dst, copy_function=os.symlink)
             elif src.exists():
                 shutil.copy(src, dst)
 
@@ -32,7 +36,9 @@ class LatticeValidatorTests(unittest.TestCase):
         return json.loads((self.tmp / rel).read_text(encoding="utf-8"))
 
     def save(self, rel: str, doc: dict) -> None:
-        (self.tmp / rel).write_text(json.dumps(doc), encoding="utf-8")
+        path = self.tmp / rel
+        path.unlink()  # a symlink to the repo's file: replace the link, never write through it
+        path.write_text(json.dumps(doc), encoding="utf-8")
 
     def node(self, doc: dict, nid: str) -> dict:
         return next(n for n in doc["nodes"] if n["id"] == nid)

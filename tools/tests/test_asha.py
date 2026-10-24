@@ -21,7 +21,7 @@ sys.path.insert(0, str(SRC))
 sys.path.insert(0, str(ROOT / "assets_src" / "characters" / "base_body"))
 
 MAX_BYTES = 5 * 1024 * 1024  # ADR 0005 plain-blob cap
-LOD0_MAX = 63_500  # asha.md §8.1 target (ceiling 70k)
+LOD0_MAX = 65_000  # asha.md §8.1 target (ceiling 70k; the kept shins under the skirts, M1-CHR-14)
 PAIRED = ["brow_inner_up", "brow_down", "brow_outer_up", "lid_close", "lid_wide", "lid_squint", "cheek_raise",
           "nose_sneer", "mouth_smile", "mouth_frown", "mouth_stretch", "mouth_dimple"]
 SINGLE = ["mouth_press", "mouth_pucker", "lip_upper_up", "lip_lower_down", "jaw_open", "jaw_clench"]
@@ -55,7 +55,7 @@ class TestParams(unittest.TestCase):
         self.assertAlmostEqual(lm.mouth_w / lm.head_w, 0.40, places=3)  # asha.md §6.1
 
     def test_face_pose_table_uses_the_shared_api(self):
-        poses = json.loads((ROOT / "game/levels/_tests/characters/asha/asha_face_poses.json").read_text())
+        poses = json.loads((ROOT / "game/data/cutscene/asha_face_poses.json").read_text())
         tags = {e["id"] for e in json.loads((ROOT / "game/data/dialogue/emotions.json").read_text())["emotions"]}
         self.assertEqual(set(poses["emotions"]), tags)
         for tag, pose in poses["emotions"].items():

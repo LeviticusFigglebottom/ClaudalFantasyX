@@ -93,13 +93,15 @@ func unleash_vowbound(engine: BattleEngine) -> bool:
 ## M2-CMB-05, the call rule (sim_policies.json "call_vowbound"): "at_once" calls the first
 ## Vowbound the actor may call (vowbound.callable_ids) as soon as it may, and it stays out until it
 ## falls or the battle ends. "on_field" calls only while a field is up (the flood rises; the
-## Drownbell's clear_field_skill is the model), keeps it out while the field holds, and dismisses
-## it on its first turn after the field is gone. Unset: never. True if it called or dismissed.
+## Drownbell's flood is the model), keeps it out while the field holds, and dismisses
+## it on its first turn after the field is gone. "field_up" (M2-FP-17, the flood_call policy) calls
+## only while a field is up and never dismisses: it stays out until it falls or the battle ends.
+## Unset: never. True if it called or dismissed.
 func call_vowbound(engine: BattleEngine) -> bool:
 	var rule := StringName(str(config.get("call_vowbound", "")))
 	if rule == &"on_field" and engine.fields.is_empty():
 		return engine.vowbound.dismiss_refusal(engine) == &"" and engine.dismiss()
-	if rule == &"":
+	if rule == &"" or (rule == &"field_up" and engine.fields.is_empty()):
 		return false
 	var ids := engine.vowbound.callable_ids(engine)
 	return not ids.is_empty() and engine.summon(ids[0])

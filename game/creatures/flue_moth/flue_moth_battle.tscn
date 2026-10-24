@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_actor.gd" id="1_actor"]
+[ext_resource type="PackedScene" uid="uid://c2xd7qe6m2gj3" path="res://assets/creatures/flue_moth/flue_moth.glb" id="2_model"]
+
+[node name="FlueMoth" type="Node3D"]
+script = ExtResource("1_actor")
+creature_id = &"flue_moth"
+metadata/hymn_battle_actor = true
+
+[node name="Model" parent="." instance=ExtResource("2_model")]

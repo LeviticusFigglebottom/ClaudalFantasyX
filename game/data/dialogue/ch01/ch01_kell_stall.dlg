@@ -1,0 +1,52 @@
+// Ch1 C1-10 "Kell's stall: the wick" (critical) and the optional side scene "The Sea Owes Me a
+// Favour" (docs/kb/story/beats/act1_ch01.md §4). On the way to the dive mooring Rhen passes Mother
+// Kell's chandlery on the second mooring, as every diver does. Every path: she presses a fresh wick
+// from her own spool into his hand, "For luck", and he pockets it in his tin without looking
+// (ch01_has_kell_wick; the chapter flow gives the key item kell_wick). "Stay a minute." is the side
+// scene (ch01_kell_side_scene); "Tide's turning, Kell." goes straight on to C1-11.
+// O09: 65 mm, her hands and the wick in focus; inserts on her hands in the side scene.
+// ADR 0022 watches, every one: her own stock, given as to every diver; not a parting gift, not from
+// or about Dace; nothing about Rhen's father; nobody asked her to keep him; the wick is never fitted
+// to the lantern. Kell: Low Reaches plain, fond through insults, a trader's arithmetic. No more than
+// four of her lines in a row (SPEC §3.6). Her last line in the side scene is her last to him.
+title: ch01_kell_stall
+location: ch01/oruvel
+---
+@camera O09
+Kell [neutral]: Sallow. Over here. Second dive? #line:ch01_kell_001
+Rhen [smile]: Tide's good, and the scale-man's in a robbing mood. I need more brass. #line:ch01_kell_002
+@anim kell press_wick
+Kell [neutral]: Hand. For luck. #line:ch01_kell_003
+@anim rhen pocket_tin
+Rhen [neutral]: For luck. #line:ch01_kell_004
+<<set $ch01_has_kell_wick = true>>
+-> Stay a minute. #line:ch01_kell_005
+    <<set $ch01_kell_side_scene = true>>
+    <<jump side_scene>>
+-> Tide's turning, Kell. #line:ch01_kell_006
+    Kell [neutral]: Then go and catch it. #line:ch01_kell_007
+@camera release
+===
+title: side_scene
+---
+@anim kell trim_wicks
+Kell [neutral]: Then make yourself useful. Wicks for the afternoon divers. Even lengths. #line:ch01_kell_008
+@anim rhen trim_wicks
+Rhen [smile]: Even lengths. I've been doing this since I was eight. #line:ch01_kell_009
+@anim kell take_scissors
+Kell [neutral]: Badly. Since you were eight, badly. Give those here. #line:ch01_kell_010
+Rhen [neutral]: Kell. Why did you never learn to swim? #line:ch01_kell_011
+Kell [neutral]: Never needed to. The sea owes me a favour, and I've never once collected. #line:ch01_kell_012
+Kell [smile]: It can't take me while it's in debt. Salt and stone, that's plain trade. #line:ch01_kell_013
+Rhen [laugh]: That isn't how debt works. #line:ch01_kell_014
+Kell [neutral]: It's how mine works. #line:ch01_kell_015
+@wait 0.8
+Kell [neutral]: Tavi asked you twice to go to Tamsule with the side. Why didn't you? #line:ch01_kell_016
+Rhen [smile]: Somebody has to keep you in brass. #line:ch01_kell_017
+Kell [neutral]: Hm. #line:ch01_kell_018
+@wait 1.0
+Kell [smile]: Go on. The tide won't wait for a pretty face, and it won't wait for yours either. #line:ch01_kell_019
+@anim rhen laugh
+Rhen [laugh]: That's the nicest thing you've said all week. #line:ch01_kell_020
+@camera release
+===

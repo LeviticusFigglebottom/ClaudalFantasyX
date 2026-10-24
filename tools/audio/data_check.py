@@ -536,8 +536,8 @@ def load_files(root: Path) -> dict[str, object]:
 
 def script_classes(root: Path) -> dict[str, list[str]]:
     """{class_name: [declared signals]} for every script under game/ (ui_sfx.json hooks name classes and signals).
-    A class's list includes the signals of the script classes it extends (M3-AUD-15: LatticeMenu's `closed` is
-    FieldSubmenu's)."""
+    A class also has the signals of the game classes it extends (GraphicsMenu extends SettingsPage, whose
+    `closed` it emits)."""
     import re
 
     own: dict[str, list[str]] = {}
@@ -550,14 +550,16 @@ def script_classes(root: Path) -> dict[str, list[str]]:
             e = re.search(r"(?m)^extends\s+(\w+)", text)
             if e:
                 base[m.group(1)] = e.group(1)
-    out: dict[str, list[str]] = {}
-    for cls, sigs in own.items():
-        all_sigs = list(sigs)
-        up, hops = base.get(cls), 0
-        while up in own and hops < 32:
-            all_sigs += [s for s in own[up] if s not in all_sigs]
-            up, hops = base.get(up), hops + 1
-        out[cls] = all_sigs
+    return {cls: _with_inherited(cls, own, base) for cls in own}
+
+
+def _with_inherited(cls: str, own: dict[str, list[str]], base: dict[str, str]) -> list[str]:
+    out: list[str] = []
+    seen: set[str] = set()
+    while cls in own and cls not in seen:
+        seen.add(cls)
+        out += [s for s in own[cls] if s not in out]
+        cls = base.get(cls, "")
     return out
 
 

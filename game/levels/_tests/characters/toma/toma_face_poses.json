@@ -1,0 +1,23 @@
+{
+  "_about": "Toma's emotion tags -> face blendshape weights (docs/kb/art/characters/toma.md §6). A pair is [L, R]; a scalar sets both sides of a paired shape. His heavy brow does the acting: the brow_* weights carry the sheet's 1.15 range (the table there already includes it). Smiles read through cheek_raise and lid_squint, because the beard hides the mouth corners. Tags: game/data/dialogue/emotions.json. Read by the hero stage for the M2-CHR-02 review shots.",
+  "blend_in_s": 0.22,
+  "brow_range": 1.15,
+  "overshoot": {"smile": 0.06, "laugh": 0.06, "soft_smile": 0.06},
+  "emotions": {
+    "neutral": {},
+    "soft_smile": {"cheek_raise": 0.25, "lid_squint": 0.15, "mouth_smile": 0.25},
+    "smile": {"cheek_raise": 0.55, "lid_squint": 0.35, "mouth_smile": 0.60},
+    "laugh": {"cheek_raise": 0.80, "lid_squint": 0.60, "mouth_smile": 0.85, "jaw_open": 0.40},
+    "worried": {"brow_inner_up": 0.55, "brow_down": 0.30},
+    "sad": {"brow_inner_up": 0.70, "lid_close": 0.20, "mouth_frown": 0.25},
+    "grief": {"brow_inner_up": 1.00, "brow_down": 0.45, "lid_squint": 0.45, "mouth_frown": 0.50, "jaw_clench": 0.35},
+    "angry": {"brow_down": 0.95, "lid_squint": 0.25, "nose_sneer": 0.20, "jaw_clench": 0.60},
+    "cold": {"brow_down": 0.40, "lid_close": 0.15, "mouth_press": 0.45},
+    "surprised": {"brow_outer_up": 0.75, "brow_inner_up": 0.45, "lid_wide": 0.45, "jaw_open": 0.20},
+    "afraid": {"brow_inner_up": 0.80, "lid_wide": 0.50, "jaw_open": 0.10},
+    "determined": {"brow_down": 0.50, "jaw_clench": 0.45, "mouth_press": 0.35},
+    "tender": {"brow_inner_up": 0.30, "cheek_raise": 0.20, "lid_close": 0.20},
+    "guilty": {"brow_inner_up": 0.60, "lid_close": 0.40, "mouth_press": 0.40},
+    "exhausted": {"lid_close": 0.40, "brow_inner_up": 0.20, "jaw_open": 0.10}
+  }
+}

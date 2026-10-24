@@ -97,9 +97,13 @@
         "smart": [
           80,
           95
+        ],
+        "flood_call": [
+          0,
+          95
         ]
       },
-      "p90_turns_max": 60,
+      "p90_turns_max": 66,
       "loadout": "ch03_drownbell",
       "swell": "good"
     },
@@ -125,6 +129,284 @@
       "p90_turns_max": 40,
       "loadout": "sandbox_vowbound",
       "swell": "off"
+    },
+    {
+      "id": "sandbox_reef_vowbound_good",
+      "chapter": "M1 sandbox, Ilun called, heroes' Swell on (stress test)",
+      "kind": "vowbound",
+      "encounter": "sandbox_reef",
+      "active": [
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "toma"
+      ],
+      "bands": {
+        "naive": null,
+        "naive_swell": [
+          0,
+          50
+        ]
+      },
+      "p90_turns_max": 40,
+      "loadout": "sandbox_vowbound",
+      "swell": "good"
+    },
+    {
+      "id": "ch01_wickfry",
+      "chapter": "Ch1 tutorial regular (solo Rhen)",
+      "kind": "tutorial",
+      "encounter": "ch01_wickfry",
+      "active": [
+        "rhen"
+      ],
+      "reserve": [],
+      "bands": {
+        "naive": [
+          80,
+          100
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          95,
+          100
+        ],
+        "smart": [
+          98,
+          100
+        ]
+      },
+      "p90_turns_max": 30,
+      "loadout": "ch01_underway",
+      "swell": "good"
+    },
+    {
+      "id": "ch01_oil_slug",
+      "chapter": "Ch1 tutorial regular (solo Rhen)",
+      "kind": "tutorial",
+      "encounter": "ch01_oil_slug",
+      "active": [
+        "rhen"
+      ],
+      "reserve": [],
+      "bands": {
+        "naive": [
+          80,
+          100
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          95,
+          100
+        ],
+        "smart": [
+          98,
+          100
+        ]
+      },
+      "p90_turns_max": 30,
+      "loadout": "ch01_underway",
+      "swell": "good"
+    },
+    {
+      "id": "ch01_shaft_limpet",
+      "chapter": "Ch1 tutorial regular (solo Rhen)",
+      "kind": "tutorial",
+      "encounter": "ch01_shaft_limpet",
+      "active": [
+        "rhen"
+      ],
+      "reserve": [],
+      "bands": {
+        "naive": [
+          80,
+          100
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          95,
+          100
+        ],
+        "smart": [
+          98,
+          100
+        ]
+      },
+      "p90_turns_max": 30,
+      "loadout": "ch01_underway",
+      "swell": "good"
+    },
+    {
+      "id": "ch01_scuttlers",
+      "chapter": "Ch1 regular (solo Rhen)",
+      "kind": "regular",
+      "encounter": "ch01_scuttlers",
+      "active": [
+        "rhen"
+      ],
+      "reserve": [],
+      "bands": {
+        "naive": [
+          40,
+          80
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          95,
+          100
+        ],
+        "smart": [
+          98,
+          100
+        ]
+      },
+      "p90_turns_max": 30,
+      "loadout": "ch01_underway",
+      "swell": "good"
+    },
+    {
+      "id": "ch01_hullgnaw",
+      "chapter": "Ch1 boss (solo Rhen)",
+      "kind": "boss",
+      "encounter": "ch01_hullgnaw",
+      "active": [
+        "rhen"
+      ],
+      "reserve": [],
+      "bands": {
+        "naive": [
+          0,
+          10
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          80,
+          95
+        ]
+      },
+      "p90_turns_max": 60,
+      "loadout": "ch01_hullgnaw",
+      "swell": "good"
+    },
+    {
+      "id": "ch01_underway_shoals",
+      "chapter": "Ch1 Underway random (solo Rhen)",
+      "kind": "tutorial",
+      "encounter": "ch01_underway_shoals",
+      "active": [
+        "rhen"
+      ],
+      "reserve": [],
+      "bands": {
+        "naive": [
+          80,
+          100
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          95,
+          100
+        ],
+        "smart": [
+          98,
+          100
+        ]
+      },
+      "p90_turns_max": 30,
+      "loadout": "ch01_underway",
+      "swell": "good"
+    },
+    {
+      "id": "ch01_underway_limpet",
+      "chapter": "Ch1 Underway random (solo Rhen)",
+      "kind": "tutorial",
+      "encounter": "ch01_underway_limpet",
+      "active": [
+        "rhen"
+      ],
+      "reserve": [],
+      "bands": {
+        "naive": [
+          80,
+          100
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          95,
+          100
+        ],
+        "smart": [
+          98,
+          100
+        ]
+      },
+      "p90_turns_max": 30,
+      "loadout": "ch01_underway",
+      "swell": "good"
+    },
+    {
+      "id": "ch03_causeway_shore",
+      "chapter": "Ch3 route (Saltgrass Causeway): random shallows fight (crab, eel, harrier)",
+      "kind": "regular",
+      "encounter": "ch03_causeway_shore",
+      "active": [
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "toma"
+      ],
+      "bands": {
+        "naive": [
+          40,
+          80
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          95,
+          100
+        ],
+        "smart": [
+          98,
+          100
+        ]
+      },
+      "p90_turns_max": 30,
+      "loadout": "m1_starting",
+      "swell": "good"
+    },
+    {
+      "id": "ch03_causeway_harrier",
+      "chapter": "Ch3 route: the gull harrier lesson (Rhen answers fliers)",
+      "kind": "regular",
+      "encounter": "ch03_causeway_harrier",
+      "active": [
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "toma"
+      ],
+      "bands": {
+        "naive": [
+          40,
+          80
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          95,
+          100
+        ],
+        "smart": [
+          98,
+          100
+        ]
+      },
+      "p90_turns_max": 30,
+      "loadout": "m1_starting",
+      "swell": "good"
     }
   ]
 }

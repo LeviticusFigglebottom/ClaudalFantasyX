@@ -1,0 +1,22 @@
+{
+  "_about": "Rhen's emotion tags -> face blendshape weights (docs/kb/art/characters/rhen.md §6). A pair is [L, R]; a scalar sets both sides of a paired shape. His asymmetry is the crooked smile: mouth_smile R = L x 1.25, and mouth_dimple_R 0.3 whenever mouth_smile > 0.3. Tags: game/data/dialogue/emotions.json. Read by the hero stage for the M2-CHR-01 review shots.",
+  "blend_in_s": 0.12,
+  "overshoot": {"smile": 0.08, "laugh": 0.08, "soft_smile": 0.08},
+  "emotions": {
+    "neutral": {},
+    "soft_smile": {"mouth_smile": [0.28, 0.35], "mouth_dimple_R": 0.1},
+    "smile": {"mouth_smile": [0.60, 0.75], "cheek_raise": 0.40, "lid_squint": 0.30, "mouth_dimple_R": 0.3},
+    "laugh": {"mouth_smile": [0.85, 1.00], "cheek_raise": 0.70, "jaw_open": 0.45, "lid_squint": 0.60, "mouth_dimple_R": 0.3},
+    "worried": {"brow_inner_up": 0.50, "brow_down": 0.25, "mouth_stretch": 0.15},
+    "sad": {"brow_inner_up": 0.55, "lid_close": 0.30, "mouth_frown": 0.30, "mouth_press": 0.20},
+    "grief": {"brow_inner_up": 0.95, "brow_down": 0.40, "lid_squint": 0.50, "mouth_frown": 0.55, "mouth_stretch": 0.40, "jaw_clench": 0.20},
+    "angry": {"brow_down": 0.85, "lid_squint": 0.35, "nose_sneer": 0.25, "lip_upper_up": 0.20, "jaw_clench": 0.40},
+    "cold": {"brow_down": 0.30, "mouth_press": 0.40},
+    "surprised": {"brow_outer_up": 0.85, "brow_inner_up": 0.50, "lid_wide": 0.60, "jaw_open": 0.35},
+    "afraid": {"brow_inner_up": 0.85, "lid_wide": 0.70, "mouth_stretch": 0.50, "jaw_open": 0.20},
+    "determined": {"brow_down": 0.45, "jaw_clench": 0.35, "mouth_press": 0.30},
+    "tender": {"brow_inner_up": 0.25, "mouth_smile": [0.15, 0.22], "lid_close": 0.15},
+    "guilty": {"brow_inner_up": 0.45, "mouth_press": 0.25, "mouth_smile": [0.10, 0.20]},
+    "exhausted": {"lid_close": 0.40, "jaw_open": 0.12, "brow_inner_up": 0.15}
+  }
+}

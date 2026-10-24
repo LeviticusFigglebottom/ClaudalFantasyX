@@ -1,6 +1,6 @@
 {
  "battle_fixtures": {
-  "doc": "Frozen battle data for the HUD capture states (tests/screenshots/shots.json) and their tests (docs/kb/tech/ui.md § Capture fixtures). A copy of the sandbox rows as of 2026-10-23: rebalancing game/data/battle/*.json never moves a screenshot baseline. Each fixture may override rows (deep merge by id) and set opening state (hp, statuses, provoked_by) before the first turn. Edit only to change what a shot shows, then re-approve its baseline. M2-UI-05: tables.vowbound is a frozen copy of vowbound.json (Ilun's three skills are appended to tables.skills); a fixture's \"vowbound\" lists the Vowbound the party has bound, and only such a fixture gets the call (the others keep their root menus).",
+  "doc": "Frozen battle data for the HUD capture states (tests/screenshots/shots.json) and their tests (docs/kb/tech/ui.md § Capture fixtures). A copy of the sandbox rows as of 2026-10-23: rebalancing game/data/battle/*.json never moves a screenshot baseline. Each fixture may override rows (deep merge by id) and set opening state (hp, statuses, provoked_by) before the first turn. Edit only to change what a shot shows, then re-approve its baseline. M2-UI-05: tables.vowbound is a frozen copy of vowbound.json (Ilun's three skills are appended to tables.skills); a fixture's \"vowbound\" lists the Vowbound the party has bound, and only such a fixture gets the call (the others keep their root menus). M2-BPR-04: tables carry a frozen Drownbell (its Toll phase only: no Flood phase, polyps or Flood kit), its three skills and the fixture_drownbell encounter, for the toll's freeze-frame. M2-CMB-07: the victory fixture's foes carry lume and certain drops, so its shot shows the spoils rows.",
   "tables": {
    "characters": [
     {
@@ -232,6 +232,68 @@
       }
      ],
      "xp": 30
+    },
+    {
+     "id": "drownbell",
+     "name_key": "ENEMY_DROWNBELL",
+     "role_answer": "rhen",
+     "lore_key": "LORE_DROWNBELL",
+     "phase_name_key": "PHASE_DROWNBELL_TOLL",
+     "field_name_key": "FIELD_DROWNBELL_FLOOD",
+     "stats": {
+      "level": 6,
+      "hp": 3000,
+      "mp": 0,
+      "strength": 18,
+      "magic": 14,
+      "defense": 30,
+      "magic_defense": 20,
+      "agility": 12,
+      "accuracy": 10,
+      "evasion": 4,
+      "luck": 8
+     },
+     "affinities": {
+      "water": "absorb",
+      "lightning": "weak"
+     },
+     "delay_immune": true,
+     "skills": [
+      "hood_slam",
+      "toll_gather",
+      "toll"
+     ],
+     "weak_point": {
+      "hits": 3,
+      "max_delay": 200,
+      "name_key": "PART_DROWNBELL_RIM"
+     },
+     "ai": [
+      {
+       "if": {
+        "turn_mod": [
+         3,
+         0
+        ]
+       },
+       "pick": [
+        {
+         "skill": "toll_gather",
+         "target": "self"
+        }
+       ]
+      },
+      {
+       "pick": [
+        {
+         "skill": "hood_slam",
+         "target": "random_foe"
+        }
+       ]
+      }
+     ],
+     "xp": 450,
+     "currency": 300
     }
    ],
    "skills": [
@@ -499,6 +561,83 @@
      "swell": true,
      "vowbound": true,
      "clears_field": "flood"
+    },
+    {
+     "id": "shallows_verse",
+     "name_key": "SKILL_SHALLOWS_VERSE",
+     "kind": "heal",
+     "power": 4,
+     "rank": 3,
+     "element": "none",
+     "target": "all_other_allies",
+     "mp_cost": 0,
+     "magic": true,
+     "swell": true
+    },
+    {
+     "id": "return_tide",
+     "name_key": "SKILL_RETURN_TIDE",
+     "kind": "physical",
+     "power": 14,
+     "rank": 3,
+     "accuracy": 100,
+     "element": "none",
+     "target": "single_foe",
+     "mp_cost": 0,
+     "magic": false,
+     "swell": true
+    },
+    {
+     "id": "written_light",
+     "name_key": "SKILL_WRITTEN_LIGHT",
+     "kind": "magical",
+     "power": 10,
+     "rank": 3,
+     "element": "none",
+     "target": "all_foes",
+     "mp_cost": 0,
+     "magic": true,
+     "swell": true
+    },
+    {
+     "id": "hood_slam",
+     "name_key": "SKILL_HOOD_SLAM",
+     "kind": "physical",
+     "power": 4,
+     "rank": 3,
+     "accuracy": 95,
+     "element": "none",
+     "target": "single_foe",
+     "mp_cost": 0,
+     "magic": false
+    },
+    {
+     "id": "toll_gather",
+     "name_key": "SKILL_TOLL_GATHER",
+     "kind": "support",
+     "power": 0,
+     "rank": 2,
+     "element": "none",
+     "target": "self",
+     "mp_cost": 0,
+     "magic": false,
+     "charge": {
+      "skill": "toll",
+      "turns": 2
+     }
+    },
+    {
+     "id": "toll",
+     "name_key": "SKILL_TOLL",
+     "kind": "physical",
+     "power": 8,
+     "rank": 3,
+     "accuracy": 100,
+     "element": "none",
+     "target": "all_foes",
+     "mp_cost": 0,
+     "magic": false,
+     "delay_ranks": 3
     }
    ],
    "statuses": [
@@ -681,6 +820,16 @@
       "lantern_eel",
       "gull_harrier"
      ]
+    },
+    {
+     "id": "fixture_drownbell",
+     "name_key": "ENC_DROWNBELL",
+     "scripted": true,
+     "opening": "normal",
+     "prompt_key": "TUT_DROWNBELL_TOLL",
+     "enemies": [
+      "drownbell"
+     ]
     }
    ],
    "vowbound": [
@@ -788,19 +937,38 @@
        "stats": {
         "hp": 1,
         "evasion": 0
-       }
+       },
+       "currency": 24,
+       "drops": [
+        {
+         "item": "crab_carapace",
+         "chance": 100
+        },
+        {
+         "item": "salt_tonic",
+         "chance": 100
+        }
+       ]
       },
       "lantern_eel": {
        "stats": {
         "hp": 1,
         "evasion": 0
-       }
+       },
+       "currency": 20,
+       "drops": [
+        {
+         "item": "eel_lantern",
+         "chance": 100
+        }
+       ]
       },
       "gull_harrier": {
        "stats": {
         "hp": 1,
         "evasion": 0
-       }
+       },
+       "currency": 18
       }
      }
     }
@@ -1032,6 +1200,334 @@
       }
      }
     }
+   },
+   "swell_chant": {
+    "active": [
+     "asha",
+     "rhen"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "opening": {
+     "asha": {
+      "swell": 100,
+      "hp": 60
+     }
+    }
+   },
+   "swell_brace": {
+    "active": [
+     "toma",
+     "rhen"
+    ],
+    "reserve": [
+     "asha",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "opening": {
+     "toma": {
+      "swell": 100
+     }
+    }
+   },
+   "swell_glyph": {
+    "active": [
+     "ysolde",
+     "rhen"
+    ],
+    "reserve": [
+     "asha",
+     "toma"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "opening": {
+     "ysolde": {
+      "swell": 100
+     }
+    }
+   },
+   "statuses_colorblind": {
+    "active": [
+     "rhen",
+     "asha",
+     "ysolde"
+    ],
+    "reserve": [
+     "toma"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "overrides": {
+     "characters": {
+      "ysolde": {
+       "stats": {
+        "agility": 40
+       }
+      }
+     }
+    },
+    "opening": {
+     "rhen": {
+      "hp": 90,
+      "statuses": [
+       {
+        "id": "doom",
+        "duration": 4
+       },
+       {
+        "id": "zombie",
+        "duration": -1
+       },
+       {
+        "id": "regen",
+        "duration": 4
+       }
+      ]
+     },
+     "asha": {
+      "statuses": [
+       {
+        "id": "petrify",
+        "duration": -1
+       }
+      ]
+     },
+     "lantern_eel#2": {
+      "statuses": [
+       {
+        "id": "reflect",
+        "duration": 4
+       }
+      ]
+     },
+     "ysolde": {
+      "statuses": [
+       {
+        "id": "provoke",
+        "duration": 3
+       }
+      ],
+      "provoked_by": "lantern_eel#2"
+     }
+    },
+    "script": "statuses",
+    "ui_settings": {
+     "palette": "colorblind"
+    }
+   },
+   "choreo_melee": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022
+   },
+   "choreo_hit": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022
+   },
+   "choreo_swap": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022
+   },
+   "choreo_support": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022
+   },
+   "choreo_cast": {
+    "active": [
+     "rhen",
+     "asha",
+     "ysolde"
+    ],
+    "reserve": [
+     "toma"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "overrides": {
+     "characters": {
+      "ysolde": {
+       "stats": {
+        "agility": 40
+       },
+       "skills": [
+        "attack",
+        "ember",
+        "frost",
+        "slow_hex",
+        "read"
+       ]
+      }
+     },
+     "enemies": {
+      "reef_crab": {
+       "lore_key": "LORE_REEF_CRAB"
+      },
+      "lantern_eel": {
+       "lore_key": "LORE_LANTERN_EEL"
+      },
+      "gull_harrier": {
+       "lore_key": "LORE_GULL_HARRIER"
+      }
+     }
+    }
+   },
+   "choreo_read": {
+    "active": [
+     "rhen",
+     "asha",
+     "ysolde"
+    ],
+    "reserve": [
+     "toma"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "overrides": {
+     "characters": {
+      "ysolde": {
+       "stats": {
+        "agility": 40
+       },
+       "skills": [
+        "attack",
+        "ember",
+        "frost",
+        "slow_hex",
+        "read"
+       ]
+      }
+     },
+     "enemies": {
+      "reef_crab": {
+       "lore_key": "LORE_REEF_CRAB"
+      },
+      "lantern_eel": {
+       "lore_key": "LORE_LANTERN_EEL"
+      },
+      "gull_harrier": {
+       "lore_key": "LORE_GULL_HARRIER"
+      }
+     }
+    }
+   },
+   "choreo_ko": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "overrides": {
+     "enemies": {
+      "gull_harrier": {
+       "stats": {
+        "hp": 1,
+        "evasion": 0
+       }
+      }
+     }
+    }
+   },
+   "choreo_lamp_dive": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "opening": {
+     "rhen": {
+      "swell": 100
+     }
+    }
+   },
+   "choreo_toll": {
+    "active": [
+     "toma",
+     "asha",
+     "ysolde"
+    ],
+    "reserve": [
+     "rhen"
+    ],
+    "encounter": "fixture_drownbell",
+    "seed": 20261023
+   },
+   "choreo_vowbound_rise": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "vowbound": [
+     "ilun"
+    ]
+   },
+   "choreo_summon": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "vowbound": [
+     "ilun"
+    ]
    }
   }
  }

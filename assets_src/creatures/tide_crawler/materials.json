@@ -1,0 +1,19 @@
+{
+  "_doc": "Tide crawler (act1/tide_crawler.md): the spawn carapace with spawn_wound wounds and eyes. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "carapace": {
+      "roughness_dry": 0.3,
+      "roughness_wet": 0.12,
+      "specular": 0.6,
+      "clearcoat_wet": 0.9,
+      "detail_scale": 18.0,
+      "detail_albedo": 0.1,
+      "detail_bump": 0.35,
+      "cavity_albedo": 0.3,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 2.2,
+      "emission_pulse_hz": 0.3,
+      "emission_pulse_depth": 0.45
+    }
+  }
+}

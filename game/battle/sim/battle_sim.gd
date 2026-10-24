@@ -6,7 +6,10 @@ extends RefCounted
 ## which tools/balance/sim.py wraps, and by tests/integration/test_sandbox_battle.gd.
 
 ## naive_swell (M2-NIT-03) is report only: naive plus the Swell row (balance_targets.md).
-const POLICY_NAMES: Array[StringName] = [&"naive", &"naive_swell", &"lowest_hp", &"role_answer", &"smart"]
+## flood_call (M2-FP-17): naive_swell that calls its Vowbound when a field rises and leaves it out.
+const POLICY_NAMES: Array[StringName] = [
+	&"naive", &"naive_swell", &"lowest_hp", &"role_answer", &"smart", &"flood_call"
+]
 const CONFIG_PATH := "res://game/data/battle/sim_policies.json"
 
 var db: BattleDB
@@ -32,6 +35,8 @@ func make_policy(policy: StringName) -> SimPolicy:
 			p = SimPolicyNaive.new()
 		&"naive_swell":
 			p = SimPolicyNaiveSwell.new()
+		&"flood_call":
+			p = SimPolicyFloodCall.new()
 		&"lowest_hp":
 			p = SimPolicyLowestHp.new()
 		&"role_answer":
@@ -47,8 +52,8 @@ func make_policy(policy: StringName) -> SimPolicy:
 
 ## A named party loadout from sim_policies.json "loadouts": {gear: {character: [equipment ids]},
 ## items: {item id: count}, flags?: [story flags set], vowbound?: [ids bound]}. {} if unknown (the
-## bare party from characters.json). `flags` become BattleEngine.story_flags (flag-locked skills,
-## e.g. call_ilun); `vowbound` the Vowbound the party may call (M2-CMB-05; policies call by
+## bare party from characters.json). `flags` become BattleEngine.story_flags (flag-locked skills);
+## `vowbound` the Vowbound the party may call (M2-CMB-05; policies call by
 ## sim_policies.json "call_vowbound").
 func loadout(loadout_name: StringName) -> Dictionary:
 	return ((_config.get("loadouts", {}) as Dictionary).get(String(loadout_name), {}) as Dictionary).duplicate(true)

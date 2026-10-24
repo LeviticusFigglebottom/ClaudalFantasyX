@@ -1,0 +1,25 @@
+{
+  "objectives": {
+    "doc": "M2-UI-16: the objective lines. Rows are in story order. A row applies when every flag in `requires` is set and its `until` flag is not; `zone` (optional) limits it to that zone (game/data/ui/zone_maps.json ids). The current objective is the first main row that applies; `side` rows are optional errands listed under it in the field menu. `target` {zone, poi} is where the line points: the map's objective marker and the field's destination cue. First pass by the UI track for the slice beats (docs/kb/story/beats/vertical_slice.md); m2-slice keeps it current as beats change (M2-FP-28). tools/validate_data.py checks flags, loc keys and targets.",
+    "rows": [
+      {"id": "up_the_beach", "line_key": "OBJ_UP_THE_BEACH", "requires": ["ch02_met_asha"], "until": "ch02_tideline_won",
+       "zone": "ch02/haluna", "target": {"zone": "ch02/haluna", "poi": "village"}},
+      {"id": "to_nemes", "line_key": "OBJ_TO_NEMES", "requires": ["ch02_tideline_won"], "until": "ch02_ate_at_nemes",
+       "zone": "ch02/haluna", "target": {"zone": "ch02/haluna", "poi": "village"}},
+      {"id": "save_at_shrine", "line_key": "OBJ_SAVE_AT_SHRINE", "requires": ["ch02_ate_at_nemes"], "until": "ch02_saved_once",
+       "zone": "ch02/haluna", "target": {"zone": "ch02/haluna", "poi": "shrine"}},
+      {"id": "to_causeway_head", "line_key": "OBJ_TO_CAUSEWAY_HEAD", "requires": ["ch02_saved_once"], "until": "ch03_shrine_door_open",
+       "zone": "ch02/haluna", "target": {"zone": "ch02/haluna", "poi": "causeway_head"}},
+      {"id": "shrine_trial", "line_key": "OBJ_SHRINE_TRIAL", "requires": [], "until": "ch03_shrine_door_open",
+       "zone": "ch03/shell_shrine", "target": {"zone": "ch03/shell_shrine", "poi": "inner_pool"}},
+      {"id": "shrine_door", "line_key": "OBJ_SHRINE_DOOR", "requires": ["ch03_shrine_door_open"], "until": "ch03_first_verse_sung",
+       "zone": "ch03/shell_shrine", "target": {"zone": "ch03/shell_shrine", "poi": "chamber_door"}},
+      {"id": "find_asha_on_dock", "line_key": "OBJ_FIND_ASHA_ON_DOCK", "requires": ["ch03_drownbell_defeated"], "until": "ch03_rhen_sworn_guardian",
+       "zone": "ch02/haluna", "target": {"zone": "ch02/haluna", "poi": "dock"}},
+      {"id": "side_market_fragments", "line_key": "OBJ_SIDE_TOWN", "requires": ["ch02_ate_at_nemes"], "until": "ch03_shrine_door_open",
+       "zone": "ch02/haluna", "side": true},
+      {"id": "side_net_float", "line_key": "OBJ_SIDE_NET_FLOAT", "requires": ["ch03_side_pool_drained"], "until": "ch03_found_net_float",
+       "zone": "ch03/shell_shrine", "side": true, "target": {"zone": "ch03/shell_shrine", "poi": "side_pool"}}
+    ]
+  }
+}

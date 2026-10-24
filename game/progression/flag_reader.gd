@@ -8,6 +8,10 @@ extends RefCounted
 var values: Dictionary = {}
 ## Optional func(flag: StringName) -> Variant.
 var source: Callable
+## The access from_access() wraps. A Callable does not keep its RefCounted object alive, so the
+## reader holds it; without this a GameFlagAccess.new() passed in was freed at once and every
+## flag read as unset (found by M2-UI-06).
+var access: DialogueFlagAccess
 
 
 func _init(flag_source: Callable = Callable()) -> void:
@@ -15,7 +19,9 @@ func _init(flag_source: Callable = Callable()) -> void:
 
 
 static func from_access(access: DialogueFlagAccess) -> FlagReader:
-	return FlagReader.new(access.get_flag)
+	var reader := FlagReader.new(access.get_flag)
+	reader.access = access
+	return reader
 
 
 func is_set(flag: StringName) -> bool:

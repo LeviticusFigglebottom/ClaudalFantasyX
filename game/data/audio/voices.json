@@ -145,6 +145,60 @@
       "rate_ms": 55,
       "jitter": 0.08,
       "volume_db": 0.0
+    },
+    "cook": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.94,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "kell": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.82,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "osu": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.85,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "sabe": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.8,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "scaleman": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.86,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "skipper_sadi": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 1.02,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
     }
   }
 }

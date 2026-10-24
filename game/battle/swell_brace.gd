@@ -8,7 +8,9 @@ extends SwellInput
 ## - Letting go ends the brace: blows still to come are misses, and the release is graded by its
 ##   distance from the counter (perfect, good or miss). No release by the end of the counter's
 ##   window is a miss.
-## - Holding again after a release does nothing; other buttons are ignored.
+## - A release during the lead-in only lets go (nothing is graded), so the tap that chose the
+##   technique cannot spoil the brace; pressing again holds again (M2-UI-03).
+## - Holding again after a graded release does nothing; other buttons are ignored.
 
 const GRADE_BRACED := &"braced"
 
@@ -85,10 +87,13 @@ func press(button: StringName = BUTTON_ACCEPT) -> StringName:
 
 
 ## Lets go: every blow still to come is a miss, and the release is graded against the counter.
+## During the lead-in it only lets go.
 func release(button: StringName = BUTTON_ACCEPT) -> StringName:
 	if button != BUTTON_ACCEPT or is_done() or not holding:
 		return &""
 	holding = false
+	if elapsed < lead_in_sec:
+		return &""
 	while blows_left() > 0:
 		_record(GRADE_MISS)
 	var grade := grade_for(elapsed - counter_time(), perfect_sec, good_sec)

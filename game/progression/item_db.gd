@@ -27,12 +27,16 @@ var abilities: Dictionary = {}
 var recipes: Dictionary = {}
 ## Shop id -> row (shops.json "shops").
 var shops: Dictionary = {}
+## Inn id -> row (shops.json "inns": a price for a full rest; M2-UI-06, Inn).
+var inns: Dictionary = {}
 ## Character id -> {"weapon": equipment id, "armor": equipment id}.
 var starting: Dictionary = {}
 
 var stack_cap: int = 0
 var key_item_cap: int = 0
 var currency_cap: int = 0
+## The purse a new game starts with (items.json rules.starting_currency; economy.md § Currency).
+var starting_currency: int = 0
 var category_order: Array[StringName] = []
 var max_slots: int = 0
 var equip_slots: Array[StringName] = []
@@ -105,6 +109,7 @@ static func from_tables(raw: Dictionary) -> ItemDB:
 	db.stack_cap = int(rules.get("stack_cap", 0))
 	db.key_item_cap = int(rules.get("key_item_cap", 0))
 	db.currency_cap = int(rules.get("currency_cap", 0))
+	db.starting_currency = clampi(int(rules.get("starting_currency", 0)), 0, db.currency_cap)
 	db.category_order = _names(rules.get("category_order", []))
 	for row: Variant in it.get("items", []):
 		var d: Dictionary = row
@@ -139,6 +144,7 @@ static func from_tables(raw: Dictionary) -> ItemDB:
 	db.sell_ratio_den = maxi(int(sh_rules.get("sell_ratio_den", 1)), 1)
 	db.min_sell_price = int(sh_rules.get("min_sell_price", 0))
 	db.shops = _index(sh.get("shops", []))
+	db.inns = _index(sh.get("inns", []))
 	return db
 
 

@@ -1,0 +1,31 @@
+{
+  "_doc": "Shoal skipper (act1/shoal_skipper.md): skin (mottled, salt-crusted, the spawn_wound gill), fin (the dorsal sail), eye. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "skin": {
+      "roughness_dry": 0.6,
+      "roughness_wet": 0.2,
+      "clearcoat_wet": 0.6,
+      "detail_scale": 40.0,
+      "detail_albedo": 0.15,
+      "detail_bump": 0.4,
+      "cavity_albedo": 0.4,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 1.8
+    },
+    "fin": {
+      "roughness_dry": 0.5,
+      "roughness_wet": 0.2,
+      "detail_albedo": 0.08,
+      "detail_bump": 0.1,
+      "rim_sheen": 0.5
+    },
+    "eye": {
+      "roughness_dry": 0.12,
+      "roughness_wet": 0.06,
+      "specular": 0.7,
+      "clearcoat_wet": 1.0,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0
+    }
+  }
+}

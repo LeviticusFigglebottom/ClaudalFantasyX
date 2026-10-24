@@ -30,7 +30,7 @@ SPEC §16 Q4 default: no voice acting yet, but the architecture must be ready. T
   `CutsceneSequencer.line_shown(step)` (speaker, else narrator identity) and falls back to `mouth_flap(speaker)`.
   VO: the step's `voice` field, else the pattern; when the file exists it plays on Voice and the line's blips are
   dropped; a missing file falls back to blips; the next line or a closed box stops it.
-- **Request task:** M3-ARC-01 (architect): a `blip(voice)` signal, a `line_started(step)` signal and a switch to
+- **Request task:** M3-ARC-02 (architect; filed as M3-ARC-01): a `blip(voice)` signal, a `line_started(step)` signal and a switch to
   leave the box's own player out, so the poll and the muting can go.
 - **Tests:** `tests/unit/test_voice_audio.gd` (9: speaker coverage vs speakers.json with rows on Voice and files
   present, default fallback, blips per box blip with pitch/level/cycle and the box muted, rate limit and one per

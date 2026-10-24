@@ -1,6 +1,6 @@
 {
   "shell_shrine": {
-    "doc": "The Shell Shrine trial (M2-FP-16; vertical_slice.md B07, haluna.md \u00a73; logic in ShellShrineTrial). Water from the spring pours into `source_into`. Each basin pours out of one lip, which faces outlets[rotation]: another basin, `goal` (the inner pool), `drain` (the side pool's sluice) or `spill` (a floor grate, lost). An interaction turns a basin one step (90\u00b0) clockwise; rotation counts 0..steps-1. While the traced water reaches the goal, the inner pool fills over fill_sec and, once full, the chamber door floods open (it stays open). The first time water reaches the drain, the side pool empties for good and the net-float charm can be picked up. hint_scene plays once after hint_idle_sec with no turn. solution_moves is the band the shortest solution must sit in (checked by tools/tests/test_shell_shrine_trial.py). layout: greybox placement in metres for the level (x east, z south; the entrance is west, the door east). greybox: the stand-in geometry until Environment's shrine kit (haluna.md \u00a73.2) exists: sizes in metres, colours as hex. inserts: the camera shots held for insert_sec when the water first reaches the pool (S04) and when the side pool drains (S05). The level's flags: drained_flag lets the charm be picked up, door_flag opens the way to Cutscene B.",
+    "doc": "The Shell Shrine trial (M2-FP-16; vertical_slice.md B07, haluna.md \u00a73; logic in ShellShrineTrial). Water from the spring pours into `source_into`. Each basin pours out of one lip, which faces outlets[rotation]: another basin, `goal` (the inner pool), `drain` (the side pool's sluice) or `spill` (a floor grate, lost). An interaction turns a basin one step (90\u00b0) clockwise; rotation counts 0..steps-1. While the traced water reaches the goal, the inner pool fills over fill_sec and, once full, the chamber door floods open (it stays open). The first time water reaches the drain, the side pool empties for good and the net-float charm can be picked up. hint_scene plays once after hint_idle_sec with no turn. solution_moves is the band the shortest solution must sit in, and a random turner must need a median of 20 turns or more (both checked by tools/tests/test_shell_shrine_trial.py; M2-FP-22: four basins, the water starts looping b1 -> b4 -> b1, and b4 must be turned away from b1 through two spills before it feeds b3). layout: placement in metres (x east, z south; the hall's centre is the origin, the entrance is west, the door east). A lip turned to a basin, the pool or the sluice faces that point; a lip turned to a spill faces spill_bearing_deg[basin][rotation] (compass degrees, 0 north = -z, 90 east = +x; default the rotation's compass point) and its trough runs spill_len_m to a floor grate. The hall pieces are cut for inner_pool, side_pool and the oculus targets b1, b3 and inner_pool (M2-ENV-03: assets_src/environments/kits/haluna/shrine_interior.py SHRINE_LAYOUT; tools/tests/test_shell_shrine_kit.py keeps them equal), so moving those means rebuilding the kit. room: the room's metrics for the level's kit placement, water levels and collision (metres; y up from the floor): kit_dir and pieces name the M2-ENV-03 kit; a piece that fails to load falls back to a plain primitive of the same size. inserts: the camera shots held for insert_sec when the water first reaches the pool (S04) and when the side pool drains (S05). The level's flags: drained_flag lets the charm be picked up, door_flag opens the way to Cutscene B.",
     "source_into": "b1",
     "goal": "inner_pool",
     "drain": "side_sluice",
@@ -11,35 +11,44 @@
     "hint_idle_sec": 90.0,
     "hint_scene": "ch03_trial_hint",
     "solution_moves": [
-      3,
-      8
+      5,
+      10
     ],
     "basins": {
       "b1": {
-        "rotation": 0,
+        "rotation": 1,
         "outlets": [
-          "spill",
           "b2",
+          "b4",
           "spill",
-          "b3"
+          "spill"
         ]
       },
       "b2": {
         "rotation": 0,
         "outlets": [
-          "b3",
           "spill",
           "side_sluice",
+          "b1",
           "spill"
         ]
       },
       "b3": {
-        "rotation": 1,
+        "rotation": 0,
         "outlets": [
-          "spill",
           "b2",
+          "b4",
           "spill",
           "inner_pool"
+        ]
+      },
+      "b4": {
+        "rotation": 3,
+        "outlets": [
+          "spill",
+          "spill",
+          "b3",
+          "b1"
         ]
       }
     },
@@ -60,87 +69,125 @@
         1.5,
         0.0
       ],
+      "b4": [
+        1.5,
+        -6.0
+      ],
       "inner_pool": [
         7.5,
         0.0
       ],
       "side_sluice": [
-        -4.5,
-        6.0
+        -3.0,
+        6.5
       ],
       "side_pool": [
         -1.5,
-        8.0
+        6.5
       ],
       "door": [
-        14.0,
+        14.3,
         0.0
       ],
-      "spill_len_m": 1.6,
+      "spill_len_m": 2.2,
       "spawn": [
         -12.5,
         0.0
-      ]
+      ],
+      "spill_bearing_deg": {
+        "b1": {
+          "2": 122.0,
+          "3": 225.0
+        },
+        "b2": {
+          "0": 110.0,
+          "3": 270.0
+        },
+        "b3": {
+          "2": 45.0
+        },
+        "b4": {
+          "0": 0.0,
+          "1": 90.0
+        }
+      }
     },
     "drained_flag": "ch03_side_pool_drained",
     "door_flag": "ch03_shrine_door_open",
     "insert_sec": 2.5,
     "door_sink_sec": 1.5,
-    "greybox": {
-      "floor": [
-        28.0,
-        20.0
-      ],
-      "wall_h": 4.0,
+    "room": {
+      "kit_dir": "res://assets/environments/kits/haluna/",
+      "pieces": {
+        "spring": "shrine_spring",
+        "pedestal": "shrine_basin_pedestal",
+        "bowl": "shrine_basin_bowl",
+        "channel": "shrine_channel_straight",
+        "spillway": "shrine_channel_spillway",
+        "sluice": "shrine_channel_sluice",
+        "inner_pool": "shrine_inner_pool",
+        "side_pool": "shrine_side_pool",
+        "door": "shrine_door_valve",
+        "charm": "shrine_charm_net_float"
+      },
+      "water_material": "res://game/levels/ch03/shell_shrine/shrine_water_material.tres",
+      "spill_material": "res://assets/environments/kits/haluna/materials/kit_water_spill.tres",
+      "hall_half_m": 5.0,
+      "hall_r_m": 9.0,
+      "wall_h": 4.2,
       "wall_t": 0.6,
       "entrance_w": 3.0,
       "door_w": 3.0,
+      "floor_t": 0.5,
       "basin_r": 1.1,
       "basin_h": 0.9,
-      "lip": [
-        0.5,
-        0.15,
-        0.3
+      "pedestal_h": 0.5,
+      "bowl_water": 0.33,
+      "lip_reach_m": 1.46,
+      "spout_y": 0.31,
+      "spring_spout": [
+        0.72,
+        0.5
       ],
-      "channel_w": 0.4,
-      "channel_h": 0.12,
+      "foot_m": 0.8,
+      "channel_w": 0.38,
+      "channel_water": 0.22,
+      "module_m": 1.0,
+      "spillway_m": 1.25,
+      "sluice_m": 0.6,
       "pool": [
-        6.0,
-        6.0
+        7.0,
+        7.0
       ],
-      "pool_low": 0.02,
-      "pool_high": 0.42,
+      "pool_low": -0.55,
+      "pool_high": 0.1,
       "side_pool": [
         3.0,
         3.0
       ],
-      "side_low": 0.02,
+      "side_low": -0.46,
+      "side_high": -0.08,
+      "rim_h": 0.45,
+      "rim_t": 0.35,
       "door": [
-        0.6,
-        3.4,
+        0.5,
+        3.5,
         3.0
       ],
       "door_sink": -3.6,
-      "charm_r": 0.08,
-      "colors": {
-        "stone": "#C9C1AE",
-        "basin": "#D8D0BC",
-        "lip": "#E9E4D8",
-        "channel": "#8F8A7C",
-        "water": "#3FD0C9",
-        "door": "#B8AE96",
-        "charm": "#CFE8E6"
-      },
-      "water_alpha": 0.7,
-      "water_emission": 0.6,
-      "side_high": 0.38,
-      "rim_h": 0.45,
-      "rim_t": 0.25,
-      "floor_t": 0.5,
-      "water_t": 0.02,
-      "basin_foot": 0.8,
+      "charm_r": 0.03,
+      "charm_rest": -0.495,
       "reach_m": 0.9,
-      "exit_depth_m": 1.8
+      "exit_depth_m": 1.8,
+      "spill_width_m": 0.18,
+      "gi_energy": 0.3,
+      "gi_propagation": 0.6,
+      "pool_bounce": {
+        "color": "#3FD0C9",
+        "energy": 0.4,
+        "range_m": 8.0,
+        "height_m": 1.0
+      }
     }
   }
 }

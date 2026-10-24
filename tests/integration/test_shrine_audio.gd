@@ -32,7 +32,6 @@ func before_each() -> void:
 
 func test_the_zone_plays_the_shrine_cue() -> void:
 	dir.apply_zone(SCENE)
-	dir.flush_pending()  # zone music loads on a worker thread
 	assert_eq(dir.music.current, &"shell_shrine_interior")
 	var stream := dir.music.player().stream as AudioStreamOggVorbis
 	assert_true(stream != null and stream.loop, "the cue loops")
@@ -62,10 +61,11 @@ func test_a_turn_grinds_and_the_water_sounds_where_it_ends() -> void:
 
 
 func test_the_side_pool_drains_audibly_and_the_charm_glints() -> void:
+	# The turns come from the trial's own data (a search), so a puzzle change (M2-FP-22) can't break the test.
 	var turns := _turns_to(level.trial.drain())
-	assert_false(turns.is_empty(), "the data has a way to the sluice that doesn't fill the pool first")
-	for b in turns:
-		_interactable(StringName("basin_%s" % b)).try_interact()
+	assert_false(turns.is_empty(), "the sluice is reachable")
+	for id: StringName in turns:
+		_interactable(StringName("basin_%s" % id)).try_interact()
 	assert_eq(_events().back(), "reach_drain", "the water into the sluice")
 	level.advance(0.1)
 	assert_true(_events().has("side_drain"), "the side pool empties")
@@ -106,34 +106,6 @@ func _last_player(id: StringName) -> AudioStreamPlayer3D:
 	return out
 
 
-## The shortest turn sequence (basin ids) from the current state that brings the water to `target` without passing
-## a state that reaches the inner pool (so the pool never fills on the way). Derived from the trial data, so the
-## test follows the puzzle when its layout changes. [] when there is none within 10 turns.
-func _turns_to(target: StringName) -> Array[StringName]:
-	var start := level.trial.rotations.duplicate()
-	var queue: Array = [[start, [] as Array[StringName]]]
-	var seen := {str(start): true}
-	while not queue.is_empty():
-		var item: Array = queue.pop_front()
-		var path: Array[StringName] = item[1]
-		if path.size() >= 10:
-			continue
-		for b in level.trial.basin_ids():
-			var probe := ShellShrineTrial.new(level.trial.data)
-			probe.rotations = (item[0] as Dictionary).duplicate()
-			probe.rotate(b)
-			var key := str(probe.rotations)
-			if seen.has(key) or probe.reaches(probe.goal()):
-				continue
-			seen[key] = true
-			var next: Array[StringName] = path.duplicate()
-			next.append(b)
-			if probe.reaches(target):
-				return next
-			queue.append([probe.rotations.duplicate(), next])
-	return [] as Array[StringName]
-
-
 func _solve() -> void:
 	var guard := 0
 	while not level.trial.reaches(level.trial.goal()) and guard < 16:
@@ -170,3 +142,35 @@ func _done() -> void:
 
 func _host() -> Node:
 	return (Engine.get_main_loop() as SceneTree).current_scene
+
+
+## The shortest basin-turn sequence from the current state that brings the water to `target`, never passing
+## through a state that fills the inner pool first (that opens the door and ends the trial). Empty if none.
+func _turns_to(target: StringName) -> Array[StringName]:
+	var ids := level.trial.basin_ids()
+	var probe := ShellShrineTrial.new(level.trial.data)
+	var start: Array = []
+	for id in ids:
+		start.append(int(level.trial.rotations[id]))
+	var seen := {str(start): true}
+	var frontier: Array = [[start, [] as Array[StringName]]]
+	while not frontier.is_empty():
+		var next: Array = []
+		for item: Array in frontier:
+			var state: Array = item[0]
+			for i in ids.size():
+				probe.rotations[ids[i]] = int(state[i])
+			if probe.reaches(target):
+				return item[1]
+			if probe.reaches(probe.goal()):
+				continue
+			for i in ids.size():
+				var s2: Array = state.duplicate()
+				s2[i] = (int(s2[i]) + 1) % probe.steps()
+				if not seen.has(str(s2)):
+					seen[str(s2)] = true
+					var path: Array[StringName] = (item[1] as Array[StringName]).duplicate()
+					path.append(ids[i])
+					next.append([s2, path])
+		frontier = next
+	return []
