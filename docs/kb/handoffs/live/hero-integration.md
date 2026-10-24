@@ -63,6 +63,8 @@ and ADR 0190 "hero motion layer", proposed).
   - **Proposed patches** for UI and battle-presentation: `docs/kb/tech/hero_battle_proposed.patch`. Requests were
     sent to ui, battle-presentation and characters (M2-HER-1105 lists the clip asks).
   - **Tests:** hero 35/0 on this branch. On the trial with the patches: choreo 40/0, fighter 4/0, clips 7/0.
+  - **UI agreed:** they take the set_ko fix on claude/ui now, with a test. They repoint the stand_ins at the wrappers
+    after this branch reaches the integration branch. Their files stay off this branch.
   - **Shots** `battle_heroes_*` wait until the three branches are merged.
 
 ## In progress
