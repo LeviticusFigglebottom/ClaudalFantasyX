@@ -51,6 +51,7 @@ This needs the Godot 4.6.3 **export templates**: in the editor, open **Editor â†
 | Choose an option | Up / Down, then Enter | D-pad, then A |
 | Back, cancel | Escape | B / Circle |
 | Skip a cutscene (it stops at each choice, so you still choose) | hold Escape for 1 s | hold B / Circle |
+| Field menu (bestiary, Swell fill modes) | Escape in the field | B / Circle |
 | Battle menus | Up / Down / Left / Right, Enter, Escape | D-pad, A, B |
 
 In battle, the timeline on the right shows who acts next. Highlighting a command previews how it changes the order. Swap brings Toma in from the reserve. In the Drownbell fight, the panel at the top left says what the bell is building toward (the Toll and how many of its turns away it is), how many rim hits you've landed, and later how many polyps feed it.
@@ -65,7 +66,7 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - Haluna uses the art team's mood-test scene, with simple collision added. The camera mostly follows Rhen from behind; only a few spots use composed shots.
 - **Call Ilun** is a stand-in for the real Vowbound summon (ADR 0026). For now it is one of Asha's commands rather than a full summon that replaces the party, and the bell and polyps are placeholder shapes.
 - Entering Haluna holds the black fade for about a second and a half while the village builds itself; the picture no longer freezes when it appears.
-- In the field, Escape does nothing. **E** also advances dialogue.
+- In the field, Escape opens the field menu, which pauses the game. From it you can open the bestiary or choose each hero's Swell fill mode. Escape backs out a step at a time and then closes it. It doesn't open during a cutscene or a conversation. **E** also advances dialogue.
 
 ## Reporting
 
