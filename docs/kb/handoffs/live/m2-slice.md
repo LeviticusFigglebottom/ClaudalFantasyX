@@ -18,7 +18,9 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 - **Remaining M3 work for m2-slice:**
   1. **Ch8**, once M3-CMB-01 lands.
   2. **Ch7's real match** (the Reefball agent's seam).
-  3. **The slice end card → Ch4 hand-off** (M3-C04-04).
+  3. **The slice end card → Ch4 hand-off** (M3-C04-04). **Lead's call:** wiring it means the M2 review build no longer ends at the title after B11.
+     - My proposal: a data switch, `end_card.next_location` in first_playable.json, left empty (back to the title) until you say M3 should follow the slice.
+     - Say the word and I'll add it.
   4. **The Lead's earlier item 6:** swapping the capsules for real characters, which waits on the characters track.
   - **Playtest:** none of Act I has been played on a real GPU yet. A PC playthrough of the greybox chapters would catch flow and feel issues that headless tests can't.
 - **MERGE-READY @ the replay-uid commit after d034c31d.**
