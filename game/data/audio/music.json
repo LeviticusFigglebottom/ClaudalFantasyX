@@ -153,6 +153,11 @@
       "resume": true,
       "_note": "Ch7, the galleries inside the Tamsule Bell around the Reefball arena, not the match (that is tidecup_match) (M3-AUD-19); no zone row until ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn exists"
     }
+,
+    "stillguard_inquisitor": {
+      "file": "res://assets/audio/music/stillguard_inquisitor.ogg",
+      "_note": "Ch6 boss, the Stillguard Inquisitor and a raid-hound in the Brine Shoals (M3-AUD-20); no battle.encounters row until the encounter exists; intended: battle.encounters stillguard_inquisitor -> stillguard_inquisitor"
+    }
   },
   "zones": [
     {

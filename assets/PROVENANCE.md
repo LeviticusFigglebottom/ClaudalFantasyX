@@ -782,3 +782,5 @@ Rules:
 | assets/audio/music/coilspire.loop.json | assets_src/music/coilspire.py + tools/audio/synth/looping.py | python3 assets_src/music/coilspire.py | Audio (claude/audio, M3-AUD-19) | 2026-10-24 | original |
 | assets/audio/music/tamsule_bell_galleries.ogg | assets_src/music/tamsule_bell_galleries.py + tools/audio/synth/ | python3 assets_src/music/tamsule_bell_galleries.py | Audio (claude/audio, M3-AUD-19) | 2026-10-24 | original |
 | assets/audio/music/tamsule_bell_galleries.loop.json | assets_src/music/tamsule_bell_galleries.py + tools/audio/synth/looping.py | python3 assets_src/music/tamsule_bell_galleries.py | Audio (claude/audio, M3-AUD-19) | 2026-10-24 | original |
+| assets/audio/music/stillguard_inquisitor.ogg | assets_src/music/stillguard_inquisitor.py + tools/audio/synth/ | python3 assets_src/music/stillguard_inquisitor.py | Audio (claude/audio, M3-AUD-20) | 2026-10-24 | original |
+| assets/audio/music/stillguard_inquisitor.loop.json | assets_src/music/stillguard_inquisitor.py + tools/audio/synth/looping.py | python3 assets_src/music/stillguard_inquisitor.py | Audio (claude/audio, M3-AUD-20) | 2026-10-24 | original |
