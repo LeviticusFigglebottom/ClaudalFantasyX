@@ -3,6 +3,7 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **Done, in review:** M2-FP-14, B04 "Pila's Granddaughter": Osu at the causeway head on a greybox stand-in wake-shell wall, because the real piece is out of reach (filed **M2-ENV-04**). Also the B02 bag insert and the H03 lintel-gull look-at. Handoff cinematics-6.
 - **Done, in review:** M2-FP-10, the dialogue key light. The PC's GPU check passed. Its two follow-ups are done: H05/H06 `key_pitch_deg` 30, and the key layer moved 20 → 19 (20 is `UndertowHalfRes.BODY_LAYER`), with a guard test.
 - **Done, in review:** M2-FP-15, B11 "The dock at night" (the Drownbell victory → Haluna at night under a stand-in light → B11 → the end card; night blessings for the barks). It doesn't wait for M2-ENV-02 any more: its criteria allow the stand-in.
 - **Done, in review:** M2-FP-18, Cutscene A/B facial animation (seeded blinks, a blink on each expression change, text-driven visemes on Asha's viseme shapes; checked on lavapipe).
@@ -24,9 +25,9 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 - **M2-FP-10 is review-ready at c818bc8.** Please ask the PC GPU session to check Cutscene A (H05/H06): nose and mouth-corner shadows with the key on, the key's cost (a second shadowed directional light shares the directional atlas), and whether Haluna's `face_key_shadow_normal_bias` 3.0 on the zone sun can return to 1.0 (RND-20 S1).
 
 ## Exact next step
-**The standing queue is done apart from blocked items.**
+**The standing queue is done.** Every item is in review.
 - M2-CMB-05 and M2-FP-17 are in review. When M2-UI-05 (the Call command) lands, remove `call_ilun` from Asha and from the `ch03_drownbell` loadout's `retire_skills`, then re-run `sim.py --check`.
-- M2-FP-14 (B04) waits on the wake-shell wall being reachable.
+- M2-FP-14 is in review. When M2-ENV-04 lands, swap the stand-in wall for the real piece (handoff cinematics-6).
 - M2-FP-15 (B11) is done with the stand-in night; swap in M2-ENV-02's light when it lands.
 Lead: please queue more slice work.
 
@@ -34,7 +35,7 @@ Lead: please queue more slice work.
 1. ~~M2-FP-10 dialogue key light~~ (review)
 2. ~~Drownbell follow-ups (M2-FP-06)~~ → M2-FP-12 (review)
 3. ~~M2-FP-05 and M1-ARC-15 follow-ups; M1-UI-10~~: FP-05 and ARC-15 had no open review items (their known gaps are documented). M1-UI-10 is done (review).
-4. Haluna at vertical-slice quality: M2-FP-13 in review; M2-FP-14 (B04) next, M2-FP-15 (B11) in review (stand-in night)
+4. ~~Haluna at vertical-slice quality~~: M2-FP-13, M2-FP-14 (B04) and M2-FP-15 (B11) in review
 5. ~~Shell Shrine temple trial~~: M2-FP-16 (review)
 6. ~~First Vowbound~~ → M2-CMB-05 and M2-FP-17 (review); Cutscene A/B faces → M2-FP-18 (review)
 
@@ -43,6 +44,7 @@ Lead: please queue more slice work.
 - `pip install -r tools/requirements.txt` for gdlint/gdformat.
 
 ## History
+- 2026-10-24: M2-FP-14 done (B04, the B02 insert, H03). Gates: lint and format, dlgc --check, validate_data, taskboard --check, the full Godot suite (1355 green). I checked four lavapipe renders by eye. No coverage (no battle code), no shots (none render this scene).
 - 2026-10-24: merged the integration branch (e7270ca: RND-01 undertow compute, the GPU key-light check, the Lead's merge of this branch). Clean, no conflicts. Gates on the merged tree: validate_data, taskboard --check, lint and format, the full Godot suite (1347 green).
 - 2026-10-24: M2-CMB-05 and M2-FP-17 done. Gates: lint and format, validate_data, taskboard --check, the full Godot suite under coverage (1337 tests; battle 99.95%, progression 96.52%), `sim.py --check` passing every band, tools unittest 483 OK. No shots (none cover a boss fight).
 - 2026-10-24: M2-FP-15 done (B11). Gates: dlgc and `--check`, validate_data, lint and format, the full Godot suite (1316 green). I checked a lavapipe render of the night stand-in by eye.
