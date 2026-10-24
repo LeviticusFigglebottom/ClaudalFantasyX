@@ -83,6 +83,21 @@ var field: StringName = &""
 ## enemies.json "reactions" (M3-C05-02, the Cinder Matron's quench): [{elements, from_phase?,
 ## cleanses?, statuses?}]. A landed hit of one of those elements cleanses and adds statuses on it.
 var reactions: Array = []
+## enemies.json "tags" (M3-C06-02): what a foe is, for an encounter's rules ("stillguard": a person
+## of the Order, whom Toma will not strike in Ch6).
+var tags: Array[StringName] = []
+## enemies.json "yield_at_hp_pct" (M3-C06-02, the Stillguard Inquisitor and his hound): -1 fights to
+## a KO. Otherwise a hit (or a fall) that leaves it at or below this share of its max HP ends its
+## fight on its feet: it yields or runs, keeps at least 1 HP and leaves the field (is_alive() is
+## false from then on, so it counts as down for the timeline, targeting and the outcome). Nobody dies.
+var yield_at_hp_pct := -1
+## True once it has yielded (see yield_at_hp_pct).
+var yielded := false
+## encounters.json "forbidden_skills" (M3-C06-02), on a party member: its offensive skills may not
+## touch a foe carrying this tag (BossMechanics.forbids), and forbidden_key is the loc key that
+## says why ("Toma will not strike the Stillguard."). &"" = no rule.
+var forbidden_tag: StringName = &""
+var forbidden_key := ""
 
 
 static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> BattleCombatant:
@@ -115,6 +130,9 @@ static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> Ba
 	c.weak_point = (d.get("weak_point", {}) as Dictionary).duplicate(true)
 	c.field = StringName(str(d.get("field", "")))
 	c.reactions = (d.get("reactions", []) as Array).duplicate(true)
+	for t: Variant in d.get("tags", []):
+		c.tags.append(StringName(str(t)))
+	c.yield_at_hp_pct = int(d.get("yield_at_hp_pct", -1))
 	return c
 
 
@@ -153,7 +171,7 @@ func sim_copy() -> BattleCombatant:
 ## Still in the fight: HP above 0 and not turned to stone. Petrify counts as KO for the
 ## timeline, targeting, outcome checks and XP credit (formulas.md § Statuses).
 func is_alive() -> bool:
-	return hp > 0 and not statuses.has(STATUS_PETRIFY)
+	return hp > 0 and not yielded and not statuses.has(STATUS_PETRIFY)
 
 
 func is_petrified() -> bool:
@@ -226,11 +244,15 @@ func effective_magic_defense() -> int:
 
 ## Applies signed HP change (positive = damage). Returns the actual HP delta (negative = lost).
 func apply_damage(amount: int) -> int:
+	if yielded:
+		return 0  # it has left the fight
 	var before := hp
 	hp = clampi(hp - amount, 0, max_hp)
 	if amount > 0 and has_status(&"sleep"):
 		statuses.erase(&"sleep")
-	if hp == 0:
+	if amount > 0 and before > 0 and _yields_at(hp):
+		_yield()
+	elif hp == 0:
 		statuses.clear()
 		provoker_id = &""
 	return hp - before
@@ -244,7 +266,23 @@ func restore_hp(amount: int) -> int:
 
 ## KO now (Doom reaching zero): HP 0 and every status cleared.
 func fall() -> void:
+	if yield_at_hp_pct >= 0 and hp > 0:
+		_yield()  # a yielding foe never goes down: Doom or a field's fall ends its fight on its feet
+		return
 	hp = 0
+	statuses.clear()
+	provoker_id = &""
+
+
+## True when a hit leaving it on `left` HP ends its fight (see yield_at_hp_pct).
+func _yields_at(left: int) -> bool:
+	return yield_at_hp_pct >= 0 and not yielded and left * Formulas.PCT <= max_hp * yield_at_hp_pct
+
+
+## Leaves the fight on its feet (see yield_at_hp_pct): at least 1 HP, every status gone.
+func _yield() -> void:
+	hp = maxi(hp, 1)
+	yielded = true
 	statuses.clear()
 	provoker_id = &""
 

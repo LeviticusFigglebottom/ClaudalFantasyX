@@ -3,6 +3,45 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **The test_scene_router_swap regression is fixed on this branch** (reported by battle-presentation).
+  - **The cause:** my M2-ENV-05 resident flags on top of M2-ARC-05/08.
+    - **With the 17 Haluna `"resident": true` flags** merged onto 29b1dbfa, boot.tscn and battle_sandbox ran hidden swap frames of 156–196 ms against the 40 ms limit, failing 4 of 4 warm runs.
+    - **Without the flags,** the test passed 5 of 5 warm runs. The integration branch alone passed 4 of 4.
+  - **Reverted** in dc044b48. prewarm_materials.json now matches the integration branch exactly.
+  - **Cold-cache flake:** the first run after a fresh `--import` can fail this test once even without the flags. Trust warm runs.
+  - **To bring the flags back:** Rendering/PC needs to spread `ShaderPrewarm.spawn_resident` over frames with a per-frame budget. Until then, Haluna's second-launch entry stays at 3.1/3.5 s (ADR 0029's limit is 3 s). Noted in M2-ENV-05.
+- **The integration branch is merged** (1cc9fc66). My M2-ARC-04 handoff was renumbered **architect-23**, because the Lead's architect-21 took that number.
+- **M3-C06-02 is merged** (Ch6 "Salt Edict"; in review: narrative for staging, combat for the bands). Handoff cinematics-17.
+  - **Act I now plays through as greybox:** prologue → Ch1 → the Haluna slice (Ch2–Ch3, with the causeway) → Ch4 → Ch5 → Ch6 → Ch7 (a stand-in match) → the end card.
+  - **Gaps in the line:**
+    - The slice's end card doesn't hand on to Ch4 yet (M3-C04-04). Ch4 is reached from its own location or F5.
+    - Ch7 → Ch8 → Ch9: Ch8 waits on combat's M3-CMB-01. Ch9 plays from its own zone.
+  - **Engine rules added** (game/battle, tested; coverage 99.96%):
+    - encounter `forbidden_skills` (per hero, against a foe tag): Toma won't strike the Stillguard;
+    - enemy `yield_at_hp_pct`: the Inquisitor yields, so nobody dies;
+    - encounter `victory_key`;
+    - the sim's lawful-skill fallback.
+    - Combat should review these (M3-C06-05).
+  - **Provisional rows:** Liss's characters.json row (placeholder gear), plus the Inquisitor and raid hound.
+- **Remaining M3 work for m2-slice:**
+  1. **Ch8**, once M3-CMB-01 lands.
+  2. **Ch7's real match** (the Reefball agent's seam).
+  3. **The slice end card → Ch4 hand-off** (M3-C04-04). **Lead's call:** wiring it means the M2 review build no longer ends at the title after B11.
+     - My proposal: a data switch, `end_card.next_location` in first_playable.json, left empty (back to the title) until you say M3 should follow the slice.
+     - Say the word and I'll add it.
+  4. **The Lead's earlier item 6:** swapping the capsules for real characters, which waits on the characters track.
+  - **Playtest:** none of Act I has been played on a real GPU yet. A PC playthrough of the greybox chapters would catch flow and feel issues that headless tests can't.
+- **MERGE-READY @ the replay-uid commit after d034c31d.**
+  - **Items:**
+    - M3-C09-02 (Ch9, the end of Act I);
+    - M2-ENV-12 (the shrine's hall built off the tree);
+    - the Memories replay hooks for the Menus track (`CutsceneSequencer.replay`, `ReplayStage.prepare`).
+  - **Checks run:**
+    - full Godot suite 1590/0, tools unittest OK and `sim.py --check` exit 0, all on 4ec9bd77 (Ch9 and ENV-12);
+    - the replay commit's own tests: cutscene_replay 3/0, cutscene_sequencer 15/0, zone_story 13/0;
+    - shrine tests 15/0;
+    - gdlint, gdformat, validate_data, taskboard and dlgc --check all clean.
+  - **Checks skipped:** the screenshot manifest and Blender. The shrine shots last passed after M2-ENV-10, and M2-ENV-12 doesn't change pixels (the GI rebake is byte-identical).
 - **The shrine test hang (16:00): stack taken from a scratch repro.** The original run was already killed. **It's not the M2-QA-02 ShaderRD deadlock.**
   - **Repro:** headless, with the main thread in `Thread.wait_to_finish()` on a GDScript Thread that instantiates `shell_shrine.tscn`. `gdb thread apply all bt` (the binary is stripped):
     - main thread: `std::thread::join` (`wait_to_finish`);

@@ -141,7 +141,7 @@ func refresh_ko(engine: BattleEngine) -> void:
 		f.set_stone(
 			c.is_petrified(), Color.html(str(stone.get("color", "#FFFFFF"))), float(stone.get("roughness", 1.0))
 		)
-		var ko := c.hp <= 0
+		var ko := c.hp <= 0 or c.yielded  # a foe that yielded or ran has left the fight
 		f.set_ko(ko, float(cfg.get("ko_sink_m", 0.0)), float(cfg.get("ko_alpha", 1.0)))
 		if choreo != null:
 			choreo.on_ko_state(c.id, ko)

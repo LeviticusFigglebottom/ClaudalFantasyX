@@ -2,9 +2,10 @@
 id: M3-C04-04
 title: Ch4's hand-offs: the slice's end card into the wake night, and the ferry on to Ch5's Pemakar
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M3-C04-02, M3-C05-02]
+reviewer: lead
 milestone: M3
 request-from: cinematics
 ---
@@ -16,9 +17,15 @@ M3-C04-02 built Ch4 between two stand-ins:
 Do the exit first: with the end card pointing into Ch4 while Ch4 still exits to the end card, the two would loop.
 
 ## Acceptance criteria
-- [ ] Ch4's last step goes to Ch5's entry; `test_ch04_thread` asserts it.
+- [x] Ch4's last step goes to Ch5's entry; `test_ch04_thread` asserts it.
 - [ ] The end card leads into Ch4 in the full-game build; `test_fp_thread` and `test_fp_end_card` stay green.
 
 ## Notes
+- 2026-10-24 m2-slice: the Lead approved the switch.
+  - **The exit is already done.** Ch4's ferry goes on to `ch05/pemakar` at `Harbour` (M3-C05-02 merge).
+  - **The entry switch is in.** `first_playable.json` `end_card.next_location` / `next_spawn` are both **empty**, so the M2 review build still ends at the title.
+    - When they are set, `EndCard.accept` goes there through `FlowRouting.go_to` instead of `return_scene`.
+    - `test_fp_end_card` has two tests: one that the data stays empty, and one that with the switch set, accept goes on to `ch04/haluna_wake` / `NemeDoor`.
+  - **Left for the Lead:** set `ch04/haluna_wake` / `NemeDoor` once the human signs off the M2 review. That is the last box. Testers can reach M3 before then with F8 (M3-ARC-02).
 
 ## Review log

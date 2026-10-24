@@ -108,7 +108,7 @@ Ch5 "Terraces of Ash" follows Ch1's pattern: `game/data/flow/chapters/ch05.json`
 **Entry and exit.**
 - **Entry:** `ch05/pemakar` at `Harbour`, which is also the location's own spawn, so Ch5 can be entered directly (F5). Ch4 (M3-C04-02) should hand off with `{"go": {"location": "ch05/pemakar", "spawn": "Harbour"}}`. A party Ch4 leaves is kept. An empty one is filled with Rhen, Asha and Toma, with Ysolde in reserve.
 - **Kerrid** joins with a `party` step at the end of B05: active Rhen, Asha and Kerrid; reserve Toma and Ysolde.
-- **Exit:** Ch6's `ch06/brine_shoals` isn't built, so the dawn beat ends on the end card. Repoint its last step to a `go` when Ch6 lands.
+- **Exit:** the dawn beat goes to Ch6's `ch06/brine_shoals` at `Entry` (M3-C06-02).
 
 ## Ch7 (M3-C07-02)
 Ch7 "The Tidecup" is built the same way: `game/data/flow/chapters/ch07.json`, two zones under `game/levels/ch07/`, scripts in `game/data/dialogue/ch07/`, the loc table `game/data/loc/ch07.csv`, and the test `tests/integration/test_ch07_thread.gd`.
@@ -129,7 +129,7 @@ The real steps hand off to the match scene. The match must:
 The zone's first arrival row then plays B07 the same either way. No story `.dlg` and no chapter flow may read `ch07_tidecup_won`. The test enforces it, and its `REWARD_SCRIPTS` lists any script that gives the reward.
 
 **Seams to other chapters.**
-- **Entry:** Ch6 isn't built, so `ch07/tamsule` is reached from its own `locations.json` row (spawn `RiverMouth`) or the F5 teleport.
+- **Entry:** Ch6's dawn (B10) hands off to `ch07/tamsule` at `RiverMouth`; the location row and the F5 teleport reach it directly too.
 - **Exit:** `ch08/corrow` isn't built, so B10 hands off to the end card. Ch8 swaps the `leave` beat's last step for a `go`.
 
 ## Ch4 (M3-C04-02)
@@ -174,3 +174,34 @@ Flags inside them are set by `<<set>>` at the line that earns them.
 - **Exit:** Ch10 (Act II) isn't in M3, so the act break hands off to the end card.
 
 **Pell** has no `characters.json` row, so his joining is the flag `ch09_pell_joined` (and `ch09_pell_named` at B09). He is in no party list and no sim suite; his battle kit is M3-C09-07. The Ch9 party is Rhen, Asha and Toma, with Kerrid and Ysolde in reserve.
+
+## Ch6 (M3-C06-02)
+Ch6 "Salt Edict" is built the same way: `game/data/flow/chapters/ch06.json`, one zone under `game/levels/ch06/`, scripts in `game/data/dialogue/ch06/`, loc rows in `game/data/loc/ch06.csv`, and the test `tests/integration/test_ch06_thread.gd`.
+
+**The zone.** `ch06/brine_shoals` holds the whole chapter: the wreck-ridges and the mud-flats (the road), the last ridge and the hold, the burning Saltwright camp, the shoal channel, the ridge camp and the tideline. Its root, `Ch06Zone`, extends Ch04Zone, so the layout's flag-driven `states` keep the raid's cast, the barge, the party and Liss right after the battle or a load. It adds two things:
+- the layout's `lights`: rows of `{flag, sun, environment}` applied in order over the layout's own light, on `_ready` and in `refresh_states()`. The ridge camp's dusk uses it.
+- `checkpoint(spawn)`: B08's shrine. It moves the respawn point and requests an autosave, as Ch7's does. The shrine beat is `rest` then `checkpoint`.
+
+**Entry and exit.**
+- **Entry:** `Entry`, which is also the location's own spawn. Ch5's dawn now hands off with `{"go": {"location": "ch06/brine_shoals", "spawn": "Entry"}}`. Ch5's party is kept (Rhen, Asha and Kerrid; Toma and Ysolde in reserve).
+- **Exit:** B10 hands off to `ch07/tamsule` at `RiverMouth`.
+
+**The fight and the barge.** The `raid` beat plays B02 and B03 and ends on the battle step for `ch06_inquisitor`, with Toma, Rhen and Asha on the field and Kerrid and Ysolde in reserve. The battle returns to `CampWaterline` with `ch06_inquisitor_yielded`, and the zone's first arrival row then plays B05 to B08 in one run: the barge, a `party` step that seats Liss in reserve after B06, the lantern, and the ridge camp. A `zone: refresh_states` step follows each scene that sets a flag a state reads.
+
+**Two encounter rules (BossMechanics; battle_ctb.md "Encounter rules: forbidden skills and yielding foes").**
+- `forbidden_skills` greys Toma's offensive skills against foes tagged `stillguard` (both the Inquisitor and the hound), and the engine refuses them with `forbidden`. `party_skills` lends him his guard (Stand Fast, Brace, Challenge, Shield Wall) so the fight works without a Lattice.
+- `yield_at_hp_pct: 0` makes both foes yield on their feet at 0 HP: nobody dies. The encounter's `victory_key` sets the banner's title: "The Inquisitor yields."
+
+**Random fights.** The layout has one table for the whole road. It runs between `ch06_arrived` and `ch06_sheltered_liss`, so the camp has none. GreyboxZone has a single `encounters` block, so the ridges and the flats share it; separate tables for the flats need a zone-root feature (M3-C06-05).
+
+## Debug chapter select (M3-ARC-02)
+F8 in the debug overlay (debug builds only) lists the starts in `game/data/debug/chapter_select.json`: Ch1, then each built chapter. Enter on a start:
+1. begins a fresh game;
+2. sets that start's `flags` (the story so far);
+3. sets its `chapter` and `party`;
+4. goes to its `location` at `spawn`. The chapter's zone story takes over from there.
+
+`tools/chapter_flow_check.py` checks the starts: locations, spawns on greybox zones, heroes and declared flags. When a new chapter lands, add its start, and add its completion flags to every later start.
+
+The slice's end card leads on to `end_card.next_location` / `next_spawn` in `first_playable.json` when they are set (M3-C04-04). They are empty for the M2 review build, so the card returns to the title.
+

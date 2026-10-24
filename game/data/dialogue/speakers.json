@@ -33,6 +33,9 @@
   {"id": "marra", "name_key": "CHAR_MARRA", "blip_pitch": 0.86, "portrait_id": "portrait_villager_placeholder"},
   {"id": "hobb", "name_key": "CHAR_HOBB", "blip_pitch": 0.78, "portrait_id": "portrait_villager_placeholder"},
   {"id": "fenn", "name_key": "CHAR_FENN", "blip_pitch": 0.74, "portrait_id": "portrait_villager_placeholder"},
-  {"id": "stillguard", "name_key": "CHAR_STILLGUARD", "blip_pitch": 0.82, "portrait_id": "portrait_villager_placeholder"}
+  {"id": "stillguard", "name_key": "CHAR_STILLGUARD", "blip_pitch": 0.82, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "inquisitor", "name_key": "CHAR_INQUISITOR", "blip_pitch": 0.76, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "clerk", "name_key": "CHAR_CLERK", "blip_pitch": 0.96, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "wright", "name_key": "CHAR_WRIGHT", "blip_pitch": 1.04, "portrait_id": "portrait_villager_placeholder"}
  ]
 }

@@ -9,7 +9,7 @@
       "scene": "res://game/levels/prologue/prologue.tscn",
       "spawn": "Start",
       "name_key": "LOCATION_PROLOGUE",
-      "_note": "M2-FP-03: New Game starts here. The prologue plays its cutscene and sends the party to ch01/oruvel_underway at Drop (M3-C01-02; Ch1 then goes on to ch02/haluna at Beach); its root script defines place_at, so it counts as playable."
+      "_note": "M2-FP-03: New Game starts here. The prologue plays its cutscene and sends the party to first_playable.json prologue.next_location: ch02/haluna at Beach for the M2 review build, ch01/oruvel_underway at Drop once Act I is switched on (M3-C01-02; Ch1 then goes on to ch02/haluna at Beach); its root script defines place_at, so it counts as playable."
     },
     {
       "id": "field_test",
@@ -56,7 +56,7 @@
       "scene": "res://game/levels/ch07/tamsule/tamsule.tscn",
       "spawn": "RiverMouth",
       "name_key": "LOCATION_CH07_TAMSULE",
-      "_note": "M3-C07-02: Ch7's port (B01-B03, B08, B10), a greybox zone (Ch07Zone). Ch6 (not built) hands off here at RiverMouth; until then it is reached from this row. B10 hands off to the end card until ch08/corrow exists."
+      "_note": "M3-C07-02: Ch7's port (B01-B03, B08, B10), a greybox zone (Ch07Zone). Ch6's dawn (B10) hands off here at RiverMouth; it is also reached from this row. B10 hands off to the end card until ch08/corrow exists."
     },
     {
       "id": "ch07/tamsule_bell_galleries",
@@ -99,6 +99,13 @@
       "spawn": "Strand",
       "name_key": "LOCATION_CH09_CORROW_NIGHT",
       "_note": "M3-C09-02: Corrow on the night of the Ebbing and the dawn road (Ch9 B01-B10), a greybox zone (Ch09Zone) standing in for the ch08/corrow night variant until Ch8 lands. Ch8 hands off here at Strand; until then it is reached from this row. The act break hands off to the end card (Ch10 is Act II, not in M3)."
+    },
+    {
+      "id": "ch06/brine_shoals",
+      "scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn",
+      "spawn": "Entry",
+      "name_key": "LOCATION_CH06_BRINE_SHOALS",
+      "_note": "M3-C06-02: the Brine Shoals (Ch6 B01-B10): the wreck-ridges and mud-flats, the burning Saltwright camp, the shoal channel and the ridge camp; a greybox zone (Ch06Zone). Ch5's dawn hands off here at Entry; B10 hands off to ch07/tamsule at RiverMouth."
     }
   ],
   "shrines": [

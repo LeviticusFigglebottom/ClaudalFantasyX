@@ -44,6 +44,11 @@
     {"id": "ch04_derelict_leeches", "name_key": "ENC_CH04_SAIL_LEECHES", "scripted": false, "opening": "roll",
      "enemies": ["sail_leech", "sail_leech"]},
     {"id": "ch04_derelict_glass", "name_key": "ENC_CH04_BOTTLE_HERMIT", "scripted": false, "opening": "roll",
-     "enemies": ["bottle_hermit"]}
+     "enemies": ["bottle_hermit"]},
+    {"id": "ch06_ridge_skippers", "name_key": "ENC_CH06_WRECK_RIDGES", "scripted": false, "opening": "roll", "enemies": ["shoal_skipper", "shoal_skipper"]},
+    {"id": "ch06_ridge_crab", "name_key": "ENC_CH06_WRECK_RIDGES", "scripted": false, "opening": "roll", "enemies": ["wreck_crab", "shoal_skipper"]},
+    {"id": "ch06_ridge_gulls", "name_key": "ENC_CH06_WRECK_RIDGES", "scripted": false, "opening": "roll", "enemies": ["gull_harrier", "gull_harrier", "shoal_skipper"]},
+    {"id": "ch06_flats_crabs", "name_key": "ENC_CH06_MUD_FLATS", "scripted": false, "opening": "roll", "enemies": ["wreck_crab", "wreck_crab", "gull_harrier"]},
+    {"id": "ch06_inquisitor", "name_key": "ENC_CH06_INQUISITOR", "scripted": true, "opening": "normal", "prompt_key": "TUT_CH06_HOUND", "turn_prompt_hero": "toma", "turn_prompt_key": "BARK_CH06_TOMA_NOT_THEM", "victory_key": "HUD_CH06_INQUISITOR_YIELDS", "party_skills": {"toma": ["stand_fast", "brace", "challenge", "shield_wall"]}, "forbidden_skills": {"toma": {"against_tag": "stillguard", "fail_key": "HUD_FAIL_CH06_TOMA_WILL_NOT_STRIKE"}}, "enemies": ["stillguard_inquisitor", "raid_hound"], "_note": "M3-C06-02 (act1_ch06.md B04, §5): the party's first fight with the Order's own, and nobody dies. Toma will not strike the Stillguard: forbidden_skills greys his offensive skills on both (the hound is the Order's too) with the sheet's tooltip; party_skills lends him his defensive kit (Brace, Challenge, Shield Wall) so it is all there without a Lattice, and Stand Fast, a guard that costs nothing, so he always has a lawful action. Both foes yield_at_hp_pct 0: the Inquisitor yields and the hound runs. victory_key: 'The Inquisitor yields.' The first-turn prompt on Toma is his bark, 'No. Not them.' (a stand-in until the UI's first-refusal bark, M3-C06-05). Bands: tools/balance/targets.json ch06_inquisitor."}
   ]
 }

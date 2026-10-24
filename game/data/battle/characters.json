@@ -30,6 +30,7 @@
                 "magic_defense": 8, "agility": 9, "accuracy": 10, "evasion": 4, "luck": 8},
       "skills": ["attack", "fluke_cleave", "snub_line", "anchor_fall"],
       "_note": "M3-C05-02 PROVISIONAL: joins at the end of Ch5 B05 (act1_ch05.md; kerrid.md: a heavy hitter who breaks armour). No Swell row or Lattice start yet; his real kit is the combat request M3-C05-06. In no pre-Ch5 sim suite."
-    }
+    },
+    {"id": "liss", "name_key": "CHAR_LISS", "stats": {"level": 5, "hp": 340, "mp": 40, "strength": 12, "magic": 10, "defense": 8, "magic_defense": 10, "agility": 20, "accuracy": 12, "evasion": 14, "luck": 20}, "skills": ["attack", "reel_shot", "flash_housing"], "_note": "M3-C06-02 PROVISIONAL: joins at Ch6 B06 on Toma's papers (act1_ch06.md; liss_varrow.md: the Saltwright technical, an item specialist who steals, combines and deploys gadgets that apply statuses or alter turn order). A stand-in kit: Reel Shot (a launcher bolt that pushes its target down the timeline) and Flash Housing (a salt-glass flash: Darkness). No steal, combine, Swell (the reel-stop), gear or Lattice start yet; her real kit is the combat request M3-C06-05. Her first fight is Ch8 (Ch7 has no foes). In no sim suite."}
   ]
 }

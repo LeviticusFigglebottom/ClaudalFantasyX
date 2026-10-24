@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch06_bark_toma_papers",
+ "source": "game/data/dialogue/ch06/ch06_bark_toma_papers.dlg",
+ "start": "ch06_bark_toma_papers",
+ "nodes": {
+  "ch06_bark_toma_papers": {
+   "headers": {"location": "ch06/brine_shoals"},
+   "ops": [
+    {"op": "line", "id": "ch06_bark_toma_001", "key": "DLG_CH06_BARK_TOMA_001", "speaker": "toma", "emotion": "smile", "voice": "", "src": 5}
+   ]
+  }
+ }
+}

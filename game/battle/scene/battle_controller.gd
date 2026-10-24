@@ -517,7 +517,7 @@ func _show_result() -> void:
 	if persist_progress and fixture == null:
 		BattleVitals.send_back(engine, swell)
 	var rows: Array[Dictionary] = []
-	var title_key := "HUD_VICTORY"
+	var title_key := BattleMenus.victory_title_key(engine)
 	var sub_key := "HUD_VICTORY_SUB"
 	if engine.outcome == BattleEngine.OUTCOME_VICTORY:
 		rows = BattleRewards.new().award_victory(self)

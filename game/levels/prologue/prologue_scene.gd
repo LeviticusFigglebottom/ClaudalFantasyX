@@ -7,9 +7,10 @@ extends Node3D
 ## registry (and tools/validate_data.py) count the scene as playable.
 ##
 ## When it is the current scene (and `autoplay` is on) it sets `prologue_seen`, plays the cutscene,
-## then sends the party to first_playable.json prologue.next_location / next_spawn (Ch1's
-## ch01/oruvel_underway at Drop since M3-C01-02) through SceneRouter.world_return. Tests instance it with
-## autoplay off and call play().
+## then sends the party to first_playable.json prologue.next_location / next_spawn through
+## SceneRouter.world_return. That is a switch: the M2 slice route (ch02/haluna at Beach) until the
+## human signs off the M2 review, then Act I (ch01/oruvel_underway at Drop, M3-C01-02; the debug
+## chapter select reaches Ch1 before then). Tests instance it with autoplay off and call play().
 
 signal handed_off(location_id: StringName, spawn: StringName)
 
@@ -25,6 +26,10 @@ var sequencer: CutsceneSequencer
 ## How the hand-off travels: (location_id: StringName, spawn: StringName) -> bool. Unset =
 ## SceneRouter.world_return.go_to. Tests set a recorder.
 var travel: Callable = Callable()
+## Where the hand-off goes when set; unset = first_playable.json prologue.next_location / next_spawn.
+## Tests of the Act I route set it.
+var next_location: StringName = &""
+var next_spawn: StringName = &""
 ## True once the hand-off was requested (it happens once).
 var finished := false
 
@@ -66,8 +71,8 @@ func hand_off() -> bool:
 		return false
 	finished = true
 	var cfg := FirstPlayableConfig.section(FirstPlayableConfig.SECTION_PROLOGUE)
-	var loc := StringName(str(cfg.get(KEY_NEXT_LOCATION, "")))
-	var spawn := StringName(str(cfg.get(KEY_NEXT_SPAWN, "")))
+	var loc := next_location if next_location != &"" else StringName(str(cfg.get(KEY_NEXT_LOCATION, "")))
+	var spawn := next_spawn if next_location != &"" else StringName(str(cfg.get(KEY_NEXT_SPAWN, "")))
 	handed_off.emit(loc, spawn)
 	if travel.is_valid():
 		return bool(travel.call(loc, spawn))

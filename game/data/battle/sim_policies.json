@@ -232,6 +232,70 @@
       "vowbound": [
         "ilun"
       ]
+    },
+    "ch06_shoals": {
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ]
+      },
+      "items": {
+        "salt_tonic": 3,
+        "brine_eyewash": 1
+      }
+    },
+    "ch06_inquisitor": {
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ]
+      },
+      "items": {
+        "salt_tonic": 4,
+        "brine_eyewash": 2,
+        "relighting_wick": 1
+      },
+      "flags": [
+        "ch03_ilun_bound",
+        "ch05_kahre_bound"
+      ],
+      "vowbound": [
+        "ilun"
+      ]
     }
   }
 }
