@@ -1238,6 +1238,10 @@
     {
       "id": "items_menu_key",
       "scene": "res://game/ui/menus/items/shots/items_menu_key.tscn"
+    },
+    {
+      "id": "lattice_overview",
+      "scene": "res://game/ui/menus/lattice/shots/lattice_overview.tscn"
     }
   ]
 }

@@ -393,6 +393,96 @@ func _assert_no_overlap(what: String) -> void:
 			assert_false(rects[i].intersects(rects[j]), "%s: %s overlaps %s" % [what, rects[i], rects[j]])
 
 
+## M3-MNU-04: the overview fits every node in the board view, keeps the cursor, the side panel and
+## the actions, and toggling back returns to the cursor view on the same node.
+func test_the_overview_fits_the_whole_board_and_returns_to_the_cursor() -> void:
+	_open({})
+	menu.model.traveler().movement_points = 3
+	menu.set_cursor(&"rh_02", false)
+	var view := menu.board_view()
+	var texts := menu.side_texts()
+	assert_eq(view.zoom, 1.0)
+	assert_eq(menu.overview_button().text, tr("LATTICE_MENU_OVERVIEW_FMT").format({"key": "M"}))
+	menu.toggle_overview(false)
+	assert_true(menu.is_overview())
+	assert_eq(view.zoom, view.fit_zoom(), "the fit zoom")
+	assert_true(view.zoom < 1.0 and view.zoom >= view.zoom_min(), "held inside the wheel's range")
+	var inside := Rect2(Vector2.ZERO, view.size)
+	for nid: StringName in menu.model.board().nodes:
+		assert_true(inside.has_point(view.screen_point(nid)), "%s is in view" % nid)
+	assert_eq(menu.cursor, &"rh_02", "the cursor stays")
+	assert_eq(menu.side_texts(), texts, "and so does its panel")
+	assert_eq(menu.overview_button().text, tr("LATTICE_MENU_OVERVIEW_BACK_FMT").format({"key": "M"}))
+	var framed := view.pan
+	menu.handle_input(_ev(&"ui_right"))
+	assert_eq(menu.cursor, &"rh_03")
+	assert_eq(view.pan, framed, "the board stays framed as the cursor moves")
+	menu.handle_input(_ev(&"ui_accept"))
+	assert_true(menu.is_confirming(), "actions work in the overview")
+	menu.handle_input(_ev(&"ui_cancel"))
+	menu.handle_input(_ev(LatticeMenu.OVERVIEW_ACTION))
+	assert_eq(menu.is_overview(), false, "the action toggles it back")
+	_teardown()
+
+
+func test_back_from_the_overview_is_the_cursor_view_on_the_same_node() -> void:
+	_open({})
+	var view := menu.board_view()
+	menu.set_cursor(&"rh_05", false)
+	var near_pan := view.pan
+	menu.toggle_overview(false)
+	menu.toggle_overview(false)
+	assert_eq(view.zoom, 1.0)
+	assert_eq(view.pan, near_pan, "the same framing as before")
+	menu.toggle_overview(false)
+	menu.set_cursor(&"rh_01", false)
+	menu.toggle_overview(false)
+	var fresh := LatticeMenu.create(PartySheet.new(GameStateData.new(), HEROES))
+	fresh.pause_tree = false
+	_root().add_child(fresh)
+	fresh.set_cursor(&"rh_01", false)
+	assert_eq(view.pan, fresh.board_view().pan, "back on the node the cursor moved to")
+	fresh.close()
+	fresh.get_parent().remove_child(fresh)
+	fresh.free()
+	_teardown()
+
+
+func test_a_wheel_turn_leaves_the_overview_and_reduced_motion_snaps() -> void:
+	var settings := UiSettings.shared()
+	var was: Variant = settings.get_value(UiSettings.REDUCED_MOTION)
+	settings.set_value(UiSettings.REDUCED_MOTION, true)
+	_open({})
+	var view := menu.board_view()
+	menu.toggle_overview()  # animated if it could be: reduced motion snaps
+	assert_eq(view.zoom, view.fit_zoom(), "no tween: already there")
+	var wheel := InputEventMouseButton.new()
+	wheel.button_index = MOUSE_BUTTON_WHEEL_UP
+	wheel.pressed = true
+	wheel.position = view.size * 0.5
+	view._gui_input(wheel)
+	assert_false(menu.is_overview(), "the player took the camera")
+	assert_eq(menu.overview_button().text, tr("LATTICE_MENU_OVERVIEW_FMT").format({"key": "M"}))
+	_teardown()
+	settings.set_value(UiSettings.REDUCED_MOTION, was)
+
+
+func test_the_overview_names_who_woke_each_node() -> void:
+	var m := _model({"facet_speed": 1})
+	m.traveler().movement_points = 1
+	m.act(&"rh_01")
+	m.act(&"rh_01")
+	assert_eq(m.woken_initials(&"rh_01"), tr("CHAR_RHEN").left(1))
+	assert_eq(m.woken_initials(&"rh_02"), "", "nobody woke it")
+	assert_eq(m.woken_initials(&"asha_start"), tr("CHAR_ASHA").left(1), "a start is its owner's")
+	assert_true(InputMap.has_action(LatticeMenu.OVERVIEW_ACTION) or _ensured(), "the action exists")
+
+
+func _ensured() -> bool:
+	LatticeMenu.ensure_action()
+	return InputMap.has_action(LatticeMenu.OVERVIEW_ACTION)
+
+
 func _model(facets: Dictionary = {}) -> LatticeMenuModel:
 	var state := GameStateData.new()
 	state.inventory = facets.duplicate()

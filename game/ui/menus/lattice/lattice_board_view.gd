@@ -11,8 +11,14 @@ extends Control
 ## reduced motion). A click on a node emits node_clicked (on release, so a press that moves drag_px or
 ## more pans the board instead: M2-UI-26); the wheel zooms between zoom_min and zoom_max about the
 ## pointer, every shape and line scaling with it.
+## M3-MNU-04: the overview fits the whole board in the view (fit_zoom, centred; no second renderer)
+## and names every hero under their node, with the initials of who woke it beside each woken node,
+## so who stands where and who woke what reads without colour. Cursor moves keep the framing; a
+## wheel turn or a drag hands the camera back to the player (overview off).
 
 signal node_clicked(node_id: StringName)
+## The overview was turned on or off (by set_overview, or a wheel turn or drag leaving it).
+signal overview_changed(on: bool)
 
 var model: LatticeMenuModel
 var cursor: StringName = &""
@@ -34,7 +40,14 @@ var zoom := 1.0:
 		zoom = value
 		queue_redraw()
 
+## M3-MNU-04: the whole board is framed (set_overview).
+var overview := false
+
 var _m: Dictionary = {}
+## lattice_menu.json "overview".
+var _o: Dictionary = {}
+## The zoom to return to when the overview ends.
+var _return_zoom := 1.0
 var _pan_tween: Tween
 ## A left press on the board: where it went down, and whether it has moved far enough to pan.
 var _pressing := false
@@ -42,8 +55,9 @@ var _dragging := false
 var _press_at := Vector2.ZERO
 
 
-func setup(metrics: Dictionary, with_model: LatticeMenuModel) -> void:
+func setup(metrics: Dictionary, with_model: LatticeMenuModel, overview_metrics: Dictionary = {}) -> void:
 	_m = metrics
+	_o = overview_metrics
 	model = with_model
 	clip_contents = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -80,6 +94,7 @@ func zoom_by(factor: float, local: Vector2) -> void:
 	if is_equal_approx(z, zoom):
 		return
 	_stop_pan()
+	_leave_overview()
 	var anchor := pan + (local - size * 0.5) / zoom
 	zoom = z
 	pan = _clamped_pan(anchor - (local - size * 0.5) / z)
@@ -98,15 +113,67 @@ func node_at(local: Vector2) -> StringName:
 
 
 ## Pans so `nid` is in the middle (held inside the board's bounds); slides unless `animate` is false
-## or motion is reduced.
+## or motion is reduced. In the overview the whole board stays framed, so nothing moves.
 func center_on(nid: StringName, animate: bool) -> void:
-	var target := _clamped_pan(board_point(nid))
+	if overview:
+		return
+	_move_to(zoom, _clamped_pan(board_point(nid)), animate)
+
+
+## The board's node centres, in reference px (an empty rect for an empty board).
+func board_bounds() -> Rect2:
+	var b := model.board()
+	if b.nodes.is_empty():
+		return Rect2()
+	var lo := Vector2(INF, INF)
+	var hi := Vector2(-INF, -INF)
+	for nid: StringName in b.nodes:
+		var p := board_point(nid)
+		lo = lo.min(p)
+		hi = hi.max(p)
+	return Rect2(lo, hi - lo)
+
+
+## The zoom that fits every node in the view, margin_px inside each side (held between zoom_min and
+## zoom_max).
+func fit_zoom() -> float:
+	var r := board_bounds()
+	var room := size - Vector2.ONE * HudLayout.num(_o, "margin_px") * 2.0
+	var z := minf(room.x / maxf(r.size.x, 1.0), room.y / maxf(r.size.y, 1.0))
+	return clampf(z, zoom_min(), zoom_max())
+
+
+## Turns the overview on (the whole board, fitted and centred) or off (back to the zoom it had, on
+## the cursor). Moves over pan_sec unless `animate` is false or motion is reduced.
+func set_overview(on: bool, animate: bool) -> void:
+	if on == overview:
+		return
+	overview = on
+	if on:
+		_return_zoom = zoom
+		var z := fit_zoom()
+		_move_to(z, _clamped_pan(board_bounds().get_center(), z), animate)
+	else:
+		_move_to(_return_zoom, _clamped_pan(board_point(cursor), _return_zoom), animate)
+	overview_changed.emit(on)
+
+
+func _move_to(z: float, target: Vector2, animate: bool) -> void:
 	_stop_pan()
 	if not animate or reduced_motion or not is_inside_tree():
+		zoom = z
 		pan = target
 		return
-	_pan_tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	_pan_tween = create_tween().set_parallel().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	_pan_tween.tween_property(self, ^"pan", target, _num("pan_sec"))
+	_pan_tween.tween_property(self, ^"zoom", z, _num("pan_sec"))
+
+
+## The player took the camera (a wheel turn or a drag): the overview ends where the board is.
+func _leave_overview() -> void:
+	if overview:
+		overview = false
+		overview_changed.emit(false)
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -117,6 +184,7 @@ func _gui_input(event: InputEvent) -> void:
 		if not _dragging and mm.position.distance_to(_press_at) >= _num("drag_px"):
 			_dragging = true
 			_stop_pan()
+			_leave_overview()
 		if _dragging:
 			pan = _clamped_pan(pan - mm.relative / zoom)
 			accept_event()
@@ -151,19 +219,16 @@ func _stop_pan() -> void:
 		_pan_tween.kill()
 
 
-func _clamped_pan(target: Vector2) -> Vector2:
-	var b := model.board()
-	if b.nodes.is_empty():
+## `target` held so the board stays in view at zoom `z` (the current zoom when < 0).
+func _clamped_pan(target: Vector2, z: float = -1.0) -> Vector2:
+	if model.board().nodes.is_empty():
 		return Vector2.ZERO
-	var lo := Vector2(INF, INF)
-	var hi := Vector2(-INF, -INF)
-	for nid: StringName in b.nodes:
-		var p := board_point(nid)
-		lo = lo.min(p)
-		hi = hi.max(p)
+	var bounds := board_bounds()
+	var lo := bounds.position
+	var hi := bounds.end
 	var margin := _num("pan_margin_px")
 	var out := target
-	var seen := size / zoom
+	var seen := size / (z if z > 0.0 else zoom)
 	for axis in 2:
 		var half := seen[axis] * 0.5
 		if hi[axis] - lo[axis] + margin * 2.0 <= seen[axis]:
@@ -189,7 +254,45 @@ func _draw() -> void:
 		_draw_node(b.lattice_node(nid))
 	_draw_markers()
 	_draw_cursor()
-	_draw_tag()
+	if not overview:
+		_draw_tag(_draw_point(cursor))
+		return
+	draw_set_transform(Vector2.ZERO)  # the overview's words keep their size
+	_draw_tag(screen_point(cursor))
+	_draw_overview_words()
+
+
+## M3-MNU-04, in view space (the words keep their size at any zoom): each hero's name in a tag
+## under their node (the hero on show framed in gold, others dim; tags on one node stack), and the
+## initials of who woke each woken node beside it.
+func _draw_overview_words() -> void:
+	var font := get_theme_font(&"font", &"SmallLabel")
+	var fs := get_theme_font_size(&"font_size", &"SmallLabel")
+	var off := _ovec("initials_offset")
+	for nid: StringName in model.board().nodes:
+		var who := model.woken_initials(nid)
+		if who == "":
+			continue
+		var n := model.board().lattice_node(nid)
+		var at := screen_point(nid) + Vector2(_half_size(n).x * zoom + off.x, font.get_ascent(fs) + off.y)
+		draw_string(font, at, who, HORIZONTAL_ALIGNMENT_LEFT, -1.0, fs, _role(&"text_dim"))
+	var stacked: Dictionary = {}
+	var pad := _ovec("name_pad")
+	for cid: StringName in model.heroes():
+		var nid: StringName = model.progress().traveler(cid).position
+		var n := model.board().lattice_node(nid)
+		if n == null:
+			continue
+		var k := int(stacked.get(nid, 0))
+		stacked[nid] = k + 1
+		var text := model.hero_name(cid)
+		var ts := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, fs)
+		var top := _half_size(n).y * zoom + HudLayout.num(_o, "name_gap_px") + HudLayout.num(_o, "name_step_px") * k
+		var box := Rect2(screen_point(nid) + Vector2(-ts.x * 0.5 - pad.x, top), ts + pad * 2.0)
+		var edge := _role(&"focus_gold") if cid == model.hero() else _role(&"text_dim")
+		draw_rect(box, _role(&"panel_deep"))
+		draw_rect(box, edge, false, _num("outline_px"))
+		draw_string(font, box.position + Vector2(pad.x, pad.y + font.get_ascent(fs)), text, 0, -1.0, fs, _role(&"text"))
 
 
 ## Each region's faint ribbon of colour along its own edges.
@@ -335,14 +438,15 @@ func _draw_cursor() -> void:
 		draw_line(v, v + (v - at).normalized() * tick, _role(&"focus_gold"), _num("outline_px") * 2.0, true)
 
 
-func _draw_tag() -> void:
+## The cost tag beside the cursor drawn at `at` (the cursor's point in the current transform).
+func _draw_tag(at: Vector2) -> void:
 	if tag_text == "" or model.board().lattice_node(cursor) == null:
 		return
 	var font := get_theme_font(&"font", &"RankLabel")
 	var fs := get_theme_font_size(&"font_size", &"RankLabel")
 	var text_size := font.get_string_size(tag_text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, fs)
 	var pad := _vec("tag_pad")
-	var box := Rect2(_draw_point(cursor) + _vec("tag_offset"), text_size + pad * 2.0)
+	var box := Rect2(at + _vec("tag_offset"), text_size + pad * 2.0)
 	var c := _role(&"focus") if path_ok else _role(&"danger")
 	draw_rect(box, _role(&"panel_deep"))
 	draw_rect(box, c, false, _num("outline_px"))
@@ -416,6 +520,11 @@ static func _faded(c: Color, k: float) -> Color:
 
 func _num(key: String) -> float:
 	return HudLayout.num(_m, key)
+
+
+func _ovec(key: String) -> Vector2:
+	var v: Array = _o.get(key, [0, 0])
+	return Vector2(float(v[0]), float(v[1]))
 
 
 func _vec(key: String) -> Vector2:
