@@ -2,8 +2,8 @@
 id: M2-ARC-02
 title: A shipped owner for the weather clock (hymn_wind_time, hymn_wind) so zone and battle water moves
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a4071bcb36cd4fdae"
 depends_on: []
 milestone: M2
 request-from: "lead"
