@@ -169,3 +169,31 @@ func _to_turn_of(cid: StringName) -> void:
 			engine.perform(&"guard", [engine.current] as Array[BattleCombatant])
 		else:
 			engine.run_enemy_turn()
+
+
+func test_a_charging_foe_threatens_only_on_its_firing_turn() -> void:
+	_to_turn_of(&"guard")
+	var mite := engine.enemies[0]
+	mite.charge_skill = &"grip"
+	mite.charge_left = 2
+	var entry := TurnEntry.new(mite.id, engine.now + 1, mite.team)
+	assert_false(SimWardGuard.threat(engine, mite, entry, engine.ward()), "it counts down first")
+
+
+func test_a_skill_that_strips_haste_bites_only_a_hasted_ward() -> void:
+	var dive := {"target": "ward", "cleanses": ["haste"]}
+	assert_false(SimWardGuard._bites(dive, engine.ward()))
+	engine.ward().add_status(&"haste", 2)
+	assert_true(SimWardGuard._bites(dive, engine.ward()))
+	assert_false(SimWardGuard._bites({"target": "self"}, engine.ward()), "not a ward skill")
+
+
+func test_with_no_lawful_skill_the_fallback_gives_up() -> void:
+	_to_turn_of(&"hero")
+	for e in engine.enemies:
+		e.apply_damage(e.max_hp)
+	var hero := engine.current
+	hero.skills = [&"attack", &"bolt"] as Array[StringName]
+	assert_false(SimPolicy._lawful_fallback(engine, hero), "nothing but blows, and no foe")
+	hero.skills.append(&"guard")
+	assert_true(SimPolicy._lawful_fallback(engine, hero))

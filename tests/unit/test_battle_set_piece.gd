@@ -618,3 +618,15 @@ static func _with_id(row: Dictionary, eid: String) -> Dictionary:
 	var out := row.duplicate(true)
 	out["id"] = eid
 	return out
+
+
+func test_field_rules_pick_their_side_and_an_entry_never_withdraws() -> void:
+	var mite := engine.enemies[0]
+	var hero := engine.find(&"hero")
+	assert_true(BattleSetPiece._rule_applies(BattleSetPiece.RULE_ON_ENEMY, mite))
+	assert_false(BattleSetPiece._rule_applies(BattleSetPiece.RULE_ON_ENEMY, hero))
+	assert_false(BattleSetPiece._rule_applies(BattleSetPiece.RULE_ON_ENEMY, engine.find(&"the_surge")))
+	assert_false(BattleSetPiece._rule_applies("nobody", hero))
+	engine.ward().withdraw()
+	assert_false(engine.ward().withdrawn, "the Climb never leaves")
+	assert_true(engine.ward().is_alive())
