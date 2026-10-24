@@ -83,4 +83,10 @@ The human's note: parts feel primitive. claude/hero-integration is putting the r
   - Nothing has been heard on the real clips yet. Once claude/hero-integration and claude/characters merge, walk
     Rhen in Haluna and listen.
 
+- 2026-10-24 (hero-integration's ADR 0191: the field walks at 1.0 m/s and runs at 3.6 m/s): footsteps.json's
+  distance stepper is now walk_step_m 0.53 and run_step_m 1.0 (half a stride, per characters' locomotion.json);
+  stall_m is 1.6 (3.2 m would be 3 s of silence at 1.0 m/s). run_above_m_s is now 2.3, the midpoint of the gaits:
+  just under 3.6, the smoothed pace took about 0.5 s to class a run, so a run's first steps played as walk steps
+  (the run-rows test caught it). The test speeds follow field_movement.json.
+
 ## Review log

@@ -9,8 +9,8 @@ extends TestCase
 
 const HALUNA := "res://game/levels/ch02/haluna/haluna.tscn"
 const DT := 1.0 / 60.0
-const WALK_MPS := 1.5
-const RUN_MPS := 4.6
+const WALK_MPS := 1.0  # field_movement.json's walk (hero-integration ADR 0191)
+const RUN_MPS := 3.6  # field_movement.json's run (hero-integration ADR 0191)
 const WALK_LEN := 1.0
 const RUN_LEN := 0.6
 const MARKERS: Array[StringName] = [&"foot_l_down", &"foot_r_down"]
