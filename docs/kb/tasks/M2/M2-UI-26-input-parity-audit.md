@@ -23,9 +23,9 @@ The human's ask: every screen fully usable with the keyboard, the mouse and a co
   - [x] field menu and its pages (Swell modes, Quit, Map, Bestiary; the Menus track's Items, Equip, Lattice, Status): `test_input_parity_{field_menu,map,bestiary,items,equip,lattice,status}.gd`. Fixes in the Menus track's files (Lattice board drag and zoom, its click test) were sent to that track through the lead;
   - [x] shop and inn;
   - [x] save and load (Systems-owned `game/ui/save/`: hover, wheel and the dialog-choice hover added; Systems to accept, and M2-ARC-06's hover bug is fixed by it);
-  - [ ] dialogue box, choices and backlog;
-  - [ ] tips and prompts (the glyph switches with the device);
-  - [ ] battle command menus, targeting, Swell inputs, read and result panels, battle pause.
+  - [x] dialogue box, choices and backlog (and the hold to skip): `test_input_parity_dialogue.gd`; click-to-advance and wheel-to-backlog in DialogueAssist, `UiFocus` hooked into m2-slice's CutsceneChoices (one line), the right button holds Cancel;
+  - [x] tips and prompts (the glyph switches with the device): `test_input_parity_glyphs.gd`; the prompt follows `InputNames.using_pad`, the tip card refills on a device change, dialogue lines fill `{action}` (one line in the Architect's DialogueBox); M2-FP-28 asks m2-slice to rewrite two Ch1 tutorial lines that spell out keys;
+  - [x] battle command menus, targeting, Swell inputs, read and result panels, battle pause: `test_input_parity_{battle,swell}.gd`; mouse targeting (`BattlePointer`), the mouse plays every Swell input (`SwellRingView.pointer_event`), the Read panel's click (it was 0 x 0). The battle pause has no mouse affordance (noted in ui.md).
 - [ ] Screens owned by other roles: fix what the audit finds there minimally (one-line hooks), or file a request task and note it in the live log.
 
 ## Review log

@@ -1,9 +1,10 @@
 extends Node
 ## The UiInput autoload (M2-UI-26, ADR 0036): input every screen shares, so keyboard, mouse and
 ## controller work the same everywhere without each screen re-implementing it.
-## - **Mouse cancel:** a right click or the mouse's back button becomes a `ui_cancel` press (and
-##   release), delivered through the normal input path, so every screen that backs out on Cancel
-##   also backs out on them, including over a menu whose controls stop the click.
+## - **Mouse cancel:** a right click or the mouse's back button becomes a `ui_cancel` press, and its
+##   release a `ui_cancel` release, delivered through the normal input path, so every screen that
+##   backs out on Cancel also backs out on them, including over a menu whose controls stop the
+##   click, and holding the button holds Cancel (a cutscene's hold to skip, M2-UI-26).
 ## - **Pad defaults everywhere:** ControlsModel.defaults() runs here, at startup, so pad A and B
 ##   confirm and cancel (controls.json pad_defaults) in every scene, not only after boot.tscn.
 ## - **Last device:** remembers whether the pad or the keyboard and mouse was used last
@@ -40,26 +41,37 @@ func _input(event: InputEvent) -> void:
 	InputNames.note(event, float(_d.get("pad_deadzone", 0.5)))
 	if InputNames.using_pad != was:
 		device_changed.emit(InputNames.using_pad)
-	if is_cancel_click(event):
+	if is_cancel_button(event):
 		get_viewport().set_input_as_handled()
-		send_cancel(get_viewport())
+		send_cancel_edge(get_viewport(), event.is_pressed())
 
 
-## True for a mouse button press (or its release) that stands for Cancel.
+## True for a mouse button press that stands for Cancel.
 func is_cancel_click(event: InputEvent) -> bool:
+	return is_cancel_button(event) and event.is_pressed()
+
+
+## True for a press or a release of a mouse button that stands for Cancel.
+func is_cancel_button(event: InputEvent) -> bool:
 	var mb := event as InputEventMouseButton
-	return mb != null and _cancel_buttons.has(int(mb.button_index)) and mb.pressed
+	return mb != null and _cancel_buttons.has(int(mb.button_index))
 
 
 ## Delivers a ui_cancel press and release to `vp` (the press first, so is_action_pressed sees it),
 ## marked with the data's `cancel_device`, so a screen can tell a mouse Cancel from a plain one.
 static func send_cancel(vp: Viewport) -> void:
-	for down in [true, false]:
-		var a := InputEventAction.new()
-		a.action = &"ui_cancel"
-		a.pressed = down
-		a.device = mouse_cancel_device()
-		vp.push_input(a)
+	send_cancel_edge(vp, true)
+	send_cancel_edge(vp, false)
+
+
+## Delivers one ui_cancel press (`down`) or release to `vp`, marked as send_cancel marks it: the
+## cancel button's own press and release, so holding it holds Cancel.
+static func send_cancel_edge(vp: Viewport, down: bool) -> void:
+	var a := InputEventAction.new()
+	a.action = &"ui_cancel"
+	a.pressed = down
+	a.device = mouse_cancel_device()
+	vp.push_input(a)
 
 
 ## The device id a mouse Cancel carries (ui_input.json cancel_device).

@@ -677,16 +677,19 @@ func _begin_swap_out() -> void:
 
 
 func _handle_pick_input(event: InputEvent) -> bool:
+	var hit := BattlePointer.candidate_at(self, event)  # M2-UI-26: hovering a fighter or its row aims at it
+	if hit >= 0 and hit != _target_index:
+		_cycle_target(hit - _target_index)
 	if event.is_action_pressed(&"ui_left", true) or event.is_action_pressed(&"ui_up", true):
 		_cycle_target(-1)
 	elif event.is_action_pressed(&"ui_right", true) or event.is_action_pressed(&"ui_down", true):
 		_cycle_target(1)
-	elif event.is_action_pressed(&"ui_accept"):
+	elif event.is_action_pressed(&"ui_accept") or (hit >= 0 and BattlePointer.is_click(event)):
 		_confirm_pick()
 	elif event.is_action_pressed(&"ui_cancel"):
 		_cancel_pick()
 	else:
-		return false
+		return hit >= 0
 	return true
 
 
@@ -724,7 +727,7 @@ func _commit_skill(skill_id: StringName, target_ids: Array[StringName]) -> void:
 ## The open input takes ui_accept and the directions (SwellInputKeys) and ui_cancel (back out,
 ## only before the first grade).
 func _handle_ring_input(event: InputEvent) -> bool:
-	if not SwellInputKeys.feed(event, _ring_clock, swell_input_live):
+	if not SwellInputKeys.feed(hud.swell_ring.pointer_event(event), _ring_clock, swell_input_live):  # M2-UI-26
 		return false
 	_after_ring()
 	return true

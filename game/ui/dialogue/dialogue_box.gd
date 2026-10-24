@@ -107,7 +107,7 @@ func show_text(
 	_name_label.text = tr(name_key) if name_key != &"" else ""
 	_name_label.visible = name_key != &""
 	_body_label.theme_type_variation = SUNG_VARIATION if sung else &""
-	_text = tr(text_key)
+	_text = InputNames.fill(tr(text_key))  # {action} names the binding, for the last device (M2-UI-26)
 	_body_label.text = _text
 	_body_label.visible_characters = 0
 	_progress = 0.0

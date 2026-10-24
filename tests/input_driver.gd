@@ -41,6 +41,17 @@ func press(action: StringName) -> void:
 	send(ev, false)
 
 
+## Presses `action` and keeps it down (a hold: Toma's brace, hold to confirm, hold to skip) until
+## let_go(). MOUSE falls back to the keyboard, as press() does.
+func hold(action: StringName) -> void:
+	send(event_for(action, kind if kind != Kind.MOUSE else Kind.KEYS), true)
+
+
+## Lets go of an action held with hold().
+func let_go(action: StringName) -> void:
+	send(event_for(action, kind if kind != Kind.MOUSE else Kind.KEYS), false)
+
+
 ## A fresh event for `action` on device `k` (null when the action has none).
 static func event_for(action: StringName, k: Kind) -> InputEvent:
 	if not InputMap.has_action(action):
@@ -116,6 +127,33 @@ static func click(c: Control, button: MouseButton = MOUSE_BUTTON_LEFT) -> void:
 ## Right-clicks over `c` (Cancel on every screen, through UiInput).
 static func right_click(c: Control) -> void:
 	click(c, MOUSE_BUTTON_RIGHT)
+
+
+## Moves the pointer to `at` (root viewport coordinates: a fighter's BattleController.head_pos,
+## a point from point_of).
+static func hover_at(at: Vector2) -> void:
+	var m := InputEventMouseMotion.new()
+	m.position = at
+	m.global_position = at
+	root().push_input(m, true)
+
+
+## Hovers then clicks at `at` (root viewport coordinates) with `button`.
+static func click_at(at: Vector2, button: MouseButton = MOUSE_BUTTON_LEFT) -> void:
+	hover_at(at)
+	button_at(at, button, true)
+	button_at(at, button, false)
+
+
+## Presses (`down`) or releases `button` at `at` without moving first: a held click is
+## button_at(.., true) now and button_at(.., false) later.
+static func button_at(at: Vector2, button: MouseButton, down: bool) -> void:
+	var b := InputEventMouseButton.new()
+	b.button_index = button
+	b.position = at
+	b.global_position = at
+	b.button_mask = (MOUSE_BUTTON_MASK_LEFT if button == MOUSE_BUTTON_LEFT else 0) if down else 0
+	send(b, down)
 
 
 ## Turns the wheel over `c`: `steps` notches down (negative: up).

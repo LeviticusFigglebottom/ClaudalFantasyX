@@ -10,6 +10,9 @@ extends Control
 ##   - Auto-advance: with the Accessibility setting `dialogue_auto` On, a waiting line advances by
 ##     itself after a hold that grows with its length, by emitting the box's advance_requested.
 ##     Never while choices are up, the backlog is open or the tree is paused; never an empty line.
+##   - The mouse (M2-UI-26, input parity): a left click on the box's panel does what Confirm does
+##     (finish the reveal, then advance), never under choices or the backlog; the wheel turned up
+##     over it opens the backlog, which the wheel then scrolls and a right click closes.
 ## Layout and timing: game/data/ui/dialogue_assist.json.
 
 const DATA_PATH := "res://game/data/ui/dialogue_assist.json"
@@ -75,6 +78,9 @@ func _ready() -> void:
 	if box != null:
 		box.reveal_finished.connect(_on_reveal_finished)
 		box.advance_requested.connect(_on_advance_requested)
+		var panel := box.get_node_or_null(PANEL_PATH) as Control
+		if panel != null:
+			panel.gui_input.connect(_on_panel_input.bind(panel))
 
 
 func _exit_tree() -> void:
@@ -183,6 +189,29 @@ func open_backlog() -> DialogueBacklogPage:
 	var host := box.get_parent() if box.get_parent() != null else box
 	FieldSubmenu.mount(page, host)
 	return page
+
+
+## Confirm from the mouse: a click on the panel finishes the reveal, or advances a shown line, as
+## the box does for ui_accept. Under choices or the backlog it does nothing.
+func click_advance() -> bool:
+	if box == null or not box.is_visible_in_tree() or choices_up() or backlog_open():
+		return false
+	if box.is_revealing():
+		box.skip_reveal()
+	else:
+		box.advance_requested.emit()
+	return true
+
+
+func _on_panel_input(event: InputEvent, panel: Control) -> void:
+	var mb := event as InputEventMouseButton
+	if mb == null or not mb.pressed:
+		return
+	if mb.button_index == MOUSE_BUTTON_LEFT and click_advance():
+		panel.accept_event()
+	elif mb.button_index == MOUSE_BUTTON_WHEEL_UP and can_open_backlog():
+		open_backlog()
+		panel.accept_event()
 
 
 func _on_reveal_finished() -> void:
