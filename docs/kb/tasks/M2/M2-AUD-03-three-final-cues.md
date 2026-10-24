@@ -2,8 +2,8 @@
 id: M2-AUD-03
 title: The slice's three final music cues: Haluna by day, battle v2 with the Drownbell, the Hush / cutscene family
 role: audio
-status: todo
-owner_session: ""
+status: doing
+owner_session: "audio (claude/audio)"
 depends_on: [M2-AUD-02]
 milestone: M2
 request-from: lead
