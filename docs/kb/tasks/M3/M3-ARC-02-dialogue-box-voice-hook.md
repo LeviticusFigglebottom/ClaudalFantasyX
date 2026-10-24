@@ -1,5 +1,5 @@
 ---
-id: M3-ARC-01
+id: M3-ARC-02
 title: DialogueBox voice hook for the Audio listener (a blip signal with its voice, and the line's step)
 role: architect
 status: todo
@@ -29,5 +29,6 @@ would make it exact everywhere and drop the poll and the muting.
   `tests/unit/test_voice_audio.gd` already drive the box).
 
 ## Notes
+- Renumbered at the Lead's big7 merge (2026-10-24): filed by audio as M3-ARC-01, which collided with m2-slice's M3-ARC-01 (data-driven chapter flow, filed first). M3-ARC-02 is the next id free across all branches.
 
 ## Review log
