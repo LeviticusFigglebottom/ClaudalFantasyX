@@ -168,6 +168,8 @@ At victory:
 
 Escape and defeat award nothing. Sandbox values: Reef Crab 24 lume (Crab Carapace 50%, Salt Tonic 10%), Lantern Eel 20 (Eel Lantern 50%, Salt Tonic 10%), Gull Harrier 18 (Gull Quill 50%, Salt Tonic 10%), so 62 lume per sandbox win. Drownbell's ~300 lands with its encounter data.
 
+**Paid in play (M2-CMB-07).** A live victory pays exactly these numbers: the lume through `Wallet.earn` (up to `currency_cap`) and each drop through `Inventory.add` (a full stack keeps what fits), in `BattleRewards.pay`. A live battle sets `currency_multiplier` from the party's equipped gear (`BattleVitals.live_gear`), so Full Net doubles in play as it does in the simulator. A new game opens with `starting_currency` lume (items.json `rules`, 100). No formula changed.
+
 ## Openings (M1-CMB-03)
 
 SPEC §6.1. A battle opens **normal**, **preemptive** (the party moves first) or **ambush** (the enemies move first). `BattleOpening` (`game/battle/battle_opening.gd`) holds the rules.

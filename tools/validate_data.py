@@ -948,6 +948,11 @@ def _items_table_errors(doc: object, refs: dict[str, set[str]], w0: str, errs: l
     order = rules.get("category_order")
     if not isinstance(order, list) or sorted(order) != sorted(ITEM_CATEGORIES):
         errs.append(f"{w0}: rules.category_order must list each of {sorted(ITEM_CATEGORIES)} once")
+    # M2-CMB-07: the new-game purse (optional) is a whole number between 0 and the currency cap.
+    if "starting_currency" in rules:
+        start, cap = rules["starting_currency"], rules.get("currency_cap")
+        if not _is_int(start) or start < 0 or (_is_int(cap) and start > cap):
+            errs.append(f"{w0}: rules.starting_currency must be an int from 0 to rules.currency_cap")
     items: dict[str, dict] = {}
     for it in _rows(doc, "items", w0, errs):
         w = f"{w0}: item '{it['id']}'"

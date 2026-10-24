@@ -147,6 +147,11 @@ HUD_RESULT_RETRY,Fight again
 HUD_RESULT_RETURN,Return
 HUD_TARGET_UNREAD,HP unknown until Read
 HUD_RESULT_FELL,Fell before the end: no XP
+HUD_RESULT_LUME,Lume
+HUD_RESULT_LUME_FMT,+{n} lume
+HUD_RESULT_PURSE_FMT,purse {n} lume
+HUD_RESULT_DROP_FMT,×{n}
+HUD_RESULT_BAG_FULL,"bag full, left behind"
 SAVE_MENU_TITLE_SAVE,Record the Journey
 SAVE_MENU_TITLE_LOAD,Continue a Journey
 SAVE_SHRINE_PROMPT,Rest at the shrine

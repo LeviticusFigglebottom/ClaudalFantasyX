@@ -180,3 +180,7 @@ The thread now runs: Haluna's causeway head → **the Saltgrass Causeway** (B06)
 - When the inner pool fills, the respawn point moves to `Exit` (`shell_shrine.checkpoint_location` and `checkpoint_spawn`) and a checkpoint autosave is requested.
 - A Drownbell loss followed by **Return to last save** resumes at the open door. The door and the side pool restore from their flags, so the trial isn't replayed. `test_fp_thread` walks that path.
 
+## Party joins (M2-CMB-07 follow-up)
+
+`first_playable.json` "party" says who joins `Game.state.party_ids`: `new_game` (Rhen) on `Game.new_game()`, and `joins[flag]` (Asha and Toma on `ch02_met_asha`, which Cutscene A sets) the first time the flag is set truthy, through `EventBus.flag_changed`. `PartyJoins` (`game/flow/party_joins.gd`) calls `PartyGoods.join`, which adds the hero once and grants their starting gear without replacing worn pieces. Field battles still take their party from "field_battle" and "first_verse"; live battles now wear the joined heroes' gear (`BattleVitals.live_gear`). A save made before this change has no joined heroes and stays that way (nothing back-fills `party_ids` on load). Tests: `tests/unit/test_party_joins.gd`.
+

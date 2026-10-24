@@ -52,6 +52,8 @@ var menus: BattleMenus
 var state: StringName = STATE_IDLE
 ## Last victory: id -> {xp, moves}; moves is -1 for a fighter with no Lattice start yet.
 var last_awards: Dictionary = {}
+## Last victory's lume and drops, paid into Game.state when live (BattleRewards.pay, M2-CMB-07).
+var last_spoils: Dictionary = {}
 var battles_started := 0
 ## The fixture the current battle started from (null for live data).
 var fixture: BattleFixture
@@ -217,6 +219,7 @@ func _build_engine(
 	_setup = {"active": active, "reserve": reserve, "encounter": encounter, "seed": rng_seed}
 	battles_started += 1
 	last_awards = {}
+	last_spoils = {}
 	_after_wait = Callable()
 	floats.reset()
 	progress = lattice
