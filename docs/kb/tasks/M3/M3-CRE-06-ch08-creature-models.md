@@ -17,7 +17,8 @@ The Ch8 seawall creatures. `model` on m2-slice's rows (M3-C08-02). Waves of 3 / 
 - [ ] squall_wing (gull harrier's rig, a spawn body)
 - [ ] wall_polyp (variant of spawn_polyp)
 - [x] undertows_reach (first pass: 10.9k triangles, six-fingered grip, the three states as phases `dark` and `breach`; the water look is the PC GPU session's)
-- [ ] Low priority (m2-slice, unconfirmed): stormgull, wallcrab, flue_moth
+- [x] flue_moth (m2-slice act1_ch08 §9: a soot-moth with wings folded like a roof, ember hindwings on the flare; 3.1k triangles)
+- [ ] Low priority (m2-slice): stormgull (gull_harrier palette variant), wallcrab (reef_crab palette variant)
 
 ## Notes
 

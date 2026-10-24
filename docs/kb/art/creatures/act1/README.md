@@ -11,4 +11,4 @@ roster row is the brief.
 | 4 | [spar_wraith](spar_wraith.md) (boss), [bottle_hermit](bottle_hermit.md), [sail_leech](sail_leech.md) |
 | 5 | [cinder_matron](cinder_matron.md) (boss), [ashwing](ashwing.md), [slag_tortoise](slag_tortoise.md), [vein_sparker](vein_sparker.md) (optional) |
 | 6 | [raid_hound](raid_hound.md) (boss pair), [shoal_skipper](shoal_skipper.md) |
-| 8 | [undertows_reach](undertows_reach.md) (boss, with Rendering), [tide_crawler](tide_crawler.md), [squall_wing](squall_wing.md) |
+| 8 | [undertows_reach](undertows_reach.md) (boss, with Rendering), [tide_crawler](tide_crawler.md), [squall_wing](squall_wing.md), [flue_moth](flue_moth.md) (Coilspire) |

@@ -266,6 +266,16 @@
         ["{blender}", "--python", "assets_src/creatures/undertows_reach/build_undertows_reach.py", "--", "--out", "assets/creatures/undertows_reach/undertows_reach.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "undertows_reach"]
       ]
+    },
+    {
+      "id": "creature_flue_moth",
+      "owner": "character",
+      "sources": ["assets_src/creatures/flue_moth/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/flue_moth/*.glb", "assets/creatures/flue_moth/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/flue_moth/build_flue_moth.py", "--", "--out", "assets/creatures/flue_moth/flue_moth.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "flue_moth"]
+      ]
     }
   ]
 }
