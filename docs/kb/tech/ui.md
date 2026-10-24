@@ -438,6 +438,11 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
   - **A right click could not stop the Controls page listening.** The mouse Cancel carries `cancel_device` (`UiInput.is_mouse_cancel`), so listening stops on it while a plain `ui_cancel` action is still swallowed.
   - **InputDriver uses viewport-local coordinates.** The headless window's stretch moved clicks onto the next row.
 - **Parity findings (shop, inn):** the mouse could not set how many to buy or sell; only Left and Right could. Buy and Sell now show ‹ ×N › keycap steppers at the right end of the status line (`shop_menu.json` `steppers`), and the wheel over the status line changes the count too.
+- **Parity findings (save and load):**
+  - Hovering a slot did nothing: it took two clicks.
+  - The wheel did nothing.
+  - Hovering the overwrite question's choices left Confirm on the old one (M2-ARC-06's bug).
+  - **Fix:** `SaveSlotRow` now emits `hovered` and `wheeled`, `SaveMenu` follows them while browsing, and the choices' `row_hovered` sets `dialog_cursor`. These are Systems' files: small hooks for them to accept.
 
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 

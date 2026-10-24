@@ -22,7 +22,7 @@ The human's ask: every screen fully usable with the keyboard, the mouse and a co
   - [x] Settings pages (Accessibility, Controls; Graphics is the same SettingsPage);
   - [ ] field menu and its pages (Swell modes, Quit, Map, Bestiary; the Menus track's Items, Equip, Lattice, Status);
   - [x] shop and inn;
-  - [ ] save and load;
+  - [x] save and load (Systems-owned `game/ui/save/`: hover, wheel and the dialog-choice hover added; Systems to accept, and M2-ARC-06's hover bug is fixed by it);
   - [ ] dialogue box, choices and backlog;
   - [ ] tips and prompts (the glyph switches with the device);
   - [ ] battle command menus, targeting, Swell inputs, read and result panels, battle pause.
