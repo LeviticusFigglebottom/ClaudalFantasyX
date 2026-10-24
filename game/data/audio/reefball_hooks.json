@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "doc": "Reefball by listening (M3-AUD-17; ADR 0031; game/audio/reefball_audio.gd; docs/kb/tech/audio_runtime.md \"Reefball\"). ReefballAudio watches every node whose script's global class (or a base class, or its `audio_class` meta) has a hook here, connects the signals it has by name and never writes the game. An action: sfx_at plays at a place (the signal's first Vector3 or Node3D argument, else the hooked node), sfx plays flat, crowd moves the stands' beds (murmur, excited or silence; the zone's other beds stay), restore + restore_after_sec bring a crowd state back after that long. on_enter / on_exit: an action when the node is attached or leaves the tree. sphere: the node is the water sphere (centre = its global position, radius from radius_method, else radius_m); swim reads each swimmer (a Node3D in one of swim.groups) against it once a frame: the wall crossed inward plays swim.enter, outward swim.exit (edge_m of hysteresis), and every stroke_m swum inside plays swim.stroke, at the swimmer; a jump over teleport_m is not swum. crowd: the two ambience.json beds and the fades. pending: the class is not on this branch yet (WaterSphereRig is on gpu/m3-rnd-01-reefball, which has no ball, goals or match yet; ReefballMatch, ReefballBall and ReefballGoal are guesses for the minigame, SPEC minigames/reefball/); tools/audio/data_check.py skips a pending hook's class and signal names. The naming rite carries its own stands going quiet (sfx_reefball.json), so it silences the beds and brings the murmur back after its 12 s. muffle (M3-AUD-22): while the ear (the viewport's Camera3D when use_camera and there is one, else the first node in ear_groups) is inside a sphere, mix.json's muffle is on for `reason` (the world through water); it lifts when the ear leaves or the sphere goes.",
+  "crowd": {
+    "murmur": "reefball_crowd_murmur",
+    "excited": "reefball_crowd_excited",
+    "fade_sec": 2.5,
+    "rite_fade_sec": 0.8
+  },
+  "swim": {
+    "groups": ["reefball_swimmer", "player"],
+    "edge_m": 0.3,
+    "stroke_m": 1.6,
+    "teleport_m": 4.0,
+    "enter": "reefball_sphere_enter",
+    "exit": "reefball_sphere_exit",
+    "stroke": "reefball_swim"
+  },
+  "muffle": {"reason": "underwater", "ear_groups": ["player"], "use_camera": true},
+  "hooks": [
+    {
+      "class": "WaterSphereRig",
+      "pending": true,
+      "sphere": {"radius_method": "radius_m", "radius_m": 16.0},
+      "on_enter": {"crowd": "murmur"},
+      "on_exit": {"crowd": "silence"},
+      "_note": "gpu/m3-rnd-01-reefball's render rig: no signals; entry, exit and strokes come from the swimmers' positions"
+    },
+    {
+      "class": "ReefballMatch",
+      "pending": true,
+      "signals": {
+        "kickoff": {"sfx": "reefball_whistle_start", "crowd": "excited"},
+        "play_stopped": {"sfx": "reefball_whistle_short", "crowd": "murmur"},
+        "play_resumed": {"sfx": "reefball_whistle_short", "crowd": "excited"},
+        "ball_kicked": {"sfx_at": "reefball_kick"},
+        "ball_pushed": {"sfx_at": "reefball_push"},
+        "ball_caught": {"sfx_at": "reefball_catch"},
+        "shot_taken": {"sfx_at": "reefball_shot"},
+        "near_miss": {"sfx": "reefball_gasp"},
+        "goal_scored": {"sfx_at": "reefball_score", "sfx": "reefball_cheer"},
+        "goal_conceded": {"sfx_at": "reefball_score", "sfx": "reefball_groan"},
+        "match_ended": {"sfx": "reefball_whistle_end", "crowd": "murmur"},
+        "naming_rite_started": {"sfx": "reefball_naming_rite", "crowd": "silence", "restore": "murmur",
+                                "restore_after_sec": 12.0},
+        "naming_rite_ended": {"crowd": "murmur"}
+      },
+      "_note": "a guess: the match flow's names, to correct when the minigame lands (the ball's place as a Vector3 or Node3D argument)"
+    },
+    {
+      "class": "ReefballBall",
+      "pending": true,
+      "signals": {
+        "kicked": {"sfx_at": "reefball_kick"},
+        "pushed": {"sfx_at": "reefball_push"},
+        "caught": {"sfx_at": "reefball_catch"},
+        "shot": {"sfx_at": "reefball_shot"}
+      },
+      "_note": "a guess: the ball's own contacts, at the ball (use these or the match's, not both: a row's cooldown keeps a double from doubling only for the score)"
+    },
+    {
+      "class": "ReefballGoal",
+      "pending": true,
+      "signals": {"scored": {"sfx_at": "reefball_score", "sfx": "reefball_cheer"}},
+      "_note": "a guess: a goal ring's own signal, at the ring"
+    }
+  ]
+}

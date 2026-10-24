@@ -27,6 +27,8 @@ var data: Dictionary = {}
 var played: Array[StringName] = []
 ## The reduced-audio setting in force (UiSettings, followed live).
 var reduced := false
+## The creatures' voices and movement (M3-AUD-14), a child listener.
+var creatures: CreatureAudio
 var _ctl: BattleController
 var _settings: UiSettings
 ## The factor this listener applies to the SFX bank's level (taken back off on exit, so a retry's overlapping
@@ -52,6 +54,15 @@ func attach(dir: AudioDirector, controller: BattleController, eng: BattleEngine,
 	eng.phase_changed.connect(_on_phase_changed)
 	eng.battle_finished.connect(_on_battle_finished)
 	_connect_sfx()
+	_attach_creatures(controller)
+
+
+## M3-AUD-14: the creatures' voices and movement (creature_audio.gd, creature_voices.json).
+func _attach_creatures(controller: Node) -> void:
+	creatures = CreatureAudio.new()
+	creatures.name = "CreatureAudio"
+	add_child(creatures)
+	creatures.attach(director, controller, engine, self)
 
 
 ## Plays the sound battle_sfx.json's section `table` names for `key` (a VFX effect id, a skill, an event, ...).
