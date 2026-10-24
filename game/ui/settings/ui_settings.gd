@@ -21,6 +21,13 @@ const TIMING_ASSIST := &"timing_assist"
 const TEXT_SPEED := &"text_speed"
 const DIALOGUE_BACKING := &"dialogue_backing"
 const OBJECTIVE_CUE := &"objective_cue"
+const TUTORIAL_TIPS := &"tutorial_tips"
+const BATTLE_SPEED := &"battle_speed"
+const SUMMON_CINEMATIC := &"summon_cinematic"
+## The cuts summon_cinematic_cut() answers (accessibility.json "summon_cinematics").
+const CUT_FULL := &"full"
+const CUT_SHORT := &"short"
+const CUT_NONE := &"none"
 const KIND_BOOL := "bool"
 const KIND_ENUM := "enum"
 const PALETTE_STANDARD := &"standard"
@@ -161,6 +168,33 @@ func dialogue_backing_alpha() -> float:
 ## True when the field shows the destination cue toward the objective (M2-UI-19).
 func objective_cue_enabled() -> bool:
 	return bool(get_value(OBJECTIVE_CUE))
+
+
+## True when the field shows first-time tips (M2-UI-24).
+func tutorial_tips_enabled() -> bool:
+	return bool(get_value(TUTORIAL_TIPS))
+
+
+## The battle presentation speed (M2-UI-23): the battle_speed option, a multiplier (1.0 = normal),
+## clamped to accessibility.json "battle_speed" min/max. BattleChoreo (M2-BPR-03) reads the same value.
+func battle_speed() -> float:
+	var lim := data.get("battle_speed", {}) as Dictionary
+	return clampf(float(get_value(BATTLE_SPEED)), float(lim.get("min", 1.0)), float(lim.get("max", 1.0)))
+
+
+## What every battle presentation duration is multiplied by (1 / battle_speed()): the controller's
+## pacing waits, damage numbers and float words, the camera shake and the hit recoil. It never reaches
+## the engine or a Swell input window (SwellRingClock, SwellInput run in real time).
+func battle_time_scale() -> float:
+	return 1.0 / battle_speed()
+
+
+## The cut a Vowbound's call cinematic plays (M2-UI-23; SPEC §6.3): CUT_FULL, CUT_SHORT (skip the
+## middle beats) or CUT_NONE (straight to the effect), for that Vowbound's first call or a later one
+## (accessibility.json "summon_cinematics"). The cinematic that reads it is M2-BPR-07.
+func summon_cinematic_cut(first_call: bool) -> StringName:
+	var row := (data.get("summon_cinematics", {}) as Dictionary).get(str(get_value(SUMMON_CINEMATIC)), {}) as Dictionary
+	return StringName(str(row.get("first" if first_call else "again", CUT_FULL)))
 
 
 ## The short on-screen tag of the timing assist in force (its "tag_key"; "" when it is off).

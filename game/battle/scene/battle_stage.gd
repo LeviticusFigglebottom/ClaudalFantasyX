@@ -132,8 +132,9 @@ func refresh_ko(engine: BattleEngine) -> void:
 		f.set_ko(ko, float(cfg.get("ko_sink_m", 0.0)), float(cfg.get("ko_alpha", 1.0)))
 
 
-## A short, decaying side-to-side camera nudge (deterministic: no randomness).
-func shake() -> void:
+## A short, decaying side-to-side camera nudge (deterministic: no randomness). `speed` is the
+## battle presentation speed (UiSettings.battle_speed, M2-UI-23).
+func shake(speed: float = 1.0) -> void:
 	if camera == null or not is_inside_tree():
 		return
 	var cfg: Dictionary = config().get("shake", {})
@@ -145,7 +146,7 @@ func shake() -> void:
 	shakes_started += 1
 	if _shake_tween != null and _shake_tween.is_valid():
 		_shake_tween.kill()
-	_shake_tween = create_tween()
+	_shake_tween = create_tween().set_speed_scale(speed)
 	for i in steps:
 		var side := 1.0 if i % 2 == 0 else -1.0
 		var fade := 1.0 - float(i) / steps

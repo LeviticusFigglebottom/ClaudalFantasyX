@@ -57,5 +57,9 @@ flags = {
 "ch01_children_safe": "Ch1 C1-13: Rhen got the Reefball pen's children onto the plank bridge toward the keel-hull; Hullgnaw rises next.",
 "tut_movement_seen": "Tutorial seen-flag (Design: gate by seen-flags, not by chapter): the field movement prompt has been shown.",
 "tut_tether_seen": "Tutorial seen-flag: the tether point prompt has been shown (Ch1 Underway).",
-"tut_shutter_seen": "Tutorial seen-flag: the lantern shutter prompt has been shown (Ch1 Underway galleries)."
+"tut_shutter_seen": "Tutorial seen-flag: the lantern shutter prompt has been shown (Ch1 Underway galleries).",
+"tut_objective_seen": "Tutorial seen-flag (M2-UI-24, game/data/ui/tutorial_tips.json): the tip about the objective line and the map has been shown.",
+"tut_field_menu_seen": "Tutorial seen-flag (M2-UI-24): the tip about the field menu has been shown.",
+"tut_save_shrine_seen": "Tutorial seen-flag (M2-UI-24): the tip about save shrines has been shown.",
+"tut_shop_seen": "Tutorial seen-flag (M2-UI-24): the tip about shops has been shown."
 }

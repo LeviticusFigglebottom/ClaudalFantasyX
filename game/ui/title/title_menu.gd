@@ -13,6 +13,8 @@ extends Control
 ##             Accessibility page; each saves and applies as you change it.
 ## Input: ui_up / ui_down move, ui_accept chooses (keyboard and controller); hover moves, a click
 ## chooses; ui_cancel closes the New Game question. It follows UiSettings (text size, palette).
+## M2-UI-22: behind the menu, a TitleBackdrop (caustics, light shafts, drifting motes) and the drawn
+## TitleLogo; the build label in the corner shows only in debug builds (`shows_version`).
 ## Layout: game/ui/title/title_menu.json.
 
 signal chosen(choice: StringName, error: int)
@@ -25,10 +27,15 @@ var world_return: WorldReturn
 var model: TitleMenuModel
 var load_menu: SaveMenu
 var settings_menu: SettingsMenu
+## True in debug builds; tests set it before the menu enters the tree to stand in for a release.
+var debug_build := OS.is_debug_build()
+var backdrop: TitleBackdrop
+var logo: TitleLogo
 
 var _d: Dictionary = {}
 var _page: MenuPage
 var _help: Label
+var _version: Label
 ## Set once a choice has started a scene change, so a second press does nothing.
 var _launched := false
 
@@ -39,6 +46,20 @@ static func load_data() -> Dictionary:
 		push_error("TitleMenu: could not read 'title_menu' from %s" % DATA_PATH)
 		return {}
 	return (parsed as Dictionary)["title_menu"] as Dictionary
+
+
+## True when the build label shows: always in a debug build, and in a release only if the data's
+## `debug_only` is false.
+static func shows_version(version_data: Dictionary, debug: bool) -> bool:
+	return debug or not bool(version_data.get("debug_only", true))
+
+
+## The build label's words: project.godot's version, or the data's fallback name when it has none.
+static func version_text(version_data: Dictionary) -> String:
+	var v := str(ProjectSettings.get_setting("application/config/version", ""))
+	if v == "":
+		v = str(version_data.get("fallback", ""))
+	return TranslationServer.translate("TITLE_BUILD_LABEL") % v
 
 
 func _ready() -> void:
@@ -172,7 +193,18 @@ func _on_load_closed(outcome: SaveMenuModel.Outcome) -> void:
 		model.refresh()
 
 
+## The build label (null in a release build unless the data shows it).
+func version_label() -> Label:
+	return _version
+
+
 func _build() -> void:
+	backdrop = TitleBackdrop.new()
+	add_child(backdrop)
+	backdrop.setup(_d.get("backdrop", {}) as Dictionary)
+	logo = TitleLogo.new()
+	add_child(logo)
+	logo.setup(_d.get("logo", {}) as Dictionary)
 	_build_page()
 	_help = Label.new()
 	_help.theme_type_variation = &"HelpDimLabel"
@@ -181,6 +213,17 @@ func _build() -> void:
 	_help.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_help.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_help)
+	var vd := _d.get("version", {}) as Dictionary
+	if shows_version(vd, debug_build):
+		_version = Label.new()
+		_version.name = &"VersionLabel"
+		_version.theme_type_variation = &"DimLabel"
+		HudLayout.place(_version, vd)
+		_version.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		_version.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		_version.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_version.text = version_text(vd)
+		add_child(_version)
 
 
 ## (Re)builds the choice rows; a row's greyed look is fixed when it is built.

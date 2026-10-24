@@ -9,11 +9,7 @@ var made: Array[Node] = []
 
 
 func before_each() -> void:
-	for n in made:
-		if is_instance_valid(n):
-			n.get_parent().remove_child(n)
-			n.free()
-	made.clear()
+	_free_made()
 	(Engine.get_main_loop() as SceneTree).paused = false
 	UiSettings.set_shared(UiSettings.new())
 	FieldInput.ensure_actions()
@@ -97,6 +93,7 @@ func test_field_hud_attaches_both_pieces() -> void:
 	_add(c)
 	assert_true(c.get_node_or_null(^"ObjectiveLayer/ObjectiveHud") is ObjectiveHud)
 	assert_true(c.get_node_or_null(^"InteractLayer/InteractPrompt") is InteractPrompt)
+	_free_made()  # a live FieldController brings TownServices: never leave one behind (test_town_services)
 	_done()
 
 
@@ -104,6 +101,14 @@ func _add(n: Node) -> void:
 	var tree := Engine.get_main_loop() as SceneTree
 	(tree.current_scene if tree.current_scene != null else tree.root).add_child(n)
 	made.append(n)
+
+
+func _free_made() -> void:
+	for n in made:
+		if is_instance_valid(n):
+			n.get_parent().remove_child(n)
+			n.free()
+	made.clear()
 
 
 func _done() -> void:

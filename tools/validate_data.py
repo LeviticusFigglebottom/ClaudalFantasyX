@@ -1271,6 +1271,7 @@ def run(root: Path) -> Report:
     data_keys += check_boss(files, declared_flags_quiet(root), rep)
     check_read_openings(files, rep)
     data_keys += check_objectives(files, declared_flags_quiet(root), rep)  # M2-UI-16/18
+    data_keys += check_tutorial_tips(files, declared_flags_quiet(root), rep)  # M2-UI-24
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_undertow(root, files, rep)
@@ -2411,6 +2412,51 @@ def objective_errors(objectives: object, zone_maps: object, declared: set[str]) 
 
 def check_objectives(files: dict[str, object], declared: set[str], rep: Report) -> list[str]:
     errs, keys = objective_errors(files.get(OBJECTIVES_FILE), files.get(ZONE_MAPS_FILE), declared)
+    for e in errs:
+        rep.err(e)
+    return [k for k in keys if k]
+
+
+TUTORIAL_TIPS_FILE = "game/data/ui/tutorial_tips.json"
+TIP_TRIGGERS = {"field_ready", "near", "flag"}
+
+
+def tutorial_tip_errors(doc: object, declared: set[str]) -> tuple[list[str], list[str]]:
+    """M2-UI-24: every tip has a known trigger, declared seen/required/when flags, its loc keys, and
+    no two tips share a seen flag. Returns (errors, loc keys)."""
+    errs: list[str] = []
+    keys: list[str] = []
+    if doc is None:
+        return errs, keys
+    tips = (doc or {}).get("tutorial_tips", {}).get("tips", []) if isinstance(doc, dict) else []
+    seen_flags: set[str] = set()
+    for i, t in enumerate(tips):
+        w = f"{TUTORIAL_TIPS_FILE} tips[{i}] ({t.get('id', '?')})"
+        on = t.get("on")
+        if on not in TIP_TRIGGERS:
+            errs.append(f"{w}: 'on' must be one of {sorted(TIP_TRIGGERS)}")
+        if on == "near" and not t.get("tag"):
+            errs.append(f"{w}: a 'near' tip needs a 'tag'")
+        if on == "flag" and not t.get("when"):
+            errs.append(f"{w}: a 'flag' tip needs 'when'")
+        flag = str(t.get("flag", ""))
+        if not flag:
+            errs.append(f"{w}: no seen 'flag'")
+        elif flag in seen_flags:
+            errs.append(f"{w}: seen flag '{flag}' is used by another tip")
+        seen_flags.add(flag)
+        for f in [flag, *t.get("requires", []), *([t["when"]] if t.get("when") else [])]:
+            if f and f not in declared:
+                errs.append(f"{w}: flag '{f}' is not declared in game/data/flags.tres")
+        for k in ("title_key", "body_key"):
+            if not t.get(k):
+                errs.append(f"{w}: no {k}")
+            keys.append(str(t.get(k, "")))
+    return errs, keys
+
+
+def check_tutorial_tips(files: dict[str, object], declared: set[str], rep: Report) -> list[str]:
+    errs, keys = tutorial_tip_errors(files.get(TUTORIAL_TIPS_FILE), declared)
     for e in errs:
         rep.err(e)
     return [k for k in keys if k]

@@ -827,3 +827,28 @@ CREDITS_FONTS,EB Garamond and Source Sans 3 (SIL Open Font License)
 CREDITS_THANKS,Thank you for playing.
 FIELD_PROMPT_DEFAULT,Examine
 CTRL_ACT_BATTLE_PAUSE,Pause a battle
+TIP_OBJECTIVE_TITLE,Where to next
+TIP_OBJECTIVE_BODY,"Press {field_objective} to see your errand again. The Map, in the menu ({ui_cancel}), shows the way."
+TIP_FIELD_MENU_TITLE,The menu
+TIP_FIELD_MENU_BODY,"Press {ui_cancel} to open the menu: items, gear, the Lattice, each hero's Swell, and the map."
+TIP_SAVE_SHRINE_TITLE,Save shrines
+TIP_SAVE_SHRINE_BODY,"A shrine keeps your journey. Press {field_interact} at one to record it and rest."
+TIP_SHOP_TITLE,Trade
+TIP_SHOP_BODY,"Keepers buy as well as sell. In a deal, Left and Right change how many."
+SET_TUTORIAL_TIPS,Tips
+SET_TUTORIAL_TIPS_HELP,"Short first-time tips in the field. Each shows once per journey."
+TITLE_LOGO_HYMN,Hymn
+TITLE_LOGO_JOIN,of the
+TITLE_LOGO_UNDERTOW,Undertow
+TITLE_BUILD_LABEL,Development build (%s)
+SET_BATTLE_SPEED,Battle speed
+SET_BATTLE_SPEED_HELP,How fast each action plays out in battle. The turn order and every choice stay the same.
+SET_BATTLE_SPEED_075,Slower
+SET_BATTLE_SPEED_100,Normal
+SET_BATTLE_SPEED_150,Faster
+SET_BATTLE_SPEED_200,Fastest
+SET_SUMMON_CINEMATIC,Vowbound calls
+SET_SUMMON_CINEMATIC_HELP,"How a Vowbound's call plays. Short plays it in full the first time, then shortened. Off goes straight to the Vowbound's arrival."
+SET_SUMMON_CINEMATIC_FULL,Full
+SET_SUMMON_CINEMATIC_SHORT,Short
+SET_SUMMON_CINEMATIC_OFF,Off

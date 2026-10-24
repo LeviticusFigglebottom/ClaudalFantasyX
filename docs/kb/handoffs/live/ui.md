@@ -11,34 +11,32 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 6. (Found on claude/characters) **M2-UI-07**, the hero actor hook: **hook done and pushed (08c872c)**. It is **blocked** on M2-CHR-06's scenes reaching the integration branch; after that it needs three `"scene"` lines in battle_sandbox.json and shot re-approval.
 
 ## Now
-- **MERGE-READY @ 81910b52: ci_local exit 0, 1586 tests, 91 shots** (full run, every shot, own HYMN_LOG_DIR). It includes the integration branch at cf999e0a and m2-slice at 386643c3. Coverage battle 99.95% / progression 96.69%. The Blender step was SKIPPED: no pinned Blender in this container, and this branch touches no Blender source.
-- **In progress, the human's top priority:** objectives, the objective line, the destination cue (M2-UI-16/17/19, done on the local branch `ui/objectives`) and the zone map (M2-UI-18, done in a worktree agent). They are merging into claude/ui with claude/menus (the Menus track's nine-row field menu). The next MERGE-READY line follows after a full gate.
-- **Queued after it (Lead, intro audit):**
-  1. A field interaction prompt.
-  2. First-time tutorial prompts.
-  3. The title screen.
-  4. Area title cards.
-  5. Dialogue box: a continue glyph, a backlog and auto-advance.
-  6. Settings: battle speed and summon-cinematic length.
-  Also add `battle_pause` to the Controls page (from the Menus track).
-- **The Lead's queue top-up (11:00) is done apart from M2-UI-07,** which waits on claude/characters. All in review:
-  - **Item 1, M2-UI-08:** Art's two colour fixes (done earlier).
-  - **Item 2, the accessibility audit, one task per item:**
-    - **M2-UI-11:** the colour-blind palette. The old orange `#F08A24` was *less* distinct than red under deuteranopia: 0.085 Oklab from the Swell amber. The new `#D15E1F` reaches 0.177 at 4.6:1 contrast. Regression test with CVD matrices; new shot `battle_statuses_colorblind`. Reviewer character; **art/ui.md §9 needs updating by Art.**
-    - **M2-UI-12:** text speed and subtitle backing on the Accessibility page, with query methods for the box. **M2-ARC-07 filed** for Architect's dialogue box to read them; text size there is M2-ARC-06.
-    - **M2-UI-13:** a Controls page (a worktree agent's work, merged), for keyboard and pad remapping with swap-on-conflict. Escape or B always backs out, and Cancel can never be unbound. It saves to `[controls]`, and **one line in `game/core/boot.gd`** applies the saved bindings (Architect's file: please accept). **Behaviour change:** pad A and B now confirm and cancel in menus; Godot ships those actions with no pad buttons.
-    - **M2-UI-14:** hold to confirm (`timing_assist` "hold"). Reviewer combat, because `swell_input.gd` changed.
-  - **Item 3, M2-UI-15:** a pseudo-locale render test and a no-hard-coded-string check (the codebase was clean). Fixes: the hub help line now wraps, and the shop and inn lines size to their text. **The shop's sell description and refusal line were already cut off in English.**
-- **The human asked directly for UI flair:** M2-UI-10 / ADR 0033, in review with Art. The m2-slice merge (c2d03e29) is pushed.
-- **Gates at the last push:**
-  - Full suite **1578 run, 0 failed**, log check clean.
-  - Coverage battle 99.95% / progression 96.69% (within baseline); tools unittest 519 OK.
-  - validate_data 0/0, lint and format clean, manifest 91 shots.
-  - Shots viewed and approved this round: `battle_statuses_colorblind`, `settings_accessibility` (six rows), `settings_controls`, `settings_hub` (three rows), and `shop_menu_buy`, `shop_menu_sell`, `inn_menu`.
-- **Only M2-UI-07 remains in the queue. Lead: please queue more.**
+- **Lead gate rules from 14:14 apply** (scoped checks per item; one full Godot suite per batch in the background; the Lead runs the full manifest and Blender at merge).
+- **MERGE-READY line:** pending on the background suite for 4d8798c7 (see below).
+- **Done this batch, all status review (reviewer lead):**
+  - **M2-UI-16/17/19:** objectives, the objective line, the destination cue. Since the last line:
+    - the field menu root shows the objective (an Objective block);
+    - fixed the line drawing empty (a trimming Label asked for no height);
+    - shot `field_objective_line` approved.
+  - **M2-UI-18:** the zone map, merged with the Menus track's party pages. The root has ten rows: Map comes after Swell.
+  - **M2-UI-20:** the field interaction prompt. A keycap (key, or pad button after pad use) plus the interactable's `prompt_key` verb over the nearest interactable. `FieldHud.attach(self)` is now the one UI line in FieldController (Systems' file; one line changed).
+  - **M2-UI-21:** area title cards, once per change of place. The title screen resets them.
+  - **M2-UI-22:** title screen (worktree agent). An original drawn logotype, light shafts and motes over the caustics, and a debug-only build label. **Removed boot's placeholder Label** in `game/core/boot.gd`/`.tscn` (Architect's files; please accept).
+  - **M2-UI-23:** Battle speed (0.75 to 2x; presentation only, the engine and Swell windows untouched) and Vowbound call length (Full/Short/Off) (worktree agent).
+    - **No call cinematic exists yet:** request task **M2-BPR-07** for combat.
+    - **Expect a conflict with claude/battle-presentation's M2-BPR-03:** it adds the same `battle_speed` row and loc keys. Keep one copy of the six `SET_BATTLE_SPEED*` rows.
+  - **M2-UI-24:** first-time tips. Data-driven, saved per journey by seen flags, with an Accessibility **Tips** off switch. There are four slice tips, and `validate_data` checks them.
+  - **M2-UI-13 addendum:** `battle_pause` on the Controls page (the Menus track's ask).
+- **Fixes found by the full gate:**
+  - **Field shot drivers moved to `game/levels/_tests/ui_shots/`:** they load `_tests` scenes, and `test_release_excludes_tests` failed. The Menus track reported it too.
+  - **`test_town_services` leak:** a FieldController left behind by a test opened a second shop.
+- **In progress:** M2-UI-25, the dialogue box's continue glyph, backlog and auto-advance, in a worktree agent. These are UI-owned pieces in `game/ui/dialogue_assist/`, attached by one line in DialogueBox (Architect's file).
+- **Blocked:**
+  - **M2-UI-07:** claude/characters (M2-CHR-06) is still not on the integration branch.
+  - **M3-UI-01 (Reefball HUD):** no Reefball engine on any branch yet.
 
 ## Exact next step
-- When claude/characters is on the integration branch, merge it here and finish M2-UI-07: add the three `"scene"` lines to battle_sandbox.json `stand_ins`, capture the battle shots twice to check the idle animation keeps them stable, then view and re-approve them.
+- Merge the M2-UI-25 agent branch when it reports. Then write the MERGE-READY line, and ask the Lead for more queue: after M2-UI-25 only the two blocked items remain.
 
 ## Un-pushed state
 - None.

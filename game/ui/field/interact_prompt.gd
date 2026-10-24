@@ -55,6 +55,7 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	UiSettings.shared().follow(self)
+	using_pad = InputNames.using_pad
 	_build()
 	_apply()
 
@@ -67,15 +68,10 @@ func _process(delta: float) -> void:
 	advance(delta)
 
 
-## Remembers whether the pad or the keyboard and mouse was used last.
+## Remembers whether the pad or the keyboard and mouse was used last (InputNames.using_pad).
 func note_device(event: InputEvent) -> void:
-	if event is InputEventJoypadButton and (event as InputEventJoypadButton).pressed:
-		using_pad = true
-	elif event is InputEventJoypadMotion:
-		if absf((event as InputEventJoypadMotion).axis_value) >= HudLayout.num(_d, "pad_deadzone"):
-			using_pad = true
-	elif event is InputEventKey or event is InputEventMouseButton:
-		using_pad = false
+	InputNames.note(event, HudLayout.num(_d, "pad_deadzone"))
+	using_pad = InputNames.using_pad
 
 
 ## True while the prompt may be seen: the field takes input and no menu pauses the tree.
@@ -122,22 +118,9 @@ func verb_text(it: Interactable) -> String:
 
 
 ## The field_interact binding by name: its first pad button when the pad was used last, else its
-## first key (pad buttons by their generic names, controls.json pad_button_keys).
+## first key (InputNames).
 func key_text() -> String:
-	var events := InputMap.action_get_events(FieldInput.INTERACT) if InputMap.has_action(FieldInput.INTERACT) else []
-	var key_name := ""
-	var pad_name := ""
-	for ev: InputEvent in events:
-		if ev is InputEventKey and key_name == "":
-			var k := ev as InputEventKey
-			key_name = OS.get_keycode_string(k.physical_keycode if k.physical_keycode != KEY_NONE else k.keycode)
-		elif ev is InputEventJoypadButton and pad_name == "":
-			var b := str(int((ev as InputEventJoypadButton).button_index))
-			var keys := ControlsModel.load_data().get("pad_button_keys", {}) as Dictionary
-			pad_name = tr(str(keys[b])) if keys.has(b) else b
-	if using_pad and pad_name != "":
-		return pad_name
-	return key_name if key_name != "" else pad_name
+	return InputNames.first_name(FieldInput.INTERACT, using_pad)
 
 
 ## Where the plate goes for a point at screen `screen` (`behind`: behind the camera) on a screen of

@@ -384,6 +384,32 @@ The human's top priority for the slice: the player always knows the next step. A
 - **Gating:** it waits while the field refuses input (an opening cutscene), and a menu or a scene that takes over ends it for good. Reduced motion drops the rise. Layout and timing: `game/data/ui/area_title.json`.
 - **Shot:** `field_area_title`. **Tests:** `test_area_title_card.gd`. Field shot drivers live in `game/levels/_tests/ui_shots/` because they load `_tests` scenes, which release exports leave out.
 
+## First-time tips (M2-UI-24)
+
+- **Rows** live in `game/data/ui/tutorial_tips.json`. A tip is raised by `on`: `field_ready` (the field takes input in a scene), `near` (an interactable in reach whose tags include `tag`; the tags are its payload keys plus `shrine` for a SaveShrine), or `flag` (story flag `when` turns true). All of its `requires` flags must be set. Its seen `flag` (declared in flags.tres) is set when it shows, so each tip shows once per journey. `validate_data.py` (`check_tutorial_tips`) checks triggers, flags and keys.
+- **`TutorialTips`** (node-free) queues raised tips in order. **`TipCard`** (attached by `FieldHud`) shows one at a time at the upper right: a lamp glyph, a HeaderLabel title and the body. It holds `hold_sec + sec_per_char * length` and is gated like the other field HUD pieces, with its clock stopped while hidden.
+- **Bindings in text:** a body writes `{field_interact}`; `InputNames.fill` puts in the first key's name, or the pad button's after the pad was used (`InputNames.using_pad`, shared with the interaction prompt).
+- **Off switch:** Accessibility **Tips** (`tutorial_tips`). While it is off nothing is raised and nothing is marked seen.
+- Ch1's story prompts (dialogue scenes) and the battle `prompt_key` lines are separate systems.
+- **Shot:** `field_tip_card`. **Tests:** `test_tutorial_tips.gd`, `tools/tests/test_tutorial_tips.py`.
+
+## Title screen (M2-UI-22)
+
+- **Logotype (`TitleLogo`, `game/ui/title/`):** "Hymn" and "Undertow" in TitleLabel's serif at `word_scale_pct` of its size, a small-caps "of the" (BannerLabel's font) between them flanked by gold rules that fade outward from a lamp-node diamond, and a tide flourish under the name: a gold wave and a fainter teal echo that swell from nothing at their ends, with a diamond over the crest. All `draw_string` / `draw_*` from theme fonts and colours, no images. Sizes follow the theme, so the Accessibility text size scales it. Words: `TITLE_LOGO_HYMN`, `TITLE_LOGO_JOIN`, `TITLE_LOGO_UNDERTOW` (a language that orders the name differently translates the three parts).
+- **Backdrop (`TitleBackdrop`):** the menus' `CausticBackdrop` (drawn behind its parent), a few faint light shafts slanting down from the surface and swaying, and seeded motes (teal, some gold) that rise, sway and twinkle. Motion comes from the node's own elapsed time and a seeded `RandomNumberGenerator`, so `--fixed-fps` captures are identical run to run (checked: two captures match pixel for pixel); under reduced motion nothing moves. The logo's waves drift the same way.
+- **Build label:** "Development build (…)" bottom right, only when `OS.is_debug_build()` (`TitleMenu.shows_version`; data `version.debug_only` false would show it in a release too). It names project.godot's `application/config/version`, or `version.fallback` when that is unset. Boot's old placeholder Label (name + "bootstrap build") is gone.
+- **Data:** `game/ui/title/title_menu.json` (`logo`, `backdrop`, `version`). **Shot:** `boot_title`. **Tests:** `test_title_screen.gd` (and `test_title_menu.gd` for the menu's behaviour).
+
+## Battle speed and the Vowbound call cinematic (M2-UI-23)
+
+Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows in `accessibility.json`, `UiSettings` constants and query methods, loc keys, and saved in `settings.cfg`.
+- **`battle_speed`** (Slower 0.75, Normal 1.0, Faster 1.5, Fastest 2.0; default Normal) is a presentation speed multiplier. It uses the same id and values as BattleChoreo's `speed` (M2-BPR-03, battle-presentation branch), so the sequencer and the rest of the battle read one setting. `UiSettings.battle_speed()` is clamped to `accessibility.json` `battle_speed` min/max, and `battle_time_scale()` is `1 / battle_speed()`. `BattleHud.battle_speed()` is what the battle scene asks.
+  - **What it scales:** the controller's pacing waits (`_pace` divides by it, so the party bar drain follows too), damage numbers and float words (`DamageNumber.pop` `speed`, the tween's speed scale), the heavy-hit camera shake (`BattleStage.shake(speed)`) and the hit recoil (`FighterStandIn.flinch(speed)`).
+  - **What it never touches:** the engine and its seeded rng, so outcomes stay the same at every speed (`test_the_speed_never_changes_the_battle`). Also the Swell input windows: `SwellRingClock` and `SwellInput` run on real time in `tick()`, never on the paced wait. HUD panels, the opening banner, menu cursors and timeline chips keep their own pace, because they answer input or carry text to read. Instant pacing (`pacing_scale` 0, used by tests and captures) stays instant, and Normal changes no battle shot.
+- **`summon_cinematic`** (Full, Short, Off; default Short) sets the cut of a Vowbound's call cinematic (SPEC §6.3: full on first use, then shortened, with a skip toggle). `UiSettings.summon_cinematic_cut(first_call)` returns `CUT_FULL`, `CUT_SHORT` (skip the middle beats) or `CUT_NONE` (straight to the effect), from `accessibility.json` `summon_cinematics`. Short plays the first call of each Vowbound in full and later calls short. Full is always full, and Off always skips.
+  - **No call cinematic exists yet.** Today a call re-seats the stage at once (`BattleVowboundHud._reseat`). The cinematic belongs to battle presentation (M2-BPR-04's "Vowbound call", then C10 for Ilun). It must ask `summon_cinematic_cut()` with whether this is that Vowbound's first call, and the first-call record is its own. Request task: **M2-BPR-07**.
+- **Tests:** `test_accessibility_battle_speed.gd`. **Shot:** `settings_accessibility` (the page grows by two rows).
+
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 
 - **The field menu's root has ten rows** (`FieldMenuModel.ROOT_IDS`): Items, Equip, Lattice, Status, Swell, Map (M2-UI-18), Bestiary, Settings, Quit to Title, Close. Equip, Lattice and Status (`PARTY_ROWS`) are off, saying why, when nobody has joined. `field_menu.json` grew the panel to 639 px and the root page to nine rows; every rect is still a multiple of 3.
