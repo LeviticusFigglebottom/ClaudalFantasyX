@@ -45,10 +45,14 @@ const OCTAGON := 8
 @export var insert_side: CameraShot
 ## Hand off on the exit trigger only when this is the current scene (tests turn it off).
 @export var autostart := true
-## The hall's GI (a VoxelGI in the graphics presets' gi_voxel group), baked when the room is built
-## and again once the door is down (the two lighting states: before and after the flood). Not baked
-## without a rendering device (headless tests).
+## The hall's GI (a VoxelGI in the graphics presets' gi_voxel group), in two lighting states (the door
+## up, and down after the flood). M2-ENV-10 (ADR 0029): the states ship as baked VoxelGIData
+## (room.gi_data, made by tools/shrine/bake_shrine_gi.gd) and are only loaded at entry; baking them
+## took ~1.8 s each in one main-thread frame.
 @export var gi: VoxelGI
+## Bake the states at load when the shipped data is missing (a development fallback, never the game:
+## it costs the entry ~3.6 s). The bake tool turns it off.
+@export var bake_at_load := false
 
 var trial: ShellShrineTrial
 var cfg: Dictionary = {}
@@ -70,6 +74,8 @@ var room: Node3D
 var missing_pieces: Array[String] = []
 ## The last GI bake's wall time (ms, both states), -1 before any bake.
 var gi_bake_ms := -1
+## Milliseconds bake_gi() took at entry (loading the shipped states, or the fallback bake).
+var gi_load_ms := -1
 ## "closed" / "open" -> the VoxelGIData baked with the door up / down.
 var gi_states: Dictionary = {}
 
@@ -122,18 +128,31 @@ func _ready() -> void:
 ## has flooded it open; only the second after a reload past the trial), so opening the door swaps the
 ## data instead of baking mid-play. Needs a rendering device (no-op in headless tests).
 func bake_gi() -> void:
-	if gi == null or RenderingServer.get_rendering_device() == null:
+	if gi == null:
 		return
 	var t0 := Time.get_ticks_msec()
-	gi_states["open"] = _bake_state(true)
-	if not trial.door_open:
-		gi_states["closed"] = _bake_state(false)
-	gi_bake_ms = Time.get_ticks_msec() - t0
-	print("ShellShrineLevel: GI baked (%d states) in %d ms" % [gi_states.size(), gi_bake_ms])
+	var paths := gi_data_paths()
+	for state: String in paths.keys():
+		var path := str(paths[state])
+		if ResourceLoader.exists(path):
+			gi_states[state] = load(path) as VoxelGIData
+	if gi_states.size() < paths.size() and bake_at_load and RenderingServer.get_rendering_device() != null:
+		gi_states["open"] = bake_state(true)
+		if not trial.door_open:
+			gi_states["closed"] = bake_state(false)
+		gi_bake_ms = Time.get_ticks_msec() - t0
+		print("ShellShrineLevel: GI baked (%d states) in %d ms" % [gi_states.size(), gi_bake_ms])
+	gi_load_ms = Time.get_ticks_msec() - t0
 	_show_gi_state()
 
 
-func _bake_state(open: bool) -> VoxelGIData:
+## The shipped lighting states: state ("open", "closed") -> res path (room.gi_data).
+func gi_data_paths() -> Dictionary:
+	return (trial.data.get("room", {}) as Dictionary).get("gi_data", {})
+
+
+## Bakes one lighting state (the door down when `open`) on the hall's VoxelGI and returns its data.
+func bake_state(open: bool) -> VoxelGIData:
 	var keep := door.position
 	var h := float((_g["door"] as Array)[1])
 	door.position = Vector3(keep.x, float(_g["door_sink"]) if open else h * 0.5, keep.z)

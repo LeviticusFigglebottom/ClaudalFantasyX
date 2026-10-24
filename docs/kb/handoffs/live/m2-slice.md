@@ -3,6 +3,11 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **M2-ENV-10 is done, for review by rendering:** the Lead's 14:40 ADR 0029 breach.
+  - **The change:** the Shell Shrine now ships its two VoxelGI states, baked offline by `tools/shrine/bake_shrine_gi.tscn` under godot-render (reproducible, with PROVENANCE rows, about 0.8 MB each). Entry only loads them, so there's no main-thread bake.
+  - **Guards:** the staleness guard is `tools/tests/test_shrine_gi_bake.py`; the frame-time test is in `test_shell_shrine_level.gd`.
+  - **PC: please re-measure the shrine entry on hardware** (slice_sweep `launch,shell_shrine`, High): hidden worst frame and entry total.
+  - **For the Lead's bisect:** that removes the "GI baked (2 states)" step the lavapipe hang followed.
 - **M3-C07-02 is merged** (Ch7's story half; in review, reviewer narrative). Handoff cinematics-16.
   - **For the Reefball agent:** replace only the steps of beat `reefball_match` in `game/data/flow/chapters/ch07.json`, zone `ch07/tamsule_bell_galleries`.
     - Today that beat is a stand-in: it sets `ch07_tidecup_played`, then goes to `ch07/tamsule_bell_galleries` `CatchPool`. The real match must make the same return.
