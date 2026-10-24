@@ -408,3 +408,20 @@ Five new suites at Swell `good` (balance_targets.md "Ch6"). 1000 seeds:
 - **The sim stalled on Toma** until he had a no-cost lawful action: with only Brace, Challenge and Shield Wall, his MP ran out and 70–88% of runs timed out. `party_skills` now lends Stand Fast too.
 - **`role_answer` left Toma on guard all fight** while a striker waited in reserve (14–21%). The policy now steps a hero forbidden to strike back for a reserve member (battle_ctb.md).
 - **Lineups tried and dropped:** three skippers (naive 2–6%, smart 53–85%), two skippers and two gulls (smart 54–67%, p90 43–51), a skipper and three gulls (smart 92.5%, p90 49), two crabs and a skipper (naive 0–8%), and a crab and a gull on the ridge (naive 100%).
+### 2026-10-24: the Drownbell on an affordable party (M2-CMB-07 follow-up, combat)
+
+The Lead's decision: the `ch03_drownbell` loadout assumed every hero's tier-1 piece (about 2,160 lume of gear), but the slice pays about 800–900 lume in all. The loadout is now **starting gear plus two tier-1 pieces**, the most likely buys at the Net-Rack Forge: Rhen's **Coral-Bitten Hooks** (380, the protagonist's weapon, Ember Edge) and Toma's **Chiselled Shield** (340, DEF +3, Ember Guard), 720 lume. Asha keeps her starter staff and bangle, Rhen his Patched Tether, Toma his Boarding Spear. Consumables are unchanged (4 Salt Tonic, 1 Relighting Wick). Slice income is unchanged.
+
+On that party, with the bell unchanged, the bell won the Flood: role_answer 66.5% and smart 67.4% (1000 seeds), both under their bands, with no timeouts. The losses were wipes, not stalls. The party had lost the Reefline Harness (+40 HP), the Pearl Bangle (MDEF +2) and Asha's staff, so phase 2's water hits (Floodtide every turn, the Undertow Surge) fell on thinner defences. Strength 18 → 16 barely moved it (68.7 / 69.3 at 300 seeds). **The bell's magic goes from 14 to 11** (enemies.json), which softens Floodtide and the Undertow Surge only; Hood Slam, the toll, the rim, the HP and the phase threshold are unchanged. At 1000 seeds `--check` passes for every suite: naive 0.0%, naive_swell 1.8% (report only), role_answer 80.7%, smart 83.7% (p90 56 actions, under the 60 ceiling). The other suites are byte-identical. No formula changed.
+
+**Still generous:** before the bell a slice player has the 100-lume purse plus the field fights (today one `ch02_tideline` fight, 44 lume), so two tier-1 pieces before the boss assume random encounters on the causeway that the first playable does not have yet, and the four tonics and the wick (460 lume) are not budgeted either. If the slice keeps one field fight, the next lever is one tier-1 piece.
+
+### 2026-10-24: the Drownbell after the big7 merge (Lead merge; open)
+
+The combat retune above (the affordable party, magic 11) was measured on a base without m2-slice's real Ilun
+call (M2-FP-17), and m2-slice's numbers were measured on the old tier-1 party. With both, at 1000 seeds: naive
+0.0%, naive_swell 0.6%, role_answer 75.6%, smart 83.8%, flood_call 44.4%, all in band, but smart's p90 is **65**
+actions, over the suite's 60 ceiling, so `--check` fails (and `test_drownbell_battle` at 200 seeds, p90 66). The
+bell's knobs barely move it at 500 seeds (smart p90): HP 2500-3000 gave 61-65, magic 10-13 gave 62-70, strength 16
+or 20 gave 61-64, defense 26 gave 62, polyp HP 120 gave 66. Only the party's damage (the loadout) or the ceiling
+moves it: a Lead decision.

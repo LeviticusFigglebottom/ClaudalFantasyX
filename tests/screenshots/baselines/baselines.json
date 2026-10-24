@@ -185,6 +185,12 @@
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
   },
+  "battle_arena_camp": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
   "battle_arena_causeway": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_method": "forward_plus",
@@ -203,6 +209,12 @@
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
   },
+  "battle_arena_derelict": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
   "battle_arena_derelict_deck_night": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
@@ -214,6 +226,30 @@
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
+  },
+  "battle_arena_raft": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
+  "battle_arena_route": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
+  "battle_arena_shoals": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
+  "battle_arena_terrace": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "battle_arena_tideline": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
@@ -227,11 +263,23 @@
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
   },
+  "battle_arena_underway": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
   "battle_arena_underway_tower": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
+  },
+  "battle_boss_intro_drownbell": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "battle_choreo_cast": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",

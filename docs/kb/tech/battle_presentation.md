@@ -288,6 +288,8 @@ the fighters. A retry of the same encounter keeps the arena (the `hymn_arena` me
 | `causeway_route_afternoon` | `ch03_causeway_shore`, `ch03_causeway_harrier` | haluna.md `ch03_causeway` 14:30: sun 52°, key `#FFEAD8` 3.0, sky fill `#A9DCF2` 0.6, `lut_ch02_noon` (+200 K): exposure 0.65, sat ×1.12, a far haze only | low tide: a slab landing on the stone path over tidal flats, coral boulders, tidepools and salt-grass, the lagoon at the horizon |
 | `derelict_deck_night` | `ch04_sail_leeches`, `ch04_bottle_hermit`, `ch04_spar_wraith`, `ch04_derelict_*` | Ch4: key `#FFB16E` lamp 1.2 (the Sun), fill `#2A4A6E` 0.2, rim `#9DB4D9` 0.5, sky `#0B1630` / `#1E2E4E`, fog `#22354F`, exposure 1.10, sat ×0.95; `night_sea` with sea-glow 0.12 | a planked deck, mainmast and foremast behind the fighters (yards and set sails above the frame), the far bulwark only (no near rail), two hung deck lamps, the ferry's lamps far off |
 | `ash_terrace_lanternfall` | `ch05_stair_*`, `ch05_cinder_matron` | Ch5: key `#FFA757` lamp 1.6 (the Sun), fill `#3A4A6A` 0.25, rim `#E0702E` 0.9, sky `#101A33` / `#3A2A3A`, fog `#5A3A2E`, exposure 1.05, sat ×1.15; no Sea | a volcanic-stone terrace, four tiers stepping up behind the foes with graves and small warm lanterns on their lips, a leaf-boat channel down the steps, the mountain's cone and plume beyond |
+| `brine_shoals_afternoon` | `ch06_ridge_skippers`, `ch06_ridge_crab`, `ch06_ridge_gulls`, `ch06_flats_crabs` | Ch6 15:30 haze: sun 35°, key `#FFD5B3` 2.4, fill `#A8B8B0` 0.55, rim `#E0702E` 0.35 (the far smoke), sky `#7FA3C0` / `#D8C8A8`, fog `#B8A890` (thick), exposure 0.70, sat ×0.9; `silted_flats` sea (deep `#4A5A50`) | a grey-brown mud bank with puddles, a tide channel behind the foes, wreck-ridges of black Lit Age hull plating (one with a Saltwright chalk camp-sign) and wooden hulks' ribs, gulls high over the ridges |
+| `salvage_camp_burning` | `ch06_inquisitor` | the same Ch6 grade, rim 0.7, plus four steady orange fire points (`#FF8A3A`, no flicker); `silted_flats` sea at the waterline | the camp's mud bank; behind the foes the hulk the party hid in, charred and burning low along its gunwale, lashed hulls with a tide-wheel behind the party's side, lamp racks alight, three dark smoke columns of stacked billows far behind; sober: no embers, nothing falling |
 
 - **Act I (M3-BPR-01):** the Underway's scripted fights (`ch01_wickfry`, `ch01_oil_slug`) are underwater in the
   drowned tower (act1_ch01.md C1-04, C1-06), so they take `underway_tower`, not the raft. Two grades are the
@@ -301,8 +303,11 @@ the fighters. A retry of the same encounter keeps the arena (the `hymn_arena` me
   battle baseline moved except `drownbell_flood` (now on the causeway at sunset, as battle_vfx.md's "the arena is
   the noon sandbox" asked).
 - **Shots:** `battle_arena_tideline`, `battle_arena_causeway`, `battle_arena_raft`, `battle_arena_underway`,
-  `battle_arena_route`, `battle_arena_derelict`, `battle_arena_terrace` (`game/levels/_tests/battle_arenas/`; shot fixtures live under `_tests` so release builds and the
-  game/battle coverage gate exclude them).
+  `battle_arena_route`, `battle_arena_derelict`, `battle_arena_terrace`, `battle_arena_shoals`, `battle_arena_camp`
+  (`game/levels/_tests/battle_arenas/`; shot fixtures live under `_tests` so release builds and the game/battle
+  coverage gate exclude them).
+- **Ch6 (M3-BPR-03):** every light in the two Ch6 arenas sets `light_volumetric_fog_energy = 0.0` (Lead rule: the
+  default 1.0 bands dense fog volumes). Env-art's Brine Shoals zone (M3-ENV-02) is the kit for the final versions.
 - **Staging** (`arenas.json` `staging`, M3-BPR-01): `travel_scale` scales every run, step, walk-in and exit, `tempo`
   the battle speed. The underway tower: shorter runs (0.6) and slower (0.8); the derelict deck: shorter runs (0.85).
 - **Checked by** `tools/validate_choreo.py` `arena_errors` (from validate_data): every scene exists, every
@@ -465,8 +470,8 @@ turn follows. **`BattleBossIntro`** (`game/battle/scene/battle_boss_intro.gd`) i
 (one line; the controller is untouched) and listens to the engine's first `turn_started`.
 
 **When.** An encounter with a row in `choreo.json → boss_intro.rows`: Hullgnaw (`ch01_hullgnaw`), the Bottle Hermit
-(`ch04_bottle_hermit`), the Spar-Wraith (`ch04_spar_wraith`), the Cinder Matron (`ch05_cinder_matron`) and the
-Drownbell (`drownbell`). Once per battle.
+(`ch04_bottle_hermit`), the Spar-Wraith (`ch04_spar_wraith`), the Cinder Matron (`ch05_cinder_matron`), Inquisitor
+Hadric Moll (`ch06_inquisitor`, M3-BPR-03) and the Drownbell (`drownbell`). Once per battle.
 - **Sequenced, never on top of anything.** At the first turn it waits while the router's fade covers the screen
   (`SceneRouter.is_busy`) and while the opening banner is pending or showing, at most `reveal_wait_max_sec`. The boss
   encounters open `normal`, so in practice no banner shows; the order is still fixed.
@@ -492,6 +497,10 @@ Drownbell (`drownbell`). Once per battle.
   the target info and the opening banner (tested). Text: `BOSS_TITLE_*` and `BOSS_EPITHET_*` (strings.csv), drawn
   from the story beats and the bestiary lore: *Storm-born, caged in a drowned ship's ribs*; *It keeps house in the
   old lamp glass*; *It hauls a dead ship's lines*; *Woken by the anvil's ring*; *It still rings for the drowned*.
+  The Inquisitor is a living officer of the Order, not a monster (act1_ch06.md B03, §5): his card is his name and
+  rank, *Inquisitor Hadric Moll*, over *A tired officer who still believes the Edict* (Narrative may refine). His
+  encounter's opening prompt (`TUT_CH06_HOUND`) is hidden while the intro plays and shows after it; Toma's
+  first-turn bark (`turn_prompt_key`) still shows on his first turn (tested). Shot: `battle_boss_intro_inquisitor`.
 - **Original staging.** A slow ease to a still frame and a fading card: no screen break, no spin, no flash, no
   name plate sweeping in, no letterbox bars.
 

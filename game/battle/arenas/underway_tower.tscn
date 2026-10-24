@@ -238,6 +238,7 @@ light_energy = 4.0
 omni_range = 11.0
 omni_attenuation = 1.0
 shadow_enabled = true
+light_volumetric_fog_energy = 0.0
 
 [node name="LampGlass" type="MeshInstance3D" parent="."]
 cast_shadow = 0
@@ -250,6 +251,7 @@ light_color = Color(0.498, 0.776, 0.851, 1.0)
 light_energy = 0.6
 omni_range = 5.0
 omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
 
 [node name="Mote0" type="MeshInstance3D" parent="."]
 cast_shadow = 0
@@ -262,6 +264,7 @@ light_color = Color(0.498, 0.776, 0.851, 1.0)
 light_energy = 0.5
 omni_range = 5.0
 omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
 
 [node name="Mote1" type="MeshInstance3D" parent="."]
 cast_shadow = 0
@@ -274,6 +277,7 @@ light_color = Color(0.498, 0.776, 0.851, 1.0)
 light_energy = 0.5
 omni_range = 5.0
 omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
 
 [node name="Mote2" type="MeshInstance3D" parent="."]
 cast_shadow = 0
@@ -286,6 +290,7 @@ light_color = Color(0.498, 0.776, 0.851, 1.0)
 light_energy = 0.4
 omni_range = 5.0
 omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
 
 [node name="Mote3" type="MeshInstance3D" parent="."]
 cast_shadow = 0

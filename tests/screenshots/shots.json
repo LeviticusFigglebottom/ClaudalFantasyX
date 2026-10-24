@@ -2486,6 +2486,44 @@
     {
       "id": "field_menu_map_underway",
       "scene": "res://game/ui/map/shots/field_menu_map_underway.tscn"
+    },
+    {
+      "id": "battle_arena_shoals",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_shoals.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_arena_camp",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_camp.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_boss_intro_inquisitor",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_inquisitor.tscn"
+    },
+    {
+      "id": "battle_boss_intro_matron",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_matron.tscn"
+    },
+    {
+      "id": "battle_boss_intro_hermit",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_hermit.tscn"
+    },
+    {
+      "id": "battle_boss_intro_wraith",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_wraith.tscn"
+    },
+    {
+      "id": "battle_boss_intro_drownbell",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_drownbell.tscn"
     }
   ]
 }

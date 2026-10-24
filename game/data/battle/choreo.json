@@ -125,7 +125,9 @@
         "boss": {"anchor": "target", "back_m": 3.3, "side_m": 3.1, "up_m": 0.45, "look_at": 1.0, "look_up_m": 0.15,
                  "fov": 44.0},
         "boss_tall": {"anchor": "target", "back_m": 5.6, "side_m": 5.4, "up_m": 0.5, "look_at": 1.0, "look_up_m": 0.2,
-                      "fov": 46.0}
+                      "fov": 46.0},
+        "boss_skyward": {"anchor": "target", "back_m": 2.6, "side_m": 6.4, "up_m": 0.3, "look_at": 1.0, "look_up_m": -0.6,
+                         "fov": 58.0}
       },
       "by_style": {
         "melee": {"lead": "actor", "contact": "target"},
@@ -319,9 +321,12 @@
                                "on_retry": false},
         "ch04_spar_wraith": {"enemy": "spar_wraith", "shot": "boss", "hold_sec": 2.0, "title_key": "BOSS_TITLE_SPAR_WRAITH",
                              "epithet_key": "BOSS_EPITHET_SPAR_WRAITH", "on_retry": false},
-        "ch05_cinder_matron": {"enemy": "cinder_matron", "shot": "boss_tall", "hold_sec": 2.2,
+        "ch05_cinder_matron": {"enemy": "cinder_matron", "shot": "boss_skyward", "hold_sec": 2.2,
                                "title_key": "BOSS_TITLE_CINDER_MATRON", "epithet_key": "BOSS_EPITHET_CINDER_MATRON",
                                "on_retry": false},
+        "ch06_inquisitor": {"enemy": "stillguard_inquisitor", "shot": "boss", "hold_sec": 2.0,
+                            "title_key": "BOSS_TITLE_INQUISITOR", "epithet_key": "BOSS_EPITHET_INQUISITOR",
+                            "on_retry": false},
         "drownbell": {"enemy": "drownbell", "shot": "boss_tall", "hold_sec": 2.2, "title_key": "BOSS_TITLE_DROWNBELL",
                       "epithet_key": "BOSS_EPITHET_DROWNBELL", "on_retry": false}
       }

@@ -353,6 +353,7 @@ light_energy = 2.2
 omni_range = 9.0
 omni_attenuation = 1.0
 shadow_enabled = true
+light_volumetric_fog_energy = 0.0
 
 [node name="LampMainGlass" type="MeshInstance3D" parent="."]
 cast_shadow = 0
@@ -370,6 +371,7 @@ light_color = Color(1.000, 0.694, 0.431, 1.0)
 light_energy = 1.4
 omni_range = 6.5
 omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
 
 [node name="LampAftGlass" type="MeshInstance3D" parent="."]
 cast_shadow = 0

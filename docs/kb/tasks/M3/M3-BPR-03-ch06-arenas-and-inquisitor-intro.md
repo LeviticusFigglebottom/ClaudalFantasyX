@@ -2,8 +2,9 @@
 id: M3-BPR-03
 title: Ch6 battle arenas (Brine Shoals, the burning salvage camp) and the Inquisitor's intro
 role: combat
-status: doing
+status: review
 owner_session: battle-presentation (claude/battle-presentation)
+reviewer: lead
 depends_on: [M3-BPR-01, M3-BPR-02]
 milestone: M3
 request-from: lead
@@ -19,8 +20,20 @@ m2-slice's Ch6 encounters (act1_ch06.md) need arenas and the boss fight needs an
 Env-art's Brine Shoals zone (M3-ENV-02) is the kit for the final versions (request in M3-ENV-06's spirit).
 
 ## Acceptance criteria
-- [ ] Two greybox arenas on the contract, the encounter rows' `arena`, shots viewed
-- [ ] The Inquisitor's intro row and loc keys (sincere; Narrative may refine)
-- [ ] Tests
+- [x] Two greybox arenas on the contract, the encounter rows' `arena`, shots viewed
+- [x] The Inquisitor's intro row and loc keys (sincere; Narrative may refine)
+- [x] Tests
+
+## Notes
+- 2026-10-24 (worktree agent): `game/battle/arenas/brine_shoals_afternoon.tscn` and `salvage_camp_burning.tscn`
+  (greybox, hand-written primitives; the grade in each header). arenas.json scenes; `arena` on the five Ch6 rows.
+  Every light in both sets `light_volumetric_fog_energy = 0.0` (Lead rule). Shots `battle_arena_shoals`
+  (ch06_ridge_gulls), `battle_arena_camp` (ch06_inquisitor) and `battle_boss_intro_inquisitor`, viewed and approved.
+- The intro row `ch06_inquisitor` (shot `boss`, hold 2.0): `BOSS_TITLE_INQUISITOR` "Inquisitor Hadric Moll",
+  `BOSS_EPITHET_INQUISITOR` "A tired officer who still believes the Edict" (Narrative may refine). Tested: the help
+  line (`TUT_CH06_HOUND`) is hidden while it plays and back after, and Toma's bark shows on his first turn.
+- Open: the shoals' hull plates read dark brown under the warm haze rather than black; env-art's kit (M3-ENV-02)
+  replaces the greybox. A pre-existing quirk, not the intro's: if Toma's first turn came before any other party turn,
+  his bark would replace the unshown `TUT_CH06_HOUND` prompt (BattleBossHud keeps one pending prompt).
 
 ## Review log

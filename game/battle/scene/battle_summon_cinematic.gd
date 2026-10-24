@@ -61,10 +61,11 @@ func wants_full(cid: StringName) -> bool:
 	return _live() and _cut(not bool(Game.get_flag(flag))) == UiSettings.CUT_FULL
 
 
-## The entrance for `cid`'s call when this cinematic decides it ({} = the short entry): the full cinematic, or under
-## "off" no rise at all.
+## The entrance for `cid`'s call when this cinematic decides it ({} = the short entry): the full cinematic, or for a
+## "none" cut (the "off" setting) no rise at all.
 func entry_for(cid: StringName) -> Dictionary:
-	if first_call_flag(cid) != &"" and str(_setting()) == SETTING_OFF:
+	var flag := first_call_flag(cid)
+	if flag != &"" and _cut(not bool(Game.get_flag(flag))) == UiSettings.CUT_NONE:
 		return cfg.get("off_entry", {}) as Dictionary
 	return begin(cid) if wants_full(cid) else {}
 
@@ -149,6 +150,7 @@ func _place_light() -> void:
 		_light.light_color = Color(str(cfg.get("light_color", "#FFFFFF")))
 		_light.omni_range = float(cfg.get("light_range_m", 0.0))
 		_light.shadow_enabled = false
+		_light.light_volumetric_fog_energy = 0.0  # Lead rule: lamps never band a dense fog volume
 		_ctl.stage.add_child(_light)
 	var f := _ctl.stage.stand_in(active_id)
 	if f != null:
