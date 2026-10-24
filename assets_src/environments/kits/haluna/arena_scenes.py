@@ -266,7 +266,7 @@ class Scene:
 
 def write_arena(a: dict) -> Path:
     sc = Scene()
-    script = sc.res("Script", "res://game/world/arenas/battle_arena.gd")
+    script = sc.res("Script", "res://game/world/arenas/battle_arena_root.gd")
     sky_shader = sc.res("Shader", LOW_SUN_SKY)
     lut = sc.res("Texture3D", a["lut"])
     sky_params = "\n".join(

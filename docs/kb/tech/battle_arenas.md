@@ -9,7 +9,7 @@ camera; the arena brings the ground, the sky, the light and the dressing.
 ## The contract
 
 An arena is the scene **`assets/environments/arenas/<arena_id>/<arena_id>.tscn`**
-(`BattleArena.path_for(id)`). Its root is a `BattleArena` (`game/world/arenas/battle_arena.gd`, a Node3D with
+(`BattleArenaRoot.path_for(id)`). Its root is a `BattleArenaRoot` (`game/world/arenas/battle_arena_root.gd`, a Node3D with
 `arena_id` and `sub_frame`).
 
 1. **It lights itself.** Direct children `WorldEnvironment` (the colour-script grade, with its LUT) and `Sun`
@@ -62,20 +62,21 @@ has `wide_high`, `party_side`, `foe_side`, `into_the_sun`.
 ## Swap-in (battle presentation: branch `claude/battle-presentation`)
 
 The presentation track owns the battle scene and `encounters.json`; Environment does not edit them.
-1. Add `"arena": "tideline_dawn"` to `ch02_tideline` and `"arena": "causeway_disc_sunset"` to `drownbell` in
-   `game/data/battle/encounters.json`. An encounter without one keeps the sandbox greybox.
-2. On battle start, when the encounter names an arena: free the sandbox's `WorldEnvironment`, `Sun` and
-   `Arena`, instance `BattleArena.path_for(id)` and add it to the battle root **named `Arena`**. Then the flood
-   rig's `hide_nodes: ["Arena/Sea"]` hides the arena's sea, and its `ArenaSea` stops publishing.
-3. **Rendering's data, one value** (`game/data/vfx/battle/boss_vfx.json` `flood.sun_node`): it is `"Sun"`, a
-   child of the battle root. With an arena it must be `"Arena/Sun"` (or the rig should look up
-   `BattleArena.sun()`). Until then the rig finds no sun and the phase-2 light fall does not play. Filed with
-   the swap-in note so whoever lands step 2 changes it in the same commit.
+**Adopted by battle-presentation at 972131e** (its `BattleArena` loader, `game/battle/scene/battle_arena.gd`;
+this side's root script is `BattleArenaRoot` so the two global class names don't collide):
+1. `encounters.json` rows carry `arena` (`ch02_tideline` → `tideline_dawn`, `drownbell` → `causeway_disc_sunset`),
+   and `game/data/battle/arenas.json` maps each id to its scene. Once this branch merges, repoint the two paths
+   from the greybox `game/battle/arenas/<id>.tscn` to `assets/environments/arenas/<id>/<id>.tscn`, then
+   re-approve `battle_arena_tideline`, `battle_arena_causeway` and `drownbell_flood` after viewing them.
+2. At load the arena root's `WorldEnvironment` and `Sun` replace the battle scene's at the battle root. Every other
+   child goes under a new `Arena` node, so the root child `Sea` becomes `Arena/Sea`, which the flood rig's
+   `hide_nodes` hides (its `ArenaSea` then stops publishing). `CameraHints` lands under `Arena/CameraHints`.
+3. The flood rig's `flood.sun_node` stays `"Sun"`: the arena's sun sits at the battle root. No Rendering change.
 4. Fighters keep standing on the battle's slot markers; nothing moves.
 5. The sandbox's weather: the arena's grass and palms sway on the zone wind; `WeatherClock` supplies it.
 
 **m2-slice:** nothing to wire. The field-to-battle router already loads the battle scene; the arena comes with
-the encounter row. The first fight (Haluna beach) and the Drownbell get their arenas as soon as step 1-3 land.
+the encounter row. The first fight (Haluna beach) and the Drownbell get their arenas as soon as step 1's repoint lands.
 
 ## Building and checking
 

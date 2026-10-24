@@ -31,20 +31,19 @@ per-encounter battle arenas at final quality, around the sandbox's slot layout:
 
 ## The contract (full text: docs/kb/tech/battle_arenas.md)
 An arena is `assets/environments/arenas/<arena_id>/<arena_id>.tscn` with a `BattleArena` root
-(`game/world/arenas/battle_arena.gd`) that carries its own `WorldEnvironment`, `Sun` (one DirectionalLight3D) and
+(`game/world/arenas/battle_arena_root.gd`) that carries its own `WorldEnvironment`, `Sun` (one DirectionalLight3D) and
 dressing, built around the sandbox's slot layout at the origin. The slot markers and BattleCamera stay in the battle
 scene. Within 1.0 m of every slot nothing rises over y = 0.05, and 70% of the ground there is the floor; nothing
 crosses the camera-to-slot lines at chest height; no camera. Its sea is an `ArenaSea` named `Sea` that publishes
 `hymn_water_level` only while visible. Optional `CameraHints` (Marker3Ds), `BossAnchor`, `FloodAnchor`.
 
 ## Swap-in note (battle-presentation `claude/battle-presentation`, m2-slice)
-1. `encounters.json`: `"arena": "tideline_dawn"` on `ch02_tideline`, `"arena": "causeway_disc_sunset"` on `drownbell`.
-2. On battle start with an arena: free the sandbox's `WorldEnvironment`, `Sun`, `Arena`; instance
-   `BattleArena.path_for(id)` as a child of the battle root **named `Arena`** (then the flood rig's
-   `hide_nodes: ["Arena/Sea"]` matches, and the hidden ArenaSea stops publishing).
-3. Rendering's `boss_vfx.json` `flood.sun_node` `"Sun"` must become `"Arena/Sun"` in the same commit, or the
-   phase-2 light fall finds no sun.
-4. m2-slice: nothing to wire; the arena comes with the encounter row.
+Battle-presentation adopted the contract at 972131e (encounter `arena` ids, `arenas.json`, its `BattleArena`
+loader). Once this branch merges: repoint `arenas.json` to `assets/environments/arenas/<id>/<id>.tscn` and
+re-approve `battle_arena_tideline`, `battle_arena_causeway` and `drownbell_flood` after viewing them. The loader keeps
+the arena's `Sun` at the battle root, so `flood.sun_node` stays `"Sun"`. This side's root class is now
+`BattleArenaRoot`, so it doesn't collide with the loader's `BattleArena`. m2-slice: nothing to wire. Full text:
+`docs/kb/tech/battle_arenas.md` § Swap-in.
 
 ## Notes (2026-10-24, env-art)
 - **Kit (`arenas.py`, registered in build.py):** `arena_tideline_ground` (27360 / 1984 tris), `causeway_disc`

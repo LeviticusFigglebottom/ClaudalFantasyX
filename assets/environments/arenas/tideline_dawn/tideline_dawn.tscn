@@ -1,6 +1,6 @@
 [gd_scene load_steps=31 format=3]
 
-[ext_resource type="Script" path="res://game/world/arenas/battle_arena.gd" id="1_r"]
+[ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
 [ext_resource type="Texture3D" path="res://assets/environments/arenas/tideline_dawn/lut_ch02_dawn.png" id="3_r"]
 [ext_resource type="Script" path="res://game/world/arenas/arena_sea.gd" id="4_r"]

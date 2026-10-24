@@ -1,4 +1,4 @@
-class_name BattleArena
+class_name BattleArenaRoot
 extends Node3D
 ## The root of a battle arena scene (M2-ENV-11; the contract is docs/kb/tech/battle_arenas.md):
 ## assets/environments/arenas/<arena_id>/<arena_id>.tscn. It carries its own WorldEnvironment, Sun

@@ -10,8 +10,8 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
     layout, the shipped dressing scene and the preview C01–C08. The Drownbell disc is seated, and 2 baselines
     are registered (c02 profile, c08 disc approach). Swap-in note below.
   - **M2-ENV-11, the battle arenas `tideline_dawn` and `causeway_disc_sunset`: done, in review (rendering),
-    merged here** (22080124). Contract in `docs/kb/tech/battle_arenas.md`. The flood rig's sun path needs
-    Rendering's one-line change (see the swap-in note).
+    merged here** (22080124). Contract in `docs/kb/tech/battle_arenas.md`. Battle-presentation adopted it
+    (972131e); after the merge only its `arenas.json` repoint remains (swap-in note below).
   - **M3-ENV-02, Brine Shoals: in review, merged here** (c2bb5563). Its own import category
     `brine_shoals_kit` needs Character + Tools sign-off (M3-RND-21 filed). **M3-ENV-01 Tidecup:** in review
     (M3-RND-01 filed).
@@ -42,10 +42,10 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
   `$Dresser.path_points()`. Banter beats, examine points and the B10 trigger (`drownbell_disc`, r < 15.1 m)
   come from `$Dresser.anchors()`. Collision is a trimesh from `causeway_flats-lod1` plus `causeway_disc-lod1`.
   Full note: the task file's "Swap-in note for m2-slice".
-- **M2-ENV-11, battle arenas (for battle-presentation; nothing for m2-slice to wire):**
-  1. Add `"arena"` to the `ch02_tideline` and `drownbell` rows in `encounters.json`.
-  2. At battle start, free the sandbox's WorldEnvironment, Sun and Arena, then add the arena scene as `Arena`.
-  3. In the same commit, change `boss_vfx.json` `flood.sun_node` to `"Arena/Sun"`.
+- **M2-ENV-11, battle arenas:** battle-presentation adopted the contract (972131e: encounter `arena` ids, `arenas.json`,
+  its `BattleArena` loader; the Sun stays at the battle root, so no Rendering change). After merging, repoint
+  `arenas.json` at `assets/environments/arenas/<id>/<id>.tscn` and re-approve its three arena/flood shots after
+  viewing them. The arena root class is renamed `BattleArenaRoot` here to avoid a global class-name clash.
   Details: `docs/kb/tech/battle_arenas.md`.
 - **M2-ENV-09 (Shell Shrine art fixes):** merged here on top of your kit. One edit in your scene, approved by the
   project owner: a shadowless `Bounce/Skylight` OmniLight in `ch03/shell_shrine/shell_shrine.tscn` (the cool sky

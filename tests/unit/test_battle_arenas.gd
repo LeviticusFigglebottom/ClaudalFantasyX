@@ -1,5 +1,5 @@
 extends TestCase
-## M2-ENV-11: the battle arenas (docs/kb/tech/battle_arenas.md). Each arena scene loads as a BattleArena with
+## M2-ENV-11: the battle arenas (docs/kb/tech/battle_arenas.md). Each arena scene loads as a BattleArenaRoot with
 ## its own WorldEnvironment and Sun and no camera; the floor under every battle sandbox slot (read from
 ## battle_sandbox.tscn, so a moved slot is checked where it now is) is flat and clear; nothing stands between
 ## the BattleCamera and a fighter; and the arena sea stops publishing the water level while hidden.
@@ -21,10 +21,10 @@ const CHEST_M := 0.9
 func test_every_arena_is_a_battle_arena_with_its_grade_and_no_camera() -> void:
 	for id in ARENAS:
 		var root := _instance(id)
-		assert_true(root is BattleArena, "%s: root is a BattleArena" % id)
-		if not root is BattleArena:
+		assert_true(root is BattleArenaRoot, "%s: root is a BattleArenaRoot" % id)
+		if not root is BattleArenaRoot:
 			continue
-		var arena := root as BattleArena
+		var arena := root as BattleArenaRoot
 		assert_eq(arena.arena_id, id, "%s: arena_id" % id)
 		assert_true(arena.world_environment() != null and arena.world_environment().environment != null, "%s env" % id)
 		assert_true(arena.sun() != null, "%s: has a Sun" % id)
@@ -77,13 +77,13 @@ func test_nothing_stands_between_the_battle_camera_and_a_fighter() -> void:
 
 func test_the_disc_leaves_room_for_the_boss_and_the_flood() -> void:
 	var arena := _instance(&"causeway_disc_sunset") as Node3D
-	var boss := arena.get_node_or_null(NodePath(BattleArena.BOSS_ANCHOR)) as Marker3D
-	var flood := arena.get_node_or_null(NodePath(BattleArena.FLOOD_ANCHOR)) as Marker3D
+	var boss := arena.get_node_or_null(NodePath(BattleArenaRoot.BOSS_ANCHOR)) as Marker3D
+	var flood := arena.get_node_or_null(NodePath(BattleArenaRoot.FLOOD_ANCHOR)) as Marker3D
 	assert_true(boss != null and flood != null, "BossAnchor and FloodAnchor")
 	if boss != null and flood != null:
 		assert_true(boss.position.y < flood.position.y, "the sunk pool's floor is under low water (it holds water)")
 		assert_eq(Vector2(flood.position.x, flood.position.z), Vector2.ZERO, "the flood rig's water origin")
-		var sea := (arena as BattleArena).sea()
+		var sea := (arena as BattleArenaRoot).sea()
 		assert_between(sea.position.y, flood.position.y - 0.01, flood.position.y + 0.01, "the sea starts at low water")
 	arena.free()
 
@@ -138,7 +138,7 @@ func test_a_grounded_scatter_sits_on_its_ground() -> void:
 
 
 func _instance(id: StringName) -> Node:
-	var scene := load(BattleArena.path_for(id)) as PackedScene
+	var scene := load(BattleArenaRoot.path_for(id)) as PackedScene
 	assert_true(scene != null, "%s loads" % id)
 	return scene.instantiate() if scene != null else Node3D.new()
 
