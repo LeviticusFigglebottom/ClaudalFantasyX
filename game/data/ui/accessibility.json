@@ -13,7 +13,9 @@
        "label_key": "SET_PALETTE", "help_key": "SET_PALETTE_HELP"},
       {"id": "timing_assist", "type": "enum", "default": "off", "options": ["off", "wide", "auto"],
        "option_keys": ["SET_TIMING_ASSIST_OFF", "SET_TIMING_ASSIST_WIDE", "SET_TIMING_ASSIST_AUTO"],
-       "label_key": "SET_TIMING_ASSIST", "help_key": "SET_TIMING_ASSIST_HELP"}
+       "label_key": "SET_TIMING_ASSIST", "help_key": "SET_TIMING_ASSIST_HELP"},
+      {"id": "reduced_audio", "type": "bool", "default": false, "label_key": "SET_REDUCED_AUDIO",
+       "help_key": "SET_REDUCED_AUDIO_HELP"}
     ],
     "palettes": {
       "standard": {},
