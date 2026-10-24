@@ -218,3 +218,30 @@ Loadouts are `ch06_shoals` (3 Salt Tonic, 1 Brine Eyewash) and `ch06_inquisitor`
 - **The flats are cut to three foes.** The sheet's 3–4 foe groups are too much for this party: three skippers gave `smart` 53–85%, and four foes pushed `smart`'s p90 to 43–51. The flats keep one 3-foe group (two crabs, whom Kerrid answers, and a gull), and `ch06_ridge_gulls` (three foes) is in their table too. The cut groups are `ch06_flats_skippers` and `ch06_flats_mixed` (M3-C06-05).
 
 Numbers are in the 2026-10-24 tuning-log entry in balance_report.md.
+
+### Ch8: the Fisher Stair set piece and the Undertow's Reach (M3-CMB-01)
+
+The set piece (act1_ch08.md §5a; schema in [set_piece_battles.md](set_piece_battles.md), ADR 0038) is won on its **objective**: a quota of the Climb's turns, or `scripted_escape` for the Reach, which the simulator counts as a win. `kind: set_piece`. Every suite uses the loadout `ch08_seawall`: Ch6's gear without Kerrid's, 4 Salt Tonic, 2 Brine Eyewash and 1 Relighting Wick, the flags `ch03_ilun_bound`, `ch05_kahre_bound`, `ch08_virel_bound` and `ch08_hoist_rigged`, and Ilun, Kahre and Virel bound. Swell is `good`. Toma is locked active in every fight and Kerrid is in none.
+
+**The guard.** `role_answer` and `smart` play `sim_policies.json` `guard_ward` (SimWardGuard): Toma holds the stair when a grip comes before his next turn, Provokes a second one, and Liss hauls a bare Climb. This is the set piece's role answer; the crawlers' `role_answer` is Toma. `ward_guard` (`naive` plus the guard) is report only. It shows that guarding alone doesn't carry a wave. The killing still matters.
+
+| Suite | Party (active / reserve) | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch08_stair_hold_1` "Hold" | Toma, Ysolde, Liss / Rhen, Asha | 10–60% | 85–95% | 97–100% | ≤ 100 |
+| `ch08_stair_hold_2` "The Rope" | Toma, Rhen, Liss / Asha, Ysolde | 10–60% | 85–95% | 97–100% | ≤ 100 |
+| `ch08_stair_hold_3` "The Last of the Low Town" | Toma, Liss, Ysolde / Rhen, Asha | 10–60% | 85–95% | 97–100% | ≤ 100 |
+| `ch08_undertows_reach` | Toma, Asha, Liss / Rhen, Ysolde | ≤ 10% | 75–85% | 75–95% (the Act I boss range) | ≤ 90 |
+
+- **The waves' `naive` floor is 10%, not the sheet's proposed 40%.** In Wave 1 the Climb is slowest and its grips land unguarded, so a masher who never holds the stair loses most of the time. It measures about 15%, against 53% and 33% in Waves 2 and 3. Lifting it would have needed the role answer pushed past 95%.
+- **Wave 1's party is Toma, Ysolde and Liss.** With Asha active, the role answer, which neither heals nor guards with her, fell to about 20%. With Rhen and Ysolde it won every fight. The bands hold for this party, and the player may choose another.
+- **Waves are long for a masher** (p90 up to about 90 actions, against about 55 for the role answer), which is why the p90 ceiling is 100.
+- **The Reach:** the masher never lights the dark (no Virel), so storm_dark's Darkness, which lasts to the hero's next turn, kills its blows and its counters. The role answer calls Virel the moment the field rises; Flare Line clears it and the bound Squall Wings fall. Losses are the fights where Asha falls before her first turn in the Dark.
+
+Measured at 1000 seeds (balance_report.md, 2026-10-24 M3-CMB-01):
+
+| Suite | `naive` | `naive_swell` | `role_answer` | `smart` | `ward_guard` |
+|---|---|---|---|---|---|
+| Wave 1 | 15.4 | 29.6 | 89.8 | 100.0 | 2.5 |
+| Wave 2 | 53.2 | 54.1 | 87.8 | 100.0 | 44.9 |
+| Wave 3 | 33.2 | 37.3 | 93.0 | 100.0 | 8.4 |
+| The Reach | 0.3 | 12.8 | 80.7 | 86.2 | 0.3 |
