@@ -1105,6 +1105,10 @@
       "scene": "res://game/ui/map/shots/field_menu_map_shrine.tscn"
     },
     {
+      "id": "field_menu_map_underway",
+      "scene": "res://game/ui/map/shots/field_menu_map_underway.tscn"
+    },
+    {
       "id": "field_menu_codex",
       "scene": "res://game/ui/codex/shots/field_menu_codex.tscn"
     },
