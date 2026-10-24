@@ -3,6 +3,14 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **The test_scene_router_swap regression is fixed on this branch** (reported by battle-presentation).
+  - **The cause:** my M2-ENV-05 resident flags on top of M2-ARC-05/08.
+    - **With the 17 Haluna `"resident": true` flags** merged onto 29b1dbfa, boot.tscn and battle_sandbox ran hidden swap frames of 156–196 ms against the 40 ms limit, failing 4 of 4 warm runs.
+    - **Without the flags,** the test passed 5 of 5 warm runs. The integration branch alone passed 4 of 4.
+  - **Reverted** in dc044b48. prewarm_materials.json now matches the integration branch exactly.
+  - **Cold-cache flake:** the first run after a fresh `--import` can fail this test once even without the flags. Trust warm runs.
+  - **To bring the flags back:** Rendering/PC needs to spread `ShaderPrewarm.spawn_resident` over frames with a per-frame budget. Until then, Haluna's second-launch entry stays at 3.1/3.5 s (ADR 0029's limit is 3 s). Noted in M2-ENV-05.
+- **The integration branch is merged** (1cc9fc66). My M2-ARC-04 handoff was renumbered **architect-23**, because the Lead's architect-21 took that number.
 - **M3-C06-02 is merged** (Ch6 "Salt Edict"; in review: narrative for staging, combat for the bands). Handoff cinematics-17.
   - **Act I now plays through as greybox:** prologue → Ch1 → the Haluna slice (Ch2–Ch3, with the causeway) → Ch4 → Ch5 → Ch6 → Ch7 (a stand-in match) → the end card.
   - **Gaps in the line:**
