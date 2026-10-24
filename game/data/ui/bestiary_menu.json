@@ -1,6 +1,6 @@
 {
   "bestiary_menu": {
-    "doc": "The bestiary menu (M2-UI-02; docs/kb/tech/ui.md section Bestiary). Rects are top-left x, y, w, h at the 1920 x 1080 reference. 'list' is a MenuPage metrics block (the same keys as battle_hud.json commands). 'page': the page panel; portrait_size is the square creature portrait at its top right (M2-MNU-302), portrait_gap the space between it and the words; the words keep the rest of the inner width (pad both sides), which must hold the page's widest line in the pseudo-locale at 130% text (680 px today; test_pseudo_loc_screens checks it).",
+    "doc": "The bestiary menu (M2-UI-02; docs/kb/tech/ui.md section Bestiary). Rects are top-left x, y, w, h at the 1920 x 1080 reference. 'list' is a MenuPage metrics block (the same keys as battle_hud.json commands). 'page': the page panel; portrait_size is the square creature portrait at its top right (M2-MNU-302), portrait_gap the space between it and the words; the words keep the rest of the inner width (pad both sides), which must hold the page's widest line in the pseudo-locale at 130% text (the English stat row needs about 690 px at 100%, so 184 + 20 leaves 692; test_pseudo_loc_screens checks the pseudo-locale).",
     "canvas_layer": 64,
     "panel": {"rect": [160, 86, 1600, 908], "pad": 28, "title_height": 56, "help_height": 40},
     "list": {
@@ -20,6 +20,6 @@
       "breath_sec": 2.4,
       "breath_min": 0.75
     },
-    "page": {"rect": [780, 178, 952, 744], "pad": 28, "portrait_size": 196, "portrait_gap": 20}
+    "page": {"rect": [780, 178, 952, 744], "pad": 28, "portrait_size": 184, "portrait_gap": 20}
   }
 }

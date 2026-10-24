@@ -348,10 +348,10 @@
     "rendering_method": "forward_plus"
   },
   "bestiary_menu": {
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "rendering_method": "forward_plus"
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "boot_title": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -587,6 +587,18 @@
     "rendering_driver": "vulkan",
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
+  "equip_customize": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
+  "equip_menu": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
   "field_area_title": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
@@ -677,6 +689,12 @@
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
   },
+  "formation_menu": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
   "glimmer_bound": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
@@ -742,6 +760,24 @@
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
+  },
+  "lattice_menu": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
+  "lattice_menu_activate": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+  },
+  "lattice_overview": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "lighting_probe": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -892,6 +928,12 @@
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
+  },
+  "status_menu": {
+    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
+    "rendering_driver": "vulkan",
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "swatch_card": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
@@ -1168,47 +1210,5 @@
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
     "rendering_driver": "vulkan",
     "rendering_method": "forward_plus"
-  },
-  "equip_customize": {
-    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
-    "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
-  },
-  "equip_menu": {
-    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
-    "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
-  },
-  "formation_menu": {
-    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
-    "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
-  },
-  "lattice_menu": {
-    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
-    "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
-  },
-  "lattice_menu_activate": {
-    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
-    "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
-  },
-  "lattice_overview": {
-    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
-    "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
-  },
-  "status_menu": {
-    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
-    "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   }
 }
