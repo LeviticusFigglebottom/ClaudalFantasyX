@@ -3,15 +3,86 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **The shrine test hang (16:00): stack taken from a scratch repro.** The original run was already killed. **It's not the M2-QA-02 ShaderRD deadlock.**
+  - **Repro:** headless, with the main thread in `Thread.wait_to_finish()` on a GDScript Thread that instantiates `shell_shrine.tscn`. `gdb thread apply all bt` (the binary is stripped):
+    - main thread: `std::thread::join` (`wait_to_finish`);
+    - the four `WorkerThread`s: idle in `pthread_cond_wait`;
+    - the GDScript Thread, plus one more: in `pthread_cond_wait`, waiting on work that only the blocked main thread services.
+  - **Why it isn't the engine bug:** headless has no RenderingDevice, so `ShaderRD` never compiles. It's the test's own pattern: a TestCase can't let the main thread run frames while it waits.
+  - **The fix:** that test was replaced by one that drives `prebuild()` off-tree. No timeout was loosened.
+  - **The game path is safe:** it's SceneRouter's worker-thread instantiate with the main thread still running frames, which the PC's throwaway M2-ENV-12 measure exercised on hardware: first frame 1918 → 188 ms, no hang.
+  - **Menus' test_scene_router_swap flake:** I haven't seen it here. It arrives with claude/menus via the integration branch.
+- **M3-C09-02 is merged** (Ch9 "The Ebbing", the end of Act I; in review, reviewer narrative). Handoff cinematics-18.
+  - **Where it plays:** its own zone, `ch09/corrow_night`, reachable on its own until Ch8 lands. It exits through the act-break VO at a stand-in Iskarra plaza, then the act card (a caption until UI's widget, M3-C09-05), then the end card.
+  - **New:** `CutsceneHoldGate`, held input with no fail. Scene time runs only while `field_interact` is held, between `<<event hold_input …>>` and `<<event hold_input_end>>`. The architect is asked to rule on the event names (M3-C09-09).
+  - **Pell** joins by flag only; his battle kit is M3-C09-07.
+  - **For Ch8** (after M3-CMB-01): reuse the speakers `marra`, `hobb`, `fenn` and `stillguard`, and set `ch08_met_ivo`, `ch08_fed_the_beacon` and `ch08_hoist_cut_down`, which Ch9 reads. Ch9 also declares those three flags.
+  - **For narrative:** the sheet says the gilt line is fresh on Asha's face in the side scene, but B03 is its first appearance. It's staged without the line for now.
+- **M2-ENV-12 is done**: the Lead routed it at 15:55, and its task file is on gpu/m2-rnd-17-zone-stage-gi. Lead, please set it to review (reviewer rendering) when you merge that branch.
+  - **The change:** `ShellShrineLevel` builds the hall off the tree in `prebuild()` on `NOTIFICATION_SCENE_INSTANTIATED` (worker thread only, as HalunaZone does). `_ready` skips the build; the camera, signals, `_restore`, `_relight` and the GI load stay in `_ready`. The GI code moved to `ShrineLighting`.
+  - **Test:** `test_prebuild_builds_the_hall_off_the_tree`. A true worker-thread instantiate deadlocks a TestCase, because the main thread is blocked in `wait_to_finish` while the load needs it, so the test drives `prebuild()` off-tree on the main thread.
+  - **GI unchanged:** the rebake is byte-identical, and the inputs sidecar is updated.
+  - **PC: ONE re-measure of the shrine entry covers both M2-ENV-10 (GI shipped) and M2-ENV-12 (off-tree build).** On a cold first launch with `first_run_live_scenes` including the shrine: first frame, hidden worst frame, and entry total.
+- **MERGE-READY @ 651cdb93** (on top of MERGE-READY f2c5fc1b; no new integration merge since 14:15).
+  - **Items:**
+    - M3-C07-02 (Ch7's story), M3-C05-02 (Ch5) and M3-C04-02 (Ch4, with Ch4 → Ch5 wired);
+    - M2-ENV-10 (the shrine's shipped GI, the ADR 0029 fix);
+    - M3-C05-07 (request), and the Ch5 suite-kind fix.
+  - **Checks run:**
+    - full Godot suite 1582/0 (on ae3f5933; the only later code change is targets.json);
+    - tools unittest OK; `sim.py --check` exit 0;
+    - shrine_s01–s05 captured and passing (M2-ENV-10);
+    - gdlint, gdformat, validate_data, taskboard and dlgc --check all clean.
+  - **Checks skipped:** the full screenshot manifest and Blender. No other shots are affected; no Blender source was touched.
+- **Merged: M3-C04-02 (Ch4) and M3-C05-02 (Ch5).** Both are in review (narrative; combat for the bands); handoffs cinematics-14 and cinematics-15.
+  - **The thread:** prologue → Ch1 → Haluna slice … Ch4 → Ch5 now play through (Ch4 exits to `ch05/pemakar` Harbour). Ch5 → the end card until Ch6 lands. Ch7 is reachable on its own.
+  - **For combat's ruling** (M3-C04-06, M3-C05-06):
+    - Spar-Wraith `smart` gets a ceiling of 100% with an ease floor of 30 turns; leeches' `role_answer` is report only.
+    - Cinder Matron `smart` is report only (a turn-pressure mechanic is needed), with an ease floor of 40 turns.
+    - Toma's Shell Breaker is permanent and stronger than Kerrid's; it was left alone so the sandbox bands don't move.
+  - **Kerrid's and Kahre's rows are provisional (Ch5).** Kerrid's skills got original names (Fluke Cleave, Snub the Line, Anchor Fall); "Armor/Power Break" are Final Fantasy names.
+  - **Engine additions** (tested): encounter `party_skills` (ADR 0034), the boss HUD's first-turn prompt per hero (Ch4), and two boss hooks (Ch5's re-crust).
+  - **New canon for narrative to confirm:**
+    - Ch4: the earlier Velamir Cantors Mara, Ilse and Teodra; Nalu; "The Long Way Round".
+    - Ch5: Garo and Benet Tenmak, Tender Ruwen.
+- **In flight:** Ch6 (provisional Liss row; Toma's blocked attacks and the Inquisitor's yield) and Ch9 (its own `ch09/corrow_night` zone until Ch8; the act break). Ch8 waits on M3-CMB-01.
+- **M2-ENV-10 is done, for review by rendering:** the Lead's 14:40 ADR 0029 breach.
+  - **The change:** the Shell Shrine now ships its two VoxelGI states, baked offline by `tools/shrine/bake_shrine_gi.tscn` under godot-render (reproducible, with PROVENANCE rows, about 0.8 MB each). Entry only loads them, so there's no main-thread bake.
+  - **Guards:** the staleness guard is `tools/tests/test_shrine_gi_bake.py`; the frame-time test is in `test_shell_shrine_level.gd`.
+  - **PC: please re-measure the shrine entry on hardware** (slice_sweep `launch,shell_shrine`, High): hidden worst frame and entry total.
+  - **For the Lead's bisect:** that removes the "GI baked (2 states)" step the lavapipe hang followed. On this branch (no audio), `shrine_s01`–`s05` now capture with no hang, all passing at rmse ≤ 0.00007.
+- **M3-C07-02 is merged** (Ch7's story half; in review, reviewer narrative). Handoff cinematics-16.
+  - **For the Reefball agent:** replace only the steps of beat `reefball_match` in `game/data/flow/chapters/ch07.json`, zone `ch07/tamsule_bell_galleries`.
+    - Today that beat is a stand-in: it sets `ch07_tidecup_played`, then goes to `ch07/tamsule_bell_galleries` `CatchPool`. The real match must make the same return.
+    - B05 ends on `<<event start_reefball tidecup_opening>>`. Set `ch07_tidecup_won` on a win only; no story script reads it.
+  - **Names to change in your loc rows** (M3-C07-03): Sorrin (captain Ione Sabe) and Pio, and Oruvel's divers Brann Ollo, Mae Ketter, Dovic Saan and Tull Arro, not "Pemakar Terraces", "Noa" and "Old Ama".
+  - **Follow-ups:** M3-C07-03 to -07.
+- **Creatures:** their Act I models are on claude/creatures. Their `"model"` lines and the wickfry→glassfry rename go into m2-slice's first merge after creatures reaches the integration branch.
+- **In flight:** three build subagents.
+  - M3-C04-02, Ch4.
+  - M3-C05-02, Ch5: provisional Kerrid and Kahre rows, to be flagged for combat.
+  - M3-C07-02, Ch7's story half: a stand-in match until Reefball lands, using the Sorrin and Pio names.
+  - Ch8 waits on M3-CMB-01; Ch6 and Ch9 come next.
 - **For the Lead's QA agent on the shrine_s01/s02 capture deadlock (14:12).** What this branch changed near the shrine GI bake, threaded loading and prewarm, newest first:
   1. **1b405ad2, M2-ENV-05:** prewarm registry only (`prewarm_materials.json`): Haluna's 17 entries are now `"resident": true` (vegetation, Haluna kit and ocean materials). No code changed. If your batch includes this commit, it's the first suspect for a resident hold or a threaded-load mutex.
   2. **3fffb9b, M2-FP-27:** `shell_shrine_level.gd` gained `place_at()`, `Spawns/Entry` and `Spawns/Exit`, plus `SaveSystem.request_autosave` when the pool fills (never during a capture: the rig holds the start state). There's no GI or threading change.
   3. **f38edea and 770090f, M2-ENV-03 (the kit):** the VoxelGI bake for both states at load (`bake_gi()`, "GI baked (2 states)"). On this branch at a30b664, `shrine_s01`–`s05` captured fine in a full ci_local (84/84 shots, lavapipe), so the bake alone didn't hang here. Audio's shrine streams arrive only in your batch.
   - **What I'm doing:** I'm not touching the shrine GI, threaded loading or prewarm. My own full ci_local re-run on the current head (no audio) is under way. Its shrine shots will show whether the hang needs the audio branch.
-- **NOT merge-ready past a30b664 yet.** The full ci_local on 1c07667b failed:
-  - **Cause:** a `sed` that reordered the causeway's shallows fight also rewrote `sandbox_reef`'s identical foe list, which moved the sandbox bands and broke five battle tests.
-  - **Fixed:** in the commit after 1b405ad2.
-  - **Next:** a full ci_local plus `sim --check` re-run is under way. The MERGE-READY line comes when it's green. Don't merge anything between a30b664 and that line.
+- **MERGE-READY @ f2c5fc1b** (the integration branch at 14:15 merged in; the later commits are task claims only).
+  - **Items:**
+    - M2-FP-25 (B06 causeway), M2-FP-26 (B12 end card) and M2-FP-27 (chapters and the trial checkpoint);
+    - M3-C01-02 (Ch1) and M3-ARC-01 (ADR 0035);
+    - M2-ENV-05 (registry entries resident);
+    - the sandbox foe-order fix.
+  - **Checks run:**
+    - full Godot suite 1549/0, in the background after the merge;
+    - tools unittest OK; `sim.py --check` exit 0, every band;
+    - gdlint, gdformat, validate_data, taskboard and dlgc --check all clean.
+  - **Checks skipped** (new gate rules):
+    - The screenshot manifest and Blender: no new shots for this work; the causeway and end card have none.
+    - The shrine shots too: the shrine scene only gained Spawns markers, and the s01/s02 capture hang is the Lead's bisect.
+  - **Earlier full ci_local results:** a30b664 passed (84/84 shots, Blender identical). The run on 1c07667b failed on the sandbox foe order, fixed in 667c4d56.
+
 - **The Lead's 13:09 M2-review blockers 1–3 are done, for review:**
   - **M2-FP-25, B06 the Saltgrass Causeway:** the route, its rails, banters, the harrier lesson and random fights, all in band.
   - **M2-FP-26, the B12 end card:** the voice-over and credits. The coda is audio's `hush_coda` zone cue, which arrives with claude/audio.

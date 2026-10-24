@@ -1,0 +1,19 @@
+{
+ "format": 1,
+ "scene": "ch04_wake_osu",
+ "source": "game/data/dialogue/ch04/ch04_wake_osu.dlg",
+ "start": "ch04_wake_osu",
+ "nodes": {
+  "ch04_wake_osu": {
+   "headers": {"location": "ch04/haluna_wake"},
+   "ops": [
+    {"op": "line", "id": "ch04_wake_osu_001", "key": "DLG_CH04_WAKE_OSU_001", "speaker": "osu", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch04_wake_osu_002", "key": "DLG_CH04_WAKE_OSU_002", "speaker": "asha", "emotion": "tender", "voice": "", "src": 8},
+    {"op": "if_not", "cond": ["flag", "ch02_heard_pila"], "to": 6, "src": 9},
+    {"op": "line", "id": "ch04_wake_osu_003", "key": "DLG_CH04_WAKE_OSU_003", "speaker": "osu", "emotion": "soft_smile", "voice": "", "src": 10},
+    {"op": "line", "id": "ch04_wake_osu_004", "key": "DLG_CH04_WAKE_OSU_004", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "goto", "to": 6, "src": 9}
+   ]
+  }
+ }
+}

@@ -111,3 +111,22 @@ A zone sun's shadow cascades span hundreds of metres (Haluna: 400 m, first casca
 
 - Music markers (`music_marker_reached`) need an adaptive music player (Audio).
 - Body clips (`idle`, `talk`, `walk`, `run` and the scripted ones) need Asha's rig to have them: request M2-FP-07. The sequencer already plays same-named clips. `grade=` on `@camera` is ignored until the grading pipeline has frames per sub-frame.
+
+## Held input (M3-C09-02)
+
+A no-fail held input inside a cutscene, for the Ebbing's three movements (act1_ch09.md B04–B07); act3_ending E4's "hold to take the strain with her" can reuse it. The code is `CutsceneHoldGate` (`game/cutscene/cutscene_hold_gate.gd`). The host attaches it to a sequencer with `setup(seq, cfg)`, where `cfg` is `{action, prompts: {id: loc key}, layer, bottom_px}`. Ch9's is `game/data/flow/ch09_field.json` `hold`.
+
+```
+<<event hold_input raise_staff>>
+@camera N11
+@vfx glimmer_held at=harbour_stream count=36 drift=down_seaward rate=normal
+@wait 7.0
+<<event hold_input_end>>
+```
+
+- **Between the two events, the scene's time runs only while the action is held.** The gate turns the sequencer's own `_process` off, and its `tick(delta, held)` calls `advance(delta)` only on held frames. So waits, walks, fades and blends driven by `advance` go on while it is held and stand still when it is let go.
+  - Camera blends run on the director's own clock, so cut on the gate's shots.
+  - The placeholder motes drift on their own clock, so the dance "breathes" while it waits.
+- **Nothing can fail.** There is no timer, no score and no reset: `held_sec` only grows within a gate, and the only way out is the scene reaching `hold_input_end` or ending. The prompt (a `HintLabel`; UI's widget is M3-C09-05) shows for the whole gate.
+- **Tests.** In `instant` mode the waits are zero, so a gate passes at once. `tests/integration/test_ch09_thread.gd` `test_the_ebbing_cannot_fail` drives a real-time play with `tick()`.
+- **Two notes.** A skip (holding `ui_cancel`) counts its hold in `advance`, so it fills only while the action is held too. The gate gives the sequencer its processing state back when it closes.

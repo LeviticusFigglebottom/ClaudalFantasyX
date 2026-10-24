@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch04_bark_chapel_reed",
+ "source": "game/data/dialogue/ch04/ch04_bark_chapel_reed.dlg",
+ "start": "ch04_bark_chapel_reed",
+ "nodes": {
+  "ch04_bark_chapel_reed": {
+   "headers": {"location": "ch04/haluna_wake"},
+   "ops": [
+    {"op": "line", "id": "ch04_bark_reed_001", "key": "DLG_CH04_BARK_REED_001", "speaker": "reed", "emotion": "smile", "voice": "", "src": 8},
+    {"op": "line", "id": "ch04_bark_reed_002", "key": "DLG_CH04_BARK_REED_002", "speaker": "reed", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "line", "id": "ch04_bark_reed_003", "key": "DLG_CH04_BARK_REED_003", "speaker": "reed", "emotion": "worried", "voice": "", "src": 10}
+   ]
+  }
+ }
+}

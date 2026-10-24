@@ -1,0 +1,9 @@
+{
+  "doc": "Ch9 field tunables (M3-C09-02; docs/kb/tech/chapter_flow.md 'Ch9'). Read by Ch09Zone (game/levels/ch09/ch09_zone.gd). hold: the Ebbing's no-fail held input (act1_ch09.md B04-B07; CutsceneHoldGate, docs/kb/tech/cutscenes.md 'Held input'). Between <<event hold_input <prompt>>> and <<event hold_input_end>> in a scene, the scene's time runs only while `action` is held (field_input.json's interact: E, Enter or Space, or the A/cross button). prompts maps the event's prompt id to its loc key (UI's widget replaces the plain label: M3-C09-05). layer is the prompt's canvas layer (one above the cutscene overlay's, sequencer.json layer), bottom_px its distance from the bottom of the screen. How long each movement lasts is the scene's own @wait seconds, inside each gate.",
+  "hold": {
+    "action": "field_interact",
+    "prompts": {"raise_staff": "FIELD_PROMPT_CH09_RAISE_STAFF"},
+    "layer": 33,
+    "bottom_px": 96.0
+  }
+}

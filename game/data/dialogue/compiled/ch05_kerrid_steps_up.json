@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch05_kerrid_steps_up",
+ "source": "game/data/dialogue/ch05/ch05_kerrid_steps_up.dlg",
+ "start": "ch05_kerrid_steps_up",
+ "nodes": {
+  "ch05_kerrid_steps_up": {
+   "headers": {"location": "ch05/ashcrown"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["A02"], "kwargs": {}, "src": 7},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "unsling_cleaver"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "stair_front", "walk"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 10}
+   ]
+  }
+ }
+}

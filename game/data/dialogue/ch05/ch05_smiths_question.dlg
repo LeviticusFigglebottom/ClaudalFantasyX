@@ -1,0 +1,49 @@
+// Ch5 B03, the optional side scene "The Smith's Question" (act1_ch05.md §4). The forge lane on
+// Pemakar's second tier (P07: the forge mouth, the smith's back lit by the coals, a half-folded boat
+// on the anvil beside a hammer, inserts on Rhen's hands folding). Any time in B02; the fallback is
+// B11, with one changed opening line (his boat has already gone down; he asks anyway).
+// Rules: no more than four of Garo's lines in a row, broken by Rhen's hands and his answers. Rhen
+// does not joke here. The "better version" is kindness, not a lie: everything he says is true. Garo:
+// plain, practical, slow, says a thing once. Sets ch05_told_the_smith (B04's insert; Ch18).
+title: ch05_smiths_question
+location: ch05/pemakar
+---
+@camera P07
+<<if $ch05_kahre_bound>>
+    Garo [neutral]: Mine went down last night. Folded it wrong. You're the diver. Oruvel make, that lantern. #line:ch05_smith_001
+<<else>>
+    @anim garo fold_boat
+    Garo [neutral]: Oruvel make, that. You're a diver. #line:ch05_smith_002
+<<endif>>
+Rhen [neutral]: I am. Here. Let me. #line:ch05_smith_003
+@anim rhen fold_boat
+@wait 1.5
+Garo [neutral]: Hands made for tongs. You fold like a man who ties knots. #line:ch05_smith_004
+Rhen [neutral]: Tether-knots are folds. Divers learn them before they learn to swim. #line:ch05_smith_005
+Garo [neutral]: My boy Benet went to Oruvel at sixteen. To dive. #line:ch05_smith_006
+Garo [neutral]: Said copper's cheaper if you cut it yourself. He stayed five years. #line:ch05_smith_007
+Garo [sad]: A trader brought the news. #line:ch05_smith_008
+@wait 1.0
+Garo [neutral]: He wrote that it was the most beautiful place on the sea. He was a terrible liar. What did it look like? #line:ch05_smith_009
+@anim rhen fold_boat
+Rhen [neutral]: Hulls lashed together, rotting from underneath. Oil smoke. Everyone owing everyone. #line:ch05_smith_010
+Rhen [neutral]: Not a yard of ground anywhere to stand on. #line:ch05_smith_011
+@anim garo nod
+Garo [neutral]: I'd guessed. #line:ch05_smith_012
+@wait 1.0
+@anim rhen fold_boat
+-> When the divers come up at dusk... #line:ch05_smith_013
+    Rhen [tender]: You see their lamps coming up through the water before you see their heads. Like the sea handing them back one at a time. #line:ch05_smith_014 #long
+-> On race days, at the second mooring... #line:ch05_smith_015
+    Rhen [soft_smile]: Everyone yelling. Your boy yelled loudest. He always lost. #line:ch05_smith_016
+Garo [neutral]: Did you know him? #line:ch05_smith_017
+Rhen [neutral]: Tall. Burned his thumb on every lamp I ever saw him light. #line:ch05_smith_018
+@anim garo laugh
+Garo [laugh]: That's him. #line:ch05_smith_019
+@anim garo take_boat
+Garo [neutral]: Fold toward you, they say. For your own. #line:ch05_smith_020
+@wait 0.8
+Garo [soft_smile]: He'd have folded it away. Never could keep the rule straight. #line:ch05_smith_021
+<<set $ch05_told_the_smith = true>>
+@camera release
+===

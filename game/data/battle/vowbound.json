@@ -14,6 +14,21 @@
       "skills": ["attack", "brine_lash", "tidal_ward"],
       "affinities": {"water": "absorb", "lightning": "weak"},
       "swell": {"rate": 150, "technique": "floodnet"}
+    },
+    {
+      "id": "kahre",
+      "name_key": "VOWBOUND_KAHRE",
+      "caller": "asha",
+      "bound_flag": "ch05_kahre_bound",
+      "call_rank": 3,
+      "base": {"hp": 50, "mp": 10, "strength": 6, "magic": 6, "defense": 8, "magic_defense": 8,
+               "agility": 4, "accuracy": 4, "evasion": 2, "luck": 4},
+      "scale_pct": {"hp": 100, "mp": 50, "strength": 50, "magic": 100, "defense": 75, "magic_defense": 75,
+                    "agility": 50, "accuracy": 100, "evasion": 50, "luck": 100},
+      "skills": ["attack", "forge_bolt"],
+      "affinities": {"lightning": "absorb", "water": "weak"},
+      "swell": {"rate": 150, "technique": "last_strike"},
+      "_note": "M3-C05-02 PROVISIONAL (Kahre, the Lightning Vowbound, bound in Ch5 B10; vowbound.md §2). Raw lightning that ignores defence and the real Last Strike are the combat request M3-C05-06. In no sim suite."
     }
   ]
 }

@@ -1,0 +1,31 @@
+// Ch7 B06: the match barks Narrative supplies to the Reefball agent (act1_ch07.md §5.3), optional,
+// fired by the match on its own events, ~40 words, ALL NEUTRAL TO THE RESULT. One node per event:
+// start the runner at the node (DialogueRunner.start(&"<node>")). Nothing here may mock the dead,
+// Sorrin or the rite, and nothing interrupts the match: these are barks, not scenes. The first node
+// is the kick-off (dlgc: the first title is the file name). The gallery's "Oruvel! Oruvel!" plays at
+// kick-off only if Rhen lit his Pemakar boat for Oruvel (ch05_boat_for_oruvel). "Kell's boy!" is for
+// Rhen's first score only; the match fires it once. No node reads the match result.
+title: ch07_reefball_barks
+location: ch07/tamsule_bell
+---
+Tavi [determined]: For her. Go. #line:ch07_rbl_001
+<<if $ch05_boat_for_oruvel>>
+    Crowd as "Gallery" [determined]: Oruvel! Oruvel! #line:ch07_rbl_002
+<<endif>>
+===
+title: oruvel_scores
+---
+Crowd [laugh]: Up! #line:ch07_rbl_003 #tn:"The naming's word, as a cheer: Oruvel has brought the float up."
+===
+title: sorrin_scores
+---
+Tavi [determined]: Again. Again. #line:ch07_rbl_004
+===
+title: rhen_first_score
+---
+Tavi [laugh]: Kell's boy! #line:ch07_rbl_005
+===
+title: final_whistle
+---
+Tavi [exhausted]: That's it. That's us. #line:ch07_rbl_006
+===

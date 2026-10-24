@@ -50,6 +50,55 @@
       "spawn": "ScaleHull",
       "name_key": "LOCATION_CH01_ORUVEL",
       "_note": "M3-C01-02: the raft-town by day and in the storm (C1-07 to C1-15), a greybox zone (Ch01OruvelZone). Ch1 ends by sending the party to ch02/haluna at Beach."
+    },
+    {
+      "id": "ch07/tamsule",
+      "scene": "res://game/levels/ch07/tamsule/tamsule.tscn",
+      "spawn": "RiverMouth",
+      "name_key": "LOCATION_CH07_TAMSULE",
+      "_note": "M3-C07-02: Ch7's port (B01-B03, B08, B10), a greybox zone (Ch07Zone). Ch6 (not built) hands off here at RiverMouth; until then it is reached from this row. B10 hands off to the end card until ch08/corrow exists."
+    },
+    {
+      "id": "ch07/tamsule_bell_galleries",
+      "scene": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn",
+      "spawn": "Entrance",
+      "name_key": "LOCATION_CH07_TAMSULE_BELL_GALLERIES",
+      "_note": "M3-C07-02: the story's greybox stand-in for the Bell's galleries, catch-pool and moorings (B04, B05, B07, B09). The Reefball match returns here at CatchPool. The arena, ch07/tamsule_bell, is env-art's and the Reefball agent's."
+    },
+    {
+      "id": "ch05/pemakar",
+      "scene": "res://game/levels/ch05/pemakar/pemakar.tscn",
+      "spawn": "Harbour",
+      "name_key": "LOCATION_CH05_PEMAKAR",
+      "_note": "M3-C05-02: Pemakar on Lanternfall night and the day after (Ch5 B01-B06, B11), a greybox zone (Ch05Zone). Ch4's ferry hands off here at Harbour. Ch5 ends at the end card until Ch6's ch06/brine_shoals exists."
+    },
+    {
+      "id": "ch05/ashcrown",
+      "scene": "res://game/levels/ch05/ashcrown/ashcrown.tscn",
+      "spawn": "StairFoot",
+      "name_key": "LOCATION_CH05_ASHCROWN",
+      "_note": "M3-C05-02: Ashcrown, the stair-mountain temple (Ch5 B07-B10): the pilgrim stair, the strike trial, the anvil court; a greybox zone (Ch05AshcrownZone)."
+    },
+    {
+      "id": "ch04/haluna_wake",
+      "scene": "res://game/levels/ch04/haluna_wake/haluna_wake.tscn",
+      "spawn": "NemeDoor",
+      "name_key": "LOCATION_CH04_HALUNA_WAKE",
+      "_note": "M3-C04-02: Haluna on the Pilgrim's Wake night (C4-01 to C4-08), a greybox stand-in for ch02/haluna's night variant (HalunaStory is not data-driven; ADR 0035). Ch4 ends the night by sending the party to ch04/brightwater_ferry at Landing."
+    },
+    {
+      "id": "ch04/brightwater_ferry",
+      "scene": "res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn",
+      "spawn": "Landing",
+      "name_key": "LOCATION_CH04_BRIGHTWATER_FERRY",
+      "_note": "M3-C04-02: the islet's seaward landing, the ferry Kind Weather and the drifting Seventh Terrace (C4-09 to C4-15), a greybox zone (Ch04Zone)."
+    },
+    {
+      "id": "ch09/corrow_night",
+      "scene": "res://game/levels/ch09/corrow_night/corrow_night.tscn",
+      "spawn": "Strand",
+      "name_key": "LOCATION_CH09_CORROW_NIGHT",
+      "_note": "M3-C09-02: Corrow on the night of the Ebbing and the dawn road (Ch9 B01-B10), a greybox zone (Ch09Zone) standing in for the ch08/corrow night variant until Ch8 lands. Ch8 hands off here at Strand; until then it is reached from this row. The act break hands off to the end card (Ch10 is Act II, not in M3)."
     }
   ],
   "shrines": [

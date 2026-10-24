@@ -1,0 +1,10 @@
+// Ch4 C4-12 "The derelict's deck", bark 1 of 3: the galley, four bowls on the table, the meal
+// half-eaten (the crew were at their food when the gulls cried). No bodies anywhere: the sea took them.
+// Toma, quietly, stacks the bowls, as you would in a house where someone has died. Field bark.
+title: ch04_bark_galley_bowls
+location: ch04/brightwater_ferry
+---
+@anim toma stack_bowls
+Toma [sad]: Four bowls. They were at their food. #line:ch04_bark_bowls_001
+Toma [neutral]: In a house where someone has died, you clear the table. That is all. #line:ch04_bark_bowls_002
+===

@@ -22,6 +22,12 @@ extends RefCounted
 ##                 that one is never refused and clears the field only when it is up.
 ##                 "requires_flag": story flag: party members only know the skill when the flag is
 ##                 in BattleEngine.story_flags (passed in at setup; the engine never reads Game).
+##                 "cleanses": [status ids]: after the hits, those statuses are lifted off every
+##                 target the skill landed on (M3-C05-02: the Cinder Matron's recrust ends a break).
+##   enemies.json  "reactions": [{elements, from_phase?, cleanses?, statuses?: [{id, duration?}]}]:
+##                 a landed hit of one of `elements` on this enemy, while its phase is from_phase
+##                 (or any phase when unset), lifts `cleanses` off it and adds `statuses` (the
+##                 Matron's quench: water or cold re-crusts her). The hit records "reacted": true.
 ##   encounters.json "party_skills": {hero id: [skill ids]}: skills that hero knows for this fight only
 ##                 (a tutorial fight teaching one: Ch1's Hullgnaw lends Rhen Kick Off; ADR 0034).
 ##                 Added at setup after the Lattice and the flag locks, never twice.
@@ -103,6 +109,7 @@ static func after_action(engine: BattleEngine, actor: BattleCombatant, sk: Dicti
 			t.clear_charge()
 			hit["charge_broken"] = broken
 			engine.charge_broken.emit(t, broken)
+	_cleanse_and_react(engine, sk, result)
 	var charge: Dictionary = sk.get("charge", {})
 	if not charge.is_empty() and actor.is_alive():
 		actor.charge_skill = StringName(str(charge.get("skill", "")))
@@ -120,6 +127,40 @@ static func after_action(engine: BattleEngine, actor: BattleCombatant, sk: Dicti
 	var cleared := StringName(str(sk.get("clears_field", "")))
 	if cleared != &"" and engine.fields.has(cleared):
 		clear_field(engine, cleared)
+
+
+## The skill's "cleanses" on every target it landed on, then each target's "reactions" to the
+## hit's element (see the class comment).
+static func _cleanse_and_react(engine: BattleEngine, sk: Dictionary, result: ActionResult) -> void:
+	var lift: Array = sk.get("cleanses", [])
+	for hit in result.hits:
+		var t := engine.find(StringName(str(hit.get("target_id", ""))))
+		if t == null or not bool(hit.get("hit", false)) or not t.is_alive():
+			continue
+		for sid: Variant in lift:
+			t.statuses.erase(StringName(str(sid)))
+		var element := str(hit.get("element", ""))
+		for r: Variant in t.reactions:
+			var row: Dictionary = r
+			var from := str(row.get("from_phase", ""))
+			if not (row.get("elements", []) as Array).has(element) or (from != "" and phase_id(t) != from):
+				continue
+			for sid: Variant in row.get("cleanses", []):
+				t.statuses.erase(StringName(str(sid)))
+			for inf: Variant in row.get("statuses", []):
+				var s := StringName(str((inf as Dictionary).get("id", "")))
+				var dur := int(
+					(inf as Dictionary).get("duration", engine.db.statuses.get(s, {}).get("default_duration", -1))
+				)
+				t.add_status(s, dur)
+			hit["reacted"] = true
+
+
+## The id of the phase `e` is in (&"" before its first "phases" row).
+static func phase_id(e: BattleCombatant) -> String:
+	if e.phase_index < 0 or e.phase_index >= e.phases.size():
+		return ""
+	return str((e.phases[e.phase_index] as Dictionary).get("id", ""))
 
 
 ## Whether a landed hit of `sk` from `actor` counts on `target`'s weak point right now.

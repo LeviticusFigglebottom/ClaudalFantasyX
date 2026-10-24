@@ -121,6 +121,117 @@
         "salt_tonic": 2,
         "brine_eyewash": 1
       }
+    },
+    "ch05_ashcrown": {
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ]
+      },
+      "items": {
+        "salt_tonic": 2
+      }
+    },
+    "ch05_matron": {
+      "gear": {
+        "rhen": [
+          "rhen_tidewalker_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_dawnwick_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_saltgrass_pike",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_gold_script_book",
+          "ysolde_lacquered_guards"
+        ],
+        "kerrid": [
+          "kerrid_anchor_cleaver",
+          "kerrid_watch_wraps"
+        ]
+      },
+      "items": {
+        "salt_tonic": 4,
+        "relighting_wick": 1
+      },
+      "vowbound": [
+        "ilun"
+      ]
+    },
+    "ch04_derelict": {
+      "gear": {
+        "rhen": [
+          "rhen_coral_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_bellshell_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_net_rack_spear",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_pleated_primer",
+          "ysolde_plain_guards"
+        ]
+      },
+      "items": {
+        "salt_tonic": 4,
+        "brine_eyewash": 1,
+        "relighting_wick": 1
+      }
+    },
+    "ch04_spar_wraith": {
+      "gear": {
+        "rhen": [
+          "rhen_coral_hooks",
+          "rhen_reefline_harness"
+        ],
+        "asha": [
+          "asha_bellshell_staff",
+          "asha_pearl_bangle"
+        ],
+        "toma": [
+          "toma_net_rack_spear",
+          "toma_chiselled_shield"
+        ],
+        "ysolde": [
+          "ysolde_pleated_primer",
+          "ysolde_plain_guards"
+        ]
+      },
+      "items": {
+        "salt_tonic": 4,
+        "brine_eyewash": 1,
+        "relighting_wick": 1
+      },
+      "vowbound": [
+        "ilun"
+      ]
     }
   }
 }

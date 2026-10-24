@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch07_bark_ysolde",
+ "source": "game/data/dialogue/ch07/ch07_bark_ysolde.dlg",
+ "start": "ch07_bark_ysolde",
+ "nodes": {
+  "ch07_bark_ysolde": {
+   "headers": {"location": "ch07/tamsule"},
+   "ops": [
+    {"op": "line", "id": "ch07_bark_ysolde_001", "key": "DLG_CH07_BARK_YSOLDE_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 6},
+    {"op": "line", "id": "ch07_bark_ysolde_002", "key": "DLG_CH07_BARK_YSOLDE_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

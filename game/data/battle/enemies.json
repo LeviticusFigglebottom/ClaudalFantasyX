@@ -165,6 +165,132 @@
       ],
       "xp": 300,
       "currency": 150
+    },
+    {
+      "id": "ashwing", "name_key": "ENEMY_ASHWING", "role_answer": "ysolde", "lore_key": "LORE_ASHWING",
+      "stats": {"level": 5, "hp": 340, "mp": 0, "strength": 20, "magic": 8, "defense": 8, "magic_defense": 10,
+                "agility": 22, "accuracy": 10, "evasion": 70, "luck": 8},
+      "affinities": {"fire": "weak"},
+      "skills": ["ash_rake", "wing_dust"],
+      "ai": [
+        {"if": {"turn_mod": [3, 1]}, "pick": [{"skill": "wing_dust", "target": "all_foes"}]},
+        {"pick": [{"skill": "ash_rake", "target": "random_foe"}]}
+      ],
+      "xp": 40, "currency": 22
+    },
+    {
+      "id": "slag_tortoise", "name_key": "ENEMY_SLAG_TORTOISE", "role_answer": "kerrid", "lore_key": "LORE_SLAG_TORTOISE",
+      "stats": {"level": 5, "hp": 520, "mp": 0, "strength": 24, "magic": 2, "defense": 200, "magic_defense": 12,
+                "agility": 9, "accuracy": 8, "evasion": 2, "luck": 4},
+      "affinities": {"fire": "absorb", "water": "weak"},
+      "skills": ["shell_ram", "pull_in"],
+      "ai": [
+        {"if": {"turn_mod": [3, 2]}, "pick": [{"skill": "pull_in", "target": "self"}]},
+        {"pick": [{"skill": "shell_ram", "target": "random_foe"}]}
+      ],
+      "xp": 50, "currency": 30
+    },
+    {
+      "id": "vein_sparker", "name_key": "ENEMY_VEIN_SPARKER", "role_answer": "ysolde", "lore_key": "LORE_VEIN_SPARKER",
+      "stats": {"level": 5, "hp": 260, "mp": 20, "strength": 6, "magic": 16, "defense": 120, "magic_defense": 6,
+                "agility": 16, "accuracy": 8, "evasion": 10, "luck": 6},
+      "affinities": {"lightning": "absorb", "water": "weak"},
+      "skills": ["spark_spit"],
+      "ai": [{"pick": [{"skill": "spark_spit", "target": "random_foe"}]}],
+      "xp": 40, "currency": 24
+    },
+    {
+      "id": "cinder_matron", "name_key": "ENEMY_CINDER_MATRON", "role_answer": "kerrid", "lore_key": "LORE_CINDER_MATRON",
+      "phase_name_key": "PHASE_CINDER_MATRON_CRUST",
+      "stats": {"level": 6, "hp": 4000, "mp": 0, "strength": 16, "magic": 12, "defense": 120, "magic_defense": 30,
+                "agility": 13, "accuracy": 10, "evasion": 2, "luck": 6},
+      "affinities": {"fire": "absorb", "lightning": "weak"},
+      "delay_immune": true,
+      "skills": ["ladle_swing", "bank_the_fire"],
+      "ai": [
+        {"if": {"turn_mod": [3, 0]}, "pick": [{"skill": "bank_the_fire", "target": "self"}]},
+        {"pick": [{"skill": "ladle_swing", "target": "random_foe"}]}
+      ],
+      "reactions": [
+        {"elements": ["water", "ice"], "from_phase": "pour", "cleanses": ["armor_break"],
+         "statuses": [{"id": "protect", "duration": 2}, {"id": "shell", "duration": 2}]}
+      ],
+      "phases": [
+        {
+          "id": "pour", "at_hp_pct": 60, "name_key": "PHASE_CINDER_MATRON_POUR",
+          "prompt_key": "TUT_CINDER_MATRON_POUR",
+          "skills": ["ladle_swing", "slag_pour", "recrust_gather"],
+          "ai": [
+            {"if": {"turn_mod": [3, 0]}, "pick": [{"skill": "recrust_gather", "target": "self"}]},
+            {"if": {"turn_mod": [3, 2]}, "pick": [{"skill": "ladle_swing", "target": "random_foe"}]},
+            {"pick": [{"skill": "slag_pour", "target": "all_foes"}]}
+          ]
+        }
+      ],
+      "xp": 500, "currency": 320,
+      "_note": "M3-C05-02 (act1_ch05.md §5): the Crust, then the Pour at 50%. Kerrid's Armor Break is the answer; in the Pour, recrust (telegraphed two turns out) and any landed water or ice hit (the reactions row) re-crust her and clear the break. Bands: tools/balance/targets.json ch05_cinder_matron."
+    },
+    {
+      "id": "sail_leech",
+      "name_key": "ENEMY_SAIL_LEECH",
+      "role_answer": "rhen",
+      "lore_key": "LORE_SAIL_LEECH",
+      "stats": {"level": 6, "hp": 600, "mp": 0, "strength": 22, "magic": 2, "defense": 8, "magic_defense": 8,
+                "agility": 22, "accuracy": 10, "evasion": 30, "luck": 6},
+      "affinities": {},
+      "skills": ["sail_drop"],
+      "ai": [{"pick": [{"skill": "sail_drop", "target": "random_foe"}]}],
+      "xp": 40,
+      "currency": 22
+    },
+    {
+      "id": "bottle_hermit",
+      "name_key": "ENEMY_BOTTLE_HERMIT",
+      "role_answer": "ysolde",
+      "lore_key": "LORE_BOTTLE_HERMIT",
+      "stats": {"level": 6, "hp": 760, "mp": 0, "strength": 24, "magic": 12, "defense": 24, "magic_defense": 18,
+                "agility": 14, "accuracy": 8, "evasion": 4, "luck": 6},
+      "affinities": {"none": "resist", "fire": "immune", "ice": "weak"},
+      "skills": ["glass_jab", "glass_flare"],
+      "ai": [
+        {"if": {"turn_mod": [3, 2]}, "pick": [{"skill": "glass_flare", "target": "random_foe"}]},
+        {"pick": [{"skill": "glass_jab", "target": "random_foe"}]}
+      ],
+      "xp": 60,
+      "currency": 35
+    },
+    {
+      "id": "spar_wraith",
+      "name_key": "ENEMY_SPAR_WRAITH",
+      "role_answer": "ysolde",
+      "lore_key": "LORE_SPAR_WRAITH",
+      "phase_name_key": "PHASE_SPAR_WRAITH_SHROUDED",
+      "stats": {"level": 7, "hp": 2700, "mp": 0, "strength": 10, "magic": 12, "defense": 28, "magic_defense": 16,
+                "agility": 12, "accuracy": 10, "evasion": 4, "luck": 8},
+      "affinities": {"none": "resist", "fire": "weak", "ice": "resist", "water": "resist"},
+      "skills": ["spar_stab", "shroud_sweep"],
+      "ai": [
+        {"if": {"turn_mod": [3, 0]}, "pick": [{"skill": "shroud_sweep", "target": "all_foes"}]},
+        {"pick": [{"skill": "spar_stab", "target": "random_foe"}]}
+      ],
+      "phases": [
+        {
+          "id": "hauled_down",
+          "at_hp_pct": 60,
+          "name_key": "PHASE_SPAR_WRAITH_HAULED",
+          "prompt_key": "TUT_SPAR_WRAITH_HAULED",
+          "skills": ["spar_stab", "lines_taut", "haul", "sea_lash"],
+          "affinities": {"none": "resist", "fire": "resist", "ice": "weak", "water": "absorb"},
+          "stats": {"defense": 20, "agility": 14},
+          "ai": [
+            {"if": {"turn_mod": [4, 0]}, "pick": [{"skill": "lines_taut", "target": "self"}]},
+            {"if": {"turn_mod": [4, 2]}, "pick": [{"skill": "sea_lash", "target": "all_foes"}]},
+            {"pick": [{"skill": "spar_stab", "target": "random_foe"}]}
+          ]
+        }
+      ],
+      "xp": 500,
+      "currency": 320
     }
   ]
 }

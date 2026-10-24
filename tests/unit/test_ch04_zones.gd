@@ -1,0 +1,77 @@
+extends TestCase
+## M3-C04-02: the Ch4 zone root (Ch04Zone): its dressing follows the story flags (the layout's
+## "states"), applied in order when the zone is ready, so a zone reloaded by a battle or a save comes
+## up right; and it stands actors on marks.
+
+const WAKE := "res://game/levels/ch04/haluna_wake/haluna_wake.tscn"
+const FERRY := "res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn"
+
+var zone: Ch04Zone
+var saved_state: GameStateData
+
+
+func before_each() -> void:
+	saved_state = Game.state
+	Game.state = GameStateData.new()
+
+
+func test_a_ferry_loaded_after_the_boss_comes_up_with_the_sails_down() -> void:
+	for f: StringName in [
+		&"ch04_started", &"ch04_ysolde_joined", &"ch04_boarded_derelict", &"ch04_spar_wraith_defeated"
+	]:
+		Game.set_flag(f)
+	_open(FERRY)
+	assert_false(zone.block_shown("SailsSet"))
+	assert_true(zone.block_shown("SailsLowered"))
+	assert_false(zone.block_shown("spar_wraith"), "the wraith is gone")
+	assert_false(zone.block_shown("Gangplank"), "the gangplank is shipped")
+	assert_true(zone.block_shown("SternGate"))
+	assert_false(zone.block_shown("NameBoardWrapped"), "the board is still on her stern")
+	var asha := zone.stage.actor(&"asha")
+	assert_true(asha.position.distance_to(zone.stage.mark(&"derelict_asha").position) < 0.01, "the party is aboard her")
+	_done()
+
+
+func test_later_rows_win_and_a_fresh_wake_shows_its_lit_windows() -> void:
+	Game.set_flag(&"ch03_rhen_sworn_guardian")
+	_open(WAKE)
+	assert_true(zone.block_shown("WindowLit1"))
+	assert_false(zone.block_shown("AshaShell"), "hidden by the first row")
+	Game.set_flag(&"ch04_started")
+	Game.set_flag(&"ch04_shell_set")
+	zone.refresh_states()
+	assert_false(zone.block_shown("WindowLit1"))
+	assert_true(zone.block_shown("AshaShell"), "shown again by a later row")
+	_done()
+
+
+func test_placing_an_actor_needs_the_actor_and_the_mark() -> void:
+	_open(FERRY)
+	assert_true(zone.place_actor("toma", "ferry_toma"))
+	assert_true(zone.stage.actor(&"toma").position.distance_to(zone.stage.mark(&"ferry_toma").position) < 0.01)
+	assert_false(zone.place_actor("toma", "no_such_mark"))
+	assert_false(zone.place_actor("nobody", "ferry_toma"))
+	_done()
+
+
+func _open(path: String) -> void:
+	zone = (load(path) as PackedScene).instantiate() as Ch04Zone
+	zone.story.autostart = false
+	_host().add_child(zone)
+	zone.set_process(false)
+	zone.director.auto_update = false
+	zone.player.set_physics_process(false)
+	if zone.encounters != null:
+		zone.encounters.set_physics_process(false)
+
+
+func _done() -> void:
+	if zone != null and is_instance_valid(zone):
+		_host().remove_child(zone)
+		zone.free()
+	zone = null
+	Game.state = saved_state
+
+
+func _host() -> Node:
+	return (Engine.get_main_loop() as SceneTree).current_scene

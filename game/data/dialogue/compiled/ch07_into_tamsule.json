@@ -1,0 +1,27 @@
+{
+ "format": 1,
+ "scene": "ch07_into_tamsule",
+ "source": "game/data/dialogue/ch07/ch07_into_tamsule.dlg",
+ "start": "ch07_into_tamsule",
+ "nodes": {
+  "ch07_into_tamsule": {
+   "headers": {"location": "ch07/tamsule"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "camera", "args": ["T01"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "music", "args": ["tamsule_port"], "kwargs": {"fade": 1.0}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "camera", "args": ["T02"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "bell_moorings"], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ch07_into_001", "key": "DLG_CH07_INTO_001", "speaker": "liss", "emotion": "cold", "voice": "", "src": 17},
+    {"op": "line", "id": "ch07_into_002", "key": "DLG_CH07_INTO_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 18},
+    {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ch07_into_003", "key": "DLG_CH07_INTO_003", "speaker": "rhen", "emotion": "tender", "voice": "", "src": 20},
+    {"op": "cue", "cue": "mark", "args": ["liss", "liss_stall", "walk"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "ysolde_gantry", "walk"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 24}
+   ]
+  }
+ }
+}

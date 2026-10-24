@@ -80,6 +80,9 @@ var weak_point: Dictionary = {}
 var weak_hits := 0
 ## enemies.json "field": the field this combatant is bound to; it falls when the field clears.
 var field: StringName = &""
+## enemies.json "reactions" (M3-C05-02, the Cinder Matron's quench): [{elements, from_phase?,
+## cleanses?, statuses?}]. A landed hit of one of those elements cleanses and adds statuses on it.
+var reactions: Array = []
 
 
 static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> BattleCombatant:
@@ -111,6 +114,7 @@ static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> Ba
 	c.phases = (d.get("phases", []) as Array).duplicate(true)
 	c.weak_point = (d.get("weak_point", {}) as Dictionary).duplicate(true)
 	c.field = StringName(str(d.get("field", "")))
+	c.reactions = (d.get("reactions", []) as Array).duplicate(true)
 	return c
 
 

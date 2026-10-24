@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch04_banter_salt_and_stone",
+ "source": "game/data/dialogue/ch04/ch04_banter_salt_and_stone.dlg",
+ "start": "ch04_banter_salt_and_stone",
+ "nodes": {
+  "ch04_banter_salt_and_stone": {
+   "headers": {"location": "ch04/brightwater_ferry"},
+   "ops": [
+    {"op": "line", "id": "ch04_banter_salt_001", "key": "DLG_CH04_BANTER_SALT_001", "speaker": "ferrymaster", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch04_banter_salt_002", "key": "DLG_CH04_BANTER_SALT_002", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 9},
+    {"op": "line", "id": "ch04_banter_salt_003", "key": "DLG_CH04_BANTER_SALT_003", "speaker": "ferrymaster", "emotion": "sad", "voice": "", "src": 10}
+   ]
+  }
+ }
+}
