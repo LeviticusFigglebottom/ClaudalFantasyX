@@ -72,7 +72,7 @@
   - The hero-integration track's live log is read each cycle. The branch didn't exist at 2026-10-24 ~20:00.
 - **Un-pushed paused WIP (local worktree branches; not merged on purpose):**
   - **Kerrid, M3-CHR-05:** branch `worktree-agent-a163619bbd2d21786` @ e67e6aba. The build runs end to end, but the GLB is 5.30 MB (cap 5) and LOD1 is 35k (budget ~28k). His hero_clips block makes a no-argument `hero_clips.py` run fail until kerrid.glb exists, so he isn't merged. The next step is in the task's Notes.
-  - **Liss, M3-CHR-03 hero half:** paused, and her report is pending.
+  - **Liss, M3-CHR-03 hero half:** branch `worktree-agent-a61329e979970a83f` @ c5e3a320. LOD0 55,820, about 4.1 MB, with the 10 story clips and 11 battle clips. Not merged: two source edits (`TAIL_ROOT_H`, `SLEEVE_KEEP_NEAR_TORSO`) aren't built into the committed files yet, and the probe, Godot tests, shots and verify are still to run. The next step is in the task's Notes.
 - **Kerrid and Pell design sheets merged** (kerrid.md, pell.md; M3-CHR-05 and 06).
   - Pell (M3-CHR-06) waits on **M3-NAR-01**: in outline, Pell's arc is close to the inspiring series' beast-folk guardian; the costume avoids every visual cue, but Narrative must rule on the arc. That task also carries the sheets' story questions and the stale ADR 0020 and glossary rows.
 - **From the M3 sheets:**
