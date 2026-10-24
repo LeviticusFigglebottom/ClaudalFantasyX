@@ -35,7 +35,7 @@ func on_action_resolved(result: ActionResult) -> void:
 		var tid: StringName = hit["target_id"]
 		var target := ctl.engine.find(tid)
 		var f := ctl.stage.stand_in(tid)
-		# ActionResult.amount: positive = HP lost, negative = HP restored (BattleEngine._resolve_on).
+		# ActionResult.amount: positive = HP lost, negative = HP restored (BattleHits.resolve).
 		var amount := int(hit["amount"])
 		if f != null and amount > 0:
 			f.flinch()
