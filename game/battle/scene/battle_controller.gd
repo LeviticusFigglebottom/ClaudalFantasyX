@@ -387,7 +387,7 @@ func try_escape() -> bool:
 	if engine.escape():
 		_set_state(STATE_BUSY)
 		hud.commands.visible = false
-		_wait(_pace(&"result_delay_sec"), _show_result)
+		_wait(stage.outro_hold(_pace(&"result_delay_sec")), _show_result)  # M2-BPR-05 victory pose
 		return true
 	hud.set_help(tr("HUD_ESCAPE_FAILED"))
 	after_action(actor)
@@ -438,7 +438,7 @@ func _next_turn() -> void:
 	if engine.outcome != &"":
 		_set_state(STATE_BUSY)
 		hud.commands.visible = false
-		_wait(_pace(&"result_delay_sec"), _show_result)
+		_wait(stage.outro_hold(_pace(&"result_delay_sec")), _show_result)  # M2-BPR-05 victory pose
 		return
 	var auto := _auto_reason()
 	hud.party.set_current(current_actor_id(), auto)

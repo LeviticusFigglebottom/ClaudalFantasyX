@@ -93,6 +93,15 @@ def choreo_errors(doc: object, skills: object) -> list[str]:
     if not isinstance(rm, dict) or any(not _num(rm.get(k)) or not 0 <= rm[k] <= 1 for k in
                                        ("travel_scale", "lean_scale", "tilt_scale")):
         errs.append(f"{CHOREO_FILE}: reduced_motion scales must be numbers in [0, 1]")
+    outro = c.get("outro")
+    if not isinstance(outro, dict) or not _num(outro.get("settle_sec")) or outro["settle_sec"] < 0:
+        errs.append(f"{CHOREO_FILE}: outro needs settle_sec >= 0")
+    else:
+        for kind, extra in (("victory", ("hops", "hop_m")), ("escape", ("back_m",))):
+            o = outro.get(kind)
+            keys = ("delay_sec", "sec", "stagger_sec") + extra
+            if not isinstance(o, dict) or any(not _num(o.get(k)) or o[k] < 0 for k in keys) or o.get("clip") not in CLIPS:
+                errs.append(f"{CHOREO_FILE}: outro.{kind} needs numbers >= 0 for {', '.join(keys)} and a contract clip")
     sp = c.get("speeds")
     if not isinstance(sp, dict) or not _num(sp.get("min")) or not _num(sp.get("max")) or not 0 < sp["min"] <= sp["max"]:
         errs.append(f"{CHOREO_FILE}: speeds needs 0 < min <= max")

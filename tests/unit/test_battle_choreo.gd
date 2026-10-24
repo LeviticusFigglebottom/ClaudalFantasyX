@@ -333,6 +333,64 @@ func test_a_new_action_finishes_the_last_sequence() -> void:
 	_free()
 
 
+# --- outro (M2-BPR-05) ------------------------------------------------------------------
+
+
+func test_the_party_holds_a_victory_pose_before_the_result() -> void:
+	_to_turn_of(&"rhen")
+	for e in ctl.engine.enemies:
+		e.hp = 1 if e.id == _foe() else 0
+	ctl.pacing_scale = 1.0
+	var outro := choreo.outro
+	outro.live = false
+	ctl.act(&"attack", [_foe()])
+	assert_eq(ctl.engine.outcome, BattleEngine.OUTCOME_VICTORY)
+	assert_eq(outro.playing, &"", "the pose waits for the last blow")
+	assert_true(ctl.stage.outro_hold(0.0) > choreo.remaining_sec(), "the result waits for the blow and the pose")
+	choreo.finish()
+	assert_eq(outro.playing, BattleOutro.VICTORY)
+	var cfg := outro.cfg(BattleOutro.VICTORY)
+	outro.advance(float(cfg["delay_sec"]) + float(cfg["sec"]) * 0.25)
+	assert_true(_pos(&"rhen").y > _home_pos(&"rhen").y + EPS, "Rhen hops")
+	var hold := ctl.stage.outro_hold(0.0)
+	assert_between(hold, outro.remaining_sec(), outro.remaining_sec() + 1.0)
+	outro.advance(outro.duration(BattleOutro.VICTORY))
+	assert_eq(outro.playing, &"")
+	_assert_home(&"rhen")
+	assert_eq(ctl.stage.outro_hold(0.6), 0.6, "nothing left to wait for")
+	_free()
+
+
+func test_an_escape_walks_the_party_off() -> void:
+	_to_turn_of(&"rhen")
+	ctl.pacing_scale = 1.0
+	choreo.outro.live = false
+	ctl.engine.rng.seed = 1
+	var guard := 0
+	while ctl.engine.outcome == &"" and guard < 40:
+		guard += 1
+		if ctl.engine.is_party_turn():
+			ctl.try_escape()
+		choreo.finish()
+		ctl.tick(100.0)
+	assert_eq(ctl.engine.outcome, BattleEngine.OUTCOME_ESCAPED, "the party got away")
+	assert_eq(choreo.outro.playing, BattleOutro.ESCAPE)
+	choreo.outro.advance(choreo.outro.duration(BattleOutro.ESCAPE))
+	var f := ctl.stage.stand_in(&"rhen")
+	assert_true(f.transform.origin.distance_to(choreo._home_of(&"rhen").origin) > 1.0, "Rhen walked off")
+	_free()
+
+
+func test_no_outro_when_instant() -> void:
+	_to_turn_of(&"rhen")
+	for e in ctl.engine.enemies:
+		e.hp = 1 if e.id == _foe() else 0
+	ctl.act(&"attack", [_foe()])
+	assert_eq(choreo.outro.playing, &"")
+	assert_eq(ctl.stage.outro_hold(0.0), 0.0)
+	_free()
+
+
 # --- clip contract --------------------------------------------------------------------------
 
 

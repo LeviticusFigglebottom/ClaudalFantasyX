@@ -54,6 +54,9 @@ class ChoreoValidateTest(unittest.TestCase):
         self.assertTrue(self._errs(lambda c: c["reduced_motion"].update(travel_scale=2)))
         self.assertTrue(self._errs(lambda c: c["speeds"].update(min=0)))
         self.assertTrue(self._errs(lambda c: c.update(settle_sec="x")))
+        self.assertTrue(self._errs(lambda c: c["outro"]["victory"].update(hop_m=-1)))
+        self.assertTrue(self._errs(lambda c: c["outro"]["escape"].update(clip="run")))
+        self.assertTrue(self._errs(lambda c: c["outro"].pop("settle_sec")))
         self.assertEqual(vc.choreo_errors({}, SKILLS), [f"{vc.CHOREO_FILE}: needs a 'choreo' object"])
 
 

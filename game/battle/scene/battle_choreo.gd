@@ -53,6 +53,8 @@ var live := true
 var frozen := false
 ## Every plan started, in order (tests and tools).
 var played: Array[Dictionary] = []
+## The victory pose and the escape (M2-BPR-05).
+var outro: BattleOutro
 
 var _ctl: BattleController
 var _engine: BattleEngine
@@ -94,6 +96,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	controller.stage.add_child(c)
 	controller.stage.choreo = c
 	c.attach(controller, engine)
+	c.outro = BattleOutro.attached(c, engine)
 	return c
 
 
@@ -544,6 +547,31 @@ func _pose(cid: StringName, offset: Vector3, toward: Vector3, lean_deg: float) -
 	if absf(lean_deg) > 0.0 and axis.length() > 0.0:
 		basis = Basis(axis.normalized(), deg_to_rad(lean_deg)) * basis
 	f.transform = Transform3D(basis, home.origin + offset)
+
+
+## Public for BattleOutro: the stand-in, its pose, its rest, its facing, a reduced-motion scale, the ease.
+func stand_in(cid: StringName) -> FighterStandIn:
+	return _ctl.stage.stand_in(cid) if _ctl != null else null
+
+
+func pose(cid: StringName, offset: Vector3, toward: Vector3, lean_deg: float) -> void:
+	_pose(cid, offset, toward, lean_deg)
+
+
+func rest(cid: StringName) -> void:
+	_rest(cid)
+
+
+func facing(cid: StringName) -> Vector3:
+	return _facing(cid)
+
+
+func rm(key: String) -> float:
+	return _rm(key)
+
+
+static func ease01(u: float) -> float:
+	return _ease(u)
 
 
 func _rest(cid: StringName) -> void:

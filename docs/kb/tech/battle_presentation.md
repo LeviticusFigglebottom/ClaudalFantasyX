@@ -165,3 +165,22 @@ on. Instant pacing (captures, tests) never waits.
 - **Screenshots:** no shot in `tests/screenshots/shots.json` captures the field-to-battle transition, so no
   baseline moves. `battle_opening_banner` renders at instant pacing (shown, no wait) and is unaffected.
 - **Hooks for tests:** `BattleRequest.play_stinger` and `OpeningBanner.screen_covered`, both Callables.
+
+## Victory and escape (M2-BPR-05, part 2)
+
+**`BattleOutro`** (`game/battle/scene/battle_outro.gd`), a child of the sequencer, listens to
+`engine.battle_finished`. It waits for the last action's choreography (`after_sequence`), then:
+- **Victory:** every standing party fighter plays `victory` (the clip contract), or a stand-in hops `hops` times
+  `hop_m` high over `sec`, each one `stagger_sec` after the last, after `delay_sec`. It stands back on its mark
+  at the end. A looping `victory` clip carries on under the result panel.
+- **Escape:** the party walks `back_m` back off the field over `sec` and stays there under the result panel.
+- **Defeat:** nothing more; the KO collapses already told it.
+
+`BattleController` holds the result panel `BattleStage.outro_hold(result_delay)`: the base delay, or the last
+blow's rest plus the outro plus `outro.settle_sec`. That is an in-place change to the two `result_delay_sec`
+waits; the controller is still 995 lines. Instant pacing and "skip animations" skip the outro.
+
+**Return to the field.** The result panel's Return goes back through SceneRouter's opaque fade, as before.
+The field's own arrival is the field camera's business (field_camera.md), so nothing new plays here.
+
+**Data:** `choreo.json` `outro` (validated with the rest of the file).

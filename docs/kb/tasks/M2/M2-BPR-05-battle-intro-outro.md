@@ -2,7 +2,7 @@
 id: M2-BPR-05
 title: Battle intro and outro: encounter stinger, opening banner, victory pose and return
 role: combat
-status: doing
+status: review
 owner_session: battle-presentation (claude/battle-presentation)
 depends_on: [M2-BPR-01]
 milestone: M2
@@ -14,8 +14,8 @@ An original encounter transition into battle, the opening banner's timing, and t
 ## Acceptance criteria
 - [x] Original transition (not the inspiring game's)
 - [x] Opening banner timing in data
-- [ ] Victory pose (clip or procedural) before the result panel
-- [ ] Tests
+- [x] Victory pose (clip or procedural) before the result panel (BattleOutro; escape walks the party off)
+- [x] Tests (test_battle_stinger.gd, test_battle_choreo.gd outro tests)
 
 ## Notes
 - Battle-presentation track standing queue (Lead, 2026-10-24). Listen-only presentation: the engine stays headless (CLAUDE.md §3).

@@ -138,6 +138,11 @@ func refresh_ko(engine: BattleEngine) -> void:
 			choreo.on_ko_state(c.id, ko)
 
 
+## How long the result panel waits after the battle ends: `base`, or longer for the victory pose or the escape.
+func outro_hold(base: float) -> float:
+	return choreo.outro.hold(base) if choreo != null and choreo.outro != null else base
+
+
 ## How long the controller holds after an action: `base`, or longer while the choreography plays.
 func hold_after(base: float) -> float:
 	return choreo.hold_after(base) if choreo != null else base
