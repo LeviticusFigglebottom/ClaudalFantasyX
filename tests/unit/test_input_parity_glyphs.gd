@@ -11,6 +11,7 @@ var flags: Dictionary = {}
 
 
 func before_each() -> void:
+	InputDriver.clear_screen()
 	(Engine.get_main_loop() as SceneTree).paused = false
 	UiSettings.set_shared(UiSettings.new())
 	FieldInput.ensure_actions()

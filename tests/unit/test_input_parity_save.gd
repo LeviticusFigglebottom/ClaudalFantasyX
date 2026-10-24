@@ -14,6 +14,7 @@ var _saved_state: GameStateData
 
 
 func before_each() -> void:
+	InputDriver.clear_screen()
 	_saved_dir = SaveSystem.save_dir
 	_saved_clock = SaveSystem.clock
 	_saved_autosave = SaveSystem.autosave_enabled

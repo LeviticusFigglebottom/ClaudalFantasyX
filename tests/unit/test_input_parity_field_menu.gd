@@ -9,6 +9,7 @@ var state: GameStateData
 
 
 func before_each() -> void:
+	InputDriver.clear_screen()
 	state = GameStateData.new()
 	menu = null
 	UiSettings.set_shared(UiSettings.new())

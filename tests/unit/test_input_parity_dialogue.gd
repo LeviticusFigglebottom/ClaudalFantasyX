@@ -15,6 +15,7 @@ var advances: Array[int] = [0]
 
 
 func before_each() -> void:
+	InputDriver.clear_screen()
 	_tree().paused = false
 	UiSettings.set_shared(UiSettings.new())
 	advances[0] = 0

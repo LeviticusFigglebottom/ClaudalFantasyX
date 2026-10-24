@@ -10,6 +10,7 @@ var resolved: Array[ActionResult] = []
 
 
 func before_each() -> void:
+	InputDriver.clear_screen()
 	ctl = (load(SANDBOX) as PackedScene).instantiate() as BattleController
 	ctl.auto_start = false
 	ctl.pacing_scale = 0.0

@@ -248,6 +248,7 @@ func test_the_field_menu_codex_row_follows_the_bestiary_and_opens_the_codex() ->
 	assert_true(menu.visible, "back to the field menu")
 	assert_eq(menu.codex_menu, null)
 	assert_true(menu.is_open())
+	_free_made()  # the runner has no after_each: no menu may outlive its test
 
 
 # --- input parity (M2-UI-26) --------------------------------------------------------------------

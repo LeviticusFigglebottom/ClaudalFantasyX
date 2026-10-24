@@ -12,6 +12,7 @@ var menu: FieldMenu
 
 
 func before_each() -> void:
+	InputDriver.clear_screen()
 	menu = null
 	UiSettings.set_shared(UiSettings.new())
 

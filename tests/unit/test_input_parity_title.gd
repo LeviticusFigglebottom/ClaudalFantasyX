@@ -9,6 +9,7 @@ var _saved_dir := ""
 
 
 func before_each() -> void:
+	InputDriver.clear_screen()
 	_saved_dir = SaveSystem.save_dir
 	SaveSystem.save_dir = TEST_DIR
 	UiSettings.set_shared(UiSettings.new())

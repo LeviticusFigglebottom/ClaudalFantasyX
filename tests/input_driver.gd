@@ -31,6 +31,21 @@ static func root() -> Window:
 	return (Engine.get_main_loop() as SceneTree).root
 
 
+## Frees every Control and CanvasLayer an earlier test left under the test scene, and unpauses.
+## The runner has no after_each and never ends a frame between tests, so a leftover menu would
+## cover the screen and take this test's clicks. Every parity test's before_each calls it.
+static func clear_screen() -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var host: Node = tree.current_scene if tree.current_scene != null else tree.root
+	if host == tree.root:
+		return  # no test scene: never sweep the root (the autoloads live there)
+	for c in host.get_children():
+		if c is Control or c is CanvasLayer:
+			host.remove_child(c)
+			c.free()
+	tree.paused = false
+
+
 ## Presses and releases `action` with this driver's device. MOUSE has no action bindings: it
 ## falls back to the keyboard for actions a mouse does not have (a parity test uses the mouse's
 ## own gestures where one exists: click, right click, wheel).
