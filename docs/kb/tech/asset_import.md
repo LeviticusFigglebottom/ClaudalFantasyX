@@ -9,6 +9,7 @@ ADR 0005 step 4. Every `.glb` under `assets/` is imported through an `EditorScen
 | `base_body` | `base_body_post_import.gd` | `base_body.json` | `assets/characters/base_body/` (3) | none: keeps the flat `PLACEHOLDER_*` glTF materials | Godot auto LODs | none |
 | `shader_test` | `shader_test_post_import.gd` | `shader_test.json` | `assets/characters/shader_test/` (2) | none, on purpose (see "Shared materials and shader tiers") | none | none |
 | `brine_shoals_kit` (M3-ENV-02) | `brine_shoals_kit_post_import.gd` | `brine_shoals_kit.json` | `assets/environments/kits/brine_shoals/` (28) | slot → `kits/brine_shoals/materials/<slot>.tres` | `-lod1`: 0–70 m, 70–2000 m, 2 m margin | `-col` → trimesh body |
+| `pemakar_kit` (M3-ENV-03) | `pemakar_kit_post_import.gd` | `pemakar_kit.json` | `assets/environments/kits/pemakar/` (25) | slot → `kits/pemakar/materials/<slot>.tres` | `-lod1`: 0–70 m, 70–4000 m (skyline pieces), 2 m margin | `-col` → trimesh body |
 | `characters` | `characters_post_import.gd` | `characters.json` | `assets/characters/asha/`: **adoption pending** | slot → `<asset dir>/materials/<slot>.tres` | Godot auto LODs plus `<hero>_lod1.glb` | none |
 
 ## What the import does (in order)

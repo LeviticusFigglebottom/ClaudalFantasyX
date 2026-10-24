@@ -54,7 +54,9 @@ def massif_height(x: np.ndarray, z: np.ndarray, noise: kc.Noise3) -> np.ndarray:
     tf = np.floor(t)
     h_town = np.where(t >= 0.0, pc.tier_tread_y(tf) + pc.WALL_H_M * kc.smoothstep(0.9, 1.0, t - tf),
                       pc.TOWN_Y0_M + t * 2.1)
-    inside = (np.abs(x) < 62.0) & (t >= 0.0) & (t < pc.TOWN_TIERS)
+    # Only the town's south arc: the tier rings are circles about TOWN_CENTRE, and without the z test
+    # their far (north) side cut a trench across the face behind the town.
+    inside = (np.abs(x) < 62.0) & (t >= 0.0) & (t < pc.TOWN_TIERS) & (z > pc.TOWN_CENTRE[1])
     h_town = h_town - 0.7 * inside
     w = (1.0 - kc.smoothstep(55.0, 150.0, np.abs(x))) * kc.smoothstep(-135.0, -95.0, z) * (t < 13.0)
     w = np.where(inside, 1.0, w)
@@ -152,10 +154,11 @@ def plume(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
     rng = kc.rng_for(name, seed)
     noise = kc.Noise3(rng)
     mb = kc.MeshBuilder(pc.lod_name(name, lod))
-    rings, sides = (14, 12) if lod else (50, 36)
+    rings, sides = (16, 14) if lod else (64, 52)
     t = np.linspace(0.0, 1.0, rings)
     spine = np.stack([-PLUME_LEAN_M * t ** 1.8, PLUME_H_M * t, 30.0 * np.sin(t * 2.2)], axis=-1)
-    radius = 32.0 + 125.0 * t ** 1.2
+    # Necks and swells along the column (puffs rising one after another), not a smooth cone.
+    radius = (32.0 + 125.0 * t ** 1.2) * (1.0 + 0.16 * np.sin(t * 17.0 + 0.6) * np.clip(t * 3.0, 0.0, 1.0))
     ang = np.linspace(0.0, 2.0 * math.pi, sides + 1)
     tang = np.gradient(spine, axis=0)
     tang = kc.normalize(tang)
@@ -168,8 +171,10 @@ def plume(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
     # Billows: big lumps that grow with height; the vent stays tight.
     lump = noise.fbm(p / 70.0, 3) - 0.5
     lump2 = np.abs(noise.fbm(p / 26.0 + 11.0, 2) - 0.5) * 2.0 - 0.3  # rounded cauliflower heads
+    lump3 = np.abs(noise.fbm(p / 11.0 + 23.0, 2) - 0.5) * 2.0 - 0.3  # small heads on the big ones
     out = kc.normalize(p - spine[:, None, :])
-    p = p + out * ((lump * 0.8 + lump2 * 0.35) * radius[:, None] * (0.35 + 0.65 * t[:, None]))[..., None]
+    p = p + out * ((lump * 1.1 + lump2 * 0.55 + lump3 * 0.18) * radius[:, None]
+                   * (0.35 + 0.65 * t[:, None]))[..., None]
     p[:, -1] = p[:, 0]
     u = np.tile(ang / (2.0 * math.pi), (rings, 1))
     v = np.tile(t[:, None], (1, sides + 1))
