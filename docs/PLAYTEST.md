@@ -48,6 +48,16 @@ This is a rough but complete thread through the first chapters of *Hymn of the U
    Lose, and you can fight again or return to your last save (the shrine's open door, past the trial).
 10. **The dock at night.** Win, and you're back in Haluna after dark: moonlight, stars, a faintly glowing sea and oil lamps under the eaves. Rhen finds Asha at the end of the dock and asks to come with her. Talking to the villagers again now gives their night lines.
 11. **End card.** Rhen's voice-over on black, then the card and a short list of credits. When the prompt shows, press accept to return to the title. **Continue** loads your save, which now shows the chapter you reached.
+12. **Ch4, "The Pilgrim's Wake"** (greybox, about 40 minutes; optional, editor runs only for now). The end card doesn't lead on to it yet. After the end card, **Continue** your save, press **F5** and pick **Ch4: Haluna, the wake night**. It plays only once the dock scene has sworn Rhen in.
+   - **The wake night.** Dusk: the village carries its lamps to the wall at the causeway head, and the windows go dark. Walk the dark town (the child in the lane, the netmender on the dock, the Reed at the chapel, the inn's door), then north into the lamplight.
+   - **The feast.** Talk at the four tables. **Neme's** (the right-hand table) is the one that counts: after it, walk up to the wall. The shell is set, the village sings, and Rhen walks out.
+   - **The dock in the dark.** Asha sits with him. **Tell her about Oruvel** or **Not tonight**; both are fine. Watch her face while he looks at the water.
+   - **Optional, "The Ink":** back at the wall, someone kneels with a lamp. **Look**. Going to **Neme's door** (**Sleep**) instead ends the night, and the scene is gone.
+   - **Dawn.** The causeway at low water, then the ferry's landing, where Ysolde is waiting. She joins **in reserve**.
+   - **Brightwater Crossing.** Walk the deck: three conversations play as you pass the rail, the awning and the wheel. The purser sells supplies; the deckhouse shrine **rests** the party (it can't save yet). Nothing attacks the ferry. Walk to the **bow**.
+   - **The Seventh Terrace.** The party crosses to the drifting ship. Sail leeches drop on you first (an ambush). In the hold, a **bottle hermit** in a lamp glass: **Swap** Ysolde in on anyone's turn (it costs no time), **Read** it, then answer with the right element. The deck can throw a fight at you as you walk.
+   - **The Spar-Wraith** (two phases; the party is rested first). Blows slide off its shroud: Read it, burn it. At about 60% it drops to the deck and its weakness changes: Read it again. It also telegraphs **Haul**, which shoves someone back on the timeline.
+   - **The name-board**, the crossing and a fade. The end card then stands in for Ch5.
 
 ## Running it
 
@@ -96,6 +106,7 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - The night has no colour grade of its own yet.
 - Ilun is a placeholder shape, and his call has no cinematic yet. The bell and polyps are placeholder shapes too.
 - Entering Haluna holds the black fade for about a second while the village builds itself; the picture no longer freezes when it appears.
+- Ch4 is grey blocks and capsules: Haluna's wake night is a stand-in town, not the real Haluna at night. It has no music or sounds of its own yet, the song at the wall is shown as text, and the ferry's shrine heals without saving.
 - In the field, Escape opens the field menu, which pauses the game. From it you can open the bestiary or choose each hero's Swell fill mode. Escape backs out a step at a time and then closes it. It doesn't open during a cutscene or a conversation. **E** also advances dialogue.
 
 - **Ch1 is greybox:** blocks and capsules, and a teal stand-in for the underwater look. Its music and sounds don't exist yet, so the chapter plays mostly silent. The sea between the hulls is a floor you can walk on. Ch1 has no save shrine (its chapter start autosaves).
