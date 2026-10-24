@@ -49,30 +49,20 @@ func _ready() -> void:
 
 ## Holds `clip` at `clip_time` (a paused AnimationPlayer: the capture is the same every run).
 func hold(a: CreatureActor) -> void:
-	var players := a.find_children("*", "AnimationPlayer", true, false)
-	if players.is_empty():
-		return
-	var p := players[0] as AnimationPlayer
-	if not p.has_animation(clip):
+	if not CreatureFraming.hold(a, clip, clip_time):
 		push_warning("CreatureStage: %s has no clip %s" % [a.creature_id, clip])
-		return
-	p.play(clip, 0.0)
-	p.seek(clip_time, true)
-	p.pause()
 
 
 func frame_camera() -> void:
 	var v: Dictionary = (_cfg.get("views", {}) as Dictionary).get(String(view), {})
-	var box := _bounds(get_children())
-	var c := box.get_center()
-	var radius := box.size.length() * 0.5 * float(v.get("margin", 1.2))
-	camera.fov = float(v.get("fov_deg", 30.0))
-	var dist := radius / sin(deg_to_rad(camera.fov * 0.5))
-	var yaw := deg_to_rad(float(v.get("yaw_deg", 0.0)))
-	var pitch := deg_to_rad(float(v.get("pitch_deg", 10.0)))
-	var dir := Vector3(sin(yaw) * cos(pitch), sin(pitch), cos(yaw) * cos(pitch))
-	camera.position = c + dir * dist
-	camera.look_at(c, Vector3.UP)
+	CreatureFraming.frame(
+		camera,
+		_bounds(get_children()),
+		float(v.get("yaw_deg", 0.0)),
+		float(v.get("pitch_deg", 10.0)),
+		float(v.get("fov_deg", 30.0)),
+		float(v.get("margin", 1.0))
+	)
 
 
 func _add_scale_bars(x0: float) -> void:
@@ -94,20 +84,6 @@ func _add_scale_bars(x0: float) -> void:
 		x += float(_cfg.get("scale_bar_gap_m", 0.4))
 
 
-## World bounds of every visible mesh under `nodes` (skinned meshes at their rest bounds).
+## World bounds of the creatures and scale bars (not the ground disc).
 func _bounds(nodes: Array) -> AABB:
-	var box := AABB()
-	var first := true
-	for n: Variant in nodes:
-		if not n is Node:
-			continue
-		var list: Array = (n as Node).find_children("*", "MeshInstance3D", true, false)
-		if n is MeshInstance3D:
-			list.append(n)
-		for m: MeshInstance3D in list:
-			if m.mesh == null or not m.is_visible_in_tree() or m.name == "GroundDisc":
-				continue
-			var b := m.global_transform * m.get_aabb()
-			box = b if first else box.merge(b)
-			first = false
-	return box
+	return CreatureFraming.bounds(nodes, PackedStringArray(["GroundDisc"]))

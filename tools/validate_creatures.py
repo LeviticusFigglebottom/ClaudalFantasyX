@@ -18,11 +18,12 @@ SKILLS_FILE = "game/data/battle/skills.json"
 SCENE_PREFIX = "res://game/creatures/"
 
 DEFAULT_KEYS = {"idle", "hit", "ko", "loop", "blend_sec", "clip_by_kind", "clip_by_skill", "ko_fade_sec",
-                "stand_in", "phases", "break_parts"}
+                "stand_in", "phases", "break_parts", "portrait"}
 ROW_KEYS = DEFAULT_KEYS | {"scene"}
 STAND_IN_KEYS = {"yaw_deg"}
 PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec"}
 PART_KEYS = {"whole", "broken"}
+PORTRAIT_KEYS = {"clip", "clip_time", "yaw_deg", "pitch_deg", "fov_deg", "margin"}
 
 
 def _num(v: object) -> bool:
@@ -53,6 +54,18 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str]) -> lis
         errs += [f"{w}.stand_in: unknown key '{k}'" for k in sorted(set(st) - STAND_IN_KEYS)]
         if "yaw_deg" in st and not _num(st["yaw_deg"]):
             errs.append(f"{w}.stand_in.yaw_deg: must be a number")
+    por = row.get("portrait", {})
+    if not isinstance(por, dict):
+        errs.append(f"{w}.portrait: must be an object")
+    else:
+        errs += [f"{w}.portrait: unknown key '{k}'" for k in sorted(set(por) - PORTRAIT_KEYS)]
+        if "clip" in por and not (isinstance(por["clip"], str) and por["clip"]):
+            errs.append(f"{w}.portrait.clip: must be a clip name")
+        for k in sorted(PORTRAIT_KEYS - {"clip"}):
+            if k in por and not _num(por[k]):
+                errs.append(f"{w}.portrait.{k}: must be a number")
+        if _num(por.get("fov_deg")) and not 1.0 <= por["fov_deg"] <= 120.0:
+            errs.append(f"{w}.portrait.fov_deg: must be 1..120")
     phases = row.get("phases", {})
     if not isinstance(phases, dict):
         errs.append(f"{w}.phases: must be an object")

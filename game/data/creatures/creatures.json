@@ -11,7 +11,8 @@
     "ko_fade_sec": 0.6,
     "stand_in": {"yaw_deg": 90.0},
     "phases": {},
-    "break_parts": {}
+    "break_parts": {},
+    "portrait": {"clip": "idle", "clip_time": 0.0, "yaw_deg": 30.0, "pitch_deg": 14.0, "fov_deg": 28.0, "margin": 0.7}
   },
   "creatures": {
     "drownbell": {

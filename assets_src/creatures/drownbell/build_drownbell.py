@@ -33,7 +33,7 @@ RIM_TOP = 0.50  # where the rim band meets the bell body
 RIM_R = 0.85
 SEGS = 72
 WET_LINE = 0.75
-BREAK_ARC = (math.radians(-60.0), math.radians(10.0))  # azimuth span of the lip lost in RimBroken (camera side)
+BREAK_ARC = (math.radians(-80.0), math.radians(25.0))  # azimuth span of the lip lost in RimBroken (camera side)
 CRACKS = (-1.25, -0.35, 0.55, 2.35)  # hood crack azimuths (radians; 0 = +Z, the face)
 
 

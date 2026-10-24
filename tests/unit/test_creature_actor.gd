@@ -241,6 +241,22 @@ func test_a_drownbell_fight_breaks_the_rim_and_floods_the_bell() -> void:
 	Game.state = _saved_state
 
 
+func test_a_portrait_shows_an_enemy_with_a_model_and_nothing_otherwise() -> void:
+	var p := (load("res://game/creatures/creature_portrait.tscn") as PackedScene).instantiate() as CreaturePortrait
+	_add(p)
+	assert_true(p.show_enemy(&"reef_crab"))
+	assert_true(p.has_creature() and p.actor.creature_id == &"reef_crab")
+	assert_eq(p.enemy_id, &"reef_crab")
+	var cam := p.get_node(^"Viewport/Camera") as Camera3D
+	var box := CreatureFraming.bounds([p.actor])
+	assert_true(cam.position.distance_to(box.get_center()) > box.size.length() * 0.5, "framed from outside")
+	assert_true(p.show_enemy(&"drownbell"), "a second call replaces the first")
+	assert_eq(p.actor.creature_id, &"drownbell")
+	assert_eq(p.get_node(^"Viewport/Holder").get_child_count(), 1)
+	assert_false(p.show_enemy(&"no_such_enemy"))
+	assert_false(p.has_creature())
+
+
 func _actor(path: String) -> CreatureActor:
 	var a := (load(path) as PackedScene).instantiate() as CreatureActor
 	_add(a)
