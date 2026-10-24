@@ -19,10 +19,9 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
 ## For the Lead
-- **Question (send_message to the Lead is refused: elevated_session_untrusted_device):** M2-ENV-09 needs m2-slice's shrine kit on this branch. May I merge `claude/m2-slice` into `claude/env-art`, or should I wait until the integration branch carries it? Until you answer here or by message, I wait and work on other items.
-- **Import gotcha when merging this branch:** Godot doesn't reimport a `.glb` when only its post-import script changes. After merging, delete `.godot/imported/*.glb-*` in the gate worktree and run `--import`, or `--filter=import` fails 3 tests on stale ranges.
-- **Merging this branch changes the five haluna baselines** (intended, viewed). m2-slice's moved Haluna scenes use the same kit, so their haluna shots will match these baselines once both land.
-- `haluna_h10_dock_night` (m2-slice's ENV-02) isn't on the integration branch yet, so it wasn't re-captured here; it uses the same kit stone and will drift a little when both land. I'll re-capture it after the integration merge.
+- **Answered (2026-10-24):** the project owner and the Lead approved merging `claude/m2-slice`; done (70fa4c77 + bf18e854). The merge exposed two M2-ARC-04 release-build breaks, both fixed here: `LodChain` moved to `game/world/vegetation/` beside VegetationPlant (the import rules ship and used a `_tests` class), and `HalunaShotCamera` moved to `game/levels/ch02/haluna/` (the shrine's shots rig and the mood wrapper use it). `test_release_excludes_tests` passes.
+- **Import gotcha when merging this branch:** delete `.godot/imported/*.glb-*` in the gate worktree and run `--import`, or `--filter=import` fails 3 tests on stale LOD ranges.
+- **New standing queue started** (your message): M3-ENV-01 Tidecup, M3-ENV-02 Brine Shoals, M3-ENV-03 Terraces of Ash with worktree agents now; M3-ENV-04 Seawall and M3-ENV-05 the lamp-diver sea floor next.
 
 ## Swap-in notes for m2-slice
 - **M2-ENV-03, the Shell Shrine: swap in YOUR kit (the Art Director's verdict, 2026-10-24).** I compared
@@ -67,11 +66,14 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 **Blocked, waiting:** (1) the Lead's answer to the question above (merge `claude/m2-slice` for M2-ENV-09, or wait for the integration branch); (2) `haluna_h10_dock_night` and the shrine kit reaching the integration branch (not there at 19118fba). When either lands: build M2-ENV-09 on `shrine_interior.py` (salvage per `assets_src/environments/kits/shell_shrine_salvage/README.md`); re-capture h10, view, re-approve if it drifts, close M2-ENV-06. Session handoff: `docs/kb/handoffs/2026-10-24-environment-6.md`.
 
 ## Queue
-1. M2-ENV-03: Shell Shrine interior kit (agent)
-2. M1-ENV-10: LOD chain in the kit dresser and import rules (agent)
-3. M2-ENV-06: Haluna kit to final quality (passes 1–3 done) + M2-ENV-07 trees (agent)
-4. ~~Art sign-offs M2-ART-01/02/03~~ (done)
-5. ~~M2-ENV-08: the route and village props~~ (review); greybox flagged by the m2-slice playthrough (none reported to env-art yet)
+1. M2-ENV-09: Shell Shrine art fixes (doing: roof tiers, dressed stone, cool skylight fill; S01 props and channel bends remain)
+2. M2-ENV-06: close with the h10 re-capture (doing)
+3. M3-ENV-01: Ch7 Tidecup arena and stands (agent; the PC GPU owns the water sphere)
+4. M3-ENV-02: Ch6 Brine Shoals (agent)
+5. M3-ENV-03: Ch5 Terraces of Ash (agent)
+6. M3-ENV-04: Ch8 the Seawall
+7. M3-ENV-05: Ch1 the lamp-diver's sea floor
+Done: M2-ART-01/02/03; in review: M1-ENV-10, M2-ENV-07, M2-ENV-08; M2-ENV-03 decided (m2-slice kit adopted).
 
 ## History
 - 2026-10-24: ENV-03 verdict (m2-slice kit adopted, M2-ENV-09 filed), salvage kept (5274d59a), handoff environment-6, merged the integration branch (53ddbc36; no overlap with env-art files; validate_data and taskboard clean).

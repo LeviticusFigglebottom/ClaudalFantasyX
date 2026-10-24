@@ -57,6 +57,7 @@ OUT_DEFAULT = ROOT / "assets" / "environments" / "kits" / "haluna" / "textures"
 # Tile sizes in metres (the materials scale UVs / triplanar with these; keep in sync with the .tres).
 TILE_M = {
     "coral_stone": (1.2, 1.2),
+    "coral_dressed": (1.2, 1.2),
     "coral_concrete": (2.0, 2.0),
     "timber": (0.4, 1.6),
     "thatch": (1.6, 1.6),
@@ -148,8 +149,11 @@ def save_pair(out: Path, stem: str, rgb, height, nx, ny, cavity) -> list[Path]:
 # ---------------------------------------------------------------------------------------------
 # Painters
 # ---------------------------------------------------------------------------------------------
-def build_coral_stone(out: Path, n: int) -> list[Path]:
-    """Coral limestone: porous, with fossil polyp rings, sun-bleached; height in A, cavity in B."""
+def build_coral_stone(out: Path, n: int, *, stem: str = "coral_stone", vug_amount: float = 1.0,
+                      grey_amount: float = 1.0) -> list[Path]:
+    """Coral limestone: porous, with fossil polyp rings, sun-bleached; height in A, cavity in B.
+    `vug_amount` and `grey_amount` scale the solution holes and the weathered-grey patches: the
+    village walls use 1.0; the Shell Shrine's dressed stone (`coral_dressed`) far less."""
     rng = kc.rng_for("coral_stone_tex", SEED)
     shape = (n, n)
     big = fbm(shape, (3, 3), rng, octaves=5)
@@ -165,7 +169,7 @@ def build_coral_stone(out: Path, n: int) -> list[Path]:
     # worm-like ridges) give the faces a grain, so a wall reads as stone, not plaster.
     holes = fbm(shape, (30, 30), rng, octaves=3) * 0.7 + fbm(shape, (72, 72), rng, octaves=2) * 0.3
     vug_patch = smoothstep_np(0.4, 0.62, fbm(shape, (4, 4), rng, 4))
-    vugs = smoothstep_np(0.6 - 0.06 * vug_patch, 0.68 - 0.06 * vug_patch, holes) * (0.35 + 0.65 * vug_patch)
+    vugs = smoothstep_np(0.6 - 0.06 * vug_patch, 0.68 - 0.06 * vug_patch, holes) * (0.35 + 0.65 * vug_patch) * vug_amount
     warp = fbm(shape, (5, 5), rng, 3)
     u = (np.arange(n) + 0.5) / n
     U, V = np.meshgrid(u, u)
@@ -179,7 +183,7 @@ def build_coral_stone(out: Path, n: int) -> list[Path]:
     tone = fbm(shape, (4, 4), rng, octaves=4)
     # Two stones in one tile: fresh-broken coral_stone and the sun-greyed coral_stone_weathered, in
     # broad patches, so value varies across a face as well as between blocks (UV2.y variation).
-    grey = smoothstep_np(0.38, 0.66, fbm(shape, (2, 2), rng, 4))[..., None]
+    grey = smoothstep_np(0.38, 0.66, fbm(shape, (2, 2), rng, 4))[..., None] * grey_amount
     col = (CORAL * (1 - grey) + CORAL_W * grey) * (0.84 + 0.2 * tone)[..., None]
     col = col * (1.0 - 0.5 * np.clip(cav, 0, 1))[..., None] + CORAL_W * (0.2 * cav)[..., None]
     # The holes are shadowed inside: darker and warmer (a brown-grey), never a cold grey blot.
@@ -187,7 +191,13 @@ def build_coral_stone(out: Path, n: int) -> list[Path]:
     warm = np.clip((fbm(shape, (8, 8), rng, 3) - 0.55) * 3.0, 0, 1)[..., None]
     col = col * (1 - 0.14 * warm) + hex_lin("#D9C29A") * 0.14 * warm
     col = col * (0.9 + 0.12 * fine)[..., None]
-    return save_pair(out, "coral_stone", col, hgt, nx, ny, cav)
+    return save_pair(out, stem, col, hgt, nx, ny, cav)
+
+
+def build_coral_dressed(out: Path, n: int) -> list[Path]:
+    """The Shell Shrine's dressed coral limestone (M2-ENV-09): the same stone, tooled and tended, so its
+    pores and fossil grain stay but the dark solution holes and grey weathering are mostly gone."""
+    return build_coral_stone(out, n, stem="coral_dressed", vug_amount=0.18, grey_amount=0.3)
 
 
 def build_coral_concrete(out: Path, n: int) -> list[Path]:
@@ -553,6 +563,7 @@ BUILDERS = {
     "sand": (build_sand, 512),
     "canopy_cluster": (build_canopy_cluster, 512),
     "coral_stone": (build_coral_stone, 512),
+    "coral_dressed": (build_coral_dressed, 512),
     "coral_concrete": (build_coral_concrete, 512),
     "timber": (build_timber, 512),
     "thatch": (build_thatch, 512),

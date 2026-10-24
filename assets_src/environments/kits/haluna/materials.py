@@ -64,14 +64,15 @@ MATERIALS: dict[str, dict] = {
                                 # Drowned a thousand years (M2 final pass): greyed below lit_ceramic, so
                                 # the ruins read as old stone in the sea, not as glowing white posts.
                                 col_tint=hexc("#D2D4CB")),
-    # The Shell Shrine's dressed coral limestone (M2-ENV-03, haluna.md §3.3): fresher than the causeway's,
-    # because the place is tended; dry inside (no algae, barnacles or spray salt), shallow pits.
-    # The Shell Shrine's dressed coral limestone (M2-ENV-03, haluna.md §3.3): fresher than the causeway's,
-    # because the place is tended; dry inside (no algae, barnacles or spray salt), shallow pits.
-    "kit_shrine_stone": stone("coral_stone_albedo.png", "coral_stone_normal.png", (0.6, 0.6), base_triplanar=True,
-                              col_tint=hexc("#F6F1E6"), normal_strength=0.7, roughness_base=0.82, cavity_darken=0.12,
-                              erosion_pit_darken=0.1, ao_strength=0.55, variation_value=0.06, use_algae=False,
-                              use_barnacles=False, use_salt=False, moss_min_height_m=40.0),
+    # M2-ENV-09 (Art Director): coral-limestone courses, not beige ashlar: the Haluna stone's holes and
+    # two tones in the dressed variant (`coral_dressed`: pores and grain, few holes, so floor and vault don't blotch), a per-block spread, a soft cavity; tinted a
+    # touch cool, because the warm stone was bouncing the oculus sun into a brown hall (the brief: cool
+    # after the glare). Still lighter and cleaner than the village (no algae, barnacles or salt indoors).
+    "kit_shrine_stone": stone("coral_dressed_albedo.png", "coral_dressed_normal.png", (1.2, 1.2),
+                              base_triplanar=True, col_tint=hexc("#F2F3F0"), normal_strength=1.0, roughness_base=0.84,
+                              cavity_darken=0.22, erosion_pit_darken=0.14, ao_strength=0.65, variation_value=0.12,
+                              variation_warmth=0.02, use_algae=False, use_barnacles=False, use_salt=False,
+                              moss_min_height_m=40.0),
     "kit_mortar_white": stone("coral_stone_albedo.png", "coral_stone_normal.png", (0.9, 0.9), base_triplanar=True,
                               normal_strength=0.35, roughness_base=0.9, col_paint=hexc("#E6E1D6"), paint_cover=0.97,
                               cavity_darken=0.04, erosion_pit_darken=0.05, ao_strength=0.4),

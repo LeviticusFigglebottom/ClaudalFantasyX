@@ -344,3 +344,5 @@ Rules:
 | assets/environments/kits/haluna/materials/kit_nacre.tres | assets_src/environments/kits/haluna/materials.py | python3 assets_src/environments/kits/haluna/materials.py | Environment Artist | 2026-10-24 | original |
 | assets/environments/kits/haluna/materials/kit_shrine_stone.tres | assets_src/environments/kits/haluna/materials.py | python3 assets_src/environments/kits/haluna/materials.py | Environment Artist | 2026-10-24 | original |
 | assets/environments/kits/haluna/materials/kit_water_spill.tres | assets_src/environments/kits/haluna/materials.py | python3 assets_src/environments/kits/haluna/materials.py | Environment Artist | 2026-10-24 | original |
+| assets/environments/kits/haluna/textures/coral_dressed_albedo.png | assets_src/environments/kits/haluna/kit_textures.py | python3 assets_src/environments/kits/haluna/kit_textures.py --only coral_dressed | Environment Artist | 2026-10-24 | original |
+| assets/environments/kits/haluna/textures/coral_dressed_normal.png | assets_src/environments/kits/haluna/kit_textures.py | python3 assets_src/environments/kits/haluna/kit_textures.py --only coral_dressed | Environment Artist | 2026-10-24 | original |

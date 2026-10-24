@@ -682,6 +682,11 @@ def roof_floor(x, z):
     return vault_y(x, z) + VAULT_T_M - np.clip(d - HALL_R_M, 0.0, None) * 1.1
 
 
+ROOF_TIER_LIFT_M = 0.45  # each fan's hinge stands this far off the vault (M2-ENV-09)
+ROOF_PITCH_SCALE = 0.62  # fans pitch at this share of the vault's slope, so their rims overhang
+ROOF_SHELL_LIFT = 0.34  # the fans' doming (was 0.22): deeper scallops read at S01's distance
+
+
 def build_roof_fan(seed: int = 312) -> list[kc.MeshBuilder]:
     out = []
     oc = oculus_centres()
@@ -701,9 +706,11 @@ def build_roof_fan(seed: int = 312) -> list[kc.MeshBuilder]:
                 _p, foot, n = stadium_frame(u, 0.0)
                 hinge = foot + n * max(hinge_d, 0.3)
                 mid = foot + n * mid_d
-                y_h = float(vault_y(hinge[0], hinge[2])) + VAULT_T_M + 0.15
+                y_h = float(vault_y(hinge[0], hinge[2])) + VAULT_T_M + 0.15 + ROOF_TIER_LIFT_M
                 y_m = float(vault_y(mid[0], mid[2])) + VAULT_T_M + 0.1
-                droop = math.degrees(math.atan2(y_h - y_m, shell_r * 0.5))
+                # Pitched shallower than the vault under it (M2-ENV-09), so each tier's rim stands out
+                # over the tier below and casts a shadow line: tiers of fans, not a lumpy dome.
+                droop = math.degrees(math.atan2(y_h - y_m, shell_r * 0.5)) * ROOF_PITCH_SCALE
                 # Keep every shaft clear: drop a shell that would shade an oculus.
                 blocked = False
                 side = np.cross(np.array([0.0, 1.0, 0.0]), n)
@@ -719,7 +726,7 @@ def build_roof_fan(seed: int = 312) -> list[kc.MeshBuilder]:
                 span = min(360.0 / count * 1.6 if ring_r < 3 else 2.0 * math.degrees(
                     math.atan2(total / count * 0.8, shell_r)), 160.0)
                 scallop(mb, hinge + np.array([0.0, y_h, 0.0]), n, shell_r, rng, noise, span_deg=span,
-                        ribs=9, lift=0.22, droop_deg=max(min(droop, 60.0), 8.0), lod=lod, weather=TENDED,
+                        ribs=9, lift=ROOF_SHELL_LIFT, droop_deg=max(min(droop, 45.0), 8.0), lod=lod, weather=TENDED,
                         floor_fn=roof_floor, thick=0.18)
             # The mortar joint under the tier, broken where it would cross a shaft.
             ang_n = 24 if lod else 96

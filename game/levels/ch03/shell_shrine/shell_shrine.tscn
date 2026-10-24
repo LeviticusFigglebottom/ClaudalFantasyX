@@ -85,6 +85,15 @@ size = Vector3(30, 11.6, 20.4)
 
 [node name="Bounce" type="Node3D" parent="."]
 
+[node name="Skylight" type="OmniLight3D" parent="Bounce"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.5, 0)
+light_color = Color(0.6, 0.76, 0.95, 1)
+light_energy = 1.2
+light_specular = 0.2
+omni_range = 18.0
+omni_attenuation = 0.6
+shadow_enabled = false
+
 [node name="Shaft_b1" type="OmniLight3D" parent="Bounce"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 1.42, -3)
 light_color = Color(1, 0.93, 0.84, 1)
