@@ -5,6 +5,6 @@ title: ch01_bark_roof
 location: ch01/oruvel
 ---
 Child [laugh]: Rhen! Off the cabin roof! Ma says you used to. #line:ch01_bark_roof_001
-Rhen [neutral]: I was young and foolish then. Now I'm old and foolish, and I've got brass to spend. #line:ch01_bark_roof_002
+Rhen [neutral]: I was young and foolish then. Now I'm just foolish. #line:ch01_bark_roof_002
 <<set $ch01_roof_dared = true>>
 ===

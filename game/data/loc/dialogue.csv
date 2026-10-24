@@ -1,6 +1,6 @@
 keys,en
 DLG_CH01_BARK_COOK_001,"That's nine knots, diver. I'm running out of rope."
-DLG_CH01_BARK_COOK_002,Tie a tenth. I've got the Order's chit in my pocket.
+DLG_CH01_BARK_COOK_002,Tie a tenth. I'm good for it.
 DLG_CH01_BARK_COOK_003,Then you can untie three. Sit. Eat.
 DLG_CH01_BARK_SABE_001,Gulls have been quiet all morning.
 DLG_CH01_BARK_SABE_002,"Sabe, they're carved. They're always quiet."
@@ -9,18 +9,17 @@ DLG_CH01_BARK_NETS_001,Not a cloud since dawn. I don't like it.
 DLG_CH01_BARK_NETS_002,You don't like rain either. You don't like anything.
 DLG_NAME_NETMENDER_THE_OTHER_MENDER,The Other Mender
 DLG_CH01_BARK_NETS_003,I like a sky that's honest about what it wants.
-DLG_CH01_BARK_NETS_004,It wants you to mend nets. Same as always.
 DLG_CH01_BARK_SADI_001,Sallow! Come to complain about my arithmetic again?
 DLG_CH01_BARK_SADI_002,You paid me for half a lamp-housing. I sold you a whole one.
-DLG_CH01_BARK_SADI_003,The other half was the pleasure of my company. The Seventh Terrace sails at the turn.
+DLG_CH01_BARK_SADI_003,The other half was my company. We sail at the turn.
 DLG_CH01_BARK_PEN_001,The side went to Tamsule without me. Next year they'll have to take me.
 DLG_CH01_BARK_PEN_002,We're winning the Tidecup this year. Tavi says.
 DLG_CH01_BARK_PEN_003,Tavi says that every year. Keep your elbows in.
 DLG_CH01_BARK_ROOF_001,Rhen! Off the cabin roof! Ma says you used to.
-DLG_CH01_BARK_ROOF_002,"I was young and foolish then. Now I'm old and foolish, and I've got brass to spend."
+DLG_CH01_BARK_ROOF_002,I was young and foolish then. Now I'm just foolish.
 DLG_CH01_BARK_ROOF_003,Scared!
 DLG_CH01_BARK_ROOF_004,Fine. Fine. Watch how it's done.
-DLG_CH01_BARK_ROOF_005,He did it! He did it with his boots on!
+DLG_CH01_BARK_ROOF_005,He did it!
 DLG_CH01_BELL_001,Morning. Don't get up.
 DLG_CH01_BELL_002,Air's stale. Air's always stale. Four hundred years and nobody thought to open a window.
 DLG_CH01_BELL_003,Brass in the door hinges. Somebody in the Lit Age loved a hinge.
