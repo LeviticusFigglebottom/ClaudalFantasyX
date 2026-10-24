@@ -37,6 +37,12 @@ The scene-swap regression test now measures the real swap on an injected per-fra
 | M2-MNU-10 Lattice: walk to a sealed gate | **review** (merged bbd45c8): the cheapest neighbour, cost shown, then the open confirm |
 
 ## Exact next step
+**Not merge-ready right now (2026-10-24, after merging big7).** claude/menus @ d7294c0 = big7 (integration @ 8f808cc) + claude/ui + claude/m2-slice + this track. Full Godot suite 2105 run / 7 failed, none in this track's code:
+- 6 are the UI track's settings tests meeting big7's audio volume rows (the Settings hub gains Audio; test_settings_menu x2, test_audio_menu x2, test_controls_menu x1, test_pseudo_locale via settings_shot.gd). Reported to the UI track with the list.
+- 1 is test_voice_audio: audio's voices.json lacks rows for m2-slice's 14 new Ch4-Ch9 speakers (validate_data shows the same 14). Asked the audio track for the rows.
+- Merge repairs made here (commit d7294c0): project.godot keeps both autoloads (claude/ui's UiInput, big7's Audio); battle_controller.gd was 1003 lines after the merge (each side at the 1000 cap), so the M2-UI-26 hover-aim lines moved to BattlePointer.aim (same behaviour), now 1000.
+Earlier MERGE-READY lines below describe the menus work itself (unchanged and still green in its own tests).
+
 
 **MERGE-READY @ 31aa92c8** (fourth batch; merges claude/ui @ 2b9012d5 and the integration branch @ 81651b7e): M3-MNU-03 key items view (Bag / Key Items tabs on the Items page) and M3-MNU-04 Lattice overview (whole board, every hero named, initials on woken nodes; new remappable action lattice_overview, M / pad X, with a row in controls.json and one ensure_action line in controls_model.gd, both the UI track's files, minimal); both in review; plus everything in the earlier lines below. Checks run on 31aa92c8: gdlint + gdformat clean (540 files), validate_data 0/0, taskboard OK, full Godot suite 1921 run / 0 failed. Shots viewed and approved: items_menu_key and lattice_overview (new); items_menu, items_menu_use, lattice_menu, lattice_menu_activate re-approved (tabs / the overview button). Skipped: the full screenshot manifest (Lead at merge), coverage (no game/battle or game/progression change), the Blender step.
 
@@ -80,3 +86,4 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 - 2026-10-24: Memories test fix merged (the replay test measures its own autosave requests); integration branch merged (ADR 0037). Full suite 1913/0. MERGE-READY @ cd93db79. Queue empty: next pick from SPEC §6.11/§8 menu work, checked against the UI track's list first.
 - 2026-10-24: UI track handed over the key-items view and a Lattice overview (both pages are this track's); claimed M3-MNU-03/04; the two original page agents are on them. A field-menu save is left for the Lead (design change).
 - 2026-10-24: (after a usage-limit stop and a worker restart) M3-MNU-04 merged; claude/ui merged; full suite 1921/0; MERGE-READY @ 31aa92c8. Queue empty again; checking the UI track and the Lead for the next menu work.
+- 2026-10-24: merged the Lead's big7 (as asked). Conflicts resolved (see the merge commit a5903bb), two merge repairs (d7294c0). Full suite 2105/7, all from UI-vs-audio and audio-vs-m2-slice data meeting; reported to both. Waiting on their fixes before a new MERGE-READY.
