@@ -2,8 +2,8 @@
 id: M2-UI-04
 title: A field menu that opens the bestiary and the out-of-battle Swell mode chooser; the target panel knows a Read foe
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a218779a0dea1229a"
 depends_on: [M2-UI-01, M2-UI-02]
 milestone: M2
 request-from: "lead"
