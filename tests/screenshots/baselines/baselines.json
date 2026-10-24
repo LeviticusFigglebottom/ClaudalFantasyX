@@ -786,10 +786,10 @@
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "save_shrine_field": {
-    "godot": "4.6.3-stable (debian4.6.3+ds-2)",
-    "rendering_method": "forward_plus",
-    "rendering_driver": "vulkan",
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
+    "godot": "?",
+    "rendering_method": "?",
+    "rendering_driver": "?",
+    "adapter": "?"
   },
   "settings_accessibility": {
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",

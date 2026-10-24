@@ -1234,7 +1234,7 @@
     },
     {
       "id": "battle_arena_tideline",
-      "scene": "res://game/battle/arenas/shots/arena_tideline.tscn",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_tideline.tscn",
       "setup": {
         "globals": {
           "hymn_wind_time": 12.0
@@ -1243,7 +1243,7 @@
     },
     {
       "id": "battle_arena_causeway",
-      "scene": "res://game/battle/arenas/shots/arena_causeway.tscn",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_causeway.tscn",
       "setup": {
         "globals": {
           "hymn_wind_time": 12.0

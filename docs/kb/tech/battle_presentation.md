@@ -274,7 +274,7 @@ the fighters. A retry of the same encounter keeps the arena (the `hymn_arena` me
 - **Unchanged:** the sandbox's own encounters and every capture fixture (`fixture_reef`) have no arena, so no
   battle baseline moved except `drownbell_flood` (now on the causeway at sunset, as battle_vfx.md's "the arena is
   the noon sandbox" asked).
-- **Shots:** `battle_arena_tideline`, `battle_arena_causeway` (`game/battle/arenas/shots/`).
+- **Shots:** `battle_arena_tideline`, `battle_arena_causeway` (`game/levels/_tests/battle_arenas/`; shot fixtures live under `_tests` so release builds and the game/battle coverage gate exclude them).
 - **Checked by** `tools/validate_choreo.py` `arena_errors` (from validate_data): every scene exists, every
   encounter's `arena` is a known id.
 
