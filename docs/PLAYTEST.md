@@ -18,7 +18,7 @@ This is a rough but complete thread through the first minutes of *Hymn of the Un
    - The room is grey placeholder blocks for now.
 8. **The Drownbell.** The bell answers the verse. It's a two-phase boss, with Rhen, Asha and Toma and no reserve.
    - **Phase 1, the Toll:** watch the timeline. The bell gathers a toll that shoves everyone back, and the timeline shows it two turns out. Three fast strikes (Rhen's Attack or Quick Hit) break its rim and silence it.
-   - **Phase 2, the Flood:** at about 40% health the water rises, and polyps heal the bell faster than you can cut them down. Asha's **Call Ilun** (12 MP) clears the water. It can only be used while the water is up.
+   - **Phase 2, the Flood:** at about 40% health the water rises, and polyps heal the bell faster than you can cut them down. Asha's **Call** row brings in **Ilun**, the first Vowbound. The party steps back and he fights alone, his gauge filling as he drinks the flood. When it's full, his **Floodnet** clears the water. Dismiss him from his own menu, or he stays until he falls.
 
    Lose, and you can fight again or return to your last save.
 9. **The dock at night.** Win, and you're back in Haluna after dark: moonlight, stars, a faintly glowing sea and oil lamps under the eaves. Rhen finds Asha at the end of the dock and asks to come with her. Talking to the villagers again now gives their night lines.
@@ -68,7 +68,7 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - The glimmer motes in the cutscenes are simple glowing dots, not the real particle effect.
 - Haluna's world is the art team's scene, now shipped with the zone, with simple collision added. The camera mostly follows Rhen from behind; only a few spots use composed shots.
 - Osu's wall at the causeway head is a grey stand-in with shells (the real wake-shell wall piece is still to be placed), and the night has no colour grade of its own yet.
-- **Call Ilun** is a stand-in for the real Vowbound summon (ADR 0026). The battle engine already has the real summon (Ilun replaces the party and fights until dismissed; ADR 0027), but the Call command and its HUD aren't built yet (M2-UI-05), so for now it is one of Asha's commands. The bell and polyps are placeholder shapes.
+- Ilun is a placeholder shape, and his call has no cinematic yet. The bell and polyps are placeholder shapes too.
 - Entering Haluna holds the black fade for about a second and a half while the village builds itself; the picture no longer freezes when it appears.
 - In the field, Escape opens the field menu, which pauses the game. From it you can open the bestiary or choose each hero's Swell fill mode. Escape backs out a step at a time and then closes it. It doesn't open during a cutscene or a conversation. **E** also advances dialogue.
 

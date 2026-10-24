@@ -25,3 +25,6 @@ Option 3. `call_ilun` (skills.json) is a 12 MP, rank-4 magical hit on all foes w
 
 ## Superseded in the simulator (M2-FP-17, m2-slice, 2026-10-24)
 The Drownbell's bands are now measured with the real Vowbound call (ADR 0027): the sim's `ch03_drownbell` loadout retires `call_ilun`, and the policies call Ilun into the flood. The live game keeps `call_ilun` as the fallback until M2-UI-05 gives the player the Call command. Then it is removed from Asha and this ADR is fully superseded.
+
+## Fully superseded (M2-FP-17, m2-slice, 2026-10-24)
+M2-UI-05's Call row landed (batch 3), so `call_ilun` is removed: from Asha's kit, from skills.json with its loc key, and from the simulator (`clear_field_skill`). Ilun is bound by vowbound.json's `bound_flag` (`ch03_ilun_bound`), and his finisher, Floodnet, clears the flood (ADR 0027 A2). This ADR now records history only.

@@ -30,6 +30,8 @@ ADR 0027 is accepted (review-sweep-P). The m2-slice track's `call_ilun` stand-in
   - **`TUT_DROWNBELL_FLOOD`** ("Call on Ilun") still tells the truth.
   - **Tests:** `tests/unit/test_sim_flood_call.gd` (3). In `test_drownbell_battle.gd`, the 200-seed guard allows the sampling spread near the band edges, and "without Ilun" also drops the loadout's Vowbound.
 
+- 2026-10-24 m2-slice, after batch 3 (Lead note 2): **the `call_ilun` stand-in is removed.** It's gone from Asha's kit (characters.json), skills.json, its loc key `SKILL_CALL_ILUN`, the sim's `clear_field_skill` (and role_answer's clear-field step), the `retire_skills` mechanism and the Drownbell loadout's flags. boss_vfx.json's Floodnet moment now keys off `floodnet`. ADR 0026 is fully superseded. The tests check the real binding (`bound_flag`, `BattleVowboundHud.bound_ids`, `engine.vowbound.known`). PLAYTEST.md describes the Call row. The bands are unchanged: role_answer 71.0%, smart 85.3%, flood_call 38.8%.
+
 ## Review log
 
 ## Lead note (2026-10-24)
