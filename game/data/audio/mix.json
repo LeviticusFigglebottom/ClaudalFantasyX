@@ -153,5 +153,18 @@
       "predelay_feedback": 0.1,
       "_note": "the field battle: open sand; battle SFX carry their own short room (12-30 % wet)"
     }
+  },
+  "muffle": {
+    "doc": "M3-AUD-22 (game/audio/bus_muffle.gd): the world heard through water. While a reason is on (Reefball's sphere: underwater), each bus's low-pass glides to cutoff_hz over ramp_sec, and back to open_hz after. Music is left out: the score is not in the water.",
+    "buses": [
+      "World",
+      "Ambience",
+      "Combat",
+      "SFX"
+    ],
+    "cutoff_hz": 700.0,
+    "open_hz": 20000.0,
+    "resonance": 0.6,
+    "ramp_sec": 0.35
   }
 }

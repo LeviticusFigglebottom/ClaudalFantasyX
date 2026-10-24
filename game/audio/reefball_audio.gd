@@ -14,6 +14,8 @@ extends Node
 ##   `swim.enter`, outward `swim.exit` (with `swim.edge_m` of hysteresis), and every `swim.stroke_m` swum inside
 ##   plays `swim.stroke`, all at the swimmer. A swimmer's first read is its baseline, and a jump longer than
 ##   `swim.teleport_m` is not swum.
+## - `muffle` (M3-AUD-22): while the ear (the viewport's Camera3D with `use_camera`, else the first node in
+##   `ear_groups`) is inside a sphere, the director's BusMuffle is on for `reason`: the world heard through water.
 ## The crowd's beds are ambience.json beds; a move keeps the zone's other beds and swaps only the crowd's.
 ## Time passes only through advance(delta) (AudioDirector.advance calls it; tests call it directly).
 
@@ -31,10 +33,15 @@ var player_at: Callable = Callable()
 var beds_now: Callable = Callable()
 ## Sets the ambience beds: (ids: Array[StringName], sec: float) -> void.
 var ambience: Callable = Callable()
+## Turns a muffle reason on or off: (reason: StringName, on: bool) -> void.
+var muffler: Callable = Callable()
 ## reefball_hooks.json's hooks by class name, and its crowd and swim blocks.
 var hooks: Dictionary = {}
 var crowd_cfg: Dictionary = {}
 var swim_cfg: Dictionary = {}
+var muffle_cfg: Dictionary = {}
+## Whether the ear is inside a sphere (the muffle is on).
+var ear_inside := false
 ## The crowd's state now (&"" before any move).
 var crowd: StringName = &""
 ## Every row played, in order: [id, positional] (tests).
@@ -59,6 +66,7 @@ func configure(table: Dictionary) -> void:
 			hooks[str((h as Dictionary)["class"])] = h
 	crowd_cfg = table.get("crowd", {}) as Dictionary
 	swim_cfg = table.get("swim", {}) as Dictionary
+	muffle_cfg = table.get("muffle", {}) as Dictionary
 
 
 ## Points the players at `dir`'s play_sfx / play_sfx_at and its ambience beds.
@@ -66,6 +74,7 @@ func bind_director(dir: AudioDirector) -> void:
 	player = func(id: StringName) -> void: dir.play_sfx(id)
 	player_at = func(id: StringName, at: Vector3) -> void: dir.play_sfx_at(id, at)
 	ambience = func(ids: Array[StringName], sec: float) -> void: dir.set_ambience(ids, sec)
+	muffler = func(reason: StringName, on: bool) -> void: dir.muffle.set_reason(reason, on)
 	beds_now = func() -> Array[StringName]:
 		var out: Array[StringName] = []
 		for id: StringName in dir.beds:
@@ -198,7 +207,9 @@ func advance(delta: float) -> void:
 			spheres.append(w["node"] as Node3D)
 	if spheres.is_empty():
 		swimmers.clear()
+		_set_ear(false)
 		return
+	_read_ear(spheres)
 	var seen: Dictionary = {}
 	for s: Node3D in _swimmer_nodes():
 		seen[s.get_instance_id()] = true
@@ -239,6 +250,46 @@ func _read_swimmer(s: Node3D, spheres: Array[Node3D]) -> void:
 	if stroke > 0.0 and float(st["swum"]) >= stroke:
 		st["swum"] = fmod(float(st["swum"]), stroke)
 		_play_at(StringName(str(swim_cfg.get("stroke", ""))), at)
+
+
+## The node that hears: the viewport's camera (muffle.use_camera), else the first node in muffle.ear_groups.
+func ear() -> Node3D:
+	if not is_inside_tree():
+		return null
+	if bool(muffle_cfg.get("use_camera", false)):
+		var cam := get_viewport().get_camera_3d()
+		if cam != null:
+			return cam
+	for g: Variant in muffle_cfg.get("ear_groups", []):
+		for n: Node in get_tree().get_nodes_in_group(StringName(str(g))):
+			if n is Node3D:
+				return n as Node3D
+	return null
+
+
+func _read_ear(spheres: Array[Node3D]) -> void:
+	var e := ear()
+	if e == null:
+		_set_ear(false)
+		return
+	var edge := float(swim_cfg.get("edge_m", 0.0))
+	var inside := false
+	var near := false
+	for sp in spheres:
+		var d := e.global_position.distance_to(sp.global_position)
+		var r := radius_of(sp)
+		inside = inside or d < r - edge
+		near = near or d <= r + edge
+	_set_ear(inside or (ear_inside and near))
+
+
+func _set_ear(inside: bool) -> void:
+	if inside == ear_inside:
+		return
+	ear_inside = inside
+	var reason := StringName(str(muffle_cfg.get("reason", "")))
+	if reason != &"" and muffler.is_valid():
+		muffler.call(reason, inside)
 
 
 ## The sphere's radius: its `radius_method` (the hook's sphere block), else that block's `radius_m`.

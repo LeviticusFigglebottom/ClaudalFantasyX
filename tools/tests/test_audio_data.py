@@ -451,3 +451,20 @@ class VoicePaceTest(unittest.TestCase):
         self.assertFalse([e for e in dc.voice_errors(doc, files.get(dc.SPEAKERS), rows) if "pace" in e])
         doc["pace"] = "word"
         self.assertTrue(any("pace" in e for e in dc.voice_errors(doc, files.get(dc.SPEAKERS), rows)))
+
+
+class MuffleTest(unittest.TestCase):
+    """M3-AUD-22: mix.json muffle and reefball_hooks.json muffle (data_check.muffle_errors)."""
+
+    def test_shipped_and_bad(self) -> None:
+        files = dc.load_files(ROOT)
+        _, buses = dc.mix_errors(files[dc.MIX])
+        self.assertEqual(dc.muffle_errors(files[dc.MIX], files[dc.REEFBALL_HOOKS], buses), [])
+        mix = copy.deepcopy(files[dc.MIX])
+        mix["muffle"]["buses"].append("Music")
+        mix["muffle"]["cutoff_hz"] = 30000.0
+        rb = copy.deepcopy(files[dc.REEFBALL_HOOKS])
+        rb["muffle"] = {"reason": ""}
+        errs = dc.muffle_errors(mix, rb, buses)
+        for frag in ("leave Music out", "cutoff_hz < open_hz", "muffle.reason", "names the ear"):
+            self.assertTrue(any(frag in e for e in errs), (frag, errs))

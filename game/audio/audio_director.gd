@@ -49,6 +49,7 @@ var footstep_data: Dictionary = {}
 var voice_data: Dictionary = {}
 ## The World and Combat reverb (M2-AUD-10).
 var verb := WorldVerb.new()
+var muffle := BusMuffle.new()
 var ui: UiAudio
 ## Reefball's sphere and match, by listening (M3-AUD-17; reefball_audio.gd).
 var reefball: ReefballAudio
@@ -124,6 +125,7 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 		add_child(reefball)
 	build_buses(mix)
 	verb.configure(mix)
+	muffle.configure(mix)
 	if music == null:
 		music = MusicDeck.new()
 		music.name = "Music"
@@ -163,6 +165,7 @@ func advance(delta: float) -> void:
 		bed.step(delta, music.floor_db)
 	_step_ducks(delta)
 	verb.advance(delta)
+	muffle.advance(delta)
 	_poll_pending()
 	ui.step()
 	reefball.advance(delta)

@@ -423,3 +423,17 @@ vowel group (`text_box.json` `flap_vowels`), the same edge the M2-CHR-10 lip syn
 rests and keep time with the mouth. A skipped reveal and sung lines emit no flaps, and narration stays silent unless
 `narration_blip` is set. Each voice's `rate_ms` still applies. `pace: letter` keeps the old behaviour: one blip per blip
 the box counts (`blip_every_n_chars`). Tests: `tests/unit/test_voice_audio.gd` (syllable tests), `VoicePaceTest`.
+
+## Underwater muffle (M3-AUD-22)
+
+`BusMuffle` (`game/audio/bus_muffle.gd`, built by the director from mix.json `muffle`) puts a switched-off
+`AudioEffectLowPassFilter` on World, Ambience, Combat and SFX. While any reason is on, the cutoff glides in log
+frequency to `cutoff_hz` (700 Hz) over `ramp_sec` (0.35 s), and back to `open_hz` after, when the effects are switched
+off again. Music is left out: the score is not in the water. ReefballAudio turns the `underwater` reason on while the
+ear is inside a water sphere. The ear is the viewport's Camera3D (`use_camera`), else the first node in `ear_groups`.
+It uses the same `edge_m` band as the swimmers, and the reason lifts when the ear leaves or the sphere goes.
+data_check `muffle_errors` checks both blocks.
+
+Test note: the reefball tests name their stand-ins (the `audio_class` meta) after `add_child`, so the game's own
+Audio autoload, which tests never advance, does not hook them. The director test records its beds instead of playing
+them. A real playback started in a headless test is still held when the run quits ("resources still in use").

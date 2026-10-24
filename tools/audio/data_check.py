@@ -372,10 +372,37 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
     if REEFBALL_HOOKS in files:
         all_beds = set(amb_beds) | set(((files.get(MUSIC) or {}).get("ambience") or {}).keys())
         errs += reefball_hook_errors(files[REEFBALL_HOOKS], ids, all_beds, files.get(CLASSES))
+    errs += muffle_errors(files.get(MIX), files.get(REEFBALL_HOOKS), buses)
     if BATTLE_STINGS in files:
         errs += sting_errors(files[BATTLE_STINGS], ids, set(((files.get(MIX) or {}).get("ducks") or {}).keys()))
     if CREATURE_VOICES in files:
         errs += creature_voice_errors(files[CREATURE_VOICES], files.get(ENEMIES), merged_sfx(files).get("sfx") or {})
+    return errs
+
+
+def muffle_errors(mix: object, reefball: object, buses: set[str]) -> list[str]:
+    """mix.json muffle (M3-AUD-22): real buses (never Music), cutoff below open, a ramp >= 0; reefball_hooks.json
+    muffle names a reason and where the ear is."""
+    errs: list[str] = []
+    cfg = (mix or {}).get("muffle") if isinstance(mix, dict) else None
+    if cfg is not None:
+        for b in cfg.get("buses", []):
+            if b not in buses:
+                errs.append(f"{MIX} muffle.buses: {b} is not a bus")
+            if b == "Music":
+                errs.append(f"{MIX} muffle.buses: the score is not in the water (leave Music out)")
+        if not (_num(cfg.get("cutoff_hz")) and _num(cfg.get("open_hz")) and 20 <= cfg["cutoff_hz"] < cfg["open_hz"]):
+            errs.append(f"{MIX} muffle: 20 <= cutoff_hz < open_hz")
+        if not _num(cfg.get("ramp_sec", 0)) or cfg.get("ramp_sec", 0) < 0:
+            errs.append(f"{MIX} muffle.ramp_sec: seconds >= 0")
+    m = (reefball or {}).get("muffle") if isinstance(reefball, dict) else None
+    if m is not None:
+        if not isinstance(m.get("reason"), str) or not m["reason"]:
+            errs.append(f"{REEFBALL_HOOKS} muffle.reason: a reason name")
+        if not m.get("use_camera") and not m.get("ear_groups"):
+            errs.append(f"{REEFBALL_HOOKS} muffle: use_camera or ear_groups names the ear")
+        if cfg is None:
+            errs.append(f"{REEFBALL_HOOKS} muffle: needs mix.json muffle")
     return errs
 
 
