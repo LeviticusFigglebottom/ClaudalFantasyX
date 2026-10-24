@@ -96,5 +96,17 @@ flags = {
 "ch04_leeches_won": "Ch4 C4-12: the scripted sail-leech ambush on the derelict's deck was won.",
 "ch04_hermit_won": "Ch4 C4-12: the scripted bottle-hermit fight (the swap, Read and element lesson) was won.",
 "ch04_spar_wraith_defeated": "Ch4 C4-13: the Spar-Wraith boss is beaten on the derelict's main deck (set by the battle result).",
-"ch04_name_board_carried": "Ch4 C4-14: Rhen carried the Seventh Terrace's name-board home for nothing (key item name_board_seventh_terrace; Ch5 payoff)."
+"ch04_name_board_carried": "Ch4 C4-14: Rhen carried the Seventh Terrace's name-board home for nothing (key item name_board_seventh_terrace; Ch5 payoff).",
+"ch06_arrived": "Ch6 B01: the party has come onto the Brine Shoals from Pemakar's harbour road (the chapter becomes 6; the road's random fights run from here until the raid).",
+"ch06_midday_seen": "Ch6 B01: the midday stop on a hull has played (Kerrid's share untouched; Rhen took it).",
+"ch06_sheltered_liss": "Ch6 B03: Asha hid the running wright girl, Liss, in the hold of the wreck the party stood on.",
+"ch06_inquisitor_yielded": "Ch6 B04: the Stillguard Inquisitor (Hadric Moll) yielded and his raid-hound ran; nobody died (set by the battle result). Ch14 may have Moll stand aside for Toma.",
+"ch06_met_sefir": "Ch6 B05: High Warden Sefir Aurane's white barge came up the channel and he stopped the branding (his first appearance). Ch13: he greets the party at Ansedra as acquaintances.",
+"ch06_rhen_greeted_sefir": "Ch6 B05: Rhen tried the Order's greeting and gave the answer ('Be... still?'); unset if he asked about the wake. Ch13 and Ch16 recall it.",
+"ch06_liss_joined": "Ch6 B06: Liss Varrow joined the party on Toma's papers (a Cantor may take any guardian she chooses).",
+"ch06_liss_read_lantern": "Ch6 B07: Liss read Rhen's lantern as pair-built wright work. Ch11, at Lowlight: 'I told you on the shoals it was wright work.'",
+"ch06_camp_made": "Ch6 B08: the party has made camp on the high wreck-ridge at dusk (the shrine, the vendor, the barks; the tideline and the channel open).",
+"ch06_saw_lamp_buried": "Ch6 B09 (optional side scene): Rhen saw Liss bury a burned lamp at the tideline; she never says whose name was on it. Opens Ch11's lamp-repair truce.",
+"ch06_dug_without_asking": "Ch6 B09 choice: Rhen knelt and dug beside Liss without asking whose lamp it was. Ch11: 'You dug. You didn't ask.'",
+"ch06_done": "Ch6 B10: the party waded the shoal channel at dawn toward Tamsule (the chapter's end)."
 }
