@@ -2,7 +2,7 @@
 id: M1-RND-18
 title: SSS crest patches from high noon cameras (fade the crest term with view elevation)
 role: rendering
-status: review
+status: done
 reviewer: character
 owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/rnd-18-sss-crest)"
 depends_on: [M1-RND-08]
@@ -34,16 +34,16 @@ Setup:
 So SSS supplies some of the lift the deep band needs, but it supplies it as patches. The fix must spread or fade it, not just delete it.
 
 ## Acceptance criteria
-- [ ] **The crest term fades with view elevation.** Weight the crest term by the steepness of the view ray, e.g. `1 − smoothstep(sss_view_fade_lo, sss_view_fade_hi, abs(VIEW_world.y))`. Grazing views (the low cameras) keep their SSS. Views looking down more than about 25–30° lose most of it. Expose both thresholds as material parameters with defaults in the shader, not magic numbers in zone scenes. Apply it on every tier.
-- [ ] **Survey view (the probe run above):**
+- [x] **The crest term fades with view elevation.** Weight the crest term by the steepness of the view ray, e.g. `1 − smoothstep(sss_view_fade_lo, sss_view_fade_hi, abs(VIEW_world.y))`. Grazing views (the low cameras) keep their SSS. Views looking down more than about 25–30° lose most of it. Expose both thresholds as material parameters with defaults in the shader, not magic numbers in zone scenes. Apply it on every tier.
+- [x] **Survey view (the probe run above):**
   - the share of deep-water pixels where SSS adds ΔE_ok > 0.05 is **≤ 5 %**, and the share above 0.03 is **≤ 10 %**;
   - the max added is **≤ 0.08**;
   - OkL p90 − p10 over deep water is **≤ 0.14**.
-- [ ] **The deep band still passes.** The > 15 m survey band median stays within **ΔE_ok ≤ 0.07** of `deep_teal_shadow` "+1" (colour script, "Water looks", pass criteria). If the fade pushes it past 0.07, as SSS off does at 0.078, make up the lift with an even term (e.g. `scatter_energy` or the deep colour's view-angle response), never with patches. Report the band hex.
-- [ ] **Low cameras unchanged.** `water_shallows`, `water_lagoon`, `water_horizon`, `haluna_h01_village_from_sea` and `haluna_h04_dock` stay within RMSE **0.004** of their current baselines, or are re-approved with each image opened. In `water_lagoon`'s mid-ground (x 0–960, y 195–300), the pale-turquoise share (OkL > 0.72, C < 0.10, hue 170–230°) stays **≤ 13 %** (today 12.2 %; before RND-08, 29.5 %).
-- [ ] **Undertow unaffected.** No Undertow shot changes by more than RMSE 0.002. `storm_ocean_material.tres` has SSS off today; the scene owner decides whether to turn it back on.
-- [ ] **Docs.** water.md documents the new parameters (the subsurface row, and the "Sun behind the camera" gotcha), and the colour script's "Two findings for Rendering" first bullet can then be closed by Art.
-- [ ] Back to **review** with **character** (Art Director) as the reviewer. Art re-runs the probe pair and records the numbers in color_script.md, "Art sign-off".
+- [x] **The deep band still passes.** The > 15 m survey band median stays within **ΔE_ok ≤ 0.07** of `deep_teal_shadow` "+1" (colour script, "Water looks", pass criteria). If the fade pushes it past 0.07, as SSS off does at 0.078, make up the lift with an even term (e.g. `scatter_energy` or the deep colour's view-angle response), never with patches. Report the band hex.
+- [x] **Low cameras unchanged.** `water_shallows`, `water_lagoon`, `water_horizon`, `haluna_h01_village_from_sea` and `haluna_h04_dock` stay within RMSE **0.004** of their current baselines, or are re-approved with each image opened. In `water_lagoon`'s mid-ground (x 0–960, y 195–300), the pale-turquoise share (OkL > 0.72, C < 0.10, hue 170–230°) stays **≤ 13 %** (today 12.2 %; before RND-08, 29.5 %).
+- [x] **Undertow unaffected.** No Undertow shot changes by more than RMSE 0.002. `storm_ocean_material.tres` has SSS off today; the scene owner decides whether to turn it back on.
+- [x] **Docs.** water.md documents the new parameters (the subsurface row, and the "Sun behind the camera" gotcha), and the colour script's "Two findings for Rendering" first bullet can then be closed by Art.
+- [ ] Back to **review** with **character** (Art Director) as the reviewer. Art re-runs the probe pair and records the numbers in color_script.md, "Art sign-off". **→ The review is done (review-sweep-N and -O); the Art record in color_script.md moved to M1-ART-06.**
 
 ## Notes
 - Probe command (needs a real renderer, ADR 0009):
@@ -78,6 +78,15 @@ Report: `docs/kb/qa/gpu/2026-10-23-rnd-18-sss-crest.md`. The GPU probe pair repr
   for Rendering" bullet.
 - **Reviewer:** character (Art Director), who re-runs the probe pair.
 
+### Follow-up S1 (branch `gpu/rnd-18-20-followups`)
+- The `col_deep` lift is multiplied by `lift_gate = use_sss ? clamp(sss_strength / 1.4, 0, 1) : 0`, where 1.4 is the
+  default `sss_strength` the lift was tuned at (`SSS_LIFT_TUNED_STRENGTH`). So the storm sea (`use_sss` off) gets no
+  lift, and a weaker SSS gets less. Tested (`test_deep_lift_is_gated_by_sss`).
+- GPU before → after (capture_preset High, storm held): the 4 water shots are 0.0000. Of the Undertow shots, eye is
+  0.0004 and the other three are 0.0000. No current shot sees the storm sea from the lift's 10–25 m heights; the Ch18
+  Kite will.
+- S2 and S3 are not done (they weren't in the Lead's follow-up).
+
 ## Review log
 - 2026-10-23 character (review-sweep-N, fresh reviewer, Art Director): **approve with should-fixes.** No blockers.
   - **What I read:** this task, `docs/kb/qa/gpu/2026-10-23-rnd-18-sss-crest.md`, water.md's subsurface row and gotcha, and `git diff cede626^1 cede626` (water_surface_body.gdshaderinc, test_water_surface.gd, sss_probe_metrics.py).
@@ -92,3 +101,8 @@ Report: `docs/kb/qa/gpu/2026-10-23-rnd-18-sss-crest.md`. The GPU probe pair repr
     - **S2:** the fade thresholds are much steeper than the task's suggestion: 0.10 / 0.28 (about 6–16°) against "lose most past 25–30°". That's fine with the height gate, but note in water.md that from a 10–25 m crane the near water already loses its crests, so the H01-style crane shots coming in M2 are judged with that in mind.
     - **S3:** add the probe's `--sss=#hex` flag (the task's Notes suggest it), so the control run no longer needs a temporary edit to Art-owned water_looks.json.
   - **Closing:** Art can tick the colour script's first "Two findings for Rendering" bullet. Close after S1, or file S1 against the Undertow owner.
+- 2026-10-24 review-sweep-O (character): **approve with fixes.** Sweep-N's closing condition, S1, is done on `gpu/rnd-18-20-followups`, which the Lead merged lavapipe-checked as ci35 (a8f7d61). water_surface_body.gdshaderinc:555 now gates the `col_deep` lift by `use_sss` and `sss_strength / SSS_LIFT_TUNED_STRENGTH`, and `test_deep_lift_is_gated_by_sss` covers it. So a storm sea seen from the Ch18 Kite no longer brightens.
+  - **Checks:** Godot `--filter=water_surface` 14/0 failed. water.md:41 lists the new parameters with their defaults, and :169 has the gotcha.
+  - **Criteria:** I ticked criteria 1-6 on the evidence: the GPU pair, plus sweep-N's lavapipe low-camera re-check (bit-identical).
+  - **Criterion 7:** Art's record in color_script.md "Art sign-off" was never written, and the first "Two findings for Rendering" bullet is still open. Both moved to **M1-ART-06**.
+  - **Filed as M1-RND-23:** sweep-N S2 (water.md's note on the near water from a crane camera) and S3 (the probe's `--sss=#hex` flag).

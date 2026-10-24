@@ -2,9 +2,9 @@
 id: M1-ENV-03
 title: Vegetation follow-ups (review-sweep-B)
 role: environment
-status: doing
+status: done
 reviewer: rendering
-owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/env-03-vegetation; routed by the Lead)"
+owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU, branch gpu/env-03-vegetation-v2; routed by the Lead)"
 depends_on: [M1-ENV-02, M1-ENV-01]
 milestone: M1
 request-from: "rendering"
@@ -15,7 +15,7 @@ Rendering-side findings on vegetation, scheduled after the mood test (which uses
 ## Acceptance criteria
 - [x] translucency_shadow_floor no longer lets plants under eaves glow
 - [x] Capture under FXAA (as water does) and restore threshold 0.008
-- [x] LOD fade (no palm pop against sky)
+- [x] LOD fade (no palm pop against sky): the final 400 m cut only (v2)
 - [x] Overdraw measured (debug_draw OVERDRAW capture) with a budget
 - [x] Assets tagged PLACEHOLDER until Art Director sign-off
 - [x] Wind flutter cap noted for GPU TAA motion test
@@ -38,6 +38,24 @@ PC GPU session (Lead-routed; branch `gpu/env-03-vegetation`). Report: `docs/kb/q
   - `veg_backlit_fronds`, `veg_frangipani_close` and `veg_beach_wide`: TAA → FXAA, RMSE 0.022–0.044 on the GPU.
   - `haluna_h02_tidewall_lane` and `haluna_h03_lintel_gull`: 0.012, a palm in a fade band.
   - Not overwritten. Environment and Art re-approve.
+
+### v2 (review-sweep-N fixes, branch `gpu/env-03-vegetation-v2`)
+Report section: "v2" in `docs/kb/qa/gpu/2026-10-23-env-03-vegetation.md`.
+- **B1 (ghost trunks):** only the last LOD fades, out at 400 m (`VISIBILITY_RANGE_FADE_SELF`, end margin =
+  `lod_fade_m`). The 45 m and 120 m switches are hard again, with the `lod_margin_m` hysteresis. Tested.
+- **B2 (drift attribution):** re-measured on the GPU. With the AA swap disabled, v2 renders the three `veg_*` shots
+  identically to the base (RMSE 0.0000), so their drift is purely TAA → FXAA. `haluna_h03` no longer drifts.
+  `haluna_h02` 0.0124 is one palm at the 120 m switch, drawn now and missing in the base (see the report).
+- **S1:** `shelter` is `enum Shelter { AUTO, OPEN, SHELTERED }`.
+- **S2:**
+  - The ray has a `shelter_mask` (physics layers, default 1).
+  - The sun comes from the `hymn_sun_direction` global through the new `ShaderGlobals`
+    (`game/core/shader_globals.gd`). It keeps a CPU copy of what was written, because `global_shader_parameter_get`
+    is editor-only.
+  - The four writers (the vegetation, water, Undertow and Haluna mood test rigs) now go through
+    `ShaderGlobals.set_value`. The Haluna rig line is a one-line cross-role edit.
+- **Tests:** an auto-detect test (a box roof on layer 1 shelters; off the mask, or under a low side sun, it doesn't).
+  The `.uid` is committed.
 
 ## Review log
 - 2026-10-23 rendering (review-sweep-N, fresh reviewer): **changes needed.** The LOD cross-fade produces see-through trunks in the shots, and the report puts the drift down to the AA swap.
@@ -71,3 +89,11 @@ PC GPU session (Lead-routed; branch `gpu/env-03-vegetation`). Report: `docs/kb/q
     - **Reject** `veg_beach_wide`, `haluna_h02_tidewall_lane` and `haluna_h03_lintel_gull` (B1).
     - **Hold** `veg_backlit_fronds` and `veg_frangipani_close`. They look right (AA only), but re-approve them in the same commit as the B1 fix, so the 0.008 threshold is set against final images.
 - 2026-10-23 lead: the code merge was REVERTED on the integration branch (e97dd41 / 9a57a8c) because the review-sweep-N blockers broke lavapipe shots. The reports and notes are kept. The PC reworks it on its gpu/ branch: rebase on the integration branch, fix the blockers, and resubmit.
+- 2026-10-24 review-sweep-O (rendering): **approve with fixes.** The sweep-N blockers are fixed. B1: only the last LOD fades now, so the 45 m and 120 m switches are hard again and no trunk goes translucent. B2: the drift is re-attributed, and the Lead lavapipe-checked the merge as ci33 (b1997e1, baselines re-approved in c940d77). S1-S4 are done.
+  - **What I read:** `git show 4ca20cc`: vegetation_plant.gd, the new game/core/shader_globals.gd, the four rig writers, vegetation_test.gd and test_vegetation_plant.gd (plus its `.uid`).
+  - **Checks:** Godot `--filter=vegetation` 10/0 failed. gdlint and gdformat are clean on the tree. I ran no shots, because the Lead's ci33 covered this merge.
+  - **Should-fixes, filed as M1-ENV-09:**
+    1. **The hysteresis gap at the last switch** (vegetation_plant.gd `_apply_lod`). The fading last LOD gets a begin margin of 0, while LOD1's end margin stays at `lod_margin_m` (2 m) as hysteresis. Approaching through 118-120 m, neither LOD draws. Receding through 120-122 m, both draw. That is the same family as the h02 palm "the old hysteresis failed to draw".
+    2. **ShaderGlobals goes stale.** vegetation_test.gd:54-57 restores the sun through RenderingServer directly, so `ShaderGlobals.get_value` keeps returning the test's sun. Its fallback is `Vector3.UP`, not the project default.
+    3. **The probe runs once.** A time-of-day change doesn't re-probe, and vegetation.md doesn't say so.
+    4. **Check the AUTO shelter against first-playable's Haluna collision** once that branch merges (sweep-N S5).

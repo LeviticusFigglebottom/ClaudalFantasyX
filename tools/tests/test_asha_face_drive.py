@@ -188,6 +188,72 @@ class TestEmotionsDriveTheFace(unittest.TestCase):
         self.assertLess(max(lid, cheek), 0.2 * MM, "the rest face must not squint")
 
 
+class TestRound6Expressions(unittest.TestCase):
+    """M1-CHR-11: the Duchenne smile, grief's inner brows, and no notch at the nose bridge."""
+
+    def total(self, tag: str) -> np.ndarray:
+        d = drive()
+        poses = json.loads(POSES.read_text(encoding="utf-8"))["emotions"]
+        tot = np.zeros_like(d.P)
+        for shape, value in poses[tag].items():
+            for target, w, _side in d.targets(shape, value, d.h["names"]):
+                tot += w * d.h["D"][target]
+        return tot
+
+    def test_smile_narrows_the_eye_and_draws_the_crows_feet(self):
+        d = drive()
+        tot = self.total("smile")
+        for side in ("L", "R"):
+            sg = 1.0 if side == "L" else -1.0
+            rel = d.P - d.eye[side]
+            lid = (rel[:, 1] < -0.002) & (rel[:, 1] > -0.010) & (np.abs(rel[:, 0]) < 0.013) & (rel[:, 2] > 0)
+            with self.subTest(side=side):
+                self.assertGreaterEqual(float(tot[lid, 1].max()), 4.0 * MM)  # CHR-10: 3.3 mm
+                # crow's feet: lateral of the outer canthus, skin drawn toward the eye and folded
+                crow = (sg * rel[:, 0] > 0.016) & (sg * rel[:, 0] < 0.030) & (np.abs(rel[:, 1]) < 0.008)
+                self.assertLess(float((sg * tot[crow, 0]).min()), -0.5 * MM)
+                # the brow tail comes down a little; the brow head does not
+                tail = (sg * rel[:, 0] > 0.010) & (sg * rel[:, 0] < 0.022) & (rel[:, 1] > 0.008) & (rel[:, 1] < 0.022)
+                self.assertLess(float(tot[tail & (rel[:, 2] > 0), 1].mean()), -0.4 * MM)
+
+    def test_grief_lifts_the_inner_brows_obliquely(self):
+        d = drive()
+        tot = self.total("grief")
+        for side in ("L", "R"):
+            sg = 1.0 if side == "L" else -1.0
+            rel = d.P - d.eye[side]
+            band = (rel[:, 1] > 0.008) & (rel[:, 1] < 0.022) & (rel[:, 2] > 0)
+            med = band & (sg * rel[:, 0] > -0.016) & (sg * rel[:, 0] < -0.006)
+            lat = band & (sg * rel[:, 0] > 0.010) & (sg * rel[:, 0] < 0.022)
+            with self.subTest(side=side):
+                self.assertGreaterEqual(float(tot[med, 1].mean()), 2.5 * MM)  # CHR-10: 0.4 mm
+                self.assertGreater(float(tot[med, 1].mean() - tot[lat, 1].mean()), 2.0 * MM)
+
+    def test_lid_shapes_have_no_step_on_the_nose_bridge(self):
+        # QA-05c fault 6: the squint's rotation stopped dead 5 mm off the midline (a hard 30 mm ball),
+        # which drew a light/dark notch. Each vertex's delta must stay close to its neighbours' mean
+        d = drive()
+        P, F = d.P, d.h["F"]
+        wid = asha_glb.weld(P)
+        nw = int(wid.max()) + 1
+        ed = np.concatenate([F[:, [0, 1]], F[:, [1, 2]], F[:, [2, 0]]])
+        ew = np.unique(np.sort(wid[ed], axis=1), axis=0)
+        ew = ew[ew[:, 0] != ew[:, 1]]
+        cnt = np.maximum(np.bincount(ew.ravel(), minlength=nw), 1).astype(float)
+        Pw = np.zeros((nw, 3))
+        Pw[wid] = P
+        bridge = (np.abs(Pw[:, 0]) < 0.010) & (np.abs(Pw[:, 1] - d.eye["L"][1]) < 0.015) & (Pw[:, 2] > 0.06)
+        for name in ("lid_squint_L", "lid_squint_R", "lid_close_L", "lid_close_R", "cheek_raise_L", "cheek_raise_R"):
+            Dw = np.zeros((nw, 3))
+            Dw[wid] = d.h["D"][name]
+            acc = np.zeros((nw, 3))
+            np.add.at(acc, ew[:, 0], Dw[ew[:, 1]])
+            np.add.at(acc, ew[:, 1], Dw[ew[:, 0]])
+            lap = np.linalg.norm(Dw - acc / cnt[:, None], axis=1)
+            with self.subTest(target=name):
+                self.assertLess(float(lap[bridge].max()), 0.5 * MM)  # CHR-10 squint: 1.23 mm
+
+
 class TestMorphNormalPass(unittest.TestCase):
     """asha_glb.add_morph_normals on a tiny hand-made GLB: a 3x3 vertex grid with one target that
     lifts the centre vertex."""

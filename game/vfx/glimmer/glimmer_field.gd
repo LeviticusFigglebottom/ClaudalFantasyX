@@ -97,6 +97,10 @@ const USE_DEFAULT := -1.0
 @export var intensity: float = 1.0
 ## Treat hymn_glimmer_focus as an extra attractor.
 @export var follow_global_focus: bool = true
+## The sky at this field's horizon is warm (a dusk peach band): released halos within the look's
+## halo_hue_band_deg of the horizon turn toward its halo_hue_horizon_deg (M1-RND-17). Off (the default),
+## every released halo keeps the released colour's own hue, as it must under a night or noon sky.
+@export var warm_horizon_halo: bool = false
 ## Energy of an OmniLight3D that follows the mote colour (0 = no light).
 @export var fill_light_energy: float = 0.0
 @export var fill_light_offset_m: Vector3 = Vector3.ZERO
@@ -531,11 +535,38 @@ func release_origin() -> Vector3:
 	return global_position if is_inside_tree() else position
 
 
+## Oklab hue (degrees) of the field's released colour (glimmer.json colors.released): the released
+## motes' gold halo takes it, so a different released palette gets its own halo hue (review-sweep-N S2).
+func released_hue_deg() -> float:
+	var c := Color.from_string(str((config.get("colors", {}) as Dictionary).get("released", "")), Color.WHITE)
+	var lab := linear_to_oklab(c.srgb_to_linear())
+	return fposmod(rad_to_deg(atan2(lab.z, lab.y)), 360.0)
+
+
+## Linear sRGB to Oklab (Ottosson 2020), as hymn_linear_srgb_to_oklab in common.gdshaderinc.
+static func linear_to_oklab(c: Color) -> Vector3:
+	var l := 0.4122214708 * c.r + 0.5363325363 * c.g + 0.0514459929 * c.b
+	var m := 0.2119034982 * c.r + 0.6806995451 * c.g + 0.1073969566 * c.b
+	var s := 0.0883024619 * c.r + 0.2817188376 * c.g + 0.6299787005 * c.b
+	l = pow(l, 1.0 / 3.0)
+	m = pow(m, 1.0 / 3.0)
+	s = pow(s, 1.0 / 3.0)
+	return Vector3(
+		0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+		1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+		0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+	)
+
+
 ## Draw-pass uniforms (direct pass; the reflection pass adds mirror_plane_y and its gain).
 func draw_parameters() -> Dictionary:
 	var lk := config.get("look", {}) as Dictionary
 	return {
 		"halo_chroma_gain": float(lk.get("halo_chroma_gain", 1.0)),
+		"halo_chroma_min": float(lk.get("halo_chroma_min", 0.0)),
+		"halo_hue_deg": released_hue_deg(),
+		"halo_hue_horizon_deg": float(lk["halo_hue_horizon_deg"]) if warm_horizon_halo else released_hue_deg(),
+		"halo_hue_band_deg": float(lk.get("halo_hue_band_deg", 0.0)),
 		"halo_scale": float(lk.get("halo_scale", 1.0)),
 		"core_gain": float(lk.get("core_gain", 0.0)),
 		"halo_gain": float(lk.get("halo_gain", 0.0)),

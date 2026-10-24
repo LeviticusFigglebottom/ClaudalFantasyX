@@ -22,6 +22,8 @@ Owner: Combat Designer-Engineer. Formulas: [formulas.md](formulas.md).
 | `BattleOpening` | Preemptive and ambush openings (M1-CMB-03): which opening an encounter gets (`choose`, one RNG draw when rolled) and the tick shift `begin()` applies. |
 | `BattleRead` | What Read reveals (M1-CMB-03). The engine puts `reveal()` on a Read hit as `hit["read"]`. |
 | `Bestiary` | The bestiary log over `GameStateData.bestiary` (read flag and defeat count per enemy id; save v5). |
+| `BattleHits`, `BattleItemUse`, `BattleAutoTurn`, `BattleSpoils` | Static helpers split out of `BattleEngine` in M2-CMB-03 for the line cap, with no behaviour change: one skill hit on one target (damage, heal, Read, the skill's and the gear's statuses, delay); item use, its party-defeat check and its timeline preview; the attack and target pool of a Berserk or Confused turn; and the victory rewards (XP, lume, drops). The engine keeps every public name as a one-line wrapper and still owns the turn flow, and each helper draws on `engine.rng` in the old order, so a seed plays out exactly as before. |
+| `BattleVowbound` | Vowbound summons (M2-CMB-04): the call that stands the party down, the Vowbound's stats from its caller, its Swell finisher, and the party's return. The engine owns one (`engine.vowbound`) and calls it from `summon()`, `dismiss()`, `_check_outcome()` and `_finish()`. See "Vowbound" below. |
 
 **Headless and deterministic:** no Nodes, no scene access, and all randomness through `engine.rng` (seeded in `setup`). The battle *scene* (UI, cameras, VFX) listens to the engine's signals and never mutates combat state directly.
 
@@ -162,7 +164,7 @@ The slice boss (vertical_slice.md §5): encounter `drownbell` (scripted, no esca
 
 **Phase 2, the Flood** (40% HP). The phase raises the field `flood`, spawns two Spawn-Polyps (180 HP, bound to the field) and swaps the bell's kit: while the field is up it rouses a new polyp whenever fewer than two stand, otherwise it casts *Floodtide* (all foes, magical, power 14; retuned twice after the Swell merges, balance_report.md). Each polyp's *Feeding Tide* heals the bell (power 20) each of its turns, more than the party deals, and a killed polyp is replaced. Once the field is gone the bell falls back to *Hood Slam* and an *Undertow Surge* (power 5) every third turn.
 
-**The Ilun stand-in** ([ADR 0024](../decisions/0024-drownbell-ilun-stand-in.md)). The full Vowbound system (SPEC §6.3: the summon replaces the party, with its own HP and Swell) is out of scope for the first playable. Asha gets **Call Ilun** (`call_ilun`, 12 MP, rank 4, magical power 8 to all foes) with `requires_flag: ch03_ilun_bound` (Cutscene B sets it) and `clears_field: flood`: Ilun's *Floodnet* washes the polyps away and ends the field for good. The command is greyed out (and refused at no cost) while no field is up. When Vowbound land, replace the skill with the real summon and keep the field rule as Floodnet's effect.
+**The Ilun stand-in** ([ADR 0026](../decisions/0026-drownbell-ilun-stand-in.md)). The full Vowbound system (SPEC §6.3: the summon replaces the party, with its own HP and Swell) is out of scope for the first playable. Asha gets **Call Ilun** (`call_ilun`, 12 MP, rank 4, magical power 8 to all foes) with `requires_flag: ch03_ilun_bound` (Cutscene B sets it) and `clears_field: flood`: Ilun's *Floodnet* washes the polyps away and ends the field for good. The command is greyed out (and refused at no cost) while no field is up. When Vowbound land, replace the skill with the real summon and keep the field rule as Floodnet's effect.
 
 **Timeline honesty (pillar 4).** `TurnEntry.intent` is the skill a turn is already committed to. `CtbTimeline.predict()` marks the charge on the turn it fires, uses that skill's rank for the next delay, and applies its all-foes delay push to every predicted foe (with the diminishing returns of play). A candidate action that would land the breaking hit on the rim (`BossMechanics.would_break`) removes the toll from its preview (pseudo-status `BREAKS_CHARGE`, assumed to land like every preview). Spawns join the timeline the moment they appear. What the engine cannot predict: when a damage threshold will be crossed, and future gathers.
 
@@ -214,3 +216,38 @@ Swell follows the party as HP and MP do (save v6; architecture.md "Save v6"). Th
 
 ## Adding an AI condition or target selector
 Extend `EnemyAI._conditions_hold` / `select_targets`, add the name to `AI_CONDITIONS` / `AI_TARGETS` in `tools/validate_data.py`, and add a test.
+
+## Vowbound (M2-CMB-04)
+
+SPEC §6.3: a called Vowbound **replaces the whole party on the field**, with its own HP, abilities and Swell. The engine rules are in `game/battle/battle_vowbound.gd` (`BattleVowbound`; headless, with no random rolls), the rows in `game/data/battle/vowbound.json` (validated by `validate_data.py`'s `check_vowbound`), and the stats in [formulas.md § Vowbound](formulas.md). Each Vowbound's battle identity comes from [vowbound.md](../story/vowbound.md). The first is **Ilun** (caller Asha): *Brine Lash*, *Tidal Ward*, Attack, and the finisher *Floodnet*.
+
+**Engine API.** `engine.vowbound = BattleVowbound.new(BattleVowbound.load_config(), known)` before `begin()`, where `known` is the ids the party has bound. The scene builds it from story flags (`ch03_ilun_bound` → `ilun`), since the engine never reads `Game`. The default instance has no Vowbound.
+- `engine.summon(id) -> bool`, with `vowbound.refusal(engine, id)` giving the reason (`not_your_turn`, `vowbound_out`, `unknown_vowbound`, `not_bound`, `not_caller`, `silenced` (the call is a verse), `vowbound_fallen`). `vowbound.callable_ids(engine)` lists the ones the current actor may call now, for the command menu.
+- `engine.dismiss() -> bool` and `vowbound.dismiss_refusal(engine)`.
+- `vowbound.unleash(engine, targets) -> ActionResult` and `unleash_refusal(engine)` (`swell_not_full`); `vowbound.finisher(c)` names the technique.
+- State: `vowbound.summon` (the combatant on the field, team `party`, or null), `vowbound.stood_down` (the active party, in slot order), `vowbound.is_out()`. `engine.find()` still reaches the stood-down party.
+- Signals on `engine.vowbound`: `called(vowbound)` and `departed(vowbound, fell)`. `turn_started` fires for the Vowbound when it takes the caller's turn.
+
+**Turn rules** (decided here; pillar 4: the timeline always shows them).
+1. **The call.** On the caller's own turn (it must be in control of itself and not Silenced), the whole active party stands down, KO'd members included, and leaves the timeline. The Vowbound takes the current turn at once. The call is still the caller's action: when the party comes back, the caller waits a `call_rank` delay (Ilun's is 3), and every other member waits the ticks it had left. The stood-down party is out of reach, and its statuses don't count down.
+2. **While it is out.** It is the only party combatant on the field, so every foe's action lands on it. It acts like any party member, with its own skills and MP. The reserve stays in reserve. **Refused while out:** Swap, Escape and items (`vowbound_out`; "a Vowbound uses no items"). Provoke from a stood-down hero ends at once, because the provoker left the field.
+3. **Its Swell.** Its gauge fills only from HP it loses (formulas.md § Vowbound). A full gauge unleashes its finisher, which has no interactive input, needs no MP, is not a learned skill (so `perform()` refuses it) and empties the gauge. Party Swell gauges never see its hits.
+4. **Leaving.** (a) **Dismissed** on its own turn: the turn is spent, the party comes back, and the next turn begins. (b) **Fallen** (KO or stone): this is **no defeat**. The party comes back at that moment, and this Vowbound cannot be called again this battle (`vowbound_fallen`). (c) **Victory while out:** the party comes back before `battle_finished`, so the XP credit, the vitals write-back and the result screen all see the party. A Vowbound earns no XP.
+5. **Coming back.** A dismissed Vowbound called again in the same battle returns as it left (HP, MP, statuses, gauge). Every battle builds it fresh. Carrying it between battles is a later save task (formulas.md § Not yet specified).
+
+**Why the call costs the caller's rank.** The sandbox probe (`sandbox_reef`, Rhen and Asha active, Toma in reserve, no gear, 1000 seeds) compared a masher who attacks the first living foe with the same masher calling Ilun on Asha's first turn. There, Ilun attacks the crab, Brine Lashes the rest and unleashes Floodnet when full. A plain masher wins 8.7%.
+
+| Ilun (HP at Asha level 5) | Call free (first draft) | **Call at rank 3** |
+|---|---|---|
+| 1 HP (the mechanic alone) | 28.7% | 16.4% |
+| 760 (first-draft stats) | 87.2% | 78.9% |
+| 400 | | 50.1% |
+| **360 (shipped)** | | **38.9%** (Ilun falls in 99.6%; 0.22 Floodnets a fight) |
+
+A free call gave the masher a free action that soaked an enemy turn, which was worth 20 points by itself. With the rank, the 1 HP call is worth 8. The shipped stats keep a Vowbound strong, but not a second party, against an encounter that was tuned with no Vowbound: a masher lands at 38.9%. **That is above the Swell masher line on starting gear (25%), on purpose, and it is up for review** (ADR 0027): a Vowbound is a once-a-battle rescue, not a gauge that refills every fight. The proposed Vowbound masher line is 40% with no gear. If the review wants Ilun weaker, the levers are his HP scale and `call_rank`. The probe was a scratch driver and is not committed. Next step: the simulator needs a call rule (see Follow-ups).
+
+**Follow-ups.**
+- **UI and HUD** (request task M2-UI-05): a Vowbound command on the caller's menu (`callable_ids`), its own command menu (skills, the finisher and Dismiss), the stood-down party shown off the field, and a timeline preview of the call (the caller's `call_rank` delay).
+- **The Drownbell** (claude/m2-slice, ADR 0024): replace `call_ilun` with the real call. Floodnet would then take the field rule (`clears_field: flood`). Re-run the Drownbell bands. Ilun absorbs water and is weak to lightning; check that against Floodtide's element.
+- **The simulator**: give `role_answer` and `smart` a call rule (the Drownbell's `clear_field_skill` is the model). Then add a Vowbound masher line to balance_targets.md.
+- Tests: `tests/unit/test_battle_vowbound.gd` (stats, the call, refusals, reach, dismissal and its timing, a fall that is no defeat, no swap, escape or items, the Swell and Floodnet, victory handing the field back, Provoke, and a seeded replay), `test_formulas.gd` (`vowbound_stat`), and `tools/tests/test_vowbound_validate.py`.

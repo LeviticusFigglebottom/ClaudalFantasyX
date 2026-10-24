@@ -13,7 +13,7 @@ Session: m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`. 
 - Nothing. M2-FP-16 is in review (reviewer: design, on whether three basins are enough puzzle).
 
 ## Exact next step
-- Queue item 6: the first Vowbound (Ilun as a real summon replacing ADR 0024's stand-in) and Cutscene A/B facial animation. File task files first; check the integration branch for id collisions. FP-14 (B04) waits on the wake-shell wall's placement.
+- Queue item 6: the first Vowbound (Ilun as a real summon replacing ADR 0026's stand-in) and Cutscene A/B facial animation. File task files first; check the integration branch for id collisions. FP-14 (B04) waits on the wake-shell wall's placement.
 
 ## Known issues
 - In `.tscn`, `Transform3D(...)` lists the basis the other way from the "columns first" reading. Probe a node's `-global_basis.z` before trusting a hand-written rotation.

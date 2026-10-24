@@ -85,6 +85,25 @@ palette_check gained the `advisory` flag. Turn them strict when `glimmer_dusk` i
 
 **Reviewer:** character (Art Director).
 
+## Notes (PC GPU session, v2 after review-sweep-N; branch gpu/rnd-17-dusk-motes-v2)
+- **B1:** the gold floor is gated by `smoothstep(0.6, 1, released)`, so mid-lerp motes keep their own hue.
+  `glimmer_release` now differs from its baseline by RMSE 0.0043 on the GPU (v1: 0.0145).
+- **B2:** the 55° near-horizon switch only applies to a field with `warm_horizon_halo` (glimmer_dusk sets it). Night
+  and noon fields keep the released hue at the horizon. Tested.
+- **S1:** `halo_chroma_min` 0.23 → 0.25. Upper sky: hue 76.0°, |Δab| 0.0598. |Δab| plateaus at about 0.060 inside
+  75–95° (0.27 gives 0.0602 but hue 74°), so the check uses `dab_min` 0.059 with a note.
+- **S2/S3:** `halo_hue_deg` is derived from `colors.released` (Oklab hue, `GlimmerField.released_hue_deg()`). No
+  duplicated constants.
+- **S4:** the checks carry the re-scoped targets (horizon ≤ 145°, mirror 75–110°, chroma not below the background,
+  heads-down ≤ 0.07). They stay `advisory` until the Lead re-approves `glimmer_dusk`; flip them strict in that commit.
+- **GPU, `glimmer_dusk`:** upper sky 76° / 0.060, horizon 138° (≤ 145 ✓), mirror 100° (75–110 ✓), chroma not below
+  the background ✓, coverage 16.3 %, streaks 5.9° median / 86 % within 30° / 3 % beyond 60° / heads-down 0.05.
+- **Drift (GPU):**
+  - `glimmer_dusk` 0.0146: re-approve it.
+  - `glimmer_release` 0.0043: just over the 0.004 gate. Its mid-lerp halos are the old cyan-white; only fully
+    released motes are gold. Look at it before re-approving.
+  - `glimmer_night_held`, `glimmer_bound` and `save_shrine_field`: ≤ 0.00004.
+
 ## Review log
 - 2026-10-23 character (review-sweep-N, fresh reviewer, Art Director): **changes needed.** The streak fix and the dusk look are approved. The gold-halo floor breaks colour-script rule 1 in `glimmer_release`, so its baseline must not be re-approved as it stands.
   - **What I read:** this task, `docs/kb/qa/gpu/2026-10-23-rnd-17-dusk-motes.md`, color_script.md "Art sign-off 2026-10-23", and `git diff c3517dc^1 c3517dc` (process and draw shaders, glimmer.json, glimmer_field.gd, palette_check.py, mote_metrics.py and its test).

@@ -2,7 +2,7 @@
 id: M2-UI-01
 title: Swell mode menu and timing-input accessibility
 role: ui
-status: review
+status: done
 owner_session: "worktree-agent-ab3d864d1e75fe481"
 depends_on: [M1-CMB-04]
 milestone: M2
@@ -42,3 +42,12 @@ SPEC §6.2 says the mode is selectable. M1-CMB-04 ships the rules (`BattleSwell.
 - **Gate after merging claude/new-session-mj8c3c (merge 9186104):** the scoped `tools/ci_local.sh` with all 9 battle and bestiary shots gives rc 0. 1169 Godot tests, 0 failed. Coverage: battle 99.94% (1770/1771), progression 96.52%, within baseline. All shots at rmse 0, so none needed re-approval.
 
 ## Review log
+- 2026-10-24 review-sweep-O (combat): **approve with fixes.** Criteria 1 and 2 hold. Criterion 3 is Art's, and M2-ART-01 tracks it. That task depends on this one, so it can start now.
+  - **What I read:** battle_menus.gd `swell_rows` and `swell_mode_rows`, swell_mode_rows.gd, ui_settings.gd `timing_input` (:137-160, :285-289), swell_input.gd `assist_floor` and `_record` (:53-62, :160-168), accessibility.json `timing_assist`, battle_controller.gd:699, and formulas.md § Swell "Timing assist".
+  - **Checks:** Godot `--filter=` swell 124/0 failed, swell_mode 15/0, ui 87/0, battle 307/0. gdlint and gdformat are clean.
+  - **Combat confirms formulas.md "Timing assist"** (UI's proposal):
+    - The numbers live in accessibility.json, not in code.
+    - The assist changes the row before `SwellInput.create`, and `assist_floor` maps a miss to that step's scripted good grade. Both are Node-free and use no RNG, so the engine stays deterministic.
+    - Balance: `auto` makes a masher play at `good`, and `naive_swell` at good is 23.8% (M2-CMB-02), under the 25% line. So the assist needs no band of its own.
+  - **Nit:** `_record` indexes `scripted_grades(assist_floor)[grades.size()]`. That's safe today, because every kind records at most `grade_count()` steps. An assert there would catch a future kind that records more.
+  - **Filed as M2-UI-04:** the out-of-battle mode chooser, which isn't built for lack of a party or field menu (criterion 1 allows "and/or"). No task held it.

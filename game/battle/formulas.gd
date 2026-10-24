@@ -210,6 +210,12 @@ static func swell_power(power: int, bonus_pct: int) -> int:
 	return power * (PCT + maxi(bonus_pct, 0)) / PCT
 
 
+## A called Vowbound's stat (formulas.md § Vowbound, M2-CMB-04): its row's base plus its percent of
+## the caller's same stat as it stands in battle, floor(caller_stat x scale_pct / 100).
+static func vowbound_stat(base: int, caller_stat: int, scale_pct: int) -> int:
+	return maxi(base, 0) + maxi(caller_stat, 0) * maxi(scale_pct, 0) / PCT
+
+
 ## Percent chance of a preemptive opening (the party moves first), from the mean agility of the
 ## living active party and of the enemies (formulas.md § Openings).
 static func preemptive_chance(party_mean_agility: float, enemy_mean_agility: float) -> int:

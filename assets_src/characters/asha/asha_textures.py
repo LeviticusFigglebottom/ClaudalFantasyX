@@ -47,8 +47,14 @@ SCLERA_DARKEN = 0.16
 SCLERA_WARM = 0.08
 # M1-CHR-09: the upper lid's albedo, margin to crease, against the cheek. M1-CHR-10: 0.15 -> 0.26,
 # plus the lash line and the lid's ambient occlusion below; at 0.15 the band still read pale.
-UPPER_LID_DARKEN = 0.26
-UPPER_LID_AO = 0.30  # ambient occlusion on the upper lid (the lashes and the brow overhang shade it)
+# M1-CHR-11: the band read orange, like make-up, on the GPU (QA-05c fault 5). The CHR-09/10
+# darkening took less from red than from green and blue ([0.8, 1, 1.05]), which made the lid more
+# saturated than the cheek, and the occlusion took away the cool sky fill and left the warm key.
+# Thin lid skin is a little cooler and browner than the cheek, not warmer: the darkening now takes
+# the most from red (UPPER_LID_TINT), and both terms are a touch lighter.
+UPPER_LID_DARKEN = 0.22
+UPPER_LID_TINT = (1.2, 1.0, 0.6)  # per-channel share of the darkening (R, G, B)
+UPPER_LID_AO = 0.18  # ambient occlusion on the upper lid (the lashes and the brow overhang shade it)
 LASH_LINE_RR = 1.05  # lid-field radius of the lash line (1 = the margin)
 LASH_LINE_W = 0.04
 LASH_LINE_DARKEN = 0.30
@@ -70,6 +76,29 @@ def hexc(h: str) -> np.ndarray:
 def smoothstep(e0, e1, x):
     t = np.clip((x - e0) / (e1 - e0), 0.0, 1.0)
     return t * t * (3.0 - 2.0 * t)
+
+
+# M1-CHR-08: id maps (values are labels, not colours) are sampled nearest without mips. Each label's
+# region must be at least ID_MAP_MIN_RUN texels wide along both axes, so a magnified edge stays on
+# whole texels (docs/kb/tech/character_shading.md, the band-id row).
+ID_MAP_MIN_RUN = 2
+
+
+def id_map_min_run(labels: np.ndarray) -> int:
+    """The shortest run of one label along any row or column of a 2D label map."""
+    best = max(labels.shape)
+    for grid in (labels, labels.T):
+        for line in grid:
+            cuts = np.flatnonzero(np.diff(line.astype(np.int64))) + 1
+            edges = np.concatenate([[0], cuts, [line.size]])
+            best = min(best, int(np.diff(edges).min()))
+    return best
+
+
+def check_id_map(name: str, labels: np.ndarray) -> None:
+    run = id_map_min_run(labels)
+    if run < ID_MAP_MIN_RUN:
+        raise SystemExit(f"{name}: a label region is {run} texel(s) wide (id maps need >= {ID_MAP_MIN_RUN})")
 
 
 def write(name: str, img: np.ndarray, mode: str | None = None) -> None:
@@ -399,8 +428,11 @@ VERM_UP = 0.0094  # upper vermilion height at the bow's peaks: at the upper lip'
 VERM_LO = 0.0095  # lower vermilion height (asha.md §6.1: a full lower lip)
 VERM_DIP = 0.18  # the bow's dip over the philtrum, as a fraction of the height
 VERM_PEAK_U = 0.25  # the bow's peaks (the philtral columns' feet), in half-widths
-VERM_EDGE = 0.00035  # half-width of the colour edge at the border
+VERM_EDGE = 0.00055  # half-width of the colour edge at the border (M1-CHR-11: 0.35 mm read as a cut, ragged edge)
 PHILTRUM_H = 0.013  # philtrum height above the bow
+# M1-CHR-11: the peaks' bump (CHR-07: 0.06 over a 0.06 half-width) left a shoulder just past each
+# peak, which with the sharp edge read as a ragged border; lower and wider, one arc per side
+VERM_PEAK_BUMP = 0.035
 
 
 def vermilion(r: dict, s: float) -> dict | None:
@@ -414,7 +446,7 @@ def vermilion(r: dict, s: float) -> dict | None:
     f = np.clip(r["LIPFRONT"], 0.0, 1.0)
     au = np.abs(u)
     taper = np.clip(1.0 - u * u, 0.0, 1.0)
-    bow = (1.0 - VERM_DIP * np.exp(-((u / 0.10) ** 2))) * (1.0 + 0.06 * np.exp(-(((au - VERM_PEAK_U) / 0.06) ** 2)))
+    bow = (1.0 - VERM_DIP * np.exp(-((u / 0.10) ** 2))) * (1.0 + VERM_PEAK_BUMP * np.exp(-(((au - VERM_PEAK_U) / 0.09) ** 2)))
     hu = VERM_UP * s * taper ** 0.6 * bow
     hu = monotone_upper(r["P"][:, 2] - dz, u, hu, f)
     hl = VERM_LO * s * taper ** 0.55
@@ -560,7 +592,7 @@ def detail_height(P: np.ndarray, face, lm, r: dict) -> np.ndarray:
             # M1-CHR-07: a crisper ridge on the upper border (it catches the key as a thin line),
             # the white roll of skin above it, and the philtrum: a groove between two columns that
             # rise from the bow's peaks toward the nose
-            h += 0.00005 * s * vm["bu"] + 0.00004 * s * vm["roll"]
+            h += 0.00003 * s * vm["bu"] + 0.00004 * s * vm["roll"]  # M1-CHR-11: ridge 0.05 -> 0.03 mm (it drew a wobbly line)
             h += 0.00030 * s * vm["philtrum"]
         # where the lips meet: a shallow groove (the geometry closes the slit; this is the line)
         h -= 0.00006 * s * z["contact"] ** 2
@@ -609,19 +641,33 @@ def detail_height(P: np.ndarray, face, lm, r: dict) -> np.ndarray:
     return h
 
 
-TEETH_EDGE = "#DCC6A6"  # enamel at the biting edge: warm ivory, not white (the sky fill cools it)
-TEETH_GUM = "#BC9C7C"  # toward the gum: warmer and darker (thicker dentine under the enamel)
+# M1-CHR-11: under the stage's orange key the CHR-10 ivory (#DCC6A6, R:B 1.33) read as gold-brass
+# on the GPU (QA-05c fault 3): a neutral grey reads R:B 2.0 under that key, so a warm albedo is pushed
+# well past it. Enamel is close to neutral, a touch cool and grey at the translucent biting edge,
+# warmer only toward the gum where the dentine shows through.
+TEETH_EDGE = "#D6D9DC"  # enamel: off-white, a touch cool (R:B 0.97) so the orange key leaves it near white
+TEETH_INCISAL = "#B8BFC8"  # the translucent biting edge: greyer and slightly cool
+TEETH_GUM = "#CDC6BA"  # toward the gum: a little warmer (dentine under thinner enamel)
+TEETH_INCISAL_B = 0.14  # of the crown height: the translucent band at the biting edge
 TEETH_AO_EDGE = 0.62  # ambient reaching the front teeth's biting edge; the lips shade the rest
 TEETH_AO_GUM = 0.38
 TEETH_AO_BACK = 0.4  # the last teeth get this fraction of the front teeth's ambient
-TEETH_ROUGH = 0.45  # ORM G (the teeth material's roughness texture): satin, wet
+TEETH_ROUGH = 0.55  # ORM G (the teeth material's roughness texture): satin; 0.45 read glossy and metallic
+# M1-CHR-11: each tooth spans its own fifth of the patch in U (asha_mouth.TOOTH_U_SPAN); its sides
+# (toward the neighbours) are darker and more occluded, so the row reads as separate teeth
+TEETH_GAP_W = 0.16  # of a tooth's U cell, at each side
+TEETH_GAP_DARKEN = 0.45
+TEETH_GAP_AO = 0.5
+TEETH_GAP_ROUGH = 0.75
 
 
 def teeth_patch(albi: np.ndarray, ormi: np.ndarray, size: int) -> None:
     """M1-CHR-10: paint the teeth's colour and occlusion into the head atlas's unused corner
     (asha_mouth.TEETH_UV), in place. U along the arch (front -> back), V edge -> gum. The baked AO
     comes from the skin's vertex bake, which never saw the teeth, so this is a model of it: open at
-    the front teeth's biting edge, closing toward the gum and the back of the mouth."""
+    the front teeth's biting edge, closing toward the gum and the back of the mouth. M1-CHR-11: each
+    tooth's U cell darkens toward its sides (the gaps between teeth), and the biting edge is a
+    greyer, translucent band."""
     import asha_mouth
 
     u0, v0, u1, v1 = asha_mouth.TEETH_UV  # V down the image (the Part / glTF convention)
@@ -631,11 +677,44 @@ def teeth_patch(albi: np.ndarray, ormi: np.ndarray, size: int) -> None:
     a = np.clip(((xx + 0.5) / size - u0) / (u1 - u0), 0.0, 1.0)
     b = np.clip(((yy + 0.5) / size - v0) / (v1 - v0), 0.0, 1.0)
     col = hexc(TEETH_EDGE) * (1 - b[..., None] ** 0.8) + hexc(TEETH_GUM) * b[..., None] ** 0.8
-    albi[y0:y1, x0:x1] = col * (1.0 - 0.12 * a[..., None])
+    inc = smoothstep(TEETH_INCISAL_B, 0.0, b)[..., None]
+    col = col * (1 - inc) + hexc(TEETH_INCISAL) * inc
+    n = len(asha_mouth.UPPER)
+    cell = a * n - np.floor(np.minimum(a * n, n - 1e-6))  # 0 .. 1 across one tooth
+    side = np.minimum(cell, 1.0 - cell) / max(0.5 - asha_mouth.TOOTH_U_SPAN, 1e-6)  # 1 where a tooth's side starts
+    gap = smoothstep(TEETH_GAP_W / max(0.5 - asha_mouth.TOOTH_U_SPAN, 1e-6) + 1.0, 1.0, side)
+    albi[y0:y1, x0:x1] = col * (1.0 - 0.12 * a[..., None]) * (1.0 - TEETH_GAP_DARKEN * gap[..., None])
     ao = (TEETH_AO_EDGE + (TEETH_AO_GUM - TEETH_AO_EDGE) * b ** 0.7) * (1.0 - (1.0 - TEETH_AO_BACK) * a)
-    ormi[y0:y1, x0:x1, 0] = ao
-    ormi[y0:y1, x0:x1, 1] = TEETH_ROUGH
+    ormi[y0:y1, x0:x1, 0] = ao * (1.0 - TEETH_GAP_AO * gap)
+    ormi[y0:y1, x0:x1, 1] = TEETH_ROUGH + (TEETH_GAP_ROUGH - TEETH_ROUGH) * gap
     ormi[y0:y1, x0:x1, 2] = 0.0
+
+
+INNER_LIP = "#7A3834"  # wet mucosa behind the lips' contact line (the mouth bag is #6A2F2C)
+INNER_LIP_MIX = 0.8
+INNER_LIP_DEPTH = (0.0004, 0.0025)  # m behind the contact line (at s = 1) over which it takes over
+INNER_LIP_BIN = 0.0015  # m: x spacing of the contact line's depth profile
+
+
+def inner_lip_weight(P: np.ndarray, r: dict, face, s: float) -> np.ndarray:
+    """M1-CHR-11: 0..1 on the lips' inner surface: texels further back (+Y) than the contact line at
+    their x, within the mouth's width and near the contact's height. 0 without the lip frame."""
+    if "CONTACT" not in r or "LIPDZ" not in r:
+        return np.zeros(len(P))
+    on = r["CONTACT"] > 0.8
+    if on.sum() < 8:
+        return np.zeros(len(P))
+    x = P[:, 0]
+    xs = x[on]
+    centres = np.arange(float(xs.min()), float(xs.max()) + INNER_LIP_BIN * s, INNER_LIP_BIN * s)
+    idx = np.clip(np.round((xs - centres[0]) / (INNER_LIP_BIN * s)).astype(int), 0, len(centres) - 1)
+    cnt = np.bincount(idx, minlength=len(centres))
+    have = cnt > 0
+    yb = (np.bincount(idx, P[on, 1], len(centres)) / np.maximum(cnt, 1))[have]
+    yc = np.interp(x, centres[have], yb)
+    behind = smoothstep(INNER_LIP_DEPTH[0] * s, INNER_LIP_DEPTH[1] * s, P[:, 1] - yc)
+    near = smoothstep(0.012 * s, 0.006 * s, np.abs(r["LIPDZ"])) * smoothstep(1.1, 0.95, np.abs(x) / face.mouth_half)
+    return behind * near
 
 
 def upper_lid_weight(rr: np.ndarray, tt: np.ndarray, front: np.ndarray) -> np.ndarray:
@@ -731,11 +810,11 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
             # M1-CHR-09: the upper lid, margin to crease, a touch darker and browner. Lit from
             # above it read as a pale band over the iris, like pale eyeshadow (a doll cue)
             lid_up = upper_lid_weight(rr, tt, front)
-            col = col * (1 - UPPER_LID_DARKEN * lid_up[:, None] * np.array([0.8, 1.0, 1.05]))
+            col = col * (1 - UPPER_LID_DARKEN * lid_up[:, None] * np.array(UPPER_LID_TINT))
             # M1-CHR-10: the lash line, a narrow darker band along the upper margin where the lash
             # roots sit (it frames the eye; without it the lid read as one pale strip down to the iris)
             line = np.exp(-((rr - LASH_LINE_RR) / LASH_LINE_W) ** 2) * smoothstep(0.0, 0.35, np.sin(tt)) * front
-            col = col * (1 - LASH_LINE_DARKEN * line[:, None] * np.array([0.85, 1.0, 1.0]))
+            col = col * (1 - LASH_LINE_DARKEN * line[:, None] * np.array([1.0, 1.0, 0.9]))  # M1-CHR-11: not orange
             wall = (np.linalg.norm(Ph - e.E, axis=1) < e.R + 0.0016 * s) & (rr < 1.15)
             col[wall] = col[wall] * 0.7 + hexc("#B87268") * 0.3
             car = np.exp(-((rr - 1.0) / 0.12) ** 2) * smoothstep(-0.7, -0.98, np.cos(tt)) * front
@@ -775,6 +854,13 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
         col *= 1 - 0.12 * (np.exp(-((v - (ve + 0.072)) / 0.015) ** 2) * np.exp(-((np.abs(u) - 0.13) / 0.06) ** 2))[:, None]
         mouth = npz["mi"][r["tri"]] == list(npz["mats"]).index("mouth") if "mouth" in list(npz["mats"]) else np.zeros(n, bool)
         col[mouth] = hexc("#6A2F2C")
+        # M1-CHR-11: the inner lip (the skin behind the contact line, which only an open mouth shows)
+        # was painted the vermilion's outer colour. In grief, lit, it read as a long khaki-gold band
+        # under the upper teeth that the QA-05c capture took for the teeth (a diagnostic render with
+        # the teeth pure green showed the band is not teeth). Wet mucosa: darker and redder, toward
+        # the mouth bag's colour the deeper it goes behind the contact
+        inner = inner_lip_weight(Ph, r, face, s) * (~mouth)
+        col = col * (1 - INNER_LIP_MIX * inner[:, None]) + hexc(INNER_LIP) * INNER_LIP_MIX * inner[:, None]
     else:
         # body: knuckles, elbows and knees a little redder, palms and soles paler
         col = col * (1 + 0.03 * (noise3(Ph, 0.05 * s, 3) - 0.5)[:, None])
@@ -991,9 +1077,17 @@ BROW_HEAD_FADE = 0.18
 BROW_EDGE_FADE = 0.08  # of the card height: strokes fade to nothing over this band at each edge
 
 
-LASH_CLUMPS = (38, 14)  # upper, lower: clumps across the strip (about one per 0.9 mm on the upper lid)
-LASH_STRANDS = ((3, 6), (2, 4))  # strands per clump, [lo, hi)
-LASH_ROOT_HAIRS = (150, 40)  # short fine hairs along the root, between the clumps
+# M1-CHR-11: the CHR-10 clumps (38 of 3-5 hairs, 1.5 px at the root, one per 0.9 mm on a jittered
+# grid) still read as a coarse, evenly spaced comb on the GPU (QA-05c fault 4): one dark tick every
+# few pixels, all the same width. Real upper lashes are 100-150 hairs in two or three ragged rows,
+# fine at the root, mostly single or in pairs, of very different lengths, and fanning: the inner
+# ones lean toward the nose, the outer ones out toward the temple, so they cross.
+LASH_CLUMPS = (140, 18)  # upper, lower: hair groups across the strip, at random positions (no grid)
+LASH_STRANDS = ((1, 4), (1, 3))  # strands per group, [lo, hi): mostly singles and pairs
+LASH_ROOT_HAIRS = (220, 30)  # short fine hairs along the root, between the groups
+LASH_WIDTH = (1.15, 0.8)  # px at the root (upper, lower); CHR-10: 1.5 and 1.0
+LASH_FAN = (-18.0, 32.0, 9.0)  # lean in degrees at the inner and outer end, and its per-lash spread
+LASH_ASPECT = 0.47  # one V texel / one U texel in millimetres on the upper ribbon (10 mm / 512 px against 30 mm / 717 px)
 
 
 def _lash_strand(alpha, sid, dep, rng, rx: float, tx: float, length: float, width: float, op: float,
@@ -1039,27 +1133,30 @@ def lash_clumps(h: int, w: int, rng) -> tuple[np.ndarray, np.ndarray, np.ndarray
         n = LASH_CLUMPS[part]
         span = (u1 - u0) * w
         pitch = span / n
-        for c in range(n):
-            u = (c + 0.5) / n
-            xc = u0 * w + (c + rng.uniform(0.2, 0.8)) * pitch
-            # longest over the outer middle of the lid, as asha_eyes.lashes shapes the ribbon
+        # M1-CHR-11: random roots (sorted, no grid), so the gaps are irregular
+        roots = np.sort(rng.uniform(u0 * w + 2, u1 * w - 2, n))
+        for xc in roots:
+            u = (xc / w - u0) / (u1 - u0)
+            # longest over the outer middle of the lid, as asha_eyes.lashes shapes the ribbon, with
+            # a wide spread so neighbours differ
             prof = math.sin(math.pi * (0.1 + 0.8 * u)) ** 0.6
-            length = rng.uniform(0.62, 0.78) + 0.22 * prof if not lower else rng.uniform(0.45, 0.75)
-            lean = rng.normal(0.0, 0.18) * pitch
+            length = rng.uniform(0.45, 0.80) + 0.22 * prof if not lower else rng.uniform(0.35, 0.75)
+            ang = LASH_FAN[0] + (LASH_FAN[1] - LASH_FAN[0]) * u + rng.normal(0.0, LASH_FAN[2])
+            lean = math.tan(math.radians(ang)) * length * h * LASH_ASPECT
             tip = xc + lean
             ns = int(rng.integers(*LASH_STRANDS[part]))
-            wd = (1.5 if not lower else 1.0) * rng.uniform(0.85, 1.15)
+            wd = LASH_WIDTH[part] * rng.uniform(0.75, 1.25)
             for _ in range(ns):
                 k += 1
-                rx = xc + rng.normal(0.0, 0.28 * pitch)
-                _lash_strand(alpha, sid, dep, rng, rx, tip + rng.normal(0.0, 0.8), length * rng.uniform(0.82, 1.0),
-                             wd * rng.uniform(0.8, 1.2), rng.uniform(0.8, 1.0), (k * 0.6180339) % 1.0,
-                             converge=rng.uniform(0.65, 0.9))
+                rx = xc + rng.normal(0.0, 0.5 * pitch)
+                _lash_strand(alpha, sid, dep, rng, rx, tip + rng.normal(0.0, 0.6 * pitch), length * rng.uniform(0.75, 1.0),
+                             wd * rng.uniform(0.8, 1.2), rng.uniform(0.7, 1.0), (k * 0.6180339) % 1.0,
+                             converge=rng.uniform(0.6, 0.95))
         for _ in range(LASH_ROOT_HAIRS[part]):
             k += 1
             rx = rng.uniform(u0 * w + 2, u1 * w - 2)
             ln = rng.uniform(0.10, 0.28)
-            _lash_strand(alpha, sid, dep, rng, rx, rx + rng.normal(0.0, 2.0), ln, rng.uniform(0.8, 1.3),
+            _lash_strand(alpha, sid, dep, rng, rx, rx + rng.normal(0.0, 2.0), ln, rng.uniform(0.6, 1.0),
                          rng.uniform(0.6, 0.95), (k * 0.6180339) % 1.0)
     return alpha, sid, dep
 
@@ -1378,6 +1475,7 @@ def sleeve_maps(w: int = 1024, h: int = 2048, band_px: int = 512, length_m: floa
     write("asha_sleeve_clothmask.png", blur(mask, 1))
     write("asha_sleeve_normal.png", height_to_normal(blur(hgt, 1), 1.6, wrap=False))
     bid = np.asarray(Image.fromarray((band_id * 255).astype(np.uint8), "L").resize((band_px, band_px), Image.NEAREST))
+    check_id_map("asha_sleeve_bandid.png", bid)
     write("asha_sleeve_bandid.png", bid / 255.0)
 
 

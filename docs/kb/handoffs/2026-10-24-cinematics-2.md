@@ -8,7 +8,7 @@ Session: m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`. 
 - **B05, Low tide:** plays at the causeway head before Cutscene B.
 - New speakers `neme` and `child`, and their stand-ins.
 - Data in first_playable.json; docs in first_playable_flow.md; PLAYTEST updated.
-- Filed: M2-FP-14 (B04, plus the B02 bag insert and the H03 gulls), M2-FP-15 (B11), M2-ENV-02 (Haluna night light) and M2-UI-05 (shop and inn).
+- Filed: M2-FP-14 (B04, plus the B02 bag insert and the H03 gulls), M2-FP-15 (B11), M2-ENV-02 (Haluna night light) and M2-UI-06 (shop and inn).
 
 ## In progress
 - Nothing. M2-FP-13 is in review (reviewer: narrative, for the three new scripts).

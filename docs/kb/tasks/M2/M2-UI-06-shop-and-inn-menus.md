@@ -1,5 +1,5 @@
 ---
-id: M2-UI-05
+id: M2-UI-06
 title: Shop and inn menus for Haluna (the slice's B03 systems on show)
 role: ui
 status: todo

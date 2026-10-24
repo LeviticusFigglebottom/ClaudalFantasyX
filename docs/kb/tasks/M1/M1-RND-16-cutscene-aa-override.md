@@ -2,7 +2,7 @@
 id: M1-RND-16
 title: Scoped graphics override for storm cutscenes (FSR2 dither workaround)
 role: rendering
-status: review
+status: done
 owner_session: "worktree-agent-aa764c62452184711"
 depends_on: [M1-RND-11]
 milestone: M1
@@ -80,3 +80,9 @@ M1-RND-11 found that the Undertow body's dither only partly integrates under FSR
     - **S1: the metric partly rewards blur.** A high-frequency RMS over an unsharpened 0.77 bilinear upscale is lower simply because the upscale low-passes the image, so "22 % under native" overstates the integration. Add the jitter-frozen bilinear value as a control (like the "jitter frozen" row for High and Ultra), and report the ratio of the two.
     - **S2:** the cost column comes from `gpu_bench --override` as plain settings, not the push API. Say in undertow.md that the cost was measured that way.
     - **S3:** sweep-L S2 (`tree_exiting` fires on a reparent) and S3 (settings.cfg read on every call) are still open. Carry them onto the M2 cinematics task when it is filed.
+- 2026-10-24 review-sweep-O (environment): **approve with fixes.** All six criteria hold. M1-NIT-02 (re-base, reparent, cache) and M2-NIT-03 (a push during a scene swap, the base copy) have since fixed sweep-L S1-S3 in the code.
+  - **Checks:** Godot `--filter=` graphics_override 15/0 failed and graphics_settings 24/0. I read `push_override` and `_older_owners_left` at graphics_settings.gd:400-545 on the current branch.
+  - **Open (docs only), filed as M1-RND-23:**
+    - sweep-N S1: the jitter-frozen bilinear control row, so "22 % under native" isn't partly upscale blur;
+    - sweep-N S2: undertow.md should say the cost was measured as plain settings, not through the push API.
+  - Criterion 6's "M2 cinematics tasks reference it": M2-FP-10, the only cinematics task, doesn't name `push_override` yet. That's fine until a storm close-up task exists. undertow.md names the shots.

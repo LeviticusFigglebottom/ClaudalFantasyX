@@ -188,6 +188,44 @@ Measured on a GPU (docs/kb/qa/gpu/2026-10-23-qa-05-asha.md): the diagonal bandin
 - **Lights that key a face: `shadow_normal_bias` 2.5–3.0** (Godot default 1.0). At 3.0 Asha's full-body contact shadows still hold; there's no visible peter-panning.
 - **Don't fight it with a shorter `directional_shadow_max_distance`.** Godot's normal bias scales with the shadow texel, so finer texels shrink the bias, and the stair-steps get sharper.
 - The lasting fix is mesh density across the cheeks and jaw (Character).
+- **Asha stage: 4.5 (M1-RND-20).** At 4.5 the smile corner is clean, and the nose, feet and staff contact shadows
+  hold. The stage's key light has `directional_shadow_max_distance` 8 m.
+- **The bias is in shadow texels, not metres.** Godot multiplies `shadow_normal_bias` by the cascade's texel size, so
+  the same number pushes much further in a zone sun with long cascades. Match the *world* offset, not the number.
+  - Haluna's sun (400 m, first split 0.04 = 16 m) has cascades about 10–20× coarser than the stage's at face range.
+    At its own 1.0 its offset at a face is already larger than the stage's 4.5.
+  - Measured (M1-RND-20 follow-up, `docs/kb/qa/gpu/2026-10-23-rnd-18-20-followups.md`): Asha's smile and neutral
+    faces under Haluna's cascade settings show no corner stripe at bias 1.0. At 2.5 and 4.5 the nose shadow fades,
+    and at 4.5 it's gone. **Keep zone suns at 1.0.**
+  - What a zone sun can't do at dialogue range is resolve a face's own shadows at all: 16 m cascades blur the nose
+    and cheek shadows away. Close-ups that need them need a dialogue key light with a short shadow range (a few
+    metres, as the stage does) and bias 4.5 (M2 dialogue rig).
+
+## Mouth interior (M1-RND-21)
+
+The lips shadow an open mouth from every light, so with direct light alone the interior gets only ambient light and
+goes near-black (M1-QA-05c fault 2, grief). Every hero's **mouth bag, teeth and tongue use the `mouth` family**
+(`character_mouth{,_medium,_low}.gdshader`, body `character_mouth_body.gdshaderinc`). It's registered in
+character_shader_tiers.json and the prewarm registry.
+
+- **Material contract:** the values of the StandardMaterial3D it replaced.
+  - `col_albedo` and `tex_albedo`.
+  - `tex_orm`: R = occlusion, G = roughness.
+  - `roughness`, with `roughness_from_orm` (0 = the uniform alone).
+  - `specular` (F0 = 0.08 ×) and `ao_light_affect`.
+- **Cavity bounce:** per light, the shader adds `col_cavity_bounce × cavity_bounce × LIGHT_COLOR / π`.
+  - It's unshadowed, because the lips that bounce the light are lit even where the interior isn't.
+  - It's faded by the baked occlusion (`mix(1, ao, cavity_occlusion)`), by how far the light is behind the face
+    (`0.5 + 0.5 · L·V`, so a rim light from behind adds almost nothing), and, for positional lights, by
+    `ATTENUATION`.
+  - Defaults: #C79A8C, 0.4, 0.5. A saturated lip red turned the teeth orange.
+- **Tiers:** the bounce is on every tier. Low drops only the GGX lobe from lights.
+- **Measured** on the GPU (`docs/kb/qa/gpu/2026-10-23-rnd-21-mouth-fill.md`), over the grief interior pixels:
+  - The median luminance rises 0.0121 → 0.0174 (High) and 0.0121 → 0.0180 (Low).
+  - The share below 0.01 halves: 0.30 → 0.16 (High) and 0.29 → 0.14 (Low).
+  - Closed-mouth shots don't change.
+- **The teeth still read khaki-brown,** even under a neutral bounce. That's the atlas teeth patch's albedo (QA-05c
+  fault 3, M1-CHR-11), not this term.
 
 ## Cost estimates
 

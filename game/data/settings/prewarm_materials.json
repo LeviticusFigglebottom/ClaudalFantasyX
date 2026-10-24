@@ -263,6 +263,30 @@
       "note": "M1-RND-04 character cloth_sheer (high tier). Add the hero's battle and dialogue scenes when M1-CHR-02 lands; prewarm only the active tier once ShaderPrewarm filters by tier."
     },
     {
+      "path": "res://game/shaders/character/character_mouth_low.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/characters/asha/asha_stage.tscn"
+      ],
+      "tier": "low",
+      "note": "M1-RND-21 character mouth interior (low tier): every hero's mouth bag, teeth and tongue."
+    },
+    {
+      "path": "res://game/shaders/character/character_mouth_medium.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/characters/asha/asha_stage.tscn"
+      ],
+      "tier": "medium",
+      "note": "M1-RND-21 character mouth interior (medium tier): every hero's mouth bag, teeth and tongue."
+    },
+    {
+      "path": "res://game/shaders/character/character_mouth.gdshader",
+      "scenes": [
+        "res://game/levels/_tests/characters/asha/asha_stage.tscn"
+      ],
+      "tier": "high",
+      "note": "M1-RND-21 character mouth interior (high tier): every hero's mouth bag, teeth and tongue."
+    },
+    {
       "path": "res://game/shaders/character/character_cornea.gdshader",
       "scenes": [
         "res://game/levels/_tests/character_shading/shading_test.tscn"

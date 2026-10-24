@@ -31,6 +31,6 @@ Queue item 4 of the m2-slice track. The playable Haluna has Cutscene A, three of
 - Gates: dlgc and `--check` (11 scenes, 0 errors); validate_data (which includes banned terms); lint and format; the full Godot suite, 1269 green (including fp_thread and the new `test_haluna_slice_beats.gd`, 5 tests). No manifest shot covers Haluna's playable zone.
 
 ## Not in this task (filed separately)
-B04, Pila's granddaughter, is M2-FP-14. B11, the dock at night, is M2-FP-15, with M2-ENV-02 for Haluna's night light. The inn and the equipment shop are M2-UI-05. The lintel-gull look-at (H03) and the camera insert of Asha's packed bag in B02 are part of M2-FP-14.
+B04, Pila's granddaughter, is M2-FP-14. B11, the dock at night, is M2-FP-15, with M2-ENV-02 for Haluna's night light. The inn and the equipment shop are M2-UI-06. The lintel-gull look-at (H03) and the camera insert of Asha's packed bag in B02 are part of M2-FP-14.
 
 ## Review log

@@ -127,7 +127,7 @@ vec3 hymn_sea_glow_global(vec3 world_pos, float material_energy, float column_m)
 ## Rendering design
 
 - **Simulation:** `GPUParticles3D` with a custom particle shader, world-space (`local_coords = false`), `fixed_fps` 30, `preprocess` 14 s, lifetime 14 s. Motion is a target velocity that the actual velocity eases towards (`response_rate` 1.4 /s), giving the motes weight. The target is the mode drift plus divergence-free curl noise (`hymn_curl_fbm3`, one shared field sampled at the mote's position, so neighbours move together like a current rather than buzzing independently), plus attractors. Per-particle layout: see the header of `glimmer_motes_process.gdshader`.
-- **Draw:** a 1×1 QuadMesh, billboarded in view space (`skip_vertex_transform`), additive and unshaded. Each mote has a gaussian core (2% at one core radius), a round inverse-square halo (quad half-size = 7 core radii), and a short tail: a gaussian streak along the screen-space velocity whose length is speed × `trail_time_s` (1.1 s), capped at 1.4 halo radii. A longer streak spreads the same light (alpha / (1 + 0.5 · trail)), so fast motes don't get brighter. Output is HDR (cores reach about 2–5) for Environment glow to bloom.
+- **Draw:** a 1×1 QuadMesh, billboarded in view space (`skip_vertex_transform`), additive and unshaded. Each mote has a gaussian core (2% at one core radius), a round inverse-square halo (quad half-size = 7 core radii), and a short tail: a gaussian streak along the screen-space **streak velocity** (the velocity without the released spiral's tangential term, `CUSTOM.xyz`, M1-RND-17), whose length is speed × `trail_time_s` (1.1 s), capped at 1.4 halo radii. A longer streak spreads the same light (alpha / (1 + 0.5 · trail)), so fast motes don't get brighter. Output is HDR (cores reach about 2–5) for Environment glow to bloom.
 - **Soft particles:** both passes read `hint_depth_texture`. The direct pass fades over `soft_depth_m` (0.35 m) in front of opaque geometry. Without it, a mote sinking just under the sea surface leaves a hard horizontal cut where its camera-facing quad meets the water.
 - **Still-water reflection** (second draw pass, `still_water_reflection` and tier `reflection`): mirrors each mote about `water_height_m`, multiplies by Schlick reflectance for that view ray, and draws it softer. Depth test is off (mirrored motes sit under the opaque water), so occlusion is done by hand: it compares the opaque depth with the point where the view ray meets the water plane, which means a figure in front of the water hides the reflection behind it.
 - **Near-lens fade:** alpha is 0 nearer than 0.6 m and full from 2 m. Invisible motes (at the lens, fully absorbed, or unborn) collapse to zero area in the vertex shader, so they cost no fill.
@@ -143,7 +143,7 @@ vec3 hymn_sea_glow_global(vec3 world_pos, float material_energy, float column_m)
 | `modes.machine` | `energy` 1.2 |
 | `motion` | `curl_frequency` 0.35 /m, `curl_strength_mps` 0.05, `curl_evolve` 0.04, `response_rate` 1.4, `underwater_drag` 3, `underwater_absorb_per_m` 2.2 |
 | `attractor` | `max` 8 (= `HYMN_GLIMMER_MAX_ATTRACTORS` in the shader, tested), `default_strength` 1, `default_radius_m` 0.7, `default_swirl` 1, `default_half_height_m` 0, `influence_scale` 3 (× radius), `pull_mps` 0.5, `swirl_mps` 0.45, `keep_drift` 0.55, `focus_strength` 0.8, `focus_half_height_m` 0.8 |
-| `look` | `size_min/max_m` 0.012/0.045, `size_power` 3, `halo_scale` 7, `core_gain` 0.8, `halo_gain` 0.12, `halo_falloff` 0.6, `streak_gain` 0.25, `streak_width` 1.6, `trail_time_s` 1.1, `trail_max_ratio` 1.4, `breath_rate_hz` 0.18, `breath_depth` 0.22, `fade_in/out_fraction` 0.12/0.3, `reflection_gain` 1, `reflection_softness` 1.6, `brightness_min` 0.3, `brightness_power` 1.5, `near_fade_start/end_m` 0.6/2, `soft_depth_m` 0.35 |
+| `look` | `size_min/max_m` 0.012/0.045, `size_power` 3, `halo_scale` 7, `core_gain` 0.8, `halo_gain` 0.12, `halo_chroma_gain` 1.6, `halo_chroma_min` 0.25, `halo_hue_horizon_deg` 55 (only for a field with `warm_horizon_halo`), `halo_hue_band_deg` 8, `halo_falloff` 0.6, `streak_gain` 0.25, `streak_width` 1.6, `trail_time_s` 1.1, `trail_max_ratio` 1.4, `breath_rate_hz` 0.18, `breath_depth` 0.22, `fade_in/out_fraction` 0.12/0.3, `reflection_gain` 1, `reflection_softness` 1.6, `brightness_min` 0.3, `brightness_power` 1.5, `near_fade_start/end_m` 0.6/2, `soft_depth_m` 0.35 |
 | `emitter` | `amount` 450 (at High), `lifetime_s` 14, `preprocess_s` 14, `fixed_fps` 30, `aabb_margin_m` 6 |
 | `fill_light` | `range_m` 6, `attenuation` 1.6 |
 | `quality` | per tier: `amount_scale`, `trail_scale`, `curl_octaves`, `reflection` |
@@ -208,9 +208,28 @@ No tier removes the effect (a test asserts amount ≥ 1 and growing with tier). 
 
 Every value in `cues.json`'s sets must have a mapping (tested). There's no runtime `@vfx` handler yet. The sequencer should call `apply_cue()` when the beat starts.
 
-**Spiral.** `spiral_rate_rad_s` is 1.0 (was 0.3): 2.2 turns per 14 s life, so released light reads as a spiral, not straight streaks (bible §2, colour script rule 1).
+**Spiral.** `spiral_rate_rad_s` is 1.0 (was 0.3): 2.2 turns per 14 s life, so released light reads as a spiral, not straight streaks (bible §2, colour script rule 1). **Streak axis (M1-RND-17):** the streak is drawn along the rise and curl drift only; the spiral's tangential term is left out of `CUSTOM.xyz`. A still frame therefore reads rising (dusk median 6° from vertical, was 37°), while the motes themselves still circle. In a 10 s bench or editor run, each released mote makes 1.6 turns (radius 0.2–0.6 m, rise 0.15–0.4 m/s, unchanged). The spiral is visible in motion, not in a still.
 
-**Warm halo.** `look.halo_chroma_gain` (1.6) raises the halo's Oklab chroma for warm (gold) motes only, keeping their hue. A pale `glimmer_lift` core blown toward white by bloom still reads gold at dusk. Held and bound motes are unchanged. Art to confirm the value.
+**Warm halo.** `look.halo_chroma_gain` (1.6) raises the halo's Oklab chroma for warm motes. On its own it fell short: it multiplies `glimmer_lift`'s C 0.022–0.037, still below a dusk sky's 0.04–0.06, so the halo bleached the sky (M1-ART-05).
+
+**M1-RND-17** adds an absolute floor for **released** motes, weighted by their released share (`CUSTOM.w`).
+- The halo gets Oklab C ≥ `halo_chroma_min` (0.25) × L, at the released colour's own Oklab hue: GlimmerField derives `halo_hue_deg` from `colors.released` (83° for `glimmer_lift`), whatever the core has whitened to. A different released palette (M2 VFX) gets its own halo hue.
+- **One hue per mote (review-sweep-N B1):** the floor is weighted by `smoothstep(0.6, 1, released share)`, so a mote mid-way through its release lerp keeps a halo of its own core's hue.
+- **Only on a warm horizon (review-sweep-N B2):** for a field with `warm_horizon_halo` (the dusk test sets it), halos within `halo_hue_band_deg` (8°) of the horizon in view elevation (mirrored motes too) turn to `halo_hue_horizon_deg` (55°). On a peach horizon, light at 83° reads as a *loss of red* (toward cyan). Every other field keeps one hue at the horizon, so a night horizon never goes copper.
+- The streak takes the halo colour too. The core stays its own pale colour.
+- Held and bound motes are unchanged.
+
+Measured on the GPU (the M1-ART-05 method, `tools/screenshots/mote_metrics.py`):
+
+| Region | Before | After |
+|---|---|---|
+| Upper sky | hue 87°, \|Δab\| 0.039 | hue 76°, \|Δab\| 0.060 |
+| Horizon | hue 175°, \|Δab\| 0.023 | hue 139°, \|Δab\| 0.024 |
+| Mirror | hue 136°, \|Δab\| 0.021 | hue 102°, \|Δab\| 0.031 |
+
+- Halo chroma at or above the sky's: horizon 0.044 against 0.043, mirror 0.045 against 0.036.
+- Coverage 16.3 %.
+- The horizon and mirror hue targets are not met. The pale cores dominate the inner-halo band there (`docs/kb/qa/gpu/2026-10-23-rnd-17-dusk-motes.md`).
 
 ## Open items
 

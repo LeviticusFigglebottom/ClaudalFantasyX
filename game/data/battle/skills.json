@@ -101,6 +101,14 @@
      "accuracy": 100, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false,
      "swell": true},
     {"id": "written_light", "name_key": "SKILL_WRITTEN_LIGHT", "kind": "magical", "power": 10, "rank": 3,
-     "element": "none", "target": "all_foes", "mp_cost": 0, "magic": true, "swell": true}
+     "element": "none", "target": "all_foes", "mp_cost": 0, "magic": true, "swell": true},
+    {"id": "brine_lash", "name_key": "SKILL_BRINE_LASH", "kind": "magical", "power": 10, "rank": 3,
+     "element": "water", "target": "single_foe", "mp_cost": 4, "magic": true},
+    {"id": "tidal_ward", "name_key": "SKILL_TIDAL_WARD", "kind": "support", "power": 0, "rank": 2,
+     "element": "none", "target": "self", "mp_cost": 6, "magic": true,
+     "statuses": [{"id": "protect", "chance": 100}, {"id": "shell", "chance": 100}]},
+    {"id": "floodnet", "name_key": "SKILL_FLOODNET", "kind": "magical", "power": 16, "rank": 3,
+     "element": "water", "target": "all_foes", "mp_cost": 0, "magic": true, "swell": true,
+     "vowbound": true}
   ]
 }
