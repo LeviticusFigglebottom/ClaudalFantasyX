@@ -110,6 +110,12 @@ var record_trace := false
 var trace: Array = []
 
 var _running := false
+# M2-RND-15: the first run's live scenes (first_run_live_scenes), instanced on worker threads: [task id, [instance]].
+var _live_tasks: Array = []
+var _live_seen := {}
+# A first run's live scenes start once the regular staging has drained: started with it, their worker-thread
+# instancing (loads, dressing) piled onto the boot's heaviest frames (2.9 s against 1.05 on a cold driver).
+var _live_pending := false
 var _last_frame_usec := 0
 var _stage_alive := false
 var _frames_to_render := 0
@@ -229,6 +235,7 @@ func start(for_scene: String = "") -> int:
 		for path: Variant in config.get("first_run_scenes", []):
 			if ResourceLoader.exists(str(path)):
 				_instanced += _instance_scene_materials(str(path), int(config.get("max_scene_materials", 0)))
+		_live_pending = true
 	if bool(config.get("scene_materials", false)) and for_scene != "" and ResourceLoader.exists(for_scene):
 		_instanced += _instance_scene_materials(for_scene, int(config.get("max_scene_materials", 0)))
 	var per_frame := int(config.get("materials_per_frame", 0))
@@ -496,12 +503,93 @@ func tick(frame_ms: float) -> void:
 				_batch = maxi(floori(_batch / 2.0), 1)
 				_min_batch_seen = mini(_min_batch_seen, _batch)
 			_stage_next_batch()
-		else:
+		elif not _poll_live_scenes():
 			_frames_since_batch += 1
 			if _frames_since_batch >= _frames_to_render:
 				_clear_stage()
 	if not _stage_alive and _frames_measured >= _measure_frames:
 		_finish()
+
+
+## M2-RND-15, a cold first launch: a zone that builds its geometry at runtime (Haluna's dresser MultiMeshes, ocean
+## grid and cast materials) has surfaces no SceneState lists, and on an empty driver cache its first frame compiled
+## 92 surface pipelines at once (1.6-1.7 s). A first run instances each registry "first_run_live_scenes" entry on a
+## worker thread, as SceneRouter does (so a zone prebuilds itself off the tree, never running _ready), stages a
+## draw of every mesh, MultiMesh and material the live instance holds, and frees it.
+func _start_live_scenes() -> void:
+	for path: Variant in config.get("first_run_live_scenes", []):
+		if ResourceLoader.exists(str(path)):
+			var box := [null]
+			_live_tasks.append([WorkerThreadPool.add_task(_instance_live.bind(str(path), box)), box])
+
+
+static func _instance_live(path: String, box: Array) -> void:
+	var packed := load(path) as PackedScene
+	box[0] = packed.instantiate() if packed != null else null
+
+
+## Harvests every finished live scene into the pending draws. True while any is still instancing (the stage stays).
+func _poll_live_scenes() -> bool:
+	if _live_pending:
+		_live_pending = false
+		_start_live_scenes()
+		return not _live_tasks.is_empty()
+	var cap := int(config.get("max_live_materials", 0))
+	for i in range(_live_tasks.size() - 1, -1, -1):
+		var task: Array = _live_tasks[i]
+		if not WorkerThreadPool.is_task_completed(int(task[0])):
+			continue
+		WorkerThreadPool.wait_for_task_completion(int(task[0]))
+		_live_tasks.remove_at(i)
+		var inst := (task[1] as Array)[0] as Node
+		if inst == null:
+			continue
+		var added := 0
+		var geoms := inst.find_children("*", "GeometryInstance3D", true, false)
+		if inst is GeometryInstance3D:
+			geoms.append(inst)
+		for g in geoms:
+			for pair in _live_draws(g as GeometryInstance3D):
+				var key := [pair[0], pair[1]]
+				if _live_seen.has(key) or added >= cap:
+					continue
+				_live_seen[key] = true
+				_pending.append(pair)
+				added += 1
+		_draws_total += added
+		_instanced += added
+		inst.free()
+		if added > 0:
+			_stage_next_batch()
+	return not _live_tasks.is_empty()
+
+
+## [material, mesh, source multimesh or null] for a live node: its override, per-surface overrides, else the
+## mesh's own surface materials (as _state_draws, from the node itself rather than its stored properties).
+static func _live_draws(g: GeometryInstance3D) -> Array:
+	var mm: MultiMesh = (g as MultiMeshInstance3D).multimesh if g is MultiMeshInstance3D else null
+	var mesh: Mesh = mm.mesh if mm != null else ((g as MeshInstance3D).mesh if g is MeshInstance3D else null)
+	if mesh == null:
+		return []
+	if g.material_override != null:
+		return [[g.material_override, mesh, mm]]
+	var out := []
+	for i in mesh.get_surface_count():
+		var m: Material = (g as MeshInstance3D).get_surface_override_material(i) if g is MeshInstance3D else null
+		if m == null:
+			m = mesh.surface_get_material(i)
+		if m != null:
+			out.append([m, mesh, mm])
+	return out
+
+
+func _drop_live_scenes() -> void:
+	for task: Array in _live_tasks:
+		WorkerThreadPool.wait_for_task_completion(int(task[0]))
+		var inst := (task[1] as Array)[0] as Node
+		if inst != null:
+			inst.free()
+	_live_tasks.clear()
 
 
 ## Moves up to one batch of pending draws into the stage; they compile on the frame that draws them.
@@ -543,6 +631,7 @@ func _process(_delta: float) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
+		_drop_live_scenes()
 		for n: Variant in _pending:
 			if is_instance_valid(n) and n is Node:
 				n.free()

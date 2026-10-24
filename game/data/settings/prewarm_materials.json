@@ -930,5 +930,10 @@
       ],
       "note": "M2-RND-04 Ilun's Floodnet over the flood."
     }
-  ]
+  ],
+  "first_run_live_scenes": [
+    "res://game/levels/ch02/haluna/haluna.tscn"
+  ],
+  "max_live_materials": 256,
+  "_note_first_run_live": "M2-RND-15: a first run also instances these scenes on a worker thread (a zone prebuilds itself off the tree), stages a draw of every mesh, MultiMesh and material the live instance holds (at most max_live_materials), and frees it. They cover the surfaces a zone builds at runtime, which no SceneState lists; on an empty driver cache Haluna's first frame compiled 92 surface pipelines at once (1.6-1.7 s)."
 }

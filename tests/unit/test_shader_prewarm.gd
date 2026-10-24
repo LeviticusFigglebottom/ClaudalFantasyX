@@ -681,6 +681,49 @@ func test_headless_skips_the_first_run_and_an_interrupted_warm_up_leaves_nothing
 	_clean_tmp()
 
 
+## M2-RND-15: a first run instances each first_run_live_scenes entry on a worker thread and stages the draws its
+## live instance holds (a zone's runtime-built surfaces no SceneState lists), then frees the instance.
+func test_a_first_run_stages_the_draws_of_its_live_scenes_and_frees_them() -> void:
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var mi := MeshInstance3D.new()
+	var mesh := BoxMesh.new()
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color.TEAL
+	mesh.material = mat
+	mi.mesh = mesh
+	var packed := PackedScene.new()
+	packed.pack(mi)
+	mi.free()
+	var scene_path := TMP_DIR + "/live_scene.tscn"
+	ResourceSaver.save(packed, scene_path)
+	var reg_path := _write_registry(
+		"registry_live.json", {"first_run_live_scenes": [scene_path], "max_live_materials": 8, "materials_per_frame": 4}
+	)
+	var nodes_before := Performance.get_monitor(Performance.OBJECT_NODE_COUNT)
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	node.resident_only = true
+	node.first_run = true
+	node.preset_id = "high"
+	_host().add_child(node)
+	assert_eq(node.start(""), 0, "nothing listed up front: the live scene comes later")
+	var got: Array[Dictionary] = []
+	node.finished.connect(func(st: Dictionary) -> void: got.append(st))
+	for i in 600:
+		if not node.is_running():
+			break
+		# The live scene instances on a worker thread: let it run between ticks.
+		OS.delay_msec(5)
+		node.tick(4.0)
+	assert_false(node.is_running(), "the first run finishes once its live scene is harvested and drawn")
+	assert_eq(got.size(), 1)
+	assert_eq(int(got[0]["materials"]), 1, "the live instance's material was staged")
+	if is_instance_valid(node):
+		node.free()
+	assert_eq(Performance.get_monitor(Performance.OBJECT_NODE_COUNT), nodes_before, "the live instance is freed")
+	_clean_tmp()
+
+
 func _host() -> Node:
 	# The tree root is busy while the runner scene is readying, so attach under the running scene.
 	return (Engine.get_main_loop() as SceneTree).current_scene
