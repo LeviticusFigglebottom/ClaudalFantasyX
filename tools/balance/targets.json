@@ -1046,6 +1046,105 @@
       "p90_turns_max": 90,
       "loadout": "ch08_seawall",
       "swell": "good"
+    },
+    {
+      "id": "ch08_headland_gulls",
+      "chapter": "Ch8 route, the headland path: two stormgulls and a wallcrab (Rhen answers; role_answer report only, logged exception as for ch06_ridge_gulls)",
+      "kind": "regular",
+      "encounter": "ch08_headland_gulls",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch08_headland_crabs",
+      "chapter": "Ch8 route, the headland path: two wallcrabs and a stormgull (Toma answers the crabs)",
+      "kind": "regular",
+      "encounter": "ch08_headland_crabs",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch08_flue_moths",
+      "chapter": "Ch8 Coilspire, the placed fights: two flue moths (Ysolde's frost; she starts in reserve)",
+      "kind": "regular",
+      "encounter": "ch08_flue_moths",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
     }
   ]
 }

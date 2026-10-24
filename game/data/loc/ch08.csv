@@ -57,3 +57,11 @@ FIELD_PROMPT_CH08_FLUE_KEY,Turn the flue-key
 FIELD_PROMPT_CH08_GREAT_KEY,Open the beacon
 FIELD_PROMPT_CH08_HEARTH,Sit by the hearth
 FIELD_PROMPT_CH08_GATE,Through the wall-gate
+ENEMY_STORMGULL,Stormgull
+LORE_STORMGULL,"A gull harrier gone dark with the weather. It rides the updraught off the headland without a wingbeat, and the static it carries crackles in its feathers before it spits it."
+ENEMY_WALLCRAB,Wallcrab
+LORE_WALLCRAB,"A reef crab the colour of laterite, grown fat on the seawall's weed. Corrow's children say it is a piece of the wall that got bored and walked off."
+ENEMY_FLUE_MOTH,Flue Moth
+LORE_FLUE_MOTH,"Not spawn. A soot-moth as wide as a door, drawn up Coilspire's flues by the keeping flame. It drinks fire and sheds soot, and the Tenders sweep its dust off the braziers every morning."
+ENC_CH08_HEADLAND,The Headland Path
+ENC_CH08_COILSPIRE,Coilspire

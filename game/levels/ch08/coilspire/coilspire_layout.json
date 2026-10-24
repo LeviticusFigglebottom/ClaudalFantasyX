@@ -140,8 +140,8 @@
   ],
   "encounters": {
     "table": [
-      {"encounter": "ch06_ridge_gulls", "weight": 2},
-      {"encounter": "ch06_flats_crabs", "weight": 1}
+      {"encounter": "ch08_headland_gulls", "weight": 2},
+      {"encounter": "ch08_headland_crabs", "weight": 1}
     ],
     "min_m": 26, "max_m": 42, "when": {"unset": ["ch08_entered_coilspire"]}, "seed": 8
   },

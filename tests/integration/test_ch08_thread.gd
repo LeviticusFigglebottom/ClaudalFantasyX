@@ -236,7 +236,7 @@ func _coilspire() -> void:
 	assert_true(coil.encounters != null, "the headland has random fights")
 	assert_true(ZoneStory.holds((coil.layout.get("encounters", {}) as Dictionary).get("when", {})), "on the path")
 	assert_true(_trigger(&"path_fight").on_touched())
-	_expect_battle(&"ch06_ridge_gulls", &"PathMid", &"ch08_path_fight_won")
+	_expect_battle(&"ch08_headland_gulls", &"PathMid", &"ch08_path_fight_won")
 	_reopen(COILSPIRE, &"PathMid")
 	coil = zone as Ch08CoilspireZone
 	assert_false(_trigger(&"path_fight").is_available(), "the forced fight is once")
@@ -259,7 +259,7 @@ func _coilspire() -> void:
 	assert_false(coil.block_shown("Gate_t1"), "the way up opens")
 	assert_true(coil.block_shown("Flame_t1"))
 	assert_true(_trigger(&"moths_1").on_touched())
-	_expect_battle(&"ch05_stair_ashwings", &"Tier2", &"ch08_moths_1_won")
+	_expect_battle(&"ch08_flue_moths", &"Tier2", &"ch08_moths_1_won")
 	_reopen(COILSPIRE, &"Tier2")
 	coil = zone as Ch08CoilspireZone
 	assert_eq(coil.trial.tier, 1, "the trial survives the fight's reload")
@@ -275,7 +275,7 @@ func _coilspire() -> void:
 	assert_true(_flue(coil, &"t3_a"))
 	assert_eq(coil.trial.tier, 3, "tier 3 draws")
 	assert_true(_trigger(&"moths_2").on_touched())
-	_expect_battle(&"ch05_stair_tortoise_ashwing", &"Tier4", &"ch08_moths_2_won")
+	_expect_battle(&"ch08_flue_moths", &"Tier4", &"ch08_moths_2_won")
 	_reopen(COILSPIRE, &"Tier4")
 	coil = zone as Ch08CoilspireZone
 	for k: StringName in [&"t4_a", &"t4_b", &"t4_d"]:
