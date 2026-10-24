@@ -2,6 +2,8 @@
 
 **Rewritten:** 2026-10-24 by the Lead, cloud session `session_019iimsngAgPLEram1wcbLpE` (new account). It replaces the old account's handoff; that version is in git history at a504072. Each environment's detail is in this folder (`lead-cloud.md`, `pc-gpu.md`, and `m2-slice.md` / `characters.md` on those tracks' branches). **Fetch every branch first: the newest per-environment log is on that environment's own branch.**
 
+> **The human's direction (2026-10-24, ~11:30):** no environment idles waiting on another or on the human. Reviews the human must give are collected and never block work, and M3+ (Act I) runs in parallel with the M2 review. The Lead must stay active: it monitors every session, routes work, merges in batches, and lets tracks merge each other's branches directly when that unblocks them (e.g. env-art and ui merge claude/m2-slice).
+
 ## 0. Read these, in this order
 1. [`CLAUDE.md`](../../../CLAUDE.md): the operating rules for every agent. They include "Gate scope", §7a live logs, and §8a shared-machine and scratch rules.
 2. [`SPEC.md`](../../../SPEC.md) v1.3: the brief. Only the Lead edits it, and every change needs an ADR plus a version note.
@@ -80,6 +82,7 @@ These were created in default permission mode; the human sets Auto in each one's
 - **Wake-ups:** the hourly routine `trig_01LJyLo42xCq3WVmAza3BMhe` FAILS with ACCESS_DENIED (as in the old account). The Lead keeps a background `sleep 2700` heartbeat in its own session instead, and re-arms it on each wake.
 
 ## 4. Process that works (keep it)
+- **Pre-merge gates run on the tracks (2026-10-24).** Each cloud track merges the latest integration branch, runs the FULL `tools/ci_local.sh` in its own container, and writes "MERGE-READY @ <sha>: ..." in its live log. The Lead merges with a scoped re-check (conflicts, plus the areas its merge resolution touched). Every Blender job pins `threads` so outputs reproduce on any CPU count. In shell waiters, never `pgrep -f <pattern>` for a pattern your own command line contains: it matches itself.
 - **Standing queues:** never one task at a time; ask each environment to message when it's two items from the end.
 - **Review sweeps:** after each merge batch, a fresh reviewer agent covers every `status: review` task. On approve or approve-with-fixes, close the task and file the fixes as new tasks. On request-changes, reopen it.
 - **Gate scope** (CLAUDE.md): agents run only checks their change can break. The Lead runs the full `tools/ci_local.sh` (about 60–90 min on 4 CPUs) after a batch of code or render merges, in a separate `lead/integration` worktree.
