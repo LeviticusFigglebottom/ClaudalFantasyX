@@ -4,7 +4,11 @@ extends TestCase
 ## within the switch margin, no double draw while the camera moves.
 
 const LodRangeModel := preload("res://tests/unit/lod_range_model.gd")
-const LAYOUT := "res://game/levels/_tests/haluna_mood/haluna_layout.json"
+## The mood layout, then its home on the Haluna zone branch (M2-ENV-01 moves it): the first that exists.
+const LAYOUTS: Array[String] = [
+	"res://game/levels/_tests/haluna_mood/haluna_layout.json",
+	"res://game/levels/ch02/haluna/haluna_layout.json",
+]
 const PIECES: Array[String] = ["dock_haluna", "tidewall_straight", "lintel_gull_a"]
 ## A per-placement switch distance (the layout's `lod1_from_m` on a piece spec), m.
 const OVERRIDE_FROM_M := 40.0
@@ -14,7 +18,10 @@ const SWEEP_PAST_M := 60.0
 
 func _dresser() -> HalunaDresser:
 	var dresser := HalunaDresser.new()
-	dresser.layout = HalunaDresser._load_json(LAYOUT)
+	for path in LAYOUTS:
+		if FileAccess.file_exists(path):
+			dresser.layout = HalunaDresser._load_json(path)
+			break
 	assert_false(dresser.layout.is_empty(), "the layout loads")
 	return dresser
 
