@@ -116,6 +116,10 @@ var _live_seen := {}
 # A first run's live scenes start once the regular staging has drained: started with it, their worker-thread
 # instancing (loads, dressing) piled onto the boot's heaviest frames (2.9 s against 1.05 on a cold driver).
 var _live_pending := false
+# A first run's first_run_scenes, harvested one at a time before the stage's batches (M2-RND-18), each loaded on a
+# worker thread: [task id, [PackedScene]] while one loads.
+var _harvest_queue: PackedStringArray = PackedStringArray()
+var _harvest_task: Array = []
 var _last_frame_usec := 0
 var _stage_alive := false
 var _frames_to_render := 0
@@ -232,13 +236,20 @@ func start(for_scene: String = "") -> int:
 			push_warning("%s: registered material not found: %s" % [LOG_PREFIX, e.get("path", "")])
 			_skipped += 1
 	if first_run:
+		# M2-RND-18: harvested one scene per frame (_harvest_next_first_run_scene), not here: loading all five
+		# scenes' meshes and materials in start() compiled their pipelines in one frame (2.65 s on a cold High).
 		for path: Variant in config.get("first_run_scenes", []):
 			if ResourceLoader.exists(str(path)):
-				_instanced += _instance_scene_materials(str(path), int(config.get("max_scene_materials", 0)))
+				_harvest_queue.append(str(path))
 		_live_pending = true
 	if bool(config.get("scene_materials", false)) and for_scene != "" and ResourceLoader.exists(for_scene):
 		_instanced += _instance_scene_materials(for_scene, int(config.get("max_scene_materials", 0)))
+	# M2-RND-18: a first run on an empty driver cache compiles every pass of a material at once (up to ~1.3 s for
+	# one), so its batches start at first_run_materials_per_frame: two to a batch made the boot's worst hidden
+	# frame 1.7 s on Low and 3.0 s on High, which froze the boot card.
 	var per_frame := int(config.get("materials_per_frame", 0))
+	if first_run and config.has("first_run_materials_per_frame"):
+		per_frame = int(config["first_run_materials_per_frame"])
 	_batch = per_frame if per_frame > 0 else maxi(_pending.size(), 1)
 	_min_batch_seen = _batch
 	_draws_total = _pending.size()
@@ -493,8 +504,12 @@ func tick(frame_ms: float) -> void:
 	if _stage_alive and not _bring_up.is_empty():
 		var step: Array = _bring_up.pop_front()
 		_viewport.set(step[0], step[1])
-		if _bring_up.is_empty():
+		# M2-RND-18: a first run keeps one frame empty after the bring-up, so the renderer's own first use (its
+		# passes with every feature on) doesn't share a frame with the first material's pipelines.
+		if _bring_up.is_empty() and not first_run:
 			_stage_next_batch()
+	elif _stage_alive and not _harvest_queue.is_empty():
+		_harvest_next_scene()
 	elif _stage_alive:
 		if not _pending.is_empty():
 			# The first frame also carries start() and the stage's set-up, so it says nothing about how
@@ -520,12 +535,7 @@ func _start_live_scenes() -> void:
 	for path: Variant in config.get("first_run_live_scenes", []):
 		if ResourceLoader.exists(str(path)):
 			var box := [null]
-			_live_tasks.append([WorkerThreadPool.add_task(_instance_live.bind(str(path), box)), box])
-
-
-static func _instance_live(path: String, box: Array) -> void:
-	var packed := load(path) as PackedScene
-	box[0] = packed.instantiate() if packed != null else null
+			_live_tasks.append([WorkerThreadPool.add_task(PrewarmHarvest.instance_live.bind(str(path), box)), box])
 
 
 ## Harvests every finished live scene into the pending draws. True while any is still instancing (the stage stays).
@@ -549,7 +559,7 @@ func _poll_live_scenes() -> bool:
 		if inst is GeometryInstance3D:
 			geoms.append(inst)
 		for g in geoms:
-			for pair in _live_draws(g as GeometryInstance3D):
+			for pair in PrewarmHarvest.live_draws(g as GeometryInstance3D):
 				var key := [pair[0], pair[1]]
 				if _live_seen.has(key) or added >= cap:
 					continue
@@ -564,25 +574,6 @@ func _poll_live_scenes() -> bool:
 	return not _live_tasks.is_empty()
 
 
-## [material, mesh, source multimesh or null] for a live node: its override, per-surface overrides, else the
-## mesh's own surface materials (as _state_draws, from the node itself rather than its stored properties).
-static func _live_draws(g: GeometryInstance3D) -> Array:
-	var mm: MultiMesh = (g as MultiMeshInstance3D).multimesh if g is MultiMeshInstance3D else null
-	var mesh: Mesh = mm.mesh if mm != null else ((g as MeshInstance3D).mesh if g is MeshInstance3D else null)
-	if mesh == null:
-		return []
-	if g.material_override != null:
-		return [[g.material_override, mesh, mm]]
-	var out := []
-	for i in mesh.get_surface_count():
-		var m: Material = (g as MeshInstance3D).get_surface_override_material(i) if g is MeshInstance3D else null
-		if m == null:
-			m = mesh.surface_get_material(i)
-		if m != null:
-			out.append([m, mesh, mm])
-	return out
-
-
 func _drop_live_scenes() -> void:
 	for task: Array in _live_tasks:
 		WorkerThreadPool.wait_for_task_completion(int(task[0]))
@@ -590,6 +581,29 @@ func _drop_live_scenes() -> void:
 		if inst != null:
 			inst.free()
 	_live_tasks.clear()
+
+
+## M2-RND-18: loading a first_run_scenes entry (its meshes and materials) compiled its mesh pipelines in the frame
+## that loaded it (1.96 s on a cold High). Each loads on a worker thread, as SceneRouter loads a zone, and its
+## SceneState is read here once it's in: one scene at a time, the main thread drawing the card meanwhile.
+func _harvest_next_scene() -> void:
+	if _harvest_task.is_empty():
+		var box := [null]
+		var path := _harvest_queue[0]
+		_harvest_task = [WorkerThreadPool.add_task(func() -> void: box[0] = load(path)), box]
+		return
+	if not WorkerThreadPool.is_task_completed(int(_harvest_task[0])):
+		return
+	WorkerThreadPool.wait_for_task_completion(int(_harvest_task[0]))
+	var packed := (_harvest_task[1] as Array)[0] as PackedScene
+	_harvest_task = []
+	_harvest_queue.remove_at(0)
+	if packed == null:
+		return
+	var counter := [0]
+	_harvest_state(packed.get_state(), {}, {}, int(config.get("max_scene_materials", 0)), counter, 0)
+	_instanced += int(counter[0])
+	_draws_total += int(counter[0])
 
 
 ## Moves up to one batch of pending draws into the stage; they compile on the frame that draws them.
@@ -631,6 +645,8 @@ func _process(_delta: float) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
+		if not _harvest_task.is_empty():
+			WorkerThreadPool.wait_for_task_completion(int(_harvest_task[0]))
 		_drop_live_scenes()
 		for n: Variant in _pending:
 			if is_instance_valid(n) and n is Node:
@@ -926,7 +942,7 @@ func _harvest_state(
 				_ensure_stage_env().background_mode = Environment.BG_SKY
 				_stage_env.sky = sky
 			continue
-		for pair in _state_draws(props):
+		for pair in PrewarmHarvest.state_draws(props):
 			var key := [pair[0], pair[1]]
 			if seen.has(key) or int(counter[0]) >= cap:
 				continue
@@ -935,33 +951,6 @@ func _harvest_state(
 			# (about 75 ms each), which belongs in a batch frame, not in start().
 			_pending.append(pair)
 			counter[0] = int(counter[0]) + 1
-
-
-## [material, mesh, source multimesh or null] pairs of one node's stored properties: a MeshInstance3D's
-## or MultiMeshInstance3D's override, per-surface overrides, else the mesh's own surface materials.
-static func _state_draws(props: Dictionary) -> Array:
-	var mm := props.get(&"multimesh") as MultiMesh
-	var mesh := props.get(&"mesh") as Mesh
-	if mm != null:
-		mesh = mm.mesh
-	if mesh == null:
-		return []
-	var out := []
-	var override := props.get(&"material_override") as Material
-	if override != null:
-		out.append([override, mesh, mm])
-		return out
-	# A PrimitiveMesh builds its arrays on the first surface query, and that builds its StandardMaterial3D's
-	# shader: about 75 ms each, synchronously in start() (Haluna's save shrine, M1-RND-27). It has one
-	# surface, whose material is its `material`: read that, and the compile happens in the draw's batch.
-	var primitive := mesh as PrimitiveMesh
-	for i in 1 if primitive != null else mesh.get_surface_count():
-		var m := props.get(StringName("surface_material_override/%d" % i)) as Material
-		if m == null:
-			m = primitive.material if primitive != null else mesh.surface_get_material(i)
-		if m != null:
-			out.append([m, mesh, mm])
-	return out
 
 
 ## The stage draw of one harvested pair: a MeshInstance3D, or a MultiMeshInstance3D with the source's

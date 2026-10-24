@@ -767,6 +767,46 @@ func test_a_first_run_stages_the_draws_of_its_live_scenes_and_frees_them() -> vo
 	_clean_tmp()
 
 
+## M2-RND-18: a first run harvests its first_run_scenes on later frames (each loaded on a worker thread), not in
+## start(), and keeps the frame after its bring-up empty: on an empty driver cache each of those had shared one
+## frame with the renderer's own first use or a scene's load (the boot's worst hidden frame, 3.0 s on High).
+func test_a_first_run_spreads_its_harvest_and_leaves_the_frame_after_bring_up_empty() -> void:
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var mi := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	var mat := StandardMaterial3D.new()
+	box.material = mat
+	mi.mesh = box
+	var packed := PackedScene.new()
+	packed.pack(mi)
+	mi.free()
+	var scene_path := TMP_DIR + "/spread_scene.tscn"
+	ResourceSaver.save(packed, scene_path)
+	var reg_path := _write_registry(
+		"registry_spread.json", {"first_run_scenes": [scene_path], "max_scene_materials": 8, "materials_per_frame": 4}
+	)
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	node.resident_only = true
+	node.first_run = true
+	node.preset_id = "high"
+	_host().add_child(node)
+	assert_eq(node.start(""), 0, "the scene isn't loaded or harvested in start()")
+	var staged_at := -1
+	for i in 400:
+		if not node.is_running():
+			break
+		OS.delay_msec(2)
+		node.tick(4.0)
+		if staged_at < 0 and node.stage_node_count() > 0:
+			staged_at = i
+	assert_true(staged_at > 0, "its draw stages on a later frame")
+	assert_eq(int(node.stats.get("materials", 0)), 1, "the harvested scene's material was staged")
+	if is_instance_valid(node):
+		node.free()
+	_clean_tmp()
+
+
 func _host() -> Node:
 	# The tree root is busy while the runner scene is readying, so attach under the running scene.
 	return (Engine.get_main_loop() as SceneTree).current_scene
