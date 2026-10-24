@@ -2,8 +2,8 @@
 id: M1-CHR-13
 title: Asha's vest shoulder has a stair-stepped vertex-normal crease (QA-08 polish item F)
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
 reviewer: rendering
 depends_on: []
 milestone: M1

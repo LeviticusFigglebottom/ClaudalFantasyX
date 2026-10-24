@@ -2,8 +2,8 @@
 id: M1-RND-25
 title: Grief mouth's black rim is the lip shadow on the inner-lip skin, which gets no cavity bounce (QA-08 fault A)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
 reviewer: character
 depends_on: [M1-RND-24]
 milestone: M1
