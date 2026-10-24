@@ -384,7 +384,7 @@ def make_tree(p: dict) -> Tree:
             off = rng.normal(0.0, 0.07, 2)
             length = min(base_len * rng.uniform(0.6, 1.05), attach[2] - 0.25)
             anchored = long and rng.random() < 0.12
-            clear = path_distance(attach, p["path"]) < 0.3
+            clear = path_distance(attach, p["path"]) < 0.6  # margin for the braid and drift offsets
             if anchored and not clear:
                 length = attach[2] + 0.3
             else:

@@ -115,8 +115,11 @@ class KitGeometryTests(unittest.TestCase):
         self.assertGreater(head[:, 0].mean(), 0.1, "the head (highest points) is at +X: the dresser yaws +X to sea")
 
     def test_placeholders_are_listed(self) -> None:
-        for name in ("banyan_placeholder", "windbreak_placeholder", "shell_shrine_massing"):
-            self.assertIn(name, BUILD.PLACEHOLDERS)
+        self.assertIn("shell_shrine_massing", BUILD.PLACEHOLDERS)
+        # M2-ENV-07: the two trees are real (trees.py); they keep their piece names as the scene contract.
+        for name in ("banyan_placeholder", "windbreak_placeholder"):
+            self.assertNotIn(name, BUILD.PLACEHOLDERS)
+            self.assertIn(name, BUILD.targets())
 
 
 @unittest.skipUnless(find_blender(), "Blender 5.0.1 not installed (tools/dev/fetch_blender or HYMN_BLENDER)")
