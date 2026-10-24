@@ -3,7 +3,7 @@ id: M2-BPR-10
 title: Placeholder hero battle clip poses through the clip contract (until M2-CHR-07 lands)
 role: combat
 reviewer: character
-status: review
+status: done
 owner_session: battle-presentation (claude/battle-presentation)
 depends_on: [M2-BPR-02]
 milestone: M2
