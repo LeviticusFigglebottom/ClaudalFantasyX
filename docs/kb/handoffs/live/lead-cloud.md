@@ -26,6 +26,7 @@
 5. Review sweep R over the review column, and keep ~3 local agents busy (candidates: M1-QA-10, M2-CMB-06 if m2-slice doesn't take it).
 
 ## Log
+- 2026-10-24: intro audit routed (see CONSOLIDATED §3). New menus track (claude/menus). Combat agent: live payouts and Read. **To pc-gpu:** M2-RND-10 acked; the Lead does the Art review and views every undertow_* drift before re-approving, after the b5 and rnd09 gates. Proceed with M2-RND-11, and file the capture_preset finding (it ignores a shot's setup block) as a QA task on your branch.
 - 2026-10-24: merged rnd-04, sweep Q, SPEC v1.3, batch 3, rnd-05 and fix6. Filed M2-ARC-02, M1-QA-10 and M1-CHR-14 (top priority). Characters and m2-slice re-queued; the PC was approved to install export templates.
 - 2026-10-24: merge batch 2 (3e59f8d). PC queue topped up.
 - 2026-10-24: merged rnd-21, CHR-08, sweep O, qa-08, first-playable, cmb, ui-04, sweep P, rnd-01, m2-slice, rnd-23. Spawned the characters track. Hourly check-in trig_01LJyLo42xCq3WVmAza3BMhe.
