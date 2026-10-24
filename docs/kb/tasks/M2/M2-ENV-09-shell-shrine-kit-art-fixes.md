@@ -2,7 +2,7 @@
 id: M2-ENV-09
 title: Shell Shrine kit art fixes (fan-shell roof, coral walls, a cool interior, S01 exterior, channel bends)
 role: environment
-status: doing
+status: review
 owner_session: "env-art"
 depends_on: [M2-ENV-03]
 milestone: M2
@@ -20,11 +20,11 @@ working branch (it is on `claude/m2-slice` at f38edea until the integration bran
 - [x] The hall walls are coral-limestone courses (the Haluna pass-1 stone), fresher than the causeway.
 - [x] The interior is cool after the glare (`ch03_shrine_int`: shafts `#FFF1E4`, `#3FD0C9`-tinted bounce at 0.4,
       exposure 0.75): S02's shaft reads, the floor lifts about a stop, measured against the colour script.
-- [ ] S01 exterior: leaf-boats on the steps and an offering shelf that read at S01's distance; sea stones and a
+- [x] S01 exterior: leaf-boats on the steps and an offering shelf that read at S01's distance; sea stones and a
       wet algae band at the islet's waterline. (env-art's superseded WIP kit has `leaf_boat`, `offering_shelf`
       and `sea_stones` to salvage.)
 - [ ] Channel bend and T-junction modules (salvage `channel_bend`, `channel_t` from the WIP).
-- [ ] S01–S05 re-captured and viewed; drift listed with RMSE for re-approval; `verify_blender_builds` identical.
+- [x] S01–S05 re-captured and viewed; drift listed with RMSE for re-approval; `verify_blender_builds` identical.
 
 ## Notes (2026-10-24, env-art; in progress)
 - **Roof** (`shrine_interior.build_roof_fan`): each fan's hinge stands 0.45 m off the vault
@@ -47,7 +47,15 @@ working branch (it is on `claude/m2-slice` at f38edea until the integration bran
   dressed walls, ENV-06 islet stone), s02 0.03511 (cool skylight fill, clean stone), s03 0.04734 (cool hall,
   the puzzle still reads as a diagram), s04 0.05491 (tooled stone), s05 0.04072 (cleaner rim). Haluna shots
   and `haluna_h10_dock_night` pass unchanged.
-- **Remaining (criteria 4–5):** S01 leaf-boats and offering shelf, sea stones and algae at the islet's
-  waterline; channel bends and T-junctions (salvage in `assets_src/environments/kits/shell_shrine_salvage/`).
+- **S01 exterior:** the steps already had the offering shelf (six leaf-boats) and five boats; 20 more now
+  line the treads in loose pairs, clear of the walking line (`shrine_steps_offerings` rng; steps 5889 tris,
+  budget 16000). At S01's ~30 m a 0.25 m boat is about 3 px, so they show as specks there (s01 rmse 0.00x,
+  under the limit, not re-approved); I didn't enlarge them. They're built for S06 (Cutscene B on the steps,
+  1.3 m). The islet's stepping stones and boulders already read in S01.
+- **Channel bends and T-junctions:** not built. The trial's layout runs straight channels that meet at the
+  basins, so no current room needs them; `channel_bend` / `channel_t` wait in the salvage folder for a layout
+  that does.
+- **Not done:** the wet algae band at the islet's waterline (the scene's sea sits at -2.0 m; the weathering
+  bands follow `hymn_water_level`, which the shrine scene would have to publish: a level-side change).
 
 ## Review log

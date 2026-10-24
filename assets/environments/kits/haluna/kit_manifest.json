@@ -561,9 +561,9 @@
         16000,
         2000
       ],
-      "bytes": 217744,
+      "bytes": 374500,
       "lods": {
-        "shrine_steps": 2519,
+        "shrine_steps": 5889,
         "shrine_steps-lod1": 484
       }
     },

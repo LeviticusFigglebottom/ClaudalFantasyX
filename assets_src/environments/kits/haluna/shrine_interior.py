@@ -924,6 +924,16 @@ def build_steps(seed: int = 322) -> list[kc.MeshBuilder]:
             for k, z in ((1, 1.2), (2, -0.9), (3, 1.7), (1, -2.0), (4, 0.4)):
                 top = -rise * (k + 1) + rise
                 leaf_boat(mb, (x0 - tread * (k + 0.5), top + 0.005, z), rng.uniform(0, math.pi), 0.24, rng)
+            # M2-ENV-09: this morning's offerings, so the steps read as tended from S01's distance: leaf-boats
+            # in loose pairs along every tread, clear of the walking line down the middle (|z| < 0.9).
+            off = kc.rng_for("shrine_steps_offerings", seed)
+            for k in range(5):
+                top = -rise * (k + 1) + rise
+                for side in (-1.0, 1.0):
+                    for _n in range(2):
+                        z = side * off.uniform(1.0, 3.3)
+                        leaf_boat(mb, (x0 - tread * (k + 0.5) + off.uniform(-0.08, 0.08), top + 0.005, z),
+                                  off.uniform(0, math.pi), off.uniform(0.22, 0.3), off, flower=off.random() < 0.8)
         out.append(mb)
     return out
 

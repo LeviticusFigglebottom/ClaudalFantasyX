@@ -25,6 +25,10 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **New standing queue started** (your message): M3-ENV-01 Tidecup, M3-ENV-02 Brine Shoals, M3-ENV-03 Terraces of Ash with worktree agents now; M3-ENV-04 Seawall and M3-ENV-05 the lamp-diver sea floor next.
 
 ## Swap-in notes for m2-slice
+- **M2-ENV-09 (Shell Shrine art fixes):** merged here on top of your kit. One edit in your scene, approved by the
+  project owner: a shadowless `Bounce/Skylight` OmniLight in `ch03/shell_shrine/shell_shrine.tscn` (the cool sky
+  through the oculi; S02 was murky brown). If you want the islet's algae band at the waterline, the shrine scene
+  needs to publish `hymn_water_level` for its sea at -2.0 m (as Haluna's WeatheringTide does).
 - **M2-ENV-03, the Shell Shrine: swap in YOUR kit (the Art Director's verdict, 2026-10-24).** I compared
   your kit (f38edea, shots from 3313bac) with env-art's in-progress kit, as the Lead asked. Yours wins: it is
   complete, wired into the level, and it reads (S03's diagram, S04's pour, S05's charm). Revert your revert of
@@ -67,7 +71,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 **Blocked, waiting:** (1) the Lead's answer to the question above (merge `claude/m2-slice` for M2-ENV-09, or wait for the integration branch); (2) `haluna_h10_dock_night` and the shrine kit reaching the integration branch (not there at 19118fba). When either lands: build M2-ENV-09 on `shrine_interior.py` (salvage per `assets_src/environments/kits/shell_shrine_salvage/README.md`); re-capture h10, view, re-approve if it drifts, close M2-ENV-06. Session handoff: `docs/kb/handoffs/2026-10-24-environment-6.md`.
 
 ## Queue
-1. M2-ENV-09: Shell Shrine art fixes (doing: roof, stone and interior done and approved; S01 props and channel bends remain)
+1. ~~M2-ENV-09~~ (review: roof tiers, dressed stone, cool interior, tread offerings; bends not needed by the layout)
 2. ~~M2-ENV-06~~ (review: h10 passes with the new kit)
 3. M3-ENV-01: Ch7 Tidecup arena and stands (agent; the PC GPU owns the water sphere)
 4. M3-ENV-02: Ch6 Brine Shoals (agent)
