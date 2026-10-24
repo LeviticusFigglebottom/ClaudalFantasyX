@@ -12,7 +12,15 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 
 ## Now
 - **Lead gate rules from 14:14 apply** (scoped checks per item; one full Godot suite per batch in the background; the Lead runs the full manifest and Blender at merge).
-- **MERGE-READY line:** pending on the background suite for 4d8798c7 (see below).
+- **MERGE-READY @ 4d8798c7:**
+  - **Items:** M2-UI-16..24 and the battle_pause Controls row.
+  - **Includes:** the integration branch, m2-slice and menus as of 14:20.
+  - **Checks run:**
+    - full Godot suite **1716 run, 0 failed** (log check clean);
+    - tools unittest **544 OK** (3 skipped);
+    - validate_data 0/0, taskboard --check, gdlint and gdformat clean;
+    - the shots for each item, viewed and approved.
+  - **Checks skipped (Lead runs at merge):** the full screenshot manifest, Blender (no Blender source touched) and coverage (the M2-UI-23 battle edits are in `game/battle/scene/`, which coverage excludes).
 - **Done this batch, all status review (reviewer lead):**
   - **M2-UI-16/17/19:** objectives, the objective line, the destination cue. Since the last line:
     - the field menu root shows the objective (an Objective block);
