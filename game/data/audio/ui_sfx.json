@@ -262,6 +262,24 @@
          "_note": "the line-up changed: two heroes traded places, or one took an open place"}
       ],
       "_note": "M2-AUD-14: claude/menus' Formation page (M2-MNU-07); no signals of its own beyond FieldSubmenu.closed"
+    },
+    {
+      "class": "SettingsPage",
+      "_note": "M2-AUD-08 via M3-UI-02 (UI track): the Audio, Accessibility and Controls pages (GraphicsMenu keeps its own row). A value step plays ui_cursor at the new level.",
+      "on_enter": "ui_menu_open",
+      "signals": {
+        "closed": "ui_menu_close"
+      },
+      "watch": [
+        {
+          "expr": "node.model.cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.model.value_text(node.model.current())",
+          "sfx": "ui_cursor"
+        }
+      ]
     }
   ]
 }
