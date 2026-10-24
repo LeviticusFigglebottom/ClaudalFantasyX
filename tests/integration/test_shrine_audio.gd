@@ -61,9 +61,11 @@ func test_a_turn_grinds_and_the_water_sounds_where_it_ends() -> void:
 
 
 func test_the_side_pool_drains_audibly_and_the_charm_glints() -> void:
-	_interactable(&"basin_b1").try_interact()
-	_interactable(&"basin_b2").try_interact()
-	_interactable(&"basin_b2").try_interact()
+	# The turns come from the trial's own data (a search), so a puzzle change (M2-FP-22) can't break the test.
+	var turns := _turns_to(level.trial.drain())
+	assert_false(turns.is_empty(), "the sluice is reachable")
+	for id: StringName in turns:
+		_interactable(StringName("basin_%s" % id)).try_interact()
 	assert_eq(_events().back(), "reach_drain", "the water into the sluice")
 	level.advance(0.1)
 	assert_true(_events().has("side_drain"), "the side pool empties")
@@ -140,3 +142,35 @@ func _done() -> void:
 
 func _host() -> Node:
 	return (Engine.get_main_loop() as SceneTree).current_scene
+
+
+## The shortest basin-turn sequence from the current state that brings the water to `target`, never passing
+## through a state that fills the inner pool first (that opens the door and ends the trial). Empty if none.
+func _turns_to(target: StringName) -> Array[StringName]:
+	var ids := level.trial.basin_ids()
+	var probe := ShellShrineTrial.new(level.trial.data)
+	var start: Array = []
+	for id in ids:
+		start.append(int(level.trial.rotations[id]))
+	var seen := {str(start): true}
+	var frontier: Array = [[start, [] as Array[StringName]]]
+	while not frontier.is_empty():
+		var next: Array = []
+		for item: Array in frontier:
+			var state: Array = item[0]
+			for i in ids.size():
+				probe.rotations[ids[i]] = int(state[i])
+			if probe.reaches(target):
+				return item[1]
+			if probe.reaches(probe.goal()):
+				continue
+			for i in ids.size():
+				var s2: Array = state.duplicate()
+				s2[i] = (int(s2[i]) + 1) % probe.steps()
+				if not seen.has(str(s2)):
+					seen[str(s2)] = true
+					var path: Array[StringName] = (item[1] as Array[StringName]).duplicate()
+					path.append(ids[i])
+					next.append([s2, path])
+		frontier = next
+	return []
