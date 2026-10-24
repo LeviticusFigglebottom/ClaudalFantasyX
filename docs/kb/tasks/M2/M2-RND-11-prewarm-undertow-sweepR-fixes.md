@@ -2,8 +2,8 @@
 id: M2-RND-11
 title: Rendering fixes from review-sweep-R (first-run tests, warm compute pipelines at exit, Undertow literals, Ultra reflection)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M1-RND-27, M1-RND-29, M2-RND-05]
 milestone: M2
