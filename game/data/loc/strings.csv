@@ -852,3 +852,9 @@ SET_SUMMON_CINEMATIC_HELP,"How a Vowbound's call plays. Short plays it in full t
 SET_SUMMON_CINEMATIC_FULL,Full
 SET_SUMMON_CINEMATIC_SHORT,Short
 SET_SUMMON_CINEMATIC_OFF,Off
+SET_DIALOGUE_AUTO,Auto-advance dialogue
+SET_DIALOGUE_AUTO_HELP,"A line moves on by itself after a pause long enough to read it. Choices still wait for you."
+CTRL_ACT_DIALOGUE_BACKLOG,Dialogue backlog
+BACKLOG_TITLE,Backlog
+BACKLOG_HELP,Up and Down: scroll · Page keys: a page · Cancel: close
+BACKLOG_EMPTY,Nothing has been said yet.

@@ -65,6 +65,7 @@ func _ready() -> void:
 		speakers = DialogueSpeakers.load_default()
 	_blip.volume_db = settings.blip_volume_db
 	clear()
+	DialogueAssist.attach(self)  # M2-UI-25: continue glyph, backlog, auto-advance (UI-owned)
 
 
 func _process(delta: float) -> void:

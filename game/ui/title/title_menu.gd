@@ -65,6 +65,7 @@ static func version_text(version_data: Dictionary) -> String:
 func _ready() -> void:
 	Game.stop_play_clock()
 	AreaTitleCard.forget()  # M2-UI-21: the next start shows its area title card
+	DialogueBacklog.forget()  # M2-UI-25: a new start keeps no earlier run's lines
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_d = load_data()

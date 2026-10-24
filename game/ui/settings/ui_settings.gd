@@ -28,6 +28,7 @@ const SUMMON_CINEMATIC := &"summon_cinematic"
 const CUT_FULL := &"full"
 const CUT_SHORT := &"short"
 const CUT_NONE := &"none"
+const DIALOGUE_AUTO := &"dialogue_auto"
 const KIND_BOOL := "bool"
 const KIND_ENUM := "enum"
 const PALETTE_STANDARD := &"standard"
@@ -195,6 +196,11 @@ func battle_time_scale() -> float:
 func summon_cinematic_cut(first_call: bool) -> StringName:
 	var row := (data.get("summon_cinematics", {}) as Dictionary).get(str(get_value(SUMMON_CINEMATIC)), {}) as Dictionary
 	return StringName(str(row.get("first" if first_call else "again", CUT_FULL)))
+
+
+## True when a fully revealed dialogue line advances by itself after a hold (M2-UI-25).
+func dialogue_auto_enabled() -> bool:
+	return bool(get_value(DIALOGUE_AUTO))
 
 
 ## The short on-screen tag of the timing assist in force (its "tag_key"; "" when it is off).
