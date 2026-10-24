@@ -1260,6 +1260,7 @@ def run(root: Path) -> Report:
     data_keys += check_swell(files, rep)
     data_keys += check_boss(files, declared_flags_quiet(root), rep)
     check_read_openings(files, rep)
+    data_keys += check_objectives(files, declared_flags_quiet(root), rep)  # M2-UI-16/18
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_undertow(root, files, rep)
@@ -2321,6 +2322,71 @@ def check_chapter_flow(root: Path, files: dict[str, object], flags: set[str], re
     """The chapter files chapters.json lists, and their zones' layouts (tools/chapter_flow_check.py)."""
     for e in chapter_flow_check.check(root, files, flags):
         rep.err(e)
+
+
+
+# --- M2-UI-16/18: objectives (game/data/flow/objectives.json) and zone maps (game/data/ui/zone_maps.json) ---
+
+OBJECTIVES_FILE = "game/data/flow/objectives.json"
+ZONE_MAPS_FILE = "game/data/ui/zone_maps.json"
+
+
+def objective_errors(objectives: object, zone_maps: object, declared: set[str]) -> tuple[list[str], list[str]]:
+    """(errors, loc keys) for the objective rows and the zone maps: flags declared, zones and
+    POI targets that exist, unique ids, and every line/name key collected for check_loc."""
+    errs: list[str] = []
+    keys: list[str] = []
+    zm = zone_maps.get("zone_maps") if isinstance(zone_maps, dict) else None
+    pois: dict[str, set[str]] = {}
+    if not isinstance(zm, dict):
+        return [f"{ZONE_MAPS_FILE}: missing the 'zone_maps' object"], keys
+    for z in zm.get("zones", []):
+        zid = str(z.get("id", "")) if isinstance(z, dict) else ""
+        if not zid:
+            errs.append(f"{ZONE_MAPS_FILE}: a zone has no id")
+            continue
+        keys.append(str(z.get("name_key", "")))
+        ids = pois.setdefault(zid, set())
+        for p in z.get("pois", []):
+            pid = str(p.get("id", ""))
+            if pid in ids:
+                errs.append(f"{ZONE_MAPS_FILE}: {zid}: duplicate POI '{pid}'")
+            ids.add(pid)
+            keys.append(str(p.get("name_key", "")))
+            at = p.get("at")
+            if not (isinstance(at, list) and len(at) == 2 and all(_num(v) for v in at)):
+                errs.append(f"{ZONE_MAPS_FILE}: {zid}/{pid}: 'at' must be [x, z]")
+    for r in zm.get("route", []):
+        keys.append(str(r.get("name_key", "")))
+    od = objectives.get("objectives") if isinstance(objectives, dict) else None
+    if not isinstance(od, dict):
+        return errs + [f"{OBJECTIVES_FILE}: missing the 'objectives' object"], keys
+    seen: set[str] = set()
+    for row in od.get("rows", []):
+        rid = str(row.get("id", ""))
+        w = f"{OBJECTIVES_FILE}: {rid}"
+        if not rid or rid in seen:
+            errs.append(f"{w}: missing or duplicate id")
+        seen.add(rid)
+        keys.append(str(row.get("line_key", "")))
+        for f in list(row.get("requires", [])) + ([row["until"]] if row.get("until") else []):
+            if f not in declared:
+                errs.append(f"{w}: flag '{f}' is not declared (game/data/flags.tres)")
+        if row.get("zone") and str(row["zone"]) not in pois:
+            errs.append(f"{w}: zone '{row['zone']}' is not in {ZONE_MAPS_FILE}")
+        t = row.get("target")
+        if t is not None:
+            tz, tp = str(t.get("zone", "")), str(t.get("poi", ""))
+            if tp not in pois.get(tz, set()):
+                errs.append(f"{w}: target {tz}/{tp} is not a POI in {ZONE_MAPS_FILE}")
+    return errs, keys
+
+
+def check_objectives(files: dict[str, object], declared: set[str], rep: Report) -> list[str]:
+    errs, keys = objective_errors(files.get(OBJECTIVES_FILE), files.get(ZONE_MAPS_FILE), declared)
+    for e in errs:
+        rep.err(e)
+    return [k for k in keys if k]
 
 
 if __name__ == "__main__":

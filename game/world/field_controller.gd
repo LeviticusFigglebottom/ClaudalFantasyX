@@ -50,6 +50,7 @@ func _ready() -> void:
 	var services := TownServices.new()  # M2-UI-06: {"shop": id} / {"inn": id} payloads open a town menu
 	services.name = &"TownServices"
 	add_child(services)
+	ObjectiveHud.attach(self)  # M2-UI-17/19: the objective line and the destination cue
 
 
 func _physics_process(delta: float) -> void:

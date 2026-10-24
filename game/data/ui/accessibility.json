@@ -20,7 +20,9 @@
        "label_key": "SET_TEXT_SPEED", "help_key": "SET_TEXT_SPEED_HELP"},
       {"id": "dialogue_backing", "type": "enum", "default": "soft", "options": ["off", "soft", "solid"],
        "option_keys": ["SET_BACKING_OFF", "SET_BACKING_SOFT", "SET_BACKING_SOLID"],
-       "label_key": "SET_BACKING", "help_key": "SET_BACKING_HELP"}
+       "label_key": "SET_BACKING", "help_key": "SET_BACKING_HELP"},
+      {"id": "objective_cue", "type": "bool", "default": true, "label_key": "SET_OBJECTIVE_CUE",
+       "help_key": "SET_OBJECTIVE_CUE_HELP"}
     ],
     "text_speeds": {
       "doc": "M2-UI-12: text_speed option -> multiplier of the dialogue box's default chars_per_sec (text_box.json), clamped to its min/max; 0 = instant (the box shows the whole line at once).",
