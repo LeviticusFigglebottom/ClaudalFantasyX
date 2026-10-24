@@ -33,6 +33,8 @@ var _waiting := false
 var _hold := 0.0
 var _hold_need := 0.0
 var _bob_t := 0.0
+## The box's own reveal speed before the player's text speed scales it (text_box.json).
+var _base_cps := 0.0
 
 
 ## Adds the assist under `b` (the box's _ready calls it), and returns it.
@@ -76,11 +78,30 @@ func _ready() -> void:
 	_glyph.visible = false
 	add_child(_glyph)
 	if box != null:
+		_base_cps = box.settings.chars_per_sec
+		apply_text_speed()
+		UiSettings.shared().changed.connect(_on_setting_changed)
 		box.reveal_finished.connect(_on_reveal_finished)
 		box.advance_requested.connect(_on_advance_requested)
 		var panel := box.get_node_or_null(PANEL_PATH) as Control
 		if panel != null:
 			panel.gui_input.connect(_on_panel_input.bind(panel))
+
+
+## Sets the box's reveal speed from the player's text speed (M2-UI-12; M2-UI-27): the box's own
+## speed times the setting's multiplier, or instant. The punctuation pauses scale with it.
+func apply_text_speed() -> void:
+	var t := box.settings
+	var cps := UiSettings.shared().dialogue_chars_per_sec(_base_cps, t.min_chars_per_sec, t.max_chars_per_sec)
+	if cps <= 0.0:
+		t.chars_per_sec = 0.0  # instant (the box shows the whole line at once); set_chars_per_sec clamps
+	else:
+		box.set_chars_per_sec(cps)
+
+
+func _on_setting_changed(key: StringName, _value: Variant = null) -> void:
+	if key == UiSettings.TEXT_SPEED and box != null:
+		apply_text_speed()
 
 
 func _exit_tree() -> void:

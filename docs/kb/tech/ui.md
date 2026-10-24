@@ -461,6 +461,15 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
   - **Not fixed (noted):** the battle pause has no mouse affordance (P, Pause or pad Start); a pause button would change every battle shot, so it is left for a design pass. The Lattice help line still says "Page Up / Page Down: hero" on the pad, where those are now the shoulders; a device-aware help line there is the Menus track's.
   - **Checked and fine:** the command menu and sub-menus (hover, click, wheel, right click back), the result panel (hover, click, keys, pad), the battle pause rows and its Settings hub with every device, the backlog page (keys, pad, wheel, right click), the box's advance with keys and pad.
 
+## Dialogue reveal pauses (M2-UI-27)
+
+- **Pauses:** the reveal lingers after punctuation (`text_box.json` `pauses`, seconds at `pause_reference_cps`, shorter in proportion at a faster text speed).
+  - A mark pauses only before whitespace (`pause_closers` may sit between), never at a line's end, and once per run of marks.
+  - `DialogueTextSettings.pause_after(text, i)` and `reveal_times(text)` hold the rule. `DialogueBox.advance()` reveals by those times.
+- **Lip sync and anything else that follows the reveal** reads `DialogueBox.time_of_char(i)` and `reveal_duration()`.
+- **Text speed:** `DialogueAssist` applies the player's text speed to the box (instant sets `chars_per_sec` to 0; it follows changes). Instant and fast-forward skip every pause.
+- **Tests:** `test_dialogue_reveal_pauses.gd`.
+
 ## Audio settings page (M3-UI-02)
 
 - **`AudioMenu`** (a SettingsPage over `AudioMenuModel`) lists the UiSettings rows named in `game/data/ui/audio_menu.json`: the Audio track's volumes (`master_volume`, `music_volume`, `sfx_volume`, `voice_volume`, `reduced_audio`), which AudioDirector applies through mix.json `volume_settings`.
