@@ -12,12 +12,14 @@ GREYBOX_SCRIPT = "res://game/world/zone/greybox_zone.gd"
 LAYOUT_PATH_RE = re.compile(r'^layout_path = "(res://[^"]+)"', re.M)
 ZONE_KEYS = {"party", "arrive", "beats", "barks", "overheard_hold_sec", "doc"}
 END_STEPS = {"battle", "go", "scene"}
-STEP_KEYS = {"play", "place", "set", "party", "zone", "beat", "if_event"} | END_STEPS
+STEP_KEYS = {"play", "place", "set", "chapter", "party", "zone", "beat", "if_event"} | END_STEPS
 STEP_EXTRA = {"battle": {"return_spawn", "escape_spawn", "victory_flag", "party", "reserve", "seed"},
               "zone": {"args"}, "if_event": {"steps"}}
 TRIGGER_KEYS = {"id", "at", "size", "yaw", "activation", "prompt_key", "payload", "requires_flag",
                 "blocked_by_flag", "sets_flag", "once"}
 ACTIVATIONS = {"touch", "interact"}
+SHOT_MODES = {"fixed", "pan_follow", "dolly"}
+ENCOUNTER_KEYS = {"table", "min_m", "max_m", "when", "seed"}
 
 
 class Context:
@@ -83,6 +85,8 @@ def _step_errors(step: object, w: str, loc: str, zone: dict, ctx: Context) -> li
         errs += _spawn_errors(v, loc, w, ctx)
     elif kind == "set" and v not in ctx.flags:
         errs.append(f"{w}: undeclared flag '{v}'")
+    elif kind == "chapter" and not (isinstance(v, int) and not isinstance(v, bool) and v >= 0):
+        errs.append(f"{w}: chapter must be a non-negative int")
     elif kind == "party":
         errs += _party_errors(v, w, ctx)
     elif kind == "beat" and v not in zone.get("beats", {}):
@@ -179,6 +183,8 @@ def layout_errors(layout: object, where: str, ctx: Context) -> list[str]:
     for k, s in (layout.get("shots") or {}).items():
         if not (isinstance(s, dict) and _nums(s.get("pos"), (3,)) and _nums(s.get("look_at"), (3,))):
             errs.append(f"{where}: shots.{k} needs pos and look_at as [x, y, z]")
+    errs += _volume_errors(layout, where)
+    errs += _encounter_block_errors(layout.get("encounters"), where, ctx)
     seen: set[str] = set()
     for i, t in enumerate(layout.get("triggers", [])):
         w = f"{where}: triggers[{i}]"
@@ -200,6 +206,48 @@ def layout_errors(layout: object, where: str, ctx: Context) -> list[str]:
         dlg = (t.get("payload") or {}).get("dialogue")
         if dlg is not None and dlg not in ctx.dialogue:
             errs.append(f"{w}: no compiled dialogue '{dlg}'")
+    return errs
+
+
+def _volume_errors(layout: dict, where: str) -> list[str]:
+    errs = []
+    for i, v in enumerate(layout.get("camera_volumes", [])):
+        w = f"{where}: camera_volumes[{i}]"
+        if not (isinstance(v, dict) and _nums(v.get("at"), (3,)) and _nums(v.get("size"), (3,))):
+            errs.append(f"{w}: needs at and size as [x, y, z]")
+            continue
+        mode = v.get("mode", "fixed")
+        if mode not in SHOT_MODES:
+            errs.append(f"{w}: mode must be one of {sorted(SHOT_MODES)}")
+        if mode == "dolly" and not (isinstance(v.get("dolly"), list) and len(v["dolly"]) >= 2):
+            errs.append(f"{w}: a dolly shot needs a dolly rail of at least two [x, y, z] points")
+        for key in ("dolly", "track"):
+            if key in v and not all(_nums(p, (3,)) for p in v[key]):
+                errs.append(f"{w}: {key} points must be [x, y, z]")
+        if mode != "dolly" and not _nums(v.get("pos"), (3,)):
+            errs.append(f"{w}: a {mode} shot needs pos as [x, y, z]")
+    return errs
+
+
+def _encounter_block_errors(block: object, where: str, ctx: Context) -> list[str]:
+    if block is None:
+        return []
+    w = f"{where}: encounters"
+    if not isinstance(block, dict):
+        return [f"{w}: must be an object"]
+    errs = [f"{w}: unknown key '{k}'" for k in set(block) - ENCOUNTER_KEYS]
+    table = block.get("table")
+    if not isinstance(table, list) or not table:
+        errs.append(f"{w}: table must be a non-empty list of {{encounter, weight}}")
+    for row in table if isinstance(table, list) else []:
+        if not isinstance(row, dict) or row.get("encounter") not in ctx.encounters:
+            errs.append(f"{w}: unknown encounter {row.get('encounter') if isinstance(row, dict) else row!r}")
+        elif not (isinstance(row.get("weight", 1), int) and row.get("weight", 1) > 0):
+            errs.append(f"{w}: weight must be a positive int")
+    lo, hi = block.get("min_m"), block.get("max_m", block.get("min_m"))
+    if not (isinstance(lo, (int, float)) and isinstance(hi, (int, float)) and 0 < lo <= hi):
+        errs.append(f"{w}: needs 0 < min_m <= max_m (metres between encounters)")
+    errs += _when_errors(block.get("when"), w, ctx)
     return errs
 
 

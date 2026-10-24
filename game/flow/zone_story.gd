@@ -13,6 +13,7 @@ extends Node
 ##   {"play": id}       plays a compiled .dlg scene on the stage and waits for it.
 ##   {"place": spawn}   puts Rhen on a spawn, facing its marker.
 ##   {"set": flag}      sets a declared flag through Game.set_flag.
+##   {"chapter": n}     moves the story to chapter n (Game.set_chapter; the chapter autosave follows).
 ##   {"party": {"party": [...], "reserve": [...]}} replaces the party.
 ##   {"zone": method, "args": [...]} calls a method on the zone root, when it has it.
 ##   {"beat": id}       runs another beat's steps here (its `when` is not checked).
@@ -101,6 +102,19 @@ func run(steps: Array) -> void:
 	busy = handed_off
 
 
+## True when nothing is playing and nothing has handed off: a field encounter may start.
+func is_free() -> bool:
+	return _free()
+
+
+## Opens a random field battle (FieldEncounters): it returns to `spawn` here, win or escape.
+func random_battle(encounter: StringName, spawn: StringName) -> void:
+	_hand_off(
+		KIND_BATTLE,
+		_battle_request({"battle": String(encounter), "return_spawn": String(spawn), "escape_spawn": String(spawn)})
+	)
+
+
 ## True when every flag in when.set is set and every flag in when.unset is not.
 static func holds(when: Dictionary) -> bool:
 	for f: Variant in when.get("set", []):
@@ -142,13 +156,15 @@ func _steps(steps: Array) -> bool:
 	return stop or handed_off
 
 
-## The steps that change state and return at once: place, set, party, zone.
+## The steps that change state and return at once: place, set, chapter, party, zone.
 func _apply(step: Dictionary) -> void:
 	if step.has("place"):
 		var spawn := StringName(str(step["place"]))
 		_zone.call(&"place_at", spawn, _zone.call(&"spawn_yaw_deg", spawn))
 	elif step.has("set"):
 		Game.set_flag(StringName(str(step["set"])))
+	elif step.has("chapter"):
+		Game.set_chapter(int(step["chapter"]))
 	elif step.has("party"):
 		_set_party(step["party"])
 	elif step.has("zone"):

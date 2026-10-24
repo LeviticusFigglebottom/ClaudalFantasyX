@@ -35,6 +35,9 @@ Every key is optional. Defaults come from `game/data/world/greybox_defaults.json
 | `actors` | `{id: {at: [x,y,z,yaw], color, radius, height, hidden}}` | `CutsceneStage/Actors/<id>`, a capsule stand-in |
 | `shots` | `{id: {pos, look_at, fov}}` | `CutsceneStage/Shots/<id>`, a FIXED `CameraShot` |
 | `triggers` | `[{id, at, size, yaw, activation: touch\|interact, prompt_key, payload, requires_flag, blocked_by_flag, sets_flag, once}]` | `Triggers/<id>` (`Interactable`); size y 0 uses the default height |
+| `camera_volumes` | `[{id, at, size, priority, mode: fixed\|pan_follow\|dolly, pos, look_at, fov, dolly: [[x,y,z]...], track: [[x,y,z]...]}]` | `CameraVolumes/<id>` (`CameraVolume`) with its shot; a dolly's rails go under `Rails/` (M2-FP-25) |
+| `encounters` | `{table: [{encounter, weight}], min_m, max_m, when, seed}` | `Encounters` (`FieldEncounters`): a random field battle every `min_m`–`max_m` metres walked (seeded; stretched by the party's `encounter_rate_pct`, e.g. Light Step), only while `when` holds and the story is free. It returns to the built-in `Encounter` spawn, where Rhen stood (M2-FP-25) |
+| blocks' `emission`, `emission_energy` | `#rrggbb`, float | an emissive block (a glint) |
 | `camera`, `sun`, `environment`, `player`, `actor`, `block_color`, `shot_fov_deg`, `trigger_height` | as in the defaults | override the defaults |
 
 ## Chapter file
@@ -49,6 +52,7 @@ Every key is optional. Defaults come from `game/data/world/greybox_defaults.json
 - **Payloads:** a trigger or interactable runs a beat with `{"beat": id}`. `{"dialogue": id}` plays a bark, and adding `"overheard": true` lets Rhen walk on while it plays.
 - **Steps:** the class comment in `game/flow/zone_story.gd` is the reference. A `battle`, `go` or `scene` step ends the run and must come last.
 - **Battle party:** a battle uses the step's `party` and `reserve` when given, else the current party.
+- **Chapters:** `{"chapter": n}` calls `Game.set_chapter(n)`. Put it in a chapter's first arrival, and the chapter autosave follows at the next safe point (M2-FP-27).
 - **Back-out choices:** a choice that steps Rhen back is `{"if_event": "<event>", "steps": [{"place": "<spawn>"}]}` placed after the `play`.
 
 ## Limits
