@@ -49,6 +49,7 @@ PARAMS = HERE / "asha_params.json"
 HEAD_BONE = "DEF-spine.006"
 MIDLINE_SNAP = 1e-9  # m: coordinates smaller than this are float noise from the face solve
 SHAPE_GRID = 1e-6  # m: shape-key deltas are rounded to this (host-independent morph targets)
+UV_GRID = 2.0 ** -16  # UVs are rounded to this (1/32 texel at 2K; host-independent unwrap)
 
 # material name -> (preview linear rgb, roughness). Godot replaces these by name with the hero
 # shader materials (game/levels/_tests/characters/asha/materials/).
@@ -434,6 +435,15 @@ def skirt_weights(P: np.ndarray, W0: np.ndarray, V: np.ndarray, W: np.ndarray, r
     return limit4(W0 * (1.0 - d[:, None]) + legs * d[:, None])
 
 
+def quantize_uvs(ob: bpy.types.Object) -> None:
+    """UVs on a UV_GRID grid, before the bake dump and the export. Blender's unwrap left one head UV a float32
+    ULP apart between hosts (the Lead's gate, M1-CHR-14), and the texture raster turned that into texel flips."""
+    uvl = ob.data.uv_layers.active.data
+    uv = np.zeros(len(uvl) * 2, dtype=np.float64)
+    uvl.foreach_get("uv", uv)
+    uvl.foreach_set("uv", np.round(uv / UV_GRID) * UV_GRID)
+
+
 def snap_shape_noise(ob: bpy.types.Object) -> None:
     """Shape-key deltas on a SHAPE_GRID grid. Their last bits are host-dependent float noise (0 or ~1e-16, or a
     float32 rounding flip of a tiny delta, by the host CPU's SIMD paths); on the grid the exported morph targets
@@ -575,6 +585,7 @@ def main() -> int:
                                                        np.where(fh_reg == "mouth", 4, 2)))
     unwrap_faces(ob_head, {"skin_head", "mouth"}, head_seams(Fh, cat, Vh, lm),
                  shrink=(np.nonzero(cat != 1)[0], 0.45))
+    quantize_uvs(ob_head)
     pad = np.zeros(len(Vhead) - n_skin)
     masks = {"lower": np.concatenate([res["lower"][used_h], pad]), "lip": np.concatenate([res["lip_w"][used_h], pad])}
     lip_frame = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("contact", "lip_contact"), ("dz", "lip_dz"),
@@ -674,6 +685,7 @@ def main() -> int:
     ob_body = make_object("Body", V[used_b], Fb_l, UVb, ["skin_body"] * len(Fb), normals=Nw[used_b])
     apply_weights(ob_body, W[used_b], wnames, skel)
     unwrap_faces(ob_body, {"skin_body"}, uv_seams(Fb_l, UVb))  # the donor's islands, re-flattened and packed
+    quantize_uvs(ob_body)
     dense = np.isin(reg[used_b], ["hand_L", "hand_R", "foot_L", "foot_R"])
     t_all = sum(len(f) - 2 for f in Fb_l)
     t_dense = sum(len(f) - 2 for f in Fb_l if dense[list(f)].all())
