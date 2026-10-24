@@ -94,6 +94,7 @@ func test_close_means_dialogue_or_portrait_framing() -> void:
 	assert_true(CutsceneKeyLight.is_close(Vector3(-0.4, 1.02, 4.5), Vector3(-0.4, 0.45, 8), 27.0, cfg), "H06")
 	assert_false(CutsceneKeyLight.is_close(Vector3(120, 8, -5), Vector3(0, 23.4, -8), 53.1, cfg), "H01 is wide")
 	assert_false(CutsceneKeyLight.is_close(Vector3.ZERO, Vector3(0, 0, -10), 37.8, cfg), "10 m at 37.8")
+	_free()
 
 
 func test_engage_keys_only_the_cast_and_disengage_restores_everything() -> void:
