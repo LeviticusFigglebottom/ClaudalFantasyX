@@ -16,7 +16,7 @@ The face stage (`base_body_stage.tscn`) lights the face with SpotLight3Ds, and o
 
 ## Acceptance criteria
 - [x] For positional lights, the bounce gets the light's distance falloff without its shadow. One option is `reach = 1.0`, because `light()` runs only inside a light's range and cone, plus a smooth range falloff. Another is a falloff the shader computes itself; choose one and document it. Directional lights are unchanged.
-- [ ] Measured on the GPU: grief interior luminance and the share below 0.01, High and Low, against RND-21's numbers. Closed-mouth shots unchanged. Report whether QA-08's fault A changes, with a key-shadow-off control capture.
+- [x] Measured on the GPU: grief interior luminance and the share below 0.01, High and Low, against RND-21's numbers. Closed-mouth shots unchanged. Report whether QA-08's fault A changes, with a key-shadow-off control capture.
 - [x] A test that walks `assets/characters/*/materials/` and asserts that every `mouth`, `teeth` and `tongue` material uses the `mouth` family. Today's test checks only Asha's three files by name; Rhen and Toma (M2-CHR-01) must inherit the rule.
 - [x] Update character_shading.md, "Mouth interior". The Lead re-approves the affected lavapipe shots (`asha_face_grief` at least) after a side-by-side view.
 
@@ -30,5 +30,27 @@ The face stage (`base_body_stage.tscn`) lights the face with SpotLight3Ds, and o
   - The share below 0.01 is 0 in this rig: the directional rim still lights the interior.
   - **Still open for the PC GPU:** the High/Low grief numbers against RND-21's, in a positional-key rig.
 - **QA-08 fault A: not this bug, and it doesn't change.** It's the lips' shadow on the *inner-lip skin* (`skin_head`), which no bounce reaches. With the key and rim shadows off, the rim disappears completely. With the mouth bag, teeth and tongue painted green, the dark band lies outside the green (`docs/kb/qa/gpu/qa08/crop_grief_rim_shadow_off.png`). Filed **M1-RND-25** (rendering, reviewer character).
+
+## Notes (PC GPU, session_01UFcBRsk9M9EKtxJKdBU2mB, 2026-10-24): criterion 2 on the GPU
+Report: `docs/kb/qa/gpu/2026-10-24-rnd-24-bounce-gpu.md`. Tool: `tools/gpu_bench/mouth_bounce_probe.tscn`. Branch
+`gpu/m1-rnd-24-gpu-check`.
+- **The rig.** Grief, with the stage's directional key replaced by a shadowed spot or omni along the same direction,
+  2 m out, at matched irradiance.
+- **Shadowed spot key.** Over RND-21's interior pixels, the median goes from fallback 0.0145 to **pass 0.0194** at
+  High, and from 0.0144 to **0.0185** at Low. The share below 0.01 goes 0.16 → 0.10 at High and 0.19 → 0.07 at Low.
+  - The key-shadow-off control is 0.0194–0.0205 at High and 0.0197 at Low, so the pass gives back the full
+    unshadowed bounce.
+  - A shadowed omni changes nothing here: its cube shadow doesn't darken the interior.
+- **Directional keys (the shipped Asha shots).** At Low, pass and fallback are pixel-identical. Against RND-21's
+  numbers, the bounce is intact (0.0106 → 0.0161–0.0165 at High over today's pixels).
+- **Closed mouths** (smile, neutral): RMSE ≤ 0.0001 at High and Low, for both the dir and spot keys.
+- **QA-08 fault A doesn't change.** The inner-lip band is identical in the fallback and pass captures, and it goes
+  only with the key shadow off (`docs/kb/qa/gpu/rnd24/crop_grief_keys_variants.png`). It's M1-RND-25's to fix.
+- **Cost** at 2560×1440, in a close-up where the face fills the frame: no measurable change, under 0.005 ms (inside
+  run-to-run noise), at High and Low, for the spot, omni and dir keys.
+- **Finding: under FSR2 (the High preset), the pass softens the mouth's edges even when it adds nothing.** This
+  happens under directional light too: full-frame RMSE 0.0005–0.0012, on the mouth-family pixels only. It isn't
+  there with bilinear scaling or at Low. Filed **M1-RND-26**. No lavapipe shot is affected, because the capture rig
+  doesn't use FSR2.
 
 ## Review log
