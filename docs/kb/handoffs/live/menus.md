@@ -39,6 +39,16 @@ The scene-swap regression test now measures the real swap on an injected per-fra
 | ~~M3-MNU-01 Lore codex~~ | **withdrawn**: the UI track built it as M3-UI-03 at the same time (no task claimed when I checked); my agent was stopped before any commit landed here, and the task file is removed |
 | M2-MNU-10 Lattice: walk to a sealed gate | **review** (merged bbd45c8): the cheapest neighbour, cost shown, then the open confirm |
 
+## Third queue (from the Lead, 2026-10-24: the human's "parts look primitive" playtest note)
+Design call: **no save row** in the field menu; saving stays at shrines plus the chapter autosaves.
+| Task | State |
+|---|---|
+| M2-MNU-300 Last saved block on the field menu root + the `menu_save` tip | **review** (abf5061a): the newest loadable save's place and time above the objective, shrine reminder; field_menu, field_menu_21x9, field_menu_16x10 re-approved after viewing |
+| M2-MNU-301 hero portraits in every menu (a lavapipe renderer under tools/portraits/, PROVENANCE rows, expressions) | **doing** (worktree agent). ADR 0120: baked PNGs, one renderer and manifest for heroes and creatures |
+| M2-MNU-302 bestiary creature portraits (27 Act I + the slice's five) | **todo**, after 301's renderer lands |
+| M2-MNU-303 menu motion (page transitions, cursor easing, ui_sfx focus sounds, Reduced motion) | **doing** (worktree agent) |
+| Then M3 menu work from SPEC §8 | |
+
 ## Exact next step
 **MERGE-READY @ f49f2869** (claude/menus = big7 + claude/ui @ 427c65f + claude/audio @ 662f9d7 + claude/m2-slice @ d034c31 + this track): menus items M2-MNU-01..11, M3-MNU-02..04, M2-AUD-15/16, all in review. Checks run on f49f2869: gdlint + gdformat clean (610 files), validate_data 0/0, taskboard OK, full Godot suite 2189 run / 0 failed (the creatures-vs-UI-07 test fixed by claude/ui; the pseudo-locale walk passes with no KNOWN rows). Shots: none changed by M2-MNU-11 (equip_menu, equip_customize, status_menu, lattice_menu, lattice_menu_activate, lattice_overview at rmse 0). Skipped: the full screenshot manifest (Lead at merge), coverage (no game/battle or game/progression change of this track's), the Blender step.
 
