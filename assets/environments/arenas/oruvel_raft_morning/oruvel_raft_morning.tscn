@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3]
+[gd_scene load_steps=28 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_cumulus.gdshader" id="2_r"]
@@ -15,18 +15,15 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/crate_stack.glb" id="13_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/basket_set.glb" id="14_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/water_jar.glb" id="15_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/stilt_house.glb" id="16_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lintel_gull_a.glb" id="17_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lintel_gull_c.glb" id="18_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lintel_gull_b.glb" id="19_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/timber_stilt_post.glb" id="20_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/roof_thatch_hip.glb" id="21_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/storehouse_stilt.glb" id="22_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/awning_cloth.glb" id="23_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/fish_drying_rack.glb" id="24_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/salvage_pile.glb" id="25_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/outrigger_7m.glb" id="26_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/market_stall.glb" id="27_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/oruvel/cabin_keelroof.glb" id="16_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/oruvel/lintel_gull_open.glb" id="17_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/oruvel/cabin_patched.glb" id="18_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/oruvel/net_frame.glb" id="19_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/oruvel/stall_awning.glb" id="20_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/oruvel/salvage_heap.glb" id="21_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/oruvel/hull_outrigger.glb" id="22_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/oruvel/hull_cabin.glb" id="23_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/oruvel/town_far.glb" id="24_r"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -118,113 +115,89 @@ transform = Transform3D(0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, 0.766044, 
 [node name="water_jar_1" parent="Dressing" instance=ExtResource("15_r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 5.6, 0, -4.6)
 
-[node name="stilt_house_1" parent="Dressing" instance=ExtResource("16_r")]
-transform = Transform3D(0.978148, 0, 0.207912, 0, 1, 0, -0.207912, 0, 0.978148, -18.879, -1.89, -23.826)
+[node name="cabin_keelroof_1" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.978148, 0, 0.207912, 0, 1, 0, -0.207912, 0, 0.978148, -18.85, 0.18, -22.75)
 
-[node name="lintel_gull_a_1" parent="Dressing" instance=ExtResource("17_r")]
-transform = Transform3D(-0.207912, 0, 0.978148, 0, 1, 0, -0.978148, 0, -0.207912, -18.65, 4.16, -22.75)
+[node name="lintel_gull_open_1" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.406737, 0, -0.913545, 0, 1, 0, 0.913545, 0, 0.406737, -18.247, 3.479, -19.913)
 
-[node name="stilt_house_2" parent="Dressing" instance=ExtResource("16_r")]
-transform = Transform3D(-0.0871557, 0, 0.996195, 0, 1, 0, -0.996195, 0, -0.0871557, -20.846, -1.93, -9.154)
+[node name="cabin_keelroof_2" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.0871557, 0, 0.996195, 0, 1, 0, -0.996195, 0, -0.0871557, -19.75, 0.14, -9.25)
 
-[node name="lintel_gull_c_1" parent="Dressing" instance=ExtResource("18_r")]
-transform = Transform3D(-0.996195, 0, -0.0871557, 0, 1, 0, 0.0871557, 0, -0.996195, -19.75, 4.12, -9.25)
+[node name="lintel_gull_open_2" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.258819, 0, -0.965926, 0, 1, 0, 0.965926, 0, 0.258819, -22.639, 3.419, -8.997)
 
-[node name="stilt_house_3" parent="Dressing" instance=ExtResource("16_r")]
-transform = Transform3D(0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, 0.766044, -26.207, -1.95, -36.343)
+[node name="cabin_patched_1" parent="Dressing" instance=ExtResource("18_r")]
+transform = Transform3D(0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, 0.766044, -25.5, 0.12, -35.5)
 
-[node name="lintel_gull_b_1" parent="Dressing" instance=ExtResource("19_r")]
-transform = Transform3D(-0.642788, 0, 0.766044, 0, 1, 0, -0.766044, 0, -0.642788, -25.5, 4.1, -35.5)
+[node name="lintel_gull_open_3" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.438371, 0, -0.898794, 0, 1, 0, 0.898794, 0, 0.438371, -26.917, 3.24, -34.311)
 
-[node name="timber_stilt_post_1" parent="Dressing" instance=ExtResource("20_r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4.5, 0.16, -35.25)
+[node name="cabin_patched_2" parent="Dressing" instance=ExtResource("18_r")]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, -8.3, 0.1, -28)
 
-[node name="timber_stilt_post_2" parent="Dressing" instance=ExtResource("20_r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 8.5, 0.16, -35.25)
+[node name="lintel_gull_open_4" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.292372, 0, -0.956305, 0, 1, 0, 0.956305, 0, 0.292372, -10.087, 3.22, -28.479)
 
-[node name="timber_stilt_post_3" parent="Dressing" instance=ExtResource("20_r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4.5, 0.16, -30.25)
+[node name="net_frame_1" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4.5, 0.16, -32.75)
 
-[node name="timber_stilt_post_4" parent="Dressing" instance=ExtResource("20_r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 8.5, 0.16, -30.25)
+[node name="net_frame_2" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 8.1, 0.16, -32.25)
 
-[node name="roof_thatch_hip_1" parent="Dressing" instance=ExtResource("21_r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 6.5, 2.46, -32.75)
+[node name="stall_awning_1" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-1, 0, 1.22465e-16, 0, 1, 0, -1.22465e-16, 0, -1, 8.9, 0.16, -35.35)
 
-[node name="lintel_gull_c_2" parent="Dressing" instance=ExtResource("18_r")]
-transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 6.5, 4.51, -32.75)
+[node name="net_frame_3" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -16.8, 0.14, -11.4)
 
-[node name="stilt_house_4" parent="Dressing" instance=ExtResource("16_r")]
-transform = Transform3D(0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, 0.34202, -47.034, -0.62, -27.376)
+[node name="salvage_heap_1" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(0.906308, 0, 0.422618, 0, 1, 0, -0.422618, 0, 0.906308, -22.6, 0.14, -6.4)
 
-[node name="lintel_gull_c_3" parent="Dressing" instance=ExtResource("18_r")]
-transform = Transform3D(-0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, -0.939693, -46, 5.43, -27)
+[node name="net_frame_4" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -15.6, 0.18, -22.4)
 
-[node name="stilt_house_5" parent="Dressing" instance=ExtResource("16_r")]
-transform = Transform3D(0.766044, 0, -0.642788, 0, 1, 0, 0.642788, 0, 0.766044, 30.707, -0.62, -62.843)
+[node name="stall_awning_2" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.984808, 0, 0.173648, 0, 1, 0, -0.173648, 0, -0.984808, -4.4, 0.1, -25.6)
 
-[node name="lintel_gull_b_2" parent="Dressing" instance=ExtResource("19_r")]
-transform = Transform3D(0.642788, 0, 0.766044, 0, 1, 0, -0.766044, 0, 0.642788, 30, 5.43, -62)
+[node name="salvage_heap_2" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -22.4, 0.12, -33)
 
-[node name="storehouse_stilt_1" parent="Dressing" instance=ExtResource("22_r")]
-transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, -8.3, 0.1, -29.2)
+[node name="salvage_heap_3" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 3.6, 0.16, -30)
 
-[node name="net_rack_2" parent="Dressing" instance=ExtResource("10_r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -16.6, 0.14, -12)
+[node name="hull_outrigger_1" parent="Dressing" instance=ExtResource("22_r")]
+transform = Transform3D(0.999848, 0, 0.0174524, 0, 1, 0, -0.0174524, 0, 0.999848, 9.3, -0.8, 2.5)
 
-[node name="crate_stack_2" parent="Dressing" instance=ExtResource("13_r")]
-transform = Transform3D(0.906308, 0, 0.422618, 0, 1, 0, -0.422618, 0, 0.906308, -23, 0.14, -6)
+[node name="hull_outrigger_2" parent="Dressing" instance=ExtResource("22_r")]
+transform = Transform3D(0.994522, 0, 0.104528, 0, 1, 0, -0.104528, 0, 0.994522, -9.6, -0.8, -6.5)
 
-[node name="net_rack_3" parent="Dressing" instance=ExtResource("10_r")]
-transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -15.4, 0.18, -22.8)
+[node name="hull_outrigger_3" parent="Dressing" instance=ExtResource("22_r")]
+transform = Transform3D(0.173648, 0, 0.984808, 0, 1, 0, -0.984808, 0, 0.173648, -1, -0.8, -28)
 
-[node name="oil_lamp_post_2" parent="Dressing" instance=ExtResource("12_r")]
-transform = Transform3D(-1, 0, 1.22465e-16, 0, 1, 0, -1.22465e-16, 0, -1, -15, 0.18, -19)
+[node name="hull_cabin_1" parent="Dressing" instance=ExtResource("23_r")]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -46, -0.8, -27)
 
-[node name="awning_cloth_1" parent="Dressing" instance=ExtResource("23_r")]
-transform = Transform3D(0.984808, 0, -0.173648, 0, 1, 0, 0.173648, 0, 0.984808, -4.6, 0.1, -25)
+[node name="hull_cabin_2" parent="Dressing" instance=ExtResource("23_r")]
+transform = Transform3D(0.766044, 0, -0.642788, 0, 1, 0, 0.642788, 0, 0.766044, 30, -0.8, -62)
 
-[node name="fish_drying_rack_1" parent="Dressing" instance=ExtResource("24_r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10.6, 0.1, -24.6)
+[node name="town_far_1" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(0.990268, 0, 0.139173, 0, 1, 0, -0.139173, 0, 0.990268, -34, -0.8, -76)
 
-[node name="basket_set_2" parent="Dressing" instance=ExtResource("14_r")]
-transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -22, 0.12, -32)
+[node name="town_far_2" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(0.951057, 0, -0.309017, 0, 1, 0, 0.309017, 0, 0.951057, 36, -0.8, -86)
 
-[node name="salvage_pile_1" parent="Dressing" instance=ExtResource("25_r")]
-transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 3.4, 0.16, -29.6)
+[node name="cabin_keelroof_3" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -8.4, 0.12, -16.4)
 
-[node name="outrigger_7m_1" parent="Dressing" instance=ExtResource("26_r")]
-transform = Transform3D(-0.0174524, 0, 0.999848, 0, 1, 0, -0.999848, 0, -0.0174524, 9.3, -0.8, 2.5)
+[node name="lintel_gull_open_5" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.374607, 0, -0.927184, 0, 1, 0, 0.927184, 0, 0.374607, -5.5, 3.419, -16.4)
 
-[node name="outrigger_7m_2" parent="Dressing" instance=ExtResource("26_r")]
-transform = Transform3D(-0.104528, 0, 0.994522, 0, 1, 0, -0.994522, 0, -0.104528, -9.6, -0.8, -6.5)
+[node name="stall_awning_3" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.173648, 0, 0.984808, 0, 1, 0, -0.984808, 0, -0.173648, -6.6, 0.12, -13.9)
 
-[node name="outrigger_7m_3" parent="Dressing" instance=ExtResource("26_r")]
-transform = Transform3D(-0.984808, 0, 0.173648, 0, 1, 0, -0.173648, 0, -0.984808, -1, -0.8, -28)
-
-[node name="outrigger_7m_4" parent="Dressing" instance=ExtResource("26_r")]
-transform = Transform3D(-0.0174524, 0, 0.999848, 0, 1, 0, -0.999848, 0, -0.0174524, 9.3, -0.8, 2.5)
-
-[node name="outrigger_7m_5" parent="Dressing" instance=ExtResource("26_r")]
-transform = Transform3D(-0.104528, 0, 0.994522, 0, 1, 0, -0.994522, 0, -0.104528, -9.6, -0.8, -6.5)
-
-[node name="market_stall_1" parent="Dressing" instance=ExtResource("27_r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -8.2, 0.12, -16.4)
-
-[node name="awning_cloth_2" parent="Dressing" instance=ExtResource("23_r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -8.2, 0.12, -14.3)
-
-[node name="oil_lamp_post_3" parent="Dressing" instance=ExtResource("12_r")]
-transform = Transform3D(-1, 0, 1.22465e-16, 0, 1, 0, -1.22465e-16, 0, -1, -4.3, 0.12, -13.3)
-
-[node name="water_jar_2" parent="Dressing" instance=ExtResource("15_r")]
-transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -5.2, 0.12, -17.9)
-
-[node name="basket_set_3" parent="Dressing" instance=ExtResource("14_r")]
-transform = Transform3D(0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, 0.34202, -11.2, 0.12, -13.8)
-
-[node name="fish_drying_rack_2" parent="Dressing" instance=ExtResource("24_r")]
-transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -11.4, 0.12, -17.2)
+[node name="salvage_heap_4" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, 0.34202, -11.4, 0.12, -13.8)
 
 [node name="CameraHints" type="Node3D" parent="."]
 
