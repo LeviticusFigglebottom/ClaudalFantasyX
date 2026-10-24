@@ -24,5 +24,6 @@ flags = {
 "field_test_lever_pulled": "Field test zone (game/levels/_tests/field): the lever interactable was used. Tests and the debug flag inspector only; never read by story content.",
 "field_test_causeway_reached": "Field test zone (game/levels/_tests/field): the player touched the causeway gate trigger. Tests only; never read by story content.",
 "save_shrine_used": "The player has used any save shrine at least once (set by every SaveShrine, M1-ARC-03). Story shrines may also set their own flag (Haluna's sets ch02_saved_once).",
-"ch02_tideline_won": "The first scripted battle on Haluna's tideline was won (first-playable thread)."
+"ch02_tideline_won": "The first scripted battle on Haluna's tideline was won (first-playable thread).",
+"ch02_ate_at_nemes": "Ch2 B02 'Neme's table' has played (set by ch02_nemes_table, M2-FP-13): Rhen woke at noon at Neme's after the walk up from the beach."
 }
