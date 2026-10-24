@@ -107,7 +107,7 @@ This is a **seed**. The Narrative agent owns `docs/kb/story/` and must expand it
 | Minimum | GTX 1060 / RX 580 class | 1080p, 30–60 fps, low preset |
 
 - A graphics settings menu with presets is required: GI quality, shadows, volumetrics, SSR, SSAO/SSIL, render scale and FSR, and anti-aliasing (TAA/FXAA/MSAA).
-- No visible hitch over 50 ms: battle transitions, dialogue and cutscene cuts, and the first 60 frames after any fade lifts. Frames hidden behind a full-screen fade or loading screen are loading time: no single hidden frame over 1 s, and zone entries under 3 s. The shader warm-up (a prewarm stage plus the boot warm-up of resident shaders) keeps the visible frames in budget (ADR 0029).
+- No visible hitch over 50 ms: battle transitions, dialogue and cutscene cuts, and the first 60 frames after any fade lifts. Frames hidden behind a full-screen fade or loading screen are loading time: no single hidden frame over 1 s, and zone entries under 3 s. The shader warm-up (a prewarm stage plus the boot warm-up of resident shaders) keeps the visible frames in budget (ADR 0029). On a cold first launch only, behind the boot card with its first-run cue, a hidden frame may take up to 1.7 s (ADR 0037).
 
 ### 4.3 Allowed Tooling and Libraries (examples, not limits)
 
@@ -522,3 +522,4 @@ It must include the following: a link to this spec, the pillars, the guardrails,
 - v1.1 (2026-10-23): §3.5 prologue line replaced at the human's direction (it echoed the inspiring game's opening line); see ADR 0020 §(g). §16 Q2 answered by the human: MPFB/MakeHuman allowed as a tool, CC0 data only, heavily modified (ADR 0021).
 - v1.2 (2026-10-23): §8 item 8 tier wording neutralised. The old suffixes echoed the inspiring game's spell-tier names (IP guardrail §2); no design change.
 - v1.3 (2026-10-24): §4.2's hitch limit now names the visible frames (50 ms) and budgets frames hidden behind a fade as loading time (1 s per frame, 3 s per zone entry); see ADR 0029 (accepted with an amendment by review-sweep-Q).
+- v1.4 (2026-10-24): §4.2 allows a hidden frame of up to 1.7 s on a cold first launch only, behind the boot card with its first-run cue; see ADR 0037 (measured by M2-RND-18; Godot compiles one draw's pipeline set synchronously).
