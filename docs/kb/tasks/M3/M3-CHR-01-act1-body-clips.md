@@ -1,7 +1,7 @@
 ---
 id: M3-CHR-01
 title: Act I body clips the chapter dialogue stages (Rhen, Asha, Toma, Ysolde, Kerrid, Liss)
-role: characters
+role: character
 status: todo
 owner_session: ""
 depends_on: []
