@@ -52,6 +52,19 @@ JOBS = [
      ["battle_standard.ogg", "battle_standard.loop.json"], "music_loop"),
     ("assets_src/music/temple_trial.py", "assets/audio/music",
      ["temple_trial.ogg", "temple_trial.loop.json"], "music_loop"),
+    ("assets_src/sfx/battle_sfx.py", "assets/audio/sfx",
+     ["battle/hit_none_1.ogg", "battle/hit_none_2.ogg", "battle/hit_none_3.ogg", "battle/hit_fire_1.ogg",
+      "battle/hit_fire_2.ogg", "battle/hit_fire_3.ogg", "battle/hit_ice_1.ogg", "battle/hit_ice_2.ogg",
+      "battle/hit_ice_3.ogg", "battle/hit_lightning_1.ogg", "battle/hit_lightning_2.ogg",
+      "battle/hit_lightning_3.ogg", "battle/hit_water_1.ogg", "battle/hit_water_2.ogg", "battle/hit_water_3.ogg",
+      "battle/hit_holy_1.ogg", "battle/hit_holy_2.ogg", "battle/lamp_dive.ogg", "battle/shallows_verse.ogg",
+      "battle/read.ogg", "battle/heal.ogg", "battle/status_apply.ogg", "battle/ko_release.ogg",
+      "battle/bell_release.ogg", "battle/stinger_ambush.ogg", "battle/stinger_ambush_soft.ogg",
+      "battle/stinger_preemptive.ogg", "battle/drownbell_toll.ogg", "battle/drownbell_toll_soft.ogg",
+      "battle/toll_gather.ogg", "battle/rim_crack_1.ogg", "battle/rim_crack_2.ogg", "battle/rim_crack_3.ogg",
+      "battle/rim_break.ogg", "battle/polyp_rise.ogg", "battle/polyp_mend.ogg", "battle/floodnet.ogg",
+      "battle/flood.ogg", "battle/flood_soft.ogg", "battle/vowbound_call.ogg", "battle/vowbound_dismiss.ogg",
+      "battle/victory.ogg", "battle/defeat.ogg", "battle/escape.ogg", "drownbell_toll.ogg"], "sfx"),
 ]
 
 
