@@ -5,9 +5,12 @@ extends RefCounted
 ## The first rule whose conditions all hold wins; one option is drawn by weight.
 ## A rule without "if" always holds (use it last as the default).
 ## Conditions: self_hp_below_pct:int, turn_mod:[n, r], foe_has_status:String,
-##             allies_alive_below:int, field_active:String (a field in BattleEngine.fields)
+##             allies_alive_below:int, field_active:String (a field in BattleEngine.fields),
+##             ward_has_status:String (the battle's ward entry has it: a Squall Wing dives a hauled
+##             rope; M3-CMB-01)
 ## Targets:    random_foe, lowest_hp_foe, highest_hp_foe, self, random_ally, all_foes, all_allies,
-##             largest_ally (the living ally with the highest max HP: a boss its adds tend)
+##             largest_ally (the living ally with the highest max HP: a boss its adds tend),
+##             ward (the battle's ward entry, for a skill whose target is "ward"; M3-CMB-01)
 ## turn_mod counts the actor's turns since its current phase began (BossMechanics).
 ## A Provoked enemy's single-foe skills always target its provoker (formulas.md § Statuses).
 
@@ -31,6 +34,21 @@ static func choose(engine: BattleEngine, actor: BattleCombatant) -> Dictionary:
 	return {}
 
 
+## The skills the first rule whose conditions hold now could pick (no draw, no targets): what a
+## careful player reads off a foe's habits (SimWardGuard; M3-CMB-01). Empty when no rule holds.
+static func likely_skills(engine: BattleEngine, actor: BattleCombatant) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for rule: Variant in actor.ai_rules:
+		var r: Dictionary = rule
+		if not _conditions_hold(engine, actor, r.get("if", {}) as Dictionary):
+			continue
+		for o: Variant in r.get("pick", []):
+			if int((o as Dictionary).get("weight", 1)) > 0:
+				out.append(StringName(str((o as Dictionary).get("skill", ""))))
+		break
+	return out
+
+
 static func select_targets(
 	engine: BattleEngine, actor: BattleCombatant, selector: StringName
 ) -> Array[BattleCombatant]:
@@ -40,6 +58,10 @@ static func select_targets(
 	match selector:
 		&"self":
 			out.append(actor)
+		&"ward":
+			var w := engine.ward()
+			if w != null:
+				out.append(w)
 		&"all_foes":
 			out = foes
 		&"all_allies":
@@ -97,6 +119,9 @@ static func _holds(engine: BattleEngine, actor: BattleCombatant, key: StringName
 			ok = engine.living_allies_of(actor).size() < int(arg)
 		&"field_active":
 			ok = engine.fields.has(StringName(str(arg)))
+		&"ward_has_status":
+			var w := engine.ward()
+			ok = w != null and w.has_status(StringName(str(arg)))
 		_:
 			push_error("EnemyAI: unknown condition '%s'" % key)
 			ok = false

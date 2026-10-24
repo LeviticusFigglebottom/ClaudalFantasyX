@@ -99,6 +99,34 @@ var yielded := false
 var forbidden_tag: StringName = &""
 var forbidden_key := ""
 
+## Set-piece battles (M3-CMB-01, BattleSetPiece; set_piece_battles.md).
+## A scripted timeline entry (encounters.json "entries"): &"ward" (the Climb), &"tide" (the Surge)
+## or &"guest" (Pell). &"" for every fighter. An entry has no HP, can't be KO'd and is never a target
+## but of a "ward" skill (BattleSetPiece.ROLE_WARD); it acts on its own (data AI).
+var entry_role: StringName = &""
+## On a ward: who covers it (a "covers" skill, Toma's Hold the Stair): the next foe's ward skill
+## lands on them instead. Cleared when it lands or at the coverer's next turn. &"" = uncovered.
+var covered_by: StringName = &""
+## A counter stance (a "counter" skill, Toma's Stand Firm): until this combatant's next turn, a
+## landed physical hit from a foe is answered at once with this skill on the attacker. &"" = none.
+var counter_skill: StringName = &""
+## On an entry: a summon from its skills adds nothing while this many targetable foes stand
+## (encounters.json entries "summon_cap"; the Surge's "max 3 standing"). -1 = no cap.
+var summon_cap := -1
+## A phase row's "untargetable" (nothing may target it; it still acts) and "damage_immune" (no hit
+## takes HP): the Undertow's Reach drawn back over the sea.
+var untargetable := false
+var damage_immune := false
+## enemies.json "hp_floor_pct": hits never take it below this share of max HP (the Reach can't fall
+## before its last phase begins). -1 = none.
+var hp_floor_pct := -1
+## Left the field on its feet without being felled (Pell's Storm-Call draws it off; an objective
+## victory sends the rest back down the wall). Counts as down; gives no XP, lume or drops.
+var withdrawn := false
+## The skill this combatant's Attack plays (encounters.json "attack_override": Toma's Attack becomes
+## Stand Firm at the stair-head). The menus read it; &"attack" otherwise.
+var attack_skill: StringName = &"attack"
+
 
 static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> BattleCombatant:
 	var c := BattleCombatant.new()
@@ -133,7 +161,22 @@ static func from_dict(cid: StringName, team_id: StringName, d: Dictionary) -> Ba
 	for t: Variant in d.get("tags", []):
 		c.tags.append(StringName(str(t)))
 	c.yield_at_hp_pct = int(d.get("yield_at_hp_pct", -1))
+	c.hp_floor_pct = int(d.get("hp_floor_pct", -1))
 	return c
+
+
+## True for a scripted timeline entry (see entry_role).
+func is_entry() -> bool:
+	return entry_role != &""
+
+
+## Leaves the field without falling (see withdrawn). Nothing for an entry.
+func withdraw() -> void:
+	if is_entry():
+		return
+	withdrawn = true
+	statuses.clear()
+	provoker_id = &""
 
 
 ## True while a telegraphed skill is gathering (see charge_skill).
@@ -171,7 +214,7 @@ func sim_copy() -> BattleCombatant:
 ## Still in the fight: HP above 0 and not turned to stone. Petrify counts as KO for the
 ## timeline, targeting, outcome checks and XP credit (formulas.md § Statuses).
 func is_alive() -> bool:
-	return hp > 0 and not yielded and not statuses.has(STATUS_PETRIFY)
+	return hp > 0 and not yielded and not withdrawn and not statuses.has(STATUS_PETRIFY)
 
 
 func is_petrified() -> bool:
@@ -244,10 +287,10 @@ func effective_magic_defense() -> int:
 
 ## Applies signed HP change (positive = damage). Returns the actual HP delta (negative = lost).
 func apply_damage(amount: int) -> int:
-	if yielded:
-		return 0  # it has left the fight
+	if yielded or withdrawn or is_entry() or damage_immune and amount > 0:
+		return 0  # it has left the fight, has no HP, or nothing can wound it now
 	var before := hp
-	hp = clampi(hp - amount, 0, max_hp)
+	hp = clampi(hp - amount, mini(_hp_floor(), hp), max_hp)
 	if amount > 0 and has_status(&"sleep"):
 		statuses.erase(&"sleep")
 	if amount > 0 and before > 0 and _yields_at(hp):
@@ -266,12 +309,19 @@ func restore_hp(amount: int) -> int:
 
 ## KO now (Doom reaching zero): HP 0 and every status cleared.
 func fall() -> void:
+	if is_entry():
+		return  # no HP: an entry can't be KO'd
 	if yield_at_hp_pct >= 0 and hp > 0:
 		_yield()  # a yielding foe never goes down: Doom or a field's fall ends its fight on its feet
 		return
 	hp = 0
 	statuses.clear()
 	provoker_id = &""
+
+
+## The least HP a hit can leave (hp_floor_pct of max HP, floored), 0 without a floor.
+func _hp_floor() -> int:
+	return maxi(max_hp * hp_floor_pct / Formulas.PCT, 0) if hp_floor_pct >= 0 else 0
 
 
 ## True when a hit leaving it on `left` HP ends its fight (see yield_at_hp_pct).
