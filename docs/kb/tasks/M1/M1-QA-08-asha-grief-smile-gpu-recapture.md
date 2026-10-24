@@ -2,8 +2,8 @@
 id: M1-QA-08
 title: GPU 2x High re-capture of Asha's grief and smile after M1-CHR-11 and M1-RND-21
 role: qa
-status: todo
-owner_session: ""
+status: doing
+owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU, branch gpu/qa-08-asha-recheck)"
 depends_on: [M1-CHR-11, M1-RND-21]
 milestone: M1
 request-from: "lead"
