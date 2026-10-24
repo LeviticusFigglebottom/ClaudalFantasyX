@@ -2,8 +2,8 @@
 id: M2-ENV-07
 title: The hero banyan and the windbreak tree at final quality (replace the two PLACEHOLDER trees)
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M1-ENV-03]
 milestone: M2
 request-from: environment
