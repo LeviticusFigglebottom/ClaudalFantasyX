@@ -1,0 +1,114 @@
+"""Writes the Brightwater ferry preview layout (M3-ENV-08):
+game/levels/_tests/brightwater_ferry_kit/brightwater_ferry_layout.json.
+
+    python3 assets_src/environments/kits/brightwater_ferry/bf_preview_layout.py
+
+The layout is HalunaDresser's format (hymn-zone-layout/1, no terrain: every piece carries its own "y"), plus
+"lamps" for BrightwaterFerryPreview: one entry [x, y, z, energy, range, shadow] per deck lantern, the light at the
+lantern's flame (bf_props.LANTERN_FLAME below its ring). It composes the design notes' key shots
+(brightwater_ferry.md §4): the ferry *Kind Weather* floating with her main deck at y SHIP_Y over the sea at the
+datum, bow north, her hull, rig, deckhouse, awning, cargo and skiff all in the ship's frame at her origin; the
+passengers' places under the awning and by the rails; eight lanterns; and to the east, on the strait's reef edge,
+the drowned hulls on their coral.
+
+m2-slice copies the pieces it wants (swap-in note in the task file); the ship pieces share one origin, so moving the
+ferry is one transform.
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[3]
+sys.path.insert(0, str(HERE))
+import bf_common as bf  # noqa: E402
+import bf_deckhouse  # noqa: E402
+import bf_hull  # noqa: E402
+import bf_props  # noqa: E402
+
+OUT = ROOT / "game" / "levels" / "_tests" / "brightwater_ferry_kit" / "brightwater_ferry_layout.json"
+SHIP_Y = -bf.WATERLINE_Y  # the main deck's height above the sea
+SHIP_PIECES = ("ferry_hull", "ferry_rig", "ferry_deckhouse", "ferry_awning", "ferry_cargo", "ferry_skiff")
+LAMP_COLOR = "#FFB16E"  # oil_lamp (colour script ch04 key)
+LAMP_ENERGY = 1.2  # ch04 lamp key
+LAMP_RANGE_M = 7.0
+LAMP_ATTENUATION = 1.2
+# (name, ring position in the ship's frame, energy multiplier, range multiplier, casts shadows)
+LANTERNS = (
+    ("awning_fore", (0.0, bf_deckhouse.AWNING_RIDGE_Y - 0.06, -6.0), 1.0, 1.0, False),
+    ("awning_aft", (0.0, bf_deckhouse.AWNING_RIDGE_Y - 0.08, -4.3), 1.0, 1.0, True),
+    ("awning_port", (-bf_deckhouse.AWNING_SIDE_X, bf_deckhouse.AWNING_SIDE_Y - 0.02, -3.05), 0.9, 0.9, False),
+    ("awning_starboard", (bf_deckhouse.AWNING_SIDE_X, bf_deckhouse.AWNING_SIDE_Y - 0.02, -3.05), 0.9, 0.9, False),
+    ("deckhouse_door", (0.78, 1.98, bf_deckhouse.Z0 - 0.16), 0.9, 0.85, False),
+    ("deckhouse_inside", (0.55, 1.95, 5.7), 0.75, 0.6, False),
+    ("stern", bf_hull.stern_lantern_ring(), 1.0, 1.1, True),
+    ("fore_fife", (0.62, 0.98 + 0.42, bf.FOREMAST_Z + bf_hull.FIFE_DZ[bf.FOREMAST_Z]), 0.8, 0.9, False),
+    ("bow", bf_hull.bow_lantern_ring(), 0.9, 0.9, False),
+)
+# Passengers' places on the main deck (x, z, yaw deg): under the awning, along the rails, by the cargo.
+BUNDLES = ((-1.25, -6.3, 8.0), (1.3, -5.9, 172.0), (-1.2, -4.2, -6.0), (1.25, -4.0, 185.0), (-2.6, -0.2, 90.0),
+           (2.55, 2.0, -88.0), (-2.55, 6.0, 92.0))
+# The drowned (world x, z, yaw deg), the reef patches under them and along the edge between.
+HULKS = (("derelict_hulk_a", 101.0, -11.5, 108.0), ("derelict_hulk_b", -24.6, -238.6, 158.0),
+         ("derelict_hulk_b", 301.0, 9.5, 64.0), ("derelict_hulk_a", 217.0, -47.0, -24.0))
+REEFS = ((101.0, -12.0, 20.0), (124.0, -2.0, 34.0), (80.0, -20.0, 12.0), (-23.6, -237.6, 70.0), (-4.0, -208.0, 62.0),
+         (300.0, 9.0, 28.0), (262.0, -10.0, 18.0), (217.0, -46.0, 24.0), (180.0, -30.0, 10.0), (150.0, -14.0, -10.0),
+         (340.0, 22.0, 6.0), (-44.0, -268.0, 74.0))
+FAR_LOD_M = 900.0  # the drowned stay LOD0 in the preview's shots (their silhouettes are the read)
+
+
+def ship(piece: str) -> dict:
+    return {"piece": piece, "at": [0.0, 0.0], "y": SHIP_Y, "yaw_deg": 0.0}
+
+
+def lanterns() -> tuple[list[dict], list[list]]:
+    pieces, lamps = [], []
+    fx, fy, fz = bf_props.LANTERN_FLAME
+    for _name, (x, y, z), e, r, shadow in LANTERNS:
+        pieces.append({"piece": "ferry_lantern", "at": [round(x, 3), round(z, 3)], "y": round(SHIP_Y + y, 3),
+                       "yaw_deg": 0.0})
+        lamps.append([round(x + fx, 3), round(SHIP_Y + y + fy, 3), round(z + fz, 3), round(LAMP_ENERGY * e, 3),
+                      round(LAMP_RANGE_M * r, 3), bool(shadow)])
+    return pieces, lamps
+
+
+def main() -> int:
+    pieces = [ship(p) for p in SHIP_PIECES]
+    lantern_pieces, lamps = lanterns()
+    pieces += lantern_pieces
+    for x, z, yaw in BUNDLES:
+        pieces.append({"piece": "passenger_bundles", "at": [x, z], "y": SHIP_Y, "yaw_deg": yaw})
+    for piece, x, z, yaw in HULKS:
+        pieces.append({"piece": piece, "at": [x, z], "y": 0.0, "yaw_deg": yaw, "lod1_from_m": FAR_LOD_M})
+    for x, z, yaw in REEFS:
+        pieces.append({"piece": "reef_awash", "at": [x, z], "y": 0.0, "yaw_deg": yaw, "lod1_from_m": FAR_LOD_M})
+    layout = {
+        "schema": "hymn-zone-layout/1",
+        "zone": "ch04/brightwater_ferry preview (M3-ENV-08): the kit composed for the design notes' key shots",
+        "_about": "Generated by assets_src/environments/kits/brightwater_ferry/bf_preview_layout.py; do not edit by hand. "
+                  "Coordinates: x east, z south (north = -Z), y explicit per piece (no terrain). The ferry's origin is "
+                  f"(0, {SHIP_Y:g}, 0), bow north: every ship piece is placed there. The sea's datum is y 0. `lamps` are "
+                  "[x, y, z, energy, range, shadow] (BrightwaterFerryPreview lights them, fog energy 0).",
+        "seed": 8,
+        "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
+        "materials_dir": "res://assets/environments/kits/brightwater_ferry/materials/",
+        "lod1_from_m": 70.0,
+        "lod_end_m": 3000.0,
+        "lod_margin_m": 2.0,
+        "ship_origin": [0.0, SHIP_Y, 0.0],
+        "lamp_color": LAMP_COLOR,
+        "lamp_attenuation": LAMP_ATTENUATION,
+        "lamps": lamps,
+        "pieces": pieces,
+    }
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(json.dumps(layout, indent=1) + "\n", encoding="utf-8")
+    print(f"LAYOUT {OUT.relative_to(ROOT)}: {len(pieces)} pieces, {len(lamps)} lamps")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
