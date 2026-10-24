@@ -37,6 +37,7 @@ The Lattice exists only as headless logic (`game/progression/lattice_*.gd`); the
   - taskboard --check passes.
   - Godot tests: `--filter=lattice` 49/0 (12 new in test_lattice_menu.gd); `--filter=field_menu` 19/0.
   - No coverage step: game/battle and game/progression were not touched.
+- 2026-10-24, M2-MNU-05 sweep fix: the side panel flows by measured height, so text sizes up to 130% no longer overlap. The key's rows wrap and the key shrinks or hides before reaching the foot, and the confirm keeps a gap above it at 100%. A new test checks that no rects intersect at 1.0, 1.15 and 1.3. Both baselines were re-approved: the key sits 9 px (1080p) higher. Gates: `--filter=lattice` 50/0, `--filter=field_menu` 19/0, compare 2/2 at RMSE 0.00000, lint, format, validate_data and taskboard clean. I checked the page at 130% in scratch renders that are not committed.
 - Left for later:
   - The board has no zoom-out or overview mode, and the page has no mouse-drag pan (the camera follows the cursor).
   - A closed gate that is not adjacent offers no "walk next to it".
