@@ -142,9 +142,10 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
         for m2-slice or VFX.
       - For Art: a `ch08_day` colour-script row.
     - **All four Act I zones filed as M3-ENV-07..10 are in review.**
-    - **Running (worktree agents):** M3-ENV-07B the Oruvel storm and Hullgnaw's split, M3-ENV-11 the close-range
-      plume, M3-ENV-700 the ferry's transom.
-    - **Next:** nothing queued. When these land: a merge-ready batch, then the next item from the Lead's queue.
+    - **Merged here, in review:** M3-ENV-07B the Oruvel storm (baseline `oruvel_o17_pen_split`; Art owes the
+      `ch01_storm` row) and M3-ENV-700 the ferry's transom (`ferry_hull` and `derelict_hulk_a`; b03 moved by
+      0.0007, under the limit). **M3-ENV-11, the close-range plume, is still running.**
+    - **Running:** M3-ENV-11 the close-range plume. Nothing is queued after it. Next: the Lead's queue, or the weaker views each task file lists.
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
@@ -159,6 +160,30 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
 ## For the Lead
+- **MERGE-READY @ 5ab6029c** (claude/env-art; it includes the integration branch at 7fa22c77).
+  - **Items since 74c6dc0e, all in review:**
+    - M3-ENV-07 Oruvel raft-town (and the raft arena's town); 07B its storm state and Hullgnaw's split.
+    - M3-ENV-08 Brightwater ferry; 08B the Seventh Terrace; 700 the ferry's transom.
+    - M3-ENV-09 Ashcrown; 09B Pemakar's far Ashcrown from that kit.
+    - M3-ENV-10 Coilspire.
+    - M2-ENV-12 the Haluna gull normals.
+    - The ten arena and flood baselines re-approved from isolated captures.
+    - The big8 renumbering applied (M3-ARC-04, M3-RND-26).
+  - **Checks run:**
+    - full Godot suite: 2015 run, 0 failed;
+    - full tools unittests: 947 OK (4 skipped);
+    - Blender jobs: every job touched is byte-identical (oruvel, brightwater_ferry, ashcrown, coilspire, haluna,
+      pemakar, corrow);
+    - every new or changed env-art baseline, re-captured with `capture.sh` (one process per shot), passes;
+    - lint, format, validate_data and taskboard are clean.
+  - **Checks skipped:** the full screenshot manifest (the Lead's) and coverage (no changes to game/battle or
+    game/progression).
+  - **Not env-art's baselines, flagged:** five UI and dialogue shots drift from the wetter Haluna tidewalls (listed
+    above).
+  - **Waiting on people:**
+    - Character + Tools: sign-off on the import kinds `oruvel_kit`, `brightwater_ferry_kit`, `ashcrown_kit` and
+      `coilspire_kit`.
+    - Art: colour-script rows `ch01_storm`, `ch04_derelict`, `ch05_temple` and `ch08_day`.
 - **MERGE-READY @ 74c6dc0e, for big8.** It includes the integration branch at 8f808cc6 (big7).
   - **Items:**
     - All seven final arenas swap in through `game/data/battle/arenas.json`.
