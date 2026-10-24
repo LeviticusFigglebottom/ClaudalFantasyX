@@ -1,0 +1,109 @@
+{
+  "doc": "Ch1 'Lamp-Diver' (M3-C01-02; docs/kb/story/beats/act1_ch01.md C1-01 to C1-15; docs/kb/tech/chapter_flow.md). Two greybox zones, played by ZoneStory. The prologue hands off to ch01/oruvel_underway at Drop (first_playable.json prologue.next_location). The Underway: the card and the drop, the tether lesson, the first bell-room (a rest point: a full heal, no save; C1-03 plays once), the galleries (the shutter prompt, the scripted glassfry shoal, the old tin behind the coral curtain the open shutter shows), the low lights at the stairwell lip, the gauge room (the scripted oil slug, then the wheel), the optional limpet in the shaft (the escape lesson, standing in for the shaft's random roll until M3-C01-04), and the ride up the current shaft to the surface. Oruvel: the scale-hull on arrival, the town loop and its six barks, Kell's stall (the wick on every path, the side scene on 'Stay a minute.'), the gulls and the Rising at the dive mooring, the run (Kell first or the net-pen), the scuttlers, the two lashings, the children, Hullgnaw (a breath first: the fight is tuned for a full-HP Rhen, ADR 0034), and going under, which hands off to ch02/haluna at Beach. Every fight is Rhen alone. Item counts and lume are the sheet's §9 Design numbers until Design rules (M3-C01-03).",
+  "chapter": "ch01",
+  "zones": {
+    "ch01/oruvel_underway": {
+      "party": {"party": ["rhen"], "reserve": []},
+      "arrive": [
+        {"when": {"unset": ["ch01_started"]}, "steps": [
+          {"place": "Drop"},
+          {"zone": "begin_chapter", "args": [1]},
+          {"set": "ch01_started"},
+          {"zone": "give", "args": [{"salt_tonic": 2, "brine_eyewash": 1}, 0]},
+          {"play": "ch01_the_drop"},
+          {"zone": "prompt", "args": ["movement"]}
+        ]}
+      ],
+      "beats": {
+        "tut_tether": {"steps": [{"zone": "prompt", "args": ["tether"]}]},
+        "drop_to_bell_room": {"steps": [{"place": "BellRoom1"}]},
+        "bell_room_1": {"when": {"unset": ["ch01_saw_bell_room"]}, "steps": [
+          {"zone": "rest", "args": ["ch01_bell_room_1"]},
+          {"play": "ch01_bell_room"},
+          {"set": "ch01_saw_bell_room"}
+        ]},
+        "bell_rest_1": {"steps": [{"zone": "rest", "args": ["ch01_bell_room_1"]}]},
+        "cut_hinge": {"steps": [{"zone": "give", "args": [{"lit_age_brass": 1}, 0]}]},
+        "drop_to_galleries": {"steps": [{"place": "Gallery"}]},
+        "tut_shutter": {"steps": [{"zone": "prompt", "args": ["shutter"]}]},
+        "wickfry": {"when": {"unset": ["ch01_wickfry_won"]}, "steps": [
+          {"battle": "ch01_wickfry", "party": ["rhen"], "reserve": [], "return_spawn": "GalleryAfter",
+           "victory_flag": "ch01_wickfry_won"}
+        ]},
+        "old_tin": {"steps": [{"zone": "give", "args": [{"salt_tonic": 2, "brine_eyewash": 1}, 0]}]},
+        "bell_rest_2": {"steps": [{"zone": "rest", "args": ["ch01_bell_room_2"]}]},
+        "low_lights": {"when": {"unset": ["ch01_saw_low_lights"]}, "steps": [
+          {"play": "ch01_low_lights"},
+          {"set": "ch01_saw_low_lights"}
+        ]},
+        "oil_slug": {"when": {"unset": ["ch01_oil_slug_won"]}, "steps": [
+          {"battle": "ch01_oil_slug", "party": ["rhen"], "reserve": [], "return_spawn": "GaugeRoom",
+           "victory_flag": "ch01_oil_slug_won"}
+        ]},
+        "gauge_wheel": {"steps": [
+          {"play": "ch01_gauge_wheel"},
+          {"zone": "give", "args": [{"gauge_wheel_brass": 1}, 0]}
+        ]},
+        "limpet": {"when": {"unset": ["ch01_limpet_won"]}, "steps": [
+          {"battle": "ch01_shaft_limpet", "party": ["rhen"], "reserve": [], "return_spawn": "ShaftFoot",
+           "escape_spawn": "ShaftFoot", "victory_flag": "ch01_limpet_won"}
+        ]},
+        "ride_shaft": {"when": {"set": ["ch01_cut_gauge_wheel"]}, "steps": [
+          {"play": "ch01_current_shaft"},
+          {"set": "ch01_underway_done"},
+          {"go": {"location": "ch01/oruvel", "spawn": "Surface"}}
+        ]}
+      }
+    },
+    "ch01/oruvel": {
+      "party": {"party": ["rhen"], "reserve": []},
+      "arrive": [
+        {"when": {"set": ["ch01_hullgnaw_defeated"], "unset": ["ch01_went_under"]}, "steps": [
+          {"play": "ch01_going_under"},
+          {"set": "ch01_went_under"},
+          {"go": {"location": "ch02/haluna", "spawn": "Beach"}}
+        ]},
+        {"when": {"set": ["ch01_cut_gauge_wheel"], "unset": ["ch01_sold_gauge_wheel"]}, "steps": [
+          {"place": "ScaleHull"},
+          {"play": "ch01_scale_hull"},
+          {"set": "ch01_sold_gauge_wheel"},
+          {"zone": "give", "args": [{"gauge_wheel_brass": -1}, 40]},
+          {"if_event": "ch01_haggled", "steps": [{"zone": "give", "args": [{}, 10]}]}
+        ]}
+      ],
+      "beats": {
+        "kell_stall": {"when": {"unset": ["ch01_has_kell_wick"]}, "steps": [
+          {"play": "ch01_kell_stall"},
+          {"zone": "give", "args": [{"kell_wick": 1}, 0]}
+        ]},
+        "gulls": {"when": {"set": ["ch01_has_kell_wick"], "unset": ["ch01_gulls_cried"]}, "steps": [
+          {"play": "ch01_gulls"},
+          {"set": "ch01_gulls_cried"},
+          {"zone": "set_storm", "args": [true]},
+          {"play": "ch01_the_rising"},
+          {"if_event": "ch01_kell_first", "steps": [{"place": "KellRun"}, {"play": "ch01_bridge_gone"}]},
+          {"place": "RunStart"}
+        ]},
+        "scuttlers": {"when": {"set": ["ch01_gulls_cried"], "unset": ["ch01_scuttlers_won"]}, "steps": [
+          {"play": "ch01_scuttlers"},
+          {"battle": "ch01_scuttlers", "party": ["rhen"], "reserve": [], "return_spawn": "AfterScuttlers",
+           "victory_flag": "ch01_scuttlers_won"}
+        ]},
+        "cut_lashing": {"steps": [{"zone": "refresh_rig"}]},
+        "net_pen": {"when": {"set": ["ch01_scuttlers_won"], "unset": ["ch01_children_safe"]}, "steps": [
+          {"play": "ch01_net_pen"},
+          {"set": "ch01_children_safe"}
+        ]},
+        "hullgnaw": {"when": {"set": ["ch01_children_safe"], "unset": ["ch01_hullgnaw_defeated"]}, "steps": [
+          {"zone": "rest", "args": ["ch01_before_hullgnaw"]},
+          {"play": "ch01_hullgnaw_rises"},
+          {"battle": "ch01_hullgnaw", "party": ["rhen"], "reserve": [], "return_spawn": "NetPenAfter",
+           "victory_flag": "ch01_hullgnaw_defeated"}
+        ]}
+      },
+      "barks": [
+        {"when": {"set": ["ch01_roof_dared"]}, "map": {"ch01_bark_roof": "ch01_bark_roof_dive"}}
+      ]
+    }
+  }
+}
