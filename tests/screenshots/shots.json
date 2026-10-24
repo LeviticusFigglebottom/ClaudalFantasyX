@@ -1150,6 +1150,18 @@
     {
       "id": "battle_boss_intro_matron",
       "scene": "res://game/battle/scene/shots/battle_boss_intro_matron.tscn"
+    },
+    {
+      "id": "battle_boss_intro_hermit",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_hermit.tscn"
+    },
+    {
+      "id": "battle_boss_intro_wraith",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_wraith.tscn"
+    },
+    {
+      "id": "battle_boss_intro_drownbell",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_drownbell.tscn"
     }
   ]
 }
