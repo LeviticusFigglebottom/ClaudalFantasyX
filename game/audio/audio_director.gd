@@ -115,6 +115,19 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 	sfx.rows = sfx_table.get("sfx", {}) as Dictionary
 
 
+## Stops every player under this node as the game quits: a playback still running when its player is freed
+## outlives it in the AudioServer and is reported as a leak at exit (the boot smoke test's "resources still in use").
+func _exit_tree() -> void:
+	stop_all_players()
+
+
+func stop_all_players() -> void:
+	for p: Node in find_children("*", "AudioStreamPlayer", true, false):
+		(p as AudioStreamPlayer).stop()
+	for p: Node in find_children("*", "AudioStreamPlayer3D", true, false):
+		(p as AudioStreamPlayer3D).stop()
+
+
 func _process(delta: float) -> void:
 	advance(delta)
 
@@ -486,7 +499,12 @@ func wind_bed() -> String:
 	return str((ambience_data.get("wind", {}) as Dictionary).get("bed", ""))
 
 
+## The first scene's zone row (a scene run on its own, or the main scene). Not on a headless run (no audio device:
+## CI's boot smoke test quits after 60 frames, and a music playback still live in the dummy driver at exit is
+## reported as leaked resources); tests call apply_zone themselves.
 func _apply_first_scene() -> void:
+	if DisplayServer.get_name() == "headless":
+		return
 	var scene := get_tree().current_scene
 	if scene != null and zone_path == "" and scene.scene_file_path != "":
 		apply_zone(scene.scene_file_path)

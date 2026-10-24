@@ -209,3 +209,6 @@ SPEC §16 Q4: no voice acting yet, but the architecture is ready for it. Every s
   dialogue duck already lowers Music and Ambience under it.
 - `tests/unit/test_voice_audio.gd` covers the speaker table against speakers.json, the fallback, the rate limit,
   the cycle and jitter, the sequencer hook and the VO preference with a fixture stream.
+- **Headless runs** (CI, tests) don't auto-apply the first scene's zone row: with no audio device, a music playback
+  still live in the dummy driver when `--quit-after` ends the run is reported as leaked resources (the boot smoke
+  test). Swaps (`scene_swapping`) and `apply_zone` work as usual. The autoload also stops its players on exit.
