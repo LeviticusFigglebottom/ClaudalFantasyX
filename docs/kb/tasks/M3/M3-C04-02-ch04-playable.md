@@ -2,8 +2,8 @@
 id: M3-C04-02
 title: Ch4 "The Pilgrim's Wake" playable (dialogue, flow, greybox levels, encounters, cutscenes)
 role: cinematics
-status: todo
-owner_session: ""
+status: doing
+owner_session: "m2-slice subagent (C04 build)"
 depends_on: [M3-C04-01, M3-ARC-01]
 reviewer: narrative
 milestone: M3
