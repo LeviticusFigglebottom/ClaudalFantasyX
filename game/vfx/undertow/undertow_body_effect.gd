@@ -16,6 +16,9 @@ const COMPUTE_SUFFIX := "_compute.glsl"
 const GROUP_SIZE := 8
 const FMT_BODY := RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT
 const FMT_FRONT := RenderingDevice.DATA_FORMAT_R32_SFLOAT
+## Dispatches a replaced render target outlives its replacement (the deferred hand-over takes one main-thread
+## frame; a margin for frames in flight).
+const RETIRE_FRAMES := 3
 
 ## Compute shaders and pipelines created ahead of the first storm frame (M1-RND-27, ShaderPrewarm
 ## "compute_twin"): path -> [shader RID, pipeline RID] on the main RenderingDevice, held for the session.
@@ -28,6 +31,8 @@ var body_texture := Texture2DRD.new()
 var front_texture := Texture2DRD.new()
 
 var _mutex := Mutex.new()
+# Replaced render targets waiting to be freed: [RID, dispatches left] (render thread only).
+var _retired: Array = []
 # Main-thread hand-over (under _mutex).
 var _next_params := PackedByteArray()
 var _next_shader := ""
@@ -61,6 +66,10 @@ func _notification(what: int) -> void:
 		# its uniform set ("Texture (binding: 1, index 0) is not a valid texture").
 		body_texture.texture_rd_rid = RID()
 		front_texture.texture_rd_rid = RID()
+		for entry: Array in _retired:
+			if (entry[0] as RID).is_valid():
+				_rd.free_rid(entry[0] as RID)
+		_retired.clear()
 		for rid: RID in [_tex_body, _tex_front, _ubo, _sampler_noise, _sampler_depth, _shader]:
 			# A warm pipeline (M1-RND-27) is held for the session, not by this effect.
 			if rid.is_valid() and not (rid == _shader and (_owns_warm(rid) or _released.has(rid))):
@@ -243,11 +252,16 @@ static func _owns_warm(shader: RID) -> bool:
 
 
 func _ensure_targets(size: Vector2i) -> void:
+	_free_retired()
 	if size == _size and _tex_body.is_valid():
 		return
+	# The old targets stay alive until the main thread has handed the new RIDs to the Texture2DRDs (set_deferred
+	# below): freed at once, the materials sampling them were drawn for a frame with a uniform set built over a
+	# freed texture ("Uniforms supplied for set (3) are not the same format", "Attempted to free invalid ID"; seen
+	# on every resize, M2-RND-12).
 	for rid: RID in [_tex_body, _tex_front]:
 		if rid.is_valid():
-			_rd.free_rid(rid)
+			_retired.append([rid, RETIRE_FRAMES])
 	_tex_body = _target(size, FMT_BODY)
 	_tex_front = _target(size, FMT_FRONT)
 	_size = size
@@ -255,6 +269,16 @@ func _ensure_targets(size: Vector2i) -> void:
 	# on the render thread, the material kept sampling the placeholder.
 	body_texture.set_deferred(&"texture_rd_rid", _tex_body)
 	front_texture.set_deferred(&"texture_rd_rid", _tex_front)
+
+
+func _free_retired() -> void:
+	for i in range(_retired.size() - 1, -1, -1):
+		var entry: Array = _retired[i]
+		entry[1] = int(entry[1]) - 1
+		if int(entry[1]) <= 0:
+			if (entry[0] as RID).is_valid():
+				_rd.free_rid(entry[0] as RID)
+			_retired.remove_at(i)
 
 
 func _target(size: Vector2i, format: RenderingDevice.DataFormat) -> RID:
