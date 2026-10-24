@@ -10,6 +10,10 @@ extends RefCounted
 ## When slot 0 holds a readable (or newer-build) autosave, New Game first asks: the rows become
 ## [Go back, Begin anew] with "Go back" first and the default, and the help line says what would
 ## be lost. Manual records are never touched by a new run.
+##
+## Memories (M3-MNU-02): a fifth row after Settings, shown only once a memory is remembered in the
+## live run or the newest readable save (MemoriesModel.any_unlocked). While it is hidden the title
+## has exactly the four rows above, at the same indexes.
 
 signal changed
 
@@ -17,18 +21,21 @@ const CHOICE_CONTINUE := &"continue"
 const CHOICE_NEW_GAME := &"new_game"
 const CHOICE_LOAD := &"load"
 const CHOICE_SETTINGS := &"settings"
+const CHOICE_MEMORIES := &"memories"
 const CHOICES: Array[StringName] = [CHOICE_CONTINUE, CHOICE_NEW_GAME, CHOICE_LOAD, CHOICE_SETTINGS]
 const LABEL_KEYS := {
 	CHOICE_CONTINUE: "TITLE_CONTINUE",
 	CHOICE_NEW_GAME: "TITLE_NEW_GAME",
 	CHOICE_LOAD: "TITLE_LOAD",
 	CHOICE_SETTINGS: "TITLE_SETTINGS",
+	CHOICE_MEMORIES: "TITLE_MEMORIES",
 }
 const HELP_KEYS := {
 	CHOICE_CONTINUE: "TITLE_HELP_CONTINUE",
 	CHOICE_NEW_GAME: "TITLE_HELP_NEW_GAME",
 	CHOICE_LOAD: "TITLE_HELP_LOAD",
 	CHOICE_SETTINGS: "TITLE_HELP_SETTINGS",
+	CHOICE_MEMORIES: "TITLE_HELP_MEMORIES",
 }
 const HELP_NO_RECORD_KEY := "TITLE_HELP_NO_RECORD"
 const CHOICE_CONFIRM_BACK := &"confirm_back"
@@ -46,6 +53,8 @@ var cursor := 0
 var has_record := false
 ## True when slot 0 holds an autosave a new run would write over (TitleSaveEntry).
 var autosave_at_risk := false
+## True when a memory is remembered (the Memories row shows).
+var has_memories := false
 ## True while the New Game question is open; confirm_cursor is its row.
 var confirming := false
 var confirm_cursor := 0
@@ -60,7 +69,8 @@ func _init(saves: Node = null) -> void:
 func refresh() -> void:
 	has_record = TitleSaveEntry.can_continue(save_system)
 	autosave_at_risk = TitleSaveEntry.new_game_overwrites_autosave(save_system)
-	if not is_enabled(CHOICES[cursor]):
+	has_memories = MemoriesModel.from_game(save_system).any_unlocked()
+	if cursor >= _choices().size() or not is_enabled(_choices()[cursor]):
 		cursor = initial_cursor()
 	changed.emit()
 
@@ -74,16 +84,27 @@ func is_enabled(choice: StringName) -> bool:
 		return confirming
 	if confirming:
 		return false
+	if choice == CHOICE_MEMORIES:
+		return has_memories
 	return choice == CHOICE_NEW_GAME or choice == CHOICE_SETTINGS or has_record
 
 
 func current() -> StringName:
-	return CONFIRM_CHOICES[confirm_cursor] if confirming else CHOICES[cursor]
+	return CONFIRM_CHOICES[confirm_cursor] if confirming else _choices()[cursor]
 
 
 ## The rows shown now: the title choices, or the New Game question's two rows.
 func row_ids() -> Array[StringName]:
-	return CONFIRM_CHOICES if confirming else CHOICES
+	return CONFIRM_CHOICES if confirming else _choices()
+
+
+## The title's rows: CHOICES, then Memories when one is remembered.
+func _choices() -> Array[StringName]:
+	if not has_memories:
+		return CHOICES
+	var out := CHOICES.duplicate()
+	out.append(CHOICE_MEMORIES)
+	return out
 
 
 ## The cursor over row_ids().
@@ -118,10 +139,11 @@ func move(delta: int) -> bool:
 		confirm_cursor = posmod(confirm_cursor + delta, CONFIRM_CHOICES.size())
 		changed.emit()
 		return true
+	var ids := _choices()
 	var i := cursor
-	for _n in CHOICES.size():
-		i = posmod(i + delta, CHOICES.size())
-		if is_enabled(CHOICES[i]):
+	for _n in ids.size():
+		i = posmod(i + delta, ids.size())
+		if is_enabled(ids[i]):
 			break
 	if i == cursor:
 		return false
@@ -137,7 +159,7 @@ func set_cursor(index: int) -> bool:
 		confirm_cursor = index
 		changed.emit()
 		return true
-	if index < 0 or index >= CHOICES.size() or not is_enabled(CHOICES[index]):
+	if index < 0 or index >= _choices().size() or not is_enabled(_choices()[index]):
 		return false
 	cursor = index
 	changed.emit()
