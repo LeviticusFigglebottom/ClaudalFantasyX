@@ -5,7 +5,7 @@ role: environment
 status: review
 owner_session: "m2-slice subagent (M2-ENV-03)"
 depends_on: [M2-FP-16]
-reviewer: art (env-art compares kits), rendering
+reviewer: rendering
 milestone: M2
 request-from: cinematics
 ---
@@ -30,8 +30,9 @@ Request from the m2-slice track. The Shell Shrine trial (M2-FP-16) plays in a gr
 - **2026-10-24 m2-slice, the Lead's decision:**
   - **Merged here:** the kit pieces, shaders, materials and PROVENANCE rows, as commit f38edea, "M2-ENV-03 (m2-slice kit, for env-art review)". Every file is under 5 MB and every asset has a PROVENANCE row; `verify_blender_builds.py --job haluna_kit` checks the rebuild.
   - **Reverted on purpose: the level side** (the 98e65e4 dressing and the 3313bac S01–S05 shots and baselines). The shrine level stays on its greybox until env-art has compared this kit with its own and the Lead names which to swap in.
-  - **To swap this kit in:** `git revert` the revert commit (the one after f38edea). That brings back `ShellShrineLevel`'s room build, `shell_shrine_dressing.tscn`, the `room` JSON block and the five shots.
+  - **To swap this kit in:** `git revert` the revert commit (the one after f38edea). That brings back the level side. The four level-side checks in `tools/tests/test_shell_shrine_kit.py` (`ShellShrineLevelUsesKitTest`) run only when the JSON has the `room` block, so they come back on by themselves; I checked all 8 pass after a swap-in. The revert also brings back `ShellShrineLevel`'s room build, `shell_shrine_dressing.tscn`, the `room` JSON block and the five shots.
   - The notes above describe the full branch, including the level side.
+- **2026-10-24 m2-slice: swapped in** after env-art's verdict below, by reverting the level-side revert. The level-side checks in `test_shell_shrine_kit.py` now run (the JSON has `room` again).
 
 ## Review log
 - **2026-10-24, Art Director (env-art), the Lead's kit comparison: ADOPT m2-slice's kit as the base (approve-with-fixes); env-art's parallel kit stops and is kept only for salvage.**

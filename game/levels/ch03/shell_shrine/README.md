@@ -1,20 +1,40 @@
-# Shell Shrine trial (M2-FP-16)
+# Shell Shrine trial (M2-FP-16, dressed in M2-ENV-03)
 
 `shell_shrine.tscn` is the slice's temple trial (vertical_slice.md B07). The causeway head opens it (`first_playable.json` `haluna.ending_scene`), and its flooded door leads to Cutscene B (`shell_shrine.next_scene`).
 
 | File | Role |
 |---|---|
 | `shell_shrine_trial.gd` (`ShellShrineTrial`) | The rules, headless: basins, outlets, the water's trace, filling, draining, the idle hint, and a shortest-solution search. |
-| `shell_shrine_level.gd` (`ShellShrineLevel`) | The view: it builds the **greybox** room from the JSON, turns basins on interaction, lights the channels on the water's path, raises the pool, sinks the door, empties the side pool, offers the charm, plays the hint bark, and hands off at the exit. |
-| `shell_shrine.tscn` | The root, environment, oculus light, Rhen, the camera director (S03 overview, with S02 at the threshold) and the S04/S05 inserts. |
-| `game/data/trials/shell_shrine.json` | Puzzle data, layout and greybox metrics (see its `doc`). |
+| `shell_shrine_level.gd` (`ShellShrineLevel`) | The view: it places the trial's working parts from the JSON (kit pieces), turns basins on interaction, runs water down the channels on the water's path, raises the pool, sinks the door, empties the side pool, offers the charm, plays the hint bark, bakes the hall's GI and hands off at the exit. |
+| `shell_shrine.tscn` | The root: environment, the Oculus sun, the sea, the shaft fog, the hall's VoxelGI, the shaft bounce lights, Rhen, the camera director (S02 at the threshold, S03 over the hall) and the S04/S05 inserts. |
+| `shell_shrine_dressing.tscn` | The hall, placed once: floor, vault, fan-shell roof, steps, islet, the wall modules and the whorl columns (M2-ENV-03 kit). |
+| `shell_shrine_environment.tres`, `shrine_water_material.tres` | The interior grade (`ch03_shrine_int`) and the shrine's water look (`lagoon_clear` ×1.5, river shader). |
+| `shots/S01.tres`–`S05.tres` | The composed shots of haluna.md §5.3. The director uses S02–S05; `shell_shrine_shots.tscn` frames all five. |
+| `shell_shrine_shots.tscn` (`ShellShrineShots`) | The screenshot rig: the level held in one trial state (`start`, `flow`, `drained`) and the five cameras. |
+| `game/data/trials/shell_shrine.json` | Puzzle data, layout and room metrics (see its `doc`). |
 
 **Puzzle.** The spring pours into `b1`. Each basin pours out of one lip, toward `outlets[rotation]`: another basin, the inner pool, the side sluice, or a spill grate. Using a basin turns it 90° clockwise. While the water reaches the inner pool, the pool fills over `fill_sec`; when it's full the door sinks and stays open (`ch03_shrine_door_open`). The first time the water reaches the sluice, the side pool empties for good (`ch03_side_pool_drained`), and the net-float charm can be taken: the `net_float_charm` key item and `ch03_found_net_float`, which Cutscene B reads. Toma's one hint (`ch03_trial_hint`) comes after `hint_idle_sec` with no turn. Water that loops is lost.
 
-The shortest solution is 3 turns and the side pool takes 3; `tools/tests/test_shell_shrine_trial.py` holds the band. Change the data, not the code.
+**M2-FP-22 (review-sweep-Q):** there are four basins. The water starts out going round (b1 → b4 → b1), so b4 has to be turned *away* from b1, through two spill grates, before it feeds b3. The shortest solution is 6 turns (b1 → b4 → b3 → the pool), and the side pool takes 4 (b1 → b2 → the sluice). Draining it never breaks the main route, because rotations cycle. A random turner needs a median of about 75 turns, so Toma's 90 s hint can play. `tools/tests/test_shell_shrine_trial.py` holds the band (5–10) and the random-turner floor (a median of 20 or more, seeded). Change the data, not the code.
 
-**Greybox.** It stands in until M2-ENV-03, and Audio is M2-AUD-01. Asha and Toma aren't in the room yet (there are no followers), and the hint is Toma's voice only.
+## The room (M2-ENV-03)
+
+**The hall.** A stadium plan: two half-rounds of R = 9 m (inner face) joined by 10 m runs, 28 m long, the entrance west and the shell-valve door east. The vault springs at 4.2 m and rises to 10.5 m, fluted like a scallop's ribs; three oculi let the sun in on b1 (S02), the side pool (S05) and b3's lip and trough (S04). The exterior is tiers of stone fan-shells over the vault, the west steps with fresh leaf-boats, and the islet with the causeway's last tongue and tidepool (S01). Everything is a procedural kit piece: `assets_src/environments/kits/haluna/shrine_interior.py` (the `haluna_kit` Blender job, byte-reproducible).
+
+**What the level builds from the JSON** (`layout` and `room`): the spring, each basin's pedestal and turning bowl (`basin_pivots[id]` turns the bowl; its open lip is at -Z), every channel as 1 m trough modules (`channels[key]`), a spillway grate at each spill's end, the sluice gate, the inner pool, the side pool, the door (`door`, a StaticBody with the valve inside it), the charm (`charm`), the waters, the falling sheets off the lips, the teal pool bounce lights, and the collision proxies (floor, the stadium wall open only at the door, the pool kerbs, the passage behind the door). The JSON positions are the source; **moving `inner_pool`, `side_pool`, `b1` or `b3` means rebuilding the kit** (the floor is cut for the pools and the oculi for those targets), and `tools/tests/test_shell_shrine_kit.py` fails until you do.
+
+**Lips.** A lip turned to a basin, the pool or the sluice faces that point. A lip turned to a spill faces `layout.spill_bearing_deg[basin][rotation]` (compass degrees), so no spill trough runs along another channel; without an entry it faces the rotation's compass point.
+
+**The greybox is gone.** Each piece that fails to load falls back to a plain primitive of the same size (`ShellShrineLevel._piece`, listed in `missing_pieces`, with a warning), so a broken import still leaves a playable trial; the integration test asserts that nothing falls back.
+
+**Water.** Every channel, bowl and pool is a `WaterSurface` with the river (flowmap) shader and `shrine_water_material.tres`. Channels share one material: its `tex_flow` is a 64-texel direction wheel built at runtime (`ShellShrineLevel.flow_wheel()`), and each channel's UV.x picks its flow direction, so ripples run downstream. Pools and bowls use a still flow. A channel's water shows only while the water runs along it; its trough's nacre then shimmers (`env_nacre_inlay.gdshader`, the instance uniform `inst_shimmer`: caustic lines and a wet sheen, no glimmer), and the lips that pour carry a falling sheet (`env_water_spill.gdshader`). Shared troughs (b1 ↔ b2, b1 ↔ b4, b3 ↔ b4) have one water surface per direction.
+
+**GI.** LightmapGI cannot be baked from a script (Godot 4.6 exposes no `bake()` on `LightmapGI`; only the editor plugin bakes), so the hall uses a **VoxelGI baked at load, once per lighting state**: door up (pre-flood) and door down (post-flood). Opening the door swaps the baked data (no mid-play bake). Measured on lavapipe (4 vCPU, software Vulkan): 4.6–5.3 s for both states (2.2–2.8 s each), five runs. The node is in the presets' `gi_voxel` group, so `gi_mode = off` hides it. Headless (no rendering device) nothing is baked. Energy and propagation are in the JSON (`gi_energy` 0.3: more washes the interior out to a uniform beige; the colour script wants a cool interior). The shaft spots also get a warm omni each (`Bounce/Shaft_*`), and each pool a teal one that rises and goes out with its water. GPU cost is unmeasured.
+
+**Shots** (haluna.md §5.3; `tests/screenshots/shots.json` `shrine_s01`–`s05`, lavapipe baselines): S01 35 mm at 1.6 m over the last tidepool; S02 24 mm at 1.7 m at the threshold, with the shaft fog (`ShaftFog`, density 0.02); S03 18 mm overview, **8 m high and pitched ~33°** (the brief's 6 m / 60° can't take in a 28 m hall at 18 mm under the vault); S04 50 mm at 1.0 m on b3's lip pouring into its trough; S05 40 mm at 0.8 m on the drained side pool, the charm in the shaft.
+
+**Known gaps.** Channels have no collision (the controller has no step-up; the greybox's had none either), so Rhen can walk through a trough's curbs. The channel network is straight runs meeting at the basins: there are no bend or T-junction modules. No reflection probes. Asha and Toma aren't in the room yet (there are no followers), and the hint is Toma's voice only. Audio is M2-AUD-01.
 
 **Hooks.** `trial.rotated`, `flow_changed`, `pool_filled`, `side_pool_drained`, `hint_due`, and the level's `charm_taken`.
 
-**Tests.** `tests/unit/test_shell_shrine_trial.gd`, `tests/integration/test_shell_shrine_level.gd`, and the whole thread in `test_fp_thread.gd`.
+**Tests.** `tests/unit/test_shell_shrine_trial.gd`, `tests/integration/test_shell_shrine_level.gd` (including the kit pieces, the water and the shimmer), the whole thread in `test_fp_thread.gd`, `tools/tests/test_shell_shrine_trial.py` and `tools/tests/test_shell_shrine_kit.py`.

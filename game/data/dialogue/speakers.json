@@ -13,6 +13,7 @@
   {"id": "netmender", "name_key": "CHAR_NETMENDER", "blip_pitch": 0.84, "portrait_id": "portrait_villager_placeholder"},
   {"id": "fisher", "name_key": "CHAR_FISHER", "blip_pitch": 0.96, "portrait_id": "portrait_villager_placeholder"},
   {"id": "neme", "name_key": "CHAR_NEME", "blip_pitch": 0.9, "portrait_id": "portrait_villager_placeholder"},
-  {"id": "child", "name_key": "CHAR_CHILD", "blip_pitch": 1.3, "portrait_id": "portrait_villager_placeholder"}
+  {"id": "child", "name_key": "CHAR_CHILD", "blip_pitch": 1.3, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "osu", "name_key": "CHAR_OSU", "blip_pitch": 0.85, "portrait_id": "portrait_villager_placeholder"}
  ]
 }

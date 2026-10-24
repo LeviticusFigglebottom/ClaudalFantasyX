@@ -1,0 +1,2877 @@
+{
+ "schema": "hymn-zone-layout/1",
+ "zone": "haluna (M1-ENV-01 mood test)",
+ "seed": 11,
+ "kit_dir": "res://assets/environments/kits/haluna/",
+ "materials_dir": "res://assets/environments/kits/haluna/materials/",
+ "lod1_from_m": 75.0,
+ "lod_end_m": 2500.0,
+ "lod_margin_m": 2.0,
+ "gull_jitter_deg": 10.0,
+ "ridges": {
+  "house_tile_a": [
+   0.0,
+   4.16,
+   0.9
+  ],
+  "house_tile_b": [
+   0.0,
+   3.93,
+   0.9
+  ],
+  "house_tile_c": [
+   0.0,
+   4.39,
+   0.9
+  ]
+ },
+ "terrain": {
+  "shore_tip_x_m": 50.0,
+  "shore_half_len_m": 210.0,
+  "tip_recede": 2.2,
+  "beach_width_m": 28.0,
+  "beach_head_y_m": 1.6,
+  "terrace_slope": 0.012,
+  "interior_start_m": 190.0,
+  "interior_rise_m": 5.0,
+  "lagoon_slope": 0.012,
+  "lagoon_shelf_m": 1.4,
+  "shelf_variation": 0.8,
+  "shelf_variation_period_m": 45.0,
+  "reef_edge_m": 270.0,
+  "reef_depth_m": 22.0,
+  "reef_width_m": 40.0,
+  "west_coast_m": 430.0,
+  "noise_amp_m": 0.35,
+  "noise_period_m": 28.0,
+  "core_rect": [
+   -165.0,
+   -135.0,
+   240.0,
+   270.0
+  ],
+  "core_cell_m": 1.0,
+  "outer_rect": [
+   -720.0,
+   -1100.0,
+   1500.0,
+   1800.0
+  ],
+  "outer_cell_m": 8.0,
+  "lane_width_m": 3.0,
+  "seed_value": 7,
+  "far_islands": [
+   [
+    -2600.0,
+    -900.0,
+    700.0,
+    90.0
+   ],
+   [
+    -3400.0,
+    700.0,
+    1100.0,
+    140.0
+   ],
+   [
+    -1900.0,
+    1500.0,
+    500.0,
+    55.0
+   ],
+   [
+    1200.0,
+    -2600.0,
+    900.0,
+    110.0
+   ]
+  ]
+ },
+ "pads": [
+  [
+   -118.0,
+   38.0,
+   13.0
+  ]
+ ],
+ "islets": [
+  [
+   250.0,
+   -270.0,
+   40.0,
+   1.4
+  ]
+ ],
+ "lanes": [
+  [
+   [
+    -100,
+    -16
+   ],
+   [
+    -82,
+    -13
+   ],
+   [
+    -64,
+    -7.5
+   ],
+   [
+    -48,
+    -1
+   ],
+   [
+    -36,
+    4
+   ],
+   [
+    -29,
+    6
+   ],
+   [
+    -18,
+    7
+   ]
+  ],
+  [
+   [
+    -112,
+    -58
+   ],
+   [
+    -80,
+    -54
+   ],
+   [
+    -55,
+    -50
+   ],
+   [
+    -32,
+    -46
+   ],
+   [
+    -25,
+    -45
+   ],
+   [
+    -14,
+    -44
+   ]
+  ],
+  [
+   [
+    -106,
+    41
+   ],
+   [
+    -80,
+    42
+   ],
+   [
+    -55,
+    46
+   ],
+   [
+    -35,
+    50
+   ],
+   [
+    -25,
+    51
+   ],
+   [
+    -12,
+    53
+   ]
+  ],
+  [
+   [
+    -92,
+    -72
+   ],
+   [
+    -93,
+    -30
+   ],
+   [
+    -96,
+    0
+   ],
+   [
+    -102,
+    26
+   ],
+   [
+    -112,
+    40
+   ]
+  ],
+  [
+   [
+    -108,
+    -95
+   ],
+   [
+    -70,
+    -92
+   ],
+   [
+    -40,
+    -90
+   ],
+   [
+    -20,
+    -88
+   ],
+   [
+    -8,
+    -87
+   ]
+  ],
+  [
+   [
+    -104,
+    86
+   ],
+   [
+    -70,
+    89
+   ],
+   [
+    -40,
+    91
+   ],
+   [
+    -19,
+    92
+   ],
+   [
+    -6,
+    93
+   ]
+  ]
+ ],
+ "runs": [
+  {
+   "name": "beach_head",
+   "path": [
+    [
+     5.77,
+     -170
+    ],
+    [
+     -1.49,
+     -150
+    ],
+    [
+     -7.84,
+     -130
+    ],
+    [
+     -13.28,
+     -110
+    ],
+    [
+     -17.82,
+     -90
+    ],
+    [
+     -21.44,
+     -70
+    ],
+    [
+     -24.17,
+     -50
+    ],
+    [
+     -25.98,
+     -30
+    ],
+    [
+     -26.89,
+     -10
+    ],
+    [
+     -26.89,
+     10
+    ],
+    [
+     -25.98,
+     30
+    ],
+    [
+     -24.17,
+     50
+    ],
+    [
+     -21.44,
+     70
+    ],
+    [
+     -17.82,
+     90
+    ],
+    [
+     -13.28,
+     110
+    ],
+    [
+     -7.84,
+     130
+    ],
+    [
+     -1.49,
+     150
+    ],
+    [
+     5.77,
+     170
+    ]
+   ],
+   "spacing": 2.0,
+   "cycle": [
+    "tidewall_straight",
+    "tidewall_straight",
+    "tidewall_windgap"
+   ],
+   "gates_near": [
+    [
+     -26.9,
+     6.5
+    ],
+    [
+     -25.4,
+     -45
+    ],
+    [
+     -24.6,
+     51
+    ],
+    [
+     -19.5,
+     -88
+    ],
+    [
+     -18.6,
+     92
+    ]
+   ]
+  },
+  {
+   "name": "lane1_north",
+   "path": [
+    [
+     -100,
+     -18.3
+    ],
+    [
+     -82,
+     -15.3
+    ],
+    [
+     -64,
+     -9.9
+    ],
+    [
+     -48,
+     -3.4
+    ],
+    [
+     -37,
+     1.8
+    ],
+    [
+     -30.5,
+     3.8
+    ]
+   ],
+   "spacing": 2.0,
+   "cycle": [
+    "tidewall_straight",
+    "tidewall_windgap",
+    "tidewall_straight"
+   ],
+   "skip_near": [
+    [
+     -88,
+     -15.0
+    ],
+    [
+     -73,
+     -12.6
+    ],
+    [
+     -57,
+     -7.3
+    ],
+    [
+     -42,
+     -0.6
+    ]
+   ]
+  },
+  {
+   "name": "lane1_south",
+   "path": [
+    [
+     -100.4,
+     -13.7
+    ],
+    [
+     -82.4,
+     -10.7
+    ],
+    [
+     -64.6,
+     -5.2
+    ],
+    [
+     -48.8,
+     1.3
+    ],
+    [
+     -37.0,
+     6.2
+    ],
+    [
+     -30.0,
+     8.3
+    ]
+   ],
+   "spacing": 2.0,
+   "cycle": [
+    "tidewall_straight",
+    "tidewall_straight",
+    "tidewall_windgap"
+   ],
+   "skip_near": [
+    [
+     -90,
+     -11.0
+    ],
+    [
+     -74,
+     -8.5
+    ],
+    [
+     -58,
+     -3.0
+    ],
+    [
+     -44,
+     3.6
+    ]
+   ]
+  }
+ ],
+ "pieces": [
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -88,
+    -22.5
+   ],
+   "yaw_deg": -1.9764162144423159,
+   "gull": "lintel_gull_a"
+  },
+  {
+   "piece": "house_tile_b",
+   "at": [
+    -73,
+    -19.5
+   ],
+   "yaw_deg": 2.230883073930796,
+   "gull": "lintel_gull_b"
+  },
+  {
+   "piece": "house_tile_c",
+   "at": [
+    -57,
+    -15.0
+   ],
+   "yaw_deg": 0.26931067423708477,
+   "gull": "lintel_gull_c"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -42,
+    -7.0
+   ],
+   "yaw_deg": -2.074291552708548,
+   "gull": "lintel_gull_a"
+  },
+  {
+   "piece": "house_tile_b",
+   "at": [
+    -90,
+    -5.0
+   ],
+   "yaw_deg": 178.93598139422497,
+   "gull": "lintel_gull_b"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -74,
+    -1.8
+   ],
+   "yaw_deg": 179.2577558801725,
+   "gull": "lintel_gull_c"
+  },
+  {
+   "piece": "house_tile_c",
+   "at": [
+    -58,
+    4.5
+   ],
+   "yaw_deg": 182.9951861738232,
+   "gull": "lintel_gull_a"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -95,
+    -63
+   ],
+   "yaw_deg": 2.336166215197262,
+   "gull": "lintel_gull_b"
+  },
+  {
+   "piece": "house_tile_c",
+   "at": [
+    -78,
+    -62.5
+   ],
+   "yaw_deg": -1.504100778914352,
+   "gull": "lintel_gull_c"
+  },
+  {
+   "piece": "house_tile_b",
+   "at": [
+    -60,
+    -59
+   ],
+   "yaw_deg": -1.6314459449690206,
+   "gull": "lintel_gull_a"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -42,
+    -56
+   ],
+   "yaw_deg": 0.7149246489711958,
+   "gull": "lintel_gull_b"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -92,
+    -45
+   ],
+   "yaw_deg": 180.61580395406128,
+   "gull": "lintel_gull_c"
+  },
+  {
+   "piece": "house_tile_b",
+   "at": [
+    -74,
+    -44
+   ],
+   "yaw_deg": 182.99519642323872,
+   "gull": "lintel_gull_a"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -56,
+    -41
+   ],
+   "yaw_deg": 176.34585133596147,
+   "gull": "lintel_gull_b"
+  },
+  {
+   "piece": "house_tile_b",
+   "at": [
+    -40,
+    -38.5
+   ],
+   "yaw_deg": 179.22601914523938,
+   "gull": "lintel_gull_c"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -80,
+    33
+   ],
+   "yaw_deg": -2.846942755208869,
+   "gull": "lintel_gull_a"
+  },
+  {
+   "piece": "house_tile_b",
+   "at": [
+    -62,
+    37
+   ],
+   "yaw_deg": 2.9208519392007517,
+   "gull": "lintel_gull_b"
+  },
+  {
+   "piece": "house_tile_c",
+   "at": [
+    -44,
+    40
+   ],
+   "yaw_deg": 0.7702289112196414,
+   "gull": "lintel_gull_c"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -92,
+    51
+   ],
+   "yaw_deg": 179.01060671495486,
+   "gull": "lintel_gull_a"
+  },
+  {
+   "piece": "house_tile_c",
+   "at": [
+    -75,
+    52
+   ],
+   "yaw_deg": 178.33283702955606,
+   "gull": "lintel_gull_b"
+  },
+  {
+   "piece": "house_tile_b",
+   "at": [
+    -58,
+    56
+   ],
+   "yaw_deg": 183.64960444296463,
+   "gull": "lintel_gull_c"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -42,
+    59
+   ],
+   "yaw_deg": 178.27870561034416,
+   "gull": "lintel_gull_a"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -80,
+    -101
+   ],
+   "yaw_deg": 0.5966019277524195,
+   "gull": "lintel_gull_b"
+  },
+  {
+   "piece": "house_tile_b",
+   "at": [
+    -60,
+    -99
+   ],
+   "yaw_deg": -1.9159700368574315,
+   "gull": "lintel_gull_c"
+  },
+  {
+   "piece": "house_tile_c",
+   "at": [
+    -43,
+    -100
+   ],
+   "yaw_deg": 2.229469858040239,
+   "gull": "lintel_gull_a"
+  },
+  {
+   "piece": "house_tile_b",
+   "at": [
+    -96,
+    -104
+   ],
+   "yaw_deg": 1.681175966789831,
+   "gull": "lintel_gull_b"
+  },
+  {
+   "piece": "house_tile_c",
+   "at": [
+    -85,
+    96
+   ],
+   "yaw_deg": 176.32027575780452,
+   "gull": "lintel_gull_c"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -65,
+    99
+   ],
+   "yaw_deg": 176.2448335120259,
+   "gull": "lintel_gull_a"
+  },
+  {
+   "piece": "house_tile_b",
+   "at": [
+    -48,
+    100
+   ],
+   "yaw_deg": 182.78713583592835,
+   "gull": "lintel_gull_b"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -31,
+    103
+   ],
+   "yaw_deg": 178.1805784255997,
+   "gull": "lintel_gull_c"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -130,
+    -40
+   ],
+   "yaw_deg": 92.92991983219164,
+   "gull": "lintel_gull_a"
+  },
+  {
+   "piece": "house_tile_b",
+   "at": [
+    -136,
+    -6
+   ],
+   "yaw_deg": 92.5898104261307,
+   "gull": "lintel_gull_b"
+  },
+  {
+   "piece": "house_tile_c",
+   "at": [
+    -128,
+    -78
+   ],
+   "yaw_deg": 92.081620137823,
+   "gull": "lintel_gull_c"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -140,
+    70
+   ],
+   "yaw_deg": 87.22385607492588,
+   "gull": "lintel_gull_a"
+  },
+  {
+   "piece": "house_tile_b",
+   "at": [
+    -126,
+    92
+   ],
+   "yaw_deg": 90.14787469063532,
+   "gull": "lintel_gull_b"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -138,
+    -110
+   ],
+   "yaw_deg": 91.57881045012003,
+   "gull": "lintel_gull_c"
+  },
+  {
+   "piece": "house_tile_b",
+   "at": [
+    -112,
+    -22
+   ],
+   "yaw_deg": 0.025041914501367835,
+   "gull": "lintel_gull_a"
+  },
+  {
+   "piece": "house_tile_a",
+   "at": [
+    -110,
+    6
+   ],
+   "yaw_deg": 181.73370295448547,
+   "gull": "lintel_gull_b"
+  },
+  {
+   "piece": "storehouse_stilt",
+   "at": [
+    -44,
+    9.5
+   ],
+   "yaw_deg": 176
+  },
+  {
+   "piece": "storehouse_stilt",
+   "at": [
+    -104,
+    -84
+   ],
+   "yaw_deg": 8
+  },
+  {
+   "piece": "storehouse_stilt",
+   "at": [
+    -34,
+    70
+   ],
+   "yaw_deg": 95
+  },
+  {
+   "piece": "order_chapel",
+   "at": [
+    -118,
+    27.5
+   ],
+   "yaw_deg": 0
+  },
+  {
+   "piece": "banyan_placeholder",
+   "at": [
+    -103.0,
+    35.5
+   ],
+   "yaw_deg": 30
+  },
+  {
+   "piece": "dock_haluna",
+   "at": [
+    -6,
+    60
+   ],
+   "y": 0.0,
+   "yaw_deg": 35
+  },
+  {
+   "piece": "stilt_house",
+   "at": [
+    21,
+    56
+   ],
+   "y": 0.0,
+   "yaw_deg": 125
+  },
+  {
+   "piece": "outrigger_7m",
+   "at": [
+    4.09,
+    50.0
+   ],
+   "y": 0.12,
+   "yaw_deg": 35,
+   "tilt_deg": [
+    0.31983095279873064,
+    0.34139576911049163
+   ]
+  },
+  {
+   "piece": "outrigger_7m",
+   "at": [
+    12.17,
+    44.1
+   ],
+   "y": 0.12,
+   "yaw_deg": 33,
+   "tilt_deg": [
+    -0.7134848079223,
+    0.48905615912239364
+   ]
+  },
+  {
+   "piece": "outrigger_7m",
+   "at": [
+    20.18,
+    45.09
+   ],
+   "y": 0.12,
+   "yaw_deg": 38,
+   "tilt_deg": [
+    -0.7942426871058816,
+    0.41199411977357125
+   ]
+  },
+  {
+   "piece": "outrigger_7m",
+   "at": [
+    -9,
+    47
+   ],
+   "y": "ground",
+   "dy": 0.42,
+   "yaw_deg": 104,
+   "tilt_deg": [
+    0,
+    4
+   ]
+  },
+  {
+   "piece": "outrigger_7m",
+   "at": [
+    -6,
+    76
+   ],
+   "y": "ground",
+   "dy": 0.42,
+   "yaw_deg": 80,
+   "tilt_deg": [
+    0,
+    -3
+   ]
+  },
+  {
+   "piece": "net_rack",
+   "at": [
+    2,
+    47
+   ],
+   "yaw_deg": -26
+  },
+  {
+   "piece": "net_rack",
+   "at": [
+    -11,
+    66
+   ],
+   "yaw_deg": 95
+  },
+  {
+   "piece": "shell_shrine_massing",
+   "at": [
+    250,
+    -270
+   ],
+   "yaw_deg": 0
+  },
+  {
+   "piece": "wakeshell_wall",
+   "at": [
+    30,
+    -196
+   ],
+   "yaw_deg": 200
+  },
+  {
+   "piece": "ruin_column_broken",
+   "at": [
+    160,
+    -27
+   ],
+   "scale": 3.2,
+   "tilt_deg": [
+    3,
+    -5
+   ],
+   "yaw_deg": 15
+  },
+  {
+   "piece": "ruin_column_broken",
+   "at": [
+    147,
+    -17
+   ],
+   "scale": 2.5,
+   "tilt_deg": [
+    -7,
+    3
+   ],
+   "yaw_deg": 70,
+   "dy": -0.6
+  },
+  {
+   "piece": "ruin_column_broken",
+   "at": [
+    136,
+    -38
+   ],
+   "scale": 2.8,
+   "tilt_deg": [
+    2,
+    6
+   ],
+   "yaw_deg": 150,
+   "dy": -2.6
+  },
+  {
+   "piece": "ruin_wall_sunk",
+   "at": [
+    124,
+    -24
+   ],
+   "scale": 2.8,
+   "yaw_deg": 25,
+   "tilt_deg": [
+    8,
+    2
+   ],
+   "dy": -2.0
+  },
+  {
+   "piece": "ruin_slab",
+   "at": [
+    152,
+    -6
+   ],
+   "scale": 2.0,
+   "yaw_deg": 40,
+   "tilt_deg": [
+    16,
+    6
+   ],
+   "dy": -0.6
+  },
+  {
+   "piece": "ruin_slab",
+   "at": [
+    140,
+    -2
+   ],
+   "scale": 1.2,
+   "yaw_deg": 110,
+   "tilt_deg": [
+    -22,
+    9
+   ],
+   "dy": -0.4
+  },
+  {
+   "piece": "ruin_column_broken",
+   "at": [
+    72,
+    -2
+   ],
+   "scale": 2.0,
+   "tilt_deg": [
+    -4,
+    3
+   ],
+   "yaw_deg": 200
+  },
+  {
+   "piece": "ruin_wall_sunk",
+   "at": [
+    80,
+    9
+   ],
+   "scale": 1.6,
+   "yaw_deg": 30,
+   "tilt_deg": [
+    -10,
+    0
+   ],
+   "dy": -1.5
+  },
+  {
+   "piece": "garland_string",
+   "at": [
+    -79,
+    -12.4
+   ],
+   "y": "ground",
+   "dy": 3.0,
+   "yaw_deg": 100
+  },
+  {
+   "piece": "garland_string",
+   "at": [
+    -66,
+    -8.1
+   ],
+   "y": "ground",
+   "dy": 3.0,
+   "yaw_deg": 105
+  },
+  {
+   "piece": "garland_string",
+   "at": [
+    -52,
+    -2.6
+   ],
+   "y": "ground",
+   "dy": 3.0,
+   "yaw_deg": 112
+  },
+  {
+   "piece": "awning_cloth",
+   "at": [
+    -40.5,
+    6.8
+   ],
+   "yaw_deg": 200,
+   "materials": {
+    "kit_cloth": "kit_cloth_indigo"
+   }
+  },
+  {
+   "piece": "awning_cloth",
+   "at": [
+    -35.5,
+    -0.6
+   ],
+   "yaw_deg": 22,
+   "materials": {
+    "kit_cloth": "kit_cloth_sea_blue"
+   }
+  },
+  {
+   "piece": "awning_cloth",
+   "at": [
+    -30.0,
+    58.5
+   ],
+   "yaw_deg": 190,
+   "materials": {
+    "kit_cloth": "kit_cloth_sand"
+   }
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -151.3,
+    -125
+   ],
+   "yaw_deg": 4,
+   "scale": 1.12
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -152.1,
+    -118
+   ],
+   "yaw_deg": 88,
+   "scale": 1.2
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -151.8,
+    -111
+   ],
+   "yaw_deg": 216,
+   "scale": 1.08
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -152.7,
+    -104
+   ],
+   "yaw_deg": 330,
+   "scale": 1.02
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -153.0,
+    -97
+   ],
+   "yaw_deg": 101,
+   "scale": 0.99
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -153.3,
+    -90
+   ],
+   "yaw_deg": 346,
+   "scale": 1.14
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -153.5,
+    -83
+   ],
+   "yaw_deg": 208,
+   "scale": 1.09
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -153.0,
+    -76
+   ],
+   "yaw_deg": 315,
+   "scale": 1.14
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -153.0,
+    -69
+   ],
+   "yaw_deg": 141,
+   "scale": 1.13
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -153.9,
+    -62
+   ],
+   "yaw_deg": 43,
+   "scale": 1.0
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -152.6,
+    -55
+   ],
+   "yaw_deg": 330,
+   "scale": 1.05
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -151.3,
+    -48
+   ],
+   "yaw_deg": 221,
+   "scale": 1.08
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -152.3,
+    -41
+   ],
+   "yaw_deg": 226,
+   "scale": 0.92
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -151.7,
+    -34
+   ],
+   "yaw_deg": 16,
+   "scale": 0.95
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -150.2,
+    -27
+   ],
+   "yaw_deg": 152,
+   "scale": 1.03
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -151.0,
+    -20
+   ],
+   "yaw_deg": 12,
+   "scale": 0.96
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -152.3,
+    -13
+   ],
+   "yaw_deg": 59,
+   "scale": 0.97
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -150.3,
+    -6
+   ],
+   "yaw_deg": 111,
+   "scale": 1.19
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -151.3,
+    1
+   ],
+   "yaw_deg": 48,
+   "scale": 0.94
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -150.2,
+    8
+   ],
+   "yaw_deg": 163,
+   "scale": 1.03
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -153.6,
+    15
+   ],
+   "yaw_deg": 96,
+   "scale": 0.92
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -153.7,
+    22
+   ],
+   "yaw_deg": 86,
+   "scale": 0.94
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -150.7,
+    29
+   ],
+   "yaw_deg": 145,
+   "scale": 0.96
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -150.7,
+    36
+   ],
+   "yaw_deg": 188,
+   "scale": 0.91
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -153.7,
+    43
+   ],
+   "yaw_deg": 309,
+   "scale": 1.11
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -151.2,
+    50
+   ],
+   "yaw_deg": 341,
+   "scale": 1.03
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -153.0,
+    57
+   ],
+   "yaw_deg": 264,
+   "scale": 0.99
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -150.3,
+    64
+   ],
+   "yaw_deg": 286,
+   "scale": 1.2
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -151.4,
+    71
+   ],
+   "yaw_deg": 32,
+   "scale": 1.12
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -150.2,
+    78
+   ],
+   "yaw_deg": 48,
+   "scale": 0.94
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -150.2,
+    85
+   ],
+   "yaw_deg": 131,
+   "scale": 1.24
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -153.1,
+    92
+   ],
+   "yaw_deg": 306,
+   "scale": 0.99
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -153.8,
+    99
+   ],
+   "yaw_deg": 288,
+   "scale": 0.94
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -150.4,
+    106
+   ],
+   "yaw_deg": 343,
+   "scale": 1.25
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -150.9,
+    113
+   ],
+   "yaw_deg": 212,
+   "scale": 1.24
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -150.1,
+    120
+   ],
+   "yaw_deg": 21,
+   "scale": 1.13
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -104.68792164824367,
+    -29.5
+   ],
+   "yaw_deg": 84,
+   "scale": 0.96
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -95.49631553670477,
+    -29.5
+   ],
+   "yaw_deg": 99,
+   "scale": 1.06
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -56.13743958569613,
+    -29.5
+   ],
+   "yaw_deg": 111,
+   "scale": 0.9
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -47.121926899470864,
+    -29.5
+   ],
+   "yaw_deg": 290,
+   "scale": 0.91
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -38.882638597209066,
+    -29.5
+   ],
+   "yaw_deg": 2,
+   "scale": 0.91
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -100.84339568684857,
+    22.5
+   ],
+   "yaw_deg": 111,
+   "scale": 0.93
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -90.30057709566852,
+    22.5
+   ],
+   "yaw_deg": 77,
+   "scale": 0.86
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -81.23282277386278,
+    22.5
+   ],
+   "yaw_deg": 109,
+   "scale": 1.03
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -72.4509663039409,
+    22.5
+   ],
+   "yaw_deg": 105,
+   "scale": 0.9
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -65.17920507481128,
+    22.5
+   ],
+   "yaw_deg": 299,
+   "scale": 1.03
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -54.826788649747115,
+    22.5
+   ],
+   "yaw_deg": 131,
+   "scale": 1.11
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -45.08504419734669,
+    22.5
+   ],
+   "yaw_deg": 283,
+   "scale": 0.97
+  },
+  {
+   "piece": "windbreak_placeholder",
+   "at": [
+    -37.82236359070361,
+    22.5
+   ],
+   "yaw_deg": 199,
+   "scale": 1.06
+  },
+  {
+   "piece": "wakeshell_wall",
+   "at": [
+    -14.61,
+    -122.14
+   ],
+   "yaw_deg": -31.1,
+   "_note": "M2-ENV-04 (m2-slice): the Pilgrim's Wake wall at the causeway head, in reach (B04, H08), its shell face to the village; Grandmother Osu stands at its gap. The far piece out on the sand (30, -196) stays as the vista."
+  }
+ ],
+ "plants": [
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    9.32,
+    -175.0
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -11.5,
+   "scale": 1.26
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    10.34,
+    -167.03
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 15.5,
+   "scale": 1.15
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    5.17,
+    -156.47
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 2.5,
+   "scale": 0.85
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    2.48,
+    -148.29
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -11.3,
+   "scale": 1.24
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -1.29,
+    -139.89
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 4.4,
+   "scale": 1.32
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -10.26,
+    -139.89
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -9.2,
+   "scale": 0.94
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -3.54,
+    -131.61
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 16.1,
+   "scale": 0.95
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -6.04,
+    -121.81
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -17.0,
+   "scale": 1.25
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -18.07,
+    -121.81
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 21.5,
+   "scale": 0.93
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -8.66,
+    -112.5
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 11.3,
+   "scale": 1.17
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -19.84,
+    -112.5
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 6.7,
+   "scale": 0.87
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -12.95,
+    -103.07
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 19.6,
+   "scale": 1.06
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -15.71,
+    -92.22
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 13.8,
+   "scale": 1.07
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -24.16,
+    -92.22
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 22.1,
+   "scale": 1.03
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -15.93,
+    -84.84
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -7.5,
+   "scale": 1.26
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -25.44,
+    -84.84
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 10.9,
+   "scale": 1.25
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -18.38,
+    -73.7
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -16.0,
+   "scale": 1.04
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -17.19,
+    -64.87
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 7.0,
+   "scale": 1.12
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -18.44,
+    -56.87
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -7.6,
+   "scale": 0.97
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -28.83,
+    -56.87
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 10.9,
+   "scale": 1.11
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -19.22,
+    -46.35
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 9.4,
+   "scale": 0.88
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -20.68,
+    -39.25
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -1.5,
+   "scale": 1.02
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -28.87,
+    -39.25
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 20.5,
+   "scale": 1.23
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -22.99,
+    -27.37
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -9.0,
+   "scale": 1.03
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -30.17,
+    -27.37
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 8.5,
+   "scale": 1.14
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -22.43,
+    -18.03
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -8.6,
+   "scale": 1.08
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -31.69,
+    -18.03
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -22.3,
+   "scale": 0.92
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -23.7,
+    -8.37
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 12.4,
+   "scale": 1.06
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -23.75,
+    0.4
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -20.1,
+   "scale": 1.29
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -23.44,
+    10.89
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -7.3,
+   "scale": 0.85
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -31.8,
+    10.89
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 17.0,
+   "scale": 1.05
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -22.83,
+    19.72
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -14.0,
+   "scale": 1.31
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -21.88,
+    28.05
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -3.7,
+   "scale": 0.98
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -23.42,
+    37.72
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -7.2,
+   "scale": 1.18
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -29.82,
+    37.72
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -6.1,
+   "scale": 1.09
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -20.28,
+    45.51
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -5.9,
+   "scale": 1.29
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -16.32,
+    75.97
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 17.9,
+   "scale": 0.96
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -24.47,
+    75.97
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -16.8,
+   "scale": 1.31
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -13.22,
+    85.68
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -15.9,
+   "scale": 1.32
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -12.08,
+    95.29
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -9.2,
+   "scale": 1.34
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -11.76,
+    105.46
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -14.3,
+   "scale": 0.99
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -17.47,
+    105.46
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 23.3,
+   "scale": 0.86
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -9.11,
+    112.83
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 24.1,
+   "scale": 0.87
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -18.84,
+    112.83
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -15.5,
+   "scale": 1.33
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -3.79,
+    124.7
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 15.0,
+   "scale": 1.19
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -2.25,
+    134.09
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 21.2,
+   "scale": 1.21
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -10.44,
+    134.09
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -20.4,
+   "scale": 0.92
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -1.57,
+    144.27
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 3.2,
+   "scale": 0.87
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -7.02,
+    144.27
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -10.2,
+   "scale": 1.15
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    2.85,
+    154.19
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -1.0,
+   "scale": 1.28
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -6.95,
+    154.19
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -22.6,
+   "scale": 0.87
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    9.78,
+    165.78
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -16.7,
+   "scale": 1.16
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    11.43,
+    173.99
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -6.9,
+   "scale": 0.93
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    2.94,
+    173.99
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -20.0,
+   "scale": 0.86
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -60.3,
+    -42.7
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -3.2,
+   "scale": 1.24
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -65.0,
+    -97.3
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 34.1,
+   "scale": 1.03
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -49.9,
+    -77.0
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -40.7,
+   "scale": 1.49
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -106.8,
+    -47.5
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 16.7,
+   "scale": 1.26
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -98.3,
+    -1.9
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -25.1,
+   "scale": 1.11
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -71.3,
+    84.5
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 7.0,
+   "scale": 1.17
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -89.4,
+    -61.3
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -17.5,
+   "scale": 1.27
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -65.8,
+    84.8
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -22.0,
+   "scale": 1.36
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -105.0,
+    -87.8
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -52.6,
+   "scale": 0.97
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -100.1,
+    24.0
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -16.5,
+   "scale": 1.45
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -133.6,
+    85.0
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -56.2,
+   "scale": 1.02
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -130.3,
+    64.3
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 60.0,
+   "scale": 0.94
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -114.5,
+    62.7
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 52.1,
+   "scale": 1.07
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -53.8,
+    -44.9
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 29.5,
+   "scale": 0.96
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -97.1,
+    -110.7
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 58.6,
+   "scale": 1.31
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -147.0,
+    -5.2
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 42.0,
+   "scale": 1.12
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -51.5,
+    41.2
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 53.5,
+   "scale": 1.33
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -76.8,
+    7.2
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 45.5,
+   "scale": 1.09
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -35.9,
+    72.7
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -17.7,
+   "scale": 1.02
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -93.2,
+    24.7
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -19.2,
+   "scale": 1.45
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -104.9,
+    73.5
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -47.2,
+   "scale": 1.27
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -39.7,
+    73.7
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 19.8,
+   "scale": 1.38
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -107.1,
+    -109.2
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -27.2,
+   "scale": 0.95
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -58.7,
+    28.6
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 48.3,
+   "scale": 1.21
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -79.7,
+    70.2
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 50.2,
+   "scale": 1.1
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -110.6,
+    48.7
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -2.4,
+   "scale": 1.31
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -73.5,
+    56.9
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -34.7,
+   "scale": 1.33
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -95.4,
+    69.3
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -11.4,
+   "scale": 0.99
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -71.2,
+    119.2
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 17.7,
+   "scale": 1.27
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -71.2,
+    -53.9
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 21.4,
+   "scale": 1.11
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -35.5,
+    -101.8
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 48.3,
+   "scale": 1.29
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -102.1,
+    118.3
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -45.9,
+   "scale": 1.34
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -95.0,
+    -5.2
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -22.4,
+   "scale": 1.45
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -37.6,
+    -65.7
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -52.7,
+   "scale": 0.99
+  },
+  {
+   "plant": "frangipani_a",
+   "at": [
+    -82,
+    -19
+   ],
+   "yaw_deg": 83.6,
+   "scale": 1.12
+  },
+  {
+   "plant": "frangipani_a",
+   "at": [
+    -66,
+    -14
+   ],
+   "yaw_deg": 259.9,
+   "scale": 0.91
+  },
+  {
+   "plant": "frangipani_a",
+   "at": [
+    -50,
+    -9
+   ],
+   "yaw_deg": 46.4,
+   "scale": 0.91
+  },
+  {
+   "plant": "frangipani_b",
+   "at": [
+    -85,
+    1
+   ],
+   "yaw_deg": 187.6,
+   "scale": 1.21
+  },
+  {
+   "plant": "frangipani_b",
+   "at": [
+    -66,
+    2
+   ],
+   "yaw_deg": 268.8,
+   "scale": 0.99
+  },
+  {
+   "plant": "frangipani_a",
+   "at": [
+    -49,
+    9
+   ],
+   "yaw_deg": 154.5,
+   "scale": 1.12
+  },
+  {
+   "plant": "frangipani_a",
+   "at": [
+    -100,
+    30
+   ],
+   "yaw_deg": 80.2,
+   "scale": 1.11
+  },
+  {
+   "plant": "frangipani_a",
+   "at": [
+    -125,
+    42
+   ],
+   "yaw_deg": 201.1,
+   "scale": 1.16
+  },
+  {
+   "plant": "frangipani_a",
+   "at": [
+    -129,
+    41
+   ],
+   "yaw_deg": 79.9,
+   "scale": 1.07
+  },
+  {
+   "plant": "frangipani_a",
+   "at": [
+    -84,
+    -50
+   ],
+   "yaw_deg": 233.2,
+   "scale": 1.23
+  },
+  {
+   "plant": "frangipani_a",
+   "at": [
+    -52,
+    -46
+   ],
+   "yaw_deg": 37.1,
+   "scale": 1.04
+  },
+  {
+   "plant": "frangipani_b",
+   "at": [
+    -70,
+    47
+   ],
+   "yaw_deg": 122.1,
+   "scale": 1.22
+  },
+  {
+   "plant": "frangipani_b",
+   "at": [
+    -48,
+    53
+   ],
+   "yaw_deg": 187.9,
+   "scale": 1.16
+  },
+  {
+   "plant": "frangipani_b",
+   "at": [
+    -38,
+    -94
+   ],
+   "yaw_deg": 48.0,
+   "scale": 1.21
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -9.8,
+    -48.5
+   ],
+   "yaw_deg": 292.1,
+   "scale": 1.21
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -22.3,
+    10.1
+   ],
+   "yaw_deg": 274.4,
+   "scale": 1.29
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -13.3,
+    -75.9
+   ],
+   "yaw_deg": 239.8,
+   "scale": 0.93
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -11.8,
+    -79.9
+   ],
+   "yaw_deg": 16.4,
+   "scale": 0.93
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -7.0,
+    -109.5
+   ],
+   "yaw_deg": 21.1,
+   "scale": 1.07
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -11.3,
+    -28.2
+   ],
+   "yaw_deg": 135.2,
+   "scale": 0.98
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    2.5,
+    -127.8
+   ],
+   "yaw_deg": 192.5,
+   "scale": 1.15
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -0.2,
+    -110.5
+   ],
+   "yaw_deg": 108.7,
+   "scale": 1.2
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -6.4,
+    89.9
+   ],
+   "yaw_deg": 62.8,
+   "scale": 0.96
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    0.2,
+    114.8
+   ],
+   "yaw_deg": 35.0,
+   "scale": 1.39
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -18.1,
+    37.9
+   ],
+   "yaw_deg": 285.9,
+   "scale": 0.95
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -18.2,
+    40.6
+   ],
+   "yaw_deg": 16.2,
+   "scale": 1.4
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -19.2,
+    -45.4
+   ],
+   "yaw_deg": 257.1,
+   "scale": 1.4
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -19.3,
+    15.9
+   ],
+   "yaw_deg": 94.9,
+   "scale": 1.23
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -8.9,
+    -60.8
+   ],
+   "yaw_deg": 333.8,
+   "scale": 1.34
+  },
+  {
+   "plant": "beach_vine_patch",
+   "at": [
+    -13.5,
+    2.0
+   ],
+   "yaw_deg": 26.3,
+   "scale": 1.26
+  }
+ ],
+ "plant_kinds": {
+  "palm_coconut_a": {
+   "glb": "res://assets/environments/vegetation/palm_coconut_a.glb",
+   "materials": {
+    "palm_bark": "res://assets/environments/vegetation/materials/palm_bark.tres",
+    "palm_frond": "res://assets/environments/vegetation/materials/palm_frond.tres"
+   }
+  },
+  "palm_coconut_b": {
+   "glb": "res://assets/environments/vegetation/palm_coconut_b.glb",
+   "materials": {
+    "palm_bark": "res://assets/environments/vegetation/materials/palm_bark.tres",
+    "palm_frond": "res://assets/environments/vegetation/materials/palm_frond.tres"
+   }
+  },
+  "palm_coconut_c": {
+   "glb": "res://assets/environments/vegetation/palm_coconut_c.glb",
+   "materials": {
+    "palm_bark": "res://assets/environments/vegetation/materials/palm_bark.tres",
+    "palm_frond": "res://assets/environments/vegetation/materials/palm_frond.tres"
+   }
+  },
+  "frangipani_a": {
+   "glb": "res://assets/environments/vegetation/frangipani_a.glb",
+   "materials": {
+    "frangipani_bark": "res://assets/environments/vegetation/materials/frangipani_bark.tres",
+    "frangipani_leaf": "res://assets/environments/vegetation/materials/frangipani_leaf.tres"
+   }
+  },
+  "frangipani_b": {
+   "glb": "res://assets/environments/vegetation/frangipani_b.glb",
+   "materials": {
+    "frangipani_bark": "res://assets/environments/vegetation/materials/frangipani_bark.tres",
+    "frangipani_leaf": "res://assets/environments/vegetation/materials/frangipani_leaf.tres"
+   }
+  },
+  "beach_vine_patch": {
+   "glb": "res://assets/environments/vegetation/beach_vine_patch.glb",
+   "small_foliage": true,
+   "materials": {
+    "beach_vine": "res://assets/environments/vegetation/materials/beach_vine.tres"
+   },
+   "lod_end_m": [
+    45.0,
+    160.0
+   ]
+  }
+ },
+ "scatter": [
+  {
+   "name": "SaltgrassDunes",
+   "glb": "res://assets/environments/vegetation/saltgrass_clumps.glb",
+   "mesh_node": "saltgrass_a",
+   "material": "res://assets/environments/vegetation/materials/saltgrass.tres",
+   "rect": [
+    -40.0,
+    -170.0,
+    80.0,
+    340.0
+   ],
+   "count": 2600,
+   "seed": 5,
+   "inland_m": [
+    9.0,
+    31.0
+   ],
+   "scale": [
+    0.8,
+    1.3
+   ],
+   "patch_frequency": 0.08,
+   "patch_threshold": -0.25,
+   "visibility_end_m": 260.0
+  },
+  {
+   "name": "SaltgrassVillage",
+   "glb": "res://assets/environments/vegetation/saltgrass_clumps.glb",
+   "mesh_node": "saltgrass_b",
+   "material": "res://assets/environments/vegetation/materials/saltgrass.tres",
+   "rect": [
+    -150.0,
+    -125.0,
+    120.0,
+    250.0
+   ],
+   "count": 3000,
+   "seed": 9,
+   "inland_m": [
+    31.0,
+    200.0
+   ],
+   "scale": [
+    0.7,
+    1.1
+   ],
+   "max_lane": 0.15,
+   "patch_frequency": 0.06,
+   "patch_threshold": 0.05,
+   "visibility_end_m": 160.0
+  }
+ ],
+ "night_lamps": {
+  "_doc": "M2-ENV-02: oil lamps for the night mood (color script ch02_night: lamps #FFB16E, lamp pools 1.3). One lantern (an OmniLight3D and an emissive glass) per listed local offset of each placed piece of that kind, hung under the house's front eave so the lane gets a lamp pool and the village reads from the dock (H10); HalunaMood shows them at night.",
+  "color": "#FFB16E",
+  "energy": 1.3,
+  "range_m": 7.0,
+  "attenuation": 1.2,
+  "flame_radius_m": 0.12,
+  "flame_energy": 8.0,
+  "per_piece": {
+   "house_tile_a": [
+    [
+     0.0,
+     2.6,
+     5.3
+    ]
+   ],
+   "house_tile_b": [
+    [
+     0.0,
+     2.6,
+     5.3
+    ]
+   ],
+   "house_tile_c": [
+    [
+     0.0,
+     2.6,
+     5.3
+    ]
+   ]
+  }
+ }
+}

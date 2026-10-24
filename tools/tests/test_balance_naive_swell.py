@@ -24,9 +24,15 @@ class NaiveSwellTest(unittest.TestCase):
     def test_the_vowbound_suite_caps_the_calling_masher_at_40(self):
         """ADR 0027 (accepted): the provisional Vowbound masher line, a ceiling, not a band to aim at."""
         suites = [s for s in sim.load_targets() if s.get("kind") == "vowbound"]
-        self.assertEqual([s["id"] for s in suites], ["sandbox_reef_vowbound"])
+        self.assertEqual([s["id"] for s in suites], ["sandbox_reef_vowbound", "sandbox_reef_vowbound_good"])
         s = suites[0]
         self.assertEqual(s["bands"]["naive_swell"], [0, 40])
+        self.assertEqual(s["swell"], "off", "the line that isolates the Vowbound's own lift")
+        # M2-CMB-06 (sweep-Q): the same masher with the heroes' Swell on, as play has it: a 50% ceiling.
+        good = suites[1]
+        self.assertEqual(good["bands"]["naive_swell"], [0, 50])
+        self.assertEqual(good["swell"], "good")
+        self.assertEqual(good["loadout"], s["loadout"])
         self.assertIsNone(s["bands"]["naive"], "naive never opens the Vowbound row")
         policies = json.loads((ROOT / "game/data/battle/sim_policies.json").read_text())
         self.assertEqual(policies["loadouts"][s["loadout"]]["vowbound"], ["ilun"])

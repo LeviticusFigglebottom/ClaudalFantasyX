@@ -1,31 +1,8 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene format=3]
 
-[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_mood.gd" id="1_rig"]
-[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/weathering_tide.gd" id="2_tide"]
-[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_terrain.gd" id="3_terrain"]
-[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_dresser.gd" id="4_dresser"]
-[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_shot_camera.gd" id="5_cam"]
+[ext_resource type="PackedScene" path="res://game/levels/ch02/haluna/haluna_dressing.tscn" id="1_dressing"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="5_cam"]
 [ext_resource type="Script" path="res://game/world/camera_shot.gd" id="6_shot"]
-[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="7_water"]
-[ext_resource type="Resource" path="res://game/levels/_tests/water/lagoon_waves.tres" id="8_waves"]
-[ext_resource type="Material" path="res://game/levels/_tests/haluna_mood/haluna_water_material.tres" id="9_water_mat"]
-[ext_resource type="Environment" path="res://game/levels/_tests/haluna_mood/haluna_noon_environment.tres" id="10_env"]
-[ext_resource type="Shader" path="res://game/shaders/environment/env_ground.gdshader" id="11_ground"]
-[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/sand_albedo.png" id="12_sand"]
-[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/sand_normal.png" id="13_sand_n"]
-[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/coral_stone_albedo.png" id="14_stone"]
-[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/coral_stone_normal.png" id="15_stone_n"]
-[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/weathering_detail.png" id="16_detail"]
-[ext_resource type="PackedScene" path="res://game/world/save_shrine/save_shrine.tscn" id="17_shrine"]
-
-[sub_resource type="ShaderMaterial" id="GroundMat"]
-resource_name = "haluna_ground"
-shader = ExtResource("11_ground")
-shader_parameter/tex_sand = ExtResource("12_sand")
-shader_parameter/tex_sand_normal = ExtResource("13_sand_n")
-shader_parameter/tex_stone = ExtResource("14_stone")
-shader_parameter/tex_stone_normal = ExtResource("15_stone_n")
-shader_parameter/tex_detail = ExtResource("16_detail")
 
 [sub_resource type="Resource" id="ShotH01"]
 script = ExtResource("6_shot")
@@ -66,47 +43,14 @@ position = Vector3(-105, 4.3, 42.5)
 look_at = Vector3(-118, 5.4, 31.5)
 fov_deg = 53.1
 
-[node name="HalunaMood" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water")]
-script = ExtResource("1_rig")
-sun = NodePath("Sun")
-tide = NodePath("Tide")
-water = NodePath("Water")
+[sub_resource type="Resource" id="ShotH10"]
+script = ExtResource("6_shot")
+id = &"H10"
+position = Vector3(23.0, 2.9, 38.4)
+look_at = Vector3(-30, 6.5, 12)
+fov_deg = 37.8
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = ExtResource("10_env")
-
-[node name="Sun" type="DirectionalLight3D" parent="."]
-light_color = Color(1, 0.945, 0.894, 1)
-light_energy = 3.2
-shadow_enabled = true
-shadow_bias = 0.03
-shadow_normal_bias = 1.0
-shadow_blur = 1.2
-sky_mode = 1
-directional_shadow_mode = 2
-directional_shadow_split_1 = 0.04
-directional_shadow_split_2 = 0.12
-directional_shadow_split_3 = 0.35
-directional_shadow_max_distance = 400.0
-
-[node name="Water" type="Node3D" parent="."]
-script = ExtResource("7_water")
-publishes_water_level = true
-wave_set = ExtResource("8_waves")
-material = ExtResource("9_water_mat")
-
-[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
-script = ExtResource("2_tide")
-water = NodePath("../Water")
-
-[node name="Terrain" type="Node3D" parent="."]
-script = ExtResource("3_terrain")
-
-[node name="Dresser" type="Node3D" parent="." node_paths=PackedStringArray("terrain", "tide")]
-script = ExtResource("4_dresser")
-terrain = NodePath("../Terrain")
-tide = NodePath("../Tide")
-ground_material = SubResource("GroundMat")
+[node name="HalunaMood" instance=ExtResource("1_dressing")]
 
 [node name="Cameras" type="Node3D" parent="."]
 
@@ -141,14 +85,8 @@ far = 6000.0
 script = ExtResource("5_cam")
 shot = SubResource("ShotH07")
 
-[node name="Spawns" type="Node3D" parent="."]
-
-[node name="Shrine" type="Marker3D" parent="Spawns"]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -67, 2.02, 44.3)
-
-[node name="SaveShrine" parent="." instance=ExtResource("17_shrine")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -67, 2.04, 46.6)
-id = &"haluna_shrine"
-sets_flag = &"ch02_saved_once"
-location_id = &"ch02/haluna"
-network_id = &"haluna_shrine"
+[node name="H10" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("5_cam")
+shot = SubResource("ShotH10")

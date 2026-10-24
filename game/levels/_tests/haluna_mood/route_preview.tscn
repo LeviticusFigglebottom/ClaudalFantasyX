@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" path="res://game/levels/_tests/haluna_mood/haluna_mood.tscn" id="1_mood"]
 [ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/route_preview_dresser.gd" id="2_route"]
-[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_shot_camera.gd" id="3_cam"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="3_cam"]
 [ext_resource type="Script" path="res://game/world/camera_shot.gd" id="4_shot"]
 
 [sub_resource type="Resource" id="ShotRouteWide"]

@@ -4,7 +4,7 @@ extends TestCase
 ## mood-test zone, which the playable zone game/levels/ch02/haluna/ instances (M2-FP-02); it is
 ## instanced here, never added to the tree, so the zone's dresser does not build.
 
-const ZONE := "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
+const ZONE := "res://game/levels/ch02/haluna/haluna_dressing.tscn"
 const PLAYABLE_ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
 const LOCATION := &"ch02/haluna"
 const NETWORK := &"haluna_shrine"

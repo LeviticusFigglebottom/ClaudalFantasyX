@@ -12,6 +12,11 @@
    "args": [{"name": "encounter", "type": "id"}]
   },
   {
+   "id": "departure_declined",
+   "doc": "The player chose not to leave yet (M2-FP-21, B05 at Haluna's causeway head): the host returns control instead of handing off.",
+   "args": []
+  },
+  {
    "id": "fixture_event",
    "doc": "Runner tests only (game/data/dialogue/test/test_dialogue_fixture.dlg).",
    "test_only": true,

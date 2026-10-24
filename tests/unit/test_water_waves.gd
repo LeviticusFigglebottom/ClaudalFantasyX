@@ -4,7 +4,7 @@ extends TestCase
 ## software renderer when it is installed (ADR 0009) and is skipped (passes) otherwise.
 
 const WAVES_INC := "res://game/shaders/water/water_waves.gdshaderinc"
-const LAGOON_WAVES := "res://game/levels/_tests/water/lagoon_waves.tres"
+const LAGOON_WAVES := "res://game/world/water/lagoon_waves.tres"
 const PROBE_SCENE := "res://game/levels/_tests/water/wave_parity_probe.tscn"
 const RENDER_WRAPPER := "~/.cache/hymn/godot-4.6.3+ds-2/godot-render"
 ## Vector3/Vector4 store float32, so packed constants are exact to ~1e-7 relative.

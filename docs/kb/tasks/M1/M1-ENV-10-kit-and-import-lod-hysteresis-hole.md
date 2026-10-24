@@ -34,7 +34,7 @@ places set up LOD ranges the old way:
   confirm the kit fix.
 
 ## Notes (2026-10-24, environment, env-art worktree agent-a7f7257f59099ea20)
-- **One helper.** `LodChain` (`game/levels/_tests/vegetation/lod_chain.gd`, static, with no scene or autoload
+- **One helper.** `LodChain` (`game/world/vegetation/lod_chain.gd`, moved there beside VegetationPlant for the release build, M2-ARC-04, static, with no scene or autoload
   dependency, so the editor's post-import pass can call it) now holds the chain rule that `VegetationPlant.lod_range`
   had: `range_for` (moved, same maths), `sibling` (moved from `lod_mesh`), and `apply`, which sets the range,
   margins and fade mode, and sets or clears `visibility_parent`. `VegetationPlant.lod_range`/`lod_mesh` delegate to

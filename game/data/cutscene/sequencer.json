@@ -77,7 +77,7 @@
     "font_size": 22
   },
   "face_poses": {
-    "asha": "res://game/levels/_tests/characters/asha/asha_face_poses.json"
+    "asha": "res://game/data/cutscene/asha_face_poses.json"
   },
   "lip_flap": {
     "vis_aa": 0.55,

@@ -21,6 +21,8 @@ VEG_TEX = "res://assets/environments/vegetation/"
 WEATHER = "res://game/shaders/environment/env_weathering.gdshader"
 SHELL = "res://game/shaders/environment/env_wake_shell.gdshader"
 BARK = "res://game/shaders/vegetation/vegetation_bark.gdshader"
+NACRE = "res://game/shaders/environment/env_nacre_inlay.gdshader"
+SPILL = "res://game/shaders/environment/env_water_spill.gdshader"
 FOLIAGE = "res://game/shaders/vegetation/vegetation_foliage.gdshader"
 
 
@@ -62,6 +64,14 @@ MATERIALS: dict[str, dict] = {
                                 # Drowned a thousand years (M2 final pass): greyed below lit_ceramic, so
                                 # the ruins read as old stone in the sea, not as glowing white posts.
                                 col_tint=hexc("#D2D4CB")),
+    # The Shell Shrine's dressed coral limestone (M2-ENV-03, haluna.md §3.3): fresher than the causeway's,
+    # because the place is tended; dry inside (no algae, barnacles or spray salt), shallow pits.
+    # The Shell Shrine's dressed coral limestone (M2-ENV-03, haluna.md §3.3): fresher than the causeway's,
+    # because the place is tended; dry inside (no algae, barnacles or spray salt), shallow pits.
+    "kit_shrine_stone": stone("coral_stone_albedo.png", "coral_stone_normal.png", (0.6, 0.6), base_triplanar=True,
+                              col_tint=hexc("#F6F1E6"), normal_strength=0.7, roughness_base=0.82, cavity_darken=0.12,
+                              erosion_pit_darken=0.1, ao_strength=0.55, variation_value=0.06, use_algae=False,
+                              use_barnacles=False, use_salt=False, moss_min_height_m=40.0),
     "kit_mortar_white": stone("coral_stone_albedo.png", "coral_stone_normal.png", (0.9, 0.9), base_triplanar=True,
                               normal_strength=0.35, roughness_base=0.9, col_paint=hexc("#E6E1D6"), paint_cover=0.97,
                               cavity_darken=0.04, erosion_pit_darken=0.05, ao_strength=0.4),
@@ -148,6 +158,12 @@ for _dye, _hex in (("indigo", "#2B3A6B"), ("sea_blue", "#3C78A8"), ("sand", "#C9
 
 MATERIALS["kit_cloth"] = MATERIALS["kit_cloth_sand"]  # the glTF slot's default dye
 
+# The Shell Shrine (M2-ENV-03): nacre inlay along the channels and in the bowls (the per-channel water
+# shimmer is the instance uniform inst_shimmer), and the falling sheets the level hangs from the lips.
+MATERIALS["kit_nacre"] = {"shader": NACRE, "params": {"col_base": hexc("#E6DAC0"), "iridescence": 0.3,
+                                                       "hue_shift_deg": 40, "roughness_dry": 0.3}}
+MATERIALS["kit_water_spill"] = {"shader": SPILL, "params": {"opacity": 0.55, "fall_speed_m_s": 2.4}}
+
 # StandardMaterial3D pieces (no weathering stack needed).
 STANDARD: dict[str, dict] = {
     "kit_garland": {"albedo_color": hexc("#F0E8D8"), "roughness": 0.5, "cull_mode": 2,
@@ -165,6 +181,9 @@ STANDARD: dict[str, dict] = {
     "kit_net": {"transparency": 3, "cull_mode": 2,
                 "albedo_texture": ("tex", TEX + "net_albedo.png"), "roughness": 0.9,
                 "uv1_scale": "Vector3(2.5, 2.5, 1)", "texture_filter": 5},
+    # Fresh leaf-boats on the shrine steps (haluna.md §3.1: "tended"), the leaf folded green side out.
+    "kit_leaf_boat": {"albedo_color": hexc("#5E7F35"), "roughness": 0.55, "cull_mode": 2,
+                      "backlight_enabled": "true", "backlight": "Color(0.35, 0.45, 0.12, 1)"},
     "kit_salt_glass": {"transparency": 1, "albedo_color": hexc("#BFE6E0", 0.55), "roughness": 0.06,
                        "metallic_specular": 0.7},
 }
