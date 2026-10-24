@@ -1,6 +1,6 @@
 # 0030 — The Vowbound on the battle HUD: a Call row per caller, bound by a data flag
 
-- **Status:** proposed
+- **Status:** accepted (review-sweep-R, 2026-10-24, with the Lead's amendment: no Call row until a Vowbound is bound; 5eda83b2 on claude/ui)
 - **Date:** 2026-10-24
 - **Roles affected:** UI, Combat (vowbound.json, validate_data.py), the m2-slice track (M2-FP-17), Narrative (the flag)
 - **Author role:** UI (M2-UI-05)
