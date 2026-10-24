@@ -1,0 +1,11 @@
+// Ch4 C4-10, banter 2 of 3 (field bark, overheard): Toma and Ysolde, two believers, formal and easy
+// with each other in the Order's words. Toma asks, with real reverence, whether she has walked a
+// pilgrimage before. "Once." She doesn't say whose (Corran, the 60th Cantor: Ch13's).
+title: ch04_banter_once
+location: ch04/brightwater_ferry
+---
+Toma [neutral]: Tutor. Forgive me. Have you walked a pilgrimage before? #line:ch04_banter_once_001
+Ysolde [neutral]: Once. #line:ch04_banter_once_002
+Toma [neutral]: Then the road is level under you. #line:ch04_banter_once_003
+Ysolde [neutral]: And still, Guardian. Thank you. #line:ch04_banter_once_004
+===

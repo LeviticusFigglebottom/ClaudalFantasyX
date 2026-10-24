@@ -4,4 +4,11 @@ DLG_CH03_VERSE_042	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgi
 DLG_CH03_VERSE_043	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown.	hal oan, ish karra.
 DLG_CH03_VERSE_044	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown.	Ennu re, ennu re...
 DLG_CH03_VERSE_045	ch03_the_first_verse	yes	Lamptongue, the old Iskarran liturgical language (constructed). Keep exactly as written: the translation is never shown.	...mir.
+DLG_CH04_BANTER_ENNU_001	ch04_banter_ennu	yes	Lamptongue, sung under her breath and slightly wrong (one syllable). Keep exactly as written.	Vey enu, vey enu...
+DLG_CH04_BANTER_ENNU_003	ch04_banter_ennu		'Vey ennu' is Lamptongue: keep as written.	Thank you. Vey ennu, vey ennu.
+DLG_CH04_BOARD_001	ch04_name_board		The Canticle of Level Water, recited, never sung.	The water keeps what it is given.
+DLG_CH04_BOARD_002	ch04_name_board		The Canticle of Level Water, recited, never sung.	Go down to the level, and be still.
+DLG_CH04_SHELL_002	ch04_shell_is_set		One line of the Canticle of Level Water, recited, never sung.	The water keeps what it is given, and gives back what it keeps.
+DLG_CH04_SHELL_012	ch04_shell_is_set		'The Long Way Round': a Low Reaches farewell song for a voyage, sung by the whole village. Plain words; keep it singable.	Bring her round by the long way, by the reef and the weed and the light.
+DLG_CH04_UNDER_WAY_001	ch04_under_way		Title card over the terraces at dusk: a place and a time, no chapter name.	Pemakar. Dusk.
 DLG_TEST_DLG_020	test_dialogue_fixture	yes	Invented language: keep as written.	Ennu re.
