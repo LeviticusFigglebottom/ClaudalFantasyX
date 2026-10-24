@@ -8,6 +8,9 @@ const DIR := "res://game/data/audio/"
 const MIX := "mix"
 const MUSIC := "music"
 const SFX := "sfx"
+const AMBIENCE := "ambience"
+const UI_SFX := "ui_sfx"
+const FOOTSTEPS := "footsteps"
 ## The reserved music id meaning "fade the bed out" (the .dlg format's `@music silence`).
 const SILENCE := &"silence"
 
@@ -92,3 +95,38 @@ static func cue_files(row: Dictionary) -> Array[String]:
 	elif row.has("file"):
 		out.append(str(row["file"]))
 	return out
+
+
+## The ambience bed rows: music.json's `ambience` plus ambience.json's (M2-AUD-05); music.json's win on a clash.
+static func bed_rows(music: Dictionary, amb: Dictionary) -> Dictionary:
+	var out := (amb.get("ambience", {}) as Dictionary).duplicate(true)
+	out.merge(music.get("ambience", {}) as Dictionary, true)
+	return out
+
+
+## `row` (music.json's zone row for `scene_path`, maybe {}) with ambience.json's beds for the scene when the row
+## names none (no ambience key, or an empty list): the day list, or the night list once night_flag is set, plus
+## the wind bed when the zone has wind. `flag_set` is (flag: StringName) -> bool.
+static func merge_zone_beds(row: Dictionary, amb: Dictionary, scene_path: String, flag_set: Callable) -> Dictionary:
+	var z := (amb.get("zones", {}) as Dictionary).get(scene_path, {}) as Dictionary
+	if z.is_empty() or not (row.get("ambience", []) as Array).is_empty():
+		return row
+	var night := StringName(str(z.get("night_flag", "")))
+	var key := "night" if night != &"" and z.has("night") and bool(flag_set.call(night)) else "day"
+	var beds: Array = (z.get(key, []) as Array).duplicate()
+	var wind_bed := str((amb.get("wind", {}) as Dictionary).get("bed", ""))
+	if bool(z.get("wind", false)) and wind_bed != "" and not beds.has(wind_bed):
+		beds.append(wind_bed)
+	var out := row.duplicate(true)
+	out["ambience"] = beds
+	return out
+
+
+## The wind bed's level offset (dB) for a wind of `speed` m/s: ambience.json `wind` maps min_m_s..max_m_s
+## linearly onto min_db..max_db, clamped.
+static func wind_db(amb: Dictionary, speed: float) -> float:
+	var w := amb.get("wind", {}) as Dictionary
+	var lo := float(w.get("min_m_s", 0.0))
+	var hi := float(w.get("max_m_s", 1.0))
+	var u := clampf((speed - lo) / (hi - lo), 0.0, 1.0) if hi > lo else (1.0 if speed >= hi else 0.0)
+	return lerpf(float(w.get("min_db", 0.0)), float(w.get("max_db", 0.0)), u)

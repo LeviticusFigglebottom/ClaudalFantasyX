@@ -31,6 +31,19 @@ GOOD = {
     dc.VFX_EFFECTS: {"effects": {"hit_fire": {}}},
     dc.BATTLE_SFX: {"vfx": {"hit_fire": "tick"}, "events": {"rim_break": "tick"}},
     dc.SHRINE_SFX: {"events": {"turn": {"sfx": "tick"}}, "fill_sfx": "tick", "fill_in_sec": 1.0},
+    dc.AMBIENCE: {
+        "ambience": {"gulls": {"file": OGG, "bus": "Music"}, "breeze": {"file": OGG, "bus": "Music"}},
+        "zones": {SCENE: {"day": ["gulls", "surf"], "night_flag": "night", "night": ["surf"], "wind": True}},
+        "wind": {"bed": "breeze", "min_m_s": 2.0, "max_m_s": 10.0, "min_db": -18.0, "max_db": 0.0},
+    },
+    dc.FOOTSTEPS: {"walk_step_m": 1.0, "run_step_m": 1.6, "surfaces": {"sand": "tick"}, "default": "sand",
+                   "scenes": {SCENE: "sand"}},
+    dc.UI_SFX: {"priority": ["tick"], "hooks": [
+        {"class": "Menu", "on_enter": "tick", "signals": {"closed": "tick", "visibility_changed": "tick"},
+         "watch": [{"expr": "node.level", "rise": "tick", "values": {"2": "tick"}}]},
+        {"class": "ShopMenu", "pending": True, "signals": {"bought": "tick"}},
+    ]},
+    dc.CLASSES: {"Menu": ["closed"]},
 }
 
 
@@ -96,6 +109,50 @@ class AudioDataTest(unittest.TestCase):
         for want in ("nope is not an sfx.json row", "hit_ice: not a BattleVfx effect", "ko_release has no sound",
                      "grind is not an sfx.json row"):
             self.assertTrue(any(want in e for e in errs), (want, errs))
+
+    def test_ambience_beds_zones_flags_and_wind(self) -> None:
+        def edit(a: dict) -> None:
+            a["ambience"]["gulls"]["bus"] = "Nowhere"
+            a["zones"][SCENE]["day"].append("rain")
+            a["zones"][SCENE]["night_flag"] = "dusk"
+            a["zones"]["res://game/levels/missing.tscn"] = {"day": []}
+            a["wind"]["bed"] = "gale"
+            a["wind"]["min_m_s"] = 12.0
+        errs = self._broken(dc.AMBIENCE, edit)
+        for want in ("unknown bus Nowhere", "unknown bed rain", "dusk is not declared", "missing.tscn does not exist",
+                     "unknown bed gale", "min_m_s must be below max_m_s"):
+            self.assertTrue(any(want in e for e in errs), (want, errs))
+
+    def test_music_zones_may_name_ambience_json_beds(self) -> None:
+        files = copy.deepcopy(GOOD)
+        files[dc.MUSIC]["zones"][0]["ambience"] = ["gulls"]
+        self.assertEqual(_errs(files), [])
+
+    def test_footsteps_name_rows_surfaces_and_scenes(self) -> None:
+        def edit(f: dict) -> None:
+            f["surfaces"]["mud"] = "squelch"
+            f["default"] = "ice"
+            f["scenes"]["res://nope.tscn"] = "gravel"
+            f["run_step_m"] = 0
+        errs = self._broken(dc.FOOTSTEPS, edit)
+        for want in ("squelch is not an sfx.json row", "ice is not a surface", "nope.tscn does not exist",
+                     "gravel is not a surface", "run_step_m: a stride"):
+            self.assertTrue(any(want in e for e in errs), (want, errs))
+
+    def test_ui_hooks_check_rows_classes_and_signals_not_names(self) -> None:
+        def edit(u: dict) -> None:
+            u["hooks"][0]["signals"]["opened"] = "tick"
+            u["hooks"][0]["watch"].append({"expr": "node.x"})
+            u["hooks"][0]["watch"][0]["values"]["3"] = "boom"
+            u["hooks"].append({"class": "Ghost", "on_exit": "tick"})
+            u["hooks"][1]["signals"]["refused"] = "nope"
+            u["priority"].append("fanfare")
+        errs = self._broken(dc.UI_SFX, edit)
+        for want in ("Menu declares no such signal", "plays nothing", "boom is not an sfx.json row",
+                     "no script declares class_name Ghost", "nope is not an sfx.json row",
+                     "fanfare is not an sfx.json row"):
+            self.assertTrue(any(want in e for e in errs), (want, errs))
+        self.assertFalse(any("ShopMenu" in e and "class_name" in e for e in errs), "a pending hook's class waits")
 
     def test_sfx_rows_play_on_real_buses(self) -> None:
         errs = self._broken(dc.SFX, lambda s: s["sfx"]["tick"].update({"bus": "Nowhere", "pitch_jitter": 0.9}))
