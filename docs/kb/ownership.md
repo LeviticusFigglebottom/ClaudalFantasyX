@@ -24,7 +24,7 @@ Claim a path glob before editing `.tscn` or `.tres` files or assets (SPEC §5.3)
 | Systems (field/debug/saves) | `game/world/**`, `game/core/debug/**`, `game/data/world/**`, `game/data/debug/**` | 2026-10-23 | architect-stream-2/4 |
 | Rendering (storm) | `game/shaders/undertow/**`, `game/vfx/undertow/**`, `game/levels/_tests/undertow/**` | 2026-10-23 | rendering-stream-5 |
 | Rendering (storm perf, M1-RND-10) | `assets_src/vfx/undertow/**`, `assets/vfx/undertow/**`, `tools/gpu_bench/**` | 2026-10-23 | session_01778wbLbDFnRRLTKjnawv3T (PC GPU) |
-| Environment (kits) | `assets_src/environments/kits/**`, `assets/environments/kits/**`, `game/shaders/environment/**`, `game/levels/_tests/haluna_mood/**` | 2026-10-23 | environment-stream-2 |
+| Environment (kits) | `assets_src/environments/kits/**`, `assets/environments/kits/**`, `game/shaders/environment/**`, `game/levels/_tests/haluna_mood/**`, and the promoted Haluna world files in `game/levels/ch02/haluna/` (`haluna_dressing.tscn`, `haluna_layout.json`, `haluna_dresser.gd`, `haluna_terrain.gd`, `weathering_tide.gd`, `haluna_water_material.tres`; M2-ENV-01) | 2026-10-23 | environment-stream-2 |
 | Systems (saves) | `game/world/save_shrine/**`, `game/ui/save/**`, `game/levels/_tests/save_shrine/**` | 2026-10-23 | architect-stream-4 |
 | Art (swatches) | `game/levels/_tests/swatches/**` | 2026-10-23 | art-stream-3 |
 | Rendering (sky perf, M1-RND-12) | `assets_src/vfx/sky/**`, `assets/vfx/sky/**` (plus the sky-quality edits to `game/shaders/environment/env_sky_cumulus.gdshader` and `haluna_noon_environment.tres`, routed by the Lead from review-sweep-H; Environment reviews) | 2026-10-23 | session_01778wbLbDFnRRLTKjnawv3T (PC GPU) |
