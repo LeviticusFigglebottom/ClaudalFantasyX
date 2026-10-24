@@ -2,8 +2,8 @@
 id: M2-UI-06
 title: Shop and inn menus for Haluna (the slice's B03 systems on show)
 role: ui
-status: doing
-owner_session: "claude/ui"
+status: todo
+owner_session: ""
 depends_on: [M1-PRG-02]
 milestone: M2
 request-from: cinematics
