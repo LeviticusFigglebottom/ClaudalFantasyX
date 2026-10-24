@@ -39,6 +39,8 @@ func test_every_creature_row_names_a_scene_with_its_clips() -> void:
 			needed.append(str((phase as Dictionary).get("clip", "")))
 			needed.append(str((phase as Dictionary).get("idle", "")))
 		for clip in needed:
+			if clip == "":
+				continue  # a phase may keep the creature's idle (no `idle` of its own)
 			assert_true(a.has_clip(StringName(clip)), "%s has the clip %s" % [id, clip])
 		for clip: Variant in row["loop"]:
 			var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
