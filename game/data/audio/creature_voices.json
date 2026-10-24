@@ -300,6 +300,19 @@
         "death": "cre_gull_harrier_death",
         "move": "cre_gull_harrier_wingbeat"
       }
+    },
+    "wickfry": {
+      "family": "swarm",
+      "variant_of": "glassfry",
+      "pitch": 1.12,
+      "_note": "the integration branch's new shoal enemy (enemies.json): glassfry's swarm, smaller and quicker",
+      "events": {
+        "idle": "cre_glassfry_idle",
+        "attack": "cre_glassfry_attack",
+        "hurt": "cre_glassfry_hurt",
+        "death": "cre_glassfry_death",
+        "move": "cre_glassfry_shimmer"
+      }
     }
   }
 }
