@@ -154,8 +154,10 @@ func use_item_with(engine: BattleEngine, effect_type: StringName, target: Battle
 	return false
 
 
-## Basic attack on the first living foe (the provoker if Provoked). Escapes as a last resort
-## so a battle can never stall on a party with nothing usable.
+## Basic attack on the first living foe (the provoker if Provoked). An actor an encounter forbids to
+## strike (M3-C06-02: Toma and the Stillguard) uses its first usable skill that it may (a guard, a
+## Provoke) instead. Escapes as a last resort so a battle can never stall on a party with nothing
+## usable.
 func _basic(engine: BattleEngine) -> void:
 	var actor := engine.current
 	var sid := engine.basic_attack(actor)
@@ -164,8 +166,29 @@ func _basic(engine: BattleEngine) -> void:
 		var forced := engine.forced_target(actor, sid)
 		if engine.perform(sid, _one(forced if forced != null else foes[0])).ok:
 			return
+	if _unforbidden(engine, actor):
+		return
 	if not engine.escape() and engine.current == actor and engine.outcome == &"":
 		push_error("SimPolicy: %s could not act" % actor.id)
+
+
+## The first usable skill `actor` is allowed (usable_skills), on itself or the first foe it may
+## touch. True when one was used.
+static func _unforbidden(engine: BattleEngine, actor: BattleCombatant) -> bool:
+	if actor.forbidden_tag == &"":
+		return false
+	for sid in usable_skills(engine, actor):
+		var sk := engine.db.skill(sid)
+		var target := actor
+		if str(sk.get("target", "single_foe")).ends_with("foe"):
+			target = null
+			for f in engine.living_foes_of(actor):
+				if not BossMechanics.forbids(actor, sk, f):
+					target = f
+					break
+		if target != null and use(engine, sid, target):
+			return true
+	return false
 
 
 ## Uses `skill_id` on `target`, honouring Provoke for single-foe skills. True on success.
@@ -250,7 +273,8 @@ static func best_damage_skill(engine: BattleEngine, actor: BattleCombatant, targ
 	return best if best != &"" else engine.basic_attack(actor)
 
 
-## Skills `actor` can pay for and isn't blocked from (Silence, a field clear with no field up).
+## Skills `actor` can pay for and isn't blocked from (Silence, a field clear with no field up, a foe
+## the encounter forbids it to strike).
 static func usable_skills(engine: BattleEngine, actor: BattleCombatant) -> Array[StringName]:
 	var out: Array[StringName] = []
 	for sid in actor.skills:
@@ -259,7 +283,7 @@ static func usable_skills(engine: BattleEngine, actor: BattleCombatant) -> Array
 			continue
 		if bool(sk.get("magic", false)) and actor.has_status(&"silence"):
 			continue
-		if BossMechanics.refusal(engine, sk) != &"":
+		if BossMechanics.refusal(engine, sk) != &"" or BossMechanics.forbidden_now(engine, actor, sk):
 			continue
 		out.append(sid)
 	return out

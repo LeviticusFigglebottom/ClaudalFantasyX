@@ -331,3 +331,21 @@ Five new suites at Swell `good` (balance_targets.md "Ch4"). 1000 seeds:
 - **Lineups tried and dropped.** Three leeches (naive 1.0%), a leech with the hermit (naive 4.5%: the hermit's lesson plus a leech is too much for a masher), and the boss with Ysolde in reserve (`role_answer` 4.5 to 14%: the policy swaps out the first actor, Rhen).
 - `naive_swell` (report only) is 14.6% on the boss, 56.5% on the leeches and 75.9% on the hermit: Ilun called at once is strong against foes that don't punish water.
 - `sim.py --check` over every suite at 1000 seeds: 75 rows, all in band. The existing suites are unchanged (sandbox_reef 10.9 / 97.1 / 100.0, with its foe order untouched; Drownbell 0.0 / 71.0 / 85.3).
+
+### 2026-10-24: Ch6, the Brine Shoals (M3-C06-02, m2-slice)
+
+Five new suites at Swell `good` (balance_targets.md "Ch6"). 1000 seeds:
+
+| Suite | Band | naive | role_answer | smart | worst p90 |
+|---|---|---|---|---|---|
+| `ch06_ridge_skippers` | Ch4–Ch9 regular, role_answer report only | 52.6 | 61.4 | 97.4 | 30 |
+| `ch06_ridge_crab` | the same | 57.8 | 88.7 | 99.9 | 24 |
+| `ch06_ridge_gulls` | the same | 57.3 | 71.9 | 99.6 | 35 |
+| `ch06_flats_crabs` | Ch4–Ch9 regular | 55.2 | 95.7 | 100.0 | 32 |
+| `ch06_inquisitor` | Ch4–Ch9 boss, smart 75–100 and ≥ 25 mean turns | 3.1 | 70.9 | 100.0 (29.0 mean turns) | 69 |
+
+- **Knobs.** Shoal skipper: level 6, HP 240, strength 23, agility 22, evasion 60; Skim Bite power 6, rank 2, at a random foe. Wreck crab: level 6, HP 380, strength 28, defense 120; Pinch, and Housing Glare (Darkness 60%) every third turn. Inquisitor: level 6, HP 1300, strength 9, defense 60, magic defense 12; Brine Iron power 8 (fire, Power Break) and Shell Wall in the Hound's Watch, Torch the Hulk (Darkness on the party) every third turn from 50%. Raid-hound: level 5, HP 620, strength 5, agility 15; Bite 7, Pounce 9. Both yield at 0 HP.
+- **The hound at agility 24 acted twice for every party turn** and bit for 100–160: `role_answer` won 0–15%. Damage is power × (strength + level), so its level came down with its strength.
+- **The sim stalled on Toma** until he had a no-cost lawful action: with only Brace, Challenge and Shield Wall, his MP ran out and 70–88% of runs timed out. `party_skills` now lends Stand Fast too.
+- **`role_answer` left Toma on guard all fight** while a striker waited in reserve (14–21%). The policy now steps a hero forbidden to strike back for a reserve member (battle_ctb.md).
+- **Lineups tried and dropped:** three skippers (naive 2–6%, smart 53–85%), two skippers and two gulls (smart 54–67%, p90 43–51), a skipper and three gulls (smart 92.5%, p90 49), two crabs and a skipper (naive 0–8%), and a crab and a gull on the ridge (naive 100%).

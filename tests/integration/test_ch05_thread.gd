@@ -5,7 +5,7 @@ extends TestCase
 ## and Rhen's choice → the weir and Kerrid → the inn gate → Ashcrown's stair (the banters, the
 ## slag tortoise pair) → the crown → the trial, tier by tier (a faded charge, the sealed side vein and
 ## the Quench Charm, the plate) → the Matron → Kahre and the second verse → Pemakar after → the dawn
-## → the end card (Ch6's stand-in). Instant sequencers; every hand-off is recorded through
+## → the Brine Shoals (Ch6, at Entry). Instant sequencers; every hand-off is recorded through
 ## ZoneStory.hand_off, and every fight is played in the real field battle to a forced win.
 ## Also the watches: Kerrid's three lines and nothing to Rhen, no glow on his hands (no @vfx at him),
 ## Asha leading no rite at Lanternfall, the three exclusive boat flags, and Kell's wick unburned.
@@ -13,7 +13,6 @@ extends TestCase
 const PEMAKAR := "res://game/levels/ch05/pemakar/pemakar.tscn"
 const ASHCROWN := "res://game/levels/ch05/ashcrown/ashcrown.tscn"
 const BATTLE := "res://game/flow/field_battle.tscn"
-const END_CARD := "res://game/flow/end_card.tscn"
 const SAVE_DIR := "user://test_ch05_thread_saves"
 const MAX_TURNS := 120
 const STAGING_WARNINGS: Array[String] = ["no shot", "no mark", "no actor", "cannot place", "no look_at"]
@@ -242,7 +241,7 @@ func _pemakar_after() -> void:
 	assert_true(_trigger(&"bark_after_band").on_touched())
 	assert_true(_trigger(&"harbour_road").on_touched())
 	assert_true(bool(Game.get_flag(&"ch05_done")))
-	assert_eq(hand_offs.back(), [ZoneStory.KIND_SCENE, END_CARD], "Ch6's stand-in: the end card")
+	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": "ch06/brine_shoals", "spawn": "Entry"}], "on to Ch6")
 	assert_false(restore_at_line.has(&"ch05_dawn_001"), "the dawn has no line")
 	_close()
 

@@ -104,6 +104,7 @@ func root_rows(engine: BattleEngine, items: BattleItemSource = null, swell: Batt
 func _attack_row(engine: BattleEngine) -> Dictionary:
 	var rank := int(engine.db.skill(ATTACK_SKILL).get("rank", Formulas.DEFAULT_RANK))
 	var known := engine.current.skills.has(ATTACK_SKILL)
+	known = known and not BossMechanics.forbidden_now(engine, engine.current, engine.db.skill(ATTACK_SKILL))
 	return _row(ROW_ATTACK, tr("HUD_CMD_ATTACK"), _rank_text(rank), _rank_role(rank), known, ATTACK_SKILL)
 
 
@@ -251,6 +252,7 @@ func skill_rows(engine: BattleEngine) -> Array[Dictionary]:
 		var mp := int(sk.get("mp_cost", 0))
 		var usable := actor.mp >= mp and not (bool(sk.get("magic", false)) and actor.has_status(&"silence"))
 		usable = usable and BossMechanics.refusal(engine, sk) == &""  # e.g. Call Ilun with no field up
+		usable = usable and not BossMechanics.forbidden_now(engine, actor, sk)  # Toma and the Stillguard
 		var row := _row(sid, skill_name(engine, sid), _rank_text(rank), _rank_role(rank), usable, sid)
 		row["mp"] = tr("HUD_MP_FMT").format({"mp": mp}) if mp > 0 else ""
 		rows.append(row)
@@ -507,6 +509,8 @@ func escape_chance(engine: BattleEngine) -> int:
 ## actor acts again (`next_in` = turns between now and the actor's next turn; -1 = unknown).
 func skill_help(engine: BattleEngine, skill_id: StringName, next_in: int) -> String:
 	var sk := engine.db.skill(skill_id)
+	if BossMechanics.forbidden_now(engine, engine.current, sk):
+		return fail_text(BossMechanics.FAIL_FORBIDDEN, engine.current)  # the greyed row says why
 	var parts: PackedStringArray = []
 	parts.append("%s, %s" % [_kind_text(str(sk.get("kind", ""))), _target_text(str(sk.get("target", "single_foe")))])
 	for inflict: Variant in sk.get("statuses", []):
@@ -578,6 +582,8 @@ func fail_text(reason: StringName, actor: BattleCombatant, provoker: BattleComba
 			text = tr("HUD_FAIL_SWELL_CANCELLED")
 		BossMechanics.FAIL_NO_FIELD:
 			text = tr("HUD_FAIL_NO_FIELD")
+		BossMechanics.FAIL_FORBIDDEN:
+			text = tr(actor.forbidden_key) if actor != null and actor.forbidden_key != "" else text
 		BattleVowbound.FAIL_OUT:
 			text = tr("HUD_FAIL_VOWBOUND_OUT")
 		BattleVowbound.FAIL_UNKNOWN:
@@ -591,6 +597,13 @@ func fail_text(reason: StringName, actor: BattleCombatant, provoker: BattleComba
 		BattleVowbound.FAIL_NONE_OUT:
 			text = tr("HUD_FAIL_NO_VOWBOUND")
 	return text.format({"name": display_name(actor), "provoker": display_name(provoker)})
+
+
+## The victory banner's title key: the encounter's "victory_key" (M3-C06-02: "The Inquisitor
+## yields."), else HUD_VICTORY.
+static func victory_title_key(e: BattleEngine) -> String:
+	var enc: Dictionary = e.db.encounters.get(e.encounter_id, {}) if e != null and e.db != null else {}
+	return str(enc.get("victory_key", "HUD_VICTORY"))
 
 
 ## Announces a turn the player does not choose (Berserk/Confuse), before it plays.
