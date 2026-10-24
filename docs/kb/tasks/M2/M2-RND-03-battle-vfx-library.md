@@ -3,7 +3,7 @@ id: M2-RND-03
 title: Battle VFX library, first set for the vertical slice
 role: rendering
 status: doing
-owner_session: "session_01778wbLbDFnRRLTKjnawv3T (PC GPU)"
+owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU, branch gpu/m2-rnd-03-battle-vfx; took over from session_01778wbLbDFnRRLTKjnawv3T)"
 depends_on: [M2-CMB-01]
 milestone: M2
 request-from: "lead"
