@@ -2,8 +2,8 @@
 id: M2-UI-03
 title: HUD panels for Asha's chant, Toma's brace and Ysolde's glyph
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "claude/ui"
 depends_on: [M2-CMB-01]
 milestone: M2
 request-from: combat
