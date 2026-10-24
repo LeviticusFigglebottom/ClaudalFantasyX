@@ -36,6 +36,18 @@ and ADR 0038 "hero motion layer", proposed).
 - Battle: a trial merge of claude/ui + claude/characters + claude/battle-presentation to check the real heroes play
   the contract clips; gaps go back to the owners as exact patches.
 
+## Coordination (2026-10-24 ~20:55)
+- **m2-slice OK'd** the FieldController hook and the field_movement.json tuning. FieldEncounters only reads metres
+  walked, with a 1.5 m per-frame cap. They also OK'd editing the field_hero_hooks.md hook points (the greybox
+  `_build_stage` actors and the hand-placed cast capsules), so the field agent covers stage actors too.
+- **The sequencer already eases** (M2-FP-29, claude/m2-slice 716c2db4: CutsceneMotion). Our patch builds on it: the
+  hero body gets a `play_clip(name, blend)` entry point, and the sequencer's `_play_clip` and `_cue_anim` call it when
+  present. The idle micro-motion layer also goes in. The patch is checked against claude/m2-slice.
+- **ADR number clash:** m2-slice's M3-CMB-01 also took 0038 on an unpushed worktree. Whichever reaches the
+  integration branch second renumbers.
+- **I couldn't message the Lead** (send_message refused: the Lead's session needs a trusted device). This log is the
+  channel.
+
 ## Exact next step
 Merge the three worktree agents' branches as they finish, run scoped checks, post a MERGE-READY line here.
 
