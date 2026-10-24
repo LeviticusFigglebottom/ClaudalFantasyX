@@ -3,6 +3,17 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
+- **MERGE-READY @ 63f7bed3: polish batch.** The Cinder Matron's crack lines (Voronoi slag cells with ember seams, 23.2k
+  triangles) and a cleaner mask; the squall wing's see-through rents in wings and body; the wreck crab's salt-plate
+  crust and bleached legs; phase strikes (a phase `clips` map, the Reach's Dark and Breach strikes).
+  - **Checks run:** validate_data, taskboard, lint and format, tools creature tests, Godot `--filter=creature` 14/0,
+    Blender verify of each changed job (identical). Shots creature_cinder_matron (0.03653), creature_squall_wing
+    (0.02447) and creature_wreck_crab (0.03140) were re-approved after viewing; the Reach's shot is unchanged.
+  - **Checks skipped:** other shots and coverage (no shared code beyond CreatureActor's phase-clip lookup, which
+    the creature tests cover).
+  - **Queue:** every item is done or blocked. Blocked: the enemy `model` lines (they wait for this branch to reach
+    the integration branch, then m2-slice adds them) and the Matron's re-crust hook (battle-presentation). Open
+    polish notes, low priority: the Matron's cells are a bit even in size; the wreck crab's legs are smooth up close.
 - **16:30, queue state** (answering the Lead's 16:03 note: items a–c were already done at 539d145a):
   - Done since then: integration c1607d89 merged at 438a1445 (creature 13/0, battle 412/0 after it), and phase
     strikes at 468fa197 (a phase `clips` map; the Reach strikes from its Dark and Breach poses).
