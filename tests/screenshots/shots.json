@@ -911,6 +911,196 @@
       "settle_frames": 30
     },
     {
+      "id": "villager_neme_front",
+      "scene": "res://game/levels/_tests/characters/villagers/neme_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_neme_face",
+      "scene": "res://game/levels/_tests/characters/villagers/neme_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_osu_front",
+      "scene": "res://game/levels/_tests/characters/villagers/osu_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_osu_face",
+      "scene": "res://game/levels/_tests/characters/villagers/osu_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_child_front",
+      "scene": "res://game/levels/_tests/characters/villagers/child_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_child_face",
+      "scene": "res://game/levels/_tests/characters/villagers/child_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_vendor_front",
+      "scene": "res://game/levels/_tests/characters/villagers/vendor_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_vendor_face",
+      "scene": "res://game/levels/_tests/characters/villagers/vendor_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_reed_front",
+      "scene": "res://game/levels/_tests/characters/villagers/reed_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_reed_face",
+      "scene": "res://game/levels/_tests/characters/villagers/reed_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_netmender_front",
+      "scene": "res://game/levels/_tests/characters/villagers/netmender_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_netmender_face",
+      "scene": "res://game/levels/_tests/characters/villagers/netmender_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_fisher_front",
+      "scene": "res://game/levels/_tests/characters/villagers/fisher_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_fisher_face",
+      "scene": "res://game/levels/_tests/characters/villagers/fisher_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_lineup",
+      "scene": "res://game/levels/_tests/characters/villagers/villagers_lineup.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_neme_back",
+      "scene": "res://game/levels/_tests/characters/villagers/neme_stage.tscn",
+      "camera": "Cameras/BackThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_vendor_back",
+      "scene": "res://game/levels/_tests/characters/villagers/vendor_stage.tscn",
+      "camera": "Cameras/BackThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_neme_idle",
+      "scene": "res://game/levels/_tests/characters/villagers/neme_idle.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_osu_idle",
+      "scene": "res://game/levels/_tests/characters/villagers/osu_idle.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "battle_swell_ring",
       "scene": "res://game/battle/scene/shots/battle_swell_ring.tscn"
     },
