@@ -614,6 +614,8 @@ def voice_errors(doc: object, speakers: object, rows: dict) -> list[str]:
         return [f"{VOICES}: must be an object"]
     if doc.get("pace", "syllable") not in ("syllable", "letter"):
         errs.append(f"{VOICES} pace: syllable or letter (M3-AUD-21)")
+    if not _num(doc.get("mix_db", 0.0)) or not -12.0 <= doc.get("mix_db", 0.0) <= 12.0:
+        errs.append(f"{VOICES} mix_db: a number in -12..12 dB (M3-AUD-23)")
 
     def voice(row: object, w: str, full: bool) -> None:
         if not isinstance(row, dict):

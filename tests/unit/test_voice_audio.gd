@@ -218,6 +218,19 @@ func test_syllable_pace_rests_with_the_reveal() -> void:
 	_done()
 
 
+func test_mix_db_lifts_every_blip() -> void:
+	var t := _syllable_table()
+	t["mix_db"] = 6.0
+	voice.data = t
+	voice.on_line(_line(&"toma", &""))
+	box.show_line(_line(&"toma", &""))
+	_reveal(0.3, 0.1)
+	assert_eq(calls.size(), 1)
+	assert_between(float(calls[0][1]["volume_db"]), -4.01, -3.99, "toma's -2, the box's -8 and the mix's +6")
+	assert_eq(float(AudioData.table(AudioData.VOICES).get("mix_db", 0.0)), 6.0, "the shipped mix pass (M3-AUD-23)")
+	_done()
+
+
 func _syllable_table() -> Dictionary:
 	var t := TABLE.duplicate(true)
 	t["pace"] = "syllable"

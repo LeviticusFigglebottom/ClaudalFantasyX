@@ -9,6 +9,8 @@ extends Node
 ## - **Pace (M3-AUD-21).** voices.json `pace`: `syllable` (the default) blips once per syllable, on the box's
 ##   mouth_flap opening (each vowel group, the same edge the lip sync follows), so the blips rest through the reveal's
 ##   comma and full-stop pauses and keep time with the mouth; `letter` keeps one blip per blip the box counts.
+## - **Level.** Each blip plays at the voice's volume_db + voices.json `mix_db` (M3-AUD-23's mix pass) + the box's
+##   blip_volume_db.
 ## - **The speaker.** A CutsceneSequencer's line_shown step gives it exactly (the speaker, else the narrator
 ##   identity). A box shown without a sequencer reports only mouth_flap(speaker), at its first vowel, so until then
 ##   the previous voice stands; a request task asks the box for a public voice signal (M3-ARC-01).
@@ -142,7 +144,7 @@ func _play_blip(row: Dictionary) -> void:
 	_cycle += 1
 	var jitter := float(row.get("jitter", 0.0))
 	var pitch := float(row.get("pitch", 1.0)) * (1.0 + (_rng.randf_range(-jitter, jitter) if jitter > 0.0 else 0.0))
-	var level := float(row.get("volume_db", 0.0))
+	var level := float(row.get("volume_db", 0.0)) + float(data.get("mix_db", 0.0))
 	if is_instance_valid(box) and box.settings != null:
 		level += box.settings.blip_volume_db
 	_last_blip = _clock
