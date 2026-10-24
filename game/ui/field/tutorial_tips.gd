@@ -1,0 +1,99 @@
+class_name TutorialTips
+extends RefCounted
+## First-time tips (M2-UI-24), node-free: which tip a field event raises, in data order, once per
+## save (a tip's seen flag is set when it is taken to show). Rows: game/data/ui/tutorial_tips.json.
+## TipCard is the view. Tests build it with their own flag reader and writer and setting.
+
+const DATA_PATH := "res://game/data/ui/tutorial_tips.json"
+const ON_FIELD_READY := &"field_ready"
+const ON_NEAR := &"near"
+const ON_FLAG := &"flag"
+const TAG_SHRINE := &"shrine"
+
+var data: Dictionary = {}
+var tips: Array[Dictionary] = []
+## Tips raised and waiting to show, oldest first.
+var queue: Array[Dictionary] = []
+
+var _is_set: Callable
+var _mark: Callable
+var _enabled: Callable
+
+
+## `flag_check`: Callable(flag) -> bool (default Game.get_flag); `flag_mark`: Callable(flag) (default
+## Game.set_flag); `enabled`: Callable() -> bool (default the Accessibility setting tutorial_tips).
+func _init(flag_check: Callable = Callable(), flag_mark: Callable = Callable(), enabled: Callable = Callable()) -> void:
+	_is_set = flag_check if flag_check.is_valid() else func(f: StringName) -> bool: return bool(Game.get_flag(f))
+	_mark = flag_mark if flag_mark.is_valid() else func(f: StringName) -> void: Game.set_flag(f, true)
+	_enabled = enabled if enabled.is_valid() else func() -> bool: return UiSettings.shared().tutorial_tips_enabled()
+	data = load_data()
+	for t: Variant in data.get("tips", []):
+		tips.append(t as Dictionary)
+
+
+static func load_data() -> Dictionary:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+	if typeof(parsed) != TYPE_DICTIONARY or typeof((parsed as Dictionary).get("tutorial_tips")) != TYPE_DICTIONARY:
+		push_error("TutorialTips: could not read 'tutorial_tips' from %s" % DATA_PATH)
+		return {}
+	return (parsed as Dictionary)["tutorial_tips"] as Dictionary
+
+
+## The tags a "near" tip matches on `it`: its payload's keys, plus "shrine" for a save shrine.
+static func tags_of(it: Interactable) -> Array[StringName]:
+	var out: Array[StringName] = []
+	if it == null:
+		return out
+	for k: Variant in it.payload.keys():
+		out.append(StringName(str(k)))
+	if it is SaveShrine:
+		out.append(TAG_SHRINE)
+	return out
+
+
+## The field took input in a scene.
+func raise_field_ready() -> void:
+	_raise(func(t: Dictionary) -> bool: return _on(t) == ON_FIELD_READY)
+
+
+## An interactable with `tags` came in reach.
+func raise_near(tags: Array[StringName]) -> void:
+	_raise(func(t: Dictionary) -> bool: return _on(t) == ON_NEAR and tags.has(StringName(str(t.get("tag", "")))))
+
+
+## Story flag `flag` became `value`.
+func raise_flag(flag: StringName, value: Variant) -> void:
+	if not bool(value):
+		return
+	_raise(func(t: Dictionary) -> bool: return _on(t) == ON_FLAG and StringName(str(t.get("when", ""))) == flag)
+
+
+## Takes the next waiting tip to show and marks it seen ({} when none).
+func take() -> Dictionary:
+	if queue.is_empty():
+		return {}
+	var t: Dictionary = queue.pop_front()
+	_mark.call(StringName(str(t.get("flag", ""))))
+	return t
+
+
+## True when `tip` has been seen in this save.
+func seen(tip: Dictionary) -> bool:
+	return bool(_is_set.call(StringName(str(tip.get("flag", "")))))
+
+
+func _raise(matches: Callable) -> void:
+	if not bool(_enabled.call()):
+		return
+	for t in tips:
+		if not matches.call(t) or seen(t) or queue.has(t):
+			continue
+		var ready := true
+		for f: Variant in t.get("requires", []):
+			ready = ready and bool(_is_set.call(StringName(str(f))))
+		if ready:
+			queue.append(t)
+
+
+func _on(t: Dictionary) -> StringName:
+	return StringName(str(t.get("on", "")))

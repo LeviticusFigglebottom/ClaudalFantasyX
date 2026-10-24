@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch01_tut_movement",
+ "source": "game/data/dialogue/ch01/ch01_tut_movement.dlg",
+ "start": "ch01_tut_movement",
+ "nodes": {
+  "ch01_tut_movement": {
+   "headers": {"location": "ch01/oruvel_underway"},
+   "ops": [
+    {"op": "line", "id": "ch01_tut_001", "key": "DLG_CH01_TUT_001", "speaker": "", "emotion": "", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

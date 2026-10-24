@@ -120,13 +120,14 @@ func ring_mode_visible() -> bool:
 	return _ring.visible
 
 
-## A small knock-back away from the camera's right, then back (no effect while KO'd).
-func flinch() -> void:
+## A small knock-back away from the camera's right, then back (no effect while KO'd), at the
+## battle presentation speed `speed` (UiSettings.battle_speed, M2-UI-23).
+func flinch(speed: float = 1.0) -> void:
 	if _ko or _stone or not is_inside_tree():
 		return
 	var push := float(spec.get("recoil_m", 0.0))
 	var sec := float(spec.get("recoil_sec", 0.0))
-	var tw := create_tween()
+	var tw := create_tween().set_speed_scale(speed)
 	tw.tween_property(_body, "position", _rest + Vector3(push * signf(-global_position.x), 0.0, 0.0), sec * 0.5)
 	tw.tween_property(_body, "position", _rest, sec * 0.5)
 

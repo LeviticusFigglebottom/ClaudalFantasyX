@@ -4,12 +4,16 @@ extends Label
 ## rise over 700 ms, then a 250 ms fade. Damage to allies is ui_danger, healing ui_heal,
 ## damage to foes white; criticals use the larger DamageNumberCrit style. KIND_INFO is a word
 ## instead of a number ("Reflected", "Heal turns to harm"): smaller FloatText, no pop.
-## `motion_scale` (UiSettings.motion_scale()) shrinks the rise under reduced motion.
+## `motion_scale` (UiSettings.motion_scale()) shrinks the rise under reduced motion; `speed`
+## (UiSettings.battle_speed(), M2-UI-23) plays the whole pop faster or slower.
 
 const KIND_DAMAGE := &"damage"
 const KIND_HEAL := &"heal"
 const KIND_MISS := &"miss"
 const KIND_INFO := &"info"
+
+## The pop's tween (tests step it).
+var tween: Tween
 
 
 ## Shows `text` centred on `at` (HUD coordinates) and frees itself when done. `role` overrides
@@ -22,7 +26,8 @@ func pop(
 	crit: bool,
 	m: Dictionary,
 	motion_scale: float = 1.0,
-	role: StringName = &""
+	role: StringName = &"",
+	speed: float = 1.0
 ) -> void:
 	var info := kind == KIND_INFO
 	theme_type_variation = &"FloatText" if info else (&"DamageNumberCrit" if crit else &"DamageNumber")
@@ -36,6 +41,8 @@ func pop(
 	var rise := HudLayout.num(m, "rise_px") * motion_scale
 	var rise_sec := HudLayout.num(m, "rise_sec")
 	var tw := create_tween()
+	tween = tw
+	tw.set_speed_scale(speed)
 	tw.set_parallel(true)
 	tw.tween_property(self, "position:y", position.y - rise, rise_sec).set_trans(Tween.TRANS_CUBIC).set_ease(
 		Tween.EASE_OUT

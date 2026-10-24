@@ -1,6 +1,6 @@
 extends Node
-## Boot scene and minimal title (M1-ARC-06): the project name over a Continue / New Game / Load
-## menu (TitleMenu, game/ui/title/), until the UI stream builds the real title screen.
+## Boot scene and title (M1-ARC-06): the title screen (TitleMenu, game/ui/title/: since M2-UI-22 it
+## draws the logotype, the animated backdrop and the debug-only build label itself).
 ## The title stops the play clock, and boot arms SceneRouter.world_return so a load from here
 ## (Continue or Load) returns the party to its respawn point. Nothing else arms it, so the test
 ## runner and screenshot captures never change scene on a load.
@@ -27,17 +27,16 @@ const DEBUG_OVERLAY_NAME := "DebugOverlay"
 ## The boot screen while the warm-up runs (null when boot is not the game's scene, and after it lifts).
 var _card: BootCard
 
-@onready var _label: Label = $Label
 @onready var _title: Control = $TitleMenu
 
 
 func _ready() -> void:
+	ControlsModel.apply_saved(UiSettings.CONFIG_PATH)  # M2-UI-13: saved key and pad bindings
 	GraphicsRuntime.boot(get_viewport())
 	if is_game_scene():
 		_cover_until_warm()
 	else:
 		GraphicsRuntime.warm_resident_shaders.call_deferred(get_tree().root)
-	_label.text = "%s\n%s" % [ProjectSettings.get_setting("application/config/name"), "bootstrap build"]
 	Game.stop_play_clock()
 	arm_world_return()
 	_install_debug_overlay()

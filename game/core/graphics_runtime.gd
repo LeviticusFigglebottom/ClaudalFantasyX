@@ -20,6 +20,9 @@ extends RefCounted
 static var armed := false
 ## Where the settings persist (tests point it at their own file).
 static var config_path := GraphicsSettings.CONFIG_PATH
+## The last warm-up warm_resident_shaders() spawned (null before any; freed once it is done). The
+## Graphics menu holds its fade until a warm-up its preset change spawned is done (M1-UI-11).
+static var last_warmup: ShaderPrewarm
 
 static var _settings: GraphicsSettings
 static var _warm_up: WeakRef
@@ -93,6 +96,7 @@ static func warm_resident_shaders(parent: Node) -> ShaderPrewarm:
 		return null
 	var node := ShaderPrewarm.spawn_resident(parent, settings().preset_id)
 	_warm_up = weakref(node)
+	last_warmup = node
 	return node
 
 

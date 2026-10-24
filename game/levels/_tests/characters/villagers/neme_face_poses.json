@@ -1,0 +1,21 @@
+{
+  "_about": "Neme's emotion tags -> face blendshape weights (M2-CHR-03; docs/kb/art/characters/villagers_review.md). A pair is [L, R]; a scalar sets both sides of a paired shape. She talks to Rhen the way she would to a stray she has decided to keep, and hides her fear: her smiles are brisk and a little lopsided (the left corner higher), and even the soft smile keeps a trace of the worried brow. Shapes: the shared API (asha.md §6.2). Tags: game/data/dialogue/emotions.json. Read by the villager stage and, once wired, by CutsceneSequencer (sequencer.json face_poses).",
+  "blend_in_s": 0.2,
+  "emotions": {
+    "neutral": {"mouth_press": 0.12},
+    "soft_smile": {"cheek_raise": [0.30, 0.22], "lid_squint": 0.15, "mouth_smile": [0.34, 0.24], "brow_inner_up": 0.12},
+    "smile": {"cheek_raise": [0.55, 0.45], "lid_squint": 0.30, "mouth_smile": [0.62, 0.50]},
+    "laugh": {"cheek_raise": 0.80, "lid_squint": 0.55, "mouth_smile": 0.80, "jaw_open": 0.35},
+    "worried": {"brow_inner_up": 0.60, "brow_down": 0.25, "mouth_press": 0.30},
+    "sad": {"brow_inner_up": 0.70, "lid_close": 0.20, "mouth_frown": 0.30},
+    "grief": {"brow_inner_up": 1.00, "brow_down": 0.40, "lid_squint": 0.40, "mouth_frown": 0.55, "jaw_clench": 0.30},
+    "angry": {"brow_down": 0.80, "lid_squint": 0.25, "nose_sneer": 0.15, "mouth_press": 0.45},
+    "cold": {"brow_down": 0.35, "lid_close": 0.15, "mouth_press": 0.50},
+    "surprised": {"brow_outer_up": 0.70, "brow_inner_up": 0.50, "lid_wide": 0.40, "jaw_open": 0.20},
+    "afraid": {"brow_inner_up": 0.85, "lid_wide": 0.45, "mouth_stretch": 0.25, "jaw_open": 0.08},
+    "determined": {"brow_down": 0.45, "jaw_clench": 0.35, "mouth_press": 0.40},
+    "tender": {"brow_inner_up": 0.35, "cheek_raise": 0.22, "lid_close": 0.20, "mouth_smile": 0.15},
+    "guilty": {"brow_inner_up": 0.55, "lid_close": 0.35, "mouth_press": 0.40},
+    "exhausted": {"lid_close": 0.40, "brow_inner_up": 0.25, "jaw_open": 0.08}
+  }
+}

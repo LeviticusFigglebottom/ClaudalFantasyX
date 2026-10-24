@@ -1,7 +1,7 @@
 """M1-CHR-07: do Asha's emotion tags actually drive her face?
 
 Loads the committed `assets/characters/asha/asha.glb` and the emotion table AshaStage reads
-(`game/levels/_tests/characters/asha/asha_face_poses.json`, asha.md §6.3). For every tag and
+(`game/data/cutscene/asha_face_poses.json`, asha.md §6.3). For every tag and
 every shape it maps:
 * the shape exists on the Head mesh, under the name AshaStage resolves (a pair or a scalar on a
   paired shape is applied to `<shape>_L` and `<shape>_R`);
@@ -32,7 +32,7 @@ sys.path.insert(0, str(ROOT / "assets_src" / "characters" / "asha"))
 import asha_glb  # noqa: E402
 
 GLB = ROOT / "assets" / "characters" / "asha" / "asha.glb"
-POSES = ROOT / "game" / "levels" / "_tests" / "characters" / "asha" / "asha_face_poses.json"
+POSES = ROOT / "game" / "data" / "cutscene" / "asha_face_poses.json"
 MM = 0.001
 
 # shape family -> (region name, full-weight peak floor in mm inside the region)

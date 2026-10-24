@@ -110,11 +110,13 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
         "col_albedo": "Color(0.55, 0.26, 0.25, 1)", "roughness": "0.6", "specular": "0.25",
     }, {}),
     # M1-CHR-10: the mouth interior takes the head bake's occlusion (its UVs are in the head atlas),
-    # so the bag darkens away from the lips instead of meeting them as one flat dark red
+    # so the bag darkens away from the lips instead of meeting them as one flat dark red.
+    # M1-RND-25: it now also carries the lips' inner roll, so its colour comes from the head atlas
+    # (asha_textures paints the bag the old flat #471A17 and the inner lip as mucosa)
     "mouth": ("character_mouth", 0, {
-        "col_albedo": "Color(0.28, 0.1, 0.09, 1)", "roughness": "0.5", "roughness_from_orm": "0.0",
+        "col_albedo": "Color(1, 1, 1, 1)", "roughness": "0.5", "roughness_from_orm": "0.0",
         "ao_light_affect": "0.5",
-    }, {"tex_orm": "asha_head_orm.png"}),
+    }, {"tex_albedo": "asha_head_albedo.png", "tex_orm": "asha_head_orm.png"}),
 }
 STANDARD_MATERIALS = {
     "staff_wood": "albedo_color = Color(0.227, 0.165, 0.125, 1)\nroughness = 0.45\n",

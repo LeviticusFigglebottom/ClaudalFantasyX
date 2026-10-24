@@ -1,0 +1,37 @@
+{
+ "format": 1,
+ "scene": "ch02_pila_granddaughter",
+ "source": "game/data/dialogue/ch02/ch02_pila_granddaughter.dlg",
+ "start": "ch02_pila_granddaughter",
+ "nodes": {
+  "ch02_pila_granddaughter": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "if_not", "cond": ["flag", "ch02_heard_pila"], "to": 4, "src": 10},
+    {"op": "line", "id": "ch02_pila_granddaughter_015", "key": "DLG_CH02_PILA_GRANDDAUGHTER_015", "speaker": "osu", "emotion": "soft_smile", "voice": "", "src": 11},
+    {"op": "stop", "src": 12},
+    {"op": "goto", "to": 4, "src": 10},
+    {"op": "cue", "cue": "camera", "args": ["H08"], "kwargs": {"blend": 0.6}, "src": 14},
+    {"op": "line", "id": "ch02_pila_granddaughter_001", "key": "DLG_CH02_PILA_GRANDDAUGHTER_001", "speaker": "osu", "emotion": "neutral", "voice": "", "src": 15},
+    {"op": "line", "id": "ch02_pila_granddaughter_002", "key": "DLG_CH02_PILA_GRANDDAUGHTER_002", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 16},
+    {"op": "line", "id": "ch02_pila_granddaughter_003", "key": "DLG_CH02_PILA_GRANDDAUGHTER_003", "speaker": "osu", "emotion": "soft_smile", "voice": "", "src": 17},
+    {"op": "line", "id": "ch02_pila_granddaughter_004", "key": "DLG_CH02_PILA_GRANDDAUGHTER_004", "speaker": "osu", "emotion": "neutral", "voice": "", "src": 18},
+    {"op": "cue", "cue": "wait", "args": [1.2], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "camera", "args": ["H08_hand"], "kwargs": {"blend": 0.0}, "src": 20},
+    {"op": "line", "id": "ch02_pila_granddaughter_005", "key": "DLG_CH02_PILA_GRANDDAUGHTER_005", "speaker": "osu", "emotion": "neutral", "voice": "", "src": 21},
+    {"op": "line", "id": "ch02_pila_granddaughter_006", "key": "DLG_CH02_PILA_GRANDDAUGHTER_006", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 22},
+    {"op": "line", "id": "ch02_pila_granddaughter_007", "key": "DLG_CH02_PILA_GRANDDAUGHTER_007", "speaker": "osu", "emotion": "neutral", "voice": "", "src": 23},
+    {"op": "line", "id": "ch02_pila_granddaughter_008", "key": "DLG_CH02_PILA_GRANDDAUGHTER_008", "speaker": "osu", "emotion": "sad", "voice": "", "src": 24},
+    {"op": "cue", "cue": "camera", "args": ["H08"], "kwargs": {"blend": 0.0}, "src": 25},
+    {"op": "line", "id": "ch02_pila_granddaughter_009", "key": "DLG_CH02_PILA_GRANDDAUGHTER_009", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 26},
+    {"op": "line", "id": "ch02_pila_granddaughter_010", "key": "DLG_CH02_PILA_GRANDDAUGHTER_010", "speaker": "osu", "emotion": "smile", "voice": "", "src": 27},
+    {"op": "line", "id": "ch02_pila_granddaughter_011", "key": "DLG_CH02_PILA_GRANDDAUGHTER_011", "speaker": "osu", "emotion": "laugh", "voice": "", "src": 28},
+    {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 29},
+    {"op": "line", "id": "ch02_pila_granddaughter_012", "key": "DLG_CH02_PILA_GRANDDAUGHTER_012", "speaker": "osu", "emotion": "tender", "voice": "", "src": 30},
+    {"op": "line", "id": "ch02_pila_granddaughter_013", "key": "DLG_CH02_PILA_GRANDDAUGHTER_013", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 31},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 32},
+    {"op": "set", "flag": "ch02_heard_pila", "value": ["lit", true], "src": 33}
+   ]
+  }
+ }
+}

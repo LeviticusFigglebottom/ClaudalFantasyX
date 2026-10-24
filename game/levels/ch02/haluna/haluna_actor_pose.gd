@@ -20,10 +20,24 @@ var skeleton: Skeleton3D
 var model: Node3D
 
 var _materials_assigned := false
+## Material paths request_materials() started loading on other threads (M2-ENV-05).
+var _requested: PackedStringArray = []
 
 
 func _ready() -> void:
 	apply()
+
+
+## M2-ENV-05: starts loading the replacement materials (and their textures) on the loader's threads, so
+## they decode while HalunaZone.prebuild() dresses the zone; assign_materials() then collects them. Same
+## paths as _assign_materials() would load. Safe off the tree.
+func request_materials() -> void:
+	model = get_child(0) as Node3D if get_child_count() > 0 else null
+	if model == null or materials_dir == "" or _materials_assigned:
+		return
+	for path in _material_paths():
+		if not path in _requested and ResourceLoader.load_threaded_request(path, "", true) == OK:
+			_requested.append(path)
 
 
 ## Replaces the imported materials (once). M2-FP-05: loading them cost ~1 s on the main thread, so
@@ -85,9 +99,37 @@ func _assign_materials() -> void:
 		if mi.mesh == null:
 			continue
 		for s in mi.mesh.get_surface_count():
-			var src := mi.mesh.surface_get_material(s)
-			if src == null:
-				continue
-			var path := materials_dir.path_join(src.resource_name + ".tres")
-			if ResourceLoader.exists(path):
-				mi.set_surface_override_material(s, load(path) as Material)
+			var path := _material_path(mi.mesh.surface_get_material(s))
+			if path != "":
+				mi.set_surface_override_material(s, _take(path))
+
+
+## The replacement material's path for an imported surface material, or "" when there is none.
+func _material_path(src: Material) -> String:
+	if src == null:
+		return ""
+	var path := materials_dir.path_join(src.resource_name + ".tres")
+	return path if ResourceLoader.exists(path) else ""
+
+
+func _material_paths() -> PackedStringArray:
+	var out := PackedStringArray()
+	for n in model.find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		for s in mi.mesh.get_surface_count():
+			var path := _material_path(mi.mesh.surface_get_material(s))
+			if path != "" and not path in out:
+				out.append(path)
+	return out
+
+
+## The material at `path`: from its threaded load when request_materials() started one (waits for it),
+## else loaded now.
+func _take(path: String) -> Material:
+	if path in _requested:
+		var got := ResourceLoader.load_threaded_get(path) as Material
+		if got != null:
+			return got
+	return load(path) as Material

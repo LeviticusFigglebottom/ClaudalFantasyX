@@ -12,7 +12,10 @@
     {"op": "line", "id": "ch02_nemes_table_002", "key": "DLG_CH02_NEMES_TABLE_002", "speaker": "neme", "emotion": "soft_smile", "voice": "", "src": 12},
     {"op": "line", "id": "ch02_nemes_table_003", "key": "DLG_CH02_NEMES_TABLE_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 13},
     {"op": "line", "id": "ch02_nemes_table_004", "key": "DLG_CH02_NEMES_TABLE_004", "speaker": "neme", "emotion": "neutral", "voice": "", "src": 14},
-    {"op": "set", "flag": "ch02_ate_at_nemes", "value": ["lit", true], "src": 15}
+    {"op": "cue", "cue": "camera", "args": ["B02_bag"], "kwargs": {"blend": 0.0}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [1.6], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 17},
+    {"op": "set", "flag": "ch02_ate_at_nemes", "value": ["lit", true], "src": 18}
    ]
   }
  }

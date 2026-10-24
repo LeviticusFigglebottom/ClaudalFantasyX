@@ -91,6 +91,18 @@ def _box_centered(x: np.ndarray, L: int) -> np.ndarray:
     return (cs[b] - cs[a]) / np.maximum(b - a, 1)
 
 
+def limit_gain(x: np.ndarray, ceiling_db: float = -1.5, window_ms: float = 6.0, sr: int = SR) -> np.ndarray:
+    """The gain curve limit() applies to x (1.0 where it does nothing). Apply it to the stems of x to limit them
+    linked: their sum is then exactly limit(x), and no stem is ever made louder (M2-AUD-03 boss stems)."""
+    c = db_to_lin(ceiling_db)
+    peak = np.abs(x).max(axis=1) if x.ndim == 2 else np.abs(x)
+    req = np.minimum(1.0, c / np.maximum(peak, 1e-12))
+    if req.min() >= 1.0:
+        return np.ones(len(x))
+    W = max(4, int(window_ms * sr / 1000))
+    return np.minimum(_box_centered(_running_min_centered(req, W), W), 1.0)
+
+
 def limit(x: np.ndarray, ceiling_db: float = -1.5, window_ms: float = 6.0, sr: int = SR) -> np.ndarray:
     """Zero-latency (offline, look-ahead) linked-stereo peak limiter.
 

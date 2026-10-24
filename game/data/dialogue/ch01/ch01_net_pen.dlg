@@ -1,0 +1,10 @@
+// Ch1 C1-13: the net-pen hull. The girl from the Reefball pen and two smaller children cling to the
+// netting; Rhen gets them onto the plank bridge toward the keel-hull. Habit holding panic together.
+title: ch01_net_pen
+location: ch01/oruvel
+---
+Child [afraid]: Rhen! The net's going! #line:ch01_net_pen_001
+Rhen [determined]: I know. Hands on the plank. Don't look at the water, look at me. #line:ch01_net_pen_002
+@mark pen_child bridge run
+Rhen [determined]: Keel-hull. Go, and don't stop for anything. I'm right behind you. #line:ch01_net_pen_003
+===

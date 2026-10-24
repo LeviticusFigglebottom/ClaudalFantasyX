@@ -1,8 +1,8 @@
 [gd_scene load_steps=26 format=3]
 
 [ext_resource type="Script" path="res://game/levels/_tests/vegetation/vegetation_test.gd" id="1_r"]
-[ext_resource type="Script" path="res://game/levels/_tests/vegetation/vegetation_plant.gd" id="2_r"]
-[ext_resource type="Script" path="res://game/levels/_tests/vegetation/vegetation_scatter.gd" id="3_r"]
+[ext_resource type="Script" path="res://game/world/vegetation/vegetation_plant.gd" id="2_r"]
+[ext_resource type="Script" path="res://game/world/vegetation/vegetation_scatter.gd" id="3_r"]
 [ext_resource type="Shader" path="res://game/levels/_tests/vegetation/beach_sand_test.gdshader" id="4_r"]
 [ext_resource type="Shader" path="res://game/levels/_tests/vegetation/sea_test.gdshader" id="5_r"]
 [ext_resource type="Material" path="res://assets/environments/vegetation/materials/palm_frond.tres" id="6_r"]

@@ -1,9 +1,17 @@
 // Ch2 B05 "Low tide" (docs/kb/story/beats/vertical_slice.md): at the causeway head (C01) the tide is
 // out. The pilgrimage begins and nobody calls it that. In-engine (no letterbox, no camera cues),
 // played by the causeway-head trigger before the hand-off to Cutscene B.
+// M2-FP-21: crossing ends Haluna's day (B04, the barks), so Asha asks first. "Not yet" reports
+// <<event departure_declined>>: HalunaStory steps Rhen back off the trigger and keeps it armed.
 title: ch02_low_tide
 location: ch02/haluna
 ---
+Asha [soft_smile]: Once we cross, we won't be back before dark. Is there anyone you want to see first? #line:ch02_low_tide_005
+-> Go now. #line:ch02_low_tide_006
+-> Not yet. #line:ch02_low_tide_007
+    Asha [smile]: Then go and see them. The tide will hold a while yet. #line:ch02_low_tide_008
+    <<event departure_declined>>
+    <<stop>>
 Toma [neutral]: The tide-readers set the day. The causeway opens this far twice a month. #line:ch02_low_tide_001
 Asha [smile]: Come and see it, Rhen. It's the most beautiful thing we have. #line:ch02_low_tide_002
 Toma [worried]: He is not sworn to anything, Asha. #line:ch02_low_tide_003

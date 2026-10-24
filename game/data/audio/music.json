@@ -1,0 +1,181 @@
+{
+  "version": 1,
+  "doc": "Music cues and where they play (M2-AUD-02; docs/kb/tech/audio_runtime.md). cues: id -> file (one stream) or stems (synchronized layers of equal length; start_stems are audible at the start, the rest start silent), volume_db (0: assets ship at -16 LUFS), resume (a cue that comes back, after a battle say, carries on from where it stopped). Looping comes from each file's import settings (render_all.py writes them from the .loop.json sidecars). zones: scene -> the zone's music and ambience beds, switched under the router's fade (SceneRouter.scene_swapping). A missing `music` key leaves the music as it is; \"silence\" fades it out. variants: the first whose `flag` is set replaces the row's keys. battle: the cue per encounter (else default), and phases: an engine phase_changed id -> the stems to bring in or take out over sec. Cue ids are the .dlg @music ids (vertical_slice.md §6). tools/validate_data.py checks every file, scene and flag.",
+  "cues": {
+    "battle_standard": {
+      "file": "res://assets/audio/music/battle_standard.ogg",
+      "_note": "the M1-AUD-02 prototype (v1), kept for A/B; battles play v2"
+    },
+    "shell_shrine_interior": {
+      "file": "res://assets/audio/music/shell_shrine_interior.ogg"
+    },
+    "hush_theme": {
+      "file": "res://assets/audio/music/hush_theme_v2.ogg"
+    },
+    "temple_trial": {
+      "file": "res://assets/audio/music/temple_trial.ogg",
+      "_note": "the M1-AUD-02 prototype, kept for A/B"
+    },
+    "haluna_village": {
+      "file": "res://assets/audio/music/haluna_village.ogg",
+      "resume": true
+    },
+    "haluna_night": {
+      "file": "res://assets/audio/music/haluna_night.ogg",
+      "resume": true
+    },
+    "battle_standard_v2": {
+      "file": "res://assets/audio/music/battle_standard_v2.ogg"
+    },
+    "drownbell": {
+      "stems": [
+        "res://assets/audio/music/drownbell_p1.ogg",
+        "res://assets/audio/music/drownbell_p2.ogg"
+      ],
+      "start_stems": [
+        0
+      ]
+    },
+    "hush_first_verse": {
+      "file": "res://assets/audio/music/hush_first_verse.ogg",
+      "_note": "Cutscene B (B09); the sequencer plays it by name (@music hush_first_verse)"
+    },
+    "hush_coda": {
+      "file": "res://assets/audio/music/hush_coda.ogg",
+      "_note": "the slice end card (B12), piano alone"
+    },
+    "haluna_dawn": {
+      "file": "res://assets/audio/music/haluna_dawn.ogg",
+      "_note": "Cutscene A (B01); the sequencer plays it by name"
+    },
+    "saltgrass_causeway": {
+      "file": "res://assets/audio/music/saltgrass_causeway.ogg",
+      "resume": true,
+      "_note": "B06; m2-slice adds the zone row when ch03/saltgrass_causeway exists"
+    },
+    "lamp_diver": {
+      "file": "res://assets/audio/music/lamp_diver.ogg",
+      "resume": true,
+      "_note": "M3 Ch1, the drowned-tower dive"
+    },
+    "sefir_theme": {
+      "file": "res://assets/audio/music/sefir_theme.ogg",
+      "_note": "M3 Ch6, Sefir's barge; his motif"
+    },
+    "the_ebbing": {
+      "file": "res://assets/audio/music/the_ebbing.ogg",
+      "_note": "M3 Ch9, the Ebbing (through-composed)"
+    },
+    "tidecup_match": {
+      "file": "res://assets/audio/music/tidecup_match.ogg",
+      "_note": "Ch7, the story Reefball match in the Tamsule Bell (M3-AUD-02); no zone row until ch07/tamsule_bell exists"
+    },
+    "terraces_of_ash": {
+      "file": "res://assets/audio/music/terraces_of_ash.ogg",
+      "resume": true,
+      "_note": "Ch5, Pemakar and Lanternfall (M3-AUD-04); no zone row until ch05/pemakar exists"
+    },
+    "corrow_seawall": {
+      "file": "res://assets/audio/music/corrow_seawall.ogg",
+      "resume": true,
+      "_note": "Ch8, Corrow Bastion before the storm (M3-AUD-04); no zone row until ch08/corrow exists"
+    },
+    "hullgnaw": {
+      "file": "res://assets/audio/music/hullgnaw.ogg",
+      "_note": "Ch1 boss, Hullgnaw on the breaking raft at Oruvel (M3-AUD-08); no battle.encounters row until the encounter exists"
+    },
+    "spar_wraith": {
+      "file": "res://assets/audio/music/spar_wraith.ogg",
+      "_note": "Ch4 boss, the Spar-Wraith on the drowned trader's deck (M3-AUD-08); no battle.encounters row until the encounter exists"
+    },
+    "cinder_matron": {
+      "stems": [
+        "res://assets/audio/music/cinder_matron_p1.ogg",
+        "res://assets/audio/music/cinder_matron_p2.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch5 boss (M3-AUD-09). No encounter or phase row until the fight exists; intended: battle.encounters cinder_matron -> cinder_matron, and phase `crust_broken` (Kerrid breaks its armour) -> stems_on [1] over 3 s"
+    },
+    "undertows_reach": {
+      "stems": [
+        "res://assets/audio/music/undertows_reach_p1.ogg",
+        "res://assets/audio/music/undertows_reach_p2.ogg",
+        "res://assets/audio/music/undertows_reach_p3.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch8 boss (M3-AUD-09). No encounter or phase rows until the fight exists; intended: battle.encounters undertows_reach -> undertows_reach, phase `reach_strikes` -> stems_on [1] over 4 s, phase `wall_falls` (the scripted escape) -> stems_on [2] over 2 s"
+    },
+    "oruvel": {
+      "file": "res://assets/audio/music/oruvel.ogg",
+      "resume": true,
+      "_note": "Ch1, the Oruvel raft-town before the storm (M3-AUD-10); no zone row until ch01/oruvel exists"
+    },
+    "pilgrims_wake": {
+      "file": "res://assets/audio/music/pilgrims_wake.ogg",
+      "resume": true,
+      "_note": "Ch4, Asha's living funeral at Haluna by night (M3-AUD-10); for the feast scene, no zone row until it exists"
+    },
+    "tamsule": {
+      "file": "res://assets/audio/music/tamsule.ogg",
+      "resume": true,
+      "_note": "Ch7, Tamsule port, the town of the Tamsule Bell (M3-AUD-12); no zone row until ch07/tamsule exists"
+    },
+    "iskarra_vigil": {
+      "file": "res://assets/audio/music/iskarra_vigil.ogg",
+      "_note": "the Act I break at the end of Ch9 (M3-AUD-12): a through-composed bed under Rhen's voice-over at the Iskarra vigil; the 300 Hz-3 kHz band is left clear for the voice"
+    }
+  },
+  "zones": [
+    {
+      "scene": "res://game/core/boot.tscn",
+      "music": "hush_theme",
+      "_note": "the title"
+    },
+    {
+      "scene": "res://game/levels/ch02/haluna/haluna.tscn",
+      "music": "haluna_village",
+      "variants": [
+        {
+          "flag": "ch03_drownbell_defeated",
+          "music": "haluna_night"
+        }
+      ],
+      "reverb": "village_lanes",
+      "_note": "B03 by day; B11 the dock at night after the Drownbell. Beds: ambience.json"
+    },
+    {
+      "scene": "res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
+      "music": "shell_shrine_interior",
+      "reverb": "stone_shrine"
+    },
+    {
+      "scene": "res://game/flow/field_battle.tscn",
+      "reverb": "battle_beach",
+      "_note": "the battle's cue comes from `battle` when the battle starts"
+    },
+    {
+      "scene": "res://game/flow/end_card.tscn",
+      "music": "hush_coda",
+      "_note": "B12"
+    }
+  ],
+  "battle": {
+    "default": "battle_standard_v2",
+    "encounters": {
+      "drownbell": "drownbell"
+    },
+    "phases": {
+      "flood": {
+        "stems_on": [
+          1
+        ],
+        "sec": 4.0,
+        "_note": "the Flood (phase 2): low strings and the rising water come in over 4 s"
+      }
+    }
+  }
+}

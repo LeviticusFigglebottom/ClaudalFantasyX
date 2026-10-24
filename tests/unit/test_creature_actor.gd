@@ -2,7 +2,7 @@ extends TestCase
 ## M2-CRE-03: the battle creatures. CreatureActor plays the clip an action names and idles again, holds the KO,
 ## freezes under Petrify; an enemies.json `model` reaches the stand-in spec as its actor `scene`; every
 ## creatures.json row names a scene whose clips exist; and in a live sandbox battle the reef crab plays its
-## clips from the engine's signals (BattleActorMotion).
+## action and hit clips from its choreography (BattleChoreo through BattleClips; phases and parts: BattleActorMotion).
 
 const CRAB := "res://game/creatures/reef_crab/reef_crab_battle.tscn"
 const BELL := "res://game/creatures/drownbell/drownbell_battle.tscn"
@@ -13,6 +13,9 @@ const WRAITH := "res://game/creatures/spar_wraith/spar_wraith_battle.tscn"
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
+## Stepping a forced choreography (the sandbox test): seconds per step, and a cap on the steps.
+const CHOREO_STEP_SEC := 0.05
+const CHOREO_MAX_STEPS := 200
 
 var made: Array[Node] = []
 var ctl: BattleController
@@ -158,8 +161,12 @@ func test_a_sandbox_battle_drives_the_crabs_clips() -> void:
 	assert_ne(crab_id, &"", "the sandbox encounter has a crab")
 	var crab := ctl.stage.stand_in(crab_id).creature()
 	assert_true(crab != null, "the crab is its model on the stage")
+	# The action and hit clips are BattleChoreo's (M2-BPR-01, through BattleClips; big7 merge): play every action's
+	# choreography (forced on at pacing 0) and watch the crab's clip at each step.
+	var choreo := ctl.stage.choreo
+	choreo.force_play = true
+	choreo.live = false
 	var seen: Dictionary = {}
-	e.action_resolved.connect(func(_r: ActionResult) -> void: seen[crab.current_clip] = true)
 	var n := 0
 	while e.outcome == &"" and n < 60 and not (seen.has(&"hit") and (seen.has(&"attack") or seen.has(&"cast"))):
 		n += 1
@@ -170,6 +177,12 @@ func test_a_sandbox_battle_drives_the_crabs_clips() -> void:
 			ctl.act(&"attack", target)
 		else:
 			e.run_enemy_turn()
+		var steps := 0
+		while choreo.playing() and steps < CHOREO_MAX_STEPS:
+			steps += 1
+			choreo.advance(CHOREO_STEP_SEC)
+			seen[crab.current_clip] = true
+		ctl.tick(CHOREO_STEP_SEC * CHOREO_MAX_STEPS)
 	assert_true(seen.has(&"hit"), "the crab flinched when struck")
 	assert_true(seen.has(&"attack") or seen.has(&"cast"), "the crab played its own action")
 	ctl.get_parent().remove_child(ctl)

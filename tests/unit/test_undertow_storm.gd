@@ -547,7 +547,7 @@ func test_wall_foot_uniforms_reach_every_tier() -> void:
 func test_half_res_body_follows_the_tier() -> void:
 	var s := UndertowState.new()
 	assert_eq(s.quality_plan("high")["body_scale"], 0.35)
-	assert_eq(s.quality_plan("ultra")["body_scale"], 1.0)
+	assert_eq(s.quality_plan("ultra")["body_scale"], 0.5, "M2-RND-12: the storm <= 4 ms at 1440p")
 	var cfg := UndertowState.load_config()
 	((cfg["quality"] as Dictionary)["high"] as Dictionary)["body_scale"] = 0.01
 	assert_eq(UndertowState.new(cfg).quality_plan("high")["body_scale"], UndertowState.MIN_BODY_SCALE, "clamped")
@@ -559,7 +559,12 @@ func test_half_res_body_follows_the_tier() -> void:
 	assert_true(storm.half_res.composite != null and storm.half_res.composite.mesh == storm.body.mesh)
 	storm.quality = "ultra"
 	storm.refresh()
-	assert_true(storm.half_res == null, "Ultra renders at full resolution")
+	# M2-RND-11/12: Ultra runs the compute body at its tier's scale where compute runs (its frame is the sea's
+	# reflection); without a RenderingDevice (headless) it takes the SubViewport half-res path, as Medium does.
+	assert_true(storm.half_res != null, "Ultra renders the body at its tier's scale")
+	assert_eq(storm.half_res.scale, 0.5, "the 4 ms budget (M2-RND-12)")
+	if UndertowHalfRes.use_compute(storm.body):
+		assert_true(storm.half_res.effect != null, "Ultra: the compute body")
 	# M2-RND-01: High then Low (shells) must drop the half-res body, or its compute pass keeps marching
 	# the hidden body (seen on undertow_horizon_low).
 	storm.quality = "high"

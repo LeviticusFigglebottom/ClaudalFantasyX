@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "doc": "Footsteps (M2-AUD-05; docs/kb/tech/audio_runtime.md). FootstepAudio (game/audio/footstep_audio.gd) listens to the field walker: every walk_step_m (below run_above_m_s) or run_step_m of horizontal distance it plays the scene's surface row (surfaces: surface -> an sfx row) at the walker's feet, quieter by walk_db when walking. A walk ends after stop_sec without movement (frames between physics ticks read none) and restarts first_step of a stride in, so the first step lands soon. Moves under still_m per frame are idle jitter; a jump over teleport_m is a warp, not a walk. speed_smooth_sec smooths the pace. scenes: scene -> surface, else default. The movement speeds are game/data/world/field_movement.json's (walk 2.4, run 4.6 m/s). tools/validate_data.py checks the rows and scenes.",
+  "walk_step_m": 1.05,
+  "run_step_m": 1.6,
+  "run_above_m_s": 3.5,
+  "walk_db": -3.0,
+  "run_db": 0.0,
+  "first_step": 0.6,
+  "stop_sec": 0.2,
+  "still_m": 0.001,
+  "teleport_m": 3.0,
+  "speed_smooth_sec": 0.15,
+  "surfaces": {"sand": "step_sand", "stone": "step_stone", "wood": "step_wood"},
+  "default": "stone",
+  "scenes": {
+    "res://game/levels/ch02/haluna/haluna.tscn": "sand",
+    "res://game/levels/ch03/shell_shrine/shell_shrine.tscn": "stone"
+  }
+}

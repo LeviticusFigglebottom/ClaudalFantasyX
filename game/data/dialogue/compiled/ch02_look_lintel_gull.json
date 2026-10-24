@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch02_look_lintel_gull",
+ "source": "game/data/dialogue/ch02/ch02_look_lintel_gull.dlg",
+ "start": "ch02_look_lintel_gull",
+ "nodes": {
+  "ch02_look_lintel_gull": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["H03"], "kwargs": {"blend": 0.8}, "src": 7},
+    {"op": "cue", "cue": "wait", "args": [1.4], "kwargs": {}, "src": 8},
+    {"op": "line", "id": "ch02_look_lintel_gull_001", "key": "DLG_CH02_LOOK_LINTEL_GULL_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "cue", "cue": "wait", "args": [0.6], "kwargs": {}, "src": 10}
+   ]
+  }
+ }
+}

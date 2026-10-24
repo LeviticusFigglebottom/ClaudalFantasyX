@@ -43,7 +43,9 @@ func test_every_branch_plays_on_a_complete_stage_then_calls_the_drownbell() -> v
 			assert_eq(r.active, [&"rhen", &"asha", &"toma"] as Array[StringName], "all three, no reserve")
 			assert_eq(r.reserve, [] as Array[StringName])
 			assert_eq(r.victory_flag, &"ch03_drownbell_defeated")
-			assert_eq(r.return_scene, EndCard.SCENE, "a win goes on to the end card")
+			# M2-FP-15: a win goes back to Haluna's dock at night (B11), which ends on the end card.
+			assert_eq(r.return_scene, "", "no scene: the party travels")
+			assert_eq([r.return_location, r.return_spawn], [&"ch02/haluna", &"DockNight"])
 			assert_true(bool(Game.get_flag(&"ch03_ilun_bound")), "the scene ran its flag writes")
 			for w in scene.sequencer.warnings:
 				assert_true(ALLOWED_WARNINGS.any(func(a: String) -> bool: return w.contains(a)), "stage gap: %s" % w)
