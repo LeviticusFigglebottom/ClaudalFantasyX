@@ -96,6 +96,16 @@
         ["{blender}", "--python", "assets_src/creatures/tower_limpet/build_tower_limpet.py", "--", "--out", "assets/creatures/tower_limpet/tower_limpet.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "tower_limpet"]
       ]
+    },
+    {
+      "id": "creature_lantern_eel",
+      "owner": "character",
+      "sources": ["assets_src/creatures/lantern_eel/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/lantern_eel/*.glb", "assets/creatures/lantern_eel/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/lantern_eel/build_lantern_eel.py", "--", "--out", "assets/creatures/lantern_eel/lantern_eel.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "lantern_eel"]
+      ]
     }
   ]
 }

@@ -62,3 +62,7 @@ dorsal fin, a heavy jaw, small eyes set far forward.
 - A chain of 9 spine bones plus jaw and two lure bones. The body deforms smoothly (skinned), the cage is rigid.
 - Budget: ≤ 9k triangles.
 - Battle VFX anchors (fractions of 2.1 m): chest 1.26 m (the upper curve), head 2.1 m (the brow).
+- As built (M2-CRE-05): the tail is buried and runs a short way along the ground before the S rises. That gives the
+  silhouette a base and gives the KO coil body to lie down with. The 0.5 m stalk arcs to about 2.3 m above the brow
+  and hangs the cage in front of the snout at brow height. The spine has 9 bones from the grounded run to the neck;
+  the head, jaw and two lure bones complete the rig.

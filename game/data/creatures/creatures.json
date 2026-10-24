@@ -33,6 +33,10 @@
     "reef_crab": {
       "scene": "res://game/creatures/reef_crab/reef_crab_battle.tscn",
       "clip_by_skill": {"brine_spit": "cast"}
+    },
+    "lantern_eel": {
+      "scene": "res://game/creatures/lantern_eel/lantern_eel_battle.tscn",
+      "clip_by_skill": {"lure_glow": "cast"}
     }
   }
 }
