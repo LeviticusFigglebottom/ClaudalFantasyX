@@ -15,7 +15,11 @@ extends Node3D
 ##   loco    BlendSpace1D on the filtered ground speed: idle at 0, walk at walk_clip_mps, run at run_clip_mps
 ##   scale   TimeScale: HeroLocomotion.playback_scale (the run speeds up past its clip speed)
 ##   act_a / act_b  the one-shot or looping clip play_clip() asked for (two slots so clips cross-fade)
-##   mode    Transition between scale, act_a and act_b
+##   mode    Transition between scale, act_a and act_b (each slot through its own TimeScale, ts_a / ts_b)
+## Gait clips (M2-HER-1107, HeroGaitClips): when the model has M2-CHR-12's walk/run starts and stops, turns
+## in place and idle variant (and game/data/characters/locomotion.json has their root curves), they play in
+## the action slots over the blend: starts and stops by the ground covered, turns driving the visible yaw.
+## The gait speeds then come from locomotion.json too (gait_speeds()). Without them nothing changes.
 ## play_clip(name, blend) is the cutscene entry point: a locomotion clip name (field.locomotion_clips)
 ## returns to the speed blend; any other clip plays over it, a one-shot returning to locomotion when it
 ## ends (unless `hold`), a loop staying until the next call. Clips started on the model's own
@@ -32,8 +36,12 @@ const SLOT_B := &"act_b"
 const P_BLEND := &"parameters/loco/blend_position"
 const P_SCALE := &"parameters/scale/scale"
 const P_MODE := &"parameters/mode/transition_request"
+const SCALE_A := &"ts_a"
+const SCALE_B := &"ts_b"
 
 static var _data_cache: Dictionary = {}
+static var _loco_cache: Dictionary = {}
+static var _loco_read := false
 
 var hero_id: StringName = &""
 ## The gameplay node the body follows (never moved by the body).
@@ -48,6 +56,8 @@ var hidden_stand_ins: Array[Node3D] = []
 var carried: Array[Node3D] = []
 ## The clip play_clip() is showing (&"" while on locomotion).
 var action: StringName = &""
+## The starts, stops, turns and idle variant (null when the model has no AnimationPlayer).
+var gait: HeroGaitClips
 
 var _field: Dictionary = {}
 var _yaw_offset := 0.0
@@ -70,6 +80,56 @@ static func data() -> Dictionary:
 
 static func field_data() -> Dictionary:
 	return data().get("field", {}) as Dictionary
+
+
+## The characters track's locomotion.json (M2-CHR-12; field.gait_clips.locomotion_data), or {} while it
+## is not in this tree. Read once.
+static func locomotion_data() -> Dictionary:
+	if not _loco_read:
+		var cfg := field_data().get("gait_clips", {}) as Dictionary
+		_loco_cache = HeroGaitClips.load_locomotion(str(cfg.get("locomotion_data", "")))
+		_loco_read = true
+	return _loco_cache
+
+
+## Hero `id`'s table in locomotion.json ({} when there is none).
+static func locomotion_of(id: StringName) -> Dictionary:
+	return (locomotion_data().get("heroes", {}) as Dictionary).get(String(id), {}) as Dictionary
+
+
+## The ground speeds (m/s) at which hero `id`'s walk and run plant their feet: locomotion.json's
+## speed_mps when it has them (source "locomotion"), else hero_motion.json field.heroes (source
+## "hero_motion", measured from the clips before M2-CHR-12). {walk_clip_mps, run_clip_mps, source}.
+static func gait_speeds(id: StringName) -> Dictionary:
+	return gait_speeds_from(id, locomotion_of(id))
+
+
+## gait_speeds() for hero `id` with `loco_row` as its locomotion.json table (tests inject one).
+static func gait_speeds_from(id: StringName, loco_row: Dictionary) -> Dictionary:
+	var row := (field_data().get("heroes", {}) as Dictionary).get(String(id), {}) as Dictionary
+	var gait := data().get("gait", {}) as Dictionary
+	var out := {
+		"walk_clip_mps": float(row.get("walk_clip_mps", gait.get("walk_clip_mps", 0.0))),
+		"run_clip_mps": float(row.get("run_clip_mps", gait.get("run_clip_mps", 0.0))),
+		"source": "hero_motion",
+	}
+	var walk := float((loco_row.get("walk", {}) as Dictionary).get("speed_mps", 0.0))
+	var run := float((loco_row.get("run", {}) as Dictionary).get("speed_mps", 0.0))
+	if walk > 0.0 and run > walk:
+		out["walk_clip_mps"] = walk
+		out["run_clip_mps"] = run
+		out["source"] = "locomotion"
+	return out
+
+
+## HeroClipGait's measure settings for the clips gait_speeds() describes: field.gait_measure, with its
+## `planted_ball` block over it for M2-CHR-12's clips (they pivot the planted foot on its ball, so the
+## ball, not the ankle, holds still on the ground).
+static func measure_config(id: StringName) -> Dictionary:
+	var cfg := (field_data().get("gait_measure", {}) as Dictionary).duplicate()
+	if str(gait_speeds(id)["source"]) == "locomotion":
+		cfg.merge(cfg.get("planted_ball", {}) as Dictionary, true)
+	return cfg
 
 
 ## The model scene for a hero id, or "" when the hero has no field body.
@@ -164,12 +224,11 @@ static func create(id: StringName) -> HeroFieldActor:
 func _setup(m: Node3D) -> void:
 	_field = field_data()
 	var d := data().duplicate(true)
-	var gait := (d.get("gait", {}) as Dictionary).duplicate()
-	var row := (_field.get("heroes", {}) as Dictionary).get(String(hero_id), {}) as Dictionary
+	var gait_row := (d.get("gait", {}) as Dictionary).duplicate()
+	var speeds := gait_speeds(hero_id)
 	for k: String in ["walk_clip_mps", "run_clip_mps"]:
-		if row.has(k):
-			gait[k] = row[k]
-	d["gait"] = gait
+		gait_row[k] = speeds[k]
+	d["gait"] = gait_row
 	loco = HeroLocomotion.new(d)
 	_yaw_offset = deg_to_rad(float(_field.get("model_yaw_offset_deg", 0.0)))
 	_ground_offset = float(_field.get("ground_offset_m", 0.0))
@@ -182,6 +241,15 @@ func _setup(m: Node3D) -> void:
 		anim.stop()
 		anim.active = false  # the tree animates; plays started on it are routed through play_clip
 		_build_tree()
+		gait = HeroGaitClips.new(
+			_field.get("gait_clips", {}) as Dictionary,
+			locomotion_of(hero_id),
+			tree.has_animation,
+			float(locomotion_data().get("fps", 0.0)),
+			loco.walk_clip_mps,
+			loco.run_clip_mps,
+			hero_id
+		)
 	HeroMotion.add_micro_motion(model, hero_id)  # M2-HER-1104: breathing, weight shift, the head leads turns
 
 
@@ -199,6 +267,10 @@ func _build_tree() -> void:
 	bt.connect_node(LOCO, 0, &"loco")
 	bt.add_node(SLOT_A, AnimationNodeAnimation.new())
 	bt.add_node(SLOT_B, AnimationNodeAnimation.new())
+	bt.add_node(SCALE_A, AnimationNodeTimeScale.new())
+	bt.add_node(SCALE_B, AnimationNodeTimeScale.new())
+	bt.connect_node(SCALE_A, 0, SLOT_A)
+	bt.connect_node(SCALE_B, 0, SLOT_B)
 	_transition = AnimationNodeTransition.new()
 	_transition.input_count = 3
 	_transition.set_input_name(0, String(LOCO))
@@ -207,8 +279,8 @@ func _build_tree() -> void:
 	_transition.xfade_time = float(_field.get("clip_blend_sec", 0.0))
 	bt.add_node(&"mode", _transition)
 	bt.connect_node(&"mode", 0, LOCO)
-	bt.connect_node(&"mode", 1, SLOT_A)
-	bt.connect_node(&"mode", 2, SLOT_B)
+	bt.connect_node(&"mode", 1, SCALE_A)
+	bt.connect_node(&"mode", 2, SCALE_B)
 	bt.connect_node(&"output", 0, &"mode")
 	tree = AnimationTree.new()
 	tree.name = &"AnimationTree"
@@ -272,6 +344,10 @@ func snap() -> void:
 	loco.reset_yaw(source_facing())
 	loco.reset_speed(0.0)
 	_has_travel = false
+	if gait != null:
+		if gait.clip != &"" and action == &"":
+			_to_locomotion(0.0)
+		gait.reset()
 	_place(_last_pos)
 	if tree != null:
 		tree.set(P_BLEND, 0.0)
@@ -311,7 +387,12 @@ func advance(delta: float) -> void:
 			_travel_yaw = HeroLocomotion.yaw_of(flat)
 			_has_travel = true
 		var moving := _has_travel and loco.is_moving(loco.speed)
-		loco.step_yaw(_travel_yaw if moving else source_facing(), delta)
+		if gait != null:
+			_step_gait(flat.length(), delta)
+		if gait != null and gait.phase == HeroGaitClips.Phase.TURN:
+			_turn_toward(gait.turn_yaw(), delta)
+		else:
+			loco.step_yaw(_travel_yaw if moving else source_facing(), delta)
 		_last_pos = p
 	HeroMotion.set_locomotion_speed(model, loco.speed)  # the micro-motion fades out while walking
 	_place(p)
@@ -324,6 +405,56 @@ func advance(delta: float) -> void:
 			if _action_left <= 0.0:
 				_to_locomotion(float(_field.get("clip_blend_sec", 0.0)))
 		tree.advance(delta)
+
+
+## Steps the gait clips from this frame's travel and shows what they pick (a cutscene clip holds them).
+func _step_gait(dist: float, delta: float) -> void:
+	if action != &"" or tree == null:
+		gait.reset(loco.speed)
+		return
+	var shown := gait.clip
+	var heading := angle_difference(loco.yaw, _travel_yaw) if _has_travel else 0.0
+	var facing := angle_difference(loco.yaw, source_facing())
+	gait.step(loco.yaw, loco.speed, dist, heading, facing, _intent_mps(), _stop_dist_m(), delta)
+	if gait.clip != shown:
+		if gait.clip != &"":
+			_show_slot(gait.clip, gait.blend_sec)
+		else:
+			_to_locomotion(gait.blend_sec)
+	if gait.clip != &"":
+		tree.set(_scale_param(_slot), gait.time_scale)
+
+
+## One capped step of the visible yaw toward `want` (a turn clip's curve): never over max_rate.
+func _turn_toward(want: float, delta: float) -> void:
+	var cap := loco.max_rate_rad * delta
+	var d := clampf(angle_difference(loco.yaw, want), -cap, cap)
+	loco.yaw = wrapf(loco.yaw + d, -PI, PI)
+	loco.yaw_rate = d / delta
+
+
+## The speed the source is heading for (m/s): a FieldController's stick (as FieldMotor.step reads it),
+## 0 while it coasts to a stop, -1 when the source cannot tell (followers, cutscene roots, a scripted move).
+func _intent_mps() -> float:
+	var c := source as FieldController
+	if c == null or c.motor == null:
+		return -1.0
+	var stick := c.current_stick()
+	var mag := minf(stick.length(), 1.0)
+	if mag <= c.motor.deadzone:
+		return 0.0 if c.motor.velocity.length_squared() > 0.0 else -1.0
+	var walk := c.walk_override or mag < c.motor.walk_run_threshold
+	walk = walk or (c.accepts_input and Input.is_action_pressed(FieldInput.WALK))
+	return c.motor.walk_speed if walk else c.motor.run_speed
+
+
+## The distance a FieldController needs to stop from its speed at its deceleration, or -1.
+func _stop_dist_m() -> float:
+	var c := source as FieldController
+	if c == null or c.motor == null or c.motor.deceleration <= 0.0:
+		return -1.0
+	var v := Vector2(c.motor.velocity.x, c.motor.velocity.z).length()
+	return v * v / (2.0 * c.motor.deceleration)
 
 
 func _place(p: Vector3) -> void:
@@ -343,19 +474,33 @@ func play_clip(clip_name: StringName, blend: float = -1.0, hold: bool = false) -
 		return false
 	var fade := blend if blend >= 0.0 else float(_field.get("clip_blend_sec", 0.0))
 	if String(clip_name) in (_field.get("locomotion_clips", {}) as Dictionary).values():
+		if action == &"" and gait != null and gait.clip != &"":
+			return true  # a start, stop or turn is the locomotion already: let it finish
 		_to_locomotion(fade)
 		return true
 	if not tree.has_animation(clip_name):
 		return false
 	var an := tree.get_animation(clip_name)
-	_slot = SLOT_A if _slot == SLOT_B else SLOT_B
-	((tree.tree_root as AnimationNodeBlendTree).get_node(_slot) as AnimationNodeAnimation).animation = clip_name
-	_transition.xfade_time = fade
-	tree.set(P_MODE, String(_slot))
+	if gait != null:
+		gait.reset(loco.speed)
+	_show_slot(clip_name, fade)
+	tree.set(_scale_param(_slot), 1.0)
 	action = clip_name
 	_action_hold = hold or an.loop_mode != Animation.LOOP_NONE
 	_action_left = an.length
 	return true
+
+
+## Shows `clip_name` in the free action slot with a `fade` second cross-fade.
+func _show_slot(clip_name: StringName, fade: float) -> void:
+	_slot = SLOT_A if _slot == SLOT_B else SLOT_B
+	((tree.tree_root as AnimationNodeBlendTree).get_node(_slot) as AnimationNodeAnimation).animation = clip_name
+	_transition.xfade_time = fade
+	tree.set(P_MODE, String(_slot))
+
+
+static func _scale_param(slot: StringName) -> StringName:
+	return StringName("parameters/%s/scale" % (SCALE_A if slot == SLOT_A else SCALE_B))
 
 
 func _to_locomotion(fade: float) -> void:
