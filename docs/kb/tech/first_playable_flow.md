@@ -26,7 +26,7 @@ Code lives in `game/flow/` and `game/levels/prologue/`; tunables in
      tests inject an `instant` one);
   3. waits until `SceneRouter.is_busy()` is false (a short cutscene can end while the router is still
      finishing its own swap, and the router drops a change made meanwhile);
-  4. `hand_off()`: `SceneRouter.world_return.go_to(&"ch02/haluna", &"Beach")` (from the data file),
+  4. `hand_off()`: `SceneRouter.world_return.go_to(&"ch01/oruvel_underway", &"Drop")` (from the data file; it was `ch02/haluna` `Beach` until M3-C01-02, and Ch1's own end now goes there),
      emitting `handed_off(location_id, spawn)`. It happens once.
 - Injection points: `autoplay` (export), `sequencer`, `travel: Callable(location_id, spawn) -> bool`.
 - The script is `game/data/dialogue/prologue/prologue_dead_city.dlg`: letterbox, `@camera P01`, fade in,

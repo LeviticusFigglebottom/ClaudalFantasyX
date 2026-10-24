@@ -7,7 +7,7 @@ extends Ch01Zone
 ##   narrow (the default) is quiet: a small pool of light, the base encounter rate.
 ##   open (the shutter action held) widens the light, finds what the reveals and curtains hide (the
 ##        coral curtain falls away and the old tin's trigger can be used, for good), and multiplies the
-##        encounter rate (encounter_rate_mult(), for the field encounter system: M3-C01-04).
+##        encounter rate (encounter_rate_mult(), for the shared field encounters, M2-FP-25, to read).
 ## No fuel. Weighted divers walk the floors (the ordinary field controller); tether points and the
 ## bell-rooms' rests are story beats in the chapter file. The underwater look in the field is a
 ## stand-in (the layout's dark sun, environment and fog) until the kit brings an UnderwaterRig.

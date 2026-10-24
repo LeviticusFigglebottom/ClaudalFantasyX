@@ -54,3 +54,35 @@ Every key is optional. Defaults come from `game/data/world/greybox_defaults.json
 ## Limits
 - There are no conditionals beyond `when` and `if_event`. Anything bigger, such as a puzzle or a wave meter, belongs on the zone root (a GreyboxZone subclass), reached with a `zone` step.
 - Greybox collision is boxes only and the controller has no step-up, so keep walkable routes flat.
+
+## Ch1 (M3-C01-02)
+Ch1 "Lamp-Diver" is the first chapter built on this flow: `game/data/flow/chapters/ch01.json`, two zones under `game/levels/ch01/`, scripts in `game/data/dialogue/ch01/`, and the test `tests/integration/test_ch01_thread.gd`.
+
+**The zone roots.** Both zones subclass GreyboxZone, so the generic class stays generic:
+- `Ch01Zone` adds the story calls Ch1 needs, each reached with a `zone` step:
+  - `rest(source)`: a full heal and no save, the request a shrine or an inn makes. Bell-rooms use it, and so does the breath before Hullgnaw.
+  - `give(items, lume)`: a negative count takes an item away.
+  - `prompt(id)`: a one-time tutorial prompt with a seen-flag, played on a hint sequencer that never holds the player.
+  - `hide_block(id)` / `show_block(id)`: the block goes with its collision.
+  - The layout's `fog` sets up the zone's fog.
+- `Ch01UnderwayZone` adds the lantern and its shutter: a held `field_lantern_shutter`, F or the left face button.
+  - Opening it widens the light and reveals the layout's `lantern.reveals` triggers and `lantern.curtains` blocks, for good.
+  - `encounter_rate_mult()` exposes the shutter's rate for the field encounters.
+- `Ch01OruvelZone` adds the storm variant, the layout's `storm` block:
+  - it applies a storm light and the hide and show lists;
+  - two lashing flags free the low hull;
+  - a zone entered after `ch01_gulls_cried` comes up in the storm.
+- Tuning lives in `game/data/flow/ch01_field.json`.
+
+**The checks follow subclasses.** `chapter_flow_check.greybox_layout_path` and `validate_data.scene_has_player` follow a root script's `extends` chain (by path or class_name) to GreyboxZone, so a subclassed zone's layout and spawns are checked.
+
+A battle step's own `party` is not a `party` step.
+
+**Shared pieces still to come, and their placeholders (M2-FP-25, claude/m2-slice):**
+- **The chapter step.** C1-01's `Game.set_chapter(1)` waits for the `{"chapter": 1}` step. It goes before `{"set": "ch01_started"}` in the Underway's arrival. Until then, Ch1 writes no chapter autosave.
+- **Field random encounters.** The Underway's layout carries `encounters: {table, min_m, max_m}`, which is ignored until they land. Wiring the shutter's `encounter_rate_mult` into it is part of that merge.
+- **Camera volumes.** Ch1 uses none yet.
+
+**ZoneStory and fades.** A `play` step followed by a hand-off, with only set, place, party or zone steps between them, doesn't fade back in. A scene that ends on black (the shaft's rise, going under) hands off on black.
+
+**The exit to Haluna.** Ch1 leaves an empty party, so Haluna seats Rhen, Asha and Toma after Cutscene A exactly as it did from a prologue start. Nothing in Ch2 changes.
