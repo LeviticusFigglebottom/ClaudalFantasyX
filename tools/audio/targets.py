@@ -28,6 +28,7 @@ RULES = [
     ("sfx/drownbell_toll.ogg", "momentary", -18.0, 1.0, -1.0, "the cutscene's far toll"),
     ("sfx/text_blip.ogg", "momentary", -27.0, 1.0, -3.0, "one dialogue blip"),
     ("sfx/ui_*.ogg", "momentary", -20.0, 1.0, -2.5, "UI SFX"),
+    ("sfx/voice/blip_*.ogg", "momentary", -27.0, 1.0, -3.0, "per-speaker dialogue blips (M3-AUD-07)"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
 TOTAL_BUDGET = 24 * 1024 * 1024     # every shipped audio file (mix.md §5: the slice; about 1 MB per minute of music)

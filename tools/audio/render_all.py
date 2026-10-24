@@ -97,6 +97,8 @@ JOBS = [
      [f"step_{s}_{v:02d}.ogg" for s in ("sand", "stone", "wood") for v in range(1, 6)]
      + [f"{u}.ogg" for u in ("ui_menu_open", "ui_menu_close", "ui_page", "ui_buy", "ui_inn_rest", "ui_error",
                              "ui_vowbound_open")], "sfx"),
+    ("assets_src/sfx/voice_blips.py", "assets/audio/sfx/voice",
+     [f"blip_{t}_{v}.ogg" for t in ("soft", "bright", "low", "breathy", "child") for v in (1, 2, 3)], "sfx"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
