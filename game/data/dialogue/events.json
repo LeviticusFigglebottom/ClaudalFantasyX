@@ -36,6 +36,16 @@
    "id": "start_reefball",
    "doc": "Hand off to a Reefball match once the scene ends (act1_ch07.md §5; M3-C07-02, modelled on start_battle). The chapter flow reads it with an if_event step and runs the zone's match beat; the match sets ch07_tidecup_played (and ch07_tidecup_won on a win, a reward only) and returns to the zone.",
    "args": [{"name": "match", "type": "id"}]
+  },
+  {
+   "id": "hold_input",
+   "doc": "A no-fail held input inside a cutscene (M3-C09-02; act1_ch09.md B04-B07, the Ebbing; shared with act3_ending E4). From here to hold_input_end the scene's time runs only while the player holds the host's action (CutsceneHoldGate): waits, walks and fades advance while it is held and stand still when it is let go. No timing, no score, no fail. prompt names the prompt row in the host's data (a loc key).",
+   "args": [{"name": "prompt", "type": "id"}]
+  },
+  {
+   "id": "hold_input_end",
+   "doc": "Ends the held input hold_input began: the scene's time runs on its own again and the prompt goes.",
+   "args": []
   }
  ]
 }

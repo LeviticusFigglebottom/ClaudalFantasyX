@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch09_bark_marra",
+ "source": "game/data/dialogue/ch09/ch09_bark_marra.dlg",
+ "start": "ch09_bark_marra",
+ "nodes": {
+  "ch09_bark_marra": {
+   "headers": {"location": "ch09/corrow_night"},
+   "ops": [
+    {"op": "line", "id": "ch09_bark_marra_001", "key": "DLG_CH09_BARK_MARRA_001", "speaker": "marra", "emotion": "tender", "voice": "", "src": 7},
+    {"op": "line", "id": "ch09_bark_marra_002", "key": "DLG_CH09_BARK_MARRA_002", "speaker": "child", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch09_bark_marra_003", "key": "DLG_CH09_BARK_MARRA_003", "speaker": "marra", "emotion": "sad", "voice": "", "src": 9},
+    {"op": "set", "flag": "ch09_heard_stair_clear", "value": ["lit", true], "src": 10}
+   ]
+  }
+ }
+}

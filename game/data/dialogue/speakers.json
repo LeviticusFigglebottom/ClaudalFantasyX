@@ -29,6 +29,10 @@
   {"id": "tender", "name_key": "CHAR_TENDER", "blip_pitch": 0.92, "portrait_id": "portrait_villager_placeholder"},
   {"id": "ferryman", "name_key": "CHAR_FERRYMAN", "blip_pitch": 0.8, "portrait_id": "portrait_villager_placeholder"},
   {"id": "townsfolk", "name_key": "CHAR_TOWNSFOLK", "blip_pitch": 1.0, "portrait_id": "portrait_villager_placeholder"},
-  {"id": "ferrymaster", "name_key": "CHAR_FERRYMASTER", "blip_pitch": 0.88, "portrait_id": "portrait_villager_placeholder"}
+  {"id": "ferrymaster", "name_key": "CHAR_FERRYMASTER", "blip_pitch": 0.88, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "marra", "name_key": "CHAR_MARRA", "blip_pitch": 0.86, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "hobb", "name_key": "CHAR_HOBB", "blip_pitch": 0.78, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "fenn", "name_key": "CHAR_FENN", "blip_pitch": 0.74, "portrait_id": "portrait_villager_placeholder"},
+  {"id": "stillguard", "name_key": "CHAR_STILLGUARD", "blip_pitch": 0.82, "portrait_id": "portrait_villager_placeholder"}
  ]
 }

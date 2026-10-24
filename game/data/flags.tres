@@ -96,5 +96,18 @@ flags = {
 "ch04_leeches_won": "Ch4 C4-12: the scripted sail-leech ambush on the derelict's deck was won.",
 "ch04_hermit_won": "Ch4 C4-12: the scripted bottle-hermit fight (the swap, Read and element lesson) was won.",
 "ch04_spar_wraith_defeated": "Ch4 C4-13: the Spar-Wraith boss is beaten on the derelict's main deck (set by the battle result).",
-"ch04_name_board_carried": "Ch4 C4-14: Rhen carried the Seventh Terrace's name-board home for nothing (key item name_board_seventh_terrace; Ch5 payoff)."
+"ch04_name_board_carried": "Ch4 C4-14: Rhen carried the Seventh Terrace's name-board home for nothing (key item name_board_seventh_terrace; Ch5 payoff).",
+"ch08_met_ivo": "Set by Ch8 B02 (not built yet; critical path): Toma's shield-mate Ivo has greeted him on the wall. Ch9 reads it to offer the 'Shield-Mate' side scene.",
+"ch08_fed_the_beacon": "Set by Ch8 B03's optional side scene (not built yet): the party fed the Coilspire beacon. Ch9 reads it: Fenn, not Hobb, speaks after the Ebbing (B08).",
+"ch08_hoist_cut_down": "Set by Ch8 B18 (not built yet; critical path): the Stillguard cut the hoist down. Ch9 reads it for Liss's bark on the wall-head.",
+"ch09_started": "Ch9 B01: the party has come down onto Corrow's strand of the drowned (the chapter is 9).",
+"ch09_heard_stair_clear": "Ch9 B01 (optional bark): Marra told a child what the captain's 'Stair's clear' means (log only; the Ending's E3 lands for this player).",
+"ch09_toma_knelt_with_ivo": "Ch9 B02 side scene 'Shield-Mate': Rhen stood with Toma while he washed Ivo's face and asked Asha to take him gently (Ch15, Ch18 payoffs).",
+"ch09_rhen_answered_toma": "Ch9 B02 choice: Rhen gave the Order's answer 'And still.' for the dead man (Ch15 payoff).",
+"ch09_ebbing_danced": "Ch9 B07: Asha has danced her first great Ebbing and the held dead have gone down into the sea (Ch10 payoff).",
+"ch09_asha_said_they_hung_back": "Ch9 B08 (critical): Asha told Rhen privately that the dead didn't want to go (Ch10, Ch16 payoff).",
+"ch09_pell_joined": "Ch9 B08: Pell asked to walk where Asha walks and Toma let him (party from Ch10; Pell has no battle row yet).",
+"ch09_pell_named": "Ch9 B09: Pell told Rhen his name on the dawn road (UI labels: 'The Kirru' becomes 'Pell').",
+"ch09_kerrid_on_road": "Ch9 B09 (critical): Kerrid was waiting on the road out of Corrow and walks last in the line (Ch15 payoff).",
+"ch09_act_one_complete": "Ch9 B10: the Iskarra vigil has played; Act I is over (Ch10 gate, save summary)."
 }
