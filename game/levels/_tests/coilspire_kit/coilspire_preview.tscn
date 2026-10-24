@@ -1,0 +1,210 @@
+[gd_scene load_steps=32 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/coilspire_kit/coilspire_preview.gd" id="1_rig"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="2_tide"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_dresser.gd" id="3_dresser"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Script" path="res://game/world/water/wave_set.gd" id="5_set"]
+[ext_resource type="Script" path="res://game/world/water/wave_component.gd" id="6_comp"]
+[ext_resource type="Material" path="res://game/levels/_tests/corrow_kit/corrow_water_material.tres" id="7_water_mat"]
+[ext_resource type="Environment" path="res://game/levels/_tests/coilspire_kit/coilspire_ch08_environment.tres" id="8_env"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="9_cam"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="10_shot"]
+[ext_resource type="Environment" path="res://game/levels/_tests/coilspire_kit/coilspire_int_environment.tres" id="11_int_env"]
+
+[sub_resource type="Resource" id="Swell0"]
+script = ExtResource("6_comp")
+direction_deg = 315.0
+wavelength_m = 42.0
+amplitude_m = 0.16
+steepness = 0.5
+phase_rad = 0.0
+
+[sub_resource type="Resource" id="Swell1"]
+script = ExtResource("6_comp")
+direction_deg = 298.0
+wavelength_m = 23.0
+amplitude_m = 0.09
+steepness = 0.6
+phase_rad = 1.9
+
+[sub_resource type="Resource" id="Swell2"]
+script = ExtResource("6_comp")
+direction_deg = 332.0
+wavelength_m = 11.0
+amplitude_m = 0.045
+steepness = 0.65
+phase_rad = 4.4
+
+[sub_resource type="Resource" id="Swell3"]
+script = ExtResource("6_comp")
+direction_deg = 287.0
+wavelength_m = 5.5
+amplitude_m = 0.02
+steepness = 0.6
+phase_rad = 2.2
+
+[sub_resource type="Resource" id="StormWaves"]
+script = ExtResource("5_set")
+components = Array[ExtResource("6_comp")]([SubResource("Swell0"), SubResource("Swell1"), SubResource("Swell2"), SubResource("Swell3")])
+amplitude_scale = 1.0
+
+[sub_resource type="Resource" id="ShotK01"]
+script = ExtResource("10_shot")
+id = &"K01"
+position = Vector3(282.20, 28.74, 108.54)
+look_at = Vector3(317.27, 56.29, 153.97)
+fov_deg = 46.4
+
+[sub_resource type="Resource" id="ShotK02"]
+script = ExtResource("10_shot")
+id = &"K02"
+position = Vector3(297.71, 40.54, 145.40)
+look_at = Vector3(307.98, 42.89, 153.63)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotK03"]
+script = ExtResource("10_shot")
+id = &"K03"
+position = Vector3(308.69, 40.59, 159.46)
+look_at = Vector3(308.23, 69.29, 158.04)
+fov_deg = 67.4
+
+[sub_resource type="Resource" id="ShotK04"]
+script = ExtResource("10_shot")
+id = &"K04"
+position = Vector3(306.93, 58.79, 158.87)
+look_at = Vector3(306.73, 58.54, 157.32)
+fov_deg = 27.0
+
+[sub_resource type="Resource" id="ShotK05"]
+script = ExtResource("10_shot")
+id = &"K05"
+position = Vector3(309.17, 77.89, 157.74)
+look_at = Vector3(306.82, 75.59, 161.15)
+fov_deg = 53.1
+
+[sub_resource type="Resource" id="ShotK06"]
+script = ExtResource("10_shot")
+id = &"K06"
+position = Vector3(305.61, 83.49, 159.10)
+look_at = Vector3(308.41, 82.29, 164.61)
+fov_deg = 53.1
+
+[sub_resource type="Resource" id="ShotK07"]
+script = ExtResource("10_shot")
+id = &"K07"
+position = Vector3(305.96, 83.49, 157.16)
+look_at = Vector3(40.00, 6.00, 0.00)
+fov_deg = 10.2
+
+[sub_resource type="Resource" id="ShotK08"]
+script = ExtResource("10_shot")
+id = &"K08"
+position = Vector3(-32.32, 14.30, 7.38)
+look_at = Vector3(38.62, 12.50, 12.08)
+fov_deg = 46.4
+
+[node name="CoilspirePreview" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water", "world_environment", "dresser")]
+script = ExtResource("1_rig")
+interior_environment = ExtResource("11_int_env")
+sun = NodePath("Sun")
+tide = NodePath("Tide")
+water = NodePath("Water")
+world_environment = NodePath("WorldEnvironment")
+dresser = NodePath("Dresser")
+sun_elevation_deg = 30.0
+sun_azimuth_deg = 250.0
+time_of_day_h = 16.0
+wind_azimuth_deg = 315.0
+wind_speed_m_s = 14.0
+wind_gust = 0.6
+water_height_m = 0.5
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("8_env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+light_color = Color(1, 0.8941, 0.8078, 1)
+light_energy = 2.0
+light_volumetric_fog_energy = 0.0
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.2
+sky_mode = 0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.04
+directional_shadow_split_2 = 0.12
+directional_shadow_split_3 = 0.35
+directional_shadow_max_distance = 400.0
+
+[node name="Water" type="Node3D" parent="."]
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = SubResource("StormWaves")
+material = ExtResource("7_water_mat")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("2_tide")
+water = NodePath("../Water")
+
+[node name="Dresser" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("3_dresser")
+layout_path = "res://game/levels/_tests/coilspire_kit/coilspire_layout.json"
+tide = NodePath("../Tide")
+
+[node name="Backdrop" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("3_dresser")
+layout_path = "res://game/levels/_tests/coilspire_kit/coilspire_backdrop.json"
+tide = NodePath("../Tide")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="K01" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotK01")
+
+[node name="K02" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotK02")
+
+[node name="K03" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotK03")
+
+[node name="K04" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotK04")
+
+[node name="K05" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotK05")
+
+[node name="K06" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotK06")
+
+[node name="K07" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotK07")
+
+[node name="K08" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotK08")

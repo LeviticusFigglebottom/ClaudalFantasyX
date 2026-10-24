@@ -277,6 +277,20 @@
       ]
     },
     {
+      "id": "coilspire_kit", "threads": 4,
+      "owner": "environment",
+      "_doc": "M3-ENV-10: the Coilspire temple kit (Corrow's skyline spire up close). Geometry reuses the Haluna kit's core (kit_common), the Corrow kit's helpers (cw_common) and its far piece (cw_far: the same building's height law, flues, cage and headland) and the Brine Shoals heightfield (bs_common), all read-only; pinned at 4 threads like corrow_kit. The {python} step rebuilds its materials (the Haluna writers, loaded by path), so it is verified too. No maps of its own: it uses the Corrow, Haluna and Brine Shoals kits' textures.",
+      "sources": ["assets_src/environments/kits/coilspire/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/materials.py", "assets_src/environments/kits/corrow/cw_common.py",
+                  "assets_src/environments/kits/corrow/cw_far.py", "assets_src/environments/kits/brine_shoals/bs_common.py"],
+      "outputs": ["assets/environments/kits/coilspire/*.glb", "assets/environments/kits/coilspire/kit_manifest.json",
+                  "assets/environments/kits/coilspire/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/coilspire/build.py", "--", "--all", "--out-dir", "assets/environments/kits/coilspire", "--manifest", "assets/environments/kits/coilspire/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/coilspire/cs_materials.py"]
+      ]
+    },
+    {
       "id": "oruvel_underway_kit", "threads": 4,
       "owner": "environment",
       "_doc": "M3-ENV-05: the Oruvel Underway kit (the Ch1 drowned tower and its sea floor). Geometry reuses the Haluna kit's core (kit_common) read-only; the two {python} steps rebuild its maps and materials (with the Haluna texture helpers and material writers), so they are verified too. Threads pinned at 4, as haluna_kit.",

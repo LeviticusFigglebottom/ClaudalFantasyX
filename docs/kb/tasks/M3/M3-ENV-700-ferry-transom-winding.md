@@ -2,8 +2,8 @@
 id: M3-ENV-700
 title: "Brightwater kit: bf_common.transom is wound inward (the ferry's and drowned hulls' transoms vanish from astern)"
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M3-ENV-08]
 milestone: M3
 request-from: environment
