@@ -21,6 +21,7 @@ const KINDS: Array[String] = [
 	"corrow_kit",
 	"creatures",
 	"haluna_kit",
+	"oruvel_kit",
 	"oruvel_underway_kit",
 	"pemakar_kit",
 	"shader_test",
