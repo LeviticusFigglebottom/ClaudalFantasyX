@@ -3,6 +3,18 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **Merged: M3-C04-02 (Ch4) and M3-C05-02 (Ch5).** Both are in review (narrative; combat for the bands); handoffs cinematics-14 and cinematics-15.
+  - **The thread:** prologue → Ch1 → Haluna slice … Ch4 → Ch5 now play through (Ch4 exits to `ch05/pemakar` Harbour). Ch5 → the end card until Ch6 lands. Ch7 is reachable on its own.
+  - **For combat's ruling** (M3-C04-06, M3-C05-06):
+    - Spar-Wraith `smart` gets a ceiling of 100% with an ease floor of 30 turns; leeches' `role_answer` is report only.
+    - Cinder Matron `smart` is report only (a turn-pressure mechanic is needed), with an ease floor of 40 turns.
+    - Toma's Shell Breaker is permanent and stronger than Kerrid's; it was left alone so the sandbox bands don't move.
+  - **Kerrid's and Kahre's rows are provisional (Ch5).** Kerrid's skills got original names (Fluke Cleave, Snub the Line, Anchor Fall); "Armor/Power Break" are Final Fantasy names.
+  - **Engine additions** (tested): encounter `party_skills` (ADR 0034), the boss HUD's first-turn prompt per hero (Ch4), and two boss hooks (Ch5's re-crust).
+  - **New canon for narrative to confirm:**
+    - Ch4: the earlier Velamir Cantors Mara, Ilse and Teodra; Nalu; "The Long Way Round".
+    - Ch5: Garo and Benet Tenmak, Tender Ruwen.
+- **In flight:** Ch6 (provisional Liss row; Toma's blocked attacks and the Inquisitor's yield) and Ch9 (its own `ch09/corrow_night` zone until Ch8; the act break). Ch8 waits on M3-CMB-01.
 - **M2-ENV-10 is done, for review by rendering:** the Lead's 14:40 ADR 0029 breach.
   - **The change:** the Shell Shrine now ships its two VoxelGI states, baked offline by `tools/shrine/bake_shrine_gi.tscn` under godot-render (reproducible, with PROVENANCE rows, about 0.8 MB each). Entry only loads them, so there's no main-thread bake.
   - **Guards:** the staleness guard is `tools/tests/test_shrine_gi_bake.py`; the frame-time test is in `test_shell_shrine_level.gd`.
