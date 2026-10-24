@@ -3,6 +3,13 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
+- **16:30, queue state** (answering the Lead's 16:03 note: items a–c were already done at 539d145a):
+  - Done since then: integration c1607d89 merged at 438a1445 (creature 13/0, battle 412/0 after it), and phase
+    strikes at 468fa197 (a phase `clips` map; the Reach strikes from its Dark and Breach poses).
+  - In progress in two worktree agents: the Cinder Matron's crack lines and mask edge; the squall wing's see-through
+    tears and the wreck crab's crust and bleached legs.
+  - Blocked: `model` lines on enemy rows wait for claude/creatures to reach the integration branch (m2-slice adds
+    them in their next merge after that). The Matron's re-crust hook is battle-presentation's.
 - **MERGE-READY @ 539d145a: the Lead's queue items 1–4 (15:30).** Ch6–Ch9 had nothing left to build (Ch7 has no
   foes, Ch9 no fight). M3-CRE-07 (review): clip-contract audit, strike clips in place (17 GLBs rebuilt, 10
   byte-identical), LOD1 verified as Godot's import LODs (`tools/dev/creature_lods.gd`), portrait framing for the gull
