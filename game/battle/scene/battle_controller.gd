@@ -521,8 +521,7 @@ func _show_result() -> void:
 	var sub_key := "HUD_VICTORY_SUB"
 	if engine.outcome in BattleSpoils.SPOILS_OUTCOMES:
 		rows = BattleRewards.new().award_victory(self)
-		if engine.outcome == BattleEngine.OUTCOME_SCRIPTED_ESCAPE:
-			sub_key = "HUD_SCRIPTED_ESCAPE_SUB"  # the Reach survived (M3-CMB-01)
+		sub_key = "HUD_SCRIPTED_ESCAPE_SUB" if engine.outcome == BattleEngine.OUTCOME_SCRIPTED_ESCAPE else sub_key
 	elif engine.outcome == BattleEngine.OUTCOME_DEFEAT:
 		title_key = "HUD_DEFEAT"
 		sub_key = "HUD_DEFEAT_SUB"
@@ -982,8 +981,7 @@ func _live_items() -> BattleItemSource:
 # --- capture scripts (deterministic; see tests/screenshots/shots.json) ---------------------
 
 
-## Plays the `scripted_state` fixture to its capture state (BattleCaptureScript). Public so tests
-## can drive it.
+## Plays the `scripted_state` fixture to its capture state (BattleCaptureScript); public for tests.
 func run_script(state_id: StringName = &"") -> void:
 	var sid := state_id if state_id != &"" else scripted_state
 	var fx := BattleFixture.load_fixture(sid)
