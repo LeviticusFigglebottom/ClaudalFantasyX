@@ -321,9 +321,37 @@ The first press in a beat is the one that counts, and a press before the beat op
 - Swift asks for a clean trace *as played* (`raw_misses == 0`), so the assist never earns it.
 - `max_step_sec` (0.05) stays within each kind's tightest window under every option.
 
+## Vowbound (M2-CMB-04)
+
+SPEC §6.3: a called Vowbound replaces the whole active party and **grows with its caller's stats** (Asha, the Cantor, for every Vowbound so far). `BattleVowbound` (`game/battle/battle_vowbound.gd`) holds the rules; the rows are `game/data/battle/vowbound.json`. No step adds a random roll. The turn rules are in [battle_ctb.md § Vowbound](battle_ctb.md).
+
+**Stats.** At its first call in a battle, every stat but level is built from the row's `base` and `scale_pct` and the caller's same stat as it stands in battle (Lattice and gear included; the caller's current HP, MP and statuses don't count). Its level is the caller's. It enters at full HP and MP.
+```
+vowbound_stat(base, caller_stat, scale_pct) = base + caller_stat × scale_pct ÷ 100
+```
+(Negative inputs count as 0.) `hp` and `mp` scale from the caller's **max** HP and MP.
+
+**The call's cost.** Calling takes no time at once: the Vowbound acts on the caller's turn. But the call is the caller's action. When the party comes back, the caller waits `action_delay(caller agility, call_rank, its speed)` from that moment, and every other member waits the ticks it had left when it stood down. Ilun's `call_rank` is 3 (`DEFAULT_RANK`). Without this cost, a 1 HP Ilun lifted a masher from 8.7% to 28.7% on the sandbox: a free action that soaks an enemy turn. With it, a 1 HP Ilun gives 16.4% (battle_ctb.md § Vowbound has the probe).
+
+Worked example, **Ilun** from Asha at level 5 with no Lattice gains (HP 300, MP 60, STR 6, MAG 18, DEF 6, MDF 14, AGI 14, ACC 8, EVA 10, LCK 12):
+
+| Stat | Base | Scale | Ilun |
+|---|---|---|---|
+| HP | 60 | 100% | 60 + 300 = **360** |
+| MP | 10 | 50% | 10 + 30 = **40** |
+| STR | 4 | 50% | 4 + 3 = **7** |
+| MAG | 4 | 100% | 4 + 18 = **22** |
+| DEF / MDF | 14 / 14 | 100% | **20 / 28** |
+| AGI | 4 | 50% | 4 + 7 = **11** |
+| ACC / EVA / LCK | 4 / 2 / 4 | 100% / 50% / 100% | **12 / 7 / 16** |
+
+Ilun is a wall, not a hammer (vowbound.md §1: defensive water magic and a tidal shield): a little more HP than Asha but over three times her defense and twice her magic defense, a little more magic than hers, and slow. *Brine Lash* (water, power 10, 4 MP), *Tidal Ward* (Protect and Shell on himself, 6 MP) and Attack. He absorbs water and is weak to lightning, so the sandbox's Reef Crab, which also absorbs water, shrugs off his magic.
+
+**His Swell.** The Vowbound's gauge (`0..SWELL_MAX`) fills only from HP **it** loses to hits: `swell_gain(amount, its max HP, swell.rate)`, the same formula as Ballast (§ Swell). Ilun's rate is 150, so he fills after losing two thirds of his max HP. A full gauge unleashes its finisher (`swell.technique`, *Floodnet*: water, all foes, power 16), which has no interactive input, costs no MP and empties the gauge. Party gauges never see the Vowbound's hits, and its gauge does not carry between battles.
+
 ## Not yet specified (owned by Combat, tracked in M1 tasks)
 
-Equipment abilities that tilt the opening odds, steal formulas, a Petrify cure item, and Vowbound stat scaling from Asha (M2).
+Equipment abilities that tilt the opening odds, steal formulas, a Petrify cure item, and Vowbound HP, MP and gauge carried between battles (M2).
 
 ## Progression
 

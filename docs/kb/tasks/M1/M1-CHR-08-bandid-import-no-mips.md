@@ -2,7 +2,7 @@
 id: M1-CHR-08
 title: Import the cloth band-id map without mipmaps
 role: character
-status: review
+status: done
 owner_session: "worktree-agent-af72bd4d8af383b91"
 reviewer: rendering
 depends_on: [M1-RND-09]
@@ -42,3 +42,4 @@ Owner of `assets/characters/**` is Character, so Rendering did not edit the impo
   | `asha_profile` | 0.00057 |
 
 ## Review log
+- 2026-10-24 review-sweep-P (rendering): **approve.** Both criteria hold in the files, not only in the notes. `asha_sleeve_bandid.png.import` and `shader_test/sleeve_bandid.png.import` have `mipmaps/generate=false` and are still lossless (`compress/mode=0`), and no other character map lost its mips. Both builders call `check_id_map` on the id map before writing it (asha_textures.py:1478, build_shader_test_textures.py:563). The 2-texel minimum is pinned by `test_character_id_maps.py` (6 OK, re-run here) and by the engine-side `test_band_id_maps_import_without_mipmaps` (the character_shading filter is 16/0 here). The shot RMSEs are all at noise level, so no baseline needed re-approval. Nit, no task: `id_map_min_run` and `check_id_map` are copied in two builders. If a third character needs an id map, move them into a shared helper under `assets_src/characters/`.
