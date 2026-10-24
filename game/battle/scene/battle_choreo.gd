@@ -14,6 +14,10 @@ extends Node
 ##   root procedurally (lunge, recoil, collapse). Its inner mesh stays the stand-in's own (flinch, KO sink).
 ## - **Instant.** With the controller's pacing at 0 (tests, captures) or "skip animations", every action lands
 ##   at once exactly as before this sequencer existed. force_play (freeze-frame captures) overrides that.
+## - **Specials (M2-BPR-04).** Generic shape fields (arc_m, windup_m, trace_m, stagger_sec, wave_m_s, react_scale)
+##   give the Swell finishers and the Drownbell's toll their own rows; accent() lays a short overlay on a fighter
+##   (BattleBossChoreo: the bell's gather sway, rim stagger, the party's flood brace); leave() and enter() play a
+##   Vowbound's call, entry, dismissal and fall (BattleVowboundChoreo). All of it moves fighters' roots only.
 
 signal contact(result: ActionResult)
 signal beat(kind: StringName, actor_id: StringName)
@@ -53,6 +57,10 @@ var live := true
 var frozen := false
 ## Every plan started, in order (tests and tools).
 var played: Array[Dictionary] = []
+## The Vowbound's call, entry, dismissal and fall (attached() builds it; M2-BPR-04).
+var vow: BattleVowboundChoreo
+## A boss's set-piece motion (null without a boss row in choreo.json bosses; M2-BPR-04).
+var boss: BattleBossChoreo
 
 var _ctl: BattleController
 var _engine: BattleEngine
@@ -69,8 +77,12 @@ var _ko_pose: Dictionary = {}
 var _after: Array[Callable] = []
 ## The HUD says an action is playing (help line, the timeline head reads "Next"); undone on finish.
 var _announced := false
-## Fighters walking onto their mark (a swap or a call): combatant id -> seconds walked.
+## Fighters walking (or rising) onto their mark: combatant id -> {t (seconds; < 0 still waiting), spec, fwd}.
 var _entering: Dictionary = {}
+## Fighters the stage took off the field that still play their exit: [{cid, node, t, spec, fwd, clip}].
+var _leaving: Array[Dictionary] = []
+## Accents on fighters' roots: combatant id -> {t, spec, back, clip}.
+var _accents: Dictionary = {}
 
 
 static func load_data() -> Dictionary:
@@ -94,6 +106,8 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	controller.stage.add_child(c)
 	controller.stage.choreo = c
 	c.attach(controller, engine)
+	c.vow = BattleVowboundChoreo.new(c, engine)  # M2-BPR-04: listen-only, like the sequencer
+	c.boss = BattleBossChoreo.attached_if_boss(c, engine)
 	return c
 
 
@@ -144,6 +158,11 @@ func current() -> Dictionary:
 	return _plan
 
 
+## Seconds into the current plan (plan time, at battle speed 1).
+func plan_time() -> float:
+	return _t
+
+
 ## Seconds of the current sequence still to play, at the battle speed (0 when none plays).
 func remaining_sec() -> float:
 	if _plan.is_empty():
@@ -151,14 +170,25 @@ func remaining_sec() -> float:
 	return maxf(float(_plan["total"]) - _t, 0.0) / speed
 
 
-## How long the controller holds after an action: `base`, or the choreography's rest plus a settle.
+## How long the controller holds after an action: `base`, or the choreography's rest plus a settle (an entrance,
+## an exit or an accent in progress counts too: a Vowbound's call plays without an action plan).
 func hold_after(base: float) -> float:
-	if _plan.is_empty():
+	var busy := busy_sec()
+	if not _plan.is_empty():
+		_announce()
+		if frozen:
+			return INF
+	elif busy <= 0.0:
 		return base
-	_announce()
-	if frozen:
-		return INF
-	return maxf(base, remaining_sec() + float(data.get("settle_sec", 0.0)) / speed)
+	return maxf(base, maxf(remaining_sec(), busy) + float(data.get("settle_sec", 0.0)) / speed)
+
+
+## Seconds (at the battle speed) until every entrance, exit and accent in progress has finished.
+func busy_sec() -> float:
+	var left := 0.0
+	for e: Dictionary in _entering.values() + _leaving + _accents.values():
+		left = maxf(left, float((e["spec"] as Dictionary).get("sec", 0.0)) - float(e["t"]))
+	return left / speed
 
 
 ## Runs `cb` once the current sequence has finished (at once when none plays).
@@ -234,8 +264,7 @@ func plan_for(result: ActionResult) -> Dictionary:
 	var targets: Array[StringName] = []
 	var reactions: Array[Dictionary] = []
 	var kos: Array[StringName] = []
-	var react_end := c
-	var reaction := data.get("reaction", {}) as Dictionary
+	var stagger := float(st.get("stagger_sec", 0.0))
 	for hit: Dictionary in result.hits:
 		var tid := StringName(str(hit.get("target_id", "")))
 		if not targets.has(tid):
@@ -247,18 +276,13 @@ func plan_for(result: ActionResult) -> Dictionary:
 		if kind == "" and amount < 0:
 			kind = REACT_HEAL
 		if kind != "":
-			reactions.append({"target": tid, "kind": kind})
-			react_end = maxf(react_end, c + float((reaction.get(kind, {}) as Dictionary).get("sec", 0.0)))
+			reactions.append({"target": tid, "kind": kind, "at": c + stagger * reactions.size()})
 		var t := _engine.find(tid) if _engine != null else null
 		if amount > 0 and t != null and t.hp <= 0 and not kos.has(tid):
 			kos.append(tid)
-	var ko := data.get("ko", {}) as Dictionary
-	var ko_at := c + float(ko.get("delay_sec", 0.0))
-	var total := maxf(ret, react_end)
-	if not kos.is_empty():
-		total = maxf(total, ko_at + float(ko.get("collapse_sec", 0.0)))
-	return {
+	var plan := {
 		"style": sid,
+		"shot": str(st.get("shot", "")),
 		"actor": result.actor_id,
 		"targets": targets,
 		"reactions": reactions,
@@ -268,9 +292,29 @@ func plan_for(result: ActionResult) -> Dictionary:
 		"strike_end": a + s,
 		"recover_end": rec,
 		"return_end": ret,
-		"ko_at": ko_at,
-		"total": total,
 	}
+	_retime(plan)
+	return plan
+
+
+## Sets a plan's ko_at (a felled target collapses after its own reaction starts) and total from its reactions'
+## start times (`at`: the contact, staggered by stagger_sec, or delayed by a wave's travel).
+func _retime(plan: Dictionary) -> void:
+	var reaction := data.get("reaction", {}) as Dictionary
+	var kos: Array = plan["kos"]
+	var react_end := float(plan["contact"])
+	var ko_from := react_end
+	for r: Dictionary in plan["reactions"]:
+		var at := float(r["at"])
+		react_end = maxf(react_end, at + float((reaction.get(r["kind"], {}) as Dictionary).get("sec", 0.0)))
+		if kos.has(r["target"]):
+			ko_from = maxf(ko_from, at)
+	var ko := data.get("ko", {}) as Dictionary
+	plan["ko_at"] = ko_from + float(ko.get("delay_sec", 0.0))
+	var total := maxf(float(plan["return_end"]), react_end)
+	if not kos.is_empty():
+		total = maxf(total, float(plan["ko_at"]) + float(ko.get("collapse_sec", 0.0)))
+	plan["total"] = total
 
 
 # --- playback -----------------------------------------------------------------------------
@@ -323,6 +367,11 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 			str(((data.get("reaction", {}) as Dictionary).get(r["kind"], {}) as Dictionary).get("clip", ""))
 		)
 		r["clip"] = BattleClips.has_clip(_ctl.stage.stand_in(tid), clip)
+	var wave := float(st.get("wave_m_s", 0.0))
+	if wave > 0.0:  # a shockwave (the toll): each target reacts as the wave reaches it
+		for r: Dictionary in plan["reactions"]:
+			r["at"] = float(r["at"]) + _flat_len(_home_of(StringName(str(r["target"]))).origin - from) / wave
+		_retime(plan)
 	for k: StringName in plan["kos"]:
 		_held_ko[k] = true
 	played.append(plan)
@@ -330,8 +379,10 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 	_apply()
 
 
-## Moves the current sequence (and any fighter walking onto its mark) on by `delta` real seconds.
+## Moves the current sequence (and any accent, exit or entrance) on by `delta` real seconds.
 func advance(delta: float) -> void:
+	_advance_accents(delta)
+	_advance_leaving(delta)
 	_advance_entering(delta)
 	if _plan.is_empty():
 		return
@@ -383,22 +434,26 @@ func _step_beats() -> void:
 	_fire(BEAT_CONTACT, float(p["contact"]), _beat_contact)
 	_fire(BEAT_RECOVER, float(p["strike_end"]), Callable())
 	_fire(BEAT_RETURN, float(p["recover_end"]), Callable())
+	var reactions: Array = p["reactions"]
+	for i in reactions.size():
+		_fire(StringName("react_%d" % i), float(reactions[i]["at"]), _react.bind(reactions[i]), false)
 	if not (p["kos"] as Array).is_empty():
 		_fire(BEAT_KO, float(p["ko_at"]), _beat_ko)
 		_fire(
 			&"ko_end",
 			float(p["ko_at"]) + float((data.get("ko", {}) as Dictionary).get("collapse_sec", 0.0)),
-			_release_kos
+			_release_kos,
+			false
 		)
 
 
-func _fire(id: StringName, at: float, cb: Callable) -> void:
+func _fire(id: StringName, at: float, cb: Callable, announce := true) -> void:
 	if _fired.has(id) or _t < at or _plan.is_empty():
 		return
 	if cb.is_valid():
 		cb.call()
 	_fired[id] = true
-	if id != &"ko_end":
+	if announce:
 		beat.emit(id, StringName(str(_plan.get("actor", ""))))
 
 
@@ -414,11 +469,13 @@ func _beat_strike() -> void:
 func _beat_contact() -> void:
 	_ctl.floats.show_hits(_result, false)
 	contact.emit(_result)
-	var reaction := data.get("reaction", {}) as Dictionary
-	for r: Dictionary in _plan["reactions"]:
-		if bool(r["clip"]):
-			var clip := StringName(str((reaction.get(r["kind"], {}) as Dictionary).get("clip", "")))
-			BattleClips.play(_ctl.stage.stand_in(StringName(str(r["target"]))), clip, speed)
+
+
+## A target's reaction starts (on the contact, or later when staggered or reached by a wave): its clip, if any.
+func _react(r: Dictionary) -> void:
+	if bool(r["clip"]):
+		var def := (data.get("reaction", {}) as Dictionary).get(r["kind"], {}) as Dictionary
+		BattleClips.play(_ctl.stage.stand_in(StringName(str(r["target"]))), StringName(str(def["clip"])), speed)
 
 
 ## A KO with a clip on the model just lets the stage apply it (the model plays its own KO); a stand-in
@@ -463,20 +520,38 @@ func _apply() -> void:
 	var rec := float(p["recover_end"])
 	var ret := float(p["return_end"])
 	var lean_max := float(st.get("lean_deg", 0.0)) * (_rm("lean_scale") if reduced_motion else 1.0)
+	var arc := float(st.get("arc_m", 0.0)) * (_rm("travel_scale") if reduced_motion else 1.0)
+	var c := float(p["contact"])
 	var pos := from
 	var lean := 0.0
 	if _t < a:
 		var u := _ease(_t / a)
-		pos = from.lerp(to, u)
+		pos = from.lerp(to, u) + Vector3.UP * arc * sin(clampf(_t / a, 0.0, 1.0) * PI * 0.5)  # the leap rises
 		lean = lean_max * 0.5 * u
 	elif _t < s_end:
 		var u := (_t - a) / (s_end - a)
-		var peak := _peak(u, (float(p["contact"]) - a) / (s_end - a))
+		var cu := (c - a) / (s_end - a)
+		var peak := _peak(u, cu)
 		pos = to
-		lean = lean_max * (0.5 + 0.5 * peak)
+		if _t < c:  # the plunge: the leap's height falls away, faster and faster, onto the contact
+			pos += Vector3.UP * arc * (1.0 - pow((_t - a) / (c - a), 2.0))
+		var windup := float(st.get("windup_m", 0.0))
+		var wind := 0.0
+		var thrust := peak
+		if windup != 0.0 and u < cu:  # a planted brace (or a rear-back), and the blow only once it has held
+			var at := float(st.get("windup_at", 0.5))
+			wind = _peak(u / cu, at)
+			thrust = _ease((u / cu - at) / (1.0 - at))
+		lean = lean_max * (0.5 + 0.5 * peak - wind)
 		if not bool(p["actor_clip"]):
-			pos += dir * float(st.get("lunge_m", 0.0)) * peak
-			pos += Vector3.UP * (float(st.get("lift_m", 0.0)) - float(st.get("crouch_m", 0.0))) * peak
+			pos += dir * (float(st.get("lunge_m", 0.0)) * thrust - windup * wind)
+			pos += (
+				Vector3.UP * (float(st.get("lift_m", 0.0)) * peak - float(st.get("crouch_m", 0.0)) * maxf(peak, wind))
+			)
+			var trace := float(st.get("trace_m", 0.0))
+			if trace != 0.0 and u < cu:  # a glyph written in the air, stroke by stroke, finished on the contact
+				var strokes := float(st.get("trace_strokes", 1.0))
+				pos += Vector3.UP.cross(dir).normalized() * trace * sin(PI * strokes * u / cu)
 	elif _t < rec:
 		pos = to
 		lean = lean_max * 0.5 * (1.0 - (_t - s_end) / maxf(rec - s_end, 0.0001))
@@ -500,13 +575,14 @@ func _reaction_pose(r: Dictionary) -> Array:
 	var away: Vector3 = r["dir"]
 	var def := (data.get("reaction", {}) as Dictionary).get(r["kind"], {}) as Dictionary
 	var sec := float(def.get("sec", 0.0))
-	var c := float(_plan["contact"])
+	var c := float(r.get("at", _plan["contact"]))
 	if bool(r["clip"]) or _t < c or sec <= 0.0:
 		return [Vector3.ZERO, away, 0.0]
 	var w := sin(PI * clampf((_t - c) / sec, 0.0, 1.0))
 	var tilt_k := _rm("tilt_scale") if reduced_motion else 1.0
 	match str(r["kind"]):
 		REACT_DAMAGE:
+			w *= float(style(str(_plan["style"])).get("react_scale", 1.0))  # a heavy blow (the toll) recoils harder
 			return [away * float(def.get("recoil_m", 0.0)) * w, away, float(def.get("tilt_deg", 0.0)) * w * tilt_k]
 		REACT_HEAL:
 			return [Vector3.UP * float(def.get("lift_m", 0.0)) * w, away, 0.0]
@@ -535,27 +611,49 @@ func _add_collapse(poses: Dictionary) -> void:
 
 ## Places fighter `cid` at its home moved by `offset`, tipped `lean_deg` toward `toward` (about its feet).
 func _pose(cid: StringName, offset: Vector3, toward: Vector3, lean_deg: float) -> void:
-	var f := _ctl.stage.stand_in(cid)
-	if f == null:
-		return
+	var f := _node_of(cid)
+	if f != null:
+		_pose_node(f, offset, toward, lean_deg)
+
+
+## Places `f` at its home moved by `offset`, tipped `lean_deg` toward `toward`, with its accent (if any) on top.
+func _pose_node(f: FighterStandIn, offset: Vector3, toward: Vector3, lean_deg: float) -> void:
 	var home := _home(f)
-	var basis := home.basis
+	var acc := _accent_now(f.combatant_id)
+	var basis := (acc[1] as Basis) * _tipped(home.basis, toward, lean_deg)
+	f.transform = Transform3D(basis, home.origin + offset + (acc[0] as Vector3))
+
+
+static func _tipped(basis: Basis, toward: Vector3, lean_deg: float) -> Basis:
 	var axis := Vector3.UP.cross(toward)
 	if absf(lean_deg) > 0.0 and axis.length() > 0.0:
-		basis = Basis(axis.normalized(), deg_to_rad(lean_deg)) * basis
-	f.transform = Transform3D(basis, home.origin + offset)
+		return Basis(axis.normalized(), deg_to_rad(lean_deg)) * basis
+	return basis
 
 
 func _rest(cid: StringName) -> void:
-	var f := _ctl.stage.stand_in(cid)
+	var f := _node_of(cid)
 	if f != null:
 		f.transform = _home(f)
 
 
-# --- entering (swap, call) ----------------------------------------------------------------
+## The fighter node for `cid`: the stage's, or one the stage took off that has not started its exit yet (a
+## Vowbound struck down still takes the blow before it falls; a caller still makes its call).
+func _node_of(cid: StringName) -> FighterStandIn:
+	var f := _ctl.stage.stand_in(cid) if _ctl != null else null
+	if f != null:
+		return f
+	for e: Dictionary in _leaving:
+		if e["cid"] == cid and float(e["t"]) < 0.0 and is_instance_valid(e["node"]):
+			return e["node"] as FighterStandIn
+	return null
 
 
-## A fighter the stage just placed (a swap or a Vowbound's call) walks onto its mark from behind it.
+# --- entering, leaving (swap, a Vowbound's call and departure) ------------------------------
+
+
+## A fighter the stage just placed walks onto its mark from behind it (a swap: choreo.json enter), or plays the
+## entrance BattleVowboundChoreo gives it (a Vowbound rising at its slot, the party walking back in after it).
 func enter(cid: StringName) -> void:
 	var f := _ctl.stage.stand_in(cid) if _ctl != null else null
 	if f == null:
@@ -563,8 +661,10 @@ func enter(cid: StringName) -> void:
 	_home(f)
 	if not animating():
 		return
-	_entering[cid] = 0.0
-	BattleClips.play(f, StringName(str((data.get("enter", {}) as Dictionary).get("clip", ""))), speed)
+	var spec: Dictionary = vow.enter_spec(cid) if vow != null else {}
+	if spec.is_empty():
+		spec = data.get("enter", {}) as Dictionary
+	_entering[cid] = {"t": -float(spec.get("delay_sec", 0.0)), "spec": spec, "fwd": _facing(cid), "clip": false}
 	_advance_entering(0.0)
 
 
@@ -572,22 +672,174 @@ func is_entering(cid: StringName) -> bool:
 	return _entering.has(cid)
 
 
+## The entrance `cid` is playing ({} when none): {t, spec, fwd}.
+func entering(cid: StringName) -> Dictionary:
+	return _entering.get(cid, {}) as Dictionary
+
+
+## From back_m behind the mark and depth_m under it, tipped lean_deg forward, onto the mark over sec (eased),
+## after delay_sec unseen. Reduced motion shortens the walk (travel_scale) and the tip, never the rise.
 func _advance_entering(delta: float) -> void:
 	if _entering.is_empty():
 		return
-	var cfg := data.get("enter", {}) as Dictionary
-	var sec := maxf(float(cfg.get("sec", 0.0)), 0.0001)
-	var back := float(cfg.get("back_m", 0.0)) * (_rm("travel_scale") if reduced_motion else 1.0)
+	var travel := _rm("travel_scale") if reduced_motion else 1.0
+	var lean_k := _rm("lean_scale") if reduced_motion else 1.0
 	for cid: StringName in _entering.keys():
-		var walked := float(_entering[cid]) + delta * speed
+		var e: Dictionary = _entering[cid]
+		var spec: Dictionary = e["spec"]
+		var sec := maxf(float(spec.get("sec", 0.0)), 0.0001)
+		var t := float(e["t"]) + delta * speed
 		var f := _ctl.stage.stand_in(cid)
-		if f == null or walked >= sec:
+		if f == null or t >= sec:
 			_entering.erase(cid)
-			_rest(cid)
+			if f != null:
+				f.visible = true
+				_rest(cid)
 			continue
-		_entering[cid] = walked
-		var fwd := _facing(cid)
-		_pose(cid, -fwd * back * (1.0 - _ease(walked / sec)), fwd, 0.0)
+		e["t"] = t
+		f.visible = t >= 0.0
+		if t >= 0.0 and not bool(e["clip"]):
+			e["clip"] = true
+			BattleClips.play(f, StringName(str(spec.get("clip", ""))), speed)
+		var k := 1.0 - _ease(maxf(t, 0.0) / sec)
+		var fwd: Vector3 = e["fwd"]
+		var off := -fwd * float(spec.get("back_m", 0.0)) * travel + Vector3.DOWN * float(spec.get("depth_m", 0.0))
+		_pose_node(f, off * k, fwd, float(spec.get("lean_deg", 0.0)) * lean_k * k)
+
+
+## The stage takes `f` (combatant `cid`) off the field (BattleStage.sync_party). A swap's leaver goes at once, as
+## before; BattleVowboundChoreo gives the party's step-off at a call and a Vowbound's departure or fall, which
+## play out (the node no longer belongs to the stage) and then free it.
+func leave(cid: StringName, f: FighterStandIn) -> void:
+	var spec: Dictionary = vow.leave_spec(cid) if vow != null else {}
+	if spec.is_empty() or not animating():
+		f.queue_free()
+		return
+	var home := _home(f)
+	var e := {"cid": cid, "node": f, "t": -float(spec.get("delay_sec", 0.0)), "spec": spec, "clip": false}
+	e["fwd"] = _facing_from(home.origin, BattleCombatant.TEAM_PARTY)
+	_leaving.append(e)
+	if spec.has("accent"):  # played while it still stands (a Vowbound's caller makes its call)
+		accent(cid, spec["accent"] as Dictionary)
+
+
+## The exit `cid` is playing ({} when none): {cid, node, t, spec, fwd}.
+func leaving(cid: StringName) -> Dictionary:
+	for e: Dictionary in _leaving:
+		if e["cid"] == cid:
+			return e
+	return {}
+
+
+## Holds on the mark through delay_sec, then back_m back and depth_m down, tipped tilt_deg back, over sec.
+func _advance_leaving(delta: float) -> void:
+	var travel := _rm("travel_scale") if reduced_motion else 1.0
+	var lean_k := _rm("lean_scale") if reduced_motion else 1.0
+	for e: Dictionary in _leaving.duplicate():
+		var spec: Dictionary = e["spec"]
+		var sec := maxf(float(spec.get("sec", 0.0)), 0.0001)
+		e["t"] = float(e["t"]) + delta * speed
+		var f := e["node"] as FighterStandIn
+		if not is_instance_valid(f) or float(e["t"]) >= sec:
+			_leaving.erase(e)
+			if is_instance_valid(f):
+				f.queue_free()
+			continue
+		if float(e["t"]) < 0.0:
+			continue  # still on the field: the sequence (and an accent) pose it
+		if not bool(e["clip"]):
+			e["clip"] = true
+			BattleClips.play(f, StringName(str(spec.get("clip", ""))), speed)
+		var u := _ease(float(e["t"]) / sec)
+		var back := -(e["fwd"] as Vector3)
+		var off := back * float(spec.get("back_m", 0.0)) * travel + Vector3.DOWN * float(spec.get("depth_m", 0.0))
+		_pose_node(f, off * u, back, float(spec.get("tilt_deg", 0.0)) * lean_k * u)
+
+
+func _exit_tree() -> void:
+	for e: Dictionary in _leaving:
+		if is_instance_valid(e["node"]):
+			(e["node"] as Node).queue_free()
+	_leaving.clear()
+	for cid: StringName in _entering:
+		var f := _ctl.stage.stand_in(cid) if _ctl != null else null
+		if f != null:
+			f.visible = true
+	_entering.clear()
+
+
+# --- accents (a boss's set piece, a Vowbound's caller) ----------------------------------------
+
+
+## A short overlay on `cid`'s root after `delay` seconds, on top of whatever else moves it (its own action, a
+## reaction, an entrance). `spec` (choreo.json): sec; lift_m and crouch_m (up, down); recoil_m and tilt_deg (back,
+## away from the other side; negative leans in); sway_deg and sways (side to side, that many times); clip. Out and
+## back over sec. A fallen fighter takes none. Nothing when actions land instantly.
+func accent(cid: StringName, spec: Dictionary, delay := 0.0) -> void:
+	var f := _node_of(cid)
+	var c := _engine.find(cid) if _engine != null else null
+	if f == null or not animating() or float(spec.get("sec", 0.0)) <= 0.0 or (c != null and c.hp <= 0):
+		return
+	if _ko_pose.has(cid) or _held_ko.has(cid):
+		return
+	_home(f)
+	_accents[cid] = {"t": -delay, "spec": spec, "back": -_facing(cid), "clip": false}
+	_advance_accents(0.0)
+
+
+func has_accent(cid: StringName) -> bool:
+	return _accents.has(cid)
+
+
+func _advance_accents(delta: float) -> void:
+	for cid: StringName in _accents.keys():
+		var e: Dictionary = _accents[cid]
+		var spec: Dictionary = e["spec"]
+		e["t"] = float(e["t"]) + delta * speed
+		var f := _node_of(cid)
+		if f == null or float(e["t"]) >= float(spec.get("sec", 0.0)):
+			_accents.erase(cid)
+			if f != null and not _moved_elsewhere(cid):
+				_rest(cid)
+			continue
+		if float(e["t"]) >= 0.0 and not bool(e["clip"]):
+			e["clip"] = true
+			BattleClips.play(f, StringName(str(spec.get("clip", ""))), speed)
+		if not _moved_elsewhere(cid):
+			_pose(cid, Vector3.ZERO, e["back"] as Vector3, 0.0)
+
+
+## True when the sequence, an entrance or a KO pose places `cid` (each adds the accent itself).
+func _moved_elsewhere(cid: StringName) -> bool:
+	if _entering.has(cid) or _ko_pose.has(cid):
+		return true
+	if _plan.is_empty():
+		return false
+	if StringName(str(_plan["actor"])) == cid or (_plan["kos"] as Array).has(cid):
+		return true
+	for r: Dictionary in _plan["reactions"]:
+		if r["target"] == cid:
+			return true
+	return false
+
+
+## [offset, basis] of `cid`'s accent now (none: [ZERO, IDENTITY]).
+func _accent_now(cid: StringName) -> Array:
+	var e: Dictionary = _accents.get(cid, {})
+	if e.is_empty() or float(e["t"]) < 0.0:
+		return [Vector3.ZERO, Basis.IDENTITY]
+	var spec: Dictionary = e["spec"]
+	var u := clampf(float(e["t"]) / maxf(float(spec.get("sec", 0.0)), 0.0001), 0.0, 1.0)
+	var env := sin(PI * u)
+	var back: Vector3 = e["back"]
+	var side := Vector3.UP.cross(back)
+	var travel := _rm("travel_scale") if reduced_motion else 1.0
+	var lean_k := _rm("lean_scale") if reduced_motion else 1.0
+	var off := Vector3.UP * (float(spec.get("lift_m", 0.0)) - float(spec.get("crouch_m", 0.0))) * env
+	off += back * float(spec.get("recoil_m", 0.0)) * travel * env
+	var sway := float(spec.get("sway_deg", 0.0)) * sin(TAU * float(spec.get("sways", 0.0)) * u) * env
+	var basis := _tipped(Basis.IDENTITY, back, float(spec.get("tilt_deg", 0.0)) * lean_k * env)
+	return [off, _tipped(basis, side, sway * lean_k)]
 
 
 # --- geometry -----------------------------------------------------------------------------
@@ -601,7 +853,7 @@ func _home(f: FighterStandIn) -> Transform3D:
 
 
 func _home_of(cid: StringName) -> Transform3D:
-	var f := _ctl.stage.stand_in(cid)
+	var f := _node_of(cid)
 	return _home(f) if f != null else Transform3D()
 
 
@@ -621,11 +873,15 @@ func _centroid(ids: Array[StringName], actor_id: StringName) -> Vector3:
 ## The flat direction from `cid`'s mark toward the other side's fighters.
 func _facing(cid: StringName) -> Vector3:
 	var me := _engine.find(cid) if _engine != null else null
-	var from := _home_of(cid).origin
+	return _facing_from(_home_of(cid).origin, me.team if me != null else &"")
+
+
+## The flat direction from `from` toward the fighters not on `team` (every fighter when `team` is &"").
+func _facing_from(from: Vector3, team: StringName) -> Vector3:
 	var sum := Vector3.ZERO
 	var n := 0
 	for c in _engine.party_active + _engine.enemies:
-		if me != null and c.team == me.team:
+		if team != &"" and c.team == team:
 			continue
 		if _ctl.stage.stand_in(c.id) != null:
 			sum += _home_of(c.id).origin

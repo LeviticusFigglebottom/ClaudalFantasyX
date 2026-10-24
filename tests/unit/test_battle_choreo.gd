@@ -86,7 +86,7 @@ func test_styles_follow_skill_kind_target_and_item() -> void:
 	assert_eq(choreo.plan_for(_result(&"mend", [_hit(&"asha", -12)]))["style"], "support", "heal")
 	assert_eq(choreo.plan_for(_result(&"brace", [_hit(&"rhen", 0)]))["style"], "guard", "self target")
 	assert_eq(choreo.plan_for(_result(&"read", [_hit(foe, 0)]))["style"], "read", "by skill")
-	assert_eq(choreo.plan_for(_result(&"lamp_dive", [_hit(foe, 30)]))["style"], "finisher", "a Swell finisher")
+	assert_eq(choreo.plan_for(_result(&"lamp_dive", [_hit(foe, 30)]))["style"], "dive", "a Swell finisher (M2-BPR-04)")
 	var item := _result(&"", [_hit(&"asha", -20)])
 	item.item_id = &"tonic"
 	assert_eq(choreo.plan_for(item)["style"], "item", "an item")

@@ -755,6 +755,19 @@
       "scene": "res://game/battle/scene/shots/battle_vowbound_out.tscn"
     },
     {
+      "id": "battle_choreo_lamp_dive",
+      "scene": "res://game/battle/scene/shots/battle_choreo_lamp_dive.tscn"
+    },
+    {
+      "id": "battle_choreo_toll",
+      "scene": "res://game/battle/scene/shots/battle_choreo_toll.tscn",
+      "settle_frames": 45
+    },
+    {
+      "id": "battle_choreo_vowbound_rise",
+      "scene": "res://game/battle/scene/shots/battle_choreo_vowbound_rise.tscn"
+    },
+    {
       "id": "bestiary_menu",
       "scene": "res://game/ui/bestiary/shots/bestiary_menu.tscn"
     },

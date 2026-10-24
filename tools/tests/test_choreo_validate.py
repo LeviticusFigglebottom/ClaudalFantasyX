@@ -56,6 +56,49 @@ class ChoreoValidateTest(unittest.TestCase):
         self.assertTrue(self._errs(lambda c: c.update(settle_sec="x")))
         self.assertEqual(vc.choreo_errors({}, SKILLS), [f"{vc.CHOREO_FILE}: needs a 'choreo' object"])
 
+    # --- M2-BPR-04: specials ---
+
+    def test_special_styles_ship_for_every_swell_technique_and_the_toll(self) -> None:
+        c = DOC["choreo"]
+        for skill, sid in (("lamp_dive", "dive"), ("shallows_verse", "verse"), ("return_tide", "brace"),
+                           ("written_light", "glyph"), ("toll", "toll")):
+            self.assertEqual(c["style_by_skill"][skill], sid)
+        self.assertGreater(c["styles"]["dive"]["arc_m"], 0)
+        self.assertGreater(c["styles"]["verse"]["stagger_sec"], 0)
+        self.assertGreater(c["styles"]["toll"]["wave_m_s"], 0)
+
+    def test_style_shape_fields(self) -> None:
+        self.assertTrue(self._errs(lambda c: c["styles"]["dive"].update(arc_m=-1)))
+        self.assertTrue(self._errs(lambda c: c["styles"]["dive"].update(approach_sec=0)))  # a leap needs a rise
+        self.assertTrue(self._errs(lambda c: c["styles"]["verse"].update(stagger_sec="x")))
+        self.assertTrue(self._errs(lambda c: c["styles"]["brace"].update(windup_at=1.0)))
+        self.assertTrue(self._errs(lambda c: c["styles"]["glyph"].update(trace_strokes=2.5)))
+        self.assertTrue(self._errs(lambda c: c["styles"]["toll"].update(wave_m_s=-3)))
+        self.assertTrue(self._errs(lambda c: c["styles"]["toll"].update(react_scale=-1)))
+        self.assertTrue(self._errs(lambda c: c["styles"]["dive"].update(shot="")))
+
+    def test_toll_wave_matches_the_boss_vfx_ring(self) -> None:
+        vfx = json.loads((ROOT / "game/data/vfx/battle/boss_vfx.json").read_text(encoding="utf-8"))
+        toll = vfx["bosses"]["drownbell"]["toll"]
+        ring_m_s = (toll["ring_radius_m"] - 0.2) / toll["ring_s"]  # BattleBossVfx._toll's linear ring from 0.2 m
+        self.assertAlmostEqual(DOC["choreo"]["styles"]["toll"]["wave_m_s"], ring_m_s, delta=ring_m_s * 0.05)
+
+    def test_boss_block(self) -> None:
+        self.assertTrue(self._errs(lambda c: c["bosses"]["drownbell"].update(charge_skill="no_such_skill")))
+        self.assertTrue(self._errs(lambda c: c["bosses"]["drownbell"]["gather"].update(sec=0)))
+        self.assertTrue(self._errs(lambda c: c["bosses"]["drownbell"]["break"].update(clip="twirl")))
+        self.assertTrue(self._errs(lambda c: c["bosses"]["drownbell"]["flood"].pop("phase")))
+        self.assertTrue(self._errs(lambda c: c["bosses"]["drownbell"]["flood"]["accent"].update(tilt_deg="x")))
+
+    def test_vowbound_block(self) -> None:
+        self.assertTrue(self._errs(lambda c: c["vowbound"]["call"].update(sec=-1)))
+        self.assertTrue(self._errs(lambda c: c["vowbound"]["step_off"].update(back_m=-1)))
+        self.assertTrue(self._errs(lambda c: c["vowbound"]["entry"].update(clip="twirl")))
+        self.assertTrue(self._errs(lambda c: c["vowbound"]["entry"].update(sec=0)))
+        self.assertTrue(self._errs(lambda c: c["vowbound"]["fall"].update(depth_m="deep")))
+        self.assertTrue(self._errs(lambda c: c["vowbound"]["return"].update(share=2)))
+        self.assertTrue(self._errs(lambda c: c.update(vowbound=[])))
+
 
 if __name__ == "__main__":
     unittest.main()
