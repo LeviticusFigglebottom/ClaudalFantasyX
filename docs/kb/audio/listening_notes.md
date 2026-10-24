@@ -588,3 +588,30 @@ in this order, a creature at a time (`ffplay -autoexit <file>`):
   they read as legs and glass, or as digital clicks?
 - **Variants:** the wreck crab, wallcrab, wall polyp and stormgull play their parent's set at another pitch. Is
   that distinct enough, or does each want its own?
+
+## M3: the Ch6 boss, the Stillguard Inquisitor and the raid-hound (M3-AUD-20)
+
+`music/stillguard_inquisitor.ogg`: a 4.6 s intro and a 73.8 s loop (78.5 s in all), from
+`assets_src/music/stillguard_inquisitor.py`. The fight isn't built yet, so for now it can only be heard on its own.
+The scene is act_outline.md Ch6: an Order raid burning a Saltwright salvage camp in the Brine Shoals. It is the
+first fight against the Order's own people, and Toma refuses to strike to kill. So it must not sound like a monster
+fight. It should sound lawful and cold, with sorrow under it.
+
+- **The brief in sound:** a march in A minor, 4/4 at 104 BPM. It keeps to the white notes (the Order's C major seen
+  from below) except for the G# of the cadences. The drill drums are barely humanized (1 ms), unlike every other
+  battle cue: the Order keeps exact time.
+- **The band:** frame drums in a strict march pattern, with the big drum on 1 and 3. Shields (a hand-damped kettle
+  gong under a hard slap) strike on beat 4, and three times ("Hold. On my shield.") at each cadence. A low piano
+  marches in octaves on eighths. The edict theme is on piano in octaves, marcato. A men's hum holds the chord roots
+  under the whole loop, because the Order hums and only Cantors sing.
+- **The people (bars 13-20):** the drums thin to the dum. A breath flute plays the lament in C major over
+  F C G Am, and women hum above the men. In A'' (bars 25-32) the edict drops an octave and the flute's counterline
+  sits over it: law and sorrow at once.
+- **The hound (bars 21-24):** the drill breaks into running sixteenths, the bass snaps through the flattened second
+  (Bb) in eighths, and the shields strike on 2 and 4.
+- **The key questions:** does it read as **people** (the Order's discipline) and not a beast? Does the sorrow
+  come through, or is it only stern? **Does the strict drill sound disciplined, or mechanical?** If it's
+  mechanical, I'd add a little timing spread before changing the pattern. **Is the piano edict cold, or thin
+  against the drums?** If it's thin, I'd double it on the flute an octave up in A rather than raise the piano.
+- **Do the shields sound like a struck shield,** or like a pot or a gong? If they're a gong, the plate gets shorter.
+- **Can you hear the loop wrap?** The seam is 73.8 s after the intro, a sixteenth before bar 1's downbeat.
