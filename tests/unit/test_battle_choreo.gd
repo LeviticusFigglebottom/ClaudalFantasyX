@@ -190,6 +190,31 @@ func test_hand_off_waits_for_the_choreography() -> void:
 	_free()
 
 
+func test_the_hud_names_the_playing_action_and_the_next_actor() -> void:
+	_to_turn_of(&"rhen")
+	ctl.pacing_scale = 1.0
+	ctl.act(&"attack", [_foe()])
+	var head: Dictionary = ctl.hud.timeline.slots[0]
+	assert_eq(str(head["caption"]), tr("HUD_TL_NEXT"), "the head is who acts next while Rhen's attack plays")
+	assert_true(ctl.hud.help_text().contains(ctl.menus.display_name(ctl.engine.find(&"rhen"))), "help names Rhen")
+	choreo.finish()
+	head = ctl.hud.timeline.slots[0]
+	assert_eq(str(head["caption"]), ctl.hud.timeline.caption, "the turn caption is back")
+	_free()
+
+
+func test_frozen_holds_the_hand_off_and_ignores_finish() -> void:
+	_to_turn_of(&"rhen")
+	choreo.force_play = true
+	choreo.frozen = true
+	ctl.act(&"attack", [_foe()])
+	assert_true(choreo.playing(), "force_play plays at pacing 0")
+	assert_eq(ctl.stage.hold_after(0.0), INF)
+	choreo.finish()
+	assert_true(choreo.playing(), "a freeze-frame never ends")
+	_free()
+
+
 func test_a_ko_waits_for_its_collapse_beat() -> void:
 	_to_turn_of(&"rhen")
 	ctl.pacing_scale = 1.0

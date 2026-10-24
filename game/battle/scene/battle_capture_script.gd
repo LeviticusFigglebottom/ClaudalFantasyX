@@ -16,6 +16,20 @@ const SCRIPT_VOWBOUND_CALL := &"vowbound_call"
 const SCRIPT_VOWBOUND_OUT := &"vowbound_out"
 const VOWBOUND_ID := &"ilun"
 const CALLER_ID := &"asha"
+## M2-BPR-06: mid-action freeze-frames. Each plays one action with the choreography forced on, frozen at a beat
+## (plus an offset in seconds): [actor, skill, target base id ("" = default target), beat, offset].
+const CHOREO_PREFIX := "choreo_"
+const CHOREO_FREEZES := {
+	&"choreo_melee": [&"rhen", &"attack", &"gull_harrier", &"contact", -0.04],
+	&"choreo_hit": [&"rhen", &"undertow_cut", &"reef_crab", &"contact", 0.14],
+	&"choreo_cast": [&"ysolde", &"ember", &"lantern_eel", &"contact", -0.05],
+	&"choreo_support": [&"asha", &"mend", &"rhen", &"contact", -0.05],
+	&"choreo_read": [&"ysolde", &"read", &"lantern_eel", &"contact", -0.05],
+	&"choreo_ko": [&"rhen", &"attack", &"gull_harrier", &"ko_at", 0.3],
+}
+const CHOREO_SWAP := &"choreo_swap"
+## The walk-in is frozen at this share of its time.
+const SWAP_FREEZE_SHARE := 0.5
 
 
 ## Plays `ctl`'s already-started fixture `sid` (a BattleController.SCRIPT_* id) to its state.
@@ -87,6 +101,40 @@ static func play(ctl: BattleController, sid: StringName) -> void:
 			ctl.act(BattleMenus.ATTACK_SKILL, [ctl.default_targets(BattleMenus.ATTACK_SKILL)[0].id])
 			_to_turn_of(ctl, VOWBOUND_ID)
 			ctl.hud.commands.select(BattleMenus.ROW_DISMISS)
+		CHOREO_SWAP:
+			_to_turn_of(ctl, &"rhen")
+			var choreo := _force_choreo(ctl)
+			ctl.swap_members(CALLER_ID, &"toma")
+			var sec := float((choreo.data.get("enter", {}) as Dictionary).get("sec", 0.0))
+			choreo.advance(sec * SWAP_FREEZE_SHARE / choreo.speed)
+		_:
+			if CHOREO_FREEZES.has(sid):
+				_freeze_action(ctl, CHOREO_FREEZES[sid] as Array)
+
+
+## Forces the choreography on for a capture, with its clock held (BattleChoreo.force_play, frozen).
+static func _force_choreo(ctl: BattleController) -> BattleChoreo:
+	var choreo := ctl.stage.choreo
+	choreo.force_play = true
+	choreo.live = false
+	choreo.speed = 1.0
+	choreo.reduced_motion = false
+	choreo.skip = false
+	return choreo
+
+
+## Plays `spec` ([actor, skill, target base id, beat, offset]) and freezes it at its beat + offset.
+static func _freeze_action(ctl: BattleController, spec: Array) -> void:
+	_to_turn_of(ctl, StringName(spec[0]))
+	var choreo := _force_choreo(ctl)
+	choreo.frozen = true
+	var skill := StringName(spec[1])
+	var target := ctl.default_targets(skill)[0].id
+	for c in ctl.engine.party_active + ctl.engine.enemies:
+		if String(c.id).get_slice("#", 0) == String(spec[2]) and c.is_alive():
+			target = c.id
+	ctl.act(skill, [target])
+	choreo.seek(float(choreo.current().get(String(spec[3]), 0.0)) + float(spec[4]))
 
 
 ## Plays (party: Attack the first living foe) until it is `cid`'s turn.

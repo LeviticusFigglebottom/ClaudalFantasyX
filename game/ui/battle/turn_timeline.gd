@@ -57,6 +57,18 @@ func note_turn_taken(cid: StringName) -> void:
 	_offsets[cid] = int(_offsets.get(cid, 0)) + 1
 
 
+## M2-BPR-01: while an action's choreography plays, slot 0 is who acts next, not who is acting. Its caption
+## reads `text`; "" puts the turn caption back.
+func set_head_caption(text: String) -> void:
+	if slots.is_empty():
+		return
+	var head: Dictionary = slots[0]
+	head["caption"] = text if text != "" else caption
+	var chip := chip_for_key(str(head["key"]))
+	if chip != null:
+		chip.apply(head, _identity.get(head["id"], {}), bool(head["is_current"]))
+
+
 ## Shows the order. `base` is engine.preview() (no candidate action). `preview` is
 ## engine.preview(skill, target, length - 1), or empty when nothing is hovered.
 func show_turns(

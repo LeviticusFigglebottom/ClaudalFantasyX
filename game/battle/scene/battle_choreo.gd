@@ -49,6 +49,8 @@ var skip := false
 var force_play := false
 ## False holds a sequence where it stands (captures); advance() still moves it.
 var live := true
+## A freeze-frame capture: the sequence never ends, so the controller's hand-off holds forever.
+var frozen := false
 ## Every plan started, in order (tests and tools).
 var played: Array[Dictionary] = []
 
@@ -65,6 +67,8 @@ var _held_ko: Dictionary = {}
 ## Combatant id -> the collapsed transform a procedural KO left it in (cleared on revive).
 var _ko_pose: Dictionary = {}
 var _after: Array[Callable] = []
+## The HUD says an action is playing (help line, the timeline head reads "Next"); undone on finish.
+var _announced := false
 ## Fighters walking onto their mark (a swap or a call): combatant id -> seconds walked.
 var _entering: Dictionary = {}
 
@@ -151,6 +155,9 @@ func remaining_sec() -> float:
 func hold_after(base: float) -> float:
 	if _plan.is_empty():
 		return base
+	_announce()
+	if frozen:
+		return INF
 	return maxf(base, remaining_sec() + float(data.get("settle_sec", 0.0)) / speed)
 
 
@@ -165,6 +172,28 @@ func after_sequence(cb: Callable) -> void:
 ## True while the stage should hold `cid`'s KO look back (its collapse beat has not come yet).
 func holds_ko(cid: StringName) -> bool:
 	return _held_ko.has(cid)
+
+
+## Pillar 4 while an action plays: the controller has already moved the order on, so the timeline head is who
+## acts next ("Next", not "Acting now"), and the help line names the action being played (the enemy and
+## automatic turns, and a Swell's input grade, already say it). hold_after calls it, right after the hand-off
+## has redrawn the order.
+func _announce() -> void:
+	if _announced or _result == null:
+		return
+	_announced = true
+	_ctl.hud.timeline.set_head_caption(tr("HUD_TL_NEXT"))
+	var actor := _engine.find(_result.actor_id)
+	if actor == null or actor.team != BattleCombatant.TEAM_PARTY or _result.auto_reason != &"":
+		return
+	if _ctl.swell != null and _ctl.swell.is_technique(actor, _result.skill_id):
+		return
+	var what := (
+		_ctl.menus.item_name(_ctl.items, _result.item_id)
+		if _result.item_id != &""
+		else _ctl.menus.skill_name(_engine, _result.skill_id)
+	)
+	_ctl.hud.set_help(tr("HUD_ENEMY_ACTS_FMT").format({"name": _ctl.menus.display_name(actor), "skill": what}))
 
 
 # --- the plan (pure data) -----------------------------------------------------------------
@@ -326,7 +355,7 @@ func seek(t: float) -> void:
 
 ## Ends the current sequence at once: anything it has not landed lands, and everyone stands on their mark.
 func finish() -> void:
-	if _plan.is_empty():
+	if _plan.is_empty() or frozen:
 		return
 	_t = float(_plan["total"])
 	_step_beats()
@@ -335,6 +364,9 @@ func finish() -> void:
 	for tid: StringName in _plan["targets"]:
 		if not _ko_pose.has(tid):
 			_rest(tid)
+	if _announced:
+		_announced = false
+		_ctl.hud.timeline.set_head_caption("")
 	_plan = {}
 	_result = null
 	sequence_finished.emit(actor_id)

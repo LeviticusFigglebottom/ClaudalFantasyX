@@ -1032,6 +1032,154 @@
       }
      }
     }
+   },
+   "choreo_melee": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022
+   },
+   "choreo_hit": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022
+   },
+   "choreo_swap": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022
+   },
+   "choreo_support": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022
+   },
+   "choreo_cast": {
+    "active": [
+     "rhen",
+     "asha",
+     "ysolde"
+    ],
+    "reserve": [
+     "toma"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "overrides": {
+     "characters": {
+      "ysolde": {
+       "stats": {
+        "agility": 40
+       },
+       "skills": [
+        "attack",
+        "ember",
+        "frost",
+        "slow_hex",
+        "read"
+       ]
+      }
+     },
+     "enemies": {
+      "reef_crab": {
+       "lore_key": "LORE_REEF_CRAB"
+      },
+      "lantern_eel": {
+       "lore_key": "LORE_LANTERN_EEL"
+      },
+      "gull_harrier": {
+       "lore_key": "LORE_GULL_HARRIER"
+      }
+     }
+    }
+   },
+   "choreo_read": {
+    "active": [
+     "rhen",
+     "asha",
+     "ysolde"
+    ],
+    "reserve": [
+     "toma"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "overrides": {
+     "characters": {
+      "ysolde": {
+       "stats": {
+        "agility": 40
+       },
+       "skills": [
+        "attack",
+        "ember",
+        "frost",
+        "slow_hex",
+        "read"
+       ]
+      }
+     },
+     "enemies": {
+      "reef_crab": {
+       "lore_key": "LORE_REEF_CRAB"
+      },
+      "lantern_eel": {
+       "lore_key": "LORE_LANTERN_EEL"
+      },
+      "gull_harrier": {
+       "lore_key": "LORE_GULL_HARRIER"
+      }
+     }
+    }
+   },
+   "choreo_ko": {
+    "active": [
+     "rhen",
+     "asha"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "overrides": {
+     "enemies": {
+      "gull_harrier": {
+       "stats": {
+        "hp": 1,
+        "evasion": 0
+       }
+      }
+     }
+    }
    }
   }
  }
