@@ -1,5 +1,6 @@
 """Generates the Pemakar kit preview layout (M3-ENV-03): the town's ten tiers dressed from the kit, the
-Lanternfall leaf-boats and lights, the skyline. Plain python3 + numpy, deterministic.
+Lanternfall leaf-boats and lights, the skyline (Ashcrown on the rim is the Ashcrown kit's building, M3-ENV-09B).
+Plain python3 + numpy, deterministic.
 
     python3 assets_src/environments/kits/pemakar/pemakar_layout.py [--out game/levels/_tests/pemakar_kit/pemakar_preview_layout.json]
 
@@ -64,6 +65,16 @@ SEA_SHORE_Z_M = 29.0  # where the sea meets the massif's foot below the town (ma
 SEA_DRIFT_M = 120.0  # how far out the drift reaches
 SEA_LIGHT_Y_M = 0.35  # just above the swell crests (lagoon_waves, about 0.3 m)
 SEA_LIGHT_SIZE_M = [0.35, 0.35]
+# Ashcrown on the rim is the Ashcrown temple kit's own building (M3-ENV-09B): its exterior pieces, placed at the
+# kit's origin, which is this layout's rim point (ashcrown.md §0: the kit's y 0 is the rim, its axes are the
+# town's), so the far and near temple are one mesh. The interior (anvil_hall, anvil_altar), the crater's
+# plume_vent (hidden in the bowl from the town) and crest_ground (the zone's own terrain; here the massif
+# stays) are left out. LOD1 from the Ashcrown preview's per-placement distance (ac_preview_layout.FAR_LOD1_M:
+# the pieces' origin is the temple's, not their middle), so the chain is the same wherever it is placed.
+ASHCROWN_KIT_DIR = "res://assets/environments/kits/ashcrown/"
+ASHCROWN_MATERIALS_DIR = ASHCROWN_KIT_DIR + "materials/"
+ASHCROWN_PIECES = ("ashcrown_tiers", "flying_stair", "crown_pavilion", "forecourt", "pilgrim_causeway")
+ASHCROWN_LOD1_FROM_M = 600.0
 
 
 def anchor(t: int, theta: float, local=(0.0, 0.0, 0.0)) -> np.ndarray:
@@ -288,7 +299,9 @@ def build(seed: int = SEED) -> dict:
     # --- skyline and far lights -------------------------------------------------------------------
     pieces.append(piece("mountain_massif", np.zeros(3), 0.0))
     rim = np.array(sky.massif_rim_point())
-    pieces.append(piece("ashcrown_silhouette", rim, 0.0))
+    for name in ASHCROWN_PIECES:
+        pieces.append(piece(name, rim, 0.0, kit_dir=ASHCROWN_KIT_DIR, materials_dir=ASHCROWN_MATERIALS_DIR,
+                            lod1_from_m=ASHCROWN_LOD1_FROM_M))
     vent_noise = kc.Noise3(kc.rng_for("mountain_massif", 801))
     vent_y = float(sky.massif_height(np.array([pc.CROWN[0]]), np.array([pc.CROWN[1]]), vent_noise)[0])
     pieces.append(piece("ash_plume", np.array([pc.CROWN[0], vent_y - 10.0, pc.CROWN[1]]), 0.0))

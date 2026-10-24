@@ -148,7 +148,7 @@ class LayoutTests(unittest.TestCase):
 
     def test_layout_names_only_kit_pieces(self) -> None:
         self.assertEqual(self.layout["kit_dir"], "res://assets/environments/kits/pemakar/")
-        names = {spec["piece"] for spec in self.layout["pieces"]}
+        names = {spec["piece"] for spec in self.layout["pieces"] if "kit_dir" not in spec}
         self.assertTrue(names <= set(TARGETS), names - set(TARGETS))
         self.assertEqual(self.layout["boats"]["piece"], "leaf_boat_lit")
         for spec in self.layout["pieces"]:
@@ -173,6 +173,25 @@ class LayoutTests(unittest.TestCase):
         self.assertGreater(len(pts), 100)
         self.assertTrue((pts[:, 2] >= LAYOUT_GEN.SEA_SHORE_Z_M).all())
         self.assertTrue(np.allclose(pts[:, 1], LAYOUT_GEN.SEA_LIGHT_Y_M))
+
+    def test_ashcrown_is_the_ashcrown_kits_building_at_the_rim(self) -> None:
+        # M3-ENV-09B: the far temple is the Ashcrown kit's exterior pieces at the kit's origin (the rim point; the
+        # kit's y 0 is the rim), with the Ashcrown preview's LOD1 distances; the silhouette is no longer placed.
+        kit = ROOT / "assets" / "environments" / "kits" / "ashcrown"
+        ac_layout = json.loads((ROOT / "game" / "levels" / "_tests" / "ashcrown_kit" / "ashcrown_layout.json")
+                               .read_text())
+        ac_lod1 = {p["piece"]: p["lod1_from_m"] for p in ac_layout["pieces"]}
+        temple = [p for p in self.layout["pieces"] if "kit_dir" in p]
+        self.assertEqual(sorted(p["piece"] for p in temple), sorted(LAYOUT_GEN.ASHCROWN_PIECES))
+        rim = [round(float(v), 3) for v in sky.massif_rim_point()]
+        for p in temple:
+            self.assertEqual(p["kit_dir"], "res://assets/environments/kits/ashcrown/")
+            self.assertEqual(p["materials_dir"], p["kit_dir"] + "materials/")
+            self.assertTrue((kit / f"{p['piece']}.glb").is_file(), p["piece"])
+            self.assertEqual(p["at"], rim)
+            self.assertEqual(p["yaw_deg"], 0.0)
+            self.assertEqual(p["lod1_from_m"], ac_lod1[p["piece"]], p["piece"])
+        self.assertNotIn("ashcrown_silhouette", {p["piece"] for p in self.layout["pieces"]})
 
     def test_no_shipped_reference_to_the_preview(self) -> None:
         rules = IMPORT_RULES.read_text()

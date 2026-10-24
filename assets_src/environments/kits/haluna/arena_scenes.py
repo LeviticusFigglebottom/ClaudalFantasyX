@@ -411,7 +411,9 @@ PEM_TOWN_Y_MIN_M = 2.0  # town pieces kept: the tiers above the arena's floor (a
 PEM_LIGHT_RADIUS_M = 30.0
 PEM_FAR_MIN_Y_M = 4.0
 PEM_FAR_SIZE_RANGE_M = 700.0  # pemakar_kit_preview.gd FAR_SIZE_RANGE_M: far-light radius grows to this distance
-PEM_SKYLINE = ("mountain_massif", "ashcrown_silhouette", "ash_plume")
+# The skyline pieces kept whatever their height. Ashcrown on the rim (300 m up) is the Ashcrown kit's own pieces in
+# the town layout (M3-ENV-09B; each names its kit_dir), and at the arena's 650 m their import chain draws LOD1.
+PEM_SKYLINE = ("mountain_massif", "ash_plume")
 
 
 def _terrace_town() -> tuple[list, list, list]:
@@ -428,8 +430,8 @@ def _terrace_town() -> tuple[list, list, list]:
         at = pa.town_to_arena(p["at"])
         if at[1] < PEM_TOWN_Y_MIN_M and p["piece"] not in PEM_SKYLINE:
             continue
-        pieces.append({"glb": PEM + p["piece"] + ".glb", "at": tuple(round(float(v), 3) for v in at),
-                       "yaw": round(p["yaw_deg"] - turn, 3)})
+        pieces.append({"glb": p.get("kit_dir", PEM) + p["piece"] + ".glb",
+                       "at": tuple(round(float(v), 3) for v in at), "yaw": round(p["yaw_deg"] - turn, 3)})
     for p in town["plants"]:
         at = pa.town_to_arena(p["at"])
         if at[1] >= PEM_TOWN_Y_MIN_M:
