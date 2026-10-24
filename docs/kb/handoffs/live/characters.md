@@ -16,7 +16,13 @@
     - the 18 asha_* shots pass unchanged (max RMSE 0.00797, asha_front, the same as before);
     - test_asha and test_rig_integrity: OK.
   - **Threads:** pinned at 4 on every character and villager job (ad6e232).
-- **Later heads (docs plus your branch only):** the M3 design sheets merge and the integration-branch merge of 27 commits that touch no character file. A full `ci_local` on the merged head is running; the result goes here.
+- **Later heads (docs plus your branch only):** the M3 design sheets merge (Ysolde, Sefir, Liss, Tavi Orse, Mother Kell; M3-CHR-01 to 04) and an integration-branch merge that touches no character file.
+  - Per the new gate rules I stopped the second full `ci_local`. Scoped checks: `character_shading` 17/17, validate_data and taskboard OK.
+- **In flight, three worktree sub-agents:** M3-CHR-01 Ysolde (hero), M3-CHR-02 Sefir (hero), and M2-CHR-07, the battle clip set for Asha, Rhen and Toma (the battle-presentation clip contract).
+- **From the M3 sheets:**
+  - Liss is a party member, so she is on the hero path; she stays in M3-CHR-03.
+  - Mother Kell is Oruvel's chandler, not the diver. The story corrected this; glossary rows 195 and 254 are stale.
+  - Ysolde's Swell input is Glyph Trace.
 - **Blocker cleared (d523d43):** Toma's mouth/teeth/tongue are on `character_mouth`; the integration branch is merged;
   `--filter=character_shading` 17/17, hero_stage 6/6, post_import 19/19; `verify --job toma` 38 identical. Ready to merge.
   (send_message to the Lead was refused: "needs a trusted device", so this log is the channel.)
