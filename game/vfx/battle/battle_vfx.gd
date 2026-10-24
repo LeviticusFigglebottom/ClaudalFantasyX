@@ -1,0 +1,334 @@
+class_name BattleVfx
+extends Node3D
+## Battle VFX library player (M2-RND-03). Docs: docs/kb/tech/battle_vfx.md.
+## - **Listens only.** It hooks the engine's `action_resolved` the way BattleBossHud does: one line in
+##   BattleController._build_engine. It never writes combat state.
+## - **Data-driven.** game/data/vfx/battle/effects.json maps skills, items, elements and events (heal, status,
+##   KO, ambush, preemptive) to effects. effects_for() turns an ActionResult into [{effect, target}] with no
+##   nodes, so it is tested headless.
+## - **Effects:**
+##   - particles: one-shot GPUParticles3D at a fighter, built from the definition (one shared billboard draw
+##     material, battle_spark_draw.tres; a ParticleProcessMaterial per effect). Pooled per effect.
+##   - flash: a full-screen tint on a CanvasLayer below the HUD (the timeline is never covered, pillar 4).
+## - **Safety.** A flash is capped at safety.flash_max_alpha, and two are at least flash_min_interval_s apart
+##   (photosensitivity). With UiSettings reduced motion, particles are fewer and slower and flashes are faint
+##   and gentle.
+
+signal effect_played(effect_id: StringName, position: Vector3)
+
+const DATA_PATH := "res://game/data/vfx/battle/effects.json"
+const DRAW_MATERIAL := "res://game/vfx/battle/materials/battle_spark_draw.tres"
+const PROCESS_MATERIAL := "res://game/vfx/battle/materials/battle_spark_process.tres"
+const KIND_PARTICLES := "particles"
+const KIND_FLASH := "flash"
+## Emitters kept per effect for reuse (a 3v3 all-foes skill needs three at once).
+const POOL_PER_EFFECT := 6
+## Visibility box of an emitter, in metres around it (effects stay within a fighter's reach).
+const VISIBILITY_HALF_M := 3.0
+const MSEC_PER_SEC := 1000.0
+## Colour ramp: the alpha a particle still has at RAMP_HOLD of its life.
+const RAMP_HOLD := 0.6
+const RAMP_HOLD_ALPHA := 0.85
+
+static var _data_cache: Dictionary = {}
+
+var data: Dictionary = {}
+var reduced_motion := false
+## Every effect played, in order (tests and tools).
+var played: Array[StringName] = []
+## Flashes refused by the photosensitivity interval.
+var flashes_suppressed := 0
+## The boss's own VFX and set piece (M2-RND-04), when the encounter has one (else null).
+var boss: BattleBossVfx
+var _ctl: BattleController
+var _engine: BattleEngine
+var _flash_layer: CanvasLayer
+var _flash_rect: ColorRect
+var _flash_tween: Tween
+var _last_flash_ms := -1000000
+var _process_cache: Dictionary = {}
+var _pool: Dictionary = {}
+var _draw_mesh: QuadMesh
+
+
+static func load_data() -> Dictionary:
+	if _data_cache.is_empty():
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+		if typeof(parsed) == TYPE_DICTIONARY:
+			_data_cache = parsed as Dictionary
+		else:
+			push_warning("BattleVfx: cannot read %s" % DATA_PATH)
+	return _data_cache
+
+
+## Builds the view under the controller's stage and connects it to `engine` (after setup).
+static func attached(controller: BattleController, engine: BattleEngine) -> BattleVfx:
+	# A retry builds a new engine: the previous view (its flood water publishes hymn_water_level) goes.
+	var old := controller.stage.get_node_or_null(^"BattleVfx")
+	if old != null:
+		controller.stage.remove_child(old)
+		old.queue_free()
+	var view := BattleVfx.new()
+	view.name = "BattleVfx"
+	controller.stage.add_child(view)
+	view.attach(controller, engine)
+	return view
+
+
+func _init() -> void:
+	data = load_data()
+
+
+func attach(controller: BattleController, engine: BattleEngine) -> void:
+	_ctl = controller
+	_engine = engine
+	engine.action_resolved.connect(_on_action_resolved)
+	var settings := UiSettings.shared()
+	if settings != null:
+		reduced_motion = settings.reduced_motion()
+		settings.changed.connect(func(_key: StringName) -> void: reduced_motion = settings.reduced_motion())
+	_build_flash_layer(controller)
+	boss = BattleBossVfx.attached_if_boss(self, controller, engine)
+	var opening_event := _opening_event(engine.opening)
+	if opening_event != &"":
+		play_event.call_deferred(opening_event, &"")
+
+
+## What an action plays: [{"effect": id, "target": combatant id}], in order. No nodes: tests call it.
+func effects_for(result: ActionResult) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	if result == null or not result.ok:
+		return out
+	var map := data.get("map", {}) as Dictionary
+	var events := map.get("events", {}) as Dictionary
+	var special := ""
+	var element := "none"
+	if result.item_id != &"":
+		special = str((map.get("items", {}) as Dictionary).get(String(result.item_id), ""))
+	elif result.skill_id != &"":
+		special = str((map.get("skills", {}) as Dictionary).get(String(result.skill_id), ""))
+		if _engine != null:
+			element = str(_engine.db.skill(result.skill_id).get("element", "none"))
+	var elements := map.get("elements", {}) as Dictionary
+	for hit: Dictionary in result.hits:
+		var target := StringName(str(hit.get("target_id", "")))
+		if special != "":
+			out.append({"effect": StringName(special), "target": target})
+		if not bool(hit.get("hit", true)):
+			continue
+		var amount := int(hit.get("amount", 0))
+		if amount > 0:
+			out.append({"effect": StringName(str(elements.get(element, elements.get("none", "")))), "target": target})
+		elif amount < 0:
+			out.append({"effect": StringName(str(events.get("heal", ""))), "target": target})
+		if not (hit.get("statuses_added", []) as Array).is_empty():
+			out.append({"effect": StringName(str(events.get("status", ""))), "target": target})
+		if amount > 0 and _is_down(target):
+			var ko := str((map.get("ko_overrides", {}) as Dictionary).get(base_id(target), events.get("ko", "")))
+			out.append({"effect": StringName(ko), "target": target})
+	return out.filter(func(e: Dictionary) -> bool: return e["effect"] != &"")
+
+
+## Plays an event's effect (events map: heal, status, ko, ambush, preemptive) at `target` ("" for a flash).
+func play_event(event: StringName, target: StringName) -> void:
+	var id := str(((data.get("map", {}) as Dictionary).get("events", {}) as Dictionary).get(String(event), ""))
+	if id != "":
+		play(StringName(id), target)
+
+
+## Plays effect `effect_id` at fighter `target`. Returns the emitter (null for a flash, or when skipped).
+func play(effect_id: StringName, target: StringName, aim := Vector3.ZERO) -> GPUParticles3D:
+	var def := (data.get("effects", {}) as Dictionary).get(String(effect_id), {}) as Dictionary
+	if def.is_empty():
+		push_warning("BattleVfx: unknown effect %s" % effect_id)
+		return null
+	if str(def.get("kind", "")) == KIND_FLASH:
+		_flash(effect_id, def)
+		return null
+	return play_at(effect_id, anchor(target, str(def.get("at", "chest"))), aim)
+
+
+## Plays a particle effect at a world position (the probe tool and tests). An effect is one emitter, or
+## one per entry of its "layers" (each a particle definition; the layer inherits the effect's keys it
+## doesn't set). A non-zero `aim` replaces the layers' direction (a stream from one fighter to another).
+## Returns the first layer's emitter.
+func play_at(effect_id: StringName, at: Vector3, aim := Vector3.ZERO) -> GPUParticles3D:
+	var def := (data.get("effects", {}) as Dictionary).get(String(effect_id), {}) as Dictionary
+	if str(def.get("kind", "")) != KIND_PARTICLES:
+		return null
+	var first: GPUParticles3D = null
+	var layers: Array = def.get("layers", [{}])
+	for i in layers.size():
+		var layer := def.merged(layers[i] as Dictionary, true)
+		var key := StringName("%s#%d" % [effect_id, i])
+		var p := _emitter(key, layer)
+		if aim != Vector3.ZERO:
+			(p.process_material as ParticleProcessMaterial).direction = aim.normalized()
+		p.global_position = at
+		p.restart()
+		p.emitting = true
+		if first == null:
+			first = p
+	played.append(effect_id)
+	effect_played.emit(effect_id, at)
+	return first
+
+
+## Flash opacity actually used for `def`: capped by safety, scaled by reduced motion.
+func flash_alpha(def: Dictionary) -> float:
+	var safety := data.get("safety", {}) as Dictionary
+	var a := minf(float(def.get("alpha", 0.0)), float(safety.get("flash_max_alpha", 0.0)))
+	if reduced_motion:
+		a *= float((data.get("reduced_motion", {}) as Dictionary).get("flash_alpha_scale", 1.0))
+	return a
+
+
+func _on_action_resolved(result: ActionResult) -> void:
+	for e in effects_for(result):
+		play(e["effect"], e["target"])
+
+
+## The table id of a combatant id ("drownbell#1" -> "drownbell").
+static func base_id(cid: StringName) -> String:
+	return String(cid).get_slice("#", 0)
+
+
+static func _opening_event(opening: StringName) -> StringName:
+	match opening:
+		BattleOpening.AMBUSH:
+			return &"ambush"
+		BattleOpening.PREEMPTIVE:
+			return &"preemptive"
+	return &""
+
+
+func _is_down(target: StringName) -> bool:
+	if _engine == null:
+		return false
+	var c := _engine.find(target)
+	return c != null and c.hp <= 0
+
+
+## A fighter's point at `at` (an anchor_heights key: feet, rim, chest, hood, head); this node's position
+## when the fighter is not on the stage.
+func anchor(target: StringName, at: String) -> Vector3:
+	var frac := float((data.get("anchor_heights", {}) as Dictionary).get(at, 0.5))
+	if _ctl == null or not _ctl.stage.has_fighter(target):
+		return global_position
+	var f := _ctl.stage.stand_in(target)
+	var height := float(BattleStage.stand_in_spec(target).get("height", 1.7))
+	return f.global_position + Vector3.UP * height * frac
+
+
+func _emitter(effect_id: StringName, def: Dictionary) -> GPUParticles3D:
+	var list: Array = _pool.get(effect_id, [])
+	for p: GPUParticles3D in list:
+		if not p.emitting:
+			_apply_motion(p, def)
+			return p
+	if list.size() >= POOL_PER_EFFECT:
+		return list[0] as GPUParticles3D  # the oldest restarts: a burst beyond the pool replaces it
+	var p := GPUParticles3D.new()
+	p.name = "%s_%d" % [effect_id, list.size()]
+	p.one_shot = true
+	p.emitting = false
+	p.local_coords = false
+	p.lifetime = float(def.get("lifetime_s", 0.5))
+	p.explosiveness = float(def.get("explosiveness", 0.9))
+	p.process_material = _process_for(effect_id, def)
+	if _draw_mesh == null:
+		_draw_mesh = QuadMesh.new()
+		_draw_mesh.material = load(DRAW_MATERIAL) as Material
+	p.draw_pass_1 = _draw_mesh
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var h := VISIBILITY_HALF_M
+	p.visibility_aabb = AABB(Vector3(-h, -h, -h), Vector3(2.0 * h, 2.0 * h, 2.0 * h))
+	add_child(p)
+	_apply_motion(p, def)
+	list.append(p)
+	_pool[effect_id] = list
+	return p
+
+
+## Amount (reduced motion: fewer), set on every reuse so a settings change applies at the next play.
+func _apply_motion(p: GPUParticles3D, def: Dictionary) -> void:
+	var rm := data.get("reduced_motion", {}) as Dictionary
+	var scale := float(rm.get("particle_scale", 1.0)) if reduced_motion else 1.0
+	p.amount = maxi(1, roundi(float(def.get("amount", 16)) * scale))
+	var mat := p.process_material as ParticleProcessMaterial
+	var vel: Array = def.get("velocity_m_s", [1.0, 2.0])
+	var vscale := float(rm.get("velocity_scale", 1.0)) if reduced_motion else 1.0
+	mat.initial_velocity_min = float(vel[0]) * vscale
+	mat.initial_velocity_max = float(vel[1]) * vscale
+	mat.turbulence_enabled = float(def.get("turbulence", 0.0)) > 0.0 and not reduced_motion
+
+
+func _process_for(effect_id: StringName, def: Dictionary) -> ParticleProcessMaterial:
+	if _process_cache.has(effect_id):
+		return _process_cache[effect_id]
+	var mat := (load(PROCESS_MATERIAL) as ParticleProcessMaterial).duplicate() as ParticleProcessMaterial
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+	mat.emission_sphere_radius = float(def.get("emission_radius_m", 0.1))
+	var d: Array = def.get("direction", [0, 1, 0])
+	mat.direction = Vector3(float(d[0]), float(d[1]), float(d[2]))
+	mat.spread = float(def.get("spread_deg", 180.0))
+	var g: Array = def.get("gravity", [0, 0, 0])
+	mat.gravity = Vector3(float(g[0]), float(g[1]), float(g[2]))
+	var size: Array = def.get("size_m", [0.05, 0.1])
+	mat.scale_min = float(size[0])
+	mat.scale_max = float(size[1])
+	mat.turbulence_noise_strength = float(def.get("turbulence", 0.0))
+	var energy := float(def.get("energy", 1.0))
+	var c0 := Color(str(def.get("color", "#FFFFFF")))
+	var c1 := Color(str(def.get("color_end", def.get("color", "#FFFFFF"))))
+	# Held near full until RAMP_HOLD of the life, then out: a linear fade emptied a burst before it read.
+	var ramp := Gradient.new()
+	ramp.set_color(0, Color(c0.r * energy, c0.g * energy, c0.b * energy, 1.0))
+	ramp.set_color(1, Color(c1.r * energy, c1.g * energy, c1.b * energy, 0.0))
+	var mid := c0.lerp(c1, RAMP_HOLD)
+	ramp.add_point(RAMP_HOLD, Color(mid.r * energy, mid.g * energy, mid.b * energy, RAMP_HOLD_ALPHA))
+	var tex := GradientTexture1D.new()
+	tex.gradient = ramp
+	mat.color_ramp = tex
+	_process_cache[effect_id] = mat
+	return mat
+
+
+func _exit_tree() -> void:
+	if _flash_layer != null and is_instance_valid(_flash_layer):
+		_flash_layer.queue_free()
+		_flash_layer = null
+
+
+func _build_flash_layer(controller: Node) -> void:
+	_flash_layer = CanvasLayer.new()
+	_flash_layer.name = "BattleVfxFlash"
+	_flash_layer.layer = int((data.get("safety", {}) as Dictionary).get("flash_layer", 0))
+	_flash_rect = ColorRect.new()
+	_flash_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_flash_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_flash_rect.color = Color(0, 0, 0, 0)
+	_flash_layer.add_child(_flash_rect)
+	controller.add_child(_flash_layer)
+
+
+func _flash(effect_id: StringName, def: Dictionary) -> void:
+	var safety := data.get("safety", {}) as Dictionary
+	var now := Time.get_ticks_msec()
+	if now - _last_flash_ms < int(float(safety.get("flash_min_interval_s", 0.0)) * MSEC_PER_SEC):
+		flashes_suppressed += 1
+		return
+	_last_flash_ms = now
+	played.append(effect_id)
+	effect_played.emit(effect_id, Vector3.ZERO)
+	if _flash_rect == null or not _flash_rect.is_inside_tree():
+		return
+	var rm := data.get("reduced_motion", {}) as Dictionary
+	var min_ramp := float(rm.get("flash_min_ramp_s", 0.0)) if reduced_motion else 0.0
+	var c := Color(str(def.get("color", "#FFFFFF")))
+	_flash_rect.color = Color(c.r, c.g, c.b, 0.0)
+	if _flash_tween != null:
+		_flash_tween.kill()
+	_flash_tween = create_tween()
+	_flash_tween.tween_property(_flash_rect, "color:a", flash_alpha(def), maxf(float(def.get("in_s", 0.05)), min_ramp))
+	_flash_tween.tween_property(_flash_rect, "color:a", 0.0, maxf(float(def.get("out_s", 0.3)), min_ramp))

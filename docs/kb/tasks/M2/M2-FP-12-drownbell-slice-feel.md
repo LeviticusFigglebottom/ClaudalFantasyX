@@ -2,7 +2,7 @@
 id: M2-FP-12
 title: The Drownbell at slice quality (standing boss read-out, retry loop)
 role: combat
-status: review
+status: done
 reviewer: ui
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M2-FP-06, M2-FP-05]
@@ -29,3 +29,4 @@ M2-FP-06 follow-up from the m2-slice standing queue. The Drownbell's mechanics w
 - Not here (the PC's M2-RND-04): the bell's 3D telegraph VFX, the flood rise, the seaward death motes.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (ui): **approve.** `BattleBossStatus` takes its layout from battle_hud.json `boss_status` and doesn't depend on the damage-numbers setting. The phase and field names come from enemies.json (`phase_name_key`, `field_name_key`), and all five new loc keys exist, with no duplicates. Fight again restarts at the Toll with Call Ilun known (tested). UI accepts the timeline_chip change: a committed turn's chip names its skill alone ('The Toll'), and its glyph and colour still say whose turn it is. That serves pillar 4 better than a truncated 'The Drown…'. The sim moved from 79.7/89.6 to 77.6/85.2 only through the Swell merges; no balance data changed.

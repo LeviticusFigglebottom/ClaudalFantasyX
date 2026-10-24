@@ -1,20 +1,20 @@
 {
-  "_doc": "Tunables for the balancing simulator's party policies (game/battle/sim/, docs/kb/design/balance_targets.md). Not game data: nothing in play reads this file. loadouts: the gear (equipment ids per character) and consumables a suite's party carries (balance_targets.md, Party assumptions). swell_heal_below_pct (M2-CMB-01): a ready healing Swell technique waits until an active ally is below this share of max HP. call_vowbound (M2-CMB-05): when a policy calls the actor's Vowbound: at_once (the masher) or field_up (only while a field is up); absent = never. Loadout flags bind the Vowbound (vowbound.json bound_flag). retire_skills (M2-FP-17): skills a loadout takes off the party (ch03_drownbell retires the call_ilun stand-in, so the policies play the real Vowbound call). flood_call: the naive_swell masher who calls the Vowbound when a field rises. dismiss_when_clear (M2-FP-17): the Vowbound goes home on its own turn once no field is up.",
+  "_doc": "Tunables for the balancing simulator's party policies (game/battle/sim/, docs/kb/design/balance_targets.md). Not game data: nothing in play reads this file. loadouts: the gear (equipment ids per character) and consumables a suite's party carries (balance_targets.md, Party assumptions). swell_heal_below_pct (M2-CMB-01): a ready healing Swell technique waits until an active ally is below this share of max HP. call_vowbound (M2-CMB-05): when a policy calls a Vowbound its loadout lists under 'vowbound' (at_once: as soon as the caller may; on_field: while a field is up); unset: never. field_up (M2-FP-17): call only while a field is up, never dismiss (the flood_call policy). retire_skills (M2-FP-17): skills a loadout takes off the party; ch03_drownbell retires the call_ilun stand-in so the policies play the real Vowbound call.",
   "policies": {
     "naive": {},
+    "naive_swell": {
+      "call_vowbound": "at_once"
+    },
     "lowest_hp": {},
     "role_answer": {
-      "call_vowbound": "field_up",
-      "dismiss_when_clear": true
+      "clear_field_skill": "call_ilun",
+      "call_vowbound": "on_field"
     },
     "smart": {
       "heal_below_pct": 45,
       "keep_healer_below_pct": 70,
-      "call_vowbound": "field_up",
-      "dismiss_when_clear": true
-    },
-    "naive_swell": {
-      "call_vowbound": "at_once"
+      "clear_field_skill": "call_ilun",
+      "call_vowbound": "on_field"
     },
     "flood_call": {
       "call_vowbound": "field_up"
@@ -92,15 +92,18 @@
       "flags": [
         "ch03_ilun_bound"
       ],
+      "vowbound": [
+        "ilun"
+      ],
       "retire_skills": [
         "call_ilun"
       ]
     },
-    "vowbound_bare": {
+    "sandbox_vowbound": {
       "gear": {},
       "items": {},
-      "flags": [
-        "ch03_ilun_bound"
+      "vowbound": [
+        "ilun"
       ]
     }
   }

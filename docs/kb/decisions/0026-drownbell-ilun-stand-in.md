@@ -24,4 +24,4 @@ Option 3. `call_ilun` (skills.json) is a 12 MP, rank-4 magical hit on all foes w
 - 2026-10-24 (Lead, at merge): renumbered from 0024 to 0026, because 0024 was already taken on the integration branch by 0024-asha-hair-shading-values.
 
 ## Superseded in the simulator (M2-FP-17, m2-slice, 2026-10-24)
-The Drownbell's bands are now measured with the real Vowbound call (ADR 0027): the sim's `ch03_drownbell` loadout retires `call_ilun`, and the policies call Ilun into the flood. The live game keeps `call_ilun` (now `requires_field: flood`) as the fallback until M2-UI-05 gives the player the Call command. Then it is removed from Asha and this ADR is fully superseded.
+The Drownbell's bands are now measured with the real Vowbound call (ADR 0027): the sim's `ch03_drownbell` loadout retires `call_ilun`, and the policies call Ilun into the flood. The live game keeps `call_ilun` as the fallback until M2-UI-05 gives the player the Call command. Then it is removed from Asha and this ADR is fully superseded.

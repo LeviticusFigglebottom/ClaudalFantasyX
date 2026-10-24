@@ -6,6 +6,7 @@ extends RefCounted
 ## which tools/balance/sim.py wraps, and by tests/integration/test_sandbox_battle.gd.
 
 ## naive_swell (M2-NIT-03) is report only: naive plus the Swell row (balance_targets.md).
+## flood_call (M2-FP-17): naive_swell that calls its Vowbound when a field rises and leaves it out.
 const POLICY_NAMES: Array[StringName] = [
 	&"naive", &"naive_swell", &"lowest_hp", &"role_answer", &"smart", &"flood_call"
 ]
@@ -34,14 +35,14 @@ func make_policy(policy: StringName) -> SimPolicy:
 			p = SimPolicyNaive.new()
 		&"naive_swell":
 			p = SimPolicyNaiveSwell.new()
+		&"flood_call":
+			p = SimPolicyFloodCall.new()
 		&"lowest_hp":
 			p = SimPolicyLowestHp.new()
 		&"role_answer":
 			p = SimPolicyRoleAnswer.new()
 		&"smart":
 			p = SimPolicySmart.new()
-		&"flood_call":
-			p = SimPolicyFloodCall.new()
 		_:
 			push_error("BattleSim: unknown policy '%s'" % policy)
 			return null
@@ -50,8 +51,18 @@ func make_policy(policy: StringName) -> SimPolicy:
 
 
 ## A named party loadout from sim_policies.json "loadouts": {gear: {character: [equipment ids]},
-## items: {item id: count}, flags?: [story flags set]}. {} if unknown (the bare party from
-## characters.json). `flags` become BattleEngine.story_flags (flag-locked skills, e.g. call_ilun).
+## items: {item id: count}, flags?: [story flags set], vowbound?: [ids bound]}. {} if unknown (the
+## bare party from characters.json). `flags` become BattleEngine.story_flags (flag-locked skills,
+## e.g. call_ilun); `vowbound` the Vowbound the party may call (M2-CMB-05; policies call by
+## sim_policies.json "call_vowbound"); `retire_skills` skills taken off the party (M2-FP-17: the
+## Drownbell suite retires the call_ilun stand-in, so its policies play the real call).
+## M2-FP-17: takes the loadout's "retire_skills" off every party member after setup.
+static func retire_skills(engine: BattleEngine, kit: Dictionary) -> void:
+	for sid: Variant in kit.get("retire_skills", []):
+		for c in engine.party_active + engine.party_reserve:
+			c.skills.erase(StringName(str(sid)))
+
+
 func loadout(loadout_name: StringName) -> Dictionary:
 	return ((_config.get("loadouts", {}) as Dictionary).get(String(loadout_name), {}) as Dictionary).duplicate(true)
 
@@ -89,13 +100,12 @@ func run_one(
 	for f: Variant in kit.get("flags", []):
 		engine.story_flags.append(StringName(str(f)))
 	engine.setup(db, active, reserve, encounter, rng_seed)
-	# M2-CMB-05: the Vowbound the loadout's story flags bind (vowbound.json bound_flag).
-	var vb_rows := BattleVowbound.load_config()
-	engine.vowbound = BattleVowbound.new(vb_rows, BattleVowbound.bound_by(vb_rows, engine.story_flags))
-	# M2-FP-17: skills the loadout retires (call_ilun: the game after M2-UI-05's Call command).
-	for sid: Variant in kit.get("retire_skills", []):
-		for c in engine.party_active + engine.party_reserve:
-			c.skills.erase(StringName(str(sid)))
+	retire_skills(engine, kit)
+	var bound: Array[StringName] = []
+	for v: Variant in kit.get("vowbound", []):
+		bound.append(StringName(str(v)))
+	if not bound.is_empty():
+		engine.vowbound = BattleVowbound.new(BattleVowbound.load_config(), bound)
 	policy.reset()
 	# Held for the whole battle, like fx: the signal connection does not keep it alive.
 	var swell: BattleSwell = null
@@ -139,7 +149,6 @@ func run_one(
 		"items": policy.items_used,
 		"lume": engine.currency_award(),
 		"swells": policy.swells_used,
-		"calls": policy.calls_used,
 	}
 
 

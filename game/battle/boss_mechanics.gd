@@ -17,7 +17,9 @@ extends RefCounted
 ##                 (charge_started). The timeline shows it as TurnEntry.intent.
 ##                 "summon": enemy id: adds one enemy to the field (combatants_joined).
 ##                 "clears_field": field id: ends that field after the hits; every combatant bound
-##                 to it falls (field_cleared). Refused with &"no_field" while the field is down.
+##                 to it falls (field_cleared). Refused with &"no_field" while the field is down,
+##                 except on a Swell finisher ("swell": true, e.g. Ilun's Floodnet, ADR 0027 A2):
+##                 that one is never refused and clears the field only when it is up.
 ##                 "requires_flag": story flag: party members only know the skill when the flag is
 ##                 in BattleEngine.story_flags (passed in at setup; the engine never reads Game).
 
@@ -36,11 +38,11 @@ static func lock_skills(c: BattleCombatant, db: BattleDB, flags: Array[StringNam
 			c.skills.erase(sid)
 
 
-## Why skill row `sk` cannot be used now, or &"" if it can: it needs a field (requires_field) that
-## is down. M2-CMB-05: a skill that clears_field but needs no field (Floodnet) is always usable.
+## Why skill row `sk` cannot be used now, or &"" if it can: a field clear with that field down
+## (a Swell finisher is a full gauge's payoff, never greyed out by a field).
 static func refusal(engine: BattleEngine, sk: Dictionary) -> StringName:
-	var f := StringName(str(sk.get("requires_field", "")))
-	if f != &"" and not engine.fields.has(f):
+	var f := StringName(str(sk.get("clears_field", "")))
+	if f != &"" and not engine.fields.has(f) and not bool(sk.get("swell", false)):
 		return FAIL_NO_FIELD
 	return &""
 

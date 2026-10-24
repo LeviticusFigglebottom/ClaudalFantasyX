@@ -79,7 +79,17 @@ static func select_preset(id: String, viewport: Viewport) -> bool:
 		return false
 	settings().save_config(config_path)
 	apply_now(viewport)
+	if armed and viewport != null and viewport.is_inside_tree():
+		warm_resident_shaders(viewport)  # the new preset's tier variants (M1-RND-22)
 	return true
+
+
+## Compiles the current preset's resident shaders under `parent` (ShaderPrewarm.spawn_resident): at boot,
+## and after a preset change. Returns the warm-up node (null without a parent in the tree).
+static func warm_resident_shaders(parent: Node) -> ShaderPrewarm:
+	if parent == null or not parent.is_inside_tree():
+		return null
+	return ShaderPrewarm.spawn_resident(parent, settings().preset_id)
 
 
 ## Settings menu: one custom value on top of the preset; saved and applied.
@@ -100,7 +110,7 @@ static func scene_environment(root: Node) -> Environment:
 
 
 ## Tiers of the systems that keep their own preset maps (graphics_presets.json "system_tiers_note"):
-## WaterSurface, WeatheringTide, UndertowStorm, GlimmerField, and character materials. Only nodes
+## WaterSurface, WeatheringTide, UndertowStorm, GlimmerField, UnderwaterRig, and character materials. Only nodes
 ## whose tier differs are touched (a storm or glimmer change rebuilds). Returns how many changed.
 static func apply_system_tiers(root: Node, preset: String) -> int:
 	var changed := 0
@@ -126,6 +136,10 @@ static func apply_system_tiers(root: Node, preset: String) -> int:
 		elif n is GlimmerField:
 			var field := n as GlimmerField
 			if field.get_quality() != preset and field.set_quality(preset):
+				changed += 1
+		elif n is UnderwaterRig:
+			var rig := n as UnderwaterRig
+			if rig.get_quality() != UnderwaterRig.tier_for_preset(preset) and rig.set_quality(preset):
 				changed += 1
 	return changed + CharacterShaderTiers.apply_to_tree(root, CharacterShaderTiers.tier_for_preset(preset))
 

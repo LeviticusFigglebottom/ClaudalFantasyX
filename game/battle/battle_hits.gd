@@ -7,7 +7,8 @@ extends RefCounted
 
 ## The hit dictionary for `sk` from `actor` landing on `target` (after Reflect):
 ## {target_id, hit, crit, amount (HP lost; < 0 heals), statuses_added, element}, plus "read" for
-## Read and "delay_ticks" when it pushes the target back.
+## Read, "delay_ticks" when it pushes the target back, and "absorbed" (the HP the target's absorb
+## affinity drank, before the max-HP cap: ADR 0027 A1, the Vowbound gauge) when it absorbs.
 static func resolve(
 	engine: BattleEngine, actor: BattleCombatant, target: BattleCombatant, sk: Dictionary
 ) -> Dictionary:
@@ -39,6 +40,7 @@ static func resolve(
 				actor.break_damage_cap
 			)
 			hit["crit"] = crit
+			_mark_absorbed(hit, dmg)
 			hit["amount"] = -target.apply_damage(dmg)
 			if dmg > 0:
 				target.statuses.erase(&"confuse")  # a physical blow snaps a confused unit out of it
@@ -55,6 +57,7 @@ static func resolve(
 				target.has_status(&"shell"),
 				actor.break_damage_cap
 			)
+			_mark_absorbed(hit, dmg_m)
 			hit["amount"] = -target.apply_damage(dmg_m)
 		&"heal":
 			var amt := Formulas.heal_amount(
@@ -72,6 +75,12 @@ static func resolve(
 	if delay_ranks > 0 and target.is_alive():
 		hit["delay_ticks"] = engine.push_delay(target, delay_ranks)
 	return hit
+
+
+## A negative damage roll is an absorb: record what it drank, even when the target was full.
+static func _mark_absorbed(hit: Dictionary, dmg: int) -> void:
+	if dmg < 0:
+		hit["absorbed"] = -dmg
 
 
 ## The skill's own "statuses" entries: each rolls its chance; a landed Provoke remembers `actor`.

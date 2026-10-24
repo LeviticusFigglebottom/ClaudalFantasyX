@@ -1,19 +1,18 @@
 {
-  "doc": "Vowbound summons (SPEC 6.3, M2-CMB-04). Rules: docs/kb/design/battle_ctb.md section Vowbound; stats: formulas.md section Vowbound. A called Vowbound replaces the whole active party; the call is the caller's action at call_rank (1..8), which it pays once the party is back. Every stat is Formulas.vowbound_stat(base, the caller's stat, scale_pct) at the caller's level. skills are skills.json rows it knows (none may be a Swell technique); swell.rate fills its gauge from HP it loses (Formulas.swell_gain over its own max HP); swell.technique is its finisher (a skills.json row with swell and vowbound true that nobody learns). Battle identity per vowbound: docs/kb/story/vowbound.md. bound_flag (M2-CMB-05): the story flag that binds it; BattleVowbound.bound_by() turns the battle's story flags into the Vowbound the party may call.",
+  "doc": "Vowbound summons (SPEC 6.3, M2-CMB-04). Rules: docs/kb/design/battle_ctb.md section Vowbound; stats: formulas.md section Vowbound. A called Vowbound replaces the whole active party; the call is the caller's action at call_rank (1..8), which it pays once the party is back. Every stat is Formulas.vowbound_stat(base, the caller's stat, scale_pct) at the caller's level. skills are skills.json rows it knows (none may be a Swell technique); swell.rate fills its gauge from HP it loses and HP it gains by absorbing (ADR 0027 A1; Formulas.swell_gain over its own max HP); swell.technique is its finisher (a skills.json row with swell and vowbound true that nobody learns). Battle identity per vowbound: docs/kb/story/vowbound.md.",
   "vowbound": [
     {
       "id": "ilun",
       "name_key": "VOWBOUND_ILUN",
       "caller": "asha",
-      "bound_flag": "ch03_ilun_bound",
       "call_rank": 3,
       "base": {"hp": 60, "mp": 10, "strength": 4, "magic": 4, "defense": 14, "magic_defense": 14,
                "agility": 4, "accuracy": 4, "evasion": 2, "luck": 4},
-      "scale_pct": {"hp": 60, "mp": 50, "strength": 50, "magic": 100, "defense": 100, "magic_defense": 100,
+      "scale_pct": {"hp": 100, "mp": 50, "strength": 50, "magic": 100, "defense": 100, "magic_defense": 100,
                     "agility": 50, "accuracy": 100, "evasion": 50, "luck": 100},
       "skills": ["attack", "brine_lash", "tidal_ward"],
       "affinities": {"water": "absorb", "lightning": "weak"},
-      "swell": {"rate": 220, "technique": "floodnet"}
+      "swell": {"rate": 150, "technique": "floodnet"}
     }
   ]
 }

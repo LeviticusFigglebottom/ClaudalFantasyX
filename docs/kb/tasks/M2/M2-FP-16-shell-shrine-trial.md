@@ -2,7 +2,7 @@
 id: M2-FP-16
 title: The Shell Shrine temple trial (B07) at slice quality: puzzle data, level, hooks, reward
 role: cinematics
-status: review
+status: done
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M2-FP-13]
 milestone: M2
@@ -30,3 +30,4 @@ Queue item 5 of the m2-slice track. SPEC §10.2 asks the slice for "one small te
 - **Tests:** `tests/unit/test_shell_shrine_trial.gd` (6), `tests/integration/test_shell_shrine_level.gd` (5), `tools/tests/test_shell_shrine_trial.py` (4), and `test_fp_thread.gd` updated.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (design): **approve-with-fixes.** `ShellShrineTrial` is RefCounted with no randomness or Node dependency. The data is at `game/data/trials/shell_shrine.json` rather than the criterion's `game/data/world/trials/`. That's correct: it avoids the Systems-owned glob, and `game/data/trials/**` is claimed in ownership.md. The hooks are signals, the hint fires once after 90 s, flags restore the state on reload, and the thread solves the trial. The ENV-03 and AUD-01 requests are filed. `--filter=shrine`: 29/0. **Design verdict, as asked: 3 turns is not enough puzzle for B07's five minutes.** There are 64 states, a 3-turn route plus 3 for the sluice, so random turning solves it in under a minute and the 90 s hint can't fire. Filed **M2-FP-22** (data only): the shortest solution at least 5 turns, one non-obvious move, and a seeded random-turner check.

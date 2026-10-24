@@ -68,7 +68,6 @@
           "ai": [
             {"if": {"field_active": "flood", "allies_alive_below": 3},
              "pick": [{"skill": "rouse_polyp", "target": "self"}]},
-            {"if": {"field_active": "flood", "foes_all_absorb": "water"}, "pick": [{"skill": "hood_slam", "target": "random_foe"}]},
             {"if": {"field_active": "flood"}, "pick": [{"skill": "flood_surge", "target": "all_foes"}]},
             {"if": {"turn_mod": [3, 2]}, "pick": [{"skill": "undertow_surge", "target": "all_foes"}]},
             {"pick": [{"skill": "hood_slam", "target": "random_foe"}]}

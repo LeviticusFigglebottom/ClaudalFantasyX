@@ -5,10 +5,6 @@ extends RefCounted
 ## policy can't change the battle's random stream except through the actions it picks.
 ## Every turn must end: take_turn() falls back to the basic attack if decide() did not.
 
-## sim_policies.json "call_vowbound" rules (call_vowbound()).
-const RULE_AT_ONCE := "at_once"
-const RULE_FIELD_UP := "field_up"
-
 ## Items used this battle. Items don't exist yet (Progression), so this stays 0; a policy that
 ## uses one increments it so the report's item column has a hook.
 var items_used := 0
@@ -21,8 +17,6 @@ var swell: BattleSwell
 var swell_quality: StringName = &""
 ## Techniques unleashed this battle.
 var swells_used := 0
-## Vowbound calls this battle (M2-CMB-05).
-var calls_used := 0
 ## A ready healing technique waits until an active ally is below this share of max HP (percent;
 ## BattleSim sets it from sim_policies.json "swell_heal_below_pct").
 var swell_heal_below_pct := 100
@@ -36,17 +30,13 @@ func policy_name() -> StringName:
 func reset() -> void:
 	items_used = 0
 	swells_used = 0
-	calls_used = 0
 
 
 ## Plays the current party turn. May swap first; must end with an action that ends the turn.
 func take_turn(engine: BattleEngine) -> void:
 	var actor := engine.current
 	var now := engine.now
-	if engine.vowbound.is_out() and actor == engine.vowbound.summon:
-		vowbound_turn(engine)
-		return
-	if (str(config.get("call_vowbound", "")) == RULE_AT_ONCE and call_vowbound(engine)) or unleash_swell(engine):
+	if unleash_vowbound(engine) or unleash_swell(engine):
 		return
 	decide(engine)
 	if engine.outcome == &"" and engine.current == actor and engine.now == now and engine.is_party_turn():
@@ -64,44 +54,6 @@ func decide(engine: BattleEngine) -> void:
 
 
 # --- shared helpers ----------------------------------------------------------------------
-
-
-## M2-CMB-05: calls the actor's Vowbound per sim_policies.json "call_vowbound": "at_once" (a masher:
-## the first turn the call is open; take_turn tries it first), "field_up" (only while a field is
-## up: Ilun drinks the flood; role_answer tries it after its field clear), or absent (never). True
-## when it called (the Vowbound now holds the turn).
-func call_vowbound(engine: BattleEngine) -> bool:
-	var rule := str(config.get("call_vowbound", ""))
-	if rule == "" or engine.vowbound.is_out() or (rule == RULE_FIELD_UP and engine.fields.is_empty()):
-		return false
-	var ids := engine.vowbound.callable_ids(engine)
-	if ids.is_empty() or not engine.summon(ids[0]):
-		return false
-	calls_used += 1
-	return true
-
-
-## The Vowbound's own turn: its finisher when the gauge is full, else its best expected damage on
-## the weakest foe. It stays out until it falls or the battle ends, unless sim_policies.json
-## "dismiss_when_clear" sends it home once no field is up (its work done; M2-FP-17).
-func vowbound_turn(engine: BattleEngine) -> void:
-	var vb := engine.vowbound
-	var s := vb.summon
-	var foes := engine.living_foes_of(s)
-	if foes.is_empty():
-		return
-	if bool(config.get("dismiss_when_clear", false)) and engine.fields.is_empty() and engine.dismiss():
-		return
-	var target := lowest_hp(foes)
-	if vb.unleash_refusal(engine) == &"":
-		var tid := vb.finisher(s)
-		var all := str(engine.db.skill(tid).get("target", "")).begins_with("all")
-		if vb.unleash(engine, foes if all else _one(target)).ok:
-			swells_used += 1
-			return
-	var sid := best_damage_skill(engine, s, target)
-	if sid == &"" or not use(engine, sid, target):
-		_basic(engine)
 
 
 ## A ready Swell goes first (a player rarely sits on a full gauge; naive never opens it, see
@@ -123,6 +75,36 @@ func unleash_swell(engine: BattleEngine) -> bool:
 			swells_used += 1
 			return true
 	return false
+
+
+## M2-CMB-05: a called Vowbound's full gauge goes first too, its finisher aimed like a technique
+## (_swell_targets; Floodnet hits every foe). Only a policy that opens the Swell row. True if unleashed.
+func unleash_vowbound(engine: BattleEngine) -> bool:
+	var vb := engine.vowbound
+	if not unleashes_swell() or vb.unleash_refusal(engine) != &"":
+		return false
+	var targets := _swell_targets(engine, engine.current, vb.finisher(engine.current))
+	if targets.is_empty() or not vb.unleash(engine, targets).ok:
+		return false
+	swells_used += 1
+	return true
+
+
+## M2-CMB-05, the call rule (sim_policies.json "call_vowbound"): "at_once" calls the first
+## Vowbound the actor may call (vowbound.callable_ids) as soon as it may, and it stays out until it
+## falls or the battle ends. "on_field" calls only while a field is up (the flood rises; the
+## Drownbell's clear_field_skill is the model), keeps it out while the field holds, and dismisses
+## it on its first turn after the field is gone. "field_up" (M2-FP-17, the flood_call policy) calls
+## only while a field is up and never dismisses: it stays out until it falls or the battle ends.
+## Unset: never. True if it called or dismissed.
+func call_vowbound(engine: BattleEngine) -> bool:
+	var rule := StringName(str(config.get("call_vowbound", "")))
+	if rule == &"on_field" and engine.fields.is_empty():
+		return engine.vowbound.dismiss_refusal(engine) == &"" and engine.dismiss()
+	if rule == &"" or (rule == &"field_up" and engine.fields.is_empty()):
+		return false
+	var ids := engine.vowbound.callable_ids(engine)
+	return not ids.is_empty() and engine.summon(ids[0])
 
 
 func _swell_targets(engine: BattleEngine, actor: BattleCombatant, tid: StringName) -> Array[BattleCombatant]:

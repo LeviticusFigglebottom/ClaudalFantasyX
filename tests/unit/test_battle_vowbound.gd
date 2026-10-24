@@ -1,8 +1,8 @@
 extends TestCase
 ## M2-CMB-04: Vowbound summons (SPEC §6.3; battle_ctb.md § Vowbound, formulas.md § Vowbound). A called
-## Vowbound replaces the whole active party, takes the caller's turn (which ends there, ADR 0027
-## A3), fights with its own HP, MP, skills and Swell, and gives the field back when dismissed, when
-## it falls, or at victory.
+## Vowbound replaces the whole active party and takes the caller's turn, which ends at once (ADR 0027
+## A3); it fights with its own HP, MP, skills and Swell (absorbed HP fills it, A1), Floodnet clears a
+## flood (A2), and it gives the field back when dismissed, when it falls, or at victory (M2-CMB-05).
 
 const REEF := &"sandbox_reef"
 const ILUN := &"ilun"
@@ -43,7 +43,7 @@ func test_ilun_is_built_from_ashas_stats_at_her_level() -> void:
 	assert_eq(ilun.team, BattleCombatant.TEAM_PARTY)
 	assert_eq(ilun.level, asha.level)
 	var want := {
-		"max_hp": 240,
+		"max_hp": 360,
 		"max_mp": 40,
 		"strength": 7,
 		"magic": 22,
@@ -62,7 +62,7 @@ func test_ilun_is_built_from_ashas_stats_at_her_level() -> void:
 	assert_eq(ilun.skills, [&"attack", &"brine_lash", &"tidal_ward"] as Array[StringName])
 
 
-func test_the_call_replaces_the_party_and_hands_ilun_the_turn() -> void:
+func test_the_call_replaces_the_party_and_hands_ilun_the_turn_at_once() -> void:
 	var rhen := engine.find(&"rhen")
 	var asha := engine.find(&"asha")
 	var now := engine.now
@@ -151,8 +151,6 @@ func test_a_dismissal_brings_the_party_back_where_it_left_off() -> void:
 	var call_wait := Formulas.action_delay(asha.agility, Formulas.DEFAULT_RANK, asha.speed_mult())
 	assert_true(engine.summon(ILUN))
 	var ilun := engine.vowbound.summon
-	ilun.max_hp = 5000  # this test is about the dismissal, not whether he outlasts the round
-	ilun.hp = ilun.max_hp
 	engine.perform(&"brine_lash", [engine.enemies[1]] as Array[BattleCombatant])
 	_turn_of(engine, ILUN)
 	assert_eq(engine.vowbound.dismiss_refusal(engine), &"")
@@ -244,7 +242,7 @@ func test_the_vowbound_fills_its_own_gauge_and_unleashes_floodnet() -> void:
 	hit.actor_id = engine.enemies[0].id
 	hit.hits.append({"target_id": ILUN, "amount": 380})
 	engine.action_resolved.emit(hit)
-	assert_eq(ilun.swell, Formulas.swell_gain(380, ilun.max_hp, _rate()), "his own HP share at his row's rate")
+	assert_eq(ilun.swell, Formulas.swell_gain(380, ilun.max_hp, 150), "his own HP share at rate 150")
 	assert_eq([rhen.swell, asha.swell], party_swell, "party gauges never see his hits")
 	assert_eq(engine.perform(&"floodnet", engine.living_foes_of(ilun)).fail_reason, &"unknown_skill")
 	ilun.swell = Formulas.SWELL_MAX
@@ -259,111 +257,163 @@ func test_the_vowbound_fills_its_own_gauge_and_unleashes_floodnet() -> void:
 	assert_false(ilun.skills.has(&"floodnet"), "the finisher is not a learned skill")
 
 
-## ADR 0027 A1: HP an absorb hit restores fills the gauge like HP lost; a heal does not.
-func test_an_absorb_fills_the_gauge_and_a_heal_does_not() -> void:
+func test_absorbed_water_fills_his_gauge_even_at_full_hp_but_a_heal_does_not() -> void:
 	assert_true(engine.summon(ILUN))
 	var ilun := engine.vowbound.summon
-	ilun.hp = ilun.max_hp / 2
+	assert_eq(ilun.hp, ilun.max_hp)
 	var drink := ActionResult.new()
 	drink.actor_id = engine.enemies[0].id
-	drink.skill_id = &"brine_lash"  # water, which Ilun absorbs
-	drink.hits.append({"target_id": ILUN, "amount": -120})
+	drink.hits.append({"target_id": ILUN, "amount": 0, "absorbed": 90, "element": &"water"})
 	engine.action_resolved.emit(drink)
-	assert_eq(ilun.swell, Formulas.swell_gain(120, ilun.max_hp, _rate()), "he drinks the tide into the net")
-	var before := ilun.swell
+	var gain := Formulas.swell_gain(90, ilun.max_hp, 150)
+	assert_eq(gain, 37, "formulas.md § Vowbound worked example")
+	assert_eq(ilun.swell, gain, "ADR 0027 A1: what he drinks fills the gauge, at full HP too")
 	var mend := ActionResult.new()
-	mend.actor_id = ILUN
-	mend.skill_id = &"mend"
-	mend.hits.append({"target_id": ILUN, "amount": -120})
+	mend.actor_id = engine.enemies[0].id
+	mend.hits.append({"target_id": ILUN, "amount": -90, "element": &"none"})
 	engine.action_resolved.emit(mend)
-	assert_eq(ilun.swell, before, "a heal is not an absorb")
-	var tonic := ActionResult.new()
-	tonic.actor_id = ILUN
-	tonic.item_id = &"salt_tonic"
-	tonic.hits.append({"target_id": ILUN, "amount": -120})
-	engine.action_resolved.emit(tonic)
-	assert_eq(ilun.swell, before, "nor is an item")
+	assert_eq(ilun.swell, gain, "a heal is not an absorb")
 
 
-## ADR 0027 A3: the call is the caller's action, so its end of turn runs at the call: Poison ticks
-## once, Doom counts down once, turns_taken and turn_ended. Only its next turn waits for the return.
-func test_the_call_runs_the_callers_end_of_turn_once() -> void:
-	var asha := engine.find(&"asha")
-	asha.add_status(&"poison", 5)
-	asha.add_status(&"doom", 4)
-	var hp := asha.hp
-	var doom := asha.doom_count()
-	var taken := asha.turns_taken
-	var ended: Array[StringName] = []
-	engine.turn_ended.connect(func(c: BattleCombatant, _ch: Array[Dictionary]) -> void: ended.append(c.id))
+func test_the_crabs_brine_spit_is_drunk_and_fills_his_gauge() -> void:
 	assert_true(engine.summon(ILUN))
-	assert_eq(asha.hp, hp - Formulas.poison_damage(asha.max_hp), "Poison ticks once")
-	assert_eq(asha.doom_count(), doom - 1, "Doom counts down once")
-	assert_eq(asha.turns_taken, taken + 1)
-	assert_eq(ended, [&"asha"] as Array[StringName], "her turn ended at the call")
-	assert_eq(engine.current, engine.vowbound.summon, "Ilun has the turn")
-	assert_true(engine.dismiss())
-	assert_eq(asha.doom_count(), doom - 1, "the return does not tick her again")
-
-
-## ADR 0027 A2: Floodnet is non-elemental and clears the flood, through the same path as the old
-## call_ilun stand-in (skills.json clears_field).
-func test_floodnet_clears_an_active_flood() -> void:
-	var e := BattleEngine.new()
-	e.setup(
-		BattleDB.load_default(),
-		[&"rhen", &"asha", &"toma"] as Array[StringName],
-		[] as Array[StringName],
-		&"drownbell",
-		3
+	var ilun := engine.vowbound.summon
+	var seen: Array = []  # [absorbed, HP change, gauge before, gauge after], after BattleVowbound's handler
+	var before := [ilun.swell]
+	engine.action_resolved.connect(
+		func(r: ActionResult) -> void:
+			if r.skill_id == &"brine_spit":
+				for h in r.hits:
+					if h["target_id"] == ILUN and h["hit"]:
+						seen.append([int(h.get("absorbed", 0)), int(h["amount"]), before[0], ilun.swell])
+			before[0] = ilun.swell
 	)
-	e.vowbound = BattleVowbound.new(BattleVowbound.load_config(), [ILUN] as Array[StringName])
-	e.begin()
-	var bell := e.enemies[0]
-	bell.hp = bell.max_hp * 40 / 100
-	BossMechanics.check_phases(e)
-	assert_true(e.fields.has(&"flood"), "the flood is up")
-	_turn_of(e, &"asha")
-	assert_true(e.summon(ILUN))
-	var ilun := e.vowbound.summon
+	var guard := 0
+	while seen.is_empty() and engine.outcome == &"" and engine.vowbound.is_out() and guard < 60:
+		guard += 1
+		before[0] = ilun.swell
+		if engine.is_party_turn():
+			ilun.hp = ilun.max_hp  # full HP: the absorb restores nothing, and still counts
+			engine.perform(&"tidal_ward", [ilun] as Array[BattleCombatant])
+			ilun.mp = ilun.max_mp
+		else:
+			engine.run_enemy_turn()
+	assert_false(seen.is_empty(), "the crab spat brine at him")
+	var absorbed: int = seen[0][0]
+	assert_true(absorbed > 0, "he absorbs water")
+	assert_true(int(seen[0][1]) <= 0, "it does not hurt him")
+	assert_eq(seen[0][3], Formulas.swell_fill(seen[0][2], Formulas.swell_gain(absorbed, ilun.max_hp, 150)))
+
+
+func test_floodnet_binds_without_water_and_clears_the_flood() -> void:
+	assert_eq(str(engine.db.skill(&"floodnet")["element"]), "none", "ADR 0027 A2: the net binds; it is no wave")
+	assert_true(engine.summon(ILUN))
+	var ilun := engine.vowbound.summon
+	var bound := engine.enemies[2]
+	bound.max_hp = 9999  # Floodnet's hit must leave it standing for the clear
+	bound.hp = bound.max_hp
+	bound.field = &"flood"
+	engine.fields.append(&"flood")
+	var cleared: Array = []
+	engine.field_cleared.connect(
+		func(f: StringName, fallen: Array[BattleCombatant]) -> void: cleared.append([f, fallen.size()])
+	)
+	var crab := engine.enemies[0]
+	var crab_hp := crab.hp
 	ilun.swell = Formulas.SWELL_MAX
-	var row := e.db.skill(&"floodnet")
-	assert_eq(str(row.get("element", "")), "none", "the net binds; it is not a wave")
-	var res := e.vowbound.unleash(e, e.living_foes_of(ilun))
+	var res := engine.vowbound.unleash(engine, engine.living_foes_of(ilun))
 	assert_true(res.ok, str(res.fail_reason))
-	assert_false(e.fields.has(&"flood"), "Floodnet clears the flood")
-	for c in e.enemies.slice(1):
-		assert_false(c.is_alive(), "%s fell with the field" % c.id)
+	assert_false(engine.fields.has(&"flood"), "the flood is cleared")
+	assert_eq(cleared, [[&"flood", 1]], "the foe bound to it falls with it")
+	assert_false(bound.is_alive())
+	assert_true(crab.hp < crab_hp, "the crab drinks water, but not the net")
 
 
-## M2-FP-17: with Ilun alone on the field the flood only feeds him, so the bell answers him with
-## Hood Slam (enemies.json foes_all_absorb), and the slam's damage fills his gauge toward Floodnet.
-func test_the_bell_answers_a_lone_ilun_in_the_flood() -> void:
-	var e := BattleEngine.new()
-	e.setup(
-		BattleDB.load_default(),
-		[&"rhen", &"asha", &"toma"] as Array[StringName],
-		[] as Array[StringName],
-		&"drownbell",
-		5
+func test_floodnet_is_never_greyed_out_by_a_missing_field() -> void:
+	assert_true(engine.summon(ILUN))
+	var ilun := engine.vowbound.summon
+	var cleared: Array = []
+	engine.field_cleared.connect(func(f: StringName, _fallen: Array[BattleCombatant]) -> void: cleared.append(f))
+	assert_eq(BossMechanics.refusal(engine, engine.db.skill(&"floodnet")), &"", "a finisher is not refused")
+	ilun.swell = Formulas.SWELL_MAX
+	assert_true(engine.vowbound.unleash(engine, engine.living_foes_of(ilun)).ok)
+	assert_true(cleared.is_empty(), "no field was up, so none is cleared")
+
+
+func test_the_call_ends_the_callers_turn_at_once() -> void:
+	var asha := engine.find(&"asha")
+	var taken := asha.turns_taken
+	var order: Array[String] = []
+	engine.turn_ended.connect(func(c: BattleCombatant, _ch: Array[Dictionary]) -> void: order.append("end:%s" % c.id))
+	engine.turn_started.connect(func(c: BattleCombatant) -> void: order.append("start:%s" % c.id))
+	assert_true(engine.summon(ILUN))
+	assert_eq(asha.turns_taken, taken + 1, "ADR 0027 A3: the call is Asha's turn")
+	assert_eq(order, ["end:asha", "start:ilun"] as Array[String])
+
+
+func test_a_poisoned_caller_ticks_once_per_call() -> void:
+	var asha := engine.find(&"asha")
+	asha.add_status(&"poison", -1)
+	var ticks: Array[int] = []
+	engine.turn_ended.connect(
+		func(c: BattleCombatant, changes: Array[Dictionary]) -> void:
+			for ch in changes:
+				if c == asha and ch["cause"] == &"poison":
+					ticks.append(int(ch["amount"]))
 	)
-	e.vowbound = BattleVowbound.new(BattleVowbound.load_config(), [ILUN] as Array[StringName])
-	e.begin()
-	var bell := e.enemies[0]
-	bell.hp = bell.max_hp * 40 / 100
-	BossMechanics.check_phases(e)
-	var with_party := EnemyAI.choose(e, bell)
-	assert_ne(StringName(str(with_party.get("skill", ""))), &"hood_slam", "while the party stands, the flood surges")
-	_turn_of(e, &"asha")
-	assert_true(e.summon(ILUN))
-	var alone := EnemyAI.choose(e, bell)
-	assert_eq(StringName(str(alone.get("skill", ""))), &"hood_slam", "a lone absorber gets the hood")
+	var hp := asha.hp
+	assert_true(engine.summon(ILUN))
+	var lost := Formulas.poison_damage(asha.max_hp)
+	assert_eq(asha.hp, hp - lost, "ADR 0027 A3: Poison ticks at the call")
+	assert_eq(engine.vowbound.call_changes, [{"target_id": &"asha", "cause": &"poison", "amount": lost, "doom": 0}])
+	assert_true(engine.dismiss())
+	assert_eq(ticks, [lost] as Array[int], "not again while she stood down or on the return")
+	_keep_alive()
+	_turn_of(engine, &"asha")
+	assert_eq(ticks.size(), 1, "her own next turn has not ended yet")
+	assert_true(engine.summon(ILUN))
+	assert_eq(ticks.size(), 2, "once per call")
 
 
-func test_the_story_flag_binds_ilun() -> void:
-	var cfg := BattleVowbound.load_config()
-	assert_eq(BattleVowbound.bound_by(cfg, [&"ch03_ilun_bound"] as Array[StringName]), [ILUN] as Array[StringName])
-	assert_eq(BattleVowbound.bound_by(cfg, [] as Array[StringName]), [] as Array[StringName])
+func test_a_doomed_caller_counts_down_once_per_call() -> void:
+	var asha := engine.find(&"asha")
+	asha.add_status(&"doom", 3)
+	assert_true(engine.summon(ILUN))
+	assert_eq(asha.doom_count(), 2)
+	assert_eq(engine.vowbound.call_changes[-1]["cause"], &"doom_tick")
+	assert_true(engine.dismiss())
+	assert_eq(asha.doom_count(), 2, "the count holds while she stands down")
+	_keep_alive()
+	_turn_of(engine, &"asha")
+	assert_true(engine.summon(ILUN))
+	assert_eq(asha.doom_count(), 1)
+	assert_true(engine.dismiss())
+	_keep_alive()
+	_turn_of(engine, &"asha")
+	assert_eq(engine.current, asha)
+	assert_true(engine.summon(ILUN))
+	assert_false(asha.is_alive(), "Doom fells her at the third call")
+	assert_eq(engine.vowbound.call_changes[-1]["cause"], &"doom")
+	assert_eq(engine.current, engine.vowbound.summon, "Ilun still takes the field")
+
+
+## Tops up the party so the foes can't end it while a test waits for a turn.
+func _keep_alive() -> void:
+	for c in engine.party_active + engine.party_reserve:
+		if c.is_alive():
+			c.hp = c.max_hp
+
+
+func test_a_vowbound_that_hands_back_a_fallen_party_ends_in_defeat() -> void:
+	var rhen := engine.find(&"rhen")
+	var asha := engine.find(&"asha")
+	rhen.fall()
+	asha.add_status(&"doom", 1)
+	assert_true(engine.summon(ILUN))
+	assert_false(asha.is_alive(), "Doom took her at the call")
+	assert_eq(engine.outcome, &"", "Ilun still stands")
+	assert_true(engine.dismiss())
+	assert_eq(engine.outcome, BattleEngine.OUTCOME_DEFEAT, "nobody is left to come back")
 
 
 func test_victory_gives_the_field_back_to_the_party_first() -> void:
@@ -377,7 +427,7 @@ func test_victory_gives_the_field_back_to_the_party_first() -> void:
 			for c in engine.party_active:
 				seen.append(c.id)
 	)
-	engine.enemies[0].hp = 0  # the crab drinks the water, so Floodnet can't finish it
+	engine.enemies[0].hp = 0  # leaves two foes for Floodnet
 	for e in engine.enemies:
 		e.hp = mini(e.hp, 1)
 	ilun.swell = Formulas.SWELL_MAX
@@ -418,11 +468,6 @@ static func _play(rng_seed: int) -> Array:
 			log.append([r.actor_id, r.hits] if r != null else [])
 	log.append(e.outcome)
 	return log
-
-
-## Ilun's gauge rate (vowbound.json swell.rate).
-static func _rate() -> int:
-	return int(((BattleVowbound.load_config()[0] as Dictionary)["swell"] as Dictionary)["rate"])
 
 
 static func _turn_of(e: BattleEngine, cid: StringName) -> void:

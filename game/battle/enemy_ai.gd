@@ -5,9 +5,7 @@ extends RefCounted
 ## The first rule whose conditions all hold wins; one option is drawn by weight.
 ## A rule without "if" always holds (use it last as the default).
 ## Conditions: self_hp_below_pct:int, turn_mod:[n, r], foe_has_status:String,
-##             allies_alive_below:int, field_active:String (a field in BattleEngine.fields),
-##             foes_all_absorb:String (every living foe absorbs that element: M2-FP-17, the
-##             Drownbell's answer to a lone Ilun drinking its flood)
+##             allies_alive_below:int, field_active:String (a field in BattleEngine.fields)
 ## Targets:    random_foe, lowest_hp_foe, highest_hp_foe, self, random_ally, all_foes, all_allies,
 ##             largest_ally (the living ally with the highest max HP: a boss its adds tend)
 ## turn_mod counts the actor's turns since its current phase began (BossMechanics).
@@ -99,12 +97,6 @@ static func _holds(engine: BattleEngine, actor: BattleCombatant, key: StringName
 			ok = engine.living_allies_of(actor).size() < int(arg)
 		&"field_active":
 			ok = engine.fields.has(StringName(str(arg)))
-		&"foes_all_absorb":
-			var foes := engine.living_foes_of(actor)
-			ok = not foes.is_empty()
-			for f in foes:
-				if f.affinity_for(StringName(str(arg))) != &"absorb":
-					ok = false
 		_:
 			push_error("EnemyAI: unknown condition '%s'" % key)
 			ok = false

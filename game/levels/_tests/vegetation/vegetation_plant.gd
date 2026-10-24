@@ -11,21 +11,27 @@ enum Shelter { AUTO, OPEN, SHELTERED }
 
 const LOD_SUFFIX := "-lod"
 const SHELTER_PARAM := &"inst_translucency_shelter"
+const SUN_GLOBAL := &"hymn_sun_direction"
 ## The shelter probe starts at this fraction of the plant's height (its crown: a palm's trunk passes
 ## under a neighbour's eave while its crown stands in the sun), and runs this far toward the sun (m).
 const SHELTER_PROBE_CROWN := 0.8
 const SHELTER_PROBE_LENGTH_M := 40.0
+## AUTO shelter re-probes when the hymn_sun_direction global turns by more than this (deg), so a sun
+## written every frame (a time-of-day sweep) costs a ray per plant only every so often.
+const SHELTER_REPROBE_DEG := 0.5
 
 ## glTF material name -> material to use (e.g. &"palm_frond" -> palm_frond.tres).
 @export var materials: Dictionary[StringName, Material] = {}
-## visibility_range_end (m) of LOD0, LOD1, LOD2...; the last LOD ends at the last value.
+## Switch distance (m) from LOD0 to LOD1, LOD1 to LOD2...; the last LOD ends at the last value.
+## Each LOD is the visibility-range child of the next one (lod_range), so exactly one draws.
 @export var lod_end_m: PackedFloat32Array = PackedFloat32Array([45.0, 120.0, 400.0])
-## Hysteresis around each switch distance (m), so LODs do not flicker at the boundary.
+## Hysteresis around each switch distance (m), so LODs do not flicker at the boundary. At the switch
+## into a faded last LOD it is the half-width of a crossfade instead (Godot fades over both margins).
 @export var lod_margin_m: float = 2.0
-## Fade-out width (m) of the last LOD at its final distance (M1-ENV-03), so a palm does not pop off
-## against the sky. Only the last cut fades: Godot's visibility-range fade alpha-blends the instance
-## (not a dither), which turned trunks into translucent ghosts at the LOD0 -> 1 switch
-## (review-sweep-N). LOD switches stay hard, with lod_margin_m hysteresis. 0 = no fade.
+## Fade-out half-width (m) of the last LOD at its final distance (M1-ENV-03), so a palm does not pop
+## off against the sky: it fades over end +- lod_fade_m. Godot's visibility-range fade alpha-blends the
+## instance (not a dither), which turned trunks into translucent ghosts at the LOD0 -> 1 switch
+## (review-sweep-N), so the other switches stay hard, with lod_margin_m hysteresis. 0 = no fade.
 @export var lod_fade_m: float = 6.0
 ## Show only this LOD (for screenshots and debugging); -1 = distance-based.
 @export var force_lod: int = -1
@@ -36,25 +42,52 @@ const SHELTER_PROBE_LENGTH_M := 40.0
 @export var small_foliage: bool = false
 ## Shelter from solid occluders (M1-ENV-03): SHELTERED turns the leaves' through-shadow translucency
 ## floor off, so a plant under an eave does not glow. AUTO casts one ray from the plant's crown toward
-## the sun (the hymn_sun_direction global, via ShaderGlobals) once placed: a hit on `shelter_mask` means
-## sheltered. OPEN keeps the floor.
+## the sun (the hymn_sun_direction global, via ShaderGlobals) once placed, and again whenever
+## ShaderGlobals writes a new sun: a hit on `shelter_mask` means sheltered. OPEN keeps the floor.
 @export var shelter: Shelter = Shelter.AUTO
 ## Physics layers the shelter probe tests (the world's solids: buildings, cliffs).
 @export_flags_3d_physics var shelter_mask: int = 1
+
+## The sun the last AUTO probe aimed at (zero before the first).
+var _probed_sun := Vector3.ZERO
 
 
 func _ready() -> void:
 	apply()
 	match shelter:
 		Shelter.AUTO:
-			if is_inside_tree():
-				# The physics space is only queryable once the scene's bodies have been placed.
-				await get_tree().physics_frame
-				set_shelter(1.0 if is_sheltered() else 0.0)
+			# Re-probe when the sun moves (a time-of-day change or a test restoring the sun, M1-ENV-09).
+			add_to_group(ShaderGlobals.LISTENERS_GROUP)
+			request_shelter_probe()
 		Shelter.OPEN:
 			set_shelter(0.0)
 		Shelter.SHELTERED:
 			set_shelter(1.0)
+
+
+## AUTO shelter: probe toward the sun on the next physics frame. Several requests in one frame (a sun
+## written every frame) coalesce into one probe.
+func request_shelter_probe() -> void:
+	if not is_inside_tree() or get_tree().physics_frame.is_connected(probe_shelter):
+		return
+	# The physics space is only queryable once the scene's bodies have been placed. A signal
+	# connection (not an await) dies with the plant if it is freed first.
+	get_tree().physics_frame.connect(probe_shelter, CONNECT_ONE_SHOT)
+
+
+## AUTO shelter now: one ray toward the sun sets the shelter weight.
+func probe_shelter() -> void:
+	if is_inside_tree() and shelter == Shelter.AUTO:
+		_probed_sun = sun_direction()
+		set_shelter(1.0 if is_sheltered() else 0.0)
+
+
+## ShaderGlobals listener: a sun that turned more than SHELTER_REPROBE_DEG since the last probe.
+func _on_shader_global_changed(global: StringName, _value: Variant) -> void:
+	if global != SUN_GLOBAL or shelter != Shelter.AUTO:
+		return
+	if _probed_sun == Vector3.ZERO or rad_to_deg(_probed_sun.angle_to(sun_direction())) > SHELTER_REPROBE_DEG:
+		request_shelter_probe()
 
 
 ## Writes the shelter weight to every mesh of the plant.
@@ -84,9 +117,10 @@ func crown_height() -> float:
 	return top
 
 
-## Unit vector toward the sun: the hymn_sun_direction global as last written (ShaderGlobals), else up.
+## Unit vector toward the sun: the hymn_sun_direction global as last written (ShaderGlobals), else its
+## project default, else up.
 func sun_direction() -> Vector3:
-	var sun: Variant = ShaderGlobals.get_value(&"hymn_sun_direction")
+	var sun: Variant = ShaderGlobals.get_value(SUN_GLOBAL)
 	if sun is Vector3 and (sun as Vector3).length_squared() > 0.0:
 		return (sun as Vector3).normalized()
 	return Vector3.UP
@@ -132,6 +166,7 @@ func _apply_materials(mi: MeshInstance3D) -> void:
 
 
 func _apply_lod(mi: MeshInstance3D, lod: int) -> void:
+	mi.visibility_parent = NodePath()
 	if force_lod >= 0:
 		mi.visible = lod == force_lod
 		mi.visibility_range_begin = 0.0
@@ -140,15 +175,57 @@ func _apply_lod(mi: MeshInstance3D, lod: int) -> void:
 	mi.visible = lod < lod_end_m.size()
 	if not mi.visible:
 		return
-	var last := lod == lod_end_m.size() - 1
-	var fade_out := last and lod_fade_m > 0.0
-	mi.visibility_range_begin = 0.0 if lod == 0 else lod_end_m[lod - 1]
-	mi.visibility_range_end = lod_end_m[lod]
-	# Fading uses the margins as fade spans (no hysteresis), so the faded LOD's switch-in stays hard.
-	mi.visibility_range_begin_margin = 0.0 if lod == 0 or fade_out else lod_margin_m
-	mi.visibility_range_end_margin = lod_fade_m if fade_out else lod_margin_m
+	var next := lod_mesh(mi, lod + 1) if lod + 1 < lod_end_m.size() else null
+	var r := lod_range(lod, lod_end_m, lod_margin_m, lod_fade_m, next != null)
+	mi.visibility_range_begin = r["begin"]
+	mi.visibility_range_end = r["end"]
+	mi.visibility_range_begin_margin = r["begin_margin"]
+	mi.visibility_range_end_margin = r["end_margin"]
 	mi.visibility_range_fade_mode = (
-		GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF if fade_out else GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+		GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
+		if r["fade"]
+		else GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
 	)
+	if next != null:
+		mi.visibility_parent = mi.get_path_to(next)
 	if shadow_lod_max >= 0 and lod > shadow_lod_max:
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+
+
+## The sibling `<base>-lod<lod>` of `mi`'s chain (saltgrass_clumps holds two chains), else null.
+static func lod_mesh(mi: MeshInstance3D, lod: int) -> MeshInstance3D:
+	if mi.get_parent() == null:
+		return null
+	var base := String(mi.name)
+	var at := base.rfind(LOD_SUFFIX)
+	if at >= 0 and base.substr(at + LOD_SUFFIX.length()).is_valid_int():
+		base = base.substr(0, at)
+	return mi.get_parent().get_node_or_null(NodePath("%s%s%d" % [base, LOD_SUFFIX, lod])) as MeshInstance3D
+
+
+## LOD `lod`'s visibility range (M1-ENV-08/09): a Dictionary of begin, end, begin_margin, end_margin
+## and fade (bool). When `chained` (the chain has LOD lod+1), LOD lod becomes LOD lod+1's
+## visibility-parent child, and Godot draws it only while LOD lod+1 is hidden for being too close. So
+## each switch is one state machine, the parent's begin check: its begin margin is the hysteresis, and
+## exactly one LOD draws at every distance whatever the camera did before (no hole, no double draw).
+## The child's own end is a loose bound halfway into the parent's span; it only matters while the
+## parent hands its children through during its own fade. A faded last LOD fades in over its begin
+## margin as well (Godot uses both margins as fade spans), which is a 2 x margin crossfade over the
+## opaque LOD below it. Not `chained`: the plain switch interval, with no margins.
+static func lod_range(lod: int, ends: PackedFloat32Array, margin: float, fade: float, chained: bool) -> Dictionary:
+	var last := ends.size() - 1
+	var r := {
+		"begin": 0.0 if lod == 0 else ends[lod - 1],
+		"begin_margin": 0.0 if lod == 0 else margin,
+		"end": ends[lod],
+		"end_margin": 0.0,
+		"fade": lod == last and fade > 0.0,
+	}
+	if lod == last:
+		r["end_margin"] = fade if fade > 0.0 else margin
+	elif chained:
+		var parent_leaves := ends[lod + 1] - float(lod_range(lod + 1, ends, margin, fade, true)["end_margin"])
+		r["end"] = 0.5 * (ends[lod] + parent_leaves)
+	else:
+		r["begin_margin"] = 0.0
+	return r

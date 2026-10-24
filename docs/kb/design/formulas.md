@@ -331,13 +331,13 @@ vowbound_stat(base, caller_stat, scale_pct) = base + caller_stat × scale_pct ÷
 ```
 (Negative inputs count as 0.) `hp` and `mp` scale from the caller's **max** HP and MP.
 
-**The call's cost.** Calling takes no time at once: the Vowbound acts on the caller's turn. But the call is the caller's action, so the caller's **end of turn runs at the call** (ADR 0027 A3: Poison and Regen, the status countdown, Doom, `turns_taken`, `turn_ended`); only its next turn waits. When the party comes back, the caller waits `action_delay(caller agility, call_rank, its speed)` from that moment, and every other member waits the ticks it had left when it stood down. Ilun's `call_rank` is 3 (`DEFAULT_RANK`). Without this cost, a 1 HP Ilun lifted a masher from 8.7% to 28.7% on the sandbox: a free action that soaks an enemy turn. With it, a 1 HP Ilun gives 16.4% (battle_ctb.md § Vowbound has the probe).
+**The call's cost.** Calling takes no time at once: the Vowbound acts on the caller's turn. But the call is the caller's action, so the caller's end of turn runs at the moment of the call (ADR 0027 A3): Poison and Regen, the status countdown and Doom, exactly once per call. Only its next turn waits: when the party comes back, the caller waits `action_delay(caller agility, call_rank, its speed)` from that moment, and every other member waits the ticks it had left when it stood down. Ilun's `call_rank` is 3 (`DEFAULT_RANK`). Without this cost, a 1 HP Ilun lifted a masher from 8.7% to 28.7% on the sandbox: a free action that soaks an enemy turn. With it, a 1 HP Ilun gives 16.4% (battle_ctb.md § Vowbound has the probe).
 
 Worked example, **Ilun** from Asha at level 5 with no Lattice gains (HP 300, MP 60, STR 6, MAG 18, DEF 6, MDF 14, AGI 14, ACC 8, EVA 10, LCK 12):
 
 | Stat | Base | Scale | Ilun |
 |---|---|---|---|
-| HP | 60 | 60% | 60 + 180 = **240** |
+| HP | 60 | 100% | 60 + 300 = **360** |
 | MP | 10 | 50% | 10 + 30 = **40** |
 | STR | 4 | 50% | 4 + 3 = **7** |
 | MAG | 4 | 100% | 4 + 18 = **22** |
@@ -345,9 +345,9 @@ Worked example, **Ilun** from Asha at level 5 with no Lattice gains (HP 300, MP 
 | AGI | 4 | 50% | 4 + 7 = **11** |
 | ACC / EVA / LCK | 4 / 2 / 4 | 100% / 50% / 100% | **12 / 7 / 16** |
 
-Ilun is a wall, not a hammer (vowbound.md §1: defensive water magic and a tidal shield): a little less HP than Asha (M2-CMB-05 lowered his HP scale from 100% to 60% for the masher line, battle_ctb.md § Vowbound) but over three times her defense and twice her magic defense, a little more magic than hers, and slow. *Brine Lash* (water, power 10, 4 MP), *Tidal Ward* (Protect and Shell on himself, 6 MP) and Attack. He absorbs water and is weak to lightning, so the sandbox's Reef Crab, which also absorbs water, shrugs off his magic.
+Ilun is a wall, not a hammer (vowbound.md §1: defensive water magic and a tidal shield): a little more HP than Asha but over three times her defense and twice her magic defense, a little more magic than hers, and slow. *Brine Lash* (water, power 10, 4 MP), *Tidal Ward* (Protect and Shell on himself, 6 MP) and Attack. He absorbs water and is weak to lightning, so the sandbox's Reef Crab, which also absorbs water, shrugs off his magic.
 
-**His Swell.** The Vowbound's gauge (`0..SWELL_MAX`) fills from HP **it** loses to hits **and, ADR 0027 A1, from HP an absorb hit restores to it**: `swell_gain(amount, its max HP, swell.rate)` either way, the same formula as Ballast (§ Swell). A heal or an item is not an absorb. Ilun's rate is 220 (M2-FP-17, from 150), so he fills after losing (or drinking back) under half his max HP. A full gauge unleashes its finisher (`swell.technique`, *Floodnet*: **non-elemental** (A2), all foes, power 16, `clears_field: flood`), which has no interactive input, costs no MP and empties the gauge. Party gauges never see the Vowbound's hits, and its gauge does not carry between battles.
+**His Swell.** The Vowbound's gauge (`0..SWELL_MAX`) fills from HP **it** loses to hits and from HP it **gains by absorbing** a hit's element (ADR 0027 A1): `swell_gain(amount, its max HP, swell.rate)` on either amount, the same formula as Ballast (§ Swell). For an absorb, the amount is the **rolled** absorb (the hit's `absorbed`, before the max-HP cap), so it counts at full HP too: Ilun is called at full HP, and a gauge fed only by the HP actually restored would leave him filling nothing in the flood. A heal does not count. Ilun's rate is 150, so he fills after losing (or drinking) two thirds of his max HP. Worked example: a water hit rolled at 90 heals him by up to 90 (nothing at full HP) and adds `90 × 150 ÷ 360` = 37 points either way. A full gauge unleashes its finisher (`swell.technique`, *Floodnet*: non-elemental, all foes, power 16, and it clears the flood field, A2), which has no interactive input, costs no MP and empties the gauge. Party gauges never see the Vowbound's hits, and its gauge does not carry between battles.
 
 ## Not yet specified (owned by Combat, tracked in M1 tasks)
 

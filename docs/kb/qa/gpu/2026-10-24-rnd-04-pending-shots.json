@@ -1,0 +1,14 @@
+{
+  "_note": "M2-RND-04: the Drownbell's flood, awaiting a lavapipe baseline. Lead: move the entry into tests/screenshots/shots.json when approving its baseline. On a GPU: tools/gpu_bench/capture_preset.tscn -- --manifest=res://docs/kb/qa/gpu/2026-10-24-rnd-04-pending-shots.json --preset=high (2026-10-24: moved into tests/screenshots/shots.json by the Lead.)",
+  "defaults": {
+    "camera": "default",
+    "resolution": [
+      1280,
+      720
+    ],
+    "settle_frames": 30,
+    "seed": 1,
+    "threshold_rmse": 0.008
+  },
+  "shots": []
+}

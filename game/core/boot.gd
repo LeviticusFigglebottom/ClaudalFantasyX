@@ -9,6 +9,8 @@ extends Node
 ## leave the whole debug folder out. F9 (battle sandbox) now lives in the overlay.
 ## M1-ARC-15: applies the saved (or default) graphics preset before anything renders, and arms
 ## SceneRouter's per-scene graphics hook (GraphicsRuntime).
+## M1-RND-22: starts the shader warm-up of the preset's resident shaders (ShaderPrewarm.spawn_resident)
+## under the tree root, so their compile happens here, under the boot screen, not in a transition.
 
 const DEBUG_OVERLAY_SCENE := "res://game/core/debug/debug_overlay.tscn"
 const DEBUG_OVERLAY_NAME := "DebugOverlay"
@@ -18,6 +20,7 @@ const DEBUG_OVERLAY_NAME := "DebugOverlay"
 
 func _ready() -> void:
 	GraphicsRuntime.boot(get_viewport())
+	GraphicsRuntime.warm_resident_shaders.call_deferred(get_tree().root)
 	_label.text = "%s\n%s" % [ProjectSettings.get_setting("application/config/name"), "bootstrap build"]
 	Game.stop_play_clock()
 	arm_world_return()

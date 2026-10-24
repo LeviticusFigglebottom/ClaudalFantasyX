@@ -55,25 +55,29 @@ func test_smart_party_wins_a_headless_fight_through_both_phases() -> void:
 	assert_true(engine.xp_awards().has(&"asha"))
 
 
+## A quick guard; the bands themselves are gated by tools/balance/sim.py --check at 1000 seeds. With the
+## real Vowbound call (M2-FP-17) role_answer and smart's p90 sit near their band edges at 1000 seeds
+## (71.0%, p90 60), so the 200-seed margins allow its sampling spread (64.5%, p90 62).
 func test_bands_hold_at_200_seeds() -> void:
 	var kit := sim.loadout(LOADOUT)
 	var naive := sim.run_many(&"drownbell", PARTY, [], &"naive", SEEDS, 1, Callable(), kit)
 	var role := sim.run_many(&"drownbell", PARTY, [], &"role_answer", SEEDS, 1, Callable(), kit)
 	var smart := sim.run_many(&"drownbell", PARTY, [], &"smart", SEEDS, 1, Callable(), kit)
 	assert_true(float(naive["win_pct"]) <= 10.0, "naive %.1f%%" % naive["win_pct"])
-	assert_between(float(role["win_pct"]), 65.0, 95.0, "role_answer")
+	assert_between(float(role["win_pct"]), 60.0, 95.0, "role_answer")
 	assert_between(float(smart["win_pct"]), 75.0, 98.0, "smart")
 	# M2-FP-17: the real Vowbound call; the masher who calls into the flood never stalls the fight.
 	var flood := sim.run_many(&"drownbell", PARTY, [], &"flood_call", SEEDS, 1, Callable(), kit)
 	assert_true(float(flood["win_pct"]) <= 95.0, "flood_call %.1f%%" % flood["win_pct"])
 	for agg: Dictionary in [naive, role, smart, flood]:
 		assert_eq(int(agg["timeouts"]), 0, "%s never stalls" % agg["policy"])
-		assert_true(int(agg["p90_turns"]) <= 70, "%s p90 %d" % [agg["policy"], agg["p90_turns"]])
+		assert_true(int(agg["p90_turns"]) <= 65, "%s p90 %d" % [agg["policy"], agg["p90_turns"]])
 
 
 func test_without_ilun_the_flood_wins() -> void:
 	var kit := sim.loadout(LOADOUT)
 	kit.erase("flags")
+	kit.erase("vowbound")  # neither the stand-in nor the real call (M2-FP-17)
 	var agg := sim.run_many(&"drownbell", PARTY, [], &"smart", 20, 1, Callable(), kit)
 	assert_true(float(agg["win_pct"]) <= 10.0, "no Ilun: %.1f%%" % agg["win_pct"])
 

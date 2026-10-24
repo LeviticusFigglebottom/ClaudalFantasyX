@@ -1,5 +1,5 @@
 {
-  "_doc": "Machine-readable target bands for tools/balance/sim.py. The prose and rationale live in docs/kb/design/balance_targets.md; change both together. Bands are inclusive [min, max] win percentages per policy; null = reported, no band. Each suite names the loadout (gear and consumables) its bands assume. mean_turns_min (optional) maps a policy to its ease ceiling: the fewest mean turns it may take, so a band that sits at 100% still catches a regression that makes the fight easier. swell (M2-CMB-01, optional): the quality every hero's Swell input is played at when a policy unleashes a full gauge (off, miss, good or perfect; default off). naive never unleashes. naive_swell (M2-NIT-03) is naive plus the Swell row, always report only (null): balance_targets.md says when its rate needs a decision. sandbox_vowbound (M2-CMB-05, ADR 0027's Acceptance): the Vowbound masher line, the one suite where naive_swell is banded: no gear, Ilun bound, a masher who calls him at once (sim_policies.json call_vowbound) must win no more than 40%. flood_call (M2-FP-17): calls the Vowbound when a field rises and leaves it out; banded at no more than the encounter's smart ceiling, with no timeouts.",
+  "_doc": "Machine-readable target bands for tools/balance/sim.py. The prose and rationale live in docs/kb/design/balance_targets.md; change both together. Bands are inclusive [min, max] win percentages per policy; null = reported, no band. Each suite names the loadout (gear and consumables) its bands assume. mean_turns_min (optional) maps a policy to its ease ceiling: the fewest mean turns it may take, so a band that sits at 100% still catches a regression that makes the fight easier. swell (M2-CMB-01, optional): the quality every hero's Swell input is played at when a policy unleashes a full gauge (off, miss, good or perfect; default off). naive never unleashes. naive_swell (M2-NIT-03) is naive plus the Swell row, report only (null) in every suite but a kind 'vowbound' one: balance_targets.md says when its rate needs a decision. A 'vowbound' suite (M2-CMB-05, ADR 0027) gives naive_swell, the masher who calls the Vowbound at once, the Vowbound masher line as its band, with the heroes' Swell off as the line was measured.",
   "suites": [
     {
       "id": "sandbox_reef",
@@ -103,35 +103,32 @@
           95
         ]
       },
-      "p90_turns_max": 70,
+      "p90_turns_max": 60,
       "loadout": "ch03_drownbell",
       "swell": "good"
     },
     {
-      "id": "sandbox_vowbound",
-      "chapter": "M2 sandbox, Vowbound masher (no gear)",
-      "kind": "vowbound_masher",
+      "id": "sandbox_reef_vowbound",
+      "chapter": "M1 sandbox, Ilun called (stress test)",
+      "kind": "vowbound",
       "encounter": "sandbox_reef",
       "active": [
         "rhen",
         "asha"
       ],
       "reserve": [
-        "toma",
-        "ysolde"
+        "toma"
       ],
       "bands": {
         "naive": null,
         "naive_swell": [
           0,
           40
-        ],
-        "role_answer": null,
-        "smart": null
+        ]
       },
       "p90_turns_max": 40,
-      "loadout": "vowbound_bare",
-      "swell": "good"
+      "loadout": "sandbox_vowbound",
+      "swell": "off"
     }
   ]
 }
