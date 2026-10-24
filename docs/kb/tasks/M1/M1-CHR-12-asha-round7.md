@@ -27,3 +27,7 @@ These are the faults that rounds 5 and 6 (M1-CHR-10 and M1-CHR-11) carried witho
 - Merge M1-RND-21 (the mouth-interior fill, PC branch `gpu/rnd-21-mouth-fill`) first, if it has landed. M1-CHR-11's "exact next step" lists the order.
 
 ## Review log
+
+## Lead note (2026-10-24)
+- Grief fault A, the black lip-edge rim, may be a shader bug rather than Asha's bake. Review sweep P found that the mouth family's cavity bounce is shadowed for positional lights, because Godot 4's ATTENUATION includes the shadow. That's **M1-RND-24**, which the Lead's Rendering agent is fixing. Do fault B (the peg teeth), the lid band, the smile eyes and the crown first, and revisit A after RND-24 merges.
+- The next GPU re-check after this round is **M1-QA-09** (with tighter rigour).
