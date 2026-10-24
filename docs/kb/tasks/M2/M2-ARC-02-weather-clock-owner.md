@@ -2,7 +2,7 @@
 id: M2-ARC-02
 title: A shipped owner for the weather clock (hymn_wind_time, hymn_wind) so zone and battle water moves
 role: architect
-status: review
+status: done
 reviewer: lead
 owner_session: "worktree-agent-a4071bcb36cd4fdae"
 depends_on: []
@@ -34,3 +34,4 @@ The PC's M2-RND-04 work found that no shipped scene advances the weather clock (
 
 ## Review log
 - 2026-10-24 architect (worktree-agent-a4071bcb36cd4fdae): ready for review (reviewer **lead**).
+- 2026-10-24 review-sweep-R (lead): **approve.** `WeatherClock` (game/core/weather_clock.gd): installed by SceneRouter, idempotent, and PROCESS_MODE_PAUSABLE. It is never reset and writes through `ShaderGlobals.set_value`. `hymn_wind_time` is in `FRAME_GLOBALS`, so listeners aren't called every frame. The wind comes from `zone_weather.json` (with a `default` row, checked by validate_data and `test_zone_weather_validate.py`) on `scene_swapping`, under the fade, and it isn't a ZONE_GLOBAL, so handler order doesn't matter. Holds use weakrefs, so a freed holder releases; capture.gd holds the clock for the whole run, so no baselines moved. The flood rig's own clock is gone (battle_boss_vfx.gd and boss_vfx.json). architecture.md, water.md and battle_vfx.md are updated. `--filter=weather_clock`: 11/0. Not filed: the clock grows without bound, which is fine for float32 precision over any realistic session.
