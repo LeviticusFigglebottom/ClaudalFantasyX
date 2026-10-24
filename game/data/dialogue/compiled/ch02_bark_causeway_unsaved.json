@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch02_bark_causeway_unsaved",
+ "source": "game/data/dialogue/ch02/ch02_bark_causeway_unsaved.dlg",
+ "start": "ch02_bark_causeway_unsaved",
+ "nodes": {
+  "ch02_bark_causeway_unsaved": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "line", "id": "ch02_bark_causeway_unsaved_001", "key": "DLG_CH02_BARK_CAUSEWAY_UNSAVED_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch02_bark_causeway_unsaved_002", "key": "DLG_CH02_BARK_CAUSEWAY_UNSAVED_002", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 9}
+   ]
+  }
+ }
+}
