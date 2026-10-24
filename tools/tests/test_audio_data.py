@@ -438,3 +438,16 @@ class BattleStingsTest(unittest.TestCase):
         errs = dc.sting_errors(bad, {"a", "b"}, set())
         for frag in ("zz is not an sfx row", "not a mix.json duck", "duck_sec", "yy is not an sfx row"):
             self.assertTrue(any(frag in e for e in errs), (frag, errs))
+
+
+class VoicePaceTest(unittest.TestCase):
+    """M3-AUD-21: voices.json pace is syllable or letter."""
+
+    def test_pace(self) -> None:
+        files = dc.load_files(ROOT)
+        rows = dc.merged_sfx(files)["sfx"]
+        doc = copy.deepcopy(files[dc.VOICES])
+        self.assertEqual(doc.get("pace"), "syllable")
+        self.assertFalse([e for e in dc.voice_errors(doc, files.get(dc.SPEAKERS), rows) if "pace" in e])
+        doc["pace"] = "word"
+        self.assertTrue(any("pace" in e for e in dc.voice_errors(doc, files.get(dc.SPEAKERS), rows)))

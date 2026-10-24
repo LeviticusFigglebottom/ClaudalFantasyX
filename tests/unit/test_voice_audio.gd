@@ -3,12 +3,15 @@ extends TestCase
 ## has a voice whose blip rows exist on the Voice bus; an unknown voice falls back to the default; the listener plays
 ## the speaker's blips for the box's own blips (and keeps the box's player silent), drops blips closer than the
 ## voice's rate, takes the voice from the sequencer's line, and prefers a recorded line (a fixture stream) to blips.
+## M3-AUD-21: paced by syllable (the default), a voice blips once per vowel group as the mouth opens, so it rests
+## where the reveal rests, and stays silent for narration without narration blips and for a skipped reveal.
 
 const SCENE := "res://game/ui/dialogue/dialogue_box.tscn"
 const SPEAKERS := "res://game/data/dialogue/speakers.json"
 const LINE_KEY := &"DLG_CH02_BEACH_004"
 const VO_PATH := "res://assets/audio/vo/asha/ch02_test_001.ogg"
 const TABLE := {
+	"pace": "letter",
 	"default": {"blips": ["voice_soft"], "pitch": 1.0, "rate_ms": 0, "jitter": 0.0, "volume_db": 0.0},
 	"vo": {"pattern": "res://assets/audio/vo/{speaker}/{line_id}.ogg", "narrator": "narrator", "suppress_blips": true},
 	"speakers":
@@ -173,13 +176,63 @@ func test_director_attaches_one_voice_per_box_and_hears_the_sequencer() -> void:
 	b.visible = true
 	b.settings.chars_per_sec = 10.0
 	b.show_line(_line(&"kerrid", &""))
-	b.advance(0.2)
-	dir.advance(0.2)
+	b.advance(0.3)  # "Tha": the first syllable opens on its vowel
+	dir.advance(0.3)
 	assert_eq(l.blips, 1)
 	assert_eq(StringName(str(dir.sfx.history[-1][0])), &"voice_low", "kerrid's row through the SFX bank")
 	seq.free()
 	dir.free()
 	_done()
+
+
+func test_syllable_pace_blips_once_per_vowel_group() -> void:
+	voice.data = _syllable_table()
+	voice.on_line(_line(&"toma", &""))
+	box.show_line(_line(&"toma", &""))
+	_reveal(0.3, 0.1)  # "Tha"
+	assert_eq(voice.blips, 1, "the mouth opens on the first vowel")
+	_reveal(0.5, 0.1)  # "t's a"
+	assert_eq(voice.blips, 2, "nothing for the consonants, one for the next vowel")
+	_reveal(10.0, 0.1)
+	assert_eq(box.shown_text(), "That's a very big spear for a very small conversation.")
+	assert_eq(voice.blips, _vowel_groups(box.shown_text()), "one blip per vowel group (13), not per letter")
+	assert_true(box.blips_played > voice.blips * 3, "the box counted letters")
+	_done()
+
+
+func test_syllable_pace_rests_with_the_reveal() -> void:
+	voice.data = _syllable_table()
+	voice.on_line(_line(&"toma", &""))
+	box.show_line(_line(&"toma", &""))
+	_reveal(0.3, 0.1)
+	var before := voice.blips
+	voice.advance(1.0)  # the reveal holds (a pause): no characters, no mouth, no blips
+	assert_eq(voice.blips, before, "a pause is silent")
+	box.skip_reveal()
+	voice.advance(0.1)
+	assert_eq(voice.blips, before, "a skipped reveal adds no blips")
+	voice.on_line(_line(&"", &"", &"toma"))
+	box.show_line(_line(&"", &"", &"toma"))
+	_reveal(1.0, 0.1)
+	assert_eq(voice.blips, before, "narration stays silent without narration_blip")
+	_done()
+
+
+func _syllable_table() -> Dictionary:
+	var t := TABLE.duplicate(true)
+	t["pace"] = "syllable"
+	return t
+
+
+func _vowel_groups(text: String) -> int:
+	var n := 0
+	var inside := false
+	for ch in text:
+		var v := box.settings.flap_vowels.contains(ch)
+		if v and not inside:
+			n += 1
+		inside = v
+	return n
 
 
 func _line(speaker: StringName, line_id: StringName, narrator: StringName = &"") -> DialogueStep:

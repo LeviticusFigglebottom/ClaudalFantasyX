@@ -414,3 +414,12 @@ Reduced audio swaps the boss stings for `_soft` versions without sub-bass. The r
   and its cooldown, attack and the move fallback, one hurt per kind, one death (a hit or poison), silence for a
   hero's action and a miss, a model's clip playing the move by name (a plain Node3D with an AnimationPlayer, no
   stub class), reduced audio, and BattleAudio bringing the listener.
+
+## Blip pace (M3-AUD-21)
+
+`voices.json` `pace` is `syllable` by default: VoiceAudio blips on the DialogueBox's `mouth_flap` opening edge, once per
+vowel group (`text_box.json` `flap_vowels`), the same edge the M2-CHR-10 lip sync follows. The UI track's reveal times
+(`time_of_char`, with the comma and full-stop rests, M2-UI-27) pace those edges, so the blips rest where the text
+rests and keep time with the mouth. A skipped reveal and sung lines emit no flaps, and narration stays silent unless
+`narration_blip` is set. Each voice's `rate_ms` still applies. `pace: letter` keeps the old behaviour: one blip per blip
+the box counts (`blip_every_n_chars`). Tests: `tests/unit/test_voice_audio.gd` (syllable tests), `VoicePaceTest`.
