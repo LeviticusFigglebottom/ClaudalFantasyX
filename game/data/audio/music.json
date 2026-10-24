@@ -79,6 +79,14 @@
       "file": "res://assets/audio/music/corrow_seawall.ogg",
       "resume": true,
       "_note": "Ch8, Corrow Bastion before the storm (M3-AUD-04); no zone row until ch08/corrow exists"
+    },
+    "hullgnaw": {
+      "file": "res://assets/audio/music/hullgnaw.ogg",
+      "_note": "Ch1 boss, Hullgnaw on the breaking raft at Oruvel (M3-AUD-08); no battle.encounters row until the encounter exists"
+    },
+    "spar_wraith": {
+      "file": "res://assets/audio/music/spar_wraith.ogg",
+      "_note": "Ch4 boss, the Spar-Wraith on the drowned trader's deck (M3-AUD-08); no battle.encounters row until the encounter exists"
     }
   },
   "zones": [

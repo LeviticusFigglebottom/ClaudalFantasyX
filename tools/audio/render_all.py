@@ -47,7 +47,7 @@ M1_AUD_02 = ("hush_theme_v2", "battle_standard.", "temple_trial")
 # stack measured whole by its source (the full stack is -16; stem 1 alone is quieter by design, mix.md §2).
 M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_verse", "hush_coda", "haluna_dawn",
            "shell_shrine_interior", "ilun_summon", "saltgrass_causeway", "lamp_diver", "sefir_theme", "the_ebbing",
-           "tidecup_match", "terraces_of_ash", "corrow_seawall")
+           "tidecup_match", "terraces_of_ash", "corrow_seawall", "hullgnaw", "spar_wraith")
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
@@ -125,6 +125,9 @@ JOBS = [
      ["terraces_of_ash.ogg", "terraces_of_ash.loop.json"], "music_loop"),
     ("assets_src/music/corrow_seawall.py", "assets/audio/music",
      ["corrow_seawall.ogg", "corrow_seawall.loop.json"], "music_loop"),
+    ("assets_src/music/hullgnaw.py", "assets/audio/music", ["hullgnaw.ogg", "hullgnaw.loop.json"], "music_loop"),
+    ("assets_src/music/spar_wraith.py", "assets/audio/music",
+     ["spar_wraith.ogg", "spar_wraith.loop.json"], "music_loop"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
