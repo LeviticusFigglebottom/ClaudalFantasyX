@@ -2,9 +2,10 @@ class_name BattleSummonCinematic
 extends Node
 ## C10: a Vowbound's first call as an in-battle cinematic (M2-BPR-08; docs/kb/tech/battle_presentation.md
 ## "Ilun's first call"). The slice's one Vowbound and its first call must be unmissable (vertical_slice.md B10).
-## - **When.** The first call of each Vowbound in a live story battle (its first_call_flags flag is unset), with
-##   UiSettings summon_cinematic "full" (the default). Every later call, the "short" setting, a capture fixture,
-##   instant pacing and "skip animations" play the short entry (choreo.json vowbound.entry).
+## - **When** (UiSettings summon_cinematic, the UI track's row, M2-UI-23): "short" (the default) plays it on the
+##   first call of each Vowbound in a live story battle (its first_call_flags flag unset) and the short entry
+##   (choreo.json vowbound.entry) after; "full" plays it on every call; "off" skips the rise (the Vowbound is
+##   simply there). A capture fixture, instant pacing and "skip animations" play the short entry.
 ## - **What.** The water stills (a longer delay after the party steps off), the Vowbound rises slowly at its slot
 ##   in bound light (an OmniLight3D in glimmer_bound, fading in and holding steady: no flicker, no drift, no
 ##   trails; color script C10), the camera eases to a low frame on the slot and back to the default by the end.
@@ -14,7 +15,9 @@ extends Node
 
 const KEY := "summon_cinematic"
 const SETTING := &"summon_cinematic"
+const SETTING_FULL := "full"
 const SETTING_SHORT := "short"
+const SETTING_OFF := "off"
 const SHOT := "summon"
 
 var cfg: Dictionary = {}
@@ -47,14 +50,23 @@ static func attached(choreo: BattleChoreo, controller: BattleController, engine:
 
 ## True when `cid`'s call should play the full cinematic now.
 func wants_full(cid: StringName) -> bool:
-	if not _choreo.animating() or str(_setting()) == SETTING_SHORT:
+	var setting := str(_setting())
+	if not _choreo.animating() or setting == SETTING_OFF:
 		return false
 	var flag := first_call_flag(cid)
 	if flag == &"":
 		return false
-	if force_full:
+	if force_full or (setting == SETTING_FULL and _live()):
 		return true
 	return _live() and not bool(Game.get_flag(flag))
+
+
+## The entrance for `cid`'s call when this cinematic decides it ({} = the short entry): the full cinematic, or under
+## "off" no rise at all.
+func entry_for(cid: StringName) -> Dictionary:
+	if first_call_flag(cid) != &"" and str(_setting()) == SETTING_OFF:
+		return cfg.get("off_entry", {}) as Dictionary
+	return begin(cid) if wants_full(cid) else {}
 
 
 ## The seen-flag of `cid`'s first call (choreo.json summon_cinematic.first_call_flags; &"" for none).
@@ -67,7 +79,7 @@ func first_call_flag(cid: StringName) -> StringName:
 func begin(cid: StringName) -> Dictionary:
 	active_id = cid
 	elapsed = 0.0
-	if _live() and not force_full:
+	if _live() and not force_full and not bool(Game.get_flag(first_call_flag(cid))):
 		Game.set_flag(first_call_flag(cid))
 	_summon_pose = {}
 	_place_light()

@@ -68,14 +68,24 @@ func test_the_first_live_call_plays_in_full_once_and_sets_the_flag() -> void:
 	_free()
 
 
-func test_short_setting_plays_the_short_entry() -> void:
+func test_the_three_settings() -> void:
 	_to_turn_of(&"asha")
 	ctl.pacing_scale = 1.0
 	_go_live()
 	var s := UiSettings.shared()
 	var was: Variant = s.get_value(BattleSummonCinematic.SETTING)
 	s.set_value(BattleSummonCinematic.SETTING, BattleSummonCinematic.SETTING_SHORT)
-	assert_false(choreo.summon.wants_full(ILUN))
+	assert_true(choreo.summon.wants_full(ILUN), "short: the first call in full")
+	Game.set_flag(FLAG, true)
+	assert_false(choreo.summon.wants_full(ILUN), "short: shortened after")
+	s.set_value(BattleSummonCinematic.SETTING, BattleSummonCinematic.SETTING_FULL)
+	assert_true(choreo.summon.wants_full(ILUN), "full: every call")
+	s.set_value(BattleSummonCinematic.SETTING, BattleSummonCinematic.SETTING_OFF)
+	assert_false(choreo.summon.wants_full(ILUN), "off: never")
+	assert_eq(choreo.summon.entry_for(ILUN), cfg["off_entry"], "off: no rise")
+	assert_true(ctl.vow.call_vowbound(ILUN))
+	choreo.advance(0.0)
+	assert_false(choreo.is_entering(ILUN), "Ilun is simply there")
 	s.set_value(BattleSummonCinematic.SETTING, was)
 	_free()
 

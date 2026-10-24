@@ -773,10 +773,10 @@ func _advance_entering(delta: float) -> void:
 	for cid: StringName in _entering.keys():
 		var e: Dictionary = _entering[cid]
 		var spec: Dictionary = e["spec"]
-		var sec := maxf(float(spec.get("sec", 0.0)), 0.0001)
+		var sec := float(spec.get("sec", 0.0))
 		var t := float(e["t"]) + delta * speed
 		var f := _ctl.stage.stand_in(cid)
-		if f == null or t >= sec:
+		if f == null or t >= sec:  # a zero-length entrance (summon_cinematic "off") is there at once
 			_entering.erase(cid)
 			if f != null:
 				f.visible = true
@@ -787,7 +787,7 @@ func _advance_entering(delta: float) -> void:
 		if t >= 0.0 and not bool(e["clip"]):
 			e["clip"] = true
 			BattleClips.play(f, StringName(str(spec.get("clip", ""))), speed)
-		var k := 1.0 - _ease(maxf(t, 0.0) / sec)
+		var k := 1.0 - _ease(maxf(t, 0.0) / maxf(sec, 0.0001))
 		var fwd: Vector3 = e["fwd"]
 		var off := -fwd * float(spec.get("back_m", 0.0)) * travel + Vector3.DOWN * float(spec.get("depth_m", 0.0))
 		_pose_node(f, off * k, fwd, float(spec.get("lean_deg", 0.0)) * lean_k * k)

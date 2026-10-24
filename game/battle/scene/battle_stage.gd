@@ -64,7 +64,6 @@ func _ready() -> void:
 		_party_slots.append(n as Marker3D)
 	for n in %EnemySlots.get_children():
 		_enemy_slots.append(n as Marker3D)
-	BattleMousePick.attached(self)  # M2-BPR-09: hover and click to pick a target
 
 
 func spawn(engine: BattleEngine) -> void:

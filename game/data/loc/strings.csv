@@ -628,10 +628,11 @@ SET_BATTLE_ANIMATIONS_HELP,"Full plays each action with movement and camera fram
 SET_BATTLE_ANIMATIONS_FULL,Full
 SET_BATTLE_ANIMATIONS_SKIP,Skip
 BARK_LINE_FMT,{name}: {line}
-SET_SUMMON_CINEMATIC,Summon cinematic
-SET_SUMMON_CINEMATIC_HELP,"A Vowbound's first call plays in full. Short plays every call quickly."
+SET_SUMMON_CINEMATIC,Vowbound calls
+SET_SUMMON_CINEMATIC_HELP,"How a Vowbound's call plays. Short plays it in full the first time, then shortened. Off goes straight to the Vowbound's arrival."
 SET_SUMMON_CINEMATIC_FULL,Full
 SET_SUMMON_CINEMATIC_SHORT,Short
+SET_SUMMON_CINEMATIC_OFF,Off
 HUD_CALLS_FMT,{name} calls {vowbound}.
 CHAR_OSU,Grandmother Osu
 FIELD_PROMPT_LOOK,Look

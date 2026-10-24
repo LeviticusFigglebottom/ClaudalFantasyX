@@ -323,9 +323,10 @@ def summon_errors(doc: object, flags: set[str]) -> list[str]:
               "camera_in_sec", "camera_out_sec"):
         if not _num(s.get(k)) or s[k] < 0:
             errs.append(f"{w}.{k}: must be a number >= 0")
-    e = s.get("entry")
-    if not isinstance(e, dict) or any(not _num(e.get(k)) or e[k] < 0 for k in ENTRY_NUMS) or e.get("clip") not in CLIPS:
-        errs.append(f"{w}.entry: needs numbers >= 0 for {', '.join(ENTRY_NUMS)} and a contract clip")
+    for key in ("entry", "off_entry"):
+        e = s.get(key)
+        if not isinstance(e, dict) or any(not _num(e.get(k)) or e[k] < 0 for k in ENTRY_NUMS) or e.get("clip") not in CLIPS:
+            errs.append(f"{w}.{key}: needs numbers >= 0 for {', '.join(ENTRY_NUMS)} and a contract clip")
     if "summon" not in (c.get("camera", {}).get("shots", {}) if isinstance(c.get("camera"), dict) else {}):
         errs.append(f"{CHOREO_FILE}: camera.shots needs the 'summon' shot")
     return errs
