@@ -457,7 +457,7 @@ func _build() -> void:
 	_title_rule(Rect2(title.position, Vector2(pr.size.x * 0.5, title.size.y)))
 	var help_h := HudLayout.num(pm, "help_height")
 	var help_at := Vector2(pr.position.x + pad, pr.end.y - pad - help_h)
-	_help = _label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
+	_help = HudLayout.wrap_upward(_label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h))))
 	var rm: Dictionary = _d.get("root", {})
 	_root = _page(rm, &"field_root", "", 0)
 	_root.row_hovered.connect(_on_hovered.bind(Level.ROOT))

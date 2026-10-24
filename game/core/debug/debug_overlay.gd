@@ -7,7 +7,8 @@ extends CanvasLayer
 ## Pages (bindings in game/data/debug/debug_overlay.json, added to the InputMap at runtime):
 ##   F1 help · F2 turn-order internals · F3 encounter rate · F4 flag inspector (Enter toggles a
 ##   bool) · F5 teleport (Enter goes) · F6 Lattice cheat (Enter grants) · F7 field camera ·
-##   F9 battle sandbox · F12 hide. Pressing a page's key again hides the overlay.
+##   F9 battle sandbox · F10 pseudo-localisation on / off (M2-UI-28, PseudoLoc) · F12 hide.
+##   Pressing a page's key again hides the overlay.
 ## Lists move with ui_up / ui_down and act with ui_accept, only on list pages ("list": true in the
 ## data: flags, teleport, Lattice). Every other page lets those keys through to the game, so F2 and
 ## F7 can stay open while playing (M1-ARC-05).
@@ -27,6 +28,7 @@ const PAGE_LATTICE := &"lattice"
 const PAGE_CAMERA := &"camera"
 const ACTION_SANDBOX := &"debug_battle_sandbox"
 const ACTION_HIDE := &"debug_overlay_hide"
+const ACTION_PSEUDO_LOC := &"debug_pseudo_loc"
 const MONO_FONTS: PackedStringArray = ["monospace", "DejaVu Sans Mono", "Consolas", "Menlo"]
 const CURSOR := "> "
 const NO_CURSOR := "  "
@@ -116,6 +118,7 @@ func _build_action_tables() -> void:
 			_list_pages[StringName(str(p["id"]))] = true
 	_global_actions[ACTION_SANDBOX] = launch_battle_sandbox
 	_global_actions[ACTION_HIDE] = close
+	_global_actions[ACTION_PSEUDO_LOC] = toggle_pseudo_loc
 	_list_actions = {&"ui_up": move_selection.bind(-1), &"ui_down": move_selection.bind(1), &"ui_accept": activate}
 
 
@@ -198,6 +201,19 @@ func launch_battle_sandbox() -> bool:
 	return true
 
 
+## F10: pseudo-localisation on or off (PseudoLoc). Screens built from now on show it; reopen one
+## to see it. Returns whether it is on.
+func toggle_pseudo_loc() -> bool:
+	var on := PseudoLoc.toggle()
+	last_message = (
+		"pseudo-localisation %s (locale %s): reopen a screen to see it"
+		% ["on" if on else "off", TranslationServer.get_locale()]
+	)
+	print(last_message)
+	refresh()
+	return on
+
+
 ## Re-renders the open page now.
 func refresh() -> void:
 	_refresh_left = float(cfg.get("refresh_sec", 0.0))
@@ -268,6 +284,8 @@ func _help_lines() -> PackedStringArray:
 	for p in _pages:
 		out.append("%-26s %s" % [_keys_for(StringName(str(p["action"]))), p["title"]])
 	out.append("%-26s battle sandbox" % _keys_for(ACTION_SANDBOX))
+	var pseudo_on := "on" if PseudoLoc.is_enabled() else "off"
+	out.append("%-26s pseudo-localisation (%s)" % [_keys_for(ACTION_PSEUDO_LOC), pseudo_on])
 	out.append("%-26s hide" % _keys_for(ACTION_HIDE))
 	out.append("list pages: ui_up / ui_down move, ui_accept acts; other pages pass those keys to the game")
 	return out

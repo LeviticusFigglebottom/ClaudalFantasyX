@@ -129,7 +129,7 @@ func _framed_panel(metrics: Dictionary, title_text: String) -> Label:
 	_title_rule(Rect2(title.position, Vector2(pr.size.x * 0.5, title.size.y)))
 	var help_h := HudLayout.num(metrics, "help_height")
 	var help_at := Vector2(pr.position.x + pad, pr.end.y - pad - help_h)
-	return _label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
+	return HudLayout.wrap_upward(_label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h))))
 
 
 ## A MenuPage at its block's rect, as tall as `rows` rows (titled when `title` is not "").
