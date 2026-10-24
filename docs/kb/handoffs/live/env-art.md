@@ -31,6 +31,22 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
 ## For the Lead
+- **MERGE-READY @ ba7679c1** (claude/env-art, which includes the integration branch at 1e3ff5d6).
+  - **Items:** M2-ENV-10 causeway route (review); M2-ENV-11 battle arenas (review; arena root renamed
+    `BattleArenaRoot`, adopted by battle-presentation); M3-ENV-02 Brine Shoals (review).
+  - **Checks run:**
+    - full Godot suite: 1556 run, 0 failed;
+    - tools unittests: 584, of which the one failure (tamsule test_lut, a LUT regression from the arena merge)
+      is fixed and re-run green;
+    - verify_blender_builds: haluna_kit and brine_shoals_kit byte-identical;
+    - gdlint, gdformat, validate_data, taskboard --check: clean.
+    - Shots captured and viewed for the new work only: causeway c01/c03/c05/c06/c08, two new causeway
+      baselines; the arenas and Brine Shoals agents viewed and approved their own two each.
+  - **Checks skipped:** the full screenshot manifest and coverage (no game/battle or game/progression changes).
+  - **Fixed on the way:**
+    - `test_causeway_dressing` never parsed before; once it ran, its zones leaked a water-level publisher into
+      `test_water_surface`.
+    - The arena LUT table froze the noon grade, which broke tamsule_bell's LUT.
 - **MERGE-READY @ 4f450a7c: ci_local exit 0, 1532 tests (0 failed), coverage within baseline (battle 99.95%, progression 96.69%), boot smoke OK, 84 shots compared / 0 failed, Blender vegetation 7 + haluna_kit 68 identical** (HYMN_BLENDER_BASE = cf999e0a, the integration commit merged; claude/m2-slice 165ddb4c merged too). The only commit after it is this live-log update.
 - **Answered (2026-10-24):** the project owner and the Lead approved merging `claude/m2-slice`; done (70fa4c77 + bf18e854). The merge exposed two M2-ARC-04 release-build breaks, both fixed here: `LodChain` moved to `game/world/vegetation/` beside VegetationPlant (the import rules ship and used a `_tests` class), and `HalunaShotCamera` moved to `game/levels/ch02/haluna/` (the shrine's shots rig and the mood wrapper use it). `test_release_excludes_tests` passes.
 - **Import gotcha when merging this branch:** delete `.godot/imported/*.glb-*` in the gate worktree and run `--import`, or `--filter=import` fails 3 tests on stale LOD ranges.
