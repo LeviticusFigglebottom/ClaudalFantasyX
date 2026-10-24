@@ -2,7 +2,7 @@
 id: M2-RND-08
 title: The Low tier's storm (lathe shells) costs more than High's compute body; bring it under
 role: rendering
-status: review
+status: done
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M2-RND-05]
@@ -31,3 +31,4 @@ From M2-RND-05's findings (docs/kb/qa/gpu/2026-10-24-rnd-05-undertow-events.md).
 - **Tests.** Godot `undertow` 51/0, plus the tools unittests (the generator's stale-output test).
 
 ## Review log
+- 2026-10-24 review-sweep-R (environment): **approve.** The shells now read the baked lattice (`undertow_lattice.gdshaderinc`, shared with the body's march, so there's one copy of the helpers; the compute outputs are regenerated and the generator's stale-output test covers them), and wounds are evaluated only on the wall band. Low's storm by difference is 0.31–0.66 ms on all four cameras, under High's 0.59–0.83, and High is unchanged (its shots are byte-identical). The noise texture already has its provenance row. The `undertow_horizon_low` drift (0.025) was re-approved after viewing (d099391): same silhouette, banding, rents and flashes. RX 9070 XT only; the GTX 1060 ratio is unmeasured, as RND-05's finding said. `--filter=undertow`: 51/0.
