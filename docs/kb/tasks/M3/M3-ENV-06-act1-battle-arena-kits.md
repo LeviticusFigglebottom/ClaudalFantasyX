@@ -2,7 +2,7 @@
 id: M3-ENV-06
 title: Act I battle arenas from the zone kits (five arenas on the M2-ENV-11 contract)
 role: environment
-status: doing
+status: review
 owner_session: "env-art"
 depends_on: [M2-ENV-11]
 milestone: M3
@@ -16,10 +16,11 @@ contract (docs/kb/tech/battle_arenas.md), each from its zone kit and graded from
 ids freely; tell battle-presentation in your live log, and it updates the encounter rows and arenas.json.
 
 ## Acceptance criteria
-- [ ] Five arenas on the contract (WorldEnvironment, Sun, Sea or none, dressing, CameraHints; flat clear floor
+- [x] Five arenas on the contract (WorldEnvironment, Sun, Sea or none, dressing, CameraHints; flat clear floor
       under the sandbox slots; nothing between the battle camera and the fighters)
-- [ ] The underwater arena agreed with Rendering (underwater.md) for its look under the battle camera
-- [ ] Preview shots viewed and approved
+- [ ] The underwater arena agreed with Rendering (underwater.md) for its look under the battle camera (proposal
+      built; open in M3-RND-25)
+- [x] Preview shots viewed and approved (five baselines on lavapipe, one per arena)
 
 ## Notes
 - Request from the battle-presentation track (M3-BPR-01).
@@ -62,5 +63,36 @@ ids freely; tell battle-presentation in your live log, and it updates the encoun
   to measure on the GPU tier.
 - **Remaining (status stays doing):** `underway_tower` (after M3-ENV-05's sea-floor kit, with Rendering's
   underwater agreement) and `oruvel_raft_morning` (Haluna waterfront and village pieces).
+- **Built (env-art, 2026-10-24, second worker): the last two; all five exist, status → review (rendering).** Each with
+  one lavapipe baseline, viewed and iterated (the fighters read in both):
+  - `oruvel_raft_morning` (`ch01`, 10:30): one of Oruvel's working decks. New ground `arena_raft_deck` (haluna_kit
+    job, `arenas.py`): planks fore and aft at y 0 over four lashed hulls (painted bows out past the open north end),
+    rope rails and float logs beyond the slots at x ±6.3, a dive ladder; a plank bridge to the chandler's cabin raft;
+    the town's other rafts on hulls with bridges between them; single hulls moored round. The town on it is Haluna's
+    pieces (cabin houses, a storehouse, a net shed, a carved gull on every ridge, a stall and awning, nets, outriggers)
+    and two Brine Shoals salvage pieces; the open sea east. New grade `lut_ch01_raft` (`zone_lut.py --grade
+    ch01_raft`; a `band_sat` pass lifts the cyans and oranges 8%), shared with the Underway.
+  - `underway_tower` (`ch01_underway_int`): the lamp gallery's breach end, 22 m down. No new geometry: the kit
+    preview's tower and terrace (`ou_preview_layout.py`, read-only) turned a quarter so the camera looks east down the
+    gallery to the breach; the kit's F9 slabs are the floor; the fight's bay's columns are left out (props within 4 m
+    of a slot). Rhen's lantern (the rig's) at his lantern hand on slot 0 keys the fight; the breach's sunlit patches
+    and the terrace beyond are behind the fighters; held motes sink beyond the enemy line. The look is the existing
+    `UnderwaterRig` through `ArenaUnderwater` (an in-scatter `light_scale` 0.33, new in `game/world/arenas/`), the sun
+    and ambient baked tinted for 21 m of water (downwelling stand-in). **Not agreed with Rendering yet:** request
+    filed, M3-RND-25 (what the arena needs from the rig under the battle camera; extends M3-RND-24).
+  - Contract: the Godot floor rays now start at the fighters' head-room (5.5 m), so the gallery's ceiling is not
+    "on the floor"; the tools test exempts the floor's own tiles and lets structure (walls, piers) stand 2 m off the
+    slots (props still 4 m). Tests: both ids in `tests/unit/test_battle_arenas.gd` (all seven arenas) plus the
+    underwater arena's rig, lantern and motes, and ArenaUnderwater's scale; `tools/tests/test_arenas.py` adds the raft
+    deck's and the gallery slabs' floors, the downwelling tint, the gallery's columns and `lut_ch01_raft`.
+- **Swap-in note for battle-presentation (the last two):** `assets/environments/arenas/oruvel_raft_morning/oruvel_raft_morning.tscn`
+  and `assets/environments/arenas/underway_tower/underway_tower.tscn` (`BattleArenaRoot.path_for(id)`). Same loader
+  rules. No `BossAnchor` or `FloodAnchor`. CameraHints: raft `wide_high`, `party_side`, `foe_side`,
+  `from_the_bridge`; Underway `wide_high`, `party_side`, `foe_side`, `to_the_low_lights`. **The Underway's extra
+  children** go under `Arena` with the rest: `Underwater` (ArenaUnderwater: it must be added after the moved
+  WorldEnvironment and Sun, which the loader's child order already gives), `Lantern` (re-target
+  `Arena/Underwater.lantern_target` to Rhen's lamp node once his fighter carries one) and `HeldMotes`. Keep camera
+  hints 2.5 m or more off the lantern (the halo hazes the frame nearer). Add both ids to `arenas.json` and the Ch1
+  encounter rows (C1-04/C1-06 Underway fights; a raft-town fight).
 
 ## Review log
