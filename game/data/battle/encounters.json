@@ -23,6 +23,16 @@
     {"id": "ch01_underway_shoals", "name_key": "ENC_CH01_WICKFRY", "scripted": false, "opening": "roll",
      "enemies": ["wickfry", "wickfry"]},
     {"id": "ch01_underway_limpet", "name_key": "ENC_CH01_SHAFT_LIMPET", "scripted": false, "opening": "roll",
-     "enemies": ["wickfry", "tower_limpet"]}
+     "enemies": ["wickfry", "tower_limpet"]},
+    {"id": "ch05_stair_tortoises", "name_key": "ENC_CH05_PILGRIM_STAIR", "scripted": true, "opening": "normal",
+     "prompt_key": "TUT_CH05_ARMOR_BREAK", "enemies": ["slag_tortoise", "slag_tortoise"]},
+    {"id": "ch05_stair_ashwings", "name_key": "ENC_CH05_PILGRIM_STAIR", "scripted": false, "opening": "roll",
+     "enemies": ["ashwing", "ashwing"]},
+    {"id": "ch05_stair_tortoise_sparker", "name_key": "ENC_CH05_PILGRIM_STAIR", "scripted": false, "opening": "roll",
+     "enemies": ["slag_tortoise", "vein_sparker"]},
+    {"id": "ch05_stair_tortoise_ashwing", "name_key": "ENC_CH05_PILGRIM_STAIR", "scripted": false, "opening": "roll",
+     "enemies": ["slag_tortoise", "ashwing"]},
+    {"id": "ch05_cinder_matron", "name_key": "ENC_CH05_CINDER_MATRON", "scripted": true, "opening": "normal",
+     "prompt_key": "TUT_CINDER_MATRON_CRUST", "enemies": ["cinder_matron"]}
   ]
 }
