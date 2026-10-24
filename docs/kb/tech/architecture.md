@@ -152,6 +152,25 @@ screen *was* the title, so the PC measured 168–265 ms frames on the visible me
   `wait_for_node(GraphicsRuntime.current_warm_up())`; `arm()`; on `opened`, give the menu its input back and call
   `SceneRouter.measure_reveal(...)` with `card.is_lifted`. `cancel_visible_window()` ends a window early.
 
+### Frame times are wall time, never `delta` (M2-ARC-05, ADR 0029)
+Godot caps the process `delta` at about 140–150 ms (4.6.3 and 4.7.2; a 500 ms stall reports 135–147 ms, found by
+M1-RND-29). A statistic summed or maxed from `delta` can never see a frame over that, so ADR 0029's 1 s hidden-frame
+budget could never trip, and the launch's `reveal_wait_max_frame_ms` read ~149 ms where the sweep measured 1266 ms.
+
+- **`FrameClock`** (`game/core/frame_clock.gd`) is the one helper: `reset()` / `reset_at(usec)` start a window,
+  `lap()` / `lap_at(usec)` return the wall ms since the last mark (Time.get_ticks_usec) and move it, `since_ms()`
+  reads without moving it. Tests inject a fake clock: `FrameClock.new(fake.now)`.
+- **Users.** `BootCard` (its `clock`, started in `_ready`, feeds `step()`, so the wait stats, `MAX_WAIT_MS`, the
+  fade-in and the lift run on real time); `SceneRouter`'s hidden frames, reveal wait and `VisibleWindow`. The
+  router already timed by wall clock; it now does so through FrameClock. `ShaderPrewarm` switched to
+  `Time.get_ticks_usec` in M1-RND-29 on its own (`_last_frame_usec`); moving it onto FrameClock is a small
+  follow-up once that branch has merged.
+- **Rule.** Anything that judges a frame against a budget (SPEC §4.2, ADR 0029) times it with a FrameClock.
+  Animation and gameplay may keep `delta`; tools/gpu_bench already read `Time.get_ticks_usec`.
+- **Tests.** `tests/unit/test_frame_clock.gd` (fake clock: a 500 ms stall laps at 500 ms; the router's
+  VisibleWindow); `test_boot_card.gd` (a 500 ms stall handed a 147 ms `delta` reads 500 ms; a real
+  `OS.delay_msec(400)` reads ≥ 400 ms; the time-out is wall time).
+
 ## Saves (M1-ARC-03, architect-stream-4)
 
 SPEC §5.2 (versioned saves, save-point-only, chapter autosave) and §6.6 (shrines: full heal, a save menu, a teleport network later).

@@ -21,6 +21,10 @@ extends CanvasLayer
 ## to measure the reveal like a scene change, call SceneRouter.measure_reveal(path, card.is_lifted).
 ## hold_reveal_of(SceneRouter) keeps a router change from lifting its own fade until the card opens (boot
 ## does this when the title is reached through a SceneRouter change).
+##
+## Frames are wall time (M2-ARC-05): each _process frame is timed by `clock` (a FrameClock, Time.get_ticks_usec
+## between frames), never by `delta`, which Godot caps at about 150 ms. So the wait's stats, MAX_WAIT_MS and the
+## fade and lift run on real time, and a stall under the card shows at its true length.
 
 signal covered
 signal opened(stats: Dictionary)
@@ -39,6 +43,8 @@ const LOG_PREFIX := "BootCard"
 var lift_sec := 0.0
 ## Seconds the fade-in takes (0: opaque at once).
 var fade_in_sec := 0.0
+## Times each frame (M2-ARC-05); started when the card enters the tree. Tests swap in a fake clock.
+var clock := FrameClock.new()
 
 var _rect: ColorRect
 var _phase := Phase.WAITING
@@ -73,6 +79,7 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	clock.reset()
 	if fade_in_sec > 0.0:
 		_phase = Phase.FADING_IN
 		_set_alpha(0.0)
@@ -133,11 +140,13 @@ func work_done() -> bool:
 	return true
 
 
-func _process(delta: float) -> void:
-	step(delta * MSEC_PER_SEC)
+## The frame's wall time from `clock`, not the capped `delta` (M2-ARC-05).
+func _process(_delta: float) -> void:
+	step(clock.lap())
 
 
-## Advances the card by one frame of `frame_ms` (tests call it directly). Returns true on the frame it opens.
+## Advances the card by one frame of `frame_ms` wall ms (tests call it directly). Returns true on the frame it
+## opens.
 func step(frame_ms: float) -> bool:
 	match _phase:
 		Phase.FADING_IN:

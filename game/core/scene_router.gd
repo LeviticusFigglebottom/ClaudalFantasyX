@@ -56,6 +56,8 @@ extends Node
 ##     visible_measured.
 ##   - warm_fonts_now() / fonts_ready(): the theme font warm-up outside a change (boot runs it under its card).
 ##   - cancel_visible_window(): ends the window being measured (change_scene() and measure_reveal() call it).
+## M2-ARC-05: every window's frames are wall time, timed by a FrameClock (Time.get_ticks_usec between
+## frames), never the process `delta`, which Godot caps at about 150 ms.
 
 signal prewarm_requested(scene_path: String)
 ## Emitted under the opaque fade, just before the new scene enters the tree (zone globals reset here).
@@ -216,13 +218,13 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 ## M2-ARC-03: keeps the fade opaque while anything holds the reveal (boot's warm-up), recording the wait.
 func _wait_for_reveal(stats: Dictionary) -> void:
 	var start := Time.get_ticks_usec()
-	var t := start
+	var clock := FrameClock.new()
+	clock.reset_at(start)
 	var frames := 0
 	var worst := 0.0
 	while not reveal_holders().is_empty() and _ms_since(start) < REVEAL_WAIT_MAX_MS:
 		await get_tree().process_frame
-		worst = maxf(worst, _ms_since(t))
-		t = Time.get_ticks_usec()
+		worst = maxf(worst, clock.lap())
 		frames += 1
 	if not reveal_holders().is_empty():
 		push_warning("%s: lifting after %.0f ms with the reveal still held" % [LOG_PREFIX, _ms_since(start)])
@@ -295,7 +297,8 @@ func _swap(
 	else:
 		swap_frame_start = frame0_start(swap_frame_start, waited, Time.get_ticks_usec())
 	var frames: Array[float] = []
-	t = swap_frame_start
+	var clock := FrameClock.new()
+	clock.reset_at(swap_frame_start)
 	# Zone render globals (M1-RND-15) reset on this signal: the new zone starts from the project
 	# defaults, so one that never writes them does not inherit the last zone's sea-glow or tide line.
 	scene_swapping.emit(scene_path)
@@ -303,9 +306,7 @@ func _swap(
 	get_tree().change_scene_to_node(node)
 	for i in MEASURE_FRAMES:
 		await get_tree().process_frame
-		var now := Time.get_ticks_usec()
-		frames.append((now - t) / USEC_PER_MSEC)
-		t = now
+		frames.append(clock.lap())
 		if i == 0:
 			if spawn != &"" and node.is_inside_tree():
 				WorldReturn.place_player(node, spawn)
@@ -478,7 +479,7 @@ func _fade_to(alpha: float) -> void:
 
 
 static func _ms_since(t_usec: int) -> float:
-	return (Time.get_ticks_usec() - t_usec) / USEC_PER_MSEC
+	return FrameClock.ms_between(t_usec, Time.get_ticks_usec())
 
 
 ## M1-ARC-16: ADR 0029's visible window, fed one timestamp per frame (an injected clock, so tests can drive
@@ -490,16 +491,15 @@ class VisibleWindow:
 	var frame_ms: Array[float] = []
 	var lift_frames := 0
 	var lifted_frames := 0
-	var _last_usec := 0
+	var _clock := FrameClock.new()
 
 	func _init(start_usec: int) -> void:
-		_last_usec = start_usec
+		_clock.reset_at(start_usec)
 
 	## Records the frame that ended at `now_usec`; `lifted`: the fade was fully lifted when it ended.
 	## Returns true once the window is complete.
 	func tick(now_usec: int, lifted: bool) -> bool:
-		frame_ms.append((now_usec - _last_usec) / USEC_PER_MSEC)
-		_last_usec = now_usec
+		frame_ms.append(_clock.lap_at(now_usec))
 		if lifted:
 			lifted_frames += 1
 		else:
