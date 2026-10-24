@@ -19,11 +19,12 @@ var ui_settings: UiSettings
 var _page: MenuPage
 var _help: Label
 var _backdrop: ColorRect
+var _caustics: CausticBackdrop
 var _open := false
 
 
 func _ready() -> void:
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	if ui_settings == null:
 		ui_settings = UiSettings.shared()
@@ -34,6 +35,8 @@ func _ready() -> void:
 	_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_backdrop)
 	_paint_backdrop()
+	_caustics = CausticBackdrop.new()  # ADR 0033
+	add_child(_caustics)
 	var pm := data.get("page", {}) as Dictionary
 	_page = MenuPage.new()
 	var r := HudLayout.rect_of(pm)

@@ -301,6 +301,7 @@ func _build() -> void:
 	mat.set_shader_parameter(&"tint", get_theme_color(&"scrim", HymnThemeBuilder.PALETTE_TYPE))
 	scrim.material = mat
 	add_child(scrim)
+	add_child(CausticBackdrop.new())  # ADR 0033
 	var pm: Dictionary = _d.get("panel", {})
 	var panel := Panel.new()
 	HudLayout.place(panel, pm)
@@ -311,6 +312,7 @@ func _build() -> void:
 	var title := _label(&"BannerLabel", Rect2(pr.position + Vector2(pad, pad), Vector2(pr.size.x - pad * 2.0, 0.0)))
 	title.size.y = HudLayout.num(pm, "title_height")
 	title.text = tr("FIELD_MENU_TITLE")
+	_title_rule(Rect2(title.position, Vector2(pr.size.x * 0.5, title.size.y)))
 	var help_h := HudLayout.num(pm, "help_height")
 	var help_at := Vector2(pr.position.x + pad, pr.end.y - pad - help_h)
 	_help = _label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
@@ -366,3 +368,12 @@ func _label(variation: StringName, r: Rect2) -> Label:
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(l)
 	return l
+
+
+## The gold OrnamentRule under the menu's title (ADR 0033), across the left half of the panel.
+func _title_rule(title: Rect2) -> void:
+	var rule := OrnamentRule.new()
+	var node := float(get_theme_constant(&"ornament_node_px", HymnThemeBuilder.PALETTE_TYPE))
+	rule.position = Vector2(title.position.x, title.end.y - node)
+	rule.size = Vector2(title.size.x, node * 2.0)
+	add_child(rule)

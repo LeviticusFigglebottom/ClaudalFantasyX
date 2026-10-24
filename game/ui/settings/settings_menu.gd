@@ -28,6 +28,7 @@ var graphics_viewport: Viewport
 var _list: MenuPage
 var _help: Label
 var _backdrop: ColorRect
+var _caustics: CausticBackdrop
 var _data: Dictionary = {}
 var _open := false
 
@@ -48,7 +49,7 @@ static func open_in(host: Node) -> SettingsMenu:
 func _ready() -> void:
 	name = &"SettingsMenu"
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	if ui_settings == null:
 		ui_settings = UiSettings.shared()
@@ -59,6 +60,8 @@ func _ready() -> void:
 	_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_backdrop)
 	_paint_backdrop()
+	_caustics = CausticBackdrop.new()  # ADR 0033
+	add_child(_caustics)
 	var pm := _data.get("page", {}) as Dictionary
 	_list = MenuPage.new()
 	var r := HudLayout.rect_of(pm)
@@ -174,7 +177,7 @@ func _render() -> void:
 
 ## The hub's own page, help and backdrop hide under an open page (its backdrop would double up).
 func _set_hub_visible(on: bool) -> void:
-	for c: CanvasItem in [_list, _help, _backdrop]:
+	for c: CanvasItem in [_list, _help, _backdrop, _caustics]:
 		c.visible = on
 
 

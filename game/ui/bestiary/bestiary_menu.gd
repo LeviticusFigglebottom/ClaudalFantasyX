@@ -203,6 +203,7 @@ func _build() -> void:
 	mat.set_shader_parameter(&"tint", get_theme_color(&"scrim", HymnThemeBuilder.PALETTE_TYPE))
 	scrim.material = mat
 	add_child(scrim)
+	add_child(CausticBackdrop.new())  # ADR 0033
 	var pm: Dictionary = _d.get("panel", {})
 	var panel := Panel.new()
 	HudLayout.place(panel, pm)
@@ -213,6 +214,11 @@ func _build() -> void:
 	var title_h := HudLayout.num(pm, "title_height")
 	var title := _label(&"BannerLabel", Rect2(pr.position + Vector2(pad, pad), Vector2(pr.size.x * 0.5, title_h)))
 	title.text = tr("BESTIARY_TITLE")
+	var rule := OrnamentRule.new()  # ADR 0033: the gold rule under the title
+	var node := float(get_theme_constant(&"ornament_node_px", HymnThemeBuilder.PALETTE_TYPE))
+	rule.position = Vector2(title.position.x, title.position.y + title.size.y - node)
+	rule.size = Vector2(title.size.x * 0.6, node * 2.0)
+	add_child(rule)
 	var right := Rect2(pr.position + Vector2(pr.size.x * 0.5, pad), Vector2(pr.size.x * 0.5 - pad, title_h))
 	_summary = _label(&"DimLabel", right)
 	_summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT

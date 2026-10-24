@@ -6,26 +6,27 @@
 [ext_resource type="FontFile" path="res://assets/fonts/source_sans_3/SourceSans3-Bold.otf" id="4_kaix7"]
 [ext_resource type="FontFile" path="res://assets/fonts/source_sans_3/SourceSans3-It.otf" id="5_ts6ve"]
 [ext_resource type="FontFile" path="res://assets/fonts/source_sans_3/SourceSans3-Semibold.otf" id="6_rbby7"]
+[ext_resource type="Script" path="res://game/ui/theme/cursor_style_box.gd" id="7_mueey"]
 [ext_resource type="Script" path="res://game/ui/theme/tide_notch_style_box.gd" id="7_mxmff"]
 
-[sub_resource type="FontVariation" id="FontVariation_lhnf3"]
+[sub_resource type="FontVariation" id="FontVariation_mueey"]
 base_font = ExtResource("4_kaix7")
 opentype_features = {
 1819178349: 1,
 1953396077: 1
 }
 
-[sub_resource type="FontVariation" id="FontVariation_mueey"]
+[sub_resource type="FontVariation" id="FontVariation_2ep6y"]
 base_font = ExtResource("1_lhnf3")
 opentype_features = {
 1936548720: 1
 }
 spacing_glyph = 3
 
-[sub_resource type="FontVariation" id="FontVariation_2ep6y"]
+[sub_resource type="FontVariation" id="FontVariation_kaix7"]
 base_font = ExtResource("2_mueey")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kaix7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ts6ve"]
 content_margin_left = 20.0
 content_margin_right = 20.0
 bg_color = Color(0.07450981, 0.22745098, 0.4, 0)
@@ -34,7 +35,7 @@ corner_radius_bottom_right = 6
 corner_detail = 1
 anti_aliasing = false
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ts6ve"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rbby7"]
 content_margin_left = 20.0
 content_margin_right = 20.0
 bg_color = Color(0.07450981, 0.22745098, 0.4, 0)
@@ -50,7 +51,7 @@ shadow_color = Color(0.43529412, 0.8784314, 0.84705883, 0.35)
 shadow_size = 6
 anti_aliasing = false
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rbby7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mxmff"]
 content_margin_left = 20.0
 content_margin_right = 20.0
 bg_color = Color(0.07450981, 0.22745098, 0.4, 0.85)
@@ -59,7 +60,7 @@ corner_radius_bottom_right = 6
 corner_detail = 1
 anti_aliasing = false
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mxmff"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0olxv"]
 content_margin_left = 20.0
 content_margin_right = 20.0
 bg_color = Color(0.07450981, 0.22745098, 0.4, 0.85)
@@ -73,15 +74,8 @@ corner_radius_bottom_right = 6
 corner_detail = 1
 anti_aliasing = false
 
-[sub_resource type="FontVariation" id="FontVariation_0olxv"]
-base_font = ExtResource("3_2ep6y")
-
 [sub_resource type="FontVariation" id="FontVariation_j16pc"]
-base_font = ExtResource("4_kaix7")
-opentype_features = {
-1819178349: 1,
-1953396077: 1
-}
+base_font = ExtResource("3_2ep6y")
 
 [sub_resource type="FontVariation" id="FontVariation_e7vs4"]
 base_font = ExtResource("4_kaix7")
@@ -91,31 +85,38 @@ opentype_features = {
 }
 
 [sub_resource type="FontVariation" id="FontVariation_abn1b"]
-base_font = ExtResource("3_2ep6y")
+base_font = ExtResource("4_kaix7")
+opentype_features = {
+1819178349: 1,
+1953396077: 1
+}
 
 [sub_resource type="FontVariation" id="FontVariation_pqiwe"]
-base_font = ExtResource("5_ts6ve")
+base_font = ExtResource("3_2ep6y")
 
 [sub_resource type="FontVariation" id="FontVariation_4ujp7"]
+base_font = ExtResource("5_ts6ve")
+
+[sub_resource type="FontVariation" id="FontVariation_lgil6"]
 base_font = ExtResource("4_kaix7")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lgil6"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5wql7"]
 bg_color = Color(0.8509804, 0.7058824, 0.3529412, 0.85)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5wql7"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xoy06"]
 bg_color = Color(0.8509804, 0.7058824, 0.3529412, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xoy06"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ou5d5"]
 content_margin_left = 3.0
 content_margin_top = 3.0
 content_margin_right = 3.0
 content_margin_bottom = 3.0
 bg_color = Color(0.9490196, 0.9607843, 0.98039216, 0.1)
 
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_ou5d5"]
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_54nnj"]
 color = Color(0.9490196, 0.9607843, 0.98039216, 0.1)
 
-[sub_resource type="FontVariation" id="FontVariation_54nnj"]
+[sub_resource type="FontVariation" id="FontVariation_r00ie"]
 base_font = ExtResource("1_lhnf3")
 variation_embolden = 0.45
 opentype_features = {
@@ -123,26 +124,42 @@ opentype_features = {
 }
 spacing_glyph = 2
 
-[sub_resource type="FontVariation" id="FontVariation_r00ie"]
-base_font = ExtResource("2_mueey")
-
 [sub_resource type="FontVariation" id="FontVariation_lv1h4"]
 base_font = ExtResource("2_mueey")
 
 [sub_resource type="FontVariation" id="FontVariation_d4dgw"]
-base_font = ExtResource("3_2ep6y")
+base_font = ExtResource("2_mueey")
 
 [sub_resource type="FontVariation" id="FontVariation_mvuoh"]
+base_font = ExtResource("3_2ep6y")
+
+[sub_resource type="FontVariation" id="FontVariation_4phrc"]
 base_font = ExtResource("6_rbby7")
 opentype_features = {
 1819178349: 1,
 1953396077: 1
 }
 
-[sub_resource type="FontVariation" id="FontVariation_4phrc"]
+[sub_resource type="StyleBox" id="StyleBox_wgw2u"]
+resource_local_to_scene = false
+resource_name = ""
+content_margin_left = -1.0
+content_margin_top = -1.0
+content_margin_right = -1.0
+content_margin_bottom = -1.0
+script = ExtResource("7_mueey")
+fill = Color(0.07450981, 0.22745098, 0.4, 0.85)
+wash = Color(0.43529412, 0.8784314, 0.84705883, 0.22)
+frame_color = Color(0.8509804, 0.7058824, 0.3529412, 1)
+glow_color = Color(0.43529412, 0.8784314, 0.84705883, 0.35)
+wick_color = Color(0.43529412, 0.8784314, 0.84705883, 0.9)
+wick_px = 0.0
+wick_inset_px = 7.0
+
+[sub_resource type="FontVariation" id="FontVariation_h88u8"]
 base_font = ExtResource("3_2ep6y")
 
-[sub_resource type="StyleBox" id="StyleBox_wgw2u"]
+[sub_resource type="StyleBox" id="StyleBox_vmwuu"]
 resource_local_to_scene = false
 resource_name = ""
 content_margin_left = 20.0
@@ -156,8 +173,16 @@ sheen_color = Color(0.07450981, 0.22745098, 0.4, 0.25)
 frame_color = Color(0.8509804, 0.7058824, 0.3529412, 0.85)
 rule_color = Color(0.9490196, 0.9607843, 0.98039216, 0.18)
 lamp_node_glow = Color(0.8509804, 0.7058824, 0.3529412, 0.3)
+glint_color = Color(0.8509804, 0.7058824, 0.3529412, 0.6)
+glint_span = 0.6
+corner_tick_px = 12.0
+tide_color = Color(0.9490196, 0.9607843, 0.98039216, 0.1)
+tide_lines = 2
+tide_band_px = 15.0
+tide_amp_px = 2.0
+tide_wavelength_px = 132.0
 
-[sub_resource type="StyleBox" id="StyleBox_h88u8"]
+[sub_resource type="StyleBox" id="StyleBox_j30vm"]
 resource_local_to_scene = false
 resource_name = ""
 content_margin_left = 20.0
@@ -172,8 +197,16 @@ frame_color = Color(0.8509804, 0.7058824, 0.3529412, 0.85)
 rule_color = Color(0.9490196, 0.9607843, 0.98039216, 0.18)
 chamfer_px = 6.0
 lamp_node_glow = Color(0.8509804, 0.7058824, 0.3529412, 0.3)
+glint_color = Color(0.8509804, 0.7058824, 0.3529412, 0.6)
+glint_span = 0.6
+corner_tick_px = 12.0
+tide_color = Color(0.9490196, 0.9607843, 0.98039216, 0.1)
+tide_lines = 2
+tide_band_px = 15.0
+tide_amp_px = 2.0
+tide_wavelength_px = 132.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vmwuu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7g1y1"]
 bg_color = Color(0.019607844, 0.039215688, 0.078431375, 0.55)
 border_width_left = 1
 border_width_top = 1
@@ -182,11 +215,11 @@ border_width_bottom = 1
 border_color = Color(0.9490196, 0.9607843, 0.98039216, 0.35)
 anti_aliasing = false
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j30vm"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pq3ce"]
 bg_color = Color(0.49803922, 0.827451, 0.5411765, 1)
 anti_aliasing = false
 
-[sub_resource type="FontVariation" id="FontVariation_7g1y1"]
+[sub_resource type="FontVariation" id="FontVariation_7mrt1"]
 base_font = ExtResource("4_kaix7")
 opentype_features = {
 1819178349: 1,
@@ -194,14 +227,14 @@ opentype_features = {
 }
 spacing_glyph = 1
 
-[sub_resource type="FontVariation" id="FontVariation_pq3ce"]
+[sub_resource type="FontVariation" id="FontVariation_efxft"]
 base_font = ExtResource("3_2ep6y")
 
-[sub_resource type="FontVariation" id="FontVariation_7mrt1"]
+[sub_resource type="FontVariation" id="FontVariation_df8ex"]
 base_font = ExtResource("1_lhnf3")
 spacing_glyph = 1
 
-[sub_resource type="StyleBox" id="StyleBox_efxft"]
+[sub_resource type="StyleBox" id="StyleBox_dem8o"]
 resource_local_to_scene = false
 resource_name = ""
 content_margin_left = 20.0
@@ -216,14 +249,22 @@ frame_color = Color(0.8509804, 0.7058824, 0.3529412, 0.85)
 rule_color = Color(0.9490196, 0.9607843, 0.98039216, 0.18)
 chamfer_px = 6.0
 lamp_node_glow = Color(0.8509804, 0.7058824, 0.3529412, 0.3)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_df8ex"]
-bg_color = Color(0.8509804, 0.7058824, 0.3529412, 0.85)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dem8o"]
-bg_color = Color(0.8509804, 0.7058824, 0.3529412, 1)
+glint_color = Color(0.8509804, 0.7058824, 0.3529412, 0.6)
+glint_span = 0.6
+corner_tick_px = 12.0
+tide_color = Color(0.9490196, 0.9607843, 0.98039216, 0.1)
+tide_lines = 2
+tide_band_px = 15.0
+tide_amp_px = 2.0
+tide_wavelength_px = 132.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cpbm"]
+bg_color = Color(0.8509804, 0.7058824, 0.3529412, 0.85)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eupqr"]
+bg_color = Color(0.8509804, 0.7058824, 0.3529412, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mol5y"]
 content_margin_left = 3.0
 content_margin_top = 3.0
 content_margin_right = 3.0
@@ -237,72 +278,74 @@ BadgeNumber/base_type = &"Label"
 BadgeNumber/colors/font_outline_color = Color(0.019607844, 0.039215688, 0.078431375, 1)
 BadgeNumber/constants/outline_size = 4
 BadgeNumber/font_sizes/font_size = 22
-BadgeNumber/fonts/font = SubResource("FontVariation_lhnf3")
+BadgeNumber/fonts/font = SubResource("FontVariation_mueey")
 BannerLabel/base_type = &"Label"
 BannerLabel/font_sizes/font_size = 40
-BannerLabel/fonts/font = SubResource("FontVariation_mueey")
+BannerLabel/fonts/font = SubResource("FontVariation_2ep6y")
 BodyLabel/base_type = &"Label"
 BodyLabel/font_sizes/font_size = 30
-BodyLabel/fonts/font = SubResource("FontVariation_2ep6y")
+BodyLabel/fonts/font = SubResource("FontVariation_kaix7")
 Button/colors/font_color = Color(0.9490196, 0.9607843, 0.98039216, 1)
 Button/colors/font_disabled_color = Color(0.6627451, 0.72156864, 0.8, 0.5)
 Button/colors/font_focus_color = Color(0.9490196, 0.9607843, 0.98039216, 1)
 Button/colors/font_hover_color = Color(0.9490196, 0.9607843, 0.98039216, 1)
 Button/colors/font_pressed_color = Color(0.9490196, 0.9607843, 0.98039216, 1)
-Button/styles/disabled = SubResource("StyleBoxFlat_kaix7")
-Button/styles/focus = SubResource("StyleBoxFlat_ts6ve")
-Button/styles/hover = SubResource("StyleBoxFlat_rbby7")
-Button/styles/normal = SubResource("StyleBoxFlat_kaix7")
-Button/styles/pressed = SubResource("StyleBoxFlat_mxmff")
+Button/styles/disabled = SubResource("StyleBoxFlat_ts6ve")
+Button/styles/focus = SubResource("StyleBoxFlat_rbby7")
+Button/styles/hover = SubResource("StyleBoxFlat_mxmff")
+Button/styles/normal = SubResource("StyleBoxFlat_ts6ve")
+Button/styles/pressed = SubResource("StyleBoxFlat_0olxv")
 CommandButton/base_type = &"Button"
 CommandButton/font_sizes/font_size = 26
-CommandButton/fonts/font = SubResource("FontVariation_0olxv")
+CommandButton/fonts/font = SubResource("FontVariation_j16pc")
 DamageNumber/base_type = &"Label"
 DamageNumber/colors/font_outline_color = Color(0.019607844, 0.039215688, 0.078431375, 1)
 DamageNumber/constants/outline_size = 4
 DamageNumber/font_sizes/font_size = 44
-DamageNumber/fonts/font = SubResource("FontVariation_j16pc")
+DamageNumber/fonts/font = SubResource("FontVariation_e7vs4")
 DamageNumberCrit/base_type = &"Label"
 DamageNumberCrit/colors/font_outline_color = Color(0.019607844, 0.039215688, 0.078431375, 1)
 DamageNumberCrit/constants/outline_size = 4
 DamageNumberCrit/font_sizes/font_size = 56
-DamageNumberCrit/fonts/font = SubResource("FontVariation_e7vs4")
+DamageNumberCrit/fonts/font = SubResource("FontVariation_abn1b")
 DimLabel/base_type = &"Label"
 DimLabel/colors/font_color = Color(0.6627451, 0.72156864, 0.8, 1)
 DimLabel/font_sizes/font_size = 22
-DimLabel/fonts/font = SubResource("FontVariation_abn1b")
+DimLabel/fonts/font = SubResource("FontVariation_pqiwe")
 FlavorLabel/base_type = &"Label"
 FlavorLabel/font_sizes/font_size = 24
-FlavorLabel/fonts/font = SubResource("FontVariation_pqiwe")
+FlavorLabel/fonts/font = SubResource("FontVariation_4ujp7")
 FloatText/base_type = &"Label"
 FloatText/colors/font_outline_color = Color(0.019607844, 0.039215688, 0.078431375, 1)
 FloatText/constants/outline_size = 4
 FloatText/font_sizes/font_size = 28
-FloatText/fonts/font = SubResource("FontVariation_4ujp7")
-HScrollBar/styles/grabber = SubResource("StyleBoxFlat_lgil6")
-HScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_5wql7")
-HScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_5wql7")
-HScrollBar/styles/scroll = SubResource("StyleBoxFlat_xoy06")
-HScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_xoy06")
+FloatText/fonts/font = SubResource("FontVariation_lgil6")
+HScrollBar/styles/grabber = SubResource("StyleBoxFlat_5wql7")
+HScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_xoy06")
+HScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_xoy06")
+HScrollBar/styles/scroll = SubResource("StyleBoxFlat_ou5d5")
+HScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_ou5d5")
 HSeparator/constants/separation = 1
-HSeparator/styles/separator = SubResource("StyleBoxLine_ou5d5")
+HSeparator/styles/separator = SubResource("StyleBoxLine_54nnj")
 HeaderLabel/base_type = &"Label"
 HeaderLabel/font_sizes/font_size = 28
-HeaderLabel/fonts/font = SubResource("FontVariation_54nnj")
+HeaderLabel/fonts/font = SubResource("FontVariation_r00ie")
 HelpDimLabel/base_type = &"Label"
 HelpDimLabel/colors/font_color = Color(0.6627451, 0.72156864, 0.8, 1)
 HelpDimLabel/font_sizes/font_size = 24
-HelpDimLabel/fonts/font = SubResource("FontVariation_r00ie")
+HelpDimLabel/fonts/font = SubResource("FontVariation_lv1h4")
 HelpLabel/base_type = &"Label"
 HelpLabel/font_sizes/font_size = 24
-HelpLabel/fonts/font = SubResource("FontVariation_lv1h4")
+HelpLabel/fonts/font = SubResource("FontVariation_d4dgw")
 HudName/base_type = &"Label"
 HudName/font_sizes/font_size = 24
-HudName/fonts/font = SubResource("FontVariation_d4dgw")
+HudName/fonts/font = SubResource("FontVariation_mvuoh")
 HudNumber/base_type = &"Label"
 HudNumber/font_sizes/font_size = 24
-HudNumber/fonts/font = SubResource("FontVariation_mvuoh")
+HudNumber/fonts/font = SubResource("FontVariation_4phrc")
 Hymn/colors/ally_chip = Color(0.07450981, 0.22745098, 0.4, 0.85)
+Hymn/colors/caustic = Color(0.43529412, 0.8784314, 0.84705883, 0.24)
+Hymn/colors/cursor_wash = Color(0.43529412, 0.8784314, 0.84705883, 0.22)
 Hymn/colors/danger = Color(0.9098039, 0.3529412, 0.26666668, 1)
 Hymn/colors/enemy_chip = Color(0.16470589, 0.078431375, 0.1254902, 0.85)
 Hymn/colors/focus = Color(0.43529412, 0.8784314, 0.84705883, 0.9)
@@ -315,6 +358,7 @@ Hymn/colors/hp = Color(0.49803922, 0.827451, 0.5411765, 1)
 Hymn/colors/lamp_node_glow = Color(0.8509804, 0.7058824, 0.3529412, 0.3)
 Hymn/colors/line_gold = Color(0.8509804, 0.7058824, 0.3529412, 0.85)
 Hymn/colors/mp = Color(0.43529412, 0.65882355, 0.9411765, 1)
+Hymn/colors/ornament_gold = Color(0.8509804, 0.7058824, 0.3529412, 0.9)
 Hymn/colors/outline = Color(0.019607844, 0.039215688, 0.078431375, 1)
 Hymn/colors/panel_deep = Color(0.039215688, 0.13725491, 0.25882354, 0.8)
 Hymn/colors/panel_low = Color(0.023529412, 0.08627451, 0.16862746, 0.86)
@@ -326,25 +370,43 @@ Hymn/colors/separator_white = Color(0.9490196, 0.9607843, 0.98039216, 0.1)
 Hymn/colors/shadow = Color(0.019607844, 0.039215688, 0.078431375, 0.6)
 Hymn/colors/stone = Color(0.7254902, 0.68235296, 0.59607846, 1)
 Hymn/colors/stone_crack = Color(0.22745098, 0.22745098, 0.24705882, 1)
+Hymn/colors/surface_glint = Color(0.8509804, 0.7058824, 0.3529412, 0.6)
 Hymn/colors/swell = Color(0.9490196, 0.72156864, 0.29411766, 1)
 Hymn/colors/text = Color(0.9490196, 0.9607843, 0.98039216, 1)
 Hymn/colors/text_dim = Color(0.6627451, 0.72156864, 0.8, 1)
 Hymn/colors/text_disabled = Color(0.6627451, 0.72156864, 0.8, 0.5)
+Hymn/colors/tide_line = Color(0.9490196, 0.9607843, 0.98039216, 0.1)
 Hymn/constants/chamfer_px = 10
 Hymn/constants/chamfer_small_px = 6
+Hymn/constants/corner_tick_inset_px = 6
+Hymn/constants/corner_tick_px = 12
+Hymn/constants/cursor_fill_fade_pct = 35
+Hymn/constants/cursor_nudge_px = 6
+Hymn/constants/cursor_wash_span_pct = 55
+Hymn/constants/cursor_wick_inset_px = 7
+Hymn/constants/cursor_wick_px = 0
 Hymn/constants/damage_outline_px = 4
 Hymn/constants/focus_glow_px = 6
 Hymn/constants/focus_px = 2
+Hymn/constants/glint_span_pct = 60
 Hymn/constants/inner_rule_inset_px = 3
 Hymn/constants/lamp_node_glow_px = 4
 Hymn/constants/lamp_node_px = 3
 Hymn/constants/line_px = 1
+Hymn/constants/ornament_gap_px = 6
+Hymn/constants/ornament_node_px = 4
 Hymn/constants/panel_margin_px = 20
 Hymn/constants/scroll_px = 6
 Hymn/constants/shadow_blur_px = 4
 Hymn/constants/shadow_offset_y_px = 2
 Hymn/constants/sheen_px = 24
 Hymn/constants/small_panel_max_height_px = 160
+Hymn/constants/tide_amp_px = 2
+Hymn/constants/tide_band_px = 15
+Hymn/constants/tide_lines = 2
+Hymn/constants/tide_min_height_px = 120
+Hymn/constants/tide_wavelength_px = 132
+Hymn/styles/cursor = SubResource("StyleBox_wgw2u")
 Label/colors/font_color = Color(0.9490196, 0.9607843, 0.98039216, 1)
 Label/colors/font_outline_color = Color(0.019607844, 0.039215688, 0.078431375, 1)
 Label/colors/font_shadow_color = Color(0.019607844, 0.039215688, 0.078431375, 0.6)
@@ -353,27 +415,27 @@ Label/constants/shadow_offset_y = 2
 Label/constants/shadow_outline_size = 4
 MenuLabel/base_type = &"Label"
 MenuLabel/font_sizes/font_size = 26
-MenuLabel/fonts/font = SubResource("FontVariation_4phrc")
-Panel/styles/panel = SubResource("StyleBox_wgw2u")
-PanelContainer/styles/panel = SubResource("StyleBox_wgw2u")
+MenuLabel/fonts/font = SubResource("FontVariation_h88u8")
+Panel/styles/panel = SubResource("StyleBox_vmwuu")
+PanelContainer/styles/panel = SubResource("StyleBox_vmwuu")
 PanelSmall/base_type = &"PanelContainer"
-PanelSmall/styles/panel = SubResource("StyleBox_h88u8")
+PanelSmall/styles/panel = SubResource("StyleBox_j30vm")
 ProgressBar/colors/font_color = Color(0.9490196, 0.9607843, 0.98039216, 1)
-ProgressBar/styles/background = SubResource("StyleBoxFlat_vmwuu")
-ProgressBar/styles/fill = SubResource("StyleBoxFlat_j30vm")
+ProgressBar/styles/background = SubResource("StyleBoxFlat_7g1y1")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_pq3ce")
 RankLabel/base_type = &"Label"
 RankLabel/font_sizes/font_size = 22
-RankLabel/fonts/font = SubResource("FontVariation_7g1y1")
+RankLabel/fonts/font = SubResource("FontVariation_7mrt1")
 SmallLabel/base_type = &"Label"
 SmallLabel/font_sizes/font_size = 22
-SmallLabel/fonts/font = SubResource("FontVariation_pq3ce")
+SmallLabel/fonts/font = SubResource("FontVariation_efxft")
 TitleLabel/base_type = &"Label"
 TitleLabel/font_sizes/font_size = 72
-TitleLabel/fonts/font = SubResource("FontVariation_7mrt1")
+TitleLabel/fonts/font = SubResource("FontVariation_df8ex")
 TooltipLabel/colors/font_color = Color(0.9490196, 0.9607843, 0.98039216, 1)
-TooltipPanel/styles/panel = SubResource("StyleBox_efxft")
-VScrollBar/styles/grabber = SubResource("StyleBoxFlat_df8ex")
-VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_dem8o")
-VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_dem8o")
-VScrollBar/styles/scroll = SubResource("StyleBoxFlat_8cpbm")
-VScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_8cpbm")
+TooltipPanel/styles/panel = SubResource("StyleBox_dem8o")
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_8cpbm")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_eupqr")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_eupqr")
+VScrollBar/styles/scroll = SubResource("StyleBoxFlat_mol5y")
+VScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_mol5y")

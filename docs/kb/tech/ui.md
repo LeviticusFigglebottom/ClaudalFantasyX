@@ -9,7 +9,8 @@ Owner: UI/UX + Combat (M1-UI-01, M1-CMB-01, M1-UI-02). Art rules: [`docs/kb/art/
 | `game/data/ui/theme.json` | The theme recipe: palette roles (swatch + alpha), line weights, chamfers, fonts, and the type variations. |
 | `game/ui/theme/hymn_theme_builder.gd` | Builds the `Theme` from `theme.json` and `docs/kb/art/palette.json`. |
 | `game/ui/theme/hymn_theme.tres` | **Generated.** Never hand-edit it. `tests/unit/test_ui_theme.gd` fails if it drifts from the builder. |
-| `game/ui/theme/tide_notch_style_box.gd` | `TideNotchStyleBox`: the panel recipe (gradient, sheen, inner rule, gold frame, chamfers, lamp-nodes). |
+| `game/ui/theme/tide_notch_style_box.gd` | `TideNotchStyleBox`: the panel recipe (gradient, sheen, inner rule, gold frame, chamfers, lamp-nodes; ADR 0033: glint, corner ticks, tide lines). |
+| `game/ui/theme/cursor_style_box.gd`, `ornament_rule.gd`, `caustic_backdrop.gd` | ADR 0033 flair: the lamplit menu cursor, the gold header rule, the drifting caustic backdrop (§ Flair). |
 | `game/ui/shaders/lamp_mote.gdshader`, `scrim.gdshader` | The breathing focus dot and the result-screen vignette. |
 | `game/data/ui/battle_hud.json` | Every HUD rect, pitch, timing and pacing value, at the 1920 × 1080 reference. |
 | `game/ui/battle/` | HUD components (below) and `battle_hud.tscn`. |
@@ -208,6 +209,20 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
   - `battle_vowbound_call` (fixture `vowbound_call`): Asha's turn, the Call row highlighted.
   - `battle_vowbound_out` (fixture `vowbound_out`): Ilun out after one exchange, Dismiss highlighted. The fixture makes Ilun quicker, so he lives to a second turn with some gauge.
 - **Tests:** `tests/unit/test_battle_vowbound_hud.gd` (scene) and `test_battle_vowbound_preview.gd` (each preview against the engine's real order after the action); `tools/tests/test_vowbound_flag_validate.py`.
+
+## Flair (ADR 0033)
+
+At the human's request (more character, less plain), the theme adds faint, original ornament. All of it is theme data in `theme.json` (the `surface_glint`, `tide_line`, `cursor_wash`, `caustic` and `ornament_gold` colours, and the `glint_*`, `corner_tick_*`, `tide_*`, `cursor_*` and `ornament_*` constants):
+- **Panels (`TideNotchStyleBox`):**
+  - A gold glint under the top frame.
+  - Gold corner ticks on the two square corners.
+  - Two faint tide lines in the bottom margin of panels at least 120 px tall.
+- **The cursor (`CursorStyleBox`, theme stylebox `cursor` of type `Hymn`; MenuPage reads it):**
+  - A raised fill lit from the left, plus a focus wash, inside the 2 px gold frame and glow.
+  - The cursor row's text nudges right by `cursor_nudge_px` (`MenuPage.label_x`).
+- **`OrnamentRule`** (game/ui/theme/): the gold header rule under titled MenuPages and the field menu's and bestiary's banner titles.
+- **`CausticBackdrop`** (game/ui/theme/, `menu_caustics.gdshader`): drifting caustic light behind the field menu, the bestiary and the settings screens. It is still under reduced motion and deterministic in captures.
+- **Tests:** `tests/unit/test_ui_flair.gd`.
 
 ## Settings, accessibility and the polish pass (M2-UI-09)
 
