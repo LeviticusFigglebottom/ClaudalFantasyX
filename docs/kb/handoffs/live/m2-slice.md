@@ -3,6 +3,25 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **MERGE-READY @ 74ef8626** (plus this log commit)
+  - **Items since 17853df1:**
+    - the playtest round 2 fixes:
+      - motion easing (716c2db4);
+      - the prologue figures, lantern and grade (583759c0);
+      - Haluna's Asha faces her root's forward (74ed95b4, hero-integration's catch);
+      - the hero hooks doc (d06ba098);
+    - M2-UI-100 and M3-UI-100 (UI requests);
+    - **M3-CMB-01 merged** (74ef8626). Ch8's set-piece battle pieces, ADR 0100, gated on its merge over big7 (f3ef6f8c → 40a55f3d):
+      - full Godot suite 2069 run, 0 failed;
+      - tools OK;
+      - sim exit 0, nothing out of band;
+      - coverage battle 99.96% and progression 96.89%, within baseline.
+  - **Checks after the final merge:** ch08 8, set_piece 28, haluna 47, prologue 6 and cutscene 44, all 0 failed; validate_data, taskboard, lint and format clean.
+  - **Checks skipped:**
+    - a second full run on 74ef8626: the merge was clean, and the gated sides are covered by the scoped runs above;
+    - Blender: no source touched;
+    - the shot manifest: no shot covers the changed areas.
+  - **Next:** M3-C08-02, Ch8 playable (it was blocked on CMB-01).
 - **Playtest round 2 (Lead, ~20:00)**
   1. **The prologue's "everyone is still here" segment: fixed in-scene** (583759c0).
      - **Presets are not the cause:** low, medium, high and ultra render the same, and nothing desaturates.
