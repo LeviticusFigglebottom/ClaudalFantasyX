@@ -2844,6 +2844,144 @@
     {
       "id": "cutscene_act_card",
       "scene": "res://game/ui/cards/shots/cutscene_act_card.tscn"
+    },
+    {
+      "id": "brightwater_b02_awning",
+      "scene": "res://game/levels/_tests/brightwater_ferry_kit/brightwater_ferry_preview.tscn",
+      "camera": "Cameras/B02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "brightwater_b03_rail_drowned",
+      "scene": "res://game/levels/_tests/brightwater_ferry_kit/brightwater_ferry_preview.tscn",
+      "camera": "Cameras/B03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "oruvel_o01_surfacing",
+      "scene": "res://game/levels/_tests/oruvel_kit/oruvel_preview.tscn",
+      "camera": "Cameras/O01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "oruvel_o19_dive_mooring",
+      "scene": "res://game/levels/_tests/oruvel_kit/oruvel_preview.tscn",
+      "camera": "Cameras/O19",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ashcrown_a01_approach",
+      "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+      "camera": "Cameras/A01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ashcrown_a04_anvil_hall",
+      "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+      "camera": "Cameras/A04",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "interior": true
+          }
+        }
+      }
+    },
+    {
+      "id": "oruvel_o07_name_board",
+      "scene": "res://game/levels/_tests/oruvel_kit/oruvel_preview.tscn",
+      "camera": "Cameras/O07",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }

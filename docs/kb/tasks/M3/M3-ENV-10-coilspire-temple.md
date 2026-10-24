@@ -2,8 +2,8 @@
 id: M3-ENV-10
 title: "Ch8 Coilspire temple (kit at final quality)"
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M3-ENV-04]
 milestone: M3
 request-from: environment
