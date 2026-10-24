@@ -303,9 +303,13 @@ vec4 undertow_march(vec3 ro, vec3 rd, float t_opaque, vec2 frag_coord, out float
 		}
 		float pocket = 0.0;
 		float seam = 0.0;
+		float lip = 0.0;
+		float halo = 0.0;
 		if (skin > 0.0) {
-			seam = undertow_wound(p, pocket) * skin;
+			seam = undertow_wound(p, pocket, lip, halo) * skin;
 			pocket *= skin;
+			lip *= skin;
+			halo *= skin;
 		}
 		// A rent: the wall is torn open along the seam, and the light behind it shows.
 		d *= 1.0 - clamp(seam, 0.0, 1.0) * rent_depth;
@@ -313,8 +317,9 @@ vec4 undertow_march(vec3 ro, vec3 rd, float t_opaque, vec2 frag_coord, out float
 		if (d <= 0.0) {
 			continue;
 		}
-		// The rent glows where the wall is: through its depth, strongest at mid density.
-		vec3 glow = col_wound * seam * wound_per_m * (0.3 + 2.8 * d * (1.0 - d));
+		// The rent glows where the wall is: through its depth, strongest at mid density. Its halo is the
+		// light poured out of it, scattered by the cloud beside the rent (so it needs density).
+		vec3 glow = col_wound * wound_per_m * (seam * (0.3 + 2.8 * d * (1.0 - d)) + halo * rent_halo_energy * d);
 		float sigma = d * density_per_m;
 		float ts = exp(-sigma * ds);
 		// A lump facing the sun has less of itself between p and the light (lean > 0), one facing away more.
@@ -337,10 +342,14 @@ vec4 undertow_march(vec3 ro, vec3 rd, float t_opaque, vec2 frag_coord, out float
 		if (water_wall_height_m > 0.0) {
 			alb = mix(albedo, col_water_wall, water_wall_mix * (1.0 - smoothstep(0.0, water_wall_height_m, p.y)));
 		}
-		vec3 lit = alb * (sun * sun_ms * sun_reach * HYMN_TAU * 2.0 + amb) * base;
+		// The torn lip around a rent is dark: shredded cloud in the rent's own shadow (M2-RND-05).
+		vec3 lit = alb * (sun * sun_ms * sun_reach * HYMN_TAU * 2.0 + amb) * base * (1.0 - rent_lip_dark * lip);
+		// ...and a little thicker, torn cloud heaped at the edge.
+		d = min(d * (1.0 + 0.5 * lip), 1.0);
 		// Inner light: lightning in the wall and held light pooled behind the wounds.
 		vec3 inner = undertow_lightning(p) + col_held * pocket * pocket_energy * wound_intensity * env;
-		vec3 s = lit + inner * (0.35 + 0.65 * d);
+		// The torn lip is dark through: the pooled light shows at the open core, not in the shredded edge.
+		vec3 s = lit + inner * (0.35 + 0.65 * d) * (1.0 - rent_lip_dark * lip);
 		sum += T * (s * (1.0 - ts) + glow * ds);
 		t_acc += T * (1.0 - ts) * t_here;
 		t_weight += T * (1.0 - ts);

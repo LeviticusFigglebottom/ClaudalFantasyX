@@ -821,6 +821,77 @@
           "hymn_wind_time": 12.0
         }
       }
+    },
+    {
+      "id": "undertow_strike_ch08",
+      "scene": "res://game/levels/_tests/undertow/undertow_test.tscn",
+      "camera": "Cameras/Day",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "strike"
+          },
+          "Storm": {
+            "playing": false,
+            "exposure_flash": false
+          }
+        }
+      }
+    },
+    {
+      "id": "undertow_landfall_ch08",
+      "scene": "res://game/levels/_tests/undertow/undertow_test.tscn",
+      "camera": "Cameras/Day",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "day"
+          },
+          "Storm": {
+            "playing": false,
+            "exposure_flash": false,
+            "preset": "ch08_landfall"
+          }
+        }
+      }
+    },
+    {
+      "id": "undertow_letting_ch21",
+      "scene": "res://game/levels/_tests/undertow/undertow_test.tscn",
+      "camera": "Cameras/Night",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "night"
+          },
+          "Storm": {
+            "playing": false,
+            "exposure_flash": false,
+            "unbinding": 1.0
+          }
+        }
+      }
     }
   ]
 }

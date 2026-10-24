@@ -31,7 +31,14 @@ const SHADER_UNIFORMS := {
 	"undertow_sea.gdshader": ["funnel_depth_m", "foam_octaves", "sea_glow_energy", "col_sea_deep"],
 	"undertow_sea_lid.gdshader": ["lid_height_m"],
 	"undertow_composite.gdshader": ["body_tex", "occluder_radius_m", "front_tex", "use_front"],
+	"undertow_streamer.gdshader": ["streamer_energy", "streamer_mote_scale_m", "wound_drift_m", "col_held"],
+	"undertow_bolt.gdshader": ["bolt_level", "bolt_width_m", "bolt_min_px", "col_lightning"],
+	"undertow_rain.gdshader": ["rain_amount", "rain_radius_m", "rain_time_s", "col_rain"],
 }
+## M2-RND-05: event shaders that take only their own uniforms (UndertowEvents sets them), not the storm's.
+const STANDALONE_SHADERS: Array[String] = [
+	"undertow_sea_lid.gdshader", "undertow_composite.gdshader", "undertow_bolt.gdshader", "undertow_rain.gdshader"
+]
 const LINEAR_TOL := 0.002
 
 
@@ -83,8 +90,9 @@ func test_every_undertow_shader_compiles() -> void:
 		assert_true(SHADER_UNIFORMS.has(file), "unexpected shader %s" % file)
 		for u: String in SHADER_UNIFORMS.get(file, []):
 			assert_true(names.has(u), "%s lacks uniform %s" % [file, u])
-		# The lid writes depth only; the half-res composite only lays the body's texture down.
-		if file not in ["undertow_sea_lid.gdshader", "undertow_composite.gdshader"]:
+		# The lid writes depth only; the half-res composite only lays the body's texture down; the bolts and
+		# the rain take their own uniforms.
+		if file not in STANDALONE_SHADERS:
 			for u in COMMON_UNIFORMS:
 				assert_true(names.has(u), "%s lacks storm uniform %s" % [file, u])
 	OS.remove_logger(shader_log)
