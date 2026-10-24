@@ -69,6 +69,12 @@ func animations_enabled() -> bool:
 	return settings == null or settings.animations_enabled()
 
 
+## The battle presentation speed (UiSettings.battle_speed, M2-UI-23; 1.0 without settings). The
+## controller's waits and every float divide their durations by it.
+func battle_speed() -> float:
+	return settings.battle_speed() if settings != null else 1.0
+
+
 ## Shows `text` on the help line. `role` draws it in a palette role instead of the theme's text
 ## color (the item menu's defeat warning uses &"danger"); the next plain call resets it.
 func set_help(text: String, role: StringName = &"") -> void:
@@ -119,7 +125,7 @@ func pop_number(text: String, at: Vector2, kind: StringName, on_ally: bool, crit
 	var n := DamageNumber.new()
 	_damage_layer.add_child(n)
 	var p := at - Vector2(0.0, HudLayout.num(_damage_m, "stack_px") * stack)
-	n.pop(text, p, kind, on_ally, crit, _damage_m, motion_scale())
+	n.pop(text, p, kind, on_ally, crit, _damage_m, motion_scale(), &"", battle_speed())
 	_note_number(text, kind, on_ally, crit)
 
 
@@ -128,7 +134,7 @@ func pop_info(text: String, at: Vector2, role: StringName = &"text_dim") -> void
 	var n := DamageNumber.new()
 	_damage_layer.add_child(n)
 	var p := at - Vector2(0.0, HudLayout.num(_float_m, "lift_px"))
-	n.pop(text, p, DamageNumber.KIND_INFO, false, false, _float_m, motion_scale(), role)
+	n.pop(text, p, DamageNumber.KIND_INFO, false, false, _float_m, motion_scale(), role, battle_speed())
 	_note_number(text, DamageNumber.KIND_INFO, false, false)
 
 

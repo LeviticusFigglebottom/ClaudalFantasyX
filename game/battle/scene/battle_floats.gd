@@ -38,7 +38,7 @@ func on_action_resolved(result: ActionResult) -> void:
 		# ActionResult.amount: positive = HP lost, negative = HP restored (BattleHits.resolve).
 		var amount := int(hit["amount"])
 		if f != null and amount > 0:
-			f.flinch()
+			f.flinch(ctl.hud.battle_speed())
 		heavy = heavy or bool(hit.get("crit", false))
 		if not ctl.show_damage_numbers or target == null:
 			continue
@@ -59,7 +59,7 @@ func on_action_resolved(result: ActionResult) -> void:
 		elif amount < 0:
 			ctl.hud.pop_number(str(-amount), at, DamageNumber.KIND_HEAL, ally, false, n)
 	if heavy and ctl.show_damage_numbers and ctl.hud.animations_enabled():
-		ctl.stage.shake()
+		ctl.stage.shake(ctl.hud.battle_speed())
 
 
 ## End-of-turn HP changes the ActionResult cannot carry (Poison, Regen, Regen turned to harm by

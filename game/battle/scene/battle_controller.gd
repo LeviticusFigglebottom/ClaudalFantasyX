@@ -952,7 +952,7 @@ func _drain() -> void:
 
 
 func _pace(key: StringName) -> float:
-	return HudLayout.num(_pacing, String(key)) * pacing_scale
+	return HudLayout.num(_pacing, String(key)) * pacing_scale / hud.battle_speed()  # M2-UI-23 battle speed
 
 
 func _set_state(s: StringName) -> void:
