@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import functools
+import json
 import math
 import sys
 from pathlib import Path
@@ -71,6 +72,16 @@ def yaw_xform(yaw_deg: float, pos, scale: float = 1.0) -> str:
     return _xf((c, 0.0, -s), (0.0, scale, 0.0), (s, 0.0, c), pos)
 
 
+def tilt_xform(yaw_deg: float, tilt_deg, pos, scale: float = 1.0) -> str:
+    """HalunaDresser's placement basis: yaw about Y, then the tilt (x, z degrees) as Basis.from_euler (YXZ)."""
+    a, tx, tz = (math.radians(v) for v in (yaw_deg, tilt_deg[0], tilt_deg[1]))
+    ry = np.array([[math.cos(a), 0.0, math.sin(a)], [0.0, 1.0, 0.0], [-math.sin(a), 0.0, math.cos(a)]])
+    rx = np.array([[1.0, 0.0, 0.0], [0.0, math.cos(tx), -math.sin(tx)], [0.0, math.sin(tx), math.cos(tx)]])
+    rz = np.array([[math.cos(tz), -math.sin(tz), 0.0], [math.sin(tz), math.cos(tz), 0.0], [0.0, 0.0, 1.0]])
+    m = ry @ rx @ rz * scale
+    return _xf(m[:, 0], m[:, 1], m[:, 2], pos)
+
+
 def _xf(x, y, z, o) -> str:
     vals = [x[0], y[0], z[0], x[1], y[1], z[1], x[2], y[2], z[2], o[0], o[1], o[2]]
     return "Transform3D(" + ", ".join(f"{float(v):.6g}" for v in vals) + ")"
@@ -88,7 +99,7 @@ def _ground_fn(name: str):
 
 
 def height(ground: str, x: float, z: float) -> float:
-    if ground in ("disc", "deck", "tread"):
+    if ground in ("disc", "deck", "tread", "gallery", "raft"):
         return arenas.FLOOR_Y
     fn = _ground_fn(ground)
     return float(fn(np.array([[x]]), np.array([[z]]))[0, 0])
@@ -540,7 +551,249 @@ def _terrace_arena() -> dict:
 ASH_TERRACE = _terrace_arena()
 
 
-ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE)}
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-06 (second part): the two Ch1 arenas
+# ---------------------------------------------------------------------------------------------
+OU = "res://assets/environments/kits/oruvel_underway/"
+UNDERWATER_DATA = ROOT / "game" / "data" / "vfx" / "underwater.json"
+LUT_CH01 = "res://assets/environments/arenas/oruvel_raft_morning/lut_ch01_raft.png"
+CH01_KEY = "#FFEFE1"  # colour script ch01 key and fill
+CH01_FILL = "#8FC3E0"
+# The Underway in arena coordinates: the kit preview's tower (ou_preview_layout, read-only) turned a quarter so its
+# lamp gallery (F9) runs north-south, the camera standing in the gallery looking east down it to the breach (kit +X ->
+# arena -Z, kit +Z -> arena +X), the gallery's floor at y 0. The east wall (kit x 18) stands at arena z -9.
+UW_SHIFT_Z = 9.0
+UW_DEPTH_M = 21.0  # water over the gallery's subject (the preview's U04): the sun and the ambient come through it
+UW_LIGHT_SCALE = 0.33  # oruvel_underway.md §0 `ch01_underway_int`: in-scatter x0.33, ambient 0.22
+UW_AMBIENT = 0.22
+UW_LANTERN = (1.5, 1.4, 0.9)  # Rhen's lantern hand: party slot 0 (2.1, 0.7), 0.6 m off its axis towards the foe
+UW_PROP_CLEAR_M = 4.0 # props (columns, coral, fragments) of the kit's gallery this near a slot are left out
+UW_STRUCTURE = ("tower_bay", "tower_bay_solid", "tower_bay_broken", "tower_pier", "floor_slab", "floor_slab_broken",
+                "hinge_door", "stair_flight", "current_shaft", "seafloor_patch_a", "seafloor_patch_b",
+                "seafloor_edge", "sand_drift")
+UW_SKIP = ("bell_room", "hull_keels", "tether_line")  # above the gallery's storeys, or the crown's
+
+
+def _hex_lin(h: str) -> np.ndarray:
+    c = np.array([int(h[i:i + 2], 16) / 255.0 for i in (1, 3, 5)])
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+
+def _lin_hex(lin: np.ndarray) -> str:
+    c = np.where(lin <= 0.0031308, lin * 12.92, 1.055 * np.power(np.maximum(lin, 0.0), 1.0 / 2.4) - 0.055)
+    return "#" + "".join(f"{int(round(float(np.clip(v, 0.0, 1.0)) * 255.0)):02X}" for v in c)
+
+
+def water_tinted(hex_color: str, metres: float) -> str:
+    """A light colour after `metres` of water, with the rig's own transmittance (underwater.json `transmit` over
+    `transmit_distance_m`, per channel: red goes first): the downwelling stand-in of the kit preview
+    (OruvelUnderwayPreview.tinted), baked for the arena's one depth until the rig does it (M3-RND-24)."""
+    data = json.loads(UNDERWATER_DATA.read_text(encoding="utf-8"))
+    t = np.maximum(_hex_lin(data["colors"]["transmit"]), 1e-3)
+    sigma = -np.log(t) / float(data["optics"]["transmit_distance_m"])
+    return _lin_hex(_hex_lin(hex_color) * np.exp(-sigma * metres))
+
+
+def _uw_layout():
+    sys.path.append(str(HERE.parent / "oruvel_underway"))  # the Oruvel Underway kit's preview layout, read-only
+    import ou_preview_layout as ol  # noqa: PLC0415
+
+    return ol
+
+
+def uw_to_arena(x: float, y: float, z: float) -> tuple[float, float, float]:
+    """Kit preview coordinates (sea surface y 0, the gallery's floor at F9) -> the arena's."""
+    ol = _uw_layout()
+    return (round(z, 3), round(y - ol.F9, 3), round(UW_SHIFT_Z - x, 3))
+
+
+def _near_slot(x: float, z: float, r: float) -> bool:
+    return any(math.hypot(x - sx, z - sz) < r for sx, sz in arenas.SLOTS_XZ)
+
+
+def _underway_pieces() -> tuple[list, list]:
+    """The tower's gallery storeys (F8-F12: walls, piers, floors, the west bay's door, stair and shaft), the gallery's
+    columns and growth, the breach's spill, and the terrace round it (cells, the dead ship, coral heads, the meadow,
+    fragments), placed in the arena. The gallery's props within UW_PROP_CLEAR_M of a slot are left out (the fight's
+    bay is the one whose columns are gone). Returns (pieces, the ones left out)."""
+    ol = _uw_layout()
+    terrace = ol.terrace()  # seats the ground (ground_y) for the dressing
+    rows = terrace[1:] + ol.tower() + ol.dressing()
+    top = ol.floor_y(12) + 0.01
+    pieces, dropped = [], []
+    for p in rows:
+        if p["piece"] in UW_SKIP or p["y"] > top:
+            continue
+        x, y, z = uw_to_arena(p["at"][0], p["y"], p["at"][1])
+        row = {"glb": OU + p["piece"] + ".glb", "at": (x, y, z), "yaw": round(p["yaw_deg"] + 90.0, 2)}
+        if "scale" in p:
+            row["scale"] = p["scale"]
+        if "tilt_deg" in p:
+            row["tilt"] = tuple(p["tilt_deg"])
+        if p["piece"] == "floor_slab" and abs(y) < 0.01:
+            row["floor"] = True  # the gallery's own floor (F9): the fighting floor
+        elif p["piece"] in UW_STRUCTURE:
+            row["structure"] = True
+        elif abs(y) < 0.5 and _near_slot(x, z, UW_PROP_CLEAR_M):
+            dropped.append(row)
+            continue
+        pieces.append(row)
+    return pieces, dropped
+
+
+UW_PIECES, UW_DROPPED = _underway_pieces()
+
+UNDERWAY_TOWER = {
+    "id": "underway_tower",
+    "sub_frame": "ch01_underway_int",
+    "ground": "gallery",
+    # The terrace's apron (its hole round the tower) is the arena's ground; the gallery's floor is the kit's F9 slabs.
+    "ground_glb": OU + "seafloor_far.glb",
+    "ground_at": uw_to_arena(0.0, -22.6, 0.0),
+    "lut": LUT_CH01,
+    # oruvel_underway.md §0 `ch01_underway_int` (the lamp gallery): the dive's sun (08:45, 42 deg / 105 deg in the kit,
+    # 15 deg here), the ch01 key #FFEFE1 3.0 and fill #8FC3E0 tinted by 21 m of water (the downwelling stand-in), the
+    # ambient 0.22, the in-scatter x0.33 (ArenaUnderwater), exposure 0.65, lut_ch01_raft's intent.
+    "sun": {"elev": 42.0, "az": 15.0, "color": water_tinted(CH01_KEY, UW_DEPTH_M), "energy": 3.0},
+    "fill": {"color": water_tinted(CH01_FILL, UW_DEPTH_M), "energy": UW_AMBIENT},
+    "exposure": 0.65,
+    "fog": {"color": "#1FA3A6", "density": 0.0, "sky_affect": 0.0, "height": 0.0, "height_density": 0.0},
+    "sky": {"col_zenith": "#2E7FD6", "col_horizon_sun": "#A9DCF2", "col_horizon_away": "#A9DCF2",
+            "col_mid": "#A9DCF2", "col_ground": "#8FC3E0", "cloud_coverage": 0.0},
+    # The lagoon's surface over the tower: the rig's water (Snell window, the waterline test) and the battle's
+    # hymn_water_level publisher (everything here is under it, so wet).
+    "sea": {"y": round(-_uw_layout().F9, 3), "tide_line_y": round(-_uw_layout().F9, 3), "sea_glow": 0.0},
+    "pieces": UW_PIECES,
+    "scatters": [],
+    "underwater": {
+        "light_scale": UW_LIGHT_SCALE,
+        # Rhen's oil lantern (the rig hangs its oil-lamp light and halo here): at his shoulder on party slot 0, on
+        # the side towards the foe and the lens, as he carries it in the field. No mesh: the battle's Rhen carries
+        # the lantern; the presentation track re-targets the rig to his lamp node (M3-RND-25).
+        "lantern": UW_LANTERN,
+        # Held motes (glimmer_held, the colour script's ch01 energy 1.5) sinking through the gallery beyond the fight.
+        "motes": [{"name": "HeldMotes", "at": (-2.6, 2.6, -5.8), "extents": (2.6, 1.6, 2.0), "amount": 0.35,
+                   "seed": 106, "sea_direction": (0.0, 0.0, -1.0)}],
+    },
+    "hints": {
+        "wide_high": ((-2.5, 5.2, 9.0), (0.5, 0.0, -3.0)),
+        "party_side": ((5.0, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-5.0, 1.7, 4.0), (1.5, 1.0, 0.0)),
+        "to_the_low_lights": ((0.5, 1.6, -6.5), (0.0, 1.0, 6.0)),
+    },
+}
+
+
+RAFT_HOUSE_RIDGE = (0.0, 6.05, 1.1)  # stilt_house: the middle of its hip roof's ridge (local, measured)
+RAFT_HOUSE_DECK = (2.12, 1.1)  # stilt_house: its deck's height and the deck's middle (local z), measured
+RAFT_CABIN_Y = arenas.RAFT_CABIN[4]
+RAFT_SHED = (2.0, 2.5, 2.3, 2.05)  # the net shed: post half-spacing x, z; the roof's eave height; its ridge above it
+
+
+def _raft_house(x: float, z: float, deck_y: float, yaw: float, gull: str) -> list:
+    """A cabin house (the Haluna kit's stilt_house) with its deck at `deck_y`: on a raft its stilts drop through the
+    raft into the hulls, out in the lagoon (deck_y high) it stands on them; and a carved gull on its ridge."""
+    a = math.radians(yaw)
+    h, mid = RAFT_HOUSE_DECK
+    ox, oz = x - mid * math.sin(a), z - mid * math.cos(a)  # the house's origin, so its deck is centred on (x, z)
+    y = round(deck_y - h, 3)
+    lx, ly, lz = RAFT_HOUSE_RIDGE
+    gx, gz = ox + lx * math.cos(a) + lz * math.sin(a), oz - lx * math.sin(a) + lz * math.cos(a)
+    return [{"glb": KIT + "stilt_house.glb", "at": (round(ox, 3), y, round(oz, 3)), "yaw": yaw},
+            {"glb": KIT + gull + ".glb", "at": (round(gx, 3), round(y + ly, 3), round(gz, 3)), "yaw": yaw + 90.0}]
+
+
+def _raft_town() -> list:
+    """The town beyond the deck (the Haluna kit's pieces, read-only): cabin houses on the town's rafts (arenas.RAFT_TOWN),
+    two fishing huts out on their stilts, each roof with its carved gull (act1_ch01: carved gulls on every roof); nets,
+    racks, awnings, salvage and lamps on the rafts; outriggers moored alongside; the chandler's cabin raft."""
+    t = arenas.RAFT_TOWN
+    sea = arenas.RAFT_SEA_Y
+
+    def mid(k: int) -> tuple[float, float, float]:
+        return (t[k][0] + t[k][1]) * 0.5, t[k][4], (t[k][2] + t[k][3]) * 0.5
+
+    rows = []
+    for k, dx, yaw, gull in ((0, 0.6, 12.0, "lintel_gull_a"), (2, 0.0, 95.0, "lintel_gull_c"),
+                             (3, 0.0, 40.0, "lintel_gull_b")):
+        x, y, z = mid(k)
+        rows += _raft_house(x + dx, z, y + 0.05, yaw, gull)
+    # A net shed on the fifth raft: four lashed posts under a thatch roof, a gull on its ridge.
+    ex, ey, ez = mid(4)
+    for px, pz in ((-RAFT_SHED[0], -RAFT_SHED[1]), (RAFT_SHED[0], -RAFT_SHED[1]), (-RAFT_SHED[0], RAFT_SHED[1]),
+                   (RAFT_SHED[0], RAFT_SHED[1])):
+        rows.append({"glb": KIT + "timber_stilt_post.glb", "at": (ex + px, ey, ez + pz), "yaw": 0.0})
+    rows.append({"glb": KIT + "roof_thatch_hip.glb", "at": (ex, ey + RAFT_SHED[2], ez), "yaw": 0.0})
+    rows.append({"glb": KIT + "lintel_gull_c.glb", "at": (ex, ey + RAFT_SHED[2] + RAFT_SHED[3], ez), "yaw": 90.0})
+    for x, z, yaw, gull in ((-46.0, -27.0, 70.0, "lintel_gull_c"), (30.0, -62.0, -40.0, "lintel_gull_b")):
+        rows += _raft_house(x, z, sea + 2.3, yaw, gull)  # out in the lagoon, on their stilts
+    yc = t[2][4]
+    ya, yb, yd, ye = t[0][4], t[1][4], t[3][4], t[4][4]
+    rows += [
+        {"glb": KIT + "storehouse_stilt.glb", "at": (mid(1)[0] - 0.8, yb, mid(1)[2] - 1.2), "yaw": -15.0},
+        {"glb": KIT + "net_rack.glb", "at": (-16.6, yc, -12.0), "yaw": 0.0},
+        {"glb": BS + "crate_stack.glb", "at": (-23.0, yc, -6.0), "yaw": 25.0},
+        {"glb": KIT + "net_rack.glb", "at": (-15.4, ya, -22.8), "yaw": 90.0},
+        {"glb": KIT + "oil_lamp_post.glb", "at": (-15.0, ya, -19.0), "yaw": 180.0},
+        {"glb": KIT + "awning_cloth.glb", "at": (-4.6, yb, -25.0), "yaw": -10.0},
+        {"glb": KIT + "fish_drying_rack.glb", "at": (-10.6, yb, -24.6), "yaw": 0.0},
+        {"glb": KIT + "basket_set.glb", "at": (-22.0, yd, -32.0), "yaw": 15.0},
+        {"glb": BS + "salvage_pile.glb", "at": (3.4, ye, -29.6), "yaw": 30.0},
+        {"glb": KIT + "outrigger_7m.glb", "at": (9.3, sea, 2.5), "yaw": 91.0},
+        {"glb": KIT + "outrigger_7m.glb", "at": (-9.6, sea, -6.5), "yaw": 96.0},
+        {"glb": KIT + "outrigger_7m.glb", "at": (-1.0, sea, -28.0), "yaw": 170.0},
+        {"glb": KIT + "outrigger_7m.glb", "at": (9.3, arenas.RAFT_SEA_Y, 2.5), "yaw": 91.0},
+        {"glb": KIT + "outrigger_7m.glb", "at": (-9.6, arenas.RAFT_SEA_Y, -6.5), "yaw": 96.0},
+        # The chandler's cabin raft: a stall under an awning, a lamp post, jars, baskets and a drying rack.
+        {"glb": KIT + "market_stall.glb", "at": (-8.2, RAFT_CABIN_Y, -16.4), "yaw": 0.0},
+        {"glb": KIT + "awning_cloth.glb", "at": (-8.2, RAFT_CABIN_Y, -14.3), "yaw": 0.0},
+        {"glb": KIT + "oil_lamp_post.glb", "at": (-4.3, RAFT_CABIN_Y, -13.3), "yaw": 180.0},
+        {"glb": KIT + "water_jar.glb", "at": (-5.2, RAFT_CABIN_Y, -17.9), "yaw": 30.0},
+        {"glb": KIT + "basket_set.glb", "at": (-11.2, RAFT_CABIN_Y, -13.8), "yaw": 70.0},
+        {"glb": KIT + "fish_drying_rack.glb", "at": (-11.4, RAFT_CABIN_Y, -17.2), "yaw": 90.0},
+    ]
+    return rows
+
+
+RAFT_MORNING = {
+    "id": "oruvel_raft_morning",
+    "sub_frame": "ch01",
+    "ground": "raft",
+    "ground_glb": KIT + "arena_raft_deck.glb",
+    "lut": LUT_CH01,
+    # Colour script ch01 (10:30, the raft-town): sun 58 deg / 120 deg, key #FFEFE1 3.0, fill #8FC3E0 (the sky's own
+    # radiance, 0.6), exposure 0.65, saturation x1.12 in lut_ch01_raft; the brightest frame so far. The noon cumulus sky.
+    "sun": {"elev": 58.0, "az": 120.0, "color": CH01_KEY, "energy": 3.0},
+    "fill": {"color": CH01_FILL, "energy": 0.6},
+    "ambient_sky": 0.6,
+    "exposure": 0.65,
+    "fog": {"color": "#BFDDE8", "density": 0.0008, "sky_affect": 0.0, "height": 0.0, "height_density": 0.0},
+    "sky_shader": "res://game/shaders/environment/env_sky_cumulus.gdshader",
+    "sky": {"background_energy": 1.5, "horizon_curve": 0.14,
+            "cloud_lattice": ("Texture3D", "res://assets/vfx/undertow/undertow_noise3d.png"),
+            "cloud_lattice2": ("Texture2D", "res://assets/vfx/sky/cloud_lattice2.png")},
+    "sea": {"y": arenas.RAFT_SEA_Y, "tide_line_y": arenas.RAFT_SEA_Y, "sea_glow": 0.0},
+    "pieces": [
+        # The deck's working clutter, beyond the fight: nets drying, floats, salvage crates, a jar and baskets.
+        (KIT + "net_rack.glb", -5.6, -5.8, 90.0, 1.0, 0.0),
+        (KIT + "net_float_cluster.glb", -5.7, -7.0, 20.0, 1.0, 0.0),
+        (KIT + "oil_lamp_post.glb", -6.0, 3.6, 0.0, 1.0, 0.0),
+        (BS + "crate_stack.glb", 5.3, -6.2, 10.0, 0.9, 0.0),
+        (KIT + "basket_set.glb", 4.3, -6.9, 40.0, 1.0, 0.0),
+        (KIT + "water_jar.glb", 5.6, -4.6, 0.0, 1.0, 0.0),
+    ] + _raft_town(),
+    "scatters": [],
+    "hints": {
+        "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.3, -3.0)),
+        "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+        "from_the_bridge": ((-4.6, 1.6, -10.2), (1.0, 1.0, 1.0)),
+    },
+}
+
+
+ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
+                               RAFT_MORNING)}
 
 
 # ---------------------------------------------------------------------------------------------
@@ -653,7 +906,10 @@ def write_arena(a: dict) -> Path:
         sea_props["material"] = f'ExtResource("{sc.res("Material", WATER_MAT)}")'
     sea_props.update({"sea_glow_energy": sea["sea_glow"], "tide_line_y": sea["tide_line_y"]})
     sc.node("Sea", "Node3D", ".", sea_props)
-    sc.node("Ground", None, ".", {}, instance=sc.res("PackedScene", a["ground_glb"]))
+    ground_props = {}
+    if "ground_at" in a:  # the ground glb placed off the origin (the Underway's terrace apron)
+        ground_props["transform"] = _xyz(a["ground_at"])
+    sc.node("Ground", None, ".", ground_props, instance=sc.res("PackedScene", a["ground_glb"]))
     if "disc" in a:
         cx, cz = a["disc"]["center"]
         sc.node("Disc", None, ".", {"transform": f"Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {cx}, 0, {cz})"},
@@ -663,16 +919,18 @@ def write_arena(a: dict) -> Path:
     sc.node("Dressing", "Node3D", ".", {})
     counts: dict[str, int] = {}
     for row in a["pieces"]:
-        if isinstance(row, dict):  # an explicit placement: {"glb", "at": (x, y, z), "yaw", "scale"}
+        tilt = None
+        if isinstance(row, dict):  # an explicit placement: {"glb", "at": (x, y, z), "yaw", "scale", "tilt"}
             glb, (x, y, z), yaw, scale = row["glb"], row["at"], row["yaw"], row.get("scale", 1.0)
+            tilt = row.get("tilt")
         else:  # (glb, x, z, yaw_deg, scale, sink_m): standing on the arena's ground
             glb, x, z, yaw, scale, sink = row
             y = height(a["ground"], float(x), float(z)) - sink
         stem = Path(glb).stem
         counts[stem] = counts.get(stem, 0) + 1
-        sc.node(f"{stem}_{counts[stem]}", None, "Dressing",
-                {"transform": yaw_xform(yaw, (float(x), round(float(y), 3), float(z)), scale)},
-                instance=sc.res("PackedScene", glb))
+        pos = (float(x), round(float(y), 3), float(z))
+        xf = yaw_xform(yaw, pos, scale) if tilt is None else tilt_xform(yaw, tilt, pos, scale)
+        sc.node(f"{stem}_{counts[stem]}", None, "Dressing", {"transform": xf}, instance=sc.res("PackedScene", glb))
     if a["scatters"]:
         scatter = sc.res("Script", "res://game/world/vegetation/vegetation_scatter.gd")
         grass = sc.res("PackedScene", VEG + "saltgrass_clumps.glb")
@@ -688,6 +946,7 @@ def write_arena(a: dict) -> Path:
             "ground": 'NodePath("../../Ground")', "height_min_m": h0, "height_max_m": h1}, node_paths=("ground",))
     _write_lamps(sc, a)
     _write_far_lights(sc, a)
+    _write_underwater(sc, a)
     sc.node("CameraHints", "Node3D", ".", {})
     for name, (eye, target) in a["hints"].items():
         sc.node(name, "Marker3D", "CameraHints", {"transform": look_xform(eye, target)})
@@ -724,6 +983,8 @@ def _write_lamps(sc: Scene, a: dict) -> None:
         props = {"transform": _xyz(at), "light_color": hexc(lp.get("color", spec["color"])),
                  "light_energy": energy, "omni_range": lp.get("range", spec["range_m"]),
                  "omni_attenuation": spec["attenuation"]}
+        if "fog_energy" in spec:  # the Lead's rule near a dense FogVolume (the rig's god rays): 0
+            props["light_volumetric_fog_energy"] = spec["fog_energy"]
         if lp.get("shadow", False):
             props["shadow_enabled"] = "true"
             props["shadow_bias"] = 0.05
@@ -754,6 +1015,33 @@ def _write_far_lights(sc: Scene, a: dict) -> None:
         f"instance_count = {len(far['points'])}", 'mesh = SubResource("FarLightQuad")',
         "buffer = PackedFloat32Array(" + ", ".join(f"{float(v):.6g}" for v in buf) + ")"]))
     sc.node("FarLights", "MultiMeshInstance3D", ".", {"cast_shadow": 0, "multimesh": 'SubResource("FarLightSet")'})
+
+
+UNDERWATER_RIG = "res://game/world/arenas/arena_underwater.gd"
+GLIMMER_FIELD = "res://game/vfx/glimmer/glimmer_field.gd"
+
+
+def _write_underwater(sc: Scene, a: dict) -> None:
+    """An arena under the sea (`underwater`): `Lantern`, where Rhen's lantern hangs (a bare Node3D: the rig hangs its
+    oil-lamp light on it), the underwater look (ArenaUnderwater: the rig with the arena's in-scatter scale) on the
+    arena's Sea, and held glimmer fields at their own colour-script energy (not the scene's hymn_glimmer gate, which
+    a day scene keeps shut)."""
+    uw = a.get("underwater")
+    if not uw:
+        return
+    sc.node("Lantern", "Node3D", ".", {"transform": _xyz(uw["lantern"])})
+    field = sc.res("Script", GLIMMER_FIELD)
+    for m in uw.get("motes", []):
+        ex, sd = m["extents"], m["sea_direction"]
+        sc.node(m["name"], "Node3D", ".", {
+            "transform": _xyz(m["at"]), "script": f'ExtResource("{field}")', "mode": 0,
+            "emission_extents_m": f"Vector3({ex[0]}, {ex[1]}, {ex[2]})", "amount_multiplier": m["amount"],
+            "sea_direction": f"Vector3({sd[0]}, {sd[1]}, {sd[2]})", "water_height_m": a["sea"]["y"],
+            "follow_scene_intensity": "false", "use_fixed_seed": "true", "fixed_seed": m["seed"]})
+    sc.node("Underwater", "Node3D", ".", {
+        "script": f'ExtResource("{sc.res("Script", UNDERWATER_RIG)}")', "water": 'NodePath("../Sea")',
+        "lantern_target": 'NodePath("../Lantern")', "light_scale": uw["light_scale"]},
+        node_paths=("water", "lantern_target"))
 
 
 def main(argv: list[str] | None = None) -> int:

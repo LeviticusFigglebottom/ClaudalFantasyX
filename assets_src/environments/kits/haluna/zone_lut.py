@@ -39,6 +39,11 @@ M3-ENV-06 adds the two night grades of the Act I arenas (practical-keyed night f
                     0.55, saturation x1.15, the black point at night_sky.
       python3 assets_src/environments/kits/haluna/zone_lut.py --grade ch05_lanternfall \
           --out assets/environments/arenas/ash_terrace_lanternfall/lut_ch05_lanternfall.png
+  ch01_raft         lut_ch01_raft (colour script Ch1, the raft-town at 10:30, and the Underway below it):
+                    neutral-warm, the cyans and the oranges +8% (`band_sat`), saturation x1.12, S-curve 0.45, a
+                    mild toe lift. Shared by the two Ch1 arenas, written next to the raft-town's:
+      python3 assets_src/environments/kits/haluna/zone_lut.py --grade ch01_raft \
+          --out assets/environments/arenas/oruvel_raft_morning/lut_ch01_raft.png
 """
 
 from __future__ import annotations
@@ -99,6 +104,11 @@ GRADES = {
                   "black_floor": 1.0, "highlight_hex": "#FFE6C8", "highlight_start": 0.7, "highlight_strength": 0.4,
                   "warm_deg": (8.0, 58.0), "warm_sat": 1.0 / 0.95, "cool_sat": 0.85, "cool_hex": "#C8D6EE",
                   "cool_strength": 0.35},
+    # M3-ENV-06. lut_ch01_raft (colour script Ch1): a neutral-warm day grade, +8% saturation in the cyans and the
+    # oranges, a mild toe lift (the teal toe a little higher off black than noon's).
+    "ch01_raft": {"saturation": 1.12, "s_curve": 0.45, "toe_hex": TOE_HEX, "toe_strength": 0.3, "toe_end": 0.36,
+                  "black_floor": 0.16, "highlight_hex": "#FFF4E8", "highlight_start": 0.72,
+                  "highlight_strength": 0.5, "band_sat": (((15.0, 50.0), 1.08), ((172.0, 205.0), 1.08))},
     # Oranges and reds +12%, greens towards teal, neutral stone a touch cool; the toe at night_sky.
     "ch05_lanternfall": {"saturation": 1.15, "s_curve": 0.55, "toe_hex": NIGHT_SKY_HEX, "toe_strength": 0.45,
                          "toe_end": 0.3, "black_floor": 1.0, "highlight_hex": "#FFE2BC", "highlight_start": 0.7,
@@ -179,6 +189,17 @@ def hue_pass(srgb: np.ndarray, g: dict) -> np.ndarray:
     return np.clip(lin_to_srgb(lin), 0.0, 1.0)
 
 
+def band_saturation(srgb: np.ndarray, bands) -> np.ndarray:
+    """Selective saturation (M3-ENV-06, `band_sat`): each (hue band in degrees, gain) scales the saturation of the
+    colours inside the band (soft edges, and only colours already a little saturated, so greys stay grey)."""
+    hsv = rgb_to_hsv(srgb)
+    gain = np.ones(hsv.shape[:-1])
+    for band, k in bands:
+        gain = gain + (k - 1.0) * _hue_band(hsv[..., 0], band) * smoothstep(0.05, 0.2, hsv[..., 1])
+    hsv[..., 1] = np.clip(hsv[..., 1] * gain, 0.0, 1.0)
+    return np.clip(hsv_to_rgb(hsv), 0.0, 1.0)
+
+
 def grade_params(name: str) -> dict:
     """The named grade. ch02_noon is read from the module constants at call time, so a kit that loads this module
     and overrides SATURATION / S_CURVE (tamsule_bell/zone_lut.py) still gets its own grade."""
@@ -219,6 +240,8 @@ def grade(srgb: np.ndarray, g: dict | None = None) -> np.ndarray:
         out = hue_pass(out, g)
         # The pass may not lower the black point below the grade's floor.
         out = np.maximum(out, lin_to_srgb(hex_lin(g["toe_hex"]) * g["black_floor"]))
+    if "band_sat" in g:
+        out = band_saturation(out, g["band_sat"])
     return out
 
 

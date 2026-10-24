@@ -31,6 +31,13 @@ script's sun azimuths); the BattleCamera looks north.
                           south-west (frame left) and away north-east to the Shell Shrine's islet on the
                           horizon, the open lagoon east (frame right). The slabs on the bed are the kit's
                           own causeway_slab_* pieces, placed by arena_scenes.py on ROUTE_PATH.
+  arena_raft_deck         oruvel_raft_morning (M3-ENV-06): one of Oruvel's working decks at 10:30. Sun-bleached
+                          planks fore and aft at y = 0 over four lashed hulls (their bows out past the deck's
+                          open north end), a rope rail and a lashed float log along each side beyond the
+                          slots, a dive ladder and tether post; a plank bridge to the chandler's cabin raft;
+                          the town's other rafts on their hulls with bridges between them, and single hulls
+                          moored round. Built from the village and waterfront modules (deck, posts, the hull
+                          section), read-only; the houses and props on it are kit pieces (arena_scenes.py).
 
 The flood rig (battle_vfx.md "The Drownbell") raises its water from -0.7 to +0.6 m around the origin;
 the disc's top is y = 0 and its pool floor -0.95, so at low water the pool holds water and the flats
@@ -44,6 +51,7 @@ import math
 import numpy as np
 
 import kit_common as kc
+import village
 
 M_STONE = "kit_causeway_stone"
 M_GROUND = "kit_ground"
@@ -589,6 +597,240 @@ def build_route_ground(seed: int = 251) -> list[kc.MeshBuilder]:
     return out
 
 
+# ---------------------------------------------------------------------------------------------
+# oruvel_raft_morning: the raft-town's deck (M3-ENV-06)
+# ---------------------------------------------------------------------------------------------
+# Oruvel (bible §3, act1_ch01 C1-09): a raft-town of lashed hulls and plank bridges. The arena is one of its working
+# decks: sun-bleached planks laid fore and aft at y 0 over four lashed hulls, a lashed float log and a rope rail along
+# each side beyond the slots, the deck's north end open over the water with a plank bridge to the chandler's cabin
+# raft, and single hulls moored round it. No raft-town kit exists yet: the deck, hulls, floats and bridge are built
+# here with the Haluna village and waterfront modules (village.deck, village.post, waterfront's hull section,
+# read-only); the town's stilt houses, stalls, nets and gulls are the Haluna kit's own pieces (arena_scenes.py).
+RAFT_SEA_Y = -0.8  # the lagoon under the deck at 10:30: the deck's freeboard
+RAFT_DECK = (-6.4, 6.4, -7.6, 12.0)  # x0, x1, z0 (the open north end), z1 (behind the camera)
+RAFT_GUNWALE_Y = -0.18  # the hulls' gunwales, under the deck's bearers
+RAFT_HULL_DEPTH_M = 1.3
+# The main deck's hulls: x, bow z (north), stern z, beam, the faded paint on the sheer strake (None: bare).
+RAFT_HULLS = ((-4.85, -10.4, 12.6, 2.5, "kit_paint_sea_blue"), (-1.6, -9.1, 12.8, 2.7, "kit_paint_red"),
+              (1.65, -10.9, 12.4, 2.6, None), (4.9, -9.7, 12.7, 2.4, "kit_whitewash"))
+RAFT_RAIL_X = 6.3
+RAFT_RAIL_Z = (-7.2, 10.8)
+RAFT_RAIL_STEP_M = 2.0
+RAFT_FLOAT_X = 6.85  # the float logs lashed along both sides, outboard of the rail
+# The chandler's cabin raft north-west across a plank bridge: x0, x1, z0, z1, deck y; its two hulls.
+RAFT_CABIN = (-12.6, -3.8, -19.2, -12.8, 0.12)
+RAFT_CABIN_HULLS = ((-10.4, -21.2, -10.9, 2.4, "kit_paint_red"), (-6.0, -20.8, -11.3, 2.3, None))
+RAFT_BRIDGE = ((-3.4, -7.55), (-6.2, -12.85))  # from the main deck's north end to the cabin raft
+RAFT_BRIDGE_W = 1.1
+# Single hulls moored round the deck (x, z, yaw from +Z towards +X in degrees, length, beam, paint).
+RAFT_MOORED = ((10.6, -3.5, 8.0, 9.0, 2.2, "kit_paint_sea_blue"), (14.2, -15.0, -14.0, 11.0, 2.5, None),
+               (3.0, -26.0, 84.0, 12.0, 2.6, "kit_paint_red"), (17.5, -31.0, 66.0, 10.0, 2.3, "kit_whitewash"),
+               (-29.0, -16.0, 20.0, 10.0, 2.4, "kit_paint_sea_blue"), (-12.8, 1.0, -6.0, 8.0, 2.1, None))
+RAFT_MOORED_FREEBOARD_M = 0.45
+RAFT_PAINT_BAND_M = 0.42  # the sheer strake's painted band below the gunwale
+# The town's other rafts north-west of the deck (the cabin hulls the houses stand on): x0, x1, z0, z1, deck y, the
+# paint of each hull under it (they run along the raft's long side, as many as the paints).
+RAFT_TOWN = ((-24.0, -14.5, -27.0, -18.5, 0.18, ("kit_paint_sea_blue", None, "kit_paint_red")),
+             (-12.0, -3.0, -32.5, -23.5, 0.1, (None, "kit_whitewash", None)),
+             (-24.0, -15.5, -13.5, -5.0, 0.14, ("kit_paint_red", None)),
+             (-30.0, -21.0, -40.0, -31.0, 0.12, (None, "kit_paint_sea_blue")),
+             (2.0, 11.0, -37.0, -28.5, 0.16, ("kit_whitewash", None, None)))
+# Plank bridges between rafts: ((x, z) from, (x, z) to, y from, y to).
+RAFT_TOWN_BRIDGES = (((-12.6, -16.4), (-14.5, -20.4), 0.12, 0.18), ((-14.5, -25.2), (-12.0, -26.2), 0.18, 0.1),
+                     ((-20.0, -18.5), (-20.0, -13.5), 0.18, 0.14), ((-22.0, -27.0), (-23.0, -31.0), 0.18, 0.12),
+                     ((-3.0, -29.5), (2.0, -31.0), 0.1, 0.16))
+
+TRI_BUDGET["arena_raft_deck"] = (60000, 8000)
+
+
+def raft_hull(name: str, beam: float, length: float, depth: float, paint: str | None, rng, *,
+              lod: bool, coarse: bool = False) -> kc.MeshBuilder:
+    """A plank-built hull along local +Z (bow at -Z), its gunwale at y 0: waterfront's U section lofted with a
+    rising sheer, a sheer strake painted in a faded band, the rest bare timber; inside and outside surfaces."""
+    import waterfront  # noqa: PLC0415  (the Haluna waterfront kit's hull section, read-only)
+
+    mb = kc.MeshBuilder(name)
+    tm = mb.material(village.M_TIMBER)
+    pm = mb.material(paint) if paint else tm
+    nl, ns = (8, 5) if lod else ((16, 9) if coarse else (26, 13))  # coarse: the town's hulls, 15 m off and more
+    ts = np.linspace(-1.0, 1.0, nl)
+    outer, inner = [], []
+    for t in ts:
+        taper = (1.0 - abs(t) ** 2.6) ** 0.55
+        b = max(beam * taper, 0.04)
+        d = max(depth * (0.55 + 0.45 * taper), 0.15)
+        sheer = 0.28 * abs(t) ** 3
+        sec = waterfront._hull_section(t, b, d, sheer, ns)  # x 0, y up, z across
+        pts = np.stack([sec[:, 2], sec[:, 1], np.full(ns, t * length * 0.5)], axis=-1)
+        outer.append(pts)
+        inner.append(pts * np.array([0.94, 0.95, 1.0]) + np.array([0.0, 0.02, 0.0]))
+    outer, inner = np.asarray(outer), np.asarray(inner)
+    uv = np.stack([outer[..., 2], outer[..., 1] + outer[..., 0]], axis=-1)
+    col = np.broadcast_to(np.array([0.05, 0.35, 0.1, 0.55]), outer.shape[:2] + (4,))
+    uv2 = np.broadcast_to(np.array([1.0, float(rng.random())]), outer.shape[:2] + (2,))
+    start_t = mb.triangle_count
+    kc.quad_strip(mb, outer, tm, uv=uv, col=col, uv2=uv2, flip=True)
+    kc.quad_strip(mb, inner, tm, uv=uv, col=col, uv2=uv2 * np.array([0.55, 1.0]), flip=False)
+    for side in (0, ns - 1):
+        rim = np.stack([outer[:, side], inner[:, side]], axis=1)
+        kc.quad_strip(mb, rim, tm, uv=np.stack([rim[..., 2], rim[..., 0]], axis=-1),
+                      col=np.broadcast_to(col[0, 0], rim.shape[:2] + (4,)),
+                      uv2=np.broadcast_to(np.array([1.0, 0.5]), rim.shape[:2] + (2,)), flip=side != 0)
+    if paint:
+        pos = np.asarray(mb.pos)
+        for k in range(start_t, start_t + (nl - 1) * (ns - 1) * 2):  # the outer surface's triangles
+            c = pos[list(mb.tris[k])].mean(axis=0)
+            if c[1] > -RAFT_PAINT_BAND_M + 0.28 * (2.0 * c[2] / length) ** 2:
+                mb.tri_mat[k] = pm
+    kc.recompute_normals(mb, 0, 0)
+    return mb
+
+
+def _place(mb: kc.MeshBuilder, part: kc.MeshBuilder, x: float, y: float, z: float, yaw_deg: float = 0.0) -> None:
+    mb.merge(part, kc.rot_y(math.radians(yaw_deg)), (x, y, z))
+
+
+def _rope(mb: kc.MeshBuilder, a, b, sag: float, radius: float, mat: int, n: int = 8) -> None:
+    a, b = np.asarray(a, float), np.asarray(b, float)
+    s = np.linspace(0.0, 1.0, n)
+    pts = a + (b - a) * s[:, None] - np.array([0.0, 1.0, 0.0]) * (4.0 * sag * s * (1.0 - s))[:, None]
+    kc.tube(mb, pts, radius, 5, mat, variation=0.3, u_repeat=2.0, v_scale=6.0)
+
+
+def _float_log(mb: kc.MeshBuilder, rng, noise, x: float, z0: float, z1: float, y: float, *, lod: bool) -> None:
+    """A lashed float of bound logs along z (outboard of a rail): two logs side by side, coir lashings every 1.5 m."""
+    tm, lm = mb.material(village.M_TIMBER), mb.material(village.M_LASHING)
+    zs = np.linspace(z0, z1, 4 if lod else 12)
+    for dx in (-0.17, 0.17):
+        pts = np.stack([np.full_like(zs, x + dx), y + 0.02 * np.sin(zs * 1.3 + dx * 9.0), zs], axis=-1)
+        kc.tube(mb, pts, 0.17, 5 if lod else 9, tm, noise=None if lod else noise, disp_m=0.015, cap_start=True,
+                cap_end=True, variation=float(rng.random()), weather=kc.DROWNED)
+    if not lod:
+        for z in np.arange(z0 + 0.6, z1 - 0.3, 1.5):
+            ring = np.array([[x - 0.42, y, z], [x, y + 0.2, z], [x + 0.42, y, z], [x, y - 0.2, z], [x - 0.42, y, z]])
+            kc.tube(mb, ring, 0.025, 5, lm, variation=float(rng.random()))
+
+
+def _rail(mb: kc.MeshBuilder, rng, noise, x: float, z0: float, z1: float, y: float, *, lod: bool) -> None:
+    """Lashed posts every RAFT_RAIL_STEP_M and two sagging rope rails (the raft-town's rails: rope, not timber)."""
+    lm = mb.material(village.M_LASHING)
+    zs = np.arange(z0, z1 + 1e-6, RAFT_RAIL_STEP_M)
+    for z in zs:
+        if lod:
+            kc.tube(mb, np.array([[x, y, z], [x, y + 1.0, z]]), 0.06, 4, mb.material(village.M_TIMBER))
+        else:
+            village.post(mb, (x, y - 0.2, z), (x + rng.normal(0, 0.015), y + 1.0, z), 0.055, rng, noise, sides=6)
+    if lod:
+        return
+    for h, sag in ((0.95, 0.06), (0.5, 0.05)):
+        for za, zb in zip(zs[:-1], zs[1:]):
+            _rope(mb, (x, y + h, za), (x, y + h, zb), sag, 0.018, lm)
+
+
+def _bridge(mb: kc.MeshBuilder, rng, noise, a, b, y0: float, y1: float, *, lod: bool) -> None:
+    """A plank bridge from a to b (x, z): two stringers with a slight sag, planks across, one rope handrail."""
+    tm, lm = mb.material(village.M_TIMBER), mb.material(village.M_LASHING)
+    a, b = np.asarray(a, float), np.asarray(b, float)
+    d = (b - a) / np.linalg.norm(b - a)
+    side = np.array([-d[1], d[0]])
+    length = float(np.linalg.norm(b - a))
+    hw = RAFT_BRIDGE_W * 0.5
+
+    def at(s: float, off: float, dy: float = 0.0):
+        p = a + (b - a) * s + side * off
+        return (float(p[0]), y0 + (y1 - y0) * s - 0.1 * 4.0 * s * (1.0 - s) + dy, float(p[1]))
+
+    for off in (-hw + 0.1, hw - 0.1):
+        kc.plank(mb, at(0.0, off, -0.1), at(1.0, off, -0.1), 0.1, 0.12, tm, variation=float(rng.random()),
+                 noise=None if lod else noise, sag_m=0.1, seg=1 if lod else 6)
+    if lod:
+        return
+    n = int(length / 0.34)
+    for k in range(n):
+        if rng.random() < 0.04:
+            continue  # a missing plank
+        s = (k + 0.5) / n
+        kc.plank(mb, at(s, -hw, -0.02), at(s, hw, -0.02), 0.28, 0.04, tm, variation=float(rng.random()), noise=noise)
+    for s in (0.0, 0.5, 1.0):
+        p = at(s, hw)
+        village.post(mb, (p[0], p[1] - 0.15, p[2]), (p[0], p[1] + 0.95, p[2]), 0.045, rng, noise, sides=6)
+    for s0, s1 in ((0.0, 0.5), (0.5, 1.0)):
+        p0, p1 = at(s0, hw, 0.9), at(s1, hw, 0.9)
+        _rope(mb, p0, p1, 0.08, 0.018, lm)
+
+
+def build_raft_deck(seed: int = 261) -> list[kc.MeshBuilder]:
+    """arena_raft_deck: the main deck on its four hulls, rails and float logs, the plank bridge, the cabin raft on its
+    two hulls, and the single hulls moored round (oruvel_raft_morning)."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("arena_raft_deck", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("arena_raft_deck" + ("-lod1" if lod else ""))
+        tm = mb.material(village.M_TIMBER)
+        x0, x1, z0, z1 = RAFT_DECK
+        if lod:
+            kc.rounded_block(mb, ((x0 + x1) * 0.5, -0.06, (z0 + z1) * 0.5), ((x1 - x0) * 0.5, 0.06, (z1 - z0) * 0.5),
+                             tm, seg=1, radius=0.01)
+        else:
+            village.deck(mb, x0, x1, z0, z1, FLOOR_Y, rng, noise, along_x=False)
+            # The fascia boards along the deck's sides and its open north end.
+            for x in (x0 - 0.03, x1 + 0.03):
+                kc.plank(mb, (x, -0.13, z0), (x, -0.13, z1), 0.2, 0.05, tm, up=(1.0, 0.0, 0.0),
+                         variation=float(rng.random()), noise=noise, seg=4)
+            kc.plank(mb, (x0, -0.13, z0 - 0.03), (x1, -0.13, z0 - 0.03), 0.2, 0.05, tm, up=(0.0, 0.0, 1.0),
+                     variation=float(rng.random()), noise=noise, seg=4)
+        for x, zb, zs, beam, paint in RAFT_HULLS:
+            hull = raft_hull("hull", beam, zs - zb, RAFT_HULL_DEPTH_M, paint, rng, lod=lod)
+            _place(mb, hull, x, RAFT_GUNWALE_Y, (zb + zs) * 0.5)
+        for side in (-1.0, 1.0):
+            _rail(mb, rng, noise, side * RAFT_RAIL_X, RAFT_RAIL_Z[0], RAFT_RAIL_Z[1], FLOOR_Y, lod=lod)
+            _float_log(mb, rng, noise, side * RAFT_FLOAT_X, z0 + 0.4, z1 - 0.6, RAFT_SEA_Y + 0.12, lod=lod)
+        # The dive mooring at the north end: a ladder down to the water and a tall post for the divers' tethers.
+        if not lod:
+            for x in (2.25, 2.75):
+                kc.plank(mb, (x, RAFT_SEA_Y - 0.6, z0 - 0.25), (x, 0.55, z0 - 0.04), 0.06, 0.06, tm,
+                         variation=float(rng.random()))
+            for k in range(4):
+                yy = RAFT_SEA_Y - 0.3 + k * 0.38
+                kc.plank(mb, (2.22, yy, z0 - 0.2), (2.78, yy, z0 - 0.2), 0.05, 0.04, tm, variation=float(rng.random()))
+            village.post(mb, (4.1, -0.3, z0 + 0.25), (4.12, 2.1, z0 + 0.25), 0.09, rng, noise)
+        # The cabin raft and the bridge to it.
+        cx0, cx1, cz0, cz1, cy = RAFT_CABIN
+        if lod:
+            kc.rounded_block(mb, ((cx0 + cx1) * 0.5, cy - 0.06, (cz0 + cz1) * 0.5),
+                             ((cx1 - cx0) * 0.5, 0.06, (cz1 - cz0) * 0.5), tm, seg=1, radius=0.01)
+        else:
+            village.deck(mb, cx0, cx1, cz0, cz1, cy, rng, noise, along_x=True, missing_p=0.02)
+        for x, zb, zs, beam, paint in RAFT_CABIN_HULLS:
+            _place(mb, raft_hull("hull", beam, zs - zb, RAFT_HULL_DEPTH_M, paint, rng, lod=lod), x,
+                   cy + RAFT_GUNWALE_Y, (zb + zs) * 0.5)
+        _rail(mb, rng, noise, cx0 + 0.15, cz0 + 0.3, cz1 - 0.3, cy, lod=lod)
+        _bridge(mb, rng, noise, RAFT_BRIDGE[0], RAFT_BRIDGE[1], FLOOR_Y, cy, lod=lod)
+        # The town's rafts and the bridges between them.
+        for tx0, tx1, tz0, tz1, ty, paints in RAFT_TOWN:
+            if lod:
+                kc.rounded_block(mb, ((tx0 + tx1) * 0.5, ty - 0.06, (tz0 + tz1) * 0.5),
+                                 ((tx1 - tx0) * 0.5, 0.06, (tz1 - tz0) * 0.5), tm, seg=1, radius=0.01)
+            else:
+                village.deck(mb, tx0, tx1, tz0, tz1, ty, rng, noise, along_x=bool(rng.random() < 0.5),
+                             missing_p=0.02)
+            step = (tx1 - tx0) / len(paints)
+            for k, paint in enumerate(paints):
+                hull = raft_hull("hull", min(2.6, step - 0.3), tz1 - tz0 + float(rng.uniform(1.5, 3.5)),
+                                 RAFT_HULL_DEPTH_M, paint, rng, lod=lod, coarse=True)
+                _place(mb, hull, tx0 + step * (k + 0.5), ty + RAFT_GUNWALE_Y,
+                       (tz0 + tz1) * 0.5 - float(rng.uniform(0.0, 1.0)))
+        for a, b, ya, yb in RAFT_TOWN_BRIDGES:
+            _bridge(mb, rng, noise, a, b, ya, yb, lod=lod)
+        # Single hulls moored round.
+        for x, z, yaw, length, beam, paint in RAFT_MOORED:
+            hull = raft_hull("hull", beam, length, RAFT_HULL_DEPTH_M * 0.85, paint, rng, lod=lod, coarse=True)
+            _place(mb, hull, x, RAFT_SEA_Y + RAFT_MOORED_FREEBOARD_M, z, yaw)
+        out.append(mb)
+    return out
+
+
 def floor_height_at(builder: kc.MeshBuilder, x: float, z: float, radius: float = FLOOR_CLEAR_M) -> tuple[float, float]:
     """(min, max) top height of the builder's upward-facing vertices within `radius` of (x, z) (tests)."""
     pos = np.asarray(builder.pos)
@@ -604,4 +846,5 @@ TARGETS = {
     "arena_causeway_flats": build_causeway_flats,
     "arena_causeway_arms": build_causeway_arms,
     "arena_causeway_route_ground": build_route_ground,
+    "arena_raft_deck": build_raft_deck,
 }

@@ -35,6 +35,17 @@
         "arena_causeway_route_ground-lod1": 3526
       }
     },
+    "arena_raft_deck": {
+      "budget": [
+        60000,
+        8000
+      ],
+      "bytes": 2161524,
+      "lods": {
+        "arena_raft_deck": 43271,
+        "arena_raft_deck-lod1": 4312
+      }
+    },
     "arena_tideline_ground": {
       "budget": [
         60000,
