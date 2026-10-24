@@ -59,6 +59,7 @@
   6. Swap the capsules for Rhen, Toma and the villagers when the characters branch merges.
   7. Another playthrough pass.
 - **characters:**
+  0. **TOP PRIORITY (the human, 2026-10-24): M1-CHR-14.** Asha's braid is detached from her head; clothing and staff clip; some limbs look detached. Fix it properly and add automated guards; same checks for Rhen and Toma.
   1. M1-CHR-13 (vest normals, plus the shared `_panel` winding fix; rebuild Asha, Rhen and Toma).
   2. M1-RND-25 (the inner lip onto the mouth material).
   3. Toma follow-ups, plus Toma's clips.
