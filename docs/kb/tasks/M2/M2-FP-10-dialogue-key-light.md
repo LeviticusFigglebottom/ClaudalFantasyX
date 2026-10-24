@@ -27,3 +27,9 @@ From the PC GPU session's RND-20 follow-up (docs/kb/qa/gpu/2026-10-23-rnd-18-20-
 - **Open:** the GPU check of Cutscene A (nose and mouth-corner artefacts, cost) is with the PC session via the Lead. Also worth judging there: whether Haluna's `face_key_shadow_normal_bias = 3.0` on the zone sun can go back to the mood scene's 1.0 now that close-ups no longer use the sun on faces (RND-20 S1 recommends 1.0).
 
 ## Review log
+
+## Lead note (2026-10-24): PC GPU check results (gpu/fp-10-keylight-check, c1b54ad)
+- No nose or mouth-corner artefacts at High or Ultra. The key costs ≤ 0.03 ms. The Haluna sun is at bias 1.0 at runtime, with no face regression.
+- **To do on m2-slice:**
+  1. Set `key_pitch_deg` to 30 on H05 and H06. The sun is at 74° elevation, so a faithful key leaves her face in her own brow and nose shadow. The PC verified the fix on the GPU.
+  2. **Layer conflict:** `sequencer.json` `key_light.layer = 20` is also `UndertowHalfRes.BODY_LAYER`, so a storm-zone close shot would make the cast vanish. Move the key light to a free layer, and add a test that the two don't collide.
