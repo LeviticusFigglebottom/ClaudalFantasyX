@@ -553,18 +553,13 @@ func test_ui_hooks_play_equip_map_tip_and_title() -> void:
 func test_new_menu_rows_exist_and_hooks_wait_for_their_classes() -> void:
 	var ui := _ui()
 	var rows := AudioData.sfx_rows()
-	for cls: String in [
-		"FieldSubmenu",
-		"LatticeMenu",
-		"EquipMenu",
-		"ZoneMapMenu",
-		"ZoneMapView",
-		"TipCard",
-		"ItemsMenu",
-		"FormationMenu"
-	]:
+	for cls: String in ["ZoneMapMenu", "ZoneMapView", "TipCard"]:
 		assert_true(ui.hooks.has(cls), "%s has a hook" % cls)
 		assert_true(bool((ui.hooks[cls] as Dictionary).get("pending", false)), "%s waits for claude/ui" % cls)
+	# M2-MNU-303: the menus track's pages have landed; their hooks are checked like any other.
+	for cls: String in ["FieldSubmenu", "LatticeMenu", "EquipMenu", "ItemsMenu", "FormationMenu"]:
+		assert_true(ui.hooks.has(cls), "%s has a hook" % cls)
+		assert_false(bool((ui.hooks[cls] as Dictionary).get("pending", false)), "%s is live" % cls)
 	for id: String in [
 		"ui_lattice_node",
 		"ui_lattice_unlock",

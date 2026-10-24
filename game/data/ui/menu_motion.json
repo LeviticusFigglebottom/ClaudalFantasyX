@@ -1,0 +1,9 @@
+{
+  "menu_motion": {
+    "doc": "Page transitions of the field menu and its pages (M2-MNU-303; MenuMotion, docs/kb/tech/ui.md section Menu motion). A page opens by fading in and rising slide_px (at the 1920 x 1080 reference) into place over open_sec, and closes by fading out and sinking over close_sec; return_sec is the field menu's own fade back in when a page over it closes. Over the open world the scrim fades with it; a page over another menu keeps the backdrop (the same scrim and caustics) still and moves only its content. Reduced motion, or a duration of 0, makes it all instant. Every duration stays well under a capture's 30 settle frames (0.5 s at 60 fps), so a screenshot always grabs the page at rest.",
+    "open_sec": 0.18,
+    "close_sec": 0.12,
+    "return_sec": 0.12,
+    "slide_px": 18
+  }
+}
