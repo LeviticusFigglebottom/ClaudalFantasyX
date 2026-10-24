@@ -85,6 +85,11 @@ func replace_rows(page_rows: Array[Dictionary]) -> void:
 	_place_cursor(false)
 
 
+## Changes the header text. A page set up untitled has no header row to show it in.
+func set_header(title: String) -> void:
+	_header.text = title
+
+
 func row_count() -> int:
 	return rows.size()
 

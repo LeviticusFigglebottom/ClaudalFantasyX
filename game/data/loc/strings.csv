@@ -540,3 +540,20 @@ VOWBOUND_ILUN,Ilun
 SKILL_BRINE_LASH,Brine Lash
 SKILL_TIDAL_WARD,Tidal Ward
 SKILL_FLOODNET,Floodnet
+FIELD_MENU_TITLE,Along the Way
+FIELD_MENU_BESTIARY,Bestiary
+FIELD_MENU_SWELL,Swell
+FIELD_MENU_CLOSE,Return to the path
+FIELD_MENU_BESTIARY_DESC,Every foe you have Read or defeated.
+FIELD_MENU_SWELL_DESC,Choose how each hero's Swell gauge fills.
+FIELD_MENU_CLOSE_DESC,Close this menu and walk on.
+FIELD_MENU_SWELL_NONE,No one in your party has a Swell gauge yet.
+FIELD_MENU_SWELL_HEROES_TITLE,Swell fill modes
+FIELD_MENU_SWELL_MODES_TITLE_FMT,{name}'s fill mode
+FIELD_MENU_SWELL_HERO_FMT,{name}'s gauge fills by {mode}: {desc}
+FIELD_MENU_SWELL_MODE_FMT,{mode}: {desc}
+FIELD_MENU_SWELL_MODE_CURRENT_FMT,{mode} is in use: {desc}
+FIELD_MENU_SWELL_SET_FMT,{name}'s gauge now fills by {mode}. It keeps what it holds.
+FIELD_MENU_HELP_ROOT,Up and Down: choose · Confirm: open · Cancel: close
+FIELD_MENU_HELP_HEROES,Up and Down: choose a hero · Confirm: their fill modes · Cancel: back
+FIELD_MENU_HELP_MODES,Up and Down: choose · Confirm: use this mode · Cancel: back

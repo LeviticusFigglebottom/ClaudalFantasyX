@@ -57,6 +57,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if accepts_input and event.is_action_pressed(FieldInput.INTERACT):
 		if interact() != null:
 			get_viewport().set_input_as_handled()
+	elif accepts_input and event.is_action_pressed(FieldMenu.OPEN_ACTION):  # M2-UI-04: the field menu
+		FieldMenu.open_in(self)
+		get_viewport().set_input_as_handled()
 
 
 ## One movement step: stick -> FieldMotor -> move_and_slide, then touch triggers.
