@@ -1,5 +1,5 @@
 keys,en
-LATTICE_MENU_HELP,"Arrows: choose a node · Confirm: walk, wake or open · Page Up / Page Down: hero · Cancel: back"
+LATTICE_MENU_HELP,"Arrows: choose a node · Confirm: walk, wake or open · Page Up / Page Down or the shoulders: hero · Cancel: back"
 LATTICE_MENU_HERO_FMT,‹ {name} ›   {i} of {n}
 LATTICE_MENU_POINTS_FMT,Movement: {n}
 LATTICE_MENU_FACETS_FMT,Facets held: {list}
