@@ -133,3 +133,11 @@ The plan in §4 is now the game's mix: the `Audio` autoload (ADR 0031; docs/kb/t
 each source's comment above `render()`): the lead instrument at 0 LU; accompaniment metallophones −7 to −8;
 plucked or struck accompaniment −9 to −11; bass −6 to −10; drums −4 (battle) to −8 (town); gongs −12 to −14;
 drones −9. In the Drownbell the bell sits −2 under the lead, and stem 2 lifts the full stack about +2 LU.
+
+**Reefball and underwater (M3-AUD-06).** `assets_src/sfx/reefball_sfx.py` and `underwater_sfx.py` (render_all kind
+`sfx_set`: one-shots and loops in one job; a file listed with a `.loop.json` is checked as a loop). The underwater
+beds (`underwater_deep`, `drowned_tower`) are ambience beds at −26 LUFS, Vorbis q1. The Reefball crowd beds sit on
+Ambience too: the murmur at −26, the excited bed at **−23** (3 LU over the murmur, so a crossfade into play rises
+without a fader move). World SFX at −18 momentary max, swimming strokes at −20 (they repeat), the reed-pipe whistle
+at −17 (it has to cut through the crowd), and the lantern's underwater hum, a 6 s loop, at −24 integrated like the
+shrine's pool fill. Every rule is in `tools/audio/targets.py`.

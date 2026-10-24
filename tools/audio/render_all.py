@@ -34,6 +34,8 @@ import tempfile
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 sys.path.insert(0, os.path.join(ROOT, "tools", "audio"))
 
+import numpy as np  # noqa: E402
+
 from synth.analysis import loop_seam_report  # noqa: E402
 from synth.loudness import integrated_lufs, momentary_max_lufs, self_test, true_peak_dbtp  # noqa: E402
 from synth.mixer import read_audio  # noqa: E402
@@ -97,6 +99,18 @@ JOBS = [
      [f"step_{s}_{v:02d}.ogg" for s in ("sand", "stone", "wood") for v in range(1, 6)]
      + [f"{u}.ogg" for u in ("ui_menu_open", "ui_menu_close", "ui_page", "ui_buy", "ui_inn_rest", "ui_error",
                              "ui_vowbound_open")], "sfx"),
+    # M3-AUD-06. "sfx_set": one-shots and loops together; a file with a .loop.json in the list is checked as a loop.
+    ("assets_src/sfx/underwater_sfx.py", "assets/audio",
+     [f"ambience/{b}{ext}" for b in ("underwater_deep", "drowned_tower") for ext in (".ogg", ".loop.json")]
+     + [f"sfx/dive/{s}.ogg" for s in ("dive_entry", "dive_surface", "dive_bubble_burst", "dive_stroke_1",
+                                      "dive_stroke_2", "dive_stroke_3", "dive_stroke_4")]
+     + ["sfx/dive/dive_lantern_hum.ogg", "sfx/dive/dive_lantern_hum.loop.json"], "sfx_set"),
+    ("assets_src/sfx/reefball_sfx.py", "assets/audio/sfx/reefball",
+     [f"ball_{k}_{v}.ogg" for k, n in (("kick", 3), ("push", 2), ("catch", 2), ("shot", 2)) for v in range(1, n + 1)]
+     + ["ball_score.ogg", "sphere_enter.ogg", "sphere_exit.ogg", "sphere_swim_1.ogg", "sphere_swim_2.ogg",
+        "sphere_swim_3.ogg", "crowd_cheer_1.ogg", "crowd_cheer_2.ogg", "crowd_groan.ogg", "crowd_gasp.ogg",
+        "whistle_start.ogg", "whistle_short.ogg", "whistle_end.ogg", "naming_rite.ogg"]
+     + [f"crowd_{b}{ext}" for b in ("murmur", "excited") for ext in (".ogg", ".loop.json")], "sfx_set"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
@@ -202,13 +216,20 @@ def main() -> int:
             if f.endswith(".json"):
                 rows.append((os.path.join(rel_dir, f), size, None, None, None, None, _sha(p)))
                 continue
+            looped = kind in ("music_loop", "ambience_loop")
+            one_shot = kind == "sfx"
+            if kind == "sfx_set":
+                looped = os.path.splitext(f)[0] + ".loop.json" in files
+                one_shot = not looped
             y = read_audio(p, channels=1 if kind == "sfx" else 2)
-            if kind in ("music_loop", "ambience_loop"):
+            if kind == "sfx_set" and np.array_equal(y[:, 0], y[:, 1]):
+                y = read_audio(p, channels=1)  # a mono file measures as mono (as test_audio_loudness does)
+            if looped:
                 for prob in _check_loop(p, y):
                     print(f"FAIL {f}: {prob}")
                     ok = False
             rows.append((os.path.join(rel_dir, f), size, len(y) / 44100,
-                         integrated_lufs(y) if kind != "sfx" else None, momentary_max_lufs(y), true_peak_dbtp(y),
+                         None if one_shot else integrated_lufs(y), momentary_max_lufs(y), true_peak_dbtp(y),
                          _sha(p)))
 
     print()
