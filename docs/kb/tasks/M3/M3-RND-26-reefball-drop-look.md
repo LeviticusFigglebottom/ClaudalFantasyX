@@ -1,5 +1,5 @@
 ---
-id: M3-RND-01
+id: M3-RND-26
 title: The Reefball water drop's look (inside the Tamsule Bell), on the agreed volume
 role: rendering
 status: todo
@@ -39,5 +39,6 @@ weep column of radius 0.8 to 0.6 m down to the catch-pool water at y 0.35; >= 2.
   mouth). Above y 41 the bronze crown hides it; there is a 4.4 m air pocket over the surface.
 - The bronze bell is `env_bronze.gdshader` (Environment); the salt-glass bays are a plain transparent
   StandardMaterial3D (`tb_salt_glass`), which Rendering may replace with a refractive one if the drop needs it.
+- Renumbered by the Lead at big8 (2026-10-24): filed by env-art as M3-RND-01, which collided with Rendering's sphere-look task.
 
 ## Review log

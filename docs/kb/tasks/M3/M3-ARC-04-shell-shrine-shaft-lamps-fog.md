@@ -1,5 +1,5 @@
 ---
-id: M3-ARC-02
+id: M3-ARC-04
 title: "Shell Shrine: the three Shaft_* omni lights stop lighting the ShaftFog volume (the Lead's fog-lamp rule)"
 role: architect
 status: todo
@@ -23,5 +23,8 @@ M2-ENV-09. `shell_shrine_level.gd` `_pool_bounce()` builds an OmniLight3D in cod
       lamp scatter. Re-approve them if they move.
 - [ ] Delete the shell shrine entry from `KNOWN_EXCEPTIONS` in `tools/tests/test_fog_lamps.py`, so the rule is
       enforced with no exceptions.
+
+## Notes
+- Renumbered by the Lead at big8 (2026-10-24): filed by env-art as M3-ARC-02, which collided with audio's voice-hook task.
 
 ## Review log

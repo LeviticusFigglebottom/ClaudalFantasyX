@@ -89,7 +89,7 @@ between two captures).
   T02 and T07 sat under shade-cloths, T04 missed the prow (framed numerically, then on the jetty).
 
 **Open issues (honest).** Lavapipe only (no GPU look, no SDFGI). No crowd (characters are not the kit's); the stands
-read empty. The drop is a placeholder until M3-RND-01. The port's shophouses are two variants with scale jitter
+read empty. The drop is a placeholder until M3-RND-26. The port's shophouses are two variants with scale jitter
 and read uniform at range; the galleries are plain at 150 m. The colour script's LUT hue pushes (boards warm, drop
 cyan) are not in the generated LUT. The preview uses depth fog, not the frame row's volumetric 0.003. The prow-boards
 of the captains' platforms are small in T04.
@@ -98,7 +98,7 @@ of the captains' platforms are small in T04.
 (placement data is `preview_scene.py`'s `layout()`; keep `SphereAnchor`/`ColumnAnchor`/`GoalRingAnchor`; gameplay
 spots, collision shapes and the prewarm registration are listed there).
 
-**Asked of others:** PC GPU, M3-RND-01 (accept or amend the drop contract, then the look); Character + Tools,
+**Asked of others:** PC GPU, M3-RND-26 (accept or amend the drop contract, then the look); Character + Tools,
 sign-off on the new import kind.
 
 - **Fog-lamp rule (Lead, 2026-10-24; env-art):** the Tidecup preview has no omni or spot lamps yet; it is a noon

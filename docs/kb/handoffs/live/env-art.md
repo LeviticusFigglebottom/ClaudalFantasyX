@@ -5,6 +5,10 @@ Environment-art track, cloud session `session_01QmWUfYxd8DMg7XM3MyR6ps`, branch 
 Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to `claude/m2-slice` with a swap-in note here. Art Director sign-offs. I don't edit m2-slice's scenes (`game/levels/ch02/**`, `ch03/**`) except through a request task.
 
 ## Now
+- **Id blocks (the Lead, CONSOLIDATED §4):** env-art's new task ids are 700–799 (e.g. M3-ENV-710), its ADRs
+  0160–0169, and its handoffs are named `<date>-<role>-env-art-<n>.md`. Existing ids stay. The big8 renumbering
+  is applied here too: the shell shrine shaft-lamps task is now **M3-ARC-04** (was M3-ARC-02), and the Tidecup
+  drop-look task is now **M3-RND-26** (was M3-RND-01).
 - **2026-10-24 afternoon (the Lead's M2-review blockers):**
   - **M2-ENV-10, the B06 Saltgrass Causeway route: done, in review (rendering).** Covers the flats terrain, the
     layout, the shipped dressing scene and the preview C01–C08. The Drownbell disc is seated, and 2 baselines
@@ -14,7 +18,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
     (972131e); after the merge only its `arenas.json` repoint remains (swap-in note below).
   - **M3-ENV-02, Brine Shoals: in review, merged here** (c2bb5563). Its own import category
     `brine_shoals_kit` needs Character + Tools sign-off (M3-RND-21 filed). **M3-ENV-01 Tidecup:** in review
-    (M3-RND-01 filed).
+    (M3-RND-26 filed; renumbered from M3-RND-01).
   - **M3-ENV-03 Terraces of Ash (Pemakar): in review, merged here** (f5c35191).
     - Kit: 25 pieces, 27 materials, Blender job `pemakar_kit` (61 identical). Its import kind `pemakar_kit`
       needs Character + Tools sign-off.
@@ -144,7 +148,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
     - Character + Tools sign-off on the import kinds `brine_shoals_kit`, `pemakar_kit`, `corrow_kit` and
       `oruvel_underway_kit`.
     - Rendering: M3-RND-24 and M3-RND-25 (the underwater rig).
-    - m2-slice: M3-ARC-02 (the shrine's shaft lights and the fog).
+    - m2-slice: M3-ARC-04 (the shrine's shaft lights and the fog).
     - Narrative: the Ch9 stair; the sea floor's floor count and its ship's ribs.
     - Art: the `ch08_after` colour-script row.
 - **MERGE-READY @ ba7679c1** (claude/env-art, which includes the integration branch at 1e3ff5d6).
@@ -172,7 +176,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Fog-lamp rule (the Lead, 2026-10-24):** a light near a dense FogVolume keeps `light_volumetric_fog_energy = 0`.
   In `ch03/shell_shrine/shell_shrine.tscn` I set it on my own `Bounce/Skylight` (the light added under M2-ENV-09;
   no registered baseline shows the shrine). Your three `Bounce/Shaft_*` lights and `_pool_bounce()` in
-  `shell_shrine_level.gd` are still on the default 1.0 inside `ShaftFog`. **M3-ARC-02** is filed for you;
+  `shell_shrine_level.gd` are still on the default 1.0 inside `ShaftFog`. **M3-ARC-04** is filed for you;
   `tools/tests/test_fog_lamps.py` lists them as known exceptions until it lands.
 - **M2-ENV-10, B06 Saltgrass Causeway:** instance
   `assets/environments/zones/saltgrass_causeway/saltgrass_causeway_dressing.tscn`. Rails and triggers come from
@@ -232,7 +236,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
   legs at azimuth 0..300, galleries `_a/_b/_c` at 40/90/140/220/270/320, platforms at 90 and 270, pennant lines at
   60/120/240/300, catch-pool) is placed with `rotation.y = -azimuth` and no offset. **Keep `SphereAnchor` at
   (0, 31.5, 0) with its `Drop` child, and `ColumnAnchor` (y 20) and `GoalRingAnchor` (y 43): PC GPU swaps the drop
-  there (M3-RND-01).** Gameplay is yours: spawns on the galleries' walkway (y 2.4) and tiers (floors y 4.0 to 10.4,
+  there (M3-RND-26).** Gameplay is yours: spawns on the galleries' walkway (y 2.4) and tiers (floors y 4.0 to 10.4,
   every 1.6 m), Toma and Asha on the west gallery's second tier (T02), the captains on the prow steps (y 2.46, r 13
   to 15.4 on azimuth 90 and 270), Tavi's side scene on Oruvel's posts (r 21, azimuth 19-51, T03), the match trigger
   at the catch-pool. Collision: the kit exports no `-col` proxies; boxes for the walkway, tiers, jetties and

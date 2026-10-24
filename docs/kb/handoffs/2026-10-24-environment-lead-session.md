@@ -51,7 +51,7 @@ Nothing. The queue is empty and no worktree agents are running.
   - Character + Tools sign-off on the import kinds `brine_shoals_kit`, `pemakar_kit`, `corrow_kit` and
     `oruvel_underway_kit`.
   - Rendering: M3-RND-24 and M3-RND-25 (the underwater rig).
-  - m2-slice: M3-ARC-02 (the shrine's `Shaft_*` lights and the fog).
+  - m2-slice: M3-ARC-04 (the shrine's `Shaft_*` lights and the fog).
   - Narrative: the Ch9 stair, the sea floor's floor numbering and the dead ship's ribs.
   - Art: a `ch08_after` colour-script row.
 - **Shot quality:**
@@ -70,6 +70,6 @@ Nothing. The queue is empty and no worktree agents are running.
 - `game/levels/ch03/shell_shrine/shell_shrine.tscn` (the Skylight's fog energy).
 - Tests: `tests/unit/test_causeway_dressing.gd`, `tests/unit/test_battle_arenas.gd`,
   `tools/tests/test_haluna_kit.py`, `tools/tests/test_fog_lamps.py`.
-- Docs: `docs/kb/tech/battle_arenas.md`; the tasks M2-ENV-10, M2-ENV-11, M3-ENV-01, M3-ENV-06 and M3-ARC-02;
+- Docs: `docs/kb/tech/battle_arenas.md`; the tasks M2-ENV-10, M2-ENV-11, M3-ENV-01, M3-ENV-06 and M3-ARC-04;
   `docs/kb/handoffs/live/env-art.md`.
 - Merges of the worktree agents' branches (see each handoff).
