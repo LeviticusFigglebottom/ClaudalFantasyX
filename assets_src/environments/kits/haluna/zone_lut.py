@@ -125,9 +125,19 @@ def clip_magenta(srgb: np.ndarray, g: dict) -> np.ndarray:
     return hsv_to_rgb(hsv)
 
 
+def grade_params(name: str) -> dict:
+    """The named grade. ch02_noon is read from the module constants at call time, so a kit that loads this module
+    and overrides SATURATION / S_CURVE (tamsule_bell/zone_lut.py) still gets its own grade."""
+    if name != "ch02_noon":
+        return GRADES[name]
+    return {"saturation": SATURATION, "s_curve": S_CURVE, "toe_hex": TOE_HEX, "toe_strength": TOE_STRENGTH,
+            "toe_end": TOE_END, "black_floor": BLACK_FLOOR, "highlight_hex": HIGHLIGHT_HEX,
+            "highlight_start": HIGHLIGHT_START, "highlight_strength": HIGHLIGHT_STRENGTH}
+
+
 def grade(srgb: np.ndarray, g: dict | None = None) -> np.ndarray:
     """srgb: (..., 3) in [0, 1] display-encoded -> graded display-encoded, by grade `g` (default ch02_noon)."""
-    g = GRADES["ch02_noon"] if g is None else g
+    g = grade_params("ch02_noon") if g is None else g
     lin = srgb_to_lin(srgb)
     lum = (lin @ LUMA)[..., None]
     # Saturation around luminance (linear light).
@@ -160,7 +170,7 @@ def table(identity: bool, grade_name: str = "ch02_noon") -> np.ndarray:
     v = (np.arange(SIZE) + 0.5) / SIZE
     b, g, r = np.meshgrid(v, v, v, indexing="ij")  # [blue slice, green row, red column]
     rgb = np.stack([r, g, b], axis=-1)
-    graded = rgb if identity else grade(rgb, GRADES[grade_name])
+    graded = rgb if identity else grade(rgb, grade_params(grade_name))
     # Strip: slice k (blue) occupies columns k*SIZE..(k+1)*SIZE; rows = green, columns = red.
     strip = np.concatenate([graded[k] for k in range(SIZE)], axis=1)
     return np.round(strip * 255.0).astype(np.uint8)

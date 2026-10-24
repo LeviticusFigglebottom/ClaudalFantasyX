@@ -17,6 +17,13 @@ func _zone() -> Node3D:
 	return zone
 
 
+## Freed now, not queued: tests run back to back in one frame, and a queued zone's sea would still publish the
+## water level while the next suites run (test_water_surface counts the publishers).
+func _drop(zone: Node3D) -> void:
+	zone.get_parent().remove_child(zone)
+	zone.free()
+
+
 func test_the_dressing_places_the_terrain_and_the_layout_pieces() -> void:
 	var zone := _zone()
 	var dresser := zone.get_node("Dresser") as CausewayDresser
@@ -29,7 +36,7 @@ func test_the_dressing_places_the_terrain_and_the_layout_pieces() -> void:
 			if not k.begins_with("Saltgrass"):
 				placed += int(dresser.placed[k])
 		assert_eq(placed, expected, "every layout piece is instanced")
-	zone.queue_free()
+	_drop(zone)
 
 
 func test_saltgrass_is_baked_multimeshes() -> void:
@@ -44,7 +51,7 @@ func test_saltgrass_is_baked_multimeshes() -> void:
 		expected += (spec.get("xforms", []) as Array).size()
 	assert_true(total > 0, "saltgrass instances exist")
 	assert_eq(total, expected, "every baked transform becomes an instance")
-	zone.queue_free()
+	_drop(zone)
 
 
 func test_the_sea_is_at_low_water() -> void:
@@ -52,7 +59,7 @@ func test_the_sea_is_at_low_water() -> void:
 	await (Engine.get_main_loop() as SceneTree).process_frame
 	var water := zone.get_node("Water") as Node3D
 	assert_between(water.global_position.y, LOW_WATER_M - EPS, LOW_WATER_M + EPS, "the sea sits at low water")
-	zone.queue_free()
+	_drop(zone)
 
 
 func test_the_handoff_path_and_anchors() -> void:
@@ -66,4 +73,4 @@ func test_the_handoff_path_and_anchors() -> void:
 	var anchors := dresser.anchors()
 	for key: String in ["head", "islet_steps", "broken_post", "tide_pools", "lit_age_ring", "drownbell_disc"]:
 		assert_true(anchors.has(key), "anchor %s" % key)
-	zone.queue_free()
+	_drop(zone)
