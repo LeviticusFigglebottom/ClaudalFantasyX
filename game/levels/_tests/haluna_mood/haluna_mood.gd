@@ -64,10 +64,9 @@ func _process(_delta: float) -> void:
 
 
 func _exit_tree() -> void:
+	# Through ShaderGlobals, so its copy of the sun does not outlive the scene (M1-ENV-09).
 	for g: StringName in PINNED_GLOBALS:
-		var entry: Variant = ProjectSettings.get_setting("shader_globals/%s" % g)
-		if entry is Dictionary:
-			RenderingServer.global_shader_parameter_set(g, (entry as Dictionary).get("value"))
+		ShaderGlobals.reset(g)
 
 
 ## Unit vector toward a body at elevation/azimuth (deg), with north = -Z and east = +X.

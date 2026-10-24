@@ -62,11 +62,18 @@
     "band_sharpness": 2.2,
     "band_density": 0.9,
     "calm_shrink": 0.55,
+    "skirt_height_m": 2200.0,
+    "skirt_reach_m": 3000.0,
+    "skirt_density": 0.7,
+    "band_join_m": 5000.0,
     "bound_margin_m": 400.0,
     "striation_spacing_m": 2400.0,
     "striation_starts": 2.0,
     "striation_strength": 0.45,
-    "striation_sharpness": 1.2
+    "striation_sharpness": 1.2,
+    "striation_warp": 0.35,
+    "striation_vary": 0.6,
+    "striation_warp_scale_m": 4500.0
   },
   "flow": {
     "_note": "Differential rotation: omega(r) = rotation_rad_s * (eye_radius / r)^falloff. Two-phase advection over cycle_s keeps the noise from winding up forever.",
@@ -100,8 +107,20 @@
     "erosion_contrast": 4.0,
     "sun_clear_height": 0.92,
     "sun_low_floor": 0.04,
+    "scud_height_m": 2600.0,
+    "scud_stretch": 3.0,
+    "water_wall_height_m": 1400.0,
+    "water_wall_mix": 0.55,
+    "ms_octaves": 3,
+    "ms_attenuation": 0.35,
+    "ms_extinction": 0.25,
+    "ms_eccentricity": 0.6,
     "empty_step": 2.5,
-    "dense_step": 0.55
+    "dense_step": 0.55,
+    "billow_weight": 0.8,
+    "billow_scale_m": 1000.0,
+    "billow_shade": 3.0,
+    "billow_shade_step_m": 300.0
   },
   "wounds": {
     "_note": "Rents where held light bleeds out (bible \u00a79). Seams drift DOWN the wall (held light sinks, colour script rule 1).",
@@ -114,6 +133,7 @@
     "pocket_energy": 0.6,
     "rent_depth": 0.65,
     "skin_m": 900.0,
+    "skin_step": 0.25,
     "height_min": 0.15,
     "height_max": 0.85
   },
@@ -154,18 +174,33 @@
     "foam_ring_spacing_m": 380.0,
     "foam_ring_radius_m": 8000.0,
     "darkening": 0.55,
+    "reflection_dim": 0.35,
     "roughness": 0.16,
     "throat_glow_energy": 2.2,
     "glow_sink_m_s": 6.0,
     "foam_pitch": 3.5
   },
+  "sea_response": {
+    "_note": "M2-RND-01: the zone sea answering the storm (water shader group 'storm', set by UndertowStorm on its `water`). Within reach_m of the storm's centre the sea darkens toward it, turns choppier and rougher, and carries wind streaks drawn in toward it; darken, chop, roughness and streak_amount scale with storm_intensity.",
+    "reach_m": 32000.0,
+    "darken": 0.25,
+    "reflection_dim": 0.35,
+    "chop": 1.2,
+    "roughness": 0.12,
+    "streak_amount": 0.15,
+    "streak_length_m": 70.0,
+    "streak_width_m": 0.6,
+    "streak_fade_m": 3000.0,
+    "streak_drift": 0.05
+  },
   "spray": {
     "inner_radius_m": 1750.0,
-    "outer_radius_m": 6600.0,
-    "height_m": 650.0,
-    "scale_m": 300.0,
+    "outer_radius_m": 10600.0,
+    "height_m": 560.0,
+    "scale_m": 140.0,
     "rise_m_s": 14.0,
-    "density": 0.6
+    "density": 0.75,
+    "sun": 0.35
   },
   "shells": {
     "_note": "Low tier body: open lathe shells mapped onto the same envelope the raymarch uses. fraction = position across the wall (0 eye face, 1 outer face).",
@@ -184,12 +219,13 @@
     "amount_multiplier": 0.2
   },
   "render_priority": {
-    "_note": "Transparent sort: lid < water (0) < spray < body < motes drawn over the storm.",
+    "_note": "Transparent sort: lid < water (0) < spray (inner curtain, behind the wall) < body < spray_outer (the near half of the outer curtain, in front of the wall's foot; M2-RND-01) < motes drawn over the storm.",
     "lid": -1,
     "spray": 1,
     "body": 2,
     "shells": 1,
-    "motes": 3
+    "spray_outer": 3,
+    "motes": 4
   },
   "quality": {
     "low": {
@@ -203,7 +239,8 @@
       "march_steps": 28,
       "spray_layers": 2,
       "sea_foam_octaves": 3,
-      "temporal_jitter": true
+      "temporal_jitter": true,
+      "body_scale": 0.5
     },
     "high": {
       "body": "raymarch",
@@ -211,7 +248,8 @@
       "spray_layers": 2,
       "sea_foam_octaves": 4,
       "curl_reuse": 2,
-      "temporal_jitter": true
+      "temporal_jitter": true,
+      "body_scale": 0.35
     },
     "ultra": {
       "body": "raymarch",
@@ -219,7 +257,8 @@
       "spray_layers": 2,
       "sea_foam_octaves": 5,
       "curl_reuse": 2,
-      "temporal_jitter": true
+      "temporal_jitter": true,
+      "body_scale": 1.0
     }
   },
   "looks": {

@@ -6,6 +6,10 @@ DLG_CH02_BARK_DOCK_001,Her mother went from this dock too. Same age near enough.
 DLG_CH02_BARK_DOCK_002,Then she'll have fair weather. Her mother did.
 DLG_CH02_BARK_DOCK_003,Went where?
 DLG_CH02_BARK_DOCK_004,"Out. Pass me that float, would you?"
+DLG_CH02_BARK_LANE_001,"One for the shell and two for the ash,"
+DLG_CH02_BARK_LANE_002,three for the bell and four for the hush...
+DLG_CH02_BARK_LANE_003,What comes after four?
+DLG_CH02_BARK_LANE_004,You start again. Everybody knows that.
 DLG_CH02_BARK_MARKET_001,"Two days. Two days, and she's still helping me wrap fish."
 DLG_CH02_BARK_MARKET_002,Salt and stone. Her knots are neater than mine ever were.
 DLG_CH02_BARK_MARKET_003,Who's leaving? You've wrapped enough for a whole crew.
@@ -45,6 +49,14 @@ DLG_CH02_BEACH_034,Later. You're shaking.
 DLG_CH02_BEACH_014,"Come up to the village. Bring your father's light. You'll eat first, and then we'll tell you what we know."
 DLG_CH02_BEACH_015,"Come up to the village. You'll eat first, and then we'll tell you what we know."
 DLG_CH02_BEACH_035,She smiled first. Every time. It took me a long while to understand why.
+DLG_CH02_LOW_TIDE_001,The tide-readers set the day. The causeway opens this far twice a month.
+DLG_CH02_LOW_TIDE_002,"Come and see it, Rhen. It's the most beautiful thing we have."
+DLG_CH02_LOW_TIDE_003,"He is not sworn to anything, Asha."
+DLG_CH02_LOW_TIDE_004,"I know. I'm already walking, Toma."
+DLG_CH02_NEMES_TABLE_001,"Up, then. Sit. Not that stool, it bites."
+DLG_CH02_NEMES_TABLE_002,"Fish, then bread, then more fish. The sea gave you back thin."
+DLG_CH02_NEMES_TABLE_003,That's a lot of food for one stranger.
+DLG_CH02_NEMES_TABLE_004,It's the right amount. Eat. Asha's at the market. She'll want to show you everything today.
 DLG_CH03_VERSE_001,"Don't look so worried, both of you. It's only my first one."
 DLG_CH03_VERSE_002,Shout if it bites.
 DLG_CH03_VERSE_003,He's been in there a hundred and forty years. I think he'll be polite.
@@ -103,6 +115,7 @@ DLG_CH03_VERSE_057,"That's twice you haven't answered me, Rhen Sallow. I'm patie
 DLG_CH03_VERSE_058,The tide has turned.
 DLG_CH03_VERSE_059,Something heard that.
 DLG_CH03_VERSE_060,"On my shield. Everyone, on my shield, now."
+DLG_CH03_TRIAL_HINT_001,"Start at the spring. Follow the water, not the stone."
 DLG_PROLOGUE_DEAD_CITY_001,"Everyone I'm going to tell you about is still here tonight. Remember that, later."
 DLG_TEST_CUTSCENE_001,First fixture line.
 DLG_TEST_CUTSCENE_002,Fixture option A.

@@ -1,9 +1,9 @@
 # STATUS
 
 - **Milestone:** M1 (Tech & Look Prototypes) is in progress; M0 is done.
-- **Updated:** 2026-10-23 by Lead (lead-bootstrap)
-- **Gate:** `tools/ci_local.sh` is green on `claude/new-session-mj8c3c` at d5f62c7 (ci20): 811 Godot tests, coverage battle 99.75% / progression 95.61%, and 58 Forward+ screenshot baselines.
-- **Task board:** 47/68 M1 tasks done.
+- **Updated:** 2026-10-24 by the Lead (session_019iimsngAgPLEram1wcbLpE, new account). The integration branch is `claude/undertow-lead-handoff-423ixt`; live state is in docs/kb/handoffs/live/CONSOLIDATED.md.
+- **Gate:** the full `tools/ci_local.sh` (ci36) is green at b533db0: 1269 Godot tests, coverage battle 99.95% / progression 96.52%, 64/64 Forward+ shots, and the Blender asha job 44 identical. It covers first-playable (the Drownbell), the battle_engine split and the Vowbound rules.
+- **Task board:** 110/143 done (`python3 tools/taskboard.py`).
 - **M1 exit criteria (SPEC §10.2):** CTB battle sandbox ✅ · ocean/shallows water ✅ · glimmer ✅ · Undertow prototype ✅ (prototype; production cost is M2-RND-01) · five-shot mood test 🔄 (M1-ENV-01 reopened: sky misses the palette) · **one hero at final fidelity 🔄 (CHR-02 built, failed the §14 face review at dialogue range; M1-CHR-03 rebuilds on the MPFB2 CC0 topology per the human's Q2 answer)**.
 
 ## The project in one page (Lead's reading of SPEC v1.0)

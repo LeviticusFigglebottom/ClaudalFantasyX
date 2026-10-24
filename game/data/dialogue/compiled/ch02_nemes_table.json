@@ -1,0 +1,19 @@
+{
+ "format": 1,
+ "scene": "ch02_nemes_table",
+ "source": "game/data/dialogue/ch02/ch02_nemes_table.dlg",
+ "start": "ch02_nemes_table",
+ "nodes": {
+  "ch02_nemes_table": {
+   "headers": {"location": "ch02/haluna"},
+   "ops": [
+    {"op": "cue", "cue": "fade", "args": ["in", 1.0], "kwargs": {}, "src": 10},
+    {"op": "line", "id": "ch02_nemes_table_001", "key": "DLG_CH02_NEMES_TABLE_001", "speaker": "neme", "emotion": "neutral", "voice": "", "src": 11},
+    {"op": "line", "id": "ch02_nemes_table_002", "key": "DLG_CH02_NEMES_TABLE_002", "speaker": "neme", "emotion": "soft_smile", "voice": "", "src": 12},
+    {"op": "line", "id": "ch02_nemes_table_003", "key": "DLG_CH02_NEMES_TABLE_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 13},
+    {"op": "line", "id": "ch02_nemes_table_004", "key": "DLG_CH02_NEMES_TABLE_004", "speaker": "neme", "emotion": "neutral", "voice": "", "src": 14},
+    {"op": "set", "flag": "ch02_ate_at_nemes", "value": ["lit", true], "src": 15}
+   ]
+  }
+ }
+}

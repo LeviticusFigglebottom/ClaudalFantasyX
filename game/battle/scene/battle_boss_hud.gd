@@ -8,12 +8,17 @@ extends RefCounted
 ##                      marks the turn it fires on: TurnEntry.intent, TurnTimeline.intent_labels)
 ##   charge_broken      floats "<part> breaks" over the user; weak-point hits float a count
 ##   field_cleared      floats the field clearing over each fighter that leaves with it
+## After each of those (and every action) the standing read-out, BattleBossStatus, refreshes
+## (M2-FP-12): floats are transient and off with damage numbers; the read-out is neither.
 ## The encounter's own prompt_key is the opening prompt. show_prompt() puts a queued prompt on the
 ## help line once, when the next command menu opens.
 
 var ctl: BattleController
 ## The tutorial line waiting for the next command menu ("" when none).
 var pending_prompt := ""
+## The standing read-out under the target info (one per HUD, reused by a retry).
+var status: BattleBossStatus
+var _engine: BattleEngine
 
 
 func _init(controller: BattleController) -> void:
@@ -52,6 +57,13 @@ func attach(engine: BattleEngine) -> void:
 	engine.charge_broken.connect(_on_charge_broken)
 	engine.field_cleared.connect(_on_field_cleared)
 	engine.action_resolved.connect(_on_action_resolved)
+	engine.battle_finished.connect(_on_finished)
+	_engine = engine
+	status = ctl.hud.get_node_or_null(^"BossStatus") as BattleBossStatus
+	if status == null and BattleBossStatus.boss_of(engine) != null:
+		status = BattleBossStatus.new()
+		ctl.hud.add_child(status)
+	refresh()
 	var labels: Dictionary = {}
 	for sid: StringName in engine.db.skills:
 		var charge: Dictionary = engine.db.skill(sid).get("charge", {})
@@ -59,6 +71,12 @@ func attach(engine: BattleEngine) -> void:
 			var charged := StringName(str(charge.get("skill", "")))
 			labels[charged] = ctl.menus.skill_name(engine, charged)
 	ctl.hud.timeline.intent_labels = labels
+
+
+## Re-reads the boss's state into the read-out (hidden when there is no boss).
+func refresh() -> void:
+	if status != null and _engine != null:
+		status.refresh(_engine, ctl.menus)
 
 
 ## Shows the queued prompt on the help line (once). True if it did.
@@ -75,6 +93,7 @@ func _on_phase_changed(enemy: BattleCombatant, phase_id: StringName) -> void:
 		var p: Dictionary = row
 		if StringName(str(p.get("id", ""))) == phase_id:
 			pending_prompt = _text(str(p.get("prompt_key", "")))
+	refresh()
 
 
 func _on_joined(added: Array[BattleCombatant]) -> void:
@@ -82,10 +101,12 @@ func _on_joined(added: Array[BattleCombatant]) -> void:
 		ctl.stage.add_enemy(c, ctl.engine)
 		var tint := Color.html(str(BattleStage.stand_in_spec(c.id).get("tint", "#A9B8CC")))
 		ctl.hud.timeline.set_identity(c.id, ctl.menus.display_name(c), tint)
+	refresh()
 
 
 func _on_charge_started(actor: BattleCombatant, skill_id: StringName, _turns: int) -> void:
 	_float(actor, ctl.menus.skill_name(ctl.engine, skill_id), &"danger")
+	refresh()
 
 
 func _on_charge_broken(enemy: BattleCombatant, skill_id: StringName) -> void:
@@ -100,15 +121,23 @@ func _on_charge_broken(enemy: BattleCombatant, skill_id: StringName) -> void:
 		)
 	)
 	_float(enemy, text, &"focus_gold")
+	refresh()
 
 
 func _on_field_cleared(_field_id: StringName, fallen: Array[BattleCombatant]) -> void:
 	for c in fallen:
 		_float(c, tr("HUD_FIELD_CLEARED"), &"focus")
+	refresh()
+
+
+func _on_finished(_outcome: StringName) -> void:
+	if status != null:
+		status.hide_status()
 
 
 ## A weak-point hit that did not break the charge yet shows its count ("Rim 2/3").
 func _on_action_resolved(result: ActionResult) -> void:
+	refresh()
 	for hit in result.hits:
 		if not hit.has("weak_point_hits") or hit.has("charge_broken"):
 			continue

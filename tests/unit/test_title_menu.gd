@@ -67,8 +67,12 @@ func test_without_a_record_only_new_game_is_offered() -> void:
 	assert_eq(menu.model.current(), TitleMenuModel.CHOICE_NEW_GAME)
 	assert_false(menu.model.is_enabled(TitleMenuModel.CHOICE_CONTINUE))
 	assert_false(menu.model.is_enabled(TitleMenuModel.CHOICE_LOAD))
-	assert_false(menu.model.move(1), "the greyed rows are skipped")
 	assert_eq(menu.help_text(), tr(TitleMenuModel.HELP_NO_RECORD_KEY))
+	# M1-UI-10: Settings needs no record; the greyed Load and Continue are skipped on the way.
+	assert_true(menu.model.move(1))
+	assert_eq(menu.model.current(), TitleMenuModel.CHOICE_SETTINGS, "the greyed Load is skipped")
+	assert_true(menu.model.move(1))
+	assert_eq(menu.model.current(), TitleMenuModel.CHOICE_NEW_GAME, "and Continue, wrapping round")
 	assert_eq(menu.choose(TitleMenuModel.CHOICE_CONTINUE), ERR_UNAVAILABLE)
 	assert_eq(menu.choose(&""), ERR_UNAVAILABLE)
 	assert_false(menu.is_launched())

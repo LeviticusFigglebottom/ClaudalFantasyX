@@ -76,7 +76,8 @@ class SwellColumnTest(unittest.TestCase):
     def test_the_shipped_suites_play_swell_at_good(self):
         for s in sim.load_targets():
             self.assertIn(sim.suite_swell(s), sim.SWELL_QUALITIES, s["id"])
-            self.assertEqual(s.get("swell"), "good", s["id"])
+            # M2-CMB-05: the Vowbound line was accepted on a probe with no hero Swell (balance_targets.md).
+            self.assertEqual(s.get("swell"), "off" if s.get("kind") == "vowbound" else "good", s["id"])
 
 
 if __name__ == "__main__":

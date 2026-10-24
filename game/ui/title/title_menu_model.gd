@@ -1,7 +1,8 @@
 class_name TitleMenuModel
 extends RefCounted
-## Logic of the minimal title menu (M1-ARC-06): Continue / New Game / Load, no nodes.
-## Continue and Load need a readable record (TitleSaveEntry.can_continue); New Game always works.
+## Logic of the minimal title menu (M1-ARC-06): Continue / New Game / Load / Settings, no nodes.
+## Continue and Load need a readable record (TitleSaveEntry.can_continue); New Game and Settings
+## (the Graphics page, M1-UI-10) always work.
 ## The cursor starts on Continue when it is available, otherwise on New Game, and skips rows that
 ## are not available. Every row has a help line, including why a row is unavailable (pillar 4).
 ##
@@ -15,16 +16,19 @@ signal changed
 const CHOICE_CONTINUE := &"continue"
 const CHOICE_NEW_GAME := &"new_game"
 const CHOICE_LOAD := &"load"
-const CHOICES: Array[StringName] = [CHOICE_CONTINUE, CHOICE_NEW_GAME, CHOICE_LOAD]
+const CHOICE_SETTINGS := &"settings"
+const CHOICES: Array[StringName] = [CHOICE_CONTINUE, CHOICE_NEW_GAME, CHOICE_LOAD, CHOICE_SETTINGS]
 const LABEL_KEYS := {
 	CHOICE_CONTINUE: "TITLE_CONTINUE",
 	CHOICE_NEW_GAME: "TITLE_NEW_GAME",
 	CHOICE_LOAD: "TITLE_LOAD",
+	CHOICE_SETTINGS: "TITLE_SETTINGS",
 }
 const HELP_KEYS := {
 	CHOICE_CONTINUE: "TITLE_HELP_CONTINUE",
 	CHOICE_NEW_GAME: "TITLE_HELP_NEW_GAME",
 	CHOICE_LOAD: "TITLE_HELP_LOAD",
+	CHOICE_SETTINGS: "TITLE_HELP_SETTINGS",
 }
 const HELP_NO_RECORD_KEY := "TITLE_HELP_NO_RECORD"
 const CHOICE_CONFIRM_BACK := &"confirm_back"
@@ -70,7 +74,7 @@ func is_enabled(choice: StringName) -> bool:
 		return confirming
 	if confirming:
 		return false
-	return choice == CHOICE_NEW_GAME or has_record
+	return choice == CHOICE_NEW_GAME or choice == CHOICE_SETTINGS or has_record
 
 
 func current() -> StringName:
@@ -154,6 +158,6 @@ func label_key(choice: StringName) -> String:
 func help_key() -> String:
 	if confirming:
 		return CONFIRM_HELP_KEY
-	if not has_record:
+	if not has_record and current() == CHOICE_NEW_GAME:
 		return HELP_NO_RECORD_KEY
 	return str(HELP_KEYS.get(current(), ""))

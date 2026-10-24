@@ -4,24 +4,34 @@ extends Node
 ## A child of the zone root (HalunaZone), which provides `stage` (a CutsceneStage) and
 ## `place_at(spawn)`. What it plays and where comes from first_playable.json "haluna".
 ##   arrival   while `ch02_met_asha` is unset: Rhen on the Beach spawn, Cutscene A
-##             (ch02_girl_on_the_beach), then free play.
+##             (ch02_girl_on_the_beach), then free play. Once the tideline battle is won (its
+##             victory flag) and until after_battle_flag is set, an arrival plays B02 instead
+##             (M2-FP-13): Rhen at the after_battle spawn and Neme's table in-engine.
 ##   villagers an Interactable whose payload has "dialogue" plays that bark scene in-engine.
+##   overheard a touch trigger whose payload has "dialogue" and "overheard" (M2-FP-13, B03's four
+##             "Cantor" fragments) plays that bark on its own sequencer as Rhen walks past: he is
+##             not stopped, the lines advance by themselves, and it never blocks another trigger
+##             (anything else that starts cuts it off).
 ##   battle    a trigger whose payload has "battle" opens that field battle (BattleRequest), which
 ##             returns the party to BattleReturn and sets the victory flag on a win; an escape
 ##             returns it to BeforeBattle, on the beach side of the trigger (M2-FP-05).
-##   ending    a trigger whose payload has "cutscene" opens Cutscene B on its own set
+##   ending    a trigger whose payload has "cutscene" plays the low-tide beat in-engine (M2-FP-13,
+##             B05, before_ending_scene_id), then opens Cutscene B on its own set
 ##             (game/levels/ch03/first_verse/), which ends on the end card.
 ## The zone's interactables only author ids, payloads and flags; nothing in them knows this script.
 
 const KEY_DIALOGUE := "dialogue"
 const KEY_BATTLE := "battle"
 const KEY_CUTSCENE := "cutscene"
+const KEY_OVERHEARD := "overheard"
 
 ## Go live on _ready when the zone is the current scene (the game). Tests turn it off, set
 ## `active` and call begin() themselves, so a zone instanced by a test never hands off.
 @export var autostart := true
 
 var sequencer: CutsceneSequencer
+## Plays the overheard barks: Rhen keeps walking and the lines advance by themselves.
+var overhear: CutsceneSequencer
 var cfg: Dictionary = {}
 ## True while a cutscene, a bark or a hand-off is under way: further triggers wait.
 var busy := false
@@ -39,6 +49,7 @@ func _ready() -> void:
 	sequencer = CutsceneSequencer.new()
 	sequencer.name = "Sequencer"
 	add_child(sequencer)
+	overhear = _new_overhear(false)
 	FieldEvents.connect_interacted(_on_interacted)
 	FieldEvents.connect_trigger(_on_trigger)
 	if autostart:
@@ -51,14 +62,20 @@ func _exit_tree() -> void:
 			EventBus.disconnect(pair[0], pair[1])
 
 
-## Plays the arrival when it has not happened yet. Await it.
+## Plays the arrival (Cutscene A) or B02 when either is due. Await it.
 func begin() -> void:
-	if bool(Game.get_flag(StringName(str(cfg.get("intro_flag", ""))))):
-		return
-	busy = true
-	_zone.call(&"place_at", StringName(str(cfg.get("intro_spawn", ""))))
-	await sequencer.play(StringName(str(cfg.get("intro_scene_id", ""))), _stage())
-	busy = false
+	if not _flag(&"intro_flag"):
+		busy = true
+		_zone.call(&"place_at", StringName(str(cfg.get("intro_spawn", ""))))
+		await sequencer.play(StringName(str(cfg.get("intro_scene_id", ""))), _stage())
+		busy = false
+	elif _flag(&"battle_victory_flag") and not _flag(&"after_battle_flag"):
+		# B02: noon at Neme's. The scene opens black, so the move to her door is never seen.
+		busy = true
+		var spawn := StringName(str(cfg.get("after_battle_spawn", "")))
+		_zone.call(&"place_at", spawn, _zone.call(&"spawn_yaw_deg", spawn))
+		await sequencer.play(StringName(str(cfg.get("after_battle_scene_id", ""))), _stage())
+		busy = false
 
 
 func _autostart() -> void:
@@ -73,22 +90,61 @@ func _on_interacted(_id: StringName, _kind: StringName, payload: Dictionary) -> 
 
 
 func _on_trigger(_id: StringName, payload: Dictionary) -> void:
+	if payload.has(KEY_DIALOGUE) and bool(payload.get(KEY_OVERHEARD, false)):
+		if _free() and not overhear.is_playing():
+			overhear.play(StringName(str(payload[KEY_DIALOGUE])), _stage())
+		return
 	if not _free():
 		return
 	if payload.has(KEY_BATTLE):
 		_go(KEY_BATTLE, str(payload[KEY_BATTLE]))
 	elif payload.has(KEY_CUTSCENE):
-		_go(KEY_CUTSCENE, str(cfg.get("ending_scene", "")))
+		_end()
 
 
 func _bark(scene_id: StringName) -> void:
 	busy = true
+	_hush()
 	await sequencer.play(scene_id, _stage())
 	busy = false
 
 
+## B05 at the causeway head, then Cutscene B.
+func _end() -> void:
+	busy = true
+	_hush()
+	var low_tide := StringName(str(cfg.get("before_ending_scene_id", "")))
+	if low_tide != &"":
+		await sequencer.play(low_tide, _stage())
+	if is_inside_tree():
+		_go(KEY_CUTSCENE, str(cfg.get("ending_scene", "")))
+
+
+## Cuts an overheard bark off (something else is starting): a sequencer that leaves the tree ends
+## its scene at once (M2-FP-09), so it is swapped for a fresh one.
+func _hush() -> void:
+	if overhear == null or not overhear.is_playing():
+		return
+	var instant := overhear.instant
+	remove_child(overhear)
+	overhear.queue_free()
+	overhear = _new_overhear(instant)
+
+
+func _new_overhear(instant: bool) -> CutsceneSequencer:
+	var seq := CutsceneSequencer.new()
+	seq.name = "Overhear"
+	seq.hold_player = false
+	seq.auto_advance = true
+	seq.auto_advance_hold_sec = float(cfg.get("overheard_hold_sec", seq.auto_advance_hold_sec))
+	seq.instant = instant
+	add_child(seq)
+	return seq
+
+
 func _go(kind: StringName, target: String) -> void:
 	busy = true
+	_hush()
 	if hand_off.is_valid():
 		hand_off.call(kind, target)
 		return
@@ -102,6 +158,12 @@ func _go(kind: StringName, target: String) -> void:
 		)
 	else:
 		FlowRouting.change_scene(target)
+
+
+## The story flag named by cfg[`key`] (false when the key is empty).
+func _flag(key: StringName) -> bool:
+	var f := StringName(str(cfg.get(String(key), "")))
+	return f != &"" and bool(Game.get_flag(f))
 
 
 func _free() -> bool:

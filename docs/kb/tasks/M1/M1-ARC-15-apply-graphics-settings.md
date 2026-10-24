@@ -2,7 +2,7 @@
 id: M1-ARC-15
 title: The game never applies GraphicsSettings (presets have no effect in play)
 role: architect
-status: review
+status: done
 owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M1-RND-12]
 milestone: M1
@@ -34,3 +34,4 @@ Review-sweep-K on RND-12: no game code calls GraphicsSettings.apply or apply_cur
   - M1-ENV-05's item "call apply_tiers after a zone loads" is now done by GraphicsRuntime.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (environment): **approve.** GraphicsRuntime is real. `boot()` applies the global part and arms the hook, and SceneRouter's `attach_graphics_hook` runs `apply_scene` on the new root's `ready` (main thread, after HalunaZone's prebuild). Settings changes go through `apply_now`, and the system tiers cover water, weathering, Undertow, glimmer, underwater and characters. `test_graphics_runtime.gd` boots, sets Low and asserts the tiers. The RND-12 S2 radiance answer is evidenced with a probe. 'Prewarm stages authored tiers' was resolved since, by M1-RND-22's `preset_tier` filter. `--filter=graphics`: 51/0.

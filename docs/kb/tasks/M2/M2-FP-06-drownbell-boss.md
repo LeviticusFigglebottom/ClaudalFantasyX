@@ -2,7 +2,7 @@
 id: M2-FP-06
 title: The Drownbell, a two-phase boss on the CTB engine (vertical slice B10)
 role: combat
-status: review
+status: done
 owner_session: "session_01ELR13ohWMPrprcpcgLa7UR"
 depends_on: [M2-FP-04]
 milestone: M2
@@ -25,3 +25,4 @@ The boss Cutscene B calls to battle (`<<event start_battle drownbell>>`), per ve
 - Touched UI-owned files minimally (additive): `game/ui/battle/turn_timeline.gd` (`intent_labels`, the `intent` slot field) and `game/ui/battle/timeline_chip.gd` (the "· The Toll" suffix). UI may restyle.
 
 ## Review log
+- 2026-10-24 review-sweep-Q (lead): **approve.** BossMechanics is headless and data-driven: phases, telegraphed charges, the weak point, fields and summons, from enemies.json and skills.json. The intent shows on the timeline. The bands were measured (79.7/89.6% at 1000 seeds, then 77.6/85.2% after the Swell merges, still inside 70–90 and 80–95). The thread wiring went in with e1d8502. The ADR numbering settled at 0026 after two renumbers, with no stale references left in code. The stand-in is being replaced by M2-FP-17 (with M2-CMB-06). `test_drownbell_battle` passes in the battle filter.

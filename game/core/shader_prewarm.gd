@@ -28,7 +28,9 @@ extends Node
 ## once), because a pipeline compiles on the first frame that draws it and staging everything in one
 ## frame cost 121-150 ms on an RX 9070 XT. When a frame comes in over "slice_budget_ms" the batch is
 ## halved (never below 1), so slower cards self-tune. The stage is cleared "frames_to_render" frames
-## after the last batch went in. SceneRouter waits while is_staging() before showing the new scene.
+## after the last batch went in. While staging, the stage holds its parent's swap (hold_swap /
+## release_swap, M1-RND-23), so a SceneRouter parent waits before showing the new scene; any other
+## parent (a cutscene's spawn_with_state) is not held.
 ##
 ## Hook-up (autoload-free): `ShaderPrewarm.install(SceneRouter)` connects to
 ## SceneRouter.prewarm_requested and spawns this scene as a child of the router (which survives the
@@ -40,9 +42,16 @@ const SCENE_PATH := "res://game/core/shader_prewarm.tscn"
 const REGISTRY_PATH := "res://game/data/settings/prewarm_materials.json"
 const ROUTER_SIGNAL := &"prewarm_requested"
 const HOOK_META := &"shader_prewarm_hook"
+const HOLD_METHOD := &"hold_swap"
+const RELEASE_METHOD := &"release_swap"
 const MSEC_PER_SEC := 1000.0
 const LOG_PREFIX := "ShaderPrewarm"
 const MODE_UNSUPPORTED := -1
+
+## Shaders and materials loaded at boot and held for the session (M1-RND-22, registry "resident"):
+## their load compiles the shader, 75-220 ms each, so it happens once under the boot screen instead of
+## in a transition. Held so the resource cache keeps them.
+static var _resident: Array[Resource] = []
 
 var registry_path: String = REGISTRY_PATH
 var config: Dictionary = {}
@@ -51,6 +60,11 @@ var stats: Dictionary = {}
 ## Viewport properties laid over the game viewport's when the stage copies them (match_viewport):
 ## the state a planned GraphicsSettings override will set (M1-RND-16). Empty: the game's own.
 var viewport_state: Dictionary = {}
+## The preset whose tier variants are staged (M1-RND-22, registry "preset_tier"). "" = the player's
+## (GraphicsRuntime); a tool or test may set it before start().
+var preset_id: String = ""
+## Boot run (M1-RND-22): stage every "resident" entry, whatever its scenes, and nothing else.
+var resident_only := false
 
 var _running := false
 var _stage_alive := false
@@ -61,6 +75,7 @@ var _max_frame_ms := 0.0
 var _total_ms := 0.0
 var _instanced := 0
 var _skipped := 0
+var _filtered := 0
 var _spawned: Array[Node] = []
 ## Draws waiting for the stage: built Nodes (scene harvest) or registry entries loaded in their batch.
 var _pending: Array = []
@@ -69,6 +84,8 @@ var _min_batch_seen := 0
 var _batches := 0
 var _frames_since_batch := 0
 var _stage_env: Environment
+## The parent whose swap this stage holds while staging (null when the parent has no hold_swap).
+var _held: Node
 
 @onready var _viewport: SubViewport = $Viewport
 @onready var _stage_3d: Node3D = $Viewport/Stage3D
@@ -119,6 +136,9 @@ func start(for_scene: String = "") -> int:
 	if not is_node_ready():
 		push_error("%s: start() needs the node in the scene tree" % LOG_PREFIX)
 		return 0
+	if _running:
+		push_warning("%s: start() called twice; ignored" % LOG_PREFIX)
+		return 0
 	config = _load_registry(registry_path)
 	scene_path = for_scene
 	_frames_to_render = int(config.get("frames_to_render", 0))
@@ -130,10 +150,19 @@ func start(for_scene: String = "") -> int:
 	# Registry entries are only listed here and loaded in their batch (M1-RND-15): loading a material
 	# compiles its shader on the CPU, up to ~35 ms each on an RX 9070 XT. Loading them all at start put
 	# 0.2 s into one frame however small the batches were.
+	var preset := active_preset()
 	for entry: Variant in config.get("materials", []):
 		var e := entry as Dictionary
 		var scenes := e.get("scenes", []) as Array
-		if not (scenes.is_empty() or scenes.has(for_scene)):
+		if resident_only:
+			if not bool(e.get("resident", false)):
+				continue
+		elif not (scenes.is_empty() or scenes.has(for_scene)):
+			continue
+		# Another preset's tier variant compiles a pipeline this game never draws: 75 ms a shader on an
+		# RX 9070 XT, in the transition (M1-RND-22).
+		if not entry_wanted(e, preset):
+			_filtered += 1
 			continue
 		if ResourceLoader.exists(str(e.get("path", ""))):
 			_pending.append(e)
@@ -149,8 +178,72 @@ func start(for_scene: String = "") -> int:
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_running = true
 	_stage_alive = true
+	_hold_parent_swap()
 	_stage_next_batch()
 	return _instanced
+
+
+## The preset the stage warms tier variants for: preset_id, else the player's (GraphicsRuntime).
+func active_preset() -> String:
+	if preset_id != "":
+		return preset_id
+	var gs := GraphicsRuntime.settings()
+	return gs.preset_id if gs != null else ""
+
+
+## Loads every registry entry marked "resident" that `preset` stages and keeps it loaded for the session
+## (boot, and GraphicsRuntime on a preset change). Returns how many it loaded now (already held: 0).
+static func load_resident(preset: String, path: String = REGISTRY_PATH) -> int:
+	var count := 0
+	for entry: Variant in _load_registry(path).get("materials", []):
+		var e := entry as Dictionary
+		if not bool(e.get("resident", false)) or not entry_wanted(e, preset):
+			continue
+		var res_path := str(e.get("path", ""))
+		if not ResourceLoader.exists(res_path):
+			continue
+		var res := load(res_path)
+		if res != null and not _resident.has(res):
+			_resident.append(res)
+			count += 1
+	return count
+
+
+## The boot warm-up (M1-RND-22): holds the resident entries (load_resident) and stages them once under
+## `parent`, so their shader variants compile under the boot screen. A held Shader keeps its compiled
+## variants, and a transition then only builds pipelines (a load alone compiles nothing: Godot compiles
+## a shader variant the first time a material that uses it is drawn).
+static func spawn_resident(parent: Node, preset: String) -> ShaderPrewarm:
+	load_resident(preset)
+	var node := (load(SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.resident_only = true
+	node.preset_id = preset
+	parent.add_child(node)
+	node.start("")
+	return node
+
+
+## The resources load_resident() holds (tests).
+static func resident_count() -> int:
+	return _resident.size()
+
+
+## Whether a registry entry is staged for `preset`: an entry with "preset_tier" {system, tier} only when
+## that preset selects that tier; every other entry (and every entry when `preset` is "") always.
+static func entry_wanted(entry: Dictionary, preset: String) -> bool:
+	var pt: Variant = entry.get("preset_tier")
+	if typeof(pt) != TYPE_DICTIONARY or preset == "":
+		return true
+	var system := str((pt as Dictionary).get("system", ""))
+	var want := ""
+	match system:
+		"character":
+			want = CharacterShaderTiers.tier_for_preset(preset)
+		"undertow":
+			want = preset
+		_:
+			want = GraphicsSettings.preset_tier(preset, system)
+	return want == "" or want == str((pt as Dictionary).get("tier", ""))
 
 
 ## Copies the AA and 3D scaling state of the game viewport onto the stage, so the pipelines
@@ -165,6 +258,11 @@ func match_viewport(game: Viewport) -> void:
 	_viewport.scaling_3d_scale = game.scaling_3d_scale
 	for prop: Variant in viewport_state:
 		_viewport.set(str(prop), viewport_state[prop])
+	# FSR2 fails on a tiny target ("uavMip ... FFX_ERROR_INVALID_ARGUMENT" every frame at 64 px; M1-RND-22),
+	# so an FSR2 stage is at least fsr2_min_size px (the stage's size doesn't change its cost: M1-RND-15).
+	if _viewport.scaling_3d_mode == Viewport.SCALING_3D_MODE_FSR2:
+		var m := int(config.get("fsr2_min_size", 0))
+		_viewport.size = Vector2i(maxi(_viewport.size.x, m), maxi(_viewport.size.y, m))
 
 
 func is_running() -> bool:
@@ -174,14 +272,6 @@ func is_running() -> bool:
 ## True while draws are still entering or rendering in the stage: the incoming scene should wait.
 func is_staging() -> bool:
 	return _running and _stage_alive
-
-
-## True when a ShaderPrewarm child of `router` is still staging (SceneRouter waits on it).
-static func is_staging_under(router: Node) -> bool:
-	for child in router.get_children():
-		if child is ShaderPrewarm and (child as ShaderPrewarm).is_staging():
-			return true
-	return false
 
 
 ## Number of warmup draw nodes currently in the stage (pending batches excluded).
@@ -249,6 +339,7 @@ func _notification(what: int) -> void:
 			if is_instance_valid(n) and n is Node:
 				n.free()
 		_pending.clear()
+		_release_parent_swap()
 
 
 func _finish() -> void:
@@ -258,6 +349,7 @@ func _finish() -> void:
 		"scene_path": scene_path,
 		"materials": _instanced,
 		"skipped": _skipped,
+		"filtered": _filtered,
 		"frames": _frames_measured,
 		"max_frame_ms": _max_frame_ms,
 		"total_ms": _total_ms,
@@ -287,6 +379,21 @@ func _clear_stage() -> void:
 	_stage_env = null
 	_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	_stage_alive = false
+	_release_parent_swap()
+
+
+## Holds the parent's next swap while the stage is alive (duck-typed: the SceneRouter autoload).
+func _hold_parent_swap() -> void:
+	var parent := get_parent()
+	if parent != null and parent.has_method(HOLD_METHOD):
+		parent.call(HOLD_METHOD, self)
+		_held = parent
+
+
+func _release_parent_swap() -> void:
+	if is_instance_valid(_held) and _held.has_method(RELEASE_METHOD):
+		_held.call(RELEASE_METHOD, self)
+	_held = null
 
 
 static func _load_registry(path: String) -> Dictionary:

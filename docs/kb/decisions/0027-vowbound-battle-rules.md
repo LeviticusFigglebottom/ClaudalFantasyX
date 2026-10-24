@@ -22,12 +22,12 @@ Option 2, with `call_rank` 3 for Ilun.
 - **A fallen Vowbound** (KO or stone) is no defeat. The party returns at once, and that Vowbound cannot be called again this battle.
 - **Victory while it is out** hands the field back to the party before the battle ends, so XP and vitals see the party.
 - **Refused while it is out:** swap, escape and items.
-- **Its gauge** fills only from HP it loses: `swell_gain` at its row's rate. The finisher has no input.
+- **Its gauge** fills only from HP it loses: `swell_gain` at its row's rate (amended by A1: absorbed HP fills it too). The finisher has no input.
 - **Its stats:** `vowbound_stat(base, caller_stat, scale_pct) = base + caller_stat × scale_pct ÷ 100`, at the caller's level. Ilun at Asha level 5 has 360 HP.
 - **The data field is `caller`.** The class word for one who summons is on the banned list, so it is not used.
 
 ## Consequences
-- **The probe.** A 1 HP call is worth 8 masher points, down from 20. The shipped Ilun lifts a sandbox masher with no gear to 38.9%. That is above the 25% starting-gear line for the Swell masher. **This is a deliberate proposal for review**: a Vowbound is a once-a-battle rescue, not a gauge that comes back every fight. The proposed Vowbound masher line is 40% with no gear. The sandbox is pre-Ilun content, so this is a stress test, not a band. If the review wants Ilun weaker, the levers are his HP scale and `call_rank` (the table in battle_ctb.md § Vowbound).
+- **The probe.** A 1 HP call is worth 8 masher points, down from 20. The shipped Ilun lifts a sandbox masher with no gear to 38.9%. That is above the 25% starting-gear line for the Swell masher. **This is a deliberate proposal for review**: a Vowbound is one HP pool per battle, not a gauge that comes back every fight. The proposed Vowbound masher line is 40% with no gear. The sandbox is pre-Ilun content, so this is a stress test, not a band. If the review wants Ilun weaker, the levers are his HP scale and `call_rank` (the table in battle_ctb.md § Vowbound).
 - **Pillar 4.** The UI must show the call's cost: a timeline preview with the caller's delay (M2-UI-05).
 - **The Drownbell.** The real call replaces `call_ilun` on claude/m2-slice. Its bands must be re-run.
 - **Not decided here:** carrying a Vowbound's HP, MP and gauge between battles; summon cinematics; and growth from item-taught abilities (SPEC §6.3).
@@ -51,3 +51,16 @@ So a called Ilun was immortal and harmless, Floodnet never came, the flood never
 - **A3. The call runs the caller's end of turn at the moment of the call.** That means Poison and Regen, the status countdown, Doom, `turns_taken` and `turn_ended`. Only the caller's `next_time` waits for the party's return, at the `call_rank` delay. Before this, every call skipped one tick of Doom or Poison.
 
 The Drownbell's bands must then include a policy that calls Ilun when the flood rises and stays out (M2-FP-17).
+
+## Implementation note (M2-CMB-05, Combat, 2026-10-24)
+A1–A3 are in the engine. The wording above now reads "one HP pool per battle", as the acceptance asked; nothing else in the decision changed. Three details the amendments left open:
+- **A1 counts the rolled absorb, not the HP actually restored.** The hit records `absorbed`, the amount before the max-HP cap, and the gauge takes `swell_gain` of that. Ilun is called at full HP, so a gauge fed only by restored HP filled nothing in the flood. A scratch probe of the Drownbell with the real call showed it: Floodnet never came, the flood never cleared, and role_answer and smart won 0.0% (most fights timed out). With the rolled absorb they win 72.0% and 87.0% (300 seeds). This is the amendment's stated intent ("calling him into the flood is the answer, not a hiding place"), and Design should confirm it.
+- **A Swell finisher with `clears_field` is never refused while that field is down.** Floodnet stays Ilun's finisher in every fight and clears nothing there.
+- **The simulator's call rule.** `naive_swell` calls at once and stays out. `role_answer` and `smart` call while a field is up and dismiss Ilun on his first turn after the field is gone.
+
+The provisional 40% line is the `sandbox_reef_vowbound` suite, measured as the probe was: no gear and no hero Swell. There the masher calling at once wins 38.9%, which reproduces the probe. With the heroes' Swell played at `good`, the same masher wins 46.2%, above the line (balance_targets.md § Vowbound masher line). The per-encounter line is M2-FP-17's.
+
+## Confirmation (review-sweep-Q, Design, 2026-10-24)
+- **A1's reading is confirmed: the rolled absorb.** The gauge measures what a hit gave the Vowbound, which is the quantity the damage side already uses. The fiction is that Ilun drinks the flood. The HP-restored reading starves him at full HP and stalls the flood phase. One asymmetry is accepted: a damage hit counts only the HP actually lost, while an absorb counts the uncapped roll. `swell_fill` caps the gauge either way.
+- **The Swell-on case gets its own line.** Hero Swell can't be off in play, so the Swell-off 40% line alone watches a state the player never reaches. It stays as the Vowbound's isolated lift. A second suite, with the heroes' Swell at `good`, gets a 50% ceiling (46.2% measured), plus a tuning-log entry. Both lines are sandbox regression ceilings: Ilun isn't bound before Ch3. The binding per-encounter line is the Drownbell at `good` (M2-FP-17). Filed as M2-CMB-06.
+- **`claude/m2-slice` holds a second implementation of these amendments** (d396f57 and following). It reads A1 as the HP restored, with Ilun at HP 60% and rate 220. On merge, the integration engine (the rolled absorb) is canonical, and Ilun's HP scale and rate are re-derived on it (M2-CMB-06).

@@ -7,10 +7,12 @@ This is a rough but complete thread through the first minutes of *Hymn of the Un
 1. **Title.** Choose **New Game**.
 2. **Prologue.** A dead city at dusk, with one line of Rhen's narration.
 3. **Cutscene A, "The Girl on the Beach".** Rhen wakes in the shallows at Haluna. There are two choices; both are fine.
-4. **Haluna, free to walk.** Talk to the three villagers (at the market, the chapel court and the dock). Each one has a line that hints at what a "Cantor" is.
-5. **First battle.** Walking up the beach path toward the village starts a fight against a reef crab and a lantern eel, with Rhen and Asha (Toma in reserve). Win it, and you're back on the path just inland of where the fight started. Flee it, and you're back on the beach below the path, with the fight still ahead. Lose it, and you can **Fight again** or **Return to last save** (your newest save; with none yet, this reads **Return to title**).
+4. **First battle.** Walking up the beach path toward the village starts a fight against a reef crab and a lantern eel, with Rhen and Asha (Toma in reserve). Win it, and the screen fades to **Neme's table**: noon, Rhen waking at Asha's aunt's door to far too much food. Flee it, and you're back on the beach below the path, with the fight still ahead. Lose it, and you can **Fight again** or **Return to last save** (your newest save; with none yet, this reads **Return to title**).
+5. **Haluna, free to walk.** Four people, at the market, the chapel court, the dock and in the lane (a child skipping), each say something that hints at what a "Cantor" is. You overhear each one as you walk past, without stopping, and you can also talk to them.
 6. **Save** at the shrine: the glowing teal stone with a shell canopy, on the third lane into the village (past the tide-wall lanes). Resting there heals the party and opens the save menu.
-7. **The causeway head.** Once you have saved, walk north along the beach, past the dock, to the causeway head at its far end. This plays **Cutscene B, "The First Verse"**, at the Shell Shrine at sunset.
+7. **The causeway head.** Once you have saved, walk north along the beach, past the dock, to the causeway head at its far end. Toma and Asha talk about the low tide, and you're inside the **Shell Shrine** for its trial.
+   - **The trial:** three stone basins, seen from above. Water runs from the spring through whichever channel each basin's lip faces, and the channels carrying water light up. Use a basin (**E**) to turn it a quarter turn. Send the water into the big pool on the far side; when the pool fills, the door at the end sinks, and walking through it plays **Cutscene B, "The First Verse"**, at sunset. Stuck for a minute and a half? Toma gives one hint. **Optional:** route the water into the small sluice near the second basin to drain the side pool, and pick up what's in it. Cutscene B notices.
+   - The room is grey placeholder blocks for now.
 8. **The Drownbell.** The bell answers the verse. It's a two-phase boss, with Rhen, Asha and Toma and no reserve.
    - **Phase 1, the Toll:** watch the timeline. The bell gathers a toll that shoves everyone back, and the timeline shows it two turns out. Three fast strikes (Rhen's Attack or Quick Hit) break its rim and silence it.
    - **Phase 2, the Flood:** at about 40% health the water rises, and polyps heal the bell faster than you can cut them down. Asha's **Call Ilun** (12 MP) clears the water.
@@ -30,6 +32,8 @@ This is a rough but complete thread through the first minutes of *Hymn of the Un
 
 To close the game, press **Alt+F4**, or click ■ Stop in the editor. **F8** also stops it from the editor.
 
+**If it runs slowly:** on the title, choose **Settings**. Left and Right change the preset (try **Low**) or any single setting; each change is applied and kept at once. Escape goes back.
+
 ### Option B: an exported .exe
 
 This needs the Godot 4.6.3 **export templates**: in the editor, open **Editor → Manage Export Templates → Download and Install**. Then open **Project → Export…**, select the **Windows Desktop** preset (already in the project), and click **Export Project**. The default output is `build/windows/hymn_of_the_undertow.exe`. Run the `.exe` next to its `.pck`.
@@ -46,9 +50,10 @@ This needs the Godot 4.6.3 **export templates**: in the editor, open **Editor �
 | Choose an option | Up / Down, then Enter | D-pad, then A |
 | Back, cancel | Escape | B / Circle |
 | Skip a cutscene (it stops at each choice, so you still choose) | hold Escape for 1 s | hold B / Circle |
+| Field menu (bestiary, Swell fill modes) | Escape in the field | B / Circle |
 | Battle menus | Up / Down / Left / Right, Enter, Escape | D-pad, A, B |
 
-In battle, the timeline on the right shows who acts next. Highlighting a command previews how it changes the order. Swap brings Toma in from the reserve.
+In battle, the timeline on the right shows who acts next. Highlighting a command previews how it changes the order. Swap brings Toma in from the reserve. In the Drownbell fight, the panel at the top left says what the bell is building toward (the Toll and how many of its turns away it is), how many rim hits you've landed, and later how many polyps feed it.
 
 Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the story flags and **F5** teleports. They're useful if you get stuck.
 
@@ -60,7 +65,7 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - Haluna uses the art team's mood-test scene, with simple collision added. The camera mostly follows Rhen from behind; only a few spots use composed shots.
 - **Call Ilun** is a stand-in for the real Vowbound summon (ADR 0026). For now it is one of Asha's commands rather than a full summon that replaces the party, and the bell and polyps are placeholder shapes.
 - Entering Haluna holds the black fade for about a second and a half while the village builds itself; the picture no longer freezes when it appears.
-- In the field, Escape does nothing. **E** also advances dialogue.
+- In the field, Escape opens the field menu, which pauses the game. From it you can open the bestiary or choose each hero's Swell fill mode. Escape backs out a step at a time and then closes it. It doesn't open during a cutscene or a conversation. **E** also advances dialogue.
 
 ## Reporting
 

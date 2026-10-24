@@ -17,6 +17,11 @@ const KEY_FAMILIES := "families"
 const KEY_SINGLE_TIER := "single_tier"
 ## Meta on a material copy apply_to_tree made: [root instance id, the copy's own instance id].
 const OWNER_META := &"hymn_tier_owner"
+## M1-RND-24: every mouth-family material gets this unshadowed, additive cavity-bounce pass as its
+## next_pass (positional lights' bounce; see character_mouth_body.gdshaderinc).
+const MOUTH_FAMILY := "mouth"
+const MOUTH_BOUNCE_SHADER := "res://game/shaders/character/character_mouth_bounce.gdshader"
+const PARAM_BOUNCE_PASS := &"cavity_bounce_pass"
 
 static var _data: Dictionary = {}
 
@@ -101,7 +106,9 @@ static func apply_tier(material: Material, tier: String) -> bool:
 ## a material can sit at different tiers. Slots under `root` that shared one source share one copy,
 ## and calling again on the same root swaps its own copies in place instead of copying again.
 ## Each source material is visited once. Returns the number of source materials changed.
-## Not reached (M2-NIT-03): `GeometryInstance3D.material_overlay` and any `Material.next_pass`
+## A mouth-family material also gets its cavity-bounce pass (M1-RND-24, needs_bounce_pass): the copy
+## is made for that too, even at its own tier, and the pass takes the base's parameters as they are then.
+## Not reached (M2-NIT-03): `GeometryInstance3D.material_overlay` and any other `Material.next_pass`
 ## chain are neither swapped nor copied. A tiered next_pass (a hair shell, an outline) or overlay
 ## would stay at its authored tier; extend this walk before adding one. Swapping back to a material's
 ## source tier keeps the owned copy in the slot rather than restoring the shared source (same shader
@@ -149,12 +156,48 @@ static func _visit(source: Material, tier: String, root_id: int, done: Dictionar
 	if done.has(source):
 		return 0
 	done[source] = source
-	if target_shader_path(source, tier).is_empty():
+	if target_shader_path(source, tier).is_empty() and not needs_bounce_pass(source):
 		return 0
 	var target := source
 	if not owns(source, root_id):
 		target = source.duplicate() as Material
 		target.set_meta(OWNER_META, PackedInt64Array([root_id, target.get_instance_id()]))
 	apply_tier(target, tier)
+	attach_bounce_pass(target)
 	done[source] = target
 	return 1
+
+
+## True for a mouth-family material without its cavity-bounce pass (M1-RND-24).
+static func needs_bounce_pass(material: Material) -> bool:
+	var sm := material as ShaderMaterial
+	if sm == null or family_of(sm.shader) != MOUTH_FAMILY:
+		return false
+	return not is_bounce_pass(sm.next_pass) or sm.get_shader_parameter(PARAM_BOUNCE_PASS) != true
+
+
+static func is_bounce_pass(material: Material) -> bool:
+	var sm := material as ShaderMaterial
+	return sm != null and sm.shader != null and sm.shader.resource_path == MOUTH_BOUNCE_SHADER
+
+
+## Gives a mouth-family material **in place** its unshadowed bounce pass, with every parameter the
+## pass declares copied from it, and moves the positional bounce there (cavity_bounce_pass). The
+## caller must own `material` (apply_to_tree passes its copies). Returns true when it attached one.
+static func attach_bounce_pass(material: Material) -> bool:
+	if not needs_bounce_pass(material):
+		return false
+	var base := material as ShaderMaterial
+	if base.next_pass != null and not is_bounce_pass(base.next_pass):
+		push_warning("CharacterShaderTiers: %s already has a next_pass; no mouth bounce pass" % base.resource_name)
+		return false
+	var bounce := ShaderMaterial.new()
+	bounce.shader = load(MOUTH_BOUNCE_SHADER) as Shader
+	for u: Dictionary in bounce.shader.get_shader_uniform_list():
+		var name := StringName(u["name"])
+		var value: Variant = base.get_shader_parameter(name)
+		if value != null:
+			bounce.set_shader_parameter(name, value)
+	base.next_pass = bounce
+	base.set_shader_parameter(PARAM_BOUNCE_PASS, true)
+	return true
