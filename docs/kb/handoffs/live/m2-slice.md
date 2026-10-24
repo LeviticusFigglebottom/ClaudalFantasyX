@@ -3,13 +3,38 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **The Lead's 13:09 M2-review blockers 1–3 are done, for review:**
+  - **M2-FP-25, B06 the Saltgrass Causeway:** the route, its rails, banters, the harrier lesson and random fights, all in band.
+  - **M2-FP-26, the B12 end card:** the voice-over and credits. The coda is audio's `hush_coda` zone cue, which arrives with claude/audio.
+  - **M2-FP-27:** chapters 1/2/3, the shrine checkpoint (no trial replay after a Drownbell loss) and the Prologue slot label.
+  - **Item 4,** objective data, waits on UI's note.
+  - Handoff cinematics-13.
+- **M3-C01-02, Ch1 "Lamp-Diver," is merged** (greybox, solo Rhen, Hullgnaw, every fight banded). It's in review: narrative for the story, combat for the bands. It has ADR 0034 (encounter-lent skills, the solo boss band), plus requests **M3-C01-03** (combat/design numbers) and **M3-C01-04** (env-art kits and the UnderwaterRig). The prologue now hands off to Ch1, and Ch1 ends at Haluna `Beach` with Ch2 unchanged.
+- **ADR renumber:** my chapter-flow ADR is now **0035** (it was 0033); claude/ui's `0033-ui-flair` came first.
+- **MERGE-READY @ a30b664:**
+  - `tools/ci_local.sh` exit 0, on the integration branch cf999e0 merged in.
+  - 1527 Godot tests, 0 failed; coverage battle 99.95%, progression 96.69% (within baseline).
+  - Tools unittest 524 + 9 OK.
+  - 84 shots compared, 0 failed.
+  - Blender: `HYMN_BLENDER_REQUIRED=1`, base cf999e0, `vegetation` and `haluna_kit` both identical. `haluna_kit` takes the manifest's `default_threads` 4.
+  - The only commit after the run is a30b664, a docs note.
+- **Lead 13:09, M2-review blockers taken ahead of M3:**
+  1. B06 Saltgrass Causeway;
+  2. the B12 end-card voice-over, coda and credits;
+  3. the chapter advance, plus an autosave before the shrine;
+  4. objective data (waiting on UI's note).
+  The Ch1 build subagent keeps running in its worktree.
+- **To the Lead, on Ch7** (send_message to the Lead is still refused):
+  - The Ch7 sheet's opponent is the atoll side **Sorrin**: Tamsule wins offscreen, and Pemakar is Ch5's town. Rhen plays in **Pio**'s place.
+  - I'll rename the Reefball engine's provisional loc rows to match in M3-C07-02.
+  - B05 ends on `<<event start_reefball tidecup_opening>>`.
 - **M3 Act I is under way** (the Lead's 12:00 message). The tasks are filed in `docs/kb/tasks/M3/`:
   - M3-C01..C09-01, the beat sheets;
   - M3-C0x-02, the playable chapters;
   - M3-C07-01, Ch7's story;
   - M3-ARC-01, the chapter flow.
   - **Ownership:** recorded in ownership.md (`game/levels/ch01`, `ch04`–`ch09`, the dialogue, `act1_*` beats, `game/data/flow/chapters/**`).
-  - **M3-ARC-01 is done, for review by lead (ADR 0033, `docs/kb/tech/chapter_flow.md`).**
+  - **M3-ARC-01 is done, for review by lead (ADR 0035, `docs/kb/tech/chapter_flow.md`).**
     - Chapters are data: `ZoneStory` plays each zone's arrive/beats/barks steps from `game/data/flow/chapters/chNN.json`, and `GreyboxZone` builds a playable zone from a layout JSON.
     - `validate_data` checks both. The tests are `test_zone_story` (7) and `test_chapter_flow` (8). The slice is untouched.
   - **Ch1 and Ch4 beat sheets are done:** `act1_ch01.md` and `act1_ch04.md`, reviewed and approved by cinematics. **For the Lead and narrative, two calls the sheets made:**

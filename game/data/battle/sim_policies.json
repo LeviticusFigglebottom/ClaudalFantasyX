@@ -97,6 +97,30 @@
       "vowbound": [
         "ilun"
       ]
+    },
+    "ch01_underway": {
+      "gear": {
+        "rhen": [
+          "rhen_salvage_hooks",
+          "rhen_patched_tether"
+        ]
+      },
+      "items": {
+        "salt_tonic": 2,
+        "brine_eyewash": 1
+      }
+    },
+    "ch01_hullgnaw": {
+      "gear": {
+        "rhen": [
+          "rhen_salvage_hooks",
+          "rhen_patched_tether"
+        ]
+      },
+      "items": {
+        "salt_tonic": 2,
+        "brine_eyewash": 1
+      }
     }
   }
 }

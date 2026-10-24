@@ -1,0 +1,52 @@
+{
+ "doc": "Ch3 'The Shell Shrine' (vertical_slice.md B06; M2-FP-25): the Saltgrass Causeway. Haluna's causeway head (first_playable.json haluna.ending_location) brings the party here; the chapter becomes 3 on arrival (the chapter autosave); the gull harrier at C07 teaches Rhen's niche, then random shallows fights; the islet steps go on to the Shell Shrine trial. The trial, Cutscene B and the Drownbell still run from first_playable.json.",
+ "chapter": "ch03",
+ "zones": {
+  "ch03/saltgrass_causeway": {
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch03_causeway_arrived"
+      ]
+     },
+     "steps": [
+      {
+       "chapter": 3
+      },
+      {
+       "set": "ch03_causeway_arrived"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "harrier": {
+     "when": {
+      "unset": [
+       "ch03_harrier_won"
+      ]
+     },
+     "steps": [
+      {
+       "battle": "ch03_causeway_harrier",
+       "return_spawn": "AfterHarrier",
+       "escape_spawn": "BeforeHarrier",
+       "victory_flag": "ch03_harrier_won"
+      }
+     ]
+    },
+    "to_shrine": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch03/shell_shrine",
+        "spawn": "Entry"
+       }
+      }
+     ]
+    }
+   }
+  }
+ }
+}

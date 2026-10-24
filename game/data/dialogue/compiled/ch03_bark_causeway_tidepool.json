@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch03_bark_causeway_tidepool",
+ "source": "game/data/dialogue/ch03/ch03_bark_causeway_tidepool.dlg",
+ "start": "ch03_bark_causeway_tidepool",
+ "nodes": {
+  "ch03_bark_causeway_tidepool": {
+   "headers": {"location": "ch03/saltgrass_causeway"},
+   "ops": [
+    {"op": "line", "id": "ch03_bark_causeway_tidepool_001", "key": "DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_001", "speaker": "asha", "emotion": "smile", "voice": "", "src": 6},
+    {"op": "line", "id": "ch03_bark_causeway_tidepool_002", "key": "DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_002", "speaker": "rhen", "emotion": "soft_smile", "voice": "", "src": 7},
+    {"op": "line", "id": "ch03_bark_causeway_tidepool_003", "key": "DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_003", "speaker": "asha", "emotion": "laugh", "voice": "", "src": 8},
+    {"op": "line", "id": "ch03_bark_causeway_tidepool_004", "key": "DLG_CH03_BARK_CAUSEWAY_TIDEPOOL_004", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

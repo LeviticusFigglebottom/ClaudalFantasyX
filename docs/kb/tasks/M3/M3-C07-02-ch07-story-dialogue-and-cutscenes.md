@@ -22,5 +22,11 @@ Lead 2026-10-24 12:00 (the human authorised M3 in parallel; m2-slice owns Act I 
 - [ ] A headless thread test, port arrival to the Ch8 hand-off, with the stand-in match.
 
 ## Notes
+- 2026-10-24, the Lead: the Reefball rules engine is M3-RBL-01 (`docs/kb/design/reefball.md`). The story match is `tidecup_opening`: Oruvel (captain Tavi Orse; Rhen dives) against a provisional "Pemakar Terraces", with Oruvel's divers provisionally "Noa" and "Old Ama".
+  - **Reconcile those loc rows with act1_ch07.md:** the opponent is the atoll side **Sorrin** (not Tamsule, which wins offscreen), and Rhen takes Pio's place.
+  - **Renaming** the loc rows is allowed (the Lead said so).
+  - **The outcome is a reward only** (ADR 0020 (h)).
+  - **To do here:** the naming-rite cutscene, the match entry and exit flow through SceneRouter/FlowRouting, and the post-match beats.
+  - **Not ours:** the match HUD is UI's, and the arena (the water sphere) is env-art's and the PC's.
 
 ## Review log

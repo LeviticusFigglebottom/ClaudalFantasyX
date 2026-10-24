@@ -814,3 +814,14 @@ MAP_DIR_S,south
 MAP_DIR_SW,south-west
 MAP_DIR_W,west
 MAP_DIR_NW,north-west
+ENC_CH03_CAUSEWAY_SHORE,The Causeway Shallows
+ENC_CH03_CAUSEWAY_HARRIER,A Harrier over the Saltgrass
+TUT_FLIER_RHEN,"Fliers dodge most blows. Rhen's quick, precise strikes find them."
+SAVE_SLOT_PROLOGUE,Prologue
+FLOW_END_CARD_VOICE,"""I said yes to a girl I'd known for two days. I didn't know yet what I was walking her toward."""
+CREDITS_GAME,Hymn of the Undertow
+CREDITS_SLICE,"The first playable: Haluna, the Saltgrass Causeway and the Shell Shrine"
+CREDITS_MUSIC,"Original music, in prototype"
+CREDITS_ENGINE,Made with the Godot Engine (MIT License)
+CREDITS_FONTS,EB Garamond and Source Sans 3 (SIL Open Font License)
+CREDITS_THANKS,Thank you for playing.

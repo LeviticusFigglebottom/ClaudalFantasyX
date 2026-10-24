@@ -92,6 +92,23 @@ Loadout `m1_starting`. Rhen and Asha active, Toma and Ysolde in reserve, against
 
 **Ease ceiling (M1-CMB-07).** `smart` wins every seed (100.0%), so a win band can't see a regression that makes the sandbox *easier*. A win ceiling below 100% would fail today's numbers. The suite sets `mean_turns_min` in targets.json instead: `smart` must still average at least 16 actions per fight (measured 17.9 at 1000 seeds and 18.1 at the 200 seeds CI uses, so the floor allows about a 10% shorter fight). The geared suite `sandbox_reef_tier1` floors `smart` at 14.5 (measured 16.1 and 16.3). `sim.py` marks a row out of band when it misses the floor, and `test_sandbox_battle.gd` asserts the starting-gear floor at 200 seeds. Mean turns is used rather than party KOs because KOs are rare for `smart` (0.07 to 0.12 per fight) and too noisy at 200 seeds. If a deliberate change makes the fight shorter, re-measure and move the floor with a tuning-log note.
 
+### Ch3 route: `ch03_causeway_harrier` and `ch03_causeway_shore` (regular, M2-FP-25)
+
+These are the Saltgrass Causeway's two fights (B06): the scripted flier lesson at C07, and the random shallows fight after it. Both put a Gull Harrier, a Reef Crab and a Lantern Eel against Rhen and Asha, with Toma in reserve, on loadout `m1_starting`. They take the Ch1–Ch3 **regular** band from the curve above.
+
+| Policy | Band | Measured (1000 seeds), harrier / shore |
+|---|---|---|
+| `naive` | 40–80% | 65.8% / 71.3% |
+| `role_answer` | ≥ 95% | 95.3% / 95.3% |
+| `smart` | ≥ 98% | 100% / 99.9% |
+| p90 turns | ≤ 30 | 18 / 19 |
+
+**Notes:**
+- **Foe order matters.** The naive policy strikes the first foe, so the harrier-first lesson and the eel-first shallows land in band. The same three foes with the crab first fall to 10.9% for naive, and that's out of band.
+- **Two foes are too easy.** Every pair tried gave naive 96–100%.
+- **The other three-foe mixes miss.** With two crabs, or two harriers, the role answer falls short, because the crab's answer (Toma) starts in reserve and the eel's (Ysolde) hasn't joined yet.
+- Leave the order as authored, and re-measure if a foe moves.
+
 ### Vowbound masher line: `sandbox_reef_vowbound` (stress test, M2-CMB-05)
 
 ADR 0027 accepted a **provisional ceiling of 40%** for a masher who calls the Vowbound at once, on the sandbox with no gear. It is a ceiling, not a band to aim at, and the sandbox is pre-Ilun content. Suite: `sandbox_reef`, Rhen and Asha active and Toma in reserve (the probe's lineup), loadout `sandbox_vowbound` (no gear, no items, Ilun bound), `kind: vowbound`.
@@ -122,3 +139,19 @@ From [act_outline.md](../story/beats/act_outline.md): two phases on the causeway
 | p90 turns | ≤ 60 | Two phases, still a slice-length fight. |
 
 The encounter landed in M2-FP-06 with a first-playable stand-in for the Vowbound summon (ADR 0026). Both `role_answer` and `smart` carry the "clear the field" rule: `sim_policies.json` `clear_field_skill: call_ilun`, so whoever can use it does so as soon as a field is up (`smart` heals first if someone is below 45%). Measured at 1000 seeds: naive 0.0%, role answer 79.7%, smart 89.6%, p90 51 actions (balance_report.md). `tests/integration/test_drownbell_battle.gd` asserts loose bands at 200 seeds on every run.
+
+### Ch1: solo Rhen (M3-C01-02, ADR 0034)
+
+Rhen fights alone all chapter (act1_ch01.md §9 Combat), with `active: [rhen]` and no reserve. The loadouts are `ch01_underway` (starting gear, 2 Salt Tonic, 1 Brine Eyewash) and `ch01_hullgnaw` (the same). Swell is `good`.
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch01_wickfry`, `ch01_oil_slug`, `ch01_shaft_limpet`, and the random `ch01_underway_shoals` and `ch01_underway_limpet` | tutorial (logged exception) | 80–100% | ≥ 95% | ≥ 98% | ≤ 30 |
+| `ch01_scuttlers` | Ch1–Ch3 regular | 40–80% | ≥ 95% | ≥ 98% | ≤ 30 |
+| `ch01_hullgnaw` | Ch1–Ch3 boss | 0–10% | report only | 80–95% | ≤ 60 |
+
+- **Tutorial fights:** each teaches one thing (the command menu, items, escape), and a first-time masher shouldn't lose one.
+- **Hullgnaw's `role_answer`:** the policy never uses items, and in a one-hero fight nobody can swap in, so it measures only the masher plus MP skills and the Swell. Rhen's answer is tempo plus a Salt Tonic when the Coil telegraphs the Gnaw, and only `smart` plays that.
+- **Kick Off:** the encounter lends it (`party_skills`), because the second phase teaches it.
+
+Numbers are in the 2026-10-24 tuning log entry in balance_report.md.

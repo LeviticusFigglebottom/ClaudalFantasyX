@@ -14,13 +14,18 @@
     },
     "prologue": {
       "scene_id": "prologue_dead_city",
-      "next_location": "ch02/haluna",
-      "next_spawn": "Beach"
+      "next_location": "ch01/oruvel_underway",
+      "next_spawn": "Drop"
     },
     "end_card": {
       "return_scene": "res://game/core/boot.tscn",
-      "min_hold_sec": 1.5,
-      "fade_in_sec": 1.2
+      "voice_key": "FLOW_END_CARD_VOICE",
+      "voice_sec": 7.0,
+      "voice_fade_sec": 1.0,
+      "fade_in_sec": 1.2,
+      "credits": ["CREDITS_GAME", "CREDITS_SLICE", "CREDITS_MUSIC", "CREDITS_ENGINE", "CREDITS_FONTS", "CREDITS_THANKS"],
+      "credit_line_sec": 1.1,
+      "min_hold_sec": 16.0
     },
     "haluna": {
       "location_id": "ch02/haluna",
@@ -35,6 +40,9 @@
       "after_battle_scene_id": "ch02_nemes_table",
       "after_battle_flag": "ch02_ate_at_nemes",
       "ending_scene": "res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
+      "ending_location": "ch03/saltgrass_causeway",
+      "ending_spawn": "FromHaluna",
+      "chapter": 2,
       "before_ending_scene_id": "ch02_low_tide",
       "ending_decline_event": "departure_declined",
       "ending_decline_spawn": "CausewayHead",
@@ -109,7 +117,10 @@
       "after_spawn": "DockNight"
     },
     "shell_shrine": {
-      "next_scene": "res://game/levels/ch03/first_verse/first_verse.tscn"
+      "next_scene": "res://game/levels/ch03/first_verse/first_verse.tscn",
+      "checkpoint_location": "ch03/shell_shrine",
+      "checkpoint_spawn": "Exit",
+      "checkpoint_reason": "checkpoint"
     }
   }
 }

@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch01_bark_keel_hull",
+ "source": "game/data/dialogue/ch01/ch01_bark_keel_hull.dlg",
+ "start": "ch01_bark_keel_hull",
+ "nodes": {
+  "ch01_bark_keel_hull": {
+   "headers": {"location": "ch01/oruvel"},
+   "ops": [
+    {"op": "line", "id": "ch01_bark_sabe_001", "key": "DLG_CH01_BARK_SABE_001", "speaker": "sabe", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch01_bark_sabe_002", "key": "DLG_CH01_BARK_SABE_002", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 9},
+    {"op": "line", "id": "ch01_bark_sabe_003", "key": "DLG_CH01_BARK_SABE_003", "speaker": "sabe", "emotion": "neutral", "voice": "", "src": 10}
+   ]
+  }
+ }
+}

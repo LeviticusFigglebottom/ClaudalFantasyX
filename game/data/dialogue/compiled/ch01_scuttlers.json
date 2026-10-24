@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch01_scuttlers",
+ "source": "game/data/dialogue/ch01/ch01_scuttlers.dlg",
+ "start": "ch01_scuttlers",
+ "nodes": {
+  "ch01_scuttlers": {
+   "headers": {"location": "ch01/oruvel"},
+   "ops": [
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "scuttlers", "count": 6, "drift": "down_seaward"}, "src": 7},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 8},
+    {"op": "line", "id": "ch01_scuttlers_001", "key": "DLG_CH01_SCUTTLERS_001", "speaker": "rhen", "emotion": "afraid", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

@@ -106,6 +106,27 @@
      "statuses": [{"id": "protect", "chance": 100}, {"id": "shell", "chance": 100}]},
     {"id": "floodnet", "name_key": "SKILL_FLOODNET", "kind": "magical", "power": 16, "rank": 3,
      "element": "none", "target": "all_foes", "mp_cost": 0, "magic": true, "swell": true,
-     "vowbound": true, "clears_field": "flood"}
+     "vowbound": true, "clears_field": "flood"},
+    {"id": "shoal_nip", "name_key": "SKILL_SHOAL_NIP", "kind": "physical", "power": 3, "rank": 2,
+     "accuracy": 95, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false},
+    {"id": "limpet_clamp", "name_key": "SKILL_LIMPET_CLAMP", "kind": "physical", "power": 3, "rank": 4,
+     "accuracy": 90, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false,
+     "delay_ranks": 1},
+    {"id": "smother", "name_key": "SKILL_SMOTHER", "kind": "support", "power": 0, "rank": 3,
+     "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false,
+     "statuses": [{"id": "darkness", "chance": 100}]},
+    {"id": "oil_slap", "name_key": "SKILL_OIL_SLAP", "kind": "physical", "power": 4, "rank": 3,
+     "accuracy": 90, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false},
+    {"id": "scuttle_claw", "name_key": "SKILL_SCUTTLE_CLAW", "kind": "physical", "power": 5, "rank": 3,
+     "accuracy": 90, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false},
+    {"id": "gnaw_coil", "name_key": "SKILL_GNAW_COIL", "kind": "support", "power": 0, "rank": 2,
+     "element": "none", "target": "self", "mp_cost": 0, "magic": false,
+     "charge": {"skill": "gnaw", "turns": 2}},
+    {"id": "gnaw", "name_key": "SKILL_GNAW", "kind": "physical", "power": 21, "rank": 3,
+     "accuracy": 100, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false},
+    {"id": "rib_lash", "name_key": "SKILL_RIB_LASH", "kind": "physical", "power": 5, "rank": 3,
+     "accuracy": 95, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false},
+    {"id": "thrash", "name_key": "SKILL_THRASH", "kind": "physical", "power": 4, "rank": 2,
+     "accuracy": 90, "element": "none", "target": "single_foe", "mp_cost": 0, "magic": false}
   ]
 }
