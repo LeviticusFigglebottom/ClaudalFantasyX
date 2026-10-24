@@ -2,26 +2,28 @@
   "version": 1,
   "doc": "M2-RND-02 underwater look: UnderwaterRig (game/world/water/underwater/underwater_rig.gd). docs/kb/tech/underwater.md. Colours are palette.json swatches (named in `swatches`, tested).",
   "colors": {
-    "transmit": "#3FD0C9",
-    "scatter": "#3FD0C9",
-    "deep": "#061A2B",
+    "transmit": "#1FA3A6",
+    "scatter": "#1FA3A6",
+    "deep": "#0E4A55",
     "window": "#2E7FD6",
-    "tir": "#1C6B78",
+    "tir": "#0E4A55",
     "lantern": "#FFB16E",
-    "snow": "#EEF6F4"
+    "snow": "#EEF6F4",
+    "sea_glow": "#1C6B78"
   },
   "swatches": {
-    "transmit": "turquoise_shallow",
-    "scatter": "turquoise_shallow",
-    "deep": "abyss_navy",
+    "transmit": "lagoon_teal",
+    "scatter": "lagoon_teal",
+    "deep": "deep_teal_shadow",
     "window": "sky_zenith_noon",
-    "tir": "sea_glow",
+    "tir": "deep_teal_shadow",
     "lantern": "oil_lamp",
-    "snow": "foam_white"
+    "snow": "foam_white",
+    "sea_glow": "sea_glow"
   },
   "optics": {
-    "_note": "transmit is the colour white light keeps after transmit_distance_m of water (sigma = -ln(transmit) / distance, per channel: red goes first). scatter is the in-scatter colour near the surface, fading toward deep with depth below the surface over depth_falloff_m and when looking down. ior gives the Snell window (asin(1/ior) = 48.6 deg). The in-scatter's light level weights the camera's own depth by camera_light_weight (the rest: the path's middle). sun_disc and sun_halo brighten the refracted sun inside the Snell window. The light level is the scene's visible directional lights (energy x colour luminance) over light_reference (a noon sun), at least light_floor: it scales the in-scatter and the underside, so a night dive is dark and the lantern carries it.",
-    "transmit_distance_m": 20.0,
+    "_note": "transmit is the colour white light keeps after transmit_distance_m of water (sigma = -ln(transmit) / distance, per channel: red goes first). scatter is the in-scatter colour near the surface, fading toward deep with depth below the surface over depth_falloff_m and when looking down. ior gives the Snell window (asin(1/ior) = 48.6 deg). The in-scatter's light level weights the camera's own depth by camera_light_weight (the rest: the path's middle). sun_disc and sun_halo brighten the refracted sun inside the Snell window. The light level is the scene's visible directional lights (energy x colour luminance) over light_reference (a noon sun), at least light_floor: it scales the in-scatter and the underside, so a night dive is dark and the lantern carries it. M2-RND-09 (Art, M2-ART-02): scatter and transmit are lagoon_teal (the lagoon's water look), deep is deep_teal_shadow (Act I), and TIR is deep_teal_shadow x tir_gain (about the old on-screen value; sea_glow is emission only, never a lit surface). At night the water column carries sea_glow emission at the zone WaterSurface's sea_glow_energy x sea_glow_strength, independent of the light level (colour script rule 3). M2-RND-09: the waterline is antialiased in screen space and its meniscus is meniscus_px wide (it was a 3 cm world band).",
+    "transmit_distance_m": 40.0,
     "scatter_strength": 0.45,
     "depth_falloff_m": 30.0,
     "down_darkening": 0.5,
@@ -29,17 +31,19 @@
     "window_soft_deg": 5.0,
     "window_alpha": 0.35,
     "tir_alpha": 0.9,
-    "meniscus_m": 0.03,
+    "meniscus_px": 1.5,
     "lens_m": 0.25,
     "max_distance_m": 400.0,
     "camera_light_weight": 0.7,
     "sun_disc": 6.0,
     "sun_halo": 0.8,
     "light_reference": 3.0,
-    "light_floor": 0.02
+    "light_floor": 0.02,
+    "tir_gain": 2.2,
+    "sea_glow_strength": 1.8
   },
   "god_rays": {
-    "_note": "A FogVolume under the surface whose density is constant along the sun's direction, so the volumetric fog draws shafts. Only on tiers with god_rays and volumetric fog on. The fog's albedo is the scatter colour mixed toward white by albedo_white_mix, so Rhen's oil lamp keeps a warm halo instead of turning green.",
+    "_note": "A FogVolume under the surface whose density is constant along the sun's direction, so the volumetric fog draws shafts. Only on tiers with god_rays and volumetric fog on. The fog's albedo is the scatter colour mixed toward white by albedo_white_mix, so Rhen's oil lamp keeps a warm halo instead of turning green. M2-RND-09: the lamp's halo no longer comes from the fog (lantern.halo_*), so the shafts keep the 0.5 mix.",
     "density": 0.3,
     "shaft_scale_m": 4.0,
     "shaft_contrast": 4.0,
@@ -61,12 +65,17 @@
     "alpha": 0.55
   },
   "lantern": {
-    "_note": "Rhen's oil lamp (decisions_log N-02): the hero light underwater.",
+    "_note": "Rhen's oil lamp (decisions_log N-02): the hero light underwater. M2-RND-09: the halo is the underwater post's own single scattering of the lamp (halo_strength x energy, falling over halo_range_m with attenuation and a halo_core_m core, halo_steps samples), absorbed only between the lamp, each point and the camera: warm by the lamp, cooling to teal further out. fog_energy is 0, so volumetric fog doesn't add a second, green halo absorbed over the whole background path. halo_absorption 0.35: the halo loses less red than the water behind it (Art: physics yields to the last warm light).",
     "energy": 9.0,
     "range_m": 9.0,
     "attenuation": 1.4,
-    "fog_energy": 3.0,
-    "specular": 0.4
+    "fog_energy": 0.0,
+    "specular": 0.4,
+    "halo_strength": 0.1,
+    "halo_core_m": 0.6,
+    "halo_steps": 16,
+    "halo_absorption": 0.35,
+    "halo_range_m": 4.0
   },
   "quality": {
     "low": {
@@ -93,5 +102,20 @@
       "particles": 500,
       "lantern_shadows": true
     }
+  },
+  "looks": {
+    "_note": "UnderwaterRig.look overrides colours per zone look (M2-RND-09): night_sea zones (ch20, ch21, night dives) keep the abyss_navy deep.",
+    "night_sea": {
+      "deep": "#061A2B",
+      "swatches": {
+        "deep": "abyss_navy"
+      }
+    }
+  },
+  "glimmer": {
+    "_note": "M2-RND-09 item 5: motes seen by a camera underwater get their path's absorption back (core and halo divided by the transmittance, mixed by this share): released (glimmer_lift, rising) fully, held 0.6. A GlimmerField's underwater_compensation scales it (0 opts out). max_gain caps it per channel, so no core reads above its swatch's on-screen +1.",
+    "lift": 1.0,
+    "held": 0.6,
+    "max_gain": 8.0
   }
 }
