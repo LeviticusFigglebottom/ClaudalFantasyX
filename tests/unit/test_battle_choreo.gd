@@ -166,7 +166,15 @@ func test_attack_runs_to_the_target_lands_on_contact_and_comes_back() -> void:
 	assert_true(_pos(&"rhen").distance_to(_pos(foe)) < gap - 0.5, "Rhen ran at the foe")
 	choreo.advance(float(plan["contact"]) - float(plan["approach_end"]) + EPS)
 	assert_eq(contacts, 1, "the blow lands on the contact beat")
-	assert_true(_pos(foe).distance_to(_home_pos(foe)) > EPS, "the foe recoils")
+	# The clip contract: a model with a hit clip plays it (the sandbox foes are creature models since M2-CRE-03);
+	# a primitive stand-in recoils procedurally.
+	var model := ctl.stage.stand_in(foe)
+	if BattleClips.has_clip(model, BattleClips.HIT):
+		assert_eq(
+			StringName(str(BattleClips.creature_of(model).get("current_clip"))), BattleClips.HIT, "the foe flinches"
+		)
+	else:
+		assert_true(_pos(foe).distance_to(_home_pos(foe)) > EPS, "the foe recoils")
 	choreo.advance(float(plan["total"]))
 	assert_false(choreo.playing())
 	assert_eq(finished, [&"rhen"] as Array[StringName])
@@ -226,7 +234,16 @@ func test_a_ko_waits_for_its_collapse_beat() -> void:
 	assert_eq(plan["kos"], [foe.id] as Array[StringName])
 	assert_true(choreo.holds_ko(foe.id), "the stage holds the KO look back")
 	choreo.advance(float(plan["ko_at"]) + EPS)
-	var mid := ctl.stage.stand_in(foe.id).transform
+	var f := ctl.stage.stand_in(foe.id)
+	if BattleClips.has_clip(f, BattleClips.KO):
+		# A model with a KO clip (a creature, M2-CRE-03) plays its own KO at the collapse beat, on its mark.
+		assert_false(choreo.holds_ko(foe.id), "released on the collapse beat")
+		assert_eq(StringName(str(BattleClips.creature_of(f).get("current_clip"))), BattleClips.KO, "it plays its KO")
+		choreo.advance(float(plan["total"]))
+		_assert_home(foe.id)
+		_free()
+		return
+	var mid := f.transform
 	assert_true(mid.origin.y < _home_pos(foe.id).y, "it starts to drop")
 	choreo.advance(float(plan["total"]))
 	assert_false(choreo.holds_ko(foe.id), "released")

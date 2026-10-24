@@ -1,8 +1,8 @@
 extends TestCase
 ## M2-CMB-07 follow-up: heroes join the party with their starting gear on the join path
 ## (PartyJoins, first_playable.json "party"): Rhen on a fresh New Game, Asha and Toma when
-## ch02_met_asha is set. Idempotent: a second join or a load never grants again, and worn gear is
-## never replaced. A load also normalises inventory counts to whole numbers.
+## ch02_met_asha is set (Rhen and Asha active, Toma in reserve). Idempotent: a second join or a load
+## never grants again, and worn gear is never replaced. A load also normalises inventory counts to whole numbers.
 
 const TEST_DIR := "user://test_party_joins"
 const T_SAVED := 1792489500
@@ -34,7 +34,8 @@ func test_a_fresh_new_game_has_rhen_geared() -> void:
 func test_meeting_asha_brings_asha_and_toma_geared_once() -> void:
 	Game.new_game()
 	Game.set_flag(&"ch02_met_asha")
-	assert_eq(Game.state.party_ids, [&"rhen", &"asha", &"toma"] as Array[StringName])
+	assert_eq(Game.state.party_ids, [&"rhen", &"asha"] as Array[StringName])
+	assert_eq(Game.state.reserve_ids, [&"toma"] as Array[StringName], "Toma joins the reserve (the slice's layout)")
 	var bag := _bag(Game.state)
 	for cid: StringName in [&"asha", &"toma"]:
 		assert_ne(bag.equipped(cid, &"weapon"), EquipmentBag.NO_PIECE, "%s has a weapon" % cid)
@@ -42,7 +43,7 @@ func test_meeting_asha_brings_asha_and_toma_geared_once() -> void:
 	var pieces := bag.uids().size()
 	Game.set_flag(&"ch02_met_asha")  # set again: nothing more
 	Game.set_flag(&"ch02_met_asha", false)
-	assert_eq(Game.state.party_ids.size(), 3)
+	assert_eq(PartyGoods.joined_members(Game.state).size(), 3)
 	assert_eq(_bag(Game.state).uids().size(), pieces, "no second set of gear")
 	_done()
 
@@ -84,7 +85,7 @@ func test_a_load_after_joining_grants_nothing_more() -> void:
 	var back := SaveSystem.load_from_slot(1)
 	assert_true(back != null)
 	if back != null:
-		assert_eq(back.party_ids, [&"rhen", &"asha", &"toma"] as Array[StringName])
+		assert_eq(PartyGoods.joined_members(back), [&"rhen", &"asha", &"toma"] as Array[StringName])
 		assert_eq(_bag(back).uids().size(), _bag(Game.state).uids().size(), "no double grant on load")
 		var before := EquipmentBag.new(ItemDB.load_default(), saved_equipment)
 		for cid: StringName in [&"rhen", &"asha", &"toma"]:

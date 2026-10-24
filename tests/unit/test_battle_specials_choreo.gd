@@ -131,10 +131,10 @@ func test_written_light_writes_its_glyph_and_reaches_each_foe_in_turn() -> void:
 	assert_between((_at(&"rhen") - from).dot(side), float(st["trace_m"]) - 0.01, float(st["trace_m"]) + 0.01)
 	var stagger := float(st["stagger_sec"])
 	choreo.seek(c + stagger * 0.5)
-	assert_true(_at(foes[0]).distance_to(_home(foes[0])) > EPS, "the first foe is struck")
-	assert_true(_at(foes[2]).distance_to(_home(foes[2])) < EPS, "the light has not reached the last yet")
+	assert_true(_struck(foes[0]), "the first foe is struck")
+	assert_false(_struck(foes[2]), "the light has not reached the last yet")
 	choreo.seek(c + stagger * 2.5)
-	assert_true(_at(foes[2]).distance_to(_home(foes[2])) > EPS, "then it does")
+	assert_true(_struck(foes[2]), "then it does")
 	_free()
 
 
@@ -426,3 +426,12 @@ func _assert_home(cid: StringName) -> void:
 func _free() -> void:
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
+
+
+## A foe reacting to a hit: a model with a hit clip plays it (creature models, M2-CRE-03; the clip contract), a
+## primitive stand-in is knocked off its mark.
+func _struck(id: StringName) -> bool:
+	var f := ctl.stage.stand_in(id)
+	if BattleClips.has_clip(f, BattleClips.HIT):
+		return StringName(str(BattleClips.creature_of(f).get("current_clip"))) == BattleClips.HIT
+	return _at(id).distance_to(_home(id)) > EPS
