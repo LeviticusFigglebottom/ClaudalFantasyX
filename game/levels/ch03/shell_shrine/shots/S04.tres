@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CameraShot" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="1_shot"]
+
+[resource]
+script = ExtResource("1_shot")
+id = &"S04"
+position = Vector3(4.3, 1, 1.7)
+look_at = Vector3(2.75, 0.3, 0)
+fov_deg = 27
+hard_cut = true
