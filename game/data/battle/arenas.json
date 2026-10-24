@@ -8,7 +8,9 @@
       "underway_tower": "res://game/battle/arenas/underway_tower.tscn",
       "causeway_route_afternoon": "res://game/battle/arenas/causeway_route_afternoon.tscn",
       "derelict_deck_night": "res://game/battle/arenas/derelict_deck_night.tscn",
-      "ash_terrace_lanternfall": "res://game/battle/arenas/ash_terrace_lanternfall.tscn"
+      "ash_terrace_lanternfall": "res://game/battle/arenas/ash_terrace_lanternfall.tscn",
+      "brine_shoals_afternoon": "res://game/battle/arenas/brine_shoals_afternoon.tscn",
+      "salvage_camp_burning": "res://game/battle/arenas/salvage_camp_burning.tscn"
     },
     "staging": {
       "doc": "M3-BPR-01: per-arena choreography (BattleChoreo): travel_scale scales every run, step, walk-in and exit (with reduced motion's on top); tempo scales the battle speed (under 1 = slower). Arenas with no row stage as the sandbox.",

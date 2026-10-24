@@ -12,6 +12,7 @@ const BOSSES := {
 	&"ch04_bottle_hermit": [&"rhen", &"asha", &"toma"],
 	&"ch04_spar_wraith": [&"rhen", &"asha", &"toma"],
 	&"ch05_cinder_matron": [&"rhen", &"asha", &"toma"],
+	&"ch06_inquisitor": [&"rhen", &"asha", &"toma"],
 	&"drownbell": [&"rhen", &"asha", &"toma"],
 }
 const SEED := 20261024
@@ -236,6 +237,44 @@ func test_an_encounter_without_a_row_has_no_intro() -> void:
 	assert_true(intro.row.is_empty())
 	assert_false(intro.holding())
 	assert_false(ctl.hud.holds_battle())
+	_free()
+
+
+# --- M3-BPR-03: the Inquisitor (Ch6 B04) ---------------------------------------------------
+
+
+## His card names a man, not a monster: his name and rank from the beats, and a sober epithet.
+func test_ch06_the_inquisitor_has_a_sincere_card() -> void:
+	var row := (cfg["rows"] as Dictionary)["ch06_inquisitor"] as Dictionary
+	assert_eq(str(row["enemy"]), "stillguard_inquisitor")
+	assert_eq(str(row["shot"]), "boss")
+	assert_eq(str(TranslationServer.translate(str(row["title_key"]))), "Inquisitor Hadric Moll")
+	var epithet := str(TranslationServer.translate(str(row["epithet_key"])))
+	assert_ne(epithet, str(row["epithet_key"]), "the epithet is translated")
+	_free()
+
+
+## The intro hides the encounter's opening prompt while it plays and gives it back after; Toma's first-turn bark
+## (turn_prompt_key) still shows on his first turn.
+func test_ch06_the_intro_and_the_first_turn_prompts_do_not_collide() -> void:
+	var intro := _start(&"ch06_inquisitor", 1.0)
+	assert_true(intro.playing(), "it plays at the first turn")
+	var help := ctl.hud.get_node(BattleBossIntro.HELP_LINE) as CanvasItem
+	assert_eq(help.modulate.a, 0.0, "the help line is hidden while it plays")
+	intro.advance(_total(intro) + EPS)
+	assert_true(intro.done())
+	assert_eq(help.modulate.a, 1.0, "the help line is back after it")
+	ctl.pacing_scale = 0.0
+	var bark := tr("BARK_CH06_TOMA_NOT_THEM")
+	var guard := 0
+	while guard < 200 and not (ctl.state == BattleController.STATE_COMMAND and ctl.engine.current.id == &"toma"):
+		guard += 1
+		if ctl.state == BattleController.STATE_COMMAND:
+			ctl.act(&"attack", [ctl.engine.enemies[0].id] as Array[StringName])
+		else:
+			ctl.tick(10.0)
+	assert_eq(ctl.engine.current.id, &"toma", "Toma's first turn comes")
+	assert_eq(ctl.hud.help_text(), bark, "his bark shows on it")
 	_free()
 
 
