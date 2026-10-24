@@ -51,7 +51,21 @@
     - hero_clips merged as the union of both blocks; all four clip libraries regenerate byte-identical;
     - test_hero_clips, test_hero_battle_clips, test_sefir and test_rig_integrity: OK;
     - post_import 19/19.
-- **In flight, three worktree sub-agents** (two resumed after the usage limit): M3-CHR-01 Ysolde, M3-CHR-03 Tavi Orse and Mother Kell (villager path), and M1-CHR-15 skirt and corrective bones.
+- **MERGE-READY @ (this commit): M3-CHR-01 Ysolde (review: rendering) and M3-CHR-03, villager half: Tavi Orse and Mother Kell.**
+  - **Ysolde:** LOD0 58,918, ysolde.glb 4.31 MB. `verify --job ysolde` 37 identical, on both numpy SIMD paths. Collar, book and ink-guards 0 mm.
+    - Ratchets: costume 31/6 (a run knee fold under the robe), body 45/70 (armpit), 4 exposed.
+    - 9 shots, viewed. Handoff 2026-10-24-character-10.md; review ysolde_review.md.
+  - **Tavi and Kell:** LOD0 30,198 and 33,596. Opt-in params keep the seven M2 villagers byte-identical. The wick props are a new job, `props_wick`.
+    - `verify` on the 9 villager jobs plus props_wick: identical.
+    - Ratchets: the armpit only.
+    - 9 shots, viewed. Handoff 2026-10-24-character-13.md.
+    - Neither has a level slot yet (there is no Ch1 or Ch7 scene); the actor scenes are listed in the handoff.
+  - **Gates on the merged head (075838e6):**
+    - validate_data, taskboard, a manifest of 148 shots;
+    - test_villagers, test_rig_integrity (7 characters), test_blender_builds, test_hero_clips, test_hero_battle_clips: OK;
+    - post_import 19/19, hero_stage 9/9;
+    - all five hero clip libraries regenerate byte-identical.
+- **In flight, two worktree sub-agents:** M3-CHR-03 hero half, Liss (hero path, with the battle clip set), and M1-CHR-15, skirt and corrective bones (Asha, Rhen, Toma).
 - **From the M3 sheets:**
   - Liss is a party member, so she is on the hero path; she stays in M3-CHR-03.
   - Mother Kell is Oruvel's chandler, not the diver. The story corrected this; glossary rows 195 and 254 are stale.
