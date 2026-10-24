@@ -29,6 +29,7 @@
     - 3 new shots (`<hero>_battle_attack`), viewed and approved.
   - **Ratchet:** Asha's VerseSleeve count limit rose 4 → 6 (sleeve-top vertices under the sleeve at hit and defend; viewed). The depth limit is unchanged.
   - **Requests sent to the battle track:** read the `contact` marker (contact currently lands late), finisher and support per-style timing, and ko revive.
+  - **The battle track has wired all three:** strikes land on the `contact` marker, the shared finisher and cast clips are fine, and a revive returns a hero to idle. **To do:** review M2-BPR-10 (their placeholder battle poses; reviewer: character) once claude/battle-presentation and this branch meet on the integration branch.
 - **In flight, two worktree sub-agents:** M3-CHR-01 Ysolde (hero) and M3-CHR-02 Sefir (hero).
 - **From the M3 sheets:**
   - Liss is a party member, so she is on the hero path; she stays in M3-CHR-03.
