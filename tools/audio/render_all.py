@@ -200,6 +200,8 @@ JOBS = [
     # M3-AUD-20: the Ch6 boss, the Stillguard Inquisitor and the raid-hound
     ("assets_src/music/stillguard_inquisitor.py", "assets/audio/music",
      ["stillguard_inquisitor.ogg", "stillguard_inquisitor.loop.json"], "music_loop"),
+    # M3-AUD-802: the field heroes' footsteps by surface and gait, halts, turns, cloth and gear foley
+    ("assets_src/sfx/hero_foley.py", "assets/audio/sfx/foley", _source_files("assets_src/sfx/hero_foley.py"), "sfx"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
