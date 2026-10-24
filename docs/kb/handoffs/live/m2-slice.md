@@ -3,6 +3,23 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **MERGE-READY @ a30b664:**
+  - `tools/ci_local.sh` exit 0, on the integration branch cf999e0 merged in.
+  - 1527 Godot tests, 0 failed; coverage battle 99.95%, progression 96.69% (within baseline).
+  - Tools unittest 524 + 9 OK.
+  - 84 shots compared, 0 failed.
+  - Blender: `HYMN_BLENDER_REQUIRED=1`, base cf999e0, `vegetation` and `haluna_kit` both identical. `haluna_kit` takes the manifest's `default_threads` 4.
+  - The only commit after the run is a30b664, a docs note.
+- **Lead 13:09, M2-review blockers taken ahead of M3:**
+  1. B06 Saltgrass Causeway;
+  2. the B12 end-card voice-over, coda and credits;
+  3. the chapter advance, plus an autosave before the shrine;
+  4. objective data (waiting on UI's note).
+  The Ch1 build subagent keeps running in its worktree.
+- **To the Lead, on Ch7** (send_message to the Lead is still refused):
+  - The Ch7 sheet's opponent is the atoll side **Sorrin**: Tamsule wins offscreen, and Pemakar is Ch5's town. Rhen plays in **Pio**'s place.
+  - I'll rename the Reefball engine's provisional loc rows to match in M3-C07-02.
+  - B05 ends on `<<event start_reefball tidecup_opening>>`.
 - **M3 Act I is under way** (the Lead's 12:00 message). The tasks are filed in `docs/kb/tasks/M3/`:
   - M3-C01..C09-01, the beat sheets;
   - M3-C0x-02, the playable chapters;
