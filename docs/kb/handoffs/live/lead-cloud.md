@@ -26,6 +26,7 @@
 5. Review sweep R over the review column, and keep ~3 local agents busy (candidates: M1-QA-10, M2-CMB-06 if m2-slice doesn't take it).
 
 ## Log
+- 2026-10-24 ~14:20: usage-limit stop at ~14:10. Resumed battle-presentation, ui, env-art and audio, and sent every track the no-waiting gate rules (CONSOLIDATED §4). Batch 5 is HELD: the shrine_s01 and s02 lavapipe captures deadlock after the GI bake (2/2); a QA agent is bisecting. Asha: 4 DIFF traced to one 1-ULP UV (Head vertex 3918) plus the texels around it; the characters track is snapping UVs. Gate queue (serial): rnd09 → batch 4 → the character shots → combat (batch 6).
 - 2026-10-24 ~14:05: **To pc-gpu: queue top-up, in this order. Read the entry below first, which has the Ultra storm budget decision.**
   1. **Ultra storm at or under 4 ms at 1440p**: your next item, ahead of M3-RND-01. Take a free M2-RND id.
   2. M3-RND-01 Reefball look, as you planned.
