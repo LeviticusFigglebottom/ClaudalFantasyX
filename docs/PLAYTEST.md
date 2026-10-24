@@ -49,6 +49,19 @@ This is a rough but complete thread through the first chapters of *Hymn of the U
 10. **The dock at night.** Win, and you're back in Haluna after dark: moonlight, stars, a faintly glowing sea and oil lamps under the eaves. Rhen finds Asha at the end of the dock and asks to come with her. Talking to the villagers again now gives their night lines.
 11. **End card.** Rhen's voice-over on black, then the card and a short list of credits. When the prompt shows, press accept to return to the title. **Continue** loads your save, which now shows the chapter you reached.
 
+## Also playable: Ch7, "The Tidecup" (greybox, about 15 minutes)
+
+Ch4 to Ch6 aren't built yet, so Ch7 isn't on the New Game thread. To play it from an editor run, press **F5** (debug teleport), choose **Ch7: Tamsule, the river mouth**, and press Enter. Every place is grey blocks and capsules, and the chapter is silent (its music and sounds don't exist yet). Ch7 has no fights.
+
+1. **Into Tamsule.** The barge ties up under the stilt city; the bronze Bell hangs on its gantry beyond the north edge, with the sea held in its mouth.
+2. **The port.** Talk to the market trader, the Reefball board-caller, the child, the fisher and the old woman on the stilt lane (west), and the boatman and Ysolde at the gantry foot (north).
+3. **Tavi.** Cross the small bridge east of the gantry foot to the market boats. Oruvel's Reefball captain finds Rhen. There's one choice; both are fine. Rhen takes Pio's side-band (a key item).
+4. **The Bell.** Walk to the far (north) edge of the gantry foot to go up to the galleries. The galleries scene plays; then Rhen is on the pool steps, and **the game autosaves**.
+5. **The naming.** Walk down to the catch-pool's rim. The two captains each name one person the sea has taken, and the crowd answers.
+6. **The match is a stand-in for now.** The Reefball match isn't built, so the naming goes straight to its end: the zone reloads at the pool and "After the Bell" plays. It's written to read the same whether Oruvel won or lost.
+7. **Optional, "The Empty Moorings":** walk east over the bridge to the timber staging with six small dark rings and talk to Tavi at his boat.
+8. **The afternoon.** Leave by the gallery entrance (south-west) to return to the port, where some of the talk has changed. Walk to the harbour (east) to board the trader for Corrow. The end card stands in for Ch8.
+
 ## Running it
 
 ### Option A: the Godot editor (recommended)
@@ -99,6 +112,7 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - In the field, Escape opens the field menu, which pauses the game. From it you can open the bestiary or choose each hero's Swell fill mode. Escape backs out a step at a time and then closes it. It doesn't open during a cutscene or a conversation. **E** also advances dialogue.
 
 - **Ch1 is greybox:** blocks and capsules, and a teal stand-in for the underwater look. Its music and sounds don't exist yet, so the chapter plays mostly silent. The sea between the hulls is a floor you can walk on. Ch1 has no save shrine (its chapter start autosaves).
+- **Ch7 is greybox too**, and its Reefball match is a stand-in that skips straight to the result. The port has no shop, inn or save shrine yet (its chapter start and the pool steps autosave). Liss and Kerrid appear only as capsules: they can't join the party yet.
 
 ## Reporting
 
