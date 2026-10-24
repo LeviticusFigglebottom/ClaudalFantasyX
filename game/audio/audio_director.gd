@@ -16,6 +16,10 @@ extends Node
 ##   live under this node, not in the other scene's tree, and never write game state.
 ## - **Ambience (M2-AUD-05):** ambience.json's beds join music.json's, and its zone beds apply where music.json's
 ##   row names none; the wind bed's level follows the zone's wind speed (WeatherClock.zone_wind).
+## - **Reverb (M2-AUD-10):** a WorldVerb puts an AudioEffectReverb on the World and Combat buses; the zone row's
+##   `reverb` key picks a mix.json preset, ramped.
+## - **Voices (M3-AUD-07):** each DialogueBox gets a VoiceAudio (voice_audio.gd): the speaker's own blips from
+##   voices.json, and a recorded line when its file exists. A CutsceneSequencer's line_shown tells it each line.
 ## It runs while the tree is paused (PROCESS_MODE_ALWAYS), so a menu that pauses the field keeps its music and
 ## sounds; nothing it drives moves the game.
 ## Time passes only through advance(delta), which _process calls; tests call it directly.
@@ -38,6 +42,10 @@ var bed_table: Dictionary = {}
 var wind_db := 0.0
 ## footsteps.json (each FieldController's FootstepAudio).
 var footstep_data: Dictionary = {}
+## voices.json (each DialogueBox's VoiceAudio; M3-AUD-07).
+var voice_data: Dictionary = {}
+## The World and Combat reverb (M2-AUD-10).
+var verb := WorldVerb.new()
 var ui: UiAudio
 var music: MusicDeck
 var sfx: SfxBank
@@ -73,6 +81,7 @@ func _ready() -> void:
 	)
 	ui.configure(AudioData.table(AudioData.UI_SFX))
 	footstep_data = AudioData.table(AudioData.FOOTSTEPS)
+	voice_data = AudioData.table(AudioData.VOICES)
 	get_tree().node_added.connect(_on_node_added)
 	var router := get_node_or_null(^"/root/SceneRouter")
 	if router != null and router.has_signal(&"scene_swapping"):
@@ -93,6 +102,7 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 		ui.player = func(id: StringName) -> void: play_sfx(id)
 		add_child(ui)
 	build_buses(mix)
+	verb.configure(mix)
 	if music == null:
 		music = MusicDeck.new()
 		music.name = "Music"
@@ -115,10 +125,15 @@ func advance(delta: float) -> void:
 	for bed: FadeVoice in beds.values():
 		bed.step(delta, music.floor_db)
 	_step_ducks(delta)
+	verb.advance(delta)
 	ui.step()
 	for l: Variant in listeners.values():
-		if l is FootstepAudio and is_instance_valid(l):
+		if not is_instance_valid(l):
+			continue
+		if l is FootstepAudio:
 			(l as FootstepAudio).advance(delta)
+		elif l is VoiceAudio:
+			(l as VoiceAudio).advance(delta)
 
 
 # --------------------------------------------------------------------------- music
@@ -149,6 +164,9 @@ func apply_zone(scene_path: String) -> void:
 	)
 	var w := WeatherClock.zone_wind(scene_path)
 	wind_db = AudioData.wind_db(ambience_data, Vector3(w.x, w.y, w.z).length())
+	var room := verb.preset_for(zone)
+	if room != verb.preset:
+		verb.apply(room)
 	if zone.is_empty():
 		zone_applied.emit(scene_path, zone)
 		return
@@ -307,7 +325,10 @@ func _apply_bus(bus: StringName) -> void:
 
 func _on_node_added(node: Node) -> void:
 	if node is CutsceneSequencer:
-		pass  # its players are routed as they enter (below)
+		# its players are routed as they enter (below); its lines tell the box's VoiceAudio who speaks
+		var seq := node as CutsceneSequencer
+		if not seq.line_shown.is_connected(_on_line_shown):
+			seq.line_shown.connect(_on_line_shown.bind(seq))
 	elif node is AudioStreamPlayer and node.get_parent() is CutsceneSequencer:
 		_route_sequencer_player(node as AudioStreamPlayer)
 	elif node is DialogueBox:
@@ -315,6 +336,7 @@ func _on_node_added(node: Node) -> void:
 		var blip := node.get_node_or_null(NodePath(String(BLIP_NODE))) as AudioStreamPlayer
 		if blip != null:
 			blip.bus = &"Voice"
+		_later(attach_voice, node)
 	elif node is BattleController:
 		_battles.append(node)
 	elif node is BattleVfx:
@@ -433,6 +455,30 @@ func attach_footsteps(walker: Node) -> void:
 	var path := zone_path if zone_path != "" or scene == null else scene.scene_file_path
 	l.attach(walker as Node3D, path)
 	listeners[walker] = l
+
+
+## A VoiceAudio for dialogue box `box` (once; M3-AUD-07). Its blips play through play_sfx.
+func attach_voice(box: Node) -> VoiceAudio:
+	if not is_instance_valid(box) or not box is DialogueBox:
+		return null
+	if listeners.has(box):
+		return listeners[box] as VoiceAudio
+	var l := VoiceAudio.new(voice_data)
+	l.name = "VoiceAudio"
+	l.player = func(id: StringName, opts: Dictionary) -> void: play_sfx(id, opts)
+	add_child(l)
+	l.attach(box as DialogueBox)
+	listeners[box] = l
+	return l
+
+
+## A sequencer's line: its box's VoiceAudio learns the voice and looks for a recorded file.
+func _on_line_shown(step: DialogueStep, seq: CutsceneSequencer) -> void:
+	if not is_instance_valid(seq) or seq.overlay == null or not is_instance_valid(seq.overlay.box):
+		return
+	var l := attach_voice(seq.overlay.box)
+	if l != null:
+		l.on_line(step)
 
 
 ## ambience.json's wind bed id ("" when none).

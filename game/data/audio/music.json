@@ -64,14 +64,17 @@
           "music": "haluna_night"
         }
       ],
+      "reverb": "village_lanes",
       "_note": "B03 by day; B11 the dock at night after the Drownbell. Beds: ambience.json"
     },
     {
       "scene": "res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
-      "music": "shell_shrine_interior"
+      "music": "shell_shrine_interior",
+      "reverb": "stone_shrine"
     },
     {
       "scene": "res://game/flow/field_battle.tscn",
+      "reverb": "battle_beach",
       "_note": "the battle's cue comes from `battle` when the battle starts"
     },
     {

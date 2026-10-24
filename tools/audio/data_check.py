@@ -19,6 +19,8 @@ SHRINE_SFX = "game/data/audio/shrine_sfx.json"
 UI_SFX = "game/data/audio/ui_sfx.json"
 AMBIENCE = "game/data/audio/ambience.json"
 FOOTSTEPS = "game/data/audio/footsteps.json"
+VOICES = "game/data/audio/voices.json"  # M3-AUD-07
+SPEAKERS = "game/data/dialogue/speakers.json"
 CLASSES = "@classes"  # load_files: {global class name: [its declared signals]} from game/**/*.gd
 NODE_SIGNALS = {"ready", "tree_entered", "tree_exiting", "tree_exited", "visibility_changed", "hidden",
                 "draw", "resized", "focus_entered", "focus_exited"}
@@ -352,6 +354,10 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
             errs += hook_errors(name, files[name], ids, vfx_effects)
     if UI_SFX in files:
         errs += ui_hook_errors(files[UI_SFX], ids, files.get(CLASSES))
+    errs += reverb_errors(files.get(MIX), files.get(MUSIC), buses)
+    if VOICES in files:
+        rows = merged_sfx(files).get("sfx") or {}
+        errs += voice_errors(files[VOICES], files.get(SPEAKERS), rows)
     return errs
 
 
@@ -374,7 +380,7 @@ def load_files(root: Path) -> dict[str, object]:
     out = {}
     extra = [str(p.relative_to(root)) for p in sorted((root / SFX_DIR).glob("sfx_*.json"))]
     for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, AMBIENCE, FOOTSTEPS, ENCOUNTERS, VFX_EFFECTS,
-                ACCESSIBILITY] + extra:
+                ACCESSIBILITY, VOICES, SPEAKERS] + extra:
         p = root / rel
         if p.is_file():
             out[rel] = json.loads(p.read_text(encoding="utf-8"))
@@ -393,3 +399,98 @@ def script_classes(root: Path) -> dict[str, list[str]]:
         if m:
             out[m.group(1)] = re.findall(r"(?m)^signal\s+(\w+)", text)
     return out
+
+
+# AudioEffectReverb's ranges (M2-AUD-10)
+REVERB_RANGES = {"room_size": (0.0, 1.0), "damping": (0.0, 1.0), "spread": (0.0, 1.0), "hipass": (0.0, 1.0),
+                 "dry": (0.0, 1.0), "wet": (0.0, 1.0), "predelay_msec": (20.0, 500.0),
+                 "predelay_feedback": (0.0, 0.98)}
+
+
+def reverb_errors(mix: object, music: object, buses: set[str]) -> list[str]:
+    """mix.json `reverb` / `reverb_presets` and the zone rows' `reverb` keys (M2-AUD-10)."""
+    errs: list[str] = []
+    if not isinstance(mix, dict):
+        return errs
+    cfg = mix.get("reverb")
+    presets = mix.get("reverb_presets") or {}
+    if cfg is not None:
+        if not isinstance(cfg, dict):
+            return [f"{MIX} reverb: must be an object"]
+        for b in cfg.get("buses", []):
+            if b not in buses:
+                errs.append(f"{MIX} reverb.buses: unknown bus {b}")
+        if cfg.get("default") not in presets:
+            errs.append(f"{MIX} reverb.default: unknown preset {cfg.get('default')}")
+        if not _num(cfg.get("ramp_sec", 0)) or cfg.get("ramp_sec", 0) < 0:
+            errs.append(f"{MIX} reverb.ramp_sec: a number >= 0")
+    for pid, row in presets.items():
+        w = f"{MIX} reverb_presets.{pid}"
+        if not isinstance(row, dict):
+            errs.append(f"{w}: must be an object")
+            continue
+        for k, (lo, hi) in REVERB_RANGES.items():
+            if k not in row:
+                errs.append(f"{w}.{k}: missing")
+            elif not _num(row[k]) or not lo <= row[k] <= hi:
+                errs.append(f"{w}.{k}: a number in {lo}..{hi}")
+    zones = (music.get("zones") if isinstance(music, dict) else None) or []
+    for i, z in enumerate(zones):
+        if not isinstance(z, dict):
+            continue
+        for w, row in [(f"{MUSIC} zones[{i}]", z)] + [(f"{MUSIC} zones[{i}].variants[{j}]", v)
+                                                     for j, v in enumerate(z.get("variants", []))
+                                                     if isinstance(v, dict)]:
+            if "reverb" in row and row["reverb"] not in presets:
+                errs.append(f"{w}.reverb: unknown preset {row['reverb']} (mix.json reverb_presets)")
+    return errs
+
+
+def voice_errors(doc: object, speakers: object, rows: dict) -> list[str]:
+    """voices.json (M3-AUD-07): a voice for every speakers.json id, blip sets of real Voice-bus rows, sane numbers,
+    and a VO pattern with {line_id}."""
+    errs: list[str] = []
+    if not isinstance(doc, dict):
+        return [f"{VOICES}: must be an object"]
+
+    def voice(row: object, w: str, full: bool) -> None:
+        if not isinstance(row, dict):
+            errs.append(f"{w}: must be an object")
+            return
+        blips = row.get("blips")
+        if full or blips is not None:
+            if not isinstance(blips, list) or not blips:
+                errs.append(f"{w}.blips: a non-empty list of sfx rows")
+                blips = []
+            for b in blips:
+                if b not in rows:
+                    errs.append(f"{w}.blips: unknown sfx row {b}")
+                elif (rows[b] or {}).get("bus") != "Voice":
+                    errs.append(f"{w}.blips: row {b} must play on the Voice bus")
+        checks = {"pitch": (0.25, 4.0), "rate_ms": (0, 1000), "jitter": (0.0, 0.3), "volume_db": (-40.0, 12.0)}
+        for k, (lo, hi) in checks.items():
+            if k in row and (not _num(row[k]) or not lo <= row[k] <= hi):
+                errs.append(f"{w}.{k}: a number in {lo}..{hi}")
+            elif full and k not in row:
+                errs.append(f"{w}.{k}: missing")
+
+    voice(doc.get("default"), f"{VOICES} default", True)
+    table = doc.get("speakers") or {}
+    if not isinstance(table, dict):
+        errs.append(f"{VOICES} speakers: must be an object")
+        table = {}
+    known = {r.get("id") for r in ((speakers or {}).get("speakers") or []) if isinstance(r, dict)}
+    for sid, row in table.items():
+        if speakers is not None and sid not in known:
+            errs.append(f"{VOICES} speakers.{sid}: not a speaker in {SPEAKERS}")
+        voice(row, f"{VOICES} speakers.{sid}", False)
+    for sid in sorted(k for k in known if isinstance(k, str)):
+        if sid not in table:
+            errs.append(f"{VOICES} speakers: {sid} ({SPEAKERS}) has no voice")
+    vo = doc.get("vo") or {}
+    pattern = vo.get("pattern", "")
+    if not isinstance(pattern, str) or not pattern.startswith("res://") or "{line_id}" not in pattern:
+        errs.append(f"{VOICES} vo.pattern: a res:// path with {{line_id}} (and usually {{speaker}})")
+    if "bus" in vo and vo["bus"] != "Voice":
+        errs.append(f"{VOICES} vo.bus: recorded lines play on the Voice bus")
+    return errs

@@ -1,0 +1,148 @@
+{
+  "version": 1,
+  "doc": "Dialogue voices (M3-AUD-07; SPEC §16 Q4: no voice acting yet, but ready for it; docs/kb/tech/audio_runtime.md \"Voices\"). VoiceAudio (game/audio/voice_audio.gd) listens to each DialogueBox and plays the speaker's blips in place of the box's one shared blip. speakers: a speakers.json id (every one needs a row; validate_data checks) -> blips (sfx row ids on the Voice bus; the blips cycle through the set), pitch (a pitch scale on top of the row's own timbre), rate_ms (the shortest gap between two blips; a blip sooner than that is dropped), jitter (each blip is pitched within +- this fraction, from a seeded generator), volume_db (added to the text box's blip_volume_db). default: the voice of an unknown speaker. vo: recorded lines, for later. A line's file is its compiled `voice` field when that is set, else `pattern` with {speaker} (the speaker, or the narrator identity of narration, else the `narrator` value) and {line_id}. When the file exists it plays on `bus` and, with suppress_blips, the line plays no blips; a missing file falls back to the blips.",
+  "default": {
+    "blips": [
+      "voice_soft"
+    ],
+    "pitch": 1.0,
+    "rate_ms": 60,
+    "jitter": 0.05,
+    "volume_db": 0.0
+  },
+  "vo": {
+    "pattern": "res://assets/audio/vo/{speaker}/{line_id}.ogg",
+    "narrator": "narrator",
+    "bus": "Voice",
+    "volume_db": 0.0,
+    "suppress_blips": true
+  },
+  "speakers": {
+    "rhen": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 1.0,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "asha": {
+      "blips": [
+        "voice_bright"
+      ],
+      "pitch": 1.02,
+      "rate_ms": 55,
+      "jitter": 0.06,
+      "volume_db": 0.0
+    },
+    "toma": {
+      "blips": [
+        "voice_low"
+      ],
+      "pitch": 1.12,
+      "rate_ms": 70,
+      "jitter": 0.04,
+      "volume_db": 0.0
+    },
+    "liss": {
+      "blips": [
+        "voice_bright"
+      ],
+      "pitch": 0.96,
+      "rate_ms": 55,
+      "jitter": 0.06,
+      "volume_db": 0.0
+    },
+    "ysolde": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 1.12,
+      "rate_ms": 65,
+      "jitter": 0.03,
+      "volume_db": 0.0
+    },
+    "kerrid": {
+      "blips": [
+        "voice_low"
+      ],
+      "pitch": 0.95,
+      "rate_ms": 80,
+      "jitter": 0.03,
+      "volume_db": 0.0
+    },
+    "pell": {
+      "blips": [
+        "voice_breathy"
+      ],
+      "pitch": 0.92,
+      "rate_ms": 70,
+      "jitter": 0.04,
+      "volume_db": 0.0
+    },
+    "sefir": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.86,
+      "rate_ms": 65,
+      "jitter": 0.03,
+      "volume_db": 0.0
+    },
+    "vendor": {
+      "blips": [
+        "voice_bright"
+      ],
+      "pitch": 0.94,
+      "rate_ms": 55,
+      "jitter": 0.07,
+      "volume_db": 0.0
+    },
+    "reed": {
+      "blips": [
+        "voice_bright"
+      ],
+      "pitch": 1.08,
+      "rate_ms": 55,
+      "jitter": 0.06,
+      "volume_db": 0.0
+    },
+    "netmender": {
+      "blips": [
+        "voice_breathy"
+      ],
+      "pitch": 0.88,
+      "rate_ms": 65,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "fisher": {
+      "blips": [
+        "voice_low"
+      ],
+      "pitch": 1.2,
+      "rate_ms": 65,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "neme": {
+      "blips": [
+        "voice_breathy"
+      ],
+      "pitch": 1.06,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
+    },
+    "child": {
+      "blips": [
+        "voice_child"
+      ],
+      "pitch": 1.0,
+      "rate_ms": 55,
+      "jitter": 0.08,
+      "volume_db": 0.0
+    }
+  }
+}
