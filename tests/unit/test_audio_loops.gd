@@ -93,7 +93,10 @@ func test_streams_load_and_take_loop_settings() -> void:
 		var bpm := float(meta["bpm"])
 		if bpm > 0.0:
 			assert_between(stream.bpm, bpm - 0.01, bpm + 0.01, "%s bpm" % path)
-			assert_eq(stream.beat_count, int(meta["beat_count"]), "%s beat_count" % path)
+		# With bpm and beat_count both set, Godot loops after beat_count beats counted from the file start, not from
+		# loop_offset, so a cue with an intro would wrap early by the intro: the import keeps beat_count 0 and the
+		# engine loops at the file's end (render_all.py _sync_import; the sidecar keeps the musical count).
+		assert_eq(stream.beat_count, 0, "%s imports with beat_count 0" % path)
 
 
 func test_playback_instantiates() -> void:

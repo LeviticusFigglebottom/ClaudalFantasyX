@@ -15,5 +15,5 @@ dest_files=["res://.godot/imported/sefir_theme.ogg-417caf18dfce449c7a134b6b3be4d
 loop=true
 loop_offset=0.0
 bpm=54.0
-beat_count=64
+beat_count=0
 bar_beats=4

@@ -154,3 +154,11 @@ Ambience too: the murmur at −26, the excited bed at **−23** (3 LU over the m
 without a fader move). World SFX at −18 momentary max, swimming strokes at −20 (they repeat), the reed-pipe whistle
 at −17 (it has to cut through the crowd), and the lantern's underwater hum, a 6 s loop, at −24 integrated like the
 shrine's pool fill. Every rule is in `tools/audio/targets.py`.
+
+**Budget (2026-10-24):** the slice plus the first Act I cues reached 23.5 MiB, so the total audio budget in
+`tools/audio/targets.py` is now 48 MiB (about 1 MB per minute of music; the full game's 60–80 cues land near 70–90 MB,
+which is a repository-size question for the Lead: Git LFS, STATUS.md). Each file stays under 5 MB.
+
+**Loop import rule:** `.import` files keep `beat_count=0`. Godot 4.6 loops an Ogg after `beat_count` beats counted
+from the start of the file (not from `loop_offset`), so a cue with an intro would wrap early by its intro's length.
+The sidecars keep the musical beat count; `tests/unit/test_audio_loops.gd` asserts the import keeps 0.

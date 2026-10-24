@@ -193,7 +193,11 @@ def _sync_import(ogg: str, meta: dict) -> None:
     with open(imp, encoding="utf-8") as f:
         txt = f.read()
     want = {"loop": "true", "loop_offset": repr(float(meta["loop_offset_seconds"])),
-            "bpm": repr(float(meta["bpm"])), "beat_count": str(int(meta["beat_count"])),
+            # beat_count stays 0: with bpm and beat_count both set, Godot 4.6's Ogg playback loops after
+            # beat_count beats counted from the *file start* (audio_stream_ogg_vorbis.cpp, beat_length_frames),
+            # not from loop_offset, so a cue with an intro would wrap early by the intro's length. The sidecar keeps
+            # the musical beat count for tools; the engine loops at the file's end.
+            "bpm": repr(float(meta["bpm"])), "beat_count": "0",
             "bar_beats": str(int(meta["bar_beats"]))}
     new = txt
     for k, v in want.items():

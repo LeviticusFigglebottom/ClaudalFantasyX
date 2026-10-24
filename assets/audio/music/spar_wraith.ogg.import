@@ -15,5 +15,5 @@ dest_files=["res://.godot/imported/spar_wraith.ogg-b704b0fd2c51cdfd180f0c4c315fe
 loop=true
 loop_offset=2.8
 bpm=300.0
-beat_count=364
+beat_count=0
 bar_beats=7
