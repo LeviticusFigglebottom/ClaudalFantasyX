@@ -410,7 +410,9 @@ Lead: please queue more slice work.
 ## Queue
 - **Wildlife** (creatures M3-CRE-611, claude/creatures 778bf972, landing after big8): add a `WildlifeLayer` (game/world/wildlife/wildlife_layer.gd) to haluna.tscn. Make GreyboxZone add one when game/data/world/wildlife/<location>.json exists.
 - **Villagers alive** (creatures M3-CRE-610, FieldNpc, after hero-integration): call begin_talk(player) and end_talk() around villager barks in HalunaStory and ZoneStory (docs/kb/tech/field_npc.md).
-- **hero-integration's sequencer patch** (docs/kb/tech/hero_motion_sequencer.patch on claude/hero-integration): apply it after that branch reaches the integration branch.
+- **hero-integration's sequencer patch** (docs/kb/tech/hero_motion_sequencer.patch on claude/hero-integration): apply it after that branch reaches the integration branch. With it:
+  - set sequencer.json `walk_mps` 1.3 → 1.0, to match the M2-CHR-12 walk cycle;
+  - in `_cue_mark`, call `HeroMotion.set_locomotion_speed(actor, run_mps)` at the start of a run move, so it gets the run start (M2-HER-1107).
 - **Rhen's lantern lit "as the line lands"** in the prologue: needs an `@light` cue (follow-up).
 1. ~~M2-FP-10 dialogue key light~~ (review)
 2. ~~Drownbell follow-ups (M2-FP-06)~~ → M2-FP-12 (review)
