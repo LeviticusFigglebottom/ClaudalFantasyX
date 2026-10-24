@@ -1048,6 +1048,44 @@
           }
         }
       }
+    },
+    {
+      "id": "tamsule_t01_bell_from_the_mouth",
+      "scene": "res://game/levels/_tests/tamsule_bell_kit/tamsule_bell_kit.tscn",
+      "camera": "Cameras/T01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "tamsule_t03_oruvel_moorings",
+      "scene": "res://game/levels/_tests/tamsule_bell_kit/tamsule_bell_kit.tscn",
+      "camera": "Cameras/T03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
