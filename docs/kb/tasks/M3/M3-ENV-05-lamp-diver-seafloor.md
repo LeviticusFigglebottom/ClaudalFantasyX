@@ -2,8 +2,8 @@
 id: M3-ENV-05
 title: Ch1 the lamp-diver's sea floor: Oruvel Underway, the drowned tower (kit at final quality)
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art worktree"
 depends_on: [M2-ENV-06]
 milestone: M3
 request-from: lead
