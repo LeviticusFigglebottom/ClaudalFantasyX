@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://game/battle/scene/battle_controller.gd" id="1_ctrl"]
 [ext_resource type="Script" path="res://game/battle/scene/battle_stage.gd" id="2_stage"]
 [ext_resource type="PackedScene" path="res://game/ui/battle/battle_hud.tscn" id="3_hud"]
+[ext_resource type="Script" path="res://game/ui/menus/battle_pause/battle_pause.gd" id="4_pause"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
 sky_top_color = Color(0.18, 0.498, 0.839, 1)
@@ -135,3 +136,6 @@ fov = 40.0
 
 [node name="BattleHud" parent="HudLayer" instance=ExtResource("3_hud")]
 unique_name_in_owner = true
+
+[node name="BattlePause" type="Node" parent="."]
+script = ExtResource("4_pause")

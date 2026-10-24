@@ -14,7 +14,7 @@ func before_each() -> void:
 	menu = null
 
 
-func after_each() -> void:
+func _teardown() -> void:
 	FlowRouting.record = Callable()
 	if menu != null and is_instance_valid(menu):
 		menu.close()
@@ -33,6 +33,7 @@ func test_party_rows_are_off_with_nobody_in_the_party_and_say_why() -> void:
 	for id in FieldMenuModel.PARTY_ROWS:
 		assert_true(full.root_rows()[_at(id)]["enabled"])
 		assert_eq(full.root_desc(id), tr(FieldMenuModel.ROOT_DESC_KEYS[id]))
+	_teardown()
 
 
 func test_each_party_row_opens_its_page_and_cancel_hands_back() -> void:
@@ -49,6 +50,7 @@ func test_each_party_row_opens_its_page_and_cancel_hands_back() -> void:
 		assert_true(menu.child == null, "closed")
 		assert_true(menu.visible)
 		assert_eq(menu.root_page().current_row()["id"], id, "the cursor is where it was")
+	_teardown()
 
 
 func test_quit_asks_first_with_stay_under_the_cursor() -> void:
@@ -74,6 +76,7 @@ func test_quit_asks_first_with_stay_under_the_cursor() -> void:
 	menu.accept()
 	assert_false(menu.is_open(), "quitting closes the menu")
 	assert_eq(went, [[FieldMenu.TITLE_SCENE]], "and returns to the title")
+	_teardown()
 
 
 func test_party_sheet_builds_a_hero_like_a_battle_does() -> void:
@@ -97,6 +100,7 @@ func test_party_sheet_builds_a_hero_like_a_battle_does() -> void:
 	assert_eq(sheet.combatant(&"rhen").hp, 1, "the saved HP, applied last")
 	assert_true(sheet.save_lattice())
 	assert_true((state.lattice.get("characters", {}) as Dictionary).has("rhen"), "written back")
+	_teardown()
 
 
 func _open() -> void:

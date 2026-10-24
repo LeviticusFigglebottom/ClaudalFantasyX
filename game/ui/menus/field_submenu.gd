@@ -62,7 +62,7 @@ func load_layout() -> Dictionary:
 func _ready() -> void:
 	_d = load_layout()
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	UiSettings.shared().follow(self)
 	_build_backdrop()

@@ -1076,6 +1076,10 @@
     {
       "id": "battle_statuses_colorblind",
       "scene": "res://game/battle/scene/shots/battle_statuses_colorblind.tscn"
+    },
+    {
+      "id": "battle_pause",
+      "scene": "res://game/ui/menus/battle_pause/shots/battle_pause.tscn"
     }
   ]
 }

@@ -17,3 +17,9 @@ FIELD_MENU_QUIT_STAY_DESC,Close this question and keep going.
 FIELD_MENU_QUIT_WARN,Anything since your last save at a shrine will be lost.
 FIELD_MENU_HELP_QUIT,Up and Down: choose · Confirm: choose · Cancel: back
 FIELD_MENU_HELP_BACK,Cancel: back
+BATTLE_PAUSE_TITLE,Paused
+BATTLE_PAUSE_RESUME,Resume
+BATTLE_PAUSE_RESUME_DESC,Return to the fight where it stood.
+BATTLE_PAUSE_QUIT_DESC,Leave the fight and return to the title screen.
+BATTLE_PAUSE_STAY_DESC,Close this question and keep fighting.
+BATTLE_PAUSE_HELP,Up and Down: choose · Confirm: choose · Cancel or Pause: resume
