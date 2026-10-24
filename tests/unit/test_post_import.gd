@@ -15,6 +15,7 @@ const BUST := "res://assets/characters/shader_test/shader_test_bust.glb"
 const ASHA_DIR := "res://assets/characters/asha/"
 const KINDS: Array[String] = [
 	"base_body",
+	"brightwater_ferry_kit",
 	"brine_shoals_kit",
 	"characters",
 	"corrow_kit",
