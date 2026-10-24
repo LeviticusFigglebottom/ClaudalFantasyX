@@ -31,7 +31,11 @@ func _done() -> void:
 
 func test_the_accessibility_rows_are_the_settings_with_their_values() -> void:
 	var m := AccessibilityMenuModel.new(s, "")
-	assert_eq(m.row_ids(), s.settings())
+	var not_audio: Array[StringName] = []
+	for id in s.settings():
+		if not AudioMenuModel.audio_ids().has(id):
+			not_audio.append(id)
+	assert_eq(m.row_ids(), not_audio, "every setting but the Audio page's")
 	assert_eq(m.label(UiSettings.TEXT_SCALE), tr("SET_TEXT_SCALE"))
 	assert_eq(m.value_text(UiSettings.REDUCED_MOTION), tr("GFX_VALUE_OFF"))
 	assert_eq(m.value_text(UiSettings.TEXT_SCALE), tr("SET_TEXT_SCALE_100"))
@@ -98,9 +102,11 @@ func test_the_hub_opens_each_page_and_comes_back() -> void:
 	hub.graphics_viewport = SubViewport.new()
 	_add(hub.graphics_viewport)
 	_add(hub)
-	var labels := PackedStringArray([tr("SET_MENU_GRAPHICS"), tr("SET_MENU_ACCESSIBILITY"), tr("SET_MENU_CONTROLS")])
-	assert_eq(hub.row_labels(), labels)
+	var labels := PackedStringArray([tr("SET_MENU_GRAPHICS"), tr("SET_MENU_AUDIO")])
+	labels.append_array([tr("SET_MENU_ACCESSIBILITY"), tr("SET_MENU_CONTROLS")])
+	assert_eq(hub.row_labels(), labels, "the Audio track's volume rows are in the data, so Audio shows")
 	assert_eq(hub.help_text(), tr("SET_MENU_HELP_GRAPHICS"))
+	assert_true(hub.handle_input(_ev(&"ui_down")))
 	assert_true(hub.handle_input(_ev(&"ui_down")))
 	assert_eq(hub.current(), SettingsMenu.ROW_ACCESSIBILITY)
 	assert_eq(hub.help_text(), tr("SET_MENU_HELP_ACCESSIBILITY"))

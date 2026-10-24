@@ -845,13 +845,7 @@ func _preview_skill(skill_id: StringName, targets: Array[BattleCombatant]) -> vo
 	if lands != chosen:
 		marked = [lands]
 	_show_timeline(TurnTimeline.MODE_PREVIEW, preview, BattleIds.of(marked))
-	# What changes the outcome (Provoke, Reflect, Zombie) reads before the generic description.
-	var parts := menus.target_notes(engine, skill_id, chosen, lands)
-	if swell.is_technique(engine.current, skill_id):
-		parts.append(menus.swell_help(engine, swell, skill_id, _ghost_slot() - 1))
-	else:
-		parts.append(menus.skill_help(engine, skill_id, _ghost_slot() - 1))
-	hud.set_help(" · ".join(parts))
+	hud.set_help(menus.skill_preview_help(engine, swell, skill_id, chosen, lands, _ghost_slot() - 1))
 
 
 ## Previews item `item_id` on `targets`. What the use will really do leads the help line; a use
