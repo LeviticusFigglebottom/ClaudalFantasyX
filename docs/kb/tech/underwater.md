@@ -17,13 +17,17 @@ camera below the surface the underwater look, and a half-submerged one a clean w
 |---|---|
 | **Absorption and scatter** | Two full-screen passes drawn after everything (render priorities 126 and 127). The *multiply* pass multiplies the frame by the per-channel transmittance `exp(-sigma x path)`, where `sigma = -ln(transmit) / transmit_distance_m`: red goes first. The *add* pass adds the in-scattered light: the scatter colour, darkening toward the deep colour with depth and when looking down, times (1 - transmittance) and the scene's light level. Neither reads the screen texture, so everything drawn before them (the underside, motes, glass) is absorbed like the rest. |
 | **Where the water is** | Per pixel. A ray starts underwater when its *lens point* (`lens_m` 0.25 along it, not the near plane, which is only a few cm tall) is below the surface. The surface is the water's own Gerstner sum (`water_waves.gdshaderinc`, the same time base), so the waterline moves with the waves. A rising ray stops at the surface; a ray starting above water is left to the water shader. |
-| **The surface from below** | `water_underside.gdshader` on a copy of the water's surface mesh (a child of it, so it follows), back faces only, with the water's exact vertex stage. Inside the Snell window (`asin(1/ior)`, 48.6°) it's mostly clear, with a sky tint and the refracted sun (a disc and a halo); outside it, total internal reflection in `sea_glow`. |
+| **The surface from below** | `water_underside.gdshader` on a copy of the water's surface mesh (a child of it, so it follows), back faces only, with the water's exact vertex stage. Inside the Snell window (`asin(1/ior)`, 48.6°) it's mostly clear, with a sky tint and the refracted sun (a disc and a halo); outside it, total internal reflection in `deep_teal_shadow` × `tir_gain` (M2-RND-09: about the old on-screen value; `sea_glow` is emission only). At night it also reflects the column's sea-glow. A fragment nearer than `lens_m` is discarded, the same test as the post, so a camera just under a crest sees air above its lens line, not TIR. |
 | **God rays** | A FogVolume under the surface with a fog shader whose density is a noise on the plane perpendicular to the sun: constant along the light, so the volumetric fog draws shafts. They fade with depth and drift on `hymn_wind_time`. Presets only *gate* volumetric fog, so the rig authors it on (`GraphicsSettings.set_authored`) in a zone that didn't, with no global density, and only on tiers with `god_rays`. |
 | **Particulate** | Marine snow: GPUParticles3D in a 14 m box around the camera, shown only below the surface. |
-| **Rhen's lantern** | An `OmniLight3D` on `lantern_target`: `oil_lamp`, energy 9, range 9 m, a volumetric halo (`fog_energy`). Oil light, not glimmer (decisions_log N-02). |
+| **Rhen's lantern** | An `OmniLight3D` on `lantern_target`: `oil_lamp`, energy 9, range 9 m. Oil light, not glimmer (decisions_log N-02). **Its halo is the post's** (M2-RND-09): single scattering of the lamp along each ray (`halo_steps` 16 samples inside `halo_range_m` 4 m), absorbed from the lamp to each point and on to the camera, at `halo_absorption` 0.35 of the water's (Art: the last warm light reads warm; physics yields). Volumetric fog can't do it: the post absorbs fog light over the whole path to the background, which turned the halo green. So `fog_energy` is 0, and the halo shows on every tier. |
+| **Night sea-glow** | M2-RND-09 (colour script rule 3): the in-scatter and the underside carry `sea_glow` emission at the zone WaterSurface's `sea_glow_energy` × `sea_glow_strength` (1.8), independent of the light level. So a night dive is dark but teal. |
+| **Looks** | `UnderwaterRig.look` picks a row of the data's `looks`, whose colours override the defaults. Act I ("") has a `deep_teal_shadow` deep; `night_sea` (ch20, ch21, night dives) has `abyss_navy`. |
+| **Glimmer underwater** | M2-RND-09. While the camera is underwater, the rig gives each GlimmerField's motes their path back: core and halo are divided by the transmittance, released fully and held 0.6 (`glimmer` in the data, capped at `max_gain`). The rig also zeroes the field's own below-water absorption, which is the above-water sinking model, so the post absorbs them once. `GlimmerField.underwater_compensation` 0 opts a field out. With no rig, as in Ch2's sinking motes, nothing changes. |
+| **Waterline** | Antialiased in screen space (cover from the lens point's height over the surface in pixels), with a `meniscus_px` 1.5 px dark line. It was a 3 cm world band and a hard 1 px step. |
 | **Light level** | The scene's visible directional lights (energy × colour luminance) over `light_reference` (a noon sun, 3.0). It scales the in-scatter and the underside, so a night dive is dark and the lantern carries the frame. |
 
-Key frames (RX 9070 XT, High, 2×), in `docs/kb/qa/gpu/rnd02/`:
+Key frames (RX 9070 XT, High, 960×540) after M2-RND-09 are in `docs/kb/qa/gpu/rnd09/`, with the same names plus `below_night_motes_high` (released motes) and `tir_day_high` (the camera 8 cm under). The M2-RND-02 originals are in `docs/kb/qa/gpu/rnd02/`:
 - `below_high.png`: shafts, the lantern, the reef floor;
 - `window_high.png`: the Snell window with the sun;
 - `waterline_high.png`: the half-submerged split;
@@ -55,6 +59,9 @@ Key frames (RX 9070 XT, High, 2×), in `docs/kb/qa/gpu/rnd02/`:
 | UpWindow | High | 1.141 ms | 0.842 ms | +0.30 |
 | Below | Ultra | 1.827 ms | 1.108 ms | +0.72 |
 
+After M2-RND-09 (the post's lantern halo, 16 samples; same method): Below Low +0.17 ms, High **+0.37**, Ultra
++0.72; Deep Low +0.13, High +0.30, Ultra +0.66. The halo costs about 0.03–0.05 ms at 1440p.
+
 The whole underwater frame at High 1440p is 1.1–1.5 ms, inside the 3 ms criterion with room left. Most of
 Ultra's extra is its larger volumetric-fog grid and 500 snow particles.
 
@@ -74,13 +81,9 @@ Ultra's extra is its larger volumetric-fog grid and 500 snow particles.
 - **The rig finds its zone** as the nearest ancestor holding a WorldEnvironment, for the environment and the
   lights. Keep the rig inside the zone's scene.
 
-## Open (Art sign-off: M2-ART-02)
+## Open
 
-- **Glimmer motes underwater.** They're absorbed with everything else. At noon, held motes are faint by design
-  and the in-scatter haze hides them beyond a few metres. At night they survive the dark water, but at this test
-  range they're 2–3 px. An "underwater glimmer" boost (compensating the motes' emission for the path's
-  transmittance) is Art's call, and probably wanted for Act III's abyss of glimmer.
-- **The lantern's halo** reads greenish at night: water strips the oil lamp's red over a few metres (physical).
-  `albedo_white_mix` and the `turquoise_shallow` transmittance already warm it; Art may want it warmer.
-- **No caustics on characters yet** (a projected caustic light is the obvious next step), and no splash or
-  droplets at the crossing.
+- **No caustics on characters yet** (SPEC §8.2 item 2; a projected caustic light is the obvious next step), and no
+  splash or droplets at the crossing. Needed before the first underwater zone ships.
+- M2-ART-02's other items were done in M2-RND-09: the swatches, the TIR, night sea-glow, the warm halo, glimmer
+  compensation and the waterline.

@@ -104,6 +104,9 @@ const USE_DEFAULT := -1.0
 ## Energy of an OmniLight3D that follows the mote colour (0 = no light).
 @export var fill_light_energy: float = 0.0
 @export var fill_light_offset_m: Vector3 = Vector3.ZERO
+## Scales the underwater path compensation an UnderwaterRig gives these motes when the camera is
+## underwater (M2-RND-09: underwater.json glimmer); 0 opts out (the motes fade by absorption).
+@export var underwater_compensation: float = 1.0
 
 @export_group("Determinism")
 ## Fixed seed + preprocess make captures and cutscenes repeatable.
@@ -122,6 +125,9 @@ var fill_light: OmniLight3D
 var flow_time_s: float = 0.0
 
 var _mirror_quad: QuadMesh
+# Scales the field's own below-water absorption: an UnderwaterRig sets 0 while the camera is underwater, as
+# its post then absorbs every mote along the path (M2-RND-09). 1 = the field's own model (Ch2's sinking motes).
+var _underwater_absorb_scale := 1.0
 var _release_origin: Vector3 = Vector3.ZERO
 var _release_origin_set: bool = false
 
@@ -154,6 +160,18 @@ func _process(delta: float) -> void:
 
 
 # --- Modes -------------------------------------------------------------------------------------
+
+
+## UnderwaterRig: 0 while it absorbs these motes itself (the camera underwater), 1 otherwise.
+func set_underwater_absorb_scale(value: float) -> void:
+	if is_equal_approx(value, _underwater_absorb_scale):
+		return
+	_underwater_absorb_scale = value
+	if process_material != null:
+		var mo := config.get("motion", {}) as Dictionary
+		process_material.set_shader_parameter(
+			&"underwater_absorb_per_m", float(mo.get("underwater_absorb_per_m", 0.0)) * _underwater_absorb_scale
+		)
 
 
 func set_mode(new_mode: GlimmerState.Mode) -> void:
@@ -446,7 +464,7 @@ func static_process_parameters() -> Dictionary:
 		"curl_octaves": int(_tier().get("curl_octaves", 1)),
 		"response_rate": float(mo.get("response_rate", 0.0)),
 		"underwater_drag": float(mo.get("underwater_drag", 0.0)),
-		"underwater_absorb_per_m": float(mo.get("underwater_absorb_per_m", 0.0)),
+		"underwater_absorb_per_m": float(mo.get("underwater_absorb_per_m", 0.0)) * _underwater_absorb_scale,
 		"breath_rate_hz": float(lk.get("breath_rate_hz", 0.0)),
 		"breath_depth": float(lk.get("breath_depth", 0.0)),
 		"fade_in_fraction": float(lk.get("fade_in_fraction", 0.0)),
